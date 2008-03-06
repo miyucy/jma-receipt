@@ -44,7 +44,7 @@
            03  SYURRK-HKNCOMBINUM         PIC  X(04).
       *¿¡µ·∆‚Õ∆
            03  SYURRK-SKY-NAIYOU.
-               05  SYURRK-SKY-TBL             OCCURS   16.
+               05  SYURRK-SKY-TBL             OCCURS   17.
       *     ›∏±≈¿øÙ
                    09  SYURRK-HKNTEN      PIC S9(7).
       *    ∂‚≥€
@@ -133,19 +133,25 @@
                   09  SYURRK-HOU-MONEY           PIC S9(7).
                   09  SYURRK-HOU-TGMONEY         PIC S9(7).
                   09  SYURRK-HOU-TGMONEY-TAX     PIC S9(7).
-      *∆˛±°Œ¡(14)
+      *…¬Õ˝ø«√«(14)
+              05  SYURRK-BYR.
+                  09  SYURRK-BYR-HKNTEN          PIC S9(7).
+                  09  SYURRK-BYR-MONEY           PIC S9(7).
+                  09  SYURRK-BYR-TGMONEY         PIC S9(7).
+                  09  SYURRK-BYR-TGMONEY-TAX     PIC S9(7).
+      *∆˛±°Œ¡(15)
               05  SYURRK-NYN.
                   09  SYURRK-NYN-HKNTEN          PIC S9(7).
                   09  SYURRK-NYN-MONEY           PIC S9(7).
                   09  SYURRK-NYN-TGMONEY         PIC S9(7).
                   09  SYURRK-NYN-TGMONEY-TAX     PIC S9(7).
-      *Œ≈Õ‹√¥≈ˆºÍ≈ˆ(15)
+      *Œ≈Õ‹√¥≈ˆºÍ≈ˆ(16)
               05  SYURRK-RYO.
                   09  SYURRK-RYO-HKNTEN          PIC S9(7).
                   09  SYURRK-RYO-MONEY           PIC S9(7).
                   09  SYURRK-RYO-TGMONEY         PIC S9(7).
                   09  SYURRK-RYO-TGMONEY-TAX     PIC S9(7).
-      *πÁ∑◊  (16)
+      *πÁ∑◊  (17)
               05  SYURRK-TOTAL.
                   09  SYURRK-TOTAL-HKNTEN        PIC S9(7).
                   09  SYURRK-TOTAL-MONEY         PIC S9(7).

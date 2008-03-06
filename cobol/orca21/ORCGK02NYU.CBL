@@ -54,6 +54,7 @@
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/10/XX  °­À­¼ðáç¸¡ººÂÐ±þ
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/11/21  ´ïºà¾¦ÉÊÌ¾É½¼¨ÂÐ±þ
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/12/XX  ´µ¼Ô¶Ø´÷ÌôºÞÂÐ±þ
+      * 04.02.00     NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2390,15 +2391,6 @@
                MOVE    31                  TO  SPA-SRYLST-DD
            END-IF
       *
-      **** MOVE    ZERO                TO  SPA-NAI-ROUSTR
-      *****MOVE    ZERO                TO  SPA-NAI-ROUFLG
-      *Ï·¿ÍÈ½Äê¤Ï ORCSAGECHK ¤Ø
-      *****Ï·¿ÍÈ½Äê
-      *****PERFORM 3102-ROUJIN-SET-SEC
-      *
-      *    £Ä£Ï¿ÇÎÅÆüÉÕÊÔ½¸
-      *****PERFORM 3101-DORRKYMD-HEN-SEC
-      *
       *    £Ä£ÏÊÔ½¸
            MOVE    "F"                 TO  SPA-GMN-TEISEI
            MOVE    ZERO                TO  SPA-NAI-SYORI
@@ -2407,62 +2399,6 @@
        310-SPA-SET-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    Ï·¿ÍÈ½Äê½èÍý
-      *****************************************************************
-       3102-ROUJIN-SET-SEC              SECTION.
-      *
-           MOVE    ZERO                TO  SPA-NAI-ROUJIN
-      *    Ï·¿ÍÈ½Äê
-           IF     (SPA-KOH1HKNNUM       =   "027"   )  OR
-                  (SPA-KOH2HKNNUM       =   "027"   )  OR
-                  (SPA-KOH3HKNNUM       =   "027"   )  OR
-                  (SPA-KOH4HKNNUM       =   "027"   )
-               MOVE    1                TO  SPA-NAI-ROUJIN
-           ELSE
-      *        £È£±£´¡¥£±£°°Ê¹ß£·£°ºÐ¤ò£·£µºÐ¤È¤¹¤ë
-      *        £È£±£´¡¥£±£°»þÅÀ¤Ç£·£°ºÐÌ¤Ëþ¤Î»þ
-               IF     (SPA-SRYYMD          >=   "20021001" )  AND
-                      (SPA-BIRTHDAY        >=   "19321001" )
-                   MOVE    75                   TO  WRK-ROU-NEN
-               ELSE
-                   MOVE    70                   TO  WRK-ROU-NEN
-               END-IF
-      *        £·£°ºÐ°Ê¾å¤ÏÏ·¿Í¤È¤¹¤ë¡Ê³ºÅö·î£±Æü¤Ë£·£°ºÐ¡Ë
-      *        Ç¯Îð·×»»¡Ê¿ÇÎÅ·î¤Î£±Æü¤ÎÇ¯Îð¡Ë
-               MOVE    SPA-BIRTHDAY        TO  WRK-YMDS1
-               MOVE    SPA-SRYYMD          TO  WRK-YMDS2
-               MOVE    01                  TO  WRK-DDS2
-               COMPUTE WRK-NENREI-YY       =   WRK-YYS2
-                                           -   WRK-YYS1
-               IF      WRK-YMDS1(5:4)      >   WRK-YMDS2(5:4)
-                   COMPUTE WRK-NENREI-YY   =   WRK-NENREI-YY
-                                           -   1
-                   COMPUTE WRK-NENREI-MM   =  (WRK-MMS2  +  12 )
-                                           -   WRK-MMS1
-               ELSE
-                   COMPUTE WRK-NENREI-MM   =   WRK-MMS2
-                                           -   WRK-MMS1
-               END-IF
-               IF      WRK-DDS1            >   WRK-DDS2
-                   COMPUTE WRK-NENREI-MM   =   WRK-NENREI-MM
-                                           -   1
-               END-IF
-      *********IF      WRK-NENREI-YY       >=  70
-               IF      WRK-NENREI-YY       >=  WRK-ROU-NEN
-                   MOVE    1               TO  SPA-NAI-ROUJIN
-               END-IF
-           END-IF
-      *    Ï«ºÒ¡¦¼«ÇåÀÕ¡¦¸ø³²¤Î¾ì¹ç¡¢Ï·¿Í¤Ç¤â°ìÈÌ¤È¤¹¤ë
-           IF      SPA-HKNKBN          =   1
-                                       OR  2
-               MOVE    ZERO                TO  SPA-NAI-ROUJIN
-           END-IF
-      *
-      *
-           .
-       3102-ROUJIN-SET-EXT.
-           EXIT.
       *****************************************************************
       *    ÊÝ¸±ÁÈ¹ç·èÄêÊÔ½¸½èÍý
       *****************************************************************
@@ -2609,10 +2545,12 @@
                MOVE    "1070"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-RJN-ERR
            END-IF
+      *    £È£²£°¡¥£´¤«¤é¸å´ü¹âÎð¼Ô¤ÎÊÝ¸±¤¬¤Ê¤¤»þ
+           IF      AGECHK-RJNCHK       =   4
+               MOVE    "1076"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-RJN-ERR
+           END-IF
            IF      AGECHK-RJNCHK       =   2
-      ****     IF      SPA-NAI-ROUSTR      =   ZERO
-      *            MOVE    "K008"              TO  SPA-ERRCD
-      *****    END-IF
                MOVE    1                   TO  SPA-NAI-ROUFLG
            ELSE
                MOVE    ZERO                TO  SPA-NAI-ROUFLG
@@ -6409,6 +6347,7 @@
                    ADD     1               TO  SPA-SRYKBN-CNT (06)
       *            ¸¡ºº
                WHEN    "60"
+               WHEN    "64"
                    CALL    "ORCSC60"       USING
                                            MCPAREA
                                            ORCSC00AREA

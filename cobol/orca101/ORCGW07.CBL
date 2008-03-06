@@ -174,10 +174,11 @@
                        09  SPA-GMN-GAIKANRIKBN-G.
                            11  SPA-GMN-GAIKANRIKBN-CHK     PIC X(01).
                            11  SPA-GMN-GAIKANRIKBN-H       PIC X(01).
-                           11  SPA-GMN-GAIKANRIKBN-MEI     PIC X(20).
+                           11  SPA-GMN-GAIKANRIKBN-MEI     PIC X(30).
                        09  SPA-GMN-GAIKANRIKBN-COMB.
-                           11  SPA-GMN-GAIKANRIKBN-LIST    PIC X(22)
-                                                           OCCURS  3.
+                           11  SPA-GMN-GAIKANRIKBN-LIST    PIC X(32)
+                                                           OCCURS  5.
+                       09  SPA-GAIKANRIKBN-MAX             PIC 9(02).
       *                外来カーソル移動
                        09  SPA-GMN-GAIMOVE-G.
                            11  SPA-GMN-GAIMOVE             PIC X(01).
@@ -1146,7 +1147,10 @@
       *
            MOVE    "0 チェックなし"    TO  SPA-GMN-GAIKANRIKBN-LIST(1)
            MOVE    "1 チェックあり"    TO  SPA-GMN-GAIKANRIKBN-LIST(2)
-           MOVE    "2 自動発生なし"    TO  SPA-GMN-GAIKANRIKBN-LIST(3)
+           MOVE    "2 削除後の自動発生なし" 
+                                       TO  SPA-GMN-GAIKANRIKBN-LIST(3)
+           MOVE    "3 自動発生なし"    TO  SPA-GMN-GAIKANRIKBN-LIST(4)
+           MOVE    4                   TO  SPA-GAIKANRIKBN-MAX
       *
            MOVE    "0 標準"            TO  SPA-GMN-GAIMOVE-LIST(1)
            MOVE    "1 保険組合せ"      TO  SPA-GMN-GAIMOVE-LIST(2)
@@ -1743,6 +1747,9 @@
                                                TO  SPA-GMN-GAIKANRIKBN-G
                 WHEN    "2"
                     MOVE    SPA-GMN-GAIKANRIKBN-LIST(3)
+                                               TO  SPA-GMN-GAIKANRIKBN-G
+                WHEN    "3"
+                    MOVE    SPA-GMN-GAIKANRIKBN-LIST(4)
                                                TO  SPA-GMN-GAIKANRIKBN-G
                 WHEN    OTHER
                     MOVE    SPA-GMN-GAIKANRIKBN-LIST(1)
@@ -3888,7 +3895,7 @@
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   3
+                   UNTIL       IDX     >   SPA-GAIKANRIKBN-MAX
                IF      SPA-GMN-GAIKANRIKBN-CHK
                                       =   SPA-GMN-GAIKANRIKBN-LIST(IDX)
                                                                 (1:1)
@@ -5567,7 +5574,7 @@
            MOVE    "W01"           TO  SPA-SAKIPG
            MOVE    "W07"           TO  SPA-MOTOPG
       *
-      *    INITIALIZE                  SPA-W01KYOUTU
+           INITIALIZE                  SPA-W01KYOUTU
       *
       ***  MOVE   "CHANGE"         TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG      TO  MCP-WINDOW
@@ -6590,11 +6597,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    外来管理加算チェック
            MOVE    SPA-GMN-GAIKANRIKBN-G   TO  W07-GAIKANKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   3
+                   UNTIL       IDX     >   SPA-GAIKANRIKBN-MAX
                MOVE    SPA-GMN-GAIKANRIKBN-LIST (IDX)
                                        TO  W07-GAIKANKBN-ITEM(IDX)
            END-PERFORM
-           MOVE    3                   TO  W07-GAIKANKBN-COUNT
+           MOVE    SPA-GAIKANRIKBN-MAX TO  W07-GAIKANKBN-COUNT
       *
       *    外来カーソル移動
            MOVE    SPA-GMN-GAIMOVE-G       TO  W07-GAIMOVE

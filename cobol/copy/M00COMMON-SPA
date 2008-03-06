@@ -43,8 +43,9 @@
                    07  SPA-GMN-JIKANKBN        PIC X(01).
                    07  SPA-GMN-JIKANKBN-F      PIC X(01).
                    07  SPA-GMN-JIKANKBN-MEI    PIC X(28).
-               05  SPA-GMN-JIKANKBN-LIST       OCCURS   5.
+               05  SPA-GMN-JIKANKBN-LIST       OCCURS   9.
                    07  SPA-GMN-JIKANKBN-LST    PIC X(30).
+               05  SPA-JIKANKBN-MAX            PIC 9(02).
       *
                05  SPA-NAI-SYSYMDW     PIC X(07).
                05  SPA-M95-MOTOPG      PIC X(08).

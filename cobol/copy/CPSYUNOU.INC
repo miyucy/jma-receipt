@@ -165,7 +165,7 @@
            03  SYU-SKYGK               PIC  9(07).
       *¿¡µ·∆‚Õ∆
            03  SYU-SKY-NAIYOU.
-               05  SYU-SKY-TBL             OCCURS   16.
+               05  SYU-SKY-TBL             OCCURS   17.
       *     ›∏±≈¿øÙ
                    09  SYU-HKNTEN          PIC  9(07).
       *    ∂‚≥€
@@ -254,19 +254,25 @@
                   09  SYU-HOU-MONEY           PIC  9(07).
                   09  SYU-HOU-TGMONEY         PIC  9(07).
                   09  SYU-HOU-TGMONEY-TAX     PIC  9(07).
-      *∆˛±°Œ¡(14)
+      *…¬Õ˝ø«√«(14)
+              05  SYU-BYR.
+                  09  SYU-BYR-HKNTEN          PIC  9(07).
+                  09  SYU-BYR-MONEY           PIC  9(07).
+                  09  SYU-BYR-TGMONEY         PIC  9(07).
+                  09  SYU-BYR-TGMONEY-TAX     PIC  9(07).
+      *∆˛±°Œ¡(15)
               05  SYU-NYN.
                   09  SYU-NYN-HKNTEN          PIC  9(07).
                   09  SYU-NYN-MONEY           PIC  9(07).
                   09  SYU-NYN-TGMONEY         PIC  9(07).
                   09  SYU-NYN-TGMONEY-TAX     PIC  9(07).
-      *Œ≈Õ‹√¥≈ˆºÍ≈ˆ(15)
+      *Œ≈Õ‹√¥≈ˆºÍ≈ˆ(16)
               05  SYU-RYO.
                   09  SYU-RYO-HKNTEN          PIC  9(07).
                   09  SYU-RYO-MONEY           PIC  9(07).
                   09  SYU-RYO-TGMONEY         PIC  9(07).
                   09  SYU-RYO-TGMONEY-TAX     PIC  9(07).
-      *πÁ∑◊  (16)
+      *πÁ∑◊  (17)
               05  SYU-TOTAL.
                   09  SYU-TOTAL-HKNTEN        PIC  9(07).
                   09  SYU-TOTAL-MONEY         PIC  9(07).

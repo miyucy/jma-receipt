@@ -813,6 +813,7 @@
                                            OR  5
                                            OR  6
                                            OR  7
+                                           OR  8
                                            OR  0
                    CONTINUE
                ELSE
@@ -825,6 +826,14 @@
                        CONTINUE
                    ELSE
                        MOVE    "0069"          TO  SPA-ERRCD
+                       GO      TO      2020-INPUTCD-CHOSA-EXT
+                   END-IF
+               END-IF
+      *        Ìë´Ö¡¦ÁáÄ«²Ã»»¤Ï¿ÇÎÅ½ê¤Ç£È£²£°¡¥£´¤«¤é
+               IF     (LNK-SC97-JIKAN      =   8 )
+                   IF     (SPA-SRYYMD          <   "20080401" )
+                      OR  (SPA-HOSPSBT         =   1   )
+                       MOVE    "9002"          TO  SPA-ERRCD
                        GO      TO      2020-INPUTCD-CHOSA-EXT
                    END-IF
                END-IF

@@ -147,27 +147,12 @@ path	key8 	{
 		DECLARE tbl_pthkninf_key8_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pthkninf
-			WHERE HOSPNUM     =   :HOSPNUM
+			WHERE   HOSPNUM    =   :HOSPNUM
 			AND   PTID        =   :PTID
-			AND   HKNNUM      =   :HKNNUM
-			ORDER   BY      HKNID
-		;
-	};
-};
-
-path	key9 	{
-	DBSELECT	{
-		DECLARE tbl_pthkninf_key9_csr CURSOR FOR
-		SELECT *
-		FROM tbl_pthkninf
-			WHERE HOSPNUM     =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   HKNNUM      =   :HKNNUM
 			AND   TEKSTYMD    <=  :TEKSTYMD
 			AND   TEKEDYMD    >=  :TEKEDYMD
-			AND   SAKJOKBN    <> '1'
-			ORDER   BY      HKNID
+			ORDER   BY      HKNNUM,
+                                        TEKSTYMD
 		;
 	};
 };
-

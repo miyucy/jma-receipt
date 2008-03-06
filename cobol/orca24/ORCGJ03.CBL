@@ -843,6 +843,7 @@
                        MOVE    5               TO  IDX
       *                検査
                    WHEN    "60"
+                   WHEN    "64"
                        MOVE    6               TO  IDX
       *                Ｘ線
                    WHEN    "70"
@@ -1102,7 +1103,8 @@
            END-IF
       *    検体検査コメント以外
            IF     (TNS-KENTAICOMMENT   NOT =   ZERO )  AND
-                  (ACCT-SRYKBN             =   "60" )
+                  (ACCT-SRYKBN             =   "60"
+                                           OR  "64"  )
                GO      TO      310112-SINKOUI-02-EXT
            END-IF
       *

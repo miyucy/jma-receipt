@@ -1025,6 +1025,9 @@
                        WHEN    "60"
                            MOVE    "検査"      TO  SPA-GMN-SRYKBNME-L
                                                                (IDX-1)
+                       WHEN    "64"
+                           MOVE    "病理診断"  TO  SPA-GMN-SRYKBNME-L
+                                                               (IDX-1)
                        WHEN    "70"
                            MOVE    "画像診断"  TO  SPA-GMN-SRYKBNME-L
                                                                (IDX-1)
@@ -1308,7 +1311,9 @@
                                          TO  SPA-GMN-TIMEKSNKBNCOB (5)
                MOVE    "5 時間外特定加算"
                                          TO  SPA-GMN-TIMEKSNKBNCOB (6)
-               MOVE    6                 TO  SPA-TIMEKSNKBN-MAX
+               MOVE    "6 夜間・早朝加算"
+                                         TO  SPA-GMN-TIMEKSNKBNCOB (7)
+               MOVE    7                 TO  SPA-TIMEKSNKBN-MAX
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-TIMEKSNKBN-MAX
@@ -2271,7 +2276,9 @@
                                          TO  SPA-GMN-TIMEKSNKBNCOB (5)
                MOVE    "5 時間外特定加算"
                                          TO  SPA-GMN-TIMEKSNKBNCOB (6)
-               MOVE    6                 TO  SPA-TIMEKSNKBN-MAX
+               MOVE    "6 夜間・早朝加算"
+                                         TO  SPA-GMN-TIMEKSNKBNCOB (7)
+               MOVE    7                 TO  SPA-TIMEKSNKBN-MAX
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-TIMEKSNKBN-MAX

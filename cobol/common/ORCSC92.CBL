@@ -4217,7 +4217,8 @@
       *    ¸¡ººÀµ¼°Ì¾¾Î
            IF      SPA-FORMALFLG       =   "1"
                IF     (TNS-SRYCD(1:1)      =   "1") AND
-                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-SRYKBN          =   "60"
+                                           OR  "64" )  AND
                       (TNS-FORMALNAME  NOT =   SPACE )  AND
                       (TNS-FORMALNAME  NOT =   TNS-NAME )
                    MOVE    TNS-FORMALNAME  TO  TNS-NAME
@@ -4349,7 +4350,8 @@
       *    ¸¡ººÀµ¼°Ì¾¾Î
            IF      SPA-FORMALFLG       =   "1"
                IF     (TNS-SRYCD(1:1)      =   "1") AND
-                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-SRYKBN          =   "60"
+                                           OR  "64"   )  AND
                       (TNS-FORMALNAME  NOT =   SPACE )  AND
                       (TNS-FORMALNAME  NOT =   TNS-NAME )
                    MOVE    TNS-FORMALNAME  TO  TNS-NAME

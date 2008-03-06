@@ -14,7 +14,7 @@
                       07  M95-VALUE   PIC X(30).
                     06  M95-JIKANKBN-COUNT   PIC S9(9)   BINARY.
                     06  M95-JIKANKBN-ITEM
-                            PIC X(30)   OCCURS  5 TIMES.
+                            PIC X(30)   OCCURS  9 TIMES.
                 04  M95-FIXED3.
                   05  M95-SRYKA.
                     06  M95-VALUE   PIC X(2).

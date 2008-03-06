@@ -352,23 +352,8 @@
            MOVE    SPA-SYSYMDWH    TO  SPA-GMN-SYSYMD
       *
       *    時間外区分
-           MOVE    "0 時間内"          TO  SPA-GMN-JIKANKBN-LST(1)
-           MOVE    "1 時間外"          TO  SPA-GMN-JIKANKBN-LST(2)
-           MOVE    "2 休日"            TO  SPA-GMN-JIKANKBN-LST(3)
-           MOVE    "3 深夜"            TO  SPA-GMN-JIKANKBN-LST(4)
-           MOVE    "4 時間外特例"      TO  SPA-GMN-JIKANKBN-LST(5)
-      *
            MOVE    SPA-GAI-JIKANKBN    TO  SPA-GMN-JIKANKBN
-      *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   5
-               IF      SPA-GMN-JIKANKBN    =   SPA-GMN-JIKANKBN-LST
-                                                          (IDX)(1:1)
-                   MOVE    SPA-GMN-JIKANKBN-LST (IDX)
-                                           TO  SPA-GMN-JIKANKBN-G
-                   MOVE   5                TO  IDX
-               END-IF
-           END-PERFORM
+           PERFORM 3101-JIKANGAI-SET-SEC
       *
            MOVE    1               TO  SPA-M95-CUR
            MOVE    1               TO  SPA-M95-PAGE
@@ -377,6 +362,40 @@
            INITIALIZE                  SPA-M95PAGE2-AREA
            .
        310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（ＭＩＤ１）ＯＫ処理
+      *****************************************************************
+       3101-JIKANGAI-SET-SEC       SECTION.
+      *
+      *    時間外区分
+           MOVE    "0 時間内"          TO  SPA-GMN-JIKANKBN-LST(1)
+           MOVE    "1 時間外"          TO  SPA-GMN-JIKANKBN-LST(2)
+           MOVE    "2 休日"            TO  SPA-GMN-JIKANKBN-LST(3)
+           MOVE    "3 深夜"            TO  SPA-GMN-JIKANKBN-LST(4)
+           MOVE    "4 時間外特例"      TO  SPA-GMN-JIKANKBN-LST(5)
+           IF     (SPA-NAI-SYSYMD      >=  "20080401" )
+             AND  (SPA-HOSPSBT         =   2          ) 
+               MOVE    "8 夜間・早朝"      TO  SPA-GMN-JIKANKBN-LST(6)
+               MOVE    6                   TO  SPA-JIKANKBN-MAX
+           ELSE
+               MOVE    5                   TO  SPA-JIKANKBN-MAX
+           END-IF
+      *
+           MOVE    SPACE               TO  SPA-GMN-JIKANKBN-MEI
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-JIKANKBN-MAX
+               IF      SPA-GMN-JIKANKBN    =   SPA-GMN-JIKANKBN-LST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-JIKANKBN-LST (IDX)
+                                           TO  SPA-GMN-JIKANKBN-G
+                   MOVE   SPA-JIKANKBN-MAX TO  IDX
+               END-IF
+           END-PERFORM
+           .
+       3101-JIKANGAI-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -508,6 +527,9 @@
                MOVE    WRK-HENYMDG         TO  SPA-GMN-SYSYMD
                MOVE    WRK-CAL-YMD         TO  SPA-NAI-SYSYMD
                MOVE    3                   TO  SPA-M95-CUR
+      *        時間外区分
+               MOVE    SPA-GAI-JIKANKBN    TO  SPA-GMN-JIKANKBN
+               PERFORM 3101-JIKANGAI-SET-SEC
            ELSE
                MOVE    "0001"              TO  SPA-ERRCD
            END-IF
@@ -524,13 +546,13 @@
       *
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   5
+                   UNTIL       IDX     >   SPA-JIKANKBN-MAX
                IF      SPA-GMN-JIKANKBN    =   SPA-GMN-JIKANKBN-LST
                                                           (IDX)(1:1)
                    MOVE    SPA-GMN-JIKANKBN-LST (IDX)
                                            TO  SPA-GMN-JIKANKBN-G
                    MOVE    1               TO  FLG-CHK
-                   MOVE    5               TO  IDX
+                   MOVE    SPA-JIKANKBN-MAX    TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1598,11 +1620,11 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            MOVE    SPA-GMN-JIKANKBN-G  TO  M95-JIKANKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   5
+                   UNTIL       IDX     >   SPA-JIKANKBN-MAX
                MOVE    SPA-GMN-JIKANKBN-LST (IDX)
                                            TO  M95-JIKANKBN-ITEM (IDX)
            END-PERFORM
-           MOVE    5                   TO  M95-JIKANKBN-COUNT
+           MOVE    SPA-JIKANKBN-MAX    TO  M95-JIKANKBN-COUNT
       *
            IF     (SPA-M95-INIT    =   ZERO ) AND
                   (SPA-M95-PAGE    =   1    )

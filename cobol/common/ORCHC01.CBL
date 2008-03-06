@@ -52,6 +52,7 @@
       *  04.01.00    NACL-多々納  07/11/22  公害保険表示
       *  04.01.00    NACL-多々納  08/01/25  受給者番号１２文字
       *  04.01.00    NACL-多々納  08/02/04  オンラインファイル名確認追加
+      *  04.02.00    NACL-多々納  08/02/XX  記号・番号の１６文字以上対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -781,8 +782,24 @@
                    INTO                    WRK-HEN-KIGONUM
                END-STRING
            END-IF
+      *---(04.02.00) LINE ADD START ------------------------------------
+      *    後期高齢者保険は番号のみ
+           IF     (COMB-HKNNUM         =  "039" )
+              AND (WRK-KIGONUM         =   SPACE )
+               MOVE    WRK-NUM             TO  WRK-HEN-KIGONUM
+           END-IF
+      *---(04.02.00) LINE END START ------------------------------------
       *
            MOVE    WRK-HEN-KIGONUM     TO  HC01-KIGONUM
+      *---(04.02.00) LINE ADD START ------------------------------------
+      *    記号・番号が１６文字以上は別行へ
+           IF      WRK-HEN-KIGONUM(33:)    NOT =   SPACE
+               MOVE    SPACE               TO  HC01-KIGONUM
+               MOVE    WRK-KIGONUM         TO  HC01-KIGO
+               MOVE    WRK-NUM             TO  HC01-NUM
+           END-IF
+      *---(04.02.00) LINE END START ------------------------------------
+      *
       *---- (01.00.11) LINE UPD START ----------------------------
       *
       *---- (01.00.01) LINE MOD END   ---------------------------------

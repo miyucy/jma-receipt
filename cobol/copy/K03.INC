@@ -40,6 +40,8 @@
                 04  K03-VALUE   PIC X(10).
               03  K03-HOUHKNTEN.
                 04  K03-VALUE   PIC X(10).
+              03  K03-BYRHKNTEN.
+                04  K03-VALUE   PIC X(10).
               03  K03-NYUHKNTEN.
                 04  K03-VALUE   PIC X(10).
               03  K03-RYOHKNTEN.
@@ -123,6 +125,8 @@
               03  K03-SSNTGMONEY.
                 04  K03-VALUE   PIC X(10).
               03  K03-HOUTGMONEY.
+                04  K03-VALUE   PIC X(10).
+              03  K03-BYRTGMONEY.
                 04  K03-VALUE   PIC X(10).
               03  K03-NYUTGMONEY.
                 04  K03-VALUE   PIC X(10).

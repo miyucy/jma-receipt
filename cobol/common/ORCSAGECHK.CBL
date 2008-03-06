@@ -1333,7 +1333,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-PTKOHINF        =   ZERO
-               MOVE    1                   TO  AGECHK-ROUJIN
+               MOVE    1                   TO  AGECHK-ROUJIN2
            END-IF
       *
            .
@@ -1347,30 +1347,64 @@
        20011-ROUJIN-CHK3-SEC         SECTION.
       *
       *    後期高齢者該当
-           INITIALIZE                  PTKOHINF-REC
-           MOVE    AGECHK-HOSPNUM      TO  PTKOH-HOSPNUM
-           MOVE    AGECHK-PTID         TO  PTKOH-PTID
-           MOVE    "968"               TO  PTKOH-KOHNUM
-           MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKSTYMD
-           MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKEDYMD
+           INITIALIZE                  PTHKNINF-REC
+           MOVE    AGECHK-HOSPNUM      TO  PTHKN-HOSPNUM
+           MOVE    AGECHK-PTID         TO  PTHKN-PTID
+           MOVE    AGECHK-SRYYMD       TO  PTHKN-TEKSTYMD
+           MOVE    AGECHK-SRYYMD       TO  PTHKN-TEKEDYMD
       *
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-               MOVE    "key6"              TO  MCP-PATHNAME
-               PERFORM 920-PTKOHINF-READ-SEC
+               MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 910-PTHKNINF-READ-SEC
            ELSE
-               MOVE    1               TO  FLG-PTKOHINF
+               MOVE    1               TO  FLG-PTHKNINF
            END-IF
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM UNTIL      (FLG-PTHKNINF    =   1   )
+                         OR   (AGECHK-ROUJIN2  =   1   )
+               IF      PTHKN-HKNNUM        =   "039"
+                                           OR  "038"
+                   MOVE    1               TO  AGECHK-ROUJIN2
+               END-IF
+               MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 910-PTHKNINF-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF      FLG-PTKOHINF        =   ZERO
-               MOVE    1                   TO  AGECHK-ROUJIN2
+      *    後期高齢者該当
+           IF      AGECHK-ROUJIN2      =   ZERO
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    AGECHK-HOSPNUM      TO  PTKOH-HOSPNUM
+               MOVE    AGECHK-PTID         TO  PTKOH-PTID
+               MOVE    "968"               TO  PTKOH-KOHNUM
+               MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKSTYMD
+               MOVE    AGECHK-SRYYMD       TO  PTKOH-TEKEDYMD
+      *
+               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                   MOVE    "key6"              TO  MCP-PATHNAME
+                   PERFORM 920-PTKOHINF-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-PTKOHINF
+               END-IF
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+      *
+               IF      FLG-PTKOHINF        =   ZERO
+                   MOVE    1                   TO  AGECHK-ROUJIN2
+               END-IF
            END-IF
            .
        20011-ROUJIN-CHK3-EXT.

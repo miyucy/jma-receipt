@@ -200,7 +200,7 @@
                05  SPA-GMN-SYOSINYMD         PIC X(09).
                05  SPA-GMN-MISYUMONEY        PIC S9(08).
       *
-               05  SPA-GMN-HKNTEN-TBL        OCCURS  15.
+               05  SPA-GMN-HKNTEN-TBL        OCCURS  16.
                    07  SPA-GMN-HKNTEN        PIC S9(07).
       *
                05  SPA-GMN-SELNUM-G.
@@ -1103,7 +1103,7 @@
                    UNTIL       IDX2    >   LNK-SYUNOU-MAX
                MOVE    LNK-SYUNOU-REC (IDX2)   TO  SYUNOU-REC
                PERFORM VARYING     IDX     FROM    1   BY  1
-                       UNTIL       IDX     >   15
+                       UNTIL       IDX     >   16
                    ADD     SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNTEN (IDX)
                END-PERFORM
            END-PERFORM
@@ -3287,6 +3287,7 @@
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (13)
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (14)
            MOVE    ZERO                TO  SPA-GMN-HKNTEN (15)
+           MOVE    ZERO                TO  SPA-GMN-HKNTEN (16)
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-K08-MAX
              IF      SPA-GMN-NAIIDX  (IDX)   >   ZERO
@@ -3330,6 +3331,9 @@
                        WHEN    "70"
                            ADD     SPA-NAI-HKNTEN(IDX-NAI)
                                                TO  SPA-GMN-HKNTEN (10)
+                       WHEN    "64"
+                           ADD     SPA-NAI-HKNTEN(IDX-NAI)
+                                               TO  SPA-GMN-HKNTEN (14)
                        WHEN    "80"
                            PERFORM  410321-SONOTA-TENSU-SEC
       *                食事
@@ -3338,10 +3342,10 @@
                        WHEN    "97"
                            IF      SPA-NAI-HKNSFLG (IDX-NAI) =   ZERO
                                ADD     SPA-NAI-HKNTEN (IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (14)
+                                               TO  SPA-GMN-HKNTEN (15)
                            ELSE
                                COMPUTE SPA-GMN-HKNTEN (14)
-                                               =   SPA-GMN-HKNTEN (14)
+                                               =   SPA-GMN-HKNTEN (15)
                                                -   SPA-NAI-HKNTEN
                                                               (IDX-NAI)
                            END-IF
@@ -3352,7 +3356,7 @@
       *    各点数
            MOVE    ZERO                TO  SPA-GMN-GOKEI
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   15
+                   UNTIL       IDX     >   16
                ADD     SPA-GMN-HKNTEN (IDX)    TO  SPA-GMN-GOKEI
            END-PERFORM
            .
@@ -3384,11 +3388,11 @@
       *        療養担当手当て
                WHEN    "850"
                    ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (15)
+                                               TO  SPA-GMN-HKNTEN (16)
       *        入院料
                WHEN    "890"
                    ADD     SPA-NAI-HKNTEN(IDX-NAI)
-                                               TO  SPA-GMN-HKNTEN (14)
+                                               TO  SPA-GMN-HKNTEN (15)
       *        その他
                WHEN    OTHER
                    ADD     SPA-NAI-HKNTEN(IDX-NAI)
@@ -3997,6 +4001,7 @@
            MOVE    ZERO                TO  SYU-HKNTEN(13)
            MOVE    ZERO                TO  SYU-HKNTEN(14)
            MOVE    ZERO                TO  SYU-HKNTEN(15)
+           MOVE    ZERO                TO  SYU-HKNTEN(16)
            MOVE    ZERO                TO  SYU-SHOHOU-SAI
       *    各点数
            PERFORM VARYING     IDY     FROM    1   BY  1
@@ -4010,11 +4015,11 @@
                    PERFORM 450120-HKNTEN-KEI-SEC
                END-IF
            END-PERFORM
-           MOVE    ZERO                TO  SYU-HKNTEN(16)
+           MOVE    ZERO                TO  SYU-HKNTEN(17)
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   15
+                   UNTIL       IDX     >   16
       *        保険合計点数
-               ADD     SYU-HKNTEN(IDX)         TO  SYU-HKNTEN(16)
+               ADD     SYU-HKNTEN(IDX)         TO  SYU-HKNTEN(17)
            END-PERFORM
       *
            ADD     1                   TO  LNK-SYUNOU2-MAX
@@ -4070,7 +4075,7 @@
            ADD     WRK-SYU-SKYGK       TO  SYU-SKYGK
            ADD     WRK-SYU-HKNTEKMONEY TO  SYU-HKNTEKMONEY
            PERFORM VARYING     IDS2    FROM    1   BY  1
-                   UNTIL       IDS2    >   16
+                   UNTIL       IDS2    >   17
                ADD    WRK-SYU-HKNTEN (IDS2)    TO  SYU-HKNTEN(IDS2)
                ADD    WRK-SYU-MONEY (IDS2)     TO  SYU-MONEY (IDS2)
                ADD    WRK-SYU-TGMONEY (IDS2)   TO  SYU-TGMONEY(IDS2)
@@ -4258,6 +4263,9 @@
                WHEN    "60"
                    ADD     SPA-NAI-HKNTEN(IDY)
                                                TO  SYU-HKNTEN (09)
+               WHEN    "64"
+                   ADD     SPA-NAI-HKNTEN(IDY)
+                                               TO  SYU-HKNTEN (14)
                WHEN    "70"
                    ADD     SPA-NAI-HKNTEN(IDY)
                                                TO  SYU-HKNTEN (10)
@@ -4285,11 +4293,11 @@
       *            療養担当手当て
                    WHEN    "850"
                        ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (15)
+                                               TO  SYU-HKNTEN (16)
       *            入院料（外来）
                    WHEN    "890"
                        ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (14)
+                                               TO  SYU-HKNTEN (15)
       *            その他
                    WHEN    OTHER
                        ADD     SPA-NAI-HKNTEN(IDY)
@@ -4298,7 +4306,7 @@
       *            食事
                WHEN    "90"
                    ADD     SPA-NAI-HKNTEN(IDY)
-                                               TO  SYU-HKNTEN (14)
+                                               TO  SYU-HKNTEN (15)
            END-EVALUATE
       *
            .
@@ -6172,7 +6180,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    各点数
            PERFORM   VARYING   IDX     FROM    1   BY  1
-                     UNTIL     IDX         >   15
+                     UNTIL     IDX         >   16
                IF      SPA-GMN-HKNTEN  (IDX)   >=  ZERO
                    MOVE    SPA-GMN-HKNTEN  (IDX)   TO  WRK-Z9
                    MOVE    WRK-Z9                  TO  WRK-Z9-X
@@ -6208,11 +6216,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    13
                        MOVE    WRK-Z9-X          TO  K08-HOUHKNTEN
                    WHEN    14
+                       MOVE    WRK-Z9-X          TO  K08-BYRHKNTEN
+                   WHEN    15
                        MOVE    WRK-Z9-X          TO  K08-NYUHKNTEN
                        IF      SPA-GMN-HKNTEN  (IDX) NOT =   ZERO
                            MOVE    "入院料等"        TO  K08-SRYMEI14
                        END-IF
-                   WHEN    15
+                   WHEN    16
                        MOVE    WRK-Z9-X          TO  K08-RYOHKNTEN
                        IF      SPA-GMN-HKNTEN  (IDX) NOT =   ZERO
                            MOVE    "療養担当"        TO  K08-SRYMEI15
@@ -6598,7 +6608,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    検査正式名称
            IF      SPA-FORMALFLG       =   "1"
                IF     (TNS-SRYCD(1:1)      =   "1") AND
-                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-SRYKBN          =   "60"
+                                           OR  "64"  )  AND
                       (TNS-FORMALNAME  NOT =   SPACE )  AND
                       (TNS-FORMALNAME  NOT =   TNS-NAME )
                    MOVE    TNS-FORMALNAME  TO  TNS-NAME

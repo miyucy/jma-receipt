@@ -59,6 +59,7 @@
       *                                     一括入力内容修正
       *  04.01.00    NACL-多々納  07/10/22  公務災害追加
       *  04.01.00    NACL-多々納  07/11/27  公害追加
+      *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -10128,6 +10129,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN   "54"
                    MOVE    "01"        TO  JYURRK-SRYKBN8
                WHEN   "60"
+               WHEN   "64"
                    MOVE    "01"        TO  JYURRK-SRYKBN9
                WHEN   "70"
                    MOVE    "01"        TO  JYURRK-SRYKBN10
@@ -11990,12 +11992,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "0009"          TO  SPA-ERRCD
            END-IF
       *@!!
-      *    ４月のレセプト適用までエラー
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-NAI-SRYYM       >=  "200804"
-                   MOVE    "9009"          TO  SPA-ERRCD
-               END-IF
-           END-IF
+      **** ４月のレセプト適用までエラー
+      *    IF      SPA-ERRCD           =   SPACE
+      *        IF      SPA-NAI-SRYYM       >=  "200804"
+      *            MOVE    "9009"          TO  SPA-ERRCD
+      *        END-IF
+      **** END-IF
       *@
       *
            MOVE    SPACE               TO  SPA-XC01-HKNKBN
@@ -13049,7 +13051,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    検査正式名称
            IF      SPA-FORMALFLG       =   "1"
                IF     (TNS-SRYCD(1:1)      =   "1") AND
-                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-SRYKBN          =   "60"
+                                           OR  "64"   )  AND
                       (TNS-FORMALNAME  NOT =   SPACE )  AND
                       (TNS-FORMALNAME  NOT =   TNS-NAME )
                    MOVE    TNS-FORMALNAME  TO  TNS-NAME

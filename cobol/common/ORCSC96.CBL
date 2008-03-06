@@ -1379,6 +1379,13 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
+      *Ｈ２０．４から
+               WHEN    "K240"
+                   STRING  "警告！！"
+                           "初回算定から２年以上経過しています。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

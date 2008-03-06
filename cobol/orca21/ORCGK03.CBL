@@ -1187,11 +1187,11 @@
            END-IF
       *
       *    ÊÝ¸±ÎÁ
-           MOVE    ZERO                TO  SPA-GMN-HKNRYO (16)
+           MOVE    ZERO                TO  SPA-GMN-HKNRYO (17)
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   15
+                   UNTIL       IDX     >   16
                MOVE    SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNRYO (IDX)
-               ADD     SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNRYO (16)
+               ADD     SYU-HKNTEN (IDX)    TO  SPA-GMN-HKNRYO (17)
       *    ÊÝ¸±Å¬ÍÑ³°
                COMPUTE SPA-GMN-TGMONEY (IDX)   =   SYU-TGMONEY (IDX)
                                                +   SYU-TGMONEY-TAX(IDX)
@@ -1200,8 +1200,8 @@
       *        ADD     SYU-TGMONEY-TAX (IDX)   TO  SPA-GMN-HKNGAI
            END-PERFORM
       *    ÊÝ¸±Å¬ÍÑ³°
-           COMPUTE SPA-GMN-HKNGAI      =   SYU-TGMONEY (16)
-                                       +   SYU-TGMONEY-TAX (16)
+           COMPUTE SPA-GMN-HKNGAI      =   SYU-TGMONEY (17)
+                                       +   SYU-TGMONEY-TAX (17)
       *ÊÝ¸±Å¬ÍÑ¶â³Û
            MOVE    SYU-HKNTEKMONEY     TO  SPA-GMN-HKNTEKI
       *    Ï·¿Í°ìÉôÉéÃ´¶â
@@ -1764,7 +1764,7 @@
            ADD     WRK-SYU-HKNTEKMONEY TO  SYU-HKNTEKMONEY
            ADD     WRK-SYU-SHOHOU-SAI  TO  SYU-SHOHOU-SAI
            PERFORM VARYING     IDS1    FROM    1   BY  1
-                   UNTIL       IDS1    >   16
+                   UNTIL       IDS1    >   17
                ADD    WRK-SYU-HKNTEN (IDS1)    TO  SYU-HKNTEN(IDS1)
                ADD    WRK-SYU-MONEY (IDS1)     TO  SYU-MONEY (IDS1)
                ADD    WRK-SYU-TGMONEY (IDS1)   TO  SYU-TGMONEY(IDS1)
@@ -2602,14 +2602,17 @@
       *    Êü¼ÍÀþ
            MOVE    SPA-GMN-HKNRYO (13) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-HOUHKNTEN
-      *    Æþ±¡ÎÁÅù
+      *    ÉÂÍý¿ÇÃÇ
            MOVE    SPA-GMN-HKNRYO (14) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-BYRHKNTEN
+      *    Æþ±¡ÎÁÅù
+           MOVE    SPA-GMN-HKNRYO (15) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-NYUHKNTEN
       *    ÎÅÍÜÃ´Åö¼êÅö¤Æ
-           MOVE    SPA-GMN-HKNRYO (15) TO  WRK-Z9
+           MOVE    SPA-GMN-HKNRYO (16) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-RYOHKNTEN
       *    ¹ç·×ÅÀ¿ô
-           MOVE    SPA-GMN-HKNRYO (16) TO  WRK-Z9
+           MOVE    SPA-GMN-HKNRYO (17) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-TOTALHKNTEN
       *    ÊÝ¸±Å¬ÍÑ³°
       *    ¿ÇÎÅÎÁ
@@ -2651,21 +2654,24 @@
       *    Êü¼ÍÀþ
            MOVE    SPA-GMN-TGMONEY (13) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-HOUTGMONEY
-      *    Æþ±¡ÎÁ
+      *    ÉÂÍý¿ÇÃÇ
            MOVE    SPA-GMN-TGMONEY (14) TO  WRK-Z9
+           MOVE    WRK-Z9              TO  K03-BYRTGMONEY
+      *    Æþ±¡ÎÁ
+           MOVE    SPA-GMN-TGMONEY (15) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-NYUTGMONEY
       *    ÎÅÍÜÃ´Åö
-           MOVE    SPA-GMN-TGMONEY (15) TO  WRK-Z9
+           MOVE    SPA-GMN-TGMONEY (16) TO  WRK-Z9
            MOVE    WRK-Z9              TO  K03-RYOTGMONEY
       *    ¸«½Ð¤·
-           IF     (SPA-GMN-HKNRYO (14) =   ZERO )  AND
-                  (SPA-GMN-TGMONEY(14) =   ZERO )
+           IF     (SPA-GMN-HKNRYO (15) =   ZERO )  AND
+                  (SPA-GMN-TGMONEY(15) =   ZERO )
                CONTINUE
            ELSE
                MOVE    "Æþ±¡ÎÁÅù"          TO  K03-SRYMEI14
            END-IF
-           IF     (SPA-GMN-HKNRYO (15) =   ZERO )  AND
-                  (SPA-GMN-TGMONEY(15) =   ZERO )
+           IF     (SPA-GMN-HKNRYO (16) =   ZERO )  AND
+                  (SPA-GMN-TGMONEY(16) =   ZERO )
                CONTINUE
            ELSE
                MOVE    "ÎÅÍÜÃ´Åö¼êÅö"      TO  K03-SRYMEI15
@@ -2982,6 +2988,8 @@
            MOVE    ALL "*"              TO  K03-SSNHKNTEN
       *    Êü¼ÍÀþ
            MOVE    ALL "*"              TO  K03-HOUHKNTEN
+      *    ÉÂÍý¿ÇÃÇ
+           MOVE    ALL "*"              TO  K03-BYRHKNTEN
       *    Æþ±¡ÎÁÅù
            MOVE    ALL "*"              TO  K03-NYUHKNTEN
       *    ÎÅÍÜÃ´Åö¼êÅö¤Æ
@@ -3015,6 +3023,8 @@
            MOVE    ALL "*"              TO  K03-SSNTGMONEY
       *    Êü¼ÍÀþ
            MOVE    ALL "*"              TO  K03-HOUTGMONEY
+      *    ÉÂÍý¿ÇÃÇ
+           MOVE    ALL "*"              TO  K03-BYRTGMONEY
       *    Æþ±¡ÎÁ
            MOVE    ALL "*"              TO  K03-NYUTGMONEY
       *    ÎÅÍÜÃ´Åö

@@ -5223,6 +5223,7 @@
                                                        OR "E"
                                                        OR "F"
                                                        OR "G"
+                                                       OR "H"
                        PERFORM 49012-JIKAN-SYORI-SEC
                    END-IF
       *            Ｈ１６．４から特定疾患処方管理料等の自動発生チェック
@@ -5412,6 +5413,9 @@
                                                                 (1:1)
                WHEN    "G"
                    MOVE    "7"             TO  WKSRY-INPUTCD(IDX)
+                                                                (1:1)
+               WHEN    "H"
+                   MOVE    "8"             TO  WKSRY-INPUTCD(IDX)
                                                                 (1:1)
            END-EVALUATE
            MOVE    WKSRY-SRYCD (IDX)   TO  WKSRY-INPUTCD (IDX)(3:)

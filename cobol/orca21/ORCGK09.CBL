@@ -752,7 +752,8 @@
            MOVE    "30 Ãí¼Í"           TO  SPA-K09-SRYKBN-LST (04)
            MOVE    "40 ½èÃÖ"           TO  SPA-K09-SRYKBN-LST (05)
            MOVE    "50 ¼ê½Ñ¡¦Ëã¿ì"     TO  SPA-K09-SRYKBN-LST (06)
-           MOVE    "60 ¸¡ºº"           TO  SPA-K09-SRYKBN-LST (07)
+           MOVE    "60 ¸¡ºº¡¦ÉÂÍý¿ÇÃÇ"
+                                       TO  SPA-K09-SRYKBN-LST (07)
            MOVE    "70 ²èÁü¿ÇÃÇ"       TO  SPA-K09-SRYKBN-LST (08)
            MOVE    "80 ¥ê¥Ï¥Ó¥ê¡¦¤½¤ÎÂ¾"
                                        TO  SPA-K09-SRYKBN-LST (09)
@@ -3460,7 +3461,8 @@
       *    ¸¡ººÀµ¼°Ì¾¾Î
            IF      SPA-FORMALFLG       =   "1"
                IF     (TNS-SRYCD(1:1)      =   "1") AND
-                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-SRYKBN          =   "60"
+                                           OR  "64"  )  AND
                       (TNS-FORMALNAME  NOT =   SPACE )  AND
                       (TNS-FORMALNAME  NOT =   TNS-NAME )
                    MOVE    TNS-FORMALNAME  TO  TNS-NAME

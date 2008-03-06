@@ -16,7 +16,7 @@ M95	{
 						value	varchar(30);
 					};
 					count	int;
-					item	varchar(30)[5];
+					item	varchar(30)[9];
 				};
 			};
 			fixed3	{

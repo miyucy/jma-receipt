@@ -106,6 +106,10 @@ tbl_syunou {
 	HOU_MONEY			number(7,0);
 	HOU_TGMONEY			number(7,0);
 	HOU_TGMONEY_TAX		number(7,0);
+	BYR_HKNTEN			number(7,0);
+	BYR_MONEY			number(7,0);
+	BYR_TGMONEY			number(7,0);
+	BYR_TGMONEY_TAX		number(7,0);
 	NYN_HKNTEN			number(7,0);
 	NYN_MONEY			number(7,0);
 	NYN_TGMONEY			number(7,0);

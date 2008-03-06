@@ -80,10 +80,10 @@ W07	{
 				};
 				GAIKANKBN_COMBO	{
 					GAIKANKBN	{
-						value	varchar(22);
+						value	varchar(32);
 					};
 					count	int;
-					item	varchar(22)[3];
+					item	varchar(32)[5];
 				};
 				GAIMOVE_COMBO	{
 					GAIMOVE	{

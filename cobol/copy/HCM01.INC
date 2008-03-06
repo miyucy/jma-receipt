@@ -57,3 +57,5 @@
               03  HCM01-FTNSNON   PIC X(20).
             02  HCM01-JKOH12-TBL        OCCURS  3 TIMES.
               03  HCM01-JKYSNO12  PIC X(24).
+            02  HCM01-KIGO  PIC X(32).
+            02  HCM01-NUM   PIC X(32).

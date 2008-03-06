@@ -36,8 +36,8 @@
                    07  SPA-GMN-HAKYMD            PIC X(09).
                    07  SPA-GMN-DENPNUM           PIC X(07).
       *
-                   07  SPA-GMN-HKNRYO            PIC 9(07)  OCCURS  16.
-                   07  SPA-GMN-TGMONEY           PIC 9(07)  OCCURS  16.
+                   07  SPA-GMN-HKNRYO            PIC 9(07)  OCCURS  17.
+                   07  SPA-GMN-TGMONEY           PIC 9(07)  OCCURS  17.
       *
                    07  SPA-GMN-HKNTEKI           PIC 9(10).
                    07  SPA-GMN-ROUFTN            PIC 9(07).

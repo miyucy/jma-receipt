@@ -1065,7 +1065,7 @@
                                        TO  SPA-COM-AUTOKBN  (IDX2)
            IF      LNK-WKSRY-AUTOKBN (IDX IDY)
                                        =   "A" OR "B" OR "C"  OR  "D"
-                                       OR  "E" OR "F" OR "G"
+                                       OR  "E" OR "F" OR "G"  OR  "H"
                MOVE    SPACE               TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
       *!!
@@ -2194,8 +2194,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    "E"      TO  WKSRY-AUTOKBN  (IDY)
                        WHEN    6
                            MOVE    "F"      TO  WKSRY-AUTOKBN  (IDY)
-                       WHEN    4
+                       WHEN    7
                            MOVE    "G"      TO  WKSRY-AUTOKBN  (IDY)
+                       WHEN    8
+                           MOVE    "H"      TO  WKSRY-AUTOKBN  (IDY)
                    END-EVALUATE
                END-IF
            END-IF
@@ -2239,6 +2241,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "F"      TO  WKSRY-AUTOKBN  (IDY)
                    WHEN    "7"
                        MOVE    "G"      TO  WKSRY-AUTOKBN  (IDY)
+                   WHEN    "8"
+                       MOVE    "H"      TO  WKSRY-AUTOKBN  (IDY)
                END-EVALUATE
            END-IF
            .
@@ -2987,6 +2991,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        £ÿ¿˛
                WHEN    "70"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (10)
+      *        …¬Õ˝ø«√«
+               WHEN    "64"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (14)
       *        §Ω§Œ¬æ
                WHEN    "80"
                    PERFORM 45011-HKNTEN-SONOTA-SEC
@@ -3018,10 +3025,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (13)
       *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
                WHEN    "850"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (15)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (16)
       *        ∆˛±°Œ¡
                WHEN    "890"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (14)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (15)
       *        §Ω§Œ¬æ
                WHEN    OTHER
                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (11)
@@ -3187,6 +3194,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        £ÿ¿˛
                WHEN    "70"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (10)
+      *        …¬Õ˝ø«√«
+               WHEN    "64"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (14)
       *        §Ω§Œ¬æ
                WHEN    "80"
                    EVALUATE    WRK-TNSSRYSYUKBN
@@ -3204,10 +3214,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (13)
       *            ∆˛±°Œ¡
                    WHEN    "890"
-                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (14)
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (15)
       *            Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
                    WHEN    "850"
-                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (15)
+                       ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (16)
       *            §Ω§Œ¬æ
                    WHEN    OTHER
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (11)
@@ -3220,10 +3230,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (13)
       *        ∆˛±°Œ¡
                WHEN    "89"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (14)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (15)
       *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
                WHEN    "85"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (15)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (16)
       *        §Ω§Œ¬æ
                WHEN    OTHER
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY (11)
@@ -3272,6 +3282,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        £ÿ¿˛
                WHEN    "70"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (10)
+      *        …¬Õ˝ø«√«
+               WHEN    "64"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (14)
       *        §Ω§Œ¬æ
                WHEN    "80"
                    EVALUATE    WRK-TNSSRYSYUKBN
@@ -3294,11 +3307,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
                    WHEN    "850"
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
-                                                                   (15)
+                                                                   (16)
       *            ∆˛±°Œ¡
                    WHEN    "890"
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
-                                                                   (14)
+                                                                   (15)
       *            §Ω§Œ¬æ
                    WHEN    OTHER
                        ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX
@@ -3312,10 +3325,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (13)
       *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
                WHEN    "85"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (15)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (16)
       *        ∆˛±°Œ¡
                WHEN    "89"
-                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (14)
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (15)
       *        §Ω§Œ¬æ
                WHEN    OTHER
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-TGMONEY-TAX (11)
@@ -3409,6 +3422,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        £ÿ¿˛
                WHEN    "70"
                    ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (10)
+      *        …¬Õ˝ø«√«
+               WHEN    "64"
+                   ADD     SPA-GMN-KEI (IDX)   TO  SYU-HKNTEN (14)
       *        §Ω§Œ¬æ
                WHEN    "80"
       *            œ´∫“ ›∏±°›§Ω§Œ¬æ
@@ -3492,6 +3508,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    WHEN    "70"
                        ADD     ORCSCWKSRY-KSN-TENSU (IDX)
                                                    TO  SYU-HKNTEN(10)
+      *            …¬Õ˝ø«√«
+                   WHEN    "64"
+                       ADD     ORCSCWKSRY-KSN-TENSU (IDX)
+                                                   TO  SYU-HKNTEN(14)
       *            §Ω§Œ¬æ
                    WHEN    "80"
                        PERFORM 4504-JIDOUKEI-SONOTA-SEC
@@ -3533,11 +3553,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        Œ≈Õ‹√¥≈ˆºÍ≈ˆ§∆
                WHEN    "850"
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                               TO  SYU-HKNTEN (15)
+                                               TO  SYU-HKNTEN (16)
       *        ∆˛±°Œ¡
                WHEN    "890"
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
-                                               TO  SYU-HKNTEN (14)
+                                               TO  SYU-HKNTEN (15)
       *        §Ω§Œ¬æ
                WHEN    OTHER
                    ADD     ORCSCWKSRY-KSN-TENSU (IDX)
@@ -3553,15 +3573,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4506-TOTALKEI-SEC             SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX         >   15
+                   UNTIL       IDX         >   16
       *        ›∏±≈¿øÙ
-              ADD     SYU-HKNTEN(IDX)      TO  SYU-HKNTEN(16)
+              ADD     SYU-HKNTEN(IDX)      TO  SYU-HKNTEN(17)
       *       ∂‚≥€
-              ADD     SYU-MONEY (IDX)      TO  SYU-MONEY (16)
+              ADD     SYU-MONEY (IDX)      TO  SYU-MONEY (17)
       *       ≈¨Õ—≥∞∂‚≥€
-              ADD     SYU-TGMONEY(IDX)     TO  SYU-TGMONEY(16)
+              ADD     SYU-TGMONEY(IDX)     TO  SYU-TGMONEY(17)
       *       ≈¨Õ—≥∞∂‚≥€° æ√»Ò¿«§¢§Í°À
-              ADD     SYU-TGMONEY-TAX(IDX) TO  SYU-TGMONEY-TAX(16)
+              ADD     SYU-TGMONEY-TAX(IDX) TO  SYU-TGMONEY-TAX(17)
       *
            END-PERFORM
       *

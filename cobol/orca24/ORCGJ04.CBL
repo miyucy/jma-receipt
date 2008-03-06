@@ -50,6 +50,7 @@
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/11/16  ¸øÌ³ºÒ³²¡¦¸ø³²ÂÐ±þ
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/12/XX  ´µ¼Ô¶Ø´÷ÌôºÞÂÐ±þ
       * 04.01.00     NACL-Â¿¡¹Ç¼  08/01/XX  ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿ÊÑ¹¹ÂÐ±þ
+      * 04.02.00    NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµ
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4005,6 +4006,7 @@
                    ADD     1               TO  SPA-SRYKBN-CNT (06)
       *            ¸¡ºº
                WHEN    "60"
+               WHEN    "64"
                    CALL    "ORCSC60"       USING
                                            MCPAREA
                                            ORCSC00AREA
@@ -5569,6 +5571,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SMCNDATE-YMD        TO  PTINF-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTINF-UPHMS
+           MOVE    SPA-OPID            TO  PTINF-OPID
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -5753,6 +5756,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  PTCOM-CREYMD
            MOVE    SMCNDATE-YMD        TO  PTCOM-UPYMD
            MOVE    SMCNDATE-HMS        TO  PTCOM-UPHMS
+           MOVE    SPA-OPID            TO  PTCOM-OPID
       *
            MOVE    PTCOM-REC           TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -5795,6 +5799,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  SRY-CREYMD
            MOVE    SMCNDATE-YMD        TO  SRY-UPYMD
            MOVE    SMCNDATE-HMS        TO  SRY-UPHMS
+           MOVE    SPA-OPID            TO  SRY-OPID
       *
       *
            MOVE    SRYACT-REC          TO  MCPDATA-REC
@@ -5888,6 +5893,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
            MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+           MOVE    SPA-OPID            TO  ACCT-OPID
       *
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
@@ -6163,6 +6169,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+           MOVE    SPA-OPID            TO  JYURRK-OPID
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -6186,6 +6193,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
            MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+           MOVE    SPA-OPID            TO  JYURRK-OPID
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -6293,6 +6301,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN   "54"
                    MOVE    "01"        TO  JYURRK-SRYKBN8
                WHEN   "60"
+               WHEN   "64"
                    MOVE    "01"        TO  JYURRK-SRYKBN9
                WHEN   "70"
                    MOVE    "01"        TO  JYURRK-SRYKBN10
@@ -6392,6 +6401,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      FLG-SRYACCTPLUS     =   1
       *        ¿·µ¬
                MOVE    SMCNDATE-HMS        TO  ACCTP-UPHMS
+               MOVE    SPA-OPID            TO  ACCTP-OPID
       *
                MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -6820,6 +6830,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
            MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+           MOVE    SPA-OPID            TO  ACCT-OPID
       *
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
@@ -6896,6 +6907,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-YMD        TO  ACCT-CREYMD
            MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
            MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
+           MOVE    SPA-OPID            TO  ACCT-OPID
       *
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
@@ -6979,6 +6991,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    SMCNDATE-YMD        TO  JYURRK-UPYMD
                    MOVE    SMCNDATE-HMS        TO  JYURRK-UPHMS
+                   MOVE    SPA-OPID            TO  JYURRK-OPID
       *
                    MOVE    JYURRK-REC          TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -7034,6 +7047,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "1"                 TO  SYU-ACCT-UPDKBN
                MOVE    SMCNDATE-YMD        TO  SYU-UPYMD
                MOVE    SMCNDATE-HMS        TO  SYU-UPHMS
+               MOVE    SPA-OPID            TO  SYU-OPID
       *
                MOVE    SYUNOU-REC          TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -7926,7 +7940,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ¸¡ººÀµ¼°Ì¾¾Î
            IF      SPA-FORMALFLG       =   "1"
                IF     (TNS-SRYCD(1:1)      =   "1") AND
-                      (TNS-SRYKBN          =   "60")  AND
+                      (TNS-SRYKBN          =   "60"
+                                           OR  "64"  )  AND
                       (TNS-FORMALNAME  NOT =   SPACE )  AND
                       (TNS-FORMALNAME  NOT =   TNS-NAME )
                    MOVE    TNS-FORMALNAME  TO  TNS-NAME

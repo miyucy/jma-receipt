@@ -95,6 +95,9 @@ K08	{
 		RYOHKNTEN	{
 			value	varchar(10);
 		};
+		BYRHKNTEN	{
+			value	varchar(10);
+		};
 		SELNUM01	{
 			value	number(3);
 		};

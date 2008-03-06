@@ -798,6 +798,7 @@
                            WHEN    "50"
                            WHEN    "54"
                            WHEN    "60"
+                           WHEN    "64"
                            WHEN    "70"
                            WHEN    "80"
                                MOVE    SPA-COM-SRYKBN(IDX - 1)
@@ -823,6 +824,7 @@
                            WHEN    "50"
                            WHEN    "54"
                            WHEN    "60"
+                           WHEN    "64"
                            WHEN    "70"
                            WHEN    "80"
                                MOVE    SPA-COM-SRYKBN(IDX - 1)
@@ -846,6 +848,7 @@
                                WHEN    "50"
                                WHEN    "54"
                                WHEN    "60"
+                               WHEN    "64"
                                WHEN    "70"
                                WHEN    "80"
                                    MOVE    SPA-COM-SRYKBN(IDX - 1)
@@ -872,6 +875,7 @@
                                                "60"  OR  "70"  OR
       *****************************************"13"  OR  "14"   )
                                                "80"  OR  "14"
+                                           OR  "64"
                                            OR  "21" OR  "22" OR
                                                "23"          )
                      AND  (FLG-HASSYO              =   ZERO  )
@@ -1326,7 +1330,8 @@
                                                 "60" OR  "70" OR
                                                 "80" OR  "14" OR
                                                 "21" OR  "22" OR
-                                                "23" OR  "13" )
+                                                "23" OR  "13"
+                                            OR  "64"           )
                        MOVE    SPA-COM-SRYKBN(IDX - 1)
                                                TO  SPA-COM-SRYKBN(IDX)
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
