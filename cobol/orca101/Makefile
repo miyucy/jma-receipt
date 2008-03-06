@@ -40,8 +40,6 @@ SRCS = ORCGW01.CBL \
        ORCGW22.CBL \
        ORCGW23.CBL \
        ORCGW24.CBL \
-       ORCGW26.CBL \
-       ORCGW27.CBL \
        ORCGW28.CBL \
        ORCGW29.CBL \
        ORCGW33.CBL \

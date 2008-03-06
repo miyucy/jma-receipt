@@ -85,6 +85,7 @@
       *  04.01.01    NACL-太田    08/01/10  前回ＣＤボタン追加
       *  04.01.01    NACL-多々納  08/01/2X  プログラムオプション追加
       *  04.01.01    NACL-多々納  08/01/29  予約内容追加
+      *  04.02.00    NACL-太田    08/03/06  病棟・病室入院基本料加算情報削除
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -345,10 +346,6 @@
            03  FILLER              PIC X(35)   VALUE
                "5002 病室管理情報".
            03  FILLER              PIC X(35)   VALUE
-               "5003 病棟入院基本料加算情報".
-           03  FILLER              PIC X(35)   VALUE
-               "5004 病室入院基本料加算情報".
-           03  FILLER              PIC X(35)   VALUE
                "5005 室料差額設定".
            03  FILLER              PIC X(35)   VALUE
                "5006 病棟選定入院料情報".
@@ -372,11 +369,11 @@
                "9800 排他制御情報".
       *
        01  TBL-KANRICD-N-AREAR         REDEFINES   TBL-KANRICD-N-AREA.
-           03  TBL-KANRICD-N-TBL           OCCURS   16.
+           03  TBL-KANRICD-N-TBL           OCCURS   14.
                05  TBL-KANRICD-N           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-N        PIC X(30).
-       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   16.
+       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   14.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -486,8 +483,6 @@
            COPY    "W23.INC".
            COPY    "W24.INC".
            COPY    "W25.INC".
-           COPY    "W26.INC".
-           COPY    "W27.INC".
            COPY    "W28.INC".
            COPY    "W29.INC".
            COPY    "W30.INC".
@@ -1133,8 +1128,6 @@
                WHEN    "1102"
                WHEN    "5001"
                WHEN    "5002"
-               WHEN    "5003"
-               WHEN    "5004"
                WHEN    "5005"
                WHEN    "5006"
                WHEN    "2006"
@@ -1774,8 +1767,6 @@
              OR                            "1102"
              OR                            "5001"
              OR                            "5002" 
-             OR                            "5003" 
-             OR                            "5004" 
              OR                            "5005"
              OR                            "5006"
              OR                            "2006"
@@ -1880,10 +1871,6 @@
                    MOVE    "W20"               TO  SPA-SAKIPG
                WHEN    "5002"
                    MOVE    "W21"               TO  SPA-SAKIPG
-               WHEN    "5003"
-                   MOVE    "W26"               TO  SPA-SAKIPG
-               WHEN    "5004"
-                   MOVE    "W27"               TO  SPA-SAKIPG
                WHEN    "5005"
                    MOVE    "W22"               TO  SPA-SAKIPG
                WHEN    "5006"

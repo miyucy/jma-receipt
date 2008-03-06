@@ -391,8 +391,6 @@
            COPY    "W23.INC".
            COPY    "W24.INC".
            COPY    "W25.INC".
-           COPY    "W26.INC".
-           COPY    "W27.INC".
            COPY    "W28.INC".
            COPY    "W29.INC".
            COPY    "W30.INC".
