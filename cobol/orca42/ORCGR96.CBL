@@ -694,19 +694,15 @@ grpsys         MOVE    SPA-HOSPNUM TO  PTINF-HOSPNUM
        410-INPUT-CHK-SEC       SECTION.
       *
       *   入力チェック
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-               WHEN    "ACTIVATE"      ALSO    "SRYYM"
-               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
-                   IF      SPA-NAI-R96-PTID    >   ZERO
-                       MOVE    "0103"              TO  SPA-ERRCD
-                       GO  TO  410-INPUT-CHK-EXT
-                   END-IF
-               WHEN    "CLICKED"       ALSO    "B23"
-                   IF      SPA-NAI-R96-PTID    >   ZERO
-                       MOVE    "0103"              TO  SPA-ERRCD
-                       GO  TO  410-INPUT-CHK-EXT
-                   END-IF
-           END-EVALUATE
+          IF      SPA-NAI-R96-PTID    >   ZERO
+               MOVE    "0103"              TO  SPA-ERRCD
+               IF      SPA-NAI-R96-SELNUM  >   ZERO
+                   MOVE    91              TO  SPA-GMN-R96-CUR
+               ELSE
+                   MOVE    99              TO  SPA-GMN-R96-CUR
+               END-IF
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
       *
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
@@ -780,9 +776,19 @@ grpsys         MOVE    SPA-HOSPNUM TO  PTINF-HOSPNUM
                MOVE    "0007"              TO  SPA-ERRCD
            END-IF
       *
-           IF    ( SPA-ERRCD           =   SPACE  )
-           AND   ( SPA-NAI-R96-SRYYM   >=  200804 ) 
-               MOVE    "0200"          TO  SPA-ERRCD
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-R96-SRYYM   >=  200804
+                   IF    ( MCP-WIDGET          =   "B05"  )
+                   AND   ( SPA-NAI-R96-SRYYM   =   200804 )
+                       CONTINUE
+                   ELSE 
+                       MOVE    "0200"          TO  SPA-ERRCD
+                   END-IF
+               END-IF    
+               IF    ( SPA-NAI-R96-SRYYM   =   200803 )
+               AND   ( MCP-WIDGET          =   "B08"  )
+                   MOVE    "0200"          TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -1159,43 +1165,34 @@ grpsys             MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
       *****************************************************************
        450-BACK-MONTH-SEC               SECTION.
       *
-           IF      SPA-NAI-R96-PTID        >   ZERO
-               MOVE    "0103"              TO  SPA-ERRCD
-           ELSE
-      *
-      *        入力チェック
-               MOVE    0               TO  FLG-TOUROKU
-               PERFORM 410-INPUT-CHK-SEC
-               IF      SPA-ERRCD   NOT =   SPACE
-                   GO  TO  450-BACK-MONTH-EXT
-               END-IF
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE
-               INITIALIZE                  STS-AREA-DAY
-               INITIALIZE                  LNK-DAY6-AREA
-               MOVE    "61"                TO  LNK-DAY6-IRAI
-               MOVE    SPA-NAI-R96-SRYYM       TO  LNK-DAY6-KIJUN (1:6)
-               MOVE    "01"                TO  LNK-DAY6-KIJUN (7:2)  
-               MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
-               MOVE    -1                  TO  LNK-DAY6-ZOGEN
-               CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY6-AREA
-               MOVE    LNK-DAY6-KEISAN(1:6)
-                                           TO  SPA-NAI-R96-SRYYM
-      *
-               MOVE    SPA-NAI-R96-SRYYM   TO  WRK-SYMD (1:6)
-               MOVE    "01"                TO  WRK-SYMD (7:2) 
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG1(1:6)   TO  SPA-GMN-R96-SRYYM
-      *
-               MOVE    1                   TO  SPA-GMN-R96-PAGE
-      *     
-      *        該当診療年月の情報編集処理
-               PERFORM 3101-MISEIKYU-HENSYU-SEC
-           ELSE
-               MOVE    1                   TO  SPA-GMN-R96-CUR
+      *    入力チェック
+           MOVE    0               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  450-BACK-MONTH-EXT
            END-IF
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    SPA-NAI-R96-SRYYM       TO  LNK-DAY6-KIJUN (1:6)
+           MOVE    "01"                TO  LNK-DAY6-KIJUN (7:2)  
+           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+           MOVE    -1                  TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN(1:6)
+                                       TO  SPA-NAI-R96-SRYYM
+      *
+           MOVE    SPA-NAI-R96-SRYYM   TO  WRK-SYMD (1:6)
+           MOVE    "01"                TO  WRK-SYMD (7:2) 
+           PERFORM 5002-HIZUKE-HEN-SEC
+           MOVE    WRK-HENYMDG1(1:6)   TO  SPA-GMN-R96-SRYYM
+      *
+           MOVE    1                   TO  SPA-GMN-R96-PAGE
+      *     
+      *    該当診療年月の情報編集処理
+           PERFORM 3101-MISEIKYU-HENSYU-SEC
            .
       *
        450-BACK-MONTH-EXT.
@@ -1206,43 +1203,34 @@ grpsys             MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
       *****************************************************************
        480-NEXT-MONTH-SEC               SECTION.
       *
-           IF      SPA-NAI-R96-PTID    >   ZERO
-               MOVE    "0103"              TO  SPA-ERRCD
-           ELSE
-      *
-      *        入力チェック
-               MOVE    0               TO  FLG-TOUROKU
-               PERFORM 410-INPUT-CHK-SEC
-               IF      SPA-ERRCD   NOT =   SPACE
-                   GO  TO  480-NEXT-MONTH-EXT
-               END-IF
-           END-IF    
-      *
-           IF      SPA-ERRCD           =   SPACE
-      *         次月診療年月         
-               INITIALIZE                     STS-AREA-DAY
-               INITIALIZE                     LNK-DAY6-AREA
-               MOVE    "61"                   TO  LNK-DAY6-IRAI
-               MOVE    SPA-NAI-R96-SRYYM      TO  LNK-DAY6-KIJUN (1:6)
-               MOVE    "01"                   TO  LNK-DAY6-KIJUN (7:2)  
-               MOVE    "2"                    TO  LNK-DAY6-ZOGENPTN
-               MOVE    1                      TO  LNK-DAY6-ZOGEN
-               CALL    "ORCSDAY"              USING   STS-AREA-DAY
-                                                      LNK-DAY6-AREA
-               MOVE    LNK-DAY6-KEISAN(1:6)   TO  SPA-NAI-R96-SRYYM
-      *
-               MOVE    SPA-NAI-R96-SRYYM       TO  WRK-SYMD (1:6)
-               MOVE    "01"                TO  WRK-SYMD (7:2) 
-               PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG1(1:6)   TO  SPA-GMN-R96-SRYYM
-      *
-               MOVE    1                   TO  SPA-GMN-R96-PAGE
-      *     
-      *        該当診療年月の情報編集処理
-               PERFORM 3101-MISEIKYU-HENSYU-SEC
-           ELSE
-               MOVE    1                   TO  SPA-GMN-R96-CUR
+      *    入力チェック
+           MOVE    0               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  480-NEXT-MONTH-EXT
            END-IF
+      *
+      *    次月診療年月
+           INITIALIZE                     STS-AREA-DAY
+           INITIALIZE                     LNK-DAY6-AREA
+           MOVE    "61"                   TO  LNK-DAY6-IRAI
+           MOVE    SPA-NAI-R96-SRYYM      TO  LNK-DAY6-KIJUN (1:6)
+           MOVE    "01"                   TO  LNK-DAY6-KIJUN (7:2)  
+           MOVE    "2"                    TO  LNK-DAY6-ZOGENPTN
+           MOVE    1                      TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"              USING   STS-AREA-DAY
+                                                  LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN(1:6)   TO  SPA-NAI-R96-SRYYM
+      *
+           MOVE    SPA-NAI-R96-SRYYM       TO  WRK-SYMD (1:6)
+           MOVE    "01"                TO  WRK-SYMD (7:2) 
+           PERFORM 5002-HIZUKE-HEN-SEC
+           MOVE    WRK-HENYMDG1(1:6)   TO  SPA-GMN-R96-SRYYM
+      *
+           MOVE    1                   TO  SPA-GMN-R96-PAGE
+      *
+      *    該当診療年月の情報編集処理
+           PERFORM 3101-MISEIKYU-HENSYU-SEC
            .
       *
        480-NEXT-MONTH-EXT.
@@ -1253,8 +1241,10 @@ grpsys             MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
       *****************************************************************
        490-KENSAKU-SEC             SECTION.
       *
-           IF      SPA-NAI-R96-PTID        >   ZERO
-               MOVE    "0103"              TO  SPA-ERRCD
+      *    入力チェック
+           MOVE    0               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
                GO  TO  490-KENSAKU-EXT
            END-IF
       *
@@ -1404,8 +1394,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
       *****************************************************************
        490-SETTEI-MAE-SEC                SECTION.
       *
-           IF      SPA-NAI-R96-PTID    =   ZERO
-               MOVE    "0100"              TO  SPA-ERRCD
+      *    入力チェック
+           MOVE    0               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
                GO  TO  490-SETTEI-MAE-EXT
            END-IF
       *
@@ -1413,13 +1405,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                MOVE    "0006"              TO  SPA-ERRCD
                GO  TO  490-SETTEI-MAE-EXT
            END-IF 
-      *
-      *    入力チェック
-           MOVE    0               TO  FLG-TOUROKU
-           PERFORM 410-INPUT-CHK-SEC
-           IF      SPA-ERRCD   NOT =   SPACE
-               GO  TO  490-SETTEI-MAE-EXT
-           END-IF
       *
       *    請求管理テーブルの存在チェック
            INITIALIZE                  RECE10-REC
