@@ -83,6 +83,7 @@
       *Ê¿À®£²£°Ç¯£´·î²þÄêÂÐ±þ
       *  04.02.00    NACL-¾®Æ¦Âô  08/03/05  °¡µÞÀ­´üÆþ±¡°åÎÅ´ÉÍýÎÁ£²
       *                                     Àº¿À²ÊµßµÞÆþ±¡ÎÁ£²
+      *                                     ¾®»ùÆþ±¡°åÎÅ´ÉÍýÎÁ£±
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6334,6 +6335,8 @@
                        MOVE   "190813410"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "16"
                        MOVE   "190124910"   TO  SYOKIKSN-IN-KHNSRYCD
+                   WHEN    "17"
+                       MOVE   "190129310"   TO  SYOKIKSN-IN-KHNSRYCD
                    WHEN    "22"
                        MOVE   "190130010"   TO  SYOKIKSN-IN-KHNSRYCD
                END-EVALUATE
