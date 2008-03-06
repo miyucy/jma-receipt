@@ -184,6 +184,7 @@
            03  FLG-IN              PIC 9(01).
            03  FLG-CHK             PIC 9(01).
            03  FLG-GMN-INIT        PIC 9(01).
+           03  FLG-RECEPRT         PIC 9(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -971,7 +972,17 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "HC21"          TO  RECE08-PRTID
                WHEN    "2"
                    MOVE    "HC23"          TO  RECE08-PRTID
+               WHEN    "3"
+                   MOVE    "HC25"          TO  RECE08-PRTID
            END-EVALUATE
+           MOVE    "999999"            TO  RECE08-RECEYM
+           MOVE    WRK-PTNUM           TO  RECE08-PTNUM
+           MOVE    SPA-HOSPNUM         TO  RECE08-HOSPNUM
+           MOVE    RECE08-REC          TO  MCPDATA-REC
+           PERFORM 900-RECEPRT-INV-SEC
+           IF      FLG-RECEPRT         =   1
+                   GO        TO        2101-FILE-DEL-EXT
+           END-IF
            MOVE    "999999"            TO  RECE08-RECEYM
            MOVE    WRK-PTNUM           TO  RECE08-PTNUM
            MOVE    SPA-HOSPNUM         TO  RECE08-HOSPNUM
@@ -2388,6 +2399,47 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
       *
            .
        900-PRVKANRI-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    receprt読込（キー）
+      *****************************************************************
+       900-RECEPRT-INV-SEC         SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_receprt"       TO  MCP-TABLE
+           MOVE    "key43"             TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_receprt"       TO  MCP-TABLE
+               MOVE    "key43"             TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-RECEPRT 
+               ELSE
+                   MOVE    1                   TO  FLG-RECEPRT 
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-RECEPRT
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_receprt"       TO  MCP-TABLE
+           MOVE    "key43"             TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+       900-RECEPRT-INV-EXT.
            EXIT.
       *
       *****************************************************************
