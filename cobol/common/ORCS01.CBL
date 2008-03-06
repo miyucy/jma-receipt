@@ -1379,14 +1379,14 @@
                                               LNK-SYU-JIHI-TAXARI(10)).
       *
       *    ÊÝ¸±Å¬ÍÑ³°¶â³Û¤Î²Ã»»
-           MOVE       ZERO              TO  LNK-SYU-TGMONEY(16).
-           MOVE       ZERO              TO  LNK-SYU-TGMONEY-TAX(16).
+           MOVE       ZERO              TO  LNK-SYU-TGMONEY(17).
+           MOVE       ZERO              TO  LNK-SYU-TGMONEY-TAX(17).
            PERFORM    VARYING   HKNGAI-IDX   FROM   1   BY   1
-                      UNTIL     HKNGAI-IDX   >     15
+                      UNTIL     HKNGAI-IDX   >     16
                       ADD       LNK-SYU-TGMONEY(HKNGAI-IDX)
-                                            TO  LNK-SYU-TGMONEY(16)
+                                            TO  LNK-SYU-TGMONEY(17)
                       ADD       LNK-SYU-TGMONEY-TAX(HKNGAI-IDX)
-                                        TO  LNK-SYU-TGMONEY-TAX(16)
+                                        TO  LNK-SYU-TGMONEY-TAX(17)
            END-PERFORM.
       *
            MOVE      LNK-SYU-SKYMONEY   TO  WK-GENTAI-SKYMONEY.
@@ -1396,24 +1396,24 @@
                 COMPUTE LNK-SYU-JIHI-TAX =
                        (LNK-SYU-JIHI-TOTAL-TAX  * 5 / 105) + 0.5
                 COMPUTE LNK-SYU-TGMONEY-TAX-SAI   =
-                       (LNK-SYU-TGMONEY-TAX(16) * 5 / 105) + 0.5
+                       (LNK-SYU-TGMONEY-TAX(17) * 5 / 105) + 0.5
              ELSE
                 COMPUTE LNK-SYU-JIHI-TAX =
                        (LNK-SYU-JIHI-TOTAL-TAX  * 5 / 105)
                 COMPUTE LNK-SYU-TGMONEY-TAX-SAI   =
-                       (LNK-SYU-TGMONEY-TAX(16) * 5 / 105)
+                       (LNK-SYU-TGMONEY-TAX(17) * 5 / 105)
              END-IF
       *      ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â´Þ¤Þ¤º¡Ë
              COMPUTE    LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY        +
-                                             LNK-SYU-TGMONEY(16)     +
-                                             LNK-SYU-TGMONEY-TAX(16) +
+                                             LNK-SYU-TGMONEY(17)     +
+                                             LNK-SYU-TGMONEY-TAX(17) +
                                              LNK-SYU-JIHI-TOTAL      +
                                              LNK-SYU-JIHI-TOTAL-TAX
              IF   WK-HKNKBN  =   "1" OR "2"
                   COMPUTE    LNK-SYU-RSIJIBAI-SKYMONEY  =
                              LNK-SYU-RSIJIBAI-SKYMONEY  +
-                             LNK-SYU-TGMONEY(16)        +
-                             LNK-SYU-TGMONEY-TAX(16)    +
+                             LNK-SYU-TGMONEY(17)        +
+                             LNK-SYU-TGMONEY-TAX(17)    +
                              LNK-SYU-JIHI-TOTAL         +
                              LNK-SYU-JIHI-TOTAL-TAX
              END-IF
@@ -1421,11 +1421,11 @@
                  ( COMB-HOJOKBN           =  "1" )
                  COMPUTE  LNK-SYU-TAX-TAISHOU     =
                           LNK-SYU-HKNTEKMONEY     +
-                          LNK-SYU-TGMONEY-TAX(16) +
+                          LNK-SYU-TGMONEY-TAX(17) +
                           LNK-SYU-JIHI-TOTAL-TAX
              ELSE
                  COMPUTE  LNK-SYU-TAX-TAISHOU     =
-                          LNK-SYU-TGMONEY-TAX(16) +
+                          LNK-SYU-TGMONEY-TAX(17) +
                           LNK-SYU-JIHI-TOTAL-TAX
              END-IF
              IF    WK-TAX1001-KBN  =  "1"
@@ -1449,30 +1449,30 @@
                 COMPUTE LNK-SYU-JIHI-TAX =
                        (LNK-SYU-JIHI-TOTAL-TAX  * 0.05)  +  0.5
                 COMPUTE LNK-SYU-TGMONEY-TAX-SAI   =
-                       (LNK-SYU-TGMONEY-TAX(16) * 0.05)  +  0.5
-                COMPUTE LNK-SYU-TGMONEY-TAX(16)   = 
-                       (LNK-SYU-TGMONEY-TAX(16) * 1.05)  +  0.5
+                       (LNK-SYU-TGMONEY-TAX(17) * 0.05)  +  0.5
+                COMPUTE LNK-SYU-TGMONEY-TAX(17)   = 
+                       (LNK-SYU-TGMONEY-TAX(17) * 1.05)  +  0.5
               ELSE
                 COMPUTE LNK-SYU-JIHI-TAX =
                         LNK-SYU-JIHI-TOTAL-TAX  * 0.05
                 COMPUTE LNK-SYU-TGMONEY-TAX-SAI   = 
-                        LNK-SYU-TGMONEY-TAX(16) * 0.05
-                COMPUTE LNK-SYU-TGMONEY-TAX(16)   = 
-                        LNK-SYU-TGMONEY-TAX(16) * 1.05
+                        LNK-SYU-TGMONEY-TAX(17) * 0.05
+                COMPUTE LNK-SYU-TGMONEY-TAX(17)   = 
+                        LNK-SYU-TGMONEY-TAX(17) * 1.05
               END-IF
              END-IF
       *      ÀÁµá¶â³Û¤Î·×»»¡ÊÄ´À°¶â´Þ¤Þ¤º¡Ë
              COMPUTE    LNK-SYU-SKYMONEY  =  LNK-SYU-SKYMONEY        +
-                                             LNK-SYU-TGMONEY(16)     +
-                                             LNK-SYU-TGMONEY-TAX(16) +
+                                             LNK-SYU-TGMONEY(17)     +
+                                             LNK-SYU-TGMONEY-TAX(17) +
                                              LNK-SYU-JIHI-TOTAL      +
                                              LNK-SYU-JIHI-TOTAL-TAX  +
                                              LNK-SYU-JIHI-TAX
              IF   WK-HKNKBN  =   "1" OR "2"
                   COMPUTE    LNK-SYU-RSIJIBAI-SKYMONEY  =
                              LNK-SYU-RSIJIBAI-SKYMONEY  +
-                             LNK-SYU-TGMONEY(16)        +
-                             LNK-SYU-TGMONEY-TAX(16)    +
+                             LNK-SYU-TGMONEY(17)        +
+                             LNK-SYU-TGMONEY-TAX(17)    +
                              LNK-SYU-JIHI-TOTAL         +
                              LNK-SYU-JIHI-TOTAL-TAX     +
                              LNK-SYU-JIHI-TAX
@@ -1548,14 +1548,14 @@
              MOVE    ZERO      TO       LNK-SYU-SKYMONEY
              IF    LNK-SYU-SRYYMD(1:6)       >=   "200704"
                COMPUTE LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY        +
-                                          LNK-SYU-TGMONEY(16)     +
-                                          LNK-SYU-TGMONEY-TAX(16) +
+                                          LNK-SYU-TGMONEY(17)     +
+                                          LNK-SYU-TGMONEY-TAX(17) +
                                           LNK-SYU-JIHI-TOTAL      +
                                           LNK-SYU-JIHI-TOTAL-TAX
              ELSE
                COMPUTE LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY        +
-                                          LNK-SYU-TGMONEY(16)     +
-                                          LNK-SYU-TGMONEY-TAX(16) +
+                                          LNK-SYU-TGMONEY(17)     +
+                                          LNK-SYU-TGMONEY-TAX(17) +
                                           LNK-SYU-JIHI-TOTAL      +
                                           LNK-SYU-JIHI-TOTAL-TAX  +
                                           LNK-SYU-JIHI-TAX
@@ -1622,7 +1622,7 @@
       *
                  IF    LNK-SYU-SRYYMD(1:6)       >=   "200704"
                      COMPUTE  LNK-SYU-TAX-TAISHOU     =
-                              LNK-SYU-TGMONEY-TAX(16) +
+                              LNK-SYU-TGMONEY-TAX(17) +
                               LNK-SYU-JIHI-TOTAL-TAX  +
                               WK-RSIETC-ZEITAISYO
                      IF    WK-TAX1001-KBN  =  "1"
@@ -1660,14 +1660,14 @@
               MOVE    ZERO      TO       LNK-SYU-SKYMONEY
               IF    LNK-SYU-SRYYMD(1:6)       >=   "200704"
                COMPUTE LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY        +
-                                          LNK-SYU-TGMONEY(16)     +
-                                          LNK-SYU-TGMONEY-TAX(16) +
+                                          LNK-SYU-TGMONEY(17)     +
+                                          LNK-SYU-TGMONEY-TAX(17) +
                                           LNK-SYU-JIHI-TOTAL      +
                                           LNK-SYU-JIHI-TOTAL-TAX
               ELSE
                COMPUTE LNK-SYU-SKYMONEY = LNK-SYU-SKYMONEY        +
-                                          LNK-SYU-TGMONEY(16)     +
-                                          LNK-SYU-TGMONEY-TAX(16) +
+                                          LNK-SYU-TGMONEY(17)     +
+                                          LNK-SYU-TGMONEY-TAX(17) +
                                           LNK-SYU-JIHI-TOTAL      +
                                           LNK-SYU-JIHI-TOTAL-TAX  +
                                           LNK-SYU-JIHI-TAX
@@ -2358,7 +2358,7 @@
       *
              IF     WK-JIHIFTN    NOT =    ZERO
                PERFORM   VARYING   IDX9    FROM    1   BY  1
-                          UNTIL    IDX9       >   16
+                          UNTIL    IDX9       >   17
                  IF   (LNK-SYU-SRYYMD(1:6)       >=   "200704")
                  AND  (COMB-HOJOKBN               =   "1"     )
                     COMPUTE WK-JIHIGAKU   =
@@ -2372,7 +2372,7 @@
                        COMPUTE WK-JIHIGAKU3  =
                               (WK-JIHIGAKU2  * 0.05)
                     END-IF
-                    IF    IDX9  =  16
+                    IF    IDX9  =  17
                        MOVE   ZERO  TO  WK-JIHIGAKU2
                        MOVE   ZERO  TO  WK-JIHIGAKU3
                     END-IF
@@ -2390,7 +2390,7 @@
                             LNK-SYU-HKNTEN (IDX9) *  HKN-TENTNK
                     COMPUTE WK-JIHIGAKU2  =
                             WK-JIHIGAKU           *  WK-JIHIFTN
-                    IF    IDX9  =  16
+                    IF    IDX9  =  17
                        MOVE   ZERO  TO  WK-JIHIGAKU2
                     END-IF
                     COMPUTE LNK-SYU-TGMONEY(IDX9) =
@@ -2782,9 +2782,9 @@
       *    ¡ÊÎÅÍÜÃ´Åö¼êÅö¡§£±·î£±²ó¤Î»»Äê¡Ë
            IF    LNK-SYU-SYUHKNNUM       =    "973"
            AND   LNK-S01-RYOYO(IDY)  NOT =    ZERO
-               COMPUTE  LNK-SYU-HKNTEN (15)  =  LNK-SYU-HKNTEN (15)
-                                             -  LNK-S01-RYOYO(IDY)
                COMPUTE  LNK-SYU-HKNTEN (16)  =  LNK-SYU-HKNTEN (16)
+                                             -  LNK-S01-RYOYO(IDY)
+               COMPUTE  LNK-SYU-HKNTEN (17)  =  LNK-SYU-HKNTEN (17)
                                              -  LNK-S01-RYOYO(IDY)
       *
                COMPUTE  WK-RYOYO  =  LNK-S01-RYOYO(IDY)  /   7
@@ -3618,7 +3618,7 @@
       *
            MOVE      ZERO      TO      WK-ZENGAKU.
            PERFORM   VARYING   IDX9    FROM    1   BY  1
-                     UNTIL     IDX9       >   15
+                     UNTIL     IDX9       >   16
                COMPUTE WK-ZENGAKU  =   WK-ZENGAKU  +
                             (LNK-SYU-HKNTEN (IDX9) *  10)
            END-PERFORM.
@@ -7669,7 +7669,7 @@
                      IF   FLG-IRYOHI70  =  3 OR 4 OR 6
                        COMPUTE  WK-KOUREI-IRYOHI70  =
                                 WK-KOUREI-IRYOHI70  +
-                               (SYU-HKNTEN (16) * 10)
+                               (SYU-HKNTEN (17) * 10)
                        MOVE       1    TO      FLG-SYUKEI
                        IF ((LNK-SYU-KOH1HKNNUM  =  SYU-KOH2HKNNUM ) AND
                            (COMB-KOH1ID         =  WRK-COMB-KOH2ID))
@@ -7684,13 +7684,13 @@
                     IF   FLG-IRYOHI70K NOT = ZERO
                       COMPUTE  WK-KOUREI-IRYOHI70K =
                                WK-KOUREI-IRYOHI70K +
-                              (SYU-HKNTEN (16) * 10)
+                              (SYU-HKNTEN (17) * 10)
                     END-IF
                    ELSE
                      IF    (FLG-IRYOHI      =   1       )
                      OR    (FLG-IRYOHI2     =   1  OR  2)
                        COMPUTE  WK-IRYOHI   =  WK-IRYOHI  +
-                                              (SYU-HKNTEN (16) * 10)
+                                              (SYU-HKNTEN (17) * 10)
                      END-IF
                    END-IF
                   END-IF
@@ -8397,7 +8397,7 @@
                             (LNK-SYU-SRYYMD(1:6)  >=  "200801"  ))
                          COMPUTE  WK-KOUREI-IRYOHI70  =
                                   WK-KOUREI-IRYOHI70  +
-                                 (SYU-HKNTEN (16) * 10)
+                                 (SYU-HKNTEN (17) * 10)
                        END-IF
                      END-IF
                     END-IF
@@ -10252,7 +10252,7 @@
            AND    FLG-GRPNYURYOKU      =  ZERO
       *
              IF    KOHI-TBL(IDX2 IDX3)  =  ZERO
-             AND   SYU-HKNTEN(16)   NOT =  ZERO
+             AND   SYU-HKNTEN(17)   NOT =  ZERO
       *
                IF   SYU-GRP-DENPNUM   NOT  =  ZERO
       *
@@ -10323,7 +10323,7 @@
       *
              ELSE
       *
-               IF  SYU-HKNTEN(16)   NOT =  ZERO
+               IF  SYU-HKNTEN(17)   NOT =  ZERO
       *
                  IF   SYU-GRP-DENPNUM   NOT  =  ZERO
       *
@@ -10402,7 +10402,7 @@
            IF     FLG-NOCOUNT          =  ZERO
            AND    FLG-GRPNYURYOKU      =  ZERO
       *
-             IF  SYU-HKNTEN(16)   NOT =  ZERO
+             IF  SYU-HKNTEN(17)   NOT =  ZERO
       *
                IF   SYU-GRP-DENPNUM   NOT  =  ZERO
       *
@@ -10575,7 +10575,7 @@
                  IF    FLG-IRYOHI70  =  1 OR 2
                    COMPUTE   WK-KOUREI-IRYOHI70  =
                              WK-KOUREI-IRYOHI70  +
-                            (SYU-HKNTEN (16) * 10)
+                            (SYU-HKNTEN (17) * 10)
                  END-IF
                ELSE
                  MOVE   ZERO  TO  WK-SYU-SYUCOMPFTN
@@ -10588,7 +10588,7 @@
                  IF    FLG-IRYOHI70  =  1 OR 2
                    COMPUTE   WK-KOUREI-IRYOHI70  =
                              WK-KOUREI-IRYOHI70  +
-                            (SYU-HKNTEN (16) * 10)
+                            (SYU-HKNTEN (17) * 10)
                  END-IF
                ELSE
                  MOVE   ZERO  TO  WK-SYU-SYUCOMPFTN
@@ -10605,7 +10605,7 @@
       ***        IF    FLG-IRYOHI70  =  3 OR 4 OR 6
       ***          COMPUTE   WK-KOUREI-IRYOHI70  =
       ***                    WK-KOUREI-IRYOHI70  +
-      ***                   (SYU-HKNTEN (16) * 10)
+      ***                   (SYU-HKNTEN (17) * 10)
       ***        END-IF
                  MOVE   ZERO  TO  WK-SYU-SYUCOMPFTN
                  MOVE   ZERO  TO  WK-ENTANI
@@ -12851,7 +12851,7 @@
            END-IF.
            MOVE      ZERO      TO      WK-ZENGAKU.
            PERFORM   VARYING   IDX9    FROM    1   BY  1
-                     UNTIL     IDX9       >   15
+                     UNTIL     IDX9       >   16
                COMPUTE WK-ZENGAKU  =   WK-ZENGAKU  +
                             (LNK-SYU-HKNTEN (IDX9) *  HKN-TENTNK)
            END-PERFORM.
@@ -13395,7 +13395,7 @@
            END-IF.
            MOVE      ZERO      TO      WK-ZENGAKU.
            PERFORM   VARYING   IDX9    FROM    1   BY  1
-                     UNTIL     IDX9       >   15
+                     UNTIL     IDX9       >   16
                COMPUTE WK-ZENGAKU  =   WK-ZENGAKU  +
                             (LNK-SYU-HKNTEN (IDX9) *  HKN-TENTNK)
            END-PERFORM.
@@ -18371,7 +18371,7 @@
       *    ´µ¼ÔÉéÃ´¶â»»½ÐÁ°¤Î£±£°£°¡óÉéÃ´³Û»»½Ð
            MOVE      ZERO         TO      WK-ZENGAKU.
            PERFORM   VARYING   IDX     FROM    1   BY  1
-                     UNTIL     IDX         >   15
+                     UNTIL     IDX         >   16
                COMPUTE WK-ZENGAKU  =   WK-ZENGAKU  +
                                       (LNK-SYU-HKNTEN (IDX) * 10)
            END-PERFORM.

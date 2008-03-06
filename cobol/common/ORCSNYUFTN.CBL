@@ -96,6 +96,7 @@
       *  04.01.04    NACL-ÌçÏÆ    08/01/18  ºë¶Ì¸©ÀîÅçÄ®ÃÏÊý¸øÈñÂÐ±þ
       *  04.01.05    NACL-ÌçÏÆ    08/01/21  Æ±ÆüºÆÆþ±¡¿©»öÂÐ±þ
       *  04.01.06    NACL-ÌçÏÆ    08/02/04  É¸·ç³°Çñ·×»»½¤Àµ
+      *  04.02.01    NACL-ÌçÏÆ    08/02/29  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -291,7 +292,7 @@
       *
       * ÊÝ¸±Å¬ÍÑ³°¶â³ÛÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
        01  HKNTEKGAI-TABLE.
-           03  HKNTEKGAI-TBL               OCCURS 15.
+           03  HKNTEKGAI-TBL               OCCURS 16.
                05  TBL-TGMONEY             PIC 9(08).
                05  TBL-TGMONEY-TAX         PIC 9(08).
       *
@@ -1739,7 +1740,7 @@ grpsys                              SPA-AREA
                     IF    SYS-5000-GENKBN(GENSAN-IDX)   =   "2"
                         EVALUATE  GENSAN-IDX
                             WHEN  2
-                                COMPUTE SYU-HKNTEN(14) = SYU-HKNTEN(14)
+                                COMPUTE SYU-HKNTEN(15) = SYU-HKNTEN(15)
                                                     - (5 * NYUIN-COUNT)
                                 PERFORM VARYING SYU-IDX FROM 1 BY 1    
                                          UNTIL    SYU-IDX  >   31      
@@ -1751,7 +1752,7 @@ grpsys                              SPA-AREA
                                  END-IF                                
                                 END-PERFORM                            
                             WHEN  3
-                                COMPUTE SYU-HKNTEN(14) = SYU-HKNTEN(14)
+                                COMPUTE SYU-HKNTEN(15) = SYU-HKNTEN(15)
                                                    - (10 * NYUIN-COUNT)
                                 PERFORM VARYING SYU-IDX FROM 1 BY 1    
                                          UNTIL    SYU-IDX  >   31      
@@ -1763,7 +1764,7 @@ grpsys                              SPA-AREA
                                  END-IF                                
                                 END-PERFORM                            
                             WHEN  4
-                                COMPUTE SYU-HKNTEN(14) = SYU-HKNTEN(14)
+                                COMPUTE SYU-HKNTEN(15) = SYU-HKNTEN(15)
                                                     - (5 * NYUIN-COUNT)
                                 PERFORM VARYING SYU-IDX FROM 1 BY 1    
                                          UNTIL    SYU-IDX  >   31      
@@ -1812,25 +1813,25 @@ grpsys                              SPA-AREA
                        END-IF
                    END-IF
                END-PERFORM
-               COMPUTE SYU-HKNTEN(14)  =   SYU-HKNTEN(14)
+               COMPUTE SYU-HKNTEN(15)  =   SYU-HKNTEN(15)
                                        -   WRK-INNAI-KANSEN-GENTEN
-               COMPUTE SYU-HKNTEN(14)  =   SYU-HKNTEN(14)
+               COMPUTE SYU-HKNTEN(15)  =   SYU-HKNTEN(15)
                                        -   WRK-IRYOU-ANZEN-GENTEN
-               COMPUTE SYU-HKNTEN(14)  =   SYU-HKNTEN(14)
+               COMPUTE SYU-HKNTEN(15)  =   SYU-HKNTEN(15)
                                        -   WRK-JOKUSOU-GENTEN
       *
            END-IF
       *
       **     PERFORM   VARYING   IDZ   FROM  1   BY   1
-      **               UNTIL     IDZ   >     15
-      **               ADD    SYU-HKNTEN (IDZ)  TO  SYU-HKNTEN (16)
+      **               UNTIL     IDZ   >     16
+      **               ADD    SYU-HKNTEN (IDZ)  TO  SYU-HKNTEN (17)
       **     END-PERFORM
       *
       *    Æþ±¡ÊÝ¸±Å¬ÍÑ³°
-           ADD    NYUIN-TGMONEY        TO  SYU-TGMONEY(14)
-           ADD    NYUIN-TGMONEY-TAX    TO  SYU-TGMONEY-TAX(14)
-           ADD    NYUIN-TGMONEY        TO  SYU-TGMONEY(16)
-           ADD    NYUIN-TGMONEY-TAX    TO  SYU-TGMONEY-TAX(16)
+           ADD    NYUIN-TGMONEY        TO  SYU-TGMONEY(15)
+           ADD    NYUIN-TGMONEY-TAX    TO  SYU-TGMONEY-TAX(15)
+           ADD    NYUIN-TGMONEY        TO  SYU-TGMONEY(17)
+           ADD    NYUIN-TGMONEY-TAX    TO  SYU-TGMONEY-TAX(17)
       *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU-REC(IDX)
            MOVE    SYUDAY-REC          TO  LNK-SYUDAY-REC(IDX)         
@@ -2063,12 +2064,12 @@ grpsys                            SPA-AREA
                                EVALUATE   TBL-GAIHAKU(SYU-IDX)
                                  WHEN   ZERO
                                      ADD    NACCT-ZAITEN
-                                           TO  SYU-HKNTEN(14)
+                                           TO  SYU-HKNTEN(15)
                                                SDAY-HKNTEN(SYU-IDX)    
       *                          ³°Çñ¡Ê£±£µ¡ó¡Ë
                                  WHEN   1
-                                     COMPUTE  SYU-HKNTEN(14)  =
-                                              SYU-HKNTEN(14)  +
+                                     COMPUTE  SYU-HKNTEN(15)  =
+                                              SYU-HKNTEN(15)  +
                                              ((WRK-KHNTEN    *  0.15)
                                                              +  0.5)
                                      COMPUTE  SDAY-HKNTEN(SYU-IDX) =   
@@ -2077,8 +2078,8 @@ grpsys                            SPA-AREA
                                                              +  0.5)   
       *                          ³°Çñ¡Ê£³£°¡ó¡Ë
                                  WHEN   2
-                                     COMPUTE  SYU-HKNTEN(14)  =
-                                              SYU-HKNTEN(14)  +
+                                     COMPUTE  SYU-HKNTEN(15)  =
+                                              SYU-HKNTEN(15)  +
                                             ((WRK-KHNTEN      *  0.3)
                                                               +  0.5)
                                      COMPUTE  SDAY-HKNTEN(SYU-IDX) =   
@@ -2087,8 +2088,8 @@ grpsys                            SPA-AREA
                                                               +  0.5)  
       *                          ³°Çñ¡ÊÁªÄêÎÅÍÜÈñ¡Ë
                                  WHEN   3
-                                     COMPUTE  SYU-HKNTEN(14)  =
-                                              SYU-HKNTEN(14)  +
+                                     COMPUTE  SYU-HKNTEN(15)  =
+                                              SYU-HKNTEN(15)  +
                                             ((WRK-KHNTEN      *
                                               WRK-SENTEI-GAIHAKU-KEISU)
                                                               +  0.5)
@@ -2100,8 +2101,8 @@ grpsys                            SPA-AREA
       *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç¡Ê£±£µ¡ó¡ËÊ¿À®£±£¶Ç¯£´·î¤è¤ê£³£°¡ó¤ËÊÑ¹¹
                                  WHEN   4
                                      IF  SYU-SRYYMD(1:6) >= "200404"
-                                         COMPUTE  SYU-HKNTEN(14)  =
-                                                  SYU-HKNTEN(14)  +
+                                         COMPUTE  SYU-HKNTEN(15)  =
+                                                  SYU-HKNTEN(15)  +
                                                 ((WRK-KHNTEN  *  0.3)
                                                               +  0.5)
                                          COMPUTE SDAY-HKNTEN(SYU-IDX) =
@@ -2109,8 +2110,8 @@ grpsys                            SPA-AREA
                                                ((WRK-KHNTEN  *  0.3)
                                                               +  0.5)
                                      ELSE
-                                         COMPUTE  SYU-HKNTEN(14)  =
-                                                  SYU-HKNTEN(14)  +
+                                         COMPUTE  SYU-HKNTEN(15)  =
+                                                  SYU-HKNTEN(15)  +
                                                 ((WRK-KHNTEN  *  0.15)
                                                               +  0.5)
                                          COMPUTE SDAY-HKNTEN(SYU-IDX) =
@@ -2124,12 +2125,12 @@ grpsys                            SPA-AREA
                                EVALUATE   TBL-GAIHAKU(SYU-IDX)
                                  WHEN   ZERO
                                      ADD    WRK-SENTEI-ZAITEN
-                                           TO  SYU-HKNTEN(14)
+                                           TO  SYU-HKNTEN(15)
                                                SDAY-HKNTEN(SYU-IDX)    
       *                          ³°Çñ
                                  WHEN   1
-                                     COMPUTE  SYU-HKNTEN(14)  =
-                                              SYU-HKNTEN(14)  +
+                                     COMPUTE  SYU-HKNTEN(15)  =
+                                              SYU-HKNTEN(15)  +
                                             ((WRK-KHNTEN    *
                                               WRK-SENTEI-GAIHAKU-KEISU)
                                                              +  0.5)
@@ -2140,8 +2141,8 @@ grpsys                            SPA-AREA
                                                              +  0.5)   
       *                          ³°Çñ¡ÊÁªÄêÎÅÍÜÈñ¡Ë
                                  WHEN   3
-                                     COMPUTE  SYU-HKNTEN(14)  =
-                                              SYU-HKNTEN(14)  +
+                                     COMPUTE  SYU-HKNTEN(15)  =
+                                              SYU-HKNTEN(15)  +
                                             ((WRK-KHNTEN      *
                                               WRK-SENTEI-GAIHAKU-KEISU)
                                                               +  0.5)
@@ -2152,8 +2153,8 @@ grpsys                            SPA-AREA
                                                               +  0.5)  
       *                          Â¾°åÎÅµ¡´Ø¼õ¿Ç
                                  WHEN   4
-                                     COMPUTE  SYU-HKNTEN(14)  =
-                                              SYU-HKNTEN(14)  +
+                                     COMPUTE  SYU-HKNTEN(15)  =
+                                              SYU-HKNTEN(15)  +
                                             ((WRK-KHNTEN      *
                                               WRK-SENTEI-GAIHAKU-KEISU)
                                                               +  0.5)
@@ -2180,7 +2181,7 @@ grpsys                            SPA-AREA
                        AND ( TBL-GAIHAKU(SYU-IDX)     =  ZERO  OR  4 )
                        AND ( WRK-DOJITU-FLG(IDX SYU-IDX)     =  ZERO )
                            ADD   NACCT-ZAITEN   TO
-                                             SYU-HKNTEN(14)
+                                             SYU-HKNTEN(15)
                                              SDAY-HKNTEN(SYU-IDX)      
                        END-IF
                    END-PERFORM
@@ -2196,7 +2197,7 @@ grpsys                            SPA-AREA
                        AND ( TBL-GAIHAKU(SYU-IDX)     =  ZERO  OR  4 )
                        AND ( WRK-DOJITU-FLG(IDX SYU-IDX)     =  ZERO )
                            ADD   NACCT-ZAITEN    TO
-                                             SYU-HKNTEN(15)
+                                             SYU-HKNTEN(16)
                                              SDAY-HKNTEN(SYU-IDX)      
                            IF    SYU-SYUHKNNUM   =    "975"
                              ADD NACCT-ZAITEN    TO
@@ -2379,7 +2380,7 @@ grpsys                                    SPA-AREA
                        AND ( NACCT-DAY(SYU-IDX)          NOT =  ZERO )
                        AND ( TBL-GAIHAKU(SYU-IDX)     =  ZERO  OR  4 )
                        AND ( WRK-DOJITU-FLG(IDX SYU-IDX)     =  ZERO )
-                           ADD   NACCT-ZAITEN    TO   SYU-HKNTEN(15)
+                           ADD   NACCT-ZAITEN    TO   SYU-HKNTEN(16)
                            IF    SYU-SYUHKNNUM   =    "973"
                               ADD  NACCT-ZAITEN
                                     TO   WRK-JIBAI-RYOYO-NACCT(IDX)
@@ -2544,13 +2545,13 @@ grpsys                              SPA-AREA
                 AND ( WRK-DOJITU-FLG(IDX SYU-IDX)         =   ZERO)
       *
                      ADD   LNK-SROUNYUIN-ZAITEN(SYU-IDX)
-                                                 TO  SYU-HKNTEN(14)
+                                                 TO  SYU-HKNTEN(15)
                      ADD   LNK-SROUNYUIN-ZAITEN-NACCT(SYU-IDX)
-                                                 TO  SYU-HKNTEN(14)
+                                                 TO  SYU-HKNTEN(15)
                      ADD   LNK-SROUNYUIN-ZAITEN-ACCT(SYU-IDX)
-                                                 TO  SYU-HKNTEN(14)
+                                                 TO  SYU-HKNTEN(15)
                      ADD   LNK-SROUNYUIN-ZAITEN-ACCTETC(SYU-IDX)
-                                                 TO  SYU-HKNTEN(14)
+                                                 TO  SYU-HKNTEN(15)
       *
                      MOVE  LNK-SROUNYUIN-GAIHAKU(SYU-IDX)
                                           TO   TBL-GAIHAKU(SYU-IDX)
@@ -3494,8 +3495,8 @@ grpsys                            SPA-AREA
       *
       *    ÊÝ¸±ÅÀ¿ô½¸·×
            PERFORM     VARYING   IDZ    FROM   1    BY    1
-                         UNTIL   IDZ    >      15
-                  ADD    SYU-HKNTEN(IDZ)      TO  SYU-HKNTEN(16)
+                         UNTIL   IDZ    >      16
+                  ADD    SYU-HKNTEN(IDZ)      TO  SYU-HKNTEN(17)
            END-PERFORM
       *    ÊÝ¸±Å¬ÍÑ³°ÂàÈò¥Æ¡¼¥Ö¥ë¤È¼«ÈñÂàÈòÍÑ¥Æ¡¼¥Ö¥ë¤«¤é
       *    ¼ýÇ¼¥Æ¡¼¥Ö¥ë¤Ø¤Î¥»¥Ã¥È
@@ -3850,6 +3851,16 @@ grpsys                                        SPA-AREA
                                SDAY-HKNTEN(SYU-IDX) +                  
                               (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))  
                     END-PERFORM                                        
+      *            ÉÂÍý¿ÇÃÇ
+                   WHEN    "64"
+                    COMPUTE SYU-HKNTEN (14)   =  SYU-HKNTEN (14)  +
+                           (ACCT-ZAITEN  *   SINRYO-COUNT)
+                    PERFORM  VARYING  SYU-IDX  FROM  1  BY  1          
+                               UNTIL    SYU-IDX   >    31              
+                       COMPUTE SDAY-HKNTEN(SYU-IDX) =                  
+                               SDAY-HKNTEN(SYU-IDX) +                  
+                              (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))  
+                    END-PERFORM                                        
       *            £ØÀþ
                    WHEN    "70"
                     COMPUTE SYU-HKNTEN (10)   =  SYU-HKNTEN (10)  +
@@ -3923,7 +3934,7 @@ grpsys                                     SPA-AREA
                                 (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))
                          END-PERFORM
                        WHEN        "850"
-                         COMPUTE SYU-HKNTEN (15) =  SYU-HKNTEN (15)  +
+                         COMPUTE SYU-HKNTEN (16) =  SYU-HKNTEN (16)  +
                                 (ACCT-ZAITEN  *   SINRYO-COUNT)
                          PERFORM  VARYING  SYU-IDX  FROM  1  BY  1
                                     UNTIL    SYU-IDX   >    31
@@ -3932,7 +3943,7 @@ grpsys                                     SPA-AREA
                                 (ACCT-ZAITEN  *  TBL-ZAIKAISU(SYU-IDX))
                          END-PERFORM
                        WHEN        "890"
-                         COMPUTE SYU-HKNTEN (14) =  SYU-HKNTEN (14)  +
+                         COMPUTE SYU-HKNTEN (15) =  SYU-HKNTEN (15)  +
                                 (ACCT-ZAITEN  *   SINRYO-COUNT)
                          PERFORM  VARYING  SYU-IDX  FROM  1  BY  1
                                     UNTIL    SYU-IDX   >    31
@@ -3959,7 +3970,7 @@ grpsys                                     SPA-AREA
                                                     190809090  OR
                                                     190111790  OR
                                                     190809190
-                        COMPUTE SYU-HKNTEN (14)   =  SYU-HKNTEN (14) -
+                        COMPUTE SYU-HKNTEN (15)   =  SYU-HKNTEN (15) -
                                (ACCT-ZAITEN  *   SINRYO-COUNT)
                         PERFORM  VARYING  SYU-IDX  FROM  1  BY  1      
                                    UNTIL    SYU-IDX   >    31          
@@ -3969,7 +3980,7 @@ grpsys                                     SPA-AREA
                                    TBL-ZAIKAISU(SYU-IDX))              
                         END-PERFORM                                    
                       ELSE
-                        COMPUTE SYU-HKNTEN (14)   =  SYU-HKNTEN (14) +
+                        COMPUTE SYU-HKNTEN (15)   =  SYU-HKNTEN (15) +
                                (ACCT-ZAITEN  *   SINRYO-COUNT)
                         PERFORM  VARYING  SYU-IDX  FROM  1  BY  1      
                                    UNTIL    SYU-IDX   >    31          
@@ -4437,7 +4448,7 @@ grpsys                                    SPA-AREA
                                         -    WRK-SOGAIKASAN
                                         -    WRK-RYOYOTEATE
       *
-             ADD    SYU-HKNTEN(14)     TO    WRK-JIBAI-SYUTEN(IDX)
+             ADD    SYU-HKNTEN(15)     TO    WRK-JIBAI-SYUTEN(IDX)
       *
              MOVE      WRK-SINDAN      TO    WRK-JIBAI-SINDAN(IDX)
              MOVE      WRK-MEISAI      TO    WRK-JIBAI-MEISAI(IDX)
@@ -4459,7 +4470,7 @@ grpsys                                    SPA-AREA
        KOGAI-TENSO-SEC          SECTION.
       *
            COMPUTE   WRK-JIBAI-SYUTEN(IDX) =  WRK-SYUTEN
-                                           +  SYU-HKNTEN(14)
+                                           +  SYU-HKNTEN(15)
                                            +  WRK-JIBAI-RYOYO-NACCT(IDX)
                                            -  WRK-KOGAI-TEN
       *
@@ -4599,6 +4610,11 @@ grpsys                                    SPA-AREA
                                                 TBL-TGMONEY(9)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   "64"
+                                       COMPUTE  TBL-TGMONEY(14)  =
+                                                TBL-TGMONEY(14)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                    WHEN   "70"
                                        COMPUTE  TBL-TGMONEY(10)  =
                                                 TBL-TGMONEY(10)  +
@@ -4626,18 +4642,18 @@ grpsys                                    SPA-AREA
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
                                    WHEN   "85"
+                                       COMPUTE  TBL-TGMONEY(16)  =
+                                                TBL-TGMONEY(16)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
+                                   WHEN   "89"
                                        COMPUTE  TBL-TGMONEY(15)  =
                                                 TBL-TGMONEY(15)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
-                                   WHEN   "89"
-                                       COMPUTE  TBL-TGMONEY(14)  =
-                                                TBL-TGMONEY(14)  +
-                                               (SRY-JIHIMONEY(IDZ) *
-                                                SINRYO-COUNT)
                                    WHEN   "90"
-                                       COMPUTE  TBL-TGMONEY(14)  =
-                                                TBL-TGMONEY(14)  +
+                                       COMPUTE  TBL-TGMONEY(15)  =
+                                                TBL-TGMONEY(15)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
                                    WHEN   OTHER
@@ -4709,6 +4725,11 @@ grpsys                                    SPA-AREA
                                                 TBL-TGMONEY(9)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   "64"
+                                       COMPUTE  TBL-TGMONEY(14)  =
+                                                TBL-TGMONEY(14)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                    WHEN   "70"
                                        COMPUTE  TBL-TGMONEY(10)  =
                                                 TBL-TGMONEY(10)  +
@@ -4738,19 +4759,19 @@ grpsys                                    SPA-AREA
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
                                      WHEN       "850"
+                                       COMPUTE  TBL-TGMONEY(16)  =
+                                                TBL-TGMONEY(16)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
+                                     WHEN       "890"
                                        COMPUTE  TBL-TGMONEY(15)  =
                                                 TBL-TGMONEY(15)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
-                                     WHEN       "890"
-                                       COMPUTE  TBL-TGMONEY(14)  =
-                                                TBL-TGMONEY(14)  +
-                                               (SRY-JIHIMONEY(IDZ) *
-                                                SINRYO-COUNT)
                                     END-EVALUATE
                                    WHEN   "90"
-                                       COMPUTE  TBL-TGMONEY(14)  =
-                                                TBL-TGMONEY(14)  +
+                                       COMPUTE  TBL-TGMONEY(15)  =
+                                                TBL-TGMONEY(15)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
                                    WHEN   OTHER
@@ -4904,6 +4925,11 @@ grpsys                                    SPA-AREA
                                                 TBL-TGMONEY-TAX(9)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   "64"
+                                       COMPUTE  TBL-TGMONEY-TAX(14)  =
+                                                TBL-TGMONEY-TAX(14)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                    WHEN   "70"
                                        COMPUTE  TBL-TGMONEY-TAX(10)  =
                                                 TBL-TGMONEY-TAX(10)  +
@@ -4931,18 +4957,18 @@ grpsys                                    SPA-AREA
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
                                    WHEN   "85"
+                                       COMPUTE  TBL-TGMONEY-TAX(16)  =
+                                                TBL-TGMONEY-TAX(16)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
+                                   WHEN   "89"
                                        COMPUTE  TBL-TGMONEY-TAX(15)  =
                                                 TBL-TGMONEY-TAX(15)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
-                                   WHEN   "89"
-                                       COMPUTE  TBL-TGMONEY-TAX(14)  =
-                                                TBL-TGMONEY-TAX(14)  +
-                                               (SRY-JIHIMONEY(IDZ) *
-                                                SINRYO-COUNT)
                                    WHEN   "90"
-                                       COMPUTE  TBL-TGMONEY-TAX(14)  =
-                                                TBL-TGMONEY-TAX(14)  +
+                                       COMPUTE  TBL-TGMONEY-TAX(15)  =
+                                                TBL-TGMONEY-TAX(15)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
                                    WHEN   OTHER
@@ -5012,6 +5038,11 @@ grpsys                                    SPA-AREA
                                                 TBL-TGMONEY-TAX(9)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
+                                   WHEN   "64"
+                                       COMPUTE  TBL-TGMONEY-TAX(14)  =
+                                                TBL-TGMONEY-TAX(14)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
                                    WHEN   "70"
                                        COMPUTE  TBL-TGMONEY-TAX(10)  =
                                                 TBL-TGMONEY-TAX(10)  +
@@ -5041,19 +5072,19 @@ grpsys                                    SPA-AREA
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
                                      WHEN       "850"
+                                       COMPUTE  TBL-TGMONEY-TAX(16)  =
+                                                TBL-TGMONEY-TAX(16)  +
+                                               (SRY-JIHIMONEY(IDZ) *
+                                                SINRYO-COUNT)
+                                     WHEN       "890"
                                        COMPUTE  TBL-TGMONEY-TAX(15)  =
                                                 TBL-TGMONEY-TAX(15)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
-                                     WHEN       "890"
-                                       COMPUTE  TBL-TGMONEY-TAX(14)  =
-                                                TBL-TGMONEY-TAX(14)  +
-                                               (SRY-JIHIMONEY(IDZ) *
-                                                SINRYO-COUNT)
                                     END-EVALUATE
                                    WHEN   "90"
-                                       COMPUTE  TBL-TGMONEY-TAX(14)  =
-                                                TBL-TGMONEY-TAX(14)  +
+                                       COMPUTE  TBL-TGMONEY-TAX(15)  =
+                                                TBL-TGMONEY-TAX(15)  +
                                                (SRY-JIHIMONEY(IDZ) *
                                                 SINRYO-COUNT)
                                    WHEN   OTHER
@@ -5093,18 +5124,18 @@ grpsys                                    SPA-AREA
       *
       *  ÊÝ¸±Å¬ÍÑ³°
            PERFORM     VARYING   IDZ    FROM   1    BY    1
-                         UNTIL   IDZ    >      15
+                         UNTIL   IDZ    >      16
                   ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(IDZ)
                   ADD    TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(IDZ)
-                  ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(16)
-                  ADD    TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(16)
+                  ADD    TBL-TGMONEY(IDZ)      TO  SYU-TGMONEY(17)
+                  ADD    TBL-TGMONEY-TAX(IDZ)  TO  SYU-TGMONEY-TAX(17)
            END-PERFORM
       *
       *  Æþ±¡ÊÝ¸±Å¬ÍÑ³°
-      *    ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(14)
-      *    ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(14)
-      *    ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(16)
-      *    ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(16)
+      *    ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(15)
+      *    ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(15)
+      *    ADD    NYUIN-TGMONEY                TO  SYU-TGMONEY(17)
+      *    ADD    NYUIN-TGMONEY-TAX            TO  SYU-TGMONEY-TAX(17)
       *
       *  ¼«Èñ£±¤«¤é£±£°
            PERFORM     VARYING   IDZ    FROM    1    BY    1
