@@ -1826,7 +1826,7 @@
                GO  TO  420-TUIKA-EXT
            END-IF
       *
-           PERFORM 310-SPASET-SEC
+           PERFORM 420-CLEAR-SEC
       *
       *    病棟リスト最大件数チェック
            IF    ( SPA-GMN-W20-BTULST-MAX  >=  CONST-BTULST-MAX )
@@ -1904,7 +1904,8 @@
                GO  TO  420-HENKOU-EXT
            END-IF
       *
-           PERFORM 310-SPASET-SEC
+      *
+           PERFORM 420-CLEAR-SEC
       *
            MOVE    ZERO            TO  FLG-BTULST-ROW
       *
@@ -1998,8 +1999,7 @@
                GO  TO  421-SAKUJO-EXT
            END-IF
       *
-      *
-           PERFORM 310-SPASET-SEC
+           PERFORM 420-CLEAR-SEC
       *
            MOVE    ZERO            TO  FLG-BTULST-ROW
       *
