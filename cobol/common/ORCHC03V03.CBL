@@ -201,7 +201,7 @@
                05  WRK-HOSPADRS2       PIC X(50).
            03  WRK-HOSPTEL             PIC X(15).
       *----(03.04.01)--ADD-END-----
-           03  WRK-FROMID              PIC X(30).
+           03  WRK-FORMID              PIC X(30).
       *
        01  CONST-AREA.
            03  CONST-H200401           PIC X(08)   VALUE "20080401".
@@ -403,7 +403,7 @@
             MOVE   "HC01.sh"           TO  MKPRT-ID
       ***** MOVE   "HC03.dia"          TO  MKPRT-DIA
       ***** MOVE   "HC03.def"          TO  MKPRT-DEF
-            MOVE   WRK-FROMID          TO  MKPRT-DIA
+            MOVE   WRK-FORMID          TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
@@ -439,7 +439,7 @@
       *
            MOVE    ORCHC03-PRTAREA     TO  ORCSPRTAREA
       *
-           MOVE    WRK-FROMID          TO  SPRT-PRTID
+           MOVE    WRK-FORMID          TO  SPRT-PRTID
            MOVE    HC03                TO  SPRT-PRTDATA
       *-----------------------------------------------------------------
            MOVE    "1"                 TO  SPRT-SITEKBN
@@ -1133,16 +1133,16 @@
            IF    ( SYU-SRYYMD              >=  CONST-H200401 )
                EVALUATE    ORCHC03-SIZE
                WHEN    "A5"
-                   MOVE    "HCM03V03A5BN.red"  TO  WRK-FROMID
+                   MOVE    "HCM03V03A5BN.red"  TO  WRK-FORMID
                WHEN    OTHER
-                   MOVE    "HCM03V03BN.red"    TO  WRK-FROMID
+                   MOVE    "HCM03V03BN.red"    TO  WRK-FORMID
                END-EVALUATE
            ELSE
                EVALUATE    ORCHC03-SIZE
                WHEN    "A5"
-                   MOVE    "HCM03V03A5BO.red"    TO  WRK-FROMID
+                   MOVE    "HCM03V03A5BO.red"  TO  WRK-FORMID
                WHEN    OTHER
-                   MOVE    "HCM03V03BO.red"  TO  WRK-FROMID
+                   MOVE    "HCM03V03BO.red"    TO  WRK-FORMID
                END-EVALUATE
            END-IF
       *
