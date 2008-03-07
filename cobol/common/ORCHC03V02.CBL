@@ -44,6 +44,7 @@
       *  03.05.00    NACL-太田    07/08/03  月別発行実日数記載追加
       *  03.05.01    NACL-多々納  07/08/06  訂正時合計対応
       *  04.01.00    NACL-太田    07/10/22  公務災害対応
+      *  04.02.00    NACL-太田    08/03/06  改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -61,7 +62,7 @@
       *    印刷用データ
        FD  PRT-FILE.
       *****COPY    "HC03.INC".
-           COPY    "HCM03V02A.INC"  REPLACING   //HCM03V02A//
+           COPY    "HCM03V02B.INC"  REPLACING   //HCM03V02B//
                                    BY          //HC03//.
       *
        WORKING-STORAGE             SECTION.
@@ -205,6 +206,10 @@
                05  WRK-HOSPADRS2       PIC X(50).
            03  WRK-HOSPTEL             PIC X(15).
       *----(03.04.01)--ADD-END-----
+           03  WRK-FORMID              PIC X(30).
+      *
+       01  CONST-AREA.
+           03  CONST-H200401           PIC X(08)   VALUE "20080401".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -398,7 +403,7 @@
             MOVE   "HC01.sh"           TO  MKPRT-ID
       ***** MOVE   "HC03.dia"          TO  MKPRT-DIA
       ***** MOVE   "HC03.def"          TO  MKPRT-DEF
-            MOVE   "HCM03V02A.red"      TO  MKPRT-DIA
+            MOVE   WRK-FORMID          TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(3)   TO  MKPRT-PRTNM
@@ -418,7 +423,7 @@
       *
            MOVE    ORCHC03-PRTAREA     TO  ORCSPRTAREA
       *
-           MOVE    "HCM03V02A.red"     TO  SPRT-PRTID
+           MOVE    WRK-FORMID          TO  SPRT-PRTID
            MOVE    HC03                TO  SPRT-PRTDATA
       *-----------------------------------------------------------------
            MOVE    "1"                 TO  SPRT-SITEKBN
@@ -884,32 +889,22 @@
            MOVE    SYU-HKNTEN (13)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO13
-      *    入院料
+      *    病理診断
            MOVE    SYU-HKNTEN (14)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO14
-      *    療養担当手当て
+      *    入院料
            MOVE    SYU-HKNTEN (15)     TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HKNRYO15
+      *    療養担当手当て
+           MOVE    SYU-HKNTEN (16)     TO  WRK-Z72
+           PERFORM 800-HENKAN-SEC
+           MOVE    WRK-Z72-G           TO  HC03-HKNRYO16
       *    見出し
            PERFORM 3001-MEISAI-HEN-SEC
       *    合計点数
-           COMPUTE WRK-GOKTEN          =   SYU-HKNTEN (01)
-                                       +   SYU-HKNTEN (02)
-                                       +   SYU-HKNTEN (03)
-                                       +   SYU-HKNTEN (04)
-                                       +   SYU-HKNTEN (05)
-                                       +   SYU-HKNTEN (06)
-                                       +   SYU-HKNTEN (07)
-                                       +   SYU-HKNTEN (08)
-                                       +   SYU-HKNTEN (09)
-                                       +   SYU-HKNTEN (10)
-                                       +   SYU-HKNTEN (11)
-                                       +   SYU-HKNTEN (12)
-                                       +   SYU-HKNTEN (13)
-                                       +   SYU-HKNTEN (14)
-                                       +   SYU-HKNTEN (15)
+           COMPUTE WRK-GOKTEN          =   SYU-TOTAL-HKNTEN
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-GOKTEN
@@ -938,6 +933,7 @@
                MOVE    SPACE               TO  HC03-HKNRYO13
                MOVE    SPACE               TO  HC03-HKNRYO14
                MOVE    SPACE               TO  HC03-HKNRYO15
+               MOVE    SPACE               TO  HC03-HKNRYO16
                MOVE    ALL "*"             TO  HC03-GOKTEN
            END-IF
       *
@@ -948,7 +944,7 @@
       *
       *    保険適用外編集
            PERFORM     VARYING   IDX-JIHI FROM  1  BY  1
-                       UNTIL     IDX-JIHI  >  15
+                       UNTIL     IDX-JIHI  >  16
                MOVE   ZERO      TO    WRK-Z72
                COMPUTE   WRK-Z72   =   SYU-TGMONEY(IDX-JIHI)  +
                                        SYU-TGMONEY-TAX(IDX-JIHI)
@@ -1009,8 +1005,8 @@
       *
       *    保険適用外分
            MOVE    ZERO                TO  WRK-GOKTEN
-           COMPUTE WRK-GOKTEN          =   SYU-TGMONEY (16)
-                                       +   SYU-TGMONEY-TAX  (16)
+           COMPUTE WRK-GOKTEN          =   SYU-TOTAL-TGMONEY
+                                       +   SYU-TOTAL-TGMONEY-TAX
            MOVE    WRK-GOKTEN          TO  WRK-Z72
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-Z72-G           TO  HC03-HOKENGAI
@@ -1098,6 +1094,13 @@
                PERFORM 3001-TUKIBETU-HEN-SEC
            END-IF
       *
+      *
+           IF    ( SYU-SRYYMD              >=  CONST-H200401 )
+               MOVE    "HCM03V02BN.red"    TO  WRK-FORMID
+           ELSE
+               MOVE    "HCM03V02BO.red"    TO  WRK-FORMID
+           END-IF
+      *
            .
        300-HC03-HEN-EXT.
            EXIT.
@@ -1133,16 +1136,18 @@
                                        TO  HC03-MEISAI (12)
            MOVE    "放 射 線 治 療"
                                        TO  HC03-MEISAI (13)
-           MOVE    "入　院　料　等"
+           MOVE    "病　理　診　断"
                                        TO  HC03-MEISAI (14)
-           MOVE    "療養担当手当"
+           MOVE    "入　院　料　等"
                                        TO  HC03-MEISAI (15)
+           MOVE    "療養担当手当"
+                                       TO  HC03-MEISAI (16)
       *    明細削除
       *    療養担当手当て
-           IF     (SYU-HKNTEN (15)     =   ZERO ) AND
-                  (SYU-TGMONEY (15)    =   ZERO ) AND
-                  (SYU-TGMONEY-TAX(15) =   ZERO )
-               MOVE    SPACE               TO  HC03-MEISAI (15)
+           IF     (SYU-HKNTEN (16)     =   ZERO ) AND
+                  (SYU-TGMONEY (16)    =   ZERO ) AND
+                  (SYU-TGMONEY-TAX(16) =   ZERO )
+               MOVE    SPACE               TO  HC03-MEISAI (16)
            END-IF
       *
            .
