@@ -374,26 +374,27 @@
       *
       *    ³°Íè´ÉÍý²Ã»»¥Æ¡¼¥Ö¥ë
        01  TBL-GAIRAI-AREA.
-      *    °ìÈÌ
-           03  FILLER              PIC X(13)   VALUE    "100 112011010".
-      ***  Ï·¿Í ÉÂ±¡
+           03  TBLG-SRYCD          PIC X(09)   VALUE   "112011010".
+      **** °ìÈÌ
+      *    03  FILLER              PIC X(13)   VALUE    "100 112011010".
+      *    Ï·¿Í ÉÂ±¡
       *    03  FILLER              PIC X(13)   VALUE    "111 112705110".
       *    Ï·¿Í ¿ÇÎÅ½ê
       ***  03  FILLER              PIC X(13)   VALUE    "112 112705310".
       *
       *
-       01  TBL-GAIRAI-AREAR       REDEFINES   TBL-GAIRAI-AREA.
-           03  TBL-GAIRAI-OCC          OCCURS  1   INDEXED  TBLG-IDX.
+      *01  TBL-GAIRAI-AREAR       REDEFINES   TBL-GAIRAI-AREA.
+      *    03  TBL-GAIRAI-OCC          OCCURS  1   INDEXED  TBLG-IDX.
       *        ²ó¿ô
-               05  TBLG-KAISU           PIC 9(01).
+      *        05  TBLG-KAISU           PIC 9(01).
       *        Ï·¿Í°ìÈÌ¶èÊ¬¡Ê£°¡§°ìÈÌ¡¢£±¡§Ï·¿Í¡Ë
-               05  TBLG-ROUJIN          PIC 9(01).
+      *        05  TBLG-ROUJIN          PIC 9(01).
       *        ÉÂ±¡¼ïÊÌ¡Ê£±¡§ÉÂ±¡¡¢£²¡§¿ÇÎÅ½ê¡Ë
-               05  TBLG-HOSPSBT         PIC 9(01).
+      *        05  TBLG-HOSPSBT         PIC 9(01).
       *
-               05  TBLG-KBN2            PIC X(01).
+      *        05  TBLG-KBN2            PIC X(01).
       *        ¿ÇÎÅ¥³¡¼¥É
-               05  TBLG-SRYCD           PIC X(09).
+      *****    05  TBLG-SRYCD           PIC X(09).
       *
       *    Ï«ºÒ¿Ç»¡ÎÁ¥Æ¡¼¥Ö¥ë
        01  TBL-RSI-SINSATU-AREA.
@@ -2200,7 +2201,7 @@
       *****************************************************************
        2002-SRYCD-TBLG-SEC                  SECTION.
       *
-           MOVE    TBLG-SRYCD (01)             TO  WRK-SRYCD
+           MOVE    TBLG-SRYCD          TO  WRK-SRYCD
       *
       *    °ìÈÌ¤Î»þ¡¢ÉÂ±¡¡¦¿ÇÎÅ½ê¤ÏÆ±¤¸
       *    IF      SPA-NAI-ROUJIN      =   ZERO
@@ -4696,14 +4697,17 @@
                        MOVE    1               TO  FLG-TAKA
                END-EVALUATE
       *        ³°Íè´ÉÍý²Ã»»
-               SET     TBLG-IDX              TO  1
-               SEARCH  TBL-GAIRAI-OCC       VARYING   TBLG-IDX
-                   AT  END
-                       MOVE    ZERO          TO  FLG-ARI
-                   WHEN    SPA-COM-INPUTCD (IDX)
-                                            =   TBLG-SRYCD (TBLG-IDX)
-                       MOVE    1            TO  FLG-GAI
-               END-SEARCH
+               IF      SPA-COM-INPUTCD (IDX)   =   TBLG-SRYCD
+                   MOVE    1            TO  FLG-GAI
+               END-IF
+      *******  SET     TBLG-IDX              TO  1
+      *        SEARCH  TBL-GAIRAI-OCC       VARYING   TBLG-IDX
+      *            AT  END
+      *                MOVE    ZERO          TO  FLG-ARI
+      *            WHEN    SPA-COM-INPUTCD (IDX)
+      *                                     =   TBLG-SRYCD (TBLG-IDX)
+      *                MOVE    1            TO  FLG-GAI
+      ******** END-SEARCH
            END-PERFORM
            .
        1001-TBLCHEK-EXT.
@@ -4931,13 +4935,16 @@
       *
            IF      FLG-ARI         =   ZERO
       *    ³°Íè´ÉÍý²Ã»»
-               SET     TBLG-IDX             TO  1
-               SEARCH  TBL-GAIRAI-OCC       VARYING   TBLG-IDX
-                   AT  END
-                       MOVE    ZERO         TO  FLG-ARI
-                   WHEN   WRK-SRYCD         =   TBLG-SRYCD (TBLG-IDX)
-                       MOVE    1            TO  FLG-ARI
-               END-SEARCH
+               IF      WRK-SRYCD           =   TBLG-SRYCD
+                   MOVE    1                   TO  FLG-ARI
+               END-IF
+      *******  SET     TBLG-IDX             TO  1
+      *        SEARCH  TBL-GAIRAI-OCC       VARYING   TBLG-IDX
+      *            AT  END
+      *                MOVE    ZERO         TO  FLG-ARI
+      *            WHEN   WRK-SRYCD         =   TBLG-SRYCD (TBLG-IDX)
+      *                MOVE    1            TO  FLG-ARI
+      ******** END-SEARCH
            END-IF
       *
            IF      FLG-ARI         =   ZERO

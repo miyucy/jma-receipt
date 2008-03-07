@@ -410,7 +410,8 @@
       *    ³°Íè´ÉÍý²Ã»»¡¦·ÑÂ³´ÉÍý²Ã»»¥Æ¡¼¥Ö¥ë
        01  TBL-GAIRAI-AREA.
       *    °ìÈÌ
-           03  FILLER              PIC X(13)   VALUE   "100G112011010".
+           03  TBLG-SRYCD          PIC X(09)   VALUE   "112011010".
+      ***  03  FILLER              PIC X(13)   VALUE   "100G112011010".
       *
       **** Ï·¿Í ÉÂ±¡
       **   03  FILLER              PIC X(13)   VALUE   "111G112705110".
@@ -424,18 +425,18 @@
       *D   03  FILLER              PIC X(13)   VALUE   "010K112702270".
       *
       *
-       01  TBL-GAIRAI-AREAR       REDEFINES   TBL-GAIRAI-AREA.
-           03  TBL-GAIRAI-OCC          OCCURS  1    INDEXED  TBLG-IDX.
+      *01  TBL-GAIRAI-AREAR       REDEFINES   TBL-GAIRAI-AREA.
+      *    03  TBL-GAIRAI-OCC          OCCURS  1    INDEXED  TBLG-IDX.
       *        ²ó¿ô
-               05  TBLG-KAISU           PIC 9(01).
+      *        05  TBLG-KAISU           PIC 9(01).
       *        Ï·¿Í°ìÈÌ¶èÊ¬¡Ê£°¡§°ìÈÌ¡¢£±¡§Ï·¿Í¡Ë
-               05  TBLG-ROUJIN          PIC 9(01).
+      *        05  TBLG-ROUJIN          PIC 9(01).
       *        ÉÂ±¡¼ïÊÌ¡Ê£±¡§ÉÂ±¡¡¢£²¡§¿ÇÎÅ½ê¡Ë
-               05  TBLG-HOSPSBT         PIC 9(01).
+      *        05  TBLG-HOSPSBT         PIC 9(01).
       *         :³°Íè´ÉÍý²Ã»»¡¢K:·ÑÂ³´ÉÍý²Ã»»
-               05  TBLG-KBN             PIC X(01).
+      *        05  TBLG-KBN             PIC X(01).
       *        ¿ÇÎÅ¥³¡¼¥É
-               05  TBLG-SRYCD           PIC X(09).
+      ******** 05  TBLG-SRYCD           PIC X(09).
       *
       *    Ï«ºÒ¿Ç»¡ÎÁ¥Æ¡¼¥Ö¥ë
        01  TBL-RSI-SINSATU-AREA.
@@ -1204,26 +1205,31 @@
       *****************************************************************
        100111-KEIZOKU-CHK-SEC                  SECTION.
       *
-      *    ³°Íè´ÉÍý²Ã»»¡¢·ÑÂ³´ÉÍý²Ã»»¤ÎÈ½Äê
            MOVE    ZERO                TO  FLG-GAIRAI
            MOVE    ZERO                TO  FLG-KEIZOK
-           SET     TBLG-IDX            TO  1
-           SEARCH  TBL-GAIRAI-OCC      VARYING   TBLG-IDX
-                   AT   END
-                       MOVE    SPACE           TO  WRK-KBN
-                   WHEN    WRK-COM-INPUTCD(IDX-Z)  =   TBLG-SRYCD
-                                                             (TBLG-IDX)
-                       MOVE    TBLG-KBN   (TBLG-IDX)
-                                               TO  WRK-KBN
-           END-SEARCH
-           EVALUATE    WRK-KBN
+           MOVE    SPACE               TO  WRK-KBN
+      *    ³°Íè´ÉÍý²Ã»»
+           IF      WRK-COM-INPUTCD(IDX-Z)  =   TBLG-SRYCD
+               MOVE    "G"                 TO  WRK-KBN
+               MOVE    1                   TO  FLG-GAIRAI
+           END-IF
+      **** SET     TBLG-IDX            TO  1
+      *    SEARCH  TBL-GAIRAI-OCC      VARYING   TBLG-IDX
+      *            AT   END
+      *                MOVE    SPACE           TO  WRK-KBN
+      *            WHEN    WRK-COM-INPUTCD(IDX-Z)  =   TBLG-SRYCD
+      *                                                      (TBLG-IDX)
+      *                MOVE    TBLG-KBN   (TBLG-IDX)
+      *                                        TO  WRK-KBN
+      *    END-SEARCH
+      *    EVALUATE    WRK-KBN
       *        ³°Íè´ÉÍý²Ã»»
-               WHEN    "G"
-                   MOVE    1           TO  FLG-GAIRAI
+      *        WHEN    "G"
+      *            MOVE    1           TO  FLG-GAIRAI
       *        ·ÑÂ³´ÉÍý²Ã»»
-               WHEN    "K"
-                   MOVE    1           TO  FLG-KEIZOK
-           END-EVALUATE
+      *        WHEN    "K"
+      *            MOVE    1           TO  FLG-KEIZOK
+      *    END-EVALUATE
       *
       *    ·òÊÝ¤Ç¡¢·ÑÂ³´ÉÍý¤Î»þ
       **** IF     (SPA-HKNKBN      NOT =   1   ) OR
@@ -4622,7 +4628,7 @@
                PERFORM 200111-RSI-GAIKASAN-SEC
            ELSE
       *        ³°Íè´ÉÍý²Ã»»
-               MOVE    TBLG-SRYCD (01)     TO  WRK-SRYCD
+               MOVE    TBLG-SRYCD          TO  WRK-SRYCD
            END-IF
       *
       *    °ìÈÌ¤Î»þ¡¢ÉÂ±¡¡¦¿ÇÎÅ½ê¤ÏÆ±¤¸
@@ -5394,15 +5400,18 @@
                GO      TO      2911-SINSATU-CHK-SYORI-EXT
            END-IF
       *
-      *    ³°Íè´ÉÍý²Ã»»¡¢·ÑÂ³´ÉÍý²Ã»»¤ÎÈ½Äê
-           SET     TBLG-IDX            TO  1
-           SEARCH  TBL-GAIRAI-OCC      VARYING   TBLG-IDX
-                   AT   END
-                       MOVE    ZERO            TO  FLG-ARI
-                   WHEN    WRK-COM-INPUTCD(IDX)    =   TBLG-SRYCD
-                                                             (TBLG-IDX)
-                       MOVE    1               TO  FLG-ARI
-           END-SEARCH
+      *    ³°Íè´ÉÍý²Ã»»È½Äê
+           IF      WRK-COM-INPUTCD(IDX)    =   TBLG-SRYCD
+               MOVE    1                   TO  FLG-ARI
+           END-IF
+      **** SET     TBLG-IDX            TO  1
+      *    SEARCH  TBL-GAIRAI-OCC      VARYING   TBLG-IDX
+      *            AT   END
+      *                MOVE    ZERO            TO  FLG-ARI
+      *            WHEN    WRK-COM-INPUTCD(IDX)    =   TBLG-SRYCD
+      *                                                      (TBLG-IDX)
+      *                MOVE    1               TO  FLG-ARI
+      **** END-SEARCH
            IF      FLG-ARI             =   1
                GO      TO      2911-SINSATU-CHK-SYORI-EXT
            END-IF

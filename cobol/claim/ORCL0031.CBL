@@ -1570,6 +1570,9 @@
                            MOVE    "3"                 TO  WRK-TIMEKBN
                        WHEN    "5"
                            MOVE    "4"                 TO  WRK-TIMEKBN
+                       WHEN    "6"
+      *                    夜間・早朝
+                           MOVE    "8"                 TO  WRK-TIMEKBN
                    END-EVALUATE
            END-EVALUATE
       *
@@ -1844,7 +1847,7 @@
       *    診察で、手技料の時、時間外の自動加算
            IF      (WRK-JIKAN          =   "1"  OR  "2"  OR  "3"
                                        OR  "4"  OR  "5"  OR  "6"
-                                       OR  "7"                    ) AND
+                                       OR  "7"  OR  "8"           ) AND
                    (TBL-WKSRY-SRYKBN (TBL-MAX)
                                        =   "11"  OR  "12"  OR "13") AND
                    (TNS-DATAKBN        =   "1"   )
