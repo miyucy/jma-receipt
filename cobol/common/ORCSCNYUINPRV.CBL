@@ -33,6 +33,7 @@
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/11/XX  ¸øÌ³ºÒ³²¡¦¸ø³²ÂÐ±þ
       *                                     ´ïºà¾¦ÉÊÌ¾¥³¡¼¥ÉÂÐ±þ
+      *  04.02.00    NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
       *
@@ -1932,6 +1933,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN   "54"
                    MOVE    "01"        TO  JYURRK-SRYKBN8
                WHEN   "60"
+                   MOVE    "01"        TO  JYURRK-SRYKBN9
+               WHEN   "64"
                    MOVE    "01"        TO  JYURRK-SRYKBN9
                WHEN   "70"
                    MOVE    "01"        TO  JYURRK-SRYKBN10

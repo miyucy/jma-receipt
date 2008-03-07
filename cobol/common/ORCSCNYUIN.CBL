@@ -38,6 +38,7 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.01.00    NACL-多々納  07/11/XX  公務災害・公害対応
       *                                     器材商品名コード対応
+      *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *****************************************************************
       *
       *
@@ -1884,9 +1885,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    訂正で科・保険組合せ変更がない時、前の同日連番
            IF     (SPA-SYORIFLG        =   1  )  AND
                   (SPA-SRYKA           =   SPA-OLD-SRYKA )
-      *        同じ保険組合せがある時
+      *        同じ保険組合せがない時、訂正前の連番
                IF      FLG-OK              =   ZERO
-                 MOVE    SPA-DOUJI-RENNUM    TO  WRK-JYURRK-DOUJI-RENNUM
+                   MOVE    SPA-DOUJI-RENNUM
+                                           TO  WRK-JYURRK-DOUJI-RENNUM
                END-IF
       *        他の保険組合せがない時、ゼロ
                IF      WRK-CNT-DOUJI       =   ZERO
@@ -2024,6 +2026,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN   "54"
                    MOVE    "01"        TO  JYURRK-SRYKBN8
                WHEN   "60"
+                   MOVE    "01"        TO  JYURRK-SRYKBN9
+               WHEN   "64"
                    MOVE    "01"        TO  JYURRK-SRYKBN9
                WHEN   "70"
                    MOVE    "01"        TO  JYURRK-SRYKBN10
