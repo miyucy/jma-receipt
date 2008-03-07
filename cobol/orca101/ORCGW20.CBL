@@ -2495,6 +2495,8 @@
       *
            MOVE    ZERO                TO  CNT-KSN
       *
+           INITIALIZE  SYS-5001-KSNAREA
+      *
       *    ´Ç¸îÊä½õ²Ã»»¶èÊ¬
            IF    ( SPA-GMN-W20-KNGHJO  =   "00" )
                MOVE    SPACE           TO  SYS-5001-BTU-KNGHJOKSN
@@ -3952,8 +3954,6 @@
                                        TO  WRK-CMB-CD
            PERFORM 4200-HOIKULST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W20-HOIKU-G
-      *
-           INITIALIZE  SYS-5001-KSNAREA
       *
            PERFORM VARYING IDX-KSN     FROM    1   BY  1
                    UNTIL ( IDX-KSN     >   CONST-5001-KSN-MAX )
