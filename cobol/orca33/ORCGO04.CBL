@@ -717,7 +717,7 @@
       *    ÊÝ¸±Å¬ÍÑ³°
            MOVE    ZERO                TO  SPA-GMN-O04-HKNGAI.
            COMPUTE  SPA-GMN-O04-HKNGAI
-                 =  SYU-TOTAL-TGMONEY  +   SYU-TOTAL-TGMONEY
+                 =  SYU-TOTAL-TGMONEY  +   SYU-TOTAL-TGMONEY-TAX
       *
       *    Ï«ºÒÊÝ¸±Å¬ÍÑÊ¬
            MOVE    SYU-RSISHOSHIN-MONEY
