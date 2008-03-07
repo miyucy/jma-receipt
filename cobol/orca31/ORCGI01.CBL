@@ -144,6 +144,7 @@
       *                                     精神科救急・合併症入院料
       *                                     短期滞在手術基本料３
       *  04.02.00    NACL-太田    08/03/06  後期高齢者判定追加
+      *  04.02.00    NACL-小豆沢  08/03/07  シス管病棟設定の加算判定変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -10837,7 +10838,8 @@
                    MOVE   "2"    TO   WRK-BTU-HIKSISUKBN
                END-IF
       *
-      *        病棟入院料加算
+      *      病棟入院料加算
+             IF     WRK-YUKYMD      <=     "20080331"
                PERFORM   VARYING   IDX7   FROM   1  BY  1
                  UNTIL  (IDX7                    >   14)
                    EVALUATE   IDX7
@@ -10875,6 +10877,29 @@
                            END-IF
                    END-EVALUATE
                END-PERFORM
+             ELSE
+      *        平成２０年４月以降の加算セットはこちらの処理
+      *       （システム管理の病棟設定見直しによるもの）
+               PERFORM   VARYING   IDX7   FROM   1  BY  1
+                 UNTIL  (IDX7      >   14)
+                     IF   SYS-5001-KSNKBN(IDX7)   =   "2"
+                         EVALUATE    SYS-5001-KSNCD(IDX7)
+                             WHEN    "190110170"
+      *                        児童思春期精神科入院医療管理加算（２０才未満）
+                                PERFORM   4801-PT-AGE-SEC
+                                IF      WRK-NENREI   <      20
+                                   ADD    1            TO  IDX8
+                                   MOVE   SYS-5001-KSNCD(IDX7) TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+                             WHEN   OTHER
+                                ADD    1                TO  IDX8
+                                MOVE   SYS-5001-KSNCD(IDX7) TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                         END-EVALUATE
+                     END-IF
+               END-PERFORM
+             END-IF
            END-IF
       *
       *病室情報
@@ -10980,21 +11005,23 @@
                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
            END-IF
       *
-      *    看護配置適合加算
-           IF    (WRK-BTU-KNGTEK-KBN   =   "2")  AND
-                 (IDX9    <   20 )
-               ADD    1            TO  IDX9
-               MOVE  "190109670"   TO
+           IF     WRK-YUKYMD      <=     "20080331"
+      *      看護配置適合加算
+             IF    (WRK-BTU-KNGTEK-KBN   =   "2")  AND
+                   (IDX9    <   20 )
+                 ADD    1            TO  IDX9
+                 MOVE  "190109670"   TO
                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
-           END-IF
+             END-IF          
       *
-      *    複数医師及び看護配置適合加算
-           IF    (WRK-BTU-DRTEK-KBN   =   "2")  AND
-                 (IDX9    <   20 )
-               ADD    1            TO  IDX9
-               MOVE  "190117070"   TO
+      *      複数医師及び看護配置適合加算
+             IF    (WRK-BTU-DRTEK-KBN   =   "2")  AND
+                   (IDX9    <   20 )
+                 ADD    1            TO  IDX9
+                 MOVE  "190117070"   TO
                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
-           END-IF
+             END-IF
+           END-IF 
       *
            .
       *
