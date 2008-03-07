@@ -95,6 +95,9 @@ tbl_tensu {
 	NYUKHNKBN			number(2,0);
 	NYUKHNKSNKBN		number(3,0);
 	KANGOKSN  			number(2,0);
+	GAZOOPESUP			number(1,0);
+	IRYOKANSATUKBN			number(1,0);
+	MASUISKBKBN			number(1,0);
 	OLDTENSKB			number(1,0);
 	OLDTEN   			number(11,2);
 	MADOKUKBN  			number(1,0);

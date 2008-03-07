@@ -27,6 +27,9 @@
       *                                     基準不適合逓減施設 追加
       * 01.00.02     NACL-多々納  04/12/20  検索点数キー追加
       * 01.00.03     NACL-伊藤    06/03/15  ドナー分集計区分 追加
+      * 01.00.04     NACL-伊藤    08/03/07  画像手術支援加算
+      *                                     医療観察法対象区分
+      *                                     麻酔識別区分 追加
       ************************************************************
        01  TNS-TENSU-REC.
       *(1)
@@ -117,6 +120,9 @@
            03  TNS-NYUKHNKBN           PIC  9(02).
            03  TNS-NYUKHNKSNKBN        PIC  9(03).
            03  TNS-KANGOKSN            PIC  9(02).
+           03  TNS-GAZOOPESUP          PIC  9(01).
+           03  TNS-IRYOKANSATUKBN      PIC  9(01).
+           03  TNS-MASUISKBKBN         PIC  9(01).
            03  TNS-OLDTENSKB           PIC  9(01).
            03  TNS-OLDTEN              PIC  9(09)V99.
            03  TNS-MADOKUKBN           PIC  9(01).
