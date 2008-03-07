@@ -89,6 +89,8 @@
       *                                     精神科救急・合併症入院料
       *                                     短期滞在手術基本料３
       *  04.02.00    NACL-小豆沢  08/03/07  シス管病棟設定の加算判定変更
+      *  04.02.00    NACL-小豆沢  08/03/07  療養病棟（病床）入院料の名称
+      *                                     表示変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -8192,7 +8194,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-                   EVALUATE   TNS-SRYCD
+                   IF  WRK-SRYYMD(1:6)    <=   "200803"
+                     EVALUATE   TNS-SRYCD
                        WHEN   "190121310"
                            MOVE "療養病棟入院基本料２（Ａ）"
                                                TO  TNS-NAME
@@ -8270,7 +8273,88 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        WHEN   "197000570"
                            MOVE
                           "食堂加算"           TO  TNS-NAME
-                   END-EVALUATE
+                     END-EVALUATE
+                   ELSE
+                     EVALUATE   TNS-SRYCD
+                       WHEN   "190121310"
+                           MOVE "療養病棟入院基本料（Ａ）"
+                                               TO  TNS-NAME
+                       WHEN   "190121410"
+                           MOVE "療養病棟入院基本料（Ｂ）"
+                                               TO  TNS-NAME
+                       WHEN   "190121510"
+                           MOVE "療養病棟入院基本料（Ｃ）"
+                                               TO  TNS-NAME
+                       WHEN   "190121610"
+                           MOVE "療養病棟入院基本料（Ｄ）"
+                                               TO  TNS-NAME
+                       WHEN   "190121710"
+                           MOVE "療養病棟入院基本料（Ｅ）"
+                                               TO  TNS-NAME
+                       WHEN   "190121810"
+                           MOVE "療養病棟入院基本料（特別入院基本料）"
+                                               TO  TNS-NAME
+                       WHEN   "190122010"
+                           MOVE "療養病床入院基本料（Ａ）"
+                                               TO  TNS-NAME
+                       WHEN   "190122110"
+                           MOVE "療養病床入院基本料（Ｂ）"
+                                               TO  TNS-NAME
+                       WHEN   "190122210"
+                           MOVE "療養病床入院基本料（Ｃ）"
+                                               TO  TNS-NAME
+                       WHEN   "190122310"
+                           MOVE "療養病床入院基本料（Ｄ）"
+                                               TO  TNS-NAME
+                       WHEN   "190122410"
+                           MOVE "療養病床入院基本料（Ｅ）"
+                                               TO  TNS-NAME
+                       WHEN   "190122510"
+                           MOVE
+                          "療養病床入院基本料（特別入院基本料）"
+                                               TO  TNS-NAME
+                       WHEN   "190123710"
+                           MOVE "療養病棟入院基本料（Ａ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190123810"
+                           MOVE "療養病棟入院基本料（Ｂ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190123910"
+                           MOVE "療養病棟入院基本料（Ｃ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124010"
+                           MOVE "療養病棟入院基本料（Ｄ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124110"
+                           MOVE "療養病棟入院基本料（Ｅ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124210"
+                           MOVE "療養病棟入院基本料（特別生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124310"
+                           MOVE "療養病床入院基本料（Ａ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124410"
+                           MOVE "療養病床入院基本料（Ｂ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124510"
+                           MOVE "療養病床入院基本料（Ｃ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124610"
+                           MOVE "療養病床入院基本料（Ｄ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124710"
+                           MOVE "療養病床入院基本料（Ｅ生活）"
+                                               TO  TNS-NAME
+                       WHEN   "190124810"
+                           MOVE
+                          "療養病床入院基本料（特別生活）"
+                                               TO  TNS-NAME
+                       WHEN   "197000570"
+                           MOVE
+                          "食堂加算"           TO  TNS-NAME
+                     END-EVALUATE
+                   END-IF
                    MOVE    ZERO                TO  FLG-TENSU
                ELSE
                    INITIALIZE                  TNS-TENSU-REC
