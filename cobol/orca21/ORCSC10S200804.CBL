@@ -1379,6 +1379,7 @@
                        MOVE    ZERO            TO  SPA-TOKUTEI-KNJ2
                    END-IF
       *TEST
+      *Ｈ２０．４から廃止
       *        器具等による療法
                WHEN    "140040310"
       *        湿布処置１
@@ -3699,6 +3700,9 @@
            MOVE    ZERO                TO  SPA-KAIHOU1-ARI
            MOVE    ZERO                TO  SPA-KAIHOU2-ARI
            MOVE    ZERO                TO  SPA-ZAIKANRI-ARI
+      *Ｈ２０．４から
+      *    MOVE    ZERO                TO  SPA-KOURESRY-ARI
+      *    MOVE    ZERO                TO  SPA-IGAKUKAN-ARI
       *
            MOVE    ZERO                TO  SPA-SEIKATU-ARI
            MOVE    ZERO                TO  SPA-KYUSEI-FLG
@@ -3808,6 +3812,20 @@
       *            急性発生
                    WHEN    "099800101"
                        MOVE    1               TO  SPA-KYUSEI-FLG
+      *            後期高齢者診療料
+      *            WHEN    "113702110"
+      *                MOVE    1               TO  SPA-KOURESRY-ARI
+      *            特定施設入居時医学総合管理料
+      *            WHEN    "114013010"
+      *            WHEN    "114013210"
+      *                院外
+      *                MOVE    "1"             TO  SPA-INGAIKBN
+      *                MOVE    1               TO  SPA-IGAKUKAN-ARI
+      *            WHEN    "114013110"
+      *            WHEN    "114013310"
+      *                院内
+      *                MOVE    "2"             TO  SPA-INGAIKBN
+      ****             MOVE    1               TO  SPA-IGAKUKAN-ARI
                END-EVALUATE
       *        在宅療養指導料の判定
                IF     (SPA-COM-INPUTCD (IDX)(1:3)  =   "114") AND
@@ -3903,6 +3921,12 @@
              OR   (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
                PERFORM 5022-ZAIKANRI-CHK-SEC
            END-IF
+      *
+      *    後期高齢者診療料チェック
+      *    IF     (SPA-KOURESRY-ARI    NOT =   ZERO )
+      *      OR   (SPA-KOURESRY-ARI2   NOT =   ZERO )
+      *        PERFORM 5022-KOURESRY-CHK-SEC
+      *    END-IF
       *
            .
        700-SANTEI-CHK-EXT.
@@ -4937,6 +4961,10 @@
       *    外来管理加算
                IF      WRK-SRYCD           =   TBLG-SRYCD
                    MOVE    1                   TO  FLG-ARI
+      *        外来管理加算を自動発生しない時、削除しない
+                   IF      SPA-GAIKANRIKBN-CHK     =   3
+                       MOVE    ZERO                TO  FLG-ARI
+                   END-IF
                END-IF
       *******  SET     TBLG-IDX             TO  1
       *        SEARCH  TBL-GAIRAI-OCC       VARYING   TBLG-IDX
