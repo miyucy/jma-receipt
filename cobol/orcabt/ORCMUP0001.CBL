@@ -185,6 +185,12 @@ grpsys     COPY    "COMMON-SPA".
            03  TNSWK-V02-AREA-01       PIC X(969).
            03  TNSWK-V02-AREA-02       PIC X(300).
       *---(01.00.02) LINE ADD START -------------------------------------
+      *---(01.00.03) LINE ADD START -------------------------------------
+      *    旧マスタデータ退避領域
+       01  TNSWK-TENSU-REC-V03.
+           03  TNSWK-V03-AREA-01       PIC X(1080).
+           03  TNSWK-V03-AREA-02       PIC X(239).
+      *---(01.00.03) LINE ADD START -------------------------------------
       *
        01  WRK-HOMEDIR.
            03  FILLER                  PIC X(28)  VALUE
@@ -949,6 +955,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            WHEN    LNK-DBRVERSION (3:6)    <   "020800"
                PERFORM 900-TNSWK-V02-SET
       *
+           WHEN    LNK-DBRVERSION (3:6)    <   "040200"
+               PERFORM 900-TNSWK-V03-SET
+      *
            WHEN    OTHER
                MOVE    IN-REC      TO  TNSWK-TENSU-REC
            END-EVALUATE
@@ -996,6 +1005,26 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *---(01.00.01) LINE ADD END   -------------------------------------
+      *---(01.00.03) LINE ADD START -------------------------------------
+      *****************************************************************
+      *    変更後レイアウト移送処理
+      *****************************************************************
+       900-TNSWK-V03-SET          SECTION.
+      *
+           MOVE    IN-REC              TO  TNSWK-TENSU-REC-V03
+      *
+           MOVE    TNSWK-V03-AREA-01   TO  TNSWK-TENSU-REC (1    : 1080)
+      *****MOVE    ZERO                TO  TNSWK-GAZOOPESUP
+      *****MOVE    ZERO                TO  TNSWK-IRYOKANSATUKBN
+      *****MOVE    ZERO                TO  TNSWK-MASUISKBKBN
+           MOVE    ZERO                TO  TNSWK-TENSU-REC (1081 : 3)
+           MOVE    TNSWK-V03-AREA-02   TO  TNSWK-TENSU-REC (1084 : 239)
+      *
+          .
+       900-TNSWK-V03-EXT.
+           EXIT.
+      *
+      *---(01.00.03) LINE ADD END   -------------------------------------
       *****************************************************************
       *    点数マスター読込
       *****************************************************************
