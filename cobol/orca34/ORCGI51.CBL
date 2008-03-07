@@ -627,16 +627,20 @@
            MOVE    SPA-GMN-I51-HKNRYO (13)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-HOUHKNTEN
-      *    Æþ±¡ÎÁ
+      *    ÉÂÍý¿ÇÃÇ
            MOVE    SPA-GMN-I51-HKNRYO (14)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-BYRHKNTEN
+      *    Æþ±¡ÎÁ
+           MOVE    SPA-GMN-I51-HKNRYO (15)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-NYUHKNTEN
       *    ÎÅÍÜÃ´Åö¼êÅö
-           MOVE    SPA-GMN-I51-HKNRYO (15)
+           MOVE    SPA-GMN-I51-HKNRYO (16)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-RYOHKNTEN
       *    ¹ç·×ÅÀ¿ô
-           MOVE    SPA-GMN-I51-HKNRYO (16)
+           MOVE    SPA-GMN-I51-HKNRYO (17)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-TOTALHKNTEN
       *    ÊÝ¸±Å¬ÍÑ³°
@@ -693,12 +697,17 @@
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-HOUTGMONEY
       *
-      *    Æþ±¡ÎÁ
+      *    ÉÂÍý¿ÇÃÇ
            MOVE    SPA-GMN-I51-TGMONEY (14)
+                                       TO  WRK-Z9
+           MOVE    WRK-Z9              TO  I51-BYRTGMONEY
+      *
+      *    Æþ±¡ÎÁ
+           MOVE    SPA-GMN-I51-TGMONEY (15)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-NYUTGMONEY
       *    ÎÅÍÜÃ´Åö¼êÅö
-           MOVE    SPA-GMN-I51-TGMONEY (15)
+           MOVE    SPA-GMN-I51-TGMONEY (16)
                                        TO  WRK-Z9
            MOVE    WRK-Z9              TO  I51-RYOTGMONEY
       *
@@ -1895,7 +1904,7 @@
                                        TO  SUMSYUNOU-OCC (SUMSYUNOU-CNT)
       *            ÊÝ¸±ÎÁ
                    PERFORM VARYING     IDX12   FROM    1   BY  1
-                           UNTIL       IDX12   >   16
+                           UNTIL       IDX12   >   17
                      COMPUTE SUMSYU-HKNTEN   (WRK-SYU-SUM-IDX IDX12)
                          =   SUMSYU-HKNTEN   (WRK-SYU-SUM-IDX IDX12)
                          +   LNK-SYU-HKNTEN (IDX11 IDX12)
@@ -2414,7 +2423,7 @@
       *
       *    ÊÝ¸±ÎÁ
            PERFORM VARYING     IDX1     FROM    1   BY  1
-                   UNTIL     ( IDX1     >   15 )
+                   UNTIL     ( IDX1     >   16 )
                MOVE    WKSYU-HKNTEN (IDX1)
                                       TO  SPA-GMN-I51-HKNRYO (IDX1)
       *    ÊÝ¸±Å¬ÍÑ³°
@@ -2423,12 +2432,12 @@
                    +   WKSYU-TGMONEY-TAX(IDX1)
            END-PERFORM
       *
-           MOVE    WKSYU-HKNTEN (16)   TO  SPA-GMN-I51-HKNRYO (16)
+           MOVE    WKSYU-TOTAL-HKNTEN  TO  SPA-GMN-I51-HKNRYO (17)
       *
       *    ÊÝ¸±Å¬ÍÑ³°
            COMPUTE SPA-GMN-I51-HKNGAI
-               =   WKSYU-TGMONEY (16)
-               +   WKSYU-TGMONEY-TAX (16)
+               =   WKSYU-TOTAL-TGMONEY
+               +   WKSYU-TOTAL-TGMONEY-TAX
       *
       *    ÊÝ¸±Å¬ÍÑ¶â³Û
            MOVE    WKSYU-HKNTEKMONEY       TO  SPA-GMN-I51-HKNTEKI

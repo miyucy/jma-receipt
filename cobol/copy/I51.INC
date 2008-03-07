@@ -70,6 +70,8 @@
                 04  I51-VALUE   PIC X(10).
               03  I51-HOUHKNTEN.
                 04  I51-VALUE   PIC X(10).
+              03  I51-BYRHKNTEN.
+                04  I51-VALUE   PIC X(10).
               03  I51-NYUHKNTEN.
                 04  I51-VALUE   PIC X(10).
               03  I51-RYOHKNTEN.
@@ -101,6 +103,8 @@
               03  I51-SSNTGMONEY.
                 04  I51-VALUE   PIC X(10).
               03  I51-HOUTGMONEY.
+                04  I51-VALUE   PIC X(10).
+              03  I51-BYRTGMONEY.
                 04  I51-VALUE   PIC X(10).
               03  I51-NYUTGMONEY.
                 04  I51-VALUE   PIC X(10).
