@@ -669,7 +669,7 @@
       *    ÊÝ¸±ÎÁ
            MOVE    ZERO                TO  SPA-GMN-O04-HKNRYO (12)
            PERFORM VARYING     IDX0    FROM    1   BY  1
-                   UNTIL     ( IDX0    >   15 )
+                   UNTIL     ( IDX0    >   16 )
                MOVE    SYU-HKNTEN (IDX0)
                                        TO  SPA-GMN-O04-HKNRYO (IDX0)
       *
@@ -681,7 +681,7 @@
       *
       *    ÊÝ¸±Å¬ÍÑ³°
            PERFORM VARYING     IDX0     FROM    1   BY  1
-                   UNTIL     ( IDX0     >   15 )
+                   UNTIL     ( IDX0     >   16 )
       *
                MOVE    ZERO            TO   SPA-GMN-O04-TGMONEY (IDX0)
                COMPUTE SPA-GMN-O04-TGMONEY (IDX0)
@@ -1350,9 +1350,10 @@
            MOVE    SPA-GMN-O04-HKNRYO (11) TO  O04-ETCHKNTEN
            MOVE    SPA-GMN-O04-HKNRYO (12) TO  O04-SSNHKNTEN
            MOVE    SPA-GMN-O04-HKNRYO (13) TO  O04-HOUHKNTEN
-           MOVE    SPA-GMN-O04-HKNRYO (14) TO  O04-NYUHKNTEN
-           MOVE    SPA-GMN-O04-HKNRYO (15) TO  O04-RYOHKNTEN
-           MOVE    SPA-GMN-O04-HKNRYO (16) TO  O04-TOTALHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (14) TO  O04-BYRHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (15) TO  O04-NYUHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (16) TO  O04-RYOHKNTEN
+           MOVE    SPA-GMN-O04-HKNRYO (17) TO  O04-TOTALHKNTEN
            MOVE    SPA-GMN-O04-HKNTEKI     TO  O04-HKNTEKMONEY
            MOVE    SPA-GMN-O04-ROUFTN      TO  O04-RJNFTN
            MOVE    SPA-GMN-O04-KOHFTN      TO  O04-KOHFTN
@@ -1392,8 +1393,9 @@
            MOVE    SPA-GMN-O04-TGMONEY (11) TO  O04-ETCTGMONEY
            MOVE    SPA-GMN-O04-TGMONEY (12) TO  O04-SSNTGMONEY
            MOVE    SPA-GMN-O04-TGMONEY (13) TO  O04-HOUTGMONEY
-           MOVE    SPA-GMN-O04-TGMONEY (14) TO  O04-NYUTGMONEY
-           MOVE    SPA-GMN-O04-TGMONEY (15) TO  O04-RYOTGMONEY
+           MOVE    SPA-GMN-O04-TGMONEY (14) TO  O04-BYRTGMONEY
+           MOVE    SPA-GMN-O04-TGMONEY (15) TO  O04-NYUTGMONEY
+           MOVE    SPA-GMN-O04-TGMONEY (16) TO  O04-RYOTGMONEY
            MOVE    SPA-GMN-O04-HKNGAI      TO  O04-HKNTEKGAI
            MOVE    SPA-GMN-O04-ICHIFTN     TO  O04-FTNTOTAL
       *    MOVE    SPA-GMN-O04-YAKFTN      TO  O04-YKZFTN 

@@ -48,6 +48,7 @@
               03  O04-ETCHKNTEN PIC S9(8).
               03  O04-SSNHKNTEN PIC S9(8).
               03  O04-HOUHKNTEN PIC S9(8).
+              03  O04-BYRHKNTEN PIC S9(8).
               03  O04-NYUHKNTEN PIC S9(8).
               03  O04-RYOHKNTEN PIC S9(8).
               03  O04-TOTALHKNTEN
@@ -74,6 +75,7 @@
                                 PIC S9(8).
               03  O04-SSNTGMONEY PIC S9(8).
               03  O04-HOUTGMONEY PIC S9(8).
+              03  O04-BYRTGMONEY PIC S9(8).
               03  O04-NYUTGMONEY
                                 PIC S9(8).
               03  O04-RYOTGMONEY PIC S9(8).

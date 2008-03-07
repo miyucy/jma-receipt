@@ -90,6 +90,8 @@
                 04  I04-VALUE   PIC X(10).
               03  I04-HOUHKNTEN.
                 04  I04-VALUE   PIC X(10).
+              03  I04-BYRHKNTEN.
+                04  I04-VALUE   PIC X(10).
               03  I04-NYUHKNTEN.
                 04  I04-VALUE   PIC X(10).
               03  I04-RYOHKNTEN.
@@ -121,6 +123,8 @@
               03  I04-SSNTGMONEY.
                 04  I04-VALUE   PIC X(10).
               03  I04-HOUTGMONEY.
+                04  I04-VALUE   PIC X(10).
+              03  I04-BYRTGMONEY.
                 04  I04-VALUE   PIC X(10).
               03  I04-NYUTGMONEY.
                 04  I04-VALUE   PIC X(10).

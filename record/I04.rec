@@ -107,6 +107,9 @@ I04	{
 		HOUHKNTEN	{
 			value	varchar(10);
 		};
+		BYRHKNTEN	{
+			value	varchar(10);
+		};
 		NYUHKNTEN	{
 			value	varchar(10);
 		};
@@ -153,6 +156,9 @@ I04	{
 			value	varchar(10);
 		};
 		HOUTGMONEY	{
+			value	varchar(10);
+		};
+		BYRTGMONEY	{
 			value	varchar(10);
 		};
 		NYUTGMONEY	{

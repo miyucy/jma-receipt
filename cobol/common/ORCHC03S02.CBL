@@ -425,7 +425,7 @@
            ADD SYU-SKYGK           TO  LNKSYU-SKYGK       (IDX-SYU)
            ADD SYU-HKNTEKMONEY     TO  LNKSYU-HKNTEKMONEY (IDX-SYU)
            PERFORM VARYING     IDX0    FROM    1   BY  1
-                   UNTIL       IDX0    >   16
+                   UNTIL       IDX0    >   17
                ADD SYU-HKNTEN (IDX0)
                                    TO  LNKSYU-HKNTEN(IDX-SYU IDX0)
                ADD SYU-MONEY  (IDX0)

@@ -108,7 +108,7 @@
            03  CONST-MOTSYU-MAX        PIC 9(03)   VALUE 10.
            03  CONST-KONSYU-MAX        PIC 9(03)   VALUE 20.
            03  CONST-SYUNOU-MAX        PIC 9(03)   VALUE 23.
-           03  CONST-HKNTEN-MAX        PIC 9(03)   VALUE 16.
+           03  CONST-HKNTEN-MAX        PIC 9(03)   VALUE 17.
            03  CONST-JIHI-MAX          PIC 9(03)   VALUE 10.
            03  CONST-ORCSHKN-MAX       PIC 9(03)   VALUE 100.
            03  CONST-H180401           PIC X(08)   VALUE "20060401".

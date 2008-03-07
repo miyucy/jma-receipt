@@ -643,7 +643,7 @@
            ADD     WRK-SYU-HKNTEKMONEY TO  SYU-HKNTEKMONEY
            ADD     WRK-SYU-SHOHOU-SAI      TO  SYU-SHOHOU-SAI
            PERFORM VARYING     IDS1    FROM    1   BY  1
-                   UNTIL       IDS1    >   16
+                   UNTIL       IDS1    >   17
                ADD    WRK-SYU-HKNTEN (IDS1)    TO  SYU-HKNTEN(IDS1)
                ADD    WRK-SYU-MONEY (IDS1)     TO  SYU-MONEY (IDS1)
                ADD    WRK-SYU-TGMONEY (IDS1)   TO  SYU-TGMONEY(IDS1)

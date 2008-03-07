@@ -60,7 +60,7 @@
            03  WRK-SYURRKUPDKBN    PIC X(01).
       *
        01  CONST-AREA.
-           03  CONST-SRYKBN-MAX    PIC 9(05)   VALUE 16.
+           03  CONST-SRYKBN-MAX    PIC 9(05)   VALUE 17.
       *
       *    ¼ýÇ¼ÍúÎò½¸·×ÎÎ°è
        01  SUMSYU-AREA.

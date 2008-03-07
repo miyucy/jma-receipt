@@ -88,6 +88,9 @@ O04	{
 		HOUHKNTEN	{
 			value	number(8);
 		};
+		BYRHKNTEN	{
+			value	number(8);
+		};
 		NYUHKNTEN	{
 			value	number(8);
 		};
@@ -134,6 +137,9 @@ O04	{
 			value	number(8);
 		};
 		HOUTGMONEY	{
+			value	number(8);
+		};
+		BYRTGMONEY	{
 			value	number(8);
 		};
 		NYUTGMONEY	{
