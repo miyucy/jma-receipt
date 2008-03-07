@@ -3707,6 +3707,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    連番
            ADD     1                   TO  WRK-RENNUM
            MOVE    WRK-RENNUM          TO  SHELLTBL-ARG11 (1:2)
+      *    システム日付
+           MOVE    SPA-SYSYMD          TO  SHELLTBL-ARG12
       *
            MOVE    SHELLTBL            TO  MCPDATA-REC
            MOVE    "SHELL"             TO  MCP-FUNC

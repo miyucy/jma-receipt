@@ -2677,6 +2677,12 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                                                                 (IDX)
                            END-STRING
                        END-IF
+      *                後期高齢者は・なし
+                       IF     (PTHKN-HKNNUM        =   "039")
+                          AND (PTHKN-KIGO          =   SPACE )
+                           MOVE    PTHKN-NUM   TO  SPA-GMN-TMIKIGONUM
+                                                                (IDX)
+                       END-IF
       *
                        MOVE    PTHKN-KAKUNINYMD    TO
                                                    SPA-NAI-KAKUNINYMD
@@ -4413,6 +4419,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    連番
            ADD     1                   TO  WRK-RENNUM
            MOVE    WRK-RENNUM          TO  SHELLTBL-ARG11 (1:2)
+      *    システム日付
+           MOVE    SPA-SYSYMD          TO   SHELLTBL-ARG12
       *
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SHELLTBL            TO  MCPDATA-REC

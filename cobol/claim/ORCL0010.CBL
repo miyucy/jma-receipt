@@ -63,6 +63,8 @@
                                     PIC  X(16).
                05  WRK-PARA-RENNUM
                                     PIC  X(02).
+               05  WRK-PARA-SYSYMD
+                                    PIC  X(08).
       *
            03  WRK-IN               PIC X(01).
       *
@@ -144,11 +146,15 @@
                                             WRK-PARA-HKNCOMBI
                                             WRK-PARA-SINRYONAIYO
                                             WRK-PARA-RENNUM
+                                            WRK-PARA-SYSYMD
       *
       *???
            DISPLAY "PARA " WRK-PARA "##"
       *???
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+           IF      WRK-PARA-SYSYMD     NOT =   SPACE
+               MOVE    WRK-PARA-SYSYMD     TO  SPA-SYSYMD
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
