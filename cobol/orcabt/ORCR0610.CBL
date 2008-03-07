@@ -108,6 +108,8 @@
       *                                     À¸ÊÝ¤ÈÈïÇú£¸£¶¤Îµ­ºÜ½ç 
       *  04.01.03    NACL-Æ£¸¶    07/01/21  ·îÅÓÃæ¤ÎÉéÃ´¼ÔÈÖ¹æÊÑ¹¹ÂÐ±þ
       *                                     ¡ÊÀ¸ÊÝ¤Î¸øÈñÃ±ÆÈ¤Î¤ß¡Ë 
+      * 
+      *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1942,6 +1944,13 @@
                                                TO  WRK-RECE61-HONKZKKBN
                               END-EVALUATE
       *****               END-IF     
+                      WHEN    "038" 
+                      WHEN    "039" 
+                          EVALUATE   PTHKN-HOJOKBN
+                              WHEN   "1"
+                              WHEN   "2"
+                                 MOVE    "0" TO  WRK-RECE61-HONKZKKBN
+                          END-EVALUATE             
                       WHEN    OTHER 
                           EVALUATE   PTHKN-HOJOKBN
                              WHEN   "9"
@@ -2028,6 +2037,14 @@
                            MOVE    "3"             TO
                                                WRK-RECE61-HOJOKBN
                    END-EVALUATE
+               WHEN    "038" 
+               WHEN    "039" 
+                   EVALUATE   PTHKN-HOJOKBN
+                       WHEN   "1"
+                       WHEN   "2"
+                           MOVE    PTHKN-HOJOKBN   TO
+                                               WRK-RECE61-HOJOKBN
+                   END-EVALUATE             
                WHEN    OTHER 
                    EVALUATE   PTHKN-HOJOKBN
                        WHEN   "9"
@@ -2159,6 +2176,7 @@
            MOVE   PTINF-TSTPTNUMKBN    TO  WRK-RECE61-TSTPTNUMKBN
       *    ´µ¼ÔÇ¯Îð
            MOVE   WRK-NENREI           TO  WRK-RECE61-AGE
+           MOVE    AGECHK-SYUGAKUKBN   TO  WRK-RECE61-SYUGAKUKBN
       *    µìÀ«ÍúÎò¤Î¼èÆÀ
            INITIALIZE                      KYUSEIRRK-REC
            MOVE    WRK-RECE61-HOSPNUM      TO  KYUSEI-HOSPNUM

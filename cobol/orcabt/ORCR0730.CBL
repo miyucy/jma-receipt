@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCR0720.
+       PROGRAM-ID.                 ORCR0730.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : レセプト（入院）
@@ -70,7 +70,6 @@
       *  04.02.01    NACL-藤原    08/02/20  レセプトカスタマイズされてい
       *                                     るときの適用欄下段コメントの
       *                                     編集方法の修正
-      *  04.02.02    NACL-藤原    08/03/04  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -866,13 +865,18 @@
                05  TBL-SUUJI-9     PIC X(01).
       *
        01  WRK-ERR-MSG-AREA.
+      *★★平成２０年４月改正対応
            03  WRK-ERR-MSG-1.
+               05  FILLER          PIC X(28)   VALUE
+                   "《平成２０年４月改正未対応》". 
                05  WRK-ERR-HKNCOMBINUM-1
                                    PIC X(08).
                05  FILLER          PIC X(28)   VALUE
                    "の保険組合せが存在しません。". 
       *
            03  WRK-ERR-MSG-2.
+               05  FILLER          PIC X(28)   VALUE
+                   "《平成２０年４月改正未対応》". 
                05  WRK-ERR-DAY-2   PIC X(04).
                05  FILLER          PIC X(04)   VALUE
                    "日の". 
@@ -889,6 +893,8 @@
                    "となっています". 
       *
            03  WRK-ERR-MSG-3.
+               05  FILLER          PIC X(28)   VALUE
+                   "《平成２０年４月改正未対応》". 
                05  WRK-ERR-DAY-3   PIC X(04).
                05  FILLER          PIC X(04)   VALUE
                    "日の". 
@@ -905,6 +911,8 @@
                    "となっています". 
       *
            03  WRK-ERR-MSG-4.
+               05  FILLER          PIC X(28)   VALUE
+                   "《平成２０年４月改正未対応》". 
                05  WRK-ERR-DAY-4   PIC X(04).
                05  FILLER          PIC X(04)   VALUE
                    "日の". 
@@ -916,14 +924,28 @@
                    07  FILLER          PIC X(28)   VALUE
                    "は適用年月日外となっています". 
       *
-           03  WRK-ERR-MSG-5           PIC X(48)  VALUE
+           03  WRK-ERR-MSG-5.
+               05  FILLER          PIC X(28)   VALUE
+                   "《平成２０年４月改正未対応》". 
+               05  FILLER          PIC X(48)  VALUE
                "地方公費のみ選択されています。主保険がありません".
       *
-           03  WRK-ERR-MSG-6           PIC X(14)  VALUE
-               "【主科未設定】".
+           03  WRK-ERR-MSG-6.
+               05  FILLER          PIC X(28)   VALUE
+                   "《平成２０年４月改正未対応》". 
+               05  WRK-ERR-MSG-61.
+                   07  FILLER      PIC X(14)  VALUE
+                   "【主科未設定】".
       *
-           03  WRK-ERR-MSG-7           PIC X(30)  VALUE
-              "【未請求設定の患者です】".
+           03  WRK-ERR-MSG-7.
+               05  FILLER          PIC X(28)   VALUE
+                   "《平成２０年４月改正未対応》". 
+               05  FILLER              PIC X(30)  VALUE
+               "【未請求設定の患者です】".
+      *
+           03  WRK-ERR-MSG-8.
+               05  FILLER          PIC X(28)   VALUE
+                   "《平成２０年４月改正未対応》". 
       *
        01  WRK-CONS-AREA.
       *    固定端末ＩＤ
@@ -937,8 +959,6 @@
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
       *
            03  WRK-CONS-SRYYM-200703   PIC 9(06)   VALUE   200703.
-      *
-           03  WRK-CONS-SRYYM-200803   PIC 9(06)   VALUE   200803.
       *
            03  WRK-CONS-BODYLIST-MAX
                                    PIC 9(02)   VALUE   50.
@@ -1117,7 +1137,7 @@
       *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    "ORCR0720"      TO  JOB-PGID
+               MOVE    "ORCR0730"      TO  JOB-PGID
                MOVE    "印刷データ編集"
                                        TO  JOB-SHELLMSG
                PERFORM   900-CALL-ORCSJOB-SEC
@@ -1194,43 +1214,43 @@
       *
            OPEN    INPUT               RECE62-FILE
            IF  STS-RECE62          NOT =   ZERO
-               DISPLAY "*** ORCR0720 RECE62 OPEN ERR  ***"
+               DISPLAY "*** ORCR0730 RECE62 OPEN ERR  ***"
                MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE62X-FILE
            IF  STS-RECE62X         NOT =   ZERO
-               DISPLAY "*** ORCR0720 RECE62X OPEN ERR  ***"
+               DISPLAY "*** ORCR0730 RECE62X OPEN ERR  ***"
                MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE631-FILE
            IF  STS-RECE63          NOT =   ZERO
-               DISPLAY "*** ORCR0720 RECE631 OPEN ERR  ***"
+               DISPLAY "*** ORCR0730 RECE631 OPEN ERR  ***"
                MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE661-FILE
            IF  STS-RECE66          NOT =   ZERO
-               DISPLAY "*** ORCR0720 RECE661 OPEN ERR  ***"
+               DISPLAY "*** ORCR0730 RECE661 OPEN ERR  ***"
                MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE69-FILE
            IF  STS-RECE69            NOT =   ZERO
-               DISPLAY "*** ORCR0720 RECE69 OPEN ERR  ***" STS-RECE69
+               DISPLAY "*** ORCR0730 RECE69 OPEN ERR  ***" STS-RECE69
                MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE68-FILE
            IF  STS-RECE68            NOT =   ZERO
-               DISPLAY "*** ORCR0720 RECE68 OPEN ERR  ***" STS-RECE68
+               DISPLAY "*** ORCR0730 RECE68 OPEN ERR  ***" STS-RECE68
                MOVE    2               TO  FLG-STS
            END-IF
       *
            OPEN    INPUT               RECE67-FILE
            IF  STS-RECE67            NOT =   ZERO
-               DISPLAY "*** ORCR0720 RECE67 OPEN ERR  ***" STS-RECE67
+               DISPLAY "*** ORCR0730 RECE67 OPEN ERR  ***" STS-RECE67
                MOVE    2               TO  FLG-STS
            END-IF
            .
@@ -1533,10 +1553,15 @@
                MOVE    1                TO  FLG-SYS-2008
            END-IF
       *
+      *★★平成２０年４月改正対応
+      *??  改正対応のため編綴順情報設定を中止
+           MOVE    ZERO            TO  FLG-SYS-2008
+      *
       *    レセプト編綴順詳細設定情報（一括作成時のみ）
-           IF   WRK-PARA-SRYYM    NOT =  ZERO
-               PERFORM 1201-HENTETU-HENSYU-SEC
-           END-IF
+      *??  IF   WRK-PARA-SRYYM    NOT =  ZERO
+      *??      PERFORM 1201-HENTETU-HENSYU-SEC
+      *??  END-IF
+      *??
       *         
       *    レセプト編集区分情報
            MOVE    SPACE           TO  SYSKANRI-REC
@@ -2148,6 +2173,9 @@
       *****************************************************************
        20022-KOHSKY-WRITE-SEC          SECTION.
       *
+      *★★平成２０年４月改正対応
+           GO  TO  20022-KOHSKY-WRITE-EXT
+      *★★
            MOVE    SPACE               TO  KOHSKY-REC
            INITIALIZE                      KOHSKY-REC
            MOVE    RECE62X-HOSPNUM     TO  KOHSKY-HOSPNUM
@@ -2308,7 +2336,7 @@
            IF      MCP-RC     =   ZERO
                CONTINUE
            ELSE
-               DISPLAY "ORCR0720 KOHSKY MCP-RC= "  MCP-RC   
+               DISPLAY "ORCR0730 KOHSKY MCP-RC= "  MCP-RC   
                IF      FLG-KOHSKY          =   1    
                    MOVE    "公費請求ＤＢに追加できませんでした"
                                            TO  WRK-RECEERR
@@ -2321,7 +2349,7 @@
            END-IF
       *
            .
-       2002-KOHSKY-WRITE-EXT.
+       20022-KOHSKY-WRITE-EXT.
            EXIT.
       *****************************************************************
       *    県単用項目ファイル読込処理
@@ -2732,6 +2760,10 @@
                END-IF
            END-IF
       *
+      *★★平成２０年４月改正対応
+           MOVE    WRK-ERR-MSG-8   TO   HC06-HEAD4-G (5:)
+      *★★
+      *
            .
        310-HCN06-HEAD-HEN-EXT.
            EXIT.
@@ -2845,7 +2877,7 @@
       *    主科未設定のとき     
            IF      RECE62-SYUKA         =   "XX"
                MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
-               MOVE    WRK-ERR-MSG-6        TO  HC06-HEAD4-G (5:)
+               MOVE    WRK-ERR-MSG-61       TO  HC06-HEAD4-G (5:)
                MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (19:)
            END-IF
       *
@@ -3137,8 +3169,9 @@
                            MOVE    "１国"          TO  HC06-HKNSBT1
                        WHEN    "2"
                            MOVE    "２公費"        TO  HC06-HKNSBT1
-                       WHEN    "3"
-                           MOVE    "３老人"        TO  HC06-HKNSBT1
+      *★★平成２０年４月改正対応
+      *??                 WHEN    "3"
+      *??                     MOVE    "３老人"        TO  HC06-HKNSBT1
                        WHEN    "4"
                            MOVE    "４退職"        TO  HC06-HKNSBT1
                    END-EVALUATE
@@ -3153,8 +3186,9 @@
                            END-EVALUATE
                        WHEN    "2"
                            MOVE    "２公費"        TO  HC06-HKNSBT1
-                       WHEN    "3"
-                           MOVE    "３老人"        TO  HC06-HKNSBT1
+      *★★平成２０年４月改正対応
+      *??                 WHEN    "3"
+      *??                     MOVE    "３老人"        TO  HC06-HKNSBT1
                        WHEN    "4"
                            MOVE    "４退職"        TO  HC06-HKNSBT1
                    END-EVALUATE
@@ -6896,10 +6930,10 @@
                END-IF
            END-PERFORM
       *
-      *    請求管理ＤＢ更新
-           IF      FLG-ERR              =   ZERO
-               PERFORM 3904-RECE10-HENSYU-SEC
-           END-IF
+      *★★平成２０年４月改正対応
+      *    IF      FLG-ERR              =   ZERO
+      *        PERFORM 3904-RECE10-HENSYU-SEC
+      *    END-IF
       *
            IF      FLG-ERR              =   1
                MOVE    2                    TO  FLG-STS
@@ -7039,7 +7073,7 @@
            MOVE    RECE08-REC          TO  MCPDATA-REC
            PERFORM 900-RECE08-READ-SEC
            IF      FLG-RECE08          =   ZERO
-               DISPLAY "ORCR0720 MCP-RC=" MCP-RC " " RECE08-KEY 
+               DISPLAY "ORCR0730 MCP-RC=" MCP-RC " " RECE08-KEY 
                STRING   "レセプト明細に更新できません　患者番号＝"
                                                DELIMITED  BY  SIZE
                         RECE62-PTNUM           DELIMITED  BY  SIZE  
@@ -7119,7 +7153,7 @@
                IF      MCP-RC     =   ZERO
                    ADD     1                 TO  CNT-OUT
                ELSE 
-                   DISPLAY "ORCR0720 RECE08=" MCP-RC " " RECE08-KEY 
+                   DISPLAY "ORCR0730 RECE08=" MCP-RC " " RECE08-KEY 
                    STRING
                         "レセプト明細に更新できませんでした　患者番号＝"
                                                DELIMITED  BY  SIZE
@@ -7662,7 +7696,7 @@
            IF      MCP-RC     =   ZERO
                CONTINUE
            ELSE
-               DISPLAY "ORCR0720 RECEKANRI MCP-RC= "  MCP-RC   
+               DISPLAY "ORCR0730 RECEKANRI MCP-RC= "  MCP-RC   
                IF      FLG-SEIKYU          =   1    
                MOVE    "レセプト管理ＤＢに追加できませんでした"
                                                TO  WRK-RECEERR
@@ -8027,7 +8061,7 @@
            IF      MCP-RC     =   ZERO
                CONTINUE
            ELSE
-               DISPLAY "ORCR0720 SEIKYU MCP-RC= "  MCP-RC   
+               DISPLAY "ORCR0730 SEIKYU MCP-RC= "  MCP-RC   
                IF      FLG-SEIKYU          =   1    
                MOVE    "請求管理ＤＢに追加できませんでした"
                                                TO  WRK-RECEERR
@@ -8429,10 +8463,10 @@
       *****    MOVE    "対象データがありませんでした" TO  WRK-RECEERR
       *****    PERFORM 500-ERR-HENSYU-SEC
       *****END-IF
-           DISPLAY "*** ORCR0720 IN  RECE62 ="  CNT-RECE62
-           DISPLAY "*** ORCR0720 IN  RECE62X="  CNT-RECE62X
-           DISPLAY "*** ORCR0720 OUT  "  CNT-OUT
-           DISPLAY "*** ORCR0720 END ***"
+           DISPLAY "*** ORCR0730 IN  RECE62 ="  CNT-RECE62
+           DISPLAY "*** ORCR0730 IN  RECE62X="  CNT-RECE62X
+           DISPLAY "*** ORCR0730 OUT  "  CNT-OUT
+           DISPLAY "*** ORCR0730 END ***"
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ステップ管理終了処理

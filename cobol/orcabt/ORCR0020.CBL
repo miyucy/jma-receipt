@@ -173,7 +173,9 @@
       *  04.01.01    NACL-Æ£¸¶    07/01/21  ·îÅÓÃæ¤ÎÉéÃ´¼ÔÈÖ¹æÊÑ¹¹ÂÐ±þ
       *                                     ¡ÊÀ¸ÊÝ¤Î¸øÈñÃ±ÆÈ¤Î¤ß¡Ë 
       *  04.01.02    NACL-Æ£¸¶    08/02/12  µÜºê¸©¡Ö¸øÈñ£¹£°¡×ÂÐ±þ
-      *                                     ÄÌ¾ï¤Îµ­ºÜÊýË¡¤ËÌá¤¹ 
+      *                                     ÄÌ¾ï¤Îµ­ºÜÊýË¡¤ËÌá¤¹
+      *
+      *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -516,6 +518,8 @@
       *
            03  WRK-CONS-SRYYM-200609
                                    PIC 9(06)   VALUE   200609.      
+           03  WRK-CONS-SRYYM-200804
+                                   PIC 9(06)   VALUE   200804.      
       *
       *    ºßÁí¿Ç¥Æ¡¼¥Ö¥ë
        01  TBL-ZAITAKU-AREA.
@@ -1797,33 +1801,23 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                    END-IF
                END-IF
            END-IF
-      *----(01.00.13) LINE ADD START --------------------------
       *   Ê¿À®£±£´Ç¯£±£°·îÂÐ±þ
       *    £³ºÐÌ¤Ëþ¤Î¾ì¹ç¡¢£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë"£³"¤ò¥»¥Ã¥È
            IF  RECE01-HKNID             NOT =   ZERO
-               IF      RECE02-SRYYM             >=      "200210"
-      **             MOVE   PTINF-BIRTHDAY   TO  WRK-YMDS1
-      **             MOVE   RECE02-SRYYM     TO  WRK-YYMMS2R
-      **             MOVE   01               TO  WRK-DDS2R
-      **             MOVE   ZERO             TO  WRK-NENREI
-      **             COMPUTE  WRK-NENREI     =   WRK-YYS2
-      **                                     -   WRK-YYS1
-      **             IF   WRK-YMDS1(5:4)     >   WRK-YMDS2(5:4)
-      **                  ADD   -1           TO  WRK-NENREI
-      **             END-IF
-      **             IF   WRK-NENREI         =   3
-      **                 IF    WRK-YMDS1(5:2)  = WRK-YMDS2(5:2)
-      **                       IF   WRK-YMDS1(7:2)  NOT = "01"
-      **                            ADD   -1     TO  WRK-NENREI
-      **                       END-IF
-      **                 END-IF
-      **             END-IF
-      *
+               IF    ( RECE02-SRYYM         >=  200210                )
+               AND   ( RECE02-SRYYM         <   WRK-CONS-SRYYM-200804 )
                    IF      WRK-NENREI         <     3
                                MOVE   "3"     TO   WK-HONKZKKBN
                    END-IF
                END-IF
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+               IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM-200804
+                   IF      RECE01-SYUGAKUKBN   =   1
+                       MOVE   "3"          TO  WK-HONKZKKBN
+                   END-IF
+               END-IF
            END-IF
+      *¡ú¡ú
       *
       *    £±³ä¡¢£²³äÉéÃ´¤Î¹âÎð¼Ô¤Î¾ì¹ç£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë
       *    "£¹"¤Þ¤¿¤Ï"£¸"¤ò¥»¥Ã¥È
@@ -1963,12 +1957,22 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                END-IF
            END-IF
       *
-           IF      RECE02-SRYYM        >  WRK-CONS-SRYYM-200609
-               IF    ( WK-HONKZKKBN        =   "?" )
-               OR    ( WK-RJN              =   "?" )
-                   MOVE    7                    TO  RECE02-ERR-ERRKBN
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+           IF      RECE02-HKNNUM       =   "038"   OR  "039"
+               MOVE    "?"                 TO  WK-IHO
+           END-IF
+           IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM-200804
+               IF      RECE02-RJNHKNNUM    =   "027"
+                   MOVE    "?"                 TO  WK-RJN
+               END-IF
+               IF      WRK-NENREI          <   3
+                   CONTINUE
+               ELSE
+                   IF      RECE01-SYUGAKUKBN   =   1
+                       MOVE   "?"              TO   WK-HONKZKKBN
                END-IF
            END-IF
+      *¡ú¡ú
       *          
       *----(01.00.13) LINE ADD END   --------------------------
       *

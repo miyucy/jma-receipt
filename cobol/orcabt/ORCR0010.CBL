@@ -144,6 +144,8 @@
       *                                     À¸ÊÝ¤ÈÈïÇú£¸£¶¤Îµ­ºÜ½ç 
       *  04.01.03    NACL-Æ£¸¶    07/01/21  ·îÅÓÃæ¤ÎÉéÃ´¼ÔÈÖ¹æÊÑ¹¹ÂÐ±þ
       *                                     ¡ÊÀ¸ÊÝ¤Î¸øÈñÃ±ÆÈ¤Î¤ß¡Ë 
+      * 
+      *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1493,6 +1495,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                                                TO  WRK-RECE01-HONKZKKBN
                               END-EVALUATE
       *****               END-IF     
+                      WHEN    "038" 
+                      WHEN    "039" 
+                          EVALUATE   PTHKN-HOJOKBN
+                              WHEN   "1"
+                              WHEN   "2"
+                                 MOVE    "0" TO  WRK-RECE01-HONKZKKBN
+                          END-EVALUATE             
                       WHEN    OTHER 
                           EVALUATE   PTHKN-HOJOKBN
                              WHEN   "9"
@@ -1576,6 +1585,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                                                WRK-RECE01-HOJOKBN
                        END-EVALUATE
       *****        END-IF     
+               WHEN    "038" 
+               WHEN    "039" 
+                   EVALUATE   PTHKN-HOJOKBN
+                       WHEN   "1"
+                       WHEN   "2"
+                           MOVE    PTHKN-HOJOKBN   TO
+                                               WRK-RECE01-HOJOKBN
+                   END-EVALUATE             
                WHEN    OTHER 
                    EVALUATE   PTHKN-HOJOKBN
                       WHEN   "9"
@@ -1699,6 +1716,7 @@ grpsys                                         SPA-AREA
            MOVE   PTINF-TSTPTNUMKBN    TO  WRK-RECE01-TSTPTNUMKBN
       *    ´µ¼ÔÇ¯Îð
            MOVE    WRK-NENREI          TO  WRK-RECE01-AGE
+           MOVE    AGECHK-SYUGAKUKBN   TO  WRK-RECE01-SYUGAKUKBN
       *    µìÀ«ÍúÎò¤Î¼èÆÀ
            INITIALIZE                      KYUSEIRRK-REC
 grpsys     MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM

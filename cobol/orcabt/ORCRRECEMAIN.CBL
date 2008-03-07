@@ -44,6 +44,8 @@
       *
       *  04.01.01    NACL-Æ£¸¶    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.02    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
+      *
+      *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -524,20 +526,26 @@
                     RECEERR        DELIMITED   BY  SPACE
                                    INTO    WRK-ARG
            END-STRING
-           DISPLAY "ORCR0104 start = [" WRK-ARG "]"
-           CALL    "ORCR0104"          USING
-                                       WRK-ARG
+           IF    WRK-PARA-A8     <   "200804"
+               DISPLAY "ORCR0104 start = [" WRK-ARG "]"
+               CALL    "ORCR0104"          USING
+                                           WRK-ARG
       *
-           IF    ( WRK-PARA-A11    =   "06"     )
-           AND   ( WRK-PARA-A8     <   "200601" )
-               CALL    "ORCRCP060"     USING
+               IF    ( WRK-PARA-A11    =   "06"     )
+               AND   ( WRK-PARA-A8     <   "200601" )
+                   CALL    "ORCRCP060"     USING
                                        WRK-ARG
-           END-IF
+               END-IF
       *
-           IF    ( WRK-PARA-A11    =   "40"                  )
-           AND   ( WRK-PARA-A8     <=  WRK-CONS-SRYYM-200609 )
-               CALL    "ORCRCP400"     USING
-                                       WRK-ARG
+               IF    ( WRK-PARA-A11    =   "40"                  )
+               AND   ( WRK-PARA-A8     <=  WRK-CONS-SRYYM-200609 )
+                   CALL    "ORCRCP400"     USING
+                                           WRK-ARG
+               END-IF
+           ELSE
+               DISPLAY "ORCR0105 start = [" WRK-ARG "]"
+               CALL    "ORCR0105"          USING
+                                           WRK-ARG
            END-IF
       *
       *
@@ -734,8 +742,12 @@
                                            WRK-ARG
                END-IF
            ELSE    
-               CALL    "ORCR0720"          USING
-                                           WRK-ARG
+               IF    WRK-PARA-A8     <   "200804"
+                   CALL    "ORCR0720"          USING
+                                               WRK-ARG
+               ELSE
+                   CALL    "ORCR0730"          USING
+                                               WRK-ARG
            END-IF
       *
       *

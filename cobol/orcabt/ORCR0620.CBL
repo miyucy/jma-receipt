@@ -134,7 +134,9 @@
       *  04.01.01    NACL-Æ£¸¶    07/01/21  ·îÅÓÃæ¤ÎÉéÃ´¼ÔÈÖ¹æÊÑ¹¹ÂÐ±þ
       *                                     ¡ÊÀ¸ÊÝ¤Î¸øÈñÃ±ÆÈ¤Î¤ß¡Ë 
       *  04.01.02    NACL-Æ£¸¶    08/02/12  µÜºê¸©¡Ö¸øÈñ£¹£°¡×ÂÐ±þ
-      *                                     ÄÌ¾ï¤Îµ­ºÜÊýË¡¤ËÌá¤¹ 
+      *                                     ÄÌ¾ï¤Îµ­ºÜÊýË¡¤ËÌá¤¹
+      * 
+      *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -446,6 +448,8 @@
       *
            03  WRK-CONS-SRYYM-200609
                                    PIC 9(06)   VALUE   200609.      
+           03  WRK-CONS-SRYYM-200804
+                                   PIC 9(06)   VALUE   200804.      
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -1715,10 +1719,20 @@
       *
       *    £³ºÐÌ¤Ëþ¤Î¾ì¹ç¡¢£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë"£³"¤ò¥»¥Ã¥È
            IF      RECE61-HKNID            NOT =   ZERO
-               IF      WRK-NENREI              <     3
-                           MOVE   "3"          TO   WK-HONKZKKBN
+               IF    ( RECE62-SRYYM         >=  200210                )
+               AND   ( RECE62-SRYYM         <   WRK-CONS-SRYYM-200804 )
+                   IF      WRK-NENREI         <     3
+                               MOVE   "3"     TO   WK-HONKZKKBN
+                   END-IF
+               END-IF
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+               IF      RECE62-SRYYM        >=  WRK-CONS-SRYYM-200804
+                   IF      RECE61-SYUGAKUKBN   =   1
+                       MOVE   "3"          TO  WK-HONKZKKBN
+                   END-IF
                END-IF
            END-IF
+      *¡ú¡ú
       *
       *    £±³ä¡¢£²³äÉéÃ´¤Î¹âÎð¼Ô¤Î¾ì¹ç£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë
       *    "£¹"¤Þ¤¿¤Ï"£¸"¤ò¥»¥Ã¥È
@@ -1857,13 +1871,22 @@
                END-IF
            END-IF    
       *          
-      *
-           IF      RECE62-SRYYM        >   WRK-CONS-SRYYM-200609
-               IF    ( WK-HONKZKKBN        =   "?" )
-               OR    ( WK-RJN              =   "?" )
-                   MOVE    8                    TO  RECE62-ERR-ERRKBN
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+           IF      RECE62-HKNNUM       =   "038"   OR  "039"
+               MOVE    "?"                 TO  WK-IHO
+           END-IF
+           IF      RECE62-SRYYM        >=  WRK-CONS-SRYYM-200804
+               IF      RECE62-RJNHKNNUM    =   "027"
+                   MOVE    "?"                 TO  WK-RJN
                END-IF
-           END-IF    
+               IF      WRK-NENREI          <   3
+                   CONTINUE
+               ELSE
+                   IF      RECE61-SYUGAKUKBN   =   1
+                       MOVE   "?"              TO   WK-HONKZKKBN
+               END-IF
+           END-IF
+      *¡ú¡ú
       * 
            INITIALIZE                  ORCSSYUBETUGETAREA  
            MOVE    WK-KOKUHO           TO  LNK-SYUBETUGET-KOKUHO

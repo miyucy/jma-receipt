@@ -178,6 +178,7 @@
       *  04.02.01    NACL-藤原    08/02/20  レセプトカスタマイズされてい
       *                                     るときの適用欄下段コメントの
       *                                     編集方法の修正
+      *  04.02.02    NACL-藤原    08/03/04  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1020,6 +1021,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609. 
            03  WRK-CONS-SRYYM-200703   PIC 9(06)   VALUE   200703. 
+           03  WRK-CONS-SRYYM-200803   PIC 9(06)   VALUE   200803.
       *
            03  WRK-CONS-BODYLIST-MAX
                                    PIC 9(02)   VALUE   50.
@@ -2074,7 +2076,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
            MOVE    ZERO               TO  SESNIDX
            PERFORM   VARYING   IDX  FROM    1   BY  1
                      UNTIL   ( IDX                >    4    )
-                     OR      ( RECE02-KOHID(IDX)  =   SPACE )
+                     OR      ( RECE02-KOHID(IDX)  =   ZERO  )
       *        生保
                IF  RECE02-KOHNUM (IDX)  =   "012"
                    MOVE    "1"          TO  WRK-3SYU (1:1)

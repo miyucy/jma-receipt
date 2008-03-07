@@ -259,6 +259,7 @@
       *
       *  04.02.01    NACL-Æ£¸¶    08/02/20  »°¼ï¸øÈñÊ»ÍÑÆÃÎã»þ¤ÎÉéÃ´¶èÊ¬
       *                                     ÂÐ±þ
+      *  04.02.02    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1519,6 +1520,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE12PARA-HOSPNUM
            OPEN    INPUT               RECE11-FILE
       *
            OPEN    INPUT               RECE12-FILE
+      *
       * 
            IF      FLG-END             =   ZERO
       *
@@ -1536,7 +1538,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE12PARA-HOSPNUM
                    MOVE    TNS-TEN         TO
                                            WRK-CONS-JIKANGAI-TEN (IDX)
                END-PERFORM
-           END-IF    
+           END-IF
+      *
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+           IF    ( FLG-END             =   ZERO   )
+           AND   ( RECE02-SRYYM        >=  200804 )
+               MOVE    1                   TO  FLG-END
+           END-IF
+      *¡ú¡ú
            .
        100-INIT-EXT.
            EXIT.
