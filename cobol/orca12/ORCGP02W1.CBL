@@ -5581,6 +5581,9 @@
                               (SPA-ERRCD   NOT =   SPACE )
                    INITIALIZE                  SPA-GMN-HKN-AREA
                    IF      SPA-PTHKN-SAKJOKBN (IDX)    =   SPACE
+                       IF      WRK-NAI-HKNSTR      =   ZERO
+                           MOVE    IDX             TO  WRK-NAI-HKNSTR
+                       END-IF
                        MOVE    IDX             TO  SPA-NAI-HKNSTR
                        PERFORM 3101-HOKEN-HEN-SEC
       *                保険情報チェックサブ
