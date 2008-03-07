@@ -28,6 +28,8 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  03.05.01    NACL-¾®Æ¦Âô  07/06/15  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.02.00    NACL-¾®Æ¦Âô  08/03/06  ÎÅÍÜÉÂÅï¡ÊÉÂ¾²¡ËÆþ±¡´µ¼Ô¤Ë¤Ä¤¤¤Æ¤â
+      *                                     ½èÍý²ÄÇ½¤È¤Ê¤ë¤è¤¦¤Ë²þ½¤
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -459,7 +461,7 @@
            MOVE    WRK-PARA-SRYYM      TO  SYS-1001-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-1001-STYUKYMD (7:2)
            MOVE    SYS-1001-STYUKYMD   TO  SYS-1001-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -494,7 +496,7 @@
            MOVE    WRK-PARA-SRYYM      TO  SYS-2009-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-2009-STYUKYMD (7:2)
            MOVE    SYS-2009-STYUKYMD   TO  SYS-2009-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-2009-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-2009-HOSPNUM
            MOVE    SYS-2009-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -556,8 +558,7 @@
                MOVE    "key40"              TO      MCP-PATHNAME
                PERFORM  910-PTNYUINRRK-READ-SEC
                PERFORM  UNTIL  FLG-PTNYUINRRK    =    1
-                       IF   (PTNYUINRRK-BTUNUM  =   WRK-PARA-BTUNUM) AND
-                            (PTNYUINRRK-TOKUTEI-KBN  =  SPACE)
+                       IF   PTNYUINRRK-BTUNUM  =   WRK-PARA-BTUNUM
                            MOVE    PTNYUINRRK-PTID   TO  WRK-PTID
       *                    Æþ±¡²ñ·×Â¸ºß¥Á¥§¥Ã¥¯
                            PERFORM    2001-NYUINACCT-CHK-SEC
@@ -609,6 +610,9 @@
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    PTNYUINRRK-PTID     TO  NACCT-PTID
            MOVE    WRK-PARA-SRYYM      TO  NACCT-SRYYM
+           DISPLAY "NACCT-HOSPNUM = " NACCT-HOSPNUM
+           DISPLAY "NACCT-NYUGAIKBN = " NACCT-NYUGAIKBN
+           DISPLAY "NACCT-PTID = " NACCT-PTID
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 910-NYUINACCT-SELECT-SEC
@@ -729,6 +733,25 @@
                END-IF
            END-IF
       *
+      *    ÆÃÄêÆþ±¡ÎÁ»»Äê´µ¼Ô¤Ç¤Ê¤¤¤³¤È¤Î¥Á¥§¥Ã¥¯
+           IF   WRK-ERRCD           =    SPACE
+              DISPLAY "PTNYUINRRK-TOKUTEI-KBN ="
+                       PTNYUINRRK-TOKUTEI-KBN
+              DISPLAY "PTNYUINRRK-TOKUTEI-NYUIN ="
+                       PTNYUINRRK-TOKUTEI-NYUIN
+              IF        PTNYUINRRK-TOKUTEI-KBN  =  SPACE
+                  CONTINUE
+              ELSE
+                IF  (PTNYUINRRK-TOKUTEI-KBN    =   "3")     AND
+                   ((PTNYUINRRK-TOKUTEI-NYUIN  >=   "25")   AND
+                    (PTNYUINRRK-TOKUTEI-NYUIN  <=   "48"))
+                         CONTINUE
+                ELSE
+                    MOVE   "2011"    TO   WRK-ERRCD
+                END-IF
+              END-IF
+           END-IF
+      *
            IF        (FLG-NYUINACCTARI   =    1)   AND
                      (WRK-ERRCD          =    SPACE)
       *        ´û¤ËºîÀ®ºÑ¤ÎÆþ±¡²ñ·×¤¬Â¸ºß¤¹¤ì¤Ð
@@ -798,7 +821,7 @@
            MOVE    WRK-PARA-SRYYM      TO  SYS-5001-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-5001-STYUKYMD (7:2)
            MOVE    SYS-5001-STYUKYMD   TO  SYS-5001-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-5001-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-5001-HOSPNUM
            MOVE    SYS-5001-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -844,7 +867,10 @@
                        MOVE  "Äê´üÀÁµáºÑ¤ß¤Î¤¿¤á½èÍý¤Ç¤­¤Þ¤»¤ó"
                                                       TO  WRK-NAIYO
                    WHEN    "2010"
-                      MOVE  "ÂÐ¾Ý·î¤Ç¤Î°ÛÆ°½èÍý¤¬¤¢¤ë¤¿¤á½èÍý¤Ç¤­¤Þ¤»¤ó"
+                    MOVE  "ÂÐ¾Ý·î¤Ç¤Î°ÛÆ°½èÍý¤¬¤¢¤ë¤¿¤á½èÍý¤Ç¤­¤Þ¤»¤ó"
+                                                      TO  WRK-NAIYO
+                   WHEN    "2011"
+                      MOVE  "ÆÃÄêÆþ±¡ÎÁ´µ¼Ô¤Î¤¿¤á½èÍý¤Ç¤­¤Þ¤»¤ó"
                                                       TO  WRK-NAIYO
                    END-EVALUATE
            END-IF
@@ -1041,7 +1067,7 @@
            MOVE    ZERO                TO  WRK-TSUSAN
       *
            INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
            MOVE    WRK-PTID            TO  PTNYUINRRK-PTID
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key9"              TO  MCP-PATHNAME
@@ -1146,7 +1172,7 @@
            MOVE    PTNYUINRRK-PTID     TO  SPA-PTID
            MOVE    PTNYUINRRK-NYUINKA  TO  SPA-SRYKA
            MOVE    SYOKIKSN-IN-KHNSRYCD
-                                       TO  LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                                      TO  LNK-SCNYUACCT-NYUKHN-SRYCD(1)
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                        TO  LNK-SCNYUACCT-STSRYYMD
            MOVE    SYOKIKSN-IN-SANTEISTYMD
@@ -1170,7 +1196,7 @@
       *    ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ
            IF      SYOKIKSN-IN-KHNSRYCD    =   "190774110"
                MOVE   SPACE            TO  SYOKIKSN-IN-KHNSRYCD
-                                           LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                MOVE   "190774110"      TO  LNK-SCNYUACCT-KAGEN-SRYCD(1)
                MOVE   PTNYUINRRK-TENNYUYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
@@ -1207,7 +1233,7 @@
       *    ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ¡ÊÀ¸³èÎÅÍÜ¡Ë
            IF      SYOKIKSN-IN-KHNSRYCD    =   "190125010"
                MOVE   SPACE            TO  SYOKIKSN-IN-KHNSRYCD
-                                           LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                MOVE   "190125010"      TO  LNK-SCNYUACCT-KAGEN-SRYCD(1)
                MOVE   PTNYUINRRK-TENNYUYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
@@ -1244,7 +1270,7 @@
       *    Ï·¿ÍÀ­ÃÔÊò¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ
            IF      SYOKIKSN-IN-KHNSRYCD    =   "190739910"
                MOVE   SPACE            TO  SYOKIKSN-IN-KHNSRYCD
-                                           LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                MOVE   "190739910"      TO  LNK-SCNYUACCT-KAGEN-SRYCD(1)
                MOVE   PTNYUINRRK-TENNYUYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
@@ -1284,8 +1310,8 @@
                ELSE
                    MOVE    2               TO  TN-IDX
                END-IF
-               MOVE    "190740010"         TO  LNK-SCNYUACCT-KAGEN-SRYCD
-                                                                (TN-IDX)
+               MOVE    "190740010"        TO  LNK-SCNYUACCT-KAGEN-SRYCD
+                                                               (TN-IDX)
                INITIALIZE                  STS-AREA-DAY
                INITIALIZE                  LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
@@ -1298,28 +1324,28 @@
                                                        LNK-DAY6-AREA
                    MOVE    LNK-DAY6-KEISAN     TO
                                            LNK-SCNYUACCT-KAGEN-STYUKYMD
-                                                                (TN-IDX)
+                                                               (TN-IDX)
                ELSE
                    MOVE    SYOKIKSN-IN-SANTEISTYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
-                                                                (TN-IDX)
+                                                               (TN-IDX)
                END-IF
                MOVE    "99999999"      TO  LNK-SCNYUACCT-KAGEN-EDYUKYMD
                                                               (TN-IDX)
            END-IF
       *
       *    ¹­ÈÏ°ÏÇ®½ýÆÃÄê½¸Ãæ¼£ÎÅ¼¼´ÉÍýÎÁ
-           IF      SYOKIKSN-IN-KHNSRYCD    =   "190024810"
-               MOVE   SPACE                TO  IPN-NYUKAIKEI-SAKUSEI-FLG
-               MOVE   WRK-PARA-SRYYM       TO  PTNYUINRRK-TENNYUYMD(1:6)
-               MOVE   "01"                 TO  PTNYUINRRK-TENNYUYMD(7:2)
-               MOVE   SPACE                TO  SYOKIKSN-IN-KHNSRYCD
-                                           LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+           IF      SYOKIKSN-IN-KHNSRYCD   =   "190024810"
+               MOVE   SPACE               TO  IPN-NYUKAIKEI-SAKUSEI-FLG
+               MOVE   WRK-PARA-SRYYM      TO  PTNYUINRRK-TENNYUYMD(1:6)
+               MOVE   "01"                TO  PTNYUINRRK-TENNYUYMD(7:2)
+               MOVE   SPACE               TO  SYOKIKSN-IN-KHNSRYCD
+                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
       *        ¹­ÈÏ°ÏÇ®½ýÆÃÄê½¸Ãæ¼£ÎÅ¼¼´ÉÍýÎÁ¤Î»»Äê²ÄÇ½Æü¿ô¤ò·×»»
-               MOVE     ZERO               TO  WK-TOKUTEI-DAY
-               COMPUTE  WK-TOKUTEI-DAY     =   60  -    STUSAN-NISSU06
-               IF       STUSAN-NISSU06     <   60
-                   MOVE   "190024810"          TO
+               MOVE     ZERO              TO  WK-TOKUTEI-DAY
+               COMPUTE  WK-TOKUTEI-DAY    =   60  -    STUSAN-NISSU06
+               IF       STUSAN-NISSU06    <   60
+                   MOVE   "190024810"         TO
                                            LNK-SCNYUACCT-KAGEN-SRYCD(1)
                    MOVE   PTNYUINRRK-TENNYUYMD TO
                                            LNK-SCNYUACCT-KAGEN-STYUKYMD
@@ -1370,14 +1396,14 @@
                                            TO  WRK-IPN-HANTEI-YMD2
       *        °ìÈÌÆþ±¡²ñ·×ºîÀ®ÍÑ¤Î¥Õ¥é¥°ÀßÄê
                IF      WRK-IPN-HANTEI-YMD1 >   WRK-IPN-HANTEI-YMD2
-                   MOVE    "1"             TO  IPN-NYUKAIKEI-SAKUSEI-FLG
+                   MOVE    "1"            TO  IPN-NYUKAIKEI-SAKUSEI-FLG
                END-IF
            END-IF
       *
       *    Ï·¿ÍÀ­ÃÔÊò¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
            IF      SYOKIKSN-IN-KHNSRYCD    =   "190813410"
                MOVE    SPACE           TO  SYOKIKSN-IN-KHNSRYCD
-                                           LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
                MOVE   "190813410"      TO  LNK-SCNYUACCT-KAGEN-SRYCD(1)
                MOVE   PTNYUINRRK-TENNYUYMD
                                        TO  LNK-SCNYUACCT-KAGEN-STYUKYMD
@@ -1418,7 +1444,7 @@
                    MOVE    2               TO  TN-IDX
                END-IF
                MOVE   "190813510"          TO  
-                                       LNK-SCNYUACCT-KAGEN-SRYCD(TN-IDX)
+                                      LNK-SCNYUACCT-KAGEN-SRYCD(TN-IDX)
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
@@ -1442,12 +1468,12 @@
            END-IF
       *
       *    °¡µÞÀ­´üÆþ±¡°åÎÅ´ÉÍýÎÁ
-           IF      SYOKIKSN-IN-KHNSRYCD    =   "190117410"
-               MOVE    SPACE               TO  IPN-NYUKAIKEI-SAKUSEI-FLG
-               MOVE    WRK-PARA-SRYYM      TO  PTNYUINRRK-TENNYUYMD(1:6)
-               MOVE    "01"                TO  PTNYUINRRK-TENNYUYMD(7:2)
-               MOVE    SPACE               TO  SYOKIKSN-IN-KHNSRYCD
-                                           LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+           IF      SYOKIKSN-IN-KHNSRYCD   =   "190117410"
+               MOVE    SPACE              TO  IPN-NYUKAIKEI-SAKUSEI-FLG
+               MOVE    WRK-PARA-SRYYM     TO  PTNYUINRRK-TENNYUYMD(1:6)
+               MOVE    "01"               TO  PTNYUINRRK-TENNYUYMD(7:2)
+               MOVE    SPACE              TO  SYOKIKSN-IN-KHNSRYCD
+                                          LNK-SCNYUACCT-NYUKHN-SRYCD(1)
       *        °¡µÞÀ­´üÆþ±¡°åÎÅ´ÉÍýÎÁ¤Î»»Äê²ÄÇ½Æü¿ô¤ò·×»»
                MOVE    ZERO                TO  WK-TOKUTEI-DAY
                COMPUTE WK-TOKUTEI-DAY      =   90  -   STUSAN-NISSU06
@@ -1493,17 +1519,17 @@
       *        ·îËöÆü¤ò»»Äê
                INITIALIZE                  STS-AREA-DAY
                INITIALIZE                  LNK-DAY7-AREA
-               MOVE    "71"                TO  LNK-DAY7-IRAI
+               MOVE    "71"            TO  LNK-DAY7-IRAI
                MOVE    WRK-IPN-HANTEI-YM1  TO  LNK-DAY7-YM
-               CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY7-AREA
+               CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                               LNK-DAY7-AREA
                MOVE    LNK-DAY7-KOYOMI     TO  WRK-IPN-HANTEI-YMD1
                MOVE    LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
-                                           TO  WRK-IPN-HANTEI-YMD2
+                                       TO  WRK-IPN-HANTEI-YMD2
       *          °ìÈÌÆþ±¡²ñ·×ºîÀ®ÍÑ¤Î¥Õ¥é¥°ÀßÄê
-               IF     (WRK-IPN-HANTEI-YMD1      >  WRK-IPN-HANTEI-YMD2)
+               IF     (WRK-IPN-HANTEI-YMD1    >  WRK-IPN-HANTEI-YMD2)
                  AND  (WRK-IPN-HANTEI-YMD2(1:6) =  WRK-PARA-SRYYM)
-                   MOVE    "1"             TO  IPN-NYUKAIKEI-SAKUSEI-FLG
+                   MOVE    "1"         TO  IPN-NYUKAIKEI-SAKUSEI-FLG
                END-IF
            END-IF
       *
@@ -1675,9 +1701,8 @@
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI        =    ZERO
                IF      SYS-5001-BTU-SYOKUDOKBN     =    "2"
-                   MOVE    "197000570"     TO
-                                           LNK-SCNYUACCT-SHOKUDO-SRYCD
-                   MOVE    1               TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                   MOVE    "197000570" TO  LNK-SCNYUACCT-SHOKUDO-SRYCD
+                   MOVE    1           TO  LNK-SCNYUACCT-SHOKUDO-KBN
                END-IF
            END-IF
       *    ÊÝ¸±ÁÈ¹ç¤»
@@ -1693,10 +1718,12 @@
                PERFORM 4801-SENTEI-SET-SEC
            END-IF
       *     DISPLAY   "********ORCSNYUACCT MAE **********"
-           MOVE    SPA-HOSPNUM     TO  SPA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM TO  SPA-HOSPNUM
            MOVE    WRK-PTID        TO  SPA-PTID
            MOVE    "00"            TO  SPA-SRYKA
            MOVE    "1"             TO  SPA-NYUGAIKBN
+           DISPLAY "SPA-HOSPNUM = " SPA-HOSPNUM
+           DISPLAY "SPA-PTID = " SPA-PTID
            CALL    "ORCSNYUACCT"       USING   SPA-AREA
                                                ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA      TO  SPA-SRYKA
@@ -1873,7 +1900,7 @@
       *    ÄÌ»»Æü¿ô¤òµá¤á¤ë¡ÊÆþ±¡ÍúÎò¤ò¸¡º÷¡Ë
            MOVE    ZERO                TO  WRK-TSUSAN
            INITIALIZE                      PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
            MOVE    WRK-PTID            TO  PTNYUINRRK-PTID
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
@@ -1936,7 +1963,7 @@
            MOVE    PTNYUINRRK-PTID     TO  SPA-PTID
            MOVE    PTNYUINRRK-NYUINKA  TO  SPA-SRYKA
            MOVE    SYOKIKSN-IN-KHNSRYCD
-                                       TO  LNK-SCNYUACCT-NYUKHN-SRYCD(1)
+                                       TO LNK-SCNYUACCT-NYUKHN-SRYCD(1)
            MOVE      SYOKIKSN-IN-SANTEISTYMD
                                        TO  LNK-SCNYUACCT-STSRYYMD
                                            LNK-SCNYUACCT-EDSRYYMD
@@ -1977,9 +2004,8 @@
            PERFORM 4801-BTUSEL-SEC
            IF      FLG-SYSKANRI           =    ZERO
                IF      SYS-5001-BTU-SYOKUDOKBN     =    "2"
-                   MOVE    "197000570"     TO
-                                           LNK-SCNYUACCT-SHOKUDO-SRYCD
-                   MOVE    1               TO  LNK-SCNYUACCT-SHOKUDO-KBN
+                   MOVE    "197000570" TO  LNK-SCNYUACCT-SHOKUDO-SRYCD
+                   MOVE    1           TO  LNK-SCNYUACCT-SHOKUDO-KBN
                END-IF
            END-IF
       *    ÊÝ¸±ÁÈ¹ç¤»
@@ -1993,7 +2019,7 @@
            IF     PTNYUINRRK-SENTEIKBN  =   "1"
                PERFORM 4801-SENTEI-SET-SEC
            END-IF
-           MOVE    SPA-HOSPNUM     TO  SPA-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM TO  SPA-HOSPNUM
            MOVE    WRK-PTID        TO  SPA-PTID
            MOVE    "00"            TO  SPA-SRYKA
            MOVE    "1"             TO  SPA-NYUGAIKBN
@@ -2016,7 +2042,7 @@
            MOVE    SPACE           TO  WRK-ERRCD
       *
            INITIALIZE                  ORCSTUSANAREA
-           MOVE    SPA-HOSPNUM     TO  STUSAN-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM  TO  STUSAN-HOSPNUM
            MOVE    PTNYUINRRK-PTID TO  STUSAN-PTID
            MOVE    WRK-PARA-SRYYM  TO  STUSAN-KJNYMD(1:6)
            IF   IPN-NYUKAIKEI-SAKUSEI-FLG  =   "1"
@@ -2096,7 +2122,7 @@
            END-IF
            MOVE    WRK-SENTEI-STYMD    TO  LNK-SCNYUACCT-SENTEI-STYMD
       *    £±£µºÍÌ¤Ëþ¤Î´µ¼Ô¤ÏÁªÄêÆþ±¡ÂÐ¾Ý³°
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  PTINF-HOSPNUM
            MOVE    WRK-PTID            TO  PTINF-PTID
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2330,7 +2356,7 @@
            MOVE    WRK-PARA-SRYYM      TO  SYS-STYUKYMD(1:6)
            MOVE    "01"                TO  SYS-STYUKYMD(7:2)
            MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¤Î°åÎÅµ¡´Ø¾ðÊó¤è¤ê¼èÆÀ
@@ -2352,9 +2378,9 @@
                END-PERFORM
       *        ÃÏ°è²Ã»»
                IF      SYS-5000-CHIIKIKSN  NOT =   SPACE
-                    ADD    1                   TO  IDX8
+                    ADD    1               TO  IDX8
                     MOVE   SYS-5000-CHIIKIKSN  TO
-                                               WRK-NYUKHNKSN-SRYCD(IDX8)
+                                           WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
            END-IF
       *
@@ -2445,7 +2471,7 @@
                                IF      WRK-NENREI          <      20
                                    ADD    1                TO  IDX8
                                    MOVE   SYS-5001-KSNCD(IDX7) TO
-                                               WRK-NYUKHNKSN-SRYCD(IDX8)
+                                              WRK-NYUKHNKSN-SRYCD(IDX8)
                                END-IF
                            END-IF
       *                ´Ç¸îÇÛÃÖÅ¬¹ç²Ã»»
@@ -2678,7 +2704,7 @@
                                    TO  TNS-YUKOSTYMD
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                    TO  TNS-YUKOEDYMD
-           MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
            MOVE    "tbl_tensu"     TO  WRK-MCP-TABLE
@@ -2743,7 +2769,7 @@
                                    TO  TNS-YUKOSTYMD
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                    TO  TNS-YUKOEDYMD
-           MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
       *
            MOVE    "tbl_tensu"     TO  WRK-MCP-TABLE
@@ -2778,11 +2804,11 @@
       *
       *    Æþ±¡´µ¼Ô¤ÎÇ¯Îð·×»»
            INITIALIZE                      ORCSAGECHKAREA
-           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  AGECHK-HOSPNUM
            MOVE    PTNYUINRRK-PTID     TO  AGECHK-PTID
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                        TO  AGECHK-SRYYMD
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  PTINF-HOSPNUM
            MOVE    WRK-PTID            TO  PTINF-PTID
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2824,7 +2850,7 @@
            MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD(1:6)
            MOVE    "01"            TO  SYS-STYUKYMD(7:2)
            MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM  TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
            MOVE    "key10"         TO  WRK-MCP-PATHNAME
@@ -2857,7 +2883,7 @@
            MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD(1:6)
            MOVE    "01"            TO  SYS-STYUKYMD(7:2)
            MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
-           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC    TO  MCPDATA-REC
            MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
            MOVE    "key10"         TO  WRK-MCP-PATHNAME
@@ -2884,12 +2910,12 @@
       *
       *    ÊÝ¸±»»ÄêÇ¯Îð¥Á¥§¥Ã¥¯Åù
            INITIALIZE                  ORCSAGECHKAREA
-           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  AGECHK-HOSPNUM
            MOVE    WRK-PTID            TO  AGECHK-PTID
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                        TO  AGECHK-SRYYMD
            INITIALIZE                      PTINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM    TO  PTINF-HOSPNUM
            MOVE    WRK-PTID            TO  PTINF-PTID
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -2925,7 +2951,7 @@
                        INITIALIZE              SRYCDCHG-REC
                        MOVE    SYOKIKSN-IN-KHNSRYCD
                                                TO   CHG-IPNSRYCD
-                       MOVE    SPA-HOSPNUM     TO   CHG-HOSPNUM
+                       MOVE    WRK-PARA-HOSPNUM TO   CHG-HOSPNUM
                        MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
                        MOVE    "tbl_srycdchg"  TO   WRK-MCP-TABLE
                        MOVE    "key2"          TO   WRK-MCP-PATHNAME
@@ -2947,7 +2973,7 @@
                    INITIALIZE              SRYCDCHG-REC
                    MOVE    SYOKIKSN-IN-KHNSRYCD
                                            TO   CHG-IPNSRYCD
-                   MOVE    SPA-HOSPNUM     TO   CHG-HOSPNUM
+                   MOVE    WRK-PARA-HOSPNUM TO   CHG-HOSPNUM
                    MOVE    SRYCDCHG-REC    TO   MCPDATA-REC
                    MOVE    "tbl_srycdchg"  TO  WRK-MCP-TABLE
                    MOVE    "key2"          TO  WRK-MCP-PATHNAME
@@ -3338,7 +3364,7 @@
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           MOVE    WRK-PARA-HOSPNUM TO  JOB-HOSPNUM
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA 
                                    JOBKANRI-REC
