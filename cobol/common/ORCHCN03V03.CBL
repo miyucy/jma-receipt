@@ -33,6 +33,7 @@
       *  03.04.02    NACL-森脇    07/01/30  自費消費税H19年4月対応
       *  03.05.00    NACL-太田    07.05.17  グループ診療対応
       *  04.01.00    NACL-太田    07/10/22  公務災害対応
+      *  04.02.00    NACL-太田    08/03/07  改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -189,10 +190,9 @@
            COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
                                        BY          //MISYU-//.
       *
-      *----(03.04.02)--ADD-START---
        01  CONST-AREA.
            03  CONST-H190401       PIC X(08)   VALUE   "20070401".
-      *----(03.04.02)--ADD-END-----
+           03  CONST-H200401       PIC X(08)   VALUE   "20080401".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -261,7 +261,7 @@
            COPY    "CPSRYACCT.INC".
       *
       *    入院請求書
-           COPY "HCN03V03A.INC"    REPLACING  //HCN03V03A//
+           COPY "HCN03V03B.INC"    REPLACING  //HCN03V03B//
                                   BY         //HCN03//.
       *
       *    患者労災保険情報
@@ -419,13 +419,6 @@
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
            MOVE    1                   TO  HC01PARA-CNT
            OPEN    OUTPUT               PRT-FILE
-      *
-           EVALUATE    ORCHCN03-SIZE
-           WHEN    "A5"
-               MOVE    "HCN03V03A5.red"    TO  WRK-FORMID
-           WHEN    OTHER
-               MOVE    "HCN03V03A.red"     TO  WRK-FORMID
-           END-EVALUATE
       *
            .
        100-INIT-EXT.
@@ -607,7 +600,7 @@
            MOVE    SPACE               TO  WRK-ZHENSYU-G
       *
            PERFORM VARYING     IDX1    FROM  1   BY  1
-                   UNTIL       IDX1    >     16
+                   UNTIL       IDX1    >     17
                MOVE    SYU-HKNTEN(IDX1)    TO  WRK-KINGAKU-Z
                MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
                PERFORM 800-HENKAN-SEC
@@ -625,10 +618,10 @@
             OR   ( COMB-HKNNUM             =    "973"
                AND SYU-PTFTNRATE           =    ZERO )
                PERFORM VARYING     IDX1    FROM  1   BY  1
-                       UNTIL       IDX1    >     15
+                       UNTIL       IDX1    >     16
                    MOVE    SPACE           TO  HCN03-HKNRYO(IDX1)
                END-PERFORM
-               MOVE    ALL "*"             TO  HCN03-HKNRYO(16)
+               MOVE    ALL "*"             TO  HCN03-HKNRYO(17)
            END-IF
       *
       *    保険適用分
@@ -713,7 +706,7 @@
       *
       *    保険適用外内訳編集
            PERFORM     VARYING   IDX-JIHI FROM  1  BY  1
-                       UNTIL     IDX-JIHI  >  15
+                       UNTIL     IDX-JIHI  >  16
                COMPUTE   WRK-KINGAKU-Z   =  SYU-TGMONEY(IDX-JIHI)  +
                                             SYU-TGMONEY-TAX(IDX-JIHI)
                MOVE    WRK-KINGAKU-Z       TO  WRK-ZHENSYU12
@@ -849,6 +842,22 @@
       *    見出し
            PERFORM 20011-MEISAI-HEN-SEC
       *
+           IF    ( SYU-SRYYMD          >=  CONST-H200401 )
+               EVALUATE    ORCHCN03-SIZE
+               WHEN    "A5"
+                   MOVE    "HCN03V03A5BN.red"  TO  WRK-FORMID
+               WHEN    OTHER
+                   MOVE    "HCN03V03BN.red"    TO  WRK-FORMID
+               END-EVALUATE
+           ELSE
+               EVALUATE    ORCHCN03-SIZE
+               WHEN    "A5"
+                   MOVE    "HCN03V03A5BO.red"  TO  WRK-FORMID
+               WHEN    OTHER
+                   MOVE    "HCN03V03BO.red"    TO  WRK-FORMID
+               END-EVALUATE
+           END-IF
+      *
       *    印刷用データ出力
            MOVE    SPACE               TO  PRT-REC
            MOVE    SYU-SRYYMD          TO  PRT-SRYYMD
@@ -894,16 +903,18 @@
                                        TO  HCN03-MEISAI (12)
            MOVE    "放 射 線 治 療"
                                        TO  HCN03-MEISAI (13)
-           MOVE    "入　院　料　等"
+           MOVE    "病　理　診　断"
                                        TO  HCN03-MEISAI (14)
-           MOVE    "療養担当手当"
+           MOVE    "入　院　料　等"
                                        TO  HCN03-MEISAI (15)
+           MOVE    "療養担当手当"
+                                       TO  HCN03-MEISAI (16)
       *    明細削除
       *    療養担当手当て
-           IF    ( SYU-HKNTEN (15)     =   ZERO )
-            AND  ( SYU-TGMONEY(15)     =   ZERO )
-            AND  ( SYU-TGMONEY-TAX(15) =   ZERO )
-               MOVE    SPACE               TO  HCN03-MEISAI (15)
+           IF    ( SYU-HKNTEN (16)     =   ZERO )
+            AND  ( SYU-TGMONEY(16)     =   ZERO )
+            AND  ( SYU-TGMONEY-TAX(16) =   ZERO )
+               MOVE    SPACE               TO  HCN03-MEISAI (16)
            END-IF
       *
            .
