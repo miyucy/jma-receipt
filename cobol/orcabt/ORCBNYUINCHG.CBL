@@ -2670,41 +2670,33 @@
            PERFORM 48011-TENSU-SEL-SEC
            MOVE    WRK-BTU-NYUKSNKBN   TO  NYUKSNCHK-NYUINKBN
            PERFORM 48012-TENSU-SEL-SEC
-           MOVE    WRK-KSN-NYUKSNKBN   TO  NYUKSNCHK-KSNKBN
-           MOVE    SYOKIKSN-IN-SANTEISTYMD
-                                       TO  NYUKSNCHK-YUKOSTYMD
-           MOVE    SYOKIKSN-IN-SANTEISTYMD
-                                       TO  NYUKSNCHK-YUKOEDYMD
+           IF      TNS-NYUKHNKSNKBN    NOT =   ZERO
+               MOVE    WRK-KSN-NYUKSNKBN   TO  NYUKSNCHK-KSNKBN
+               MOVE    SYOKIKSN-IN-SANTEISTYMD
+                                           TO  NYUKSNCHK-YUKOSTYMD
+               MOVE    SYOKIKSN-IN-SANTEISTYMD
+                                           TO  NYUKSNCHK-YUKOEDYMD
       *
-           MOVE    "tbl_nyuksnchk"     TO  WRK-MCP-TABLE
-           MOVE    "key"               TO  WRK-MCP-PATHNAME
-           MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC            =   ZERO )
-               MOVE    MCPDATA-REC         TO  NYUKSNCHK-REC
-               IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
-                   CONTINUE
+               MOVE    "tbl_nyuksnchk"     TO  WRK-MCP-TABLE
+               MOVE    "key"               TO  WRK-MCP-PATHNAME
+               MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
+               PERFORM 900-TBL-SELECT-SEC
+               IF    ( FLG-DBRC            =   ZERO )
+                   MOVE    MCPDATA-REC         TO  NYUKSNCHK-REC
+                   IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
+                       CONTINUE
+                   ELSE
+                       MOVE   1        TO     FLG-NYUKSN
+                   END-IF
                ELSE
-                   MOVE   1        TO     FLG-NYUKSN
+                   MOVE   1            TO  FLG-NYUKSN
                END-IF
-           ELSE
-               MOVE   1            TO  FLG-NYUKSN
+      *
+               MOVE    "tbl_nyuksnchk"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
            END-IF
       *
-           MOVE    "tbl_nyuksnchk"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-      *    老人特定入院基本料の加算チェック漏れ対応
-           IF   (WRK-BTU-NYUKSNKBN   =  "099")  AND
-                (WRK-KSN-NYUKSNKBN   =  "407"   OR
-                                        "408"   OR
-                                        "409"   OR
-                                        "410"   OR
-                                        "411"   OR
-                                        "412")
-               MOVE   ZERO     TO     FLG-NYUKSN
-           END-IF
            .
       *
        4801-NYUKSN-CHK-EXT.

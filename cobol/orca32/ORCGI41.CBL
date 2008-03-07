@@ -89,8 +89,6 @@
       *                                     Àº¿À²ÊµßµÞ¡¦¹çÊ»¾ÉÆþ±¡ÎÁ
       *                                     Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³
       *  04.02.00    NACL-¾®Æ¦Âô  08/03/07  ¥·¥¹´ÉÉÂÅïÀßÄê¤Î²Ã»»È½ÄêÊÑ¹¹
-      *  04.02.00    NACL-¾®Æ¦Âô  08/03/07  ÎÅÍÜÉÂÅï¡ÊÉÂ¾²¡ËÆþ±¡ÎÁ¤ÎÌ¾¾Î
-      *                                     É½¼¨ÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6843,40 +6841,32 @@
            PERFORM 48011-TENSU-SEL-SEC
            MOVE    WRK-BTU-NYUKSNKBN   TO  NYUKSNCHK-NYUINKBN
            PERFORM 48012-TENSU-SEL-SEC
-           MOVE    WRK-KSN-NYUKSNKBN   TO  NYUKSNCHK-KSNKBN
-           MOVE    SYOKIKSN-IN-SANTEISTYMD TO  NYUKSNCHK-YUKOSTYMD
-           MOVE    SYOKIKSN-IN-SANTEISTYMD TO  NYUKSNCHK-YUKOEDYMD
+           IF      TNS-NYUKHNKSNKBN    NOT =   ZERO
+               MOVE    WRK-KSN-NYUKSNKBN   TO  NYUKSNCHK-KSNKBN
+               MOVE    SYOKIKSN-IN-SANTEISTYMD TO  NYUKSNCHK-YUKOSTYMD
+               MOVE    SYOKIKSN-IN-SANTEISTYMD TO  NYUKSNCHK-YUKOEDYMD
       *
-           MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
-           MOVE    "tbl_nyuksnchk"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-TBL-SELECT-SEC
-           IF    ( FLG-DBRC            =   ZERO )
-               MOVE    MCPDATA-REC         TO  NYUKSNCHK-REC
-               IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
-                   CONTINUE
+               MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
+               MOVE    "tbl_nyuksnchk"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-TBL-SELECT-SEC
+               IF    ( FLG-DBRC            =   ZERO )
+                   MOVE    MCPDATA-REC         TO  NYUKSNCHK-REC
+                   IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
+                       CONTINUE
+                   ELSE
+                       MOVE   1        TO     FLG-NYUKSN
+                   END-IF
                ELSE
-                   MOVE   1        TO     FLG-NYUKSN
+                   MOVE   1                    TO  FLG-NYUKSN
                END-IF
-           ELSE
-               MOVE   1                    TO  FLG-NYUKSN
+      *
+      *        Æþ±¡ÎÁ²Ã»»¥Á¥§¥Ã¥¯¥¯¥í¡¼¥º
+               MOVE    "tbl_nyuksnchk"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
            END-IF
       *
-      *    Æþ±¡ÎÁ²Ã»»¥Á¥§¥Ã¥¯¥¯¥í¡¼¥º
-           MOVE    "tbl_nyuksnchk"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-      *    Ï·¿ÍÆÃÄêÆþ±¡´ðËÜÎÁ¤Î²Ã»»¥Á¥§¥Ã¥¯Ï³¤ìÂÐ±þ
-           IF   (WRK-BTU-NYUKSNKBN   =  "099")  AND
-                (WRK-KSN-NYUKSNKBN   =  "407"   OR
-                                        "408"   OR
-                                        "409"   OR
-                                        "410"   OR
-                                        "411"   OR
-                                        "412")
-               MOVE   ZERO     TO     FLG-NYUKSN
-           END-IF
            .
       *
        4801-NYUKSN-CHK-EXT.
@@ -8194,8 +8184,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-                   IF  WRK-SRYYMD(1:6)    <=   "200803"
-                     EVALUATE   TNS-SRYCD
+                   EVALUATE   TNS-SRYCD
                        WHEN   "190121310"
                            MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡Ê£Á¡Ë"
                                                TO  TNS-NAME
@@ -8273,88 +8262,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        WHEN   "197000570"
                            MOVE
                           "¿©Æ²²Ã»»"           TO  TNS-NAME
-                     END-EVALUATE
-                   ELSE
-                     EVALUATE   TNS-SRYCD
-                       WHEN   "190121310"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ê£Á¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190121410"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ê£Â¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190121510"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ê£Ã¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190121610"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ê£Ä¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190121710"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ê£Å¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190121810"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190122010"
-                           MOVE "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡Ê£Á¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190122110"
-                           MOVE "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡Ê£Â¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190122210"
-                           MOVE "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡Ê£Ã¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190122310"
-                           MOVE "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡Ê£Ä¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190122410"
-                           MOVE "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡Ê£Å¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190122510"
-                           MOVE
-                          "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190123710"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ê£ÁÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190123810"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ê£ÂÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190123910"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ê£ÃÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190124010"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ê£ÄÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190124110"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡Ê£ÅÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190124210"
-                           MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190124310"
-                           MOVE "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡Ê£ÁÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190124410"
-                           MOVE "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡Ê£ÂÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190124510"
-                           MOVE "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡Ê£ÃÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190124610"
-                           MOVE "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡Ê£ÄÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190124710"
-                           MOVE "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡Ê£ÅÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "190124810"
-                           MOVE
-                          "ÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÀ¸³è¡Ë"
-                                               TO  TNS-NAME
-                       WHEN   "197000570"
-                           MOVE
-                          "¿©Æ²²Ã»»"           TO  TNS-NAME
-                     END-EVALUATE
-                   END-IF
+                   END-EVALUATE
                    MOVE    ZERO                TO  FLG-TENSU
                ELSE
                    INITIALIZE                  TNS-TENSU-REC
