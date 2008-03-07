@@ -51,6 +51,8 @@
                05  WRK-PARA-HKNCOMBI
                                     PIC  X(04).
                05  WRK-PARA-RC      PIC  X(02).
+               05  WRK-PARA-SYSYMD
+                                    PIC  X(08).
       *
            03  WRK-IN               PIC X(01).
       *
@@ -128,11 +130,15 @@
                                             WRK-PARA-DRCD
                                             WRK-PARA-HKNCOMBI
                                             WRK-PARA-RC
+                                            WRK-PARA-SYSYMD
       *
       *???
            DISPLAY "PARA " WRK-PARA "##"
       *???
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+           IF      WRK-PARA-SYSYMD     NOT =   SPACE
+               MOVE    WRK-PARA-SYSYMD     TO  SPA-SYSYMD
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -152,6 +158,7 @@
                                                WRK-PARA-DRCD
                                                WRK-PARA-HKNCOMBI
                                                WRK-PARA-RC
+                                               SPA-SYSYMD
       *
            MOVE    WRK-PARA-HOSPNUM    TO  FILE-HOSPNUM
            MOVE    WRK-PARA-PTID       TO  FILE-PTID

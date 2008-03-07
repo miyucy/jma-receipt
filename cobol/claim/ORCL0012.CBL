@@ -98,6 +98,7 @@
        01  LNK-DRCD             PIC X(05).
        01  LNK-HKNCOMBI         PIC X(04).
        01  LNK-RC               PIC X(02).
+       01  LNK-YMD              PIC X(08).
       *
       *
       ******************************************************************
@@ -109,7 +110,8 @@
                                                LNK-HOSPNUM
                                                LNK-DRCD
                                                LNK-HKNCOMBI
-                                               LNK-RC.
+                                               LNK-RC
+                                               LNK-YMD.
       *
       *****************************************************************
       *    主　　処理
@@ -140,7 +142,7 @@
            INITIALIZE              SPA-AREA
            MOVE    LNK-HOSPNUM         TO  SPA-HOSPNUM
            MOVE    LNK-PTID            TO  SPA-PTID
-           MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
+           MOVE    LNK-YMD             TO  WRK-SYSYMD
       *
            .
        100-INIT-EXT.
