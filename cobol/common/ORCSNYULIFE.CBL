@@ -446,24 +446,24 @@
                    MOVE    LNK-NYULIFE-PTID     TO  PTHKN-PTID
                    MOVE    "039"                TO  PTHKN-HKNNUM
                    MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                   MOVE    "key8"               TO  MCP-PATHNAME
+                   MOVE    "key10"               TO  MCP-PATHNAME
                    PERFORM 910-PTHKNINF-SELECT-SEC
                    IF      FLG-PTHKNINF         =   ZERO
                        MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                       MOVE    "key8"               TO  MCP-PATHNAME
+                       MOVE    "key10"               TO  MCP-PATHNAME
                        PERFORM   910-PTHKNINF-READ-SEC
                        PERFORM   UNTIL   (FLG-PTHKNINF   =   1)
                            IF    PTHKN-SAKJOKBN     =    SPACE
                                  MOVE   1           TO   FLG-RJN
                            END-IF
                            MOVE    "tbl_pthkninf"   TO  MCP-TABLE
-                           MOVE    "key8"           TO  MCP-PATHNAME
+                           MOVE    "key10"           TO  MCP-PATHNAME
                            PERFORM 910-PTHKNINF-READ-SEC
                        END-PERFORM
                    END-IF
       *            ´µ¼ÔÊÝ¸±¾ðÊó¥¯¥í¡¼¥º
                    MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                   MOVE    "key8"               TO  MCP-PATHNAME
+                   MOVE    "key10"               TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC-SEC
       *            ¸å´ü³ºÅö¤ÎÈ½Äê¡Ê¸øÈñÈÖ¹æ£¹£¶£¸¡Ë
                    MOVE    ZERO                 TO  FLG-RJN 
