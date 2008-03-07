@@ -55,6 +55,7 @@
               03  S03-ETCHKNTEN PIC S9(10).
               03  S03-SSNHKNTEN PIC S9(10).
               03  S03-HOUHKNTEN PIC S9(10).
+              03  S03-BYRHKNTEN PIC S9(10).
               03  S03-NYUHKNTEN PIC S9(10).
               03  S03-RYOHKNTEN PIC S9(10).
               03  S03-TOTALHKNTEN
@@ -81,6 +82,7 @@
                                 PIC S9(10).
               03  S03-SSNTGMONEY PIC S9(10).
               03  S03-HOUTGMONEY PIC S9(10).
+              03  S03-BYRTGMONEY PIC S9(10).
               03  S03-NYUTGMONEY PIC S9(10).
               03  S03-RYOTGMONEY PIC S9(10).
               03  S03-HKNTEKMONEY
