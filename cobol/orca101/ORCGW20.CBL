@@ -737,7 +737,7 @@
       *    Ω≈æ…¥µº‘≤Û…¸…¬≈Ô≤√ªª
            PERFORM 3101-CMB-JKAIFUKU-SET-SEC
       *
-      *    ∞Âª’«€√÷≤√ªª
+      *    ∞Âª’«€√÷≈¨πÁ≤√ªª
            PERFORM 3101-CMB-DRTEK-SET-SEC
       *
       *    ÃÎ¥÷∂€µﬁ¬Œ¿©≥Œ ›≤√ªª
@@ -2563,7 +2563,7 @@
                PERFORM 420121-BTU-KSN-EDIT-SEC
            END-IF
       *
-      *    ∞Âª’«€√÷≤√ªª
+      *    ∞Âª’«€√÷≈¨πÁ≤√ªª
            IF    ( SPA-GMN-W20-DRTEK       =   "2" )
                MOVE    CONST-DRTEKCD       TO  WRK-KSNCD
                PERFORM 420121-BTU-KSN-EDIT-SEC
@@ -4220,7 +4220,7 @@
                MOVE    "Ω≈æ…¥µº‘≤Û…¸…¬≈Ô≤√ªª"
                                            TO  SPA-GMN-W20-JKAIFUKU-LBL
                MOVE    CONST-JKAIFUKU      TO  SPA-NAI-W20-JKAIFUKU-CD
-               MOVE    "∞Âª’«€√÷≤√ªª"      TO  SPA-GMN-W20-DRTEK-LBL
+               MOVE    "∞Âª’«€√÷≈¨πÁ≤√ªª"      TO  SPA-GMN-W20-DRTEK-LBL
                MOVE    CONST-DRTEKCD       TO  SPA-NAI-W20-DRTEK-CD
                MOVE    "ÃÎ¥÷∂€µﬁ¬Œ¿©≥Œ ›≤√ªª"
                                            TO  SPA-GMN-W20-YKNKNKYU-LBL
