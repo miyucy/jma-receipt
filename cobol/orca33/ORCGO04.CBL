@@ -675,7 +675,7 @@
       *
            END-PERFORM
       *
-           MOVE    SYU-TOTAL-HKNTEN    TO  SPA-GMN-O04-HKNRYO (16)
+           MOVE    SYU-TOTAL-HKNTEN    TO  SPA-GMN-O04-HKNRYO (17)
       *
            MOVE    SYU-DENPJTIKBN      TO  SPA-NAI-O04-HEAD-DENPJTIKBN
       *
