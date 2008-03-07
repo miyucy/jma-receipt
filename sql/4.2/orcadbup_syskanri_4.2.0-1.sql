@@ -1,3 +1,13 @@
+--                                    --
+-- システム管理データ更新             --
+-- 病棟特定入院料 5110                --
+-- 病室特定入院料 5111                --
+--                                    --
+--                                    --
+-- Create Date : 2008/03/07           --
+--                                    --
+\set ON_ERROR_STOP
+
 delete from tbl_syskanri where kanricd = '5110' ;
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '15' and styukymd = '00000000' and edyukymd = '99999999';
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '15' and styukymd = '00000000' and edyukymd = '20080331';
