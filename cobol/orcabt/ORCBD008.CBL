@@ -743,7 +743,12 @@
                WHEN    "067"
                WHEN    "068"
                WHEN    "069"
-                   MOVE    3                   TO  IDX
+      *            国保老人
+                   IF      SYU-KOH1HKNNUM      =   "027"
+                       MOVE    4                   TO  IDX
+                   ELSE
+                       MOVE    3                   TO  IDX
+                   END-IF
       *        後期高齢
                WHEN    WRK-CONS-ROUJIN-HKNNUM
                    MOVE    4                   TO  IDX
@@ -753,14 +758,19 @@
                    IF      SYU-SYUHKNNUM(1:2) = "98"
                        MOVE    6                   TO  IDX
                    ELSE
-      *                社保
-                       PERFORM 3201-PTHKNINF-HENSYU-SEC
-                       EVALUATE    PTHKN-HONKZKKBN
-                           WHEN    "1"
-                               MOVE    1                   TO  IDX
-                           WHEN    "2"
-                               MOVE    2                   TO  IDX
-                       END-EVALUATE
+      *                社保老人
+                       IF      SYU-KOH1HKNNUM      =   "027"
+                           MOVE    4                   TO  IDX
+                       ELSE
+      *                    社保
+                           PERFORM 3201-PTHKNINF-HENSYU-SEC
+                           EVALUATE    PTHKN-HONKZKKBN
+                               WHEN    "1"
+                                   MOVE    1                   TO  IDX
+                               WHEN    "2"
+                                   MOVE    2                   TO  IDX
+                           END-EVALUATE
+                       END-IF
                    END-IF
            END-EVALUATE
       *
