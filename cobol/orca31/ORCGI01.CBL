@@ -4885,20 +4885,19 @@
                INITIALIZE                  PTHKNINF-REC
                MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
                MOVE    SPA-NAI-I01-PTID    TO  PTHKN-PTID
-               MOVE    "039"               TO  PTHKN-HKNNUM
                MOVE    WRK-RJNYMD          TO  PTHKN-TEKSTYMD
                MOVE    WRK-RJNYMD          TO  PTHKN-TEKEDYMD
       *
                MOVE    PTHKNINF-REC        TO  MCPDATA-REC
                MOVE    "tbl_pthkninf"      TO  MCP-TABLE
-               MOVE    "key9"              TO  MCP-PATHNAME
+               MOVE    "key11"             TO  MCP-PATHNAME
                PERFORM 910-DBSELECT-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    1               TO  FLG-ROUJIN
                END-IF
       *
                MOVE    "tbl_pthkninf"      TO  MCP-TABLE
-               MOVE    "key9"              TO  MCP-PATHNAME
+               MOVE    "key11"             TO  MCP-PATHNAME
                PERFORM 910-DBCLOSECURSOR-SEC
       *
                INITIALIZE                  PTKOHINF-REC
