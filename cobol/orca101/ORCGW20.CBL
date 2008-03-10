@@ -100,6 +100,7 @@
            03  CNT-STR                             PIC 9(05).
            03  CNT-SST                             PIC 9(05).
            03  CNT-KSN                             PIC 9(05).
+           03  CNT-NYUKSNKBNCHK                    PIC 9(05).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -4671,6 +4672,9 @@
                                        FLG-KSNERR
                                        WRK-NYUKSNKBN-G
                                        WRK-KSNKSNKBN
+                                       CNT-NYUKSNKBNCHK
+      *
+           DISPLAY "SPA-NAI-W20-KHNSRYCD  =" SPA-NAI-W20-KHNSRYCD 
       *
            IF    ( SPA-NAI-W20-KHNSRYCD    NOT =   SPACE )
                EVALUATE    SPA-NAI-W20-KHNSRYCD
@@ -4742,6 +4746,9 @@
                             OR   ( FLG-HIT =   1 )
       *
                        IF    ( WRK-NYUKSNKBN (IDX6)    >   ZERO )
+                           COMPUTE CNT-NYUKSNKBNCHK
+                               =   CNT-NYUKSNKBNCHK
+                               +   1
                            MOVE    WRK-NYUKSNKBN (IDX6)
                                                        TO  WRK-NYUINKBN
                            MOVE    WRK-KSNKSNKBN       TO  WRK-KSNKBN
@@ -4754,8 +4761,10 @@
                        END-IF
                    END-PERFORM
       *
-                   IF    ( FLG-HIT     =       ZERO )
-                        MOVE    1       TO      FLG-KSNERR
+                   IF    ( CNT-NYUKSNKBNCHK    >   ZERO )
+                       IF   (  FLG-HIT     =       ZERO )
+                            MOVE    1      TO      FLG-KSNERR
+                       END-IF
                    END-IF
                END-IF
            END-IF
