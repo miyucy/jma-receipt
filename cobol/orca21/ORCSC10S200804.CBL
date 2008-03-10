@@ -1151,6 +1151,12 @@
            MOVE    ZERO                TO  SPA-ZAIKANRI-ARI
            MOVE    ZERO                TO  SPA-ZAIKANRI-ARI2
       *
+           MOVE    ZERO                TO  SPA-KOURESRY-ARI
+           MOVE    ZERO                TO  SPA-KOURESRY-ARI2
+      *
+           MOVE    ZERO                TO  SPA-IGAKUKAN-ARI
+           MOVE    ZERO                TO  SPA-IGAKUKAN-ARI2
+      *
       *     Ò≥Á§ﬁ§»§·∆˛Œœ¬–æ›≥∞
            IF      SPA-HKNCOMBINUM     =   "9999"
                GO      TO      1001-TOUGETU-KAISU-EXT
@@ -1378,7 +1384,25 @@
                      AND (SANTEI-FSANTEIYMD    >   SPA-SRYYMD )
                        MOVE    ZERO            TO  SPA-TOKUTEI-KNJ2
                    END-IF
-      *TEST
+      *£»£≤£∞°•£¥§´§È
+      *        ∏Â¥¸π‚Œº‘ø«Œ≈Œ¡
+               WHEN    "113702110"
+                   IF      SANTEI-MSANTEICNT   >   ZERO
+                       MOVE    1                   TO  SPA-KOURESRY-ARI2
+                   END-IF
+      *        ∆√ƒÍª‹¿ﬂ∆˛µÔª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡
+               WHEN    "114013010"
+               WHEN    "114013210"
+      *            ±°≥∞
+                   IF      SANTEI-MSANTEICNT   >   ZERO
+                       MOVE    1                   TO  SPA-IGAKUKAN-ARI2
+                   END-IF
+               WHEN    "114013110"
+               WHEN    "114013310"
+      *                ±°∆‚
+                   IF      SANTEI-MSANTEICNT   >   ZERO
+                       MOVE    2                   TO  SPA-IGAKUKAN-ARI2
+                   END-IF
       *£»£≤£∞°•£¥§´§È«—ªﬂ
       *        ¥Ô∂Ò≈˘§À§Ë§ÎŒ≈À°
                WHEN    "140040310"
@@ -3499,6 +3523,10 @@
       *        ∫ﬂ¬ª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡
                PERFORM 3308-ZAIKANRI-SET-SEC
            END-IF
+           IF      SPA-ZAIKANRI-ARI     NOT =   ZERO
+      *        ∆√ƒÍª‹¿ﬂ∆˛µÔª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡Œ¡
+               PERFORM 3308-IGAKUKAN-SET-SEC
+           END-IF
       *
            .
        400-INGAI-HEN-EXT.
@@ -3639,6 +3667,42 @@
        3308-ZAIKANRI-SET-EXT.
            EXIT.
       *****************************************************************
+      *    ∆√ƒÍª‹¿ﬂ∆˛µÔª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡ΩËÕ˝
+      *****************************************************************
+       3308-IGAKUKAN-SET-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SRYCD
+           IF      SPA-INGAIKBN        =   "1"
+      *        ±°≥∞§ÿ
+               EVALUATE    SPA-COM-INPUTCD (WRK-IDX-IN)
+      *            ∆√ƒÍª‹¿ﬂ∆˛µÔª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£±
+                   WHEN    "114013110"
+                       MOVE    "114013010"         TO  WRK-SRYCD
+      *            ∆√ƒÍª‹¿ﬂ∆˛µÔª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£≤
+                   WHEN    "114013310"
+                       MOVE    "114013210"         TO  WRK-SRYCD
+               END-EVALUATE
+           ELSE
+      *        ±°∆‚§ÿ
+               EVALUATE    SPA-COM-INPUTCD (WRK-IDX-IN)
+      *            ∆√ƒÍª‹¿ﬂ∆˛µÔª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£±
+                   WHEN    "114013010"
+                       MOVE    "114013110"         TO  WRK-SRYCD
+      *            ∆√ƒÍª‹¿ﬂ∆˛µÔª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡£≤
+                   WHEN    "114013210"
+                       MOVE    "114013310"         TO  WRK-SRYCD
+               END-EVALUATE
+           END-IF
+           IF      WRK-SRYCD       NOT =   SPACE
+               MOVE    ZERO                TO  FLG-ADD
+      *        ƒ…≤√∂¶ƒÃΩËÕ˝
+               PERFORM 33041-SRYCD-ADD-SEC
+           END-IF
+      *
+           .
+       3308-IGAKUKAN-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    ∆±ª˛∫∆ø«ªªƒÍΩËÕ˝° ∆˛Œœ ¨°À
       *****************************************************************
        500-INDOUSAISIN-SET-SEC         SECTION.
@@ -3701,8 +3765,8 @@
            MOVE    ZERO                TO  SPA-KAIHOU2-ARI
            MOVE    ZERO                TO  SPA-ZAIKANRI-ARI
       *£»£≤£∞°•£¥§´§È
-      *    MOVE    ZERO                TO  SPA-KOURESRY-ARI
-      *    MOVE    ZERO                TO  SPA-IGAKUKAN-ARI
+           MOVE    ZERO                TO  SPA-KOURESRY-ARI
+           MOVE    ZERO                TO  SPA-IGAKUKAN-ARI
       *
            MOVE    ZERO                TO  SPA-SEIKATU-ARI
            MOVE    ZERO                TO  SPA-KYUSEI-FLG
@@ -3813,19 +3877,19 @@
                    WHEN    "099800101"
                        MOVE    1               TO  SPA-KYUSEI-FLG
       *            ∏Â¥¸π‚Œº‘ø«Œ≈Œ¡
-      *            WHEN    "113702110"
-      *                MOVE    1               TO  SPA-KOURESRY-ARI
+                   WHEN    "113702110"
+                       MOVE    1               TO  SPA-KOURESRY-ARI
       *            ∆√ƒÍª‹¿ﬂ∆˛µÔª˛∞Â≥ÿ¡ÌπÁ¥…Õ˝Œ¡
-      *            WHEN    "114013010"
-      *            WHEN    "114013210"
+                   WHEN    "114013010"
+                   WHEN    "114013210"
       *                ±°≥∞
-      *                MOVE    "1"             TO  SPA-INGAIKBN
-      *                MOVE    1               TO  SPA-IGAKUKAN-ARI
-      *            WHEN    "114013110"
-      *            WHEN    "114013310"
+                       MOVE    "1"             TO  SPA-INGAIKBN
+                       MOVE    1               TO  SPA-IGAKUKAN-ARI
+                   WHEN    "114013110"
+                   WHEN    "114013310"
       *                ±°∆‚
-      *                MOVE    "2"             TO  SPA-INGAIKBN
-      ****             MOVE    1               TO  SPA-IGAKUKAN-ARI
+                       MOVE    "2"             TO  SPA-INGAIKBN
+                       MOVE    1               TO  SPA-IGAKUKAN-ARI
                END-EVALUATE
       *        ∫ﬂ¬Œ≈Õ‹ªÿ∆≥Œ¡§Œ»ΩƒÍ
                IF     (SPA-COM-INPUTCD (IDX)(1:3)  =   "114") AND
@@ -3923,10 +3987,10 @@
            END-IF
       *
       *    ∏Â¥¸π‚Œº‘ø«Œ≈Œ¡•¡•ß•√•Ø
-      *    IF     (SPA-KOURESRY-ARI    NOT =   ZERO )
-      *      OR   (SPA-KOURESRY-ARI2   NOT =   ZERO )
-      *        PERFORM 5022-KOURESRY-CHK-SEC
-      *    END-IF
+           IF     (SPA-KOURESRY-ARI    NOT =   ZERO )
+             OR   (SPA-KOURESRY-ARI2   NOT =   ZERO )
+               PERFORM 5022-KOURESRY-CHK-SEC
+           END-IF
       *
            .
        700-SANTEI-CHK-EXT.
@@ -4491,6 +4555,68 @@
            END-PERFORM
            .
        5022-ZAIMATU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ∏Â¥¸π‚Œº‘ø«Œ≈Œ¡•¡•ß•√•ØΩËÕ˝
+      *****************************************************************
+       5022-KOURESRY-CHK-SEC                SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   SPA-MAX-LINE    )   OR
+                              (SPA-ERRCD           NOT =   SPACE )  OR
+                              (SPA-GMN-INPUTCD (IDX)   =   SPACE )
+      *         Ò≥Á ›∏±
+               IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
+                   OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
+                                                   OR  "$"   )
+                   CONTINUE
+               ELSE
+                   EVALUATE    SPA-COM-SRYKBN(IDX)
+      *            ≤Ë¡¸ø«√«°¶∏°∫∫°¶ΩË√÷
+                   WHEN    "40"
+                   WHEN    "60"
+                   WHEN    "64"
+                   WHEN    "70"
+      *                ºÍµª°¶≤√ªª§«£µ£µ£∞≈¿∞ ≤º§œ•®•È°º
+                       IF      SPA-COM-INPUTCD  (IDX)(1:1) =   "1"
+                           IF      SPA-COM-TEN (IDX)       <   550
+                               MOVE    "0241"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  SPA-COM-CUR
+                                                                (IDX)
+                           ELSE
+      *                    £µ£µ£∞≈¿ ∞ æÂ§œ∑Ÿπ
+                               IF     (SPA-COM-KZMFLG (IDX)
+                                                       =   SPACE )
+                                   MOVE    "K241"      TO  SPA-ERRCD
+                                   MOVE    "1"         TO  SPA-COM-CUR
+                                                                (IDX)
+                                   MOVE    "1"     TO  SPA-COM-KZMFLG
+                                                                (IDX)
+                               END-IF
+                           END-IF
+                       END-IF
+                   WHEN    "13"
+                       IF      SPA-COM-INPUTCD  (IDX)(1:1) =   "1"
+                           IF      (SPA-COM-CDKBN-KBN (IDX) =   "B" )
+                              AND  (SPA-COM-CDKBN-KBNNUM(IDX)
+                                                            =   "009"
+                                                            OR  "010"
+                                                            OR  "016"
+                                                            OR  "017"
+                                                            OR  "018")
+                               CONTINUE
+                           ELSE
+                               MOVE    "0241"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  SPA-COM-CUR
+                                                                (IDX)
+                           END-IF
+                       END-IF
+                   END-EVALUATE
+               END-IF
+           END-PERFORM
+           .
+       5022-KOURESRY-CHK-EXT.
            EXIT.
       *
       *****************************************************************

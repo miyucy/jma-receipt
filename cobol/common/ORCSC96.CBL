@@ -1379,13 +1379,6 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
-      *Ｈ２０．４から
-               WHEN    "K240"
-                   STRING  "警告！！"
-                           "初回算定から２年以上経過しています。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.
@@ -1856,6 +1849,23 @@
                WHEN    "K091"
                    MOVE    "警告！既に当日算定回数を超えています。"
                                        TO  SPA-ERRMSG
+      *Ｈ２０．４から
+               WHEN    "K240"
+                   STRING  "警告！！"
+                           "初回算定から２年以上経過しています。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0241"
+                   MOVE    "後期高齢者診療料を算定時、算定できません"
+                                       TO      SPA-ERRMSG
+               WHEN    "K241"
+                   STRING  "警告！！"
+                           "後期高齢者診療料を算定を算定してます。"
+                           "急性増悪時のみ算定可能です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG
