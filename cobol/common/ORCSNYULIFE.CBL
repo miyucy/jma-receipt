@@ -439,34 +439,31 @@
                    MOVE    "key4"               TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC-SEC
                ELSE
-      *            ¸å´ü¹âÎð¼Ô¤ÎÈ½Äê¡ÊÊÝ¸±ÈÖ¹æ£°£³£¹¡Ë
+                   MOVE    ZERO                 TO  FLG-RJN 
+      *            ¸å´ü¹âÎð¼Ô¤ÎÈ½Äê¡ÊÊÝ¸±ÈÖ¹æ£°£³£¸¡¢£°£³£¹¡Ë
                    MOVE    ZERO                 TO  FLG-RJN 
                    INITIALIZE                       PTHKNINF-REC
                    MOVE    LNK-NYULIFE-HOSPNUM  TO  PTHKN-HOSPNUM
                    MOVE    LNK-NYULIFE-PTID     TO  PTHKN-PTID
-                   MOVE    "039"                TO  PTHKN-HKNNUM
                    MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                   MOVE    "key10"               TO  MCP-PATHNAME
+                   MOVE    "key11"               TO  MCP-PATHNAME
                    PERFORM 910-PTHKNINF-SELECT-SEC
                    IF      FLG-PTHKNINF         =   ZERO
                        MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                       MOVE    "key10"               TO  MCP-PATHNAME
+                       MOVE    "key11"               TO  MCP-PATHNAME
                        PERFORM   910-PTHKNINF-READ-SEC
                        PERFORM   UNTIL   (FLG-PTHKNINF   =   1)
-                           IF    PTHKN-SAKJOKBN     =    SPACE
-                                 MOVE   1           TO   FLG-RJN
-                           END-IF
+                           MOVE   1           TO   FLG-RJN
                            MOVE    "tbl_pthkninf"   TO  MCP-TABLE
-                           MOVE    "key10"           TO  MCP-PATHNAME
+                           MOVE    "key11"           TO  MCP-PATHNAME
                            PERFORM 910-PTHKNINF-READ-SEC
                        END-PERFORM
                    END-IF
       *            ´µ¼ÔÊÝ¸±¾ðÊó¥¯¥í¡¼¥º
                    MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                   MOVE    "key10"               TO  MCP-PATHNAME
+                   MOVE    "key11"               TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC-SEC
       *            ¸å´ü³ºÅö¤ÎÈ½Äê¡Ê¸øÈñÈÖ¹æ£¹£¶£¸¡Ë
-                   MOVE    ZERO                 TO  FLG-RJN 
                    INITIALIZE                       PTKOHINF-REC
                    MOVE    LNK-NYULIFE-HOSPNUM  TO  PTKOH-HOSPNUM
                    MOVE    LNK-NYULIFE-PTID     TO  PTKOH-PTID
