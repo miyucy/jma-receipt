@@ -1378,6 +1378,35 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *Ｈ２０．４から
+               WHEN    "K835"
+                   STRING  "警告！心大血管疾患リハビリ"
+                           "発症日から１５０日以上です。"
+                           "１３単位以上算定できません。"
+                           "月１３単位を超えました。"
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K836"
+                   STRING  "警告！脳血管疾患リハビリ"
+                           "発症日から１８０日以上です。"
+                           "月１３単位を超えました。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K837"
+                   STRING  "警告！運動器リハビリ"
+                           "発症日から１５０日以上です。"
+                           "月１３単位を超えました。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K838"
+                   STRING  "警告！呼吸器リハビリ"
+                           "発症日から９０日以上です。"
+                           "月１３単位を超えました。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .
