@@ -186,3 +186,17 @@ path	key10 	{
 	};
 };
 
+path	key11	{
+	DBSELECT	{
+		DECLARE tbl_pthkninf_key11_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pthkninf
+			WHERE HOSPNUM     =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   HKNNUM      in  ('038','039')
+			AND   SAKJOKBN    <> '1'
+			ORDER   BY      HKNID
+		;
+	};
+};
+
