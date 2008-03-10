@@ -163,6 +163,7 @@
            03  WRK-EDYMD                           PIC X(08).
            03  WRK-KBN1-G.
                05  WRK-KBN1                        PIC 9(01).
+           03  WRK-TEN                             PIC 9(05).
       *
        01  WRK-ROW.
            03  WRK-BTULST-ROW                      PIC S9(9)   BINARY.
@@ -1747,6 +1748,11 @@
       *
            END-PERFORM
       *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *        入院加算情報チェック処理-施設基準チェック処理
+               PERFORM 4901-SSTKIJUN-CHK-SEC
+           END-IF
+      *
            .
        4102-KIHON-CHK-EXT.
            EXIT.
@@ -2887,13 +2893,26 @@
       *****************************************************************
        41001-KHNRYO-CMB-EDT-SEC     SECTION.
       *
+           MOVE    "190097010"         TO  WRK-TNS-SRYCD
+           MOVE    SPA-NAI-W20-YUKOSTYMD
+                                       TO  WRK-TNS-KJNYMD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           MOVE    TNS-TEN             TO  WRK-TEN
+      *
            MOVE    "099999950"         TO  WRK-TNS-SRYCD
            MOVE    SPA-NAI-W20-YUKOSTYMD
                                        TO  WRK-TNS-KJNYMD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
+               MOVE    WRK-TEN         TO  TNS-TEN
                PERFORM 410011-KHNRYO-CMB-SET-SEC
            END-IF
+      *
+           MOVE    "190097210"         TO  WRK-TNS-SRYCD
+           MOVE    SPA-NAI-W20-YUKOSTYMD
+                                       TO  WRK-TNS-KJNYMD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           MOVE    TNS-TEN             TO  WRK-TEN
       *
            MOVE    "099999951"         TO  WRK-TNS-SRYCD
            MOVE    SPA-NAI-W20-YUKOSTYMD
@@ -2901,6 +2920,7 @@
       *
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
+               MOVE    WRK-TEN         TO  TNS-TEN
                PERFORM 410011-KHNRYO-CMB-SET-SEC
            END-IF
       *
@@ -4438,12 +4458,6 @@
                        GO  TO  4900-KANRENCHK-EXT
                    END-IF
                END-IF
-           END-IF
-      *
-      *    入院加算情報チェック処理-施設基準チェック処理
-           PERFORM 4901-SSTKIJUN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
            .
