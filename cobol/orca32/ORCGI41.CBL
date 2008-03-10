@@ -8186,7 +8186,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-                   IF  WRK-SRYYMD(1:)      <=  "200803"
+                   IF  WRK-SRYYMD(1:6)      <=  "200803"
                      EVALUATE   TNS-SRYCD
                        WHEN   "190121310"
                            MOVE "ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡Ê£Á¡Ë"
