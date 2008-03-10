@@ -146,6 +146,8 @@
       *                                     （生保の公費単独のみ） 
       * 
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/03/10  心神喪失者等医療
+      *                                    （法第８１条関係）の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -406,12 +408,14 @@
                05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE   SPACE.
+               05  FILLER              PIC X(03)   VALUE   SPACE.
       *
                05  FILLER              PIC X(03)   VALUE   "027".  
                05  FILLER              PIC X(03)   VALUE   "013".  
                05  FILLER              PIC X(03)   VALUE   "014".  
                05  FILLER              PIC X(03)   VALUE   "018".  
                05  FILLER              PIC X(03)   VALUE   "029".  
+               05  FILLER              PIC X(03)   VALUE   "030".  
                05  FILLER              PIC X(03)   VALUE   "010".  
                05  FILLER              PIC X(03)   VALUE   "011".  
                05  FILLER              PIC X(03)   VALUE   "020".  
@@ -437,9 +441,9 @@
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.
                05  WRK-SRT-OCC         OCCURS  2.
                    07  WRK-SRT-KOHHKNNUM
-                                       PIC X(03)   OCCURS  26.
+                                       PIC X(03)   OCCURS  27.
       *
-           03  WRK-SRT-KOHHKNNUM-MAX   PIC 9(02)   VALUE   26.
+           03  WRK-SRT-KOHHKNNUM-MAX   PIC 9(02)   VALUE   27.
       *
       *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
