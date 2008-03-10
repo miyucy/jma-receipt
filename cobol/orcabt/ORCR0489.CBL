@@ -31,6 +31,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-門脇    07/07/17  個別時のシステム管理編集修正
+      *  04.02.01    NACL-門脇    08/03/10  電話番号桁数修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -100,8 +101,10 @@
                                    BY         //RECEERR//.
       *
       *    自賠責
-           COPY    "HCM55.INC"  REPLACING  //HCM55//
-                                   BY      //HC23//.
+      ***  COPY    "HCM55.INC"  REPLACING  //HCM55//
+      ***                          BY      //HC23//.
+           COPY    "HCM55V01.INC"  REPLACING  //HCM55V01//
+                                   BY         //HC23//.
       *
       *    自賠責（続紙）
            COPY    "HCM26.INC"  REPLACING  //HCM26//
@@ -1995,7 +1998,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCM55.red"         TO
+      ***      MOVE    "HCM55.red"         TO
+               MOVE    "HCM55V01.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC23                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -2131,7 +2135,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCM55.red"                  
+      ***              WHEN    "HCM55.red"
+                       WHEN    "HCM55V01.red"
                            MOVE    RECE08-PRTDATA  TO HC23
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC23-PAGE

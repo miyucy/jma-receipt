@@ -109,6 +109,10 @@
       *  04.01.02    NACL-藤原    07/11/22  公害レセプト対応
       *                                     HCM58.red  HCM59.red
       *                                     HCN58.red
+      *  04.02.01    NACL-門脇    08/03/10  自賠責平成１９年４月改正様式
+      *                                     （従来様式：入院外）
+      *                                     電話番号桁数修正
+      *                                     HCM55V01.red
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -290,6 +294,7 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCM53.INC".
       *    COPY    "HCM54.INC".
            COPY    "HCM55.INC".
+           COPY    "HCM55V01.INC".
       *
            COPY    "HCN23.INC".
            COPY    "HCN23V01.INC".
@@ -957,6 +962,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM55
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM55-RENNUM
                        MOVE    HCM55               TO  RECE08-PRTDATA
+                   WHEN    "HCM55V01.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM55V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM55V01-RENNUM
+                       MOVE    HCM55V01            TO  RECE08-PRTDATA
                    WHEN    "HCN53.red"
                    WHEN    "HCN54.red"
                        MOVE    RECE08-PRTDATA      TO  HCN53
@@ -1174,6 +1183,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                                                        TO  SPRT-TITLE
                    END-IF
                WHEN    "HCM55.red"     ALSO    ANY
+               WHEN    "HCM55V01.red"  ALSO    ANY
                WHEN    "HCM25.red"     ALSO    "2"
                WHEN    "HCM26.red"     ALSO    "2"
                    IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
