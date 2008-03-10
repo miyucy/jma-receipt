@@ -399,7 +399,7 @@ FORM_files = \
 	      HCN03BO.red\
               HCM55V01.red \
               HCM41V02.red \
-	      
+              HCM62.red \
 all:   
 
 clean: 

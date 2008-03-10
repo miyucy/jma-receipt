@@ -54,6 +54,8 @@ HCM304.red		薬剤情報（４）
 HCM305.red		薬剤情報（５）
 HCM306.red		薬剤情報（６）
 
+HCM62.red	＊	お薬手帳					VER4.2.0
+
 HCM43.red		外来月別請求書兼領収書
 HCM43V01.red		外来月別請求書兼領収書（１）
 HCM43V01A.red	＊	外来月別請求書兼領収書（１）
@@ -336,7 +338,8 @@ HCM61.red	＊	薬剤情報マスタ一覧				VER4.1.0
 
 HCM17.red		日計表
 HCM41.red		日計表
-HCM41V01.red	＊	日計表						VER4.1.0
+HCM41V01.red		日計表						VER4.1.0
+HCM41V02.red	＊	日計表						VER4.2.0
 HCM07.red		収納一覧表（入院外）等
 HCM07V01.red		収納一覧表（入院外）等
 HCM07V02.red	＊	収納一覧表（入院外）等
