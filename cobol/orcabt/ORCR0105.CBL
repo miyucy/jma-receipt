@@ -785,18 +785,13 @@
                05  TBL-SUUJI-9     PIC X(01).
       *
        01  WRK-ERR-MSG-AREA.
-      *★★平成２０年４月改正対応
            03  WRK-ERR-MSG-1.
-               05  FILLER          PIC X(28)   VALUE
-                   "《平成２０年４月改正未対応》". 
                05  WRK-ERR-HKNCOMBINUM-1
                                    PIC X(08).
                05  FILLER          PIC X(32)   VALUE
                    "の保険組合せが存在しません". 
       *
            03  WRK-ERR-MSG-2.
-               05  FILLER          PIC X(28)   VALUE
-                   "《平成２０年４月改正未対応》". 
                05  WRK-ERR-DAY-2   PIC X(04).
                05  FILLER          PIC X(04)   VALUE
                    "日の". 
@@ -813,8 +808,6 @@
                    "となっています". 
       *
            03  WRK-ERR-MSG-3.
-               05  FILLER          PIC X(28)   VALUE
-                   "《平成２０年４月改正未対応》". 
                05  WRK-ERR-DAY-3       PIC X(04).
                05  FILLER              PIC X(04)   VALUE
                    "日の". 
@@ -831,21 +824,14 @@
                    "となっています". 
       *
            03  WRK-ERR-MSG-4.
-               05  FILLER          PIC X(28)   VALUE
-                   "《平成２０年４月改正未対応》". 
                05  FILLER          PIC X(48)  VALUE
                "地方公費のみ選択されています。主保険がありません".
       *
            03  WRK-ERR-MSG-5.
-               05  FILLER          PIC X(28)   VALUE
-                   "《平成２０年４月改正未対応》". 
-               05  WRK-ERR-MSG-51.
-                   07  FILLER      PIC X(14)  VALUE
+               05  FILLER          PIC X(14)  VALUE
                    "【主科未設定】".
       *
            03  WRK-ERR-MSG-6.
-               05  FILLER          PIC X(28)   VALUE
-                   "《平成２０年４月改正未対応》". 
                05  FILLER              PIC X(30)  VALUE
                "【未請求設定の患者です】".
       *
@@ -2605,23 +2591,12 @@
                END-IF
            END-IF
       *
-      *    新潟県中越沖地震対応 
-           IF      CNT-PAGE            =   1
-               IF    ( RECE02-PREFNUM      =   "15"   )
-               AND   ( RECE02-SRYYM        >=  200709 )
-               AND   ( RECE02-SRYYM        <=  200712 )
-                   EVALUATE    RECE02-RJNGAIKOHFTN (1)
-                       WHEN    1
-                           MOVE    "（不詳）"  TO  HC06-HEAD4 (2)(1:8)
-                       WHEN    2
-                           MOVE    "（災１）"  TO  HC06-HEAD4 (2)(1:8)
-                   END-EVALUATE
-               END-IF
-           END-IF
-      *
       *★★平成２０年４月改正対応
-           MOVE    WRK-ERR-MSG-7   TO   HC06-HEAD4-G (5:)
+           MOVE    HC06-HEAD4-G (5:)   TO  WRK-HC06-HEAD4-G
+           MOVE    WRK-ERR-MSG-7       TO   HC06-HEAD4-G (5:)
+           MOVE    WRK-HC06-HEAD4-G    TO  HC06-HEAD4-G (33:)
       *★★
+      *
       *
            .
        310-HC101-HEAD-HEN-EXT.
@@ -2716,7 +2691,7 @@
       *    主科未設定のとき     
            IF      RECE02-SYUKA         =   "XX"
                MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
-               MOVE    WRK-ERR-MSG-51       TO  HC06-HEAD4-G (5:)
+               MOVE    WRK-ERR-MSG-5        TO  HC06-HEAD4-G (5:)
                MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (19:)
            END-IF
       *
@@ -8334,7 +8309,7 @@
            EXIT.
       *
       ****************************************************************
-      *            医療機関情報取得処理（個別作成時）
+      *    医療機関情報取得処理（個別作成時）
       ****************************************************************
        900-SYSKANRI-HENSYU-SEC         SECTION.
       *
