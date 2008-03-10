@@ -72,12 +72,14 @@
                                13  SPA-GMN-TCD         PIC X(04).
                                13  SPA-GMN-TNAME       PIC X(100).
                                13  SPA-GMN-TSSTKIJUN   PIC 9(01).
+                               13  SPA-GMN-TKEIFLG     PIC 9(01).
                    07  SPA-GMN-SELCD                   PIC X(04).
       *
                    07  SPA-NAI-AREA.
                        09  SPA-NAI-TBL.
                            11  SPA-NAI-TBLO            OCCURS  1000.
                                13  SPA-NAI-TSSTKIJUN   PIC 9(01).
+                               13  SPA-NAI-TKEIFLG     PIC 9(01).
       *
                        09  SPA-SYORIFLG                PIC 9(01).
                        09  SPA-NAI-SELCD               PIC 9(04).
@@ -580,6 +582,8 @@
                    MOVE    IDX             TO  SPA-GMN-TCD       (IDY)
                    MOVE    SPA-NAI-TSSTKIJUN   (IDX)
                                            TO  SPA-GMN-TSSTKIJUN (IDY)
+                   MOVE    SPA-NAI-TKEIFLG     (IDX)
+                                           TO  SPA-GMN-TKEIFLG   (IDY)
                    MOVE    SPACE           TO  SYS-0031-REC
                    INITIALIZE                  SYS-0031-REC
                    MOVE    "0031"          TO  SYS-0031-KANRICD
@@ -972,8 +976,12 @@
       *        施設基準名があること
                IF      SPA-GMN-TNAME (IDX)     =   SPACE
                AND     SPA-GMN-TSSTKIJUN (IDX) =   1
-                   MOVE    "0002"             TO  SPA-ERRCD
-                   MOVE    IDX                TO  SPA-GMN-CUR
+                   IF      SPA-GMN-TKEIFLG (IDX)   =   ZERO
+                       MOVE    1                  TO  SPA-GMN-TKEIFLG
+                                                            (IDX)
+                       MOVE    "K002"             TO  SPA-ERRCD
+                       MOVE    IDX                TO  SPA-GMN-CUR
+                   END-IF
                END-IF
       *
                IF      SPA-GMN-TCD (IDX)   =   SPA-GMN-SELCD
@@ -986,6 +994,8 @@
                        WHEN    1
                            MOVE  SPA-GMN-TSSTKIJUN (IDX)
                                          TO  SPA-NAI-TSSTKIJUN (IDZ)
+                           MOVE  SPA-GMN-TKEIFLG   (IDX)
+                                         TO  SPA-NAI-TKEIFLG  (IDZ)
                        WHEN    OTHER
                            MOVE    "0002"             TO  SPA-ERRCD
                            MOVE    IDX                TO  SPA-GMN-CUR
@@ -1700,6 +1710,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "選択コード入力エラー"    TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "入力エラー"               TO  SPA-ERRMSG
+               WHEN    "K002"
+                   MOVE    "警告！！施設規準がありません"
+                                                      TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "項目に入力がありません"   TO  SPA-ERRMSG
                WHEN    "0004"
