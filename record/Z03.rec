@@ -165,6 +165,13 @@ Z03	{
 					count	int;
 					item	varchar(20)[3];
 				};
+				IRYOKAN_COMB	{
+					IRYOKAN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[9];
+				};
 			};
 			fixed10	{
 				JITUDAY	{
@@ -345,6 +352,12 @@ Z03	{
 					value	number(3);
 				};
 				MICMESUKSN	{
+					value	number(1);
+				};
+				GAZOOPESUP	{
+					value	number(1);
+				};
+				MASUISKBKBN	{
 					value	number(1);
 				};
 			};

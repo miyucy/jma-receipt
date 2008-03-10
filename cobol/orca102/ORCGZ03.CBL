@@ -48,6 +48,7 @@
       *  03.04.00    NACL-多々納  06/12/05  ユーザ設定 上限回数追加
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *  03.05.01    NACL-多々納  07/07/XX  ユーザ設定 他月情報追加
+      *  04.02.00    NACL-多々納  08/03/XX  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -191,6 +192,8 @@
            03  FILLER          PIC X(32)  VALUE   "0 NYUGAITEKKBN".
            03  FILLER          PIC X(32)  VALUE   "0 ROUTEKKBN".
            03  FILLER          PIC X(32)  VALUE   "0 HOSPSRYKBN".
+      *    医療観察法
+           03  FILLER          PIC X(32)  VALUE   "0 IRYOKAN".
            03  FILLER          PIC X(32)  VALUE   "0 OSINKBN".
            03  FILLER          PIC X(32)  VALUE   "0 BYOSYOKBN".
            03  FILLER          PIC X(32)  VALUE   "0 SANTEIRRKKBN".
@@ -250,6 +253,10 @@
            03  FILLER          PIC X(32)  VALUE   "2 AUTOFUNGO".
            03  FILLER          PIC X(32)  VALUE   "2 CHPGYOKOSOTIKSN".
            03  FILLER          PIC X(32)  VALUE   "2 SHORTSTAYOPE".
+      *    画像等手術支援加算
+           03  FILLER          PIC X(32)  VALUE   "2 GAZOOPESUP".
+      *    麻酔識別区分
+           03  FILLER          PIC X(32)  VALUE   "2 MASUISKBKBN".
       *    施設基準不適合区分
            03  FILLER          PIC X(32)  VALUE   "2 KIJUNTEIGENKBN".
       *     基準不適合逓減対象施設基準コード
@@ -299,13 +306,14 @@
        01  TBL-GMN-JUN-R       REDEFINES   TBL-GMN-JUN.
       *****03  TBL-GMN-OCC                 OCCURS  107
       **** 03  TBL-GMN-OCC                 OCCURS  109
-           03  TBL-GMN-OCC                 OCCURS  115
+      **** 03  TBL-GMN-OCC                 OCCURS  115
+           03  TBL-GMN-OCC                 OCCURS  118
                                            INDEXED  IDX-GMN.
                05  TBL-PAGE                PIC 9(01).
                05  TBL-YOBI1               PIC X(01).
                05  TBL-WIDGET              PIC X(30).
       *
-       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   115.
+       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   118.
       *
       *    単位の項目順テーブル
            COPY    "CMTANICD.INC".
@@ -481,14 +489,20 @@
            03  FILLER              PIC X(02)   VALUE   "55".
            03  FILLER              PIC X(50)   VALUE
                "地域連帯診療計画退院時指導料".
+           03  FILLER              PIC X(02)   VALUE   "56".
+           03  FILLER              PIC X(50)   VALUE
+               "薬剤管理指導料".
+           03  FILLER              PIC X(02)   VALUE   "57".
+           03  FILLER              PIC X(50)   VALUE
+               "後期高齢者退院時薬剤情報提供料".
       *
        01  TBL-SDOKNRYO-AREA-R     REDEFINES   TBL-SDOKNRYO-AREA.
       *    03  TBL-SDOKNRYO-OCC        OCCURS  45      INDEXED  SDO-IDX.
-           03  TBL-SDOKNRYO-OCC        OCCURS  56      INDEXED  SDO-IDX.
+           03  TBL-SDOKNRYO-OCC        OCCURS  58      INDEXED  SDO-IDX.
                05  TBL-SDOKNRYO        PIC X(02).
                05  TBL-SDOKNRYOMEI     PIC X(50).
       *01  SDO-MAX                     PIC 9(04)   VALUE   45.
-       01  SDO-MAX                     PIC 9(04)   VALUE   56.
+       01  SDO-MAX                     PIC 9(04)   VALUE   58.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -892,6 +906,10 @@
            MOVE  TNS-KOKUJISKBKBN2         TO  SPA-GMN-KOKUJISKBKBN2   
       *    正式名称
            MOVE  TNS-FORMALNAME            TO  SPA-GMN-FORMALNAME
+      *    医療観察法
+           MOVE  TNS-IRYOKANSATUKBN        TO  SPA-GMN-IRYOKAN
+           MOVE  TNS-GAZOOPESUP            TO  SPA-GMN-GAZOOPESUP
+           MOVE  TNS-MASUISKBKBN           TO  SPA-GMN-MASUISKBKBN
       *    各リストボックス編集
       *****PERFORM 30012-COB-HEN-SEC
            .
@@ -1237,6 +1255,28 @@
                END-IF
            END-PERFORM
       *
+      *    医療観察法
+           MOVE    "0 適応外"
+                                       TO  SPA-GMN-IRYOKANCOB (1)
+           MOVE    "1 入院出来高"
+                                       TO  SPA-GMN-IRYOKANCOB (2)
+           MOVE    "2 退院出来高"
+                                       TO  SPA-GMN-IRYOKANCOB (3)
+           MOVE    "3 入院通院出来高"
+                                       TO  SPA-GMN-IRYOKANCOB (4)
+           MOVE    "4 医療観察出来高"
+                                       TO  SPA-GMN-IRYOKANCOB (5)
+           MOVE    5                   TO  SPA-IRYOKAN-MAX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-IRYOKAN-MAX
+               IF      SPA-GMN-IRYOKAN     =   SPA-GMN-IRYOKANCOB
+                                                         (IDX)(1:1)
+                   MOVE    SPA-GMN-IRYOKANCOB (IDX)
+                                           TO  SPA-GMN-IRYOKAN-G
+                   MOVE    SPA-IRYOKAN-MAX TO  IDX
+               END-IF
+           END-PERFORM
+      *
       *    往診区分
            MOVE    "0 往診対象外"
                                        TO  SPA-GMN-OSINKBNCOB (1)
@@ -1574,6 +1614,8 @@
            MOVE    Z03-NYUGAITEKKBN    TO  SPA-GMN-NYUGAITEKKBN-G
            MOVE    Z03-ROUTEKKBN       TO  SPA-GMN-ROUTEKKBN-G
            MOVE    Z03-HOSPSRYKBN      TO  SPA-GMN-HOSPSRYKBN-G
+      *    医療観察法
+           MOVE    Z03-IRYOKAN         TO  SPA-GMN-IRYOKAN-G
            MOVE    Z03-OSINKBN         TO  SPA-GMN-OSINKBN-G
            MOVE    Z03-BYOSYOKBN       TO  SPA-GMN-BYOSYOKBN
            MOVE    Z03-SANTEIRRKKBN    TO  SPA-GMN-SANTEIRRKKBN-G
@@ -1670,6 +1712,10 @@
            MOVE    Z03-KANGOKSN        TO  SPA-GMN-KANGOKSN
       *        地域加算
            MOVE    Z03-CHIIKIKSN       TO  SPA-GMN-CHIIKIKSN
+      *    画像等手術支援加算
+           MOVE    Z03-GAZOOPESUP      TO  SPA-GMN-GAZOOPESUP
+      *    麻酔識別
+           MOVE    Z03-MASUISKBKBN     TO  SPA-GMN-MASUISKBKBN
       *
       *        施設基準コード１〜１０
            MOVE    Z03-SSTKIJUNCD1     TO  SPA-GMN-SSTKIJUNCD(1)
@@ -1801,6 +1847,9 @@
       *        病院診療所
                WHEN    "HOSPSRYKBN"
                    PERFORM 505-HOSPSRYKBN-CHK-SEC
+      *        医療観察法対象
+               WHEN    "IRYOKAN"
+                   PERFORM 505-IRYOKAN-CHK-SEC
       *        往診
                WHEN    "OSINKBN"
                    PERFORM 505-OSINKBN-CHK-SEC
@@ -1978,6 +2027,10 @@
                WHEN    "KANGOKSN"
       *        地域加算
                WHEN    "CHIIKIKSN"
+      *        画像等手術支援加算
+               WHEN    "GAZOOPESUP"
+      *        麻酔識別区分
+               WHEN    "MASUISKBKBN"
       *
       *        施設基準コード１〜１０
                WHEN    "SSTKIJUNCD1"
@@ -2553,6 +2606,29 @@
            .
       *
        505-HOSPSRYKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *  　医療観察法対象チェック
+      *****************************************************************
+       505-IRYOKAN-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-IRYOKAN-MAX
+               IF      SPA-GMN-IRYOKAN     =   SPA-GMN-IRYOKANCOB
+                                                         (IDX)(1:1)
+                   MOVE    SPA-GMN-IRYOKANCOB (IDX)
+                                               TO  SPA-GMN-IRYOKAN-G
+                   MOVE    SPA-IRYOKAN-MAX     TO  IDX
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    "0006"              TO  SPA-ERRCD
+           END-IF
+           .
+      *
+       505-IRYOKAN-CHK-EXT.
            EXIT.
       *****************************************************************
       *  　往診チェック
@@ -3786,6 +3862,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE  SPA-GMN-KOKUJISKBKBN1         TO  TNS-KOKUJISKBKBN1
            MOVE  SPA-GMN-KOKUJISKBKBN2         TO  TNS-KOKUJISKBKBN2 
+      *Ｈ２０．４から
+      *    医療観察法
+           MOVE  SPA-GMN-IRYOKAN           TO  TNS-IRYOKANSATUKBN 
+           MOVE  SPA-GMN-GAZOOPESUP        TO  TNS-GAZOOPESUP 
+           MOVE  SPA-GMN-MASUISKBKBN       TO  TNS-MASUISKBKBN 
            .    
       *
        4121-KOUMOKUISO-EXT.
@@ -4083,6 +4164,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  Z03-HOSPSRYKBN-ITEM (IDX)
            END-PERFORM
            MOVE    SPA-HOSPSRYKBN-MAX  TO  Z03-HOSPSRYKBN-COUNT
+      *
+      *    医療観察法
+           MOVE    SPA-GMN-IRYOKAN-G   TO  Z03-IRYOKAN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-IRYOKAN-MAX
+               MOVE    SPA-GMN-IRYOKANCOB (IDX)
+                                           TO  Z03-IRYOKAN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-IRYOKAN-MAX     TO  Z03-IRYOKAN-COUNT
       *    往診区分
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-OSINKBN-MAX
@@ -4167,6 +4257,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE  SPA-GMN-AUTOFUNGO             TO  Z03-AUTOFUNGO       
            MOVE  SPA-GMN-CHPGYOKOSOTIKSN       TO  Z03-CHPGYOKOSOTIKSN 
            MOVE  SPA-GMN-SHORTSTAYOPE          TO  Z03-SHORTSTAYOPE    
+      *    画像等手術支援加算
+           MOVE    SPA-GMN-GAZOOPESUP      TO  Z03-GAZOOPESUP
+           MOVE    SPA-GMN-MASUISKBKBN     TO  Z03-MASUISKBKBN
       *    施設基準不適合区分
            MOVE  SPA-GMN-KIJUNTEIGENKBN    TO  Z03-KIJUNTEIGENKBN
       *     基準不適合逓減対象施設基準コード

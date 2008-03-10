@@ -134,6 +134,12 @@
                       07  Z03-VALUE   PIC X(20).
                     06  Z03-ROUTEKKBN-COUNT   PIC S9(9)   BINARY.
                     06  Z03-ROUTEKKBN-ITEM    PIC X(20)   OCCURS  3.
+                  05  Z03-IRYOKAN-COMB.
+                    06  Z03-IRYOKAN.
+                      07  Z03-VALUE   PIC X(20).
+                    06  Z03-IRYOKAN-COUNT   PIC S9(9)   BINARY.
+                    06  Z03-IRYOKAN-ITEM
+                            PIC X(20)   OCCURS  9 TIMES.
                 04  Z03-FIXED10.
                   05  Z03-JITUDAY.
                     06  Z03-VALUE   PIC S9(1).
@@ -255,6 +261,10 @@
                   05  Z03-KIJUNTEIGENCD.
                     06  Z03-VALUE   PIC S9(3).
                   05  Z03-MICMESUKSN.
+                    06  Z03-VALUE   PIC S9(1).
+                  05  Z03-GAZOOPESUP.
+                    06  Z03-VALUE   PIC S9(1).
+                  05  Z03-MASUISKBKBN.
                     06  Z03-VALUE   PIC S9(1).
                 04  Z03-FIXED12.
                   05  Z03-SSTKIJUNCD1.
