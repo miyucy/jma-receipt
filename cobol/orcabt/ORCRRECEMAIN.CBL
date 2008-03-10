@@ -748,6 +748,7 @@
                ELSE
                    CALL    "ORCR0730"          USING
                                                WRK-ARG
+               END-IF
            END-IF
       *
       *

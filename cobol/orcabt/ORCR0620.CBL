@@ -1884,6 +1884,7 @@
                ELSE
                    IF      RECE61-SYUGAKUKBN   =   1
                        MOVE   "?"              TO   WK-HONKZKKBN
+                   END-IF
                END-IF
            END-IF
       *¡ú¡ú

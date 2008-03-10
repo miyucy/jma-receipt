@@ -1970,6 +1970,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                ELSE
                    IF      RECE01-SYUGAKUKBN   =   1
                        MOVE   "?"              TO   WK-HONKZKKBN
+                   END-IF
                END-IF
            END-IF
       *¡ú¡ú
