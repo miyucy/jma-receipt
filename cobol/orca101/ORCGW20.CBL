@@ -1783,6 +1783,18 @@
        420-CLEAR-EXT.
            EXIT.
       *****************************************************************
+      *    条件クリア処理（コラムリストも再編集）
+      *****************************************************************
+       421-CLEAR-SEC               SECTION.
+      *
+           PERFORM 3101-EDIT-BTULST-SEC
+           PERFORM 4201-INPUT-AREA-CLEAR-SEC
+           PERFORM 4201-RIREKI-AREA-CLEAR-SEC
+      *
+           .
+       421-CLEAR-EXT.
+           EXIT.
+      *****************************************************************
       *    追加処理
       *****************************************************************
        420-TUIKA-SEC               SECTION.
@@ -1826,7 +1838,7 @@
                GO  TO  420-TUIKA-EXT
            END-IF
       *
-           PERFORM 420-CLEAR-SEC
+           PERFORM 421-CLEAR-SEC
       *
       *    病棟リスト最大件数チェック
            IF    ( SPA-GMN-W20-BTULST-MAX  >=  CONST-BTULST-MAX )
@@ -1905,7 +1917,7 @@
            END-IF
       *
       *
-           PERFORM 420-CLEAR-SEC
+           PERFORM 421-CLEAR-SEC
       *
            MOVE    ZERO            TO  FLG-BTULST-ROW
       *
@@ -1999,7 +2011,7 @@
                GO  TO  421-SAKUJO-EXT
            END-IF
       *
-           PERFORM 420-CLEAR-SEC
+           PERFORM 421-CLEAR-SEC
       *
            MOVE    ZERO            TO  FLG-BTULST-ROW
       *
