@@ -30,6 +30,7 @@
       *  01.00.01    NACL-ÌçÏÆ     05/01/12  ¼«ÈñÍó½¸·×½¤Àµ¡ÊÃ¼¿ô½èÍý¡Ë
       *  03.04.01    NACL-¿¹ÏÆ     07/02/08  Ê¿À®£±£¹Ç¯£´·î¼«Èñ¾ÃÈñÀÇÉ½¼¨ÊÑ¹¹
       *  03.05.00    NACL-ÂÀÅÄ     07/05/28  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.02.01    NACL-¿¹ÏÆ     08/03/10  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,8 +84,11 @@
                                    REPLACING  //RECE01//
                                    BY         //BD00801//.
       *
-           COPY    "HCM41V01.INC"  REPLACING  //HCM41V01//
+      *----(04.02.01)--UPD-START---
+      *     COPY    "HCM41V01.INC"  REPLACING  //HCM41V01//
+           COPY    "HCM41V02.INC"  REPLACING  //HCM41V02//
                                    BY         //HCM41//.
+      *----(04.02.01)--UPD-END-----
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
@@ -176,6 +180,9 @@
        01  CONST-AREA.
            03  CONST-H190401           PIC X(08)   VALUE   "20070401".
       *----(03.04.01)--ADD-END-----
+      *----(04.02.01)--ADD-START---
+           03  CONST-H200401           PIC X(08)   VALUE   "20080401".
+      *----(04.02.01)--ADD-END-----
       *
        01  RECEERR                     PIC X(100).
       *
@@ -453,6 +460,31 @@
            MOVE    CNT-PAGE        TO  WRK-PAGE
            MOVE    WRK-PAGE        TO  HCM41-PAGE
       *
+      *----(04.02.01)--ADD-START---
+           IF      ORCBD008-SYORIYMD   <   CONST-H200401
+               MOVE    "¼ÒÊÝËÜ¿Í"      TO  HCM41-HKNNAME(1)
+               MOVE    "¼ÒÊÝ²ÈÂ²"      TO  HCM41-HKNNAME(2)
+               MOVE    "¼ÒÊÝÏ·¿Í"      TO  HCM41-HKNNAME(3)
+               MOVE    "¹ñÊÝ°ìÈÌ"      TO  HCM41-HKNNAME(4)
+               MOVE    "¹ñÊÝÏ·¿Í"      TO  HCM41-HKNNAME(5)
+               MOVE    "¸øÈñÃ±ÆÈ"      TO  HCM41-HKNNAME(6)
+               MOVE    "¼«Èñ"          TO  HCM41-HKNNAME(7)
+               MOVE    "Ï«ºÒ"          TO  HCM41-HKNNAME(8)
+               MOVE    "¼«ÇåÀÕ"        TO  HCM41-HKNNAME(9)
+               MOVE    "¸ø³²"          TO  HCM41-HKNNAME(10)
+           ELSE
+               MOVE    "¼ÒÊÝËÜ¿Í"      TO  HCM41-HKNNAME(1)
+               MOVE    "¼ÒÊÝ²ÈÂ²"      TO  HCM41-HKNNAME(2)
+               MOVE    "¹ñÊÝ"          TO  HCM41-HKNNAME(3)
+               MOVE    "¸å´ü¹âÎð"      TO  HCM41-HKNNAME(4)
+               MOVE    "¸øÈñÃ±ÆÈ"      TO  HCM41-HKNNAME(5)
+               MOVE    "¼«Èñ"          TO  HCM41-HKNNAME(6)
+               MOVE    "Ï«ºÒ"          TO  HCM41-HKNNAME(7)
+               MOVE    "¼«ÇåÀÕ"        TO  HCM41-HKNNAME(8)
+               MOVE    "¸ø³²"          TO  HCM41-HKNNAME(9)
+           END-IF
+      *----(04.02.01)--ADD-END-----
+      *
            .
        310-HEAD-HEN-EXT.
            EXIT.
@@ -489,144 +521,38 @@
       *****************************************************************
        3201-BODY-HEN-SEC            SECTION.
       *
-               ADD     1               TO  CNT-LINE
+           ADD     1               TO  CNT-LINE
       *    Ï¢ÈÖ
-               ADD     1               TO  WRK-RENNUM
-               MOVE    WRK-RENNUM      TO  WRK-RENNUM-X
-               MOVE    WRK-RENNUM-X    TO  HCM41-RENNUM(CNT-LINE)
+           ADD     1               TO  WRK-RENNUM
+           MOVE    WRK-RENNUM      TO  WRK-RENNUM-X
+           MOVE    WRK-RENNUM-X    TO  HCM41-RENNUM(CNT-LINE)
       *    ´µ¼ÔÈÖ¹æ
-               IF    ( BD00801-PTNUM (11:) =   SPACE )
-                   MOVE    BD00801-PTNUM   TO  HCM41-PTNUM(CNT-LINE)
-               ELSE
-                   MOVE    BD00801-PTNUM   TO  HCM41-PTNUM2(CNT-LINE)
-               END-IF
+           IF    ( BD00801-PTNUM (11:) =   SPACE )
+               MOVE    BD00801-PTNUM   TO  HCM41-PTNUM(CNT-LINE)
+           ELSE
+               MOVE    BD00801-PTNUM   TO  HCM41-PTNUM2(CNT-LINE)
+           END-IF
       *    »áÌ¾
-               MOVE    PTINF-NAME      TO  HCM41-NAME(CNT-LINE)
+           MOVE    PTINF-NAME      TO  HCM41-NAME(CNT-LINE)
       *    ÊÝ¸±ÅÀ¿ô
-               EVALUATE    SYU-SYUHKNNUM
-                   WHEN    WRK-CONS-JIBAI-HKNNUM
-                   WHEN    WRK-CONS-ROUSAI-HKNNUM
-                   WHEN    WRK-CONS-KOUGAI-HKNNUM
-                       MOVE    ZERO        TO  SYU-TOTAL-HKNTEN
-                   WHEN    OTHER
-                       MOVE    SYU-TOTAL-HKNTEN
-                                           TO  WRK-Z8
-                       MOVE    WRK-Z8      TO  HCM41-HKNTEN (CNT-LINE)
-               END-EVALUATE
-      *    ÊÝ¸±ÊÌ¶â³Û¡Ê¼ÒÊÝËÜ¿Í¡Á¼«ÇåÀÕ¡Ë
-               MOVE    ZERO                TO  IDX
-               EVALUATE    SYU-SYUHKNNUM
-                   WHEN    SPACE
-                       MOVE    6                   TO  IDX
-                   WHEN    WRK-CONS-KOUGAI-HKNNUM
-                       MOVE    10                  TO  IDX
-                   WHEN    WRK-CONS-JIBAI-HKNNUM
-                       MOVE    9                   TO  IDX
-                   WHEN    WRK-CONS-ROUSAI-HKNNUM
-                       MOVE    8                   TO  IDX
-      ***          WHEN    WRK-CONS-JIHI-HKNNUM    
-      ***              MOVE    7                   TO  IDX
-                   WHEN    "060"
-                   WHEN    "067"
-                   WHEN    "068"
-                   WHEN    "069"
-                       IF      SYU-KOH1HKNNUM      =   "027"
-                           MOVE    5                   TO  IDX
-                       ELSE
-                           MOVE    4                   TO  IDX
-                       END-IF
-                   WHEN    OTHER
-                       IF  SYU-SYUHKNNUM(1:2) = "98"
-                           MOVE    7                   TO  IDX
-                       ELSE
-                         IF      SYU-KOH1HKNNUM      =   "027"
-                           MOVE    3                   TO  IDX
-                         ELSE
-                           PERFORM 3201-PTHKNINF-HENSYU-SEC
-                           EVALUATE    PTHKN-HONKZKKBN
-                               WHEN    "1"
-                                   MOVE    1                   TO  IDX
-                               WHEN    "2"
-                                   MOVE    2                   TO  IDX
-                           END-EVALUATE
-                         END-IF
-                       END-IF
-               END-EVALUATE
+           EVALUATE    SYU-SYUHKNNUM
+               WHEN    WRK-CONS-JIBAI-HKNNUM
+               WHEN    WRK-CONS-ROUSAI-HKNNUM
+               WHEN    WRK-CONS-KOUGAI-HKNNUM
+                   MOVE    ZERO        TO  SYU-TOTAL-HKNTEN
+               WHEN    OTHER
+                   MOVE    SYU-TOTAL-HKNTEN
+                                       TO  WRK-Z8
+                   MOVE    WRK-Z8      TO  HCM41-HKNTEN (CNT-LINE)
+           END-EVALUATE
       *
-               IF      IDX                 >   ZERO
-      *
-      *            ¼«Èñ°Ê³°¤Î¤È¤­¼«ÈñÊ¬¤À¤±½¸·×
-                   IF      IDX             =   7
-                       MOVE    ZERO            TO  WRK-JIHI
-                   ELSE
-      *----(03.04.01)--UPD-START---
-                       COMPUTE WRK-JIHI    =   SYU-TOTAL-TGMONEY
-                                           +   SYU-TOTAL-TGMONEY-TAX
-                                           +   SYU-JIHI-TOTAL
-                                           +   SYU-JIHI-TOTAL-TAX
-                                           +   SYU-RMSAGAKU
-                                       +   SYU-SKYMONEY-SKJ-JIHI-KEI
-                       IF      SYU-SRYYMD  <   CONST-H190401
-                           COMPUTE WRK-JIHI    =   WRK-JIHI 
-                                               +   SYU-JIHI-TAX
-                       END-IF
-      *----(03.04.01)--UPD-START---
-                   END-IF
-                   IF    IDX  =  8  OR  9 OR 10
-                       COMPUTE WRK-MONEY   =   SYU-RSIJIBAI-SKYMONEY
-                                           -   WRK-JIHI
-                   ELSE
-                       COMPUTE WRK-MONEY   =   SYU-SKYMONEY
-                                           -   WRK-JIHI                  
-                       IF   WRK-JIHI  NOT =  ZERO
-                         IF  ((SYU-DISCOUNT-TEIRITU  NOT =  SPACE) AND
-                              (SYU-DISCOUNT-RATE     NOT =  ZERO ))
-                         OR  ( SYU-CHOSEI            NOT =  ZERO  )
-                            CONTINUE
-                         ELSE
-                            COMPUTE WRK-MONEY  =  SYU-HKNTEKMONEY
-                                               +  SYU-RJN-FTN
-                                               +  SYU-KOH-FTN
-                                               +  SYU-YKZ-FTN
-                                               +  SYU-SKYMONEY-SKJ-KEI
-                            COMPUTE WRK-JIHI   =  SYU-SKYMONEY
-                                               -  WRK-MONEY
-                         END-IF
-                       END-IF
-                   END-IF
-      *
-                   IF      WRK-MONEY       <   0
-                       MOVE    WRK-MONEY   TO  WRK-Z99
-                       MOVE    WRK-Z99     TO  HCM41-MONEY(IDX CNT-LINE)
-                   ELSE
-                       MOVE    WRK-MONEY   TO  WRK-Z9
-                       MOVE    WRK-Z9      TO  HCM41-MONEY(IDX CNT-LINE)
-                   END-IF
-                   IF      IDX             =   7
-                       CONTINUE
-                   ELSE
-                       IF      WRK-JIHI    >   ZERO
-                           MOVE    WRK-JIHI
-                                           TO  WRK-Z9
-                           MOVE    "*"     TO  WRK-Z9 (2:1)
-                           MOVE    WRK-Z9  TO  HCM41-MONEY (7 CNT-LINE)
-                       END-IF
-                   END-IF
+      *----(04.02.01)--ADD-START---
+               IF      ORCBD008-SYORIYMD   <   CONST-H200401
+                   PERFORM 3201-BODY-H200401-MAE-SEC
+               ELSE
+                   PERFORM 3201-BODY-H200401-ATO-SEC
                END-IF
-      *
-               ADD     SYU-TOTAL-HKNTEN  TO  SUM-HKNTEN (1)
-               ADD     SYU-SKYMONEY      TO  SUM-MONEY  (1)
-               ADD     1                   TO  SUM-KENSU  (1)
-               IF      IDX                 >   ZERO
-                   COMPUTE IDY     =   IDX     +   1
-                   IF      IDX     <   8
-                       ADD     SYU-TOTAL-HKNTEN
-                                               TO  SUM-HKNTEN (IDY)
-                   END-IF
-                   ADD     WRK-MONEY       TO  SUM-MONEY(IDY)
-                   ADD     1               TO  SUM-KENSU(IDY)
-                   ADD     WRK-JIHI        TO  SUM-MONEY(8)
-               END-IF
+      *----(04.02.01)--ADD-END-----
       *
            .
        3201-BODY-HEN-EXT.
@@ -655,6 +581,261 @@
        3201-PTHKNINF-HENSYU-EXT.
            EXIT.
       *
+      *----(04.02.01)--ADD-START---
+      *****************************************************************
+      *    Ä¢É¼ÊÔ½¸<ÌÀºÙ¹Ô>½èÍý
+      *****************************************************************
+       3201-BODY-H200401-MAE-SEC   SECTION.
+      *
+      *    ÊÝ¸±ÊÌ¶â³Û¡Ê¼ÒÊÝËÜ¿Í¡Á¼«ÇåÀÕ¡Ë
+           MOVE    ZERO                TO  IDX
+           EVALUATE    SYU-SYUHKNNUM
+      *        ¸øÈñÃ±ÆÈ
+               WHEN    SPACE
+                   MOVE    6                   TO  IDX
+      *        ¸ø³²
+               WHEN    WRK-CONS-KOUGAI-HKNNUM
+                   MOVE    10                  TO  IDX
+      *        ¼«ÇåÀÕ
+               WHEN    WRK-CONS-JIBAI-HKNNUM
+                   MOVE    9                   TO  IDX
+      *        Ï«ºÒ
+               WHEN    WRK-CONS-ROUSAI-HKNNUM
+                   MOVE    8                   TO  IDX
+      ***      WHEN    WRK-CONS-JIHI-HKNNUM    
+      ***          MOVE    7                   TO  IDX
+      *        ¹ñÊÝ
+               WHEN    "060"
+               WHEN    "067"
+               WHEN    "068"
+               WHEN    "069"
+      *            ¹ñÊÝÏ·¿Í
+                   IF      SYU-KOH1HKNNUM      =   "027"
+                       MOVE    5                   TO  IDX
+                   ELSE
+      *                ¹ñÊÝ°ìÈÌ
+                       MOVE    4                   TO  IDX
+                   END-IF
+               WHEN    OTHER
+      *            ¼«Èñ
+                   IF      SYU-SYUHKNNUM(1:2) = "98"
+                       MOVE    7                   TO  IDX
+                   ELSE
+      *                ¼ÒÊÝÏ·¿Í
+                       IF      SYU-KOH1HKNNUM      =   "027"
+                           MOVE    3                   TO  IDX
+                       ELSE
+                           PERFORM 3201-PTHKNINF-HENSYU-SEC
+      *                    ¼ÒÊÝËÜ¿Í¡¦²ÈÂ²
+                           EVALUATE    PTHKN-HONKZKKBN
+                               WHEN    "1"
+                                   MOVE    1                   TO  IDX
+                               WHEN    "2"
+                                   MOVE    2                   TO  IDX
+                           END-EVALUATE
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *
+           IF      IDX                 >   ZERO
+      *        ¼«Èñ°Ê³°¤Î¤È¤­¼«ÈñÊ¬¤À¤±½¸·×
+               IF      IDX             =   7
+                   MOVE    ZERO            TO  WRK-JIHI
+               ELSE
+      *----(03.04.01)--UPD-START---
+                   COMPUTE WRK-JIHI    =   SYU-TOTAL-TGMONEY
+                                       +   SYU-TOTAL-TGMONEY-TAX
+                                       +   SYU-JIHI-TOTAL
+                                       +   SYU-JIHI-TOTAL-TAX
+                                       +   SYU-RMSAGAKU
+                                       +   SYU-SKYMONEY-SKJ-JIHI-KEI
+                   IF      SYU-SRYYMD  <   CONST-H190401
+                       COMPUTE WRK-JIHI    =   WRK-JIHI 
+                                           +   SYU-JIHI-TAX
+                   END-IF
+      *----(03.04.01)--UPD-START---
+               END-IF
+               IF    IDX  =  8  OR  9 OR 10
+                   COMPUTE WRK-MONEY   =   SYU-RSIJIBAI-SKYMONEY
+                                       -   WRK-JIHI
+               ELSE
+                   COMPUTE WRK-MONEY   =   SYU-SKYMONEY
+                                       -   WRK-JIHI
+                   IF   WRK-JIHI  NOT =  ZERO
+                       IF  ((SYU-DISCOUNT-TEIRITU  NOT =  SPACE) AND
+                            (SYU-DISCOUNT-RATE     NOT =  ZERO ))
+                       OR  ( SYU-CHOSEI            NOT =  ZERO  )
+                           CONTINUE
+                       ELSE
+                           COMPUTE WRK-MONEY   =   SYU-HKNTEKMONEY
+                                               +   SYU-RJN-FTN
+                                               +   SYU-KOH-FTN
+                                               +   SYU-YKZ-FTN
+                                               +   SYU-SKYMONEY-SKJ-KEI
+                           COMPUTE WRK-JIHI    =   SYU-SKYMONEY
+                                               -   WRK-MONEY
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF      WRK-MONEY       <   0
+                   MOVE    WRK-MONEY   TO  WRK-Z99
+                   MOVE    WRK-Z99     TO  HCM41-MONEY(IDX CNT-LINE)
+               ELSE
+                   MOVE    WRK-MONEY   TO  WRK-Z9
+                   MOVE    WRK-Z9      TO  HCM41-MONEY(IDX CNT-LINE)
+               END-IF
+               IF      IDX             =   7
+                   CONTINUE
+               ELSE
+                   IF      WRK-JIHI    >   ZERO
+                       MOVE    WRK-JIHI    TO  WRK-Z9
+                       MOVE    "*"         TO  WRK-Z9 (2:1)
+                       MOVE    WRK-Z9      TO  HCM41-MONEY (7 CNT-LINE)
+                   END-IF
+               END-IF
+           END-IF
+      *
+           ADD     SYU-TOTAL-HKNTEN  TO  SUM-HKNTEN (1)
+           ADD     SYU-SKYMONEY      TO  SUM-MONEY  (1)
+           ADD     1                   TO  SUM-KENSU  (1)
+           IF      IDX                 >   ZERO
+               COMPUTE IDY     =   IDX     +   1
+               IF      IDX     <   8
+                   ADD     SYU-TOTAL-HKNTEN
+                                       TO  SUM-HKNTEN (IDY)
+               END-IF
+               ADD     WRK-MONEY       TO  SUM-MONEY(IDY)
+               ADD     1               TO  SUM-KENSU(IDY)
+               ADD     WRK-JIHI        TO  SUM-MONEY(8)
+           END-IF
+      *
+           .
+       3201-BODY-H200401-MAE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ä¢É¼ÊÔ½¸<ÌÀºÙ¹Ô>½èÍý
+      *****************************************************************
+       3201-BODY-H200401-ATO-SEC   SECTION.
+      *
+      *    ÊÝ¸±ÊÌ¶â³Û¡Ê¼ÒÊÝËÜ¿Í¡Á¼«ÇåÀÕ¡Ë
+           MOVE    ZERO                TO  IDX
+           EVALUATE    SYU-SYUHKNNUM
+      *        ¸øÈñÃ±ÆÈ
+               WHEN    SPACE
+                   MOVE    5                   TO  IDX
+      *        ¸ø³²
+               WHEN    WRK-CONS-KOUGAI-HKNNUM
+                   MOVE    9                   TO  IDX
+      *        ¼«ÇåÀÕ
+               WHEN    WRK-CONS-JIBAI-HKNNUM
+                   MOVE    8                   TO  IDX
+      *        Ï«ºÒ
+               WHEN    WRK-CONS-ROUSAI-HKNNUM
+                   MOVE    7                   TO  IDX
+      *        ¹ñÊÝ
+               WHEN    "060"
+               WHEN    "067"
+               WHEN    "068"
+               WHEN    "069"
+                   MOVE    3                   TO  IDX
+      *        ¸å´ü¹âÎð
+               WHEN    "039"
+                   MOVE    4                   TO  IDX
+      *        ¤½¤ÎÂ¾
+               WHEN    OTHER
+      *            ¼«Èñ
+                   IF      SYU-SYUHKNNUM(1:2) = "98"
+                       MOVE    6                   TO  IDX
+                   ELSE
+      *                ¼ÒÊÝ
+                       PERFORM 3201-PTHKNINF-HENSYU-SEC
+                       EVALUATE    PTHKN-HONKZKKBN
+                           WHEN    "1"
+                               MOVE    1                   TO  IDX
+                           WHEN    "2"
+                               MOVE    2                   TO  IDX
+                       END-EVALUATE
+                   END-IF
+           END-EVALUATE
+      *
+           IF      IDX                 >   ZERO
+      *        ¼«Èñ°Ê³°¤Î¤È¤­¼«ÈñÊ¬¤À¤±½¸·×
+               IF      IDX             =   6
+                   MOVE    ZERO            TO  WRK-JIHI
+               ELSE
+                   COMPUTE WRK-JIHI    =   SYU-TOTAL-TGMONEY
+                                       +   SYU-TOTAL-TGMONEY-TAX
+                                       +   SYU-JIHI-TOTAL
+                                       +   SYU-JIHI-TOTAL-TAX
+                                       +   SYU-RMSAGAKU
+                                       +   SYU-SKYMONEY-SKJ-JIHI-KEI
+                   IF      SYU-SRYYMD  <   CONST-H190401
+                       COMPUTE WRK-JIHI    =   WRK-JIHI 
+                                           +   SYU-JIHI-TAX
+                   END-IF
+               END-IF
+      *
+               IF      IDX  =  7  OR  8 OR  9
+                   COMPUTE WRK-MONEY   =   SYU-RSIJIBAI-SKYMONEY
+                                       -   WRK-JIHI
+               ELSE
+                   COMPUTE WRK-MONEY   =   SYU-SKYMONEY
+                                       -   WRK-JIHI
+                   IF      WRK-JIHI    NOT =  ZERO
+                       IF  ((SYU-DISCOUNT-TEIRITU  NOT =  SPACE) AND
+                            (SYU-DISCOUNT-RATE     NOT =  ZERO ))
+                       OR  ( SYU-CHOSEI            NOT =  ZERO  )
+                            CONTINUE
+                       ELSE
+                           COMPUTE WRK-MONEY   =   SYU-HKNTEKMONEY
+                                               +   SYU-RJN-FTN
+                                               +   SYU-KOH-FTN
+                                               +   SYU-YKZ-FTN
+                                               +   SYU-SKYMONEY-SKJ-KEI
+                           COMPUTE WRK-JIHI    =   SYU-SKYMONEY
+                                               -   WRK-MONEY
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF      WRK-MONEY       <   0
+                   MOVE    WRK-MONEY   TO  WRK-Z99
+                   MOVE    WRK-Z99     TO  HCM41-MONEY(IDX CNT-LINE)
+               ELSE
+                   MOVE    WRK-MONEY   TO  WRK-Z9
+                   MOVE    WRK-Z9      TO  HCM41-MONEY(IDX CNT-LINE)
+               END-IF
+               IF      IDX             =   6
+                   CONTINUE
+               ELSE
+                   IF      WRK-JIHI    >   ZERO
+                       MOVE    WRK-JIHI    TO  WRK-Z9
+                       MOVE    "*"         TO  WRK-Z9 (2:1)
+                       MOVE    WRK-Z9      TO  HCM41-MONEY (7 CNT-LINE)
+                   END-IF
+               END-IF
+           END-IF
+      *
+           ADD     SYU-TOTAL-HKNTEN    TO  SUM-HKNTEN (1)
+           ADD     SYU-SKYMONEY        TO  SUM-MONEY  (1)
+           ADD     1                   TO  SUM-KENSU  (1)
+           IF      IDX                 >   ZERO
+               COMPUTE IDY     =   IDX     +   1
+               IF      IDX     <   7
+                   ADD     SYU-TOTAL-HKNTEN    TO  SUM-HKNTEN (IDY)
+               END-IF
+               ADD     WRK-MONEY       TO  SUM-MONEY(IDY)
+               ADD     1               TO  SUM-KENSU(IDY)
+               ADD     WRK-JIHI        TO  SUM-MONEY(7)
+           END-IF
+      *
+           .
+       3201-BODY-H200401-ATO-EXT.
+           EXIT.
+      *
+      *----(04.02.01)--ADD-END-----
       *****************************************************************
       *          *    Ä¢É¼ÊÔ½¸<¹ç·×>½èÍý
       *****************************************************************
@@ -662,10 +843,19 @@
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       11
-               IF      IDX                 <   9
-                   MOVE    SUM-HKNTEN(IDX) TO  WRK-Z8
-                   MOVE    WRK-Z8          TO  HCM41-GHKNTEN(IDX)
+      *----(04.02.01)--UPD-START---
+               IF      ORCBD008-SYORIYMD   <   CONST-H200401
+                   IF      IDX                 <   9
+                       MOVE    SUM-HKNTEN(IDX) TO  WRK-Z8
+                       MOVE    WRK-Z8          TO  HCM41-GHKNTEN(IDX)
+                   END-IF
+               ELSE
+                   IF      IDX                 <   8
+                       MOVE    SUM-HKNTEN(IDX) TO  WRK-Z8
+                       MOVE    WRK-Z8          TO  HCM41-GHKNTEN(IDX)
+                   END-IF
                END-IF
+      *----(04.02.01)--UPD-END-----
                IF      SUM-MONEY (IDX)     <   0
                    MOVE    SUM-MONEY(IDX)  TO  WRK-Z99
                    MOVE    WRK-Z99         TO  HCM41-GMONEY(IDX)
@@ -704,7 +894,10 @@
                                    TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
-           MOVE    "HCM41V01.red"  TO  SPRT-PRTID
+      *----(04.02.01)--UPD-START---
+      *     MOVE    "HCM41V01.red"  TO  SPRT-PRTID
+           MOVE    "HCM41V02.red"  TO  SPRT-PRTID
+      *----(04.02.01)--UPD-END-----
            IF      ORCBD008-SYORIKBN   =   "1" OR "3"
                MOVE    "Æü·×É½¡ÊÅÁÉ¼È¯¹ÔÆü¡Ë"
                                        TO  SPRT-TITLE

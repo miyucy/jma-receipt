@@ -398,6 +398,7 @@ FORM_files = \
               HCN03BN.red\
 	      HCN03BO.red\
               HCM55V01.red \
+              HCM41V02.red \
 	      
 all:   
 
