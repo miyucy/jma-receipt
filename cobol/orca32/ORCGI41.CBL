@@ -8349,6 +8349,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        WHEN   "197000570"
                            MOVE
                           "¿©Æ²²Ã»»"           TO  TNS-NAME
+                     END-EVALUATE
                    END-IF
                    MOVE    ZERO                TO  FLG-TENSU
                ELSE
