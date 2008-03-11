@@ -122,6 +122,8 @@
       *
            03  WRK-DRCD            PIC X(05).
       *
+           03  WRK-CNT             PIC 9(03).
+      *
       *
        01  TBL-DATA-AREA.
       *    ドクター毎
@@ -322,6 +324,7 @@
       *****************************************************************
        300-HC62-SYORI-SEC             SECTION.
       *
+           MOVE    ZERO                TO  WRK-CNT
            PERFORM VARYING     IDX-T1  FROM    1   BY  1
                    UNTIL      (IDX-T1  >   10   )
                IF      TBL-MAX (IDX-T1)    NOT =   ZERO
@@ -341,7 +344,9 @@
            INITIALIZE                  ORCHC62AREA
       *    診療日
            MOVE    SPA-SRYYMD          TO  ORCHC62-SRYYMD
-      *   ドクター
+           ADD     1                   TO  WRK-CNT
+           MOVE    WRK-CNT             TO  ORCHC62-CNT
+      *    ドクター
            MOVE    TBL-DRCD (IDX-T1)   TO  ORCHC62-DRCD
       *    投薬内容
            PERFORM VARYING     IDX-T2  FROM    1   BY  1
@@ -400,23 +405,23 @@
                END-PERFORM
            END-PERFORM
       *TEST
-           DISPLAY "ORCHC62-DRCD:" ORCHC62-DRCD
-           DISPLAY "ORCHC62-ZAI-MAX:" ORCHC62-ZAI-MAX
-           PERFORM VARYING    IDX   FROM    1  BY  1
-                   UNTIL      IDX   >  ORCHC62-ZAI-MAX
-             DISPLAY "ORCHC62-ZAIKAIKEI:" ORCHC62-ZAIKAIKEI (IDX)
-               ",SRYKBN:" ORCHC62-SRYKBN (IDX)
-               ",SRYSYUKBN:" ORCHC62-SRYSYUKBN (IDX)
-               ",ZAINUM:" ORCHC62-ZAINUM (IDX)
-              PERFORM VARYING    IDY   FROM    1  BY  1
-                   UNTIL      IDY   >  50 
-              IF      ORCHC62-SRYCD (IDX IDY)  NOT =   SPACE
-             DISPLAY "ORCHC62-SRYCD:" ORCHC62-SRYCD (IDX IDY)
-                     ",ORCHC62-SRYSURYO:" ORCHC62-SRYSURYO (IDX IDY)
-                   ",COMMNT:"  ORCHC62-INPUTCOMENT (IDX IDY)(1:10)
-              END-IF
-               END-PERFORM 
-           END-PERFORM 
+      *    DISPLAY "ORCHC62-DRCD:" ORCHC62-DRCD
+      *    DISPLAY "ORCHC62-ZAI-MAX:" ORCHC62-ZAI-MAX
+      *    PERFORM VARYING    IDX   FROM    1  BY  1
+      *            UNTIL      IDX   >  ORCHC62-ZAI-MAX
+      *      DISPLAY "ORCHC62-ZAIKAIKEI:" ORCHC62-ZAIKAIKEI (IDX)
+      *        ",SRYKBN:" ORCHC62-SRYKBN (IDX)
+      *        ",SRYSYUKBN:" ORCHC62-SRYSYUKBN (IDX)
+      *        ",ZAINUM:" ORCHC62-ZAINUM (IDX)
+      *       PERFORM VARYING    IDY   FROM    1  BY  1
+      *            UNTIL      IDY   >  50 
+      *       IF      ORCHC62-SRYCD (IDX IDY)  NOT =   SPACE
+      *      DISPLAY "ORCHC62-SRYCD:" ORCHC62-SRYCD (IDX IDY)
+      *              ",ORCHC62-SRYSURYO:" ORCHC62-SRYSURYO (IDX IDY)
+      *            ",COMMNT:"  ORCHC62-INPUTCOMENT (IDX IDY)(1:10)
+      *       END-IF
+      *        END-PERFORM 
+      *    END-PERFORM 
       *TEST
       *    印刷処理
            PERFORM 300-HC62-PRINT-SEC

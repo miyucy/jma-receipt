@@ -26,6 +26,8 @@
        01  ORCHC62AREA.
       *    診療日
            03  ORCHC62-SRYYMD          PIC X(08).
+      *    処理回数
+           03  ORCHC62-CNT             PIC 9(03).
       *   ドクター
            03  ORCHC62-DRCD            PIC X(05).
       *    処方内容
