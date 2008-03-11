@@ -1,5 +1,8 @@
 G03	{
 	fixed	{
+		B04	{
+			label	varchar(8);
+		};
 		MARKHISSU	{
 			style   varchar(20);
 			value	varchar(01);

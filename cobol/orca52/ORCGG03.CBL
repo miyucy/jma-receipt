@@ -56,10 +56,12 @@
            03  FLG-SYSKANRI                    PIC 9(01).
            03  FLG-TOUKEIMEMO                  PIC 9(01).
            03  FLG-ERR                         PIC 9(01).
+           03  FLG-HIT                         PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                            PIC 9(05).
            03  IDX1                            PIC 9(05).
+           03  IDX2                            PIC 9(05).
            03  IDXA                            PIC 9(05).
       *
        01  WRK-AREA.
@@ -103,11 +105,17 @@
       *    パラメータ最大個数
            03  WRK-CONS-PARA-MAX               PIC 9(05) VALUE 8.
       *
+       01  WTMEMO-AREA.
+           COPY    "CPTOUKEIMEMO.INC"  REPLACING   //TKIMEMO-//
+                                              BY   //WTMEMO-//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
       *
       *    システム管理
+           COPY    "CPSYSKANRI.INC".
+           COPY    "CPSK0044.INC".
            COPY    "CPSK3002.INC".
            COPY    "CPSK3003.INC".
       *
@@ -149,6 +157,10 @@
       *
       *    患者番号変換サブ
            COPY    "CPORCSPTNUM.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -310,9 +322,19 @@
            END-PERFORM
       *
            MOVE    SPA-G01-SEL         TO  WRK-KBNCD
-           PERFORM 3101-TOKEIMEMO-SEL-SEC
       *
-           MOVE    TKIMEMO-MEMO        TO  SPA-GMN-G03-MEMO
+           PERFORM 3102-TOKEIMEMO-SEL-SEC
+           MOVE    TOUKEIMEMO-REC  TO  WTMEMO-AREA
+           IF    ( FLG-TOUKEIMEMO  =   ZERO )
+               MOVE    1               TO  SPA-NAI-G03-PARAARI
+           END-IF
+      *
+           PERFORM 3101-TOKEIMEMO-SEL-SEC
+           IF    ( FLG-TOUKEIMEMO  =   ZERO )
+               MOVE    TKIMEMO-MEMO    TO  SPA-GMN-G03-MEMO
+           ELSE
+               MOVE    WTMEMO-MEMO     TO  SPA-GMN-G03-MEMO
+           END-IF
       *
            MOVE    2                   TO  SPA-GMN-G03-CUR
       *
@@ -338,23 +360,31 @@
            MOVE    "tbl_toukeimemo"    TO  WRK-MCP-TABLE
            MOVE    "key2"              TO  WRK-MCP-PATHNAME
            PERFORM 900-TOUKEIMEMO-SEL-SEC
-           IF    ( FLG-TOUKEIMEMO  NOT =   ZERO )
-               INITIALIZE                  TOUKEIMEMO-REC
-               MOVE    SPA-HOSPNUM     TO  TKIMEMO-HOSPNUM
-               MOVE    SPA-GMN-G03-PRGNAME
-                                       TO  TKIMEMO-PGID
-               MOVE    "0000"          TO  TKIMEMO-KANRICD
-               MOVE    "000"           TO  TKIMEMO-KBNCD
-               MOVE    "00000000"      TO  TKIMEMO-STYUKYMD
-               MOVE    "99999999"      TO  TKIMEMO-EDYUKYMD
-               MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
-               MOVE    "tbl_toukeimemo"    TO  WRK-MCP-TABLE
-               MOVE    "key"               TO  WRK-MCP-PATHNAME
-               PERFORM 900-TOUKEIMEMO-SEL-SEC
-           END-IF
            .
       *
        3101-TOKEIMEMO-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    統計メモテーブル検索処理(標準パラメタ検索）
+      *****************************************************************
+       3102-TOKEIMEMO-SEL-SEC          SECTION.
+      *
+           INITIALIZE                  TOUKEIMEMO-REC
+           MOVE    SPA-HOSPNUM     TO  TKIMEMO-HOSPNUM
+           MOVE    SPA-GMN-G03-PRGNAME
+                                   TO  TKIMEMO-PGID
+           MOVE    "0000"          TO  TKIMEMO-KANRICD
+           MOVE    "000"           TO  TKIMEMO-KBNCD
+           MOVE    "00000000"      TO  TKIMEMO-STYUKYMD
+           MOVE    "99999999"      TO  TKIMEMO-EDYUKYMD
+           MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
+           MOVE    "tbl_toukeimemo"    TO  WRK-MCP-TABLE
+           MOVE    "key"               TO  WRK-MCP-PATHNAME
+           PERFORM 900-TOUKEIMEMO-SEL-SEC
+      *
+           .
+      *
+       3102-TOKEIMEMO-SEL-EXT.
            EXIT.
       *****************************************************************
       *    画面遷移処理
@@ -372,6 +402,9 @@
            WHEN    "CLICKED"       ALSO    "B02"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
                PERFORM 230-CLEAR-SEC
+      *    説明更新
+           WHEN    "CLICKED"       ALSO    "B04"
+               PERFORM 240-PARAUPDATE-SEC
       *    OK
            WHEN    "CLICKED"       ALSO    "B12"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
@@ -677,6 +710,159 @@
            EXIT.
       *
       *****************************************************************
+      *    パラメタ説明更新
+      *****************************************************************
+       240-PARAUPDATE-SEC              SECTION.
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
+           MOVE    SPA-G01-SEL         TO  WRK-KBNCD
+      *
+           IF    ( SPA-NAI-G03-PARAARI =   1 )
+               PERFORM 2401-PARAUPDATE-SEC
+               IF    ( SPA-ERRCD       =   SPACE )
+                   PERFORM 2402-PARAUPDATE-SEC
+               END-IF
+      *
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+      *
+               INITIALIZE                      SYSKANRI-REC
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+               MOVE    "3002"              TO  SYS-KANRICD
+               MOVE    WRK-KBNCD-G         TO  SYS-KBNCD
+               MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               IF    ( FLG-SYSKANRI        =   ZERO )
+      *
+                   MOVE    SYSKANRI-REC    TO  SYS-3002-REC
+      *
+                   MOVE    SPA-G01-SEL     TO  IDX0
+                   MOVE    SYS-3002-HCNAME TO  SPA-GMN-G01-HCNAME (IDX0)
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL ( IDX1    >   WRK-CONS-PARA-MAX )
+                       MOVE    SYS-3002-PARAHYOJI (IDX1)
+                                   TO  SPA-GMN-G01-PARAHYOJI (IDX0 IDX1)
+                                       SPA-GMN-G03-PARAHYOJI (IDX1)
+                       MOVE    SYS-3002-PARA (IDX1)
+                                   TO  SPA-NAI-G01-PARA  (IDX0 IDX1)
+                                       SPA-NAI-G03-PARA  (IDX1)
+                       MOVE    SYS-3002-HISSU-KBN (IDX1)
+                                   TO  SPA-NAI-G01-HISSU-KBN (IDX0 IDX1)
+                                       SPA-NAI-G03-HISSU-KBN (IDX1)
+                   END-PERFORM
+               END-IF
+      *
+      *
+               PERFORM 3101-TOKEIMEMO-SEL-SEC
+               IF    ( FLG-TOUKEIMEMO      =   ZERO )
+                   MOVE    TKIMEMO-MEMO    TO  SPA-GMN-G03-MEMO
+               END-IF
+      *
+               PERFORM 4201-CHK-CHK-SEC
+           END-IF
+      *
+           .
+       240-PARAUPDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメタ説明更新（統計メモ）
+      *****************************************************************
+       2401-PARAUPDATE-SEC             SECTION.
+      *
+           PERFORM 3102-TOKEIMEMO-SEL-SEC
+           MOVE    TOUKEIMEMO-REC  TO  WTMEMO-AREA
+           IF    ( FLG-TOUKEIMEMO  =   ZERO )
+      *
+               PERFORM 3101-TOKEIMEMO-SEL-SEC
+               IF    ( FLG-TOUKEIMEMO  =   ZERO )
+                   MOVE    WTMEMO-MEMO     TO  TKIMEMO-MEMO
+                   MOVE    SMCNDATE-YMD    TO  TKIMEMO-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  TKIMEMO-UPHMS
+                   MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
+                   MOVE    "tbl_toukeimemo" TO MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBUPDATE-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    "0006"      TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       2401-PARAUPDATE-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメタ説明更新（システム管理）
+      *****************************************************************
+       2402-PARAUPDATE-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HIT
+      *
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    "3002"              TO  SYS-KANRICD
+           MOVE    WRK-KBNCD-G         TO  SYS-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           IF    ( FLG-SYSKANRI        =   ZERO )
+               MOVE    SYSKANRI-REC    TO  SYS-3002-REC
+      *
+               INITIALIZE                      SYSKANRI-REC
+               MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+               MOVE    "0044"              TO  SYS-KANRICD
+               MOVE    SPA-SYSYMD          TO  SYS-STYUKYMD
+                                               SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-0044-REC
+      *
+               PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                        OR   ( FLG-HIT         NOT =   ZERO )
+      *
+                   IF    ( SYS-0044-PRGNAME    =   SYS-3002-PRGNAME )
+                       MOVE    SYS-0044-HCNAME TO  SYS-3002-HCNAME
+                       PERFORM VARYING IDX2    FROM    1   BY  1
+                               UNTIL ( IDX2    >   10 )
+                           MOVE    SYS-0044-PARAHYOJI (IDX2)
+                                       TO  SYS-3002-PARAHYOJI (IDX2)
+                           MOVE    SYS-0044-PARA (IDX2)
+                                       TO  SYS-3002-PARA (IDX2)
+                           MOVE    SYS-0044-HISSU-KBN (IDX2)
+                                       TO  SYS-3002-HISSU-KBN (IDX2)
+                       END-PERFORM
+      *
+                       MOVE    SYS-3002-REC    TO  SYSKANRI-REC
+                       MOVE    SMCNDATE-YMD    TO  SYS-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  SYS-UPHMS
+                       MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+                       MOVE    "tbl_syskanri"  TO MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBUPDATE-SEC
+                       IF    ( MCP-RC          NOT =   ZERO )
+                           MOVE    "0007"      TO  SPA-ERRCD
+                       END-IF
+      *
+                       MOVE    1               TO  FLG-HIT
+      *
+                   END-IF
+      *
+                   PERFORM 900-SYSKANRI-KEY2-FET-SEC
+                   MOVE    SYSKANRI-REC    TO  SYS-0044-REC
+               END-PERFORM
+      *
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           END-IF
+      *
+           .
+       2402-PARAUPDATE-EXT.
+           EXIT.
+      *****************************************************************
       *    個別出力処理
       *****************************************************************
        420-CHK-CHK-SEC                 SECTION.
@@ -743,6 +929,11 @@
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
+      *
+           IF    ( SPA-NAI-G03-PARAARI =   1 )
+               MOVE    "説明更新"      TO  G03-B04-LABEL
+           END-IF
+      *
       *
            MOVE    "red"               TO  G03-MARKHISSU-STYLE
            MOVE    "*"                 TO  G03-MARKHISSU
@@ -911,6 +1102,10 @@
            WHEN    "0005"
                MOVE    "対象の処理が選択されていません"
                                                    TO  SPA-ERRMSG
+           WHEN    "0006"
+           WHEN    "0007"
+               MOVE    "パラメタ説明の更新に失敗しました"
+                                                   TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  GERR
@@ -1021,6 +1216,17 @@
        800-KANA-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
+      *****************************************************************
       *    統計メモテーブル検索処理
       *****************************************************************
        900-TOUKEIMEMO-SEL-SEC          SECTION.
@@ -1064,6 +1270,175 @@
       *
            .
        900-TOUKEIMEMO-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理(KEY10)
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               MOVE    1           TO  FLG-SYSKANRI
+               INITIALIZE              SYSKANRI-REC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key10"         TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYSKANRI-KEY10-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理検索処理(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               MOVE    1           TO  FLG-SYSKANRI
+               INITIALIZE              SYSKANRI-REC
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム管理FETCH処理(KEY2)
+      *****************************************************************
+       900-SYSKANRI-KEY2-FET-SEC       SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYSKANRI
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               MOVE    1           TO  FLG-SYSKANRI
+               INITIALIZE              SYSKANRI-REC
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHも行う)
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF    ( MCP-RC          =   ZERO )
+               PERFORM 910-DBFETCH-SEC
+           END-IF
+      *
+           .
+      *
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHは行わない)
+      *****************************************************************
+       911-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       911-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       910-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBFETCH-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       910-DBCLOSECURSOR-SEC                 SECTION.
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBCLOSECURSOR-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＤＥＬＥＴＥ処理
+      *****************************************************************
+       910-DBDELETE-SEC                 SECTION.
+      *
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBDELETE-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＩＮＳＥＲＴ処理
+      *****************************************************************
+       910-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBINSERT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＵＰＤＡＴＥ処理
+      *****************************************************************
+       910-DBUPDATE-SEC                SECTION.
+      *
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
       *    ＰＵＴ　処理
