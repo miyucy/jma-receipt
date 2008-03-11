@@ -100,6 +100,7 @@
        01  CNT-AREA.
            03  CNT-SST                             PIC 9(05).
            03  CNT-SEL                             PIC 9(05).
+           03  CNT-NYUKSNKBNCHK                    PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -1943,6 +1944,11 @@
       *
            END-PERFORM
       *
+           IF    ( SPA-ERRCD   =   SPACE )
+      *        入院加算情報チェック処理-施設基準チェック処理
+               PERFORM 4901-SSTKIJUN-CHK-SEC
+           END-IF
+      *
            .
       *
        4102-KIHON-CHK-EXT.
@@ -2144,11 +2150,6 @@
                    END-PERFORM
                END-IF
            END-PERFORM
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-      *        入院加算情報チェック処理-施設基準チェック処理
-               PERFORM 4901-SSTKIJUN-CHK-SEC
-           END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
                MOVE    "3001"           TO  SPA-WIDCD
@@ -3908,13 +3909,6 @@
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
-      *    入院加算情報チェック処理-施設基準チェック処理
-           PERFORM 4901-SSTKIJUN-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO  TO  4900-KANRENCHK-EXT
-           END-IF
-      *
-      *
            .
       *
        4900-KANRENCHK-EXT.
@@ -4043,6 +4037,7 @@
                                        FLG-KSNERR
                                        WRK-NYUKSNKBN-G
                                        WRK-KSNKSNKBN
+                                       CNT-NYUKSNKBNCHK
       *
            IF    ( SPA-NAI-W21-BTUKHNCD    NOT =   SPACE )
                EVALUATE    SPA-NAI-W21-BTUKHNCD
@@ -4128,6 +4123,8 @@
                             OR   ( FLG-HIT =   1 )
       *
                        IF    ( WRK-NYUKSNKBN (IDX6)    >   ZERO )
+                           COMPUTE CNT-NYUKSNKBNCHK
+                               =   CNT-NYUKSNKBNCHK    +   1
                            MOVE    WRK-NYUKSNKBN (IDX6)
                                                        TO  WRK-NYUINKBN
                            MOVE    WRK-KSNKSNKBN       TO  WRK-KSNKBN
@@ -4140,8 +4137,10 @@
                        END-IF
                    END-PERFORM
       *
-                   IF    ( FLG-HIT     =       ZERO )
-                       MOVE    1       TO      FLG-KSNERR
+                   IF    ( CNT-NYUKSNKBNCHK    >   ZERO )
+                       IF    ( FLG-HIT     =       ZERO )
+                           MOVE    1       TO      FLG-KSNERR
+                       END-IF
                    END-IF
                END-IF
            END-IF
