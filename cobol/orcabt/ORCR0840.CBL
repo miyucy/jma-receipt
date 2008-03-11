@@ -132,6 +132,7 @@
       *  04.01.06    NACL-門脇    07/12/19  入院料未算定日対応
       *  04.01.07    NACL-門脇    08/01/15  公害対応
       *  04.01.08    NACL-門脇    08/02/12  処方料等カウント修正
+      *  04.02.01    NACL-門脇    08/03/10  ○○にて入院料算定済のフラグ編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -8023,7 +8024,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
              IF      SYU-DAY(IDY)    =    "2"
       *
                 IF         WRK-DAY5(IDY)      NOT =  ZERO
-                AND        WRK-DAY1(IDY)      NOT =  ZERO
+      ***       AND        WRK-DAY1(IDY)      NOT =  ZERO
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    RECE82-HOSPNUM  TO  COMB-HOSPNUM
                    MOVE    RECE82-PTID     TO  COMB-PTID

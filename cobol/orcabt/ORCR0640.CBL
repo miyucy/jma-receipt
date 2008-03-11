@@ -288,6 +288,7 @@
       *  04.02.01    NACL-門脇    08/02/20  主保険がない場合の食事療養費欄
       *                                     編集修正
       *  04.02.02    NACL-門脇    08/03/06  生保一部負担金編集修正
+      *  04.02.03    NACL-門脇    08/03/10  ○○にて入院料算定済のフラグ編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -9485,7 +9486,7 @@
              IF      SYU-DAY(IDY)    =    "2"
       *
                 IF         WRK-DAY5(IDY)      NOT =  ZERO
-                AND        WRK-DAY1(IDY)      NOT =  ZERO
+      ***       AND        WRK-DAY1(IDY)      NOT =  ZERO
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    RECE62-HOSPNUM  TO  COMB-HOSPNUM
                    MOVE    RECE62-PTID     TO  COMB-PTID

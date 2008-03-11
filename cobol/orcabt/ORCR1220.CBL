@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-門脇    08/03/10  ○○にて入院料算定済のフラグ編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5008,7 +5009,7 @@
              IF      SYU-DAY(IDY)    =    "2"
       *
                 IF         WRK-DAY5(IDY)      NOT =  ZERO
-                AND        WRK-DAY1(IDY)      NOT =  ZERO
+      ***       AND        WRK-DAY1(IDY)      NOT =  ZERO
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    RECE200-HOSPNUM TO  COMB-HOSPNUM
                    MOVE    RECE200-PTID    TO  COMB-PTID
