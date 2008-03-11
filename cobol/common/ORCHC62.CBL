@@ -706,7 +706,8 @@
            MOVE    "HC62"          TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID      TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
-           MOVE    CNT-PAGE        TO  HC01PARA-CNT
+           MOVE    ORCHC62-CNT     TO  HC01PARA-CNT(1:3)
+           MOVE    CNT-PAGE        TO  HC01PARA-CNT(4:3)
            OPEN    OUTPUT              PRT-FILE
            MOVE    SPACE           TO  PRT-REC
       *
