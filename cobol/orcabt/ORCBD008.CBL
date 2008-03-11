@@ -175,10 +175,6 @@
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".
       *    公害保険番号
            03  WRK-CONS-KOUGAI-HKNNUM   PIC X(03)   VALUE  "975".
-      *----(04.02.01)--ADD-START---
-      *    後期高齢者番号
-           03  WRK-CONS-ROUJIN-HKNNUM   PIC X(03)   VALUE  "039".
-      *----(04.02.01)--ADD-END-----
       *
       *----(03.04.01)--ADD-START---
        01  CONST-AREA.
@@ -750,7 +746,8 @@
                        MOVE    3                   TO  IDX
                    END-IF
       *        後期高齢
-               WHEN    WRK-CONS-ROUJIN-HKNNUM
+               WHEN    "038"
+               WHEN    "039"
                    MOVE    4                   TO  IDX
       *        その他
                WHEN    OTHER
