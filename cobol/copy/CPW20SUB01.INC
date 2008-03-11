@@ -36,25 +36,6 @@
       *            ¥À‹ø«Œ≈π‘∞Ÿ•≥°º•…
                    07  W20SUB01-I-KHNSRYCD     PIC X(09).
       *
-      *        ∏°∫˜•≠°º£≤
-               05  W20SUB01-I-KEY2.
-      *            ∞Âª’øÙ∂Ë ¨
-                   07  W20SUB01-I-ISISUKBN     PIC X(01).
-      *            ¥«∏Óª’øÙ∂Ë ¨
-                   07  W20SUB01-I-KNGSISUKBN   PIC X(01).
-      *            …¬≈ÔºÔ Ã
-                   07  W20SUB01-I-BTUSBTKBN    PIC X(02).
-      *             ø∂—∫ﬂ±°∆¸øÙ
-                   07  W20SUB01-I-HEIKINZAIKBN PIC X(02).
-      *            ¥«∏Ó«€√÷
-                   07  W20SUB01-I-KANGOHAICHIKBN
-                                               PIC X(02).
-      *            ¥«∏Ó»ÊŒ®
-                   07  W20SUB01-I-KANGOHIRITUKBN
-                                               PIC X(02).
-      *            ¥«∏Ó ‰Ωı«€√÷
-                   07  W20SUB01-I-KANGOHOJOHAICHIKBN
-                                               PIC X(02).
            03  W20SUB01-OT.
       *
       *        •Í•ø°º•Û•≥°º•…° £∞°ß¿µæÔ°ø£±°ß≥∫≈ˆ§ §∑≈˘°À
@@ -66,17 +47,3 @@
       *        ¥À‹≈¿øÙ
                05  W20SUB01-O-KHNTEN           PIC  9(06).
       *        ª‹¿ﬂ¥Ω‡∂Ë ¨
-               05  W20SUB01-O-SSTKIJUNKBN      PIC X(01).
-      *        …¬≈ÔºÔ Ã
-               05  W20SUB01-O-BTUSBTKBN        PIC X(02).
-      *         ø∂—∫ﬂ±°∆¸øÙ
-               05  W20SUB01-O-HEIKINZAIKBN     PIC X(02).
-      *        ¥«∏Ó«€√÷
-               05  W20SUB01-O-KANGOHAICHIKBN
-                                               PIC X(02).
-      *        ¥«∏Ó»ÊŒ®
-               05  W20SUB01-O-KANGOHIRITUKBN
-                                               PIC X(02).
-      *        ¥«∏Ó ‰Ωı«€√÷
-               05  W20SUB01-O-KANGOHOJOHAICHIKBN
-                                               PIC X(02).
