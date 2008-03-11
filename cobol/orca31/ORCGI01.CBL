@@ -10996,10 +10996,6 @@
                       UNTIL      (WRK-NYUKHNKSN-SRYCD(IDX8)  =  SPACE)
                          OR      (IDX8   >     20)
                          PERFORM   4801-NYUKSN-CHK-SEC
-      *
-      *                 入院料加算テーブル整備するまで暫定で加算チェック外す
-                         MOVE    ZERO          TO    FLG-NYUKSN
-      *
                          IF     FLG-NYUKSN       =   ZERO   
                              ADD    1                TO  IDX9
                              MOVE   WRK-NYUKHNKSN-SRYCD(IDX8)  TO
