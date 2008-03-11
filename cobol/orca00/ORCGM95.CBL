@@ -152,6 +152,7 @@
                05  WRK-DRCDMEI         PIC X(24).
            03  WRK-SYU-DRCD            PIC X(05).
            03  WRK-MCP-WIDGET          PIC X(10).
+           03  WRK-YAKANKBN            PIC 9(01).
       *
            03  TBL-DRCD-AREA.
                05  TBL-DRCD-OCC        OCCURS   300.
@@ -199,6 +200,8 @@
            COPY  "CPSK1005.INC".
       *    担当医設定 
            COPY  "CPSK1011.INC".
+      *    施設規準 
+           COPY  "CPSK1006.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -369,14 +372,20 @@
       *****************************************************************
        3101-JIKANGAI-SET-SEC       SECTION.
       *
+           MOVE    ZERO                TO  WRK-YAKANKBN
+           IF     (SPA-NAI-SYSYMD      >=  "20080401" )
+             AND  (SPA-HOSPSBT         =   2          )
+      *        夜間・早朝加算施設規準
+               PERFORM 31011-KIJUN-CHK-SEC
+           END-IF
+      *
       *    時間外区分
            MOVE    "0 時間内"          TO  SPA-GMN-JIKANKBN-LST(1)
            MOVE    "1 時間外"          TO  SPA-GMN-JIKANKBN-LST(2)
            MOVE    "2 休日"            TO  SPA-GMN-JIKANKBN-LST(3)
            MOVE    "3 深夜"            TO  SPA-GMN-JIKANKBN-LST(4)
            MOVE    "4 時間外特例"      TO  SPA-GMN-JIKANKBN-LST(5)
-           IF     (SPA-NAI-SYSYMD      >=  "20080401" )
-             AND  (SPA-HOSPSBT         =   2          ) 
+           IF      WRK-YAKANKBN        =   1
                MOVE    "8 夜間・早朝"      TO  SPA-GMN-JIKANKBN-LST(6)
                MOVE    6                   TO  SPA-JIKANKBN-MAX
            ELSE
@@ -396,6 +405,50 @@
            END-PERFORM
            .
        3101-JIKANGAI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    夜間・早朝加算施設規準処理
+      *****************************************************************
+       31011-KIJUN-CHK-SEC          SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1006-REC
+           INITIALIZE                      SYS-1006-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
+           MOVE    "1006"              TO  SYS-1006-KANRICD
+           MOVE    SPA-NAI-SYSYMD      TO  SYS-1006-STYUKYMD
+           MOVE    SPA-NAI-SYSYMD      TO  SYS-1006-EDYUKYMD
+      *    システム管理検索（施設基準）
+           MOVE    SYS-1006-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1006-REC
+               INITIALIZE                  SYS-1006-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM UNTIL   FLG-SYSKANRI    =   1
+               MOVE    MCPDATA-REC         TO  SYS-1006-REC
+               IF      SYS-1006-KBNCD      =   "2"
+      *            夜間・早朝加算
+                   IF      SYS-1006-SSTKIJUN (172) =   1
+                       MOVE    1               TO  WRK-YAKANKBN
+                   ELSE
+                       MOVE    0               TO  WRK-YAKANKBN
+                   END-IF
+               END-IF
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       31011-KIJUN-CHK-EXT.
            EXIT.
       *
       *****************************************************************

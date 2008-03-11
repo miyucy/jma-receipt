@@ -1256,15 +1256,15 @@
            END-PERFORM
       *
       *    啣恓棋說芊
-           MOVE    "0 贗殺陸"
+           MOVE    "0 贗迕陸"
                                        TO  SPA-GMN-IRYOKANCOB (1)
            MOVE    "1 ェ情請侳嫖"
                                        TO  SPA-GMN-IRYOKANCOB (2)
-           MOVE    "2 轉情請侳嫖"
+           MOVE    "2 騷情請侳嫖"
                                        TO  SPA-GMN-IRYOKANCOB (3)
            MOVE    "3 ェ情騷情請侳嫖"
                                        TO  SPA-GMN-IRYOKANCOB (4)
-           MOVE    "4 啣恓棋說請侳嫖"
+           MOVE    "4 啣恓棋說芊燬迕"
                                        TO  SPA-GMN-IRYOKANCOB (5)
            MOVE    5                   TO  SPA-IRYOKAN-MAX
            PERFORM VARYING     IDX     FROM    1   BY  1

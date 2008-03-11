@@ -1711,7 +1711,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0002"
                    MOVE    "入力エラー"               TO  SPA-ERRMSG
                WHEN    "K002"
-                   MOVE    "警告！！施設規準がありません"
+                   MOVE    "警告！！施設基準がありません"
                                                       TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "項目に入力がありません"   TO  SPA-ERRMSG

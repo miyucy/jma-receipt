@@ -2663,16 +2663,19 @@
                   (FLG-JIKANKBN        =   ZERO )
       *           時間外指定が無い時
              AND  (SPA-COM-TIMEFLG (SPA-GMN-IDX) =   ZERO )
-               MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
+      *            夜間・早朝加算はなし
+               IF     (SPA-GAI-JIKANKBN    NOT =   8    ) 
+                   MOVE    SPA-GMN-INPUTCD (SPA-GMN-IDX)
                                            TO  WRK-INPUTCD
-               MOVE    SPACE               TO  SPA-GMN-INPUTCD
+                   MOVE    SPACE               TO  SPA-GMN-INPUTCD
                                                          (SPA-GMN-IDX)
-               MOVE    SPA-GAI-JIKANKBN    TO  SPA-GMN-INPUTCD
+                   MOVE    SPA-GAI-JIKANKBN    TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)(1:1)
-               MOVE    WRK-INPUTCD         TO  SPA-GMN-INPUTCD
+                   MOVE    WRK-INPUTCD         TO  SPA-GMN-INPUTCD
                                                      (SPA-GMN-IDX)(3:)
-               MOVE    SPA-GAI-JIKANKBN    TO  SPA-COM-TIMEFLG
+                   MOVE    SPA-GAI-JIKANKBN    TO  SPA-COM-TIMEFLG
                                                      (SPA-GMN-IDX)
+               END-IF
            END-IF
       *
            MOVE    1                   TO  FLG-SYONIKA

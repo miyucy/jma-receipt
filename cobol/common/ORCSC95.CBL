@@ -1128,6 +1128,12 @@
                    ELSE
                        MOVE    0               TO  SPA-DENSIKA
                    END-IF
+      *            夜間・早朝加算
+                   IF      SYS-1006-SSTKIJUN (172) =   1
+                       MOVE    1               TO  SPA-YAKANKBN
+                   ELSE
+                       MOVE    0               TO  SPA-YAKANKBN
+                   END-IF
                END-IF
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC

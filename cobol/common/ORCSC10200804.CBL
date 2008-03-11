@@ -1640,6 +1640,17 @@
                END-IF
            END-IF
       *
+      *    夜間・早朝加算
+           IF      WRK-COM-TIMEFLG(IDX-Z)  =   8
+               IF     (SPA-YAKANKBN        =   1  )
+                   CONTINUE
+               ELSE
+                   MOVE    "0210"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   GO      TO      1002-KASAN-SET-EXT
+               END-IF
+           END-IF
+      *
       *    ６歳以上の乳幼児特例時間外エラー
            IF      WRK-COM-TIMEFLG(IDX-Z)  =   5
                                            OR  6
@@ -3057,11 +3068,11 @@
       *        １回目
                WHEN    "113000810"
                    IF      WRK-LST-YMD(1:6)    =   SPA-SRYYMD(1:6)
-                       MOVE    "113009910"     TO  WRK-SRYCD
-                       MOVE    IDX-Z                TO  IDX-T
-                       MOVE    1                    TO  FLG-ARI
+                       MOVE    "113009910"         TO  WRK-SRYCD
+                       MOVE    IDX-Z               TO  IDX-T
+                       MOVE    1                   TO  FLG-ARI
                        PERFORM 1100-KASAN-SET-SEC
-                       MOVE    SPACE            TO  WRK-COM-AUTOKBN
+                       MOVE    SPACE               TO  WRK-COM-AUTOKBN
                                                           (IDX-Z)
                    END-IF
       *        ２回目
@@ -4887,49 +4898,6 @@
            .
        230-SIDOU-SYOSIN-EXT.
            EXIT.
-      *D
-      *****************************************************************
-      *    老人慢性疾患外来総合診察料との初診日チェック
-      *****************************************************************
-      *230-ROUMANSEI-SYOSIN-SEC            SECTION.
-      *
-      *    MOVE    ZERO                TO  FLG-KYUJITU
-      *    IF      LNK-ORCSC-SYOYMD    =   SPACE
-      *        MOVE    SPA-SRYYMD          TO  WRK-KEIYMD
-      *    ELSE
-      *        初診料算定日＋１月後
-      *        MOVE    LNK-ORCSC-SYOYMD    TO  WRK-KEIYMD
-      *        COMPUTE WRK-KEI-MM          =   WRK-KEI-MM
-      *                                    +   1
-      *        IF      WRK-KEI-MM          >   12
-      *            MOVE    1                   TO  WRK-KEI-MM
-      *            COMPUTE WRK-KEI-YY          =   WRK-KEI-YY
-      *                                        +   1
-      *        END-IF
-      *    END-IF
-      *    IF      LNK-ORCSC-SYOYMD(7:2)   =   "01"
-      *        初診料算定日が１日の時翌月から
-      *        IF      WRK-KEIYMD(1:6)     <=  SPA-SRYYMD(1:6)
-      *            CONTINUE
-      *        ELSE
-      *            MOVE    "0034"              TO  SPA-ERRCD
-      *        END-IF
-      *    ELSE
-      *        初診料算定日が１日以外の時、翌々月から
-      *        IF      WRK-KEIYMD(1:6)     <   SPA-SRYYMD(1:6)
-      *            CONTINUE
-      *        ELSE
-      *            MOVE    "0065"            TO  SPA-ERRCD
-      *        END-IF
-      *    END-IF
-      *
-      *    IF      SPA-ERRCD       NOT =   SPACE
-      *        MOVE    "1"             TO  WRK-COM-CUR  (IDX-Z)
-      *    END-IF
-      *    .
-      *230-ROUMANSEI-SYOSIN-EXT.
-      *D   EXIT.
-      *
       *****************************************************************
       *    特定薬剤治療管理料の算定チェック処理
       *****************************************************************

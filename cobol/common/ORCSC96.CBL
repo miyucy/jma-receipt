@@ -1879,6 +1879,11 @@
                    MOVE    "警告！既に当日算定回数を超えています。"
                                        TO  SPA-ERRMSG
       *Ｈ２０．４から
+               WHEN    "0210"
+                   STRING  "夜間・早朝加算の施設基準ではありません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K240"
                    STRING  "警告！！"
                            "初回算定から２年以上経過しています。"
