@@ -56,8 +56,10 @@
       *    ∞Ïª˛ŒŒ∞Ë
        01  WRK-AREA.
            03  WRK-TNS-NAME                        PIC X(200).
+           03  WRK-TNS-TEN                         PIC 9(05).
            03  WRK-PATHNAME                        PIC X(64).
            03  WRK-CHG-SRYCD                       PIC X(09).
+           03  WRK-SRYCD                           PIC X(09).
       *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
@@ -121,20 +123,12 @@
                MOVE    W20SUB01-I-KJNYMD   TO  NYUKHN-YUKOSTYMD
                                                NYUKHN-YUKOEDYMD
                MOVE    "key"               TO  WRK-PATHNAME
-      *
-      *    ¥«∏Ó«€√÷°¶ ø∂—∫ﬂ∆¸øÙ≈˘§«∏°∫˜
-           WHEN    "2"
-               PERFORM 200-SELKEY-SET-SEC
-      *
-               MOVE    "key2"              TO  WRK-PATHNAME
            WHEN    OTHER
                MOVE    1                   TO  W20SUB01-O-RC
            END-EVALUATE 
       *
            PERFORM 800-NYUKHN-SEL-SEC
            IF    ( FLG-NYUKHN      =   ZERO )
-      *
-               PERFORM 1001-NYUINRYO-CHG-CHK-SEC
       *
                PERFORM 1001-W20SUB01-0-HEN-SEC
            ELSE
@@ -143,61 +137,6 @@
       *
            .
        100-EDIT-EXT.
-          EXIT.
-      *****************************************************************
-      *    ∆˛±°Œ¡√÷¥πΩËÕ˝
-      *****************************************************************
-       1001-NYUINRYO-CHG-CHK-SEC       SECTION.
-      *
-           MOVE    SPACE               TO  WRK-CHG-SRYCD
-      *
-           EVALUATE TRUE
-      *    ¥«∏Ó«€√÷°¶ ø∂—∫ﬂ∆¸øÙ≈˘§«∏°∫˜§ŒæÏπÁ°¢
-      *    Õ≠æ≤ø«Œ≈ΩÍ£±∑≤∆˛±°¥À‹Œ¡£±§«°¢∆˛Œœ•—•È•·°º•ø§Œ
-      *    ∞Âª’øÙ∂Ë ¨§¨£±°¢¥«∏Óª’øÙ∂Ë ¨§¨£±§ŒæÏπÁ°¢
-      *    ¥«∏Ó°¶ £øÙ∞ÂŒ≈«€√÷≈¨πÁ§À√÷§≠¥π§®§Î
-      *    ° ¥Ω‡∆¸§¨£≤£∞£∞£¥«Ø£¥∑Ó£±∆¸∞ πﬂ§ŒæÏπÁ°À
-           WHEN  ( W20SUB01-I-KJNYMD       >=  "20040401"  )
-             AND ( W20SUB01-I-KBN          =   "2" )
-             AND ( NYUKHN-KHNSRYCD         =   "190097010" )
-             AND ( W20SUB01-I-ISISUKBN     =   "1" )
-             AND ( W20SUB01-I-KNGSISUKBN   =   "1" )
-               MOVE    "190117670"     TO  WRK-CHG-SRYCD
-      *    ¥«∏Ó«€√÷°¶ ø∂—∫ﬂ∆¸øÙ≈˘§«∏°∫˜§ŒæÏπÁ°¢
-      *    Õ≠æ≤ø«Œ≈ΩÍ£±∑≤∆˛±°¥À‹Œ¡£±§«°¢∆˛Œœ•—•È•·°º•ø§Œ
-      *    ∞Âª’øÙ∂Ë ¨§¨£±§ŒæÏπÁ°¢ £øÙ∞ÂŒ≈«€√÷≈¨πÁ§À√÷§≠¥π§®§Î
-      *    ° ¥Ω‡∆¸§¨£≤£∞£∞£¥«Ø£¥∑Ó£±∆¸∞ πﬂ§ŒæÏπÁ°À
-           WHEN  ( W20SUB01-I-KJNYMD       >=  "20040401"  )
-             AND ( W20SUB01-I-KBN          =   "2" )
-             AND ( NYUKHN-KHNSRYCD         =   "190097010" )
-             AND ( W20SUB01-I-ISISUKBN     =   "1" )
-               MOVE    "190117070"     TO  WRK-CHG-SRYCD
-      *    ¥«∏Ó«€√÷°¶ ø∂—∫ﬂ∆¸øÙ≈˘§«∏°∫˜§ŒæÏπÁ°¢
-      *    Õ≠æ≤ø«Œ≈ΩÍ£±∑≤∆˛±°¥À‹Œ¡£±§«°¢∆˛Œœ•—•È•·°º•ø§Œ
-      *    ¥«∏Óª’øÙ∂Ë ¨§¨£±§ŒæÏπÁ°¢¥«∏Ó«€√÷≈¨πÁ§À√÷§≠¥π§®§Î
-           WHEN  ( W20SUB01-I-KBN          =   "2" )
-             AND ( NYUKHN-KHNSRYCD         =   "190097010" )
-             AND ( W20SUB01-I-KNGSISUKBN   =   "1" )
-               MOVE    "190109670"     TO  WRK-CHG-SRYCD
-           END-EVALUATE
-      *
-           IF    ( WRK-CHG-SRYCD   NOT =   SPACE )
-               INITIALIZE  NYUINKHN-REC
-               MOVE    WRK-CHG-SRYCD   TO  NYUKHN-KHNSRYCD
-               MOVE    W20SUB01-I-KJNYMD
-                                       TO  NYUKHN-YUKOSTYMD
-                                           NYUKHN-YUKOEDYMD
-               MOVE    "key"           TO  WRK-PATHNAME
-               PERFORM 800-NYUKHN-SEL-SEC
-               IF    ( FLG-NYUKHN      =   ZERO )
-                   PERFORM 1001-W20SUB01-0-HEN-SEC
-               ELSE
-                   MOVE    1       TO  W20SUB01-O-RC
-               END-IF
-           END-IF
-      *
-           .
-       1001-NYUINRYO-CHG-CHK-EXT.
           EXIT.
       *****************************************************************
       *    ∆˛±°¥À‹Œ¡ªªΩ–•µ•÷ ÷µ—√Õ ‘Ω∏ΩËÕ˝
@@ -209,225 +148,19 @@
                                TO  W20SUB01-O-NAME
            MOVE    NYUKHN-KHNSRYCD
                                TO  W20SUB01-O-KHNSRYCD
-           MOVE    NYUKHN-KHNTEN
+           MOVE    WRK-TNS-TEN
                                TO  W20SUB01-O-KHNTEN
-           MOVE    NYUKHN-SSTKIJUNKBN
-                               TO  W20SUB01-O-SSTKIJUNKBN
-           MOVE    NYUKHN-BTUSBTKBN
-                               TO  W20SUB01-O-BTUSBTKBN
-           MOVE    NYUKHN-HEIKINZAIKBN
-                               TO  W20SUB01-O-HEIKINZAIKBN
-           MOVE    NYUKHN-KANGOHAICHIKBN
-                               TO  W20SUB01-O-KANGOHAICHIKBN
-           MOVE    NYUKHN-KANGOHIRITUKBN
-                               TO  W20SUB01-O-KANGOHIRITUKBN
-           MOVE    NYUKHN-KANGOHOJOHAICHIKBN
-                               TO  W20SUB01-O-KANGOHOJOHAICHIKBN
       *
            .
        1001-W20SUB01-0-HEN-EXT.
           EXIT.
       *****************************************************************
-      *    ∏°∫˜•≠°º ‘Ω∏ΩËÕ˝
-      *****************************************************************
-       200-SELKEY-SET-SEC              SECTION.
-      *
-           MOVE   "1"                  TO  NYUKHN-IPROUKBN
-           MOVE   SPACE                TO  NYUKHN-SSTKIJUNKBN
-           MOVE   W20SUB01-I-KJNYMD
-                                       TO  NYUKHN-YUKOSTYMD
-                                           NYUKHN-YUKOEDYMD
-      *
-      *
-           EVALUATE    W20SUB01-I-BTUSBTKBN
-      *
-      *    ∞Ï»Ã…¬≈Ô
-           WHEN    "01"
-               PERFORM 210-IPPAN-PARA-SET-SEC
-      *    ¿∫ø¿…¬≈Ô
-           WHEN    "02"
-               PERFORM 210-SEISIN-PARA-SET-SEC
-      *    ∑Î≥À…¬≈Ô
-           WHEN    "03"
-               PERFORM 210-KEKKAKU-PARA-SET-SEC
-      *    Œ≈Õ‹…¬≈Ô
-           WHEN    "04"
-               PERFORM 210-RYOYO-PARA-SET-SEC
-      *    æ„≥≤º‘ª‹¿ﬂ
-           WHEN    "05"
-               PERFORM 210-SYOGAI-PARA-SET-SEC
-      *    ¿ÏÃÁ…¬±°
-           WHEN    "06"
-               PERFORM 210-SENMON-PARA-SET-SEC
-      *    œ∑øÕ…¬≈Ô
-           WHEN    "07"
-               PERFORM 210-ROJIN-PARA-SET-SEC
-      *    Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡
-           WHEN    "08"
-               PERFORM 210-SINRYO-PARA-SET-SEC
-      *    Õ≠æ≤ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤∆˛±°Œ¡
-           WHEN    "09"
-               PERFORM 210-SINRYORYOYO-PARA-SET-SEC
-           END-EVALUATE
-      *
-           .
-       200-SELKEY-SET-EXT.
-          EXIT.
-      *****************************************************************
-      *    ∞Ï»Ã…¬≈Ô
-      *****************************************************************
-       210-IPPAN-PARA-SET-SEC          SECTION.
-      *
-           MOVE    W20SUB01-I-BTUSBTKBN
-                                   TO  NYUKHN-BTUSBTKBN
-           MOVE    W20SUB01-I-HEIKINZAIKBN
-                                   TO  NYUKHN-HEIKINZAIKBN
-           MOVE    W20SUB01-I-KANGOHAICHIKBN
-                                   TO  NYUKHN-KANGOHAICHIKBN
-           MOVE    W20SUB01-I-KANGOHIRITUKBN
-                                   TO  NYUKHN-KANGOHIRITUKBN
-      *
-           .
-       200-IPPAN-PARA-SET-EXT.
-          EXIT.
-      *****************************************************************
-      *    ¿∫ø¿…¬≈Ô
-      *****************************************************************
-       210-SEISIN-PARA-SET-SEC         SECTION.
-      *
-           MOVE    W20SUB01-I-BTUSBTKBN
-                                   TO  NYUKHN-BTUSBTKBN
-           MOVE    W20SUB01-I-HEIKINZAIKBN
-                                   TO  NYUKHN-HEIKINZAIKBN
-           MOVE    W20SUB01-I-KANGOHAICHIKBN
-                                   TO  NYUKHN-KANGOHAICHIKBN
-           MOVE    W20SUB01-I-KANGOHIRITUKBN
-                                   TO  NYUKHN-KANGOHIRITUKBN
-      *
-           .
-       210-SEISIN-PARA-SET-EXT.
-          EXIT.
-      *****************************************************************
-      *    ∑Î≥À…¬≈Ô
-      *****************************************************************
-       210-KEKKAKU-PARA-SET-SEC        SECTION.
-      *
-           MOVE    W20SUB01-I-BTUSBTKBN
-                                   TO  NYUKHN-BTUSBTKBN
-           MOVE    W20SUB01-I-HEIKINZAIKBN
-                                   TO  NYUKHN-HEIKINZAIKBN
-           MOVE    W20SUB01-I-KANGOHAICHIKBN
-                                   TO  NYUKHN-KANGOHAICHIKBN
-           MOVE    W20SUB01-I-KANGOHIRITUKBN
-                                   TO  NYUKHN-KANGOHIRITUKBN
-      *
-           .
-       210-KEKKAKU-PARA-SET-EXT.
-          EXIT.
-      *****************************************************************
-      *    Œ≈Õ‹…¬≈Ô
-      *****************************************************************
-       210-RYOYO-PARA-SET-SEC          SECTION.
-      *
-           MOVE    W20SUB01-I-BTUSBTKBN
-                                   TO  NYUKHN-BTUSBTKBN
-           MOVE    W20SUB01-I-KANGOHAICHIKBN
-                                   TO  NYUKHN-KANGOHAICHIKBN
-           MOVE    W20SUB01-I-KANGOHIRITUKBN
-                                   TO  NYUKHN-KANGOHIRITUKBN
-           MOVE    W20SUB01-I-KANGOHOJOHAICHIKBN
-                                   TO  NYUKHN-KANGOHOJOHAICHIKBN
-      *
-           .
-       210-RYOYO-PARA-SET-EXT.
-          EXIT.
-      *****************************************************************
-      *    æ„≥≤º‘ª‹¿ﬂ
-      *****************************************************************
-       210-SYOGAI-PARA-SET-SEC         SECTION.
-      *
-           MOVE    W20SUB01-I-BTUSBTKBN
-                                   TO  NYUKHN-BTUSBTKBN
-           MOVE    W20SUB01-I-KANGOHAICHIKBN
-                                   TO  NYUKHN-KANGOHAICHIKBN
-           MOVE    W20SUB01-I-KANGOHIRITUKBN
-                                   TO  NYUKHN-KANGOHIRITUKBN
-      *
-           .
-       210-SYOGAI-PARA-SET-EXT.
-          EXIT.
-      *****************************************************************
-      *    ¿ÏÃÁ…¬±°
-      *****************************************************************
-       210-SENMON-PARA-SET-SEC         SECTION.
-      *
-           MOVE    W20SUB01-I-BTUSBTKBN
-                                   TO  NYUKHN-BTUSBTKBN
-           MOVE    W20SUB01-I-HEIKINZAIKBN
-                                   TO  NYUKHN-HEIKINZAIKBN
-           MOVE    W20SUB01-I-KANGOHAICHIKBN
-                                   TO  NYUKHN-KANGOHAICHIKBN
-           MOVE    W20SUB01-I-KANGOHIRITUKBN
-                                   TO  NYUKHN-KANGOHIRITUKBN
-      *
-           .
-       210-SENMON-PARA-SET-EXT.
-          EXIT.
-      *****************************************************************
-      *    œ∑øÕ…¬≈Ô
-      *****************************************************************
-       210-ROJIN-PARA-SET-SEC          SECTION.
-      *
-           MOVE    W20SUB01-I-BTUSBTKBN
-                                   TO  NYUKHN-BTUSBTKBN
-           MOVE    W20SUB01-I-KANGOHAICHIKBN
-                                   TO  NYUKHN-KANGOHAICHIKBN
-           MOVE    W20SUB01-I-KANGOHIRITUKBN
-                                   TO  NYUKHN-KANGOHIRITUKBN
-           MOVE    W20SUB01-I-KANGOHOJOHAICHIKBN
-                                   TO  NYUKHN-KANGOHOJOHAICHIKBN
-      *
-           .
-       210-ROJIN-PARA-SET-EXT.
-          EXIT.
-      *****************************************************************
-      *    Õ≠æ≤ø«Œ≈ΩÍ∆˛±°¥À‹Œ¡
-      *****************************************************************
-       210-SINRYO-PARA-SET-SEC         SECTION.
-      *
-      *    IF    ( W20SUB01-I-KNGSISUKBN   =   "1" )
-      *        MOVE    "3"         TO  NYUKHN-SSTKIJUNKBN
-      *    END-IF
-      *
-           MOVE    W20SUB01-I-BTUSBTKBN
-                                   TO  NYUKHN-BTUSBTKBN
-           MOVE    W20SUB01-I-KANGOHAICHIKBN
-                                   TO  NYUKHN-KANGOHAICHIKBN
-           MOVE    W20SUB01-I-KANGOHOJOHAICHIKBN
-                                   TO  NYUKHN-KANGOHOJOHAICHIKBN
-      *
-           .
-       210-SINRYO-PARA-SET-EXT.
-          EXIT.
-      *****************************************************************
-      *    Õ≠æ≤ø«Œ≈ΩÍŒ≈Õ‹…¬æ≤∆˛±°Œ¡
-      *****************************************************************
-       210-SINRYORYOYO-PARA-SET-SEC    SECTION.
-      *
-           MOVE    W20SUB01-I-BTUSBTKBN
-                                   TO  NYUKHN-BTUSBTKBN
-           MOVE    W20SUB01-I-KANGOHAICHIKBN
-                                   TO  NYUKHN-KANGOHAICHIKBN
-           MOVE    W20SUB01-I-KANGOHOJOHAICHIKBN
-                                   TO  NYUKHN-KANGOHOJOHAICHIKBN
-      *
-           .
-       210-SINRYORYOYO-PARA-SET-EXT.
-          EXIT.
-      *****************************************************************
       *    ∆˛±°Œ¡ªªƒÍ•ﬁ•π•ø∏°∫˜ΩËÕ˝
       *****************************************************************
        800-NYUKHN-SEL-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TNS-NAME
+           MOVE    ZERO                TO  WRK-TNS-TEN
       *
            MOVE    ZERO                TO  FLG-NYUKHN
       *
@@ -441,13 +174,31 @@
                    MOVE    1           TO  FLG-NYUKHN
            ELSE
                MOVE    MCPDATA-REC TO  NYUINKHN-REC
+               MOVE    NYUKHN-KHNSRYCD
+                                   TO  WRK-SRYCD
       *        ≈¿øÙ•ﬁ•π•ø§Ë§ÍÃææŒºË∆¿
                PERFORM 800-TENSU-SEL-SEC
                IF    ( FLG-TENSU   =   ZERO )
                    MOVE    TNS-NAME
                                    TO  WRK-TNS-NAME
-               ELSE
-                   MOVE    SPACE   TO  WRK-TNS-NAME
+                   MOVE    TNS-TEN
+                                   TO  WRK-TNS-TEN
+      *
+                   IF    ( TNS-SRYCD   =   "099999950" )
+                       MOVE    "190097010"
+                                       TO  WRK-SRYCD
+                       PERFORM 800-TENSU-SEL-SEC
+                       MOVE    TNS-TEN
+                                   TO  WRK-TNS-TEN
+                   END-IF
+                   IF    ( TNS-SRYCD   =   "099999951" )
+                       MOVE    "190097210"
+                                       TO  WRK-SRYCD
+                       PERFORM 800-TENSU-SEL-SEC
+                       MOVE    TNS-TEN
+                                   TO  WRK-TNS-TEN
+                   END-IF
+      *
                END-IF
            END-IF
       *
@@ -471,8 +222,7 @@
       *
            MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
       *
-           MOVE    NYUKHN-KHNSRYCD
-                                   TO  TNS-SRYCD
+           MOVE    WRK-SRYCD       TO  TNS-SRYCD
            MOVE    W20SUB01-I-KJNYMD
                                    TO  TNS-YUKOSTYMD
                                        TNS-YUKOEDYMD
