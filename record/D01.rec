@@ -32,6 +32,10 @@ D01	{
 		CHK_KOKUHO	{
 			value	bool;
 		};
+		CHK_KOUKI	{
+	        	state	int;
+			value	bool;
+		};
 		CHK_RSIJBI	{
 			value	bool;
 		};

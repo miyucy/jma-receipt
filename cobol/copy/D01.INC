@@ -29,6 +29,8 @@
             04  D01-NYUGAIKBN-ITEM     PIC X(20)   OCCURS  5 TIMES.
           03  D01-CHK-SYAHO            PIC X(01).
           03  D01-CHK-KOKUHO           PIC X(01).
+          03  D01-CHK-KOUKI-STATE      PIC S9(9)   BINARY.
+          03  D01-CHK-KOUKI            PIC X(01).
           03  D01-CHK-RSIJBI           PIC X(01).
           03  D01-CHK-KOUGAI           PIC X(01).
           03  D01-CHK-JIHI             PIC X(01).

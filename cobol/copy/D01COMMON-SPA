@@ -35,6 +35,7 @@
                    07  SPA-D01-CHKKBN      PIC  X(01)  OCCURS 50.
                05  SPA-D01-SYAHOPROCKBN    PIC  X(01).
                05  SPA-D01-KOKUHOPROCKBN   PIC  X(01).
+               05  SPA-D01-KOUKIPROCKBN    PIC  X(01).
                05  SPA-D01-RSIPROCKBN      PIC  X(01).
                05  SPA-D01-JBIPROCKBN      PIC  X(01).
                05  SPA-D01-KGIPROCKBN      PIC  X(01).

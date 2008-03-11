@@ -1818,30 +1818,6 @@
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_KOKUHO</name>
-      <x>45</x>
-      <y>200</y>
-      <width>107</width>
-      <height>25</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Wed, 17 Aug 2005 01:11:16 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 17 Aug 2005 01:11:25 GMT</last_modification_time>
-      </signal>
-      <label>¹ñÊÝ</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>CMB_PRTSRTKBN</name>
       <x>75</x>
@@ -1882,10 +1858,110 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>label513</name>
+      <x>25</x>
+      <y>390</y>
+      <width>49</width>
+      <height>25</height>
+      <label>°õºþ½ç</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <x>24</x>
+      <y>328</y>
+      <width>225</width>
+      <height>0</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>25</x>
+      <y>170</y>
+      <width>225</width>
+      <height>0</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator2</name>
+      <x>250</x>
+      <y>170</y>
+      <width>0</width>
+      <height>158</height>
+    </widget>
+
+    <widget>
+      <class>GtkVSeparator</class>
+      <name>vseparator1</name>
+      <x>25</x>
+      <y>170</y>
+      <width>0</width>
+      <height>160</height>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHK_JIHI</name>
+      <x>44</x>
+      <y>296</y>
+      <width>107</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:59 GMT</last_modification_time>
+      </signal>
+      <label>¼«Èñ</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHK_KOUGAI</name>
+      <x>44</x>
+      <y>272</y>
+      <width>107</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:53 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:59 GMT</last_modification_time>
+      </signal>
+      <label>¸ø³²</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
       <class>GtkCheckButton</class>
       <name>CHK_RSIJBI</name>
-      <x>45</x>
-      <y>225</y>
+      <x>44</x>
+      <y>248</y>
       <width>107</width>
       <height>25</height>
       <can_focus>True</can_focus>
@@ -1901,6 +1977,30 @@
 	<last_modification_time>Wed, 17 Aug 2005 01:11:43 GMT</last_modification_time>
       </signal>
       <label>Ï«ºÒ¡¦¼«ÇåÀÕ</label>
+      <active>False</active>
+      <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkCheckButton</class>
+      <name>CHK_KOKUHO</name>
+      <x>45</x>
+      <y>200</y>
+      <width>107</width>
+      <height>25</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>toggled</name>
+	<handler>button_toggled</handler>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:16 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:25 GMT</last_modification_time>
+      </signal>
+      <label>¹ñÊÝ</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>
@@ -1931,100 +2031,24 @@
 
     <widget>
       <class>GtkCheckButton</class>
-      <name>CHK_JIHI</name>
-      <x>45</x>
-      <y>275</y>
+      <name>CHK_KOUKI</name>
+      <x>44</x>
+      <y>224</y>
       <width>107</width>
       <height>25</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>toggled</name>
 	<handler>button_toggled</handler>
-	<last_modification_time>Wed, 17 Aug 2005 01:11:53 GMT</last_modification_time>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:16 GMT</last_modification_time>
       </signal>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Wed, 17 Aug 2005 01:11:59 GMT</last_modification_time>
+	<last_modification_time>Wed, 17 Aug 2005 01:11:25 GMT</last_modification_time>
       </signal>
-      <label>¼«Èñ</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>25</x>
-      <y>170</y>
-      <width>225</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator2</name>
-      <x>250</x>
-      <y>170</y>
-      <width>0</width>
-      <height>135</height>
-    </widget>
-
-    <widget>
-      <class>GtkVSeparator</class>
-      <name>vseparator1</name>
-      <x>25</x>
-      <y>170</y>
-      <width>0</width>
-      <height>135</height>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label513</name>
-      <x>25</x>
-      <y>390</y>
-      <width>49</width>
-      <height>25</height>
-      <label>°õºþ½ç</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator2</name>
-      <x>25</x>
-      <y>305</y>
-      <width>225</width>
-      <height>0</height>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_KOUGAI</name>
-      <x>45</x>
-      <y>250</y>
-      <width>107</width>
-      <height>25</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Wed, 17 Aug 2005 01:11:53 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Wed, 17 Aug 2005 01:11:59 GMT</last_modification_time>
-      </signal>
-      <label>¸ø³²</label>
+      <label>¸å´ü¹âÎð¼Ô</label>
       <active>False</active>
       <draw_indicator>True</draw_indicator>
     </widget>

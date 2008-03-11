@@ -41,3 +41,4 @@
            03  ORCBSD01-STSRYYMD       PIC  9(02).
            03  ORCBSD01-EDSRYYMD       PIC  9(02).
            03  ORCBSD01-KGIPROCKBN     PIC  X(01).
+           03  ORCBSD01-KOUKIPROCKBN   PIC  X(01).

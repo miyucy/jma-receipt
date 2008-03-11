@@ -301,6 +301,7 @@
                                                ORCBSD01-STSRYYMD
                                                ORCBSD01-EDSRYYMD
                                                ORCBSD01-KGIPROCKBN
+                                               ORCBSD01-KOUKIPROCKBN
            END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM

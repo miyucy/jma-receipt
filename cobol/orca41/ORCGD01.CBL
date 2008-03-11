@@ -79,6 +79,7 @@
                        09  SPA-GMN-D01-SRYYM               PIC X(07).
                        09  SPA-GMN-D01-CHK-SYAHO           PIC X(01).
                        09  SPA-GMN-D01-CHK-KOKUHO          PIC X(01).
+                       09  SPA-GMN-D01-CHK-KOUKI           PIC X(01).
                        09  SPA-GMN-D01-CHK-RSIJBI          PIC X(01).
                        09  SPA-GMN-D01-CHK-KOUGAI          PIC X(01).
                        09  SPA-GMN-D01-CHK-JIHI            PIC X(01).
@@ -224,6 +225,7 @@
                05  WRK-KBNCD-FL            PIC X(06).
       *
        01  CONST-AREA.
+           03  CONST-H2004                 PIC X(06)   VALUE   "200804".
            03  CONST-USRCHKKBN-MAX         PIC 9(03)   VALUE   10.
            03  CONST-LINE                  PIC X(40)   VALUE
                "¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²¡²".
@@ -686,6 +688,9 @@
            IF    ( SPA-D01-KOKUHOPROCKBN   =   "1" )
                MOVE    "T"         TO  SPA-GMN-D01-CHK-KOKUHO
            END-IF
+           IF    ( SPA-D01-KOUKIPROCKBN    =   "1" )
+               MOVE    "T"         TO  SPA-GMN-D01-CHK-KOUKI
+           END-IF
            IF    ( SPA-D01-RSIPROCKBN      =   "1" )
              OR  ( SPA-D01-JBIPROCKBN      =   "1" )
                MOVE    "T"         TO  SPA-GMN-D01-CHK-RSIJBI
@@ -1072,6 +1077,8 @@
       *
            MOVE    ORCBSD01-KGIPROCKBN     TO  SHELLTBL-ARG31
       *
+           MOVE    ORCBSD01-KOUKIPROCKBN   TO  SHELLTBL-ARG32
+      *
            MOVE    SHELLTBL                TO  MCPDATA-REC
            MOVE    "SHELL"                 TO  MCP-FUNC
            MOVE    "shell"                 TO  MCP-TABLE
@@ -1216,6 +1223,10 @@
                MOVE    "1"         TO  ORCBSD01-KOKUHOPROCKBN
            END-IF
       *
+           IF    ( SPA-GMN-D01-CHK-KOUKI       =   "T" )
+               MOVE    "1"         TO  ORCBSD01-KOUKIPROCKBN
+           END-IF
+      *
            IF    ( SPA-GMN-D01-CHK-RSIJBI      =   "T" )
                MOVE    "1"         TO  ORCBSD01-RSIPROCKBN
                MOVE    "1"         TO  ORCBSD01-JBIPROCKBN
@@ -1288,6 +1299,7 @@
       *
            MOVE    ORCBSD01-SYAHOPROCKBN   TO  SPA-D01-SYAHOPROCKBN
            MOVE    ORCBSD01-KOKUHOPROCKBN  TO  SPA-D01-KOKUHOPROCKBN
+           MOVE    ORCBSD01-KOUKIPROCKBN   TO  SPA-D01-KOUKIPROCKBN
            MOVE    ORCBSD01-RSIPROCKBN     TO  SPA-D01-RSIPROCKBN
            MOVE    ORCBSD01-KGIPROCKBN     TO  SPA-D01-KGIPROCKBN
            MOVE    ORCBSD01-JBIPROCKBN     TO  SPA-D01-JBIPROCKBN
@@ -1495,6 +1507,7 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
            WHEN    "CLICKED"       ALSO    "CHK_SYAHO"
            WHEN    "CLICKED"       ALSO    "CHK_KOKUHO"
+           WHEN    "CLICKED"       ALSO    "CHK_KOUKI"
            WHEN    "CLICKED"       ALSO    "CHK_RSIJBI"
            WHEN    "CLICKED"       ALSO    "CHK_KOUGAI"
            WHEN    "CLICKED"       ALSO    "CHK_JIHI"
@@ -1712,6 +1725,7 @@
       *
            MOVE    D01-CHK-SYAHO       TO  SPA-GMN-D01-CHK-SYAHO
            MOVE    D01-CHK-KOKUHO      TO  SPA-GMN-D01-CHK-KOKUHO
+           MOVE    D01-CHK-KOUKI       TO  SPA-GMN-D01-CHK-KOUKI
            MOVE    D01-CHK-RSIJBI      TO  SPA-GMN-D01-CHK-RSIJBI
            MOVE    D01-CHK-KOUGAI      TO  SPA-GMN-D01-CHK-KOUGAI
            MOVE    D01-CHK-JIHI        TO  SPA-GMN-D01-CHK-JIHI
@@ -1742,6 +1756,10 @@
       *
            MOVE    WRK-HENYMDG (1:6)   TO  SPA-GMN-D01-SRYYM
            MOVE    WRK-SYMD    (1:6)   TO  SPA-NAI-D01-SRYYM
+      *
+           IF    ( CONST-H2004         >   SPA-NAI-D01-SRYYM )
+               MOVE    "F"             TO  SPA-GMN-D01-CHK-KOUKI
+           END-IF
       *
            .
        4101-SRYYM-CHK-EXT.
@@ -2007,6 +2025,10 @@
       *
            MOVE    "T"                 TO  SPA-GMN-D01-CHK-SYAHO
            MOVE    "T"                 TO  SPA-GMN-D01-CHK-KOKUHO
+           MOVE    "T"                 TO  SPA-GMN-D01-CHK-KOUKI
+           IF    ( CONST-H2004         >   SPA-NAI-D01-SRYYM )
+               MOVE    "F"             TO  SPA-GMN-D01-CHK-KOUKI
+           END-IF
            MOVE    "T"                 TO  SPA-GMN-D01-CHK-RSIJBI
            MOVE    "T"                 TO  SPA-GMN-D01-CHK-KOUGAI
            MOVE    "F"                 TO  SPA-GMN-D01-CHK-JIHI
@@ -2570,6 +2592,7 @@
       *    ÊÝ¸±¤¬¤¤¤º¤ì¤«°ì¤Ä¤ÏÆþÎÏ¤µ¤ì¤Æ¤¤¤ë¤³¤È
            IF    ( SPA-GMN-D01-CHK-SYAHO   =   "F" )
             AND  ( SPA-GMN-D01-CHK-KOKUHO  =   "F" )
+            AND  ( SPA-GMN-D01-CHK-KOUKI   =   "F" )
             AND  ( SPA-GMN-D01-CHK-RSIJBI  =   "F" )
             AND  ( SPA-GMN-D01-CHK-KOUGAI  =   "F" )
             AND  ( SPA-GMN-D01-CHK-JIHI    =   "F" )
@@ -2858,6 +2881,7 @@
       *    ¥Á¥§¥Ã¥¯ÂÐ¾ÝÊÝ¸±
            MOVE    SPA-GMN-D01-CHK-SYAHO   TO  D01-CHK-SYAHO
            MOVE    SPA-GMN-D01-CHK-KOKUHO  TO  D01-CHK-KOKUHO
+           MOVE    SPA-GMN-D01-CHK-KOUKI   TO  D01-CHK-KOUKI
            MOVE    SPA-GMN-D01-CHK-RSIJBI  TO  D01-CHK-RSIJBI
            MOVE    SPA-GMN-D01-CHK-KOUGAI  TO  D01-CHK-KOUGAI
            MOVE    SPA-GMN-D01-CHK-JIHI    TO  D01-CHK-JIHI
@@ -2912,6 +2936,7 @@
            MOVE    WIDGET-NORMAL       TO  D01-B05S-STATE
                                            D01-B06S-STATE
                                            D01-B07S-STATE
+                                           D01-CHK-KOUKI-STATE
                                            D01-CHK-SRYYMD-STATE
                                            D01-STSRYYMD-STATE
                                            D01-EDSRYYMD-STATE
@@ -2920,6 +2945,10 @@
                MOVE    WIDGET-INSENSITIVE  TO  D01-CHK-SRYYMD-STATE
                                                D01-STSRYYMD-STATE
                                                D01-EDSRYYMD-STATE
+           END-IF
+      *
+           IF    ( CONST-H2004             >   SPA-NAI-D01-SRYYM )
+               MOVE    WIDGET-INSENSITIVE  TO  D01-CHK-KOUKI-STATE
            END-IF
       *
            IF    ( SPA-GMN-D01-CHK-SRYYMD  =   "F" )
@@ -3017,6 +3046,8 @@
                MOVE    "USRCHKKBN"     TO  MCP-WIDGET
            WHEN    110
                MOVE    "CHK_KOUGAI"    TO  MCP-WIDGET
+           WHEN    111
+               MOVE    "CHK_KOUKI"     TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -3075,6 +3106,8 @@
            WHEN    "CHK_SYAHO"
                MOVE    102             TO  SPA-GMN-D01-CUR
            WHEN    "CHK_KOKUHO"
+               MOVE    111             TO  SPA-GMN-D01-CUR
+           WHEN    "CHK_KOUKI"
                MOVE    103             TO  SPA-GMN-D01-CUR
            WHEN    "CHK_RSIJBI"
                MOVE    110             TO  SPA-GMN-D01-CUR
@@ -3105,6 +3138,12 @@
       *    ¥«¡¼¥½¥ë¥¹¥­¥Ã¥×½èÍý
       *****************************************************************
        5011-INPUT-CUR-SKIP-SEC         SECTION.
+      *
+           IF    ( SPA-GMN-D01-CUR     =   111 )
+               IF    ( D01-CHK-KOUKI-STATE     =   WIDGET-INSENSITIVE )
+                   MOVE    103         TO  SPA-GMN-D01-CUR
+               END-IF
+           END-IF
       *
            IF    ( SPA-GMN-D01-CUR     =   106 )
                IF    ( D01-CHK-SRYYMD-STATE    =   WIDGET-INSENSITIVE )

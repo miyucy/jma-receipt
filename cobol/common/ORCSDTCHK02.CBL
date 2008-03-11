@@ -318,6 +318,9 @@
                    MOVE    1       TO  SDTCHK02-O-JIBAI (IDX-HKNNUM)
                WHEN      "975"
                    MOVE    1       TO  SDTCHK02-O-KOUGAI (IDX-HKNNUM)
+               WHEN      "038"
+               WHEN      "039"
+                   MOVE    1       TO  SDTCHK02-O-KOUKI  (IDX-HKNNUM)
                WHEN      OTHER
                    IF    ( WRK-SYUHKNNUM (1:2) =   "98" )
                        MOVE    1   TO  SDTCHK02-O-JIHI  (IDX-HKNNUM)

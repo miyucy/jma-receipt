@@ -109,6 +109,8 @@
                                        VALUE   "5".
            03  CONST-KOUGAI            PIC X(01)
                                        VALUE   "6".
+           03  CONST-KOUKI             PIC X(01)
+                                       VALUE   "7".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -552,6 +554,11 @@
                END-IF
            WHEN      ( WRK-ZAIHKNNUM   =   "975" )
                IF    ( SDTCHK01-HKNKBN =   CONST-KOUGAI )
+                   MOVE    1           TO  FLG-TAISYO-HKN
+               END-IF
+           WHEN      ( WRK-ZAIHKNNUM   =   "038" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "039" )
+               IF    ( SDTCHK01-HKNKBN =   CONST-KOUKI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
       *

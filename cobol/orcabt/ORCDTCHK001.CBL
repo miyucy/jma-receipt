@@ -126,9 +126,10 @@
                    07  CNT-JIBAI                       PIC 9(03).
                    07  CNT-JIHI                        PIC 9(03).
                    07  CNT-KOUGAI                      PIC 9(03).
+                   07  CNT-KOUKI                       PIC 9(03).
                05  CNT-HKNKBN-R    REDEFINES   CNT-HKNKBN-VAL.
                    07  CNT-HKNKBN                      PIC 9(03)
-                                                       OCCURS   6.
+                                                       OCCURS   7.
            03  CNT-HKNKBN-TTL                          PIC 9(03).
       *
        01  IDX-AREA.
@@ -147,9 +148,10 @@
                    07  WRK-JBIPROCKBN                  PIC X(01).
                    07  WRK-JIHIPROCKBN                 PIC X(01).
                    07  WRK-KGIPROCKBN                  PIC X(01).
+                   07  WRK-KOUKIPROCKBN                PIC X(01).
                05  WRK-HKNKBN-R    REDEFINES           WRK-HKNKBN-VAL.
                    07  WRK-HKNKBN                      PIC X(01)
-                                                       OCCURS  6.
+                                                       OCCURS  7.
       *
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  WRK-PARA.
@@ -162,7 +164,7 @@
            COPY    "CPORCBSD01PARA.INC".
       *
        01  CONST-AREA.
-           03  CONST-HKNKBN-MAX                PIC 9(03)   VALUE   6.
+           03  CONST-HKNKBN-MAX                PIC 9(03)   VALUE   7.
            03  CONST-HKNKBN-G.
                05  CONST-HKNKBN-VAL.
                    07  CONST-SYAHO             PIC X(01)   VALUE   "1".
@@ -171,8 +173,9 @@
                    07  CONST-JIBAI             PIC X(01)   VALUE   "4".
                    07  CONST-JIHI              PIC X(01)   VALUE   "5".
                    07  CONST-KOUGAI            PIC X(01)   VALUE   "6".
+                   07  CONST-KOUKI             PIC X(01)   VALUE   "7".
                05  CONST-HKNKBN-R      REDEFINES   CONST-HKNKBN-VAL.
-                   07  CONST-HKNKBN            PIC X(01)   OCCURS  6.
+                   07  CONST-HKNKBN            PIC X(01)   OCCURS  7.
       *
            COPY    "COMMON-SPA".
       *
@@ -273,6 +276,7 @@
                                                ORCBSD01-STSRYYMD
                                                ORCBSD01-EDSRYYMD
                                                ORCBSD01-KGIPROCKBN
+                                               ORCBSD01-KOUKIPROCKBN
            END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -490,6 +494,14 @@
       *
                IF    ( ORCBSD01-KGIPROCKBN  =   "1" )
                    MOVE    "1"         TO  WRK-KGIPROCKBN
+               END-IF
+           WHEN      ( WRK-ZAIHKNNUM   =   "038" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "039" )
+      *
+               MOVE    1               TO  CNT-KOUKI
+      *
+               IF    ( ORCBSD01-KOUKIPROCKBN  =   "1" )
+                   MOVE    "1"         TO  WRK-KOUKIPROCKBN
                END-IF
            WHEN      ( WRK-ZAIHKNNUM (1:2) =   "98" )
       *

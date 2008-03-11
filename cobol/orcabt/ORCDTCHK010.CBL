@@ -223,6 +223,7 @@
                                                ORCBSD01-STSRYYMD
                                                ORCBSD01-EDSRYYMD
                                                ORCBSD01-KGIPROCKBN
+                                               ORCBSD01-KOUKIPROCKBN
            END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -385,6 +386,8 @@
                        MOVE    "1"         TO  CK4-2001-JIHI
                    WHEN    "6"
                        MOVE    "1"         TO  CK4-2001-KOUGAI
+                   WHEN    "7"
+                       MOVE    "1"         TO  CK4-2001-KOUKI
                    END-EVALUATE
       *
                    PERFORM 900-DTCHK004-READ-SEC

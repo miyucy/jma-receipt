@@ -46,7 +46,8 @@
                05  CK4-2001-JIBAI       PIC  X(01).
                05  CK4-2001-JIHI        PIC  X(01).
                05  CK4-2001-KOUGAI      PIC  X(01).
-               05  CK4-2001-FILLER      PIC  X(493).
+               05  CK4-2001-KOUKI       PIC  X(01).
+               05  CK4-2001-FILLER      PIC  X(492).
       *Ã¼Ëö£É£Ä
            03  CK4-2001-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

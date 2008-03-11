@@ -103,6 +103,8 @@
                                                    VALUE   "5".
            03  CONST-KOUGAI                        PIC X(01)
                                                    VALUE   "6".
+           03  CONST-KOUKI                         PIC X(01)
+                                                   VALUE   "7".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -428,6 +430,10 @@
                        IF   ( SDTCHK02-O-KOUGAI(IDX-HKNNUM)    =   1 )
                            MOVE    1       TO  FLG-TARGET
                        END-IF
+                   WHEN    CONST-KOUKI
+                       IF   ( SDTCHK02-O-KOUKI(IDX-HKNNUM)    =   1 )
+                           MOVE    1       TO  FLG-TARGET
+                       END-IF
                    WHEN    CONST-JIHI
                        IF   ( SDTCHK02-O-JIHI  (IDX-HKNNUM)    =   1 )
                            MOVE    1       TO  FLG-TARGET
@@ -452,6 +458,10 @@
                    END-IF
                    IF    ( ORCBSD01-KGIPROCKBN     =   "1" )
                     AND  ( SDTCHK02-O-KOUGAI   (IDX-HKNNUM)    =   1 )
+                           MOVE    1       TO  FLG-TARGET
+                   END-IF
+                   IF    ( ORCBSD01-KOUKIPROCKBN     =   "1" )
+                    AND  ( SDTCHK02-O-KOUKI    (IDX-HKNNUM)    =   1 )
                            MOVE    1       TO  FLG-TARGET
                    END-IF
                    IF    ( ORCBSD01-JIHIPROCKBN    =   "1" )

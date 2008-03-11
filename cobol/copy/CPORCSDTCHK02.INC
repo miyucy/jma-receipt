@@ -33,4 +33,5 @@
                    07  SDTCHK02-O-JIBAI        PIC 9(01).
                    07  SDTCHK02-O-JIHI         PIC 9(01).
                    07  SDTCHK02-O-KOUGAI       PIC 9(01).
+                   07  SDTCHK02-O-KOUKI        PIC 9(01).
                    07  SDTCHK02-O-HKNNUM       PIC X(03).

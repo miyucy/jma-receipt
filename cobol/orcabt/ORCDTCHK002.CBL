@@ -541,8 +541,6 @@
       *
       *    ¸øÈñ£É£ÄÂàÈò¥ï¡¼¥¯
        01  TKOHID-AREA.
-           03  TKOHID-RJNFLG                           PIC 9(01).
-           03  TKOHID-SEIHOFLG                         PIC 9(01).
            03  TKOHID-MAX                              PIC 9(05).
            03  TKOHID-IDX                              PIC 9(05).
            03  TKOHID-OCC                              OCCURS 20.
@@ -975,10 +973,12 @@
                                                    VALUE   "5".
            03  CONST-KOUGAI                        PIC X(01)
                                                    VALUE   "6".
+           03  CONST-KOUKI                         PIC X(01)
+                                                   VALUE   "7".
       *
            03  CONST-TSANTEICD-G.
                05  CONST-TSANTEICD-MAX         PIC 9(05)
-                                               VALUE   37.
+                                               VALUE   38.
                05  CONST-TSANTEICD-VAL.
                    07                          PIC X(11)
                                                VALUE   "113006510MM".
@@ -1040,6 +1040,8 @@
                    07                          PIC X(11)
                                                VALUE   "180029410CN".
                    07                          PIC X(11)
+                                               VALUE   "180030810CN".
+                   07                          PIC X(11)
                                                VALUE   "180027810CU".
                    07                          PIC X(11)
                                                VALUE   "180027910CU".
@@ -1056,7 +1058,7 @@
                    07                          PIC X(11)
                                                VALUE   "180029810CK".
                05  CONST-TSANTEICD-R   REDEFINES   CONST-TSANTEICD-VAL.
-                   07  CONST-TSANTEICD-OCC     OCCURS  37.
+                   07  CONST-TSANTEICD-OCC     OCCURS  38.
                        09   CONST-TSANTEICD-SRYCD
                                                PIC X(09).
                        09   CONST-TSANTEICD-TYPE
@@ -1281,6 +1283,7 @@
                                                ORCBSD01-STSRYYMD
                                                ORCBSD01-EDSRYYMD
                                                ORCBSD01-KGIPROCKBN
+                                               ORCBSD01-KOUKIPROCKBN
            END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -2173,6 +2176,11 @@
                IF    ( DTCHK003-HKNKBN =   CONST-KOUGAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
+           WHEN      ( WRK-ZAIHKNNUM   =   "038" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "039" )
+               IF    ( DTCHK003-HKNKBN =   CONST-KOUKI )
+                   MOVE    1           TO  FLG-TAISYO-HKN
+               END-IF
       *
            WHEN      ( WRK-ZAIHKNNUM (1:2) =   "98" )
                IF    ( DTCHK003-HKNKBN =   CONST-JIHI )
@@ -2497,13 +2505,6 @@
       *
                    MOVE    COMB-KOHID (IDX3)
                                        TO  TKOHID-KOHID (TKOHID-MAX)
-      *
-                   EVALUATE    COMB-KOHHKNNUM (IDX3)
-                   WHEN    "027"
-                       MOVE    1       TO  TKOHID-RJNFLG
-                   WHEN    "012"
-                       MOVE    1       TO  TKOHID-SEIHOFLG
-                   END-EVALUATE
       *
                    MOVE    TKOHID-MAX  TO  TKOHID-IDX
       *
@@ -4263,10 +4264,14 @@
                 END-IF
       *
                 IF    ( COMB-KOHHKNNUM (IDX0)
-                                           =   "027" )
+                                           =   "027" OR "968" )
                     MOVE   1           TO  FLG-RJN
                 END-IF
            END-PERFORM
+      *
+           IF    ( COMB-HKNNUM     =   "039" OR "038" )
+                    MOVE   1           TO  FLG-RJN
+           END-IF
       *
            IF    ( AGECHK-NENREI       <   15 )
             AND  ( COMB-HONKZKKBN     =   "1" )
