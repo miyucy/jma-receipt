@@ -30,7 +30,10 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.04.01    NACL-藤原    07/04/16  レセプト請求がない地方公費
       *                                     を入力時の登録を不可とする
+      *
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
+      * 
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2480,6 +2483,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+      *★★平成２０年４月改正対応
+           IF      SPA-ERRCD       =   SPACE
+               IF      SPA-NAI-STYUKYMD    >=  20080401 
+                   MOVE    "0200"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *★★
            IF      SPA-ERRCD       =   SPACE
                MOVE    3               TO  SPA-GMN-CUR
            END-IF   
@@ -2564,6 +2574,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-PERFORM
            END-IF
       *
+      *★★平成２０年４月改正対応
+           IF      SPA-ERRCD       =   SPACE
+               IF      SPA-NAI-EDYUKYMD    >=  20080401 
+                   MOVE    "0200"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *★★
            IF      SPA-ERRCD       =   SPACE
                IF      SPA-GMN-SELNUM1     =   ZERO
       *
@@ -4901,6 +4918,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-PERFORM
              END-PERFORM
            END-PERFORM        
+      *
+      *★★平成２０年４月改正対応
+           IF      SPA-ERRCD       =   SPACE
+               IF    ( SPA-NAI-STYUKYMD    >=  20080401 )
+                   MOVE    "0200"              TO  SPA-ERRCD
+                   MOVE    2                   TO  SPA-GMN-CUR
+               ELSE
+                   IF    ( SPA-NAI-EDYUKYMD    >=  20080401 )
+                       MOVE    "0200"              TO  SPA-ERRCD
+                       MOVE    3                   TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *★★
       *    
            .
        4900-KANRENCHK-EXT.
@@ -5917,6 +5948,11 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                WHEN    "0105"
                    MOVE    "これ以上公費の登録ができません"
                                                TO  SPA-ERRMSG
+      *
+               WHEN    "0200"
+                   MOVE
+                       "平成２０年４月改正未対応のため入力できません"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "1001"
                    MOVE
