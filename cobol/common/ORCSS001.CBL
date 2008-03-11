@@ -456,6 +456,10 @@ grpsys     COPY  "COMMON-SPA".
                WHEN    "068"
                WHEN    "069"
                    MOVE    1               TO  SS001-KOK-FLG(IDX-NYUGAI)
+               WHEN    "038"
+               WHEN    "039"
+                   MOVE    1               TO  SS001-KOUKI-FLG
+                                                            (IDX-NYUGAI)
                WHEN    OTHER
                    IF    ( COMB-HKNNUM (1:2)   =   "98" )
                        MOVE    1           TO  SS001-JHI-FLG(IDX-NYUGAI)
@@ -533,6 +537,10 @@ grpsys     COPY  "COMMON-SPA".
                    WHEN    "068"
                    WHEN    "069"
                        MOVE    1       TO  SS001-SRYKA-KOK-FLG
+                                                  (IDX-SRYKA IDX-NYUGAI)
+                   WHEN    "038"
+                   WHEN    "039"
+                       MOVE    1       TO  SS001-SRYKA-KOUKI-FLG
                                                   (IDX-SRYKA IDX-NYUGAI)
                    WHEN    OTHER
                        IF    ( COMB-HKNNUM (1:2)   =   "98" )
@@ -623,6 +631,11 @@ grpsys     COPY  "COMMON-SPA".
                         SS001-SRYKA-KOK-FLG (IDX0 1)
                DISPLAY       "SRYKA-KOK-FLG ( " IDX0 "2 )="
                         SS001-SRYKA-KOK-FLG (IDX0 2)
+      *
+               DISPLAY       "SRYKA-KOUKI-FLG ( " IDX0 "1 )="
+                        SS001-SRYKA-KOUKI-FLG (IDX0 1)
+               DISPLAY       "SRYKA-KOUKI-FLG ( " IDX0 "2 )="
+                        SS001-SRYKA-KOUKI-FLG (IDX0 2)
       *
                DISPLAY       "SRYKA-JHI-FLG ( " IDX0 "1 )="
                         SS001-SRYKA-JHI-FLG (IDX0 1)
