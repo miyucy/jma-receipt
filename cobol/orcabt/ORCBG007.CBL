@@ -633,15 +633,23 @@ grpsys     END-UNSTRING
                    PERFORM 210111-BG00701-WRITE-SEC
                END-IF
       *
+               IF    ( SS001-SRYKA-KOUKI-FLG (IDX1 WRK-NYUGAI)
+                                       =   1 )
+                   MOVE    "3"     TO  WRK-HOKENBUNRUI
+                   PERFORM 210111-BG00701-WRITE-SEC
+               END-IF
+      *
                IF    ( SS001-SRYKA-RSI-FLG (IDX1 WRK-NYUGAI)
                                        =   1 )
                 OR   ( SS001-SRYKA-JBI-FLG (IDX1 WRK-NYUGAI)
                                        =   1 )
                 OR   ( SS001-SRYKA-JHI-FLG (IDX1 WRK-NYUGAI)
                                        =   1 )
+                OR   ( SS001-SRYKA-KGI-FLG (IDX1 WRK-NYUGAI)
+                                       =   1 )
                 OR   ( SS001-SRYKA-HKT-FLG (IDX1 WRK-NYUGAI)
                                        =   1 )
-                   MOVE    "3"     TO  WRK-HOKENBUNRUI
+                   MOVE    "9"     TO  WRK-HOKENBUNRUI
                    PERFORM 210111-BG00701-WRITE-SEC
                END-IF
            END-IF

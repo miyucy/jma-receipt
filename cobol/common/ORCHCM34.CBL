@@ -1729,7 +1729,7 @@
       *
            END-PERFORM
       *
-           IF    ( ORCHCM34-HOKEN  =   SPACE   OR  "3" )
+           IF    ( ORCHCM34-HOKEN  =   SPACE   OR  "9" )
       *        保険組み合わせ包括分編集処理
                PERFORM 20011-HOUKATU-HEN-SEC
            END-IF
@@ -6359,17 +6359,22 @@
            WHEN    SPACE
                MOVE    "1"         TO  WRK-HOKEN
            WHEN    "971"
-               MOVE    "3"         TO  WRK-HOKEN
+               MOVE    "9"         TO  WRK-HOKEN
            WHEN    "973"
-               MOVE    "3"         TO  WRK-HOKEN
+               MOVE    "9"         TO  WRK-HOKEN
+           WHEN    "975"
+               MOVE    "9"         TO  WRK-HOKEN
            WHEN    "060"
            WHEN    "067"
            WHEN    "068"
            WHEN    "069"
                MOVE    "2"         TO  WRK-HOKEN
+           WHEN    "038"
+           WHEN    "039"
+               MOVE    "3"         TO  WRK-HOKEN
            WHEN    OTHER
                IF    ( WRK-HKNNUM (1:2)   =   "98" )
-                   MOVE    "3"     TO  WRK-HOKEN
+                   MOVE    "9"     TO  WRK-HOKEN
                ELSE
                    MOVE    "1"     TO  WRK-HOKEN
                END-IF
@@ -6701,7 +6706,7 @@
                    END-IF
       *
                    IF    ( ORCHCM34-HOKEN      =   SPACE )
-                    OR  (( ORCHCM34-HOKEN      =   "3" )
+                    OR  (( ORCHCM34-HOKEN      =   "9" )
                      AND (ACCT-HKNCOMBI        =   9999 ))
                        CONTINUE
                    ELSE
