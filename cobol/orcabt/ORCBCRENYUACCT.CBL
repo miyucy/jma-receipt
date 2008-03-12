@@ -2572,8 +2572,13 @@
       *
       *        ¾®»ùÆþ±¡°åÎÅ´ÉÍýÎÁ²Ã»»¡ÊÊÝ°é»Î£±¿Í°Ê¾å¡Ë
                MOVE  SPACE       TO   WRK-BTU-HIKSISUKBN
-               IF    SYS-5001-BTU-HIKSISUKBN   =   "2"
-                   MOVE   "2"    TO   WRK-BTU-HIKSISUKBN
+               IF    SYOKIKSN-IN-KHNSRYCD      =   "190129310"  OR
+                                                   "190111110"  OR
+                                                   "190111210"  OR
+                                                   "190075810"
+                   IF    SYS-5001-BTU-HIKSISUKBN   =   "2"
+                       MOVE   "2"    TO   WRK-BTU-HIKSISUKBN
+                   END-IF
                END-IF
       *
       *        ÉÂÅïÆþ±¡ÎÁ²Ã»»

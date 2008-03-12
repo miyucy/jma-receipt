@@ -9695,24 +9695,6 @@
                                   TO LNK-SCNYUACCT-KAGEN-STYUKYMD(3)
                  MOVE    "99999999"
                                   TO LNK-SCNYUACCT-KAGEN-EDYUKYMD(3)
-                 DISPLAY "LNK-SCNYUACCT-KAGEN-SRYCD(1) = "
-                          LNK-SCNYUACCT-KAGEN-SRYCD(1)
-                 DISPLAY "LNK-SCNYUACCT-KAGEN-STYUKYMD(1) = "
-                          LNK-SCNYUACCT-KAGEN-STYUKYMD(1)
-                 DISPLAY "LNK-SCNYUACCT-KAGEN-EDYUKYMD(1) = "
-                          LNK-SCNYUACCT-KAGEN-EDYUKYMD(1)
-                 DISPLAY "LNK-SCNYUACCT-KAGEN-SRYCD(2) = "
-                          LNK-SCNYUACCT-KAGEN-SRYCD(2)
-                 DISPLAY "LNK-SCNYUACCT-KAGEN-STYUKYMD(2) = "
-                          LNK-SCNYUACCT-KAGEN-STYUKYMD(2)
-                 DISPLAY "LNK-SCNYUACCT-KAGEN-EDYUKYMD(2) = "
-                          LNK-SCNYUACCT-KAGEN-EDYUKYMD(2)
-                 DISPLAY "LNK-SCNYUACCT-KAGEN-SRYCD(3) = "
-                          LNK-SCNYUACCT-KAGEN-SRYCD(3)
-                 DISPLAY "LNK-SCNYUACCT-KAGEN-STYUKYMD(3) = "
-                          LNK-SCNYUACCT-KAGEN-STYUKYMD(3)
-                 DISPLAY "LNK-SCNYUACCT-KAGEN-EDYUKYMD(3) = "
-                          LNK-SCNYUACCT-KAGEN-EDYUKYMD(3)
       *          °ìÈÌÆþ±¡ÎÁ¤Î»»Äê³«»ÏÆü¤ò»»Äê
                  INITIALIZE                STS-AREA-DAY
                  INITIALIZE                LNK-DAY6-AREA
@@ -10840,8 +10822,13 @@
       *
       *        ¾®»ùÆþ±¡°åÎÅ´ÉÍýÎÁ²Ã»»¡ÊÊÝ°é»Î£±¿Í°Ê¾å¡Ë
                MOVE  SPACE       TO   WRK-BTU-HIKSISUKBN
-               IF    SYS-5001-BTU-HIKSISUKBN   =   "2"
-                   MOVE   "2"    TO   WRK-BTU-HIKSISUKBN
+               IF    SYOKIKSN-IN-KHNSRYCD      =   "190129310"  OR
+                                                   "190111110"  OR
+                                                   "190111210"  OR
+                                                   "190075810"
+                   IF    SYS-5001-BTU-HIKSISUKBN   =   "2"
+                       MOVE   "2"    TO   WRK-BTU-HIKSISUKBN
+                   END-IF
                END-IF
       *
       *      ÉÂÅïÆþ±¡ÎÁ²Ã»»
