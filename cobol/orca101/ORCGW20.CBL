@@ -3738,6 +3738,8 @@
       *    システム管理情報再設定
            PERFORM 4100-SYS-KANRI-SAI-SET-SEC
       *
+           PERFORM 4201-KSN-AREA-CLEAR-SEC
+      *
       *    病棟番号
            MOVE    SYS-5001-BTU-NUM    TO  SPA-GMN-W20-BTUNUM
       *

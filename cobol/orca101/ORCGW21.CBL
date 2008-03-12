@@ -1352,6 +1352,8 @@
       *    システム管理情報再設定処理
            PERFORM 4100-SYSKANRI-RESET-SEC
       *
+           PERFORM 4201-KSN-AREA-CLEAR-SEC
+      *
       *    区分コード
            MOVE    SYS-5002-KBNCD
                                    TO  SPA-NAI-W21-5002-KBNCD
