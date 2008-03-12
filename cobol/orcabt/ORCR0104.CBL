@@ -179,6 +179,7 @@
       *                                     るときの適用欄下段コメントの
       *                                     編集方法の修正
       *  04.02.02    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.02.03    NACL-藤原    08/03/12  フラグ、データエリア追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -7533,6 +7534,9 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE10-HOSPNUM
                                            TO  RECE10-ETC-YKZFTN (1)
                END-IF
            END-IF
+      *
+           MOVE    "00000000000000000000000000000000000000000000000000"
+                                       TO  RECE10-RESERVE-AREA
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE

@@ -101,6 +101,9 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-門脇    07/07/17  個別時のシステム管理編集修正
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *                                     フラグ、データエリア追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5700,6 +5703,9 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE10-HOSPNUM
       *    一部負担金・食事療養費標準負担額区分
            MOVE    RECE02-SHOKUJIFTNKBN
                                        TO  RECE10-SHOKUJIFTNKBN
+      *
+           MOVE    "00000000000000000000000000000000000000000000000000"
+                                       TO  RECE10-RESERVE-AREA
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE

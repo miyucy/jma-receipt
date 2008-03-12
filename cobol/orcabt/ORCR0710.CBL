@@ -7207,6 +7207,10 @@
                                        TO  RECE10-SHOKUJIFTNKBN
       *
            MOVE    SPA-HOSPNUM         TO  RECE10-HOSPNUM
+      *
+           MOVE    "00000000000000000000000000000000000000000000000000"
+                                       TO  RECE10-RESERVE-AREA
+      *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME

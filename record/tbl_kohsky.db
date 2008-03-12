@@ -525,6 +525,11 @@ SKYYM		    char(6);
 HENREIYM	    char(6);
 SKYKBN		    char(1);
 TEISEIKBN	    char(1);
+FLG1				number(1,0);
+FLG2				number(1,0);
+FLG3				number(1,0);
+FLG4				number(1,0);
+FLG5				number(1,0);
 CREYMD	        char(8);
 UPDYMD	        char(8);
 #-----> ธกบ๗อันเฬÜ
