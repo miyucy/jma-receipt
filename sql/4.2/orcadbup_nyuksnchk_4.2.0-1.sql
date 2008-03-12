@@ -14,6 +14,9 @@
 --   Àº¿À²ÊµßµŞ¡¦¹çÊ»¾ÉÆş±¡ÎÁ                     --
 --   Ã»´üÂÚºß¼ê½Ñ´ğËÜÎÁ£³                         --
 --                                                --
+-- ¸å´ü¹âÎğ¼ÔÆÃÄêÆş±¡´ğËÜÎÁ¤Î´Ç¸îÇÛÃÖ²Ã»»¤ò       --
+-- Ê¿À®£²£°Ç¯£³·î£³£±Æü¤Ş¤Ç¤È¤¹¤ë                 --
+--                                                --
 --                                                --
 -- Create Date : 2008/03/11                       --
 --                                                --
@@ -30,6 +33,8 @@ delete from tbl_nyuksnchk where nyuinkbn = '237' and yukostymd = '20080401';
 delete from tbl_nyuksnchk where nyuinkbn = '238' and yukostymd = '20080401';
 delete from tbl_nyuksnchk where nyuinkbn = '239' and yukostymd = '20080401';
 delete from tbl_nyuksnchk where nyuinkbn = '240' and yukostymd = '20080401';
+delete from tbl_nyuksnchk where nyuinkbn = '099' and  ksnkbn = '335' and yukostymd = '20060401';
+delete from tbl_nyuksnchk where nyuinkbn = '100' and  ksnkbn = '335' and yukostymd = '20060401';
 
 COPY "tbl_nyuksnchk" FROM stdin;
 162	401	20080401	99999999	1			        	        	      
@@ -260,4 +265,6 @@ COPY "tbl_nyuksnchk" FROM stdin;
 240	404	20080401	99999999	1			        	        	      
 240	405	20080401	99999999	1			        	        	      
 240	408	20080401	99999999	1			        	        	      
+099	335	20060401	20080331	1			        	        	      
+100	335	20060401	20080331	1			        	        	      
 \.
