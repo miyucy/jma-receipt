@@ -10877,18 +10877,39 @@
                  UNTIL  (IDX7      >   14)
                      IF   SYS-5001-KSNKBN(IDX7)   =   "2"
                          EVALUATE    SYS-5001-KSNCD(IDX7)
+      *                      児童思春期精神科入院医療管理加算（２０才未満）
                              WHEN    "190110170"
-      *                        児童思春期精神科入院医療管理加算（２０才未満）
                                 PERFORM   4801-PT-AGE-SEC
                                 IF      WRK-NENREI   <      20
                                    ADD    1            TO  IDX8
                                    MOVE   SYS-5001-KSNCD(IDX7) TO
                                             WRK-NYUKHNKSN-SRYCD(IDX8)
                                 END-IF
+      *                      重症患者回復病棟加算（回復期リハビリテーション入院料１）
                              WHEN    "190129870"
-      *                        重症患者回復病棟加算（回復期リハビリテーション入院料１）
                                 IF  SYOKIKSN-IN-KHNSRYCD = "190129410"
                                                         OR "190129510"  
+                                   ADD    1            TO  IDX8
+                                   MOVE   SYS-5001-KSNCD(IDX7) TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
+      *                      医師配置適合加算（有床診療所入院基本料１）
+      *                      夜間緊急体制確保加算（有床診療所入院基本料１）
+      *                      看護配置加算１（有床診療所入院基本料１）
+      *                      看護配置加算２（有床診療所入院基本料１）
+      *                      夜間看護配置加算１（有床診療所入院基本料１）
+      *                      夜間看護配置加算２（有床診療所入院基本料１）
+                             WHEN    "190117070"
+                             WHEN    "190126470"
+                             WHEN    "190126570"
+                             WHEN    "190109670"
+                             WHEN    "190126670"
+                             WHEN    "190126770"
+                                IF  LNK-SCNYUACCT-KAGEN-SRYCD(1)
+                                                         = "190097010"
+                                                        OR "190097110"
+                                                        OR "190119510"
+                                                        OR "190119610"
                                    ADD    1            TO  IDX8
                                    MOVE   SYS-5001-KSNCD(IDX7) TO
                                             WRK-NYUKHNKSN-SRYCD(IDX8)
