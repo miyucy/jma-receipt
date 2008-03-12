@@ -654,6 +654,9 @@
                    WHEN    "7"
       *                乳幼児深夜
                        MOVE    "111011770"         TO  WRK-SRYCD
+                   WHEN    "8"
+      *                乳幼児夜間早朝等
+                       MOVE    "111012470"         TO  WRK-SRYCD
                    WHEN    OTHER
       *                時間外なし
                        MOVE    "111000370"         TO  WRK-SRYCD
