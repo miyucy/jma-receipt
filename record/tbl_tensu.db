@@ -161,7 +161,7 @@ tbl_tensu {
 	
 };
 primary	{
-	SRYCD,YUKOSTYMD,YUKOEDYMD;
+	HOSPNUM,SRYCD,YUKOSTYMD,YUKOEDYMD;
 };
 
 path	key 	{
