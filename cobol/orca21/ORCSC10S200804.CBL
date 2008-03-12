@@ -4579,7 +4579,6 @@
       *            画像診断・検査・処置
                    WHEN    "40"
                    WHEN    "60"
-                   WHEN    "64"
                    WHEN    "70"
       *                手技・加算で５５０点以下はエラー
                        IF      SPA-COM-INPUTCD  (IDX)(1:1) =   "1"

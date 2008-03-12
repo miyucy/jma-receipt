@@ -41,6 +41,8 @@
       *  03.04.00    NACL-多々納  06/12/05  上限回数ユーザ指定追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.01.00    NACL-多々納  07/11/XX  公害対応
+      *  04.02.00    NACL-多々納  08/03/XX  平成２０年４月改正対応
+      *                                     入院中１回のチェック追加
       *****************************************************************
       *
       *
@@ -68,6 +70,8 @@
            03  FLG-SANTEI-ARI      PIC 9(01).
            03  FLG-TENSUPLUS-CHK   PIC 9(01).
       *
+           03  FLG-SYOKAI-OK       PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -77,6 +81,8 @@
       *
            03  IDX-SAN             PIC 9(04).
            03  IDX-SAN2            PIC 9(04).
+      *
+           03  ID2                 PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -122,6 +128,12 @@
            03  WRK-CHK-NAME            PIC X(100).
       *
            03  WRK-DAYMAXCNT           PIC 9(04).
+      *    入院期間
+           03  CNT-NYU                 PIC 9(02).
+           03  WRK-NYU                 PIC 9(03).
+           03  WRK-YMD.
+               05  WRK-YM              PIC X(06).
+               05  WRK-DD              PIC 9(02).
       *
       *    同時に算定する診療行為コード一覧
        01  TBL-DOUJI-AREA.
@@ -194,6 +206,22 @@
            03  FILLER                  PIC X(04)   VALUE   "005H".
            03  FILLER                  PIC X(09)   VALUE   "140002450".
       *まで
+      *Ｈ２０．４から
+      *    人工腎臓（その他）
+           03  FILLER                  PIC X(04)   VALUE   "008".
+           03  FILLER                  PIC X(09)   VALUE   "140007710".
+      *    人工腎臓（４時間未満）
+           03  FILLER                  PIC X(04)   VALUE   "008".
+           03  FILLER                  PIC X(09)   VALUE   "140036710".
+      *    人工腎臓（４時間以上から５時間未満）
+           03  FILLER                  PIC X(04)   VALUE   "008".
+           03  FILLER                  PIC X(09)   VALUE   "140051010".
+      *    人工腎臓（５時間以上）
+           03  FILLER                  PIC X(04)   VALUE   "008".
+           03  FILLER                  PIC X(09)   VALUE   "140051110".
+      *    持続緩徐式血液濾過
+           03  FILLER                  PIC X(04)   VALUE   "008".
+           03  FILLER                  PIC X(09)   VALUE   "140029850".
       *
       *    継続管理加算（一般）
            03  FILLER                  PIC X(04)   VALUE   "006".
@@ -212,13 +240,15 @@
        01  TBL-DOUJI-AREA-R            REDEFINES  TBL-DOUJI-AREA.
       *****03  TBL-DOUJI-OCC           OCCURS   9   INDEXED   TBL-IDX.
       *****03  TBL-DOUJI-OCC           OCCURS   13  INDEXED   TBL-IDX.
-           03  TBL-DOUJI-OCC           OCCURS   24  INDEXED   TBL-IDX.
+      **** 03  TBL-DOUJI-OCC           OCCURS   24  INDEXED   TBL-IDX.
+           03  TBL-DOUJI-OCC           OCCURS   29  INDEXED   TBL-IDX.
                05  TBL-CODE                PIC X(03).
                05  TBL-CHK                 PIC X(01).
                05  TBL-SRYCD               PIC X(09).
       *01  TBL-MAX                     PIC 9(04)   VALUE   9.
       *01  TBL-MAX                     PIC 9(04)   VALUE   18.
-       01  TBL-MAX                     PIC 9(04)   VALUE   24.
+      *01  TBL-MAX                     PIC 9(04)   VALUE   24.
+       01  TBL-MAX                     PIC 9(04)   VALUE   29.
       *
       *    保険別算定履歴テーブル
            COPY   "CMSANTEITBL.INC".
@@ -302,12 +332,7 @@
                PERFORM 910-TENSU-READ-SEC
                IF      FLG-TENSU           =   1
                    MOVE    "0001"              TO  LNK-SC91-ERRCD
-                   GO      TO      000-PROC-EXT
                END-IF
-           END-IF
-      *
-           IF      TNS-SANTEIRRKKBN    =   ZERO
-               GO      TO      000-PROC-EXT
            END-IF
       *
       *    リハビリチェック（H18.4)
@@ -327,13 +352,38 @@
                    PERFORM 910-TENSU-READ-SEC
                    IF      FLG-TENSU           =   1
                        MOVE    "0001"              TO  LNK-SC91-ERRCD
-                       GO      TO      000-PROC-EXT
                    END-IF
                END-IF
            END-IF
       *
       *    K02,K02NYUの場合のみとする（薬剤情報提供料チェックの為）
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *
+           IF     (LNK-SC91-ERRCD      =   SPACE )
+               IF     (LNK-SC91-KBN        =   "8"
+                                           OR  "9" )
+      *            入院期間
+                   PERFORM 2001-NYUIN-CHEK-SEC
+               ELSE
+                   IF      TNS-SANTEIRRKKBN    =   ZERO
+                       CONTINUE
+                   ELSE
+      *            算定履歴チェック
+                       PERFORM 100-MAIN-CHEKI-SEC
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       000-PROC-EXT.
+           EXIT    PROGRAM
+           .
+      *
+      *
+      *****************************************************************
+      *    算定回数チェック処理
+      *****************************************************************
+       100-MAIN-CHEKI-SEC      SECTION.
       *
       *    訂正の時、前回算定時の算定回数
            IF      LNK-SC91-SYORIFLG   =   1
@@ -367,9 +417,8 @@
            END-EVALUATE
       *
            .
-       000-PROC-EXT.
-           EXIT    PROGRAM
-           .
+       100-MAIN-CHEKI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    前回算定時の算定回数処理
@@ -1027,6 +1076,10 @@
                IF       WRK-JGNCNTERR      =   9
                    MOVE    "K004"              TO  LNK-SC91-ERRCD
                END-IF
+      *        人工腎臓の時メッセージ変更
+               IF      WRK-CODE            =   "008"
+                   MOVE    "K242"         TO  LNK-SC91-ERRCD
+               END-IF
            END-IF
       *    薬剤情報提供料はチェック判定
            IF      WRK-CODE            =   "002"
@@ -1144,69 +1197,12 @@
                END-IF
            END-PERFORM
       *
-      *    算定履歴検索
-      *    INITIALIZE                  SANTEI-REC
-      *    MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
-      *    MOVE    SPA-PTID            TO  SANTEI-PTID
-      *    MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
-      *    MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-      *    EVALUATE    TNS-SANTEIRRKKBN
-      *        WHEN    1
-      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-      *            MOVE    ZERO                TO  SANTEI-SRYKA
-      *        WHEN    2
-      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-      *            MOVE    ZERO                TO  SANTEI-SRYKA
-      *        WHEN    3
-      *            MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-      *        WHEN    4
-      *            MOVE    SPA-NYUGAIKBN       TO  SANTEI-NYUGAIKBN
-      *            MOVE    SPA-SRYKA           TO  SANTEI-SRYKA
-      *    END-EVALUATE
-      *
-      *    IF     (FLG-HKNSAN          =   1   )  AND
-      *           (SPA-HKNKBN      NOT =   ZERO)
-      *        MOVE    SPA-HKNCOMBINUM     TO  SANTEI-HKNCOMBINUM
-      *    ELSE
-      *        MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-      *    END-IF
-      *
-      *    IF      WRK-RSI-KBN         =   SPACE
-      *        主キー
-      *        MOVE    "key"               TO  WRK-ORC-DBPATH
-      *    ELSE
-      *        労災毎の算定
-      *        MOVE    "key3"              TO  WRK-ORC-DBPATH
-      *    END-IF
-      *
-      *    MOVE    SANTEI-REC          TO  MCPDATA-REC
-      *    MOVE    "tbl_santei"        TO  MCP-TABLE
-      *    MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
-      *    PERFORM 910-DBSELECT-SEC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "tbl_santei"        TO  MCP-TABLE
-      *        MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
-      *        PERFORM 920-SANTEI-READ-SEC
-      *    ELSE
-      *        MOVE    1                   TO  FLG-SANTEI
-      *    END-IF
-      *
-      *    MOVE    "tbl_santei"        TO  MCP-TABLE
-      *    MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
-      *    PERFORM 990-DBCLOSE-SEC
-      *
-      **   IF      FLG-SANTEI          =   1
-      **       INITIALIZE              SANTEI-REC
-      **** END-IF
-      *
       *    算定歴の回数をチェックする
            IF      TNS-JGNCNT          >   ZERO
                ADD     SANTEI-MSANTEICNT   TO  WRK-CNT
            END-IF
       *    労災でリハビリの時３月以内の件数はカウントしない
            IF     ((SPA-HKNKBN          =   1 ) AND
-     ***********   (SPA-RSI-HKNKBN  NOT =   "5" )) AND
                    (SPA-RSI-JUNKYO  NOT =   "1" )) AND
                   (FLG-HKN-SANTEI      =   1     )
                MOVE    WRK-CNT             TO  WRK-RSI-CNT
@@ -1498,6 +1494,97 @@
            PERFORM 990-DBCLOSE-SEC
            .
        2000-SANTEI-HZN-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院期間の算定回数処理
+      *****************************************************************
+       2001-NYUIN-CHEK-SEC      SECTION.
+      *
+           IF      LNK-SC91-KBN        =   "9"
+               MOVE    1               TO  CNT-NYU
+           ELSE
+               MOVE    2               TO  CNT-NYU
+           END-IF
+      *
+           MOVE    LNK-SC91-SRYCD      TO  WRK-SRYCD
+      *    訂正の時、前回算定時の算定回数
+           IF      LNK-SC91-SYORIFLG   =   1
+               MOVE    LNK-SC91-SRYCD      TO  WRK-SRYCD
+               PERFORM 1001-TEISEI-CNT-SEC
+           ELSE
+               MOVE    ZERO            TO  WRK-TEI-CNT
+           END-IF
+      *
+      *    算定履歴検索（算定履歴区分は１とする）
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           MOVE    ZERO                TO  FLG-SYOKAI-OK
+           MOVE    ZERO                TO  WRK-NYU
+           PERFORM UNTIL   (FLG-SANTEI     =   1   )  OR
+                           (FLG-SYOKAI-OK  =   1   )
+               MOVE    SANTEI-SRYYM        TO  WRK-YM
+               MOVE    ZERO                TO  WRK-DD
+               PERFORM VARYING    ID2      FROM    1   BY  1
+                       UNTIL     (ID2      >   31  )  OR
+                                 (FLG-SYOKAI-OK    =   1   )
+                   IF      SANTEI-DAY (ID2)    NOT =   ZERO
+                       MOVE    ID2             TO  WRK-DD
+      *                訂正の時当日分は算定なしとする
+                       IF     (LNK-SC91-SYORIFLG   =   1  )  AND
+                              (WRK-YMD             =   SPA-SRYYMD) AND
+                              (WRK-TEI-CNT         >   ZERO )
+                           COMPUTE SANTEI-DAY (ID2)
+                                               =   SANTEI-DAY (ID2)
+                                               -   WRK-TEI-CNT
+                       END-IF
+                       IF     (SPA-K02N-NYUINYMD
+                                               <=  WRK-YMD )  AND
+                              (SPA-K02N-TAIINYMD
+                                               >=  WRK-YMD )
+                           ADD     SANTEI-DAY (ID2)    TO  WRK-NYU
+                           IF      WRK-NYU              >=   CNT-NYU
+                               MOVE    1               TO  FLG-SYOKAI-OK
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+               IF      SANTEI-SRYYM        <   SPA-K02N-NYUINYMD (1:6)
+                   MOVE    1                   TO  FLG-SANTEI
+               ELSE
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    "key8"              TO  MCP-PATHNAME
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    WRK-NYU             TO  LNK-SC91-CNT
+           IF      FLG-SYOKAI-OK       =   1
+               MOVE    "9031"              TO  LNK-SC91-ERRCD
+           END-IF
+           .
+       2001-NYUIN-CHEK-EXT.
            EXIT.
       *
       *****************************************************************

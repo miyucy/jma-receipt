@@ -1354,6 +1354,32 @@
                GO      TO      100113-NYUINSYOKAI-EXT
            END-IF
       *
+           INITIALIZE                      ORCSC91AREA
+           MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
+           MOVE    "9"                 TO  LNK-SC91-KBN
+           MOVE    WRK-COM-INPUTCD (IDX-Z)
+                                       TO  LNK-SC91-SRYCD
+           MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
+           CALL    "ORCSC91"           USING
+                                       MCPAREA
+                                       ORCSC91AREA
+                                       WRK-SCR-REC
+                                       SPA-AREA
+                                       TNS-TENSU-REC
+      *
+           IF      LNK-SC91-ERRCD  NOT =   SPACE
+               MOVE    "9031"              TO  WRK-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+           END-IF
+      *   £±²ó¤Î¤ß
+           IF   (WRK-COM-NYU-KAI (IDX-Z)   >   1 )  OR
+                (LNK-ORCSC-KAISU           >   1 )
+               MOVE    "9035"              TO  WRK-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+           END-IF
+      *
+      *!!!!!!!!!!!!!!!!!!!1
+               GO      TO      100113-NYUINSYOKAI-EXT
            MOVE    WRK-COM-INPUTCD (IDX-Z)
                                       TO  WRK-SRYCD
            MOVE    ZERO               TO  WRK-TEI-CNT

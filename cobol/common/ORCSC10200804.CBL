@@ -133,6 +133,11 @@
            03  FLG-SINSATU2        PIC 9(01).
            03  FLG-KIJUN-ERR       PIC 9(01).
       *
+           03  FLG-NYUIN           PIC 9(01).
+      *    ËãÌôÈ½Äê
+           03  FLG-KANWA           PIC 9(01).
+           03  FLG-MAYAKU          PIC 9(01).
+      *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -327,6 +332,9 @@
            03  WRK-AKUSEI-IDX          PIC 9(04).
            03  WRK-NAME                PIC X(80).
            03  WRK-MEISYO-G            PIC X(80).
+      *    ËãÌôÈ½Äê
+           03  WRK-DD                  PIC 9(02).
+           03  IDX-N2                  PIC 9(02).
       *
       *    ÊÝÂ¸ÍÑ£Ó£Ð£Á
        01  HZN-SCR-REC.
@@ -4060,6 +4068,8 @@
                                                OR  "113002210"
       *        ¤Æ¤ó¤«¤ó»ØÆ³´ÉÍýÎÁ
                                                OR  "113002850"
+      *        ¼ªÉ¡°ö¹¢²ÊÆÃÄê¼À´µ»ØÆ³´ÉÍýÎÁ
+                                               OR  "113010110"
                    MOVE    1                   TO  FLG-SIDOU
                    PERFORM 230-SIDOU-SYOSIN-SEC
                END-IF
@@ -4068,6 +4078,17 @@
                                                OR  "113008410"
                                                OR  "113008510"
                    PERFORM 10014-NIKOCHIN-CHK-SEC
+               END-IF
+      *        Æþ±¡Ãæ¤Î²ó¿ô
+      *        ¥ê¥ó¥ÑÉâ¼ð»ØÆ³´ÉÍýÎÁ
+               IF      WRK-COM-INPUTCD (IDX-Z) =   "113010410"
+                   MOVE    1                   TO  FLG-NYUIN
+                   PERFORM 10016-NYUIN-KIKAN-SEC
+               END-IF
+      *        Âà±¡»þ¶¦Æ±»ØÆ³ÎÁ£²
+               IF      WRK-COM-INPUTCD (IDX-Z) =   "113008910"
+                   MOVE    2                   TO  FLG-NYUIN
+                   PERFORM 10016-NYUIN-KIKAN-SEC
                END-IF
       *
       *        ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍý½é²ó»»Äê¥³¥á¥ó¥È¥Á¥§¥Ã¥¯
@@ -4899,6 +4920,41 @@
        230-SIDOU-SYOSIN-EXT.
            EXIT.
       *****************************************************************
+      *    Æþ±¡Ãæ¤Î²ó¿ô¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       10016-NYUIN-KIKAN-SEC                SECTION.
+      *
+           INITIALIZE                      ORCSC91AREA
+           MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
+           IF      FLG-NYUIN           =   2
+               MOVE    "8"                 TO  LNK-SC91-KBN
+           ELSE
+               MOVE    "9"                 TO  LNK-SC91-KBN
+           END-IF
+           MOVE    WRK-COM-INPUTCD (IDX-Z)
+                                       TO  LNK-SC91-SRYCD
+           MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
+           CALL    "ORCSC91"           USING
+                                       MCPAREA
+                                       ORCSC91AREA
+                                       WRK-SCR-REC
+                                       SPA-AREA
+                                       TNS-TENSU-REC
+      *
+           IF      LNK-SC91-ERRCD  NOT =   SPACE
+               MOVE    "0212"              TO  SPA-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+           END-IF
+      *   £±²ó¤Î¤ß
+           IF   (WRK-COM-NYU-KAI (IDX-Z)   >   FLG-NYUIN )  OR
+                (LNK-ORCSC-KAISU           >   FLG-NYUIN )
+               MOVE    "0212"              TO  SPA-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
+           END-IF
+           .
+       10016-NYUIN-KIKAN-EXT.
+           EXIT.
+      *****************************************************************
       *    ÆÃÄêÌôºÞ¼£ÎÅ´ÉÍýÎÁ¤Î»»Äê¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        20010-TOKUTEI-ALLCHK-SEC                SECTION.
@@ -5401,6 +5457,63 @@
       *****************************************************************
        300-AUTO-SYORI-SEC                SECTION.
       *
+           MOVE    ZERO                TO  FLG-KANWA
+           MOVE    ZERO                TO  FLG-MAYAKU
+           PERFORM VARYING     IDY     FROM    IDX BY  1
+                   UNTIL      (IDY         >   SPA-MAX-LINE      )   OR
+                             ((WRK-GMN-INPUTCD(IDY)    =   SPACE ) AND
+                              (WRK-COM-INPUTCD(IDY)    =   SPACE ))
+      *        ¤¬¤óÀ­áÖÄË´ËÏÂ»ØÆ³´ÉÍýÎÁ
+               IF      WRK-COM-INPUTCD (IDY)   =   "113010210"
+                   MOVE    IDY             TO  IDX-Z
+                   MOVE    1               TO  FLG-KANWA
+               END-IF
+           END-PERFORM
+           IF      FLG-KANWA           =   1
+               IF      SPA-NYUGAIKBN       =   1
+                   MOVE    ZERO                TO  WRK-DD
+                   PERFORM VARYING IDX-N2      FROM    1   BY  1
+                           UNTIL  (IDX-N2      >   31  )   OR
+                                  (WRK-DD      NOT =   ZERO  )
+                       IF      WRK-COM-NYUINDAY(IDX-Z  IDX-N2)
+                                                        >   ZERO
+                           MOVE    IDX-N2          TO  WRK-DD
+                           MOVE    31              TO  IDX-N2
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
+           PERFORM VARYING     IDY     FROM    IDX BY  1
+                   UNTIL      (IDY         >   SPA-MAX-LINE      )   OR
+                             ((WRK-GMN-INPUTCD(IDY)    =   SPACE ) AND
+                              (WRK-COM-INPUTCD(IDY)    =   SPACE ))  OR
+                              (FLG-KANWA       =   ZERO   )  OR
+                              (FLG-MAYAKU      =   1      )
+      *        ËãÌô
+               IF     (WRK-COM-INPUTCD (IDY)(1:1)  =   "6")
+                  AND (WRK-COM-MADOKUKBN (IDY)     =   1  )
+                   IF      SPA-NYUGAIKBN       =   1
+                       IF      WRK-COM-NYUINDAY(IDY WRK-DD)
+                                                    >   ZERO
+                           MOVE    1               TO  FLG-MAYAKU
+                       END-IF
+                   ELSE
+                       MOVE    1               TO  FLG-MAYAKU
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF     (FLG-KANWA           =   1    )
+              AND (FLG-MAYAKU          =   ZERO )
+      *        ËãÌô¤¬¤Ê¤¤»þ¡¢·Ù¹ð¤È¤¹¤ë
+               IF     (WRK-COM-KZMFLG (IDX-Z)  NOT =   "2" )
+                  AND (LNK-ORCSC-KEI-IDX   =   ZERO  )
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "K243"          TO  SPA-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+                   MOVE    "2"             TO  WRK-COM-KZMFLG
+                                                           (IDX-Z)
+               END-IF
+           END-IF
            .
        300-AUTO-SYORI-EXT.
            EXIT.

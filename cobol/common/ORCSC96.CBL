@@ -1407,6 +1407,27 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "0210"
+                   STRING  "夜間・早朝加算の施設基準ではありません。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0212"
+                   STRING  "入院中の上限回数を超えています。"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0213"
+                   STRING  "画像等手術支援加算の算定できない手術です。"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0214"
+                   STRING  "この画像等手術支援加算は算定できない"
+                           "手術です。"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .
@@ -1879,11 +1900,6 @@
                    MOVE    "警告！既に当日算定回数を超えています。"
                                        TO  SPA-ERRMSG
       *Ｈ２０．４から
-               WHEN    "0210"
-                   STRING  "夜間・早朝加算の施設基準ではありません。"
-                                               DELIMITED  BY  SIZE
-                                       INTO    SPA-ERRMSG
-                   END-STRING
                WHEN    "K240"
                    STRING  "警告！！"
                            "初回算定から２年以上経過しています。"
@@ -1897,6 +1913,19 @@
                    STRING  "警告！！"
                            "後期高齢者診療料を算定を算定してます。"
                            "急性増悪時のみ算定可能です。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K242"
+                   STRING  "警告！！"
+                           "人工腎臓の当月の上限回数を超えています。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K243"
+                   STRING  "警告！！"
+                           "がん性疼痛緩和指導管理料を算定しています。"
+                           "麻薬の算定がありません。"
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING

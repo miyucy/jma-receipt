@@ -1617,14 +1617,14 @@
            MOVE    "key14"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    リハビリテーション管理料チェック
-           IF     (LNK-SC92-ERRCD6 NOT =   SPACE      )  AND
-                  (SPA-SRYYMD          >=  "20070401" )
+      *****リハビリテーション管理料チェック
+      *    IF    ((LNK-SC92-ERRCD6 NOT =   SPACE      )  AND
+      *           (SPA-SRYYMD          >=  "20070401" )
       *        今回入力時エラーはそのまま
-               IF      FLG-KONKAI          =   ZERO
-                   PERFORM 20054-RIHA-CHKSYORI-SEC
-               END-IF
-           END-IF
+      *        IF      FLG-KONKAI          =   ZERO
+      *            PERFORM 20054-RIHA-CHKSYORI-SEC
+      *        END-IF
+      **** END-IF
       *
            IF      FLG-CHKERR          =   1
       *        エラーメッセージ
@@ -1816,6 +1816,12 @@
                       END-IF
                   END-IF
               END-IF
+           END-IF
+      *    リハビリテーション管理料チェック
+           IF    ((FLG-CHKERR          =   1          )
+              OR  (WRK-KEI-SRYCD   NOT =   SPACE      ))  AND
+                  (SPA-SRYYMD          >=  "20070401" )
+               PERFORM 20054-RIHA-CHKSYORI-SEC
            END-IF
            .
        20051-CHK-SANTEI-EXT.
@@ -2152,12 +2158,18 @@
                    AT  END
                        MOVE    ZERO            TO  FLG-RKAN-OK2
                        MOVE    SPACE           TO  WRK-KAN-KBN2
-                   WHEN   (WRK-CHK-CD          =   TBL-RIHA-KAN-SRYCD
+                   WHEN   (CHK-CD              =   TBL-RIHA-KAN-SRYCD
                                                           (TBL-RKA))
                        MOVE    1               TO  FLG-RKAN-OK2
                        MOVE    TBL-RIHA-KAN-KBN (TBL-RKA)
                                                TO  WRK-KAN-KBN2
            END-SEARCH
+      *TEST
+           DISPLAY "FLG-RKAN-OK:"  FLG-RKAN-OK
+                  ",FLG-RKAN-OK2:" FLG-RKAN-OK2
+                  ",LNK-SC92-SRYCD:" LNK-SC92-SRYCD
+                  ",CHK-CD:" CHK-CD
+      *TEST
       *    両方ともにリハビリ管理料の場合、エラー
            IF    ((FLG-RKAN-OK         =   ZERO )  AND
                   (FLG-RKAN-OK2        =   ZERO ))     OR
@@ -2167,7 +2179,7 @@
            END-IF
       *    どちらかが慢性疼痛疾患管理料の場合、エラー
            IF     (LNK-SC92-SRYCD      =   "113006510" OR
-                   WRK-CHK-CD          =   "113006510" )
+                   CHK-CD              =   "113006510" )
                GO      TO      20054-RIHA-CHKSYORI-EXT
            END-IF
       *
@@ -2180,9 +2192,9 @@
       *    直帰のリハビリ管理料算定日
            IF      FLG-RKAN-OK         =   1
                MOVE    LNK-SC92-SRYCD      TO  WRK-SRYCD
-               MOVE    WRK-CHK-CD          TO  WRK-SRYCD2
+               MOVE    CHK-CD              TO  WRK-SRYCD2
            ELSE
-               MOVE    WRK-CHK-CD          TO  WRK-SRYCD
+               MOVE    CHK-CD              TO  WRK-SRYCD
                MOVE    LNK-SC92-SRYCD      TO  WRK-SRYCD2
            END-IF
            MOVE    SPACE               TO  WRK-FSANTEIYMD
@@ -2207,6 +2219,9 @@
                END-PERFORM
            END-IF
            PERFORM 200541-RIHASANTEI-CHK-SEC
+      *TEST
+           DISPLAY "WRK-YMD:"  WRK-YMD
+      *TEST
       *    今回入力でないこと
            MOVE    ZERO                TO  FLG-RKAN-ARI
            MOVE    ZERO                TO  FLG-RKAN-ARI2
@@ -2231,6 +2246,8 @@
                   (FLG-RKAN-ARI        =   ZERO   )
                MOVE    SPACE           TO  LNK-SC92-ERRCD6
                MOVE    SPACE           TO  LNK-SC92-ERRMSG
+               MOVE    ZERO            TO  FLG-CHKERR 
+               MOVE    SPACE           TO  WRK-KEI-SRYCD
            END-IF
       *    訂正の時、当日ならＯＫとする
            IF      LNK-SC92-SYORIFLG   =   1
@@ -2239,6 +2256,8 @@
                       (FLG-RKAN-ARI2       =   ZERO   )
                    MOVE    SPACE           TO  LNK-SC92-ERRCD6
                    MOVE    SPACE           TO  LNK-SC92-ERRMSG
+                   MOVE    ZERO            TO  FLG-CHKERR 
+                   MOVE    SPACE           TO  WRK-KEI-SRYCD
                END-IF
            END-IF
       *
@@ -2249,7 +2268,12 @@
               AND (FLG-RKAN-ARI2       =   ZERO   )
                MOVE    SPACE           TO  LNK-SC92-ERRCD6
                MOVE    SPACE           TO  LNK-SC92-ERRMSG
+               MOVE    ZERO            TO  FLG-CHKERR 
+               MOVE    SPACE           TO  WRK-KEI-SRYCD
            END-IF
+      *TEST
+           DISPLAY "FLG-CHKERR :"  FLG-CHKERR 
+      *TEST
       *
            .
        20054-RIHA-CHKSYORI-EXT.
@@ -3271,6 +3295,11 @@
            MOVE    TNS-LASERKBN        TO  SPA-COM-LASERKBN (IDX-T)
       *    極低出生体重児加算区分
            MOVE    TNS-CHPMESUKSN      TO  SPA-COM-CHPMESUKSN (IDX-T)
+      *Ｈ２０年４月から
+      *    画像等手術支援加算
+           MOVE    TNS-GAZOOPESUP      TO  SPA-COM-GAZOOPESUP (IDX-T)
+      *    麻酔識別区分
+           MOVE    TNS-MASUISKBKBN     TO  SPA-COM-MASUISKBKBN (IDX-T)
       *
       *    点数マスタ付加情報より編集
            PERFORM 3006-TENSUPLUS-HEN-SEC
