@@ -460,6 +460,8 @@
                    MOVE    "54"        TO  WRK-SRYKBN
                WHEN   "60"
                    MOVE    "60"        TO  WRK-SRYKBN
+               WHEN   "64"
+                   MOVE    "64"        TO  WRK-SRYKBN
                WHEN   "70"
                    MOVE    "70"        TO  WRK-SRYKBN
                WHEN   "80"

@@ -311,6 +311,7 @@
            03  IDX0                PIC 9(05).
            03  IDX-CMB             PIC 9(05).
            03  IDX-LST             PIC 9(05).
+           03  IDX-KGNM            PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -344,6 +345,7 @@
            03  CONST-INSERT        PIC X(03)   VALUE   "INS".
            03  CONST-UPDATE        PIC X(03)   VALUE   "UPD".
            03  CONST-DELETE        PIC X(03)   VALUE   "DEL".
+           03  CONST-H039          PIC X(03)   VALUE   "039".
       *
            COPY    "CPKGNMCHK.INC".
       *
@@ -1264,226 +1266,66 @@
       *****************************************************************
        4201-CHKCMB-DEFAULT-SET-SEC     SECTION.
       *
+           MOVE    KGNMCHK-HDEF-IDX        TO  IDX-KGNM
            EVALUATE    SPA-GMN-HKNNUM
            WHEN    "001"
-               MOVE    KGNMCHK-H001-KGSUJI
-                                       TO  SPA-GMN-KGSUJI
-               MOVE    KGNMCHK-H001-KGKANJI
-                                       TO  SPA-GMN-KGKANJI
-               MOVE    KGNMCHK-H001-KGABT
-                                       TO  SPA-GMN-KGABT
-               MOVE    KGNMCHK-H001-KGHYPN
-                                       TO  SPA-GMN-KGHYPN
-               MOVE    KGNMCHK-H001-KGKAKKO
-                                       TO  SPA-GMN-KGKAKKO
-               MOVE    KGNMCHK-H001-KGETC
-                                       TO  SPA-GMN-KGETC
-               MOVE    KGNMCHK-H001-KGKANJINASHI
-                                       TO  SPA-GMN-KGKANJINASHI
-      *
-               MOVE    KGNMCHK-H001-NM1SUJI
-                                       TO  SPA-GMN-NM1SUJI
-               MOVE    KGNMCHK-H001-NM1KANJI
-                                       TO  SPA-GMN-NM1KANJI
-               MOVE    KGNMCHK-H001-NM1ABT
-                                       TO  SPA-GMN-NM1ABT
-               MOVE    KGNMCHK-H001-NM1HYPN
-                                       TO  SPA-GMN-NM1HYPN
-               MOVE    KGNMCHK-H001-NM1KAKKO
-                                       TO  SPA-GMN-NM1KAKKO
-               MOVE    KGNMCHK-H001-NM1ETC
-                                       TO  SPA-GMN-NM1ETC
-               MOVE    KGNMCHK-H001-NMSUJINASHI
-                                       TO  SPA-GMN-NMSUJINASHI
-      *
-               MOVE    KGNMCHK-H001-NM2SUJI
-                                       TO  SPA-GMN-NM2SUJI
-               MOVE    KGNMCHK-H001-NM2KANJI
-                                       TO  SPA-GMN-NM2KANJI
-               MOVE    KGNMCHK-H001-NM2ABT
-                                       TO  SPA-GMN-NM2ABT
-               MOVE    KGNMCHK-H001-NM2HYPN
-                                       TO  SPA-GMN-NM2HYPN
-               MOVE    KGNMCHK-H001-NM2KAKKO
-                                       TO  SPA-GMN-NM2KAKKO
-               MOVE    KGNMCHK-H001-NM2ETC
-                                       TO  SPA-GMN-NM2ETC
+               MOVE    KGNMCHK-H001-IDX    TO  IDX-KGNM
            WHEN    "031"
            WHEN    "032"
            WHEN    "034"
-               MOVE    KGNMCHK-H031-KGSUJI
-                                       TO  SPA-GMN-KGSUJI
-               MOVE    KGNMCHK-H031-KGKANJI
-                                       TO  SPA-GMN-KGKANJI
-               MOVE    KGNMCHK-H031-KGABT
-                                       TO  SPA-GMN-KGABT
-               MOVE    KGNMCHK-H031-KGHYPN
-                                       TO  SPA-GMN-KGHYPN
-               MOVE    KGNMCHK-H031-KGKAKKO
-                                       TO  SPA-GMN-KGKAKKO
-               MOVE    KGNMCHK-H031-KGETC
-                                       TO  SPA-GMN-KGETC
-               MOVE    KGNMCHK-H031-KGKANJINASHI
-                                       TO  SPA-GMN-KGKANJINASHI
-      *
-               MOVE    KGNMCHK-H031-NM1SUJI
-                                       TO  SPA-GMN-NM1SUJI
-               MOVE    KGNMCHK-H031-NM1KANJI
-                                       TO  SPA-GMN-NM1KANJI
-               MOVE    KGNMCHK-H031-NM1ABT
-                                       TO  SPA-GMN-NM1ABT
-               MOVE    KGNMCHK-H031-NM1HYPN
-                                       TO  SPA-GMN-NM1HYPN
-               MOVE    KGNMCHK-H031-NM1KAKKO
-                                       TO  SPA-GMN-NM1KAKKO
-               MOVE    KGNMCHK-H031-NM1ETC
-                                       TO  SPA-GMN-NM1ETC
-               MOVE    KGNMCHK-H031-NMSUJINASHI
-                                       TO  SPA-GMN-NMSUJINASHI
-      *
-               MOVE    KGNMCHK-H031-NM2SUJI
-                                       TO  SPA-GMN-NM2SUJI
-               MOVE    KGNMCHK-H031-NM2KANJI
-                                       TO  SPA-GMN-NM2KANJI
-               MOVE    KGNMCHK-H031-NM2ABT
-                                       TO  SPA-GMN-NM2ABT
-               MOVE    KGNMCHK-H031-NM2HYPN
-                                       TO  SPA-GMN-NM2HYPN
-               MOVE    KGNMCHK-H031-NM2KAKKO
-                                       TO  SPA-GMN-NM2KAKKO
-               MOVE    KGNMCHK-H031-NM2ETC
-                                       TO  SPA-GMN-NM2ETC
+               MOVE    KGNMCHK-H031-IDX    TO  IDX-KGNM
            WHEN    "033"
-               MOVE    KGNMCHK-H033-KGSUJI
-                                       TO  SPA-GMN-KGSUJI
-               MOVE    KGNMCHK-H033-KGKANJI
-                                       TO  SPA-GMN-KGKANJI
-               MOVE    KGNMCHK-H033-KGABT
-                                       TO  SPA-GMN-KGABT
-               MOVE    KGNMCHK-H033-KGHYPN
-                                       TO  SPA-GMN-KGHYPN
-               MOVE    KGNMCHK-H033-KGKAKKO
-                                       TO  SPA-GMN-KGKAKKO
-               MOVE    KGNMCHK-H033-KGETC
-                                       TO  SPA-GMN-KGETC
-               MOVE    KGNMCHK-H033-KGKANJINASHI
-                                       TO  SPA-GMN-KGKANJINASHI
-      *
-               MOVE    KGNMCHK-H033-NM1SUJI
-                                       TO  SPA-GMN-NM1SUJI
-               MOVE    KGNMCHK-H033-NM1KANJI
-                                       TO  SPA-GMN-NM1KANJI
-               MOVE    KGNMCHK-H033-NM1ABT
-                                       TO  SPA-GMN-NM1ABT
-               MOVE    KGNMCHK-H033-NM1HYPN
-                                       TO  SPA-GMN-NM1HYPN
-               MOVE    KGNMCHK-H033-NM1KAKKO
-                                       TO  SPA-GMN-NM1KAKKO
-               MOVE    KGNMCHK-H033-NM1ETC
-                                       TO  SPA-GMN-NM1ETC
-               MOVE    KGNMCHK-H033-NMSUJINASHI
-                                       TO  SPA-GMN-NMSUJINASHI
-      *
-               MOVE    KGNMCHK-H033-NM2SUJI
-                                       TO  SPA-GMN-NM2SUJI
-               MOVE    KGNMCHK-H033-NM2KANJI
-                                       TO  SPA-GMN-NM2KANJI
-               MOVE    KGNMCHK-H033-NM2ABT
-                                       TO  SPA-GMN-NM2ABT
-               MOVE    KGNMCHK-H033-NM2HYPN
-                                       TO  SPA-GMN-NM2HYPN
-               MOVE    KGNMCHK-H033-NM2KAKKO
-                                       TO  SPA-GMN-NM2KAKKO
-               MOVE    KGNMCHK-H033-NM2ETC
-                                       TO  SPA-GMN-NM2ETC
+               MOVE    KGNMCHK-H033-IDX    TO  IDX-KGNM
            WHEN    "006"
            WHEN    "063"
-               MOVE    KGNMCHK-H006-KGSUJI
-                                       TO  SPA-GMN-KGSUJI
-               MOVE    KGNMCHK-H006-KGKANJI
-                                       TO  SPA-GMN-KGKANJI
-               MOVE    KGNMCHK-H006-KGABT
-                                       TO  SPA-GMN-KGABT
-               MOVE    KGNMCHK-H006-KGHYPN
-                                       TO  SPA-GMN-KGHYPN
-               MOVE    KGNMCHK-H006-KGKAKKO
-                                       TO  SPA-GMN-KGKAKKO
-               MOVE    KGNMCHK-H006-KGETC
-                                       TO  SPA-GMN-KGETC
-               MOVE    KGNMCHK-H006-KGKANJINASHI
-                                       TO  SPA-GMN-KGKANJINASHI
-      *
-               MOVE    KGNMCHK-H006-NM1SUJI
-                                       TO  SPA-GMN-NM1SUJI
-               MOVE    KGNMCHK-H006-NM1KANJI
-                                       TO  SPA-GMN-NM1KANJI
-               MOVE    KGNMCHK-H006-NM1ABT
-                                       TO  SPA-GMN-NM1ABT
-               MOVE    KGNMCHK-H006-NM1HYPN
-                                       TO  SPA-GMN-NM1HYPN
-               MOVE    KGNMCHK-H006-NM1KAKKO
-                                       TO  SPA-GMN-NM1KAKKO
-               MOVE    KGNMCHK-H006-NM1ETC
-                                       TO  SPA-GMN-NM1ETC
-               MOVE    KGNMCHK-H006-NMSUJINASHI
-                                       TO  SPA-GMN-NMSUJINASHI
-      *
-               MOVE    KGNMCHK-H006-NM2SUJI
-                                       TO  SPA-GMN-NM2SUJI
-               MOVE    KGNMCHK-H006-NM2KANJI
-                                       TO  SPA-GMN-NM2KANJI
-               MOVE    KGNMCHK-H006-NM2ABT
-                                       TO  SPA-GMN-NM2ABT
-               MOVE    KGNMCHK-H006-NM2HYPN
-                                       TO  SPA-GMN-NM2HYPN
-               MOVE    KGNMCHK-H006-NM2KAKKO
-                                       TO  SPA-GMN-NM2KAKKO
-               MOVE    KGNMCHK-H006-NM2ETC
-                                       TO  SPA-GMN-NM2ETC
-           WHEN    OTHER
-               MOVE    KGNMCHK-HDEF-KGSUJI
-                                       TO  SPA-GMN-KGSUJI
-               MOVE    KGNMCHK-HDEF-KGKANJI
-                                       TO  SPA-GMN-KGKANJI
-               MOVE    KGNMCHK-HDEF-KGABT
-                                       TO  SPA-GMN-KGABT
-               MOVE    KGNMCHK-HDEF-KGHYPN
-                                       TO  SPA-GMN-KGHYPN
-               MOVE    KGNMCHK-HDEF-KGKAKKO
-                                       TO  SPA-GMN-KGKAKKO
-               MOVE    KGNMCHK-HDEF-KGETC
-                                       TO  SPA-GMN-KGETC
-               MOVE    KGNMCHK-HDEF-KGKANJINASHI
-                                       TO  SPA-GMN-KGKANJINASHI
-      *
-               MOVE    KGNMCHK-HDEF-NM1SUJI
-                                       TO  SPA-GMN-NM1SUJI
-               MOVE    KGNMCHK-HDEF-NM1KANJI
-                                       TO  SPA-GMN-NM1KANJI
-               MOVE    KGNMCHK-HDEF-NM1ABT
-                                       TO  SPA-GMN-NM1ABT
-               MOVE    KGNMCHK-HDEF-NM1HYPN
-                                       TO  SPA-GMN-NM1HYPN
-               MOVE    KGNMCHK-HDEF-NM1KAKKO
-                                       TO  SPA-GMN-NM1KAKKO
-               MOVE    KGNMCHK-HDEF-NM1ETC
-                                       TO  SPA-GMN-NM1ETC
-               MOVE    KGNMCHK-HDEF-NMSUJINASHI
-                                       TO  SPA-GMN-NMSUJINASHI
-      *
-               MOVE    KGNMCHK-HDEF-NM2SUJI
-                                       TO  SPA-GMN-NM2SUJI
-               MOVE    KGNMCHK-HDEF-NM2KANJI
-                                       TO  SPA-GMN-NM2KANJI
-               MOVE    KGNMCHK-HDEF-NM2ABT
-                                       TO  SPA-GMN-NM2ABT
-               MOVE    KGNMCHK-HDEF-NM2HYPN
-                                       TO  SPA-GMN-NM2HYPN
-               MOVE    KGNMCHK-HDEF-NM2KAKKO
-                                       TO  SPA-GMN-NM2KAKKO
-               MOVE    KGNMCHK-HDEF-NM2ETC
-                                       TO  SPA-GMN-NM2ETC
+               MOVE    KGNMCHK-H006-IDX    TO  IDX-KGNM
+           WHEN    CONST-H039
+               MOVE    KGNMCHK-H039-IDX    TO  IDX-KGNM
            END-EVALUATE
+      *
+      *
+           MOVE    KGNMCHK-KGSUJI(IDX-KGNM)
+                                       TO  SPA-GMN-KGSUJI
+           MOVE    KGNMCHK-KGKANJI (IDX-KGNM)
+                                       TO  SPA-GMN-KGKANJI
+           MOVE    KGNMCHK-KGABT(IDX-KGNM)
+                                       TO  SPA-GMN-KGABT
+           MOVE    KGNMCHK-KGHYPN(IDX-KGNM)
+                                       TO  SPA-GMN-KGHYPN
+           MOVE    KGNMCHK-KGKAKKO(IDX-KGNM)
+                                       TO  SPA-GMN-KGKAKKO
+           MOVE    KGNMCHK-KGETC(IDX-KGNM)
+                                       TO  SPA-GMN-KGETC
+           MOVE    KGNMCHK-KGKANJINASHI(IDX-KGNM)
+                                       TO  SPA-GMN-KGKANJINASHI
+      *
+           MOVE    KGNMCHK-NM1SUJI(IDX-KGNM)
+                                       TO  SPA-GMN-NM1SUJI
+           MOVE    KGNMCHK-NM1KANJI(IDX-KGNM)
+                                       TO  SPA-GMN-NM1KANJI
+           MOVE    KGNMCHK-NM1ABT(IDX-KGNM)
+                                       TO  SPA-GMN-NM1ABT
+           MOVE    KGNMCHK-NM1HYPN(IDX-KGNM)
+                                       TO  SPA-GMN-NM1HYPN
+           MOVE    KGNMCHK-NM1KAKKO(IDX-KGNM)
+                                       TO  SPA-GMN-NM1KAKKO
+           MOVE    KGNMCHK-NM1ETC(IDX-KGNM)
+                                       TO  SPA-GMN-NM1ETC
+           MOVE    KGNMCHK-NMSUJINASHI(IDX-KGNM)
+                                       TO  SPA-GMN-NMSUJINASHI
+      *
+           MOVE    KGNMCHK-NM2SUJI(IDX-KGNM)
+                                       TO  SPA-GMN-NM2SUJI
+           MOVE    KGNMCHK-NM2KANJI(IDX-KGNM)
+                                       TO  SPA-GMN-NM2KANJI
+           MOVE    KGNMCHK-NM2ABT(IDX-KGNM)
+                                       TO  SPA-GMN-NM2ABT
+           MOVE    KGNMCHK-NM2HYPN(IDX-KGNM)
+                                       TO  SPA-GMN-NM2HYPN
+           MOVE    KGNMCHK-NM2KAKKO(IDX-KGNM)
+                                       TO  SPA-GMN-NM2KAKKO
+           MOVE    KGNMCHK-NM2ETC(IDX-KGNM)
+                                       TO  SPA-GMN-NM2ETC
       *
            .
        4201-CHKCMB-DEFAULT-SET-EXT.
@@ -1905,7 +1747,13 @@
                                    TO  SPA-GMN-HKNNUM-G
                        IF    ( SPA-NAI-HKNNUM-BF  =  SPACE )
                         OR   ( SPA-GMN-HKNNUM NOT =  SPA-NAI-HKNNUM-BF )
-                           MOVE    "0" TO  SPA-GMN-KGCHKPTN
+                           IF    ( SPA-GMN-HKNNUM =  CONST-H039 )
+                               MOVE    KGNMCHK-H039-KGCHECK
+                                           TO  SPA-GMN-KGCHKPTN
+                           ELSE
+                               MOVE    KGNMCHK-HDEF-KGCHECK
+                                           TO  SPA-GMN-KGCHKPTN
+                           END-IF
                            PERFORM 4201-CHKCMB-DEFAULT-SET-SEC
                            PERFORM 4202-CHKCMB-DEFAULT-SET-SEC
                        END-IF
@@ -1938,7 +1786,13 @@
                    IF    ( WRK-MCP-WIDGET =   "HKNNUM" )
                        IF    ( SPA-NAI-HKNNUM-BF  =  SPACE )
                         OR   ( SPA-GMN-HKNNUM NOT =  SPA-NAI-HKNNUM-BF )
-                           MOVE    "0" TO  SPA-GMN-KGCHKPTN
+                           IF    ( SPA-GMN-HKNNUM =  CONST-H039 )
+                               MOVE    KGNMCHK-H039-KGCHECK
+                                           TO  SPA-GMN-KGCHKPTN
+                           ELSE
+                               MOVE    KGNMCHK-HDEF-KGCHECK
+                                           TO  SPA-GMN-KGCHKPTN
+                           END-IF
                            PERFORM 4201-CHKCMB-DEFAULT-SET-SEC
                            PERFORM 4202-CHKCMB-DEFAULT-SET-SEC
                        END-IF
@@ -3801,7 +3655,7 @@
                MOVE    "該当するデータが既に存在します"
                                            TO  SPA-ERRMSG
            WHEN    "1007"
-               MOVE    "保険者番号を入力してください"
+               MOVE   "保険者番号を入力するか、指定なしを選択してくだい"
                                            TO  SPA-ERRMSG
            WHEN    "1008"
                MOVE    "該当する保険者が存在しません"

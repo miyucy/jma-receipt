@@ -299,6 +299,7 @@
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
            03  FLG-PTKOHINF                PIC 9(01).
+           03  FLG-PTHKNINF                PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-HIZUKE-ERR              PIC 9(01).
            03  FLG-ALLIDOLST-ROW           PIC 9(01).
@@ -338,6 +339,7 @@
            03  IDX-MAX                     PIC 9(05).
            03  IDX-HEAD                    PIC 9(05).
            03  IDX-ITM                     PIC 9(05).
+           03  IDX-LIFE                    PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-MCP-WIDGET              PIC X(64).
@@ -365,8 +367,9 @@
                05  WRK-SAGAKU-EN           PIC X(02).
            03  WRK-TNS-SRYCD               PIC X(09).
            03  WRK-TNS-KJNYMD              PIC X(08).
-           03  WRK-TOKNYUIN-KBN            PIC X(01).
-           03  WRK-TOKKBNCD                PIC X(02).
+           03  WRK-TOKNYUIN.
+               05  WRK-TOKNYUIN-KBN        PIC X(01).
+               05  WRK-TOKKBNCD            PIC X(02).
            03  WRK-TAIHI-HKN               PIC X(04).
            03  WRK-I0IDMSG                 PIC X(80). 
            03  WRK-MAE-INPUT               PIC X(100).
@@ -435,6 +438,12 @@
                    07                      PIC X(03)   VALUE   "213".
                    07                      PIC X(03)   VALUE   "216".
       *
+                   07                      PIC X(03)   VALUE   "218".
+                   07                      PIC X(03)   VALUE   "219".
+      *
+                   07                      PIC X(03)   VALUE   "220".
+                   07                      PIC X(03)   VALUE   "221".
+      *
                    07                      PIC X(03)   VALUE   "302".
                    07                      PIC X(03)   VALUE   "349".
       *
@@ -479,13 +488,16 @@
       *
                    07                      PIC X(03)   VALUE   "323".
                    07                      PIC X(03)   VALUE   "351".
+      *
+                   07                      PIC X(03)   VALUE   "352".
+                   07                      PIC X(03)   VALUE   "353".
                05  CONST-TOK-LIFECD-R  REDEFINES   CONST-TOK-LIFECD-VAL.
-                   07  CONST-TOK-LIFECD-OCC    OCCURS  16.
+                   07  CONST-TOK-LIFECD-OCC    OCCURS  19.
                        09  CONST-TOK-LIFECD-IPN
                                            PIC X(03).
                        09  CONST-TOK-LIFECD-LIFE
                                            PIC X(03).
-               05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   16.
+               05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   19.
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
@@ -541,6 +553,10 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *
+      *    患者保険情報
+       01  PTHKNINF-REC.
+           COPY    "CPPTHKNINF.INC".
       *
       *    患者公費情報
        01  PTKOHINF-REC.
@@ -1295,17 +1311,6 @@
                                        TO  WRK-TOKKBNCD
                        PERFORM 31011-TOKNYUINLST-SET-SEC
                    END-IF
-               WHEN  ( SPA-NAI-BTU-BTUTOK  =   "13" OR "16" )
-                   IF    ( FLG-LIFE-RJN        =   ZERO )
-                    OR   ( SPA-NAI-BTU-SBT NOT =   "04" )
-                       MOVE    "13"        TO  WRK-TOKKBNCD
-                       MOVE    "2"         TO  WRK-TOKNYUIN-KBN
-                       PERFORM 31011-TOKNYUINLST-SET-SEC
-                   ELSE
-                       MOVE    "16"        TO  WRK-TOKKBNCD
-                       MOVE    "2"         TO  WRK-TOKNYUIN-KBN
-                       PERFORM 31011-TOKNYUINLST-SET-SEC
-                   END-IF
                WHEN    OTHER
                    MOVE    "2"     TO  WRK-TOKNYUIN-KBN
                    MOVE    SPA-NAI-BTU-BTUTOK
@@ -1325,14 +1330,6 @@
                        PERFORM 31011-TOKNYUINLST-SET-SEC
       *
                        MOVE    "23"        TO  WRK-TOKKBNCD
-                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                       PERFORM 31011-TOKNYUINLST-SET-SEC
-                   ELSE
-                       MOVE    "49"        TO  WRK-TOKKBNCD
-                       MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-                       PERFORM 31011-TOKNYUINLST-SET-SEC
-      *
-                       MOVE    "51"        TO  WRK-TOKKBNCD
                        MOVE    "3"         TO  WRK-TOKNYUIN-KBN
                        PERFORM 31011-TOKNYUINLST-SET-SEC
                    END-IF
@@ -1358,17 +1355,13 @@
            END-IF
       *
       *    短期滞在手術基本料をコンボに設定
-           IF    ( FLG-LIFE-RJN        =   ZERO )
-            OR  (( SPA-NAI-BTU-SBT NOT =   "04" )
-             AND ( SPA-NAI-BTU-SBT NOT =   "09" ))
-               MOVE    "21"        TO  WRK-TOKKBNCD
-               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-               PERFORM 31011-TOKNYUINLST-SET-SEC
-           ELSE
-               MOVE    "50"        TO  WRK-TOKKBNCD
-               MOVE    "3"         TO  WRK-TOKNYUIN-KBN
-               PERFORM 31011-TOKNYUINLST-SET-SEC
-           END-IF
+           MOVE    "21"        TO  WRK-TOKKBNCD
+           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+           PERFORM 31011-TOKNYUINLST-SET-SEC
+      *
+           MOVE    "52"        TO  WRK-TOKKBNCD
+           MOVE    "3"         TO  WRK-TOKNYUIN-KBN
+           PERFORM 31011-TOKNYUINLST-SET-SEC
       *
            MOVE    CNT-MAX         TO  SPA-GMN-TOKNYUIN-MAX
       *
@@ -1379,6 +1372,22 @@
       *    特定入院料設定処理
       *****************************************************************
        31011-TOKNYUINLST-SET-SEC       SECTION.
+      *
+           IF    ( SPA-NAI-BTU-SBT  =   "04" OR "09" )
+            AND  ( FLG-LIFE-RJN     =   1 )
+               PERFORM VARYING IDX-LIFE    FROM    1   BY  1
+                       UNTIL ( IDX-LIFE    >   CONST-TOK-LIFECD-MAX )
+      *
+                   IF    ( WRK-TOKNYUIN    =   CONST-TOK-LIFECD-IPN
+                                                             (IDX-LIFE))
+                       MOVE    CONST-TOK-LIFECD-LIFE (IDX-LIFE)
+                                           TO  WRK-TOKNYUIN
+                       MOVE    CONST-TOK-LIFECD-MAX
+                                           TO  IDX-LIFE
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
       *
            IF    ( CNT-MAX         >=  CONST-TOKNYUIN-MAX )
                GO  TO  31011-TOKNYUINLST-SET-EXT
@@ -1473,11 +1482,20 @@
            INITIALIZE                      PTKOHINF-REC
            MOVE    SPA-HOSPNUM          TO  PTKOH-HOSPNUM
            MOVE    SPA-NAI-PTID        TO  PTKOH-PTID
-           MOVE    "027"               TO  PTKOH-KOHNUM
-           MOVE    SPA-NAI-KJNYMD      TO  PTKOH-TEKSTYMD
-                                           PTKOH-TEKEDYMD
-           PERFORM 900-PTKOHINF-KEY6-SEL-SEC
+           PERFORM 900-PTKOHINF-KEY11-SEL-SEC
            IF    ( FLG-PTKOHINF        =   ZERO )
+               MOVE    1               TO  FLG-RJN
+           END-IF
+      *
+      *    患者保険情報から老人保健の登録チェック
+           INITIALIZE                      PTHKNINF-REC
+           MOVE    SPA-HOSPNUM          TO  PTHKN-HOSPNUM
+           MOVE    SPA-NAI-PTID        TO  PTHKN-PTID
+           MOVE    "968"               TO  PTHKN-HKNNUM
+           MOVE    SPA-NAI-KJNYMD      TO  PTHKN-TEKSTYMD
+                                           PTHKN-TEKEDYMD
+           PERFORM 900-PTHKNINF-KEY6-SEL-SEC
+           IF    ( FLG-PTHKNINF        =   ZERO )
                MOVE    1               TO  FLG-RJN
            END-IF
       *
@@ -3706,6 +3724,24 @@
       *
            END-PERFORM
       *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+      *
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+               MOVE    "1010"          TO  SYS-KANRICD
+               MOVE    WRK-CMB-CD      TO  SYS-KBNCD
+               MOVE    SPA-NAI-KJNYMD  TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               IF    ( FLG-SYSKANRI    =   ZERO )
+                   MOVE    SYSKANRI-REC    TO  SYS-1010-REC
+                   MOVE    SYS-1010-KBNCD (2:4)
+                                           TO  WRK-CMB-ITM (1:4)
+                   MOVE    SYS-1010-NAME   TO  WRK-CMB-ITM (6:)
+               END-IF
+      *
+           END-IF
+      *
            .
        4200-DRLST-CHK-EXT.
            EXIT.
@@ -5915,15 +5951,15 @@
        900-HKNCOMBI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    患者公費情報検索処理(KEY6)
+      *    患者公費情報検索処理(KEY11)
       *****************************************************************
-       900-PTKOHINF-KEY6-SEL-SEC       SECTION.
+       900-PTKOHINF-KEY11-SEL-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-PTKOHINF
       *
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  PTKOHINF-REC
@@ -5933,12 +5969,38 @@
            END-IF
       *
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key11"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-PTKOHINF-KEY11-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者保険情報検索処理(KEY6)
+      *****************************************************************
+       900-PTHKNINF-KEY6-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PTHKNINF
+      *
+           MOVE    PTHKNINF-REC        TO  MCPDATA-REC
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  PTHKNINF-REC
+           ELSE
+               INITIALIZE                  PTHKNINF-REC
+               MOVE    1               TO  FLG-PTHKNINF
+           END-IF
+      *
+           MOVE    "tbl_pthkninf"      TO  MCP-TABLE
            MOVE    "key6"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
-       900-PTKOHINF-KEY6-SEL-EXT.
+       900-PTHKNINF-KEY6-SEL-EXT.
            EXIT.
       *****************************************************************
       *    点数マスタ検索処理(KEY)

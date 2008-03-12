@@ -378,6 +378,7 @@
            03  IDX-KANA                                PIC 9(05).
            03  IDX-CHK                                 PIC 9(05).
            03  IDX-KANRIRYO                           PIC 9(05).
+           03  IDX-KGNM                               PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-SYMD                                PIC X(08).
@@ -1063,6 +1064,7 @@
                                                PIC X(09).
                        09   CONST-TSANTEICD-TYPE
                                                PIC X(02).
+           03  CONST-H039                      PIC X(03)   VALUE "039".
       *
       *
       *    エラーメッセージ
@@ -2154,6 +2156,9 @@
       *****************************************************************
        2001111-TAISYO-HKN-CHK-SEC          SECTION.
       *
+           DISPLAY "WRK-ZAIHKNNUM   =" WRK-ZAIHKNNUM
+           DISPLAY "DTCHK003-HKNKBN =" DTCHK003-HKNKBN
+      *
            MOVE    ZERO                TO  FLG-TAISYO-HKN
       *
            EVALUATE    TRUE
@@ -2688,7 +2693,8 @@
                END-EVALUATE
       *
                IF    ( SYS-1101-YBKENSAYAKUKBN =   "2" )
-                   IF    ( DCACCT-SRYKBN =   "40" OR "60"  OR "70" )
+                   IF    ( DCACCT-SRYKBN =   "40" OR "60"
+                                          OR "64" OR "70" )
                        MOVE    ZERO    TO  FLG-TAISYO-SRY
                    END-IF
                END-IF
@@ -9032,7 +9038,13 @@
            END-PERFORM
       *
            IF    ( FLG-HIT     =   ZERO )
-               MOVE    "0"             TO  SRH-1102-KGCHKPTN
+               IF    ( SRH-1102-HKNNUM =   CONST-H039 )
+                   MOVE    KGNMCHK-H039-KGCHECK
+                                       TO  SRH-1102-KGCHKPTN
+               ELSE
+                   MOVE    KGNMCHK-HDEF-KGCHECK
+                                       TO  SRH-1102-KGCHKPTN
+               END-IF
                PERFORM 21111-CK4-1102-DEFAULT-SET-SEC
            END-IF
       *
@@ -9044,226 +9056,65 @@
       *****************************************************************
        21111-CK4-1102-DEFAULT-SET-SEC   SECTION.
       *
+           MOVE    KGNMCHK-HDEF-IDX        TO  IDX-KGNM
            EVALUATE    SRH-1102-HKNNUM
            WHEN    "001"
-               MOVE    KGNMCHK-H001-KGSUJI
-                                       TO  SRH-1102-KGSUJI
-               MOVE    KGNMCHK-H001-KGKANJI
-                                       TO  SRH-1102-KGKANJI
-               MOVE    KGNMCHK-H001-KGABT
-                                       TO  SRH-1102-KGABT
-               MOVE    KGNMCHK-H001-KGHYPN
-                                       TO  SRH-1102-KGHYPN
-               MOVE    KGNMCHK-H001-KGKAKKO
-                                       TO  SRH-1102-KGKAKKO
-               MOVE    KGNMCHK-H001-KGETC
-                                       TO  SRH-1102-KGETC
-               MOVE    KGNMCHK-H001-KGKANJINASHI
-                                       TO  SRH-1102-KGKANJINASHI
-      *
-               MOVE    KGNMCHK-H001-NM1SUJI
-                                       TO  SRH-1102-NM1SUJI
-               MOVE    KGNMCHK-H001-NM1KANJI
-                                       TO  SRH-1102-NM1KANJI
-               MOVE    KGNMCHK-H001-NM1ABT
-                                       TO  SRH-1102-NM1ABT
-               MOVE    KGNMCHK-H001-NM1HYPN
-                                       TO  SRH-1102-NM1HYPN
-               MOVE    KGNMCHK-H001-NM1KAKKO
-                                       TO  SRH-1102-NM1KAKKO
-               MOVE    KGNMCHK-H001-NM1ETC
-                                       TO  SRH-1102-NM1ETC
-               MOVE    KGNMCHK-H001-NMSUJINASHI
-                                       TO  SRH-1102-NMSUJINASHI
-      *
-               MOVE    KGNMCHK-H001-NM2SUJI
-                                       TO  SRH-1102-NM2SUJI
-               MOVE    KGNMCHK-H001-NM2KANJI
-                                       TO  SRH-1102-NM2KANJI
-               MOVE    KGNMCHK-H001-NM2ABT
-                                       TO  SRH-1102-NM2ABT
-               MOVE    KGNMCHK-H001-NM2HYPN
-                                       TO  SRH-1102-NM2HYPN
-               MOVE    KGNMCHK-H001-NM2KAKKO
-                                       TO  SRH-1102-NM2KAKKO
-               MOVE    KGNMCHK-H001-NM2ETC
-                                       TO  SRH-1102-NM2ETC
+               MOVE    KGNMCHK-H001-IDX    TO  IDX-KGNM
            WHEN    "031"
            WHEN    "032"
            WHEN    "034"
-               MOVE    KGNMCHK-H031-KGSUJI
-                                       TO  SRH-1102-KGSUJI
-               MOVE    KGNMCHK-H031-KGKANJI
-                                       TO  SRH-1102-KGKANJI
-               MOVE    KGNMCHK-H031-KGABT
-                                       TO  SRH-1102-KGABT
-               MOVE    KGNMCHK-H031-KGHYPN
-                                       TO  SRH-1102-KGHYPN
-               MOVE    KGNMCHK-H031-KGKAKKO
-                                       TO  SRH-1102-KGKAKKO
-               MOVE    KGNMCHK-H031-KGETC
-                                       TO  SRH-1102-KGETC
-               MOVE    KGNMCHK-H031-KGKANJINASHI
-                                       TO  SRH-1102-KGKANJINASHI
-      *
-               MOVE    KGNMCHK-H031-NM1SUJI
-                                       TO  SRH-1102-NM1SUJI
-               MOVE    KGNMCHK-H031-NM1KANJI
-                                       TO  SRH-1102-NM1KANJI
-               MOVE    KGNMCHK-H031-NM1ABT
-                                       TO  SRH-1102-NM1ABT
-               MOVE    KGNMCHK-H031-NM1HYPN
-                                       TO  SRH-1102-NM1HYPN
-               MOVE    KGNMCHK-H031-NM1KAKKO
-                                       TO  SRH-1102-NM1KAKKO
-               MOVE    KGNMCHK-H031-NM1ETC
-                                       TO  SRH-1102-NM1ETC
-               MOVE    KGNMCHK-H031-NMSUJINASHI
-                                       TO  SRH-1102-NMSUJINASHI
-      *
-               MOVE    KGNMCHK-H031-NM2SUJI
-                                       TO  SRH-1102-NM2SUJI
-               MOVE    KGNMCHK-H031-NM2KANJI
-                                       TO  SRH-1102-NM2KANJI
-               MOVE    KGNMCHK-H031-NM2ABT
-                                       TO  SRH-1102-NM2ABT
-               MOVE    KGNMCHK-H031-NM2HYPN
-                                       TO  SRH-1102-NM2HYPN
-               MOVE    KGNMCHK-H031-NM2KAKKO
-                                       TO  SRH-1102-NM2KAKKO
-               MOVE    KGNMCHK-H031-NM2ETC
-                                       TO  SRH-1102-NM2ETC
+               MOVE    KGNMCHK-H031-IDX    TO  IDX-KGNM
            WHEN    "033"
-               MOVE    KGNMCHK-H033-KGSUJI
-                                       TO  SRH-1102-KGSUJI
-               MOVE    KGNMCHK-H033-KGKANJI
-                                       TO  SRH-1102-KGKANJI
-               MOVE    KGNMCHK-H033-KGABT
-                                       TO  SRH-1102-KGABT
-               MOVE    KGNMCHK-H033-KGHYPN
-                                       TO  SRH-1102-KGHYPN
-               MOVE    KGNMCHK-H033-KGKAKKO
-                                       TO  SRH-1102-KGKAKKO
-               MOVE    KGNMCHK-H033-KGETC
-                                       TO  SRH-1102-KGETC
-               MOVE    KGNMCHK-H033-KGKANJINASHI
-                                       TO  SRH-1102-KGKANJINASHI
-      *
-               MOVE    KGNMCHK-H033-NM1SUJI
-                                       TO  SRH-1102-NM1SUJI
-               MOVE    KGNMCHK-H033-NM1KANJI
-                                       TO  SRH-1102-NM1KANJI
-               MOVE    KGNMCHK-H033-NM1ABT
-                                       TO  SRH-1102-NM1ABT
-               MOVE    KGNMCHK-H033-NM1HYPN
-                                       TO  SRH-1102-NM1HYPN
-               MOVE    KGNMCHK-H033-NM1KAKKO
-                                       TO  SRH-1102-NM1KAKKO
-               MOVE    KGNMCHK-H033-NM1ETC
-                                       TO  SRH-1102-NM1ETC
-               MOVE    KGNMCHK-H033-NMSUJINASHI
-                                       TO  SRH-1102-NMSUJINASHI
-      *
-               MOVE    KGNMCHK-H033-NM2SUJI
-                                       TO  SRH-1102-NM2SUJI
-               MOVE    KGNMCHK-H033-NM2KANJI
-                                       TO  SRH-1102-NM2KANJI
-               MOVE    KGNMCHK-H033-NM2ABT
-                                       TO  SRH-1102-NM2ABT
-               MOVE    KGNMCHK-H033-NM2HYPN
-                                       TO  SRH-1102-NM2HYPN
-               MOVE    KGNMCHK-H033-NM2KAKKO
-                                       TO  SRH-1102-NM2KAKKO
-               MOVE    KGNMCHK-H033-NM2ETC
-                                       TO  SRH-1102-NM2ETC
+               MOVE    KGNMCHK-H033-IDX    TO  IDX-KGNM
            WHEN    "006"
            WHEN    "063"
-               MOVE    KGNMCHK-H006-KGSUJI
-                                       TO  SRH-1102-KGSUJI
-               MOVE    KGNMCHK-H006-KGKANJI
-                                       TO  SRH-1102-KGKANJI
-               MOVE    KGNMCHK-H006-KGABT
-                                       TO  SRH-1102-KGABT
-               MOVE    KGNMCHK-H006-KGHYPN
-                                       TO  SRH-1102-KGHYPN
-               MOVE    KGNMCHK-H006-KGKAKKO
-                                       TO  SRH-1102-KGKAKKO
-               MOVE    KGNMCHK-H006-KGETC
-                                       TO  SRH-1102-KGETC
-               MOVE    KGNMCHK-H006-KGKANJINASHI
-                                       TO  SRH-1102-KGKANJINASHI
-      *
-               MOVE    KGNMCHK-H006-NM1SUJI
-                                       TO  SRH-1102-NM1SUJI
-               MOVE    KGNMCHK-H006-NM1KANJI
-                                       TO  SRH-1102-NM1KANJI
-               MOVE    KGNMCHK-H006-NM1ABT
-                                       TO  SRH-1102-NM1ABT
-               MOVE    KGNMCHK-H006-NM1HYPN
-                                       TO  SRH-1102-NM1HYPN
-               MOVE    KGNMCHK-H006-NM1KAKKO
-                                       TO  SRH-1102-NM1KAKKO
-               MOVE    KGNMCHK-H006-NM1ETC
-                                       TO  SRH-1102-NM1ETC
-               MOVE    KGNMCHK-H006-NMSUJINASHI
-                                       TO  SRH-1102-NMSUJINASHI
-      *
-               MOVE    KGNMCHK-H006-NM2SUJI
-                                       TO  SRH-1102-NM2SUJI
-               MOVE    KGNMCHK-H006-NM2KANJI
-                                       TO  SRH-1102-NM2KANJI
-               MOVE    KGNMCHK-H006-NM2ABT
-                                       TO  SRH-1102-NM2ABT
-               MOVE    KGNMCHK-H006-NM2HYPN
-                                       TO  SRH-1102-NM2HYPN
-               MOVE    KGNMCHK-H006-NM2KAKKO
-                                       TO  SRH-1102-NM2KAKKO
-               MOVE    KGNMCHK-H006-NM2ETC
-                                       TO  SRH-1102-NM2ETC
-           WHEN    OTHER
-               MOVE    KGNMCHK-HDEF-KGSUJI
-                                       TO  SRH-1102-KGSUJI
-               MOVE    KGNMCHK-HDEF-KGKANJI
-                                       TO  SRH-1102-KGKANJI
-               MOVE    KGNMCHK-HDEF-KGABT
-                                       TO  SRH-1102-KGABT
-               MOVE    KGNMCHK-HDEF-KGHYPN
-                                       TO  SRH-1102-KGHYPN
-               MOVE    KGNMCHK-HDEF-KGKAKKO
-                                       TO  SRH-1102-KGKAKKO
-               MOVE    KGNMCHK-HDEF-KGETC
-                                       TO  SRH-1102-KGETC
-               MOVE    KGNMCHK-HDEF-KGKANJINASHI
-                                       TO  SRH-1102-KGKANJINASHI
-      *
-               MOVE    KGNMCHK-HDEF-NM1SUJI
-                                       TO  SRH-1102-NM1SUJI
-               MOVE    KGNMCHK-HDEF-NM1KANJI
-                                       TO  SRH-1102-NM1KANJI
-               MOVE    KGNMCHK-HDEF-NM1ABT
-                                       TO  SRH-1102-NM1ABT
-               MOVE    KGNMCHK-HDEF-NM1HYPN
-                                       TO  SRH-1102-NM1HYPN
-               MOVE    KGNMCHK-HDEF-NM1KAKKO
-                                       TO  SRH-1102-NM1KAKKO
-               MOVE    KGNMCHK-HDEF-NM1ETC
-                                       TO  SRH-1102-NM1ETC
-               MOVE    KGNMCHK-HDEF-NMSUJINASHI
-                                       TO  SRH-1102-NMSUJINASHI
-      *
-               MOVE    KGNMCHK-HDEF-NM2SUJI
-                                       TO  SRH-1102-NM2SUJI
-               MOVE    KGNMCHK-HDEF-NM2KANJI
-                                       TO  SRH-1102-NM2KANJI
-               MOVE    KGNMCHK-HDEF-NM2ABT
-                                       TO  SRH-1102-NM2ABT
-               MOVE    KGNMCHK-HDEF-NM2HYPN
-                                       TO  SRH-1102-NM2HYPN
-               MOVE    KGNMCHK-HDEF-NM2KAKKO
-                                       TO  SRH-1102-NM2KAKKO
-               MOVE    KGNMCHK-HDEF-NM2ETC
-                                       TO  SRH-1102-NM2ETC
+               MOVE    KGNMCHK-H006-IDX    TO  IDX-KGNM
+           WHEN    CONST-H039
+               MOVE    KGNMCHK-H039-IDX    TO  IDX-KGNM
            END-EVALUATE
+      *
+           MOVE    KGNMCHK-KGSUJI(IDX-KGNM)
+                                       TO  SRH-1102-KGSUJI
+           MOVE    KGNMCHK-KGKANJI(IDX-KGNM)
+                                       TO  SRH-1102-KGKANJI
+           MOVE    KGNMCHK-KGABT(IDX-KGNM)
+                                       TO  SRH-1102-KGABT
+           MOVE    KGNMCHK-KGHYPN(IDX-KGNM)
+                                       TO  SRH-1102-KGHYPN
+           MOVE    KGNMCHK-KGKAKKO(IDX-KGNM)
+                                       TO  SRH-1102-KGKAKKO
+           MOVE    KGNMCHK-KGETC(IDX-KGNM)
+                                       TO  SRH-1102-KGETC
+           MOVE    KGNMCHK-KGKANJINASHI(IDX-KGNM)
+                                       TO  SRH-1102-KGKANJINASHI
+      *
+           MOVE    KGNMCHK-NM1SUJI(IDX-KGNM)
+                                       TO  SRH-1102-NM1SUJI
+           MOVE    KGNMCHK-NM1KANJI(IDX-KGNM)
+                                       TO  SRH-1102-NM1KANJI
+           MOVE    KGNMCHK-NM1ABT(IDX-KGNM)
+                                       TO  SRH-1102-NM1ABT
+           MOVE    KGNMCHK-NM1HYPN(IDX-KGNM)
+                                       TO  SRH-1102-NM1HYPN
+           MOVE    KGNMCHK-NM1KAKKO(IDX-KGNM)
+                                       TO  SRH-1102-NM1KAKKO
+           MOVE    KGNMCHK-NM1ETC(IDX-KGNM)
+                                       TO  SRH-1102-NM1ETC
+           MOVE    KGNMCHK-NMSUJINASHI(IDX-KGNM)
+                                       TO  SRH-1102-NMSUJINASHI
+      *
+           MOVE    KGNMCHK-NM2SUJI(IDX-KGNM)
+                                       TO  SRH-1102-NM2SUJI
+           MOVE    KGNMCHK-NM2KANJI(IDX-KGNM)
+                                       TO  SRH-1102-NM2KANJI
+           MOVE    KGNMCHK-NM2ABT(IDX-KGNM)
+                                       TO  SRH-1102-NM2ABT
+           MOVE    KGNMCHK-NM2HYPN(IDX-KGNM)
+                                       TO  SRH-1102-NM2HYPN
+           MOVE    KGNMCHK-NM2KAKKO(IDX-KGNM)
+                                       TO  SRH-1102-NM2KAKKO
+           MOVE    KGNMCHK-NM2ETC(IDX-KGNM)
+                                       TO  SRH-1102-NM2ETC
       *
            .
        21111-CK4-1102-DEFAULT-SET-EXT.

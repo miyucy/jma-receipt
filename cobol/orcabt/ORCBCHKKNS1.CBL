@@ -400,7 +400,7 @@
       *
            PERFORM UNTIL ( FLG-SRYACT  NOT =  ZERO )
       *
-               IF  SRY-SRYKBN          =  "60"
+               IF  SRY-SRYKBN          =  "60" OR "64"
                    PERFORM VARYING IDX0  FROM  1  BY  1
                            UNTIL ( IDX0  >  5 )
                             OR   ( SRY-SRYCD (IDX0) =  SPACE )
