@@ -870,6 +870,8 @@
                MOVE    "¼«Èñ"          TO  WRK-HKNMES
            WHEN    "6"
                MOVE    "¸ø³²"          TO  WRK-HKNMES
+           WHEN    "7"
+               MOVE    "¸å´ü¹âÎð¼Ô"    TO  WRK-HKNMES
            END-EVALUATE
       *
            .

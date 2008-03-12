@@ -518,6 +518,7 @@
            03  WRK-TIYU-CHUSHI                         PIC 9(01).
            03  WRK-SAISHIN-ERRCD                       PIC X(06).
            03  WRK-HKNFLG                              PIC 9(01).
+           03  WRK-SRTKBN                              PIC X(01).
       *
        01  TKANRIRYO-AREA.
            03  TKANRIRYO-OCC                           OCCURS  9.
@@ -2155,9 +2156,6 @@
       *    対象保険チェック処理
       *****************************************************************
        2001111-TAISYO-HKN-CHK-SEC          SECTION.
-      *
-           DISPLAY "WRK-ZAIHKNNUM   =" WRK-ZAIHKNNUM
-           DISPLAY "DTCHK003-HKNKBN =" DTCHK003-HKNKBN
       *
            MOVE    ZERO                TO  FLG-TAISYO-HKN
       *
@@ -8806,29 +8804,47 @@
            MOVE    DTCHK003-HKNKBN     TO  DTCHK004-HKNKBN
            MOVE    ERRPTINF-BIRTHDAY   TO  DTCHK004-BIRTHDAY
       *
+           MOVE    "9"                 TO  WRK-SRTKBN
+           EVALUATE    DTCHK003-HKNKBN
+           WHEN  CONST-SYAHO
+               MOVE    "1"             TO  WRK-SRTKBN
+           WHEN  CONST-KOKUHO
+               MOVE    "2"             TO  WRK-SRTKBN
+           WHEN  CONST-KOUKI
+               MOVE    "3"             TO  WRK-SRTKBN
+           WHEN  CONST-ROSAI
+               MOVE    "4"             TO  WRK-SRTKBN
+           WHEN  CONST-JIBAI
+               MOVE    "5"             TO  WRK-SRTKBN
+           WHEN  CONST-KOUGAI
+               MOVE    "6"             TO  WRK-SRTKBN
+           WHEN  CONST-JIHI
+               MOVE    "7"             TO  WRK-SRTKBN
+           END-EVALUATE
+      *
            EVALUATE    ORCBSD01-PRTSRTKBN
            WHEN    "1"
            WHEN    SPACE
                MOVE    DTCHK004-PTNUM      TO  DTCHK004-R1-PTNUM
                MOVE    DTCHK004-PTID       TO  DTCHK004-R1-PTID
-               MOVE    DTCHK003-HKNKBN     TO  DTCHK004-R1-HKNKBN
+               MOVE    WRK-SRTKBN          TO  DTCHK004-R1-SRTKBN
                MOVE    DTCHK004-ERRCD      TO  DTCHK004-R1-ERRCD
                MOVE    DTCHK004-ERRCD-SEQ  TO  DTCHK004-R1-ERRCD-SEQ
            WHEN    "2"
                MOVE    ERRPTINF-KANANAME   TO  DTCHK004-R2-KANANAME
                MOVE    DTCHK004-PTNUM      TO  DTCHK004-R2-PTNUM
                MOVE    DTCHK004-PTID       TO  DTCHK004-R2-PTID
-               MOVE    DTCHK003-HKNKBN     TO  DTCHK004-R2-HKNKBN
+               MOVE    WRK-SRTKBN          TO  DTCHK004-R2-SRTKBN
                MOVE    DTCHK004-ERRCD      TO  DTCHK004-R2-ERRCD
                MOVE    DTCHK004-ERRCD-SEQ  TO  DTCHK004-R2-ERRCD-SEQ
            WHEN    "3"
-               MOVE    DTCHK003-HKNKBN     TO  DTCHK004-R3-HKNKBN
+               MOVE    WRK-SRTKBN          TO  DTCHK004-R3-SRTKBN
                MOVE    DTCHK004-PTNUM      TO  DTCHK004-R3-PTNUM
                MOVE    DTCHK004-PTID       TO  DTCHK004-R3-PTID
                MOVE    DTCHK004-ERRCD      TO  DTCHK004-R3-ERRCD
                MOVE    DTCHK004-ERRCD-SEQ  TO  DTCHK004-R3-ERRCD-SEQ
            WHEN    "4"
-               MOVE    DTCHK003-HKNKBN     TO  DTCHK004-R4-HKNKBN
+               MOVE    WRK-SRTKBN          TO  DTCHK004-R4-SRTKBN
                MOVE    ERRPTINF-KANANAME   TO  DTCHK004-R4-KANANAME
                MOVE    DTCHK004-PTNUM      TO  DTCHK004-R4-PTNUM
                MOVE    DTCHK004-PTID       TO  DTCHK004-R4-PTID
