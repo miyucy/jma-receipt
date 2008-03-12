@@ -33,6 +33,8 @@
       *
       *  04.01.01    NACL-藤原    07/01/21  月途中の負担者番号変更対応
       *                                     （生保の公費単独のみ） 
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -66,6 +68,10 @@
                05  WRK-YY          PIC 9(04).
                05  WRK-MM          PIC 9(02).
                05  WRK-DD          PIC 9(02).
+      *
+       01  WRK-CONS-AREA.
+           03  WRK-CONS-SRYYM-200804
+                                   PIC 9(06)   VALUE   200804.      
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -125,6 +131,12 @@
       *
            MOVE    ZERO            TO  LNK-SYUACC-RC
       *****INITIALIZE                  LNK-SYUACC-IO
+      *
+      *★★平成２０年４月改正対応
+           IF      LNK-SYUACC-I-SRYYM  >=  WRK-CONS-SRYYM-200804
+               MOVE    1               TO  FLG-END 
+           END-IF
+      *★★
       *
       *    入力項目チェック
            IF      SPA-SYUKA-KBN   =   ZERO
