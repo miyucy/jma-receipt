@@ -2512,6 +2512,14 @@
                                    MOVE   SYS-5001-KSNCD(IDX7) TO
                                             WRK-NYUKHNKSN-SRYCD(IDX8)
                                 END-IF
+                             WHEN    "190129870"
+      *                        重症患者回復病棟加算（回復期リハビリテーション入院料１）
+                                IF  SYOKIKSN-IN-KHNSRYCD = "190129410"
+                                                        OR "190129510"  
+                                   ADD    1            TO  IDX8
+                                   MOVE   SYS-5001-KSNCD(IDX7) TO
+                                            WRK-NYUKHNKSN-SRYCD(IDX8)
+                                END-IF
                              WHEN   OTHER
                                 ADD    1                TO  IDX8
                                 MOVE   SYS-5001-KSNCD(IDX7) TO
