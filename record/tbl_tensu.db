@@ -47,7 +47,7 @@ tbl_tensu {
 	JGNAGE  			char(2);
 	TIMEKSNKBN			number(1,0);
 	KIJUNTEIGENKBN			number(1,0);
-	KIJUNTEIGENCD			number(4,0);
+	KIJUNTEIGENCD			number(3,0);
 	LASERKSN			number(1,0);
 	CHPMESUKSN			number(1,0);
 	MICMESUKSN			number(1,0);
@@ -69,45 +69,32 @@ tbl_tensu {
 	SHORTSTAYOPE  		number(1,0);
 	BUIKBN  			number(1,0);
 	SANTEIRRKKBN		number(1,0);
-	SSTKIJUNCD1  		number(4,0);
-	SSTKIJUNCD2  		number(4,0);
-	SSTKIJUNCD3  		number(4,0);
-	SSTKIJUNCD4  		number(4,0);
-	SSTKIJUNCD5  		number(4,0);
-	SSTKIJUNCD6  		number(4,0);
-	SSTKIJUNCD7  		number(4,0);
-	SSTKIJUNCD8  		number(4,0);
-	SSTKIJUNCD9  		number(4,0);
-	SSTKIJUNCD10  		number(4,0);
+	SSTKIJUNCD1  		number(3,0);
+	SSTKIJUNCD2  		number(3,0);
+	SSTKIJUNCD3  		number(3,0);
+	SSTKIJUNCD4  		number(3,0);
+	SSTKIJUNCD5  		number(3,0);
+	SSTKIJUNCD6  		number(3,0);
+	SSTKIJUNCD7  		number(3,0);
+	SSTKIJUNCD8  		number(3,0);
+	SSTKIJUNCD9  		number(3,0);
+	SSTKIJUNCD10  		number(3,0);
 	AGEKSNKGN1  		char(2);
 	AGEKSNJGN1  		char(2);
-	AGEKSNSRYCD1  		varchar(9);
+	AGEKSNSRYCD1  		char(9);
 	AGEKSNKGN2  		char(2);
 	AGEKSNJGN2  		char(2);
-	AGEKSNSRYCD2  		varchar(9);
+	AGEKSNSRYCD2  		char(9);
 	AGEKSNKGN3  		char(2);
 	AGEKSNJGN3  		char(2);
-	AGEKSNSRYCD3  		varchar(9);
+	AGEKSNSRYCD3  		char(9);
 	AGEKSNKGN4  		char(2);
 	AGEKSNJGN4  		char(2);
-	AGEKSNSRYCD4  		varchar(9);
+	AGEKSNSRYCD4  		char(9);
 	KENTAICOMMENT  		number(1,0);
 	NYUKHNKBN			number(2,0);
 	NYUKHNKSNKBN		number(3,0);
 	KANGOKSN  			number(2,0);
-	GAZOOPESUP			number(1,0);
-	IRYOKANSATUKBN			number(1,0);
-	MASUISKBKBN			number(1,0);
-	FUKUBIKUNAIKBN		number(1,0);
-	FUKUBIKUKOTUKBN		number(1,0);
-	TIMEMASUIKBN		number(1,0);
-	DPCKBN		number(1,0);
-	HISINSYUMONITORKSN		number(1,0);
-	TOUKETUHOZONKSN		number(1,0);
-	KUBUNBANGOU		varchar(30);
-	ROSAIKBN		number(1,0);
-	SISIKSN			number(1,0);
-	AKUSEIBYORIKSN		number(1,0);
 	OLDTENSKB			number(1,0);
 	OLDTEN   			number(11,2);
 	MADOKUKBN  			number(1,0);
@@ -143,26 +130,25 @@ tbl_tensu {
 	KOKUJISKBKBN2  		number(1,0);
 	NAMECHGKBN  		number(1,0);
 	KANANAMECHGKBN 		number(1,0);
-	IDOKANREN       	varchar(9);
+	IDOKANREN       	char(9);
 	KOUHYOJYUNNUM   	number(9,0);
-	YAKKAKJNCD			varchar(12);
+	YAKKAKJNCD			char(12);
 	SYUSAISKB			number(1,0);
-	SYOMEIKANREN		varchar(9);
-	CHGYMD				varchar(8);
-	HAISIYMD			varchar(8);
-	KEIKASOCHIYMD		varchar(8);
+	SYOMEIKANREN		char(9);
+	CHGYMD				char(8);
+	HAISIYMD			char(8);
+	KEIKASOCHIYMD		char(8);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-	MASTER_CLASS		number(1,0);
-#-----> ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
+#-----> ¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
 	UPHOSPNUM			number(2,0),virtual;
 	UPSRYCD				char(9),virtual;
 	UPSTYUKYMD			char(8),virtual;
 	UPEDYUKYMD			char(8),virtual;
-#-----> æ¤œç´¢ç”¨é …ç›®
+#-----> ¸¡º÷ÍÑ¹àÌÜ
 	STSRYKBN			char(2),virtual;
 	EDSRYKBN			char(2),virtual;
 	TK_CDKBN_KBNNUM		number(3,0),virtual;
@@ -579,19 +565,6 @@ path	upd1	{
 	NYUKHNKBN		=	:NYUKHNKBN,
 	NYUKHNKSNKBN	=	:NYUKHNKSNKBN,
 	KANGOKSN 		=	:KANGOKSN,
-	GAZOOPESUP 		=	:GAZOOPESUP,
-	IRYOKANSATUKBN 		=	:IRYOKANSATUKBN,
-	MASUISKBKBN 		=	:MASUISKBKBN,
-	FUKUBIKUNAIKBN		=	:FUKUBIKUNAIKBN,
-	FUKUBIKUKOTUKBN		=	:FUKUBIKUKOTUKBN,
-	TIMEMASUIKBN		=	:TIMEMASUIKBN,
-	DPCKBN		=	:DPCKBN,
-	HISINSYUMONITORKSN	=	:HISINSYUMONITORKSN,
-	TOUKETUHOZONKSN		=	:TOUKETUHOZONKSN,
-	KUBUNBANGOU		=	:KUBUNBANGOU,
-	ROSAIKBN		=	:ROSAIKBN,
-	SISIKSN			=	:SISIKSN,
-	AKUSEIBYORIKSN		=	:AKUSEIBYORIKSN,
 	OLDTENSKB		=	:OLDTENSKB,
 	OLDTEN 			=	:OLDTEN,
 	MADOKUKBN 		=	:MADOKUKBN,
@@ -1247,7 +1220,6 @@ path	key90	{
 			AND   CDKBN_KBN     =  :CDKBN_KBN
 			ORDER   BY          CDKBN_KBNNUM,
 					    CDKBN_KBNNUM_EDA,
-					    CDKBN_KOUBAN,
 					    SRYCD
 			;
 	};
@@ -1265,7 +1237,6 @@ path	key91	{
 			AND   CDKBN_KBNNUM  =  :CDKBN_KBNNUM
 			ORDER   BY          CDKBN_KBNNUM,
 					    CDKBN_KBNNUM_EDA,
-					    CDKBN_KOUBAN,
 					    SRYCD
 			;
 	};
@@ -1337,7 +1308,7 @@ path	key25	{
 			AND   DATAKBN       =  1
 			AND   CHUKSNTSUBAN  =  '0'
 			AND   NYUKHNKSNKBN  >  0
-			ORDER   BY          KOUHYOJYUNNUM,SRYCD
+			ORDER   BY          KOUHYOJYUNNUM
 			;
 	};
 };
@@ -1449,266 +1420,8 @@ path	key91m	{
 			AND   a.SRYCD    =   b.SRYCD
 			ORDER   BY          CDKBN_KBNNUM,
 					    CDKBN_KBNNUM_EDA,
-					    CDKBN_KOUBAN,
 					    a.SRYCD
 			;
-	};
-};
-
-path	key94 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key94_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM	 =   :HOSPNUM
-			AND   SRYCD      <>  :SRYCD
-			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			AND   YAKKAKJNCD     LIKE  :YAKKAKJNCD
-			ORDER  BY  SRYCD
-		;
-	};
-};
-
-path	key26 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key26_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM	 =   :HOSPNUM
-			AND   YUKOEDYMD  =   :YUKOEDYMD
-			ORDER  BY  SRYCD
-		;
-	};
-};
-
-path	key27 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key27_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
-			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			AND ((SRYCD  >=   '001000987')  AND
-                        (SRYCD  <=   '001999999')
-                   OR   (SRYCD  >=   '002000006')  AND
-                        (SRYCD  <=   '002999999')
-                   OR   (SRYCD  LIKE '0082%')
-                   OR   (SRYCD  LIKE '0083%')
-                   OR   (SRYCD  LIKE '0084%')
-                   OR   (SRYCD  LIKE '0085%')
-                   OR   (SRYCD  LIKE '058%')
-                   OR   (SRYCD  LIKE '059%')
-                   OR   (SRYCD  LIKE '095%')
-                   OR   (SRYCD  LIKE '096%'))
-			ORDER   BY       SRYCD
-		;
-	};
-};
-
-path	key95	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key95_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM	   =   :HOSPNUM
-			AND   YUKOSTYMD    <=  :YUKOSTYMD
-			AND   YUKOEDYMD    >=  :YUKOEDYMD
-			AND  (TEN          >=  :TK_TEN
-			AND   TEN          <=  :TK_EDTEN )
-			AND   CDKBN_KBN    =   :CDKBN_KBN
-			ORDER   BY          TEN,
-                                            CDKBN_KBN,
-                                            CDKBN_KBNNUM,
-					    CDKBN_KBNNUM_EDA,
-                                            CDKBN_KOUBAN,
-					    SRYCD
-			;
-	};
-};
-
-path	key28   	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key28_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu a
-			WHERE HOSPNUM  =   :HOSPNUM
-			AND  (HOSPNUM,SRYCD) in
-              (
-               SELECT HOSPNUM,SRYCD FROM tbl_inputcd
-              )
-			AND   NOT EXISTS 
-              (SELECT * FROM tbl_tensu
-				WHERE	HOSPNUM =  a.HOSPNUM
-				AND	    SRYCD   =  a.SRYCD
-			    AND     YUKOEDYMD  >  :YUKOEDYMD
-            )
-			AND    YUKOEDYMD  =  :YUKOEDYMD
-			ORDER  BY  YKZKBN,
-			           KANANAME
-		;
-	};
-};
-
-path	key30   	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key30_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
- 			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-                        AND   SRYCD  LIKE    '19%'
-                        AND   MICMESUKSN =    0
-                        AND   NYUTENTTLKBN =  903
-                        AND   CDKBN_KBNNUM <  200
-                        AND   KOKUJISKBKBN2 =  7
-			ORDER  BY  KOUHYOJYUNNUM
-		;
-	};
-};
-
-path	key31   	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key31_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
- 			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-                        AND   SRYCD       =  :SRYCD
-                        AND   MICMESUKSN =    0
-                        AND   NYUTENTTLKBN =  903
-                        AND   CDKBN_KBNNUM <  200
-                        AND   KOKUJISKBKBN2 =  7
-			ORDER  BY  KOUHYOJYUNNUM
-		;
-	};
-};
-
-
-path	key01g 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key01g_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
-			AND   YAKKAKJNCD    LIKE :YAKKAKJNCD
-			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-                        AND   SRYCD LIKE '6%'
-			ORDER   BY       KANANAME
-		;
-	};
-};
-
-path	key01gj 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key01gj_csr CURSOR FOR
-		SELECT distinct a.*
-		FROM tbl_tensu a, tbl_inputcd b
-			WHERE a.HOSPNUM  =   :HOSPNUM
-			AND   (YAKKAKJNCD    LIKE :YAKKAKJNCD)
-			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			AND   a.SRYCD    = b.SRYCD 
-			AND   a.HOSPNUM  = b.HOSPNUM 
-                        AND   a.SRYCD LIKE '6%'
-			ORDER   BY       KANANAME
-		;
-	};
-};
-
-
-path	key32   	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key32_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
-                        AND   SRYCD      LIKE :SRYCD
-                        AND   IDOKANREN  LIKE :IDOKANREN
-			ORDER  BY  SRYCD,
-				   YUKOSTYMD
-		;
-	};
-};
-
-path	key33 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key33_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM	 =   :HOSPNUM
-			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			AND   SRYCD      >=  :SRYCD
-			AND   SRYCD      <=  :UPSRYCD
-			AND   NAME       =   :NAME
-		;
-	};
-};
-
-path	key34 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key34_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
-			AND   SRYCD      =   :SRYCD
- 			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			ORDER  BY  YUKOEDYMD DESC 
-		;
-	};
-};
-
-path	key35 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key35_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
-			AND   UPYMD      >=  :UPYMD
-			ORDER  BY  SRYCD
-		;
-	};
-};
-
-path	key36 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_key36_csr CURSOR FOR
-		SELECT *
-		FROM tbl_tensu
-			WHERE HOSPNUM    =   :HOSPNUM
-			AND   CHUKSNCD   =   :CHUKSNCD
-			AND   CHUKSNTSUBAN =  :CHUKSNTSUBAN
- 			AND   YUKOSTYMD  <=  :YUKOSTYMD
-			AND   YUKOEDYMD  >=  :YUKOEDYMD
-			ORDER  BY  SRYCD
-		;
-	};
-};
-
-path	last_update1 	{
-	DBSELECT	{
-		DECLARE tbl_tensu_last_update1_csr CURSOR FOR
-		SELECT MAX(UPYMD||UPHMS) AS TERMID
-		FROM tbl_tensu
-		;
-	};
-};
-
-path	last_update2	{
-	DBSELECT	{
-		DECLARE tbl_tensu_last_update2_csr CURSOR FOR
-		SELECT UPYMD||TO_CHAR(COUNT(*), 'FM00000000') AS TERMID
-		FROM tbl_tensu
-        GROUP BY UPYMD
-        ORDER BY UPYMD DESC
-        LIMIT 5
-		;
 	};
 };
 
