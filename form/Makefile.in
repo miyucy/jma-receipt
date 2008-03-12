@@ -383,23 +383,24 @@ FORM_files = \
               HCML02V01.red \
               HCN03V03BO.red \
               HCN03V03BN.red \
-              HCM03V03BN.red\
-	      HCM03V03BO.red\
-              HCM03V03A5BN.red\
-	      HCM03V03A5BO.red\
-              HCM03V02BN.red\
-	      HCM03V02BO.red\
-              HCM03BN.red\
-	      HCM03BO.red\
-              HCN03V03A5BN.red\
-	      HCN03V03A5BO.red\
-              HCN03V02BN.red\
-	      HCN03V02BO.red\
-              HCN03BN.red\
-	      HCN03BO.red\
+              HCM03V03BN.red \
+	      HCM03V03BO.red \
+              HCM03V03A5BN.red \
+	      HCM03V03A5BO.red \
+              HCM03V02BN.red \
+	      HCM03V02BO.red \
+              HCM03BN.red \
+	      HCM03BO.red \
+              HCN03V03A5BN.red \
+	      HCN03V03A5BO.red \
+              HCN03V02BN.red \
+	      HCN03V02BO.red \
+              HCN03BN.red \
+	      HCN03BO.red \
               HCM55V01.red \
               HCM41V02.red \
               HCM62.red \
+
 all:   
 
 clean: 
