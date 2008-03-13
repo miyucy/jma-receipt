@@ -16740,7 +16740,6 @@
       *    ´µ¼Ô¸øÈñ¾ðÊó¤«¤éÏ·¿ÍÊÝ·ò¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯
            MOVE    WRK-AGECHK-SRYYMD TO  WRK-RJNYMD
            PERFORM 410111-ROUJIN-CHK-SEC
-           DISPLAY "FLG-ROUJIN = " FLG-ROUJIN " " WRK-RJNYMD
       *
            MOVE    ZERO                TO  FLG-RJN
            MOVE    ZERO                TO  FLG-LIFE-RJN
@@ -16800,17 +16799,23 @@
                MOVE    1            TO  FLG-RJN
            END-IF
       *
-           IF    ( WRK-AGECHK-SRYYMD   >=  CONST-H181001 )
-            AND  ( SPA-NAI-I01-RSI-HKNKBN
-                                        =  SPACE )
+           IF    ( SPA-NAI-I01-RSI-HKNKBN  =   SPACE )
+               EVALUATE    TRUE
+               WHEN  ( WRK-AGECHK-SRYYMD   >=  CONST-H200401 )
       *
-               MOVE    FLG-RJN      TO  FLG-LIFE-RJN
+                   IF    ( AGECHK-NENREI2-YY  >=   65 )
+                       MOVE    1        TO  FLG-LIFE-RJN
+                   END-IF
+               WHEN  ( WRK-AGECHK-SRYYMD   >=  CONST-H181001 )
       *
-      *        Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
-               IF    ( FLG-ROUJIN       =   1 )      OR
-                      (AGECHK-NENREI   >=    70)
-                   MOVE    1        TO  FLG-LIFE-RJN
-               END-IF
+                   MOVE    FLG-RJN      TO  FLG-LIFE-RJN
+      *
+      *            Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
+                   IF    ( FLG-ROUJIN           =   1  ) 
+                    OR   ( AGECHK-NENREI2-YY   >=   70 )
+                       MOVE    1        TO  FLG-LIFE-RJN
+                   END-IF
+               END-EVALUATE
            END-IF
       *
            .
