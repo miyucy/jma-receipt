@@ -3079,6 +3079,10 @@
                        MOVE    "113009910"         TO  WRK-SRYCD
                        MOVE    IDX-Z               TO  IDX-T
                        MOVE    1                   TO  FLG-ARI
+                       MOVE    SPACE               TO  WRK-COM-HKEIFLG
+                                                          (IDX-Z)
+                       MOVE    SPACE               TO  WRK-COM-HCHKFLG
+                                                          (IDX-Z)
                        PERFORM 1100-KASAN-SET-SEC
                        MOVE    SPACE               TO  WRK-COM-AUTOKBN
                                                           (IDX-Z)
@@ -3090,6 +3094,10 @@
                        MOVE    "113000810"         TO  WRK-SRYCD
                        MOVE    IDX-Z               TO  IDX-T
                        MOVE    1                   TO  FLG-ARI
+                       MOVE    SPACE               TO  WRK-COM-HKEIFLG
+                                                          (IDX-Z)
+                       MOVE    SPACE               TO  WRK-COM-HCHKFLG
+                                                          (IDX-Z)
                        PERFORM 1100-KASAN-SET-SEC
                        MOVE    SPACE              TO  WRK-COM-AUTOKBN
                                                           (IDX-Z)

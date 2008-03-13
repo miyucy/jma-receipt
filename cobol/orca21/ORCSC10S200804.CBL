@@ -3499,6 +3499,12 @@
                    WHEN    "113006010"
                    WHEN    "113006110"
                        MOVE    IDX                 TO  WRK-IDX-IN
+      *            特定施設入居時医学総合管理料
+                   WHEN    "114013010"
+                   WHEN    "114013210"
+                   WHEN    "114013110"
+                   WHEN    "114013310"
+                       MOVE    IDX                 TO  WRK-IDX-IN
                END-EVALUATE
            END-PERFORM
       *
@@ -3526,7 +3532,7 @@
       *        在宅時医学総合管理料
                PERFORM 3308-ZAIKANRI-SET-SEC
            END-IF
-           IF      SPA-ZAIKANRI-ARI     NOT =   ZERO
+           IF      SPA-IGAKUKAN-ARI     NOT =   ZERO
       *        特定施設入居時医学総合管理料料
                PERFORM 3308-IGAKUKAN-SET-SEC
            END-IF
@@ -3995,6 +4001,12 @@
                PERFORM 5022-KOURESRY-CHK-SEC
            END-IF
       *
+      *    特定施設入居時等医学管理料
+           IF     (SPA-IGAKUKAN-ARI    NOT =   ZERO )
+             OR   (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
+               PERFORM 5022-IGAKUKAN-CHK-SEC
+           END-IF
+      *
            .
        700-SANTEI-CHK-EXT.
            EXIT.
@@ -4437,7 +4449,7 @@
                                                  OR  "$"   )
                CONTINUE
              ELSE
-      *        検査、投薬、注射は算定できない
+      *        投薬は算定できない
                EVALUATE    SPA-COM-SRYKBN(IDX)
                    WHEN    "21"
                    WHEN    "22"
@@ -4619,6 +4631,61 @@
            END-PERFORM
            .
        5022-KOURESRY-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定施設入居時等医学管理料チェック処理
+      *****************************************************************
+       5022-IGAKUKAN-CHK-SEC                SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX         >   SPA-MAX-LINE    )   OR
+                              (SPA-ERRCD           NOT =   SPACE )  OR
+                              (SPA-GMN-INPUTCD (IDX)   =   SPACE )
+      *      包括保険
+             IF     (SPA-COM-HKNCOMBI (IDX)      =   "9999")
+                 OR (SPA-GMN-INPUTCD  (IDX)(1:1) =   "#"
+                                                 OR  "$"   )
+               CONTINUE
+             ELSE
+      *        投薬は算定できない
+               EVALUATE    SPA-COM-SRYKBN(IDX)
+                   WHEN    "21"
+                   WHEN    "22"
+                   WHEN    "23"
+      *                院内時の診療種別変更
+                       PERFORM 50192-SRYSYUKBN-CHK-SEC
+      *                薬剤の時、院外処方であること
+                       IF    ((SPA-INGAIKBN        =   "1"  ) AND
+                              (SPA-COM-SRYSYUKBN(IDX)
+                                                   =   "210" OR
+                                                       "212" OR
+                                                       "220" OR
+                                                       "222" OR
+                                                       "230" OR
+                                                       "232" OR
+                                                       "290" OR
+                                                       "292" OR
+                                                       SPACE  ))  OR
+                             ( SPA-COM-SRYSYUKBN(IDX)
+                                                   =   "212" OR
+                                                       "222" OR
+                                                       "232" OR
+                                                       "292"  )
+                           CONTINUE
+                       ELSE
+      *                    処方のみはＯＫ
+                           IF      SPA-COM-SRYSYUKBN(IDX)(3:1)
+                                                   NOT =   "3" 
+                               MOVE    "1402"          TO  SPA-ERRCD
+                               MOVE    "1"             TO  SPA-COM-CUR
+                                                             (IDX)
+                           END-IF
+                       END-IF
+               END-EVALUATE
+             END-IF
+           END-PERFORM
+           .
+       5022-IGAKUKAN-CHK-EXT.
            EXIT.
       *
       *****************************************************************

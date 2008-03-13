@@ -538,6 +538,9 @@
                            (SPA-ZAIMATU-ARI            =   ZERO)
                        AND (SPA-ZAIKANRI-ARI           =   ZERO)
                        AND (SPA-ZAIKANRI-ARI2          =   ZERO)
+      *                特定施設入居時等医学管理料
+                       AND (SPA-IGAKUKAN-ARI           =   ZERO)
+                       AND (SPA-IGAKUKAN-ARI2          =   ZERO)
       *************    MOVE    "0074"          TO  WRK-ERRCD
       *                MOVE    "1"             TO  WRK-COM-CUR
       *************                                          (IDX-Z)
@@ -1778,6 +1781,9 @@
       *             在宅時医療総合管理料あり
                OR  (SPA-ZAIKANRI-ARI           >   ZERO)
                OR  (SPA-ZAIKANRI-ARI2          >   ZERO)
+      *        特定施設入居時等医学管理料
+               OR  (SPA-IGAKUKAN-ARI       NOT =   ZERO)
+               OR  (SPA-IGAKUKAN-ARI2      NOT =   ZERO)
                CONTINUE
            ELSE
                MOVE    1                   TO  FLG-SYOHO-CHK
