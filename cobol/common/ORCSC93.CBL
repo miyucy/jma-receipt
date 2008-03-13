@@ -977,7 +977,8 @@
            END-IF
       *---(02.00.05)  LINE ADD  START  --------------------------------
       *    検査の時、包括対象検査により、剤を決定する
-           IF     (SPA-COM-SRYKBN (IDX)    =   "60" )  AND
+           IF     (SPA-COM-SRYKBN (IDX)    =   "60"
+                                           OR  "64"  )  AND
                   (SPA-GMN-INPUTCD(IDX)(1:1)   NOT =   "." )  AND
                   (SPA-COM-DATAKBN(IDX)    =   "1"  )
               AND (SPA-COM-SET (IDX)   NOT =   "1"  )
@@ -1711,7 +1712,8 @@
            MOVE    ZERO                TO  WRK-KENSA-CNT
            PERFORM VARYING     IDX-KEN     FROM    1   BY  1
                    UNTIL       IDX-KEN     >   SPA-MAX-LINE
-               IF      (SPA-COM-SRYKBN (IDX-KEN)   =   "60" ) AND
+               IF      (SPA-COM-SRYKBN (IDX-KEN)   =   "60"
+                                                   OR  "64"  ) AND
                        (SPA-COM-SRYSYUKBN (IDX-KEN)
                                                NOT =   "610")  AND
                        (SPA-COM-INPUTCD (IDX-KEN)(1:1)
@@ -1958,7 +1960,8 @@
                        WRK-GMN-INPUTCD(IDX)    =   SPACE
                    CONTINUE
                ELSE
-                   IF     (WRK-COM-SRYKBN (IDX)    =   "60" ) AND
+                   IF     (WRK-COM-SRYKBN (IDX)    =   "60"
+                                                   OR  "64" ) AND
                           (WRK-COM-HOUKNSKBN(IDX)  NOT =  ZERO)
                    AND    (WRK-COM-SRYSYUKBN(IDX)  NOT =  "610")
                    AND    (WRK-COM-SET      (IDX)  NOT =   "1"  )
