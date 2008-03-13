@@ -4,6 +4,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-多々納  08/03/14  Ｈ２０年４月改正対応
       ************************************************************
        01  CLAIM007-VALUES.
            02  CLAIM007-T.
@@ -42,6 +43,11 @@
                05  CLAIM007-CLAIM-T125  PIC  X(3)   VALUE   "125" .
                05  CLAIM007-NAME-T125   PIC  X(40)  
                    VALUE   "再診（深夜）" .
+             03  CLAIM007-T126.
+      *        05  CLAIM007-ORCA-T126   PIC  X(2)   VALUE   "12" .
+               05  CLAIM007-CLAIM-T126  PIC  X(3)   VALUE   "126" .
+               05  CLAIM007-NAME-T126   PIC  X(40)  
+                   VALUE   "再診（夜間・早朝）" .
              03  CLAIM007-T130.
       *        05  CLAIM007-ORCA-T130   PIC  X(2)   VALUE   "13" .
                05  CLAIM007-CLAIM-T130  PIC  X(3)   VALUE   "130" .
@@ -132,6 +138,11 @@
                05  FILLER               PIC  X(3)   VALUE   "600" .
                05  FILLER               PIC  X(40)  
                    VALUE   "検査" .
+             03  CLAIM007-T640.
+      *        05  FILLER               PIC  X(2)   VALUE   "64" .
+               05  FILLER               PIC  X(3)   VALUE   "640" .
+               05  FILLER               PIC  X(40)  
+                   VALUE   "病理診断" .
              03  CLAIM007-T700.
       *        05  FILLER               PIC  X(2)   VALUE   "70" .
                05  FILLER               PIC  X(3)   VALUE   "700" .
@@ -183,7 +194,9 @@
                05  FILLER               PIC  X(40)  
                    VALUE   "自費（消費税あり）" .
            02  CLAIM007-R  REDEFINES   CLAIM007-T.
-             03  CLAIM007-TX           OCCURS  35.
+             03  CLAIM007-TX           OCCURS  37.
       *        05  CLAIM007-ORCA       PIC  X(2).
                05  CLAIM007-CLAIM      PIC  X(3).
                05  CLAIM007-NAME       PIC  X(40).
+       01  CLAIM007-MAX                PIC  9(03)  VALUE   37.
+      *

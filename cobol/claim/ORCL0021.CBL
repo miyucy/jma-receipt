@@ -41,6 +41,7 @@
       *                                     ¼«Èñ¥³¡¼¥É¡¢²èÁü¿ÇÃÇÂÐ±þ
       *                                     ¿·µ¬¡¦ÄûÀµÄÉ²Ã
       *  03.05.01    NACL-Â¿¡¹Ç¼  07/08/16  ´µ¼Ô¥á¥âÄÉ²Ã
+      *  04.02.01    NACL-Â¿¡¹Ç¼  08/03/14  £È£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1036,13 +1037,13 @@
       *
       *    £Ã£Ì£Á£É£ÍÍÑ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       33
+                   UNTIL   IDX >       CLAIM007-MAX
                IF      TBL-SRYCD (IDX-LF)  =   CLAIM007-CLAIM  (IDX)
                    MOVE    CLAIM007-CLAIM(IDX) 
                                            TO  TBL-SRYCD  (IDX-LF)
                    MOVE    CLAIM007-NAME (IDX)
                                            TO  TBL-SRYNAME(IDX-LF)
-                   MOVE    33              TO  IDX
+                   MOVE    CLAIM007-MAX    TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1133,6 +1134,8 @@
                    PERFORM 20022-SRYACT-SYORI-SEC
       *        ¸¡ºº
                WHEN    "60"
+      *        ÉÂÍý¿ÇÃÇ
+               WHEN    "64"
                    ADD     1               TO  IDX-IJ
                    PERFORM 20022-SRYACT-SYORI-SEC
       *        ²èÁü¿ÇÃÇ
@@ -1219,6 +1222,9 @@
       *            ¿¼Ìë²Ã»»½èÍý
                    WHEN    3
                        MOVE    "125"           TO  WRK-SRYKBN3
+      *            Ìë´Ö¡¦ÁáÄ«²Ã»»
+                   WHEN    6
+                       MOVE    "126"           TO  WRK-SRYKBN3
                END-EVALUATE
                ADD     1               TO  IDX-LF
                ADD     1               TO  IDX-LF2
@@ -1266,13 +1272,13 @@
       *    ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
            IF      WRK-SRYKBN3(3:1)    NOT =   ZERO
              PERFORM VARYING IDX FROM    1   BY  1
-                     UNTIL   IDX >       33
+                     UNTIL   IDX >       CLAIM007-MAX
                  IF      WRK-SRYKBN3     =   CLAIM007-CLAIM  (IDX)
                      MOVE    CLAIM007-CLAIM(IDX) 
                                          TO  TBL-SRYCD  (IDX-LF)
                      MOVE    CLAIM007-NAME (IDX)
                                          TO  TBL-SRYNAME(IDX-LF)
-                     MOVE    33          TO  IDX
+                     MOVE    CLAIM007-MAX    TO  IDX
                  END-IF
              END-PERFORM
            END-IF
@@ -2056,13 +2062,13 @@
            MOVE    "000"               TO  TBL-SRYCD (IDX-LF)
       *    £Ã£Ì£Á£É£ÍÍÑ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       35
+                   UNTIL   IDX >       CLAIM007-MAX
                IF      TBL-SRYCD (IDX-LF)  =   CLAIM007-CLAIM  (IDX)
                    MOVE    CLAIM007-CLAIM(IDX) 
                                            TO  TBL-SRYCD  (IDX-LF)
                    MOVE    CLAIM007-NAME (IDX)
                                            TO  TBL-SRYNAME(IDX-LF)
-                   MOVE    35              TO  IDX
+                   MOVE    CLAIM007-MAX    TO  IDX
                END-IF
            END-PERFORM
       *    ¹ç·×ÀÁµáÅÀ¿ô
@@ -2385,13 +2391,13 @@
            MOVE    "014"               TO  TBL-SRYCD (IDX-LF)
       *    £Ã£Ì£Á£É£ÍÍÑ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       35
+                   UNTIL   IDX >       CLAIM007-MAX
                IF      TBL-SRYCD (IDX-LF)  =   CLAIM007-CLAIM  (IDX)
                    MOVE    CLAIM007-CLAIM(IDX) 
                                            TO  TBL-SRYCD  (IDX-LF)
                    MOVE    CLAIM007-NAME (IDX)
                                            TO  TBL-SRYNAME(IDX-LF)
-                   MOVE    35              TO  IDX
+                   MOVE    CLAIM007-MAX    TO  IDX
                END-IF
            END-PERFORM
       *    ¹ç·×¶â³Û
@@ -2530,13 +2536,13 @@
            MOVE    "016"               TO  TBL-SRYCD (IDX-LF)
       *    £Ã£Ì£Á£É£ÍÍÑ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       35
+                   UNTIL   IDX >       CLAIM007-MAX
                IF      TBL-SRYCD (IDX-LF)  =   CLAIM007-CLAIM  (IDX)
                    MOVE    CLAIM007-CLAIM(IDX) 
                                            TO  TBL-SRYCD  (IDX-LF)
                    MOVE    CLAIM007-NAME (IDX)
                                            TO  TBL-SRYNAME(IDX-LF)
-                   MOVE    35              TO  IDX
+                   MOVE    CLAIM007-MAX    TO  IDX
                END-IF
            END-PERFORM
       *    ¹ç·×¶â³Û
@@ -2553,7 +2559,7 @@
       *    ÊÝ¸±Ê¬
            MOVE    ZERO                TO  IDX-IJ
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       15
+                   UNTIL   IDX     >       16
                IF      SYU-TGMONEY-TAX (IDX)   NOT =   ZERO
                    ADD     1               TO  IDX-IJ
       *            ÀÁµá¥³¡¼¥É
@@ -2607,9 +2613,12 @@
                        MOVE    "Êü¼ÍÀþ¼£ÎÅ"      TO  TBL-ALSNAME
                                                         (IDX-LF IDX-IJ)
                    WHEN    14
-                       MOVE    "Æþ±¡ÎÁÅù"      TO  TBL-ALSNAME
+                       MOVE    "ÉÂÍý¿ÇÃÇ"      TO  TBL-ALSNAME
                                                         (IDX-LF IDX-IJ)
                    WHEN    15
+                       MOVE    "Æþ±¡ÎÁÅù"      TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    16
                        MOVE    "ÎÅÍÜÃ´Åö¼êÅö"  TO  TBL-ALSNAME
                                                         (IDX-LF IDX-IJ)
                    END-EVALUATE
