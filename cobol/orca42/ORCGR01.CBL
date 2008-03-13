@@ -4685,7 +4685,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                            INTO        SPA-ERRMSG
                    END-STRING
                WHEN    "0039"
-                   STRING  "改正前と改正後（２００８年４月）の"
+                   STRING  "改正前と改正後（平成２０年４月）の"
                                            DELIMITED   BY  SIZE
                            "レセプトは同時に処理できません"
                                            DELIMITED   BY  SIZE
