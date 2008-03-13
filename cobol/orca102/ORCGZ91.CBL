@@ -47,6 +47,7 @@
       *  02.00.07    NACL-¿¹ÏÆ    06/07/27  Ãê½Ð¥Ç¡¼¥¿¤È½ÐÎÏ½ç¤Ë¼«±¡ºÎÍÑ¤òÄÉ²Ã
       *  03.05.01    NACL-¿¹ÏÆ    07/05/29  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.01    NACL-¿¹ÏÆ    08/01/17  ´ïºà¾¦ÉÊÄÉ²Ã
+      *  04.02.01    NACL-¿¹ÏÆ    08/03/13  ÉÂÍý¿ÇÎÅÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -137,19 +138,21 @@
                        09  SPA-Z91-F2L         PIC X(01).
                        09  SPA-Z91-SRYENDMEIL  PIC X(13).
       *
+      *----(04.02.01)--UPD-START---
                05  SPA-GMN-SRYSTR-AREA.
-                   07  SPA-GMN-SRYSTR-LIST     OCCURS 13.
+                   07  SPA-GMN-SRYSTR-LIST     OCCURS 14.
                        09  SPA-GMN-SRYSTRL     PIC X(02).
                        09  SPA-GMN-F1L         PIC X(01).
                        09  SPA-GMN-SRYSTRMEIL  PIC X(14).
                    07  SPA-SRYSTR-MAX          PIC 9(04).
       *
                05  SPA-GMN-SRYEND-AREA.
-                   07  SPA-GMN-SRYEND-LIST     OCCURS 13.
+                   07  SPA-GMN-SRYEND-LIST     OCCURS 14.
                        09  SPA-GMN-SRYENDL     PIC X(02).
                        09  SPA-GMN-F2L         PIC X(01).
                        09  SPA-GMN-SRYENDMEIL  PIC X(14).
                    07  SPA-SRYEND-MAX          PIC 9(04).
+      *----(04.02.01)--UPD-END-----
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MSTYMD          PIC 9(08).
@@ -500,6 +503,7 @@
            MOVE  "T"     TO  SPA-GMN-KEI (1)
            MOVE  "F"     TO  SPA-GMN-KEI (2)
       *
+      *----(04.02.01)--UPD-START---
            MOVE  "11"    TO  SPA-GMN-SRYSTRL(1)
            MOVE  "12"    TO  SPA-GMN-SRYSTRL(2)
            MOVE  "13"    TO  SPA-GMN-SRYSTRL(3)
@@ -510,10 +514,11 @@
            MOVE  "50"    TO  SPA-GMN-SRYSTRL(8)
            MOVE  "54"    TO  SPA-GMN-SRYSTRL(9)
            MOVE  "60"    TO  SPA-GMN-SRYSTRL(10)
-           MOVE  "70"    TO  SPA-GMN-SRYSTRL(11)
-           MOVE  "80"    TO  SPA-GMN-SRYSTRL(12)
+           MOVE  "64"    TO  SPA-GMN-SRYSTRL(11)
+           MOVE  "70"    TO  SPA-GMN-SRYSTRL(12)
+           MOVE  "80"    TO  SPA-GMN-SRYSTRL(13)
       *----(01.01.01)--ADD-START---
-           MOVE  "90"    TO  SPA-GMN-SRYSTRL(13)
+           MOVE  "90"    TO  SPA-GMN-SRYSTRL(14)
       *----(01.01.01)--ADD-END-----
       *
            MOVE  "½é¿ÇÎÁ"    TO  SPA-GMN-SRYSTRMEIL(1)
@@ -526,13 +531,15 @@
            MOVE  "¼ê½ÑÎÁ"    TO  SPA-GMN-SRYSTRMEIL(8)
            MOVE  "Ëã¿ìÎÁ"    TO  SPA-GMN-SRYSTRMEIL(9)
            MOVE  "¸¡ººÎÁ"    TO  SPA-GMN-SRYSTRMEIL(10)
-           MOVE  "²èÁü¿ÇÃÇÎÁ"    TO  SPA-GMN-SRYSTRMEIL(11)
-           MOVE  "¤½¤ÎÂ¾ÎÁ"  TO  SPA-GMN-SRYSTRMEIL(12)
+           MOVE  "ÉÂÍý¿ÇÃÇ"  TO  SPA-GMN-SRYSTRMEIL(11)
+           MOVE  "²èÁü¿ÇÃÇÎÁ"    TO  SPA-GMN-SRYSTRMEIL(12)
+           MOVE  "¤½¤ÎÂ¾ÎÁ"  TO  SPA-GMN-SRYSTRMEIL(13)
       *----(01.01.01)--ADD-START---
-           MOVE  "Æþ±¡ÎÁ"    TO  SPA-GMN-SRYSTRMEIL(13)
+           MOVE  "Æþ±¡ÎÁ"    TO  SPA-GMN-SRYSTRMEIL(14)
       *----(01.01.01)--ADD-END-----
       *
-           MOVE  13      TO  SPA-SRYSTR-MAX
+           MOVE  14      TO  SPA-SRYSTR-MAX
+      *----(04.02.01)--UPD-END-----
       *
            MOVE  SPA-GMN-SRYSTR-AREA  TO  SPA-GMN-SRYEND-AREA
       *

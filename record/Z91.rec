@@ -15,7 +15,7 @@ Z91	{
 			};
 			state   int;
 			count	int;
-			item	varchar(17)[13];
+			item	varchar(17)[14];
 		};
 		SRYENDCOMBO	{
 			SRYEND	{
@@ -23,7 +23,7 @@ Z91	{
 			};
 			state   int;
 			count	int;
-			item	varchar(17)[13];
+			item	varchar(17)[14];
 		};
 		IYKCHKALL	{
 			value	bool;

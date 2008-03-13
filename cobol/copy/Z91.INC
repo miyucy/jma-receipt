@@ -23,12 +23,12 @@
                         06  Z91-SRYSTR         PIC X(17).
                         06  Z91-SRYSTR-STATE   PIC S9(9)   BINARY.
                         06  Z91-SRYSTR-COUNT   PIC S9(9)   BINARY.
-                        06  Z91-SRYSTR-ITEM    PIC X(17)   OCCURS  13.
+                        06  Z91-SRYSTR-ITEM    PIC X(17)   OCCURS  14.
                     05  Z91-SRYENDCOMBO.
                         06  Z91-SRYEND         PIC X(17).
                         06  Z91-SRYEND-STATE   PIC S9(9)   BINARY.
                         06  Z91-SRYEND-COUNT   PIC S9(9)   BINARY.
-                        06  Z91-SRYEND-ITEM    PIC X(17)   OCCURS  13.
+                        06  Z91-SRYEND-ITEM    PIC X(17)   OCCURS  14.
                     05  Z91-IYKCHKALL          PIC X.
                     05  Z91-IYKCHK             PIC X       OCCURS  7.
                     05  Z91-TOKCHK             PIC X.
