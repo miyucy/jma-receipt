@@ -1210,7 +1210,7 @@
            IF      (SRY-SRYKBN         =   "12"  )  AND
                    (SRY-SRYCD (IDXA)(1:1)   =   "1"  )  AND
                    (TNS-DATAKBN        =   "2"  )  AND
-                   (TNS-TIMEKSNKBN     >=  1    AND  <=  5  )
+                   (TNS-TIMEKSNKBN     >=  1    AND  <=  6  )
                EVALUATE    TNS-TIMEKSNKBN
       *            »þ´Ö³°²Ã»»½èÍý
                    WHEN    1
@@ -2078,7 +2078,7 @@
            MOVE    ZERO                TO  IDX-IJ2
            MOVE    ZERO                TO  FLG-ERR
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       15
+                   UNTIL   IDX     >       16
                ADD     1                   TO  IDX-IJ
                ADD     1                   TO  IDX-IJ2
       *        ÀÁµá¥³¡¼¥É
@@ -2129,9 +2129,12 @@
                        MOVE    "Êü¼ÍÀþ¼£ÎÅ"    TO  TBL-ALSNAME
                                                         (IDX-LF IDX-IJ)
                    WHEN    14
-                       MOVE    "Æþ±¡ÎÁÅù"      TO  TBL-ALSNAME
+                       MOVE    "ÉÂÍý¿ÇÃÇ"      TO  TBL-ALSNAME
                                                         (IDX-LF IDX-IJ)
                    WHEN    15
+                       MOVE    "Æþ±¡ÎÁÅù"      TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    16
                        MOVE    "ÎÅÍÜÃ´Åö¼êÅö"  TO  TBL-ALSNAME
                                                         (IDX-LF IDX-IJ)
                END-EVALUATE
@@ -2408,7 +2411,7 @@
            MOVE    ZERO                TO  IDX-IJ
            MOVE    ZERO                TO  FLG-ERR
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       15
+                   UNTIL   IDX     >       16
                IF      SYU-TGMONEY (IDX)   NOT =   ZERO
                    ADD     1               TO  IDX-IJ
       *            ÀÁµá¥³¡¼¥É
@@ -2462,9 +2465,12 @@
                        MOVE    "Êü¼ÍÀþ¼£ÎÅ"      TO  TBL-ALSNAME
                                                         (IDX-LF IDX-IJ)
                    WHEN    14
-                       MOVE    "Æþ±¡ÎÁÅù"      TO  TBL-ALSNAME
+                       MOVE    "ÉÂÍý¿ÇÃÇ"      TO  TBL-ALSNAME
                                                         (IDX-LF IDX-IJ)
                    WHEN    15
+                       MOVE    "Æþ±¡ÎÁÅù"      TO  TBL-ALSNAME
+                                                        (IDX-LF IDX-IJ)
+                   WHEN    16
                        MOVE    "ÎÅÍÜÃ´Åö¼êÅö"  TO  TBL-ALSNAME
                                                         (IDX-LF IDX-IJ)
                    END-EVALUATE
