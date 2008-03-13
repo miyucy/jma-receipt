@@ -160,6 +160,13 @@ W18	{
 					count	int;
 					item	varchar(21)[99];
 				};
+				PRTKBN17_COMBO	{
+					PRTKBN17	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
 			};
 		};
 		HHOSPNAME	{
