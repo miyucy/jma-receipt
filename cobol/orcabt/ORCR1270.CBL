@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.02.01    NACL-藤原    08/02/19  誕生年の記載の修正
+      *  04.02.02    NACL-藤原    08/03/13  平成２０年４月改正対応
+      *                                     フラグ、データエリア追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2837,6 +2839,9 @@ grpsys     MOVE    RECE200-HOSPNUM     TO  RECE10-HOSPNUM
            MOVE    RECE200-AGE         TO  RECE10-AGE  
       *    一部負担金・食事療養費標準負担額区分
            MOVE    SPACE               TO  RECE10-SHOKUJIFTNKBN
+      *
+           MOVE    "00000000000000000000000000000000000000000000000000"
+                                       TO  RECE10-RESERVE-AREA
       *
            MOVE    SPA-HOSPNUM         TO  RECE10-HOSPNUM
            MOVE    RECE10-REC          TO  MCPDATA-REC

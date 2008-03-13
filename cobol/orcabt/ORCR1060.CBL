@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.02.01    NACL-藤原    08/02/19  誕生年の記載の修正
+      *  04.02.02    NACL-藤原    08/03/13  平成２０年４月改正対応
+      *                                     フラグ、データエリア追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2477,6 +2479,9 @@ grpsys     MOVE    RECE100-HOSPNUM     TO  RECE10-HOSPNUM
                                        +   RECE100-TENSU  (41 2)
       *     
            MOVE    RECE100-AGE          TO  RECE10-AGE  
+      *
+           MOVE    "00000000000000000000000000000000000000000000000000"
+                                       TO  RECE10-RESERVE-AREA
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
