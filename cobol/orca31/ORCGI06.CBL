@@ -419,6 +419,7 @@
                05  ITEM-TOKNYUIN-NYUIN     PIC X(02).
       *
        01  CONST-AREA.
+           03  CONST-H200401               PIC X(08)   VALUE "20080401".
            03  CONST-H181001               PIC X(08)   VALUE "20061001".
            03  CONST-H180701               PIC X(08)   VALUE "20060701".
            03  CONST-ERRCD9001             PIC X(04)   VALUE "9001".
@@ -1468,35 +1469,41 @@
                INITIALIZE  ORCSAGECHKAREA
            END-IF
       *
-      *    Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
-           IF    ((FLG-HKNCOMBI        =   ZERO)
-              AND (COMB-KOH1HKNNUM     =   "027"))
-             OR  ( AGECHK-NENREI      >=    75)
-             OR  ((AGECHK-NENREI      >=    70)
-              AND (SPA-NAI-BIRTHDAY   <=   "19320930"))
-             OR  (AGECHK-ROUJIN        =    1)
-               MOVE    1               TO  FLG-RJN
-           END-IF
+           IF    ( SPA-NAI-KJNYMD     >=   CONST-H200401 )
       *
-      *    ´µ¼Ô¸øÈñ¾ðÊó¤«¤éÏ·¿ÍÊÝ·ò¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯
-           INITIALIZE                      PTKOHINF-REC
-           MOVE    SPA-HOSPNUM          TO  PTKOH-HOSPNUM
-           MOVE    SPA-NAI-PTID        TO  PTKOH-PTID
-           PERFORM 900-PTKOHINF-KEY11-SEL-SEC
-           IF    ( FLG-PTKOHINF        =   ZERO )
-               MOVE    1               TO  FLG-RJN
-           END-IF
+      *        ´µ¼ÔÊÝ¸±¾ðÊó¤«¤éÏ·¿ÍÊÝ·ò¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯
+               INITIALIZE                      PTHKNINF-REC
+               MOVE    SPA-HOSPNUM          TO  PTHKN-HOSPNUM
+               MOVE    SPA-NAI-PTID        TO  PTHKN-PTID
+               MOVE    SPA-NAI-KJNYMD      TO  PTHKN-TEKSTYMD
+                                               PTHKN-TEKEDYMD
+               PERFORM 900-PTHKNINF-KEY11-SEL-SEC
+               IF    ( FLG-PTHKNINF        =   ZERO )
+                   MOVE    1               TO  FLG-RJN
+               END-IF
       *
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¤«¤éÏ·¿ÍÊÝ·ò¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯
-           INITIALIZE                      PTHKNINF-REC
-           MOVE    SPA-HOSPNUM          TO  PTHKN-HOSPNUM
-           MOVE    SPA-NAI-PTID        TO  PTHKN-PTID
-           MOVE    "968"               TO  PTHKN-HKNNUM
-           MOVE    SPA-NAI-KJNYMD      TO  PTHKN-TEKSTYMD
-                                           PTHKN-TEKEDYMD
-           PERFORM 900-PTHKNINF-KEY6-SEL-SEC
-           IF    ( FLG-PTHKNINF        =   ZERO )
-               MOVE    1               TO  FLG-RJN
+      *        ´µ¼Ô¸øÈñ¾ðÊó¤«¤éÏ·¿ÍÊÝ·ò¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯
+               INITIALIZE                      PTKOHINF-REC
+               MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
+               MOVE    SPA-NAI-PTID        TO  PTKOH-PTID
+               MOVE    "968"               TO  PTKOH-KOHNUM
+               MOVE    SPA-NAI-KJNYMD      TO  PTKOH-TEKSTYMD
+                                               PTKOH-TEKEDYMD
+               PERFORM 900-PTKOHINF-KEY6-SEL-SEC
+               IF    ( FLG-PTKOHINF        =   ZERO )
+                   MOVE    1               TO  FLG-RJN
+               END-IF
+           ELSE
+      *
+      *        Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
+               IF    ((FLG-HKNCOMBI        =   ZERO)
+                  AND (COMB-KOH1HKNNUM     =   "027"))
+                 OR  ( AGECHK-NENREI      >=    75)
+                 OR  ((AGECHK-NENREI      >=    70)
+                  AND (SPA-NAI-BIRTHDAY   <=   "19320930"))
+                 OR  (AGECHK-ROUJIN        =    1)
+                   MOVE    1               TO  FLG-RJN
+               END-IF
            END-IF
       *
            .
@@ -5765,15 +5772,20 @@
                MOVE    BAK-AGE-FLG-ROUJIN  TO  FLG-ROUJIN
            END-IF
       *
-           IF    ( SPA-NAI-KJNYMD         >=  CONST-H181001 )
-               IF    ( SPA-NAI-HKNNUM      =  "971" OR "973" OR "975" )
-                   CONTINUE
-               ELSE
-                   MOVE    FLG-ROUJIN      TO  FLG-LIFE-RJN
-                   IF    ( AGECHK-NENREI   >=  70 )
+           IF    ( SPA-NAI-HKNNUM      =  "971" OR "973" OR "975" )
+               CONTINUE
+           ELSE
+               EVALUATE    TRUE
+               WHEN  ( SPA-NAI-KJNYMD         >=  CONST-H200401 )
+                   IF    ( AGECHK-NENREI2-YY  >=  65 )
                        MOVE    1           TO  FLG-LIFE-RJN
                    END-IF
-               END-IF
+               WHEN  ( SPA-NAI-KJNYMD         >=  CONST-H181001 )
+                   MOVE    FLG-ROUJIN      TO  FLG-LIFE-RJN
+                   IF    ( AGECHK-NENREI2-YY   >=  70 )
+                       MOVE    1           TO  FLG-LIFE-RJN
+                   END-IF
+               END-EVALUATE
            END-IF
       *
            .
@@ -5951,15 +5963,15 @@
        900-HKNCOMBI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊó¸¡º÷½èÍý(KEY11)
+      *    ´µ¼Ô¸øÈñ¾ðÊó¸¡º÷½èÍý(KEY6)
       *****************************************************************
-       900-PTKOHINF-KEY11-SEL-SEC      SECTION.
+       900-PTKOHINF-KEY6-SEL-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-PTKOHINF
       *
            MOVE    PTKOHINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key11"             TO  MCP-PATHNAME
+           MOVE    "key6"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  PTKOHINF-REC
@@ -5969,23 +5981,23 @@
            END-IF
       *
            MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key11"             TO  MCP-PATHNAME
+           MOVE    "key6"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
-       900-PTKOHINF-KEY11-SEL-EXT.
+       900-PTKOHINF-KEY6-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¸¡º÷½èÍý(KEY6)
+      *    ´µ¼ÔÊÝ¸±¾ðÊó¸¡º÷½èÍý(KEY11)
       *****************************************************************
-       900-PTHKNINF-KEY6-SEL-SEC       SECTION.
+       900-PTHKNINF-KEY11-SEL-SEC      SECTION.
       *
            MOVE    ZERO                TO  FLG-PTHKNINF
       *
            MOVE    PTHKNINF-REC        TO  MCPDATA-REC
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  PTHKNINF-REC
@@ -5995,12 +6007,12 @@
            END-IF
       *
            MOVE    "tbl_pthkninf"      TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
+           MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
       *
-       900-PTHKNINF-KEY6-SEL-EXT.
+       900-PTHKNINF-KEY11-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ÅÀ¿ô¥Þ¥¹¥¿¸¡º÷½èÍý(KEY)
