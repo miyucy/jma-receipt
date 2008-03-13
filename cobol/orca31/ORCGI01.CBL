@@ -4958,7 +4958,7 @@
            MOVE    WRK-KBNCD           TO  WRK-TOKNYUIN-CD
       *
            IF    ( SPA-NAI-I01-BTUSBT  =   "04" OR "09" )
-            AND  ( FLG-LIFE-ROUJIN     =   1 )
+            AND  ( FLG-LIFE-RJN        =   1 )
       *
                PERFORM VARYING IDX-LIFE    FROM    1   BY  1
                        UNTIL ( IDX-LIFE    >   CONST-TOK-LIFECD-MAX )
