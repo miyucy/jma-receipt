@@ -81,6 +81,8 @@
            03  FLG-NYUKSN                  PIC 9(01).
            03  FLG-SYUNOU                  PIC 9(01).
            03  FLG-DBRC                    PIC 9(01).
+           03  FLG-TAISYO                  PIC 9(01).
+           03  FLG-NG                      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -209,6 +211,8 @@
                05  WRK-CHK-SRYYR           PIC 9(04).
                05  WRK-CHK-SRYMR           PIC 9(02).
            03  WRK-ERRCD                   PIC X(04).
+      *
+           03  WRK-NENREIXXX               PIC 9(03).
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
            03  WRK-NENREI                  PIC 9(03).
@@ -335,6 +339,10 @@
       *    印刷用データ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
+      *
+      *    保険組み合わせ
+       01  HKNCOMBI-REC.
+           COPY    "CPHKNCOMBI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -853,6 +861,20 @@
                EVALUATE    WRK-ERRCD
                    WHEN    SPACE
                        MOVE  "入院会計を更新しました" TO  WRK-NAIYO
+      *
+                       IF   WRK-PARA-SRYYM = "200804"
+                         PERFORM 20021-GAITOU-HENSYU-SEC
+      *
+                         EVALUATE   FLG-TAISYO
+                          WHEN        1
+                        MOVE  "入院会計を更新しました（後期高齢該当）"
+                                                      TO  WRK-NAIYO
+                          WHEN        2
+                        MOVE  "入院会計を更新しました（生活療養該当）"
+                                                      TO  WRK-NAIYO
+                         END-EVALUATE
+                       END-IF
+      *
                    WHEN    "2003"
                        MOVE  "通算日数の取得に失敗しました"
                                                       TO  WRK-NAIYO
@@ -885,6 +907,131 @@
            .
        2002-HCMSL55-HEN-EXT.
            EXIT.
+      *****************************************************************
+      *    該当者編集処理
+      *****************************************************************
+       20021-GAITOU-HENSYU-SEC            SECTION.
+      *
+           MOVE     ZERO     TO     FLG-TAISYO
+      *
+      *    保険組合せマスタの検索
+           INITIALIZE                           HKNCOMBI-REC
+           MOVE    WRK-PARA-HOSPNUM     TO      COMB-HOSPNUM
+           MOVE    WRK-PTID             TO      COMB-PTID
+           MOVE    WRK-TAIHI-HKN(1)     TO      COMB-HKNCOMBINUM
+           MOVE    HKNCOMBI-REC         TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "tbl_hkncombi"       TO      MCP-TABLE
+           MOVE    "key"                TO      MCP-PATHNAME
+           CALL    "ORCDBMAIN"          USING   MCPAREA
+                                                MCPDATA-REC
+                                                SPA-AREA
+           IF      MCP-RC               =       ZERO
+               MOVE    "tbl_hkncombi"   TO      MCP-TABLE
+               MOVE    "key"            TO      MCP-PATHNAME
+               MOVE    "DBFETCH"        TO      MCP-FUNC
+               CALL    "ORCDBMAIN"      USING   MCPAREA
+                                                MCPDATA-REC
+                                                SPA-AREA
+               IF      MCP-RC           =       ZERO
+                  MOVE    MCPDATA-REC   TO  HKNCOMBI-REC
+               ELSE
+                  INITIALIZE                HKNCOMBI-REC
+                  DISPLAY "HKNCOMBI DBFETCH ERR"
+               END-IF
+           ELSE
+                  INITIALIZE                HKNCOMBI-REC
+                  DISPLAY "HKNCOMBI DBSELECT ERR"
+           END-IF
+           MOVE    "tbl_hkncombi"       TO  MCP-TABLE
+           MOVE    "key"                TO  MCP-PATHNAME
+           PERFORM  900-CLOSE-SEC
+      *
+      *    入院患者の年齢計算（３月１日時点）
+           MOVE    ZERO                TO  WRK-NENREIXXX
+           INITIALIZE                      ORCSAGECHKAREA
+           MOVE    WRK-PARA-HOSPNUM    TO  AGECHK-HOSPNUM
+           MOVE    WRK-PTID            TO  AGECHK-PTID
+           MOVE    "200803"            TO  AGECHK-SRYYMD(1:6)
+           MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
+           MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+                                       SPA-AREA
+           IF      AGECHK-RC           =   ZERO
+              MOVE   AGECHK-NENREI     TO  WRK-NENREIXXX
+           END-IF
+      *    入院患者の年齢計算（４月１日時点）
+           INITIALIZE                      ORCSAGECHKAREA
+           MOVE    WRK-PARA-HOSPNUM    TO  AGECHK-HOSPNUM
+           MOVE    WRK-PTID            TO  AGECHK-PTID
+           MOVE    "200804"            TO  AGECHK-SRYYMD(1:6)
+           MOVE    "01"                TO  AGECHK-SRYYMD(7:2)
+           MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+                                       SPA-AREA
+           IF      AGECHK-RC           =   ZERO
+      *
+             IF     (COMB-HKNNUM  =  "971" OR "973" OR "975")
+             OR     (COMB-HKNNUM(1:2) = "98"                )
+             OR     (COMB-HKNNUM  =  SPACE                  )
+               CONTINUE
+             ELSE
+               IF   (COMB-KOH1HKNNUM  =  "027")
+               OR   (AGECHK-NENREI   >=   75  )
+                   MOVE     1     TO     FLG-TAISYO
+               END-IF
+             END-IF
+      *
+             IF   (FLG-TAISYO             =    1            )
+             OR   (COMB-HKNNUM            =  "971" OR "973" )
+             OR   (AGECHK-NENREI          <   65            )
+             OR   (WRK-NENREIXXX         >=   70            )
+             OR   (SYS-5001-BTU-SBT   NOT =  "04" AND "09"  )
+                 CONTINUE
+             ELSE
+                 MOVE    ZERO                 TO  FLG-NG
+                 INITIALIZE                       PTKOHINF-REC
+                 MOVE    WRK-PARA-HOSPNUM     TO  PTKOH-HOSPNUM
+                 MOVE    WRK-PTID             TO  PTKOH-PTID
+                 MOVE    "027"                TO  PTKOH-KOHNUM
+                 MOVE    "20080331"           TO  PTKOH-TEKSTYMD
+                                                  PTKOH-TEKEDYMD
+                 MOVE    PTKOHINF-REC         TO  MCPDATA-REC
+                 MOVE    "DBSELECT"           TO  MCP-FUNC
+                 MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                 MOVE    "key6"               TO  MCP-PATHNAME
+                 CALL    "ORCDBMAIN"          USING  MCPAREA
+                                                     MCPDATA-REC
+                                                     SPA-AREA
+                 IF      MCP-RC               =      ZERO
+                    MOVE    "tbl_ptkohinf"    TO  MCP-TABLE
+                    MOVE    "key6"            TO  MCP-PATHNAME
+                    MOVE    "DBFETCH"         TO  MCP-FUNC
+                    CALL    "ORCDBMAIN"       USING  MCPAREA
+                                                     MCPDATA-REC
+                                                     SPA-AREA
+                    IF      MCP-RC            =      ZERO
+                      MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+                      MOVE    1               TO  FLG-NG
+                    END-IF
+                 END-IF
+                 MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
+                 MOVE    "key6"               TO  MCP-PATHNAME
+                 PERFORM  900-CLOSE-SEC
+      *
+                 IF    FLG-NG   =   ZERO
+                     MOVE     2     TO     FLG-TAISYO
+                 END-IF
+             END-IF
+      *
+           END-IF
+      *
+           .
+       20021-GAITOU-HENSYU-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    帳票印刷処理
       *****************************************************************
