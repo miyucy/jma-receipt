@@ -1442,6 +1442,7 @@
                                        TO  SPA-GMN-HKNCOMBI-G
                END-IF
            END-PERFORM
+           MOVE    SPA-J02-SRYYMD      TO  SPA-SRYYMD
       *
            .
        31031-HKNCOMBI-HEN-EXT.

@@ -236,8 +236,10 @@
            03  FILLER              PIC X(20)   VALUE
                      "微生物学的検査".
            03  FILLER              PIC X(02)   VALUE   "07".
-           03  FILLER              PIC X(40)   VALUE   "病理学的検査".
-           03  FILLER              PIC X(20)   VALUE   "病理学的検査".
+      **** 03  FILLER              PIC X(40)   VALUE   "病理学的検査".
+      **** 03  FILLER              PIC X(20)   VALUE   "病理学的検査".
+           03  FILLER              PIC X(40)   VALUE   "病理診断".
+           03  FILLER              PIC X(20)   VALUE   "病理診断".
            03  FILLER              PIC X(02)   VALUE   "08".
            03  FILLER              PIC X(40)   VALUE
                      "基本的検体検査実施料".
@@ -1279,7 +1281,8 @@
       *!!
       *    検査正式名称
            IF     (TNS-SRYCD(1:1)      =   "1") AND
-                  (TNS-SRYKBN          =   "60")  AND
+                  (TNS-SRYKBN          =   "60"
+                                       OR  "64"  )  AND
                   (TNS-FORMALNAME  NOT =   SPACE )  AND
                   (TNS-FORMALNAME  NOT =   TNS-NAME )
                 MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
@@ -1782,7 +1785,8 @@
       *!!
       *    検査正式名称
            IF     (TNS-SRYCD(1:1)      =   "1") AND
-                  (TNS-SRYKBN          =   "60")  AND
+                  (TNS-SRYKBN          =   "60"
+                                       OR  "64" )  AND
                   (TNS-FORMALNAME  NOT =   SPACE )  AND
                   (TNS-FORMALNAME  NOT =   TNS-NAME )
                 MOVE    SPACE              TO  SPA-K98-GMN-NAME (IDX)
