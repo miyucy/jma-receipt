@@ -445,6 +445,9 @@
                    INITIALIZE                       PTHKNINF-REC
                    MOVE    LNK-NYULIFE-HOSPNUM  TO  PTHKN-HOSPNUM
                    MOVE    LNK-NYULIFE-PTID     TO  PTHKN-PTID
+                   MOVE    LNK-NYULIFE-SANTEIYM TO  PTHKN-TEKSTYMD(1:6)
+                   MOVE    "01"                 TO  PTHKN-TEKSTYMD(7:2)
+                   MOVE    PTHKN-TEKSTYMD       TO  PTHKN-TEKEDYMD
                    MOVE    "tbl_pthkninf"       TO  MCP-TABLE
                    MOVE    "key11"               TO  MCP-PATHNAME
                    PERFORM 910-PTHKNINF-SELECT-SEC
@@ -453,40 +456,41 @@
                        MOVE    "key11"               TO  MCP-PATHNAME
                        PERFORM   910-PTHKNINF-READ-SEC
                        PERFORM   UNTIL   (FLG-PTHKNINF   =   1)
-                           MOVE   1           TO   FLG-RJN
+                           MOVE    1                TO  FLG-RJN
                            MOVE    "tbl_pthkninf"   TO  MCP-TABLE
-                           MOVE    "key11"           TO  MCP-PATHNAME
+                           MOVE    "key11"          TO  MCP-PATHNAME
                            PERFORM 910-PTHKNINF-READ-SEC
                        END-PERFORM
                    END-IF
       *            ´µ¼ÔÊÝ¸±¾ðÊó¥¯¥í¡¼¥º
                    MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                   MOVE    "key11"               TO  MCP-PATHNAME
+                   MOVE    "key11"              TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC-SEC
       *            ¸å´ü³ºÅö¤ÎÈ½Äê¡Ê¸øÈñÈÖ¹æ£¹£¶£¸¡Ë
                    INITIALIZE                       PTKOHINF-REC
                    MOVE    LNK-NYULIFE-HOSPNUM  TO  PTKOH-HOSPNUM
                    MOVE    LNK-NYULIFE-PTID     TO  PTKOH-PTID
                    MOVE    "968"                TO  PTKOH-KOHNUM
+                   MOVE    LNK-NYULIFE-SANTEIYM TO  PTKOH-TEKSTYMD(1:6)
+                   MOVE    "01"                 TO  PTKOH-TEKSTYMD(7:2)
+                   MOVE    PTKOH-TEKSTYMD       TO  PTKOH-TEKEDYMD
                    MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-                   MOVE    "key4"               TO  MCP-PATHNAME
+                   MOVE    "key6"               TO  MCP-PATHNAME
                    PERFORM 910-PTKOHINF-SELECT-SEC
                    IF      FLG-PTKOHINF         =   ZERO
                        MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-                       MOVE    "key4"               TO  MCP-PATHNAME
+                       MOVE    "key6"               TO  MCP-PATHNAME
                        PERFORM   910-PTKOHINF-READ-SEC
                        PERFORM   UNTIL   (FLG-PTKOHINF   =   1)
-                           IF    PTKOH-SAKJOKBN     =    SPACE
-                                 MOVE   1           TO   FLG-RJN
-                           END-IF
+                           MOVE    1                TO   FLG-RJN
                            MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                           MOVE    "key4"           TO  MCP-PATHNAME
+                           MOVE    "key6"           TO  MCP-PATHNAME
                            PERFORM 910-PTKOHINF-READ-SEC
                        END-PERFORM
                    END-IF
       *            ´µ¼Ô¸øÈñ¾ðÊó¥¯¥í¡¼¥º
                    MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-                   MOVE    "key4"               TO  MCP-PATHNAME
+                   MOVE    "key6"               TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC-SEC
                END-IF
       *
