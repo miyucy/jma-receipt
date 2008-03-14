@@ -91,6 +91,7 @@
       *  04.02.00    NACL-小豆沢  08/03/07  シス管病棟設定の加算判定変更
       *  04.02.00    NACL-小豆沢  08/03/10  療養病棟（病床）入院料の名称
       *                                     表示変更
+      *  04.02.00    NACL-小豆沢  08/03/14  会計点数の不整合メッセージ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -567,6 +568,9 @@
       *    主科情報アクセス用パラメタ
        01  ORCSSYUACCAREA.
            COPY    "CPORCSSYUACC.INC".
+      *
+      *    入院基本点数チェック
+           COPY    "CPORCSS007.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -2758,6 +2762,18 @@
            MOVE    "key41"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *    サブプロによる入院点数チェック（改正時等の点数チェック）
+           IF      SPA-GMN-KEIKOKU     =   SPACE
+               MOVE    SPA-NAI-SRYYM   TO  SS007-SRYYM
+               CALL    "ORCSS007"      USING  SS007-AREA
+                                              SPA-AREA
+               IF    SS007-RC          =   0
+                   MOVE    SPACE       TO  SPA-GMN-KEIKOKU
+               ELSE
+                MOVE "会計の点数に不整合があります。確認してください。"
+                                       TO  SPA-GMN-KEIKOKU
+               END-IF
+           END-IF
            .
       *
        31062-SANTEI-NYUINCHK-EXT.
