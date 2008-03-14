@@ -694,15 +694,20 @@ grpsys         MOVE    SPA-HOSPNUM TO  PTINF-HOSPNUM
        410-INPUT-CHK-SEC       SECTION.
       *
       *   入力チェック
-          IF      SPA-NAI-R96-PTID    >   ZERO
-               MOVE    "0103"              TO  SPA-ERRCD
-               IF      SPA-NAI-R96-SELNUM  >   ZERO
-                   MOVE    91              TO  SPA-GMN-R96-CUR
-               ELSE
-                   MOVE    99              TO  SPA-GMN-R96-CUR
-               END-IF
-               GO  TO  410-INPUT-CHK-EXT
-           END-IF
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+               WHEN    "CLICKED"       ALSO    "B12"
+                   CONTINUE
+               WHEN    OTHER
+                   IF      SPA-NAI-R96-PTID    >   ZERO
+                       MOVE    "0103"              TO  SPA-ERRCD
+                       IF      SPA-NAI-R96-SELNUM  >   ZERO
+                           MOVE    91              TO  SPA-GMN-R96-CUR
+                       ELSE
+                           MOVE    99              TO  SPA-GMN-R96-CUR
+                       END-IF
+                       GO  TO  410-INPUT-CHK-EXT
+                   END-IF
+           END-EVALUATE        
       *
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
