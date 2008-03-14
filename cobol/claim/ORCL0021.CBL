@@ -773,11 +773,11 @@
       *    主保険あり
            IF      COMB-HKNNUM     NOT =   SPACE
                PERFORM VARYING IDW     FROM    1   BY  1
-                       UNTIL   IDW     >       42
+                       UNTIL   IDW     >       45
                    IF    COMB-HKNNUM       =   MML0031-HOKEN (IDW)
                        MOVE    MML0031-NAME(IDW) 
                                            TO  WRK-LF02-HKNSBT
-                       MOVE    42          TO  IDW
+                       MOVE    45          TO  IDW
                    END-IF
                END-PERFORM
                PERFORM 20091-HKNNUM-SET-SEC
