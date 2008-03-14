@@ -47,7 +47,7 @@
       *    印刷用データ
        FD  PRT-FILE.
        01  PRT-REC.
-           03  PRT-PRTDATA         PIC X(10000).
+           03  PRT-PRTDATA         PIC X(20000).
       *
        WORKING-STORAGE             SECTION.
       *
