@@ -3139,7 +3139,7 @@
                MOVE    SPACE        TO  SPA-GMN-I01-LBLINFO
                STRING  "＊＊　"     DELIMITED  BY  SPACE
                        CONST-IDOMEI DELIMITED  BY  SPACE
-                       "処理を行い、今月の入院料を再設定しください"
+                       "処理を行い、今月の入院料を再設定してください"
                                     DELIMITED  BY  SIZE
                        "　＊＊"
                                     DELIMITED  BY  SIZE
