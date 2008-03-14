@@ -213,6 +213,7 @@
       *
       *    ¸ÇÄêÃÍÎÎ°è
        01  CONST-AREA.
+           03  CONST-H2004                 PIC X(06)   VALUE "200804".
            03  CONST-GAZOU-TANICD          PIC X(03)   VALUE "006".
            03  CONST-LINE-MAX              PIC 9(05)   VALUE 80.
            03  CONST-TPTINF-MAX            PIC 9(05)   VALUE 1000.
@@ -220,39 +221,42 @@
            03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 5.
            03  CONST-NSRYACT-MAX           PIC 9(05)   VALUE 20.
            03  CONST-PARA-SRYKBN-MAX       PIC 9(05)   VALUE 5.
-           03  CONST-SRYKBN-MAX        PIC 9(03)   VALUE   13.
            03  CONST-SRYKBN-G.
                05  CONST-SRYKBN-VAL.
-                   07              PIC X(02)   VALUE   "11".
-                   07              PIC X(10)   VALUE   "½é¿Ç".
-                   07              PIC X(02)   VALUE   "12".
-                   07              PIC X(10)   VALUE   "ºÆ¿Ç".
-                   07              PIC X(02)   VALUE   "13".
-                   07              PIC X(10)   VALUE   "°å³Ø´ÉÍý".
-                   07              PIC X(02)   VALUE   "14".
-                   07              PIC X(10)   VALUE   "ºßÂð".
-                   07              PIC X(02)   VALUE   "20".
-                   07              PIC X(10)   VALUE   "ÅêÌô".
-                   07              PIC X(02)   VALUE   "30".
-                   07              PIC X(10)   VALUE   "Ãí¼Í".
-                   07              PIC X(02)   VALUE   "40".
-                   07              PIC X(10)   VALUE   "½èÃÖ".
-                   07              PIC X(02)   VALUE   "50".
-                   07              PIC X(10)   VALUE   "¼ê½Ñ".
-                   07              PIC X(02)   VALUE   "54".
-                   07              PIC X(10)   VALUE   "Ëã¿ì".
-                   07              PIC X(02)   VALUE   "60".
-                   07              PIC X(10)   VALUE   "¸¡ºº".
-                   07              PIC X(02)   VALUE   "70".
-                   07              PIC X(10)   VALUE   "²èÁü¿ÇÃÇ".
-                   07              PIC X(02)   VALUE   "80".
-                   07              PIC X(10)   VALUE   "¤½¤ÎÂ¾".
-                   07              PIC X(02)   VALUE   "90".
-                   07              PIC X(10)   VALUE   "Æþ±¡".
+                   07              PIC X(08)   VALUE   "11000000".
+                   07              PIC X(14)   VALUE   "½é¿Ç".
+                   07              PIC X(08)   VALUE   "12000000".
+                   07              PIC X(14)   VALUE   "ºÆ¿Ç".
+                   07              PIC X(08)   VALUE   "13000000".
+                   07              PIC X(14)   VALUE   "°å³Ø´ÉÍý".
+                   07              PIC X(08)   VALUE   "14000000".
+                   07              PIC X(14)   VALUE   "ºßÂð".
+                   07              PIC X(08)   VALUE   "20000000".
+                   07              PIC X(14)   VALUE   "ÅêÌô".
+                   07              PIC X(08)   VALUE   "30000000".
+                   07              PIC X(14)   VALUE   "Ãí¼Í".
+                   07              PIC X(08)   VALUE   "40000000".
+                   07              PIC X(14)   VALUE   "½èÃÖ".
+                   07              PIC X(08)   VALUE   "50000000".
+                   07              PIC X(14)   VALUE   "¼ê½Ñ".
+                   07              PIC X(08)   VALUE   "54000000".
+                   07              PIC X(14)   VALUE   "Ëã¿ì".
+                   07              PIC X(08)   VALUE   "60200804".
+                   07              PIC X(14)   VALUE   "¸¡ºº¡¢ÉÂÍý¿ÇÃÇ".
+                   07              PIC X(08)   VALUE   "60000000".
+                   07              PIC X(14)   VALUE   "¸¡ºº".
+                   07              PIC X(08)   VALUE   "70000000".
+                   07              PIC X(14)   VALUE   "²èÁü¿ÇÃÇ".
+                   07              PIC X(08)   VALUE   "80000000".
+                   07              PIC X(14)   VALUE   "¤½¤ÎÂ¾".
+                   07              PIC X(08)   VALUE   "90000000".
+                   07              PIC X(14)   VALUE   "Æþ±¡".
                05  CONST-SRYKBN-R    REDEFINES   CONST-SRYKBN-VAL.
-                   07  CONST-SRYKBN-OCC        OCCURS  13.
+                   07  CONST-SRYKBN-OCC        OCCURS  14.
                        09  CONST-SRYKBN        PIC X(02).
-                       09  CONST-SRYKBNNAME    PIC X(10).
+                       09  CONST-SRYKBNSTYM    PIC X(06).
+                       09  CONST-SRYKBNNAME    PIC X(14).
+           03  CONST-SRYKBN-MAX        PIC 9(03)   VALUE   14.
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -511,32 +515,25 @@ grpsys     END-UNSTRING
                    COMPUTE CNT-INPUT-ITEM
                        =   CNT-INPUT-ITEM  +   1
       *
-                   EVALUATE    WRK-PARA-SRYKBN (IDX0)
-                   WHEN    "20"
-                       MOVE    1       TO  FLG-TOUYAKU
-                   WHEN    "30"
-                       MOVE    1       TO  FLG-CHUSYA
-                   WHEN    OTHER
       *
-                       PERFORM VARYING IDX1    FROM    1   BY  1
+                   PERFORM VARYING IDX1    FROM    1   BY  1
                                UNTIL ( IDX1
                                            >   CONST-SRYKBN-MAX )
-                           IF    ( WRK-PARA-SRYKBN (IDX0)
+                       IF    ( WRK-PARA-SRYKBN (IDX0)
                                            =   CONST-SRYKBN (IDX1) )
       *
-                               COMPUTE TSRYKBN-MAX
-                                   =   TSRYKBN-MAX  +   1
+                           COMPUTE TSRYKBN-MAX
+                               =   TSRYKBN-MAX  +   1
       *
-                               MOVE    CONST-SRYKBN (IDX1)
-                                           TO  TSRYKBN-SRYKBN
-                                                    (TSRYKBN-MAX)
+                           MOVE    CONST-SRYKBN (IDX1)
+                                       TO  TSRYKBN-SRYKBN
+                                                (TSRYKBN-MAX)
+      
+                           MOVE    CONST-SRYKBN-MAX
+                                       TO  IDX1
       *
-                               MOVE    CONST-SRYKBN-MAX
-                                           TO  IDX1
-      *
-                           END-IF
-                       END-PERFORM
-                   END-EVALUATE
+                       END-IF
+                   END-PERFORM
                END-IF
       *
            END-PERFORM
@@ -563,8 +560,8 @@ grpsys     END-UNSTRING
                PERFORM 2001-HEAD-HEN-SEC
       *
       *        ÌÀºÙ¹ÔÊÔ½¸½èÍý
-               PERFORM 2001-BODY-HEN-SEC
-      *
+               PERFORM 2001-BODY-HEN-SEC 
+      * 
       *        °õºþ½èÍý
                PERFORM 2001-PRINT-SEC
       *
@@ -618,10 +615,19 @@ grpsys     END-UNSTRING
       *
                    MOVE    SRY-SRYKBN  TO  WRK-SRYKBN
       *
-                   IF    ( WRK-SRYKBN  =   "90" OR "92" OR "97" )
+                   EVALUATE    TRUE
+                   WHEN    ( WRK-SRYKBN  =   "90" OR "92" OR "97" )
                        MOVE    "90"    TO  WRK-SRYKBN
-                   END-IF
+		   WHEN    ( WRK-SRYKBN (1:1)     =  "2" )
+                       MOVE    "20"    TO  WRK-SRYKBN
+		   WHEN    ( WRK-SRYKBN (1:1)     =  "3" )
+                       MOVE    "30"    TO  WRK-SRYKBN
+		   WHEN    ( WRK-SRYKBN =  "64" )
+                       MOVE    "60"    TO  WRK-SRYKBN
+                   END-EVALUATE
+      *
                    MOVE    WRK-SRYKBN  TO  WRK-CHK-SRYKBN
+      *
                    PERFORM 20011-CHK-SRYKBN-SEC
                    IF    ( FLG-TARGET  =   1 )
       *
@@ -664,18 +670,6 @@ grpsys     END-UNSTRING
                END-IF
       *
            END-PERFORM
-      *
-           IF    ( WRK-CHK-SRYKBN (1:1)    =   "2" )
-               IF    ( FLG-TOUYAKU     =   1 )
-                   MOVE    1       TO  FLG-TARGET
-               END-IF
-           END-IF
-      *
-           IF    ( WRK-CHK-SRYKBN (1:1)    =   "3" )
-               IF    ( FLG-CHUSYA      =   1 )
-                   MOVE    1       TO  FLG-TARGET
-               END-IF
-           END-IF
       *
            .
        20011-CHK-SRYKBN-EXT.
@@ -1022,6 +1016,8 @@ grpsys     END-UNSTRING
       *
                IF    ( CONST-SRYKBN  (IDX-SRYKBN)
                                        =   IN01-KEY-SRYKBN )
+		 AND ( WRK-PARA-SRYYM  >=  CONST-SRYKBNSTYM
+		                               (IDX-SRYKBN))
                    MOVE    CONST-SRYKBNNAME  (IDX-SRYKBN)
                                        TO  HCG017-SRYKBN
                END-IF
