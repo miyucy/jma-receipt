@@ -138,7 +138,7 @@
                05  FILLER               PIC  X(3)   VALUE   "039" .
                05  FILLER               PIC  X(40)  
                    VALUE   "後期高齢者" .
-               05  FILLER               PIC  X(3)   VALUE   "038" .
+               05  FILLER               PIC  X(3)   VALUE   "040" .
                05  FILLER               PIC  X(40)  
                    VALUE   "後期特療費" .
                05  FILLER               PIC  X(3)   VALUE   "975" .
