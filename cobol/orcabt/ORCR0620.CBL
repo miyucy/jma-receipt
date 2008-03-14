@@ -1872,7 +1872,7 @@
            END-IF    
       *          
       *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
-           IF      RECE62-HKNNUM       =   "038"   OR  "039"
+           IF      RECE62-HKNNUM       =   "040"   OR  "039"
                MOVE    "?"                 TO  WK-IHO
            END-IF
            IF      RECE62-SRYYM        >=  WRK-CONS-SRYYM-200804

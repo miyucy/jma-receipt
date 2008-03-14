@@ -1499,7 +1499,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                                                TO  WRK-RECE01-HONKZKKBN
                               END-EVALUATE
       *****               END-IF     
-                      WHEN    "038" 
+                      WHEN    "040" 
                       WHEN    "039" 
                           EVALUATE   PTHKN-HOJOKBN
                               WHEN   "1"

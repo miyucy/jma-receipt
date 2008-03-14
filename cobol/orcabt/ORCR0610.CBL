@@ -1946,7 +1946,7 @@
                                                TO  WRK-RECE61-HONKZKKBN
                               END-EVALUATE
       *****               END-IF     
-                      WHEN    "038" 
+                      WHEN    "040" 
                       WHEN    "039" 
                           EVALUATE   PTHKN-HOJOKBN
                               WHEN   "1"
