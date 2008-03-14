@@ -746,8 +746,8 @@
                        MOVE    3                   TO  IDX
                    END-IF
       *        後期高齢
-               WHEN    "038"
                WHEN    "039"
+               WHEN    "040"
                    MOVE    4                   TO  IDX
       *        その他
                WHEN    OTHER
