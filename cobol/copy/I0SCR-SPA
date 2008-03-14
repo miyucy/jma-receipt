@@ -53,6 +53,8 @@
                  11  SPA-GMN-I01-IDOYMD            PIC X(10).
       *          前回異動日
                  11  SPA-GMN-I01-MAEIDOYMD         PIC X(09).
+      *          注意メッセージ
+                 11  SPA-GMN-I01-LBLINFO           PIC X(160).
       *
       *        画面入力部領域
                09  SPA-GMN-I01-INPUT-AREA.

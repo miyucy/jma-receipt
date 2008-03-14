@@ -926,6 +926,9 @@
       *    収納更新差額取得
            COPY  "CPORCSS002.INC".
       *
+      *    入院料点数チェックサブ
+           COPY  "CPORCSS007.INC".
+      *
       *    ユーザプログラム起動サブパラメタ
            COPY    "CPORCSUSERCHK.INC".
       *
@@ -3126,6 +3129,23 @@
       *
            MOVE    WRK-AGE-G       TO  SPA-GMN-I01-AGE
       *
+           INITIALIZE                  SS007-AREA
+           MOVE    SPA-NAI-I01-PTID TO SPA-PTID
+           MOVE    SPA-SYSYMD (1:6) TO SS007-SRYYM
+           CALL    "ORCSS007"      USING   SS007-AREA
+                                           SPA-AREA
+           IF    ( SS007-RC        NOT =   ZERO )
+               MOVE    SPA-SYSYMD   TO  WRK-SYMD
+               MOVE    SPACE        TO  SPA-GMN-I01-LBLINFO
+               STRING  "＊＊　"     DELIMITED  BY  SPACE
+                       CONST-IDOMEI DELIMITED  BY  SPACE
+                       "処理を行い、今月の入院料を再設定しください"
+                                    DELIMITED  BY  SIZE
+                       "　＊＊"
+                                    DELIMITED  BY  SIZE
+               INTO    SPA-GMN-I01-LBLINFO
+               END-STRING
+           END-IF
       *
       *    入院履歴編集処理
            PERFORM 4101-NYUREKI-EDIT-SEC
@@ -17310,6 +17330,9 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
+           MOVE    SPACE                   TO  I01
+           INITIALIZE                          I01
+      *
       *    患者番号
            MOVE    SPA-GMN-I01-PTNUM       TO  I01-PTNUM
       *    患者氏名
@@ -17335,6 +17358,13 @@
       *
       *    前回異動日
            MOVE    SPA-GMN-I01-MAEIDOYMD   TO  I01-MAEIDOYMD
+      *
+      *    注意情報
+           MOVE    "black"                 TO  I01-LBLINFO-STYLE
+           IF    ( SPA-GMN-I01-LBLINFO     NOT =   SPACE )
+               MOVE    "red"               TO  I01-LBLINFO-STYLE
+               MOVE    SPA-GMN-I01-LBLINFO TO  I01-LBLINFO
+           END-IF
       *
       *    病室番号
            MOVE    SPA-GMN-I01-BRMNUM      TO  I01-BRMNUM

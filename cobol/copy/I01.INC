@@ -155,6 +155,8 @@
                 05  I01-USERPG-ITM                PIC X(22)
                                                   OCCURS  2.
                 05  I01-USERPG-ITM-STT            PIC S9(9)   BINARY.
+              04  I01-LBLINFO-STYLE               PIC X(20).
+              04  I01-LBLINFO                     PIC X(160).
               04  I01-SELNUM                       PIC S9(3).
               04  I01-SCROLLEDWINDOW1.
                 05  I01-NYUREKILST.

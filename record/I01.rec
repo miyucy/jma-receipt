@@ -227,6 +227,10 @@ I01	{
 			item	varchar(22)[02];
 			state	int;
 		};
+		LBLINFO	{
+			style   varchar(20);
+			value	varchar(160);
+		};
 		SELNUM	{
 			value	number(3);
 		};
