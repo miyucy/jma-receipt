@@ -193,7 +193,7 @@ path	key11	{
 		FROM tbl_pthkninf
 			WHERE HOSPNUM     =   :HOSPNUM
 			AND   PTID        =   :PTID
-			AND   HKNNUM      in  ('038','039')
+			AND   HKNNUM      in  ('039','040')
 			AND   TEKSTYMD    <=  :TEKSTYMD
 			AND   TEKEDYMD    >=  :TEKEDYMD
 			AND   SAKJOKBN    <> '1'
