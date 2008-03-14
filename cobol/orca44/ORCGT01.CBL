@@ -1784,9 +1784,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *     ¹ñÊÝ¥ì¥»ÅÅ½èÍý
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 460-RECEDEN-GID-SEC
-      *     Ì¤ÀÁµá°ìÍ÷
-               WHEN    "CLICKED"       ALSO    "B08"
-                   PERFORM 480-PRINT-GID-SEC
       *     ·èÄêÄÌÃÎ½ñ¡Ê¼ÒÊÝ¡Ë
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 480-PRINT-GID-SEC
@@ -1809,6 +1806,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    ¸øÈñ¸ÄÊÌ»ØÄê
                WHEN    "CLICKED"       ALSO    "B21"
                    PERFORM 490-KOBETU-SEC
+      *     Ì¤ÀÁµá°ìÍ÷
+               WHEN    "CLICKED"       ALSO    "B22"
+                   PERFORM 480-PRINT-GID-SEC
       *    ¥×¥ê¥ó¥¿ÀßÄê
                WHEN    "CLICKED"       ALSO    "B23"
                    PERFORM 490-PRTNM-SET-SEC
@@ -2006,10 +2006,12 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
            END-IF
       *
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
            IF    ( SPA-ERRCD           =   SPACE  )
            AND   ( SPA-NAI-SKYYM       >=  200804 ) 
                MOVE    "0200"          TO  SPA-ERRCD
            END-IF
+      *¡ú¡ú
       *
       *    ¥Õ¥¡¥¤¥ëÊÝÂ¸¾ðÊó
            PERFORM 3102-FILE-INFO-CHECK-SEC
@@ -2528,17 +2530,37 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                    END-IF    
            END-EVALUATE                                               
       *     
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *    Áí³çÉ½°õºþ¡Ê¹­°èÏ¢¹ç¡Ë
+      *****EVALUATE    TRUE
+      *****    WHEN    T01-DATAKBN1-VALUE    =   "T" 
+      *****        IF      SPA-NAI-PRTKBN4       =   SPACE
+      *****            MOVE    "3"                 TO  WRK-SHELL-RECEKBN
+      *****            PERFORM 45013-SOKATU-SYORI-SEC
+      *****        END-IF    
+      *****END-EVALUATE                                               
+      *¡ú¡ú
+      *     
       *    ¥ì¥»ÅÅÁí³çÉ½°õºþ¡Ê¹ñÊÝ¡Ë
            EVALUATE    TRUE
                WHEN    T01-DATAKBN6-VALUE    =   "T" 
                    IF      SPA-NAI-PRTKBN3   NOT =   SPACE
+                       MOVE    "2"                 TO  WRK-SHELL-RECEKBN
                        PERFORM 45014-RECEDEN-SOKATU-SYORI-SEC
                    END-IF    
            END-EVALUATE                                               
+      *     
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *    ¥ì¥»ÅÅÁí³çÉ½°õºþ¡Ê¹­°èÏ¢¹ç¡Ë
+      *****EVALUATE    TRUE
+      *****    WHEN    T01-DATAKBN2-VALUE    =   "T" 
+      *****        IF      SPA-NAI-PRTKBN5   NOT =   SPACE
+      *****            MOVE    "3"                 TO  WRK-SHELL-RECEKBN
+      *****            PERFORM 45014-RECEDEN-SOKATU-SYORI-SEC
+      *****        END-IF    
+      *****END-EVALUATE                                               
+      *¡ú¡ú
       *
-      *???
-           DISPLAY "DATAKBN7=" T01-DATAKBN7-VALUE "#"
-      *???
            
       *    Áí³çÉ½°õºþ¡Ê¸ø³²¡Ë
            EVALUATE    TRUE
@@ -2784,6 +2806,17 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                                                TO  IDXX
                        END-IF
                    END-PERFORM         
+               WHEN    "3"
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       3
+                       IF      SPA-3004-KBNCD  (IDXX)
+                                           =   901
+                           MOVE    SPA-3004-PRTNM (IDXX)
+                                               TO  LNK-PRTKANRI-PRTNM
+                           MOVE    SPA-3004-MAX
+                                               TO  IDXX
+                       END-IF
+                   END-PERFORM         
            END-EVALUATE
            MOVE    LNK-PRTKANRI-RENNUM
                                    TO  SHELLTBL-ARG1       
@@ -2866,6 +2899,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
            ELSE
                MOVE    "0"             TO  SHELLTBL-ARG25
            END-IF
+           EVALUATE    SPA-CHK21-VALUE ALSO    SPA-CHK22-VALUE
+               WHEN    "T"             ALSO    "T"
+                   MOVE    "0"             TO  SHELLTBL-ARG26
+               WHEN    "T"             ALSO    "F"
+                   MOVE    "1"             TO  SHELLTBL-ARG26
+               WHEN    "F"             ALSO    "T"
+                   MOVE    "2"             TO  SHELLTBL-ARG26
+           END-EVALUATE
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -3135,7 +3176,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥ì¥»ÅÅÁí³ç¡Ê¹ñÊÝ¡Ë½èÍý        
+      *    ¥ì¥»ÅÅÁí³ç¡Ê¹ñÊÝ¡¦¹­°èÏ¢¹ç¡Ë½èÍý        
       *****************************************************************
        45014-RECEDEN-SOKATU-SYORI-SEC       SECTION.
       *
@@ -3167,15 +3208,28 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
            MOVE    WRK-CONS-TERMID TO  LNK-PRTKANRI-TERMID 
            MOVE    SPA-OPID        TO  LNK-PRTKANRI-OPID
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       3
-               IF      SPA-3004-KBNCD  (IDXX)
-                                           =   902
-                   MOVE    SPA-3004-PRTNM (IDXX)
-                                           TO  LNK-PRTKANRI-PRTNM
-                   MOVE    SPA-3004-MAX    TO  IDXX
-               END-IF
-           END-PERFORM         
+           EVALUATE    WRK-SHELL-RECEKBN
+               WHEN    "2"
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       3
+                       IF      SPA-3004-KBNCD  (IDXX)
+                                               =   902
+                           MOVE    SPA-3004-PRTNM (IDXX)
+                                               TO  LNK-PRTKANRI-PRTNM
+                           MOVE    SPA-3004-MAX    TO  IDXX
+                       END-IF
+               END-PERFORM         
+               WHEN    "3"
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       3
+                       IF      SPA-3004-KBNCD  (IDXX)
+                                               =   902
+                           MOVE    SPA-3004-PRTNM (IDXX)
+                                               TO  LNK-PRTKANRI-PRTNM
+                           MOVE    SPA-3004-MAX    TO  IDXX
+                       END-IF
+               END-PERFORM         
+           END-EVALUATE
            MOVE    LNK-PRTKANRI-RENNUM
                                    TO  SHELLTBL-ARG1       
            MOVE    LNK-PRTKANRI-TBL-KEY
@@ -3205,6 +3259,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                    TO  SHELLTBL-ARG13
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
            MOVE    RECEERR         TO  SHELLTBL-ARG15
+           MOVE    WRK-SHELL-RECEKBN
+                                   TO  SHELLTBL-ARG16
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
@@ -3682,7 +3738,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF      SPA-ERRCD           =   SPACE
       *    ¥¬¥¤¥É¥á¥Ã¥»¡¼¥¸¥»¥Ã¥È
                EVALUATE    MCP-WIDGET
-                   WHEN    "B08" 
+                   WHEN    "B22" 
                        MOVE    "1011"              TO  SPA-TIDCD
                    WHEN    "B09" 
                        MOVE    "1012"              TO  SPA-TIDCD
@@ -4380,6 +4436,22 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                        TO  T01-PRTKBN3-VALUE
            MOVE    SPA-GMN-PRTKBN3-STYLE
                                        TO  T01-PRTKBN3-STYLE                                 
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+           MOVE    "F"                 TO  T01-CHK31-VALUE
+                                           T01-CHK32-VALUE
+                                           T01-DATAKBN1-VALUE
+                                           T01-DATAKBN2-VALUE
+           MOVE    WIDGET-INSENSITIVE  TO  T01-B08-STATE
+                                           T01-CHK31-STATE
+                                           T01-CHK32-STATE
+                                           T01-DATAKBN1-STATE
+                                           T01-DATAKBN2-STATE
+                                           T01-HKNJANUM1-STATE
+           MOVE   "red"                TO  T01-PRTKBN4-STYLE
+                                           T01-PRTKBN5-STYLE
+           MOVE    "Ìµ"                TO  T01-PRTKBN4-VALUE
+                                           T01-PRTKBN5-VALUE 
+      *¡ú¡ú
       *
            PERFORM 5001-MAPCUR-SEC
       *

@@ -9,6 +9,9 @@ T01	{
 		B07	{
 			state	int;
 		};
+		B08	{
+			state	int;
+		};
 		B19	{
 			state	int;
 		};
@@ -26,6 +29,10 @@ T01	{
 			value	varchar(10);
 		};
 		HKNJANUM	{
+			value	varchar(8);
+		};
+		HKNJANUM1	{
+			state	int;
 			value	varchar(8);
 		};
 		DATA_COMBO	{
@@ -63,6 +70,9 @@ T01	{
 		HKNJAMEI	{
 			value	varchar(40);
 		};
+		HKNJAMEI1	{
+			value	varchar(40);
+		};
 		CHK11	{
 			state	int;
 			value	bool;
@@ -79,7 +89,23 @@ T01	{
 			state	int;
 			value	bool;
 		};
+		CHK31	{
+			state	int;
+			value	bool;
+		};
+		CHK32	{
+			state	int;
+			value	bool;
+		};
 		DATAKBN5	{
+			state	int;
+			value	bool;
+		};
+		DATAKBN1	{
+			state	int;
+			value	bool;
+		};
+		DATAKBN2	{
 			state	int;
 			value	bool;
 		};
@@ -92,6 +118,14 @@ T01	{
 			value	varchar(4);
 		};
 		PRTKBN3	{
+			style	varchar(20);
+			value	varchar(4);
+		};
+		PRTKBN4	{
+			style	varchar(20);
+			value	varchar(4);
+		};
+		PRTKBN5	{
 			style	varchar(20);
 			value	varchar(4);
 		};

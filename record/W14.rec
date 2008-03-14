@@ -799,5 +799,21 @@ W14	{
 		PRTKBN32	{
 			value	bool;
 		};
+		PRTKBN41	{
+			state	int;
+			value	bool;
+		};
+		PRTKBN42	{
+			state	int;
+			value	bool;
+		};
+		PRTKBN51	{
+			state	int;
+			value	bool;
+		};
+		PRTKBN52	{
+			state	int;
+			value	bool;
+		};
 	};
 };

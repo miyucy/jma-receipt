@@ -49,3 +49,11 @@
                 04  W14-PRTKBN22     PIC X.
                 04  W14-PRTKBN31     PIC X.
                 04  W14-PRTKBN32     PIC X.
+                04  W14-PRTKBN41-STATE   PIC S9(9)   BINARY.
+                04  W14-PRTKBN41     PIC X.
+                04  W14-PRTKBN42-STATE   PIC S9(9)   BINARY.
+                04  W14-PRTKBN42     PIC X.
+                04  W14-PRTKBN51-STATE   PIC S9(9)   BINARY.
+                04  W14-PRTKBN51     PIC X.
+                04  W14-PRTKBN52-STATE   PIC S9(9)   BINARY.
+                04  W14-PRTKBN52     PIC X.

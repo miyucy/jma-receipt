@@ -34,6 +34,8 @@
       *  01.00.04    NACL-Æ£¸¶    05/02/16  É¸½à¹ñÊÝ¥ì¥»ÅÅÁí³çÉ½°õºþ»Ø¼¨
       *                                     ¤ÎÄÉ²Ã
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/02  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *
+      *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -45,6 +47,8 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
+      *
+           COPY    "ENUM-VALUE".
       *
       *    ¥¹¥ÑÎÎ°è
            COPY    "COMMON-SPA".
@@ -812,6 +816,12 @@
            COMPUTE WRK-GMN-CUR        =  (IDX -   1)  *   6   +
                                           2   +   IDY
       *
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+           IF      IDY                =   4
+               GO  TO  420-CHKFLG-CHK-EXT
+           END-IF
+      *¡ú¡ú
+      *
            MOVE    W14-CHKBTN(IDX IDY)    TO  SPA-GMN-CHKFLG (IDX IDY)
       *
       *    ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
@@ -1237,6 +1247,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-PRTKBN22     TO  W14-PRTKBN22
            MOVE    SPA-GMN-PRTKBN31     TO  W14-PRTKBN31
            MOVE    SPA-GMN-PRTKBN32     TO  W14-PRTKBN32
+      *
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+           MOVE    "F"                 TO  W14-PRTKBN41
+           MOVE    "T"                 TO  W14-PRTKBN42            
+           MOVE    "F"                 TO  W14-PRTKBN51
+           MOVE    "T"                 TO  W14-PRTKBN52            
+           MOVE    WIDGET-INSENSITIVE  TO  W14-PRTKBN41-STATE
+                                           W14-PRTKBN42-STATE
+                                           W14-PRTKBN51-STATE
+                                           W14-PRTKBN52-STATE
+      *¡ú¡ú
       *
            PERFORM 5001-MAPCUR-SEC
       *
