@@ -59,6 +59,7 @@
            03  WRK-ZAITEN                      PIC 9(05).
            03  WRK-SRYYMD                      PIC X(08).
            03  WRK-SRYCD                       PIC X(09).
+           03  WRK-HYOKETU-TEN                 PIC 9(05).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -170,6 +171,7 @@
        2001-NYUINACT-CHK-SEC           SECTION.
       *
            MOVE    ZERO            TO  WRK-ZAITEN
+                                       WRK-HYOKETU-TEN
       *
            PERFORM 900-NYUINACT-KEY9-SEL-SEC
       *
@@ -182,8 +184,16 @@
                        MOVE    NSRY-SRYCD (IDX-NSRY)
                                    TO  WRK-SRYCD
                        PERFORM 900-TENSU-KEY-SEL-SEC
-                       COMPUTE WRK-ZAITEN  =   WRK-ZAITEN  +   TNS-TEN
-		       DISPLAY "TNS-SRYCD = " TNS-SRYCD " " TNS-TEN
+                       EVALUATE    TNS-TENSIKIBETU
+                       WHEN    3
+                           COMPUTE WRK-ZAITEN
+                               =   WRK-ZAITEN  +   TNS-TEN
+                       WHEN    8
+                           COMPUTE WRK-ZAITEN
+                                =   WRK-ZAITEN  + ( TNS-TEN *   -1 )
+                       WHEN    6
+                           MOVE    TNS-TEN     TO  WRK-HYOKETU-TEN
+                       END-EVALUATE
                    END-IF
       *
                END-PERFORM
@@ -196,8 +206,14 @@
            MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           DISPLAY "NACCT-ZAITEN = " NACCT-ZAITEN
-           DISPLAY "WRK-ZAITEN   = " WRK-ZAITEN
+           IF    ( WRK-HYOKETU-TEN NOT =   ZERO )
+               COMPUTE WRK-ZAITEN
+                   =   WRK-ZAITEN
+                   -   WRK-ZAITEN * ( WRK-HYOKETU-TEN / 100)
+                   +  0.5
+           END-IF
+      *
+           DISPLAY "WRK-ZAITEN = " WRK-ZAITEN
       *
            IF    ( NACCT-ZAITEN    NOT =   WRK-ZAITEN )
                MOVE    1               TO  FLG-UNMATCH
