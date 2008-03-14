@@ -495,7 +495,7 @@
                IF    ( ORCBSD01-KGIPROCKBN  =   "1" )
                    MOVE    "1"         TO  WRK-KGIPROCKBN
                END-IF
-           WHEN      ( WRK-ZAIHKNNUM   =   "038" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "040" )
            WHEN      ( WRK-ZAIHKNNUM   =   "039" )
       *
                MOVE    1               TO  CNT-KOUKI

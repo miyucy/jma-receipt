@@ -318,7 +318,7 @@
                    MOVE    1       TO  SDTCHK02-O-JIBAI (IDX-HKNNUM)
                WHEN      "975"
                    MOVE    1       TO  SDTCHK02-O-KOUGAI (IDX-HKNNUM)
-               WHEN      "038"
+               WHEN      "040"
                WHEN      "039"
                    MOVE    1       TO  SDTCHK02-O-KOUKI  (IDX-HKNNUM)
                WHEN      OTHER

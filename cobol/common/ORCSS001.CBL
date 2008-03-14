@@ -456,7 +456,7 @@ grpsys     COPY  "COMMON-SPA".
                WHEN    "068"
                WHEN    "069"
                    MOVE    1               TO  SS001-KOK-FLG(IDX-NYUGAI)
-               WHEN    "038"
+               WHEN    "040"
                WHEN    "039"
                    MOVE    1               TO  SS001-KOUKI-FLG
                                                             (IDX-NYUGAI)
@@ -538,7 +538,7 @@ grpsys     COPY  "COMMON-SPA".
                    WHEN    "069"
                        MOVE    1       TO  SS001-SRYKA-KOK-FLG
                                                   (IDX-SRYKA IDX-NYUGAI)
-                   WHEN    "038"
+                   WHEN    "040"
                    WHEN    "039"
                        MOVE    1       TO  SS001-SRYKA-KOUKI-FLG
                                                   (IDX-SRYKA IDX-NYUGAI)

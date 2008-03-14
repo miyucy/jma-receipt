@@ -495,7 +495,7 @@
                IF    ( SDTCHK06-HKNKBN =   CONST-KOUGAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
-           WHEN      ( WRK-ZAIHKNNUM   =   "038" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "040" )
            WHEN      ( WRK-ZAIHKNNUM   =   "039" )
                IF    ( SDTCHK06-HKNKBN =   CONST-KOUKI )
                    MOVE    1           TO  FLG-TAISYO-HKN

@@ -2179,7 +2179,7 @@
                IF    ( DTCHK003-HKNKBN =   CONST-KOUGAI )
                    MOVE    1           TO  FLG-TAISYO-HKN
                END-IF
-           WHEN      ( WRK-ZAIHKNNUM   =   "038" )
+           WHEN      ( WRK-ZAIHKNNUM   =   "040" )
            WHEN      ( WRK-ZAIHKNNUM   =   "039" )
                IF    ( DTCHK003-HKNKBN =   CONST-KOUKI )
                    MOVE    1           TO  FLG-TAISYO-HKN
@@ -4273,7 +4273,7 @@
                 END-IF
            END-PERFORM
       *
-           IF    ( COMB-HKNNUM     =   "039" OR "038" )
+           IF    ( COMB-HKNNUM     =   "039" OR "040" )
                     MOVE   1           TO  FLG-RJN
            END-IF
       *

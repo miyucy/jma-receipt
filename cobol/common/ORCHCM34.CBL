@@ -6369,7 +6369,7 @@
            WHEN    "068"
            WHEN    "069"
                MOVE    "2"         TO  WRK-HOKEN
-           WHEN    "038"
+           WHEN    "040"
            WHEN    "039"
                MOVE    "3"         TO  WRK-HOKEN
            WHEN    OTHER
