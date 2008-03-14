@@ -2278,7 +2278,7 @@
                    MOVE   LNK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
                                     TO  WK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
                    IF (LNK-SYU-SYUHKNNUM = "971" OR "973" OR "975"
-                                        OR "068" OR "069" OR "038")
+                                        OR "068" OR "069" OR "040")
                    OR (LNK-SYU-SYUHKNNUM(1:2) = "98"              )
                        MOVE  SPACE  TO  WK-SYOTOKU-SKJKBN(SYOTOKU-IDX)
                    END-IF
@@ -2938,7 +2938,7 @@
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
                IF  COMB-HKNNUM  =  "971" OR "973" OR "975"
-                                OR "068" OR "069" OR "038"
+                                OR "068" OR "069" OR "040"
                    MOVE  SPACE       TO  LNK-S02-KOUREI-NYUIN-KBN
                END-IF
            END-IF                                               
@@ -2950,7 +2950,7 @@
              IF  (COMB-HKNNUM                =   SPACE   )
              OR  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
              OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
-                               OR "068" OR "069" OR "038"
+                               OR "068" OR "069" OR "040"
                                                  OR "039")
              OR  (AGECHK-NENREI         <     70         )
                CONTINUE
@@ -3010,7 +3010,7 @@
       *
             IF  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
             OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
-                              OR "068" OR "069" OR "038")
+                              OR "068" OR "069" OR "040")
               CONTINUE
             ELSE
               PERFORM   VARYING   GEN-IDX   FROM   1    BY   1
@@ -3083,7 +3083,7 @@
             AND  COMB-KOH4HKNNUM      =  SPACE
               IF  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
               OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
-                                OR "068" OR "069" OR "038")
+                                OR "068" OR "069" OR "040")
                 CONTINUE
               ELSE
                 INITIALIZE                       PTKOHINF-REC
@@ -3130,7 +3130,7 @@
              OR  (COMB-HKNNUM                =   SPACE   )
              OR  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
              OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
-                               OR "068" OR "069" OR "038")
+                               OR "068" OR "069" OR "040")
                CONTINUE
              ELSE
                PERFORM   VARYING   GEN-IDX   FROM   1    BY   1
@@ -7443,7 +7443,7 @@
              OR ( FLG-KOHININBARAI           =    1  )
              OR ( FLG-GENBUTU70          NOT =   ZERO)
                IF ( SYU-SYUHKNNUM       =  "971" OR "973" OR "975"
-                                        OR "068" OR "069" OR "038" )
+                                        OR "068" OR "069" OR "040" )
                OR ( SYU-SYUHKNNUM(1:2)  =  "98"                    )
       *
                  CONTINUE
@@ -11614,7 +11614,7 @@
       *
               IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
               OR   ( COMB-HKNNUM =  "971"  OR  "973"  OR  "975"
-                                OR  "068"  OR  "069"  OR  "038" )
+                                OR  "068"  OR  "069"  OR  "040" )
                 ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
               ELSE
                 EVALUATE   WK-SYOTOKU-SKJKBN(1)
@@ -12165,7 +12165,7 @@
       *
                IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
                OR   ( COMB-HKNNUM =  "971"  OR  "973"  OR  "975"
-                                 OR  "068"  OR  "069"  OR  "038" )
+                                 OR  "068"  OR  "069"  OR  "040" )
                  ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
                                                WK-SHOKUJI-FTNL
                ELSE
@@ -12269,7 +12269,7 @@
       *
                 IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
                 OR   ( COMB-HKNNUM =  "971"  OR  "973"  OR  "975"
-                                  OR  "068"  OR  "069"  OR  "038" )
+                                  OR  "068"  OR  "069"  OR  "040" )
                   ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
                                                 WK-SHOKUJI-FTNL
                 ELSE
@@ -12399,7 +12399,7 @@
       *
                IF   ( COMB-SYU-HKNKOHSBTKBN   =   "8"            )
                OR   ( COMB-HKNNUM =  "971"  OR  "973"  OR  "975"
-                                 OR  "068"  OR  "069"  OR  "038" )
+                                 OR  "068"  OR  "069"  OR  "040" )
                 ADD   WK-SHOKUJI-JIHI    TO   WK-SHOKUJI-FTN
                                               WK-SHOKUJI-FTNS
                ELSE
@@ -12814,7 +12814,7 @@
            END-IF.
       *
       *    ÆÃÊÌÎÅÍÜÈñ
-           IF    COMB-HKNNUM    =    "068" OR "069" OR "038"
+           IF    COMB-HKNNUM    =    "068" OR "069" OR "040"
                           MOVE   100       TO   HKN-HON-NYUKFTNRATE
                                                 HKN-KZK-NYUKFTNRATE
                                                 HKN-TSY-NYUKFTNRATE

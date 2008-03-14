@@ -2881,7 +2881,7 @@
              IF  (COMB-HKNNUM                =   SPACE   )
              OR  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
              OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
-                               OR "068" OR "069" OR "038"
+                               OR "068" OR "069" OR "040"
                                                  OR "039")
              OR  (AGECHK-NENREI         <     70         )
                CONTINUE
@@ -2899,7 +2899,7 @@
              OR  (COMB-HKNNUM                =   SPACE   )
              OR  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
              OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
-                               OR "068" OR "069" OR "038")
+                               OR "068" OR "069" OR "040")
                CONTINUE
              ELSE
                PERFORM   VARYING   GEN-IDX   FROM   1    BY   1
@@ -2981,7 +2981,7 @@
                    MOVE  SPACE       TO  LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
                IF  COMB-HKNNUM  =  "971"  OR  "973"  OR  "975"
-                               OR  "068"  OR  "069"  OR  "038"
+                               OR  "068"  OR  "069"  OR  "040"
                    MOVE  SPACE       TO  LNK-S01-KOUREI-ZAITAKU-KBN
                END-IF
            END-IF
@@ -2996,7 +2996,7 @@
                    MOVE  SPACE       TO  FLG-KOUREI-KBN
                END-IF
                IF  COMB-HKNNUM  =  "971"  OR  "973"  OR  "975"
-                               OR  "068"  OR  "069"  OR  "038"
+                               OR  "068"  OR  "069"  OR  "040"
                    MOVE  SPACE       TO  FLG-KOUREI-KBN
                END-IF
            END-IF
@@ -3050,7 +3050,7 @@
       *
             IF  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
             OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
-                              OR "068" OR "069" OR "038")
+                              OR "068" OR "069" OR "040")
               CONTINUE
             ELSE
               PERFORM   VARYING   GEN-IDX   FROM   1    BY   1
@@ -3123,7 +3123,7 @@
             AND  (COMB-KOH4HKNNUM      =  SPACE         )
               IF  (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
               OR  (COMB-HKNNUM  =  "971" OR "973" OR "975"
-                                OR "068" OR "069" OR "038")
+                                OR "068" OR "069" OR "040")
                 CONTINUE
               ELSE
                 INITIALIZE                       PTKOHINF-REC
@@ -7437,7 +7437,7 @@
              OR  (FLG-GENBUTU70            NOT =  ZERO)
       *
                IF ( SYU-SYUHKNNUM       =  "971" OR "973" OR "975"
-                                        OR "068" OR "069" OR "038" )
+                                        OR "068" OR "069" OR "040" )
                OR ( SYU-SYUHKNNUM(1:2)  =  "98"                    )
       *
                  CONTINUE
@@ -12743,7 +12743,7 @@
            END-IF.
       *
       *    ÆÃÊÌÎÅÍÜÈñ
-           IF    COMB-HKNNUM    =    "068" OR "069" OR "038"
+           IF    COMB-HKNNUM    =    "068" OR "069" OR "040"
                           MOVE   100       TO   HKN-HON-GAIKFTNRATE
                                                 HKN-KZK-GAIKFTNRATE
                                                 HKN-TSY-GAIKFTNRATE
