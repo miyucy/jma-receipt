@@ -2554,6 +2554,9 @@ grpsys             MOVE    RECE01-HOSPNUM       TO  RECE09-HOSPNUM
       * 
                    IF      RECE01-HKNNUM       =   "060"   OR  "067"
                                                OR  "068"   OR  "069"
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+                   OR      RECE01-HKNNUM       =   "040"   OR  "039"
+      *¡ú¡ú
                        MOVE    2               TO  RECE09-TEISYUTUSAKI
                    ELSE
                        MOVE    1               TO  RECE09-TEISYUTUSAKI

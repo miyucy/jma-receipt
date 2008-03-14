@@ -2239,6 +2239,9 @@
       * 
                    IF      RECE61-HKNNUM       =   "060"   OR  "067"
                                                OR  "068"   OR  "069"
+      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+                   OR      RECE61-HKNNUM       =   "040"   OR  "039"
+      *¡ú¡ú
                        MOVE    2               TO  RECE69-TEISYUTUSAKI
                    ELSE
                        MOVE    1               TO  RECE69-TEISYUTUSAKI
