@@ -440,7 +440,7 @@
                    PERFORM   900-CLOSE-SEC-SEC
                ELSE
                    MOVE    ZERO                 TO  FLG-RJN 
-      *            稿袋光勿荚の冉年∈瘦副戎规０３８、０３９∷
+      *            稿袋光勿荚の冉年∈瘦副戎规０３９と０４０∷
                    MOVE    ZERO                 TO  FLG-RJN 
                    INITIALIZE                       PTHKNINF-REC
                    MOVE    LNK-NYULIFE-HOSPNUM  TO  PTHKN-HOSPNUM
