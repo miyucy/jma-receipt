@@ -4926,6 +4926,7 @@
                IF     (SPA-PTKOH-SAKJOKBN (IDX) NOT =  "1"  )   AND
                       (SPA-PTKOH-KOHNUM   (IDX)     =  "027" )  AND
                       (SPA-PTKOH-TEKEDYMD (IDX)     =  "20080331")
+                AND   (SPA-PTKOH-KAKUNINYMD (IDX)   <  "20080401")
                    MOVE    1                   TO  FLG-27KOH-OK
                END-IF
            END-PERFORM
