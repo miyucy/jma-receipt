@@ -2770,7 +2770,7 @@
                IF    SS007-RC          =   0
                    MOVE    SPACE       TO  SPA-GMN-KEIKOKU
                ELSE
-                MOVE "会計の点数に不整合があります。確認してください。"
+            MOVE "入院点数に誤りがあります。異動処理をしてください。"
                                        TO  SPA-GMN-KEIKOKU
                END-IF
            END-IF
