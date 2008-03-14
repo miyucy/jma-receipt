@@ -955,8 +955,8 @@
                        END-IF
                    END-IF
       *        Ｈ２０．４から（後期高齢者）
-               WHEN    "038"
                WHEN    "039"
+               WHEN    "040"
                    MOVE    4                   TO  FLG-OK
                WHEN    OTHER
       *            その他
@@ -1237,7 +1237,7 @@
            MOVE    ZERO                TO  AGECHK-ROUJIN2
       *    後期高齢者を選択している場合、老人
            IF      COMB-HKNNUM         =   "039"
-                                       OR  "038"
+                                       OR  "040"
                MOVE    1               TO  AGECHK-ROUJIN
            END-IF
       *    ６５歳以上の時、後期高齢者をもっているかの判定
@@ -1367,7 +1367,7 @@
            PERFORM UNTIL      (FLG-PTHKNINF    =   1   )
                          OR   (AGECHK-ROUJIN2  =   1   )
                IF      PTHKN-HKNNUM        =   "039"
-                                           OR  "038"
+                                           OR  "040"
                    MOVE    1               TO  AGECHK-ROUJIN2
                END-IF
                MOVE    "tbl_pthkninf"      TO  MCP-TABLE

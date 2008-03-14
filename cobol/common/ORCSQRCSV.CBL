@@ -351,8 +351,8 @@
               WHEN     "980"  THRU  "989"
                   MOVE    "6"          TO  TBL-QRCSV-DATA (2)
       *       ¸å´ü¹âÎð¼Ô
-              WHEN     "038"
               WHEN     "039"
+              WHEN     "040"
                   MOVE    "7"          TO  TBL-QRCSV-DATA (2)
       *       °åÊÝ¡¢¸øÈñ
               WHEN     OTHER

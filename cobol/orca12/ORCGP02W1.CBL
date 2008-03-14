@@ -1147,7 +1147,7 @@
       *Ｈ２０．４改正
       *        後期高齢者
                WHEN    "039"
-               WHEN    "038"
+               WHEN    "040"
                    PERFORM VARYING     IDT     FROM    1  BY  1
                            UNTIL       IDT     >   2
                        IF      WRK-HJO-REC6 (IDT)(1:1)
@@ -1510,7 +1510,7 @@
       *        公害保険は本人のみ
                                            OR  "975"
       *        後期高齢者は本人のみ
-                                           OR  "038"
+                                           OR  "040"
                                            OR  "039"
                    MOVE    2               TO  IDT
                END-IF
@@ -1618,7 +1618,7 @@
       *Ｈ２０．４改正
       *        後期高齢者
                WHEN    "039"
-               WHEN    "038"
+               WHEN    "040"
                    PERFORM VARYING   IDT     FROM    1  BY  1
                          UNTIL       IDT     >   2
                        MOVE    WRK-HJO-REC6 (IDT)
@@ -4447,7 +4447,7 @@
                                                OR  "069"
       *              後期高齢者
                                                OR  "039"
-                                               OR  "038" )
+                                               OR  "040" )
                    PERFORM VARYING  IDY     FROM    1   BY  1
                            UNTIL   (IDY     >   SPA-PTKOH-MAX )  OR
                                    (SPA-ERRCD   NOT =   SPACE )
@@ -4788,7 +4788,7 @@
                    END-IF
       *        後期高齢者
                WHEN    "039"
-               WHEN    "038"
+               WHEN    "040"
                    MOVE    2                   TO  FLG-RJNCHK
       *        その他
                WHEN    OTHER
@@ -4904,7 +4904,7 @@
                IF     (SPA-PTHKN-TEKEDYMD (IDX)    >=  SPA-SYSYMD ) AND
                       (SPA-PTHKN-SAKJOKBN (IDX) NOT =  "1"        )
                    IF      SPA-PTHKN-HKNNUM(IDX)    =   "039"
-                                                    OR  "038"
+                                                    OR  "040"
       *                後期高齢者区分判定
                        MOVE    1               TO  FLG-RJNCHK
                    END-IF
@@ -4981,7 +4981,7 @@
                    MOVE    "0089"              TO  SPA-ERRCD
       *
                    IF      SPA-PTHKN-HKNNUM(IDX)    =   "039"
-                                                    OR  "038"
+                                                    OR  "040"
                        MOVE    "0124"          TO  SPA-ERRCD
                    END-IF
                END-IF

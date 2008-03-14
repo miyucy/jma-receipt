@@ -1010,8 +1010,8 @@
                                MOVE    3           TO  FLG-RJNHKN
                        END-EVALUATE
       *---(04.02.00) LINE ADD START ------------------------------------
-                   WHEN    "038"
                    WHEN    "039"
+                   WHEN    "040"
       *                後期高齢者
                        EVALUATE    COMB-HOJOKBN
                            WHEN    "1"

@@ -979,7 +979,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
              IF  WRK-HKN-SBT (IDX)     =   "1"
       *!       ∆√ ÃŒ≈Õ‹»Ò§œ¬–æ›≥∞
              AND (WRK-HKN-HKNNUM (IDX) NOT =   "068"
-                                           AND "038"
+                                           AND "040"
                                            AND "069")
       *!
       *        ∞Ï»ÃŒ≈Õ‹°¢∆√ ÃŒ≈Õ‹° µÏ∆¸∏€°¢µÏ∆√ Ã∆¸∏€°À§Œ»ΩƒÍ
@@ -1891,7 +1891,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(02.00.0) LINE UPD END   -------------------------------
                           IF  HKN-HKNNUM               =   "068"
                                                        OR  "069"
-                                                       OR  "038"
+                                                       OR  "040"
       *                       ∆√ ÃŒ≈Õ‹»Ò¬–æ›≥∞
                               CONTINUE
                           ELSE
@@ -3234,7 +3234,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                        IF  WRK-HKN-SBT(IDY2)  =   "1"
       *!       ∆√ ÃŒ≈Õ‹»Ò§œ¬–æ›≥∞
                        AND (WRK-HKN-HKNNUM (IDY2)  NOT =   "068"
-                                                       AND "038"
+                                                       AND "040"
                                                        AND "069" )
       *!
       ****                 IF  ((WRK-HKN-HKNNUM (IDY)  =   "002") AND
@@ -4669,7 +4669,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
              IF  ((WRK-HKN-SBT(IDZ)     =   "1"  )  AND
       *!         ∆√ ÃŒ≈Õ‹»Ò§œ¬–æ›≥∞
                   (WRK-HKN-HKNNUM (IDZ)  NOT =   "068"
-                                              AND "038"
+                                              AND "040"
                                               AND "069" )) AND
       *!
                  (WRK-HKN-SAKJOKBN (IDZ)     =   SPACE)
@@ -4975,7 +4975,7 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
              IF  ((WRK-HKN-SBT   (IDX)  =   "4" OR "8" OR "9")
       *!          ∆√ ÃŒ≈Õ‹»Ò ¬–æ›
                OR (WRK-HKN-HKNNUM (IDX) =   "068"
-                                        OR  "038"
+                                        OR  "040"
                                         OR  "069" )) AND
       *!
                  (WRK-HKN-SAKJOKBN    (IDX)  =   SPACE)

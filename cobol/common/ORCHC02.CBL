@@ -1009,7 +1009,7 @@
                        END-EVALUATE
       *---(04.02.00) LINE ADD START ------------------------------------
                    WHEN    "039"
-                   WHEN    "038"
+                   WHEN    "040"
       *                後期高齢者
                        EVALUATE    COMB-HOJOKBN
                            WHEN    "1"

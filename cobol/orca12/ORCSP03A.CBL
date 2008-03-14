@@ -547,7 +547,7 @@
                   OR ((WRK-HKNJA-HKNNUM    =   "067" ) AND
                       (SPA-MAE-HKNNUM      =   "069" ))
                   OR ((WRK-HKNJA-HKNNUM    =   "039" ) AND
-                      (SPA-MAE-HKNNUM      =   "038" ))
+                      (SPA-MAE-HKNNUM      =   "040" ))
                    MOVE    SPA-MAE-HKNNUM      TO  WRK-HKNJA-HKNNUM
                END-IF
       *
@@ -573,7 +573,7 @@
                       OR ((WRK-HKNJA-HKNNUM    =   "067" ) AND
                           (SPA-GMN-HKNNUM      =   "069" ))
                       OR ((WRK-HKNJA-HKNNUM    =   "039" ) AND
-                          (SPA-GMN-HKNNUM      =   "038" ))
+                          (SPA-GMN-HKNNUM      =   "040" ))
                         CONTINUE
                    ELSE
                         MOVE    WRK-HKNJA-HKNNUM    TO  SPA-GMN-HKNNUM
@@ -824,8 +824,8 @@
       *        公害保険は本人のみ
                                            OR  "975"
       *        後期高齢者は本人のみ
-                                           OR  "038"
                                            OR  "039"
+                                           OR  "040"
       ************ IF      SPA-GMN-HONKZKKBN-G     =   SPACE
                    IF      IDT                 =   1
       *                空白の時、本人を設定
@@ -845,8 +845,8 @@
                                            OR  "068"
                                            OR  "069"
       *              後期高齢者追加
-                                           OR  "038"
-                                           OR  "039" )
+                                           OR  "039"
+                                           OR  "040" )
                MOVE    ZERO                TO  SPA-GMN-CONT-MAX
            ELSE
                IF      SPA-GMN-HKNNUM      =   "003"
@@ -1005,8 +1005,8 @@
                    END-IF
       *Ｈ２０．４
       *        後期高齢者
-               WHEN    "038"
                WHEN    "039"
+               WHEN    "040"
                    PERFORM VARYING   IDT     FROM    1  BY  1
                          UNTIL       IDT     >   2
                        MOVE    WRK-HJO-REC6 (IDT)
@@ -1531,7 +1531,7 @@
                MOVE    SPA-SYSYMDWH        TO  SPA-GMN-HTEKSTYMD
       *        後期高齢者
                IF      SPA-GMN-HKNNUM      =   "039"
-                                           OR  "038"
+                                           OR  "040"
                    PERFORM 10011-TEKSTYMD-SET39-SEC
                    IF      (FLG-KOH-CHK        =   1   )
                        OR  (SPA-SYSYMD         <   "20080401" )
@@ -1576,7 +1576,7 @@
            END-IF
       *    後期高齢者の時、開始日が７５歳以上は警告
            IF      SPA-GMN-HKNNUM      =   "039"
-                                       OR  "038"
+                                       OR  "040"
                PERFORM 10011-TEKSTYMD-SET39-SEC
                IF     (SPA-NAI-HTEKSTYMD   NOT =   SPACE )  AND
                       (SPA-NAI-HTEKSTYMD       <   SPA-BYMD-75-2)
