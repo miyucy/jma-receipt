@@ -1950,7 +1950,7 @@
                       WHEN    "039" 
                           EVALUATE   PTHKN-HOJOKBN
                               WHEN   "1"
-                              WHEN   "2"
+                              WHEN   "3"
                                  MOVE    "0" TO  WRK-RECE61-HONKZKKBN
                           END-EVALUATE             
                       WHEN    OTHER 
@@ -2039,11 +2039,11 @@
                            MOVE    "3"             TO
                                                WRK-RECE61-HOJOKBN
                    END-EVALUATE
-               WHEN    "038" 
+               WHEN    "040" 
                WHEN    "039" 
                    EVALUATE   PTHKN-HOJOKBN
                        WHEN   "1"
-                       WHEN   "2"
+                       WHEN   "3"
                            MOVE    PTHKN-HOJOKBN   TO
                                                WRK-RECE61-HOJOKBN
                    END-EVALUATE             

@@ -1503,7 +1503,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                       WHEN    "039" 
                           EVALUATE   PTHKN-HOJOKBN
                               WHEN   "1"
-                              WHEN   "2"
+                              WHEN   "3"
                                  MOVE    "0" TO  WRK-RECE01-HONKZKKBN
                           END-EVALUATE             
                       WHEN    OTHER 
@@ -1589,11 +1589,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
                                                WRK-RECE01-HOJOKBN
                        END-EVALUATE
       *****        END-IF     
-               WHEN    "038" 
+               WHEN    "040" 
                WHEN    "039" 
                    EVALUATE   PTHKN-HOJOKBN
                        WHEN   "1"
-                       WHEN   "2"
+                       WHEN   "3"
                            MOVE    PTHKN-HOJOKBN   TO
                                                WRK-RECE01-HOJOKBN
                    END-EVALUATE             
