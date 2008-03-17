@@ -735,6 +735,7 @@
                    MOVE    SYSKANRI-REC    TO  SYS-3001-REC
                    MOVE    SPA-L01-SEL     TO  IDX0
                    MOVE    SYS-3001-HCNAME TO  SPA-GMN-L01-HCNAME (IDX0)
+                                               SPA-GMN-L03-HCNAME
                    PERFORM VARYING IDX1    FROM    1   BY  1
                            UNTIL ( IDX1    >   WRK-CONS-PARA-MAX )
                        MOVE    SYS-3001-PARAHYOJI (IDX1)
