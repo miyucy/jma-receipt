@@ -446,11 +446,17 @@ CREATE TABLE tbl_seikyu (
     tokki2 character(2),
     tokki3 character(2),
     tokki4 character(2),
-    tokki5 character(2)
+    tokki5 character(2),
+    flg1 numeric(1,0) DEFAULT 0,
+    flg2 numeric(1,0) DEFAULT 0,
+    flg3 numeric(1,0) DEFAULT 0,
+    flg4 numeric(1,0) DEFAULT 0,
+    flg5 numeric(1,0) DEFAULT 0,
+    reserve_area character(50)
 );
+
+COMMENT ON TABLE tbl_seikyu IS 'ÀÁµá´ÉÍý';
 
 ALTER TABLE ONLY tbl_seikyu
     ADD CONSTRAINT tbl_seikyu_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, tekstymd);
-
-COMMENT ON TABLE tbl_seikyu IS 'ÀÁµá´ÉÍý';
 

@@ -135,11 +135,15 @@ CREATE TABLE tbl_syurrk (
     opid character varying(16),
     creymd character(8),
     upymd character(8),
-    uphms character(6)
+    uphms character(6),
+    byr_hknten numeric(7,0) DEFAULT 0,
+    byr_money numeric(7,0) DEFAULT 0,
+    byr_tgmoney numeric(7,0) DEFAULT 0,
+    byr_tgmoney_tax numeric(7,0) DEFAULT 0
 );
+
+COMMENT ON TABLE tbl_syurrk IS '¼ıÇ¼ÍúÎò';
 
 ALTER TABLE ONLY tbl_syurrk
     ADD CONSTRAINT tbl_syurrk_primary_key PRIMARY KEY (hospnum, ptid, nyugaikbn, denpnum, syurrknum, syuedanum);
-
-COMMENT ON TABLE tbl_syurrk IS '¼ıÇ¼ÍúÎò';
 

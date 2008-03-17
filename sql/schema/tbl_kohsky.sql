@@ -526,11 +526,16 @@ CREATE TABLE tbl_kohsky (
     teiseikbn character(1),
     creymd character(8),
     updymd character(8),
-    hospnum numeric(2,0) NOT NULL
+    hospnum numeric(2,0) NOT NULL,
+    flg1 numeric(1,0) DEFAULT 0,
+    flg2 numeric(1,0) DEFAULT 0,
+    flg3 numeric(1,0) DEFAULT 0,
+    flg4 numeric(1,0) DEFAULT 0,
+    flg5 numeric(1,0) DEFAULT 0
 );
+
+COMMENT ON TABLE tbl_kohsky IS '孟数给锐懒滇今';
 
 ALTER TABLE ONLY tbl_kohsky
     ADD CONSTRAINT tbl_kohsky_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum_key, hojokbn_key, tekstymd);
-
-COMMENT ON TABLE tbl_kohsky IS '孟数给锐懒滇今';
 

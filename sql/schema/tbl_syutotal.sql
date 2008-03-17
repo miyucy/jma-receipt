@@ -182,11 +182,15 @@ CREATE TABLE tbl_syutotal (
     ryo_tgmoney numeric(7,0) DEFAULT 0,
     ryo_tgmoney_tax numeric(7,0) DEFAULT 0,
     shohou_sai numeric(7,0) DEFAULT 0,
-    hospnum numeric(2,0) NOT NULL
+    hospnum numeric(2,0) NOT NULL,
+    byr_hknten numeric(7,0) DEFAULT 0,
+    byr_money numeric(7,0) DEFAULT 0,
+    byr_tgmoney numeric(7,0) DEFAULT 0,
+    byr_tgmoney_tax numeric(7,0) DEFAULT 0
 );
+
+COMMENT ON TABLE tbl_syutotal IS '¼ýÇ¼¹ç·×';
 
 ALTER TABLE ONLY tbl_syutotal
     ADD CONSTRAINT tbl_syutotal_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, denpnum);
-
-COMMENT ON TABLE tbl_syutotal IS '¼ýÇ¼¹ç·×';
 

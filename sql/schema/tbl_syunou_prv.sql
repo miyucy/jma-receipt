@@ -300,11 +300,15 @@ CREATE TABLE tbl_syunou_prv (
     skymoney_life_jihi numeric(7,0) DEFAULT 0,
     skymoney_life_jihi_tax numeric(7,0) DEFAULT 0,
     skymoney_life_jihi_kei numeric(7,0) DEFAULT 0,
-    hospnum numeric(2,0) NOT NULL
+    hospnum numeric(2,0) NOT NULL,
+    byr_hknten numeric(7,0) DEFAULT 0,
+    byr_money numeric(7,0) DEFAULT 0,
+    byr_tgmoney numeric(7,0) DEFAULT 0,
+    byr_tgmoney_tax numeric(7,0) DEFAULT 0
 );
+
+COMMENT ON TABLE tbl_syunou_prv IS '収納(プレビュー)';
 
 ALTER TABLE ONLY tbl_syunou_prv
     ADD CONSTRAINT tbl_syunou_prv_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, denpnum, creymd);
-
-COMMENT ON TABLE tbl_syunou_prv IS '収納(プレビュー)';
 

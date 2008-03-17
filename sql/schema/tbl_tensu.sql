@@ -142,19 +142,22 @@ CREATE TABLE tbl_tensu (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    hospnum numeric(2,0) NOT NULL,
+    gazoopesup numeric(1,0) DEFAULT 0,
+    iryokansatukbn numeric(1,0) DEFAULT 0,
+    masuiskbkbn numeric(1,0) DEFAULT 0
 );
+
+COMMENT ON TABLE tbl_tensu IS '点数';
+
+ALTER TABLE ONLY tbl_tensu
+    ADD CONSTRAINT tbl_tensu_primary_key PRIMARY KEY (hospnum, srycd, yukostymd, yukoedymd);
+
+CREATE INDEX idx_tensu_formalname ON tbl_tensu USING btree (formalname);
 
 CREATE INDEX idx_tensu_kananame ON tbl_tensu USING btree (kananame);
 
 CREATE INDEX idx_tensu_kensagrp ON tbl_tensu USING btree (hospnum, srykbn, knsjisgrpkbn);
 
 CREATE INDEX idx_tensu_name ON tbl_tensu USING btree (name);
-
-CREATE INDEX idx_tensu_formalname ON tbl_tensu USING btree (formalname);
-
-ALTER TABLE ONLY tbl_tensu
-    ADD CONSTRAINT tbl_tensu_primary_key PRIMARY KEY (hospnum, srycd, yukostymd, yukoedymd);
-
-COMMENT ON TABLE tbl_tensu IS '点数';
 
