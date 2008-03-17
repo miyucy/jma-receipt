@@ -548,6 +548,10 @@
                    IF       TNS-JGNCNTERR      =   9
                        MOVE    "K004"              TO  LNK-SC91-ERRCD
                    END-IF
+      *            人工腎臓の時メッセージ変更
+                   IF      WRK-CODE            =   "008"
+                       MOVE    "K242"         TO  LNK-SC91-ERRCD
+                   END-IF
                END-IF
            END-IF
       *    薬剤情報提供料はチェック判定

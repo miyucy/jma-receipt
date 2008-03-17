@@ -1709,7 +1709,7 @@
                                MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX
                                MOVE    "1"         TO  WRK-COM-KZMFLG
                                                            (IDX-Z)
-                               MOVE    "0082"      TO  WRK-ERRCD
+                               MOVE    "0215"      TO  WRK-ERRCD
                                MOVE    "1"         TO  WRK-COM-CUR
                                                            (IDX-Z)
                            END-IF
@@ -1741,14 +1741,14 @@
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
-      *    リハビリ医学管理料はエラー
-           MOVE    WRK-COM-INPUTCD (IDX-Z)     TO  WRK-SRYCD2
-           PERFORM 10011312-RIGAKU-SERCH-SEC
-           IF      WRK-TBL-RSI-KBN     =   "S"
-               MOVE    "8045"          TO  WRK-ERRCD
-               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-               GO      TO      100113-RSIHKN-SYORI-EXT
-           END-IF
+      **** リハビリ医学管理料はエラー
+      *    MOVE    WRK-COM-INPUTCD (IDX-Z)     TO  WRK-SRYCD2
+      *    PERFORM 10011312-RIGAKU-SERCH-SEC
+      *    IF      WRK-TBL-RSI-KBN     =   "S"
+      *        MOVE    "8045"          TO  WRK-ERRCD
+      *        MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+      *        GO      TO      100113-RSIHKN-SYORI-EXT
+      **** END-IF
       *
       *    リハビリテーション総合計画評価料は対象外
            IF      WRK-COM-INPUTCD (IDX-Z) =   "180024710"

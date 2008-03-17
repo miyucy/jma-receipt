@@ -213,9 +213,10 @@
                MOVE    "病理判断料を算定できる検査を入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0027"
-                   MOVE
-                   "病理学的検査判断料が算定済です。削除後再入力"
-                                       TO  SPA-ERRMSG
+                   STRING  "病理学的検査判断料が算定済です。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0028"
                    MOVE    "検査の包括対象が混在しています。"
                                        TO  SPA-ERRMSG
@@ -1425,6 +1426,12 @@
                WHEN    "0214"
                    STRING  "この画像等手術支援加算は算定できない"
                            "手術です。"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0215"
+                   STRING  "初診料算定日より１年以上経過しています。"
+                           "算定できません。"
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
