@@ -9,6 +9,7 @@
 \set ON_ERROR_STOP
 
 delete from tbl_syskanri where kanricd = '5110' ;
+delete from tbl_syskanri where kanricd = '5111' and kbncd = '02';
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '15' and styukymd = '00000000' and edyukymd = '99999999';
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '15' and styukymd = '00000000' and edyukymd = '20080331';
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '18' and styukymd = '20040401' and edyukymd = '99999999';
@@ -64,6 +65,8 @@ COPY tbl_syskanri (kanricd, kbncd, styukymd, edyukymd, kanritbl, termid, opid, c
 5110	05      	20080401	99999999	190739910Ç§ÃÎ¾ÉÉÂÅïÆş±¡ÎÁ£±                                          Ç§ÃÎ£±			        	        	      	0
 5110	15      	20040401	20080331	190813410Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆş±¡ÎÁ£²                            Ï·Ç§ÃÎ£²			        	        	      	0
 5110	15      	20080401	99999999	190813410Ç§ÃÎ¾ÉÉÂÅïÆş±¡ÎÁ£²                                          Ç§ÃÎ£²			        	        	      	0
+5111	02      	00000000	20080331	190774110¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍıÎÁ                                        ¿ÇÏ·´É                  01			        	        	      	1
+5111	02      	20080401	99999999	190774110¿ÇÎÅ½ê¸å´ü¹âÎğ¼Ô°åÎÅ´ÉÍıÎÁ                                  ¿Ç¸å´É                  01			        	        	      	1
 5111	15      	00000000	20080331	190788810Ï·¿Í°ìÈÌÉÂÅïÆş±¡°åÎÅ´ÉÍıÎÁ                                  Ï·Æş´É                  01			        	        	      	0
 5111	18      	20040401	20080331	190117410°¡µŞÀ­´üÆş±¡°åÎÅ´ÉÍıÎÁ                                      °¡µŞÀ­´ü                01			        	        	      	0
 5111	18      	20080401	20080331	190117410°¡µŞÀ­´üÆş±¡°åÎÅ´ÉÍıÎÁ£±                                    °¡µŞÀ­´ü£±              01			        	        	      	0
