@@ -515,6 +515,24 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
+      *    ＤＢ削除  処理
+      *****************************************************************
+       20103-HKNNUM-DEL-SEC           SECTION.
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    4               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+           END-IF
+           .
+       20103-HKNNUM-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    更新  処理
       *****************************************************************
        2020-UPDATE-SYORI-SEC           SECTION.
@@ -605,6 +623,36 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        2030-DELETE-SYORI-SEC           SECTION.
       *
+           MOVE    ZERO                TO  FLG-SYORI
+      *
+           INITIALIZE                  HKNNUM-REC
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+           MOVE    HKNWK-HKNNUM        TO  HKN-HKNNUM
+           MOVE    HKNWK-PAYKBN        TO  HKN-PAYKBN    
+           MOVE    HKNWK-TEKSTYMD      TO  HKN-TEKSTYMD
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM                     910-HKNNUM-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-HKNNUM
+           END-IF
+      *
+      *    削除処理
+           IF      FLG-HKNNUM          =   ZERO
+                   PERFORM 20103-HKNNUM-DEL-SEC
+                   ADD     1           TO  CNT-DEL
+           END-IF
+      *
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
            .
        2030-DELETE-SYORI-EXT.
            EXIT.
@@ -644,6 +692,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "更新エラー"       TO  WRK-MSG-01
                WHEN    3
                    MOVE    "更新データなし"   TO  WRK-MSG-01
+               WHEN    4
+                   MOVE    "削除エラー"       TO  WRK-MSG-01
                WHEN    5
                    MOVE    "保険番号追加済み"
                                                TO  WRK-MSG-01
