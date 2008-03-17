@@ -2237,7 +2237,9 @@
            END-EVALUATE
       *
            IF      WRK-SRYCD       NOT =   SPACE
-               MOVE    1               TO  FLG-TIME-NYU
+               IF      WRK-COM-TIMEFLG(IDX-Z)  NOT =   "8"
+                   MOVE    1               TO  FLG-TIME-NYU
+               END-IF
            END-IF
            .
        1009-NYUYOUJI-KSN-EXT.
