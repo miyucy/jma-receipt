@@ -5467,7 +5467,7 @@
       *
            MOVE    ZERO                TO  FLG-KANWA
            MOVE    ZERO                TO  FLG-MAYAKU
-           PERFORM VARYING     IDY     FROM    IDX BY  1
+           PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY         >   SPA-MAX-LINE      )   OR
                              ((WRK-GMN-INPUTCD(IDY)    =   SPACE ) AND
                               (WRK-COM-INPUTCD(IDY)    =   SPACE ))
@@ -5491,7 +5491,7 @@
                    END-PERFORM
                END-IF
            END-IF
-           PERFORM VARYING     IDY     FROM    IDX BY  1
+           PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL      (IDY         >   SPA-MAX-LINE      )   OR
                              ((WRK-GMN-INPUTCD(IDY)    =   SPACE ) AND
                               (WRK-COM-INPUTCD(IDY)    =   SPACE ))  OR
