@@ -4926,8 +4926,12 @@
                IF     (SPA-PTKOH-SAKJOKBN (IDX) NOT =  "1"  )   AND
                       (SPA-PTKOH-KOHNUM   (IDX)     =  "027" )  AND
                       (SPA-PTKOH-TEKEDYMD (IDX)     =  "20080331")
-                AND   (SPA-PTKOH-KAKUNINYMD (IDX)   <  "20080401")
-                   MOVE    1                   TO  FLG-27KOH-OK
+                  IF     (SPA-PTKOH-KAKUNINYMD (IDX)   <  "20080401")
+      *            £´·î°Ê¹ß¤ÏÅöÆü
+                  OR    ((SPA-PTKOH-KAKUNINYMD (IDX)   >=  "20080401")
+                     AND (SPA-PTKOH-KAKUNINYMD (IDX)   =   SPA-SYSYMD))
+                       MOVE    1                   TO  FLG-27KOH-OK
+                   END-IF
                END-IF
            END-PERFORM
       *    £²£·Ï·¿Í¸øÈñ¤¬£È£²£°¡¥£³¡¥£³£±¤Ç½ªÎ»¡¢¤«¤Ä¡¢¸å´ü¤¬¤Ê¤¤»þ
