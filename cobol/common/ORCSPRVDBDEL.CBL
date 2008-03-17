@@ -314,7 +314,7 @@
            MOVE    SRYACCTPLUS-REC     TO      MCPDATA-REC
            MOVE    "DBDELETE"          TO      MCP-FUNC
            MOVE    "tbl_sryacctplus_prv"     TO  MCP-TABLE
-           MOVE    "delprv"            TO  MCP-PATHNAME
+           MOVE    "del1"              TO  MCP-PATHNAME
            PERFORM  900-TMPDB-ACCESS-SEC
       *
            .
