@@ -561,28 +561,37 @@
            MOVE    "01"                 TO      PTNYUINRRK-TENSTUYMD
                                                                 (7:2)
            MOVE    "tbl_ptnyuinrrk"     TO      MCP-TABLE
-           MOVE    "key40"              TO      MCP-PATHNAME
+           MOVE    "key50"              TO      MCP-PATHNAME
            PERFORM   910-PTNYUINRRK-SELECT-SEC
            IF      FLG-PTNYUINRRK       =       ZERO
                MOVE    "tbl_ptnyuinrrk"     TO      MCP-TABLE
-               MOVE    "key40"              TO      MCP-PATHNAME
+               MOVE    "key50"              TO      MCP-PATHNAME
                PERFORM  910-PTNYUINRRK-READ-SEC
                PERFORM  UNTIL  FLG-PTNYUINRRK    =    1
-                       IF   PTNYUINRRK-BTUNUM  =   WRK-PARA-BTUNUM
+                       DISPLAY "WRK-PARA-BTUNUM = " WRK-PARA-BTUNUM
+                       IF   WRK-PARA-BTUNUM      =    SPACE
                            MOVE    PTNYUINRRK-PTID   TO  WRK-PTID
       *                    入院会計存在チェック
                            PERFORM    2001-NYUINACCT-CHK-SEC
       *                    入院会計更新処理
                            PERFORM     2001-NYUINACCT-UPD-SEC
+                       ELSE
+                         IF   PTNYUINRRK-BTUNUM  =   WRK-PARA-BTUNUM
+                             MOVE    PTNYUINRRK-PTID   TO  WRK-PTID
+      *                      入院会計存在チェック
+                             PERFORM    2001-NYUINACCT-CHK-SEC
+      *                      入院会計更新処理
+                             PERFORM     2001-NYUINACCT-UPD-SEC
+                         END-IF
                        END-IF
                    MOVE    "tbl_ptnyuinrrk"     TO      MCP-TABLE
-                   MOVE    "key40"              TO      MCP-PATHNAME
+                   MOVE    "key50"              TO      MCP-PATHNAME
                    PERFORM  910-PTNYUINRRK-READ-SEC
                END-PERFORM
            END-IF
       *
            MOVE    "tbl_ptnyuinrrk"     TO      MCP-TABLE
-           MOVE    "key40"              TO      MCP-PATHNAME
+           MOVE    "key50"              TO      MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
            IF    ( CNT-LINE            >   ZERO )

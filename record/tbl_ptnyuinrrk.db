@@ -893,3 +893,18 @@ path	key49		{
 		;
 	};
 };
+
+path	key50		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key50_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	HOSPNUM      =   :HOSPNUM
+			AND		TENNYUYMD	<=	:TENNYUYMD
+			AND		TENSTUYMD	>=	:TENSTUYMD
+			AND		JTIKBN		<>	'5'
+			AND		JTIKBN		<>	'6'
+			ORDER BY BTUNUM,NYUINYMD DESC,TAIINYMD DESC,RRKNUM DESC,RRKEDANUM DESC
+		;
+	};
+};
