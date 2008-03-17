@@ -4699,10 +4699,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "公費負担適用期間が重複しています。"
                                                TO  SPA-ERRMSG
                WHEN    "2435"
-                   MOVE    "公費負担の外来上減額入力エラー"
+                   MOVE    "公費負担の外来上限額入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "2436"
-                   MOVE    "公費負担の入院上減額入力エラー"
+                   MOVE    "公費負担の入院上限額入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "2437"
                    MOVE    "公費負担適用期間を入力して下さい"
