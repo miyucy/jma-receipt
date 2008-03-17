@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 月次帳票
-      *  コンポーネント名  : チェックマスタ経過措置薬剤更新
+      *  コンポーネント名  : チェックマスタ・薬剤情報マスタ経過措置薬剤更新
       *  管理者            : 
       *  作成日付    作業者        記述
       *  07/09/07    NACL-太田     新規作成
@@ -52,6 +52,7 @@
        FD  IN01-FILE.
        01  IN01-REC.
            03  IN01-KEY.
+               05  IN01-MSTKBN         PIC X(01).
                05  IN01-PROCKBN        PIC X(01).
                05  IN01-SRYCD-OLD      PIC X(09).
            03  IN01-SRYCD-NEW          PIC X(09).
@@ -82,6 +83,8 @@
            03  FLG-SRYCDCHG        PIC 9(01).
            03  FLG-CHKSND          PIC 9(01).
            03  FLG-WKCHKSND        PIC 9(01).
+           03  FLG-YAKUJYO         PIC 9(01).
+           03  FLG-WKYAKUJYO       PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
       *
       *    カウント領域
@@ -111,13 +114,15 @@
            03  WRK-EDTYMD3         PIC X(22).
            03  WRK-YUKOEDYMD-N     PIC X(22).
            03  WRK-SAKYMD-N        PIC X(22).
+           03  WRK-MSTKBN          PIC X(01).
            03  WRK-PROCKBN         PIC X(01).
            03  WRK-ZZZZ9-G.
                05  WRK-ZZZZ9       PIC ZZZZ9.
-           03  WRK-HEAD-MSG        PIC X(20).
            03  WRK-SRYCD           PIC X(09).
+           03  WRK-MSTMSG          PIC X(20).
       *
        01  KEY-AREA.
+           03  KEY-MSTKBN                  PIC X(01).
            03  KEY-PROCKBN                 PIC X(01).
       *
        01  HEAD-AREA.
@@ -146,6 +151,9 @@
            COPY    "CPCHKSND.INC"  REPLACING   //CHKSND-//
                                    BY          //WKCHKSND-//.
       *
+           COPY    "CPYAKUJYO.INC"  REPLACING  //YAKUJYO-//
+                                   BY          //WKYAKUJYO-//.
+      *
            COPY    "COMMON-SPA".
       *
       *****************************************************************
@@ -158,6 +166,9 @@
       *    チェックマスタ２
        01  CHKSND-REC.
            COPY    "CPCHKSND.INC".
+      *
+      *    薬剤情報マスタ
+           COPY    "CPYAKUJYO.INC".
       *
       *    診療行為コード置き換えマスタ
        01  SRYCDCHG-REC.
@@ -269,7 +280,7 @@
                                    TO  JOB-SHELLID
            MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    "ORCBG018"      TO  JOB-PGID
-           MOVE    "チェックマスタ経過措置薬剤更新"
+           MOVE    "チェックマスタ・薬剤情報マスタ経過措置薬剤更新"
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
@@ -323,11 +334,13 @@
            PERFORM UNTIL ( FLG-IN01 NOT =   ZERO )
                      OR  ( FLG-END  NOT =   ZERO )
       *
+               MOVE    IN01-MSTKBN     TO  KEY-MSTKBN
                MOVE    IN01-PROCKBN    TO  KEY-PROCKBN
                MOVE    ZERO            TO  CNT-SEQ
       *
                PERFORM UNTIL ( FLG-IN01    NOT =   ZERO )
                         OR   ( FLG-END     NOT =   ZERO )
+                        OR   ( KEY-MSTKBN  NOT =   IN01-MSTKBN )
                         OR   ( KEY-PROCKBN NOT =   IN01-PROCKBN )
       *
       *            ヘッダー編集処理
@@ -356,6 +369,22 @@
       *
            OPEN    OUTPUT  IN01-FILE
       *
+           PERFORM 20011-INFILE-CHKSND-EDIT-SEC
+      *
+           IF    ( FLG-END         =   ZERO )
+               PERFORM 20011-INFILE-YAKUJYO-EDIT-SEC
+           END-IF
+      *
+           CLOSE   IN01-FILE
+      *
+           .
+       2001-INFILE-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力ファイル編集処理（チェックマスタ）
+      *****************************************************************
+       20011-INFILE-CHKSND-EDIT-SEC    SECTION.
+      *
            PERFORM 900-CHKSND-KEY15-SEL-SEC
       *
            PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
@@ -369,14 +398,17 @@
                    IF    ( FLG-SRYCDCHG        =   ZERO )
                        PERFORM 900-CHKSND-KEY-SEL-SEC
                        IF    ( FLG-WKCHKSND    =   ZERO )
+                           MOVE    "1"     TO  WRK-MSTKBN
                            MOVE    "1"     TO  WRK-PROCKBN
                            PERFORM 2001-IN01-EDIT-SEC
                        ELSE
                            PERFORM 2001-CHKSND-EDIT-SEC
+                           MOVE    "1"     TO  WRK-MSTKBN
                            MOVE    ZERO    TO  WRK-PROCKBN
                            PERFORM 2001-IN01-EDIT-SEC
                        END-IF
                    ELSE
+                       MOVE    "1"         TO  WRK-MSTKBN
                        MOVE    "1"         TO  WRK-PROCKBN
                        PERFORM 2001-IN01-EDIT-SEC
                    END-IF
@@ -390,10 +422,8 @@
            MOVE    "key15"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           CLOSE   IN01-FILE
-      *
            .
-       2001-INFILE-EDIT-EXT.
+       20011-INFILE-CHKSND-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ２編集処理
@@ -431,13 +461,88 @@
        2001-CHKSND-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    入力ファイル編集処理（薬剤情報マスタ）
+      *****************************************************************
+       20011-INFILE-YAKUJYO-EDIT-SEC   SECTION.
+      *
+           PERFORM 900-YAKUJYO-ALL-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-YAKUJYO  NOT =   ZERO )
+                     OR  ( FLG-END     NOT =   ZERO )
+      *
+               MOVE    YAKUJYO-SRYCD    TO  WRK-SRYCD
+               MOVE    WRK-PARA-SRYYMD  TO  WRK-SYMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( TNS-YUKOEDYMD   =   WRK-PARA-SRYYMD )
+                   PERFORM 900-SRYCDCHG-KEY2-SEL-SEC
+                   IF    ( FLG-SRYCDCHG        =   ZERO )
+                       PERFORM 900-YAKUJYO-KEY-SEL-SEC
+                       IF    ( FLG-WKYAKUJYO    =   ZERO )
+                           MOVE    "2"     TO  WRK-MSTKBN
+                           MOVE    "1"     TO  WRK-PROCKBN
+                           PERFORM 2001-IN01-EDIT-SEC
+                       ELSE
+                           PERFORM 2001-YAKUJYO-EDIT-SEC
+                           MOVE    "2"     TO  WRK-MSTKBN
+                           MOVE    ZERO    TO  WRK-PROCKBN
+                           PERFORM 2001-IN01-EDIT-SEC
+                       END-IF
+                   ELSE
+                       MOVE    "2"         TO  WRK-MSTKBN
+                       MOVE    "1"         TO  WRK-PROCKBN
+                       PERFORM 2001-IN01-EDIT-SEC
+                   END-IF
+               END-IF
+      *
+               PERFORM 900-YAKUJYO-ALL-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "all"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       20011-INFILE-YAKUJYO-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤情報マスタ編集処理
+      *****************************************************************
+       2001-YAKUJYO-EDIT-SEC           SECTION.
+      *
+           MOVE    YAKUJYO-REC     TO  WKYAKUJYO-REC
+           MOVE    CHG-RJNSRYCD    TO  WKYAKUJYO-SRYCD
+           MOVE    SPACE           TO  WKYAKUJYO-TERMID
+                                       WKYAKUJYO-OPID
+           MOVE    SMCNDATE-YMD    TO  WKYAKUJYO-CREYMD
+                                       WKYAKUJYO-UPYMD
+           MOVE    SMCNDATE-HMS    TO  WKYAKUJYO-UPHMS
+      *
+           MOVE    WKYAKUJYO-REC    TO  MCPDATA-REC
+      *
+           MOVE    "tbl_yakujyo"    TO  MCP-TABLE
+           MOVE    "key"            TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    "薬剤情報マスタの更新に失敗しました"
+                                   TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           .
+       2001-YAKUJYO-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    入力ファイル編集処理
       *****************************************************************
        2001-IN01-EDIT-SEC              SECTION.
       *
            INITIALIZE                  IN01-REC
+           MOVE    WRK-MSTKBN      TO  IN01-MSTKBN
            MOVE    WRK-PROCKBN     TO  IN01-PROCKBN
-           MOVE    CHKSND-SRYCD    TO  IN01-SRYCD-OLD
+           MOVE    WRK-SRYCD       TO  IN01-SRYCD-OLD
            MOVE    CHG-RJNSRYCD    TO  IN01-SRYCD-NEW
            WRITE   IN01-REC
       *
@@ -455,11 +560,17 @@
       *
            INITIALIZE                  HCMSL55
       *
-           MOVE    SPACE               TO   WRK-HEAD-MSG
+           MOVE    SPACE               TO   WRK-MSTMSG
+           IF    ( IN01-MSTKBN         =    "1" )
+               MOVE    "チェックマスタ" TO  WRK-MSTMSG
+           ELSE
+               MOVE    "薬剤情報マスタ" TO  WRK-MSTMSG
+           END-IF
       *
            STRING
-               "＊＊　チェックマスタ経過措置薬剤更新リスト"
-                                                   DELIMITED   BY  SIZE
+               "＊＊　"                            DELIMITED   BY  SIZE
+               WRK-MSTMSG                          DELIMITED   BY  SPACE
+                "経過措置薬剤更新リスト"           DELIMITED   BY  SIZE
                "　＊＊　　"                        DELIMITED   BY  SIZE
                "有効期限："                        DELIMITED   BY  SIZE
                WRK-PARA-SRYYMD (1:4)               DELIMITED   BY  SIZE
@@ -481,24 +592,28 @@
                INTO    HCMSL55-MOJI (1)
            END-STRING
       *
-           STRING
-               "※注意：薬剤と病名の区分のみを対象としています。"
+           IF    ( WRK-MSTMSG  =   "1" )
+               STRING
+                   "※注意：薬剤と病名の区分のみを対象としています。"
                                                    DELIMITED   BY  SIZE
-               "他の区分については対応していません。"
+                   "他の区分については対応していません。"
                                                    DELIMITED   BY  SIZE
-           INTO    HCMSL55-MOJI (2)
-           END-STRING
+               INTO    HCMSL55-MOJI (2)
+               END-STRING
+           END-IF
       *
            IF    ( IN01-PROCKBN    =   ZERO )
                STRING
-                   "経過措置薬剤よりチェックマスタを複写しました。"
-                                                   DELIMITED   BY  SIZE
+                   "経過措置薬剤より"              DELIMITED   BY  SIZE
+                   WRK-MSTMSG                      DELIMITED   BY  SPACE
+                   "を複写しました。"              DELIMITED   BY  SIZE
                INTO    HCMSL55-MOJI (4)
                END-STRING
            ELSE
                STRING
-                   "既にチェックマスタに登録済か、"
-                                                   DELIMITED BY SIZE
+                   "既に"                          DELIMITED BY SIZE
+                   WRK-MSTMSG                      DELIMITED   BY  SPACE
+                   "に登録済か、"                  DELIMITED BY SIZE
                    "複写先となる薬剤が存在しません。"
                                                    DELIMITED BY SIZE
                INTO    HCMSL55-MOJI (4)
@@ -524,7 +639,6 @@
       *
        2001-HEAD-HEN-EXT.
            EXIT.
-      *
       *****************************************************************
       *    帳票編集<明細行>処理
       *****************************************************************
@@ -532,6 +646,7 @@
       *
            PERFORM UNTIL ( FLG-IN01    NOT =   ZERO )
                     OR   ( FLG-END     NOT =   ZERO )
+                    OR   ( KEY-MSTKBN  NOT =   IN01-MSTKBN )
                     OR   ( KEY-PROCKBN NOT =   IN01-PROCKBN )
                     OR   ( CNT-LINE       >=   CONST-LINE-MAX )
       *
@@ -610,8 +725,13 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
            MOVE    "HCMSL55.red"   TO  SPRT-PRTID
-           MOVE    "チェックマスタ経過措置薬剤更新"
+           IF    ( KEY-MSTKBN    =   "1" )
+               MOVE    "チェックマスタ経過措置薬剤更新"
                                    TO  SPRT-TITLE
+           ELSE
+               MOVE    "薬剤情報マスタ経過措置薬剤更新"
+                                   TO  SPRT-TITLE
+           END-IF
            MOVE    HCMSL55         TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  SPRT-TERMID
@@ -831,6 +951,78 @@ grpsys                                 SPA-AREA
        900-CHKSND-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
+      *    薬剤情報マスタ検索処理
+      *****************************************************************
+       900-YAKUJYO-ALL-SEL-SEC    SECTION.
+      *
+           MOVE    ZERO            TO  FLG-YAKUJYO
+      *
+           INITIALIZE                  YAKUJYO-REC
+           MOVE    WRK-PARA-HOSPNUM TO YAKUJYO-HOSPNUM
+      *
+           MOVE    YAKUJYO-REC      TO  MCPDATA-REC
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "all"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  YAKUJYO-REC
+           ELSE
+               INITIALIZE              YAKUJYO-REC
+               MOVE    1           TO  FLG-YAKUJYO
+           END-IF
+      *
+           .
+       900-YAKUJYO-ALL-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤情報マスタ検索処理
+      *****************************************************************
+       900-YAKUJYO-ALL-FET-SEC    SECTION.
+      *
+           MOVE    ZERO            TO  FLG-YAKUJYO
+      *
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "all"           TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  YAKUJYO-REC
+           ELSE
+               INITIALIZE              YAKUJYO-REC
+               MOVE    1           TO  FLG-YAKUJYO
+           END-IF
+      *
+           .
+       900-YAKUJYO-ALL-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤情報マスタ検索処理
+      *****************************************************************
+       900-YAKUJYO-KEY-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO            TO  FLG-WKYAKUJYO
+      *
+           MOVE    YAKUJYO-REC     TO  WKYAKUJYO-REC
+           MOVE    CHG-RJNSRYCD    TO  WKYAKUJYO-SRYCD
+      *
+           MOVE    WKYAKUJYO-REC   TO  MCPDATA-REC
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  WKYAKUJYO-REC
+           ELSE
+               INITIALIZE              WKYAKUJYO-REC
+               MOVE    1           TO  FLG-WKYAKUJYO
+           END-IF
+      *
+           MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-YAKUJYO-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    診療行為コード置換マスタ検索処理
       *****************************************************************
        900-SRYCDCHG-KEY2-SEL-SEC       SECTION.
@@ -839,7 +1031,7 @@ grpsys                                 SPA-AREA
       *
            INITIALIZE                  SRYCDCHG-REC
            MOVE    WRK-PARA-HOSPNUM TO CHG-HOSPNUM
-           MOVE    CHKSND-SRYCD    TO  CHG-IPNSRYCD
+           MOVE    WRK-SRYCD        TO  CHG-IPNSRYCD
       *
            MOVE    SRYCDCHG-REC    TO  MCPDATA-REC
            MOVE    "tbl_srycdchg"  TO  MCP-TABLE
