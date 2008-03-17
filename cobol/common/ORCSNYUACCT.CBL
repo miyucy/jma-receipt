@@ -1217,7 +1217,7 @@
       *    点数算定
       *    PERFORM VARYING     IDX     FROM    1   BY  1
       *            UNTIL      (IDX     >   10  )  OR
-      *                       ( (IDX) =   SPACE )
+      *                       (TBL-SRYCD (IDX) =   SPACE )
       *        点数マスタより計算
       *        PERFORM 4001-TENSU-KEI-SEC
       *    END-PERFORM
@@ -1261,7 +1261,7 @@
            MOVE    ZERO                TO  WRK-TENSU
            MOVE    SPACE               TO  TNS-TENSU-REC
            MOVE    TBL-SRYCD (IDX)     TO  TNS-SRYCD
-           MOVE    WRK-KHN-STYMD       TO  WRK-YMD
+      **** MOVE    WRK-KHN-STYMD       TO  WRK-YMD
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU       NOT =   ZERO
                DISPLAY "ORCSNYUACCT TENSU INV:" TBL-SRYCD (IDX)
@@ -1387,6 +1387,18 @@
       *****************************************************************
        40009-TBL-NYUIN-SYORI-SEC            SECTION.
       *
+      *    点数算定
+           MOVE    HZN-NYUIN-AREA      TO  TBL-NYUIN-AREA
+           MOVE    WRK-ACT-STYMD       TO  WRK-YMD
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   10  )  OR
+                              (TBL-SRYCD (IDX) =   SPACE )
+      *        点数マスタより計算
+               PERFORM 4001-TENSU-KEI-SEC
+           END-PERFORM
+           INITIALIZE                  HZN-NYUIN-AREA
+           MOVE    TBL-NYUIN-AREA      TO  HZN-NYUIN-AREA
+      *
            INITIALIZE                  TBL-NYUIN-AREA
            MOVE    ZERO                TO  IDX-TBL
       *
@@ -1471,14 +1483,6 @@
       *****************************************************************
        40091-NYUACT-KEISAN-SEC            SECTION.
       *
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   10  )  OR
-                              (TBL-SRYCD (IDX) =   SPACE )
-      *        点数マスタより計算
-               PERFORM 4001-TENSU-KEI-SEC
-           END-PERFORM
-      *
-      *    点数算定
            INITIALIZE                  WRK-SRYACCT-AREA
            MOVE    ZERO                TO  IDX-ATO
            MOVE    ZERO                TO  IDX-SYU
