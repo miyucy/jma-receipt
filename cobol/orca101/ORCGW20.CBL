@@ -251,7 +251,7 @@
                05  CONST-SNRHICH       PIC X(09)    OCCURS 2.
            03  CONST-YKNHICH-VAL.
                05                      PIC X(09) VALUE "190126670".
-               05                      PIC X(09) VALUE "190126670".
+               05                      PIC X(09) VALUE "190126770".
            03  CONST-YKNHICH-R         REDEFINES CONST-YKNHICH-VAL.
                05  CONST-YKNHICH       PIC X(09)    OCCURS 2.
            03  CONST-KNGHJOCD-MAX      PIC 9(03) VALUE 15.
