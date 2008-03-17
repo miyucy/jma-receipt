@@ -1215,12 +1215,12 @@
        400-NYUACT-SYORI-SEC            SECTION.
       *
       *    点数算定
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   10  )  OR
-                              (TBL-SRYCD (IDX) =   SPACE )
+      *    PERFORM VARYING     IDX     FROM    1   BY  1
+      *            UNTIL      (IDX     >   10  )  OR
+      *                       ( (IDX) =   SPACE )
       *        点数マスタより計算
-               PERFORM 4001-TENSU-KEI-SEC
-           END-PERFORM
+      *        PERFORM 4001-TENSU-KEI-SEC
+      *    END-PERFORM
       *
            IF      WRK-KHN-STYMD(1:6)  =   WRK-KHN-EDYMD(1:6)
       *        開始と終了が同じ月の時
@@ -1471,6 +1471,14 @@
       *****************************************************************
        40091-NYUACT-KEISAN-SEC            SECTION.
       *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   10  )  OR
+                              (TBL-SRYCD (IDX) =   SPACE )
+      *        点数マスタより計算
+               PERFORM 4001-TENSU-KEI-SEC
+           END-PERFORM
+      *
+      *    点数算定
            INITIALIZE                  WRK-SRYACCT-AREA
            MOVE    ZERO                TO  IDX-ATO
            MOVE    ZERO                TO  IDX-SYU
