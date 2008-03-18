@@ -14,7 +14,7 @@ SET search_path = public, pg_catalog;
 
 CREATE TABLE tbl_dbkanri (
     kanricd character(8) NOT NULL,
-    "version" character varying(64),
+    version character varying(64),
     dbsversion1 character varying(64),
     dbsversion2 character varying(64),
     termid character varying(32),
@@ -31,7 +31,7 @@ CREATE TABLE tbl_dbkanri (
 --
 
 COPY tbl_dbkanri (kanricd, "version", dbsversion1, dbsversion2, termid, opid, creymd, upymd, uphms) FROM stdin;
-ORCADB00	000000-0	S-000000-0-00000000-0	S-000000-0-00000000-0			20050710	20070709	140728
+ORCADB00	000000-0	S-000000-0-00000000-0	S-000000-0-00000000-0			20050710	20080318	000000
 \.
 
 
