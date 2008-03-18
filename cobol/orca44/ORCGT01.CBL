@@ -95,6 +95,9 @@
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/03/18  レセプト個別作成後の公費請求
+      *                                     書処理を可能とするためのパラ
+      *                                     メタ種別の置き換え
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -923,6 +926,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    SYS-3004-SHORIMSG
                                            TO  SPA-3004-SHORIMSG
                                                                 (IDX)
+                   IF      SYS-3004-PARAKBN    =   SPACE
+                       MOVE    "0"             TO  SYS-3004-PARAKBN
+                   END-IF
                    MOVE    SYS-3004-PARAKBN
                                            TO  SPA-3004-PARAKBN (IDX)
                    MOVE    SYS-3004-PRTNM  TO  SPA-3004-PRTNM   (IDX)
