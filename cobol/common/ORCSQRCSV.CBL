@@ -798,16 +798,22 @@
        2002-RP111-SYORI-SEC            SECTION.
       *
            MOVE    ZERO                TO  WRK-RP-11
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL      (IDX2    >   50  )
-                         OR   (ORCSQRCSV-SRYCD(IDX IDX2) =   SPACE)
+      *    用法レコードは最後のコードとする
+           PERFORM VARYING     IDX2    FROM    50  BY  -1
+                   UNTIL      (IDX2    <   1    )
+                         OR   (WRK-RP-11   >   ZERO  )
       *        用法レコード
                IF     (ORCSQRCSV-SRYCD(IDX IDX2)(1:3) =  "001")
-                   IF      WRK-RP-11       =   ZERO
-                       PERFORM 20021-RP111-SEC
-                   ELSE
-                       PERFORM 20022-RP181-SEC
-                   END-IF
+                   PERFORM 20021-RP111-SEC
+                   MOVE    SPACE       TO  ORCSQRCSV-SRYCD(IDX IDX2)
+               END-IF
+           END-PERFORM
+      *
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   50   )
+      *        用法補助レコード
+               IF     (ORCSQRCSV-SRYCD(IDX IDX2)(1:3) =  "001")
+                   PERFORM 20022-RP181-SEC
                END-IF
            END-PERFORM
       *    用法がない時、最後のコメントを用法とする
@@ -823,16 +829,16 @@
                    END-IF
                END-PERFORM
            END-IF
-      *    用法がなければ空白
-           IF      WRK-RP-11           =   ZERO
-               MOVE    SPACE               TO  TBL-QRCSV-AREA
-               MOVE    "111"               TO  TBL-QRCSV-DATA (1)
-               MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
-               MOVE    "1"                 TO  TBL-QRCSV-DATA (3)
-               MOVE    "医師の指示通りに"  TO  TBL-QRCSV-DATA (5)
-               MOVE    6                   TO  TBL-MAX
-               PERFORM 400-DATAOUT-SEC
-           END-IF
+      **** 用法がなければ空白
+      *    IF      WRK-RP-11           =   ZERO
+      *        MOVE    SPACE               TO  TBL-QRCSV-AREA
+      *        MOVE    "111"               TO  TBL-QRCSV-DATA (1)
+      *        MOVE    WRK-H-RP1           TO  TBL-QRCSV-DATA (2)
+      *        MOVE    "1"                 TO  TBL-QRCSV-DATA (3)
+      *        MOVE    "医師の指示通りに"  TO  TBL-QRCSV-DATA (5)
+      *        MOVE    6                   TO  TBL-MAX
+      *        PERFORM 400-DATAOUT-SEC
+      **** END-IF
            .
        2002-RP111-SYORI-EXT.
            EXIT.
@@ -859,7 +865,7 @@
        20021-RP111-EXT.
            EXIT.
       *****************************************************************
-      *    用法レコード処理
+      *    用法補助レコード処理
       *****************************************************************
        20022-RP181-SEC            SECTION.
       *
