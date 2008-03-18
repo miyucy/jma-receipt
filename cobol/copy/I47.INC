@@ -51,6 +51,7 @@
                 06  I47-TNUM    PIC X(2).
                 06  I47-TMARK   PIC X(1).
                 06  I47-TNAME   PIC X(100).
+                06  I47-TDAYLMT PIC X(2).
                 06  I47-TDAYALL PIC X(2).
                 06  I47-TDAY-G.
                   07  I47-TDAY  PIC X(2) OCCURS 31.
@@ -65,6 +66,7 @@
                 06  I47-TNL-NUM        PIC X(2).
                 06  I47-TNL-MARK       PIC X(1).
                 06  I47-TNL-NAME       PIC X(100).
+                06  I47-TNL-LMT        PIC X(2).
                 06  I47-TNL-DAYALL     PIC X(2).
                 06  I47-TNL-DAY-G.
                   07  I47-TNL-DAY      PIC X(2) OCCURS 31.

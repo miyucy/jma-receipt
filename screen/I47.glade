@@ -320,8 +320,8 @@
       <name>SRYYM</name>
       <x>8</x>
       <y>36</y>
-      <width>100</width>
-      <height>24</height>
+      <width>0</width>
+      <height>0</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>8</text_max_length>
@@ -1641,8 +1641,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Mon, 17 Sep 2001 01:39:53 GMT</last_modification_time>
 	</signal>
-	<columns>35</columns>
-	<column_widths>20,10,225,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15</column_widths>
+	<columns>36</columns>
+	<column_widths>20,10,238,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -1678,6 +1678,19 @@
 	  <child_name>CList:title</child_name>
 	  <name>label213</name>
 	  <label>Ì¾¾Î</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label284</name>
+	  <label></label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
@@ -2139,8 +2152,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Mon, 17 Sep 2001 01:39:53 GMT</last_modification_time>
 	</signal>
-	<columns>35</columns>
-	<column_widths>20,10,225,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15</column_widths>
+	<columns>36</columns>
+	<column_widths>20,10,238,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -2176,6 +2189,19 @@
 	  <child_name>CList:title</child_name>
 	  <name>label176</name>
 	  <label>Ì¾¾Î</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label284</name>
+	  <label></label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

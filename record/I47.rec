@@ -170,6 +170,7 @@ I47	{
 					value32	varchar(2);
 					value33	varchar(2);
 					value34	varchar(2);
+					value35	varchar(2);
 				}	[100];
 				select	bool[100];
 			};
@@ -215,6 +216,7 @@ I47	{
 					value32	varchar(2);
 					value33	varchar(2);
 					value34	varchar(2);
+					value35	varchar(2);
 				}	[3];
 				select	bool[3];
 			};
