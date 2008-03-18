@@ -14,7 +14,7 @@ delete from tbl_syskanri where kanricd = '5111' and kbncd = '15' and styukymd = 
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '15' and styukymd = '00000000' and edyukymd = '20080331';
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '18' and styukymd = '20040401' and edyukymd = '99999999';
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '18' and styukymd = '20040401' and edyukymd = '20080331';
-delete from tbl_syskanri where kanricd = '5111' and kbncd = '18' and styukymd = '20080401' and edyukymd = '20080331';
+delete from tbl_syskanri where kanricd = '5111' and kbncd = '18' and styukymd = '20080401' ;
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '52' and styukymd = '20080401' and edyukymd = '99999999';
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '53' and styukymd = '20080401' and edyukymd = '99999999';
 delete from tbl_syskanri where kanricd = '5111' and kbncd = '54' and styukymd = '20080401' and edyukymd = '99999999';   
@@ -69,7 +69,7 @@ COPY tbl_syskanri (kanricd, kbncd, styukymd, edyukymd, kanritbl, termid, opid, c
 5111	02      	20080401	99999999	190774110¿ÇÎÅ½ê¸å´ü¹âÎğ¼Ô°åÎÅ´ÉÍıÎÁ                                  ¿Ç¸å´É                  01			        	        	      	0
 5111	15      	00000000	20080331	190788810Ï·¿Í°ìÈÌÉÂÅïÆş±¡°åÎÅ´ÉÍıÎÁ                                  Ï·Æş´É                  01			        	        	      	0
 5111	18      	20040401	20080331	190117410°¡µŞÀ­´üÆş±¡°åÎÅ´ÉÍıÎÁ                                      °¡µŞÀ­´ü                01			        	        	      	0
-5111	18      	20080401	20080331	190117410°¡µŞÀ­´üÆş±¡°åÎÅ´ÉÍıÎÁ£±                                    °¡µŞÀ­´ü£±              01			        	        	      	0
+5111	18      	20080401	99999999	190117410°¡µŞÀ­´üÆş±¡°åÎÅ´ÉÍıÎÁ£±                                    °¡µŞÀ­´ü£±              01			        	        	      	0
 5111	52      	20080401	99999999	190130410Ã»´üÂÚºß¼ê½Ñ´ğËÜÎÁ£³                                        Ã»´üÂÚºß£³              02			        	        	      	0
 5111	53      	20080401	99999999	190130510Ã»´üÂÚºß¼ê½Ñ´ğËÜÎÁ£³¡ÊÀ¸³èÎÅÍÜ¡Ë                            Ã»´üÂÚºß£³¡ÊÀ¸³èÎÅÍÜ¡Ë  021			        	        	      	0
 5111	54      	20080401	99999999	190130210°¡µŞÀ­´üÆş±¡°åÎÅ´ÉÍıÎÁ£²                                    °¡µŞÀ­´ü£²              01			        	        	      	0
