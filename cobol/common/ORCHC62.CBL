@@ -174,6 +174,13 @@
       *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
       *
+      *    医療機関編集情報
+           COPY    "CPSK1900.INC".
+      *    医療機関名称編集情報
+           COPY    "CPSK1901.INC".
+      *    医療機関住所編集情報
+           COPY    "CPSK1902.INC".
+      *
       *    点数マスタ
            COPY    "CPTENSU.INC".
       *
@@ -252,6 +259,9 @@
       *    医療機関情報−所在地、連絡先
            PERFORM 900-1002-READ-SEC
       *
+      *    医療機関編集情報
+           PERFORM 900-1900-READ-SEC
+      *
       *    職員情報
            PERFORM 900-1010-READ-SEC
       *
@@ -294,12 +304,6 @@
       *    帳票ＨＥＡＤ情報編集処理
       *****************************************************************
        210-HEAD-HENSYU-SEC         SECTION.
-      *
-      *    医療機関情報
-           MOVE    SYS-1001-HOSPNAME
-                                   TO  WRK-HOSPNAME
-           MOVE    SYS-1002-TEL    TO  WRK-HOSPTEL
-           MOVE    SYS-1010-NAME   TO  WRK-DRNAME
       *
       *    診療日
            MOVE    ORCHC62-SRYYMD  TO  WRK-SYMD
@@ -940,6 +944,8 @@
                INITIALIZE                  SYS-1001-REC
            END-IF
       *
+           MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
+      *
            .
        900-1001-READ-EXT.
            EXIT.
@@ -964,6 +970,8 @@
            ELSE
                INITIALIZE                  SYS-1002-REC
            END-IF
+      *
+           MOVE    SYS-1002-TEL    TO  WRK-HOSPTEL
       *
            .
        900-1002-READ-EXT.
@@ -990,6 +998,8 @@
                INITIALIZE                  SYS-1010-REC
            END-IF
       *
+           MOVE    SYS-1010-NAME   TO  WRK-DRNAME
+      *
            .
        900-1010-READ-EXT.
            EXIT.
@@ -1015,6 +1025,92 @@
       *
            .
        900-1031-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関編集情報読み込み
+      *****************************************************************
+       900-1900-READ-SEC           SECTION.
+      *
+      *    医療機関編集情報読み込み
+           MOVE    SPACE           TO  SYS-1900-REC
+           INITIALIZE                  SYS-1900-REC
+           MOVE    "1900"          TO  SYS-1900-KANRICD
+           MOVE    "*"             TO  SYS-1900-KBNCD
+           MOVE    ORCHC62-SRYYMD  TO  SYS-1900-STYUKYMD
+           MOVE    ORCHC62-SRYYMD  TO  SYS-1900-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1900-HOSPNUM
+           MOVE    SYS-1900-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1900-REC
+               IF      SYS-1900-PRTKBN(18) NOT =   SPACE
+      *            医療機関名称編集情報
+                   PERFORM 900-1901-READ-SEC
+      *            医療機関住所編集情報
+                   PERFORM 900-1902-READ-SEC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-1900-REC
+           END-IF
+      *
+           .
+       900-1900-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関名称編集情報読み込み
+      *****************************************************************
+       900-1901-READ-SEC           SECTION.
+      *
+      *    医療機関名称編集情報読み込み
+           MOVE    SPACE           TO  SYS-1901-REC
+           INITIALIZE                  SYS-1901-REC
+           MOVE    "1901"          TO  SYS-1901-KANRICD
+           MOVE    SYS-1900-PRTKBN(18)
+                                   TO  SYS-1901-KBNCD
+           MOVE    ORCHC62-SRYYMD  TO  SYS-1901-STYUKYMD
+           MOVE    ORCHC62-SRYYMD  TO  SYS-1901-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1901-HOSPNUM
+           MOVE    SYS-1901-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1901-REC
+               MOVE    SYS-1901-HOSPNAME1
+                                       TO  WRK-HOSPNAME
+           ELSE
+               INITIALIZE                  SYS-1901-REC
+           END-IF
+      *
+           .
+       900-1901-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関住所編集情報読み込み
+      *****************************************************************
+       900-1902-READ-SEC           SECTION.
+      *
+      *    医療機関住所編集情報読み込み
+           MOVE    SPACE           TO  SYS-1902-REC
+           INITIALIZE                  SYS-1902-REC
+           MOVE    "1902"          TO  SYS-1902-KANRICD
+           MOVE    SYS-1900-PRTKBN(18)
+                                   TO  SYS-1902-KBNCD
+           MOVE    ORCHC62-SRYYMD  TO  SYS-1902-STYUKYMD
+           MOVE    ORCHC62-SRYYMD  TO  SYS-1902-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1902-HOSPNUM
+           MOVE    SYS-1902-REC    TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1902-REC
+               MOVE    SYS-1902-TEL    TO  WRK-HOSPTEL
+           ELSE
+               INITIALIZE                  SYS-1902-REC
+           END-IF
+      *
+           .
+       900-1902-READ-EXT.
            EXIT.
       *
       *****************************************************************
