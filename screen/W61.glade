@@ -1577,22 +1577,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label929</name>
-      <x>100</x>
-      <y>515</y>
-      <width>130</width>
-      <height>16</height>
-      <label>適用欄下段コメント</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkHSeparator</class>
       <name>hseparator6</name>
       <x>10</x>
@@ -1684,22 +1668,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label928</name>
-      <x>100</x>
-      <y>485</y>
-      <width>130</width>
-      <height>16</height>
-      <label>適用欄上段コメント</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkPandaCombo</class>
       <name>TEKIYOU_COMMENT2KBN_COMBO</name>
       <x>648</x>
@@ -1779,6 +1747,38 @@
 	<input_mode>ASCII</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label928</name>
+      <x>100</x>
+      <y>485</y>
+      <width>130</width>
+      <height>16</height>
+      <label>摘要欄上段コメント</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label929</name>
+      <x>100</x>
+      <y>515</y>
+      <width>130</width>
+      <height>16</height>
+      <label>摘要欄下段コメント</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
