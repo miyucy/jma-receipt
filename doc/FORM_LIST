@@ -369,7 +369,8 @@ HCG017.red          ＊      診療行為別集計表
 
 HCM51.red           ＊      収納日報（明細）
 HCM52.red                   収納日報（合計）
-HCM52V01.red        ＊      収納日報（合計）                                    VER4.1.0
+HCM52V01.red                収納日報（合計）                                    VER4.1.0
+HCM52V02.red        ＊      収納日報（合計）                                    VER4.2.0
 
 HCMSL55.red         ＊      帳票（横）
 HCMSL80.red         ＊      帳票（縦）
