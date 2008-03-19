@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−太田   04/02/19  登録上限数を500に変更
+      *  04.02.00    NACL−小豆沢 08/03/19  変更処理のグループ診療対応漏れ
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -1647,6 +1648,7 @@
            PERFORM 4701-KOHPLUS-HEN-SEC
       *
       *****MOVE    SPA-HOSPID              TO  KOHPLUSUP-HOSPID
+           MOVE    SPA-HOSPNUM             TO  KOHPLUSUP-HOSPNUM
            MOVE    SPA-NAI-PREFNUM-MOT     TO  KOHPLUSUP-PREFNUM
            MOVE    SPA-NAI-CITYNUM-MOT     TO  KOHPLUSUP-CITYNUM
            MOVE    SPA-NAI-KOHNUM-MOT      TO  KOHPLUSUP-KOHNUM
@@ -1658,6 +1660,7 @@
            MOVE    ZERO                    TO  FLG-KOHPLUS
            INITIALIZE                          KOHPLUS-REC
       *****MOVE    SPA-HOSPID              TO  KOHPLUS-HOSPID
+           MOVE    SPA-HOSPNUM             TO  KOHPLUS-HOSPNUM
            MOVE    SPA-NAI-PREFNUM-MOT     TO  KOHPLUS-PREFNUM
            MOVE    SPA-NAI-CITYNUM-MOT     TO  KOHPLUS-CITYNUM
            MOVE    SPA-NAI-KOHNUM-MOT      TO  KOHPLUS-KOHNUM
