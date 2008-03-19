@@ -261,6 +261,7 @@
       *                                     ¬–±˛
       *  04.02.02    NACL-∆£∏∂    08/03/04   ø¿Æ£≤£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
       *  04.02.03    NACL-∆£∏∂    08/03/10  ∆√ƒÍ¥Ô∫‡ÃææŒ§Œµ≠œø ˝À°§ŒΩ§¿µ
+      *  04.02.04    NACL-ÃÁœ∆    08/03/17  µ‹∫Í∏©√œ ˝∏¯»Ò° £±£π£∞°À§Œ¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2481,6 +2482,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
                    MOVE    8                      TO  WRK-NAGASA
                END-IF
            ELSE
+             IF    RECE02-PREFNUM     =   "45"
+             AND   RECE02-KOHNUM(IDY) =   "190"
+               CONTINUE
+             ELSE
                IF      RECE02-FTNMONEY(IDX)   >   ZERO     
                    MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
                    MOVE    8                      TO  WRK-NAGASA
@@ -2492,6 +2497,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
                        MOVE    8                      TO  WRK-NAGASA
                    END-IF
                END-IF
+             END-IF
            END-IF
       *    ∏©√±Õ—π‡Ã‹
            IF      FLG-RECE11          =   ZERO

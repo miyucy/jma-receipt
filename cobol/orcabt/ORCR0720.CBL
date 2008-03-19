@@ -72,6 +72,7 @@
       *                                     ÊÔ½¸ÊýË¡¤Î½¤Àµ
       *  04.02.02    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.02.03    NACL-Æ£¸¶    08/03/12  ¥Õ¥é¥°¡¢¥Ç¡¼¥¿¥¨¥ê¥¢ÄÉ²Ã
+      *  04.02.04    NACL-ÌçÏÆ    08/03/17  µÜºê¸©ÃÏÊý¸øÈñ¡Ê£±£¹£°¡Ë¤ÎÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5329,10 +5330,15 @@
                                       NOT =   RECE62-TOTALTEN (IDX1)) OR
                   (RECE62-FTNMONEY (IDX2)
                                       NOT =   RECE62-FTNMONEY (IDX1))  )
+             IF    SYS-1001-PREFNUM   =   45
+             AND   RECE62-KOHNUM(1)   =  "190"
+               CONTINUE
+             ELSE
                IF    RECE62-FTNMONEY (IDX2)   >   ZERO
                    MOVE    RECE62-FTNMONEY (IDX2) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(2)
                END-IF
+             END-IF
            END-IF
            IF    ( RECE62-TOTALTEN (IDX2) >   ZERO                  )
            AND   ( RECE62-FTNMONEY (IDX2) =   RECE62-FTNMONEY (IDX1))
@@ -5432,11 +5438,16 @@
                                       NOT =   RECE62-FTNMONEY (IDX2))  )
       ***        IF    RECE62-FTNMONEY (IDX3)
       ***                             NOT =   RECE62-FTNMONEY (IDX2)
+                 IF    SYS-1001-PREFNUM   =   45
+                 AND   RECE62-KOHNUM(2)   =  "190"
+                   CONTINUE
+                 ELSE
                    IF  RECE62-FTNMONEY (IDX3)   >   ZERO
                        MOVE    RECE62-FTNMONEY (IDX3)
                                            TO  WRK-KGK7
                        MOVE    WRK-KGK7    TO  HC06-FTNMONEY(3)
                    END-IF
+                 END-IF
       ***        END-IF
              END-IF
              IF    ( RECE62-TOTALTEN (IDX3) >   ZERO                  )
