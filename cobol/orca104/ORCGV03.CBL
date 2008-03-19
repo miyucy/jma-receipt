@@ -29,9 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−太田   04/02/19  登録上限数を500に変更
       *  04.02.00    NACL−小豆沢 08/03/19  変更処理のグループ診療対応漏れ
-      *  04.02.00    NACL−小豆沢 08/04/18  レセプト請求コンボの内容に
-      *                                     広域連合を追加
-      *  04.06.00    NACL-多々納  11/03/22  LD104 ,LD105,LD106,LD108,LD109　統合
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -59,26 +56,26 @@
                    07  SPA-GMN-INPUT-AREA.
                        09  SPA-GMN-PREFNUM-G.
                            11  SPA-GMN-PREFNUM         PIC X(2).
-                           11  SPA-GMN-PREFNUMFL       PIC X(1).
+                           11                          PIC X(1).
                            11  SPA-GMN-PREFNUMMEI      PIC X(20).
                        09  SPA-GMN-CITYNUM             PIC X(3).
                        09  SPA-GMN-KOHNUM              PIC X(3).
                        09  SPA-GMN-SEIDONAME           PIC X(100).
                        09  SPA-GMN-PTKBN-G.
                            11  SPA-GMN-PTKBN           PIC X(1).
-                           11  SPA-GMN-PTKBNFL         PIC X(1).
+                           11                          PIC X(1).
                            11  SPA-GMN-PTKBNMEI        PIC X(18).
                        09  SPA-GMN-FTNKBN-G.
                            11  SPA-GMN-FTNKBN          PIC X(1).
-                           11  SPA-GMN-FTNKBNFL        PIC X(1).
+                           11                          PIC X(1).
                            11  SPA-GMN-FTNKBNMEI       PIC X(38).
                        09  SPA-GMN-RECESKYKBN-G.
                            11  SPA-GMN-RECESKYKBN      PIC X(1).
-                           11  SPA-GMN-RECESKYKBNFL    PIC X(1).
+                           11                          PIC X(1).
                            11  SPA-GMN-RECESKYKBNMEI   PIC X(38).
                        09  SPA-GMN-NYUSKJRYYKBN-G.
                            11  SPA-GMN-NYUSKJRYYKBN    PIC X(1).
-                           11  SPA-GMN-NYUSKJRYYKBNFL  PIC X(1).
+                           11                          PIC X(1).
                            11  SPA-GMN-NYUSKJRYYKBNMEI PIC X(38).
                        09  SPA-GMN-YUKOSTYMD           PIC X(10).
                        09  SPA-GMN-YUKOEDYMD           PIC X(10).
@@ -86,31 +83,31 @@
                        09  SPA-GMN-PREFNUM-MAX         PIC 9(03).
                        09  SPA-GMN-PREFNUMLST          OCCURS  50.
                            11  SPA-GMN-PREFNUML        PIC X(02).
-                           11  SPA-GMN-PREFNUMFLL      PIC X(01).
+                           11                          PIC X(01).
                            11  SPA-GMN-PREFNUMMEIL     PIC X(20).
                    07  SPA-GMN-PTKBNLST-G.
                        09  SPA-GMN-PTKBN-MAX           PIC 9(03).
                        09  SPA-GMN-PTKBNLST            OCCURS  5.
                            11  SPA-GMN-PTKBNL          PIC X(01).
-                           11  SPA-GMN-PTKBNFLL        PIC X(01).
+                           11                          PIC X(01).
                            11  SPA-GMN-PTKBNMEIL       PIC X(18).
                    07  SPA-GMN-FTNKBNLST-G.
                        09  SPA-GMN-FTNKBN-MAX          PIC 9(03).
                        09  SPA-GMN-FTNKBNLST           OCCURS  5.
                            11  SPA-GMN-FTNKBNL         PIC X(01).
-                           11  SPA-GMN-FTNKBNFLL       PIC X(01).
+                           11                          PIC X(01).
                            11  SPA-GMN-FTNKBNMEIL      PIC X(38).
                    07  SPA-GMN-RECESKYKBNLST-G.
                        09  SPA-GMN-RECESKYKBN-MAX      PIC 9(03).
                        09  SPA-GMN-RECESKYKBNLST       OCCURS  10.
                            11  SPA-GMN-RECESKYKBNL     PIC X(01).
-                           11  SPA-GMN-RECESKYKBNFLL   PIC X(01).
+                           11                          PIC X(01).
                            11  SPA-GMN-RECESKYKBNMEIL  PIC X(38).
                    07  SPA-GMN-NYUSKJRYYKBNLST-G.
                        09  SPA-GMN-NYUSKJRYYKBN-MAX    PIC 9(03).
                        09  SPA-GMN-NYUSKJRYYKBNLST     OCCURS  10.
                            11  SPA-GMN-NYUSKJRYYKBNL   PIC X(01).
-                           11  SPA-GMN-NYUSKJRYYKBNFLL PIC X(01).
+                           11                          PIC X(01).
                            11  SPA-GMN-NYUSKJRYYKBNMEIL
                                                        PIC X(38).
                    07  SPA-GMN-KOHPLUSLST.
@@ -250,28 +247,11 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-      *orca104
            COPY    "V01.INC".
            COPY    "V02.INC".
            COPY    "V03.INC".
            COPY    "VERR.INC".
            COPY    "VID1.INC".
-      *orca105
-           COPY    "N01.INC".
-           COPY    "NERR.INC".
-           COPY    "NID1.INC".
-      *orca106
-           COPY    "N11.INC".
-           COPY    "N11ERR.INC".
-           COPY    "N11ID1.INC".
-      *orca108
-           COPY    "N31.INC".
-           COPY    "N31ERR.INC".
-           COPY    "N31ID1.INC".
-      *orca109
-           COPY    "N41.INC".
-           COPY    "N41ERR.INC".
-           COPY    "N41ID1.INC".
       *
        PROCEDURE                       DIVISION    USING
            MCPAREA
@@ -591,7 +571,7 @@
            MOVE     4                  TO  SPA-GMN-RECESKYKBN-MAX
       *
            MOVE    "0"                 TO  SPA-GMN-RECESKYKBNL    (1)
-           MOVE    "社保、国保、広域の場合に印刷"
+           MOVE    "社保、国保の両方に印刷"
                                        TO  SPA-GMN-RECESKYKBNMEIL (1)
       *
            MOVE    "1"                 TO  SPA-GMN-RECESKYKBNL    (2)
@@ -599,11 +579,11 @@
                                        TO  SPA-GMN-RECESKYKBNMEIL (2)
       *
            MOVE    "2"                 TO  SPA-GMN-RECESKYKBNL    (3)
-           MOVE    "国保又は広域との併用に限り印刷" 
+           MOVE    "国保との併用に限り印刷" 
                                        TO  SPA-GMN-RECESKYKBNMEIL (3)
       *
            MOVE    "3"                 TO  SPA-GMN-RECESKYKBNL    (4)
-           MOVE    "社保、国保、広域とも印刷不可"
+           MOVE    "社保、国保とも印刷不可"
                                        TO  SPA-GMN-RECESKYKBNMEIL (4)
       *
            . 
@@ -1469,7 +1449,7 @@
            MOVE    "V01"               TO  SPA-SAKIPG
            MOVE    "V03"               TO  SPA-MOTOPG
       *
-      *    INITIALIZE                  SPA-V01KYOUTU
+           INITIALIZE                  SPA-V01KYOUTU
       *
       ***  MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
@@ -2263,7 +2243,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  VID1
-           INITIALIZE                      VID1
            MOVE    SPA-VIDCD           TO  VID1-ID1CODE
            MOVE    WRK-VIDMSG          TO  VID1-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
