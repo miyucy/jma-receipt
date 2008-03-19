@@ -988,7 +988,7 @@
            ELSE
       *        就学前
                IF      AGECHK-SYUGAKUKBN   =   1
-                   MOVE    "（義務教育就学前）"
+                   MOVE    "（６歳）"
                                                TO  WRK-BIKOU
                    MOVE    "3"                 TO  WRK-BIKOU-FTN
                END-IF
@@ -1069,7 +1069,12 @@
       *
            EVALUATE    FLG-RJNHKN
                WHEN    1
-                   MOVE    "（高９）"          TO  WRK-BIKOU
+                   IF      SPA-SRYYMD          <   "20080401"
+                       MOVE    "（高９）"          TO  WRK-BIKOU
+                   ELSE
+      *                Ｈ２０．４ から変更
+                       MOVE    "（高一）"          TO  WRK-BIKOU
+                   END-IF
                    MOVE    "1"                 TO  WRK-BIKOU-FTN
                WHEN    2
                    MOVE    "（高８）"          TO  WRK-BIKOU
