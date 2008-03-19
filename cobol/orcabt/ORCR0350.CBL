@@ -200,6 +200,7 @@
       *                                     ¬–±˛
       *  04.02.03    NACL-∆£∏∂    08/03/04   ø¿Æ£≤£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
       *  04.02.04    NACL-∆£∏∂    08/03/10  ∆√ƒÍ¥Ô∫‡ÃææŒ§Œµ≠œø ˝À°§ŒΩ§¿µ
+      *  04.02.05    NACL-ÃÁœ∆    08/03/17  µ‹∫Í∏©√œ ˝∏¯»Ò° £±£π£∞°À§Œ¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2747,6 +2748,10 @@
                    MOVE    8                      TO  WRK-NAGASA
                END-IF
            ELSE
+             IF    RECE62-PREFNUM     =   "45"
+             AND   RECE62-KOHNUM(IDY) =   "190"
+               CONTINUE
+             ELSE
                IF      RECE62-FTNMONEY(IDX)   >   ZERO     
                    MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
                    MOVE    8                      TO  WRK-NAGASA
@@ -2758,6 +2763,7 @@
                        MOVE    8                      TO  WRK-NAGASA
                    END-IF
                END-IF
+             END-IF
            END-IF    
       *
       *    ∏©√±Õ—π‡Ã‹
