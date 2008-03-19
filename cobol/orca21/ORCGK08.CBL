@@ -3949,7 +3949,10 @@
                    (SPA-ZAIMATU-ARI2   =   ZERO )  AND
       *            Ｈ１８．４追加
                    (SPA-ZAIKANRI-ARI   =   ZERO )  AND
-                   (SPA-ZAIKANRI-ARI2  =   ZERO )  )
+                   (SPA-ZAIKANRI-ARI2  =   ZERO )
+      *            Ｈ２０．４追加（特定施設入居時医学総合管理料）
+              AND  (SPA-IGAKUKAN-ARI   =   ZERO )
+              AND  (SPA-IGAKUKAN-ARI2  =   ZERO )  )
                CONTINUE
            ELSE
       *        保険算定年齢が７０歳以上か、老人保険の時
