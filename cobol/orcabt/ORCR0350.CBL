@@ -201,6 +201,7 @@
       *  04.02.03    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.02.04    NACL-Æ£¸¶    08/03/10  ÆÃÄê´ïºàÌ¾¾Î¤Îµ­Ï¿ÊýË¡¤Î½¤Àµ
       *  04.02.05    NACL-ÌçÏÆ    08/03/17  µÜºê¸©ÃÏÊý¸øÈñ¡Ê£±£¹£°¡Ë¤ÎÂÐ±þ
+      *  04.02.06    NACL-ÌçÏÆ    08/03/19  À¸ÊÝ¤Î£·£¹Ê»ÍÑ»þ¤ÎÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2756,9 +2757,13 @@
                    MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
                    MOVE    8                      TO  WRK-NAGASA
                ELSE
-                   IF    ( RECE62-TOTALTEN (IDX)      >   ZERO )
-                   AND   ( RECE62-FTNMONEY (IDX)      =   ZERO )
-                   AND   ( RECE62-ZEROKISAIFLG (IDX)  =   "1"  )
+                   IF   (( RECE62-TOTALTEN (IDX)      >   ZERO ) AND
+                         ( RECE62-FTNMONEY (IDX)      =   ZERO ) AND
+                         ( RECE62-ZEROKISAIFLG (IDX)  =   "1"  ))
+                   OR   (( RECE62-KOHNUM   (IDY)      =   "012") AND
+                         ( RECE62-TOTALTEN (IDX)      =   ZERO ) AND
+                         ( RECE62-FTNMONEY (IDX)      =   ZERO ) AND
+                         ( RECE62-ZEROKISAIFLG (IDX)  =   "1"  ))
                        MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
                        MOVE    8                      TO  WRK-NAGASA
                    END-IF

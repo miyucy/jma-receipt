@@ -29,6 +29,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  04.02.01    NACL-ÌçÏÆ    08/03/17  µÜºê¸©ÃÏÊý¸øÈñ¡Ê£±£¹£°¡Ë¤ÎÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4388,10 +4389,15 @@
                                       NOT =   RECE02-TOTALTEN (IDX1)) OR
                   (RECE02-FTNMONEY (IDX2)
                                       NOT =   RECE02-FTNMONEY (IDX1))  )
+             IF    SYS-1001-PREFNUM   =   45
+             AND   RECE02-KOHNUM(1)   =  "190"
+               CONTINUE
+             ELSE
                IF    RECE02-FTNMONEY (IDX2)   >   ZERO
                    MOVE    RECE02-FTNMONEY (IDX2) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(2)
                END-IF
+             END-IF
            END-IF
            IF    ( RECE02-TOTALTEN (IDX2) >   ZERO                  )
            AND   ( RECE02-FTNMONEY (IDX2) =   RECE02-FTNMONEY (IDX1))
@@ -4446,10 +4452,15 @@
                                       NOT =   RECE02-FTNMONEY (IDX1)) OR
                   (RECE02-FTNMONEY (IDX3)
                                       NOT =   RECE02-FTNMONEY (IDX2))  )
+               IF    SYS-1001-PREFNUM   =   45
+               AND   RECE02-KOHNUM(2)   =  "190"
+                 CONTINUE
+               ELSE
                  IF      RECE02-FTNMONEY (IDX3)   >   ZERO
                      MOVE    RECE02-FTNMONEY (IDX3) TO  WRK-KGK7
                      MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
                  END-IF
+               END-IF
              END-IF
              IF    ( RECE02-TOTALTEN (IDX3) >   ZERO                  )
              AND   ( RECE02-FTNMONEY (IDX3) =   RECE02-FTNMONEY (IDX2))

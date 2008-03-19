@@ -289,6 +289,7 @@
       *                                     ÊÔ½¸½¤Àµ
       *  04.02.02    NACL-ÌçÏÆ    08/03/06  À¸ÊÝ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
       *  04.02.03    NACL-ÌçÏÆ    08/03/10  ¡û¡û¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ¤Î¥Õ¥é¥°ÊÔ½¸½¤Àµ
+      *  04.02.04    NACL-ÌçÏÆ    08/03/19  À¸ÊÝ¤Î£·£¹Ê»ÍÑ»þ¤ÎÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -11249,6 +11250,13 @@
                END-IF
       *
            END-EVALUATE
+      *
+           IF  ( RECE62-HKNNUM          =  SPACE    )
+           AND ( RECE62-KOHNUM(1)       =  "079"    )
+           AND ( RECE62-KOHNUM(2)       =  "012"    )
+           AND ( RECE62-SRYYM          >=  "200804" )
+               MOVE     ZERO    TO    RECE62-TOTALTEN(3)
+           END-IF
       *
            IF   ( RECE62-SHOKUJIRYOYOHI(1) = ZERO )
            AND  ( RECE62-SHOKUJIRYOYOHI(2) = ZERO )
