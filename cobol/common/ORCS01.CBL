@@ -243,6 +243,7 @@
       *  04.01.08    NACL-ÌçÏÆ    08/01/31  ÂçºåÉÜ£²£¸£°ÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
       *  04.02.01    NACL-ÌçÏÆ    08/02/29  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.02.02    NACL-ÌçÏÆ    08/03/06  À¸ÊÝ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
+      *  04.02.03    NACL-ÌçÏÆ    08/03/21  ´Î±ê¼£ÎÅÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -458,6 +459,9 @@
                  06  WK-JIRITU-CYUKANSOU   PIC  9(01).
                  06  WK-JIRITU-TAFTNRUIKEI PIC  9(07).
       *
+                 06  WK-CHIHOU-TAFTNRUIKEI PIC  9(07).
+                 06  WK-KANEN-TAFTNRUIKEI  PIC  9(07).
+      *
            03  WK-JIRITU-SRYYMD            PIC  X(08).
       *
            03  WK-OITA-HKNFTNMONEY         PIC  9(07).
@@ -475,10 +479,6 @@
            03  WK-GENGAKU-GAK-ENTANI       PIC  9(07)V9(01).
       *
            03  WK-KOHININBARAI-KOHID       PIC  9(10).
-      *
-           03  WK-CHIHOU-TAFTNRUIKEI-TBL.
-               05  WK-CHIHOU-TAFTNRUIKEI-OCC    OCCURS   4.
-                 06  WK-CHIHOU-TAFTNRUIKEI      PIC  9(07).
       *
            03  WK-HKNJANUM                 PIC  X(08).
            03  WK-HKNJANUM2                PIC  X(08).
@@ -5897,7 +5897,6 @@
        2107-KOHFTN-KINGAKU-SEC           SECTION.
       *
            INITIALIZE                   WK-JIRITU-TBL.
-           INITIALIZE                   WK-CHIHOU-TAFTNRUIKEI-TBL.
       *
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
                       UNTIL    (KOH-IDX    >      4)
@@ -5928,6 +5927,9 @@
              OR ((WK-1001-PREFNUM              =  07     )  AND
                  (COMB-KOHHKNNUM(KOH-IDX)      = "281"   )  AND
                  (LNK-SYU-SRYYMD(1:6)         >= "200702"))
+      *
+             OR ((COMB-KOHHKNNUM(KOH-IDX)      = "038"   )  AND
+                 (LNK-SYU-SRYYMD(1:6)         >= "200804"))
       *
       ***    OR ( COMB-KOHHKNNUM(KOH-IDX)(1:1) = "1" OR "2" OR "3" OR 
       ***                                        "4" OR "5" OR "6" OR
@@ -5975,6 +5977,8 @@
                               OR  ((COMB-KOHHKNNUM(KOH-IDX) =
                                            "024" OR "079"          ) AND
                                    (LNK-SYU-SRYYMD(1:6) >= "200610"))
+                              OR  ((COMB-KOHHKNNUM(KOH-IDX) = "038") AND
+                                   (LNK-SYU-SRYYMD(1:6) >= "200804"))
                                  CONTINUE
                               ELSE
                                  IF  (MAX-KIN-KOHI1-M    >
@@ -5998,9 +6002,11 @@
                                      TO MAX-KIN-KOHI1-M
                               END-IF
                             ELSE
-                              IF  COMB-KOHHKNNUM(KOH-IDX) =
+                              IF  ( COMB-KOHHKNNUM(KOH-IDX) =
                                            "015" OR "016" OR "021"
-                                                 OR "024" OR "079"
+                                                 OR "024" OR "079"  )
+                              OR  ((COMB-KOHHKNNUM(KOH-IDX) = "038") AND
+                                   (LNK-SYU-SRYYMD(1:6) >= "200804"))
                                  CONTINUE
                               ELSE
                                  IF  (MAX-KIN-KOHI1-M    >
@@ -6031,6 +6037,11 @@
                         AND (LNK-SYU-SRYYMD(1:6) >= "200702"  )
                               MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
                                    TO WK-CHIHOU-TAFTNRUIKEI(KOH-IDX)
+                        END-IF
+                        IF  (COMB-KOH1HKNNUM      = "038"     )
+                        AND (LNK-SYU-SRYYMD(1:6) >= "200804"  )
+                              MOVE  LNK-ORCSJGNGET-TAFTNRUIKEI
+                                   TO WK-KANEN-TAFTNRUIKEI(KOH-IDX)
                         END-IF
                         IF  (LNK-S01-KOUREI-ZAITAKU-KBN   =   "1" ) OR
                             (FLG-KOUREI-KBN               =   "1" )
@@ -6311,22 +6322,13 @@
                                                  TO   MAX-KIN-KOHI3-M
                               END-IF
                             ELSE
-                              IF  ((COMB-KOHHKNNUM(KOH-IDX) =
-                                           "015" OR "016" OR "021" ) AND
-                                   (LNK-SYU-SRYYMD(1:6) >= "200604"))
-                              OR  ((COMB-KOHHKNNUM(KOH-IDX) =
-                                           "024" OR "079"          ) AND
-                                   (LNK-SYU-SRYYMD(1:6) >= "200610"))
-                                 CONTINUE
-                              ELSE
-                                 IF  (MAX-KIN-KOHI3-M    >
-                                                      WK-KOH-GENDOGAKU)
-                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
-                                                                 = "0")
-                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
-                                   MOVE  WK-KOH-GENDOGAKU
-                                                 TO   MAX-KIN-KOHI3-M
-                                 END-IF
+                              IF  (MAX-KIN-KOHI3-M    >
+                                                   WK-KOH-GENDOGAKU)
+                              AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                              = "0")
+                              AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
+                                MOVE  WK-KOH-GENDOGAKU
+                                              TO   MAX-KIN-KOHI3-M
                               END-IF
                             END-IF
                             IF    FLG-CHIHOU(3)      =  "1"
@@ -6340,19 +6342,13 @@
                                      TO MAX-KIN-KOHI3-M
                               END-IF
                             ELSE
-                              IF  COMB-KOHHKNNUM(KOH-IDX) =
-                                           "015" OR "016" OR "021"
-                                                 OR "024" OR "079"
-                                 CONTINUE
-                              ELSE
-                                 IF  (MAX-KIN-KOHI3-M    >
-                                                    WK-GEN70-GENDOGAKU)
-                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
-                                                                 = "0")
-                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
-                                   MOVE  WK-GEN70-GENDOGAKU
-                                      TO MAX-KIN-KOHI3-M
-                                 END-IF
+                              IF  (MAX-KIN-KOHI3-M    >
+                                                 WK-GEN70-GENDOGAKU)
+                              AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                              = "0")
+                              AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
+                                MOVE  WK-GEN70-GENDOGAKU
+                                   TO MAX-KIN-KOHI3-M
                               END-IF
                             END-IF
                         END-IF
@@ -6374,22 +6370,13 @@
                                                  TO   MAX-KIN-KOHI4-M
                               END-IF
                             ELSE
-                              IF  ((COMB-KOHHKNNUM(KOH-IDX) =
-                                           "015" OR "016" OR "021" ) AND
-                                   (LNK-SYU-SRYYMD(1:6) >= "200604"))
-                              OR  ((COMB-KOHHKNNUM(KOH-IDX) =
-                                           "024" OR "079"          ) AND
-                                   (LNK-SYU-SRYYMD(1:6) >= "200610"))
-                                 CONTINUE
-                              ELSE
-                                 IF  (MAX-KIN-KOHI4-M    >
-                                                      WK-KOH-GENDOGAKU)
-                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
-                                                                 = "0")
-                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
-                                   MOVE  WK-KOH-GENDOGAKU
-                                                 TO   MAX-KIN-KOHI4-M
-                                 END-IF
+                              IF  (MAX-KIN-KOHI4-M    >
+                                                   WK-KOH-GENDOGAKU)
+                              AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                              = "0")
+                              AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
+                                MOVE  WK-KOH-GENDOGAKU
+                                              TO   MAX-KIN-KOHI4-M
                               END-IF
                             END-IF
                             IF    FLG-CHIHOU(4)      =  "1"
@@ -6403,19 +6390,13 @@
                                      TO MAX-KIN-KOHI4-M
                               END-IF
                             ELSE
-                              IF  COMB-KOHHKNNUM(KOH-IDX) =
-                                           "015" OR "016" OR "021"
-                                                 OR "024" OR "079"
-                                 CONTINUE
-                              ELSE
-                                 IF  (MAX-KIN-KOHI4-M    >
-                                                    WK-GEN70-GENDOGAKU)
-                                 AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
-                                                                 = "0")
-                                 AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
-                                   MOVE  WK-GEN70-GENDOGAKU
-                                      TO MAX-KIN-KOHI4-M
-                                 END-IF
+                              IF  (MAX-KIN-KOHI4-M    >
+                                                 WK-GEN70-GENDOGAKU)
+                              AND (COMB-KOHHKNNUM(KOH-IDX)(1:1)
+                                                              = "0")
+                              AND (WK-DOTANDOKU(KOH-IDX)   =  ZERO )
+                                MOVE  WK-GEN70-GENDOGAKU
+                                   TO MAX-KIN-KOHI4-M
                               END-IF
                             END-IF
                         END-IF
@@ -6962,6 +6943,14 @@
                         MOVE  WK-CHIHOU-TAFTNRUIKEI(4) TO FTN-KOHI4-M
                                                           FTN-KOHI4-M2
                                                           FTN-KOHI4-M3
+                    END-IF
+               END-IF
+               IF   LNK-SYU-SRYYMD(1:6)   >=   "200804"
+                    IF   LNK-SYU-KOH1HKNNUM  = "038"
+                        MOVE     1    TO     FLG-NYUGAI
+                        MOVE  WK-KANEN-TAFTNRUIKEI(1)  TO FTN-KOHI1-M
+                                                          FTN-KOHI1-M2
+                                                          FTN-KOHI1-M3
                     END-IF
                END-IF
       *
@@ -8151,23 +8140,18 @@
                                            SYU-KOH1COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI1-M3        
                              END-IF                                     
-                             IF  (LNK-SYU-SRYYMD(1:6)  >=  "200604")
-                             AND (LNK-SYU-KOH1HKNNUM    =
-                                            "015" OR "016" OR "021")
-                             AND (WK-JIRITU-CYUKANSOU(1)   =  2    )
-                             AND (SYU-NYUGAIKBN            = "2"   )
-                                ADD   SYU-KOH1HKNFTNMONEY
-                                                   TO  FTN-KOHI1-M-JI
-                                ADD   SYU-KOH1COMPFTN
-                                                   TO  FTN-KOHI1-M2-JI
-                                COMPUTE WK-ENTANI =
-                                          SYU-KOH1COMPFTN-ENTANI + 0.9
-                                ADD   WK-ENTANI    TO  FTN-KOHI1-M3-JI
-                             END-IF
-                             IF  (LNK-SYU-SRYYMD(1:6)  >=  "200610")
-                             AND (LNK-SYU-KOH1HKNNUM    =
-                                            "024" OR "079"         )
-                             AND (SYU-NYUGAIKBN            = "2"   )
+                             IF ((LNK-SYU-SRYYMD(1:6)  >=  "200604") AND
+                                 (LNK-SYU-KOH1HKNNUM    =
+                                            "015" OR "016" OR "021") AND
+                                 (WK-JIRITU-CYUKANSOU(1)   =  2    ) AND
+                                 (SYU-NYUGAIKBN            = "2"   ))
+                             OR ((LNK-SYU-SRYYMD(1:6)  >=  "200610") AND
+                                 (LNK-SYU-KOH1HKNNUM    =
+                                             "024" OR "079"        ) AND
+                                 (SYU-NYUGAIKBN            = "2"   ))
+                             OR ((LNK-SYU-SRYYMD(1:6)  >=  "200804") AND
+                                 (LNK-SYU-KOH1HKNNUM    =  "038"   ) AND
+                                 (SYU-NYUGAIKBN            = "2"   ))
                                 ADD   SYU-KOH1HKNFTNMONEY
                                                    TO  FTN-KOHI1-M-JI
                                 ADD   SYU-KOH1COMPFTN
@@ -8206,23 +8190,15 @@
                                            SYU-KOH2COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI1-M3        
                              END-IF                                     
-                             IF  (LNK-SYU-SRYYMD(1:6)  >=  "200604")
-                             AND (LNK-SYU-KOH1HKNNUM    =
-                                            "015" OR "016" OR "021")
-                             AND (WK-JIRITU-CYUKANSOU(1)   =  2    )
-                             AND (SYU-NYUGAIKBN            = "2"   )
-                                ADD   SYU-KOH2HKNFTNMONEY
-                                                   TO  FTN-KOHI1-M-JI
-                                ADD   SYU-KOH2COMPFTN
-                                                   TO  FTN-KOHI1-M2-JI
-                                COMPUTE WK-ENTANI =
-                                          SYU-KOH2COMPFTN-ENTANI + 0.9
-                                ADD   WK-ENTANI    TO  FTN-KOHI1-M3-JI
-                             END-IF
-                             IF  (LNK-SYU-SRYYMD(1:6)  >=  "200610")
-                             AND (LNK-SYU-KOH1HKNNUM    =
-                                            "024" OR "079"         )
-                             AND (SYU-NYUGAIKBN            = "2"   )
+                             IF ((LNK-SYU-SRYYMD(1:6)  >=  "200604") AND
+                                 (LNK-SYU-KOH1HKNNUM    =
+                                            "015" OR "016" OR "021") AND
+                                 (WK-JIRITU-CYUKANSOU(1)   =  2    ) AND
+                                 (SYU-NYUGAIKBN            = "2"   ))
+                             OR ((LNK-SYU-SRYYMD(1:6)  >=  "200610") AND
+                                 (LNK-SYU-KOH1HKNNUM    =
+                                             "024" OR "079"        ) AND
+                                 (SYU-NYUGAIKBN            = "2"   ))
                                 ADD   SYU-KOH2HKNFTNMONEY
                                                    TO  FTN-KOHI1-M-JI
                                 ADD   SYU-KOH2COMPFTN
@@ -8852,23 +8828,15 @@
                                            SYU-KOH1COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI2-M3        
                              END-IF                                     
-                             IF  (LNK-SYU-SRYYMD(1:6)  >=  "200604")
-                             AND (LNK-SYU-KOH2HKNNUM    =
-                                            "015" OR "016" OR "021")
-                             AND (WK-JIRITU-CYUKANSOU(2)   =  2    )
-                             AND (SYU-NYUGAIKBN            = "2"   )
-                                ADD   SYU-KOH1HKNFTNMONEY
-                                                   TO  FTN-KOHI2-M-JI
-                                ADD   SYU-KOH1COMPFTN
-                                                   TO  FTN-KOHI2-M2-JI
-                                COMPUTE WK-ENTANI =
-                                          SYU-KOH1COMPFTN-ENTANI + 0.9
-                                ADD   WK-ENTANI    TO  FTN-KOHI2-M3-JI
-                             END-IF
-                             IF  (LNK-SYU-SRYYMD(1:6)  >=  "200610")
-                             AND (LNK-SYU-KOH2HKNNUM    =
-                                            "024" OR "079"         )
-                             AND (SYU-NYUGAIKBN            = "2"   )
+                             IF ((LNK-SYU-SRYYMD(1:6)  >=  "200604") AND
+                                 (LNK-SYU-KOH2HKNNUM    =
+                                            "015" OR "016" OR "021") AND
+                                 (WK-JIRITU-CYUKANSOU(2)   =  2    ) AND
+                                 (SYU-NYUGAIKBN            = "2"   ))
+                             OR ((LNK-SYU-SRYYMD(1:6)  >=  "200610") AND
+                                 (LNK-SYU-KOH2HKNNUM    =
+                                             "024" OR "079"        ) AND
+                                 (SYU-NYUGAIKBN            = "2"   ))
                                 ADD   SYU-KOH1HKNFTNMONEY
                                                    TO  FTN-KOHI2-M-JI
                                 ADD   SYU-KOH1COMPFTN
@@ -8907,23 +8875,15 @@
                                            SYU-KOH2COMPFTN-ENTANI + 0.9
                                ADD   WK-ENTANI  TO  FTN-KOHI2-M3        
                              END-IF                                     
-                             IF  (LNK-SYU-SRYYMD(1:6)  >=  "200604")
-                             AND (LNK-SYU-KOH2HKNNUM    =
-                                            "015" OR "016" OR "021")
-                             AND (WK-JIRITU-CYUKANSOU(2)   =  2    )
-                             AND (SYU-NYUGAIKBN            = "2"   )
-                                ADD   SYU-KOH2HKNFTNMONEY
-                                                   TO  FTN-KOHI2-M-JI
-                                ADD   SYU-KOH2COMPFTN
-                                                   TO  FTN-KOHI2-M2-JI
-                                COMPUTE WK-ENTANI =
-                                          SYU-KOH2COMPFTN-ENTANI + 0.9
-                                ADD   WK-ENTANI    TO  FTN-KOHI2-M3-JI
-                             END-IF
-                             IF  (LNK-SYU-SRYYMD(1:6)  >=  "200610")
-                             AND (LNK-SYU-KOH2HKNNUM    =
-                                            "024" OR "079"         )
-                             AND (SYU-NYUGAIKBN            = "2"   )
+                             IF ((LNK-SYU-SRYYMD(1:6)  >=  "200604") AND
+                                 (LNK-SYU-KOH2HKNNUM    =
+                                            "015" OR "016" OR "021") AND
+                                 (WK-JIRITU-CYUKANSOU(2)   =  2    ) AND
+                                 (SYU-NYUGAIKBN            = "2"   ))
+                             OR ((LNK-SYU-SRYYMD(1:6)  >=  "200610") AND
+                                 (LNK-SYU-KOH2HKNNUM    =
+                                             "024" OR "079"        ) AND
+                                 (SYU-NYUGAIKBN            = "2"   ))
                                 ADD   SYU-KOH2HKNFTNMONEY
                                                    TO  FTN-KOHI2-M-JI
                                 ADD   SYU-KOH2COMPFTN
@@ -11316,8 +11276,10 @@
                    ( WK-JIRITU-CYUKANSOU(1) =   2             ))
                OR (( LNK-SYU-SRYYMD(1:6)   >=  "200610"       ) AND
                    ( COMB-KOH1HKNNUM = "024" OR "079"         ))
+               OR (( LNK-SYU-SRYYMD(1:6)   >=  "200804"       ) AND
+                   ( COMB-KOH1HKNNUM = "038"                  ))
                    IF  ( COMB-KOH1HKNNUM  = "015" OR "016"
-                                         OR "024" OR "079" )
+                                         OR "024" OR "079" OR "038" )
                    AND ((COMB-KOH2HKNNUM  = "972") OR
                         (COMB-KOH3HKNNUM  = "972") OR
                         (COMB-KOH4HKNNUM  = "972"))
@@ -11351,7 +11313,7 @@
                       END-IF
                    END-IF
                    IF  ( COMB-KOH1HKNNUM  = "015" OR "016"
-                                         OR "024" OR "079" )
+                                         OR "024" OR "079" OR "038" )
                    AND ((COMB-KOH2HKNNUM  = "974") OR
                         (COMB-KOH3HKNNUM  = "974") OR
                         (COMB-KOH4HKNNUM  = "974"))
