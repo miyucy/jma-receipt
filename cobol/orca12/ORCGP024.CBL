@@ -590,10 +590,18 @@
                                            >=   "20060401"  )
                    MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
-               ELSE
+                 ELSE
                    MOVE    "外来上限額"         TO  SPA-GMN24-FTNMSG1
                    MOVE    "入院上限額"         TO  SPA-GMN24-FTNMSG2
-               END-IF
+                 END-IF
+      *          肝炎治療名称
+                 IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "038"       )  AND
+                        (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=   "20080401"  )
+                   MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
+                 END-IF
              END-IF
            END-IF
       *TEST
@@ -1705,6 +1713,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "医療部分上限額"     TO  SPA-GMN24-FTNMSG1
                    MOVE    "食事療養上限額"     TO  SPA-GMN24-FTNMSG2
                END-IF
+      *         肝炎治療名称
+               IF     (SPA-NAI24-KOHNUM (SPA-NAI24-FTNSELNUM)
+                                           =   "038"   )  AND
+                      (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)
+                                           >=   "20061001"  )
+                   MOVE    "入外上限額"         TO  SPA-GMN24-FTNMSG1
+                   MOVE    "他一部負担累計"     TO  SPA-GMN24-FTNMSG2
+                 END-IF
            END-IF
       *
       *    対象のデータをパラメタファイルより編集する
