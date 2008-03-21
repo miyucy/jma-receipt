@@ -407,10 +407,6 @@
                            MOVE    ZERO    TO  WRK-PROCKBN
                            PERFORM 2001-IN01-EDIT-SEC
                        END-IF
-                   ELSE
-                       MOVE    "1"         TO  WRK-MSTKBN
-                       MOVE    "1"         TO  WRK-PROCKBN
-                       PERFORM 2001-IN01-EDIT-SEC
                    END-IF
                END-IF
       *
@@ -487,10 +483,6 @@
                            MOVE    ZERO    TO  WRK-PROCKBN
                            PERFORM 2001-IN01-EDIT-SEC
                        END-IF
-                   ELSE
-                       MOVE    "2"         TO  WRK-MSTKBN
-                       MOVE    "1"         TO  WRK-PROCKBN
-                       PERFORM 2001-IN01-EDIT-SEC
                    END-IF
                END-IF
       *
