@@ -493,6 +493,8 @@
       *
            03  WK-KOHNUM                   PIC  X(03).
       *
+           03  WK-ZAITAKU-SRYCD            PIC  X(09).
+      *
       *    ¸øÈñ¤Î´µ¼ÔÉéÃ´¾å¸Â²ó¿ô¤È¾å¸Â¶â³Û¤ÎÂàÈòÍÑ¥¨¥ê¥¢
        01  HOKEN-MAX-AREA.
            03  MAX-KAI-KOHI1-D         PIC 9(05).
@@ -890,6 +892,25 @@
            03  TBL-ZAITAKU2    PIC X(09)   OCCURS    6.
       *
        01  TBL-ZAITAKU2-MAX    PIC 9(02)   VALUE     6.
+      *
+      *    ºßÁí¿ÇÈ½ÄêÍÑ¥Æ¡¼¥Ö¥ë¡Ê£²£°£°£¸Ç¯£´·î¤«¤é¡Ë
+       01  TBL-ZAITAKU3-AREA.
+           03  FILLER          PIC X(09)   VALUE    "114007610".
+           03  FILLER          PIC X(09)   VALUE    "114007710".
+           03  FILLER          PIC X(09)   VALUE    "114012210".
+           03  FILLER          PIC X(09)   VALUE    "114012310".
+           03  FILLER          PIC X(09)   VALUE    "114012410".
+           03  FILLER          PIC X(09)   VALUE    "114007510".
+      *
+           03  FILLER          PIC X(09)   VALUE    "114013010".
+           03  FILLER          PIC X(09)   VALUE    "114013110".
+           03  FILLER          PIC X(09)   VALUE    "114013210".
+           03  FILLER          PIC X(09)   VALUE    "114013310".
+      *
+       01  TBL-ZAITAKU3-R      REDEFINES   TBL-ZAITAKU3-AREA.
+           03  TBL-ZAITAKU3    PIC X(09)   OCCURS   10.
+      *
+       01  TBL-ZAITAKU3-MAX    PIC 9(02)   VALUE    10.
       *
       *    ¸º³Û¡¦ÌÈ½ü¡¦»ÙÊ§Í±Í½È½ÄêÍÑ¥Æ¡¼¥Ö¥ë
        01  TBL-GENGAKU-AREA.
@@ -2954,7 +2975,11 @@
                IF   LNK-S01-KOUREI-ZAITAKU-KBN  =  "1"
                  MOVE     SPACE  TO  LNK-S01-KOUREI-ZAITAKU-KBN
                ELSE
-                 PERFORM   2002-ZAITAKU-HENSYU200604-SEC
+                 IF   LNK-SYU-SRYYMD(1:6)   >=   "200804"
+                    PERFORM   2003-ZAITAKU-HENSYU200804-SEC
+                 ELSE
+                    PERFORM   2002-ZAITAKU-HENSYU200604-SEC
+                 END-IF
                  IF LNK-S01-KOUREI-ZAITAKU-KBN  =  "1"
                    MOVE   SPACE  TO  LNK-S01-KOUREI-ZAITAKU-KBN
                  ELSE
@@ -2968,10 +2993,14 @@
              END-IF
            ELSE
              IF     LNK-S01-KOUREI-ZAITAKU-KBN  =  SPACE
-               IF   LNK-SYU-SRYYMD(1:6)   >=   "200604"
-                    PERFORM   2002-ZAITAKU-HENSYU200604-SEC
+               IF   LNK-SYU-SRYYMD(1:6)   >=   "200804"
+                    PERFORM   2003-ZAITAKU-HENSYU200804-SEC
                ELSE
+                 IF LNK-SYU-SRYYMD(1:6)   >=   "200604"
+                    PERFORM   2002-ZAITAKU-HENSYU200604-SEC
+                 ELSE
                     PERFORM   2001-ZAITAKU-HENSYU-SEC
+                 END-IF
                END-IF
              END-IF
            END-IF
@@ -3274,62 +3303,8 @@
                       UNTIL  ( IDX10    >   TBL-ZAITAKU-MAX      )
                        OR    ( LNK-S01-KOUREI-ZAITAKU-KBN  = "1" )
       *
-               INITIALIZE                           SRYACT-REC
-               MOVE    LNK-SYU-HOSPNUM      TO      SRY-HOSPNUM
-               MOVE    LNK-SYU-NYUGAIKBN    TO      SRY-NYUGAIKBN
-               MOVE    LNK-SYU-PTID         TO      SRY-PTID
-               MOVE    LNK-SYU-SRYYMD(1:6)  TO      SRY-SRYYM
-               MOVE    TBL-ZAITAKU(IDX10)   TO      SRY-SRYCD(1)
-               MOVE    TBL-ZAITAKU(IDX10)   TO      SRY-SRYCD(2)
-               MOVE    TBL-ZAITAKU(IDX10)   TO      SRY-SRYCD(3)
-               MOVE    TBL-ZAITAKU(IDX10)   TO      SRY-SRYCD(4)
-               MOVE    TBL-ZAITAKU(IDX10)   TO      SRY-SRYCD(5)
-               MOVE    SRYACT-REC           TO      MCPDATA-REC
-               MOVE    "DBSELECT"           TO      MCP-FUNC
-               MOVE    "tbl_sryact"         TO      MCP-TABLE
-               MOVE    "key7"               TO      MCP-PATHNAME
-               CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                    MCPDATA-REC
-                                                    SPA-AREA
-               IF      MCP-RC               =       ZERO
-                   MOVE    "tbl_sryact"     TO      MCP-TABLE
-                   MOVE    "key7"           TO      MCP-PATHNAME
-                   PERFORM   SRYACT-READ-SEC
-                   IF      FLG-SRYACT       =       ZERO
-                       INITIALIZE                   SRYACCT-REC
-                       MOVE    SRY-HOSPNUM      TO   ACCT-HOSPNUM
-                       MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
-                       MOVE    SRY-SRYKA        TO   ACCT-SRYKA
-                       MOVE    SRY-PTID         TO   ACCT-PTID
-                       MOVE    SRY-SRYYM        TO   ACCT-SRYYM
-                       MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
-                       MOVE    SRYACCT-REC      TO   MCPDATA-REC
-                       MOVE    "DBSELECT"       TO   MCP-FUNC
-                       MOVE    "tbl_sryacct"    TO   MCP-TABLE
-                       MOVE    "key31"          TO   MCP-PATHNAME
-                       CALL    "ORCDBMAIN"      USING   MCPAREA
-                                                        MCPDATA-REC
-                                                        SPA-AREA
-                       IF      MCP-RC           =       ZERO
-                           MOVE    "tbl_sryacct" TO  MCP-TABLE
-                           MOVE    "key31"       TO  MCP-PATHNAME
-                           PERFORM  SRYACCT-READ-SEC
-                           IF      FLG-SRYACCT  =       ZERO
-                               IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
-                                   (ACCT-ZAIKAISU NOT =  ZERO)
-                                   MOVE  "1"    TO
-                                            LNK-S01-KOUREI-ZAITAKU-KBN
-                               END-IF
-                           END-IF
-                       END-IF
-                       MOVE    "tbl_sryacct" TO  MCP-TABLE
-                       MOVE    "key31"       TO  MCP-PATHNAME
-                       PERFORM  DB-CLOSE-SEC
-                   END-IF
-               END-IF
-               MOVE    "tbl_sryact"         TO      MCP-TABLE
-               MOVE    "key7"               TO      MCP-PATHNAME
-               PERFORM  DB-CLOSE-SEC
+             MOVE     TBL-ZAITAKU(IDX10)     TO   WK-ZAITAKU-SRYCD
+             PERFORM  20011-ZAITAKU-HANTEI-SEC
       *
            END-PERFORM
       *
@@ -3347,68 +3322,100 @@
                       UNTIL  ( IDX10    >   TBL-ZAITAKU2-MAX     )
                        OR    ( LNK-S01-KOUREI-ZAITAKU-KBN  = "1" )
       *
-               INITIALIZE                           SRYACT-REC
-               MOVE    LNK-SYU-HOSPNUM      TO      SRY-HOSPNUM
-               MOVE    LNK-SYU-NYUGAIKBN    TO      SRY-NYUGAIKBN
-               MOVE    LNK-SYU-PTID         TO      SRY-PTID
-               MOVE    LNK-SYU-SRYYMD(1:6)  TO      SRY-SRYYM
-               MOVE    TBL-ZAITAKU2(IDX10)  TO      SRY-SRYCD(1)
-               MOVE    TBL-ZAITAKU2(IDX10)  TO      SRY-SRYCD(2)
-               MOVE    TBL-ZAITAKU2(IDX10)  TO      SRY-SRYCD(3)
-               MOVE    TBL-ZAITAKU2(IDX10)  TO      SRY-SRYCD(4)
-               MOVE    TBL-ZAITAKU2(IDX10)  TO      SRY-SRYCD(5)
-               MOVE    SRYACT-REC           TO      MCPDATA-REC
-               MOVE    "DBSELECT"           TO      MCP-FUNC
-               MOVE    "tbl_sryact"         TO      MCP-TABLE
-               MOVE    "key7"               TO      MCP-PATHNAME
-               CALL    "ORCDBMAIN"          USING   MCPAREA
-                                                    MCPDATA-REC
-                                                    SPA-AREA
-               IF      MCP-RC               =       ZERO
-                   MOVE    "tbl_sryact"     TO      MCP-TABLE
-                   MOVE    "key7"           TO      MCP-PATHNAME
-                   PERFORM   SRYACT-READ-SEC
-                   IF      FLG-SRYACT       =       ZERO
-                       INITIALIZE                   SRYACCT-REC
-                       MOVE    SRY-HOSPNUM      TO   ACCT-HOSPNUM
-                       MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
-                       MOVE    SRY-SRYKA        TO   ACCT-SRYKA
-                       MOVE    SRY-PTID         TO   ACCT-PTID
-                       MOVE    SRY-SRYYM        TO   ACCT-SRYYM
-                       MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
-                       MOVE    SRYACCT-REC      TO   MCPDATA-REC
-                       MOVE    "DBSELECT"       TO   MCP-FUNC
-                       MOVE    "tbl_sryacct"    TO   MCP-TABLE
-                       MOVE    "key31"          TO   MCP-PATHNAME
-                       CALL    "ORCDBMAIN"      USING   MCPAREA
-                                                        MCPDATA-REC
-                                                        SPA-AREA
-                       IF      MCP-RC           =       ZERO
-                           MOVE    "tbl_sryacct" TO  MCP-TABLE
-                           MOVE    "key31"       TO  MCP-PATHNAME
-                           PERFORM   SRYACCT-READ-SEC
-                           IF      FLG-SRYACCT  =       ZERO
-                               IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
-                                   (ACCT-ZAIKAISU NOT =  ZERO)
-                                   MOVE  "1"    TO
-                                            LNK-S01-KOUREI-ZAITAKU-KBN
-                               END-IF
-                           END-IF
-                       END-IF
-                       MOVE    "tbl_sryacct" TO  MCP-TABLE
-                       MOVE    "key31"       TO  MCP-PATHNAME
-                       PERFORM  DB-CLOSE-SEC
-                   END-IF
-               END-IF
-               MOVE    "tbl_sryact"         TO      MCP-TABLE
-               MOVE    "key7"               TO      MCP-PATHNAME
-               PERFORM  DB-CLOSE-SEC
+             MOVE     TBL-ZAITAKU2(IDX10)    TO   WK-ZAITAKU-SRYCD
+             PERFORM  20011-ZAITAKU-HANTEI-SEC
       *
            END-PERFORM
       *
            .
       *
        2002-ZAITAKU-HENSYU200604-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        ºßÁí¿ÇÈ½Äê¡Ê£²£°£°£¸Ç¯£´·î¤«¤é¡Ë                        *
+      ******************************************************************
+       2003-ZAITAKU-HENSYU200804-SEC           SECTION.
+      *
+           PERFORM   VARYING   IDX10   FROM    1   BY  1
+                      UNTIL  ( IDX10    >   TBL-ZAITAKU3-MAX     )
+                       OR    ( LNK-S01-KOUREI-ZAITAKU-KBN  = "1" )
+      *
+             MOVE     TBL-ZAITAKU3(IDX10)    TO   WK-ZAITAKU-SRYCD
+             PERFORM  20011-ZAITAKU-HANTEI-SEC
+      *
+           END-PERFORM
+      *
+           .
+      *
+       2003-ZAITAKU-HENSYU200804-EXT.
+           EXIT.
+      *
+      ******************************************************************
+      *        ºßÁí¿ÇÈ½Äê
+      ******************************************************************
+       20011-ZAITAKU-HANTEI-SEC           SECTION.
+      *
+           INITIALIZE                           SRYACT-REC
+           MOVE    LNK-SYU-HOSPNUM      TO      SRY-HOSPNUM
+           MOVE    LNK-SYU-NYUGAIKBN    TO      SRY-NYUGAIKBN
+           MOVE    LNK-SYU-PTID         TO      SRY-PTID
+           MOVE    LNK-SYU-SRYYMD(1:6)  TO      SRY-SRYYM
+           MOVE    WK-ZAITAKU-SRYCD     TO      SRY-SRYCD(1)
+           MOVE    WK-ZAITAKU-SRYCD     TO      SRY-SRYCD(2)
+           MOVE    WK-ZAITAKU-SRYCD     TO      SRY-SRYCD(3)
+           MOVE    WK-ZAITAKU-SRYCD     TO      SRY-SRYCD(4)
+           MOVE    WK-ZAITAKU-SRYCD     TO      SRY-SRYCD(5)
+           MOVE    SRYACT-REC           TO      MCPDATA-REC
+           MOVE    "DBSELECT"           TO      MCP-FUNC
+           MOVE    "tbl_sryact"         TO      MCP-TABLE
+           MOVE    "key7"               TO      MCP-PATHNAME
+           CALL    "ORCDBMAIN"          USING   MCPAREA
+                                                MCPDATA-REC
+                                                SPA-AREA
+           IF      MCP-RC               =       ZERO
+               MOVE    "tbl_sryact"     TO      MCP-TABLE
+               MOVE    "key7"           TO      MCP-PATHNAME
+               PERFORM   SRYACT-READ-SEC
+               IF      FLG-SRYACT       =       ZERO
+                   INITIALIZE                   SRYACCT-REC
+                   MOVE    SRY-HOSPNUM      TO   ACCT-HOSPNUM
+                   MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
+                   MOVE    SRY-SRYKA        TO   ACCT-SRYKA
+                   MOVE    SRY-PTID         TO   ACCT-PTID
+                   MOVE    SRY-SRYYM        TO   ACCT-SRYYM
+                   MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
+                   MOVE    SRYACCT-REC      TO   MCPDATA-REC
+                   MOVE    "DBSELECT"       TO   MCP-FUNC
+                   MOVE    "tbl_sryacct"    TO   MCP-TABLE
+                   MOVE    "key31"          TO   MCP-PATHNAME
+                   CALL    "ORCDBMAIN"      USING   MCPAREA
+                                                    MCPDATA-REC
+                                                    SPA-AREA
+                   IF      MCP-RC           =       ZERO
+                       MOVE    "tbl_sryacct" TO  MCP-TABLE
+                       MOVE    "key31"       TO  MCP-PATHNAME
+                       PERFORM   SRYACCT-READ-SEC
+                       IF      FLG-SRYACCT  =       ZERO
+                           IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
+                               (ACCT-ZAIKAISU NOT =  ZERO)
+                               MOVE  "1"    TO
+                                        LNK-S01-KOUREI-ZAITAKU-KBN
+                           END-IF
+                       END-IF
+                   END-IF
+                   MOVE    "tbl_sryacct" TO  MCP-TABLE
+                   MOVE    "key31"       TO  MCP-PATHNAME
+                   PERFORM  DB-CLOSE-SEC
+               END-IF
+           END-IF
+           MOVE    "tbl_sryact"         TO      MCP-TABLE
+           MOVE    "key7"               TO      MCP-PATHNAME
+           PERFORM  DB-CLOSE-SEC
+      *
+           .
+      *
+       20011-ZAITAKU-HANTEI-EXT.
            EXIT.
       *
       ******************************************************************
