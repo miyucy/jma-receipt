@@ -426,7 +426,11 @@
                       (SPA-GMN-INPUTCD(IDX)(1:1)   =   "#"
                                                    OR  "$")
                    IF      LNK-SC93-PG         =   "K02"
-                       CONTINUE
+      *!               １行目はエラー
+                       IF      IDX             =   1
+                           MOVE    "1056"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                       END-IF
                    ELSE
                        MOVE    "1055"          TO  SPA-ERRCD
                        MOVE    "1"             TO  SPA-COM-CUR(IDX)
