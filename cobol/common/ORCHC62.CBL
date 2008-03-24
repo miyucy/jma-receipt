@@ -594,7 +594,8 @@
            COMPUTE IDX-KET1    =   54  -   IDX-KET
       *
       *    文字が重なる場合は１行下に表示する
-           IF      HCM62-NAIYO1(CNT-LINE)(IDX-KET1:)   NOT =   SPACE
+           IF    ( HCM62-NAIYO1(CNT-LINE)(IDX-KET1:)   NOT =   SPACE )
+           OR    ( HCM62-NAIYO2(CNT-LINE) NOT =   SPACE )
                PERFORM 250-PAGE-CHK-SEC
                MOVE    WRK-HENNAIYO    TO  HCM62-NAIYO2(CNT-LINE)
            ELSE
