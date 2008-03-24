@@ -176,6 +176,7 @@
       *                                     ÄÌ¾ï¤Îµ­ºÜÊýË¡¤ËÌá¤¹
       *
       *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.02.02    NACL-ÌçÏÆ    08/03/24  ºß°åÁí´É¤Î¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -426,6 +427,8 @@
            03  WK-PTNYUINRRK-TENSTUYMD   PIC  X(08).
            03  WK-PTNYUINRRK-TENSTUYMD2  PIC  X(08).
       *
+           03  WRK-ZAITAKU-SRYCD         PIC  X(09).
+      *
       *    ´µ¼ÔÇ¯Îð»»½ÐÍÑ¥¨¥ê¥¢
        01  WRK-NENREI-AREA.
            03  WRK-NENREI                PIC 9(03).
@@ -558,6 +561,37 @@
             03  TBL-ZAITAKU2   PIC X(09)   OCCURS   7.
       *
        01  TBL-ZAITAKU2-MAX    PIC 9(02)   VALUE    7.
+      *
+      *    ºßÁí¿Ç¥Æ¡¼¥Ö¥ë¡Ê£²£°£°£¸Ç¯£´·î¿ÇÎÅÊ¬¡Á¡Ë
+       01  TBL-ZAITAKU3-AREA.
+      *    ºßÂðËö´ü°åÎÅÁí¹ç¿ÇÎÅÎÁ¡Ê±¡³°¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114007610".
+      *    ºßÂðËö´ü°åÎÅÁí¹ç¿ÇÎÅÎÁ¡Ê±¡Æâ¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114007710".
+      *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ£±¡Ê±¡³°½èÊý¤»¤ó¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114012210".
+      *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ£±¡Ê±¡Æâ½èÊý¤»¤ó¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114012310".
+      *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ£²¡Ê±¡Æâ½èÊý¤»¤ó¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114012410".
+      *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ£²¡Ê±¡³°½èÊý¤»¤ó¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114007510".
+      *    ºß°åÁí¡¦ºß°åÁí´É¡Ê£Ä£Õ£Í£Í£Ù¡Ë
+           03  FILLER          PIC X(09)   VALUE   "099140003".
+      *    ÆÃÄê»ÜÀßÆþµï»þÅù°å³ØÁí¹ç´ÉÍýÎÁ£±¡Ê½èÊý¤»¤ó¤ò¸òÉÕ¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114013010".
+      *    ÆÃÄê»ÜÀßÆþµï»þÅù°å³ØÁí¹ç´ÉÍýÎÁ£±¡Ê½èÊý¤»¤ó¤ò¸òÉÕ¤·¤Ê¤¤¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114013110".
+      *    ÆÃÄê»ÜÀßÆþµï»þÅù°å³ØÁí¹ç´ÉÍýÎÁ£²¡Ê½èÊý¤»¤ó¤ò¸òÉÕ¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114013210".
+      *    ÆÃÄê»ÜÀßÆþµï»þÅù°å³ØÁí¹ç´ÉÍýÎÁ£²¡Ê½èÊý¤»¤ó¤ò¸òÉÕ¤·¤Ê¤¤¡Ë
+           03  FILLER          PIC X(09)   VALUE   "114013310".
+      *
+       01  TBL-ZAITAKU3-R      REDEFINES   TBL-ZAITAKU3-AREA.
+            03  TBL-ZAITAKU3   PIC X(09)   OCCURS  11.
+      *
+       01  TBL-ZAITAKU3-MAX    PIC 9(02)   VALUE   11.
+      *
       *
            COPY    "MCPAREA".
       *
@@ -2362,146 +2396,111 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
       *
            IF   RECE01-SRYYM    >=  "200210"
       *
-            IF  RECE01-SRYYM    >=  "200604"
-             PERFORM   VARYING   IDX3   FROM    1   BY  1
-                         UNTIL   ( IDX3   >   TBL-ZAITAKU2-MAX )
-                          OR     ( WRK-ZAITAKU    =    "1"     )
-      *
-               INITIALIZE                           SRYACT-REC
-grpsys         MOVE    RECE01-HOSPNUM       TO      SRY-HOSPNUM
-               MOVE    RECE01-NYUGAIKBN     TO      SRY-NYUGAIKBN
-               MOVE    RECE01-PTID          TO      SRY-PTID
-               MOVE    RECE01-SRYYM         TO      SRY-SRYYM
-               MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(1)
-               MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(2)
-               MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(3)
-               MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(4)
-               MOVE    TBL-ZAITAKU2(IDX3)   TO      SRY-SRYCD(5)
-               MOVE    SRYACT-REC           TO      MCPDATA-REC
-               MOVE    "tbl_sryact"         TO      MCP-TABLE
-               MOVE    "key7"               TO      MCP-PATHNAME
-grpsys         PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC               =       ZERO
-                   MOVE    "tbl_sryact"         TO  MCP-TABLE
-                   MOVE    "key7"               TO  MCP-PATHNAME
-                   PERFORM   SRYACT-READ-SEC
-                   IF      FLG-SRYACT       =       ZERO
-                       INITIALIZE                   SRYACCT-REC
-grpsys                 MOVE    SRY-HOSPNUM      TO   ACCT-HOSPNUM
-                       MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
-                       MOVE    SRY-SRYKA        TO   ACCT-SRYKA
-                       MOVE    SRY-PTID         TO   ACCT-PTID
-                       MOVE    SRY-SRYYM        TO   ACCT-SRYYM
-                       MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
-                       MOVE    SRYACCT-REC      TO   MCPDATA-REC
-                       MOVE    "tbl_sryacct"    TO   MCP-TABLE
-                       MOVE    "key31"          TO   MCP-PATHNAME
-grpsys                 PERFORM 900-DBSELECT-SEC
-                       IF      MCP-RC           =       ZERO
-                           MOVE    "tbl_sryacct"    TO   MCP-TABLE
-                           MOVE    "key31"          TO   MCP-PATHNAME
-                           PERFORM   SRYACCT-READ-SEC
-                           IF      FLG-SRYACCT  =       ZERO
-                             IF TBL-ZAITAKU2(IDX3)  = "099140003"
-                               IF  (ACCT-ZAIKAISU NOT =  ZERO)
-                                   MOVE    "1" TO   WRK-ZAITAKU
-                               END-IF
-                             ELSE
-                               IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
-                                   (ACCT-ZAIKAISU NOT =  ZERO)
-                                   MOVE    "1" TO   WRK-ZAITAKU
-                               END-IF
-                             END-IF
-                           END-IF
-                       END-IF
-      *
-                       MOVE    "tbl_sryacct"    TO   MCP-TABLE
-                       MOVE    "key31"          TO   MCP-PATHNAME
-                       PERFORM 900-CLOSE-SEC
-      *
-                   END-IF
+             IF    RECE01-SRYYM    >=  "200804"
+                 PERFORM   VARYING   IDX3   FROM    1   BY   1
+                            UNTIL  ( IDX3   >   TBL-ZAITAKU3-MAX )
+                              OR   ( WRK-ZAITAKU    =    "1"     )
+                    MOVE     TBL-ZAITAKU3(IDX3)  TO  WRK-ZAITAKU-SRYCD
+                    PERFORM  ZAITAKU-HENSYU-SEC
+                 END-PERFORM
+             ELSE
+               IF  RECE01-SRYYM    >=  "200604"
+                 PERFORM   VARYING   IDX3   FROM    1   BY   1
+                            UNTIL  ( IDX3   >   TBL-ZAITAKU2-MAX )
+                              OR   ( WRK-ZAITAKU    =    "1"     )
+                    MOVE     TBL-ZAITAKU2(IDX3)  TO  WRK-ZAITAKU-SRYCD
+                    PERFORM  ZAITAKU-HENSYU-SEC
+                 END-PERFORM
+               ELSE
+                 PERFORM   VARYING   IDX3   FROM    1   BY   1
+                            UNTIL  ( IDX3   >   TBL-ZAITAKU-MAX  )
+                              OR   ( WRK-ZAITAKU    =    "1"     )
+                    MOVE     TBL-ZAITAKU(IDX3)   TO  WRK-ZAITAKU-SRYCD
+                    PERFORM  ZAITAKU-HENSYU-SEC
+                 END-PERFORM
                END-IF
+             END-IF
       *
-               MOVE    "tbl_sryact"         TO  MCP-TABLE
-               MOVE    "key7"               TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-      *
-             END-PERFORM
-            ELSE
-             PERFORM   VARYING   IDX3   FROM    1   BY  1
-                         UNTIL   ( IDX3   >   TBL-ZAITAKU-MAX )
-                          OR     ( WRK-ZAITAKU    =    "1"    )
-      *
-               INITIALIZE                           SRYACT-REC
-grpsys         MOVE    RECE01-HOSPNUM       TO      SRY-HOSPNUM
-               MOVE    RECE01-NYUGAIKBN     TO      SRY-NYUGAIKBN
-               MOVE    RECE01-PTID          TO      SRY-PTID
-               MOVE    RECE01-SRYYM         TO      SRY-SRYYM
-               MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(1)
-               MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(2)
-               MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(3)
-               MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(4)
-               MOVE    TBL-ZAITAKU(IDX3)    TO      SRY-SRYCD(5)
-               MOVE    SRYACT-REC           TO      MCPDATA-REC
-               MOVE    "tbl_sryact"         TO      MCP-TABLE
-               MOVE    "key7"               TO      MCP-PATHNAME
-grpsys         PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC               =       ZERO
-                   MOVE    "tbl_sryact"         TO  MCP-TABLE
-                   MOVE    "key7"               TO  MCP-PATHNAME
-                   PERFORM   SRYACT-READ-SEC
-                   IF      FLG-SRYACT       =       ZERO
-                       INITIALIZE                   SRYACCT-REC
-grpsys                 MOVE    SRY-HOSPNUM      TO   ACCT-HOSPNUM
-                       MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
-                       MOVE    SRY-SRYKA        TO   ACCT-SRYKA
-                       MOVE    SRY-PTID         TO   ACCT-PTID
-                       MOVE    SRY-SRYYM        TO   ACCT-SRYYM
-                       MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
-                       MOVE    SRYACCT-REC      TO   MCPDATA-REC
-                       MOVE    "tbl_sryacct"    TO   MCP-TABLE
-                       MOVE    "key31"          TO   MCP-PATHNAME
-grpsys                 PERFORM 900-DBSELECT-SEC
-                       IF      MCP-RC           =       ZERO
-                           MOVE    "tbl_sryacct"    TO   MCP-TABLE
-                           MOVE    "key31"          TO   MCP-PATHNAME
-                           PERFORM   SRYACCT-READ-SEC
-                           IF      FLG-SRYACCT  =       ZERO
-                               IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
-                                   (ACCT-ZAIKAISU NOT =  ZERO)
-                                   MOVE    "1" TO   WRK-ZAITAKU
-                               END-IF
-                           END-IF
-                       END-IF
-      *
-                       MOVE    "tbl_sryacct"    TO   MCP-TABLE
-                       MOVE    "key31"          TO   MCP-PATHNAME
-                       PERFORM 900-CLOSE-SEC
-      *
-                   END-IF
-               END-IF
-      *
-               MOVE    "tbl_sryact"         TO  MCP-TABLE
-               MOVE    "key7"               TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-      *
-             END-PERFORM
-            END-IF
-      *
-            IF    WRK-ZAITAKU   =   "1"
-              EVALUATE   FLG-GENBUTU70
-                WHEN        1
-                   MOVE   "1"   TO  RECE02-ZAITAKU
-                WHEN        2
-                   MOVE   "2"   TO  RECE02-ZAITAKU
-              END-EVALUATE
-            END-IF
+             IF    WRK-ZAITAKU   =   "1"
+               EVALUATE   FLG-GENBUTU70
+                 WHEN        1
+                    MOVE   "1"   TO  RECE02-ZAITAKU
+                 WHEN        2
+                    MOVE   "2"   TO  RECE02-ZAITAKU
+               END-EVALUATE
+             END-IF
       *
            END-IF
+      *
            .
        ZAITAKU-SET-EXT.
            EXIT.
-      * 
+      *
+      *****************************************************************
+      *    ºßÁí¿ÇÊÔ½¸
+      *****************************************************************
+       ZAITAKU-HENSYU-SEC                SECTION.
+      *
+           INITIALIZE                           SRYACT-REC
+grpsys     MOVE    RECE01-HOSPNUM       TO      SRY-HOSPNUM
+           MOVE    RECE01-NYUGAIKBN     TO      SRY-NYUGAIKBN
+           MOVE    RECE01-PTID          TO      SRY-PTID
+           MOVE    RECE01-SRYYM         TO      SRY-SRYYM
+           MOVE    WRK-ZAITAKU-SRYCD    TO      SRY-SRYCD(1)
+           MOVE    WRK-ZAITAKU-SRYCD    TO      SRY-SRYCD(2)
+           MOVE    WRK-ZAITAKU-SRYCD    TO      SRY-SRYCD(3)
+           MOVE    WRK-ZAITAKU-SRYCD    TO      SRY-SRYCD(4)
+           MOVE    WRK-ZAITAKU-SRYCD    TO      SRY-SRYCD(5)
+           MOVE    SRYACT-REC           TO      MCPDATA-REC
+           MOVE    "tbl_sryact"         TO      MCP-TABLE
+           MOVE    "key7"               TO      MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC               =       ZERO
+               MOVE    "tbl_sryact"         TO  MCP-TABLE
+               MOVE    "key7"               TO  MCP-PATHNAME
+               PERFORM   SRYACT-READ-SEC
+               IF      FLG-SRYACT       =       ZERO
+                   INITIALIZE                    SRYACCT-REC
+grpsys             MOVE    SRY-HOSPNUM      TO   ACCT-HOSPNUM
+                   MOVE    SRY-NYUGAIKBN    TO   ACCT-NYUGAIKBN
+                   MOVE    SRY-SRYKA        TO   ACCT-SRYKA
+                   MOVE    SRY-PTID         TO   ACCT-PTID
+                   MOVE    SRY-SRYYM        TO   ACCT-SRYYM
+                   MOVE    SRY-ZAINUM       TO   ACCT-ZAINUM
+                   MOVE    SRYACCT-REC      TO   MCPDATA-REC
+                   MOVE    "tbl_sryacct"    TO   MCP-TABLE
+                   MOVE    "key31"          TO   MCP-PATHNAME
+grpsys             PERFORM 900-DBSELECT-SEC
+                   IF      MCP-RC           =       ZERO
+                       MOVE    "tbl_sryacct"    TO   MCP-TABLE
+                       MOVE    "key31"          TO   MCP-PATHNAME
+                       PERFORM   SRYACCT-READ-SEC
+                       IF      FLG-SRYACCT  =       ZERO
+                         IF  WRK-ZAITAKU-SRYCD  = "099140003"
+                           IF  (ACCT-ZAIKAISU NOT =  ZERO)
+                               MOVE    "1" TO   WRK-ZAITAKU
+                           END-IF
+                         ELSE
+                           IF  (ACCT-ZAITEN   NOT =  ZERO)  AND
+                               (ACCT-ZAIKAISU NOT =  ZERO)
+                               MOVE    "1" TO   WRK-ZAITAKU
+                           END-IF
+                         END-IF
+                       END-IF
+                   END-IF
+                   MOVE    "tbl_sryacct"    TO   MCP-TABLE
+                   MOVE    "key31"          TO   MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
+               END-IF
+           END-IF
+           MOVE    "tbl_sryact"         TO  MCP-TABLE
+           MOVE    "key7"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       ZAITAKU-HENSYU-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    ¥Ç¡¼¥¿½ÐÎÏ½èÍý
       *****************************************************************
