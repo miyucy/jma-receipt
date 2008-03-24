@@ -824,7 +824,7 @@
                    IF      WRK-JIHI    >   ZERO
                        MOVE    WRK-JIHI    TO  WRK-Z9
                        MOVE    "*"         TO  WRK-Z9 (2:1)
-                       MOVE    WRK-Z9      TO  HCM41-MONEY (7 CNT-LINE)
+                       MOVE    WRK-Z9      TO  HCM41-MONEY (6 CNT-LINE)
                    END-IF
                END-IF
            END-IF
