@@ -357,6 +357,7 @@
            COPY    "CPSK2004.INC".
       *
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
            COPY    "CPSK2008.INC".
       *
@@ -916,6 +917,24 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-2005-HOSPNUM
                MOVE    SPACE            TO  SYS-2005-REC
                INITIALIZE                   SYS-2005-REC
            END-IF    
+      *
+      *    区分コード０１のデータ読み込み
+           INITIALIZE                  SYS-200501-REC
+           MOVE    "2005"          TO  SYS-200501-KANRICD
+           MOVE    "01"            TO  SYS-200501-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-200501-STYUKYMD
+                                       SYS-200501-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
+           MOVE    SYS-200501-REC  TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE   MCPDATA-REC  TO  SYS-200501-REC
+           ELSE
+               INITIALIZE              SYS-200501-REC
+               MOVE    SYS-2005-TERMID (1:4)
+                                   TO  SYS-200501-TBL (1:4)
+           END-IF
+      *
            MOVE    SYS-2005-SYAPRTNM    TO  SPA-NAI-2005-SYAPRTNM
            MOVE    SYS-2005-KKHPRTNM    TO  SPA-NAI-2005-KKHPRTNM
            MOVE    SYS-2005-SYAPRTNM-NEXT
@@ -962,10 +981,10 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-2005-HOSPNUM
            MOVE    SYS-2005-KKHPRTNM-NEXT-N
                                        TO  SPA-NAI-2005-KKHPRTNM-NEXT-N
       *
-           IF      SYS-2005-PRT-CHECKKBN =   SPACE
-               MOVE   "0"                TO  SYS-2005-PRT-CHECKKBN
+           IF      SYS-200501-PRT-CHECKKBN =   SPACE
+               MOVE   "0"                TO  SYS-200501-PRT-CHECKKBN
            END-IF
-           MOVE    SYS-2005-PRT-CHECKKBN
+           MOVE    SYS-200501-PRT-CHECKKBN
                                        TO  SPA-NAI-2005-PRT-CHECKKBN
       *    
       *    出力順（一括作成）

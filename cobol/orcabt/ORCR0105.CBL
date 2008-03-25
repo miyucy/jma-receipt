@@ -30,6 +30,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  04.02.01    NACL-ÌçÏÆ    08/03/17  µÜºê¸©ÃÏÊý¸øÈñ¡Ê£±£¹£°¡Ë¤ÎÂÐ±þ
+      *  04.02.02    NACL-Æ£¸¶    08/03/25  ÆÃµ­»ö¹à¤ÎÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -584,7 +585,7 @@
            03  FILLER          PIC X(02)   VALUE   "03".
            03  FILLER          PIC X(10)   VALUE   "£°£³Ä¹½è".
            03  FILLER          PIC X(02)   VALUE   "04".
-           03  FILLER          PIC X(10)   VALUE   "£°£´Ï·ÊÝ".
+           03  FILLER          PIC X(10)   VALUE   "£°£´¸åÊÝ".
            03  FILLER          PIC X(02)   VALUE   "07".
            03  FILLER          PIC X(10)   VALUE   "£°£·Ï·Ê»".
            03  FILLER          PIC X(02)   VALUE   "08".
@@ -611,11 +612,13 @@
            03  FILLER          PIC X(10)   VALUE   "£±£¸°ìÈÌ".
            03  FILLER          PIC X(02)   VALUE   "19".
            03  FILLER          PIC X(10)   VALUE   "£±£¹Äã½ê".
+           03  FILLER          PIC X(02)   VALUE   "20".
+           03  FILLER          PIC X(10)   VALUE   "£²£°Æó³ä".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
-           03  TBL-TOKKI       OCCURS   17.
+           03  TBL-TOKKI       OCCURS   18.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
-       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   17.
+       01  TBL-TOKKI-MAX                   PIC 9(02)   VALUE   18.
       *
       *   ¾É¾õ¾Üµ­¶èÊ¬¤ÎÉ½Âê
        01  TBL-RECECOM-AREA.

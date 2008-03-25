@@ -350,7 +350,7 @@
 	  <class>GtkPandaEntry</class>
 	  <name>PREFPRGID</name>
 	  <x>245</x>
-	  <y>548</y>
+	  <y>577</y>
 	  <width>130</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -378,7 +378,7 @@
 	  <class>GtkPandaEntry</class>
 	  <name>PREFPRGID1</name>
 	  <x>245</x>
-	  <y>572</y>
+	  <y>600</y>
 	  <width>130</width>
 	  <height>24</height>
 	  <can_focus>True</can_focus>
@@ -660,38 +660,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label326</name>
-	  <x>600</x>
-	  <y>130</y>
-	  <width>56</width>
-	  <height>24</height>
-	  <label>（続紙）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>labe2213</name>
-	  <x>550</x>
-	  <y>160</y>
-	  <width>64</width>
-	  <height>24</height>
-	  <label>続紙区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label325</name>
 	  <x>600</x>
 	  <y>70</y>
@@ -723,117 +691,12 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label332</name>
-	  <x>550</x>
-	  <y>100</y>
-	  <width>110</width>
-	  <height>24</height>
-	  <label>国保</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkHSeparator</class>
 	  <name>hseparator2</name>
 	  <x>530</x>
 	  <y>30</y>
 	  <width>460</width>
 	  <height>10</height>
-	</widget>
-
-	<widget>
-	  <class>GtkHSeparator</class>
-	  <name>hseparator1</name>
-	  <x>530</x>
-	  <y>200</y>
-	  <width>460</width>
-	  <height>10</height>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>NEXTPRTKBN1_COMBO</name>
-	  <x>680</x>
-	  <y>160</y>
-	  <width>140</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>NEXTPRTKBN_1</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>16</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>NEXTPRTKBN_COMBO</name>
-	  <x>840</x>
-	  <y>160</y>
-	  <width>140</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>NEXTPRTKBN</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>16</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
 	</widget>
 
 	<widget>
@@ -870,12 +733,12 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label223</name>
+	  <name>label212</name>
 	  <x>30</x>
-	  <y>548</y>
-	  <width>144</width>
+	  <y>136</y>
+	  <width>132</width>
 	  <height>24</height>
-	  <label>県別レセプト編集</label>
+	  <label>転帰日編集区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
@@ -886,9 +749,498 @@
 
 	<widget>
 	  <class>GtkLabel</class>
+	  <name>label230</name>
+	  <x>30</x>
+	  <y>176</y>
+	  <width>148</width>
+	  <height>24</height>
+	  <label>社保ＯＣＲ出力区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label327</name>
+	  <x>30</x>
+	  <y>456</y>
+	  <width>150</width>
+	  <height>24</height>
+	  <label>老人＋原爆  レセ記載</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label511</name>
+	  <x>30</x>
+	  <y>432</y>
+	  <width>144</width>
+	  <height>20</height>
+	  <label>                    （入院）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label510</name>
+	  <x>30</x>
+	  <y>410</y>
+	  <width>150</width>
+	  <height>24</height>
+	  <label>病棟番号編集区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>labe2215</name>
+	  <x>30</x>
+	  <y>376</y>
+	  <width>150</width>
+	  <height>24</height>
+	  <label>診療科編集区分（入院）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label320</name>
+	  <x>30</x>
+	  <y>350</y>
+	  <width>144</width>
+	  <height>20</height>
+	  <label>                    （入院外）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label319</name>
+	  <x>30</x>
+	  <y>330</y>
+	  <width>144</width>
+	  <height>24</height>
+	  <label>入退院履歴記載区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>labe2212</name>
+	  <x>30</x>
+	  <y>296</y>
+	  <width>122</width>
+	  <height>24</height>
+	  <label>通し番号編集区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label219</name>
+	  <x>30</x>
+	  <y>216</y>
+	  <width>144</width>
+	  <height>24</height>
+	  <label>国保ＯＣＲ出力区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label512</name>
+	  <x>30</x>
+	  <y>256</y>
+	  <width>160</width>
+	  <height>24</height>
+	  <label>広域連合ＯＣＲ出力区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>KOUIKIPRTNM_NEXT</name>
+	  <x>680</x>
+	  <y>190</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Wed, 27 Feb 2002 01:43:05 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Wed, 27 Feb 2002 01:43:21 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text>1234567890123456</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>KOUIKIPRTNM_NEXT_N</name>
+	  <x>840</x>
+	  <y>190</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Wed, 27 Feb 2002 01:43:05 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Wed, 27 Feb 2002 01:43:21 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text>1234567890123456</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkHSeparator</class>
+	  <name>hseparator1</name>
+	  <x>530</x>
+	  <y>260</y>
+	  <width>460</width>
+	  <height>10</height>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>KOUIKIPRTNM</name>
+	  <x>680</x>
+	  <y>160</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Wed, 27 Feb 2002 01:43:05 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Wed, 27 Feb 2002 01:43:21 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text>1234567890123456</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>KOUIKIPRTNM_N</name>
+	  <x>840</x>
+	  <y>160</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Wed, 27 Feb 2002 01:43:05 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Wed, 27 Feb 2002 01:43:21 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text>1234567890123456</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>labe2213</name>
+	  <x>550</x>
+	  <y>220</y>
+	  <width>64</width>
+	  <height>24</height>
+	  <label>続紙区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label326</name>
+	  <x>600</x>
+	  <y>130</y>
+	  <width>56</width>
+	  <height>24</height>
+	  <label>（続紙）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label513</name>
+	  <x>600</x>
+	  <y>190</y>
+	  <width>56</width>
+	  <height>24</height>
+	  <label>（続紙）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label332</name>
+	  <x>550</x>
+	  <y>100</y>
+	  <width>110</width>
+	  <height>24</height>
+	  <label>国保</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label514</name>
+	  <x>550</x>
+	  <y>160</y>
+	  <width>110</width>
+	  <height>24</height>
+	  <label>広域連合</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label222</name>
+	  <x>490</x>
+	  <y>336</y>
+	  <width>132</width>
+	  <height>24</height>
+	  <label>自動遷移区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label515</name>
+	  <x>490</x>
+	  <y>536</y>
+	  <width>180</width>
+	  <height>24</height>
+	  <label>一括作成出力順（広域連合）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label222</name>
+	  <x>490</x>
+	  <y>376</y>
+	  <width>160</width>
+	  <height>24</height>
+	  <label>印刷後のチェック解除</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label441</name>
+	  <x>490</x>
+	  <y>416</y>
+	  <width>160</width>
+	  <height>24</height>
+	  <label>一括作成出力順（全体）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label223</name>
+	  <x>490</x>
+	  <y>456</y>
+	  <width>160</width>
+	  <height>24</height>
+	  <label>一括作成出力順（社保）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label333</name>
+	  <x>490</x>
+	  <y>496</y>
+	  <width>160</width>
+	  <height>24</height>
+	  <label>一括作成出力順（国保）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label334</name>
+	  <x>490</x>
+	  <y>576</y>
+	  <width>160</width>
+	  <height>24</height>
+	  <label>個別作成出力順（医保）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label301</name>
+	  <x>190</x>
+	  <y>600</y>
+	  <width>48</width>
+	  <height>24</height>
+	  <label>入　院</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>1</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
 	  <name>label225</name>
 	  <x>70</x>
-	  <y>572</y>
+	  <y>600</y>
 	  <width>90</width>
 	  <height>24</height>
 	  <label>プログラム名</label>
@@ -904,13 +1256,61 @@
 	  <class>GtkLabel</class>
 	  <name>label300</name>
 	  <x>190</x>
-	  <y>548</y>
+	  <y>577</y>
 	  <width>48</width>
 	  <height>24</height>
 	  <label>入院外</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>1</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label223</name>
+	  <x>30</x>
+	  <y>580</y>
+	  <width>144</width>
+	  <height>24</height>
+	  <label>県別レセプト編集</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label328</name>
+	  <x>30</x>
+	  <y>496</y>
+	  <width>150</width>
+	  <height>24</height>
+	  <label>自費レセ摘要欄記載</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label519</name>
+	  <x>30</x>
+	  <y>536</y>
+	  <width>150</width>
+	  <height>24</height>
+	  <label>広域連合作成区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -1038,6 +1438,46 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
+	  <name>TENKIHENKBN_COMBO</name>
+	  <x>190</x>
+	  <y>136</y>
+	  <width>208</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>TENKIHENKBN</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>20</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
 	  <name>SYAOCRKBN_COMBO</name>
 	  <x>190</x>
 	  <y>176</y>
@@ -1118,9 +1558,49 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>RENNUMHENKBN_COMBO</name>
+	  <name>KOUIKIOCRKBN_COMBO</name>
 	  <x>190</x>
 	  <y>256</y>
+	  <width>208</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KOUIKIOCRKBN</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>24</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>RENNUMHENKBN_COMBO</name>
+	  <x>190</x>
+	  <y>296</y>
 	  <width>208</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1160,7 +1640,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>NYUTAIINREKI_COMBO</name>
 	  <x>190</x>
-	  <y>296</y>
+	  <y>336</y>
 	  <width>208</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1200,7 +1680,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>SRYKAHENKBN_COMBO</name>
 	  <x>190</x>
-	  <y>336</y>
+	  <y>376</y>
 	  <width>208</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1237,258 +1717,10 @@
 	</widget>
 
 	<widget>
-	  <class>GtkLabel</class>
-	  <name>label212</name>
-	  <x>30</x>
-	  <y>136</y>
-	  <width>132</width>
-	  <height>24</height>
-	  <label>転帰日編集区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label230</name>
-	  <x>30</x>
-	  <y>176</y>
-	  <width>148</width>
-	  <height>24</height>
-	  <label>社保ＯＣＲ出力区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label219</name>
-	  <x>30</x>
-	  <y>216</y>
-	  <width>144</width>
-	  <height>24</height>
-	  <label>国保ＯＣＲ出力区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>labe2212</name>
-	  <x>30</x>
-	  <y>256</y>
-	  <width>122</width>
-	  <height>24</height>
-	  <label>通し番号編集区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label319</name>
-	  <x>30</x>
-	  <y>290</y>
-	  <width>144</width>
-	  <height>24</height>
-	  <label>入退院履歴記載区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label327</name>
-	  <x>30</x>
-	  <y>416</y>
-	  <width>150</width>
-	  <height>24</height>
-	  <label>老人＋原爆  レセ記載</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label328</name>
-	  <x>30</x>
-	  <y>456</y>
-	  <width>150</width>
-	  <height>24</height>
-	  <label>自費レセ摘要欄記載</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>TENKIHENKBN_COMBO</name>
-	  <x>190</x>
-	  <y>136</y>
-	  <width>208</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>TENKIHENKBN</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>20</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label301</name>
-	  <x>190</x>
-	  <y>572</y>
-	  <width>48</width>
-	  <height>24</height>
-	  <label>入　院</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>1</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label510</name>
-	  <x>30</x>
-	  <y>370</y>
-	  <width>150</width>
-	  <height>24</height>
-	  <label>病棟番号編集区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>labe2215</name>
-	  <x>30</x>
-	  <y>336</y>
-	  <width>150</width>
-	  <height>24</height>
-	  <label>診療科編集区分（入院）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label320</name>
-	  <x>30</x>
-	  <y>310</y>
-	  <width>144</width>
-	  <height>20</height>
-	  <label>                    （入院外）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label511</name>
-	  <x>30</x>
-	  <y>392</y>
-	  <width>144</width>
-	  <height>20</height>
-	  <label>                    （入院）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label222</name>
-	  <x>512</x>
-	  <y>376</y>
-	  <width>132</width>
-	  <height>24</height>
-	  <label>自動遷移区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>BTUNUM_KSIKBN_COMBO</name>
 	  <x>190</x>
-	  <y>376</y>
+	  <y>416</y>
 	  <width>208</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1526,9 +1758,49 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
-	  <name>JIHITEKKSIKBN_COMBO</name>
+	  <name>RJNGNBKKBN_COMBO</name>
 	  <x>190</x>
 	  <y>456</y>
+	  <width>208</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>RJNGNBKKBN</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>24</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>JIHITEKKSIKBN_COMBO</name>
+	  <x>190</x>
+	  <y>496</y>
 	  <width>100</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1566,9 +1838,209 @@
 
 	<widget>
 	  <class>GtkPandaCombo</class>
+	  <name>KOUIKIKBN_COMBO</name>
+	  <x>190</x>
+	  <y>536</y>
+	  <width>270</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KOUIKIKBN</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>34</text_max_length>
+	    <text></text>
+	    <input_mode>ASCII</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>NEXTPRTKBN1_COMBO</name>
+	  <x>680</x>
+	  <y>220</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>NEXTPRTKBN_1</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>16</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>NEXTPRTKBN_COMBO</name>
+	  <x>840</x>
+	  <y>220</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>NEXTPRTKBN</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>16</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>AUTODSPKBN_COMBO</name>
+	  <x>680</x>
+	  <y>336</y>
+	  <width>200</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>AUTODSPKBN</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>20</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>PRT_CHECKKBN_COMBO</name>
+	  <x>680</x>
+	  <y>376</y>
+	  <width>200</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>PRT_CHECKKBN</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>22</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
 	  <name>PRTJYUNKBN4_COMBO</name>
 	  <x>680</x>
-	  <y>456</y>
+	  <y>416</y>
 	  <width>250</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1608,7 +2080,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>PRTJYUNKBN1_COMBO</name>
 	  <x>680</x>
-	  <y>496</y>
+	  <y>456</y>
 	  <width>250</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1648,7 +2120,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>PRTJYUNKBN3_COMBO</name>
 	  <x>680</x>
-	  <y>536</y>
+	  <y>496</y>
 	  <width>250</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -1662,6 +2134,46 @@
 	    <class>GtkPandaEntry</class>
 	    <child_name>GtkPandaCombo:entry</child_name>
 	    <name>PRTJYUNKBN3</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>31</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>PRTJYUNKBN5_COMBO</name>
+	  <x>680</x>
+	  <y>536</y>
+	  <width>250</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>PRTJYUNKBN5</name>
 	    <can_focus>True</can_focus>
 	    <signal>
 	      <name>activate</name>
@@ -1719,206 +2231,6 @@
 	    <text_visible>True</text_visible>
 	    <text_max_length>31</text_max_length>
 	    <text>01 １２３４５６７８９０１</text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label441</name>
-	  <x>512</x>
-	  <y>456</y>
-	  <width>160</width>
-	  <height>24</height>
-	  <label>一括作成出力順（全体）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label223</name>
-	  <x>512</x>
-	  <y>496</y>
-	  <width>160</width>
-	  <height>24</height>
-	  <label>一括作成出力順（社保）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label333</name>
-	  <x>512</x>
-	  <y>536</y>
-	  <width>160</width>
-	  <height>24</height>
-	  <label>一括作成出力順（国保）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label334</name>
-	  <x>512</x>
-	  <y>576</y>
-	  <width>160</width>
-	  <height>24</height>
-	  <label>個別作成出力順（医保）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label222</name>
-	  <x>512</x>
-	  <y>416</y>
-	  <width>160</width>
-	  <height>24</height>
-	  <label>印刷後のチェック解除</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>RJNGNBKKBN_COMBO</name>
-	  <x>190</x>
-	  <y>416</y>
-	  <width>208</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>RJNGNBKKBN</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>24</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>AUTODSPKBN_COMBO</name>
-	  <x>680</x>
-	  <y>376</y>
-	  <width>200</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>AUTODSPKBN</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>20</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>PRT_CHECKKBN_COMBO</name>
-	  <x>680</x>
-	  <y>416</y>
-	  <width>200</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>PRT_CHECKKBN</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>22</text_max_length>
-	    <text></text>
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
@@ -2582,10 +2894,166 @@
 	</widget>
 
 	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>RECEDENOUT</name>
+	  <x>204</x>
+	  <y>136</y>
+	  <width>260</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Wed, 27 Feb 2002 01:43:05 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Wed, 27 Feb 2002 01:43:21 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>30</text_max_length>
+	  <text>123456789012345678901234567899</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>NI_JYOKEN1</name>
+	  <x>204</x>
+	  <y>256</y>
+	  <width>100</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZZZZZZZ</format>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>NI_JYOKEN2</name>
+	  <x>204</x>
+	  <y>296</y>
+	  <width>100</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZZZZZZZ</format>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>NI_JYOKEN3</name>
+	  <x>204</x>
+	  <y>376</y>
+	  <width>100</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZZZZZZZ</format>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>NI_JYOKEN4</name>
+	  <x>204</x>
+	  <y>416</y>
+	  <width>100</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZZZZZZZ</format>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label239</name>
+	  <x>48</x>
+	  <y>175</y>
+	  <width>170</width>
+	  <height>16</height>
+	  <label>レセプトコメント</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label213</name>
+	  <x>48</x>
+	  <y>136</y>
+	  <width>144</width>
+	  <height>24</height>
+	  <label>レセ電データ出力先</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
 	  <class>GtkLabel</class>
 	  <name>label212</name>
 	  <x>48</x>
-	  <y>64</y>
+	  <y>56</y>
 	  <width>148</width>
 	  <height>24</height>
 	  <label>国保レセ電出力区分</label>
@@ -2599,15 +3067,191 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label213</name>
+	  <name>label516</name>
 	  <x>48</x>
-	  <y>112</y>
-	  <width>144</width>
+	  <y>96</y>
+	  <width>160</width>
 	  <height>24</height>
-	  <label>レセ電データ出力先</label>
+	  <label>広域連合レセ電出力区分</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label240</name>
+	  <x>48</x>
+	  <y>192</y>
+	  <width>150</width>
+	  <height>16</height>
+	  <label>（症状詳記）記録区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>NI_JYOKEN6</name>
+	  <x>204</x>
+	  <y>456</y>
+	  <width>100</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZZZZZZZ</format>
+	</widget>
+
+	<widget>
+	  <class>GtkNumberEntry</class>
+	  <name>NI_JYOKEN5</name>
+	  <x>204</x>
+	  <y>336</y>
+	  <width>100</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <format>ZZZZZZZZ</format>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label242</name>
+	  <x>48</x>
+	  <y>416</y>
+	  <width>144</width>
+	  <height>24</height>
+	  <label>                        国保</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label242</name>
+	  <x>48</x>
+	  <y>376</y>
+	  <width>144</width>
+	  <height>24</height>
+	  <label>              入院・社保</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label242</name>
+	  <x>48</x>
+	  <y>296</y>
+	  <width>144</width>
+	  <height>24</height>
+	  <label>                        国保</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label517</name>
+	  <x>48</x>
+	  <y>336</y>
+	  <width>144</width>
+	  <height>24</height>
+	  <label>                 広域連合</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label518</name>
+	  <x>48</x>
+	  <y>456</y>
+	  <width>144</width>
+	  <height>24</height>
+	  <label>                 広域連合</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label241</name>
+	  <x>48</x>
+	  <y>220</y>
+	  <width>200</width>
+	  <height>24</height>
+	  <label>日計表記録条件（合計点数）</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label242</name>
+	  <x>48</x>
+	  <y>256</y>
+	  <width>144</width>
+	  <height>24</height>
+	  <label>          入院外・社保</label>
+	  <justify>GTK_JUSTIFY_RIGHT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
@@ -2657,7 +3301,7 @@
 	  <class>GtkPandaCombo</class>
 	  <name>KKHRECEKBN_COMBO</name>
 	  <x>204</x>
-	  <y>64</y>
+	  <y>56</y>
 	  <width>208</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -2694,38 +3338,50 @@
 	</widget>
 
 	<widget>
-	  <class>GtkPandaEntry</class>
-	  <name>RECEDENOUT</name>
+	  <class>GtkPandaCombo</class>
+	  <name>KOUIKIRECEKBN_COMBO</name>
 	  <x>204</x>
-	  <y>112</y>
-	  <width>260</width>
+	  <y>96</y>
+	  <width>208</width>
 	  <height>24</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Wed, 27 Feb 2002 01:43:05 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Wed, 27 Feb 2002 01:43:21 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <text_visible>True</text_visible>
-	  <text_max_length>30</text_max_length>
-	  <text>123456789012345678901234567899</text>
-	  <input_mode>ASCII</input_mode>
-	  <xim_enabled>False</xim_enabled>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>KOUIKIRECEKBN</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:23:41 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Mon, 25 Dec 2000 08:24:01 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>24</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
 	</widget>
 
 	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>RECECOMKBN_COMBO</name>
 	  <x>204</x>
-	  <y>160</y>
+	  <y>176</y>
 	  <width>208</width>
 	  <height>24</height>
 	  <value_in_list>False</value_in_list>
@@ -2759,214 +3415,6 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkNumberEntry</class>
-	  <name>NI_JYOKEN1</name>
-	  <x>204</x>
-	  <y>256</y>
-	  <width>100</width>
-	  <height>24</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <format>ZZZZZZZZ</format>
-	</widget>
-
-	<widget>
-	  <class>GtkNumberEntry</class>
-	  <name>NI_JYOKEN2</name>
-	  <x>204</x>
-	  <y>304</y>
-	  <width>100</width>
-	  <height>24</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <format>ZZZZZZZZ</format>
-	</widget>
-
-	<widget>
-	  <class>GtkNumberEntry</class>
-	  <name>NI_JYOKEN3</name>
-	  <x>204</x>
-	  <y>352</y>
-	  <width>100</width>
-	  <height>24</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <format>ZZZZZZZZ</format>
-	</widget>
-
-	<widget>
-	  <class>GtkNumberEntry</class>
-	  <name>NI_JYOKEN4</name>
-	  <x>204</x>
-	  <y>400</y>
-	  <width>100</width>
-	  <height>24</height>
-	  <can_focus>True</can_focus>
-	  <signal>
-	    <name>activate</name>
-	    <handler>send_event</handler>
-	    <data>ACTIVATE</data>
-	    <last_modification_time>Tue, 26 Dec 2000 01:04:18 GMT</last_modification_time>
-	  </signal>
-	  <signal>
-	    <name>changed</name>
-	    <handler>entry_changed</handler>
-	    <data>CHANGED</data>
-	    <last_modification_time>Tue, 26 Dec 2000 01:04:36 GMT</last_modification_time>
-	  </signal>
-	  <editable>True</editable>
-	  <format>ZZZZZZZZ</format>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label242</name>
-	  <x>48</x>
-	  <y>256</y>
-	  <width>144</width>
-	  <height>24</height>
-	  <label>          入院外・社保</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label242</name>
-	  <x>48</x>
-	  <y>304</y>
-	  <width>144</width>
-	  <height>24</height>
-	  <label>                        国保</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label242</name>
-	  <x>48</x>
-	  <y>352</y>
-	  <width>144</width>
-	  <height>24</height>
-	  <label>              入院・社保</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label242</name>
-	  <x>48</x>
-	  <y>400</y>
-	  <width>144</width>
-	  <height>24</height>
-	  <label>                        国保</label>
-	  <justify>GTK_JUSTIFY_RIGHT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label241</name>
-	  <x>48</x>
-	  <y>208</y>
-	  <width>200</width>
-	  <height>24</height>
-	  <label>日計表記録条件（合計点数）</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label240</name>
-	  <x>48</x>
-	  <y>175</y>
-	  <width>170</width>
-	  <height>16</height>
-	  <label>（症状詳記）記録区分</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label239</name>
-	  <x>48</x>
-	  <y>155</y>
-	  <width>170</width>
-	  <height>16</height>
-	  <label>レセプトコメント</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
 	</widget>
       </widget>
 

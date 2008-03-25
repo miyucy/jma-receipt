@@ -51,6 +51,13 @@ W12	{
 					count	int;
 					item	varchar(24)[4];
 				};
+				KOUIKIOCRKBN_COMBO	{
+					KOUIKIOCRKBN	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[4];
+				};
 				RENNUMHENKBN_COMBO	{
 					RENNUMHENKBN	{
 						value	varchar(22);
@@ -93,6 +100,13 @@ W12	{
 					count	int;
 					item	varchar(10)[2];
 				};
+				KOUIKIKBN_COMBO	{
+					KOUIKIKBN	{
+						value	varchar(34);
+					};
+					count	int;
+					item	varchar(34)[4];
+				};
 				PREFPRGID	{
 					value	varchar(15);
 				};
@@ -112,6 +126,12 @@ W12	{
 				KKHPRTNM_NEXT	{
 					value	varchar(16);
 				};
+				KOUIKIPRTNM	{
+					value	varchar(16);
+				};
+				KOUIKIPRTNM_NEXT	{
+					value	varchar(16);
+				};
 				NEXTPRTKBN1_COMBO	{
 					NEXTPRTKBN_1	{
 						value	varchar(16);
@@ -129,6 +149,12 @@ W12	{
 					value	varchar(16);
 				};
 				KKHPRTNM_NEXT_N	{
+					value	varchar(16);
+				};
+				KOUIKIPRTNM_N	{
+					value	varchar(16);
+				};
+				KOUIKIPRTNM_NEXT_N	{
 					value	varchar(16);
 				};
 				NEXTPRTKBN_COMBO	{
@@ -168,6 +194,13 @@ W12	{
 				};
 				PRTJYUNKBN3_COMBO	{
 					PRTJYUNKBN3	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(31)[10];
+				};
+				PRTJYUNKBN5_COMBO	{
+					PRTJYUNKBN5	{
 						value	varchar(31);
 					};
 					count	int;
@@ -250,6 +283,13 @@ W12	{
 					count	int;
 					item	varchar(24)[4];
 				};
+				KOUIKIRECEKBN_COMBO	{
+					KOUIKIRECEKBN	{
+						value	varchar(24);
+					};
+					count	int;
+					item	varchar(24)[4];
+				};
 				RECEDENOUT	{
 					value	varchar(30);
 				};
@@ -266,10 +306,16 @@ W12	{
 				NI_JYOKEN2 {
 					value	number(8);
 				};
+				NI_JYOKEN5 {
+					value	number(8);
+				};
 				NI_JYOKEN3 {
 					value	number(8);
 				};
 				NI_JYOKEN4 {
+					value	number(8);
+				};
+				NI_JYOKEN6 {
 					value	number(8);
 				};
 			};

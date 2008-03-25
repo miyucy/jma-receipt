@@ -962,6 +962,7 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
            COPY    "CPSK2008.INC".
       *
@@ -1476,6 +1477,26 @@
            ELSE    
                INITIALIZE                   SYS-2005-REC
            END-IF
+      *
+      *    レセプト編集情報（区分コード０１）
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "2005"           TO  SYS-KANRICD
+           MOVE    "01"             TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM   TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+           MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
+           PERFORM 960-KANRIMST-READ-SEC
+           IF      FLG-KANRIMST     =   ZERO
+               MOVE   MCPDATA-REC  TO  SYS-200501-REC
+           ELSE
+               INITIALIZE              SYS-200501-REC
+               MOVE    SYS-2005-TERMID (1:4)
+                                   TO  SYS-200501-TBL (1:4)
+           END-IF
+      *
            IF      SYS-2005-BYOMEIHENKBN    =   SPACE
                MOVE    ZERO             TO  SYS-2005-BYOMEIHENKBN
            END-IF
@@ -1510,9 +1531,9 @@
                MOVE    ZERO             TO
                                         SYS-2005-RECESYUBETU-KISAIKBN
            END-IF
-           IF      SYS-2005-BTUNUM-KSIKBN
+           IF      SYS-200501-BTUNUM-KSIKBN
                                         =   SPACE
-               MOVE    "0"             TO  SYS-2005-BTUNUM-KSIKBN
+               MOVE    "0"              TO  SYS-200501-BTUNUM-KSIKBN
            END-IF
       *         
       *    レセプト編綴順情報
@@ -2634,7 +2655,7 @@
            END-IF
       *
       *    病棟番号・病室番号
-           EVALUATE    SYS-2005-BTUNUM-KSIKBN
+           EVALUATE    SYS-200501-BTUNUM-KSIKBN
                WHEN    "1"
                    MOVE    RECE62-LASTBTUNUM   TO  HC06-BTUNUM
                WHEN    "2"
