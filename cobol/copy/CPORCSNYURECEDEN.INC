@@ -36,7 +36,7 @@
            03  LNK-NYURECEDEN-PTID                   PIC  9(10).
       *算定年月
            03  LNK-NYURECEDEN-SANTEIYM               PIC  X(06).
-      *保険区分（１：社保　２：国保）
+      *保険区分（１：社保　２：国保　３：広域連合）
            03  LNK-NYURECEDEN-HKNKBN                 PIC  X(01).
       *返却項目
            03  LNK-NYURECEDEN-HENKYAKU-AREA.

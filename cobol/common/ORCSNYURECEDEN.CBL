@@ -57,6 +57,8 @@
       *  04.01.00    NACL-小豆沢  07/12/19  短期滞在手術基本料２の入院翌日の
       *                                     食事と入院料加算対応
       *  04.01.00    NACL-小豆沢  08/02/04  標欠と定数超過の外泊修正
+      *平成２０年４月改定対応
+      *  04.02.00    NACL-小豆沢  08/03/25  広域連合（後期高齢者）のレセ電対応
       *****************************************************************
       *
       *
@@ -577,14 +579,14 @@
            END-IF
       *
       *    保険区分チェック
-           IF     LNK-NYURECEDEN-HKNKBN    =   "1"  OR  "2"
+           IF     LNK-NYURECEDEN-HKNKBN    =   "1"  OR  "2"  OR  "3"
                CONTINUE
            ELSE
                MOVE    3               TO  LNK-NYURECEDEN-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    入院中のチェック（入院会計マスター検索）
+      *    入院中のチェック（入院会計マスターの保険組合せ検索）
            INITIALIZE                      NYUINACCT-REC
            MOVE    LNK-NYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
            MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
@@ -653,19 +655,36 @@
                                   ( COMB-HKNNUM(1:2)  =    "98")
                                 MOVE   ZERO   TO  WRK-HKNCOMBI-DAY(IDX)
                             ELSE
-                                IF     LNK-NYURECEDEN-HKNKBN  = "1"
-                                    IF   COMB-HKNNUM = "060"  OR  "067"
+                                EVALUATE   LNK-NYURECEDEN-HKNKBN
+      *                             社保
+                                    WHEN   "1"
+                                        IF   COMB-HKNNUM = "060"  OR
+                                                           "067"  OR
+                                                           "068"  OR
+                                                           "069"  OR
+                                                           "039"  OR
+                                                           "040"
                                         MOVE   ZERO  TO  
                                                   WRK-HKNCOMBI-DAY(IDX)
-                                    END-IF
-                                ELSE
-                                    IF   COMB-HKNNUM = "060"  OR  "067"
-                                        CONTINUE
-                                    ELSE
-                                        MOVE   ZERO  TO  
+                                        END-IF
+      *                             国保
+                                    WHEN   "2"
+                                        IF   COMB-HKNNUM = "060"  OR
+                                                           "067"
+                                            CONTINUE
+                                        ELSE
+                                            MOVE   ZERO  TO  
                                                   WRK-HKNCOMBI-DAY(IDX)
-                                    END-IF
-                                END-IF
+                                        END-IF
+      *                             広域連合
+                                    WHEN   "3"
+                                        IF   COMB-HKNNUM = "039"
+                                            CONTINUE
+                                        ELSE
+                                            MOVE   ZERO  TO  
+                                                  WRK-HKNCOMBI-DAY(IDX)
+                                        END-IF
+                                END-EVALUATE
                             END-IF
                        ELSE
                            MOVE    5          TO  LNK-NYURECEDEN-RC
