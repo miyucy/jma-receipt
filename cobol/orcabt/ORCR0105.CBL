@@ -31,6 +31,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.02.01    NACL-門脇    08/03/17  宮崎県地方公費（１９０）の対応
       *  04.02.02    NACL-藤原    08/03/25  特記事項の変更
+      *                                     診療区分６４：病理診断対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -8461,6 +8462,9 @@
                    ADD     1         TO  CNT-RECE061
                    IF      RECE061-SRYKBN    =   "54"
                        MOVE    "50"          TO  RECE061-SRYKBN
+                   END-IF
+                   IF      RECE061-SRYKBN    =   "64"
+                       MOVE    "60"          TO  RECE061-SRYKBN
                    END-IF
            END-READ
       *

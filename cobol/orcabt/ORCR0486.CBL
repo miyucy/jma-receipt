@@ -47,6 +47,8 @@
       *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  03.05.03    NACL-門脇    07/07/17  個別時のシステム管理編集修正
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （診療区分６４：病理診断対応）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2721,6 +2723,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    END-IF
                    IF      RECE47-SRYKBN    =   "99"
                        MOVE    SPACE         TO  RECE47-SRYKBN
+                   END-IF
+                   IF      RECE47-SRYKBN    =   "64"
+                       MOVE    "60"          TO  RECE47-SRYKBN
                    END-IF
            END-READ
       *

@@ -2171,8 +2171,8 @@
            IF   (RECE62-SRYYM       >=  "200610")
            AND  (RECE62-HKNNUM   NOT =   SPACE  )
       *
-            IF  (RECE62-HKNNUM(1:2)  =   "98"          )
-            OR  (RECE62-HKNNUM       =   "068" OR "069")
+            IF  (RECE62-HKNNUM(1:2)  =   "98"                   )
+            OR  (RECE62-HKNNUM       =   "068" OR "069" OR "040")
               CONTINUE
             ELSE
               MOVE      RECE62-SRYYM          TO   WK-GENGAKU-YM

@@ -88,6 +88,8 @@
       *  03.05.04    NACL-門脇    07/08/07  算定履歴に関わる記載修正
       *  04.01.01    NACL-門脇    07/10/31  公務災害対応
       *  04.01.02    NACL-門脇    07/11/26  特定器材商品名記載対応
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （診療区分６４：病理診断対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1255,6 +1257,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
                    WHEN      "60"
+                   WHEN      "64"
       *            （（検選）日のセット）
                       PERFORM    2001-KENSEN-HANTEI-SEC
                    WHEN      "70"
@@ -1358,6 +1361,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *            （手術日のセット）                                   
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
                    WHEN      "60"
+                   WHEN      "64"
       *            （（検選）日のセット）
                       PERFORM    2001-KENSEN-HANTEI-SEC
                    WHEN      "70"

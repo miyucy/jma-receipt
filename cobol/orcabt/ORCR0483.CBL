@@ -29,6 +29,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （診療区分６４：病理診断対応）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2749,6 +2751,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    ADD     1         TO  CNT-RECE47
                    IF      RECE47-SRYKBN    =   "54"
                        MOVE    "50"          TO  RECE47-SRYKBN
+                   END-IF    
+                   IF      RECE47-SRYKBN    =   "64"
+                       MOVE    "60"          TO  RECE47-SRYKBN
                    END-IF    
            END-READ
       *

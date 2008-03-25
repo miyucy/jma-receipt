@@ -70,6 +70,8 @@
       *  03.05.03    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
       *  04.01.01    NACL-ÌçÏÆ    07/10/31  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.02.01    NACL-ÌçÏÆ    08/02/26  ÀÁµá¶èÊ¬ÊÔ½¸
+      *  04.02.02    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1113,7 +1115,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                END-IF
                                IF   ACCT-SRYKBN  =  "40"  OR  "50"  OR
                                                     "60"  OR  "80"  OR
-                                                    "54"
+                                                    "54"  OR  "64"
                                    PERFORM   21033-GAIRAIXX-HANTEI-SEC
                                END-IF
                                IF   ACCT-SRYKBN  =  "12"   
@@ -2017,7 +2019,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    ZERO    TO      FLG-KENSA
                                MOVE    ZERO    TO      WRK-TEN
                                                        WRK-KIN
-                               IF   ACCT-SRYKBN  =  "60"  
+                               IF   ACCT-SRYKBN  =  "60"  OR  "64"
                                    MOVE     1      TO     FLG-KENSA
                                END-IF
                                PERFORM   21035-ENDATE-HANTEI-SEC 
@@ -2102,7 +2104,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         (ACCT-ZAIKAISU  NOT =    ZERO)    AND
                         (ACCT-JIHOKBN       =   SPACE)
                                MOVE    ZERO    TO      FLG-KENSA
-                               IF   ACCT-SRYKBN  =  "60"  
+                               IF   ACCT-SRYKBN  =  "60"  OR  "64"
                                    MOVE     1      TO     FLG-KENSA
                                END-IF
                                PERFORM   21071-TENSOU4-SEC

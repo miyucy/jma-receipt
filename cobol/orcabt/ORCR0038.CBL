@@ -45,6 +45,8 @@
       *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -418,7 +420,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE04-HOSPNUM      )
       *
                MOVE    RECE04-ZAINUM     TO      WRK-ZAINUM
                MOVE    SPACE             TO      WRK-SRYSYUKBN
-               IF       RECE04-SRYKBN  =  "60"
+               IF       RECE04-SRYKBN  =  "60" OR "64"
                    PERFORM   2101-RECE05-SRYSYUKBN-HENSYU-SEC
                END-IF
       *
