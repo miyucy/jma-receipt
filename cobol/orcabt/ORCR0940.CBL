@@ -38,6 +38,8 @@
       *
       *  03.05.01    NACL-ÌçÏÆ    07/06/01  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
+      *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -266,7 +268,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            IF      RECE86-ZAINUM       =   99999999
                  MOVE     ZERO          TO      RECE87-ZAINUM
            END-IF
-           IF      RECE86-SRYKBN        =       "60"
+           IF      RECE86-SRYKBN        =       "60" OR "64"
               IF   RECE86-KNSJISKBN     =       2
                    MOVE    5            TO      RECE87-KNSJISKBN
               ELSE
@@ -307,7 +309,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE86-ASTER         TO      RECE87-ASTER 
            MOVE    RECE86-TEKIYO        TO      RECE87-TEKIYO
            IF      RECE86-SRYKBN        NOT =   "21"
-               IF   RECE86-SRYKBN       NOT =   "40" AND "60" AND "80"  
+               IF   RECE86-SRYKBN       NOT =   "40" AND "60" AND "80"
+                                                     AND "64"
                    MOVE    RECE86-ZAITEN    TO      RECE87-ZAITEN
                END-IF
                MOVE   RECE86-CDKBN-SYO     TO  RECE87-CDKBN-SYO

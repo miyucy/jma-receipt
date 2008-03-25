@@ -73,6 +73,7 @@
       *  04.01.04    NACL-門脇    08/01/15  公害対応
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （薬剤管理指導料コード追加）
+      *                                     （診療区分６４：病理診断対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1041,6 +1042,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
       *            （手術日のセット）
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
                    WHEN      "60"
+                   WHEN      "64"
       *            （（検選）日のセット）
                       PERFORM    2001-KENSEN-HANTEI-SEC
                    WHEN      "70"
@@ -1185,6 +1187,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
       *            （手術日のセット）                                   
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC               
                    WHEN      "60"
+                   WHEN      "64"
       *            （（検選）日のセット）
                       PERFORM    2001-KENSEN-HANTEI-SEC
                    WHEN      "70"

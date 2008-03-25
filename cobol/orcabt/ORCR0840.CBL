@@ -139,6 +139,7 @@
       *                                     （脳血管リハ（３）コード追加）
       *                                     （介達牽引発症日記載廃止）
       *                                     （初診（夜間・早朝等）加算追加）
+      *                                     （診療区分６４：病理診断対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2938,7 +2939,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF      RECE84-SRYKBN   =  "14" OR "40" OR "50" OR "54"
-                                           OR "60" OR "70" OR "80"
+                                   OR "60" OR "70" OR "80" OR "64"
               SET     TBL-SANSO    TO      1
               SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
                    AT  END
@@ -3094,7 +3095,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                        IF   RECE82-HKNKBN    NOT  =  "4"
                          IF    SRY-SRYKBN   =  "31" OR "32" OR "33" OR
                                                "40" OR "50" OR "54" OR
-                                               "60" OR "70" OR "80"
+                                               "60" OR "70" OR "80" OR
+                                               "64"
                                 MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
                                 COMPUTE   WK-YKZTEN   =
                                                       ACCT-KIZAITEN  +
@@ -3103,7 +3105,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                        ELSE
                          IF    SRY-SRYKBN   =  "31" OR "32" OR "33" OR
                                                "40" OR "50" OR "54" OR
-                                               "60" OR "70" OR "80"
+                                               "60" OR "70" OR "80" OR
+                                               "64"
                                 MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN  
                                 COMPUTE   WK-YKZTEN =                 
                                                       ACCT-KIZAITEN  +  
@@ -3164,7 +3167,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                                             "31"  OR  "32"  OR  "33" OR
                                             "40"  OR  "50"  OR  "54" OR
                                             "60"  OR  "70"  OR  "80" OR
-                                            "13"  OR  "14"
+                                            "13"  OR  "14"  OR  "64"
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -3204,7 +3207,8 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
                                       "31"   OR   "32"   OR   "33"   OR
                                       "40"   OR   "50"   OR   "54"   OR
-                                      "60"   OR   "70"   OR   "14"
+                                      "60"   OR   "70"   OR   "14"   OR
+                                      "64"
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
@@ -3382,6 +3386,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    検査のレセ点数欄の編集
                WHEN    "60"
+               WHEN    "64"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE82-KAISU(17)
                    END-IF
@@ -3743,6 +3748,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    検査のレセ点数欄の編集
                WHEN    "60"
+               WHEN    "64"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE82-KAISU(18)
                    END-IF
@@ -4265,6 +4271,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    検査のレセ点数欄の編集
                WHEN    "60"
+               WHEN    "64"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE82-KAISU(21)
                    END-IF
@@ -4664,6 +4671,7 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    検査のレセ点数欄の編集
                WHEN    "60"
+               WHEN    "64"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE82-KAISU(32)
                    END-IF
@@ -4749,10 +4757,10 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                       UNTIL  ( IDU   >   TBL-ZAICHECK-MAX )
                        OR    ( FLG-RINYAK  NOT =  ZERO    )
       *
-              IF  ( IDU  =  1                          )
-              OR  ((IDU  =  2) AND (ACCT-SRYKBN = "60"))
-              OR  ((IDU  =  3) AND (ACCT-SRYKBN = "80"))
-              OR  ((IDU  =  4) AND (ACCT-SRYKBN = "80"))
+              IF  ( IDU  =  1                                  )
+              OR  ((IDU  =  2) AND (ACCT-SRYKBN = "60" OR "64"))
+              OR  ((IDU  =  3) AND (ACCT-SRYKBN = "80"        ))
+              OR  ((IDU  =  4) AND (ACCT-SRYKBN = "80"        ))
       *
                  INITIALIZE                  SRYACT-REC
                  MOVE RECE82-HOSPNUM     TO  SRY-HOSPNUM
