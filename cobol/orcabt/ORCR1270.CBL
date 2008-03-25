@@ -31,6 +31,8 @@
       *  04.02.01    NACL-藤原    08/02/19  誕生年の記載の修正
       *  04.02.02    NACL-藤原    08/03/13  平成２０年４月改正対応
       *                                     フラグ、データエリア追加
+      *  04.02.03    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     診療区分６４：病理診断対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3337,6 +3339,9 @@ grpsys             MOVE    RECE200-HOSPNUM     TO  KEY-N-HOSPNUM
                    ADD     1         TO  CNT-RECE240
                    IF      RECE240-SRYKBN    =   "54"
                        MOVE    "50"          TO  RECE240-SRYKBN
+                   END-IF    
+                   IF      RECE240-SRYKBN    =   "64"
+                       MOVE    "60"          TO  RECE240-SRYKBN
                    END-IF    
            END-READ
       *

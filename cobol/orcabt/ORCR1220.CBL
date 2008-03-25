@@ -37,6 +37,7 @@
       *                                     ¡ÊÇ¾·ì´É¥ê¥Ï¡Ê£³¡Ë¥³¡¼¥ÉÄÉ²Ã¡Ë
       *                                     ¡Ê²ðÃ£¸£°úÈ¯¾ÉÆüµ­ºÜÇÑ»ß¡Ë
       *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
+      *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1572,8 +1573,8 @@
                  END-IF
                END-IF
       *
-               IF    ( SRY-SRYKBN         =     "60" )
-               AND   ( TNS-KNSJISKBN      =     2    )
+               IF    ( SRY-SRYKBN         =    "60" OR "64" )
+               AND   ( TNS-KNSJISKBN      =     2           )
                    MOVE    TNS-KNSJISKBN        TO  RECE220-KNSJISKBN
                END-IF
       *
@@ -1609,7 +1610,7 @@
                MOVE    SRY-AUTOKBN(IDX2)   TO   RECE230-AUTOKBN(IDX4)
                MOVE    SRY-INPUTNUM(IDX2)  TO   RECE230-INPUTNUM(IDX4)
       *
-               IF      SRY-SRYKBN    =   "40" OR "50" OR "54" OR "60"
+               IF      SRY-SRYKBN = "40" OR "50" OR "54" OR "60" OR "64"
                   IF   SRY-SRYCD(IDX2)(1:1)  =  "7"
                   AND  TNS-DATAKBN           =  "3"
                          COMPUTE WRK-FILMTEN2   =
@@ -2180,7 +2181,7 @@
            END-IF
       *
            IF      RECE220-SRYKBN   =  "14" OR "40" OR "50" OR "54"
-                                            OR "60" OR "70" OR "80"
+                                    OR "60" OR "70" OR "80" OR "64"
               SET     TBL-SANSO    TO      1
               SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
                    AT  END
@@ -2283,7 +2284,7 @@
                        IF    SRY-SRYKBN  =  "31" OR "32" OR "33" OR
                                             "40" OR "50" OR "54" OR
                                             "60" OR "70" OR "80" OR
-                                            "14"
+                                            "14" OR "64"
                            MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
                            COMPUTE  WK-YKZTEN  =  ACCT-KIZAITEN
                                                +  ACCT-YKZTEN
@@ -2299,7 +2300,7 @@
                                             "31"  OR  "32"  OR  "33" OR
                                             "40"  OR  "50"  OR  "54" OR
                                             "60"  OR  "70"  OR  "80" OR
-                                            "13"  OR  "14"
+                                            "13"  OR  "14"  OR  "64"
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -2321,8 +2322,8 @@
                IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
                                       "31"   OR   "32"   OR   "33"   OR
                                       "40"   OR   "50"   OR   "54"   OR
-                                      "60"   OR   "70"   OR
-                                      "13"   OR   "14"
+                                      "60"   OR   "70"   OR   "13"   OR
+                                      "14"   OR   "64"
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
@@ -2527,6 +2528,7 @@
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ¸¡ºº¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "60"
+               WHEN    "64"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE200-KAISU(16)
                    END-IF
@@ -2590,10 +2592,10 @@
                       UNTIL  ( IDU   >   TBL-ZAICHECK-MAX )
                        OR    ( FLG-RINYAK  NOT =  ZERO    )
       *
-              IF  ( IDU  =  1                          )
-              OR  ((IDU  =  2) AND (ACCT-SRYKBN = "60"))
-              OR  ((IDU  =  3) AND (ACCT-SRYKBN = "80"))
-              OR  ((IDU  =  4) AND (ACCT-SRYKBN = "80"))
+              IF  ( IDU  =  1                                  )
+              OR  ((IDU  =  2) AND (ACCT-SRYKBN = "60" OR "64"))
+              OR  ((IDU  =  3) AND (ACCT-SRYKBN = "80"        ))
+              OR  ((IDU  =  4) AND (ACCT-SRYKBN = "80"        ))
       *
                  INITIALIZE                  SRYACT-REC
                  MOVE RECE200-HOSPNUM    TO  SRY-HOSPNUM

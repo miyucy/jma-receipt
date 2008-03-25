@@ -28,6 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （診療区分６４：病理診断対応）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -332,8 +334,8 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    RECE120-ZAINUM      TO  WRK-ZAINUM
                MOVE    SPACE               TO  WRK-SRYSYUKBN
                INITIALIZE                  WRK-COM-AREA
-               IF    ( RECE120-SRYKBN      =   "60" )
-               OR    ( RECE120-COMCDFLG    =   "1"  )
+               IF    ( RECE120-SRYKBN      =   "60" OR "64" )
+               OR    ( RECE120-COMCDFLG    =   "1"          )
                    PERFORM 2101-RECE130-COM-HENSYU-SEC
                END-IF
       *
@@ -498,8 +500,8 @@ grpsys     COPY    "COMMON-SPA".
                          ( WRK-ZAINUM  NOT =  RECE130-ZAINUM )
       *
       *        検査のとき最初の診療区分を取得
-               IF    ( RECE120-SRYKBN      =   "60"  )
-               AND   ( WRK-SRYSYUKBN       =   SPACE )
+               IF    ( RECE120-SRYKBN      =   "60" OR "64" )
+               AND   ( WRK-SRYSYUKBN       =    SPACE       )
                    MOVE   RECE130-SRYSYUKBN   TO   WRK-SRYSYUKBN
                END-IF
       *        コメント取得

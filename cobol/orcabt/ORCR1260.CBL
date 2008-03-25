@@ -31,6 +31,7 @@
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （初診（夜間・早朝等）加算追加）
       *                                     （点滴編集修正）
+      *                                     （診療区分６４：病理診断対応）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -905,6 +906,7 @@
                            PERFORM 2003-SRYKBN11-HENSYU-SEC
       *                検査
                        WHEN    "60"
+                       WHEN    "64"
                            PERFORM 2006-SRYKBN60-CHECK-SEC 
       *                それ以外
                        WHEN    OTHER
@@ -1346,7 +1348,7 @@
        2005-SRYKBNELSE-HENSYU-SEC    SECTION.
       *
       *    検査のとき剤が一つ以上なら”、”で編集
-           IF  RECE220-SRYKBN         =   "60"
+           IF  RECE220-SRYKBN         =   "60" OR "64"
                PERFORM 20051-SRYKBNELSE-KENSA-SEC
            ELSE 
                PERFORM 20052-SRYKBNELSE-CHECK-SEC
@@ -1763,8 +1765,8 @@
            END-PERFORM
       *             
       *    検査のとき回数を集計
-           IF      WRK-ZAIWMAX(3)     >   ZERO
-           AND     RECE220-SRYKBN      =   "60"
+           IF     (WRK-ZAIWMAX(3)      >   ZERO        )
+           AND    (RECE220-SRYKBN      =   "60" OR "64")
                IF      TBL-ZAIW-SRYCD (3 1)   =   WRK-CONS-SAIKETSU1
                                               OR  WRK-CONS-SAIKETSU2
                                               OR  WRK-CONS-SAIKETSU3 
@@ -2726,9 +2728,9 @@
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF                                                      
            IF     (FLG-COMMENT3       =    1                  )   AND
-                  (RECE220-SRYKBN      =   "14" OR "33" OR "90"
+                  (RECE220-SRYKBN     =   "14" OR "33" OR "90"
                                                        OR "92")   AND
-                  (RECE220-ZAITEN      =   ZERO                )      
+                  (RECE220-ZAITEN     =   ZERO                )      
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF     
            IF      RECE220-SAFLG   NOT =   SPACE
@@ -2969,7 +2971,7 @@
       *--------------------------------------------------------------
                MOVE    RECE220-ZAITEN      TO  RECE240-ZAITEN
       *
-               IF      RECE220-SRYKBN     =   "60"
+               IF      RECE220-SRYKBN     =   "60" OR "64"
                        MOVE   WRK-ZAIW-KNSJISKBN
                                              TO  RECE240-KNSJISKBN
                ELSE
@@ -3022,7 +3024,7 @@
            IF      RECE240-ZAINUM      =   99999999
                MOVE     ZERO               TO  RECE240-ZAINUM
            END-IF
-           IF      RECE240-SRYKBN      =   "60"
+           IF      RECE240-SRYKBN      =   "60" OR "64"
                IF      RECE240-KNSJISKBN   =   2
                    MOVE    5                   TO  RECE240-KNSJISKBN
                ELSE
@@ -3052,7 +3054,8 @@
            END-IF
       *
            IF      RECE240-SRYKBN      NOT =   "21"
-               IF      RECE240-SRYKBN  NOT =   "40" AND "60" AND "80"  
+               IF      RECE240-SRYKBN  NOT =   "40" AND "60" AND "80"
+                                                    AND "64"
                    CONTINUE
                ELSE 
                    INITIALIZE              RECE240-ZAITEN

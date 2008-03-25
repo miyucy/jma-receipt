@@ -30,6 +30,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （初診（夜間・早朝等）加算追加）
+      *                                     （診療区分６４：病理診断対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1024,6 +1025,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                            PERFORM 2004-SRYKBN12-HENSYU-SEC
       *                検査
                        WHEN    "60"
+                       WHEN    "64"
                            PERFORM 2006-SRYKBN60-CHECK-SEC 
       *                それ以外
                        WHEN    OTHER
@@ -1631,7 +1633,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            ELSE            
       *
       *        検査のとき編集
-               IF  RECE120-SRYKBN         =   "60"
+               IF  RECE120-SRYKBN         =   "60" OR "64"
                    PERFORM 20051-SRYKBNELSE-KENSA-SEC
                ELSE 
                    PERFORM 20052-SRYKBNELSE-CHECK-SEC
@@ -2050,8 +2052,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-PERFORM
       *             
       *    検査のとき回数を集計
-           IF      WRK-ZAIWMAX(3)     >   ZERO
-           AND     RECE120-SRYKBN      =   "60"
+           IF     (WRK-ZAIWMAX(3)      >   ZERO        )
+           AND    (RECE120-SRYKBN      =   "60" OR "64")
                IF      TBL-ZAIW-SRYCD (3 1)   =   WRK-CONS-SAIKETSU1
                                               OR  WRK-CONS-SAIKETSU2
                                               OR  WRK-CONS-SAIKETSU3 
@@ -3106,7 +3108,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                MOVE    RECE120-ZAITEN     TO  RECE140-ZAITEN
       *
-               IF      RECE120-SRYKBN     =   "60"
+               IF      RECE120-SRYKBN     =   "60" OR "64"
                        MOVE   WRK-ZAIW-KNSJISKBN
                                              TO  RECE140-KNSJISKBN
                ELSE
@@ -3164,7 +3166,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            IF      RECE140-ZAINUM      =   99999999
                MOVE     ZERO               TO  RECE140-ZAINUM
            END-IF
-           IF      RECE140-SRYKBN      =   "60"
+           IF      RECE140-SRYKBN      =   "60" OR "64"
                IF      RECE140-KNSJISKBN   =   2
                    MOVE    5               TO  RECE140-KNSJISKBN
                ELSE
@@ -3193,6 +3195,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
            IF      RECE140-SRYKBN        NOT =   "21"
                IF   RECE140-SRYKBN       NOT =   "40" AND "60" AND "80"
+                                                      AND "64"
                    CONTINUE
                ELSE 
                    INITIALIZE            RECE140-ZAITEN
