@@ -80,6 +80,8 @@
       *  04.01.01    NACL-ÌçÏÆ    07/10/05  Æþ±¡ÅÀÅ©¥³¥á¥ó¥ÈÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/11/01  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.03    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
+      *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -686,6 +688,9 @@
       *    ÅÅ»Ò²½²Ã»»
            03  WRK-CONS-SYOSIN-KASAN29 PIC X(09)   VALUE 
                                                    "111012370".
+      *    ½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN30 PIC X(09)   VALUE 
+                                                   "111012470".
       *
       *    Ì¤¼Â»Ü¸º»»
            03  CONS-GENZAN1            PIC X(09)   VALUE   "190080470".
@@ -1445,6 +1450,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                             OR  WRK-CONS-SYOSIN-KASAN27
                                             OR  WRK-CONS-SYOSIN-KASAN28
       ***>                                  OR  WRK-CONS-SYOSIN-KASAN29
+                                            OR  WRK-CONS-SYOSIN-KASAN30
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         

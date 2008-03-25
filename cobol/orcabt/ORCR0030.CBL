@@ -326,6 +326,11 @@
       *  04.01.11    NACL-ÌçÏÆ    08/02/06  ²¬»³¸©ÃÏÊý¸øÈñÂÐ±þ
       *  04.01.12    NACL-ÌçÏÆ    08/02/12  ½èÊýÎÁÅù¥«¥¦¥ó¥È½¤Àµ
       *  04.02.01    NACL-ÌçÏÆ    08/03/06  À¸ÊÝ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
+      *  04.02.02    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡ÊÆÃµ­»ö¹àÄÉ²ÃÂÐ±þ¡§£²£°¡Ë
+      *                                     ¡ÊÇ¾·ì´É¥ê¥Ï¡Ê£³¡Ë¥³¡¼¥ÉÄÉ²Ã¡Ë
+      *                                     ¡Ê²ðÃ£¸£°úÈ¯¾ÉÆüµ­ºÜÇÑ»ß¡Ë
+      *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -928,11 +933,6 @@
            03  CONS-GAIRAIKSN5     PIC X(09) VALUE "112707010".
            03  CONS-GAIRAIKSN6     PIC X(09) VALUE "112705210".
            03  CONS-GAIRAIKSN7     PIC X(09) VALUE "112706910".
-      *    ºßÂðÁí¹ç¡¦ºßÂðËö´ü
-           03  CONS-ZAITAKU1       PIC X(09) VALUE "114701210".
-           03  CONS-ZAITAKU2       PIC X(09) VALUE "114701710".
-           03  CONS-ZAITAKU3       PIC X(09) VALUE "114007610".
-           03  CONS-ZAITAKU4       PIC X(09) VALUE "114007710".
       *    ÆÃµ­»ö¹à
            03  CONS-TOKKI1         PIC X(14) VALUE "00000099990101".
            03  CONS-TOKKI2         PIC X(14) VALUE "00000099990102".
@@ -952,6 +952,7 @@
            03  CONS-TOKKI17        PIC X(14) VALUE "00000099990117".
            03  CONS-TOKKI18        PIC X(14) VALUE "00000099990118".
            03  CONS-TOKKI19        PIC X(14) VALUE "00000099990119".
+           03  CONS-TOKKI20        PIC X(14) VALUE "00000099990120".
       *
       *    ÉÂ¾²¿ôÊÔ½¸¥Õ¥é¥°ÊÔ½¸¤Î°Ù¤Î¥³¡¼¥É¡ÊÆÃÄê¼À´µÎÅÍÜ»ØÆ³ÎÁÅù¡Ë
            03  CONS-SIDORYO1       PIC X(09) VALUE "113001810".
@@ -1104,6 +1105,8 @@
            03  CONS-NOUKE5-COMMENT   PIC X(09)  VALUE  "180030110".
       **   Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó°å³Ø´ÉÍýÎÁ¡Ê£²¡Ë
            03  CONS-NOUKE6-COMMENT   PIC X(09)  VALUE  "180030210".
+      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë
+           03  CONS-NOUKE7-COMMENT   PIC X(09)  VALUE  "180030810".
       *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
            03  CONS-UNDOKI1-COMMENT  PIC X(09)  VALUE  "180027810".
       *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
@@ -2381,7 +2384,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        CONS-TOKKI16 OR
                                                        CONS-TOKKI17 OR
                                                        CONS-TOKKI18 OR
-                                                       CONS-TOKKI19
+                                                       CONS-TOKKI19 OR
+                                                       CONS-TOKKI20
                                       MOVE    1    TO      FLG-TOKKI
                                       PERFORM   21045-TOKKI-HENSYU-SEC
                                  ELSE
@@ -2804,7 +2808,8 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                                       OR  CONS-TOKKI16(6:9)
                                       OR  CONS-TOKKI17(6:9)
                                       OR  CONS-TOKKI18(6:9)
-                                      OR  CONS-TOKKI19(6:9) )
+                                      OR  CONS-TOKKI19(6:9)
+                                      OR  CONS-TOKKI20(6:9) )
                   COMPUTE   RECE04-MEISAISU    =  RECE04-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -2843,7 +2848,8 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
                                        OR  CONS-TOKKI16(6:9)
                                        OR  CONS-TOKKI17(6:9)
                                        OR  CONS-TOKKI18(6:9)
-                                       OR  CONS-TOKKI19(6:9) )
+                                       OR  CONS-TOKKI19(6:9)
+                                       OR  CONS-TOKKI20(6:9) )
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
@@ -3577,6 +3583,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
               END-IF
       *       ²ðÃ£¸£°ú¡ÊÈ¯¾ÉÆüµ­ºÜ¡Ë
               IF   RECE02-SRYYM      >=    "200604"
+              AND  RECE02-SRYYM      <=    "200803"
                 IF   SRY-SRYCD(IDX2)  =     CONS-KAITATU-COMMENT
                         MOVE   "1"    TO    RECE02-COMCNTFLG
                         MOVE   "1"    TO    RECE04-KAITATU-COMMENT
@@ -3631,6 +3638,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                             CONS-NOUKE2-COMMENT   OR
                                             CONS-NOUKE3-COMMENT   OR
                                             CONS-NOUKE4-COMMENT   OR
+                                            CONS-NOUKE7-COMMENT   OR
                                             CONS-UNDOKI1-COMMENT  OR
                                             CONS-UNDOKI2-COMMENT  OR
                                             CONS-UNDOKI3-COMMENT  OR
@@ -3685,6 +3693,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                       OR    CONS-NOUKE4-COMMENT
                                       OR    CONS-NOUKE5-COMMENT
                                       OR    CONS-NOUKE6-COMMENT
+                                      OR    CONS-NOUKE7-COMMENT
                         MOVE   "1"    TO    RECE02-COMCNTFLG
                         MOVE   "1"    TO    RECE04-NOUKE-COMMENT
                 END-IF
@@ -4283,6 +4292,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                      EVALUATE    WRK-TNS-TIMEKSNKBN(IDX3)
                          WHEN    1
                          WHEN    5
+                         WHEN    6
                              EVALUATE   RECE02-SHOSHINTIME
                                WHEN   SPACE
                                   MOVE  "1"     TO   RECE02-SHOSHINTIME
@@ -5693,6 +5703,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        MOVE    "18"      TO      WRK-TOKKI
                    WHEN    CONS-TOKKI19
                        MOVE    "19"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI20
+                       MOVE    "20"      TO      WRK-TOKKI
                END-EVALUATE
              WHEN        2
                EVALUATE    SRY-SRYCD(IDX2)
@@ -5732,6 +5744,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        MOVE    "18"      TO      WRK-TOKKI
                    WHEN    CONS-TOKKI19(6:9)
                        MOVE    "19"      TO      WRK-TOKKI
+                   WHEN    CONS-TOKKI20(6:9)
+                       MOVE    "20"      TO      WRK-TOKKI
                END-EVALUATE
              WHEN        3
                        MOVE    "14"      TO      WRK-TOKKI
@@ -5765,6 +5779,13 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
              WHEN      "18"
              WHEN      "19"
                IF  (RECE02-SRYYM   <   "200704")
+                   GO  TO  21045-TOKKI-HENSYU-EXT
+               END-IF
+             WHEN      "20"
+               IF  (RECE02-SRYYM   >=  "200804")
+               AND (RECE02-SRYYM   <=  "200903")
+                   CONTINUE
+               ELSE
                    GO  TO  21045-TOKKI-HENSYU-EXT
                END-IF
            END-EVALUATE

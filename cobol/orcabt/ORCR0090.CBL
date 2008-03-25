@@ -179,6 +179,8 @@
       *  04.01.01    NACL-門脇    07/11/26  特定器材商品名記載対応
       *  04.01.02    NACL-藤原    08/01/10  レセプト特記事項編集情報
       *                                     適用欄コメント対応
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （初診（夜間・早朝等）加算追加）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1035,6 +1037,9 @@
       *    電子化加算
            03  WRK-CONS-SYOSIN-KASAN29 PIC X(09)   VALUE 
                                                    "111012370".
+      *    初診（夜間・早朝等）加算
+           03  WRK-CONS-SYOSIN-KASAN30 PIC X(09)   VALUE 
+                                                   "111012470".
       *
       *    外来迅速検体検査加算
            03  WRK-CONS-GAIJINKEN      PIC X(09)   VALUE 
@@ -1886,6 +1891,7 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                                             OR  WRK-CONS-SYOSIN-KASAN27
                                             OR  WRK-CONS-SYOSIN-KASAN28
       ***>                                  OR  WRK-CONS-SYOSIN-KASAN29
+                                            OR  WRK-CONS-SYOSIN-KASAN30
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         

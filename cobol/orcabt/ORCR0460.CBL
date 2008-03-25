@@ -101,6 +101,8 @@
       *
       *  04.01.01    NACL-門脇    07/10/31  公務災害対応
       *  04.01.02    NACL-門脇    07/11/26  特定器材商品名記載対応
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （初診（夜間・早朝等）加算追加）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -774,6 +776,8 @@
            03  CONS-SYOSIN-KASAN28 PIC X(09) VALUE "111011810".
       *    電子化加算
            03  CONS-SYOSIN-KASAN29 PIC X(09) VALUE "111012370".
+      *    初診（夜間・早朝等）加算
+           03  CONS-SYOSIN-KASAN30 PIC X(09) VALUE "111012470".
       *
       *    外来迅速検体検査加算
            03  WRK-CONS-GAIJINKEN      PIC X(09)   VALUE 
@@ -1520,6 +1524,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                                 CONS-SYOSIN-KASAN27 OR
                                                 CONS-SYOSIN-KASAN28 OR
       ***>                                      CONS-SYOSIN-KASAN29 OR
+                                                CONS-SYOSIN-KASAN30 OR
                                                 CONS-COMMENT5       OR
                                                 CONS-COMMENT6       OR
                                                 CONS-COMMENT7       OR

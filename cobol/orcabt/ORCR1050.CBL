@@ -28,6 +28,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （初診（夜間・早朝等）加算追加）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -807,6 +809,9 @@
       *    電子化加算
            03  WRK-CONS-SYOSIN-KASAN29 PIC X(09)   VALUE 
                                                    "111012370".
+      *    初診（夜間・早朝等）加算
+           03  WRK-CONS-SYOSIN-KASAN30 PIC X(09)   VALUE 
+                                                   "111012470".
       *
       *    外来迅速検体検査加算
            03  WRK-CONS-GAIJINKEN      PIC X(09)   VALUE 
@@ -1425,6 +1430,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                             OR  WRK-CONS-SYOSIN-KASAN26
                                             OR  WRK-CONS-SYOSIN-KASAN27
                                             OR  WRK-CONS-SYOSIN-KASAN28
+                                            OR  WRK-CONS-SYOSIN-KASAN30
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         

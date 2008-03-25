@@ -29,6 +29,14 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  04.02.01    NACL-ÌçÏÆ    08/03/10  ¡û¡û¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ¤Î¥Õ¥é¥°ÊÔ½¸½¤Àµ
+      *  04.02.02    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡Ê³°Çñ¡§Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ¤Î¿ÇÎÅ¹Ô°Ù
+      *                                             ¥³¡¼¥É¼èÆÀ¡Ë
+      *                                     ¡ÊÆÃµ­»ö¹àÄÉ²ÃÂÐ±þ¡§£²£°¡Ë
+      *                                     ¡ÊÌôºÞ´ÉÍý»ØÆ³ÎÁ¥³¡¼¥ÉÄÉ²Ã¡Ë
+      *                                     ¡ÊÇ¾·ì´É¥ê¥Ï¡Ê£³¡Ë¥³¡¼¥ÉÄÉ²Ã¡Ë
+      *                                     ¡Ê²ðÃ£¸£°úÈ¯¾ÉÆüµ­ºÜÇÑ»ß¡Ë
+      *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -421,6 +429,7 @@
            03  CONS-TOKKI17        PIC X(14) VALUE "00000099990117".
            03  CONS-TOKKI18        PIC X(14) VALUE "00000099990118".
            03  CONS-TOKKI19        PIC X(14) VALUE "00000099990119".
+           03  CONS-TOKKI20        PIC X(14) VALUE "00000099990120".
       *
       *    ÉÂ¾²¿ôÊÔ½¸¥Õ¥é¥°ÊÔ½¸¤Î°Ù¤Î¥³¡¼¥É¡ÊÆÃÄê¼À´µÎÅÍÜ»ØÆ³ÎÁÅù¡Ë
            03  CONS-SIDORYO1       PIC X(09) VALUE "113001810".
@@ -447,7 +456,9 @@
            03  CONS-ZANHAIKI       PIC X(09) VALUE "099309901".
       *
       *    ÌôºÞ´ÉÍý»ØÆ³ÎÁ
-           03  CONS-YAKUKAN-COMMENT  PIC X(09)  VALUE  "120001610".
+           03  CONS-YAKUKAN-COMMENT1 PIC X(09)  VALUE  "113010710".
+           03  CONS-YAKUKAN-COMMENT2 PIC X(09)  VALUE  "113010810".
+           03  CONS-YAKUKAN-COMMENT3 PIC X(09)  VALUE  "120001610".
       *    Æþ±¡±ÉÍÜ¿©»ö»ØÆ³ÎÁ
            03  CONS-NYUEIYO-COMMENT  PIC X(09)  VALUE  "113003310".
       *    Âà±¡Á°Ë¬Ìä»ØÆ³ÎÁ
@@ -552,6 +563,8 @@
            03  CONS-NOUKE5-COMMENT   PIC X(09)  VALUE  "180030110".
       **   Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó°å³Ø´ÉÍýÎÁ¡Ê£²¡Ë
            03  CONS-NOUKE6-COMMENT   PIC X(09)  VALUE  "180030210".
+      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë
+           03  CONS-NOUKE7-COMMENT   PIC X(09)  VALUE  "180030810".
       *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
            03  CONS-UNDOKI1-COMMENT  PIC X(09)  VALUE  "180027810".
       *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
@@ -1214,7 +1227,8 @@
                                                   CONS-TOKKI16 OR
                                                   CONS-TOKKI17 OR
                                                   CONS-TOKKI18 OR
-                                                  CONS-TOKKI19
+                                                  CONS-TOKKI19 OR
+                                                  CONS-TOKKI20
                                  CONTINUE
                             ELSE
                                  MOVE   ZERO   TO   WRK-SRYSURYO
@@ -1454,7 +1468,8 @@
                                      OR  CONS-TOKKI16(6:9)
                                      OR  CONS-TOKKI17(6:9)
                                      OR  CONS-TOKKI18(6:9)
-                                     OR  CONS-TOKKI19(6:9) )
+                                     OR  CONS-TOKKI19(6:9)
+                                     OR  CONS-TOKKI20(6:9) )
             OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
             OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                     (TNS-TEN               =  ZERO )       )
@@ -1511,7 +1526,8 @@
                                        OR  CONS-TOKKI16(6:9)
                                        OR  CONS-TOKKI17(6:9)
                                        OR  CONS-TOKKI18(6:9)
-                                       OR  CONS-TOKKI19(6:9) )
+                                       OR  CONS-TOKKI19(6:9)
+                                       OR  CONS-TOKKI20(6:9) )
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
@@ -1903,6 +1919,7 @@
            IF      RECE220-SRYKBN      =     "40"
       *       ²ðÃ£¸£°ú¡ÊÈ¯¾ÉÆüµ­ºÜ¡Ë
               IF   RECE200-SRYYM      >=    "200604"
+              AND  RECE200-SRYYM      <=    "200803"
                 IF   SRY-SRYCD(IDX2)  =     CONS-KAITATU-COMMENT
                         MOVE   "1"    TO    RECE200-COMCNTFLG
                         MOVE   "1"    TO    RECE220-KAITATU-COMMENT
@@ -1957,6 +1974,7 @@
                                             CONS-NOUKE2-COMMENT   OR
                                             CONS-NOUKE3-COMMENT   OR
                                             CONS-NOUKE4-COMMENT   OR
+                                            CONS-NOUKE7-COMMENT   OR
                                             CONS-UNDOKI1-COMMENT  OR
                                             CONS-UNDOKI2-COMMENT  OR
                                             CONS-UNDOKI3-COMMENT  OR
@@ -2011,6 +2029,7 @@
                                       OR    CONS-NOUKE4-COMMENT
                                       OR    CONS-NOUKE5-COMMENT
                                       OR    CONS-NOUKE6-COMMENT
+                                      OR    CONS-NOUKE7-COMMENT
                         MOVE   "1"    TO    RECE200-COMCNTFLG
                         MOVE   "1"    TO    RECE220-NOUKE-COMMENT
                 END-IF
@@ -2041,7 +2060,9 @@
            END-IF
       *
            IF      RECE220-SRYKBN      =     "13"
-              IF   SRY-SRYCD(IDX2)    =     CONS-YAKUKAN-COMMENT
+              IF   SRY-SRYCD(IDX2)    =     CONS-YAKUKAN-COMMENT1 OR
+                                            CONS-YAKUKAN-COMMENT2 OR
+                                            CONS-YAKUKAN-COMMENT3
                    MOVE   "1"   TO    RECE220-FLG-YAKUKAN-COMMENT
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-NYUEIYO-COMMENT
@@ -2333,6 +2354,7 @@
                      EVALUATE    TNS-TIMEKSNKBN
                          WHEN    1
                          WHEN    5
+                         WHEN    6
                              EVALUATE   RECE200-SHOSHINTIME
                                WHEN   SPACE
                                   MOVE  "1"     TO   RECE200-SHOSHINTIME
@@ -3708,12 +3730,12 @@
            MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)   TO   SYUKEI-IDX4
       *
            EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-               WHEN   099  THRU  100 
+      ***      WHEN   099  THRU  100 
                WHEN   201  THRU  219
                WHEN   221  THRU  222
                WHEN   224
                WHEN   227  THRU  228
-               WHEN   230  THRU  233
+               WHEN   230  THRU  239
                   MOVE   "190108790" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                WHEN   013  THRU  021
                WHEN   101  THRU  109

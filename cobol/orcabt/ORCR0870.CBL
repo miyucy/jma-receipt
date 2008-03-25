@@ -71,6 +71,8 @@
       *  04.01.02    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *  04.01.03    NACL-ÌçÏÆ    07/11/30  Âà±¡»þÉþÌô»ØÆ³²Ã»»»»ÄêÆüµ­ºÜÂÐ±þ
       *  04.01.04    NACL-ÌçÏÆ    08/01/15  ¸ø³²ÂÐ±þ
+      *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡ÊÌôºÞ´ÉÍý»ØÆ³ÎÁ¥³¡¼¥ÉÄÉ²Ã¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -295,6 +297,7 @@
            03  IDX3                PIC 9(02).
            03  IDX4                PIC 9(04).
            03  IDX5                PIC 9(04).
+           03  IDX6                PIC 9(04).
            03  IDX12               PIC 9(04).
            03  IDX13               PIC 9(04).
            03  IDX15               PIC 9(01).
@@ -409,6 +412,8 @@
       *
            03  WRK-MCP-TABLE         PIC X(64).
            03  WRK-MCP-PATHNAME      PIC X(64).
+      *
+           03  WRK-YAKUKAN-SRYCD     PIC X(09).
       *
        01  WRK-RECE84-REC. 
            COPY    "CPRCF084.INC"  REPLACING   //RECE84//
@@ -547,6 +552,18 @@
            03  CONS-NOUKE-DUMMY     PIC X(09) VALUE "099800321".
       *    ±¿Æ°´ï¥ê¥Ï¼Â»Ü
            03  CONS-UNDOKI-DUMMY    PIC X(09) VALUE "099800331".
+      *
+      *    ÌôºÞ´ÉÍý»ØÆ³ÎÁ¥Æ¡¼¥Ö¥ë¡Ê£²£°£°£¸Ç¯£´·î¿ÇÎÅÊ¬¡Á¡Ë
+       01  TBL-YAKUKAN-AREA.
+           03  FILLER               PIC X(09) VALUE "113010710".
+           03  FILLER               PIC X(09) VALUE "113010810".
+           03  FILLER               PIC X(09) VALUE "120001610".
+      *
+       01  TBL-YAKUKAN-R       REDEFINES   TBL-YAKUKAN-AREA.
+            03  TBL-YAKUKAN    PIC X(09)   OCCURS   3.
+      *
+       01  TBL-YAKUKAN-MAX     PIC 9(02)   VALUE    3.
+      *
       *
        01  TBL-HASSYO-INF.
            03  TBL-HASSYO-KAITATU-COMMENT   PIC 9(01).
@@ -2598,40 +2615,21 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
              MOVE      ZERO            TO      FLG-YAKUKAN-COMMENT
       *
-             INITIALIZE                        SRYACT-REC
-             MOVE    RECE84-HOSPNUM    TO      SRY-HOSPNUM
-             MOVE    RECE84-NYUGAIKBN  TO      SRY-NYUGAIKBN
-             MOVE    RECE84-PTID       TO      SRY-PTID
-             MOVE    RECE84-SRYYM      TO      SRY-SRYYM
-             MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (1)
-             MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (2)
-             MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (3)
-             MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (4)
-             MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (5)
-      *
-             MOVE    SRYACT-REC        TO      MCPDATA-REC
-             MOVE    "tbl_sryact"      TO      MCP-TABLE
-             MOVE    "key7"            TO      MCP-PATHNAME
-grpsys       PERFORM  900-DBSELECT-SEC
-      *
-             IF      MCP-RC               =       ZERO
-                 MOVE    "tbl_sryact"  TO      MCP-TABLE
-                 MOVE    "key7"        TO      MCP-PATHNAME
-                 PERFORM  900-SRYACT-READ-SEC
-                 IF      FLG-SRYACT  =  ZERO
-                     MOVE    1         TO      FLG-YAKUKAN-COMMENT
-                 END-IF
+             IF    RECE82-SRYYM    >=  "200804"
+               PERFORM   VARYING   IDX6   FROM    1   BY    1
+                          UNTIL  ( IDX6   >   TBL-YAKUKAN-MAX       )
+                            OR   ( FLG-YAKUKAN-COMMENT   =    1     )
+                  MOVE   TBL-YAKUKAN(IDX6)     TO  WRK-YAKUKAN-SRYCD
+                  PERFORM  2001X-TAIIN-HANTEI-TOUGETU-SEC
+               END-PERFORM
+             ELSE
+                  MOVE   CONS-YAKUKAN-COMMENT  TO  WRK-YAKUKAN-SRYCD
+                  PERFORM  2001X-TAIIN-HANTEI-TOUGETU-SEC
              END-IF
-      *
-             MOVE    "tbl_sryact"      TO      MCP-TABLE
-             MOVE    "key7"            TO      MCP-PATHNAME
-             PERFORM  900-CLOSE-SEC
       *
              IF      FLG-YAKUKAN-COMMENT   =   ZERO
       *
                MOVE      ZERO            TO      WRK-ZENYYMM
-      *
-               MOVE      ZERO            TO      FLG-YAKUKAN-COMMENT
       *
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
@@ -2645,75 +2643,16 @@ grpsys       PERFORM  900-DBSELECT-SEC
                MOVE    LNK-DAY6-KEISAN(1:6)
                                            TO  WRK-ZENYYMM
       *
-               INITIALIZE                        SRYACT-REC
-               MOVE    RECE84-HOSPNUM    TO      SRY-HOSPNUM
-               MOVE    RECE84-NYUGAIKBN  TO      SRY-NYUGAIKBN
-               MOVE    RECE84-PTID       TO      SRY-PTID
-               MOVE    WRK-ZENYYMM       TO      SRY-SRYYM
-               MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (1)
-               MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (2)
-               MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (3)
-               MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (4)
-               MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (5)
-      *
-               MOVE    SRYACT-REC        TO      MCPDATA-REC
-               MOVE    "tbl_sryact"      TO      MCP-TABLE
-               MOVE    "key7"            TO      MCP-PATHNAME
-grpsys         PERFORM  900-DBSELECT-SEC
-      *
-               IF      MCP-RC               =       ZERO
-                   MOVE    "tbl_sryact"  TO      MCP-TABLE
-                   MOVE    "key7"        TO      MCP-PATHNAME
-                   PERFORM  900-SRYACT-READ-SEC
-                   PERFORM  UNTIL   FLG-SRYACT           =  1
-      *
-                     INITIALIZE                     SRYACCT-REC
-                     MOVE    SRY-HOSPNUM    TO      ACCT-HOSPNUM
-                     MOVE    SRY-NYUGAIKBN  TO      ACCT-NYUGAIKBN
-                     MOVE    SRY-PTID       TO      ACCT-PTID
-                     MOVE    SRY-SRYKA      TO      ACCT-SRYKA
-                     MOVE    SRY-SRYYM      TO      ACCT-SRYYM
-                     MOVE    SRY-ZAINUM     TO      ACCT-ZAINUM
-      *
-                     MOVE    SRYACCT-REC    TO      MCPDATA-REC
-                     MOVE    "tbl_sryacct"  TO      MCP-TABLE
-                     MOVE    "key31"        TO      MCP-PATHNAME
-grpsys               PERFORM  900-DBSELECT-SEC
-      *
-                     IF  MCP-RC                =  ZERO
-                         MOVE    "tbl_sryacct"  TO  MCP-TABLE
-                         MOVE    "key31"        TO  MCP-PATHNAME
-grpsys                   PERFORM  900-DBFETCH-SEC
-                         IF      MCP-RC        =       ZERO
-      *
-                           MOVE    MCPDATA-REC  TO  SRYACCT-REC
-      *
-                           PERFORM    VARYING    IDX  FROM   1   BY   1
-                                UNTIL      IDX      >   31
-                             IF    ACCT-DAY(1 IDX)  NOT =  ZERO
-                                IF    IDX   >   WRK-DAY-YAKUKAN
-                                    MOVE  IDX   TO  WRK-DAY-YAKUKAN
-                                END-IF
-                             END-IF
-                           END-PERFORM
-      *
-                         END-IF
-                     END-IF
-      *
-                     MOVE    "tbl_sryacct"    TO   MCP-TABLE
-                     MOVE    "key31"          TO   MCP-PATHNAME
-                     PERFORM  900-CLOSE-SEC
-      *
-                     MOVE    "tbl_sryact"     TO   MCP-TABLE
-                     MOVE    "key7"           TO   MCP-PATHNAME
-                     PERFORM  900-SRYACT-READ-SEC
-      *
-                   END-PERFORM
+               IF    RECE82-SRYYM    >=  "200804"
+                 PERFORM   VARYING   IDX6   FROM    1   BY    1
+                            UNTIL    IDX6   >   TBL-YAKUKAN-MAX
+                    MOVE   TBL-YAKUKAN(IDX6)     TO  WRK-YAKUKAN-SRYCD
+                    PERFORM  2001Y-TAIIN-HANTEI-ZENGETU-SEC
+                 END-PERFORM
+               ELSE
+                    MOVE   CONS-YAKUKAN-COMMENT  TO  WRK-YAKUKAN-SRYCD
+                    PERFORM  2001Y-TAIIN-HANTEI-ZENGETU-SEC
                END-IF
-      *
-               MOVE    "tbl_sryact"         TO  MCP-TABLE
-               MOVE    "key7"               TO  MCP-PATHNAME
-               PERFORM  900-CLOSE-SEC
       *
              END-IF
       *
@@ -2730,6 +2669,119 @@ grpsys                   PERFORM  900-DBFETCH-SEC
       *
            .
        2001-TAIIN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Åö·î¤ËÌôºÞ´ÉÍý»ØÆ³ÎÁ¤¬¤¢¤ë¤«¥Á¥§¥Ã¥¯
+      *****************************************************************
+       2001X-TAIIN-HANTEI-TOUGETU-SEC          SECTION.
+      *
+           INITIALIZE                    SRYACT-REC
+           MOVE    RECE84-HOSPNUM    TO  SRY-HOSPNUM
+           MOVE    RECE84-NYUGAIKBN  TO  SRY-NYUGAIKBN
+           MOVE    RECE84-PTID       TO  SRY-PTID
+           MOVE    RECE84-SRYYM      TO  SRY-SRYYM
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (1)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (2)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (3)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (4)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (5)
+           MOVE    SRYACT-REC        TO  MCPDATA-REC
+           MOVE    "tbl_sryact"      TO  MCP-TABLE
+           MOVE    "key7"            TO  MCP-PATHNAME
+           PERFORM   900-DBSELECT-SEC
+      *
+           IF      MCP-RC               =       ZERO
+             MOVE    "tbl_sryact"    TO  MCP-TABLE
+             MOVE    "key7"          TO  MCP-PATHNAME
+             PERFORM  900-SRYACT-READ-SEC
+             IF      FLG-SRYACT  =  ZERO
+                   MOVE    1         TO  FLG-YAKUKAN-COMMENT
+             END-IF
+           END-IF
+      *
+           MOVE    "tbl_sryact"      TO  MCP-TABLE
+           MOVE    "key7"            TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+           .
+       2001X-TAIIN-HANTEI-TOUGETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Á°·î¤ËÌôºÞ´ÉÍý»ØÆ³ÎÁ¤¬¤¢¤ë¤«¥Á¥§¥Ã¥¯
+      *****************************************************************
+       2001Y-TAIIN-HANTEI-ZENGETU-SEC          SECTION.
+      *
+           INITIALIZE                    SRYACT-REC
+           MOVE    RECE84-HOSPNUM    TO  SRY-HOSPNUM
+           MOVE    RECE84-NYUGAIKBN  TO  SRY-NYUGAIKBN
+           MOVE    RECE84-PTID       TO  SRY-PTID
+           MOVE    WRK-ZENYYMM       TO  SRY-SRYYM
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (1)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (2)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (3)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (4)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (5)
+           MOVE    SRYACT-REC        TO  MCPDATA-REC
+           MOVE    "tbl_sryact"      TO  MCP-TABLE
+           MOVE    "key7"            TO  MCP-PATHNAME
+           PERFORM   900-DBSELECT-SEC
+      *
+           IF      MCP-RC               =       ZERO
+               MOVE    "tbl_sryact"     TO   MCP-TABLE
+               MOVE    "key7"           TO   MCP-PATHNAME
+               PERFORM  900-SRYACT-READ-SEC
+      *
+               PERFORM  UNTIL   FLG-SRYACT   =  1
+      *
+                 INITIALIZE                  SRYACCT-REC
+                 MOVE    SRY-HOSPNUM    TO   ACCT-HOSPNUM
+                 MOVE    SRY-NYUGAIKBN  TO   ACCT-NYUGAIKBN
+                 MOVE    SRY-PTID       TO   ACCT-PTID
+                 MOVE    SRY-SRYKA      TO   ACCT-SRYKA
+                 MOVE    SRY-SRYYM      TO   ACCT-SRYYM
+                 MOVE    SRY-ZAINUM     TO   ACCT-ZAINUM
+                 MOVE    SRYACCT-REC    TO   MCPDATA-REC
+                 MOVE    "tbl_sryacct"  TO   MCP-TABLE
+                 MOVE    "key31"        TO   MCP-PATHNAME
+                 PERFORM   900-DBSELECT-SEC
+      *
+                 IF  MCP-RC               =  ZERO
+                     MOVE    "tbl_sryacct"  TO  MCP-TABLE
+                     MOVE    "key31"        TO  MCP-PATHNAME
+                     PERFORM   900-DBFETCH-SEC
+                     IF      MCP-RC       =  ZERO
+                       MOVE    MCPDATA-REC  TO  SRYACCT-REC
+                       PERFORM   VARYING   IDX  FROM   1   BY   1
+                                  UNTIL    IDX    >   31
+                         IF    ACCT-DAY(1 IDX)  NOT =  ZERO
+                            IF    IDX   >   WRK-DAY-YAKUKAN
+                                MOVE  IDX   TO  WRK-DAY-YAKUKAN
+                            END-IF
+                         END-IF
+                       END-PERFORM
+                     END-IF
+                 END-IF
+      *
+                 INITIALIZE                  MCPAREA
+                 MOVE    "tbl_sryacct"  TO   MCP-TABLE
+                 MOVE    "key31"        TO   MCP-PATHNAME
+                 PERFORM   900-CLOSE-SEC
+      *
+                 MOVE    "tbl_sryact"   TO   MCP-TABLE
+                 MOVE    "key7"         TO   MCP-PATHNAME
+                 PERFORM   900-SRYACT-READ-SEC
+      *
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "tbl_sryact"      TO      MCP-TABLE
+           MOVE    "key7"            TO      MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+           .
+       2001Y-TAIIN-HANTEI-ZENGETU-EXT.
            EXIT.
       *
       *****************************************************************

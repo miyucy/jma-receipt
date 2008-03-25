@@ -28,6 +28,11 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （特記事項追加対応：２０）
+      *                                     （脳血管リハ（３）コード追加）
+      *                                     （介達牽引発症日記載廃止）
+      *                                     （初診（夜間・早朝等）加算追加）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -360,6 +365,7 @@
            03  CONS-TOKKI17        PIC X(14) VALUE "00000099990117".
            03  CONS-TOKKI18        PIC X(14) VALUE "00000099990118".
            03  CONS-TOKKI19        PIC X(14) VALUE "00000099990119".
+           03  CONS-TOKKI20        PIC X(14) VALUE "00000099990120".
       *
       *    病床数編集フラグ編集の為のコード（特定疾患療養指導料等）
            03  CONS-SIDORYO1       PIC X(09) VALUE "113001810".
@@ -512,6 +518,8 @@
            03  CONS-NOUKE5-COMMENT   PIC X(09)  VALUE  "180030110".
       **   脳血管疾患等リハビリテーション医学管理料（２）
            03  CONS-NOUKE6-COMMENT   PIC X(09)  VALUE  "180030210".
+      *    脳血管疾患等リハビリテーション料（３）
+           03  CONS-NOUKE7-COMMENT   PIC X(09)  VALUE  "180030810".
       *    運動器リハビリテーション料（１）
            03  CONS-UNDOKI1-COMMENT  PIC X(09)  VALUE  "180027810".
       *    運動器リハビリテーション料（２）
@@ -955,7 +963,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        CONS-TOKKI16 OR
                                                        CONS-TOKKI17 OR
                                                        CONS-TOKKI18 OR
-                                                       CONS-TOKKI19
+                                                       CONS-TOKKI19 OR
+                                                       CONS-TOKKI20
                                       CONTINUE
                                  ELSE
                                       MOVE  ZERO  TO   FLG-SHOSAISIN    
@@ -1217,7 +1226,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       OR  CONS-TOKKI16(6:9)
                                       OR  CONS-TOKKI17(6:9)
                                       OR  CONS-TOKKI18(6:9)
-                                      OR  CONS-TOKKI19(6:9) )
+                                      OR  CONS-TOKKI19(6:9)
+                                      OR  CONS-TOKKI20(6:9) )
              OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
              OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                      (TNS-TEN               =  ZERO )       )
@@ -1254,7 +1264,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        OR  CONS-TOKKI16(6:9)
                                        OR  CONS-TOKKI17(6:9)
                                        OR  CONS-TOKKI18(6:9)
-                                       OR  CONS-TOKKI19(6:9) )
+                                       OR  CONS-TOKKI19(6:9)
+                                       OR  CONS-TOKKI20(6:9) )
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
@@ -1873,6 +1884,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            IF      RECE120-SRYKBN      =     "40"
       *       介達牽引（発症日記載）
               IF   RECE100-SRYYM      >=    "200604"
+              AND  RECE100-SRYYM      <=    "200803"
                 IF   SRY-SRYCD(IDX2)  =     CONS-KAITATU-COMMENT
                         MOVE   "1"    TO    RECE100-COMCNTFLG
                         MOVE   "1"    TO    RECE120-KAITATU-COMMENT
@@ -1927,6 +1939,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                             CONS-NOUKE2-COMMENT   OR
                                             CONS-NOUKE3-COMMENT   OR
                                             CONS-NOUKE4-COMMENT   OR
+                                            CONS-NOUKE7-COMMENT   OR
                                             CONS-UNDOKI1-COMMENT  OR
                                             CONS-UNDOKI2-COMMENT  OR
                                             CONS-UNDOKI3-COMMENT  OR
@@ -1981,6 +1994,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                       OR    CONS-NOUKE4-COMMENT
                                       OR    CONS-NOUKE5-COMMENT
                                       OR    CONS-NOUKE6-COMMENT
+                                      OR    CONS-NOUKE7-COMMENT
                         MOVE   "1"    TO    RECE100-COMCNTFLG
                         MOVE   "1"    TO    RECE120-NOUKE-COMMENT
                 END-IF
@@ -2390,6 +2404,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                      EVALUATE    WRK-TNS-TIMEKSNKBN(IDX3)
                          WHEN    1
                          WHEN    5
+                         WHEN    6
                              EVALUATE   RECE100-SHOSHINTIME
                                WHEN   SPACE
                                   MOVE  "1"     TO   RECE100-SHOSHINTIME
