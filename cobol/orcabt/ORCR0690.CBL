@@ -120,6 +120,7 @@
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （初診（夜間・早朝等）加算追加）
       *                                     （点滴編集修正）
+      *                                     （診療区分６４：病理診断対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1237,6 +1238,7 @@
                            PERFORM 2003-SRYKBN11-HENSYU-SEC
       *                検査
                        WHEN    "60"
+                       WHEN    "64"
                            PERFORM 2006-SRYKBN60-CHECK-SEC 
       *                それ以外
                        WHEN    OTHER
@@ -1747,7 +1749,7 @@
        2005-SRYKBNELSE-HENSYU-SEC    SECTION.
       *
       *    検査のとき剤が一つ以上なら”、”で編集
-           IF  RECE64-SRYKBN         =   "60"
+           IF  RECE64-SRYKBN         =   "60" OR "64"
       *****AND  WRK-ZAIWMAX (6)      >   1
                PERFORM 20051-SRYKBNELSE-KENSA-SEC
            ELSE 
@@ -2188,8 +2190,8 @@
            END-PERFORM
       *             
       *    検査のとき回数を集計
-           IF      WRK-ZAIWMAX(3)     >   ZERO
-           AND     RECE64-SRYKBN      =   "60"
+           IF     (WRK-ZAIWMAX(3)     >   ZERO        )
+           AND    (RECE64-SRYKBN      =   "60" OR "64")
                IF      TBL-ZAIW-SRYCD (3 1)   =   WRK-CONS-SAIKETSU1
                                               OR  WRK-CONS-SAIKETSU2
                                               OR  WRK-CONS-SAIKETSU3 
@@ -3982,7 +3984,7 @@
                    MOVE    RECE64-ZAITEN     TO  RECE66-ZAITEN
                END-IF
       *
-               IF      RECE64-SRYKBN     =   "60"
+               IF      RECE64-SRYKBN     =   "60" OR "64"
                        MOVE   WRK-ZAIW-KNSJISKBN
                                              TO  RECE66-KNSJISKBN
                ELSE
