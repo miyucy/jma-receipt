@@ -1332,7 +1332,7 @@
            ELSE
                IF      WRK-HEN-JKYSNUM(2)(21:) =   SPACE
       *           £±£°Ê¸»ú¤Þ¤Ç
-                   MOVE    WRK-HEN-JKYSNUM(2)  TO  HCM19-JKYSNUM2
+                   MOVE    WRK-HEN-JKYSNUM(2)  TO  HCM19-JKYSNUM2N
                ELSE
       *           £±£°Ê¸»ú°Ê¾å¡Ê£±£²Ê¸»ú¡Ë
                    MOVE    WRK-HEN-JKYSNUM(2)  TO  HCM19-JKYSNUM212
