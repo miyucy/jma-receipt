@@ -300,7 +300,6 @@
            MOVE    "*"             TO  SYS-KBNCD
            MOVE    WRK-SRYYMD      TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
-           DISPLAY "WRK-SRYYMD =" WRK-SRYYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-5015-REC
       *
@@ -495,6 +494,11 @@
                                                        SYS-EDYUKYMD
                            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
                            MOVE    SYSKANRI-REC    TO  SYS-5014-REC
+                           IF    ( FLG-SYSKANRI    =   ZERO )
+                               CONTINUE
+                           ELSE
+                               MOVE    "1"         TO  SYS-5014-DISPKBN
+                           END-IF
                            IF    ( SYS-5014-DISPKBN    =   "1" )
                                PERFORM 2001-IRYOKBN-DATA-INS-SEC
                            END-IF
