@@ -170,6 +170,7 @@
       *    閉鎖循環式麻酔の数量チェック
        01  TBL-MASUICHK-AREA.
            03  TBL-MASUICHK-OCC            OCCURS   400.
+               05  TBL-SURYO-Z         PIC 9(05)V9(03).
                05  TBL-CHK             PIC X(01).
       *
       *    神経ブロック・トリガーポイント注射判定
@@ -1136,6 +1137,7 @@
                                                TO  WRK-COM-SURYO2(IDX-Z)
                        COMPUTE WRK-SURYO-H     =   WRK-COM-SURYO (IDX-Z)
                                                -   WRK-COM-KZMKGN(IDX-Z)
+                       MOVE    WRK-SURYO-H     TO  TBL-SURYO-Z (IDX-Z)
                        IF      WRK-SURYO-H     <   ZERO
                            MOVE    "1"             TO  TBL-CHK (IDX-Z)
                        END-IF
@@ -1148,9 +1150,13 @@
                            IF      WRK-SURYO-H     <   ZERO
                                COMPUTE WRK-SURYO-K     =   WRK-SURYO-K
                                                        +   WRK-SURYO-H
+                               MOVE    WRK-SURYO-K     TO  TBL-SURYO-Z
+                                                                (IDX-Z)
                                MOVE    ZERO            TO  WRK-SURYO-H
                            END-IF
                            IF      WRK-SURYO-K    <   WRK-COM-KZM(IDX-Z)
+                               MOVE    WRK-SURYO-K     TO  TBL-SURYO-Z
+                                                                (IDX-Z)
                                ADD     WRK-SURYO-K     TO  WRK-SURYO-H
                                MOVE    ZERO            TO  WRK-SURYO-K
                            ELSE
@@ -1179,9 +1185,9 @@
                      AND  (WRK-COM-CDKBN-KBNNUM    (IDX-Z) =   "008")
                      AND  (WRK-COM-CDKBN-KBNNUM-EDA(IDX-Z) =   "00" )
                      AND  (TBL-CHK (IDX-Z)       =   SPACE  )
-                       IF      WRK-COM-SURYO (IDX-Z)   >   WRK-SURYO
-                           MOVE    WRK-COM-SURYO (IDX-Z)   TO  WRK-SURYO
-                           MOVE    IDX-Z               TO  IDX-SURYO
+                       IF      TBL-SURYO-Z   (IDX-Z)   >   WRK-SURYO
+                           MOVE    TBL-SURYO-Z (IDX-Z)     TO  WRK-SURYO
+                           MOVE    IDX-Z                   TO  IDX-SURYO
                        END-IF
                    END-IF
                END-PERFORM
