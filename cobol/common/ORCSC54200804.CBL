@@ -122,35 +122,54 @@
       *    点数計（通則加算対象外計）
            03  WRK-SUM-TENGAKEI        PIC 9(08)V99.
       *
+      *
+           03  WRK-SANSO           PIC 9(08).
+           03  WRK-SANSOKIN        PIC 9(08)V99.
+           03  WRK-SANKEI          PIC 9(08).
+           03  WRK-SANTEN          PIC 9(08).
+           03  WRK-SANSOKIN-SUM    PIC 9(08)V99.
+      *
            03  WRK-SYOKEIS         PIC 9(08)V9999.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
            03  WRK-SYOKEI          PIC 9(08).
+      *    フィルム点数計
+           03  WRK-FIRTEN          PIC 9(08).
+           03  WRK-FIRTEN-KEI      PIC 9(08).
+           03  WRK-FIRTEN-ADD      PIC 9(08).
+           03  WRK-KIZKEI          PIC 9(08).
+           03  WRK-KIZKEI-ADD      PIC 9(08).
+           03  WRK-TENSUKEIS       PIC 9(08)V99.
       *   きざみ値行為再計算用
            03  WRK-SATU-TEN        PIC 9(08)V9(03).
            03  WRK-KEI-TEN         PIC 9(08)V9(03).
            03  WRK-KEI-TEN1        PIC 9(08)V9(03).
            03  WRK-KEI-TEN2        PIC 9(08).
-           03  WRK-SURYO           PIC 9(05)V9(05).
-           03  WRK-SURYO-K         PIC S9(05)V9(05).
-           03  WRK-SURYO-H         PIC S9(05)V9(05).
+           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO-K         PIC S9(05)V9(03).
+           03  WRK-SURYO-H         PIC S9(05)V9(03).
            03  WRK-KZMTEN          PIC 9(08)V9(03).
            03  WRK-KZMJGN          PIC 9(08)V9(03).
            03  WRK-KZMKGN          PIC 9(08)V9(03).
       *
            03  WRK-ERRCD           PIC X(04).
       *
+      *
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
+      *
            03  WRK-INPUTCD         PIC X(22).
       *
        01  WRK-AREA2.
       *    閉鎖循環式麻酔の数量
-           03  WRK-SURYO-G         PIC 9(05)V9(05).
+           03  WRK-SURYO-G         PIC 9(05)V9(03).
            03  WRK-MASUI-CNT       PIC 9(03).
            03  WRK-MASUI           PIC 9(03).
       *
       *    閉鎖循環式麻酔の数量チェック
        01  TBL-MASUICHK-AREA.
            03  TBL-MASUICHK-OCC            OCCURS   400.
-               05  TBL-SURYO-Z         PIC S9(05)V9(05).
                05  TBL-CHK             PIC X(01).
       *
       *    神経ブロック・トリガーポイント注射判定
@@ -176,11 +195,11 @@
       *
       *    点数マスタ−
       *01  TENSU-REC.
-      *    COPY    "CPTENSU.INC".
+           COPY    "CPTENSU.INC".
       *
       *    算定履歴
-      *01  SANTEI-REC.
-      *    COPY    "CPSANTEI.INC".
+       01  SANTEI-REC.
+           COPY    "CPSANTEI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -575,11 +594,7 @@
                    (SPA-GAI-JIKANKBN   NOT =   ZERO )  AND
                    (WRK-COM-TIMEKSNKBN(IDX-ZS)
                                        NOT =   ZERO )
-               IF      (SPA-GAI-JIKANKBN       =   8 )
-                   CONTINUE
-               ELSE
-                   PERFORM 10019-JIKANKASAN-CHK-SEC
-               END-IF
+               PERFORM 10019-JIKANKASAN-CHK-SEC
            END-IF
       *
       *    時間加算
@@ -956,6 +971,10 @@
            MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  IDX-ZS
            MOVE    ZERO                TO  IDX-SANSO
+           MOVE    ZERO                TO  WRK-SANSO
+           MOVE    ZERO                TO  WRK-SANKEI
+           MOVE    ZERO                TO  WRK-SANTEN
+           MOVE    ZERO                TO  WRK-SANSOKIN-SUM
            MOVE    ZERO                TO  IDX-MSYU
            MOVE    ZERO                TO  WRK-MASUI
       *
@@ -1117,23 +1136,8 @@
                                                TO  WRK-COM-SURYO2(IDX-Z)
                        COMPUTE WRK-SURYO-H     =   WRK-COM-SURYO (IDX-Z)
                                                -   WRK-COM-KZMKGN(IDX-Z)
-                       MOVE    WRK-SURYO-H     TO  TBL-SURYO-Z (IDX-Z)
                        IF      WRK-SURYO-H     <   ZERO
                            MOVE    "1"             TO  TBL-CHK (IDX-Z)
-                       ELSE
-                           MOVE    WRK-SURYO-H     TO  WRK-SURYO-K
-                           PERFORM
-                               UNTIL   WRK-SURYO-K <  WRK-COM-KZM(IDX-Z)
-                               ADD     WRK-COM-KZM(IDX-Z)
-                                                   TO  WRK-COM-SURYO2
-                                                             (IDX-Z)
-                               COMPUTE WRK-SURYO-K =   WRK-SURYO-K
-                                                   -   WRK-COM-KZM
-                                                              (IDX-Z)
-                           END-PERFORM
-                           MOVE    WRK-SURYO-K     TO  WRK-SURYO-H
-                           MOVE    WRK-SURYO-H     TO  TBL-SURYO-Z
-                                                          (IDX-Z)
                        END-IF
                    ELSE
       *                きざみ値毎に数量
@@ -1144,13 +1148,9 @@
                            IF      WRK-SURYO-H     <   ZERO
                                COMPUTE WRK-SURYO-K     =   WRK-SURYO-K
                                                        +   WRK-SURYO-H
-                               MOVE    WRK-SURYO-K     TO  TBL-SURYO-Z
-                                                                (IDX-Z)
                                MOVE    ZERO            TO  WRK-SURYO-H
                            END-IF
                            IF      WRK-SURYO-K    <   WRK-COM-KZM(IDX-Z)
-                               MOVE    WRK-SURYO-K     TO  TBL-SURYO-Z
-                                                                (IDX-Z)
                                ADD     WRK-SURYO-K     TO  WRK-SURYO-H
                                MOVE    ZERO            TO  WRK-SURYO-K
                            ELSE
@@ -1160,8 +1160,6 @@
                                COMPUTE WRK-SURYO-K =   WRK-SURYO-K
                                                    -   WRK-COM-KZM
                                                               (IDX-Z)
-                               MOVE    WRK-SURYO-K     TO  TBL-SURYO-Z
-                                                                (IDX-Z)
                            END-IF
                        END-PERFORM
                    END-IF
@@ -1181,21 +1179,16 @@
                      AND  (WRK-COM-CDKBN-KBNNUM    (IDX-Z) =   "008")
                      AND  (WRK-COM-CDKBN-KBNNUM-EDA(IDX-Z) =   "00" )
                      AND  (TBL-CHK (IDX-Z)       =   SPACE  )
-                       IF      TBL-SURYO-Z   (IDX-Z)   >   WRK-SURYO
-                           MOVE    TBL-SURYO-Z (IDX-Z)     TO  WRK-SURYO
-                           MOVE    IDX-Z                   TO  IDX-SURYO
+                       IF      WRK-COM-SURYO (IDX-Z)   >   WRK-SURYO
+                           MOVE    WRK-COM-SURYO (IDX-Z)   TO  WRK-SURYO
+                           MOVE    IDX-Z               TO  IDX-SURYO
                        END-IF
                    END-IF
                END-PERFORM
                IF      IDX-SURYO       >   ZERO
                    MOVE    IDX-SURYO       TO  IDX-Z
-                   IF      WRK-COM-KZM(IDX-Z)  <=  WRK-SURYO-H
-                       ADD     WRK-COM-KZM(IDX-Z)  TO  WRK-COM-SURYO2
+                   ADD     WRK-COM-KZM(IDX-Z)  TO  WRK-COM-SURYO2
                                                              (IDX-Z)
-                   ELSE
-                       ADD     WRK-SURYO-H         TO  WRK-COM-SURYO2
-                                                             (IDX-Z)
-                   END-IF
                    COMPUTE WRK-SURYO-H     =   WRK-SURYO-H
                                            -   WRK-COM-KZM(IDX-Z)
                    MOVE    "1"             TO  TBL-CHK (IDX-Z)
