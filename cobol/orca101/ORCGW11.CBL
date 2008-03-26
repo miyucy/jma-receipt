@@ -63,6 +63,7 @@
       * 03.05.00     NACL-Â¿¡¹Ç¼  07/05/02  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       * 04.00000     NACL-Â¿¡¹Ç¼  07/09/19  ½èÊý¤»¤ó£Ñ£Ò¥×¥í¥°¥é¥àÄÉ²ÃÂ¾
       * 04.02.01     NACL-¿¹ÏÆ    08/03/06  ¤ªÌô¼êÄ¢ÄÉ²Ã
+      * 04.02.02     NACL-¿¹ÏÆ    08/03/26  ÌôºÞ¾ðÊóÄó¶¡½ñ¥×¥í¥°¥é¥àÁªÂò
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -591,6 +592,13 @@
            MOVE    "ORCHC02"           TO  SPA-GMN-ORGPGNM02-MEI(2)
            MOVE    "ORCHC02Q"          TO  SPA-GMN-ORGPGNM02-MEI(3)
            MOVE    3                   TO  SPA-GMN-ORGPGNM02-MAX
+      *
+      *----(04.02.02)--ADD-START---
+      *    ÌôºÞ¾ðÊóÄó¶¡½ñ
+           MOVE    "ORCHC30"           TO  SPA-GMN-ORGPGNM04-MEI(1)
+           MOVE    "ORCHC31"           TO  SPA-GMN-ORGPGNM04-MEI(2)
+           MOVE    2                   TO  SPA-GMN-ORGPGNM04-MAX
+      *----(04.02.02)--ADD-END-----
       *
            INITIALIZE                      SPA-GMN-USERLSTSCROLLE
            INITIALIZE                      SPA-NAI-TBL
@@ -1426,6 +1434,10 @@
       *
            MOVE    W11-ORCAORGNM03     TO  SPA-GMN-TORGPGNM (03)
            MOVE    W11-ORCAORGNM-N03   TO  SPA-GMN-TORGPGNM-N (03)
+      *----(04.02.01)--ADD-START---
+      *    ÌôºÞ¾ðÊóÄó¶¡½ñ
+           MOVE    W11-ORCAORGNM04     TO  SPA-GMN-TORGPGNM (04)
+      *----(04.02.01)--ADD-END-----
       *
       *    Ä¢É¼ÊÔ½¸¶èÊ¬
            MOVE    W11-SYOHOGEPRTFLG   TO  SPA-GMN-SYOHOGEPRTFLG-G
@@ -1860,6 +1872,22 @@
                MOVE    SPA-GMN-ORGPGNM02-MEI(1)
                                        TO  SPA-GMN-TORGPGNM (2)
            END-IF
+      *----(04.02.02)--ADD-START---
+      *    ÌôºÞ¾ðÊóÄó¶¡½ñ
+           MOVE    ZERO            TO  FLG-OK
+           PERFORM VARYING IDX4    FROM    1   BY  1
+                   UNTIL  (IDX4    >   SPA-GMN-ORGPGNM04-MAX )
+                       OR (FLG-OK  =   1   )
+               IF      SPA-GMN-TORGPGNM (4)
+                                   =   SPA-GMN-ORGPGNM04-MEI(IDX4)
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-ORGPGNM04-MEI(1)
+                                       TO  SPA-GMN-TORGPGNM (4)
+           END-IF
+      *----(04.02.02)--ADD-END-----
       *
            .
        4101-ORGPGNM-SET-EXT.
@@ -3169,6 +3197,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-ORGPGNM03-MAX
                                        TO  W11-ORCAORGNM03-COUNT
       *
+      *----(04.02.02)--ADD-START---
+      *    ÌôºÞ¾ðÊóÄó¶¡½ñ
+           PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL   IDX2    >       SPA-GMN-ORGPGNM04-MAX
+               MOVE    SPA-GMN-ORGPGNM04-MEI (IDX2)
+                                       TO  W11-ORCAORGNM04-ITEM (IDX2)
+           END-PERFORM
+           MOVE    SPA-GMN-ORGPGNM04-MAX
+                                       TO  W11-ORCAORGNM04-COUNT
+      *----(04.02.02)--ADD-END-----
       *
            PERFORM VARYING     IDZ2     FROM    1   BY  1
                    UNTIL       IDZ2     >       SPA-GPGNM-MAX

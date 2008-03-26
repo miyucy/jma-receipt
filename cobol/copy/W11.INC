@@ -70,7 +70,12 @@
                                                PIC S9(9)   BINARY.
                         08  W11-ORCAORGNM03LST PIC X(20)
                                                OCCURS  5 TIMES.
-                      07  W11-ORCAORGNM04      PIC X(20).
+                      07  W11-ORGNM04-COB.
+                        08  W11-ORCAORGNM04.
+                          09  W11-VALUE   PIC X(20).
+                        08  W11-ORCAORGNM04-COUNT   PIC S9(9)   BINARY.
+                        08  W11-ORCAORGNM04-ITEM
+                                PIC X(20)   OCCURS  5 TIMES.
                       07  W11-ORCAORGNM05      PIC X(20).
                       07  W11-ORCAORGNM06      PIC X(20).
                       07  W11-ORCAORGNM07      PIC X(20).
