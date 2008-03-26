@@ -4614,6 +4614,15 @@
                                END-IF
                            END-IF
                        END-IF
+      *                ½èÃÖ°åÎÅµ¡´ï²Ã»»¤Ï»»Äê²ÄÇ½
+                       IF      (SPA-COM-CDKBN-KBN    (IDX) =   "J" )
+                           AND (SPA-COM-CDKBN-KBNNUM (IDX) =   "200")
+                           AND (SPA-COM-CDKBN-KBNNUM-EDA(IDX)
+                                                           =   "00" )
+                           MOVE    SPACE           TO  SPA-ERRCD
+                           MOVE    SPACE           TO  SPA-COM-CUR
+                                                                (IDX)
+                       END-IF
                    WHEN    "13"
                        IF      SPA-COM-INPUTCD  (IDX)(1:1) =   "1"
                            IF      (SPA-COM-CDKBN-KBN (IDX) =   "B" )
