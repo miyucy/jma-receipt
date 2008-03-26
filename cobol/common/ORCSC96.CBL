@@ -1435,6 +1435,12 @@
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K216"
+                   STRING  "煞屢〞岉瑪諛棕摯蟈褥呾辦午職及澎絰反"
+                           "管毛坌仃化票今中﹝"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .
