@@ -97,6 +97,7 @@
            03  IDX1                                PIC 9(05).
            03  IDX-CHK                             PIC 9(05).
            03  IDX-CMB                             PIC 9(05).
+           03  IDX-MED                             PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -116,6 +117,7 @@
       *
       *    固定値領域
        01  CONST-AREA.
+           03  CONST-H200401           PIC X(08)   VALUE "20080401".
            03  CONST-GMN-MEDKBN-MAX    PIC 9(05)   VALUE 40.
            03  CONST-MEDKBN-G.
                05  CONST-MEDKBN-VAL.
@@ -236,6 +238,128 @@
                        09  CONST-MEDKBN-ZAINUM PIC 9(04).
                        09  CONST-MEDKBN-SRYCD  PIC X(09).
                05  CONST-MEDKBN-MAX        PIC 9(03)   VALUE   37.
+      *
+           03  CONST-MEDH20-G.
+               05  CONST-MEDH20-VAL.
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2004.
+                   07                  PIC X(09)   VALUE "820000060".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2020.
+                   07                  PIC X(09)   VALUE "820000076".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2021.
+                   07                  PIC X(09)   VALUE "820000077".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2022.
+                   07                  PIC X(09)   VALUE "820000078".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2023.
+                   07                  PIC X(09)   VALUE "820000079".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2024.
+                   07                  PIC X(09)   VALUE "820000080".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2027.
+                   07                  PIC X(09)   VALUE "820000083".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2031.
+                   07                  PIC X(09)   VALUE "820000087".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2034.
+                   07                  PIC X(09)   VALUE "820000090".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2001.
+                   07                  PIC X(09)   VALUE "820000057".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2010.
+                   07                  PIC X(09)   VALUE "820000066".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2002.
+                   07                  PIC X(09)   VALUE "820000058".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2003.
+                   07                  PIC X(09)   VALUE "820000059".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2005.
+                   07                  PIC X(09)   VALUE "820000061".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2006.
+                   07                  PIC X(09)   VALUE "820000062".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2007.
+                   07                  PIC X(09)   VALUE "820000063".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2008.
+                   07                  PIC X(09)   VALUE "820000064".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2009.
+                   07                  PIC X(09)   VALUE "820000065".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2011.
+                   07                  PIC X(09)   VALUE "820000067".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2012.
+                   07                  PIC X(09)   VALUE "820000068".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2013.
+                   07                  PIC X(09)   VALUE "820000069".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2014.
+                   07                  PIC X(09)   VALUE "820000070".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2015.
+                   07                  PIC X(09)   VALUE "820000071".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2016.
+                   07                  PIC X(09)   VALUE "820000072".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2017.
+                   07                  PIC X(09)   VALUE "820000073".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2030.
+                   07                  PIC X(09)   VALUE "820000086".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2036.
+                   07                  PIC X(09)   VALUE "820000092".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC 9(04)   VALUE 2037.
+                   07                  PIC X(09)   VALUE "820000093".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2018.
+                   07                  PIC X(09)   VALUE "820000074".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2019.
+                   07                  PIC X(09)   VALUE "820000075".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2025.
+                   07                  PIC X(09)   VALUE "820000081".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2026.
+                   07                  PIC X(09)   VALUE "820000082".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2028.
+                   07                  PIC X(09)   VALUE "820000084".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2029.
+                   07                  PIC X(09)   VALUE "820000085".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2032.
+                   07                  PIC X(09)   VALUE "820000088".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2033.
+                   07                  PIC X(09)   VALUE "820000089".
+                   07                  PIC 9(01)   VALUE 0.
+                   07                  PIC 9(04)   VALUE 2035.
+                   07                  PIC X(09)   VALUE "820000091".
+               05  CONST-MEDH20-R REDEFINES CONST-MEDH20-VAL.
+                   07  CONST-MEDH20-OCC    OCCURS  37.
+                       09  CONST-MEDH20-ALLKBN PIC 9(01).
+                       09  CONST-MEDH20-ZAINUM PIC 9(04).
+                       09  CONST-MEDH20-SRYCD  PIC X(09).
+               05  CONST-MEDH20-MAX        PIC 9(03)   VALUE   37.
+      *
+           COPY  "CPMEDKBN.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -433,7 +557,12 @@
       *
            EVALUATE    SPA-W01-KANRICD
            WHEN    "5014"
-               PERFORM 3100-SPA-5014-SET-SEC
+               EVALUATE    TRUE
+               WHEN  ( SPA-W01-STYUKYMD    >=  CONST-H200401 )
+                   PERFORM 3101-SPA-5014-SET-SEC
+               WHEN    OTHER
+                   PERFORM 3100-SPA-5014-SET-SEC
+               END-EVALUATE
            WHEN    "5015"
                PERFORM 3100-SPA-5015-SET-SEC
            END-EVALUATE
@@ -476,6 +605,51 @@
       *
            .
        3100-SPA-5014-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       3101-SPA-5014-SET-SEC                  SECTION.
+      *
+           PERFORM VARYING IDX-CHK    FROM    1   BY  1
+                   UNTIL ( IDX-CHK    >   CONST-MEDH20-MAX )
+      *
+               MOVE    CONST-MEDH20-ZAINUM (IDX-CHK)
+                                       TO  SPA-NAI-MEDKBN-ZAINUM
+                                                              (IDX-CHK)
+               MOVE    CONST-MEDH20-SRYCD  (IDX-CHK)
+                                       TO  SPA-NAI-MEDKBN-SRYCD
+                                                              (IDX-CHK)
+      *
+               PERFORM VARYING IDX-MED FROM    1   BY  1
+                       UNTIL ( IDX-MED >   MEDH20-MAX )
+                        OR   ( SPA-GMN-CHK-LBLMEDKBN (IDX-CHK)
+                                       NOT =   SPACE )
+                   IF    ( MEDH20-CDL (IDX-MED)
+                                       =   SPA-NAI-MEDKBN-SRYCD
+                                                              (IDX-CHK))
+                       MOVE    MEDH20-MEIL (IDX-MED)
+                                       TO  SPA-GMN-CHK-LBLMEDKBN
+                                                              (IDX-CHK)
+                   END-IF
+      *
+               END-PERFORM
+      *
+               PERFORM 3101-SYS5014-SEL-SEC
+               IF    ( SYS-5014-DISPKBN    =   "1" )
+                   MOVE    "T"         TO  SPA-GMN-CHK-MEDKBN (IDX-CHK)
+               ELSE
+                   MOVE    "F"         TO  SPA-GMN-CHK-MEDKBN (IDX-CHK)
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    CONST-MEDH20-MAX    TO  SPA-GMN-MEDKBN-MAX
+      *
+           MOVE    1               TO  SPA-GMN-CUR
+      *
+           .
+       3101-SPA-5014-SET-EXT.
            EXIT.
       *****************************************************************
       *    スパ初期編集処理
@@ -546,6 +720,11 @@
            MOVE    SYS-5014-REC    TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-5014-REC
+           IF    ( FLG-SYSKANRI    =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    "1"         TO  SYS-5014-DISPKBN
+           END-IF
       *
            .
        3101-SYS5014-SEL-EXT.
@@ -1011,8 +1190,13 @@
                                        TO  SYS-5014-EDYUKYMD
                    MOVE    SPA-NAI-MEDKBN-ZAINUM (IDX-CHK)
                                        TO  SYS-5014-ZAINUM
-                   MOVE    SPA-NAI-MEDKBN-SRYCD  (IDX-CHK)
+                   IF    ( SPA-W01-STYUKYMD    >=  CONST-H200401 )
+                       MOVE    "00000000"
                                        TO  SYS-5014-SRYCD 
+                   ELSE
+                       MOVE    SPA-NAI-MEDKBN-SRYCD  (IDX-CHK)
+                                       TO  SYS-5014-SRYCD 
+                   END-IF
                    IF    ( SPA-GMN-CHK-MEDKBN (IDX-CHK)    =   "T" )
                        MOVE    "1"     TO  SYS-5014-DISPKBN
                    ELSE
