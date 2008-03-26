@@ -11291,6 +11291,17 @@
            AND ( RECE62-KOHNUM(2)       =  "012"    )
            AND ( RECE62-SRYYM          >=  "200804" )
                MOVE     ZERO    TO    RECE62-TOTALTEN(3)
+               PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                           UNTIL    KOHFTN-IDX     >   30
+                 MOVE   ZERO    TO    RECE62-TENSU(KOHFTN-IDX 3)
+               END-PERFORM
+               PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
+                           UNTIL    KOHFTN-IDX     >   10
+                 MOVE   ZERO    TO    RECE62-NYUKHNKEI(KOHFTN-IDX 3)
+                                      RECE62-NYUTOKKEI(KOHFTN-IDX 3)
+               END-PERFORM
+               MOVE     ZERO    TO    RECE62-NYUKHNKEI2(3)
+                                      RECE62-NYUTOKKEI2(3)
            END-IF
       *
            IF   ( RECE62-SHOKUJIRYOYOHI(1) = ZERO )

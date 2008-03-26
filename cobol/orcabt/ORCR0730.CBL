@@ -4827,9 +4827,11 @@
            IF      RECE62-HKNNUM      =   SPACE
                IF      SEIHIDX            >   ZERO 
       *            長崎の生保と被爆（０１２＋１８６）のときはそのまま記載
-                   IF    ( SYS-1001-PREFNUM    =   "42"  )
-                   AND   ( RECE62-KOHNUM (1)   =   "186" )
-                   AND   ( RECE62-KOHNUM (2)   =   "012" )
+                   IF   (( SYS-1001-PREFNUM    =   "42"  ) AND
+                         ( RECE62-KOHNUM (1)   =   "186" ) AND
+                         ( RECE62-KOHNUM (2)   =   "012" ))
+                   OR   (( RECE62-KOHNUM (1)   =   "079" ) AND
+                         ( RECE62-KOHNUM (2)   =   "012" ))
                        MOVE    2                  TO  IDX1
                        MOVE    3                  TO  IDX2
                    ELSE

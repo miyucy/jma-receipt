@@ -332,6 +332,8 @@
       *                                     ¡Ê²ðÃ£¸£°úÈ¯¾ÉÆüµ­ºÜÇÑ»ß¡Ë
       *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *  04.02.03    NACL-ÌçÏÆ    08/03/25  µÜ¾ë¸©ÆýÍÄ»ù¡¢ËÌ³¤Æ»Àº¿ÀÊä½õ¤Î
+      *                                     ÊÑÂ§ÂÐ±þ½ªÎ»
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6585,6 +6587,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              WHEN    "04"
       *
                IF    RECE02-SRYYM         >=   "200510"
+               AND   RECE02-SRYYM         <=   "200803"
       *
                  IF  SYU-KOH-HKNNUM(IDX3)  =  "183" OR "383" OR "483"
       *
@@ -6623,6 +6626,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              WHEN    "01"
       *
                IF    RECE02-SRYYM         >=   "200604"
+               AND   RECE02-SRYYM         <=   "200803"
       *
                  IF  SYU-KOH-HKNNUM(IDX3)  =  "121"
       *
@@ -8168,6 +8172,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              WHEN    "04"
       *
                IF   RECE02-SRYYM    >=   "200510"
+               AND  RECE02-SRYYM    <=   "200803"
       *
                  PERFORM    VARYING   KOHFTN-IDX   FROM   2   BY   1
                              UNTIL    KOHFTN-IDX     >    5
@@ -8213,6 +8218,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
              WHEN    "01"
       *
                IF   RECE02-SRYYM    >=   "200604"
+               AND  RECE02-SRYYM    <=   "200803"
       *
                  PERFORM    VARYING   KOHFTN-IDX   FROM   2   BY   1
                              UNTIL    KOHFTN-IDX     >    5
