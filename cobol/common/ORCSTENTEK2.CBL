@@ -27,6 +27,9 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *
+      *平成２０年４月改定対応
+      *  04.02.00    NACL-小豆沢  08/03/26  無菌製剤処理加算を基本項目に変更
       *****************************************************************
       *
       *
@@ -255,7 +258,21 @@
       *****************************************************************
       *    主取得
       *****************************************************************
+      *
        200-MAIN-SEC            SECTION.
+           IF     LNK-ORCSTEN2-SRYYM    <=    "200803"
+               PERFORM    210-CHUSYA1-SEC
+           ELSE
+               PERFORM    220-CHUSYA2-SEC
+           END-IF
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    注射（点滴・中心静脈）の取り込み（平成２０年３月まで）
+      *****************************************************************
+       210-CHUSYA1-SEC      SECTION.
       *
       *    点滴注射の取り込み
            INITIALIZE                          SRYACCT-REC
@@ -857,7 +874,465 @@
                MOVE    5           TO      LNK-ORCSTEN2-RC
            END-IF
            .
-       200-MAIN-EXT.
+       210-CHUSYA1-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    注射（点滴・中心静脈）の取り込み（平成２０年４月以降）
+      *****************************************************************
+       220-CHUSYA2-SEC      SECTION.
+      *
+      *    点滴注射の取り込み
+           INITIALIZE                          SRYACCT-REC
+           MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
+           MOVE    "1"                     TO  ACCT-NYUGAIKBN
+           MOVE    LNK-ORCSTEN2-PTID       TO  ACCT-PTID
+           MOVE    LNK-ORCSTEN2-SRYYM      TO  ACCT-SRYYM
+           MOVE    "33"                    TO  ACCT-SRYKBN
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key14"                 TO  MCP-PATHNAME
+           PERFORM 910-SRYACCT-SELECT-SEC
+           IF      FLG-SRYACCT             =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM   910-SRYACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
+                      (ACCT-ZAIKAISU   NOT =    ZERO)    AND
+                      (ACCT-MEISAISU   =        1   )    AND
+                      (ACCT-JIHOKBN    =       SPACE)    AND
+                      (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
+                      (ACCT-SRYCDTOTAL =   130003810)
+                       PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL     IDX1   >   31
+                           IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+                               MOVE  1     TO   FLG-TENTEK-SET
+                               ADD   1     TO 
+                                    LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               ADD   ACCT-ZAITEN     TO 
+                                    LNK-ORCSTEN2-TENTEK-ZAITEN(IDX1)
+                               ADD   ACCT-SRYCDTOTAL     TO 
+                                    LNK-ORCSTEN2-TENTEK-SRYCDTOTAL(IDX1)
+                               MOVE   "130003810"    TO
+                                    LNK-ORCSTEN2-TENTEK-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               PERFORM   300-ZAINUM-SET-SEC
+                           END-IF
+                       END-PERFORM
+                 END-IF
+                 MOVE     "tbl_sryacct"      TO  MCP-TABLE
+                 MOVE     "key14"            TO  MCP-PATHNAME
+                 PERFORM   910-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    診療会計クローズ
+           MOVE     "tbl_sryacct"    TO  MCP-TABLE
+           MOVE     "key14"          TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *     
+      *    点滴注射（乳幼児）＋点滴注射（乳幼児）加算の取り込み
+           INITIALIZE                          SRYACCT-REC
+           MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
+           MOVE    "1"                     TO  ACCT-NYUGAIKBN
+           MOVE    LNK-ORCSTEN2-PTID       TO  ACCT-PTID
+           MOVE    LNK-ORCSTEN2-SRYYM      TO  ACCT-SRYYM
+           MOVE    "33"                    TO  ACCT-SRYKBN
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key14"                 TO  MCP-PATHNAME
+           PERFORM 910-SRYACCT-SELECT-SEC
+           IF      FLG-SRYACCT             =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM   910-SRYACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
+                      (ACCT-ZAIKAISU   NOT =    ZERO)    AND
+                      (ACCT-MEISAISU   =        2   )    AND
+                      (ACCT-JIHOKBN    =       SPACE)    AND
+                      (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
+                      (ACCT-SRYCDTOTAL =   260013180)
+                       PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL     IDX1   >   31
+                           IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+                               MOVE  1     TO   FLG-TENTEK-SET
+                               ADD   ACCT-ZAITEN     TO 
+                                    LNK-ORCSTEN2-TENTEK-ZAITEN(IDX1)
+                               ADD   ACCT-SRYCDTOTAL     TO 
+                                    LNK-ORCSTEN2-TENTEK-SRYCDTOTAL(IDX1)
+                               ADD   1     TO 
+                                    LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               MOVE   "130003710"    TO
+                                    LNK-ORCSTEN2-TENTEK-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               ADD   1     TO 
+                                    LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               MOVE   "130009470"    TO
+                                    LNK-ORCSTEN2-TENTEK-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               PERFORM   300-ZAINUM-SET-SEC
+                           END-IF
+                       END-PERFORM
+                 END-IF
+                 MOVE     "tbl_sryacct"      TO  MCP-TABLE
+                 MOVE     "key14"            TO  MCP-PATHNAME
+                 PERFORM   910-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    診療会計クローズ
+           MOVE     "tbl_sryacct"    TO  MCP-TABLE
+           MOVE     "key14"          TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+      *    中心静脈注射の取り込み
+           INITIALIZE                          SRYACCT-REC
+           MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
+           MOVE    "1"                     TO  ACCT-NYUGAIKBN
+           MOVE    LNK-ORCSTEN2-PTID       TO  ACCT-PTID
+           MOVE    LNK-ORCSTEN2-SRYYM      TO  ACCT-SRYYM
+           MOVE    "33"                    TO  ACCT-SRYKBN
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key14"                 TO  MCP-PATHNAME
+           PERFORM 910-SRYACCT-SELECT-SEC
+           IF      FLG-SRYACCT             =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM   910-SRYACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
+                      (ACCT-ZAIKAISU   NOT =    ZERO)    AND
+                      (ACCT-MEISAISU   =        1   )    AND
+                      (ACCT-JIHOKBN    =       SPACE)    AND
+                      (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
+                      (ACCT-SRYCDTOTAL =   130004410)
+                       PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL     IDX1   >   31
+                           IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+                               MOVE  1     TO   FLG-CHUJOU-SET
+                               ADD   1     TO 
+                                    LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               ADD   ACCT-ZAITEN     TO 
+                                    LNK-ORCSTEN2-CHUJOU-ZAITEN(IDX1)
+                               ADD   ACCT-SRYCDTOTAL     TO 
+                                    LNK-ORCSTEN2-CHUJOU-SRYCDTOTAL(IDX1)
+                               MOVE   "130004410"    TO
+                                    LNK-ORCSTEN2-CHUJOU-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               PERFORM   300-ZAINUM-SET-SEC
+                           END-IF
+                       END-PERFORM
+                 END-IF
+                 MOVE     "tbl_sryacct"      TO  MCP-TABLE
+                 MOVE     "key14"            TO  MCP-PATHNAME
+                 PERFORM   910-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    診療会計クローズ
+           MOVE     "tbl_sryacct"    TO  MCP-TABLE
+           MOVE     "key14"          TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+      *    中心静脈注射＋中心静脈注射（乳幼児）加算の取り込み
+           INITIALIZE                          SRYACCT-REC
+           MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
+           MOVE    "1"                     TO  ACCT-NYUGAIKBN
+           MOVE    LNK-ORCSTEN2-PTID       TO  ACCT-PTID
+           MOVE    LNK-ORCSTEN2-SRYYM      TO  ACCT-SRYYM
+           MOVE    "33"                    TO  ACCT-SRYKBN
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key14"                 TO  MCP-PATHNAME
+           PERFORM 910-SRYACCT-SELECT-SEC
+           IF      FLG-SRYACCT             =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM   910-SRYACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
+                      (ACCT-ZAIKAISU   NOT =    ZERO)    AND
+                      (ACCT-MEISAISU   =        2   )    AND
+                      (ACCT-JIHOKBN    =       SPACE)    AND
+                      (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
+                      (ACCT-SRYCDTOTAL =   260015580)
+                       PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL     IDX1   >   31
+                           IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+                               MOVE  1     TO   FLG-CHUJOU-SET
+                               ADD   ACCT-ZAITEN     TO 
+                                    LNK-ORCSTEN2-CHUJOU-ZAITEN(IDX1)
+                               ADD   ACCT-SRYCDTOTAL     TO 
+                                    LNK-ORCSTEN2-CHUJOU-SRYCDTOTAL(IDX1)
+                               ADD   1     TO 
+                                    LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               MOVE   "130004410"    TO
+                                    LNK-ORCSTEN2-CHUJOU-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               ADD   1     TO 
+                                    LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               MOVE   "130011170"    TO
+                                    LNK-ORCSTEN2-CHUJOU-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               PERFORM   300-ZAINUM-SET-SEC
+                           END-IF
+                       END-PERFORM
+                 END-IF
+                 MOVE     "tbl_sryacct"      TO  MCP-TABLE
+                 MOVE     "key14"            TO  MCP-PATHNAME
+                 PERFORM   910-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    診療会計クローズ
+           MOVE     "tbl_sryacct"    TO  MCP-TABLE
+           MOVE     "key14"          TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+      *    通則加算−生物学的製剤注射の取り込み
+           INITIALIZE                          SRYACCT-REC
+           MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
+           MOVE    "1"                     TO  ACCT-NYUGAIKBN
+           MOVE    LNK-ORCSTEN2-PTID       TO  ACCT-PTID
+           MOVE    LNK-ORCSTEN2-SRYYM      TO  ACCT-SRYYM
+           MOVE    "33"                    TO  ACCT-SRYKBN
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key14"                 TO  MCP-PATHNAME
+           PERFORM 910-SRYACCT-SELECT-SEC
+           IF      FLG-SRYACCT             =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM   910-SRYACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
+                      (ACCT-ZAIKAISU   NOT =    ZERO)    AND
+                      (ACCT-MEISAISU   =        1   )    AND
+                      (ACCT-JIHOKBN    =       SPACE)    AND
+                      (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
+                      (ACCT-SRYCDTOTAL =   130000110)
+                       PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL     IDX1   >   31
+                           IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+      *                      点滴注射
+                             IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                                              NOT =   ZERO
+                               MOVE  1     TO   FLG-TENTEK-SET
+                               ADD   1     TO
+                                    LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               ADD   ACCT-ZAITEN     TO 
+                                    LNK-ORCSTEN2-TENTEK-ZAITEN(IDX1)
+                               ADD   ACCT-SRYCDTOTAL     TO 
+                                    LNK-ORCSTEN2-TENTEK-SRYCDTOTAL(IDX1)
+                               MOVE   "130000110"    TO
+                                    LNK-ORCSTEN2-TENTEK-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               PERFORM   300-ZAINUM-SET-SEC
+                             END-IF
+      *                      中心静脈注射
+                             IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                                              NOT =   ZERO
+                               MOVE  1     TO   FLG-CHUJOU-SET
+                               ADD   1     TO 
+                                    LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               ADD   ACCT-ZAITEN     TO 
+                                    LNK-ORCSTEN2-CHUJOU-ZAITEN(IDX1)
+                               ADD   ACCT-SRYCDTOTAL     TO 
+                                    LNK-ORCSTEN2-CHUJOU-SRYCDTOTAL(IDX1)
+                               MOVE   "130000110"    TO
+                                    LNK-ORCSTEN2-CHUJOU-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               PERFORM   300-ZAINUM-SET-SEC
+                             END-IF
+                           END-IF
+                       END-PERFORM
+                 END-IF
+                 MOVE     "tbl_sryacct"      TO  MCP-TABLE
+                 MOVE     "key14"            TO  MCP-PATHNAME
+                 PERFORM   910-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    診療会計クローズ
+           MOVE     "tbl_sryacct"    TO  MCP-TABLE
+           MOVE     "key14"          TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+      *    通則加算−精密持続点滴注射の取り込み
+           INITIALIZE                          SRYACCT-REC
+           MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
+           MOVE    "1"                     TO  ACCT-NYUGAIKBN
+           MOVE    LNK-ORCSTEN2-PTID       TO  ACCT-PTID
+           MOVE    LNK-ORCSTEN2-SRYYM      TO  ACCT-SRYYM
+           MOVE    "33"                    TO  ACCT-SRYKBN
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key14"                 TO  MCP-PATHNAME
+           PERFORM 910-SRYACCT-SELECT-SEC
+           IF      FLG-SRYACCT             =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM   910-SRYACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
+                      (ACCT-ZAIKAISU   NOT =    ZERO)    AND
+                      (ACCT-MEISAISU   =        1   )    AND
+                      (ACCT-JIHOKBN    =       SPACE)    AND
+                      (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
+                      (ACCT-SRYCDTOTAL =   130000210)
+                       PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL     IDX1   >   31
+                           IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+      *                      点滴注射
+                             MOVE    ZERO      TO   FLG-SEIMITSU-SET
+                             IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                                              NOT =   ZERO
+                               MOVE  1     TO   FLG-SEIMITSU-SET
+                               MOVE  1     TO   FLG-TENTEK-SET
+                               ADD   1     TO 
+                                    LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               ADD   ACCT-ZAITEN     TO 
+                                    LNK-ORCSTEN2-TENTEK-ZAITEN(IDX1)
+                               ADD   ACCT-SRYCDTOTAL     TO 
+                                    LNK-ORCSTEN2-TENTEK-SRYCDTOTAL(IDX1)
+                               MOVE   "130000210"    TO
+                                    LNK-ORCSTEN2-TENTEK-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               PERFORM   300-ZAINUM-SET-SEC
+                             END-IF
+      *                      中心静脈注射
+                             IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                                              NOT =   ZERO
+                               MOVE  1     TO   FLG-SEIMITSU-SET
+                               MOVE  1     TO   FLG-CHUJOU-SET
+                               ADD   1     TO 
+                                    LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               ADD   ACCT-ZAITEN     TO 
+                                    LNK-ORCSTEN2-CHUJOU-ZAITEN(IDX1)
+                               ADD   ACCT-SRYCDTOTAL     TO 
+                                    LNK-ORCSTEN2-CHUJOU-SRYCDTOTAL(IDX1)
+                               MOVE   "130000210"    TO
+                                    LNK-ORCSTEN2-CHUJOU-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               PERFORM   300-ZAINUM-SET-SEC
+                             END-IF
+                             IF      FLG-SEIMITSU-SET    =    ZERO
+                                 MOVE   5     TO    LNK-ORCSTEN2-RC
+                             END-IF
+                           END-IF
+                       END-PERFORM
+                 END-IF
+                 MOVE     "tbl_sryacct"      TO  MCP-TABLE
+                 MOVE     "key14"            TO  MCP-PATHNAME
+                 PERFORM   910-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    診療会計クローズ
+           MOVE     "tbl_sryacct"    TO  MCP-TABLE
+           MOVE     "key14"          TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+      *    通則加算−麻薬注射の取り込み
+           INITIALIZE                          SRYACCT-REC
+           MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
+           MOVE    "1"                     TO  ACCT-NYUGAIKBN
+           MOVE    LNK-ORCSTEN2-PTID       TO  ACCT-PTID
+           MOVE    LNK-ORCSTEN2-SRYYM      TO  ACCT-SRYYM
+           MOVE    "33"                    TO  ACCT-SRYKBN
+           MOVE    "tbl_sryacct"           TO  MCP-TABLE
+           MOVE    "key14"                 TO  MCP-PATHNAME
+           PERFORM 910-SRYACCT-SELECT-SEC
+           IF      FLG-SRYACCT             =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM   910-SRYACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-SRYACCT    =   1)
+                 IF   (ACCT-ZAITEN     NOT =    ZERO)    AND
+                      (ACCT-ZAIKAISU   NOT =    ZERO)    AND
+                      (ACCT-MEISAISU   =        1   )    AND
+                      (ACCT-JIHOKBN    =       SPACE)    AND
+                      (ACCT-HKNCOMBI   =   LNK-ORCSTEN2-HKNCOMBI)  AND
+                      (ACCT-SRYCDTOTAL =   130000310)
+                       PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                  UNTIL     IDX1   >   31
+                           IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
+      *                      点滴注射
+                             IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                                              NOT =   ZERO
+                               MOVE  1     TO   FLG-TENTEK-SET
+                               ADD   1     TO 
+                                    LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               ADD   ACCT-ZAITEN     TO 
+                                    LNK-ORCSTEN2-TENTEK-ZAITEN(IDX1)
+                               ADD   ACCT-SRYCDTOTAL     TO 
+                                    LNK-ORCSTEN2-TENTEK-SRYCDTOTAL(IDX1)
+                               MOVE   "130000310"    TO
+                                    LNK-ORCSTEN2-TENTEK-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               PERFORM   300-ZAINUM-SET-SEC
+                             END-IF
+      *                      中心静脈注射
+                             IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                                              NOT =   ZERO
+                               MOVE  1     TO   FLG-CHUJOU-SET
+                               ADD   1     TO 
+                                    LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                               MOVE  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
+                                        TO  WRK-MEISAISU
+                               ADD   ACCT-ZAITEN     TO 
+                                    LNK-ORCSTEN2-CHUJOU-ZAITEN(IDX1)
+                               ADD   ACCT-SRYCDTOTAL     TO 
+                                    LNK-ORCSTEN2-CHUJOU-SRYCDTOTAL(IDX1)
+                               MOVE   "130000310"    TO
+                                    LNK-ORCSTEN2-CHUJOU-SRYCD
+                                                  (IDX1 WRK-MEISAISU)
+                               PERFORM   300-ZAINUM-SET-SEC
+                             END-IF
+                           END-IF
+                       END-PERFORM
+                 END-IF
+                 MOVE     "tbl_sryacct"      TO  MCP-TABLE
+                 MOVE     "key14"            TO  MCP-PATHNAME
+                 PERFORM   910-SRYACCT-READ-SEC
+               END-PERFORM
+           END-IF
+      *    診療会計クローズ
+           MOVE     "tbl_sryacct"    TO  MCP-TABLE
+           MOVE     "key14"          TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *    
+           IF      FLG-TENTEK-SET     =    1
+               MOVE    ZERO        TO      LNK-ORCSTEN2-TENTEK-ERRCD
+           ELSE
+               MOVE    1           TO      LNK-ORCSTEN2-TENTEK-ERRCD
+           END-IF
+      *    
+           IF      FLG-CHUJOU-SET     =    1
+               MOVE    ZERO        TO      LNK-ORCSTEN2-CHUJOU-ERRCD
+           ELSE
+               MOVE    1           TO      LNK-ORCSTEN2-CHUJOU-ERRCD
+           END-IF
+      *
+           IF    LNK-ORCSTEN2-RC      =    5
+               INITIALIZE                  LNK-ORCSTEN2-OUT-AREA
+               MOVE    5           TO      LNK-ORCSTEN2-RC
+           END-IF
+           .
+       220-CHUSYA2-EXT.
            EXIT.
       *
       *****************************************************************
