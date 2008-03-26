@@ -55,8 +55,7 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX0                            PIC 9(05).
-           03  IDXK                            PIC 9(05).
-           03  IDXR                            PIC 9(05).
+           03  IDX-RYO                         PIC 9(05).
            03  IDX-SRY                         PIC 9(05).
            03  IDX-DAY                         PIC 9(05).
       *
@@ -72,13 +71,12 @@
            03  WRK-DAY-X.
                05  WRK-DAY                     PIC 9(02).
            03  WRK-RYOYO-DAY-G.
-               05  WRK-RYOYO-DAY               PIC S9(02)
+               05  WRK-RYOYO-DAY               PIC 9(01)
                                                OCCURS  31.
            03  WRK-TNS-SRYCD                   PIC X(09).
            03  WRK-TNS-KJNYMD                  PIC X(08).
            03  WRK-ZAINUM-G.
                05  WRK-ZAINUM                  PIC 9(08).
-           03  WRK-ZAISKBKBN                   PIC X(01).
       *
        01  CALENDAR-AREA.
            03  CL-RYOYO-FLG                    PIC 9(01).
@@ -97,11 +95,64 @@
                                                OCCURS  31.
       *
        01  CONST-AREA.
-           03  CONST-H220401           PIC X(08)   VALUE "20100401".
            03  CONST-NSRYACT-MAX       PIC 9(05)   VALUE 5.
+           03  CONST-RYOYOCD-G.
+               05  CONST-RYOYOCD-VAL.
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC X(09)   VALUE "190121310".
+                   07                  PIC 9(01)   VALUE 2.
+                   07                  PIC X(09)   VALUE "190121410".
+                   07                  PIC 9(01)   VALUE 3.
+                   07                  PIC X(09)   VALUE "190121510".
+                   07                  PIC 9(01)   VALUE 4.
+                   07                  PIC X(09)   VALUE "190121610".
+                   07                  PIC 9(01)   VALUE 5.
+                   07                  PIC X(09)   VALUE "190121710".
+                   07                  PIC 9(01)   VALUE 6.
+                   07                  PIC X(09)   VALUE "190121810".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC X(09)   VALUE "190123710".
+                   07                  PIC 9(01)   VALUE 2.
+                   07                  PIC X(09)   VALUE "190123810".
+                   07                  PIC 9(01)   VALUE 3.
+                   07                  PIC X(09)   VALUE "190123910".
+                   07                  PIC 9(01)   VALUE 4.
+                   07                  PIC X(09)   VALUE "190124010".
+                   07                  PIC 9(01)   VALUE 5.
+                   07                  PIC X(09)   VALUE "190124110".
+                   07                  PIC 9(01)   VALUE 6.
+                   07                  PIC X(09)   VALUE "190124210".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC X(09)   VALUE "190122010".
+                   07                  PIC 9(01)   VALUE 2.
+                   07                  PIC X(09)   VALUE "190122110".
+                   07                  PIC 9(01)   VALUE 3.
+                   07                  PIC X(09)   VALUE "190122210".
+                   07                  PIC 9(01)   VALUE 4.
+                   07                  PIC X(09)   VALUE "190122310".
+                   07                  PIC 9(01)   VALUE 5.
+                   07                  PIC X(09)   VALUE "190122410".
+                   07                  PIC 9(01)   VALUE 6.
+                   07                  PIC X(09)   VALUE "190122510".
+                   07                  PIC 9(01)   VALUE 1.
+                   07                  PIC X(09)   VALUE "190124310".
+                   07                  PIC 9(01)   VALUE 2.
+                   07                  PIC X(09)   VALUE "190124410".
+                   07                  PIC 9(01)   VALUE 3.
+                   07                  PIC X(09)   VALUE "190124510".
+                   07                  PIC 9(01)   VALUE 4.
+                   07                  PIC X(09)   VALUE "190124610".
+                   07                  PIC 9(01)   VALUE 5.
+                   07                  PIC X(09)   VALUE "190124710".
+                   07                  PIC 9(01)   VALUE 6.
+                   07                  PIC X(09)   VALUE "190124810".
+               05  CONST-RYOYOCD-R REDEFINES   CONST-RYOYOCD-VAL.
+                   07  CONST-RYOYOCD-OCC   OCCURS      24.
+                       09  CONST-RYOYOCDMSGID
+                                           PIC 9(01).
+                       09  CONST-RYOYOCD   PIC X(09).
+               05  CONST-RYOYOCD-MAX   PIC 9(05)   VALUE   24.
            03  CONST-ADL-TTLZAINUM     PIC 9(04)   VALUE 3000.
-      *
-           COPY    "CPRYOYOCD.INC".
       *
        01  WKRYOCOM-REC.
            COPY    "CPRYOCOM.INC"      REPLACING
@@ -221,12 +272,6 @@
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           MOVE    "5"             TO  WRK-ZAISKBKBN
-           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
-           IF    ( FLG-NYUINACCT   NOT =   ZERO )
-               MOVE    1           TO  FLG-END
-           END-IF
-      *
            PERFORM 900-PTNYUINRRK-KEY24-SEL-SEC
            IF    ( FLG-PTNYUINRRK  =   ZERO )
                IF    ( PTNYUINRRK-TAIINYMD =   "99999999" )
@@ -257,12 +302,6 @@
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-5015-REC
-      *
-           IF    ( WRK-SRYYMD     >=   CONST-H220401 )
-               MOVE    "1"         TO  SYS-5015-ADLINPUTKBN
-           END-IF
-      *
-           PERFORM 800-MCNDATE-SEC
       *
            .
        100-INIT-EXT.
@@ -296,10 +335,11 @@
                PERFORM VARYING IDX-DAY FROM    1   BY  1
                        UNTIL ( IDX-DAY >   31 )
       *
-                   IF    ( WRK-RYOYO-DAY (IDX-DAY) NOT =   ZERO )
+                   IF    ( WRK-RYOYO-DAY (IDX-DAY) >   ZERO )
                        MOVE    WRK-RYOYO-DAY (IDX-DAY)
                                        TO  CL-DAY (IDX-DAY)
-                       IF    ( WRK-RYOYO-DAY (IDX-DAY) >   ZERO )
+                       IF    ( WRK-RYOYO-DAY (IDX-DAY) >=  1 )
+                        AND  ( WRK-RYOYO-DAY (IDX-DAY) <=  6 )
                            MOVE    1   TO  CL-RYOYO-FLG
                        END-IF
                    END-IF
@@ -351,24 +391,25 @@
       *****************************************************************
        1001111-RYOYOCD-CHK-SEC          SECTION.
       *
-           PERFORM VARYING IDXK    FROM    1   BY  1
-                   UNTIL ( IDXK    >   CONST-RYOYOCD-KHN-MAX )
+           PERFORM VARYING IDX-RYO FROM    1   BY  1
+                   UNTIL ( IDX-RYO >   CONST-RYOYOCD-MAX )
                     OR   ( WRK-RYOYO-DAY-G NOT =   ZERO )
-               PERFORM VARYING IDXR    FROM    1   BY  1
-                   UNTIL ( IDXR    >   CONST-RYOYOCD-CD-MAX  )
-                    OR   ( WRK-RYOYO-DAY-G NOT =   ZERO )
-                   IF    ( NSRY-SRYCD (IDX-SRY)
-                                   =   CONST-RYOYOCD  (IDXK IDXR))
-                       PERFORM VARYING IDX-DAY FROM    1   BY  1
-                               UNTIL ( IDX-DAY >   31 )
       *
-                           IF    ( NACCT-DAY (IDX-DAY) >   ZERO )
-                               MOVE    1   TO  WRK-RYOYO-DAY (IDX-DAY)
-                           END-IF
+               IF    ( NSRY-SRYCD (IDX-SRY)    =   CONST-RYOYOCD
+                                                              (IDX-RYO))
       *
-                       END-PERFORM
-                   END-IF
-               END-PERFORM
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+      *
+                       IF    ( NACCT-DAY (IDX-DAY) >   ZERO )
+                           MOVE    CONST-RYOYOCDMSGID  (IDX-RYO)
+                                           TO  WRK-RYOYO-DAY (IDX-DAY)
+                       END-IF
+      *
+                   END-PERFORM
+      *
+               END-IF
+      *
            END-PERFORM
       *
            IF    ( WRK-RYOYO-DAY-G         =   ZERO )
@@ -381,7 +422,7 @@
                            UNTIL ( IDX-DAY >   31 )
       *
                        IF    ( NACCT-DAY (IDX-DAY) >   ZERO )
-                           MOVE    -1      TO  WRK-RYOYO-DAY (IDX-DAY)
+                           MOVE    9       TO  WRK-RYOYO-DAY (IDX-DAY)
                        END-IF
       *
                    END-PERFORM
@@ -390,6 +431,25 @@
       *
            .
        1001111-RYOYOCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院期間編集処理
+      *****************************************************************
+       10011-EDIT-NYUIN-DAY-SEC         SECTION.
+      *
+           PERFORM 900-NYUINACCT-KEY19-SEL-SEC
+      *
+           PERFORM VARYING IDX-DAY FROM    1   BY  1
+                   UNTIL ( IDX-DAY >   31 )
+      *
+               IF    ( NACCT-DAY (IDX-DAY) =   ZERO )
+                   MOVE    ZERO    TO  CL-DAY (IDX-DAY)
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       10011-EDIT-NYUIN-DAY-EXT.
            EXIT.
       *****************************************************************
       *    主処理
@@ -440,7 +500,6 @@
                                MOVE    "1"         TO  SYS-5014-DISPKBN
                            END-IF
                            IF    ( SYS-5014-DISPKBN    =   "1" )
-                            AND  ( RYOCOM-MONTH    NOT =   ZERO )
                                PERFORM 2001-IRYOKBN-DATA-INS-SEC
                            END-IF
                        END-IF
@@ -508,11 +567,13 @@
                IF    ( RYOCOM-MONTH    >   ZERO )
                    CONTINUE
                ELSE
-                   IF    ( CL-ZENGETU-DAY (CL-ZENGETU-END) >   ZERO )
+                   IF    ( CL-ZENGETU-DAY (CL-ZENGETU-END) >=  1 )
+                    AND  ( CL-ZENGETU-DAY (CL-ZENGETU-END) <=  6 )
                        PERFORM VARYING IDX-DAY FROM    1   BY  1
                                UNTIL ( IDX-DAY >   CL-KONGETU-END )
       *
-                           IF    ( CL-KONGETU-DAY(IDX-DAY) >   ZERO )
+                           IF    ( CL-KONGETU-DAY (IDX-DAY) >=  1 )
+                            AND  ( CL-KONGETU-DAY (IDX-DAY) <=  6 )
                                MOVE    WKRYOCOM-DAY (CL-ZENGETU-END)
                                        TO  RYOCOM-DAY (IDX-DAY)
                            END-IF
@@ -547,17 +608,6 @@
       *
            .
        300-END-EXT.
-           EXIT.
-      *****************************************************************
-      *    マシン日付取得サブ
-      *****************************************************************
-       800-MCNDATE-SEC         SECTION.
-      *
-           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
-      *
-           .
-      *
-       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    カレンダー処理
@@ -692,7 +742,7 @@
       *****************************************************************
       *    入院会計検索処理
       *****************************************************************
-       900-NYUINACCT-KEY17-SEL-SEC     SECTION.
+       900-NYUINACCT-KEY19-SEL-SEC     SECTION.
       *
            MOVE    ZERO                TO  FLG-NYUINACCT
       *
@@ -701,10 +751,10 @@
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  NACCT-PTID
            MOVE    WRK-SRYYM           TO  NACCT-SRYYM
-           MOVE    WRK-ZAISKBKBN       TO  NACCT-ZAISKBKBN
+           MOVE    "5"                 TO  NACCT-ZAISKBKBN
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
+           MOVE    "key19"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC TO  NYUINACCT-REC
@@ -714,11 +764,11 @@
            END-IF
       *
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-           MOVE    "key17"             TO  MCP-PATHNAME
+           MOVE    "key19"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-NYUINACCT-KEY17-SEL-EXT.
+       900-NYUINACCT-KEY19-SEL-EXT.
            EXIT.
       *****************************************************************
       *    入院会計検索処理
