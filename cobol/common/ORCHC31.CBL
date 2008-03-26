@@ -549,7 +549,7 @@
       *
            INITIALIZE                  WRK-HENSYU-AREA
            MOVE    1               TO  IDX-GYO
-           MOVE    65              TO  GYO-MAX
+           MOVE    64              TO  GYO-MAX
            MOVE    30              TO  KOU-MAX
            MOVE    YAKUJYO-EFFECT  TO  WRK-HENSYUDATA
            PERFORM 250-HENSYU-SYORI-SEC
@@ -557,7 +557,7 @@
            MOVE    ZERO            TO  IDX-GYO1
            PERFORM VARYING IDX-GYO     FROM    1   BY  1
                    UNTIL   IDX-GYO     >   GYO-MAX
-               COMPUTE IDX-GYO1    =   IDX-GYO     +   3
+               COMPUTE IDX-GYO1    =   IDX-GYO     +   4
                MOVE    WRK-HENSYU(IDX-GYO)
                                        TO  WRK-YKJ-KONOKOKA(IDX-GYO1)
            END-PERFORM
