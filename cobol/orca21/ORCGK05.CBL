@@ -198,6 +198,8 @@
       *
            03  FLG-AUTOKBN2         PIC 9(01).
       *
+           03  FLG-SAIHEN           PIC 9(01).
+      *
       *    システム領域
       *01  SYS-AREA.
       *    03  SYS-YMD.
@@ -2367,7 +2369,6 @@
            IF     SPA-K05-NAI-YUKOEDYMD   <   "99999999"
                MOVE    SPA-K05-NAI-YUKOEDYMD   TO  SPA-SRYYMD
            ELSE
-      *TEST
                IF      SPA-K05-NAI-YUKOSTYMD   =   "00000000"
                    MOVE    SPA-K05-MAE-SRYYMD      TO  SPA-SRYYMD
                ELSE
@@ -2518,6 +2519,13 @@
                  AND  (SPA-K05-NAI-YUKOSTYMD   <   SPA-SRYYMD)
                    MOVE    SPA-K05-MAE-SRYYMD  TO  SPA-SRYYMD
                    PERFORM 410121-SAIHEN-SEC
+               ELSE
+                   IF     (SPA-K05-NAI-YUKOSTYMD   >   "00000000") AND
+                          (SPA-K05-NAI-YUKOSTYMD
+                                           NOT =   SPA-SRYYMD )
+                       MOVE    SPA-K05-NAI-YUKOSTYMD  TO  SPA-SRYYMD
+                       PERFORM 410121-SAIHEN-SEC
+                   END-IF
                END-IF
            ELSE
                INITIALIZE                      ORCSGDAYAREA
@@ -2564,9 +2572,11 @@
                MOVE    SPACE           TO  SPA-MAE-INPUTCD (IDX)
            END-PERFORM
       *
+           MOVE    1                      TO  FLG-SAIHEN
            MOVE    ZERO                   TO  WRK-STR
       *    画面ＳＰＡチェック処理
            PERFORM 410112-KOUI-SPACHK-SEC
+           MOVE    ZERO                   TO  FLG-SAIHEN
            .
        410121-SAIHEN-EXT.
            EXIT.
@@ -3090,6 +3100,7 @@
            MOVE    SPACE               TO  LNK-SC92-KBN
       *    入力コード変更ありの時
            IF      LNK-SC97-NYURYOKU   =   1
+             OR   (FLG-SAIHEN          =   1    )
                MOVE    SPACE               TO  LNK-SC92-KBN
            ELSE
                MOVE    "5"                 TO  LNK-SC92-KBN
