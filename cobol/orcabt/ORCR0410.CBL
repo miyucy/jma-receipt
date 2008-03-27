@@ -72,6 +72,7 @@
       *  04.02.01    NACL-ÌçÏÆ    08/02/26  ÀÁµá¶èÊ¬ÊÔ½¸
       *  04.02.02    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *                                     ¡ÊºÆ½¢Ï«¡§±ßÊÑ¹¹ÂÐ±þ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1418,7 +1419,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               CONS-ROUSAI5  OR
                                               CONS-ROUSAI6  OR
                                               CONS-ROUSAI7  OR
-                                              CONS-ROUSAI8  OR
                                               CONS-ROUSAI9  OR
                                               CONS-ROUSAI10 OR
                                               CONS-ROUSAI11 OR
@@ -1431,12 +1431,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               CONS-ROUSAI18   )
                        OR ((ACCT-SRYKBN         =  "80"      )   AND
                            (SRY-SRYCD(IDY)(1:5) =  "09593"   ))
+                       OR ((SRY-SRYCD(IDY) =  CONS-ROUSAI8   )   AND
+                           (RECE41-SRYYM   <  "200804"       ))
       *
-      *                     IF     TNS-TENSIKIBETU   =   1
                                ADD    TNS-TEN      TO    WRK-KIN
                                COMPUTE  WRK-TEN  =   WRK-TEN   +
                                         ( TNS-TEN / 10)
-      *                     END-IF
       *
                        END-IF
       *
@@ -1625,14 +1625,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                        PERFORM   800-TENSU-TBL-SEC
       *
-                       IF   SRY-SRYCD(IDY) =  CONS-ROUSAI1  OR
+                       IF ( SRY-SRYCD(IDY) =  CONS-ROUSAI1  OR
                                               CONS-ROUSAI2  OR
                                               CONS-ROUSAI3  OR
                                               CONS-ROUSAI4  OR
                                               CONS-ROUSAI5  OR
                                               CONS-ROUSAI6  OR
                                               CONS-ROUSAI7  OR
-                                              CONS-ROUSAI8  OR
                                               CONS-ROUSAI9  OR
                                               CONS-ROUSAI10 OR
                                               CONS-ROUSAI11 OR
@@ -1642,14 +1641,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                               CONS-ROUSAI15 OR
                                               CONS-ROUSAI16 OR
                                               CONS-ROUSAI17 OR
-                                              CONS-ROUSAI18
+                                              CONS-ROUSAI18    )
+                       OR ((SRY-SRYCD(IDY) =  CONS-ROUSAI8    ) AND
+                           (RECE41-SRYYM   <  "200804"        ))
       *
-      *                     IF     TNS-TENSIKIBETU   =   1
                                COMPUTE  WRK-TEN-JI   =  TNS-TEN / 10
                                COMPUTE  TBL-SYUTEN-JI(ID1)  =
                                         TBL-SYUTEN-JI(ID1)  -
                                  ( WRK-ZAIKAISU-JI * WRK-TEN-JI )
-      *                     END-IF
       *
                        END-IF
       *

@@ -84,6 +84,7 @@
       *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *                                     ¡ÊÅÀÅ©ÊÔ½¸½¤Àµ¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *                                     ¡ÊºÆ½¢Ï«¡¢¿¦¶ÈÉüµ¢¡§µ­ºÜ½çÂÐ±þ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3104,6 +3105,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                          MOVE    999999998   TO  TBL-ZAIW-KOUHYOJYUNNUM
                        END-IF
                      END-IF
+                 END-IF
+                 IF   RECE82-SRYYM   >=   "200804"
+                   EVALUATE  TBL-ZAIW-SRYCD1
+                     WHEN     "101130010"
+                       MOVE      ALL "9"     TO  TBL-ZAIW-CDKBN-AREA
+                       MOVE      999999991   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                     WHEN     "101800180"
+                       MOVE      ALL "9"     TO  TBL-ZAIW-CDKBN-AREA
+                       MOVE      999999992   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                   END-EVALUATE
                  END-IF
                END-IF
                MOVE    TBL-ZAIW-CDKBN-SYO  TO  RECE86-CDKBN-SYO
