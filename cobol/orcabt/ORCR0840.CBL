@@ -875,10 +875,9 @@
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
       *
       *    在支援フラグ編集の為のコード
-           03  CONS-ZAISIEN1         PIC X(09)  VALUE  "114001110".
-           03  CONS-ZAISIEN2         PIC X(09)  VALUE  "114011570".
-           03  CONS-ZAISIEN3         PIC X(09)  VALUE  "114011670".
-           03  CONS-ZAISIEN4         PIC X(09)  VALUE  "114011770".
+           03  CONS-ZAISIEN1         PIC X(09)  VALUE  "114011570".
+           03  CONS-ZAISIEN2         PIC X(09)  VALUE  "114011670".
+           03  CONS-ZAISIEN3         PIC X(09)  VALUE  "114011770".
       *
       *    剤の診療内容チェックテーブル
        01  TBL-ZAICHECK-AREA.
@@ -2921,8 +2920,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
               AND (WRK-SISETU613      =      1      )
                 IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1    OR
                                             CONS-ZAISIEN2    OR
-                                            CONS-ZAISIEN3    OR
-                                            CONS-ZAISIEN4
+                                            CONS-ZAISIEN3
                    MOVE   "1"   TO    RECE82-COMCNTFLG
                    MOVE   "1"   TO    RECE84-FLG-ZAISIEN-COMMENT
                 END-IF

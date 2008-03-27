@@ -1045,10 +1045,9 @@
            03  CONS-SIDORYO6       PIC X(09) VALUE "113700810".
       *
       *    ºß»Ù±ç¥Õ¥é¥°ÊÔ½¸¤Î°Ù¤Î¥³¡¼¥É
-           03  CONS-ZAISIEN1       PIC X(09) VALUE "114001110".
-           03  CONS-ZAISIEN2       PIC X(09) VALUE "114011570".
-           03  CONS-ZAISIEN3       PIC X(09) VALUE "114011670".
-           03  CONS-ZAISIEN4       PIC X(09) VALUE "114011770".
+           03  CONS-ZAISIEN1       PIC X(09) VALUE "114011570".
+           03  CONS-ZAISIEN2       PIC X(09) VALUE "114011670".
+           03  CONS-ZAISIEN3       PIC X(09) VALUE "114011770".
       *
       *    ¥Õ¥£¥ë¥àÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
            03  CONS-FILM-YOUJI-KASAN  
@@ -3462,8 +3461,7 @@
               AND (WRK-SISETU613      =      1      )
                 IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1    OR
                                             CONS-ZAISIEN2    OR
-                                            CONS-ZAISIEN3    OR
-                                            CONS-ZAISIEN4
+                                            CONS-ZAISIEN3
                    MOVE   "1"   TO    RECE62-COMCNTFLG
                    MOVE   "1"   TO    RECE64-FLG-ZAISIEN-COMMENT
                 END-IF

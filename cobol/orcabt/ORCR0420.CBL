@@ -149,6 +149,7 @@
       *                                     （診療区分６４：病理診断対応）
       *                                     （再就労：円変更対応）
       *                                     （リハ：専用コード追加）
+      *                                     （在宅コード追加）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -815,6 +816,8 @@
            03  CONS-ZAIHOU-COMMENT   PIC X(09)  VALUE  "114001110".
       *    訪問診療日コメント
            03  CONS-ZAIHOU2-COMMENT  PIC X(09)  VALUE  "840000066".
+      *    在宅患者訪問診療料（居住系）
+           03  CONS-ZAIHOU3-COMMENT  PIC X(09)  VALUE  "114012910".
       *
       *    在宅時医学総合管理料１（院外処方せん）
            03  CONS-ZAIIKAN1-COMMENT PIC X(09)  VALUE  "114012210".
@@ -824,6 +827,14 @@
            03  CONS-ZAIIKAN3-COMMENT PIC X(09)  VALUE  "114012410".
       *    在宅時医学総合管理料２（院外処方せん）
            03  CONS-ZAIIKAN4-COMMENT PIC X(09)  VALUE  "114007510".
+      *    特定施設入居時等医学総合管理料１（処方せんを交付）
+           03  CONS-ZAIIKAN5-COMMENT PIC X(09)  VALUE  "114013010".
+      *    特定施設入居時等医学総合管理料１（処方せんを交付しない）
+           03  CONS-ZAIIKAN6-COMMENT PIC X(09)  VALUE  "114013110".
+      *    特定施設入居時等医学総合管理料２（処方せんを交付）
+           03  CONS-ZAIIKAN7-COMMENT PIC X(09)  VALUE  "114013210".
+      *    特定施設入居時等医学総合管理料２（処方せんを交付しない）
+           03  CONS-ZAIIKAN8-COMMENT PIC X(09)  VALUE  "114013310".
       *
       *    外来迅速検体検査加算
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -840,10 +851,9 @@
            03  CONS-JYOMYAKUKASAN    PIC X(09)  VALUE  "130003670".
       *
       *    在支援フラグ編集の為のコード
-           03  CONS-ZAISIEN1         PIC X(09)  VALUE  "114001110".
-           03  CONS-ZAISIEN2         PIC X(09)  VALUE  "114011570".
-           03  CONS-ZAISIEN3         PIC X(09)  VALUE  "114011670".
-           03  CONS-ZAISIEN4         PIC X(09)  VALUE  "114011770".
+           03  CONS-ZAISIEN1         PIC X(09)  VALUE  "114011570".
+           03  CONS-ZAISIEN2         PIC X(09)  VALUE  "114011670".
+           03  CONS-ZAISIEN3         PIC X(09)  VALUE  "114011770".
       *
       *    剤の診療内容チェックテーブル
        01  TBL-ZAICHECK-AREA.
@@ -2711,13 +2721,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       OR    CONS-ZAIIKAN2-COMMENT
                                       OR    CONS-ZAIIKAN3-COMMENT
                                       OR    CONS-ZAIIKAN4-COMMENT
+                                      OR    CONS-ZAIIKAN5-COMMENT
+                                      OR    CONS-ZAIIKAN6-COMMENT
+                                      OR    CONS-ZAIIKAN7-COMMENT
+                                      OR    CONS-ZAIIKAN8-COMMENT
                                       OR    CONS-ZAIHOU-COMMENT
+                                      OR    CONS-ZAIHOU3-COMMENT
                    MOVE   "1"   TO    RECE41-COMCNTFLG
                    MOVE   "2"   TO    RECE44-FLG-OSIN-COMMENT
               END-IF
       *
-              IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT
-              AND  FLG-ZAIHOU-COM     =     ZERO
+              IF   (SRY-SRYCD(IDX2)   =     CONS-ZAIHOU-COMMENT
+                                      OR    CONS-ZAIHOU3-COMMENT)
+              AND  (FLG-ZAIHOU-COM    =     ZERO                )
                    MOVE   "1"   TO    RECE44-FLG-ZAIHOU-COMMENT
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHOU2-COMMENT
@@ -2727,10 +2743,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
               IF  (RECE41-SRYYM      >=     "200604")
               AND (WRK-SISETU613      =      1      )
-                IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1    OR
-                                            CONS-ZAISIEN2    OR
-                                            CONS-ZAISIEN3    OR
-                                            CONS-ZAISIEN4
+                IF SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT  OR
+                                            CONS-ZAIHOU3-COMMENT OR
+                                            CONS-ZAISIEN1        OR
+                                            CONS-ZAISIEN2        OR
+                                            CONS-ZAISIEN3
                    MOVE   "1"   TO    RECE41-COMCNTFLG
                    MOVE   "1"   TO    RECE44-FLG-ZAISIEN-COMMENT
                 END-IF
@@ -3422,7 +3439,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114012070")))
-                   OR (  SRY-SRYCD(IDX3)       =    "114001110"  )
+                   OR (  SRY-SRYCD(IDX3) =  CONS-ZAIHOU-COMMENT  )
+                   OR (  SRY-SRYCD(IDX3) =  CONS-ZAIHOU3-COMMENT )
                        MOVE   1              TO   FLG-ZAITAKU
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(11)
                        COMPUTE   RECE41-TENSU(11)  =
@@ -3860,7 +3878,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114012070")))
-                   OR (  SRY-SRYCD(IDX3)       =    "114001110"  )
+                   OR (  SRY-SRYCD(IDX3) =  CONS-ZAIHOU-COMMENT  )
+                   OR (  SRY-SRYCD(IDX3) =  CONS-ZAIHOU3-COMMENT )
                        MOVE   1              TO   FLG-ZAITAKU
                        COMPUTE   RECE41-TENSU(6)  =
                                  RECE41-TENSU(6)  +
@@ -4253,7 +4272,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114012070")))
-                   OR (  SRY-SRYCD(IDX3)       =    "114001110"  )
+                   OR (  SRY-SRYCD(IDX3) =  CONS-ZAIHOU-COMMENT  )
+                   OR (  SRY-SRYCD(IDX3) =  CONS-ZAIHOU3-COMMENT )
                        MOVE   1              TO   FLG-ZAITAKU
                        COMPUTE   RECE41-TENSU(7)  =
                                  RECE41-TENSU(7)  +
@@ -4983,7 +5003,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114012070")))
-                   OR (  SRY-SRYCD(IDX3)       =    "114001110"  )
+                   OR (  SRY-SRYCD(IDX3) =  CONS-ZAIHOU-COMMENT  )
+                   OR (  SRY-SRYCD(IDX3) =  CONS-ZAIHOU3-COMMENT )
                        MOVE   1              TO   FLG-ZAITAKU
                        COMPUTE   RECE41-TENSU(8)   =
                                  RECE41-TENSU(8)   +
@@ -5599,7 +5620,8 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                         (SRY-SRYCD(IDX3)   NOT =    "114011770")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114011870")   AND
                         (SRY-SRYCD(IDX3)   NOT =    "114012070")))
-                   OR (  SRY-SRYCD(IDX3)       =    "114001110"  )
+                   OR (  SRY-SRYCD(IDX3) =  CONS-ZAIHOU-COMMENT  )
+                   OR (  SRY-SRYCD(IDX3) =  CONS-ZAIHOU3-COMMENT )
                        MOVE   1              TO   FLG-ZAITAKU
                        ADD    WK-ZAIKAISU    TO   RECE41-KAISU(13)
                        COMPUTE   RECE41-TENSU(13)   =

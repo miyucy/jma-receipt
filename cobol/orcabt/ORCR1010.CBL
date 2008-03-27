@@ -34,6 +34,7 @@
       *                                     ¡Ê²ðÃ£¸£°úÈ¯¾ÉÆüµ­ºÜÇÑ»ß¡Ë
       *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *                                     ¡ÊºßÂð¥³¡¼¥ÉÄÉ²Ã¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -377,10 +378,9 @@
            03  CONS-SIDORYO6       PIC X(09) VALUE "113700810".
       *
       *    ºß»Ù±ç¥Õ¥é¥°ÊÔ½¸¤Î°Ù¤Î¥³¡¼¥É
-           03  CONS-ZAISIEN1       PIC X(09) VALUE "114001110".
-           03  CONS-ZAISIEN2       PIC X(09) VALUE "114011570".
-           03  CONS-ZAISIEN3       PIC X(09) VALUE "114011670".
-           03  CONS-ZAISIEN4       PIC X(09) VALUE "114011770".
+           03  CONS-ZAISIEN1       PIC X(09) VALUE "114011570".
+           03  CONS-ZAISIEN2       PIC X(09) VALUE "114011670".
+           03  CONS-ZAISIEN3       PIC X(09) VALUE "114011770".
       *
       *    ºÆ¿Ç¡ÊÆýÍÄ»ù¡Ë²Ã»»
            03  CONS-NYUYOJI        PIC X(09) VALUE "112000970".
@@ -555,6 +555,8 @@
            03  CONS-ZAIHOU-COMMENT   PIC X(09)  VALUE  "114001110".
       *    Ë¬Ìä¿ÇÎÅÆü¥³¥á¥ó¥È
            03  CONS-ZAIHOU2-COMMENT  PIC X(09)  VALUE  "840000066".
+      *    ºßÂð´µ¼ÔË¬Ìä¿ÇÎÅÎÁ¡Êµï½»·Ï¡Ë
+           03  CONS-ZAIHOU3-COMMENT  PIC X(09)  VALUE  "114012910".
       *
       *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ£±¡Ê±¡³°½èÊý¤»¤ó¡Ë
            03  CONS-ZAIIKAN1-COMMENT PIC X(09)  VALUE  "114012210".
@@ -564,6 +566,14 @@
            03  CONS-ZAIIKAN3-COMMENT PIC X(09)  VALUE  "114012410".
       *    ºßÂð»þ°å³ØÁí¹ç´ÉÍýÎÁ£²¡Ê±¡³°½èÊý¤»¤ó¡Ë
            03  CONS-ZAIIKAN4-COMMENT PIC X(09)  VALUE  "114007510".
+      *    ÆÃÄê»ÜÀßÆþµï»þÅù°å³ØÁí¹ç´ÉÍýÎÁ£±¡Ê½èÊý¤»¤ó¤ò¸òÉÕ¡Ë
+           03  CONS-ZAIIKAN5-COMMENT PIC X(09)  VALUE  "114013010".
+      *    ÆÃÄê»ÜÀßÆþµï»þÅù°å³ØÁí¹ç´ÉÍýÎÁ£±¡Ê½èÊý¤»¤ó¤ò¸òÉÕ¤·¤Ê¤¤¡Ë
+           03  CONS-ZAIIKAN6-COMMENT PIC X(09)  VALUE  "114013110".
+      *    ÆÃÄê»ÜÀßÆþµï»þÅù°å³ØÁí¹ç´ÉÍýÎÁ£²¡Ê½èÊý¤»¤ó¤ò¸òÉÕ¡Ë
+           03  CONS-ZAIIKAN7-COMMENT PIC X(09)  VALUE  "114013210".
+      *    ÆÃÄê»ÜÀßÆþµï»þÅù°å³ØÁí¹ç´ÉÍýÎÁ£²¡Ê½èÊý¤»¤ó¤ò¸òÉÕ¤·¤Ê¤¤¡Ë
+           03  CONS-ZAIIKAN8-COMMENT PIC X(09)  VALUE  "114013310".
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -2099,13 +2109,19 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                       OR    CONS-ZAIIKAN2-COMMENT
                                       OR    CONS-ZAIIKAN3-COMMENT
                                       OR    CONS-ZAIIKAN4-COMMENT
+                                      OR    CONS-ZAIIKAN5-COMMENT
+                                      OR    CONS-ZAIIKAN6-COMMENT
+                                      OR    CONS-ZAIIKAN7-COMMENT
+                                      OR    CONS-ZAIIKAN8-COMMENT
                                       OR    CONS-ZAIHOU-COMMENT
+                                      OR    CONS-ZAIHOU3-COMMENT
                    MOVE   "1"   TO    RECE100-COMCNTFLG
                    MOVE   "2"   TO    RECE120-FLG-OSIN-COMMENT
               END-IF
       *
-              IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT
-              AND  FLG-ZAIHOU-COM     =     ZERO
+              IF   (SRY-SRYCD(IDX2)   =     CONS-ZAIHOU-COMMENT
+                                      OR    CONS-ZAIHOU3-COMMENT)
+              AND  (FLG-ZAIHOU-COM    =     ZERO                )
                    MOVE   "1"   TO    RECE120-FLG-ZAIHOU-COMMENT
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHOU2-COMMENT
@@ -2115,10 +2131,11 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *
               IF  (RECE100-SRYYM      >=     "200604")
               AND (WRK-SISETU613      =      1      )
-                IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1    OR
-                                            CONS-ZAISIEN2    OR
-                                            CONS-ZAISIEN3    OR
-                                            CONS-ZAISIEN4
+                IF SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT   OR
+                                            CONS-ZAIHOU3-COMMENT  OR
+                                            CONS-ZAISIEN1         OR
+                                            CONS-ZAISIEN2         OR
+                                            CONS-ZAISIEN3
                    MOVE   "1"   TO    RECE100-COMCNTFLG
                    MOVE   "1"   TO    RECE120-FLG-ZAISIEN-COMMENT
                 END-IF
@@ -2804,7 +2821,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                         (SRY-SRYCD(IDX3)     NOT =    "114011770")   AND
                         (SRY-SRYCD(IDX3)     NOT =    "114011870")   AND
                         (SRY-SRYCD(IDX3)     NOT =    "114012070")))
-                   OR (  SRY-SRYCD(IDX3)         =    "114001110"  )
+                   OR (  SRY-SRYCD(IDX3) =    CONS-ZAIHOU-COMMENT  )
+                   OR (  SRY-SRYCD(IDX3) =    CONS-ZAIHOU3-COMMENT )
                        MOVE   1              TO   FLG-ZAITAKU
                        ADD    WK-ZAIKAISU    TO   RECE100-KAISU(13)
                        COMPUTE   RECE100-TENSU(13 1)  =
