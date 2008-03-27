@@ -2297,13 +2297,27 @@
                    END-IF
                END-PERFORM
            ELSE
-               MOVE    SPA-NAI-TSRYCD (IDX-SEL)
+               IF    ( SPA-I40-SRYYMD  >=  CONST-H200401 )
+                   PERFORM VARYING IDX2 FROM    1   BY  1
+                           UNTIL ( IDX2 >   MEDH20-MAX )
+                            OR   ( SPA-GMN-MEISYO
+                                           NOT =   SPACE )
+                       IF    ( MEDH20-CDL (IDX2)
+                                       =   SPA-NAI-TSRYCD  (IDX-SEL))
+                           MOVE    MEDH20-MEIL (IDX2)
+                                       TO  SPA-GMN-MEISYO
+                       END-IF
+      *
+                   END-PERFORM
+               ELSE
+                   MOVE    SPA-NAI-TSRYCD (IDX-SEL)
                                    TO  WRK-TNS-SRYCD
-               MOVE    SPA-I40-SRYYMD
+                   MOVE    SPA-I40-SRYYMD
                                    TO  WRK-TNS-KJNYMD
-               MOVE    "01"        TO  WRK-TNS-KJNYMD (7:2)
-               PERFORM 900-TENSU-KEY-SEL-SEC
-               MOVE    TNS-NAME    TO  SPA-GMN-MEISYO
+                   MOVE    "01"    TO  WRK-TNS-KJNYMD (7:2)
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   MOVE    TNS-NAME TO  SPA-GMN-MEISYO
+               END-IF
            END-IF
       *
            MOVE    IDX-SEL         TO  WRK-ZZZ
