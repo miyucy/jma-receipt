@@ -46,12 +46,3 @@
             02  HC02Q-MIDASHI2.
               03  HC02Q-MIDASHI2-S
                       PIC X(44)   OCCURS  2 TIMES.
-            02  HC02Q-PREFNUM.
-              03  HC02Q-PREFNUM-S
-                      PIC X(2)    OCCURS  2 TIMES.
-            02  HC02Q-TENHYOKBN PIC X(2).
-            02  HC02Q-HOSPCD.
-              03  HC02Q-HOSPCD-S
-                      PIC X(2)    OCCURS  7 TIMES.
-            02  HC02Q-JKYSNUM15 PIC X(30).
-            02  HC02Q-JKYSNUM215    PIC X(30).

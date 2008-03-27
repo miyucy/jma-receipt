@@ -44,12 +44,3 @@
             02  HCM19-MIDASHI2.
               03  HCM19-MIDASHI2-S
                       PIC X(44)   OCCURS  2 TIMES.
-            02  HCM19-PREFNUM.
-              03  HCM19-PREFNUM-S
-                      PIC X(2)    OCCURS  2 TIMES.
-            02  HCM19-TENHYOKBN PIC X(2).
-            02  HCM19-HOSPCD.
-              03  HCM19-HOSPCD-S
-                      PIC X(2)    OCCURS  7 TIMES.
-            02  HCM19-JKYSNUM15 PIC X(30).
-            02  HCM19-JKYSNUM215    PIC X(30).
