@@ -202,9 +202,11 @@
       </appinfo>
     </element>
     <element name="MIDASHI2" occurs="1">
-      <appinfo>
-        <embed object="string" length="64"/>
-      </appinfo>
+      <element name="MIDASHI2-S" occurs="2">
+        <appinfo>
+          <embed object="string" length="44"/>
+        </appinfo>
+      </element>
     </element>
   </dictionarydata>
   <diagramdata>
@@ -10152,13 +10154,13 @@
         <point val="8.7,17.5"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="8.7,17.2691;13.3864,17.8491"/>
+        <rectangle val="8.7,17.3089;14.0328,17.5489"/>
       </attribute>
       <attribute name="dnode_path">
-        <string>#MIDASHI2#</string>
+        <string>#MIDASHI2.MIDASHI2-S[0]#</string>
       </attribute>
       <attribute name="embed_text_column">
-        <int val="32"/>
+        <int val="44"/>
       </attribute>
       <attribute name="embed_text_string">
         <enum val="0"/>
@@ -10166,14 +10168,13 @@
       <attribute name="text">
         <composite type="text">
           <attribute name="string">
-            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;
-&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;#</string>
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;#</string>
           </attribute>
           <attribute name="font">
             <font name="Courier"/>
           </attribute>
           <attribute name="height">
-            <real val="0.29"/>
+            <real val="0.24"/>
           </attribute>
           <attribute name="pos">
             <point val="8.7,17.5"/>
@@ -10185,10 +10186,55 @@
             <enum val="0"/>
           </attribute>
           <attribute name="single">
-            <real val="0.17574"/>
+            <real val="0.14544"/>
           </attribute>
           <attribute name="multi">
-            <real val="0.14645"/>
+            <real val="0.1212"/>
+          </attribute>
+        </composite>
+      </attribute>
+    </object>
+    <object type="Embed - Text" version="0" id="O311">
+      <attribute name="obj_pos">
+        <point val="8.7,17.8"/>
+      </attribute>
+      <attribute name="obj_bb">
+        <rectangle val="8.7,17.6089;14.0328,17.8489"/>
+      </attribute>
+      <attribute name="dnode_path">
+        <string>#MIDASHI2.MIDASHI2-S[1]#</string>
+      </attribute>
+      <attribute name="embed_text_column">
+        <int val="44"/>
+      </attribute>
+      <attribute name="embed_text_string">
+        <enum val="0"/>
+      </attribute>
+      <attribute name="text">
+        <composite type="text">
+          <attribute name="string">
+            <string>#&#164;&#162;&#164;&#164;&#164;&#166;&#164;&#168;&#164;&#170;&#164;&#171;&#164;&#173;&#164;&#175;&#164;&#177;&#164;&#179;&#164;&#181;&#164;&#183;&#164;&#185;&#164;&#187;&#164;&#189;&#164;&#191;&#164;&#193;&#164;&#196;&#164;&#198;&#164;&#200;&#164;&#202;&#164;&#203;#</string>
+          </attribute>
+          <attribute name="font">
+            <font name="Courier"/>
+          </attribute>
+          <attribute name="height">
+            <real val="0.24"/>
+          </attribute>
+          <attribute name="pos">
+            <point val="8.7,17.8"/>
+          </attribute>
+          <attribute name="color">
+            <color val="#000000"/>
+          </attribute>
+          <attribute name="alignment">
+            <enum val="0"/>
+          </attribute>
+          <attribute name="single">
+            <real val="0.14544"/>
+          </attribute>
+          <attribute name="multi">
+            <real val="0.1212"/>
           </attribute>
         </composite>
       </attribute>
