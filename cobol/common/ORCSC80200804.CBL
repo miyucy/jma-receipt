@@ -42,8 +42,6 @@
       * 03.04.01     NACL-多々納  07/03/XX  リハビリ逓減追加(H19.4改正）
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 04.02.00     NACL-多々納  08/03/XX  平成２０年４月改正対応
-      * 04.05.00     NACL-多々納  09/07/XX  早期リハビリテーション加算チェック
-      * 04.05.00     NACL-多々納  09/11/XX  入院精神療法６か月対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -66,7 +64,6 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
            03  FLG-SRYACCT         PIC 9(01).
-           03  FLG-PTNYUINRRK      PIC 9(01).
       *
            03  FLG-ERR             PIC 9(01).
            03  FLG-CHK             PIC 9(01).
@@ -104,13 +101,11 @@
       *    リハビリあり
            03  FLG-RIGAKU          PIC 9(01).
       *
-           03  FLG-SOUKIKSN            PIC 9(01).
-           03  FLG-KYUSEI-CHK          PIC 9(01).
+           03  FLG-SOUKIKSN          PIC 9(01).
+           03  FLG-KYUSEI-CHK        PIC 9(01).
       *
-           03  FLG-NENREI              PIC 9(01).
-           03  FLG-TOUJITU             PIC 9(01).
-           03  FLG-SEISIN              PIC 9(01).
-           03  FLG-SHOKAIKBN           PIC 9(01).
+           03  FLG-NENREI            PIC 9(01).
+           03  FLG-TOUJITU            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -274,15 +269,6 @@
       *
            03  WRK-SRYKA           PIC  X(02).
       *
-      *    発症日＋３０日
-           03  WRK-KYUSEI-30               PIC X(08).
-           03  WRK-KYUSEI-30-MSG           PIC X(80).
-      *    入院精神療法期間チェック
-           03  WRK-TUKI-9                  PIC 9(03).
-           03  WRK-NYUINYMD                PIC X(08).
-           03  WRK-NYUIN-YMD               PIC X(08).
-           03  WRK-SHONUM                  PIC 9(03).
-      *
       *    リハビリ回数集計
        01  WRK-RIGAKU-NCNT-AREA.
            03  WRK-RIGAKU-INT2             PIC X(01).
@@ -338,7 +324,6 @@
       *
       *    リハビリの早期リハ加算テーブル
       **** COPY   "CMRIHAKSNTBL.INC".
-       01  CON-RIHAKSN                 PIC X(09)   VALUE    "180030770".
       *
       *    酸素コードテーブル
            COPY     "CMSANSOTBL.INC".
@@ -352,7 +337,7 @@
       *
       *    点数マスタ−
       *01  TENSU-REC.
-      *    COPY    "CPTENSU.INC".
+           COPY    "CPTENSU.INC".
       *
       *    算定履歴
        01  SANTEI-REC.
@@ -365,11 +350,8 @@
            COPY    "CPSRYACCT.INC".
       *
       *    チェックマスタ−
-      *01  CHK-REC.
-      *    COPY    "CPCHK.INC".
-      *    患者入院履歴
-       01  PTNYUINRRK-REC.
-           COPY    "CPPTNYUINRRK.INC".
+       01  CHK-REC.
+           COPY    "CPCHK.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -512,11 +494,11 @@
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key1"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    "key1"              TO  MCP-PATHNAME
                PERFORM 920-SANTEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-SANTEI
@@ -543,7 +525,7 @@
                END-PERFORM
            END-IF
            MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "key1"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    各急性発生日
@@ -619,7 +601,7 @@
       *****************************************************************
        10001-KYUSEI-YMD-SEC                SECTION.
       *
-      *    MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
       *    訂正時
            MOVE    ZERO                TO  FLG-TOUJITU
            IF      LNK-ORCSC-SYORIFLG      =   1
@@ -1013,6 +995,7 @@
                    END-IF
       *            労災の時、労災加算の算定
                    IF      SPA-HKNKBN          =   1
+      *************  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                      AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                        PERFORM 100113-RSIHKN-SYORI-SEC
                    ELSE
@@ -1025,7 +1008,7 @@
                        END-IF
                    END-IF
       *
-      *            精神通院のチェック
+      *            精神通院の逓減チェック
                    IF      LNK-ORCSC-PG        =   "K02"
                        PERFORM 100113-SEISIN-CHK-SEC
                    END-IF
@@ -1129,8 +1112,8 @@
            IF     (WRK-COM-INPUTCD(IDX-Z)(1:5) =   "09591"  OR
                                                    "09592"  OR
                                                    "09593"  OR
-                                                   "09594"  )
-      **     AND  (WRK-COM-KISOTEN (IDX-Z)     >   ZERO     )
+                                                   "09594"  )  AND
+                  (WRK-COM-KISOTEN (IDX-Z)     >   ZERO     )
       *D       IF      WRK-COM-SURYO(IDX-Z)    >   1
                IF      WRK-COM-SURYO(IDX-Z)    NOT =   1
                    MOVE    "1002"              TO  WRK-ERRCD
@@ -1328,80 +1311,8 @@
                MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
            END-IF
       *
-      *    早期リハビリ加算チェック
-           IF     (SPA-ERRCD           =   SPACE  )
-             AND  (LNK-ORCSC-PG        =   "K02"  )
-             AND  (WRK-COM-INPUTCD (IDX-Z) =   CON-RIHAKSN )
-               IF     (SPA-HKNKBN          =   1   )
-                 AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-      *            労災はチェックなし
-                   CONTINUE
-               ELSE
-                   PERFORM 20011-RIHAKSN-CHK-SEC
-               END-IF
-           END-IF
-      *
            .
        1005-KASAN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    早期リハビリ加算チェック処理（入院）
-      *****************************************************************
-       20011-RIHAKSN-CHK-SEC                SECTION.
-      *
-      *    各リハビリ発症日判定
-           IF      WRK-KYUSEI          =   SPACE
-               IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)  AND
-                      (LNK-ORCSC-KEI-IDX        =   ZERO )
-                   MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"                 TO  WRK-COM-KZMFLG
-                                                           (IDX-Z)
-                   MOVE    "K839"              TO  WRK-ERRCD
-               END-IF
-           ELSE
-      *        発症日＋３０日
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY6-AREA
-               MOVE    "61"                TO  LNK-DAY6-IRAI
-               MOVE    WRK-KYUSEI          TO  LNK-DAY6-KIJUN
-               MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-               MOVE    30                  TO  LNK-DAY6-ZOGEN
-               CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY6-AREA
-               MOVE    LNK-DAY6-KOYOMI     TO  WRK-KYUSEI-30
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY2-AREA
-               MOVE    "21"                TO  LNK-DAY2-IRAI
-               MOVE    LNK-DAY6-KOYOMI     TO  LNK-DAY2-YMD
-               CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                                   LNK-DAY2-AREA
-               STRING  "発症日の３０日後は"  DELIMITED  BY  SIZE
-                       LNK-DAY2-EDTYMD3      DELIMITED  BY  SIZE
-                       "です"                DELIMITED  BY  SIZE
-                      INTO                 WRK-KYUSEI-30-MSG
-               END-STRING
-      *        入力日分のチェック
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL      (IDX2    >   31  )   OR
-                                  (WRK-ERRCD   NOT =   SPACE )
-                   IF      WRK-COM-NYUINDAY (IDX-Z IDX2)   >   ZERO
-                       MOVE    IDX2                TO  IDD
-                       MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
-                       MOVE    IDD                 TO  WRK-SRYYMD (7:2)
-                       IF     (WRK-KYUSEI-30       <   WRK-SRYYMD)
-      *                 発生日＋３０日以上はエラー
-                            MOVE    "8047"          TO  WRK-ERRCD
-                            MOVE    "1"             TO  WRK-COM-CUR
-                                                              (IDX-Z)
-                            MOVE    WRK-KYUSEI-30-MSG
-                                                    TO  LNK-ORCSC-ERRMSG
-                       END-IF
-                   END-IF
-               END-PERFORM
-           END-IF
-           .
-       20011-RIHAKSN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1547,6 +1458,7 @@
            END-IF
       *    労災の時、逓減コードはエラーとする
            IF     (SPA-HKNKBN          =   1   )
+      ****** AND  (SPA-RSI-HKNKBN  NOT =   "5" )
              AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                IF      WRK-RIHA-GEN        =   "2"
                    MOVE    "8044"      TO  WRK-ERRCD
@@ -1559,23 +1471,23 @@
            PERFORM 1001121-KYUSEIYMD15-SEC
       *@@
       *    逓減開始日計算処理
-      *    PERFORM 100112-TEIGENYMD15-SEC
+           PERFORM 100112-TEIGENYMD15-SEC
       *    労災・自賠責は逓減なしとする
-      *    IF     (SPA-HKNKBN          =   1   )
+           IF     (SPA-HKNKBN          =   1   )
      ******  AND  (SPA-RSI-HKNKBN  NOT =   "5" )
-      *      AND  (SPA-RSI-JUNKYO  NOT =   "1" )
-      *        MOVE    SPACE           TO  WRK-TEIGEN
-      *        MOVE    SPACE           TO  WRK-TEIGEN-YMD
-      *        MOVE    SPACE           TO  WRK-TEIGEN-MSG
-      **** END-IF
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+               MOVE    SPACE           TO  WRK-TEIGEN
+               MOVE    SPACE           TO  WRK-TEIGEN-YMD
+               MOVE    SPACE           TO  WRK-TEIGEN-MSG
+           END-IF
       *
       *@@
            IF     (SPA-NYUGAIKBN       =   "2" ) OR
                   (LNK-ORCSC-SYORIFLG  =   1   )
-      *        外来か訂正の時の日上限と月上限のチェック
+      *        外来か訂正の時の日上限と月上限のチェックと自動逓減
                PERFORM 2002-GAIRAI-ALL-CHK-SEC
            ELSE
-      *        入院の日上限と月上限のチェック
+      *        入院の日上限と月上限のチェックと自動逓減
                PERFORM 2001-NYUIN-ALL-CHK-SEC
            END-IF
       *
@@ -1719,7 +1631,6 @@
            END-IF
            .
        100112-TEIGENYMD15-EXT.
-           EXIT.
       *@@
       *
       *****************************************************************
@@ -1727,28 +1638,11 @@
       *****************************************************************
        100113-SEISIN-CHK-SEC            SECTION.
       *
+           MOVE    ZERO                TO  FLG-NENREI
       *    包括まとめ入力は対象外
            IF      SPA-HKNCOMBINUM     =   "9999"
-               CONTINUE
-           ELSE
-               IF      SPA-NYUGAIKBN       =   "1"
-      *            入院
-                   PERFORM 1001131-NYUIN-SEISIN-SEC
-               ELSE
-      *            入院外
-                   PERFORM 1001132-GAIRI-SEISIN-SEC
-               END-IF
+               GO      TO      100113-SEISIN-CHK-EXT
            END-IF
-           .
-       100113-SEISIN-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     外来　精神通院の加算チェック処理
-      *****************************************************************
-       1001132-GAIRI-SEISIN-SEC            SECTION.
-      *
-           MOVE    ZERO                TO  FLG-NENREI
       *
            IF      LNK-ORCSC-SYORIFLG      =   1
       *        訂正時点の初診算定日
@@ -1795,7 +1689,7 @@
       **** END-IF
       *    Ｈ２０．４から１年未満とする
            COMPUTE WRK-SYO2-YY         =   WRK-SYO2-YY   +   1
-           IF      SPA-SRYYMD          >=  WRK-SYOYMD2
+           IF      SPA-SRYYMD          >   WRK-SYOYMD2
                MOVE    1               TO  FLG-NENREI
            END-IF
       *
@@ -1814,7 +1708,7 @@
                                                OR  "180031110"
                                                OR  "180031210"
                                                OR  "180031310"
-                       IF      SPA-SRYYMD      >=  WRK-SYOYMD2
+                       IF      SPA-SRYYMD      >   WRK-SYOYMD2
                            IF     (WRK-COM-KZMFLG (IDX-Z)   =   SPACE)
                            AND    (LNK-ORCSC-KEI-IDX        =   ZERO )
                                MOVE    IDX-Z       TO  LNK-ORCSC-KEI-IDX
@@ -1832,201 +1726,7 @@
            END-EVALUATE
       *
            .
-       1001132-GAIRI-SEISIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *     入院　精神通院の加算チェック処理
-      *****************************************************************
-       1001131-NYUIN-SEISIN-SEC            SECTION.
-      *
-      *    警告チェック済みの時、チェックなし
-           IF     (WRK-COM-KZMFLG (IDX-Z)  NOT =   SPACE)
-               GO      TO      1001131-NYUIN-SEISIN-EXT
-           END-IF
-      *
-           MOVE    ZERO                TO  WRK-TUKI-9
-           MOVE    SPA-K02N-NYUINYMD   TO  WRK-NYUINYMD
-           MOVE    ZERO                TO  FLG-SEISIN
-           EVALUATE    WRK-COM-INPUTCD(IDX-Z)
-      *        入院精神療法（１）
-               WHEN    "180018110"
-                   MOVE    3                   TO  WRK-TUKI-9
-      *        入院精神療法（２）（６月以内）
-               WHEN    "180012010"
-                   MOVE    6                   TO  WRK-TUKI-9
-      *        入院集団精神療法
-               WHEN    "180016710"
-                   MOVE    6                   TO  WRK-TUKI-9
-      *        入院生活技能訓練療法（６月以内）
-               WHEN    "180018210"
-                   MOVE    6                   TO  WRK-TUKI-9
-      *        家族入院精神療法（１）
-               WHEN    "180028850"
-                   MOVE    3                   TO  WRK-TUKI-9
-                   MOVE    1                   TO  FLG-SEISIN
-      *        家族入院精神療法（２）（６月以内）
-               WHEN    "180028950"
-                   MOVE    6                   TO  WRK-TUKI-9
-                   MOVE    1                   TO  FLG-SEISIN
-      *        家族入院精神療法（２）（６月超）
-               WHEN    "180020950"
-                   MOVE    1                   TO  FLG-SEISIN
-                   PERFORM 10011310-NYUINYMD-HEN-SEC
-           END-EVALUATE
-           IF      WRK-TUKI-9          =   ZERO
-               GO      TO      1001131-NYUIN-SEISIN-EXT
-           END-IF
-      *    初回入院日
-           PERFORM 10011310-NYUINYMD-HEN-SEC
-           IF      WRK-ERRCD       NOT =   SPACE
-               GO      TO      1001131-NYUIN-SEISIN-EXT
-           END-IF
-      *    入院日＋Ｎ月後
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY6-AREA
-           MOVE    "61"                TO  LNK-DAY6-IRAI
-           MOVE    WRK-NYUINYMD        TO  LNK-DAY6-KIJUN
-           MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
-           MOVE    WRK-TUKI-9          TO  LNK-DAY6-ZOGEN
-           CALL    "ORCSDAY"           USING   STS-AREA-DAY
-                                               LNK-DAY6-AREA
-           MOVE    LNK-DAY6-KOYOMI     TO  WRK-NYUIN-YMD
-      *TEST
-      *    DISPLAY "WRK-COM-INPUTCD(IDX-Z):" WRK-COM-INPUTCD(IDX-Z)
-      *      ",WRK-NYUINYMD:"  WRK-NYUINYMD
-      *      ", WRK-NYUIN-YMD:"  WRK-NYUIN-YMD
-      *TEST
-      *    入力日分のチェック
-           PERFORM VARYING     IDX2    FROM    1   BY  1
-                   UNTIL      (IDX2    >   31  )   OR
-                              (WRK-ERRCD   NOT =   SPACE )
-               IF      WRK-COM-NYUINDAY (IDX-Z IDX2)   >   ZERO
-                   MOVE    IDX2                TO  IDD
-                   MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
-                   MOVE    IDD                 TO  WRK-SRYYMD (7:2)
-                   IF      WRK-SRYYMD          >   WRK-NYUIN-YMD
-                       MOVE    "KXXX"              TO  WRK-ERRCD
-                   END-IF
-               END-IF
-           END-PERFORM
-           IF      WRK-ERRCD       NOT =   SPACE
-               IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
-               AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
-                   IF      WRK-TUKI-9          =   6
-                       IF      FLG-SHOKAIKBN       =   ZERO
-                           MOVE    "K840"              TO  WRK-ERRCD
-                       ELSE
-                           MOVE    "K842"              TO  WRK-ERRCD
-                       END-IF
-                   ELSE
-                       IF      FLG-SHOKAIKBN       =   ZERO
-                           MOVE    "K841"              TO  WRK-ERRCD
-                       ELSE
-                           MOVE    "K843"              TO  WRK-ERRCD
-                       END-IF
-                   END-IF
-                   MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"                 TO  WRK-COM-KZMFLG
-                                                           (IDX-Z)
-                   MOVE    "1"                 TO  WRK-COM-CUR
-                                                           (IDX-Z)
-               ELSE
-                   MOVE    SPACE               TO  WRK-ERRCD
-               END-IF
-           END-IF
-      *
-           .
-       1001131-NYUIN-SEISIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    初回入院日判定処理
-      *****************************************************************
-       10011310-NYUINYMD-HEN-SEC        SECTION.
-      *
-           INITIALIZE                  PTNYUINRRK-REC
-           MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-           MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-           MOVE    SPA-K02N-NYUINYMD   TO  PTNYUINRRK-NYUINYMD
-      *
-           MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key12"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key12"             TO  MCP-PATHNAME
-               PERFORM 910-PTNYUINRRK-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
-               INITIALIZE                  PTNYUINRRK-REC
-           END-IF
-           MOVE    ZERO                TO  WRK-SHONUM
-           MOVE    ZERO                TO  FLG-SHOKAIKBN
-           PERFORM
-                   UNTIL      (FLG-PTNYUINRRK      =   1 )
-               IF     (PTNYUINRRK-NYUINYMD     =   SPA-K02N-NYUINYMD)
-                  AND (PTNYUINRRK-TAIINYMD     =   SPA-K02N-TAIINYMD)
-                  IF      PTNYUINRRK-SHOKAIKBN     =   "2"
-      *                継続
-                       MOVE    PTNYUINRRK-SHONUM   TO  WRK-SHONUM
-                       MOVE    1                   TO  FLG-SHOKAIKBN
-                   END-IF
-                   MOVE    1                   TO  FLG-PTNYUINRRK
-               END-IF
-               IF      FLG-PTNYUINRRK          =   ZERO
-                   MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-                   MOVE    "key12"             TO  MCP-PATHNAME
-                   PERFORM 910-PTNYUINRRK-READ-SEC
-               END-IF
-           END-PERFORM
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key12"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF     (FLG-SHOKAIKBN       =   1   )
-           AND    (FLG-SEISIN          =   1   )
-      *        継続の時、家族は算定不可
-               IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
-               AND    (LNK-ORCSC-KEI-IDX       =   ZERO )
-                   MOVE    "K844"              TO  WRK-ERRCD
-                   MOVE    IDX-Z               TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"                 TO  WRK-COM-KZMFLG
-                                                           (IDX-Z)
-                   MOVE    "1"                 TO  WRK-COM-CUR
-                                                           (IDX-Z)
-               END-IF
-           END-IF
-      *    継続の時、初回入院日検索
-           IF     (WRK-SHONUM          >   ZERO )
-           AND    (FLG-SEISIN          =   ZERO )
-               INITIALIZE                  PTNYUINRRK-REC
-               MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
-               MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-               MOVE    SPA-K02N-NYUINYMD   TO  PTNYUINRRK-NYUINYMD
-               MOVE    WRK-SHONUM          TO  PTNYUINRRK-SHONUM
-      *
-               MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key13"             TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "key13"             TO  MCP-PATHNAME
-                   PERFORM 910-PTNYUINRRK-READ-SEC
-               ELSE
-                   MOVE    1               TO  FLG-PTNYUINRRK
-                   INITIALIZE                  PTNYUINRRK-REC
-               END-IF
-               IF      FLG-PTNYUINRRK      =   ZERO
-                   MOVE    PTNYUINRRK-NYUINYMD     TO  WRK-NYUINYMD
-               END-IF
-               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key13"             TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
-           END-IF
-      *
-           .
-       10011310-NYUINYMD-HEN-EXT.
+       100113-SEISIN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2062,15 +1762,12 @@
       *
       *    労災の時、加算なし（リハビリ料は区分に’Ｈ’）
            IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101" )
+              AND (WRK-COM-CDKBN-KBN (IDX-Z)   NOT =   "H" )
       *        四肢加算チェック
                IF      WRK-COM-INPUTCD (IDX-Z) =   "101800010" 
                    MOVE    2               TO  WRK-COM-SANFLG (IDX-Z)
                END-IF
-               IF     (WRK-COM-CDKBN-KBN (IDX-Z)   NOT =   "H" )
-                   OR (WRK-COM-INPUTCD (IDX-Z) =   "101800010" )
-                   OR (WRK-COM-DATAKBN (IDX-Z) =   "2"  )
-                   GO      TO      100113-RSIHKN-SYORI-EXT
-               END-IF
+               GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
       *
            MOVE    SPACE                TO  WRK-SRYCD
@@ -2096,8 +1793,7 @@
            END-IF
       *    労災コードのリハビリ料
            IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101" )
-              AND (WRK-COM-CDKBN-KBN (IDX-Z)   =   "H"  )
-              AND (WRK-COM-DATAKBN   (IDX-Z)   =   "1"  )
+              AND (WRK-COM-CDKBN-KBN (IDX-Z)   =   "H" )
                EVALUATE    SPA-RSI-SISIKBN
                    WHEN    1
                    WHEN    2
@@ -2218,13 +1914,9 @@
       *
       *    通院精神の時、初診日から６ヶ月以内チェック
            IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "I" )  AND
-                  (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "002")
-               IF      (LNK-ORCSC-PG        =   "K02"
-                                            OR  "KT01"  )
-                   PERFORM 100113-SEISIN-CHK-SEC
-               ELSE
-                   MOVE    1               TO  FLG-NENREI
-               END-IF
+                  (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "002") AND
+                  (LNK-ORCSC-PG        =   "K02"  )
+               PERFORM 100113-SEISIN-CHK-SEC 
            ELSE
                MOVE    ZERO            TO  FLG-NENREI
            END-IF
@@ -2538,8 +2230,8 @@
       *
            PERFORM VARYING     IDX     FROM    IDX-SYU  BY  1
                    UNTIL       IDX         >=  HZN-IDX
-      *      手技料の点数を所定点数とする
-      *      ％加算
+      *        手技料の点数を所定点数とする
+      *        ％加算
              IF       (WRK-COM-INPUTCD(IDX)(1:3)   NOT =   "101") AND
                       (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
@@ -2594,26 +2286,12 @@
                    UNTIL       IDX         >=  HZN-IDX
       *
       *        手技料の点数を所定点数とする
-      *        労災１．５ ％加算
+      *        ％加算
                IF     (WRK-COM-INPUTCD(IDX)(1:3)   =   "101")  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
                       (WRK-COM-SANFLG     (IDX)    =   2   )
                    MOVE    ZERO                TO  WRK-TENSUKEI
       *****        COMPUTE WRK-TENSUKEI        =   LNK-SC90-TENSU
-                   COMPUTE WRK-TENSUKEI        =  (WRK-COM-KISOTEN
-                                                             (IDX-SYU)
-                                               -   WRK-TENSUKEI-G )
-                                               *   WRK-COM-KISOTEN(IDX)
-                                               /   100
-                                               +   0.5
-                   MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
-                   ADD     WRK-TENSUKEI-9      TO  WRK-TENSUKEI-RSI
-               END-IF
-      *        労災リハ（１．２）加算
-               IF     (WRK-COM-INPUTCD(IDX)(1:3)   =   "101")  AND
-                      (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
-                      (WRK-COM-SANFLG     (IDX)    =   0   )
-                   MOVE    ZERO                TO  WRK-TENSUKEI
                    COMPUTE WRK-TENSUKEI        =  (WRK-COM-KISOTEN
                                                              (IDX-SYU)
                                                -   WRK-TENSUKEI-G )
@@ -3229,22 +2907,7 @@
        940-SRYACCT-READ-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    入院履歴マスター読込
-      *****************************************************************
-       910-PTNYUINRRK-READ-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  PTNYUINRRK-REC
-               MOVE    ZERO                TO  FLG-PTNYUINRRK
-           ELSE
-               INITIALIZE                      PTNYUINRRK-REC
-               MOVE    1                   TO  FLG-PTNYUINRRK
-           END-IF
-           .
-       910-PTNYUINRRK-READ-EXT.
-           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************

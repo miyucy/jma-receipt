@@ -34,8 +34,6 @@
       *  03.04.01    NACL-多々納  07/03/XX  リハビリ管理料追加（H19.4改正）
       *  03.05.00    NACL-多々納  07/05/08  グループ診療対応
       *  03.05.01    NACL-竹田　  08/02/12  再作成(オリジナルより)
-      *  04.05.00    NACL-多々納  10/03/15  平成２２年４月改正対応
-      *  04.07.00    NACL-多々納  13/02/XX  労災レセ電コード対応(H25.7)
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -117,8 +115,6 @@
            03  WRK-STR-YMD             PIC X(08).
            03  WRK-RIH-YMD             PIC X(08).
       *
-           03  WRK-KEI-TENSU           PIC 9(08).
-      *
       *    同一初回算定日コードテーブル
        01  TBL-AREA.
       *    特定薬剤管理加算料テーブル
@@ -142,9 +138,6 @@
            COPY   "CMSANTEITBL.INC".
       *    リハビリ同一算定コードテーブル
            COPY   "CMRIHACDTBL.INC".
-      *H25.7
-      *    労災コード置換えテーブル 
-           COPY   "CMRSICNGTBL.INC".
       *
       *    算定履歴
        01  WRK-SANTEI-REC.
@@ -597,23 +590,6 @@
                    MOVE    1                   TO  FLG-RIHA-OK
                END-IF
            END-IF
-      *    H22.4 から　新規のリハビリ料コードは区分で判定
-           IF     (SSANTEI-SRYYMD          >=  "20100401")
-              AND (FLG-RIHA-OK             =   ZERO    )
-              AND (TNS-CDKBN-KBN           =   "H"     )
-              AND (TNS-CDKBN-KBNNUM        =   "001"
-                                           OR  "002"   )
-              AND (TNS-CDKBN-KBNNUM-EDA    =   "00"    )
-               MOVE    1               TO  FLG-RIHA-OK
-           END-IF
-      *    H28.4 廃用症候群
-           IF     (SSANTEI-SRYYMD          >=  "20160401")
-              AND (FLG-RIHA-OK             =   ZERO    )
-              AND (TNS-CDKBN-KBN           =   "H"     )
-              AND (TNS-CDKBN-KBNNUM        =   "001"   )
-              AND (TNS-CDKBN-KBNNUM-EDA    =   "02"    )
-               MOVE    1               TO  FLG-RIHA-OK
-           END-IF
            IF      FLG-RIHA-OK         =   1
                MOVE    "099800201"         TO  WRK-SRYCD
            END-IF
@@ -876,22 +852,6 @@
                    MOVE    SPACE           TO  WRK-RIGAKU-RYO
                END-IF
            END-IF
-      *H25.7
-      *    労災保険コード変更
-           IF     (WRK-SRYCD(1:3)      =   "101"    )   AND
-                  (SSANTEI-SRYYMD      >=  "20130701" )
-               PERFORM 10009-RSICD-SANTEI-CHK-SEC
-           END-IF
-      *    Ｈ２２年４月から追加のコードは固定で判定
-      *     (COPY に追加するのは、パッケージ対応で）
-           IF      WRK-SRYCD           =   "099800181"
-                                       OR  "099800182"
-      *H28.4
-             OR  (WRK-SRYCD(1:7)       =   "0998002"  )
-      *        がん患者リハ開始日・終了日
-               MOVE    1               TO  FLG-HKNSAN
-               MOVE    SPACE           TO  WRK-RIGAKU-RYO
-           END-IF
       *
            IF      WRK-RIGAKU-RYO      =   SPACE
                MOVE    ZERO                TO  FLG-HKN-SANTEI
@@ -974,38 +934,6 @@
            .
        10011-RIHAKANRI-SYORI-EXT.
            EXIT.
-      *
-      *H25.7
-      *****************************************************************
-      *    労災コード保険毎のコードの判定処理
-      *****************************************************************
-       10009-RSICD-SANTEI-CHK-SEC      SECTION.
-      *
-      *    労災のコードの判定
-           SET     TBL-RCN             TO  1
-           SEARCH  TBL-RSICHG-OCC      VARYING   TBL-RCN
-               AT  END
-                   MOVE    SPACE           TO  WRK-RSI-KBN
-               WHEN    WRK-SRYCD       =   TBL-RSICHG-ATO-SRYCD
-                                                          (TBL-RCN)
-                   MOVE    TBL-RSICHG-KBN (TBL-RCN)
-                                           TO  WRK-RSI-KBN
-           END-SEARCH
-      *
-           IF      WRK-RSI-KBN         =   "R"
-               MOVE    1               TO  FLG-HKNSAN
-           ELSE
-               IF      WRK-RSI-KBN         =   "A"
-                   MOVE    1               TO  FLG-HKNSAN
-               ELSE
-                   MOVE    ZERO            TO  FLG-HKNSAN
-               END-IF
-           END-IF
-      *
-           .
-       10009-RSICD-SANTEI-CHK-EXT.
-           EXIT.
-      *!!!!!!!!!!!!!! 
       *
       *****************************************************************
       *     新規、変更処理
@@ -1791,22 +1719,9 @@
            PERFORM UNTIL   FLG-SANTEI      =   1
                IF     (SANTEI-MSANTEICNT   >   ZERO   )  AND
                       (SANTEI-SRYCD    NOT =   KEN2-SANTEI-SRYCD )
-      ****         COMPUTE KEN2-SANTEI-MSANTEITEN
-      *                                    =   KEN2-SANTEI-MSANTEITEN
-      ****                                 +   SANTEI-MSANTEITEN
-      *           月２回は1200点の検査とする
-                  IF      (SANTEI-MSANTEICNT   >   1    )
-                   AND    (SANTEI-MSANTEITEN   <   1200 )
-                       COMPUTE WRK-KEI-TENSU   =   SANTEI-MSANTEITEN
-                                               +   1200
-                   ELSE
-                       COMPUTE WRK-KEI-TENSU   =   SANTEI-MSANTEITEN
-                                               *   SANTEI-MSANTEICNT
-                   END-IF
                    COMPUTE KEN2-SANTEI-MSANTEITEN
                                            =   KEN2-SANTEI-MSANTEITEN
-                                           +   WRK-KEI-TENSU
-      *
+                                           +   SANTEI-MSANTEITEN
                    PERFORM VARYING     IDX2    FROM   1   BY  1
                            UNTIL       IDX2    >   31
                        IF      SANTEI-DAY (IDX2)   >   ZERO
@@ -1949,8 +1864,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-           MOVE    SSANTEI-SRYYMD      TO  TNSP-YUKOSTYMD
-           MOVE    SSANTEI-SRYYMD      TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
