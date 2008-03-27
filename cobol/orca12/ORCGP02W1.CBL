@@ -1850,8 +1850,10 @@
            END-IF
       *
       *
-      **** PERFORM VARYING     IDX-K   FROM    1   BY  1
-      *            UNTIL       IDX-K   >   SPA-GMN-KOHMAX
+      *    PERFORM VARYING     IDX-K   FROM    1   BY  1
+      *            UNTIL      (IDX-K   >   SPA-GMN-KOHMAX  )
+      *                   OR  (SPA-GMN-KOHNUMMEI (IDY)
+      *                                NOT =   SPACE       )
       *        IF     (SPA-GMN-KOHNUML (IDX-K)
       *                                    =   SPA-GMN-KOHNUM (IDY)) AND
       *               (SPA-GMN-KOHKBNL (IDX-K)
@@ -1862,7 +1864,7 @@
       *                                        TO  SPA-MAE-KOHNUM-G(IDY)
       *            MOVE    SPA-GMN-KOHMAX      TO  IDX-K
       *        END-IF
-      *****END-PERFORM
+      *    END-PERFORM
            .
        3102-KOUHI-HEN-EXT.
            EXIT.
@@ -4988,6 +4990,15 @@
                    IF      SPA-PTHKN-HKNNUM(IDX)    =   "039"
                                                     OR  "040"
                        MOVE    "0124"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *        残留邦人の場合エラー
+               IF      SPA-PTKOH-KOHNUM (IDY)  =   "025"
+                   MOVE    "0126"              TO  SPA-ERRCD
+      *
+                   IF      SPA-PTHKN-HKNNUM(IDX)    =   "039"
+                                                    OR  "040"
+                       MOVE    "0125"          TO  SPA-ERRCD
                    END-IF
                END-IF
            END-IF
