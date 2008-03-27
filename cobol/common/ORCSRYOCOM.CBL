@@ -583,9 +583,9 @@
                            ADD    1   TO    LNK-RYOCOM-MEISAISU(IDX)
                            MOVE   LNK-RYOCOM-MEISAISU(IDX)  TO  IDX2
                            MOVE   RYOCOM-SRYCD  TO
-                                        LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+                                       LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
                            MOVE   RYOCOM-ZAINUM  TO
-                                        LNK-RYOCOM-IRYO-ZAINUM(IDX IDX2)
+                                       LNK-RYOCOM-IRYO-ZAINUM(IDX IDX2)
                        END-IF
                    END-PERFORM
                ELSE
@@ -596,9 +596,9 @@
                            ADD    1   TO    LNK-RYOCOM-MEISAISU(IDX)
                            MOVE   LNK-RYOCOM-MEISAISU(IDX)  TO  IDX2
                            MOVE   RYOCOM-SRYCD  TO
-                                        LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+                                       LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
                            MOVE   RYOCOM-ZAINUM  TO
-                                        LNK-RYOCOM-IRYO-ZAINUM(IDX IDX2)
+                                       LNK-RYOCOM-IRYO-ZAINUM(IDX IDX2)
                        END-IF
                    END-PERFORM
                END-IF
