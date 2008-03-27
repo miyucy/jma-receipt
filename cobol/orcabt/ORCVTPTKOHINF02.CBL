@@ -839,6 +839,11 @@
       *****************************************************************
        500141-KOH027-CHKSYORI-SEC        SECTION.
       *
+      *    戏客给锐は士喇２０ˉ３ˉ３１で姜位
+           IF      PTKOH-TEKEDYMD      >   "20080331"
+               MOVE    "20080331"          TO  TBL-PTKOH-TEKEDYMD (IDX)
+               MOVE    "20080331"          TO  PTKOH-TEKEDYMD
+           END-IF
            EVALUATE    PTKOH-PAYKBN
       *
                WHEN    "00"
