@@ -3123,7 +3123,9 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
              IF ((WRK-KOH-SBT   (IDX)  =   "6")   AND
                  (WRK-KOH-SAKJOKBN   (IDX)  =   SPACE)) OR
                 ((WRK-KOH-HKNNUM   (IDX)  =   "019"
-                                          OR "012"
+                                          OR  "012"
+      *          荒伪水客
+                                          OR  "025"
                                           OR  "011")   AND
                  (WRK-KOH-SAKJOKBN (IDX)  =   SPACE)   AND
                  (WRK-HIYATOI-FLG         =   1 )     )
@@ -3131,6 +3133,8 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO            TO  FLG-KOH-CHK
                IF      WRK-KOH-HKNNUM   (IDX)  =   "019"
                                                OR "012"
+      *          荒伪水客
+                                               OR  "025"
                                                OR  "011"
                    MOVE    1           TO  FLG-KOH-CHK
       *            泣港いの认跋嘲は侯喇しない

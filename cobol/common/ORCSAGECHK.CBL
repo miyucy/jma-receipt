@@ -54,6 +54,7 @@
       * 04.01.00     NACL-多々納  07/10/19  公務災害追加
       * 04.02.00     NACL-多々納  08/03/XX  平成２０年４月改正対応
       *                                     （後期高齢者、就学前判定）
+      *                                     （残留邦人）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -617,6 +618,14 @@
                   (COMB-KOH2HKNNUM     =   "012" )  OR
                   (COMB-KOH3HKNNUM     =   "012" )  OR
                   (COMB-KOH4HKNNUM     =   "012" ))
+               MOVE    1               TO  FLG-OK2
+           END-IF
+      *    残留邦人等のみの時
+           IF     (COMB-HKNNUM         =   SPACE )  AND
+                 ((COMB-KOH1HKNNUM     =   "025" )  OR
+                  (COMB-KOH2HKNNUM     =   "025" )  OR
+                  (COMB-KOH3HKNNUM     =   "025" )  OR
+                  (COMB-KOH4HKNNUM     =   "025" ))
                MOVE    1               TO  FLG-OK2
            END-IF
       *
@@ -1433,6 +1442,11 @@
                       (COMB-KOH2HKNNUM     =   "020" )  OR
                       (COMB-KOH3HKNNUM     =   "020" )  OR
                       (COMB-KOH4HKNNUM     =   "020" ))
+      *            残留邦人
+                 OR  ((COMB-KOH1HKNNUM     =   "025" )  OR
+                      (COMB-KOH2HKNNUM     =   "025" )  OR
+                      (COMB-KOH3HKNNUM     =   "025" )  OR
+                      (COMB-KOH4HKNNUM     =   "025" ))
                    MOVE    AGECHK-ROUJIN2      TO  AGECHK-ROUJIN
                END-IF
            END-IF

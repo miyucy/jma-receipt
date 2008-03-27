@@ -85,6 +85,7 @@
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX-K               PIC 9(04).
+           03  IDX-K1              PIC 9(04).
            03  IDX-K2              PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -784,7 +785,6 @@
            END-IF
       *
            .
-      *
        1001-KOHNUM-CHK-EXT.
            EXIT.
       *****************************************************************
@@ -1803,6 +1803,14 @@
                            MOVE    IDX-K       TO  WRK-IDX1
                            MOVE    IDK2        TO  WRK-IDX2
                        END-IF
+      *                À¸³èÊÝ¸î¡¦»ÄÎ±Ë®¿Í¤Î½ÅÊ£ÉÔ²Ä
+                       IF      (SPA-NAI-PTKOH-SBTKBN (IDX-K) =  "5") AND
+                               (SPA-NAI-PTKOH-SBTKBN (IDK2)  =  "5")
+                           MOVE    "0127"      TO  SPA-ERRCD
+                           MOVE    23          TO  SPA-GMN-CUR
+                           MOVE    IDX-K       TO  WRK-IDX1
+                           MOVE    IDK2        TO  WRK-IDX2
+                       END-IF
                    END-IF
       *
                    END-IF
@@ -2026,6 +2034,9 @@
            MOVE    WRK-HENYMD      TO  SPA-GMN-KTEKEDYMD (SPA-KOH-IDX1)
            MOVE    SPA-SYSYMD      TO  SPA-NAI-KKAKUNINYMD(SPA-KOH-IDX1)
            MOVE    SPA-SYSYMDWH    TO  SPA-GMN-KKAKUNINYMD(SPA-KOH-IDX1)
+      *    ¸øÈñÌ¾ÊÔ½¸
+           MOVE    SPA-KOH-IDX1    TO  IDX-K1
+           PERFORM 3101-HKNNUM-SET-SEC
       *
       *    Ï·¿Í¸øÈñ¤Î»þ¡¢¿·µ¬¸øÈñ¤òÄÉ²Ã¤¹¤ë
       *    £È£±£´¡¥£±£°²þÀµÊ¬¤Î¤ß
@@ -2065,6 +2076,27 @@
       *
            .
        310-KOHEDYMD-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸øÈñ¤Î¼ïÎàÁªÂò¥Á¥§¥Ã¥¯¡¦ÊÔ½¸½èÍý
+      *****************************************************************
+       3101-HKNNUM-SET-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-KOHMAX
+               IF     (SPA-GMN-KOHNUM(IDX-K1)
+                                      =    SPA-GMN-KOHNUML (IDX)) AND
+                      (SPA-GMN-KOHKBN(IDX-K1)
+                                      =    SPA-GMN-KOHKBNL (IDX))
+                   MOVE    SPA-GMN-KOHNUMLST (IDX)
+                                           TO  SPA-GMN-KOHNUM-G(IDX-K1)
+                   MOVE    SPA-GMN-KOHMAX      TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           .
+       3101-HKNNUM-SET-EXT.
            EXIT.
       *
       *****************************************************************
