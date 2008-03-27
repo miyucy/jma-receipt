@@ -244,6 +244,11 @@
       *  04.02.01    NACL-ÌçÏÆ    08/02/29  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.02.02    NACL-ÌçÏÆ    08/03/06  À¸ÊÝ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
       *  04.02.03    NACL-ÌçÏÆ    08/03/21  ´Î±ê¼£ÎÅÂÐ±þ
+      *  04.02.04    NACL-ÌçÏÆ    08/03/24  ¿ÀÆàÀî¸©£´£±Ï·¿ÍÂÐ±þ
+      *  04.02.05    NACL-ÌçÏÆ    08/03/24  µÜ¾ë¸©ÆýÍÄ»ù¡¢ËÌ³¤Æ»Àº¿ÀÊä½õ¤Î
+      *                                     ÊÑÂ§ÂÐ±þ½ªÎ»
+      *  04.02.06    NACL-ÌçÏÆ    08/03/24  Ä»¼è¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  04.02.07    NACL-ÌçÏÆ    08/03/25  ÂçºåÉÜÃÏÊý¸øÈñÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -492,6 +497,9 @@
                  06  WK-DOTANDOKU          PIC  9(01).
       *
            03  WK-KOHNUM                   PIC  X(03).
+      *
+           03  WK-KANAGAWA41-FTNRATE       PIC  9(03).
+           03  WK-TOTORI-JIRITU            PIC  9(01).
       *
            03  WK-ZAITAKU-SRYCD            PIC  X(09).
       *
@@ -3606,6 +3614,8 @@
       *
            PERFORM    2101-PTHKNINF-KENSAKU-SEC.
       *
+           MOVE      ZERO      TO      WK-KANAGAWA41-FTNRATE.
+      *
            MOVE      ZERO      TO      WK-ZENGAKU.
            PERFORM   VARYING   IDX9    FROM    1   BY  1
                      UNTIL     IDX9       >   16
@@ -4991,6 +5001,12 @@
              END-IF
            END-IF.
       *
+           IF  ( WK-1001-PREFNUM       =  14      ) AND
+               ( COMB-KOH1HKNNUM       = "141"    ) AND
+               ( LNK-SYU-SRYYMD(1:6)  >= "200804" )
+               MOVE   HKN-HON-GAIKFTNRATE   TO   WK-KANAGAWA41-FTNRATE
+           END-IF.
+      *
        2103-KOH1-KAISU-EXT.
            EXIT.
       ******************************************************************
@@ -5897,6 +5913,7 @@
        2107-KOHFTN-KINGAKU-SEC           SECTION.
       *
            INITIALIZE                   WK-JIRITU-TBL.
+           MOVE       ZERO     TO       WK-TOTORI-JIRITU.
       *
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
                       UNTIL    (KOH-IDX    >      4)
@@ -5952,6 +5969,17 @@
                                           SPA-AREA
       *
                 IF    LNK-ORCSJGNGET-RC   =   ZERO
+      *
+                   IF  (LNK-SYU-SRYYMD(1:6)     >= "200804"      )
+                   AND (COMB-KOHHKNNUM(KOH-IDX)  = "015" OR "016"
+                                                         OR "021")
+                      IF  LNK-ORCSJGNGET-GAIJGNGAK
+                                 = 9999999 OR 999999 OR 40200
+                          CONTINUE
+                      ELSE
+                          MOVE    1    TO    WK-TOTORI-JIRITU
+                      END-IF
+                   END-IF
       *            Á´¹ñ¸øÈñ¤Î¸º³Û
                    IF    WK-GENGAKUKBN    NOT  =   ZERO
                        PERFORM   21071-KOHFTN-KINGAKU-GEN-SEC
@@ -6476,28 +6504,54 @@
       ******************************************************************
        2108-ROUJIN41-JYOGEN-HENSYU-SEC           SECTION.
       *
-           IF      FLG-GENBUTU70   NOT =   ZERO
-      *      £´£±Ï·¿Í
-             IF  (WK-1001-PREFNUM  =  14                         ) AND
-                 (COMB-KOH1HKNNUM  =  "141" OR "142" OR "143"    )
-                MOVE   WK-ZENGAKU   TO    WK-KOUREI-IRYOHI70K
-                IF     COMB-KOH1HKNNUM  =  "141"
-                   MOVE    11       TO    FLG-IRYOHI70K
-                ELSE
-                   MOVE    12       TO    FLG-IRYOHI70K
-                END-IF
+           IF   LNK-SYU-SRYYMD(1:6)   >=   "200804"
+             IF  (WK-1001-PREFNUM  =   14                    )
+             AND (COMB-KOH1HKNNUM  =  "141" OR "142" OR "143")
+               IF      FLG-GENBUTU70   NOT =   ZERO
+                 MOVE   WK-ZENGAKU    TO    WK-KOUREI-IRYOHI70K
+                 IF     COMB-KOH1HKNNUM  =  "141"
+                    EVALUATE   WK-KANAGAWA41-FTNRATE
+                      WHEN      10
+                          MOVE    11       TO    FLG-IRYOHI70K
+                      WHEN      20
+                          MOVE    13       TO    FLG-IRYOHI70K
+                    END-EVALUATE
+                 ELSE
+                    MOVE          12       TO    FLG-IRYOHI70K
+                 END-IF
+               ELSE
+                 MOVE   WK-ZENGAKU    TO    WK-IRYOHI
+                 IF     COMB-KOH1HKNNUM  =  "141"
+                    EVALUATE   WK-KANAGAWA41-FTNRATE
+                      WHEN      10
+                          MOVE     1       TO    FLG-IRYOHI2
+                      WHEN      20
+                          MOVE     3       TO    FLG-IRYOHI2
+                    END-EVALUATE
+                 ELSE
+                    MOVE           2       TO    FLG-IRYOHI2
+                 END-IF
+               END-IF
              END-IF
            ELSE
-      *      £´£±Ï·¿Í
-             IF  (WK-1001-PREFNUM  =  14                         ) AND
-                 (COMB-KOH1HKNNUM  =  "141" OR "142" OR "143"    ) AND
-                 (LNK-SYU-SRYYMD(1:6)   >=   "200610"            )
-                MOVE   WK-ZENGAKU   TO    WK-IRYOHI
-                IF     COMB-KOH1HKNNUM  =  "141"
-                   MOVE     1       TO    FLG-IRYOHI2
-                ELSE
-                   MOVE     2       TO    FLG-IRYOHI2
-                END-IF
+             IF  (WK-1001-PREFNUM  =   14                    )
+             AND (COMB-KOH1HKNNUM  =  "141" OR "142" OR "143")
+             AND (LNK-SYU-SRYYMD(1:6)   >=   "200610"        )
+               IF      FLG-GENBUTU70   NOT =   ZERO
+                 MOVE   WK-ZENGAKU   TO    WK-KOUREI-IRYOHI70K
+                 IF     COMB-KOH1HKNNUM  =  "141"
+                    MOVE    11       TO    FLG-IRYOHI70K
+                 ELSE
+                    MOVE    12       TO    FLG-IRYOHI70K
+                 END-IF
+               ELSE
+                 MOVE   WK-ZENGAKU   TO    WK-IRYOHI
+                 IF     COMB-KOH1HKNNUM  =  "141"
+                    MOVE     1       TO    FLG-IRYOHI2
+                 ELSE
+                    MOVE     2       TO    FLG-IRYOHI2
+                 END-IF
+               END-IF
              END-IF
            END-IF
       *
@@ -7116,6 +7170,17 @@
                    MOVE    1    TO    FLG-KOUGAKUCYO-GEN70K
                 END-IF
               END-IF
+              IF     FLG-IRYOHI70K    =  13
+                IF  WK-KOUREI-IRYOHI70K >  400500
+                   COMPUTE WK-KOUREI-IRYOHI70X =
+                        (( WK-KOUREI-IRYOHI70K - 267000 ) * 0.01 ) + 0.5
+                   COMPUTE  MAX-KIN-KOHI1-M  =   MAX-KIN-KOHI1-M
+                                             +   WK-KOUREI-IRYOHI70X
+                   IF   WK-KOUREI-IRYOHI70K   >   407520
+                      MOVE    1    TO    FLG-KOUGAKUCYO-GEN70K
+                   END-IF
+                END-IF
+              END-IF
               IF    (FLG-IRYOHI70   NOT =  ZERO)
               OR    (FLG-IRYOHI70K  =  1  OR  2)
                 IF   WK-GENGAKUKBN  NOT =  ZERO
@@ -7154,6 +7219,17 @@
                      COMPUTE  MAX-KIN-KOHI1-M  =   MAX-KIN-KOHI1-M 
                                                +   WK-IRYOHI2
                      MOVE    1    TO    FLG-KOUGAKUCYO2
+                  END-IF
+                END-IF
+                IF     FLG-IRYOHI2     =      3
+                  IF  WK-IRYOHI  >  405000
+                     COMPUTE WK-IRYOHI2 = 
+                           (( WK-IRYOHI  -  267000 ) * 0.01 ) + 0.5
+                     COMPUTE  MAX-KIN-KOHI1-M  =   MAX-KIN-KOHI1-M 
+                                               +   WK-IRYOHI2
+                     IF   WK-IRYOHI   >   407520
+                        MOVE    1    TO    FLG-KOUGAKUCYO2
+                     END-IF
                   END-IF
                 END-IF
               ELSE
@@ -7610,8 +7686,8 @@
                               (SYU-HKNTEN (17) * 10)
                     END-IF
                    ELSE
-                     IF    (FLG-IRYOHI      =   1       )
-                     OR    (FLG-IRYOHI2     =   1  OR  2)
+                     IF    (FLG-IRYOHI       =   1  )
+                     OR    (FLG-IRYOHI2  NOT =  ZERO)
                        COMPUTE  WK-IRYOHI   =  WK-IRYOHI  +
                                               (SYU-HKNTEN (17) * 10)
                      END-IF
@@ -8544,8 +8620,8 @@
                    IF (( WK-1001-PREFNUM         =  27        ) AND
                        ( LNK-SYU-KOH2HKNNUM  = "972" OR "974" ) AND
                        ( COMB-KOH1HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188"
-                                                     OR "280" ) AND
+                          OR "186" OR "187" OR "188" OR "189"
+                                            OR "190" OR "280" ) AND
                        ( LNK-S01-SAIKEISAN-KBN   =   "1"      ) AND
                        ( LNK-SYU-DENPNUM     NOT =  ZERO      ) AND
                        ( LNK-SYU-DENPNUM      <  SYU-DENPNUM  ))
@@ -9163,11 +9239,11 @@
                    IF (( WK-1001-PREFNUM         =  27        ) AND
                        ( LNK-SYU-KOH3HKNNUM  = "972" OR "974" ) AND
                        ((COMB-KOH1HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188"
-                                                     OR "280") OR
+                          OR "186" OR "187" OR "188" OR "189"
+                                            OR "190" OR "280") OR
                         (COMB-KOH2HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188"
-                                                     OR "280")) AND
+                          OR "186" OR "187" OR "188" OR "189"
+                                            OR "190" OR "280")) AND
                        ( LNK-S01-SAIKEISAN-KBN   =   "1"      ) AND
                        ( LNK-SYU-DENPNUM     NOT =  ZERO      ) AND
                        ( LNK-SYU-DENPNUM      <  SYU-DENPNUM  ))
@@ -9752,14 +9828,14 @@
                    IF (( WK-1001-PREFNUM         =  27        ) AND
                        ( LNK-SYU-KOH4HKNNUM  = "972" OR "974" ) AND
                        ((COMB-KOH1HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188"
-                                                     OR "280") OR
+                          OR "186" OR "187" OR "188" OR "189"
+                                            OR "190" OR "280") OR
                         (COMB-KOH2HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188"
-                                                     OR "280") OR
+                          OR "186" OR "187" OR "188" OR "189"
+                                            OR "190" OR "280") OR
                         (COMB-KOH3HKNNUM     = "180" OR "182"
-                                            OR "186" OR "188"
-                                                     OR "280")) AND
+                          OR "186" OR "187" OR "188" OR "189"
+                                            OR "190" OR "280")) AND
                        ( LNK-S01-SAIKEISAN-KBN   =   "1"      ) AND
                        ( LNK-SYU-DENPNUM     NOT =  ZERO      ) AND
                        ( LNK-SYU-DENPNUM      <  SYU-DENPNUM  ))
@@ -12187,20 +12263,24 @@
        2308-ZANOKIKAE-HENSYU-SEC           SECTION.
       *
            IF     WK-1001-PREFNUM       =   27
-             IF   COMB-KOH1HKNNUM       =  "180" OR "182" OR
-                                           "186" OR "188" OR "280"
+             IF   COMB-KOH1HKNNUM       =  "180" OR "182" OR "186" OR
+                                           "187" OR "188" OR "189" OR
+                                           "190" OR "280"
                   PERFORM    23081-ZANOKIKAE-HENSYU1-SEC
              END-IF
-             IF   COMB-KOH2HKNNUM       =  "180" OR "182" OR
-                                           "186" OR "188" OR "280"
+             IF   COMB-KOH2HKNNUM       =  "180" OR "182" OR "186" OR
+                                           "187" OR "188" OR "189" OR
+                                           "190" OR "280"
                   PERFORM    23082-ZANOKIKAE-HENSYU2-SEC
              END-IF
-             IF   COMB-KOH3HKNNUM       =  "180" OR "182" OR
-                                           "186" OR "188" OR "280"
+             IF   COMB-KOH3HKNNUM       =  "180" OR "182" OR "186" OR
+                                           "187" OR "188" OR "189" OR
+                                           "190" OR "280"
                   PERFORM    23083-ZANOKIKAE-HENSYU3-SEC
              END-IF
-             IF   COMB-KOH4HKNNUM       =  "180" OR "182" OR
-                                           "186" OR "188" OR "280"
+             IF   COMB-KOH4HKNNUM       =  "180" OR "182" OR "186" OR
+                                           "187" OR "188" OR "189" OR
+                                           "190" OR "280"
                   PERFORM    23084-ZANOKIKAE-HENSYU4-SEC
              END-IF
            END-IF
@@ -13407,7 +13487,8 @@
       *
            IF     (WK-1001-PREFNUM         =  01           ) AND
                   (COMB-KOHHKNNUM(KOH-IDX) = "121"         ) AND
-                  (LNK-SYU-SRYYMD(1:6)    >= "200604"      )
+                  (LNK-SYU-SRYYMD(1:6)    >= "200604"      ) AND
+                  (LNK-SYU-SRYYMD(1:6)    <= "200803"      )
                     MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
                     MOVE    ZERO    TO   WK-GAIKFTNRATE
                     MOVE    "0"     TO   WK-GAIYKZFTNKBN
@@ -13423,11 +13504,23 @@
                     MOVE    ZERO    TO   WK-GAIKKOTGAK
            END-IF.
       *
+           IF     (WK-1001-PREFNUM         =  31           ) AND
+                  (COMB-KOHHKNNUM(KOH-IDX) = "281" OR "282"
+                                                   OR "283") AND
+                  (LNK-SYU-SRYYMD(1:6)    >= "200804"      ) AND
+                  (WK-TOTORI-JIRITU        =  1            )
+                    MOVE    SPACE   TO   COMB-KOH-GAIJGNKBN(KOH-IDX)
+                    MOVE    ZERO    TO   WK-GAIKFTNRATE
+                    MOVE    "0"     TO   WK-GAIYKZFTNKBN
+                    MOVE    ZERO    TO   WK-GAIKKOTGAK
+           END-IF.
+      *
            MOVE      ZERO      TO        FLG-MIYAGI.
            IF     (WK-1001-PREFNUM         =  04           ) AND
                   (COMB-KOHHKNNUM(KOH-IDX) = "183" OR "383" 
                                                    OR "483") AND
-                  (LNK-SYU-SRYYMD(1:6)    >= "200510"      )
+                  (LNK-SYU-SRYYMD(1:6)    >= "200510"      ) AND
+                  (LNK-SYU-SRYYMD(1:6)    <= "200803"      )
       *
                 INITIALIZE                       PTKOHINF-REC
                 MOVE    LNK-SYU-HOSPNUM      TO  PTKOH-HOSPNUM
@@ -14185,7 +14278,8 @@
              OR  ( FLG-MIYAGI   NOT =  ZERO                 )
              OR  ((WK-1001-PREFNUM         =  01           ) AND
                   (COMB-KOHHKNNUM(KOH-IDX) = "121"         ) AND
-                  (LNK-SYU-SRYYMD(1:6)    >= "200604"      ))
+                  (LNK-SYU-SRYYMD(1:6)    >= "200604"      ) AND
+                  (LNK-SYU-SRYYMD(1:6)    <= "200803"      ))
              OR  ((WK-1001-PREFNUM         =  13           ) AND
                   (COMB-KOHHKNNUM(KOH-IDX) = "588"         ) AND
                   (LNK-SYU-SRYYMD(1:6)    >= "200710"      ))
@@ -14201,7 +14295,8 @@
                END-IF
                IF (WK-1001-PREFNUM         =  01           ) AND
                   (COMB-KOHHKNNUM(KOH-IDX) = "121"         ) AND
-                  (LNK-SYU-SRYYMD(1:6)    >= "200604"      )
+                  (LNK-SYU-SRYYMD(1:6)    >= "200604"      ) AND
+                  (LNK-SYU-SRYYMD(1:6)    <= "200803"      )
                   PERFORM   23063-HOKAIDO-KOHI-SEC
                END-IF
                IF (WK-1001-PREFNUM         =  13           ) AND
@@ -16242,7 +16337,7 @@
                   CONTINUE
              ELSE
                IF  (( FLG-KOUGAKUCYO2    NOT =    ZERO  ) AND
-                    ( FLG-IRYOHI2            =  1  OR 2 ))
+                    ( FLG-IRYOHI2        NOT =    ZERO  ))
                OR  (  FLG-KOUGAKUCYO-JIRITU
                                          NOT =    ZERO  )
                OR  (  FLG-KOUGAKUCYO-GEN70K
@@ -16323,7 +16418,7 @@
                 IF   WK-TAIHI-RECEFTNDSPKBN(1) = SPACE
                 AND  COMB-KOH1HKNNUM       NOT = "027"
                   IF  (( FLG-KOUGAKUCYO2    NOT =    ZERO  ) AND
-                       ( FLG-IRYOHI2            =  1  OR 2 ))
+                       ( FLG-IRYOHI2        NOT =    ZERO  ))
                   OR  (  FLG-KOUGAKUCYO-JIRITU
                                             NOT =    ZERO  )
                   OR  (  FLG-KOUGAKUCYO-GEN70K
@@ -16456,7 +16551,7 @@
       *
       *    £´£±Ï·¿ÍÍÑ
            IF   FLG-KOUGAKUCYO2        NOT =    ZERO
-              IF   (FLG-IRYOHI2 = 1 OR 2)  AND (FLG-HIKAKU = 1)
+              IF   (FLG-IRYOHI2  NOT = ZERO)  AND  (FLG-HIKAKU = 1)
                   CONTINUE
               ELSE
                   MOVE     ZERO      TO    FLG-KOUGAKUCYO2
