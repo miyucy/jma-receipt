@@ -1503,8 +1503,8 @@
        30010-KOUHATU-HEN20-SEC      SECTION.
       *
       *    見出し
-           STRING  "後発医薬品（ジェネリック医薬品）"
-                   "への変更不可の時、以下に署名"
+           STRING  "後発医薬品（ジェネリック医薬品）への変更が全"
+                   "て不可の場合、以下に署名又は記名・押印"
                                        DELIMITED  BY  SIZE
                                        INTO    HCM19-MIDASHI2
            END-STRING
