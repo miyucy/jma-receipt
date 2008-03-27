@@ -4406,6 +4406,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0124"
                    MOVE    "後期高齢者・生活保護の期間が重複しています"
                                                TO  SPA-ERRMSG
+               WHEN    "0125"
+                   STRING  "後期高齢者・残留邦人等の期間が"
+                           "重複しています。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "0126"
+                   MOVE    "国保・残留邦人等の期間が重複しています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0127"
+                   MOVE    "生活保護・残留邦人等の期間が重複しています"
+                                               TO  SPA-ERRMSG
       *    更新前エラー
                WHEN    "0100"
                    MOVE    "カナ氏名は必ず入力して下さい"
