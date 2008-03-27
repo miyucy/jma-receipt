@@ -35,6 +35,7 @@
       *                                     （初診（夜間・早朝等）加算追加）
       *                                     （診療区分６４：病理診断対応）
       *                                     （在宅コード追加）
+      *                                     （剤支援記載対象コード修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2129,15 +2130,24 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    MOVE    1    TO    FLG-ZAIHOU-COM
               END-IF
       *
-              IF  (RECE100-SRYYM      >=     "200604")
-              AND (WRK-SISETU613      =      1      )
-                IF SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT   OR
-                                            CONS-ZAIHOU3-COMMENT  OR
-                                            CONS-ZAISIEN1         OR
-                                            CONS-ZAISIEN2         OR
-                                            CONS-ZAISIEN3
-                   MOVE   "1"   TO    RECE100-COMCNTFLG
-                   MOVE   "1"   TO    RECE120-FLG-ZAISIEN-COMMENT
+              IF   WRK-SISETU613      =      1
+                IF   RECE100-SRYYM   >=     "200604"
+                AND  RECE100-SRYYM   <=     "200803"
+                  IF SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT   OR
+                                              CONS-ZAISIEN1         OR
+                                              CONS-ZAISIEN2         OR
+                                              CONS-ZAISIEN3
+                     MOVE   "1"   TO    RECE100-COMCNTFLG
+                     MOVE   "1"   TO    RECE120-FLG-ZAISIEN-COMMENT
+                  END-IF
+                END-IF
+                IF   RECE100-SRYYM   >=     "200804"
+                  IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1         OR
+                                              CONS-ZAISIEN2         OR
+                                              CONS-ZAISIEN3
+                     MOVE   "1"   TO    RECE100-COMCNTFLG
+                     MOVE   "1"   TO    RECE120-FLG-ZAISIEN-COMMENT
+                  END-IF
                 END-IF
               END-IF
            END-IF

@@ -333,6 +333,7 @@
       *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *                                     ¡ÊºßÂð¥³¡¼¥ÉÄÉ²Ã¡Ë
+      *                                     ¡ÊºÞ»Ù±çµ­ºÜÂÐ¾Ý¥³¡¼¥É½¤Àµ¡Ë
       *  04.02.03    NACL-ÌçÏÆ    08/03/25  µÜ¾ë¸©ÆýÍÄ»ù¡¢ËÌ³¤Æ»Àº¿ÀÊä½õ¤Î
       *                                     ÊÑÂ§ÂÐ±þ½ªÎ»
       *****************************************************************
@@ -3830,15 +3831,24 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    MOVE    1    TO    FLG-ZAIHOU-COM
               END-IF
       *
-              IF  (RECE02-SRYYM      >=     "200604")
-              AND (WRK-SISETU613      =      1      )
-                IF SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT   OR
-                                            CONS-ZAIHOU3-COMMENT  OR
-                                            CONS-ZAISIEN1         OR
-                                            CONS-ZAISIEN2         OR
-                                            CONS-ZAISIEN3
-                   MOVE   "1"   TO    RECE02-COMCNTFLG
-                   MOVE   "1"   TO    RECE04-FLG-ZAISIEN-COMMENT
+              IF   WRK-SISETU613      =      1
+                IF   RECE02-SRYYM    >=     "200604"
+                AND  RECE02-SRYYM    <=     "200803"
+                  IF SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT   OR
+                                              CONS-ZAISIEN1         OR
+                                              CONS-ZAISIEN2         OR
+                                              CONS-ZAISIEN3
+                     MOVE   "1"   TO    RECE02-COMCNTFLG
+                     MOVE   "1"   TO    RECE04-FLG-ZAISIEN-COMMENT
+                  END-IF
+                END-IF
+                IF   RECE02-SRYYM    >=     "200804"
+                  IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1         OR
+                                              CONS-ZAISIEN2         OR
+                                              CONS-ZAISIEN3
+                     MOVE   "1"   TO    RECE02-COMCNTFLG
+                     MOVE   "1"   TO    RECE04-FLG-ZAISIEN-COMMENT
+                  END-IF
                 END-IF
               END-IF
            END-IF

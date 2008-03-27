@@ -150,6 +150,7 @@
       *                                     （再就労：円変更対応）
       *                                     （リハ：専用コード追加）
       *                                     （在宅コード追加）
+      *                                     （剤支援記載対象コード修正）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2741,15 +2742,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    1    TO    FLG-ZAIHOU-COM
               END-IF
       *
-              IF  (RECE41-SRYYM      >=     "200604")
-              AND (WRK-SISETU613      =      1      )
-                IF SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT  OR
-                                            CONS-ZAIHOU3-COMMENT OR
-                                            CONS-ZAISIEN1        OR
-                                            CONS-ZAISIEN2        OR
-                                            CONS-ZAISIEN3
-                   MOVE   "1"   TO    RECE41-COMCNTFLG
-                   MOVE   "1"   TO    RECE44-FLG-ZAISIEN-COMMENT
+              IF   WRK-SISETU613      =      1
+                IF   RECE41-SRYYM    >=     "200604"
+                AND  RECE41-SRYYM    <=     "200803"
+                  IF SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT   OR
+                                              CONS-ZAISIEN1         OR
+                                              CONS-ZAISIEN2         OR
+                                              CONS-ZAISIEN3
+                     MOVE   "1"   TO    RECE41-COMCNTFLG
+                     MOVE   "1"   TO    RECE44-FLG-ZAISIEN-COMMENT
+                  END-IF
+                END-IF
+                IF   RECE41-SRYYM    >=     "200804"
+                  IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1         OR
+                                              CONS-ZAISIEN2         OR
+                                              CONS-ZAISIEN3
+                     MOVE   "1"   TO    RECE41-COMCNTFLG
+                     MOVE   "1"   TO    RECE44-FLG-ZAISIEN-COMMENT
+                  END-IF
                 END-IF
               END-IF
            END-IF
