@@ -28,7 +28,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
-      *  04.02.00    NACL-多々納  08/04/28  Ｈ２０．４改正対応他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -89,8 +88,8 @@
       *
       *    ファイル指定領域
        01  ASS-AREA.
-           03  ASS-PARA                PIC X(256)  VALUE   SPACE.
-           03  ASS-ERR                 PIC X(256)  VALUE   SPACE.
+           03  ASS-PARA                PIC X(256).
+           03  ASS-ERR                 PIC X(256).
            03  ASS-ISAM                PIC X(256)  VALUE
                "/tmp/ORCVTPTKOHINF_ISAM".
       *
@@ -477,10 +476,6 @@
       *
            EVALUATE    PARA-DATKBN
                WHEN    "02-3"
-                   IF      ASS-ERR     =   SPACE
-                       MOVE    PARA-DATA   TO  ASS-ERR
-                   END-IF
-               WHEN    "02-B"
                    MOVE    PARA-DATA   TO  ASS-ERR
                WHEN    "05-1"
                    MOVE    PARA-DATA   TO  PARA-05-1
@@ -810,15 +805,10 @@
                END-IF
                MOVE    PTKOHINF-REC        TO  TBL-PTKOHINF-REC (IDX)
            ELSE
-               IF      HZN-HKN-TEKSTYMD(1) <   TBL-PTKOH-TEKEDYMD(IDX)
       *        保険の開始日を変更する
-                   MOVE    HZN-HKN-TEKSTYMD(1) TO  TBL-PTKOH-TEKSTYMD
+               MOVE    HZN-HKN-TEKSTYMD(1) TO  TBL-PTKOH-TEKSTYMD
                                                                 (IDX)
-                   MOVE    "B"                 TO  TBL-ISAM-ERR (IDX)
-               ELSE
-                   MOVE    3               TO  FLG-ERR
-                   MOVE    "3"             TO  TBL-ISAM-ERR (IDX)
-               END-IF
+               MOVE    "B"                 TO  TBL-ISAM-ERR (IDX)
            END-IF
            .
        50013-HKNNUM-HENKAN-EXT.
@@ -850,8 +840,7 @@
        500141-KOH027-CHKSYORI-SEC        SECTION.
       *
       *    老人公費は平成２０．３．３１で終了
-           IF     (PTKOH-TEKSTYMD      <=  "20080331"  )  AND
-                  (PTKOH-TEKEDYMD      >   "20080331"  )
+           IF      PTKOH-TEKEDYMD      >   "20080331"
                MOVE    "20080331"          TO  TBL-PTKOH-TEKEDYMD (IDX)
                MOVE    "20080331"          TO  PTKOH-TEKEDYMD
            END-IF
@@ -898,8 +887,6 @@
                        MOVE    "20010101"          TO  WRK-HEN-TEKSTYMD
                        MOVE    "00"                TO  WRK-HEN-PAYKBN
                        PERFORM 5001421-KOHHENKOU-SEC
-                       MOVE    PTKOHINF-REC        TO  TBL-PTKOHINF-REC
-                                                              (IDX)
                    ELSE
       *                保険者マスタなし
                        MOVE    3               TO  FLG-ERR
@@ -1221,9 +1208,9 @@
            MOVE    TBL-PTKOH-PTID (1)  TO  ERR2-PTID
       *
            EVALUATE    FLG-ERR
-               WHEN    1
-               WHEN    4
+               WHEN    3
                WHEN    7
+               WHEN    4
                    MOVE    "ERR"               TO  ERR2-NAIYO
                    MOVE    TBL-ISAM-CNT (1)    TO  ERR2-LINENO
                    PERFORM 2901-ERRLST-OUT-SEC
