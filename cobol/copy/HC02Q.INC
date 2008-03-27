@@ -43,4 +43,6 @@
             02  HC02Q-MIDASHI   PIC X(20).
             02  HC02Q-KIGO  PIC X(32).
             02  HC02Q-NUM   PIC X(32).
-            02  HC02Q-MIDASHI2  PIC X(64).
+            02  HC02Q-MIDASHI2.
+              03  HC02Q-MIDASHI2-S
+                      PIC X(44)   OCCURS  2 TIMES.

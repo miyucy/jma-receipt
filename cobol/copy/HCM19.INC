@@ -41,4 +41,6 @@
             02  HCM19-MIDASHI   PIC X(20).
             02  HCM19-KIGO  PIC X(32).
             02  HCM19-NUM   PIC X(32).
-            02  HCM19-MIDASHI2  PIC X(64).
+            02  HCM19-MIDASHI2.
+              03  HCM19-MIDASHI2-S
+                      PIC X(44)   OCCURS  2 TIMES.
