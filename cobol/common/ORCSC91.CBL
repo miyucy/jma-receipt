@@ -346,6 +346,19 @@
                                                            (TBL-RIH)
                        MOVE    1               TO  FLG-RIHA-OK
                END-SEARCH 
+      *        £È£²£°¡¥£´¤«¤éÂÐ±þ
+      *        Ï«ºÒ¸ÇÍ­¤Î¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ
+               IF     (SPA-HKNKBN          =   1   )  AND
+                      (SPA-SRYYMD          >=  "20080401"  )
+                   IF     (LNK-SC91-SRYCD(1:3)     =   "101" )
+                      AND (TNS-SRYKBN              =   "80"  )
+                      AND (TNS-SRYSYUKBN           =   "800" )
+                      AND (TNS-DATAKBN             =   "1"   )
+                      AND (TNS-CDKBN-KBN           =   "H"   )
+                       MOVE    1                   TO  FLG-RIHA-OK
+                   END-IF
+               END-IF
+      *
                IF      FLG-RIHA-OK         =   1
                    MOVE    "099800201"         TO  LNK-SC91-SRYCD
                    MOVE    LNK-SC91-SRYCD      TO  TNS-SRYCD

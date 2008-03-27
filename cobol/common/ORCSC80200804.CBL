@@ -1447,6 +1447,11 @@
                                                TO  WRK-RIHA-GEN
                        MOVE    1               TO  FLG-RIHA-OK
            END-SEARCH
+      *    リハビリテーション料の労災コード
+           IF     (WRK-COM-INPUTCD   (IDX-Z)(1:3)  =   "101")
+              AND (WRK-COM-CDKBN-KBN (IDX-Z)       =   "H"  )
+               MOVE    1                   TO  FLG-RIHA-OK
+           END-IF
       *
            IF     (FLG-RIHA-OK         =   ZERO )
                GO      TO      100112-RIGAKU-CHK-EXT
@@ -1741,22 +1746,23 @@
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
-      **** リハビリ医学管理料はエラー
-      *    MOVE    WRK-COM-INPUTCD (IDX-Z)     TO  WRK-SRYCD2
-      *    PERFORM 10011312-RIGAKU-SERCH-SEC
-      *    IF      WRK-TBL-RSI-KBN     =   "S"
-      *        MOVE    "8045"          TO  WRK-ERRCD
-      *        MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-      *        GO      TO      100113-RSIHKN-SYORI-EXT
-      **** END-IF
+      *    健保のリハビリ料はエラー
+           MOVE    WRK-COM-INPUTCD (IDX-Z)     TO  WRK-SRYCD2
+           PERFORM 10011312-RIGAKU-SERCH-SEC
+           IF      FLG-RIHA-OK         =   1
+               MOVE    "8046"          TO  WRK-ERRCD
+               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+               GO      TO      100113-RSIHKN-SYORI-EXT
+           END-IF
       *
       *    リハビリテーション総合計画評価料は対象外
            IF      WRK-COM-INPUTCD (IDX-Z) =   "180024710"
                GO      TO      100113-RSIHKN-SYORI-EXT
            END-IF
       *
-      *    労災の時、加算なし
-           IF      WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101"
+      *    労災の時、加算なし（リハビリ料は区分に’Ｈ’）
+           IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101" )
+              AND (WRK-COM-CDKBN-KBN (IDX-Z)   NOT =   "H" )
       *        四肢加算チェック
                IF      WRK-COM-INPUTCD (IDX-Z) =   "101800010" 
                    MOVE    2               TO  WRK-COM-SANFLG (IDX-Z)
@@ -1784,6 +1790,17 @@
                        END-EVALUATE
                        MOVE    1                    TO  FLG-ROUSAI
                END-EVALUATE
+           END-IF
+      *    労災コードのリハビリ料
+           IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101" )
+              AND (WRK-COM-CDKBN-KBN (IDX-Z)   =   "H" )
+               EVALUATE    SPA-RSI-SISIKBN
+                   WHEN    1
+                   WHEN    2
+      *                １．５倍
+                       MOVE    "101800010"      TO  WRK-SRYCD
+               END-EVALUATE
+               MOVE    1                    TO  FLG-ROUSAI
            END-IF
       *??  老人のコードでリハビリは対象とする
       *    IF      FLG-ROUSAI          =   ZERO
@@ -1871,27 +1888,19 @@
            EXIT.
       *
       *****************************************************************
-      *    理学療法テーブル検索処理
+      *    リハビリテーション料判定処理
       *****************************************************************
        10011312-RIGAKU-SERCH-SEC            SECTION.
       *
       *
-           SET     TBL-SAN             TO  1
-           SEARCH      TBL-SANTEI-OCC  VARYING   TBL-SAN
+           SET     TBL-RIH             TO  1
+           SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
                    AT  END
-      *D               MOVE    SPACE           TO  WRK-RIGAKU-RYO
-      *D               MOVE    SPACE           TO  WRK-RIGAKU-KBN
-                       MOVE    ZERO            TO  FLG-RIGAKU
-                       MOVE    SPACE           TO  WRK-TBL-RSI-KBN
-                   WHEN    WRK-SRYCD2          =   TBL-SANTEI-SRYCD
-                                                           (TBL-SAN)
-      *D               MOVE    TBL-RIGAKU-KBN   (TBL-SAN)
-      *                                        TO  WRK-RIGAKU-KBN
-      *                MOVE    TBL-RIGAKU-RYO   (TBL-SAN)
-      *D                                       TO  WRK-RIGAKU-RYO
-                       MOVE    1               TO  FLG-RIGAKU
-                       MOVE    TBL-RSI-KBN (TBL-SAN)
-                                               TO  WRK-TBL-RSI-KBN
+                       MOVE    ZERO            TO  FLG-RIHA-OK
+                   WHEN    WRK-COM-INPUTCD (IDX-Z)
+                                               =   TBL-RIHA-SRYCD
+                                                           (TBL-RIH)
+                       MOVE    1               TO  FLG-RIHA-OK
            END-SEARCH
       *
            .
