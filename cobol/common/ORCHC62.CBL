@@ -345,9 +345,9 @@
            MOVE    ZERO            TO  FLG-SOURYO
       *
       *    コメントは対象外
-           IF      ORCHC62-SRYKBN(IDX-ZAI) =   "98"
-               GO  TO  220-BODY-HENSYU-EXT
-           END-IF
+      *     IF      ORCHC62-SRYKBN(IDX-ZAI) =   "98"
+      *         GO  TO  220-BODY-HENSYU-EXT
+      *     END-IF
       *
            COMPUTE CNT-ZAI     =   CNT-ZAI     +   1
       *
@@ -392,11 +392,11 @@
                                    TO  WRK-SRYCD
       *
       *    薬剤、その他材料、用法以外は処理抜ける
-           IF    ( WRK-SRYCD(1:1)  NOT =   "6"   ) AND
-                 ( WRK-SRYCD(1:3)  NOT =   "059" ) AND
-                 ( WRK-SRYCD(1:3)  NOT =   "001" )
-               GO  TO  230-NAIYO-HENSYU-EXT
-           END-IF
+      *     IF    ( WRK-SRYCD(1:1)  NOT =   "6"   ) AND
+      *           ( WRK-SRYCD(1:3)  NOT =   "059" ) AND
+      *           ( WRK-SRYCD(1:3)  NOT =   "001" )
+      *         GO  TO  230-NAIYO-HENSYU-EXT
+      *     END-IF
       *
       *    点数検索
            PERFORM 900-TENSU-READ-SEC
