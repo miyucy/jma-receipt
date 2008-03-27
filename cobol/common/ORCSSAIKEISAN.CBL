@@ -2390,7 +2390,21 @@
                            COMPUTE WK-RSISAISHIN = WK-RSISAISHIN +     
                                   (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
                          END-IF                                        
-                         IF   SRY-SRYCD(IDX3) =  "101130010"  OR       
+                         IF   LNK-SYU-SRYYMD(IDY)  >=   "200804"
+                          IF  SRY-SRYCD(IDX3) =  "101130020"  OR       
+                                                 "101130030"  OR       
+                                                 "101130040"  OR       
+                                                 "101130050"  OR       
+                                                 "101130060"  OR       
+                                                 "101130070"  OR       
+                                                 "101130080"  OR       
+                                                 "101130090"  OR       
+                                                 "101130100"           
+                           COMPUTE WK-RSISDO = WK-RSISDO +             
+                                  (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
+                          END-IF
+                         ELSE
+                          IF  SRY-SRYCD(IDX3) =  "101130010"  OR       
                                                  "101130020"  OR       
                                                  "101130030"  OR       
                                                  "101130040"  OR       
@@ -2402,6 +2416,7 @@
                                                  "101130100"           
                            COMPUTE WK-RSISDO = WK-RSISDO +             
                                   (WRK-TEN  *   TBL-ZAIKAISU (IDX1))   
+                          END-IF
                          END-IF                                        
                          IF    SRY-SRYCD (IDX3)(1:5)   =   "09591"     
                                                      OR    "09592"     

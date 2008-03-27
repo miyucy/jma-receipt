@@ -4164,7 +4164,21 @@ grpsys                              SPA-AREA
                            COMPUTE WRK-RSISHOSHIN = WRK-RSISHOSHIN +
                                   (WRK-TEN  *   SINRYO-COUNT)
                       END-IF
-                      IF   SRY-SRYCD(IDZ) =  "101130010"  OR
+                      IF   SYU-SRYYMD(1:6)   >=   "200804"
+                        IF SRY-SRYCD(IDZ) =  "101130020"  OR
+                                             "101130030"  OR
+                                             "101130040"  OR
+                                             "101130050"  OR
+                                             "101130060"  OR
+                                             "101130070"  OR
+                                             "101130080"  OR
+                                             "101130090"  OR
+                                             "101130100"
+                           COMPUTE WRK-RSISDO = WRK-RSISDO +
+                                  (WRK-TEN  *   SINRYO-COUNT)
+                        END-IF
+                      ELSE
+                        IF SRY-SRYCD(IDZ) =  "101130010"  OR
                                              "101130020"  OR
                                              "101130030"  OR
                                              "101130040"  OR
@@ -4176,6 +4190,7 @@ grpsys                              SPA-AREA
                                              "101130100"
                            COMPUTE WRK-RSISDO = WRK-RSISDO +
                                   (WRK-TEN  *   SINRYO-COUNT)
+                        END-IF
                       END-IF
                       IF   SRY-SRYCD(IDZ) =  "101910010"  OR
                                              "101910020"  OR
