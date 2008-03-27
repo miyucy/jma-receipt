@@ -205,6 +205,7 @@
       *  04.02.01    NACL-ÌçÏÆ    08/02/29  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.02.02    NACL-ÌçÏÆ    08/03/06  À¸ÊÝ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
       *  04.02.03    NACL-ÌçÏÆ    08/03/21  ´Î±ê¼£ÎÅÂÐ±þ
+      *  04.02.04    NACL-ÌçÏÆ    08/03/24  Ä»¼è¸©ÃÏÊý¸øÈñÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -499,6 +500,8 @@
                  06  WK-DOTANDOKUFLG       PIC  9(01).
       *
            03  WK-KOHNUM                   PIC  X(03).
+      *
+           03  WK-TOTORI-JIRITU            PIC  9(01).
       *
       *    ¸øÈñ¤Î´µ¼ÔÉéÃ´¾å¸Â¶â³Û¤ÎÂàÈòÍÑ¥¨¥ê¥¢
        01  HOKEN-MAX-AREA.
@@ -5407,6 +5410,7 @@
            INITIALIZE                   WK-JIRITU-TBL.
            INITIALIZE                   WK-SYOGAI-TBL.
            INITIALIZE                   WK-SYOFUKUMU-TBL.
+           MOVE       ZERO     TO       WK-TOTORI-JIRITU.
       *
            PERFORM    VARYING   KOH-IDX    FROM   1   BY   1
                       UNTIL    (KOH-IDX    >      4)
@@ -5466,6 +5470,17 @@
                                            SPA-AREA
       *
                 IF    LNK-ORCSJGNGET-RC   =   ZERO
+      *
+                     IF  (LNK-SYU-SRYYMD(1:6)     >= "200804"      )
+                     AND (COMB-KOHHKNNUM(KOH-IDX)  = "015" OR "016"
+                                                           OR "021")
+                        IF  LNK-ORCSJGNGET-NYUJGNGAK
+                                   = 9999999 OR 999999 OR 40200
+                            CONTINUE
+                        ELSE
+                            MOVE    1    TO    WK-TOTORI-JIRITU
+                        END-IF
+                     END-IF
       *            Á´¹ñ¸øÈñ¤Î¸º³Û
                      IF    WK-GENGAKUKBN    NOT  =   ZERO
                        PERFORM   21071-KOHFTN-KINGAKU-GEN-SEC
@@ -13693,6 +13708,15 @@
            IF  (WK-1001-PREFNUM         =  13           ) AND
                (COMB-KOHHKNNUM(KOH-IDX) = "588"         ) AND
                (LNK-SYU-SRYYMD(1:6)    >= "200710"      )
+                    MOVE    SPACE   TO   COMB-KOH-NYUJGNKBN(KOH-IDX)
+                    MOVE    ZERO    TO   WK-NYUKFTNRATE
+           END-IF.
+      *
+           IF  (WK-1001-PREFNUM         =  31           ) AND
+               (COMB-KOHHKNNUM(KOH-IDX) = "281" OR "282"
+                                                OR "283") AND
+               (LNK-SYU-SRYYMD(1:6)    >= "200804"      ) AND
+               (WK-TOTORI-JIRITU        =  1            )
                     MOVE    SPACE   TO   COMB-KOH-NYUJGNKBN(KOH-IDX)
                     MOVE    ZERO    TO   WK-NYUKFTNRATE
            END-IF.
