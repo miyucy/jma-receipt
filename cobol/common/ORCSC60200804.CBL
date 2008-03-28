@@ -3656,20 +3656,29 @@
                                            TO  WRK-HKNCOMBI
       *        ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»
                IF      SPA-NYUGAIKBN       =   1
-      *            ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»£²
+      *            ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»£³
                    MOVE    "160161610"         TO  WRK-SRYCD
-               ELSE
-      *            ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»£±
-                   MOVE    "160170170"         TO  WRK-SRYCD
                END-IF
                MOVE    WRK-KENTAI-DAY      TO  WRK-SAI-DAY
                PERFORM 3005-AUTO-SAIKETU-SEC
-      *        ¸¡ÂÎ´ÉÍý²Ã»»£²¤¬»»Äê¤Ç¤­¤Ê¤¤»þ¡¢£±²Ã»»¤¹¤ë
-               IF     (FLG-ERR         NOT =   ZERO )  AND
-                      (SPA-NYUGAIKBN       =   1    )
-                   MOVE    "160170170"         TO  WRK-SRYCD
+      *        ¸¡ÂÎ´ÉÍý²Ã»»£³¤¬»»Äê¤Ç¤­¤Ê¤¤»þ¡¢£²¤È£±¤ò»î¤¹
+               IF      FLG-ERR         NOT =   ZERO
+                   IF      SPA-NYUGAIKBN       =   1
+      *                ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»£²
+                       MOVE    "160182770"         TO  WRK-SRYCD
+                   ELSE
+      *                ¸¡ÂÎ¸¡ºº´ÉÍý²Ã»»£±
+                       MOVE    "160170170"         TO  WRK-SRYCD
+                   END-IF
                    MOVE    WRK-KENTAI-DAY      TO  WRK-SAI-DAY
                    PERFORM 3005-AUTO-SAIKETU-SEC
+      *            ¸¡ÂÎ´ÉÍý²Ã»»£²¤¬»»Äê¤Ç¤­¤Ê¤¤»þ¡¢£±²Ã»»¤¹¤ë
+                   IF     (FLG-ERR         NOT =   ZERO )  AND
+                          (SPA-NYUGAIKBN       =   1    )
+                       MOVE    "160170170"         TO  WRK-SRYCD
+                       MOVE    WRK-KENTAI-DAY      TO  WRK-SAI-DAY
+                       PERFORM 3005-AUTO-SAIKETU-SEC
+                   END-IF
                END-IF
            END-IF
       *£È£±£¸¡¿£´
