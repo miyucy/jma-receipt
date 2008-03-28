@@ -5343,6 +5343,14 @@
                                                            (TBL-RIH)
                        MOVE    1               TO  FLG-RIHA-OK
                END-SEARCH 
+      *
+      *        労災コードのリハビリ料
+               IF     (SPA-SRYYMD              >=  "20080401")
+                  AND (SRY-SRYCD  (IDX)(1:3)   =   "101" )
+                  AND (TNS-CDKBN-KBN           =   "H" )
+                   MOVE    1               TO  FLG-RIHA-OK
+               END-IF
+      *
                IF      FLG-RIHA-OK         =   1
                    MOVE    "099800201"         TO  WRK-HEN-SRYCD
                END-IF

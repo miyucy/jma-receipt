@@ -2164,12 +2164,6 @@
                        MOVE    TBL-RIHA-KAN-KBN (TBL-RKA)
                                                TO  WRK-KAN-KBN2
            END-SEARCH
-      *TEST
-           DISPLAY "FLG-RKAN-OK:"  FLG-RKAN-OK
-                  ",FLG-RKAN-OK2:" FLG-RKAN-OK2
-                  ",LNK-SC92-SRYCD:" LNK-SC92-SRYCD
-                  ",CHK-CD:" CHK-CD
-      *TEST
       *    両方ともにリハビリ管理料の場合、エラー
            IF    ((FLG-RKAN-OK         =   ZERO )  AND
                   (FLG-RKAN-OK2        =   ZERO ))     OR
@@ -2219,9 +2213,6 @@
                END-PERFORM
            END-IF
            PERFORM 200541-RIHASANTEI-CHK-SEC
-      *TEST
-           DISPLAY "WRK-YMD:"  WRK-YMD
-      *TEST
       *    今回入力でないこと
            MOVE    ZERO                TO  FLG-RKAN-ARI
            MOVE    ZERO                TO  FLG-RKAN-ARI2
@@ -2271,9 +2262,6 @@
                MOVE    ZERO            TO  FLG-CHKERR 
                MOVE    SPACE           TO  WRK-KEI-SRYCD
            END-IF
-      *TEST
-           DISPLAY "FLG-CHKERR :"  FLG-CHKERR 
-      *TEST
       *
            .
        20054-RIHA-CHKSYORI-EXT.
@@ -2605,18 +2593,18 @@
       *****************************************************************
       *     リハビリ料チェック処理
       *****************************************************************
-       200542-RIHA-HENKAN-SEC        SECTION.
+      *200542-RIHA-HENKAN-SEC        SECTION.
       *
-           SET     TBL-RIH             TO  1
-           SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
-                   AT  END
-                       MOVE    ZERO            TO  FLG-RIHA-OK
-                   WHEN    WRK-SRYCD-3     =   TBL-RIHA-SRYCD(TBL-RIH)
-                       MOVE    1               TO  FLG-RIHA-OK
-           END-SEARCH
-           .
-       200542-RIHA-HENKAN-EXT.
-           EXIT.
+      *    SET     TBL-RIH             TO  1
+      *    SEARCH  TBL-RIHABIRI-OCC    VARYING   TBL-RIH
+      *            AT  END
+      *                MOVE    ZERO            TO  FLG-RIHA-OK
+      *            WHEN    WRK-SRYCD-3     =   TBL-RIHA-SRYCD(TBL-RIH)
+      *                MOVE    1               TO  FLG-RIHA-OK
+      *    END-SEARCH
+      *    .
+      *200542-RIHA-HENKAN-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    入院中の場合、算定なしとする

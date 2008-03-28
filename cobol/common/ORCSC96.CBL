@@ -1441,6 +1441,12 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "8046"
+                   STRING  "健保のリハビリテーション料です。"
+                           "労災のコードで算定して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .
