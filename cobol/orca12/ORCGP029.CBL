@@ -765,6 +765,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    月代り受給者番号登録（生活保護で、新規登録の時）
            IF      PTKOH-KOHNUM        =   "012"
+      *        残留邦人追加
+                                       OR  "025"
                PERFORM 2301-MONTHLYNUM-SYORI-SEC
            END-IF
            .
