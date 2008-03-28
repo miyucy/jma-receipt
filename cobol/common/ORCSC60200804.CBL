@@ -3658,23 +3658,21 @@
                IF      SPA-NYUGAIKBN       =   1
       *            検体検査管理加算３
                    MOVE    "160161610"         TO  WRK-SRYCD
+               ELSE
+      *            検体検査管理加算１
+                   MOVE    "160170170"         TO  WRK-SRYCD
                END-IF
                MOVE    WRK-KENTAI-DAY      TO  WRK-SAI-DAY
                PERFORM 3005-AUTO-SAIKETU-SEC
-      *        検体管理加算３が算定できない時、２と１を試す
-               IF      FLG-ERR         NOT =   ZERO
-                   IF      SPA-NYUGAIKBN       =   1
-      *                検体検査管理加算２
-                       MOVE    "160182770"         TO  WRK-SRYCD
-                   ELSE
-      *                検体検査管理加算１
-                       MOVE    "160170170"         TO  WRK-SRYCD
-                   END-IF
+      *        検体管理加算３が算定できない時、２を試す
+               IF     (FLG-ERR         NOT =   ZERO )  AND
+                      (SPA-NYUGAIKBN       =   1    )
+      *            検体検査管理加算２
+                   MOVE    "160182770"         TO  WRK-SRYCD
                    MOVE    WRK-KENTAI-DAY      TO  WRK-SAI-DAY
                    PERFORM 3005-AUTO-SAIKETU-SEC
       *            検体管理加算２が算定できない時、１加算する
-                   IF     (FLG-ERR         NOT =   ZERO )  AND
-                          (SPA-NYUGAIKBN       =   1    )
+                   IF     (FLG-ERR         NOT =   ZERO )
                        MOVE    "160170170"         TO  WRK-SRYCD
                        MOVE    WRK-KENTAI-DAY      TO  WRK-SAI-DAY
                        PERFORM 3005-AUTO-SAIKETU-SEC
