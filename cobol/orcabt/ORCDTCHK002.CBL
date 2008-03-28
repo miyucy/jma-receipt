@@ -4115,6 +4115,7 @@
       *
            IF    ( SRH-1040-JKYSNUMCHK =   "1" )
             OR   ( PTKOH-KOHNUM        =   "012" )
+            OR   ( PTKOH-KOHNUM        =   "025" )
                CONTINUE
            ELSE
                IF    ( WRK-PTKOH-JKYSNUM   =   SPACE )
@@ -4159,6 +4160,7 @@
       *
            IF    ( PTKOH-JKYSNUM       NOT =   SPACE )
             AND  ( PTKOH-KOHNUM        NOT =   "012" )
+            AND  ( PTKOH-KOHNUM        NOT =   "025" )
                MOVE    PTKOH-JKYSNUM   TO  WRK-KANACHK-MAE-INPUT
                PERFORM 800-HANKAKU-CHK-SEC
                IF  ( FLG-KANACHK       NOT =   ZERO )
@@ -4263,7 +4265,7 @@
                                            =   ZERO )
       *
                 IF    ( COMB-KOHHKNNUM (IDX0)
-                                           =   "012" )
+                                           =   "012" OR "025" )
                     MOVE   1           TO  FLG-SEIHO
                 END-IF
       *
