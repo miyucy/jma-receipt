@@ -1009,17 +1009,6 @@
                            WHEN    "3"
                                MOVE    3           TO  FLG-RJNHKN
                        END-EVALUATE
-      *---(04.02.00) LINE ADD START ------------------------------------
-                   WHEN    "039"
-                   WHEN    "040"
-      *                後期高齢者
-                       EVALUATE    COMB-HOJOKBN
-                           WHEN    "1"
-                               MOVE    1           TO  FLG-RJNHKN
-                           WHEN    "3"
-                               MOVE    3           TO  FLG-RJNHKN
-                       END-EVALUATE
-      *---(04.02.00) LINE ADD END   ------------------------------------
       *                以外
                    WHEN    OTHER
       *                自費以外
@@ -1048,6 +1037,19 @@
                        END-IF
                END-EVALUATE
            END-IF
+      *---(04.02.00) LINE ADD START ------------------------------------
+      *    後期高齢者
+           EVALUATE    COMB-HKNNUM
+               WHEN    "039"
+               WHEN    "040"
+                   EVALUATE    COMB-HOJOKBN
+                       WHEN    "1"
+                           MOVE    1           TO  FLG-RJNHKN
+                       WHEN    "3"
+                           MOVE    3           TO  FLG-RJNHKN
+                   END-EVALUATE
+           END-EVALUATE
+      *---(04.02.00) LINE ADD END   ------------------------------------
       *    老人公費（保険より公費の割合を優先する）
            PERFORM VARYING    IDX-K    FROM    1   BY  1
                    UNTIL      IDX-K    >   3
