@@ -516,6 +516,13 @@
       *****************************************************************
        240-SURYOU-HENSYU-SEC       SECTION.
       *
+      *    泔管﹜公及職箋恔﹜迕芊動陸反質咥�握惜�
+           IF    ( WRK-SRYCD(1:1)  NOT =   "6"   ) AND
+                 ( WRK-SRYCD(1:3)  NOT =   "059" ) AND
+                 ( WRK-SRYCD(1:3)  NOT =   "001" )
+               GO  TO  240-SURYOU-HENSYU-EXT
+           END-IF
+      *
            MOVE    SPACE           TO  WRK-HENNAIYO
       *
            MOVE    WRK-SRYSURYO(CNT-SRY)   TO  WRK-SURYO
