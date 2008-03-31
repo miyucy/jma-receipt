@@ -35,6 +35,9 @@ R03	{
 		DATAKBN3	{
 			value	bool;
 		};
+		DATAKBN5	{
+			value	bool;
+		};
 		DATAKBN32	{
 			value	bool;
 		};

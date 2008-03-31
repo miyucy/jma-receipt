@@ -21,6 +21,8 @@
                 04  R03-VALUE   PIC X.
               03  R03-DATAKBN3.
                 04  R03-VALUE   PIC X.
+              03  R03-DATAKBN5.
+                04  R03-VALUE   PIC X.
               03  R03-DATAKBN32.
                 04  R03-VALUE   PIC X.
               03  R03-DATAKBN11.
