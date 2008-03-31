@@ -4796,7 +4796,7 @@
       <name>RECESKYKBN_CMB</name>
       <x>680</x>
       <y>232</y>
-      <width>220</width>
+      <width>280</width>
       <height>24</height>
       <value_in_list>False</value_in_list>
       <ok_if_empty>True</ok_if_empty>
@@ -4824,8 +4824,8 @@
 	</signal>
 	<editable>True</editable>
 	<text_visible>True</text_visible>
-	<text_max_length>24</text_max_length>
-	<text></text>
+	<text_max_length>36</text_max_length>
+	<text>1 国保又は広域連合との併用に限り印刷</text>
 	<input_mode>XIM</input_mode>
 	<xim_enabled>False</xim_enabled>
       </widget>

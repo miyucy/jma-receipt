@@ -161,6 +161,8 @@
                                    BY         //SPA-RECE07//.
            03  SPA-RECE07-SRYKA-KOKUHO
                                    PIC X(02).
+           03  SPA-RECE07-SRYKA-KOUIKI
+                                   PIC X(02).
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -3177,7 +3179,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    WRK-ACCT-PTID   TO  RECE10-PTID
            IF      SPA-R01-RECEKBN =   "0"
                MOVE    1               TO  RECE10-TEISYUTUSAKI
-               MOVE    2               TO  RECE10-XXTEISYUTUSAKI 
+               MOVE    2               TO  RECE10-XXTEISYUTUSAKI
            ELSE
                MOVE    5               TO  RECE10-TEISYUTUSAKI
                MOVE    5               TO  RECE10-XXTEISYUTUSAKI 
@@ -3192,6 +3194,27 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                MOVE    "1002"          TO  SPA-ERRCD
                GO  TO  4801-DBDELETE-SYORI-EXT
            END-IF
+      *
+           IF      SPA-R01-RECEKBN =   "0"
+               INITIALIZE                  RECE10-REC
+               MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
+               MOVE    WRK-ACCT-SRYYM  TO  RECE10-SRYYM
+               MOVE    WRK-ACCT-NYUGAIKBN
+                                       TO  RECE10-NYUGAIKBN
+               MOVE    WRK-ACCT-PTID   TO  RECE10-PTID
+               MOVE    6               TO  RECE10-TEISYUTUSAKI
+               MOVE    6               TO  RECE10-XXTEISYUTUSAKI
+               MOVE    RECE10-REC      TO  MCPDATA-REC
+               MOVE    "tbl_seikyu"    TO  MCP-TABLE
+               MOVE    "del7"          TO  MCP-PATHNAME
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC      NOT =   ZERO
+                   DISPLAY "SEIKYU KEY=" RECE10-KEY
+                   MOVE    "1002"          TO  SPA-ERRCD
+                   GO  TO  4801-DBDELETE-SYORI-EXT
+               END-IF
+           END-IF     
       *
            IF      SPA-R01-RECEKBN     =   "0"
       *        公費請求書削除
@@ -3502,9 +3525,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                                                SPA-RECE07-SRYKA-KOKUHO
       *
       *        一括作成のとき主科設定の有無チェック
-      **       IF    ( SPA-R01-FILEKBN         =   "1"         )
-      **       AND   ( SPA-R01-RECEKBN         =   "0" OR  "1" )
-      **       AND   ( SPA-SYUKA-KBN           =   "1"         )
                IF    ( SPA-SYUKA-KBN           =   "1"         )
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key11"             TO  WRK-MCP-PATHNAME
@@ -3522,6 +3542,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    IF      FLG-RECE07          =   ZERO
                        MOVE    RECE07-SRYKA    TO
                                                SPA-RECE07-SRYKA-KOKUHO
+                   END-IF
+                   MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+                   MOVE    "key11"             TO  WRK-MCP-PATHNAME
+                   MOVE    "6"                 TO  RECE07-TEISYUTUSAKI
+                   MOVE    RECE07-REC          TO  MCPDATA-REC
+                   PERFORM 900-RECE07-INV-SEC
+                   IF      FLG-RECE07          =   ZERO
+                       MOVE    RECE07-SRYKA    TO
+                                               SPA-RECE07-SRYKA-KOUIKI
                    END-IF
                END-IF  
            END-IF
@@ -3857,6 +3886,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                        =   SPACE
                MOVE    ZERO            TO  SYS-200501-JIBAIPRTKBN-N
            END-IF
+           IF      SYS-200501-KOUIKIRECEKBN
+                                       =   SPACE
+               MOVE    ZERO            TO  SYS-200501-KOUIKIRECEKBN
+           END-IF
       *
            MOVE    SPACE           TO  SHELLTBL
            EVALUATE    SPA-R01-RECEKBN
@@ -3970,6 +4003,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                                                    TO  SHELLTBL-ARG17
                    END-IF
            END-EVALUATE
+           IF      SYS-200501-KOUIKIRECEKBN
+                                   =   ZERO
+               MOVE    "0"             TO  SHELLTBL-ARG18
+           ELSE
+               MOVE    SYS-200501-KOUIKIRECEKBN
+                                       TO  SHELLTBL-ARG18
+           END-IF
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
@@ -5208,7 +5248,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
                                    OR      FLG-SEIKYU-UMU  =   1
                EVALUATE    SPA-R01-RECEKBN
                    WHEN    "0"
-                       IF      RECE10-TEISYUTUSAKI =   1   OR  2
+                       IF      RECE10-TEISYUTUSAKI =   1   OR  2   OR  6
                            MOVE    1               TO  FLG-SEIKYU-UMU
                        END-IF
                    WHEN    "6"

@@ -1554,6 +1554,14 @@ R02	{
 			count	int;
 			item	varchar(31)[10];
 		};
+		PRTJYUN2_COMBO	{
+			state	int;
+			PRTJYUN2	{
+				value	varchar(31);
+			};
+			count	int;
+			item	varchar(31)[10];
+		};
 		PREFKBN_COMBO	{
 			state	int;
 			PREFKBN	{
@@ -1582,6 +1590,9 @@ R02	{
 		};
 		LABEL2	{
 			label	varchar(6);
+		};
+		LABEL3	{
+			label	varchar(8);
 		};
 	};
 };

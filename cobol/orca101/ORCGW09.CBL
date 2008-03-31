@@ -37,6 +37,8 @@
       * 03.05.00     NACL-Â¿¡¹Ç¼  07/05/02  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *
       *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
+      *
+      *  04.02.01    NACL-Æ£¸¶    08/03/26  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -66,7 +68,7 @@
                    07  SPA-GMN-STYUKYMD       PIC X(09).
                    07  SPA-GMN-EDYUKYMD       PIC X(09).
                    07  SPA-GMN-PRTJYUNI       PIC X(03).
-                   07  SPA-GMN-TEISYUTUSAKILST    OCCURS  5.
+                   07  SPA-GMN-TEISYUTUSAKILST    OCCURS  10.
                        09  SPA-GMN-TEISYUTUSAKIL  PIC X(01).
                        09  SPA-GMN-F1L            PIC X(01).
                        09  SPA-GMN-TEISYUTUSAKIMEIL
@@ -384,7 +386,9 @@
            MOVE    "ÊÝ¸±²ñ¼Ò"          TO  SPA-GMN-TEISYUTUSAKIMEIL(4)
            MOVE    "5"                 TO  SPA-GMN-TEISYUTUSAKIL   (5)
            MOVE    "¸ø³²"              TO  SPA-GMN-TEISYUTUSAKIMEIL(5)
-           MOVE    5                   TO  SPA-GMN-TEISYUTUSAKI-MAX 
+           MOVE    "6"                 TO  SPA-GMN-TEISYUTUSAKIL   (6)
+           MOVE    "¹­°èÏ¢¹ç"          TO  SPA-GMN-TEISYUTUSAKIMEIL(6)
+           MOVE    6                   TO  SPA-GMN-TEISYUTUSAKI-MAX 
       *
            MOVE    "1"                 TO  SPA-GMN-NYUGAIKBNL   (1) 
            MOVE    "Æþ±¡"              TO  SPA-GMN-NYUGAIKBNMEIL(1)

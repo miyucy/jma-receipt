@@ -94,6 +94,8 @@
       *                                     ¡ÊÊ¿À®£±£¹Ç¯£´·î²þÀµÍÍ¼°¡Ë
       *
       *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
+      *
+      *  04.02.01    NACL-Æ£¸¶    08/03/25  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -157,6 +159,7 @@
                        09  SPA-DATAKBN1-VALUE      PIC X(01).
                        09  SPA-DATAKBN2-VALUE      PIC X(01).
                        09  SPA-DATAKBN3-VALUE      PIC X(01).
+                       09  SPA-DATAKBN5-VALUE      PIC X(01).
                        09  SPA-DATAKBN4-VALUE      PIC X(01).
                        09  SPA-DATAKBN11-VALUE     PIC X(01).
                        09  SPA-DATAKBN21-VALUE     PIC X(01).
@@ -523,6 +526,7 @@
            MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN3-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN4-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN5-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN11-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
@@ -559,6 +563,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2001-HOSPNUM
                        MOVE    "T"             TO  SPA-DATAKBN2-VALUE
                    WHEN    "1"             ALSO    "2"             
                        MOVE    "T"             TO  SPA-DATAKBN3-VALUE
+                   WHEN    "1"             ALSO    "7"             
+                       MOVE    "T"             TO  SPA-DATAKBN5-VALUE
                    WHEN    "1"             ALSO    "3"             
                        MOVE    "T"             TO  SPA-DATAKBN11-VALUE
                    WHEN    "1"             ALSO    "4"             
@@ -728,6 +734,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN3-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN4-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN5-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN11-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
@@ -745,6 +752,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                    MOVE    "T"             TO  SPA-DATAKBN2-VALUE
                WHEN    "1"             ALSO    "2"             
                    MOVE    "T"             TO  SPA-DATAKBN3-VALUE
+               WHEN    "1"             ALSO    "7"             
+                   MOVE    "T"             TO  SPA-DATAKBN5-VALUE
                WHEN    "1"             ALSO    "3"             
                    MOVE    "T"             TO  SPA-DATAKBN11-VALUE
                WHEN    "1"             ALSO    "4"             
@@ -849,6 +858,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                    MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN3-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN4-VALUE
+                   MOVE    "F"                 TO  SPA-DATAKBN5-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN11-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
                    MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
@@ -880,6 +890,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                WHEN    "CLICKED"       ALSO    "DATAKBN2"
                WHEN    "CLICKED"       ALSO    "DATAKBN3"
                WHEN    "CLICKED"       ALSO    "DATAKBN4"
+               WHEN    "CLICKED"       ALSO    "DATAKBN5"
                WHEN    "CLICKED"       ALSO    "DATAKBN31"
                WHEN    "CLICKED"       ALSO    "DATAKBN32"
                WHEN    "CLICKED"       ALSO    "DATAKBN11"
@@ -1077,6 +1088,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    R03-DATAKBN3  TO  SPA-DATAKBN3-VALUE
                WHEN    "CLICKED"       ALSO    "DATAKBN4"
                    MOVE    R03-DATAKBN4  TO  SPA-DATAKBN4-VALUE
+               WHEN    "CLICKED"       ALSO    "DATAKBN5"
+                   MOVE    R03-DATAKBN5  TO  SPA-DATAKBN5-VALUE
                WHEN    "CLICKED"       ALSO    "DATAKBN31"
                    MOVE    R03-DATAKBN31 TO  SPA-DATAKBN31-VALUE
                WHEN    "CLICKED"       ALSO    "DATAKBN32"
@@ -1130,6 +1143,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN3-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN4-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN5-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN11-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
@@ -1155,6 +1169,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "F"                 TO  SPA-DATAKBN2-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN3-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN4-VALUE
+           MOVE    "F"                 TO  SPA-DATAKBN5-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN11-VALUE
            MOVE    "T"                 TO  SPA-DATAKBN21-VALUE
            MOVE    "F"                 TO  SPA-DATAKBN22-VALUE
@@ -1647,7 +1662,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            INITIALIZE                  RECE07-REC
 grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
-           IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2"
+           IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2" OR  "7"
                MOVE    "HC06"              TO  RECE07-PRTID
            ELSE
                IF      SPA-R01-RECEKBN     =   "3"
@@ -1985,12 +2000,17 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                        MOVE    ZERO            TO
                                                SYS-200501-JIBAIPRTKBN-N
                    END-IF
+                   IF      SYS-200501-KOUIKIRECEKBN
+                                               =   SPACE
+                       MOVE    ZERO        TO  SYS-200501-KOUIKIRECEKBN
+                   END-IF
       *
                    MOVE    SPACE           TO  SHELLTBL
                    EVALUATE    SPA-R01-RECEKBN
                        WHEN    "0"
                        WHEN    "1"
                        WHEN    "2"
+                       WHEN    "7"
                            IF      SPA-GMN-NYUGAIKBN   =   "1"
                                MOVE    "recept9.sh"
                                                    TO  WRK-SHELL-SHELL
@@ -2098,6 +2118,13 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                                                    TO  SHELLTBL-ARG17
                            END-IF
                    END-EVALUATE
+                   IF      SYS-200501-KOUIKIRECEKBN
+                                           =   ZERO
+                       MOVE    "0"             TO  SHELLTBL-ARG18
+                   ELSE
+                       MOVE    SYS-200501-KOUIKIRECEKBN
+                                               TO  SHELLTBL-ARG18
+                   END-IF
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
@@ -2126,6 +2153,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "R01"               TO  SPA-SAKIPG
                ELSE
                    IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2"
+                                                       OR  "7"
                        MOVE    "R02"               TO  SPA-SAKIPG
                    ELSE
                        MOVE    "R04"               TO  SPA-SAKIPG
@@ -2133,6 +2161,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                END-IF 
            ELSE
                IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2"
+                                                   OR  "7"
                    MOVE    "R02"               TO  SPA-SAKIPG
                ELSE
                    MOVE    "R04"               TO  SPA-SAKIPG
@@ -2165,6 +2194,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "1"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN3-VALUE  =   "T"
                    MOVE    "2"                 TO  SPA-R01-RECEKBN
+               WHEN    SPA-DATAKBN5-VALUE  =   "T"
+                   MOVE    "7"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN11-VALUE =   "T"
                    MOVE    "3"                 TO  SPA-R01-RECEKBN
                WHEN    SPA-DATAKBN31-VALUE =   "T"
@@ -2512,6 +2543,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-DATAKBN2-VALUE     TO  R03-DATAKBN2
            MOVE    SPA-DATAKBN3-VALUE     TO  R03-DATAKBN3
            MOVE    SPA-DATAKBN4-VALUE     TO  R03-DATAKBN4
+           MOVE    SPA-DATAKBN5-VALUE     TO  R03-DATAKBN5
            MOVE    SPA-DATAKBN11-VALUE    TO  R03-DATAKBN11
            MOVE    SPA-DATAKBN31-VALUE    TO  R03-DATAKBN31
            MOVE    SPA-DATAKBN32-VALUE    TO  R03-DATAKBN32

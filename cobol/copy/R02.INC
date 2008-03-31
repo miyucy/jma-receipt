@@ -64,6 +64,12 @@
                   06  R02-VALUE   PIC X(31).
                 05  R02-PRTJYUN1-COUNT   PIC S9(9)   BINARY.
                 05  R02-PRTJYUN1LST  PIC X(31)   OCCURS  10 TIMES.
+              04  R02-PRTJYUN2-COMBO.
+                05  R02-PRTJYUN2-STATE   PIC S9(09) BINARY.
+                05  R02-PRTJYUN2.
+                  06  R02-VALUE   PIC X(31).
+                05  R02-PRTJYUN2-COUNT   PIC S9(9)   BINARY.
+                05  R02-PRTJYUN2LST  PIC X(31)   OCCURS  10 TIMES.
               04  R02-PREFKBN-COMBO.
                 05  R02-PREFKBN-STATE   PIC S9(09) BINARY.
                 05  R02-PREFKBN.
@@ -83,3 +89,4 @@
                 05  R02-SYUKALST  PIC X(21)   OCCURS  50 TIMES.
               04  R02-LABEL1       PIC X(06).
               04  R02-LABEL2       PIC X(06).
+              04  R02-LABEL3       PIC X(08).

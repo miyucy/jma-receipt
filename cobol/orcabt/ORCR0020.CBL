@@ -177,6 +177,9 @@
       *
       *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.02.02    NACL-ÌçÏÆ    08/03/24  ºß°åÁí´É¤Î¿ÇÎÅ¹Ô°Ù¥³¡¼¥ÉÄÉ²Ã
+      *  04.02.03    NACL-Æ£¸¶    08/03/25  ¹­°èÏ¢¹çÂÐ±þ
+      *                                     Ãæ¹ñ»ÄÎ±Ë¡¿ÍÅù
+      *                                     ¥ì¥»¥×¥È¼ïÊÌ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -392,7 +395,6 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-PARA.
-      *********05  WRK-PARA-PREFNUM                    PIC  X(02). 
                05  WRK-PARA-SRYYM                      PIC  X(06).
                05  WRK-PARA-TERMID                     PIC  X(16).
                05  WRK-PARA-SYSYMD                     PIC  X(08).
@@ -504,6 +506,10 @@
            03  WRK-CONS-SEIHO-HKNNUM
                                    PIC X(03)   VALUE   "012". 
       *    
+      *    Ãæ¹ñ»ÄÎ±Ë®¿ÍÅùÊÝ¸±ÈÖ¹æ 
+           03  WRK-CONS-ZANRYUU-HKNNUM
+                                   PIC X(03)   VALUE   "025". 
+      *    
       *    ¼«ÈñÊÝ¸±ÈÖ¹æ 
            03  WRK-CONS-JIHI-HKNNUM
                                    PIC X(03)   VALUE   "980". 
@@ -513,7 +519,10 @@
                                    PIC X(03)   VALUE   "971". 
       *    ¼«ÇåÀÕÊÝ¸±ÈÖ¹æ 
            03  WRK-CONS-JIBAI-HKNNUM
-                                    PIC X(03)   VALUE   "973".       
+                                   PIC X(03)   VALUE   "973".       
+      *    ¸ø³²ÊÝ¸±ÈÖ¹æ 
+           03  WRK-CONS-KOUGAI-HKNNUM
+                                   PIC X(03)   VALUE   "975". 
       *    
       *    ¸ÇÄêÃ¼Ëö£É£Ä
            03  WRK-CONS-TERMID     PIC X(32)   VALUE
@@ -715,7 +724,7 @@
            END-IF 
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    ½é´ü½èÍý
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -919,12 +928,18 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                            IF      RECE01-HKNNUM   NOT =
                                                        "060" AND "067"
                                                    AND "068" AND "069"    
+                                                   AND "039" AND "040"    
                                PERFORM 210-HENSYU-SEC
                            END-IF
                        WHEN    "2"
                            IF      RECE01-HKNNUM       =
                                                        "060" OR  "067"
                                                    OR  "068" OR  "069"
+                               PERFORM 210-HENSYU-SEC
+                           END-IF
+                       WHEN    "7"
+                           IF      RECE01-HKNNUM       =
+                                                       "039" OR  "040"
                                PERFORM 210-HENSYU-SEC
                            END-IF
                    END-EVALUATE
@@ -994,8 +1009,6 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                MOVE    RECE01-HKNJANUM      TO  RECE02-HKNJANUM-KEY
            END-IF
            MOVE    RECE01-HOJOKBN       TO  RECE02-HOJOKBN-KEY
-      *****MOVE    RECE01-TEKSTYMD      TO  RECE02-TEKSTYMD
-      *****MOVE    RECE01-TEKSTYMDX     TO  RECE02-TEKSTYMD
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       10
                    OR      RECE01-TEKSTYMDX (IDX)  =   SPACE
@@ -1034,7 +1047,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                             "068"   OR    "069"
                MOVE    2                TO  RECE02-TEISYUTUSAKI
            ELSE
-               MOVE    1                TO  RECE02-TEISYUTUSAKI
+               IF      RECE01-HKNNUM        =   "039"   OR    "040"
+                   MOVE    6                TO  RECE02-TEISYUTUSAKI
+               ELSE
+                   MOVE    1                TO  RECE02-TEISYUTUSAKI
+               END-IF
            END-IF
       *    ´µ¼Ô¾ðÊó¤Î¼èÆÀ
            MOVE    RECE01-KANANAME     TO  RECE02-KANANAME
@@ -1045,6 +1062,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            MOVE    RECE01-TSTPTNUMKBN  TO  RECE02-TSTPTNUMKBN
            MOVE    RECE01-AGE          TO  WRK-NENREI
                                            RECE02-AGE
+           MOVE    RECE01-SYUGAKUKBN   TO  RECE02-SYUGAKUKBN
       *    µìÀ«ÍúÎò¤Î¼èÆÀ¡Ê·îÅÓÃæ¤ÇÊÝ¸±ÊÑ¹¹¤¬¤¢¤ë¤È¤­¡Ë
            IF    ( RECE01-TEISEIKBN    NOT =   "1"   )
            AND   ( RECE02-TEKSTYMD-X   NOT =   SPACE )
@@ -1103,8 +1121,9 @@ grpsys         MOVE   RECE02-HOSPNUM   TO  HKN-HOSPNUM
                MOVE    RECE01-CERTNUM       TO  RECE02-CERTNUM
            END-IF
       *    ´µ¼Ô¸øÈñ¾ðÊó¥Æ¡¼¥Ö¥ë¤«¤éÏ·¿ÍÊÝ¸±¾ðÊó¤Î¼èÆÀ
-           IF    ( RECE01-KOHHKNNUM-O (1)  =   "027" )
-           OR    ( RECE01-KOHID            >   ZERO  )
+           IF      RECE01-SRYYM            <   WRK-CONS-SRYYM-200804
+             IF    ( RECE01-KOHHKNNUM-O (1)  =   "027" )
+             OR    ( RECE01-KOHID            >   ZERO  )
                INITIALIZE                      PTKOHINF-REC
 grpsys         MOVE    RECE01-HOSPNUM      TO  PTKOH-HOSPNUM
                MOVE    RECE01-PTID         TO  PTKOH-PTID
@@ -1159,7 +1178,8 @@ grpsys                 MOVE   RECE01-HOSPNUM   TO  HKN-HOSPNUM
                MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
-           END-IF
+             END-IF
+           END-IF  
       *
       *    Ä¹´ü¹â³ÛÎÅÍÜÈñ¤ÎÊÔ½¸
            MOVE    SPACE              TO   WRK-CHOKI
@@ -1215,8 +1235,6 @@ grpsys           PERFORM 900-DBSELECT-SEC
            PERFORM   VARYING   IDX    FROM   1   BY   1
                      UNTIL    (IDX          >     4)
                      OR       (RECE01-KOHID-O(IDX)  =   ZERO)  
-      ******** IF  (RECE01-KOHHKNNUM-O (IDX)  =       "027")  OR
-      ********     (RECE01-KOHHKNNUM-O (IDX)  =   WRK-CHOKI)
                IF  (RECE01-KOHHKNNUM-O (IDX)  =       "027")
                      CONTINUE
                ELSE
@@ -1286,10 +1304,6 @@ grpsys           PERFORM 900-DBSELECT-SEC
       *    Ï·ÊÝ¤ÎÊÔ½¸
            MOVE    ZERO       TO     FLG-ROUJINHOKEN
            IF      RECE02-HKNNUM        =   SPACE
-      ***  AND     RECE02-KOHHBTNUM (1)   NOT =  SPACE
-      ***  AND     RECE02-KOHHBTNUM (2) =   SPACE
-      ***  AND     RECE02-KOHHBTNUM (3) =   SPACE
-      ***  AND     RECE02-KOHHBTNUM (4) =   SPACE
                IF  (   RECE01-SRYYM         >=  "200210"            )
                AND ((  RECE02-AGE           >=  75             ) OR 
                     (( RECE02-BIRTHDAY      <=  19320930 ) AND
@@ -1300,7 +1314,11 @@ grpsys           PERFORM 900-DBSELECT-SEC
                    INITIALIZE                       PTKOHINF-REC
 grpsys             MOVE    RECE01-HOSPNUM       TO  PTKOH-HOSPNUM
                    MOVE    RECE01-PTID          TO  PTKOH-PTID
-                   MOVE    "027"                TO  PTKOH-KOHNUM
+                   IF      RECE01-SRYYM     <   WRK-CONS-SRYYM-200804
+                       MOVE    "027"                TO  PTKOH-KOHNUM
+                   ELSE
+                       MOVE    "968"                TO  PTKOH-KOHNUM
+                   END-IF 
                    MOVE    PTKOHINF-REC         TO  MCPDATA-REC
                    MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                    MOVE    "key4"               TO  MCP-PATHNAME
@@ -1393,7 +1411,6 @@ grpsys             PERFORM 900-DBSELECT-SEC
       *    ¼ç²ÊÀßÄê
            IF    ( IDZ                 =   1      )
            AND   ( SYS-2009-SYUKA-KBN  =   "1"    )
-      *****AND   ( RECE02-TEISYUTUSAKI =   "1"    )
            AND   ( RECE02-RECESYUBETU  
                                    NOT =   "8888" )
              IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
@@ -1668,7 +1685,8 @@ grpsys             MOVE   RECE01-HOSPNUM   TO  HKN-HOSPNUM
                                        RECE02-HON-GAIMJGNCNT   (IDX2)
                    END-IF
       *             
-      *            À¸ÊÝ¤Î¤È¤­·îÂå¤ï¤ê¼õµë¼ÔÈÖ¹æ¥Þ¥¹¥¿¤è¤ê¼õµë¼ÔÈÖ¹æ¤ò¥»¥Ã¥È 
+      *            À¸ÊÝËô¤ÏÃæ¹ñ»ÄÎ±Ë®¿ÍÅù¤Î¤È¤­·îÂå¤ï¤ê¼õµë¼ÔÈÖ¹æ¥Þ¥¹¥¿
+      *            ¤è¤ê¼õµë¼ÔÈÖ¹æ¤ò¥»¥Ã¥È 
                    IF      PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM
 grpsys                 MOVE    RECE02-HOSPNUM  TO  MONTHLYNUM-HOSPNUM
                        MOVE    RECE02-PTID     TO  MONTHLYNUM-PTID
@@ -1707,8 +1725,33 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                            END-IF
                        END-IF    
                    ELSE                       
-                       MOVE   PTKOH-JKYSNUM
+                       IF      PTKOH-KOHNUM    =
+                                           WRK-CONS-ZANRYUU-HKNNUM
+                           MOVE    RECE02-HOSPNUM
+                                               TO  MONTHLYNUM-HOSPNUM
+                           MOVE    RECE02-PTID TO  MONTHLYNUM-PTID
+                           MOVE    PTKOH-KOHID TO  MONTHLYNUM-KOHID
+                           MOVE    RECE02-SRYYM
+                                               TO  MONTHLYNUM-SRYYM
+                           MOVE    RECE02-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
+                           MOVE    MONTHLYNUM-REC
+                                               TO  MCPDATA-REC
+                           MOVE    "tbl_monthlynum"
+                                               TO  WRK-MCP-TABLE
+                           MOVE    "key4"      TO  WRK-MCP-PATHNAME
+                           PERFORM 910-MONTHLYNUM-READ-SEC
+                           IF    ( FLG-MONTHLYNUM  =   ZERO  )
+                               MOVE    MONTHLYNUM-JKYSNUM 
                                            TO  RECE02-KOHJKYSNUM (IDX2)
+                           ELSE                       
+                               MOVE   PTKOH-JKYSNUM
+                                           TO  RECE02-KOHJKYSNUM (IDX2)
+                           END-IF
+                       ELSE    
+                           MOVE   PTKOH-JKYSNUM
+                                           TO  RECE02-KOHJKYSNUM (IDX2)
+                       END-IF
                    END-IF    
                ELSE
                    DISPLAY  "PTKOHINF FETCH ERR"  
@@ -1767,18 +1810,24 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                GO  TO  RECESYUBETU-SET-EXT
            END-IF
       *         
-           IF     (RECE02-HKNNUM        NOT =   SPACE)   AND
+           IF     (RECE02-HKNNUM    NOT =   SPACE)   AND
                   (WRK-JIHI-FLG         =   SPACE)
-               IF      RECE02-HKNNUM    =   "060"   OR   "067"   OR
-                                            "068"   OR   "069"
-                   IF   RECE02-HKNNUM   =   "060"   OR   "068"
-                        MOVE   "1"      TO  WK-KOKUHO
-                   ELSE
-                        MOVE   "2"      TO  WK-KOKUHO
-                   END-IF
-               ELSE
-                   MOVE    "1"          TO  WK-IHO
-               END-IF
+               EVALUATE    RECE02-HKNNUM
+                   WHEN    "060"
+                   WHEN    "067"
+                   WHEN    "068"
+                   WHEN    "069"
+                       IF      RECE02-HKNNUM   =   "060"   OR   "068"
+                           MOVE   "1"      TO  WK-KOKUHO
+                       ELSE
+                           MOVE   "2"      TO  WK-KOKUHO
+                       END-IF
+                   WHEN    "039"
+                   WHEN    "040"
+                       MOVE   "3"          TO  WK-KOKUHO
+                   WHEN    OTHER
+                       MOVE    "1"         TO  WK-IHO
+               END-EVALUATE
            END-IF
       *
            IF      RECE02-SRYYM     <      "200210" 
@@ -1844,20 +1893,99 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                                MOVE   "3"     TO   WK-HONKZKKBN
                    END-IF
                END-IF
-      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *    Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
                IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM-200804
                    IF      RECE01-SYUGAKUKBN   =   1
                        MOVE   "3"          TO  WK-HONKZKKBN
                    END-IF
                END-IF
            END-IF
-      *¡ú¡ú
       *
       *    £±³ä¡¢£²³äÉéÃ´¤Î¹âÎð¼Ô¤Î¾ì¹ç£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë
       *    "£¹"¤Þ¤¿¤Ï"£¸"¤ò¥»¥Ã¥È
       *    Ï·¿ÍÊÝ¸±¤Î¾ì¹ç¤Ï£×£Ë¡Ý£Ò£Ê£Î¤Ë¥»¥Ã¥È¤¹¤ë
            IF  RECE02-HKNID             NOT =   ZERO
                EVALUATE    TRUE
+                   WHEN    RECE02-SRYYM     >=  WRK-CONS-SRYYM-200804
+                     EVALUATE    RECE02-HKNNUM
+                       WHEN    "002" 
+                           EVALUATE   RECE02-HOJOKBN
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "031"  THRU    "034"  
+                           EVALUATE   RECE02-HOJOKBN
+                               WHEN   "B"
+                               WHEN   "9"   
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "060" 
+                       WHEN    "068" 
+                           IF     (WRK-NENREI  >=   70)  AND
+                                  (WRK-NENREI  <=   74)
+                               EVALUATE   RECE02-HOJOKBN
+                                   WHEN   "1"
+                                   WHEN   "4"
+                                       MOVE   "9"   TO   WK-HONKZKKBN
+                                   WHEN   "2"
+                                   WHEN   "5"
+                                       MOVE   "8"   TO   WK-HONKZKKBN
+                                   WHEN   "3"
+                                   WHEN   "6"
+                                       MOVE   "7"   TO   WK-HONKZKKBN
+                               END-EVALUATE
+                           END-IF     
+                       WHEN    "039" 
+                       WHEN    "040" 
+                           EVALUATE   RECE02-HOJOKBN
+                               WHEN   "1"
+                                   MOVE   "9"   TO   WK-RJN
+                               WHEN   "3"
+                                   MOVE   "7"   TO   WK-RJN
+                           END-EVALUATE
+                       WHEN    "067" 
+                       WHEN    "069" 
+                           IF      WRK-NENREI  >=   65
+                               MOVE   "?"   TO   WK-HONKZKKBN
+                           ELSE
+                               EVALUATE   RECE02-HOJOKBN
+                                   WHEN   "9"
+                                       MOVE   "9"   TO   WK-HONKZKKBN
+                                   WHEN   "8"
+                                       MOVE   "?"   TO   WK-HONKZKKBN
+                                   WHEN   "7"
+                                       MOVE   "7"   TO   WK-HONKZKKBN
+                               END-EVALUATE
+                           END-IF
+                       WHEN    OTHER 
+                           EVALUATE   RECE02-HOJOKBN
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                     END-EVALUATE
                    WHEN    RECE02-SRYYM     >   WRK-CONS-SRYYM-200609
                      EVALUATE    RECE02-HKNNUM
                        WHEN    "002" 
@@ -1991,23 +2119,6 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                END-IF
            END-IF
       *
-      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
-           IF      RECE02-HKNNUM       =   "040"   OR  "039"
-               MOVE    "?"                 TO  WK-IHO
-           END-IF
-           IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM-200804
-               IF      RECE02-RJNHKNNUM    =   "027"
-                   MOVE    "?"                 TO  WK-RJN
-               END-IF
-               IF      WRK-NENREI          <   3
-                   CONTINUE
-               ELSE
-                   IF      RECE01-SYUGAKUKBN   =   1
-                       MOVE   "?"              TO   WK-HONKZKKBN
-                   END-IF
-               END-IF
-           END-IF
-      *¡ú¡ú
       *          
       *----(01.00.13) LINE ADD END   --------------------------
       *
@@ -2192,6 +2303,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
       *Ê¿À®£±£¸Ç¯£±£°·î²þÀµÂÐ±þ
       *    ¼çÊÝ¸±¾ðÊó¤ÎÊä½õ¶èÊ¬¤«¤é´µ¼Ô¤ÎÉéÃ´³ä¹ç¤òºÆ¥»¥Ã¥È
            IF    ( RECE02-SRYYM    >   WRK-CONS-SRYYM-200609 )
+           AND   ( RECE02-SRYYM    <   WRK-CONS-SRYYM-200804 ) 
                EVALUATE    RECE02-HKNNUM
                    WHEN    "060"
                    WHEN    "068"
@@ -2293,7 +2405,107 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                    END-EVALUATE
                END-IF
            END-IF
-      *----(01.00.14) LINE ADD START --------------------------
+      *
+      *Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *    ¼çÊÝ¸±¾ðÊó¤ÎÊä½õ¶èÊ¬¤«¤é´µ¼Ô¤ÎÉéÃ´³ä¹ç¤òºÆ¥»¥Ã¥È
+           IF    ( RECE02-SRYYM    >=  WRK-CONS-SRYYM-200804 ) 
+               EVALUATE    RECE02-HKNNUM
+                   WHEN    "060"
+                   WHEN    "068"
+                       IF       RECE01-SYUGAKUKBN    =   1
+                           EVALUATE   RECE02-HOJOKBN
+                              WHEN   "0"
+                                  MOVE   ZERO    TO   RECE02-KYURATE
+                              WHEN   "1"
+                                  MOVE   10      TO   RECE02-KYURATE
+                              WHEN   "4"
+                                  MOVE   10      TO   RECE02-KYURATE
+                              WHEN   OTHER
+                                  MOVE   20      TO   RECE02-KYURATE
+                           END-EVALUATE
+                       ELSE
+                           EVALUATE   RECE02-HOJOKBN
+                              WHEN   "0"
+                                  MOVE   ZERO      TO   RECE02-KYURATE
+                              WHEN   "1"
+                                  MOVE   10        TO   RECE02-KYURATE
+                              WHEN   "2"
+                                  MOVE   20        TO   RECE02-KYURATE
+                              WHEN   "3"
+                                  MOVE   30        TO   RECE02-KYURATE
+                              WHEN   "4"
+                                  MOVE   10        TO   RECE02-KYURATE
+                              WHEN   "5"
+                                  MOVE   20        TO   RECE02-KYURATE
+                              WHEN   "6"
+                                  MOVE   30        TO   RECE02-KYURATE
+                              WHEN   "8"
+                                  MOVE   20        TO   RECE02-KYURATE
+                              WHEN   "9"
+                                  MOVE   10        TO   RECE02-KYURATE
+                           END-EVALUATE
+                       END-IF
+                   WHEN    "067"
+                   WHEN    "069"
+                       IF       RECE01-SYUGAKUKBN    =   1
+                           MOVE  20      TO    RECE02-KYURATE
+                       ELSE
+                           IF      RECE02-HOJOKBN      NOT =  SPACE
+                               EVALUATE   RECE02-HOJOKBN
+                                   WHEN   "7"
+                                       MOVE    30  TO  RECE02-KYURATE
+                                   WHEN   "8"
+                                       MOVE    20  TO  RECE02-KYURATE
+                                   WHEN   "9"
+                                       MOVE    10  TO  RECE02-KYURATE
+                               END-EVALUATE
+                           ELSE
+                               IF   RECE02-HKNJANUM = "67330753"
+                                 MOVE   20         TO  RECE02-KYURATE
+                               ELSE
+                                 IF RECE02-HONKZKKBN      =    "1"
+                                   MOVE   WRK-HKN-HON-GAIKFTNRATE
+                                                   TO  RECE02-KYURATE
+                                 ELSE
+                                   MOVE   WRK-HKN-KZK-GAIKFTNRATE
+                                                   TO  RECE02-KYURATE
+                                 END-IF
+                               END-IF
+                           END-IF
+                       END-IF
+                   WHEN    SPACE
+                       MOVE    ZERO            TO  RECE02-KYURATE
+                   WHEN    "039"
+                   WHEN    "040"
+                       EVALUATE   RECE02-HOJOKBN
+                           WHEN   "1"
+                               MOVE    10  TO  RECE02-KYURATE
+                           WHEN   "3"
+                               MOVE    20  TO  RECE02-KYURATE
+                       END-EVALUATE
+                   WHEN    OTHER
+                       IF       RECE01-SYUGAKUKBN    =   1
+                           MOVE    20          TO  RECE02-KYURATE
+                       ELSE
+                           IF      RECE02-HOJOKBN      =     SPACE
+                               IF      RECE02-HONKZKKBN    =     "1"
+                                   MOVE   WRK-HKN-HON-GAIKFTNRATE
+                                                   TO  RECE02-KYURATE
+                               ELSE
+                                   MOVE   WRK-HKN-KZK-GAIKFTNRATE
+                                                   TO  RECE02-KYURATE
+                               END-IF
+                           ELSE
+                               EVALUATE   RECE02-HOJOKBN
+                                   WHEN   "7"
+                                       MOVE    30  TO  RECE02-KYURATE
+                                   WHEN   "9"
+                                       MOVE    10  TO  RECE02-KYURATE
+                              END-EVALUATE
+                          END-IF
+                      END-IF
+               END-EVALUATE
+           END-IF
       *
       *    Á¥°÷ÊÝ¸±¡ÊÈïÊÝ¸±¼Ô¡Ë¡ÜÄÌ¶ÐºÒ³²¥Õ¥é¥°¥»¥Ã¥È
            IF    RECE02-HKNNUM           =    "002"
@@ -2383,7 +2595,9 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                  ( RECE02-AGE          >=  65  AND                    
                    RECE01-KOHID    NOT  =   ZERO   )   OR
                  ( RECE02-AGE          >=  65  AND                    
-                   FLG-ROUJINHOKEN      =   1      )
+                   FLG-ROUJINHOKEN      =   1      )   OR
+                 ( RECE02-AGE          >=  65  AND                    
+                   RECE02-HKNNUM        =  "039"   )
                MOVE   1    TO   FLG-GENBUTU70
            ELSE
              IF  RECE01-SRYYM    >=  "200704"
@@ -2520,7 +2734,6 @@ grpsys             PERFORM 900-DBSELECT-SEC
        230-RECE09-HENSYU-SEC                   SECTION.
       *
            IF      RECE01-HKNID             NOT =   ZERO
-      ***  AND     RECE01-HKNNUM            NOT =   WRK-CONS-JIHI-HKNNUM
            AND     RECE01-HKNNUM(1:2)       NOT =   "98"
            AND     RECE01-TEISEIKBN             =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1
@@ -2553,12 +2766,13 @@ grpsys             MOVE    RECE01-HOSPNUM       TO  RECE09-HOSPNUM
       * 
                    IF      RECE01-HKNNUM       =   "060"   OR  "067"
                                                OR  "068"   OR  "069"
-      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
-                   OR      RECE01-HKNNUM       =   "040"   OR  "039"
-      *¡ú¡ú
                        MOVE    2               TO  RECE09-TEISYUTUSAKI
                    ELSE
-                       MOVE    1               TO  RECE09-TEISYUTUSAKI
+                       IF      RECE01-HKNNUM   =   "040"   OR  "039"
+                           MOVE    6           TO  RECE09-TEISYUTUSAKI
+                       ELSE
+                           MOVE    1           TO  RECE09-TEISYUTUSAKI
+                       END-IF
                    END-IF
       *                                          
                    INITIALIZE                       PTHKNINF-REC
@@ -2721,7 +2935,8 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  COMB-HOSPNUM
                                            WRK-HKNCOMBI-REC  (IDX1)
                                IF      COMB-HKNNUM     =
                                            WRK-CONS-ROUSAI-HKNNUM OR
-                                           WRK-CONS-JIBAI-HKNNUM 
+                                           WRK-CONS-JIBAI-HKNNUM  OR
+                                           WRK-CONS-KOUGAI-HKNNUM 
                                    MOVE    "1"         TO
                                            WRK-HKNCOMBI-SYOKBN (IDX1)
                                END-IF
@@ -2791,7 +3006,8 @@ grpsys         MOVE    RECE02-HOSPNUM  TO  COMB-HOSPNUM
       *
                IF      FLG-HKNCOMBI    =   ZERO
                    IF      COMB-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM OR
-                                               WRK-CONS-JIBAI-HKNNUM
+                                               WRK-CONS-JIBAI-HKNNUM  OR
+                                               WRK-CONS-KOUGAI-HKNNUM
                        CONTINUE
                    ELSE    
                        PERFORM VARYING IDX FROM    1   BY  1

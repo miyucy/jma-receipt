@@ -338,6 +338,7 @@
       *                                       ¤Î¼«Æ°µ­ºÜÂÐ±þ¡Ë
       *  04.02.03    NACL-ÌçÏÆ    08/03/25  µÜ¾ë¸©ÆýÍÄ»ù¡¢ËÌ³¤Æ»Àº¿ÀÊä½õ¤Î
       *                                     ÊÑÂ§ÂÐ±þ½ªÎ»
+      *  04.02.04    NACL-Æ£¸¶    08/03/31  ¹­°èÏ¢¹ç£Ï£Ã£Ò½ÐÎÏ¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1306,6 +1307,7 @@
            COPY    "CPSK1006.INC".
       *    
            COPY    "CPSK2005.INC".     
+           COPY    "CPSK200501.INC".     
       *
       *    ´µ¼Ô¥³¥á¥ó¥È
        01  PTCOM-REC.
@@ -1554,6 +1556,26 @@ grpsys           PERFORM 900-DBSELECT-SEC
            IF      SYS-2005-KKHOCRKBN   =   SPACE
                MOVE    ZERO             TO  SYS-2005-KKHOCRKBN
            END-IF
+      *         
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "2005"           TO  SYS-KANRICD
+           MOVE    "01"             TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM   TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+           MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
+           PERFORM 960-KANRIMST-READ-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC      TO  SYS-200501-REC
+           ELSE    
+               INITIALIZE                   SYS-200501-REC
+           END-IF
+           IF      SYS-200501-KOUIKIOCRKBN
+                                    =   SPACE
+               MOVE    ZERO             TO  SYS-200501-KOUIKIOCRKBN
+           END-IF
       *
           .
        100-INIT-EXT.
@@ -1747,6 +1769,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                     ( SYS-2005-SYAOCRKBN    =   ZERO    OR  "2" )      )
                OR ( ( RECE02-TEISYUTUSAKI   =   2               )  AND
                     ( SYS-2005-KKHOCRKBN    =   "1"     OR  "3" )      )
+               OR ( ( RECE02-TEISYUTUSAKI   =   6               )  AND
+                    ( SYS-200501-KOUIKIOCRKBN
+                                            =   "1"     OR  "3" )      )
       *
       *            °åÎÅÊÝ¸±¡¦¸øÈñ¤Î¥Õ¥é¥°
                    MOVE    SPACE              TO  WRK-3SYU-KBN

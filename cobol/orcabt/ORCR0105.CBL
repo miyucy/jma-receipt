@@ -162,7 +162,7 @@
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-           COPY    "HCM10V02.INC"  REPLACING  //HCM10V02//
+           COPY    "HCM11.INC"  REPLACING  //HCM11//
                                    BY         //HC06//.
            COPY    "HCN061V03.INC" REPLACING  //HCN061V03//
                                    BY         //HC061//.
@@ -874,6 +874,7 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
            COPY    "CPSK2008.INC".
       *
@@ -1437,6 +1438,26 @@
                MOVE    "0"             TO  SYS-2005-NYUTAIINREKI-KSIKBN
            END-IF
       *         
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "2005"           TO  SYS-KANRICD
+           MOVE    "01"             TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM   TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+           MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+               MOVE    MCPDATA-REC      TO  SYS-200501-REC
+           ELSE    
+               INITIALIZE                   SYS-200501-REC
+           END-IF
+           IF      SYS-200501-KOUIKIOCRKBN
+                                    =   SPACE
+               MOVE    ZERO             TO  SYS-200501-KOUIKIOCRKBN
+           END-IF
+      *         
       *    レセプト編綴順情報
            MOVE    SPACE               TO  SYSKANRI-REC
            INITIALIZE                     SYSKANRI-REC
@@ -1498,6 +1519,12 @@
            AND   ( SYS-2009-SYUKA-KOKUHO
                                    =   SPACE )
                MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
+           END-IF
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOUIKI
+                                   =   SPACE )
+               MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
            END-IF
       * 
       *    県内扱い保険者情報
@@ -1908,7 +1935,7 @@
            EXIT.
       *
       *****************************************************************
-      *    主　　処理
+      *    主処理
       *****************************************************************
        2001-SYORI-SEC                SECTION.
       *
@@ -2062,10 +2089,6 @@
       *****************************************************************
        20022-KOHSKY-WRITE-SEC          SECTION.
       *
-      *★★平成２０年４月改正対応
-           GO  TO  20022-KOHSKY-WRITE-EXT
-      *★★
-      *
            MOVE    SPACE               TO  KOHSKY-REC
            INITIALIZE                      KOHSKY-REC
            MOVE    RECE02X-HOSPNUM     TO  KOHSKY-HOSPNUM
@@ -2153,7 +2176,6 @@
       *         MOVE    ZERO            TO  KOHSKY-KYURATE
       *****END-IF             
            MOVE    RECE02X-KYURATE     TO  KOHSKY-KYURATE
-           MOVE    RECE02X-RJNHKN      TO  KOHSKY-RJNHKN
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
                MOVE    RECE02X-KOHID       (IDX) 
@@ -2265,6 +2287,9 @@
                     ( SYS-2005-SYAOCRKBN    =   ZERO    OR  "2" )      )
                OR ( ( RECE02-TEISYUTUSAKI   =   2               )  AND
                     ( SYS-2005-KKHOCRKBN    =   "1"     OR  "3" )      )
+               OR ( ( RECE02-TEISYUTUSAKI   =   6               )  AND
+                    ( SYS-200501-KOUIKIOCRKBN
+                                            =   "1"     OR  "3" )      )
                    MOVE    RECE02-OCR1            TO  OCR1-AREA
                    MOVE    RECE02-OCR2            TO  OCR2-AREA
                    MOVE    RECE02-OCR3            TO  OCR3-AREA
@@ -2282,8 +2307,6 @@
            INITIALIZE                      HC06
            MOVE    SPACE               TO  HC06
       *
-           MOVE    "医学管理"          TO  HC06-TITLE
-      *
       *    特別療養費の場合「特別療養費」文字記載をシス管の設定により行う
            IF      RECE02-RECESYUBETU  =   6666
                EVALUATE    SYS-2005-MOJI-KISAIKBN
@@ -2297,6 +2320,7 @@
       *    患者番号
            MOVE    RECE02-PTNUM        TO  HC06-PTNUM
       *
+      *    ★
       *    提出先
            IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
                MOVE    SPACE           TO  HC06-TEISYUTUSAKI
@@ -2345,12 +2369,6 @@
                                                HC06-HONKZK
                END-EVALUATE
            END-IF
-      *
-      *    老人保険−市町村番号
-           MOVE    RECE02-RJNFTNJANUM  TO  HC06-RJNFTNJANUM
-      *
-      *    老人保険−受給者番号
-           MOVE    RECE02-RJNJKYSNUM   TO  HC06-RJNJKYSNUM
       *
       *    保険者番号・公費−負担者番号・受給者番号・診療実日数・記号番号
            PERFORM 3110-KANREN-NUM-SET-SEC
@@ -2422,7 +2440,6 @@
                            MOVE    "通勤災害"            TO  HC06-JIYU
                    END-EVALUATE
            END-EVALUATE        
-      *****END-IF                 
       *
       *    医療機関所在地
            IF      FLG-SYS-1902        =   1
@@ -2473,6 +2490,8 @@
                      AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
                OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
                      AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+               OR  (     ( RECE02-TEISYUTUSAKI   =   "6" )
+                     AND ( SYS-2009-SYUKA-KOUIKI =   "1" ) )
                    IF      RECE02-RECESYUKA NOT =   SPACE
                        INITIALIZE                  ORCSKANACHKAREA
                        MOVE    "2"                 TO  KANACHK-SYORI 
@@ -2526,6 +2545,9 @@
                     ( SYS-2005-SYAOCRKBN   =   ZERO OR  "2" )     )
                OR ( ( RECE02-TEISYUTUSAKI  =   2            )  AND
                     ( SYS-2005-KKHOCRKBN   =   "1"  OR  "3" )     )
+               OR ( ( RECE02-TEISYUTUSAKI  =   6            )  AND
+                    ( SYS-200501-KOUIKIOCRKBN
+                                           =   "1"  OR  "3" )     )
       *            レセプト特記事項編集情報に該当項目があるとき
       *            ＯＣＲに反映させる 
                    IF    ( RECE02-2006-FTNJANUMKBN (1)
@@ -2595,13 +2617,6 @@
                    END-IF
                END-IF
            END-IF
-      *
-      *★★平成２０年４月改正対応
-           MOVE    HC06-HEAD4-G (5:)   TO  WRK-HC06-HEAD4-G
-           MOVE    WRK-ERR-MSG-7       TO   HC06-HEAD4-G (5:)
-           MOVE    WRK-HC06-HEAD4-G    TO  HC06-HEAD4-G (33:)
-      *★★
-      *
       *
            .
        310-HC101-HEAD-HEN-EXT.
@@ -2745,12 +2760,6 @@
       *
       *            本人・家族
                    MOVE    HC06-HONKZK         TO  HC061-HONKZK
-      *
-      *            老人保険−市町村番号
-                   MOVE    HC06-RJNFTNJANUM    TO  HC061-RJNFTNJANUM
-      *
-      *            老人保険−受給者番号
-                   MOVE    HC06-RJNJKYSNUM     TO  HC061-RJNJKYSNUM
       * 
       *            保険者番号・記号番号
                    MOVE    HC06-HKNJANUM       TO  HC061-HKNJANUM
@@ -2826,12 +2835,6 @@
       *
       *            本人・家族
                    MOVE    HC06-HONKZK         TO  HC062-HONKZK
-      *
-      *            老人保険−市町村番号
-                   MOVE    HC06-RJNFTNJANUM    TO  HC062-RJNFTNJANUM
-      *
-      *            老人保険−受給者番号
-                   MOVE    HC06-RJNJKYSNUM     TO  HC062-RJNJKYSNUM
       * 
       *            保険者番号・記号番号
                    MOVE    HC06-HKNJANUM       TO  HC062-HKNJANUM
@@ -2907,12 +2910,6 @@
       *
       *            本人・家族
                    MOVE    HC06-HONKZK         TO  HC063-HONKZK
-      *
-      *            老人保険−市町村番号
-                   MOVE    HC06-RJNFTNJANUM    TO  HC063-RJNFTNJANUM
-      *
-      *            老人保険−受給者番号
-                   MOVE    HC06-RJNJKYSNUM     TO  HC063-RJNJKYSNUM
       * 
       *            保険者番号・記号番号
                    MOVE    HC06-HKNJANUM       TO  HC063-HKNJANUM
@@ -2978,9 +2975,8 @@
                            MOVE    "１国"          TO  HC06-HKNSBT1
                        WHEN    "2"
                            MOVE    "２公費"        TO  HC06-HKNSBT1
-      *★★平成２０年４月改正対応
-      *??                 WHEN    "3"
-      *??                     MOVE    "３老人"        TO  HC06-HKNSBT1
+                       WHEN    "3"
+                           MOVE    "３後期"        TO  HC06-HKNSBT1
                        WHEN    "4"
                            MOVE    "４退職"        TO  HC06-HKNSBT1
                    END-EVALUATE
@@ -2995,9 +2991,8 @@
                            END-EVALUATE
                        WHEN    "2"
                            MOVE    "２公費"        TO  HC06-HKNSBT1
-      *★★平成２０年４月改正対応
-      *??                 WHEN    "3"
-      *??                     MOVE    "３老人"        TO  HC06-HKNSBT1
+                       WHEN    "3"
+                           MOVE    "３後期"        TO  HC06-HKNSBT1
                        WHEN    "4"
                            MOVE    "４退職"        TO  HC06-HKNSBT1
                    END-EVALUATE
@@ -3051,62 +3046,32 @@
            IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
                CONTINUE
            ELSE                                        
-               IF      RECE02-SRYYM         <     "200610"
-                   IF      RECE02-RECESYUBETU  =   6666
-                     EVALUATE    RECE02-RECESYUBETU-X (4:1)
+               IF      RECE02-RECESYUBETU  =   6666
+                   EVALUATE    RECE02-RECESYUBETU-X (4:1)
                        WHEN    "0"
-                           MOVE    "０高外８"     TO  HC06-HONKZK
+                           MOVE    "０高外７"     TO  HC06-HONKZK
                        WHEN    "2"
                            MOVE    "２本外"       TO  HC06-HONKZK
                        WHEN    "4"
-                           MOVE    "４三外"       TO  HC06-HONKZK
+                           MOVE    "４六外"       TO  HC06-HONKZK
                        WHEN    "6"
                            MOVE    "６家外"       TO  HC06-HONKZK
                        WHEN    "8"
-                           MOVE    "８高外９"     TO  HC06-HONKZK
-                     END-EVALUATE
-                   ELSE
-                     EVALUATE    RECE02-RECESYUBETU (4:1)
-                       WHEN    "0"
-                           MOVE    "０高外８"     TO  HC06-HONKZK
-                       WHEN    "2"
-                           MOVE    "２本外"       TO  HC06-HONKZK
-                       WHEN    "4"
-                           MOVE    "４三外"       TO  HC06-HONKZK
-                       WHEN    "6"
-                           MOVE    "６家外"       TO  HC06-HONKZK
-                       WHEN    "8"
-                           MOVE    "８高外９"     TO  HC06-HONKZK
-                     END-EVALUATE
-                   END-IF
+                           MOVE    "８高外一"     TO  HC06-HONKZK
+                   END-EVALUATE
                ELSE
-                   IF      RECE02-RECESYUBETU  =   6666
-                     EVALUATE    RECE02-RECESYUBETU-X (4:1)
+                   EVALUATE    RECE02-RECESYUBETU (4:1)
                        WHEN    "0"
                            MOVE    "０高外７"     TO  HC06-HONKZK
                        WHEN    "2"
                            MOVE    "２本外"       TO  HC06-HONKZK
                        WHEN    "4"
-                           MOVE    "４三外"       TO  HC06-HONKZK
+                           MOVE    "４六外"       TO  HC06-HONKZK
                        WHEN    "6"
                            MOVE    "６家外"       TO  HC06-HONKZK
                        WHEN    "8"
-                           MOVE    "８高外９"     TO  HC06-HONKZK
-                     END-EVALUATE
-                   ELSE
-                     EVALUATE    RECE02-RECESYUBETU (4:1)
-                       WHEN    "0"
-                           MOVE    "０高外７"     TO  HC06-HONKZK
-                       WHEN    "2"
-                           MOVE    "２本外"       TO  HC06-HONKZK
-                       WHEN    "4"
-                           MOVE    "４三外"       TO  HC06-HONKZK
-                       WHEN    "6"
-                           MOVE    "６家外"       TO  HC06-HONKZK
-                       WHEN    "8"
-                           MOVE    "８高外９"     TO  HC06-HONKZK
-                     END-EVALUATE
-                   END-IF
+                           MOVE    "８高外一"     TO  HC06-HONKZK
+                   END-EVALUATE
                END-IF
            END-IF    
       *
@@ -3573,7 +3538,6 @@
       *          
       *    国保のみ印字
            IF    ( RECE02-TEISYUTUSAKI =   "2"   )
-           AND   ( RECE02-RJNHKNNUM    =   SPACE )
                COMPUTE WRK-KYURATE-9   =   (100 -   RECE02-KYURATE)
                                            / 10 
                IF      WRK-KYURATE-9       >   ZERO
@@ -3591,6 +3555,7 @@
                END-IF
            END-IF
       *
+      *    ★
       *    神奈川県国保老健は給付割合を記載（暫定的な対応）
            IF    ( RECE02-TEISYUTUSAKI        =   "2"    )
            AND   ( RECE02-PREFNUM             =   "14"   )
@@ -6017,22 +5982,17 @@
                    AND   ( OPECOM-HKNID        =   RECE02-HKNID  )
                        MOVE    1                   TO  FLG-OPECOM-CHK
                    ELSE
-                       IF    ( OPECOM-HKNNUM   =   RECE02-RJNHKNNUM )
-                       AND   ( OPECOM-HKNID    =   RECE02-RJNHKNID  )
-                           MOVE    1               TO  FLG-OPECOM-CHK
-                       ELSE
-                           PERFORM VARYING IDY FROM    1   BY  1
-                                   UNTIL   IDY >       4
-                                   OR      RECE02-KOHNUM (IDY) =   SPACE
-                               IF    ( OPECOM-HKNNUM   
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       4
+                               OR      RECE02-KOHNUM (IDY) =   SPACE
+                           IF    ( OPECOM-HKNNUM   
                                                =   RECE02-KOHNUM (IDY) )
-                               AND   ( OPECOM-HKNID   
+                           AND   ( OPECOM-HKNID   
                                                =   RECE02-KOHID  (IDY) )
-                                   MOVE    1       TO  FLG-OPECOM-CHK
-                                   MOVE    4       TO  IDY
-                               END-IF
-                           END-PERFORM
-                       END-IF
+                               MOVE    1       TO  FLG-OPECOM-CHK
+                               MOVE    4       TO  IDY
+                           END-IF
+                       END-PERFORM
                    END-IF    
                ELSE
                    MOVE    1                   TO  FLG-OPECOM-CHK
@@ -6081,22 +6041,17 @@
                    AND   ( OPECOM-HKNID        =   RECE02-HKNID  )
                        MOVE    1                   TO  FLG-OPECOM-CHK
                    ELSE
-                       IF    ( OPECOM-HKNNUM   =   RECE02-RJNHKNNUM )
-                       AND   ( OPECOM-HKNID    =   RECE02-RJNHKNID  )
-                           MOVE    1               TO  FLG-OPECOM-CHK
-                       ELSE
-                           PERFORM VARYING IDY FROM    1   BY  1
-                                   UNTIL   IDY >       4
-                                   OR      RECE02-KOHNUM (IDY) =   SPACE
-                               IF    ( OPECOM-HKNNUM   
+                       PERFORM VARYING IDY FROM    1   BY  1
+                               UNTIL   IDY >       4
+                               OR      RECE02-KOHNUM (IDY) =   SPACE
+                           IF    ( OPECOM-HKNNUM   
                                                =   RECE02-KOHNUM (IDY) )
-                               AND   ( OPECOM-HKNID   
+                           AND   ( OPECOM-HKNID   
                                                =   RECE02-KOHID  (IDY) )
-                                   MOVE    1       TO  FLG-OPECOM-CHK
-                                   MOVE    4       TO  IDY
-                               END-IF
-                           END-PERFORM
-                       END-IF
+                               MOVE    1       TO  FLG-OPECOM-CHK
+                               MOVE    4       TO  IDY
+                           END-IF
+                       END-PERFORM
                    END-IF    
                ELSE
                    MOVE    1                   TO  FLG-OPECOM-CHK
@@ -6199,14 +6154,14 @@
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCM10V02.red"      TO
+               MOVE    "HCM11.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
                EVALUATE    SYS-2005-NEXTPRTKBN-G
                    WHEN    ZERO
-                       MOVE    "HCM10V02.red"      TO
+                       MOVE    "HCM11.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC06            TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -6256,10 +6211,9 @@
            END-PERFORM
       *
       *    請求管理ＤＢ更新
-      *★★平成２０年４月改正対応
-      *    IF      FLG-ERR              =   ZERO
-      *        PERFORM 3904-RECE10-HENSYU-SEC
-      *    END-IF
+           IF      FLG-ERR              =   ZERO
+               PERFORM 3904-RECE10-HENSYU-SEC
+           END-IF
       *
            IF      FLG-ERR              =   1
                MOVE    2                    TO  FLG-STS
@@ -6322,8 +6276,18 @@
                    END-PERFORM
                END-IF        
            ELSE
-               MOVE    "0"             TO  RECE08-PREFKBN
-               MOVE    "00"            TO  RECE08-PREFNUM
+               IF      RECE02-TEISYUTUSAKI =   "6"
+                   MOVE    RECE02-HKNJANUM-KEY (3:2)
+                                           TO  RECE08-PREFNUM
+                   IF      RECE08-PREFNUM  =   SYS-1001-PREFNUM
+                       MOVE    "1"             TO  RECE08-PREFKBN
+                   ELSE
+                       MOVE    "2"             TO  RECE08-PREFKBN
+                   END-IF
+               ELSE
+                   MOVE    "0"             TO  RECE08-PREFKBN
+                   MOVE    "00"            TO  RECE08-PREFNUM
+               END-IF
            END-IF
            MOVE    RECE02-HKNJANUM-KEY TO  RECE08-HKNJANUM
            MOVE    RECE02-TEKSTYMD     TO  RECE08-TEKSTYMD
@@ -6367,14 +6331,17 @@
                                            RECE08-CHOUKI
                                            RECE08-KOUGAKU
       *     主科設定
-           IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
+           IF    ( SYS-2009-SYUKA-KBN  =   "1"    )
            AND   ( RECE02-RECESYUBETU  
-                                   NOT =   "8888"             )
+                                   NOT =   "8888" )
                IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
                      AND ( SYS-2009-SYUKA-SYAHO
                                              NOT =   "0" ) )
                OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
                      AND ( SYS-2009-SYUKA-KOKUHO
+                                             NOT =   "0" ) )
+               OR  (     ( RECE02-TEISYUTUSAKI   =   "6" )
+                     AND ( SYS-2009-SYUKA-KOUIKI
                                              NOT =   "0" ) )
                    MOVE    RECE02-SYUKA        TO  RECE08-SRYKA
                END-IF
@@ -6445,7 +6412,7 @@
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCM10V02.red"
+                       WHEN    "HCM11.red"
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE
@@ -7105,6 +7072,8 @@
                      AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
                OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
                      AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+               OR  (     ( RECE02-TEISYUTUSAKI   =   "6" )
+                     AND ( SYS-2009-SYUKA-KOUIKI =   "1" ) )
                    GO  TO  3904-RECE10-HENSYU-EXT
                END-IF
            END-IF
@@ -7119,6 +7088,8 @@
                      AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
                OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
                      AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+               OR  (     ( RECE02-TEISYUTUSAKI   =   "6" )
+                     AND ( SYS-2009-SYUKA-KOUIKI =   "1" ) )
                    MOVE    RECE02-SYUKA        TO  RECE10-RECEKA
                ELSE
                    IF      RECE02-RECEKA       =   SPACE
@@ -7168,8 +7139,6 @@
                MOVE    RECE02-HKNNUM       TO  RECE10-HKNNUM
                                                RECE10-HKNNUM-S
                MOVE    RECE02-HKNID        TO  RECE10-HKNID
-               MOVE    RECE02-RJNHKNNUM    TO  RECE10-RJNHKNNUM
-               MOVE    RECE02-RJNHKNID     TO  RECE10-RJNHKNID
                MOVE    RECE02-HONKZKKBN    TO  RECE10-HONKZKKBN
                MOVE    RECE02-HOJOKBN      TO  RECE10-HOJOKBN
                MOVE    RECE02-CONTKBN      TO  RECE10-CONTKBN
@@ -7324,17 +7293,6 @@
                        PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
                    END-IF
                END-PERFORM
-           END-IF
-      *
-      *    新潟県中越沖地震対応 
-           IF    ( RECE02-PREFNUM      =   "15"   )
-           AND   ( RECE02-SRYYM        >=  200709 )
-           AND   ( RECE02-SRYYM        <=  200712 )
-               IF      RECE02-RJNGAIKOHFTN (1)
-                                           >   ZERO
-                   MOVE    RECE02-RJNGAIKOHFTN (1)
-                                           TO  RECE10-ETC-YKZFTN (1)
-               END-IF
            END-IF
       *
            MOVE    "00000000000000000000000000000000000000000000000000"
@@ -7528,7 +7486,7 @@
            EXIT.
       * 
       *****************************************************************
-      *    中止処理時データ削除処理（一括作成のみ）
+      *    データ削除処理
       *****************************************************************
        5001-DB-DELETE-SEC               SECTION.
       *
@@ -7581,6 +7539,30 @@
                    END-IF
                END-IF      
       *
+      *        診療年月の請求管理削除処理（広域連合分）
+               IF      WRK-PARA-RECEKBN    =   "0" OR  "7"          
+                   INITIALIZE                      RECE10-REC
+                   MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
+                   MOVE    WRK-PARA-SRYYM      TO  RECE10-SRYYM
+                   MOVE    "2"                 TO  RECE10-NYUGAIKBN
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    "2"                 TO  RECE10-NYUGAIKBN
+                   MOVE    RECE10-REC          TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   MOVE    "tbl_seikyu"        TO  MCP-TABLE
+                   MOVE    "del6"              TO  MCP-PATHNAME
+                   PERFORM 900-ORCDBMAIN-SEC
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" MCP-TABLE " " MCP-PATHNAME
+                               " MCP-RC=" MCP-RC
+                       MOVE
+                   "請求管理削除処理（広域連合分）でエラーとなりました"
+                                           TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+               END-IF      
+      *
       *        診療年月の公費請求書削除処理（社保分）
                IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
                    INITIALIZE                      KOHSKY-REC
@@ -7627,6 +7609,29 @@
                    END-IF
                END-IF      
       *
+      *        診療年月公費請求書削除処理（広域連合分）
+               IF      WRK-PARA-RECEKBN    =   "0" OR  "7"          
+                   INITIALIZE                      KOHSKY-REC
+                   MOVE    WRK-PARA-HOSPNUM    TO  KOHSKY-HOSPNUM
+                   MOVE    WRK-PARA-SRYYM      TO  KOHSKY-SRYYM
+                   MOVE    6                   TO  KOHSKY-TEISYUTUSAKI
+                   MOVE    "2"                 TO  KOHSKY-NYUGAIKBN
+                   MOVE    KOHSKY-REC          TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   MOVE    "tbl_kohsky"        TO  MCP-TABLE
+                   MOVE    "del1"              TO  MCP-PATHNAME
+                   PERFORM 900-ORCDBMAIN-SEC
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" MCP-TABLE " " MCP-PATHNAME
+                               " MCP-RC=" MCP-RC
+                       MOVE
+                  "公費請求書削除処理（広域連合分）でエラーとなりました"
+                                               TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+               END-IF      
+      *
       *        診療年月のレセ電削除処理（社保分）
                IF      WRK-PARA-RECEKBN    =   "0" OR  "1"          
                    INITIALIZE                  RECEDEN-REC
@@ -7667,6 +7672,29 @@
                                " MCP-RC=" MCP-RC
                        MOVE
                        "レセ電削除処理（国保分）でエラーとなりました"
+                                               TO    WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
+               END-IF      
+      *
+      *        診療年月のレセ電削除処理（広域連合分）
+               IF      WRK-PARA-RECEKBN    =   "0" OR  "7"          
+                   INITIALIZE                  RECEDEN-REC
+                   MOVE    WRK-PARA-HOSPNUM    TO  RECEDEN-HOSPNUM
+                   MOVE    WRK-PARA-SRYYM      TO  RECEDEN-SRYYM
+                   MOVE    6                   TO  RECEDEN-TEISYUTUSAKI
+                   MOVE    "2"                 TO  RECEDEN-NYUGAIKBN
+                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   MOVE    "tbl_receden"       TO  MCP-TABLE
+                   MOVE    "del1"              TO  MCP-PATHNAME
+                   PERFORM 900-ORCDBMAIN-SEC
+                   IF      MCP-RC           NOT =   ZERO
+                       DISPLAY "DBPATH=" MCP-TABLE " " MCP-PATHNAME
+                               " MCP-RC=" MCP-RC
+                       MOVE
+                   "レセ電削除処理（広域連合分）でエラーとなりました"
                                                TO    WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                        GO  TO  5001-DB-DELETE-EXT
@@ -7824,6 +7852,32 @@
                                GO  TO  5001-DB-DELETE-EXT
                            END-IF
       *
+                           INITIALIZE                  RECE10-REC
+                           MOVE    WRK-PARA-HOSPNUM    TO
+                                                       RECE10-HOSPNUM
+                           MOVE    SYS-2002-PTID       TO  RECE10-PTID
+                           MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
+                           MOVE    SYS-2002-NYUGAIKBN  TO
+                                                       RECE10-NYUGAIKBN
+                           MOVE    6                   TO
+                                                   RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI
+                           MOVE    RECE10-REC          TO  MCPDATA-REC
+                           MOVE    "DBDELETE"          TO  MCP-FUNC
+                           MOVE    "tbl_seikyu"        TO  MCP-TABLE
+                           MOVE    "del4"              TO  MCP-PATHNAME
+                           PERFORM 900-ORCDBMAIN-SEC
+                           IF      MCP-RC           NOT =   ZERO
+                               DISPLAY "DBPATH=" MCP-TABLE " "
+                                                 MCP-PATHNAME
+                                       " MCP-RC=" MCP-RC
+                               MOVE
+                        "請求管理削除処理（個別分）でエラーとなりました"
+                                                   TO    WRK-RECEERR
+                               PERFORM 500-ERR-HENSYU-SEC
+                               GO  TO  5001-DB-DELETE-EXT
+                           END-IF
+      *
       *                    診療年月の公費請求書削除処理
                            INITIALIZE                  KOHSKY-REC
                            MOVE    WRK-PARA-HOSPNUM    TO
@@ -7920,6 +7974,32 @@
                            MOVE    1               TO
                                                    RECE10-TEISYUTUSAKI
                            MOVE    2               TO
+                                                   RECE10-XXTEISYUTUSAKI
+                           MOVE    RECE10-REC      TO  MCPDATA-REC
+                           MOVE    "DBDELETE"      TO  MCP-FUNC
+                           MOVE    "tbl_seikyu"    TO  MCP-TABLE
+                           MOVE    "del4"          TO  MCP-PATHNAME
+                           PERFORM 900-ORCDBMAIN-SEC
+                           IF      MCP-RC      NOT =   ZERO
+                               DISPLAY "DBPATH=" MCP-TABLE
+                                       " " MCP-PATHNAME
+                                       " MCP-RC=" MCP-RC
+                               MOVE
+                        "請求管理削除処理（個別分）でエラーとなりました"
+                                                   TO    WRK-RECEERR
+                               PERFORM 500-ERR-HENSYU-SEC
+                               GO  TO  5001-DB-DELETE-EXT
+                           END-IF
+      *
+                           INITIALIZE                  RECE10-REC
+                           MOVE    WRK-PARA-HOSPNUM
+                                                   TO  RECE10-HOSPNUM
+                           MOVE    PTINF-PTID      TO  RECE10-PTID
+                           MOVE    BTPARA-INFO-PARA (17:6)
+                                                   TO  RECE10-SRYYM
+                           MOVE    "2"             TO  RECE10-NYUGAIKBN
+                           MOVE    6               TO
+                                                   RECE10-TEISYUTUSAKI
                                                    RECE10-XXTEISYUTUSAKI
                            MOVE    RECE10-REC      TO  MCPDATA-REC
                            MOVE    "DBDELETE"      TO  MCP-FUNC
@@ -8047,6 +8127,32 @@
                                GO  TO  5001-DB-DELETE-EXT
                            END-IF
       *
+                           INITIALIZE                  RECE10-REC
+                           MOVE    WRK-PARA-HOSPNUM
+                                                   TO  RECE10-HOSPNUM
+                           MOVE    PTINF-PTID      TO  RECE10-PTID
+                           MOVE    BTPARA-INFO-PARA (1:6)
+                                                   TO  RECE10-SRYYM
+                           MOVE    "2"             TO  RECE10-NYUGAIKBN
+                           MOVE    6               TO
+                                                   RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI
+                           MOVE    RECE10-REC      TO  MCPDATA-REC
+                           MOVE    "DBDELETE"      TO  MCP-FUNC
+                           MOVE    "tbl_seikyu"    TO  MCP-TABLE
+                           MOVE    "del4"          TO  MCP-PATHNAME
+                           PERFORM 900-ORCDBMAIN-SEC
+                           IF      MCP-RC      NOT =   ZERO
+                               DISPLAY "DBPATH=" MCP-TABLE
+                                       " " MCP-PATHNAME
+                                       " MCP-RC=" MCP-RC
+                               MOVE
+                        "請求管理削除処理（個別分）でエラーとなりました"
+                                                   TO    WRK-RECEERR
+                               PERFORM 500-ERR-HENSYU-SEC
+                               GO  TO  5001-DB-DELETE-EXT
+                           END-IF
+      *
       *                    診療年月の公費請求書削除処理
                            INITIALIZE                  KOHSKY-REC
                            MOVE    WRK-PARA-HOSPNUM
@@ -8110,7 +8216,7 @@
            EXIT.    
       *
       *****************************************************************
-      *    終了　　処理
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -8121,7 +8227,7 @@
            CLOSE                       RECE061-FILE
                                        RECE09-FILE
                                        RECE11-FILE
-           CLOSE                       RECE12-FILE
+                                       RECE12-FILE
       *
       *    未請求解除データの更新
            IF    ( WRK-PARA-SHELLID
@@ -8240,9 +8346,6 @@
                NOT AT  END
                    MOVE    ZERO                TO  FLG-RECE02
       *
-      *************IF      RECE02-SRYYM        <   WRK-CONS-SRYYM-200803
-      *************    GO  TO  990-RECE02-READ-SEC
-      *************END-IF
                    IF    ( RECE02-TOTALTEN (1) =   ZERO )
                    AND   ( RECE02-TOTALTEN (2) =   ZERO )
                    AND   ( RECE02-TOTALTEN (3) =   ZERO )
@@ -8293,9 +8396,6 @@
                AT  END
                    MOVE    1                   TO  FLG-RECE02X
                NOT AT  END
-      *************IF      RECE02X-SRYYM       <   WRK-CONS-SRYYM-200803
-      *************    GO  TO  990-RECE02X-READ-SEC
-      *************END-IF
       *            テスト患者のとき読み飛ばす
                    IF      RECE02X-TSTPTNUMKBN     =   "1"
                        GO  TO  990-RECE02X-READ-SEC

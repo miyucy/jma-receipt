@@ -28,6 +28,8 @@
       *  03.05.01    NACL-藤原    07/06/30  印刷後のチェック解除機能対応
       *
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
+      *
+      *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
       *****************************************************************
       *
        01  SPA-R02.
@@ -44,6 +46,7 @@
            03  SPA-R02-AREA.
                05  SPA-GMN-PAGE                    PIC 9(02).
                05  SPA-GMN-PAGE-MAX                PIC 9(02).
+               05  SPA-GMN-PAGE-MAX1               PIC 9(02).
                05  SPA-GMN-CUR                     PIC 9(03).
                05  SPA-GMN-AREA.
                    07  SPA-GMN-SYOKBN              PIC X(01).
@@ -79,6 +82,15 @@
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-PRTJYUN1MEIL    PIC X(28).
                    07  SPA-GMN-PRTJYUN1-MAX        PIC 9(02).
+                   07  SPA-GMN-PRTJYUN2-G.
+                       09  SPA-GMN-PRTJYUN2        PIC X(02).
+                       09  SPA-GMN-F1              PIC X(01).
+                       09  SPA-GMN-PRTJYUN2MEI     PIC X(28).
+                   07  SPA-GMN-PRTJYUN2LST         OCCURS  10.
+                       09  SPA-GMN-PRTJYUN2L       PIC X(02).
+                       09  SPA-GMN-F1L             PIC X(01).
+                       09  SPA-GMN-PRTJYUN2MEIL    PIC X(28).
+                   07  SPA-GMN-PRTJYUN2-MAX        PIC 9(02).
                    07  SPA-GMN-PREFKBN-G.
                        09  SPA-GMN-PREFKBN         PIC X(01).
                        09  SPA-GMN-F1              PIC X(01).
@@ -131,12 +143,18 @@
                    07  SPA-NAI-WIDGET              PIC X(08). 
                    07  SPA-NAI-2005-SYAPRTNM       PIC X(16).
                    07  SPA-NAI-2005-KKHPRTNM       PIC X(16).
+                   07  SPA-NAI-2005-KOUIKIPRTNM    PIC X(16).
                    07  SPA-NAI-2005-SYAPRTNM-NEXT  PIC X(16).
                    07  SPA-NAI-2005-KKHPRTNM-NEXT  PIC X(16).
+                   07  SPA-NAI-2005-KOUIKIPRTNM-NEXT
+                                                   PIC X(16).
                    07  SPA-NAI-2005-SYAPRTNM-N     PIC X(16).
                    07  SPA-NAI-2005-KKHPRTNM-N     PIC X(16).
+                   07  SPA-NAI-2005-KOUIKIPRTNM-N  PIC X(16).
                    07  SPA-NAI-2005-SYAPRTNM-NEXT-N  PIC X(16).
                    07  SPA-NAI-2005-KKHPRTNM-NEXT-N  PIC X(16).
+                   07  SPA-NAI-2005-KOUIKIPRTNM-NEXT-N
+                                                   PIC X(16).
                    07  SPA-NAI-2005-PRT-CHECKKBN   PIC X(01).
                    07  SPA-NAI-2008-HYOUJI         PIC 9(01).
       *
@@ -148,7 +166,7 @@
                                                    PIC X(40).
       *
                    07  SPA-NAI-PRTNM-TABLE.
-                       09  SPA-NAI-PRTNM-G                 OCCURS  4.
+                       09  SPA-NAI-PRTNM-G                 OCCURS  6.
                            11  SPA-NAI-PRTNM       PIC X(02).
                            11  FILLER              PIC X(01).
                            11  SPA-NAI-PRTNMMEI    PIC X(16).
