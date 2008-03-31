@@ -151,6 +151,8 @@
       *                                     （リハ：専用コード追加）
       *                                     （在宅コード追加）
       *                                     （剤支援記載対象コード修正）
+      *                                     （小児特定疾患カウンセリング料
+      *                                       の自動記載対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -303,6 +305,7 @@
            03  FLG-HOUSIJI-COM                         PIC 9(01).
            03  FLG-OSIN-COM                            PIC 9(01).
            03  FLG-ZAIHOU-COM                          PIC 9(01).
+           03  FLG-SYOUNI-COM                          PIC 9(01).
            03  FLG-HOUTEN-COM                          PIC 9(01).
            03  FLG-SYOBYO-COM                          PIC 9(01).
            03  FLG-RYOYO-COM                           PIC 9(01).
@@ -837,6 +840,13 @@
       *    特定施設入居時等医学総合管理料２（処方せんを交付しない）
            03  CONS-ZAIIKAN8-COMMENT PIC X(09)  VALUE  "114013310".
       *
+      *    小児特定疾患カウンセリング料（１回目）
+           03  CONS-SYOUNI1-COMMENT  PIC X(09)  VALUE  "113000810".
+      *    小児特定疾患カウンセリング料（２回目）
+           03  CONS-SYOUNI2-COMMENT  PIC X(09)  VALUE  "113009910".
+      *    小児特定第１回目カウンセリングコメント
+           03  CONS-SYOUNI3-COMMENT  PIC X(09)  VALUE  "840000005".
+      *
       *    外来迅速検体検査加算
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
       *
@@ -1314,6 +1324,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        FLG-OSIN-COM
                                                        FLG-ZAIHOU-COM
                                                        FLG-TAHOKEN
+                                                       FLG-SYOUNI-COM
       *
                                MOVE    SPACE   TO      WRK-KYUGYOFLG
       *
@@ -1373,6 +1384,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-OSIN-COM
                                                       FLG-ZAIHOU-COM
                                                       FLG-TAHOKEN
+                                                      FLG-SYOUNI-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -1411,6 +1423,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-OSIN-COM
                                                       FLG-ZAIHOU-COM
                                                       FLG-TAHOKEN
+                                                      FLG-SYOUNI-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -2692,6 +2705,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
               IF   SRY-SRYCD(IDX2)    =     CONS-ZENSOKU3-COMMENT
                    MOVE  SPACE  TO    RECE44-FLG-ZENSOKU-COMMENT
                    MOVE    1    TO    FLG-ZENSOKU-COM
+              END-IF
+      *
+              IF   RECE41-SRYYM    >=     "200804"
+                IF   (SRY-SRYCD(IDX2)   =     CONS-SYOUNI1-COMMENT
+                                        OR    CONS-SYOUNI2-COMMENT)
+                AND  (FLG-SYOUNI-COM    =     ZERO                )
+                   MOVE   "1"   TO    RECE44-FLG-SYOUNI-COMMENT
+                END-IF
+                IF    SRY-SRYCD(IDX2)   =     CONS-SYOUNI3-COMMENT
+                   MOVE  SPACE  TO    RECE44-FLG-SYOUNI-COMMENT
+                   MOVE    1    TO    FLG-SYOUNI-COM
+                END-IF
               END-IF
            END-IF
       *
@@ -6344,6 +6369,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                      FLG-OSIN-COM
                                                      FLG-ZAIHOU-COM
                                                      FLG-TAHOKEN
+                                                     FLG-SYOUNI-COM
       *
                                MOVE    SPACE   TO    WRK-KYUGYOFLG
       *
@@ -6405,6 +6431,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-OSIN-COM
                                                       FLG-ZAIHOU-COM
                                                       FLG-TAHOKEN
+                                                      FLG-SYOUNI-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -6445,6 +6472,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-OSIN-COM
                                                       FLG-ZAIHOU-COM
                                                       FLG-TAHOKEN
+                                                      FLG-SYOUNI-COM
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
