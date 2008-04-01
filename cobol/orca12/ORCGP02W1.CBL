@@ -182,6 +182,7 @@
       *
            03  FLG-RJNCHK          PIC 9(01).
            03  FLG-HKNCHK          PIC 9(01).
+           03  FLG-HKNCHK2         PIC 9(01).
            03  FLG-SEIHOGO         PIC 9(01).
       *
            03  FLG-P02A-CHK       PIC 9(01).
@@ -4497,6 +4498,7 @@
            MOVE    ZERO                TO  FLG-RJNCHK
            MOVE    ZERO                TO  FLG-RJNCHK2
            MOVE    ZERO                TO  FLG-HKNCHK
+           MOVE    ZERO                TO  FLG-HKNCHK2
            MOVE    ZERO                TO  FLG-SEIHOGO
            MOVE    ZERO                TO  SPA-HKN-IDX1
            MOVE    ZERO                TO  FLG-RJNERR
@@ -4517,6 +4519,10 @@
                        IF      SPA-HKN-IDX1    =   ZERO
                            MOVE    IDX             TO  SPA-HKN-IDX1
                        END-IF
+                   END-IF
+      *            他の自費等が存在すること
+                   IF      SPA-PTHKN-HKNNUM(IDX)(1:1)  =   "9"
+                       MOVE    1               TO  FLG-HKNCHK2
                    END-IF
                END-IF
            END-PERFORM
@@ -4585,9 +4591,21 @@
                        END-IF
                    ELSE
                        IF     (FLG-HKNCHK         =   1   )
-                           MOVE    "0120"              TO  SPA-ERRCD
+                           IF      FLG-HKNCHK2        =    ZERO
+                               MOVE    "0120"              TO  SPA-ERRCD
+                           ELSE
+                               MOVE    "0121"              TO  SPA-ERRCD
+                           END-IF
                            MOVE    10                  TO  SPA-GMN-CUR
                        END-IF
+                   END-IF
+      *            終了する保険を再表示
+                   IF     (SPA-ERRCD           =   "0121" )
+                      AND (SPA-HKN-IDX1    NOT =   ZERO   )
+                      AND (SPA-NAI-HKNSTR  NOT =   SPA-HKN-IDX1)
+                       MOVE    SPA-HKN-IDX1    TO  IDX
+                       MOVE    IDX             TO  SPA-NAI-HKNSTR
+                       PERFORM 3101-HOKEN-HEN-SEC
                    END-IF
                ELSE
       *            ７０歳から７５歳まで
@@ -6967,6 +6985,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            継続がない時、記号へ
                    IF      SPA-GMN-CONT-MAX    =   ZERO
                        MOVE    12              TO  SPA-GMN-CUR
+                   END-IF
+      *!!!         後期高齢者は、番号へ
+                   IF      SPA-GMN-HKNNUM      =   "039"
+                       MOVE    13              TO  SPA-GMN-CUR
                    END-IF
                WHEN    "P02_CONTKBN"
                    MOVE    12          TO  SPA-GMN-CUR
