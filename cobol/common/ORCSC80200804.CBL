@@ -1762,12 +1762,14 @@
       *
       *    労災の時、加算なし（リハビリ料は区分に’Ｈ’）
            IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101" )
-              AND (WRK-COM-CDKBN-KBN (IDX-Z)   NOT =   "H" )
       *        四肢加算チェック
                IF      WRK-COM-INPUTCD (IDX-Z) =   "101800010" 
                    MOVE    2               TO  WRK-COM-SANFLG (IDX-Z)
                END-IF
-               GO      TO      100113-RSIHKN-SYORI-EXT
+               IF     (WRK-COM-CDKBN-KBN (IDX-Z)   NOT =   "H" )
+                   OR (WRK-COM-INPUTCD (IDX-Z) =   "101800010" )
+                   GO      TO      100113-RSIHKN-SYORI-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE                TO  WRK-SRYCD
