@@ -1066,6 +1066,7 @@
                        09   CONST-TSANTEICD-TYPE
                                                PIC X(02).
            03  CONST-H039                      PIC X(03)   VALUE "039".
+           03  CONST-H2004                 PIC X(06)   VALUE "200804".
       *
       *
       *    エラーメッセージ
@@ -4331,6 +4332,21 @@
                    IF    ( ORCBSD01-CHKKBN (4) =   "1" )
                        MOVE    1           TO  FLG-CHKEND (4)
                        GO  TO  200112-HKNAGE-CHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-CHKEND (4)      =   ZERO )
+               IF    ( ORCBSD01-SRYYM >=   CONST-H2004 )
+                   IF    ( COMB-HKNNUM       =  "067" )
+                    AND  ( AGECHK-NENREI    >=  65 )
+                       MOVE    COMB-HKNNUM     TO  SRH-HKNNUM
+                       MOVE    "040005"        TO  WRK-ERRCD
+                       PERFORM 211-ERRMES-HEN-SEC
+      *
+                       IF    ( ORCBSD01-CHKKBN (4) =   "1" )
+                           MOVE    1           TO  FLG-CHKEND (4)
+                       END-IF
                    END-IF
                END-IF
            END-IF
