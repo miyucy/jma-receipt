@@ -157,6 +157,11 @@
            05 PIC  X(30)   VALUE   "老人の負担割合が２割です。３割".
            05 PIC  X(30)   VALUE   "に登録し直して下さい          ".
            05 PIC  X(30)   VALUE   "                              ".
+      *
+           05 PIC  X(06)   VALUE   "040005".
+           05 PIC  X(30)   VALUE   "６５歳以上で退職者国保の入力が".
+           05 PIC  X(30)   VALUE   "あります                      ".
+           05 PIC  X(30)   VALUE   "                              ".
       *    ** 050xxx 患者病名
       *                            +---------+---------+---------+.
            05 PIC  X(06)   VALUE   "050001".
@@ -454,7 +459,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  77.
+           05 ERRMES-OCC   OCCURS  78.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   77.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   78.
