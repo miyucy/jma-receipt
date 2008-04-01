@@ -4519,9 +4519,8 @@
                        IF      SPA-HKN-IDX1    =   ZERO
                            MOVE    IDX             TO  SPA-HKN-IDX1
                        END-IF
-                   END-IF
+                   ELSE
       *            他の自費等が存在すること
-                   IF      SPA-PTHKN-HKNNUM(IDX)(1:1)  =   "9"
                        MOVE    1               TO  FLG-HKNCHK2
                    END-IF
                END-IF
