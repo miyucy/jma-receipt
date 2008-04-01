@@ -1492,7 +1492,9 @@
                    PERFORM 3002-PARA-SET-SEC
                    PERFORM 3003-GMN-HEN-SEC
                    IF      SPA-MOTOPG      =   "S02"  OR  "J02" OR "C02"
-                       PERFORM 3004-SAI-SET-SEC
+                       IF      SPA-PTID    NOT =   ZERO
+                           PERFORM 3004-SAI-SET-SEC
+                       END-IF
                    END-IF
            END-EVALUATE
       *
@@ -1630,6 +1632,8 @@
            IF      SPA-GMN-PTID        =   ZERO
                MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
                MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
+               MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
+               MOVE    SPA-GMN-PTID        TO  SPA-PTID
                GO      TO      3003-GMN-HEN-EXT
            END-IF
            MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
@@ -4032,13 +4036,13 @@
                IF     (SPA-NAI-SRYYMD      >=  "20060401" )
                    PERFORM 31091-NYUIN-HKNCHK-SEC
                END-IF
-               IF      FLG-NYUIN       =   1
-                   MOVE    "0121"          TO  SPA-KIDCD
-                   MOVE    ZERO            TO  SPA-GMN-CUR
+               IF      FLG-NYUIN           =   1
+                   MOVE    "0121"              TO  SPA-KIDCD
+                   MOVE    ZERO                TO  SPA-GMN-CUR
                END-IF
            ELSE
       *        最終退院日の設定
-               MOVE    WRK-TAIINYMD    TO  SPA-K02N-TAIINYMD
+               MOVE    WRK-TAIINYMD        TO  SPA-K02N-TAIINYMD
                MOVE    WRK-LASTTAIINYMD    TO  SPA-NAI-LASTTAIIN
            END-IF
            .
