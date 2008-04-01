@@ -1080,7 +1080,17 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            IF    ( WRK-ERR-ERRKBN      =   ZERO                  )
            AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
            AND   ( COMB-KOH1HKNNUM     =   "027"                 )
+               MOVE    "1"                 TO  WRK-TEISEIKBN
                MOVE    7                   TO  WRK-ERR-ERRKBN
+           END-IF
+      *
+      *    平成２０年４月以降に退職国保で６５歳以上のとき
+           IF    ( WRK-ERR-ERRKBN      =   ZERO                  )
+           AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
+           AND   ( COMB-HKNNUM         =   "067"                 )
+           AND   ( WRK-NENREI          >=  65                    )
+               MOVE    "1"                 TO  WRK-TEISEIKBN
+               MOVE    8                   TO  WRK-ERR-ERRKBN
            END-IF
       *     
       *    レセプト診療科（旧総合病院のとき）

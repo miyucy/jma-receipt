@@ -44,6 +44,10 @@
       *                                     ¸¡ººÅù¼Â»ÜÈ½ÃÇ¤ÎÄÉ²Ã
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *
+      *  04.02.01    NACL-Æ£¸¶    08/03/25  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¹­°èÏ¢¹çÂÐ±þ
+      *                                     ¿ÇÎÅ¶èÊ¬£¶£´¤ò£¶£°¤ËÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -145,6 +149,8 @@ grpsys     COPY    "COMMON-SPA".
                                        PIC X(01).
                05  WRK-PARA-SYARECEKBN PIC X(01).
                05  WRK-PARA-KKHRECEKBN PIC X(01).
+               05  WRK-PARA-KOUIKIRECEKBN
+                                       PIC X(01).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-RECEERR             PIC X(200). 
@@ -223,6 +229,7 @@ grpsys     COPY    "COMMON-SPA".
                                                WRK-PARA-TEISYUTUSAKI
                                                WRK-PARA-SYARECEKBN
                                                WRK-PARA-KKHRECEKBN
+                                               WRK-PARA-KOUIKIRECEKBN
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPNUM
@@ -297,7 +304,11 @@ grpsys     MOVE    RECE04-HOSPNUM      TO  RECE041-HOSPNUM
                    MOVE    WRK-HKNCOMBI    TO  RECE04-HKNCOMBI
                END-IF
            ELSE
-               MOVE    RECE04-SRYKBN       TO  RECE041-SRYKBN
+               IF      RECE04-SRYKBN   =   "64"
+                   MOVE    "60"            TO  RECE041-SRYKBN
+               ELSE
+                   MOVE    RECE04-SRYKBN   TO  RECE041-SRYKBN
+               END-IF
            END-IF
            MOVE    RECE04-PTNUM        TO  RECE041-PTNUM
            MOVE    RECE04-SRYKA        TO  RECE041-SRYKA
@@ -399,6 +410,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                    OR  "2"  )  AND
                              ( RECE04-TEISYUTUSAKI
                                                    =   "2"  )      )
+                       OR  ( ( WRK-PARA-KOUIKIRECEKBN
+                                                   =   ZERO
+                                                   OR  "2"  )  AND
+                             ( RECE04-TEISYUTUSAKI
+                                                   =   "6"  )      )
                        OR  (   RECE04-RECESYUBETU  =   ZERO   OR 
                                                        8888   OR 
                                                        6666        )

@@ -31,7 +31,6 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  04.02.01    NACL-ÌçÏÆ    08/03/17  µÜºê¸©ÃÏÊý¸øÈñ¡Ê£±£¹£°¡Ë¤ÎÂÐ±þ
       *  04.02.02    NACL-Æ£¸¶    08/03/25  ÆÃµ­»ö¹à¤ÎÊÑ¹¹
-      *                                     ¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -466,6 +465,7 @@
            03  WRK-HKN-NUM                     PIC X(50).
            03  WRK-HKN-KIGO                    PIC X(50).
            03  WRK-HKN-TEISYUTUSAKI            PIC X(04).    
+           03  WRK-HKN-FIL                     PIC X(02).
            03  WRK-SRYYMST                     PIC X(12).
            03  WRK-SRYYMED                     PIC X(12).   
       *
@@ -842,7 +842,11 @@
       *
            03  WRK-ERR-MSG-7.
                05  FILLER          PIC X(28)   VALUE
-                   "¡ÔÊ¿À®£²£°Ç¯£´·î²þÀµÌ¤ÂÐ±þ¡Õ". 
+                   "Ï·¿ÍÊÝ¸±¤¬»ÈÍÑ¤µ¤ì¤Æ¤¤¤Þ¤¹". 
+      *
+           03  WRK-ERR-MSG-8.
+               05  FILLER          PIC X(38)   VALUE
+                   "£¶£µºÐ°Ê¾å¤ÇÂà¿¦¹ñÊÝ¤¬»ÈÍÑ¤µ¤ì¤Æ¤¤¤Þ¤¹". 
       *
        01  WRK-CONS-AREA.    
       *    ¸ÇÄêÃ¼Ëö£É£Ä
@@ -1806,6 +1810,19 @@
                    WHEN    OTHER
                        MOVE    SPACE      TO  WRK-HKN-TEISYUTUSAKI   
                END-EVALUATE          
+      *
+               EVALUATE    RECE09-TEISYUTUSAKI
+                   WHEN    "6"
+                       IF    ( RECE09-NUM     NOT =   SPACE )
+                       AND   ( RECE09-KIGO    NOT =   SPACE )        
+                           MOVE    "¡Ý"       TO  WRK-HKN-FIL
+                       ELSE
+                           MOVE    SPACE      TO  WRK-HKN-FIL
+                       END-IF 
+                   WHEN    OTHER
+                       MOVE    "¡Ý"       TO  WRK-HKN-FIL
+               END-EVALUATE
+      *
                IF    ( RECE09-NUM         =   SPACE )
                AND   ( RECE09-KIGO        =   SPACE )        
                AND   ( RECE09-HKNJANUM    =   SPACE )        
@@ -1854,7 +1871,7 @@
                            WRK-HKN-HKNJANUM       DELIMITED  BY  SPACE
                            "¡¡"                   DELIMITED  BY  SIZE
                            WRK-HKN-KIGO           DELIMITED  BY  SPACE
-                           "¡Ý"                   DELIMITED  BY  SIZE
+                           WRK-HKN-FIL            DELIMITED  BY  SPACE
                            WRK-HKN-NUM            DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI-X
                    END-STRING
@@ -1877,7 +1894,7 @@
                            GO  TO  2001-RIREKI-HEN-EXT
                        END-IF    
                        STRING  WRK-HKN-KIGO       DELIMITED  BY  SPACE
-                               "¡Ý"               DELIMITED  BY  SIZE
+                               WRK-HKN-FIL        DELIMITED  BY  SPACE
                                WRK-HKN-NUM        DELIMITED  BY  SPACE
                                INTO
                                    WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
@@ -2705,6 +2722,10 @@
                    END-IF
                WHEN    6
                    MOVE    WRK-ERR-MSG-4   TO   HC06-HEAD4-G (5:)
+               WHEN    7
+                   MOVE    WRK-ERR-MSG-7   TO   HC06-HEAD4-G (5:)
+               WHEN    8
+                   MOVE    WRK-ERR-MSG-8   TO   HC06-HEAD4-G (5:)
            END-EVALUATE        
            INSPECT HC06-HEAD4-G  REPLACING ALL "  "    BY  "¡¡"
       *
@@ -8562,9 +8583,6 @@
                    ADD     1         TO  CNT-RECE061
                    IF      RECE061-SRYKBN    =   "54"
                        MOVE    "50"          TO  RECE061-SRYKBN
-                   END-IF
-                   IF      RECE061-SRYKBN    =   "64"
-                       MOVE    "60"          TO  RECE061-SRYKBN
                    END-IF
            END-READ
       *
