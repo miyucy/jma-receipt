@@ -369,6 +369,10 @@
                MOVE    SPACE               TO  PTHKN-NUM
                MOVE    "1"                 TO  PTHKN-HONKZKKBN
            END-IF
+      *    後期高齢者は記号クリア
+           IF      COMB-HKNNUM         =   "039"
+               MOVE    SPACE               TO  PTHKN-KIGO
+           END-IF
       *    保険者番号レコード
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "22"                TO  TBL-QRCSV-DATA (1)
@@ -547,7 +551,12 @@
                PERFORM 940-PTKOHINF-READ-SEC
       *        負担者番号がない時、エラーとする
                IF      PTKOH-FTNJANUM      =   SPACE
-                   MOVE    1                   TO  ORCSQRCSV-ERRCD
+                   IF      PTKOH-JKYSNUM       =   SPACE
+      *                受給者番号もないとき、対象外
+                       CONTINUE
+                   ELSE
+                       MOVE    1                   TO  ORCSQRCSV-ERRCD
+                   END-IF
                ELSE
                   IF      PTKOH-KOHNUM            =   "027"
       *            老人保健
