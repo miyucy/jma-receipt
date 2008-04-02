@@ -655,9 +655,6 @@
                INITIALIZE                  SYS-1008-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1008-REC
       *
@@ -840,6 +837,9 @@
                MOVE    "0"                 TO  SPA-ZENHKNCHK-FLG
                MOVE    "1"                 TO  SPA-BYOMEIAUTO-FLG
            END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
       *
       *    診療科
            MOVE    SPACE               TO  SYS-KEY
@@ -1004,38 +1004,6 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    後発医薬品への変更可署名
-           MOVE    SPACE               TO  SYS-1030-REC
-           INITIALIZE                  SYS-1030-REC
-           MOVE    "1030"              TO  SYS-1030-KANRICD
-           MOVE    "*"                 TO  SYS-1030-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-1030-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1030-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
-           MOVE    SYS-1030-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1030-REC
-               INITIALIZE                  SYS-1030-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1030-REC
-               MOVE    SYS-1030-KOUHATUKA  TO  SPA-KOUHATUKA
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      SPA-KOUHATUKA       =   SPACE
-               MOVE    "0"                 TO  SPA-KOUHATUKA
-          END-IF
       *
       *    包括診療行為算定
            PERFORM 10010-HKTSANTEI-SEC
@@ -1145,6 +1113,38 @@
       *    時間外特例医療機関の施設基準はすべてありとする
            MOVE    1                   TO  SPA-JIKANTOKU
       *
+      *    後発医薬品への変更可署名
+           MOVE    SPACE               TO  SYS-1030-REC
+           INITIALIZE                  SYS-1030-REC
+           MOVE    "1030"              TO  SYS-1030-KANRICD
+           MOVE    "*"                 TO  SYS-1030-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1030-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1030-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
+           MOVE    SYS-1030-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1030-REC
+               INITIALIZE                  SYS-1030-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1030-REC
+               MOVE    SYS-1030-KOUHATUKA  TO  SPA-KOUHATUKA
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      SPA-KOUHATUKA       =   SPACE
+               MOVE    "0"                 TO  SPA-KOUHATUKA
+          END-IF
            .
        1009-SISETU-KIJUN-EXT.
       *
@@ -4269,6 +4269,8 @@
       *
       *    施設基準検索
            PERFORM 1009-SISETU-KIJUN-SEC
+      *    その他システム管理
+           PERFORM 3009-SYSKANRI-SAISET-SEC
       *    包括診療行為算定
            PERFORM 10010-HKTSANTEI-SEC
       *
@@ -4334,6 +4336,62 @@
       *
           .
        300-WKSRYACT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    訂正日のその他システム管理編集
+      *****************************************************************
+       3009-SYSKANRI-SAISET-SEC               SECTION.
+      *
+      *    システム管理検索（チェック機能制御情報）
+           MOVE    SPACE               TO  SYS-1008-REC
+           INITIALIZE                  SYS-1008-REC
+           MOVE    "1008"              TO  SYS-1008-KANRICD
+           MOVE    "*"                 TO  SYS-1008-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1008-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1008-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
+           MOVE    SYS-1008-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1008-REC
+               INITIALIZE                  SYS-1008-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1008-REC
+      *
+      *        外来管理加算チェック
+               MOVE    SYS-1008-GAIKANRIKBN-CHK
+                                           TO  SPA-GAIKANRIKBN-CHK
+      *        初期は、チェックありとする
+               IF      SYS-1008-GAIKANRIKBN-CHK    =   SPACE
+                   MOVE    "1"             TO  SPA-GAIKANRIKBN-CHK
+               END-IF
+      *        検体検査加算自動発生
+               IF      SYS-1008-KENSAAUTO-FLG   =   SPACE
+                   MOVE    "0"             TO  SPA-KENSAAUTO-FLG
+               ELSE
+                   MOVE    SYS-1008-KENSAAUTO-FLG
+                                           TO  SPA-KENSAAUTO-FLG
+               END-IF
+           ELSE
+               MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
+      *        検体検査加算自動発生
+               MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       3009-SYSKANRI-SAISET-EXT.
            EXIT.
       *
       *****************************************************************
