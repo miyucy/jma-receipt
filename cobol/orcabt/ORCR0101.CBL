@@ -270,11 +270,11 @@ grpsys     COPY    "COMMON-SPA".
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           UNSTRING    WRK-PARA-ARG25  DELIMITED  BY  "||"
+           UNSTRING    WRK-PARA-ARG25  DELIMITED  BY  "#/"
                                        INTO  WRK-PARA-KKHPRTNM
                                              WRK-PARA-KOUIKIPRTNM
            END-UNSTRING                                  
-           UNSTRING    WRK-PARA-ARG26  DELIMITED  BY  "||"
+           UNSTRING    WRK-PARA-ARG26  DELIMITED  BY  "#/"
                                        INTO  WRK-PARA-KKHPRTNM-N
                                              WRK-PARA-KOUIKIPRTNM-N
            END-UNSTRING

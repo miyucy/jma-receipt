@@ -4571,14 +4571,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                    MOVE    SPA-NAI-2005-SYAPRTNM-NEXT-N
                                    TO  SHELLTBL-ARG12
                    STRING  SPA-NAI-2005-KKHPRTNM-N DELIMITED  BY  SPACE
-                           "||"                    DELIMITED  BY  SIZE
+                           "#/"                    DELIMITED  BY  SIZE
                            SPA-NAI-2005-KOUIKIPRTNM-N
                                                    DELIMITED  BY  SPACE
                                            INTO    SHELLTBL-ARG25
                    END-STRING
                    STRING  SPA-NAI-2005-KKHPRTNM-NEXT-N
                                                    DELIMITED  BY  SPACE
-                           "||"                    DELIMITED  BY  SIZE
+                           "#/"                    DELIMITED  BY  SIZE
                            SPA-NAI-2005-KOUIKIPRTNM-NEXT-N
                                                    DELIMITED  BY  SPACE
                                            INTO    SHELLTBL-ARG26
@@ -4589,14 +4589,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                    MOVE    SPA-NAI-2005-SYAPRTNM-NEXT
                                    TO  SHELLTBL-ARG12
                    STRING  SPA-NAI-2005-KKHPRTNM   DELIMITED  BY  SPACE
-                           "||"                    DELIMITED  BY  SIZE
+                           "#/"                    DELIMITED  BY  SIZE
                            SPA-NAI-2005-KOUIKIPRTNM
                                                    DELIMITED  BY  SPACE
                                            INTO    SHELLTBL-ARG25
                    END-STRING
                    STRING  SPA-NAI-2005-KKHPRTNM-NEXT
                                                    DELIMITED  BY  SPACE
-                           "||"                    DELIMITED  BY  SIZE
+                           "#/"                    DELIMITED  BY  SIZE
                            SPA-NAI-2005-KOUIKIPRTNM-NEXT
                                                    DELIMITED  BY  SPACE
                                            INTO    SHELLTBL-ARG26
