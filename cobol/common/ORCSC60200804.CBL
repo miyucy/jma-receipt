@@ -3416,10 +3416,10 @@
                                                            (WRK-KENIDX)
                            END-IF
                        END-IF
-      *                ¸¡ÂÎ¸¡ºº²Ã»»
-                       IF      WRK-KENIDX          >=  1  AND  <=  6
-                           PERFORM 3004-KENTAI-CHK-SEC
-                       END-IF
+      *****            ¸¡ÂÎ¸¡ºº²Ã»»
+      *                IF      WRK-KENIDX          >=  1  AND  <=  6
+      *                    PERFORM 3004-KENTAI-CHK-SEC
+      *******          END-IF
       *
       *                È½ÃÇÎÁ¤ÎÈ½Äê
       *---(01.00.02)   LINE UPD START  ---------------------------------
@@ -3429,6 +3429,9 @@
                            ADD     1       TO  WRK-KEN-KBN (WRK-KENIDX)
                        END-IF
                    END-IF
+      *            ¸¡ÂÎ¸¡ºº²Ã»»
+                   PERFORM 3004-KENTAI-CHK-SEC
+      *
       *            ºÎ·ìÎÁ¶èÊ¬È½Äê
                    EVALUATE    WRK-COM-SAIKETUKBN (IDX)
       *                Ëõ¾ÃºÎ·ì
@@ -3782,23 +3785,30 @@
       *****************************************************************
        3004-KENTAI-CHK-SEC              SECTION.
       *
-           MOVE    ZERO               TO  FLG-KENTAI-CHK
-           PERFORM VARYING      IDX-KEN   FROM    1   BY  1
-                   UNTIL       (IDX-KEN   >   KEN-TAI-MAX)
-                           OR  (FLG-KENTAI-CHK    =   1  )
-               SET     TAI-IDX            TO  IDX-KEN
-               IF      WRK-COM-INPUTCD(IDX)    =   TBL-TAI-SRYCD
-                                                              (IDX-KEN)
-                   MOVE    1              TO  FLG-KENTAI-CHK
-                   MOVE    KEN-TAI-MAX    TO  IDX-KEN
-               END-IF
-           END-PERFORM
+           MOVE    ZERO                TO  FLG-KENTAI-CHK
+           SET     TAI-IDX             TO  1
+           SEARCH      TBL-KENSA-TAI-OCC   VARYING   TAI-IDX
+                   AT  END
+                       MOVE    ZERO                TO  FLG-KENTAI-CHK
+                   WHEN    WRK-COM-INPUTCD (IDX)
+                                               =   TBL-TAI-SRYCD
+                                                           (TAI-IDX)
+                       MOVE    1                   TO  FLG-KENTAI-CHK
+           END-SEARCH
            IF      FLG-KENTAI-CHK      =   1
                IF      FLG-KENTAI2         =   ZERO
-                   MOVE    WRK-KEN-SRYKA (WRK-KENIDX)
+                   IF      WRK-COM-SRYKA (IDX)     =   SPACE
+                       MOVE    SPA-SRYKA       TO  WRK-KENTAI-SRYKA
+                   ELSE
+                        MOVE    WRK-COM-SRYKA (IDX)
                                                TO  WRK-KENTAI-SRYKA
-                   MOVE    WRK-KEN-HKNCOMBI (WRK-KENIDX)
+                   END-IF
+                   IF      WRK-COM-HKNCOMBI (IDX)     =   SPACE
+                       MOVE    SPA-HKNCOMBINUM TO  WRK-KENTAI-HKNCOMBI
+                   ELSE
+                        MOVE    WRK-COM-HKNCOMBI (IDX)
                                                TO  WRK-KENTAI-HKNCOMBI
+                   END-IF
                END-IF
       *
                MOVE    1               TO  FLG-KENTAI2
