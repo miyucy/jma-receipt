@@ -370,3 +370,9 @@
                     06  W12-SYUKA-KOKUHO-COUNT   PIC S9(9)   BINARY.
                     06  W12-SYUKA-KOKUHOLST
                             PIC X(22)   OCCURS  3 TIMES.
+                  05  W12-SYUKA-KOUIKI-COMBO.
+                    06  W12-SYUKA-KOUIKI.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-SYUKA-KOUIKI-COUNT   PIC S9(9)   BINARY.
+                    06  W12-SYUKA-KOUIKILST
+                            PIC X(22)   OCCURS  3 TIMES.

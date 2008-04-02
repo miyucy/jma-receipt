@@ -458,6 +458,13 @@ W12	{
 					count	int;
 					item	varchar(22)[3];
 				};
+				SYUKA_KOUIKI_COMBO	{
+					SYUKA_KOUIKI	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[3];
+				};
 			};
 		};
 	};

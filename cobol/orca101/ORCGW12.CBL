@@ -461,6 +461,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-SYUKA-KOKUHOMEI
                                               PIC X(20).
+                       09  SPA-GMN-SYUKA-KOUIKI-G.
+                           11  SPA-GMN-SYUKA-KOUIKI
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-SYUKA-KOUIKIMEI
+                                              PIC X(20).
                        09  SPA-GMN-NI-JYOKEN1 PIC 9(08).
                        09  SPA-GMN-NI-JYOKEN2 PIC 9(08).
                        09  SPA-GMN-NI-JYOKEN3 PIC 9(08).
@@ -845,6 +851,15 @@
                        09  SPA-GMN-SYUKA-KOKUHOMEIL
                                                PIC X(20).
                    07  SPA-GMN-SYUKA-KOKUHO-MAX
+                                               PIC 9(02).   
+      * 
+                   07  SPA-GMN-SYUKA-KOUIKILST OCCURS  3.
+                       09  SPA-GMN-SYUKA-KOUIKIL
+                                               PIC X(01).
+                       09  SPA-GMN-F1L         PIC X(01).
+                       09  SPA-GMN-SYUKA-KOUIKIMEIL
+                                               PIC X(20).
+                   07  SPA-GMN-SYUKA-KOUIKI-MAX
                                                PIC 9(02).   
       * 
                    07  SPA-GMN-FRAME-JIBAIPRTKBNLST  OCCURS  2.
@@ -1655,6 +1670,14 @@
            MOVE    "科別印刷のみ"  TO  SPA-GMN-SYUKA-KOKUHOMEIL (3)
            MOVE    3               TO  SPA-GMN-SYUKA-KOKUHO-MAX 
       *
+           MOVE    "0"             TO  SPA-GMN-SYUKA-KOUIKIL    (1)
+           MOVE    "しない"        TO  SPA-GMN-SYUKA-KOUIKIMEIL (1)
+           MOVE    "1"             TO  SPA-GMN-SYUKA-KOUIKIL    (2)
+           MOVE    "主科"          TO  SPA-GMN-SYUKA-KOUIKIMEIL (2)
+           MOVE    "2"             TO  SPA-GMN-SYUKA-KOUIKIL    (3)
+           MOVE    "科別印刷のみ"  TO  SPA-GMN-SYUKA-KOUIKIMEIL (3)
+           MOVE    3               TO  SPA-GMN-SYUKA-KOUIKI-MAX 
+      *
            MOVE    "0"             TO  SPA-GMN-FRAME-JIBAIPRTKBNL    (1)
            MOVE    "枠を記載しない"
                                    TO  SPA-GMN-FRAME-JIBAIPRTKBNMEIL (1)
@@ -2423,6 +2446,10 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                AND   ( SYS-2009-SYUKA-KOKUHO   =   SPACE )
                    MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
                END-IF      
+               IF    ( SYS-2009-SYUKA-KBN      =   "1"   )
+               AND   ( SYS-2009-SYUKA-KOUIKI   =   SPACE )
+                   MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
+               END-IF      
       *
                MOVE    SYS-2009-SYUKA-KBN      TO  SPA-GMN-SYUKA-KBN
                PERFORM VARYING IDY FROM    1   BY  1
@@ -2506,6 +2533,19 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                                TO
                                                SPA-GMN-SYUKA-KOKUHO-G
                        MOVE    SPA-GMN-SYUKA-KOKUHO-MAX
+                                               TO  IDY
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    SYS-2009-SYUKA-KOUIKI   TO  SPA-GMN-SYUKA-KOUIKI
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >   SPA-GMN-SYUKA-KOUIKI-MAX
+                   IF      SPA-GMN-SYUKA-KOUIKI
+                                   =   SPA-GMN-SYUKA-KOUIKIL (IDY)
+                       MOVE    SPA-GMN-SYUKA-KOUIKILST (IDY)
+                                               TO
+                                               SPA-GMN-SYUKA-KOUIKI-G
+                       MOVE    SPA-GMN-SYUKA-KOUIKI-MAX
                                                TO  IDY
                    END-IF
                END-PERFORM
@@ -2837,6 +2877,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-SYUKA-MODE      TO  SPA-GMN-SYUKA-MODE-G
            MOVE    W12-SYUKA-SYAHO     TO  SPA-GMN-SYUKA-SYAHO-G
            MOVE    W12-SYUKA-KOKUHO    TO  SPA-GMN-SYUKA-KOKUHO-G
+           MOVE    W12-SYUKA-KOUIKI    TO  SPA-GMN-SYUKA-KOUIKI-G
            MOVE    W12-NI-JYOKEN1      TO  SPA-GMN-NI-JYOKEN1
            MOVE    W12-NI-JYOKEN2      TO  SPA-GMN-NI-JYOKEN2
            MOVE    W12-NI-JYOKEN3      TO  SPA-GMN-NI-JYOKEN3
@@ -3169,6 +3210,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
+           PERFORM 4150-SYUKA-KOUIKI-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
            .
        4102-KIHON-CHK-EXT.
            EXIT.
@@ -3284,7 +3330,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *     
                IF      SPA-GMN-KOUIKIRECEKBNMEI   =   SPACE
                    MOVE    108                     TO  SPA-GMN-CUR
-                   MOVE    "00??"                  TO  SPA-ERRCD
+                   MOVE    "0046"                  TO  SPA-ERRCD
                END-IF
            END-IF    
       *
@@ -3350,8 +3396,8 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-PERFORM
       *     
                IF      SPA-GMN-KOUIKIOCRKBNMEI =   SPACE
-                   MOVE    108                     TO  SPA-GMN-CUR
-                   MOVE    "00??"                  TO  SPA-ERRCD
+                   MOVE    43                      TO  SPA-GMN-CUR
+                   MOVE    "0047"                  TO  SPA-ERRCD
                END-IF
            END-IF    
            .
@@ -3717,7 +3763,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                           TO  SPA-GMN-KOUIKIKBN-G
                ELSE
                    MOVE    44             TO  SPA-GMN-CUR
-                   MOVE    "00??"         TO  SPA-ERRCD
+                   MOVE    "0049"         TO  SPA-ERRCD
                END-IF
            END-IF    
       *
@@ -3998,7 +4044,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *     
                IF      SPA-GMN-PRTJYUN5MEI  =   SPACE
                    MOVE    49                      TO  SPA-GMN-CUR
-                   MOVE    "00??"                  TO  SPA-ERRCD
+                   MOVE    "0048"                  TO  SPA-ERRCD
                END-IF
            END-IF    
            .
@@ -4796,6 +4842,34 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    主科広域連合設定フラグチェック
+      *****************************************************************
+       4150-SYUKA-KOUIKI-CHK-SEC   SECTION.
+      *
+           IF      SPA-GMN-SYUKA-KOUIKI    =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >   SPA-GMN-SYUKA-KOUIKI-MAX
+                   IF      SPA-GMN-SYUKA-KOUIKI
+                                       =   SPA-GMN-SYUKA-KOUIKIL (IDY)
+                       MOVE    SPA-GMN-SYUKA-KOUIKILST (IDY)
+                                           TO  SPA-GMN-SYUKA-KOUIKI-G
+                       MOVE    SPA-GMN-SYUKA-KOUIKI-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-SYUKA-KOUIKIMEI =   SPACE
+                   MOVE    97                      TO  SPA-GMN-CUR
+                   MOVE    "0050"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4150-SYUKA-KOUIKI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    タグ編集処理
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
@@ -5141,6 +5215,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SYUKA-SYAHO TO  SYS-2009-SYUKA-SYAHO
            MOVE    SPA-GMN-SYUKA-KOKUHO
                                        TO  SYS-2009-SYUKA-KOKUHO
+           MOVE    SPA-GMN-SYUKA-KOUIKI
+                                       TO  SYS-2009-SYUKA-KOUIKI
            MOVE    SYS-2009-REC        TO  SYSKANRI-REC
       *     
            PERFORM 800-MCNDATE-SEC
@@ -5349,6 +5425,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                AND   ( SPA-GMN-SYUKA-SELECT    =   SPACE )
                AND   ( SPA-GMN-SYUKA-SYAHO     =   SPACE )
                AND   ( SPA-GMN-SYUKA-KOKUHO    =   SPACE )
+               AND   ( SPA-GMN-SYUKA-KOUIKI    =   SPACE )
                    CONTINUE
                ELSE
                    IF    ( SPA-GMN-SYUKA-KBN       =   ZERO )
@@ -5358,6 +5435,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        AND   ( SPA-GMN-SYUKA-SELECT    =   SPACE )
                        AND   ( SPA-GMN-SYUKA-SYAHO     =   SPACE )
                        AND   ( SPA-GMN-SYUKA-KOKUHO    =   SPACE )
+                       AND   ( SPA-GMN-SYUKA-KOUIKI    =   SPACE )
                            CONTINUE
                        ELSE
                            MOVE    91                  TO  SPA-GMN-CUR
@@ -5378,6 +5456,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                            AND   ( SPA-GMN-SYUKA-SYAHO     =   SPACE
                                                            OR  "0"   )
                            AND   ( SPA-GMN-SYUKA-KOKUHO    =   SPACE
+                                                           OR  "0"   )
+                           AND   ( SPA-GMN-SYUKA-KOUIKI    =   SPACE
                                                            OR  "0"   )
                                MOVE    95              TO  SPA-GMN-CUR
                                MOVE    "0102"          TO  SPA-ERRCD
@@ -5488,6 +5568,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SYUKA-SELECT-G   TO  W12-SYUKA-SELECT
            MOVE    SPA-GMN-SYUKA-SYAHO-G    TO  W12-SYUKA-SYAHO
            MOVE    SPA-GMN-SYUKA-KOKUHO-G   TO  W12-SYUKA-KOKUHO
+           MOVE    SPA-GMN-SYUKA-KOUIKI-G   TO  W12-SYUKA-KOUIKI
            MOVE    SPA-GMN-NI-JYOKEN1       TO  W12-NI-JYOKEN1
            MOVE    SPA-GMN-NI-JYOKEN2       TO  W12-NI-JYOKEN2
            MOVE    SPA-GMN-NI-JYOKEN3       TO  W12-NI-JYOKEN3
@@ -5921,6 +6002,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-SYUKA-KOKUHO-MAX
                                            TO  W12-SYUKA-KOKUHO-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-SYUKA-KOUIKI-MAX
+               MOVE    SPA-GMN-SYUKA-KOUIKILST (IDY)
+                                           TO  W12-SYUKA-KOUIKILST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-SYUKA-KOUIKI-MAX
+                                           TO  W12-SYUKA-KOUIKI-COUNT 
      *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-FRAME-JIBAIPRTKBN-MAX
@@ -6105,6 +6194,20 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0045"
                    MOVE    "自倍責様式選択（入院）入力エラー"
                                                          TO  SPA-ERRMSG
+               WHEN    "0046"
+                   MOVE    "広域連合レセ電出力区分入力エラー"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0047"
+                   MOVE    "広域連合ＯＣＲ出力区分入力エラー"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0048"
+                   MOVE    "一括作成出力順（広域連合）入力エラー"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0049"
+                   MOVE    "広域連合作成区分入力エラー"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0050"
+                   MOVE    "主科広域連合設定入力エラー"  TO  SPA-ERRMSG
       *
                WHEN    "0096"
                    STRING  "一括作成出力順（国保）の指定が編綴順です。"
@@ -6345,6 +6448,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "SYUKA_SYAHO"      TO   MCP-WIDGET
                 WHEN    96
                     MOVE  "SYUKA_KOKUHO"     TO   MCP-WIDGET
+                WHEN    97
+                    MOVE  "SYUKA_KOUIKI"     TO   MCP-WIDGET
       *
                 WHEN    100
                     MOVE  "SYARECEKBN"       TO   MCP-WIDGET
@@ -6573,6 +6678,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "SYUKA_SYAHO"
                    MOVE    96          TO  SPA-GMN-CUR
                WHEN    "SYUKA_KOKUHO"
+                   MOVE    97          TO  SPA-GMN-CUR
+               WHEN    "SYUKA_KOUIKI"
                    MOVE    99          TO  SPA-GMN-CUR
       *
                WHEN    "SYAPRTKBN"
