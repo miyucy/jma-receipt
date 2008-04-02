@@ -69,6 +69,8 @@
       *  03.05.01    NACL-∆£∏∂    07/04/19  •∞•Î°º•◊ø«Œ≈¬–±˛
       *
       *  04.01.01    NACL-∆£∏∂    07/11/22  ∏¯≥≤•Ï•ª•◊•»¬–±˛
+      *
+      *  04.02.01    NACL-∆£∏∂    08/03/25   ø¿Æ£≤£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -437,6 +439,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                                        ALSO    SPA-RECE10-TEISYUTUSAKI
                WHEN    "1"             ALSO    1
                WHEN    "1"             ALSO    2
+               WHEN    "1"             ALSO    6
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       35
                        MOVE    "blue"  TO  SPA-H01GMN-MIDASI-STYLE (IDX)
@@ -463,7 +466,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                    MOVE  "            ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(14)
                    MOVE  "        ºÍΩ—°¶À„øÏ"  TO SPA-H01GMN-MIDASI(15)
                    MOVE  "            ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(16)
-                   MOVE  "            ∏°  ∫∫"  TO SPA-H01GMN-MIDASI(17)
+                   IF      SPA-RECE10-SRYYM    >=  "200804"
+                       MOVE  "          …¬Õ˝∏°∫∫"
+                                               TO SPA-H01GMN-MIDASI(17)
+                   ELSE
+                       MOVE  "            ∏°  ∫∫"
+                                               TO SPA-H01GMN-MIDASI(17)
+                   END-IF
                    MOVE  "            ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(18)
                    MOVE  "          ≤Ë¡¸ø«√«"  TO SPA-H01GMN-MIDASI(19)
                    MOVE  "            ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(20)
@@ -493,10 +502,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                    MOVE  WIDGET-NORMAL      TO SPA-H01GMN-SHO-STATE 
                    MOVE    "πÁ∑◊≈¿øÙ"       TO SPA-H01GMN-TENMIDASI (1)
                    MOVE    "∞Ï…Ù…È√¥∂‚"     TO SPA-H01GMN-TENMIDASI (2)
-                   MOVE    "ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚" TO SPA-H01GMN-TENMIDASI (3)
+                   IF      SPA-RECE10-SRYYM    <   "200304"
+                       MOVE    "ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚"
+                                            TO SPA-H01GMN-TENMIDASI (3)
+                   END-IF
                    MOVE    "º¬∆¸øÙ"         TO SPA-H01GMN-TENMIDASI (4)
                WHEN    "2"             ALSO    1
                WHEN    "2"             ALSO    2
+               WHEN    "2"             ALSO    6
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       35
                        MOVE    "blue"  TO  SPA-H01GMN-MIDASI-STYLE (IDX)
@@ -535,7 +548,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                    MOVE    "          ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(26)
                    MOVE    "      ºÍΩ—°¶À„øÏ"  TO SPA-H01GMN-MIDASI(27)
                    MOVE    "          ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(28)
-                   MOVE    "          ∏°  ∫∫"  TO SPA-H01GMN-MIDASI(29)
+                   IF      SPA-RECE10-SRYYM    >=  "200804"
+                       MOVE  "        …¬Õ˝∏°∫∫"
+                                               TO SPA-H01GMN-MIDASI(29)
+                   ELSE
+                       MOVE  "          ∏°  ∫∫"
+                                               TO SPA-H01GMN-MIDASI(29)
+                   END-IF
                    MOVE    "          ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(30)
                    MOVE    "        ≤Ë¡¸ø«√«"  TO SPA-H01GMN-MIDASI(31)
                    MOVE    "          ÃÙ  ∫ﬁ"  TO SPA-H01GMN-MIDASI(32)
@@ -549,7 +568,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                    MOVE  WIDGET-INSENSITIVE TO SPA-H01GMN-SHO-STATE 
                    MOVE    "πÁ∑◊≈¿øÙ"       TO SPA-H01GMN-TENMIDASI (1)
                    MOVE    "∞Ï…Ù…È√¥∂‚"     TO SPA-H01GMN-TENMIDASI (2)
-                   MOVE    "ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚" TO SPA-H01GMN-TENMIDASI (3)
+                   IF      SPA-RECE10-SRYYM    <   "200304"
+                       MOVE    "ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚"
+                                            TO SPA-H01GMN-TENMIDASI (3)
+                   END-IF
                    MOVE    "º¬∆¸øÙ"         TO SPA-H01GMN-TENMIDASI (4)
                WHEN    "1"             ALSO    5
                    PERFORM VARYING IDX FROM    1   BY  1
@@ -1181,8 +1203,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *    ºÁ≤ ¬–±˛§Œ§»§≠ºÁ≤ §Ú…Ωº®§π§Î
            IF    ( SPA-SYUKA-KBN      =   "1"  )
-           AND   ( RECE10-TEISYUTUSAKI 
-                                      =   "1"  )
+      *****AND   ( RECE10-TEISYUTUSAKI 
+      *****                           =   "1"  )
            AND   ( RECE10-RECEKA  NOT =   "00" )
                MOVE    RECE10-RECEKA      TO  SPA-H01GMN-SRYKA
            END-IF
@@ -1199,6 +1221,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    "πÒ ›œ¢πÁ≤Ò"    TO  SPA-H01GMN-HTEISYUTUSAKI
                WHEN    "5"
                    MOVE    "∏¯≥≤"          TO  SPA-H01GMN-HTEISYUTUSAKI
+               WHEN    "6"
+                   MOVE    "π≠∞Ëœ¢πÁ"      TO  SPA-H01GMN-HTEISYUTUSAKI
            END-EVALUATE
       *
            PERFORM 530-RECESYUBETU-HENSYU-SEC
@@ -1207,14 +1231,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EVALUATE    RECE10-TEISYUTUSAKI
                WHEN    "1"
                WHEN    "2"
+               WHEN    "6"
                    MOVE    RECE10-HKNJANUM     TO  SPA-H01GMN-HHKNJANUM
            END-EVALUATE
       *
-           STRING  RECE10-KIGO     DELIMITED   BY  SPACE
-                   "°°"            DELIMITED   BY  SIZE
-                   RECE10-NUM      DELIMITED   BY  SPACE
-                                   INTO    SPA-H01GMN-HKIGO
-           END-STRING
+           EVALUATE    RECE10-TEISYUTUSAKI
+               WHEN    "6"
+                   MOVE    RECE10-NUM          TO  SPA-H01GMN-HKIGO
+               WHEN    OTHER
+                   STRING  RECE10-KIGO     DELIMITED   BY  SPACE
+                           "°°"            DELIMITED   BY  SIZE
+                           RECE10-NUM      DELIMITED   BY  SPACE
+                                           INTO    SPA-H01GMN-HKIGO
+                   END-STRING
+           END-EVALUATE        
       *
            EVALUATE    RECE10-HKNNUM
                WHEN    "002"
@@ -1298,7 +1328,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "2"
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       38
-                       IF    ( RECE10-TEISYUTUSAKI     =   "1" OR  "2" )
+                       IF    ( RECE10-TEISYUTUSAKI     =   "1" OR  "2"
+                                                               OR  "6" )
                        AND   ( IDX                     >   35          )
                            CONTINUE
                        ELSE 
@@ -1385,13 +1416,21 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    "À‹øÕ"          TO  SPA-H01GMN-HONKZKKBN
                    WHEN    "3"
                    WHEN    "4"
-                       MOVE    "ª∞∫–"          TO  SPA-H01GMN-HONKZKKBN
+                       IF      SPA-RECE10-SRYYM    >=  "200804"
+                           MOVE    "Ã§Ω¢"      TO  SPA-H01GMN-HONKZKKBN
+                       ELSE
+                           MOVE    "ª∞∫–"      TO  SPA-H01GMN-HONKZKKBN
+                       END-IF
                    WHEN    "5"
                    WHEN    "6"
                        MOVE    "≤»¬≤"          TO  SPA-H01GMN-HONKZKKBN
                    WHEN    "7"
                    WHEN    "8"
-                       MOVE    "π‚£π"          TO  SPA-H01GMN-HONKZKKBN
+                       IF      SPA-RECE10-SRYYM    >=  "200804"
+                           MOVE    "π‚∞Ï"      TO  SPA-H01GMN-HONKZKKBN
+                       ELSE 
+                           MOVE    "π‚£π"      TO  SPA-H01GMN-HONKZKKBN
+                       END-IF
                    WHEN    "9"
                    WHEN    "0"
                        IF      RECE10-SRYYM    <   WRK-CONS-SRYYM-200610
