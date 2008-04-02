@@ -4393,8 +4393,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                INTO   SPA-ERRMSG
                    END-STRING
                WHEN    "0121"
-                   STRING  "後期高齢者に到達しました。"
-                           "前期高齢者の保険は保険終了させて下さい。"
+                   STRING  "後期高齢者です。"
+                           "後期高齢者医療を登録するか"
+                           "前の主保険の有効期間を設定して下さい"
                                                DELIMITED   BY  SPACE
                                                INTO   SPA-ERRMSG
                    END-STRING
