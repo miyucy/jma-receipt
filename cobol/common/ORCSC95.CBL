@@ -1145,6 +1145,39 @@
       *    時間外特例医療機関の施設基準はすべてありとする
            MOVE    1                   TO  SPA-JIKANTOKU
       *
+      *    後発医薬品への変更可署名
+           MOVE    SPACE               TO  SYS-1030-REC
+           INITIALIZE                  SYS-1030-REC
+           MOVE    "1030"              TO  SYS-1030-KANRICD
+           MOVE    "*"                 TO  SYS-1030-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1030-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1030-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1030-HOSPNUM
+           MOVE    SYS-1030-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1030-REC
+               INITIALIZE                  SYS-1030-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1030-REC
+               MOVE    SYS-1030-KOUHATUKA  TO  SPA-KOUHATUKA
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      SPA-KOUHATUKA       =   SPACE
+               MOVE    "0"                 TO  SPA-KOUHATUKA
+          END-IF
+      *
            .
        1009-SISETU-KIJUN-EXT.
       *
