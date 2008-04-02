@@ -4123,6 +4123,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED  BY  SIZE
                                                INTO   SPA-ERRMSG
                    END-STRING
+               WHEN    "K050"
+                   STRING  "警告！！"
+                           "後期高齢者は記号に入力しないで下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
                WHEN    "0049"
                    MOVE    "保険の番号は全角で入力して下さい。"
                                                TO  SPA-ERRMSG

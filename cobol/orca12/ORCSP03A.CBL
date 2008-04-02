@@ -1424,6 +1424,20 @@
                        MOVE    13                  TO  SPA-GMN-CUR
                    END-IF
                END-IF
+      *        後期高齢者は記号なしとする
+               IF      SPA-GMN-HKNNUM      =   "039"
+                   IF      SPA-GMN-KIGO    NOT =   SPA-MAE-KIGO
+                       MOVE    ZERO            TO  SPA-KIGO-KEIFLG
+                   END-IF
+                   IF     (SPA-GMN-KIGO    NOT =   SPACE ) AND
+                          (SPA-KIGO-KEIFLG     =   ZERO  )
+                       MOVE    "K050"              TO  SPA-ERRCD
+                       MOVE    13                  TO  SPA-GMN-CUR
+                   END-IF
+                   MOVE    1                   TO  SPA-KIGO-KEIFLG
+                   MOVE    SPA-GMN-KIGO        TO  SPA-MAE-KIGO
+               ELSE
+      *
       *        空白チェック
                IF     (SPA-ERRCD           =   SPACE  )
                   AND (SPA-GMN-HKNNUM      >=  "001"  AND
@@ -1439,6 +1453,8 @@
                        MOVE    1                   TO  SPA-KIGO-KEIFLG
                    END-IF
                    MOVE    SPA-GMN-KIGO        TO  SPA-MAE-KIGO
+               END-IF
+      *
                END-IF
            END-IF
       *
