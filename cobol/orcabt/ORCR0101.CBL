@@ -174,6 +174,9 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-PARA-KOUIKIPRTNM-N     PIC X(16). 
                05  WRK-PARA-HOSPNUM    PIC  9(02).
       *
+           03  WRK-PARA-ARG25          PIC X(100).
+           03  WRK-PARA-ARG26          PIC X(100).
+      *
            03  WRK-RECE08-PRTRENNUM    PIC 9(06).
       *
            03  WRK-RECEERR             PIC X(200). 
@@ -260,14 +263,25 @@ grpsys     COPY    "COMMON-SPA".
                                              WRK-PARA-PRTJYUN
                                              WRK-PARA-PRTNM
                                              WRK-PARA-PRTNM-N
-                                             WRK-PARA-KKHPRTNM
-                                             WRK-PARA-KKHPRTNM-N
-                                             WRK-PARA-KOUIKIPRTNM
-                                             WRK-PARA-KOUIKIPRTNM-N
+                                             WRK-PARA-ARG25
+                                             WRK-PARA-ARG26
                                              WRK-PARA-HOSPNUM
                                              RECEERR
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           UNSTRING    WRK-PARA-ARG25  DELIMITED  BY  "||"
+                                       INTO  WRK-PARA-KKHPRTNM
+                                             WRK-PARA-KOUIKIPRTNM
+           END-UNSTRING                                  
+           UNSTRING    WRK-PARA-ARG26  DELIMITED  BY  "||"
+                                       INTO  WRK-PARA-KKHPRTNM-N
+                                             WRK-PARA-KOUIKIPRTNM-N
+           END-UNSTRING
+           DISPLAY "KKHPRTNM   =" WRK-PARA-KKHPRTNM " "
+                                  WRK-PARA-KKHPRTNM-N
+           DISPLAY "KOUIKIPRTNM=" WRK-PARA-KOUIKIPRTNM " "
+                                  WRK-PARA-KOUIKIPRTNM-N
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -380,7 +394,7 @@ grpsys     MOVE    SPA-HOSPNUM                  TO  RECE08-HOSPNUM
                END-EVALUATE
       *
                DISPLAY "PTNUM=" RECE08-PTNUM "#" RECE08-PRTJYUN-SYUKA
-                                "#" RECE08-PRTRENNUM
+                                "#" RECE08-PRTRENNUM "#" RECE08-PRTNM
       *
                MOVE    RECE08-REC           TO  MCPDATA-REC
                MOVE    "tbl_receprt"        TO  MCP-TABLE

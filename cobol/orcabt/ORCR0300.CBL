@@ -1472,7 +1472,6 @@ grpsys     COPY    "COMMON-SPA".
                                                WRK-PARA-TEISYUTUSAKI
                                                WRK-PARA-SYARECEKBN
                                                WRK-PARA-KKHRECEKBN
-                                               WRK-PARA-KOUIKIRECEKBN
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-HOSPNUM
@@ -1677,15 +1676,26 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
                                            TO  SYS-200501-NI-JYOKEN(1)
                END-IF
            ELSE    
-               MOVE    SPACE            TO  SYS-200501-REC
-               INITIALIZE                   SYS-200501-REC
+               MOVE    SPACE           TO  SYS-200501-REC
+               INITIALIZE                  SYS-200501-REC
                MOVE    WRK-CONS-JYOKEN-TENSU
-                                        TO  SYS-200501-NI-JYOKEN(1)
+                                       TO  SYS-200501-NI-JYOKEN(1)
            END-IF
+           IF      SYS-200501-KOUIKIRECEKBN
+                                       =   SPACE
+               MOVE    ZERO        TO  SYS-200501-KOUIKIRECEKBN
+           END-IF
+           IF      SYS-200501-KOUIKIRECEKBN
+                                       =   SPACE
+               MOVE    ZERO        TO  SYS-200501-KOUIKIRECEKBN
+           END-IF
+           MOVE    SYS-200501-KOUIKIRECEKBN
+                                   TO  WRK-PARA-KOUIKIRECEKBN 
       *
            DISPLAY "2005 NI-JYOKEN (1)=" SYS-2005-NI-JYOKEN(1)
                                  " (2)=" SYS-2005-NI-JYOKEN(2)
                    " 200501 NI-JYOKEN (1)=" SYS-200501-NI-JYOKEN(1)
+           DISPLAY "KOUIKIRECEKBN=" WRK-PARA-KOUIKIRECEKBN
       *         
       *    •Ï•ª•◊•» ‘Ω∏∂Ë ¨æ Û
            MOVE    SPACE           TO  SYS-2009-REC
@@ -4952,12 +4962,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
       *
                EVALUATE    RECE09-TEISYUTUSAKI
                    WHEN    "6"
-                       IF    ( RECE09-NUM     NOT =   SPACE )
-                       AND   ( RECE09-KIGO    NOT =   SPACE )        
-                           MOVE    "°›"       TO  WRK-HKN-FIL
-                       ELSE
-                           MOVE    SPACE      TO  WRK-HKN-FIL
-                       END-IF 
+                       MOVE    SPACE      TO  WRK-HKN-FIL
                    WHEN    OTHER
                        MOVE    "°›"       TO  WRK-HKN-FIL
                END-EVALUATE

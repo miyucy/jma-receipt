@@ -1116,7 +1116,9 @@ grpsys         MOVE   RECE02-HOSPNUM   TO  HKN-HOSPNUM
                                                 WK-HONKZKKBN
                MOVE    RECE01-HKN-HOJOKBN   TO  RECE02-HOJOKBN
                MOVE    RECE01-CONTKBN       TO  RECE02-CONTKBN
-               MOVE    RECE01-KIGO          TO  RECE02-KIGO
+               IF      RECE02-HKNNUM    NOT  =   "039"
+                   MOVE    RECE01-KIGO          TO  RECE02-KIGO
+               END-IF
                MOVE    RECE01-NUM           TO  RECE02-NUM
                MOVE    RECE01-CERTNUM       TO  RECE02-CERTNUM
            END-IF
@@ -2802,7 +2804,9 @@ grpsys             PERFORM 900-DBSELECT-SEC
                            MOVE   PTHKN-HONKZKKBN  TO  RECE09-HONKZKKBN
                            MOVE   PTHKN-HOJOKBN    TO  RECE09-HOJOKBN
                            MOVE   PTHKN-CONTKBN    TO  RECE09-CONTKBN
-                           MOVE   PTHKN-KIGO       TO  RECE09-KIGO
+                           IF     PTHKN-HKNNUM NOT =   "039"     
+                               MOVE   PTHKN-KIGO       TO  RECE09-KIGO
+                           END-IF
                            MOVE   PTHKN-NUM        TO  RECE09-NUM
                            MOVE   SPACE            TO  RECE09-CERTNUM
       *         

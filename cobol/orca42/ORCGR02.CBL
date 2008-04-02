@@ -4568,29 +4568,39 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
                WHEN   "1"
                    MOVE    SPA-NAI-2005-SYAPRTNM-N
                                    TO  SHELLTBL-ARG11
-                    MOVE    SPA-NAI-2005-SYAPRTNM-NEXT-N
+                   MOVE    SPA-NAI-2005-SYAPRTNM-NEXT-N
                                    TO  SHELLTBL-ARG12
-                   MOVE    SPA-NAI-2005-KKHPRTNM-N
-                                   TO  SHELLTBL-ARG25
-                   MOVE    SPA-NAI-2005-KKHPRTNM-NEXT-N
-                                   TO  SHELLTBL-ARG26
-                   MOVE    SPA-NAI-2005-KOUIKIPRTNM-N
-                                   TO  SHELLTBL-ARG31
-                   MOVE    SPA-NAI-2005-KOUIKIPRTNM-NEXT-N
-                                   TO  SHELLTBL-ARG32
+                   STRING  SPA-NAI-2005-KKHPRTNM-N DELIMITED  BY  SPACE
+                           "||"                    DELIMITED  BY  SIZE
+                           SPA-NAI-2005-KOUIKIPRTNM-N
+                                                   DELIMITED  BY  SPACE
+                                           INTO    SHELLTBL-ARG25
+                   END-STRING
+                   STRING  SPA-NAI-2005-KKHPRTNM-NEXT-N
+                                                   DELIMITED  BY  SPACE
+                           "||"                    DELIMITED  BY  SIZE
+                           SPA-NAI-2005-KOUIKIPRTNM-NEXT-N
+                                                   DELIMITED  BY  SPACE
+                                           INTO    SHELLTBL-ARG26
+                   END-STRING
                WHEN   "2"
                    MOVE    SPA-NAI-2005-SYAPRTNM
                                    TO  SHELLTBL-ARG11
                    MOVE    SPA-NAI-2005-SYAPRTNM-NEXT
                                    TO  SHELLTBL-ARG12
-                   MOVE    SPA-NAI-2005-KKHPRTNM
-                                   TO  SHELLTBL-ARG25
-                   MOVE    SPA-NAI-2005-KKHPRTNM-NEXT
-                                   TO  SHELLTBL-ARG26
-                   MOVE    SPA-NAI-2005-KOUIKIPRTNM
-                                   TO  SHELLTBL-ARG31
-                   MOVE    SPA-NAI-2005-KOUIKIPRTNM-NEXT
-                                   TO  SHELLTBL-ARG32
+                   STRING  SPA-NAI-2005-KKHPRTNM   DELIMITED  BY  SPACE
+                           "||"                    DELIMITED  BY  SIZE
+                           SPA-NAI-2005-KOUIKIPRTNM
+                                                   DELIMITED  BY  SPACE
+                                           INTO    SHELLTBL-ARG25
+                   END-STRING
+                   STRING  SPA-NAI-2005-KKHPRTNM-NEXT
+                                                   DELIMITED  BY  SPACE
+                           "||"                    DELIMITED  BY  SIZE
+                           SPA-NAI-2005-KOUIKIPRTNM-NEXT
+                                                   DELIMITED  BY  SPACE
+                                           INTO    SHELLTBL-ARG26
+                   END-STRING
            END-EVALUATE
            MOVE    SPA-GMN-PRTKBN  TO  SHELLTBL-ARG24
            MOVE    SPA-GMN-PREFKBN TO  SHELLTBL-ARG28
@@ -5339,6 +5349,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
            ELSE 
                MOVE    WIDGET-INSENSITIVE  TO  R02-PRTJYUN1-STATE
+                                               R02-PRTJYUN2-STATE
                MOVE    "╫пно╫Г"            TO  R02-LABEL1
                MOVE    SPACE               TO  R02-LABEL2
                                                R02-LABEL3

@@ -1813,12 +1813,7 @@
       *
                EVALUATE    RECE09-TEISYUTUSAKI
                    WHEN    "6"
-                       IF    ( RECE09-NUM     NOT =   SPACE )
-                       AND   ( RECE09-KIGO    NOT =   SPACE )        
-                           MOVE    "¡Ý"       TO  WRK-HKN-FIL
-                       ELSE
-                           MOVE    SPACE      TO  WRK-HKN-FIL
-                       END-IF 
+                       MOVE    SPACE      TO  WRK-HKN-FIL
                    WHEN    OTHER
                        MOVE    "¡Ý"       TO  WRK-HKN-FIL
                END-EVALUATE

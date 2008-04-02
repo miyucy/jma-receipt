@@ -4003,13 +4003,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                                                    TO  SHELLTBL-ARG17
                    END-IF
            END-EVALUATE
-           IF      SYS-200501-KOUIKIRECEKBN
-                                   =   ZERO
-               MOVE    "0"             TO  SHELLTBL-ARG18
-           ELSE
-               MOVE    SYS-200501-KOUIKIRECEKBN
-                                       TO  SHELLTBL-ARG18
-           END-IF
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
