@@ -182,6 +182,8 @@
                                    BY         //SPA-RECE07//.
            03  SPA-RECE07-SRYKA-KOKUHO
                                    PIC X(02).
+           03  SPA-RECE07-SRYKA-KOUIKI
+                                   PIC X(02).
            03  SPA-RECE07-RECE-PUTH-T   OCCURS 2.
                05  SPA-RECE07-ZAITAKU-KBN-T
                                    PIC  X(01).
@@ -1539,6 +1541,8 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                                           TO  SPA-R01-RECE07-HKNJANUM
                        MOVE    SPA-RECE07-SRYKA-KOKUHO
                                           TO SPA-R01-RECE07-SRYKA-KOKUHO
+                           MOVE    SPA-RECE07-SRYKA-KOUIKI
+                                          TO SPA-R01-RECE07-SRYKA-KOUIKI
                        MOVE    SPA-RECE07-RECE-PUTH-T (1)
                                           TO SPA-R01-RECE07-RECE-PUTH(1)
                        MOVE    SPA-RECE07-RECE-PUTH-T (2)
@@ -1772,9 +1776,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                END-IF  
       *
       *        一括作成のとき主科設定の有無チェック
-      **       IF    ( SPA-R01-FILEKBN         =   "1"         )
-      **       AND   ( SPA-R01-RECEKBN         =   "0" OR  "1" )
-      **       AND   ( SPA-SYUKA-KBN           =   "1"         )
                IF    ( SPA-SYUKA-KBN           =   "1"         )
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key11"             TO  WRK-MCP-PATHNAME
@@ -1792,6 +1793,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    IF      FLG-RECE07          =   ZERO
                        MOVE    RECE07-SRYKA    TO
                                                SPA-RECE07-SRYKA-KOKUHO
+                   END-IF
+                   MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+                   MOVE    "key11"             TO  WRK-MCP-PATHNAME
+                   MOVE    "6"                 TO  RECE07-TEISYUTUSAKI
+                   MOVE    RECE07-REC          TO  MCPDATA-REC
+                   PERFORM 900-RECE07-INV-SEC
+                   IF      FLG-RECE07          =   ZERO
+                       MOVE    RECE07-SRYKA    TO
+                                               SPA-RECE07-SRYKA-KOUIKI
                    END-IF
                END-IF  
            END-IF
@@ -2365,6 +2375,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "B12"                TO  MCP-WIDGET
                    IF    ( SPA-R01-RECE07-SRYKA =   "XX" )
                    OR    ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                =   "XX" )
+                   OR    ( SPA-R01-RECE07-SRYKA-KOUIKI
                                                 =   "XX" )
                        MOVE
                       "処理は正常に終了しましたが主科未設定分があります"

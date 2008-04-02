@@ -895,10 +895,11 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
       *    診療科の表示（一括作成時のみ）
            IF    ( SPA-SYUKA-KBN       =   "1"             )
            AND   ( SPA-R01-FILEKBN     =   "1"             )
-      *****AND   ( SPA-R01-RECEKBN     =   ZERO    OR  "1" )
              IF    ( SPA-R01-RECE07-SRYKA
                                      NOT =   "00" )
              OR    ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                     NOT =   "00" )
+             OR    ( SPA-R01-RECE07-SRYKA-KOUIKI
                                      NOT =   "00" )
                MOVE    "00"                TO  SPA-GMN-SYUKAL   (1)
                MOVE    "全科"              TO  SPA-GMN-SYUKAMEIL(1)
@@ -1625,6 +1626,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        MOVE    "%%"    TO  RECE07-SRYKA
                                    END-IF 
                            END-EVALUATE
+                       WHEN    "6" 
+                           EVALUATE    SPA-GMN-SYUKA
+                               WHEN    SPACE
+                               WHEN    "00"
+                                   MOVE    "%%"        TO  RECE07-SRYKA
+                               WHEN    OTHER
+                                   IF      SPA-R01-RECE07-SRYKA-KOUIKI
+                                                       NOT =   "00"
+                                       MOVE    SPA-GMN-SYUKA
+                                                       TO  RECE07-SRYKA
+                                   ELSE
+                                       MOVE    "%%"    TO  RECE07-SRYKA
+                                   END-IF 
+                           END-EVALUATE
                    END-EVALUATE
                    MOVE    RECE07-REC          TO  MCPDATA-REC                             
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
@@ -1756,6 +1771,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    "%%"        TO  RECE07-SRYKA
                        WHEN    OTHER
                            IF      SPA-R01-RECE07-SRYKA-KOKUHO
+                                               NOT =   "00"
+                               MOVE    SPA-GMN-SYUKA   TO  RECE07-SRYKA
+                           ELSE
+                               MOVE    "%%"            TO  RECE07-SRYKA
+                           END-IF 
+                   END-EVALUATE
+               WHEN    "6" 
+                   EVALUATE    SPA-GMN-SYUKA
+                       WHEN    SPACE
+                       WHEN    "00"
+                           MOVE    "%%"        TO  RECE07-SRYKA
+                       WHEN    OTHER
+                           IF      SPA-R01-RECE07-SRYKA-KOUIKI
                                                NOT =   "00"
                                MOVE    SPA-GMN-SYUKA   TO  RECE07-SRYKA
                            ELSE
@@ -3096,6 +3124,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            MOVE    "F"     TO
                                              SPA-GMN-TCHK-VALUE(IDW IDX)
                                        END-IF
+                                   WHEN    "6"
+                                       IF  SPA-R01-RECE07-SRYKA-KOUIKI
+                                                           NOT =   "00"
+                                           MOVE    "T"     TO
+                                             SPA-GMN-TCHK-VALUE(IDW IDX)
+                                       ELSE
+                                           MOVE    "F"     TO
+                                             SPA-GMN-TCHK-VALUE(IDW IDX)
+                                       END-IF
                                END-EVALUATE
                            END-PERFORM
                        END-PERFORM
@@ -3112,6 +3149,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF    ( SPA-R01-RECE07-SRYKA    NOT =   "00" )
                AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                NOT =   "00" )
+               AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                               NOT =   "00" )
                    IF      WRK-GMN-PAGE        <   3
                        MOVE    WRK-GMN-PAGE        TO  SPA-GMN-PAGE
                    ELSE
@@ -3121,6 +3160,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF    ( SPA-R01-RECE07-SRYKA        =   "00" )
                AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                NOT =   "00" )
+               AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                               NOT =   "00" )
                    IF      WRK-GMN-PAGE        =   1
                        MOVE    2                   TO  SPA-GMN-PAGE
                    ELSE
@@ -3129,6 +3170,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF    
                IF    ( SPA-R01-RECE07-SRYKA    NOT =   "00" )
                AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                   =   "00" )
+               AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
                                                    =   "00" )
                    MOVE    1                   TO  SPA-GMN-PAGE
                END-IF
@@ -3969,7 +4012,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *        広域連合出力
                IF      SPA-ERRCD           =   SPACE
-                 IF      SPA-R01-RECE07-SRYKA-KOKUHO     =   "00"
+                 IF      SPA-R01-RECE07-SRYKA-KOUIKI   =   "00"
                    MOVE    "%%"             TO  WRK-SYUKA
                    PERFORM 4501-KOUIKI-PRTJYUN-PRINT-SEC
                  ELSE
@@ -5478,6 +5521,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                            =   "00"             )
                AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                            =   "00"             )
+               AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                           =   "00"             )
                    MOVE    WIDGET-INSENSITIVE  TO  R02-SYUKA-STATE
                ELSE
                    IF      SPA-GMN-PAGE-MAX    =   1
@@ -5486,10 +5531,14 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                        IF    ( SPA-R01-RECE07-SRYKA    NOT =   "00" )
                        AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                        NOT =   "00" )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                                       NOT =   "00" )
                            MOVE    WIDGET-NORMAL   TO  R02-SYUKA-STATE
                        END-IF    
                        IF    ( SPA-R01-RECE07-SRYKA        =   "00" )
                        AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                       NOT =   "00" )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
                                                        NOT =   "00" )
                            IF      SPA-GMN-PAGE        =   1
                                MOVE    WIDGET-INSENSITIVE
@@ -5501,6 +5550,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                        END-IF    
                        IF    ( SPA-R01-RECE07-SRYKA    NOT =   "00" )
                        AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                           =   "00" )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
                                                            =   "00" )
                            IF      SPA-GMN-PAGE        =   1
                                MOVE    WIDGET-NORMAL

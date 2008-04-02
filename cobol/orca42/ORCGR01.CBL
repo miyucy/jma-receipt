@@ -4160,6 +4160,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                           TO  SPA-R01-RECE07-HKNJANUM
                            MOVE    SPA-RECE07-SRYKA-KOKUHO
                                           TO SPA-R01-RECE07-SRYKA-KOKUHO
+                           MOVE    SPA-RECE07-SRYKA-KOUIKI
+                                          TO SPA-R01-RECE07-SRYKA-KOUIKI
                            INITIALIZE     SPA-R01-RECE07-RECE-PUTH(1)
                                           SPA-R01-RECE07-RECE-PUTH(2)
                        END-IF
@@ -4184,6 +4186,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "B12"                TO  MCP-WIDGET
                    IF    ( SPA-R01-RECE07-SRYKA    =   "XX" )
                    OR    ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                   =   "XX" )
+                   OR    ( SPA-R01-RECE07-SRYKA-KOUIKI
                                                    =   "XX" )
                        MOVE
                       "処理は正常に終了しましたが主科未設定分があります"
