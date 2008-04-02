@@ -4602,6 +4602,7 @@
                    IF     (SPA-ERRCD           =   "0121" )
                       AND (SPA-HKN-IDX1    NOT =   ZERO   )
                       AND (SPA-NAI-HKNSTR  NOT =   SPA-HKN-IDX1)
+                       INITIALIZE                  SPA-GMN-HKN-AREA
                        MOVE    SPA-HKN-IDX1    TO  IDX
                        MOVE    IDX             TO  SPA-NAI-HKNSTR
                        PERFORM 3101-HOKEN-HEN-SEC
