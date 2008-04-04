@@ -933,7 +933,13 @@
                                            TO  SPA-GMN-HOJOKBNL (IDT)
                        MOVE    IDT         TO  SPA-GMN-HOJO-MAX
                    END-PERFORM
-                   IF      SPA-GMN-HOJOKBN     =   SPACE
+                   IF     (SPA-GMN-HOJOKBN     =   SPACE )
+      *           前の補助区分が空白の時、そのままとする
+                      IF  (SPA-MAE-HOJOKBN     =   SPACE )
+                      AND (SPA-NAI-HKNSTR  NOT =   ZERO  )
+                      AND (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR) = SPACE)
+                       CONTINUE
+                      ELSE
       *                給付割合から
                        IF     (SPA-HKNJA-HON-GAIKYURATE  NOT =   ZERO)
                           OR  (SPA-HKNJA-HON-NYUKYURATE  NOT =   ZERO)
@@ -952,6 +958,7 @@
                            IF     (SPA-BYMD-70       >   ZERO      )
                                MOVE    "1"         TO  SPA-GMN-HOJOKBN
                            END-IF
+                       END-IF
                        END-IF
                    END-IF
       *        共済
@@ -2137,6 +2144,27 @@
       **** END-IF
       *
       *    国保・自費の時必須
+      *    国保で前の補助区分が空白の時、そのままとする
+           IF      (SPA-GMN-HKNNUM     =   "060"   )   AND
+                   (SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-70)
+               IF     (SPA-MAE-HOJOKBN     =   SPACE )
+               AND    (SPA-NAI-HKNSTR  NOT =   ZERO  )
+               AND    (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR) = SPACE)
+                   MOVE    ZERO            TO  FLG-CHK
+                   PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL      (IDX     >   SPA-PTKOH-MAX )  OR
+                                      (FLG-CHK     =   1         )
+                       IF    (SPA-PTKOH-SAKJOKBN (IDX) =   SPACE )  AND
+                             (SPA-PTKOH-KOHNUM   (IDX) =   "027" )
+                           MOVE    1              TO  FLG-CHK
+                       END-IF
+                   END-PERFORM
+                   IF      FLG-CHK         =   1
+                       GO      TO      2003-HOJOKBN-SEICHK-EXT
+                   END-IF
+               END-IF
+           END-IF
+      *
            IF      (SPA-GMN-HKNNUM         =   "060"
                                            OR  "068" )   OR
                    (SPA-NAI-PTHKN-SBTKBN   =   "8"  )
