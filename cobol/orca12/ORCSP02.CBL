@@ -174,6 +174,7 @@
       *
            03  WRK-HKNID-MAX           PIC 9(10).
            03  WRK-KOHID-MAX           PIC 9(10).
+           03  WRK-HKNCOMBI-MAX        PIC 9(04).
       *
            03  WRK-TEIMSG-G.
                05  WRK-TMSG1           PIC X(10).
@@ -1964,7 +1965,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1                   TO  FLG-HKNCOMBI
            END-IF
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  WRK-HKNCOMBI-MAX
            PERFORM   UNTIL     FLG-HKNCOMBI    =   1
+      *        最大番号取得
+               IF      WRK-HKNCOMBI-MAX    <   COMB-HKNCOMBINUM
+                   MOVE    COMB-HKNCOMBINUM    TO  WRK-HKNCOMBI-MAX
+               END-IF
+      *
                IF      COMB-DELKBN             =   SPACE
                    ADD     1                   TO  IDX
                    MOVE    SPACE               TO  PARA-REC
@@ -2017,7 +2024,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    旧姓履歴出力
            INITIALIZE                      KYUSEIRRK-REC
-           MOVE    SPA-HOSPNUM          TO  KYUSEI-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  KYUSEI-PTID
            MOVE    KYUSEIRRK-REC       TO  MCPDATA-REC
            MOVE    "tbl_kyuseirrk"     TO  MCP-TABLE
@@ -2193,12 +2200,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    PTNUM-KOHID         TO  SPA-MAE-KOHID
                MOVE    PTNUM-AUTOCOMBINUM  TO  SPA-MAE-AUTOCOMBINUM
                MOVE    PTNUM-MANUCOMBINUM  TO  SPA-MAE-MANUCOMBINUM
+      *
+      *        保険組合せの最大番号と最大連番が違う時
+               IF      WRK-HKNCOMBI-MAX    NOT =   PTNUM-AUTOCOMBINUM
+                   MOVE    "9106"              TO  SPA-ERRCD
+                   MOVE    WRK-HKNCOMBI-MAX    TO  SPA-MAE-AUTOCOMBINUM
+                   MOVE    WRK-HKNCOMBI-MAX    TO
+                                               SPA-PTNUM-AUTOCOMBINUM
+      *            ＳＰＡを追加できないので代用
+                   MOVE    1                   TO  SPA-QRFLG
+               END-IF
            ELSE
                INITIALIZE                  SPA-PTNUM-AREA
                INITIALIZE                  SPA-MAE-PTNUM-AREA
            END-IF
-      *
-      *
            .
        10022-PARA-SET-EXT.
            EXIT.
