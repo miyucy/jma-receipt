@@ -2126,7 +2126,7 @@
                    MOVE    SPACE                      TO  SPA-ERRMSG
                    STRING  "適用コードの登録が１００件を超えている場合"
                                                   DELIMITED    BY  SIZE
-                           "複写画面は使用できません。"
+                           "、複写機能は使用できません"
                                                   DELIMITED    BY  SIZE
                    INTO    SPA-ERRMSG
                    END-STRING
