@@ -959,6 +959,7 @@
                                                SPA-P02KYOUTU
                                                SPA-P02SCRAREA
                                                P02
+           MOVE    SPA-ERRCD           TO  WRK-ERRCD
       *    ＱＲデータ判定
       *DD  PERFORM 3101-QRDATA-CHK-SEC
       *
@@ -970,6 +971,9 @@
                PERFORM 49012-GMNSPA-SET-SEC
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    WRK-ERRCD       TO  SPA-ERRCD
+           END-IF
            .
        310-SPA-SET-EXT.
            EXIT.
@@ -3864,6 +3868,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1                   TO  SPA-LOCK
                END-IF
            END-IF
+      *    保険組合せの最大番号と最大連番が違う時
+           IF      SPA-ERRCD           =   SPACE
+                                       OR  "9106"
+      *        ＳＰＡを追加できないので代用
+               IF      SPA-QRFLG       =   1
+                   MOVE    "9106"              TO  SPA-ERRCD
+                   MOVE    0                   TO  SPA-QRFLG
+               END-IF
+           END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
@@ -4814,6 +4827,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "9105"
                    STRING  "保険組合せで診療・病名が登録されています。"
                            "非表示にできません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+      *TEST
+               WHEN    "9106"
+                   STRING  "保険組合せ番号と最大連番のＤＢで不整合が"
+                           "発生しています。"
+                           "必ず登録をして下さい"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
