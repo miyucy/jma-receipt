@@ -31,6 +31,9 @@
       *
       *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *  03.05.01    NACL-小豆沢  07/06/06  グループ診療対応
+      *
+      *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
+      *                                     広域連合対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -101,6 +104,8 @@
            03  FLG-END                 PIC 9(01).
            03  FLG-READ                PIC 9(01).
       *
+           03  FLG-SYSKANRI            PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
@@ -119,6 +124,8 @@
                                        PIC X(01).
                05  WRK-PARA-SYARECEKBN PIC X(01).
                05  WRK-PARA-KKHRECEKBN PIC X(01).
+               05  WRK-PARA-KOUIKIRECEKBN
+                                       PIC X(01).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-RECEERR             PIC X(200). 
@@ -130,6 +137,8 @@
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+           COPY    "CPSK200501.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -196,6 +205,31 @@
            MOVE    "ORCR0260"      TO  JOB-PGID
            MOVE    "傷病名並び変え"    TO  JOB-SHELLMSG
            PERFORM   900-CALL-ORCSJOB-SEC
+      *
+      *    レセプト編集区分情報
+           MOVE    SPACE               TO  SYS-200501-REC
+           INITIALIZE                      SYS-200501-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
+           MOVE    "2005"              TO  SYS-200501-KANRICD
+           MOVE    "01"                TO  SYS-200501-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  SYS-200501-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
+           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
+           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+           ELSE    
+               MOVE    SPACE           TO  SYS-200501-REC
+               INITIALIZE                  SYS-200501-REC
+           END-IF
+           IF      SYS-200501-KOUIKIRECEKBN
+                                       =   SPACE
+               MOVE    ZERO        TO  SYS-200501-KOUIKIRECEKBN
+           END-IF
+           MOVE    SYS-200501-KOUIKIRECEKBN
+                                   TO  WRK-PARA-KOUIKIRECEKBN 
+           DISPLAY "KOUIKIRECEKBN=" WRK-PARA-KOUIKIRECEKBN
       *
            MOVE    "RECE631"           TO  RECE63PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE63PARA-TERMID
@@ -302,6 +336,11 @@
                                                    OR  "1"  )  AND
                              ( RECE631-TEISYUTUSAKI
                                                    =   "2"  )      )
+                       OR  ( ( WRK-PARA-KOUIKIRECEKBN
+                                                   =   ZERO
+                                                   OR  "2"  )  AND
+                             ( RECE631-TEISYUTUSAKI
+                                                   =   "6"  )      )
                        OR  (   RECE631-RECESYUBETU =   ZERO   OR 
                                                        8888   OR 
                                                        6666        )
@@ -323,6 +362,35 @@
            EXIT.
       *
       *****************************************************************
+      *    システム管理マスタ読込
+      *****************************************************************
+       910-SYSKANRI-INV-SEC         SECTION.
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       910-SYSKANRI-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
@@ -337,6 +405,41 @@
                                    SPA-AREA
            .
        900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＳＥＬＥＣＴ処理
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************

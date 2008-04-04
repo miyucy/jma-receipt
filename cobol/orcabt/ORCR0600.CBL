@@ -53,6 +53,9 @@
       *  03.05.02    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
       *
       *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
+      * 
+      *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¹­°èÏ¢¹çÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -462,6 +465,7 @@
                   WHEN    "0"
                   WHEN    "1"
                   WHEN    "2"
+                  WHEN    "7"
                    IF   SYU-SYUHKNNUM   =  WRK-CONS-ROUSAI-HKNNUM
                                        OR  WRK-CONS-JIBAI-HKNNUM
                                        OR  WRK-CONS-KOUGAI-HKNNUM
@@ -681,6 +685,7 @@
                            WHEN    "0"
                            WHEN    "1"
                            WHEN    "2"
+                           WHEN    "7"
                                IF      COMB-HKNNUM     =
                                               WRK-CONS-ROUSAI-HKNNUM OR
                                               WRK-CONS-JIBAI-HKNNUM  OR
@@ -710,11 +715,16 @@
                                IF      COMB-HKNNUM 
                                                NOT =   "060" AND "067"
                                                    AND "068" AND "069"
+                                                   AND "039" AND "040"    
                                    PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
                                END-IF
                            WHEN    "2"
                                IF      COMB-HKNNUM =   "060" OR  "067"
                                                     OR "068" OR  "069"
+                                   PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
+                               END-IF
+                           WHEN    "7"
+                               IF      COMB-HKNNUM =   "039" OR  "040"
                                    PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
                                END-IF
                        END-EVALUATE
@@ -890,6 +900,7 @@
                    WHEN    "0"
                    WHEN    "1"
                    WHEN    "2"
+                   WHEN    "7"
                        IF      COMB-HKNNUM     =
                                            WRK-CONS-ROUSAI-HKNNUM OR
                                            WRK-CONS-JIBAI-HKNNUM  OR
@@ -914,6 +925,7 @@
                            IF      COMB-HKNNUM 
                                        NOT =   "060" AND "067"
                                            AND "068" AND "069"
+                                           AND "039" AND "040"    
                                CONTINUE
                            ELSE
                                MOVE    "1"       TO  WRK-SYOKBN
@@ -922,6 +934,13 @@
                            IF      COMB-HKNNUM
                                            =   "060" OR  "067"
                                             OR "068" OR  "069"
+                               CONTINUE
+                           ELSE
+                               MOVE    "1"       TO  WRK-SYOKBN
+                           END-IF
+                       WHEN    "7"
+                           IF      COMB-HKNNUM
+                                           =   "039" OR  "040"
                                CONTINUE
                            ELSE
                                MOVE    "1"       TO  WRK-SYOKBN
@@ -1553,6 +1572,7 @@
                    WHEN    "0"
                    WHEN    "1"
                    WHEN    "2"
+                   WHEN    "7"
                        IF      COMB-HKNNUM     =
                                            WRK-CONS-ROUSAI-HKNNUM OR
                                            WRK-CONS-JIBAI-HKNNUM  OR
@@ -1581,12 +1601,17 @@
                        MOVE    1               TO  FLG-SYORI
                    WHEN    "1"
                        IF      COMB-HKNNUM NOT =   "060" AND "067" AND
-                                                   "068" AND "069" 
+                                                   "068" AND "069" AND
+                                                   "039" AND "040"    
                            MOVE    1               TO  FLG-SYORI
                        END-IF
                    WHEN    "2"
                        IF      COMB-HKNNUM     =   "060" OR  "067" OR
                                                    "068" OR  "069"
+                           MOVE    1               TO  FLG-SYORI
+                       END-IF
+                   WHEN    "7"
+                       IF      COMB-HKNNUM     =   "039" AND "040"
                            MOVE    1               TO  FLG-SYORI
                        END-IF
                  END-EVALUATE
@@ -1835,6 +1860,7 @@
                WHEN    "0"
                WHEN    "1"
                WHEN    "2"
+               WHEN    "7"
                    INITIALIZE                      SYUKA-REC
                    MOVE    SYS-1001-HOSPNUM    TO  SYUKA-HOSPNUM
                    MOVE    WRK-SYUKA-PTID      TO  SYUKA-PTID
@@ -2087,6 +2113,7 @@
                  WHEN    "0"
                  WHEN    "1"
                  WHEN    "2"
+                 WHEN    "7"
                    IF   SYU-SYUHKNNUM   =  WRK-CONS-ROUSAI-HKNNUM
                                        OR  WRK-CONS-JIBAI-HKNNUM
                                        OR  WRK-CONS-KOUGAI-HKNNUM

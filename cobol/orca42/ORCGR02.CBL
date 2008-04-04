@@ -1117,6 +1117,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
            END-IF
            MOVE    SPA-GMN-PRTJYUN     TO  SPA-GMN-PRTJYUN-OLD
       *
+           IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
+               MOVE    SPACE               TO  SPA-GMN-SYUKA-G
+           END-IF
+      *
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
            INITIALIZE                  SYS-1031-REC
@@ -1716,9 +1720,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    1               TO  IDX 
                    END-EVALUATE
            END-EVALUATE
-      *???
-           DISPLAY "3101-PAGE-HENSYU-02=" WRK-TEISYUTUSAKI "#" IDW "#"
-      *???                            
       *
            EVALUATE    WRK-TEISYUTUSAKI
                WHEN    "1"
@@ -2913,10 +2914,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPA-GMN-PRTJYUN     TO  SPA-GMN-PRTJYUN-OLD
       *        主科設定時は全科に戻す
-               IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
-               AND   ( SPA-GMN-SYUKA   NOT =   "00" )
-                   MOVE    SPA-GMN-SYUKALST (1) TO  SPA-GMN-SYUKA-G
-               END-IF
+               IF      SPA-GMN-PRTJYUN     =  "07"    OR  "08"
+                       MOVE    SPACE           TO  SPA-GMN-SYUKA-G
+               ELSE
+                   IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
+                   AND   ( SPA-GMN-SYUKA   NOT =   "00" )
+                       MOVE    SPA-GMN-SYUKALST (1) TO  SPA-GMN-SYUKA-G
+                   END-IF
       *        頁・件数の編集処理
                MOVE    "T"                 TO  SPA-GMN-SYOKBN
                MOVE    ZERO                TO  FLG-PRTNM-SET
@@ -5517,12 +5521,12 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    WIDGET-NORMAL       TO  R02-SYUKA-STATE
       *
                IF    ( SPA-GMN-PRTJYUN     =   "07"    OR  "08" )
-               AND   ( SPA-R01-RECE07-SRYKA
-                                           =   "00"             )
-               AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
-                                           =   "00"             )
-               AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
-                                           =   "00"             )
+      *********AND   ( SPA-R01-RECE07-SRYKA
+      *********                            =   "00"             )
+      *********AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+      *********                            =   "00"             )
+      *********AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+      *********                            =   "00"             )
                    MOVE    WIDGET-INSENSITIVE  TO  R02-SYUKA-STATE
                ELSE
                    IF      SPA-GMN-PAGE-MAX    =   1

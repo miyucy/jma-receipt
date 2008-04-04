@@ -137,6 +137,9 @@
       *                                     通常の記載方法に戻す
       * 
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/03/25  広域連合対応
+      *                                     中国残留法人等
+      *                                     レセプト種別
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -437,6 +440,10 @@
       *    生活保護保険番号 
            03  WRK-CONS-SEIHO-HKNNUM
                                    PIC X(03)   VALUE   "012". 
+      *    
+      *    中国残留邦人等保険番号 
+           03  WRK-CONS-ZANRYUU-HKNNUM
+                                   PIC X(03)   VALUE   "025". 
       *    
       *    自費保険番号 
            03  WRK-CONS-JIHI-HKNNUM
@@ -826,12 +833,18 @@
                            IF      RECE61-HKNNUM   NOT =
                                                        "060" AND "067"
                                                    AND "068" AND "069" 
+                                                   AND "039" AND "040"    
                                PERFORM 210-HENSYU-SEC
                            END-IF
                        WHEN    "2"
                            IF      RECE61-HKNNUM       =
                                                        "060" OR  "067"
                                                    OR  "068" OR  "069"
+                               PERFORM 210-HENSYU-SEC
+                           END-IF
+                       WHEN    "7"
+                           IF      RECE61-HKNNUM       =
+                                                       "039" OR  "040"
                                PERFORM 210-HENSYU-SEC
                            END-IF
                    END-EVALUATE
@@ -943,7 +956,11 @@
                                             "068"   OR    "069"
                MOVE    2                TO  RECE62-TEISYUTUSAKI
            ELSE
-               MOVE    1                TO  RECE62-TEISYUTUSAKI
+               IF      RECE61-HKNNUM        =   "039"   OR    "040"
+                   MOVE    6                TO  RECE62-TEISYUTUSAKI
+               ELSE
+                   MOVE    1                TO  RECE62-TEISYUTUSAKI
+               END-IF
            END-IF
       *    患者情報の取得
            MOVE    RECE61-KANANAME     TO  RECE62-KANANAME
@@ -954,6 +971,7 @@
            MOVE    RECE61-TSTPTNUMKBN  TO  RECE62-TSTPTNUMKBN
            MOVE    RECE61-AGE          TO  WRK-NENREI
                                            RECE62-AGE
+           MOVE    RECE61-SYUGAKUKBN   TO  RECE62-SYUGAKUKBN
       *    旧姓履歴の取得（月途中で保険変更があるとき）
            IF    ( RECE61-TEISEIKBN    NOT =   "1"   )
            AND   ( RECE62-TEKSTYMD-X   NOT =   SPACE )
@@ -1007,13 +1025,16 @@
                                                 WK-HONKZKKBN
                MOVE    RECE61-HKN-HOJOKBN   TO  RECE62-HOJOKBN
                MOVE    RECE61-CONTKBN       TO  RECE62-CONTKBN
-               MOVE    RECE61-KIGO          TO  RECE62-KIGO
+               IF      RECE62-HKNNUM    NOT  =   "039"
+                   MOVE    RECE61-KIGO          TO  RECE62-KIGO
+               END-IF
                MOVE    RECE61-NUM           TO  RECE62-NUM
                MOVE    RECE61-CERTNUM       TO  RECE62-CERTNUM
            END-IF
       *    患者公費情報テーブルから老人保険情報の取得
-           IF  RECE61-KOHHKNNUM-O(1)        =       "027"
-           OR  RECE61-KOHID                 >       ZERO
+           IF      RECE61-SRYYM            <   WRK-CONS-SRYYM-200804
+             IF  RECE61-KOHHKNNUM-O(1)        =       "027"
+             OR  RECE61-KOHID                 >       ZERO
                INITIALIZE                           PTKOHINF-REC
                MOVE    RECE61-HOSPNUM       TO      PTKOH-HOSPNUM
                MOVE    RECE61-PTID          TO      PTKOH-PTID
@@ -1062,6 +1083,7 @@
                MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
                MOVE    "key"              TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
+             END-IF
            END-IF
       *
       *    長期高額療養費の編集
@@ -1118,8 +1140,6 @@
            PERFORM   VARYING   IDX    FROM   1   BY   1
                      UNTIL    (IDX          >     4)
                      OR       (RECE61-KOHID-O(IDX)  =   ZERO)  
-      ******** IF  (RECE61-KOHHKNNUM-O (IDX)  =       "027")  OR
-      ********     (RECE61-KOHHKNNUM-O (IDX)  =   WRK-CHOKI)
                IF  (RECE61-KOHHKNNUM-O (IDX)  =       "027")
                      CONTINUE
                ELSE
@@ -1188,10 +1208,6 @@
       *    老保の編集
            MOVE    ZERO       TO     FLG-ROUJINHOKEN
            IF      RECE62-HKNNUM        =   SPACE
-      ***  AND     RECE62-KOHHBTNUM (1)   NOT =  SPACE
-      ***  AND     RECE62-KOHHBTNUM (2) =   SPACE
-      ***  AND     RECE62-KOHHBTNUM (3) =   SPACE
-      ***  AND     RECE62-KOHHBTNUM (4) =   SPACE
                IF  (   RECE61-SRYYM         >=  "200210"            )
                AND ((  RECE62-AGE           >=  75             ) OR 
                     (( RECE62-BIRTHDAY      <=  19320930 ) AND
@@ -1202,7 +1218,11 @@
                    INITIALIZE                       PTKOHINF-REC
                    MOVE    RECE61-HOSPNUM       TO  PTKOH-HOSPNUM
                    MOVE    RECE61-PTID          TO  PTKOH-PTID
-                   MOVE    "027"                TO  PTKOH-KOHNUM
+                   IF      RECE61-SRYYM     <   WRK-CONS-SRYYM-200804
+                       MOVE    "027"                TO  PTKOH-KOHNUM
+                   ELSE
+                       MOVE    "968"                TO  PTKOH-KOHNUM
+                   END-IF 
                    MOVE    PTKOHINF-REC         TO  MCPDATA-REC
                    MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                    MOVE    "key4"               TO  MCP-PATHNAME
@@ -1248,7 +1268,9 @@
                     ( RECE62-AGE          >=  65  AND
                       RECE61-KOHID    NOT  =   ZERO   )   OR
                     ( RECE62-AGE          >=  65  AND
-                      FLG-ROUJINHOKEN      =   1      )
+                      FLG-ROUJINHOKEN      =   1      )   OR
+                    ( RECE62-AGE          >=  65  AND                    
+                      RECE62-HKNNUM        =  "039"   )
                    MOVE     "1"     TO   RECE62-KOUREI
                 ELSE
                   IF  RECE62-SRYYM  >=  "200704"
@@ -1317,7 +1339,6 @@
       *    主科設定
            IF    ( IDZ                 =   1      )
            AND   ( SYS-2009-SYUKA-KBN  =   "1"    )
-      *****AND   ( RECE62-TEISYUTUSAKI =   "1"    )
            AND   ( RECE62-RECESYUBETU  
                                    NOT =   "8888" )
              IF  (     ( RECE62-TEISYUTUSAKI   =   "1" )
@@ -1325,6 +1346,9 @@
                                            NOT =   "0" ) )
              OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
                    AND ( SYS-2009-SYUKA-KOKUHO
+                                           NOT =   "0" ) )
+             OR  (     ( RECE62-TEISYUTUSAKI   =   "6" )
+                   AND ( SYS-2009-SYUKA-KOUIKI
                                            NOT =   "0" ) )
                INITIALIZE                      ORCSSYUACCAREA
                MOVE    RECE62-HOSPNUM  TO  SPA-HOSPNUM
@@ -1383,6 +1407,8 @@
                      AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
                OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
                      AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+               OR  (     ( RECE62-TEISYUTUSAKI   =   "6" )
+                     AND ( SYS-2009-SYUKA-KOUIKI =   "1" ) )
                    MOVE    SPACE           TO  SYSKANRI-REC
                    INITIALIZE                  SYSKANRI-REC
                    MOVE    "1005"          TO  SYS-KANRICD
@@ -1578,7 +1604,8 @@
                    MOVE   PTKOH-FTNJANUM   TO RECE62-KOHFTNJANUM(IDX2)
                    MOVE   SPACE            TO RECE62-KOHNINIKYUKBN(IDX2)
       *             
-      *            生保のとき月代わり受給者番号マスタより受給者番号をセット 
+      *            生保又は中国残留邦人等のとき月代わり受給者番号マスタ
+      *            より受給者番号をセット 
                    IF      PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM
                        MOVE    RECE62-HOSPNUM  TO  MONTHLYNUM-HOSPNUM
                        MOVE    RECE62-PTID     TO  MONTHLYNUM-PTID
@@ -1616,8 +1643,33 @@
                            END-IF
                        END-IF
                    ELSE                       
-                       MOVE   PTKOH-JKYSNUM
+                       IF      PTKOH-KOHNUM    =
+                                           WRK-CONS-ZANRYUU-HKNNUM
+                           MOVE    RECE62-HOSPNUM
+                                               TO  MONTHLYNUM-HOSPNUM
+                           MOVE    RECE62-PTID TO  MONTHLYNUM-PTID
+                           MOVE    PTKOH-KOHID TO  MONTHLYNUM-KOHID
+                           MOVE    RECE62-SRYYM
+                                               TO  MONTHLYNUM-SRYYM
+                           MOVE    RECE62-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
+                           MOVE    MONTHLYNUM-REC
+                                               TO  MCPDATA-REC
+                           MOVE    "tbl_monthlynum"
+                                               TO  WRK-MCP-TABLE
+                           MOVE    "key4"      TO  WRK-MCP-PATHNAME
+                           PERFORM 910-MONTHLYNUM-READ-SEC
+                           IF    ( FLG-MONTHLYNUM  =   ZERO  )
+                               MOVE    MONTHLYNUM-JKYSNUM 
                                            TO  RECE62-KOHJKYSNUM (IDX2)
+                           ELSE                       
+                               MOVE   PTKOH-JKYSNUM
+                                           TO  RECE62-KOHJKYSNUM (IDX2)
+                           END-IF
+                       ELSE    
+                           MOVE   PTKOH-JKYSNUM
+                                           TO  RECE62-KOHJKYSNUM (IDX2)
+                       END-IF
                    END-IF    
                END-IF
            END-IF
@@ -1667,16 +1719,22 @@
       *         
            IF     (RECE62-HKNNUM        NOT =   SPACE)   AND
                   (WRK-JIHI-FLG         =   SPACE)
-               IF      RECE62-HKNNUM    =   "060"   OR   "067"   OR
-                                            "068"   OR   "069"
-                   IF   RECE62-HKNNUM   =   "060"   OR   "068"
-                        MOVE   "1"      TO  WK-KOKUHO
-                   ELSE
-                        MOVE   "2"      TO  WK-KOKUHO
-                   END-IF
-               ELSE
-                   MOVE    "1"          TO  WK-IHO
-               END-IF
+               EVALUATE    RECE62-HKNNUM
+                   WHEN    "060"
+                   WHEN    "067"
+                   WHEN    "068"
+                   WHEN    "069"
+                       IF      RECE62-HKNNUM   =   "060"   OR   "068"
+                           MOVE   "1"      TO  WK-KOKUHO
+                       ELSE
+                           MOVE   "2"      TO  WK-KOKUHO
+                       END-IF
+                   WHEN    "039"
+                   WHEN    "040"
+                       MOVE   "3"          TO  WK-KOKUHO
+                   WHEN    OTHER
+                       MOVE    "1"         TO  WK-IHO
+               END-EVALUATE
            END-IF
       *
            IF      RECE62-SRYYM     <      "200210" 
@@ -1725,20 +1783,97 @@
                                MOVE   "3"     TO   WK-HONKZKKBN
                    END-IF
                END-IF
-      *★★平成２０年４月改正対応
                IF      RECE62-SRYYM        >=  WRK-CONS-SRYYM-200804
                    IF      RECE61-SYUGAKUKBN   =   1
                        MOVE   "3"          TO  WK-HONKZKKBN
                    END-IF
                END-IF
            END-IF
-      *★★
       *
       *    １割、２割負担の高齢者の場合ＷＫ−ＨＯＮＫＺＫＫＢＮに
       *    "９"または"８"をセット
       *    老人保険の場合はＷＫ−ＲＪＮにセットする	
            IF      RECE62-HKNID             NOT =   ZERO
              EVALUATE    TRUE
+               WHEN    RECE62-SRYYM     >=  WRK-CONS-SRYYM-200804
+                 EVALUATE    RECE62-HKNNUM
+                   WHEN    "002" 
+                       EVALUATE   RECE62-HOJOKBN
+                           WHEN   "A"
+                           WHEN   "B"
+                           WHEN   "C"
+                           WHEN   "9"
+                               MOVE   "9"   TO   WK-HONKZKKBN
+                           WHEN   "D"
+                           WHEN   "E"
+                           WHEN   "F"
+                           WHEN   "8"
+                               MOVE   "?"   TO   WK-HONKZKKBN
+                           WHEN   "G"
+                           WHEN   "H"
+                           WHEN   "I"
+                           WHEN   "7"
+                               MOVE   "7"   TO   WK-HONKZKKBN
+                       END-EVALUATE
+                   WHEN    "031"  THRU    "034"  
+                       EVALUATE   RECE62-HOJOKBN
+                           WHEN   "B"
+                           WHEN   "9"   
+                               MOVE   "9"   TO   WK-HONKZKKBN
+                           WHEN   "E"
+                           WHEN   "8"
+                               MOVE   "?"   TO   WK-HONKZKKBN
+                           WHEN   "H"
+                           WHEN   "7"
+                               MOVE   "7"   TO   WK-HONKZKKBN
+                       END-EVALUATE
+                   WHEN    "060" 
+                   WHEN    "068" 
+                       IF  (WRK-NENREI  >=   70)  AND
+                           (WRK-NENREI  <=   74)
+                           EVALUATE   RECE62-HOJOKBN
+                               WHEN   "1"
+                               WHEN   "5"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "2"
+                               WHEN   "6"
+                                   MOVE   "8"   TO   WK-HONKZKKBN
+                               WHEN   "3"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       END-IF     
+                   WHEN    "039" 
+                   WHEN    "040" 
+                       EVALUATE   RECE62-HOJOKBN
+                           WHEN   "1"
+                               MOVE   "9"   TO   WK-RJN
+                           WHEN   "3"
+                               MOVE   "7"   TO   WK-RJN
+                       END-EVALUATE
+                   WHEN    "067" 
+                   WHEN    "069" 
+                       IF      WRK-NENREI  >=   65
+                           MOVE   "?"   TO   WK-HONKZKKBN
+                       ELSE
+                           EVALUATE   RECE62-HOJOKBN
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       END-IF
+                   WHEN    OTHER 
+                       EVALUATE   RECE62-HOJOKBN
+                           WHEN   "9"
+                               MOVE   "9"   TO   WK-HONKZKKBN
+                           WHEN   "8"
+                               MOVE   "?"   TO   WK-HONKZKKBN
+                           WHEN   "7"
+                               MOVE   "7"   TO   WK-HONKZKKBN
+                       END-EVALUATE
+                 END-EVALUATE
                WHEN    RECE62-SRYYM     >   WRK-CONS-SRYYM-200609
                  EVALUATE    RECE62-HKNNUM
                    WHEN    "002" 
@@ -1871,23 +2006,6 @@
                END-IF
            END-IF    
       *          
-      *★★平成２０年４月改正対応
-           IF      RECE62-HKNNUM       =   "040"   OR  "039"
-               MOVE    "?"                 TO  WK-IHO
-           END-IF
-           IF      RECE62-SRYYM        >=  WRK-CONS-SRYYM-200804
-               IF      RECE62-RJNHKNNUM    =   "027"
-                   MOVE    "?"                 TO  WK-RJN
-               END-IF
-               IF      WRK-NENREI          <   3
-                   CONTINUE
-               ELSE
-                   IF      RECE61-SYUGAKUKBN   =   1
-                       MOVE   "?"              TO   WK-HONKZKKBN
-                   END-IF
-               END-IF
-           END-IF
-      *★★
       * 
            INITIALIZE                  ORCSSYUBETUGETAREA  
            MOVE    WK-KOKUHO           TO  LNK-SYUBETUGET-KOKUHO
@@ -2024,7 +2142,11 @@
                        MOVE   20        TO  RECE62-KYURATE
                END-EVALUATE
              END-IF
-           ELSE
+           END-IF
+      *
+      *平成１８年１０月改正対応
+           IF    ( RECE62-SRYYM    >   WRK-CONS-SRYYM-200609 )
+           AND   ( RECE62-SRYYM    <   WRK-CONS-SRYYM-200804 ) 
              EVALUATE    RECE62-HKNNUM       
                WHEN    "060"
                WHEN    "068"
@@ -2129,6 +2251,111 @@
              END-IF
            END-IF
       *
+      *平成２０年４月改正対応
+           IF    ( RECE62-SRYYM    >=  WRK-CONS-SRYYM-200804 ) 
+             EVALUATE    RECE62-HKNNUM       
+               WHEN    "060"
+               WHEN    "068"
+                   IF       RECE62-SYUGAKUKBN    =   1
+                       IF      RECE62-HOJOKBN  =    "0"  OR   "1" OR
+                                                    "4"  OR   "5"
+                           EVALUATE   RECE62-HOJOKBN
+                               WHEN   "0"
+                                   MOVE   ZERO    TO   RECE62-KYURATE
+                               WHEN   "1"
+                                   MOVE   10      TO   RECE62-KYURATE
+                               WHEN   "4"
+                                   MOVE   ZERO    TO   RECE62-KYURATE
+                               WHEN   "5"
+                                   MOVE   10      TO   RECE62-KYURATE
+                           END-EVALUATE
+                       ELSE
+                           MOVE  20      TO    RECE62-KYURATE
+                       END-IF
+                   ELSE
+                       EVALUATE   RECE62-HOJOKBN
+                           WHEN   "0"
+                               MOVE   ZERO      TO   RECE62-KYURATE
+                           WHEN   "1"
+                               MOVE   10        TO   RECE62-KYURATE
+                           WHEN   "2"
+                               MOVE   20        TO   RECE62-KYURATE
+                           WHEN   "3"
+                               MOVE   30        TO   RECE62-KYURATE
+                           WHEN   "4"
+                               MOVE   ZERO      TO   RECE62-KYURATE
+                           WHEN   "5"
+                               MOVE   10        TO   RECE62-KYURATE
+                           WHEN   "6"
+                               MOVE   20        TO   RECE62-KYURATE
+                           WHEN   "8"
+                               MOVE   20        TO   RECE62-KYURATE
+                           WHEN   "9"
+                               MOVE   10        TO   RECE62-KYURATE
+                       END-EVALUATE
+                   END-IF
+               WHEN    "067"
+               WHEN    "069"
+                   IF       RECE62-SYUGAKUKBN    =   1
+                       MOVE  20      TO    RECE62-KYURATE
+                   ELSE
+                       IF      RECE62-HOJOKBN        NOT =  SPACE
+                           EVALUATE   RECE62-HOJOKBN
+                               WHEN   "7"
+                                   MOVE   30        TO   RECE62-KYURATE
+                               WHEN   "8"
+                                   MOVE   20        TO   RECE62-KYURATE
+                               WHEN   "9"
+                                   MOVE   10        TO   RECE62-KYURATE
+                           END-EVALUATE
+                       ELSE
+                           IF   RECE62-HKNJANUM = "67330753"
+                             MOVE   20         TO  RECE62-KYURATE
+                           ELSE
+                             IF      RECE62-HONKZKKBN      =    "1"
+                               MOVE   WRK-HKN-HON-NYUKFTNRATE
+                                                   TO   RECE62-KYURATE
+                             ELSE
+                               MOVE   WRK-HKN-KZK-NYUKFTNRATE
+                                                   TO   RECE62-KYURATE
+                             END-IF
+                           END-IF
+                       END-IF
+                   END-IF
+               WHEN    SPACE
+                   MOVE    ZERO            TO  RECE62-KYURATE
+               WHEN    "039"
+               WHEN    "040"
+                   EVALUATE   RECE62-HOJOKBN
+                       WHEN   "1"
+                           MOVE    10  TO  RECE62-KYURATE
+                       WHEN   "3"
+                           MOVE    30  TO  RECE62-KYURATE
+                   END-EVALUATE
+               WHEN    OTHER
+                   IF       RECE62-SYUGAKUKBN    =   1
+                       MOVE  20      TO    RECE62-KYURATE
+                   ELSE
+                       IF  RECE62-HOJOKBN      =     SPACE
+                           IF      RECE62-HONKZKKBN    =     "1"
+                               MOVE    WRK-HKN-HON-NYUKFTNRATE
+                                                  TO  RECE62-KYURATE
+                           ELSE
+                               MOVE    WRK-HKN-KZK-NYUKFTNRATE
+                                                  TO  RECE62-KYURATE
+                           END-IF
+                       ELSE
+                           EVALUATE   RECE62-HOJOKBN
+                               WHEN   "7"
+                                   MOVE   30   TO  RECE62-KYURATE
+                               WHEN   "9"
+                                   MOVE   10   TO  RECE62-KYURATE
+                           END-EVALUATE
+                       END-IF
+                   END-IF
+             END-EVALUATE
+           END-IF
+      *
       *    船員保険（被保険者）＋通勤災害フラグセット
            IF    RECE62-HKNNUM           =    "002"
                EVALUATE   RECE62-HOJOKBN
@@ -2198,9 +2425,6 @@
       *    データ出力処理
       *****************************************************************
        220-DATA-WRITE-SEC                SECTION.
-      *???
-           DISPLAY "KEY=" RECE62-KEY "#"
-      *???
       *
            WRITE   RECE62-REC
       *
@@ -2216,7 +2440,6 @@
        230-RECE69-HENSYU-SEC                   SECTION.
       *
            IF      RECE61-HKNID             NOT =   ZERO
-      ***  AND     RECE61-HKNNUM            NOT =   WRK-CONS-JIHI-HKNNUM
            AND     RECE61-HKNNUM(1:2)       NOT =   "98"
            AND     RECE61-TEISEIKBN             =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1
@@ -2239,12 +2462,13 @@
       * 
                    IF      RECE61-HKNNUM       =   "060"   OR  "067"
                                                OR  "068"   OR  "069"
-      *★★平成２０年４月改正対応
-                   OR      RECE61-HKNNUM       =   "040"   OR  "039"
-      *★★
                        MOVE    2               TO  RECE69-TEISYUTUSAKI
                    ELSE
-                       MOVE    1               TO  RECE69-TEISYUTUSAKI
+                       IF      RECE61-HKNNUM   =   "040"   OR  "039"
+                           MOVE    6           TO  RECE69-TEISYUTUSAKI
+                       ELSE
+                           MOVE    1           TO  RECE69-TEISYUTUSAKI
+                       END-IF
                    END-IF
       *                                          
                    INITIALIZE                       PTHKNINF-REC
@@ -2274,7 +2498,9 @@
                            MOVE   PTHKN-HONKZKKBN  TO  RECE69-HONKZKKBN
                            MOVE   PTHKN-HOJOKBN    TO  RECE69-HOJOKBN
                            MOVE   PTHKN-CONTKBN    TO  RECE69-CONTKBN
-                           MOVE   PTHKN-KIGO       TO  RECE69-KIGO
+                           IF     PTHKN-HKNNUM NOT =   "039"     
+                               MOVE   PTHKN-KIGO       TO  RECE69-KIGO
+                           END-IF
                            MOVE   PTHKN-NUM        TO  RECE69-NUM
                            MOVE   SPACE            TO  RECE69-CERTNUM
       *         

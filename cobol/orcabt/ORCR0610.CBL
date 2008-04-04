@@ -112,6 +112,9 @@
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *  04.02.02    NACL-藤原    08/03/10  心神喪失者等医療
       *                                    （法第８１条関係）の追加
+      *  04.02.03    NACL-藤原    08/03/25  広域連合対応
+      *                                     肝炎治療特別促進事業
+      *                                     中国残留法人等の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -390,6 +393,7 @@
                05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE   SPACE.
                05  FILLER              PIC X(03)   VALUE   SPACE.
+               05  FILLER              PIC X(03)   VALUE   SPACE.
       *
                05  FILLER              PIC X(03)   VALUE   "027".  
                05  FILLER              PIC X(03)   VALUE   "013".  
@@ -418,13 +422,44 @@
                05  FILLER              PIC X(03)   VALUE   "012".
                05  FILLER              PIC X(03)   VALUE   "972".
                05  FILLER              PIC X(03)   VALUE   "974".
+               05  FILLER              PIC X(03)   VALUE   SPACE.
+      *
+      *********05  FILLER              PIC X(03)   VALUE   "027".  
+               05  FILLER              PIC X(03)   VALUE   "013".  
+               05  FILLER              PIC X(03)   VALUE   "014".  
+               05  FILLER              PIC X(03)   VALUE   "018".  
+               05  FILLER              PIC X(03)   VALUE   "029".  
+               05  FILLER              PIC X(03)   VALUE   "030".  
+               05  FILLER              PIC X(03)   VALUE   "010".  
+               05  FILLER              PIC X(03)   VALUE   "011".  
+               05  FILLER              PIC X(03)   VALUE   "020".  
+               05  FILLER              PIC X(03)   VALUE   "021".  
+               05  FILLER              PIC X(03)   VALUE   "015".  
+               05  FILLER              PIC X(03)   VALUE   "016".  
+               05  FILLER              PIC X(03)   VALUE   "024".  
+               05  FILLER              PIC X(03)   VALUE   "022".  
+               05  FILLER              PIC X(03)   VALUE   "028".  
+               05  FILLER              PIC X(03)   VALUE   "017".  
+               05  FILLER              PIC X(03)   VALUE   "079".  
+               05  FILLER              PIC X(03)   VALUE   "019".  
+               05  FILLER              PIC X(03)   VALUE   "023".  
+               05  FILLER              PIC X(03)   VALUE   "051".  
+               05  FILLER              PIC X(03)   VALUE   "091".  
+               05  FILLER              PIC X(03)   VALUE   "038".  
+               05  FILLER              PIC X(03)   VALUE   "052".  
+               05  FILLER              PIC X(03)   VALUE   "053".  
+               05  FILLER              PIC X(03)   VALUE   "066".  
+               05  FILLER              PIC X(03)   VALUE   "025".  
+               05  FILLER              PIC X(03)   VALUE   "012".
+               05  FILLER              PIC X(03)   VALUE   "972".
+               05  FILLER              PIC X(03)   VALUE   "974".
       *
            03  WRK-SRT-TABLE-R         REDEFINES   WRK-SRT-TABLE.
-               05  WRK-SRT-OCC         OCCURS  2.
+               05  WRK-SRT-OCC         OCCURS  3.
                    07  WRK-SRT-KOHHKNNUM
-                                       PIC X(03)   OCCURS  27.
+                                       PIC X(03)   OCCURS  28.
       *
-           03  WRK-SRT-KOHHKNNUM-MAX   PIC 9(02)   VALUE   27.
+           03  WRK-SRT-KOHHKNNUM-MAX   PIC 9(02)   VALUE   28.
       *     
       *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.
@@ -443,6 +478,8 @@
            03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975". 
       *
            03  WRK-CONS-SRYYM          PIC 9(06)   VALUE   200604.      
+      *
+           03  WRK-CONS-SRYYM-200804   PIC 9(06)   VALUE   200804.      
       *     
       * 
        01  WRK-RECE61-REC. 
@@ -477,8 +514,6 @@
            COPY    "CPSYSKANRI.INC".
       *    医療機関情報
            COPY  "CPSK1001.INC".
-      *    医療機関情報
-           COPY  "CPSK1005.INC".
       *
       *    患者番号構成管理情報
            COPY    "CPSK1009.INC".
@@ -1061,26 +1096,22 @@
                    END-IF    
                END-IF    
            END-IF
-      *     
-      *        レセプト診療科（旧総合病院のとき）
-           IF      SYS-1001-HOSPSBT1   =   1
-               INITIALIZE                  SYS-1005-REC
-               MOVE    "1005"              TO  SYS-1005-KANRICD
-               MOVE    ACCT-SRYKA          TO  SYS-1005-KBNCD
-      *********IF      WRK-PARA-SYOKBN     =   "1"
-      *********    MOVE    SYS-2001-SRYYM      TO  ORC-DBYMD(1:6)
-      *********ELSE
-      *********    MOVE    SYS-2002-SRYYM      TO  ORC-DBYMD(1:6)
-      *********END-IF
-      *********MOVE    "01"                TO  ORC-DBYMD(7:2)
-               MOVE    WRK-STYMD           TO  SYS-1005-STYUKYMD
-                                               SYS-1005-EDYUKYMD 
-               MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
-               MOVE    SYS-1005-REC        TO  MCPDATA-REC
-               PERFORM 910-SYSKANRI-INV-SEC
-               MOVE    MCPDATA-REC         TO  SYS-1005-REC
-           ELSE
-               INITIALIZE                   SYS-1005-REC
+      *
+      *    平成２０年４月以降に老人保険使用のとき
+           IF    ( WRK-ERR-ERRKBN      =   ZERO                  )
+           AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
+           AND   ( COMB-KOH1HKNNUM     =   "027"                 )
+               MOVE    "1"                 TO  WRK-TEISEIKBN
+               MOVE    8                   TO  WRK-ERR-ERRKBN
+           END-IF
+      *
+      *    平成２０年４月以降に退職国保で６５歳以上のとき
+           IF    ( WRK-ERR-ERRKBN      =   ZERO                  )
+           AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
+           AND   ( COMB-HKNNUM         =   "067"                 )
+           AND   ( WRK-NENREI          >=  65                    )
+               MOVE    "1"                 TO  WRK-TEISEIKBN
+               MOVE    9                   TO  WRK-ERR-ERRKBN
            END-IF
       *
       *    最終診療日
@@ -1106,22 +1137,6 @@
                INITIALIZE                      PTHKNINF-REC
            END-IF
       *
-      *    社保（継続）編集処理
-      *****MOVE    SPACE                   TO  WRK-CONTKBN-KEY
-      *
-      *     IF      COMB-KOHHKNNUM (1)  =   "012"   OR
-      *             COMB-KOHHKNNUM (2)  =   "012"   OR
-      *             COMB-KOHHKNNUM (3)  =   "012"   OR
-      *             COMB-KOHHKNNUM (4)  =   "012" 
-      *         IF      COMB-HKNID          NOT =   ZERO
-      *             IF      PTHKN-CONTKBN           =   1       
-      *                 PERFORM 20011-CONTKBN-CHECK-SEC
-      *             END-IF
-      *         ELSE
-      *             PERFORM 20011-CONTKBN-CHECK-SEC
-      *         END-IF
-      *****END-IF
-      *
       *    公費のレセプト・請求書への出力
       *
            INITIALIZE                  WRK-SEIKYUKBN-KOHI-AREA
@@ -1135,6 +1150,12 @@
                    UNTIL   IDX >       4
                    OR      COMB-KOHHKNNUM (IDX)    
                                            =   SPACE
+      *
+      *      平成２０年４月以降の老人保険は対象外とする
+             IF    ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
+             AND   ( COMB-KOHHKNNUM (IDX)  =  "027"                )
+                 CONTINUE
+             ELSE        
                IF     (COMB-KOHHKNNUM (IDX)(1:1)
                                            >=  "1" AND <=  "8")
                OR     (COMB-KOHHKNNUM (IDX)(1:2)   =  "99"    )
@@ -1165,7 +1186,8 @@
                        END-IF
                    ELSE
       *                福岡県の社保のとき（４１老人）
-                       IF    ( COMB-HKNNUM     NOT =   "060" AND "067" )
+                       IF    ( COMB-HKNNUM     NOT =   "060" AND "067"
+                                                             AND "039" )
                        AND   ( SYS-1001-PREFNUM    =   "40"            )
                        AND   ( HKN-HBTNUM          =   "41"            )    
                            IF      COMB-HONKZKKBN      =   "1" 
@@ -1174,19 +1196,33 @@
                                MOVE    1                   TO  IDX1
                            END-IF
                        ELSE
-                           IF      COMB-HKNNUM     =   "060"   OR  "067" 
-                               IF      HKN-RECESKYKBN  =   "1" OR  "3"
-                                   MOVE    2               TO  IDX1
-                               ELSE
-                                   MOVE    1               TO  IDX1
-                               END-IF
-                           ELSE                
-                               IF      HKN-RECESKYKBN  =   "2" OR  "3"
-                                   MOVE    2               TO  IDX1
-                               ELSE
-                                   MOVE    1               TO  IDX1
-                               END-IF
-                           END-IF
+                           EVALUATE    COMB-HKNNUM
+                               WHEN    "060"
+                               WHEN    "067" 
+                                   IF      HKN-RECESKYKBN
+                                                       =   "1" OR  "3"
+                                                               OR  "5"
+                                       MOVE    2               TO  IDX1
+                                   ELSE
+                                       MOVE    1               TO  IDX1
+                                   END-IF
+                               WHEN    "039"                
+                                   IF      HKN-RECESKYKBN
+                                                       =   "1" OR  "3"
+                                                               OR  "4"
+                                       MOVE    2               TO  IDX1
+                                   ELSE
+                                       MOVE    1               TO  IDX1
+                                   END-IF
+                               WHEN    OTHER                
+                                   IF      HKN-RECESKYKBN
+                                                       =   "2" OR  "3"
+                                                       OR  "4" OR  "5"
+                                       MOVE    2               TO  IDX1
+                                   ELSE
+                                       MOVE    1               TO  IDX1
+                                   END-IF
+                           END-EVALUATE
                        END-IF
                    END-IF
                    IF     IDX1          =        1
@@ -1275,6 +1311,7 @@
                                       WRK-SEIKYU-KOHID    (IDX1 IDZ)
                    MOVE    1                      TO  FLG-KOH 
                END-IF  
+             END-IF  
           END-PERFORM
       *
            INITIALIZE                      WRK-KOHSKY-RECE61-REC
@@ -1288,19 +1325,7 @@
       *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
-      *****IF      WRK-CONTKBN-KEY     NOT =   SPACE
-      *        社保（継続）＋生保のとき
-      *         MOVE    WRK-CONTKBN-KEY     TO  WRK-RECE61-KEY
-      *         MOVE    WRK-RECE61-KEY      TO  RECE61-KEY 
-      *         PERFORM 900-RECE61-READ-SEC
-      *         IF      FLG-RECE61          =   ZERO
-      *             MOVE    RECE61-REC          TO  WRK-RECE61-REC 
-      *             PERFORM 20011-RECE61-REWRITE-SEC
-      *         END-IF
-      *****ELSE
-      *        社保（継続）＋生保以外のとき
-               PERFORM 20011-FILE-HENSYU-SEC
-      *****END-IF   
+           PERFORM 20011-FILE-HENSYU-SEC
            .
        20011-FILE-SYORI-EXT.
            EXIT. 
@@ -1494,7 +1519,22 @@
       *****************************************************************
        200122-NYUINACCT-HENSYU-SEC           SECTION.
       *
-           INITIALIZE                   SYS-1005-REC
+      *    平成２０年４月以降に老人保険使用のとき
+           IF    ( WRK-ERR-ERRKBN      =   ZERO                  )
+           AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
+           AND   ( COMB-KOH1HKNNUM     =   "027"                 )
+               MOVE    "1"                 TO  WRK-TEISEIKBN
+               MOVE    8                   TO  WRK-ERR-ERRKBN
+           END-IF
+      *
+      *    平成２０年４月以降に退職国保で６５歳以上のとき
+           IF    ( WRK-ERR-ERRKBN      =   ZERO                  )
+           AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
+           AND   ( COMB-HKNNUM         =   "067"                 )
+           AND   ( WRK-NENREI          >=  65                    )
+               MOVE    "1"                 TO  WRK-TEISEIKBN
+               MOVE    9                   TO  WRK-ERR-ERRKBN
+           END-IF
       *
       *    最終診療日
            MOVE    NACCT-SRYYM         TO  WRK-SRYYM
@@ -1519,22 +1559,6 @@
                INITIALIZE                      PTHKNINF-REC
            END-IF
       *
-      *    社保（継続）編集処理
-      *****MOVE    SPACE                   TO  WRK-CONTKBN-KEY
-      *
-      **     IF      COMB-KOHHKNNUM (1)  =   "012"   OR
-      **             COMB-KOHHKNNUM (2)  =   "012"   OR
-      **             COMB-KOHHKNNUM (3)  =   "012"   OR
-      **             COMB-KOHHKNNUM (4)  =   "012" 
-      **         IF      COMB-HKNID          NOT =   ZERO
-      **             IF      PTHKN-CONTKBN           =   1       
-      **                 PERFORM 20011-CONTKBN-CHECK-SEC
-      **             END-IF
-      **         ELSE
-      **             PERFORM 20011-CONTKBN-CHECK-SEC
-      **         END-IF
-      **** END-IF
-      *
       *    公費のレセプト・請求書への出力
       *
            INITIALIZE                  WRK-SEIKYUKBN-KOHI-AREA
@@ -1543,15 +1567,17 @@
            MOVE    ZERO                TO  IDY
                                            IDZ    
       *
-      *        公費単独のとき全てレセプトに出力
-      *****IF      COMB-HKNNUM         =   SPACE
-      *****    MOVE    COMB-KOHI-AREA      TO  WRK-SEIKYU-TBL (1)
-      *****ELSE        
       *    地方公費のときレセプト請求区分を取得して判別
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
                    OR      COMB-KOHHKNNUM (IDX)    
                                            =   SPACE
+      *
+      *      平成２０年４月以降の老人保険は対象外とする
+             IF    ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
+             AND   ( COMB-KOHHKNNUM (IDX)  =  "027"                )
+                 CONTINUE
+             ELSE        
                IF     (COMB-KOHHKNNUM (IDX)(1:1)
                                            >=  "1" AND <=  "8")
                OR     (COMB-KOHHKNNUM (IDX)(1:2)   =  "99"    )
@@ -1582,7 +1608,8 @@
                        END-IF
                    ELSE
       *                福岡県の社保のとき（４１老人）
-                       IF    ( COMB-HKNNUM     NOT =   "060" AND "067" )
+                       IF    ( COMB-HKNNUM     NOT =   "060" AND "067"
+                                                             AND "039" )
                        AND   ( SYS-1001-PREFNUM    =   "40"            )
                        AND   ( HKN-HBTNUM          =   "41"            )    
                            IF      COMB-HONKZKKBN      =   "1" 
@@ -1591,19 +1618,33 @@
                                MOVE    1                   TO  IDX1
                            END-IF
                        ELSE
-                           IF      COMB-HKNNUM     =   "060"   OR  "067" 
-                               IF      HKN-RECESKYKBN  =   "1" OR  "3"
-                                   MOVE    2               TO  IDX1
-                               ELSE
-                                   MOVE    1               TO  IDX1
-                               END-IF
-                           ELSE                
-                               IF      HKN-RECESKYKBN  =   "2" OR  "3"
-                                   MOVE    2               TO  IDX1
-                               ELSE
-                                   MOVE    1               TO  IDX1
-                               END-IF
-                           END-IF
+                           EVALUATE    COMB-HKNNUM
+                               WHEN    "060"
+                               WHEN    "067" 
+                                   IF      HKN-RECESKYKBN
+                                                       =   "1" OR  "3"
+                                                               OR  "5"
+                                       MOVE    2               TO  IDX1
+                                   ELSE
+                                       MOVE    1               TO  IDX1
+                                   END-IF
+                               WHEN    "039"                
+                                   IF      HKN-RECESKYKBN
+                                                       =   "1" OR  "3"
+                                                               OR  "4"
+                                       MOVE    2               TO  IDX1
+                                   ELSE
+                                       MOVE    1               TO  IDX1
+                                   END-IF
+                               WHEN    OTHER                
+                                   IF      HKN-RECESKYKBN
+                                                       =   "2" OR  "3"
+                                                       OR  "4" OR  "5"
+                                       MOVE    2               TO  IDX1
+                                   ELSE
+                                       MOVE    1               TO  IDX1
+                                   END-IF
+                           END-EVALUATE
                        END-IF
                    END-IF
                    IF     IDX1          =        1
@@ -1692,6 +1733,7 @@
                                           WRK-SEIKYU-KOHID    (IDX1 IDZ)
                    MOVE    1                      TO  FLG-KOH 
                END-IF  
+             END-IF  
            END-PERFORM
       *
            INITIALIZE                      WRK-KOHSKY-RECE61-REC
@@ -1705,19 +1747,7 @@
       *
       *    レセプト明細書
            MOVE    "1"                 TO  WRK-SYOKBN
-      *****IF      WRK-CONTKBN-KEY     NOT =   SPACE
-      *        社保（継続）＋生保のとき
-      *         MOVE    WRK-CONTKBN-KEY     TO  WRK-RECE61-KEY
-      *         MOVE    WRK-RECE61-KEY      TO  RECE61-KEY 
-      *         PERFORM 900-RECE61-READ-SEC
-      *         IF      FLG-RECE61          =   ZERO
-      *             MOVE    RECE61-REC          TO  WRK-RECE61-REC 
-      *             PERFORM 20011-RECE61-REWRITE-SEC
-      *         END-IF
-      *****ELSE
-      *        社保（継続）＋生保以外のとき
-               PERFORM 20011-FILE-HENSYU-SEC
-      *****END-IF   
+           PERFORM 20011-FILE-HENSYU-SEC
            .
        200122-NYUINACCT-HENSYU-EXT.
            EXIT. 
@@ -1803,64 +1833,6 @@
       *
            .
        20011-PREFKBN-40-CHECK-EXT.
-           EXIT. 
-      *            
-      *****************************************************************
-      *    社保（継続）編集処理   （生保のときのみ）
-      *****************************************************************
-       20011-CONTKBN-CHECK-SEC         SECTION.
-      *
-      *    既に社保（継続）のデータがあるか検索
-           INITIALIZE                      WRK-RECE61-REC
-           MOVE    SYS-1001-HOSPNUM    TO  WRK-RECE61-HOSPNUM
-           IF      WRK-PARA-SYOKBN     =   "1"
-               MOVE    SYS-2001-SRYYM      TO  WRK-RECE61-SRYYM
-           ELSE
-               MOVE    SYS-2002-SRYYM      TO  WRK-RECE61-SRYYM
-           END-IF
-           MOVE    ACCT-NYUGAIKBN      TO  WRK-RECE61-NYUGAIKBN
-           MOVE    COMB-PTID           TO  WRK-RECE61-PTID
-           MOVE    WRK-RECE61-KEY      TO  RECE61-KEY
-           START   RECE61-FILE         KEY IS >=  RECE61-KEY
-               INVALID 
-                   MOVE    1               TO  FLG-RECE61
-               NOT INVALID 
-                   PERFORM 910-RECE61-READ-N-SEC 
-           END-START
-      *     
-           PERFORM                 UNTIL   FLG-RECE61  =   1
-                                   OR      WRK-RECE61-HOSPNUM 
-                                               NOT =   RECE61-HOSPNUM
-                                   OR      WRK-RECE61-SRYYM 
-                                               NOT =   RECE61-SRYYM
-                                   OR      WRK-RECE61-NYUGAIKBN 
-                                               NOT =   RECE61-NYUGAIKBN
-                                   OR      WRK-RECE61-PTID 
-                                               NOT =   RECE61-PTID
-      *        生保があり適用年月日が同じデータがあるとき
-               IF    ( RECE61-KOHHKNNUM-O (1)  =   "012"   OR  
-                       RECE61-KOHHKNNUM-O (2)  =   "012"   OR
-                       RECE61-KOHHKNNUM-O (3)  =   "012"   OR
-                       RECE61-KOHHKNNUM-O (4)  =   "012"              )
-               AND   ( RECE61-TEKSTYMDX (1)    <=  COMB-TEKSTYMD   AND
-                       RECE61-TEKEDYMDX (1)    >=  COMB-TEKSTYMD      )
-      *            公費単独のとき
-      *****        IF      RECE61-HKNID        =   ZERO
-                   IF      RECE61-HKNNUM       =   SPACE
-                       DELETE  RECE61-FILE RECORD
-                   ELSE     
-      *            社保（継続）のとき対象データとする
-                       IF      RECE61-CONTKBN      =   "1"
-                           MOVE    RECE61-KEY      TO  WRK-CONTKBN-KEY     
-                       END-IF      
-                   END-IF
-                   MOVE    1                   TO  FLG-RECE61
-               ELSE
-                   PERFORM 910-RECE61-READ-N-SEC 
-               END-IF
-           END-PERFORM
-           .
-       20011-CONTKBN-CHECK-EXT.
            EXIT. 
       *            
       *****************************************************************
@@ -2079,16 +2051,14 @@
                        PERFORM 20011-RECE61-WRITE-SEC
                    END-IF
                WHEN    "2"
-      *************IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-                       MOVE    WRK-RECE61-KEY      TO  RECE61X-KEY 
-                       PERFORM 900-RECE61X-READ-SEC
-                       IF      FLG-RECE61X         =   ZERO
-                           MOVE    RECE61X-REC     TO  WRK-RECE61-REC 
-                           PERFORM 20011-RECE61-REWRITE-SEC
-                       ELSE
-                           PERFORM 20011-RECE61-WRITE-SEC
-                       END-IF
-      *************END-IF
+                   MOVE    WRK-RECE61-KEY      TO  RECE61X-KEY 
+                   PERFORM 900-RECE61X-READ-SEC
+                   IF      FLG-RECE61X         =   ZERO
+                       MOVE    RECE61X-REC     TO  WRK-RECE61-REC 
+                       PERFORM 20011-RECE61-REWRITE-SEC
+                   ELSE
+                       PERFORM 20011-RECE61-WRITE-SEC
+                   END-IF
            END-EVALUATE
       *
       *    生保単独のみのとき
@@ -2229,9 +2199,6 @@
                MOVE    SYUKA-MISEIKYU-FLG  TO  WRK-RECE61-MISEIKYU-FLG
            END-IF
       *
-      *???
-           DISPLAY "KEY=" WRK-RECE61-KEY "#"
-      *???
            EVALUATE    WRK-SYOKBN
                WHEN    "1"
                    MOVE    WRK-RECE61-REC      TO  RECE61-REC
@@ -2464,7 +2431,11 @@
            IF      WRK-RECE61-SRYYM    <   WRK-CONS-SRYYM
                MOVE    1                   TO  IDXX
            ELSE
-               MOVE    2                   TO  IDXX
+               IF      WRK-RECE61-SRYYM    <   WRK-CONS-SRYYM-200804
+                   MOVE    2                   TO  IDXX
+               ELSE
+                   MOVE    3                   TO  IDXX
+               END-IF
            END-IF
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-SRT-KOHHKNNUM-MAX

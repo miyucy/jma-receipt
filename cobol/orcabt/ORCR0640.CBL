@@ -299,6 +299,7 @@
       *                                     ¡Ê²ðÃ£¸£°úÈ¯¾ÉÆüµ­ºÜÇÑ»ß¡Ë
       *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *  04.02.06    NACL-Æ£¸¶    08/03/31  ¹­°èÏ¢¹ç£Ï£Ã£Ò½ÐÎÏ¶èÊ¬ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1323,6 +1324,7 @@
            COPY    "CPSK1006.INC".
       *    
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
            COPY    "CPSK5000.INC".
       *    
@@ -1729,6 +1731,39 @@
            MOVE    "tbl_syskanri"       TO  MCP-TABLE
            MOVE    "key10"              TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
+      *         
+           MOVE    SPACE            TO  SYSKANRI-REC
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "2005"           TO  SYS-KANRICD
+           MOVE    "01"             TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM   TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+           MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC     TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"   TO  MCP-TABLE
+           MOVE    "key10"          TO  MCP-PATHNAME
+           PERFORM   900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"   TO  MCP-TABLE
+               MOVE    "key10"          TO  MCP-PATHNAME
+               PERFORM 960-KANRIMST-READ-SEC
+               IF      FLG-SYSKANRI     =   ZERO
+                   MOVE    MCPDATA-REC      TO  SYS-200501-REC
+               ELSE    
+                   INITIALIZE                   SYS-200501-REC
+               END-IF
+           ELSE
+               INITIALIZE                   SYS-200501-REC
+           END-IF
+           IF      SYS-200501-KOUIKIOCRKBN
+                                    =   SPACE
+               MOVE    ZERO             TO  SYS-200501-KOUIKIOCRKBN
+           END-IF
+      *
+           MOVE    "tbl_syskanri"       TO  MCP-TABLE
+           MOVE    "key10"              TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
       *
            .
        100-INIT-EXT.
@@ -2032,6 +2067,9 @@
                     ( SYS-2005-SYAOCRKBN    =   "2"         )     ) 
                OR ( ( RECE62-TEISYUTUSAKI   =   2           ) AND
                     ( SYS-2005-KKHOCRKBN    =   "2" OR  "3" )     ) 
+               OR ( ( RECE62-TEISYUTUSAKI   =   6           ) AND
+                    ( SYS-200501-KOUIKIOCRKBN
+                                            =   "2" OR  "3" )     )
       *
       *            °åÎÅÊÝ¸±¡¦¸øÈñ¤Î¥Õ¥é¥°
                    MOVE    SPACE              TO  WRK-3SYU-KBN

@@ -202,6 +202,8 @@
       *  04.02.04    NACL-Æ£¸¶    08/03/10  ÆÃÄê´ïºàÌ¾¾Î¤Îµ­Ï¿ÊýË¡¤Î½¤Àµ
       *  04.02.05    NACL-ÌçÏÆ    08/03/17  µÜºê¸©ÃÏÊý¸øÈñ¡Ê£±£¹£°¡Ë¤ÎÂÐ±þ
       *  04.02.06    NACL-ÌçÏÆ    08/03/19  À¸ÊÝ¤Î£·£¹Ê»ÍÑ»þ¤ÎÂÐ±þ
+      *  04.02.05    NACL-Æ£¸¶    08/03/25  ºÆ¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»¤ÎÄÉ²Ã
+      *                                     ¹­°èÏ¢¹çÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -458,6 +460,8 @@
                05  WRK-PARA-SHELLID    PIC X(08).
                05  WRK-PARA-SYARECEKBN PIC X(01).
                05  WRK-PARA-KKHRECEKBN PIC X(01).
+               05  WRK-PARA-KOUIKIRECEKBN
+                                       PIC X(01).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD          PIC X(08).
@@ -583,6 +587,7 @@
            03  WRK-HKN-NUM                     PIC X(50).
            03  WRK-HKN-KIGO                    PIC X(50).
            03  WRK-HKN-TEISYUTUSAKI            PIC X(04).    
+           03  WRK-HKN-FIL                     PIC X(02).    
            03  WRK-SRYYMST                     PIC X(12).
            03  WRK-SRYYMED                     PIC X(12).   
       *
@@ -1226,16 +1231,19 @@
       *        ³°Íè¿ÇÎÅ²Ê¡ÊÆýÍÄ»ù»þ´Ö³°ÆÃÎã°åÎÅµ¡´Ø¡Ë²Ã»»
                05  FILLER             PIC X(09)    VALUE   "112015470".
       *
+      *        ºÆ¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»
+               05  FILLER             PIC X(09)    VALUE   "112015570".
+      *
            03  WRK-CONS-JIKANGAI-TABLE-R  REDEFINES   
                                       WRK-CONS-JIKANGAI-TABLE.
-               05  WRK-CONS-JIKANGAI-SRYCD-G       OCCURS  30.
+               05  WRK-CONS-JIKANGAI-SRYCD-G       OCCURS  31.
                    07  WRK-CONS-JIKANGAI-SRYCD
                                       PIC X(09).
            03  WRK-CONS-JIKANGAI-TEN-TABLE.
-               05  WRK-CONS-JIKANGAI-TEN-G         OCCURS  30.
+               05  WRK-CONS-JIKANGAI-TEN-G         OCCURS  31.
                    07  WRK-CONS-JIKANGAI-TEN
                                       PIC 9(09).
-           03  WRK-CONS-JIKANGAI-MAX  PIC 9(02)    VALUE   30.    
+           03  WRK-CONS-JIKANGAI-MAX  PIC 9(02)    VALUE   31.    
       *
       *    ±ÕÂÎ»ÀÁÇ¡¦²ÄÈÂ¼°±ÕÂÎ»ÀÁÇÍÆ´ï¡Ê£Ì£Ç£Ã¡Ë
            03  WRK-CONS-SANSO1        PIC X(09)   VALUE   "739210000".
@@ -1290,10 +1298,6 @@
                05  WRK-CONS-COMMENT1  PIC X(09)   VALUE   "099999901".
       *        Â¾ÊÝ¸±¤Ë¤Æ¿Ç»¡ÎÁ»»ÄêºÑ
                05  WRK-CONS-COMMENT2  PIC X(09)   VALUE   "099999902".
-      *********¡ÊÊ´ºÕ¡Ë
-      *********05  WRK-CONS-COMMENT3  PIC X(09)   VALUE   "099209901".
-      *********¡Ê»ÄÎÌÇÑ´þ¡Ë
-      *********05  WRK-CONS-COMMENT4  PIC X(09)   VALUE   "099309901".
       *
       *    ºÆÆþ±¡Ç¯·îÆü
            03  WRK-CONS-NYUIN-SRYCD   PIC X(09)   VALUE   "840000014".
@@ -1351,6 +1355,7 @@
            03  WRK-CONS-SRYYM-200604   PIC 9(06)   VALUE   200604. 
            03  WRK-CONS-SRYYM-200609   PIC 9(06)   VALUE   200609.      
            03  WRK-CONS-SRYYM-200704   PIC 9(06)   VALUE   200704.
+           03  WRK-CONS-SRYYM-200804   PIC 9(06)   VALUE   200804.
       *
       *    ²þ¹Ô¥³¡¼¥É
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
@@ -1370,6 +1375,7 @@
       *****************************************************************
       *
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
            COPY    "CPSK2009.INC".
       *
@@ -1549,12 +1555,6 @@
                END-PERFORM
            END-IF    
       *
-      *¡ú¡úÊ¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
-           IF    ( FLG-END             =   ZERO   )
-           AND   ( RECE62-SRYYM        >=  200804 )
-               MOVE    1                   TO  FLG-END
-           END-IF
-      *¡ú¡ú
            .
        100-INIT-EXT.
            EXIT.
@@ -1658,8 +1658,41 @@
                MOVE    ZERO             TO  SYS-2005-RECECOMKBN
            END-IF
       *
+      *         
+           MOVE    SPACE               TO  SYS-200501-REC
+           INITIALIZE                      SYS-200501-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
+           MOVE    "2005"              TO  SYS-200501-KANRICD
+           MOVE    "01"                TO  SYS-200501-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  SYS-200501-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
+           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
+           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+               IF      SYS-200501-NI-JYOKEN (2)  NOT NUMERIC
+                   MOVE    WRK-CONS-JYOKEN-TENSU
+                                           TO  SYS-200501-NI-JYOKEN(2)
+               END-IF
+           ELSE    
+               MOVE    SPACE           TO  SYS-200501-REC
+               INITIALIZE                  SYS-200501-REC
+               MOVE    WRK-CONS-JYOKEN-TENSU
+                                       TO  SYS-200501-NI-JYOKEN(2)
+           END-IF
+           IF      SYS-200501-KOUIKIRECEKBN
+                                       =   SPACE
+               MOVE    ZERO        TO  SYS-200501-KOUIKIRECEKBN
+           END-IF
+           MOVE    SYS-200501-KOUIKIRECEKBN
+                                   TO  WRK-PARA-KOUIKIRECEKBN 
+      *
            DISPLAY "2005 NI-JYOKEN (3)=" SYS-2005-NI-JYOKEN(3)
                                  " (4)=" SYS-2005-NI-JYOKEN(4)
+                   " 200501 NI-JYOKEN (2)=" SYS-200501-NI-JYOKEN(2)
+           DISPLAY "KOUIKIRECEKBN=" WRK-PARA-KOUIKIRECEKBN
       *         
       *    ¥ì¥»¥×¥ÈÊÔ½¸¶èÊ¬¾ðÊó
            MOVE    SPACE           TO  SYS-2009-REC
@@ -1692,6 +1725,12 @@
            AND   ( SYS-2009-SYUKA-KOKUHO
                                    =   SPACE )
                MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
+           END-IF
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOUIKI
+                                   =   SPACE )
+               MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
            END-IF
       *    
            .
@@ -1919,6 +1958,14 @@
                    WHEN    OTHER
                        MOVE    SPACE      TO  WRK-HKN-TEISYUTUSAKI   
                END-EVALUATE          
+      *
+               EVALUATE    RECE69-TEISYUTUSAKI
+                   WHEN    "6"
+                       MOVE    SPACE      TO  WRK-HKN-FIL
+                   WHEN    OTHER
+                       MOVE    "¡Ý"       TO  WRK-HKN-FIL
+               END-EVALUATE
+      *
                IF    ( RECE69-NUM         =   SPACE )
                AND   ( RECE69-KIGO        =   SPACE )        
                AND   ( RECE69-HKNJANUM    =   SPACE )        
@@ -1967,7 +2014,7 @@
                            WRK-HKN-HKNJANUM       DELIMITED  BY  SPACE
                            "¡¡"                   DELIMITED  BY  SIZE
                            WRK-HKN-KIGO           DELIMITED  BY  SPACE
-                           "¡Ý"                   DELIMITED  BY  SIZE
+                           WRK-HKN-FIL            DELIMITED  BY  SPACE
                            WRK-HKN-NUM            DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI-X
                    END-STRING
@@ -1989,7 +2036,7 @@
                            GO  TO  2001-RIREKI-HEN-EXT
                        END-IF    
                        STRING  WRK-HKN-KIGO       DELIMITED  BY  SPACE
-                               "¡Ý"               DELIMITED  BY  SIZE
+                               WRK-HKN-FIL        DELIMITED  BY  SPACE
                                WRK-HKN-NUM        DELIMITED  BY  SPACE
                                INTO
                                    WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
@@ -2061,7 +2108,11 @@
            MOVE    RECE62-HOSPNUM      TO  LNK-NYURECEDEN-HOSPNUM
            MOVE    RECE62-PTID         TO  LNK-NYURECEDEN-PTID
            MOVE    RECE62-SRYYM        TO  LNK-NYURECEDEN-SANTEIYM
-           MOVE    RECE62-TEISYUTUSAKI TO  LNK-NYURECEDEN-HKNKBN
+           IF      RECE62-TEISYUTUSAKI =   "6"
+               MOVE    "3"                 TO  LNK-NYURECEDEN-HKNKBN
+           ELSE
+               MOVE    RECE62-TEISYUTUSAKI TO  LNK-NYURECEDEN-HKNKBN
+           END-IF
            CALL    "ORCSNYURECEDEN"    USING   ORCSNYURECEDEN-AREA
                                                SPA-AREA
            IF      LNK-NYURECEDEN-RC   NOT =   ZERO
@@ -2459,6 +2510,10 @@
       *    Ï·¿Í¥ì¥³¡¼¥ÉÊÔ½¸½èÍý
       *****************************************************************
        2004-HENSYU-SEC              SECTION.
+      *
+           IF      RECE62-SRYYM    >=  WRK-CONS-SRYYM-200804
+               GO  TO  2004-HENSYU-EXT
+           END-IF
       *
            IF      RECE62-RJNHKNNUM    =   SPACE
                GO  TO  2004-HENSYU-EXT
@@ -3184,8 +3239,8 @@
                END-IF
            END-IF    
       *???
-           DISPLAY "HKNNUM=" COMB-HKNNUM  "KOH1=" COMB-KOH1HKNNUM "##"
-                   "KOH2="   COMB-KOH2HKNNUM "##" WRK-FTNKBN        
+      **     DISPLAY "HKNNUM=" COMB-HKNNUM  "KOH1=" COMB-KOH1HKNNUM "##"
+      **             "KOH2="   COMB-KOH2HKNNUM "##" WRK-FTNKBN        
       *???              
       *
            IF      WRK-FTNKBN     NOT =   SPACE
@@ -3213,11 +3268,11 @@
                END-IF    
            END-PERFORM
       *???
-           DISPLAY "RECE62(1)=" RECE62-KOHNUM (1) "(2)="
-                                RECE62-KOHNUM (2)
-                   "(3)=" RECE62-KOHNUM (3) "##"
-           DISPLAY "(1)=" WRK-KOHNUM (1) "(2)=" WRK-KOHNUM (2)
-                   "(3)=" WRK-KOHNUM (3) "##"
+      *     DISPLAY "RECE62(1)=" RECE62-KOHNUM (1) "(2)="
+      *                          RECE62-KOHNUM (2)
+      *             "(3)=" RECE62-KOHNUM (3) "##"
+      *     DISPLAY "(1)=" WRK-KOHNUM (1) "(2)=" WRK-KOHNUM (2)
+      *             "(3)=" WRK-KOHNUM (3) "##"
       *???                  
       *                                                      
       *    ¼çÊÝ¸±¤¬¤¢¤ë¤È¤­      
@@ -4692,6 +4747,10 @@
                IF    ( RECE62-TEISYUTUSAKI   =   "2"                )
                AND   ( RECE62-RJNGAIFTN  >=  SYS-2005-NI-JYOKEN (4) )
                        PERFORM 200721-NI-KAISU-HENSYU-SEC
+               END-IF
+               IF    ( RECE62-TEISYUTUSAKI   =   "6"                  )
+               AND   ( RECE62-RJNGAIFTN  >=  SYS-200501-NI-JYOKEN (2) )
+                       PERFORM 200725-NIKKEI-HENSYU-SEC
                END-IF
            END-IF
       *
@@ -6818,6 +6877,8 @@
                      AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
                OR  (     ( RECE62-TEISYUTUSAKI   =   "2" )
                      AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+               OR  (     ( RECE62-TEISYUTUSAKI   =   "6" )
+                     AND ( SYS-2009-SYUKA-KOUIKI =   "1" ) )
                    MOVE    RECE62-SYUKA        TO  RECEDEN-RECEKA
                ELSE
                    IF      RECE62-RECEKA       =   SPACE
@@ -7016,10 +7077,10 @@
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *????
-           IF      FLG-HKNCOMBI        =   1
-               DISPLAY "HKNCOMBI INV " COMB-HOSPNUM " " COMB-PTID " "
-                                       COMB-HKNCOMBINUM " "    
-           END-IF
+      *     IF      FLG-HKNCOMBI        =   1
+      *         DISPLAY "HKNCOMBI INV " COMB-HOSPNUM " " COMB-PTID " "
+      *                                 COMB-HKNCOMBINUM " "    
+      *     END-IF
       *???? 
       *
            .
@@ -7281,6 +7342,11 @@
                                                    OR  "1"  )  AND
                              ( RECE62-TEISYUTUSAKI
                                                    =   "2"  )      )
+                       OR  ( ( WRK-PARA-KOUIKIRECEKBN
+                                                   =   ZERO
+                                                   OR  "1"  )  AND
+                             ( RECE62-TEISYUTUSAKI
+                                                   =   "6"  )      )
                        OR  (   RECE62-PTNUM        =   SPACE       )
                        OR  (   RECE62-TSTPTNUMKBN  =   "1"         )
                        OR  (   RECE62-RECESYUBETU  =   ZERO   OR 
@@ -7295,6 +7361,8 @@
                                    AND ( SYS-2009-SYUKA-SYAHO  = "1" ) )
                              OR  (     ( RECE62-TEISYUTUSAKI   = "2" )
                                    AND ( SYS-2009-SYUKA-KOKUHO = "1" ) )
+                             OR  (     ( RECE62-TEISYUTUSAKI   = "6" )
+                                   AND ( SYS-2009-SYUKA-KOUIKI = "1" ) )
                                MOVE    2               TO  FLG-READ
                              END-IF
                            END-IF

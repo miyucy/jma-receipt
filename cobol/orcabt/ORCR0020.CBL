@@ -1421,6 +1421,9 @@ grpsys             PERFORM 900-DBSELECT-SEC
              OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
                    AND ( SYS-2009-SYUKA-KOKUHO
                                            NOT =   "0" ) )
+             OR  (     ( RECE02-TEISYUTUSAKI   =   "6" )
+                   AND ( SYS-2009-SYUKA-KOUIKI
+                                           NOT =   "0" ) )
                INITIALIZE                      ORCSSYUACCAREA
 grpsys         MOVE    RECE02-HOSPNUM  TO  SPA-HOSPNUM
                MOVE    RECE02-SRYYM    TO  LNK-SYUACC-I-SRYYM
@@ -1479,6 +1482,8 @@ grpsys         MOVE    RECE02-HOSPNUM  TO  SPA-HOSPNUM
                      AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
                OR  (     ( RECE02-TEISYUTUSAKI   =   "2" )
                      AND ( SYS-2009-SYUKA-KOKUHO =   "1" ) )
+               OR  (     ( RECE02-TEISYUTUSAKI   =   "6" )
+                     AND ( SYS-2009-SYUKA-KOUIKI =   "1" ) )
                    MOVE    SPACE                TO  SYSKANRI-REC
                    INITIALIZE                       SYSKANRI-REC
                    MOVE    "1005"               TO  SYS-KANRICD
@@ -2414,7 +2419,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                EVALUATE    RECE02-HKNNUM
                    WHEN    "060"
                    WHEN    "068"
-                       IF       RECE01-SYUGAKUKBN    =   1
+                       IF       RECE02-SYUGAKUKBN    =   1
                            EVALUATE   RECE02-HOJOKBN
                               WHEN   "0"
                                   MOVE   ZERO    TO   RECE02-KYURATE
@@ -2483,7 +2488,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                            WHEN   "1"
                                MOVE    10  TO  RECE02-KYURATE
                            WHEN   "3"
-                               MOVE    20  TO  RECE02-KYURATE
+                               MOVE    30  TO  RECE02-KYURATE
                        END-EVALUATE
                    WHEN    OTHER
                        IF       RECE01-SYUGAKUKBN    =   1
