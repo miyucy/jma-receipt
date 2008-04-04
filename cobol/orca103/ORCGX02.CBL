@@ -81,7 +81,7 @@
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBL-MAX        PIC 9(05).
       *****************09  SPA-GMN-TBLO    OCCURS  60.
-                       09  SPA-GMN-TBL-OCC OCCURS  100.
+                       09  SPA-GMN-TBL-OCC OCCURS  200.
                            11  SPA-GMN-TTEKCD     PIC X(20).
                            11  SPA-GMN-TNAME      PIC X(100).
                            11  SPA-GMN-TSYORIKBN  PIC X(01).
@@ -193,7 +193,7 @@
        01  TBL-AREA.
            03  TBL-GMN-AREA.
                05  TBL-GMN-MAX         PIC 9(05).
-               05  TBL-GMN-OCC    OCCURS  100.
+               05  TBL-GMN-OCC    OCCURS  200.
                    07  TBL-GMN-TTEKCD     PIC X(20).
                    07  TBL-GMN-TNAME      PIC X(100).
                    07  TBL-GMN-TSYORIKBN  PIC X(01).
@@ -215,9 +215,10 @@
       *
       *     
        01  CONST-AREA.
-           03  CONST-TEKCD-MAX     PIC 9(05)   VALUE   100.
+           03  CONST-TEKCD-MAX     PIC 9(05)   VALUE   200.
+           03  CONST-X03TEKCD-MAX  PIC 9(05)   VALUE   100.
            03  CONST-LINE-MAX      PIC 9(03)   VALUE   20. 
-           03  CONST-PAGE-MAX      PIC 9(02)   VALUE   5.
+           03  CONST-PAGE-MAX      PIC 9(02)   VALUE   10.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1409,22 +1410,28 @@
       *
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
-           IF    ( SPA-ERRCD   NOT =   SPACE )
-               GO      TO      409-X03-SENI-EXT
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               IF    ( SPA-GMN-TBL-MAX     >   CONST-X03TEKCD-MAX )
+                   MOVE    "0014"          TO  SPA-ERRCD
+               END-IF
            END-IF
       *
-      *    チェック項目複写画面初期処理
-           PERFORM 4091-X03-INIT-SEC
+           IF    ( SPA-ERRCD   =   SPACE )
       *
-           MOVE    "X03"               TO  SPA-SAKIPG
-           MOVE    "X02"               TO  SPA-MOTOPG
+      *        チェック項目複写画面初期処理
+               PERFORM 4091-X03-INIT-SEC
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
-           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+               MOVE    "X03"               TO  SPA-SAKIPG
+               MOVE    "X02"               TO  SPA-MOTOPG
       *
-           PERFORM 900-PUT-WINDOW
+               MOVE   "CHANGE"             TO  MCP-PUTTYPE
+               MOVE   SPA-SAKIPG           TO  MCP-WINDOW
       *
-           MOVE    1                   TO  FLG-END
+               PERFORM 900-PUT-WINDOW
+      *
+               MOVE    1                   TO  FLG-END
+           END-IF
       *
            .
        409-X03-SENI-EXT.
@@ -2115,6 +2122,14 @@
                                                       TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "同一入外制限区分入力エラー"   TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    SPACE                      TO  SPA-ERRMSG
+                   STRING  "適用コードの登録が１００件を超えている場合"
+                                                  DELIMITED    BY  SIZE
+                           "複写画面は使用できません。"
+                                                  DELIMITED    BY  SIZE
+                   INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "1001"
                    MOVE    "更新ができませんでした"
                                                       TO  SPA-ERRMSG
