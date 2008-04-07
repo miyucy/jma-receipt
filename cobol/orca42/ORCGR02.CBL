@@ -5545,9 +5545,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
                        MOVE    WIDGET-INSENSITIVE  TO  R02-SYUKA-STATE
                    ELSE
-                       IF      SPA-GMN-PAGE-MAX    =   1
-                           MOVE    WIDGET-NORMAL   TO  R02-SYUKA-STATE
-                       ELSE
+                     IF      SPA-GMN-PAGE-MAX    =   1
+                         MOVE    WIDGET-NORMAL   TO  R02-SYUKA-STATE
+                     ELSE
                        IF    ( SPA-R01-RECE07-SRYKA        =   "00" )
                        AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                        NOT =   "00" )
@@ -5628,6 +5628,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                    TO  R02-SYUKA-STATE
                            END-IF
                        END-IF
+                     END-IF
                    END-IF
                END-IF    
            ELSE 

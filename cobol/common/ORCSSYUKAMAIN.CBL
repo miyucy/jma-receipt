@@ -132,11 +132,6 @@
            MOVE    ZERO            TO  LNK-SYUACC-RC
       *****INITIALIZE                  LNK-SYUACC-IO
       *
-      *★★平成２０年４月改正対応
-           IF      LNK-SYUACC-I-SRYYM  >=  WRK-CONS-SRYYM-200804
-               MOVE    1               TO  FLG-END 
-           END-IF
-      *★★
       *
       *    入力項目チェック
            IF      SPA-SYUKA-KBN   =   ZERO

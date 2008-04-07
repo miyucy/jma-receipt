@@ -2363,6 +2363,7 @@
                    WHEN    1
                        MOVE    "£±¼Ò"          TO  HC06-TEISYUTUSAKI
                    WHEN    2
+                   WHEN    6
                        MOVE    "£²¹ñ"          TO  HC06-TEISYUTUSAKI
                    WHEN    OTHER
                        MOVE    SPACE           TO  HC06-TEISYUTUSAKI

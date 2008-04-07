@@ -1173,6 +1173,7 @@ grpsys             MOVE    SPA-HOSPNUM             TO  HKN-HOSPNUM
                        AND   ( COMB-KOHHKNNUM (IDX)
                                                NOT =   "180"   )
                            IF      HKN-RECESKYKBN  =   "1" OR  "3"
+                                                           OR  "5"
                                MOVE    2               TO  IDX1
                            ELSE
                                MOVE    1               TO  IDX1
@@ -1383,12 +1384,9 @@ grpsys         MOVE    SPA-HOSPNUM         TO  LNK-SKOHPLUS-HOSPNUM
                CALL    "ORCSKOHPLUS"       USING
                                            ORCSKOHPLUS-AREA
 grpsys                                     SPA-AREA
-               IF      LNK-SKOHPLUS-RC =   ZERO
-                   IF      LNK-SKOHPLUS-RECESKYKBN =   "1" OR  "3"
-                       MOVE    2                   TO  IDX1
-                   ELSE
-                       MOVE    1                   TO  IDX1
-                   END-IF
+               IF      LNK-SKOHPLUS-RECESKYKBN =   "1" OR  "3"
+                                                       OR  "5"
+                   MOVE    2                   TO  IDX1
                ELSE
                    MOVE    1                   TO  IDX1
                END-IF

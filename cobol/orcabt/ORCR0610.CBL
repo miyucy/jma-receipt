@@ -1177,6 +1177,7 @@
                        AND   ( COMB-KOHHKNNUM (IDX)
                                                NOT =   "180"   )
                            IF      HKN-RECESKYKBN  =   "1" OR  "3"
+                                                           OR  "5"
                                MOVE    2               TO  IDX1
                            ELSE
                                MOVE    1               TO  IDX1
@@ -1599,6 +1600,7 @@
                        AND   ( COMB-KOHHKNNUM (IDX)
                                                NOT =   "180"   )
                            IF      HKN-RECESKYKBN  =   "1" OR  "3"
+                                                           OR  "5"
                                MOVE    2               TO  IDX1
                            ELSE
                                MOVE    1               TO  IDX1

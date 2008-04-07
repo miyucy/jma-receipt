@@ -2333,7 +2333,6 @@
       *    患者番号
            MOVE    RECE02-PTNUM        TO  HC06-PTNUM
       *
-      *    ★
       *    提出先
            IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
                MOVE    SPACE           TO  HC06-TEISYUTUSAKI
@@ -2342,6 +2341,7 @@
                    WHEN    1
                        MOVE    "１社"          TO  HC06-TEISYUTUSAKI
                    WHEN    2
+                   WHEN    6
                        MOVE    "２国"          TO  HC06-TEISYUTUSAKI
                    WHEN    OTHER
                        MOVE    SPACE           TO  HC06-TEISYUTUSAKI
