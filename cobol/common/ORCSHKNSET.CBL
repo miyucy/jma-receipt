@@ -36,11 +36,6 @@
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/10/19  ¸øÌ³ºÒ³²ÄÉ²Ã
       * 04.01.01     NACL-Â¿¡¹Ç¼  07/11/12  ÈóÉ½¼¨¶èÊ¬ÂÐ±þÄÉ²Ã
       * 04.02.00     NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°¡¥£´²þÀµÂÐ±þ
-      * 04.05.00     NACL-Â¿¡¹Ç¼  10/01/XX  ¼£¸³ÂÐ±þ
-      * 04.06.00     NACL-ÂÀÅÄ    10/08/30  Êä½õ¶èÊ¬¡¢ËÜ¿Í²ÈÂ²¶èÊ¬ÄÉ²Ã
-      * 04.06.00     NACL-Â¿¡¹Ç¼  10/09/29  Æþ±¡¡¦³°ÍèÈó³ºÅöÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  13/07/XX  Âè»°¼Ô¹Ô°ÙÂÐ±þ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  14/01/XX  ÉéÃ´³ä¹ç¸øÈñÂÐ±þ
       *****************************************************************
       *
       *
@@ -98,18 +93,14 @@
            03  WRK-HKNCOMBI            PIC X(100).
       *
            03  WRK-HKNCOMBINUM         PIC X(04).
-      **   03  WRK-HKNKBN-MEI          PIC X(02).
-           03  WRK-HKNKBN-MEI          PIC X(06).
+           03  WRK-HKNKBN-MEI          PIC X(02).
       *
            03  WRK-JIBAISEKIKBN        PIC X(01).
       *
       *    É½¼¨ÍÑÊÝ¸±
            03  WRK-IDXH                PIC 9(04).
-           03  WRK-IDXH2               PIC 9(04).
            03  WRK-CNT-HKN             PIC 9(04).
            03  WRK-CNT-HKN2            PIC 9(04).
-      *
-           03  WRK-SRYYMD              PIC X(08).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -173,11 +164,6 @@
       *    Ç¯Îð¡¦ÉéÃ´³ä¹ç¥µ¥Ö
            COPY    "CPORCSAGECHK.INC".
       *
-      *!!
-      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»ÉéÃ´³ä¹ç¼èÆÀ¥µ¥Ö
-           COPY    "CPORCSFTNRATE.INC".
-      *!!
-      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
@@ -211,11 +197,6 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  ORCSHKN-ERRCD
       *
-           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
-           IF      SPA-SRYYMD(7:2)     =   "00"
-               MOVE    "01"            TO  WRK-SRYYMD(7:2)
-           END-IF
-      *
       *    ÊÝ¸±ÁÈ¹ç¤»ÊÔ½¸½èÍý
            PERFORM 100-HKNCOMBI-HENSYU-SEC
       *
@@ -246,7 +227,7 @@
            INITIALIZE                  ORCSAGECHKAREA
            MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    SPA-PTID            TO  AGECHK-PTID
-           MOVE    WRK-SRYYMD          TO  AGECHK-SRYYMD
+           MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
            MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
            MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
@@ -254,6 +235,30 @@
                                        SPA-AREA
       *    ÊÝ¸±Ç¯Îð
            MOVE    AGECHK-NENREI       TO  WRK-NENREI
+      *****£±Æü°Ê³°¤ÎÃÂÀ¸Æü¤Î»þ¤Ï¡¢Íâ·î£±Æü¤ò´ð½à¤È¤¹¤ë
+      *    IF      WRK-BDD             >   01
+      *        COMPUTE WRK-BMM         =   WRK-BMM     +   1
+      *        IF      WRK-BMM         >   12
+      *            COMPUTE WRK-BYY         =   WRK-BYY     +   1
+      *            MOVE    01              TO  WRK-BMM
+      *        END-IF
+      *        MOVE    01              TO  WRK-BDD
+      *    END-IF
+      *
+      *    Ç¯Îð¤ò·×»»¤¹¤ë
+      *    MOVE    SPA-SRYYMD          TO  WRK-SYMD
+      *    COMPUTE WRK-NENREI-YY       =   WRK-SYY
+      *                                -   WRK-BYY
+      *    IF      WRK-BYMD(5:4)       >   WRK-SYMD(5:4)
+      *        COMPUTE WRK-NENREI-YY       =   WRK-NENREI-YY
+      *                                    -   1
+      *        COMPUTE WRK-NENREI-MM       =  (WRK-BMM   +  12 )
+      *                                    -   WRK-SMM
+      *    ELSE
+      *        COMPUTE WRK-NENREI-MM       =   WRK-BMM
+      *                                    -   WRK-SMM
+      *    END-IF
+      ***  MOVE    WRK-NENREI-YY       TO  WRK-NENREI
       *
            .
        1001-NENREI-EXT.
@@ -303,32 +308,8 @@
                    MOVE    1                   TO  FLG-HKNCOMBIERR
                ELSE
       *            ÈóÉ½¼¨Ê¬¤Ï½èÍý¶èÊ¬£³¡á£± ¤Î¤È¤­¤Î¤ßÂÐ¾Ý
-      *                      ½èÍý¶èÊ¬£³¡á£²¡¡Âè»°¼Ô¹Ô°Ù¤Î¤ßÂÐ¾Ý³°ÄÉ²Ã
                    IF      COMB-HYOJIKBN       =   "1"
                        IF      ORCSHKN-KBN3        =   "1"
-                                                   OR  "2"
-                           CONTINUE
-                       ELSE
-                           MOVE    1               TO  FLG-HKNCOMBIERR
-                       END-IF
-                   END-IF
-      *            Æþ±¡ÈóÉ½¼¨Ê¬¤Ï³°Íè¡¦½èÍý¶èÊ¬£³¡á£± ¤Î¤È¤­¤Î¤ßÂÐ¾Ý
-      *                      ½èÍý¶èÊ¬£³¡á£²¡¡Âè»°¼Ô¹Ô°Ù¤Î¤ßÂÐ¾Ý³°ÄÉ²Ã
-                   IF      COMB-HYOJIKBN       =   "2"
-                       IF     (ORCSHKN-KBN3        =   "1" )
-                         OR   (ORCSHKN-KBN3        =   "2" )
-                         OR   (SPA-NYUGAIKBN       =   "2" )
-                           CONTINUE
-                       ELSE
-                           MOVE    1               TO  FLG-HKNCOMBIERR
-                       END-IF
-                   END-IF
-      *            ³°ÍèÈóÉ½¼¨Ê¬¤ÏÆþ±¡¡¦½èÍý¶èÊ¬£³¡á£± ¤Î¤È¤­¤Î¤ßÂÐ¾Ý
-      *                      ½èÍý¶èÊ¬£³¡á£²¡¡Âè»°¼Ô¹Ô°Ù¤Î¤ßÂÐ¾Ý³°ÄÉ²Ã
-                   IF      COMB-HYOJIKBN       =   "3"
-                       IF     (ORCSHKN-KBN3        =   "1" )
-                         OR   (ORCSHKN-KBN3        =   "2" )
-                         OR   (SPA-NYUGAIKBN       =   "1" )
                            CONTINUE
                        ELSE
                            MOVE    1               TO  FLG-HKNCOMBIERR
@@ -357,19 +338,9 @@
                        END-IF
                    END-IF
                END-IF
-      *H25.7
-      *        ½èÍý¶èÊ¬£³¡á£²¤Î»þ¡¢Âè»°¼Ô¹Ô°Ù¤ÏÂÐ¾Ý³°
-               IF     (FLG-HKNCOMBICHK     =    1    )  AND
-                      (ORCSHKN-KBN3        =   "2"   )
-                   IF      COMB-KOH1HKNNUM     =   "970" 
-                       MOVE    ZERO            TO  FLG-HKNCOMBICHK
-                   END-IF
-               END-IF
-      *
       *        Ï«ºÒ¡¦¼«ÇåÀÕÊÝ¸±¸¡º÷
                IF     (FLG-HKNCOMBICHK     =    1    )  AND
-                     ((COMB-HKNNUM         =   "971"  OR  "973")
-                  OR  (COMB-KOH1HKNNUM     =   "970"   ))
+                      (COMB-HKNNUM         =   "971"  OR  "973")
                    PERFORM 1100-PTRSIINF-CHK-SEC
                    IF      FLG-PTRSIINF        =   1
                        MOVE    ZERO            TO  FLG-HKNCOMBICHK
@@ -405,12 +376,6 @@
            MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    SPA-PTID            TO  PTRSI-PTID
            MOVE    COMB-HKNID          TO  PTRSI-HKNID
-      *    Âè»°¼Ô¹Ô°Ù
-           IF      COMB-KOH1HKNNUM     =   "970"
-               MOVE    COMB-KOH1ID         TO  PTRSI-KOHID
-               MOVE    ZERO                TO  PTRSI-HKNID
-           END-IF
-      *
            MOVE    PTRSIINF-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_ptrsiinf"      TO  MCP-TABLE
@@ -441,9 +406,6 @@
                                                                (IDX)
       *
            MOVE    COMB-HKNID          TO  ORCSHKN-NAI-HKNID   (IDX)
-           MOVE    COMB-HKNNUM         TO  ORCSHKN-NAI-HKNNUM  (IDX)
-           MOVE    COMB-HOJOKBN        TO  ORCSHKN-NAI-HOJOKBN (IDX)
-           MOVE    COMB-HONKZKKBN      TO  ORCSHKN-NAI-HONKZKKBN (IDX)
            MOVE    COMB-HKNNUM         TO  ORCSHKN-NAI-HKNNUM  (IDX)
            MOVE    COMB-KOH1HKNNUM     TO  ORCSHKN-NAI-KOH1HKNNUM
                                                                (IDX)
@@ -496,30 +458,6 @@
                END-IF
            END-PERFORM
       *
-      *!!!!
-           IF     (COMB-KOH1HKNNUM     =   "970" )
-               OR (COMB-KOH1HKNNUM     =   SPACE )
-               CONTINUE
-           ELSE
-      *        ÃÏÊý¸øÈñÂÐ±þÉéÃ´³ä¹çÀßÄê
-               INITIALIZE                  ORCSFTNRATEAREA
-               MOVE    COMB-HOSPNUM        TO  LNK-FTNRATE-HOSPNUM
-               MOVE    COMB-PTID           TO  LNK-FTNRATE-PTID
-               MOVE    WRK-SRYYMD          TO  LNK-FTNRATE-SRYYMD
-               MOVE    COMB-HKNCOMBINUM    TO  LNK-FTNRATE-HKNCOMBINUM
-               MOVE    "1"                 TO  LNK-FTNRATE-KBN
-               CALL    "ORCSFTNRATE"       USING
-                                           ORCSFTNRATEAREA
-                                           SPA-AREA
-                                           HKNCOMBI-REC
-               IF      LNK-FTNRATE-RC      =   ZERO
-                   MOVE    LNK-FTNRATE-NYUIN   TO  COMB-NYU-KFTNRATE
-                   MOVE    LNK-FTNRATE-GAIRAI  TO  COMB-GAI-KFTNRATE
-               END-IF
-           END-IF
-      *
-      *!!!!
-      *
       *    ÉéÃ´³ä¹ç
            IF      SPA-NYUGAIKBN       =   "1"
       *        Æþ±¡
@@ -530,23 +468,16 @@
                MOVE    COMB-GAI-KFTNRATE   TO  ORCSHKN-NAI-FTNRATE
                                                                (IDX)
            END-IF
-      *    ÊÝ¸±ÈÖ¹æ¥Þ¥¹¥¿¸¡º÷
-           PERFORM 3001-HKNNUM-CHK-SEC
-      *    ¼£¸³È½Äê
-           IF     (COMB-HKNNUM         >=  "900"   AND
-                                       <=  "919"   )   AND
-                  (HKN-HKNKOHSBTKBN    =   "9"     )
-               MOVE    "1"             TO  ORCSHKN-NAI-CHIKENKBN
-                                                             (IDX)
-           END-IF
       *    £³ºÐÌ¤Ëþ¤Î»þ¡¢£²³ä¤ò¾å¸Â¤È¤¹¤ë
            IF    ((COMB-TEKEDYMD       >=  "20021001") AND
-                  (WRK-SRYYMD          >=  "20021001") AND
+                  (SPA-SRYYMD          >=  "20021001") AND
                   (WRK-NENREI          <   03        ))
       *    £È£²£°¡¥£´²þÀµ
              OR  ((COMB-TEKEDYMD       >=  "20080401") AND
-                  (WRK-SRYYMD          >=  "20080401") AND
+                  (SPA-SRYYMD          >=  "20080401") AND
                   (AGECHK-SYUGAKUKBN   =   1         ))
+      *        ¼çÊÝ¸±¤¬¼«Èñ°Ê³°¤Î»þ
+               PERFORM 3001-HKNNUM-CHK-SEC
       *        ¼«Èñ¡¦¼£¸³
                IF     (HKN-HKNKOHSBTKBN    =   "8"  OR  "9"    )
       *                ÆÃÊÌÎÅÍÜÈñ
@@ -640,26 +571,12 @@
       *        ÊÝ¸±¶èÊ¬
                MOVE    2                   TO  ORCSHKN-NAI-HKNKBN(IDX)
            END-IF
-      *H29.5
-      *    ¼«ÇåÀÕÅÀ¿ô¶èÊ¬¤È¥·¥¹¥Æ¥à´ÉÍýÈ½Äê
-           MOVE    SPACE               TO  WRK-HKNKBN-MEI
-           IF      COMB-HKNNUM         =   "973"
-               IF      (PTRSI-JIBAIKBN     =   "1"  )
-      *            Ï«ºÒ½àµò
-                   MOVE   "[Ï«]"             TO  WRK-HKNKBN-MEI
-               END-IF
-               IF      (PTRSI-JIBAIKBN     =   "2"  )
-      *            ·òÊÝ½àµò
-                   MOVE   "[·ò]"             TO  WRK-HKNKBN-MEI
-               END-IF
-           END-IF
-      *
       *    Ï«ºÒ¤Î»þ¡¢¥³¥á¥ó¥È¤ÎÄÉ²Ã
            IF      COMB-HKNNUM         =   "971"  OR  "973"
       *        ÊÝ¸±¶èÊ¬
                MOVE    1                   TO  ORCSHKN-NAI-HKNKBN(IDX)
       *
-      **       MOVE    SPACE               TO  WRK-HKNKBN-MEI
+               MOVE    SPACE               TO  WRK-HKNKBN-MEI
                EVALUATE    PTRSI-HKNKBN
                    WHEN    "1"
                        MOVE    "Ã»"        TO  WRK-HKNKBN-MEI
@@ -711,31 +628,6 @@
                                            OR  "5"
                    MOVE    PTRSI-JIBAISEIKBN   TO  WRK-JIBAISEKIKBN
                END-IF
-           END-IF
-      *ver.4.7
-      *    Âè»°¼Ô¹Ô°Ù
-           IF      COMB-KOH1HKNNUM     =   "970"
-      *        ÊÝ¸±¶èÊ¬
-               MOVE    1               TO  ORCSHKN-NAI-HKNKBN (IDX)
-      *        Ï«ºÒÊÝ¸±¶èÊ¬
-               MOVE    PTRSI-HKNKBN    TO  ORCSHKN-NAI-RSI-HKNKBN
-                                                               (IDX)
-      *        Ì¾¾ÎÊÔ½¸
-               IF      PTRSI-COMMENT   NOT =   SPACE
-      *            ÊÝ¸±¡Ü¸øÈñ£±¤Î¤ß¤È¤Ê¤ë
-                   MOVE    SPACE               TO  WRK-HKNCOMBI
-                   STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
-                           " "                     DELIMITED  BY  SIZE
-                           COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                           "¡Ê"                    DELIMITED  BY  SIZE
-                           PTRSI-COMMENT(1:24)     DELIMITED  BY  SPACE
-                           "¡Ë"                    DELIMITED  BY  SIZE
-                           INTO              WRK-HKNCOMBI
-                   END-STRING
-               END-IF
-      *        ½ýÉÂÇ¯·îÆü
-               MOVE    PTRSI-SHOBYOYMD     TO  ORCSHKN-NAI-RSI-SHOBYOYMD
-                                                                  (IDX)
            END-IF
       *
            INITIALIZE                  ORCSKANACHKAREA
@@ -834,8 +726,8 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   ORCSHKN-HKN-MAX )  OR
                               (FLG-HKNCOMBICHK =   1   )
-               IF      (WRK-SRYYMD     >=  ORCSHKN-NAI-TEKSTYMD(IDX))
-                   AND (WRK-SRYYMD     <=  ORCSHKN-NAI-TEKEDYMD(IDX))
+               IF      (SPA-SRYYMD     >=  ORCSHKN-NAI-TEKSTYMD(IDX))
+                   AND (SPA-SRYYMD     <=  ORCSHKN-NAI-TEKEDYMD(IDX))
                    IF      WRK-HKNCOMBINUM
                                        =   ORCSHKN-GMN-HKNCOMBINUM
                                                                 (IDX)
@@ -862,13 +754,12 @@
            MOVE    ZERO                TO  WRK-CNT-HKN
            MOVE    ZERO                TO  WRK-CNT-HKN2
            MOVE    ZERO                TO  WRK-IDXH
-           MOVE    ZERO                TO  WRK-IDXH2
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   ORCSHKN-HKN-MAX
                MOVE    ZERO                TO  WRK-CNT-HKN2
-               IF      (WRK-SRYYMD     >=  ORCSHKN-NAI-TEKSTYMD(IDX))
-                   AND (WRK-SRYYMD     <=  ORCSHKN-NAI-TEKEDYMD(IDX))
+               IF      (SPA-SRYYMD     >=  ORCSHKN-NAI-TEKSTYMD(IDX))
+                   AND (SPA-SRYYMD     <=  ORCSHKN-NAI-TEKEDYMD(IDX))
                    AND (ORCSHKN-GMN-HKNCOMBINUM (IDX)
                                        NOT =   "9999"    )
       *
@@ -887,18 +778,9 @@
                    IF      ORCSHKN-NAI-KOH4HKNNUM(IDX) NOT =   SPACE
                        ADD     1                   TO  WRK-CNT-HKN2
                    END-IF
-      *            ¼£¸³¡¦¼«Èñ¤ÏÂ¾¤ÎÊÝ¸±¤¬¤Ê¤¤»þ¤ËÍ­¸ú¤È¤¹¤ë
-                   IF     (ORCSHKN-NAI-HKNNUM (IDX)(1:2) =   "98"
-                                                     OR  "90"
-                                                     OR  "91" )
-                       IF      WRK-IDXH2           =   ZERO
-                           MOVE    IDX             TO  WRK-IDXH2
-                       END-IF
-                   ELSE
-                       IF      WRK-CNT-HKN         <=  WRK-CNT-HKN2
-                           MOVE    IDX                 TO  WRK-IDXH
-                           MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
-                       END-IF
+                   IF      WRK-CNT-HKN         <=  WRK-CNT-HKN2
+                       MOVE    IDX                 TO  WRK-IDXH
+                       MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
                    END-IF
       *            Ï«ºÒ¡¦¼«ÇåÀÕ¤¬¤¢¤ì¤ÐÂÐ¾Ý¤È¤¹¤ë
                    IF      ORCSHKN-NAI-HKNNUM (IDX)    =   "971"
@@ -909,9 +791,6 @@
                END-IF
            END-PERFORM
       *
-           IF      WRK-IDXH            =   ZERO
-               MOVE    WRK-IDXH2           TO  WRK-IDXH
-           END-IF
            IF      WRK-IDXH            =   ZERO
                MOVE    1               TO  ORCSHKN-IDX
            ELSE
@@ -934,7 +813,7 @@
            MOVE    SPA-PTID            TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
-           MOVE    WRK-SRYYMD          TO  JYURRK-SRYYMD
+           MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
@@ -976,8 +855,8 @@
       *
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
-           MOVE    WRK-SRYYMD          TO  HKN-TEKSTYMD
-           MOVE    WRK-SRYYMD          TO  HKN-TEKEDYMD
+           MOVE    SPA-SRYYMD          TO  HKN-TEKSTYMD
+           MOVE    SPA-SRYYMD          TO  HKN-TEKEDYMD
            MOVE    COMB-HKNNUM         TO  HKN-HKNNUM
            MOVE    ZERO                TO  HKN-PAYKBN
       *
@@ -1011,7 +890,7 @@
            INITIALIZE                  SYS-4001-REC
            MOVE    "4001"              TO  SYS-4001-KANRICD
            MOVE    "*"                 TO  SYS-4001-KBNCD
-           MOVE    WRK-SRYYMD          TO  SYS-4001-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-4001-STYUKYMD
                                            SYS-4001-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
@@ -1052,7 +931,7 @@
            INITIALIZE                  SYS-1008-REC
            MOVE    "1008"              TO  SYS-1008-KANRICD
            MOVE    "*"                 TO  SYS-1008-KBNCD
-           MOVE    WRK-SRYYMD          TO  SYS-1008-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1008-STYUKYMD
                                            SYS-1008-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
            MOVE    SYS-1008-REC        TO  MCPDATA-REC
