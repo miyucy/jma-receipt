@@ -584,7 +584,7 @@
       *    小児特定疾患カウンセリング料（２回目）
            03  CONS-SYOUNI2-COMMENT  PIC X(09)  VALUE  "113009910".
       *    小児特定第１回目カウンセリングコメント
-           03  CONS-SYOUNI3-COMMENT  PIC X(09)  VALUE  "840000005".
+           03  CONS-SYOUNI3-COMMENT  PIC X(09)  VALUE  "840000104".
       *
       *    外来迅速検体検査加算
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
