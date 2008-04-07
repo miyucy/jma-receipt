@@ -879,6 +879,14 @@
       *****************************************************************
        310110-HOJKBN-HENSYU-SEC            SECTION.
       *
+      *    前の補助区分が空白の時、そのままとする
+           IF     (SPA-GMN-HOJOKBN     =   SPACE )
+              AND (SPA-MAE-HOJOKBN     =   SPACE )
+              AND (SPA-NAI-HKNSTR  NOT =   ZERO  )
+              AND (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR) = SPACE)
+               CONTINUE
+           ELSE
+      *
            INITIALIZE                      SPA-GMN-HOJOKBN-LIST
            EVALUATE    SPA-GMN-HKNNUM
       *        船員
@@ -1067,6 +1075,8 @@
            END-PERFORM
            IF      FLG-CHK             =   ZERO
                MOVE    SPACE           TO  SPA-GMN-HOJOKBN-G
+           END-IF
+      *
            END-IF
       *
            .
@@ -1614,6 +1624,7 @@
       *        主保険で
                IF     (SPA-NAI-PTHKN-SBTKBN    =   "1"   )  AND
                       (SPA-NAI-HTEKSTYMD   NOT =   SPACE )
+                 AND  (SPA-BYMD-75-2           >   ZERO  )
                    IF     (SPA-NAI-HTEKSTYMD       >   "20080401" ) AND
                           (SPA-NAI-HTEKSTYMD       >=  SPA-BYMD-75-2)
                        MOVE    "0122"              TO  SPA-ERRCD
