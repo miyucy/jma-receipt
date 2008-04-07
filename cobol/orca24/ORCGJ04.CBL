@@ -4045,6 +4045,8 @@
                                            SPA-AREA
       *************PERFORM 510212-SRYKBN-95-SEC
       *            入院（食事）
+               WHEN    "90"
+               WHEN    "92"
                WHEN    "97"
                    IF      SPA-NYUGAIKBN       =   1
                        CALL    "ORCSCN97"      USING
