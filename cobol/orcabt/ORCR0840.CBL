@@ -142,6 +142,7 @@
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *                                     ¡ÊºÆ½¢Ï«¡§±ßÊÑ¹¹ÂÐ±þ¡Ë
       *                                     ¡Ê¥ê¥Ï¡§ÀìÍÑ¥³¡¼¥ÉÄÉ²Ã¡Ë
+      *  04.02.03    NACL-ÌçÏÆ    08/04/03  ¡û¡û¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ¤Î¥Õ¥é¥°ÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -8101,7 +8102,7 @@ grpsys     PERFORM  900-DBSELECT-SEC
              IF      SYU-DAY(IDY)    =    "2"
       *
                 IF         WRK-DAY5(IDY)      NOT =  ZERO
-      ***       AND        WRK-DAY1(IDY)      NOT =  ZERO
+                AND        WRK-DAY1(IDY)      NOT =  ZERO
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    RECE82-HOSPNUM  TO  COMB-HOSPNUM
                    MOVE    RECE82-PTID     TO  COMB-PTID
@@ -8126,24 +8127,29 @@ grpsys     PERFORM  900-DBSELECT-SEC
                           MOVE    "7"   TO   RECE82-NYUINRYOFLG
                        END-IF
                      ELSE
-                       IF   COMB-HKNNUM       =  "060" OR  "067"
-                                             OR  "068" OR  "069"
-                          MOVE    "4"   TO   RECE82-NYUINRYOFLG
-                       ELSE
-                          MOVE    "5"   TO   RECE82-NYUINRYOFLG
-                       END-IF
+                       EVALUATE  COMB-HKNNUM
+                         WHEN     "060"
+                         WHEN     "067"
+                         WHEN     "068"
+                         WHEN     "069"
+                             MOVE    "4"   TO   RECE82-NYUINRYOFLG
+                         WHEN     "039"
+                         WHEN     "040"
+                             MOVE    "8"   TO   RECE82-NYUINRYOFLG
+                         WHEN      OTHER
+                             MOVE    "5"   TO   RECE82-NYUINRYOFLG
+                       END-EVALUATE
                      END-IF
-                     MOVE       1       TO   FLG-NYUINRYO
-                     MOVE      31       TO   IDY
                    END-IF
-      ***       ELSE
-      ***          IF      WRK-DAY5(IDY)      NOT =  ZERO
-      ***                 MOVE    "1"   TO   RECE82-NYUINRYOFLG
-      ***          END-IF
+                ELSE
+                   IF      WRK-DAY5(IDY)              NOT =  ZERO
+                   AND     RECE82-NYUINDAY-KBN(IDY)   NOT =  "1"
+                          MOVE    "1"   TO   RECE82-NYUINRYOFLG
+                   END-IF
                 END-IF
       *
-      ***       MOVE      1       TO     FLG-NYUINRYO
-      ***       MOVE     31       TO     IDY
+                MOVE      1       TO     FLG-NYUINRYO
+                MOVE     31       TO     IDY
       *
              END-IF
       *

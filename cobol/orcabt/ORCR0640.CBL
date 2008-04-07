@@ -300,6 +300,7 @@
       *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *  04.02.06    NACL-Æ£¸¶    08/03/31  ¹­°èÏ¢¹ç£Ï£Ã£Ò½ÐÎÏ¶èÊ¬ÄÉ²Ã
+      *  04.02.07    NACL-ÌçÏÆ    08/04/03  ¡û¡û¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ¤Î¥Õ¥é¥°ÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -9558,7 +9559,7 @@
              IF      SYU-DAY(IDY)    =    "2"
       *
                 IF         WRK-DAY5(IDY)      NOT =  ZERO
-      ***       AND        WRK-DAY1(IDY)      NOT =  ZERO
+                AND        WRK-DAY1(IDY)      NOT =  ZERO
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    RECE62-HOSPNUM  TO  COMB-HOSPNUM
                    MOVE    RECE62-PTID     TO  COMB-PTID
@@ -9585,20 +9586,19 @@
                      ELSE
                           MOVE    "6"   TO   RECE62-NYUINRYOFLG
                      END-IF
-                     MOVE       1       TO   FLG-NYUINRYO
-                     MOVE      31       TO   IDY
                    END-IF
                    MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
                    PERFORM 900-CLOSE-SEC
-      ***       ELSE
-      ***          IF      WRK-DAY5(IDY)      NOT =  ZERO
-      ***                 MOVE    "1"   TO   RECE62-NYUINRYOFLG
-      ***          END-IF
+                ELSE
+                   IF      WRK-DAY5(IDY)              NOT =  ZERO
+                   AND     RECE62-NYUINDAY-KBN(IDY)   NOT =  "1"
+                          MOVE    "1"   TO   RECE62-NYUINRYOFLG
+                   END-IF
                 END-IF
       *
-      ***       MOVE      1       TO     FLG-NYUINRYO
-      ***       MOVE     31       TO     IDY
+                MOVE      1       TO     FLG-NYUINRYO
+                MOVE     31       TO     IDY
       *
              END-IF
       *

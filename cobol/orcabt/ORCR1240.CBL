@@ -31,6 +31,7 @@
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （薬剤管理指導料コード追加）
       *                                     （診療区分６４：病理診断対応）
+      *  04.02.02    NACL-門脇    08/04/03  ○○にて入院料算定済編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1028,6 +1029,10 @@
              WHEN     "5"
                MOVE     10             TO  WRK-RECE230XX-YUKOKETA(1 1)
                MOVE    "社保にて入院料算定済" 
+                                       TO  WRK-RECE230XX-NAME(1 1)
+             WHEN     "8"
+               MOVE     10             TO  WRK-RECE230XX-YUKOKETA(1 1)
+               MOVE    "後保にて入院料算定済" 
                                        TO  WRK-RECE230XX-NAME(1 1)
            END-EVALUATE
       *
