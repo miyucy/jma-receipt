@@ -2915,12 +2915,26 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SPA-GMN-PRTJYUN     TO  SPA-GMN-PRTJYUN-OLD
       *        主科設定時は全科に戻す
                IF      SPA-GMN-PRTJYUN     =  "07"    OR  "08"
+                   IF    ( SPA-R01-RECE07-SRYKA
+                                           NOT =   "00" )
+                   AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                           NOT =   "00" )
+                   AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                           NOT =   "00" )
+                       IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
+                       AND   ( SPA-GMN-SYUKA   NOT =   "00" )
+                           MOVE    SPA-GMN-SYUKALST (1)
+                                               TO  SPA-GMN-SYUKA-G
+                       END-IF
+                   ELSE
                        MOVE    SPACE           TO  SPA-GMN-SYUKA-G
+                   END-IF 
                ELSE
                    IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
                    AND   ( SPA-GMN-SYUKA   NOT =   "00" )
                        MOVE    SPA-GMN-SYUKALST (1) TO  SPA-GMN-SYUKA-G
                    END-IF
+               END-IF
       *        頁・件数の編集処理
                MOVE    "T"                 TO  SPA-GMN-SYOKBN
                MOVE    ZERO                TO  FLG-PRTNM-SET
@@ -5520,25 +5534,20 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            IF      SPA-GMN-SYUKA-MAX   >   ZERO
                MOVE    WIDGET-NORMAL       TO  R02-SYUKA-STATE
       *
-               IF    ( SPA-GMN-PRTJYUN     =   "07"    OR  "08" )
-      *********AND   ( SPA-R01-RECE07-SRYKA
-      *********                            =   "00"             )
-      *********AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
-      *********                            =   "00"             )
-      *********AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
-      *********                            =   "00"             )
-                   MOVE    WIDGET-INSENSITIVE  TO  R02-SYUKA-STATE
+               IF    ( SPA-R01-RECE07-SRYKA
+                                       NOT =   "00" )
+               AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                       NOT =   "00" )
+               AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                       NOT =   "00" )
+                   MOVE    WIDGET-NORMAL       TO  R02-SYUKA-STATE
                ELSE
-                   IF      SPA-GMN-PAGE-MAX    =   1
-                       MOVE    WIDGET-NORMAL       TO  R02-SYUKA-STATE
+                   IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
+                       MOVE    WIDGET-INSENSITIVE  TO  R02-SYUKA-STATE
                    ELSE
-                       IF    ( SPA-R01-RECE07-SRYKA    NOT =   "00" )
-                       AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
-                                                       NOT =   "00" )
-                       AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
-                                                       NOT =   "00" )
+                       IF      SPA-GMN-PAGE-MAX    =   1
                            MOVE    WIDGET-NORMAL   TO  R02-SYUKA-STATE
-                       END-IF    
+                       ELSE
                        IF    ( SPA-R01-RECE07-SRYKA        =   "00" )
                        AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                        NOT =   "00" )
@@ -5552,12 +5561,66 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                    TO  R02-SYUKA-STATE
                            END-IF
                        END-IF    
+                       IF    ( SPA-R01-RECE07-SRYKA        =   "00" )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                       NOT =   "00" )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                                           =   "00" )
+                           IF      SPA-GMN-PAGE        =   1   OR
+                                                       SPA-GMN-PAGE-MAX 
+                               MOVE    WIDGET-INSENSITIVE
+                                                   TO  R02-SYUKA-STATE
+                           ELSE
+                               MOVE    WIDGET-NORMAL
+                                                   TO  R02-SYUKA-STATE
+                           END-IF
+                       END-IF    
                        IF    ( SPA-R01-RECE07-SRYKA    NOT =   "00" )
                        AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                            =   "00" )
                        AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
                                                            =   "00" )
                            IF      SPA-GMN-PAGE        =   1
+                               MOVE    WIDGET-NORMAL
+                                                   TO  R02-SYUKA-STATE
+                           ELSE
+                               MOVE    WIDGET-INSENSITIVE
+                                                   TO  R02-SYUKA-STATE
+                           END-IF
+                       END-IF
+                       IF    ( SPA-R01-RECE07-SRYKA    NOT =   "00" )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                       NOT =   "00" )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                                           =   "00" )
+                           IF      SPA-GMN-PAGE    =   SPA-GMN-PAGE-MAX
+                               MOVE    WIDGET-INSENSITIVE
+                                                   TO  R02-SYUKA-STATE
+                           ELSE
+                               MOVE    WIDGET-NORMAL
+                                                   TO  R02-SYUKA-STATE
+                           END-IF
+                       END-IF
+                       IF    ( SPA-R01-RECE07-SRYKA        =   "00" )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                           =   "00" )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                                       NOT =   "00" )
+                           IF      SPA-GMN-PAGE    =   SPA-GMN-PAGE-MAX
+                               MOVE    WIDGET-NORMAL
+                                                   TO  R02-SYUKA-STATE
+                           ELSE
+                               MOVE    WIDGET-INSENSITIVE
+                                                   TO  R02-SYUKA-STATE
+                           END-IF
+                       END-IF
+                       IF    ( SPA-R01-RECE07-SRYKA    NOT =   "00" )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                           =   "00" )
+                       AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                                       NOT =   "00" )
+                           IF      SPA-GMN-PAGE    =   1   OR
+                                                       SPA-GMN-PAGE-MAX
                                MOVE    WIDGET-NORMAL
                                                    TO  R02-SYUKA-STATE
                            ELSE
