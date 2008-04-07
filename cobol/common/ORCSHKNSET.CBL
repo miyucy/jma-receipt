@@ -479,7 +479,9 @@
       *        ¼çÊÝ¸±¤¬¼«Èñ°Ê³°¤Î»þ
                PERFORM 3001-HKNNUM-CHK-SEC
       *        ¼«Èñ¡¦¼£¸³
-               IF      HKN-HKNKOHSBTKBN    =   "8"  OR  "9"
+               IF     (HKN-HKNKOHSBTKBN    =   "8"  OR  "9"    )
+      *                ÆÃÊÌÎÅÍÜÈñ
+                   OR (COMB-HKNNUM         =   "068"  OR  "069")
                    CONTINUE
                ELSE
                    IF      ORCSHKN-NAI-FTNRATE (IDX)   >   20
