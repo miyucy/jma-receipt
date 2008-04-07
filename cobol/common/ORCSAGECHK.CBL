@@ -502,6 +502,8 @@
                IF     (HKN-HKNKOHSBTKBN    =   "8"  OR  "9" )  OR
                       (HKN-HKNKOHSBTKBN    =   "4"          )  OR
                       (COMB-HKNNUM         =   "971"  OR  "973")
+      *                ∆√ ÃŒ≈Õ‹»Ò
+                   OR (COMB-HKNNUM         =   "068"  OR  "069")
                    CONTINUE
       *            º´»Ò
                    IF      HKN-HKNKOHSBTKBN    =   "8"
