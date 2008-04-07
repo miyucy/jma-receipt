@@ -4632,6 +4632,7 @@
            IF     (FLG-RJNCHK          =   ZERO  )  AND
                   (FLG-RJNCHK2         =   ZERO  )  AND
                   (FLG-HKNCHK          =   1     )
+             AND  (FLG-27KOH-OK        =   ZERO )
       *        Ｓ７．９．３０以前の時老人公費があることとする
                IF     (SPA-NAI-BIRTHDAY    <=  "19320930" )  OR
                       (SPA-SYSYMD          >=  SPA-BYMD-75)
@@ -4658,6 +4659,7 @@
                IF     (FLG-RJNCHK          =   1     )  AND
                       (FLG-RJNERR          =   1     )  AND
                       (FLG-RJNCHK2         =   ZERO  )
+                 AND  (FLG-27KOH-OK        =   ZERO )
                    MOVE    SPA-PTHKN-HKNNUM-MEI(SPA-HKN-IDX1)
                                                    TO  SPA-PIDMSG
                    MOVE    "0110"              TO  SPA-PIDCD
