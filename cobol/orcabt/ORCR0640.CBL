@@ -299,6 +299,7 @@
       *                                     ¡Ê²ðÃ£¸£°úÈ¯¾ÉÆüµ­ºÜÇÑ»ß¡Ë
       *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *                                     ¡Ê°ìÉôÉéÃ´¶âµ­ºÜÊÔ½¸¡Ë
       *  04.02.06    NACL-Æ£¸¶    08/03/31  ¹­°èÏ¢¹ç£Ï£Ã£Ò½ÐÎÏ¶èÊ¬ÄÉ²Ã
       *  04.02.07    NACL-ÌçÏÆ    08/04/03  ¡û¡û¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ¤Î¥Õ¥é¥°ÊÔ½¸½¤Àµ
       *****************************************************************
@@ -471,6 +472,7 @@
            03  FLG-TAHOKEN                             PIC 9(01).
            03  FLG-DOTANDOKU-IGAI                      PIC 9(01).
            03  FLG-DOTANDOKU                           PIC 9(01).
+           03  FLG-ZENKI-TOKUREI                       PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -9117,18 +9119,16 @@
            MOVE    ZERO                 TO      FLG-RJNGENMEN-CHIARI
            MOVE    ZERO                 TO      WRK-TAIHI-GENKIN
                                                 WRK-TAIHI-GENKIN-EN
+           MOVE    ZERO                 TO      FLG-ZENKI-TOKUREI
       *
-           IF    RECE62-KOUREI      =    "2"
-               PERFORM    21049-GENBUTU70-HANTEI-SEC
-               PERFORM    21041-KOREISYA-KOHI-SEC
-               IF   FLG-TAISYO  =  1
-                  PERFORM 21042-KOREISYA-CHECK-SEC
-               END-IF
-           END-IF
-           IF    RECE62-KOUREI      =    "1"
-                PERFORM   21048-KEIKASOCHI-HANTEI-SEC
-                PERFORM   21041-KOREISYA-KOHI-SEC
-                PERFORM   21042-KOREISYA-CHECK-SEC
+           IF    RECE62-KOUREI    =    "1"  OR  "2"
+              IF    RECE62-KOUREI    =    "1"
+                 PERFORM   21048-KEIKASOCHI-HANTEI-SEC
+              ELSE
+                 PERFORM   21049-GENBUTU70-HANTEI-SEC
+              END-IF
+              PERFORM      21041-KOREISYA-KOHI-SEC
+              PERFORM      21042-KOREISYA-CHECK-SEC
            END-IF
       *
            MOVE    ZERO                 TO      FLG-NYUINRYO
@@ -9236,20 +9236,18 @@
              END-IF
            END-IF
       *
-           IF    RECE62-KOUREI           =    "2"
-              MOVE      ZERO        TO     FLG-TAISYO
-              PERFORM   VARYING  IDX1    FROM    1   BY  1
-                         UNTIL   IDX1    >       10
-                          OR     RECE62-HKNCOMBI (IDX1)  =   ZERO
-                    IF      RECE62-HKNCOMBIFLG (IDX1)  =  2 OR 3
-                        IF   FLG-TAISYO  =  ZERO
-                           MOVE   1     TO   FLG-TAISYO
-                        END-IF
-                    ELSE
-                        MOVE      9     TO   FLG-TAISYO
-                    END-IF
-              END-PERFORM
-           END-IF
+           MOVE      ZERO        TO     FLG-TAISYO
+           PERFORM   VARYING  IDX1    FROM    1   BY  1
+                      UNTIL   IDX1    >       10
+                       OR     RECE62-HKNCOMBI (IDX1)  =   ZERO
+                 IF      RECE62-HKNCOMBIFLG (IDX1)  =  2
+                     IF   FLG-TAISYO  =  ZERO
+                        MOVE   1     TO   FLG-TAISYO
+                     END-IF
+                 ELSE
+                     MOVE      9     TO   FLG-TAISYO
+                 END-IF
+           END-PERFORM
       *
            .
        21041-KOREISYA-KOHI-EXT.
@@ -9259,6 +9257,23 @@
       *    ¹âÎð¼Ô¤Î°ìÉôÉéÃ´¶â³Ûµ­ºÜ¤Ë´Ø¤¹¤ë¥Á¥§¥Ã¥¯
       *****************************************************************
        21042-KOREISYA-CHECK-SEC               SECTION.
+      *
+           IF    RECE62-SRYYM       >=  "200804"
+             IF  ( RECE62-KOUREI       =   "1"  OR  "2" )
+             AND ( FLG-TAISYO          =    1           )
+                CONTINUE
+             ELSE
+                GO   TO   21042-KOREISYA-CHECK-EXT
+             END-IF
+           ELSE
+             IF  ( RECE62-KOUREI       =   "1"          )
+             OR  ((RECE62-KOUREI       =   "2"         ) AND
+                  (FLG-TAISYO          =    1          ))
+                CONTINUE
+             ELSE
+                GO   TO   21042-KOREISYA-CHECK-EXT
+             END-IF
+           END-IF
       *
            MOVE    SPACE               TO  WRK-CHK-HKNJANUM
                                            WRK-CHK-HKNNUM
@@ -9303,6 +9318,7 @@
                              MOVE    1            TO  WRK-CHK-TAISYO
                          END-IF
                        WHEN     2
+                       WHEN     6
                          MOVE    1                TO  WRK-CHK-TAISYO
                      END-EVALUATE
                    WHEN    "2"
@@ -9315,8 +9331,27 @@
                             MOVE  RECE69-HKNNUM   TO  WRK-CHK-HKNNUM
                          END-IF
                        WHEN     1
+                       WHEN     6
                          MOVE    1                TO  WRK-CHK-TAISYO
                        WHEN     2
+                         IF   RECE69-HKNJANUM  NOT =  WRK-CHK-HKNJANUM
+                         AND  RECE69-HKNJANUM  NOT =  SPACE
+                             MOVE    1            TO  WRK-CHK-TAISYO
+                         END-IF
+                     END-EVALUATE
+                   WHEN    "6"
+                     EVALUATE    WRK-CHK-IDOU
+                       WHEN    ZERO
+                         IF   RECE69-HKNJANUM  NOT =  SPACE
+                            MOVE    6             TO  WRK-CHK-IDOU
+                            MOVE  RECE69-HKNJANUM TO  WRK-CHK-HKNJANUM
+                            MOVE  RECE69-HKNID    TO  WRK-CHK-HKNID
+                            MOVE  RECE69-HKNNUM   TO  WRK-CHK-HKNNUM
+                         END-IF
+                       WHEN     1
+                       WHEN     2
+                         MOVE    1                TO  WRK-CHK-TAISYO
+                       WHEN     6
                          IF   RECE69-HKNJANUM  NOT =  WRK-CHK-HKNJANUM
                          AND  RECE69-HKNJANUM  NOT =  SPACE
                              MOVE    1            TO  WRK-CHK-TAISYO
@@ -9354,6 +9389,10 @@
                 MOVE    RECE62-AGE     TO  LNK-KOREIFTNCHK-AGE
                 MOVE    FLG-GENBUTU70  TO  LNK-KOREIFTNCHK-SYOTOKUKBN
                 MOVE    WRK-PREFNUM    TO  LNK-KOREIFTNCHK-PREFNUM
+                MOVE    RECE62-SYUGAKUKBN
+                                       TO  LNK-KOREIFTNCHK-SYUGAKUKBN
+                MOVE    FLG-ZENKI-TOKUREI
+                                       TO  LNK-KOREIFTNCHK-TOKUREI
       *
                 CALL    "ORCSKOREIFTNCHK"   USING
                                             ORCSKOREIFTNCHKAREA
@@ -11234,7 +11273,7 @@
       *
       *    ÆÁÅç£²£´£µÆýÍÄ»ù¡Ê¹ñÊÝ¡Ë
            IF   (RECE62-SRYYM         >=  "200802")
-           AND  (RECE62-TEISYUTUSAKI   =   2      )
+           AND  (RECE62-TEISYUTUSAKI   =   2 OR 6 )
            AND  (RECE62-KOHNUM(1)      =  "245"   )
            AND  (RECE62-KOHHBTNUM(2)   =  "48"    )
            AND  (WRK-PREFNUM           =   36     )
@@ -12431,6 +12470,20 @@
                 MOVE      1      TO     FLG-HANTEI
                 PERFORM   2104A-KOHYONKAIME-HANTEI-SEC
       *
+           END-IF
+      *
+           IF    (RECE62-SRYYM   >=  "200804")
+           AND   (RECE62-SRYYM   <=  "200903")
+             IF  (RECE62-HKNNUM       =   SPACE                      )
+             OR  (RECE62-HKNNUM(1:2)  =   "98"                       )
+             OR  (RECE62-HKNNUM  =   "068" OR "069" OR "040" OR "039")
+             OR  (RECE62-AGE          <    70                        )
+               CONTINUE
+             ELSE
+               IF  RECE62-HOJOKBN     =   "1"  OR  "9"
+                  MOVE      1     TO    FLG-ZENKI-TOKUREI
+               END-IF
+             END-IF
            END-IF
       *
            .

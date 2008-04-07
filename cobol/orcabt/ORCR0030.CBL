@@ -336,6 +336,7 @@
       *                                     ¡ÊºÞ»Ù±çµ­ºÜÂÐ¾Ý¥³¡¼¥É½¤Àµ¡Ë
       *                                     ¡Ê¾®»ùÆÃÄê¼À´µ¥«¥¦¥ó¥»¥ê¥ó¥°ÎÁ
       *                                       ¤Î¼«Æ°µ­ºÜÂÐ±þ¡Ë
+      *                                     ¡Ê°ìÉôÉéÃ´¶âµ­ºÜÊÔ½¸¡Ë
       *  04.02.03    NACL-ÌçÏÆ    08/03/25  µÜ¾ë¸©ÆýÍÄ»ù¡¢ËÌ³¤Æ»Àº¿ÀÊä½õ¤Î
       *                                     ÊÑÂ§ÂÐ±þ½ªÎ»
       *  04.02.04    NACL-Æ£¸¶    08/03/31  ¹­°èÏ¢¹ç£Ï£Ã£Ò½ÐÎÏ¶èÊ¬ÄÉ²Ã
@@ -497,6 +498,7 @@
            03  FLG-TAHOKEN                             PIC 9(01).
            03  FLG-DOTANDOKU-IGAI                      PIC 9(01).
            03  FLG-DOTANDOKU                           PIC 9(01).
+           03  FLG-ZENKI-TOKUREI                       PIC 9(01).
       *
       *    ´ðËÜÅÀ¿ô¤ÎÈóÉ½¼¨È½ÄêÍÑ¥Õ¥é¥°
        01  FLG-KHNTEN-AREA.
@@ -1715,26 +1717,18 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            MOVE      ZERO       TO      FLG-RJNGENMEN-CHIARI
            MOVE      ZERO       TO      WRK-TAIHI-GENKIN
                                         WRK-TAIHI-GENKIN-EN
+           MOVE      ZERO       TO      FLG-ZENKI-TOKUREI
       *
-           IF    RECE02-ZAITAKU          =    "2"
-               PERFORM     2118-GENBUTU70-HANTEI-SEC
-               PERFORM     2101-KOREISYA-KOHI-SEC
-               IF   FLG-TAISYO  =  1
-                 IF   RECE02-RECEKA  =  SPACE
-                  PERFORM     2102-KOREISYA-CHECK-SEC
-      *********  ELSE
-      *********   PERFORM     2103-KOREISYA-CHECK2-SEC
-                 END-IF
-               END-IF
-           END-IF
-           IF    RECE02-ZAITAKU          =    "1"
-               PERFORM     2116-KEIKASOCHI-HANTEI-SEC
-               PERFORM     2101-KOREISYA-KOHI-SEC
-               IF   RECE02-RECEKA  =  SPACE
-                  PERFORM     2102-KOREISYA-CHECK-SEC
-      *********ELSE
-      *********   PERFORM     2103-KOREISYA-CHECK2-SEC
-               END-IF
+           IF    RECE02-ZAITAKU    =    "1"  OR  "2"
+             IF    RECE02-ZAITAKU    =    "1"
+                PERFORM     2116-KEIKASOCHI-HANTEI-SEC
+             ELSE
+                PERFORM     2118-GENBUTU70-HANTEI-SEC
+             END-IF
+             PERFORM        2101-KOREISYA-KOHI-SEC
+             IF   RECE02-RECEKA  =  SPACE
+                PERFORM     2102-KOREISYA-CHECK-SEC
+             END-IF
            END-IF
       *
            PERFORM    VARYING    IDX    FROM   1   BY   1
@@ -2159,6 +2153,20 @@ grpsys         PERFORM 900-DBSELECT-SEC
                PERFORM 900-CLOSE-SEC
            END-IF
       *
+           IF    (RECE02-SRYYM   >=  "200804")
+           AND   (RECE02-SRYYM   <=  "200903")
+             IF  (RECE02-HKNNUM       =   SPACE                      )
+             OR  (RECE02-HKNNUM(1:2)  =   "98"                       )
+             OR  (RECE02-HKNNUM  =   "068" OR "069" OR "040" OR "039")
+             OR  (RECE02-AGE          <    70                        )
+               CONTINUE
+             ELSE
+               IF  RECE02-HOJOKBN     =   "1"  OR  "9"
+                  MOVE      1     TO    FLG-ZENKI-TOKUREI
+               END-IF
+             END-IF
+           END-IF
+      *
            .
        2116-KEIKASOCHI-HANTEI-EXT.
            EXIT.
@@ -2203,20 +2211,18 @@ grpsys         PERFORM 900-DBSELECT-SEC
              END-IF
            END-IF
       *
-           IF    RECE02-ZAITAKU          =    "2"
-              MOVE      ZERO        TO     FLG-TAISYO
-              PERFORM   VARYING  IDY2    FROM    1   BY  1
-                         UNTIL   IDY2    >       10
-                          OR     RECE02-HKNCOMBI (IDY2)  =   ZERO
-                    IF      RECE02-HKNCOMBIFLG (IDY2)  =  2 OR 3
-                        IF   FLG-TAISYO  =  ZERO
-                           MOVE   1     TO   FLG-TAISYO
-                        END-IF
-                    ELSE
-                        MOVE      9     TO   FLG-TAISYO
-                    END-IF
-              END-PERFORM
-           END-IF
+           MOVE      ZERO        TO     FLG-TAISYO
+           PERFORM   VARYING  IDY2    FROM    1   BY  1
+                      UNTIL   IDY2    >       10
+                       OR     RECE02-HKNCOMBI (IDY2)  =   ZERO
+                 IF      RECE02-HKNCOMBIFLG (IDY2)  =  2
+                     IF   FLG-TAISYO  =  ZERO
+                        MOVE   1     TO   FLG-TAISYO
+                     END-IF
+                 ELSE
+                     MOVE      9     TO   FLG-TAISYO
+                 END-IF
+           END-PERFORM
       *
            .
        2101-KOREISYA-KOHI-EXT.
@@ -2226,6 +2232,23 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *    ¹âÎð¼Ô¤Î°ìÉôÉéÃ´¶â³Ûµ­ºÜ¤Ë´Ø¤¹¤ë¥Á¥§¥Ã¥¯
       *****************************************************************
        2102-KOREISYA-CHECK-SEC               SECTION.
+      *
+           IF    RECE02-SRYYM       >=  "200804"
+             IF  ( RECE02-ZAITAKU      =   "1"  OR  "2" )
+             AND ( FLG-TAISYO          =    1           )
+                CONTINUE
+             ELSE
+                GO   TO   2102-KOREISYA-CHECK-EXT
+             END-IF
+           ELSE
+             IF  ( RECE02-ZAITAKU      =   "1"          )
+             OR  ((RECE02-ZAITAKU      =   "2"         ) AND
+                  (FLG-TAISYO          =    1          ))
+                CONTINUE
+             ELSE
+                GO   TO   2102-KOREISYA-CHECK-EXT
+             END-IF
+           END-IF
       *
            MOVE    SPACE               TO  WRK-CHK-HKNJANUM
                                            WRK-CHK-HKNNUM
@@ -2270,6 +2293,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                              MOVE    1            TO  WRK-CHK-TAISYO
                          END-IF
                        WHEN     2
+                       WHEN     6
                          MOVE    1                TO  WRK-CHK-TAISYO
                      END-EVALUATE
                    WHEN    "2"
@@ -2282,8 +2306,27 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                             MOVE  RECE09-HKNNUM   TO  WRK-CHK-HKNNUM
                          END-IF
                        WHEN     1
+                       WHEN     6
                          MOVE    1                TO  WRK-CHK-TAISYO
                        WHEN     2
+                         IF   RECE09-HKNJANUM  NOT =  WRK-CHK-HKNJANUM
+                         AND  RECE09-HKNJANUM  NOT =  SPACE
+                             MOVE    1            TO  WRK-CHK-TAISYO
+                         END-IF
+                     END-EVALUATE
+                   WHEN    "6"
+                     EVALUATE    WRK-CHK-IDOU
+                       WHEN    ZERO
+                         IF   RECE09-HKNJANUM  NOT =  SPACE
+                            MOVE    6             TO  WRK-CHK-IDOU
+                            MOVE  RECE09-HKNJANUM TO  WRK-CHK-HKNJANUM
+                            MOVE  RECE09-HKNID    TO  WRK-CHK-HKNID
+                            MOVE  RECE09-HKNNUM   TO  WRK-CHK-HKNNUM
+                         END-IF
+                       WHEN     1
+                       WHEN     2
+                         MOVE    1                TO  WRK-CHK-TAISYO
+                       WHEN     6
                          IF   RECE09-HKNJANUM  NOT =  WRK-CHK-HKNJANUM
                          AND  RECE09-HKNJANUM  NOT =  SPACE
                              MOVE    1            TO  WRK-CHK-TAISYO
@@ -2322,6 +2365,10 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
                 MOVE    FLG-GENBUTU70  TO  LNK-KOREIFTNCHK-SYOTOKUKBN
                 MOVE    SYS-1001-PREFNUM
                                        TO  LNK-KOREIFTNCHK-PREFNUM
+                MOVE    RECE02-SYUGAKUKBN
+                                       TO  LNK-KOREIFTNCHK-SYUGAKUKBN
+                MOVE    FLG-ZENKI-TOKUREI
+                                       TO  LNK-KOREIFTNCHK-TOKUREI
       *
                 CALL    "ORCSKOREIFTNCHK"   USING
                                             ORCSKOREIFTNCHKAREA
@@ -8152,7 +8199,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *    ÆÁÅç£²£´£µÆýÍÄ»ù¡Ê¹ñÊÝ¡Ë
            IF   (RECE02-SRYYM         >=  "200802")
-           AND  (RECE02-TEISYUTUSAKI   =   2      )
+           AND  (RECE02-TEISYUTUSAKI   =   2 OR 6 )
            AND  (RECE02-KOHNUM(1)      =  "245"   )
            AND  (RECE02-KOHHBTNUM(2)   =  "48"    )
            AND  (SYS-1001-PREFNUM      =   36     )

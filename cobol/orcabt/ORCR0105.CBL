@@ -4432,10 +4432,14 @@
              MOVE   WRK-KGK8                TO  HC06-FTNMONEY1(4)
            ELSE
              IF  ( RECE02-TOTALTEN (IDX3) >   ZERO                     )
+      ***    AND ((RECE02-TOTALTEN (IDX3)
+      ***                             NOT =   RECE02-TOTALTEN (IDX1)) OR
+      ***         (RECE02-FTNMONEY (IDX3)
+      ***                             NOT =   RECE02-FTNMONEY (IDX1)) OR
+      ***         (RECE02-FTNMONEY (IDX3)
+      ***                             NOT =   RECE02-FTNMONEY (IDX2))  )
              AND ((RECE02-TOTALTEN (IDX3)
-                                      NOT =   RECE02-TOTALTEN (IDX1)) OR
-                  (RECE02-FTNMONEY (IDX3)
-                                      NOT =   RECE02-FTNMONEY (IDX1)) OR
+                                      NOT =   RECE02-TOTALTEN (IDX2)) OR
                   (RECE02-FTNMONEY (IDX3)
                                       NOT =   RECE02-FTNMONEY (IDX2))  )
                IF    SYS-1001-PREFNUM   =   45

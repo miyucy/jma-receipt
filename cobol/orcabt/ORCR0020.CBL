@@ -1291,11 +1291,7 @@ grpsys           PERFORM 900-DBSELECT-SEC
                    END-IF
                END-PERFORM
                IF   FLG-TAISYO  =  1
-                   IF  RECE02-HKNCOMBIFLG(IDX)  =  1
                         MOVE      2     TO   RECE02-HKNCOMBIFLG(IDX)
-                   ELSE
-                        MOVE      3     TO   RECE02-HKNCOMBIFLG(IDX)
-                   END-IF
                END-IF
       *        組合せ公費保険番号情報のセット
                PERFORM   KOHNUMHC-SET-SEC

@@ -39,6 +39,7 @@
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-ÌçÏÆ    07/09/03  ¸º³Û¸ºÌÈÁ´¹ñ¸øÈñÂÐ±þ
       *  03.05.03    NACL-ÌçÏÆ    07/12/03  ËÌ³¤Æ»ÆÃÄê¼À´µ¡ÊÆ»Ã±ÆÈ»ö¶È¡ËÂÐ±þ
+      *  04.02.01    NACL-ÌçÏÆ    08/04/01  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -299,8 +300,6 @@ grpsys     MOVE    LNK-KOREIFTNCHK-HOSPNUM TO  COMB-HOSPNUM
            ELSE
                IF  LNK-KOREIFTNCHK-RECEKA     =  SPACE
                    PERFORM   230-GAIRAI-SYUKEI-SEC
-      *********ELSE
-      *********    PERFORM   240-GAIRAI-SYUKEI2-SEC
                END-IF
            END-IF
       *
@@ -399,7 +398,10 @@ grpsys     MOVE   LNK-KOREIFTNCHK-HOSPNUM
               IF      LNK-KOREIFTNCHK-NYUGAIKBN  =  "1"
                EVALUATE    COMB-HKNNUM
                  WHEN    "060"
-                    IF   LNK-KOREIFTNCHK-AGE    <     3
+                    IF ((LNK-KOREIFTNCHK-SRYYM   <=  "200803") AND
+                        (LNK-KOREIFTNCHK-AGE          <   3  ))
+                    OR ((LNK-KOREIFTNCHK-SRYYM   >=  "200804") AND
+                        (LNK-KOREIFTNCHK-SYUGAKUKBN   =   1  ))
                        IF    COMB-HOJOKBN = "0" OR "1" OR "4" OR "5"
                           EVALUATE   COMB-HOJOKBN
                             WHEN   "0"
@@ -428,7 +430,10 @@ grpsys     MOVE   LNK-KOREIFTNCHK-HOSPNUM
                        END-EVALUATE
                     END-IF
                  WHEN    OTHER
-                    IF   LNK-KOREIFTNCHK-AGE    <     3
+                    IF ((LNK-KOREIFTNCHK-SRYYM   <=  "200803") AND
+                        (LNK-KOREIFTNCHK-AGE          <   3  ))
+                    OR ((LNK-KOREIFTNCHK-SRYYM   >=  "200804") AND
+                        (LNK-KOREIFTNCHK-SYUGAKUKBN   =   1  ))
                            MOVE     20       TO   WRK-KYURATE(IDX1)
                     ELSE
                        IF   COMB-HOJOKBN  =  SPACE
@@ -443,7 +448,10 @@ grpsys     MOVE   LNK-KOREIFTNCHK-HOSPNUM
               ELSE
                EVALUATE    COMB-HKNNUM
                  WHEN    "060"
-                    IF   LNK-KOREIFTNCHK-AGE    <     3
+                    IF ((LNK-KOREIFTNCHK-SRYYM   <=  "200803") AND
+                        (LNK-KOREIFTNCHK-AGE          <   3  ))
+                    OR ((LNK-KOREIFTNCHK-SRYYM   >=  "200804") AND
+                        (LNK-KOREIFTNCHK-SYUGAKUKBN   =   1  ))
                        IF    COMB-HOJOKBN = "0" OR "1" OR "4"
                           EVALUATE   COMB-HOJOKBN
                             WHEN   "0"
@@ -471,7 +479,10 @@ grpsys     MOVE   LNK-KOREIFTNCHK-HOSPNUM
                        END-EVALUATE
                     END-IF
                  WHEN    OTHER
-                    IF   LNK-KOREIFTNCHK-AGE    <     3
+                    IF ((LNK-KOREIFTNCHK-SRYYM   <=  "200803") AND
+                        (LNK-KOREIFTNCHK-AGE          <   3  ))
+                    OR ((LNK-KOREIFTNCHK-SRYYM   >=  "200804") AND
+                        (LNK-KOREIFTNCHK-SYUGAKUKBN   =   1  ))
                            MOVE     20       TO   WRK-KYURATE(IDX1)
                     ELSE
                        IF   COMB-HOJOKBN  =  SPACE
