@@ -529,9 +529,9 @@
                        PERFORM 1003-HKNNUM-HBTNUM-SEC
                END-EVALUATE
       *        後期高齢者
-               IF      SPA-GMN-HKNJANUM(1:2)   =   "39"
-                   MOVE    "039"           TO  WRK-HKNJA-HKNNUM
-               END-IF
+      *        IF      SPA-GMN-HKNJANUM(1:2)   =   "39"
+      *            MOVE    "039"           TO  WRK-HKNJA-HKNNUM
+      *        END-IF
            END-IF
       *
            IF      WRK-HKNJA-HKNNUM    =   SPACE
