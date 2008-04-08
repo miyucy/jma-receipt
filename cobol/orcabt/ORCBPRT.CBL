@@ -38,7 +38,6 @@
       *  01.01.04    NACL-伊藤    06/03/08  オフセット対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *  04.05.00    NACL-太田    10/01/28  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -47,7 +46,7 @@
        FILE-CONTROL.
       *
       *    印刷用データ
-           SELECT  PRT-FILE        ASSIGN  ASGNPARA
+           SELECT  PRT-FILE        ASSIGN  HC01PARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
@@ -79,10 +78,10 @@ grpsys COPY    "COMMON-SPA".
       *
       *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
-           COPY    "CPASGNPARA.INC".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPRECEERR.INC".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *    システム領域
        01  SYS-AREA.
@@ -110,9 +109,6 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-HC01PARA-CNT    PIC  9(03).
       *
            03  WRK-RECEERR         PIC X(200). 
-           03  WRK-ENCODING            PIC X(01).
-           03  WRK-ENCODING9           REDEFINES WRK-ENCODING
-                                       PIC 9(01).
       *
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
@@ -134,9 +130,6 @@ grpsys COPY    "COMMON-SPA".
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
-      *
-      *    monpe印刷データ泣き別れ修正サブ
-           COPY  "CPORCSFIXREDDATA.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -163,9 +156,6 @@ grpsys COPY    "COMMON-SPA".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -205,7 +195,6 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
                                        SPA-AREA
-                                       RECEERR
       *
            ACCEPT  SYS-TIME            FROM    TIME     
       *
@@ -231,11 +220,6 @@ grpsys COPY    "COMMON-SPA".
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
-      *
-           CALL    "ORCSENCODING"          USING
-                                           MCPAREA
-                                           SPA-AREA
-           MOVE    SPA-ENCODING        TO  WRK-ENCODING9
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -263,16 +247,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                    TO  HC01PARA-TERMID
            MOVE    SYS-TIME        TO  HC01PARA-SYOHMS
            MOVE    1               TO  HC01PARA-CNT
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    HC01PARA-BASENAME
-                                   TO  SGETTEMP-BASENAMES (1)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  ASGNPARA
-           MOVE    SGETTEMP-ST     TO  ASGNPARA-ST
-      *
            OPEN    OUTPUT              PRT-FILE
       *
            PERFORM                     UNTIL   FLG-PRTKANRI =   1
@@ -301,15 +275,18 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            AND     FLG-ERR             =   ZERO 
       *
                MOVE    SPACE           TO  SHELLTBL
-               MOVE    "HCALL2.sh"     TO  SHELLTBL-NAME
+      *        ファイルデイレクトリ位置指定
+               INITIALIZE              ORCSMKPASSAREA
+               MOVE    "scripts/daily/HCALL2.sh"
+                                       TO  MKPASS-IN-01
+               CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+               MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *         
-               MOVE    ASGNPARA (ASGNPARA-ST:)
-                                       TO  SHELLTBL-ARG1
-               MOVE    WRK-ENCODING    TO  SHELLTBL-ARG2
+               MOVE    HC01PARA        TO  SHELLTBL-ARG1
                MOVE    SHELLTBL        TO  MCPDATA-REC
                MOVE    "SHELL"         TO  MCP-FUNC
                MOVE    "shell"         TO  MCP-TABLE
-               MOVE    "daily"         TO  MCP-PATHNAME
+               MOVE    "shell"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
            END-IF                                                
       *
@@ -350,15 +327,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                            MOVE    "1"         TO  PRT-SITEKBN
                    END-SEARCH
            END-EVALUATE                                                                
-           INITIALIZE                  SFIXREDDATA-AREA
-           MOVE    PRT-SITEKBN     TO  SFIXREDDATA-SITEKBN
-           MOVE    PRT-PRTID       TO  SFIXREDDATA-FORMID
-           MOVE    PRTDATA-PRTDATA TO  SFIXREDDATA-DATA
-           CALL    "ORCSFIXREDDATA"    USING
-                                       SFIXREDDATA-AREA
-                                       SPA-AREA
-           MOVE    SFIXREDDATA-DATA
-                                   TO  PRT-PRTDATA
+           MOVE    PRTDATA-PRTDATA     TO  PRT-PRTDATA
            WRITE   PRT-REC
       *
            ADD     1                   TO  CNT-OUT     
