@@ -326,6 +326,7 @@
       *  04.01.11    NACL-ÌçÏÆ    08/02/06  ²¬»³¸©ÃÏÊý¸øÈñÂÐ±þ
       *  04.01.12    NACL-ÌçÏÆ    08/02/12  ½èÊýÎÁÅù¥«¥¦¥ó¥È½¤Àµ
       *  04.02.01    NACL-ÌçÏÆ    08/03/06  À¸ÊÝ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
+      *  04.02.02    NACL-ÌçÏÆ    08/04/08  ¼¢²ì¸©ÃÏÊý¸øÈñ°ìÉôÉéÃ´¶âµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -8012,7 +8013,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                      MOVE  "1"  TO
                              RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                END-IF
-               IF  (SYS-1001-PREFNUM =   33           ) AND
+               IF  (SYS-1001-PREFNUM =   33 OR 25     ) AND
                    (RECE02-KOHNUM(KOHFTN-IDX)(1:1)
                                    >=  "1" AND <=  "8")
                      MOVE  "1"  TO
