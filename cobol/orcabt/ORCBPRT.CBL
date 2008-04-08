@@ -135,6 +135,9 @@ grpsys COPY    "COMMON-SPA".
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+      *    オフセット情報
+           COPY    "CPSK1044.INC".
+      *
       *    印刷管理ＤＢ
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
@@ -305,6 +308,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            ELSE
                MOVE    PRTDATA-PRTNM       TO  PRT-PRTNM
            END-IF
+      *    オフセット
+           PERFORM 2002-OFFSET-GET-SEC
+           MOVE    SYS-1044-OFFSET-X   TO  PRT-OFFSET-X
+           MOVE    SYS-1044-OFFSET-Y   TO  PRT-OFFSET-Y
+      *
            EVALUATE    PRTDATA-SITEKBN
                WHEN    "1"
                WHEN    "2"               
@@ -327,6 +335,53 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            PERFORM 2002-PRTDATA-UPD-SEC
            .
        2001-PRTDATA-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    オフセット取得処理
+      *****************************************************************
+       2002-OFFSET-GET-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1044-REC
+           INITIALIZE                  SYS-1044-REC
+           MOVE    "1044"              TO  SYS-1044-KANRICD
+           MOVE    PRT-PRTID           TO  SYS-1044-FORMID
+           STRING  PRT-PRTNM           DELIMITED  BY  SPACE
+                   "%"                 DELIMITED  BY  SIZE
+                                       INTO    SYS-1044-TBL(21:)
+           END-STRING
+           MOVE    "99999999"          TO  SYS-1044-STYUKYMD
+           MOVE    "99999999"          TO  SYS-1044-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1044-HOSPNUM
+           MOVE    SYS-1044-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC          =   ZERO
+                   MOVE  MCPDATA-REC   TO  SYS-1044-REC
+                   IF   (SYS-1044-FORMID  =   PRT-PRTID)  AND
+                        (SYS-1044-PRTNM   =   PRT-PRTNM)
+                         CONTINUE
+                   ELSE
+                         INITIALIZE    SYS-1044-REC
+                   END-IF
+               ELSE
+                   INITIALIZE          SYS-1044-REC
+               END-IF
+           ELSE
+               INITIALIZE              SYS-1044-REC
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       2002-OFFSET-GET-EXT.
            EXIT.
       *
       *****************************************************************
