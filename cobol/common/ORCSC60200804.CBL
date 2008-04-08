@@ -468,13 +468,13 @@
            03  FILLER          PIC X(14)  VALUE    "01 2 160022410".
       *    £Ì£Ä£Ì¥³¥ì¥¹¥Æ¥í¡¼¥ë
            03  FILLER          PIC X(14)  VALUE    "01 2 160167250".
-      *¤É¤ì¤«£²¤Ä
-      *    £Ô£É£Â£Ã
-           03  FILLER          PIC X(14)  VALUE    "02 2 160023610".
+      *¤É¤ì¤«£²¤Ä¡Ê£È£²£°¡¥£´¤«¤é £³¤Ä»»Äê²Ä¡Ë
+      **** £Ô£É£Â£Ã
+      *    03  FILLER          PIC X(14)  VALUE    "02 2 160023610".
       *    £Õ£É£Â£Ã
-           03  FILLER          PIC X(14)  VALUE    "02 2 160023710".
+      *    03  FILLER          PIC X(14)  VALUE    "02 2 160023710".
       *    Å´
-           03  FILLER          PIC X(14)  VALUE    "02 2 160022110".
+      **** 03  FILLER          PIC X(14)  VALUE    "02 2 160022110".
       *¤É¤ì¤«£±¤Ä
       *    £Ã£á
            03  FILLER          PIC X(14)  VALUE    "03 1 160021510".
@@ -495,13 +495,14 @@
            03  FILLER          PIC X(14)  VALUE    "05 1 160168450".
       *
        01  TBL-KENSA-JYU-AREA-R    REDEFINES   TBL-KENSA-JYU-AREA.
-           03  TBL-KENSA-JYU-OCC       OCCURS  11  INDEXED  JYU-IDX.
+           03  TBL-KENSA-JYU-OCC       OCCURS  8   INDEXED  JYU-IDX.
                05  TBL-JYU-KBN         PIC X(02).
                05  TBL-FILLER1         PIC X(01).
                05  TBL-JYU-KEN         PIC X(01).
                05  TBL-FILLER2         PIC X(01).
                05  TBL-JYU-SRYCD       PIC X(09).
-       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   11.
+      *01  KEN-JYU-MAX                 PIC 9(04)   VALUE   11.
+       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   8.
       *
       *    ½ÅÊ£»»ÄêÉÔ²Ä¥Æ¡¼¥Ö¥ë¡Ê£²¡Ë
        01  TBL-KENSA-JYU2-AREA.
