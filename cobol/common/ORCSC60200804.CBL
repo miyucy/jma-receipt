@@ -530,30 +530,62 @@
            03  WRK-JYU-KEN             PIC 9(01).
            03  WRK-JYU-FLG             PIC X(01).
       *
-      *    ¸¡ÂÎ¸¡ºº¿×Â®¼Â»Ü²Ã»»ÂÐ¾Ý³°
-       01  TBL-KENSA-GAI-AREA.
+      *    ¸¡ÂÎ¸¡ºº¿×Â®¼Â»Ü²Ã»»ÂÐ¾Ý
+       01  TBL-KENSA-TAI-AREA.
            03  FILLER          PIC X(09)  VALUE    "160000310".
            03  FILLER          PIC X(09)  VALUE    "160005010".
+           03  FILLER          PIC X(09)  VALUE    "160006810".
            03  FILLER          PIC X(09)  VALUE    "160007610".
-           03  FILLER          PIC X(09)  VALUE    "160000550".
-           03  FILLER          PIC X(09)  VALUE    "160000650".
-           03  FILLER          PIC X(09)  VALUE    "160000750".
-           03  FILLER          PIC X(09)  VALUE    "160000850".
-           03  FILLER          PIC X(09)  VALUE    "160000950".
-           03  FILLER          PIC X(09)  VALUE    "160001050".
-           03  FILLER          PIC X(09)  VALUE    "160149650".
-           03  FILLER          PIC X(09)  VALUE    "160149750".
-           03  FILLER          PIC X(09)  VALUE    "160149850".
-           03  FILLER          PIC X(09)  VALUE    "160163050".
-           03  FILLER          PIC X(09)  VALUE    "160027710".
-           03  FILLER          PIC X(09)  VALUE    "160168150".
-           03  FILLER          PIC X(09)  VALUE    "160169810".
-           03  FILLER          PIC X(09)  VALUE    "160169450".
+           03  FILLER          PIC X(09)  VALUE    "160008010".
+           03  FILLER          PIC X(09)  VALUE    "160010010".
+           03  FILLER          PIC X(09)  VALUE    "160012010".
+           03  FILLER          PIC X(09)  VALUE    "160014510".
+           03  FILLER          PIC X(09)  VALUE    "160114010".
+           03  FILLER          PIC X(09)  VALUE    "160017010".
+           03  FILLER          PIC X(09)  VALUE    "160017410".
+           03  FILLER          PIC X(09)  VALUE    "160018910".
+           03  FILLER          PIC X(09)  VALUE    "160019010".
+           03  FILLER          PIC X(09)  VALUE    "160131950".
+           03  FILLER          PIC X(09)  VALUE    "160019210".
+           03  FILLER          PIC X(09)  VALUE    "160132150".
+           03  FILLER          PIC X(09)  VALUE    "160019310".
+           03  FILLER          PIC X(09)  VALUE    "160132250".
+           03  FILLER          PIC X(09)  VALUE    "160020010".
+           03  FILLER          PIC X(09)  VALUE    "160020210".
+           03  FILLER          PIC X(09)  VALUE    "160020410".
+           03  FILLER          PIC X(09)  VALUE    "160020910".
+           03  FILLER          PIC X(09)  VALUE    "160021110".
+           03  FILLER          PIC X(09)  VALUE    "160132450".
+           03  FILLER          PIC X(09)  VALUE    "160021410".
+           03  FILLER          PIC X(09)  VALUE    "160132650".
+           03  FILLER          PIC X(09)  VALUE    "160021510".
+           03  FILLER          PIC X(09)  VALUE    "160132750".
+           03  FILLER          PIC X(09)  VALUE    "160019410".
+           03  FILLER          PIC X(09)  VALUE    "160137950".
+           03  FILLER          PIC X(09)  VALUE    "160138150".
+           03  FILLER          PIC X(09)  VALUE    "160138750".
+           03  FILLER          PIC X(09)  VALUE    "160019510".
+           03  FILLER          PIC X(09)  VALUE    "160020610".
+           03  FILLER          PIC X(09)  VALUE    "160023410".
+           03  FILLER          PIC X(09)  VALUE    "160022410".
+           03  FILLER          PIC X(09)  VALUE    "160022510".
+           03  FILLER          PIC X(09)  VALUE    "160022610".
+           03  FILLER          PIC X(09)  VALUE    "160167250".
+           03  FILLER          PIC X(09)  VALUE    "160151050".
+           03  FILLER          PIC X(09)  VALUE    "160031710".
+           03  FILLER          PIC X(09)  VALUE    "160033210".
+           03  FILLER          PIC X(09)  VALUE    "160033310".
+           03  FILLER          PIC X(09)  VALUE    "160036510".
+           03  FILLER          PIC X(09)  VALUE    "160036710".
+           03  FILLER          PIC X(09)  VALUE    "160037510".
+           03  FILLER          PIC X(09)  VALUE    "160037210".
+           03  FILLER          PIC X(09)  VALUE    "160054710".
+           03  FILLER          PIC X(09)  VALUE    "160057710".
       *
-       01  TBL-KENSA-GAI-AREA-R    REDEFINES  TBL-KENSA-GAI-AREA.
-           03  TBL-KENSA-GAI-OCC        OCCURS  17  INDEXED  GAI-IDX.
-               05  TBL-GAI-SRYCD        PIC X(09).
-       01  KEN-GAI-MAX                  PIC 9(04)   VALUE   17.
+       01  TBL-KENSA-TAI-AREA-R    REDEFINES  TBL-KENSA-TAI-AREA.
+           03  TBL-KENSA-TAI-OCC        OCCURS  49  INDEXED  TAI-IDX.
+               05  TBL-TAI-SRYCD        PIC X(09).
+       01  KEN-TAI-MAX                  PIC 9(04)   VALUE   49.
       *
       *    ¿ÇÎÅ¹Ô°ÙÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
            COPY    "K01COMMON-SPA".
@@ -3384,10 +3416,10 @@
                                                            (WRK-KENIDX)
                            END-IF
                        END-IF
-      *                ¸¡ÂÎ¸¡ºº²Ã»»
-                       IF      WRK-KENIDX          >=  1  AND  <=  6
-                           PERFORM 3004-KENTAI-CHK-SEC
-                       END-IF
+      *****            ¸¡ÂÎ¸¡ºº²Ã»»
+      *                IF      WRK-KENIDX          >=  1  AND  <=  6
+      *                    PERFORM 3004-KENTAI-CHK-SEC
+      *******          END-IF
       *
       *                È½ÃÇÎÁ¤ÎÈ½Äê
       *---(01.00.02)   LINE UPD START  ---------------------------------
@@ -3397,6 +3429,9 @@
                            ADD     1       TO  WRK-KEN-KBN (WRK-KENIDX)
                        END-IF
                    END-IF
+      *            ¸¡ÂÎ¸¡ºº²Ã»»
+                   PERFORM 3004-KENTAI-CHK-SEC
+      *
       *            ºÎ·ìÎÁ¶èÊ¬È½Äê
                    EVALUATE    WRK-COM-SAIKETUKBN (IDX)
       *                Ëõ¾ÃºÎ·ì
@@ -3750,23 +3785,30 @@
       *****************************************************************
        3004-KENTAI-CHK-SEC              SECTION.
       *
-           MOVE    ZERO               TO  FLG-KENTAI-CHK
-           PERFORM VARYING      IDX-KEN   FROM    1   BY  1
-                   UNTIL       (IDX-KEN   >   KEN-GAI-MAX)
-                           OR  (FLG-KENTAI-CHK    =   1  )
-               SET     GAI-IDX            TO  IDX-KEN
-               IF      WRK-COM-INPUTCD(IDX)    =   TBL-GAI-SRYCD
-                                                              (IDX-KEN)
-                   MOVE    1              TO  FLG-KENTAI-CHK
-                   MOVE    KEN-GAI-MAX    TO  IDX-KEN
-               END-IF
-           END-PERFORM
-           IF      FLG-KENTAI-CHK      =   ZERO
+           MOVE    ZERO                TO  FLG-KENTAI-CHK
+           SET     TAI-IDX             TO  1
+           SEARCH      TBL-KENSA-TAI-OCC   VARYING   TAI-IDX
+                   AT  END
+                       MOVE    ZERO                TO  FLG-KENTAI-CHK
+                   WHEN    WRK-COM-INPUTCD (IDX)
+                                               =   TBL-TAI-SRYCD
+                                                           (TAI-IDX)
+                       MOVE    1                   TO  FLG-KENTAI-CHK
+           END-SEARCH
+           IF      FLG-KENTAI-CHK      =   1
                IF      FLG-KENTAI2         =   ZERO
-                   MOVE    WRK-KEN-SRYKA (WRK-KENIDX)
+                   IF      WRK-COM-SRYKA (IDX)     =   SPACE
+                       MOVE    SPA-SRYKA       TO  WRK-KENTAI-SRYKA
+                   ELSE
+                        MOVE    WRK-COM-SRYKA (IDX)
                                                TO  WRK-KENTAI-SRYKA
-                   MOVE    WRK-KEN-HKNCOMBI (WRK-KENIDX)
+                   END-IF
+                   IF      WRK-COM-HKNCOMBI (IDX)     =   SPACE
+                       MOVE    SPA-HKNCOMBINUM TO  WRK-KENTAI-HKNCOMBI
+                   ELSE
+                        MOVE    WRK-COM-HKNCOMBI (IDX)
                                                TO  WRK-KENTAI-HKNCOMBI
+                   END-IF
                END-IF
       *
                MOVE    1               TO  FLG-KENTAI2
