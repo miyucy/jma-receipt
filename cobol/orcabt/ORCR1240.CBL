@@ -32,6 +32,7 @@
       *                                     ¡ÊÌôºÞ´ÉÍý»ØÆ³ÎÁ¥³¡¼¥ÉÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *  04.02.02    NACL-ÌçÏÆ    08/04/03  ¡û¡û¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑÊÔ½¸½¤Àµ
+      *  04.02.03    NACL-¾®Æ¦Âô  08/04/08  °åÎÅ¶èÊ¬¥³¥á¥ó¥È²þÄêÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4172,114 +4173,151 @@
                    MOVE  4    TO WRK-RECE230XX2-YUKOKETA(MAX-MEISAISU 1)
                    EVALUATE  TBL-RYOCOM2-IRYO-SRYCD(RYO-IDX3 IDX)
                      WHEN      "820000057"
+                     WHEN      "820000096"
                        MOVE "¡Ö£°£±¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000058"
+                     WHEN      "820000097"
                        MOVE "¡Ö£°£²¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000059"
+                     WHEN      "820000098"
                        MOVE "¡Ö£°£³¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000060"
+                     WHEN      "820000099"
                        MOVE "¡Ö£°£´¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000061"
+                     WHEN      "820000100"
                        MOVE "¡Ö£°£µ¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000062"
+                     WHEN      "820000101"
                        MOVE "¡Ö£°£¶¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000063"
+                     WHEN      "820000102"
                        MOVE "¡Ö£°£·¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000064"
+                     WHEN      "820000103"
                        MOVE "¡Ö£°£¸¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000065"
+                     WHEN      "820000104"
                        MOVE "¡Ö£°£¹¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000066"
+                     WHEN      "820000105"
                        MOVE "¡Ö£±£°¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000067"
+                     WHEN      "820000106"
                        MOVE "¡Ö£±£±¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000068"
+                     WHEN      "820000107"
                        MOVE "¡Ö£±£²¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000069"
+                     WHEN      "820000108"
                        MOVE "¡Ö£±£³¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000070"
+                     WHEN      "820000109"
                        MOVE "¡Ö£±£´¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000071"
+                     WHEN      "820000110"
                        MOVE "¡Ö£±£µ¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000072"
+                     WHEN      "820000111"
                        MOVE "¡Ö£±£¶¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000073"
+                     WHEN      "820000112"
                        MOVE "¡Ö£±£·¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000074"
+                     WHEN      "820000113"
                        MOVE "¡Ö£±£¸¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000075"
+                     WHEN      "820000114"
                        MOVE "¡Ö£±£¹¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000076"
+                     WHEN      "820000115"
                        MOVE "¡Ö£²£°¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000077"
+                     WHEN      "820000116"
                        MOVE "¡Ö£²£±¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000078"
+                     WHEN      "820000117"
                        MOVE "¡Ö£²£²¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000079"
+                     WHEN      "820000118"
                        MOVE "¡Ö£²£³¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000080"
+                     WHEN      "820000119"
                        MOVE "¡Ö£²£´¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000081"
+                     WHEN      "820000120"
                        MOVE "¡Ö£²£µ¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000082"
+                     WHEN      "820000121"
                        MOVE "¡Ö£²£¶¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000083"
+                     WHEN      "820000122"
                        MOVE "¡Ö£²£·¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000084"
+                     WHEN      "820000123"
                        MOVE "¡Ö£²£¸¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000085"
+                     WHEN      "820000124"
                        MOVE "¡Ö£²£¹¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000086"
+                     WHEN      "820000125"
                        MOVE "¡Ö£³£°¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000087"
+                     WHEN      "820000126"
                        MOVE "¡Ö£³£±¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000088"
+                     WHEN      "820000127"
                        MOVE "¡Ö£³£²¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000089"
+                     WHEN      "820000128"
                        MOVE "¡Ö£³£³¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000090"
+                     WHEN      "820000129"
                        MOVE "¡Ö£³£´¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000091"
+                     WHEN      "820000130"
                        MOVE "¡Ö£³£µ¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000092"
+                     WHEN      "820000131"
                        MOVE "¡Ö£³£¶¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000093"
+                     WHEN      "820000132"
                        MOVE "¡Ö£³£·¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                    END-EVALUATE
