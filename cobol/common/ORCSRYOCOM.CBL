@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-小豆沢  07/05/29  グループ診療対応
       *  03.05.00    NACL-小豆沢  07/08/20  ＡＤＬ点数の直接入力対応
+      *  04.02.00    NACL-小豆沢  08/04/08  医療区分コメント改定対応
       *****************************************************************
       *
       *
@@ -582,8 +583,12 @@
                        IF   LNK-RYOCOM-NYUINKBN(IDX)  =  "1"
                            ADD    1   TO    LNK-RYOCOM-MEISAISU(IDX)
                            MOVE   LNK-RYOCOM-MEISAISU(IDX)  TO  IDX2
-                           MOVE   RYOCOM-SRYCD  TO
+                           IF     LNK-RYOCOM-SANTEIYM  <=   "200803"
+                               MOVE   RYOCOM-SRYCD  TO
                                        LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+                           ELSE
+                               PERFORM   2101-RYOCOM-CHG-SEC
+                           END-IF
                            MOVE   RYOCOM-ZAINUM  TO
                                        LNK-RYOCOM-IRYO-ZAINUM(IDX IDX2)
                        END-IF
@@ -595,8 +600,12 @@
                             (RYOCOM-DAY(IDX)      NOT =   ZERO)
                            ADD    1   TO    LNK-RYOCOM-MEISAISU(IDX)
                            MOVE   LNK-RYOCOM-MEISAISU(IDX)  TO  IDX2
-                           MOVE   RYOCOM-SRYCD  TO
+                           IF     LNK-RYOCOM-SANTEIYM  <=   "200803"
+                               MOVE   RYOCOM-SRYCD  TO
                                        LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+                           ELSE
+                               PERFORM   2101-RYOCOM-CHG-SEC
+                           END-IF
                            MOVE   RYOCOM-ZAINUM  TO
                                        LNK-RYOCOM-IRYO-ZAINUM(IDX IDX2)
                        END-IF
@@ -606,6 +615,92 @@
       *
            .
        210-RYOCOM-REC-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    療養レセコメントの置換え（平成２０年４月改定より）
+      *****************************************************************
+       2101-RYOCOM-CHG-SEC            SECTION.
+      *
+           EVALUATE   RYOCOM-SRYCD
+             WHEN   "820000057"
+                MOVE  "820000105"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000058"
+                MOVE  "820000107"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000059"
+                MOVE  "820000108"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000060"
+                MOVE  "820000096"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000061"
+                MOVE  "820000109"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000062"
+                MOVE  "820000110"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000063"
+                MOVE  "820000111"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000064"
+                MOVE  "820000112"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000065"
+                MOVE  "820000113"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000066"
+                MOVE  "820000106"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000067"
+                MOVE  "820000114"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000068"
+                MOVE  "820000115"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000069"
+                MOVE  "820000116"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000070"
+                MOVE  "820000117"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000071"
+                MOVE  "820000118"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000072"
+                MOVE  "820000119"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000073"
+                MOVE  "820000120"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000074"
+                MOVE  "820000124"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000075"
+                MOVE  "820000125"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000076"
+                MOVE  "820000097"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000077"
+                MOVE  "820000098"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000078"
+                MOVE  "820000099"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000079"
+                MOVE  "820000100"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000080"
+                MOVE  "820000101"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000081"
+                MOVE  "820000126"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000082"
+                MOVE  "820000127"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000083"
+                MOVE  "820000102"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000084"
+                MOVE  "820000128"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000085"
+                MOVE  "820000129"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000086"
+                MOVE  "820000121"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000087"
+                MOVE  "820000103"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000088"
+                MOVE  "820000130"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000089"
+                MOVE  "820000131"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000090"
+                MOVE  "820000104"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000091"
+                MOVE  "820000132"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000092"
+                MOVE  "820000122"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+             WHEN   "820000093"
+                MOVE  "820000123"  TO  LNK-RYOCOM-IRYO-SRYCD(IDX IDX2)
+           END-EVALUATE
+      *
+           .
+       2101-RYOCOM-CHG-EXT.
            EXIT.
       *
       *****************************************************************
