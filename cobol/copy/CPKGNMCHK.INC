@@ -120,13 +120,13 @@
            05   KGNMCHK-H006-NM2KAKKO     PIC X(01)   VALUE   "2".
            05   KGNMCHK-H006-NM2ETC       PIC X(01)   VALUE   "2".
       ****
-           05   KGNMCHK-H039-KGCHECK      PIC X(01)   VALUE   "1".
-           05   KGNMCHK-H039-KGSUJI       PIC X(01)   VALUE   "1".
-           05   KGNMCHK-H039-KGKANJI      PIC X(01)   VALUE   "1".
-           05   KGNMCHK-H039-KGABT        PIC X(01)   VALUE   "1".
-           05   KGNMCHK-H039-KGHYPN       PIC X(01)   VALUE   "1".
-           05   KGNMCHK-H039-KGKAKKO      PIC X(01)   VALUE   "1".
-           05   KGNMCHK-H039-KGETC        PIC X(01)   VALUE   "1".
+           05   KGNMCHK-H039-KGCHECK      PIC X(01)   VALUE   "2".
+           05   KGNMCHK-H039-KGSUJI       PIC X(01)   VALUE   "2".
+           05   KGNMCHK-H039-KGKANJI      PIC X(01)   VALUE   "2".
+           05   KGNMCHK-H039-KGABT        PIC X(01)   VALUE   "2".
+           05   KGNMCHK-H039-KGHYPN       PIC X(01)   VALUE   "2".
+           05   KGNMCHK-H039-KGKAKKO      PIC X(01)   VALUE   "2".
+           05   KGNMCHK-H039-KGETC        PIC X(01)   VALUE   "2".
            05   KGNMCHK-H039-KGKANJINASHI PIC X(01)   VALUE   "1".
       *
            05   KGNMCHK-H039-NM1SUJI      PIC X(01)   VALUE   "1".
