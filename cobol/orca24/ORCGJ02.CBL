@@ -5599,6 +5599,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    変更後日
            MOVE    SPA-NAI-HENSRYYMD(7:2)
                                        TO  IDX-D2
+      *
            PERFORM
                UNTIL   (FLG-JYURRK         =   1     )  OR
                        (JYURRK-HKNCOMBINUM =   "9999")
@@ -5867,6 +5868,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    変更後日
            MOVE    SPA-NAI-HENSRYYMD(7:2)
                                        TO  IDX-D2
+      *    変更前と変更後が同日の時、変更なし
+           IF      (IDX-D1             =   IDX-D2 )
+               MOVE    1                   TO  FLG-JYURRK
+               MOVE    "0075"              TO  SPA-ERRCD
+           END-IF
            PERFORM
                UNTIL   (FLG-JYURRK         =   1  )
                     OR (SPA-ERRCD      NOT =   SPACE )
@@ -5944,6 +5950,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (SPA-NYUGAIKBN       =   "2"   )  AND
                   (SPA-RRK-HKNCOMBI(SPA-NAI-RRKSELNUM)
                                    NOT =   "9999" )
+             AND  (SPA-ERRCD           =   SPACE  )
                PERFORM 4101613-SYUNOU-UPD-SEC
            END-IF
       *
@@ -5970,20 +5977,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
-      *    受診連番の変更日再編集
-           MOVE    ZERO                TO  FLG-JYURRK-UPD
-           PERFORM 4101613-JYURRK-SEISET-SEC
-      *!
-      *    主科設定
-           PERFORM 410029-ORCSSYUKAMAIN-SEC
-      *
-           MOVE    ZERO                TO  SPA-NAI-RRKSELNUM
-           MOVE    SPACE               TO  SPA-NAI-HENSRYYMD
-           MOVE    SPACE               TO  SPA-GMN-RRKSELNUM
-           MOVE    SPACE               TO  SPA-GMN-HENSRYYMD
-      *
-      *    受診履歴編集
-           PERFORM 3103-JYURRK-HEN-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4101611-HENSRYYMD-UPDSYORI2-SEC
+           END-IF
       *
            IF      SPA-ERRCD           =   SPACE
       *
@@ -6014,6 +6010,28 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        410161-HENSRYYMD-UPDSYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    主科設定処理
+      *****************************************************************
+       4101611-HENSRYYMD-UPDSYORI2-SEC             SECTION.
+      *
+      *    受診連番の変更日再編集
+           MOVE    ZERO                TO  FLG-JYURRK-UPD
+           PERFORM 4101613-JYURRK-SEISET-SEC
+      *!
+      *    主科設定
+           PERFORM 410029-ORCSSYUKAMAIN-SEC
+      *
+           MOVE    ZERO                TO  SPA-NAI-RRKSELNUM
+           MOVE    SPACE               TO  SPA-NAI-HENSRYYMD
+           MOVE    SPACE               TO  SPA-GMN-RRKSELNUM
+           MOVE    SPACE               TO  SPA-GMN-HENSRYYMD
+      *
+      *    受診履歴編集
+           PERFORM 3103-JYURRK-HEN-SEC
+           .
+       4101611-HENSRYYMD-UPDSYORI2-EXT.
            EXIT.
       *****************************************************************
       *    主科設定処理
@@ -6795,6 +6813,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    JYURRK-RENNUM       TO  IDX-D3
            COMPUTE IDX-D3              =   IDX-D3    +   1
            COMPUTE IDX-D4              =   WRK-RRK-RENNUM    +   1
+           IF      IDX-D3              >   4
+               MOVE    4               TO  IDX-D3
+           END-IF
            IF      IDX-D4              >   4
                MOVE    4               TO  IDX-D4
            END-IF
@@ -6804,6 +6825,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-DAY-S           TO  SPA-NAI-DAY
                                                   (IDY IDX-D4 IDX-D2)
            MOVE    WRK-DAY-S           TO  SPA-NAI-DAY (IDY 1 IDX-D2)
+      *
            COMPUTE SPA-NAI-DAY (IDY 1   IDX-D1)
                                        =   SPA-NAI-DAY
                                                   (IDY  1    IDX-D1)
@@ -6824,6 +6846,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    JYURRK-UPRENNUM     TO  IDX-D3
            COMPUTE IDX-D3              =   IDX-D3    +   1
            COMPUTE IDX-D4              =   WRK-RENNUM    +   1
+           IF      IDX-D3              >   4
+               MOVE    4               TO  IDX-D3
+           END-IF
+           IF      IDX-D4              >   4
+               MOVE    4               TO  IDX-D4
+           END-IF
       *
            MOVE    SPA-NAI-DAY (IDY IDX-D3 IDX-D1)
                                        TO  WRK-DAY-S
@@ -6844,15 +6872,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    HZN-JYURRK-RENNUM   TO  IDX-D3
            COMPUTE IDX-D3              =   IDX-D3    +   1
            COMPUTE IDX-D4              =   WRK-RRK-RENNUM    +   1
+           IF      IDX-D3              >   4
+               MOVE    4               TO  IDX-D3
+           END-IF
            IF      IDX-D4              >   4
                MOVE    4               TO  IDX-D4
            END-IF
       *
            MOVE    SPA-NAI-DAY (IDY IDX-D3 IDX-D1)
                                        TO  WRK-DAY-S
-           MOVE    WRK-DAY-S           TO  SPA-NAI-DAY
+           ADD     WRK-DAY-S           TO  SPA-NAI-DAY
                                                 (IDY IDX-D4 IDX-D2)
-           MOVE    WRK-DAY-S           TO  SPA-NAI-DAY (IDY 1 IDX-D2)
+           ADD     WRK-DAY-S           TO  SPA-NAI-DAY (IDY 1 IDX-D2)
       *    剤回数
            ADD     WRK-DAY-S           TO  ACCT-ZAIKAISU
            .
@@ -12645,9 +12676,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG(31:)
       *
                WHEN    "0071"
-                   MOVE    "ブレビューできる診療登録がありません。"
+                   MOVE    "プレビューできる診療登録がありません。"
                                        TO  WRK-ERRMSG
-                   MOVE    "ブレビューはできません。"
+                   MOVE    "プレビューはできません。"
                                        TO  WRK-ERRMSG(39:)
                WHEN    "0072"
                    MOVE    "労災・自賠責はプレビューできません。"
@@ -12661,6 +12692,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0074"
                    STRING  "保険が複数あります。"
                            "入院料の保険を選択して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO   WRK-ERRMSG
+                   END-STRING
+      *
+               WHEN    "0075"
+                   STRING  "変更前と変更後が同日です。"
+                           "診療日変更はできません。"
                                        DELIMITED   BY  SIZE
                                        INTO   WRK-ERRMSG
                    END-STRING
@@ -12912,7 +12950,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
       *
                WHEN    "0121"
-                   STRING   "ブレビューが押下されました。"
+                   STRING   "プレビューが押下されました。"
                             "現在までの修正分を登録します。"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-JIDMSG
