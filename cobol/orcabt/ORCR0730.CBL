@@ -32,6 +32,7 @@
       *  04.02.02    NACL-ÌçÏÆ    08/03/19  À¸ÊÝ¤Î£·£¹Ê»ÍÑ»þ¤ÎÂÐ±þ
       *  04.02.03    NACL-Æ£¸¶    08/03/25  ÆÃµ­»ö¹à¤ÎÊÑ¹¹
       *                                     ¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ
+      *  04.02.04    NACL-ÌçÏÆ    08/04/08  ËÌ³¤Æ»Æ»Ï·ÇÑ»ß
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5377,26 +5378,15 @@
            END-IF
       *     
       *    ¸øÈñ£²
-           IF       RECE62-KOH-SAIKEIFLG   =   1
-             MOVE    "("                    TO  HC06-FTNMONEY1(3)(1:1)
-             MOVE   RECE62-KOH-SAIKEI       TO  WRK-KGK6
-             MOVE   WRK-KGK6                TO  HC06-FTNMONEY1(3)(2:7)
-             MOVE    ")"                    TO  HC06-FTNMONEY1(3)(9:1)
-      *
-             MOVE   RECE62-FTNMONEY (IDX3)  TO  WRK-KGK8
-             MOVE   WRK-KGK8                TO  HC06-FTNMONEY1(4)
-           ELSE
-             IF  ( RECE62-TOTALTEN (IDX3) >   ZERO                     )
-      ***    AND ((RECE62-TOTALTEN (IDX3)
-      ***                             NOT =   RECE62-TOTALTEN (IDX1)) OR
-      ***         (RECE62-FTNMONEY (IDX3)
-      ***                             NOT =   RECE62-FTNMONEY (IDX1)) OR
-      ***         (RECE62-FTNMONEY (IDX3)
-      ***                             NOT =   RECE62-FTNMONEY (IDX2))  )
-             AND ((RECE62-TOTALTEN (IDX3)
-                                      NOT =   RECE62-TOTALTEN (IDX2)) OR
-                  (RECE62-FTNMONEY (IDX3)
-                                      NOT =   RECE62-FTNMONEY (IDX2))  )
+           IF  ( RECE62-TOTALTEN (IDX3) >   ZERO                     )
+           AND ((RECE62-TOTALTEN (IDX3)
+                                    NOT =   RECE62-TOTALTEN (IDX1)) OR
+                (RECE62-TOTALTEN (IDX3)
+                                    NOT =   RECE62-TOTALTEN (IDX2)) OR
+                (RECE62-FTNMONEY (IDX3)
+                                    NOT =   RECE62-FTNMONEY (IDX1)) OR
+                (RECE62-FTNMONEY (IDX3)
+                                    NOT =   RECE62-FTNMONEY (IDX2))  )
                  IF    SYS-1001-PREFNUM   =   45
                  AND   RECE62-KOHNUM(2)   =  "190"
                    CONTINUE
@@ -5407,25 +5397,24 @@
                        MOVE    WRK-KGK7    TO  HC06-FTNMONEY(3)
                    END-IF
                  END-IF
-             END-IF
-             IF    ( RECE62-TOTALTEN (IDX3) >   ZERO                  )
-             AND   ( RECE62-FTNMONEY (IDX3) =   RECE62-FTNMONEY (IDX2))
-             AND   ( RECE62-KISAIFLG (IDX3) =   "1"                   )
+           END-IF
+           IF    ( RECE62-TOTALTEN (IDX3) >   ZERO                  )
+           AND   ( RECE62-FTNMONEY (IDX3) =   RECE62-FTNMONEY (IDX2))
+           AND   ( RECE62-KISAIFLG (IDX3) =   "1"                   )
                  IF    RECE62-FTNMONEY (IDX3)   >   ZERO
                    MOVE    RECE62-FTNMONEY (IDX3) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
                  END-IF
-             END-IF
-             IF   (( RECE62-TOTALTEN (IDX3)     >   ZERO ) AND
-                   ( RECE62-FTNMONEY (IDX3)     =   ZERO ) AND
-                   ( RECE62-ZEROKISAIFLG (IDX3) =   "1"  ))
-             OR   (( RECE62-KOHNUM(2)           =   "012") AND
-                   ( RECE62-TOTALTEN (IDX3)     =   ZERO ) AND
-                   ( RECE62-FTNMONEY (IDX3)     =   ZERO ) AND
-                   ( RECE62-ZEROKISAIFLG (IDX3) =   "1"  ))
+           END-IF
+           IF   (( RECE62-TOTALTEN (IDX3)     >   ZERO ) AND
+                 ( RECE62-FTNMONEY (IDX3)     =   ZERO ) AND
+                 ( RECE62-ZEROKISAIFLG (IDX3) =   "1"  ))
+           OR   (( RECE62-KOHNUM(2)           =   "012") AND
+                 ( RECE62-TOTALTEN (IDX3)     =   ZERO ) AND
+                 ( RECE62-FTNMONEY (IDX3)     =   ZERO ) AND
+                 ( RECE62-ZEROKISAIFLG (IDX3) =   "1"  ))
                    MOVE    RECE62-FTNMONEY (IDX3) TO  WRK-KGK7
                    MOVE    WRK-KGK7               TO  HC06-FTNMONEY(3)
-             END-IF
            END-IF
            IF      RECE62-TOTALTEN (IDX3) >   ZERO                      
            AND     RECE62-TOTALTEN (IDX3)
@@ -5453,16 +5442,6 @@
                                           AND <= "95" ) OR
                    (RECE62-KOHJKYSNUM(2)(1:2) >= "71"
                                           AND <= "88" )) AND
-                  (RECE62-TOTALTEN (IDX3) >   ZERO     ))
-           OR    ((RECE62-SRYYM          >=  "200510"  ) AND
-                  (SYS-1001-PREFNUM       =    01      ) AND
-                  (RECE62-KOHNUM(1)       =  "051"     ) AND
-                  ((RECE62-KOHJKYSNUM(1)(1:2) >= "91"
-                                          AND <= "95" ) OR
-                   (RECE62-KOHJKYSNUM(1)(1:2) >= "71"
-                                          AND <= "88" )) AND
-                  (RECE62-TOTALTEN (IDX2) >   ZERO     ) AND
-                  (RECE62-KOHHBTNUM(2)    =  "41"      ) AND
                   (RECE62-TOTALTEN (IDX3) >   ZERO     ))
                MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  HC06-TOTALTEN(3)

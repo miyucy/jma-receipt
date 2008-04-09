@@ -612,10 +612,17 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
            ELSE
              ADD    SYU-KOH-FTN      TO  LNK-KOREIFTNCHK-KOHFTNGAKU
       *
-             COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
-                                 * 10
-                                 * WRK-KYURATE(IDX1)
-                                 / 100
+             IF   LNK-KOREIFTNCHK-TOKUREI  =  1
+               COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                                   * 10
+                                   * 20
+                                   / 100
+             ELSE
+               COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                                   * 10
+                                   * WRK-KYURATE(IDX1)
+                                   / 100
+             END-IF
              COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
              COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
              COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
@@ -1086,10 +1093,17 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
            ELSE
              ADD    SYU-KOH-FTN      TO  LNK-KOREIFTNCHK-KOHFTNGAKU
       *
-             COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
-                                 * 10
-                                 * WRK-KYURATE(IDX1)
-                                 / 100
+             IF   LNK-KOREIFTNCHK-TOKUREI  =  1
+               COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                                   * 10
+                                   * 20
+                                   / 100
+             ELSE
+               COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                                   * 10
+                                   * WRK-KYURATE(IDX1)
+                                   / 100
+             END-IF
              COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
              COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
              COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
@@ -1450,10 +1464,17 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
       *
            IF   LNK-KOREIFTNCHK-GENGAKUKBN   NOT =   ZERO
       *
-               COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
-                                   * 10
-                                   * WRK-KYURATE(IDX1)
-                                   / 100
+               IF   LNK-KOREIFTNCHK-TOKUREI  =  1
+                 COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                                     * 10
+                                     * 20
+                                     / 100
+               ELSE
+                 COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                                     * 10
+                                     * WRK-KYURATE(IDX1)
+                                     / 100
+               END-IF
                EVALUATE   LNK-KOREIFTNCHK-GENGAKUKBN
                  WHEN        1
                    IF  LNK-KOREIFTNCHK-GENGAKU-RITU = 100
