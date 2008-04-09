@@ -879,14 +879,6 @@
       *****************************************************************
        310110-HOJKBN-HENSYU-SEC            SECTION.
       *
-      *    前の補助区分が空白の時、そのままとする
-           IF     (SPA-GMN-HOJOKBN     =   SPACE )
-              AND (SPA-MAE-HOJOKBN     =   SPACE )
-              AND (SPA-NAI-HKNSTR  NOT =   ZERO  )
-              AND (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR) = SPACE)
-               CONTINUE
-           ELSE
-      *
            INITIALIZE                      SPA-GMN-HOJOKBN-LIST
            EVALUATE    SPA-GMN-HKNNUM
       *        船員
@@ -930,6 +922,13 @@
                            IF     (SPA-BYMD-70       >   ZERO      )
                                MOVE    "9"         TO  SPA-GMN-HOJOKBN
                            END-IF
+                       END-IF
+      *           前の補助区分が空白の時、そのままとする
+                       IF     (SPA-MAE-HOJOKBN     =   SPACE )
+                       AND    (SPA-NAI-HKNSTR  NOT =   ZERO  )
+                       AND    (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
+                                                   = SPACE)
+                           MOVE    SPA-MAE-HOJOKBN TO  SPA-GMN-HOJOKBN
                        END-IF
                    END-IF
       *        国保
@@ -1017,6 +1016,13 @@
                                MOVE    "9"         TO  SPA-GMN-HOJOKBN
                            END-IF
                        END-IF
+      *           前の補助区分が空白の時、そのままとする
+                       IF     (SPA-MAE-HOJOKBN     =   SPACE )
+                       AND    (SPA-NAI-HKNSTR  NOT =   ZERO  )
+                       AND    (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
+                                                   = SPACE)
+                           MOVE    SPA-MAE-HOJOKBN TO  SPA-GMN-HOJOKBN
+                       END-IF
                    END-IF
       *Ｈ２０．４
       *        後期高齢者
@@ -1075,8 +1081,6 @@
            END-PERFORM
            IF      FLG-CHK             =   ZERO
                MOVE    SPACE           TO  SPA-GMN-HOJOKBN-G
-           END-IF
-      *
            END-IF
       *
            .
@@ -1154,7 +1158,16 @@
                END-PERFORM
       *        初期値は１割とする
                IF      SPA-GMN-HOJOKBN     =   SPACE
-                   MOVE    "9"             TO  SPA-GMN-HOJOKBN
+      ******       MOVE    "9"             TO  SPA-GMN-HOJOKBN
+      *        前の補助区分が空白の時、そのままとする
+                   IF      (SPA-MAE-HOJOKBN     =   SPACE )
+                       AND (SPA-NAI-HKNSTR  NOT =   ZERO  )
+                       AND (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
+                                                = SPACE   )
+                       CONTINUE
+                   ELSE
+                       MOVE    "9"             TO  SPA-GMN-HOJOKBN
+                   END-IF
                END-IF
            END-IF
            .
@@ -2155,9 +2168,9 @@
       **** END-IF
       *
       *    国保・自費の時必須
-      *    国保で前の補助区分が空白の時、そのままとする
-           IF      (SPA-GMN-HKNNUM     =   "060"   )   AND
-                   (SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-70)
+      *    前の補助区分が空白の時、そのままとする
+      *T   IF      (SPA-GMN-HKNNUM     =   "060"   )   AND
+           IF      (SPA-NAI-HTEKSTYMD  >=  SPA-BYMD-70)
                IF     (SPA-MAE-HOJOKBN     =   SPACE )
                AND    (SPA-NAI-HKNSTR  NOT =   ZERO  )
                AND    (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR) = SPACE)
