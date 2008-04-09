@@ -1005,10 +1005,6 @@
            03  WRK-TAIHI-GENKIN2               PIC  9(07).
            03  WRK-TAIHI-GENKIN3               PIC  9(07).
       *
-           03  WRK-TAIHI-GENKIN-TOK            PIC  9(07).
-           03  WRK-TAIHI-GENKIN-EN-TOK         PIC  9(07).
-           03  WRK-TAIHI-GENKIN2-TOK           PIC  9(07).
-      *
            03  WRK-FORMALNAME                  PIC  X(300).
       *
       *    ∏«ƒÍ√Õ
@@ -9125,8 +9121,6 @@
            MOVE    ZERO                 TO      FLG-RJNGENMEN-CHIARI
            MOVE    ZERO                 TO      WRK-TAIHI-GENKIN
                                                 WRK-TAIHI-GENKIN-EN
-                                                WRK-TAIHI-GENKIN-TOK
-                                                WRK-TAIHI-GENKIN-EN-TOK
            MOVE    ZERO                 TO      FLG-ZENKI-TOKUREI
       *
            IF    RECE62-KOUREI    =    "1"  OR  "2"
@@ -10620,26 +10614,18 @@
                     WHEN       "011"
                     WHEN       "025"
                     WHEN       "038"
-                      IF   FLG-ZENKI-TOKUREI  =   1
-                        COMPUTE WRK-TAIHI-GENKIN2-TOK = SYU-TOTAL-HKNTEN
-                                                      * 10
-                                                      * 20
-                                                      / 100
-                        ADD     WRK-TAIHI-GENKIN2-TOK
-                                      TO   WRK-TAIHI-GENKIN-EN-TOK
-                        COMPUTE WRK-TAIHI-GENKIN2-TOK
-                                         = WRK-TAIHI-GENKIN2-TOK +  5
-                        COMPUTE WRK-TAIHI-GENKIN2-TOK
-                                         = WRK-TAIHI-GENKIN2-TOK / 10
-                        COMPUTE WRK-TAIHI-GENKIN2-TOK
-                                         = WRK-TAIHI-GENKIN2-TOK * 10
-                        ADD     WRK-TAIHI-GENKIN2-TOK
-                                      TO   WRK-TAIHI-GENKIN-TOK
+                      IF  (FLG-ZENKI-TOKUREI          =   1           )
+                      AND (RECE62-KOHNUM(KH-IDX - 1)  = "051" OR "038")
+                        COMPUTE  WRK-TAIHI-GENKIN2 = SYU-TOTAL-HKNTEN
+                                                   * 10
+                                                   * 20
+                                                   / 100
+                      ELSE
+                        COMPUTE  WRK-TAIHI-GENKIN2 = SYU-TOTAL-HKNTEN
+                                                   * 10
+                                                   * RECE62-KYURATE
+                                                   / 100
                       END-IF
-                      COMPUTE  WRK-TAIHI-GENKIN2 = SYU-TOTAL-HKNTEN
-                                                 * 10
-                                                 * RECE62-KYURATE
-                                                 / 100
                       ADD      WRK-TAIHI-GENKIN2
                                            TO   WRK-TAIHI-GENKIN-EN
                       COMPUTE  WRK-TAIHI-GENKIN2 =
