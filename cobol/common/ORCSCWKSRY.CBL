@@ -1494,13 +1494,16 @@
            IF     (SPA-YAKJYO-1        =   2 )  AND
                   (FLG-AUTO-OK         =   1 )  AND
                   (LNK-WKSRY-SRYCD  (IDX IDY)   =   "120002370")
+             AND  (SPA-NAI-ROUJIN      =   0 )
                MOVE    ZERO            TO  FLG-AUTO-OK
            END-IF
            IF    ((SPA-YAKJYO-2        =   2 )  OR
                   (SPA-YAKJYO-3        =   2 )) AND
                   (FLG-AUTO-OK         =   1 )  AND
                   (LNK-WKSRY-SRYCD  (IDX IDY)   =   "113701410"
-                                                OR  "113701310")
+                                                OR  "113701310"
+                                                OR  "120002370")
+             AND  (SPA-NAI-ROUJIN      =   1 )
                MOVE    ZERO            TO  FLG-AUTO-OK
            END-IF
            .
