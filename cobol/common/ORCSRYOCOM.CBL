@@ -58,6 +58,9 @@
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
            03  IDX2                        PIC 9(04).
+           03  SIDX1                       PIC 9(04).
+           03  SIDX2                       PIC 9(04).
+           03  SIDX3                       PIC 9(04).
       *
       *    コンスタント値
        01  CONSTANT-AREA.
@@ -121,6 +124,11 @@
            03  WRK-SRYCD-X                 PIC X(09).
            03  WRK-SRYCD-9    REDEFINES    WRK-SRYCD-X
                                            PIC 9(09).
+      *
+      *    医療区分コメント並び替え用
+           03  WRK-IDX                     PIC 9(04).
+           03  WRK-RYOCOM-IRYO-SRYCD       PIC X(09).
+           03  WRK-RYOCOM-IRYO-ZAINUM      PIC 9(08).
       *
       *    ＡＤＬ点数全角変換領域
        01  TBL-ADLTEN-AREA.
@@ -477,6 +485,12 @@
            PERFORM   910-DB-CLOSE-SEC
       *
       *
+      *    平成２０年４月以降分の医療区分コメント並び替え
+           IF    LNK-RYOCOM-SANTEIYM  >=   "200804"
+                PERFORM   220-RYOCOM-SORT-SEC
+           END-IF
+      *
+      *
       *    取得したＡＤＬ点数を全角変換
            PERFORM   VARYING   IDX   FROM  1  BY  1
              UNTIL   IDX    >   31
@@ -618,7 +632,7 @@
            EXIT.
       *
       *****************************************************************
-      *    療養レセコメントの置換え（平成２０年４月改定より）
+      *    医療区分コメントの置換え（平成２０年４月改定より）
       *****************************************************************
        2101-RYOCOM-CHG-SEC            SECTION.
       *
@@ -701,6 +715,51 @@
       *
            .
        2101-RYOCOM-CHG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療区分コメントの並び替え（平成２０年４月改定より）
+      *****************************************************************
+       220-RYOCOM-SORT-SEC            SECTION.
+      *
+           PERFORM    VARYING    SIDX1    FROM   1   BY   1
+             UNTIL    SIDX1       >       31
+               PERFORM   VARYING   SIDX2    FROM   1   BY   1
+                 UNTIL  (SIDX2     >     29)  OR
+                        (LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX2) = SPACE)
+                   MOVE      ZERO      TO    WRK-IDX
+                   COMPUTE   WRK-IDX   =     SIDX2    +   1
+                   PERFORM   VARYING   SIDX3   FROM  WRK-IDX   BY   1
+                     UNTIL (SIDX3    >   30)    OR
+                           (LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX3) = SPACE)
+                         IF   LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX2)
+                                 >  LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX3)
+      *                       SIDX2からワークへの退避
+                              MOVE  LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX2)
+                                            TO  WRK-RYOCOM-IRYO-SRYCD
+                              MOVE  LNK-RYOCOM-IRYO-ZAINUM(SIDX1 SIDX2)
+                                            TO  WRK-RYOCOM-IRYO-ZAINUM
+      *                       SIDX3からSIDX2への移入
+                              MOVE  LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX3)
+                                            TO
+                                    LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX2)
+                              MOVE  LNK-RYOCOM-IRYO-ZAINUM(SIDX1 SIDX3)
+                                            TO
+                                    LNK-RYOCOM-IRYO-ZAINUM(SIDX1 SIDX2)
+      *                       ワークからSIDX3への移入
+                              MOVE  WRK-RYOCOM-IRYO-SRYCD
+                                            TO
+                                    LNK-RYOCOM-IRYO-SRYCD(SIDX1 SIDX3)
+                              MOVE  WRK-RYOCOM-IRYO-ZAINUM
+                                            TO
+                                    LNK-RYOCOM-IRYO-ZAINUM(SIDX1 SIDX3)
+                         END-IF
+                   END-PERFORM
+               END-PERFORM
+           END-PERFORM
+      *
+           .
+       220-RYOCOM-SORT-EXT.
            EXIT.
       *
       *****************************************************************
