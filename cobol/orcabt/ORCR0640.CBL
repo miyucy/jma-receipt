@@ -1005,6 +1005,10 @@
            03  WRK-TAIHI-GENKIN2               PIC  9(07).
            03  WRK-TAIHI-GENKIN3               PIC  9(07).
       *
+           03  WRK-TAIHI-GENKIN-TOK            PIC  9(07).
+           03  WRK-TAIHI-GENKIN-EN-TOK         PIC  9(07).
+           03  WRK-TAIHI-GENKIN2-TOK           PIC  9(07).
+      *
            03  WRK-FORMALNAME                  PIC  X(300).
       *
       *    ¸ÇÄêÃÍ
@@ -9121,6 +9125,8 @@
            MOVE    ZERO                 TO      FLG-RJNGENMEN-CHIARI
            MOVE    ZERO                 TO      WRK-TAIHI-GENKIN
                                                 WRK-TAIHI-GENKIN-EN
+                                                WRK-TAIHI-GENKIN-TOK
+                                                WRK-TAIHI-GENKIN-EN-TOK
            MOVE    ZERO                 TO      FLG-ZENKI-TOKUREI
       *
            IF    RECE62-KOUREI    =    "1"  OR  "2"
@@ -9654,17 +9660,10 @@
       *****************************************************************
        210442-HOKEN-FUTAN-HENSYU-SEC               SECTION.
       *
-           IF   FLG-ZENKI-TOKUREI  =   1
-             COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
-                                 * 10
-                                 * 20
-                                 / 100
-           ELSE
-             COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
-                                 * 10
-                                 * RECE62-KYURATE
-                                 / 100
-           END-IF
+           COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                               * 10
+                               * RECE62-KYURATE
+                               / 100
            COMPUTE  WRK-FTNKEI = WRK-FTNKEI +  5
            COMPUTE  WRK-FTNKEI = WRK-FTNKEI / 10
            COMPUTE  WRK-FTNKEI = WRK-FTNKEI * 10
@@ -10138,17 +10137,10 @@
       *
            IF   WK-GENGAKUKBN    NOT =   ZERO
       *
-              IF   FLG-ZENKI-TOKUREI  =   1
-                COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
-                                    * 10
-                                    * 20
-                                    / 100
-              ELSE
-                COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
-                                    * 10
-                                    * RECE62-KYURATE
-                                    / 100
-              END-IF
+              COMPUTE  WRK-FTNKEI = SYU-TOTAL-HKNTEN
+                                  * 10
+                                  * RECE62-KYURATE
+                                  / 100
               EVALUATE   WK-GENGAKUKBN
                 WHEN        1
                   IF  WK-GENGAKU-RITU = 100
@@ -10629,16 +10621,25 @@
                     WHEN       "025"
                     WHEN       "038"
                       IF   FLG-ZENKI-TOKUREI  =   1
-                        COMPUTE  WRK-TAIHI-GENKIN2 = SYU-TOTAL-HKNTEN
-                                                   * 10
-                                                   * 20
-                                                   / 100
-                      ELSE
-                        COMPUTE  WRK-TAIHI-GENKIN2 = SYU-TOTAL-HKNTEN
-                                                   * 10
-                                                   * RECE62-KYURATE
-                                                   / 100
+                        COMPUTE WRK-TAIHI-GENKIN2-TOK = SYU-TOTAL-HKNTEN
+                                                      * 10
+                                                      * 20
+                                                      / 100
+                        ADD     WRK-TAIHI-GENKIN2-TOK
+                                      TO   WRK-TAIHI-GENKIN-EN-TOK
+                        COMPUTE WRK-TAIHI-GENKIN2-TOK
+                                         = WRK-TAIHI-GENKIN2-TOK +  5
+                        COMPUTE WRK-TAIHI-GENKIN2-TOK
+                                         = WRK-TAIHI-GENKIN2-TOK / 10
+                        COMPUTE WRK-TAIHI-GENKIN2-TOK
+                                         = WRK-TAIHI-GENKIN2-TOK * 10
+                        ADD     WRK-TAIHI-GENKIN2-TOK
+                                      TO   WRK-TAIHI-GENKIN-TOK
                       END-IF
+                      COMPUTE  WRK-TAIHI-GENKIN2 = SYU-TOTAL-HKNTEN
+                                                 * 10
+                                                 * RECE62-KYURATE
+                                                 / 100
                       ADD      WRK-TAIHI-GENKIN2
                                            TO   WRK-TAIHI-GENKIN-EN
                       COMPUTE  WRK-TAIHI-GENKIN2 =
@@ -12368,6 +12369,14 @@
                      IF  WRK-JYOGEN-KOH  >  WRK-GEN70-GENDOGAKU
                         MOVE  WRK-GEN70-GENDOGAKU
                                                 TO   WRK-JYOGEN-KOH
+                     END-IF
+                   END-IF
+                   IF  RECE62-KOHNUM(1) = "038"
+                     IF  WRK-JIRITU-TAFTNRUIKEI  <  WRK-JYOGEN-KOH
+                        COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
+                                                - WRK-JIRITU-TAFTNRUIKEI
+                     ELSE
+                        MOVE     ZERO    TO   WRK-JYOGEN-KOH
                      END-IF
                    END-IF
              END-IF
