@@ -2277,6 +2277,8 @@
            MOVE    RECE62X-SHOKUJIFTNKBN
                                        TO  KOHSKY-SHOKUJIFTNKBN
       *
+           MOVE    RECE62X-SYUGAKUKBN  TO  KOHSKY-FLG (1)
+      *
            MOVE    RECE62X-HOSPNUM     TO  KOHSKY-HOSPNUM
            MOVE    KOHSKY-REC          TO  MCPDATA-REC
            MOVE    "tbl_kohsky"        TO  MCP-TABLE
@@ -7864,6 +7866,7 @@
            END-IF             
       *     
            MOVE    RECE62-AGE          TO  RECE10-AGE  
+           MOVE    RECE62-SYUGAKUKBN   TO  RECE10-FLG (1)
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4

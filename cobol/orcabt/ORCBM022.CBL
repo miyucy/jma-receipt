@@ -72,6 +72,8 @@
       *                                     £≤£∞£∞£∑«Ø£π∑Ó°¡£±£≤∑Ó¬–æ›
       *
       *  04.01.01    NACL-∆£∏∂    07/10/24  ¡Ì≥Á…Ω§Œ√œ ˝∏¯»Òµ≠∫‹¬–±˛
+      *
+      *  04.02.01    NACL-∆£∏∂    08/03/04   ø¿Æ£≤£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -272,6 +274,8 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-CONS-SRYYM-200604   PIC X(06)   VALUE   "200604".
       *    £≤£∞£∞£∂«Ø£±£∞∑Ó≤˛¿µ
            03  WRK-CONS-SRYYM-200610   PIC X(06)   VALUE   "200610".
+      *    £≤£∞£∞£∏«Ø£¥∑Ó≤˛¿µ
+           03  WRK-CONS-SRYYM-200804   PIC X(06)   VALUE   "200804".
       *     
       *
       *****************************************************************
@@ -529,10 +533,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
       *
            MOVE    "2"                 TO  WRK-NYUGAIKBN
       *
-      *    1:-200603 2:200604-200609 3:200610-   
+      *    1:-200603 2:200604-200609 3:200610-200803 4:200804-   
            PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
-                   UNTIL   WRK-PRTFLG  >       3
+                   UNTIL   WRK-PRTFLG  >       4
       *
+             IF    ( WRK-PRTFLG          =   4                     )
+             AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200804 )
+                 CONTINUE
+             ELSE
                IF    ( WRK-PRTFLG          =   3                     )
                AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200610 )
                    CONTINUE
@@ -570,8 +578,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                                            RECEERR
                                    END-IF
                                ELSE
-                                   IF      WRK-PARA-NYUGAIKBN  =   "1"
-                                       CALL    "ORCBM033"  USING 
+                                   IF      WRK-PRTFLG          =   3
+                                       IF      WRK-PARA-NYUGAIKBN
+                                                               =   "1"
+                                           CALL    "ORCBM033"
+                                                           USING 
                                                            SUM-AREA
                                                            WRK-PARA
                                                            WRK-NYUGAIKBN
@@ -579,20 +590,45 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                                            WRK-PRTFLG
                                                            SPA-AREA
                                                            RECEERR
-                                   ELSE
-                                       CALL    "ORCBM032"  USING 
+                                       ELSE
+                                           CALL    "ORCBM032"
+                                                           USING 
                                                            SUM-AREA
                                                            WRK-PARA
                                                            WRK-SYOKBN
                                                            WRK-PRTFLG
                                                            SPA-AREA
                                                            RECEERR
+                                       END-IF
+                                   ELSE
+                                       IF      WRK-PARA-NYUGAIKBN
+                                                               =   "1"
+                                           CALL    "ORCBM038"
+                                                           USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-NYUGAIKBN
+                                                           WRK-SYOKBN
+                                                           WRK-PRTFLG
+                                                           SPA-AREA
+                                                           RECEERR
+                                       ELSE
+                                           CALL    "ORCBM037"
+                                                           USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-SYOKBN
+                                                           WRK-PRTFLG
+                                                           SPA-AREA
+                                                           RECEERR
+                                       END-IF
                                    END-IF
                                END-IF
                            END-IF
                        END-IF
                    END-IF
                END-IF    
+             END-IF    
            END-PERFORM    
       *
       *    ∆˛±° ¨
@@ -602,7 +638,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
            IF    ( WRK-PARA-NYUGAIKBN  =   "1"  )
            AND   ( FLG-ERR             =   ZERO )
                PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
-                       UNTIL   WRK-PRTFLG  >       3
+                       UNTIL   WRK-PRTFLG  >       4
+                 IF    ( WRK-PRTFLG          =   4                 )
+                 AND   ( LNK-PRTKANRI-SRYYM  <
+                                             WRK-CONS-SRYYM-200804 )
+                     CONTINUE
+                 ELSE
                    IF    ( WRK-PRTFLG          =   3                 )
                    AND   ( LNK-PRTKANRI-SRYYM  <
                                                WRK-CONS-SRYYM-200610 )
@@ -626,7 +667,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                                            SPA-AREA
                                                            RECEERR
                                ELSE
-                                   CALL    "ORCBM033"      USING 
+                                   IF      WRK-PRTFLG          =   3
+                                       CALL    "ORCBM033"  USING 
                                                            SUM-AREA
                                                            WRK-PARA
                                                            WRK-NYUGAIKBN
@@ -634,10 +676,21 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                                            WRK-PRTFLG
                                                            SPA-AREA
                                                            RECEERR
+                                   ELSE
+                                       CALL    "ORCBM038"  USING 
+                                                           SUM-AREA
+                                                           WRK-PARA
+                                                           WRK-NYUGAIKBN
+                                                           WRK-SYOKBN
+                                                           WRK-PRTFLG
+                                                           SPA-AREA
+                                                           RECEERR
+                                   END-IF 
                                END-IF
                            END-IF
                        END-IF 
                    END-IF
+                 END-IF
                END-PERFORM
            END-IF
            .
@@ -750,6 +803,22 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
       *****************************************************************
        2001-SYUKEI-SEC                SECTION.
       *
+      *     ø¿Æ£≤£∞«Ø£¥∑Ó∞ πﬂ§Àœ∑øÕ ›∏±§¨§¢§Î§»§≠
+           IF    ( RECE10-RJNHKNNUM    NOT =   SPACE                 )
+           AND   ( RECE10-SRYYM            >=  WRK-CONS-SRYYM-200804 )
+               DISPLAY "*** ORCBM022 ERR KEY=" RECE10-PTNUM
+               MOVE    SPACE               TO  WRK-RECEERR
+               STRING "œ∑øÕ ›∏±§¢§Í°°¥µº‘»÷πÊ°·"   DELIMITED  BY  SIZE
+                       RECE10-PTNUM                DELIMITED  BY  SPACE
+                       " ø«Œ≈«Ø∑Ó°·"               DELIMITED  BY  SIZE
+                       RECE10-SRYYM                DELIMITED  BY  SIZE
+                       " •Ï•ªºÔ Ã°·"               DELIMITED  BY  SIZE
+                       RECE10-RECESYUBETU          DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING                                
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
       *
            MOVE    ZERO                TO  IDX-AREA
                                            FLG-UPD
@@ -875,13 +944,19 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                END-IF
                            END-IF
                        ELSE
-                           IF      RECE10-AGE              <   3
-                               MOVE    5                       TO  IDY1
+                           IF    ( RECE10-SRYYM        >=
+                                           WRK-CONS-SRYYM-200804 )
+                           AND   ( RECE10-FLG (1)      =   1     )
+                               MOVE    5                   TO  IDY1
                            ELSE                    
-                               IF      RECE10-HONKZKKBN    =   "1"
-                                   MOVE    3                   TO  IDY1
-                               ELSE     
-                                   MOVE    4                   TO  IDY1
+                               IF      RECE10-AGE          <   3
+                                   MOVE    5                   TO  IDY1
+                               ELSE                    
+                                   IF      RECE10-HONKZKKBN    =   "1"
+                                       MOVE    3               TO  IDY1
+                                   ELSE     
+                                       MOVE    4               TO  IDY1
+                                   END-IF
                                END-IF
                            END-IF
                        END-IF
@@ -1067,13 +1142,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                            INTO    WRK-RECEERR
                END-STRING                                
                PERFORM 500-ERR-HENSYU-SEC
-               MOVE    SPACE               TO  WRK-ERRMSG
-               STRING  "ORCBM022 "         DELIMITED  BY  SIZE
-                       WRK-RECEERR         DELIMITED  BY  SIZE
-                       LOW-VALUE           DELIMITED  BY  SIZE
-                                           INTO    WRK-ERRMSG
-               END-STRING   
-               CALL    "cobabort"          USING   WRK-ERRMSG
+               PERFORM 500-COBABORT-SEC
            END-IF 
            .
        2001-SYUKEI-EXT.
@@ -1458,7 +1527,26 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
        230-UPD-FILE-HENSYU-SEC         SECTION.
       *
            MOVE    RECE10-REC          TO  RECE10X-REC
+           INITIALIZE                      RECE10X-UPHKNJANUM
+                                           RECE10X-XXPREFNUM
+                                           RECE10X-XXSRYYM
+                                           RECE10X-XXSTHKNJANUM
+                                           RECE10X-XXEDHKNJANUM
+                                           RECE10X-XXTEISYUTUSAKI
            WRITE   RECE10X-REC
+      *
+           IF      STS-RECEUPD         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-RECEERR
+               STRING "ππø∑Õ—•’•°•§•Î ΩÒ§≠π˛§ﬂ•®•È°º STS="
+                                                   DELIMITED  BY  SIZE
+                       STS-RECEUPD                 DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING                                
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF 
       *
            ADD     1                   TO  CNT-UPDFILE
            .
@@ -1496,7 +1584,24 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ω™Œª°°°°ΩËÕ˝
+      *    •®•È°ºª˛Ω™ŒªΩËÕ˝
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCBM022 "         DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING   
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ω™ŒªΩËÕ˝
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -1550,7 +1655,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                                INTO    WRK-RECEERR
                        END-STRING                                
                        PERFORM 500-ERR-HENSYU-SEC
-                       MOVE    1           TO  FLG-UPDFILE
+                       PERFORM 500-COBABORT-SEC
                    END-IF
                ELSE
                    STRING "¿¡µ·¥…Õ˝£ƒ£¬°°∆…π˛§ﬂππø∑•®•È°º°°"
@@ -1559,7 +1664,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                                INTO    WRK-RECEERR
                    END-STRING                                
                    PERFORM 500-ERR-HENSYU-SEC
-                   MOVE    1               TO  FLG-UPDFILE
+                   PERFORM 500-COBABORT-SEC
                END-IF
            END-PERFORM  
       *
@@ -1600,6 +1705,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                    END-IF
                WHEN    "3"
                    MOVE    WRK-CONS-SRYYM-200610
+                                               TO  RECE10-SRYYM
+                   MOVE    WRK-CONS-SRYYM-200804
+                                               TO  RECE10-XXSRYYM
+               WHEN    "4"
+                   MOVE    WRK-CONS-SRYYM-200804
                                                TO  RECE10-SRYYM
                    MOVE    999999              TO  RECE10-XXSRYYM
            END-EVALUATE

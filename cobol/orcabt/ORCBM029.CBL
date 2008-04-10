@@ -55,6 +55,8 @@
       *  03.05.02    NACL-藤原    07/07/17  強制終了処理対応
       *
       *  04.01.01    NACL-藤原    07/10/24  総括表の地方公費記載対応
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -98,18 +100,8 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *****COPY    "HCM2M.INC".
-      *****COPY    "HCM2MV01.INC"  REPLACING  //HCM2MV01//
-      *****COPY    "HCM2MV02.INC"  REPLACING  //HCM2MV02//
-      *****                        BY         //HCM2M//.
-      *****COPY    "HCM2W.INC".
            COPY    "HCM2WV01.INC"  REPLACING  //HCM2WV01//
                                    BY         //HCM2W//.
-      *****COPY    "HCM2N.INC".
-      *****COPY    "HCM2NV01.INC"  REPLACING  //HCM2NV01//
-      *****COPY    "HCM2NV02.INC"  REPLACING  //HCM2NV02//
-      *****                        BY         //HCM2N//.
-      *****COPY    "HCM2X.INC".
            COPY    "HCM2XV01.INC"  REPLACING  //HCM2XV01//
                                    BY         //HCM2X//.
       *
@@ -158,6 +150,7 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-PARA-HKNJANUM   PIC X(08).
            03  WRK-PARA-SYOKBN     PIC X(01).
            03  WRK-PARA-SYOKBN1    PIC X(01).
+           03  WRK-PARA-PAGE       PIC 9(10).
       *
       *    一時領域
        01  WRK-AREA.
@@ -196,7 +189,6 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-KOHKBN.
                05  WRK-KOHNUM        PIC X(03).
                05  WRK-HKNNAME       PIC X(20). 
-      *----(03.04.01)--ADD-START---
            03  WRK-HOSPNAME            PIC X(100).
            03  WRK-HOSPNAME-R          REDEFINES   WRK-HOSPNAME.
                05  WRK-HOSPNAME1       PIC X(50).
@@ -205,7 +197,6 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-HOSPADRS-R          REDEFINES   WRK-HOSPADRS.
                05  WRK-HOSPADRS1       PIC X(50).
                05  WRK-HOSPADRS2       PIC X(50).
-      *----(03.04.01)--ADD-END-----
       *
            03  WRK-MEISYO          PIC X(44).
       *
@@ -277,6 +268,8 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-CONS-SRYYM-200604   PIC X(06)   VALUE   "200604".
       *    ２００６年１０月改正
            03  WRK-CONS-SRYYM-200610   PIC X(06)   VALUE   "200610".
+      *    ２００８年４月改正
+           03  WRK-CONS-SRYYM-200804   PIC X(06)   VALUE   "200804".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -300,11 +293,9 @@ grpsys COPY    "COMMON-SPA".
       *    医療機関情報−所在地、連絡先 
            COPY    "CPSK1002.INC".
       *
-      *----(03.04.01)--ADD-START---
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
-      *----(03.04.01)--ADD-END-----
       *
            COPY    "CPSK2007.INC".
       *
@@ -324,7 +315,7 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPPRTDATA.INC".          
       * 
       ******************************************************************
-      *    サブプロ用　領域
+      *    サブプロ用領域
       *****************************************************************
       *
       *   ジョブ管理ＤＢ制御サブ
@@ -351,7 +342,7 @@ grpsys COPY    "COMMON-SPA".
                USING
            COMMAND-PARAM.
       *****************************************************************
-      *    主　　処理
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -365,7 +356,7 @@ grpsys COPY    "COMMON-SPA".
            STOP    RUN
            .
       *****************************************************************
-      *    初期　処理
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -375,6 +366,7 @@ grpsys COPY    "COMMON-SPA".
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SUM-AREA
                                        SPA-AREA
+                                       WRK-PARA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -488,12 +480,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                PERFORM 500-ERR-HENSYU-SEC
            END-IF 
       *
-      *----(03.04.01)--ADD-START---
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
       *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
-      *----(03.04.01)--ADD-END-----
       *         
       *    公費番号まとめ情報
            INITIALIZE                      WRK-2007-AREA
@@ -548,7 +538,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    主　　処理
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -573,10 +563,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
       *****************************************************************
        2001-SYOKBN-SYUKEI-SEC         SECTION.
       *
-      *    1:-200603 2:200604-200609 3:200610-   
+      *    1:-200603 2:200604-200609 3:200610-200803 4:200804-   
            PERFORM VARYING WRK-PRTFLG  FROM    1   BY  1
-                   UNTIL   WRK-PRTFLG  >       3
+                   UNTIL   WRK-PRTFLG  >       4
       *
+             IF    ( WRK-PRTFLG          =   4                     )
+             AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200804 )
+                 CONTINUE
+             ELSE
                IF    ( WRK-PRTFLG          =   3                     )
                AND   ( LNK-PRTKANRI-SRYYM  <   WRK-CONS-SRYYM-200610 )
                    CONTINUE
@@ -636,6 +630,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                    END-IF
                  END-IF
                END-IF
+             END-IF    
            END-PERFORM 
       *     
            MOVE    1                   TO  FLG-END
@@ -656,9 +651,21 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                PERFORM 2001-SYUKEI-SEC
            END-PERFORM
       *
-          IF      FLG-UPD        =   1
-          AND     FLG-ERR        =   ZERO 
-               PERFORM 2002-PRINT-HENSYU-SEC
+           IF      FLG-UPD        =   1
+           AND     FLG-ERR        =   ZERO 
+               IF      WRK-PRTFLG          =   4
+                   CALL    "ORCBM039"  USING 
+                                       SUM-AREA
+                                       WRK-PARA
+                                       WRK-SYOKBN
+                                       WRK-PRTFLG
+                                       WRK-INDEX 
+                                       KEY-O-HKNJANUM
+                                       SPA-AREA
+                                       RECEERR
+               ELSE
+                   PERFORM 2002-PRINT-HENSYU-SEC
+               END-IF
            END-IF
            .
        200-HENSYU-EXT.
@@ -668,6 +675,44 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
       *    保険者別集計処理
       *****************************************************************
        2001-SYUKEI-SEC                SECTION.
+      *
+      *    平成２０年４月以降
+           IF    ( RECE10-SRYYM            >=  WRK-CONS-SRYYM-200804 )
+      *        老人保険があるとき
+               IF      RECE10-RJNHKNNUM    NOT =   SPACE
+                   DISPLAY "*** ORCBM029 ERR KEY=" RECE10-PTNUM
+                   MOVE    SPACE               TO  WRK-RECEERR
+                   STRING "老人保険あり　患者番号＝"
+                                                   DELIMITED  BY  SIZE
+                           RECE10-PTNUM            DELIMITED  BY  SPACE
+                           " 診療年月＝"           DELIMITED  BY  SIZE
+                           RECE10-SRYYM            DELIMITED  BY  SIZE
+                           " レセ種別＝"           DELIMITED  BY  SIZE
+                           RECE10-RECESYUBETU      DELIMITED  BY  SIZE
+                                                   INTO    WRK-RECEERR
+                   END-STRING                                
+                   PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
+               END-IF    
+      *
+      *        退職で７０歳以上のとき
+               IF    ( RECE10-HKNNUM-S     =   "067"    OR  "069" )
+               AND   ( RECE10-AGE          >=  70                 )
+                   DISPLAY "*** ORCBM029 ERR KEY=" RECE10-PTNUM
+                   MOVE    SPACE               TO  WRK-RECEERR
+                   STRING "退職前期高齢者あり　患者番号＝"
+                                                   DELIMITED  BY  SIZE
+                           RECE10-PTNUM            DELIMITED  BY  SPACE
+                           " 診療年月＝"           DELIMITED  BY  SIZE
+                           RECE10-SRYYM            DELIMITED  BY  SIZE
+                           " レセ種別＝"           DELIMITED  BY  SIZE
+                           RECE10-RECESYUBETU      DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+                   END-STRING                                
+                   PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
+               END-IF
+           END-IF
       * 
            MOVE    ZERO                    TO  IDX-AREA
                                                FLG-UPD
@@ -702,10 +747,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                        MOVE    2           TO  IDX
                                END-EVALUATE        
                            ELSE
-                               IF      RECE10-AGE      <   3
+                               IF    ( RECE10-SRYYM        >=
+                                           WRK-CONS-SRYYM-200804 )
+                               AND   ( RECE10-FLG (1)      =   1     )
                                    MOVE    4               TO  IDX
                                ELSE                    
-                                   MOVE    3               TO  IDX
+                                   IF      RECE10-AGE      <   3
+                                       MOVE    4               TO  IDX
+                                   ELSE                    
+                                       MOVE    3               TO  IDX
+                                   END-IF
                                END-IF
                            END-IF
                        WHEN    "067"
@@ -719,13 +770,20 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
                                        MOVE    7           TO  IDX
                                END-EVALUATE        
                            ELSE
-                               IF      RECE10-AGE      <   3
+                               IF    ( RECE10-SRYYM        >=
+                                           WRK-CONS-SRYYM-200804 )
+                               AND   ( RECE10-FLG (1)      =   1     )
                                    MOVE    9               TO  IDX
                                ELSE                    
-                                   IF      RECE10-HONKZKKBN    =   "1"
-                                       MOVE    5               TO  IDX
-                                   ELSE
-                                       MOVE    8               TO  IDX
+                                   IF      RECE10-AGE      <   3
+                                       MOVE    9               TO  IDX
+                                   ELSE                    
+                                       IF      RECE10-HONKZKKBN
+                                                           =   "1"
+                                           MOVE    5           TO  IDX
+                                       ELSE
+                                           MOVE    8           TO  IDX
+                                       END-IF
                                    END-IF
                                END-IF
                            END-IF        
@@ -914,7 +972,26 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
        20013-UPD-FILE-HENSYU-SEC         SECTION.
       *
            MOVE    RECE10-REC          TO  RECE10X-REC
+           INITIALIZE                      RECE10X-UPHKNJANUM
+                                           RECE10X-XXPREFNUM
+                                           RECE10X-XXSRYYM
+                                           RECE10X-XXSTHKNJANUM
+                                           RECE10X-XXEDHKNJANUM
+                                           RECE10X-XXTEISYUTUSAKI
            WRITE   RECE10X-REC
+      *
+           IF      STS-RECEUPD         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-RECEERR
+               STRING "更新用ファイル 書き込みエラー STS="
+                                                   DELIMITED  BY  SIZE
+                       STS-RECEUPD                 DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING                                
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF 
            ADD     1                   TO  CNT-UPDFILE
            .
        20013-UPD-FILE-HENSYU-EXT.
@@ -933,7 +1010,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2007-HOSPNUM
            PERFORM 20023-BODY-HEN-SEC
       *    帳票印刷処理
            PERFORM 20024-PRINT-OUT-SEC
-      *
            .
        2002-PRINT-HENSYU-EXT.
            EXIT.
@@ -1312,6 +1388,8 @@ grpsys             PERFORM 900-DBSELECT-SEC
        20024-PRINT-OUT-SEC                SECTION.
       *
            ADD     1                   TO  CNT-PAGE
+                                           WRK-PARA-PAGE
+      *
            MOVE    CNT-PAGE            TO  WRK-PAGE
       *
            INITIALIZE                  ORCSPRTAREA
@@ -1332,18 +1410,10 @@ grpsys             PERFORM 900-DBSELECT-SEC
            EVALUATE    FLG-PRTKBN
                WHEN    ZERO 
                    MOVE    WRK-PAGE            TO  HCM2W-PAGE
-      *************MOVE    "HCM2M.red"         TO  SPRT-PRTID
-      *************MOVE    "HCM2MV01.red"      TO  SPRT-PRTID
-      *************MOVE    "HCM2MV02.red"      TO  SPRT-PRTID
-      *************MOVE    "HCM2W.red"         TO  SPRT-PRTID
                    MOVE    "HCM2WV01.red"      TO  SPRT-PRTID
                    MOVE    HCM2W               TO  SPRT-PRTDATA
                WHEN    1                            
                    MOVE    WRK-PAGE            TO  HCM2X-PAGE
-      *************MOVE    "HCM2N.red"         TO  SPRT-PRTID
-      *************MOVE    "HCM2NV01.red"      TO  SPRT-PRTID
-      *************MOVE    "HCM2NV02.red"      TO  SPRT-PRTID
-      *************MOVE    "HCM2X.red"         TO  SPRT-PRTID
                    MOVE    "HCM2XV01.red"      TO  SPRT-PRTID
                    MOVE    HCM2X               TO  SPRT-PRTDATA
            END-EVALUATE        
@@ -1386,14 +1456,8 @@ grpsys                                 SPA-AREA
            ELSE
                MOVE    "印刷ＤＢに更新できませんでした"
                                           TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC                           
-               MOVE    SPACE               TO  WRK-ERRMSG
-               STRING  "ORCBM029 "         DELIMITED  BY  SIZE
-                       WRK-RECEERR         DELIMITED  BY  SIZE
-                       LOW-VALUE           DELIMITED  BY  SIZE
-                                           INTO    WRK-ERRMSG
-               END-STRING   
-               CALL    "cobabort"          USING   WRK-ERRMSG
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF                                                              
            .
        20024-PRINT-OUT-EXT.
@@ -1430,7 +1494,24 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    終了　　処理
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCBM029 "         DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING   
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -1454,7 +1535,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    CNT-PAGE        TO  JOB-UPDCNT                        
+           MOVE    WRK-PARA-PAGE   TO  JOB-UPDCNT                         
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *                              
            PERFORM 900-DBDISCONNECT-SEC
@@ -1492,7 +1573,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                                INTO    WRK-RECEERR
                        END-STRING                                
                        PERFORM 500-ERR-HENSYU-SEC
-                       MOVE    1           TO  FLG-UPDFILE
+                       PERFORM 500-COBABORT-SEC
                    END-IF
                ELSE
                    STRING "請求管理ＤＢ　読込み更新エラー　"
@@ -1501,7 +1582,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                                INTO    WRK-RECEERR
                    END-STRING                                
                    PERFORM 500-ERR-HENSYU-SEC
-                   MOVE    1               TO  FLG-UPDFILE
+                   PERFORM 500-COBABORT-SEC
                END-IF
            END-PERFORM  
       *
@@ -1554,7 +1635,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
                WHEN    "3"
                    MOVE    WRK-CONS-SRYYM-200610
                                            TO  RECE10-SRYYM
-                   MOVE    999999          TO  RECE10-XXSRYYM
+                   MOVE    WRK-CONS-SRYYM-200804
+                                               TO  RECE10-XXSRYYM
+               WHEN    "4"
+                   MOVE    WRK-CONS-SRYYM-200804
+                                               TO  RECE10-SRYYM
+                   MOVE    999999              TO  RECE10-XXSRYYM
            END-EVALUATE
            IF      WRK-PARA-HKNJANUM   NOT =   ZERO
                MOVE    WRK-PARA-HKNJANUM   TO  RECE10-XXSTHKNJANUM
@@ -1565,8 +1651,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            END-IF 
       *
       *###
-           DISPLAY "SYOKBN=" WRK-SYOKBN "#" WRK-PARA-SYOKBN1
+           DISPLAY "SYOKBN=" WRK-SYOKBN " SYOKBN1=" WRK-PARA-SYOKBN1
                    " SRYYM=" RECE10-SRYYM "-" RECE10-XXSRYYM 
+                   " PATHNAME=" WRK-MCP-PATHNAME
+      *###
       *###
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC

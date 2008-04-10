@@ -37,6 +37,8 @@
       *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
       *
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -80,8 +82,16 @@
                    07  SPA-GMN-PRTKBN3.
                        09  SPA-GMN-PRTKBN3-STYLE   PIC X(20).
                        09  SPA-GMN-PRTKBN3-VALUE   PIC X(04).
+                   07  SPA-GMN-PRTKBN4.
+                       09  SPA-GMN-PRTKBN4-STYLE   PIC X(20).
+                       09  SPA-GMN-PRTKBN4-VALUE   PIC X(04).
+                   07  SPA-GMN-PRTKBN5.
+                       09  SPA-GMN-PRTKBN5-STYLE   PIC X(20).
+                       09  SPA-GMN-PRTKBN5-VALUE   PIC X(04).
                    07  SPA-GMN-HKNJANUM            PIC X(08).
                    07  SPA-GMN-HKNJAMEI            PIC X(40). 
+                   07  SPA-GMN-HKNJANUM1           PIC X(08).
+                   07  SPA-GMN-HKNJAMEI1           PIC X(40). 
                    07  SPA-GMN-TITLE               PIC X(40). 
       *
                05  SPA-NAIB-T01-AREA.
@@ -92,17 +102,22 @@
                    07  SPA-NAI-PRTKBN1             PIC X(01).
                    07  SPA-NAI-PRTKBN2             PIC X(01).
                    07  SPA-NAI-PRTKBN3             PIC X(01).
+                   07  SPA-NAI-PRTKBN4             PIC X(01).
+                   07  SPA-NAI-PRTKBN5             PIC X(01).
                    07  SPA-NAI-HKNJANUM            PIC X(08). 
+                   07  SPA-NAI-HKNJANUM1           PIC X(08). 
       *
                05  SPA-STATE.             
                    07  SPA-B06-STATE               PIC S9(09)  BINARY.
                    07  SPA-B07-STATE               PIC S9(09)  BINARY.
+                   07  SPA-B08-STATE               PIC S9(09)  BINARY.
                    07  SPA-B19-STATE               PIC S9(09)  BINARY.
                    07  SPA-B20-STATE               PIC S9(09)  BINARY.
                    07  SPA-B21-STATE               PIC S9(09)  BINARY.
                    07  SPA-DATA-STATE              PIC S9(09)  BINARY.
                    07  SPA-NYUGAIKBN-STATE         PIC S9(09)  BINARY.
-                   07  SPA-SRYYM-STATE             PIC S9(09)  BINARY.
+                   07  SPA-DATAKBN1-STATE          PIC S9(09)  BINARY.
+                   07  SPA-DATAKBN2-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN3-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN4-STATE          PIC S9(09)  BINARY.
                    07  SPA-DATAKBN5-STATE          PIC S9(09)  BINARY.
@@ -115,12 +130,16 @@
                    07  SPA-DATAKBN5-VALUE          PIC X(01).
                    07  SPA-DATAKBN6-VALUE          PIC X(01).
                    07  SPA-DATAKBN7-VALUE          PIC X(01).
+                   07  SPA-DATAKBN1-VALUE          PIC X(01).
+                   07  SPA-DATAKBN2-VALUE          PIC X(01).
       *
                05  SPA-CHK.
                    07  SPA-CHK11-VALUE             PIC X(01).
                    07  SPA-CHK12-VALUE             PIC X(01).
                    07  SPA-CHK21-VALUE             PIC X(01).
                    07  SPA-CHK22-VALUE             PIC X(01).
+                   07  SPA-CHK31-VALUE             PIC X(01).
+                   07  SPA-CHK32-VALUE             PIC X(01).
       *
                05  SPA-3004-AREA.
                    07  SPA-3004-MAX                PIC 9(03).
@@ -136,6 +155,9 @@
                        09  SPA-3004-SHORIMSG       PIC X(40).
       *
                05  SPA-NAI-1031-PRTNM              PIC X(16). 
+      *
+               05  SPA-NAI-200501-KOUIKIKBN        PIC X(01).
+               05  SPA-NAI-200501-KOUIKIRECEKBN    PIC X(01).
       *
       *    公費個別指定
            03  SPA-T02-AREA.

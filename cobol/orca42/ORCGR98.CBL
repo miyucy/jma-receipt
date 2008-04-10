@@ -59,6 +59,9 @@
       *  03.04.02    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
+      *                                     中国残留法人等の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -197,6 +200,10 @@
       *    生活保護保険番号 
            03  WRK-CONS-SEIHO-HKNNUM
                                    PIC X(03)   VALUE   "012". 
+      *    
+      *    中国残留邦人等保険番号 
+           03  WRK-CONS-ZANRYUU-HKNNUM
+                                   PIC X(03)   VALUE   "025". 
       *
       *    労災保険番号 
            03  WRK-CONS-ROUSAI-HKNNUM
@@ -205,6 +212,10 @@
       *    自賠責保険番号 
            03  WRK-CONS-JIBAISEKI-HKNNUM
                                    PIC X(03)   VALUE   "973". 
+      *    公害保険番号 
+           03  WRK-CONS-KOUGAI-HKNNUM
+                                   PIC X(03)   VALUE   "975".
+      *
       *    ジョブ管理ＤＢのキー値  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "RECEPT1".
@@ -541,6 +552,8 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                                            WRK-CONS-ROUSAI-HKNNUM    )
                        OR    ( COMB-HKNNUM     =
                                            WRK-CONS-JIBAISEKI-HKNNUM )
+                       OR    ( COMB-HKNNUM     =
+                                           WRK-CONS-KOUGAI-HKNNUM    ) 
                            CONTINUE
                        ELSE    
                            PERFORM VARYING IDX     FROM    1   BY  1
@@ -621,6 +634,8 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                                              WRK-CONS-ROUSAI-HKNNUM    )
                                    OR    ( COMB-HKNNUM =
                                              WRK-CONS-JIBAISEKI-HKNNUM )
+                                   OR    ( COMB-HKNNUM     =
+                                             WRK-CONS-KOUGAI-HKNNUM    ) 
                                        CONTINUE
                                    ELSE    
                                        PERFORM VARYING IDX FROM  1 BY  1

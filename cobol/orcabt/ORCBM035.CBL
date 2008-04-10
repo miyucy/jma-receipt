@@ -70,14 +70,10 @@
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-           COPY    "HCM2WV01.INC"  REPLACING  //HCM2WV01//
-                                   BY         //HCM2W//.
-           COPY    "HCM2XV01.INC"  REPLACING  //HCM2XV01//
-                                   BY         //HCM2X//.
+           COPY    "HCM3G.INC".
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
-           03  STS-RECE10          PIC X(02). 
            03  STS-RECEERR         PIC X(02).
            03  STS-RECEUPD         PIC X(02).
       *
@@ -106,6 +102,9 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+           03  IDY4                PIC 9(04).
+           03  IDXX                PIC 9(04).
+           03  IDXY                PIC 9(04).
       *     
            03  IDZ1                PIC 9(04).
            03  IDZ2                PIC 9(04).
@@ -183,9 +182,11 @@
       *
       *    ½¸·×ÎÎ°è
        01  SUM-AREA.
+         02  SUM-TABLE-OCC         OCCURS  100.
+           03  SUM-TBL-SRYKA       PIC X(02).
            03  SUM-TABLE.
-      *        ¹ñÌ±·ò¹¯ÊÝ¸±¡¦Ï·¿ÍÊÝ·ò         
-               05  SUM-TBL             OCCURS  11.
+      *        ¸å´ü¹âÎð¼Ô
+               05  SUM-TBL             OCCURS  2.
                    07  SUM-TBL-G       OCCURS  2.
                        09  SUM-KENSU           PIC  9(06).
                        09  SUM-NISSU           PIC  9(06).
@@ -251,6 +252,8 @@
       *
       *    °åÎÅµ¡´Ø¾ðÊó¡Ý½êºßÃÏ¡¢Ï¢ÍíÀè 
            COPY    "CPSK1002.INC".
+      *    
+           COPY    "CPSK1005.INC".
       *
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
@@ -274,7 +277,7 @@
            COPY    "CPPRTDATA.INC".          
       * 
       ******************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
       *****************************************************************
       *
       *   ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
@@ -489,8 +492,6 @@
            PERFORM 900-CLOSE-SEC
       *
            MOVE    IDX             TO  WRK-2007-MAX    
-      *
-           OPEN    OUTPUT  UPD-FILE
            .
        100-INIT-EXT.
            EXIT.
@@ -499,6 +500,8 @@
       *    ¼ç½èÍý
       *****************************************************************
        200-MAIN-SEC                SECTION.
+      *
+           OPEN    OUTPUT  UPD-FILE
       *
            EVALUATE    WRK-PARA-SYOKBN
                WHEN    ZERO
@@ -512,6 +515,15 @@
                    MOVE    "1"         TO  WRK-SYOKBN
                    PERFORM 2001-SYOKBN-SYUKEI-SEC
            END-EVALUATE
+      *
+           CLOSE   UPD-FILE
+      *
+           IF      FLG-UPD        =   1
+           AND     FLG-ERR        =   ZERO 
+               IF      CNT-UPDFILE    >   ZERO
+                   PERFORM 310-SEIKYU-UPD-SEC
+               END-IF
+           END-IF    
            .
        200-MAIN-EXT.
            EXIT.
@@ -528,13 +540,13 @@
       *     
            EVALUATE    WRK-SYOKBN      ALSO    WRK-PARA-SYOKBN1
                WHEN    "1"             ALSO    "1"
-                   MOVE    "key34"         TO  WRK-MCP-PATHNAME
+                   MOVE    "key62"         TO  WRK-MCP-PATHNAME
                WHEN    "2"             ALSO    "1"
-                   MOVE    "key33"         TO  WRK-MCP-PATHNAME
+                   MOVE    "key61"         TO  WRK-MCP-PATHNAME
                WHEN    "1"             ALSO    "2"
-                   MOVE    "key40"         TO  WRK-MCP-PATHNAME
+                   MOVE    "key66"         TO  WRK-MCP-PATHNAME
                WHEN    "2"             ALSO    "2"
-                   MOVE    "key39"         TO  WRK-MCP-PATHNAME
+                   MOVE    "key65"         TO  WRK-MCP-PATHNAME
            END-EVALUATE  
            MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
            PERFORM 900-SEIKYU-SELECT-SEC
@@ -555,9 +567,9 @@
       *         
                EVALUATE    WRK-SYOKBN
                    WHEN    "1"
-                       MOVE    "key36"     TO  WRK-MCP-PATHNAME
+                       MOVE    "key64"     TO  WRK-MCP-PATHNAME
                    WHEN    "2"
-                       MOVE    "key35"     TO  WRK-MCP-PATHNAME
+                       MOVE    "key63"     TO  WRK-MCP-PATHNAME
                END-EVALUATE  
                MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
                PERFORM 900-SEIKYU-SELECT-SEC
@@ -604,70 +616,51 @@
            MOVE    ZERO                    TO  IDX-AREA
                                                FLG-UPD
       *
+      *    ¼ç²ÊÊÌ
+           IF      RECE10-RECEKA       =   "00"
+               MOVE    RECE10-RECEKA   TO  SUM-TBL-SRYKA (1)
+               MOVE    1                   TO  IDXX
+           ELSE
+               PERFORM VARYING IDXY    FROM    2   BY  1
+                       UNTIL   IDXY    >       99
+                   IF      SUM-TBL-SRYKA (IDXY)    =   SPACE
+                       MOVE    RECE10-RECEKA   TO  SUM-TBL-SRYKA (IDXY)
+                   END-IF 
+                   IF      SUM-TBL-SRYKA (IDXY)    =   RECE10-RECEKA
+                       MOVE    IDXY            TO  IDXX
+                       MOVE    99              TO  IDXY
+                   END-IF
+               END-PERFORM
+           END-IF        
+      *
            EVALUATE    RECE10-NYUGAIKBN
                WHEN    "1"
-                   MOVE    1                 TO  IDX3
+                   MOVE    1                   TO  IDX3
                WHEN    "2"
-                   MOVE    2                 TO  IDX3
+                   MOVE    2                   TO  IDX3
            END-EVALUATE           
       *
-      *        Ï·¿ÍÊÝ·ò
-           IF      RECE10-RJNHKNNUM    NOT =   SPACE
-               EVALUATE    RECE10-KYURATE
-                   WHEN    9
-                       MOVE    10                  TO  IDX
-                   WHEN    8
-                   WHEN    7
-                       MOVE    11                  TO  IDX
-               END-EVALUATE        
-           ELSE
-      *        ¹ñÌ±·ò¹¯ÊÝ¸±
-               EVALUATE    RECE10-HKNNUM-S
-                       WHEN    "060"
-                       WHEN    "068"
-                           IF      RECE10-AGE          >=  70
-                               EVALUATE    RECE10-KYURATE
-                                   WHEN    9
-                                       MOVE    1           TO  IDX
-                                   WHEN    8
-                                   WHEN    7
-                                       MOVE    2           TO  IDX
-                               END-EVALUATE        
-                           ELSE
-                               IF      RECE10-AGE      <   3
-                                   MOVE    4               TO  IDX
-                               ELSE                    
-                                   MOVE    3               TO  IDX
-                               END-IF
-                           END-IF
-                       WHEN    "067"
-                       WHEN    "069"
-                           IF      RECE10-AGE          >=  70
-                               EVALUATE    RECE10-KYURATE
-                                   WHEN    9
-                                       MOVE    6           TO  IDX
-                                   WHEN    8
-                                   WHEN    7
-                                       MOVE    7           TO  IDX
-                               END-EVALUATE        
-                           ELSE
-                               IF      RECE10-AGE      <   3
-                                   MOVE    9               TO  IDX
-                               ELSE                    
-                                   IF      RECE10-HONKZKKBN    =   "1"
-                                       MOVE    5               TO  IDX
-                                   ELSE
-                                       MOVE    8               TO  IDX
-                                   END-IF
-                               END-IF
-                           END-IF        
-               END-EVALUATE
+           EVALUATE    RECE10-KYURATE
+               WHEN    9
+                   MOVE    1                   TO  IDX
+               WHEN    7
+                   MOVE    2                   TO  IDX
+           END-EVALUATE        
+           IF      IDXX            >   ZERO
+               MOVE    IDXX            TO  IDY4
+               PERFORM 20011-HKN-SYUKEI-SEC
+               MOVE    100             TO  IDY4
+               PERFORM 20011-HKN-SYUKEI-SEC
            END-IF
-           PERFORM 20011-HKN-SYUKEI-SEC
       *
       *    ¸øÈñÉéÃ´Ê¬     
            IF      RECE10-KOHNUM (1)   NOT =   SPACE
-               PERFORM 20012-KOH-SYUKEI-SEC
+               IF      IDXX            >   ZERO
+                   MOVE    IDXX            TO  IDY4
+                   PERFORM 20012-KOH-SYUKEI-SEC
+                   MOVE    100             TO  IDY4
+                   PERFORM 20012-KOH-SYUKEI-SEC
+               END-IF
            END-IF
       *
       *    ½¸·×¤ÎÂÐ¾Ý¤Ë¤Ê¤é¤Ê¤«¤Ã¤¿¤È¤­                
@@ -688,20 +681,14 @@
                                            INTO    WRK-RECEERR
                END-STRING                                
                PERFORM 500-ERR-HENSYU-SEC
-               MOVE    SPACE               TO  WRK-ERRMSG
-               STRING  "ORCBM035 "         DELIMITED  BY  SIZE
-                       WRK-RECEERR         DELIMITED  BY  SIZE
-                       LOW-VALUE           DELIMITED  BY  SIZE
-                                           INTO    WRK-ERRMSG
-               END-STRING   
-               CALL    "cobabort"          USING   WRK-ERRMSG
+               PERFORM 500-COBABORT-SEC
            END-IF 
            .
        2001-SYUKEI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    °åÎÅÊÝ¸±¡¦Ï·¿ÍÊÝ·òÊ¬½¸·×½èÍý
+      *    ½¸·×½èÍý
       *****************************************************************
        20011-HKN-SYUKEI-SEC          SECTION.
       *
@@ -710,35 +697,34 @@
                GO  TO  20011-HKN-SYUKEI-EXT
            END-IF
       *
-      *    °åÎÅÊÝ¸±¡¦Ï·¿ÍÊÝ·òÊ¬
            MOVE    1                         TO  IDX1
            MOVE    IDX                       TO  IDX2
       *    
       *    ·ï¿ô
-           ADD     1               TO  SUM-KENSU (IDX2 IDX3)
+           ADD     1               TO  SUM-KENSU (IDY4 IDX2 IDX3)
       *
       *    ÎÅÍÜ¤ÎµëÉÕ 
            ADD     RECE10-JNISSU   (IDX1) TO 
-                                   SUM-NISSU      (IDX2 IDX3)
+                                   SUM-NISSU      (IDY4 IDX2 IDX3)
            ADD     RECE10-TOTALTEN (IDX1) TO
-                                   SUM-TOTALTEN   (IDX2 IDX3)
+                                   SUM-TOTALTEN   (IDY4 IDX2 IDX3)
            ADD     RECE10-FTNMONEY (IDX1) TO
-                                   SUM-FTNMONEY   (IDX2 IDX3)
+                                   SUM-FTNMONEY   (IDY4 IDX2 IDX3)
       *    ¿©»öÎÅÍÜ
            IF      IDX3                   =   1 
               IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
                   ADD     1              TO
-                                  SUM-SHOKUJIKENSU    (IDX2)
+                                  SUM-SHOKUJIKENSU    (IDY4 IDX2)
                   ADD     RECE10-SHOKUJINISSU   (IDX1)
                                          TO
-                                  SUM-SHOKUJINISSU    (IDX2)
+                                  SUM-SHOKUJINISSU    (IDY4 IDX2)
                END-IF
                ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
                                          TO
-                                  SUM-SHOKUJIRYOYOHI  (IDX2)
+                                  SUM-SHOKUJIRYOYOHI  (IDY4 IDX2)
                ADD     RECE10-SHOKUJIFTN     (IDX1)
                                          TO
-                                  SUM-SHOKUJIFTN      (IDX2)
+                                  SUM-SHOKUJIFTN      (IDY4 IDX2)
            END-IF    
       *
            MOVE    1               TO  FLG-UPD 
@@ -784,14 +770,14 @@
       *
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2 >          100
-                   IF      SUM-KOH-KOHNUM (IDX2) =   SPACE
+                   IF      SUM-KOH-KOHNUM (IDY4 IDX2) =   SPACE
                        MOVE    RECE10-KOHNUM (IDZ)     TO 
-                                       SUM-KOH-KOHNUM (IDX2)
+                                       SUM-KOH-KOHNUM (IDY4 IDX2)
                        MOVE    WRK-MEISYO              TO 
-                                       SUM-KOH-MEISYO (IDX2)
+                                       SUM-KOH-MEISYO (IDY4 IDX2)
                    END-IF                                
                    IF      RECE10-KOHNUM (IDZ) 
-                                   =   SUM-KOH-KOHNUM (IDX2)
+                                   =   SUM-KOH-KOHNUM (IDY4 IDX2)
                        PERFORM 200121-KOH-SYUKEI-01-SEC
                        MOVE    100             TO  IDX2
                    END-IF
@@ -809,30 +795,30 @@
            COMPUTE IDY     =   IDZ     +   1
       *    
       *    ·ï¿ô
-           ADD     1               TO  SUM-KOH-KENSU (IDX2 IDX3)
+           ADD     1               TO  SUM-KOH-KENSU (IDY4 IDX2 IDX3)
       *
       *    ÎÅÍÜ¤ÎµëÉÕ 
            ADD     RECE10-JNISSU   (IDY) TO 
-                                   SUM-KOH-NISSU      (IDX2 IDX3)
+                                   SUM-KOH-NISSU      (IDY4 IDX2 IDX3)
            ADD     RECE10-TOTALTEN (IDY) TO
-                                   SUM-KOH-TOTALTEN   (IDX2 IDX3)
+                                   SUM-KOH-TOTALTEN   (IDY4 IDX2 IDX3)
            ADD     RECE10-FTNMONEY (IDY) TO
-                                   SUM-KOH-FTNMONEY   (IDX2 IDX3)
+                                   SUM-KOH-FTNMONEY   (IDY4 IDX2 IDX3)
       *    ¿©»öÎÅÍÜ
            IF      IDX3                   =   1 
               IF      RECE10-SHOKUJINISSU(IDY)   >   ZERO
                   ADD     1              TO
-                                  SUM-KOH-SHOKUJIKENSU   (IDX2)
+                                  SUM-KOH-SHOKUJIKENSU   (IDY4 IDX2)
                   ADD     RECE10-SHOKUJINISSU   (IDY)
                                          TO
-                                  SUM-KOH-SHOKUJINISSU   (IDX2)
+                                  SUM-KOH-SHOKUJINISSU   (IDY4 IDX2)
                END-IF
                ADD     RECE10-SHOKUJIRYOYOHI (IDY)
                                          TO
-                                  SUM-KOH-SHOKUJIRYOYOHI (IDX2)
+                                  SUM-KOH-SHOKUJIRYOYOHI (IDY4 IDX2)
                ADD     RECE10-SHOKUJIFTN     (IDY)
                                          TO
-                                  SUM-KOH-SHOKUJIFTN     (IDX2)
+                                  SUM-KOH-SHOKUJIFTN     (IDY4 IDX2)
            END-IF    
       *
            MOVE    1               TO  FLG-UPD 
@@ -846,7 +832,26 @@
        20013-UPD-FILE-HENSYU-SEC         SECTION.
       *
            MOVE    RECE10-REC          TO  RECE10X-REC
+           INITIALIZE                      RECE10X-UPHKNJANUM
+                                           RECE10X-XXPREFNUM
+                                           RECE10X-XXSRYYM
+                                           RECE10X-XXSTHKNJANUM
+                                           RECE10X-XXEDHKNJANUM
+                                           RECE10X-XXTEISYUTUSAKI
            WRITE   RECE10X-REC
+      *
+           IF      STS-RECEUPD         =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-RECEERR
+               STRING "¹¹¿·ÍÑ¥Õ¥¡¥¤¥ë ½ñ¤­¹þ¤ß¥¨¥é¡¼ STS="
+                                                   DELIMITED  BY  SIZE
+                       STS-RECEUPD                 DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING                                
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF 
            ADD     1                   TO  CNT-UPDFILE
            .
        20013-UPD-FILE-HENSYU-EXT.
@@ -856,44 +861,74 @@
       *    Ä¢É¼¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
       *****************************************************************
        2002-PRINT-HENSYU-SEC                SECTION.
+      *
+           IF      SUM-TBL-SRYKA (2)   =   SPACE
+               MOVE    100                 TO  IDXX
+           ELSE
+               MOVE    1                   TO  IDXX
+           END-IF
+      *       
+           PERFORM VARYING IDX3    FROM   IDXX    BY  1
+                   UNTIL   IDX3    >      100
+               IF    ( SUM-TBL-SRYKA (IDX3)   =   SPACE )
+               AND   ( IDX3                   <   100   )
+                   CONTINUE
+               ELSE
+      *            ¼ç²ÊÌ¾¾Î
+                   IF      SUM-TBL-SRYKA (IDX3)   =   "00"
+                       MOVE    "¼ç²ÊÌ¤ÀßÄê"       TO  SYS-1005-SRYKANAME
+                   ELSE
+                       INITIALIZE                  SYS-1005-REC
+                       MOVE    "1005"          TO  SYS-1005-KANRICD
+                       MOVE    SUM-TBL-SRYKA (IDX3)
+                                               TO  SYS-1005-KBNCD
+                       MOVE    LNK-PRTKANRI-SRYYM
+                                               TO SYS-1005-STYUKYMD(1:6)
+                       MOVE    "01"            TO SYS-1005-STYUKYMD(7:2)
+                       MOVE    SYS-1005-STYUKYMD
+                                               TO  SYS-1005-EDYUKYMD 
+                       MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
+                       MOVE    SYS-1005-REC    TO  MCPDATA-REC
+                       PERFORM 910-SYSKANRI-KEY10-SEC
+                       IF      FLG-SYSKANRI    =   ZERO
+                           MOVE    MCPDATA-REC     TO  SYS-1005-REC
+                       ELSE
+                           INITIALIZE                  SYS-1005-REC
+                       END-IF
+                   END-IF
       *           
-      *    Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Í>½èÍý
-           PERFORM 20021-HEAD-HEN-01-SEC
-      *    Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Î>½èÍý
-           PERFORM 20022-HEAD-HEN-02-SEC
-      *    Ä¢É¼ÊÔ½¸<ÌÀºÙ>½èÍý
-           PERFORM 20023-BODY-HEN-SEC
-      *    Ä¢É¼°õºþ½èÍý
-           PERFORM 20024-PRINT-OUT-SEC
+      *            Ä¢É¼ÊÔ½¸<¸«½Ð¤·>½èÍý
+                   PERFORM 20021-HEAD-HEN-SEC
+      *            Ä¢É¼ÊÔ½¸<ÌÀºÙ>½èÍý
+                   PERFORM 20023-BODY-HEN-SEC
+      *            Ä¢É¼°õºþ½èÍý
+                   PERFORM 20024-PRINT-OUT-SEC
+               END-IF   
+           END-PERFORM    
       *
            .
        2002-PRINT-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼ÊÔ½¸<¥Ø¥Ã¥À¡¼Éô>½èÍý
+      *    Ä¢É¼ÊÔ½¸<¸«½Ð¤·>½èÍý
       *****************************************************************
-       20021-HEAD-HEN-01-SEC          SECTION.
+       20021-HEAD-HEN-SEC          SECTION.
       *
-           INITIALIZE                      HCM2W      
+           INITIALIZE                      HCM3G      
       *
-           MOVE    WRK-SEIYMDWH        TO  HCM2W-SEIYMD
+           MOVE    WRK-SEIYMDWH        TO  HCM3G-SEIYMD
       *
-           MOVE    WRK-SRYYMWH         TO  HCM2W-PRTYM
-      *
+           MOVE    WRK-SRYYMWH         TO  HCM3G-PRTYM
       *    °åÎÅµ¡´Ø½»½ê
-      *    MOVE    SYS-1002-ADRS       TO  HCM2W-ADRS
+           MOVE    WRK-HOSPADRS        TO  HCM3G-ADRS
       *    °åÎÅµ¡´ØÌ¾
-      *    MOVE    SYS-1001-HOSPNAME   TO  HCM2W-HOSPNAME
-      *    °åÎÅµ¡´Ø½»½ê
-           MOVE    WRK-HOSPADRS        TO  HCM2W-ADRS
-      *    °åÎÅµ¡´ØÌ¾
-           MOVE    WRK-HOSPNAME        TO  HCM2W-HOSPNAME
+           MOVE    WRK-HOSPNAME        TO  HCM3G-HOSPNAME
       *    
            MOVE    SYS-1001-KAISETUNAME
-                                       TO  HCM2W-KAISETUNAME
+                                       TO  HCM3G-KAISETUNAME
       *    
-           MOVE    SYS-1001-HOSPCDN    TO  HCM2W-HOSPCD
+           MOVE    SYS-1001-HOSPCDN    TO  HCM3G-HOSPCD
       *
            MOVE    SPACE               TO  HKNJAINF-REC
            INITIALIZE                      HKNJAINF-REC
@@ -902,78 +937,35 @@
            MOVE    HKNJAINF-REC        TO  MCPDATA-REC
            PERFORM 900-HKNJAINF-INV-SEC
            IF      FLG-HKNJAINF        =   ZERO
-               MOVE    HKNJA-HKNJANAME     TO  HCM2W-HKNJANAME
+               STRING  HKNJA-HKNJANAME     DELIMITED  BY  SPACE
+                       "¡¡ÅÂ"              DELIMITED  BY  SIZE
+                                           INTO  HCM3G-HKNJANAME
+               END-STRING
            END-IF                                
-           MOVE    KEY-O-HKNJANUM      TO  HCM2W-HKNJANUM
+           MOVE    KEY-O-HKNJANUM      TO  HCM3G-HKNJANUM
       *
            EVALUATE    WRK-INDEX
                WHEN    1
-                   MOVE    "¤½¤ÎÂ¾¤Î¥ì¥»"      TO  HCM2W-TITLE  
+                   MOVE    "¤½¤ÎÂ¾¤Î¥ì¥»"      TO  HCM3G-TITLE  
                WHEN    2
                    MOVE    "ºß°åÁí´É¤Þ¤¿¤Ïºß°åÁí¤ò»»Äê¤·¤¿¥ì¥»"
-                                               TO  HCM2W-TITLE
+                                               TO  HCM3G-TITLE
            END-EVALUATE           
       *
            EVALUATE    WRK-SYOKBN
                WHEN    "2"
-                   MOVE    "¡ÊÊÖÌáÊ¬¡Ë"  TO  HCM2W-TITLE1
+                   MOVE    "¡ÊÊÖÌáÊ¬¡Ë"  TO  HCM3G-TITLE1
            END-EVALUATE           
       *
            EVALUATE    WRK-PARA-SYOKBN1
                WHEN    "2"
-                   MOVE    "ÆÃÊÌÎÅÍÜÈñ"  TO  HCM2W-MOJI
+                   MOVE    "ÆÃÊÌÎÅÍÜÈñ"  TO  HCM3G-MOJI
            END-EVALUATE           
       *
-           MOVE    "²ó¿ô"              TO  HCM2W-TITLE2
-      *
-           MOVE    "¿©»öÎÅÍÜ¡¦À¸³èÎÅÍÜ"
-                                       TO  HCM2W-TITLE3
-           MOVE    "¼·"                TO  HCM2W-TITLE4
-                                           HCM2W-TITLE5
+           MOVE    SYS-1005-SRYKANAME    TO  HCM3G-SRYKA
       *
            .
-       20021-HEAD-HEN-01-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    Ä¢É¼ÊÔ½¸<¸«½Ð¤·¡¦£È£Ã£Í£²£Î>½èÍý
-      *****************************************************************
-       20022-HEAD-HEN-02-SEC          SECTION.
-      *
-           INITIALIZE                      HCM2X
-      *    
-           MOVE    SYS-1001-HOSPCDN    TO  HCM2X-HOSPCD 
-      *
-           EVALUATE    WRK-INDEX
-               WHEN    1
-                   MOVE    "¤½¤ÎÂ¾¤Î¥ì¥»"      TO  HCM2X-TITLE  
-               WHEN    2
-                   MOVE    "ºß°åÁí´É¤Þ¤¿¤Ïºß°åÁí¤ò»»Äê¤·¤¿¥ì¥»"
-                                               TO  HCM2X-TITLE
-           END-EVALUATE   
-      *
-           EVALUATE    WRK-SYOKBN
-               WHEN    "2"
-                   MOVE    "¡ÊÊÖÌáÊ¬¡Ë"  TO  HCM2X-TITLE1
-           END-EVALUATE           
-      *
-           EVALUATE    WRK-PARA-SYOKBN1
-               WHEN    "2"
-                   MOVE    "ÆÃÊÌÎÅÍÜÈñ"  TO  HCM2X-MOJI
-           END-EVALUATE           
-      *
-           MOVE    "²ó¿ô"              TO  HCM2X-TITLE2 (1)
-                                           HCM2X-TITLE2 (2)
-      *
-           MOVE    "¿©»öÎÅÍÜ¡¦À¸³èÎÅÍÜ"
-                                       TO  HCM2X-TITLE3
-                                           HCM2X-TITLE4
-           MOVE    "¼·"                TO  HCM2X-TITLE5
-      *        
-           MOVE    KEY-O-HKNJANUM      TO  HCM2X-HKNJANUM
-      *
-           .
-       20022-HEAD-HEN-02-EXT.
+       20021-HEAD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -981,78 +973,39 @@
       *****************************************************************
        20023-BODY-HEN-SEC      SECTION.
       *
-      *    ¹ñÌ±·ò¹¯ÊÝ¸±
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       9
-               PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       2
-                   MOVE    SUM-KENSU   (IDX IDY)
-                                           TO  WRK-KENSUZ
-                   MOVE    WRK-KENSUZ      TO  HCM2W-KENSU (IDX IDY)
-                   MOVE    SUM-NISSU   (IDX IDY)
-                                           TO  WRK-NISSUZ
-                   MOVE    WRK-NISSUZ      TO  HCM2W-NISSU (IDX IDY) 
-                   MOVE    SUM-TOTALTEN(IDX IDY)
-                                           TO  WRK-TENSUZ
-                   MOVE    WRK-TENSUZ      TO  HCM2W-TENSU (IDX IDY)
-                   IF    ( IDY             =   2                       )
-                   AND   ( IDX             =   3   OR  4   OR  5   OR
-                                               8   OR  9               )
-                       CONTINUE
-                   ELSE                            
-                       MOVE    SUM-FTNMONEY    (IDX IDY)
-                                               TO  WRK-FTNMONEYZ
-                       MOVE    WRK-FTNMONEYZ   TO  HCM2W-ITBFTN(IDX IDY)
-                   END-IF    
-               END-PERFORM     
-               MOVE    SUM-SHOKUJIKENSU(IDX)   TO  WRK-KENSUZ
-               MOVE    WRK-KENSUZ              TO  HCM2W-SYOKENSU (IDX)
-               MOVE    SUM-SHOKUJINISSU(IDX)   TO  WRK-NISSUZ
-               MOVE    WRK-NISSUZ              TO  HCM2W-SYONISSU (IDX)
-               MOVE    SUM-SHOKUJIRYOYOHI(IDX) TO  WRK-KINGAKZ
-               MOVE    WRK-KINGAKZ             TO  HCM2W-SYOKINGAK(IDX)
-               MOVE    SUM-SHOKUJIFTN   (IDX)  TO  WRK-FTNGAKZ
-               MOVE    WRK-FTNGAKZ             TO  HCM2W-SYOFTNGAK(IDX)
-           END-PERFORM
-      *
-      *    Ï·¿ÍÊÝ·ò
            MOVE    ZERO                TO  IDZ
-           PERFORM VARYING IDX FROM    10  BY  1
-                   UNTIL   IDX >       11
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       2
                ADD     1                   TO  IDZ    
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       2
-                   MOVE    SUM-KENSU   (IDX IDY)
+                   MOVE    SUM-KENSU   (IDX3 IDX IDY)
                                            TO  WRK-KENSUZ
-                   MOVE    WRK-KENSUZ      TO  HCM2X-HKN-KENSU (IDZ IDY)
-                   MOVE    SUM-NISSU   (IDX IDY)
+                   MOVE    WRK-KENSUZ      TO  HCM3G-HKN-KENSU (IDZ IDY)
+                   MOVE    SUM-NISSU   (IDX3 IDX IDY)
                                            TO  WRK-NISSUZ 
-                   MOVE    WRK-NISSUZ      TO  HCM2X-HKN-NISSU (IDZ IDY) 
-                   MOVE    SUM-TOTALTEN(IDX IDY)
+                   MOVE    WRK-NISSUZ      TO  HCM3G-HKN-NISSU (IDZ IDY) 
+                   MOVE    SUM-TOTALTEN(IDX3 IDX IDY)
                                            TO  WRK-TENSUZ
-                   MOVE    WRK-TENSUZ      TO  HCM2X-HKN-TENSU (IDZ IDY)
-                   MOVE    SUM-FTNMONEY    (IDX IDY)
+                   MOVE    WRK-TENSUZ      TO  HCM3G-HKN-TENSU (IDZ IDY)
+                   MOVE    SUM-FTNMONEY    (IDX3 IDX IDY)
                                            TO  WRK-FTNMONEYZ
-                   MOVE    WRK-FTNMONEYZ   TO  HCM2X-HKN-ITBFTN(IDZ IDY)
+                   MOVE    WRK-FTNMONEYZ   TO  HCM3G-HKN-ITBFTN(IDZ IDY)
                END-PERFORM     
-               MOVE    SUM-SHOKUJIKENSU(IDX)
+               MOVE    SUM-SHOKUJIKENSU(IDX3 IDX)
                                            TO  WRK-KENSUZ
-               MOVE    WRK-KENSUZ          TO  HCM2X-HKN-SYOKENSU (IDZ)
-               MOVE    SUM-SHOKUJINISSU(IDX)
+               MOVE    WRK-KENSUZ          TO  HCM3G-HKN-SYOKENSU (IDZ)
+               MOVE    SUM-SHOKUJINISSU(IDX3 IDX)
                                            TO  WRK-NISSUZ
-               MOVE    WRK-NISSUZ          TO  HCM2X-HKN-SYONISSU (IDZ)
-               MOVE    SUM-SHOKUJIRYOYOHI(IDX)
+               MOVE    WRK-NISSUZ          TO  HCM3G-HKN-SYONISSU (IDZ)
+               MOVE    SUM-SHOKUJIRYOYOHI(IDX3 IDX)
                                            TO  WRK-KINGAKZ
-               MOVE    WRK-KINGAKZ         TO  HCM2X-HKN-SYOKINGAK(IDZ)
-               MOVE    SUM-SHOKUJIFTN   (IDX)
+               MOVE    WRK-KINGAKZ         TO  HCM3G-HKN-SYOKINGAK(IDZ)
+               MOVE    SUM-SHOKUJIFTN   (IDX3 IDX)
                                            TO  WRK-FTNGAKZ
-               MOVE    WRK-FTNGAKZ         TO  HCM2X-HKN-SYOFTNGAK(IDZ)
+               MOVE    WRK-FTNGAKZ         TO  HCM3G-HKN-SYOFTNGAK(IDZ)
            END-PERFORM
       *     
-      *    Ä¢É¼°õºþ½èÍý¡Ê£±ÊÇÌÜ¡Ë
-           MOVE    ZERO                TO  FLG-PRTKBN
-           PERFORM 20024-PRINT-OUT-SEC
-           MOVE    1                   TO  FLG-PRTKBN
       *    ¸øÈñÉéÃ´Ê¬ÊÔ½¸½èÍý
            MOVE    ZERO                TO  FLG-KOH-END
            MOVE    1                   TO  IDX2
@@ -1067,56 +1020,55 @@
       *****************************************************************
       *    Ä¢É¼ÊÔ½¸<¸øÈñÉéÃ´Ê¬>½èÍý
       *****************************************************************
-      *    
        200231-KOH-HENSYU-SEC         SECTION.
       *
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       2         
                    OR      FLG-KOH-END     =   1
-               IF      SUM-KOH-KOHNUM (IDX2)   =   SPACE
+               IF      SUM-KOH-KOHNUM (IDX3 IDX2)   =   SPACE
                    MOVE    1                   TO  FLG-KOH-END
                ELSE    
                    PERFORM 2002311-HKNNUM-HENSYU-SEC     
                    PERFORM VARYING IDZ FROM    1   BY  1
                            UNTIL   IDZ >       2
-                       MOVE    SUM-KOH-KENSU   (IDX2 IDZ)
+                       MOVE    SUM-KOH-KENSU   (IDX3 IDX2 IDZ)
                                            TO  WRK-KENSUZ
-                       MOVE    WRK-KENSUZ  TO  HCM2X-KOH-KENSU (IDY IDZ)
-                       MOVE    SUM-KOH-NISSU   (IDX2 IDZ)
+                       MOVE    WRK-KENSUZ  TO  HCM3G-KOH-KENSU (IDY IDZ)
+                       MOVE    SUM-KOH-NISSU   (IDX3 IDX2 IDZ)
                                            TO  WRK-NISSUZ
-                       MOVE    WRK-NISSUZ  TO  HCM2X-KOH-NISSU (IDY IDZ) 
-                       MOVE    SUM-KOH-TOTALTEN(IDX2 IDZ)
+                       MOVE    WRK-NISSUZ  TO  HCM3G-KOH-NISSU (IDY IDZ) 
+                       MOVE    SUM-KOH-TOTALTEN(IDX3 IDX2 IDZ)
                                            TO  WRK-TENSUZ
-                       MOVE    WRK-TENSUZ  TO  HCM2X-KOH-TENSU (IDY IDZ)
-                       MOVE    SUM-KOH-FTNMONEY(IDX2 IDZ)
+                       MOVE    WRK-TENSUZ  TO  HCM3G-KOH-TENSU (IDY IDZ)
+                       MOVE    SUM-KOH-FTNMONEY(IDX3 IDX2 IDZ)
                                            TO  WRK-FTNMONEYZ
                        MOVE    WRK-FTNMONEYZ
-                                           TO  HCM2X-KOH-ITBFTN(IDY IDZ)
+                                           TO  HCM3G-KOH-ITBFTN(IDY IDZ)
                    END-PERFORM     
-                   MOVE    SUM-KOH-SHOKUJIKENSU (IDX2)
+                   MOVE    SUM-KOH-SHOKUJIKENSU (IDX3 IDX2)
                                            TO  WRK-KENSUZ
-                   MOVE    WRK-KENSUZ      TO  HCM2X-KOH-SYOKENSU (IDY)
-                   MOVE    SUM-KOH-SHOKUJINISSU (IDX2)
+                   MOVE    WRK-KENSUZ      TO  HCM3G-KOH-SYOKENSU (IDY)
+                   MOVE    SUM-KOH-SHOKUJINISSU (IDX3 IDX2)
                                            TO  WRK-NISSUZ
-                   MOVE    WRK-NISSUZ      TO  HCM2X-KOH-SYONISSU (IDY)
-                   MOVE    SUM-KOH-SHOKUJIRYOYOHI (IDX2)
+                   MOVE    WRK-NISSUZ      TO  HCM3G-KOH-SYONISSU (IDY)
+                   MOVE    SUM-KOH-SHOKUJIRYOYOHI (IDX3 IDX2)
                                            TO  WRK-KINGAKZ
-                   MOVE    WRK-KINGAKZ     TO  HCM2X-KOH-SYOKINGAK(IDY)
-                   MOVE    SUM-KOH-SHOKUJIFTN    (IDX2)
+                   MOVE    WRK-KINGAKZ     TO  HCM3G-KOH-SYOKINGAK(IDY)
+                   MOVE    SUM-KOH-SHOKUJIFTN    (IDX3 IDX2)
                                            TO  WRK-FTNGAKZ
-                   MOVE    WRK-FTNGAKZ     TO  HCM2X-KOH-SYOFTNGAK(IDY)
+                   MOVE    WRK-FTNGAKZ     TO  HCM3G-KOH-SYOFTNGAK(IDY)
       *             
                    ADD     1               TO  IDX2   
                END-IF        
            END-PERFORM
       *
-           IF      SUM-KOH-KOHNUM (IDX2)   =   SPACE
+           IF      SUM-KOH-KOHNUM (IDX3 IDX2)  =   SPACE
                MOVE    1                   TO  FLG-KOH-END
            ELSE    
       *        Ä¢É¼°õºþ½èÍý¡Ê£²ÊÇ°Ê¹ß¡Ë
                PERFORM 20024-PRINT-OUT-SEC
       *        Ä¢É¼ÊÔ½¸<¸«½Ð¤·>½èÍý
-               PERFORM 20022-HEAD-HEN-02-SEC
+               PERFORM 20021-HEAD-HEN-SEC
            END-IF     
       *
            .
@@ -1130,21 +1082,21 @@
       *
            MOVE    SPACE               TO  WRK-KOHKBN
       *
-           MOVE    SUM-KOH-KOHNUM (IDX2)
+           MOVE    SUM-KOH-KOHNUM (IDX3 IDX2)
                                        TO  WRK-KOHNUM9
-           MOVE    WRK-KOHNUM9         TO  HCM2X-KOH-NUM (IDY)
+           MOVE    WRK-KOHNUM9         TO  HCM3G-KOH-NUM (IDY)
       *
       *    ÆÃÄê¼À´µ¤Î¤È¤­ 
-           IF      SUM-KOH-KOHNUM (IDX2)    =   "051"
+           IF      SUM-KOH-KOHNUM (IDX3 IDX2)  =   "051"
                MOVE    "ÆÃÄê¼À´µ"      TO   WRK-HKNNAME
            ELSE
       *        ¸øÈñÈÖ¹æ¤Þ¤È¤á¾ðÊó¤«¤é¤Î½¸·×¤«
-               IF      SUM-KOH-MEISYO  (IDX2)
+               IF      SUM-KOH-MEISYO  (IDX3 IDX2)
                                            =   SPACE
       *            ÊÝ¸±ÈÖ¹æÆÉ¹þ¤ß  
                    INITIALIZE                      HKNNUM-REC
                    MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
-                   MOVE   SUM-KOH-KOHNUM (IDX2)
+                   MOVE   SUM-KOH-KOHNUM (IDX3 IDX2)
                                                TO    HKN-HKNNUM
                    MOVE   HKNNUM-REC           TO    MCPDATA-REC
                    MOVE    "tbl_hknnum"        TO  MCP-TABLE
@@ -1161,19 +1113,8 @@
                    PERFORM UNTIL       FLG-HKNNUM      =   1
                      IF      HKN-TEKSTYMD            <=  WRK-SRYYMD
                      AND     HKN-TEKEDYMD            >=  WRK-SRYYMD
-                         IF     SUM-KOH-KOHNUM (IDX2)    =   "027"
-                             IF    ( SYS-1001-HOSPSBT
-                                                 =   HKN-PAYKBN (1:1) )
-                             AND   ( SYS-1001-ROUPAYKBN
-                                                 =   HKN-PAYKBN (2:1) )
-                                 MOVE    HKN-TANSEIDONAME
-                                                         TO  WRK-HKNNAME
-                                 MOVE    1               TO  FLG-HKNNUM   
-                             END-IF
-                         ELSE
-                             MOVE    HKN-TANSEIDONAME    TO  WRK-HKNNAME
-                             MOVE    1                   TO  FLG-HKNNUM   
-                         END-IF     
+                         MOVE    HKN-TANSEIDONAME    TO  WRK-HKNNAME
+                         MOVE    1                   TO  FLG-HKNNUM   
                      END-IF
       *
                      IF      FLG-HKNNUM           =   ZERO
@@ -1189,10 +1130,10 @@
       *
                    INSPECT WRK-HKNNAME  REPLACING   ALL "¡Ê" BY  "¡¦"
                                                     ALL "¡Ë" BY  "¡¡"  
-                   MOVE    WRK-HKNNAME         TO  HCM2X-KOH-NAME(IDY)
+                   MOVE    WRK-HKNNAME         TO  HCM3G-KOH-NAME(IDY)
                ELSE
-                   MOVE    SUM-KOH-MEISYO (IDX2)
-                                               TO  HCM2X-KOH-NAME(IDY)
+                   MOVE    SUM-KOH-MEISYO (IDX3 IDX2)
+                                               TO  HCM3G-KOH-NAME(IDY)
                END-IF
            END-IF
            . 
@@ -1222,16 +1163,9 @@
                                        TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
-           EVALUATE    FLG-PRTKBN
-               WHEN    ZERO 
-                   MOVE    WRK-PAGE            TO  HCM2W-PAGE
-                   MOVE    "HCM2WV01.red"      TO  SPRT-PRTID
-                   MOVE    HCM2W               TO  SPRT-PRTDATA
-               WHEN    1                            
-                   MOVE    WRK-PAGE            TO  HCM2X-PAGE
-                   MOVE    "HCM2XV01.red"      TO  SPRT-PRTID
-                   MOVE    HCM2X               TO  SPRT-PRTDATA
-           END-EVALUATE        
+           MOVE    WRK-PAGE            TO  HCM3G-PAGE
+           MOVE    "HCM3G.red"         TO  SPRT-PRTID
+           MOVE    HCM3G               TO  SPRT-PRTDATA
            EVALUATE    WRK-INDEX    ALSO    WRK-SYOKBN
                                             ALSO    WRK-PARA-SYOKBN1
                WHEN    1            ALSO    "1"     
@@ -1272,13 +1206,7 @@
                MOVE    "°õºþ£Ä£Â¤Ë¹¹¿·¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
                                           TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC                           
-               MOVE    SPACE               TO  WRK-ERRMSG
-               STRING  "ORCBM035 "         DELIMITED  BY  SIZE
-                       WRK-RECEERR         DELIMITED  BY  SIZE
-                       LOW-VALUE           DELIMITED  BY  SIZE
-                                           INTO    WRK-ERRMSG
-               END-STRING   
-               CALL    "cobabort"          USING   WRK-ERRMSG
+               PERFORM 500-COBABORT-SEC
            END-IF                                                              
            .
        20024-PRINT-OUT-EXT.
@@ -1315,25 +1243,30 @@
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»¡¡¡¡½èÍý
+      *    ¥¨¥é¡¼»þ½ªÎ»½èÍý
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCBM035 "         DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING   
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ½ªÎ»½èÍý
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-           CLOSE   UPD-FILE
-      *
-      *
-           IF      CNT-RECE10            =   ZERO 
-               CONTINUE
-           ELSE
-              IF      FLG-UPD        =   1
-              AND     FLG-ERR        =   ZERO 
-                   IF      CNT-UPDFILE    >   ZERO
-                       PERFORM 310-SEIKYU-UPD-SEC
-                   END-IF
-               END-IF     
-           END-IF    
-      *
-           DISPLAY "*** ORCBM035 IN  "  CNT-RECE10 
+           DISPLAY "*** ORCBM035 IN   "  CNT-RECE10 
+           DISPLAY "***          UPD  "  CNT-UPDFILE 
+           DISPLAY "***          PAGE "  CNT-PAGE 
            DISPLAY "*** ORCBM035 END ***"
       *     
       *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
@@ -1377,7 +1310,7 @@
                                                INTO    WRK-RECEERR
                        END-STRING                                
                        PERFORM 500-ERR-HENSYU-SEC
-                       MOVE    1           TO  FLG-UPDFILE
+                       PERFORM 500-COBABORT-SEC
                    END-IF
                ELSE
                    STRING "ÀÁµá´ÉÍý£Ä£Â¡¡ÆÉ¹þ¤ß¹¹¿·¥¨¥é¡¼¡¡"
@@ -1386,7 +1319,7 @@
                                                INTO    WRK-RECEERR
                    END-STRING                                
                    PERFORM 500-ERR-HENSYU-SEC
-                   MOVE    1               TO  FLG-UPDFILE
+                   PERFORM 500-COBABORT-SEC
                END-IF
            END-PERFORM  
       *
@@ -1394,7 +1327,6 @@
            .
        310-SEIKYU-UPD-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    À¾ÎñÆüËÜ¸ìÊÑ´¹½èÍý
@@ -1425,8 +1357,8 @@
            INITIALIZE                      RECE10-REC
            MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
-      *??? MOVE    WRK-CONS-SRYYM-200804
-           MOVE    200610              TO  RECE10-SRYYM
+           MOVE    WRK-CONS-SRYYM-200804
+                                       TO  RECE10-SRYYM
            MOVE    999999              TO  RECE10-XXSRYYM
            IF      WRK-PARA-HKNJANUM   NOT =   ZERO
                MOVE    WRK-PARA-HKNJANUM   TO  RECE10-XXSTHKNJANUM
@@ -1434,11 +1366,20 @@
            ELSE
                MOVE    SPACE               TO  RECE10-XXSTHKNJANUM
                MOVE    "99999999"          TO  RECE10-XXEDHKNJANUM
-           END-IF 
+           END-IF
+           IF      WRK-PARA-SYOKBN1    =   "1"
+               MOVE    "039"               TO  RECE10-HKNNUM-S
+                                               RECE10-HKNNUM
+           ELSE 
+               MOVE    "040"               TO  RECE10-HKNNUM-S
+                                               RECE10-HKNNUM
+           END-IF
       *
       *###
-           DISPLAY "SYOKBN=" WRK-SYOKBN "#" WRK-PARA-SYOKBN1
+           DISPLAY "SYOKBN=" WRK-SYOKBN " SYOKBN1=" WRK-PARA-SYOKBN1
                    " SRYYM=" RECE10-SRYYM "-" RECE10-XXSRYYM 
+                   " HKNNUM= " RECE10-HKNNUM
+                   " PATHNAME=" WRK-MCP-PATHNAME
       *###
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
@@ -1542,7 +1483,6 @@
        900-UPD-FILE-READ-EXT.
            EXIT.
       *
-      *----(03.04.01)--ADD-START---
       *****************************************************************
       *    °åÎÅµ¡´ØÊÔ½¸¾ðÊóÆÉ¤ß¹þ¤ß
       *****************************************************************
@@ -1586,7 +1526,7 @@
            MOVE    SPACE           TO  SYS-1901-REC
            INITIALIZE                  SYS-1901-REC
            MOVE    "1901"          TO  SYS-1901-KANRICD
-           MOVE    SYS-1900-PRTKBN(8)
+           MOVE    SYS-1900-PRTKBN(17)
                                    TO  SYS-1901-KBNCD
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  SYS-1901-STYUKYMD (1:6)
@@ -1617,7 +1557,7 @@
            MOVE    SPACE           TO  SYS-1902-REC
            INITIALIZE                  SYS-1902-REC
            MOVE    "1902"          TO  SYS-1902-KANRICD
-           MOVE    SYS-1900-PRTKBN(8)
+           MOVE    SYS-1900-PRTKBN(17)
                                    TO  SYS-1902-KBNCD
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  SYS-1902-STYUKYMD (1:6)
@@ -1667,8 +1607,6 @@
            .
        910-SYSKANRI-KEY10-EXT.
            EXIT.
-      *
-      *----(03.04.01)--ADD-END-----
       *
       *****************************************************************
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ¡Ê£Î£Å£Ø£Ô¡Ë

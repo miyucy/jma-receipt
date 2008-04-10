@@ -509,6 +509,8 @@ path	key3	{
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
                   AND (      HKNNUM_S    <>  '069'       ) 
+                  AND (      HKNNUM_S    <>  '039'       ) 
+                  AND (      HKNNUM_S    <>  '040'       ) 
                   AND (      HKNNUM_S    <>  '975'       ) 
                   AND (      RECESYUBETU <>  '0000'      )
                   AND (   (( SRYYM       =   :SKYYM   )
@@ -609,6 +611,8 @@ path	key8	{
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
                   AND (      HKNNUM_S    <>  '069'       ) 
+                  AND (      HKNNUM_S    <>  '039'       ) 
+                  AND (      HKNNUM_S    <>  '040'       ) 
                   AND (      HKNNUM_S    <>  '975'       ) 
                   AND (      RECESYUBETU <>  '0000'      )
                   AND (   (( SRYYM       =   :SKYYM   )
@@ -632,6 +636,8 @@ path	key9	{
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
                   AND (      HKNNUM_S    <>  '069'       ) 
+                  AND (      HKNNUM_S    <>  '039'       ) 
+                  AND (      HKNNUM_S    <>  '040'       ) 
                   AND (      HKNNUM_S    <>  '975'       ) 
                   AND (      RECESYUBETU <>  '0000'      )
                   AND (   (( SRYYM       =   :SKYYM   )
@@ -656,6 +662,8 @@ path	key10	{
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
                   AND (      HKNNUM_S    <>  '069'       ) 
+                  AND (      HKNNUM_S    <>  '039'       ) 
+                  AND (      HKNNUM_S    <>  '040'       ) 
                   AND (      HKNNUM_S    <>  '975'       ) 
                   AND (      RECESYUBETU <>  '0000'      )
                   AND (   (( SRYYM       =   :SKYYM   )
@@ -833,6 +841,8 @@ path	key18	{
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
                   AND (      HKNNUM_S    <>  '069'       ) 
+                  AND (      HKNNUM_S    <>  '039'       ) 
+                  AND (      HKNNUM_S    <>  '040'       ) 
                   AND (      HKNNUM_S    <>  '975'       ) 
                   AND (      RECESYUBETU <>  '0000'      )
                   AND (   (( SRYYM       =   :SKYYM   )
@@ -939,6 +949,8 @@ path	key23	{
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
                   AND (      HKNNUM_S    <>  '069'       ) 
+                  AND (      HKNNUM_S    <>  '039'       ) 
+                  AND (      HKNNUM_S    <>  '040'       ) 
                   AND (      HKNNUM_S    <>  '975'       ) 
                   AND (      RECESYUBETU <>  '0000'      )
                   AND (   (( SRYYM       =   :SKYYM   )
@@ -1102,6 +1114,8 @@ path	key25	{
                   AND (      HKNNUM_S    <>  '067'       ) 
                   AND (      HKNNUM_S    <>  '068'       )
                   AND (      HKNNUM_S    <>  '069'       ) 
+                  AND (      HKNNUM_S    <>  '039'       ) 
+                  AND (      HKNNUM_S    <>  '040'       ) 
                   AND (      HKNNUM_S    <>  '975'       ) 
                   AND (      RECESYUBETU <>  '0000'      )
                   AND (   (( SRYYM       =   :SKYYM   )
@@ -1171,6 +1185,8 @@ path	key27	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1198,6 +1214,8 @@ path	key28	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1225,6 +1243,8 @@ path	key29	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1252,6 +1272,8 @@ path	key30	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1279,6 +1301,8 @@ path	key31	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1305,6 +1329,8 @@ path	key32	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1576,6 +1602,8 @@ path	key44	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (   (( SRYYM       =    :SKYYM   )
                        AND ( SKYKBN      <>   '0'      )
@@ -1598,6 +1626,8 @@ path	key45	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1633,6 +1663,8 @@ path	key46	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1668,6 +1700,8 @@ path	key47	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1703,6 +1737,8 @@ path	key48	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1738,6 +1774,8 @@ path	key49	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1772,6 +1810,8 @@ path	key50	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1806,6 +1846,8 @@ path	key51	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1841,6 +1883,8 @@ path	key52	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1876,6 +1920,8 @@ path	key53	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1911,6 +1957,8 @@ path	key54	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1946,6 +1994,8 @@ path	key55	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -1980,6 +2030,8 @@ path	key56	{
                   AND (      HKNNUM_S    <>   '067'       ) 
                   AND (      HKNNUM_S    <>   '068'       )
                   AND (      HKNNUM_S    <>   '069'       ) 
+                  AND (      HKNNUM_S    <>   '039'       ) 
+                  AND (      HKNNUM_S    <>   '040'       ) 
                   AND (      HKNNUM_S    <>   '975'       ) 
                   AND (      RECESYUBETU <>   '0000'      )
                   AND (   (( SRYYM       =    :SKYYM   )
@@ -2090,3 +2142,146 @@ path	key60	{
 		;
 	};
 };
+
+path	key61	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key61_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPNUM     =   :HOSPNUM   )
+                  AND (      HKNNUM_S    =   :HKNNUM
+                        OR   HKNNUM_S    =   :HKNNUM_S   ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
+                  AND (      ZAITAKU     <>  '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    <>  '000000'       )
+                ORDER  BY  HKNJANUM_S,RECEKA   
+		;
+	};
+};
+
+path	key62	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key62_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
+                  AND (      HKNNUM_S    =   :HKNNUM
+                        OR   HKNNUM_S    =   :HKNNUM_S  ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
+                  AND (      ZAITAKU     <>  '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    =   '000000'       )
+                ORDER  BY  HKNJANUM_S,RECEKA   
+		;
+	};
+};
+
+path	key63	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key63_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
+                  AND (      HKNNUM_S    =   :HKNNUM
+                        OR   HKNNUM_S    =   :HKNNUM_S  ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
+                  AND (      ZAITAKU     =   '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    <>  '000000'       )
+                ORDER  BY  HKNJANUM_S,RECEKA   
+		;
+	};
+};
+
+path	key64	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key64_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
+                  AND (      HKNNUM_S    =   :HKNNUM
+                        OR   HKNNUM_S    =   :HKNNUM_S  ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
+                  AND (      ZAITAKU     =   '1'         )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    =   '000000'       )
+                ORDER  BY  HKNJANUM_S,RECEKA   
+		;
+	};
+};
+
+path	key65	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key65_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
+                  AND (      HKNNUM_S    =   :HKNNUM
+                        OR   HKNNUM_S    =   :HKNNUM_S  ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    <>  '000000'       )
+                ORDER  BY  HKNJANUM_S,RECEKA   
+		;
+	};
+};
+
+path	key66	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key66_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPNUM      =   :HOSPNUM   )
+                  AND (      HKNNUM_S    =   :HKNNUM
+                        OR   HKNNUM_S    =   :HKNNUM_S  ) 
+                  AND (   (( SRYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )
+                       AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =   :SKYYM   )
+                       AND ( SKYKBN      <>  '0'      )))
+                  AND (      SRYYM       >=  :SRYYM      )
+                  AND (      SRYYM       <   :XXSRYYM    )
+                  AND (      HKNJANUM_S  >=  :XXSTHKNJANUM  
+                       AND   HKNJANUM_S  <=  :XXEDHKNJANUM  ) 
+                  AND (      HENREIYM    =   '000000'       )
+                ORDER  BY  HKNJANUM_S,RECEKA   
+		;
+	};
+};
+

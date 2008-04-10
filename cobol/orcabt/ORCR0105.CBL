@@ -2255,6 +2255,8 @@
            MOVE    RECE02X-SHOKUJIFTNKBN
                                        TO  KOHSKY-SHOKUJIFTNKBN
       *
+           MOVE    RECE02X-SYUGAKUKBN  TO  KOHSKY-FLG (1)
+      *
            MOVE    KOHSKY-REC          TO  MCPDATA-REC
            MOVE    "tbl_kohsky"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -7212,6 +7214,7 @@
            END-IF
       *     
            MOVE    RECE02-AGE          TO  RECE10-AGE  
+           MOVE    RECE02-SYUGAKUKBN   TO  RECE10-FLG (1)
            IF      RECE02-ZAITAKU  =  "1"
              MOVE    RECE02-ZAITAKU    TO  RECE10-ZAITAKU
            END-IF
@@ -7297,6 +7300,9 @@
       *
            MOVE    "00000000000000000000000000000000000000000000000000"
                                        TO  RECE10-RESERVE-AREA
+      *??
+           DISPLAY "SYUGAKU=" RECE02-SYUGAKUKBN "#"  RECE10-FLG (1)
+      *???
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE

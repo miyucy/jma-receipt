@@ -403,6 +403,13 @@ FORM_files = \
               HCM52V02.red \
 	      HCM11.red \
 	      HCN09.red \
+	      HCM3A.red \
+	      HCM3B.red \
+	      HCM3C.red \
+	      HCM3D.red \
+	      HCM3E.red \
+	      HCM3F.red \
+	      HCM3G.red \
 
 all:   
 

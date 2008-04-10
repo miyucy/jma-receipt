@@ -93,6 +93,10 @@
                    07  SPA-GMN-PRTKBN22    PIC X(01).
                    07  SPA-GMN-PRTKBN31    PIC X(01).
                    07  SPA-GMN-PRTKBN32    PIC X(01).
+                   07  SPA-GMN-PRTKBN41    PIC X(01).
+                   07  SPA-GMN-PRTKBN42    PIC X(01).
+                   07  SPA-GMN-PRTKBN51    PIC X(01).
+                   07  SPA-GMN-PRTKBN52    PIC X(01).
       *                                                             
       *    フラグ領域
        01  FLG-AREA.
@@ -350,8 +354,11 @@
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-CONS-LINE-MAX
-               MOVE    IDX             TO  SPA-GMN-TCD (IDX)
-               MOVE    ALL "F"         TO  SPA-GMN-CHK (IDX)
+               MOVE    IDX             TO  SPA-GMN-TCD    (IDX)
+               MOVE    "F"             TO  SPA-GMN-CHKFLG (IDX 1)
+                                           SPA-GMN-CHKFLG (IDX 2)
+                                           SPA-GMN-CHKFLG (IDX 3)
+                                           SPA-GMN-CHKFLG (IDX 4)
            END-PERFORM
            MOVE    "T"                 TO  SPA-GMN-PRTKBN11
            MOVE    "F"                 TO  SPA-GMN-PRTKBN12             
@@ -359,6 +366,10 @@
            MOVE    "F"                 TO  SPA-GMN-PRTKBN22             
            MOVE    "T"                 TO  SPA-GMN-PRTKBN31
            MOVE    "F"                 TO  SPA-GMN-PRTKBN32             
+           MOVE    "T"                 TO  SPA-GMN-PRTKBN41
+           MOVE    "F"                 TO  SPA-GMN-PRTKBN42             
+           MOVE    "T"                 TO  SPA-GMN-PRTKBN51
+           MOVE    "F"                 TO  SPA-GMN-PRTKBN52             
       *
       *    標準総括表印刷指示
            MOVE    SPACE               TO  SYS-3003-REC 
@@ -395,6 +406,20 @@
            ELSE
                MOVE    "T"                 TO  SPA-GMN-PRTKBN31  
                MOVE    "F"                 TO  SPA-GMN-PRTKBN32
+           END-IF      
+           IF      SYS-3003-PRTKBN4    =   SPACE
+               MOVE    "T"                 TO  SPA-GMN-PRTKBN41  
+               MOVE    "F"                 TO  SPA-GMN-PRTKBN42  
+           ELSE
+               MOVE    "F"                 TO  SPA-GMN-PRTKBN41  
+               MOVE    "T"                 TO  SPA-GMN-PRTKBN42
+           END-IF      
+           IF      SYS-3003-PRTKBN5    =   SPACE
+               MOVE    "F"                 TO  SPA-GMN-PRTKBN51  
+               MOVE    "T"                 TO  SPA-GMN-PRTKBN52  
+           ELSE
+               MOVE    "T"                 TO  SPA-GMN-PRTKBN51  
+               MOVE    "F"                 TO  SPA-GMN-PRTKBN52
            END-IF      
       * 
       *    県単独情報
@@ -504,6 +529,16 @@
                    PERFORM 450-PRTKBN31-SEC
                WHEN    "CLICKED"       ALSO    "PRTKBN32"
                    PERFORM 450-PRTKBN32-SEC
+      *        広域連合印刷指示
+               WHEN    "CLICKED"       ALSO    "PRTKBN41"
+                   PERFORM 450-PRTKBN41-SEC
+               WHEN    "CLICKED"       ALSO    "PRTKBN42"
+                   PERFORM 450-PRTKBN42-SEC
+      *        レセ電広域連合印刷指示
+               WHEN    "CLICKED"       ALSO    "PRTKBN51"
+                   PERFORM 450-PRTKBN51-SEC
+               WHEN    "CLICKED"       ALSO    "PRTKBN52"
+                   PERFORM 450-PRTKBN52-SEC
       *        処理対象
                WHEN    OTHER
                    EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET(1:6)
@@ -816,12 +851,6 @@
            COMPUTE WRK-GMN-CUR        =  (IDX -   1)  *   6   +
                                           2   +   IDY
       *
-      *★★平成２０年４月改正対応
-           IF      IDY                =   4
-               GO  TO  420-CHKFLG-CHK-EXT
-           END-IF
-      *★★
-      *
            MOVE    W14-CHKBTN(IDX IDY)    TO  SPA-GMN-CHKFLG (IDX IDY)
       *
       *    入力チェック処理
@@ -977,6 +1006,62 @@
            EXIT.
       *
       *****************************************************************
+      *    標準広域連合総括表印刷指示処理
+      *****************************************************************
+       450-PRTKBN41-SEC          SECTION.
+      *
+           MOVE    W14-PRTKBN41    TO  SPA-GMN-PRTKBN41
+      *
+      *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       450-PRTKBN41-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    標準広域連合総括表印刷指示処理
+      *****************************************************************
+       450-PRTKBN42-SEC          SECTION.
+      *
+           MOVE    W14-PRTKBN42    TO  SPA-GMN-PRTKBN42
+      *
+      *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       450-PRTKBN42-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    標準レセ電広域連合総括表印刷指示処理
+      *****************************************************************
+       450-PRTKBN51-SEC          SECTION.
+      *
+           MOVE    W14-PRTKBN51    TO  SPA-GMN-PRTKBN51
+      *
+      *    入力チェック処理
+           MOVE    ZERO            TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       450-PRTKBN51-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    標準レセ電広域連合総括表印刷指示処理
+      *****************************************************************
+       450-PRTKBN52-SEC          SECTION.
+      *
+           MOVE    W14-PRTKBN52    TO  SPA-GMN-PRTKBN52
+      *
+      *    入力チェック処理
+           MOVE    ZERO            TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       450-PRTKBN52-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    確定
       *****************************************************************
        410-KAKUTEI-SEC           SECTION.
@@ -1029,6 +1114,16 @@
                MOVE    SPACE               TO  SYS-3003-PRTKBN3
            ELSE
                MOVE    "1"                 TO  SYS-3003-PRTKBN3
+           END-IF        
+           IF      SPA-GMN-PRTKBN41    =   "T"
+               MOVE    SPACE               TO  SYS-3003-PRTKBN4
+           ELSE
+               MOVE    "1"                 TO  SYS-3003-PRTKBN4
+           END-IF        
+           IF      SPA-GMN-PRTKBN52    =   "T"
+               MOVE    SPACE               TO  SYS-3003-PRTKBN5
+           ELSE
+               MOVE    "1"                 TO  SYS-3003-PRTKBN5
            END-IF        
       *
            MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
@@ -1216,7 +1311,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-           MOVE    SPACE               TO  W14
+           INITIALIZE              W14
       *
            COMPUTE IDY     =   SPA-GMN-PAGE    *   25 
            COMPUTE IDZ     =   IDY             -   24
@@ -1247,15 +1342,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-PRTKBN22     TO  W14-PRTKBN22
            MOVE    SPA-GMN-PRTKBN31     TO  W14-PRTKBN31
            MOVE    SPA-GMN-PRTKBN32     TO  W14-PRTKBN32
+           MOVE    SPA-GMN-PRTKBN41     TO  W14-PRTKBN41
+           MOVE    SPA-GMN-PRTKBN42     TO  W14-PRTKBN42
+           MOVE    SPA-GMN-PRTKBN51     TO  W14-PRTKBN51
+           MOVE    SPA-GMN-PRTKBN52     TO  W14-PRTKBN52
       *
       *★★平成２０年４月改正対応
-           MOVE    "F"                 TO  W14-PRTKBN41
-           MOVE    "T"                 TO  W14-PRTKBN42            
            MOVE    "F"                 TO  W14-PRTKBN51
-           MOVE    "T"                 TO  W14-PRTKBN52            
-           MOVE    WIDGET-INSENSITIVE  TO  W14-PRTKBN41-STATE
-                                           W14-PRTKBN42-STATE
-                                           W14-PRTKBN51-STATE
+           MOVE    "T"                 TO  W14-PRTKBN52
+           MOVE    WIDGET-INSENSITIVE  TO  W14-PRTKBN51-STATE
                                            W14-PRTKBN52-STATE
       *★★
       *
