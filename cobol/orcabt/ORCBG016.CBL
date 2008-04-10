@@ -28,9 +28,6 @@
       *  プログラム修正履歴
       *  Maj/Min/Rev 修正者        日付      内容
       *  03.05.01    NACL-森脇     07/06/06  グループ診療対応
-      *  04.03.01    NACL-森脇     08/08/29  パラメタ増加
-      *  04.05.01    NACL-森脇     08/09/18  病棟別集計対応
-      *  04.08.01    NACL-森脇     14/07/22  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -86,24 +83,23 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *    エラーファイル 名称領域 
+grpsys*DD  COPY    "CPCOMMONDAT2.INC"
+grpsys*DD                          REPLACING   //RECE01PARA//
+grpsys*DD                          BY          //RECEERR//.
+grpsys*DD  03  FILLER              PIC X(04)   VALUE   ".dat".
+      *
       *    診療行為使用患者一覧ファイル
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0161//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    診療会計ファイル
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0162//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
-      *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
-      *----(04.08.01)--ADD-END-----
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCG016.INC".
       *
@@ -134,8 +130,6 @@
            03  CNT-PAGE            PIC 9(06).
            03  CNT-SEQ             PIC 9(06).
            03  CNT-INPUT-ITEM      PIC 9(03).
-           03  CNT-KETA                PIC 9(02).
-           03  CNT-KETA2               PIC 9(02).
       *
       *    添字領域
        01  IDX-AREA.
@@ -155,71 +149,21 @@
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
-           03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *----(04.08.01)--UPD-START---
-      *     03  RECEERR             PIC X(100).
-      *----(04.08.01)--UPD-END-----
+grpsys*DD  03  WRK-PARA-HOSPID     PIC X(24).
+grpsys     03  WRK-PARA-HOSPNUM    PIC 9(02).
+grpsys     03  RECEERR             PIC X(100).
            03  WRK-PARA-SRYYM      PIC X(06).
-           03  WRK-PARA-NYUGAIKBN-G.
-               05  WRK-PARA-NYUGAIKBN
-                                   PIC X(01).
-               05  WRK-PARA-HOKATSUKBN
-                                   PIC X(01).
+           03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SRYKA      PIC X(02).
-           03  WRK-PARA-SYORIKBN   PIC X(01).
            03  WRK-PARA-SRYCD      PIC X(20)
-                                   OCCURS  7.
-      *
-      *    出力先ファイル名
-       01  WRK-TO-DATA-G.
-           03  WRK-TO-DATA.
-               05  WRK-TO-DATA-HOSPNUM PIC 9(02).
-               05  FILLER              PIC X(12)   VALUE
-                                                   "srycd_kensu_".
-               05  WRK-TO-DATA-STRYM   PIC X(06).
-               05  FILLER              PIC X(04)   VALUE   ".csv".
-      *
-      *    ヘッダー情報
-       01  CSV-HEAD-01.
-           03  FILLER              PIC X(08)   VALUE   "診療年月".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "入外区分".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "入外区分名称".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "診療行為コード".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "診療行為名称".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-SRYKA           PIC X(12)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  CSV-SRYKAMEI        PIC X(10)   VALUE   SPACE.
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "患者番号".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "患者氏名".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "カナ氏名".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "最終受診日".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "保険組合せ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(50)   VALUE
-               "1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20".
-           03  FILLER              PIC X(38)   VALUE
-               ",21,22,23,24,25,26,27,28,29,30,31,合計".
+                                   OCCURS  5.
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-BG01DAT-FILE    PIC X(1024).
            03  WRK-RECEERR         PIC X(200).
-           03  WRK-TOUKEIERR       PIC X(200).
            03  WRK-SRYYMD          PIC X(08).
-           03  WRK-SYMD.
-               05  WRK-SYY             PIC 9(04).
-               05  WRK-SMM             PIC 9(02).
-               05  WRK-SDD             PIC 9(02).
+           03  WRK-SYMD            PIC X(08).
            03  WRK-EDTYMD1         PIC X(10).
            03  WRK-EDTYMD3         PIC X(22).
            03  WRK-SRYYM-N         PIC X(22).
@@ -236,22 +180,6 @@
            03  WRK-KANACHK-G.
                05  WRK-KANACHK-INPUT   PIC X(100).
                05  WRK-KANACHK-MAX     PIC 9(05).
-           03  WRK-REC             PIC X(20000).
-
-           03  WRK-HENSURYO            PIC X(08).
-           03  WRK-SURYO               PIC ZZZZZZZ9.
-      *
-       01  WRK-HEN-YMD-OT.
-           03  WRK-HEN-YY-OT       PIC X(04).
-           03  FILLER              PIC X(01)   VALUE   "/". 
-           03  WRK-HEN-MM-OT       PIC X(02).
-           03  FILLER              PIC X(01)   VALUE   "/". 
-           03  WRK-HEN-DD-OT       PIC X(02).
-
-       01  CSV-AREA.
-           03  CSV-DAY             PIC X(03)   OCCURS  32.
-           03  CSV-SRYYM           PIC X(07).
-           03  CSV-LASTYMD         PIC X(10).
       *
        01  TOTAL-AREA.
            03  TOTAL-PTNUM         PIC 9(08).
@@ -271,7 +199,8 @@
       *
        01  TPTINF-AREA.
         02 TPTINF-MAX                      PIC 9(05).
-        02 TPTINF-CHK-HOSPNUM              PIC 9(02).
+grpsys* 02 TPTINF-CHK-HOSPID               PIC X(24).
+grpsys  02 TPTINF-CHK-HOSPNUM              PIC 9(02).
         02 TPTINF-CHK-PTID                 PIC 9(10).
         02 TPTINF-FLG                      PIC 9(01).
         02 TPTINF-IDX                      PIC 9(05).
@@ -291,9 +220,9 @@
            03  CONST-TOTAL-IDX             PIC 9(05)   VALUE 52.
            03  CONST-TPTINF-MAX            PIC 9(05)   VALUE 1000.
            03  CONST-TSRYCD-MAX            PIC 9(05)   VALUE 100.
-           03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 7.
+           03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 5.
            03  CONST-NSRYACT-MAX           PIC 9(05)   VALUE 20.
-           03  CONST-PARA-SRYCD-MAX        PIC 9(05)   VALUE 7.
+           03  CONST-PARA-SRYCD-MAX        PIC 9(05)   VALUE 5.
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -306,7 +235,6 @@
       *
            COPY    "CPSK1001.INC".
            COPY    "CPSK1005.INC".
-           COPY    "CPSK5001.INC".
       *
       *    入院診療会計マスター
        01  NYUINACCT-REC.
@@ -371,15 +299,7 @@
            COPY    "CPORCSKANACHK.INC".
       *
       *    指定診療行為件数調サブ２
-           COPY    "CPORCSS009.INC".
-      *
-      *    統計ＣＳＶ制御サブ
-           COPY    "CPORCSTOUKEICSV.INC".
-      *
-      *----(04.08.01)--ADD-START---
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
+           COPY    "CPORCHCG016S02.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -427,9 +347,6 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  TPTINF-AREA
            INITIALIZE                  TOTAL-AREA
 grpsys     INITIALIZE                  SPA-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -451,16 +368,13 @@ grpsys*DD                                      WRK-PARA-HOSPID
 grpsys                                         WRK-PARA-HOSPNUM
 grpsys                                         RECEERR
                                                WRK-PARA-SRYYM
-                                               WRK-PARA-NYUGAIKBN-G
+                                               WRK-PARA-NYUGAIKBN
                                                WRK-PARA-SRYKA
-                                               WRK-PARA-SYORIKBN
                                                WRK-PARA-SRYCD (1)
                                                WRK-PARA-SRYCD (2)
                                                WRK-PARA-SRYCD (3)
                                                WRK-PARA-SRYCD (4)
                                                WRK-PARA-SRYCD (5)
-                                               WRK-PARA-SRYCD (6)
-                                               WRK-PARA-SRYCD (7)
 grpsys     END-UNSTRING
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -492,20 +406,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0161-HOSPNUM
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  BG0162-TERMID
 grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    BG0161-BASENAME     TO  SGETTEMP-BASENAMES (1)
-           MOVE    BG0162-BASENAME     TO  SGETTEMP-BASENAMES (2)
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (3)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  BG0161-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  BG0162-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -531,13 +431,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
       *
           MOVE    SPACE                TO  WRK-KANACHK-INPUT
           MOVE    1                    TO  WRK-KANACHK-MAX
-          STRING  WRK-PARA-NYUGAIKBN-G DELIMITED   BY  SIZE
+          STRING  WRK-PARA-NYUGAIKBN   DELIMITED   BY  SIZE
           INTO    WRK-KANACHK-INPUT
           WITH    POINTER WRK-KANACHK-MAX
           END-STRING
           COMPUTE WRK-KANACHK-MAX      =   WRK-KANACHK-MAX -   1
           PERFORM 800-HANKAKU-CHK-SEC
-          MOVE    WRK-KANACHK-INPUT    TO  WRK-PARA-NYUGAIKBN-G
+          MOVE    WRK-KANACHK-INPUT    TO  WRK-PARA-NYUGAIKBN
       *
           MOVE    SPACE                TO  WRK-KANACHK-INPUT
           MOVE    1                    TO  WRK-KANACHK-MAX
@@ -574,12 +474,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
                MOVE    "2"             TO  WRK-PARA-NYUGAIKBN
            END-IF
       *
-           IF    ( WRK-PARA-HOKATSUKBN =   "1" )
-               CONTINUE
-           ELSE
-               MOVE    SPACE           TO  WRK-PARA-HOKATSUKBN
-           END-IF
-      *
       *    対象年月日編集
            MOVE    WRK-SRYYMD          TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
@@ -590,44 +484,21 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-EDTYMD3         TO  WRK-SAKYMD-N
       *
-           MOVE    SPA-HOSPNUM     TO  WRK-TO-DATA-HOSPNUM
-           MOVE    WRK-PARA-SRYYM  TO  WRK-TO-DATA-STRYM
-      *
            PERFORM 1101-TSRYCD-HEN-SEC
       *
-           IF    ( WRK-PARA-SYORIKBN   =   "1" )
-           AND   ( WRK-PARA-NYUGAIKBN  NOT =   "1" )
-               MOVE    "外来分は病棟別に集計できません"
+           IF    ( WRK-PARA-SRYKA  NOT =   SPACE )
+               INITIALIZE              SYSKANRI-REC
+               MOVE    "1005"          TO  SYS-KANRICD
+grpsys         MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+               MOVE    WRK-PARA-SRYKA  TO  SYS-KBNCD
+               MOVE    WRK-SRYYMD      TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+               IF    ( FLG-SYSKANRI    =   ZERO )
+                   CONTINUE
+               ELSE
+                   MOVE    "診療科を正しく設定してください"
                                        TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-               GO  TO  110-PARA-HENSYU-EXT
-           END-IF
-      *
-           IF    ( WRK-PARA-SYORIKBN   NOT =   "1" )
-               MOVE    "診療科コード"  TO  CSV-SRYKA
-               MOVE    "診療科名称"    TO  CSV-SRYKAMEI
-               IF   ( WRK-PARA-SRYKA  NOT =   SPACE )
-                   INITIALIZE              SYSKANRI-REC
-                   MOVE    "1005"          TO  SYS-KANRICD
-                   MOVE    WRK-PARA-SRYKA  TO  SYS-KBNCD
-                   MOVE    WRK-SRYYMD      TO  SYS-STYUKYMD
-                                               SYS-EDYUKYMD
-                   MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
-                   PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-                   IF    ( FLG-SYSKANRI    =   ZERO )
-                       CONTINUE
-                   ELSE
-                       MOVE    "診療科を正しく設定してください"
-                                           TO  WRK-RECEERR
-                       PERFORM 500-ERR-HENSYU-SEC
-                   END-IF
-               END-IF
-           ELSE
-               MOVE    "病棟番号"      TO  CSV-SRYKA
-               MOVE    "病棟名称"      TO  CSV-SRYKAMEI
-               IF    ( WRK-PARA-SRYKA  NOT =   SPACE )
-                   MOVE    "病棟別の場合は診療科を入力しないでください"
-                                           TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
            END-IF
@@ -751,13 +622,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
            MOVE    ZERO            TO  FLG-IN01
            PERFORM 900-IN01SEQ-READ-SEC
       *
-           IF      FLG-IN01    =   ZERO
-      *        ＣＳＶ出力処理
-               INITIALIZE                  WRK-REC
-               MOVE    CSV-HEAD-01     TO  WRK-REC
-               PERFORM 500-TOUKEICSV-SEC
-           END-IF
-      *
            PERFORM UNTIL ( FLG-IN01 NOT =   ZERO )
                      OR  ( FLG-END  NOT =   ZERO )
       *
@@ -812,20 +676,27 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
            PERFORM 900-SRYACT-KEY14-SEL-SEC
       *
            PERFORM UNTIL ( FLG-SRYACT  NOT =   ZERO )
+      *
                PERFORM VARYING IDX3    FROM    1   BY  1
                        UNTIL ( IDX3    >   CONST-SRYCD-MAX )
+      *
                    IF    ( SRY-SRYCD (IDX3)    NOT =   SPACE )
                        PERFORM VARYING IDX4    FROM    1   BY  1
                                UNTIL ( IDX4    >   TSRYCD-MAX )
+      *
                            IF    ( TSRYCD-SRYCD (IDX4)
                                                =   SRY-SRYCD (IDX3) )
                                PERFORM 20011-IN01-HEN-SEC
                                MOVE    TSRYCD-MAX  TO  IDX4
                            END-IF
+      *
                        END-PERFORM
                    END-IF
+      *
                END-PERFORM
+      *
                PERFORM 900-SRYACT-KEY14-FET-SEC
+      *
            END-PERFORM
       *
            MOVE    "tbl_sryact"    TO  MCP-TABLE
@@ -845,17 +716,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
                DISPLAY "SRYACCT SEL ERR !! " SRY-PTID ":" SRY-ZAINUM
                GO  TO  20011-IN01-HEN-EXT
            END-IF
-           IF    ( ACCT-ZAIKBN     =   1 ) OR
-                 ( ACCT-ZAIKBN     =   2 )
-               GO  TO  20011-IN01-HEN-EXT
-           END-IF
-      *
-           IF    ( WRK-PARA-HOKATSUKBN   = "1" )
-               IF  ( ACCT-JIHOKBN        = "1"
-                OR   ACCT-HKNCOMBI       = 9999 )
-                   GO  TO  20011-IN01-HEN-EXT
-               END-IF
-           END-IF
       *
            MOVE    SRY-PTID            TO  WRK-PTID
            PERFORM 900-PTINF-PTNUM-KEY-SEL-SEC
@@ -864,137 +724,83 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
                GO  TO  20011-IN01-HEN-EXT
            END-IF
       *
-           IF      WRK-PARA-SYORIKBN   NOT =   "1"
-               PERFORM 20011-SRYKA-SET-SEC
+           INITIALIZE                  IN01-REC
+           MOVE    IDX4                TO  IN01-KEY-CDSEQ
+           MOVE    SRY-SRYCD (IDX3)    TO  IN01-KEY-SRYCD
+           MOVE    SRY-SRYKA           TO  IN01-KEY-SRYKA
+           MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
+           MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
+           MOVE    PTINF-PTID          TO  IN01-KEY-PTID
+           PERFORM 900-IN01DYN-READ-SEC
+           IF    ( FLG-IN01            =   ZERO )
+      *
+               PERFORM 200111-IN01-ACCT-HEN-SEC
+      *
+               REWRITE                   IN01-REC
+      *
            ELSE
-               PERFORM 20011-NYUINACCT-GET-SEC
+               INITIALIZE                  IN01-REC
+               MOVE    IDX4                TO  IN01-KEY-CDSEQ
+               MOVE    SRY-SRYCD (IDX3)    TO  IN01-KEY-SRYCD
+               MOVE    SRY-SRYKA           TO  IN01-KEY-SRYKA
+               MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
+               MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
+               MOVE    PTINF-PTID          TO  IN01-KEY-PTID
+               MOVE    PTINF-NAME          TO  IN01-NAME
+               MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
+      *
+               PERFORM 200111-IN01-ACCT-HEN-SEC
+      *
+               WRITE                     IN01-REC
            END-IF
       *
            .
        20011-IN01-HEN-EXT.
            EXIT.
-      *
       *****************************************************************
-      *    入院会計取得処理
+      *    診療行為使用患者一覧診療会計情報編集処理
       *****************************************************************
-       20011-NYUINACCT-GET-SEC     SECTION.
+       200111-IN01-ACCT-HEN-SEC        SECTION.
       *
-      *     MOVE    ZERO            TO  FLG-NYUINACCT
-      *
-           PERFORM 900-NYUINACCT-KEY9-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
-               IF    ( NACCT-ZAISKBKBN =   "5" )
-                   INITIALIZE          SS009-AREA
-                   MOVE    "1"         TO      SS009-EXGAIHAKU
-                   CALL    "ORCSS009"  USING   SS009-AREA
-                                               NYUINACCT-REC
-                                               SPA-AREA
-                   IF    ( SS009-RC    =   ZERO )
-                       PERFORM 20011-BTUNUM-SET-SEC
-                   ELSE
-                       DISPLAY "ERR SS009-RC:" SS009-RC
-                   END-IF
-               END-IF
-               PERFORM 900-NYUINACCT-KEY9-FET-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-           MOVE    "key9"          TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       20011-NYUINACCT-GET-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療科別件数セット処理
-      *****************************************************************
-       20011-SRYKA-SET-SEC         SECTION.
-      *
-           INITIALIZE                  IN01-REC
-           MOVE    IDX4                TO  IN01-KEY-CDSEQ
-           MOVE    SRY-SRYCD (IDX3)    TO  IN01-KEY-SRYCD
-           MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
-           MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
-           MOVE    PTINF-PTID          TO  IN01-KEY-PTID
-           MOVE    PTINF-NAME          TO  IN01-NAME
-           MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
-           MOVE    SRY-SRYKA           TO  IN01-KEY-SRYKA
-           PERFORM 900-IN01DYN-READ-SEC
-           COMPUTE IN01-KAISU      =   IN01-KAISU
-                                   +   ACCT-ZAIKAISU
-           PERFORM VARYING IDX-DAY FROM    1   BY  1
-                   UNTIL ( IDX-DAY >   31 )
-               COMPUTE IN01-DAY (IDX-DAY)
-                   =   IN01-DAY (IDX-DAY)
-                   +   ACCT-DAY (1 IDX-DAY)
-           END-PERFORM
-           IF    ( FLG-IN01            =   ZERO )
-               REWRITE                 IN01-REC
-           ELSE
-               WRITE                   IN01-REC
-           END-IF
-      *
-           .
-       20011-SRYKA-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    病棟別件数セット処理
-      *****************************************************************
-       20011-BTUNUM-SET-SEC        SECTION.
+           COMPUTE IN01-KAISU   =  IN01-KAISU  +   ACCT-ZAIKAISU
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
-               IF    ( SS009-BRMNUM-DAY(IDX-DAY)   NOT =   SPACE )
-                   INITIALIZE                  IN01-REC
-                   MOVE    IDX4                TO  IN01-KEY-CDSEQ
-                   MOVE    SRY-SRYCD (IDX3)    TO  IN01-KEY-SRYCD
-                   MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
-                   MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
-                   MOVE    PTINF-PTID          TO  IN01-KEY-PTID
-                   MOVE    PTINF-NAME          TO  IN01-NAME
-                   MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
-                   MOVE    SS009-BRMNUM-DAY(IDX-DAY)(1:2)
-                                               TO  IN01-KEY-SRYKA
-                   PERFORM 900-IN01DYN-READ-SEC
-                   COMPUTE IN01-DAY (IDX-DAY)
-                       =   IN01-DAY (IDX-DAY)
-                       +   ACCT-DAY (1 IDX-DAY)
-                   COMPUTE IN01-KAISU
-                       =   IN01-KAISU
-                       +   ACCT-DAY (1 IDX-DAY)
-                   IF    ( FLG-IN01            =   ZERO )
-                       REWRITE                 IN01-REC
-                   ELSE
-                       WRITE                   IN01-REC
-                   END-IF
-               END-IF
+      *
+               COMPUTE    IN01-DAY (IDX-DAY)
+                   =      IN01-DAY (IDX-DAY)
+                   +      ACCT-DAY (1 IDX-DAY)
+      *
            END-PERFORM
       *
            .
-       20011-BTUNUM-SET-EXT.
+       200111-IN01-ACCT-HEN-EXT.
            EXIT.
       *****************************************************************
       *    入院診療行為取得処理
       *****************************************************************
        20012-NYUACT-GET-SEC            SECTION.
       *
+           MOVE    ZERO            TO  FLG-NYUINACCT
+      *
            PERFORM 900-NYUINACCT-KEY27-SEL-SEC
       *
            PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+      *
                IF    ( NACCT-ZAIKAISU  >   ZERO )
-                   INITIALIZE          SS009-AREA
-                   MOVE    "1"         TO      SS009-EXGAIHAKU
-                   CALL    "ORCSS009"  USING   SS009-AREA
-                                               NYUINACCT-REC
-                                               SPA-AREA
-                   IF    ( SS009-RC    =   ZERO )
+                   INITIALIZE          HCG016S02-AREA
+                   CALL    "ORCHCG016S02"  USING   HCG016S02-AREA
+                                                   NYUINACCT-REC
+grpsys                                             SPA-AREA
+                   IF    ( HCG016S02-RC    =   ZERO )
                        PERFORM  20012-NSRYACT-GET-SEC
                    ELSE
-                       DISPLAY "ERR SS009-RC:" SS009-RC
+                       DISPLAY "ERR HCG016S02-RC:" HCG016S02-RC
                    END-IF
                END-IF
+      *
                PERFORM 900-NYUINACCT-KEY27-FET-SEC
+      *
            END-PERFORM
       *
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
@@ -1010,31 +816,36 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
        20012-NSRYACT-GET-SEC           SECTION.
       *
            PERFORM VARYING IDX-NACCT   FROM    1   BY  1
-                   UNTIL ( IDX-NACCT   >   SS009-HENKYAKU-MAX )
+                   UNTIL ( IDX-NACCT   >   HCG016S02-HENKYAKU-MAX )
+      *
                PERFORM VARYING IDX-NSRY    FROM    1   BY  1
                        UNTIL ( IDX-NSRY    >   CONST-NSRYACT-MAX )
-                   IF    ( SS009-SRYCD (IDX-NACCT IDX-NSRY)
+      *
+                   IF    ( HCG016S02-SRYCD (IDX-NACCT IDX-NSRY)
                                    NOT =   SPACE )
                        PERFORM VARYING IDX4    FROM    1   BY  1
                                UNTIL ( IDX4    >   TSRYCD-MAX )
+      *
                            IF    ( TSRYCD-SRYCD (IDX4)
-                               =   SS009-SRYCD(IDX-NACCT IDX-NSRY) )
+                                       =   HCG016S02-SRYCD
+                                                  (IDX-NACCT IDX-NSRY) )
                                PERFORM 20012-IN01-HEN-SEC
                                MOVE    TSRYCD-MAX  TO  IDX4
                            END-IF
+      *
                        END-PERFORM
                    END-IF
+      *
                END-PERFORM
            END-PERFORM
       *
            .
        20012-NSRYACT-GET-EXT.
            EXIT.
-      *
       *****************************************************************
-      *    診療行為使用患者一覧診療会計情報編集処理
+      *    診療行為使用患者一覧ファイル編集処理
       *****************************************************************
-       20012-IN01-HEN-SEC          SECTION.
+       20012-IN01-HEN-SEC              SECTION.
       *
            MOVE    NACCT-PTID          TO  WRK-PTID
            PERFORM 900-PTINF-PTNUM-KEY-SEL-SEC
@@ -1043,85 +854,63 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
                GO  TO  20012-IN01-HEN-EXT
            END-IF
       *
-           IF    ( WRK-PARA-SYORIKBN   NOT =   "1" )
-               PERFORM 20012-SRYKA-SET-SEC
+           INITIALIZE                  IN01-REC
+           MOVE    IDX4                TO  IN01-KEY-CDSEQ
+           MOVE    HCG016S02-SRYCD (IDX-NACCT IDX-NSRY)
+                                       TO  IN01-KEY-SRYCD
+           MOVE    HCG016S02-SRYKA (IDX-NACCT)
+                                       TO  IN01-KEY-SRYKA
+           MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
+           MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
+           MOVE    PTINF-PTID          TO  IN01-KEY-PTID
+           PERFORM 900-IN01DYN-READ-SEC
+           IF    ( FLG-IN01            =   ZERO )
+      *
+               PERFORM 200121-IN01-ACCT-HEN-SEC
+      *
+               REWRITE                   IN01-REC
+      *
            ELSE
-               PERFORM 20012-BTUNUM-SET-SEC
+               INITIALIZE                  IN01-REC
+               MOVE    IDX4                TO  IN01-KEY-CDSEQ
+               MOVE    HCG016S02-SRYCD (IDX-NACCT IDX-NSRY)
+                                           TO  IN01-KEY-SRYCD
+               MOVE    HCG016S02-SRYKA (IDX-NACCT)
+                                           TO  IN01-KEY-SRYKA
+               MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
+               MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
+               MOVE    PTINF-PTID          TO  IN01-KEY-PTID
+               MOVE    PTINF-NAME          TO  IN01-NAME
+               MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
+      *
+               PERFORM 200121-IN01-ACCT-HEN-SEC
+      *
+               WRITE                     IN01-REC
            END-IF
       *
            .
        20012-IN01-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   入院診療科別セット処理
+      *    診療行為使用患者一覧診療会計情報編集処理
       *****************************************************************
-       20012-SRYKA-SET-SEC         SECTION.
+       200121-IN01-ACCT-HEN-SEC        SECTION.
       *
-           INITIALIZE                  IN01-REC
-           MOVE    IDX4                TO  IN01-KEY-CDSEQ
-           MOVE    SS009-SRYCD (IDX-NACCT IDX-NSRY)
-                                       TO  IN01-KEY-SRYCD
-           MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
-           MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
-           MOVE    PTINF-PTID          TO  IN01-KEY-PTID
-           MOVE    PTINF-NAME          TO  IN01-NAME
-           MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
-           MOVE    SS009-SRYKA (IDX-NACCT)
-                                       TO  IN01-KEY-SRYKA
-           PERFORM 900-IN01DYN-READ-SEC
-           COMPUTE IN01-KAISU  =   IN01-KAISU
-                               +   SS009-ZAIKAISU (IDX-NACCT)
-           PERFORM VARYING IDX-DAY FROM    1   BY  1
-                   UNTIL ( IDX-DAY >   31 )
-               COMPUTE IN01-DAY (IDX-DAY)
-                   =   IN01-DAY (IDX-DAY)
-                   +   SS009-DAY (IDX-NACCT  IDX-DAY)
-           END-PERFORM
-           IF    ( FLG-IN01            =   ZERO )
-               REWRITE                 IN01-REC
-           ELSE
-               WRITE                   IN01-REC
-           END-IF
-      *
-           .
-       20012-SRYKA-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *   入院病棟別セット処理
-      *****************************************************************
-       20012-BTUNUM-SET-SEC         SECTION.
+           COMPUTE IN01-KAISU
+                =  IN01-KAISU
+                +  HCG016S02-ZAIKAISU (IDX-NACCT)
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
-               IF    ( SS009-BRMNUM-DAY(IDX-DAY)   NOT =   SPACE )
-                   INITIALIZE                  IN01-REC
-                   MOVE    IDX4                TO  IN01-KEY-CDSEQ
-                   MOVE    SS009-SRYCD (IDX-NACCT IDX-NSRY)
-                                               TO  IN01-KEY-SRYCD
-                   MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
-                   MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
-                   MOVE    PTINF-PTID          TO  IN01-KEY-PTID
-                   MOVE    PTINF-NAME          TO  IN01-NAME
-                   MOVE    PTINF-TSTPTNUMKBN   TO  IN01-TSTPTNUMKBN
-                   MOVE    SS009-BRMNUM-DAY(IDX-DAY)(1:2)
-                                               TO  IN01-KEY-SRYKA
-                   PERFORM 900-IN01DYN-READ-SEC
-                   COMPUTE IN01-DAY (IDX-DAY)
-                       =   IN01-DAY (IDX-DAY)
-                       +   SS009-DAY (IDX-NACCT  IDX-DAY)
-                   COMPUTE IN01-KAISU
-                       =   IN01-KAISU
-                       +   SS009-DAY (IDX-NACCT  IDX-DAY)
-                   IF    ( FLG-IN01            =   ZERO )
-                       REWRITE                 IN01-REC
-                   ELSE
-                       WRITE                   IN01-REC
-                   END-IF
-               END-IF
+      *
+               COMPUTE    IN01-DAY (IDX-DAY)
+                   =      IN01-DAY (IDX-DAY)
+                   +      HCG016S02-DAY (IDX-NACCT  IDX-DAY)
+      *
            END-PERFORM
-     *
+      *
            .
-       20012-BTUNUM-SET-EXT.
+       200121-IN01-ACCT-HEN-EXT.
            EXIT.
       *****************************************************************
       *    帳票編集<ヘッダー部>処理
@@ -1135,42 +924,26 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
            MOVE    IN01-KEY-SRYKA      TO  KEY-SRYKA
            MOVE    IN01-KEY-SRYCD      TO  KEY-SRYCD
       *
-           IF      WRK-PARA-SYORIKBN   =   "1"
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    "5001"              TO  SYS-KANRICD
-               MOVE    KEY-SRYKA           TO  SYS-KBNCD
-               MOVE    WRK-SRYYMD          TO  SYS-STYUKYMD
-                                               SYS-EDYUKYMD
-grpsys         MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               MOVE    SYSKANRI-REC        TO  SYS-5001-REC
-               MOVE    SYS-5001-BTU-TANNAME    TO  HCG016-SRYKA
-           ELSE
-               INITIALIZE                  SYSKANRI-REC
-               MOVE    "1005"              TO  SYS-KANRICD
-               MOVE    KEY-SRYKA           TO  SYS-KBNCD
-               MOVE    WRK-SRYYMD          TO  SYS-STYUKYMD
-                                               SYS-EDYUKYMD
-grpsys         MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-               PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-               MOVE    SYSKANRI-REC        TO  SYS-1005-REC
-               MOVE    SYS-1005-SRYKANAME  TO  HCG016-SRYKA
-           END-IF
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "1005"              TO  SYS-KANRICD
+           MOVE    KEY-SRYKA           TO  SYS-KBNCD
+           MOVE    WRK-SRYYMD          TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-1005-REC
       *
            MOVE    TSRYCD-NAME  (IN01-KEY-CDSEQ)
                                        TO  HCG016-SRYNAME
            MOVE    WRK-SRYYM-N         TO  HCG016-SRYYM
            MOVE    WRK-SAKYMD-N        TO  HCG016-SAKYMD
       *
+           MOVE    SYS-1005-SRYKANAME  TO  HCG016-SRYKA
+      *
            IF    ( WRK-PARA-NYUGAIKBN  =   "1" )
                MOVE    "（入院）"      TO  HCG016-NYUGAIKBN
            ELSE
                MOVE    "（外来）"      TO  HCG016-NYUGAIKBN
-           END-IF
-      *
-           IF    ( WRK-PARA-HOKATSUKBN =   "1" )
-               MOVE    "（包括分を含まない）"
-                                       TO  HCG016-HOKATSUKBN
            END-IF
       *
            COMPUTE CNT-PAGE        =   CNT-PAGE        +   1
@@ -1263,7 +1036,6 @@ grpsys                                         SPA-AREA
                                        TO  HCG016-HKNCOMBI
                                                     (CNT-LINE)
       *
-           MOVE    SPACE               TO  CSV-AREA
            MOVE    ZERO                TO  TOTAL-PTNUM
            PERFORM VARYING IDX-DAY     FROM    1   BY  1
                    UNTIL ( IDX-DAY     >   31 )
@@ -1271,9 +1043,6 @@ grpsys                                         SPA-AREA
                MOVE    IN01-DAY (IDX-DAY)
                                        TO  WRK-ZZZZ
                MOVE    WRK-ZZZZ        TO  HCG016-DAY(CNT-LINE IDX-DAY)
-               MOVE    IN01-DAY (IDX-DAY)  TO WRK-SURYO
-               PERFORM 400-ZHEN-SURYO-SET-SEC
-               MOVE    WRK-HENSURYO    TO  CSV-DAY (IDX-DAY)
       *
                COMPUTE TOTAL-SRYKA-DAY (IDX-DAY)
                    =   TOTAL-SRYKA-DAY (IDX-DAY)
@@ -1286,128 +1055,9 @@ grpsys                                         SPA-AREA
       *
            MOVE    TOTAL-PTNUM         TO  WRK-ZZZZ
            MOVE    WRK-ZZZZ            TO  HCG016-DAY (CNT-LINE 32)
-           MOVE    TOTAL-PTNUM     TO  WRK-SURYO
-           PERFORM 400-ZHEN-SURYO-SET-SEC
-           MOVE    WRK-HENSURYO    TO  CSV-DAY (32)
       *
-           PERFORM 270-CSV-BODY-SET-SEC
            .
        20011-BODY-NAIYO-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    ＣＳＶ（データレコード）編集処理
-      *****************************************************************
-       270-CSV-BODY-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD(1:6)
-           MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
-           MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
-           MOVE    WRK-HEN-YMD-OT(1:7)
-                                   TO  CSV-SRYYM
-      *
-           MOVE    HCG016S01-LASTYMD
-                                   TO  WRK-SYMD
-           MOVE    WRK-SYY         TO  WRK-HEN-YY-OT
-           MOVE    WRK-SMM         TO  WRK-HEN-MM-OT
-           MOVE    WRK-SDD         TO  WRK-HEN-DD-OT
-           MOVE    WRK-HEN-YMD-OT  TO  CSV-LASTYMD
-
-           INITIALIZE                  WRK-REC
-      *
-           STRING  CSV-SRYYM           DELIMITED BY SIZE
-                   ","                 DELIMITED BY SIZE
-                   WRK-PARA-NYUGAIKBN  DELIMITED BY SIZE
-                   ","                 DELIMITED BY SIZE
-                   HCG016-NYUGAIKBN(3:2)
-                   ","                 DELIMITED BY SIZE
-                   IN01-KEY-SRYCD      DELIMITED BY SIZE
-                   ","                 DELIMITED BY SIZE
-                   HCG016-SRYNAME      DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   KEY-SRYKA           DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   HCG016-SRYKA        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   IN01-KEY-PTNUM      DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   IN01-NAME           DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   IN01-KEY-KANANAME   DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-LASTYMD         DELIMITED BY SIZE
-                   ","                 DELIMITED BY SIZE
-                   HCG016S01-HKNCOMBIMEI
-                                       DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (1)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (2)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (3)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (4)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (5)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (6)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (7)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (8)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (9)         DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (10)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (11)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (12)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (13)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (14)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (15)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (16)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (17)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (18)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (19)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (20)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (21)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (22)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (23)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (24)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (25)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (26)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (27)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (28)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (29)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (30)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (31)        DELIMITED BY SPACE
-                   ","                 DELIMITED BY SIZE
-                   CSV-DAY (32)        DELIMITED BY SPACE
-                                 INTO  WRK-REC
-           END-STRING
-           PERFORM 500-TOUKEICSV-SEC
-      *
-           .
-       270-CSV-BODY-SET-EXT.
            EXIT.
       *****************************************************************
       *    帳票編集<診療科合計行>処理
@@ -1416,13 +1066,8 @@ grpsys                                         SPA-AREA
       *
            MOVE    ZERO                TO  TOTAL-PTNUM
       *
-           IF    ( WRK-PARA-SYORIKBN   NOT =   "1" )
-               MOVE    "　診療科件数計"    TO  HCG016-HKNCOMBI
+           MOVE    "　診療科件数計"    TO  HCG016-HKNCOMBI
                                          (CONST-SRYKA-TOTAL-IDX)
-           ELSE
-               MOVE    "　　病棟件数計"    TO  HCG016-HKNCOMBI
-                                         (CONST-SRYKA-TOTAL-IDX)
-           END-IF
       *
            COMPUTE TOTAL-NINZU
                =   TOTAL-NINZU     +   CNT-SEQ
@@ -1539,26 +1184,6 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *   帳票Ｚ編集処理
-      *****************************************************************
-       400-ZHEN-SURYO-SET-SEC      SECTION.
-      *
-           MOVE    SPACE           TO  WRK-HENSURYO
-           MOVE    ZERO            TO  CNT-KETA
-           PERFORM VARYING CNT-KETA2   FROM    1   BY  1
-                   UNTIL   CNT-KETA2   >   8
-               IF      WRK-SURYO(CNT-KETA2:1)    NOT =   SPACE
-                   COMPUTE CNT-KETA    =   CNT-KETA    +   1
-                   MOVE    WRK-SURYO(CNT-KETA2:1)
-                                           TO  WRK-HENSURYO(CNT-KETA:1)
-               END-IF
-           END-PERFORM
-      *
-           .
-       400-ZHEN-SURYO-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
@@ -1592,66 +1217,6 @@ grpsys                                     SPA-AREA
       *
            .
        500-ERR-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    統計ＣＳＶ出力処理
-      *****************************************************************
-       500-TOUKEICSV-SEC           SECTION.
-      *
-           INITIALIZE                  ORCSTOUKEICSVAREA
-           MOVE    "INS"           TO  STOUKEICSV-MODE
-           MOVE    LNK-PRTKANRI-TBL-KEY
-                                   TO  STOUKEICSV-TBL-KEY
-           MOVE    LNK-PRTKANRI-RENNUM
-                                   TO  STOUKEICSV-RENNUM
-           MOVE    LNK-PRTKANRI-TBL-GROUP
-                                   TO  STOUKEICSV-TBL-GROUP
-           MOVE    LNK-PRTKANRI-SHORI-RENNUM
-                                   TO  STOUKEICSV-SHORI-RENNUM
-           MOVE    LNK-PRTKANRI-SHELLID
-                                   TO  STOUKEICSV-SHELLID
-           MOVE    WRK-PARA-SRYYM  TO  STOUKEICSV-SRYYM
-           MOVE    WRK-PARA-NYUGAIKBN
-                                   TO  STOUKEICSV-NYUGAIKBN
-           MOVE    ZERO            TO  STOUKEICSV-PTID
-           MOVE    "/var/tmp/"     TO  STOUKEICSV-TO-FOLDER
-           MOVE    WRK-TO-DATA     TO  STOUKEICSV-TO-DATA
-           MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
-           MOVE    WRK-REC         TO  STOUKEICSV-CSVDATA
-           MOVE    "指定診療行為件数調ＣＳＶ作成"
-                                   TO  STOUKEICSV-TITLE
-      *
-           CALL    "ORCSTOUKEICSV"     USING
-                                       ORCSTOUKEICSVAREA
-                                       SPA-AREA
-           IF      STOUKEICSV-RETURN   =   ZERO
-               CONTINUE
-           ELSE
-               MOVE    "統計ＣＳＶＤＢに更新できませんでした"
-                                      TO  WRK-TOUKEIERR
-               PERFORM 500-ERR-HENSYU-SEC
-               PERFORM 500-COBABORT-SEC
-           END-IF
-           .
-      *
-       500-TOUKEICSV-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    異常終了処理
-      *****************************************************************
-       500-COBABORT-SEC          SECTION.
-      *
-           MOVE    SPACE           TO  WRK-RECEERR
-           STRING  "ORCBG016 "     DELIMITED  BY  SIZE
-                   WRK-TOUKEIERR   DELIMITED  BY  SIZE
-                   LOW-VALUE       DELIMITED  BY  SIZE
-                                   INTO    WRK-RECEERR
-           END-STRING
-           CALL    "cobabort"      USING   WRK-RECEERR
-           .
-       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1927,7 +1492,7 @@ grpsys                                 TO  PTNUM-HOSPNUM
       *****************************************************************
       *    診療行為使用患者一覧ファイル検索処理
       *****************************************************************
-       900-IN01DYN-READ-SEC        SECTION.
+       900-IN01DYN-READ-SEC            SECTION.
       *
            MOVE    ZERO            TO  FLG-IN01
       *
@@ -1942,17 +1507,18 @@ grpsys                                 TO  PTNUM-HOSPNUM
       *****************************************************************
       *    診療行為使用患者一覧ファイル読込処理
       *****************************************************************
-       900-IN01SEQ-READ-SEC        SECTION.
+       900-IN01SEQ-READ-SEC            SECTION.
       *
            MOVE    ZERO            TO  FLG-LOOP-END
       *
-           PERFORM UNTIL ( FLG-IN01    NOT =   ZERO )
-                   OR  ( FLG-LOOP-END  NOT =   ZERO )
+           PERFORM UNTIL ( FLG-IN01        NOT =   ZERO )
+                     OR  ( FLG-LOOP-END    NOT =   ZERO )
       *
                READ    IN01-FILE   NEXT
                AT  END
                    MOVE    1           TO      FLG-IN01
                NOT AT END
+      *
                    MOVE    1           TO      FLG-LOOP-END
       *
                    EVALUATE    TRUE
@@ -1974,12 +1540,13 @@ grpsys                                 TO  PTNUM-HOSPNUM
       *****************************************************************
       *    診療行為検索処理(KEY14)
       *****************************************************************
-       900-SRYACT-KEY14-SEL-SEC    SECTION.
+       900-SRYACT-KEY14-SEL-SEC         SECTION.
       *
            MOVE    ZERO            TO  FLG-SRYACT
       *
            INITIALIZE                  SRYACT-REC
-           MOVE    SPA-HOSPNUM     TO  SRY-HOSPNUM
+grpsys*DD  MOVE    WRK-PARA-HOSPID TO  SRY-HOSPID
+grpsys     MOVE    SPA-HOSPNUM     TO  SRY-HOSPNUM
            MOVE    WRK-PARA-SRYYM  TO  SRY-SRYYM
            MOVE    WRK-PARA-NYUGAIKBN
                                    TO  SRY-NYUGAIKBN
@@ -1988,10 +1555,10 @@ grpsys                                 TO  PTNUM-HOSPNUM
            MOVE    "key14"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    MCPDATA-REC TO  SRYACT-REC
            ELSE
-               INITIALIZE                  SRYACT-REC
-               MOVE    1               TO  FLG-SRYACT
+               INITIALIZE              SRYACT-REC
+               MOVE    1           TO  FLG-SRYACT
            END-IF
       *
            .
@@ -2000,7 +1567,7 @@ grpsys                                 TO  PTNUM-HOSPNUM
       *****************************************************************
       *    診療行為FETCH処理(KEY14)
       *****************************************************************
-       900-SRYACT-KEY14-FET-SEC    SECTION.
+       900-SRYACT-KEY14-FET-SEC        SECTION.
       *
            MOVE    ZERO            TO  FLG-SRYACT
       *
@@ -2008,10 +1575,10 @@ grpsys                                 TO  PTNUM-HOSPNUM
            MOVE    "key14"         TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SRYACT-REC
+               MOVE    MCPDATA-REC TO  SRYACT-REC
            ELSE
-               INITIALIZE                  SRYACT-REC
-               MOVE    1               TO  FLG-SRYACT
+               INITIALIZE              SRYACT-REC
+               MOVE    1           TO  FLG-SRYACT
            END-IF
       *
            .
@@ -2043,65 +1610,21 @@ grpsys                                 TO  PTNUM-HOSPNUM
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計検索処理
+      *    入院会計検索処理(KEY27)
       *****************************************************************
-       900-NYUINACCT-KEY9-SEL-SEC  SECTION.
+       900-NYUINACCT-KEY27-SEL-SEC     SECTION.
       *
-           MOVE    ZERO            TO  FLG-NYUINACCT
-      *
+           MOVE    ZERO                TO  FLG-NYUINACCT
            INITIALIZE                  NYUINACCT-REC
-           MOVE    SPA-HOSPNUM     TO  NACCT-HOSPNUM
-           MOVE    SRY-NYUGAIKBN   TO  NACCT-NYUGAIKBN
-           MOVE    SRY-PTID        TO  NACCT-PTID
-           MOVE    SRY-SRYYM       TO  NACCT-SRYYM
-           MOVE    "5"             TO  NACCT-ZAISKBKBN
-           MOVE    NYUINACCT-REC   TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-           MOVE    "key9"          TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
-           ELSE
-               MOVE    1               TO  FLG-NYUINACCT
-               INITIALIZE                  NYUINACCT-REC
-           END-IF
       *
-           .
-       900-NYUINACCT-KEY9-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計検索処理
-      *****************************************************************
-       900-NYUINACCT-KEY9-FET-SEC  SECTION.
-      *
-           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-           MOVE    "key9"          TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
-           ELSE
-               MOVE    1               TO  FLG-NYUINACCT
-               INITIALIZE                  NYUINACCT-REC
-           END-IF
-      *
-           .
-       900-NYUINACCT-KEY9-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計検索処理
-      *****************************************************************
-       900-NYUINACCT-KEY27-SEL-SEC SECTION.
-      *
-           MOVE    ZERO            TO  FLG-NYUINACCT
-      *
-           INITIALIZE                  NYUINACCT-REC
-           MOVE    SPA-HOSPNUM     TO  NACCT-HOSPNUM
-           MOVE    WRK-PARA-SRYYM  TO  NACCT-SRYYM
-           MOVE    "1"             TO  NACCT-NYUGAIKBN
-           MOVE    "5"             TO  NACCT-ZAISKBKBN
-           MOVE    NYUINACCT-REC   TO  MCPDATA-REC
-           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-           MOVE    "key27"         TO  MCP-PATHNAME
+grpsys*DD  MOVE    WRK-PARA-HOSPID     TO  NACCT-HOSPID
+grpsys     MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
+           MOVE    WRK-PARA-SRYYM      TO  NACCT-SRYYM
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    "5"                 TO  NACCT-ZAISKBKBN
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key27"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  NYUINACCT-REC
@@ -2114,12 +1637,12 @@ grpsys                                 TO  PTNUM-HOSPNUM
        900-NYUINACCT-KEY27-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    入院会計検索処理
+      *    入院会計FETCH処理(KEY27)
       *****************************************************************
-       900-NYUINACCT-KEY27-FET-SEC  SECTION.
+       900-NYUINACCT-KEY27-FET-SEC     SECTION.
       *
-           MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-           MOVE    "key27"         TO  MCP-PATHNAME
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key27"             TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  NYUINACCT-REC
@@ -2132,20 +1655,41 @@ grpsys                                 TO  PTNUM-HOSPNUM
        900-NYUINACCT-KEY27-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ＤＢ検索処理
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC            SECTION.
       *
            MOVE    "DBSELECT"      TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "MONFUNC"           USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              MCPDATA-REC
            IF    ( MCP-RC          =   ZERO )
                PERFORM 910-DBFETCH-SEC
            END-IF
       *
            .
+      *
        910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ検索処理（FHETCHは行わない)
+      *****************************************************************
+       911-DBSELECT-SEC            SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "MONFUNC"           USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              MCPDATA-REC
+      *
+           .
+      *
+       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ読み込み処理
@@ -2153,11 +1697,15 @@ grpsys                                 TO  PTNUM-HOSPNUM
        910-DBFETCH-SEC             SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "MONFUNC"           USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              MCPDATA-REC
       *
            .
+      *
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
@@ -2166,11 +1714,15 @@ grpsys                                 TO  PTNUM-HOSPNUM
        910-DBCLOSECURSOR-SEC           SECTION.
       *
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "MONFUNC"           USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              MCPDATA-REC
       *
            .
+      *
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
@@ -2181,20 +1733,27 @@ grpsys                                 TO  PTNUM-HOSPNUM
            MOVE    "DBOPEN"        TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "MONFUNC"           USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              MCPDATA-REC.
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-      *
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "MONFUNC"           USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              MCPDATA-REC.
+
            .
        100-DBOPEN-EXT.
            EXIT.
+      *
       *****************************************************************
       *    ＤＢ　クローズ処理
       *****************************************************************
@@ -2203,17 +1762,22 @@ grpsys                                 TO  PTNUM-HOSPNUM
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "MONFUNC"           USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              MCPDATA-REC.
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-           CALL    "ORCDBMAIN"     USING   MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-      *
+grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+grpsys                                     MCPDATA-REC
+grpsys                                     SPA-AREA
+grpsys*DD  CALL    "MONFUNC"           USING
+grpsys*DD                              MCPAREA
+grpsys*DD                              MCPDATA-REC.
            .
        900-DBDISCONNECT-EXT.
            EXIT.
