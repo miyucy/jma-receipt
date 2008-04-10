@@ -206,6 +206,8 @@
       *  04.02.02    NACL-ÌçÏÆ    08/03/06  À¸ÊÝ°ìÉôÉéÃ´¶âÊÔ½¸½¤Àµ
       *  04.02.03    NACL-ÌçÏÆ    08/03/21  ´Î±ê¼£ÎÅÂÐ±þ
       *  04.02.04    NACL-ÌçÏÆ    08/03/24  Ä»¼è¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  04.02.05    NACL-ÌçÏÆ    08/04/08  ËÌ³¤Æ»Æ»Ï·ÇÑ»ß
+      *  04.02.06    NACL-ÌçÏÆ    08/04/09  £·£°ºÐÂåÆÃÎãÁ¼ÃÖ£°£µ£±¿©»ö·×»»
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -502,6 +504,8 @@
            03  WK-KOHNUM                   PIC  X(03).
       *
            03  WK-TOTORI-JIRITU            PIC  9(01).
+      *
+           03  WK-ZENKI-TOKUREI-MONEY      PIC  9(07).
       *
       *    ¸øÈñ¤Î´µ¼ÔÉéÃ´¾å¸Â¶â³Û¤ÎÂàÈòÍÑ¥¨¥ê¥¢
        01  HOKEN-MAX-AREA.
@@ -2690,7 +2694,7 @@
                       END-IF
                END-EVALUATE
              ELSE
-               IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR
+               IF (( WK-1001-PREFNUM   =  26  OR  27  OR
                                           34  OR  12  OR  19      ) AND
                    ( HKN-HKNNUM        = "141"                    ))
                OR (( WK-1001-PREFNUM   =  28                      ) AND
@@ -2718,6 +2722,9 @@
                OR (( WK-1001-PREFNUM   =  23  OR  14  OR  30      ) AND
                    ( HKN-HKNNUM        = "141"                    ) AND
                    ( LNK-SYU-SRYYMD(1:6)   >=   "200610"          ))
+               OR (( WK-1001-PREFNUM   =  01                      ) AND
+                   ( HKN-HKNNUM        = "141"                    ) AND
+                   ( LNK-SYU-SRYYMD(1:6)   <=   "200803"          ))
                  EVALUATE   FLG-SANSHOU2
                    WHEN   "1"
                       IF   HKN-HON-NYUMJGNGAK  NOT = ZERO
@@ -4494,6 +4501,7 @@
                    IF  (WK-1001-PREFNUM  =  01            )
                    AND (COMB-HKNNUM  NOT = "060" AND "067")
                    AND (COMB-KOH1HKNNUM  =  "141" OR "241")
+                   AND (LNK-SYU-SRYYMD(1:6)   <=  "200803")
                      MOVE     80100   TO   MAX-KIN-SYU-M
                      IF  FLG-KOHYONKAIME = 1
                         MOVE  44400   TO   MAX-KIN-SYU-M
@@ -4665,7 +4673,7 @@
                       END-IF
                END-EVALUATE
              ELSE
-               IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR
+               IF (( WK-1001-PREFNUM   =  26  OR  27  OR
                                           34  OR  12  OR  19      ) AND
                    ( COMB-KOH1HKNNUM   = "141"                    ))
                OR (( WK-1001-PREFNUM   =  28                      ) AND
@@ -4693,6 +4701,9 @@
                OR (( WK-1001-PREFNUM   =  23  OR  14  OR  30      ) AND
                    ( COMB-KOH1HKNNUM   = "141"                    ) AND
                    ( LNK-SYU-SRYYMD(1:6)   >=   "200610"          ))
+               OR (( WK-1001-PREFNUM   =  01                      ) AND
+                   ( COMB-KOH1HKNNUM   = "141"                    ) AND
+                   ( LNK-SYU-SRYYMD(1:6)   <=   "200803"          ))
                  EVALUATE   FLG-SANSHOU2
                    WHEN   "1"
                       MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI1-M
@@ -4857,7 +4868,7 @@
                       END-IF
                END-EVALUATE
              ELSE
-               IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR
+               IF (( WK-1001-PREFNUM   =  26  OR  27  OR
                                           34  OR  12  OR  19      ) AND
                    ( COMB-KOH2HKNNUM   = "141"                    ))
                OR (( WK-1001-PREFNUM   =  28                      ) AND
@@ -4885,6 +4896,9 @@
                OR (( WK-1001-PREFNUM   =  23  OR  14  OR  30      ) AND
                    ( COMB-KOH2HKNNUM   = "141"                    ) AND
                    ( LNK-SYU-SRYYMD(1:6)   >=   "200610"          ))
+               OR (( WK-1001-PREFNUM   =  01                      ) AND
+                   ( COMB-KOH2HKNNUM   = "141"                    ) AND
+                   ( LNK-SYU-SRYYMD(1:6)   <=   "200803"          ))
                  EVALUATE   FLG-SANSHOU2
                    WHEN   "1"
                       MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI2-M
@@ -5049,7 +5063,7 @@
                       END-IF
                END-EVALUATE
              ELSE
-               IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR
+               IF (( WK-1001-PREFNUM   =  26  OR  27  OR
                                           34  OR  12  OR  19      ) AND
                    ( COMB-KOH3HKNNUM   = "141"                    ))
                OR (( WK-1001-PREFNUM   =  28                      ) AND
@@ -5077,6 +5091,9 @@
                OR (( WK-1001-PREFNUM   =  23  OR  14  OR  30      ) AND
                    ( COMB-KOH3HKNNUM   = "141"                    ) AND
                    ( LNK-SYU-SRYYMD(1:6)   >=   "200610"          ))
+               OR (( WK-1001-PREFNUM   =  01                      ) AND
+                   ( COMB-KOH3HKNNUM   = "141"                    ) AND
+                   ( LNK-SYU-SRYYMD(1:6)   <=   "200803"          ))
                  EVALUATE   FLG-SANSHOU2
                    WHEN   "1"
                       MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI3-M
@@ -5241,7 +5258,7 @@
                       END-IF
                END-EVALUATE
              ELSE
-               IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR
+               IF (( WK-1001-PREFNUM   =  26  OR  27  OR
                                           34  OR  12  OR  19      ) AND
                    ( COMB-KOH4HKNNUM   = "141"                    ))
                OR (( WK-1001-PREFNUM   =  28                      ) AND
@@ -5269,6 +5286,9 @@
                OR (( WK-1001-PREFNUM   =  23  OR  14  OR  30      ) AND
                    ( COMB-KOH4HKNNUM   = "141"                    ) AND
                    ( LNK-SYU-SRYYMD(1:6)   >=   "200610"          ))
+               OR (( WK-1001-PREFNUM   =  01                      ) AND
+                   ( COMB-KOH4HKNNUM   = "141"                    ) AND
+                   ( LNK-SYU-SRYYMD(1:6)   <=   "200803"          ))
                  EVALUATE   FLG-SANSHOU2
                    WHEN   "1"
                       MOVE  HKN-HON-NYUMJGNCNT TO  MAX-KAI-KOHI4-M
@@ -6266,7 +6286,7 @@
       *
            IF      FLG-GENBUTU70   NOT =   ZERO
       *      £´£±Ï·¿Í
-             IF ((WK-1001-PREFNUM  =  01 OR 26 OR 27 OR 34 OR 12 ) AND
+             IF ((WK-1001-PREFNUM  =  26 OR 27 OR 34 OR 12       ) AND
                  (COMB-KOH1HKNNUM  =  "241"                      ))
              OR ((WK-1001-PREFNUM  =  10                         ) AND
                  (COMB-KOH1HKNNUM  =  "255"                      ))
@@ -6276,6 +6296,9 @@
                  (COMB-KOH1HKNNUM  =  "241"                      ))
              OR ((WK-1001-PREFNUM  =  14                         ) AND
                  (COMB-KOH1HKNNUM  =  "142"                      ))
+             OR ((WK-1001-PREFNUM  =  01                         ) AND
+                 (COMB-KOH1HKNNUM  =  "241"                      ) AND
+                 (LNK-SYU-SRYYMD(1:6)   <=   "200803"            ))
                 MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI70K
                 IF   MAX-KIN-KOHI1-M    =    72300
                    MOVE   11       TO   FLG-IRYOHI70K
@@ -6305,7 +6328,7 @@
            ELSE
       *      £´£±Ï·¿Í
              MOVE       ZERO        TO      FLG-ROJIN41
-             IF ((WK-1001-PREFNUM  =  01 OR 26 OR 27 OR 34 OR 12 ) AND
+             IF ((WK-1001-PREFNUM  =  26 OR 27 OR 34 OR 12       ) AND
                  (COMB-KOH1HKNNUM  =  "241"                      ))
              OR ((WK-1001-PREFNUM  =  10                         ) AND
                  (COMB-KOH1HKNNUM  =  "255"                      ))
@@ -6318,6 +6341,9 @@
              OR ((WK-1001-PREFNUM  =  14                         ) AND
                  (COMB-KOH1HKNNUM  =  "142"                      ) AND
                  (LNK-SYU-SRYYMD(1:6)   >=   "200610"            ))
+             OR ((WK-1001-PREFNUM  =  01                         ) AND
+                 (COMB-KOH1HKNNUM  =  "241"                      ) AND
+                 (LNK-SYU-SRYYMD(1:6)   <=   "200803"            ))
                 IF  LNK-SYU-SRYYMD(1:6)   >=   "200610"
                     CONTINUE
                 ELSE
@@ -13373,7 +13399,7 @@
                    END-IF
                END-EVALUATE
              ELSE
-               IF (( WK-1001-PREFNUM   =  01  OR  26  OR  27  OR
+               IF (( WK-1001-PREFNUM   =  26  OR  27  OR
                                           34  OR  12  OR  19      ) AND
                    ( COMB-KOHHKNNUM(KOH-IDX)  = "141"             ))
                OR (( WK-1001-PREFNUM   =  28                      ) AND
@@ -13403,6 +13429,9 @@
                OR (( WK-1001-PREFNUM   =  23  OR  14  OR  30      ) AND
                    ( COMB-KOHHKNNUM(KOH-IDX)  = "141"             ) AND
                    ( LNK-SYU-SRYYMD(1:6)   >=   "200610"          ))
+               OR (( WK-1001-PREFNUM   =  01                      ) AND
+                   ( COMB-KOHHKNNUM(KOH-IDX)  = "141"             ) AND
+                   ( LNK-SYU-SRYYMD(1:6)   <=   "200803"          ))
                  EVALUATE   FLG-SANSHOU2
                    WHEN   "1"
                         MOVE  HKN-HON-NYUKFTNRATE  TO  WK-NYUKFTNRATE
@@ -14264,9 +14293,24 @@
                  END-IF
                END-IF
                PERFORM   23072-KOHHI-HIKAKU-SEC
-               COMPUTE   ZAN-KOHI-T(KOH-IDX)  =
-                         ZAN-KOHI-T(KOH-IDX)  -
-                         LNK-SYU-KOH-COMPFTN(KOH-IDX)
+      *
+               IF  (FLG-ZENKI-TOKUREI           =   1  )
+               AND (LNK-SYU-KOH-HKNNUM(KOH-IDX) = "051")
+                  COMPUTE  WK-ZENKI-TOKUREI-MONEY
+                                   =  WK-ZENGAKU  *  0.2
+                  IF   WK-ZENKI-TOKUREI-MONEY  <  ZAN-KOHI-T(KOH-IDX)
+                    COMPUTE   ZAN-KOHI-T(KOH-IDX)  =
+                              ZAN-KOHI-T(KOH-IDX)  -
+                              WK-ZENKI-TOKUREI-MONEY
+                  ELSE
+                    MOVE      ZERO   TO   ZAN-KOHI-T(KOH-IDX)
+                  END-IF
+               ELSE
+                  COMPUTE   ZAN-KOHI-T(KOH-IDX)  =
+                            ZAN-KOHI-T(KOH-IDX)  -
+                            LNK-SYU-KOH-COMPFTN(KOH-IDX)
+               END-IF
+      *
                IF   (LNK-SYU-KOH-HKNNUM(KOH-IDX)     =  "011")
                AND  (WK-TAIHI-NYUJGNGAK(KOH-IDX) NOT =   ZERO)
                AND  (ZAN-KOHI-T(KOH-IDX)             =   ZERO)
