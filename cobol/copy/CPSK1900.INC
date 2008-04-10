@@ -55,18 +55,11 @@
       *            16:診療報酬請求書（公害）
       *            17:診療報酬請求書（広域連合）
       *            18:お薬手帳
-      *            19:レセプト電算
-      *            20:症状詳記
-      *            21:光ディスク等送付書
-      *            22:予約票
-      *            23:診療報酬請求書（労災）
-      *            24:支払証明書
-      *            25:自費内訳明細書
                05  SYS-1900-PRTKBN-TBL  OCCURS  30.
       *
                    07  SYS-1900-PRTKBN  PIC  X(02).
       *予備
-           03  SYS-1900-YOBI            PIC  X(440).
+           03                           PIC  X(440).
       *端末ＩＤ
            03  SYS-1900-TERMID          PIC  X(16).
       *オペーレータＩＤ
@@ -77,10 +70,3 @@
            03  SYS-1900-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-1900-UPHMS           PIC  X(06).
-      *主キー更新用項目
-           03  SYS-1900-UPD-KEY.
-               05  SYS-1900-UPD-HOSPNUM     PIC 9(2).
-               05  SYS-1900-UPD-KANRICD     PIC X(04).
-               05  SYS-1900-UPD-KBNCD       PIC X(08).
-               05  SYS-1900-UPD-STYUKYMD    PIC X(08).
-               05  SYS-1900-UPD-EDYUKYMD    PIC X(08).
