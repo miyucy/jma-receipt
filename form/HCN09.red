@@ -1568,13 +1568,13 @@
         <point val="14.3,3.2"/>
       </attribute>
       <attribute name="obj_bb">
-        <rectangle val="14.28,3.18;19.12,4.42"/>
+        <rectangle val="14.28,3.18;20.22,4.42"/>
       </attribute>
       <attribute name="elem_corner">
         <point val="14.3,3.2"/>
       </attribute>
       <attribute name="elem_width">
-        <real val="4.8"/>
+        <real val="5.9"/>
       </attribute>
       <attribute name="elem_height">
         <real val="1.2"/>
