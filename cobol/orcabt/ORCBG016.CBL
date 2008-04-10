@@ -310,7 +310,7 @@ grpsys     COPY    "COMMON-SPA".
       ****************************************************************
        LINKAGE                     SECTION.
        01  COMMAND-PARAM.
-           02  FILLER              PIC X(256).
+           02  FILLER              PIC X(400).
       *
       ****************************************************************
        PROCEDURE               DIVISION
