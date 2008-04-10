@@ -5001,8 +5001,15 @@
            IF    ( FLG-SYSKANRI    =   ZERO )
                IF    ( WRK-TOKNYUIN-KBN    =   "3" )
                    MOVE    SYSKANRI-REC    TO  SYS-5111-REC
-                   MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
+                   IF    ( SYS-5111-KBNCD  =   "23" OR "49" OR "51" )
+                       MOVE    SYS-5111-SRYCD
+                                           TO  WRK-SRYCD
+                       PERFORM 900-TENSU-KEY-SEL-SEC
+                       MOVE    TNS-NAME    TO  WRK-TOKNYUIN-NM
+                   ELSE
+                       MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
                                            TO  WRK-TOKNYUIN-NM
+                   END-IF
                    MOVE    SYS-5111-KBNCD
                                            TO  WRK-TOKNYUIN-CD
                    MOVE    SYS-5111-BRM-NYUINRYOKBN
