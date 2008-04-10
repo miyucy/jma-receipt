@@ -207,6 +207,7 @@
       *  04.02.03    NACL-ÌçÏÆ    08/03/21  ´Î±ê¼£ÎÅÂÐ±þ
       *  04.02.04    NACL-ÌçÏÆ    08/03/24  Ä»¼è¸©ÃÏÊý¸øÈñÂÐ±þ
       *  04.02.05    NACL-ÌçÏÆ    08/04/08  ËÌ³¤Æ»Æ»Ï·ÇÑ»ß
+      *  04.02.06    NACL-ÌçÏÆ    08/04/09  £·£°ºÐÂåÆÃÎãÁ¼ÃÖ£°£µ£±¿©»ö·×»»
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -503,6 +504,8 @@
            03  WK-KOHNUM                   PIC  X(03).
       *
            03  WK-TOTORI-JIRITU            PIC  9(01).
+      *
+           03  WK-ZENKI-TOKUREI-MONEY      PIC  9(07).
       *
       *    ¸øÈñ¤Î´µ¼ÔÉéÃ´¾å¸Â¶â³Û¤ÎÂàÈòÍÑ¥¨¥ê¥¢
        01  HOKEN-MAX-AREA.
@@ -14290,9 +14293,24 @@
                  END-IF
                END-IF
                PERFORM   23072-KOHHI-HIKAKU-SEC
-               COMPUTE   ZAN-KOHI-T(KOH-IDX)  =
-                         ZAN-KOHI-T(KOH-IDX)  -
-                         LNK-SYU-KOH-COMPFTN(KOH-IDX)
+      *
+               IF  (FLG-ZENKI-TOKUREI           =   1  )
+               AND (LNK-SYU-KOH-HKNNUM(KOH-IDX) = "051")
+                  COMPUTE  WK-ZENKI-TOKUREI-MONEY
+                                   =  WK-ZENGAKU  *  0.2
+                  IF   WK-ZENKI-TOKUREI-MONEY  <  ZAN-KOHI-T(KOH-IDX)
+                    COMPUTE   ZAN-KOHI-T(KOH-IDX)  =
+                              ZAN-KOHI-T(KOH-IDX)  -
+                              WK-ZENKI-TOKUREI-MONEY
+                  ELSE
+                    MOVE      ZERO   TO   ZAN-KOHI-T(KOH-IDX)
+                  END-IF
+               ELSE
+                  COMPUTE   ZAN-KOHI-T(KOH-IDX)  =
+                            ZAN-KOHI-T(KOH-IDX)  -
+                            LNK-SYU-KOH-COMPFTN(KOH-IDX)
+               END-IF
+      *
                IF   (LNK-SYU-KOH-HKNNUM(KOH-IDX)     =  "011")
                AND  (WK-TAIHI-NYUJGNGAK(KOH-IDX) NOT =   ZERO)
                AND  (ZAN-KOHI-T(KOH-IDX)             =   ZERO)
