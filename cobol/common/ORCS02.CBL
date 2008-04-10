@@ -14296,6 +14296,7 @@
       *
                IF  (FLG-ZENKI-TOKUREI           =   1  )
                AND (LNK-SYU-KOH-HKNNUM(KOH-IDX) = "051")
+               AND (WK-DOTANDOKU(KOH-IDX)       =  ZERO)
                   COMPUTE  WK-ZENKI-TOKUREI-MONEY
                                    =  WK-ZENGAKU  *  0.2
                   IF   WK-ZENKI-TOKUREI-MONEY  <  ZAN-KOHI-T(KOH-IDX)
