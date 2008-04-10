@@ -730,6 +730,10 @@
                05  TBL-KEISAN-FLG                      PIC 9(01).
                05  TBL-KEISAN-ENTANI                   PIC 9(07)V9(01).
       *
+       01  TBL-DOTANDOKU.
+           03  TBL-DOTANDOKU-OCC                       OCCURS  4.
+               05  TBL-DOTANDOKU-FLG                   PIC 9(01).
+      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-IN                                  PIC X(01).
@@ -1733,6 +1737,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
              END-IF
            END-IF
       *
+           PERFORM     2119-TOKUTEISIKKAN-CHECK-SEC
            PERFORM    VARYING    IDX    FROM   1   BY   1
                       UNTIL     (IDX      >   20)  OR
                                 (RECE02-SRYKA(IDX)   =   SPACE)
@@ -2397,6 +2402,31 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
       *
            .
        2102-KOREISYA-CHECK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÆÃÄê¼À´µ£°£µ£±¥Á¥§¥Ã¥¯
+      *****************************************************************
+       2119-TOKUTEISIKKAN-CHECK-SEC               SECTION.
+      *
+           INITIALIZE                TBL-DOTANDOKU
+      *
+           IF   ( SYS-1001-PREFNUM    =   01      )
+           AND  ( RECE02-SRYYM       >=  "200510" )
+             PERFORM   VARYING  IDY2    FROM    1   BY  1
+                        UNTIL   IDY2      >     4
+               IF  ( RECE02-KOHNUM(IDY2) =  "051"         )
+               AND ((RECE02-KOHJKYSNUM(IDY2)(1:2) >= "91"
+                                              AND <= "95") OR
+                    (RECE02-KOHJKYSNUM(IDY2)(1:2) >= "71"
+                                              AND <= "88"))
+                   MOVE    1     TO    TBL-DOTANDOKU-FLG(IDY2)
+               END-IF
+             END-PERFORM
+           END-IF
+      *
+           .
+       2119-TOKUTEISIKKAN-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6860,8 +6890,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                   WHEN       "052"
                   WHEN       "025"
                   WHEN       "038"
-                    IF  (FLG-ZENKI-TOKUREI          =   1           )
-                    AND (RECE02-KOHNUM(KH-IDX - 1)  = "051" OR "038")
+                    IF  ((FLG-ZENKI-TOKUREI             =   1  ) AND
+                         (RECE02-KOHNUM(KH-IDX - 1)     = "051") AND
+                         (TBL-DOTANDOKU-FLG(KH-IDX - 1) = ZERO ))
+                    OR  ((FLG-ZENKI-TOKUREI             =   1  ) AND
+                         (RECE02-KOHNUM(KH-IDX - 1)     = "038"))
                       COMPUTE  WRK-TAIHI-GENKIN2 = SYU-TOTAL-HKNTEN
                                                  * 10
                                                  * 20
@@ -7264,6 +7297,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
              ELSE
                 MOVE     ZERO    TO    FTN-KOH-XXX
              END-IF
+           END-IF
+      *
+      *    £·£°ºÐÂåÁ°È¾·Ú¸ºÆÃÎãÁ¼ÃÖÂÐ±þ
+           IF  ((FLG-ZENKI-TOKUREI     =   1  ) AND
+                (RECE02-KOHNUM(1)      = "051") AND
+                (TBL-DOTANDOKU-FLG(1)  = ZERO ))
+           OR  ((FLG-ZENKI-TOKUREI     =   1  ) AND
+                (RECE02-KOHNUM(1)      = "038"))
+              PERFORM  21093-ZENKI-TOKUREI-OKIKAE-SEC
            END-IF
       *
       *    ¸ºÌÈ¸øÈñÂÐ±þ
@@ -7956,6 +7998,107 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        21092-GENGAKU-OKIKAE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £·£°ºÐÂåÁ°È¾·Ú¸ºÆÃÎãÁ¼ÃÖÂÐ±þ
+      *****************************************************************
+       21093-ZENKI-TOKUREI-OKIKAE-SEC               SECTION.
+      *
+           MOVE    12000          TO   WRK-KOH-GENDOGAKU
+           IF  RECE02-TEISYOTOKU  NOT =  SPACE
+                  MOVE    8000    TO   WRK-KOH-GENDOGAKU
+           END-IF
+           IF   ( RECE02-KOHNUM(2)  =   "972" )
+           OR   ( RECE02-KOHNUM(3)  =   "972" )
+           OR   ( RECE02-KOHNUM(4)  =   "972" )
+              IF   WRK-KOH-GENDOGAKU  >  10000
+                  MOVE   10000    TO   WRK-KOH-GENDOGAKU
+              END-IF
+           END-IF
+      *
+      *    ¸øÈñ¾å¸Â
+           MOVE      ZERO           TO   WRK-JYOGEN-KOH
+                                         WRK-JIRITU-TAFTNRUIKEI
+      *
+           INITIALIZE                    LNK-ORCSJGNGET-REC
+           MOVE   RECE02-HOSPNUM    TO   LNK-ORCSJGNGET-HOSPNUM
+           MOVE   RECE02-NYUGAIKBN  TO   LNK-ORCSJGNGET-NYUGAIKBN
+           MOVE   RECE02-PTID       TO   LNK-ORCSJGNGET-PTID
+           MOVE   RECE02-KOHNUM(1)  TO   LNK-ORCSJGNGET-KOHHKNNUM
+           MOVE   RECE02-KOHID(1)   TO   LNK-ORCSJGNGET-KOHID
+           MOVE   RECE02-SRYYM      TO   LNK-ORCSJGNGET-SRYYM
+           CALL    "ORCSJGNGET"     USING
+                                    LNK-ORCSJGNGET-REC
+                                    SPA-AREA
+           IF     LNK-ORCSJGNGET-RC   =   ZERO
+             MOVE LNK-ORCSJGNGET-GAIJGNGAK   TO WRK-JYOGEN-KOH
+             MOVE LNK-ORCSJGNGET-TAFTNRUIKEI TO WRK-JIRITU-TAFTNRUIKEI
+           END-IF
+      ****
+           IF    WK-GENGAKUKBN    NOT =  ZERO
+             IF  WRK-JYOGEN-KOH   NOT =  ZERO
+                 EVALUATE   WK-GENGAKUKBN
+                   WHEN        1
+                     IF  WK-GENGAKU-RITU = 100
+                         MOVE   ZERO     TO   WRK-JYOGEN-KOH
+                     ELSE
+                         COMPUTE  WK-GENGAKU-RITUX =
+                                  100 - WK-GENGAKU-RITU
+                         COMPUTE  WRK-JYOGEN-KOH      =
+                                  WRK-JYOGEN-KOH      *
+                                  WK-GENGAKU-RITUX    /
+                                  100
+                     END-IF
+                   WHEN        2
+                     CONTINUE
+                   WHEN        3
+                   WHEN        4
+                         MOVE   ZERO     TO   WRK-JYOGEN-KOH
+                 END-EVALUATE
+                 COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH +  5
+                 COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH / 10
+                 COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH * 10
+             END-IF
+           END-IF
+      ****
+           IF  WRK-JYOGEN-KOH  >  WRK-KOH-GENDOGAKU
+                MOVE   WRK-KOH-GENDOGAKU   TO   WRK-JYOGEN-KOH
+           END-IF
+      *
+           IF  RECE02-KOHNUM(1) = "038"
+                IF  WRK-JIRITU-TAFTNRUIKEI  <  WRK-JYOGEN-KOH
+                    COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
+                                            - WRK-JIRITU-TAFTNRUIKEI
+                ELSE
+                    MOVE     ZERO          TO   WRK-JYOGEN-KOH
+                END-IF
+           END-IF
+      *
+      *    ¸øÈñ¤ÎÉéÃ´·×»»
+           IF   WRK-JYOGEN-KOH   =    ZERO
+             MOVE    ZERO     TO    WRK-FTNKEI-KOH
+           ELSE
+             IF  RECE02-ZAITAKU   =   "1"
+               IF     WRK-JYOGEN-KOH     <    WRK-TAIHI-GENKIN
+                      MOVE  WRK-JYOGEN-KOH      TO  WRK-FTNKEI-KOH
+               ELSE
+                      MOVE  WRK-TAIHI-GENKIN    TO  WRK-FTNKEI-KOH
+               END-IF
+             ELSE
+               IF     WRK-JYOGEN-KOH     <    WRK-TAIHI-GENKIN-EN
+                      MOVE  WRK-JYOGEN-KOH      TO  WRK-FTNKEI-KOH
+               ELSE
+                      MOVE  WRK-TAIHI-GENKIN-EN TO  WRK-FTNKEI-KOH
+               END-IF
+             END-IF
+           END-IF
+      *
+           MOVE    WRK-FTNKEI-KOH    TO   RECE02-FTNMONEY(2)
+                                          RECE02-FTNMONEY-KOJ(2)
+      *
+           .
+       21093-ZENKI-TOKUREI-OKIKAE-EXT.
            EXIT.
       *
       *****************************************************************
