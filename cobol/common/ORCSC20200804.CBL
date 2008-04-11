@@ -483,22 +483,23 @@
                    IF      (IDX-Z          >   1   ) AND
                            (WRK-COM-INPUTCD(IDX-Z - 1)(1:1)
                                                =   "6"  )
-      *                ∏Â»Ø∞ÂÃÙ… ∂Ë ¨»ΩƒÍ
+      **               ∏Â»Ø∞ÂÃÙ… ∂Ë ¨»ΩƒÍ
       *!               IF      WRK-COM-KOUHATUKBN (IDX-Z - 1) =   "1"
       *                    MOVE    "2065"          TO  WRK-ERRCD
       *                    MOVE    "1"             TO  WRK-COM-CUR
       *                                                      (IDX-Z)
       *!               END-IF
       *                •ﬁ•π•øππø∑∏Â
-                       IF      SPA-DBUPDKBN        =   1
+      *                IF      SPA-DBUPDKBN        =   1
       *                ∏Â»Ø∞ÂÃÙ… ∂Ë ¨»ΩƒÍ
-                           IF      WRK-COM-KOUHATUKBN (IDX-Z - 1)
-                                                       =   ZERO
-                               MOVE    "2066"          TO  WRK-ERRCD
-                               MOVE    "1"             TO  WRK-COM-CUR
-                                                             (IDX-Z)
-                           END-IF
-                       END-IF
+      *                    IF      WRK-COM-KOUHATUKBN (IDX-Z - 1)
+      *                                                =   ZERO
+      *                        MOVE    "2066"          TO  WRK-ERRCD
+      *                        MOVE    "1"             TO  WRK-COM-CUR
+      *                                                      (IDX-Z)
+      *                    END-IF
+      *****            END-IF
+                       CONTINUE
                    ELSE
                        MOVE    "2064"          TO  WRK-ERRCD
                        MOVE    "1"             TO  WRK-COM-CUR
