@@ -6068,7 +6068,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
       *
            MOVE    SPACE          TO  WRK-HENSYU
       *              
-           IF      WRK-DATA       =   SPACE
+           IF      WRK-HENKAN     =   SPACE
                CONTINUE
            ELSE    
                PERFORM VARYING IDX FROM    WRK-LENGTH  BY  -1

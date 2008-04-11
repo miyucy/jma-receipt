@@ -46,6 +46,7 @@
       *  04.02.01    NACL-Æ£¸¶    08/03/25  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *                                     ¹­°èÏ¢¹çÂÐ±þ
       *                                     ¿ÇÎÅ¶èÊ¬£¶£´¤ò£¶£°¤ËÊÑ¹¹
+      *  04.02.02    NACL-Æ£¸¶    08/04/10  ¥ì¥»ÅÅÍÑÆþ±¡ÎÁ²Ã»»¥Õ¥é¥°ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -389,6 +390,7 @@
            MOVE    RECE64-KNSJISGRPKBN TO  RECE641-KNSJISGRPKBN
            MOVE    RECE64-KNSJISKBN    TO  RECE641-KNSJISKBN
            MOVE    RECE64-DAY-AREA     TO  RECE641-DAY-AREA
+           MOVE    RECE641-NYUKSNFLG   TO  RECE641-NYUKSNFLG
       *
            WRITE   RECE641-REC
            ADD     1                   TO  CNT-OUT
@@ -571,12 +573,8 @@
                        OR  (   RECE64-RECESYUBETU  =   ZERO   OR 
                                                        8888   OR 
                                                        6666        )
-      ****             OR  ( RECE64-SRYKBN         >=  "90"   AND 
-      ****                                         <   "99"        )
                        OR  ( RECE64-SRYKBN         >=  "95"   AND 
                                                    <   "99"        )
-      ****             OR  ( ( RECE64-SRYKBN = "90" OR "92" )  AND 
-      ****                   ( RECE64-ZAITEN  NOT =  ZERO   )      )
                                CONTINUE
                        ELSE
                            MOVE    1           TO  FLG-READ

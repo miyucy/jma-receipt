@@ -204,6 +204,8 @@
       *  04.02.06    NACL-門脇    08/03/19  生保の７９併用時の対応
       *  04.02.05    NACL-藤原    08/03/25  再診（夜間・早朝等）加算の追加
       *                                     広域連合対応
+      *  04.02.06    NACL-藤原    08/04/10  平成２０年４月改正に伴う記録
+      *                                     条件仕様の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2316,8 +2318,24 @@
            ELSE
                MOVE    RECE62-RECEKA       TO  WRK-DATA
            END-IF
-           MOVE    1                   TO  WRK-END 
            MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    検索番号
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    記録条件仕様年月情報
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    請求情報
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    予備
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    予備
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    予備
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    予備
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    予備
+           MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC         
       *
            MOVE    1                   TO  FLG-TOTALTEN
@@ -2369,11 +2387,11 @@
            PERFORM 5004-MOJI-HENSYU-SEC
       *    記号
            MOVE    RECE62-KIGO           TO  WRK-DATA
-           MOVE    40                    TO  WRK-NAGASA
+           MOVE    38                    TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    番号
            MOVE    RECE62-NUM            TO  WRK-DATA
-           MOVE    40                    TO  WRK-NAGASA
+           MOVE    38                    TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    診療実日数     
            MOVE    RECE62-JNISSU(IDX1)   TO  WRK-NUM
@@ -2383,7 +2401,7 @@
            MOVE    RECE62-TOTALTEN(IDX1) TO  WRK-NUM
            MOVE    8                     TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    薬剤一部負担金
+      *    予備
            MOVE    ZERO                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    食事療養費（日数）
@@ -2654,21 +2672,13 @@
                    UNTIL   IDY >       3
                    OR      RECE62-KOHNUM (IDY) =   SPACE
                COMPUTE IDX     =   IDY     +   1
-      *********IF    ( SYS-1001-PREFNUM            =   "14"    )
-      *********AND   ( RECE62-KOHNUM (IDY) (1:1)   >=  "1" AND 
-      *********                                    <=  "8"     )
-      *********AND   ( RECE62-KOHFTNJANUM (IDY)    =   SPACE   )
-      *********AND   ( RECE62-KOHJKYSNUM  (IDY)    =   SPACE   )
-      *********    CONTINUE
-      *********ELSE 
-      *            レセプト特記事項編集情報
-                   IF      RECE62-2006-RECEDEN-KORECKBN (IDY)
-                                                   =   "1"
-                       CONTINUE
-                   ELSE 
-                       PERFORM 20051-KOH-HENSYU-SEC
-                   END-IF
-      *********END-IF
+      *        レセプト特記事項編集情報
+               IF      RECE62-2006-RECEDEN-KORECKBN (IDY)
+                                               =   "1"
+                   CONTINUE
+               ELSE 
+                   PERFORM 20051-KOH-HENSYU-SEC
+               END-IF
            END-PERFORM                      
            .
        2005-HENSYU-EXT.
@@ -2749,8 +2759,14 @@
                                            TO  KANACHK-MAE-INPUT
                    CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                    IF      KANACHK-SYUBETU =   "1"
-                       MOVE    RECE62-KOHJKYSNUM  (IDY)
+                       INITIALIZE                   ORCSNUMAREA
+                       MOVE    RECE62-KOHJKYSNUM  (IDY) (1:KANACHK-MAX)
+                                                TO  SNUM-INX
+                       CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                       IF      SNUM-RC          =   ZERO
+                           MOVE   SNUM-OUTEDT (9:7)
                                                TO  WRK-DATA
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -2766,8 +2782,15 @@
                                            TO  KANACHK-MAE-INPUT
                    CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                    IF      KANACHK-SYUBETU =   "1"
+                       INITIALIZE                   ORCSNUMAREA
                        MOVE    RECE62-2006-RECEDEN-JKYSNUM (IDY)
+                                                    (1:KANACHK-MAX)
+                                                TO  SNUM-INX
+                       CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                       IF      SNUM-RC          =   ZERO
+                           MOVE   SNUM-OUTEDT (9:7)
                                                TO  WRK-DATA
+                       END-IF
                    END-IF
            END-EVALUATE
            MOVE    7                   TO  WRK-NAGASA
@@ -2844,7 +2867,7 @@
                MOVE    6                       TO  WRK-NAGASA
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
-      *    薬剤一部負担金
+      *    予備
            PERFORM 5005-NUM-HENSYU-SEC
       *    食事療養費（日数）
            MOVE    RECE62-SHOKUJINISSU(IDX)
@@ -2935,12 +2958,6 @@
       *     
            IF      RECE631-BYOMEIHENFLG =   "1"
       *        編集病名のとき未傷病名コードにする
-      *********IF      RECE631-SYUBYOFLG-X          =   "1" 
-      *********AND     SYS-2005-SYUBYOHENFLG    NOT =   ZERO
-      *********    MOVE    "0000998"            TO  WRK-BYOMEICD
-      *********ELSE
-      *********    MOVE    "0000999"            TO  WRK-BYOMEICD
-      *********END-IF
                MOVE    "0000999"           TO  WRK-BYOMEICD
            ELSE    
                MOVE    ZERO                TO  IDY
@@ -2960,15 +2977,6 @@
                            IF      BYO-HAISIYMD    NOT =   SPACE
                                IF      BYO-HAISIYMD    <
                                                        RECE631-SRYYMD
-      *****************************IF      RECE631-SYUBYOFLG-X  =   "1" 
-      *****************************AND     SYS-2005-SYUBYOHENFLG
-      *****************************                         NOT =   ZERO
-      *****************************    MOVE    "0000998"
-      *****************************                    TO  WRK-BYOMEICD
-      *****************************ELSE
-      *****************************    MOVE    "0000999"
-      *****************************                    TO  WRK-BYOMEICD
-      *****************************END-IF
                                    MOVE    "0000999"   TO  WRK-BYOMEICD
                                ELSE
                                    MOVE    RECE631-BYOMEICD(IDX)
@@ -3040,6 +3048,8 @@
                MOVE    "01"                TO  WRK-DATA
            END-IF 
            MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    補足コメント
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC  
       *
@@ -3107,23 +3117,6 @@
                MOVE    RECE641-REC         TO  WRK-RECE641-REC  
                PERFORM 20070-FTNKBN-HENSYU-SEC
       *
-      *****    外来迅速検体検査加算がある場合の検査の編集
-      *****    IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
-      *****    AND   ( RECE641-SRYKBN      >   "60"     )
-      *****    AND   ( TBL-KASAN-RECE64-MAX
-      *****                                >   0        )
-      *****        MOVE    RECE641-REC         TO  WRK-TAIHI-RECE641-REC
-      *****        MOVE    WRK-FTNKBN          TO  WRK-TAIHI-FTNKBN
-      *
-      *****        PERFORM 20078-KENSA-HENSYU-SEC
-      *
-      *****        MOVE    WRK-TAIHI-RECE641-REC
-      *****                                    TO  RECE641-REC
-      *****        MOVE    WRK-TAIHI-FTNKBN    TO  WRK-FTNKBN
-      *
-      *****        INITIALIZE                  TBL-KASAN-RECE64-AREA
-      *****                                    TBL-KENTAI-RECE64-AREA
-      *****    END-IF
       *
       *        検査に判断料がある場合の検査の編集
                IF    ( RECE641-SRYKBN      >   "60"     )
@@ -3152,15 +3145,6 @@
                END-IF     
            END-PERFORM
       *
-      *****外来迅速検体検査加算がある場合の検査の編集
-      *****IF    ( RECE62-KENTAIKASANFLG   =   "1"  )
-      *****AND   ( TBL-KASAN-RECE64-MAX
-      *****                            >   0        )
-      *****    PERFORM 20078-KENSA-HENSYU-SEC
-      *
-      *****    INITIALIZE                  TBL-KASAN-RECE64-AREA
-      *****                                TBL-KENTAI-RECE64-AREA
-      *****END-IF
       *
       *    検査に判断料がある場合の検査の編集
            IF     ( TBL-KENSA-RECE64-MAX
@@ -3510,7 +3494,6 @@
                                            FLG-KOKUJISKBKBN1
                                            FLG-GAITENTTLKBN
                                            FLG-SRYSYUKBN721
-      *************************************FLG-SRYSYUKBN700
                                            FLG-SRYKBN70-TEIGEN
                                            FLG-KENSA-KASAN
                                            FLG-KENSA-TEIGEN
@@ -3571,7 +3554,7 @@
                          OR      ( RECE65-SRYCD(IDX) =   SPACE )
                          OR      ( FLG-END           =   1     )
       *
-      *         入院料はコメントのみ対象とする
+      *         入院料はコメントかレセ電用入院料加算フラグ対象のみ対象とする
                 IF    ( RECE641-SRYKBN               >=  "90"      )
                 AND   ( RECE65-SRYCD (IDX) (1:1) NOT =   "8"   AND
                         RECE65-SRYCD (IDX) (1:3) NOT =   "008"     )
@@ -3928,106 +3911,6 @@
            EXIT.
       *
       *****************************************************************
-      *    外来迅速検体検査加算がある場合の検査退避処理
-      *****************************************************************
-       20012-KENSA-TAIHI-SEC           SECTION.
-      *
-           IF      RECE65-SRYCD (IDX) (1:1)  =   "1"
-               IF      RECE641-KNSJISGRPKBN    =   99
-                   IF      RECE65-SRYCD (IDX)      =   WRK-CONS-SRYCD
-                       MOVE    1               TO  TBL-KASAN-RECE65-MAX
-                   ELSE
-                       IF      TBL-KASAN-RECE65-MAX
-                                               =   ZERO
-                           MOVE    1           TO  TBL-KASAN-RECE65-MAX
-                       END-IF
-                       ADD     1               TO  TBL-KASAN-RECE65-MAX
-                   END-IF
-                   MOVE    RECE65-SRYACTINF (IDX)
-                                       TO  TBL-KASAN-RECE65-SRYACTINF
-                           (TBL-KASAN-RECE64-MAX TBL-KASAN-RECE65-MAX)
-                   MOVE    RECE65-NAMEINF   (IDX)
-                                       TO  TBL-KASAN-RECE65-NAMEINF
-                           (TBL-KASAN-RECE64-MAX TBL-KASAN-RECE65-MAX)
-               ELSE
-                   ADD     1               TO  TBL-KENTAI-RECE65-MAX
-                   MOVE    RECE65-SRYACTINF (IDX)
-                                       TO  TBL-KENTAI-RECE65-SRYACTINF
-                           (TBL-KENTAI-RECE64-MAX TBL-KENTAI-RECE65-MAX)
-                   MOVE    RECE65-NAMEINF (IDX)
-                                       TO  TBL-KENTAI-RECE65-NAMEINF
-                           (TBL-KENTAI-RECE64-MAX TBL-KENTAI-RECE65-MAX)
-                   IF      RECE65-SRYCD (IDX) (1:1)  =   "1"
-                       MOVE    TBL-KENTAI-RECE65-MAX 
-                                       TO  TBL-KENTAI-SRYCD-MAX
-                                                (TBL-KENTAI-RECE64-MAX)
-                   END-IF
-               END-IF
-           ELSE
-               IF      RECE641-KNSJISGRPKBN    =   99
-                   IF      TBL-KASAN-RECE65-MAX
-                                               =   ZERO
-                       MOVE    1           TO  TBL-KASAN-RECE65-MAX
-                   END-IF
-                   ADD     1               TO  TBL-KASAN-RECE65-MAX
-                   MOVE    RECE65-SRYACTINF (IDX)
-                                       TO  TBL-KASAN-RECE65-SRYACTINF
-                           (TBL-KASAN-RECE64-MAX TBL-KASAN-RECE65-MAX)
-                   MOVE    RECE65-NAMEINF   (IDX)
-                                       TO  TBL-KASAN-RECE65-NAMEINF
-                           (TBL-KASAN-RECE64-MAX TBL-KASAN-RECE65-MAX)
-      *
-                   IF      RECE65-SRYCD (IDX)   =   "810000001"
-                       CONTINUE
-                   ELSE
-      *                部位／薬剤／ユーザーコメント
-                       IF      RECE65-SRYCD (IDX) (1:1)     =   "0"
-                           MOVE    "810000001"     TO  
-                                       TBL-KASAN-RECE65-SRYCD
-                           (TBL-KASAN-RECE64-MAX TBL-KASAN-RECE65-MAX)
-                       END-IF
-      *                コメント
-                       IF    ( RECE65-SRYCD (IDX) (1:1)     =   "8"   )
-                       OR    ( RECE65-SRYCD (IDX) (1:3)     =   "008" )
-                           MOVE    RECE65-INPUTCOMENT (IDX)     TO
-                                       TBL-KASAN-RECE65-NAME
-                           (TBL-KASAN-RECE64-MAX TBL-KASAN-RECE65-MAX)
-                       END-IF
-                   END-IF
-               ELSE
-                   ADD     1               TO  TBL-KENTAI-RECE65-MAX
-                   MOVE    RECE65-SRYACTINF (IDX)
-                                       TO  TBL-KENTAI-RECE65-SRYACTINF
-                           (TBL-KENTAI-RECE64-MAX TBL-KENTAI-RECE65-MAX)
-                   MOVE    RECE65-NAMEINF (IDX)
-                                       TO  TBL-KENTAI-RECE65-NAMEINF
-                           (TBL-KENTAI-RECE64-MAX TBL-KENTAI-RECE65-MAX)
-      *
-                   IF      RECE65-SRYCD (IDX)   =   "810000001"
-                       CONTINUE
-                   ELSE
-      *                部位／薬剤／ユーザーコメント
-                       IF      RECE65-SRYCD (IDX) (1:1)     =   "0"
-                           MOVE    "810000001"     TO  
-                                       TBL-KENTAI-RECE65-SRYCD
-                           (TBL-KENTAI-RECE64-MAX TBL-KENTAI-RECE65-MAX)
-                       END-IF
-      *                コメント
-                       IF    ( RECE65-SRYCD (IDX) (1:1)     =   "8"   )
-                       OR    ( RECE65-SRYCD (IDX) (1:3)     =   "008" )
-                           MOVE    RECE65-INPUTCOMENT (IDX)     TO
-                                       TBL-KENTAI-RECE65-NAME
-                           (TBL-KENTAI-RECE64-MAX TBL-KENTAI-RECE65-MAX)
-                       END-IF
-                   END-IF
-               END-IF
-           END-IF
-      *
-           .
-       20012-KENSA-TAIHI-EXT.
-           EXIT. 
-      *
-      *****************************************************************
       *    検査（判断料）の場合の退避処理
       *****************************************************************
        20013-KENSA-HANDANRYO-TAIHI-SEC           SECTION.
@@ -4254,183 +4137,6 @@
            EXIT.
       *
       *****************************************************************
-      *    外来迅速検体検査加算を算定している検査の編集処理
-      *****************************************************************
-       20078-KENSA-HENSYU-SEC      SECTION.
-      *
-      *    外来迅速検体検査加算を算定している検査
-           PERFORM VARYING IDZ1 FROM    1   BY  1
-                   UNTIL   IDZ1 >       31
-               PERFORM VARYING IDZ2    FROM    1   BY  1
-                       UNTIL   IDZ2    >       TBL-KASAN-RECE64-MAX
-                   IF      TBL-KASAN-RECE64-KAISU (IDZ2 1 IDZ1)
-                                           >   0
-      *               負担区分編集処理
-                       MOVE    TBL-KASAN-RECE64-REC (IDZ2)
-                                               TO  WRK-RECE641-REC
-                       PERFORM 20070-FTNKBN-HENSYU-SEC
-                       MOVE    "60"                TO  WRK-SRYKBN
-      *
-      *                日毎の同じ項目数の外来迅速検体検査加算の回数をまとめる
-                       COMPUTE WRK-KENSASU     =
-                                   TBL-KASAN-RECE64-KAISU  (IDZ2 1 IDZ1)
-                               *   TBL-KASAN-RECE64-SYUTEN1(IDZ2)
-                       MOVE    WRK-KENSASU     TO  WRK-RECE64-ZAIKAISU
-                       PERFORM VARYING IDZ6    FROM    IDZ2    BY  1
-                               UNTIL   IDZ6    >   TBL-KASAN-RECE64-MAX
-                           IF    ( TBL-KASAN-RECE64-KAISU (IDZ6 1 IDZ1)
-                                                       >   0           )
-                           AND   ( TBL-KASAN-RECE64-KOHBUNRI (IDZ2)
-                                                       =
-                                     TBL-KASAN-RECE64-KOHBUNRI (IDZ6) )
-                           AND   ( IDZ6                >   IDZ2       )    
-                               COMPUTE WRK-KENSASU     =
-                                   TBL-KASAN-RECE64-KAISU  (IDZ6 1 IDZ1)
-                               *   TBL-KASAN-RECE64-SYUTEN1(IDZ6)
-                               ADD   WRK-KENSASU
-                                               TO  WRK-RECE64-ZAIKAISU
-                           END-IF
-                       END-PERFORM
-      *
-      *                検査
-                       PERFORM VARYING IDZ3 FROM    1   BY  1
-                               UNTIL   IDZ3 >   TBL-KENTAI-RECE64-MAX
-      **                     IF    ( TBL-KENTAI-RECE64-KAISU (IDZ3 1 IDZ1)
-      **                                             =
-      **                             TBL-KASAN-RECE64-KAISU (IDZ2 1 IDZ1))
-                           IF    ( TBL-KENTAI-RECE64-KAISU (IDZ3 1 IDZ1)
-                                                   >   0               )
-                           AND   ( TBL-KASAN-RECE64-KOHBUNRI (IDZ2)
-                                                   =
-                                     TBL-KENTAI-RECE64-KOHBUNRI (IDZ3) )
-                               MOVE    TBL-KENTAI-RECE64-REC (IDZ3)
-                                                   TO  RECE641-REC
-                               MOVE    TBL-KENTAI-RECE64-KAISU
-                                                       (IDZ3 1 IDZ1)
-                                               TO  RECE641-ZAIKAISU
-                               PERFORM VARYING IDZ4    FROM    1   BY  1
-                                       UNTIL   IDZ4    >       50
-                                       OR      TBL-KENTAI-RECE65-REC
-                                                           (IDZ3 IDZ4)
-                                                       =   SPACE
-                                   MOVE    TBL-KENTAI-SRYCD-MAX (IDZ3) 
-                                                           TO  IDZ5
-                                   INITIALIZE      WRK-RECE65-REC
-                                   MOVE    TBL-KENTAI-RECE65-SRYACTINF
-                                                           (IDZ3 IDZ4)
-                                           TO  WRK-RECE65-SRYACTINF (1)
-                                   MOVE    TBL-KENTAI-RECE65-NAMEINF
-                                                           (IDZ3 IDZ4)
-                                           TO  WRK-RECE65-NAMEINF   (1)
-                                   PERFORM 200781-KENSA-HENSYU-SEC
-                               END-PERFORM
-      *
-                               COMPUTE
-                                   TBL-KENTAI-RECE64-ZAIKAISU (IDZ3)
-                                       =
-                                   TBL-KENTAI-RECE64-ZAIKAISU (IDZ3)
-                                       -
-                                   TBL-KENTAI-RECE64-KAISU (IDZ3 1 IDZ1)
-                               MOVE    ZERO          TO
-                                   TBL-KENTAI-RECE64-KAISU (IDZ3 1 IDZ1)
-                           END-IF
-                       END-PERFORM
-      *
-      *                外来迅速検体検査加算
-                       MOVE    TBL-KASAN-RECE64-REC (IDZ2)
-                                               TO  RECE641-REC
-                       MOVE    WRK-RECE64-ZAIKAISU
-                                               TO  RECE641-SYUTEN1
-                       MOVE    1               TO  RECE641-ZAIKAISU
-                       MOVE    1               TO  IDZ4
-                       MOVE    1               TO  IDZ5
-                       INITIALIZE                  WRK-RECE65-REC
-                       MOVE    TBL-KASAN-RECE65-SRYACTINF (IDZ2 1)
-                                           TO  WRK-RECE65-SRYACTINF (1)
-                       MOVE    TBL-KASAN-RECE65-NAMEINF   (IDZ2 1)
-                                           TO  WRK-RECE65-NAMEINF   (1)
-                       MOVE    WRK-RECE64-ZAIKAISU
-                                           TO  WRK-RECE65-SRYSURYO  (1)
-                       PERFORM 200781-KENSA-HENSYU-SEC
-      *
-      *                外来迅速検体検査加算と同剤のその他の入力
-                       PERFORM VARYING IDZ6    FROM    IDZ2    BY  1
-                               UNTIL   IDZ6    >   TBL-KASAN-RECE64-MAX
-                           IF    ( TBL-KASAN-RECE64-KAISU (IDZ6 1 IDZ1)
-                                                       >   0           )
-                           AND   ( TBL-KASAN-RECE64-KOHBUNRI (IDZ2)
-                                                       =
-                                     TBL-KASAN-RECE64-KOHBUNRI (IDZ6) )
-                               PERFORM VARYING IDZ4    FROM    2   BY  1
-                                       UNTIL   IDZ4    >       5
-                                       OR      TBL-KASAN-RECE65-SRYCD
-                                                           (IDZ6 IDZ4)
-                                               =   SPACE
-                                   INITIALIZE      WRK-RECE65-REC
-                                   MOVE    TBL-KASAN-RECE65-SRYACTINF
-                                                           (IDZ6 IDZ4)
-                                           TO  WRK-RECE65-SRYACTINF (1)
-                                   MOVE    TBL-KASAN-RECE65-NAMEINF
-                                                           (IDZ6 IDZ4)
-                                           TO  WRK-RECE65-NAMEINF   (1)
-                                   PERFORM 200781-KENSA-HENSYU-SEC
-                               END-PERFORM
-      *
-                               MOVE    ZERO
-                                           TO  TBL-KASAN-RECE64-KAISU
-                                                       (IDZ6 1 IDZ1)
-                           END-IF
-                       END-PERFORM    
-      *
-      *****************検査日
-      *****************INITIALIZE                  WRK-RECE65-REC
-      *****************MOVE    WRK-CONS-COMMENT
-      *****************                        TO  WRK-RECE65-SRYCD (1)
-      *****************INITIALIZE              ORCSKANACHKAREA
-      *****************MOVE    "2"             TO  KANACHK-SYORI 
-      *****************MOVE    IDZ1            TO  KANACHK-MAE-INPUT
-      *****************CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
-      *****************IF      KANACHK-RC      =   ZERO
-      *****************    MOVE    KANACHK-OUT-INPUT(3:4)
-      *****************                        TO  WRK-RECE65-NAME (1)
-      *****************END-IF
-      *****************PERFORM 200781-KENSA-HENSYU-SEC
-                   END-IF
-               END-PERFORM
-           END-PERFORM
-      *
-      *    外来迅速検体検査加算を算定していない検査
-           PERFORM VARYING IDZ3 FROM    1   BY  1
-                   UNTIL   IDZ3 >   TBL-KENTAI-RECE64-MAX
-               IF      TBL-KENTAI-RECE64-ZAIKAISU (IDZ3)
-                                           >   0
-      *            負担区分編集処理
-                   MOVE    TBL-KENTAI-RECE64-REC (IDZ3)
-                                               TO  WRK-RECE641-REC
-                   PERFORM 20070-FTNKBN-HENSYU-SEC
-                   MOVE    "60"                TO  WRK-SRYKBN
-                   PERFORM VARYING IDZ4    FROM    1   BY  1
-                           UNTIL   IDZ4    >       50
-                           OR      TBL-KENTAI-RECE65-REC  (IDZ3 IDZ4)
-                                                   =   SPACE
-                       MOVE    TBL-KENTAI-SRYCD-MAX (IDZ3) 
-                                           TO  IDZ5
-                       INITIALIZE      WRK-RECE65-REC
-                       MOVE    TBL-KENTAI-RECE65-SRYACTINF
-                                                           (IDZ3 IDZ4)
-                                           TO  WRK-RECE65-SRYACTINF (1)
-                       MOVE    TBL-KENTAI-RECE65-NAMEINF
-                                                           (IDZ3 IDZ4)
-                                           TO  WRK-RECE65-NAMEINF   (1)
-                       PERFORM 200781-KENSA-HENSYU-SEC
-                   END-PERFORM
-               END-IF
-           END-PERFORM
-           .
-       20078-KENSA-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    検査に判断料がある場合の検査の編集処理
       *****************************************************************
        20078-KENSA-HANDANRYO-HENSYU-SEC      SECTION.
@@ -4464,7 +4170,7 @@
            EXIT.
       *
       *****************************************************************
-      *    外来迅速検体検査加算を算定している検査の編集処理
+      *    検査に判断料がある場合の検査の編集処理
       *****************************************************************
        200781-KENSA-HENSYU-SEC      SECTION.
       *
@@ -4551,8 +4257,20 @@
                        MOVE    WRK-KAISU           TO  WRK-NUM
                        MOVE    3                   TO  WRK-NAGASA
                    END-IF
-                   MOVE    1                   TO  WRK-END 
                    PERFORM 5005-NUM-HENSYU-SEC
+      *            コメントコード１
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            文字データ１
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            コメントコード２
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            文字データ２
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            コメントコード３
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            文字データ３
+                   MOVE    1                   TO  WRK-END 
+                   PERFORM 5004-MOJI-HENSYU-SEC  
            END-EVALUATE  
       *
            PERFORM 5001-FILE-WRITE-SEC
@@ -4964,8 +4682,20 @@
                            MOVE    WRK-KAISU           TO  WRK-NUM
                            MOVE    3                   TO  WRK-NAGASA
                        END-IF
-                       MOVE    1                   TO  WRK-END 
                        PERFORM 5005-NUM-HENSYU-SEC
+      *                コメントコード１
+                       PERFORM 5005-NUM-HENSYU-SEC
+      *                文字データ１
+                       PERFORM 5004-MOJI-HENSYU-SEC  
+      *                コメントコード２
+                       PERFORM 5005-NUM-HENSYU-SEC
+      *                文字データ２
+                       PERFORM 5004-MOJI-HENSYU-SEC  
+      *                コメントコード３
+                       PERFORM 5005-NUM-HENSYU-SEC
+      *                文字データ３
+                       MOVE    1                   TO  WRK-END 
+                       PERFORM 5004-MOJI-HENSYU-SEC  
                END-EVALUATE  
       *
                PERFORM 5001-FILE-WRITE-SEC
@@ -5196,8 +4926,20 @@
                    MOVE    3                   TO  WRK-NAGASA
                END-IF
            END-IF        
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    コメントコード１
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ１
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード２
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ２
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード３
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ３
            MOVE    1                   TO  WRK-END 
-           PERFORM 5005-NUM-HENSYU-SEC  
+           PERFORM 5004-MOJI-HENSYU-SEC  
       *
            PERFORM 5001-FILE-WRITE-SEC
            .
@@ -5243,8 +4985,6 @@
            MOVE    "TO,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
       *    診療識別
-      *****IF      IDX                 =   1
-      *****AND     WRK-SRYKBN      NOT =   SPACE     
            IF      WRK-SRYKBN      NOT =   SPACE     
                MOVE    WRK-SRYKBN          TO  WRK-DATA
                MOVE    2                   TO  WRK-NAGASA
@@ -5269,28 +5009,6 @@
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
       *    点数 
-      *****IF      IDX                     =   WRK-TBLMAX7
-      *********IF     ( RECE641-SRYKBN    =   "70" )
-      *********AND    ( TBL-ZAIW-DATAKBN (2 IDX)
-      *********                           =   "3"  )
-      *********    MOVE    RECE641-SYUTEN2     TO  WRK-TENSU
-      *********    MOVE    WRK-TENSU           TO  WRK-NUM
-      *********    MOVE    7                   TO  WRK-NAGASA
-      *********ELSE
-      *********    IF     ( RECE641-SRYKBN    =   "70" )
-      *********    AND    ( TBL-ZAIW-SRYCD (2 IDX)
-      *********                               =   "799990070"  )
-      *********        MOVE    RECE641-SYUTEN2     TO  WRK-TENSU
-      *********        MOVE    WRK-TENSU           TO  WRK-NUM
-      *********        MOVE    7                   TO  WRK-NAGASA
-      *********    ELSE
-      *********        IF      RECE641-KIZAITEN    >   ZERO
-      *********            MOVE    RECE641-KIZAITEN    TO  WRK-TENSU
-      *********            MOVE    WRK-TENSU           TO  WRK-NUM
-      *********            MOVE    7                   TO  WRK-NAGASA
-      *********        END-IF
-      *********    END-IF
-      *********END-IF
            IF    ( IDXX                =   1               )
            AND   ( IDX                 =   WRK-SRYCD71-MAX )
            AND   ( RECE641-SRYKBN      =   "70"            )
@@ -5302,12 +5020,6 @@
            END-IF
            IF    ( IDXX                =   2               )
            AND   ( IDX                 =   WRK-SRYCD72-MAX )
-      *********IF      RECE641-SRYKBN      =   "70"
-      *********    MOVE    RECE641-KIZAITEN    TO  WRK-TENSU
-      *********ELSE
-      *********    COMPUTE WRK-TENSU   =   RECE641-KIZAITEN    -
-      *********                            RECE641-SYUTEN2
-      *********END-IF
                MOVE    RECE641-KIZAITEN    TO  WRK-TENSU
                IF      WRK-TENSU       >   ZERO
                    MOVE    WRK-TENSU           TO  WRK-NUM
@@ -5316,7 +5028,6 @@
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
       *    回数
-      *****IF      IDX                     =   WRK-TBLMAX7
            IF    ( IDXX                =   1               )
            AND   ( IDX                 =   WRK-SRYCD71-MAX )
            AND   ( RECE641-SRYKBN      =   "70"            )
@@ -5372,8 +5083,20 @@
                                                  TO  WRK-DATA
            END-IF
            MOVE    300                 TO  WRK-NAGASA
-           MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
+      *    コメントコード１
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ１
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード２
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ２
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード３
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ３
+           MOVE    1                   TO  WRK-END 
+           PERFORM 5004-MOJI-HENSYU-SEC  
       *
            PERFORM 5001-FILE-WRITE-SEC
            .
@@ -5482,8 +5205,20 @@
                                                TO  WRK-DATA
            END-IF
            MOVE    300                 TO  WRK-NAGASA
-           MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
+      *    コメントコード１
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ１
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード２
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ２
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード３
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ３
+           MOVE    1                   TO  WRK-END 
+           PERFORM 5004-MOJI-HENSYU-SEC  
       *
            PERFORM 5001-FILE-WRITE-SEC
            .
@@ -6097,8 +5832,20 @@
                                                        TO  WRK-NUM
                                        MOVE    3       TO  WRK-NAGASA
                                    END-IF
-                                   MOVE    1               TO  WRK-END 
                                    PERFORM 5005-NUM-HENSYU-SEC
+      *                            コメントコード１
+                                   PERFORM 5005-NUM-HENSYU-SEC
+      *                            文字データ１
+                                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *                            コメントコード２
+                                   PERFORM 5005-NUM-HENSYU-SEC
+      *                            文字データ２
+                                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *                            コメントコード３
+                                   PERFORM 5005-NUM-HENSYU-SEC
+      *                            文字データ３
+                                   MOVE    1           TO  WRK-END 
+                                   PERFORM 5004-MOJI-HENSYU-SEC  
                                END-IF
                        END-EVALUATE
                        IF      WRK-REC-LENGTH      >   ZERO 
@@ -6777,7 +6524,6 @@
            DISPLAY "RECE64  CNT-IN  :" CNT-RECE64  
            DISPLAY "DB      CNT-OUT :" CNT-OUT  
            DISPLAY "*** ORCR0350 END ***"
-      *     ACCEPT  WRK-IN FROM CONSOLE 
       *
            .
        300-TERM-EXT.
