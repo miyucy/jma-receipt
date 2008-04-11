@@ -3472,7 +3472,7 @@
                MOVE    1                   TO  FLG-ERR
                GO      TO      3003-YAKJYO-CHK-EXT
            END-IF
-      *        算定履歴チェック処理
+      *    算定履歴チェック処理
            IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                PERFORM 3001-SANTEI-CHK-SEC
            END-IF
@@ -3492,6 +3492,11 @@
                    MOVE    1                   TO  FLG-ERR
                END-IF
            END-IF
+      *
+           IF      FLG-ERR             =   ZERO
+      *        併用算定チェック
+               PERFORM 30012-KAYJYO-SENCHK-SEC
+           END-IF
            IF      FLG-ERR             =   ZERO
                ADD     1               TO  IDXS
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
@@ -3508,6 +3513,49 @@
       *
            .
        3003-YAKJYO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    併用算定チェック処理
+      *****************************************************************
+       30012-KAYJYO-SENCHK-SEC            SECTION.
+      *
+           MOVE    WRK-SCR-REC         TO  HOZ-SCR-REC
+      *    点数マスタ編集・基本チェック
+           INITIALIZE                  ORCSC92AREA
+           MOVE    "4"                 TO  LNK-SC92-KBN
+      *
+           COMPUTE LNK-SC92-GMN-IDX    =   WRK-GMN-MAX
+                                       +   1
+           IF      LNK-SC92-GMN-IDX    >   SPA-MAX-LINE
+               MOVE    SPA-MAX-LINE        TO  LNK-SC92-GMN-IDX
+           END-IF
+           MOVE    WRK-SRYCD           TO  HOZ-COM-INPUTCD
+                                                   (LNK-SC92-GMN-IDX)
+           MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
+           MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
+           MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
+           MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
+           MOVE    LNK-ORCSC-ROUJIN    TO  LNK-SC92-ROUJIN
+           MOVE    SPACE               TO  LNK-SC92-LSTSRYKA
+           MOVE    SPACE               TO  LNK-SC92-LSTSRYKAMEI
+           MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC92-TEISEI-AREA
+           CALL    "ORCSC92"           USING
+                                       MCPAREA
+                                       ORCSC92AREA
+                                       HOZ-SCR-REC
+                                       SPA-AREA
+      *    エラーの時、追加なし
+           IF     (SPA-ERRCD           NOT =   SPACE )  OR
+                  (LNK-SC92-ERRAREA    NOT =   SPACE )
+      *        追加なし
+               MOVE    1               TO  FLG-ERR
+           ELSE
+      *        追加あり
+               MOVE    ZERO            TO  FLG-ERR
+           END-IF
+           .
+       30012-KAYJYO-SENCHK-EXT.
            EXIT.
       *
       *****************************************************************
