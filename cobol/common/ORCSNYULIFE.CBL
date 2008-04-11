@@ -39,6 +39,8 @@
       *                                       短期滞在手術基本料３
       *                                       回復期リハビリテーション病棟入院料１
       *                                       回復期リハビリテーション病棟入院料２
+      *  04.02.00    NACL-小豆沢  08/04/11  後期高齢者の判定をサブルーチン使用
+      *                                     に変更
       *****************************************************************
       *
       *
@@ -70,6 +72,7 @@
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
            03  TSY90-IDX                   PIC 9(02).
+           03  IDX-RJN                     PIC 9(02).
       *
       *    コンスタント値
       *    生活療養に関する入院診療コード
@@ -106,7 +109,12 @@
       *    一時領域
        01  WRK-AREA.
       *
-           03  WRK-GAIHAKU-SRYCD           PIC X(09).
+           03  WRK-YMD.
+               05  WRK-YYMM                PIC X(06).
+               05  WRK-DD                  PIC 9(02).
+           03  WRK-RJN-TBL.
+               05  WRK-RJN                 PIC 9(01)   OCCURS   31.
+      *    
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -410,9 +418,9 @@
       *
            IF    FLG-OK   =    1
       *
-      *        老人保健のチェック（平成２０年４月以降は後期高齢者チェック）
+      *        老人適用のチェック
                IF      LNK-NYULIFE-SANTEIYM <=  "200803"
-      *            老人保健の判定
+      *          （平成２０年３月以前は老人保健の判定チェック）
                    MOVE    ZERO                 TO  FLG-RJN 
                    INITIALIZE                       PTKOHINF-REC
                    MOVE    LNK-NYULIFE-HOSPNUM  TO  PTKOH-HOSPNUM
@@ -439,59 +447,22 @@
                    MOVE    "key4"               TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC-SEC
                ELSE
-                   MOVE    ZERO                 TO  FLG-RJN 
-      *            後期高齢者の判定（保険番号０３９と０４０）
-                   MOVE    ZERO                 TO  FLG-RJN 
-                   INITIALIZE                       PTHKNINF-REC
-                   MOVE    LNK-NYULIFE-HOSPNUM  TO  PTHKN-HOSPNUM
-                   MOVE    LNK-NYULIFE-PTID     TO  PTHKN-PTID
-                   MOVE    LNK-NYULIFE-SANTEIYM TO  PTHKN-TEKSTYMD(1:6)
-                   MOVE    "01"                 TO  PTHKN-TEKSTYMD(7:2)
-                   MOVE    PTHKN-TEKSTYMD       TO  PTHKN-TEKEDYMD
-                   MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                   MOVE    "key11"               TO  MCP-PATHNAME
-                   PERFORM 910-PTHKNINF-SELECT-SEC
-                   IF      FLG-PTHKNINF         =   ZERO
-                       MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                       MOVE    "key11"               TO  MCP-PATHNAME
-                       PERFORM   910-PTHKNINF-READ-SEC
-                       PERFORM   UNTIL   (FLG-PTHKNINF   =   1)
-                           MOVE    1                TO  FLG-RJN
-                           MOVE    "tbl_pthkninf"   TO  MCP-TABLE
-                           MOVE    "key11"          TO  MCP-PATHNAME
-                           PERFORM 910-PTHKNINF-READ-SEC
-                       END-PERFORM
-                   END-IF
-      *            患者保険情報クローズ
-                   MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                   MOVE    "key11"              TO  MCP-PATHNAME
-                   PERFORM   900-CLOSE-SEC-SEC
-      *            後期該当の判定（公費番号９６８）
-                   INITIALIZE                       PTKOHINF-REC
-                   MOVE    LNK-NYULIFE-HOSPNUM  TO  PTKOH-HOSPNUM
-                   MOVE    LNK-NYULIFE-PTID     TO  PTKOH-PTID
-                   MOVE    "968"                TO  PTKOH-KOHNUM
-                   MOVE    LNK-NYULIFE-SANTEIYM TO  PTKOH-TEKSTYMD(1:6)
-                   MOVE    "01"                 TO  PTKOH-TEKSTYMD(7:2)
-                   MOVE    PTKOH-TEKSTYMD       TO  PTKOH-TEKEDYMD
-                   MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-                   MOVE    "key6"               TO  MCP-PATHNAME
-                   PERFORM 910-PTKOHINF-SELECT-SEC
-                   IF      FLG-PTKOHINF         =   ZERO
-                       MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-                       MOVE    "key6"               TO  MCP-PATHNAME
-                       PERFORM   910-PTKOHINF-READ-SEC
-                       PERFORM   UNTIL   (FLG-PTKOHINF   =   1)
-                           MOVE    1                TO   FLG-RJN
-                           MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-                           MOVE    "key6"           TO  MCP-PATHNAME
-                           PERFORM 910-PTKOHINF-READ-SEC
-                       END-PERFORM
-                   END-IF
-      *            患者公費情報クローズ
-                   MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-                   MOVE    "key6"               TO  MCP-PATHNAME
-                   PERFORM   900-CLOSE-SEC-SEC
+      *          （平成２０年４月以降はサブルーチンによりチェック）
+                   PERFORM  VARYING    IDX-RJN    FROM   1   BY  1
+                     UNTIL  IDX-RJN    >   31
+                       INITIALIZE                   ORCSAGECHKAREA
+                       MOVE    LNK-NYULIFE-HOSPNUM  TO  AGECHK-HOSPNUM
+                       MOVE    LNK-NYULIFE-PTID     TO  AGECHK-PTID
+                       MOVE    LNK-NYULIFE-SANTEIYM TO  WRK-YYMM
+                       MOVE    IDX-RJN              TO  WRK-DD
+                       MOVE    WRK-YMD              TO  AGECHK-SRYYMD
+                       CALL   "ORCSAGECHK"          USING
+                                                    ORCSAGECHKAREA
+                                                    SPA-AREA
+                       IF      AGECHK-ROUJIN2    =   1
+                           MOVE   1              TO  WRK-RJN(IDX-RJN)
+                       END-IF
+                   END-PERFORM
                END-IF
       *
       *−−−−サブルーチンでの患者所得情報の取得ここから−−−−−
@@ -586,7 +557,8 @@
                                          LNK-NYULIFE-SKJFTN-MONEY(IDX1)
                                 WHEN   "3"
       *                           （低１）
-                                    IF   FLG-RJN    =   0
+                                    IF  (FLG-RJN         =  0)   AND
+                                        (WRK-RJN(IDX1)   =  0)                                        
                                        MOVE  "197002310"   TO
                                          LNK-NYULIFE-SKJFTN-SRYCD(IDX1)
                                        MOVE   130          TO
