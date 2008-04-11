@@ -264,6 +264,8 @@
       *  04.02.04    NACL-門脇    08/03/17  宮崎県地方公費（１９０）の対応
       *  04.02.05    NACL-藤原    08/03/25  再診（夜間・早朝等）加算の追加
       *                                     広域連合対応
+      *  04.02.06    NACL-藤原    08/04/10  平成２０年４月改正に伴う記録
+      *                                     条件仕様の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1869,7 +1871,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
            MOVE    4                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    診療年月
-           MOVE    RECE02-SRYYM       TO  WRK-SYMD(1:6)
+           MOVE    RECE02-SRYYM        TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMD (1:5)    TO  WRK-DATA
@@ -2023,8 +2025,24 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
            ELSE
                MOVE    RECE02-RECEKA       TO  WRK-DATA
            END-IF
-           MOVE    1                   TO  WRK-END 
            MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    検索番号
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    記録条件仕様年月情報
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    請求情報
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    予備
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    予備
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    予備
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    予備
+           PERFORM 5004-MOJI-HENSYU-SEC         
+      *    予備
+           MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC         
       *
            MOVE    1                   TO  FLG-TOTALTEN
@@ -2076,11 +2094,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
            PERFORM 5004-MOJI-HENSYU-SEC
       *    記号
            MOVE    RECE02-KIGO           TO  WRK-DATA
-           MOVE    40                    TO  WRK-NAGASA
+           MOVE    38                    TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    番号
            MOVE    RECE02-NUM            TO  WRK-DATA
-           MOVE    40                    TO  WRK-NAGASA
+           MOVE    38                    TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *    診療実日数     
            MOVE    RECE02-JNISSU(IDX1)   TO  WRK-NUM
@@ -2090,7 +2108,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
            MOVE    RECE02-TOTALTEN(IDX1) TO  WRK-NUM
            MOVE    8                     TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    薬剤一部負担金
+      *    予備
            MOVE    ZERO                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *    食事療養費（日数）
@@ -2361,21 +2379,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
                    UNTIL   IDY >       3
                    OR      RECE02-KOHNUM (IDY) =   SPACE
                COMPUTE IDX     =   IDY     +   1
-      *********IF    ( RECE02-PREFNUM              =   "14"    )
-      *********AND   ( RECE02-KOHNUM (IDY) (1:1)   >=  "1" AND 
-      *********                                    <=  "8"     )
-      *********AND   ( RECE02-KOHFTNJANUM (IDY)    =   SPACE   )
-      *********AND   ( RECE02-KOHJKYSNUM  (IDY)    =   SPACE   )
-      *********    CONTINUE
-      *********ELSE 
-      *            レセプト特記事項編集情報
-                   IF      RECE02-2006-RECEDEN-KORECKBN (IDY)
-                                                   =   "1"
-                       CONTINUE
-                   ELSE 
-                       PERFORM 20051-KOH-HENSYU-SEC
-                   END-IF
-      *********END-IF
+      *        レセプト特記事項編集情報
+               IF      RECE02-2006-RECEDEN-KORECKBN (IDY)
+                                               =   "1"
+                   CONTINUE
+               ELSE 
+                   PERFORM 20051-KOH-HENSYU-SEC
+               END-IF
            END-PERFORM                      
            .
        2005-HENSYU-EXT.
@@ -2456,8 +2466,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
                                            TO  KANACHK-MAE-INPUT
                    CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                    IF      KANACHK-SYUBETU =   "1"
-                       MOVE    RECE02-KOHJKYSNUM  (IDY)
+                       INITIALIZE                   ORCSNUMAREA
+                       MOVE    RECE02-KOHJKYSNUM  (IDY) (1:KANACHK-MAX)
+                                                TO  SNUM-INX
+                       CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                       IF      SNUM-RC          =   ZERO
+                           MOVE   SNUM-OUTEDT (9:7)
                                                TO  WRK-DATA
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -2473,12 +2489,19 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
                                            TO  KANACHK-MAE-INPUT
                    CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
                    IF      KANACHK-SYUBETU =   "1"
+                       INITIALIZE                   ORCSNUMAREA
                        MOVE    RECE02-2006-RECEDEN-JKYSNUM (IDY)
+                                                    (1:KANACHK-MAX)
+                                                TO  SNUM-INX
+                       CALL    "ORCSNUM"        USING   ORCSNUMAREA
+                       IF      SNUM-RC          =   ZERO
+                           MOVE   SNUM-OUTEDT (9:7)
                                                TO  WRK-DATA
+                       END-IF
                    END-IF
            END-EVALUATE
            MOVE    7                   TO  WRK-NAGASA
-           PERFORM 5004-MOJI-HENSYU-SEC
+           PERFORM 5004-MOJI-HENSYU-SEC     
       *    任意給付区分                             
            IF    ( RECE02-TEISYUTUSAKI =   "2"     AND
                    RECE02-RJNHKNNUM    =   SPACE                ) 
@@ -2546,7 +2569,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
            PERFORM 5005-NUM-HENSYU-SEC
       *    負担金額（公費給付対象入院一部負担金）
            PERFORM 5005-NUM-HENSYU-SEC
-      *    薬剤一部負担金
+      *    予備
            PERFORM 5005-NUM-HENSYU-SEC
       *    食事療養費（日数）
            PERFORM 5005-NUM-HENSYU-SEC    
@@ -2721,6 +2744,8 @@ grpsys             OR     ( RECE02-HOSPNUM
                MOVE    "01"                TO  WRK-DATA
            END-IF 
            MOVE    2                   TO  WRK-NAGASA
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    補足コメント
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC  
       *
@@ -4018,7 +4043,6 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                        MOVE    "SI,"               TO  WRK-REC
                        MOVE    3                   TO  WRK-REC-LENGTH
       *                診療識別
-      *----(01.00.04) LINE ADD START ----------------------------------
                        IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
                        AND   ( IDX                 >   1              )
                        AND   ( FLG-KOKUJISKBKBN1   =   ZERO           )
@@ -4026,7 +4050,6 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                             MOVE    2               TO  WRK-NAGASA
                             MOVE    SPACE           TO  WRK-SRYKBN
                        END-IF
-      *----(01.00.04) LINE ADD END ------------------------------------
                        IF    ( IDX                 =   1     )
                        AND   ( WRK-SRYKBN      NOT =   SPACE )
                            MOVE    WRK-SRYKBN          TO  WRK-DATA
@@ -4045,12 +4068,6 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                        PERFORM 5004-MOJI-HENSYU-SEC  
       *                数量
                        IF      TBL-KOUI-SRYSURYO (IDX) >   ZERO
-      ****************     IF    ( RECE041-SRYKBN(1:1) =
-      ****************                             "1" OR  "2" OR "3" )
-      ****************     AND   ( TBL-KOUI-SRYSURYO (IDX)
-      ****************                             <=  1              )
-      ****************         CONTINUE
-      ****************     ELSE
                                IF    ( TBL-KOUI-SRYCD (IDX) (1:1)
                                                        =   "1"        )
                                AND   ( TBL-KOUI-KZMCOMPSIKIBETU (IDX)
@@ -4062,14 +4079,9 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                                    MOVE    WRK-SURYO   TO  WRK-NUM
                                    MOVE    8           TO  WRK-NAGASA
                                END-IF
-      ****************     END-IF
                        END-IF    
                        PERFORM 5005-NUM-HENSYU-SEC  
       *                点数
-      *----(01.00.04) LINE ADD START ----------------------------------
-      **************** IF      RECE041-SRYKBN       =   "13"  OR  "14"
-      ****************      IF      IDX                 <   WRK-TBLMAX1
-      ****************          IF      FLG-KOKUJISKBKBN1   =   ZERO
                        IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
                        AND   ( IDX                 <   WRK-SRYCD1-MAX )
                            IF      FLG-KOKUJISKBKBN1   =   ZERO
@@ -4108,10 +4120,7 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                                END-IF 
                            END-IF
                        END-IF
-      *----(01.00.04) LINE ADD END ------------------------------------
-      *****************IF      IDX                 =   WRK-TBLMAX1
                        IF    ( IDX                 =   WRK-SRYCD1-MAX )
-      *****            OR    ( FLG-TBLMAX          =   1              ) 
                            IF      RECE041-SYUTEN1     >   ZERO
                                IF      RECE041-SRYKBN      =   "70"
                                  COMPUTE WRK-TENSU =   RECE041-SYUTEN1
@@ -4144,11 +4153,6 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                        END-IF    
                        PERFORM 5005-NUM-HENSYU-SEC  
       *                回数
-      *----(01.00.04) LINE ADD START ----------------------------------
-      **************** IF      RECE041-SRYKBN      =   "13"  OR  "14"
-      ****************     IF      IDX                 <   WRK-TBLMAX1
-      ****************         IF      FLG-KOKUJISKBKBN1   =   ZERO
-      ****************             IF      RECE041-ZAIKAISU    >   ZERO
                        IF    ( RECE041-SRYKBN      =   "13"  OR  "14" )
                        AND   ( RECE041-ZAIKAISU    >   ZERO           )
                        AND   ( IDX                 <   WRK-SRYCD1-MAX )
@@ -4177,9 +4181,6 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                                END-IF
                            END-IF        
                        END-IF
-      *----(01.00.04) LINE ADD END ------------------------------------
-      **************** IF      IDX             =   WRK-TBLMAX1
-      ****************     IF      RECE041-ZAIKAISU    >   ZERO
                        IF    ( IDX             =   WRK-SRYCD1-MAX     )
                        AND   ( RECE041-ZAIKAISU
                                                >   ZERO               )
@@ -4187,8 +4188,20 @@ grpsys         OR     ( RECE041-HOSPNUM    NOT =   RECE05-HOSPNUM      )
                            MOVE    WRK-KAISU           TO  WRK-NUM
                            MOVE    3                   TO  WRK-NAGASA
                        END-IF
-                       MOVE    1                   TO  WRK-END 
                        PERFORM 5005-NUM-HENSYU-SEC
+      *                コメントコード１
+                       PERFORM 5005-NUM-HENSYU-SEC
+      *                文字データ１
+                       PERFORM 5004-MOJI-HENSYU-SEC  
+      *                コメントコード２
+                       PERFORM 5005-NUM-HENSYU-SEC
+      *                文字データ２
+                       PERFORM 5004-MOJI-HENSYU-SEC  
+      *                コメントコード３
+                       PERFORM 5005-NUM-HENSYU-SEC
+      *                文字データ３
+                       MOVE    1                   TO  WRK-END 
+                       PERFORM 5004-MOJI-HENSYU-SEC  
                END-EVALUATE  
       *
                PERFORM 5001-FILE-WRITE-SEC
@@ -4401,8 +4414,20 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
                    MOVE    3                   TO  WRK-NAGASA
                END-IF
            END-IF        
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    コメントコード１
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ１
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード２
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ２
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード３
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ３
            MOVE    1                   TO  WRK-END 
-           PERFORM 5005-NUM-HENSYU-SEC  
+           PERFORM 5004-MOJI-HENSYU-SEC  
       *
            PERFORM 5001-FILE-WRITE-SEC
            .
@@ -4448,8 +4473,6 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
            MOVE    "TO,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
       *    診療識別
-      *****IF      IDX                 =   1
-      *****AND     WRK-SRYKBN      NOT =   SPACE     
            IF      WRK-SRYKBN      NOT =   SPACE     
                MOVE    WRK-SRYKBN          TO  WRK-DATA
                MOVE    2                   TO  WRK-NAGASA
@@ -4485,12 +4508,6 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
            END-IF
            IF    ( IDXX                =   2               )
            AND   ( IDX                 =   WRK-SRYCD72-MAX )
-      *********IF      RECE041-SRYKBN      =   "70"
-      *********    MOVE    RECE041-KIZAITEN    TO  WRK-TENSU
-      *********ELSE
-      *********    COMPUTE WRK-TENSU   =   RECE041-KIZAITEN    -
-      *********                            RECE041-SYUTEN2
-      *********END-IF
                MOVE    RECE041-KIZAITEN    TO  WRK-TENSU
                IF      WRK-TENSU       >   ZERO
                    MOVE    WRK-TENSU           TO  WRK-NUM
@@ -4554,8 +4571,20 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
                                                  TO  WRK-DATA
            END-IF
            MOVE    300                 TO  WRK-NAGASA
-           MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
+      *    コメントコード１
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ１
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード２
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ２
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード３
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ３
+           MOVE    1                   TO  WRK-END 
+           PERFORM 5004-MOJI-HENSYU-SEC  
       *
            PERFORM 5001-FILE-WRITE-SEC
            .
@@ -4665,8 +4694,20 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
                                                TO  WRK-DATA
            END-IF
            MOVE    300                 TO  WRK-NAGASA
-           MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
+      *    コメントコード１
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ１
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード２
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ２
+           PERFORM 5004-MOJI-HENSYU-SEC  
+      *    コメントコード３
+           PERFORM 5005-NUM-HENSYU-SEC
+      *    文字データ３
+           MOVE    1                   TO  WRK-END 
+           PERFORM 5004-MOJI-HENSYU-SEC  
       *
            PERFORM 5001-FILE-WRITE-SEC
            .
@@ -4707,7 +4748,7 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    外来迅速検体検査加算を算定している検査の編集処理
+      *    検査に判断料がある場合の検査の編集処理
       *****************************************************************
        200781-KENSA-HENSYU-SEC      SECTION.
       *
@@ -4791,8 +4832,20 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
                        MOVE    WRK-KAISU           TO  WRK-NUM
                        MOVE    3                   TO  WRK-NAGASA
                    END-IF
-                   MOVE    1                   TO  WRK-END 
                    PERFORM 5005-NUM-HENSYU-SEC
+      *            コメントコード１
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            文字データ１
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            コメントコード２
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            文字データ２
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            コメントコード３
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            文字データ３
+                   MOVE    1                   TO  WRK-END 
+                   PERFORM 5004-MOJI-HENSYU-SEC  
            END-EVALUATE  
       *
            PERFORM 5001-FILE-WRITE-SEC
@@ -4840,8 +4893,20 @@ grpsys         MOVE    RECE02-HOSPNUM      TO  ORCSRECESORT-HOSPNUM
                                                TO  WRK-KAISU
                    MOVE    WRK-KAISU           TO  WRK-NUM
                    MOVE    3                   TO  WRK-NAGASA
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            コメントコード１
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            文字データ１
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            コメントコード２
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            文字データ２
+                   PERFORM 5004-MOJI-HENSYU-SEC  
+      *            コメントコード３
+                   PERFORM 5005-NUM-HENSYU-SEC
+      *            文字データ３
                    MOVE    1                   TO  WRK-END 
-                   PERFORM 5005-NUM-HENSYU-SEC  
+                   PERFORM 5004-MOJI-HENSYU-SEC  
       *
                    PERFORM 5001-FILE-WRITE-SEC
                END-IF
@@ -5834,7 +5899,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "RECE04  CNT-IN  :" CNT-RECE04  
            DISPLAY "DB      CNT-OUT :" CNT-OUT  
            DISPLAY "*** ORCR0300 END ***"
-      *     ACCEPT  WRK-IN FROM CONSOLE 
       *
            .
        300-TERM-EXT.
@@ -6004,7 +6068,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
       *
            MOVE    SPACE          TO  WRK-HENSYU
       *              
-           IF      WRK-HENKAN     =   SPACE
+           IF      WRK-DATA       =   SPACE
                CONTINUE
            ELSE    
                PERFORM VARYING IDX FROM    WRK-LENGTH  BY  -1

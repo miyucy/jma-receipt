@@ -55,6 +55,9 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *                                     改正に伴う記録条件仕様の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -156,6 +159,7 @@ grpsys COPY    "COMMON-SPA".
            05  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-RECEERR             PIC X(200). 
+           03  WRK-ERRMSG              PIC X(300).
       *    マルチボリューム識別情報     
            03  WRK-VOLNUM              PIC 9(02).
       *    レセプト番号
@@ -542,8 +546,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            MOVE    "IR,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
       *     
-           MOVE    WRK-PARA-TEISYUTUSAKI
-                                       TO  WRK-DATA
+           EVALUATE    WRK-PARA-TEISYUTUSAKI
+               WHEN    "1"
+                   MOVE    "1"         TO  WRK-DATA
+               WHEN    OTHER
+                   MOVE    "2"         TO  WRK-DATA
+           END-EVALUATE
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *     
@@ -605,6 +613,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                        ADD     2               TO  SUM-TOTALKENSU
                    WHEN    "3"
                        ADD     3               TO  SUM-TOTALKENSU
+                   WHEN    "4"
+                       ADD     3               TO  SUM-TOTALKENSU
+                   WHEN    "5"
+                       ADD     3               TO  SUM-TOTALKENSU
                END-EVALUATE
       *
                ADD     RECEDEN-TOTALTEN    TO  SUM-TOTALTEN
@@ -632,7 +644,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                WHEN    "RE"
                    INSPECT RECEDEN-RECEDATA   TALLYING    WRK-MOJISU
                                                FOR ALL "," 
-                   IF      WRK-MOJISU          =   16
+                   IF      WRK-MOJISU          =   16  OR  17
                        PERFORM VARYING IDX FROM    2500 BY  -1
                                UNTIL   IDX <       1
                            IF      RECEDEN-RECEDATA (IDX:1)
@@ -641,19 +653,29 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                                MOVE    1               TO  IDX
                            END-IF    
                        END-PERFORM   
-                       STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
-                                               DELIMITED  BY  SIZE
-                                 ","           DELIMITED  BY  SIZE
-                                 WRK-KAIGYO    DELIMITED  BY  SIZE
-                                 INTO          WRK-REC
-                       END-STRING
+                       IF      WRK-MOJISU          =   16
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,,,,,,,,"   DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                       END-IF
+                       IF      WRK-MOJISU          =   17
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,,,,,,,"    DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                       END-IF
                        MOVE    WRK-REC         TO  RECEDEN-RECEDATA
                    END-IF     
                WHEN    "TO"
                    INSPECT RECEDEN-RECEDATA    TALLYING    WRK-MOJISU
                                                FOR ALL "," 
-                   IF      WRK-MOJISU          =   9
-                       PERFORM VARYING IDX FROM    2500 BY  -1
+                   IF      WRK-MOJISU          =   9   OR  10
+                       PERFORM VARYING IDX FROM    2500    BY  -1
                                UNTIL   IDX <       1
                            IF      RECEDEN-RECEDATA (IDX:1)
                                                    =   WRK-KAIGYO
@@ -661,20 +683,75 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                                MOVE    1               TO  IDX
                            END-IF    
                        END-PERFORM   
-                       STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
-                                               DELIMITED  BY  SIZE
-                                 ","           DELIMITED  BY  SIZE
-                                 WRK-KAIGYO    DELIMITED  BY  SIZE
-                                 INTO          WRK-REC
-                       END-STRING
-                       MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                       IF      WRK-MOJISU          =   9
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,,,,,,"     DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                           MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                       END-IF
+                       IF      WRK-MOJISU          =   10
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,,,,,"      DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                           MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                       END-IF
                    END-IF     
                WHEN    "SY"
-                   IF      RECEDEN-RECEDATA (4:7)
-                                               =   "0000998"
-                       MOVE    "0000999"   TO
-                                           RECEDEN-RECEDATA (4:7)
-                   END-IF
+                   IF      RECEDEN-SRYYM       <   200804
+                       IF      RECEDEN-RECEDATA (4:7)
+                                                   =   "0000998"
+                           MOVE    "0000999"   TO
+                                               RECEDEN-RECEDATA (4:7)
+                       END-IF
+                       INSPECT RECEDEN-RECEDATA    TALLYING  WRK-MOJISU
+                                                   FOR ALL "," 
+                       IF      WRK-MOJISU          =   6
+                           PERFORM VARYING IDX FROM    2500 BY  -1
+                                   UNTIL   IDX <       1
+                               IF      RECEDEN-RECEDATA (IDX:1)
+                                                   =   WRK-KAIGYO
+                                   COMPUTE WRK-NAGASA  =   IDX     -   1
+                                   MOVE    1               TO  IDX
+                               END-IF    
+                           END-PERFORM   
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ","           DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                           MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                       END-IF     
+                   END-IF     
+               WHEN    "SI"
+               WHEN    "IY"
+                   IF      RECEDEN-SRYYM       <   200804
+                       INSPECT RECEDEN-RECEDATA    TALLYING  WRK-MOJISU
+                                                   FOR ALL "," 
+                       IF      WRK-MOJISU          =   6
+                           PERFORM VARYING IDX FROM    2500 BY  -1
+                                   UNTIL   IDX <       1
+                               IF      RECEDEN-RECEDATA (IDX:1)
+                                                       =   WRK-KAIGYO
+                                   COMPUTE WRK-NAGASA  =   IDX     -   1
+                                   MOVE    1               TO  IDX
+                               END-IF    
+                           END-PERFORM   
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,,,,,"      DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                           MOVE    WRK-REC     TO  RECEDEN-RECEDATA
+                       END-IF
+                   END-IF     
            END-EVALUATE
       *
            ADD     1                   TO  TABLE-MAX
@@ -707,6 +784,19 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                    UNTIL   IDX >       TABLE-MAX
                MOVE    TBL-RECEDATA (IDX)  TO  RECE30-R
                WRITE   RECE30-R
+      *
+               IF      STS-RECE30          =   "00"
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE               TO  WRK-RECEERR
+                   STRING "ファイル 書き込みエラー STS="
+                                                   DELIMITED  BY  SIZE
+                           STS-RECE30              DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+                   END-STRING
+                   PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
+               END-IF
       *
                ADD     1                   TO  CNT-OUT
            END-PERFORM
@@ -800,11 +890,13 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "パラメタＤＢの更新処理でエラーとなりました"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
                END-IF
            ELSE
                MOVE    "対象のパラメタＤＢが存在しません" 
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
       *
            .
@@ -929,6 +1021,23 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                            FLG-ERR
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCBM500 "         DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
