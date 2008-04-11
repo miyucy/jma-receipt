@@ -1188,9 +1188,9 @@
            INITIALIZE                      SYS-1013-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1013-HOSPNUM
            MOVE    "1013"              TO  SYS-1013-KANRICD
-           MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    SPA-S01-SRYYMD      TO  SYS-1013-STYUKYMD
                                            SYS-1013-EDYUKYMD
+           MOVE    SYS-1013-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
@@ -3232,8 +3232,6 @@
                ELSE
                    MOVE   "00"             TO  SMEI-NYUKIN-HOHO
                END-IF
-      *
-               DISPLAY "SPA-NAI-PROC-FLG =  " SPA-NAI-PROC-FLG
       *
       *        ≈¡…ºæı¬÷∂Ë ¨
                EVALUATE    SPA-NAI-PROC-FLG
