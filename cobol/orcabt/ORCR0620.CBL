@@ -1611,8 +1611,8 @@
                                                TO  MONTHLYNUM-NYUGAIKBN
                        MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                        MOVE    "tbl_monthlynum"
-                                               TO  MCP-TABLE
-                       MOVE    "key4"          TO  MCP-PATHNAME
+                                               TO  WRK-MCP-TABLE
+                       MOVE    "key4"          TO  WRK-MCP-PATHNAME
                        PERFORM 910-MONTHLYNUM-READ-SEC
                        IF    ( FLG-MONTHLYNUM          =   ZERO  )
                            MOVE    MONTHLYNUM-JKYSNUM 
@@ -1627,8 +1627,8 @@
                                                    MONTHLYNUM-NYUGAIKBN
                            MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
                            MOVE    "tbl_monthlynum"
-                                                   TO  MCP-TABLE
-                           MOVE    "key4"          TO  MCP-PATHNAME
+                                                   TO  WRK-MCP-TABLE
+                           MOVE    "key4"          TO  WRK-MCP-PATHNAME
                            PERFORM 910-MONTHLYNUM-READ-SEC
                            IF    ( FLG-MONTHLYNUM          =   ZERO  )
                                MOVE    MONTHLYNUM-JKYSNUM 
@@ -3157,11 +3157,13 @@
       *****************************************************************
        910-MONTHLYNUM-READ-SEC         SECTION.
       *
-           PERFORM   900-DBSELECT-SEC
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC               =   ZERO
-               MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM   900-DBFETCH-SEC
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC               =   ZERO
                    MOVE    ZERO                 TO  FLG-MONTHLYNUM
                    MOVE    MCPDATA-REC          TO  MONTHLYNUM-REC
@@ -3172,8 +3174,8 @@
                MOVE    1                   TO  FLG-MONTHLYNUM
            END-IF
       *
-           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .
