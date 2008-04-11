@@ -5920,6 +5920,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            次标迹闻∈０３８∷∈Ｈ２０ˉ４笆惯∷
                  OR  ((SPA-PTKOH-KOHNUM(IDX)   =   "038" )  AND
                       (SPA-PTKOH-TEKSTYMD(IDX) >=  "20080401"))
+      *            荒伪水客∈０２５∷∈Ｈ２０ˉ４笆惯∷
+                 OR  ((SPA-PTKOH-KOHNUM(IDX)   =   "025" )  AND
+                      (SPA-PTKOH-TEKSTYMD(IDX) >=  "20080401"))
+      *
                    MOVE    ZERO                TO  IDY
                    PERFORM VARYING     IDX2    FROM    1   BY  1
                            UNTIL       IDX2    >   SPA-FTN1-MAX
