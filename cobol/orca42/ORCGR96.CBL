@@ -781,21 +781,6 @@ grpsys         MOVE    SPA-HOSPNUM TO  PTINF-HOSPNUM
                MOVE    "0007"              TO  SPA-ERRCD
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-NAI-R96-SRYYM   >=  200804
-                   IF    ( MCP-WIDGET          =   "B05"  )
-                   AND   ( SPA-NAI-R96-SRYYM   =   200804 )
-                       CONTINUE
-                   ELSE 
-                       MOVE    "0200"          TO  SPA-ERRCD
-                   END-IF
-               END-IF    
-               IF    ( SPA-NAI-R96-SRYYM   =   200803 )
-               AND   ( MCP-WIDGET          =   "B08"  )
-                   MOVE    "0200"          TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    1               TO  SPA-GMN-R96-CUR
            END-IF
@@ -960,6 +945,9 @@ grpsys         MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                                    SPA-GMN-R96-PTNUM-TTEISYUTUSAKI(IDX1)
                            WHEN    "2"
                                MOVE    "πÒ ›"  TO  
+                                   SPA-GMN-R96-PTNUM-TTEISYUTUSAKI(IDX1)
+                           WHEN    "6"
+                               MOVE    "π≠∞Ë"  TO  
                                    SPA-GMN-R96-PTNUM-TTEISYUTUSAKI(IDX1)
                        END-EVALUATE
                        EVALUATE    LNK-SYUBETU-RECESYUBETU  (IDY)
@@ -1454,6 +1442,27 @@ grpsys         MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
                                        TO  RECE10-PTID
                MOVE    1               TO  RECE10-TEISYUTUSAKI
                MOVE    2               TO  RECE10-XXTEISYUTUSAKI 
+               MOVE    RECE10-REC      TO  MCPDATA-REC
+               MOVE    "tbl_seikyu"    TO  MCP-TABLE
+               MOVE    "del7"          TO  MCP-PATHNAME
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC      NOT =   ZERO
+                   DISPLAY "SEIKYU KEY=" RECE10-KEY
+                   MOVE    "1002"          TO  SPA-ERRCD
+                   GO  TO  490-SETTEI-EXT
+               END-IF
+      *
+               INITIALIZE                  RECE10-REC
+               MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
+               MOVE    SPA-NAI-R96-SRYYM
+                                       TO  RECE10-SRYYM
+               MOVE    SPA-GMN-R96-NYUGAIKBN
+                                       TO  RECE10-NYUGAIKBN
+               MOVE    SPA-NAI-R96-PTID
+                                       TO  RECE10-PTID
+               MOVE    6               TO  RECE10-TEISYUTUSAKI
+               MOVE    6               TO  RECE10-XXTEISYUTUSAKI 
                MOVE    RECE10-REC      TO  MCPDATA-REC
                MOVE    "tbl_seikyu"    TO  MCP-TABLE
                MOVE    "del7"          TO  MCP-PATHNAME
