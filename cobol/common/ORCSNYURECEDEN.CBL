@@ -60,6 +60,7 @@
       *平成２０年４月改定対応
       *  04.02.00    NACL-小豆沢  08/03/25  広域連合（後期高齢者）のレセ電対応
       *  04.02.00    NACL-小豆沢  08/04/11  退院加算のレセ電対応（読み飛ばし）
+      *  04.02.00    NACL-小豆沢  08/04/14  有床診療所の加算を注加算通番順に記録
       *****************************************************************
       *
       *
@@ -246,9 +247,10 @@
       *    夜間看護配置加算１
       *    夜間看護配置加算２
            03  WRK-CHUKSN-NYUKSN-AREA.
-               05  WRK-CHUKSN-NYUKSN         PIC X(09).
-               05  WRK-CHUKSN-NYUKSN-ZAITEN  PIC 9(08).
-               05  WRK-CHUKSN-NYUKSN-DAY     PIC 9(03)  OCCURS 31.
+             05   WRK-CHUKSN-NYUKSN-TBL      OCCURS   6.
+               07  WRK-CHUKSN-NYUKSN         PIC X(09).
+               07  WRK-CHUKSN-NYUKSN-ZAITEN  PIC 9(08).
+               07  WRK-CHUKSN-NYUKSN-DAY     PIC 9(03)  OCCURS 31.
       *
       *    入院料加算退避領域
            03  WRK-NYUKSN-TABLE.
@@ -1198,6 +1200,102 @@
       *
            END-IF
       *
+      *    有床診療所の入院料加算（平成２０年４月から）
+           IF   (SPA-HOSPSBT                 =    2)    AND
+                (LNK-NYURECEDEN-SANTEIYM    >=   "200804")
+      *
+      *      入院時の入院料加算取得（入院会計より）
+      *      （夜間緊急体制確保加算）
+             MOVE    ZERO                    TO  KSN-IDX
+             INITIALIZE                          NYUINACCT-REC
+             MOVE    LNK-NYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
+             MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
+             MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
+             MOVE    "6"                     TO  NACCT-ZAISKBKBN
+             MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+             MOVE    "key17"                 TO  MCP-PATHNAME
+             PERFORM 910-NYUINACCT-SELECT-SEC
+             IF      FLG-NYUINACCT           =   ZERO
+               MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
+               MOVE     "key17"            TO  MCP-PATHNAME
+               PERFORM   910-NYUINACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+                   MOVE      ZERO     TO      FLG-RYAKU
+      *            入院料加算の退避
+                   PERFORM    VARYING   IDX1   FROM   1   BY   1
+                              UNTIL     IDX1   >   31
+                       IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
+                             (LNK-NYUINDAY-KBN(IDX1) = "1"))
+                       AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
+                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
+                         IF   NACCT-SRYCDTOTAL(6:9)  =   190126470
+                           MOVE   NACCT-SRYCDTOTAL(6:9)
+                                     TO  WRK-CHUKSN-NYUKSN(1)
+                           MOVE   NACCT-ZAITEN  
+                                     TO  WRK-CHUKSN-NYUKSN-ZAITEN(1)
+                           MOVE   NACCT-DAY(IDX1)
+                                     TO WRK-CHUKSN-NYUKSN-DAY(1 IDX1)
+                         END-IF
+      *
+                       END-IF
+                   END-PERFORM
+                   MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+                   MOVE    "key17"                 TO  MCP-PATHNAME
+                   PERFORM 910-NYUINACCT-READ-SEC
+               END-PERFORM
+             END-IF
+      *      入院会計クローズ
+             MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+             MOVE    "key17"                 TO  MCP-PATHNAME
+             PERFORM   900-CLOSE-SEC
+      *
+      *      入院時の入院料加算取得（入院会計より）
+      *      （医師配置適合加算）
+             MOVE    ZERO                    TO  KSN-IDX
+             INITIALIZE                          NYUINACCT-REC
+             MOVE    LNK-NYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
+             MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
+             MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
+             MOVE    "6"                     TO  NACCT-ZAISKBKBN
+             MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+             MOVE    "key17"                 TO  MCP-PATHNAME
+             PERFORM 910-NYUINACCT-SELECT-SEC
+             IF      FLG-NYUINACCT           =   ZERO
+               MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
+               MOVE     "key17"            TO  MCP-PATHNAME
+               PERFORM   910-NYUINACCT-READ-SEC
+               PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
+                   MOVE      ZERO     TO      FLG-RYAKU
+      *            入院料加算の退避
+                   PERFORM    VARYING   IDX1   FROM   1   BY   1
+                              UNTIL     IDX1   >   31
+                       IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
+                             (LNK-NYUINDAY-KBN(IDX1) = "1"))
+                       AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
+                       AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
+                         IF   NACCT-SRYCDTOTAL(6:9)  =   190117070
+                           MOVE   NACCT-SRYCDTOTAL(6:9)
+                                     TO  WRK-CHUKSN-NYUKSN(2)
+                           MOVE   NACCT-ZAITEN  
+                                     TO  WRK-CHUKSN-NYUKSN-ZAITEN(2)
+                           MOVE   NACCT-DAY(IDX1)
+                                     TO  WRK-CHUKSN-NYUKSN-DAY(2 IDX1)
+                         END-IF
+      *
+                       END-IF
+                   END-PERFORM
+                   MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+                   MOVE    "key17"                 TO  MCP-PATHNAME
+                   PERFORM 910-NYUINACCT-READ-SEC
+               END-PERFORM
+             END-IF
+      *      入院会計クローズ
+             MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+             MOVE    "key17"                 TO  MCP-PATHNAME
+             PERFORM   900-CLOSE-SEC
+      *
+           END-IF
+      *
       *入院時の入院料加算取得（入院会計より）
            MOVE    ZERO                    TO  KSN-IDX
            INITIALIZE                          NYUINACCT-REC
@@ -1222,10 +1320,15 @@
                              (LNK-NYUINDAY-KBN(IDX1) = "1"))
                        AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
-                         IF ((SPA-HOSPSBT                 =    2) AND
+                         IF (((SPA-HOSPSBT                 =    2) AND
                              (LNK-NYURECEDEN-SANTEIYM <= "200803")) AND
                             ((NACCT-SRYCDTOTAL(6:9) =  190117070)  OR
-                             (NACCT-SRYCDTOTAL(6:9) =  190109670))
+                             (NACCT-SRYCDTOTAL(6:9) =  190109670)))
+                                        OR
+                            (((SPA-HOSPSBT                 =    2) AND
+                             (LNK-NYURECEDEN-SANTEIYM >= "200804")) AND
+                            ((NACCT-SRYCDTOTAL(6:9) =  190126470)  OR
+                             (NACCT-SRYCDTOTAL(6:9) =  190117070)))
                              CONTINUE
                          ELSE
                            IF   FLG-KSN   =  ZERO
@@ -1543,22 +1646,46 @@
                                                            (IDX1 IDX1)
                END-IF
       *
-      *        入院会計加算情報（複数医師及び看護配置適合加算）（平成２０年３月まで）
-               IF    WRK-FUKUSU-NYUKSN-DAY(IDX1)  =  ZERO
-                   CONTINUE
-               ELSE
-                   ADD   1               TO  WRK-MEISAISU
-                   MOVE  WRK-FUKUSU-NYUKSN
+               IF  (SPA-HOSPSBT                 =    2)    AND  
+                   (LNK-NYURECEDEN-SANTEIYM     <=   "200803")
+      *            入院会計加算情報（複数医師及び看護配置適合加算）（平成２０年３月まで）
+                   IF    WRK-FUKUSU-NYUKSN-DAY(IDX1)  =  ZERO
+                       CONTINUE
+                   ELSE
+                       ADD   1    TO  WRK-MEISAISU
+                       MOVE  WRK-FUKUSU-NYUKSN
                                   TO  WRK-SO-SRYCD(IDX1 WRK-MEISAISU)
+                   END-IF
+      *
+      *            入院会計加算情報（看護配置適合加算）（平成２０年３月まで）
+                   IF    WRK-KANGO-NYUKSN-DAY(IDX1)  =  ZERO
+                       CONTINUE
+                   ELSE
+                       ADD   1    TO  WRK-MEISAISU
+                       MOVE  WRK-KANGO-NYUKSN
+                                  TO  WRK-SO-SRYCD(IDX1 WRK-MEISAISU)
+                   END-IF
                END-IF
       *
-      *        入院会計加算情報（看護配置適合加算）（平成２０年３月まで）
-               IF    WRK-KANGO-NYUKSN-DAY(IDX1)  =  ZERO
-                   CONTINUE
-               ELSE
-                   ADD   1               TO  WRK-MEISAISU
-                   MOVE  WRK-KANGO-NYUKSN
+               IF  (SPA-HOSPSBT                 =    2)    AND  
+                   (LNK-NYURECEDEN-SANTEIYM     >=   "200804")
+      *            入院会計加算情報（夜間緊急体制確保加算）（平成２０年４月から）
+                   IF    WRK-CHUKSN-NYUKSN-DAY(1 IDX1)  =  ZERO
+                       CONTINUE
+                   ELSE
+                       ADD   1    TO  WRK-MEISAISU
+                       MOVE  WRK-CHUKSN-NYUKSN(1)
                                   TO  WRK-SO-SRYCD(IDX1 WRK-MEISAISU)
+                   END-IF
+      *
+      *            入院会計加算情報（医師配置適合加算）（平成２０年４月から）
+                   IF    WRK-CHUKSN-NYUKSN-DAY(2 IDX1)  =  ZERO
+                       CONTINUE
+                   ELSE
+                       ADD   1    TO  WRK-MEISAISU
+                       MOVE  WRK-CHUKSN-NYUKSN(2)
+                                  TO  WRK-SO-SRYCD(IDX1 WRK-MEISAISU)
+                   END-IF
                END-IF
       *
       *        入院会計加算情報
