@@ -2910,10 +2910,10 @@
                  END-IF
                END-IF
       *
-               IF     SRY-SRYCD(IDX2)  =  "190128410" OR "190128310"
-                                                      OR "190128570"
-                  MOVE      1             TO    RECE64-NYUKSNFLG
-               END-IF
+      ***      IF     SRY-SRYCD(IDX2)  =  "190128410" OR "190128310"
+      ***                                             OR "190128570"
+      ***         MOVE      1             TO    RECE64-NYUKSNFLG
+      ***      END-IF
       *
                IF    ( SRY-SRYKBN         =     "60" OR "64" )
                AND   ( TNS-KNSJISKBN      =      2           )
