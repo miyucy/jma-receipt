@@ -1310,18 +1310,25 @@
       *        Ï·¿Í
       *        £È£±£¸¡¥£±£° ²þÀµ
                IF      SPA-NAI-HTEKSTYMD   >=  "20061001"
-                   IF      (SPA-GMN-HOJO-MAX    =   8      )  AND
-                           (SPA-GMN-HOJOKBN     NOT =   "7"  AND
-                                                        "9")
-                       MOVE    "1066"          TO  SPA-ERRCD
-                       MOVE    11              TO  SPA-GMN-CUR
+                   IF      (SPA-GMN-HOJO-MAX    =   8      )
+                       IF     (SPA-GMN-HOJOKBN     =   "7"
+                                                   OR  "9")
+                           CONTINUE
+                       ELSE
+                           MOVE    "1066"          TO  SPA-ERRCD
+                           MOVE    11              TO  SPA-GMN-CUR
+                       END-IF
                    END-IF
                ELSE
-                   IF      (SPA-GMN-HOJO-MAX    =   8      )  AND
-                           (SPA-GMN-HOJOKBN     NOT =   "8"  AND
-                                                        "9")
-                       MOVE    "1066"          TO  SPA-ERRCD
-                       MOVE    11              TO  SPA-GMN-CUR
+                   IF      (SPA-NAI-HTEKSTYMD  NOT =   SPACE )
+                      AND  (SPA-GMN-HOJO-MAX       =   8     )
+                       IF     (SPA-GMN-HOJOKBN     =   "8"
+                                                   OR  "9")
+                           CONTINUE
+                       ELSE
+                           MOVE    "1066"          TO  SPA-ERRCD
+                           MOVE    11              TO  SPA-GMN-CUR
+                       END-IF
                    END-IF
                END-IF
            END-IF
