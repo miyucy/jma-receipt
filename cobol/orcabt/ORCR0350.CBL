@@ -3554,10 +3554,13 @@
                          OR      ( RECE65-SRYCD(IDX) =   SPACE )
                          OR      ( FLG-END           =   1     )
       *
-      *         入院料はコメントかレセ電用入院料加算フラグ対象のみ対象とする
+      *         入院料はコメントか退院加算のみ対象とする
                 IF    ( RECE641-SRYKBN               >=  "90"      )
                 AND   ( RECE65-SRYCD (IDX) (1:1) NOT =   "8"   AND
-                        RECE65-SRYCD (IDX) (1:3) NOT =   "008"     )
+                        RECE65-SRYCD (IDX) (1:3) NOT =   "008" AND
+                        RECE65-SRYCD (IDX)       NOT =   "190128310" AND
+                        RECE65-SRYCD (IDX)       NOT =   "190128410" AND
+                        RECE65-SRYCD (IDX)       NOT =   "190128570"  )
                  CONTINUE
                 ELSE
                  IF      RECE65-RECEDENFLG (IDX)     =   SPACE
