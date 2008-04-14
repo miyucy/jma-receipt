@@ -180,6 +180,8 @@
       *  04.02.03    NACL-藤原    08/03/25  広域連合対応
       *                                     中国残留法人等
       *                                     レセプト種別
+      *  04.02.04    NACL-藤原    08/04/14  月途中の負担者番号変更対応
+      *                                     （中国残留法人等の公費単独） 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -973,10 +975,14 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *    公費単独の場合
            IF      RECE01-HKNNUM        =   SPACE
                IF      RECE01-TEKSTYMD      =   ZERO
-                   IF    ( RECE01-KOHHKNNUM-O (1)  = "012" OR  SPACE )
-                   AND   ( RECE01-KOHHKNNUM-O (2)  = "012" OR  SPACE )
-                   AND   ( RECE01-KOHHKNNUM-O (3)  = "012" OR  SPACE )
-                   AND   ( RECE01-KOHHKNNUM-O (4)  = "012" OR  SPACE )
+                   IF    ( RECE01-KOHHKNNUM-O (1)  = "012" OR  "025" 
+                                                           OR  SPACE )
+                   AND   ( RECE01-KOHHKNNUM-O (2)  = "012" OR  "025" 
+                                                           OR  SPACE )
+                   AND   ( RECE01-KOHHKNNUM-O (3)  = "012" OR  "025" 
+                                                           OR  SPACE )
+                   AND   ( RECE01-KOHHKNNUM-O (4)  = "012" OR  "025" 
+                                                           OR  SPACE )
                        GO  TO  210-HENSYU-EXT
                    ELSE
                        MOVE    1                TO  FLG-SEIHO

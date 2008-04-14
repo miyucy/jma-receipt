@@ -60,6 +60,8 @@
       *                                     通常の記載方法に戻す 
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/04/14  月途中の負担者番号変更対応
+      *                                     （中国残留法人等の公費単独） 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1292,7 +1294,8 @@ grpsys         IF      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *
       *    生保単独のみのとき
            IF    ( COMB-HKNNUM         =   SPACE )
-           AND   ( COMB-KOHHKNNUM (1)  =   "012" )
+           AND   ( COMB-KOHHKNNUM (1)  =   "012"
+                                       OR  "025" )
            AND   ( COMB-KOHHKNNUM (2)  =   SPACE )
                PERFORM 200194-SEIHO-RECE61-WRITE-SEC
            END-IF
@@ -1767,13 +1770,17 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                    ELSE 
                        IF      WRK-RECE61-TEKSTYMD  =   ZERO
                            IF    ( WRK-RECE61-KOHHKNNUM-O (1)
-                                                    = "012" OR SPACE )
+                                                    = "012" OR  "025"
+                                                            OR SPACE )
                            AND   ( WRK-RECE61-KOHHKNNUM-O (2) 
-                                                    = "012" OR SPACE )
+                                                    = "012" OR  "025"
+                                                            OR SPACE )
                            AND   ( WRK-RECE61-KOHHKNNUM-O (3) 
-                                                    = "012" OR SPACE )
+                                                    = "012" OR  "025"
+                                                            OR SPACE )
                            AND   ( WRK-RECE61-KOHHKNNUM-O (4) 
-                                                    = "012" OR SPACE )
+                                                    = "012" OR  "025"
+                                                            OR SPACE )
                                MOVE    1                TO  FLG-WRITE 
                            ELSE
                                MOVE    1                TO  FLG-SEIHO

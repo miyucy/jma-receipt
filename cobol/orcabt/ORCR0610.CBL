@@ -115,6 +115,8 @@
       *  04.02.03    NACL-藤原    08/03/25  広域連合対応
       *                                     肝炎治療特別促進事業
       *                                     中国残留法人等の追加
+      *  04.02.04    NACL-藤原    08/04/14  月途中の負担者番号変更対応
+      *                                     （中国残留法人等の公費単独） 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2066,7 +2068,8 @@
       *    生保単独のみのとき
            IF    ( WRK-SYOKBN          =   "1"   )
            AND   ( COMB-HKNNUM         =   SPACE )
-           AND   ( COMB-KOHHKNNUM (1)  =   "012" )
+           AND   ( COMB-KOHHKNNUM (1)  =   "012"
+                                       OR  "025" )
            AND   ( COMB-KOHHKNNUM (2)  =   SPACE )
                PERFORM 20013-SEIHO-RECE61-WRITE-SEC
            END-IF
