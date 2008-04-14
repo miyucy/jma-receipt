@@ -366,6 +366,24 @@ grpsys COPY    "COMMON-SPA".
                WHEN    "2" ALSO    "2"
                    MOVE    "レセ電ファイル作成（国保・入院外）"
                                            TO  JOB-SHELLMSG
+               WHEN    "3" ALSO    ZERO
+                   MOVE    "レセ電ファイル作成（広域）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "3" ALSO    "1"
+                   MOVE    "レセ電ファイル作成（広域・入院）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "3" ALSO    "2"
+                   MOVE    "レセ電ファイル作成（広域・入院外）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "4" ALSO    ZERO
+                   MOVE    "レセ電ファイル作成（国保、広域）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "4" ALSO    "1"
+                   MOVE    "レセ電ファイル作成（国保、広域・入院）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "4" ALSO    "2"
+                   MOVE    "レセ電ファイル作成（国保、広域・入院外）"
+                                           TO  JOB-SHELLMSG
            END-EVALUATE
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
@@ -390,6 +408,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "key24"                 TO  WRK-MCP-PATHNAME
                WHEN    "2" ALSO    ANY
                    MOVE    "key26"                 TO  WRK-MCP-PATHNAME
+               WHEN    "3" ALSO    ANY
+               WHEN    "4" ALSO    ANY
+                   MOVE    "key67"                 TO  WRK-MCP-PATHNAME
            END-EVALUATE
            MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
            PERFORM 900-SEIKYU-SELECT-SEC
@@ -482,7 +503,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                                            WRK-PTNUM-LENGTH
       *
       *???
-               DISPLAY "PTNUM=" RECE10-PTNUM 
+               DISPLAY "PTNUM=" RECE10-PTNUM
+                       " TEISYUTUSAKI=" RECE10-TEISYUTUSAKI 
+                       " RECESYUBETU="  RECE10-RECESYUBETU 
       *???
                PERFORM 900-RECEDEN-SELECT-SEC
                PERFORM     UNTIL   FLG-RECEDEN =   1
@@ -612,10 +635,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                    WHEN    "2"
                        ADD     2               TO  SUM-TOTALKENSU
                    WHEN    "3"
-                       ADD     3               TO  SUM-TOTALKENSU
-                   WHEN    "4"
-                       ADD     3               TO  SUM-TOTALKENSU
-                   WHEN    "5"
                        ADD     3               TO  SUM-TOTALKENSU
                END-EVALUATE
       *
@@ -984,6 +1003,24 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "2" ALSO    "2"
                    MOVE    "レセ電データ（国保・入院外）"
                                            TO  SFILESV-TITLE    (1)
+               WHEN    "3" ALSO    ZERO
+                   MOVE    "レセ電データ（広域）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "3" ALSO    "1"
+                   MOVE    "レセ電データ（広域・入院）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "3" ALSO    "2"
+                   MOVE    "レセ電データ（広域・入院外）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "4" ALSO    ZERO
+                   MOVE    "レセ電データ（国保、広域）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "4" ALSO    "1"
+                   MOVE    "レセ電データ（国保、広域・入院）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "4" ALSO    "2"
+                   MOVE    "レセ電データ（国保、広域・入院外）"
+                                           TO  SFILESV-TITLE    (1)
            END-EVALUATE
            MOVE    "1"             TO  SFILESV-DATA-TYPE(1)
       *
@@ -1211,6 +1248,25 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+           EVALUATE    WRK-PARA-TEISYUTUSAKI
+                           ALSO    WRK-PARA-NYUGAIKBN   
+               WHEN    "3" ALSO    ZERO
+                   MOVE    "6"                 TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI 
+                   MOVE    "%"                 TO  RECE10-NYUGAIKBN
+               WHEN    "3" ALSO    ANY
+                   MOVE    "6"                 TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI 
+                   MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+               WHEN    "4" ALSO    ZERO
+                   MOVE    "2"                 TO  RECE10-TEISYUTUSAKI
+                   MOVE    "6"                 TO  RECE10-XXTEISYUTUSAKI 
+                   MOVE    "%"                 TO  RECE10-NYUGAIKBN
+               WHEN    "4" ALSO    ANY
+                   MOVE    "2"                 TO  RECE10-TEISYUTUSAKI
+                   MOVE    "6"                 TO  RECE10-XXTEISYUTUSAKI 
+                   MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+           END-EVALUATE
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
