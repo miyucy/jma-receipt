@@ -2376,6 +2376,12 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
                                        TO  LNK-KOREIFTNCHK-SYUGAKUKBN
                 MOVE    FLG-ZENKI-TOKUREI
                                        TO  LNK-KOREIFTNCHK-TOKUREI
+                IF      RECE02-SRYYM   >=  "200804"
+                   MOVE   RECE02-KOHID(1)
+                                       TO  LNK-KOREIFTNCHK-KOHID-CYOKI
+                ELSE
+                   MOVE   ZERO         TO  LNK-KOREIFTNCHK-KOHID-CYOKI
+                END-IF
       *
                 CALL    "ORCSKOREIFTNCHK"   USING
                                             ORCSKOREIFTNCHKAREA

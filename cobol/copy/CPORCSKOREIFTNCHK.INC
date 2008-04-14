@@ -39,6 +39,7 @@
       *  03.05.02    NACL-門脇    07/12/03  県番号追加
       *  04.02.01    NACL-門脇    08/04/01  就学前区分追加
       *                                     軽減特例措置対象者区分追加
+      *                                     マル長公費ＩＤ追加
       ************************************************************
        01  ORCSKOREIFTNCHKAREA.
       *
@@ -83,6 +84,8 @@
            03  LNK-KOREIFTNCHK-SYUGAKUKBN   PIC 9(01).
       *    軽減特例措置対象者区分
            03  LNK-KOREIFTNCHK-TOKUREI      PIC 9(01).
+      *    マル長公費ＩＤ
+           03  LNK-KOREIFTNCHK-KOHID-CYOKI  PIC 9(10).
       *
       *返却値
            03  LNK-KOREIFTNCHK-OUT-AREA.

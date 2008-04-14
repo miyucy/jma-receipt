@@ -64,6 +64,7 @@
            03  FLG-PTHKNINF          PIC 9(01).
            03  FLG-TOKUREI-HKNJYA    PIC 9(01).
            03  FLG-PTKOHINF          PIC 9(01).
+           03  FLG-CYOKINOMI         PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -89,6 +90,9 @@
            03  WRK-DOTANDOKU-TBL.
              04  WRK-DOTANDOKU-OCC      OCCURS   4.
                05  WRK-DOTANDOKU     PIC 9(01).
+      *
+           03  WRK-CYOKI-HKNCOMBINUM PIC 9(04).
+           03  WRK-KOHID-CYOKI       PIC 9(10).
       *
       *    ¶¦ÄÌÎÎ°è
            COPY    "MCPAREA".
@@ -295,12 +299,50 @@ grpsys     MOVE    LNK-KOREIFTNCHK-HOSPNUM TO  COMB-HOSPNUM
            PERFORM   920-DB-CLOSE-SEC
       *
       *    ¼ýÇ¼¥Þ¥¹¥¿¤«¤é°ìÉôÉéÃ´³Û¥Á¥§¥Ã¥¯Åù
+           MOVE       ZERO      TO    FLG-CYOKINOMI
+           MOVE       ZERO      TO    WRK-CYOKI-HKNCOMBINUM
            IF      LNK-KOREIFTNCHK-NYUGAIKBN  =  "1"
                PERFORM       220-NYUIN-SYUKEI-SEC
            ELSE
                IF  LNK-KOREIFTNCHK-RECEKA     =  SPACE
                    PERFORM   230-GAIRAI-SYUKEI-SEC
                END-IF
+           END-IF
+      *
+           MOVE       ZERO      TO    WRK-KOHID-CYOKI
+           IF    LNK-KOREIFTNCHK-SRYYM     >=  "200804"
+           AND   LNK-KOREIFTNCHK-RC         =   ZERO
+             IF    FLG-CYOKINOMI              =    1
+             AND   WRK-CYOKI-HKNCOMBINUM  NOT =   ZERO
+               INITIALIZE                          HKNCOMBI-REC
+               MOVE    LNK-KOREIFTNCHK-HOSPNUM TO  COMB-HOSPNUM
+               MOVE    LNK-KOREIFTNCHK-PTID    TO  COMB-PTID
+               MOVE    WRK-CYOKI-HKNCOMBINUM   TO  COMB-HKNCOMBINUM
+               MOVE    "tbl_hkncombi"          TO  MCP-TABLE
+               MOVE    "key"                   TO  MCP-PATHNAME
+               PERFORM 900-HKNCOMBI-SELECT-SEC
+               IF      FLG-HKNCOMBI            =   ZERO
+                 MOVE    "tbl_hkncombi"        TO  MCP-TABLE
+                 MOVE    "key"                 TO  MCP-PATHNAME
+                 PERFORM 910-HKNCOMBI-READ-SEC
+                 IF    FLG-HKNCOMBI            =   ZERO
+                    MOVE   COMB-KOH1ID         TO  WRK-KOHID-CYOKI
+                 END-IF
+               END-IF
+               MOVE     "tbl_hkncombi"         TO  MCP-TABLE
+               MOVE     "key"                  TO  MCP-PATHNAME
+               PERFORM   920-DB-CLOSE-SEC
+      *
+               IF   LNK-KOREIFTNCHK-KOHID-CYOKI  NOT = ZERO
+               AND  LNK-KOREIFTNCHK-KOHID-CYOKI   =
+                                             WRK-KOHID-CYOKI
+                 CONTINUE
+               ELSE
+                 INITIALIZE     LNK-KOREIFTNCHK-OUT-AREA
+               END-IF
+             ELSE
+                 INITIALIZE     LNK-KOREIFTNCHK-OUT-AREA
+             END-IF
            END-IF
       *
            .
@@ -567,6 +609,20 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                   PERFORM 910-SYUNOU-READ-SEC
                   PERFORM  UNTIL
                              (FLG-SYUNOU        =    1)
+      *
+                   IF  ( SYU-KOH-HKNNUM(1)  =  "972" OR "974" )
+                   AND ( SYU-KOH-HKNNUM(2)  =  SPACE          )
+                   AND ( SYU-KOH-HKNNUM(3)  =  SPACE          )
+                   AND ( SYU-KOH-HKNNUM(4)  =  SPACE          )
+                      IF    FLG-CYOKINOMI   =  ZERO
+                         MOVE     1     TO    FLG-CYOKINOMI
+                         MOVE   WRK-HKNCOMBINUM(IDX1)
+                                        TO    WRK-CYOKI-HKNCOMBINUM
+                      END-IF
+                   ELSE
+                         MOVE     9     TO    FLG-CYOKINOMI
+                         MOVE   ZERO    TO    WRK-CYOKI-HKNCOMBINUM
+                   END-IF
       *
                    EVALUATE   LNK-KOREIFTNCHK-NENREIKBN
                      WHEN       "1"
@@ -1041,6 +1097,20 @@ grpsys        MOVE    LNK-KOREIFTNCHK-HOSPNUM   TO  SYU-HOSPNUM
                   PERFORM 910-SYUNOU-READ-SEC
                   PERFORM  UNTIL
                              (FLG-SYUNOU        =    1)
+      *
+                   IF  ( SYU-KOH-HKNNUM(1)  =  "972" OR "974" )
+                   AND ( SYU-KOH-HKNNUM(2)  =  SPACE          )
+                   AND ( SYU-KOH-HKNNUM(3)  =  SPACE          )
+                   AND ( SYU-KOH-HKNNUM(4)  =  SPACE          )
+                      IF    FLG-CYOKINOMI   =  ZERO
+                         MOVE     1     TO    FLG-CYOKINOMI
+                         MOVE   WRK-HKNCOMBINUM(IDX1)
+                                        TO    WRK-CYOKI-HKNCOMBINUM
+                      END-IF
+                   ELSE
+                         MOVE     9     TO    FLG-CYOKINOMI
+                         MOVE   ZERO    TO    WRK-CYOKI-HKNCOMBINUM
+                   END-IF
       *
                    EVALUATE   LNK-KOREIFTNCHK-NENREIKBN
                      WHEN       "1"
