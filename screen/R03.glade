@@ -261,7 +261,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 19 Jan 2001 07:08:11 GMT</last_modification_time>
       </signal>
-      <label>生保入力</label>
+      <label>生保等入力</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
