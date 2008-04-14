@@ -59,6 +59,7 @@
       *  04.01.00    NACL-小豆沢  08/02/04  標欠と定数超過の外泊修正
       *平成２０年４月改定対応
       *  04.02.00    NACL-小豆沢  08/03/25  広域連合（後期高齢者）のレセ電対応
+      *  04.02.00    NACL-小豆沢  08/04/11  退院加算のレセ電対応（読み飛ばし）
       *****************************************************************
       *
       *
@@ -146,6 +147,16 @@
       *    点数マスタ読み込みワーク用
            03  TTNS-CONST-MAX              PIC 9(03) VALUE 200.
       *
+      *
+      *    退院加算（障害者施設等入院基本料等算定患者）
+           03  CONS-TAIIN1                 PIC X(09) VALUE "190128410".
+      *    退院加算（療養病棟入院基本料等算定患者）
+           03  CONS-TAIIN2                 PIC X(09) VALUE "190128310".
+      *    早期退院加算
+           03  CONS-TAIIN3                 PIC X(09) VALUE "190128570".
+      *    退院加算（障害者施設等入院基本料等算定患者）＋早期退院加算
+           03  CONS-TAIIN4                 PIC X(09) VALUE "380256980".
+      *
       *    一時領域
        01  WRK-AREA.
       *
@@ -215,17 +226,29 @@
                    07  WRK-IRYOADL-GAITOU-TBL.
                      09  WRK-IRYOADL-GAITOU-KBN   PIC 9(01)  OCCURS 31.
       *
-      *    複数医師及び看護配置適合加算退避領域
+      *    複数医師及び看護配置適合加算退避領域（平成２０年３月まで）
            03  WRK-FUKUSU-NYUKSN-AREA.
                    07  WRK-FUKUSU-NYUKSN         PIC X(09).
                    07  WRK-FUKUSU-NYUKSN-ZAITEN  PIC 9(08).
                    07  WRK-FUKUSU-NYUKSN-DAY     PIC 9(03)  OCCURS 31.
       *
-      *    看護配置適合加算退避領域
+      *    看護配置適合加算退避領域（平成２０年３月まで）
            03  WRK-KANGO-NYUKSN-AREA.
                    07  WRK-KANGO-NYUKSN          PIC X(09).
                    07  WRK-KANGO-NYUKSN-ZAITEN   PIC 9(08).
                    07  WRK-KANGO-NYUKSN-DAY      PIC 9(03)  OCCURS 31.
+      *
+      *    注加算通番をもつ入院料加算の退避領域（平成２０年４月より）
+      *    夜間緊急体制確保加算
+      *    医師配置適合加算
+      *    看護配置加算１
+      *    看護配置加算２
+      *    夜間看護配置加算１
+      *    夜間看護配置加算２
+           03  WRK-CHUKSN-NYUKSN-AREA.
+               05  WRK-CHUKSN-NYUKSN         PIC X(09).
+               05  WRK-CHUKSN-NYUKSN-ZAITEN  PIC 9(08).
+               05  WRK-CHUKSN-NYUKSN-DAY     PIC 9(03)  OCCURS 31.
       *
       *    入院料加算退避領域
            03  WRK-NYUKSN-TABLE.
@@ -444,6 +467,7 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
+           COPY    "CPSK1001.INC".
            COPY    "CPSK5000.INC".
       *
       *    入院診療会計マスタ−
@@ -615,7 +639,36 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
+      *
+      *医療機関減算情報の取得（システム管理テーブルより）
+           MOVE    ZERO                TO  FLG-SYSKANRI
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1001"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    LNK-NYURECEDEN-SANTEIYM
+                                       TO  SYS-STYUKYMD(1:6)
+           MOVE    "01"                TO  SYS-STYUKYMD(7:2)
+           MOVE    SYS-STYUKYMD        TO  SYS-EDYUKYMD
+           MOVE    LNK-NYURECEDEN-HOSPNUM
+                                       TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM   900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM  910-SYSKANRI-READ-SEC
+               IF       FLG-SYSKANRI   =   0
+                   MOVE   SYS-1001-HOSPSBT
+                                       TO  SPA-HOSPSBT
+               END-IF
+           END-IF
+      *    システム管理クローズ
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
            .
        100-PRM-CHK-EXT.
            EXIT.
@@ -625,7 +678,7 @@
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *短期滞在手術基本料２の入院料未算定日について取得
+      *短期滞在手術基本料２と３の入院料未算定日について取得
            INITIALIZE                             ORCSNYUINDAY-AREA
            MOVE    LNK-NYURECEDEN-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
            MOVE    LNK-NYURECEDEN-PTID        TO  LNK-NYUINDAY-PTID
@@ -692,12 +745,12 @@
       *                保険組合せクローズ
                        MOVE    "tbl_hkncombi"          TO  MCP-TABLE
                        MOVE    "key"                   TO  MCP-PATHNAME
-                       PERFORM   910-DB-CLOSE-SEC
+                       PERFORM   900-CLOSE-SEC
                    ELSE
       *                保険組合せクローズ
                        MOVE    "tbl_hkncombi"          TO  MCP-TABLE
                        MOVE    "key"                   TO  MCP-PATHNAME
-                       PERFORM   910-DB-CLOSE-SEC
+                       PERFORM   900-CLOSE-SEC
                        MOVE    5              TO  LNK-NYURECEDEN-RC
                    END-IF
                END-IF
@@ -813,7 +866,7 @@
       *            入院会計クローズ
                    MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                    MOVE    "key17"                 TO  MCP-PATHNAME
-                   PERFORM   910-DB-CLOSE-SEC
+                   PERFORM   900-CLOSE-SEC
                    GO   TO    200-MAIN-EXT
                END-IF
            ELSE
@@ -821,13 +874,13 @@
       *        入院会計クローズ
                MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                MOVE    "key17"                 TO  MCP-PATHNAME
-               PERFORM   910-DB-CLOSE-SEC
+               PERFORM   900-CLOSE-SEC
                GO   TO    200-MAIN-EXT
            END-IF
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *入院時の外泊取得
            INITIALIZE                          NYUINACCT-REC
@@ -859,7 +912,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *選定療養情報の取得
            MOVE    ZERO                    TO  FLG-SENTEI-SET
@@ -894,7 +947,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key22"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *老人対象患者チェック
            PERFORM   210-RJN-TAISYO-CHK-SEC
@@ -917,12 +970,9 @@
            MOVE    LNK-NYURECEDEN-HOSPNUM
                                        TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN" USING MCPAREA
-                                     MCPDATA-REC
-                                     SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
@@ -1000,7 +1050,7 @@
       *    システム管理クローズ
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *この対応は特別管理加算用の為、平成１８年３月迄とする
            IF   LNK-NYURECEDEN-SANTEIYM  <=  "200603"
@@ -1047,20 +1097,27 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
-      *入院時の入院料加算取得（入院会計より）（複数医師及び看護配置
-      *                                        適合加算）
-           MOVE    ZERO                    TO  KSN-IDX
-           INITIALIZE                          NYUINACCT-REC
-           MOVE    LNK-NYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
-           MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
-           MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
-           MOVE    "6"                     TO  NACCT-ZAISKBKBN
-           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-           MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM 910-NYUINACCT-SELECT-SEC
-           IF      FLG-NYUINACCT           =   ZERO
+           DISPLAY "ORCSNYURECEDEN"
+           DISPLAY "SPA-HOSPSBT = " SPA-HOSPSBT
+      *
+      *    有床診療所の入院料加算（平成２０年３月まで）
+           IF   (SPA-HOSPSBT                 =    2)    AND
+                (LNK-NYURECEDEN-SANTEIYM    <=   "200803")
+      *
+      *      入院時の入院料加算取得（入院会計より）
+      *      （複数医師及び看護配置適合加算）
+             MOVE    ZERO                    TO  KSN-IDX
+             INITIALIZE                          NYUINACCT-REC
+             MOVE    LNK-NYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
+             MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
+             MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
+             MOVE    "6"                     TO  NACCT-ZAISKBKBN
+             MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+             MOVE    "key17"                 TO  MCP-PATHNAME
+             PERFORM 910-NYUINACCT-SELECT-SEC
+             IF      FLG-NYUINACCT           =   ZERO
                MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
                MOVE     "key17"            TO  MCP-PATHNAME
                PERFORM   910-NYUINACCT-READ-SEC
@@ -1088,23 +1145,24 @@
                    MOVE    "key17"                 TO  MCP-PATHNAME
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
-           END-IF
-      *    入院会計クローズ
-           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-           MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+             END-IF
+      *      入院会計クローズ
+             MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+             MOVE    "key17"                 TO  MCP-PATHNAME
+             PERFORM   900-CLOSE-SEC
       *
-      *入院時の入院料加算取得（入院会計より）（看護配置適合加算）
-           MOVE    ZERO                    TO  KSN-IDX
-           INITIALIZE                          NYUINACCT-REC
-           MOVE    LNK-NYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
-           MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
-           MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
-           MOVE    "6"                     TO  NACCT-ZAISKBKBN
-           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-           MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM 910-NYUINACCT-SELECT-SEC
-           IF      FLG-NYUINACCT           =   ZERO
+      *      入院時の入院料加算取得（入院会計より）
+      *      （看護配置適合加算）
+             MOVE    ZERO                    TO  KSN-IDX
+             INITIALIZE                          NYUINACCT-REC
+             MOVE    LNK-NYURECEDEN-HOSPNUM  TO  NACCT-HOSPNUM
+             MOVE    LNK-NYURECEDEN-PTID     TO  NACCT-PTID
+             MOVE    LNK-NYURECEDEN-SANTEIYM TO  NACCT-SRYYM
+             MOVE    "6"                     TO  NACCT-ZAISKBKBN
+             MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+             MOVE    "key17"                 TO  MCP-PATHNAME
+             PERFORM 910-NYUINACCT-SELECT-SEC
+             IF      FLG-NYUINACCT           =   ZERO
                MOVE     "tbl_nyuinacct"    TO  MCP-TABLE
                MOVE     "key17"            TO  MCP-PATHNAME
                PERFORM   910-NYUINACCT-READ-SEC
@@ -1132,11 +1190,13 @@
                    MOVE    "key17"                 TO  MCP-PATHNAME
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
+             END-IF
+      *      入院会計クローズ
+             MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+             MOVE    "key17"                 TO  MCP-PATHNAME
+             PERFORM   900-CLOSE-SEC
+      *
            END-IF
-      *    入院会計クローズ
-           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-           MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
       *
       *入院時の入院料加算取得（入院会計より）
            MOVE    ZERO                    TO  KSN-IDX
@@ -1162,8 +1222,10 @@
                              (LNK-NYUINDAY-KBN(IDX1) = "1"))
                        AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO  OR  4)
                        AND   (NACCT-DAY(IDX1)    NOT =  ZERO)
-                         IF   (NACCT-SRYCDTOTAL(6:9) =  190117070)  OR
-                              (NACCT-SRYCDTOTAL(6:9) =  190109670)
+                         IF ((SPA-HOSPSBT                 =    2) AND
+                             (LNK-NYURECEDEN-SANTEIYM <= "200803")) AND
+                            ((NACCT-SRYCDTOTAL(6:9) =  190117070)  OR
+                             (NACCT-SRYCDTOTAL(6:9) =  190109670))
                              CONTINUE
                          ELSE
                            IF   FLG-KSN   =  ZERO
@@ -1188,7 +1250,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *
       *入院時の入院料加算取得（診療会計より）
@@ -1291,6 +1353,17 @@
                            END-IF
                        END-PERFORM
                      ELSE
+                      IF  ((CONS-TAIIN1   =  ACCT-SRYCDTOTAL(6:9)) AND
+                            (ACCT-MEISAISU =  1))                   OR
+                           ((CONS-TAIIN2   =  ACCT-SRYCDTOTAL(6:9)) AND
+                            (ACCT-MEISAISU =  1))                   OR
+                           ((CONS-TAIIN3   =  ACCT-SRYCDTOTAL(6:9)) AND
+                            (ACCT-MEISAISU =  1))                   OR
+                           ((CONS-TAIIN4   =  ACCT-SRYCDTOTAL(6:9)) AND
+                            (ACCT-MEISAISU =  2))
+      *                    退院加算は読み飛ばす
+                           CONTINUE
+                      ELSE
       *                その他入院料加算の退避
       *                診療会計から診療行為を検索し、入院料加算の診療
       *                コードを特定する
@@ -1320,10 +1393,16 @@
       *                   診療行為クローズ
                           MOVE     "tbl_sryact"   TO  MCP-TABLE
                           MOVE     "key"          TO  MCP-PATHNAME
-                          PERFORM   910-DB-CLOSE-SEC
+                          PERFORM   900-CLOSE-SEC
                        END-IF
-                       PERFORM    VARYING   IDX1   FROM   1   BY   1
-                                  UNTIL     IDX1   >   31
+      *                
+                       IF    ACCT-SRYCDTOTAL(6:9)  =   CONS-TAIIN1  OR
+                                                       CONS-TAIIN2  OR
+                                                       CONS-TAIIN3
+                           CONTINUE
+                       ELSE
+                         PERFORM    VARYING   IDX1   FROM   1   BY   1
+                                      UNTIL     IDX1   >   31
                            IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
                                  (LNK-NYUINDAY-KBN(IDX1) = "1"))
                            AND   (WRK-GAIHAKU-KBN(IDX1)  =  ZERO OR 4)
@@ -1369,7 +1448,9 @@
                               END-EVALUATE
       *
                            END-IF
-                       END-PERFORM
+                         END-PERFORM
+                       END-IF
+                      END-IF
                      END-IF
                    END-IF
                  END-IF
@@ -1381,7 +1462,7 @@
       *    診療会計クローズ
            MOVE     "tbl_sryacct"   TO  MCP-TABLE
            MOVE     "key30"          TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *
       *    取得した入院情報から日単位の入院会計情報を再構築
@@ -1423,7 +1504,7 @@
                           END-IF
                           MOVE     "tbl_senteicdchg"   TO  MCP-TABLE
                           MOVE     "key2"              TO  MCP-PATHNAME
-                         PERFORM   910-DB-CLOSE-SEC
+                         PERFORM   900-CLOSE-SEC
                        END-IF
                    END-IF
                END-IF
@@ -1462,7 +1543,7 @@
                                                            (IDX1 IDX1)
                END-IF
       *
-      *        入院会計加算情報（複数医師及び看護配置適合加算）
+      *        入院会計加算情報（複数医師及び看護配置適合加算）（平成２０年３月まで）
                IF    WRK-FUKUSU-NYUKSN-DAY(IDX1)  =  ZERO
                    CONTINUE
                ELSE
@@ -1471,7 +1552,7 @@
                                   TO  WRK-SO-SRYCD(IDX1 WRK-MEISAISU)
                END-IF
       *
-      *        入院会計加算情報（看護配置適合加算）
+      *        入院会計加算情報（看護配置適合加算）（平成２０年３月まで）
                IF    WRK-KANGO-NYUKSN-DAY(IDX1)  =  ZERO
                    CONTINUE
                ELSE
@@ -2205,7 +2286,7 @@
       *    入院行為クローズ
            MOVE     "tbl_nyuinact"     TO  MCP-TABLE
            MOVE     "key9"             TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
            .
        210-NYUINACT-GET-EXT.
@@ -2326,7 +2407,7 @@
       *    保険組合せクローズ
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *    入院患者の年齢計算
            INITIALIZE                      ORCSAGECHKAREA
@@ -2616,12 +2697,9 @@
            MOVE    LNK-NYURECEDEN-HOSPNUM
                                        TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"    TO  MCP-TABLE
                MOVE    "key11"           TO  MCP-PATHNAME
@@ -2636,7 +2714,7 @@
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
            .
       *
@@ -2658,12 +2736,9 @@
            MOVE    LNK-NYURECEDEN-HOSPNUM
                                        TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"    TO  MCP-TABLE
                MOVE    "key11"           TO  MCP-PATHNAME
@@ -2760,7 +2835,7 @@
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
            .
       *
@@ -2925,7 +3000,7 @@
       *
            MOVE     "tbl_tsyrrk"        TO  MCP-TABLE
            MOVE     "key3"              TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *９０日越え（低所得情報）
            IF  (TSYRRK-SKJGNSTYMD(1:6)  <= LNK-NYURECEDEN-SANTEIYM) AND
@@ -2988,7 +3063,7 @@
       *
            MOVE     "tbl_tnkrrk"        TO  MCP-TABLE
            MOVE     "key3"              TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *
       *    食事の診療コード計
@@ -3007,7 +3082,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
            MOVE    "key28"                     TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *    再構築した食事情報から同一剤のまとめ処理
       *    食事ワーク
@@ -3271,7 +3346,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
            MOVE    "key30"                     TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *食事情報の取得（昼食）（入院会計）
            INITIALIZE                          NYUINACCT-REC
@@ -3332,7 +3407,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
            MOVE    "key31"                     TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *食事情報の取得（夕食）（入院会計）
            INITIALIZE                          NYUINACCT-REC
@@ -3393,7 +3468,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
            MOVE    "key32"                     TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *低所得情報の取得
            INITIALIZE                          TSYRRK-REC
@@ -3434,7 +3509,7 @@
       *
            MOVE     "tbl_tsyrrk"        TO  MCP-TABLE
            MOVE     "key3"              TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *９０日越え（低所得情報）
            IF  (TSYRRK-SKJGNSTYMD(1:6)  <= LNK-NYURECEDEN-SANTEIYM) AND
@@ -3503,7 +3578,7 @@
       *
            MOVE     "tbl_tnkrrk"        TO  MCP-TABLE
            MOVE     "key3"              TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *    食事ワーク７の編集（同一剤まとめ用）
            PERFORM      VARYING    IDX1   FROM   1  BY  1
@@ -3998,7 +4073,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
            MOVE    "key30"                     TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *食事情報の取得（昼食）（入院会計）
            INITIALIZE                          NYUINACCT-REC
@@ -4059,7 +4134,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
            MOVE    "key31"                     TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *食事情報の取得（夕食）（入院会計）
            INITIALIZE                          NYUINACCT-REC
@@ -4120,7 +4195,7 @@
       *    入院会計クローズ
            MOVE    "tbl_nyuinacct"             TO  MCP-TABLE
            MOVE    "key32"                     TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
       *−−−−サブルーチンでの患者所得情報の取得ここから−−−−−
            INITIALIZE                          WRK-SYOTOKU-SKJKBN-AREA
@@ -5265,15 +5340,14 @@
       *****************************************************************
        910-SYSKANRI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-5000-REC
+               MOVE    MCPDATA-REC         TO  SYS-1001-REC
+                                               SYS-5000-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
            ELSE
-               INITIALIZE                      SYS-5000-REC
+               INITIALIZE                      SYS-1001-REC
+                                               SYS-5000-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
       *
@@ -5287,19 +5361,13 @@
        900-PTINF-READ-SEC         SECTION.
       *
            MOVE    PTINF-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-                                      SPA-AREA
+               PERFORM   900-DBFETCH-SEC
                IF      MCP-RC          =   ZERO
                    MOVE    MCPDATA-REC TO  PTINF-REC
                    MOVE    ZERO        TO  FLG-PTINF
@@ -5314,7 +5382,7 @@
       *
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
            .
        900-PTINF-READ-EXT.
@@ -5326,10 +5394,7 @@
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACCT
            ELSE
@@ -5345,10 +5410,7 @@
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  NYUINACCT-REC
                MOVE    ZERO               TO  FLG-NYUINACCT
@@ -5367,10 +5429,7 @@
        910-SENTEICDCHG-SELECT-SEC        SECTION.
       *
            MOVE    SENTEICDCHG-REC     TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-SENTEICDCHG
            ELSE
@@ -5386,10 +5445,7 @@
       *****************************************************************
        910-SENTEICDCHG-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  SENTEICDCHG-REC
                MOVE    ZERO               TO  FLG-SENTEICDCHG
@@ -5408,10 +5464,7 @@
        910-TSYRRK-SELECT-SEC        SECTION.
       *
            MOVE    TSYRRK-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-TSYRRK
            ELSE
@@ -5427,10 +5480,7 @@
       *****************************************************************
        910-TSYRRK-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  TSYRRK-REC
                MOVE    ZERO               TO  FLG-TSYRRK
@@ -5449,10 +5499,7 @@
        910-TNKRRK-SELECT-SEC        SECTION.
       *
            MOVE    TNKRRK-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-TNKRRK
            ELSE
@@ -5468,10 +5515,7 @@
       *****************************************************************
        910-TNKRRK-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  TNKRRK-REC
                MOVE    ZERO               TO  FLG-TNKRRK
@@ -5490,10 +5534,7 @@
        910-NYUINACT-SELECT-SEC        SECTION.
       *
            MOVE    NYUINACT-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-NYUINACT
            ELSE
@@ -5509,10 +5550,7 @@
       *****************************************************************
        910-NYUINACT-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  NYUINACT-REC
                MOVE    ZERO                TO  FLG-NYUINACT
@@ -5531,10 +5569,7 @@
        910-SRYACCT-SELECT-SEC        SECTION.
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-SRYACCT
            ELSE
@@ -5550,10 +5585,7 @@
       *****************************************************************
        910-SRYACCT-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC        TO  SRYACCT-REC
                MOVE    ZERO               TO  FLG-SRYACCT
@@ -5572,10 +5604,7 @@
        910-SRYACT-SELECT-SEC        SECTION.
       *
            MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO            TO  FLG-SRYACT
            ELSE
@@ -5591,10 +5620,7 @@
       *****************************************************************
        910-SRYACT-READ-SEC        SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  SRYACT-REC
                MOVE    ZERO            TO  FLG-SRYACT
@@ -5613,10 +5639,7 @@
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO               TO  FLG-HKNCOMBI
            ELSE
@@ -5632,10 +5655,7 @@
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC         TO  HKNCOMBI-REC
                MOVE    ZERO                TO  FLG-HKNCOMBI
@@ -5653,19 +5673,13 @@
        910-TENSU-READ-SEC         SECTION.
       *
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           PERFORM   900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_tensu"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-                                      SPA-AREA
+               PERFORM   900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
@@ -5680,23 +5694,62 @@
       *
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM   910-DB-CLOSE-SEC
+           PERFORM   900-CLOSE-SEC
       *
            .
        910-TENSU-READ-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＤＢクローズ処理
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
-       910-DB-CLOSE-SEC                 SECTION.
+       900-DBSELECT-SEC                SECTION.
       *
-           MOVE    "DBCLOSECURSOR"      TO  MCP-FUNC
-           CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-                                  SPA-AREA
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+           END-IF
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＦＥＴＣＨ処理
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            .
+       900-DBFETCH-EXT.
+           EXIT.
       *
-       910-DB-CLOSE-EXT.
+      *****************************************************************
+      *    テーブルアクセス処理
+      *****************************************************************
+       900-ORCDBMAIN-SEC               SECTION.
+      *
+           CALL    "ORCDBMAIN"     USING   MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+           .
+      *
+       900-ORCDBMAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テーブルクローズ処理
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-CLOSE-EXT.
            EXIT.
