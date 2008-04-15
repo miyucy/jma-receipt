@@ -29,6 +29,8 @@
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  03.05.01    NACL-¾®Æ¦Âô  07/05/31  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.01    NACL-¾®Æ¦Âô  07/11/16  ¸øÌ³ºÒ³²¡¢¸ø³²¤Î¼ïÊÌÈ½ÄêÄÉ²Ã
+      *Ê¿À®£²£°Ç¯£´·î²þÄêÂÐ±þ
+      *  04.02.00    NACL-¾®Æ¦Âô  08/04/15  ¥ì¥»¥×¥È¼ïÊÌÂÐ±þ
       *****************************************************************
       *
       *
@@ -168,6 +170,9 @@
       *
       *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
            COPY    "CPORCSAGECHK.INC".
+      *
+      *    ¥ì¥»¥×¥È¼ïÊÌÊÖµÑ¥µ¥Ö
+           COPY    "CPORCSSYUBETUGET.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -876,16 +881,23 @@
            END-IF
       *
            IF      LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  NOT =   SPACE
-               IF      LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
-                                           =   "060"   OR   "067"
-                   IF      LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  =   "060"
-                        MOVE   "1"             TO  WK-KOKUHO
-                   ELSE
-                        MOVE   "2"             TO  WK-KOKUHO
-                   END-IF
-               ELSE
-                   MOVE    "1"             TO  WK-IHO
-               END-IF
+               EVALUATE    LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
+                   WHEN    "060"
+                   WHEN    "067"
+                   WHEN    "068"
+                   WHEN    "069"
+                       IF    LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
+                                                   = "060" OR "068"
+                           MOVE   "1"      TO  WK-KOKUHO
+                       ELSE
+                           MOVE   "2"      TO  WK-KOKUHO
+                       END-IF
+                   WHEN    "039"
+                   WHEN    "040"
+                       MOVE   "3"          TO  WK-KOKUHO
+                   WHEN    OTHER
+                       MOVE    "1"         TO  WK-IHO
+               END-EVALUATE
            END-IF
       *
            IF      LNK-ORCBT120SUB-SANTEIYMD(1:6)    <      "200210"
@@ -906,15 +918,181 @@
            END-PERFORM
       *
            IF  LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  NOT =   SPACE
-               IF  LNK-ORCBT120SUB-SANTEIYMD(1:6)    >=  "200210"
+      *
+               IF    ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200210"  )
+               AND   ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  <=  "200803"  )
       *            £³ºÐÌ¤Ëþ¤Î¾ì¹ç¡¢£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë"£³"¤ò¥»¥Ã¥È
-                   IF      WRK-AGE             <     3
-                       MOVE    "3"             TO   WK-HONKZKKBN
+                   IF      WRK-AGE         <     3
+                               MOVE   "3"     TO   WK-HONKZKKBN
                    END-IF
+               END-IF
+      *        Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+               IF      LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200804"
+                   IF      AGECHK-SYUGAKUKBN     =     1
+                               MOVE   "3"     TO   WK-HONKZKKBN
+                   END-IF
+               END-IF
       *
       *            £±³ä¡¢£²³äÉéÃ´¤Î¹âÎð¼Ô¤Î¾ì¹ç£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë
       *            "£¹"¤Þ¤¿¤Ï"£¸"¤ò¥»¥Ã¥È
-      *            Ï·¿ÍÊÝ¸±¤Î¾ì¹ç¤Ï£×£Ë¡Ý£Ò£Ê£Î¤Ë¥»¥Ã¥È¤¹¤ë	
+      *            Ï·¿ÍÊÝ¸±¤Î¾ì¹ç¤Ï£×£Ë¡Ý£Ò£Ê£Î¤Ë¥»¥Ã¥È¤¹¤ë
+      *
+      *        Ê¿À®£²£°Ç¯£´·î°Ê¹ß
+               IF     LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200804"
+                   EVALUATE    LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
+                       WHEN    "002" 
+                           EVALUATE   LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE   "8"   TO   WK-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "031"  THRU    "034"  
+                           EVALUATE   LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
+                               WHEN   "B"
+                               WHEN   "9"   
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE   "8"   TO   WK-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "060" 
+                       WHEN    "068" 
+                           IF  (WRK-AGE        >=   70)  AND
+                               (WRK-AGE        <=   74)
+                              EVALUATE LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
+                                   WHEN   "1"
+                                   WHEN   "5"
+                                       MOVE   "9"   TO   WK-HONKZKKBN
+                                   WHEN   "2"
+                                   WHEN   "6"
+                                       MOVE   "8"   TO   WK-HONKZKKBN
+                                   WHEN   "3"
+                                       MOVE   "7"   TO   WK-HONKZKKBN
+                              END-EVALUATE
+                           END-IF     
+                       WHEN    "039" 
+                       WHEN    "040" 
+                           EVALUATE  LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
+                               WHEN   "1"
+                                   MOVE   "9"   TO   WK-RJN
+                               WHEN   "3"
+                                   MOVE   "7"   TO   WK-RJN
+                           END-EVALUATE
+                       WHEN    "067" 
+                       WHEN    "069" 
+                           IF      WRK-AGE  >=   65
+                               MOVE   "?"   TO   WK-HONKZKKBN
+                           ELSE
+                              EVALUATE LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
+                                  WHEN   "9"
+                                      MOVE   "9"   TO   WK-HONKZKKBN
+                                  WHEN   "8"
+                                      MOVE   "?"   TO   WK-HONKZKKBN
+                                  WHEN   "7"
+                                      MOVE   "7"   TO   WK-HONKZKKBN
+                              END-EVALUATE
+                           END-IF
+                       WHEN    OTHER 
+                           EVALUATE   LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "8"
+                                   MOVE   "8"   TO   WK-HONKZKKBN
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                   END-EVALUATE
+               END-IF
+      *
+      *        Ê¿À®£±£¸Ç¯£±£°·î¡ÁÊ¿À®£²£°Ç¯£³·î
+               IF    ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200610" )
+               AND   ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  <=  "200803" )
+                   EVALUATE    LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
+                       WHEN    "002" 
+                           EVALUATE   LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE   "8"   TO   WK-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "031"  THRU    "034"  
+                           EVALUATE   LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
+                               WHEN   "B"
+                               WHEN   "9"   
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE   "8"   TO   WK-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "060" 
+                       WHEN    "068" 
+                           IF  (WRK-AGE        >=   70)  AND
+                               (WRK-AGE        <=   74)
+                              EVALUATE LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
+                                   WHEN   "1"
+                                   WHEN   "5"
+                                       MOVE   "9"   TO   WK-HONKZKKBN
+                                   WHEN   "2"
+                                   WHEN   "6"
+                                       MOVE   "8"   TO   WK-HONKZKKBN
+                                   WHEN   "3"
+                                       MOVE   "7"   TO   WK-HONKZKKBN
+                              END-EVALUATE
+                           END-IF     
+                       WHEN    OTHER 
+                           EVALUATE   LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "8"
+                                   MOVE   "8"   TO   WK-HONKZKKBN
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                   END-EVALUATE
+                   IF   LNK-ORCBT120SUB-KOH1HKNNUM(SYU-IDX)  =   "027"
+                       EVALUATE   LNK-ORCBT120SUB-KOH1PAYKBN(SYU-IDX)
+                           WHEN   "01"
+                               MOVE   "9"   TO   WK-RJN
+                           WHEN   "02"
+                               MOVE   "8"   TO   WK-RJN
+                           WHEN   "03"
+                               MOVE   "7"   TO   WK-RJN
+                       END-EVALUATE
+                   END-IF
+               END-IF
+      *
+      *        Ê¿À®£±£´Ç¯£±£°·î¡ÁÊ¿À®£±£¸Ç¯£¹·î
+               IF    ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200210" )
+               AND   ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  <=  "200609" )
                    EVALUATE    LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
                        WHEN    "002" 
                            EVALUATE   LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
@@ -939,14 +1117,15 @@
                                    MOVE   "8"   TO   WK-HONKZKKBN
                            END-EVALUATE
                        WHEN    "060" 
+                       WHEN    "068" 
                            IF  (WRK-AGE        >=   70)  AND
                                (WRK-AGE        <=   74)
                               EVALUATE LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
                                    WHEN   "1"
-                                   WHEN   "4"
+                                   WHEN   "5"
                                        MOVE   "9"   TO   WK-HONKZKKBN
                                    WHEN   "2"
-                                   WHEN   "5"
+                                   WHEN   "6"
                                        MOVE   "8"   TO   WK-HONKZKKBN
                               END-EVALUATE
                            END-IF     
@@ -967,6 +1146,7 @@
                        END-EVALUATE
                    END-IF
                END-IF
+      *
            END-IF
       *
            IF    ( WK-RJN          NOT =   SPACE )     
@@ -986,521 +1166,20 @@
       *      DISPLAY "RJN       : " WK-RJN 
       *      DISPLAY "KOHI-CNT  : " WK-KOHI-CNT 
       *
-      *    Ê¿À®£±£´Ç¯£¹·î¤Þ¤Ç
-           IF      LNK-ORCBT120SUB-SANTEIYMD(1:6)    <=      "200209"
-             EVALUATE  WK-HONKZKKBN ALSO WRK-NYUGAIKBN   ALSO
-                    WK-IHO ALSO WK-KOKUHO ALSO WK-RJN ALSO WK-KOHI-CNT
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1115            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1116            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1121            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   1
-                   MOVE    1121            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1122            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   1
-                   MOVE    1122            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1125            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1126            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1131            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   2
-                   MOVE    1131            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1132            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO   2
-                   MOVE    1132            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1135            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1136            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1211            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1212            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1221            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1222            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1231            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1232            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   ZERO
-                   MOVE    1311            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   ZERO
-                   MOVE    1312            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   1
-                   MOVE    1321            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   1
-                   MOVE    1322            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   2
-                   MOVE    1331            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       ANY   ALSO   ANY    ALSO  "1"    ALSO   2
-                   MOVE    1332            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1411            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1412            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1415            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   ZERO
-                   MOVE    1416            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1421            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1422            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1425            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   1
-                   MOVE    1426            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1431            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1432            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1435            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO   2
-                   MOVE    1436            TO    WRK-RECESYUBETU
-             END-EVALUATE
-           END-IF
-      *    Ê¿À®£±£´Ç¯£±£°·î²þÀµÂÐ±þ
-           IF      LNK-ORCBT120SUB-SANTEIYMD(1:6)    >=      "200210"
-             EVALUATE  WK-HONKZKKBN ALSO WRK-NYUGAIKBN   ALSO
-                    WK-IHO ALSO WK-KOKUHO ALSO WK-RJN ALSO WK-KOHI-CNT
-      *ÊÝ¸±Ã±ÆÈ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1111            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1112            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1113            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1113            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1114            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1114            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1115            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1115            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1116            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1116            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1117            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1117            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1118            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1118            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1119            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1119            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  ZERO
-                   MOVE    1110            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1110            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1121            TO    WRK-RECESYUBETU
-      *ÊÝ¸±¤È¸øÈñ£±¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1121            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1121            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1122            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1122            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1123            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1123            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1124            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1124            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1125            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1125            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1126            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1126            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1127            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1127            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1128            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1128            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1129            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1129            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  1
-                   MOVE    1120            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  1
-                   MOVE    1120            TO    WRK-RECESYUBETU
-      *ÊÝ¸±¤È¸øÈñ£²¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1131            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1131            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1132            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1132            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1133            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1133            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1134            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1134            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1135            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1135            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1136            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1136            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1137            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1137            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1138            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1138            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1139            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1139            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       "1"   ALSO   SPACE  ALSO  SPACE  ALSO  2
-                   MOVE    1130            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  SPACE  ALSO  2
-                   MOVE    1130            TO    WRK-RECESYUBETU
-      *¸øÈñÃ±ÆÈ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1211            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   1
-                   MOVE    1212            TO    WRK-RECESYUBETU
-      *£²¼ï¤Î¸øÈñÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1221            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   2
-                   MOVE    1222            TO    WRK-RECESYUBETU
-      *£³¼ï¤Î¸øÈñÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1231            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   SPACE  ALSO  SPACE  ALSO   3
-                   MOVE    1232            TO    WRK-RECESYUBETU
-      *Ï·¿ÍÃ±ÆÈ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   ZERO
-                   MOVE    1317            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   ZERO
-                   MOVE    1317            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   ZERO
-                   MOVE    1318            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   ZERO
-                   MOVE    1318            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   ZERO
-                   MOVE    1319            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   ZERO
-                   MOVE    1319            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   ZERO
-                   MOVE    1310            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   ZERO
-                   MOVE    1310            TO    WRK-RECESYUBETU
-      *Ï·¿Í¤È¸øÈñ£±¼ï¤ÎÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   1
-                   MOVE    1327            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   1
-                   MOVE    1327            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   1
-                   MOVE    1328            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   1
-                   MOVE    1328            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   1
-                   MOVE    1329            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   1
-                   MOVE    1329            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   1
-                   MOVE    1320            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   1
-                   MOVE    1320            TO    WRK-RECESYUBETU
-      *Ï·¿Í¤È¸øÈñ£²¼ï¤ÎÊ»ÍÑ
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   2
-                   MOVE    1337            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   2
-                   MOVE    1337            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "9"    ALSO   2
-                   MOVE    1338            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "9"    ALSO   2
-                   MOVE    1338            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   2
-                   MOVE    1339            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "1"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   2
-                   MOVE    1339            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       "1"   ALSO   ANY    ALSO  "8"    ALSO   2
-                   MOVE    1330            TO    WRK-RECESYUBETU
-               WHEN    ANY   ALSO   "2"    ALSO
-                       SPACE ALSO   "1"    ALSO  "8"    ALSO   2
-                   MOVE    1330            TO    WRK-RECESYUBETU
-      *Âà¿¦¼ÔÃ±ÆÈ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1411            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1412            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1413            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1414            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1415            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1416            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1417            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1418            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1409            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  ZERO
-                   MOVE    1410            TO    WRK-RECESYUBETU
-      *Âà¿¦¼Ô¤È¸øÈñ£±¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1421            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1422            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1423            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1424            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1425            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1426            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1427            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1428            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1429            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  1
-                   MOVE    1420            TO    WRK-RECESYUBETU
-      *Âà¿¦¼Ô¤È¸øÈñ£²¼ï¤ÎÊ»ÍÑ
-               WHEN    "1"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1431            TO    WRK-RECESYUBETU
-               WHEN    "1"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1432            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1433            TO    WRK-RECESYUBETU
-               WHEN    "3"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1434            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1435            TO    WRK-RECESYUBETU
-               WHEN    "2"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1436            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1437            TO    WRK-RECESYUBETU
-               WHEN    "9"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1438            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "1"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1439            TO    WRK-RECESYUBETU
-               WHEN    "8"   ALSO   "2"    ALSO
-                       SPACE ALSO   "2"    ALSO  SPACE  ALSO  2
-                   MOVE    1430            TO    WRK-RECESYUBETU
-             END-EVALUATE
-           END-IF
+           INITIALIZE                  ORCSSYUBETUGETAREA  
+           MOVE    WK-KOKUHO           TO  LNK-SYUBETUGET-KOKUHO
+           MOVE    WK-IHO              TO  LNK-SYUBETUGET-IHO
+           MOVE    WK-RJN              TO  LNK-SYUBETUGET-RJN
+           MOVE    WK-KOHI-CNT         TO  LNK-SYUBETUGET-KOHI-CNT
+           MOVE    WK-HONKZKKBN        TO  LNK-SYUBETUGET-HONKZKKBN
+           MOVE    "1"                 TO  LNK-SYUBETUGET-NYUGAIKBN
+           MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
+                                       TO  LNK-SYUBETUGET-SRYYM
+           MOVE    LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
+                                       TO  LNK-SYUBETUGET-HKNNUM
+           CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
+      *
+           MOVE    LNK-SYUBETUGET-RECESYUBETU  TO    WRK-RECESYUBETU
            .
        240-RECESYUBETU-SET-EXT.
            EXIT.
