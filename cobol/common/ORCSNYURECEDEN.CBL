@@ -60,11 +60,27 @@
       *平成２０年４月改定対応
       *  04.02.00    NACL-小豆沢  08/03/25  広域連合（後期高齢者）のレセ電対応
       *  04.02.00    NACL-小豆沢  08/04/11  退院加算のレセ電対応（読み飛ばし）
+      *                                     ・退院加算（療養病棟入院基本料等算定患者）
+      *                                     ・退院加算（障害者施設等入院基本料等算定患者）
+      *                                     ・早期退院加算
       *  04.02.00    NACL-小豆沢  08/04/14  有床診療所の加算を注加算通番順に記録
+      *                                     ・夜間緊急体制確保加算
+      *                                     ・医師配置適合加算
+      *                                     ・看護配置加算１
+      *                                     ・看護配置加算２
+      *                                     ・夜間看護配置加算１
+      *                                     ・夜間看護配置加算２
       *  04.02.00    NACL-小豆沢  08/04/14  小児入院医療管理料と回復期リハビリの
       *                                     加算を注加算通番順に記録
+      *                                     ・プレイルーム、保育士等加算
+      *                                     ・人工呼吸器使用加算（小児入院医療）
+      *                                     ・重症患者回復病棟加算
       *  04.02.00    NACL-小豆沢  08/04/15  特殊疾患病棟入院料の加算を注加算
       *                                     通番順に記録
+      *                                     ・人工呼吸器使用加算（特殊疾患）
+      *  04.02.00    NACL-小豆沢  08/04/15  特定機能病院−精神病棟の加算を注加算
+      *                                     通番順に記録
+      *                                     ・重度認知症加算（特定機能病院精神病棟）
       *****************************************************************
       *
       *
@@ -1483,7 +1499,8 @@
                                    OR
                          ((LNK-NYURECEDEN-SANTEIYM >= "200804") AND
                           (ACCT-SRYCDTOTAL(6:9)  = "190055470"  OR 
-                                                   "190120970"))
+                                                   "190120970"  OR
+                                                   "190119210"))
       *                入院料加算の退避
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
@@ -1565,6 +1582,14 @@
                                       TO  WRK-CHUKSN-NYUKSN-ZAITEN(9)
                                   MOVE   ACCT-DAY(1 IDX1)
                                       TO  WRK-CHUKSN-NYUKSN-DAY(9 IDX1)
+      *                         重度認知症加算（特定機能病院精神病棟）
+                                WHEN  "190119210"
+                                  MOVE   "190119210"
+                                      TO  WRK-CHUKSN-NYUKSN(10)
+                                  MOVE   ACCT-ZAITEN
+                                      TO  WRK-CHUKSN-NYUKSN-ZAITEN(10)
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                      TO WRK-CHUKSN-NYUKSN-DAY(10 IDX1)
                                END-EVALUATE
                              END-IF                                  
       *
@@ -1868,6 +1893,15 @@
                    ELSE
                        ADD   1    TO  WRK-MEISAISU
                        MOVE  WRK-CHUKSN-NYUKSN(9)
+                                  TO  WRK-SO-SRYCD(IDX1 WRK-MEISAISU)
+                   END-IF
+      *
+      *            診療会計加算情報（重度認知症加算（特定機能病院精神病棟））（平成２０年４月から）
+                   IF    WRK-CHUKSN-NYUKSN-DAY(10 IDX1)  =  ZERO
+                       CONTINUE
+                   ELSE
+                       ADD   1    TO  WRK-MEISAISU
+                       MOVE  WRK-CHUKSN-NYUKSN(10)
                                   TO  WRK-SO-SRYCD(IDX1 WRK-MEISAISU)
                    END-IF
       *
