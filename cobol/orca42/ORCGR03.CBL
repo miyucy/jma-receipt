@@ -2581,7 +2581,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
            MOVE    "black"                 TO  R03-LABEL-STYLE
-           MOVE    "двдвдв"                 TO  R03-LABEL 
+           MOVE    SPACE                   TO  R03-LABEL 
       *
            PERFORM 5001-MAPCUR-SEC
       *
