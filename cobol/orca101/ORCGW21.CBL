@@ -79,10 +79,6 @@
            03  FLG-NYUKSNCHK                       PIC 9(01).
            03  FLG-BFH2004                         PIC 9(01).
            03  FLG-AFH2004                         PIC 9(01).
-           03  FLG-BFH2204                         PIC 9(01).
-           03  FLG-AFH2204                         PIC 9(01).
-           03  FLG-BFH2404                         PIC 9(01).
-           03  FLG-AFH2404                         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -93,11 +89,6 @@
            03  IDX4                                PIC 9(05).
            03  IDX5                                PIC 9(05).
            03  IDX6                                PIC 9(05).
-           03  IDX7                                PIC 9(05).
-           03  IDXA                                PIC 9(05).
-           03  IDXB                                PIC 9(05).
-           03  IDXL                                PIC 9(05).
-           03  IDXS                                PIC 9(05).
            03  IDX-CMB                             PIC 9(05).
            03  IDX-BRMLST                          PIC 9(05).
            03  IDX-KSN                             PIC 9(05).
@@ -109,7 +100,7 @@
        01  CNT-AREA.
            03  CNT-SST                             PIC 9(05).
            03  CNT-SEL                             PIC 9(05).
-           03  CNT-KSN                             PIC 9(05).
+           03  CNT-NYUKSNKBNCHK                    PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -129,7 +120,7 @@
            03  WRK-ZZZ9                            PIC ZZZ9.
            03  WRK-999999                          PIC 9(06).
            03  WRK-ZZZZZ9                          PIC Z(5)9.
-           03  WRK-ZZZZZZZ9                        PIC Z(7)9.
+           03  WRK-ZZZZZZZZZ9                      PIC Z(9)9.
            03  WRK-CMB-CD                          PIC X(10).
            03  WRK-CMB-ITM-G.
                05  WRK-CMB-ITM                     PIC X(200).
@@ -160,16 +151,20 @@
                05  WRK-HEN-SAGAKU-Z9               PIC ZZZZZ9.
                05  WRK-HEN-SAGAKU-EN               PIC X(02).
            03  WRK-KSNCD                           PIC X(09).
-           03  WRK-KSNIDX                          PIC 9(03).
+           03  WRK-KSNKSNKBN                       PIC 9(03).
+           03  WRK-NYUKSNKBN-G.
+               05  WRK-NYUKSNKBN-MAX               PIC 9(03).
+               05  WRK-NYUKSNKBN                   PIC 9(03)
+                                                   OCCURS   10.
            03  WRK-KSNKBN                          PIC 9(03).
            03  WRK-NYUINKBN                        PIC 9(03).
            03  WRK-SSTKJNCD-G.
                05  WRK-SSTKJNCD-OCC                OCCURS 10.
                    07  WRK-SSTKJNCDSEP             PIC X(01).
-                   07  WRK-SSTKJNCD                PIC X(04).
+                   07  WRK-SSTKJNCD                PIC X(03).
                    07  WRK-SSTKJNCD-R              REDEFINES
                        WRK-SSTKJNCD.
-                       09  WRK-SSTKJNCD9           PIC 9(04).
+                       09  WRK-SSTKJNCD9           PIC 9(03).
            03  WRK-KSNMEI                          PIC X(100).
            03  WRK-PNT                             PIC 9(03).
            03  WRK-BTUNUM                          PIC X(02).
@@ -192,64 +187,22 @@
            03  WRK-ZZZ-G.
                05  WRK-ZZZ                 PIC ZZZ.
            03  WRK-STIDX                   PIC 9(05).
-           03  WRK-YUKOSTYMD-MOT           PIC X(08).
-           03  WRK-NUM02X.
-               05  WRK-NUM02                       PIC 9(02).
-           03  WRK-FROM                            PIC 9(05).
-           03  WRK-KBN1-G.
-               05  WRK-KBN1                        PIC 9(01).
-           03  WRK-KBN2-G.
-               05  WRK-KBN2                        PIC 9(02).
-           03  WRK-KBN4-G.
-               05  WRK-KBN4                        PIC 9(04).
-           03  WRK-TOKCHK1-G.
-               05  WRK-TOKCHK1-KBNCD               PIC X(02)
-                                                   OCCURS 100.
-           03  WRK-TOKCHK2-G.
-               05  WRK-TOKCHK2-KBNCD               PIC X(02)
-                                                   OCCURS 100.
-      *
-       01  TKSN-AREA.
-           03  TKSN-MAX                            PIC 9(03).
-           03  TKSN-OCC                            OCCURS  7.
-               05  TKSN-LBL                        PIC X(36).
-               05  TKSN-IDX                        PIC 9(03).
-               05  TKSN-SRYCD                      PIC X(09).
       *
        01  SSTKJN-AREA.
            03  SSTKJN-VAL.
-               05  SSTKJN-VAL-OCC                  PIC X(500)
-                                                   OCCURS  20.
+               05  SSTKJN-VAL1                     PIC X(500).
+               05  SSTKJN-VAL2                     PIC X(500).
            03  SSTKJN-R    REDEFINES       SSTKJN-VAL.
-               05  SSTKJN-CD                       PIC X(01)
-                                                   OCCURS  10000.
+               05  SSTKJN-CD                       PIC 9(01)
+                                                   OCCURS  1000.
       *
       *    固定値領域
        01  CONST-AREA.
            03  CONST-H180401           PIC X(08) VALUE "20060401".
            03  CONST-H180701           PIC X(08) VALUE "20060701".
            03  CONST-H200401           PIC X(08) VALUE "20080401".
-           03  CONST-H220401           PIC X(08) VALUE "20100401".
-           03  CONST-H240401           PIC X(08) VALUE "20120401".
-           03  CONST-H250401           PIC X(08) VALUE "20130401".
-           03  CONST-H241001           PIC X(08) VALUE "20121001".
-           03  CONST-KSN-MAX           PIC 9(03) VALUE 10.
+           03  CONST-KSN-MAX           PIC 9(03) VALUE 7.
            03  CONST-GKSN-MAX          PIC 9(03) VALUE 14.
-           03  CONST-5002-KSN-MAX      PIC 9(03) VALUE 12.
-           03  CONST-TOKNYUIN-MAX      PIC 9(03) VALUE 50.
-           03  CONST-H24-AREA.
-               05   CONST-H2404-BTURYO1     PIC X(09) VALUE "190120210".
-               05   CONST-H2404-BTURYO2     PIC X(09) VALUE "190106070".
-               05   CONST-H2404-BTURYO3     PIC X(09) VALUE "190106170".
-               05   CONST-H2404-BTURYO4     PIC X(09) VALUE "190106270".
-               05   CONST-H2404-SNRRYO1     PIC X(09) VALUE "190106370".
-               05   CONST-H2404-SNRRYO2     PIC X(09) VALUE "190106470".
-               05   CONST-H2404-BTURYOKAI1  PIC X(09) VALUE "190146210".
-               05   CONST-H2404-BTURYOKAI2  PIC X(09) VALUE "190146310".
-               05   CONST-H2404-SNRRYOKAI   PIC X(09) VALUE "190146410".
-               05   CONST-H2404-MUKIN1      PIC X(09) VALUE "190106570".
-               05   CONST-H2404-MUKIN1K     PIC X(09) VALUE "190713410".
-               05   CONST-H2404-MUKIN2      PIC X(09) VALUE "190146510".
            03  CONST-SINSEIJI          PIC X(09) VALUE "190109770".
            03  CONST-SNR-RYOYO-VAL.
                05                      PIC X(09) VALUE "190106370".
@@ -306,15 +259,9 @@
        01  NYUKSNCHK-REC.
            COPY    "CPNYUKSNCHK.INC".
       *
-           COPY    "CPSK5002.INC"  REPLACING  //SYS-//
-                                   BY         //TMP-//.
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
-      *
-      *    入院料加算チェック
-      *    COPY    "CPORCSNYUKSNCHK.INC".
       *
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
@@ -351,7 +298,52 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC". 
+           COPY    "W08.INC". 
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
                                                MCPAREA
@@ -406,6 +398,8 @@
       *
       *    エラー画面より
            IF    ( SPA-MOTOPG      =   "WERR" )
+               MOVE    SPA-GMN-W21-MOTOPG
+                                       TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *        初期画面セット
@@ -446,9 +440,10 @@
       *
            EVALUATE    SPA-MOTOPG
            WHEN    "W20"
-               IF    ( SPA-W20-W21-MOTOPG  =   "W21" )
-      *
-                   INITIALIZE  SPA-W20-W21-AREA
+               IF    ( SPA-MOTOPG2     =   "W21" )
+                   MOVE    "W01"       TO  SPA-MOTOPG
+                   MOVE    SPACE       TO  SPA-MOTOPG2
+                                           SPA-MOTOPG3
       *
       *            病棟情報取得処理
                    PERFORM 3101-SYS-5001-GET-SEC
@@ -478,6 +473,8 @@
                    GO  TO  300-SCREEN-EXT
                END-IF
            WHEN    "WID1"
+               MOVE    SPA-GMN-W21-MOTOPG
+                                       TO  SPA-MOTOPG
                PERFORM 330-WID1-SET-SEC
                GO  TO      300-SCREEN-EXT
            END-EVALUATE
@@ -618,17 +615,7 @@
                PERFORM 3101-KHNRYO-GET-SEC
            END-IF
       *
-      *    病棟機能
-           PERFORM 3101-TBTUTYPE-GET-SEC
-      *
-      *    加算共通コンボボックス初期処理
-           PERFORM 3101-CMB-KSNCOMMON-SET-SEC
-      *
            EVALUATE    TRUE
-           WHEN  ( WRK-KJN-YUKSTYMD    >=   CONST-H240401 )
-               PERFORM 31012-CMB-KSN-H24-SEC
-           WHEN  ( WRK-KJN-YUKSTYMD    >=   CONST-H220401 )
-               PERFORM 31012-CMB-KSN-H22-SEC
            WHEN  ( WRK-KJN-YUKSTYMD    >=   CONST-H180401 )
                PERFORM 31012-CMB-KSN-SYOKI-SEC
            WHEN    OTHER
@@ -775,6 +762,7 @@
        3101-SYS-5111-GET-SEC       SECTION.
       *
            INITIALIZE              SPA-GMN-W21-TOKNYUINLST-G
+                                   SPA-NAI-W21-TOKNYUINLST-G
       *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "5111"          TO  SYS-KANRICD
@@ -784,8 +772,7 @@
            MOVE    SYSKANRI-REC    TO  SYS-5111-REC
       *
            PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
-                    OR   ( SPA-GMN-W21-TOKNYUIN-MAX
-                                          >=  CONST-TOKNYUIN-MAX )
+                    OR   ( SPA-GMN-W21-TOKNYUIN-MAX >=  30 )
       *
                IF    ( SYS-5111-BRM-NYUINRYOKBN    =  "01"  )
                 AND  ( SYS-5111-SEIKATU-RYOKBN     =  SPACE )
@@ -794,25 +781,15 @@
                    MOVE    SPA-GMN-W21-TOKNYUIN-MAX
                                        TO  IDX1
       *
+                   MOVE    SYS-5111-KBNCD
+                                   TO  SPA-GMN-W21-TOKNYUINL(IDX1)
                    MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM
                                    TO  SPA-GMN-W21-TOKNYUINMEIL
-                                                            (IDX1)
-      *
-                   MOVE    SYS-5111-KBNCD
-                                   TO  SPA-GMN-W21-TOKNYUINL-KBNCD
-                                                            (IDX1)
+                                                                (IDX1)
                    MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM2
-                                   TO  SPA-GMN-W21-TOKNYUINL-TANMEI
-                                                            (IDX1)
+                                   TO  SPA-NAI-W21-TOKNYUINMEIL(IDX1)
                    MOVE    SYS-5111-SRYCD
-                                   TO  SPA-GMN-W21-TOKNYUINL-SRYCD
-                                                            (IDX1)
-                   MOVE    SYS-5111-SRYCD          TO  WRK-TNSSRYCD
-                   MOVE    WRK-KJN-YUKSTYMD        TO  WRK-TNSYMD
-                   PERFORM 900-TENSU-KEY-SEL-SEC
-                   MOVE    TNS-KOUHYOJYUNNUM
-                                       TO  SPA-GMN-W21-TOKNYUINL-JUNNUM
-                                                         (IDX1)
+                                   TO  SPA-NAI-W21-TOKNYUINL(IDX1)
                END-IF
       *
       *        システム管理マスタ読込処理
@@ -824,30 +801,6 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           COMPUTE IDXS    =   CONST-TOKNYUIN-MAX  +   1
-      *
-           PERFORM VARYING IDXA    FROM    1   BY  1
-                   UNTIL ( IDXA    >   SPA-GMN-W21-TOKNYUIN-MAX )
-      *
-               COMPUTE WRK-FROM    =   IDXA    +   1
-               PERFORM VARYING IDXB    FROM    WRK-FROM   BY  1
-                       UNTIL ( IDXB    >   SPA-GMN-W21-TOKNYUIN-MAX )
-                   IF    ( SPA-GMN-W21-TOKNYUINL-JUNNUM (IDXA)
-                               >   SPA-GMN-W21-TOKNYUINL-JUNNUM (IDXB))
-                       MOVE    SPA-GMN-W21-TOKNYUINLST-OCC (IDXA)
-                               TO  SPA-GMN-W21-TOKNYUINLST-OCC (IDXS)
-                       MOVE    SPA-GMN-W21-TOKNYUINLST-OCC (IDXB)
-                               TO  SPA-GMN-W21-TOKNYUINLST-OCC (IDXA)
-                       MOVE    SPA-GMN-W21-TOKNYUINLST-OCC (IDXS)
-                               TO  SPA-GMN-W21-TOKNYUINLST-OCC (IDXB)
-                   END-IF
-               END-PERFORM
-      *
-               COMPUTE WRK-NUM02   =   IDXA
-               MOVE    WRK-NUM02X  TO  SPA-GMN-W21-TOKNYUINL (IDXA)
-      *
-           END-PERFORM
       *
            .
        3101-SYS-5111-GET-EXT.
@@ -867,7 +820,7 @@
            MOVE    SYSKANRI-REC    TO  SYS-5113-REC
       *
            PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
-                    OR   ( SPA-GMN-W21-SAGAKU-MAX  >=  99 )
+                    OR   ( SPA-GMN-W21-SAGAKU-MAX  >=  30 )
       *
                COMPUTE SPA-GMN-W21-SAGAKU-MAX
                    =   SPA-GMN-W21-SAGAKU-MAX  +   1
@@ -944,15 +897,6 @@
            INITIALIZE                SPA-GMN-W21-KHNRYOLST-G
                                      SPA-NAI-W21-KHNRYOLST-G
       *
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    "5001"          TO  SYS-KANRICD
-           MOVE    SPA-GMN-W21-BTUNUM
-                                   TO  SYS-KBNCD
-           MOVE    WRK-KJN-YUKSTYMD
-                                   TO  SYS-STYUKYMD
-                                       SYS-EDYUKYMD
-           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC    TO  SYS-5001-REC
       *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "5111"          TO  SYS-KANRICD
@@ -962,7 +906,6 @@
            MOVE    SYSKANRI-REC    TO  SYS-5111-REC
       *
            PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
-                    OR   ( SPA-GMN-W21-KHNRYO-MAX  >= 20 )
       *
                MOVE    ZERO        TO  FLG-TARGET
       *
@@ -976,81 +919,6 @@
                 AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
                 AND  ( SYS-5111-SEIKATU-RYOKBN     =   SPACE )
                    MOVE    1       TO  FLG-TARGET
-               END-IF
-      *
-               IF    ( WRK-KJN-YUKSTYMD
-                                 >=  CONST-H220401 )
-                   IF    ( SYS-5111-SRYCD
-                                       =   "099999953"
-                                        OR "099999954" )
-                           MOVE  ZERO  TO  FLG-TARGET
-                   END-IF
-                   IF    ( SYS-5001-KHNSRYCD
-                                       =   SPACE
-                                  OR       "099999953"
-                                  OR       "190121310"
-                                  OR       "190121410"
-                                  OR       "190121510"
-                                  OR       "190121610"
-                                  OR       "190121710"
-                                  OR       "190131610"
-                                  OR       "190132010"
-                                  OR       "190132210" )
-                       IF    ( SYS-5111-SRYCD
-                                       =   "190132410"
-                                  OR       "190132610"
-                                  OR       "190132810"
-                                  OR       "190133010"
-                                  OR       "190133210"
-                                  OR       "190133410"
-                                  OR       "190133610"
-                                  OR       "190133810"
-                                  OR       "190134010"
-                                  OR       "190132510"
-                                  OR       "190132710"
-                                  OR       "190132910"
-                                  OR       "190133110"
-                                  OR       "190133310"
-                                  OR       "190133510"
-                                  OR       "190133710"
-                                  OR       "190133910"
-                                  OR       "190134110" )
-                           MOVE  ZERO  TO  FLG-TARGET
-                       END-IF
-                   END-IF
-                   IF    ( SYS-5001-KHNSRYCD
-                                       =   "099999954"
-                                  OR       "190132410"
-                                  OR       "190132610"
-                                  OR       "190132810"
-                                  OR       "190133010"
-                                  OR       "190133210"
-                                  OR       "190133410"
-                                  OR       "190133610"
-                                  OR       "190133810"
-                                  OR       "190134010" )
-                       IF    ( SYS-5111-SRYCD
-                                       =   "190121310"
-                                  OR       "190121410"
-                                  OR       "190121510"
-                                  OR       "190121610"
-                                  OR       "190121710"
-                                  OR       "190131610"
-                                  OR       "190131810"
-                                  OR       "190132010"
-                                  OR       "190132210"
-                                  OR       "190123710"
-                                  OR       "190123810"
-                                  OR       "190123910"
-                                  OR       "190124010"
-                                  OR       "190124110"
-                                  OR       "190131710"
-                                  OR       "190131910"
-                                  OR       "190132110"
-                                  OR       "190132310" )
-                           MOVE  ZERO  TO  FLG-TARGET
-                       END-IF
-                   END-IF
                END-IF
       *
                IF    ( FLG-TARGET          =   1 )
@@ -1080,44 +948,6 @@
       *
            .
        3101-KHNRYO-GET-EXT.
-           EXIT.
-      *****************************************************************
-      *    病棟機能情報取得処理
-      *****************************************************************
-       3101-TBTUTYPE-GET-SEC        SECTION.
-      *
-           INITIALIZE  SPA-GMN-W21-TBTUTYPELST-G
-      *
-           MOVE    "1"             TO  SPA-GMN-W21-TBTUTYPEL (1)
-           MOVE    "高度急性期"    TO  SPA-GMN-W21-TBTUTYPEMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-W21-TBTUTYPEL (2)
-           MOVE    "急性期"        TO  SPA-GMN-W21-TBTUTYPEMEIL (2)
-      *
-           MOVE    "3"             TO  SPA-GMN-W21-TBTUTYPEL (3)
-           MOVE    "回復期"        TO  SPA-GMN-W21-TBTUTYPEMEIL (3)
-      *
-           MOVE    "4"             TO  SPA-GMN-W21-TBTUTYPEL (4)
-           MOVE    "慢性期"        TO  SPA-GMN-W21-TBTUTYPEMEIL (4)
-      *
-           MOVE    4               TO  SPA-GMN-W21-TBTUTYPE-MAX
-      *
-           .
-       3101-TBTUTYPE-GET-EXT.
-           EXIT.
-      *****************************************************************
-      *    加算共通コンボボックス初期処理
-      *****************************************************************
-       3101-CMB-KSNCOMMON-SET-SEC          SECTION.
-      *
-           MOVE    "1"                 TO  SPA-GMN-W21-KSNCOMMONL(1)
-           MOVE    "算定しない"        TO  SPA-GMN-W21-KSNCOMMONMEIL(1)
-           MOVE    "2"                 TO  SPA-GMN-W21-KSNCOMMONL(2)
-           MOVE    "算定する"          TO  SPA-GMN-W21-KSNCOMMONMEIL(2)
-           MOVE    2                   TO  SPA-GMN-W21-KSNCOMMON-MAX
-      *
-           .
-       3101-CMB-KSNCOMMON-SET-EXT.
            EXIT.
       *****************************************************************
       *    入院加算コンボ初期処理(H14.4〜H18.3)
@@ -1178,64 +1008,6 @@
        31012-CMB-KSN-SYOKI-EXT.
            EXIT.
       *****************************************************************
-      *    入院加算コンボ初期処理(H22.4〜)
-      *****************************************************************
-       31012-CMB-KSN-H22-SEC           SECTION.
-      *
-      *    診療所療養病床療養環境加算
-           PERFORM 3101-CMB-SNRRYO-SET-SEC
-      *
-      *    放射線治療病室管理加算
-           PERFORM 3101-CMB-HOSYASEN-SET-SEC
-      *
-      *    療養環境加算
-           PERFORM 3101-CMB-RYO-SET-SEC
-      *
-      *    療養病棟療養環境加算
-           PERFORM 3101-CMB-BTURYO-SET-SEC
-      *
-      *    重症者等療養環境特別加算
-           PERFORM 3101-CMB-JYUTOK-SET-SEC
-      *
-      *    無菌治療室管理加算
-           PERFORM 3101-CMB-MUKIN-SET-SEC
-      *
-           .
-       31012-CMB-KSN-H22-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院加算コンボ初期処理(H24.4〜)
-      *****************************************************************
-       31012-CMB-KSN-H24-SEC           SECTION.
-      *
-      *    診療所療養病床療養環境加算
-           PERFORM 3101-CMB-SNRRYO-SET-SEC
-      *
-      *    診療所療養病床療養環境改善加算
-           PERFORM 3101-CMB-SNRRYOKAI-SET-SEC
-      *
-      *    放射線治療病室管理加算
-           PERFORM 3101-CMB-HOSYASEN-SET-SEC
-      *
-      *    療養環境加算
-           PERFORM 3101-CMB-RYO-SET-SEC
-      *
-      *    療養病棟療養環境加算
-           PERFORM 3101-CMB-BTURYO-SET-SEC
-      *
-      *    療養病棟療養環境改善加算
-           PERFORM 3101-CMB-BTURYOKAI-SET-SEC
-      *
-      *    重症者等療養環境特別加算
-           PERFORM 3101-CMB-JYUTOK-SET-SEC
-      *
-      *    無菌治療室管理加算
-           PERFORM 3101-CMB-MUKIN-SET-SEC
-      *
-           .
-       31012-CMB-KSN-H24-EXT.
-           EXIT.
-      *****************************************************************
       *    新生児入院医療管理加算
       *****************************************************************
        3101-CMB-SINSEIJI-SET-SEC       SECTION.
@@ -1254,41 +1026,27 @@
       *****************************************************************
        3101-CMB-SNRRYO-SET-SEC         SECTION.
       *
-           EVALUATE    TRUE
-           WHEN  ( WRK-KJN-YUKSTYMD    >=   CONST-H241001 )
-               MOVE    SPA-GMN-W21-KSNCOMMONLST-G
-                                       TO  SPA-GMN-W21-SNRRYOLST-G
-           WHEN    OTHER
-               MOVE    "1"             TO  SPA-GMN-W21-SNRRYOL(1)
-               MOVE    "算定しない"    TO  SPA-GMN-W21-SNRRYOMEIL(1)
-               MOVE    "2"             TO  SPA-GMN-W21-SNRRYOL(2)
-               MOVE    "加算１"        TO  SPA-GMN-W21-SNRRYOMEIL(2)
-               MOVE    "3"             TO  SPA-GMN-W21-SNRRYOL(3)
-               MOVE    "加算２"        TO  SPA-GMN-W21-SNRRYOMEIL(3)
-               MOVE    3               TO  SPA-GMN-W21-SNRRYO-MAX
-           END-EVALUATE
+           MOVE    "1"                 TO  SPA-GMN-W21-SNRRYOL(1)
+           MOVE    "算定しない"        TO  SPA-GMN-W21-SNRRYOMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-W21-SNRRYOL(2)
+           MOVE    "加算１"            TO  SPA-GMN-W21-SNRRYOMEIL(2)
+           MOVE    "3"                 TO  SPA-GMN-W21-SNRRYOL(3)
+           MOVE    "加算２"            TO  SPA-GMN-W21-SNRRYOMEIL(3)
+           MOVE    3                   TO  SPA-GMN-W21-SNRRYO-MAX
       *
            .
        3101-CMB-SNRRYO-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療所療養病床療養環境改善加算
-      *****************************************************************
-       3101-CMB-SNRRYOKAI-SET-SEC      SECTION.
-      *
-           MOVE    SPA-GMN-W21-KSNCOMMONLST-G
-                                       TO  SPA-GMN-W21-SNRRYOKAILST-G
-      *
-           .
-       3101-CMB-SNRRYOKAI-SET-EXT.
            EXIT.
       *****************************************************************
       *    放射線治療病室管理加算加算
       *****************************************************************
        3101-CMB-HOSYASEN-SET-SEC         SECTION.
       *
-           MOVE    SPA-GMN-W21-KSNCOMMONLST-G
-                                       TO  SPA-GMN-W21-HOSYASENLST-G
+           MOVE    "1"                 TO  SPA-GMN-W21-HOSYASENL(1)
+           MOVE    "算定しない"        TO  SPA-GMN-W21-HOSYASENMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-W21-HOSYASENL(2)
+           MOVE    "算定する"          TO  SPA-GMN-W21-HOSYASENMEIL(2)
+           MOVE    2                   TO  SPA-GMN-W21-HOSYASEN-MAX
       *
            .
        3101-CMB-HOSYASEN-SET-EXT.
@@ -1298,8 +1056,11 @@
       *****************************************************************
        3101-CMB-RYO-SET-SEC         SECTION.
       *
-           MOVE    SPA-GMN-W21-KSNCOMMONLST-G
-                                       TO  SPA-GMN-W21-RYOLST-G
+           MOVE    "1"                 TO  SPA-GMN-W21-RYOL(1)
+           MOVE    "算定しない"        TO  SPA-GMN-W21-RYOMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-W21-RYOL(2)
+           MOVE    "算定する"          TO  SPA-GMN-W21-RYOMEIL(2)
+           MOVE    2                   TO  SPA-GMN-W21-RYO-MAX
       *
            .
        3101-CMB-RYO-SET-EXT.
@@ -1310,20 +1071,6 @@
        3101-CMB-BTURYO-SET-SEC         SECTION.
       *
            EVALUATE    TRUE
-           WHEN  ( WRK-KJN-YUKSTYMD    >=  CONST-H241001 )
-      *
-               MOVE    "1"                 TO  SPA-GMN-W21-BTURYOL(1)
-               MOVE    "算定しない"        TO  SPA-GMN-W21-BTURYOMEIL(1)
-      *
-               MOVE    "2"                 TO  SPA-GMN-W21-BTURYOL(2)
-               MOVE    "療養病棟療養環境加算１"
-                                           TO  SPA-GMN-W21-BTURYOMEIL(2)
-      *
-               MOVE    "3"                 TO  SPA-GMN-W21-BTURYOL(3)
-               MOVE    "療養病棟療養環境加算２"
-                                           TO  SPA-GMN-W21-BTURYOMEIL(3)
-      *
-               MOVE    3                   TO  SPA-GMN-W21-BTURYO-MAX
            WHEN  ( WRK-KJN-YUKSTYMD    >=  CONST-H180401 )
       *
                MOVE    "1"                 TO  SPA-GMN-W21-BTURYOL(1)
@@ -1371,27 +1118,6 @@
        3101-CMB-BTURYO-SET-EXT.
            EXIT.
       *****************************************************************
-      *    療養病棟療養環境改善加算
-      *****************************************************************
-       3101-CMB-BTURYOKAI-SET-SEC         SECTION.
-      *
-           MOVE    "1"             TO  SPA-GMN-W21-BTURYOKAIL(1)
-           MOVE    "算定しない"    TO  SPA-GMN-W21-BTURYOKAIMEIL(1)
-      *
-           MOVE    "2"             TO  SPA-GMN-W21-BTURYOKAIL(2)
-           MOVE    "療養病棟療養環境改善加算１"
-                                   TO  SPA-GMN-W21-BTURYOKAIMEIL(2)
-      *
-           MOVE    "3"             TO  SPA-GMN-W21-BTURYOKAIL(3)
-           MOVE    "療養病棟療養環境改善加算２"
-                                   TO  SPA-GMN-W21-BTURYOKAIMEIL(3)
-      *
-           MOVE    3               TO  SPA-GMN-W21-BTURYOKAI-MAX
-      *
-           .
-       3101-CMB-BTURYOKAI-SET-EXT.
-           EXIT.
-      *****************************************************************
       *    重症者等療養環境特別加算
       *****************************************************************
        3101-CMB-JYUTOK-SET-SEC         SECTION.
@@ -1412,34 +1138,11 @@
       *****************************************************************
        3101-CMB-MUKIN-SET-SEC         SECTION.
       *
-           EVALUATE    TRUE
-           WHEN  ( WRK-KJN-YUKSTYMD    >=  CONST-H250401 )
-               MOVE    "1"             TO  SPA-GMN-W21-MUKINL(1)
-               MOVE    "算定しない"    TO  SPA-GMN-W21-MUKINMEIL(1)
-               MOVE    "2"             TO  SPA-GMN-W21-MUKINL(2)
-               MOVE    "無菌治療室管理加算１"
-                                       TO  SPA-GMN-W21-MUKINMEIL(2)
-               MOVE    "4"             TO  SPA-GMN-W21-MUKINL(3)
-               MOVE    "無菌治療室管理加算２"
-                                       TO  SPA-GMN-W21-MUKINMEIL(3)
-               MOVE    3               TO  SPA-GMN-W21-MUKIN-MAX
-           WHEN  ( WRK-KJN-YUKSTYMD    >=  CONST-H240401 )
-               MOVE    "1"             TO  SPA-GMN-W21-MUKINL(1)
-               MOVE    "算定しない"    TO  SPA-GMN-W21-MUKINMEIL(1)
-               MOVE    "2"             TO  SPA-GMN-W21-MUKINL(2)
-               MOVE    "無菌治療室管理加算１"
-                                       TO  SPA-GMN-W21-MUKINMEIL(2)
-               MOVE    "3"             TO  SPA-GMN-W21-MUKINL(3)
-               MOVE    "無菌治療室管理加算１（経過措置）"
-                                       TO  SPA-GMN-W21-MUKINMEIL(3)
-               MOVE    "4"             TO  SPA-GMN-W21-MUKINL(4)
-               MOVE    "無菌治療室管理加算２"
-                                       TO  SPA-GMN-W21-MUKINMEIL(4)
-               MOVE    4               TO  SPA-GMN-W21-MUKIN-MAX
-           WHEN    OTHER
-               MOVE    SPA-GMN-W21-KSNCOMMONLST-G
-                                       TO  SPA-GMN-W21-MUKINLST-G
-           END-EVALUATE
+           MOVE    "1"                 TO  SPA-GMN-W21-MUKINL(1)
+           MOVE    "算定しない"        TO  SPA-GMN-W21-MUKINMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-W21-MUKINL(2)
+           MOVE    "算定する"          TO  SPA-GMN-W21-MUKINMEIL(2)
+           MOVE    2                   TO  SPA-GMN-W21-MUKIN-MAX
       *
            .
        3101-CMB-MUKIN-SET-EXT.
@@ -1597,7 +1300,6 @@
            MOVE    SYS-5111-BRM-TOKUTEINYUIN-NM2
                                        TO  SPA-GMN-W21-TKHNRYO(IDX1)
       *
-      *
       *    有効開始日
            MOVE    SYS-5002-STYUKYMD
                            TO  WRK-YMD
@@ -1628,37 +1330,26 @@
       *
       *    病室情報検索処理
            PERFORM 4200-BRM-SEL-SEC
-           IF    ( FLG-SYSKANRI    =   ZERO )
+           IF    ( FLG-SYSKANRI    NOT =   ZERO )
+               MOVE    1           TO  FLG-INPUT-AREA
+               GO  TO  4100-INPUT-AREA-EDIT-EXT
+           END-IF
       *
-      *        有効開始日
-               MOVE    SYS-5002-STYUKYMD
+      *    有効開始日
+           MOVE    SYS-5002-STYUKYMD
                                    TO  SPA-NAI-W21-YUKOSTYMD
                                        SPA-NAI-W21-YUKOSTYMD-OLD
                                        WRK-YMD
-               PERFORM 800-HIZUKE-CHK-SEC
-               MOVE    WRK-HENYMDG TO  SPA-GMN-W21-YUKOSTYMD
+           PERFORM 800-HIZUKE-CHK-SEC
+           MOVE    WRK-HENYMDG     TO  SPA-GMN-W21-YUKOSTYMD
       *
-      *        有効終了日
-               MOVE    SYS-5002-EDYUKYMD
+      *    有効終了日
+           MOVE    SYS-5002-EDYUKYMD
                                    TO  SPA-NAI-W21-YUKOEDYMD
                                        SPA-NAI-W21-YUKOEDYMD-OLD
                                        WRK-YMD
-               PERFORM 800-HIZUKE-CHK-SEC
-               MOVE    WRK-HENYMDG TO  SPA-GMN-W21-YUKOEDYMD
-      *
-               PERFORM 41001-INPUT-AREA-EDIT-SEC
-      *
-           ELSE
-               MOVE    1           TO  FLG-INPUT-AREA
-           END-IF
-      *
-           .
-       4100-INPUT-AREA-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    入力項目領域編集処理
-      *****************************************************************
-       41001-INPUT-AREA-EDIT-SEC       SECTION.
+           PERFORM 800-HIZUKE-CHK-SEC
+           MOVE    WRK-HENYMDG     TO  SPA-GMN-W21-YUKOEDYMD
       *
       *    システム管理情報再設定処理
            PERFORM 4100-SYSKANRI-RESET-SEC
@@ -1699,9 +1390,8 @@
       *    特定入院料
            MOVE    SYS-5002-BRM-TOKTEI-NYUIN
                                    TO  WRK-CMB-CD
-           PERFORM 4201-TOKNYUINLST-CHK-SEC
+           PERFORM 4200-TOKNYUINLST-CHK-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-W21-TOKNYUIN-G
-           MOVE    WRK-CMB-ITM4    TO  SPA-NAI-W21-TOKNYUIN
       *
       *    収容人数
            MOVE    SYS-5002-BRM-NINZU
@@ -1741,23 +1431,7 @@
                MOVE    TNS-TEN                 TO  SPA-GMN-W21-KHNTEN
            END-IF
       *
-      *
-      *    病棟コード
-           IF    ( SYS-5002-TSRYCD      NOT =   SPACE )
-               MOVE    SYS-5002-TSRYCD(5:1)
-                                       TO  WRK-CMB-CD
-               PERFORM 4200-TBTUTYPELST-CHK-SEC
-               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W21-TBTUTYPE-G
-               MOVE    SYS-5002-TSRYCD(6:4)
-                                       TO  WRK-KBN4-G
-               MOVE    WRK-KBN4        TO  SPA-GMN-W21-TBTUCD
-           END-IF
-      *
            EVALUATE    TRUE
-           WHEN  ( SPA-NAI-W21-YUKOSTYMD   >=   CONST-H240401 )
-               PERFORM 41004-KSN-EDIT-SEC
-           WHEN  ( SPA-NAI-W21-YUKOSTYMD   >=   CONST-H220401 )
-               PERFORM 41003-KSN-EDIT-SEC
            WHEN  ( SPA-NAI-W21-YUKOSTYMD   >=   CONST-H180401 )
                PERFORM 41002-KSN-EDIT-SEC
            WHEN    OTHER
@@ -1765,7 +1439,7 @@
            END-EVALUATE
       *
            .
-       41001-INPUT-AREA-EDIT-EXT.
+       4100-INPUT-AREA-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    病棟別設定加算設定処理(H14.4〜H18.3)
@@ -1831,11 +1505,6 @@
            PERFORM 4200-JYUTOKLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-JYUTOK-G
       *
-      *    無菌治療室管理加算
-           MOVE    SYS-5002-MUKIN-KBN  TO  WRK-CMB-CD
-           PERFORM 4200-MUKINLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-MUKIN-G
-      *
            .
        41001-KSN-EDIT-EXT.
            EXIT.
@@ -1900,131 +1569,8 @@
            PERFORM 4200-JYUTOKLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-JYUTOK-G
       *
-      *    無菌治療室管理加算
-           MOVE    SYS-5002-MUKIN-KBN  TO  WRK-CMB-CD
-           PERFORM 4200-MUKINLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-MUKIN-G
-      *
            .
        41002-KSN-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    病棟別設定加算設定処理(H22.4〜)
-      *****************************************************************
-       41003-KSN-EDIT-SEC               SECTION.
-      *
-      *    診療所療養病床療養環境加算
-           MOVE    "1"                 TO  WRK-CMB-CD
-           EVALUATE    TRUE
-           WHEN  ( SYS-5002-SNR-RYOYO-KBN (1)  =   "2" )
-               MOVE    "2"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-SNR-RYOYO-KBN (2)  =   "2" )
-               MOVE    "3"             TO  WRK-CMB-CD
-           END-EVALUATE
-           PERFORM 4200-SNRRYOLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-SNRRYO-G
-      *
-      *    放射線治療病室管理加算
-           MOVE    SYS-5002-HOSYASEN-KBN
-                                       TO  WRK-CMB-CD
-           PERFORM 4200-HOSYASENLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-HOSYASEN-G
-      *
-      *    療養環境加算
-           MOVE    SYS-5002-RYOYO-KBN
-                                       TO  WRK-CMB-CD
-           PERFORM 4200-RYOLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-RYO-G
-      *
-      *    療養病棟療養環境加算
-           MOVE    "1"                 TO  WRK-CMB-CD
-           EVALUATE    TRUE
-           WHEN  ( SYS-5002-BTU-RYOYO-H18-KBN  =   "2" )
-               MOVE    "2"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-BTU-RYOYO-KBN (1)  =   "2" )
-               MOVE    "3"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-BTU-RYOYO-KBN (2)  =   "2" )
-               MOVE    "4"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-BTU-RYOYO-KBN (3)  =   "2" )
-               MOVE    "5"             TO  WRK-CMB-CD
-           END-EVALUATE
-           PERFORM 4200-BTURYOLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-BTURYO-G
-      *
-      *    重症者等療養環境特別加算
-           MOVE    "1"                 TO  WRK-CMB-CD
-           EVALUATE    TRUE
-           WHEN  ( SYS-5002-JYUTOK1-KBN  =   "2" )
-               MOVE    "2"             TO  WRK-CMB-CD
-           WHEN  ( SYS-5002-JYUTOK2-KBN  =   "2" )
-               MOVE    "3"             TO  WRK-CMB-CD
-           END-EVALUATE
-           PERFORM 4200-JYUTOKLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-JYUTOK-G
-      *
-      *    無菌治療室管理加算
-           MOVE    SYS-5002-MUKIN-KBN  TO  WRK-CMB-CD
-           PERFORM 4200-MUKINLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-W21-MUKIN-G
-      *
-           .
-       41003-KSN-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    病棟別設定加算設定処理(H24.4〜)
-      *****************************************************************
-       41004-KSN-EDIT-SEC              SECTION.
-      *
-           PERFORM VARYING IDX-KSN     FROM    1   BY  1
-                   UNTIL ( IDX-KSN     >   CONST-5002-KSN-MAX )
-      *
-               IF    ( SYS-5002-KSNKBN (IDX-KSN)   =   "2" )
-                   EVALUATE    SYS-5002-KSNCD (IDX-KSN)
-                   WHEN    CONST-H2404-SNRRYO1
-                       MOVE    "2"     TO  SPA-GMN-W21-SNRRYO
-                   WHEN    CONST-H2404-SNRRYO2
-                       MOVE    "3"     TO  SPA-GMN-W21-SNRRYO
-                   WHEN    CONST-H2404-SNRRYOKAI
-                       MOVE    "2"     TO  SPA-GMN-W21-SNRRYOKAI
-                   WHEN    CONST-HOSYASEN
-                       MOVE    "2"     TO  SPA-GMN-W21-HOSYASEN
-                   WHEN    CONST-RYOYO
-                       MOVE    "2"     TO  SPA-GMN-W21-RYO
-                   WHEN    CONST-H2404-BTURYO1
-                       MOVE    "2"     TO  SPA-GMN-W21-BTURYO
-                   WHEN    CONST-H2404-BTURYO2
-                       MOVE    "3"     TO  SPA-GMN-W21-BTURYO
-                   WHEN    CONST-H2404-BTURYO3
-                       MOVE    "4"     TO  SPA-GMN-W21-BTURYO
-                   WHEN    CONST-H2404-BTURYO4
-                       MOVE    "5"     TO  SPA-GMN-W21-BTURYO
-                   WHEN    CONST-H2404-BTURYOKAI1
-                       MOVE    "2"     TO  SPA-GMN-W21-BTURYOKAI
-                   WHEN    CONST-H2404-BTURYOKAI2
-                       MOVE    "3"     TO  SPA-GMN-W21-BTURYOKAI
-                   WHEN    CONST-JYUTOK1
-                       MOVE    "2"     TO  SPA-GMN-W21-JYUTOK
-                   WHEN    CONST-JYUTOK2
-                       MOVE    "3"     TO  SPA-GMN-W21-JYUTOK
-                   WHEN    CONST-H2404-MUKIN1
-                       MOVE    "2"     TO  SPA-GMN-W21-MUKIN
-                   WHEN    CONST-H2404-MUKIN1K
-                       MOVE    "3"     TO  SPA-GMN-W21-MUKIN
-                   WHEN    CONST-H2404-MUKIN2
-                       MOVE    "4"     TO  SPA-GMN-W21-MUKIN
-                   END-EVALUATE
-               END-IF
-           END-PERFORM
-      *
-           PERFORM VARYING IDX-KSN FROM    1   BY  1
-                   UNTIL ( IDX-KSN >   CONST-KSN-MAX )
-      *
-               PERFORM 41021-KSN-CHK-SEC
-      *
-           END-PERFORM
-      *
-           .
-       41004-KSN-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    病室情報検索処理
@@ -2123,13 +1669,8 @@
                EVALUATE    SPA-WIDCD
                WHEN "2001"
                        PERFORM 421-SAKUJO-SEC
-               WHEN "2002"
+               WHEN "3001"
                        PERFORM 42021-HENKOU-SEC
-               WHEN "2003"
-                       PERFORM 4201-EDYUKYMD-UPDATE-SEC
-                       IF    ( SPA-ERRCD   =   SPACE )
-                           PERFORM 4201-TUIKA-SEC
-                       END-IF
                END-EVALUATE
            END-IF
       *
@@ -2170,7 +1711,7 @@
       *
       *    病棟管理情報画面へ
            WHEN    "CLICKED"       ALSO    "B09"
-               IF  ( SPA-W20-W21-MOTOPG    =       SPACE )
+               IF  ( SPA-MOTOPG    =       "W01" )
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 420-BYOTO-KANRI-SENI-SEC
                END-IF
@@ -2283,21 +1824,11 @@
       *    入院基本料
            MOVE    W21-KHNRYO      TO  SPA-GMN-W21-KHNRYO-G
       *
-           IF    ( SPA-NAI-W21-INPUT-MODE  =   2 )
-               CONTINUE
-           ELSE
-      *        有効期間開始日
-               MOVE    W21-YUKOSTYMD   TO  SPA-GMN-W21-YUKOSTYMD
+      *    有効期間開始日
+           MOVE    W21-YUKOSTYMD   TO  SPA-GMN-W21-YUKOSTYMD
       *
-      *        有効期間終了日
-               MOVE    W21-YUKOEDYMD   TO  SPA-GMN-W21-YUKOEDYMD
-           END-IF
-      *
-      *    病棟コード（病棟機能）（特定入院料）
-           MOVE    W21-TBTUTYPE    TO  SPA-GMN-W21-TBTUTYPE-G
-      *
-      *    病棟コード（連番）（特定入院料）
-           MOVE    W21-TBTUCD      TO  SPA-GMN-W21-TBTUCD
+      *    有効期間終了日
+           MOVE    W21-YUKOEDYMD   TO  SPA-GMN-W21-YUKOEDYMD
       *
       *    入院料加算
            PERFORM VARYING IDX-KSN FROM    1   BY  1
@@ -2307,7 +1838,7 @@
                                    TO  IDX-GKSN
                IF    ( IDX-GKSN     >   ZERO )
                    MOVE    W21-KSN (IDX-GKSN)
-                                   TO  SPA-GMN-W21-KSNCD-G
+                                   TO  SPA-GMN-W21-KSN
                                                       (IDX-KSN)
                END-IF
            END-PERFORM
@@ -2388,83 +1919,52 @@
                PERFORM 4100-KHNRYO-CHK-SEC
            END-IF
       *
-           IF    ( SPA-ERRCD       =   SPACE )
-      *        病棟コード（病棟機能）（特定入院料）チェック処理
-               PERFORM 4101-TBTUTYPE-CHK-SEC
-           END-IF
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-      *        病棟コード（連番）（特定入院料）チェック処理
-               PERFORM 4101-TBTUCD-CHK-SEC
-           END-IF
-      *
       *    入院料加算チェック
            PERFORM VARYING IDX-KSN FROM    1   BY  1
                    UNTIL ( IDX-KSN >   CONST-KSN-MAX )
                     OR   ( SPA-ERRCD       NOT =   SPACE )
       *
-               PERFORM 41021-KSN-CHK-SEC
+               IF    ( SPA-NAI-W21-KSNINF-IDX (IDX-KSN)
+                                   >   ZERO )
+      *
+                   EVALUATE    SPA-NAI-W21-KSNINF-CD (IDX-KSN)
+                   WHEN    CONST-SINSEIJI
+                       PERFORM 4101-SINSEIJI-CHK-SEC
+                   WHEN    CONST-SNR-RYOYO(1)
+                       PERFORM 4101-SNRRYO-CHK-SEC
+                   WHEN    CONST-HOSYASEN
+                       PERFORM 4101-HOSYASEN-CHK-SEC
+                   WHEN    CONST-RYOYO
+                       PERFORM 4101-RYO-CHK-SEC
+                   WHEN    CONST-BTU-RYOYO (1)
+                       PERFORM 4101-BTURYO-CHK-SEC
+                   WHEN    CONST-JYUTOK1
+                       PERFORM 4101-JYUTOK-CHK-SEC
+                   WHEN    CONST-MUKIN
+                       PERFORM 4101-MUKIN-CHK-SEC
+                   END-EVALUATE
+      *
+               END-IF
       *
            END-PERFORM
       *
-      *    IF    ( SPA-ERRCD   =   SPACE )
+           IF    ( SPA-ERRCD   =   SPACE )
       *        入院加算情報チェック処理-施設基準チェック処理
-      *        PERFORM 4901-SSTKIJUN-CHK-SEC
-      *    END-IF
+               PERFORM 4901-SSTKIJUN-CHK-SEC
+           END-IF
       *
            .
       *
        4102-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    入院料加算チェック処理
-      *****************************************************************
-       41021-KSN-CHK-SEC           SECTION.
-      *
-           IF    ( SPA-NAI-W21-KSNINF-IDX (IDX-KSN)
-                                   >   ZERO )
-      *
-               MOVE    SPA-GMN-W21-KSNCD (IDX-KSN)
-                                   TO  WRK-CMB-CD
-      *
-               MOVE    SPACE       TO  WRK-CMB-ITM-G
-               MOVE    SPA-GMN-W21-KSNLST-MAX (IDX-KSN)
-                                   TO  WRK-MAX
-               PERFORM VARYING IDXL    FROM    1   BY  1
-                       UNTIL ( IDXL    >   WRK-MAX )
-                        OR   ( WRK-CMB-ITM-G   NOT =   SPACE )
-      *
-                   IF    ( SPA-GMN-W21-KSNCDL (IDX-KSN IDXL)
-                                   =   SPA-GMN-W21-KSNCD (IDX-KSN))
-                       MOVE    SPA-GMN-W21-KSNLST (IDX-KSN IDXL)
-                                   TO  WRK-CMB-ITM
-                   END-IF
-      *
-               END-PERFORM
-      *
-               IF    ( WRK-CMB-ITM =   SPACE )
-                   MOVE    SPA-GMN-W21-KSNLST (IDX-KSN 1)
-                                   TO  SPA-GMN-W21-KSNCD-G (IDX-KSN)
-               ELSE
-                   MOVE    WRK-CMB-ITM
-                                   TO  SPA-GMN-W21-KSNCD-G (IDX-KSN)
-               END-IF
-      *
-           END-IF
-      *
-           .
-       41021-KSN-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
-           IF    ( SPA-W20-W21-MOTOPG  =   SPACE )
-               MOVE    "W01"               TO  SPA-SAKIPG
-           ELSE
-               MOVE    SPA-W20-W21-MOTOPG  TO  SPA-SAKIPG
-           END-IF
+           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           MOVE    SPA-MOTOPG2         TO  SPA-MOTOPG3
+           MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
            MOVE    "W21"               TO  SPA-MOTOPG
       *
       ***  MOVE   "CHANGE"             TO  MCP-PUTTYPE
@@ -2518,75 +2018,32 @@
       *    存在しないこと
            MOVE    1                   TO  FLG-UPD-KBN
            PERFORM 4100-RIREKI-CHK-SEC
-           EVALUATE    FLG-KIKAN-DABURI
-           WHEN    ZERO
-               PERFORM 4201-TUIKA-SEC
-           WHEN    1
-               MOVE    "2003"      TO  SPA-WIDCD
-           WHEN    OTHER
-               MOVE    "1104"      TO  SPA-ERRCD
+           IF   ( FLG-KIKAN-DABURI NOT =   ZERO )
+               MOVE    "1104"          TO  SPA-ERRCD
                MOVE    11          TO  SPA-GMN-W21-CUR
-           END-EVALUATE
-      *
-           .
-       420-TUIKA-EXT.
-           EXIT.
-      *****************************************************************
-      *    追加処理
-      *****************************************************************
-       4201-TUIKA-SEC                  SECTION.
+               GO  TO  420-TUIKA-EXT
+           END-IF
       *
       *    病室情報追加編集処理
            PERFORM 4201-BRM-INSERT-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  420-TUIKA-EXT
+           END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
       *
                MOVE    SPA-GMN-W21-BTUNUM
                                    TO  W21-BTU-NAME
                PERFORM 4100-BTUNUM-CHK-SEC
+           END-IF
       *
-      *        病棟リスト最大件数チェック
-               IF    ( SPA-GMN-W21-BRMLST-MAX  >=  200 )
-                   MOVE    "1001"  TO  SPA-ERRCD
-               END-IF
+      *    病棟リスト最大件数チェック
+           IF    ( SPA-GMN-W21-BRMLST-MAX  >=  200 )
+               MOVE    "1001"      TO  SPA-ERRCD
            END-IF
       *
            .
-       4201-TUIKA-EXT.
-           EXIT.
-      *****************************************************************
-      *    有効期間変更処理
-      *****************************************************************
-       4201-EDYUKYMD-UPDATE-SEC        SECTION.
-      *
-           PERFORM 900-SYSKANRI-KEY16-SEL-SEC
-           IF    ( FLG-SYSKANRI    =   ZERO )
-      *
-               MOVE    SYS-5002-REC    TO  SYSKANRI-REC
-               MOVE    SYS-KEY         TO  SYSUPD-KEY
-      *
-               INITIALIZE                  STS-AREA-DAY
-               INITIALIZE                  LNK-DAY6-AREA
-               MOVE    "61"                TO  LNK-DAY6-IRAI
-               MOVE    SPA-NAI-W21-YUKOSTYMD
-                                           TO  LNK-DAY6-KIJUN
-               MOVE    "1"                 TO  LNK-DAY6-ZOGENPTN
-               MOVE    -1                  TO  LNK-DAY6-ZOGEN
-               CALL  "ORCSDAY"             USING
-                                           STS-AREA-DAY
-                                           LNK-DAY6-AREA
-               MOVE    LNK-DAY6-KEISAN     TO  SYS-EDYUKYMD
-               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "upd1"          TO  MCP-PATHNAME
-               PERFORM 910-DBUPDATE-SEC
-               IF   (  MCP-RC      NOT =   ZERO )
-                   MOVE    "1205"      TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *
-           .
-       4201-EDYUKYMD-UPDATE-EXT.
+       420-TUIKA-EXT.
            EXIT.
       *****************************************************************
       *    変更処理
@@ -2699,7 +2156,7 @@
            END-PERFORM
       *
            IF    ( SPA-ERRCD   =   SPACE )
-               MOVE    "2002"           TO  SPA-WIDCD
+               MOVE    "3001"           TO  SPA-WIDCD
            END-IF
       *
            .
@@ -2710,17 +2167,17 @@
       *****************************************************************
        42021-HENKOU-SEC                SECTION.
       *
-           PERFORM VARYING IDX7    FROM    1   BY  1
-                   UNTIL ( IDX7    >   SPA-GMN-W21-BRMLST-MAX )
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   SPA-GMN-W21-BRMLST-MAX )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
-               IF  ( SPA-NAI-W21-SELNUM-FLG (IDX7) =   1 )
+               IF  ( SPA-NAI-W21-SELNUM-FLG (IDX0) =   1 )
       *
                    INITIALIZE                  SYSKANRI-REC
                    MOVE    "5002"          TO  SYS-KANRICD
-                   MOVE    SPA-NAI-W21-TBRMNUM (IDX7)
+                   MOVE    SPA-NAI-W21-TBRMNUM (IDX0)
                                            TO  SYS-KBNCD
-                   MOVE    SPA-NAI-W21-TYUKOSTYMD (IDX7)
+                   MOVE    SPA-NAI-W21-TYUKOSTYMD (IDX0)
                                            TO  SYS-STYUKYMD
                                                SYS-EDYUKYMD
                    PERFORM 900-SYSKANRI-KEY10-SEL-SEC
@@ -2729,7 +2186,7 @@
                        MOVE    SYSKANRI-REC    TO  SYS-5002-REC
       *
       *                病室加算情報編集処理
-                       PERFORM 4200-BRM-KSN-EDIT-SEC
+                       PERFORM 4201-BRM-KSN-EDIT-SEC
       *
                        MOVE    SYS-5002-REC    TO  SYSKANRI-REC
                        PERFORM 800-MCNDATE-SEC
@@ -2817,13 +2274,11 @@
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-           INITIALIZE  SPA-W20-W21-AREA
-      *
            MOVE    SPA-GMN-W21-BTUNUM  TO  SPA-W20-W21-BTUNUM
       *
            MOVE    "W20"               TO  SPA-SAKIPG
            MOVE    "W21"               TO  SPA-MOTOPG
-                                           SPA-W20-W21-MOTOPG
+           MOVE    "W01"               TO  SPA-MOTOPG2
       *
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
@@ -2864,14 +2319,7 @@
                                              >   SYS-5002-EDYUKYMD )
                        CONTINUE
                    ELSE
-                       IF    ( SPA-NAI-W21-YUKOSTYMD
-                                           >   SYS-5002-STYUKYMD )
-                        AND  ( SPA-NAI-W21-YUKOSTYMD
-                                          <=   SYS-5002-EDYUKYMD )
-                           MOVE    1       TO  FLG-KIKAN-DABURI
-                       ELSE
-                           MOVE    2       TO  FLG-KIKAN-DABURI
-                       END-IF
+                       MOVE    1             TO  FLG-KIKAN-DABURI
                    END-IF
                END-IF
       *
@@ -2983,7 +2431,7 @@
            PERFORM 4201-BRM-EDIT-SEC
       *
       *    病室加算情報編集処理
-           PERFORM 4200-BRM-KSN-EDIT-SEC
+           PERFORM 4201-BRM-KSN-EDIT-SEC
       *
            MOVE    SYS-5002-REC    TO  SYSKANRI-REC
            MOVE    SYS-5002-HOSPNUM TO SYSUP-HOSPNUM
@@ -3034,7 +2482,7 @@
            PERFORM 4201-BRM-EDIT-SEC
       *
       *    病室加算情報編集処理
-           PERFORM 4200-BRM-KSN-EDIT-SEC
+           PERFORM 4201-BRM-KSN-EDIT-SEC
       *
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD    TO  SYS-5002-CREYMD
@@ -3121,7 +2569,7 @@
                                TO  SYS-5002-BRM-SBT
       *
       *    特定入院料
-           MOVE    SPA-NAI-W21-TOKNYUIN
+           MOVE    SPA-GMN-W21-TOKNYUIN
                                TO  SYS-5002-BRM-TOKTEI-NYUIN
       *
       *    収容人数
@@ -3151,196 +2599,20 @@
            MOVE    SPA-GMN-W21-KHNRYO
                                TO  SYS-5002-KHNKBNCD (2:2)
       *
-      *    病棟コード
-           IF    ( SPA-GMN-W21-TBTUTYPE NOT =   SPACE )
-               MOVE    SPACE           TO  SYS-5002-TSRYCD
-               MOVE    "1906"          TO  SYS-5002-TSRYCD
-               MOVE    SPA-GMN-W21-TBTUTYPE
-                                       TO  SYS-5002-TSRYCD(5:1)
-               MOVE    SPA-GMN-W21-TBTUCD
-                                       TO  WRK-KBN4
-               MOVE    WRK-KBN4-G      TO  SYS-5002-TSRYCD(6:)
-           ELSE
-               MOVE    SPACE           TO  SYS-5002-TSRYCD
-           END-IF
-      *
            .
        4201-BRM-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    病室情報追加処理
-      *****************************************************************
-       4200-BRM-KSN-EDIT-SEC           SECTION.
-      *
-           INITIALIZE                  TKSN-AREA
-      *
-           EVALUATE    TRUE
-           WHEN  ( SPA-NAI-W21-YUKOSTYMD
-                                  >=   CONST-H240401 )
-               PERFORM 4202-BRM-KSN-EDIT-SEC
-           WHEN  OTHER
-               PERFORM 4201-BRM-KSN-EDIT-SEC
-           END-EVALUATE
-      *
-           .
-       4200-BRM-KSN-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    病室情報編集処理
-      *****************************************************************
-       4202-BRM-KSN-EDIT-SEC           SECTION.
-      *
-           MOVE    ZERO                TO  CNT-KSN
-      *
-           INITIALIZE  SYS-5002-KSNAREA
-      *
-      *    療養環境加算
-           IF    ( SPA-GMN-W21-RYO         =   "2" )
-               MOVE    CONST-RYOYO             TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-RYO-IDX     TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           END-IF
-      *
-      *    重症者等療養環境特別加算
-           EVALUATE    SPA-GMN-W21-JYUTOK
-           WHEN    "2"
-               MOVE    CONST-JYUTOK1           TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-JYUTOK-IDX  TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           WHEN    "3"
-               MOVE    CONST-JYUTOK2           TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-JYUTOK-IDX  TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           END-EVALUATE
-      *
-      *    療養病棟療養環境加算
-           EVALUATE    SPA-GMN-W21-BTURYO
-           WHEN    "2"
-               MOVE    CONST-H2404-BTURYO1     TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-BTURYO-IDX  TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           WHEN    "3"
-               MOVE    CONST-H2404-BTURYO2     TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-BTURYO-IDX  TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           WHEN    "4"
-               MOVE    CONST-H2404-BTURYO3     TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-BTURYO-IDX  TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           WHEN    "5"
-               MOVE    CONST-H2404-BTURYO4     TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-BTURYO-IDX  TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           END-EVALUATE
-      *
-      *    療養病棟療養環境改善加算
-           EVALUATE    SPA-GMN-W21-BTURYOKAI
-           WHEN    "2"
-               MOVE    CONST-H2404-BTURYOKAI1  TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-BTURYOKAI-IDX
-                                               TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           WHEN    "3"
-               MOVE    CONST-H2404-BTURYOKAI2  TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-BTURYOKAI-IDX
-                                               TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           END-EVALUATE
-      *
-      *    診療所療養病床療養環境加算
-           EVALUATE    SPA-GMN-W21-SNRRYO
-           WHEN    "2"
-               MOVE    CONST-H2404-SNRRYO1     TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-SNRRYO-IDX  TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           WHEN    "3"
-               MOVE    CONST-H2404-SNRRYO2     TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-SNRRYO-IDX  TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           END-EVALUATE
-      *
-      *    診療所療養病床療養環境改善加算
-           IF    ( SPA-GMN-W21-SNRRYOKAI   =   "2" )
-               MOVE    CONST-H2404-SNRRYOKAI   TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-SNRRYOKAI-IDX
-                                               TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           END-IF
-      *
-      *    無菌治療室管理加算
-           EVALUATE    SPA-GMN-W21-MUKIN
-           WHEN    "2"
-               MOVE    CONST-H2404-MUKIN1      TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-MUKIN-IDX   TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           WHEN    "3"
-               MOVE    CONST-H2404-MUKIN1K     TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-MUKIN-IDX   TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           WHEN    "4"
-               MOVE    CONST-H2404-MUKIN2      TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-MUKIN-IDX   TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           END-EVALUATE
-      *
-      *    放射線治療病室管理加算
-           IF    ( SPA-GMN-W21-HOSYASEN    =   "2" )
-               MOVE    CONST-HOSYASEN          TO  WRK-KSNCD
-               MOVE    SPA-NAI-W21-HOSYASEN-IDX
-                                               TO  WRK-KSNIDX
-               PERFORM 42021-BRM-KSN-EDIT-SEC
-           END-IF
-      *
-           .
-       4202-BRM-KSN-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    病棟情報編集処理(H24.04〜)
-      *****************************************************************
-       42021-BRM-KSN-EDIT-SEC          SECTION.
-      *
-           IF    ( CONST-5002-KSN-MAX   >  CNT-KSN )
-               COMPUTE CNT-KSN =   CNT-KSN +   1
-      *
-               MOVE    WRK-KSNCD   TO SYS-5002-KSNCD (CNT-KSN)
-               MOVE    "2"         TO SYS-5002-KSNKBN (CNT-KSN)
-           END-IF
-      *
-           IF    ( CONST-KSN-MAX       >   TKSN-MAX )
-               COMPUTE TKSN-MAX    =   TKSN-MAX    +   1
-               MOVE    WRK-KSNCD   TO  TKSN-SRYCD (TKSN-MAX)
-               MOVE    WRK-KSNIDX  TO  TKSN-IDX   (TKSN-MAX)
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   CONST-KSN-MAX )
-                        OR   ( TKSN-LBL (TKSN-MAX) NOT =   SPACE )
-      *
-                   IF    ( SPA-NAI-W21-KSNINF-IDX (IDX0)
-                                       =   WRK-KSNIDX )
-                       MOVE    SPA-GMN-W21-KSN-LBL (IDX0)
-                                   TO  TKSN-LBL (TKSN-MAX)
-                   END-IF
-      *
-               END-PERFORM
-           END-IF
-      *
-           .
-       42021-BRM-KSN-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    病室情報編集処理
       *****************************************************************
        4201-BRM-KSN-EDIT-SEC           SECTION.
       *
-           IF    ( SPA-NAI-W21-YUKOSTYMD   >=  CONST-H220401 )
-               CONTINUE
+      *    新生児入院医療管理加算
+           MOVE    CONST-SINSEIJI  TO  SYS-5002-SINSEIJI-CD
+           IF    ( SPA-GMN-W21-SINSEIJI    = "2" )
+               MOVE    "2"         TO  SYS-5002-SINSEIJI-KBN
            ELSE
-      *        新生児入院医療管理加算
-               MOVE    CONST-SINSEIJI  TO  SYS-5002-SINSEIJI-CD
-               IF    ( SPA-GMN-W21-SINSEIJI    = "2" )
-                   MOVE    "2"         TO  SYS-5002-SINSEIJI-KBN
-               ELSE
-                   MOVE    "1"         TO  SYS-5002-SINSEIJI-KBN
-               END-IF
+               MOVE    "1"         TO  SYS-5002-SINSEIJI-KBN
            END-IF
       *
       *    診療所療養病床療養環境加算
@@ -3450,8 +2722,6 @@
                GO  TO  4100-BTUNUM-CHK-EXT
            END-IF
       *
-           PERFORM 4201-INPUT-AREA-CLEAR-SEC
-      *
       *    入院基本料編集処理
            PERFORM 3101-BTU-KHNRYO-EDIT-SEC
       *
@@ -3501,10 +2771,6 @@
        4100-KJNYMD-CHK-SEC             SECTION.
       *
            MOVE    ZERO        TO  SPA-GMN-W21-CUR
-           IF    ( W21-KJNYMD  =   SPACE )
-               MOVE    SPA-NAI-W21-KJNYMD
-                               TO  W21-KJNYMD
-           END-IF
            MOVE    W21-KJNYMD  TO  WRK-YMD
            PERFORM 800-HIZUKE-CHK-SEC
            IF  ( SPA-ERRCD         =   SPACE )
@@ -3629,10 +2895,6 @@
       *
                    MOVE    ZERO                TO  FLG-BFH2004
                    MOVE    ZERO                TO  FLG-AFH2004
-                   MOVE    ZERO                TO  FLG-BFH2204
-                   MOVE    ZERO                TO  FLG-AFH2204
-                   MOVE    ZERO                TO  FLG-BFH2404
-                   MOVE    ZERO                TO  FLG-AFH2404
                    PERFORM VARYING IDX1    FROM    1   BY  1
                            UNTIL ( IDX1    >   SPA-GMN-W21-BRMLST-MAX )
       *
@@ -3645,41 +2907,11 @@
                            END-IF
                        END-IF
       *
-                       IF    ( WRK-SELNUM-FLG (IDX1)   =   1 )
-                           IF    ( SPA-NAI-W21-TYUKOSTYMD (IDX1)
-                                                   >=  CONST-H220401 )
-                               MOVE    1       TO  FLG-AFH2204
-                           ELSE
-                               MOVE    1       TO  FLG-BFH2204
-                           END-IF
-                       END-IF
-      *
-                       IF    ( WRK-SELNUM-FLG (IDX1)   =   1 )
-                           IF    ( SPA-NAI-W21-TYUKOSTYMD (IDX1)
-                                                   >=  CONST-H240401 )
-                               MOVE    1       TO  FLG-AFH2404
-                           ELSE
-                               MOVE    1       TO  FLG-BFH2404
-                           END-IF
-                       END-IF
-      *
                    END-PERFORM
       *
                    IF    ( FLG-BFH2004 =   1 )
                     AND  ( FLG-AFH2004 =   1 )
                        MOVE    "0016"  TO  SPA-ERRCD
-                       MOVE    2       TO  SPA-GMN-W21-CUR
-                   END-IF
-      *
-                   IF    ( FLG-BFH2204 =   1 )
-                    AND  ( FLG-AFH2204 =   1 )
-                       MOVE    "0017"  TO  SPA-ERRCD
-                       MOVE    2       TO  SPA-GMN-W21-CUR
-                   END-IF
-      *
-                   IF    ( FLG-BFH2404 =   1 )
-                    AND  ( FLG-AFH2404 =   1 )
-                       MOVE    "0018"  TO  SPA-ERRCD
                        MOVE    2       TO  SPA-GMN-W21-CUR
                    END-IF
       *
@@ -3912,8 +3144,6 @@
       *****************************************************************
        4100-TOKNYUIN-CHK-SEC   SECTION.
       *
-           MOVE    SPACE               TO  SPA-NAI-W21-TOKNYUIN
-      *
            IF    ( SPA-GMN-W21-TOKNYUIN-G  =   SPACE )
                GO  TO  4100-TOKNYUIN-CHK-EXT
            END-IF
@@ -3928,8 +3158,6 @@
                MOVE    "0004"      TO  SPA-ERRCD
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-W21-TOKNYUIN-G
-               MOVE    WRK-CMB-ITM4
-                                   TO  SPA-NAI-W21-TOKNYUIN
            END-IF
       *
       *
@@ -4081,53 +3309,130 @@
        4100-KHNRYO-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    病棟コード（病棟機能）チェック処理
+      *    新生児入院医療管理加算チェック
       *****************************************************************
-       4101-TBTUTYPE-CHK-SEC           SECTION.
+       4101-SINSEIJI-CHK-SEC           SECTION.
       *
-           IF    ( SPA-GMN-W21-TBTUTYPE-G   =   SPACE )
-               MOVE    ZERO        TO  SPA-GMN-W21-TBTUCD
+           MOVE    SPA-GMN-W21-SINSEIJI  TO  WRK-CMB-CD
+           PERFORM 4200-SINSEIJILST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W21-SINSEIJILST (1)
+                                       TO  SPA-GMN-W21-SINSEIJI-G
            ELSE
-      *
-      *        該当コードのデータが存在するかチェック
-               MOVE    SPA-GMN-W21-TBTUTYPE
-                                   TO  WRK-CMB-CD
-               PERFORM 4200-TBTUTYPELST-CHK-SEC
-               IF    ( WRK-CMB-ITM     =   SPACE )
-                   MOVE    102         TO  SPA-GMN-W21-CUR
-                   MOVE    "0019"      TO  SPA-ERRCD
-               ELSE
-                   MOVE    WRK-CMB-ITM TO  SPA-GMN-W21-TBTUTYPE-G
-               END-IF
-      *
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W21-SINSEIJI-G
            END-IF
       *
            .
       *
-       4101-TBTUTYPE-CHK-EXT.
+       4101-SINSEIJI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    病棟コード（連番）チェック処理
+      *    診療所療養病床療養環境加算チェック
       *****************************************************************
-       4101-TBTUCD-CHK-SEC             SECTION.
+       4101-SNRRYO-CHK-SEC           SECTION.
       *
-           IF    ( SPA-GMN-W21-TBTUCD  =   ZERO )
-               CONTINUE
+           MOVE    SPA-GMN-W21-SNRRYO  TO  WRK-CMB-CD
+           PERFORM 4200-SNRRYOLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W21-SNRRYOLST (1)
+                                       TO  SPA-GMN-W21-SNRRYO-G
            ELSE
-      *
-               IF    ( SPA-GMN-W21-TBTUCD   >=  1 )
-                AND  ( SPA-GMN-W21-TBTUCD   <=  50 )
-                   CONTINUE
-               ELSE
-                   MOVE    103         TO  SPA-GMN-W21-CUR
-                   MOVE    "0020"      TO  SPA-ERRCD
-               END-IF
-      *
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W21-SNRRYO-G
            END-IF
       *
            .
       *
-       4101-TBTUCD-CHK-EXT.
+       4101-SNRRYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    放射線治療病室管理加算チェック
+      *****************************************************************
+       4101-HOSYASEN-CHK-SEC           SECTION.
+      *
+           MOVE    SPA-GMN-W21-HOSYASEN  TO  WRK-CMB-CD
+           PERFORM 4200-HOSYASENLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W21-HOSYASENLST (1)
+                                       TO  SPA-GMN-W21-HOSYASEN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W21-HOSYASEN-G
+           END-IF
+      *
+           .
+      *
+       4101-HOSYASEN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    療養環境加算チェック
+      *****************************************************************
+       4101-RYO-CHK-SEC           SECTION.
+      *
+           MOVE    SPA-GMN-W21-RYO  TO  WRK-CMB-CD
+           PERFORM 4200-RYOLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W21-RYOLST (1)
+                                       TO  SPA-GMN-W21-RYO-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W21-RYO-G
+           END-IF
+      *
+           .
+      *
+       4101-RYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    療養病棟療養環境加算チェック
+      *****************************************************************
+       4101-BTURYO-CHK-SEC           SECTION.
+      *
+           MOVE    SPA-GMN-W21-BTURYO  TO  WRK-CMB-CD
+           PERFORM 4200-BTURYOLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W21-BTURYOLST (1)
+                                       TO  SPA-GMN-W21-BTURYO-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W21-BTURYO-G
+           END-IF
+      *
+           .
+      *
+       4101-BTURYO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    重症者等療養環境特別加算チェック
+      *****************************************************************
+       4101-JYUTOK-CHK-SEC           SECTION.
+      *
+           MOVE    SPA-GMN-W21-JYUTOK  TO  WRK-CMB-CD
+           PERFORM 4200-JYUTOKLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W21-JYUTOKLST (1)
+                                       TO  SPA-GMN-W21-JYUTOK-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W21-JYUTOK-G
+           END-IF
+      *
+           .
+      *
+       4101-JYUTOK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    無菌治療室管理加算チェック
+      *****************************************************************
+       4101-MUKIN-CHK-SEC           SECTION.
+      *
+           MOVE    SPA-GMN-W21-MUKIN  TO  WRK-CMB-CD
+           PERFORM 4200-MUKINLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W21-MUKINLST (1)
+                                       TO  SPA-GMN-W21-MUKIN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W21-MUKIN-G
+           END-IF
+      *
+           .
+      *
+       4101-MUKIN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    有効期間開始日
@@ -4136,21 +3441,6 @@
       *
            MOVE    SPA-NAI-W21-YUKOSTYMD
                                    TO  WRK-YUKOSTYMD
-      *
-           INITIALIZE                  WRK-TOKCHK1-G
-                                       WRK-TOKCHK2-G
-      *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SPA-GMN-W21-TOKNYUIN-MAX )
-               MOVE    SPA-GMN-W21-TOKNYUINL-KBNCD (IDX0)
-                                   TO  WRK-TOKCHK1-KBNCD (IDX0)
-           END-PERFORM
-      *
-           IF    ( SPA-NAI-W21-YUKOSTYMD-MOT   =   SPACE )
-               MOVE    SPA-NAI-W21-YUKOSTYMD
-                                   TO  SPA-NAI-W21-YUKOSTYMD-MOT
-           END-IF
-      *
            MOVE    SPACE           TO  SPA-NAI-W21-YUKOSTYMD
       *
       *    日付妥当性チェック＆編集処理
@@ -4164,32 +3454,33 @@
       *
       *        システム管理情報再設定
                PERFORM 4100-SYSKANRI-RESET-SEC
-           ELSE
+               GO  TO  4100-YUKOSTYMD-CHK-EXT
+           END-IF
       *
-               MOVE    SPA-GMN-W21-YUKOSTYMD
+           MOVE    SPA-GMN-W21-YUKOSTYMD
+                                   TO  WRK-YMD
+           PERFORM 800-HIZUKE-CHK-SEC
+           IF  ( SPA-ERRCD         =   SPACE )
+               MOVE    WRK-HENYMDG
+                                   TO  SPA-GMN-W21-YUKOSTYMD
+               MOVE    WRK-SYMD    TO  SPA-NAI-W21-YUKOSTYMD
+           ELSE
+               MOVE    WRK-YUKOSTYMD
                                    TO  WRK-YMD
                PERFORM 800-HIZUKE-CHK-SEC
-               IF  ( SPA-ERRCD         =   SPACE )
-                   MOVE    WRK-HENYMDG
-                                       TO  SPA-GMN-W21-YUKOSTYMD
-                   MOVE    WRK-SYMD    TO  SPA-NAI-W21-YUKOSTYMD
-               ELSE
-                   MOVE    WRK-YUKOSTYMD
-                                       TO  WRK-YMD
-                   PERFORM 800-HIZUKE-CHK-SEC
-                   MOVE    WRK-HENYMDG
-                                       TO  SPA-GMN-W21-YUKOSTYMD
-                   MOVE    WRK-SYMD    TO  SPA-NAI-W21-YUKOSTYMD
-                   MOVE    "0011"      TO  SPA-ERRCD
-                   MOVE    11          TO  SPA-GMN-W21-CUR
-               END-IF
+               MOVE    WRK-HENYMDG
+                                   TO  SPA-GMN-W21-YUKOSTYMD
+               MOVE    WRK-SYMD    TO  SPA-NAI-W21-YUKOSTYMD
+               MOVE    11          TO  SPA-GMN-W21-CUR
+               GO  TO  4100-YUKOSTYMD-CHK-EXT
+           END-IF
       *
-               IF    ( SPA-NAI-W21-YUKOSTYMD   <   "20020401" )
-                   MOVE    "0100"      TO  SPA-ERRCD
-                   MOVE    "H14. 4. 1" TO  SPA-GMN-W21-YUKOSTYMD
-                   MOVE    "20020401"  TO  SPA-NAI-W21-YUKOSTYMD
-                   MOVE    11          TO  SPA-GMN-W21-CUR
-               END-IF
+           IF    ( SPA-NAI-W21-YUKOSTYMD   <   "20020401" )
+               MOVE    "0100"      TO  SPA-ERRCD
+               MOVE    "H14. 4. 1" TO  SPA-GMN-W21-YUKOSTYMD
+               MOVE    "20020401"  TO  SPA-NAI-W21-YUKOSTYMD
+               MOVE    11          TO  SPA-GMN-W21-CUR
+               GO  TO  4100-YUKOSTYMD-CHK-EXT
            END-IF
       *
            IF    ( SPA-NAI-W21-YUKOSTYMD
@@ -4198,35 +3489,26 @@
                PERFORM 4100-SYSKANRI-RESET-SEC
            END-IF
       *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SPA-GMN-W21-TOKNYUIN-MAX )
-               MOVE    SPA-GMN-W21-TOKNYUINL-KBNCD (IDX0)
-                                   TO  WRK-TOKCHK2-KBNCD (IDX0)
-           END-PERFORM
-      *
-           EVALUATE    TRUE
-           WHEN   ( SPA-NAI-W21-YUKOSTYMD      >=   CONST-H180401 )
-            AND  ( SPA-NAI-W21-YUKOSTYMD-MOT   <   CONST-H180401 )
-           WHEN  ( SPA-NAI-W21-YUKOSTYMD      >=   CONST-H220401 )
-            AND  ( SPA-NAI-W21-YUKOSTYMD-MOT   <   CONST-H220401 )
-           WHEN  ( SPA-NAI-W21-YUKOSTYMD      >=   CONST-H240401 )
-            AND  ( SPA-NAI-W21-YUKOSTYMD-MOT   <   CONST-H240401 )
+           IF    ( SPA-NAI-W21-YUKOSTYMD  >=   CONST-H180401 )
+               IF    ( SPA-NAI-W21-YUKOSTYMD-MOT   <   CONST-H180401 )
                    INITIALIZE                  SPA-NAI-W21-KHNSRYCD
                                                SPA-GMN-W21-KHNTEN
                                                SPA-GMN-W21-KHNRYO-G
       *
                    PERFORM 4201-KSN-AREA-CLEAR-SEC
+               END-IF
       *
-           END-EVALUATE
+           END-IF
       *
-           IF    ( SPA-NAI-W21-YUKOSTYMD      >=   CONST-H180701 )
-            AND  ( SPA-NAI-W21-YUKOSTYMD-MOT   <   CONST-H180701 )
-               IF    ( SPA-NAI-W21-BTUSBT  =   "04" OR "09" )
+           IF    ( SPA-NAI-W21-YUKOSTYMD  >=   CONST-H180701 )
+               IF    ( SPA-NAI-W21-YUKOSTYMD-MOT   <   CONST-H180701 )
+                   IF    ( SPA-NAI-W21-BTUSBT  =   "04" OR "09" )
                        INITIALIZE              SPA-NAI-W21-KHNSRYCD
                                                SPA-GMN-W21-KHNTEN
                                                SPA-GMN-W21-KHNRYO-G
       *
                        PERFORM 4201-KSN-AREA-CLEAR-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -4238,28 +3520,6 @@
                                                SPA-GMN-W21-KHNTEN
                                                SPA-GMN-W21-KHNRYO-G
            END-IF
-      *
-           IF    ( WRK-TOKCHK1-G            NOT=   WRK-TOKCHK2-G )
-               MOVE    SPA-NAI-W21-TOKNYUIN TO WRK-CMB-CD
-               PERFORM 4201-TOKNYUINLST-CHK-SEC
-               MOVE    WRK-CMB-ITM          TO  SPA-GMN-W21-TOKNYUIN-G
-
-           END-IF
-      *
-           PERFORM 4200-BRM-SEL-SEC
-           IF    ( FLG-INPUT-AREA  =    ZERO )
-               EVALUATE    TRUE
-               WHEN  ( SPA-NAI-W21-YUKOSTYMD      >=   CONST-H220401 )
-                AND  ( SPA-NAI-W21-YUKOSTYMD-MOT   <   CONST-H220401 )
-               WHEN  ( SPA-NAI-W21-YUKOSTYMD      >=   CONST-H240401 )
-                AND  ( SPA-NAI-W21-YUKOSTYMD-MOT   <   CONST-H240401 )
-                   PERFORM 900-SYSKANRI-KEY16-SEL-SEC
-                   PERFORM 41001-INPUT-AREA-EDIT-SEC
-               END-EVALUATE
-           END-IF
-      *
-           MOVE    SPA-NAI-W21-YUKOSTYMD
-                                   TO  SPA-NAI-W21-YUKOSTYMD-MOT
       *
            .
       *
@@ -4296,7 +3556,7 @@
                                    TO  SPA-GMN-W21-YUKOEDYMD
                MOVE    WRK-SYMD    TO  SPA-NAI-W21-YUKOEDYMD
                MOVE    12          TO  SPA-GMN-W21-CUR
-               MOVE    "0012"      TO  SPA-ERRCD
+               GO  TO  4100-YUKOEDYMD-CHK-EXT
            END-IF
       *
            .
@@ -4481,7 +3741,7 @@
                IF    ( SPA-NAI-W21-KSNINF-IDX (IDX-KSN)
                                       >    ZERO )
                    MOVE   SPA-GMN-W21-KSNLST (IDX-KSN 1)
-                                       TO  SPA-GMN-W21-KSNCD-G(IDX-KSN)
+                                       TO  SPA-GMN-W21-KSN (IDX-KSN)
                END-IF
       *
            END-PERFORM
@@ -4525,7 +3785,8 @@
                                    TO  WRK-KJN-YUKSTYMD
            PERFORM 3101-CMB-SYOKI-SEC
       *
-           INITIALIZE  SPA-NAI-W21-KSNINF-G
+           MOVE    SPA-NAI-W21-YUKOSTYMD
+                                   TO  SPA-NAI-W21-YUKOSTYMD-MOT
       *
            PERFORM VARYING IDX-KSN    FROM 1  BY  1
                    UNTIL ( IDX-KSN    >    CONST-KSN-MAX )
@@ -4535,26 +3796,9 @@
       *
            END-PERFORM
       *
-           IF    ( SPA-NAI-W21-YUKOSTYMD
-                                       >=  CONST-H220401 )
-               CONTINUE
-           ELSE
                MOVE    "新生児入院医療管理加算"
                                        TO  SPA-GMN-W21-SINSEIJI-LBL
                MOVE    CONST-SINSEIJI  TO  SPA-NAI-W21-SINSEIJI-CD
-           END-IF
-      *
-           IF    ( SPA-NAI-W21-YUKOSTYMD
-                                       >=  CONST-H240401 )
-               MOVE    "診療所療養病床療養環境改善加算"
-                                       TO  SPA-GMN-W21-SNRRYOKAI-LBL
-               MOVE    CONST-H2404-SNRRYOKAI
-                                       TO  SPA-NAI-W21-SNRRYOKAI-CD
-               MOVE    "療養病棟療養環境改善加算"
-                                       TO  SPA-GMN-W21-BTURYOKAI-LBL
-               MOVE    CONST-H2404-BTURYOKAI1
-                                       TO  SPA-NAI-W21-BTURYOKAI-CD
-           END-IF
       *
                MOVE    "診療所療養病床療養環境加算"
                                        TO  SPA-GMN-W21-SNRRYO-LBL
@@ -4581,24 +3825,22 @@
                                        TO  SPA-GMN-W21-MUKIN-LBL
                MOVE    CONST-MUKIN     TO  SPA-NAI-W21-MUKIN-CD
       *
-           MOVE    ZERO                    TO  IDX-GKSN
-           PERFORM VARYING IDX-KSN     FROM 1  BY  1
-                   UNTIL ( IDX-KSN     >   CONST-KSN-MAX )
       *
-               IF    ( SPA-NAI-W21-KSNINF-CD (IDX-KSN)
-                                       NOT =   SPACE )
-                   MOVE    SPA-NAI-W21-KSNINF-CD (IDX-KSN)
-                                       TO  WRK-TNSSRYCD
-                   MOVE    SPA-NAI-W21-YUKOSTYMD
-                                       TO  WRK-TNSYMD
-                   PERFORM 900-TENSU-KEY-SEL-SEC
-                   IF    ( FLG-TENSU           =   ZERO )
-                       IF    ( TNS-HOSPSRYKBN  =   ZERO )
-                        OR   ( TNS-HOSPSRYKBN  =   SPA-NAI-W21-HOSPSBT )
-                           COMPUTE    IDX-GKSN =   IDX-GKSN +   1
-                           MOVE   IDX-GKSN  TO  SPA-NAI-W21-KSNINF-IDX
+           MOVE    ZERO                    TO  IDX-GKSN
+           PERFORM VARYING IDX-KSN    FROM 1  BY  1
+                   UNTIL ( IDX-KSN    >    CONST-KSN-MAX )
+      *
+               MOVE    SPA-NAI-W21-KSNINF-CD (IDX-KSN)
+                                           TO  WRK-TNSSRYCD
+               MOVE    SPA-NAI-W21-YUKOSTYMD
+                                           TO  WRK-TNSYMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU           =   ZERO )
+                   IF    ( TNS-HOSPSRYKBN  =   ZERO )
+                    OR   ( TNS-HOSPSRYKBN  =   SPA-NAI-W21-HOSPSBT )
+                       COMPUTE    IDX-GKSN =   IDX-GKSN +   1
+                       MOVE   IDX-GKSN  TO  SPA-NAI-W21-KSNINF-IDX
                                                            (IDX-KSN)
-                       END-IF
                    END-IF
                END-IF
       *
@@ -4671,20 +3913,6 @@
                GO  TO  4900-KANRENCHK-EXT
            END-IF
       *
-           IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-GMN-W21-TBTUTYPE    NOT =   SPACE )
-                OR   ( SPA-GMN-W21-TBTUCD      NOT =   ZERO )
-                   IF    ( SPA-GMN-W21-TBTUTYPE    =   SPACE )
-                       MOVE    "1109"  TO  SPA-ERRCD
-                       MOVE    102     TO  SPA-GMN-W21-CUR
-                   END-IF
-                   IF    ( SPA-GMN-W21-TBTUCD      =   ZERO )
-                       MOVE    "1109"  TO  SPA-ERRCD
-                       MOVE    103     TO  SPA-GMN-W21-CUR
-                   END-IF
-               END-IF
-           END-IF
-      *
            .
       *
        4900-KANRENCHK-EXT.
@@ -4698,22 +3926,6 @@
       *
       *    施設基準検索処理
            PERFORM 4100-SYS-1006-SEL-SEC
-      *
-           IF    ( SPA-ERRCD               =   SPACE )
-               IF    ( SPA-NAI-W21-YUKOSTYMD >=  CONST-H240401 )
-                   PERFORM 49012-SSTKIJUN-CHK-SEC
-               ELSE
-                   PERFORM 49011-SSTKIJUN-CHK-SEC
-               END-IF
-           END-IF
-      *
-           .
-       4901-SSTKIJUN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    施設基準チェック処理 (〜H24.3)
-      *****************************************************************
-       49011-SSTKIJUN-CHK-SEC           SECTION.
       *
            PERFORM VARYING IDX-KSN FROM    1   BY  1
                    UNTIL ( IDX-KSN >   CONST-KSN-MAX )
@@ -4791,6 +4003,15 @@
                    IF    ( WRK-KSNCD       NOT =   SPACE )
                        PERFORM 41011-SSTKIJUN-CHK-SEC
       *
+                       IF    ( FLG-SSTKIJUNERR     =   1 )
+                           MOVE    "1010"          TO  SPA-ERRCD
+                           COMPUTE SPA-GMN-W21-CUR
+                               =   SPA-NAI-W21-KSNINF-IDX (IDX-KSN)
+                               +   13
+                           MOVE    SPA-GMN-W21-KSN-LBL (IDX-KSN)
+                                               TO  WRK-KSNMEI
+                       END-IF
+      *
                        IF    ( SPA-ERRCD           =   SPACE )
                            IF    ( FLG-KSNERR      =   1 )
                                MOVE    "1011"  TO  SPA-ERRCD
@@ -4801,17 +4022,6 @@
                                                TO  WRK-KSNMEI
                            END-IF
                        END-IF
-      *
-                       IF    ( SPA-ERRCD           =   SPACE )
-                           IF    ( FLG-SSTKIJUNERR     =   1 )
-                               MOVE    "1010"          TO  SPA-ERRCD
-                               COMPUTE SPA-GMN-W21-CUR
-                                   =   SPA-NAI-W21-KSNINF-IDX (IDX-KSN)
-                                   +   13
-                               MOVE    SPA-GMN-W21-KSN-LBL (IDX-KSN)
-                                               TO  WRK-KSNMEI
-                           END-IF
-                       END-IF
                    END-IF
       *
                END-IF
@@ -4819,49 +4029,7 @@
            END-PERFORM
       *
            .
-       49011-SSTKIJUN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    施設基準チェック処理 (H24.4〜)
-      *****************************************************************
-       49012-SSTKIJUN-CHK-SEC           SECTION.
-      *
-           PERFORM 4200-BRM-KSN-EDIT-SEC
-      *
-           PERFORM VARYING IDX-KSN FROM    1   BY  1
-                   UNTIL ( IDX-KSN >   TKSN-MAX )
-                    OR   ( SPA-ERRCD       NOT =   SPACE )
-      *
-               MOVE    TKSN-SRYCD (IDX-KSN)    TO  WRK-KSNCD
-      *
-               PERFORM 41011-SSTKIJUN-CHK-SEC
-      *
-               IF    ( SPA-ERRCD           =   SPACE )
-                   IF    ( FLG-KSNERR      =   1 )
-                       MOVE    "1011"  TO  SPA-ERRCD
-                   COMPUTE SPA-GMN-W21-CUR
-                       =   TKSN-IDX (IDX-KSN)
-                       +   13
-                   MOVE    TKSN-LBL (IDX-KSN)
-                                           TO  WRK-KSNMEI
-                   END-IF
-               END-IF
-      *
-               IF    ( SPA-ERRCD           =   SPACE )
-                   IF    ( FLG-SSTKIJUNERR     =   1 )
-                       MOVE    "1010"          TO  SPA-ERRCD
-                       COMPUTE SPA-GMN-W21-CUR
-                           =   TKSN-IDX (IDX-KSN)
-                           +   13
-                       MOVE    TKSN-LBL (IDX-KSN)
-                                           TO  WRK-KSNMEI
-                   END-IF
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       49012-SSTKIJUN-CHK-EXT.
+       4901-SSTKIJUN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    施設基準チェック処理
@@ -4869,52 +4037,56 @@
        41011-SSTKIJUN-CHK-SEC          SECTION.
       *
            INITIALIZE                  WRK-SSTKJNCD-G
-      *
            MOVE    ZERO            TO  FLG-SSTKIJUNERR
                                        FLG-KSNERR
+                                       WRK-NYUKSNKBN-G
+                                       WRK-KSNKSNKBN
+                                       CNT-NYUKSNKBNCHK
       *
-           INITIALIZE                  SYSKANRI-REC
-           MOVE    "5001"          TO  SYS-KANRICD
-           MOVE    SPA-GMN-W21-BTUNUM
-                                   TO  SYS-KBNCD
-           MOVE    SPA-NAI-W21-YUKOSTYMD
-                                   TO  SYS-STYUKYMD
-                                       SYS-EDYUKYMD
-           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC    TO  SYS-5001-REC
+           IF    ( SPA-NAI-W21-BTUKHNCD    NOT =   SPACE )
+               EVALUATE    SPA-NAI-W21-BTUKHNCD
+               WHEN    "099999950"
+                   MOVE    "190097010"         TO  WRK-TNSSRYCD
+               WHEN    "099999951"
+                   MOVE    "190097210"         TO  WRK-TNSSRYCD
+               WHEN    OTHER
+                   MOVE    SPA-NAI-W21-BTUKHNCD
+                                               TO  WRK-TNSSRYCD
+               END-EVALUATE
+               MOVE    SPA-NAI-W21-YUKOSTYMD   TO  WRK-TNSYMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               MOVE    TNS-NYUKHNKSNKBN        TO  WRK-NYUKSNKBN (1)
+           END-IF
       *
-      *    INITIALIZE  SNYUKSNCHK-LNK
-      *    MOVE    SYS-5001-BTU-SBT
-      *                            TO  SNYUKSNCHK-BTUSBT
-      *    MOVE    SYS-5001-BTU-KHNSRYCD
-      *                            TO  SNYUKSNCHK-KHN-SRYCD
-      *    MOVE    SYS-5001-BTU-TOKTEI-NYUIN
-      *                            TO  SNYUKSNCHK-BTU-TOKKBN
+           IF    ( SPA-NAI-W21-BTUTOKCD    NOT =   SPACE )
+               MOVE    SPA-NAI-W21-BTUTOKCD    TO  WRK-TNSSRYCD
+               MOVE    SPA-NAI-W21-YUKOSTYMD   TO  WRK-TNSYMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               MOVE    TNS-NYUKHNKSNKBN        TO  WRK-NYUKSNKBN (2)
+           END-IF
       *
-      *    IF    ( SPA-GMN-W21-TOKNYUIN    NOT =   SPACE )
-      *        MOVE    SPA-NAI-W21-TOKNYUIN
-      *                            TO  SNYUKSNCHK-BRM-TOKKBN
-      *    END-IF
-      *    IF    ( SYS-5001-BTU-SBT    =   "08" OR "09" )
-      *        MOVE    SYS-5001-CRYOYOKBN
-      *                            TO  SNYUKSNCHK-RYOYOKBN
-      *    ELSE
-      *        MOVE    SYS-5001-HRYOYOKBN
-      *                            TO  SNYUKSNCHK-RYOYOKBN
-      *    END-IF
-      *    MOVE    SPA-NAI-W21-YUKOSTYMD
-      *                            TO  SNYUKSNCHK-SRYYMD
-      *    MOVE    WRK-KSNCD       TO  SNYUKSNCHK-KSN-SRYCD
-      *    CALL    "ORCSNYUKSNCHK"         USING
-      *                                    SNYUKSNCHK-LNK
-      *                                    SPA-AREA
-      *    IF    ( SNYUKSNCHK-ERR      NOT =   ZERO )
-      *            MOVE    1   TO      FLG-KSNERR
-      *    END-IF
+           IF    ( SPA-NAI-W21-KHNSRYCD    NOT =   SPACE )
+               MOVE    SPA-NAI-W21-KHNSRYCD    TO  WRK-TNSSRYCD
+               MOVE    SPA-NAI-W21-YUKOSTYMD   TO  WRK-TNSYMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               MOVE    TNS-NYUKHNKSNKBN        TO  WRK-NYUKSNKBN (3)
+           END-IF
+      *
+           IF    ( SPA-GMN-W21-TOKNYUIN    NOT =   SPACE )
+               MOVE    SPA-GMN-W21-TOKNYUIN    TO  WRK-CMB-CD
+               PERFORM 4200-TOKNYUINLST-CHK-SEC
+               MOVE    WRK-CMB-ITM3            TO  WRK-TNSSRYCD
+               MOVE    SPA-NAI-W21-YUKOSTYMD   TO  WRK-TNSYMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               MOVE    TNS-NYUKHNKSNKBN        TO  WRK-NYUKSNKBN (4)
+           END-IF
+      *
+           MOVE    4               TO  WRK-NYUKSNKBN-MAX
       *
            MOVE    WRK-KSNCD                   TO  WRK-TNSSRYCD
            MOVE    SPA-NAI-W21-YUKOSTYMD       TO  WRK-TNSYMD
            PERFORM 900-TENSU-KEY-SEL-SEC
+           MOVE    TNS-NYUKHNKSNKBN TO WRK-KSNKSNKBN
       *
            MOVE    ZERO            TO  FLG-HIT
                                        CNT-SST
@@ -4928,7 +4100,7 @@
                                    TO  WRK-SSTKJNCD9(CNT-SST)
                    MOVE    TNS-SSTKIJUNCD (IDX5)
                                    TO  IDX-SST
-                   IF    ( SSTKJN-CD (IDX-SST) =   "1" )
+                   IF    ( SSTKJN-CD (IDX-SST) =   1 )
                        MOVE    1   TO  FLG-HIT
                    END-IF
                END-IF
@@ -4938,6 +4110,42 @@
            IF    ( CNT-SST     >   ZERO )
                IF    ( FLG-HIT =   ZERO )
                    MOVE        1   TO  FLG-SSTKIJUNERR
+               END-IF
+           END-IF
+      *
+      *
+           IF    ( SPA-GMN-W20-SBT     =   "04"  OR  "09" )
+               CONTINUE
+           ELSE
+               IF    ( FLG-SSTKIJUNERR     =   ZERO )
+                AND  ( WRK-KSNKSNKBN       >   ZERO )
+      *
+                   MOVE    ZERO        TO  FLG-HIT
+      *
+                   PERFORM VARYING IDX6    FROM    1   BY  1
+                           UNTIL ( IDX6    >   WRK-NYUKSNKBN-MAX )
+                            OR   ( FLG-HIT =   1 )
+      *
+                       IF    ( WRK-NYUKSNKBN (IDX6)    >   ZERO )
+                           COMPUTE CNT-NYUKSNKBNCHK
+                               =   CNT-NYUKSNKBNCHK    +   1
+                           MOVE    WRK-NYUKSNKBN (IDX6)
+                                                       TO  WRK-NYUINKBN
+                           MOVE    WRK-KSNKSNKBN       TO  WRK-KSNKBN
+                           MOVE    SPA-NAI-W21-YUKOSTYMD
+                                                       TO  WRK-YUKOSTYMD
+                           PERFORM 900-NYUKSNCHK-KEY-SEL-SEC
+                           IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
+                               MOVE    1       TO  FLG-HIT
+                           END-IF
+                       END-IF
+                   END-PERFORM
+      *
+                   IF    ( CNT-NYUKSNKBNCHK    >   ZERO )
+                       IF    ( FLG-HIT     =       ZERO )
+                           MOVE    1       TO      FLG-KSNERR
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
@@ -4963,19 +4171,11 @@
       *
                MOVE    SYSKANRI-REC    TO  SYS-1006-REC
       *
-               EVALUATE    TRUE
-               WHEN  ( SYS-1006-KBNCD (2:)         =   SPACE )
-                AND  ( SYS-1006-KBNCD  >=  "1" )
-                AND  ( SYS-1006-KBNCD  <=  "9" )
-                   MOVE    SYS-1006-KBNCD  TO  WRK-KBN1-G
-                   MOVE    SYS-1006-TBL    TO  SSTKJN-VAL-OCC
-                                                     (WRK-KBN1)
-               WHEN  ( SYS-1006-KBNCD (2:1)    NOT =   SPACE )
-                AND  ( SYS-1006-KBNCD  >=  "10" )
-                AND  ( SYS-1006-KBNCD  <=  "19" )
-                   MOVE    SYS-1006-KBNCD  TO  WRK-KBN2-G
-                   MOVE    SYS-1006-TBL    TO  SSTKJN-VAL-OCC
-                                                     (WRK-KBN2)
+               EVALUATE    SYS-1006-KBNCD
+               WHEN    "1"
+                   MOVE    SYS-1006-TBL    TO  SSTKJN-VAL1
+               WHEN    "2"
+                   MOVE    SYS-1006-TBL    TO  SSTKJN-VAL2
                END-EVALUATE
       *
                PERFORM 900-SYSKANRI-KEY2-FET-SEC
@@ -5045,7 +4245,7 @@
       *
            INITIALIZE                  W21
       *
-           IF    ( SPA-W20-W21-MOTOPG  =   SPACE )
+           IF    ( SPA-MOTOPG      =   "W01" )
                MOVE    "病棟"      TO  W21-B09
            END-IF
       *
@@ -5083,7 +4283,7 @@
                IF    ( IDX-GKSN    >   ZERO )
                    MOVE    SPA-GMN-W21-KSN-LBL    (IDX-KSN)
                                    TO  W21-LBLKSN (IDX-GKSN)
-                   MOVE    SPA-GMN-W21-KSNCD-G    (IDX-KSN)
+                   MOVE    SPA-GMN-W21-KSN     (IDX-KSN)
                                    TO  W21-KSN (IDX-GKSN)
                    MOVE    SPA-GMN-W21-KSNLST-MAX (IDX-KSN)
                                    TO  W21-KSN-CNT(IDX-GKSN)
@@ -5115,7 +4315,7 @@
                    END-IF
                END-IF
       *
-               STRING  "  "
+               STRING  "    "
                        SPA-GMN-W21-TBRMNUM (IDX1)
                        DELIMITED   BY  SIZE
                INTO    W21-TBRM-NUM (IDX1)
@@ -5126,12 +4326,12 @@
                MOVE    SPA-GMN-W21-TTOKNYUIN (IDX1)
                                        TO  W21-TBRM-TOKUTEINYUIN (IDX1)
                MOVE    SPA-GMN-W21-TNINZU (IDX1)
-                                       TO  WRK-ZZZZZZZ9
-               MOVE    WRK-ZZZZZZZ9
+                                       TO  WRK-ZZZZZZZZZ9
+               MOVE    WRK-ZZZZZZZZZ9
                                        TO  W21-TBRM-NINZU (IDX1)
                MOVE    SPA-GMN-W21-TSAGAKU (IDX1)
-                                       TO  WRK-ZZZZZZZ9
-               MOVE    WRK-ZZZZZZZ9
+                                       TO  WRK-ZZZZZZZZZ9
+               MOVE    WRK-ZZZZZZZZZ9
                                        TO  W21-TBRM-SAGAKU (IDX1)
                MOVE    SPA-GMN-W21-TSEX (IDX1)
                                        TO  W21-TBRM-SEX (IDX1)
@@ -5300,19 +4500,6 @@
       *
            MOVE    SPA-GMN-W21-KHNTEN      TO  W21-KHNTEN
       *
-      *    病棟機能（特定入院料）
-           MOVE    SPA-GMN-W21-TBTUTYPE-G  TO  W21-TBTUTYPE
-           MOVE    SPA-GMN-W21-TBTUTYPE-MAX
-                                           TO  W21-TBTUTYPE-CNT
-           PERFORM VARYING IDX1    FROM    1   BY  1
-               UNTIL     ( IDX1    >   W21-TBTUTYPE-CNT )
-                MOVE   SPA-GMN-W21-TBTUTYPELST (IDX1)
-                                   TO  W21-TBTUTYPE-ITM (IDX1)
-           END-PERFORM
-      *
-      *    病棟コード（特定入院料）
-           MOVE    SPA-GMN-W21-TBTUCD      TO  W21-TBTUCD
-      *
       *    有効期間開始日
            MOVE    SPA-GMN-W21-YUKOSTYMD   TO  W21-YUKOSTYMD
       *
@@ -5355,9 +4542,6 @@
                                            W21-KHNRYO-STT
                                            W21-KHNRYO-ITM-STT
                                            W21-KHNTEN-STT
-                                           W21-TBTUTYPE-STATE
-                                           W21-TBTUTYPE-ITM-STATE
-                                           W21-TBTUCD-STATE
                                            W21-SELNUM2-STT
       *
       *
@@ -5388,9 +4572,6 @@
                                            W21-KHNRYO-STT
                                            W21-KHNRYO-ITM-STT
                                            W21-KHNTEN-STT
-                                           W21-TBTUTYPE-STATE
-                                           W21-TBTUTYPE-ITM-STATE
-                                           W21-TBTUCD-STATE
                                            W21-SELNUM2-STT
            END-IF
       *
@@ -5417,19 +4598,6 @@
                                        TO  W21-KHNRYO-STT
                                            W21-KHNRYO-ITM-STT
                                            W21-KHNTEN-STT
-           END-IF
-      *
-      *
-           IF    ( SPA-NAI-W21-HOSPSBT =   2 )
-               MOVE    WIDGET-INSENSITIVE
-                                       TO  W21-TBTUTYPE-STATE
-                                           W21-TBTUTYPE-ITM-STATE
-                                           W21-TBTUCD-STATE
-           END-IF
-      *
-           IF    ( W21-TBTUTYPE        =   SPACE )
-               MOVE    WIDGET-INSENSITIVE
-                                       TO  W21-TBTUCD-STATE
            END-IF
       *
            .
@@ -5507,10 +4675,6 @@
                MOVE    "SELNUM2"           TO  MCP-WIDGET
            WHEN    101
                MOVE    "KJNYMD"            TO  MCP-WIDGET
-           WHEN    102
-               MOVE    "TBTUTYPE"          TO  MCP-WIDGET
-           WHEN    103
-               MOVE    "TBTUCD"            TO  MCP-WIDGET
            WHEN    206
                MOVE    "B06"               TO  MCP-WIDGET
            WHEN    207
@@ -5548,10 +4712,6 @@
            WHEN    "BRM_KA"
                MOVE    013             TO  SPA-GMN-W21-CUR
            WHEN    "KHNRYO"
-               MOVE    102             TO  SPA-GMN-W21-CUR
-           WHEN    "TBTUTYPE"
-               MOVE    103             TO  SPA-GMN-W21-CUR
-           WHEN    "TBTUCD"
                MOVE    014             TO  SPA-GMN-W21-CUR
            WHEN    "KSN01"
                MOVE    015             TO  SPA-GMN-W21-CUR
@@ -5602,20 +4762,6 @@
       *
            IF    ( SPA-GMN-W21-CUR =   13 )
                IF    ( W21-KHNRYO-STT
-                                       =   WIDGET-INSENSITIVE )
-                   COMPUTE SPA-GMN-W21-CUR =   102
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-W21-CUR =   102 )
-               IF    ( W21-TBTUTYPE-STATE
-                                       =   WIDGET-INSENSITIVE )
-                   COMPUTE SPA-GMN-W21-CUR =   103
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-W21-CUR =   103 )
-               IF    ( W21-TBTUCD-STATE
                                        =   WIDGET-INSENSITIVE )
                    COMPUTE SPA-GMN-W21-CUR =   14
                END-IF
@@ -5674,46 +4820,46 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
-               MOVE    "選択番号の入力に誤りがあります"
+               MOVE    "選択番号入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0002"
-               MOVE    "病室番号の入力に誤りがあります"
+               MOVE    "病室番号入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0003"
-               MOVE    "病室種別の入力に誤りがあります"
+               MOVE    "病室種別入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0004"
-               MOVE    "特定入院料の入力に誤りがあります"
+               MOVE    "特定入院料入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0005"
-               MOVE    "収容人数の入力に誤りがあります"
+               MOVE    "収容人数入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0006"
-               MOVE    "室料差額の入力に誤りがあります"
+               MOVE    "室料差額入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0007"
-               MOVE    "性別特定の入力に誤りがあります"
+               MOVE    "性別特定入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0008"
-               MOVE    "内線番号の入力に誤りがあります"
+               MOVE    "内線番号入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0009"
-               MOVE    "診療科の入力に誤りがあります"
+               MOVE    "診療科入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0010"
-               MOVE    "入院基本料の入力に誤りがあります"
+               MOVE    "入院基本料入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0011"
-               MOVE    "有効期間開始日の入力に誤りがあります"
+               MOVE    "有効期間開始日入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0012"
-               MOVE    "有効期間終了日の入力に誤りがあります"
+               MOVE    "有効期間終了日入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0013"
-               MOVE    "室歴番号の入力に誤りがあります"
+               MOVE    "室歴番号入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0014"
-               MOVE    "基準日の入力に誤りがあります"
+               MOVE    "基準日入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0015"
                MOVE    "選択された番号が多すぎます"
@@ -5723,22 +4869,6 @@
                                        TO  SPA-ERRMSG (1:40)
                MOVE    "月以前の病室は同時に選択できません"
                                        TO  SPA-ERRMSG (41:)
-           WHEN    "0017"
-               MOVE    "有効開始日が平成２２年４月以降の病室と３"
-                                       TO  SPA-ERRMSG (1:40)
-               MOVE    "月以前の病室は同時に選択できません"
-                                       TO  SPA-ERRMSG (41:)
-           WHEN    "0018"
-               MOVE    "有効開始日が平成２４年４月以降の病室と３"
-                                       TO  SPA-ERRMSG (1:40)
-               MOVE    "月以前の病室は同時に選択できません"
-                                       TO  SPA-ERRMSG (41:)
-           WHEN    "0019"
-               MOVE    "病棟機能の入力に誤りがあります"
-                                       TO  SPA-ERRMSG
-           WHEN    "0020"
-               MOVE    "連番は１から５０の範囲で設定してください"
-                                       TO  SPA-ERRMSG
            WHEN    "0100"
                MOVE    SPACE           TO  SPA-ERRMSG
                STRING  "有効開始日は平成１４年４月１日以降にして"
@@ -5746,9 +4876,6 @@
                        DELIMITED   BY  SIZE
                INTO    SPA-ERRMSG
                END-STRING
-           WHEN    "0101"
-               MOVE    "日付の入力に誤りがあります"
-                                       TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "追加可能最大件数に達しました"
                                        TO  SPA-ERRMSG
@@ -5836,22 +4963,19 @@
            WHEN    "1108"
                MOVE    "入院中の患者が存在するため削除できません"
                                        TO  SPA-ERRMSG
-           WHEN    "1109"
-               MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "レセ電病棟情報を設定する場合、病棟機能と連番"
-                                           DELIMITED   BY  SIZE
-                       "の両方を設定してください"
-                                           DELIMITED   BY  SIZE
-               INTO    SPA-ERRMSG
-               END-STRING
            WHEN    "1201"
-           WHEN    "1202"
-           WHEN    "1203"
            WHEN    "1204"
-           WHEN    "1205"
-               MOVE    "更新処理に失敗しました"
+               MOVE    "更新できませんでした"
+                                       TO  SPA-ERRMSG
+           WHEN    "1202"
+               MOVE    "追加できませんでした"
+                                       TO  SPA-ERRMSG
+           WHEN    "1203"
+               MOVE    "削除できませんでした"
                                        TO  SPA-ERRMSG
            END-EVALUATE
+      *
+           MOVE    SPA-MOTOPG          TO  SPA-GMN-W21-MOTOPG
       *
            MOVE    SPACE               TO  WERR
            MOVE    SPA-ERRCD           TO  WERR-ERRCODE
@@ -5881,27 +5005,17 @@
            WHEN    "2001"
                MOVE    "該当の病室を削除します。よろしいですか"
                                         TO  WRK-WIDMSG
-           WHEN    "2001"
-               MOVE    "該当の病室を削除します。よろしいですか"
-                                        TO  WRK-WIDMSG
-           WHEN    "2002"
+           WHEN    "3001"
                MOVE    "選択中の病室について入院料加算を変更しま"
                                         TO  WRK-WIDMSG (1 : 40)
                MOVE    "す"
                                         TO  WRK-WIDMSG (41 : )
-           WHEN    "2003"
-               MOVE    SPACE            TO  WRK-WIDMSG
-               STRING  "有効期間の重複するデータが存在します。"
-                                            DELIMITED   BY  SIZE
-                       "前の期間を区切りますか"
-                                            DELIMITED   BY  SIZE
-               INTO    WRK-WIDMSG
-               END-STRING
            END-EVALUATE
       *
       *
+           MOVE    SPA-MOTOPG           TO  SPA-GMN-W21-MOTOPG
+      *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -6042,48 +5156,16 @@
                    MOVE    SPA-GMN-W21-TOKNYUINLST   (IDX-CMB)
                                    TO  WRK-CMB-ITM
       *
-                   MOVE    SPA-GMN-W21-TOKNYUINL-TANMEI(IDX-CMB)
+                   MOVE    SPA-NAI-W21-TOKNYUINMEIL   (IDX-CMB)
                                    TO  WRK-CMB-ITM2
-                   MOVE    SPA-GMN-W21-TOKNYUINL-SRYCD (IDX-CMB)
+                   MOVE    SPA-NAI-W21-TOKNYUINL   (IDX-CMB)
                                    TO  WRK-CMB-ITM3
-                   MOVE    SPA-GMN-W21-TOKNYUINL-KBNCD (IDX-CMB)
-                                   TO  WRK-CMB-ITM4
                END-IF
       *
            END-PERFORM
       *
            .
        4200-TOKNYUINLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    特定入院料コンボボックスチェック処理
-      *****************************************************************
-       4201-TOKNYUINLST-CHK-SEC    SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-W21-TOKNYUIN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-W21-TOKNYUINL-KBNCD (IDX-CMB)
-                                       =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-W21-TOKNYUINLST   (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-                   MOVE    SPA-GMN-W21-TOKNYUINL-TANMEI(IDX-CMB)
-                                   TO  WRK-CMB-ITM2
-                   MOVE    SPA-GMN-W21-TOKNYUINL-SRYCD (IDX-CMB)
-                                   TO  WRK-CMB-ITM3
-                   MOVE    SPA-GMN-W21-TOKNYUINL-KBNCD (IDX-CMB)
-                                   TO  WRK-CMB-ITM4
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4201-TOKNYUINLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    室料差額コンボボックスチェック処理
@@ -6328,28 +5410,6 @@
        4200-MUKINLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    病棟状態コンボチェック処理
-      *****************************************************************
-       4200-TBTUTYPELST-CHK-SEC    SECTION.
-      *
-           INITIALIZE              WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-W21-TBTUTYPE-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-W21-TBTUTYPEL (IDX-CMB)
-                                       =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-W21-TBTUTYPELST (IDX-CMB)
-                                       TO  WRK-CMB-ITM
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-TBTUTYPELST-CHK-EXT.
-           EXIT.
-      *****************************************************************
       *    全角半角混在チェック
       *****************************************************************
        800-ENRTRY-CHK-SEC              SECTION.
@@ -6397,7 +5457,7 @@
                    MOVE    SGDAY-OTDAY TO  WRK-HENYMDG
                    MOVE    SGDAY-SDAY  TO  WRK-SYMD
                ELSE
-                   MOVE    "0101"      TO  SPA-ERRCD
+                   MOVE    "0001"      TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -6630,41 +5690,6 @@
       *
            .
        900-SYSKANRI-KEY9-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    システム管理検索処理
-      *****************************************************************
-       900-SYSKANRI-KEY16-SEL-SEC      SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SYSKANRI
-      *
-           INITIALIZE                      SYS-5002-REC
-           MOVE    "5002"              TO  SYS-5002-KANRICD
-           MOVE    SPA-GMN-W21-BTUNUM  TO  WRK-SYS5002-BTUNUM
-           MOVE    SPA-GMN-W21-BRMNUM  TO  WRK-BRMNUM
-           PERFORM 4100-BRMNUM-KEY-EDIT-SEC
-           MOVE    WRK-BRMNUM-KEY      TO  WRK-SYS5002-BRMNUM
-           MOVE    WRK-SYS5002-KBNCD   TO  SYS-5002-KBNCD
-           MOVE    SPA-HOSPNUM         TO  SYS-5002-HOSPNUM
-           MOVE    SPA-NAI-W21-YUKOSTYMD
-                                       TO  SYS-5002-STYUKYMD
-           MOVE    SYS-5002-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key16"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  SYS-5002-REC
-           ELSE
-               MOVE    1           TO  FLG-SYSKANRI
-               INITIALIZE              SYS-5002-REC
-           END-IF
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key16"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-SYSKANRI-KEY16-SEL-EXT.
            EXIT.
       *****************************************************************
       *    入院履歴検索処理(KEY15)
