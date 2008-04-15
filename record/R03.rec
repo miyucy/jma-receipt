@@ -6,6 +6,10 @@ R03	{
 		B23	{
 			state	int;
 		};
+		LABEL   {
+			style   varchar(20);
+			label   varchar(100);
+		};
 		SRYYM	{
 			value	varchar(7);
 		};

@@ -2580,6 +2580,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    WIDGET-NORMAL       TO  R03-B10-STATE
            END-IF
       *
+           MOVE    "black"                 TO  R03-LABEL-STYLE
+           MOVE    "двдвдв"                 TO  R03-LABEL 
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
