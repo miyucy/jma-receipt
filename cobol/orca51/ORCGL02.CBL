@@ -631,11 +631,6 @@
            ELSE
                MOVE    "0001"          TO  SPA-ERRCD
            END-IF
-      *
-           IF    ( SPA-ERRCD           =   SPACE    )
-           AND   ( SPA-NAI-L02-SRYYMD  >=  20080401 ) 
-               MOVE    "0200"          TO  SPA-ERRCD
-           END-IF
            .
        41021-SRYYM-CHK-EXT.
            EXIT.
@@ -1330,10 +1325,6 @@
                                                      DELIMITED  BY  SIZE
                                                      INTO  SPA-ERRMSG
                    END-STRING
-               WHEN    "0200"
-                   MOVE
-                       "平成２０年４月改正未対応のため処理できません"
-                                                       TO  SPA-ERRMSG
                WHEN    "7777"
                    MOVE    WRK-TOUKEIERR               TO  SPA-ERRMSG
            END-EVALUATE
