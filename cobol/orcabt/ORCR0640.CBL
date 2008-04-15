@@ -12329,6 +12329,12 @@
                       MOVE  1     TO  WRK-JIRITU-CYUKANSOU
                    ELSE
                       MOVE  2     TO  WRK-JIRITU-CYUKANSOU
+                      IF WRK-JIRITU-TAFTNRUIKEI < WRK-JYOGEN-KOH
+                       COMPUTE WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
+                                              - WRK-JIRITU-TAFTNRUIKEI
+                      ELSE
+                       MOVE    ZERO    TO   WRK-JYOGEN-KOH
+                      END-IF
                    END-IF
                    IF   RECE62-KOUREI    =   "1"
                      IF  WRK-JYOGEN-KOH  >  WRK-KOH-GENDOGAKU
@@ -12365,16 +12371,16 @@
                          MOVE  80100   TO   WRK-JYOGEN-KOH
                          MOVE  3       TO   FLG-IRYOHI70K
                    END-IF
-                   IF WRK-JIRITU-CYUKANSOU  =  2
-                      IF  WRK-JIRITU-TAFTNRUIKEI  <  WRK-JYOGEN-KOH
-                        COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
-                                                - WRK-JIRITU-TAFTNRUIKEI
-                      ELSE
-                        MOVE     ZERO    TO   WRK-JYOGEN-KOH
-                      END-IF
-                   END-IF
              END-IF
              IF  RECE62-KOHNUM(1) = "024" OR "079" OR "038"
+                   IF   RECE62-KOHNUM(1) =   "038"
+                     IF  WRK-JIRITU-TAFTNRUIKEI  <  WRK-JYOGEN-KOH
+                        COMPUTE WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
+                                               - WRK-JIRITU-TAFTNRUIKEI
+                     ELSE
+                        MOVE    ZERO    TO   WRK-JYOGEN-KOH
+                     END-IF
+                   END-IF
                    IF   RECE62-KOUREI    =   "1"
                      IF  WRK-JYOGEN-KOH  >  WRK-KOH-GENDOGAKU
                         MOVE  WRK-KOH-GENDOGAKU TO   WRK-JYOGEN-KOH
@@ -12384,14 +12390,6 @@
                      IF  WRK-JYOGEN-KOH  >  WRK-GEN70-GENDOGAKU
                         MOVE  WRK-GEN70-GENDOGAKU
                                                 TO   WRK-JYOGEN-KOH
-                     END-IF
-                   END-IF
-                   IF  RECE62-KOHNUM(1) = "038"
-                     IF  WRK-JIRITU-TAFTNRUIKEI  <  WRK-JYOGEN-KOH
-                        COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
-                                                - WRK-JIRITU-TAFTNRUIKEI
-                     ELSE
-                        MOVE     ZERO    TO   WRK-JYOGEN-KOH
                      END-IF
                    END-IF
              END-IF
@@ -12534,6 +12532,32 @@
            END-IF
       ****
            IF    WK-GENGAKUKBN    NOT =  ZERO
+             IF  WRK-KOH-GENDOGAKU   NOT =  ZERO
+                 EVALUATE   WK-GENGAKUKBN
+                   WHEN        1
+                     IF  WK-GENGAKU-RITU = 100
+                         MOVE   ZERO     TO   WRK-KOH-GENDOGAKU
+                     ELSE
+                         COMPUTE  WK-GENGAKU-RITUX =
+                                  100 - WK-GENGAKU-RITU
+                         COMPUTE  WRK-KOH-GENDOGAKU   =
+                                  WRK-KOH-GENDOGAKU   *
+                                  WK-GENGAKU-RITUX    /
+                                  100
+                     END-IF
+                   WHEN        2
+                     CONTINUE
+                   WHEN        3
+                   WHEN        4
+                         MOVE   ZERO     TO   WRK-KOH-GENDOGAKU
+                 END-EVALUATE
+                 COMPUTE  WRK-KOH-GENDOGAKU  =
+                          WRK-KOH-GENDOGAKU  +   5
+                 COMPUTE  WRK-KOH-GENDOGAKU  =
+                          WRK-KOH-GENDOGAKU  /  10
+                 COMPUTE  WRK-KOH-GENDOGAKU  =
+                          WRK-KOH-GENDOGAKU  *  10
+             END-IF
              IF  WRK-JYOGEN-KOH   NOT =  ZERO
                  EVALUATE   WK-GENGAKUKBN
                    WHEN        1
@@ -12559,10 +12583,6 @@
              END-IF
            END-IF
       ****
-           IF  WRK-JYOGEN-KOH  >  WRK-KOH-GENDOGAKU
-                MOVE  WRK-KOH-GENDOGAKU  TO   WRK-JYOGEN-KOH
-           END-IF
-      *
            IF  RECE62-KOHNUM(1) = "038"
                 IF  WRK-JIRITU-TAFTNRUIKEI  <  WRK-JYOGEN-KOH
                     COMPUTE  WRK-JYOGEN-KOH = WRK-JYOGEN-KOH
@@ -12570,6 +12590,10 @@
                 ELSE
                     MOVE     ZERO        TO   WRK-JYOGEN-KOH
                 END-IF
+           END-IF
+      *
+           IF  WRK-JYOGEN-KOH  >  WRK-KOH-GENDOGAKU
+                MOVE  WRK-KOH-GENDOGAKU  TO   WRK-JYOGEN-KOH
            END-IF
       *
       *    ¸øÈñ¤ÎÉéÃ´·×»»
