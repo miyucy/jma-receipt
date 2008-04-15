@@ -677,7 +677,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                MOVE    "99999999"      TO  SPA-RECE07-HKNJANUM
                MOVE    "00"            TO  SPA-RECE07-SRYKA 
                                            SPA-RECE07-SRYKA-KOKUHO
-                                           SPA-R01-RECE07-SRYKA-KOUIKI
+                                           SPA-RECE07-SRYKA-KOUIKI
                INITIALIZE                      SPA-RECE07-RECE-PUTH-T(1)
                                                SPA-RECE07-RECE-PUTH-T(2)
       *

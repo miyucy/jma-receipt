@@ -2350,6 +2350,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                           TO  SPA-R01-RECE07-HKNJANUM
                            MOVE    SPA-RECE07-SRYKA-KOKUHO
                                           TO SPA-R01-RECE07-SRYKA-KOKUHO
+                           MOVE    SPA-RECE07-SRYKA-KOUIKI
+                                          TO SPA-R01-RECE07-SRYKA-KOUIKI
                            MOVE    SPA-RECE07-RECE-PUTH-T (1)
                                           TO SPA-R01-RECE07-RECE-PUTH(1)
                            MOVE    SPA-RECE07-RECE-PUTH-T (2)
