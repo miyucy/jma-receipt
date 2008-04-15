@@ -8454,419 +8454,122 @@
                    GO  TO  5001-DB-DELETE-EXT
                END-IF
       *
-               EVALUATE    BTPARA-INFO-KBN
-                   WHEN    "01"
-                   WHEN    "04"
-      *                レセプト指示（個別指示）コード読み込み
-                       INITIALIZE                      SYS-2002-REC
-                       MOVE    "2002"              TO  SYS-2002-KANRICD
-                       MOVE    WRK-PARA-HOSPNUM    TO  SYS-2002-HOSPNUM
-                       MOVE    ZERO                TO  SYS-2002-STYUKYMD
-                       MOVE    ZERO                TO  SYS-2002-EDYUKYMD
-                       MOVE    SYS-2002-REC        TO  MCPDATA-REC
-                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                       MOVE    "key2"              TO  MCP-PATHNAME
-                       PERFORM 900-DBSELECT-SEC
-                       IF      MCP-RC              =   ZERO
-                           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                           MOVE    "key2"          TO  MCP-PATHNAME
-                           PERFORM 900-SYSKANRI-N-SEC
-                       ELSE
-                           MOVE    1                   TO  FLG-SYSKANRI
-                       END-IF
+      *        レセプト指示（個別指示）コード読み込み
+               INITIALIZE                      SYS-2002-REC
+               MOVE    "2002"              TO  SYS-2002-KANRICD
+               MOVE    ZERO                TO  SYS-2002-STYUKYMD
+                                               SYS-2002-EDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  SYS-2002-HOSPNUM
+               MOVE    SYS-2002-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM   900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                  MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                  MOVE    "key2"              TO  MCP-PATHNAME
+                  PERFORM 900-SYSKANRI-N-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
       *
-                       PERFORM         UNTIL       FLG-SYSKANRI    =   1
-                           MOVE    MCPDATA-REC     TO  SYS-2002-REC
+               PERFORM            UNTIL       FLG-SYSKANRI    =   1
+                   MOVE    MCPDATA-REC         TO  SYS-2002-REC
       *
-                           DISPLAY "DELETE PTNUM=" SYS-2002-PTNUM
-                                           " SRYYM=" SYS-2002-SRYYM
-      *
-      *                    診療年月の請求管理削除処理
-                           INITIALIZE                  RECE10-REC
-                           MOVE    WRK-PARA-HOSPNUM    TO
-                                                       RECE10-HOSPNUM
-                           MOVE    SYS-2002-PTID       TO  RECE10-PTID
-                           MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
-                           MOVE    SYS-2002-NYUGAIKBN  TO
-                                                       RECE10-NYUGAIKBN
-                           MOVE    1                   TO
-                                                   RECE10-TEISYUTUSAKI
-                           MOVE    2                   TO
-                                                   RECE10-XXTEISYUTUSAKI
-                           MOVE    RECE10-REC          TO  MCPDATA-REC
-                           MOVE    "DBDELETE"          TO  MCP-FUNC
-                           MOVE    "tbl_seikyu"        TO  MCP-TABLE
-                           MOVE    "del4"              TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC           NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE " "
-                                                 MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                        "請求管理削除処理（個別分）でエラーとなりました"
+      *            診療年月の請求管理削除処理
+                   INITIALIZE                  RECE10-REC
+                   MOVE    SYS-1001-HOSPNUM    TO  RECE10-HOSPNUM
+                   MOVE    SYS-2002-PTID       TO  RECE10-PTID
+                   MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
+                   MOVE    SYS-2002-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+                   MOVE    1                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    2                   TO  RECE10-XXTEISYUTUSAKI 
+                   MOVE    RECE10-REC          TO  MCPDATA-REC
+                   MOVE    "tbl_seikyu"        TO  MCP-TABLE
+                   MOVE    "del4"              TO  MCP-PATHNAME
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   PERFORM   900-ORCDBMAIN-SEC
+                   IF      MCP-RC           NOT =   ZERO
+                     DISPLAY "TABLE=" MCP-TABLE "PATHNAME=" MCP-PATHNAME
+                     DISPLAY " MCP-RC=" MCP-RC
+                       MOVE
+                       "請求管理削除処理（個別分）でエラーとなりました"
                                                    TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
+                        PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
       *
-                           INITIALIZE                  RECE10-REC
-                           MOVE    WRK-PARA-HOSPNUM    TO
-                                                       RECE10-HOSPNUM
-                           MOVE    SYS-2002-PTID       TO  RECE10-PTID
-                           MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
-                           MOVE    SYS-2002-NYUGAIKBN  TO
-                                                       RECE10-NYUGAIKBN
-                           MOVE    6                   TO
-                                                   RECE10-TEISYUTUSAKI
-                                                   RECE10-XXTEISYUTUSAKI
-                           MOVE    RECE10-REC          TO  MCPDATA-REC
-                           MOVE    "DBDELETE"          TO  MCP-FUNC
-                           MOVE    "tbl_seikyu"        TO  MCP-TABLE
-                           MOVE    "del4"              TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC           NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE " "
-                                                 MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                        "請求管理削除処理（個別分）でエラーとなりました"
+                   INITIALIZE                  RECE10-REC
+                   MOVE    SYS-1001-HOSPNUM    TO  RECE10-HOSPNUM
+                   MOVE    SYS-2002-PTID       TO  RECE10-PTID
+                   MOVE    SYS-2002-SRYYM      TO  RECE10-SRYYM
+                   MOVE    SYS-2002-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI 
+                   MOVE    RECE10-REC          TO  MCPDATA-REC
+                   MOVE    "tbl_seikyu"        TO  MCP-TABLE
+                   MOVE    "del4"              TO  MCP-PATHNAME
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   PERFORM   900-ORCDBMAIN-SEC
+                   IF      MCP-RC           NOT =   ZERO
+                     DISPLAY "TABLE=" MCP-TABLE "PATHNAME=" MCP-PATHNAME
+                     DISPLAY " MCP-RC=" MCP-RC
+                       MOVE
+                       "請求管理削除処理（個別分）でエラーとなりました"
                                                    TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
+                        PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                    END-IF
       *
-      *                    診療年月の公費請求書削除処理
-                           INITIALIZE                  KOHSKY-REC
-                           MOVE    WRK-PARA-HOSPNUM    TO
-                                                       KOHSKY-HOSPNUM
-                           MOVE    SYS-2002-PTID       TO  KOHSKY-PTID
-                           MOVE    SYS-2002-SRYYM      TO  KOHSKY-SRYYM
-                           MOVE    SYS-2002-NYUGAIKBN  TO
-                                                       KOHSKY-NYUGAIKBN
-                           MOVE    KOHSKY-REC          TO  MCPDATA-REC
-                           MOVE    "DBDELETE"          TO  MCP-FUNC
-                           MOVE    "tbl_kohsky"        TO  MCP-TABLE
-                           MOVE    "del2"              TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC           NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
+      *            診療年月の公費請求書削除処理
+                   INITIALIZE                  KOHSKY-REC
+                   MOVE    SYS-1001-HOSPNUM    TO  KOHSKY-HOSPNUM
+                   MOVE    SYS-2002-PTID       TO  KOHSKY-PTID
+                   MOVE    SYS-2002-SRYYM      TO  KOHSKY-SRYYM
+                   MOVE    SYS-2002-NYUGAIKBN  TO  KOHSKY-NYUGAIKBN
+                   MOVE    KOHSKY-REC          TO  MCPDATA-REC
+                   MOVE    "tbl_kohsky"        TO  MCP-TABLE
+                   MOVE    "del2"              TO  MCP-PATHNAME
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   PERFORM   900-ORCDBMAIN-SEC
+                   IF      MCP-RC           NOT =   ZERO
+                     DISPLAY "TABLE=" MCP-TABLE "PATHNAME=" MCP-PATHNAME
+                     DISPLAY " MCP-RC=" MCP-RC
+                       MOVE
                       "公費請求書削除処理（個別分）でエラーとなりました"
                                                    TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
       *
-      *                    診療年月のレセ電削除処理
-                           INITIALIZE                  RECEDEN-REC
-                           MOVE    WRK-PARA-HOSPNUM    TO
-                                                       RECEDEN-HOSPNUM
-                           MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
-                           MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
-                           MOVE    SYS-2002-NYUGAIKBN  TO
-                                                       RECEDEN-NYUGAIKBN
-                           MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                           MOVE    "DBDELETE"          TO  MCP-FUNC
-                           MOVE    "tbl_receden"       TO  MCP-TABLE
-                           MOVE    "del2"              TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC           NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                          "レセ電削除処理（個別分）でエラーとなりました"
+      *            診療年月のレセ電削除処理
+                   INITIALIZE                  RECEDEN-REC
+                   MOVE    SYS-1001-HOSPNUM    TO  RECEDEN-HOSPNUM
+                   MOVE    SYS-2002-PTID       TO  RECEDEN-PTID
+                   MOVE    SYS-2002-SRYYM      TO  RECEDEN-SRYYM
+                   MOVE    SYS-2002-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
+                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
+                   MOVE    "tbl_receden"       TO  MCP-TABLE
+                   MOVE    "del2"              TO  MCP-PATHNAME
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   PERFORM   900-ORCDBMAIN-SEC
+                   IF      MCP-RC           NOT =   ZERO
+                     DISPLAY "TABLE=" MCP-TABLE "PATHNAME=" MCP-PATHNAME
+                     DISPLAY " MCP-RC=" MCP-RC
+                       MOVE
+                       "レセ電削除処理（個別分）でエラーとなりました"
                                                    TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
+                       PERFORM 500-ERR-HENSYU-SEC
+                       GO  TO  5001-DB-DELETE-EXT
+                   END-IF
       *
-                           MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                           MOVE    "key2"          TO  MCP-PATHNAME
-                           PERFORM 900-SYSKANRI-N-SEC
-                       END-PERFORM
-      *
-                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                       MOVE    "key2"              TO  MCP-PATHNAME
-                       PERFORM 900-CLOSE-SEC
-                   WHEN    "02"
-                       INITIALIZE                      PTINF-REC
-                       MOVE    WRK-PARA-HOSPNUM    TO  PTINF-HOSPNUM
-                       MOVE    BTPARA-INFO-PARA (1:8)
-                                                   TO  PTINF-ST-SRYYMD
-                       MOVE    BTPARA-INFO-PARA (9:8)
-                                                   TO  PTINF-ED-SRYYMD
-                       MOVE    "1"                 TO  PTINF-NYUGAIKBN
-                       MOVE    ZERO                TO  PTINF-HKNKBN
-                       MOVE    BTPARA-INFO-PARA(17:6)
-                                                   TO  PTINF-SRYYMD(1:6)
-                       MOVE    "__"                TO  PTINF-SRYYMD(7:2)
-                       MOVE    PTINF-REC           TO  MCPDATA-REC
-                       MOVE    "tbl_ptinf"         TO  MCP-TABLE
-                       MOVE    "key13"             TO  MCP-PATHNAME
-                       PERFORM 900-DBSELECT-SEC
-                       IF      MCP-RC              =   ZERO
-                           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-                           MOVE    "key13"             TO  MCP-PATHNAME
-                           PERFORM 900-PTINF-READ-N-SEC
-                       ELSE
-                           MOVE    1                  TO  FLG-PTINF
-                       END-IF
-      *
-                       PERFORM     UNTIL       FLG-PTINF       =   1
-      *
-                           DISPLAY "DELETE PTID=" PTINF-PTID
-                                       " SRYYM=" BTPARA-INFO-PARA (17:6)
-      *
-      *                    診療年月の請求管理削除処理
-                           INITIALIZE                  RECE10-REC
-                           MOVE    WRK-PARA-HOSPNUM
-                                                   TO  RECE10-HOSPNUM
-                           MOVE    PTINF-PTID      TO  RECE10-PTID
-                           MOVE    BTPARA-INFO-PARA (17:6)
-                                                   TO  RECE10-SRYYM
-                           MOVE    "1"             TO  RECE10-NYUGAIKBN
-                           MOVE    1               TO
-                                                   RECE10-TEISYUTUSAKI
-                           MOVE    2               TO
-                                                   RECE10-XXTEISYUTUSAKI
-                           MOVE    RECE10-REC      TO  MCPDATA-REC
-                           MOVE    "DBDELETE"      TO  MCP-FUNC
-                           MOVE    "tbl_seikyu"    TO  MCP-TABLE
-                           MOVE    "del4"          TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC      NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                        "請求管理削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
-                           INITIALIZE                  RECE10-REC
-                           MOVE    WRK-PARA-HOSPNUM
-                                                   TO  RECE10-HOSPNUM
-                           MOVE    PTINF-PTID      TO  RECE10-PTID
-                           MOVE    BTPARA-INFO-PARA (17:6)
-                                                   TO  RECE10-SRYYM
-                           MOVE    "1"             TO  RECE10-NYUGAIKBN
-                           MOVE    6               TO
-                                                   RECE10-TEISYUTUSAKI
-                                                   RECE10-XXTEISYUTUSAKI
-                           MOVE    RECE10-REC      TO  MCPDATA-REC
-                           MOVE    "DBDELETE"      TO  MCP-FUNC
-                           MOVE    "tbl_seikyu"    TO  MCP-TABLE
-                           MOVE    "del4"          TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC      NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                        "請求管理削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
-      *                    診療年月の公費請求書削除処理
-                           INITIALIZE                  KOHSKY-REC
-                           MOVE    WRK-PARA-HOSPNUM
-                                                   TO  KOHSKY-HOSPNUM
-                           MOVE    PTINF-PTID      TO  KOHSKY-PTID
-                           MOVE    BTPARA-INFO-PARA (17:6)
-                                                   TO  KOHSKY-SRYYM
-                           MOVE    "1"             TO  KOHSKY-NYUGAIKBN
-                           MOVE    KOHSKY-REC      TO  MCPDATA-REC
-                           MOVE    "DBDELETE"      TO  MCP-FUNC
-                           MOVE    "tbl_kohsky"    TO  MCP-TABLE
-                           MOVE    "del2"          TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC       NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                      "公費請求書削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
-      *                    診療年月のレセ電削除処理
-                           INITIALIZE                  RECEDEN-REC
-                           MOVE    WRK-PARA-HOSPNUM
-                                                   TO  RECEDEN-HOSPNUM
-                           MOVE    PTINF-PTID      TO  RECEDEN-PTID
-                           MOVE    BTPARA-INFO-PARA (17:6)
-                                                   TO  RECEDEN-SRYYM
-                           MOVE    "1"             TO  RECEDEN-NYUGAIKBN
-                           MOVE    RECEDEN-REC     TO  MCPDATA-REC
-                           MOVE    "DBDELETE"      TO  MCP-FUNC
-                           MOVE    "tbl_receden"   TO  MCP-TABLE
-                           MOVE    "del2"          TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC           NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                          "レセ電削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
-                           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-                           MOVE    "key13"             TO  MCP-PATHNAME
-                           PERFORM 900-PTINF-READ-N-SEC
-                       END-PERFORM
-      *
-                       MOVE    "tbl_ptinf"         TO  MCP-TABLE
-                       MOVE    "key13"             TO  MCP-PATHNAME
-                       PERFORM 900-CLOSE-SEC
-                   WHEN    "03"
-                       INITIALIZE                      PTINF-REC
-                       MOVE    WRK-PARA-HOSPNUM    TO  PTINF-HOSPNUM
-                       MOVE    BTPARA-INFO-PARA (1:8)
-                                                   TO  PTINF-ST-SRYYMD
-                       MOVE    BTPARA-INFO-PARA (9:8)
-                                                   TO  PTINF-ED-SRYYMD
-                       MOVE    "1"                 TO  PTINF-NYUGAIKBN
-                       MOVE    ZERO                TO  PTINF-HKNKBN
-                       MOVE    PTINF-REC           TO  MCPDATA-REC
-                       MOVE    "tbl_ptinf"         TO  MCP-TABLE
-                       MOVE    "key11"             TO  MCP-PATHNAME
-                       PERFORM 900-DBSELECT-SEC
-                       IF      MCP-RC              =   ZERO
-                           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-                           MOVE    "key11"             TO  MCP-PATHNAME
-                           PERFORM 900-PTINF-READ-N-SEC
-                       ELSE
-                           MOVE    1                  TO  FLG-PTINF
-                       END-IF
-      *
-                       PERFORM     UNTIL       FLG-PTINF       =   1
-      *
-                           DISPLAY "DELETE PTID=" PTINF-PTID
-                                       " SRYYM=" BTPARA-INFO-PARA (1:6)
-      *
-      *                    診療年月の請求管理削除処理
-                           INITIALIZE                  RECE10-REC
-                           MOVE    WRK-PARA-HOSPNUM
-                                                   TO  RECE10-HOSPNUM
-                           MOVE    PTINF-PTID      TO  RECE10-PTID
-                           MOVE    BTPARA-INFO-PARA (1:6)
-                                                   TO  RECE10-SRYYM
-                           MOVE    "1"             TO  RECE10-NYUGAIKBN
-                           MOVE    1               TO
-                                                   RECE10-TEISYUTUSAKI
-                           MOVE    2               TO
-                                                   RECE10-XXTEISYUTUSAKI
-                           MOVE    RECE10-REC      TO  MCPDATA-REC
-                           MOVE    "DBDELETE"      TO  MCP-FUNC
-                           MOVE    "tbl_seikyu"    TO  MCP-TABLE
-                           MOVE    "del4"          TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC      NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                        "請求管理削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
-                           INITIALIZE                  RECE10-REC
-                           MOVE    WRK-PARA-HOSPNUM
-                                                   TO  RECE10-HOSPNUM
-                           MOVE    PTINF-PTID      TO  RECE10-PTID
-                           MOVE    BTPARA-INFO-PARA (1:6)
-                                                   TO  RECE10-SRYYM
-                           MOVE    "1"             TO  RECE10-NYUGAIKBN
-                           MOVE    6               TO
-                                                   RECE10-TEISYUTUSAKI
-                                                   RECE10-XXTEISYUTUSAKI
-                           MOVE    RECE10-REC      TO  MCPDATA-REC
-                           MOVE    "DBDELETE"      TO  MCP-FUNC
-                           MOVE    "tbl_seikyu"    TO  MCP-TABLE
-                           MOVE    "del4"          TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC      NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                        "請求管理削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
-      *                    診療年月の公費請求書削除処理
-                           INITIALIZE                  KOHSKY-REC
-                           MOVE    WRK-PARA-HOSPNUM
-                                                   TO  KOHSKY-HOSPNUM
-                           MOVE    PTINF-PTID      TO  KOHSKY-PTID
-                           MOVE    BTPARA-INFO-PARA (1:6)
-                                                   TO  KOHSKY-SRYYM
-                           MOVE    "1"             TO  KOHSKY-NYUGAIKBN
-                           MOVE    KOHSKY-REC      TO  MCPDATA-REC
-                           MOVE    "DBDELETE"      TO  MCP-FUNC
-                           MOVE    "tbl_kohsky"    TO  MCP-TABLE
-                           MOVE    "del2"          TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC      NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                      "公費請求書削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
-      *                    診療年月のレセ電削除処理
-                           INITIALIZE                  RECEDEN-REC
-                           MOVE    WRK-PARA-HOSPNUM
-                                                   TO  RECEDEN-HOSPNUM
-                           MOVE    PTINF-PTID      TO  RECEDEN-PTID
-                           MOVE    BTPARA-INFO-PARA (1:6)
-                                                   TO  RECEDEN-SRYYM
-                           MOVE    "1"             TO  RECEDEN-NYUGAIKBN
-                           MOVE    RECEDEN-REC     TO  MCPDATA-REC
-                           MOVE    "DBDELETE"      TO  MCP-FUNC
-                           MOVE    "tbl_receden"   TO  MCP-TABLE
-                           MOVE    "del2"          TO  MCP-PATHNAME
-                           PERFORM 900-ORCDBMAIN-SEC
-                           IF      MCP-RC           NOT =   ZERO
-                               DISPLAY "DBPATH=" MCP-TABLE
-                                       " " MCP-PATHNAME
-                                       " MCP-RC=" MCP-RC
-                               MOVE
-                          "レセ電削除処理（個別分）でエラーとなりました"
-                                                   TO    WRK-RECEERR
-                               PERFORM 500-ERR-HENSYU-SEC
-                               GO  TO  5001-DB-DELETE-EXT
-                           END-IF
-      *
-                           MOVE    "tbl_ptinf"         TO  MCP-TABLE
-                           MOVE    "key11"             TO  MCP-PATHNAME
-                           PERFORM 900-PTINF-READ-N-SEC
-                       END-PERFORM
-      *
-                       MOVE    "tbl_ptinf"         TO  MCP-TABLE
-                       MOVE    "key11"             TO  MCP-PATHNAME
-                       PERFORM 900-CLOSE-SEC
-               END-EVALUATE
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-N-SEC
+               END-PERFORM
+      *   
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
            END-IF
            .
        5001-DB-DELETE-EXT.

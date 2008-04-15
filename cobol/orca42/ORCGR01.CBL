@@ -119,6 +119,7 @@
       *  04.01.02    NACL-藤原    07/11/22  公害レセプト対応
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/04/11  未請求解除時の処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -186,6 +187,7 @@
            03  FLG-ZAISKBKBN       PIC 9(01). 
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-SEIKYU-UMU      PIC 9(01).
+           03  FLG-TAISYO          PIC 9(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -1472,6 +1474,8 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            INITIALIZE                  SPA-GMN-R01-TBL
                                        SPA-NAI-R01-TBL
            MOVE    ZERO            TO  SPA-NAI-R01-SELNO
+           MOVE    SPACE           TO  SPA-NAI-R01-SYOKBN
+           MOVE    ZERO            TO  FLG-TAISYO 
       *
            INITIALIZE                  SYUKA-REC
 grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
@@ -1557,7 +1561,29 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SS001-HOSPNUM
                                        SPA-NAI-R01-BTPARA-TTAISYO (IDX)
                            END-IF          
                    END-EVALUATE
-               END-IF     
+               END-IF
+      *      
+               IF      SPA-NAI-R01-BTPARA-TTAISYO (IDX)
+                                               =   1
+      *            対象データの一件目の診療年月取得
+                   IF      SPA-NAI-R01-SYOKBN      =   SPACE
+                       IF      SPA-NAI-R01-BTPARA-TSRYYM (IDX)
+                                                <   200804
+                           MOVE    "1"          TO  SPA-NAI-R01-SYOKBN
+                       END-IF
+                   END-IF
+      *
+                   EVALUATE    SPA-NAI-R01-SYOKBN
+                       WHEN    "1"
+                           IF      SPA-NAI-R01-BTPARA-TSRYYM (IDX)
+                                                   >=  200804
+                               MOVE    2               TO  
+                                       SPA-NAI-R01-BTPARA-TTAISYO (IDX)
+                               MOVE    1               TO  FLG-TAISYO 
+                           END-IF
+                   END-EVALUATE
+               END-IF
+      *
                IF      SPA-NAI-R01-BTPARA-TTAISYO (IDX)
                                                =   1
                    ADD     1       TO  SPA-NAI-R01-BTPARA-TAISYO-MAX
@@ -1592,7 +1618,13 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SS001-HOSPNUM
                    MOVE    1           TO  SPA-NAI-R01-BTPARA-HYOUJI-FLG
                    PERFORM 410721-MISEIKYU-DATA-JYOKEN-SEC
                END-IF
-           END-IF 
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-NAI-R01-SYOKBN
+      *
+           IF      FLG-TAISYO          =   1
+               MOVE    "0040"              TO  SPA-ERRCD
+           END-IF
            .
        41072-MISEIKYU-DATA-HENSYU-EXT.
            EXIT.
@@ -1617,7 +1649,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SS001-HOSPNUM
                IF    ( SPA-NAI-R01-BTPARA-HYOUJI-FLG
                                            =   1 )
                AND   ( SPA-NAI-R01-BTPARA-TTAISYO (IDX)
-                                           =   0 )
+                                       NOT =   1 )
                    CONTINUE
                ELSE
                    MOVE    SPA-NAI-R01-BTPARA-TQTORSUB-AREA (IDX)
@@ -4745,6 +4777,14 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    STRING  "改正前と改正後（平成２０年４月）の"
                                            DELIMITED   BY  SIZE
                            "レセプトは同時に処理できません"
+                                           DELIMITED   BY  SIZE
+                                           INTO        SPA-ERRMSG
+                   END-STRING
+               WHEN    "0040"
+                   STRING
+                   "改正前後（平成２０年４月）が混在しているため"
+                                           DELIMITED   BY  SIZE
+                   "一旦改正前のみ処理対象とします"
                                            DELIMITED   BY  SIZE
                                            INTO        SPA-ERRMSG
                    END-STRING
