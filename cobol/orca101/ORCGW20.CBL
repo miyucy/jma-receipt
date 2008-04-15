@@ -186,7 +186,7 @@
            03  CONST-SBT-MAX           PIC 9(03) VALUE 15.
            03  CONST-YKNKNG-MAX        PIC 9(03) VALUE 10.
            03  CONST-KHNRYO-MAX        PIC 9(03) VALUE 50.
-           03  CONST-KSN-MAX           PIC 9(03) VALUE 15.
+           03  CONST-KSN-MAX           PIC 9(03) VALUE 17.
            03  CONST-GKSN-MAX          PIC 9(03) VALUE 14.
            03  CONST-YKNKNGCD-VAL.
                05                      PIC X(09) VALUE "190109870".
@@ -244,16 +244,10 @@
                05  CONST-DRHJO         PIC X(09) OCCURS 4.
            03  CONST-JKAIFUKU          PIC X(09) VALUE "190129870".
            03  CONST-YKNKNKYU          PIC X(09) VALUE "190126470".
-           03  CONST-SNRHICH-VAL.
-               05                      PIC X(09) VALUE "190126570".
-               05                      PIC X(09) VALUE "190109670".
-           03  CONST-SNRHICH-R         REDEFINES CONST-SNRHICH-VAL.
-               05  CONST-SNRHICH       PIC X(09)    OCCURS 2.
-           03  CONST-YKNHICH-VAL.
-               05                      PIC X(09) VALUE "190126670".
-               05                      PIC X(09) VALUE "190126770".
-           03  CONST-YKNHICH-R         REDEFINES CONST-YKNHICH-VAL.
-               05  CONST-YKNHICH       PIC X(09)    OCCURS 2.
+           03  CONST-SNRHICH1          PIC X(09) VALUE "190126570".
+           03  CONST-SNRHICH2          PIC X(09) VALUE "190109670".
+           03  CONST-YKNHICH1          PIC X(09) VALUE "190126670".
+           03  CONST-YKNHICH2          PIC X(09) VALUE "190126770".
            03  CONST-KNGHJOCD-MAX      PIC 9(03) VALUE 15.
            03  CONST-5001-KSN-MAX      PIC 9(03) VALUE 14.
            03  CONST-H180401           PIC X(08) VALUE "20060401".
@@ -493,6 +487,9 @@
                    PERFORM 3101-EDIT-BTULST-SEC 
                    MOVE    WRK-BTULST-SEL
                                        TO  SPA-GMN-W20-BTULST-SEL
+      *
+                   PERFORM 4100-SYS-KANRI-SAI-SET-SEC
+      *
                    GO  TO  300-SCREEN-EXT
                ELSE
                    PERFORM 310-SPASET-SEC
@@ -745,11 +742,17 @@
       *    Ìë´Ö¶ÛµÞÂÎÀ©³ÎÊÝ²Ã»»
            PERFORM 3101-CMB-YKNKNKYU-SET-SEC
       *
-      *    ´Ç¸îÇÛÃÖ²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
-           PERFORM 3101-CMB-SNRHICH-SET-SEC
+      *    ´Ç¸îÇÛÃÖ²Ã»»£±¡Ê¿ÇÎÅ½ê¡Ë
+           PERFORM 3101-CMB-SNRHICH1-SET-SEC
       *
-      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»
-           PERFORM 3101-CMB-YKNHICH-SET-SEC
+      *    ´Ç¸îÇÛÃÖ²Ã»»£²¡Ê¿ÇÎÅ½ê¡Ë
+           PERFORM 3101-CMB-SNRHICH2-SET-SEC
+      *
+      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£±
+           PERFORM 3101-CMB-YKNHICH1-SET-SEC
+      *
+      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£²
+           PERFORM 3101-CMB-YKNHICH2-SET-SEC
 
 
       *
@@ -1020,38 +1023,60 @@
        3101-CMB-YKNKNKYU-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ´Ç¸îÇÛÃÖ²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
+      *    ´Ç¸îÇÛÃÖ²Ã»»£±¡Ê¿ÇÎÅ½ê¡Ë
       *****************************************************************
-       3101-CMB-SNRHICH-SET-SEC          SECTION.
+       3101-CMB-SNRHICH1-SET-SEC          SECTION.
       *
-           MOVE    "1"             TO  SPA-GMN-W20-SNRHICHL(1)
-           MOVE    "»»Äê¤·¤Ê¤¤"    TO  SPA-GMN-W20-SNRHICHMEIL(1)
-           MOVE    "2"             TO  SPA-GMN-W20-SNRHICHL(2)
-           MOVE    "´Ç¸îÇÛÃÖ²Ã»»£±" TO SPA-GMN-W20-SNRHICHMEIL(2)
-           MOVE    "3"             TO  SPA-GMN-W20-SNRHICHL(3)
-           MOVE    "´Ç¸îÇÛÃÖ²Ã»»£²" TO SPA-GMN-W20-SNRHICHMEIL(3)
-           MOVE    3               TO  SPA-GMN-W20-SNRHICH-MAX
+           MOVE    "1"             TO  SPA-GMN-W20-SNRHICH1L(1)
+           MOVE    "»»Äê¤·¤Ê¤¤"    TO  SPA-GMN-W20-SNRHICH1MEIL(1)
+           MOVE    "2"             TO  SPA-GMN-W20-SNRHICH1L(2)
+           MOVE    "»»Äê¤¹¤ë"       TO SPA-GMN-W20-SNRHICH1MEIL(2)
+           MOVE    2               TO  SPA-GMN-W20-SNRHICH1-MAX
       *
            .
-       3101-CMB-SNRHICH-SET-EXT.
+       3101-CMB-SNRHICH1-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»
+      *    ´Ç¸îÇÛÃÖ²Ã»»£²¡Ê¿ÇÎÅ½ê¡Ë
       *****************************************************************
-       3101-CMB-YKNHICH-SET-SEC        SECTION.
+       3101-CMB-SNRHICH2-SET-SEC          SECTION.
       *
-           MOVE    "1"                 TO  SPA-GMN-W20-YKNHICHL(1)
-           MOVE    "»»Äê¤·¤Ê¤¤"        TO  SPA-GMN-W20-YKNHICHMEIL(1)
-           MOVE    "2"                 TO  SPA-GMN-W20-YKNHICHL(2)
-           MOVE    "Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£±"
-                                       TO  SPA-GMN-W20-YKNHICHMEIL(2)
-           MOVE    "3"                 TO  SPA-GMN-W20-YKNHICHL(3)
-           MOVE    "Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£²"
-                                       TO  SPA-GMN-W20-YKNHICHMEIL(3)
-           MOVE    3                   TO  SPA-GMN-W20-YKNHICH-MAX
+           MOVE    "1"             TO  SPA-GMN-W20-SNRHICH2L(1)
+           MOVE    "»»Äê¤·¤Ê¤¤"    TO  SPA-GMN-W20-SNRHICH2MEIL(1)
+           MOVE    "2"             TO  SPA-GMN-W20-SNRHICH2L(2)
+           MOVE    "»»Äê¤¹¤ë"       TO SPA-GMN-W20-SNRHICH2MEIL(2)
+           MOVE    2               TO  SPA-GMN-W20-SNRHICH2-MAX
       *
            .
-       3101-CMB-YKNHICH-SET-EXT.
+       3101-CMB-SNRHICH2-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£±
+      *****************************************************************
+       3101-CMB-YKNHICH1-SET-SEC        SECTION.
+      *
+           MOVE    "1"                 TO  SPA-GMN-W20-YKNHICH1L(1)
+           MOVE    "»»Äê¤·¤Ê¤¤"        TO  SPA-GMN-W20-YKNHICH1MEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-W20-YKNHICH1L(2)
+           MOVE    "»»Äê¤¹¤ë"          TO  SPA-GMN-W20-YKNHICH1MEIL(2)
+           MOVE    2                   TO  SPA-GMN-W20-YKNHICH1-MAX
+      *
+           .
+       3101-CMB-YKNHICH1-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£²
+      *****************************************************************
+       3101-CMB-YKNHICH2-SET-SEC        SECTION.
+      *
+           MOVE    "1"                 TO  SPA-GMN-W20-YKNHICH2L(1)
+           MOVE    "»»Äê¤·¤Ê¤¤"        TO  SPA-GMN-W20-YKNHICH2MEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-W20-YKNHICH2L(2)
+           MOVE    "»»Äê¤¹¤ë"          TO  SPA-GMN-W20-YKNHICH2MEIL(2)
+           MOVE    2                   TO  SPA-GMN-W20-YKNHICH2-MAX
+      *
+           .
+       3101-CMB-YKNHICH2-SET-EXT.
            EXIT.
       *****************************************************************
       *    °åÎÅµ¡´Ø¾ðÊó¼èÆÀ½èÍý
@@ -1729,8 +1754,6 @@
                        PERFORM 4101-SEISIN-CHK-SEC
                    WHEN    CONST-KANGOCD (1)
                        PERFORM 4101-HICH-CHK-SEC
-                   WHEN    CONST-KNGTEKCD
-                       PERFORM 4101-HICHTEK-CHK-SEC
                    WHEN    CONST-DRTEKCD
                        PERFORM 4101-DRTEK-CHK-SEC
                    WHEN    CONST-DRHJO (1)
@@ -1739,10 +1762,19 @@
                        PERFORM 4101-JKAIFUKU-CHK-SEC
                    WHEN    CONST-YKNKNKYU
                        PERFORM 4101-YKNKNKYU-CHK-SEC
-                   WHEN    CONST-SNRHICH (1)
-                       PERFORM 4101-SNRHICH-CHK-SEC
-                   WHEN    CONST-YKNHICH (1)
-                       PERFORM 4101-YKNHICH-CHK-SEC
+                   WHEN    CONST-SNRHICH1
+                       PERFORM 4101-SNRHICH1-CHK-SEC
+                   WHEN    CONST-SNRHICH2
+                   WHEN    CONST-KNGTEKCD
+                       IF    ( SPA-NAI-W20-YUKOSTYMD  >= CONST-H200401 )
+                           PERFORM 4101-SNRHICH2-CHK-SEC
+                       ELSE
+                           PERFORM 4101-HICHTEK-CHK-SEC
+                       END-IF
+                   WHEN    CONST-YKNHICH1
+                       PERFORM 4101-YKNHICH1-CHK-SEC
+                   WHEN    CONST-YKNHICH2
+                       PERFORM 4101-YKNHICH2-CHK-SEC
                    END-EVALUATE
       *
                END-IF
@@ -2596,21 +2628,32 @@
                PERFORM 420121-BTU-KSN-EDIT-SEC
            END-IF
       *
-      *    ´Ç¸îÇÛÃÖ²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
-           IF    ( SPA-GMN-W20-SNRHICH     =  "2" OR "3" )
-               MOVE    SPA-GMN-W20-SNRHICH TO  WRK-KBN1-G
-               COMPUTE WRK-KBN1    =   WRK-KBN1    -   1
-               MOVE    CONST-SNRHICH (WRK-KBN1)
+      *    ´Ç¸îÇÛÃÖ²Ã»»£±¡Ê¿ÇÎÅ½ê¡Ë
+           IF    ( SPA-GMN-W20-SNRHICH1     =  "2" )
+               MOVE    CONST-SNRHICH1
                                           TO  WRK-KSNCD
                PERFORM 420121-BTU-KSN-EDIT-SEC
            END-IF
       *
-      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»
-           IF    ( SPA-GMN-W20-YKNHICH     =  "2" OR "3" )
-               MOVE    SPA-GMN-W20-YKNHICH TO  WRK-KBN1-G
-               COMPUTE WRK-KBN1    =   WRK-KBN1    -   1
-               MOVE    CONST-YKNHICH (WRK-KBN1)
+      *    ´Ç¸îÇÛÃÖ²Ã»»£²¡Ê¿ÇÎÅ½ê¡Ë
+           IF    ( SPA-GMN-W20-SNRHICH2     =  "2" )
+               MOVE    SPA-GMN-W20-SNRHICH2 TO  WRK-KBN1-G
+               MOVE    CONST-SNRHICH2
                                           TO  WRK-KSNCD
+               PERFORM 420121-BTU-KSN-EDIT-SEC
+           END-IF
+      *
+      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£±
+           IF    ( SPA-GMN-W20-YKNHICH1     =  "2" )
+               MOVE    SPA-GMN-W20-YKNHICH1 TO  WRK-KBN1-G
+               MOVE    CONST-YKNHICH1       TO  WRK-KSNCD
+               PERFORM 420121-BTU-KSN-EDIT-SEC
+           END-IF
+      *
+      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£²
+           IF    ( SPA-GMN-W20-YKNHICH2     =  "2" )
+               MOVE    SPA-GMN-W20-YKNHICH2 TO  WRK-KBN1-G
+               MOVE    CONST-YKNHICH2       TO  WRK-KSNCD
                PERFORM 420121-BTU-KSN-EDIT-SEC
            END-IF
       *
@@ -3523,40 +3566,76 @@
        4101-YKNKNKYU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ´Ç¸îÇÛÃÖ²Ã»»¡Ê¿ÇÎÅ½ê¡Ë
+      *    ´Ç¸îÇÛÃÖ²Ã»»£±¡Ê¿ÇÎÅ½ê¡Ë
       *****************************************************************
-       4101-SNRHICH-CHK-SEC              SECTION.
+       4101-SNRHICH1-CHK-SEC              SECTION.
       *
-           MOVE    SPA-GMN-W20-SNRHICH   TO  WRK-CMB-CD
-           PERFORM 4200-SNRHICHLST-CHK-SEC
+           MOVE    SPA-GMN-W20-SNRHICH1   TO  WRK-CMB-CD
+           PERFORM 4200-SNRHICH1LST-CHK-SEC
            IF    ( WRK-CMB-CD      =   SPACE )
-               MOVE    SPA-GMN-W20-SNRHICHLST (1)
-                                   TO  SPA-GMN-W20-SNRHICH-G
+               MOVE    SPA-GMN-W20-SNRHICH1LST (1)
+                                   TO  SPA-GMN-W20-SNRHICH1-G
            ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-SNRHICH-G
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-SNRHICH1-G
            END-IF
       *
            .
       *
-       4101-SNRHICH-CHK-EXT.
+       4101-SNRHICH1-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»
+      *    ´Ç¸îÇÛÃÖ²Ã»»£²¡Ê¿ÇÎÅ½ê¡Ë
       *****************************************************************
-       4101-YKNHICH-CHK-SEC              SECTION.
+       4101-SNRHICH2-CHK-SEC              SECTION.
       *
-           MOVE    SPA-GMN-W20-YKNHICH   TO  WRK-CMB-CD
-           PERFORM 4200-YKNHICHLST-CHK-SEC
+           MOVE    SPA-GMN-W20-SNRHICH2   TO  WRK-CMB-CD
+           PERFORM 4200-SNRHICH2LST-CHK-SEC
            IF    ( WRK-CMB-CD      =   SPACE )
-               MOVE    SPA-GMN-W20-YKNHICHLST (1)
-                                   TO  SPA-GMN-W20-YKNHICH-G
+               MOVE    SPA-GMN-W20-SNRHICH2LST (1)
+                                   TO  SPA-GMN-W20-SNRHICH2-G
            ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNHICH-G
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-SNRHICH2-G
            END-IF
       *
            .
       *
-       4101-YKNHICH-CHK-EXT.
+       4101-SNRHICH2-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£±
+      *****************************************************************
+       4101-YKNHICH1-CHK-SEC              SECTION.
+      *
+           MOVE    SPA-GMN-W20-YKNHICH1   TO  WRK-CMB-CD
+           PERFORM 4200-YKNHICH1LST-CHK-SEC
+           IF    ( WRK-CMB-CD      =   SPACE )
+               MOVE    SPA-GMN-W20-YKNHICH1LST (1)
+                                   TO  SPA-GMN-W20-YKNHICH1-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNHICH1-G
+           END-IF
+      *
+           .
+      *
+       4101-YKNHICH1-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£²
+      *****************************************************************
+       4101-YKNHICH2-CHK-SEC              SECTION.
+      *
+           MOVE    SPA-GMN-W20-YKNHICH2   TO  WRK-CMB-CD
+           PERFORM 4200-YKNHICH2LST-CHK-SEC
+           IF    ( WRK-CMB-CD      =   SPACE )
+               MOVE    SPA-GMN-W20-YKNHICH2LST (1)
+                                   TO  SPA-GMN-W20-YKNHICH2-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNHICH2-G
+           END-IF
+      *
+           .
+      *
+       4101-YKNHICH2-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ´ð½àÆü
@@ -4043,22 +4122,22 @@
                        MOVE    "2"         TO  WRK-CMB-CD
                        PERFORM 4200-YKNKNKYULST-CHK-SEC
                        MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNKNKYU-G
-                   WHEN    CONST-SNRHICH (1)
+                   WHEN    CONST-SNRHICH1
                        MOVE    "2"         TO  WRK-CMB-CD
-                       PERFORM 4200-SNRHICHLST-CHK-SEC
-                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-SNRHICH-G
-                   WHEN    CONST-SNRHICH (2)
-                       MOVE    "3"         TO  WRK-CMB-CD
-                       PERFORM 4200-SNRHICHLST-CHK-SEC
-                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-SNRHICH-G
-                   WHEN    CONST-YKNHICH (1)
+                       PERFORM 4200-SNRHICH1LST-CHK-SEC
+                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-SNRHICH1-G
+                   WHEN    CONST-SNRHICH2
                        MOVE    "2"         TO  WRK-CMB-CD
-                       PERFORM 4200-YKNHICHLST-CHK-SEC
-                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNHICH-G
-                   WHEN    CONST-YKNHICH (2)
-                       MOVE    "3"         TO  WRK-CMB-CD
-                       PERFORM 4200-YKNHICHLST-CHK-SEC
-                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNHICH-G
+                       PERFORM 4200-SNRHICH2LST-CHK-SEC
+                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-SNRHICH2-G
+                   WHEN    CONST-YKNHICH1
+                       MOVE    "2"         TO  WRK-CMB-CD
+                       PERFORM 4200-YKNHICH1LST-CHK-SEC
+                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNHICH1-G
+                   WHEN    CONST-YKNHICH2
+                       MOVE    "2"         TO  WRK-CMB-CD
+                       PERFORM 4200-YKNHICH2LST-CHK-SEC
+                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNHICH2-G
                    END-EVALUATE
                END-IF
       *
@@ -4262,10 +4341,14 @@
                MOVE    "Ìë´Ö¶ÛµÞÂÎÀ©³ÎÊÝ²Ã»»"
                                            TO  SPA-GMN-W20-YKNKNKYU-LBL
                MOVE    CONST-YKNKNKYU      TO  SPA-NAI-W20-YKNKNKYU-CD
-               MOVE    "´Ç¸îÇÛÃÖ²Ã»»"      TO  SPA-GMN-W20-SNRHICH-LBL
-               MOVE    CONST-SNRHICH(1)    TO  SPA-NAI-W20-SNRHICH-CD
-               MOVE    "Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»"  TO  SPA-GMN-W20-YKNHICH-LBL
-               MOVE    CONST-YKNHICH(1)    TO  SPA-NAI-W20-YKNHICH-CD
+               MOVE    "´Ç¸îÇÛÃÖ²Ã»»£±"    TO  SPA-GMN-W20-SNRHICH1-LBL
+               MOVE    CONST-SNRHICH1      TO  SPA-NAI-W20-SNRHICH1-CD
+               MOVE    "´Ç¸îÇÛÃÖ²Ã»»£²"    TO  SPA-GMN-W20-SNRHICH2-LBL
+               MOVE    CONST-SNRHICH2      TO  SPA-NAI-W20-SNRHICH2-CD
+               MOVE    "Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£±" TO SPA-GMN-W20-YKNHICH1-LBL
+               MOVE    CONST-YKNHICH1      TO  SPA-NAI-W20-YKNHICH1-CD
+               MOVE    "Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£²" TO SPA-GMN-W20-YKNHICH2-LBL
+               MOVE    CONST-YKNHICH2      TO  SPA-NAI-W20-YKNHICH2-CD
       *
            WHEN  ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H180401 )
       *
@@ -4584,11 +4667,6 @@
       *
                            END-PERFORM
                        END-IF
-                   WHEN    CONST-KNGTEKCD
-                       IF    ( SPA-GMN-W20-HICHTEK     =   "2" )
-                           MOVE    CONST-KNGTEKCD
-                                           TO  WRK-KSNCD
-                       END-IF
                    WHEN    CONST-DRTEKCD
                        IF    ( SPA-GMN-W20-DRTEK       =   "2" )
                            MOVE    CONST-DRTEKCD
@@ -4613,24 +4691,29 @@
                        IF   (  SPA-GMN-W20-YKNKNKYU    =   "2" )
                            MOVE    CONST-YKNKNKYU  TO  WRK-KSNCD
                        END-IF
-                   WHEN    CONST-SNRHICH (1)
-                       EVALUATE    "2"
-                       WHEN    CONST-SNRHICH (1)
-                           MOVE    CONST-SNRHICH (1)
-                                                   TO  WRK-KSNCD
-                       WHEN        "3"
-                           MOVE    CONST-SNRHICH (2)
-                                                   TO  WRK-KSNCD
-                       END-EVALUATE
-                   WHEN    CONST-YKNHICH (1)
-                       EVALUATE    SPA-GMN-W20-YKNHICH
-                       WHEN    "2"
-                           MOVE    CONST-YKNHICH (1)
-                                                   TO  WRK-KSNCD
-                       WHEN    "3"
-                           MOVE    CONST-YKNHICH (2)
-                                                   TO  WRK-KSNCD
-                       END-EVALUATE
+                   WHEN    CONST-SNRHICH1
+                       IF    ( SPA-GMN-W20-SNRHICH1    =   "2" )
+                           MOVE    CONST-SNRHICH1  TO  WRK-KSNCD
+                       END-IF
+                   WHEN    CONST-SNRHICH2
+                   WHEN    CONST-KNGTEKCD
+                       IF    ( SPA-NAI-W20-YUKOSTYMD  >= CONST-H200401 )
+                           IF    ( SPA-GMN-W20-SNRHICH2  =   "2" )
+                               MOVE    CONST-SNRHICH2  TO  WRK-KSNCD
+                           END-IF
+                       ELSE
+                           IF    ( SPA-GMN-W20-HICHTEK     =   "2" )
+                               MOVE    CONST-KNGTEKCD  TO  WRK-KSNCD
+                           END-IF
+                       END-IF
+                   WHEN    CONST-YKNHICH1
+                       IF    ( SPA-GMN-W20-YKNHICH1    =   "2" )
+                           MOVE    CONST-YKNHICH1  TO  WRK-KSNCD
+                       END-IF
+                   WHEN    CONST-YKNHICH2
+                       IF    ( SPA-GMN-W20-YKNHICH2    =   "2" )
+                           MOVE    CONST-YKNHICH2  TO  WRK-KSNCD
+                       END-IF
                    END-EVALUATE
       *
                    IF    ( WRK-KSNCD       NOT =   SPACE )
@@ -4923,7 +5006,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM     =   SPACE )
                MOVE    SPA-GMN-W20-KNGHJOLST (1)
                                    TO  WRK-CMB-ITM
            END-IF
@@ -4950,7 +5033,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM     =   SPACE )
                MOVE    SPA-GMN-W20-YKNKNGLST (1)
                                    TO  WRK-CMB-ITM
            END-IF
@@ -4977,7 +5060,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-SYOKUDOLST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5004,7 +5087,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-HOIKULST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5031,7 +5114,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-NANBYOLST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5057,7 +5140,7 @@
                END-IF
       *
            END-PERFORM
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-TOKUSYULST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5084,7 +5167,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-JIDOLST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5111,7 +5194,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-SEISINLST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5138,7 +5221,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-HICHLST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5165,7 +5248,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-DRTEKLST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5192,7 +5275,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-HICHTEKLST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5219,7 +5302,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-DRHJOLST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5246,7 +5329,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-JKAIFUKULST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5273,7 +5356,7 @@
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
+           IF    ( WRK-CMB-ITM         =   SPACE )
                    MOVE    SPA-GMN-W20-YKNKNKYULST (1)
                                        TO  WRK-CMB-ITM
            END-IF
@@ -5282,58 +5365,112 @@
        4200-YKNKNKYULST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ´Ç¸îÇÛÃÖ²Ã»»¡Ê¿ÇÎÅ½ê¡Ë¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ´Ç¸îÇÛÃÖ²Ã»»£±¡Ê¿ÇÎÅ½ê¡Ë¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       4200-SNRHICHLST-CHK-SEC         SECTION.
+       4200-SNRHICH1LST-CHK-SEC         SECTION.
       *
            INITIALIZE                  WRK-CMB-ITM-G
       *
            PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-W20-SNRHICH-MAX )
+                   UNTIL ( IDX-CMB >   SPA-GMN-W20-SNRHICH1-MAX )
                     OR   ( WRK-CMB-ITM NOT =   SPACE )
       *
-               IF    ( SPA-GMN-W20-SNRHICHL (IDX-CMB)
+               IF    ( SPA-GMN-W20-SNRHICH1L (IDX-CMB)
                                        =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-W20-SNRHICHLST (IDX-CMB)
+                   MOVE    SPA-GMN-W20-SNRHICH1LST (IDX-CMB)
                                        TO  WRK-CMB-ITM
                END-IF
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
-                   MOVE    SPA-GMN-W20-SNRHICHLST (1)
+           IF    ( WRK-CMB-ITM         =   SPACE )
+                   MOVE    SPA-GMN-W20-SNRHICH1LST (1)
                                        TO  WRK-CMB-ITM
            END-IF
       *
            .
-       4200-SNRHICHLST-CHK-EXT.
+       4200-SNRHICH1LST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ´Ç¸îÇÛÃÖ²Ã»»£²¡Ê¿ÇÎÅ½ê¡Ë¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
-       4200-YKNHICHLST-CHK-SEC         SECTION.
+       4200-SNRHICH2LST-CHK-SEC         SECTION.
       *
            INITIALIZE                  WRK-CMB-ITM-G
       *
            PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-W20-YKNHICH-MAX )
+                   UNTIL ( IDX-CMB >   SPA-GMN-W20-SNRHICH2-MAX )
                     OR   ( WRK-CMB-ITM NOT =   SPACE )
       *
-               IF    ( SPA-GMN-W20-YKNHICHL (IDX-CMB)
+               IF    ( SPA-GMN-W20-SNRHICH2L (IDX-CMB)
                                        =   WRK-CMB-CD )
-                   MOVE    SPA-GMN-W20-YKNHICHLST (IDX-CMB)
+                   MOVE    SPA-GMN-W20-SNRHICH2LST (IDX-CMB)
                                        TO  WRK-CMB-ITM
                END-IF
       *
            END-PERFORM
       *
-           IF    ( WRK-CMB-CD      =   SPACE )
-                   MOVE    SPA-GMN-W20-YKNHICHLST (1)
+           IF    ( WRK-CMB-ITM         =   SPACE )
+                   MOVE    SPA-GMN-W20-SNRHICH2LST (1)
                                        TO  WRK-CMB-ITM
            END-IF
       *
            .
-       4200-YKNHICHLST-CHK-EXT.
+       4200-SNRHICH2LST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£±¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-YKNHICH1LST-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W20-YKNHICH1-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W20-YKNHICH1L (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W20-YKNHICH1LST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM         =   SPACE )
+                   MOVE    SPA-GMN-W20-YKNHICH1LST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-YKNHICH1LST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    Ìë´Ö´Ç¸îÇÛÃÖ²Ã»»£²¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-YKNHICH2LST-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W20-YKNHICH2-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W20-YKNHICH2L (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W20-YKNHICH2LST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM         =   SPACE )
+                   MOVE    SPA-GMN-W20-YKNHICH2LST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-YKNHICH2LST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ¥ì¥»¥×¥ÈÉ½¼¨¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý

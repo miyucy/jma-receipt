@@ -463,6 +463,8 @@
       *            入院基本料編集処理
                    PERFORM 3101-BTU-KHNRYO-EDIT-SEC
       *
+                   PERFORM 4100-SYSKANRI-RESET-SEC
+      *
                    GO  TO  300-SCREEN-EXT
                ELSE
                    PERFORM 310-SPASET-SEC
