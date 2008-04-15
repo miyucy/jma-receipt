@@ -63,6 +63,8 @@
       *  04.02.00    NACL-小豆沢  08/04/14  有床診療所の加算を注加算通番順に記録
       *  04.02.00    NACL-小豆沢  08/04/14  小児入院医療管理料と回復期リハビリの
       *                                     加算を注加算通番順に記録
+      *  04.02.00    NACL-小豆沢  08/04/15  特殊疾患病棟入院料の加算を注加算
+      *                                     通番順に記録
       *****************************************************************
       *
       *
@@ -1480,7 +1482,8 @@
                                         OR  CONS-TOKUSEIYAKU-KSN))
                                    OR
                          ((LNK-NYURECEDEN-SANTEIYM >= "200804") AND
-                          (ACCT-SRYCDTOTAL(6:9)  =  "190120970"))
+                          (ACCT-SRYCDTOTAL(6:9)  = "190055470"  OR 
+                                                   "190120970"))
       *                入院料加算の退避
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
@@ -1546,6 +1549,14 @@
                                END-EVALUATE
                              ELSE
                                EVALUATE   ACCT-SRYCDTOTAL(6:9)
+      *                         人工呼吸器使用加算（特殊疾患）
+                                WHEN  "190055470"
+                                  MOVE   "190055470"
+                                      TO  WRK-CHUKSN-NYUKSN(7)
+                                  MOVE   ACCT-ZAITEN
+                                      TO  WRK-CHUKSN-NYUKSN-ZAITEN(7)
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                      TO  WRK-CHUKSN-NYUKSN-DAY(7 IDX1)
       *                         人工呼吸器使用加算（小児入院医療）
                                 WHEN  "190120970"
                                   MOVE   "190120970"
@@ -1832,6 +1843,15 @@
       *
                IF  (SPA-HOSPSBT                 =    1)    AND  
                    (LNK-NYURECEDEN-SANTEIYM     >=   "200804")
+      *
+      *            診療会計加算情報（人工呼吸器使用加算（特殊疾患））（平成２０年４月から）
+                   IF    WRK-CHUKSN-NYUKSN-DAY(7 IDX1)  =  ZERO
+                       CONTINUE
+                   ELSE
+                       ADD   1    TO  WRK-MEISAISU
+                       MOVE  WRK-CHUKSN-NYUKSN(7)
+                                  TO  WRK-SO-SRYCD(IDX1 WRK-MEISAISU)
+                   END-IF
       *
       *            入院会計加算情報（プレイルーム、保育士等加算）（平成２０年４月から）
                    IF    WRK-CHUKSN-NYUKSN-DAY(8 IDX1)  =  ZERO
