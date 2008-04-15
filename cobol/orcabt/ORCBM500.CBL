@@ -1251,20 +1251,20 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            EVALUATE    WRK-PARA-TEISYUTUSAKI
                            ALSO    WRK-PARA-NYUGAIKBN   
                WHEN    "3" ALSO    ZERO
-                   MOVE    "6"                 TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
                                                    RECE10-XXTEISYUTUSAKI 
                    MOVE    "%"                 TO  RECE10-NYUGAIKBN
                WHEN    "3" ALSO    ANY
-                   MOVE    "6"                 TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
                                                    RECE10-XXTEISYUTUSAKI 
                    MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
                WHEN    "4" ALSO    ZERO
-                   MOVE    "2"                 TO  RECE10-TEISYUTUSAKI
-                   MOVE    "6"                 TO  RECE10-XXTEISYUTUSAKI 
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI 
                    MOVE    "%"                 TO  RECE10-NYUGAIKBN
                WHEN    "4" ALSO    ANY
-                   MOVE    "2"                 TO  RECE10-TEISYUTUSAKI
-                   MOVE    "6"                 TO  RECE10-XXTEISYUTUSAKI 
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI 
                    MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
            END-EVALUATE
            MOVE    RECE10-REC          TO  MCPDATA-REC

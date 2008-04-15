@@ -1074,7 +1074,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       *
       *        受給者検証番号チェック区分よりチェック
                IF    ( SPA-ERRCD       =   SPACE        )
-               EVALUATE    SPA-NAI-TKOHNUM (IDX1 IDX)
+                 EVALUATE    SPA-NAI-TKOHNUM (IDX1 IDX)
                    WHEN    WRK-CONS-SEIHO-HKNNUM
                        IF      SPA-NAI-JKYSKENSNUMCHKKBN
                                                =   "1" OR  "3"
@@ -1121,7 +1121,8 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                                END-IF 
                            END-IF
                        END-IF
-               END-EVALUATE
+                 END-EVALUATE
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE   AND "0200"
