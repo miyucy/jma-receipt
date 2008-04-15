@@ -81,6 +81,9 @@
       *  04.02.00    NACL-æÆ∆¶¬Ù  08/04/15  ∆√ƒÍµ°«Ω…¬±°°›¿∫ø¿…¬≈Ô§Œ≤√ªª§Ú√Ì≤√ªª
       *                                     ƒÃ»÷ΩÁ§Àµ≠œø
       *                                     °¶Ω≈≈Ÿ«ß√Œæ…≤√ªª° ∆√ƒÍµ°«Ω…¬±°¿∫ø¿…¬≈Ô°À
+      *  04.02.00    NACL-æÆ∆¶¬Ù  08/04/15  ¿∫ø¿≤ µﬁ¿≠¥¸º£Œ≈…¬≈Ô∆˛±°Œ¡µ⁄§”
+      *                                     ¿∫ø¿≤ µﬂµﬁ∆˛±°Œ¡§Œ≤√ªª§Ú√Ì≤√ªªƒÃ»÷ΩÁ§Àµ≠œø
+      *                                     °¶»ÛƒÍ∑øπ≥¿∫ø¿…¬ÃÙº£Œ≈¥…Õ˝≤√ªª
       *****************************************************************
       *
       *
@@ -1500,7 +1503,8 @@
                          ((LNK-NYURECEDEN-SANTEIYM >= "200804") AND
                           (ACCT-SRYCDTOTAL(6:9)  = "190055470"  OR 
                                                    "190120970"  OR
-                                                   "190119210"))
+                                                   "190119210"  OR
+                                                   "190117570"))
       *                ∆˛±°Œ¡≤√ªª§Œ¬‡»Ú
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
@@ -1590,6 +1594,14 @@
                                       TO  WRK-CHUKSN-NYUKSN-ZAITEN(10)
                                   MOVE   ACCT-DAY(1 IDX1)
                                       TO WRK-CHUKSN-NYUKSN-DAY(10 IDX1)
+      *                         »ÛƒÍ∑øπ≥¿∫ø¿…¬ÃÙº£Œ≈¥…Õ˝≤√ªª
+                                WHEN  "190117570"
+                                  MOVE   "190117570"
+                                      TO  WRK-CHUKSN-NYUKSN(11)
+                                  MOVE   ACCT-ZAITEN
+                                      TO  WRK-CHUKSN-NYUKSN-ZAITEN(11)
+                                  MOVE   ACCT-DAY(1 IDX1)
+                                      TO WRK-CHUKSN-NYUKSN-DAY(11 IDX1)
                                END-EVALUATE
                              END-IF                                  
       *
@@ -1902,6 +1914,15 @@
                    ELSE
                        ADD   1    TO  WRK-MEISAISU
                        MOVE  WRK-CHUKSN-NYUKSN(10)
+                                  TO  WRK-SO-SRYCD(IDX1 WRK-MEISAISU)
+                   END-IF
+      *
+      *            ø«Œ≈≤Ò∑◊≤√ªªæ Û° »ÛƒÍ∑øπ≥¿∫ø¿…¬ÃÙº£Œ≈¥…Õ˝≤√ªª°À°  ø¿Æ£≤£∞«Ø£¥∑Ó§´§È°À
+                   IF    WRK-CHUKSN-NYUKSN-DAY(11 IDX1)  =  ZERO
+                       CONTINUE
+                   ELSE
+                       ADD   1    TO  WRK-MEISAISU
+                       MOVE  WRK-CHUKSN-NYUKSN(11)
                                   TO  WRK-SO-SRYCD(IDX1 WRK-MEISAISU)
                    END-IF
       *
