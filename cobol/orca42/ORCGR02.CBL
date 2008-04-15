@@ -5548,6 +5548,12 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                      IF      SPA-GMN-PAGE-MAX    =   1
                          MOVE    WIDGET-NORMAL   TO  R02-SYUKA-STATE
                      ELSE
+      *???
+               DISPLAY "SYA=" SPA-R01-RECE07-SRYKA
+                       " KKH=" SPA-R01-RECE07-SRYKA-KOKUHO
+                       " KOU="  SPA-R01-RECE07-SRYKA-KOUIKI
+                       " PAGE=" SPA-GMN-PAGE " MAX=" SPA-GMN-PAGE-MAX
+      *???
                        IF    ( SPA-R01-RECE07-SRYKA        =   "00" )
                        AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                        NOT =   "00" )

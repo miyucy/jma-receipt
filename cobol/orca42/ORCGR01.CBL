@@ -3523,6 +3523,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM 
                MOVE    "00"                TO  SPA-RECE07-SRYKA 
                                                SPA-RECE07-SRYKA-KOKUHO
+                                               SPA-RECE07-SRYKA-KOUIKI
       *
       *        一括作成のとき主科設定の有無チェック
                IF    ( SPA-SYUKA-KBN           =   "1"         )

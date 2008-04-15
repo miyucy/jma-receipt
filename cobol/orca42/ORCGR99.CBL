@@ -673,10 +673,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
-               MOVE    RECE07-REC          TO  SPA-RECE07-REC
-               MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM
-               MOVE    "00"                TO  SPA-RECE07-SRYKA 
-                                               SPA-RECE07-SRYKA-KOKUHO
+               MOVE    RECE07-REC      TO  SPA-RECE07-REC
+               MOVE    "99999999"      TO  SPA-RECE07-HKNJANUM
+               MOVE    "00"            TO  SPA-RECE07-SRYKA 
+                                           SPA-RECE07-SRYKA-KOKUHO
+                                           SPA-R01-RECE07-SRYKA-KOUIKI
                INITIALIZE                      SPA-RECE07-RECE-PUTH-T(1)
                                                SPA-RECE07-RECE-PUTH-T(2)
       *

@@ -1867,11 +1867,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
                                                        INTO   SPA-ERRMSG
                    END-STRING
       *
-               WHEN    "0200"
-                   MOVE
-                       "平成２０年４月改正未対応のため処理できません"
-                                                       TO  SPA-ERRMSG
-      *
                WHEN    "1001"
                    MOVE    "未請求設定ができませんでした"
                                                        TO  SPA-ERRMSG

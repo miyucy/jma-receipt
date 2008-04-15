@@ -2019,7 +2019,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    T01-SKYYM           TO  SPA-GMN-SKYYM
            MOVE    T01-SKYYMD          TO  SPA-GMN-SKYYMD
            MOVE    T01-HKNJANUM        TO  SPA-GMN-HKNJANUM
-           MOVE    T01-HKNJANUM        TO  SPA-GMN-HKNJANUM1
+           MOVE    T01-HKNJANUM1       TO  SPA-GMN-HKNJANUM1
            MOVE    T01-DATA            TO  SPA-GMN-DATAKBN-G
            MOVE    T01-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN-G
       *
@@ -2250,7 +2250,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                PERFORM 900-HKNJAINF-INV-SEC
                IF      FLG-HKNJAINF    =   ZERO
                    MOVE    HKNJA-HKNJANAME     TO SPA-GMN-HKNJAMEI1
-                   MOVE    SPA-GMN-HKNJANUM    TO  SPA-NAI-HKNJANUM1
+                   MOVE    SPA-GMN-HKNJANUM1   TO  SPA-NAI-HKNJANUM1
                ELSE
                    MOVE    "0005"          TO  SPA-ERRCD
                END-IF
