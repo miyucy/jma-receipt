@@ -513,11 +513,13 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-PARA-KKHRECEKBN PIC X(01).
                05  WRK-PARA-KOUIKIRECEKBN
                                        PIC X(01).
-           03  WRK-PARA-HOSPNUM     PIC  9(02).
+           03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD          PIC X(08).
       *
            03  WRK-RECEERR             PIC X(200).
+           03  WRK-ERRMSG              PIC X(300).
+           03  WRK-MCP-RC              PIC S9(9).
       *
            03  WRK-OPECOM-MCP-TABLE
                                    PIC X(64).
@@ -5179,13 +5181,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                    MOVE    RECE02-2006-TEKIYOU-COMMENT1 (IDXX)
                                                TO  RECEDEN-RECEDATA
       *
-                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                   MOVE    "DBINSERT"          TO  MCP-FUNC
-                   MOVE    "tbl_receden"       TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 900-ORCDBMAIN-SEC
-      *
-                   ADD     1                   TO  CNT-OUT      
+                   PERFORM 50012-DBINSERT-SEC
       *
       *            症状詳記（コメント）編集処理
                    PERFORM 20099-COMMENT-HENSYU-SEC
@@ -5218,13 +5214,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                MOVE    WRK-HKN-RIREKI-TBL  (IDXX)
                                            TO  RECEDEN-RECEDATA
       *
-               MOVE    RECEDEN-REC         TO  MCPDATA-REC
-               MOVE    "DBINSERT"          TO  MCP-FUNC
-               MOVE    "tbl_receden"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-grpsys         PERFORM 900-ORCDBMAIN-SEC
-      *
-               ADD     1                   TO  CNT-OUT
+               PERFORM 50012-DBINSERT-SEC
       *
       *        症状詳記（コメント）編集処理
                PERFORM 20099-COMMENT-HENSYU-SEC
@@ -5384,13 +5374,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
                                                    BY  "　"
            MOVE    WRK-OPECOM-HEN      TO  RECEDEN-RECEDATA
       *
-           MOVE    RECEDEN-REC         TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_receden"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
-      *
-           ADD     1                   TO  CNT-OUT
+           PERFORM 50012-DBINSERT-SEC
       *
       *    症状詳記（コメント）編集処理
            PERFORM 20099-COMMENT-HENSYU-SEC
@@ -5503,13 +5487,8 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =  RECE12-HOSPNUM      )
            MOVE    WRK-NYUTAI-RIREKI-AREA
                                        TO  RECEDEN-RECEDATA
       *
-           MOVE    RECEDEN-REC         TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_receden"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 50012-DBINSERT-SEC
       *
-           ADD     1                   TO  CNT-OUT
       *
       *    症状詳記（コメント）編集処理
            PERFORM 20099-COMMENT-HENSYU-SEC
@@ -5540,13 +5519,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    MOVE    RECE02-2006-TEKIYOU-COMMENT2 (IDXX)
                                                TO  RECEDEN-RECEDATA
       *
-                   MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                   MOVE    "DBINSERT"          TO  MCP-FUNC
-                   MOVE    "tbl_receden"       TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 900-ORCDBMAIN-SEC
-      *
-                   ADD     1                   TO  CNT-OUT
+                   PERFORM 50012-DBINSERT-SEC
       *
       *            症状詳記（コメント）編集処理
                    PERFORM 20099-COMMENT-HENSYU-SEC
@@ -5681,13 +5654,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    WRK-COMMENT (IDW)   TO  RECEDEN-RECEDATA
                        MOVE    "99"                TO  RECEDEN-SJKBN
       *
-                       MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                       MOVE    "DBINSERT"          TO  MCP-FUNC
-                       MOVE    "tbl_receden"       TO  MCP-TABLE
-                       MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 PERFORM 900-ORCDBMAIN-SEC
-      *
-                       ADD     1                   TO  CNT-OUT
+                       PERFORM 50012-DBINSERT-SEC
       *
       *                適用欄コメント編集処理
                        PERFORM 20099-COMMENT-HENSYU-SEC
@@ -5761,13 +5728,8 @@ grpsys                 PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECECOM-SJKBN       TO  WRK-SJKBN-X
                        MOVE    WRK-SJKBN           TO  RECEDEN-SJKBN
       *
-                       MOVE    RECEDEN-REC         TO  MCPDATA-REC
-                       MOVE    "DBINSERT"          TO  MCP-FUNC
-                       MOVE    "tbl_receden"       TO  MCP-TABLE
-                       MOVE    "key"               TO  MCP-PATHNAME
-grpsys                 PERFORM 900-ORCDBMAIN-SEC
+                       PERFORM 50012-DBINSERT-SEC
       *
-                       ADD     1                   TO  CNT-OUT
                      END-PERFORM
       *
       *              症状詳記レコード編集処理
@@ -5948,6 +5910,23 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCR0300 "         DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ファイル出力処理
       *****************************************************************
        5001-FILE-WRITE-SEC        SECTION.
@@ -5971,13 +5950,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
            MOVE    WRK-REC             TO  RECEDEN-RECEDATA
       *
-           MOVE    RECEDEN-REC         TO  MCPDATA-REC
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           MOVE    "tbl_receden"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 50012-DBINSERT-SEC
       *
-           ADD     1                   TO  CNT-OUT
            MOVE    ZERO                TO  FLG-TOTALTEN
            .
        5001-FILE-WRITE-EXT.
@@ -6034,6 +6008,33 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
            END-IF
            .
        50011-KEY-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＩＮＳＥＲＴ処理
+      *****************************************************************
+       50012-DBINSERT-SEC          SECTION.
+      *
+           MOVE    RECEDEN-REC         TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_receden"       TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           IF      MCP-RC      NOT =   ZERO
+               MOVE    MCP-RC          TO  WRK-MCP-RC
+               STRING  "レセ電ＤＢ更新処理エラー MCP-RC="
+                                                   DELIMITED  BY  SIZE
+                       WRK-MCP-RC                  DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+      *
+           ADD     1                   TO  CNT-OUT
+           .
+       50012-DBINSERT-EXT.
            EXIT.
       *
       *****************************************************************
