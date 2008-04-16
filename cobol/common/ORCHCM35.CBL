@@ -30,6 +30,7 @@
       *  00.00.01    NACL-森脇    06/01/20  編綴分対応
       *  03.04.01    NACL-森脇    06/11/29  パラメタ変更
       *  03.05.00    NACL-森脇    07/11/05  グループ診療対応
+      *  04.02.01    NACL-森脇    08/04/16  平成２０年４月改正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -61,6 +62,9 @@
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
+      *----(04.02.01)--ADD-START---
+           03  FLG-KOUIKI              PIC 9(01).
+      *----(04.02.01)--ADD-END-----
       *
       *    カウント領域
        01  CNT-AREA.
@@ -196,6 +200,9 @@
       *    社保
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   24
+      *----(04.02.01)--ADD-START---
+                   OR      SPA-GMN-TSYURUINAME(1 IDX) =  SPACE
+      *----(04.02.01)--ADD-END-----
                ADD     1                   TO  CNT-LINE
                MOVE    SPA-GMN-TSYURUINAME(1 IDX)
                                            TO  HCMC001-NAME(CNT-LINE)
@@ -207,19 +214,25 @@
                ADD     SPA-GMN-TKENSU(1 IDX)   TO  CNT-TKENSU
            END-PERFORM
       *
-           ADD     2                   TO  CNT-LINE
-           MOVE    "社保　小計"        TO  HCMC001-NAME(CNT-LINE)
-           MOVE    CNT-TKENSU          TO  WRK-Z10
-           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
-           MOVE    CNT-TPAGE           TO  WRK-Z10
-           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
+      *----(04.02.01)--UPD-START---
+           IF      SPA-GMN-PRTJYUN     =   "01" OR "02" OR "09" OR "10"
+               ADD     2                   TO  CNT-LINE
+               MOVE    "社保　小計"        TO  HCMC001-NAME(CNT-LINE)
+               MOVE    CNT-TKENSU          TO  WRK-Z10
+               MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
+               MOVE    CNT-TPAGE           TO  WRK-Z10
+               MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
+           END-IF
       *
            ADD     CNT-TPAGE           TO  CNT-GPAGE
            ADD     CNT-TKENSU          TO  CNT-GKENSU
-      *
            MOVE    0                   TO  CNT-TPAGE
            MOVE    0                   TO  CNT-TKENSU
            ADD     1                   TO  CNT-LINE
+      *----(04.02.01)--UPD-END-----
+      *----(04.02.01)--ADD-START---
+           MOVE    0                   TO  FLG-KOUIKI
+      *----(04.02.01)--ADD-END-----
       *
       *    国保
       *----(00.00.01)--UPD-START---
@@ -231,6 +244,32 @@
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   36
                    OR      SPA-GMN-TSYURUINAME(IDY IDX) =  SPACE
+      *----(04.02.01)--ADD-START---
+               IF    ( FLG-KOUIKI      =   0 ) AND
+                     ( SPA-GMN-TSYURUINAME(IDY IDX)(1:8) = "広域連合" )
+               IF      SPA-GMN-PRTJYUN1 =   "01" OR "02" OR "09" OR "10"
+                   ADD     1                   TO  CNT-LINE
+                   IF      CNT-LINE    >=  35
+      *                印刷処理
+                       PERFORM 400-PRINT-OUT-SEC
+      *                帳票見出編集処理
+                       PERFORM 220-PRT-PAGE-SEC
+                   END-IF
+                   ADD     1                   TO  CNT-LINE
+                   MOVE    "国保　小計"    TO  HCMC001-NAME(CNT-LINE)
+                   MOVE    CNT-TKENSU      TO  WRK-Z10
+                   MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 1)
+                   MOVE    CNT-TPAGE       TO  WRK-Z10
+                   MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 2)
+                   ADD     CNT-TPAGE       TO  CNT-GPAGE
+                   ADD     CNT-TKENSU      TO  CNT-GKENSU
+                   MOVE    0               TO  CNT-TPAGE
+                   MOVE    0               TO  CNT-TKENSU
+                   ADD     1               TO  CNT-LINE
+               END-IF
+                   MOVE    1               TO  FLG-KOUIKI
+               END-IF
+      *----(04.02.01)--ADD-END-----
                IF      CNT-LINE    >=  35
       *            印刷処理
                    PERFORM 400-PRINT-OUT-SEC
@@ -249,25 +288,50 @@
            END-PERFORM
            END-PERFORM
       *
-           ADD     1                   TO  CNT-LINE
-           IF      CNT-LINE    >=  35
-      *        印刷処理
-               PERFORM 400-PRINT-OUT-SEC
-      *        帳票見出編集処理
-               PERFORM 220-PRT-PAGE-SEC
+      *----(04.02.01)--UPD-START---
+           IF      FLG-KOUIKI          =   0
+               IF      SPA-GMN-PRTJYUN1 =   "01" OR "02" OR "09" OR "10"
+                   ADD     1               TO  CNT-LINE
+                   IF      CNT-LINE    >=  35
+      *                印刷処理
+                       PERFORM 400-PRINT-OUT-SEC
+      *                帳票見出編集処理
+                       PERFORM 220-PRT-PAGE-SEC
+                   END-IF
+                   ADD     1               TO  CNT-LINE
+                   MOVE    "国保　小計"    TO  HCMC001-NAME(CNT-LINE)
+                   MOVE    CNT-TKENSU      TO  WRK-Z10
+                   MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 1)
+                   MOVE    CNT-TPAGE       TO  WRK-Z10
+                   MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 2)
+                   ADD     1                   TO  CNT-LINE
+               END-IF
+           ELSE
+               IF      SPA-GMN-PRTJYUN2 =   "01" OR "02" OR "09" OR "10"
+                   ADD     1               TO  CNT-LINE
+                   IF      CNT-LINE    >=  35
+      *                印刷処理
+                       PERFORM 400-PRINT-OUT-SEC
+      *                帳票見出編集処理
+                       PERFORM 220-PRT-PAGE-SEC
+                   END-IF
+                   ADD     1               TO  CNT-LINE
+                   MOVE    "広域連合　小計"  TO  HCMC001-NAME(CNT-LINE)
+                   MOVE    CNT-TKENSU      TO  WRK-Z10
+                   MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 1)
+                   MOVE    CNT-TPAGE       TO  WRK-Z10
+                   MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 2)
+                   ADD     1                   TO  CNT-LINE
+               END-IF
            END-IF
-           ADD     1                   TO  CNT-LINE
-           MOVE    "国保　小計"        TO  HCMC001-NAME(CNT-LINE)
-           MOVE    CNT-TKENSU          TO  WRK-Z10
-           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 1)
-           MOVE    CNT-TPAGE           TO  WRK-Z10
-           MOVE    WRK-Z10             TO  HCMC001-NAIYO(CNT-LINE 2)
+      *----(04.02.01)--UPD-END-----
       *
            ADD     CNT-TPAGE           TO  CNT-GPAGE
            ADD     CNT-TKENSU          TO  CNT-GKENSU
+           MOVE    0               TO  CNT-TPAGE
+           MOVE    0               TO  CNT-TKENSU
       *
       *    特別療養費
-           ADD     1                   TO  CNT-LINE
            IF      CNT-LINE    >=  35
       *        印刷処理
                PERFORM 400-PRINT-OUT-SEC
