@@ -519,7 +519,7 @@ grpsys     COPY    "COMMON-SPA".
       *
            03  WRK-RECEERR             PIC X(200).
            03  WRK-ERRMSG              PIC X(300).
-           03  WRK-MCP-RC              PIC S9(9).
+           03  WRK-MCP-RC              PIC 9(9).
       *
            03  WRK-OPECOM-MCP-TABLE
                                    PIC X(64).
@@ -6019,9 +6019,12 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECEDEN-HOSPNUM
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_receden"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
       *
            IF      MCP-RC      NOT =   ZERO
+               DISPLAY "KEY="   RECEDEN-KEY
+                       " DATA=" RECEDEN-REC
+      * 
                MOVE    MCP-RC          TO  WRK-MCP-RC
                STRING  "レセ電ＤＢ更新処理エラー MCP-RC="
                                                    DELIMITED  BY  SIZE
