@@ -58,8 +58,16 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    プログラム更新　日レセ再起動要求メッセージ
+           SELECT  RESTARTMSG-FILE
+                   ASSIGN  "/tmp/jma-receipt/patch-restart-message"
+                   FILE    STATUS  IS  STS-RESTARTMSG.
+      *
        DATA                    DIVISION.
-      *FILE                        SECTION.
+       FILE                        SECTION.
+      *
+       FD  RESTARTMSG-FILE.
+       01  RESTARTMSG-REC          PIC X(01). 
       *
        WORKING-STORAGE             SECTION.
       *
@@ -76,6 +84,9 @@
            COPY    "CPCOMMONSHELLMST.INC".
       *
            COPY    "CPSHELLTBL.INC".
+      *
+       01  STS-AREA.
+           03  STS-RESTARTMSG      PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -250,6 +261,9 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
+               IF      FLG-END             =   1
+                   GO      TO      100-INIT-EXT
+               END-IF
       *        画面編集
                PERFORM 500-GMNHEN-SEC
                PERFORM 510-GSRAUTH-SEC
@@ -513,6 +527,16 @@
            END-IF
            IF      SPA-FORMALFLG       =   SPACE
                MOVE    "0"             TO  SPA-FORMALFLG
+           END-IF
+      *
+      *    プログラム更新日レセ再起動要求メッセージ
+           MOVE    SPACE               TO  STS-RESTARTMSG
+           OPEN    INPUT   RESTARTMSG-FILE
+           IF      STS-RESTARTMSG      =   ZERO
+                   CLOSE   RESTARTMSG-FILE
+                   MOVE    ALL "0"         TO  SYS-1010-GSRAUTH
+                   MOVE    "9991"          TO  SPA-ERRCD
+                   PERFORM 500-SET-SCREEN
            END-IF
            .
        320-SYS-1010-SPASET-EXT.
@@ -1324,6 +1348,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0092"
                    MOVE    "マスタ更新中です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "9991"
+                   MOVE    "日レセを再起動してください。"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
