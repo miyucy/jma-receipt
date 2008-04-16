@@ -539,6 +539,7 @@
       *
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    "1"                 TO  SYS-1010-KBNCD(1:1)
            MOVE    WRK-DRCD            TO  SYS-1010-KBNCD(2:4)
@@ -546,7 +547,6 @@
            MOVE    SPA-SRYYMD          TO  SYS-1010-EDYUKYMD
       *
       *    システム管理検索
-grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
