@@ -2420,17 +2420,31 @@ grpsys                                         SPA-AREA
                        WHEN    "068" 
                            IF  (TOUKEI01-AGE  >=   70)  AND
                                (TOUKEI01-AGE  <=   74)
-                               EVALUATE   TOUKEI01-THOJOKBN (IDY)
-                                   WHEN   "1"
-                                   WHEN   "4"
-                                       MOVE   "9"   TO   WK-HONKZKKBN
-                                   WHEN   "2"
-                                   WHEN   "5"
-                                       MOVE   "8"   TO   WK-HONKZKKBN
-                                   WHEN   "3"
-                                   WHEN   "6"
-                                       MOVE   "7"   TO   WK-HONKZKKBN
-                               END-EVALUATE
+                             EVALUATE    WRK-PARA-NYUGAIKBN
+                               WHEN    "1"
+                                   EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                                       WHEN   "1"
+                                       WHEN   "5"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "6"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                                   END-EVALUATE
+                               WHEN    "2"
+                                   EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                                       WHEN   "1"
+                                       WHEN   "4"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "5"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                       WHEN   "6"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                                   END-EVALUATE
+                             END-EVALUATE
                            END-IF     
                        WHEN    "039" 
                        WHEN    "040" 
