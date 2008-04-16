@@ -1484,15 +1484,10 @@
                MOVE    1                TO  FLG-SYS-2008
            END-IF
       *
-      *★★平成２０年４月改正対応
-      *??  改正対応のため編綴順情報設定を中止
-           MOVE    ZERO            TO  FLG-SYS-2008
-      *
       *    レセプト編綴順詳細設定情報（一括作成時のみ）
-      *??  IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *??      PERFORM 1201-HENTETU-HENSYU-SEC
-      *??  END-IF
-      *??
+           IF   WRK-PARA-SRYYM    NOT =  ZERO
+               PERFORM 1201-HENTETU-HENSYU-SEC
+           END-IF
       *         
       *    レセプト編集区分情報
            MOVE    SPACE           TO  SYSKANRI-REC
@@ -6351,6 +6346,7 @@
       *
       *    編綴順項目の設定（国保特別療養費以外）
            IF    ( RECE02-TEISYUTUSAKI =   "1"    )
+           OR    ( RECE02-TEISYUTUSAKI =   "6"    )
            OR    ( RECE02-RECESYUBETU  =   "6666"  OR  "8888"  OR
                                            "0000" )
                CONTINUE
@@ -7806,7 +7802,6 @@
                EVALUATE    BTPARA-INFO-KBN
                    WHEN    "01"
                    WHEN    "04"
-                   WHEN    "05"
       *                レセプト指示（個別指示）コード読み込み
                        INITIALIZE                      SYS-2002-REC
                        MOVE    "2002"              TO  SYS-2002-KANRICD
