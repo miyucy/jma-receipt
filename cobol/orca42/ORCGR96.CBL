@@ -2037,7 +2037,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
       *
            PERFORM                 UNTIL   FLG-SEIKYU      =   1
                                    OR      FLG-SEIKYU-UMU  =   1
-               IF      RECE10-TEISYUTUSAKI =   1   OR  2
+               IF      RECE10-TEISYUTUSAKI =   1   OR  2   OR  6
                    MOVE    1               TO  FLG-SEIKYU-UMU
                END-IF
       * 
@@ -2063,6 +2063,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
                MOVE    ZERO            TO  FLG-SEIKYU
+               MOVE    MCPDATA-REC     TO  RECE10-REC
            ELSE
                MOVE    1               TO  FLG-SEIKYU
            END-IF
