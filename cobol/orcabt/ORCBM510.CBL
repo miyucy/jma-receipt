@@ -170,7 +170,7 @@
       *----(04.02.01)--ADD-START---
            03  WRK-MOJI11.
                05  FILLER111           PIC X(50)   VALUE
-                   "¡ÚÇ¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Û".
+                   "¡ÚÇÑÍÑ¾É¸õ·²¤Ë·¸¤ëÍ×°øÅù¡Û".
       *
        01  CONST-AREA.
            03  CONST-H2004             PIC X(06)   VALUE    "200804".
@@ -1027,20 +1027,20 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            EVALUATE    WRK-PARA-TEISYUTUSAKI
                            ALSO    WRK-PARA-NYUGAIKBN
                WHEN    "3" ALSO    ZERO
-                   MOVE    "6"                 TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
                                                    RECE10-XXTEISYUTUSAKI
                    MOVE    "%"                 TO  RECE10-NYUGAIKBN
                WHEN    "3" ALSO    ANY
-                   MOVE    "6"                 TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
                                                    RECE10-XXTEISYUTUSAKI
                    MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
                WHEN    "4" ALSO    ZERO
-                   MOVE    "2"                 TO  RECE10-TEISYUTUSAKI
-                   MOVE    "6"                 TO  RECE10-XXTEISYUTUSAKI
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI
                    MOVE    "%"                 TO  RECE10-NYUGAIKBN
                WHEN    "4" ALSO    ANY
-                   MOVE    "2"                 TO  RECE10-TEISYUTUSAKI
-                   MOVE    "6"                 TO  RECE10-XXTEISYUTUSAKI
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI
                    MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
            END-EVALUATE
       *----(04.02.01)--ADD-END-----
