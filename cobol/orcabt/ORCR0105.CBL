@@ -7806,6 +7806,7 @@
                EVALUATE    BTPARA-INFO-KBN
                    WHEN    "01"
                    WHEN    "04"
+                   WHEN    "05"
       *                レセプト指示（個別指示）コード読み込み
                        INITIALIZE                      SYS-2002-REC
                        MOVE    "2002"              TO  SYS-2002-KANRICD
