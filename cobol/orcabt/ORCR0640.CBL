@@ -475,6 +475,7 @@
            03  FLG-DOTANDOKU-IGAI                      PIC 9(01).
            03  FLG-DOTANDOKU                           PIC 9(01).
            03  FLG-ZENKI-TOKUREI                       PIC 9(01).
+           03  FLG-SKJFTNNASI                          PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -5219,13 +5220,42 @@
                        PERFORM RECE65-WRITE-SEC
                        PERFORM RECE64-WRITE-SEC
       *
-                       IF  (RECE62-HKNNUMHC(IDX1)        =  SPACE)
-                       AND (RECE62-KOHNUMHC(IDX1 1)(1:1) =  "0"  )
-                       AND (RECE62-KOHNUMHC(IDX1 1)  NOT =
-                          "010" AND "051" AND "052" AND "038"    )
-                       AND (RECE62-KOHNUMHC(IDX1 2)      =  SPACE)
-                       AND (RECE62-KOHNUMHC(IDX1 3)      =  SPACE)
-                       AND (RECE62-KOHNUMHC(IDX1 4)      =  SPACE)
+                       MOVE   ZERO   TO  FLG-SKJFTNNASI
+                       IF   RECE62-HKNCOMBIFLG(IDX1)  =  3
+                         INITIALIZE      LNK-ORCSJGNGET-REC
+                         MOVE RECE62-HOSPNUM
+                                     TO  LNK-ORCSJGNGET-HOSPNUM
+                         MOVE RECE62-NYUGAIKBN
+                                     TO  LNK-ORCSJGNGET-NYUGAIKBN
+                         MOVE RECE62-PTID
+                                     TO  LNK-ORCSJGNGET-PTID
+                         MOVE RECE62-KOHNUMHC(IDX1 1)
+                                     TO  LNK-ORCSJGNGET-KOHHKNNUM
+                         MOVE RECE62-KOHIDHC(IDX1 1)
+                                     TO  LNK-ORCSJGNGET-KOHID
+                         MOVE RECE62-SRYYM
+                                     TO  LNK-ORCSJGNGET-SRYYM
+                         MOVE RECE62-SRYYM
+                                     TO  LNK-ORCSJGNGET-SKYEDYMD(1:6)
+                         MOVE "31"   TO  LNK-ORCSJGNGET-SKYEDYMD(7:2)
+                         CALL  "ORCSJGNGET"  USING
+                                             LNK-ORCSJGNGET-REC
+                                             SPA-AREA
+                         IF   LNK-ORCSJGNGET-RC   =   ZERO
+                            IF  LNK-ORCSJGNGET-TAFTNRUIKEI = ZERO
+                               MOVE    1     TO    FLG-SKJFTNNASI
+                            END-IF
+                         END-IF
+                       END-IF
+      *
+                       IF ((RECE62-HKNNUMHC(IDX1)        =  SPACE) AND
+                           (RECE62-KOHNUMHC(IDX1 1)  NOT =
+                                "010" AND "051" AND "052" AND
+                                "038" AND "024" AND "079"        ) AND
+                           (RECE62-KOHNUMHC(IDX1 2)      =  SPACE) AND
+                           (RECE62-KOHNUMHC(IDX1 3)      =  SPACE) AND
+                           (RECE62-KOHNUMHC(IDX1 4)      =  SPACE))
+                       OR ( FLG-SKJFTNNASI               =    1   )
                         CONTINUE
                        ELSE
                         IF   WRK-NYULIFE-SKJFTN-SRYCD(SYUKEI-IDX3)

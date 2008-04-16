@@ -1202,6 +1202,26 @@
                IF   FLG-TAISYO  =  1
                         MOVE      2     TO   RECE62-HKNCOMBIFLG(IDX)
                END-IF
+      *
+               IF   RECE62-HKNNUMHC(IDX)  =  SPACE
+                 MOVE    ZERO     TO   FLG-TAISYO
+                 PERFORM VARYING IDY2    FROM    1   BY  1
+                         UNTIL   IDY2    >       4
+                   IF   RECE61-KOHNUMHC (IDX IDY2) NOT = SPACE
+                     IF RECE61-KOHNUMHC (IDX IDY2) = "024" OR "079"
+                        IF   FLG-TAISYO  =  ZERO
+                           MOVE   1     TO   FLG-TAISYO
+                        END-IF
+                     ELSE
+                        MOVE      9     TO   FLG-TAISYO
+                     END-IF
+                   END-IF
+                 END-PERFORM
+                 IF   FLG-TAISYO  =  1
+                        MOVE      3     TO   RECE62-HKNCOMBIFLG(IDX)
+                 END-IF
+               END-IF
+      *
       *        組合せ公費保険番号情報のセット
                PERFORM   KOHNUMHC-SET-SEC
            END-PERFORM    
