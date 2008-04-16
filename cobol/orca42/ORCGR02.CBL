@@ -990,10 +990,15 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
       *
            MOVE    SYS-2005-SYAPRTNM    TO  SPA-NAI-2005-SYAPRTNM
            MOVE    SYS-2005-KKHPRTNM    TO  SPA-NAI-2005-KKHPRTNM
+           MOVE    SYS-200501-KOUIKIPRTNM
+                                        TO  SPA-NAI-2005-KOUIKIPRTNM
            MOVE    SYS-2005-SYAPRTNM-NEXT
                                         TO  SPA-NAI-2005-SYAPRTNM-NEXT
            MOVE    SYS-2005-KKHPRTNM-NEXT
                                         TO  SPA-NAI-2005-KKHPRTNM-NEXT
+           MOVE    SYS-200501-KOUIKIPRTNM-NEXT
+                                        TO
+                                        SPA-NAI-2005-KOUIKIPRTNM-NEXT
            IF      SYS-2005-SYAPRTNM-N  =   SPACE
                    MOVE   SYS-2005-SYAPRTNM
                                         TO  SYS-2005-SYAPRTNM-N
@@ -1002,6 +1007,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                    MOVE   SYS-2005-KKHPRTNM
                                         TO  SYS-2005-KKHPRTNM-N
            END-IF
+           IF      SYS-200501-KOUIKIPRTNM-N  =   SPACE
+                   MOVE   SYS-200501-KOUIKIPRTNM
+                                        TO  SYS-200501-KOUIKIPRTNM-N
+           END-IF
            IF      SYS-2005-SYAPRTNM-NEXT-N  =   SPACE
                    MOVE   SYS-2005-SYAPRTNM-NEXT
                                         TO  SYS-2005-SYAPRTNM-NEXT-N
@@ -1009,6 +1018,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
            IF      SYS-2005-KKHPRTNM-NEXT-N  =   SPACE
                    MOVE   SYS-2005-KKHPRTNM-NEXT
                                         TO  SYS-2005-KKHPRTNM-NEXT-N
+           END-IF
+           IF      SYS-200501-KOUIKIPRTNM-NEXT-N  =   SPACE
+                   MOVE   SYS-200501-KOUIKIPRTNM-NEXT
+                                        TO
+                                        SYS-200501-KOUIKIPRTNM-NEXT-N
            END-IF
       *
            IF      SYS-2005-PRTJYUNKBN4 =   SPACE
@@ -1035,10 +1049,15 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
       *
            MOVE    SYS-2005-SYAPRTNM-N  TO  SPA-NAI-2005-SYAPRTNM-N
            MOVE    SYS-2005-KKHPRTNM-N  TO  SPA-NAI-2005-KKHPRTNM-N
+           MOVE    SYS-200501-KOUIKIPRTNM-N
+                                        TO  SPA-NAI-2005-KOUIKIPRTNM-N
            MOVE    SYS-2005-SYAPRTNM-NEXT-N
                                        TO  SPA-NAI-2005-SYAPRTNM-NEXT-N
            MOVE    SYS-2005-KKHPRTNM-NEXT-N
                                        TO  SPA-NAI-2005-KKHPRTNM-NEXT-N
+           MOVE    SYS-200501-KOUIKIPRTNM-NEXT-N
+                                       TO
+                                       SPA-NAI-2005-KOUIKIPRTNM-NEXT-N
       *
            IF      SYS-200501-PRT-CHECKKBN =   SPACE
                MOVE   "0"                TO  SYS-200501-PRT-CHECKKBN
@@ -4421,13 +4440,19 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    WRK-PREFKBN         TO  WRK-RECE09-PREFKBN
            MOVE    SPA-R01-RECE07-NYUGAIKBN
                                        TO  WRK-RECE09-NYUGAIKBN
-           IF      WRK-TEISYUTUSAKI    =   "6"
-               MOVE    SPA-GMN-PRTJYUN2    TO  WRK-RECE09-PRTJYUN
+           IF      SPA-NAI-SYUBETU (IDW IDX IDY)
+                                       =   "6666"
+               MOVE    SPA-GMN-PRTJYUN     TO  WRK-RECE09-PRTJYUN
            ELSE
-               IF      WRK-TEISYUTUSAKI    =   "2"
-                   MOVE    SPA-GMN-PRTJYUN1    TO  WRK-RECE09-PRTJYUN
+               IF      WRK-TEISYUTUSAKI    =   "6"
+                   MOVE    SPA-GMN-PRTJYUN2    TO  WRK-RECE09-PRTJYUN
                ELSE
-                   MOVE    SPA-GMN-PRTJYUN     TO  WRK-RECE09-PRTJYUN
+                   IF      WRK-TEISYUTUSAKI    =   "2"
+                       MOVE    SPA-GMN-PRTJYUN1
+                                               TO  WRK-RECE09-PRTJYUN
+                   ELSE
+                       MOVE    SPA-GMN-PRTJYUN TO  WRK-RECE09-PRTJYUN
+                   END-IF
                END-IF
            END-IF
       * 
