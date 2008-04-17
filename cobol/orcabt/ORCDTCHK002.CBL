@@ -1158,7 +1158,6 @@
       *
       *    レセプト編集区分
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
       *
       *    入院基本情報
       *    COPY    "CPSK5000.INC".
@@ -1826,38 +1825,12 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-      *
-           MOVE    ZERO                TO  FLG-SYSKANRI
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    WRK-KJNYMD          TO  SYS-200501-STYUKYMD
-                                           SYS-200501-EDYUKYMD
-           MOVE    WRK-PARA-HOSPNUM    TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYS-200501-REC
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-               INITIALIZE                  SYS-200501-REC
-           END-IF
-      *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-      *
            IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
                EVALUATE   TRUE
                WHEN  ( SYS-2005-KKHRECEKBN =   "2" )
                WHEN  ( SYS-2005-KKHRECEKBN =   "3" )
                WHEN  ( SYS-2005-SYARECEKBN =   "2" )
                WHEN  ( SYS-2005-SYARECEKBN =   "3" )
-               WHEN  ( SYS-200501-KOUIKIRECEKBN    =   "2" )
-               WHEN  ( SYS-200501-KOUIKIRECEKBN    =   "3" )
                    MOVE    1           TO  FLG-RECEDEN-CHK
                END-EVALUATE
            ELSE
@@ -1866,8 +1839,6 @@
                WHEN  ( SYS-2005-KKHRECEKBN =   "3" )
                WHEN  ( SYS-2005-SYARECEKBN =   "1" )
                WHEN  ( SYS-2005-SYARECEKBN =   "3" )
-               WHEN  ( SYS-200501-KOUIKIRECEKBN    =   "1" )
-               WHEN  ( SYS-200501-KOUIKIRECEKBN    =   "3" )
                    MOVE    1           TO  FLG-RECEDEN-CHK
                END-EVALUATE
            END-IF
