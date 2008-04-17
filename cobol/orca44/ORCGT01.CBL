@@ -4816,7 +4816,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                TO  SPA-ERRMSG
                WHEN    "0009"
                    MOVE
-                  "総括表・広域連合の処理対象データが選択してありません"
+                  "総括表・広域の処理対象データが選択してありません"
                                                TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "再印刷できない帳票です"    TO  SPA-ERRMSG
@@ -4987,11 +4987,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "総括表（公害）の印刷処理を行います" 
                                        TO  WRK-TIDMSG
                WHEN    "1008"
-                   MOVE    "総括表（広域連合）の印刷処理を行います" 
+                   MOVE    "総括表（広域）の印刷処理を行います" 
                                        TO  WRK-TIDMSG
                WHEN    "1009"
                    MOVE
-                       "レセ電総括表（広域連合）の印刷処理を行います" 
+                       "レセ電総括表（広域）の印刷処理を行います" 
                                        TO  WRK-TIDMSG
                WHEN    "1010"
                    MOVE    "社保分のレセプト電算データを作成します"
@@ -5035,7 +5035,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                        TO  WRK-TIDMSG
                WHEN    "1020"
                    STRING
-                   "広域連合分（入院）のレセプト電算データを作成します"
+                   "広域分（入院）のレセプト電算データを作成します"
                                            DELIMITED  BY  SIZE
                    "（症状詳記の印刷を指定）"
                                            DELIMITED  BY  SIZE
@@ -5043,7 +5043,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    END-STRING
                WHEN    "1021"
                    STRING
-                 "広域連合分（入院外）のレセプト電算データを作成します"
+                 "広域分（入院外）のレセプト電算データを作成します"
                                            DELIMITED  BY  SIZE
                    "（症状詳記の印刷を指定）"
                                            DELIMITED  BY  SIZE
@@ -5051,7 +5051,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    END-STRING
                WHEN    "1022"
                    STRING
-                 "広域連合分のレセプト電算データを作成します"
+                 "広域分のレセプト電算データを作成します"
                                            DELIMITED  BY  SIZE
                    "（症状詳記の印刷を指定）"
                                            DELIMITED  BY  SIZE
@@ -5059,7 +5059,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    END-STRING
                WHEN    "1023"
                    STRING
-                   "国保・広域連合分（入院）のレセプト電算データを"
+                   "国保・広域分（入院）のレセプト電算データを"
                                            DELIMITED  BY  SIZE
                    "作成します（症状詳記の印刷を指定）"
                                            DELIMITED  BY  SIZE
@@ -5067,7 +5067,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    END-STRING
                WHEN    "1024"
                    STRING
-                 "国保・広域連合分（入院外）のレセプト電算データを"
+                 "国保・広域分（入院外）のレセプト電算データを"
                                            DELIMITED  BY  SIZE
                    "作成します（症状詳記の印刷を指定）"
                                            DELIMITED  BY  SIZE
@@ -5075,7 +5075,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    END-STRING
                WHEN    "1025"
                    STRING
-                 "国保・広域連合分のレセプト電算データを"
+                 "国保・広域分のレセプト電算データを"
                                            DELIMITED  BY  SIZE
                    "作成します（症状詳記の印刷を指定）"
                                            DELIMITED  BY  SIZE
