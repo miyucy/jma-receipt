@@ -340,6 +340,9 @@
       *****************************************************************
        210-GOKEI-GOKEI-SET-SEC     SECTION.
       *
+           ADD     CNT-TPAGE           TO  CNT-GPAGE
+           ADD     CNT-TKENSU          TO  CNT-GKENSU
+      *
            ADD     1               TO  CNT-LINE
       *
            IF      CNT-LINE    >=  35
