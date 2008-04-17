@@ -2565,6 +2565,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+      *    新規入力のとき改正前後を跨ぐときの開始日の設定
+           IF      SPA-ERRCD       =   SPACE
+               IF      SPA-GMN-SELNUM1     =   ZERO
+                   IF    ( SPA-NAI-STYUKYMD <  WRK-CONS-SRYYM-20080401 )
+                   AND   ( SPA-NAI-EDYUKYMD >= WRK-CONS-SRYYM-20080401 )
+                       MOVE    WRK-CONS-SRYYM-20080401
+                                           TO  SPA-NAI-STYUKYMD
+                                               WRK-YMD
+                       PERFORM 5002-HIZUKE-CHK-SEC
+                       MOVE    WRK-HENYMDG TO  SPA-GMN-STYUKYMD
+                   END-IF
+               END-IF
+           END-IF 
+      *
       *    有効期間の重複チェック
            IF      SPA-ERRCD       =   SPACE
                PERFORM VARYING IDX FROM    1   BY  1
@@ -2594,17 +2608,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-PERFORM
            END-IF
-      *
-      *    新規入力のとき改正前後を跨ぐときの開始日の設定
-           IF      SPA-ERRCD       =   SPACE
-               IF      SPA-GMN-SELNUM1     =   ZERO
-                   IF    ( SPA-NAI-STYUKYMD <  WRK-CONS-SRYYM-20080401 )
-                   AND   ( SPA-NAI-EDYUKYMD >= WRK-CONS-SRYYM-20080401 )
-                       MOVE    WRK-CONS-SRYYM-20080401
-                                           TO  SPA-NAI-STYUKYMD
-                   END-IF
-               END-IF
-           END-IF 
       *
            IF      SPA-ERRCD       =   SPACE
                IF      SPA-GMN-SELNUM1     =   ZERO
