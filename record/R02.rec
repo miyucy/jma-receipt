@@ -1592,7 +1592,7 @@ R02	{
 			label	varchar(6);
 		};
 		LABEL3	{
-			label	varchar(8);
+			label	varchar(6);
 		};
 	};
 };

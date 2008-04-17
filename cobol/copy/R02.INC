@@ -89,4 +89,4 @@
                 05  R02-SYUKALST  PIC X(21)   OCCURS  50 TIMES.
               04  R02-LABEL1       PIC X(06).
               04  R02-LABEL2       PIC X(06).
-              04  R02-LABEL3       PIC X(08).
+              04  R02-LABEL3       PIC X(06).

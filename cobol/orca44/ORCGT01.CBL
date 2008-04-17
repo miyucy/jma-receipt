@@ -964,7 +964,7 @@ grpsys                                         SPA-AREA
                    ADD     1               TO  IDX
                    MOVE    904             TO  SPA-3004-KBNCD   (IDX)
                    MOVE    "recept3.sh"    TO  SPA-3004-SHELLID (IDX) 
-                   MOVE    "広域連合・総括表（標準）"
+                   MOVE    "広域・総括表（標準）"
                                            TO  SPA-3004-SHORIMSG
                                                                 (IDX)
                    MOVE    SPA-NAI-1031-PRTNM
@@ -977,7 +977,7 @@ grpsys                                         SPA-AREA
                    MOVE    905             TO  SPA-3004-KBNCD   (IDX)
                    MOVE    "receden_sokatu.sh"
                                            TO  SPA-3004-SHELLID (IDX) 
-                   MOVE    "広域連合・レセ電総括表（標準）"
+                   MOVE    "広域・レセ電総括表（標準）"
                                            TO  SPA-3004-SHORIMSG
                                                                 (IDX)
                    MOVE    SPA-NAI-1031-PRTNM

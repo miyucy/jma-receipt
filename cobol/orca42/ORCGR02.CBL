@@ -584,7 +584,7 @@
                        WHEN    "2"
                            MOVE    "・国保"        TO  WRK-RECEKBN
                        WHEN    "7"
-                           MOVE    "・広域連合"    TO  WRK-RECEKBN
+                           MOVE    "・広域"        TO  WRK-RECEKBN
                    END-EVALUATE  
                    EVALUATE    SPA-R01-RECE07-NYUGAIKBN
                        WHEN    "1"
@@ -1551,9 +1551,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "6"
                    MOVE    SPA-GMN-PAGE-MAX    TO  IDW
            END-EVALUATE
-      *???
-           DISPLAY "3101-PAGE-HENSYU-01=" WRK-TEISYUTUSAKI "#" IDW "#"
-      *???                            
       *
       *    レセプト作成指示（印刷順）読み込み
            MOVE    SPACE               TO  SYS-2003-KEY
@@ -1760,7 +1757,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    "6"         TO  SPA-NAI-TEISYUTUSAKI(IDW IDX)
                    MOVE    "9999"      TO  SPA-NAI-SYUBETU
                                                            (IDW IDX 1)
-                   MOVE    "広域連合"  TO  SPA-GMN-TSYURUINAME (IDW IDX)
+                   MOVE    "広域"      TO  SPA-GMN-TSYURUINAME (IDW IDX)
                    MOVE    "T"         TO  SPA-GMN-TCHK-VALUE  (IDW IDX)
            END-EVALUATE
       *
@@ -2087,7 +2084,7 @@ grpsys                     MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                MOVE    "社保・国保"
                                    TO  SPA-GMN-TSYURUINAME (IDW IDX)
            ELSE
-               MOVE    "社保・国保・広域連合"
+               MOVE    "社保・国保・広域"
                                    TO  SPA-GMN-TSYURUINAME (IDW IDX)
            END-IF
            MOVE    "T"             TO  SPA-GMN-TCHK-VALUE  (IDW IDX)
@@ -2190,7 +2187,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    "33"              TO  SPA-NAI-PRTJYUNI    (1 33)
                MOVE    "6"               TO  SPA-NAI-TEISYUTUSAKI(1 33)
                MOVE    "6666"            TO  SPA-NAI-SYUBETU    (1 33 1)
-               MOVE    "特別療養費（広域連合）"
+               MOVE    "特別療養費（広域）"
                                          TO  SPA-GMN-TSYURUINAME (1 33)
                MOVE    "T"               TO  SPA-GMN-TCHK-VALUE  (1 33)
                IF      FLG-PRTNM-SET           =   ZERO
@@ -5428,7 +5425,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                R02-PRTJYUN2-STATE
                MOVE    "  社保"            TO  R02-LABEL1
                MOVE    "  国保"            TO  R02-LABEL2
-               MOVE    "広域連合"          TO  R02-LABEL3
+               MOVE    "  広域"            TO  R02-LABEL3
                IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
                    MOVE    WIDGET-INSENSITIVE  TO  R02-PRTJYUN1-STATE
                                                    R02-PRTJYUN2-STATE

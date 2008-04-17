@@ -677,8 +677,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2009-HOSPNUM
                    ADD     1       TO  SPA-GMN-HTEISYUTUSAKI-MAX
                    MOVE    "4"     TO  SPA-GMN-HTEISYUTUSAKIL
                                            (SPA-GMN-HTEISYUTUSAKI-MAX)
-                   MOVE    "π≠∞Ëœ¢πÁ"
-                                       TO  SPA-GMN-HTEISYUTUSAKIMEIL
+                   MOVE    "π≠∞Ë"  TO  SPA-GMN-HTEISYUTUSAKIMEIL
                                            (SPA-GMN-HTEISYUTUSAKI-MAX)
                END-IF
            END-IF
@@ -926,8 +925,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                        MOVE    "πÒ ›"  TO  SPA-GMN-TTEISYUTUSAKI
                                                               (WRK-LINE)
                    WHEN    "6"
-                       MOVE    "π≠∞Ëœ¢πÁ"
-                                       TO  SPA-GMN-TTEISYUTUSAKI
+                       MOVE    "π≠∞Ë"  TO  SPA-GMN-TTEISYUTUSAKI
                                                               (WRK-LINE)
                END-EVALUATE
                MOVE    LNK-SYUACC-IO-RECESYUBETU(IDX1)
@@ -1288,7 +1286,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                WHEN    "2"
                    MOVE    "πÒ ›"          TO  SPA-GMN-TEISYUTUSAKI
                WHEN    "6"
-                   MOVE    "π≠∞Ëœ¢πÁ"      TO  SPA-GMN-TEISYUTUSAKI
+                   MOVE    "π≠∞Ë"          TO  SPA-GMN-TEISYUTUSAKI
            END-EVALUATE
       *
            EVALUATE    SPA-NAI-RECESYUBETU

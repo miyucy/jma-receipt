@@ -143,6 +143,7 @@
       *----(01.00.01) LINE UPD END   ----------------------------------
                    07  SPA-GMN-IKKATU              PIC X(01).
                    07  SPA-GMN-KOBETU              PIC X(01).
+                   07  SPA-GMN-LABEL               PIC X(100).
       *                         
                    07  SPA-GMN-NYUGAIKBNLST        OCCURS  2.
                        09  SPA-GMN-NYUGAIKBNL      PIC X(01).
@@ -302,6 +303,8 @@
       *
            COPY    "CPSK2005.INC".
            COPY    "CPSK200501.INC".
+      *
+           COPY    "CPSK2006.INC".
       *
            COPY    "CPSK4001.INC".
       *
@@ -629,6 +632,48 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            END-IF
            MOVE    SYS-2005-AUTODSPKBN 
                                    TO  SPA-NAI-2005-AUTODSPKBN
+      *
+      *    特記事項編集情報のチェック
+           INITIALIZE                  SYS-2006-REC
+           MOVE    "2006"          TO  SYS-2006-KANRICD
+           MOVE    SPA-HOSPNUM     TO  SYS-2006-HOSPNUM
+           MOVE    SYS-2006-REC    TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key5"          TO  MCP-PATHNAME
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key5"          TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM         UNTIL   FLG-SYSKANRI   =   1
+               MOVE    MCPDATA-REC         TO  SYS-2006-REC
+               IF    ( SYS-2006-EDYUKYMD   >=  20080401 )
+               AND   ( SYS-2006-RJNKBN NOT =   SPACE    )
+                   STRING  "平成２０年４月以降に老人区分の設定があ"
+                                                DELIMITED  BY  SIZE
+                           "ります。特記事項編集情報の確認をして下さい"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-GMN-LABEL
+                   END-STRING
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+      * 
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key5"          TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *??
+           MOVE    SPACE               TO  SPA-GMN-LABEL
+      *?? 
+      *
       *
            IF      SPA-BEDSU           >   ZERO
                MOVE    3                   TO  SPA-GMN-CUR
@@ -2580,8 +2625,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    WIDGET-NORMAL       TO  R03-B10-STATE
            END-IF
       *
-           MOVE    "black"                 TO  R03-LABEL-STYLE
-           MOVE    SPACE                   TO  R03-LABEL 
+           MOVE    "red"                   TO  R03-LABEL-STYLE
+           MOVE    SPA-GMN-LABEL           TO  R03-LABEL 
       *
            PERFORM 5001-MAPCUR-SEC
       *
