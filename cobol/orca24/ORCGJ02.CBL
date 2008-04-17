@@ -2031,7 +2031,7 @@
            INITIALIZE                  SPA-GMN-HKNCOMBI-LISTG
            MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAY
            MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD(1:6)
-           MOVE    "00"                TO  SPA-SRYYMD(7:2)
+           MOVE    "01"                TO  SPA-SRYYMD(7:2)
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
       *
            INITIALIZE                  ORCSHKNSETAREA
@@ -4735,6 +4735,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "0025"              TO  SPA-ERRCD
                    END-IF
                END-IF
+      *
            END-IF
       *
            .
@@ -6012,7 +6013,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        410161-HENSRYYMD-UPDSYORI-EXT.
            EXIT.
       *****************************************************************
-      *    主科設定処理
+      *    受診日変更処理処理
       *****************************************************************
        4101611-HENSRYYMD-UPDSYORI2-SEC             SECTION.
       *
