@@ -722,8 +722,8 @@
        10012-KAISU-CHK-SEC            SECTION.
       *
       *    ¿ÇÎÅ¾ðÊóÄó¶¡ÎÁ¡Ê£±¡Ë¤Ï½ÅÊ££Ï£Ë¤È¤¹¤ë
-           IF     (IDX-SYU             >   ZERO )  AND
-                  (WRK-COM-INPUTCD (IDX-SYU)   =   "180016110"
+           IF     (IDX-SYU             >   ZERO )
+               IF  (WRK-COM-INPUTCD (IDX-SYU)   =   "180016110"
       *??                                      OR  "113009510"
       *        ½ýÉÂ¼êÅö°Õ¸«½ñ¸òÉÕÎÁ
                                                OR  "180000710"
@@ -733,10 +733,14 @@
                                                OR  "190030310"
       *        Âà±¡»þ¿ÇÎÅ¾õ¶·ÅºÉÕ²Ã»»
                                                OR  "113009470" )
-               CONTINUE
-           ELSE
-               MOVE    "0008"          TO  WRK-ERRCD
-               MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+      *        ·ìÅü¼«¸ÊÂ¬Äê´ï²Ã»»
+             OR  ((WRK-COM-CDKBN-KBN (IDX-SYU) =   "C"  )  AND
+                  (WRK-COM-CDKBN-KBNNUM (IDX-SYU)  =   "150" ))
+                   CONTINUE
+               ELSE
+                   MOVE    "0008"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+               END-IF
            END-IF
       *
            .
