@@ -721,6 +721,12 @@
                                        =   SPACE )
                    MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
                END-IF
+               IF    ( SYS-2009-SYUKA-KBN
+                                       =   "1"   )
+               AND   ( SYS-2009-SYUKA-KOUIKI
+                                       =   SPACE )
+                   MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
+               END-IF
            END-IF
       *
           .
