@@ -2305,3 +2305,22 @@ path	key67	{
 		;
 	};
 };
+
+path	key68	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key68_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE (      HOSPNUM     =    :HOSPNUM   )
+                  AND (      TEISYUTUSAKI like   :TEISYUTUSAKI )
+                  AND (   (( SRYYM       =    :SKYYM   )
+                       AND ( SKYKBN      <>   '0'      )
+                       AND (( SKYYM       =   '000000' ) OR ( SKYYM = :SKYYM )))
+                       OR (( SKYYM       =    :SKYYM   )
+                       AND ( SKYKBN      <>   '0'      )))
+                  AND (      RECEKA      LIKE :RECEKA     )
+                  ORDER BY RECEKA,NYUGAIKBN,SRYYM,SKYYM,HKNJANUM,PTNUM   
+		;
+	};
+};
+
