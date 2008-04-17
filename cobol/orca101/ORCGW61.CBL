@@ -793,7 +793,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "W61"               TO  SPA-MOTOPG
            MOVE    "W01"               TO  SPA-SAKIPG
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW

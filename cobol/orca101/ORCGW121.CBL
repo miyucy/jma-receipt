@@ -474,6 +474,10 @@
                                    PIC 9(02)   VALUE   30.
            03  WRK-CONS-SRYYM-200610
                                    PIC X(08)   VALUE   "20061001".
+           03  WRK-CONS-SRYYM-20080401
+                                   PIC 9(08)   VALUE   20080401.
+           03  WRK-CONS-SRYYM-20080331
+                                   PIC 9(08)   VALUE   20080331.
       *         
       *****************************************************************
       *    ファイルレイアウト
@@ -693,7 +697,23 @@
                        PERFORM 490-KOUSHIN-SEC
                    WHEN    "1002"
                        PERFORM 490-CLEAR-SEC
-               END-EVALUATE    
+                   WHEN    "1003"
+                       PERFORM 490-EDYUKYMD-KOUSHIN-SEC
+                   WHEN    "1004"
+                       MOVE    "JOIN"          TO  MCP-PUTTYPE
+                       PERFORM 210-BACK-SYORI-SEC
+                       GO  TO  330-WID1-SET-EXT
+               END-EVALUATE
+           ELSE    
+               EVALUATE    SPA-WIDCD
+                   WHEN    "1003"
+                       MOVE    1               TO  SPA-GMN-CUR
+                       INITIALIZE                  SPA-GMN-HEAD-KOUMOKU
+                                                   SPA-NAI-KOUMOKU
+                                                   SPA-GMN-BODY-KOUMOKU
+                                                   SPA-GMN-GRP-KOUMOKU
+                                                   SPA-GMN-BODYLIST
+               END-EVALUATE
            END-IF
       *
            EVALUATE    SPA-W121-PAGENO
@@ -1352,6 +1372,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41011-SELNUM1-HENSYU-SEC        SECTION.
       *
+      *    平成２０年４月を跨ってるとき
+           IF    ( SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
+                                       <   WRK-CONS-SRYYM-20080401 )
+           AND   ( SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
+                                       >=  WRK-CONS-SRYYM-20080401 )
+               MOVE    "1003"              TO  SPA-WIDCD
+               GO  TO  41011-SELNUM1-HENSYU-EXT
+           END-IF
+      *
            INITIALIZE                  SPA-GMN-HEAD1-KOUMOKU
       *
       *    ＨＥＡＤ部表示
@@ -1647,7 +1676,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE                  SPA-GMN-HEAD-KOUMOKU
                                        SPA-NAI-KOUMOKU
-                                       SPA-GMN-HEAD1-KOUMOKU
                                        SPA-GMN-BODY-KOUMOKU
                                        SPA-GMN-GRP-KOUMOKU
                                        SPA-GMN-BODYLIST
@@ -2483,13 +2511,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *★★平成２０年４月改正対応
-           IF      SPA-ERRCD       =   SPACE
-               IF      SPA-NAI-STYUKYMD    >=  20080401 
-                   MOVE    "0200"              TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *★★
            IF      SPA-ERRCD       =   SPACE
                MOVE    3               TO  SPA-GMN-CUR
            END-IF   
@@ -2574,13 +2595,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-PERFORM
            END-IF
       *
-      *★★平成２０年４月改正対応
+      *    新規入力のとき改正前後を跨ぐときの開始日の設定
            IF      SPA-ERRCD       =   SPACE
-               IF      SPA-NAI-EDYUKYMD    >=  20080401 
-                   MOVE    "0200"              TO  SPA-ERRCD
+               IF      SPA-GMN-SELNUM1     =   ZERO
+                   IF    ( SPA-NAI-STYUKYMD <  WRK-CONS-SRYYM-20080401 )
+                   AND   ( SPA-NAI-EDYUKYMD >= WRK-CONS-SRYYM-20080401 )
+                       MOVE    WRK-CONS-SRYYM-20080401
+                                           TO  SPA-NAI-STYUKYMD
+                   END-IF
                END-IF
-           END-IF
-      *★★
+           END-IF 
+      *
            IF      SPA-ERRCD       =   SPACE
                IF      SPA-GMN-SELNUM1     =   ZERO
       *
@@ -3518,6 +3543,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        210-BACK                        SECTION.
       *
+      *    平成２０年４月を跨ってるとき
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-HEADLIST-MAX
+               IF    ( SPA-NAI-HEADLIST-TSTYUKYMD (IDX)
+                                       <   WRK-CONS-SRYYM-20080401 )
+               AND   ( SPA-NAI-HEADLIST-TEDYUKYMD (IDX)
+                                       >=  WRK-CONS-SRYYM-20080401 )
+                   MOVE    "1004"                  TO  SPA-WIDCD 
+                   GO  TO  210-BACK-EXT
+               END-IF
+           END-PERFORM
+      *
+           PERFORM 210-BACK-SYORI-SEC         
+           .
+       210-BACK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    戻る処理
+      *****************************************************************
+       210-BACK-SYORI-SEC              SECTION.
+      *
            MOVE    "W12"               TO  SPA-SAKIPG
            MOVE    "W121"              TO  SPA-MOTOPG
       *
@@ -3528,7 +3576,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  FLG-END
       *
            .
-       210-BACK-EXT.
+       210-BACK-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4919,19 +4967,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
              END-PERFORM
            END-PERFORM        
       *
-      *★★平成２０年４月改正対応
-           IF      SPA-ERRCD       =   SPACE
-               IF    ( SPA-NAI-STYUKYMD    >=  20080401 )
-                   MOVE    "0200"              TO  SPA-ERRCD
-                   MOVE    2                   TO  SPA-GMN-CUR
-               ELSE
-                   IF    ( SPA-NAI-EDYUKYMD    >=  20080401 )
-                       MOVE    "0200"              TO  SPA-ERRCD
-                       MOVE    3                   TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
-           END-IF
-      *★★
       *    
            .
        4900-KANRENCHK-EXT.
@@ -5198,6 +5233,86 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
       *
            .
        490-KOUSHIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *       更新処理（有効終了日）
+      *****************************************************************
+       490-EDYUKYMD-KOUSHIN-SEC      SECTION.
+      *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+      *    ＨＥＡＤ部更新処理
+           INITIALIZE                      RECE-PUTH-REC
+           MOVE    SPA-HOSPNUM         TO  RECE-PUTH-HOSPNUM
+           MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
+                                       TO  RECE-PUTH-STYUKYMD
+           MOVE    WRK-CONS-SRYYM-20080331
+                                       TO  RECE-PUTH-EDYUKYMD
+      *
+           MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
+                                       TO  RECE-PUTH-UPSTYUKYMD
+           MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
+                                       TO  RECE-PUTH-UPEDYUKYMD
+           MOVE    SMCNDATE-YMD        TO  RECE-PUTH-UPYMD
+           MOVE    SMCNDATE-HMS        TO  RECE-PUTH-UPHMS
+           MOVE    SPA-TERMID          TO  RECE-PUTH-TERMID
+           MOVE    SPA-OPID            TO  RECE-PUTH-OPID
+      *
+           MOVE    RECE-PUTH-REC       TO  MCPDATA-REC
+           MOVE    "tbl_rece_puth"     TO  MCP-TABLE
+           MOVE    "upd2"              TO  MCP-PATHNAME
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "1002"              TO  SPA-ERRCD
+               GO  TO  490-EDYUKYMD-KOUSHIN-EXT
+           END-IF
+      *
+      *   ＢＯＤＹ部更新処理
+           INITIALIZE                      RECE-PUTB-REC
+           MOVE    SPA-HOSPNUM         TO  RECE-PUTB-HOSPNUM
+           MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
+                                       TO  RECE-PUTB-STYUKYMD
+           MOVE    WRK-CONS-SRYYM-20080331
+                                       TO  RECE-PUTB-EDYUKYMD
+      *
+           MOVE    SPA-NAI-HEADLIST-TSTYUKYMD (SPA-GMN-SELNUM1)
+                                       TO  RECE-PUTB-UPSTYUKYMD
+           MOVE    SPA-NAI-HEADLIST-TEDYUKYMD (SPA-GMN-SELNUM1)
+                                       TO  RECE-PUTB-UPEDYUKYMD
+           MOVE    SMCNDATE-YMD        TO  RECE-PUTB-UPYMD
+           MOVE    SMCNDATE-HMS        TO  RECE-PUTB-UPHMS
+           MOVE    SPA-TERMID          TO  RECE-PUTB-TERMID
+           MOVE    SPA-OPID            TO  RECE-PUTB-OPID
+      *
+           MOVE    RECE-PUTB-REC       TO  MCPDATA-REC
+           MOVE    "tbl_rece_putb"     TO  MCP-TABLE
+           MOVE    "upd1"              TO  MCP-PATHNAME
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               MOVE    "1003"              TO  SPA-ERRCD
+               GO  TO  490-EDYUKYMD-KOUSHIN-EXT
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+      *        画面クリア処理
+               PERFORM 490-CLEAR-SEC
+      *
+      *        管理部一覧編集処理
+               PERFORM 3101-SPA-HENSYU-SEC
+           END-IF    
+      *
+           .
+       490-EDYUKYMD-KOUSHIN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5949,11 +6064,6 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                    MOVE    "これ以上公費の登録ができません"
                                                TO  SPA-ERRMSG
       *
-               WHEN    "0200"
-                   MOVE
-                       "平成２０年４月改正未対応のため入力できません"
-                                                       TO  SPA-ERRMSG
-      *
                WHEN    "1001"
                    MOVE
                    "編綴順詳細設定（ＨＥＡＤ）の追加ができませんでした"
@@ -6007,6 +6117,22 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                WHEN    "1002"
                    MOVE    "入力内容をクリアします。よろしいですか。"
                                                 TO  WID1-ID1MSG
+                   MOVE    "B01"                TO  MCP-WIDGET
+               WHEN    "1003"
+                   STRING  "期限を平成２０年３月３１日に変更します。"
+                                                DELIMITED  BY  SIZE
+                           "よろしいですか。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  WID1-ID1MSG
+                   END-STRING
+                   MOVE    "B12"                TO  MCP-WIDGET
+               WHEN    "1004"
+                   STRING  "期限が平成２０年４月を跨いでい"
+                                                DELIMITED  BY  SIZE
+                   "るデータがあります。処理を終了してよろしいですか。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  WID1-ID1MSG
+                   END-STRING
                    MOVE    "B01"                TO  MCP-WIDGET
            END-EVALUATE
       *
