@@ -1380,7 +1380,7 @@
       *
            INITIALIZE                  SPA-GMN-HKNCOMBI-LISTG
            MOVE    SPA-J02-SRYYMD(1:6) TO  SPA-SRYYMD(1:6)
-           MOVE    "00"                TO  SPA-SRYYMD(7:2)
+           MOVE    "01"                TO  SPA-SRYYMD(7:2)
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
       *
            INITIALIZE                  ORCSHKNSETAREA
