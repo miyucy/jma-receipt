@@ -388,6 +388,9 @@
            03  WRK-TOKNYUIN.
                05  WRK-TOKNYUIN-KBN        PIC X(01).
                05  WRK-TOKNYUIN-CD         PIC X(02).
+           03  WRK-CHKTOKNYUIN.
+               05  WRK-CHKTOKNYUIN-KBN     PIC X(01).
+               05  WRK-CHKTOKNYUIN-CD      PIC X(02).
            03  WRK-TOKNYUIN-SRYCD-X.
                05  WRK-TOKNYUIN-SRYCD      PIC 9(09).
            03  WRK-TOKNYUIN-SRYCDTTL       PIC 9(14).
@@ -4720,12 +4723,13 @@
       *
                        IF    ( SYS-5001-BTU-SBT            =   "04" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "05" )
-                           IF    ( FLG-LIFE-RJN            =   ZERO )
+                           IF    ( FLG-LIFE-RJN        =   ZERO OR 2)
                                IF    ( SYS-5111-SEIKATU-RYOKBN
                                                            =   SPACE )
                                    MOVE    1   TO  FLG-TARGET
                                END-IF
-                           ELSE
+                           END-IF
+                           IF    ( FLG-LIFE-RJN        =   1    OR 2)
                                IF    ( SYS-5111-SEIKATU-RYOKBN
                                                        NOT =   SPACE )
                                    MOVE    1   TO  FLG-TARGET
@@ -4735,12 +4739,13 @@
       *
                        IF    ( SYS-5001-BTU-SBT            =   "09" )
                         AND  ( SYS-5111-BRM-NYUINRYOKBN    =   "06" )
-                           IF    ( FLG-LIFE-RJN            =   ZERO )
+                           IF    ( FLG-LIFE-RJN        =   ZERO OR 2)
                                IF    ( SYS-5111-SEIKATU-RYOKBN
                                                            =   SPACE )
                                    MOVE    1   TO  FLG-TARGET
                                END-IF
-                           ELSE
+                           END-IF
+                           IF    ( FLG-LIFE-RJN        =   1    OR 2)
                                IF    ( SYS-5111-SEIKATU-RYOKBN
                                                        NOT =   SPACE )
                                    MOVE    1   TO  FLG-TARGET
@@ -4975,18 +4980,19 @@
       *****************************************************************
        4100-CMB-TOKNYUIN-DAT-SET-SEC   SECTION.
       *
-           MOVE    WRK-KBNCD           TO  WRK-TOKNYUIN-CD
+           MOVE    WRK-TOKNYUIN-KBN    TO  WRK-CHKTOKNYUIN-KBN
+           MOVE    WRK-KBNCD           TO  WRK-CHKTOKNYUIN-CD
       *
            IF    ( SPA-NAI-I01-BTUSBT  =   "04" OR "09" )
-            AND  ( FLG-LIFE-RJN        =   1 )
+            AND  ( FLG-LIFE-RJN        =   1    OR 2 )
       *
                PERFORM VARYING IDX-LIFE    FROM    1   BY  1
                        UNTIL ( IDX-LIFE    >   CONST-TOK-LIFECD-MAX )
       *
-                   IF    ( WRK-TOKNYUIN    =   CONST-TOK-LIFECD-IPN
+                   IF    ( WRK-CHKTOKNYUIN =   CONST-TOK-LIFECD-IPN
                                                              (IDX-LIFE))
                        MOVE    CONST-TOK-LIFECD-LIFE (IDX-LIFE)
-                                           TO  WRK-TOKNYUIN
+                                           TO  WRK-CHKTOKNYUIN
                        MOVE    CONST-TOK-LIFECD-MAX
                                            TO  IDX-LIFE
                    END-IF
@@ -4994,7 +5000,24 @@
                END-PERFORM
            END-IF
       *
-           MOVE    WRK-TOKNYUIN-CD TO  WRK-KBNCD
+           IF    ( SPA-NAI-I01-BTUSBT  =   "04" OR "09" )
+            AND  ( FLG-LIFE-RJN        =   2 )
+      *
+               IF    ( WRK-CHKTOKNYUIN-CD  NOT =    WRK-KBNCD )
+                   PERFORM 41001-CMB-TOKNYUIN-DAT-SET-SEC
+               END-IF
+           END-IF
+      *
+           MOVE    WRK-CHKTOKNYUIN-CD  TO  WRK-KBNCD
+           PERFORM 41001-CMB-TOKNYUIN-DAT-SET-SEC
+      *
+           .
+       4100-CMB-TOKNYUIN-DAT-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    特定入院料コンボデータセット処理
+      *****************************************************************
+       41001-CMB-TOKNYUIN-DAT-SET-SEC   SECTION.
       *
            MOVE    WRK-KJNYMD      TO  WRK-YUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
@@ -5028,7 +5051,7 @@
            END-IF
       *
            .
-       4100-CMB-TOKNYUIN-DAT-SET-EXT.
+       41001-CMB-TOKNYUIN-DAT-SET-EXT.
            EXIT.
       *****************************************************************
       *    特定入院料コンボデータセット処理
@@ -16821,6 +16844,8 @@
                                        TO  AGECHK-SRYYMD
            MOVE    SPA-NAI-I01-BIRTHDAY
                                        TO  AGECHK-BIRTHDAY
+           MOVE    SPA-GMN-I01-HKNCOMBI-CD
+                                       TO  AGECHK-HKNCOMBINUM
            CALL    "ORCSAGECHK"        USING
                                            ORCSAGECHKAREA
                                            SPA-AREA
@@ -16840,6 +16865,7 @@
            END-IF
       *
            IF    ( SPA-NAI-I01-RSI-HKNKBN  =   SPACE )
+            OR   ( AGECHK-HKNKBN           =   4 OR 5 )
                EVALUATE    TRUE
                WHEN  ( WRK-AGECHK-SRYYMD   >=  CONST-H200401 )
       *
@@ -16856,6 +16882,13 @@
                        MOVE    1        TO  FLG-LIFE-RJN
                    END-IF
                END-EVALUATE
+      *
+               IF    ( FLG-LIFE-RJN        =   1 )
+                   IF    ( AGECHK-HKNKBN   =   4 OR 5 )
+                       MOVE    2           TO  FLG-LIFE-RJN
+                   END-IF
+               END-IF
+      *
            END-IF
       *
            .
