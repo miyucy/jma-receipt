@@ -921,6 +921,15 @@
                MOVE    12                  TO  SPA-SJKBN-MAX
            END-IF
       *
+      *
+           IF      SPA-NAI-SRYYM       >=  "200804"
+               MOVE    "52 ÇÑÍÑ¾É¸õ·²¤Ë·¸¤ëÉ¾²ÁÉ½"
+                                           TO  SPA-GMN-SJKBNLST (12)
+               MOVE    "99 ¥ì¥»¥×¥ÈÅ¦Í×Íó¥³¥á¥ó¥È"
+                                           TO  SPA-GMN-SJKBNLST (13)
+               MOVE    13                  TO  SPA-SJKBN-MAX
+           END-IF
+      *
            IF      SPA-GMN-SJKBN   NOT =   SPACE
                MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING    IDX      FROM    1   BY  1
