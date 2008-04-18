@@ -1768,6 +1768,7 @@
                END-IF
                IF     (WRK-COM-CDKBN-KBN (IDX-Z)   NOT =   "H" )
                    OR (WRK-COM-INPUTCD (IDX-Z) =   "101800010" )
+                   OR (WRK-COM-DATAKBN (IDX-Z) =   "2"  )
                    GO      TO      100113-RSIHKN-SYORI-EXT
                END-IF
            END-IF
@@ -1795,7 +1796,8 @@
            END-IF
       *    労災コードのリハビリ料
            IF     (WRK-COM-INPUTCD(IDX-Z)(1:3) =   "101" )
-              AND (WRK-COM-CDKBN-KBN (IDX-Z)   =   "H" )
+              AND (WRK-COM-CDKBN-KBN (IDX-Z)   =   "H"  )
+              AND (WRK-COM-DATAKBN   (IDX-Z)   =   "1"  )
                EVALUATE    SPA-RSI-SISIKBN
                    WHEN    1
                    WHEN    2
