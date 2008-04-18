@@ -42,6 +42,7 @@
       *  03.04.01     NACL-森脇    07/04/16  コメント見出し追加
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  04.02.01    NACL-森脇    08/04/17  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -166,6 +167,14 @@
                05  FILLER101           PIC X(50)   VALUE
                    "【疾患別リハビリテーションに係る治療継続の理由等】".
       *----(03.04.02)--ADD-END-----
+      *----(04.02.01)--ADD-START---
+           03  WRK-MOJI11.
+               05  FILLER111           PIC X(50)   VALUE
+                   "【廃用をもたらすに至った要因等】".
+      *
+       01  CONST-AREA.
+           03  CONST-H2004             PIC X(06)   VALUE    "200804".
+      *----(04.02.01)--ADD-END-----
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -327,6 +336,26 @@
                WHEN    "2" ALSO    "2"
                    MOVE    "症状詳記（国保・入院外）"
                                            TO  JOB-SHELLMSG
+      *----(04.02.01)--ADD-START---
+               WHEN    "3" ALSO    ZERO
+                   MOVE    "症状詳記（広域）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "3" ALSO    "1"
+                   MOVE    "症状詳記（広域・入院）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "3" ALSO    "2"
+                   MOVE    "症状詳記（広域・入院外）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "4" ALSO    ZERO
+                   MOVE    "症状詳記（国保、広域）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "4" ALSO    "1"
+                   MOVE    "症状詳記（国保、広域・入院）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "4" ALSO    "2"
+                   MOVE    "症状詳記（国保、広域・入院外）"
+                                           TO  JOB-SHELLMSG
+      *----(04.02.01)--ADD-END-----
            END-EVALUATE
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
@@ -345,6 +374,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "key24"     TO  WRK-PATH
                WHEN    "2" ALSO    ANY
                    MOVE    "key26"     TO  WRK-PATH
+      *----(04.02.01)--ADD-START---
+               WHEN    "3" ALSO    ANY
+               WHEN    "4" ALSO    ANY
+                   MOVE    "key67"     TO  WRK-PATH
+      *----(04.02.01)--ADD-END-----
            END-EVALUATE
            MOVE    "tbl_seikyu"    TO  WRK-TABLE
            PERFORM 900-SEIKYU-SELECT-SEC
@@ -425,6 +459,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                MOVE    WRK-MOJI10
                                        TO  HCM37-NAIYO(CNT-LINE)
       *----(03.04.02)--ADD-END-----
+      *----(04.02.01)--ADD-START---
+                           WHEN    "52"
+                               MOVE    WRK-MOJI11
+                                       TO  HCM37-NAIYO(CNT-LINE)
+      *----(04.02.01)--ADD-END-----
                            WHEN    "99"
                                MOVE    WRK-MOJI8
                                        TO  HCM37-NAIYO(CNT-LINE)
@@ -494,7 +533,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            WHEN    "2"
                MOVE    "２公費"        TO  HCM37-HKNSBT1
            WHEN    "3"
-               MOVE    "３老人"        TO  HCM37-HKNSBT1
+      *----(04.02.01)--UPD-START---
+               IF      RECE10-SRYYM    <   CONST-H2004
+                   MOVE    "３老人"        TO  HCM37-HKNSBT1
+               ELSE
+                   MOVE    "３後期"        TO  HCM37-HKNSBT1
+               END-IF
+      *----(04.02.01)--UPD-END-----
            WHEN    "4"
                MOVE    "４退職"        TO  HCM37-HKNSBT1
            END-EVALUATE
@@ -614,6 +659,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                IF      FLG-PTKOH           =   ZERO
       *        生保のとき月代わり受給者番号マスタより受給者番号をセット 
                    IF    ( PTKOH-KOHNUM    =   "012" )
+      *----(04.02.01)--ADD-START---
+      *                中国残留法人等
+                       OR    ( PTKOH-KOHNUM    =   "025" )
+      *----(04.02.01)--ADD-END-----
                        INITIALIZE                  MONTHLYNUM-REC
 grpsys                 MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
                        MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
@@ -680,17 +729,41 @@ grpsys                     MOVE    SPA-HOSPNUM     TO
                    WHEN    "2"
                        MOVE    "２本外"        TO  HCM37-HONKZK
                    WHEN    "3"
-                       MOVE    "３三入"        TO  HCM37-HONKZK
+      *----(04.02.01)--UPD-START---
+                       IF      RECE10-SRYYM    <   CONST-H2004
+                           MOVE    "３三入"        TO  HCM37-HONKZK
+                       ELSE
+                           MOVE    "３六入"        TO  HCM37-HONKZK
+                       END-IF
+      *----(04.02.01)--UPD-END-----
                    WHEN    "4"
-                       MOVE    "４三外"        TO  HCM37-HONKZK
+      *----(04.02.01)--UPD-START---
+                       IF      RECE10-SRYYM    <   CONST-H2004
+                           MOVE    "４三外"        TO  HCM37-HONKZK
+                       ELSE
+                           MOVE    "４六外"        TO  HCM37-HONKZK
+                       END-IF
+      *----(04.02.01)--UPD-END-----
                    WHEN    "5"
                        MOVE    "５家入"        TO  HCM37-HONKZK
                    WHEN    "6"
                        MOVE    "６家外"        TO  HCM37-HONKZK
                    WHEN    "7"
-                       MOVE    "７高入９"      TO  HCM37-HONKZK
+      *----(04.02.01)--UPD-START---
+                       IF      RECE10-SRYYM    <   CONST-H2004
+                           MOVE    "７高入９"      TO  HCM37-HONKZK
+                       ELSE
+                           MOVE    "７高入一"      TO  HCM37-HONKZK
+                       END-IF
+      *----(04.02.01)--UPD-END-----
                    WHEN    "8"
-                       MOVE    "８高外９"      TO  HCM37-HONKZK
+      *----(04.02.01)--UPD-START---
+                       IF      RECE10-SRYYM    <   CONST-H2004
+                           MOVE    "８高外９"      TO  HCM37-HONKZK
+                       ELSE
+                           MOVE    "８高外一"      TO  HCM37-HONKZK
+                       END-IF
+      *----(04.02.01)--UPD-END-----
                    WHEN    "9"
                        IF      RECE10-SRYYM    <   "200610"
                            MOVE    "９高入８"      TO  HCM37-HONKZK
@@ -751,6 +824,26 @@ grpsys                     MOVE    SPA-HOSPNUM     TO
                WHEN    "2" ALSO    "2"
                    MOVE    "症状詳記（国保・入院外）"
                                            TO  SPRT-TITLE
+      *----(04.02.01)--ADD-START---
+               WHEN    "3" ALSO    ZERO
+                   MOVE    "症状詳記（広域）"
+                                           TO  SPRT-TITLE
+               WHEN    "3" ALSO    "1"
+                   MOVE    "症状詳記（広域・入院）"
+                                           TO  SPRT-TITLE
+               WHEN    "3" ALSO    "2"
+                   MOVE    "症状詳記（広域・入院外）"
+                                           TO  SPRT-TITLE
+               WHEN    "4" ALSO    ZERO
+                   MOVE    "症状詳記（国保、広域）"
+                                           TO  SPRT-TITLE
+               WHEN    "4" ALSO    "1"
+                   MOVE    "症状詳記（国保、広域・入院）"
+                                           TO  SPRT-TITLE
+               WHEN    "4" ALSO    "2"
+                   MOVE    "症状詳記（国保、広域・入院外）"
+                                           TO  SPRT-TITLE
+      *----(04.02.01)--ADD-END-----
            END-EVALUATE
            MOVE    HCM37               TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -930,6 +1023,27 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+      *----(04.02.01)--ADD-START---
+           EVALUATE    WRK-PARA-TEISYUTUSAKI
+                           ALSO    WRK-PARA-NYUGAIKBN
+               WHEN    "3" ALSO    ZERO
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI
+                   MOVE    "%"                 TO  RECE10-NYUGAIKBN
+               WHEN    "3" ALSO    ANY
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI
+                   MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+               WHEN    "4" ALSO    ZERO
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI
+                   MOVE    "%"                 TO  RECE10-NYUGAIKBN
+               WHEN    "4" ALSO    ANY
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI
+                   MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+           END-EVALUATE
+      *----(04.02.01)--ADD-END-----
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    WRK-TABLE       TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
