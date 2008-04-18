@@ -3180,6 +3180,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      SPA-GMN-PAGE-MAX    =   1
                CONTINUE
            ELSE
+             IF      SPA-GMN-PRTJYUN1        =   "06"
+               IF      SPA-R01-RECE07-SRYKA    NOT =   "00"
+                   MOVE    1                   TO  SPA-GMN-PAGE
+               ELSE
+                   IF      SPA-R01-RECE07-SRYKA-KOKUHO
+                                                   NOT =   "00"
+                       MOVE    2                   TO  SPA-GMN-PAGE
+                   ELSE
+                       MOVE    WRK-GMN-PAGE        TO  SPA-GMN-PAGE
+                   END-IF
+               END-IF    
+             ELSE  
                IF    ( SPA-R01-RECE07-SRYKA    NOT =   "00" )
                AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                NOT =   "00" )
@@ -3238,6 +3250,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                NOT =   "00" )
                    MOVE    SPA-GMN-PAGE-MAX    TO  SPA-GMN-PAGE
                END-IF
+             END-IF    
            END-IF    
            .
        4109-SYUKA-CHK-EXT.
