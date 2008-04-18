@@ -655,11 +655,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            MOVE    "00"                TO  RECE10-RECEKA
            EVALUATE    FLG-SYORI
                WHEN    "1"
-                   MOVE    "1"             TO  RECE10-TEISYUTUSAKI
+                   MOVE    1               TO  RECE10-TEISYUTUSAKI
                WHEN    "2"
-                   MOVE    "2"             TO  RECE10-TEISYUTUSAKI
+                   MOVE    2               TO  RECE10-TEISYUTUSAKI
                WHEN    "3"
-                   MOVE    "6"             TO  RECE10-TEISYUTUSAKI
+                   MOVE    6               TO  RECE10-TEISYUTUSAKI
            END-EVALUATE
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
