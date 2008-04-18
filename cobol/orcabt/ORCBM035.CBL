@@ -201,6 +201,7 @@
                05  SUM-KOH-TABLE. 
                    07  SUM-KOH-TBL     OCCURS  100.
                        09  SUM-KOH-KOHNUM      PIC  X(03).
+                       09  SUM-KOH-KOHHBTNUM   PIC  X(02).
                        09  SUM-TBL-G   OCCURS  2.
                            11  SUM-KOH-KENSU   PIC  9(06).
                            11  SUM-KOH-NISSU   PIC  9(06).
@@ -1082,8 +1083,27 @@
       *
            MOVE    SPACE               TO  WRK-KOHKBN
       *
-           MOVE    SUM-KOH-KOHNUM (IDX3 IDX2)
-                                       TO  WRK-KOHNUM9
+           IF      SUM-KOH-KOHNUM (IDX3 IDX2) (1:1)
+                                       =   "0"
+               MOVE    SUM-KOH-KOHNUM (IDX3 IDX2)
+                                           TO  WRK-KOHNUM9
+           ELSE
+      *        法別番号取得（地方公費のみ） 
+               INITIALIZE                      HKNNUM-REC
+               MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+               MOVE    SUM-KOH-KOHNUM (IDX3 IDX2)
+                                           TO  HKN-HKNNUM
+               MOVE    WRK-SRYYMD          TO  HKN-TEKSTYMD
+                                               HKN-TEKEDYMD
+               MOVE    HKNNUM-REC          TO  MCPDATA-REC
+               PERFORM 900-HKNNUM-INV-SEC
+               IF      FLG-HKNNUM          =   ZERO
+                   MOVE   HKN-HBTNUM           TO  WRK-KOHNUM9
+               ELSE
+                   MOVE    SUM-KOH-KOHNUM (IDX3 IDX2)
+                                               TO  WRK-KOHNUM9
+               END-IF
+           END-IF
            MOVE    WRK-KOHNUM9         TO  HCM3G-KOH-NUM (IDY)
       *
       *    特定疾患のとき 
@@ -1701,6 +1721,36 @@
       *
            .
        900-HKNJAINF-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険番号マスタ読込
+      *****************************************************************
+       900-HKNNUM-INV-SEC         SECTION.
+      *
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hknnum"        TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-HKNNUM
+                   MOVE    MCPDATA-REC         TO  HKNNUM-REC
+               ELSE
+                   MOVE    1                   TO  FLG-HKNNUM
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-HKNNUM
+           END-IF
+      *
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-HKNNUM-INV-EXT.
            EXIT.
       *
       *****************************************************************
