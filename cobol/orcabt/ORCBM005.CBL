@@ -721,6 +721,9 @@ grpsys         MOVE    RECE10-HOSPNUM      TO  PTINF-HOSPNUM
                END-IF
       *
                MOVE    RECE10-TEISYUTUSAKI TO  KEY-N-TEISYUTUSAKI
+               IF      FLG-SYORI           =   2
+                   MOVE    2                   TO  KEY-N-TEISYUTUSAKI
+               END-IF 
                MOVE    RECE10-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
                ADD     1                   TO  CNT-IN
       *

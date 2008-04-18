@@ -3183,12 +3183,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF    ( SPA-R01-RECE07-SRYKA    NOT =   "00" )
                AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                NOT =   "00" )
-               AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
-                                               NOT =   "00" )
-                   IF      WRK-GMN-PAGE        <   3
+      *********AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+      *********                                NOT =   "00" )
+                   IF      WRK-GMN-PAGE        =   SPA-GMN-PAGE-MAX
                        MOVE    WRK-GMN-PAGE        TO  SPA-GMN-PAGE
                    ELSE
-                       MOVE    2                   TO  SPA-GMN-PAGE
+                       IF      WRK-GMN-PAGE        <   3
+                           MOVE    WRK-GMN-PAGE        TO  SPA-GMN-PAGE
+                       ELSE
+                           MOVE    2                   TO  SPA-GMN-PAGE
+                       END-IF
                    END-IF
                END-IF    
                IF    ( SPA-R01-RECE07-SRYKA        =   "00" )
@@ -3206,8 +3210,33 @@ grpsys     PERFORM 900-DBSELECT-SEC
                AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                    =   "00" )
                AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                               NOT =   "00" )
+                   IF      WRK-GMN-PAGE        =   1
+                       MOVE    1                   TO  SPA-GMN-PAGE
+                   ELSE
+                       MOVE    WRK-GMN-PAGE        TO  SPA-GMN-PAGE
+                   END-IF
+               END-IF    
+               IF    ( SPA-R01-RECE07-SRYKA    NOT =   "00" )
+               AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                   =   "00" )
+               AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
                                                    =   "00" )
                    MOVE    1                   TO  SPA-GMN-PAGE
+               END-IF
+               IF    ( SPA-R01-RECE07-SRYKA        =   "00" )
+               AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                               NOT =   "00" )
+               AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                                   =   "00" )
+                   MOVE    2                   TO  SPA-GMN-PAGE
+               END-IF
+               IF    ( SPA-R01-RECE07-SRYKA        =   "00" )
+               AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                   =   "00" )
+               AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                               NOT =   "00" )
+                   MOVE    SPA-GMN-PAGE-MAX    TO  SPA-GMN-PAGE
                END-IF
            END-IF    
            .
