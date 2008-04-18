@@ -684,12 +684,6 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
                MOVE    "tbl_seikyu"        TO  WRK-PATH-TABLE
                MOVE    "key41"             TO  WRK-PATH-PATHNAME
                PERFORM 210-SYUKEI-READ-SEC
-      *----(04.02.01)--ADD-START---
-               MOVE    6                   TO  WRK-TEISYUTUSAKI-KBN
-               MOVE    "tbl_seikyu"        TO  WRK-PATH-TABLE
-               MOVE    "key60"             TO  WRK-PATH-PATHNAME
-               PERFORM 210-SYUKEI-READ-SEC
-      *----(04.02.01)--ADD-END-----
            END-IF
       *----(00.00.02)--ADD-END-----
       *----(04.02.01)--ADD-START---
@@ -697,7 +691,6 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
            IF        ( WRK-PARA-SYOKBN     NOT =   "4" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "1" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "2" )
-               AND   ( WRK-PARA-TEISYUTU   NOT =   "3" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "9" )
                MOVE    6                   TO  WRK-TEISYUTUSAKI-KBN
                MOVE    "tbl_seikyu"        TO  WRK-PATH-TABLE
