@@ -182,6 +182,10 @@
       *                                     レセプト種別
       *  04.02.04    NACL-藤原    08/04/14  月途中の負担者番号変更対応
       *                                     （中国残留法人等の公費単独） 
+      *  04.02.05    NACL-藤原    08/04/18  神奈川県の障害は
+      *                                     国保で負担者番号が空白の場合
+      *                                     法別番号８０で判定して
+      *                                     公費カウントしない
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1776,8 +1780,10 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
            IF    ( RECE02-PREFNUM  =   "14"           )
            AND   ( RECE02-TEISYUTUSAKI
                                    =   "2"            )
-           AND   ( RECE02-KOHNUM      (IDX2)
-                                   =   "180" OR "280" )
+      *****AND   ( RECE02-KOHNUM      (IDX2)
+      *****                        =   "180" OR "280" )
+           AND   ( RECE02-KOHHBTNUM   (IDX2)
+                                   =   "80"  )
            AND   ( RECE02-KOHFTNJANUM (IDX2)
                                    =   SPACE          )
                MOVE   "4"          TO  RECE02-RECESKYKBN(IDX2)
