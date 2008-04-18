@@ -47,6 +47,8 @@
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.01    NACL-¾®Æ¦Âô  07/09/12  ¿·³ã¸©Ãæ±Û²­ÃÏ¿ÌÂÐ±þ¤ÇºÒ£±¡¢
       *                                     ÉÔ¾Ü¡¢ÊÝ¸±¼ÔÌ¤ÆÃÄê¤ÏÆÉ¤ßÈô¤Ð¤¹
+      *  04.02.00    NACL-¾®Æ¦Âô  08/04/18  Ê¿À®£²£°Ç¯£´·î°Ê¹ß¤Î¿ÇÎÅÊ¬¤Ï
+      *                                     ÆÉ¤ßÈô¤Ð¤¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -223,6 +225,8 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-CONS-SRYYM-200604   PIC X(06)   VALUE   "200604".
       *    £²£°£°£¶Ç¯£±£°·î²þÀµ
            03  WRK-CONS-SRYYM-200610   PIC X(06)   VALUE   "200610".
+      *    £²£°£°£¸Ç¯£´·î²þÀµ
+           03  WRK-CONS-SRYYM-200804   PIC X(06)   VALUE   "200804".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -1282,6 +1286,11 @@ grpsys         MOVE    RECE10-HOSPNUM  TO  PTINF-HOSPNUM
                PERFORM 800-PTINF-READ-SEC
                IF          FLG-PTINF       =   ZERO
                    AND PTINF-TSTPTNUMKBN   =   "1"
+                   GO  TO  900-SEIKYU-READ-SEC
+               END-IF
+      * 
+      *        Ê¿À®£²£°Ç¯£´·î°Ê¹ß¿ÇÎÅÊ¬¤ÏÆÉ¤ßÈô¤Ð¤¹
+               IF      RECE10-SRYYM  >=    WRK-CONS-SRYYM-200804
                    GO  TO  900-SEIKYU-READ-SEC
                END-IF
       *
