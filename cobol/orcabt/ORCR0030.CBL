@@ -337,6 +337,7 @@
       *                                     ¡Ê¾®»ùÆÃÄê¼À´µ¥«¥¦¥ó¥»¥ê¥ó¥°ÎÁ
       *                                       ¤Î¼«Æ°µ­ºÜÂÐ±þ¡Ë
       *                                     ¡Ê°ìÉôÉéÃ´¶âµ­ºÜÊÔ½¸¡Ë
+      *                                     ¡Êºß»ÙÉÂ¼«Æ°µ­ºÜÂÐ±þ¡Ë
       *  04.02.03    NACL-ÌçÏÆ    08/03/25  µÜ¾ë¸©ÆýÍÄ»ù¡¢ËÌ³¤Æ»Àº¿ÀÊä½õ¤Î
       *                                     ÊÑÂ§ÂÐ±þ½ªÎ»
       *  04.02.04    NACL-Æ£¸¶    08/03/31  ¹­°èÏ¢¹ç£Ï£Ã£Ò½ÐÎÏ¶èÊ¬ÄÉ²Ã
@@ -800,6 +801,7 @@
            03  WRK-SRYCD                               PIC 9(09).
       *
            03  WRK-SISETU613                           PIC 9(01).
+           03  WRK-SISETU695                           PIC 9(01).
       *
            03  WRK-FILMTEN                             PIC 9(07)V9(02).
            03  WRK-FILMTEN2                            PIC 9(07)V9(02).
@@ -1432,6 +1434,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
               END-IF    
       *       »ÜÀß´ð½à¾ðÊó
               MOVE     ZERO     TO     WRK-SISETU613
+              MOVE     ZERO     TO     WRK-SISETU695
               PERFORM  VARYING  IDXA   FROM   1   BY  1
                         UNTIL   IDXA     >    2
                  INITIALIZE                   SYSKANRI-REC
@@ -1450,6 +1453,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        CONTINUE
                      WHEN     2
                        MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
+                       MOVE  SYS-1006-SSTKIJUN(195)  TO  WRK-SISETU695
                    END-EVALUATE
                  END-IF
               END-PERFORM
@@ -3985,7 +3989,19 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                      MOVE   "1"   TO    RECE04-FLG-ZAISIEN-COMMENT
                   END-IF
                 END-IF
+              ELSE
+                IF   WRK-SISETU695      =      1
+                  IF   RECE02-SRYYM    >=     "200804"
+                    IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1       OR
+                                                CONS-ZAISIEN2       OR
+                                                CONS-ZAISIEN3
+                       MOVE   "1"   TO    RECE02-COMCNTFLG
+                       MOVE   "2"   TO    RECE04-FLG-ZAISIEN-COMMENT
+                    END-IF
+                  END-IF
+                END-IF
               END-IF
+      *
            END-IF
       *
            IF      RECE04-SRYKBN      =     "33"
@@ -9729,8 +9745,10 @@ grpsys         PERFORM 900-DBFETCH-SEC
            END-PERFORM
            IF      FLG-SET    =   ZERO
                MOVE  ZERO                    TO  WRK-SISETU613
+               MOVE  ZERO                    TO  WRK-SISETU695
            ELSE
                MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
+               MOVE  SYS-1006-SSTKIJUN(195)  TO  WRK-SISETU695
            END-IF
       *
            .

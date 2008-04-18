@@ -74,6 +74,7 @@
       *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *                                     ¡ÊÌôºÞ´ÉÍý»ØÆ³ÎÁ¥³¡¼¥ÉÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *                                     ¡Êºß»ÙÉÂ¼«Æ°µ­ºÜÂÐ±þ¡Ë
       *  04.02.02    NACL-ÌçÏÆ    08/04/03  ¡û¡û¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑÊÔ½¸½¤Àµ
       *  04.02.02    NACL-¾®Æ¦Âô  08/04/08  °åÎÅ¶èÊ¬¥³¥á¥ó¥È²þÄêÂÐ±þ
       *****************************************************************
@@ -842,9 +843,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                   EVALUATE      RECE84-SRYKBN
                       WHEN      "14"
       *               ¡Êºß»Ù±ç¤Ë´Ø¤¹¤ë¿ÇÎÅ¤Î¥«¥¦¥ó¥È¡Ë
-                         IF  RECE84-FLG-ZAISIEN-COMMENT  =  "1"
+                         IF  RECE84-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
                             MOVE  RECE84-REC  TO  WRK-RECE84-REC
-                            MOVE  1           TO  TBL-ZAISIEN-COMMENT
+                            EVALUATE  RECE84-FLG-ZAISIEN-COMMENT
+                              WHEN      "1"
+                                MOVE  1  TO  TBL-ZAISIEN-COMMENT
+                              WHEN      "2"
+                                MOVE  2  TO  TBL-ZAISIEN-COMMENT
+                            END-EVALUATE
                          END-IF
                       WHEN      "40"
       *               ¡Ê²ðÃ£¸£°ú¤¢¤ê¡Ë
@@ -906,9 +912,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
                             MOVE   1   TO  TBL-HASSYO-SESSYOKU-COMMENT
                          END-IF
       *               ¡Êºß»Ù±ç¤Ë´Ø¤¹¤ë¿ÇÎÅ¤Î¥«¥¦¥ó¥È¡Ë
-                         IF  RECE84-FLG-ZAISIEN-COMMENT  =  "1"
+                         IF  RECE84-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
                             MOVE  RECE84-REC  TO  WRK-RECE84-REC
-                            MOVE  1           TO  TBL-ZAISIEN-COMMENT
+                            EVALUATE  RECE84-FLG-ZAISIEN-COMMENT
+                              WHEN      "1"
+                                MOVE  1  TO  TBL-ZAISIEN-COMMENT
+                              WHEN      "2"
+                                MOVE  2  TO  TBL-ZAISIEN-COMMENT
+                            END-EVALUATE
                          END-IF
                   END-EVALUATE                                          
                END-IF                                                   
@@ -951,7 +962,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
            END-IF
       *
       *    ºß»Ù±ç¥³¥á¥ó¥È
-           IF     TBL-ZAISIEN-COMMENT   =   1
+           IF     TBL-ZAISIEN-COMMENT   NOT =  ZERO
                 PERFORM    2001-ZAISIEN-COMMENT-SEC
            END-IF
       *
@@ -2435,7 +2446,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "810000001"         TO  WRK-RECE85XX-SRYCD(1 1)
            MOVE     ZERO               TO  WRK-RECE85XX-SRYSURYO(1 1)
            MOVE     3                  TO  WRK-RECE85XX-YUKOKETA(1 1)
-           MOVE    "ºß»Ù±ç"            TO  WRK-RECE85XX-NAME(1 1)
+           EVALUATE  TBL-ZAISIEN-COMMENT
+             WHEN      1
+               MOVE    "ºß»Ù±ç"        TO  WRK-RECE85XX-NAME(1 1)
+             WHEN      2
+               MOVE    "ºß»ÙÉÂ"        TO  WRK-RECE85XX-NAME(1 1)
+           END-EVALUATE
            MOVE     "1"                TO  WRK-RECE85XX-SIKFLG(1 1)
       *
            MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)

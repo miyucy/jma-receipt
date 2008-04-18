@@ -38,6 +38,7 @@
       *                                     ¡Ê²ðÃ£¸£°úÈ¯¾ÉÆüµ­ºÜÇÑ»ß¡Ë
       *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *                                     ¡Êºß»ÙÉÂ¼«Æ°µ­ºÜÂÐ±þ¡Ë
       *  04.02.03    NACL-ÌçÏÆ    08/04/03  ¡û¡û¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ¤Î¥Õ¥é¥°ÊÔ½¸½¤Àµ
       *****************************************************************
       *
@@ -370,6 +371,7 @@
                                       OCCURS 31.
       *
            03  WRK-SISETU613       PIC 9(01).
+           03  WRK-SISETU695       PIC 9(01).
       *
       *    ¿ô»úÈ¾³ÑÁ´³ÑÊÑ´¹ÍÑ
            03  WRK-CHAR-IDX PIC 9(02).
@@ -776,6 +778,7 @@
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *       »ÜÀß´ð½à¾ðÊó
               MOVE     ZERO     TO     WRK-SISETU613
+              MOVE     ZERO     TO     WRK-SISETU695
               PERFORM  VARYING  IDXA   FROM   1   BY  1
                         UNTIL   IDXA     >    2
                 INITIALIZE                      SYSKANRI-REC
@@ -801,6 +804,8 @@
                          WHEN     2
                            MOVE  SYS-1006-SSTKIJUN(113)
                                             TO  WRK-SISETU613
+                           MOVE  SYS-1006-SSTKIJUN(195)
+                                            TO  WRK-SISETU695
                        END-EVALUATE
                     END-IF
                 END-IF
@@ -2122,13 +2127,25 @@
       ***          MOVE    1    TO    FLG-OSIN-COM
       ***     END-IF
       *
-              IF  (RECE200-SRYYM      >=     "200604")
-              AND (WRK-SISETU613      =      1      )
-                IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1    OR
-                                            CONS-ZAISIEN2    OR
-                                            CONS-ZAISIEN3
-                   MOVE   "1"   TO    RECE200-COMCNTFLG
-                   MOVE   "1"   TO    RECE220-FLG-ZAISIEN-COMMENT
+              IF     WRK-SISETU613      =      1
+                IF     RECE200-SRYYM    >=     "200604"
+                  IF   SRY-SRYCD(IDX2)  =     CONS-ZAISIEN1    OR
+                                              CONS-ZAISIEN2    OR
+                                              CONS-ZAISIEN3
+                       MOVE   "1"   TO    RECE200-COMCNTFLG
+                       MOVE   "1"   TO    RECE220-FLG-ZAISIEN-COMMENT
+                  END-IF
+                END-IF
+              ELSE
+                IF   WRK-SISETU695      =      1
+                  IF   RECE200-SRYYM    >=     "200804"
+                    IF SRY-SRYCD(IDX2)  =     CONS-ZAISIEN1    OR
+                                              CONS-ZAISIEN2    OR
+                                              CONS-ZAISIEN3
+                       MOVE   "1"   TO    RECE200-COMCNTFLG
+                       MOVE   "2"   TO    RECE220-FLG-ZAISIEN-COMMENT
+                    END-IF
+                  END-IF
                 END-IF
               END-IF
            END-IF
@@ -5717,8 +5734,10 @@
                END-PERFORM
                IF      FLG-SET    =   ZERO
                    MOVE  ZERO                    TO  WRK-SISETU613
+                   MOVE  ZERO                    TO  WRK-SISETU695
                ELSE
                    MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
+                   MOVE  SYS-1006-SSTKIJUN(195)  TO  WRK-SISETU695
                END-IF
       *
                MOVE      RECE200-SRYYM   TO  WRK-SRYYM-5000

@@ -100,6 +100,7 @@
       *                                     （診療区分６４：病理診断対応）
       *                                     （小児特定疾患カウンセリング料
       *                                       の自動記載対応）
+      *                                     （在支病自動記載対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1045,11 +1046,16 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE04-HOSPNUM      )
                       END-IF
                    WHEN      "14"
       *            （在支援に関する診療のカウント）
-                      IF  RECE04-FLG-ZAISIEN-COMMENT   =  "1"
+                      IF  RECE04-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
                         MOVE    RECE04-REC    TO   WRK-RECE04-REC
                         COMPUTE WRK-KOHBUNRI
                                    =    RECE04-KOHBUNRI  +  1
-                        MOVE  1  TO  TBL-ZAISIEN-COMMENT(WRK-KOHBUNRI)
+                        EVALUATE  RECE04-FLG-ZAISIEN-COMMENT
+                         WHEN      "1"
+                          MOVE 1 TO TBL-ZAISIEN-COMMENT(WRK-KOHBUNRI)
+                         WHEN      "2"
+                          MOVE 2 TO TBL-ZAISIEN-COMMENT(WRK-KOHBUNRI)
+                        END-EVALUATE
                         MOVE  RECE04-HKNCOMBI  TO
                                      TBL-ZAISIEN-HKNCOMBI(WRK-KOHBUNRI)
                       END-IF
@@ -1277,7 +1283,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            PERFORM   VARYING   IDX    FROM   1   BY   1
                       UNTIL    IDX      >    5
-              IF     TBL-ZAISIEN-COMMENT(IDX)    =   1
+              IF     TBL-ZAISIEN-COMMENT(IDX)   NOT =  ZERO
                   PERFORM    2001-ZAISIEN-COMMENT-SEC
               END-IF
            END-PERFORM
@@ -2048,7 +2054,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "810000001"          TO  WRK-RECE05XX-SRYCD(1 1)
            MOVE    ZERO                 TO  WRK-RECE05XX-SRYSURYO(1 1)
            MOVE    3                    TO  WRK-RECE05XX-YUKOKETA(1 1)
-           MOVE    "在支援"             TO  WRK-RECE05XX-NAME(1 1)
+           EVALUATE  TBL-ZAISIEN-COMMENT(IDX)
+             WHEN      1
+               MOVE    "在支援"         TO  WRK-RECE05XX-NAME(1 1)
+             WHEN      2
+               MOVE    "在支病"         TO  WRK-RECE05XX-NAME(1 1)
+           END-EVALUATE
            MOVE    WRK-RECE05XX-SRYACT-TBL(1 1)
                                         TO  RECE059-SRYACT-TBL(1)
            WRITE   RECE059-REC

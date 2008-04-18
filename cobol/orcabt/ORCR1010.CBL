@@ -38,6 +38,7 @@
       *                                     （剤支援記載対象コード修正）
       *                                     （小児特定疾患カウンセリング料
       *                                       の自動記載対応）
+      *                                     （在支病自動記載対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -274,6 +275,7 @@
            03  WRK-SRYCD                               PIC 9(09).
       *
            03  WRK-SISETU613                           PIC 9(01).
+           03  WRK-SISETU695                           PIC 9(01).
       *
            03  WRK-FILMTEN                             PIC 9(07)V9(02).
            03  WRK-FILMTEN2                            PIC 9(07)V9(02).
@@ -767,6 +769,7 @@
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *       施設基準情報
               MOVE     ZERO     TO     WRK-SISETU613
+              MOVE     ZERO     TO     WRK-SISETU695
               PERFORM  VARYING  IDXA   FROM   1   BY  1
                         UNTIL   IDXA     >    2
                  INITIALIZE                   SYSKANRI-REC
@@ -785,6 +788,7 @@
                        CONTINUE
                      WHEN     2
                        MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
+                       MOVE  SYS-1006-SSTKIJUN(195)  TO  WRK-SISETU695
                    END-EVALUATE
                  END-IF
               END-PERFORM
@@ -2172,6 +2176,17 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                               CONS-ZAISIEN3
                      MOVE   "1"   TO    RECE100-COMCNTFLG
                      MOVE   "1"   TO    RECE120-FLG-ZAISIEN-COMMENT
+                  END-IF
+                END-IF
+              ELSE
+                IF   WRK-SISETU695      =      1
+                  IF   RECE100-SRYYM    >=     "200804"
+                    IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1       OR
+                                                CONS-ZAISIEN2       OR
+                                                CONS-ZAISIEN3
+                       MOVE   "1"   TO    RECE100-COMCNTFLG
+                       MOVE   "2"   TO    RECE120-FLG-ZAISIEN-COMMENT
+                    END-IF
                   END-IF
                 END-IF
               END-IF
@@ -3724,8 +3739,10 @@ grpsys         PERFORM 900-DBFETCH-SEC
            END-PERFORM
            IF      FLG-SET    =   ZERO
                MOVE  ZERO                    TO  WRK-SISETU613
+               MOVE  ZERO                    TO  WRK-SISETU695
            ELSE
                MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
+               MOVE  SYS-1006-SSTKIJUN(195)  TO  WRK-SISETU695
            END-IF
       *
            .

@@ -90,6 +90,7 @@
       *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *                                     ¡ÊÌôºÞ´ÉÍý»ØÆ³ÎÁ¥³¡¼¥ÉÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *                                     ¡Êºß»ÙÉÂ¼«Æ°µ­ºÜÂÐ±þ¡Ë
       *  04.02.02    NACL-¾®Æ¦Âô  08/04/08  °åÎÅ¶èÊ¬¥³¥á¥ó¥È²þÄêÂÐ±þ
       *****************************************************************
       *
@@ -907,11 +908,16 @@
                EVALUATE      RECE64-SRYKBN
                    WHEN      "14"
       *            ¡Êºß»Ù±ç¤Ë´Ø¤¹¤ë¿ÇÎÅ¤Î¥«¥¦¥ó¥È¡Ë
-                      IF  RECE64-FLG-ZAISIEN-COMMENT   =  "1"
+                      IF  RECE64-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
                         MOVE    RECE64-REC    TO   WRK-RECE64-REC
                         COMPUTE WRK-KOHBUNRI
                                    =    RECE64-KOHBUNRI  +  1
-                        MOVE  1  TO  TBL-ZAISIEN-COMMENT(WRK-KOHBUNRI)
+                        EVALUATE  RECE64-FLG-ZAISIEN-COMMENT
+                         WHEN      "1"
+                          MOVE 1 TO TBL-ZAISIEN-COMMENT(WRK-KOHBUNRI)
+                         WHEN      "2"
+                          MOVE 2 TO TBL-ZAISIEN-COMMENT(WRK-KOHBUNRI)
+                        END-EVALUATE
                         MOVE  RECE64-HKNCOMBI  TO
                                      TBL-ZAISIEN-HKNCOMBI(WRK-KOHBUNRI)
                       END-IF
@@ -1196,7 +1202,7 @@
       *    ºß»Ù±ç¥³¥á¥ó¥È
            PERFORM   VARYING   IDX    FROM   1   BY   1
                       UNTIL    IDX      >    5
-              IF     TBL-ZAISIEN-COMMENT(IDX)    =   1
+              IF     TBL-ZAISIEN-COMMENT(IDX)   NOT =  ZERO
                   PERFORM    2001-ZAISIEN-COMMENT-SEC
               END-IF
            END-PERFORM
@@ -1388,7 +1394,12 @@
            MOVE    "810000001"         TO  WRK-RECE65XX-SRYCD(1 1)
            MOVE     ZERO               TO  WRK-RECE65XX-SRYSURYO(1 1)
            MOVE     3                  TO  WRK-RECE65XX-YUKOKETA(1 1)
-           MOVE    "ºß»Ù±ç"            TO  WRK-RECE65XX-NAME(1 1)
+           EVALUATE  TBL-ZAISIEN-COMMENT(IDX)
+             WHEN      1
+               MOVE    "ºß»Ù±ç"        TO  WRK-RECE65XX-NAME(1 1)
+             WHEN      2
+               MOVE    "ºß»ÙÉÂ"        TO  WRK-RECE65XX-NAME(1 1)
+           END-EVALUATE
       *
            MOVE    WRK-RECE65XX-SRYACT-TBL(1 1)
                                        TO  RECE659-SRYACT-TBL(1)

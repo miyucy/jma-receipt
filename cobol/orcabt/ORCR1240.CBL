@@ -31,6 +31,7 @@
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （薬剤管理指導料コード追加）
       *                                     （診療区分６４：病理診断対応）
+      *                                     （在支病自動記載対応）
       *  04.02.02    NACL-門脇    08/04/03  ○○にて入院料算定済編集修正
       *  04.02.03    NACL-小豆沢  08/04/08  医療区分コメント改定対応
       *****************************************************************
@@ -745,9 +746,14 @@
                EVALUATE      RECE220-SRYKBN
                    WHEN      "14"
       *            （在支援に関する診療のカウント）
-                      IF  RECE220-FLG-ZAISIEN-COMMENT   =  "1"
+                      IF  RECE220-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
                         MOVE    RECE220-REC    TO   WRK-RECE220-REC
-                        MOVE    1    TO    TBL-ZAISIEN-COMMENT
+                        EVALUATE  RECE220-FLG-ZAISIEN-COMMENT
+                          WHEN      "1"
+                            MOVE  1  TO  TBL-ZAISIEN-COMMENT
+                          WHEN      "2"
+                            MOVE  2  TO  TBL-ZAISIEN-COMMENT
+                        END-EVALUATE
                       END-IF
                    WHEN      "40"
       *            （介達牽引あり）
@@ -922,7 +928,7 @@
            PERFORM   2001-HASSYO-HANTEI-SEC
       *
       *    在支援コメント
-           IF  TBL-ZAISIEN-COMMENT    =   1
+           IF  TBL-ZAISIEN-COMMENT   NOT =  ZERO
                   PERFORM    2001-ZAISIEN-COMMENT-SEC
            END-IF
       *
@@ -1072,7 +1078,12 @@
            MOVE    "810000001"         TO  WRK-RECE230XX-SRYCD(1 1)
            MOVE     ZERO               TO  WRK-RECE230XX-SRYSURYO(1 1)
            MOVE     3                  TO  WRK-RECE230XX-YUKOKETA(1 1)
-           MOVE    "在支援"            TO  WRK-RECE230XX-NAME(1 1)
+           EVALUATE  TBL-ZAISIEN-COMMENT
+             WHEN      1
+               MOVE    "在支援"        TO  WRK-RECE230XX-NAME(1 1)
+             WHEN      2
+               MOVE    "在支病"        TO  WRK-RECE230XX-NAME(1 1)
+           END-EVALUATE
       *
            MOVE    WRK-RECE230XX-SRYACT-TBL(1 1)
                                        TO  RECE2309-SRYACT-TBL(1)

@@ -92,6 +92,7 @@
       *                                     （診療区分６４：病理診断対応）
       *                                     （小児特定疾患カウンセリング料
       *                                       の自動記載対応）
+      *                                     （在支病自動記載対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -954,9 +955,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE459PARA-HOSPNUM
                          END-IF
                       WHEN      "14"
       *               （在支援に関する診療のカウント）
-                         IF  RECE44-FLG-ZAISIEN-COMMENT  =  "1"
+                         IF  RECE44-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
                             MOVE  RECE44-REC  TO  WRK-RECE44-REC
-                            MOVE  1           TO  TBL-ZAISIEN-COMMENT
+                            EVALUATE  RECE44-FLG-ZAISIEN-COMMENT
+                              WHEN      "1"
+                                MOVE  1  TO  TBL-ZAISIEN-COMMENT
+                              WHEN      "2"
+                                MOVE  2  TO  TBL-ZAISIEN-COMMENT
+                            END-EVALUATE
                          END-IF
       *               （往診に関する編集）
                          IF  RECE44-FLG-OSIN-COMMENT     =  "2"
@@ -1013,9 +1019,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE459PARA-HOSPNUM
                          END-IF
                       WHEN      "14"
       *               （在支援に関する診療のカウント）
-                         IF  RECE44-FLG-ZAISIEN-COMMENT  =  "1"
+                         IF  RECE44-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
                             MOVE  RECE44-REC  TO  WRK-RECE44-REC
-                            MOVE  1           TO  TBL-ZAISIEN-COMMENT
+                            EVALUATE  RECE44-FLG-ZAISIEN-COMMENT
+                              WHEN      "1"
+                                MOVE  1  TO  TBL-ZAISIEN-COMMENT
+                              WHEN      "2"
+                                MOVE  2  TO  TBL-ZAISIEN-COMMENT
+                            END-EVALUATE
                          END-IF
       *               （往診に関する編集）
                          IF  RECE44-FLG-OSIN-COMMENT     =  "2"
@@ -1166,7 +1177,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            END-IF
       *
       *    在支援コメント
-           IF     TBL-ZAISIEN-COMMENT   =   1
+           IF     TBL-ZAISIEN-COMMENT   NOT =  ZERO
                PERFORM     2001-ZAISIEN-COMMENT-SEC
            END-IF
       *
@@ -3054,7 +3065,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "810000001"          TO  WRK-RECE45XX-SRYCD(1 1)
            MOVE    ZERO                 TO  WRK-RECE45XX-SRYSURYO(1 1)
            MOVE    3                    TO  WRK-RECE45XX-YUKOKETA(1 1)
-           MOVE    "在支援"             TO  WRK-RECE45XX-NAME(1 1)
+           EVALUATE  TBL-ZAISIEN-COMMENT
+             WHEN      1
+               MOVE    "在支援"         TO  WRK-RECE45XX-NAME(1 1)
+             WHEN      2
+               MOVE    "在支病"         TO  WRK-RECE45XX-NAME(1 1)
+           END-EVALUATE
       *
            MOVE    "1"                  TO  WRK-RECE45XX-SIKFLG(1 1)
            MOVE    WRK-RECE45XX-SRYACT-TBL(1 1)
