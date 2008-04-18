@@ -1523,7 +1523,7 @@
            PERFORM 910-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1900-REC
-               IF      SYS-1900-PRTKBN(8)  NOT =   SPACE
+               IF      SYS-1900-PRTKBN(17)  NOT =   SPACE
       *            医療機関名称編集情報
                    PERFORM 900-1901-READ-SEC
       *            医療機関住所編集情報
