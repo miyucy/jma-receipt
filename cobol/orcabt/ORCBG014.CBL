@@ -37,6 +37,7 @@
       *  03.04.02    NACL-森脇     07/01/16  未請求患者分対応
       *  03.05.01    NACL-森脇     07/06/04  グループ診療対応
       *  04.01.01    NACL-森脇     07/12/26  公害対応
+      *  04.02.01    NACL-森脇     08/04/15  平成２０年４月改正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -73,11 +74,11 @@ grpsys     SELECT  RECECSV-FILE    ASSIGN  RECECSV
       *        SRYYMFLG    診療月フラグ
       *        HKNKBN      保険区分    1:医保、2:老人、3:公費
       *        SYUBETUKBN  種別区分
-      *                    社保  医保  1:老人９割、2:老人８割、3:本人、4:家族、5:３歳
+      *                    社保  医保  1:７０歳以上一般・低所得、2:７０歳以上７割、3:本人、4:家族、5:３歳
       *                          老人  1:老人９割、2:老人８割
       *                          公費  1:公費と公費の併用、2:公費単独
-      *                    国保  一般  1:老人９割、2:老人８割、3:被保険者、4:３歳、
-      *                          退職  5:退職本人、6:老人９割、7:老人８割、8:被扶養者、9:三歳
+      *                    国保  一般  1:７０歳以上一般・低所得、2:７０歳以上７割、3:被保険者、4:３歳、
+      *                          退職  5:退職本人、6:７０歳以上一般・低所得、7:７０歳以上７割、8:被扶養者、9:三歳
       *                          老人  1:老人９割、2:老人８割
       *        KBN         詳細区分
       *                    社保  医保  001:公費併用合計、002:政、003:船、004:日、005:日特、
@@ -86,6 +87,28 @@ grpsys     SELECT  RECECSV-FILE    ASSIGN  RECECSV
       *                          公費  001〜999
       *                    国保        001
       *        KIGO        公害の記号
+      *----(04.02.01)--ADD-START---
+      *        SKYKBN      請求区分    1:請求済、未請求、2:請求しない、3:未請求患者分
+      *        TEISYUTU    提出先区分  1:社保、2:国保、3:特別療養費、4:未請求設定、5:未請求解除、6:広域連合、9:公害
+      *        HKNJANUM    保険者番号  国保と広域連合の時だけ使用、社保＆請求しない場合はオールゼロ
+      *        SYOKBN      処理区分    1:通常分、2:返戻分、3:月遅れ分
+      *        NYUGAIKBN   入外区分    1:外来分、2:入院分
+      *        ZAIKBN      在総診区分  1:その他のレセ、2:在総診または在医総を算定したレセ
+      *        SRYYMFLG    診療月フラグ
+      *        HKNKBN      保険区分    1:医保、2:老人、3:公費
+      *        SYUBETUKBN  種別区分
+      *                    社保  医保  1:７０歳以上一般・低所得、2:７０歳以上７割、3:本人、4:家族、5:６歳
+      *                          公費  1:公費と公費の併用、2:公費単独
+      *                    国保  一般  1:７０歳以上一般・低所得、2:７０歳以上７割、3:一般、4:６歳
+      *                          退職  5:本人、8:被扶養者、9:６歳
+      *                    広域連合    1:後期高齢者９割、2:後期高齢者７割
+      *        KBN         詳細区分
+      *                    社保  医保  001:公費併用合計、002:政、003:船、004:日、005:日特
+      *                                006:共、007:組、008:自、009:退
+      *                          公費  001〜999
+      *                    国保        001
+      *        KIGO        公害の記号
+      *----(04.02.01)--ADD-END-----
       *----------------------------------------------------------------------------------
       *    統計用ファイル
        FD  TOKEI-FILE.
@@ -186,6 +209,24 @@ grpsys     03  FILLER              PIC X(04)   VALUE   ".csv".
       *                                6:共、7:組、8:自、9:退
       *                          老人  1:公費併用合計、2:単独合計
       *        JYUNBAN     出力順      0:患者カナ氏名順、1:患者番号順、2:点数順
+      *----(04.02.01)--ADD-STRAT---
+      *        DENPPRTYM   請求日付
+      *        TEISYUTU    提出先区分  0:全部、1:社保、2:国保、3:特別療養費、4:広域連合、9:公害
+      *        HKNJANUM    保険者番号  国保と広域連合の時だけ使用
+      *        SYOKBN      処理区分    0:全部、1:通常分、2:返戻分、3:月遅れ分、4:請求しない
+      *        NYUGAIKBN   入外区分    O:全部、1:入院分、2:外来分
+      *        ZAIKBN      在総診区分  0:全部、1:その他のレセ、2:在総診または在医総を算定したレセ
+      *        SYUBETUKBN  種別区分
+      *                    社保  医保  1:７０歳以上一般・低所得、2:７０歳以上７割、3:本人、4:家族、5:６歳
+      *                          公費  8:公費と公費の併用、9:公費単独
+      *                    国保  一般 10:７０歳以上一般・低所得、11:７０歳以上７割、12:一般、13:６歳
+      *                          退職 14:本人、17:被扶養者、18:６歳
+      *                    広域連合   21:後期高齢者９割、22:後期高齢者７割
+      *        KBN         詳細区分
+      *                    社保  医保  1:公費併用合計、2:政、3:船、4:日、5:日特、
+      *                                6:共、7:組、8:自、9:退
+      *        JYUNBAN     出力順      0:患者カナ氏名順、1:患者番号順、2:点数順
+      *----(04.02.01)--ADD-END-----
       *-------------------------------------------------------------------------------
       *    パラメタ領域
        01  WRK-PARA.
@@ -272,6 +313,9 @@ grpsys     03  RECEERR                 PIC X(100).
       *----(04.01.01)--ADD-START---
            03  WRK-TENSU               PIC 9(10).
       *----(04.01.01)--ADD-END-----
+      *----(04.02.01)--ADD-START---
+           03  WRK-TEISYUTUSAKI-KBN   PIC 9(01).
+      *----(04.02.01)--ADD-END-----
       *
       *    日付編集用
            03  WRK-SYSYMD              PIC X(08).
@@ -364,7 +408,10 @@ grpsys     03  RECEERR                 PIC X(100).
            COPY    "CPCSV.INC".
       *
            COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *----(04.02.01)--ADD-START---
+       01  CONST-AREA.
+         03  CONST-H2004           PIC X(06)   VALUE   "200804".
+      *----(04.02.01)--ADD-END-----
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -562,17 +609,19 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
            PERFORM 5002-HIZUKE-CHK-SEC
       *----(03.04.02)--ADD-END-----
       *
+      *----(04.02.01)--UPD-START---
       *    提出先判定
-           EVALUATE    WRK-PARA-SYUBETUKBN
+      *     EVALUATE    WRK-PARA-SYUBETUKBN
       *        社保をセット
-               WHEN    "01"    THRU    "09"
-                   MOVE    "1"         TO  WRK-PARA-TEISYUTU
+      *         WHEN    "01"    THRU    "09"
+      *             MOVE    "1"         TO  WRK-PARA-TEISYUTU
       *----(00.00.02)--UPD-START---
       *        国保をセット
       *         WHEN    "10"    THRU    "20"
       *             MOVE    "2"         TO  WRK-PARA-TEISYUTU
       *----(00.00.02)--UPD-END-----
-           END-EVALUATE
+      *     END-EVALUATE
+      *----(04.02.01)--UPD-END-----
       *
            .
        110-PARA-HENSYU-EXT.
@@ -594,6 +643,9 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
            IF        ( WRK-PARA-SYOKBN     NOT =   "4" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "2" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "3" )
+      *----(04.02.01)--ADD-START---
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "4" )
+      *----(04.02.01)--ADD-END-----
       *----(04.01.01)--ADD-START---
                AND   ( WRK-PARA-TEISYUTU   NOT =   "9" )
       *----(04.01.01)--ADD-END-----
@@ -607,6 +659,9 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
            IF        ( WRK-PARA-SYOKBN     NOT =   "4" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "1" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "3" )
+      *----(04.02.01)--ADD-START---
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "4" )
+      *----(04.02.01)--ADD-END-----
       *----(04.01.01)--ADD-START---
                AND   ( WRK-PARA-TEISYUTU   NOT =   "9" )
       *----(04.01.01)--ADD-END-----
@@ -620,6 +675,9 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
            IF        ( WRK-PARA-SYOKBN     NOT =   "4" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "1" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "2" )
+      *----(04.02.01)--ADD-START---
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "4" )
+      *----(04.02.01)--ADD-END-----
       *----(04.01.01)--ADD-START---
                AND   ( WRK-PARA-TEISYUTU   NOT =   "9" )
       *----(04.01.01)--ADD-END-----
@@ -628,12 +686,28 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
                PERFORM 210-SYUKEI-READ-SEC
            END-IF
       *----(00.00.02)--ADD-END-----
+      *----(04.02.01)--ADD-START---
+      *    広域連合集計処理
+           IF        ( WRK-PARA-SYOKBN     NOT =   "4" )
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "1" )
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "2" )
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "9" )
+               MOVE    6                   TO  WRK-TEISYUTUSAKI-KBN
+               MOVE    "tbl_seikyu"        TO  WRK-PATH-TABLE
+               MOVE    "key60"             TO  WRK-PATH-PATHNAME
+               PERFORM 210-SYUKEI-READ-SEC
+           END-IF
+      *----(04.02.01)--ADD-END-----
       *----(04.01.01)--ADD-START---
       *    公害集計処理
            IF        ( WRK-PARA-SYOKBN     NOT =   "4" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "1" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "2" )
                AND   ( WRK-PARA-TEISYUTU   NOT =   "3" )
+      *----(04.02.01)--ADD-START---
+               AND   ( WRK-PARA-TEISYUTU   NOT =   "4" )
+               MOVE    5                   TO  WRK-TEISYUTUSAKI-KBN
+      *----(04.02.01)--ADD-END-----
                MOVE    "tbl_seikyu"        TO  WRK-PATH-TABLE
                MOVE    "key60"             TO  WRK-PATH-PATHNAME
                PERFORM 210-SYUKEI-READ-SEC
@@ -788,40 +862,13 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
       *
            PERFORM UNTIL ( FLG-RECE10  =   1 )
                    OR    ( FLG-ERR     =   1 )
-      *
-      *        社保分集計処理
-               IF        ( WRK-TEISYUTU    =   "1" )
-      *            医保
-                   PERFORM 220-IHO-SYAHO-SYUKEI-SEC
-      *            老人
-                   PERFORM 220-ROU-SYAHO-SYUKEI-SEC
-      *            公費
-                   PERFORM 220-KOH-SYAHO-SYUKEI-SEC
+      *----(04.02.01)--UPD-START---
+               IF      RECE10-SRYYM    <   CONST-H2004
+                   PERFORM 210-SYUKEI-H2004-MAE-READ-SEC
+               ELSE
+                   PERFORM 210-SYUKEI-H2004-ATO-READ-SEC
                END-IF
-      *
-      *----(00.00.02)--UPD-START---
-      *        国保分、特別療養費分集計処理
-               IF        ( WRK-TEISYUTU    =   "2" )
-                   OR    ( WRK-TEISYUTU    =   "3" )
-      *            一般・退職
-                   PERFORM 220-IHO-KOKHO-SYUKEI-SEC
-      *            老人
-                   PERFORM 220-ROU-KOKHO-SYUKEI-SEC
-               END-IF
-      *----(00.00.02)--UPD-END-----
-      *----(04.01.01)--ADD-START---
-      *        公害集計処理
-               IF        ( WRK-TEISYUTU    =   "9" )
-                   MOVE    "0"                 TO  WRK-HKNKBN
-                   MOVE    SPACE               TO  WRK-SYUBETUKBN
-                   MOVE    SPACE               TO  WRK-KBN
-                   MOVE    1                   TO  IDX
-                   MOVE    RECE10-FTNMONEY(1)  TO  WRK-TENSU
-                   MOVE    RECE10-KIGO         TO  WRK-KIGO
-                   PERFORM 240-PTINF-SYUKEI-SEC
-               END-IF
-      *----(04.01.01)--ADD-END-----
-      *
+      *----(04.02.01)--UPD-END-----
       *        請求読み込み
                PERFORM 900-SEIKYU-READ-SEC
            END-PERFORM
@@ -833,6 +880,85 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
        210-SYUKEI-READ-EXT.
            EXIT.
       *
+      *----(04.02.01)--ADD-START---
+      *****************************************************************
+      *    集計処理
+      *****************************************************************
+       210-SYUKEI-H2004-MAE-READ-SEC         SECTION.
+      *
+      *    社保分集計処理
+           IF        ( WRK-TEISYUTU    =   "1" )
+      *        医保
+               PERFORM 220-IHO-SYAHO-SYUKEI-SEC
+      *        老人
+               PERFORM 220-ROU-SYAHO-SYUKEI-SEC
+      *        公費
+               PERFORM 220-KOH-SYAHO-SYUKEI-SEC
+           END-IF
+      *
+      *    国保分、特別療養費分集計処理
+           IF        ( WRK-TEISYUTU    =   "2" )
+               OR    ( WRK-TEISYUTU    =   "3" )
+      *        一般・退職
+               PERFORM 220-IHO-KOKHO-SYUKEI-SEC
+      *        老人
+               PERFORM 220-ROU-KOKHO-SYUKEI-SEC
+           END-IF
+      *    公害集計処理
+           IF        ( WRK-TEISYUTU    =   "9" )
+               MOVE    "0"                 TO  WRK-HKNKBN
+               MOVE    SPACE               TO  WRK-SYUBETUKBN
+               MOVE    SPACE               TO  WRK-KBN
+               MOVE    1                   TO  IDX
+               MOVE    RECE10-FTNMONEY(1)  TO  WRK-TENSU
+               MOVE    RECE10-KIGO         TO  WRK-KIGO
+               PERFORM 240-PTINF-SYUKEI-SEC
+           END-IF
+      *
+           .
+       210-SYUKEI-H2004-MAE-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    集計処理
+      *****************************************************************
+       210-SYUKEI-H2004-ATO-READ-SEC         SECTION.
+      *
+      *    社保分集計処理
+           IF        ( WRK-TEISYUTU    =   "1" )
+      *        医保
+               PERFORM 220-IHO-SYAHO-SYUKEI-ATO-SEC
+      *        公費
+               PERFORM 220-KOH-SYAHO-SYUKEI-ATO-SEC
+           END-IF
+      *
+      *    国保分、特別療養費分集計処理
+           IF        ( WRK-TEISYUTU    =   "2" )
+               OR    ( WRK-TEISYUTU    =   "3" )
+      *        一般・退職
+               PERFORM 220-IHO-KOKHO-SYUKEI-ATO-SEC
+           END-IF
+      *    広域連合集計処理
+           IF        ( WRK-TEISYUTU    =   "6" )
+               OR    ( WRK-TEISYUTU    =   "3" )
+               PERFORM 220-ROU-KOUIKI-SYUKEI-SEC
+           END-IF
+      *    公害集計処理
+           IF        ( WRK-TEISYUTU    =   "9" )
+               MOVE    "0"                 TO  WRK-HKNKBN
+               MOVE    SPACE               TO  WRK-SYUBETUKBN
+               MOVE    SPACE               TO  WRK-KBN
+               MOVE    1                   TO  IDX
+               MOVE    RECE10-FTNMONEY(1)  TO  WRK-TENSU
+               MOVE    RECE10-KIGO         TO  WRK-KIGO
+               PERFORM 240-PTINF-SYUKEI-SEC
+           END-IF
+      *
+           .
+       210-SYUKEI-H2004-ATO-READ-EXT.
+           EXIT.
+      *
+      *----(04.02.01)--ADD-END-----
       *****************************************************************
       *    社保分医療保険分集計処理
       *****************************************************************
@@ -995,6 +1121,163 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
        220-IHO-SYAHO-SYUKEI-EXT.
            EXIT.
       *
+      *----(04.02.01)--ADD-START---
+      *****************************************************************
+      *    社保分医療保険分集計処理
+      *****************************************************************
+       220-IHO-SYAHO-SYUKEI-ATO-SEC    SECTION.
+      *
+      *    医保でない場合は処理抜ける
+           IF          RECE10-HKNNUM           =   SPACE
+               GO  TO  220-IHO-SYAHO-SYUKEI-ATO-EXT
+           END-IF
+      *
+           MOVE    "1"                 TO  WRK-HKNKBN
+           MOVE    SPACE               TO  WRK-SYUBETUKBN
+           MOVE    SPACE               TO  WRK-KBN
+           MOVE    1                   TO  IDX
+      *
+      *    レセプト種別区分分類
+      *    船員保険の補助区分が前期高齢者以外の時
+           IF        ( RECE10-HKNNUM       =   "002" )
+               AND   (( RECE10-HOJOKBN     =   "1"   )
+               OR     ( RECE10-HOJOKBN     =   "2"   )
+               OR     ( RECE10-HOJOKBN     =   "3"   )
+               OR     ( RECE10-HOJOKBN     =   SPACE ))
+      *        未就学時
+               IF      RECE10-FLG(1)       =   1
+                   MOVE    "5"             TO  WRK-SYUBETUKBN
+               ELSE
+      *            本人の時
+                   IF      RECE10-HONKZKKBN        =   "1"
+                       MOVE    "3"             TO  WRK-SYUBETUKBN
+                   ELSE
+      *            家族の時
+                       MOVE    "4"             TO  WRK-SYUBETUKBN
+                   END-IF
+               END-IF
+           ELSE
+      *        共済組合の補助区分が前期高齢者以外の時
+               IF         ( RECE10-HKNNUM  >=  "031" )
+                   AND    ( RECE10-HKNNUM  <=  "034" )
+                   AND   (( RECE10-HOJOKBN =   "2" )
+                   OR     ( RECE10-HOJOKBN =   SPACE ))
+      *            未就学時
+                   IF      RECE10-FLG(1)       =   1
+                       MOVE    "5"             TO  WRK-SYUBETUKBN
+                   ELSE
+      *                本人の時
+                       IF      RECE10-HONKZKKBN        =   "1"
+                           MOVE    "3"             TO  WRK-SYUBETUKBN
+                       ELSE
+      *                家族の時
+                           MOVE    "4"             TO  WRK-SYUBETUKBN
+                       END-IF
+                   END-IF
+               ELSE
+                   IF      RECE10-AGE      >=  70
+      *                船員保険の補助区分が前期高齢者の時
+                       IF      RECE10-HKNNUM           =   "002"
+                           EVALUATE    RECE10-HOJOKBN
+                               WHEN    "9"
+                               WHEN    "A"
+                               WHEN    "B"
+                               WHEN    "C"
+                                   MOVE    "1"     TO  WRK-SYUBETUKBN
+                               WHEN    "8"
+                               WHEN    "D"
+                               WHEN    "E"
+                               WHEN    "F"
+                               WHEN    "7"
+                               WHEN    "G"
+                               WHEN    "H"
+                               WHEN    "I"
+                                   MOVE    "2"     TO  WRK-SYUBETUKBN
+                           END-EVALUATE
+                       ELSE
+      *                共済組合の補助区分が前期高齢者の時
+                           IF        ( RECE10-HKNNUM   >=  "031" )
+                               AND   ( RECE10-HKNNUM   <=  "034" )
+                               EVALUATE    RECE10-HOJOKBN
+                                   WHEN    "9"
+                                   WHEN    "B"
+                                       MOVE    "1" TO  WRK-SYUBETUKBN
+                                   WHEN    "8"
+                                   WHEN    "E"
+                                   WHEN    "7"
+                                   WHEN    "H"
+                                       MOVE    "2" TO  WRK-SYUBETUKBN
+                               END-EVALUATE
+                           ELSE
+                               EVALUATE    RECE10-KYURATE
+                                   WHEN    9
+                                       MOVE    "1" TO  WRK-SYUBETUKBN
+                                   WHEN    8
+                                   WHEN    7
+                                       MOVE    "2" TO  WRK-SYUBETUKBN
+                               END-EVALUATE
+                           END-IF
+                       END-IF
+                   ELSE
+      *                未就学時
+                       IF      RECE10-FLG(1)       =   1
+                           MOVE    "5"             TO  WRK-SYUBETUKBN
+                       ELSE
+      *                    本人の時
+                           IF      RECE10-HONKZKKBN    =   "1"
+                               MOVE    "3"         TO  WRK-SYUBETUKBN
+                           ELSE
+      *                    家族の時
+                               MOVE    "4"         TO  WRK-SYUBETUKBN
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *    詳細区分分類
+           IF      RECE10-KOHNUM(1)    NOT =   SPACE
+      *        公費と併用
+               MOVE    "001"           TO  WRK-KBN
+           ELSE
+      *        単独
+               EVALUATE    RECE10-HKNNUM
+                   WHEN    "001"
+                       MOVE    "002"           TO  WRK-KBN
+                   WHEN    "002"
+                       MOVE    "003"           TO  WRK-KBN
+                   WHEN    "003"
+                       MOVE    "004"           TO  WRK-KBN
+                   WHEN    "004"
+                       MOVE    "005"           TO  WRK-KBN
+                   WHEN    "031"  THRU  "034"
+                       MOVE    "006"           TO  WRK-KBN
+                   WHEN    "006"
+                       MOVE    "007"           TO  WRK-KBN
+                   WHEN    "007"
+                       MOVE    "008"           TO  WRK-KBN
+                   WHEN    "063"
+                   WHEN    "072"  THRU  "075"
+                       MOVE    "009"           TO  WRK-KBN
+               END-EVALUATE
+           END-IF
+      *
+      *    詳細区分が違う場合は処理抜ける
+           IF        ( WRK-PARA-KBN    NOT =   SPACE)
+               AND   ( WRK-PARA-KBN    NOT =   "0" )
+               IF      WRK-KBN(3:1)    NOT =   WRK-PARA-KBN
+                   GO  TO  220-IHO-SYAHO-SYUKEI-ATO-EXT
+               END-IF
+           END-IF
+      *
+      *    保健集計処理
+           PERFORM 230-SYUKEI-CHK-SEC
+      *
+           .
+       220-IHO-SYAHO-SYUKEI-ATO-EXT.
+           EXIT.
+      *
+      *----(04.02.01)--ADD-END-----
       *****************************************************************
       *    社保分老人保健分集計処理
       *****************************************************************
@@ -1092,6 +1375,56 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
        220-KOH-SYAHO-SYUKEI-EXT.
            EXIT.
       *
+      *----(04.02.01)--ADD-START---
+      *****************************************************************
+      *    社保分公費保険分集計処理
+      *****************************************************************
+       220-KOH-SYAHO-SYUKEI-ATO-SEC    SECTION.
+      *
+      *    公費でない場合処理抜ける
+           IF      RECE10-KOHNUM(1)    =   SPACE
+               GO  TO  220-KOH-SYAHO-SYUKEI-ATO-EXT
+           END-IF
+      *
+           MOVE    "3"                 TO  WRK-HKNKBN
+           MOVE    SPACE               TO  WRK-SYUBETUKBN
+           MOVE    SPACE               TO  WRK-KBN
+      *
+      *    レセプト種別区分分類
+           IF          RECE10-HKNNUM       NOT =   SPACE
+               GO  TO  220-KOH-SYAHO-SYUKEI-ATO-EXT
+           ELSE
+               IF      RECE10-KOHNUM(2)    NOT =   SPACE
+      *            公費と公費の併用欄
+                   MOVE    "1"             TO  WRK-SYUBETUKBN
+               ELSE
+      *            公費単独欄
+                   MOVE    "2"             TO  WRK-SYUBETUKBN
+               END-IF
+           END-IF
+      *
+      *    詳細区分に公費番号セット
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       4
+                   OR  RECE10-KOHNUM(IDY)  =   SPACE
+      *
+      *        特定疾患無しのとき
+               IF      RECE10-KOHNUM(IDY)  =   "091"
+                   MOVE    "051"           TO  RECE10-KOHNUM(IDY)
+               END-IF
+      *
+               MOVE    RECE10-KOHNUM(IDY)  TO  WRK-KBN
+               COMPUTE IDX     =   IDY     +   1
+      *
+      *        保健集計処理
+               PERFORM 230-SYUKEI-CHK-SEC
+           END-PERFORM
+      *
+           .
+       220-KOH-SYAHO-SYUKEI-ATO-EXT.
+           EXIT.
+      *
+      *----(04.02.01)--ADD-END-----
       *****************************************************************
       *    国保分医療保険分集計処理
       *****************************************************************
@@ -1163,6 +1496,66 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
        220-IHO-KOKHO-SYUKEI-EXT.
            EXIT.
       *
+      *----(04.02.01)--ADD-START---
+      *****************************************************************
+      *    国保分医療保険分集計処理
+      *****************************************************************
+       220-IHO-KOKHO-SYUKEI-ATO-SEC   SECTION.
+      *
+      *    一般・退職でない場合は処理抜ける
+           IF       ( RECE10-HKNNUM-S         =   SPACE )
+               OR   ( RECE10-HKNNUM-S         =   "040" )
+               GO  TO  220-IHO-KOKHO-SYUKEI-ATO-EXT
+           END-IF
+      *
+           MOVE    "1"                 TO  WRK-HKNKBN
+           MOVE    SPACE               TO  WRK-SYUBETUKBN
+           MOVE    "001"               TO  WRK-KBN
+           MOVE    1                   TO  IDX
+      *
+      *    レセプト種別区分分類
+           EVALUATE    RECE10-HKNNUM-S
+               WHEN    "060"
+               WHEN    "068"
+      *            一般前期高齢者
+                   IF      RECE10-AGE          >=  70
+                       EVALUATE    RECE10-KYURATE
+                           WHEN    9
+                               MOVE    "1"         TO  WRK-SYUBETUKBN
+                           WHEN    8
+                           WHEN    7
+                               MOVE    "2"         TO  WRK-SYUBETUKBN
+                       END-EVALUATE
+                   ELSE
+      *                未就学時
+                       IF      RECE10-FLG(1)       =   1
+                           MOVE    "4"         TO  WRK-SYUBETUKBN
+                       ELSE
+                           MOVE    "3"         TO  WRK-SYUBETUKBN
+                       END-IF
+                   END-IF
+               WHEN    "067"
+               WHEN    "069"
+      *            未就学時
+                   IF      RECE10-FLG(1)       =   1
+                       MOVE    "9"         TO  WRK-SYUBETUKBN
+                   ELSE
+                       IF      RECE10-HONKZKKBN    =   "1"
+                           MOVE    "5"         TO  WRK-SYUBETUKBN
+                       ELSE
+                           MOVE    "8"         TO  WRK-SYUBETUKBN
+                       END-IF
+                   END-IF
+           END-EVALUATE
+      *
+      *    保健集計処理
+           PERFORM 230-SYUKEI-CHK-SEC
+      *
+           .
+       220-IHO-KOKHO-SYUKEI-ATO-EXT.
+           EXIT.
+      *
+      *----(04.02.01)--ADD-END-----
       *****************************************************************
       *    国保分老人保健分集計処理
       *****************************************************************
@@ -1196,6 +1589,39 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
        220-ROU-KOKHO-SYUKEI-EXT.
            EXIT.
       *
+      *----(04.02.01)--ADD-START---
+      *****************************************************************
+      *    広域連合分医療保険分集計処理
+      *****************************************************************
+       220-ROU-KOUIKI-SYUKEI-SEC   SECTION.
+      *
+      *    後期高齢者でない場合は処理抜ける
+           IF        ( RECE10-HKNNUM-S         =   SPACE )
+               OR   (( RECE10-HKNNUM-S     NOT =   "039" )
+               AND   ( RECE10-HKNNUM-S     NOT =   "040" ))
+               GO  TO  220-ROU-KOUIKI-SYUKEI-EXT
+           END-IF
+      *
+           MOVE    "2"                 TO  WRK-HKNKBN
+           MOVE    SPACE               TO  WRK-SYUBETUKBN
+           MOVE    "001"               TO  WRK-KBN
+           MOVE    1                   TO  IDX
+      *
+      *    レセプト種別区分分類
+           EVALUATE    RECE10-KYURATE
+               WHEN    9
+                   MOVE    "1"             TO  WRK-SYUBETUKBN
+               WHEN    7
+                   MOVE    "2"             TO  WRK-SYUBETUKBN
+           END-EVALUATE
+      *
+      *    保健集計処理
+           PERFORM 230-SYUKEI-CHK-SEC
+      *
+           .
+       220-ROU-KOUIKI-SYUKEI-EXT.
+           EXIT.
+      *----(04.02.01)--ADD-END-----
       *****************************************************************
       *    保健集計処理
       *****************************************************************
@@ -1209,14 +1635,16 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
            END-IF
       *
       *----(00.00.02)--UPD-START---
-           EVALUATE    WRK-TEISYUTU    ALSO    WRK-HKNKBN
+      *----(04.02.01)--UPD-START---
+           IF      RECE10-SRYYM    <   CONST-H2004
+               EVALUATE    WRK-TEISYUTU    ALSO    WRK-HKNKBN
                ALSO    WRK-SYUBETUKBN  ALSO    WRK-PARA-SYUBETUKBN
       *        指定なし
                WHEN    ANY ALSO    ANY ALSO    ANY ALSO    SPACE
                WHEN    ANY ALSO    ANY ALSO    ANY ALSO    ZERO
-      *        社保医保老人９割
+      *        社保医保前期高齢者９割
                WHEN    "1" ALSO    "1" ALSO    "1" ALSO    "01"
-      *        社保医保老人８割・７割
+      *        社保医保前期高齢者８割・７割
                WHEN    "1" ALSO    "1" ALSO    "2" ALSO    "02"
       *        社保医保本人
                WHEN    "1" ALSO    "1" ALSO    "3" ALSO    "03"
@@ -1226,16 +1654,18 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
                WHEN    "1" ALSO    "1" ALSO    "5" ALSO    "05"
       *        社保老人９割
                WHEN    "1" ALSO    "2" ALSO    "1" ALSO    "06"
+               WHEN    "1" ALSO    "2" ALSO    "1" ALSO    "21"
       *        社保老人８割・７割
                WHEN    "1" ALSO    "2" ALSO    "2" ALSO    "07"
+               WHEN    "1" ALSO    "2" ALSO    "2" ALSO    "22"
       *        社保公費と公費の併用
                WHEN    "1" ALSO    "3" ALSO    "1" ALSO    "08"
       *        社保公費単独
                WHEN    "1" ALSO    "3" ALSO    "2" ALSO    "09"
-      *        国保、特別療養費一般老人９割
+      *        国保、特別療養費一般前期高齢者９割
                WHEN    "2" ALSO    "1" ALSO    "1" ALSO    "10"
                WHEN    "3" ALSO    "1" ALSO    "1" ALSO    "10"
-      *        国保、特別療養費一般老人８割・７割
+      *        国保、特別療養費一般前期高齢者８割・７割
                WHEN    "2" ALSO    "1" ALSO    "2" ALSO    "11"
                WHEN    "3" ALSO    "1" ALSO    "2" ALSO    "11"
       *        国保、特別療養費一般被保険者
@@ -1250,9 +1680,13 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
       *        国保、特別療養費退職老人９割
                WHEN    "2" ALSO    "1" ALSO    "6" ALSO    "15"
                WHEN    "3" ALSO    "1" ALSO    "6" ALSO    "15"
+               WHEN    "2" ALSO    "1" ALSO    "6" ALSO    "21"
+               WHEN    "3" ALSO    "1" ALSO    "6" ALSO    "21"
       *        国保、特別療養費退職老人８割・７割
                WHEN    "2" ALSO    "1" ALSO    "7" ALSO    "16"
                WHEN    "3" ALSO    "1" ALSO    "7" ALSO    "16"
+               WHEN    "2" ALSO    "1" ALSO    "7" ALSO    "22"
+               WHEN    "3" ALSO    "1" ALSO    "7" ALSO    "22"
       *        国保、特別療養費退職被扶養者
                WHEN    "2" ALSO    "1" ALSO    "8" ALSO    "17"
                WHEN    "3" ALSO    "1" ALSO    "8" ALSO    "17"
@@ -1262,14 +1696,72 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
       *        国保、特別療養費老人９割
                WHEN    "2" ALSO    "2" ALSO    "1" ALSO    "19"
                WHEN    "3" ALSO    "2" ALSO    "1" ALSO    "19"
+               WHEN    "2" ALSO    "2" ALSO    "1" ALSO    "21"
+               WHEN    "3" ALSO    "2" ALSO    "1" ALSO    "21"
       *        国保、特別療養費老人８割・７割
                WHEN    "2" ALSO    "2" ALSO    "2" ALSO    "20"
                WHEN    "3" ALSO    "2" ALSO    "2" ALSO    "20"
+               WHEN    "2" ALSO    "2" ALSO    "2" ALSO    "22"
+               WHEN    "3" ALSO    "2" ALSO    "2" ALSO    "22"
                    CONTINUE
       *        指定したレセ種別が正しくない場合は処理抜ける
                WHEN    OTHER
                    GO  TO  230-SYUKEI-CHK-EXT
-           END-EVALUATE
+               END-EVALUATE
+           ELSE
+               EVALUATE    WRK-TEISYUTU    ALSO    WRK-HKNKBN
+               ALSO    WRK-SYUBETUKBN  ALSO    WRK-PARA-SYUBETUKBN
+      *        指定なし
+               WHEN    ANY ALSO    ANY ALSO    ANY ALSO    SPACE
+               WHEN    ANY ALSO    ANY ALSO    ANY ALSO    ZERO
+      *        社保医保前期高齢者一般・低所得
+               WHEN    "1" ALSO    "1" ALSO    "1" ALSO    "01"
+      *        社保医保前期高齢者７割
+               WHEN    "1" ALSO    "1" ALSO    "2" ALSO    "02"
+      *        社保医保本人
+               WHEN    "1" ALSO    "1" ALSO    "3" ALSO    "03"
+      *        社保医保家族
+               WHEN    "1" ALSO    "1" ALSO    "4" ALSO    "04"
+      *        社保医保未就学者
+               WHEN    "1" ALSO    "1" ALSO    "5" ALSO    "05"
+      *        社保公費と公費の併用
+               WHEN    "1" ALSO    "3" ALSO    "1" ALSO    "08"
+      *        社保公費単独
+               WHEN    "1" ALSO    "3" ALSO    "2" ALSO    "09"
+      *        国保、特別療養費前期高齢者一般・低所得
+               WHEN    "2" ALSO    "1" ALSO    "1" ALSO    "10"
+               WHEN    "3" ALSO    "1" ALSO    "1" ALSO    "10"
+      *        国保、特別療養費前期高齢者７・８割
+               WHEN    "2" ALSO    "1" ALSO    "2" ALSO    "11"
+               WHEN    "3" ALSO    "1" ALSO    "2" ALSO    "11"
+      *        国保、特別療養費世帯主
+               WHEN    "2" ALSO    "1" ALSO    "3" ALSO    "12"
+               WHEN    "3" ALSO    "1" ALSO    "3" ALSO    "12"
+      *        国保、特別療養費未就学者
+               WHEN    "2" ALSO    "1" ALSO    "4" ALSO    "13"
+               WHEN    "3" ALSO    "1" ALSO    "4" ALSO    "13"
+      *        国保、特別療養費退職本人
+               WHEN    "2" ALSO    "1" ALSO    "5" ALSO    "14"
+               WHEN    "3" ALSO    "1" ALSO    "5" ALSO    "14"
+      *        国保、特別療養費退職家族
+               WHEN    "2" ALSO    "1" ALSO    "8" ALSO    "17"
+               WHEN    "3" ALSO    "1" ALSO    "8" ALSO    "17"
+      *        国保、特別療養費退職未就学者
+               WHEN    "2" ALSO    "1" ALSO    "9" ALSO    "18"
+               WHEN    "3" ALSO    "1" ALSO    "9" ALSO    "18"
+      *        特別療養費、広域連合後期高齢者一般・低所得
+               WHEN    "3" ALSO    "2" ALSO    "1" ALSO    "21"
+               WHEN    "6" ALSO    "2" ALSO    "1" ALSO    "21"
+      *        特別療養費、広域連合後期高齢者７割
+               WHEN    "3" ALSO    "2" ALSO    "2" ALSO    "22"
+               WHEN    "6" ALSO    "2" ALSO    "2" ALSO    "22"
+                   CONTINUE
+      *        指定したレセ種別が正しくない場合は処理抜ける
+               WHEN    OTHER
+                   GO  TO  230-SYUKEI-CHK-EXT
+               END-EVALUATE
+           END-IF
+      *----(04.02.01)--UPD-END-----
       *----(00.00.02)--UPD-END-----
       *
       *----(04.01.01)--ADD-START---
@@ -1446,6 +1938,14 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
                WHEN    "3"     ALSO    "3"
                    MOVE    "（特別月遅れ分）"  TO  WRK-PRT1-BUNRUI
       *----(00.00.02)--ADD-END-----
+      *----(04.02.01)--ADD-START---
+               WHEN    "6"     ALSO    "1"
+                   MOVE    "（広域分）"        TO  WRK-PRT1-BUNRUI
+               WHEN    "6"     ALSO    "2"
+                   MOVE    "（広域返戻分）　"  TO  WRK-PRT1-BUNRUI
+               WHEN    "6"     ALSO    "3"
+                   MOVE    "（広域月遅れ分）"  TO  WRK-PRT1-BUNRUI
+      *----(04.02.01)--ADD-END-----
       *----(04.01.01)--ADD-START---
                WHEN    "9"     ALSO    "1"
                    MOVE    "（公害分）"        TO  WRK-PRT1-BUNRUI
@@ -1460,9 +1960,12 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
            MOVE    WRK-SYOKBN      TO  CSV-SYOKBN
       *
       *----(00.00.02)--UPD-START---
-      *    国保分、特別療養費分の場合は保険者名セット
+      *    国保分、特別療養費分、後期連合の場合は保険者名セット
            IF        ( WRK-TEISYUTU    =   "2" )
                OR    ( WRK-TEISYUTU    =   "3" )
+      *----(04.02.01)--ADD-START---
+               OR    ( WRK-TEISYUTU    =   "6" )
+      *----(04.02.01)--ADD-START---
                MOVE    SPACE           TO  HKNJAINF-REC
                INITIALIZE                  HKNJAINF-REC
 grpsys*DD      MOVE    WRK-PARA-HOSPID TO  HKNJA-HOSPID
@@ -1900,6 +2403,12 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                WHEN    "3"     ALSO    "2"
                    MOVE    "＜特別療養費入院＞"    TO  WRK-PRT-LINE
       *----(00.00.02)--ADD-END-----
+      *----(04.02.01)--ADD-START---
+               WHEN    "6"     ALSO    "1"
+                   MOVE    "＜広域外来＞"          TO  WRK-PRT-LINE
+               WHEN    "6"     ALSO    "2"
+                   MOVE    "＜広域入院＞"          TO  WRK-PRT-LINE
+      *----(04.02.01)--ADD-END-----
       *----(04.01.01)--ADD-START---
                WHEN    "9"     ALSO    "1"
                    MOVE    "＜公害外来＞"          TO  WRK-PRT-LINE
@@ -2046,6 +2555,24 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
       *
            MOVE    SPACE               TO  WRK-PRT-LINE
       *
+      *----(04.02.01)--UPD-START---
+           IF      TOKEI-SRYYM    <   CONST-H2004
+               PERFORM 3201-SYUBETU-BODY-HEN-MAE-SEC
+           ELSE
+               PERFORM 3201-SYUBETU-BODY-HEN-ATO-SEC
+           END-IF
+      *----(04.02.01)--UPD-END-----
+      *
+           .
+       3201-SYUBETU-BODY-HEN-EXT.
+           EXIT.
+      *
+      *----(04.02.01)--ADD-START---
+      *****************************************************************
+      *    帳票編集<明細行>処理    種別区分見出し
+      *****************************************************************
+       3201-SYUBETU-BODY-HEN-MAE-SEC   SECTION.
+      *
       *----(00.00.02)--UPD-START---
            EVALUATE    TOKEI-TEISYUTU      ALSO    TOKEI-HKNKBN
                ALSO    TOKEI-SYUBETUKBN    ALSO    TOKEI-KBN
@@ -2161,7 +2688,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                    END-IF
       *----(03.03.01)--UPD-END-----
                WHEN    OTHER
-                   GO  TO  3201-SYUBETU-BODY-HEN-EXT
+                   GO  TO  3201-SYUBETU-BODY-HEN-MAE-EXT
            END-EVALUATE
       *----(00.00.02)--UPD-END-----
       *
@@ -2173,9 +2700,92 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
            MOVE    SPACE               TO  WRK-KBN
       *
            .
-       3201-SYUBETU-BODY-HEN-EXT.
+       3201-SYUBETU-BODY-HEN-MAE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    帳票編集<明細行>処理    種別区分見出し
+      *****************************************************************
+       3201-SYUBETU-BODY-HEN-ATO-SEC   SECTION.
+      *
+           EVALUATE    TOKEI-TEISYUTU      ALSO    TOKEI-HKNKBN
+               ALSO    TOKEI-SYUBETUKBN    ALSO    TOKEI-KBN
+               WHEN    "1" ALSO    "1" ALSO    "1" ALSO    "001"
+               MOVE    "＊医保（７０歳以上一般・低所得）と公費の併用"
+                                                   TO  WRK-PRT-LINE
+               WHEN    "1" ALSO    "1" ALSO    "1" ALSO    ANY
+                   MOVE    "＊医保単独（７０歳以上一般・低所得）"
+                                                   TO  WRK-PRT-LINE
+               WHEN    "1" ALSO    "1" ALSO    "2" ALSO    "001"
+                   MOVE    "＊医保（７０歳以上７割）と公費の併用"
+                                                   TO  WRK-PRT-LINE
+               WHEN    "1" ALSO    "1" ALSO    "2" ALSO    ANY
+                   MOVE    "＊医保単独（７０歳以上７割）"
+                                                   TO  WRK-PRT-LINE
+               WHEN    "1" ALSO    "1" ALSO    "3" ALSO    "001"
+                   MOVE    "＊医保（本人）と公費の併用"
+                                                   TO  WRK-PRT-LINE
+               WHEN    "1" ALSO    "1" ALSO    "3" ALSO    ANY
+                   MOVE    "＊医保単独（本人）"    TO  WRK-PRT-LINE
+               WHEN    "1" ALSO    "1" ALSO    "4" ALSO    "001"
+                   MOVE    "＊医保（家族）と公費の併用"
+                                                   TO  WRK-PRT-LINE
+               WHEN    "1" ALSO    "1" ALSO    "4" ALSO    ANY
+                   MOVE    "＊医保単独（家族）"    TO  WRK-PRT-LINE
+               WHEN    "1" ALSO    "1" ALSO    "5" ALSO    "001"
+                   MOVE    "＊医保（６歳）と公費の併用"
+                                                   TO  WRK-PRT-LINE
+               WHEN    "1" ALSO    "1" ALSO    "5" ALSO    ANY
+                   MOVE    "＊医保単独（６歳）"    TO  WRK-PRT-LINE
+               WHEN    "1" ALSO    "3" ALSO    "1" ALSO    ANY
+                   MOVE    "＊公費と公費の併用"    TO  WRK-PRT-LINE
+               WHEN    "1" ALSO    "3" ALSO    "2" ALSO    ANY
+                   MOVE    "＊公費単独"            TO  WRK-PRT-LINE
+               WHEN    "2" ALSO    "1" ALSO    "1" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "1" ALSO    ANY
+                   MOVE    "＊一般（７０歳以上一般・低所得）"
+                                                   TO  WRK-PRT-LINE
+               WHEN    "2" ALSO    "1" ALSO    "2" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "2" ALSO    ANY
+                   MOVE    "＊一般（７０歳以上７割）"
+                                                   TO  WRK-PRT-LINE
+               WHEN    "2" ALSO    "1" ALSO    "3" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "3" ALSO    ANY
+                   MOVE    "＊一般"                TO  WRK-PRT-LINE
+               WHEN    "2" ALSO    "1" ALSO    "4" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "4" ALSO    ANY
+                   MOVE    "＊一般（６歳）"        TO  WRK-PRT-LINE
+               WHEN    "2" ALSO    "1" ALSO    "5" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "5" ALSO    ANY
+                   MOVE    "＊退職（本人）"        TO  WRK-PRT-LINE
+               WHEN    "2" ALSO    "1" ALSO    "8" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "8" ALSO    ANY
+                   MOVE    "＊退職（被扶養者）"    TO  WRK-PRT-LINE
+               WHEN    "2" ALSO    "1" ALSO    "9" ALSO    ANY
+               WHEN    "3" ALSO    "1" ALSO    "9" ALSO    ANY
+                   MOVE    "＊退職（６歳）"        TO  WRK-PRT-LINE
+               WHEN    "3" ALSO    "2" ALSO    "1" ALSO    ANY
+               WHEN    "6" ALSO    "2" ALSO    "1" ALSO    ANY
+                   MOVE    "＊後期高齢者９割"      TO  WRK-PRT-LINE
+               WHEN    "3" ALSO    "2" ALSO    "2" ALSO    ANY
+               WHEN    "6" ALSO    "2" ALSO    "2" ALSO    ANY
+                   MOVE    "＊後期高齢者７割"      TO  WRK-PRT-LINE
+               WHEN    OTHER
+                   GO  TO  3201-SYUBETU-BODY-HEN-ATO-EXT
+           END-EVALUATE
+      *
+      *    見出し行セット
+           PERFORM 320-BODY-SET-SEC
+      *
+           MOVE    TOKEI-SYUBETUKBN    TO  WRK-SYUBETUKBN
+           MOVE    WRK-SYUBETUKBN      TO  CSV-SYUBETUKBN
+           MOVE    SPACE               TO  WRK-KBN
+      *
+           .
+       3201-SYUBETU-BODY-HEN-ATO-EXT.
+           EXIT.
+      *
+      *----(04.02.01)--ADD-END----
       *----(04.01.01)--ADD-START---
       *****************************************************************
       *    帳票編集<明細行>処理    公害
@@ -2208,9 +2818,12 @@ grpsys         MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
        3201-KBN-BODY-HEN-SEC       SECTION.
       *
       *----(00.00.02)--UPD-START---
-      *    国保、特別療養費の場合は抜ける、公害も
+      *    国保、特別療養費の場合は抜ける、公害も、後期高齢者も
            IF        ( WRK-TEISYUTU    =   "2" )
                OR    ( WRK-TEISYUTU    =   "3" )
+      *----(04.02.01)--ADD-START---
+               OR    ( WRK-TEISYUTU    =   "6" )
+      *----(04.02.01)--ADD-END-----
       *----(04.01.01)--ADD-START---
                OR    ( WRK-TEISYUTU    =   "9" )
       *----(04.01.01)--ADD-END-----
@@ -2762,9 +3375,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
        3203-HKNKBN-BODY-END-SEC    SECTION.
       *
       *----(00.00.02)--UPD-START---
-      *    国保、特別療養費は処理抜ける、公害も抜ける
+      *    国保、特別療養費は処理抜ける、公害も抜ける、後期高齢も抜ける
            IF        ( WRK-TEISYUTU    =   "2" )
                OR    ( WRK-TEISYUTU    =   "3" )
+      *----(04.02.01)--ADD-START---
+               OR    ( WRK-TEISYUTU    =   "6" )
+      *----(04.02.01)--ADD-END-----
       *----(04.01.01)--ADD-START---
                OR    ( WRK-TEISYUTU    =   "9" )
       *----(04.01.01)--ADD-END-----
@@ -3270,9 +3886,11 @@ grpsys     MOVE    SPA-HOSPNUM             TO  RECE10-HOSPNUM
                MOVE    "99999999"          TO  RECE10-XXEDHKNJANUM
            END-IF
       *----(04.01.01)--ADD-START---
+      *----(04.02.01)--UPD-START---
            IF      WRK-PATH-PATHNAME   =   "key60"
-               MOVE    5                   TO  RECE10-TEISYUTUSAKI
+               MOVE    WRK-TEISYUTUSAKI-KBN    TO  RECE10-TEISYUTUSAKI
            END-IF
+      *----(04.02.01)--UPD-END-----
       *----(04.01.01)--ADD-END-----
            MOVE    RECE10-REC          TO  MCPDATA-REC
       *----(00.00.02)--UPD-START---
@@ -3344,6 +3962,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                WHEN    "067"
                    IF        ( WRK-PARA-TEISYUTU   =   "1" )
                        OR    ( WRK-PARA-TEISYUTU   =   "3" )
+      *----(04.02.01)--ADD-START---
+                       OR    ( WRK-PARA-TEISYUTU   =   "4" )
+      *----(04.02.01)--ADD-END-----
       *----(04.01.01)--ADD-START---
                        OR    ( WRK-PARA-TEISYUTU   =   "9" )
       *----(04.01.01)--ADD-END-----
@@ -3353,20 +3974,40 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
       *        特別療養費
                WHEN    "068"
                WHEN    "069"
+      *----(04.02.01)--ADD-START---
+               WHEN    "040"
+      *----(04.02.01)--ADD-END---
                    IF        ( WRK-PARA-TEISYUTU   =   "1" )
                        OR    ( WRK-PARA-TEISYUTU   =   "2" )
+      *----(04.02.01)--ADD-START---
+                       OR    ( WRK-PARA-TEISYUTU   =   "4" )
+      *----(04.02.01)--ADD-END-----
       *----(04.01.01)--ADD-START---
                        OR    ( WRK-PARA-TEISYUTU   =   "9" )
       *----(04.01.01)--ADD-END-----
                        GO  TO  900-SEIKYU-CHEK-EXT
                    END-IF
                    MOVE    "3"             TO  WRK-TEISYUTU
+      *----(04.02.01)--ADD-START---
+      *        広域連合
+               WHEN    "039"
+                   IF        ( WRK-PARA-TEISYUTU   =   "1" )
+                       OR    ( WRK-PARA-TEISYUTU   =   "2" )
+                       OR    ( WRK-PARA-TEISYUTU   =   "3" )
+                       OR    ( WRK-PARA-TEISYUTU   =   "9" )
+                       GO  TO  900-SEIKYU-CHEK-EXT
+                   END-IF
+                   MOVE    "6"             TO  WRK-TEISYUTU
+      *----(04.02.01)--ADD-END---
       *----(04.01.01)--ADD-START---
       *        公害
                WHEN    "975"
                    IF        ( WRK-PARA-TEISYUTU   =   "1" )
                        OR    ( WRK-PARA-TEISYUTU   =   "2" )
                        OR    ( WRK-PARA-TEISYUTU   =   "3" )
+      *----(04.02.01)--ADD-START---
+                       OR    ( WRK-PARA-TEISYUTU   =   "4" )
+      *----(04.02.01)--ADD-END-----
                        GO  TO  900-SEIKYU-CHEK-EXT
                    END-IF
                    MOVE    "9"             TO  WRK-TEISYUTU
@@ -3374,6 +4015,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                WHEN    OTHER
                    IF        ( WRK-PARA-TEISYUTU   =   "2" )
                        OR    ( WRK-PARA-TEISYUTU   =   "3" )
+      *----(04.02.01)--ADD-START---
+                       OR    ( WRK-PARA-TEISYUTU   =   "4" )
+      *----(04.02.01)--ADD-END-----
       *----(04.01.01)--ADD-START---
                        OR    ( WRK-PARA-TEISYUTU   =   "9" )
       *----(04.01.01)--ADD-END-----
@@ -3446,6 +4090,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                MOVE    "1"             TO  WRK-SKYKBN
                IF        ( WRK-TEISYUTU    =   "2" )
                    OR    ( WRK-TEISYUTU    =   "3" )
+      *----(04.02.01)--ADD-START---
+                   OR    ( WRK-TEISYUTU    =   "6" )
+      *----(04.02.01)--ADD-END-----
                    MOVE    RECE10-HKNJANUM-S   TO  WRK-HKNJANUM
                ELSE
                    MOVE    "00000000"          TO  WRK-HKNJANUM
