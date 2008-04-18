@@ -33,6 +33,8 @@
       *                                     フラグ、データエリア追加
       *  04.02.03    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     診療区分６４：病理診断対応
+      *  04.02.04    NACL-藤原    08/04/18  「レセ電通信医２０００６号」
+      *                                     症状詳記区分コード５２の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -427,8 +429,14 @@
                "【合計点数が１００万点以上の処置に係る症状等】".
            03  FILLER              PIC X(52)   VALUE
                "【その他】".
+           03  FILLER              PIC X(52)   VALUE
+               "【薬事法に規定する治験に係る治験概要】".
+           03  FILLER              PIC X(52)   VALUE
+               "【疾患別リハビリテーションに係る治療継続の理由等】".
+           03  FILLER              PIC X(52)   VALUE
+               "【廃用をもたらすに至った要因等】".
        01  TBL-RECECOM-AREA-R      REDEFINES   TBL-RECECOM-AREA.
-           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   7.
+           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   10.
       *
       *    疑い編集
        01  WRK-UTAGAI-AREA.
@@ -1972,7 +1980,7 @@
            MOVE    "key7"              TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
       *     
-      *    症状詳記コメント     
+      *    症状詳記コメント（０１〜０６）
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key8"              TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
@@ -1980,6 +1988,11 @@
       *    症状詳記コメント（その他）    
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key9"              TO  WRK-MCP-PATHNAME
+           PERFORM 3601-RECECOM-HENSYU-SEC
+      *     
+      *    症状詳記コメント（５０、５１、５２）     
+           MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
+           MOVE    "key12"             TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
            .
        360-HC101-COMMENT-HEN-EXT.
@@ -2048,6 +2061,18 @@
                        MOVE    1               TO  FLG-RECECOM-SJKBN
                        MOVE    RECECOM-SJKBN   TO  WRK-SJKBN-X
                        MOVE    TBL-RECECOM-NAME (WRK-SJKBN)
+                                               TO  WRK-RECECOM-NAME
+                   WHEN    "50"
+                       MOVE    1               TO  FLG-RECECOM-SJKBN
+                       MOVE    TBL-RECECOM-NAME (8)
+                                               TO  WRK-RECECOM-NAME
+                   WHEN    "51"
+                       MOVE    1               TO  FLG-RECECOM-SJKBN
+                       MOVE    TBL-RECECOM-NAME (9)
+                                               TO  WRK-RECECOM-NAME
+                   WHEN    "52"
+                       MOVE    1               TO  FLG-RECECOM-SJKBN
+                       MOVE    TBL-RECECOM-NAME (10)
                                                TO  WRK-RECECOM-NAME
                END-EVALUATE
            END-IF
