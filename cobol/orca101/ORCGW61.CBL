@@ -44,6 +44,7 @@
       *  04.01.03    NACL-藤原    08/01/10  適用欄コメントのチェックの修正
       *
       *  04.02.01    NACL-藤原    08/04/12  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/04/14  警告時の登録処理を可能にする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -726,6 +727,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                WHEN "2001"
                        PERFORM 421-SAKUJO-SEC
                WHEN "2002"
+               WHEN "2004"
+               WHEN "2005"
                        PERFORM 421-TOUROKU-SEC
                WHEN "2003"
                    MOVE    "JOIN"          TO  MCP-PUTTYPE
