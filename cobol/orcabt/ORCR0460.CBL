@@ -105,6 +105,7 @@
       *                                     （初診（夜間・早朝等）加算追加）
       *                                     （診療区分６４：病理診断対応）
       *                                     （再就労、職業復帰：記載順対応）
+      *  04.02.02    NACL-門脇    08/04/21  ８０その他記載順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3315,6 +3316,17 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                MOVE    RECE44-SAFLG      TO  RECE46-SAFLG
       *
                MOVE    RECE44-OKIKAEFLG  TO  RECE46-OKIKAEFLG
+      *
+               IF      RECE44-SRYKBN     =   "80"
+                 IF  TBL-ZAIW-SRYCD1 = "120002710" OR "120002810" OR
+                                       "120002910" OR "120003010" OR
+                                       "120002470" OR "120002570" OR
+                                       "120003270"
+                       MOVE   ZERO   TO   RECE46-SYOHOUFLG
+                 ELSE
+                       MOVE    1     TO   RECE46-SYOHOUFLG
+                 END-IF
+               END-IF
       *
                WRITE   RECE46-REC
                IF  STS-RECE46          NOT =   ZERO

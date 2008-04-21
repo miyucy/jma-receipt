@@ -182,6 +182,7 @@
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （初診（夜間・早朝等）加算追加）
       *                                     （診療区分６４：病理診断対応）
+      *  04.02.02    NACL-門脇    08/04/21  ８０その他記載順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4376,6 +4377,17 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE04-HOSPNUM     )
                        END-IF
                    END-PERFORM
                END-EVALUATE
+      *
+               IF      RECE04-SRYKBN     =   "80"
+                 IF  WRK-ZAIW-SRYCD1 = "120002710" OR "120002810" OR
+                                       "120002910" OR "120003010" OR
+                                       "120002470" OR "120002570" OR
+                                       "120003270"
+                       MOVE   ZERO   TO   RECE06-SYOHOUFLG
+                 ELSE
+                       MOVE    1     TO   RECE06-SYOHOUFLG
+                 END-IF
+               END-IF
       *
                WRITE   RECE06-REC
       *         

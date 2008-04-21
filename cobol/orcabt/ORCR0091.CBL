@@ -66,6 +66,7 @@
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *  04.02.02    NACL-ÌçÏÆ    08/04/21  £¸£°¤½¤ÎÂ¾µ­ºÜ½çÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -371,6 +372,8 @@ grpsys     MOVE    RECE06-HOSPNUM       TO      RECE061-HOSPNUM
       *
            MOVE   RECE06-SRYSYUKBN   TO   RECE061-SRYSYUKBN
            MOVE   RECE06-DAY         TO   RECE061-DAY
+      *
+           MOVE   RECE06-SYOHOUFLG   TO   RECE061-SYOHOUFLG
       *
            IF     RECE06-RECESYUBETU  =  8888
               IF     RECE06-ZAITEN  NOT =  ZERO

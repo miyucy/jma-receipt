@@ -45,6 +45,7 @@
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （診療区分６４：病理診断対応）
+      *  04.02.02    NACL-門脇    08/04/21  ８０その他記載順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -340,6 +341,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE   RECE46-DAY         TO   RECE47-DAY
       *
            MOVE   RECE46-OKIKAEFLG   TO   RECE47-OKIKAEFLG
+      *
+           MOVE   RECE46-SYOHOUFLG   TO   RECE47-SYOHOUFLG
       *
            IF     RECE46-SRYKBN  NOT =  "95" AND "96"
                PERFORM     2101-RECE47-WRITE-SEC

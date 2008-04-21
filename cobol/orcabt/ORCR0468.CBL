@@ -33,6 +33,7 @@
       *  03.05.01    NACL-ÌçÏÆ    07/05/25  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
       *  04.01.01    NACL-ÌçÏÆ    07/10/31  ¸øÌ³ºÒ³²ÂÐ±þ
+      *  04.02.01    NACL-ÌçÏÆ    08/04/21  £¸£°¤½¤ÎÂ¾µ­ºÜ½çÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -509,8 +510,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
                MOVE  "99"                  TO  RECE47-SRYKBN
              END-IF
              MOVE    ZERO                  TO  RECE47-KNSJISKBN
+             MOVE    ZERO                  TO  RECE47-SYOHOUFLG
              MOVE    SPACE                 TO  RECE47-SRYSYUKBN
              MOVE    ZERO                  TO  RECE47-DAY
+             MOVE    SPACE                 TO  RECE47-OKIKAEFLG
              MOVE    9                     TO  RECE47-CDKBN-SYO
              MOVE    99                    TO  RECE47-CDKBN-BU
              MOVE    "9"                   TO  RECE47-CDKBN-KBN
