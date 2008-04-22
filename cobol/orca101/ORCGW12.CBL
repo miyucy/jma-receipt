@@ -1346,16 +1346,16 @@
            MOVE    2                   TO  SPA-GMN-SYAPRTKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KOUIKIPRTKBNL    (1)
-           MOVE    "広域連合単位で作成"
+           MOVE    "全て広域連合単位で作成"
                                        TO  SPA-GMN-KOUIKIPRTKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-KOUIKIPRTKBNL    (2)
-           MOVE    "保険者番号単位で作成"
+           MOVE    "全て保険者番号単位で作成"
                                        TO  SPA-GMN-KOUIKIPRTKBNMEIL (2)
            MOVE    "2"                 TO  SPA-GMN-KOUIKIPRTKBNL    (3)
-           MOVE    "県内分のみ保険者番号単位で作成"
+           MOVE    "県内分は保険者番号単位で作成"
                                        TO  SPA-GMN-KOUIKIPRTKBNMEIL (3)
            MOVE    "3"                 TO  SPA-GMN-KOUIKIPRTKBNL    (4)
-           MOVE    "県外分のみ保険者番号単位で作成"
+           MOVE    "県外分は保険者番号単位で作成"
                                        TO  SPA-GMN-KOUIKIPRTKBNMEIL (4)
            MOVE    4                   TO  SPA-GMN-KOUIKIPRTKBN-MAX 
       *     
