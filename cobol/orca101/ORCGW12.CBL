@@ -93,6 +93,8 @@
       *                                     の追加
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/04/21  広域連合診療報酬請求書区分
+      *                                     の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -378,6 +380,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-SYAPRTKBNMEI
                                               PIC X(22).
+                       09  SPA-GMN-KOUIKIPRTKBN-G.
+                           11  SPA-GMN-KOUIKIPRTKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-KOUIKIPRTKBNMEI
+                                              PIC X(34).
       *
                        09  SPA-GMN-PREFKBN-PRTJYUN-G.
                            11  SPA-GMN-PREFKBN-PRTJYUN
@@ -579,6 +587,15 @@
                        09  SPA-GMN-SYAPRTKBNMEIL
                                               PIC X(22).
                    07  SPA-GMN-SYAPRTKBN-MAX  PIC 9(02).    
+      *                                        
+                   07  SPA-GMN-KOUIKIPRTKBNLST       OCCURS  5.
+                       09  SPA-GMN-KOUIKIPRTKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-KOUIKIPRTKBNMEIL
+                                              PIC X(32).
+                   07  SPA-GMN-KOUIKIPRTKBN-MAX
+                                              PIC 9(02).    
       *                                        
                    07  SPA-GMN-RENNUMHENKBNLST        OCCURS  3.
                        09  SPA-GMN-RENNUMHENKBNL
@@ -1327,6 +1344,20 @@
            MOVE    "マル長分を別作成する"
                                        TO  SPA-GMN-SYAPRTKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-SYAPRTKBN-MAX 
+      *     
+           MOVE    "0"                 TO  SPA-GMN-KOUIKIPRTKBNL    (1)
+           MOVE    "広域連合単位で作成"
+                                       TO  SPA-GMN-KOUIKIPRTKBNMEIL (1)
+           MOVE    "1"                 TO  SPA-GMN-KOUIKIPRTKBNL    (2)
+           MOVE    "保険者番号単位で作成"
+                                       TO  SPA-GMN-KOUIKIPRTKBNMEIL (2)
+           MOVE    "2"                 TO  SPA-GMN-KOUIKIPRTKBNL    (3)
+           MOVE    "県内分のみ保険者番号単位で作成"
+                                       TO  SPA-GMN-KOUIKIPRTKBNMEIL (3)
+           MOVE    "3"                 TO  SPA-GMN-KOUIKIPRTKBNL    (4)
+           MOVE    "県外分のみ保険者番号単位で作成"
+                                       TO  SPA-GMN-KOUIKIPRTKBNMEIL (4)
+           MOVE    4                   TO  SPA-GMN-KOUIKIPRTKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-RENNUMHENKBNL    (1)
            MOVE    "通し番号を表示しない"
@@ -2302,7 +2333,18 @@
                                            TO  SPA-GMN-KOUIKIPRTNM-N
                MOVE    SYS-200501-KOUIKIPRTNM-NEXT-N
                                            TO SPA-GMN-KOUIKIPRTNM-NEXT-N
-      *****END-IF
+      *         
+               MOVE    SYS-200501-KOUIKIPRTKBN TO  SPA-GMN-KOUIKIPRTKBN
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-KOUIKIPRTKBN-MAX
+                   IF      SPA-GMN-KOUIKIPRTKBN 
+                                   =   SPA-GMN-KOUIKIPRTKBNL (IDY)
+                       MOVE    SPA-GMN-KOUIKIPRTKBNLST (IDY)
+                                           TO  SPA-GMN-KOUIKIPRTKBN-G
+                       MOVE    SPA-GMN-KOUIKIPRTKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
       *
       *    レセプト（編綴順）情報
            MOVE    SPACE               TO  SYS-2008-REC
@@ -2804,6 +2846,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-PREFPRGID1      TO  SPA-GMN-PREFPRGID1
            MOVE    W12-KKHPRTKBN       TO  SPA-GMN-KKHPRTKBN-G 
            MOVE    W12-SYAPRTKBN       TO  SPA-GMN-SYAPRTKBN-G 
+           MOVE    W12-KOUIKIPRTKBN    TO  SPA-GMN-KOUIKIPRTKBN-G 
            MOVE    W12-BYOMEIHENKBN1   TO  SPA-GMN-BYOMEIHENKBN1-G 
            MOVE    W12-SYUBYOHENFLG    TO  SPA-GMN-SYUBYOHENFLG-G 
            MOVE    W12-TENKIHENKBN     TO  SPA-GMN-TENKIHENKBN-G 
@@ -3171,6 +3214,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
       *
            PERFORM 4105-KKHPRTKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4146-KOUIKIPRTKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -4870,6 +4918,35 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    広域連合診療報酬請求書印刷分チェック
+      *****************************************************************
+       4146-KOUIKIPRTKBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-KOUIKIPRTKBN   =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-KOUIKIPRTKBN-MAX
+                   IF      SPA-GMN-KOUIKIPRTKBN
+                                   =   SPA-GMN-KOUIKIPRTKBNL (IDY)
+                       MOVE    SPA-GMN-KOUIKIPRTKBNLST (IDY)
+                                           TO  SPA-GMN-KOUIKIPRTKBN-G
+                       MOVE    SPA-GMN-KOUIKIPRTKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-KOUIKIPRTKBNMEI    =   SPACE
+                   MOVE    151                     TO  SPA-GMN-CUR
+                   MOVE    "0051"                  TO  SPA-ERRCD
+               END-IF
+           END-IF     
+      *
+           .
+       4146-KOUIKIPRTKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    タグ編集処理
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
@@ -5148,6 +5225,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-KOUIKIPRTNM-N   TO  SYS-200501-KOUIKIPRTNM-N
            MOVE    SPA-GMN-KOUIKIPRTNM-NEXT-N
                                        TO  SYS-200501-KOUIKIPRTNM-NEXT-N
+           MOVE    SPA-GMN-KOUIKIPRTKBN    TO  SYS-200501-KOUIKIPRTKBN
            MOVE    SYS-200501-REC          TO  SYSKANRI-REC
       *     
            PERFORM 800-MCNDATE-SEC
@@ -5528,6 +5606,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                             TO  W12-NYUTAIINREKI
            MOVE    SPA-GMN-SYAPRTKBN-G      TO  W12-SYAPRTKBN
            MOVE    SPA-GMN-KKHPRTKBN-G      TO  W12-KKHPRTKBN
+           MOVE    SPA-GMN-KOUIKIPRTKBN-G   TO  W12-KOUIKIPRTKBN
            MOVE    SPA-GMN-RENNUMHENKBN-G   TO  W12-RENNUMHENKBN
            MOVE    SPA-GMN-NEXTPRTKBN-G     TO  W12-NEXTPRTKBN
            MOVE    SPA-GMN-NEXTPRTKBN1-G    TO  W12-NEXTPRTKBN1
@@ -5684,6 +5763,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-KKHPRTKBN-MAX
                                        TO  W12-KKHPRTKBN-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-KOUIKIPRTKBN-MAX
+               MOVE    SPA-GMN-KOUIKIPRTKBNLST (IDY)
+                                       TO  W12-KOUIKIPRTKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-KOUIKIPRTKBN-MAX
+                                       TO  W12-KOUIKIPRTKBN-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-RENNUMHENKBN-MAX
@@ -6208,6 +6295,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                          TO  SPA-ERRMSG
                WHEN    "0050"
                    MOVE    "主科広域連合設定入力エラー"  TO  SPA-ERRMSG
+               WHEN    "0051"
+                   MOVE    "広域診療報酬請求書区分入力エラー"
+                                                         TO  SPA-ERRMSG
       *
                WHEN    "0096"
                    STRING  "一括作成出力順（国保）の指定が編綴順です。"
@@ -6478,6 +6568,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
                 WHEN    150
                     MOVE  "SYAPRTKBN"        TO   MCP-WIDGET
+                WHEN    151
+                    MOVE  "KOUIKIPRTKBN"     TO   MCP-WIDGET
       *
                 WHEN    99
                     MOVE  "B12"              TO   MCP-WIDGET
@@ -6496,7 +6588,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    50  THRU    52
                     MOVE    4                TO  W12-PAGENO
                 WHEN    11
-                WHEN    150
+                WHEN    150 THRU    151
                     MOVE    5                TO  W12-PAGENO
                 WHEN    90  THRU    98
                     MOVE    6                TO  W12-PAGENO
@@ -6685,6 +6777,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "SYAPRTKBN"
                    MOVE    11          TO  SPA-GMN-CUR
                WHEN    "KKHPRTKBN"
+                   MOVE    151         TO  SPA-GMN-CUR
+               WHEN    "KOUIKIPRTKBN"
                    MOVE    99          TO  SPA-GMN-CUR
       *
                WHEN    "SYARECEKBN"

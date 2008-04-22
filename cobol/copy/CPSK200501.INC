@@ -71,8 +71,10 @@
       *広域連合出力先プリンタ名（続紙）（入院）
                05  SYS-200501-KOUIKIPRTNM-NEXT-N
                                            PIC X(16).
+      *広域連合診療報酬請求書区分
+               05  SYS-200501-KOUIKIPRTKBN PIC  X(01).
       *予備
-           03  FILLER                      PIC X(411).
+           03  FILLER                      PIC X(410).
       *端末ＩＤ
            03  SYS-200501-TERMID           PIC X(16).
       *オペーレータＩＤ

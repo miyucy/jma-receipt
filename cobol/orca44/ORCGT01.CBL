@@ -99,6 +99,7 @@
       *                                     書処理を可能とするためのパラ
       *                                     メタ種別の置き換え
       *  04.02.03    NACL-藤原    08/03/31  広域連合対応
+      *  04.02.04    NACL-藤原    08/04/21  広域連合の保険者番号指定をしない
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4718,6 +4719,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "F"                 TO  T01-DATAKBN1-VALUE
                                                T01-DATAKBN2-VALUE
            END-IF
+           MOVE    WIDGET-INSENSITIVE  TO  T01-HKNJANUM1-STATE
       *
            PERFORM 5001-MAPCUR-SEC
       *

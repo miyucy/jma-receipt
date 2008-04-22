@@ -27,6 +27,8 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-藤原    08/04/21  広域連合診療報酬請求書区分
+      *                                     による作成
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -103,11 +105,13 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDY4                PIC 9(04).
+           03  IDY5                PIC 9(04).
            03  IDXX                PIC 9(04).
            03  IDXY                PIC 9(04).
       *     
            03  IDZ1                PIC 9(04).
            03  IDZ2                PIC 9(04).
+           03  IDZZ                PIC 9(04).
       *
       *    パラメタ領域
        01  WRK-PARA.
@@ -182,12 +186,12 @@
       *
       *    集計領域
        01  SUM-AREA.
-         02  SUM-TABLE-OCC         OCCURS  100.
-           03  SUM-TBL-SRYKA       PIC X(02).
-           03  SUM-TABLE.
+         02  SUM-TABLE-OCC           OCCURS  2.
+           03  SUM-TABLE-OCC1            OCCURS  100.
+               05  SUM-TBL-SRYKA         PIC X(02).
       *        後期高齢者
-               05  SUM-TBL             OCCURS  2.
-                   07  SUM-TBL-G       OCCURS  2.
+               05  SUM-TBL               OCCURS  2.
+                   07  SUM-TBL-G         OCCURS  2.
                        09  SUM-KENSU           PIC  9(06).
                        09  SUM-NISSU           PIC  9(06).
                        09  SUM-TOTALTEN        PIC  9(10).
@@ -221,12 +225,19 @@
       *    キー領域
        01  KEY-AREA                    VALUE   LOW-VALUE.
            03  KEY-NEW.
-               05  KEY-N-HKNJANUM      PIC X(08).
+               05  KEY-N-HKNJANUM.
+                   07  KEY-N-HKNJANUM1 PIC X(04).
+                   07  KEY-N-HKNJANUM2 PIC X(04).
            03  KEY-OLD.
-               05  KEY-O-HKNJANUM      PIC X(08). 
+               05  KEY-O-HKNJANUM.
+                   07  KEY-O-HKNJANUM1 PIC X(04).
+                   07  KEY-O-HKNJANUM2 PIC X(04).
       *
       *
            COPY    "CPSHELLTBL.INC".
+      *
+      *    広域連合番号テーブル
+           COPY    "CMKOUIKITBL.INC".
       *
       *    固定項目
        01  WRK-CONS-AREA.
@@ -259,6 +270,8 @@
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
+      *
+           COPY    "CPSK200501.INC".
       *
            COPY    "CPSK2007.INC".
       *
@@ -493,6 +506,29 @@
            PERFORM 900-CLOSE-SEC
       *
            MOVE    IDX             TO  WRK-2007-MAX    
+      *
+      *    レセプト・総括編集情報
+      *    区分コード０１のデータ読み込み
+           MOVE    SPACE               TO  SYS-200501-REC
+           INITIALIZE                      SYS-200501-REC
+           MOVE    "2005"              TO  SYS-200501-KANRICD
+           MOVE    "01"                TO  SYS-200501-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-200501-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
+           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-200501-HOSPNUM
+           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-KEY10-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+           ELSE
+               INITIALIZE                      SYS-200501-REC
+           END-IF
+           IF      SYS-200501-KOUIKIPRTKBN
+                                       =   SPACE
+               MOVE    "0"                 TO  SYS-200501-KOUIKIPRTKBN
+           END-IF
+           DISPLAY "SYS-200501-KOUIKIPRTKBN=" SYS-200501-KOUIKIPRTKBN
            .
        100-INIT-EXT.
            EXIT.
@@ -595,14 +631,51 @@
       *
            INITIALIZE                  SUM-AREA
       *
-           MOVE    KEY-NEW             TO  KEY-OLD      
+      *    広域連合別集計 
+           MOVE    KEY-NEW             TO  KEY-OLD
            PERFORM             UNTIL   FLG-END     =   1
-                               OR      KEY-NEW NOT =   KEY-OLD
-               PERFORM 2001-SYUKEI-SEC
+                               OR      KEY-N-HKNJANUM1
+                                               NOT =   KEY-O-HKNJANUM1
+               INITIALIZE                  SUM-TABLE-OCC (2)
+      *
+      *        保険者番号別集計 
+               MOVE    KEY-NEW             TO  KEY-OLD      
+               PERFORM             UNTIL   FLG-END     =   1
+                                   OR      KEY-NEW NOT =   KEY-OLD
+      *         
+                   MOVE    1             TO  IDY5
+                   PERFORM 2001-SYUKEI-SEC
+      *
+                   IF      KEY-O-HKNJANUM2   =   "0000"
+                       CONTINUE
+                   ELSE
+                       MOVE    2             TO  IDY5
+                       PERFORM 2001-SYUKEI-SEC
+                   END-IF
+      *
+                   PERFORM 20013-UPD-FILE-HENSYU-SEC
+      *
+                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                   PERFORM 900-SEIKYU-READ-SEC
+               END-PERFORM
+      *
+      *        保険者番号別印刷
+               IF      KEY-O-HKNJANUM2   =   "0000"
+                   CONTINUE
+               ELSE
+                   IF    ( FLG-UPD        =   1    )
+                   AND   ( FLG-ERR        =   ZERO )
+                       MOVE    2             TO  IDY5
+                       PERFORM 2002-PRINT-HENSYU-SEC
+                  END-IF
+              END-IF
            END-PERFORM
       *
-          IF      FLG-UPD        =   1
-          AND     FLG-ERR        =   ZERO 
+      *    広域連合別印刷 
+           IF      FLG-UPD        =   1
+           AND     FLG-ERR        =   ZERO 
+               MOVE    1             TO  IDY5
                PERFORM 2002-PRINT-HENSYU-SEC
            END-IF
            .
@@ -614,20 +687,24 @@
       *****************************************************************
        2001-SYUKEI-SEC                SECTION.
       * 
-           MOVE    ZERO                    TO  IDX-AREA
-                                               FLG-UPD
+           MOVE    ZERO                TO  IDX3
+                                           IDX
+                                           IDXX
+                                           FLG-UPD
       *
       *    主科別
            IF      RECE10-RECEKA       =   "00"
-               MOVE    RECE10-RECEKA   TO  SUM-TBL-SRYKA (1)
+               MOVE    RECE10-RECEKA   TO  SUM-TBL-SRYKA (IDY5 1)
                MOVE    1                   TO  IDXX
            ELSE
                PERFORM VARYING IDXY    FROM    2   BY  1
                        UNTIL   IDXY    >       99
-                   IF      SUM-TBL-SRYKA (IDXY)    =   SPACE
-                       MOVE    RECE10-RECEKA   TO  SUM-TBL-SRYKA (IDXY)
+                   IF      SUM-TBL-SRYKA (IDY5 IDXY)    =   SPACE
+                       MOVE    RECE10-RECEKA   TO
+                                               SUM-TBL-SRYKA (IDY5 IDXY)
                    END-IF 
-                   IF      SUM-TBL-SRYKA (IDXY)    =   RECE10-RECEKA
+                   IF      SUM-TBL-SRYKA (IDY5 IDXY)
+                                               =   RECE10-RECEKA
                        MOVE    IDXY            TO  IDXX
                        MOVE    99              TO  IDXY
                    END-IF
@@ -647,6 +724,7 @@
                WHEN    7
                    MOVE    2                   TO  IDX
            END-EVALUATE        
+      *
            IF      IDXX            >   ZERO
                MOVE    IDXX            TO  IDY4
                PERFORM 20011-HKN-SYUKEI-SEC
@@ -666,11 +744,7 @@
       *
       *    集計の対象にならなかったとき                
            IF      FLG-UPD             =   1
-               PERFORM 20013-UPD-FILE-HENSYU-SEC
-      *
-               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
-               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
-               PERFORM 900-SEIKYU-READ-SEC
+               CONTINUE
            ELSE
                MOVE    SPACE               TO  WRK-RECEERR
                STRING "集計対象外　患者番号＝"     DELIMITED  BY  SIZE
@@ -702,30 +776,30 @@
            MOVE    IDX                       TO  IDX2
       *    
       *    件数
-           ADD     1               TO  SUM-KENSU (IDY4 IDX2 IDX3)
+           ADD     1               TO  SUM-KENSU (IDY5 IDY4 IDX2 IDX3)
       *
       *    療養の給付 
            ADD     RECE10-JNISSU   (IDX1) TO 
-                                   SUM-NISSU      (IDY4 IDX2 IDX3)
+                                   SUM-NISSU      (IDY5 IDY4 IDX2 IDX3)
            ADD     RECE10-TOTALTEN (IDX1) TO
-                                   SUM-TOTALTEN   (IDY4 IDX2 IDX3)
+                                   SUM-TOTALTEN   (IDY5 IDY4 IDX2 IDX3)
            ADD     RECE10-FTNMONEY (IDX1) TO
-                                   SUM-FTNMONEY   (IDY4 IDX2 IDX3)
+                                   SUM-FTNMONEY   (IDY5 IDY4 IDX2 IDX3)
       *    食事療養
            IF      IDX3                   =   1 
               IF      RECE10-SHOKUJINISSU(IDX1)   >   ZERO
                   ADD     1              TO
-                                  SUM-SHOKUJIKENSU    (IDY4 IDX2)
+                                  SUM-SHOKUJIKENSU    (IDY5 IDY4 IDX2)
                   ADD     RECE10-SHOKUJINISSU   (IDX1)
                                          TO
-                                  SUM-SHOKUJINISSU    (IDY4 IDX2)
+                                  SUM-SHOKUJINISSU    (IDY5 IDY4 IDX2)
                END-IF
                ADD     RECE10-SHOKUJIRYOYOHI (IDX1)
                                          TO
-                                  SUM-SHOKUJIRYOYOHI  (IDY4 IDX2)
+                                  SUM-SHOKUJIRYOYOHI  (IDY5 IDY4 IDX2)
                ADD     RECE10-SHOKUJIFTN     (IDX1)
                                          TO
-                                  SUM-SHOKUJIFTN      (IDY4 IDX2)
+                                  SUM-SHOKUJIFTN      (IDY5 IDY4 IDX2)
            END-IF    
       *
            MOVE    1               TO  FLG-UPD 
@@ -771,14 +845,14 @@
       *
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2 >          100
-                   IF      SUM-KOH-KOHNUM (IDY4 IDX2) =   SPACE
+                   IF      SUM-KOH-KOHNUM (IDY5 IDY4 IDX2) =   SPACE
                        MOVE    RECE10-KOHNUM (IDZ)     TO 
-                                       SUM-KOH-KOHNUM (IDY4 IDX2)
+                                       SUM-KOH-KOHNUM (IDY5 IDY4 IDX2)
                        MOVE    WRK-MEISYO              TO 
-                                       SUM-KOH-MEISYO (IDY4 IDX2)
+                                       SUM-KOH-MEISYO (IDY5 IDY4 IDX2)
                    END-IF                                
                    IF      RECE10-KOHNUM (IDZ) 
-                                   =   SUM-KOH-KOHNUM (IDY4 IDX2)
+                                   =   SUM-KOH-KOHNUM (IDY5 IDY4 IDX2)
                        PERFORM 200121-KOH-SYUKEI-01-SEC
                        MOVE    100             TO  IDX2
                    END-IF
@@ -796,30 +870,30 @@
            COMPUTE IDY     =   IDZ     +   1
       *    
       *    件数
-           ADD     1               TO  SUM-KOH-KENSU (IDY4 IDX2 IDX3)
+           ADD     1           TO  SUM-KOH-KENSU (IDY5 IDY4 IDX2 IDX3)
       *
       *    療養の給付 
            ADD     RECE10-JNISSU   (IDY) TO 
-                                   SUM-KOH-NISSU      (IDY4 IDX2 IDX3)
+                                   SUM-KOH-NISSU   (IDY5 IDY4 IDX2 IDX3)
            ADD     RECE10-TOTALTEN (IDY) TO
-                                   SUM-KOH-TOTALTEN   (IDY4 IDX2 IDX3)
+                                   SUM-KOH-TOTALTEN(IDY5 IDY4 IDX2 IDX3)
            ADD     RECE10-FTNMONEY (IDY) TO
-                                   SUM-KOH-FTNMONEY   (IDY4 IDX2 IDX3)
+                                   SUM-KOH-FTNMONEY(IDY5 IDY4 IDX2 IDX3)
       *    食事療養
            IF      IDX3                   =   1 
               IF      RECE10-SHOKUJINISSU(IDY)   >   ZERO
                   ADD     1              TO
-                                  SUM-KOH-SHOKUJIKENSU   (IDY4 IDX2)
+                                  SUM-KOH-SHOKUJIKENSU  (IDY5 IDY4 IDX2)
                   ADD     RECE10-SHOKUJINISSU   (IDY)
                                          TO
-                                  SUM-KOH-SHOKUJINISSU   (IDY4 IDX2)
+                                  SUM-KOH-SHOKUJINISSU  (IDY5 IDY4 IDX2)
                END-IF
                ADD     RECE10-SHOKUJIRYOYOHI (IDY)
                                          TO
-                                  SUM-KOH-SHOKUJIRYOYOHI (IDY4 IDX2)
+                                  SUM-KOH-SHOKUJIRYOYOHI(IDY5 IDY4 IDX2)
                ADD     RECE10-SHOKUJIFTN     (IDY)
                                          TO
-                                  SUM-KOH-SHOKUJIFTN     (IDY4 IDX2)
+                                  SUM-KOH-SHOKUJIFTN    (IDY5 IDY4 IDX2)
            END-IF    
       *
            MOVE    1               TO  FLG-UPD 
@@ -863,7 +937,7 @@
       *****************************************************************
        2002-PRINT-HENSYU-SEC                SECTION.
       *
-           IF      SUM-TBL-SRYKA (2)   =   SPACE
+           IF      SUM-TBL-SRYKA (IDY5 2)  =   SPACE
                MOVE    100                 TO  IDXX
            ELSE
                MOVE    1                   TO  IDXX
@@ -871,17 +945,18 @@
       *       
            PERFORM VARYING IDX3    FROM   IDXX    BY  1
                    UNTIL   IDX3    >      100
-               IF    ( SUM-TBL-SRYKA (IDX3)   =   SPACE )
+               IF    ( SUM-TBL-SRYKA (IDY5 IDX3)
+                                              =   SPACE )
                AND   ( IDX3                   <   100   )
                    CONTINUE
                ELSE
       *            主科名称
-                   IF      SUM-TBL-SRYKA (IDX3)   =   "00"
+                   IF      SUM-TBL-SRYKA (IDY5 IDX3)   =   "00"
                        MOVE    "主科未設定"       TO  SYS-1005-SRYKANAME
                    ELSE
                        INITIALIZE                  SYS-1005-REC
                        MOVE    "1005"          TO  SYS-1005-KANRICD
-                       MOVE    SUM-TBL-SRYKA (IDX3)
+                       MOVE    SUM-TBL-SRYKA (IDY5 IDX3)
                                                TO  SYS-1005-KBNCD
                        MOVE    LNK-PRTKANRI-SRYYM
                                                TO SYS-1005-STYUKYMD(1:6)
@@ -931,19 +1006,45 @@
       *    
            MOVE    SYS-1001-HOSPCDN    TO  HCM3G-HOSPCD
       *
-           MOVE    SPACE               TO  HKNJAINF-REC
-           INITIALIZE                      HKNJAINF-REC
-           MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
-           MOVE    KEY-O-HKNJANUM      TO  HKNJA-HKNJANUM
-           MOVE    HKNJAINF-REC        TO  MCPDATA-REC
-           PERFORM 900-HKNJAINF-INV-SEC
-           IF      FLG-HKNJAINF        =   ZERO
-               STRING  HKNJA-HKNJANAME     DELIMITED  BY  SPACE
-                       "　殿"              DELIMITED  BY  SIZE
-                                           INTO  HCM3G-HKNJANAME
-               END-STRING
-           END-IF                                
-           MOVE    KEY-O-HKNJANUM      TO  HCM3G-HKNJANUM
+           EVALUATE    IDY5    
+               WHEN    1
+                   IF      KEY-O-HKNJANUM      =   "00000000"
+                       MOVE    KEY-O-HKNJANUM      TO  HCM3G-HKNJANUM
+                       MOVE    "保険者番号入力なし"
+                                                   TO  HCM3G-HKNJANAME
+                   ELSE
+                       MOVE    KEY-O-HKNJANUM1     TO  HCM3G-HKNJANUM
+                       PERFORM VARYING IDZZ    FROM    1   BY  1
+                               UNTIL   IDZZ    >       CONST-KOUIKI-MAX
+                           IF      KEY-O-HKNJANUM1     =
+                                           CONST-KOUIKI-NUM (IDZZ) (1:4)
+                               MOVE    CONST-KOUIKI-NUM  (IDZZ)
+                                                   TO  HCM3G-HKNJANUM
+                               STRING  CONST-KOUIKI-NAME (IDZZ)
+                                                   DELIMITED  BY  SPACE
+                                   "　殿"          DELIMITED  BY  SIZE
+                                                   INTO  HCM3G-HKNJANAME
+                               END-STRING
+                               MOVE    CONST-KOUIKI-MAX
+                                                   TO  IDZZ
+                           END-IF    
+                       END-PERFORM
+                   END-IF    
+               WHEN    2
+                   MOVE    SPACE               TO  HKNJAINF-REC
+                   INITIALIZE                      HKNJAINF-REC
+                   MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
+                   MOVE    KEY-O-HKNJANUM      TO  HKNJA-HKNJANUM
+                   MOVE    HKNJAINF-REC        TO  MCPDATA-REC
+                   PERFORM 900-HKNJAINF-INV-SEC
+                   IF      FLG-HKNJAINF        =   ZERO
+                       STRING  HKNJA-HKNJANAME DELIMITED  BY  SPACE
+                           "　殿"              DELIMITED  BY  SIZE
+                                               INTO  HCM3G-HKNJANAME
+                       END-STRING
+                   END-IF                                
+                   MOVE    KEY-O-HKNJANUM      TO  HCM3G-HKNJANUM
+           END-EVALUATE
       *
            EVALUATE    WRK-INDEX
                WHEN    1
@@ -980,29 +1081,29 @@
                ADD     1                   TO  IDZ    
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       2
-                   MOVE    SUM-KENSU   (IDX3 IDX IDY)
+                   MOVE    SUM-KENSU   (IDY5 IDX3 IDX IDY)
                                            TO  WRK-KENSUZ
                    MOVE    WRK-KENSUZ      TO  HCM3G-HKN-KENSU (IDZ IDY)
-                   MOVE    SUM-NISSU   (IDX3 IDX IDY)
+                   MOVE    SUM-NISSU   (IDY5 IDX3 IDX IDY)
                                            TO  WRK-NISSUZ 
                    MOVE    WRK-NISSUZ      TO  HCM3G-HKN-NISSU (IDZ IDY) 
-                   MOVE    SUM-TOTALTEN(IDX3 IDX IDY)
+                   MOVE    SUM-TOTALTEN(IDY5 IDX3 IDX IDY)
                                            TO  WRK-TENSUZ
                    MOVE    WRK-TENSUZ      TO  HCM3G-HKN-TENSU (IDZ IDY)
-                   MOVE    SUM-FTNMONEY    (IDX3 IDX IDY)
+                   MOVE    SUM-FTNMONEY    (IDY5 IDX3 IDX IDY)
                                            TO  WRK-FTNMONEYZ
                    MOVE    WRK-FTNMONEYZ   TO  HCM3G-HKN-ITBFTN(IDZ IDY)
                END-PERFORM     
-               MOVE    SUM-SHOKUJIKENSU(IDX3 IDX)
+               MOVE    SUM-SHOKUJIKENSU(IDY5 IDX3 IDX)
                                            TO  WRK-KENSUZ
                MOVE    WRK-KENSUZ          TO  HCM3G-HKN-SYOKENSU (IDZ)
-               MOVE    SUM-SHOKUJINISSU(IDX3 IDX)
+               MOVE    SUM-SHOKUJINISSU(IDY5 IDX3 IDX)
                                            TO  WRK-NISSUZ
                MOVE    WRK-NISSUZ          TO  HCM3G-HKN-SYONISSU (IDZ)
-               MOVE    SUM-SHOKUJIRYOYOHI(IDX3 IDX)
+               MOVE    SUM-SHOKUJIRYOYOHI(IDY5 IDX3 IDX)
                                            TO  WRK-KINGAKZ
                MOVE    WRK-KINGAKZ         TO  HCM3G-HKN-SYOKINGAK(IDZ)
-               MOVE    SUM-SHOKUJIFTN   (IDX3 IDX)
+               MOVE    SUM-SHOKUJIFTN   (IDY5 IDX3 IDX)
                                            TO  WRK-FTNGAKZ
                MOVE    WRK-FTNGAKZ         TO  HCM3G-HKN-SYOFTNGAK(IDZ)
            END-PERFORM
@@ -1026,36 +1127,36 @@
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       2         
                    OR      FLG-KOH-END     =   1
-               IF      SUM-KOH-KOHNUM (IDX3 IDX2)   =   SPACE
+               IF      SUM-KOH-KOHNUM (IDY5 IDX3 IDX2)   =   SPACE
                    MOVE    1                   TO  FLG-KOH-END
                ELSE    
                    PERFORM 2002311-HKNNUM-HENSYU-SEC     
                    PERFORM VARYING IDZ FROM    1   BY  1
                            UNTIL   IDZ >       2
-                       MOVE    SUM-KOH-KENSU   (IDX3 IDX2 IDZ)
+                       MOVE    SUM-KOH-KENSU   (IDY5 IDX3 IDX2 IDZ)
                                            TO  WRK-KENSUZ
                        MOVE    WRK-KENSUZ  TO  HCM3G-KOH-KENSU (IDY IDZ)
-                       MOVE    SUM-KOH-NISSU   (IDX3 IDX2 IDZ)
+                       MOVE    SUM-KOH-NISSU   (IDY5 IDX3 IDX2 IDZ)
                                            TO  WRK-NISSUZ
                        MOVE    WRK-NISSUZ  TO  HCM3G-KOH-NISSU (IDY IDZ) 
-                       MOVE    SUM-KOH-TOTALTEN(IDX3 IDX2 IDZ)
+                       MOVE    SUM-KOH-TOTALTEN(IDY5 IDX3 IDX2 IDZ)
                                            TO  WRK-TENSUZ
                        MOVE    WRK-TENSUZ  TO  HCM3G-KOH-TENSU (IDY IDZ)
-                       MOVE    SUM-KOH-FTNMONEY(IDX3 IDX2 IDZ)
+                       MOVE    SUM-KOH-FTNMONEY(IDY5 IDX3 IDX2 IDZ)
                                            TO  WRK-FTNMONEYZ
                        MOVE    WRK-FTNMONEYZ
                                            TO  HCM3G-KOH-ITBFTN(IDY IDZ)
                    END-PERFORM     
-                   MOVE    SUM-KOH-SHOKUJIKENSU (IDX3 IDX2)
+                   MOVE    SUM-KOH-SHOKUJIKENSU (IDY5 IDX3 IDX2)
                                            TO  WRK-KENSUZ
                    MOVE    WRK-KENSUZ      TO  HCM3G-KOH-SYOKENSU (IDY)
-                   MOVE    SUM-KOH-SHOKUJINISSU (IDX3 IDX2)
+                   MOVE    SUM-KOH-SHOKUJINISSU (IDY5 IDX3 IDX2)
                                            TO  WRK-NISSUZ
                    MOVE    WRK-NISSUZ      TO  HCM3G-KOH-SYONISSU (IDY)
-                   MOVE    SUM-KOH-SHOKUJIRYOYOHI (IDX3 IDX2)
+                   MOVE    SUM-KOH-SHOKUJIRYOYOHI (IDY5 IDX3 IDX2)
                                            TO  WRK-KINGAKZ
                    MOVE    WRK-KINGAKZ     TO  HCM3G-KOH-SYOKINGAK(IDY)
-                   MOVE    SUM-KOH-SHOKUJIFTN    (IDX3 IDX2)
+                   MOVE    SUM-KOH-SHOKUJIFTN    (IDY5 IDX3 IDX2)
                                            TO  WRK-FTNGAKZ
                    MOVE    WRK-FTNGAKZ     TO  HCM3G-KOH-SYOFTNGAK(IDY)
       *             
@@ -1063,7 +1164,7 @@
                END-IF        
            END-PERFORM
       *
-           IF      SUM-KOH-KOHNUM (IDX3 IDX2)  =   SPACE
+           IF      SUM-KOH-KOHNUM (IDY5 IDX3 IDX2)  =   SPACE
                MOVE    1                   TO  FLG-KOH-END
            ELSE    
       *        帳票印刷処理（２頁以降）
@@ -1083,15 +1184,15 @@
       *
            MOVE    SPACE               TO  WRK-KOHKBN
       *
-           IF      SUM-KOH-KOHNUM (IDX3 IDX2) (1:1)
+           IF      SUM-KOH-KOHNUM (IDY5 IDX3 IDX2) (1:1)
                                        =   "0"
-               MOVE    SUM-KOH-KOHNUM (IDX3 IDX2)
+               MOVE    SUM-KOH-KOHNUM (IDY5 IDX3 IDX2)
                                            TO  WRK-KOHNUM9
            ELSE
       *        法別番号取得（地方公費のみ） 
                INITIALIZE                      HKNNUM-REC
                MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
-               MOVE    SUM-KOH-KOHNUM (IDX3 IDX2)
+               MOVE    SUM-KOH-KOHNUM (IDY5 IDX3 IDX2)
                                            TO  HKN-HKNNUM
                MOVE    WRK-SRYYMD          TO  HKN-TEKSTYMD
                                                HKN-TEKEDYMD
@@ -1100,23 +1201,23 @@
                IF      FLG-HKNNUM          =   ZERO
                    MOVE   HKN-HBTNUM           TO  WRK-KOHNUM9
                ELSE
-                   MOVE    SUM-KOH-KOHNUM (IDX3 IDX2)
+                   MOVE    SUM-KOH-KOHNUM (IDY5 IDX3 IDX2)
                                                TO  WRK-KOHNUM9
                END-IF
            END-IF
            MOVE    WRK-KOHNUM9         TO  HCM3G-KOH-NUM (IDY)
       *
       *    特定疾患のとき 
-           IF      SUM-KOH-KOHNUM (IDX3 IDX2)  =   "051"
-               MOVE    "特定疾患"      TO   WRK-HKNNAME
+           IF      SUM-KOH-KOHNUM (IDY5 IDX3 IDX2)  =   "051"
+               MOVE    "特定疾患"          TO  HCM3G-KOH-NAME(IDY)
            ELSE
       *        公費番号まとめ情報からの集計か
-               IF      SUM-KOH-MEISYO  (IDX3 IDX2)
+               IF      SUM-KOH-MEISYO  (IDY5 IDX3 IDX2)
                                            =   SPACE
       *            保険番号読込み  
                    INITIALIZE                      HKNNUM-REC
                    MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
-                   MOVE   SUM-KOH-KOHNUM (IDX3 IDX2)
+                   MOVE   SUM-KOH-KOHNUM (IDY5 IDX3 IDX2)
                                                TO    HKN-HKNNUM
                    MOVE   HKNNUM-REC           TO    MCPDATA-REC
                    MOVE    "tbl_hknnum"        TO  MCP-TABLE
@@ -1152,7 +1253,7 @@
                                                     ALL "）" BY  "　"  
                    MOVE    WRK-HKNNAME         TO  HCM3G-KOH-NAME(IDY)
                ELSE
-                   MOVE    SUM-KOH-MEISYO (IDX3 IDX2)
+                   MOVE    SUM-KOH-MEISYO (IDY5 IDX3 IDX2)
                                                TO  HCM3G-KOH-NAME(IDY)
                END-IF
            END-IF
@@ -1443,10 +1544,21 @@
                END-IF   
       *         
                MOVE    RECE10-HKNJANUM-S   TO  KEY-N-HKNJANUM
+               EVALUATE    SYS-200501-KOUIKIPRTKBN
+                   WHEN    "0"
+                       MOVE    "0000"          TO  KEY-N-HKNJANUM2
+                   WHEN    "2"
+                       IF      RECE10-PREFKBN  =   "2"
+                           MOVE    "0000"          TO  KEY-N-HKNJANUM2
+                       END-IF
+                   WHEN    "3"
+                       IF      RECE10-PREFKBN  =   "1"
+                           MOVE    "0000"          TO  KEY-N-HKNJANUM2
+                       END-IF
+               END-EVALUATE
                ADD     1                   TO  CNT-RECE10   
       *         
-               DISPLAY "PTNUM=" RECE10-PTNUM 
-      *         
+               DISPLAY "PTNUM=" RECE10-PTNUM
            ELSE
                MOVE    HIGH-VALUE      TO  KEY-NEW
                MOVE    1               TO  FLG-RECE10

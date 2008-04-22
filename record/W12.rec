@@ -407,6 +407,13 @@ W12	{
 					count	int;
 					item	varchar(20)[2];
 				};
+				KOUIKIPRTKBN_COMBO	{
+					KOUIKIPRTKBN	{
+						value	varchar(34);
+					};
+					count	int;
+					item	varchar(34)[5];
+				};
 			};
 			fi27	{
 				SYUKA_KBN_COMBO	{
