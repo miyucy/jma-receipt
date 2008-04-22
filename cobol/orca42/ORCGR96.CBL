@@ -937,6 +937,9 @@ grpsys         MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                            UNTIL   IDY >       100
                            OR      LNK-SYUBETU-TEISYUTUSAKI (IDY)
                                                        =   ZERO
+                     IF      LNK-SYUBETU-TEISYUTUSAKI (IDY)
+                                                       =   1   OR  2
+                                                               OR  6  
                        ADD     1               TO  IDX1
       *
                        EVALUATE    LNK-SYUBETU-TEISYUTUSAKI (IDY)
@@ -991,7 +994,15 @@ grpsys         MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                                                                (IDX1)
                                END-EVALUATE
                        END-EVALUATE
+                     END-IF 
                    END-PERFORM
+      *            医保分の請求がないとき
+                   IF    ( LNK-SYUBETU-TEISYUTUSAKI (1)   >   ZERO )
+                   AND   ( IDX1                           =   ZERO )
+                   AND   ( SPA-NAI-R96-SELNUM             =   ZERO )
+                       MOVE    "0010"              TO  SPA-ERRCD
+                       GO  TO  410231-PTNUMLST-HENSYU-EXT
+                   END-IF
                END-IF
            END-IF
       *
@@ -1103,6 +1114,10 @@ grpsys             MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
       *
       *        レセプト一覧編集処理
                PERFORM 410231-PTNUMLST-HENSYU-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   MOVE    ZERO                TO  SPA-NAI-R96-PTID
+                   MOVE    4                   TO  SPA-GMN-R96-CUR
+               END-IF
            END-IF
            .
        41024-PTNUM-CHK-EXT.
@@ -1396,6 +1411,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
       *
            IF      SPA-NAI-R96-TSTPTNUMKBN =   "1"
                MOVE    "0006"              TO  SPA-ERRCD
+               GO  TO  490-SETTEI-MAE-EXT
+           END-IF 
+      *
+           IF      SPA-NAI-R96-PTID        =   ZERO
+               MOVE    "0011"              TO  SPA-ERRCD
                GO  TO  490-SETTEI-MAE-EXT
            END-IF 
       *
@@ -1849,6 +1869,12 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
                    MOVE    "入外区分入力エラー"        TO  SPA-ERRMSG
                WHEN    "0009"
                    MOVE    "平成１８年１０月以降のみ設定可能です"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0010"
+                   MOVE    "医保分の診療がないため未請求設定できません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE    "正しい患者を入力して下さい"
                                                        TO  SPA-ERRMSG
       *
                WHEN    "0100"
