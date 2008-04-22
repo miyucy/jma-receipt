@@ -2586,12 +2586,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        OR      SPA-ERRCD   NOT =   SPACE
                    IF      SPA-GMN-SELNUM1     =   IDX
       *                選択された内容の開始日が変更された場合
-                       IF      SPA-NAI-STYUKYMD    =
-                                   SPA-NAI-HEADLIST-TSTYUKYMD (IDX)
+      ***                 IF      SPA-NAI-STYUKYMD    =
+      ***                             SPA-NAI-HEADLIST-TSTYUKYMD (IDX)
                            MOVE    ZERO            TO  FLG-CHK
-                       ELSE
-                           MOVE    1               TO  FLG-CHK
-                       END-IF
+      ***                 ELSE
+      ***                     MOVE    1               TO  FLG-CHK
+      ***                 END-IF
                    ELSE
                        MOVE    1               TO  FLG-CHK
                    END-IF
@@ -4806,18 +4806,36 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+      *    有効期間と改正の重複チェック
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-SYS-2003-MAX
+                   OR      SPA-ERRCD   NOT =   SPACE
+               IF    ( SPA-NAI-STYUKYMD    >=
+                                   SPA-SYS-2003-STYUKYMD (IDX) )
+               OR    ( SPA-NAI-EDYUKYMD    <=
+                                   SPA-SYS-2003-STYUKYMD (IDX) )
+                   CONTINUE
+               ELSE
+                   MOVE    "0049"              TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    2                   TO  SPA-GMN-CUR
+               GO  TO  4900-KANRENCHK-EXT
+           END-IF
+      *
       *    有効期間の重複チェック
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-HEADLIST-MAX
                    OR      SPA-ERRCD   NOT =   SPACE
                IF      SPA-GMN-SELNUM1     =   IDX
       *            選択された内容の開始日が変更された場合
-                   IF      SPA-NAI-STYUKYMD    =
-                                   SPA-NAI-HEADLIST-TSTYUKYMD (IDX)
+      ***             IF      SPA-NAI-STYUKYMD    =
+      ***                             SPA-NAI-HEADLIST-TSTYUKYMD (IDX)
                        MOVE    ZERO            TO  FLG-CHK
-                   ELSE
-                       MOVE    1               TO  FLG-CHK
-                   END-IF
+      ***             ELSE
+      ***                 MOVE    1               TO  FLG-CHK
+      ***             END-IF
                ELSE
                    MOVE    1               TO  FLG-CHK
                END-IF
@@ -4830,24 +4848,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    ELSE
                        MOVE    "0004"              TO  SPA-ERRCD
                    END-IF
-               END-IF
-           END-PERFORM
-           IF      SPA-ERRCD       NOT =   SPACE
-               MOVE    2                   TO  SPA-GMN-CUR
-               GO  TO  4900-KANRENCHK-EXT
-           END-IF
-      *
-      *    有効期間と改正の重複チェック
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       SPA-SYS-2003-MAX
-                   OR      SPA-ERRCD   NOT =   SPACE
-               IF    ( SPA-NAI-STYUKYMD    >=
-                                   SPA-SYS-2003-STYUKYMD (IDX) )
-               OR    ( SPA-NAI-EDYUKYMD    <=
-                                   SPA-SYS-2003-STYUKYMD (IDX) )
-                   CONTINUE
-               ELSE
-                   MOVE    "0005"              TO  SPA-ERRCD
                END-IF
            END-PERFORM
            IF      SPA-ERRCD       NOT =   SPACE
@@ -6033,12 +6033,13 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
                    MOVE
             "第一印刷順がレセプト種別のとき保険者印刷順は入力できません"
                                                        TO  SPA-ERRMSG
-      *-----> take add st
                WHEN    "0048"
-                   MOVE
-            "県内のみ選択可能な区分です"
+                   MOVE    "県内のみ選択可能な区分です"
                                                        TO  SPA-ERRMSG
-      *-----> take add ed
+               WHEN    "0049"
+                   MOVE
+                       "改正の月を跨いでの有効期間の設定はできません"
+                                                       TO  SPA-ERRMSG
                WHEN    "0098"
                    STRING
                        "医療機関の所在地保険者印刷位置を選択して"
