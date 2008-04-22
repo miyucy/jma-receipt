@@ -2031,7 +2031,7 @@
            INITIALIZE                  SPA-GMN-HKNCOMBI-LISTG
            MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAY
            MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD(1:6)
-           MOVE    "01"                TO  SPA-SRYYMD(7:2)
+           MOVE    "00"                TO  SPA-SRYYMD(7:2)
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
       *
            INITIALIZE                  ORCSHKNSETAREA

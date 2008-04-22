@@ -102,6 +102,8 @@
            03  WRK-CNT-HKN             PIC 9(04).
            03  WRK-CNT-HKN2            PIC 9(04).
       *
+           03  WRK-SRYYMD              PIC X(08).
+      *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(09).
            03  WRK-HENYMD.
@@ -197,6 +199,11 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  ORCSHKN-ERRCD
       *
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+           IF      SPA-SRYYMD(7:2)     =   "00"
+               MOVE    "01"            TO  WRK-SRYYMD
+           END-IF
+      *
       *    保険組合せ編集処理
            PERFORM 100-HKNCOMBI-HENSYU-SEC
       *
@@ -235,30 +242,6 @@
                                        SPA-AREA
       *    保険年齢
            MOVE    AGECHK-NENREI       TO  WRK-NENREI
-      *****１日以外の誕生日の時は、翌月１日を基準とする
-      *    IF      WRK-BDD             >   01
-      *        COMPUTE WRK-BMM         =   WRK-BMM     +   1
-      *        IF      WRK-BMM         >   12
-      *            COMPUTE WRK-BYY         =   WRK-BYY     +   1
-      *            MOVE    01              TO  WRK-BMM
-      *        END-IF
-      *        MOVE    01              TO  WRK-BDD
-      *    END-IF
-      *
-      *    年齢を計算する
-      *    MOVE    SPA-SRYYMD          TO  WRK-SYMD
-      *    COMPUTE WRK-NENREI-YY       =   WRK-SYY
-      *                                -   WRK-BYY
-      *    IF      WRK-BYMD(5:4)       >   WRK-SYMD(5:4)
-      *        COMPUTE WRK-NENREI-YY       =   WRK-NENREI-YY
-      *                                    -   1
-      *        COMPUTE WRK-NENREI-MM       =  (WRK-BMM   +  12 )
-      *                                    -   WRK-SMM
-      *    ELSE
-      *        COMPUTE WRK-NENREI-MM       =   WRK-BMM
-      *                                    -   WRK-SMM
-      *    END-IF
-      ***  MOVE    WRK-NENREI-YY       TO  WRK-NENREI
       *
            .
        1001-NENREI-EXT.
@@ -855,8 +838,8 @@
       *
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
-           MOVE    SPA-SRYYMD          TO  HKN-TEKSTYMD
-           MOVE    SPA-SRYYMD          TO  HKN-TEKEDYMD
+           MOVE    WRK-SRYYMD          TO  HKN-TEKSTYMD
+           MOVE    WRK-SRYYMD          TO  HKN-TEKEDYMD
            MOVE    COMB-HKNNUM         TO  HKN-HKNNUM
            MOVE    ZERO                TO  HKN-PAYKBN
       *
@@ -890,7 +873,7 @@
            INITIALIZE                  SYS-4001-REC
            MOVE    "4001"              TO  SYS-4001-KANRICD
            MOVE    "*"                 TO  SYS-4001-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-4001-STYUKYMD
+           MOVE    WRK-SRYYMD          TO  SYS-4001-STYUKYMD
                                            SYS-4001-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
@@ -931,7 +914,7 @@
            INITIALIZE                  SYS-1008-REC
            MOVE    "1008"              TO  SYS-1008-KANRICD
            MOVE    "*"                 TO  SYS-1008-KBNCD
-           MOVE    SPA-SRYYMD          TO  SYS-1008-STYUKYMD
+           MOVE    WRK-SRYYMD          TO  SYS-1008-STYUKYMD
                                            SYS-1008-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
            MOVE    SYS-1008-REC        TO  MCPDATA-REC
