@@ -1494,6 +1494,31 @@
                  IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
                       (ACCT-ZAIKAISU  NOT =    ZERO)
                    IF   ACCT-SRYKBN  =  "90" OR "92"
+                     INITIALIZE      SRYACT-REC
+                     MOVE    ACCT-HOSPNUM   TO   SRY-HOSPNUM
+                     MOVE    ACCT-NYUGAIKBN TO   SRY-NYUGAIKBN
+                     MOVE    ACCT-PTID      TO   SRY-PTID
+                     MOVE    ACCT-SRYKA     TO   SRY-SRYKA
+                     MOVE    ACCT-SRYYM     TO   SRY-SRYYM
+                     MOVE    ACCT-ZAINUM    TO   SRY-ZAINUM
+                     MOVE    1              TO   SRY-RENNUM
+                     MOVE    "tbl_sryact"   TO  MCP-TABLE
+                     MOVE    "key"          TO  MCP-PATHNAME
+                     PERFORM 910-SRYACT-SELECT-SEC
+                     IF      FLG-SRYACT     =    ZERO
+                         MOVE     "tbl_sryact"   TO  MCP-TABLE
+                         MOVE     "key"          TO  MCP-PATHNAME
+                         PERFORM   910-SRYACT-READ-SEC
+                         IF  FLG-SRYACT    =    ZERO
+                             MOVE  SRY-SRYCD(1)   TO  
+                                            ACCT-SRYCDTOTAL(6:9)   
+                         END-IF
+                     END-IF
+      *              ø«Œ≈π‘∞Ÿ•Ø•Ì°º•∫
+                     MOVE     "tbl_sryact"   TO  MCP-TABLE
+                     MOVE     "key"          TO  MCP-PATHNAME
+                     PERFORM   900-CLOSE-SEC
+      *
                      IF  ((LNK-NYURECEDEN-SANTEIYM <= "200803") AND
                           (ACCT-SRYCDTOTAL(6:9)  =
                                             CONS-KEIKAKU-GENSAN1
