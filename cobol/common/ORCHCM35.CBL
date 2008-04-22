@@ -418,10 +418,10 @@
                GO  TO  210-GOKEI-KOUIKI-SET-EXT
            END-IF
       *
-           IF      SPA-GMN-PRTJYUN2    =   "01" OR "02" OR "09" OR "10"
+      *     IF      SPA-GMN-PRTJYUN2    =   "01" OR "02" OR "09" OR "10"
                MOVE    "¹­°è¡¡¾®·×"    TO  WRK-NAME
                PERFORM 210-GOKEI-SET-SEC
-           END-IF
+      *     END-IF
       *
            ADD     CNT-TPAGE           TO  CNT-GPAGE
            ADD     CNT-TKENSU          TO  CNT-GKENSU
