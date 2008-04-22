@@ -1140,6 +1140,20 @@
                        MOVE    WRK-SURYO-H     TO  TBL-SURYO-Z (IDX-Z)
                        IF      WRK-SURYO-H     <   ZERO
                            MOVE    "1"             TO  TBL-CHK (IDX-Z)
+                       ELSE
+                           MOVE    WRK-SURYO-H     TO  WRK-SURYO-K
+                           PERFORM
+                               UNTIL   WRK-SURYO-K <  WRK-COM-KZM(IDX-Z)
+                               ADD     WRK-COM-KZM(IDX-Z)
+                                                   TO  WRK-COM-SURYO2
+                                                             (IDX-Z)
+                               COMPUTE WRK-SURYO-K =   WRK-SURYO-K
+                                                   -   WRK-COM-KZM
+                                                              (IDX-Z)
+                           END-PERFORM
+                           MOVE    WRK-SURYO-K     TO  WRK-SURYO-H
+                           MOVE    WRK-SURYO-H     TO  TBL-SURYO-Z
+                                                          (IDX-Z)
                        END-IF
                    ELSE
       *                きざみ値毎に数量
@@ -1193,8 +1207,13 @@
                END-PERFORM
                IF      IDX-SURYO       >   ZERO
                    MOVE    IDX-SURYO       TO  IDX-Z
-                   ADD     WRK-COM-KZM(IDX-Z)  TO  WRK-COM-SURYO2
+                   IF      WRK-COM-KZM(IDX-Z)  <=  WRK-SURYO-H
+                       ADD     WRK-COM-KZM(IDX-Z)  TO  WRK-COM-SURYO2
                                                              (IDX-Z)
+                   ELSE
+                       ADD     WRK-SURYO-H         TO  WRK-COM-SURYO2
+                                                             (IDX-Z)
+                   END-IF
                    COMPUTE WRK-SURYO-H     =   WRK-SURYO-H
                                            -   WRK-COM-KZM(IDX-Z)
                    MOVE    "1"             TO  TBL-CHK (IDX-Z)
