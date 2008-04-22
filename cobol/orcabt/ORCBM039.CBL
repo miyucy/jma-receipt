@@ -627,7 +627,7 @@
       *
       *    特定疾患のとき 
            IF      SUM-KOH-KOHNUM (IDX2)    =   "051"
-               MOVE    "特定疾患"      TO   WRK-HKNNAME
+               MOVE    "特定疾患"          TO  HCM3F-KOH-NAME(IDY)
            ELSE
       *        公費番号まとめ情報からの集計か
                IF      SUM-KOH-MEISYO  (IDX2)
