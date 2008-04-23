@@ -807,7 +807,10 @@
                IF      WRK-DAY (2 IDX)     =
                                        WRK-COMB-HKNCOMBINUM (IDX1)
                    IF      WRK-HKNCOMBI-SYOKBN (IDX1)   NOT =   SPACE
-                       CONTINUE                    
+      *                公害以外のとき初期化する
+                       IF      WRK-HKNCOMBI-SYOKBN (IDX1)  =   "1"
+                           MOVE    ZERO            TO  WRK-DAY (2 IDX)
+                       END-IF  
                    ELSE     
                        MOVE    WRK-STYMD       TO  WRK-YMD
                        MOVE    IDX             TO  WRK-DD
@@ -960,9 +963,6 @@
       *    病院・診療所区分
            MOVE    SYS-1001-HOSPSBT TO  WRK-RECE200-HOSPSBT               
       *
-      *    入退院履歴より情報取得
-           PERFORM 240-PTNYUINRRK-SYORI-SEC
-      *
            MOVE    WRK-RECE200-REC     TO  TBL-RECE200-OCC (IDXX)
       *
            .
@@ -1025,7 +1025,11 @@
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       TBL-RECE200-MAX
                    OR      TBL-RECE200-HOSPNUM (IDXX)  =   ZERO
-               MOVE    TBL-RECE200-OCC (IDXX)      TO  RECE200-REC
+               MOVE    TBL-RECE200-OCC (IDXX)      TO  WRK-RECE200-REC
+      *
+      *        入退院履歴より情報取得
+               PERFORM 240-PTNYUINRRK-SYORI-SEC
+               MOVE    WRK-RECE200-REC             TO  RECE200-REC
       *
       *        レセプト種別
                PERFORM 2001231-RECESYUBETU-SET-SEC
