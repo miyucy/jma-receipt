@@ -2536,7 +2536,10 @@
                        ELSE
       *                    Á¥°÷
                            IF      (SPA-GMN-HKNNUM       =   "002") AND
-                                   (SPA-GMN-HOJOKBN  NOT =   SPACE )
+                                   (SPA-GMN-HOJOKBN  NOT =   SPACE
+                                                         AND  "7"
+                                                         AND  "8" 
+                                                         AND  "9" )
                                IF     (SPA-PTHKN-HKNNUM(IDX)
                                                          =   "002")
                                  AND  (SPA-PTHKN-HOJOKBN (IDX)
@@ -2544,11 +2547,11 @@
                                    MOVE    IDX             TO  WRK-IDX
                                END-IF
                            ELSE
+      ****                     IF    ((SPA-PTHKN-HKNNUM(IDX)
+      *                                                =   "002") AND
+      *                               (SPA-PTHKN-HOJOKBN (IDX)
+      ****                                         NOT =   SPACE )) OR
                                IF    ((SPA-PTHKN-HKNNUM(IDX)
-                                                       =   "002") AND
-                                      (SPA-PTHKN-HOJOKBN (IDX)
-                                                   NOT =   SPACE )) OR
-                                     ((SPA-PTHKN-HKNNUM(IDX)
                                                        =   "031" OR
                                                            "032" OR 
                                                            "033" OR 
