@@ -1175,7 +1175,8 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
                        END-IF
                    END-IF
                ELSE
-                   IF      RECE10-AGE      >=  70
+                   IF        ( RECE10-AGE      >=  70 )
+                       AND   ( RECE10-AGE      <=  74 )
       *                Á¥°÷ÊÝ¸±¤ÎÊä½õ¶èÊ¬¤¬Á°´ü¹âÎð¼Ô¤Î»þ
                        IF      RECE10-HKNNUM           =   "002"
                            EVALUATE    RECE10-HOJOKBN
