@@ -2170,6 +2170,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
              OR  (RECE02-HKNNUM(1:2)  =   "98"                       )
              OR  (RECE02-HKNNUM  =   "068" OR "069" OR "040" OR "039")
              OR  (RECE02-AGE          <    70                        )
+             OR  (RECE02-AGE          >    74                        )
                CONTINUE
              ELSE
                IF  RECE02-HOJOKBN     =   "1"  OR  "9"

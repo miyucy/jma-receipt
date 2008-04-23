@@ -2963,6 +2963,7 @@
                                OR "068" OR "069" OR "040"
                                                  OR "039")
              OR  (AGECHK-NENREI         <     70         )
+             OR  (AGECHK-NENREI         >     74         )
                CONTINUE
              ELSE
                IF  COMB-HOJOKBN  =  "1"  OR  "9"

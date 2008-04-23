@@ -12773,6 +12773,7 @@
              OR  (RECE62-HKNNUM(1:2)  =   "98"                       )
              OR  (RECE62-HKNNUM  =   "068" OR "069" OR "040" OR "039")
              OR  (RECE62-AGE          <    70                        )
+             OR  (RECE62-AGE          >    74                        )
                CONTINUE
              ELSE
                IF  RECE62-HOJOKBN     =   "1"  OR  "9"
