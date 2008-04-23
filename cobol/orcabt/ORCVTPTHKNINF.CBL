@@ -1111,9 +1111,6 @@
                WHEN    "01"    THRU    "04"
                WHEN    "06"    THRU    "07"
                WHEN    "31"    THRU    "34"
-      *        後期高齢者
-               WHEN    "39"
-               WHEN    "40"
                WHEN    "60"
                WHEN    "63"
                WHEN    "67"
@@ -1288,19 +1285,6 @@
                    EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                        WHEN    "0"
                        WHEN    "1"     THRU    "3"
-                           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                           TO  WRK-HEN-HOJOKBN
-      *                誤入力
-                       WHEN    OTHER
-                           MOVE    3       TO  FLG-ERR
-                   END-EVALUATE
-      *        後期高齢者
-               WHEN    "039"
-               WHEN    "040"
-                   EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                       WHEN    "0"
-                       WHEN    "1" 
-                       WHEN    "3"
                            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  WRK-HEN-HOJOKBN
       *                誤入力
