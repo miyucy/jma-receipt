@@ -1382,6 +1382,21 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       * 
                IF      WRK-PARA-SRYYMD(1:6)    >=  WRK-CONS-SRYYM-200804
+                   IF    ( COMB-HKNNUM     =   "002" )
+                   AND  ( WRK-AGE          >=  75    )
+                       EVALUATE    COMB-HOJOKBN
+                           WHEN    "A"
+                           WHEN    "G"
+                               MOVE    "1"     TO  COMB-HOJOKBN
+                           WHEN    "B"
+                           WHEN    "H"
+                               MOVE    "2"     TO  COMB-HOJOKBN
+                           WHEN    "C"
+                           WHEN    "I"
+                               MOVE    "3"     TO  COMB-HOJOKBN
+                       END-EVALUATE
+                   END-IF
+      *
                    EVALUATE    COMB-HKNNUM
                        WHEN    "002" 
                            EVALUATE   COMB-HOJOKBN
