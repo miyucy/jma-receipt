@@ -77,6 +77,7 @@
       *                                     （生保の公費単独のみ） 
       *
       *  04.02.01    NACL-藤原    08/04/10  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/04/23  後期高齢者の船員保険を本人とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1270,6 +1271,17 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    END-IF
             END-EVALUATE
       *
+      *    年齢
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    COMB-HOSPNUM    TO  AGECHK-HOSPNUM
+           MOVE    TOUKEI01-PTID   TO  AGECHK-PTID
+           MOVE    WRK-PARA-SRYYM  TO  AGECHK-SRYYMD(1:6)
+           MOVE    "01"            TO  AGECHK-SRYYMD(7:2)
+           MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+                                       SPA-AREA
+      *
       *    平成２０年４月以降に老人保険使用のとき
            IF    ( WRK-TEISEIKBN       =   SPACE                 )
            AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
@@ -1281,16 +1293,6 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            IF    ( WRK-TEISEIKBN       =   SPACE                 )
            AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
            AND   ( COMB-HKNNUM         =   "067"                 )
-      *        年齢
-               INITIALIZE                  ORCSAGECHKAREA
-               MOVE    COMB-HOSPNUM    TO  AGECHK-HOSPNUM
-               MOVE    TOUKEI01-PTID   TO  AGECHK-PTID
-               MOVE    WRK-PARA-SRYYM  TO  AGECHK-SRYYMD(1:6)
-               MOVE    "01"            TO  AGECHK-SRYYMD(7:2)
-               MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
-               CALL    "ORCSAGECHK"        USING
-                                           ORCSAGECHKAREA
-                                           SPA-AREA
                IF      AGECHK-NENREI       >=  65
                    MOVE    "1"                 TO  WRK-TEISEIKBN
                END-IF
@@ -1462,6 +1464,30 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            ELSE
              EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
+                   IF      PTHKN-HOJOKBN   =   SPACE
+                       CONTINUE
+                   ELSE    
+                       IF    ( WRK-PARA-SRYYM
+                                             <   WRK-CONS-SRYYM-200804 )
+                       OR    ( AGECHK-NENREI <=  74                    )  
+                           MOVE    PTHKN-HOJOKBN   TO  TOUKEI01-HOJOKBN
+                       ELSE
+                           EVALUATE    PTHKN-HOJOKBN
+                               WHEN    "A"
+                               WHEN    "G"
+                                   MOVE    "1" TO  TOUKEI01-HOJOKBN
+                               WHEN    "B"
+                               WHEN    "H"
+                                   MOVE    "2" TO  TOUKEI01-HOJOKBN
+                               WHEN    "C"
+                               WHEN    "I"
+                                   MOVE    "3" TO  TOUKEI01-HOJOKBN
+                               WHEN    OTHER
+                                   MOVE    PTHKN-HOJOKBN
+                                               TO  TOUKEI01-HOJOKBN
+                           END-EVALUATE
+                       END-IF
+                   END-IF
                WHEN    "031"   THRU    "034"
                    IF      PTHKN-HOJOKBN   =   SPACE
                        CONTINUE
@@ -1615,6 +1641,25 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    MOVE    PTHKN-HIHKNJANAME
                                            TO  TOUKEI01-THIHKNJANAME(1)
                    MOVE    PTHKN-HOJOKBN   TO  TOUKEI01-THOJOKBN   (1)
+                   IF      PTHKN-HKNNUM    =   "002"
+                       IF    ( WRK-PARA-SRYYM
+                                             <   WRK-CONS-SRYYM-200804 )
+                       OR    ( AGECHK-NENREI <=  74                    )  
+                           CONTINUE
+                       ELSE
+                           EVALUATE    PTHKN-HOJOKBN
+                               WHEN    "A"
+                               WHEN    "G"
+                                   MOVE    "1" TO  TOUKEI01-THOJOKBN (1)
+                               WHEN    "B"
+                               WHEN    "H"
+                                   MOVE    "2" TO  TOUKEI01-THOJOKBN (1)
+                               WHEN    "C"
+                               WHEN    "I"
+                                   MOVE    "3" TO  TOUKEI01-THOJOKBN (1)
+                           END-EVALUATE
+                       END-IF
+                   END-IF
                    MOVE    PTHKN-HONKZKKBN TO  TOUKEI01-THONKZKKBN (1)
       *            法別番号
                    INITIALIZE                      HKNNUM-REC
@@ -1784,6 +1829,28 @@ grpsys                                 SPA-AREA
                                            TOUKEI01-THIHKNJANAME  (IDX)
                              MOVE    PTHKN-HOJOKBN
                                            TO  TOUKEI01-THOJOKBN  (IDX)
+                             IF      PTHKN-HKNNUM    =   "002"
+                                 IF    ( WRK-PARA-SRYYM
+                                             <   WRK-CONS-SRYYM-200804 )
+                                 OR    ( AGECHK-NENREI <=  74          )  
+                                     CONTINUE
+                                 ELSE
+                                     EVALUATE    PTHKN-HOJOKBN
+                                       WHEN    "A"
+                                       WHEN    "G"
+                                         MOVE    "1" 
+                                           TO  TOUKEI01-THOJOKBN (IDX)
+                                       WHEN    "B"
+                                       WHEN    "H"
+                                         MOVE    "2"
+                                           TO  TOUKEI01-THOJOKBN (IDX)
+                                       WHEN    "C"
+                                       WHEN    "I"
+                                         MOVE    "3"
+                                           TO  TOUKEI01-THOJOKBN (IDX)
+                                     END-EVALUATE
+                                 END-IF
+                             END-IF
                              MOVE    PTHKN-HONKZKKBN
                                            TO  TOUKEI01-THONKZKKBN(IDX)
                              MOVE    5     TO  IDX

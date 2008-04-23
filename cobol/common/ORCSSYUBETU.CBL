@@ -62,6 +62,10 @@
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *  04.02.02    NACL-藤原    08/04/14  月途中の負担者番号変更対応
       *                                     （中国残留法人等の公費単独） 
+      *  04.02.03    NACL-藤原    08/04/18  福岡地方公費の国保のとき
+      *                                     平成２０年４月以降は公費付加
+      *                                     情報より記載判定はしない
+      *  04.02.04    NACL-藤原    08/04/23  後期高齢者の船員保険を本人とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -929,6 +933,8 @@ grpsys             MOVE    LNK-SYUBETU-HOSPNUM     TO  HKN-HOSPNUM
                    AND   ( HKN-HBTNUM      NOT =   "41"              )
                    AND   ( COMB-KOHHKNNUM(IDX)(1:1)
                                               >=  "1" AND <=  "8"   )
+                   AND   ( LNK-SYUBETU-SRYYM  <
+                                              WRK-CONS-SRYYM-200804  )
                        IF    ( LNK-SYUBETU-SRYYM
                                               >  WRK-CONS-SRYYM-200609 )
                        AND   ( COMB-KOHHKNNUM (IDX)
@@ -1215,6 +1221,31 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
            ELSE
              EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
+                   IF      PTHKN-HOJOKBN   =   SPACE
+                       CONTINUE
+                   ELSE
+                      IF     ( LNK-SYUBETU-SRYYM
+                                           <   WRK-CONS-SRYYM-200804 )
+                       OR    ( WRK-NENREI  <=  74                    )  
+                           MOVE    PTHKN-HOJOKBN   TO
+                                                  WRK-RECE61-HOJOKBN
+                       ELSE
+                           EVALUATE    PTHKN-HOJOKBN
+                               WHEN    "A"
+                               WHEN    "G"
+                                   MOVE    "1" TO  WRK-RECE61-HOJOKBN
+                               WHEN    "B"
+                               WHEN    "H"
+                                   MOVE    "2" TO  WRK-RECE61-HOJOKBN
+                               WHEN    "C"
+                               WHEN    "I"
+                                   MOVE    "3" TO  WRK-RECE61-HOJOKBN
+                               WHEN    OTHER
+                                   MOVE    PTHKN-HOJOKBN
+                                               TO  WRK-RECE61-HOJOKBN
+                           END-EVALUATE
+                       END-IF
+                   END-IF
                WHEN    "031"   THRU    "034"
                    IF      PTHKN-HOJOKBN   =   SPACE
                        CONTINUE

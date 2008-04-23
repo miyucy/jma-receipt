@@ -960,16 +960,19 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                            WHEN    "1"
                            WHEN    "A"
                            WHEN    "D"
+                           WHEN    "G"
                                MOVE    "¿¦Ì³¾å" 
                                        TO  SPA-GMN-THOJOKBN   (WRK-LINE)
                            WHEN    "2"
                            WHEN    "B"
                            WHEN    "E"
+                           WHEN    "H"
                                MOVE    "²¼Á¥¸å£³¥ö·î°ÊÆâ"
                                        TO  SPA-GMN-THOJOKBN   (WRK-LINE)
                            WHEN    "3"
                            WHEN    "C"
                            WHEN    "F"
+                           WHEN    "I"
                                MOVE    "ÄÌ¶ÐºÒ³²"
                                        TO  SPA-GMN-THOJOKBN   (WRK-LINE)
                    END-EVALUATE
@@ -1361,15 +1364,18 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                            WHEN    "1"
                            WHEN    "A"
                            WHEN    "D"
+                           WHEN    "G"
                                MOVE    "¿¦Ì³¾å"    TO  SPA-GMN-HOJOKBN
                            WHEN    "2"
                            WHEN    "B"
                            WHEN    "E"
+                           WHEN    "H"
                                MOVE    "²¼Á¥¸å£³¥ö·î°ÊÆâ"
                                                    TO  SPA-GMN-HOJOKBN
                            WHEN    "3"
                            WHEN    "C"
                            WHEN    "F"
+                           WHEN    "I"
                                MOVE    "ÄÌ¶ÐºÒ³²"  TO  SPA-GMN-HOJOKBN
                    END-EVALUATE
                END-EVALUATE

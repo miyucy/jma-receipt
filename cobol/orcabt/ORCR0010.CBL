@@ -156,6 +156,7 @@
       *  03.02.05    NACL-藤原    08/04/18  福岡地方公費の国保のとき
       *                                     平成２０年４月以降は公費付加
       *                                     情報より記載判定はしない
+      *  04.02.06    NACL-藤原    08/04/23  後期高齢者の船員保険を本人とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1545,6 +1546,31 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
            ELSE
              EVALUATE    PTHKN-HKNNUM
                WHEN    "002"
+                   IF      PTHKN-HOJOKBN   =   SPACE
+                       CONTINUE
+                   ELSE
+                       IF    ( WRK-STYMD (1:6)
+                                           <   WRK-CONS-SRYYM-200804 )
+                       OR    ( WRK-NENREI  <=  74                    )  
+                           MOVE    PTHKN-HOJOKBN   TO
+                                                  WRK-RECE01-HOJOKBN
+                       ELSE
+                           EVALUATE    PTHKN-HOJOKBN
+                               WHEN    "A"
+                               WHEN    "G"
+                                   MOVE    "1" TO  WRK-RECE01-HOJOKBN
+                               WHEN    "B"
+                               WHEN    "H"
+                                   MOVE    "2" TO  WRK-RECE01-HOJOKBN
+                               WHEN    "C"
+                               WHEN    "I"
+                                   MOVE    "3" TO  WRK-RECE01-HOJOKBN
+                               WHEN    OTHER
+                                   MOVE    PTHKN-HOJOKBN
+                                               TO  WRK-RECE01-HOJOKBN
+                           END-EVALUATE
+                       END-IF
+                   END-IF
                WHEN    "031"   THRU    "034"
                    IF      PTHKN-HOJOKBN   =   SPACE
                        CONTINUE
@@ -1669,6 +1695,24 @@ grpsys     MOVE    SPA-HOSPNUM         TO  WRK-RECE01-HOSPNUM
            MOVE    PTHKN-HKNJANUM     TO  WRK-RECE01-HKN-HKNJANUM
            MOVE    PTHKN-HONKZKKBN    TO  WRK-RECE01-HKN-HONKZKKBN
            MOVE    PTHKN-HOJOKBN      TO  WRK-RECE01-HKN-HOJOKBN
+           IF      PTHKN-HKNNUM       =   "002"
+               IF    ( WRK-STYMD (1:6)    <   WRK-CONS-SRYYM-200804 )
+               OR    ( WRK-NENREI         <=  74                    )  
+                   CONTINUE
+               ELSE
+                   EVALUATE    PTHKN-HOJOKBN
+                       WHEN    "A"
+                       WHEN    "G"
+                           MOVE    "1" TO  WRK-RECE01-HKN-HOJOKBN
+                       WHEN    "B"
+                       WHEN    "H"
+                           MOVE    "2" TO  WRK-RECE01-HKN-HOJOKBN
+                       WHEN    "C"
+                       WHEN    "I"
+                           MOVE    "3" TO  WRK-RECE01-HKN-HOJOKBN
+                   END-EVALUATE
+               END-IF
+           END-IF
            MOVE    PTHKN-KIGO         TO  WRK-RECE01-KIGO
            MOVE    PTHKN-NUM          TO  WRK-RECE01-NUM
            MOVE    SPACE              TO  WRK-RECE01-CERTNUM
@@ -1835,6 +1879,24 @@ grpsys     MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
                MOVE    PTHKN-HKNJANUM      TO  WRK-RECE01-HKN-HKNJANUM
                MOVE    PTHKN-HONKZKKBN     TO  WRK-RECE01-HKN-HONKZKKBN
                MOVE    PTHKN-HOJOKBN       TO  WRK-RECE01-HKN-HOJOKBN
+               IF      PTHKN-HKNNUM        =   "002"
+                   IF    ( WRK-STYMD (1:6) <   WRK-CONS-SRYYM-200804 )
+                   OR    ( WRK-NENREI      <=  74                    )  
+                       CONTINUE
+                   ELSE
+                       EVALUATE    PTHKN-HOJOKBN
+                           WHEN    "A"
+                           WHEN    "G"
+                               MOVE    "1" TO  WRK-RECE01-HKN-HOJOKBN
+                           WHEN    "B"
+                           WHEN    "H"
+                               MOVE    "2" TO  WRK-RECE01-HKN-HOJOKBN
+                           WHEN    "C"
+                           WHEN    "I"
+                               MOVE    "3" TO  WRK-RECE01-HKN-HOJOKBN
+                       END-EVALUATE
+                   END-IF
+               END-IF
                MOVE    PTHKN-CONTKBN       TO  WRK-RECE01-CONTKBN
                MOVE    PTHKN-KIGO          TO  WRK-RECE01-KIGO
                MOVE    PTHKN-NUM           TO  WRK-RECE01-NUM
