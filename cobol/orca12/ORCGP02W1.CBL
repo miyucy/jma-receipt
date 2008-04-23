@@ -4579,11 +4579,6 @@
            ELSE
       *        £È£²£°¡¥£´¤«¤é
                IF      SPA-SYSYMD          >=  SPA-BYMD-75-2
-      *TEST
-               DISPLAY "FLG-RJNCHK:" FLG-RJNCHK
-                    ",FLG-RJNCHK2:" FLG-RJNCHK2
-                    ",FLG-HKNCHK:" FLG-HKNCHK
-      *TEST
       *            £·£µºÐ°Ê¾å¤Ç¸å´ü¹âÎð¼Ô¤¬¤Ê¤¤»þ
                    IF     (FLG-RJNCHK          =   2   )
                        OR (FLG-RJNCHK2         =   1   )
