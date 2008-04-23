@@ -197,6 +197,10 @@
                05  WRK-B70-MM          PIC 9(02).
                05  WRK-B70-DD          PIC 9(02).
            03  WRK-BYMD-70-1           PIC X(08).
+           03  WRK-BYMD-75.
+               05  WRK-B75-YY          PIC 9(04).
+               05  WRK-B75-MM          PIC 9(02).
+               05  WRK-B75-DD          PIC 9(02).
       *
            03  WRK-HEN-GAIFTN          PIC 9(03).
            03  WRK-HEN-NYUFTN          PIC 9(03).
@@ -866,6 +870,7 @@
       *    １日ならば生年月日、１日以外ならば生年月日の翌月１日
            MOVE    ZERO                TO  WRK-BASEYMD
            MOVE    ZERO                TO  WRK-BYMD-70
+           MOVE    ZERO                TO  WRK-BYMD-75
            MOVE    PTINF-BIRTHDAY      TO  WRK-BASEYMD
            IF      WRK-BDD         NOT =   01
                COMPUTE WRK-BMM         =   WRK-BMM     +   1
@@ -894,6 +899,9 @@
                   (WRK-BYMD-70         <=  WRK-SYSYMD )
                MOVE    1                   TO  FLG-ROUJIN
            END-IF
+      *    ７５歳を迎える日
+           MOVE    WRK-BASEYMD         TO  WRK-BYMD-75
+           COMPUTE WRK-B75-YY          =   WRK-B75-YY  +   75
       *
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX      >   20  )
@@ -907,6 +915,11 @@
                IF      PTHKN-HKNNUM    =   "980"
                    CONTINUE
                ELSE
+      *          後期高齢者
+                 IF     (PTHKN-HKNNUM        =   "039"
+                                                OR  "040" )
+                     PERFORM 5004-HKNNUM039-HEN-SEC
+                 ELSE
                    IF     (FLG-ROUJIN          =   1       )
                      AND  (PTHKN-CONTKBN       =   SPACE   )
       *                前期高齢者
@@ -915,6 +928,7 @@
       *                補助区分再セット
                        PERFORM 5003-HOJYOKBN-HEN-SEC
                    END-IF
+                 END-IF
                END-IF
            END-PERFORM
       *
@@ -1177,7 +1191,6 @@
                            MOVE    "3"             TO  PTHKN-HOJOKBN
                    END-EVALUATE
                END-IF
-      *
            WHEN    OTHER
       *    通常の場合
                EVALUATE    WRK-HEN-FTNKBN
@@ -1195,6 +1208,22 @@
       *
            .
        5003-ROJIN-HOJYOKBN-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    後期高齢者処理
+      *****************************************************************
+       5004-HKNNUM039-HEN-SEC            SECTION.
+      *
+           EVALUATE    WRK-HEN-FTNKBN
+      *    負担割合１
+               WHEN    "1"
+                   MOVE    "1"             TO  PTHKN-HOJOKBN
+      *    負担割合３
+               WHEN    "3"
+                   MOVE    "3"             TO  PTHKN-HOJOKBN
+           END-EVALUATE
+           .
+       5004-HKNNUM039-HEN-EXT.
            EXIT.
       *****************************************************************
       *    患者保険マスター登録処理

@@ -4579,6 +4579,11 @@
            ELSE
       *        Ｈ２０．４から
                IF      SPA-SYSYMD          >=  SPA-BYMD-75-2
+      *TEST
+               DISPLAY "FLG-RJNCHK:" FLG-RJNCHK
+                    ",FLG-RJNCHK2:" FLG-RJNCHK2
+                    ",FLG-HKNCHK:" FLG-HKNCHK
+      *TEST
       *            ７５歳以上で後期高齢者がない時
                    IF     (FLG-RJNCHK          =   2   )
                        OR (FLG-RJNCHK2         =   1   )
@@ -4786,6 +4791,20 @@
                                MOVE    IDX             TO  SPA-HKN-IDX1
                            END-IF
                        END-IF
+                   END-IF
+      *            本人で下船後なら後期高齢者扱いとする
+                   IF      (SPA-PTHKN-HOJOKBN (IDX)    =   "A"
+                                                       OR  "B"
+                                                       OR  "C"
+                                                       OR  "D"
+                                                       OR  "E"
+                                                       OR  "F"
+                                                       OR  "G"
+                                                       OR  "H"
+                                                       OR  "I" )
+                       AND (SPA-PTHKN-HONKZKKBN(IDX)   =   "1" )
+                       AND (SPA-PTHKN-TEKEDYMD (IDX)   >=  "20080401")
+                       MOVE    2                   TO  FLG-RJNCHK
                    END-IF
       *        共済
                WHEN    "031"

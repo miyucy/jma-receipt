@@ -1647,8 +1647,16 @@
                  AND  (SPA-BYMD-75-2           >   ZERO  )
                    IF     (SPA-NAI-HTEKSTYMD       >   "20080401" ) AND
                           (SPA-NAI-HTEKSTYMD       >=  SPA-BYMD-75-2)
-                       MOVE    "0122"              TO  SPA-ERRCD
-                       MOVE    16                  TO  SPA-GMN-CUR
+      *            船員で本人以外
+                       IF     (SPA-GMN-HKNNUM          =   "002" )
+                          AND (SPA-GMN-HONKZKKBN       =   "1"   )
+                          AND (SPA-GMN-HOJOKBN         >=  "A"  AND
+                                                       <=  "I"   )
+                           CONTINUE
+                       ELSE
+                           MOVE    "0122"              TO  SPA-ERRCD
+                           MOVE    16                  TO  SPA-GMN-CUR
+                       END-IF
                    END-IF
                END-IF
            END-IF
