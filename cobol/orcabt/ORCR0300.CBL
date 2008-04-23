@@ -2180,8 +2180,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
                    MOVE    9                     TO  WRK-NAGASA
                  END-IF
                END-IF
-               IF    ( RECE02-HKNNUM       =   "002" )
-               AND   ( RECE02-HOJOKBN      =   "3"   )
+      ***      IF    ( RECE02-HKNNUM       =   "002" )
+      ***      AND   ( RECE02-HOJOKBN      =   "3"   )
+               IF      RECE02-SENIN-TUUSAI =   "1"
                    MOVE    RECE02-FTNMONEY(IDX1) TO  WRK-NUM
                    MOVE    9                     TO  WRK-NAGASA
                END-IF

@@ -2479,8 +2479,9 @@
                    MOVE    9                     TO  WRK-NAGASA
                  END-IF
                END-IF
-               IF    ( RECE62-HKNNUM       =   "002" )
-               AND   ( RECE62-HOJOKBN      =   "3"   )
+      ***      IF    ( RECE62-HKNNUM       =   "002" )
+      ***      AND   ( RECE62-HOJOKBN      =   "3"   )
+               IF      RECE62-SENIN-TUUSAI =   "1"
                    MOVE    RECE62-FTNMONEY(IDX1) TO  WRK-NUM
                    MOVE    9                     TO  WRK-NAGASA
                END-IF
