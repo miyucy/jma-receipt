@@ -644,8 +644,8 @@
       *
       *        ¿ÇÎÅ²ñ·×½èÍý
                IF    ( FLG-END             =   ZERO ) 
-               AND   ( TBL-RECE200-HOSPNUM (1)
-                                           >   ZERO )
+      *********AND   ( TBL-RECE200-HOSPNUM (1)
+      *********                            >   ZERO )
                    INITIALIZE                      SRYACCT-REC
                    MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                    MOVE    KEY-O-PTID          TO  ACCT-PTID
