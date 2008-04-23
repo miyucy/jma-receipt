@@ -4247,12 +4247,16 @@
       *
                PERFORM 220-HKNCOMBI-GET-SEC
       *
-               IF    ( COMB-HKNID      NOT =   ZERO )
-                AND  ( COMB-HKNNUM     NOT =   "971" )
-                AND  ( COMB-HKNNUM     NOT =   "973" )
-                AND  ( COMB-HKNNUM     NOT =   "975" )
-                AND  ( COMB-HKNNUM (1:2)
-                                       NOT =   "98" )
+               IF    ( COMB-HKNID          =   ZERO )
+                OR   ( COMB-HKNNUM         =   "971" )
+                OR   ( COMB-HKNNUM         =   "973" )
+                OR   ( COMB-HKNNUM         =   "975" )
+                OR   ( COMB-HKNNUM (1:2)   =   "98" )
+                OR  (( COMB-HKNNUM         =   "002") 
+                 AND ( COMB-HOJOKBN        >=  "A" )
+                 AND ( COMB-HOJOKBN        <=  "I" ))
+                   CONTINUE
+               ELSE
       *
                    MOVE    THKNCOMBI-ACCTKBN  (IDX20)
                                        TO  WRK-ACCTKBN
