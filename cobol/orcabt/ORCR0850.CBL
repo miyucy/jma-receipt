@@ -41,16 +41,6 @@
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （診療区分６４：病理診断対応）
-      *
-      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-門脇    14/07/23  ３２文字以上の文字列修正
-      *                                     （コンパイル時のワーニング修正）
-      *  04.08.04    NACL-門脇    16/08/23  持参薬対応
-      *  04.08.05    NACL-門脇    16/11/07  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -240,8 +230,6 @@
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -284,7 +272,6 @@
                                        WRK-AREA
                                        FLG-AREA
                                        SPA-AREA
-                                       RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -294,58 +281,25 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE82PARA
-           INITIALIZE                      RECE82PARA
            MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE82PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE84PARA
-           INITIALIZE                      RECE84PARA
            MOVE    "RECE840"           TO  RECE84PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE85PARA
-           INITIALIZE                      RECE85PARA
            MOVE    "RECE850"           TO  RECE85PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE85PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE85PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE842PARA
-           INITIALIZE                      RECE842PARA
            MOVE    "RECE842"           TO  RECE842PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE842PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE842PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE84WPARA
-           INITIALIZE                      RECE84WPARA
            MOVE    "RECE84W"           TO  RECE84WPARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE84WPARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE84WPARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE82PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE84PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           MOVE    RECE85PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
-           MOVE    RECE842PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (5)
-           MOVE    RECE84WPARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (6)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE82PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE84PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE85PARA
-           MOVE    SGETTEMP-FULLNAMES (5)
-                                       TO  RECE842PARA
-           MOVE    SGETTEMP-FULLNAMES (6)
-                                       TO  RECE84WPARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
@@ -446,8 +400,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                MOVE    RECE84-ZAINUM     TO      WRK-ZAINUM
                MOVE    SPACE             TO      WRK-SRYSYUKBN
-               IF       RECE84-SRYKBN  =  "60" OR "64" OR "99"
-                   PERFORM   2101-RECE85-SRYSYUKBN-HEN-SEC
+               IF       RECE84-SRYKBN  =  "60" OR "64"
+                   PERFORM   2101-RECE85-SRYSYUKBN-HENSYU-SEC
                END-IF
       *
                INITIALIZE          WRK-COM-AREA
@@ -471,8 +425,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    RECE84-SURYOUTOTAL  TO  RECE842-SURYOUTOTAL
                MOVE    RECE84-RUIKEITOTAL  TO  RECE842-RUIKEITOTAL
                MOVE    RECE84-MEISAISU     TO  RECE842-MEISAISU 
-               MOVE    RECE84-JIHOKBN      TO  RECE842-JIHOKBN
-               MOVE    RECE84-JISANYAKKBN  TO  RECE842-JISANYAKKBN
                IF      RECE84-COMCDFLG   =   "1"
                  ADD     1                 TO  WRK-COMRENNUM
                  MOVE    WRK-COMRENNUM     TO  RECE842-COMRENNUM
@@ -580,7 +532,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
       *    診療種別区分取得
       *****************************************************************
-       2101-RECE85-SRYSYUKBN-HEN-SEC         SECTION.
+       2101-RECE85-SRYSYUKBN-HENSYU-SEC         SECTION.
       *
            INITIALIZE                           RECE85-REC
            MOVE    RECE82-HOSPNUM       TO      RECE85-HOSPNUM
@@ -616,7 +568,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-PERFORM
       *
            .
-       2101-RECE85-SRYSYUKBN-HEN-EXT.
+       2101-RECE85-SRYSYUKBN-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -659,15 +611,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                      IF  (RECE85-SRYCD(IDZ)(1:1)  =   "8"  )  OR
                          (RECE85-SRYCD(IDZ)(1:3)  =   "008")
-                       IF   (RECE85-RECEPTFLG(IDZ)   =  "1")
-                       AND  (RECE85-RECEDENFLG(IDZ)  =  "1")
-                         CONTINUE
-                       ELSE
                          ADD       1                 TO  IDZ2
                          IF   IDZ2  <=  10
                             MOVE   RECE85-NAME(IDZ)  TO  WRK-COM(IDZ2)
                          END-IF
-                       END-IF
                      END-IF
       *
                   END-PERFORM
@@ -907,8 +854,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE84-SURYOUTOTAL  TO  RECE842-SURYOUTOTAL
            MOVE    RECE84-RUIKEITOTAL  TO  RECE842-RUIKEITOTAL
            MOVE    RECE84-MEISAISU     TO  RECE842-MEISAISU
-           MOVE    RECE84-JIHOKBN      TO  RECE842-JIHOKBN
-           MOVE    RECE84-JISANYAKKBN  TO  RECE842-JISANYAKKBN
            START   RECE842-FILE
                KEY IS    >=   RECE842-KEY
                INVALID
@@ -931,8 +876,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                   (RECE84-SURYOUTOTAL  NOT =  RECE842-SURYOUTOTAL)  OR
                   (RECE84-RUIKEITOTAL  NOT =  RECE842-RUIKEITOTAL)  OR
                   (RECE84-MEISAISU     NOT =  RECE842-MEISAISU)     OR
-                  (RECE84-JIHOKBN      NOT =  RECE842-JIHOKBN)      OR
-                  (RECE84-JISANYAKKBN  NOT =  RECE842-JISANYAKKBN)  OR
                   (FLG-RECE842             =  1)
       *
                   MOVE     ZERO     TO     FLG-NASHI

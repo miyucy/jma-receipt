@@ -30,15 +30,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （診療区分６４：病理診断対応）
-      *
-      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
-      *  04.05.02    NACL-門脇    12/04/11  平成２４年４月改正
-      *
-      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
-      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.03    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.04    NACL-門脇    16/11/07  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -112,13 +103,9 @@ grpsys     COPY    "COMMON-SPA".
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE121//.
       *
-      *    エラーファイル名称領域
+      *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名称領域
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -198,8 +185,6 @@ grpsys     COPY    "COMMON-SPA".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -248,27 +233,18 @@ grpsys     COPY    "COMMON-SPA".
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
-      *
-           MOVE    "RECE900"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE100PARA
-      *
-           MOVE    "RECE920"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE120PARA
-      *
-           MOVE    "RECE930"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE130PARA
-      *
-           MOVE    "RECE921"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE121PARA
+           MOVE    "RECE900"           TO  RECE100PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE100PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE100PARA-HOSPNUM
+           MOVE    "RECE920"           TO  RECE120PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE120PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE120PARA-HOSPNUM
+           MOVE    "RECE930"           TO  RECE130PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE130PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE130PARA-HOSPNUM
+           MOVE    "RECE921"           TO  RECE121PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE121PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE121PARA-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -358,8 +334,8 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    RECE120-ZAINUM      TO  WRK-ZAINUM
                MOVE    SPACE               TO  WRK-SRYSYUKBN
                INITIALIZE                  WRK-COM-AREA
-               IF    ( RECE120-SRYKBN      =   "60" OR "64" OR "99" )
-               OR    ( RECE120-COMCDFLG    =   "1"                  )
+               IF    ( RECE120-SRYKBN      =   "60" OR "64" )
+               OR    ( RECE120-COMCDFLG    =   "1"          )
                    PERFORM 2101-RECE130-COM-HENSYU-SEC
                END-IF
       *
@@ -375,7 +351,6 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    RECE120-FLG-HOUTEN-COMMENT
                                            TO
                                            RECE121-FLG-HOUTEN-COMMENT
-               MOVE    RECE120-JIHOKBN     TO  RECE121-JIHOKBN
       *
                IF      RECE120-COMCDFLG    =   "2"
                    MOVE    SPACE               TO  RECE121-SRYSYUKBN
@@ -402,7 +377,7 @@ grpsys     COPY    "COMMON-SPA".
       *                剤回数・日数回数テーブルの加算
                        ADD     RECE120-ZAIKAISU    TO  RECE121-ZAIKAISU
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >      10
+                               UNTIL   IDX >       4
                            PERFORM VARYING IDY FROM    1   BY  1
                                    UNTIL   IDY >       31
                                ADD     RECE120-KAISU (IDX IDY)
@@ -428,24 +403,6 @@ grpsys     COPY    "COMMON-SPA".
                                END-IF
                            END-PERFORM
                        END-IF
-                       IF      RECE120-SAIDOU-SRYKA (1)
-                                               NOT =   SPACE
-                           PERFORM VARYING IDX FROM    1   BY  1
-                                   UNTIL   IDX >       10
-                               IF      RECE120-SAIDOU-SRYKA (1)    =
-                                           RECE121-SAIDOU-SRYKA (IDX)
-                                   MOVE    10          TO  IDX
-                               ELSE
-                                   IF      RECE121-SAIDOU-SRYKA(IDX)
-                                                           =   SPACE
-                                       MOVE   RECE120-SAIDOU-SRYKA (1)
-                                                           TO
-                                              RECE121-SAIDOU-SRYKA (IDX)
-                                       MOVE    10          TO  IDX
-                                   END-IF
-                               END-IF
-                           END-PERFORM
-                       END-IF
       *
                        IF      FLG-MATOME      =   ZERO
                            WRITE   RECE121-REC
@@ -463,7 +420,7 @@ grpsys     COPY    "COMMON-SPA".
       *                剤回数・日数回数テーブルの加算
                        ADD     RECE120-ZAIKAISU    TO  RECE121-ZAIKAISU
                        PERFORM VARYING IDX FROM    1   BY  1
-                               UNTIL   IDX >      10
+                               UNTIL   IDX >       4
                            PERFORM VARYING IDY FROM    1   BY  1
                                    UNTIL   IDY >       31
                              ADD     RECE120-KAISU (IDX IDY)
@@ -484,24 +441,6 @@ grpsys     COPY    "COMMON-SPA".
                                        MOVE   RECE120-SYODOU-SRYKA (1)
                                                            TO
                                               RECE121-SYODOU-SRYKA (IDX)
-                                       MOVE    10          TO  IDX
-                                   END-IF
-                               END-IF
-                           END-PERFORM
-                       END-IF
-                       IF      RECE120-SAIDOU-SRYKA (1)
-                                               NOT =   SPACE
-                           PERFORM VARYING IDX FROM    1   BY  1
-                                   UNTIL   IDX >       10
-                               IF      RECE120-SAIDOU-SRYKA (1)    =
-                                           RECE121-SAIDOU-SRYKA (IDX)
-                                   MOVE    10          TO  IDX
-                               ELSE
-                                   IF      RECE121-SAIDOU-SRYKA(IDX)
-                                                           =   SPACE
-                                       MOVE   RECE120-SAIDOU-SRYKA (1)
-                                                           TO
-                                              RECE121-SAIDOU-SRYKA (IDX)
                                        MOVE    10          TO  IDX
                                    END-IF
                                END-IF
@@ -561,8 +500,8 @@ grpsys     COPY    "COMMON-SPA".
                          ( WRK-ZAINUM  NOT =  RECE130-ZAINUM )
       *
       *        検査のとき最初の診療区分を取得
-               IF    ( RECE120-SRYKBN      =   "60" OR "64" OR "99" )
-               AND   ( WRK-SRYSYUKBN       =    SPACE               )
+               IF    ( RECE120-SRYKBN      =   "60" OR "64" )
+               AND   ( WRK-SRYSYUKBN       =    SPACE       )
                    MOVE   RECE130-SRYSYUKBN   TO   WRK-SRYSYUKBN
                END-IF
       *        コメント取得
@@ -573,22 +512,18 @@ grpsys     COPY    "COMMON-SPA".
                                            =   SPACE )
                        IF    ( RECE130-SRYCD(IDZ)(1:1)     =   "8"   )
                        OR    ( RECE130-SRYCD(IDZ)(1:3)     =   "008" )
-                         IF    RECE130-RECEPTFLG(IDZ)   =  "1"
-                           CONTINUE
-                         ELSE
                            ADD     1               TO  IDZ2
                            IF      IDZ2            <=  10
                                MOVE   RECE130-NAME (IDZ)
                                                    TO  WRK-COM (IDZ2)
                            END-IF
-                         END-IF
                        END-IF
                    END-PERFORM
                    PERFORM  900-RECE130-READ-SEC
                ELSE
-      ***          IF      WRK-SRYSYUKBN   NOT =   SPACE
+                   IF      WRK-SRYSYUKBN   NOT =   SPACE
                        MOVE    1               TO  FLG-RECE130
-      ***          END-IF
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -609,8 +544,6 @@ grpsys     COPY    "COMMON-SPA".
       *
            MOVE    RECE121-SYODOU-SRYKA-AREA
                                         TO  RECE120-SYODOU-SRYKA-AREA
-           MOVE    RECE121-SAIDOU-SRYKA-AREA
-                                        TO  RECE120-SAIDOU-SRYKA-AREA
       *
            WRITE   RECE120-REC
            ADD     1                   TO  CNT-RECE120W
@@ -726,20 +659,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  TEMPFLPARA (SGETTEMP-ST:)
-           .
-       800-FILENM-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    基本情報ファイル読込処理
       *****************************************************************
        900-RECE100-READ-SEC           SECTION.
@@ -837,7 +756,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE120-MEISAISU    TO  RECE121-MEISAISU
            MOVE    RECE120-FLG-HOUTEN-COMMENT
                                        TO  RECE121-FLG-HOUTEN-COMMENT
-           MOVE    RECE120-JIHOKBN     TO  RECE121-JIHOKBN
            START   RECE121-FILE
                KEY IS    >=   RECE121-KEY
                INVALID
@@ -857,7 +775,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                  ( RECE120-FLG-HOUTEN-COMMENT
                                        NOT =
                                        RECE121-FLG-HOUTEN-COMMENT ) OR
-                 ( RECE120-JIHOKBN     NOT =  RECE121-JIHOKBN     ) OR
                  ( FLG-RECE121             =  1                   )
       *
                MOVE     ZERO       TO  FLG-NASHI

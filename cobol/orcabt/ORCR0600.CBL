@@ -56,43 +56,6 @@
       * 
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *                                     広域連合対応
-      *  04.02.02    NACL-門脇    08/05/29  入院料加算保険組み合わせチェック
-      *  04.02.03    NACL-門脇    08/06/15  入院料加算外泊チェック
-      *  04.02.04    NACL-門脇    08/10/07  入院基本料有効期間チェック
-      *  04.02.05    NACL-門脇    08/10/30  保険組合せ有効期間チェック
-      *  04.03.01    NACL-門脇    08/12/04  仮収納作成時のディスプレイ追加
-      *
-      *  04.04.01    NACL-門脇    09/08/25  出産一時金対応
-      *  04.04.02    NACL-門脇    10/05/06  カーソルクローズ修正
-      *  04.04.03    NACL-門脇    10/05/07  入院料剤点チェック
-      *  04.04.04    NACL-門脇    10/07/20  救急搬送診療料のチェック
-      *  04.04.05    NACL-門脇    10/08/09  他医受診のチェック
-      *
-      *  04.05.01    NACL-門脇    10/01/18  治験対応
-      *  04.05.02    NACL-門脇    11/11/09  同日再入院食事対応
-      *  04.05.03    NACL-門脇    12/09/18  改正対応（外泊区分８，９の対応）
-      *  04.06.01    NACL-門脇    13/03/27  エラー時終了処理対応
-      *  04.07.01    NACL-門脇    12/08/28  薬剤料減点対応
-      *  04.07.02    NACL-門脇    14/03/28  平成２６年４月改正対応
-      *  04.07.03    NACL-藤原    14/07/11  医療情報連携基盤、ＥＦファイル作成対応
-      *  04.07.04    NACL-門脇    15/01/16  入院点滴：診療種別「．３４０」の
-      *                                     入力チェック対応
-      *  04.07.05    NACL-門脇    15/06/26  特別食加算の入力チェック対応
-      *
-      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
-      *                                     載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-門脇    15/11/09  該当期間に１０超の保険組合せの
-      *                                     使用があるかチェック
-      *  04.08.04    NACL-門脇    16/02/29  平成２８年４月改正対応
-      *  04.08.05    NACL-門脇    17/04/06  入院期間外の入院診療行為入力
-      *                                     チェック
-      *  04.08.06    NACL-門脇    17/08/28  ７０歳未満の低１チェックと
-      *                                     システム管理５０００−「入院時
-      *                                     食事療養」の未設定チェック
-      *  04.08.07    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
-      *                                     での食事算定対応
-      *  05.00.01    NACL-伊藤    18/01/11  診療情報システム対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -112,10 +75,11 @@
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-      *
-      *    エラーファイル名称領域
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+      *    エラーファイル 名称領域 
+           COPY    "CPERRFL.INC"
+                                   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
+      *
       *
       *    フラグ領域
        01  STS-AREA.
@@ -136,8 +100,6 @@
            03  FLG-SET                                 PIC 9(01).
            03  FLG-DATA                                PIC 9(01).
            03  FLG-SYORI                               PIC 9(01).
-           03  FLG-BUNBEN-SET                          PIC 9(01).
-           03  FLG-NG                                  PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -176,7 +138,6 @@
            03  WRK-PARA-SHELLID                        PIC X(08).
            03  WRK-PARA-PTID                           PIC X(10).
            03  WRK-PARA-SRYYM-O                        PIC X(06).
-           03  WRK-PARA-PRTKBN                         PIC X(01).
        01  WRK-PARA-HOSPNUM                            PIC 9(02).
       *
       *    エラーメッセージ編集領域
@@ -185,22 +146,12 @@
            03  ERR-ERRMSG              PIC X(80).
            03  ERR-HEN-ERRMSG          PIC X(200).
       *
-       01  WRK-ERR-AREA.
-           03  WRK-RECEERR         PIC X(200).
-           03  WRK-ERRMSG          PIC X(300).
-           03  WRK-MCP-RC          PIC 9(9).
-           03  WRK-ERR-FILE-STS    PIC X(02).
-           03  WRK-ERR-FILE-MSG    PIC X(100).
-           03  WRK-ERR-FILE-MSG1   PIC X(17).
-           03  WRK-ERR-FLG         PIC 9(01).
-      *    エラーファイル名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //WRK-ERR-FILE-NM//.
-      *
       *    一時領域
        01  WRK-AREA.
       *
            03  WRK-SYS-SRYYMD                          PIC X(08).
+      *
+           03  WRK-RECEERR                             PIC X(200).
       *
            03  WRK-STYMD                               PIC X(08).
            03  WRK-EDYMD                               PIC X(08).
@@ -211,18 +162,12 @@
                    07  WRK-DAY                         PIC 9(04)
                                                        OCCURS   31.
       *
-           03  WRK-DAY-AREA2.
-               05  WRK-DAY-TBL2                        OCCURS   31.
-                   07  WRK-DAY-DOJITU                  PIC 9(04).
-                   07  WRK-DAY-KBN                     PIC X(01).
-      *
            03  WRK-ROUSAIKBN                           PIC X(01).
            03  WRK-DENPNUM                             PIC 9(07).
            03  WRK-SEIKYUSTYMD                         PIC 9(08).
            03  WRK-SEIKYUEDYMD                         PIC 9(08).
            03  WRK-DATAKBN                             PIC X(01).
            03  WRK-SYOKBN                              PIC X(01).
-           03  WRK-HKNCOMBINUM                         PIC 9(04).
       *
            03  WRK-STR                                 PIC X(200).
            03  WRK-LEN                                 PIC 9(05).
@@ -234,11 +179,10 @@
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
-           03  WRK-SRYACCT-PATHNAME    PIC X(64).
       *
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
-      *@
+      *
        01  WRK-CONS-AREA.
       *    労災保険番号 
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
@@ -309,10 +253,6 @@
            COPY    "CPORCSJOBKANRI.INC".
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *    分娩入院チェックサブ
-           COPY    "CPORCSBUNBENCHK.INC".
-      *    入院料未算定日取得サブ
-           COPY    "CPORCSNYUINDAY.INC".
       *
       *    定期請求用収納作成サブ
        01  LNK-ORCS02-REC.
@@ -327,15 +267,13 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(400).
+           02  FILLER      PIC X(2000).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -371,26 +309,13 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
-                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           DISPLAY "WRK-PARA-HOSPNUM =" WRK-PARA-HOSPNUM
-           DISPLAY "WRK-PARA-PRTKBN  =" WRK-PARA-PRTKBN
-           DISPLAY "WRK-PARA-SRYYM   =" WRK-PARA-SRYYM
-           DISPLAY "WRK-PARA-SYOKBN  =" WRK-PARA-SYOKBN
-           DISPLAY "WRK-PARA-RECEKBN =" WRK-PARA-RECEKBN
-      *
            MOVE    WRK-PARA-SRYYM      TO  SYS-2001-SRYYM
-           MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
+           MOVE    WRK-PARA-SYOKBN     TO  SYS-2001-SYOKBN 
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -648,19 +573,11 @@
                MOVE    "1"                 TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "9" OR
-                                               "8" OR  "B"
-                   MOVE    "key60"             TO  WRK-SRYACCT-PATHNAME
-               ELSE
-                   MOVE    "key36"             TO  WRK-SRYACCT-PATHNAME
-               END-IF
-               MOVE    WRK-SRYACCT-PATHNAME
-                                           TO  MCP-PATHNAME
+               MOVE    "key36"             TO  MCP-PATHNAME
                PERFORM    900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    WRK-SRYACCT-PATHNAME
-                                               TO  MCP-PATHNAME
+                   MOVE    "key36"             TO  MCP-PATHNAME
                    PERFORM 900-SRYACCT-READ-SEC
                ELSE
                    INITIALIZE                  SRYACCT-REC
@@ -672,12 +589,9 @@
                    PERFORM 20011-IKKATU-SRYACCT-HENSYU-SEC
                END-PERFORM
       *        カーソルクロース
-               IF   FLG-ERR   =   ZERO
-                 MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                 MOVE    WRK-SRYACCT-PATHNAME
-                                             TO  MCP-PATHNAME
-                 PERFORM 900-CLOSE-SEC
-               END-IF
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key36"             TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
            END-IF
       *
            IF      FLG-ERR             =   ZERO
@@ -704,14 +618,12 @@
       *
                PERFORM UNTIL       FLG-NYUINACCT   =   1
                          OR        FLG-ERR         =   1
-                   PERFORM 20012-IKKATU-NYUINACCT-HEN-SEC
+                   PERFORM 20012-IKKATU-NYUINACCT-HENSYU-SEC
                END-PERFORM
       *        カーソルクロース
-               IF   FLG-ERR   =   ZERO
-                 MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                 MOVE    "key13"             TO  MCP-PATHNAME
-                 PERFORM 900-CLOSE-SEC
-               END-IF
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key13"             TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
            END-IF
            .
        2001-IKKATU-SYORI-EXT.
@@ -725,10 +637,6 @@
       *    処理中止設定処理
            PERFORM 500-CANCEL-HENSYU-SEC
            IF      FLG-ERR             =   1
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    WRK-SRYACCT-PATHNAME
-                                           TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
                GO  TO  20011-IKKATU-SRYACCT-HENSYU-EXT
            END-IF
       *
@@ -754,8 +662,7 @@
                                OR      FLG-ERR         =   1
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    WRK-SRYACCT-PATHNAME
-                                               TO  MCP-PATHNAME
+                   MOVE    "key36"             TO  MCP-PATHNAME
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
@@ -803,25 +710,21 @@
                        EVALUATE    WRK-PARA-RECEKBN
                            WHEN    "0"
                            WHEN    "6"
-                               MOVE    1     TO   FLG-NG
                                PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
                            WHEN    "1"
                                IF      COMB-HKNNUM 
                                                NOT =   "060" AND "067"
                                                    AND "068" AND "069"
                                                    AND "039" AND "040"    
-                                   MOVE    1     TO   FLG-NG
                                    PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
                                END-IF
                            WHEN    "2"
                                IF      COMB-HKNNUM =   "060" OR  "067"
                                                     OR "068" OR  "069"
-                                   MOVE    1     TO   FLG-NG
                                    PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
                                END-IF
                            WHEN    "7"
                                IF      COMB-HKNNUM =   "039" OR  "040"
-                                   MOVE    1     TO   FLG-NG
                                    PERFORM 20011-SRYACCT-FILE-HENSYU-SEC 
                                END-IF
                        END-EVALUATE
@@ -837,8 +740,7 @@
                                    OR      KEY-N-PTID  
                                                    NOT =   KEY-O-PTID
                                MOVE    "tbl_sryacct"   TO  MCP-TABLE
-                               MOVE    WRK-SRYACCT-PATHNAME
-                                                       TO  MCP-PATHNAME
+                               MOVE    "key36"         TO  MCP-PATHNAME
                                PERFORM 900-SRYACCT-READ-SEC
                            END-PERFORM
                          ELSE
@@ -848,8 +750,7 @@
                                        OR      FLG-ERR     =   1
                                        OR      KEY-NEW NOT =   KEY-OLD
                                MOVE    "tbl_sryacct"   TO  MCP-TABLE
-                               MOVE    WRK-SRYACCT-PATHNAME
-                                                       TO  MCP-PATHNAME
+                               MOVE    "key36"         TO  MCP-PATHNAME
                                PERFORM 900-SRYACCT-READ-SEC
                            END-PERFORM
                          END-IF    
@@ -883,15 +784,12 @@
       *****************************************************************
       *    入院会計一括編集処理
       *****************************************************************
-       20012-IKKATU-NYUINACCT-HEN-SEC              SECTION.
+       20012-IKKATU-NYUINACCT-HENSYU-SEC              SECTION.
       *
       *    処理中止設定処理
            PERFORM 500-CANCEL-HENSYU-SEC
            IF      FLG-ERR             =   1
-               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-               MOVE    "key13"             TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-               GO  TO  20012-IKKATU-NYUINACCT-HEN-EXT
+               GO  TO  20012-IKKATU-NYUINACCT-HENSYU-EXT
            END-IF
       *
            MOVE    SPACE                   TO  WRK-DATAKBN
@@ -936,7 +834,6 @@
       *
                MOVE    KEY-NEW             TO  KEY-OLD
                INITIALIZE                      WRK-DAY-AREA
-               INITIALIZE                      WRK-DAY-AREA2
       *
                PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                                OR      FLG-ERR         =   1 
@@ -960,35 +857,14 @@
                    PERFORM 900-NYUINACCT-READ-SEC
                END-PERFORM
       *
-               IF      FLG-ERR         =   ZERO
-                   INITIALIZE                   ORCSNYUINDAY-AREA
-                   MOVE    SYS-1001-HOSPNUM TO  LNK-NYUINDAY-HOSPNUM
-                   MOVE    KEY-O-PTID       TO  LNK-NYUINDAY-PTID
-                   MOVE    SYS-2001-SRYYM   TO  LNK-NYUINDAY-SANTEIYM
-                   CALL    "ORCSNYUINDAY"   USING   ORCSNYUINDAY-AREA
-                                                    SPA-AREA
-                   IF      LNK-NYUINDAY-RC  =   ZERO
-                      PERFORM    VARYING   IDX   FROM   1   BY   1
-                                  UNTIL    IDX    >    31
-                        MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX)
-                                            TO  WRK-DAY-DOJITU(IDX)
-                        MOVE  LNK-NYUINDAY-KBN(IDX)
-                                            TO  WRK-DAY-KBN(IDX)
-                      END-PERFORM
-                   END-IF
-               END-IF
-      *
                IF      FLG-ERR         =   ZERO 
       *            対象の入院会計があるとき仮収納作成
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       31
-                       IF    ((WRK-DAY (1 IDX)     >   ZERO) OR
-                              (WRK-DAY-KBN(IDX)    =   "1" ))  AND
-                             ( WRK-DAY (2 IDX)     >   ZERO )
-                           MOVE    WRK-DAY (2 IDX) TO  WRK-HKNCOMBINUM
+                       IF      WRK-DAY (1 IDX)     >   ZERO    AND
+                               WRK-DAY (2 IDX)     >   ZERO
                            PERFORM 200121-NYUINACCT-CHK-SEC
                            IF      WRK-SYOKBN      =   SPACE
-                               MOVE    2     TO   FLG-NG
                                PERFORM 200122-NYUINACCT-HENSYU-SEC
                                IF    ( WRK-DATAKBN     =   "1" ) 
                                OR    ( FLG-ERR         =    1  )
@@ -997,33 +873,11 @@
                            END-IF
                        END-IF
                    END-PERFORM
-                   IF    ( WRK-DATAKBN     =   "1" )
-                   OR    ( FLG-ERR         =    1  )
-                     CONTINUE
-                   ELSE
-                     PERFORM VARYING IDX FROM    1   BY  1
-                             UNTIL   IDX >       31
-                       IF      WRK-DAY-DOJITU(IDX) >   ZERO
-                           MOVE    WRK-DAY-DOJITU(IDX)
-                                                   TO  WRK-HKNCOMBINUM
-                           PERFORM 200121-NYUINACCT-CHK-SEC
-                           IF      WRK-SYOKBN      =   SPACE
-                               MOVE    2     TO   FLG-NG
-                               DISPLAY "DOUJITU"
-                               PERFORM 200122-NYUINACCT-HENSYU-SEC
-                               IF    ( WRK-DATAKBN     =   "1" ) 
-                               OR    ( FLG-ERR         =    1  )
-                                   MOVE    31              TO  IDX
-                               END-IF
-                           END-IF
-                       END-IF
-                     END-PERFORM
-                   END-IF
                END-IF            
              END-IF
            END-IF    
            .
-       20012-IKKATU-NYUINACCT-HEN-EXT.
+       20012-IKKATU-NYUINACCT-HENSYU-EXT.
            EXIT. 
       *            
       *****************************************************************
@@ -1036,7 +890,7 @@
            INITIALIZE                  HKNCOMBI-REC
            MOVE    SYS-1001-HOSPNUM TO  COMB-HOSPNUM
            MOVE    KEY-O-PTID      TO  COMB-PTID
-           MOVE    WRK-HKNCOMBINUM TO  COMB-HKNCOMBINUM
+           MOVE    WRK-DAY (2 IDX) TO  COMB-HKNCOMBINUM 
            MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
            PERFORM 910-HKNCOMBI-INV-SEC
       *
@@ -1122,8 +976,6 @@
       *****************************************************************
        20011-HENSYU-SEC                SECTION.
       *
-           MOVE    "1"                 TO  WRK-DATAKBN
-      *
       *    ダミー収納削除処理
       *
            INITIALIZE                      SYUNOU-REC
@@ -1204,9 +1056,6 @@
       *
               MOVE    ZERO                TO  WRK-SEIKYUSTYMD
                                               WRK-SEIKYUEDYMD
-      *
-              MOVE    ZERO                TO  FLG-BUNBEN-SET
-      *
       *       診療月内の入退院情報
               INITIALIZE                      PTNYUINRRK-REC
               MOVE    SYS-1001-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
@@ -1243,21 +1092,6 @@
                    IF      WRK-SEIKYUEDYMD =   ZERO
                        MOVE  PTNYUINRRK-TAIINYMD TO  WRK-SEIKYUEDYMD
                    END-IF             
-      *
-                   IF      FLG-BUNBEN-SET  =   ZERO
-                     INITIALIZE                    SBUNBENCHK-AREA
-                     MOVE  KEY-O-PTID          TO  SBUNBENCHK-PTID
-                     MOVE  PTNYUINRRK-RRKNUM   TO  SBUNBENCHK-RRKNUM
-                     CALL  "ORCSBUNBENCHK" USING
-                                           SBUNBENCHK-AREA
-                                           SPA-AREA
-                     IF    SBUNBENCHK-BUNBEN   =   ZERO
-                        CONTINUE
-                     ELSE
-                        MOVE    1              TO  FLG-BUNBEN-SET
-                     END-IF
-                   END-IF
-      *
                    MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
                    MOVE    "key23"             TO  MCP-PATHNAME
                    PERFORM 900-PTNYUINRRK-READ-SEC
@@ -1291,12 +1125,7 @@
               MOVE    WRK-SEIKYUEDYMD TO  LNK-S02-SKYEDYMD
               MOVE    "X"             TO  LNK-S02-TEIKI-KBN
               MOVE    WRK-PARA-SYSYMD TO  LNK-S02-SYSYMD
-      *
-              IF      FLG-BUNBEN-SET  =   ZERO
-                  MOVE    "2"         TO  LNK-S02-SYORI-KBN
-              ELSE
-                  MOVE    "9"         TO  LNK-S02-SYORI-KBN
-              END-IF
+              MOVE    "2"             TO  LNK-S02-SYORI-KBN
       *
               CALL    "ORCSNYUFTN"    USING
                                       SPA-AREA
@@ -1317,88 +1146,8 @@
                   DISPLAY "SKYSTYMD=" WRK-SEIKYUSTYMD
                   DISPLAY "SKYEDYMD=" WRK-SEIKYUEDYMD
       *
-                  EVALUATE   LNK-S02-RC
-                    WHEN       13
-                      MOVE "入院会計が未作成です"
+                  MOVE    "仮収納データの取得に失敗"
                                           TO  ERR-ERRMSG
-                    WHEN       14
-                      MOVE "入院料加算の保険組合せ確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       15
-                      MOVE "外泊日に入院料加算有"
-                                          TO  ERR-ERRMSG
-                    WHEN       16
-                      MOVE "入院料未算定日に入院料加算有"
-                                          TO  ERR-ERRMSG
-                    WHEN       17
-                      MOVE "入院基本料の有効期間確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       18
-                      MOVE "保険組合せの有効期間確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       19
-                      MOVE "包括点数減点分の点数確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       20
-                      MOVE "入院料算定点数の誤り"
-                                          TO  ERR-ERRMSG
-                    WHEN       21
-                      MOVE "救急搬送診療料算定日の入院料（加算）確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       22
-                      MOVE "他医受診（外泊）の入力誤り"
-                                          TO  ERR-ERRMSG
-                    WHEN       23
-                      MOVE "同日再入院日の実日数算定コード未入力"
-                                          TO  ERR-ERRMSG
-                    WHEN       24
-                      MOVE "同日再入院日の再入院分に入院料加算有"
-                                          TO  ERR-ERRMSG
-                    WHEN       25
-                      MOVE "薬剤料減点数確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       26
-                      MOVE "特定時間退院減算（外泊）の入力誤り"
-                                          TO  ERR-ERRMSG
-                    WHEN       27
-                      MOVE "特定曜日入退院減算（外泊）の入力誤り"
-                                          TO  ERR-ERRMSG
-                    WHEN       28
-                      MOVE "診療種別「．３４０」の診療行為入力確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       29
-                      MOVE "入院時食事療養（２）算定時に特別食加算有"
-                                          TO  ERR-ERRMSG
-                    WHEN       30
-                      MOVE "該当期間に１０超の保険組合せの使用有"
-                                          TO  ERR-ERRMSG
-                    WHEN       31
-                      MOVE "入院時生活療養（２）算定時に流動食有"
-                                          TO  ERR-ERRMSG
-                    WHEN       32
-                      MOVE "入院期間外の入院診療行為入力確認"
-                                          TO  ERR-ERRMSG
-                    WHEN       33
-                      MOVE "入院基本設定「入院時食事療養」が未設定です"
-                                          TO  ERR-ERRMSG
-                    WHEN       34
-                      MOVE "適用できない低所得１の入力有"
-                                          TO  ERR-ERRMSG
-                    WHEN       35
-                      MOVE "食事保険指定コードの診療行為入力重複"
-                                          TO  ERR-ERRMSG
-                    WHEN       36
-                      MOVE "食事保険指定コードの入力日に食事の算定なし"
-                                          TO  ERR-ERRMSG
-      *
-                    WHEN      101
-                      MOVE "包括入院期間に算定できない入院料加算有"
-                                          TO  ERR-ERRMSG
-      *
-                    WHEN      OTHER
-                      MOVE "仮収納データの取得に失敗"
-                                          TO  ERR-ERRMSG
-                  END-EVALUATE
                   PERFORM 600-ERRMSG-EDIT-SEC
       *
                   MOVE  ERR-HEN-ERRMSG    TO  WRK-RECEERR
@@ -1416,7 +1165,7 @@
       *****************************************************************
        20011-KARITEIKI-OUTPUT-SEC      SECTION.
       *
-      ***  MOVE    "1"                 TO  WRK-DATAKBN
+           MOVE    "1"                 TO  WRK-DATAKBN
       *
            MOVE    LNK-SYUNOU-REC (IDX1)
                                        TO  SYUNOU-REC
@@ -1451,24 +1200,6 @@
            PERFORM    900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO 
                COMPUTE CNT-OUT1    =   CNT-OUT1    +   1
-               DISPLAY "<SYUNOU>PTID=" KEY-O-PTID
-               DISPLAY "HKNCOMBINUM="    LNK-SYU-HKNCOMBINUM(IDX1)
-               DISPLAY "SKYSTYMD="       LNK-SYU-SKYSTYMD   (IDX1)
-               IF  LNK-SYU-SYUHKNNUM(IDX1)  NOT = SPACE
-                 DISPLAY "SYUHKNNUM="    LNK-SYU-SYUHKNNUM  (IDX1)
-               END-IF
-               IF  LNK-SYU-KOH1HKNNUM(IDX1) NOT = SPACE
-                 DISPLAY "KOH1HKNNUM="   LNK-SYU-KOH1HKNNUM (IDX1)
-               END-IF
-               IF  LNK-SYU-KOH2HKNNUM(IDX1) NOT = SPACE
-                 DISPLAY "KOH2HKNNUM="   LNK-SYU-KOH2HKNNUM (IDX1)
-               END-IF
-               IF  LNK-SYU-KOH3HKNNUM(IDX1) NOT = SPACE
-                 DISPLAY "KOH3HKNNUM="   LNK-SYU-KOH3HKNNUM (IDX1)
-               END-IF
-               IF  LNK-SYU-KOH4HKNNUM(IDX1) NOT = SPACE
-                 DISPLAY "KOH4HKNNUM="   LNK-SYU-KOH4HKNNUM (IDX1)
-               END-IF
            ELSE 
                DISPLAY "PTID=" KEY-O-PTID
                DISPLAY "SKYSTYMD=" WRK-SEIKYUSTYMD
@@ -1552,11 +1283,9 @@
                               UNTIL       FLG-SYS2002     =   1
                                 OR        FLG-ERR         =   1
       *    カーソルクロース
-           IF   FLG-ERR   =   ZERO
-              MOVE    "tbl_syskanri"      TO  MCP-TABLE
-              MOVE    "key7 "             TO  MCP-PATHNAME
-              PERFORM 900-CLOSE-SEC
-           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key7 "             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
            .
       *
        2002-KOBETU-SYORI-EXT.
@@ -1570,9 +1299,7 @@
            MOVE    WRK-PARA-PTID    TO  SYS-2002-PTID
            MOVE    WRK-PARA-SRYYM-O TO  SYS-2002-SRYYM
            MOVE    "1"              TO  SYS-2002-NYUGAIKBN
-      *
            DISPLAY "SYS PTID=" SYS-2002-PTID
-                   " SRYYM="   SYS-2002-SRYYM
       *
       *    該当診療年月の医療機関情報取得
            MOVE  ZERO           TO  FLG-SET
@@ -1629,18 +1356,11 @@
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "B" 
-               MOVE    "key61"             TO  WRK-SRYACCT-PATHNAME
-           ELSE
-               MOVE    "key37"             TO  WRK-SRYACCT-PATHNAME
-           END-IF
-           MOVE    WRK-SRYACCT-PATHNAME
-                                       TO  MCP-PATHNAME
+           MOVE    "key37"             TO  MCP-PATHNAME
            PERFORM    900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    WRK-SRYACCT-PATHNAME
-                                           TO  MCP-PATHNAME
+               MOVE    "key37"             TO  MCP-PATHNAME
                PERFORM 900-SRYACCT-READ-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
@@ -1649,12 +1369,11 @@
       *
            PERFORM UNTIL       FLG-SRYACCT     =   1
                      OR        FLG-ERR         =   1
-               PERFORM 200211-KOBETU-SRYACCT-HEN-SEC
+               PERFORM 200211-KOBETU-SRYACCT-HENSYU-SEC
            END-PERFORM
       *    カーソルクロース
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    WRK-SRYACCT-PATHNAME
-                                       TO  MCP-PATHNAME
+           MOVE    "key37"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
       *    処理対象のとき仮収納作成
@@ -1687,14 +1406,12 @@
       *
                PERFORM UNTIL       FLG-NYUINACCT     =   1
                          OR        FLG-ERR           =   1
-                   PERFORM 200212-KOBETU-NYUINACCT-HEN-SEC
+                   PERFORM 200212-KOBETU-NYUINACCT-HENSYU-SEC
                END-PERFORM
       *        カーソルクロース
-               IF   FLG-ERR   =   ZERO
-                 MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                 MOVE    "key14"             TO  MCP-PATHNAME
-                 PERFORM 900-CLOSE-SEC
-               END-IF
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
            END-IF 
       *
            .
@@ -1769,19 +1486,11 @@
                MOVE    SYS-2002-NYUGAIKBN  TO  ACCT-NYUGAIKBN
                MOVE    SRYACCT-REC         TO  MCPDATA-REC
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               IF      WRK-PARA-PRTKBN     =   "4" OR  "5" OR  "9"
-                                               OR  "8" OR  "B"
-                   MOVE    "key61"             TO  WRK-SRYACCT-PATHNAME
-               ELSE
-                   MOVE    "key37"             TO  WRK-SRYACCT-PATHNAME
-               END-IF
-               MOVE    WRK-SRYACCT-PATHNAME
-                                           TO  MCP-PATHNAME
+               MOVE    "key37"             TO  MCP-PATHNAME
                PERFORM    900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                   MOVE    WRK-SRYACCT-PATHNAME
-                                               TO  MCP-PATHNAME
+                   MOVE    "key37"             TO  MCP-PATHNAME
                    PERFORM 900-SRYACCT-READ-SEC
                ELSE
                    INITIALIZE                  SRYACCT-REC
@@ -1790,12 +1499,11 @@
       *
                PERFORM UNTIL       FLG-SRYACCT     =   1
                          OR        FLG-ERR         =   1
-                   PERFORM 200211-KOBETU-SRYACCT-HEN-SEC
+                   PERFORM 200211-KOBETU-SRYACCT-HENSYU-SEC
                END-PERFORM
       *        カーソルクロース
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    WRK-SRYACCT-PATHNAME
-                                           TO  MCP-PATHNAME
+               MOVE    "key37"             TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
       *
       *        処理対象のとき仮収納作成
@@ -1828,22 +1536,18 @@
       *
                    PERFORM UNTIL       FLG-NYUINACCT     =   1
                              OR        FLG-ERR           =   1
-                       PERFORM 200212-KOBETU-NYUINACCT-HEN-SEC
+                       PERFORM 200212-KOBETU-NYUINACCT-HENSYU-SEC
                    END-PERFORM
       *            カーソルクロース
-                   IF   FLG-ERR   =   ZERO
-                     MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                     MOVE    "key14"             TO  MCP-PATHNAME
-                     PERFORM 900-CLOSE-SEC
-                   END-IF
+                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+                   MOVE    "key14"             TO  MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
                END-IF
            END-IF
       *
-           IF   FLG-ERR   =   ZERO
-              MOVE    "tbl_syskanri"      TO  MCP-TABLE
-              MOVE    "key7 "             TO  MCP-PATHNAME
-              PERFORM 900-SYS2002-READ-SEC
-           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key7 "             TO  MCP-PATHNAME
+           PERFORM 900-SYS2002-READ-SEC
            .
        20021-KOBETU-HENSYU-EXT.
            EXIT.
@@ -1851,7 +1555,7 @@
       *****************************************************************
       *    診療会計個別処理（患者ＩＤ、保険組合せ、診療科順）
       *****************************************************************
-       200211-KOBETU-SRYACCT-HEN-SEC    SECTION.
+       200211-KOBETU-SRYACCT-HENSYU-SEC    SECTION.
       *
       *    保険組合せ読込み
            INITIALIZE                  HKNCOMBI-REC
@@ -1926,25 +1630,23 @@
                                OR      FLG-ERR         =   1  
                                OR      KEY-NEW     NOT =   KEY-OLD
                        MOVE    "tbl_sryacct"       TO  MCP-TABLE
-                       MOVE    WRK-SRYACCT-PATHNAME
-                                                   TO  MCP-PATHNAME
+                       MOVE    "key37"             TO  MCP-PATHNAME
                        PERFORM 900-SRYACCT-READ-SEC
                    END-PERFORM
                  END-IF
                END-IF 
            END-PERFORM    
            .
-       200211-KOBETU-SRYACCT-HEN-EXT.
+       200211-KOBETU-SRYACCT-HENSYU-EXT.
            EXIT.
       *            
       *****************************************************************
       *    入院会計個別編集処理
       *****************************************************************
-       200212-KOBETU-NYUINACCT-HEN-SEC              SECTION.
+       200212-KOBETU-NYUINACCT-HENSYU-SEC              SECTION.
       *
            MOVE    KEY-NEW             TO  KEY-OLD
            INITIALIZE                      WRK-DAY-AREA
-           INITIALIZE                      WRK-DAY-AREA2
       *
            PERFORM         UNTIL   FLG-NYUINACCT   =   1
                            OR      FLG-ERR         =   1 
@@ -1968,34 +1670,13 @@
            END-PERFORM
       *
            IF      FLG-ERR             =   ZERO
-               INITIALIZE                   ORCSNYUINDAY-AREA
-               MOVE    SYS-1001-HOSPNUM TO  LNK-NYUINDAY-HOSPNUM
-               MOVE    SYS-2002-PTID    TO  LNK-NYUINDAY-PTID
-               MOVE    SYS-2002-SRYYM   TO  LNK-NYUINDAY-SANTEIYM
-               CALL    "ORCSNYUINDAY"   USING   ORCSNYUINDAY-AREA
-                                                SPA-AREA
-               IF      LNK-NYUINDAY-RC  =   ZERO
-                  PERFORM    VARYING   IDX   FROM   1   BY   1
-                              UNTIL    IDX    >    31
-                    MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(IDX)
-                                        TO  WRK-DAY-DOJITU(IDX)
-                    MOVE  LNK-NYUINDAY-KBN(IDX)
-                                        TO  WRK-DAY-KBN(IDX)
-                  END-PERFORM
-               END-IF
-           END-IF
-      *
-           IF      FLG-ERR             =   ZERO
       *        対象の入院会計があるとき仮収納作成
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       31
-                   IF    ((WRK-DAY (1 IDX)     >   ZERO) OR
-                          (WRK-DAY-KBN(IDX)    =   "1" ))  AND
-                         ( WRK-DAY (2 IDX)     >   ZERO )
-                       MOVE    WRK-DAY (2 IDX) TO  WRK-HKNCOMBINUM
+                   IF      WRK-DAY (1 IDX)     >   ZERO    AND
+                           WRK-DAY (2 IDX)     >   ZERO
                        PERFORM 200121-NYUINACCT-CHK-SEC
                        IF      WRK-SYOKBN      =   SPACE
-                           MOVE    3     TO   FLG-NG
                            PERFORM 200122-NYUINACCT-HENSYU-SEC
                            IF    ( WRK-DATAKBN     =   "1" ) 
                            OR    ( FLG-ERR         =    1  )
@@ -2004,31 +1685,9 @@
                        END-IF
                    END-IF
                END-PERFORM
-               IF    ( WRK-DATAKBN     =   "1" )
-               OR    ( FLG-ERR         =    1  )
-                 CONTINUE
-               ELSE
-                 PERFORM VARYING IDX FROM    1   BY  1
-                         UNTIL   IDX >       31
-                   IF      WRK-DAY-DOJITU(IDX) >   ZERO
-                       MOVE    WRK-DAY-DOJITU(IDX)
-                                               TO  WRK-HKNCOMBINUM
-                       PERFORM 200121-NYUINACCT-CHK-SEC
-                       IF      WRK-SYOKBN      =   SPACE
-                           MOVE    3     TO   FLG-NG
-                           DISPLAY "DOUJITU2"
-                           PERFORM 200122-NYUINACCT-HENSYU-SEC
-                           IF    ( WRK-DATAKBN     =   "1" ) 
-                           OR    ( FLG-ERR         =    1  )
-                                   MOVE    31              TO  IDX
-                           END-IF
-                       END-IF
-                   END-IF
-                 END-PERFORM
-               END-IF
            END-IF    
            .
-       200212-KOBETU-NYUINACCT-HEN-EXT.
+       200212-KOBETU-NYUINACCT-HENSYU-EXT.
            EXIT.
       * 
       *****************************************************************
@@ -2056,26 +1715,9 @@
                END-IF
            END-IF
       *                             
-           MOVE    SPACE               TO  WRK-ERRMSG
-           STRING  "ORCR0600 "             DELIMITED  BY  SIZE
-                   WRK-RECEERR             DELIMITED  BY  SIZE
-                   LOW-VALUE               DELIMITED  BY  SIZE
-                                           INTO    WRK-ERRMSG
-           END-STRING
-           PERFORM 500-COBABORT-SEC
+           MOVE    1                   TO  FLG-ERR
            .
        500-ERR-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    エラー時終了処理
-      *****************************************************************
-       500-COBABORT-SEC                SECTION.
-      *
-           CALL    "cobabort"          USING   WRK-ERRMSG
-      *
-           .
-       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2177,37 +1819,6 @@
               END-STRING
            END-IF
       *
-           DISPLAY "ERR-ERRMSG=" ERR-ERRMSG
-           DISPLAY "ERR-PTNUM=" ERR-PTNUM
-      *
-           EVALUATE    WRK-PARA-SYOKBN
-             WHEN    "1"
-               IF   FLG-NG  =  1
-                 MOVE    "tbl_sryacct"     TO  MCP-TABLE
-                 MOVE    WRK-SRYACCT-PATHNAME
-                                           TO  MCP-PATHNAME
-                 PERFORM 900-CLOSE-SEC
-               END-IF
-               IF   FLG-NG  =  2
-                 MOVE    "tbl_nyuinacct"   TO  MCP-TABLE
-                 MOVE    "key13"           TO  MCP-PATHNAME
-                 PERFORM 900-CLOSE-SEC
-               END-IF
-             WHEN    "2"
-               IF   FLG-NG  =  3
-                 MOVE    "tbl_nyuinacct"   TO  MCP-TABLE
-                 MOVE    "key14"           TO  MCP-PATHNAME
-                 PERFORM 900-CLOSE-SEC
-               END-IF
-               IF   WRK-PARA-SHELLID  =  "RECEPTX"
-                 CONTINUE
-               ELSE
-                 MOVE      "tbl_syskanri"  TO  MCP-TABLE
-                 MOVE      "key7 "         TO  MCP-PATHNAME
-                 PERFORM   900-CLOSE-SEC
-               END-IF
-           END-EVALUATE
-      *
            .
        600-ERRMSG-EDIT-EXT.
            EXIT.
@@ -2244,13 +1855,6 @@
       *    未請求フラグチェック処理（医保のみ）
       *****************************************************************
        800-MISEIKYU-CHECK-SEC          SECTION.
-      *
-      *    ＥＦファイル作成、連係基盤用のとき未請求設定分も作成する
-      *    診療情報システムのとき未請求設定分も作成する
-           IF      WRK-PARA-PRTKBN     =   "9" OR  "8" OR  "B"
-               INITIALIZE                      SYUKA-REC
-               GO  TO  800-MISEIKYU-CHECK-EXT
-           END-IF
       *
            EVALUATE    WRK-PARA-RECEKBN
                WHEN    "0"
@@ -2614,30 +2218,8 @@
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
-               MOVE    SPACE               TO  WRK-ERR-AREA
-               INITIALIZE                      WRK-ERR-AREA
-               MOVE    MCP-RC              TO  WRK-MCP-RC
-      *
-               STRING  "ＤＢ読み込みエラー　TABLE="
-                                           DELIMITED   BY  SIZE
-                       MCP-TABLE           DELIMITED   BY  SPACE
-                       " RC="              DELIMITED   BY  SIZE
-                       WRK-MCP-RC          DELIMITED   BY  SIZE
-                                           INTO    WRK-RECEERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-      *
-               STRING  "ORCR0600 select err TABLE="
-                                           DELIMITED   BY  SIZE
-                       MCP-TABLE           DELIMITED   BY  SPACE
-                       " PATHNAME="        DELIMITED   BY  SIZE
-                       MCP-PATHNAME        DELIMITED   BY  SPACE
-                       " RC="              DELIMITED   BY  SIZE
-                       WRK-MCP-RC          DELIMITED   BY  SIZE
-                       LOW-VALUE           DELIMITED   BY  SIZE
-                                           INTO    WRK-ERRMSG
-               END-STRING
-               PERFORM 500-COBABORT-SEC
+               DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
            END-IF
            .
        900-DBSELECT-EXT.

@@ -35,11 +35,6 @@
       *
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
       *                                     広域連合対応
-      *
-      *  04.07.01    NACL-藤原    15/02/18  医療情報連携対応
-      *                                     自費レセプトを対象とする
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -60,6 +55,12 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE039-KEY
                                    FILE    STATUS  IS  STS-RECE039.
+      *
+           SELECT  RECE039W-FILE   ASSIGN  RECE039PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE039W-KEY
+                                   FILE    STATUS  IS  STS-RECE039.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -78,6 +79,12 @@
                                    BY          //RECE039//.
            03  RECE039-SYUBYOFLG-X PIC X(01).
       *
+       FD  RECE039W-FILE.
+       01  RECE039W-REC. 
+           COPY    "CPRCF0031.INC"  REPLACING  //RECE031//
+                                   BY          //RECE039W//.
+           03  RECE039W-SYUBYOFLG-X PIC X(01).
+      *
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
@@ -88,19 +95,17 @@ grpsys     COPY    "COMMON-SPA".
       *
       *     レセプト明細ファイル 名称領域 
       *
-            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE03PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE03//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE039PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE039//.
       *
       *    エラーファイル 名称領域 
-            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名取得
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -134,7 +139,6 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-PARA-KKHRECEKBN PIC X(01).
                05  WRK-PARA-KOUIKIRECEKBN
                                        PIC X(01).
-               05  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-RECEERR             PIC X(200). 
@@ -158,8 +162,6 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPORCSLNK.INC".
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -204,7 +206,6 @@ grpsys     COPY    "COMMON-SPA".
                                                WRK-PARA-KKHRECEKBN
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
-                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -244,29 +245,16 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  WRK-PARA-KOUIKIRECEKBN 
            DISPLAY "KOUIKIRECEKBN=" WRK-PARA-KOUIKIRECEKBN
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    "RECE031"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    "RECE039"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE03PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE039PARA
+           MOVE    "RECE031"           TO  RECE03PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE03PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE03PARA-HOSPNUM
       *
-      **   MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
+           MOVE    "RECE039"           TO  RECE039PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE039PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE039PARA-HOSPNUM
       *
-           OPEN    OUTPUT              RECE039-FILE
-           CLOSE                       RECE039-FILE
+           OPEN    OUTPUT              RECE039W-FILE
+           CLOSE                       RECE039W-FILE
       *
            OPEN    INPUT               RECE03-FILE
            OPEN    OUTPUT              RECE039-FILE
@@ -346,17 +334,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           .
-       800-FILENM-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    レセプト明細書０２読込
       *****************************************************************
        900-RECE03-READ-SEC             SECTION.
@@ -383,17 +360,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                              ( RECE031-TEISYUTUSAKI
                                                    =   "6"  )      )
                        OR  (   RECE031-RECESYUBETU =   ZERO   OR 
-      *************************************************8888   OR 
+                                                       8888   OR 
                                                        6666        )
                            CONTINUE
                        ELSE
-                           IF      RECE031-RECESYUBETU =   8888
-                               IF      WRK-PARA-PRTKBN     =   "9"
-                                   MOVE    1               TO  FLG-READ
-                               END-IF
-                           ELSE
-                               MOVE    1           TO  FLG-READ
-                           END-IF
+                           MOVE    1           TO  FLG-READ
                        END-IF
       *
                        IF      FLG-READ            =   1         
@@ -401,7 +372,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                            MOVE    ZERO        TO  FLG-END
       *
                            DISPLAY "RECE03  PTID=" RECE031-PTID
-                                   " RECESYUBETU=" RECE031-RECESYUBETU
                        END-IF
                END-READ
            END-PERFORM

@@ -43,28 +43,6 @@
       *  03.05.01    NACL-小豆沢  07/06/05  グループ診療対応
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （診療区分６４：病理診断対応）
-      *
-      *  04.03.01    NACL-門脇    08/07/08  診区１４のコメントのみの剤
-      *                                     編集対応
-      *  04.03.02    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
-      *  04.03.03    NACL-門脇    08/07/14  投薬剤点０（院外等）記載対応
-      *  04.04.01    NACL-門脇    10/03/29  改正対応
-      *                                     （画像診断２回目以降減算編集）
-      *
-      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
-      *  04.05.02    NACL-門脇    10/01/12  治験対応
-      *  04.05.03    NACL-門脇    11/06/20  公費分離区分区切り編集修正
-      *
-      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *  04.06.02    NACL-門脇    12/10/15  診療行為入力したコメントのみの剤の
-      *                                     レセプト記載対応
-      *
-      *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-門脇    16/08/23  持参薬対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -113,19 +91,18 @@
       *
            COPY    "COMMON-SPA".
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE66PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE66//.
       *
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
-                                   BY         //RECE661PARA//.
+           COPY    "CPRECEDAT1.INC"
+                                   REPLACING  //RECEDAT1//
+                                   BY         //RECE661//.
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"
+                                   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名取得
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -172,8 +149,6 @@
       *     
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -223,24 +198,13 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    "RECE660"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    "RECE661"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE66PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE661PARA
+           MOVE    "RECE660"           TO  RECE66PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE66PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE66PARA-HOSPNUM
+      *
+           MOVE    "RECE661"           TO  RECE661PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE661PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE661PARA-HOSPNUM
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
@@ -292,7 +256,16 @@
        210-HENSYU-SEC                   SECTION.
       *
            INITIALIZE                           RECE661-REC
-           MOVE    RECE66-KEY1          TO      RECE661-KEY1
+           MOVE    RECE66-HOSPNUM       TO      RECE661-HOSPNUM
+           MOVE    RECE66-SRYYM         TO      RECE661-SRYYM
+           MOVE    RECE66-NYUGAIKBN     TO      RECE661-NYUGAIKBN
+           MOVE    RECE66-PTID          TO      RECE661-PTID
+           MOVE    RECE66-RECEKA        TO      RECE661-RECEKA
+           MOVE    RECE66-TEISYUTUSAKI  TO      RECE661-TEISYUTUSAKI
+           MOVE    RECE66-RECESYUBETU   TO      RECE661-RECESYUBETU
+           MOVE    RECE66-HKNJANUM      TO      RECE661-HKNJANUM
+           MOVE    RECE66-HOJOKBN       TO      RECE661-HOJOKBN
+           MOVE    RECE66-TEKSTYMD      TO      RECE661-TEKSTYMD
            MOVE    RECE66-KOHBUNRI      TO      RECE661-KOHBUNRI
            MOVE    RECE66-ZAINUM        TO      RECE661-ZAINUM
            IF      RECE66-ZAINUM       =   99999999
@@ -318,8 +291,7 @@
                           MOVE   4      TO      RECE661-KNSJISKBN
                   END-IF
               END-IF
-              IF   (RECE66-SAFLG   NOT =  SPACE)
-              OR   (RECE66-ZAIKBN  NOT =  ZERO )
+              IF    RECE66-SAFLG   NOT =   SPACE
                    MOVE    9            TO      RECE661-KNSJISKBN
               END-IF
            END-IF     
@@ -328,8 +300,7 @@
            MOVE    RECE66-ZAIMEISAISU   TO      RECE661-ZAIMEISAISU
            MOVE    RECE66-PTNUM         TO      RECE661-PTNUM
            MOVE    RECE66-SRYKA         TO      RECE661-SRYKA
-           IF     (RECE66-SRYKBN          =  "99" )
-           AND    (RECE66-SRYSYUKBN   NOT =  "991")
+           IF      RECE66-SRYKBN        =       "99"          
                MOVE  SPACE              TO      RECE661-SRYKBN
            ELSE
                MOVE  RECE66-SRYKBN      TO      RECE661-SRYKBN
@@ -340,10 +311,10 @@
            MOVE  RECE66-TENTEKIBAN      TO      RECE661-TENTEKIBAN
            MOVE    RECE66-ASTER         TO      RECE661-ASTER
            MOVE    RECE66-TEKIYO        TO      RECE661-TEKIYO
-           IF      RECE66-SRYKBN        NOT =   "21" AND "22" AND "23"
+           IF      RECE66-SRYKBN        NOT =   "21"
                IF   RECE66-SRYKBN       NOT =   "40" AND "60" AND "80"
                                                      AND "64"
-                   MOVE    RECE66-ZAITEN   TO  RECE661-ZAITEN
+                   MOVE    RECE66-ZAITEN    TO      RECE661-ZAITEN
                END-IF
                MOVE   RECE66-CDKBN-SYO     TO  RECE661-CDKBN-SYO
                MOVE   RECE66-CDKBN-BU      TO  RECE661-CDKBN-BU
@@ -358,19 +329,14 @@
            MOVE   RECE66-SRYSYUKBN   TO   RECE661-SRYSYUKBN
            MOVE   RECE66-DAY         TO   RECE661-DAY
       *
-           MOVE   RECE66-ZAIKBN      TO   RECE661-ZAIKBN
-      *
-           MOVE   RECE66-DAY2        TO   RECE661-DAY2
-      *
-           MOVE   RECE66-HKNCOMBI    TO   RECE661-HKNCOMBI
-      *
-           MOVE   RECE66-JIHOKBN     TO   RECE661-JIHOKBN
-      *
            IF     RECE66-RECESYUBETU  =  8888
               IF     RECE66-ZAITEN  NOT =  ZERO
                   PERFORM     RECE661-WRITE-SEC
               ELSE
-                IF   RECE66-SRYKBN  NOT =  "95" AND "96"
+                IF  ( RECE66-SRYKBN  =  "11" OR "33" OR "99"
+                                     OR "90" OR "92" OR SPACE
+                                     OR "40" OR "80"          )
+                OR  ( RECE66-SAFLG   NOT =  SPACE             )
                      PERFORM  RECE661-WRITE-SEC
                 END-IF
               END-IF
@@ -491,17 +457,6 @@
            DISPLAY "*** ORCR0700 END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           .
-       800-FILENM-SET-EXT.
            EXIT.
       *
       *****************************************************************

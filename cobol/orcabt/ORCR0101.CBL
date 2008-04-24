@@ -80,24 +80,6 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
-      *  04.02.02    NACL-藤原    08/05/09  エラー時終了処理の追加
-      *
-      *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
-      *                                     「１１」の追加
-      *
-      *  04.05.01    NACL-藤原    09/06/11  病棟別出力対応
-      *                                     「１２」の追加
-      *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
-      *
-      *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
-      *                                     支払機関請求対応
-      *  04.07.02    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
-      *  04.07.03    NACL-藤原    13/01/07  自費レセプトを印刷しない設定
-      *                                     のとき、入力順、ターミナルデジット
-      *                                     出力の対象としない
-      *  04.07.04    NACL-藤原    13/03/01  保険者番号の条件設定変更
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -121,7 +103,7 @@ grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
       *    エラーファイル 名称領域 
-           COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
       *    フラグ領域
@@ -132,6 +114,10 @@ grpsys     COPY    "COMMON-SPA".
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
+      *
+      *    システム領域
+       01  SYS-AREA.
+           03  SYS-TIME            PIC 9(08).    
       *
       *    カウント領域
        01  CNT-AREA.
@@ -167,24 +153,11 @@ grpsys     COPY    "COMMON-SPA".
                                                      PIC X(04).
                        09  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).
                    07  WRK-PARA-RECE09-PRTJYUN       PIC X(02).
-                   07  WRK-PARA-RECE09-DATA.
-                       09  WRK-PARA-RECE09-HKNJANUM  PIC X(08).
-                       09  WRK-PARA-RECE09-CHOUKI    PIC X(01).
-                       09  WRK-PARA-RECE09-ZAITAKU   PIC X(01).
-                       09  WRK-PARA-RECE09-KOUGAKU   PIC X(01).
-                       09  WRK-PARA-RECE09-SRT-LAST  PIC X(01).
-                   07  WRK-PARA-RECE09-DATA-R        REDEFINES
-                                                 WRK-PARA-RECE09-DATA.
-                       09  WRK-PARA-RECE09-DRCD      PIC X(05).
-                       09  WRK-PARA-RECE09-DRCD-PRTJYUNKBN
-                                                     PIC X(01).
-                       09  FILLER                    PIC X(06).
-                   07  WRK-PARA-RECE09-DATA-R1       REDEFINES
-                                                 WRK-PARA-RECE09-DATA.
-                       09  WRK-PARA-RECE09-BTUNUM    PIC X(02).
-                       09  WRK-PARA-RECE09-BTUNUM-PRTJYUNKBN
-                                                     PIC X(01).
-                       09  FILLER                    PIC X(09).
+                   07  WRK-PARA-RECE09-CHOUKI        PIC X(01).
+                   07  WRK-PARA-RECE09-ZAITAKU       PIC X(01).
+                   07  WRK-PARA-RECE09-KOUGAKU       PIC X(01).
+                   07  WRK-PARA-RECE09-SRT-LAST      PIC X(01).
+                   07  WRK-PARA-RECE09-HKNJANUM      PIC X(08).
                05  WRK-PARA-RECE09-STDATA            PIC X(100).
                05  WRK-PARA-RECE09-EDDATA            PIC X(100).
                05  WRK-PARA-PRTJYUN           PIC 9(04).
@@ -207,8 +180,6 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-RECE08-PRTRENNUM    PIC 9(06).
       *
            03  WRK-RECEERR             PIC X(200). 
-           03  WRK-ERRMSG              PIC X(300).
-           03  WRK-MCP-RC              PIC 9(9).
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -235,8 +206,6 @@ grpsys     COPY    "COMMON-SPA".
       *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -275,8 +244,6 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-           DISPLAY "*** ORCR0101 START ***"
-      *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
@@ -303,12 +270,6 @@ grpsys     COPY    "COMMON-SPA".
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
-      *
            UNSTRING    WRK-PARA-ARG25  DELIMITED  BY  "#/"
                                        INTO  WRK-PARA-KKHPRTNM
                                              WRK-PARA-KOUIKIPRTNM
@@ -317,20 +278,10 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO  WRK-PARA-KKHPRTNM-N
                                              WRK-PARA-KOUIKIPRTNM-N
            END-UNSTRING
-           INSPECT WRK-PARA-RECE09-HKNJANUM  REPLACING   ALL "#"
-                                                         BY  " "
-      *
-      *    リアルタイムプレビューのとき
-           IF      WRK-PARA-SHELLID        =   "RECEPTX"
-               MOVE    "0"                 TO  WRK-PARA-PREFKBN
-           END-IF
            DISPLAY "KKHPRTNM   =" WRK-PARA-KKHPRTNM " "
                                   WRK-PARA-KKHPRTNM-N
            DISPLAY "KOUIKIPRTNM=" WRK-PARA-KOUIKIPRTNM " "
                                   WRK-PARA-KOUIKIPRTNM-N
-           DISPLAY "PRTJYUN    =" WRK-PARA-RECE09-PRTJYUN " "
-                                  WRK-PARA-PREFKBN
-           DISPLAY "HKNJANUM   =" WRK-PARA-RECE09-HKNJANUM
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -364,13 +315,7 @@ grpsys     MOVE    SPA-HOSPNUM                  TO  RECE08-HOSPNUM
            MOVE    WRK-PARA-RECE09-TEISYUTUSAKI TO  RECE08-TEISYUTUSAKI
            MOVE    WRK-PARA-RECE09-RECESYUBETU  TO  RECE08-RECESYUBETU
            MOVE    WRK-PARA-RECE09-NYUGAIKBN    TO  RECE08-NYUGAIKBN
-           IF      WRK-PARA-RECE09-PRTJYUN      =   "11"    OR
-                                                    "12"
-               CONTINUE
-           ELSE
-               MOVE    WRK-PARA-RECE09-HKNJANUM
-                                            TO  RECE08-HKNJANUM-S
-           END-IF
+           MOVE    WRK-PARA-RECE09-HKNJANUM     TO  RECE08-HKNJANUM-S
            MOVE    WRK-PARA-SRYKA               TO  RECE08-SRYKA
       *
            MOVE    WRK-PARA-RECE09-STDATA       TO  RECE08-STKANANAME
@@ -468,14 +413,9 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        PERFORM 500-CANCEL-HENSYU-SEC
                    END-IF
                ELSE
-                   MOVE    MCP-RC          TO  WRK-MCP-RC
-                   STRING  "レセプト明細ＤＢ更新エラー MCP-RC="
-                                                   DELIMITED  BY  SIZE
-                           WRK-MCP-RC              DELIMITED  BY  SIZE
-                                                   INTO    WRK-RECEERR
-                   END-STRING
+                   MOVE    "帳票ＤＢの更新でエラーになりました"
+                                              TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
-                   PERFORM 500-COBABORT-SEC
                END-IF
            END-PERFORM    
       *
@@ -516,23 +456,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        500-ERR-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    エラー時終了処理
-      *****************************************************************
-       500-COBABORT-SEC                SECTION.
-      *
-           MOVE    SPACE               TO  WRK-ERRMSG
-           STRING  "ORCR0101 "         DELIMITED  BY  SIZE
-                   WRK-RECEERR         DELIMITED  BY  SIZE
-                   LOW-VALUE           DELIMITED  BY  SIZE
-                                       INTO    WRK-ERRMSG
-           END-STRING
-           CALL    "cobabort"          USING   WRK-ERRMSG
-      *
-           .
-       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -615,15 +538,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "05"                    ALSO    ANY
       *            入力順印刷（個別作成時）
                    MOVE    "key30"             TO  WRK-MCP-PATHNAME
-               WHEN    "11"                    ALSO    ANY
-      *            医師別順印刷
-                   PERFORM 9002-DRCD-RECEPRT-KEY-HENSYU-SEC
-               WHEN    "12"                    ALSO    ANY
-      *            病棟別順印刷
-                   PERFORM 9003-BTUNUM-RECEPRT-KEY-HENSYU-SEC
-               WHEN    "13"                    ALSO    ANY
-      *            ターミナルデジット
-                   MOVE    "key52"             TO  WRK-MCP-PATHNAME
                WHEN    ANY                     ALSO    "4"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                        EVALUATE    WRK-PARA-RECE09-PRTJYUN
@@ -696,7 +610,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    編綴順印刷処理
+      *     入力コードマスタを主キーより検索処理
       *****************************************************************
        9001-RECEPRT-KEY-HENSYU-SEC    SECTION.
       *
@@ -704,104 +618,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-PARA-RECE09-ZAITAKU TO  RECE08-ZAITAKU
            MOVE    WRK-PARA-RECE09-KOUGAKU TO  RECE08-KOUGAKU
       *
-           IF      WRK-PARA-RECE09-RECESYUBETU =   "0000"  OR
-                                                   "6666"  OR
-                                                   "8888"
-               EVALUATE    WRK-PARA-RECE09-SRT-LAST
-                   WHEN    "1"
-                       MOVE    "key10"      TO  WRK-MCP-PATHNAME
-                   WHEN    "2"
-                       MOVE    "key11"      TO  WRK-MCP-PATHNAME
-               END-EVALUATE
-               MOVE    "key11"      TO  WRK-MCP-PATHNAME
-           ELSE
-               EVALUATE    WRK-PARA-RECE09-TEISYUTUSAKI
-                   WHEN    "1"
-                       EVALUATE    WRK-PARA-RECE09-SRT-LAST
-                           WHEN    "1"
-                               MOVE    "key51" TO  WRK-MCP-PATHNAME
-                           WHEN    "2"
-                               MOVE    "key51" TO  WRK-MCP-PATHNAME
-                       END-EVALUATE
-                   WHEN    "2" 
-                       EVALUATE    WRK-PARA-RECE09-SRT-LAST
-                           WHEN    "0"
-                               MOVE    "key37"     TO  WRK-MCP-PATHNAME
-                           WHEN    "1"
-                               MOVE    "key40"     TO  WRK-MCP-PATHNAME
-                           WHEN    "2"
-                               MOVE    "key41"     TO  WRK-MCP-PATHNAME
-                       END-EVALUATE
-               END-EVALUATE
-           END-IF
+           EVALUATE    WRK-PARA-RECE09-SRT-LAST
+               WHEN    "0"
+                   MOVE    "key37"             TO  WRK-MCP-PATHNAME
+               WHEN    "1"
+                   MOVE    "key40"             TO  WRK-MCP-PATHNAME
+               WHEN    "2"
+                   MOVE    "key41"             TO  WRK-MCP-PATHNAME
+           END-EVALUATE
       *
            .
        9001-RECEPRT-KEY-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医師別順印刷処理
-      *****************************************************************
-       9002-DRCD-RECEPRT-KEY-HENSYU-SEC    SECTION.
-      *
-           IF      WRK-PARA-RECE09-DRCD =   "XXXXX"
-               MOVE    SPACE                TO  RECE08-DRCD
-           ELSE
-               MOVE    WRK-PARA-RECE09-DRCD TO  RECE08-DRCD
-           END-IF
-           MOVE    WRK-PARA-SRYKA       TO  RECE08-DRCD-SRYKA
-           MOVE    "%%%%%%%%"           TO  RECE08-HKNJANUM-S
-      *
-           EVALUATE    WRK-PARA-RECE09-DRCD-PRTJYUNKBN
-                               ALSO    WRK-PARA-RECE09-RECESYUBETU
-               WHEN    "1"     ALSO    "9999"
-                   MOVE    "key45"             TO  WRK-MCP-PATHNAME
-               WHEN    "2"     ALSO    "9999"
-                   MOVE    "key46"             TO  WRK-MCP-PATHNAME
-               WHEN    "3"     ALSO    "9999"
-                   MOVE    "key47"             TO  WRK-MCP-PATHNAME
-               WHEN    "4"     ALSO    "9999"
-                   MOVE    "key48"             TO  WRK-MCP-PATHNAME
-               WHEN    "1"     ALSO    ANY
-               WHEN    "3"     ALSO    ANY
-                   MOVE    "key38"             TO  WRK-MCP-PATHNAME
-               WHEN    "2"     ALSO    ANY
-               WHEN    "4"     ALSO    ANY
-                   MOVE    "key39"             TO  WRK-MCP-PATHNAME
-           END-EVALUATE
-      *
-           .
-       9002-DRCD-RECEPRT-KEY-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    病棟別順印刷処理
-      *****************************************************************
-       9003-BTUNUM-RECEPRT-KEY-HENSYU-SEC    SECTION.
-      *
-           IF      WRK-PARA-RECE09-BTUNUM   =   "XX"
-               MOVE    SPACE                TO  RECE08-SORT-1
-           ELSE
-               MOVE    WRK-PARA-RECE09-BTUNUM
-                                            TO  RECE08-SORT-1
-           END-IF
-           MOVE    WRK-PARA-SRYKA       TO  RECE08-SRYKA
-           MOVE    "%%%%%%%%"           TO  RECE08-HKNJANUM-S
-      *
-           EVALUATE    WRK-PARA-RECE09-BTUNUM-PRTJYUNKBN
-                               ALSO    WRK-PARA-RECE09-RECESYUBETU
-               WHEN    "1"     ALSO    "9999"
-                   MOVE    "key49"             TO  WRK-MCP-PATHNAME
-               WHEN    "2"     ALSO    "9999"
-                   MOVE    "key50"             TO  WRK-MCP-PATHNAME
-               WHEN    "1"     ALSO    ANY
-                   MOVE    "key38"             TO  WRK-MCP-PATHNAME
-               WHEN    "2"     ALSO    ANY
-                   MOVE    "key39"             TO  WRK-MCP-PATHNAME
-           END-EVALUATE
-      *
-           .
-       9003-BTUNUM-RECEPRT-KEY-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -816,15 +643,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *                                  
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  RECE08-REC
-      *
-      *        入力順、ターミナルデジットで自費レセプトを印刷しない設定のとき
-               IF    ( WRK-PARA-RECE09-PRTJYUN =   "05"    OR  "13" )
-               AND   ( WRK-PARA-PREFKBN        =   "1"              )
-                   IF      RECE08-RECESYUBETU      =    "8888"
-                       GO  TO  900-RECEPRT-FET-SEC
-                   END-IF
-               END-IF
-      *
                MOVE    ZERO            TO  FLG-END
                ADD     1               TO  CNT-IN-CANCEL
                                            CNT-IN

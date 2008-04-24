@@ -29,14 +29,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （診療区分６４：病理診断対応）
-      *
-      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
-      *
-      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.03    NACL-門脇    16/08/23  持参薬対応
-      *  04.08.04    NACL-門脇    16/11/07  １５円以下薬剤の提出用レセプト記載
-      *                                     （記録）対応修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -92,7 +84,6 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    レセプト明細ファイル名称
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE200//.
@@ -109,13 +100,10 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE221//.
       *
-      *    エラーファイル名称領域
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+      *    エラーファイル 名称領域 
+           COPY    "CPERRFL.INC"
+                                   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
-      *
-      *    ファイル名称領域
-           COPY    "CPRECEDAT1.INC".
-           COPY    "CPTEMPFL.INC".
       *
       *    フラグ領域
        01  STS-AREA.
@@ -193,8 +181,6 @@
       *    サブプロ用領域
       *****************************************************************
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *    ＤＢ検索
@@ -247,28 +233,6 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME   TO  RECEERR
-      *
-           MOVE    "RECE700"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE200PARA
-      *
-           MOVE    "RECE720"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE220PARA
-      *
-           MOVE    "RECE730"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE230PARA
-      *
-           MOVE    "RECE721"           TO  RECEDAT1PARA-FILE-ID
-           PERFORM 800-FILENM-SET-SEC
-           MOVE    TEMPFLPARA          TO  RECE221PARA
-      *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
       *        ＤＢオープン処理
                PERFORM 100-DBOPEN-SEC
@@ -283,6 +247,19 @@
       *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
+      *
+           MOVE    "RECE700"           TO  RECE200PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE200PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE200PARA-HOSPNUM
+           MOVE    "RECE720"           TO  RECE220PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE220PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE220PARA-HOSPNUM
+           MOVE    "RECE730"           TO  RECE230PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE230PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE230PARA-HOSPNUM
+           MOVE    "RECE721"           TO  RECE221PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  RECE221PARA-TERMID
+           MOVE    WRK-PARA-HOSPNUM    TO  RECE221PARA-HOSPNUM
       *
            OPEN    OUTPUT               RECE221-FILE
            CLOSE                        RECE221-FILE
@@ -357,8 +334,8 @@
                MOVE    RECE220-ZAINUM      TO  WRK-ZAINUM
                MOVE    SPACE               TO  WRK-SRYSYUKBN
                INITIALIZE                  WRK-COM-AREA
-               IF    ( RECE220-SRYKBN      =   "60" OR "64" OR "99" )
-               OR    ( RECE220-COMCDFLG    =   "1"                  )
+               IF    ( RECE220-SRYKBN      =   "60" OR "64" )
+               OR    ( RECE220-COMCDFLG    =   "1"          )
                    PERFORM 2101-RECE230-COM-HENSYU-SEC
                END-IF
       *
@@ -372,8 +349,6 @@
                MOVE    RECE220-SURYOUTOTAL TO  RECE221-SURYOUTOTAL
                MOVE    RECE220-RUIKEITOTAL TO  RECE221-RUIKEITOTAL
                MOVE    RECE220-MEISAISU    TO  RECE221-MEISAISU 
-               MOVE    RECE220-JIHOKBN     TO  RECE221-JIHOKBN
-               MOVE    RECE220-JISANYAKKBN TO  RECE221-JISANYAKKBN
                IF      RECE220-COMCDFLG    =   "1"
                  ADD     1                 TO  WRK-COMRENNUM
                  MOVE    WRK-COMRENNUM     TO  RECE221-COMRENNUM
@@ -502,8 +477,8 @@
                          ( WRK-ZAINUM  NOT =  RECE230-ZAINUM )
       *
       *        検査のとき最初の診療区分を取得
-               IF    ( RECE220-SRYKBN      =   "60" OR "64" OR "99" )
-               AND   ( WRK-SRYSYUKBN       =    SPACE               )
+               IF    ( RECE220-SRYKBN      =   "60" OR "64" )
+               AND   ( WRK-SRYSYUKBN       =    SPACE       )
                    MOVE   RECE230-SRYSYUKBN   TO   WRK-SRYSYUKBN
                END-IF
       *        コメント取得
@@ -514,22 +489,18 @@
                                            =   SPACE )
                        IF    ( RECE230-SRYCD(IDZ)(1:1)     =   "8"   )
                        OR    ( RECE230-SRYCD(IDZ)(1:3)     =   "008" )
-                         IF    RECE230-RECEPTFLG(IDZ)   =  "1"
-                           CONTINUE
-                         ELSE
                            ADD     1               TO  IDZ2
                            IF      IDZ2            <=  10
                                MOVE   RECE230-NAME (IDZ)
                                                    TO  WRK-COM (IDZ2)
                            END-IF
-                         END-IF
                        END-IF
                    END-PERFORM
                    PERFORM  900-RECE230-READ-SEC
                ELSE
-      ***          IF      WRK-SRYSYUKBN   NOT =   SPACE
+                   IF      WRK-SRYSYUKBN   NOT =   SPACE
                        MOVE    1               TO  FLG-RECE230
-      ***          END-IF
+                   END-IF
                END-IF
            END-PERFORM
       *
@@ -657,20 +628,6 @@
            EXIT.
       *
       *****************************************************************
-      *    一時ファイル名取得処理
-      *****************************************************************
-       800-FILENM-SET-SEC        SECTION.
-      *
-           MOVE    WRK-PARA-TERMID     TO  RECEDAT1PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  RECEDAT1PARA-HOSPNUM
-           MOVE    SGETTEMP-TEMPDIR    TO  TEMPFLPARA
-           MOVE    RECEDAT1PARA-BASENAME
-                                       TO  TEMPFLPARA (SGETTEMP-ST:)
-           .
-       800-FILENM-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    基本情報ファイル読込処理
       *****************************************************************
        900-RECE200-READ-SEC           SECTION.
@@ -765,8 +722,6 @@
            MOVE    RECE220-SURYOUTOTAL TO  RECE221-SURYOUTOTAL
            MOVE    RECE220-RUIKEITOTAL TO  RECE221-RUIKEITOTAL
            MOVE    RECE220-MEISAISU    TO  RECE221-MEISAISU
-           MOVE    RECE220-JIHOKBN     TO  RECE221-JIHOKBN
-           MOVE    RECE220-JISANYAKKBN TO  RECE221-JISANYAKKBN
            START   RECE221-FILE
                KEY IS    >=   RECE221-KEY
                INVALID
@@ -783,8 +738,6 @@
                  ( RECE220-SURYOUTOTAL NOT =  RECE221-SURYOUTOTAL ) OR
                  ( RECE220-RUIKEITOTAL NOT =  RECE221-RUIKEITOTAL ) OR
                  ( RECE220-MEISAISU    NOT =  RECE221-MEISAISU    ) OR
-                 ( RECE220-JIHOKBN     NOT =  RECE221-JIHOKBN     ) OR
-                 ( RECE220-JISANYAKKBN NOT =  RECE221-JISANYAKKBN ) OR
                  ( FLG-RECE221             =  1)
       *
                   MOVE     ZERO     TO     FLG-NASHI
