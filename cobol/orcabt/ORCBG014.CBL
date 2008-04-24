@@ -1013,7 +1013,8 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
                        END-IF
                    END-IF
                ELSE
-                   IF      RECE10-AGE      >=  70
+                   IF        ( RECE10-AGE      >=  70 )
+                       AND   ( RECE10-AGE      <=  74 )
       *                Á¥°÷ÊÝ¸±¤ÎÊä½õ¶èÊ¬¤¬Á°´ü¹âÎð¼Ô¤Î»þ
                        IF      RECE10-HKNNUM           =   "002"
                            EVALUATE    RECE10-HOJOKBN
@@ -1175,7 +1176,8 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
                        END-IF
                    END-IF
                ELSE
-                   IF      RECE10-AGE      >=  70
+                   IF        ( RECE10-AGE      >=  70 )
+                       AND   ( RECE10-AGE      <=  74 )
       *                Á¥°÷ÊÝ¸±¤ÎÊä½õ¶èÊ¬¤¬Á°´ü¹âÎð¼Ô¤Î»þ
                        IF      RECE10-HKNNUM           =   "002"
                            EVALUATE    RECE10-HOJOKBN
@@ -1446,7 +1448,8 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
            EVALUATE    RECE10-HKNNUM-S
                WHEN    "060"
                WHEN    "068"
-                   IF      RECE10-AGE          >=  70
+                   IF        ( RECE10-AGE      >=  70 )
+                       AND   ( RECE10-AGE      <=  74 )
                        EVALUATE    RECE10-KYURATE
                            WHEN    9
                                MOVE    "1"         TO  WRK-SYUBETUKBN
@@ -1465,7 +1468,8 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
                    END-IF
                WHEN    "067"
                WHEN    "069"
-                   IF      RECE10-AGE          >=  70
+                   IF        ( RECE10-AGE      >=  70 )
+                       AND   ( RECE10-AGE      <=  74 )
                        EVALUATE    RECE10-KYURATE
                            WHEN    9
                                MOVE    "6"         TO  WRK-SYUBETUKBN
@@ -1518,7 +1522,8 @@ grpsys*DD  MOVE    LNK-PRTKANRI-TERMID TO  RECEERR-TERMID
                WHEN    "060"
                WHEN    "068"
       *            °ìÈÌÁ°´ü¹âÎð¼Ô
-                   IF      RECE10-AGE          >=  70
+                   IF        ( RECE10-AGE      >=  70 )
+                       AND   ( RECE10-AGE      <=  74 )
                        EVALUATE    RECE10-KYURATE
                            WHEN    9
                                MOVE    "1"         TO  WRK-SYUBETUKBN
