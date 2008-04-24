@@ -20,6 +20,9 @@ tbl_rece_putb {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
+#-----> 主キー更新用項目
+	UPSTYUKYMD			char(8),virtual;
+	UPEDYUKYMD			char(8),virtual;
 };
 
 primary	{
@@ -108,3 +111,20 @@ path	all	{
 	};
 };
 
+
+path    upd1    {
+	DBUPDATE        {
+		UPDATE  tbl_rece_putb
+			SET
+			STYUKYMD         =   :STYUKYMD,
+			EDYUKYMD         =   :EDYUKYMD,
+			TERMID           =   :TERMID,
+			OPID             =   :OPID,
+			UPYMD            =   :UPYMD,
+			UPHMS            =   :UPHMS
+		WHERE   STYUKYMD         =   :UPSTYUKYMD
+		AND     EDYUKYMD         =   :UPEDYUKYMD
+		AND     HOSPNUM          =   :HOSPNUM
+		;
+	};
+};

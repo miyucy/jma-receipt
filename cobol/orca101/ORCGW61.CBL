@@ -42,6 +42,9 @@
       *  04.01.01    NACL-藤原    08/01/10  適用欄コメント対応
       *  04.01.02    NACL-藤原    08/02/14  保険名称の取得方法の修正
       *  04.01.03    NACL-藤原    08/01/10  適用欄コメントのチェックの修正
+      *
+      *  04.02.01    NACL-藤原    08/04/12  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/04/14  警告時の登録処理を可能にする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -251,6 +254,7 @@
                            11  SPA-NAI-TZAITAKU    PIC X(01).
                            11  SPA-NAI-TFTNJANUMKBN-JYOKEN
                                                    PIC X(01).
+                           11  SPA-NAI-TRJNKBN-FLG PIC X(01).
       *
               05  SPA-NAI-SELNUM                   PIC 9(03).
       *
@@ -305,6 +309,9 @@
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
+      *
+       01  CONST-AREA.
+           03  WRK-CONS-SRYYM-200804   PIC 9(08)   VALUE   20080401.
       *
       *
       *****************************************************************
@@ -519,7 +526,9 @@
            MOVE    "支払基金"      TO  SPA-GMN-TEISYUTUSAKIMEIL  (1)
            MOVE    "2"             TO  SPA-GMN-TEISYUTUSAKIL     (2)
            MOVE    "国保連合会"    TO  SPA-GMN-TEISYUTUSAKIMEIL  (2)
-           MOVE    2               TO  SPA-GMN-TEISYUTUSAKI-MAX
+           MOVE    "6"             TO  SPA-GMN-TEISYUTUSAKIL     (3)
+           MOVE    "広域連合"      TO  SPA-GMN-TEISYUTUSAKIMEIL  (3)
+           MOVE    3               TO  SPA-GMN-TEISYUTUSAKI-MAX
       *
            MOVE    "1"             TO  SPA-GMN-ZAITAKUL          (1)
            MOVE    "在宅総合診療料を算定している場合のみ対象"
@@ -687,6 +696,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                PERFORM 5001-ZAITAKU-HENSYU-SEC
                MOVE    WRK-KBNMEI          TO  SPA-GMN-TZAITAKU  (IDX)
       *
+               IF    ( SYS-2006-EDYUKYMD   >=  WRK-CONS-SRYYM-200804 )
+               AND   ( SYS-2006-RJNKBN NOT =   SPACE                 )
+                   MOVE    "1"             TO  SPA-NAI-TRJNKBN-FLG (IDX)
+               END-IF
+      * 
                MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
                MOVE    "key5"          TO  WRK-MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-N-SEC
@@ -713,7 +727,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                WHEN "2001"
                        PERFORM 421-SAKUJO-SEC
                WHEN "2002"
+               WHEN "2004"
+               WHEN "2005"
                        PERFORM 421-TOUROKU-SEC
+               WHEN "2003"
+                   MOVE    "JOIN"          TO  MCP-PUTTYPE
+                   PERFORM 210-BACK-SYORI-SEC
                END-EVALUATE
            END-IF
       *
@@ -732,6 +751,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    "CHANGE"            TO  MCP-PUTTYPE
                    PERFORM  210-BACK
       *        クリア
                WHEN    "CLICKED"       ALSO    "B02"
@@ -753,10 +773,29 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        210-BACK                    SECTION.
       *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-MAX
+               IF      SPA-NAI-TRJNKBN-FLG (IDX)   =   "1"
+                   MOVE    "2003"                  TO  SPA-WIDCD 
+                   GO  TO  210-BACK-EXT
+               END-IF
+           END-PERFORM
+      *
+           PERFORM 210-BACK-SYORI-SEC         
+           .
+       210-BACK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    戻る　処理
+      *****************************************************************
+       210-BACK-SYORI-SEC              SECTION.
+      *
+      *
            MOVE    "W61"               TO  SPA-MOTOPG
            MOVE    "W01"               TO  SPA-SAKIPG
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -764,7 +803,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    1                   TO  FLG-END
       *
            .
-       210-BACK-EXT.
+       210-BACK-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1280,6 +1319,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF  
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-STYUKYMD    >=  WRK-CONS-SRYYM-200804
+                   MOVE    SPACE               TO  SPA-GMN-RJNKBN-G
+               END-IF
+           END-IF
+      *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    2                   TO  SPA-GMN-CUR
            END-IF
@@ -1400,8 +1445,15 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                ELSE
                    MOVE    WRK-KBNMEI          TO
                                                SPA-GMN-TEISYUTUSAKIMEI
+      *
+                   IF    ( SPA-NAI-EDYUKYMD
+                                           <   WRK-CONS-SRYYM-200804 )
+                   AND   ( SPA-GMN-TEISYUTUSAKI
+                                           =   "6"                   ) 
+                       MOVE    SPACE       TO  SPA-GMN-TEISYUTUSAKI-G
+                   END-IF
                END-IF
-           END-IF 
+           END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    5               TO  SPA-GMN-CUR
@@ -1515,6 +1567,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                                SPA-GMN-RJNKBNMEI
                END-IF
            END-IF 
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-STYUKYMD    >=  WRK-CONS-SRYYM-200804
+                   MOVE    SPACE               TO  SPA-GMN-RJNKBN-G
+               END-IF
+           END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    7               TO  SPA-GMN-CUR
@@ -2271,6 +2329,24 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-IF      
       *
+      *    有効期間と老人区分のチェック
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( SPA-NAI-STYUKYMD    <   WRK-CONS-SRYYM-200804 )
+               AND   ( SPA-NAI-EDYUKYMD    >=  WRK-CONS-SRYYM-200804 )
+               AND   ( SPA-GMN-RJNKBN  NOT =   SPACE                 )
+                   MOVE    "XXXX"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+      *    有効期間と提出先のチェック
+           IF      SPA-ERRCD           =   SPACE
+               IF    ( SPA-NAI-STYUKYMD    <   WRK-CONS-SRYYM-200804 )
+               AND   ( SPA-NAI-EDYUKYMD    >=  WRK-CONS-SRYYM-200804 )
+               AND   ( SPA-GMN-TEISYUTUSAKI    =   "6"               )
+                   MOVE    "YYYY"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
            .
        4103-KAKUTEI-CHK-EXT.
            EXIT.
@@ -2368,7 +2444,17 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            IF    ( SPA-ERRCD       =   SPACE )
                MOVE    "2002"          TO  SPA-WIDCD
+           ELSE
+               IF      SPA-ERRCD       =    "XXXX"
+                   MOVE    "2004"           TO  SPA-WIDCD
+                   MOVE    SPACE            TO  SPA-ERRCD
+               END-IF
+               IF      SPA-ERRCD       =    "YYYY"
+                   MOVE    "2005"           TO  SPA-WIDCD
+                   MOVE    SPACE            TO  SPA-ERRCD
+               END-IF
            END-IF
+           
       *
            .
        420-TOUROKU-GID-EXT.
@@ -3063,6 +3149,27 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                WHEN    "2002"
                    MOVE    "データを登録します。よろしいですか"
                                                 TO  WID1-ID1MSG
+               WHEN    "2003"
+                   STRING  "平成２０年４月以降に老人区分の設"
+                                                DELIMITED  BY  SIZE
+                           "定があります。処理を終了してよろしいですか"
+                                                DELIMITED  BY  SIZE
+                                                INTO  WID1-ID1MSG
+                   END-STRING
+               WHEN    "2004"
+                   STRING  "平成２０年４月以降に老人区分の設定があ"
+                                                DELIMITED  BY  SIZE
+                          "ります。データを登録してよろしいですか"
+                                                DELIMITED  BY  SIZE
+                                                INTO  WID1-ID1MSG
+                   END-STRING
+               WHEN    "2005"
+                   STRING  "平成２０年４月以前に広域連合の設定"
+                                                DELIMITED  BY  SIZE
+                          "があります。データを登録してよろしいですか"
+                                                DELIMITED  BY  SIZE
+                                                INTO  WID1-ID1MSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    "B12"                TO  MCP-WIDGET

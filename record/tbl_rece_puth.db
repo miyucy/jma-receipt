@@ -61,7 +61,6 @@ path    upd1    {
 		UPDATE  tbl_rece_puth
 			SET
 #                       :*
-			HOSPNUM           =   :HOSPNUM,
 			PREFKBN_PRTJYUN  =   :PREFKBN_PRTJYUN,
 			HKNJANUM_PRTJYUN =   :HKNJANUM_PRTJYUN,
 			HKNJANUM         =   :HKNJANUM,
@@ -87,6 +86,7 @@ path    upd1    {
 			UPHMS            =   :UPHMS
 		WHERE   STYUKYMD         =   :UPSTYUKYMD
 		AND     EDYUKYMD         =   :UPEDYUKYMD
+		AND     HOSPNUM          =   :HOSPNUM
                 ;
         };
 };
@@ -102,3 +102,20 @@ path	all	{
 	};
 };
 
+
+path    upd2    {
+	DBUPDATE        {
+		UPDATE  tbl_rece_puth
+			SET
+			STYUKYMD         =   :STYUKYMD,
+			EDYUKYMD         =   :EDYUKYMD,
+			TERMID           =   :TERMID,
+			OPID             =   :OPID,
+			UPYMD            =   :UPYMD,
+			UPHMS            =   :UPHMS
+		WHERE   STYUKYMD         =   :UPSTYUKYMD
+		AND     EDYUKYMD         =   :UPEDYUKYMD
+		AND     HOSPNUM          =   :HOSPNUM
+		;
+	};
+};

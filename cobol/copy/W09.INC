@@ -36,7 +36,7 @@
               04  W09-TEISYUTUSAKI-COMBO.
                   05  W09-TEISYUTUSAKI   PIC X(26).
                   05  W09-TEISYUTUSAKI-COUNT   PIC S9(9)   BINARY.
-                  05  W09-TEISYUTUSAKILST  PIC X(26)   OCCURS  5 TIMES.
+                  05  W09-TEISYUTUSAKILST  PIC X(26)   OCCURS  10 TIMES.
               04  W09-NYUGAIKBN-COMBO.
                   05  W09-NYUGAIKBN   PIC X(10).
                   05  W09-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.

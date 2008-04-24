@@ -31,6 +31,9 @@
       *                                     （入院外・入院別
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *                                     広域連合プリンタ設定の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -68,6 +71,7 @@
       *
       *    出力先プリンタ名割り当て情報 （入院）
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
       *    県単独事業情報
            COPY    "CPSK3004.INC".
@@ -206,6 +210,40 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
                                            TO  WRK-PRTNM
                PERFORM 100-PRTNM-HENSYU-SEC
                MOVE    SYS-2005-JBAIPRTNM-NEXT-N
+                                           TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+           END-IF     
+      *
+           MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+      *    レセプト・総括編集情報（区分コード０１）
+           MOVE    SPACE               TO  SYS-200501-REC
+           INITIALIZE                      SYS-200501-REC
+           MOVE    "2005"              TO  SYS-200501-KANRICD
+           MOVE    "01"                TO  SYS-200501-KBNCD
+           MOVE    PRTNMGET-YMD        TO  SYS-200501-STYUKYMD
+                                           SYS-200501-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
+           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
+           MOVE    "key10"             TO  WRK-MCP-PATHNAME
+           PERFORM 900-SYSKANRI-SELECT-SEC
+      *
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+      *
+               MOVE    SYS-200501-KOUIKIPRTNM
+                                           TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+               MOVE    SYS-200501-KOUIKIPRTNM-NEXT
+                                           TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+               MOVE    SYS-200501-KOUIKIPRTNM-N 
+                                           TO  WRK-PRTNM
+               PERFORM 100-PRTNM-HENSYU-SEC
+               MOVE    SYS-200501-KOUIKIPRTNM-NEXT-N
                                            TO  WRK-PRTNM
                PERFORM 100-PRTNM-HENSYU-SEC
            END-IF     

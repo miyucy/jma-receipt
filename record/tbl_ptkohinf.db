@@ -170,3 +170,20 @@ path	key9 	{
 	};
 };
 
+path	key10 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohinf_key10_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_ptkohinf a,tbl_ptnum b
+			WHERE a.HOSPNUM      =   :HOSPNUM
+			AND ( a.KOHNUM      =   '012'  OR
+			      a.KOHNUM      =   '025'     )
+			AND   a.TEKSTYMD    <   :TEKSTYMD
+			AND   a.TEKEDYMD    >=  :TEKEDYMD
+			AND   a.SAKJOKBN    <>   '1'
+			AND   a.PTID      =   b.PTID
+			ORDER   BY      b.PTNUM,a.FTNJANUM
+		;
+	};
+};
+

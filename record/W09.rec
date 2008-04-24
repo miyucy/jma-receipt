@@ -80,7 +80,7 @@ W09	{
 				value	varchar(26);
 			};
 			count	int;
-			item	varchar(26)[5];
+			item	varchar(26)[10];
 		};
 		NYUGAIKBN_COMBO	{
 			NYUGAIKBN	{
