@@ -39,9 +39,6 @@
       *  01.00.09    NACL-多々納  04/02/10  入院食事助成額追加
       *
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
-      *  04.05.00    NACL-太田    09/06/23  食事療養費区分"5"追加
-      *  04.06.00    NACL-多々納  11/03/22  LD104 ,LD105,LD106,LD108,LD109　統合
-      *  04.08.00    NACL-森脇    15/11/05  複写元保険番号追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -98,7 +95,7 @@
                                               PIC X(20).
                    07  SPA-GMN-NYUFTNKBN-MAX  PIC 9(01).
                    07  SPA-GMN-NYUSKJRYYKBNLST
-                                              OCCURS  6.
+                                              OCCURS  5.
                        09  SPA-GMN-NYUSKJRYYKBNL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
@@ -329,28 +326,11 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-      *orca104
            COPY    "V01.INC".
            COPY    "V02.INC".
            COPY    "V03.INC".
            COPY    "VERR.INC".
            COPY    "VID1.INC".
-      *orca105
-           COPY    "N01.INC".
-           COPY    "NERR.INC".
-           COPY    "NID1.INC".
-      *orca106
-           COPY    "N11.INC".
-           COPY    "N11ERR.INC".
-           COPY    "N11ID1.INC".
-      *orca108
-           COPY    "N31.INC".
-           COPY    "N31ERR.INC".
-           COPY    "N31ID1.INC".
-      *orca109
-           COPY    "N41.INC".
-           COPY    "N41ERR.INC".
-           COPY    "N41ID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -619,10 +599,7 @@
            MOVE    "4"                 TO  SPA-GMN-NYUSKJRYYKBNL    (5)
            MOVE    "患者負担あり（消費税あり）"
                                        TO  SPA-GMN-NYUSKJRYYKBNMEIL (5)
-           MOVE    "5"                 TO  SPA-GMN-NYUSKJRYYKBNL    (6)
-           MOVE    "患者負担あり（消費税なし）"
-                                       TO  SPA-GMN-NYUSKJRYYKBNMEIL (6)
-           MOVE    6                   TO  SPA-GMN-NYUSKJRYYKBN-MAX
+           MOVE    5                   TO  SPA-GMN-NYUSKJRYYKBN-MAX
       *
       *    法別番号チェック区分
            MOVE    "0"                 TO  SPA-GMN-HBTNUMCHKKBN-LST(1)
@@ -634,28 +611,18 @@
            MOVE    "チェックする"      TO  SPA-GMN-HBTNUMCHKKBN-LST(2)
                                                                (3:)
       *
-      *----(04.08.00)--UPD-START---
-      *    複写元保険番号がある場合
-           IF      SPA-V01-CPHKNNUM    NOT =   SPACE
-               INITIALIZE                      HKNNUM-REC
-               MOVE    SPA-V01-CPHKNNUM        TO  HKN-HKNNUM
-               MOVE    SPA-V01-PAYKBN          TO  HKN-PAYKBN
-               MOVE    SPA-SYSYMD              TO  HKN-TEKSTYMD
-               MOVE    SPA-SYSYMD              TO  HKN-TEKEDYMD
+      *    保険番号マスタより編集  
+           INITIALIZE                      HKNNUM-REC
+      *****MOVE    SPA-HOSPID              TO  HKN-HOSPID
+           MOVE    SPA-V01-HKNNUM          TO  HKN-HKNNUM
+           MOVE    SPA-V01-PAYKBN          TO  HKN-PAYKBN
+           IF      SPA-OLD-STYUKYMD        =   SPACE
+               MOVE    SPA-V01-STYUKYMD        TO  HKN-TEKSTYMD
+               MOVE    SPA-V01-EDYUKYMD        TO  HKN-TEKEDYMD
            ELSE
-      *        保険番号マスタより編集  
-               INITIALIZE                      HKNNUM-REC
-               MOVE    SPA-V01-HKNNUM          TO  HKN-HKNNUM
-               MOVE    SPA-V01-PAYKBN          TO  HKN-PAYKBN
-               IF      SPA-OLD-STYUKYMD        =   SPACE
-                   MOVE    SPA-V01-STYUKYMD        TO  HKN-TEKSTYMD
-                   MOVE    SPA-V01-EDYUKYMD        TO  HKN-TEKEDYMD
-               ELSE
-                   MOVE    SPA-OLD-STYUKYMD        TO  HKN-TEKSTYMD
-                   MOVE    SPA-OLD-EDYUKYMD        TO  HKN-TEKEDYMD
-               END-IF
+               MOVE    SPA-OLD-STYUKYMD        TO  HKN-TEKSTYMD
+               MOVE    SPA-OLD-EDYUKYMD        TO  HKN-TEKEDYMD
            END-IF
-      *----(04.08.00)--UPD-END-----
       *
            MOVE    SPA-HOSPNUM             TO  HKN-HOSPNUM
            MOVE    HKNNUM-REC              TO  MCPDATA-REC
@@ -901,11 +868,10 @@
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
       *    タグ
-               WHEN    "CLICKED"       ALSO    "B08"
-      *        WHEN    "CLICKED"       ALSO    "N01"
-      *        WHEN    "CLICKED"       ALSO    "N02"
-      *        WHEN    "CLICKED"       ALSO    "N03"
-      *        WHEN    "CLICKED"       ALSO    "N04"
+               WHEN    "CLICKED"       ALSO    "N01"
+               WHEN    "CLICKED"       ALSO    "N02"
+               WHEN    "CLICKED"       ALSO    "N03"
+               WHEN    "CLICKED"       ALSO    "N04"
                    PERFORM 440-TAG-CHANGE-SEC
            END-EVALUATE
       *
@@ -921,18 +887,8 @@
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
            MOVE    1                   TO  FLG-KOUSIN
-      *
-      *
-           EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-           WHEN    "SWITCH"        ALSO    "not3"
-                   PERFORM 440-TAG-CHANGE-SEC
-           WHEN    OTHER
-      *
-      *        入力チェック処理
-               PERFORM 410-INPUT-CHK-SEC
-      *
-           END-EVALUATE
-           
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
            .
        200-ENTRY-EXT.
            EXIT.
@@ -1691,17 +1647,6 @@
                MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
            END-IF
       *
-           IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-GMN-NYUSKJRYYKBN (IDX)  =   "5" )
-                   IF    ( SPA-GMN-HKNKOHSBTKBN    =   "8" OR "9" )
-                       CONTINUE
-                   ELSE
-                       MOVE    "0023"          TO  SPA-ERRCD
-                       MOVE    WRK-GMN-CUR     TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
-           END-IF
-      *
            .
        4129-NYUSKJRYYKBN-CHK-EXT.
            EXIT.
@@ -1846,15 +1791,14 @@
        440-TAG-CHANGE-SEC            SECTION.
       *
            EVALUATE    MCP-WIDGET
-               WHEN    "B08"
-                   IF    ( SPA-GMN-PAGENO  >=   3 )
-                       MOVE    0       TO  WRK-PAGENO
-                   ELSE
-                       COMPUTE WRK-PAGENO
-                            =  SPA-GMN-PAGENO   +  1
-                   END-IF
-               WHEN     OTHER
-                   MOVE   V02-PAGENO   TO  WRK-PAGENO
+               WHEN    "N01"
+                   MOVE   0            TO  WRK-PAGENO
+               WHEN    "N02"
+                  MOVE    1            TO  WRK-PAGENO
+               WHEN    "N03"
+                   MOVE   2            TO  WRK-PAGENO
+               WHEN    "N04"
+                   MOVE   3            TO  WRK-PAGENO
            END-EVALUATE
       *
       *    タグが変わったとき関連チェック
@@ -1890,7 +1834,7 @@
            MOVE    "V01"               TO  SPA-SAKIPG
            MOVE    "V02"               TO  SPA-MOTOPG
       *
-      *    INITIALIZE                  SPA-V01KYOUTU
+           INITIALIZE                  SPA-V01KYOUTU
       *
       ***  MOVE   "CHANGE"             TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
@@ -1991,14 +1935,7 @@
            PERFORM 900-HKNNUM-INV-SEC
            IF      FLG-HKNNUM              =   ZERO
                MOVE    MCPDATA-REC             TO  HKNNUM-REC
-      *        開始日に変更があれば削除して追加
-               IF      HKN-TEKSTYMD        NOT =   SPA-V01-STYUKYMD
-                   PERFORM 4901-KOUSHIN-DEL-SEC
-                   MOVE    1               TO  FLG-HKNNUM
-                   INITIALIZE                      HKNNUM-REC
-               END-IF
-           END-IF
-           IF      FLG-HKNNUM          NOT =   ZERO
+           ELSE
                MOVE    SPACE                   TO  HKNNUM-REC
                INITIALIZE                      HKNNUM-REC
       *********MOVE    SPA-HOSPID              TO  HKN-HOSPID
@@ -2115,22 +2052,6 @@
            END-IF
            .
        490-KOUSHIN-EXT.
-           EXIT.
-      *****************************************************************
-      *    更新分削除処理
-      *****************************************************************
-       4901-KOUSHIN-DEL-SEC           SECTION.
-      *
-           MOVE    HKNNUM-REC          TO  MCPDATA-REC
-           MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_hknnum"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-           .
-       4901-KOUSHIN-DEL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2428,9 +2349,6 @@
                WHEN    "0022"
                    MOVE    "法別番号チェック区分入力エラー"
                                                TO  SPA-ERRMSG
-               WHEN    "0023"
-                 MOVE "該当の食事療養費の設定は自費保険のみ選択可能です"
-                                               TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
@@ -2478,7 +2396,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  VID1
-           INITIALIZE                       VID1
            MOVE    SPA-VIDCD            TO  VID1-ID1CODE
            MOVE    WRK-VIDMSG           TO  VID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET

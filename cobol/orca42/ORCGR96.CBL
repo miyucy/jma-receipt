@@ -35,14 +35,6 @@
       *                                     （生保の公費単独のみ） 
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
-      *
-      *  04.03.01    NACL-藤原    08/08/22  公費４種までの併用の記録対応
-      *                                     レセプト種別はレセプト種別
-      *                                     （紙レセプト）から表示する
-      *
-      *  04.04.01    NACL-藤原    08/12/02  自費レセプトの種別表示の変更
-      *
-      *  04.08.01    NACL-藤原    16/10/10  個別作成の最大を２０００に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -203,7 +195,20 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA42SCRAREA.INC".
+           COPY    "R01.INC".
+           COPY    "R02.INC".
+           COPY    "R03.INC".
+           COPY    "R04.INC".
+           COPY    "R05.INC".
+           COPY    "R06.INC".
+           COPY    "R96.INC".
+           COPY    "R97.INC".
+           COPY    "R98.INC".
+           COPY    "R99.INC".
+           COPY    "RERR.INC".
+           COPY    "RID1.INC".
+           COPY    "RID2.INC".
+           COPY    "RID3.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -221,8 +226,7 @@
            INITIALIZE                  IDX-AREA
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-      *****MOVE    SPA-FREE        TO  SPA-R01FREE
-           MOVE    SPA-FREE        TO  SPA-R96-AREA
+           MOVE    SPA-FREE        TO  SPA-R01FREE
            MOVE    SPA-WORK        TO  SPA-R01KYOUTU
       *
            MOVE    SPACE           TO  SPA-ERRCD
@@ -246,8 +250,7 @@
       *
            MOVE    SPA-R01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-      *****MOVE    SPA-R01FREE     TO  SPA-FREE
-           MOVE    SPA-R96-AREA    TO  SPA-FREE
+           MOVE    SPA-R01FREE     TO  SPA-FREE
            .
            EXIT    PROGRAM
            .
@@ -298,7 +301,7 @@
       *        元の画面へ戻す
                IF      WRK-MOTOPG(1:3)     =  "P97"  
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
-                   MOVE    LNK-SCRSPA      TO  SPA-R96-AREA
+                   MOVE    LNK-SCRSPA      TO  SPA-R01FREE
                    MOVE    SPA-WORK        TO  SPA-R01KYOUTU
                    PERFORM 320-P97SPASET-SEC
                    GO      TO      300-SCREEN-EXT
@@ -950,7 +953,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                                MOVE    "広域"  TO  
                                    SPA-GMN-R96-PTNUM-TTEISYUTUSAKI(IDX1)
                        END-EVALUATE
-                       EVALUATE    LNK-SYUBETU-RECESYUBETU-Y  (IDY)
+                       EVALUATE    LNK-SYUBETU-RECESYUBETU  (IDY)
                            WHEN    "0000"
                                MOVE    "不明分"
                                    TO  SPA-GMN-R96-PTNUM-TRECESYUBETU
@@ -959,12 +962,8 @@ grpsys         MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                                MOVE    "特別療養費"
                                    TO  SPA-GMN-R96-PTNUM-TRECESYUBETU
                                                               (IDX1)
-                           WHEN    "8888"
-                               MOVE    "自費"
-                                   TO  SPA-GMN-R96-PTNUM-TRECESYUBETU
-                                                              (IDX1)
                            WHEN    OTHER
-                               MOVE    LNK-SYUBETU-RECESYUBETU-Y  (IDY)
+                               MOVE    LNK-SYUBETU-RECESYUBETU  (IDY)
                                    TO  SPA-GMN-R96-PTNUM-TRECESYUBETU
                                                               (IDX1)
                        END-EVALUATE
@@ -1262,7 +1261,7 @@ grpsys             MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
       *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
-           MOVE    SPA-R96-AREA        TO  LNK-SCRSPA
+           MOVE    SPA-R01FREE         TO  LNK-SCRSPA
       *
       *    画面移行用のパラメタ変更
            MOVE    "R96"               TO  SPA-MOTOPG
@@ -1942,7 +1941,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
            END-EVALUATE
       *
            MOVE    SPACE                TO  RID1
-           INITIALIZE                       RID1
            MOVE    SPA-RIDCD            TO  RID1-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
            MOVE    "ＮＯ"               TO  RID1-B01-LABEL
