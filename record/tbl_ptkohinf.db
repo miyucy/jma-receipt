@@ -181,77 +181,8 @@ path	key10 	{
 			AND   a.TEKSTYMD    <   :TEKSTYMD
 			AND   a.TEKEDYMD    >=  :TEKEDYMD
 			AND   a.SAKJOKBN    <>   '1'
-			AND ( a.PTID      =   b.PTID   AND
-                              b.HOSPNUM   =   :HOSPNUM     )
+			AND   a.PTID      =   b.PTID
 			ORDER   BY      b.PTNUM,a.FTNJANUM
-		;
-	};
-};
-
-path	key11 	{
-	DBSELECT	{
-		DECLARE tbl_ptkohinf_key11_csr CURSOR FOR
-		SELECT a.*
-		FROM tbl_ptkohinf a,tbl_ptnum b
-			WHERE a.HOSPNUM      =   :HOSPNUM
-			AND ( a.KOHNUM      =   '012'  OR
-			      a.KOHNUM      =   '025'     )
-			AND   a.TEKSTYMD    <   :TEKSTYMD
-			AND   a.TEKEDYMD    >=  :TEKEDYMD
-			AND   a.SAKJOKBN    <>   '1'
-			AND ( a.PTID      =   b.PTID   AND
-                              b.HOSPNUM   =   :HOSPNUM     )
-			ORDER   BY      a.FTNJANUM,b.PTNUM
-		;
-	};
-};
-
-path	key12 	{
-	DBSELECT	{
-		DECLARE tbl_ptkohinf_key12_csr CURSOR FOR
-		SELECT a.*
-		FROM tbl_ptkohinf a,tbl_ptnum b,tbl_ptinf c
-			WHERE a.HOSPNUM      =   :HOSPNUM
-			AND ( a.KOHNUM      =   '012'  OR
-			      a.KOHNUM      =   '025'     )
-			AND   a.TEKSTYMD    <   :TEKSTYMD
-			AND   a.TEKEDYMD    >=  :TEKEDYMD
-			AND   a.SAKJOKBN    <>   '1'
-			AND ( a.PTID      =   b.PTID   AND
-                              b.HOSPNUM   =   :HOSPNUM     )
-			AND ( a.PTID      =   c.PTID   AND
-                              c.HOSPNUM   =   :HOSPNUM     )
-			ORDER   BY      c.KANANAME
-		;
-	};
-};
-
-path	key13 	{
-	DBSELECT	{
-		DECLARE tbl_ptkohinf_key13_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptkohinf
-			WHERE HOSPNUM     =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   TEKSTYMD    <=  :TEKSTYMD
-			AND   TEKEDYMD    >=  :TEKEDYMD
-			AND   SAKJOKBN    <>   '1'
-			ORDER   BY      KOHNUM,
-					KOHID
-		;
-	};
-};
-
-path	key14 	{
-	DBSELECT	{
-		DECLARE tbl_ptkohinf_key14_csr CURSOR FOR
-		SELECT *
-		FROM tbl_ptkohinf
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   PTID        =   :PTID
-			AND   KOHNUM      =   :KOHNUM
-			ORDER   BY  TEKSTYMD DESC,
-			            KOHID
 		;
 	};
 };

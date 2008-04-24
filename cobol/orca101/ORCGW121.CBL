@@ -34,9 +34,6 @@
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       * 
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
-      *  04.03.00    NACL-太田    08/06/17  タブ切替ボタン追加
-      *
-      *  04.07.01    NACL-藤原    12/05/28  タブラベル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -430,9 +427,9 @@
                                    PIC X(02).
                    07  WRK-GMN-BODYLIST-KOHLIST.
                        09  WRK-GMN-BODYLIST-KOHLIST-TBL OCCURS  30.
-                           11  WRK-GMN-BODYLIST-KOHLIST-THKNNM
+                           11  WRK-GMN-BODYLIST-KOHLIST-THKNNUM
                                                PIC X(03).
-                           11  WRK-GMN-BODYLIST-KOHLIST-TSEINM
+                           11  WRK-GMN-BODYLIST-KOHLIST-TSEIDONAME
                                                PIC X(20).
                            11  WRK-GMN-BODYLIST-KOHLIST-TJYUN
                                                PIC X(01).
@@ -547,7 +544,52 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA101SCRAREA.INC".
+           COPY    "W01.INC".
+           COPY    "W02.INC".
+           COPY    "W03.INC".
+           COPY    "W04.INC".
+           COPY    "W05.INC".
+           COPY    "W06.INC".
+           COPY    "W07.INC". 
+           COPY    "W08.INC". 
+           COPY    "W09.INC".
+           COPY    "W10.INC".
+           COPY    "W11.INC".
+           COPY    "W111.INC".
+           COPY    "W12.INC".
+           COPY    "W121.INC".
+           COPY    "W13.INC".
+           COPY    "W14.INC".
+           COPY    "W15.INC".
+           COPY    "W16.INC".
+           COPY    "W17.INC".
+           COPY    "W18.INC".
+           COPY    "W19.INC".
+           COPY    "W20.INC".
+           COPY    "W21.INC".
+           COPY    "W22.INC".
+           COPY    "W23.INC".
+           COPY    "W24.INC".
+           COPY    "W25.INC".
+           COPY    "W28.INC".
+           COPY    "W29.INC".
+           COPY    "W30.INC".
+           COPY    "W31.INC".
+           COPY    "W32.INC".
+           COPY    "W33.INC".
+           COPY    "W34.INC".
+           COPY    "W60.INC".
+           COPY    "W61.INC".
+           COPY    "W62.INC".
+           COPY    "W63.INC".
+           COPY    "W64.INC".
+           COPY    "W98.INC".
+           COPY    "W981.INC".
+           COPY    "W97.INC".
+           COPY    "W99.INC".
+           COPY    "WERR.INC".
+           COPY    "WID1.INC".
+           COPY    "WID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -658,8 +700,6 @@
                    WHEN    "1003"
                        PERFORM 490-EDYUKYMD-KOUSHIN-SEC
                    WHEN    "1004"
-                       MOVE    SPACE           TO  SPA-WID1-FLG
-                       MOVE    SPACE           TO  SPA-WIDCD      
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
                        GO  TO  330-WID1-SET-EXT
@@ -1172,7 +1212,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        200-GMNSENI                   SECTION.  
       *
-           IF      SPA-W121-PAGENO     =   0
+           IF      W121-PAGENO       =   0
                MOVE    1           TO  WRK-PAGENO
            ELSE
                MOVE    2           TO  WRK-PAGENO
@@ -1238,7 +1278,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "CLICKED"       ALSO    "DEL_1"
                    PERFORM 490-KOH-DELETE-SEC
       *    タグ
-               WHEN    "CLICKED"       ALSO    "B08"
+               WHEN    "CLICKED"       ALSO    "N01"
+               WHEN    "CLICKED"       ALSO    "N02"
                    PERFORM 440-TAG-CHANGE-SEC
            END-EVALUATE
       *
@@ -1250,7 +1291,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           IF      SPA-W121-PAGENO     =   0
+           IF      W121-PAGENO       =   0
                MOVE    1           TO  WRK-PAGENO
            ELSE
                MOVE    2           TO  WRK-PAGENO
@@ -1282,9 +1323,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "ACTIVATE"       ALSO    "GRP2_NO"
                WHEN    "ACTIVATE"       ALSO    "GRP2_NO_1"
                    PERFORM 41021-GRP2-NO-CHK-SEC
-      *        タグ
-               WHEN    "SWITCH"        ALSO    "nt1"
-                   PERFORM 440-TAG-CHANGE-SEC
       *        一括分
                WHEN    OTHER
                    PERFORM 400-ENTRY-SYORI-SEC
@@ -3466,18 +3504,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        440-TAG-CHANGE-SEC            SECTION.
       *
            EVALUATE    MCP-WIDGET
-               WHEN    "B08"
-                   IF    ( W121-PAGENO  =   0 )
-                       MOVE    1       TO  IDYY
-                   ELSE
-                       MOVE    0       TO  IDYY
-                   END-IF
-               WHEN    OTHER
-                   MOVE   W121-PAGENO  TO  IDYY
+               WHEN    "N01"
+                   MOVE   0            TO  IDYY
+               WHEN    "N02"
+                  MOVE    1            TO  IDYY
            END-EVALUATE
       *
       *    タグが変わったとき項目チェック
-      *****IF      IDYY              NOT =   W121-PAGENO
+           IF      IDYY              NOT =   W121-PAGENO
                MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
                MOVE    ZERO                TO  SPA-GMN-CUR
       *
@@ -3502,7 +3536,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-EVALUATE
                    END-IF
                END-IF
-      *****END-IF        
+           END-IF        
            .
        440-TAG-CHANGE-EXT.
            EXIT.
@@ -6077,7 +6111,6 @@ grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
        520-WIDSET-SEC              SECTION.
       *
            MOVE    SPACE                TO  WID1
-           INITIALIZE                       WID1
            MOVE    SPA-WIDCD            TO  WID1-ID1CODE
       *
            EVALUATE    SPA-WIDCD

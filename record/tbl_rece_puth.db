@@ -23,7 +23,7 @@ tbl_rece_puth {
 	CREYMD   			char(8);
 	UPYMD    			char(8);
 	UPHMS				char(6);
-#-----> ‰∏ª„Ç≠„ÉºÊõ¥Êñ∞Áî®È†ÖÁõÆ
+#-----> ºÁ•≠°ºππø∑Õ—π‡Ã‹
 	UPSTYUKYMD			char(8),virtual;
 	UPEDYUKYMD			char(8),virtual;
 };
