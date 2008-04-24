@@ -33,30 +33,6 @@
       *                                     （平成１９年４月改正様式）
       *
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
-      *
-      *  04.02.01    NACL-藤原    08/04/24  平成２０年４月改正対応
-      *
-      *  04.03.01    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
-      *  04.03.02    NACL-藤原    08/08/11  コメント記載箇所選択機能対応
-      *  04.03.03    NACL-藤原    08/08/19  仮レセ作成（院外処方含む）対応
-      *
-      *  04.05.01    NACL-藤原    11/08/02  労災新様式対応
-      *
-      *  04.06.01    NACL-藤原    11/12/12  点検レセ０点公費印字対応
-      *
-      *  04.07.01    NACL-藤原    12/11/20  スクリプト起動パスサーチ対応
-      *  04.07.02    NACL-藤原    12/11/20  リアルタイムプレビュー時の
-      *                                     一画面対応
-      *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
-      *  04.07.04    NACL-藤原    13/12/04  自賠責（労災準拠）のレセプト
-      *                                     様式追加対応
-      *  04.07.05    NACL-藤原    14/03/12  第三者行為のプリンタ設定
-      *  04.07.06    NACL-藤原    15/06/15  「自賠責・様式選択」の初期表
-      *                                     示変更対応
-      *
-      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
-      *                                     載対応
-      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -76,12 +52,9 @@
        01  RECEERR-REC             PIC X(200).
        WORKING-STORAGE         SECTION.
       *
-      *    エラーファイル名称
-           COPY    "CPTEMPFL.INC"   REPLACING  //TEMPFLPARA//
-                                    BY         //RECEERR//.
-      *
-      *    エラーファイル名称領域 
-           COPY    "CPERRFL.INC".
+      *    エラーファイル 名称領域 
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -137,8 +110,8 @@
            COPY    "CPORCSPRTLNK.INC".             
       *
        01  WRK-SHELL-NAME.
-      *****05  FILLER             PIC X(16) VALUE
-      *****                                  "scripts/monthly/".
+           05  FILLER             PIC X(16) VALUE
+                                             "scripts/monthly/".
            05  WRK-SHELL-SHELL    PIC X(20).
       *
            COPY    "MCPAREA".
@@ -177,8 +150,6 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *???
@@ -189,11 +160,9 @@
       *****************************************************************
       *
       *     LINK-HKNKBN
-      *     ０：医保  １：労災  ２：自賠責  ３：公害  ４：第三者行為
+      *     ０：医保  １：労災  ２：自賠責
       *     LINK-PTRSI-HKNKBN
       *     １：労災  ２：自賠責
-      *      LINK-GYOUMUKBN
-      *     １：会計照会  ２：入院会計照会  ３：診療行為
        LINKAGE                 SECTION.
        01  LINK-SHORI-KBN              PIC X(01).
        01  LINK-PTID                   PIC 9(10).
@@ -201,12 +170,10 @@
        01  LINK-NYUGAIKBN              PIC X(01).
        01  LINK-HKNKBN                 PIC X(01).
        01  LINK-PTRSI-HKNKBN           PIC X(01).
-       01  LINK-PRTKBN                 PIC X(01).
-       01  LINK-GYOUMUKBN              PIC X(01).
       *01  LINK-ERRCD                  PIC X(04).
            COPY    "COMMON-SPA".
       *
-      *****************************************************************
+      **************************************************************************
        PROCEDURE           DIVISION
                USING
                LINK-SHORI-KBN
@@ -215,8 +182,6 @@
                LINK-NYUGAIKBN
                LINK-HKNKBN
                LINK-PTRSI-HKNKBN
-               LINK-PRTKBN
-               LINK-GYOUMUKBN
       *        LINK-ERRCD
                SPA-AREA.
       *
@@ -233,14 +198,12 @@
            .
       * 
       *****************************************************************
-      *    初期処理
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *???
            DISPLAY "ORCSRECEARGMK ST =" LINK-NYUGAIKBN " " LINK-HKNKBN
                                     " " LINK-PTRSI-HKNKBN
-                                    " " LINK-PRTKBN
-                                    " " LINK-GYOUMUKBN
       *???     
            INITIALIZE                  WRK-AREA
                                        FLG-AREA
@@ -324,68 +287,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                            SYS-2005-FRAME-JIBAIPRTKBN-N
            END-IF
            IF      SYS-200501-JIBAIPRTKBN    =   SPACE
-               MOVE    "1"                 TO  SYS-200501-JIBAIPRTKBN
+               MOVE    ZERO                TO  SYS-200501-JIBAIPRTKBN
            END-IF
            IF      SYS-200501-JIBAIPRTKBN-N  =   SPACE
-               MOVE    "1"                 TO  SYS-200501-JIBAIPRTKBN-N
-           END-IF
-           IF      SYS-200501-JIBAIPRTKBN1
-                                       =   SPACE
-               MOVE    "2"                 TO  SYS-200501-JIBAIPRTKBN1
-           END-IF
-           IF      SYS-200501-JIBAIPRTKBN1-N
-                                       =   SPACE
-               MOVE    "2"                 TO  SYS-200501-JIBAIPRTKBN1-N
-           END-IF
-           IF      SYS-200501-FRAME-ROUPRTKBN
-                                           =   SPACE
-               MOVE    ZERO                TO
-                                           SYS-200501-FRAME-ROUPRTKBN
-           END-IF
-           IF      SYS-200501-FRAME-ROUPRTKBN-N
-                                           =   SPACE
-               MOVE    ZERO                TO
-                                           SYS-200501-FRAME-ROUPRTKBN-N
-           END-IF
-           IF      SYS-200501-COMMENT-ROU-KSIKBN
-                                           =   SPACE
-               MOVE    ZERO                TO
-                                           SYS-200501-COMMENT-ROU-KSIKBN
-           END-IF
-           IF      SYS-200501-ROUPRTKBN    =   SPACE
-               MOVE    ZERO                TO  SYS-200501-ROUPRTKBN
-           END-IF
-           IF      SYS-200501-ROUPRTKBN-N  =   SPACE
-               MOVE    ZERO                TO  SYS-200501-ROUPRTKBN-N
-           END-IF
-           IF      SYS-200501-INSPECT-ZERO-KBN
-                                           =   SPACE
-               MOVE    "0"                 TO
-                                           SYS-200501-INSPECT-ZERO-KBN
-           END-IF
-           IF      SYS-200501-INSPECT-INCLUDE-KBN
-                                   =   SPACE
-               MOVE    "0"             TO
-                                       SYS-200501-INSPECT-INCLUDE-KBN
-           END-IF
-      *    点検用レセプトのとき
-           IF    ( LINK-PRTKBN             =   "2" )
-               IF      LINK-HKNKBN             =   "0"
-                   EVALUATE    SYS-200501-INSPECT-ZERO-KBN
-                                   ALSO   SYS-200501-INSPECT-INCLUDE-KBN
-                       WHEN    "1" ALSO    "0"
-                           MOVE    "3"                 TO  LINK-PRTKBN
-                       WHEN    "0" ALSO    "1"
-                           MOVE    "4"                 TO  LINK-PRTKBN
-                       WHEN    "1" ALSO    "1"
-                           MOVE    "5"                 TO  LINK-PRTKBN
-                   END-EVALUATE
-               ELSE
-                   EVALUATE    SYS-200501-INSPECT-INCLUDE-KBN
-                       WHEN    "1"
-                           MOVE    "4"                 TO  LINK-PRTKBN
-                   END-EVALUATE
-               END-IF
+               MOVE    ZERO                TO  SYS-200501-JIBAIPRTKBN-N
            END-IF
       *                
       *    出力先プリンタ名割り当て情報の取得
@@ -419,15 +324,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1031-HOSPNUM
            END-IF                                              
            IF      SYS-2005-KKHPRTNM-N =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO  SYS-2005-KKHPRTNM-N
-           END-IF                                              
-      *    広域印刷先
-           IF      SYS-200501-KOUIKIPRTNM
-                                       =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-200501-KOUIKIPRTNM
-           END-IF                                              
-           IF      SYS-200501-KOUIKIPRTNM-N
-                                       =   SPACE
-               MOVE    SYS-1031-PRTNM (4)  TO  SYS-200501-KOUIKIPRTNM-N
            END-IF                                              
       *    社保印刷先（続紙）
            IF      SYS-2005-SYAPRTNM-NEXT  =   SPACE
@@ -465,25 +361,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1031-HOSPNUM
                ELSE                                              
                    MOVE    SYS-2005-KKHPRTNM-N  TO
                                            SYS-2005-KKHPRTNM-NEXT-N
-               END-IF
-           END-IF                                              
-      *    広域印刷先（続紙）
-           IF      SYS-200501-KOUIKIPRTNM-NEXT  =   SPACE
-               IF      SYS-200501-KOUIKIPRTNM       =   SPACE
-                   MOVE    SYS-1031-PRTNM (4)  TO
-                                           SYS-200501-KOUIKIPRTNM-NEXT
-               ELSE                                              
-                   MOVE    SYS-200501-KOUIKIPRTNM   TO
-                                           SYS-200501-KOUIKIPRTNM-NEXT
-               END-IF
-           END-IF                                              
-           IF      SYS-200501-KOUIKIPRTNM-NEXT-N  =   SPACE
-               IF      SYS-200501-KOUIKIPRTNM-N       =   SPACE
-                   MOVE    SYS-1031-PRTNM (4)  TO
-                                           SYS-200501-KOUIKIPRTNM-NEXT-N
-               ELSE                                              
-                   MOVE    SYS-200501-KOUIKIPRTNM-N  TO
-                                           SYS-200501-KOUIKIPRTNM-NEXT-N
                END-IF
            END-IF                                              
       *    労災印刷先
@@ -593,16 +470,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    LINK-PTID       TO  WRK-PTID
       *
-           MOVE    "ORPRVERR"      TO  ERRFLPARA-FILE-ID
-           MOVE    SPA-TERMID      TO  ERRFLPARA-TERMID
-           MOVE    SPA-HOSPNUM     TO  ERRFLPARA-HOSPNUM
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    ERRFLPARA-BASENAME
-                                   TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SPACE           TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME
-                                   TO  RECEERR
+           MOVE    "ORPRVERR"      TO  RECEERR-FILE-ID
+           MOVE    WRK-PTID        TO  RECEERR-TERMID
+grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
       *
            OPEN    OUTPUT   RECEERR-FILE
            CLOSE   RECEERR-FILE
@@ -614,12 +484,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    SPACE           TO  SHELLTBL
       *    ファイルデイレクトリ位置指定
-      **   INITIALIZE              ORCSMKPASSAREA
-      **   MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
-      **   CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
-      **   MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME  TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
-           MOVE    WRK-SHELL-NAME  TO  SHELLTBL-NAME
       *------------------> recept1.sh $1 - $11
            MOVE    WRK-SHELL-ARG1  TO  SHELLTBL-ARG1
            MOVE    "2"             TO  SHELLTBL-ARG2
@@ -633,11 +502,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                            TO  SHELLTBL-ARG3
                WHEN    "3"
                    MOVE    "6"             TO  SHELLTBL-ARG3
-               WHEN    "4"
-                   MOVE    "8"             TO  SHELLTBL-ARG3
            END-EVALUATE 
-           MOVE    ERRFLPARA-BASENAME
-                                   TO  SHELLTBL-ARG4
+           MOVE    RECEERR         TO  SHELLTBL-ARG4
            MOVE    WRK-CONS-JOB-JOBID
                                    TO  SHELLTBL-ARG5
            MOVE    WRK-CONS-JOB-SHELLID
@@ -657,12 +523,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    LINK-PTRSI-HKNKBN
                                    TO  SHELLTBL-ARG12
            EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
-               WHEN   "1"              ALSO    "1"
-                   MOVE    SYS-200501-FRAME-ROUPRTKBN-N
-                                                   TO  SHELLTBL-ARG13
-               WHEN   "2"              ALSO    "1"
-                   MOVE    SYS-200501-FRAME-ROUPRTKBN
-                                                   TO  SHELLTBL-ARG13
                WHEN   "1"              ALSO    "2"
                    MOVE    SYS-2005-FRAME-JIBAIPRTKBN-N
                                                    TO  SHELLTBL-ARG13
@@ -671,29 +531,13 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                                    TO  SHELLTBL-ARG13
            END-EVALUATE
            EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
-               WHEN   "1"              ALSO    "1"
-                   MOVE    SYS-200501-ROUPRTKBN-N
-                                                   TO  SHELLTBL-ARG14
-               WHEN   "2"              ALSO    "1"
-                   MOVE    SYS-200501-ROUPRTKBN    TO  SHELLTBL-ARG14
                WHEN   "1"              ALSO    "2"
-               WHEN   "1"              ALSO    "4"
                    MOVE    SYS-200501-JIBAIPRTKBN-N
                                                    TO  SHELLTBL-ARG14
                WHEN   "2"              ALSO    "2"
-               WHEN   "2"              ALSO    "4"
                    MOVE    SYS-200501-JIBAIPRTKBN  TO  SHELLTBL-ARG14
                WHEN   OTHER
                    MOVE    "0"                     TO  SHELLTBL-ARG14
-           END-EVALUATE
-           EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
-               WHEN   "1"              ALSO    "2"
-                   MOVE    SYS-200501-JIBAIPRTKBN1-N
-                                                   TO  SHELLTBL-ARG38
-               WHEN   "2"              ALSO    "2"
-                   MOVE    SYS-200501-JIBAIPRTKBN1 TO  SHELLTBL-ARG38
-               WHEN   OTHER
-                   MOVE    "0"                     TO  SHELLTBL-ARG38
            END-EVALUATE
       *
       *------------------> recept2.sh $11 - $26 (#24 は除く)
@@ -702,46 +546,28 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                WHEN   "1"              ALSO    "3"
                    MOVE    SYS-2005-SYAPRTNM-N
                                    TO  SHELLTBL-ARG15
-                   MOVE    SYS-2005-SYAPRTNM-NEXT-N
+                   MOVE    SYS-2005-KKHPRTNM-N
                                    TO  SHELLTBL-ARG16
-                   STRING  SYS-2005-KKHPRTNM-N DELIMITED  BY  SPACE
-                           "#/"                    DELIMITED  BY  SIZE
-                           SYS-200501-KOUIKIPRTNM-N
-                                                   DELIMITED  BY  SPACE
-                                           INTO    SHELLTBL-ARG28
-                   END-STRING
-                   STRING  SYS-2005-KKHPRTNM-NEXT-N
-                                                   DELIMITED  BY  SPACE
-                           "#/"                    DELIMITED  BY  SIZE
-                           SYS-200501-KOUIKIPRTNM-NEXT-N
-                                                   DELIMITED  BY  SPACE
-                                           INTO    SHELLTBL-ARG29
-                   END-STRING
+                   MOVE    SYS-2005-SYAPRTNM-NEXT-N
+                                   TO  SHELLTBL-ARG28
+                   MOVE    SYS-2005-KKHPRTNM-NEXT-N
+                                   TO  SHELLTBL-ARG29
                WHEN   "2"              ALSO    "0"
                WHEN   "2"              ALSO    "3"
                    MOVE    SYS-2005-SYAPRTNM
                                    TO  SHELLTBL-ARG15
-                   MOVE    SYS-2005-SYAPRTNM-NEXT
+                   MOVE    SYS-2005-KKHPRTNM
                                    TO  SHELLTBL-ARG16
-                   STRING  SYS-2005-KKHPRTNM       DELIMITED  BY  SPACE
-                           "#/"                    DELIMITED  BY  SIZE
-                           SYS-200501-KOUIKIPRTNM  DELIMITED  BY  SPACE
-                                           INTO    SHELLTBL-ARG28
-                   END-STRING
-                   STRING  SYS-2005-KKHPRTNM-NEXT
-                                                   DELIMITED  BY  SPACE
-                           "#/"                    DELIMITED  BY  SIZE
-                           SYS-200501-KOUIKIPRTNM-NEXT
-                                                   DELIMITED  BY  SPACE
-                                           INTO    SHELLTBL-ARG29
-                   END-STRING
+                   MOVE    SYS-2005-SYAPRTNM-NEXT
+                                   TO  SHELLTBL-ARG28
+                   MOVE    SYS-2005-KKHPRTNM-NEXT
+                                   TO  SHELLTBL-ARG29
                WHEN   "1"              ALSO    "1"
                    MOVE    SYS-2005-ROUPRTNM-N
                                    TO  SHELLTBL-ARG15
                    MOVE    SYS-2005-ROUPRTNM-NEXT-N
                                    TO  SHELLTBL-ARG16
                WHEN   "1"              ALSO    "2"
-               WHEN   "1"              ALSO    "4"
                    MOVE    SYS-2005-JBAIPRTNM-N
                                    TO  SHELLTBL-ARG15
                    MOVE    SYS-2005-JBAIPRTNM-NEXT-N
@@ -752,7 +578,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    SYS-2005-ROUPRTNM-NEXT
                                    TO  SHELLTBL-ARG16
                WHEN   "2"              ALSO    "2"
-               WHEN   "2"              ALSO    "4"
                    MOVE    SYS-2005-JBAIPRTNM
                                    TO  SHELLTBL-ARG15
                    MOVE    SYS-2005-JBAIPRTNM-NEXT
@@ -806,14 +631,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    LINK-HKNKBN     TO  SHELLTBL-ARG32
            MOVE    LINK-SHORI-KBN  TO  SHELLTBL-ARG33
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG34
-           MOVE    SYS-200501-COMMENT-ROU-KSIKBN
-                                   TO  SHELLTBL-ARG35
-           MOVE    LINK-PRTKBN     TO  SHELLTBL-ARG36
-           MOVE    LINK-GYOUMUKBN  TO  SHELLTBL-ARG37
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
-           MOVE    "monthly"       TO  MCP-PATHNAME
+           MOVE    "shell"         TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            DISPLAY "ORCSRECEARGMK ED ="
