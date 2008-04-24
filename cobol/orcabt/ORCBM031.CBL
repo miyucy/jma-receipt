@@ -49,12 +49,6 @@
       *                                     不詳、保険者未特定は読み飛ばす
       *  04.02.00    NACL-小豆沢  08/04/18  平成２０年４月以降の診療分は
       *                                     読み飛ばす
-      *
-      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
-      *  04.07.02    NACL-藤原    15/08/18  医療機関編集情報への開設者名
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -92,9 +86,11 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01PARA//
                                    BY         //RECEUPD//.
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    エラーファイル 名称領域
-           COPY    "CPRECEERR.INC".
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //RECEERR//.
       *
       *****COPY    "HCM2Q.INC".
       *****COPY    "HCM2QV01.INC"  REPLACING  //HCM2QV01//
@@ -138,6 +134,7 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-PARA-HOSPNUM    PIC 9(02).
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
+           03  WRK-PARA-ERRFILE    PIC X(50).
       *
       *    一時領域
        01  WRK-AREA.
@@ -173,7 +170,6 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-HOSPADRS1       PIC X(50).
                05  WRK-HOSPADRS2       PIC X(50).
       *----(03.04.01)--ADD-END-----
-           03  WRK-KAISETUNAME     PIC X(80).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -242,10 +238,11 @@ grpsys COPY    "COMMON-SPA".
       *    医療機関情報−所在地、連絡先
            COPY    "CPSK1002.INC".
       *
+      *----(03.04.01)--ADD-START---
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
-           COPY    "CPSK1903.INC".
+      *----(03.04.01)--ADD-END-----
       *
       *    請求管理
            COPY    "CPRCF010.INC".
@@ -279,8 +276,6 @@ grpsys COPY    "COMMON-SPA".
       *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -362,17 +357,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
 grpsys     MOVE    WRK-PARA-HOSPNUM
                                    TO  RECEUPD-HOSPNUM
       *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECEUPD-BASENAME
-                                   TO  SGETTEMP-BASENAMES  (2)
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SPACE           TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                   TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                   TO  RECEUPD
-      *
            MOVE    LNK-PRTKANRI-SRYYM
                                    TO  WRK-SRYYMD (1:6)
            MOVE    "01"            TO  WRK-SRYYMD (7:2)
@@ -448,8 +432,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
       *----(03.04.01)--ADD-START---
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
-           MOVE    SYS-1001-KAISETUNAME
-                                       TO  WRK-KAISETUNAME
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
       *    医療機関編集情報
            PERFORM 900-1900-READ-SEC
@@ -748,14 +730,19 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            MOVE    WRK-SRYYMWH     TO  HCM2Q-PRTYM
       *
+      *----(03.04.01)--UPD-START---
+      *    医療機関住所
+      *    MOVE    SYS-1002-ADRS       TO  HCM2Q-ADRS
+      *    医療機関名
+      *    MOVE    SYS-1001-HOSPNAME   TO  HCM2Q-HOSPNAME
       *    医療機関住所
            MOVE    WRK-HOSPADRS        TO  HCM2Q-ADRS
-           INSPECT HCM2Q-ADRS          REPLACING   ALL "  "    BY  "　"
       *    医療機関名
            MOVE    WRK-HOSPNAME        TO  HCM2Q-HOSPNAME
-           INSPECT HCM2Q-HOSPNAME      REPLACING   ALL "  "    BY  "　"
+      *----(03.04.01)--UPD-END-----
       *
-           MOVE    WRK-KAISETUNAME TO  HCM2Q-KAISETUNAME
+           MOVE    SYS-1001-KAISETUNAME
+                                   TO  HCM2Q-KAISETUNAME
       *
            MOVE    SYS-1001-HOSPCDN
                                    TO  HCM2Q-HOSPCD
@@ -1395,8 +1382,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1900-HOSPNUM
                    PERFORM 900-1901-READ-SEC
       *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
-      *            医療機関名称編集情報（２）
-                   PERFORM 900-1903-READ-SEC
                END-IF
            ELSE
                INITIALIZE                  SYS-1900-REC
@@ -1466,36 +1451,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-1902-HOSPNUM
            .
       *
        900-1902-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    医療機関名称編集情報（２）読み込み
-      *****************************************************************
-       900-1903-READ-SEC           SECTION.
-      *
-           MOVE    SPACE           TO  SYS-1903-REC
-           INITIALIZE                  SYS-1903-REC
-           MOVE    SPA-HOSPNUM     TO  SYS-1903-HOSPNUM
-           MOVE    "1903"          TO  SYS-1903-KANRICD
-           MOVE    SYS-1900-PRTKBN(7)
-                                   TO  SYS-1903-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM
-                                   TO  SYS-1903-STYUKYMD (1:6)
-           MOVE    "01"            TO  SYS-1903-STYUKYMD (7:2)
-           MOVE    SYS-1903-STYUKYMD
-                                   TO  SYS-1903-EDYUKYMD
-           MOVE    SYS-1903-REC    TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1903-REC
-               MOVE    SYS-1903-KAISETUNAME
-                                           TO  WRK-KAISETUNAME
-           ELSE
-               INITIALIZE                      SYS-1903-REC
-           END-IF
-           .
-      *
-       900-1903-READ-EXT.
            EXIT.
       *
       *----(03.04.01)--ADD-END-----

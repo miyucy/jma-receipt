@@ -78,67 +78,6 @@
       *
       *  04.02.01    NACL-藤原    08/04/10  平成２０年４月改正対応
       *  04.02.02    NACL-藤原    08/04/23  後期高齢者の船員保険を本人とする
-      *  04.02.03    NACL-門脇    08/08/07  精神通院の請求点判定追加
-      *
-      *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
-      *  04.03.02    NACL-門脇    08/09/02  請求点判定追加
-      *  04.03.03    NACL-門脇    08/12/17  平成２１年１月改正対応
-      *
-      *  04.04.01    NACL-藤原    09/01/14  月途中に医保と生保の併用から
-      *                                     生保単独になったときのまとめ
-      *  04.04.02    NACL-藤原    09/04/09  入院基本料・特定入院料・食事
-      *                                     療養出力時の連番の初期化
-      *  04.04.03    NACL-藤原    09/10/21  月途中の負担者番号変更対応
-      *                                     （自立支援の公費単独） 
-      *  04.04.04    NACL-藤原    09/12/17  月途中に医保と自立支援の併用
-      *                                     から自立支援単独になったとき
-      *                                     のまとめ対応
-      *  04.04.05    NACL-藤原    10/08/23  後期高齢非該当対応
-      *                                     （高齢受給者票がない場合） 
-      *  04.04.06    NACL-藤原    10/09/14  医療観察法対応
-      *                                     公費単独のレセプトとする
-      *
-      *  04.05.01    NACL-藤原    10/03/12  平成２２年４月改正対応
-      *                                     平成２２年４月分以降の政府管
-      *                                     掌をエラーとする
-      *  04.05.06    NACL-藤原    11/08/25  公費単独対応
-      *                                     公費を最大５０に変更
-      *  04.05.07    NACL-藤原    12/07/02  住所欄に番地方書を追加
-      *  04.05.08    NACL-藤原    12/11/15  剤点数等のマイナス表記対応
-      *
-      *  04.06.01    NACL-藤原    10/11/05  補足コメント対応
-      *  04.06.02    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *  04.06.03    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
-      *                                     は公費単独のレセプトとする
-      *  04.06.04    NACL-藤原    11/02/24  月途中に医保と児童保護(53)の
-      *                                     併用から単独になったときのまとめ
-      *  04.06.05    NACL-藤原    12/10/04  同一レセプトの公費が４つを超
-      *                                     えた場合の種別不明対応
-      *  04.06.06    NACL-藤原    12/09/27  生活保護期間重複対応
-      *  04.06.07    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
-      *
-      *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
-      *  04.07.02    NACL-藤原    14/03/30  平成２６年４月改正対応
-      *  04.07.03    NACL-藤原    14/06/03  同日再入院対応
-      *  04.07.04    NACL-藤原    14/06/05  月途中のまとめのとき第二公費
-      *                                     マル長のときも対象とする
-      *  04.07.05    NACL-藤原    14/08/18  ７５歳以上の海外居住者２割対応
-      *  04.07.06    NACL-門脇    14/09/01  平成２６年１０月改正対応
-      *  04.07.07    NACL-門脇    15/03/16  平成２７年４月改正対応
-      *  04.07.08    NACL-藤原    15/05/12  存在しない保険組合せの情報設定
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-藤原    15/10/08  複数枚レセプト分割対応
-      *                                     公費単独の２回以上の分割対応
-      *  04.08.03    NACL-藤原    15/11/13  診療データがない場合は対象の
-      *                                     病名があっても病名データも作成しない
-      *  04.08.04    NACL-門脇    16/03/28  平成２８年４月改正対応
-      *  04.08.05    NACL-小豆沢  16/09/16  持参薬は出力しないよう対応
-      *  04.08.06    NACL-門脇    17/12/13  包括点数の公害補償法減点分のマイナス
-      *                                     集計対応
-      *  05.00.01    NACL-太田    17/11/21  入院料と異なる食事算定保険組み合わせ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -153,6 +92,12 @@
                                    RECORD  KEY     IS  TOUKEI01-KEY
                                    FILE    STATUS  IS  STS-TOUKEI01.
       *
+           SELECT  TOUKEI011-FILE  ASSIGN  TOUKEI01PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  TOUKEI011-KEY
+                                   FILE    STATUS  IS  STS-TOUKEI01.
+      *
       *    月次統計データ（統計情報）
            SELECT  TOUKEI02-FILE   ASSIGN  TOUKEI02PARA
                                    ORGANIZATION    IS  INDEXED
@@ -160,11 +105,23 @@
                                    RECORD  KEY     IS  TOUKEI02-KEY
                                    FILE    STATUS  IS  STS-TOUKEI02.
       *
+           SELECT  TOUKEI021-FILE  ASSIGN  TOUKEI02PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  TOUKEI021-KEY
+                                   FILE    STATUS  IS  STS-TOUKEI02.
+      *
       *    月次統計データ（病名情報）
            SELECT  TOUKEI03-FILE   ASSIGN  TOUKEI03PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI03-KEY
+                                   FILE    STATUS  IS  STS-TOUKEI03.
+      *
+           SELECT  TOUKEI031-FILE  ASSIGN  TOUKEI03PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  TOUKEI031-KEY
                                    FILE    STATUS  IS  STS-TOUKEI03.
       *
       *    エラーファイル
@@ -178,20 +135,31 @@
        FD  TOUKEI01-FILE.
        01  TOUKEI01-REC. 
            COPY    "CPTCF001.INC".
-           03  TOUKEI01-SEIHO-OCC.
-               05  TOUKEI01-SEIHO-KEY
-                                   PIC X(50)   OCCURS  10.
+      *
+       FD  TOUKEI011-FILE.
+       01  TOUKEI011-REC. 
+           COPY    "CPTCF001.INC"  REPLACING  //TOUKEI01//
+                                   BY         //TOUKEI011//.
       *
       *    月次統計データ
        FD  TOUKEI02-FILE.
        01  TOUKEI02-REC. 
            COPY    "CPTCF002.INC".
       *
+       FD  TOUKEI021-FILE.
+       01  TOUKEI021-REC. 
+           COPY    "CPTCF002.INC"  REPLACING  //TOUKEI02//
+                                   BY         //TOUKEI021//.
+      *
       *    月次統計データ
        FD  TOUKEI03-FILE.
        01  TOUKEI03-REC. 
            COPY    "CPTCF003.INC".
       *
+       FD  TOUKEI031-FILE.
+       01  TOUKEI031-REC. 
+           COPY    "CPTCF003.INC"  REPLACING  //TOUKEI03//
+                                   BY         //TOUKEI031//.
       *    エラーファイル
        FD  TOUKEIERR-FILE.
        01  TOUKEIERR-REC           PIC X(200). 
@@ -210,7 +178,7 @@
                                    REPLACING  //TEIKI01PARA//
                                    BY         //TOUKEI03PARA//.
       *
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TOUKEIERR//.
       *
       *    フラグ領域
@@ -239,7 +207,6 @@
            03  FLG-PTBYOMEI                    PIC 9(01).
            03  FLG-NYUINACCT                   PIC 9(01).
            03  FLG-SRYACCT                     PIC 9(01).
-           03  FLG-PT-HDIST-DAY                PIC 9(01).
       * 
            03  FLG-KOH                         PIC 9(01).
            03  FLG-CONTKBN                     PIC 9(01).
@@ -256,22 +223,15 @@
            03  CNT-TOUKEI03                    PIC 9(06).
       *
        01  INDEX-AREA.
-           03  IDA                             PIC 9(03). 
-           03  IDB                             PIC 9(03). 
            03  IDX                             PIC 9(03). 
            03  IDX1                            PIC 9(03). 
            03  IDX2                            PIC 9(03). 
            03  IDX3                            PIC 9(03). 
            03  IDX4                            PIC 9(03). 
            03  IDX5                            PIC 9(03). 
-           03  IDX6                            PIC 9(03). 
-           03  IDX7                            PIC 9(03). 
            03  IDY                             PIC 9(03). 
            03  IDZ                             PIC 9(03).
            03  IDXX                            PIC 9(03).
-           03  IDYY                            PIC 9(03).
-           03  IDZZ                            PIC 9(03).
-           03  IDXD                            PIC 9(03).
       **** 03  SYSKAN-IDX                      PIC 9(03).
       *
        01  KEY-AREA                            VALUE   LOW-VALUE.
@@ -326,21 +286,6 @@
            03  WRK-PREFKBN             PIC X(01).
            03  WRK-PREFNUM             PIC X(02).
       *
-           03  WRK-SEIHO-FLG           PIC 9(01).
-      *
-           03  WRK-PTID                PIC 9(10).
-      *
-           03  ST-IDX                  PIC 9(03).
-      *
-           03  WRK-RECEIPT-KBN         PIC X(10).
-      *
-      *    後期高齢者非該当フラグ
-           03  WRK-KOUKI-FLG           PIC 9(01).
-      *
-           03  WRK-TEKSTYMD.
-               05  WRK-TEKSTYYMM       PIC 9(06).
-               05  WRK-TEKSTDD         PIC 9(02).
-      *
       *    傷病名編集
            03  WRK-BYOMEI          PIC X(150).
            03  WRK-BYOMEIW         PIC X(150).
@@ -352,10 +297,6 @@
            03  WRK-MOJISU          PIC 9(03).
       *
            03  WRK-YM              PIC 9(06).
-      *
-           03  WRK-HKNCOMBINUM-G.
-               05  WRK-HKNCOMBINUM PIC 9(04).
-      *
       *    レセプト種別判定用領域
        01  WK-RECESYUBETU-AREA.
            03  WK-KOKUHO                               PIC X(01).
@@ -391,32 +332,11 @@
            02  WRK-TOUKEI01-OCC    OCCURS  100.
            COPY    "CPTCF001.INC"  REPLACING  //TOUKEI01//
                                    BY         //WRK-TOUKEI01//.
-               03  WRK-TOUKEI01-SYOKBN
-                                   PIC X(01).
-           02  WRK-TOUKEI01-SEIHO-OCC
-                                   OCCURS  100.
-               03  WRK-TOUKEI01-SEIHO-KEY
-                                   PIC X(50)   OCCURS  10.
        01  WRK-TOUKEI01-TABLE-MAX  PIC 9(03)   VALUE   100.
       *     
        01  WRK-SEIHO-TOUKEI01-REC. 
            COPY    "CPTCF001.INC"  REPLACING  //TOUKEI01//
                                    BY         //WRK-SEIHO-TOUKEI01//.
-      *
-      *    ワーク生保まとめ
-       01  TBL-SEIHO-TOUKEI01-AREA.
-           02  TBL-SEIHO-TOUKEI01-REC  OCCURS  50. 
-           COPY    "CPTCF001.INC"  REPLACING  //TOUKEI01//
-                                   BY         //TBL-SEIHO-TOUKEI01//.
-           02  TBL-SEIHO-TOUKEI01-OCC  OCCURS  50.
-               03  TBL-SEIHO-TOUKEI01-PRTFLG
-                                   PIC 9(01).
-           02  TBL-SEIHO-TOUKEI01-MAX
-                                   PIC 9(03).
-      *
-       01  WRK-KOH-TOUKEI01-REC. 
-           COPY    "CPTCF001.INC"  REPLACING  //TOUKEI01//
-                                   BY         //WRK-KOH-TOUKEI01//.
       *
       *    ワーク患者病名
        01  WRK-PTBYOMEI-REC.
@@ -448,22 +368,6 @@
        01  TBL-HKNNUM-CONST-MAX                PIC 9(05)
                                                VALUE   2000.
       *
-      *    施設入所情報（９５０、９５１）退避用領域
-       01  TABLE-PTKOHINF-AREA.
-           02  TBL-PTKOHINF-REC        OCCURS  10.
-           COPY    "CPPTKOHINF.INC"
-                                   REPLACING   //PTKOH//
-                                   BY          //TBL-PTKOH//.
-           02  TBL-PTKOHINF-MAX    PIC 9(02).
-      *
-      *    患者レセプト分割情報退避用領域
-       01  TBL-PT-HDIST-DAY-T.
-         02  TBL-PT-HDIST-DAY-REC      OCCURS  10.
-           COPY    "CPPT-HDIST-DAY.INC"
-                                   REPLACING   //PT-HDIST-DAY//
-                                   BY          //TBL-PT-HDIST-DAY//.
-         02  TBL-PT-HDIST-DAY-MAX  PIC 9(02).
-      *
        01  WRK-CONS-AREA.
       *    
       *    生活保護保険番号 
@@ -479,24 +383,7 @@
       *    原爆保険番号 
            03  WRK-CONS-GENBAKU-HKNNUM PIC X(03)   VALUE   "019".       
       *    公害保険番号 
-           03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975".
-      *
-      *    マイナス表記を行う診療行為コード
-      *    薬剤料減点（合算薬剤料上限超）
-           03  WRK-CONS-SRYCD1         PIC X(09)   VALUE   "630010001".
-      *    薬剤料逓減（９０／１００）（内服薬）
-           03  WRK-CONS-SRYCD2         PIC X(09)   VALUE   "630010002".
-      *    包括点数の治験減点分
-           03  WRK-CONS-SRYCD3         PIC X(09)   VALUE   "199000210".
-      *    薬剤料逓減（８０／１００）（向精神薬多剤投与）
-           03  WRK-CONS-SRYCD4         PIC X(09)   VALUE   "630010005".
-      *    薬剤料逓減（６０／１００）（紹介率が低い大病院３０日以上投薬）
-           03  WRK-CONS-SRYCD5         PIC X(09)   VALUE   "630010006".
-      *    薬剤料減点（湿布薬薬剤料上限超）
-           03  WRK-CONS-SRYCD6         PIC X(09)   VALUE   "630010007".
-      *    包括点数の公害補償法減点分
-           03  WRK-CONS-SRYCD7         PIC X(09)   VALUE   "199000410".
-      *
+           03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975".       
       *    疑い
            03  WRK-CONS-UTAGAI     PIC X(06)   VALUE   "の疑い".
            03  WRK-CONS-UTAGAI-MOJISU
@@ -511,7 +398,6 @@
                                    PIC X(07)   VALUE   "ZZZ4012".   
       *
            03  WRK-CONS-SRYYM-200804   PIC 9(06)   VALUE   200804.      
-           03  WRK-CONS-SRYYM-201004   PIC 9(06)   VALUE   201004.      
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -597,10 +483,6 @@
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    患者レセプト分割
-       01  PT-HDIST-DAY-REC.
-           COPY    "CPPT-HDIST-DAY.INC".
-      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -631,14 +513,6 @@
       *    レセプト種別返却サブ
            COPY    "CPORCSSYUBETUGET.INC".
       *
-      *    入院料未算定日取得サブ
-           COPY    "CPORCSNYUINDAY.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
-      *
-      *    入院料と異なる食事算定保険組み合わせ取得サブ
-           COPY    "CPORCSSKJHKN.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -647,7 +521,7 @@
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(400).
+           02  FILLER      PIC X(1000).
       ****************************************************************
        PROCEDURE           DIVISION
                USING
@@ -694,37 +568,6 @@
                                                TOUKEIERR
            END-UNSTRING 
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           MOVE    "TOKEI010"          TO  TOUKEI01PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI01PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI01PARA-HOSPNUM
-      *
-           MOVE    "TOKEI020"          TO  TOUKEI02PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI02PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI02PARA-HOSPNUM
-      *
-           MOVE    "TOKEI030"          TO  TOUKEI03PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI03PARA-TERMID
-grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TOUKEIERR           TO  SGETTEMP-BASENAMES  (1)
-           MOVE    TOUKEI01PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           MOVE    TOUKEI02PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (3)
-           MOVE    TOUKEI03PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (4)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  TOUKEI01PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  TOUKEI02PARA-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  TOUKEI03PARA-FULLNAME
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -849,12 +692,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-           OPEN    OUTPUT              TOUKEI01-FILE
-           CLOSE                       TOUKEI01-FILE
-           OPEN    OUTPUT              TOUKEI02-FILE
-           CLOSE                       TOUKEI02-FILE
-           OPEN    OUTPUT              TOUKEI03-FILE
-           CLOSE                       TOUKEI03-FILE
+           MOVE    "TOKEI010"          TO  TOUKEI01PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI01PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI01PARA-HOSPNUM
+      *
+           MOVE    "TOKEI020"          TO  TOUKEI02PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI02PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI02PARA-HOSPNUM
+      *
+           MOVE    "TOKEI030"          TO  TOUKEI03PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI03PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
+      *
+           OPEN    OUTPUT              TOUKEI011-FILE
+           CLOSE                       TOUKEI011-FILE
+           OPEN    OUTPUT              TOUKEI021-FILE
+           CLOSE                       TOUKEI021-FILE
+           OPEN    OUTPUT              TOUKEI031-FILE
+           CLOSE                       TOUKEI031-FILE
       *
            OPEN    I-O                 TOUKEI01-FILE
                                        TOUKEI02-FILE
@@ -932,8 +787,6 @@ grpsys             PERFORM 900-DBSELECT-SEC
        2001-NYUIN-HENSYU-SEC              SECTION.
       *
            INITIALIZE                  WRK-TOUKEI01-TABLE
-      *
-           MOVE    ZERO                TO  WRK-RENNUM
       *     
       *    テスト患者のときは読み飛ばす
            MOVE    WRK-PARA-HOSPNUM        TO  PTINF-HOSPNUM
@@ -952,11 +805,6 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    PERFORM 900-NYUINACCT-READ-SEC
                END-PERFORM
            ELSE
-      *
-      *        患者レセプト分割情報情報
-               MOVE    NACCT-PTID              TO  WRK-PTID
-               PERFORM 500-PT-HDIST-DAY-HENSYU-SEC
-      *
                INITIALIZE                      WRK-DAY-AREA
                                                WRK-HKNCOMBI-TABLE
       *
@@ -981,23 +829,11 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    PERFORM 900-NYUINACCT-READ-SEC
                END-PERFORM
       *
-      *        同日再入院のチェック
-               PERFORM 500-ORCSNYUINDAY-CHECK-SEC
-      *
-      *        入院料と異なる食事算定保険組み合わせのチェック
-               IF    ( WRK-PARA-SRYYM          >=  "201710" )
-                   PERFORM 500-ORCSSKJHKN-CHECK-SEC
-               END-IF
-      *
       *        入院会計の保険組合せをまとめる
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       31
-                   IF  ( ( WRK-DAY (1 IDX)     >   ZERO )  OR
-                         ( LNK-NYUINDAY-KBN (IDX)
-                                               =   "1"  )    )  AND
-                       (   WRK-DAY (2 IDX)     >   ZERO      )
-                       MOVE    WRK-DAY (2 IDX) TO  WRK-HKNCOMBINUM
-                       MOVE    IDX             TO  IDXD
+                   IF      WRK-DAY (1 IDX)     >   ZERO    AND
+                           WRK-DAY (2 IDX)     >   ZERO
                        PERFORM 20011-NYUINACCT-HENSYU-SEC
                    END-IF
                END-PERFORM        
@@ -1020,38 +856,8 @@ grpsys             PERFORM 900-DBSELECT-SEC
       *        診療会計編集処理
                PERFORM 20012-NYUIN-SRYACCT-HENSYU-SEC
       *
-               IF      TBL-PT-HDIST-DAY-MAX
-                                           =   ZERO
-                   MOVE    1               TO  ST-IDX
-                   MOVE    SPACE           TO  WRK-RECEIPT-KBN
-      *            基本ファイル出力処理
-                   PERFORM   2002-KIHON-WRITE-SEC
-               ELSE
-                   MOVE    ZERO            TO  ST-IDX
-                   PERFORM         UNTIL   ST-IDX  =   999
-                       MOVE    SPACE           TO  WRK-RECEIPT-KBN
-                       MOVE    ZERO            TO  ST-IDX
-                       PERFORM VARYING IDXX    FROM    1   BY  1
-                               UNTIL   IDXX    >       100
-                               OR      WRK-TOUKEI01-HOSPNUM (IDXX)
-                                               =   ZERO
-                           IF      WRK-TOUKEI01-SYOKBN (IDXX)
-                                                   =   SPACE
-                               MOVE    WRK-TOUKEI01-RECEIPT-KBN (IDXX)
-                                                   TO  WRK-RECEIPT-KBN
-                               MOVE    IDXX    TO  ST-IDX
-                               MOVE    100     TO  IDXX
-                           END-IF 
-                       END-PERFORM
-      *
-                       IF      ST-IDX          >   ZERO
-      *                    基本ファイル出力処理
-                           PERFORM   2002-KIHON-WRITE-SEC
-                       ELSE
-                           MOVE    999             TO  ST-IDX
-                       END-IF
-                   END-PERFORM
-               END-IF
+      *        基本ファイル出力処理
+               PERFORM 2002-KIHON-WRITE-SEC
            END-IF    
            .
        2001-NYUIN-HENSYU-EXT.
@@ -1071,7 +877,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    MOVE    WRK-PARA-HOSPNUM
                                            TO  COMB-HOSPNUM
                    MOVE    PTINF-PTID      TO  COMB-PTID
-                   MOVE    WRK-HKNCOMBINUM TO
+                   MOVE    WRK-DAY (2 IDX) TO
                                            COMB-HKNCOMBINUM 
                    MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
                    PERFORM 910-HKNCOMBI-INV-SEC
@@ -1079,25 +885,20 @@ grpsys             PERFORM 900-DBSELECT-SEC
                        MOVE    HKNCOMBI-REC    TO
                                            WRK-HKNCOMBI-REC  (IDX1)
                    ELSE
-                       MOVE    WRK-PARA-HOSPNUM 
-                                               TO
-                                           WRK-COMB-HOSPNUM     (IDX1)
-                       MOVE    PTINF-PTID      TO
-                                           WRK-COMB-PTID        (IDX1)
-                       MOVE    WRK-HKNCOMBINUM TO
+                       MOVE    WRK-DAY (2 IDX) TO
                                            WRK-COMB-HKNCOMBINUM (IDX1)
                        MOVE    "1"     TO  WRK-HKNCOMBI-SYOKBN  (IDX1)
                    END-IF
                END-IF
       *
       *        適用範囲かチェック（範囲外のとき２をセット）
-               IF      WRK-HKNCOMBINUM     =
+               IF      WRK-DAY (2 IDX)     =
                                        WRK-COMB-HKNCOMBINUM (IDX1)
                    IF      WRK-HKNCOMBI-SYOKBN (IDX1)   NOT =   SPACE
                        CONTINUE                    
                    ELSE     
                        MOVE    WRK-STYMD       TO  WRK-YMD
-                       MOVE    IDXD            TO  WRK-DD
+                       MOVE    IDX             TO  WRK-DD
                        IF      WRK-COMB-TEKSTYMD (IDX1)
                                                <=  WRK-YMD
                        AND     WRK-COMB-TEKEDYMD (IDX1)
@@ -1121,9 +922,6 @@ grpsys             PERFORM 900-DBSELECT-SEC
        20012-NYUIN-SRYACCT-HENSYU-SEC           SECTION.
       *
            MOVE    LOW-VALUE           TO  KEY-AREA
-      *
-           MOVE    SPACE               TO  WRK-ERR-AREA
-           INITIALIZE                      WRK-ERR-AREA
       *
            INITIALIZE                      SRYACCT-REC
            MOVE    WRK-PARA-HOSPNUM    TO  ACCT-HOSPNUM
@@ -1171,11 +969,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    "1"             TO  WRK-UPDKBN
                        END-IF
                    ELSE
-                       MOVE    WRK-PARA-HOSPNUM
-                                              TO  COMB-HOSPNUM
-                       MOVE    PTINF-PTID     TO  COMB-PTID
-                       MOVE    KEY-N-HKNCOMBI TO  COMB-HKNCOMBINUM 
-                       MOVE    "1"            TO  WRK-TEISEIKBN
+                      MOVE    "1"             TO  WRK-TEISEIKBN
                    END-IF
                END-IF
       *             
@@ -1217,11 +1011,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    入院基本料・特定入院料・食事療養編集処理
       *****************************************************************
        20013-NYUIN-KIHON-SEC           SECTION.
-      *
-      *    統計データ（病名）のみのとき
-           IF      WRK-PARA-DATAKBN    =   "2"
-               GO  TO  20013-NYUIN-KIHON-EXT
-           END-IF
       *
            INITIALIZE                      HCM34S01-AREA
                                            WRK-SPA-AREA
@@ -1348,7 +1137,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
        2001-NYUINGAI-HENSYU-SEC              SECTION.
       *
            INITIALIZE                  WRK-TOUKEI01-TABLE
-           INITIALIZE                      WRK-ERR-AREA
+
       *    テスト患者のときは読み飛ばす
            MOVE    WRK-PARA-HOSPNUM        TO  PTINF-HOSPNUM
            MOVE    KEY-N-PTID              TO  PTINF-PTID
@@ -1367,13 +1156,6 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
-      *        施設入所情報
-               PERFORM 500-SISETU-HENSYU-SEC
-      *
-      *        患者レセプト分割情報情報
-               MOVE    KEY-N-PTID              TO  WRK-PTID
-               PERFORM 500-PT-HDIST-DAY-HENSYU-SEC
-      *
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
@@ -1404,10 +1186,6 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                                MOVE    "1"             TO  WRK-UPDKBN
                            END-IF
                        ELSE
-                           MOVE    WRK-PARA-HOSPNUM
-                                                   TO  COMB-HOSPNUM
-                           MOVE    KEY-N-PTID      TO  COMB-PTID
-                           MOVE    KEY-N-HKNCOMBI  TO  COMB-HKNCOMBINUM 
                            MOVE    "1"             TO  WRK-TEISEIKBN
                        END-IF
                    END-IF    
@@ -1439,39 +1217,9 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    END-PERFORM    
                END-PERFORM         
       *
-               IF      TBL-PT-HDIST-DAY-MAX
-                                           =   ZERO
-                   MOVE    1               TO  ST-IDX
-                   MOVE    SPACE           TO  WRK-RECEIPT-KBN
-      *            基本ファイル出力処理
-                   PERFORM   2002-KIHON-WRITE-SEC
-               ELSE
-                   MOVE    ZERO            TO  ST-IDX
-                   PERFORM         UNTIL   ST-IDX  =   999
-                       MOVE    SPACE           TO  WRK-RECEIPT-KBN
-                       MOVE    ZERO            TO  ST-IDX
-                       PERFORM VARYING IDXX    FROM    1   BY  1
-                               UNTIL   IDXX    >       100
-                               OR      WRK-TOUKEI01-HOSPNUM (IDXX)
-                                               =   ZERO
-                           IF      WRK-TOUKEI01-SYOKBN (IDXX)
-                                                   =   SPACE
-                               MOVE    WRK-TOUKEI01-RECEIPT-KBN (IDXX)
-                                                   TO  WRK-RECEIPT-KBN
-                               MOVE    IDXX    TO  ST-IDX
-                               MOVE    100     TO  IDXX
-                           END-IF 
-                       END-PERFORM
-      *
-                       IF      ST-IDX          >   ZERO
-      *                    基本ファイル出力処理
-                           PERFORM   2002-KIHON-WRITE-SEC
-                       ELSE
-                           MOVE    999             TO  ST-IDX
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-IF
+      *        基本ファイル出力処理
+               PERFORM   2002-KIHON-WRITE-SEC
+           END-IF    
            .
        2001-NYUINGAI-HENSYU-EXT.
            EXIT. 
@@ -1525,8 +1273,8 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
       *
       *    年齢
            INITIALIZE                  ORCSAGECHKAREA
-           MOVE    PTINF-HOSPNUM   TO  AGECHK-HOSPNUM
-           MOVE    PTINF-PTID      TO  AGECHK-PTID
+           MOVE    COMB-HOSPNUM    TO  AGECHK-HOSPNUM
+           MOVE    TOUKEI01-PTID   TO  AGECHK-PTID
            MOVE    WRK-PARA-SRYYM  TO  AGECHK-SRYYMD(1:6)
            MOVE    "01"            TO  AGECHK-SRYYMD(7:2)
            MOVE    PTINF-BIRTHDAY  TO  AGECHK-BIRTHDAY
@@ -1549,13 +1297,6 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    MOVE    "1"                 TO  WRK-TEISEIKBN
                END-IF
           END-IF
-      *
-      *    平成２２年４月以降に政府管掌を使用のとき
-           IF    ( WRK-TEISEIKBN       =   SPACE                 )
-           AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-201004 )
-           AND   ( COMB-HKNNUM         =   "001"                 )
-               MOVE    "1"                 TO  WRK-TEISEIKBN
-           END-IF
       *
       *   主保険情報読み出し
            INITIALIZE                      PTHKNINF-REC
@@ -1587,7 +1328,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI01-HOSPNUM
            MOVE    WRK-PARA-SRYYM      TO  TOUKEI01-SRYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  TOUKEI01-NYUGAIKBN
-           MOVE    PTINF-PTID          TO  TOUKEI01-PTID
+           MOVE    COMB-PTID           TO  TOUKEI01-PTID
            MOVE    COMB-HKNNUM         TO  TOUKEI01-HKNNUM
            MOVE    PTHKN-HONKZKKBN     TO  TOUKEI01-HONKZKKBN
            IF      COMB-HKNNUM         =   SPACE
@@ -1664,12 +1405,8 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
       *
            MOVE    PTHKN-HKNJANUM      TO  TOUKEI01-HKNJANUM
            IF    ( COMB-HKNNUM         =   SPACE )
-           AND   ( COMB-KOH1HKNNUM     =   "020"
-                                       OR  "030"
-                                       OR  "053" )
-      *********MOVE    COMB-KOH1HKNNUM     TO  TOUKEI01-HKNJANUM
-               MOVE    COMB-TEKSTYMD       TO  TOUKEI01-HKNJANUM
-               MOVE    COMB-KOH1ID         TO  TOUKEI01-KOH-KOHID
+           AND   ( COMB-KOH1HKNNUM     =   "020" )
+               MOVE    COMB-KOH1HKNNUM     TO  TOUKEI01-HKNJANUM
            END-IF
       *
            IF      WRK-PARA-SRYYM      <=   "200609"
@@ -1738,15 +1475,12 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                            EVALUATE    PTHKN-HOJOKBN
                                WHEN    "A"
                                WHEN    "G"
-                               WHEN    "D"
                                    MOVE    "1" TO  TOUKEI01-HOJOKBN
                                WHEN    "B"
                                WHEN    "H"
-                               WHEN    "E"
                                    MOVE    "2" TO  TOUKEI01-HOJOKBN
                                WHEN    "C"
                                WHEN    "I"
-                               WHEN    "F"
                                    MOVE    "3" TO  TOUKEI01-HOJOKBN
                                WHEN    OTHER
                                    MOVE    PTHKN-HOJOKBN
@@ -1812,82 +1546,6 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                MOVE    "9999999"            TO  TOUKEI01-HKNJANUM
            END-IF
       *
-      *    施設入所の有無
-           IF    ( TOUKEI01-RECEIPT-KBN (1:1)
-                                           =   SPACE )
-           AND   ( TBL-PTKOHINF-MAX        >   ZERO  )
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL   IDX1    >       TBL-PTKOHINF-MAX
-                   IF    ( TBL-PTKOH-TEKSTYMD (IDX1)
-                                           <=  COMB-TEKSTYMD           )
-                   AND   ( COMB-TEKEDYMD   <=  TBL-PTKOH-TEKEDYMD(IDX1))
-                       IF      TBL-PTKOH-KOHNUM (IDX1)
-                                               =   "950"
-                           MOVE    "1"     TO  TOUKEI01-RECEIPT-KBN
-                                                                   (1:1)
-                       END-IF
-                       IF      TBL-PTKOH-KOHNUM (IDX1)
-                                               =   "951"
-                           MOVE    "2"     TO  TOUKEI01-RECEIPT-KBN
-                                                                   (1:1)
-                       END-IF
-                       MOVE    TBL-PTKOHINF-MAX
-                                           TO  IDX1
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-      *    患者レセプト分割情報の有無
-           IF    ( TOUKEI01-RECEIPT-KBN (2:3)
-                                           =   SPACE )
-           AND   ( TBL-PT-HDIST-DAY-MAX    >   ZERO  )
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL   IDX1    >       TBL-PT-HDIST-DAY-MAX
-                   PERFORM VARYING IDX4    FROM    1   BY  1
-                           UNTIL   IDX4    >       2
-                       PERFORM VARYING IDX5    FROM    1   BY  1
-                               UNTIL   IDX5    >       10
-                               OR      TBL-PT-HDIST-DAY-HKNCOMBI
-                                                       (IDX1 IDX4 IDX5)
-                                               =   ZERO
-                         IF      TBL-PT-HDIST-DAY-DLTFLG
-                                                       (IDX1 IDX4 IDX5)
-                                                       =   "1"
-                           CONTINUE
-                         ELSE
-                           IF      COMB-HKNCOMBINUM    =
-                                   TBL-PT-HDIST-DAY-HKNCOMBI
-                                                       (IDX1 IDX4 IDX5)
-                               MOVE    TBL-PT-HDIST-DAY-DAY (IDX1)
-                                                       TO
-                                               TOUKEI01-RECEIPT-KBN(2:2)
-                               IF      IDX4            =   1
-                                   MOVE    "1"         TO
-                                               TOUKEI01-RECEIPT-KBN(4:1)
-                               ELSE
-                                   MOVE    "2"         TO
-                                               TOUKEI01-RECEIPT-KBN(4:1)
-                               END-IF
-                               IF    ( TBL-PT-HDIST-DAY-SRYYM   (IDX1)
-                                           =   COMB-TEKSTYMD (1:6) AND
-                                       TBL-PT-HDIST-DAY-DAY (IDX1)
-                                           =   COMB-TEKSTYMD (7:2)     )
-                               OR    ( TBL-PT-HDIST-DAY-SRYYM   (IDX1)
-                                           =   COMB-TEKEDYMD (1:6) AND
-                                       TBL-PT-HDIST-DAY-DAY (IDX1)
-                                           =   COMB-TEKEDYMD (7:2)     )
-                                   MOVE    10              TO  IDX5
-                                   MOVE    2               TO  IDX4
-                                   MOVE    TBL-PT-HDIST-DAY-MAX
-                                                           TO  IDX1   
-                               END-IF
-                           END-IF
-                         END-IF 
-                       END-PERFORM
-                   END-PERFORM
-               END-PERFORM
-           END-IF
-      *
            PERFORM VARYING IDXX    FROM   1   BY  1
                    UNTIL   IDXX    >      WRK-TOUKEI01-TABLE-MAX
                IF      WRK-TOUKEI01-HOSPNUM (IDXX) =   ZERO
@@ -1905,12 +1563,9 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            END-PERFORM
       *
            INITIALIZE                  WRK-SEIHO-TOUKEI01-REC
-      *    公費単独の場合（生保、中国残留邦人等、自立支援）
+      *    生保単独のみのとき
            IF    ( COMB-HKNNUM         =   SPACE )
            AND   ( COMB-KOHHKNNUM (1)  =   "012"
-                                       OR  "015"
-                                       OR  "016"
-                                       OR  "021"
                                        OR  "025" )
            AND   ( COMB-KOHHKNNUM (2)  =   SPACE )
                PERFORM 20013-SEIHO-TOUKEI01-WRITE-SEC
@@ -1995,15 +1650,12 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                            EVALUATE    PTHKN-HOJOKBN
                                WHEN    "A"
                                WHEN    "G"
-                               WHEN    "D"
                                    MOVE    "1" TO  TOUKEI01-THOJOKBN (1)
                                WHEN    "B"
                                WHEN    "H"
-                               WHEN    "E"
                                    MOVE    "2" TO  TOUKEI01-THOJOKBN (1)
                                WHEN    "C"
                                WHEN    "I"
-                               WHEN    "F"
                                    MOVE    "3" TO  TOUKEI01-THOJOKBN (1)
                            END-EVALUATE
                        END-IF
@@ -2073,10 +1725,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            MOVE    PTINF-SEX       TO  TOUKEI01-SEX
            MOVE    PTINF-BIRTHDAY  TO  TOUKEI01-BIRTHDAY
            MOVE    PTINF-HOME-POST TO  TOUKEI01-HOME-POST
-           STRING  PTINF-HOME-ADRS     DELIMITED   BY  SPACE
-                   PTINF-HOME-BANTI    DELIMITED   BY  SPACE
-                                       INTO        TOUKEI01-HOME-ADRS
-           END-STRING
+           MOVE    PTINF-HOME-ADRS TO  TOUKEI01-HOME-ADRS
            MOVE    PTINF-HOME-TEL1 TO  TOUKEI01-HOME-TEL1
            INITIALIZE                  ADRS-REC
            MOVE    PTINF-HOME-POST TO  ADRS-POST
@@ -2189,17 +1838,14 @@ grpsys                                 SPA-AREA
                                      EVALUATE    PTHKN-HOJOKBN
                                        WHEN    "A"
                                        WHEN    "G"
-                                       WHEN    "D"
                                          MOVE    "1" 
                                            TO  TOUKEI01-THOJOKBN (IDX)
                                        WHEN    "B"
                                        WHEN    "H"
-                                       WHEN    "E"
                                          MOVE    "2"
                                            TO  TOUKEI01-THOJOKBN (IDX)
                                        WHEN    "C"
                                        WHEN    "I"
-                                       WHEN    "F"
                                          MOVE    "3"
                                            TO  TOUKEI01-THOJOKBN (IDX)
                                      END-EVALUATE
@@ -2427,14 +2073,6 @@ grpsys                                 SPA-AREA
       *                公費ＩＤ
                        MOVE    COMB-KOHID (IDX)
                                            TO  LNK-FTNJGNCHK-KOHID
-      *                都道府県番号
-                       MOVE    SYS-1001-PREFNUM
-                                           TO  LNK-FTNJGNCHK-PREFNUM
-      *                保険組合せ番号
-                       MOVE    COMB-HKNCOMBINUM
-                                           TO  LNK-FTNJGNCHK-HKNCOMBINUM
-      *                主保険−ＩＤ
-                       MOVE    COMB-HKNID  TO  LNK-FTNJGNCHK-HKNID
       *
                        CALL    "ORCSFTNJGNCHK" USING
                                                ORCSFTNJGNCHKAREA
@@ -2449,7 +2087,7 @@ grpsys                                         SPA-AREA
                        GO  TO  200121-KOHID-HENSYU-EXT
                    END-IF
       *            全国公費のとき（生保）
-      **>          IF   COMB-KOHHKNNUM (IDX)   =   "012" OR "021"
+                   IF   COMB-KOHHKNNUM (IDX)   =   "012"
       *                レセ記載判定
                        INITIALIZE          ORCSFTNJGNCHKAREA
                        MOVE    COMB-HOSPNUM
@@ -2466,14 +2104,6 @@ grpsys                                         SPA-AREA
       *                公費ＩＤ
                        MOVE    COMB-KOHID (IDX)
                                            TO  LNK-FTNJGNCHK-KOHID
-      *                都道府県番号
-                       MOVE    SYS-1001-PREFNUM
-                                           TO  LNK-FTNJGNCHK-PREFNUM
-      *                保険組合せ番号
-                       MOVE    COMB-HKNCOMBINUM
-                                           TO  LNK-FTNJGNCHK-HKNCOMBINUM
-      *                主保険−ＩＤ
-                       MOVE    COMB-HKNID  TO  LNK-FTNJGNCHK-HKNID
       *
                        CALL    "ORCSFTNJGNCHK" USING
                                                ORCSFTNJGNCHKAREA
@@ -2483,27 +2113,30 @@ grpsys                                         SPA-AREA
                        ELSE
                            MOVE    "1"     TO  TOUKEI01-TRECESKYKBN(IDY)
                        END-IF
-      **>              GO  TO  200121-KOHID-HENSYU-EXT
-      **>          END-IF
+                       GO  TO  200121-KOHID-HENSYU-EXT
+                   END-IF
       *            全国公費のとき（老人原爆）
                    IF    ( TOUKEI01-RJNHKNNUM
                                        NOT =   SPACE                   )
                    AND   ( COMB-KOHHKNNUM (IDX)
                                            =   WRK-CONS-GENBAKU-HKNNUM )
-                   AND   ( TOUKEI01-TRECESKYKBN(IDY)  =  "1"           )
                        IF      TOUKEI01-HKNNUM =   "060"   OR  "067"
                            IF      SYS-2005-RJNGNBKKBN =   "1" OR  ZERO
-                               MOVE    "2" TO  TOUKEI01-TRECESKYKBN(IDY)
+                               CONTINUE 
+                           ELSE
+                               MOVE    "1" TO  TOUKEI01-TRECESKYKBN(IDY)
                            END-IF
                        ELSE                
                            IF      SYS-2005-RJNGNBKKBN =   "2" OR  ZERO
-                               MOVE    "2" TO  TOUKEI01-TRECESKYKBN(IDY)
+                               CONTINUE 
+                           ELSE
+                               MOVE    "1" TO  TOUKEI01-TRECESKYKBN(IDY)
                            END-IF
                        END-IF
-      **>              GO  TO  200121-KOHID-HENSYU-EXT
+                       GO  TO  200121-KOHID-HENSYU-EXT
                    END-IF
-      *            全国公費のとき（長期・老人原爆・生保・精神以外）
-      **>          MOVE    "1"         TO  TOUKEI01-TRECESKYKBN(IDY)
+      *            全国公費のとき（長期・老人原爆・生保以外）
+                   MOVE    "1"         TO  TOUKEI01-TRECESKYKBN(IDY)
                END-IF       
            END-IF
            .
@@ -2521,10 +2154,6 @@ grpsys                                         SPA-AREA
            MOVE    WRK-SEIHO-TOUKEI01-KEY
                                        TO  TOUKEI01-KEY
            MOVE    COMB-TEKSTYMD       TO  TOUKEI01-HKNJANUM
-      *    生活保護期間重複対応のため
-           IF      COMB-KOHHKNNUM (1)  =   "012"
-               MOVE    COMB-KOH1ID         TO  TOUKEI01-KOH-KOHID
-           END-IF
       *
            PERFORM VARYING IDXX    FROM   1   BY  1
                    UNTIL   IDXX    >      WRK-TOUKEI01-TABLE-MAX
@@ -2618,253 +2247,49 @@ grpsys                                         SPA-AREA
        2002-KIHON-WRITE-SEC              SECTION.
       *
            MOVE    ZERO            TO  FLG-SEIHO 
-           INITIALIZE                  TBL-SEIHO-TOUKEI01-AREA
-                                       WRK-KOH-TOUKEI01-REC
-      *
-           MOVE    ZERO                TO  WRK-SEIHO-FLG
-      *
-      *    公費単独の退避（生保、中国残留邦人等、自立支援）と他の
-      *    公費単独のチェック（精神入院は除く）    
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       WRK-TOUKEI01-TABLE-MAX
-                   OR      WRK-TOUKEI01-HOSPNUM (IDXX) =   ZERO
-             IF      WRK-RECEIPT-KBN   =
-                                       WRK-TOUKEI01-RECEIPT-KBN (IDXX)
-               MOVE    WRK-TOUKEI01-OCC (IDXX)     TO  TOUKEI01-REC
-      *
-      *        公費単独の場合（精神入院・心身喪失・包括以外）
-               IF      TOUKEI01-HKNNUM     =   SPACE
-                   IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"   OR
-                                                       "030"     )
-                   OR    ( TOUKEI01-HKNJANUM       =   "9999999" )
-                       CONTINUE
-                   ELSE 
-                       IF      TOUKEI01-HKNJANUM       =   SPACE
-                           IF    ( TOUKEI01-TKOHHKNNUM (1) =
-                                                   "012"   OR  "025"
-                                               OR  "015"   OR  "016"
-                                               OR  "021"            )
-                               IF    ( TOUKEI01-TKOHHKNNUM  (2)
-                                           =   TOUKEI01-TKOHHKNNUM (1) 
-                                           OR  SPACE                  )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (3)
-                                           =   TOUKEI01-TKOHHKNNUM (1) 
-                                           OR  SPACE                  )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (4)
-                                           =   TOUKEI01-TKOHHKNNUM (1) 
-                                           OR  SPACE                  )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (5)
-                                           =   TOUKEI01-TKOHHKNNUM (1) 
-                                           OR  SPACE                  )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (6)
-                                           =   TOUKEI01-TKOHHKNNUM (1) 
-                                           OR  SPACE                  )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (7)
-                                           =   TOUKEI01-TKOHHKNNUM (1) 
-                                           OR  SPACE                  )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (8)
-                                           =   TOUKEI01-TKOHHKNNUM (1) 
-                                           OR  SPACE                  )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (9)
-                                           =   TOUKEI01-TKOHHKNNUM (1) 
-                                           OR  SPACE                  )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (10)
-                                           =   TOUKEI01-TKOHHKNNUM (1) 
-                                           OR  SPACE                  )
-                                   CONTINUE
-                               ELSE
-      *****************************IF    ( TOUKEI01-TKOHHKNNUM  (2)
-      *****************************            =   "012"   OR  "025"
-      *****************************            OR  "015"   OR  "016"
-      *****************************            OR  "021"   OR  SPACE )
-      *****************************AND   ( TOUKEI01-TKOHHKNNUM  (3)
-      *****************************            =   "012"   OR  "025"
-      *****************************            OR  "015"   OR  "016"
-      *****************************            OR  "021"   OR  SPACE )
-      *****************************AND   ( TOUKEI01-TKOHHKNNUM  (4)
-      *****************************            =   "012"   OR  "025"
-      *****************************            OR  "015"   OR  "016"
-      *****************************            OR  "021"   OR  SPACE )
-      *****************************    生保、中国残留邦人等、自立支援のみ
-      *****************************    の公費単独の場合退避
-      *****************************    MOVE    TOUKEI01-REC      TO
-      *****************************                WRK-KOH-TOUKEI01-REC
-      *****************************ELSE
-                                       MOVE    1           TO  FLG-SEIHO
-      *****************************END-IF
-                               END-IF
-                           ELSE
-                               MOVE    1           TO  FLG-SEIHO
-                           END-IF
-                       ELSE
-      *                    生保単独の場合退避
-                           ADD     1        TO  TBL-SEIHO-TOUKEI01-MAX
-                           MOVE    TOUKEI01-REC
-                                            TO  TBL-SEIHO-TOUKEI01-REC
-                                                (TBL-SEIHO-TOUKEI01-MAX)
-                       END-IF
-                  END-IF
-               END-IF
-             END-IF
-           END-PERFORM
-      *
-           IF      FLG-SEIHO           =   1
-               INITIALIZE                  TBL-SEIHO-TOUKEI01-AREA
-           END-IF    
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       WRK-TOUKEI01-TABLE-MAX
                    OR      WRK-TOUKEI01-HOSPNUM (IDXX) =   ZERO
-             IF      WRK-RECEIPT-KBN   =
-                                       WRK-TOUKEI01-RECEIPT-KBN (IDXX)
                MOVE    WRK-TOUKEI01-OCC (IDXX)     TO  TOUKEI01-REC
       *
                MOVE    ZERO            TO  FLG-WRITE 
       *
-      *        公費単独の場合（精神入院・心身喪失・包括以外）
+      *        公費単独の場合（精神入院・包括以外）
                IF      TOUKEI01-HKNNUM     =   SPACE
-                   IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"   OR
-                                                       "030"     )
+                   IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"     )
                    OR    ( TOUKEI01-HKNJANUM       =   "9999999" )
                        CONTINUE
                    ELSE 
                        IF      TOUKEI01-HKNJANUM       =   SPACE
-      *                    公費単独の場合（生保、中国残留邦人等、自立支援）
                            IF    ( TOUKEI01-TKOHHKNNUM (1) =
-                                                   "012"   OR  "025"
-                                               OR  "015"   OR  "016"
-                                               OR  "021"            )
-      *                        同じ公費の公費単独の場合
-                               IF    ( TOUKEI01-TKOHHKNNUM  (2)
-                                                    =
-                                           TOUKEI01-TKOHHKNNUM (1) 
-                                                           OR  SPACE )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (3)
-                                                    =
-                                           TOUKEI01-TKOHHKNNUM (1) 
-                                                           OR  SPACE )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (4)
-                                                    =
-                                           TOUKEI01-TKOHHKNNUM (1) 
-                                                           OR  SPACE )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (5)
-                                                    =
-                                           TOUKEI01-TKOHHKNNUM (1) 
-                                                           OR  SPACE )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (6)
-                                                    =
-                                           TOUKEI01-TKOHHKNNUM (1) 
-                                                           OR  SPACE )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (7)
-                                                    =
-                                           TOUKEI01-TKOHHKNNUM (1) 
-                                                           OR  SPACE )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (8)
-                                                    =
-                                           TOUKEI01-TKOHHKNNUM (1) 
-                                                           OR  SPACE )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (9)
-                                                    =
-                                           TOUKEI01-TKOHHKNNUM (1) 
-                                                           OR  SPACE )
-                               AND   ( TOUKEI01-TKOHHKNNUM  (10)
-                                                    =
-                                           TOUKEI01-TKOHHKNNUM (1) 
-                                                           OR  SPACE )
-                                   MOVE    1           TO  FLG-WRITE
-                               ELSE
-                                   IF      FLG-SEIHO            =   1
-                                       CONTINUE
-                                   ELSE 
-                                      MOVE    1           TO  FLG-WRITE
-                                   END-IF
-                               END-IF
+                                                      "012" OR  "025" 
+                                                            OR  SPACE )
+                           AND   ( TOUKEI01-TKOHHKNNUM (2) =
+                                                      "012" OR  "025" 
+                                                            OR  SPACE )
+                           AND   ( TOUKEI01-TKOHHKNNUM (3) =
+                                                      "012" OR  "025" 
+                                                            OR  SPACE )
+                           AND   ( TOUKEI01-TKOHHKNNUM (4) =
+                                                      "012" OR  "025" 
+                                                            OR  SPACE )
+                               MOVE    1                TO  FLG-WRITE 
                            ELSE
-                               IF    ( FLG-SEIHO       =   1     )
-                               AND   ( TOUKEI01-TKOHHKNNUM (1)
-                                                   NOT =   "053" )
-                                   CONTINUE
-                               ELSE 
-                                  MOVE    1           TO  FLG-WRITE
-                               END-IF
+                               MOVE    1                TO  FLG-SEIHO
                            END-IF
                        ELSE
-                           MOVE    1                TO  FLG-WRITE 
+                           IF      FLG-SEIHO            =   1
+                               MOVE    1                TO  FLG-WRITE 
+                           END-IF
                        END-IF
                   END-IF
-               END-IF
-      *
-      *        社保で公費併用の場合（生保、中国残留邦人等、自立支援、児童保護）
-               IF    ( TOUKEI01-HKNNUM   NOT =   SPACE )
-               AND   ( TOUKEI01-TKOHHKNNUM (1)
-                                           =   "012"   OR  "025"   OR 
-                                               "015"   OR  "016"   OR
-                                               "021"   OR  "053"      )
-               AND   ( TOUKEI01-TKOHHKNNUM (2)
-                                           =   SPACE   OR  "972"   OR
-                                               "974"                  )
-                   IF      TOUKEI01-HKNNUM   =
-                                               "060"   OR  "067"   OR
-                                               "068"   OR  "069"   OR
-                                               "039"   OR  "040"
-                       CONTINUE
-                   ELSE
-                       PERFORM VARYING IDA FROM   1   BY  1
-                               UNTIL   IDA >      TBL-SEIHO-TOUKEI01-MAX
-                           PERFORM VARYING IDYY    FROM    1   BY  1
-                                   UNTIL   IDYY    >       10
-                                   OR      TOUKEI01-TKOHID (IDYY)
-                                                   =       ZERO
-                               IF      TBL-SEIHO-TOUKEI01-TKOHID(IDA 1)
-                                           =   TOUKEI01-TKOHID (IDYY)
-                                   MOVE    1           TO
-                                       TBL-SEIHO-TOUKEI01-PRTFLG  (IDA)
-                                   MOVE    1           TO  WRK-SEIHO-FLG
-                                   PERFORM VARYING IDB FROM    1   BY  1
-                                           UNTIL   IDB >       10
-                                       IF      WRK-TOUKEI01-SEIHO-KEY
-                                                           (IDXX IDB)
-                                                           =   SPACE 
-                                           MOVE
-                                             TBL-SEIHO-TOUKEI01-KEY(IDA)
-                                                       TO
-                                                 WRK-TOUKEI01-SEIHO-KEY
-                                                              (IDXX IDB)
-                                           MOVE    10  TO  IDB
-                                       END-IF
-                                   END-PERFORM
-                                   PERFORM VARYING IDB FROM    1   BY  1
-                                           UNTIL   IDB >       10
-                                       IF      TOUKEI01-HKNCOMBI (IDB)
-                                                           =   ZERO
-                                           MOVE
-                                           TBL-SEIHO-TOUKEI01-HKNCOMBI
-                                                              (IDA 1)
-                                                           TO
-                                               TOUKEI01-HKNCOMBI (IDB)
-                                       END-IF
-                                       IF      TOUKEI01-HKNCOMBI (IDB)
-                                                   =
-                                         TBL-SEIHO-TOUKEI01-HKNCOMBI
-                                                                 (IDA 1)
-                                           MOVE    10          TO  IDB
-                                       END-IF
-                                   END-PERFORM    
-                                   MOVE    10          TO  IDYY
-                                   MOVE    TBL-SEIHO-TOUKEI01-MAX
-                                                       TO  IDA
-                               END-IF
-                           END-PERFORM      
-                       END-PERFORM
-                   END-IF                     
                END-IF
       *
                IF      FLG-WRITE            =   ZERO
       *            レセプト種別
                    PERFORM 20021-RECESYUBETU-SET-SEC
       *
-                   MOVE    WRK-TOUKEI01-SEIHO-OCC (IDXX)
-                                            TO  TOUKEI01-SEIHO-OCC
                    WRITE   TOUKEI01-REC
       *
                    IF      STS-TOUKEI01        =   "00"
@@ -2883,86 +2308,12 @@ grpsys                                         SPA-AREA
       *
                    ADD     1                    TO  CNT-TOUKEI01
                END-IF
-      *
-               MOVE    "1"              TO  WRK-TOUKEI01-SYOKBN (IDXX) 
-             END-IF
            END-PERFORM
       *
-      *    公費単独レセの出力処理
-           IF    ( WRK-SEIHO-FLG           =   ZERO )
-           AND   (  WRK-KOH-TOUKEI01-HOSPNUM
-                                           >   ZERO )
-      *        主保険とのまとめがなく生保、中国残留邦人等、自立支援以外との
-      *        公費単独の場合
-               MOVE    WRK-KOH-TOUKEI01-REC  TO  TOUKEI01-REC
-      *        レセプト種別
-               PERFORM 20021-RECESYUBETU-SET-SEC
-      *
-      *???     MOVE    WRK-TOUKEI01-SEIHO-OCC (IDXX)
-      *???                                   TO  TOUKEI01-SEIHO-OCC
-               WRITE   TOUKEI01-REC
-      *
-               IF      STS-TOUKEI01        =   "00"
-                   CONTINUE
-               ELSE
-                   MOVE    SPACE           TO  WRK-TOUKEIERR
-                   STRING  "月次統計データ（基本情報）"
-                                               DELIMITED  BY  SIZE
-                           "書き込みエラー STS="
-                                               DELIMITED  BY  SIZE
-                           STS-TOUKEI01    DELIMITED  BY  SIZE
-                                           INTO    WRK-TOUKEIERR
-                   END-STRING
-                   PERFORM 500-ERR-HENSYU-SEC
-                   PERFORM 500-COBABORT-SEC
-               END-IF
-      *
-               ADD     1                TO  CNT-TOUKEI01
-           ELSE
-               IF      TBL-SEIHO-TOUKEI01-MAX    >   ZERO
-                   PERFORM VARYING IDXX    FROM    1   BY  1
-                           UNTIL   IDXX    >   TBL-SEIHO-TOUKEI01-MAX
-                       IF      TBL-SEIHO-TOUKEI01-PRTFLG (IDXX)
-                                               =   1
-                           CONTINUE
-                       ELSE
-                           MOVE    TBL-SEIHO-TOUKEI01-REC (IDXX)
-                                               TO  TOUKEI01-REC
-      *                    レセプト種別
-                           PERFORM 20021-RECESYUBETU-SET-SEC
-      *
-                           MOVE    WRK-TOUKEI01-SEIHO-OCC (IDXX)
-                                               TO  TOUKEI01-SEIHO-OCC
-                           WRITE   TOUKEI01-REC
-      *
-                           IF      STS-TOUKEI01        =   "00"
-                               CONTINUE
-                           ELSE
-                               MOVE    SPACE           TO  WRK-TOUKEIERR
-                               STRING
-                                   "月次統計データ（基本情報）"
-                                                   DELIMITED  BY  SIZE
-                                   "書き込みエラー STS="
-                                                   DELIMITED  BY  SIZE
-                                   STS-TOUKEI01    DELIMITED  BY  SIZE
-                                                   INTO    WRK-TOUKEIERR
-                               END-STRING
-                               PERFORM 500-ERR-HENSYU-SEC
-                               PERFORM 500-COBABORT-SEC
-                           END-IF
-      *
-                           ADD     1                TO  CNT-TOUKEI01
-                       END-IF
-                   END-PERFORM
-               END-IF
-           END-IF
-      *
       *    病名ファイル出力処理
-           IF      WRK-TOUKEI01-HOSPNUM (1)    >   ZERO
-               PERFORM 20022-BYOMEI-HENSYU-SEC
-           END-IF
+           PERFORM 20022-BYOMEI-HENSYU-SEC
            .
-       2002-KIHON-WRITE-EXT.
+       2002-RECESYUBETU-HENSYU-EXT.
            EXIT. 
       *
       *****************************************************************
@@ -2978,190 +2329,395 @@ grpsys                                         SPA-AREA
            IF      TOUKEI01-TEISEIKBN  =   "1"
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
-      *
-      *    公費が４つを超える時
-           IF      TOUKEI01-TKOHHKNNUM (5)
-                                   NOT =   SPACE
-               GO  TO  20021-RECESYUBETU-SET-EXT
-           END-IF
-      *
       *    包括のとき
            IF      TOUKEI01-HKNJANUM   =   "9999999"
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
-      *
-           INITIALIZE                  ORCSSYUBETUGETAREA
-           MOVE    1               TO  LNK-SYUBETUGET-SYOFLG
-           MOVE    WRK-PARA-NYUGAIKBN
-                                   TO  LNK-SYUBETUGET-NYUGAIKBN
-           MOVE    WRK-PARA-SRYYM  TO  LNK-SYUBETUGET-SRYYM
-           MOVE    TOUKEI01-HKNNUM TO  LNK-SYUBETUGET-HKNNUM
-           MOVE    1               TO  IDY
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       5
-                   OR      TOUKEI01-TTEKSTYMD (IDX)  =   SPACE
-               IF      TOUKEI01-TTEKSTYMD (IDX)
-                                       >   TOUKEI01-TTEKSTYMD (IDY)
-                   MOVE    IDX             TO  IDY
-               END-IF
-           END-PERFORM
-           MOVE    TOUKEI01-THONKZKKBN (IDY)
-                                   TO  LNK-SYUBETUGET-HKN-HONKZKKBN
-           MOVE    TOUKEI01-THOJOKBN (IDY)
-                                   TO  LNK-SYUBETUGET-HKN-HOJOKBN
-           MOVE    TOUKEI01-HKNKOHSBTKBN
-                                   TO  LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
-           MOVE    TOUKEI01-AGE    TO  LNK-SYUBETUGET-AGE
-           MOVE    TOUKEI01-SYUGAKUKBN
-                                   TO  LNK-SYUBETUGET-SYUGAKUKBN
-      *****MOVE    TOUKEI01-PREFNUM
-      *****                        TO  LNK-SYUBETUGET-PREFNUM
-           MOVE    TOUKEI01-RJNHKNNUM
-                                   TO  LNK-SYUBETUGET-RJNHKNNUM
-           MOVE    TOUKEI01-RJNPAYKBN
-                                   TO  LNK-SYUBETUGET-RJNPAYKBN
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       10
-               MOVE    TOUKEI01-TKOHHKNNUM (IDX)   TO
-                                   LNK-SYUBETUGET-KOHNUM     (IDX)
-               MOVE    TOUKEI01-TKOHHBTNUM (IDX)  TO
-                                   LNK-SYUBETUGET-KOHHBTNUM  (IDX)
-               IF      TOUKEI01-TRECESKYKBN (IDX) =   "1"
-                   MOVE    "1"                 TO
-                                       LNK-SYUBETUGET-RECESKYKBN (IDX)
-               END-IF 
-           END-PERFORM
-      *
-           IF      LNK-SYUBETUGET-HKNNUM
-                                       =   WRK-CONS-ROUSAI-HKNNUM  OR
+      *     
+      *    労災・自賠責のとき
+           IF      TOUKEI01-HKNNUM     =   WRK-CONS-ROUSAI-HKNNUM  OR
                                            WRK-CONS-JIBAI-HKNNUM 
-               MOVE    TOUKEI01-HKNKBN     TO  LNK-SYUBETUGET-HKNKBN
-               MOVE    TOUKEI01-SAIGAIKBN  TO  LNK-SYUBETUGET-SAIGAIKBN
+               EVALUATE    TOUKEI01-HKNKBN
+                                       ALSO    TOUKEI01-SAIGAIKBN
+                                           ALSO    WRK-PARA-NYUGAIKBN
+                   WHEN    "1"         ALSO    "1"     ALSO    "1"   
+                       MOVE    7081        TO    TOUKEI01-RECESYUBETU
+                   WHEN    "1"         ALSO    "2"     ALSO    "1"
+                       MOVE    7082        TO    TOUKEI01-RECESYUBETU
+                   WHEN    "2"         ALSO    "1"     ALSO    "1"
+                       MOVE    7101        TO    TOUKEI01-RECESYUBETU
+                   WHEN    "2"         ALSO    "2"     ALSO    "1"
+                       MOVE    7102        TO    TOUKEI01-RECESYUBETU
+                   WHEN    "1"         ALSO    "1"     ALSO    "2"   
+                       MOVE    7071        TO    TOUKEI01-RECESYUBETU
+                   WHEN    "1"         ALSO    "2"     ALSO    "2"
+                       MOVE    7072        TO    TOUKEI01-RECESYUBETU
+                   WHEN    "2"         ALSO    "1"     ALSO    "2"
+                       MOVE    7091        TO    TOUKEI01-RECESYUBETU
+                   WHEN    "2"         ALSO    "2"     ALSO    "2"
+                       MOVE    7092        TO    TOUKEI01-RECESYUBETU
+                   WHEN    "3"         ALSO    ANY     ALSO    ANY
+                       MOVE    7021        TO    TOUKEI01-RECESYUBETU
+                   WHEN    "4"         ALSO    ANY     ALSO    ANY                     
+                       MOVE    7001        TO    TOUKEI01-RECESYUBETU
+      *            公務災害
+                   WHEN    "5"         ALSO    ANY     ALSO    "1"                     
+                       MOVE    7061        TO    TOUKEI01-RECESYUBETU     
+                   WHEN    "5"         ALSO    ANY     ALSO    "2"                     
+                       MOVE    7051        TO    TOUKEI01-RECESYUBETU     
+               END-EVALUATE
+               GO  TO  20021-RECESYUBETU-SET-EXT
+           END-IF
+      *     
+      *    自費のとき
+           IF     TOUKEI01-HKNKOHSBTKBN
+                                       =   "8"
+               MOVE    8888                TO  TOUKEI01-RECESYUBETU 
+               GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
       *
-      *    後期高齢非該当の有無設定
-           MOVE    ZERO            TO  WRK-KOUKI-FLG
+      *    公害保険のとき
+           IF      TOUKEI01-HKNNUM     =   WRK-CONS-KOUGAI-HKNNUM
+               EVALUATE    WRK-PARA-NYUGAIKBN
+                   WHEN    "1"
+                       MOVE    7210        TO    TOUKEI01-RECESYUBETU
+                   WHEN    "2"
+                       MOVE    7200        TO    TOUKEI01-RECESYUBETU
+               END-EVALUATE
+               GO  TO  20021-RECESYUBETU-SET-EXT
+           END-IF
       *
-           IF    ( LNK-SYUBETUGET-AGE    >=  70                    )
-           AND   ( LNK-SYUBETUGET-SRYYM  >=  WRK-CONS-SRYYM-200804 )
-               IF    ( LNK-SYUBETUGET-HKNNUM
-                                           =   SPACE   OR  "040"   
-                                           OR  "039"   OR  "067"
-                                           OR  "069"             )
-               OR    ( LNK-SYUBETUGET-HKNNUM (1:2)
-                                           =   "98"    OR  "90"
-                                           OR  "91"               )
-                   CONTINUE
-               ELSE
-                   IF   (  LNK-SYUBETUGET-HKNNUM
-                                               =   "060"   OR  "068"  )
-                   OR   (( LNK-SYUBETUGET-HKNNUM
-                                           NOT =   "060"   AND "068" )
-                           AND
-                         ( LNK-SYUBETUGET-HKN-HOJOKBN
-                                               =   SPACE             ))
-                       MOVE      LNK-SYUBETUGET-SRYYM TO  WRK-TEKSTYYMM
-                       IF   TOUKEI01-TTEKSTYMD (IDY)(1:6)  >=
-                                                   LNK-SYUBETUGET-SRYYM
-                            MOVE  TOUKEI01-TTEKSTYMD (IDY)(7:2)
-                                                       TO  WRK-TEKSTDD
+           IF      TOUKEI01-HKNNUM     NOT =   SPACE
+               EVALUATE    TOUKEI01-HKNNUM
+                   WHEN    "060"
+                   WHEN    "067"
+                   WHEN    "068"
+                   WHEN    "069"
+                       IF      TOUKEI01-HKNNUM =   "060"   OR   "068"
+                           MOVE   "1"      TO  WK-KOKUHO
                        ELSE
-                            MOVE  01                   TO  WRK-TEKSTDD
+                           MOVE   "2"      TO  WK-KOKUHO
                        END-IF
+                   WHEN    "039"
+                   WHEN    "040"
+                       MOVE   "3"          TO  WK-KOKUHO
+                   WHEN    OTHER
+                       MOVE    "1"         TO  WK-IHO
+               END-EVALUATE
+           END-IF
       *
-                       INITIALIZE                      PTKOHINF-REC
-                       MOVE    WRK-PARA-HOSPNUM TO  PTKOH-HOSPNUM
-                       MOVE    TOUKEI01-PTID    TO  PTKOH-PTID
-                       MOVE    "976"               TO  PTKOH-KOHNUM
-                       MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-                       MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-                       MOVE    "key4"              TO  MCP-PATHNAME
-                       PERFORM 900-DBSELECT-SEC
-                       IF      MCP-RC              =   ZERO
-                           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-                           MOVE    "key4"              TO  MCP-PATHNAME
-                           PERFORM 900-PTKOHINF-READ-N-SEC
-                           PERFORM UNTIL   FLG-PTKOHINF    =   1
-                               IF    (PTKOH-TEKSTYMD   <=  WRK-TEKSTYMD)
-                               AND   (WRK-TEKSTYMD     <=
-                                                       PTKOH-TEKEDYMD  )
-                                   MOVE    1           TO  WRK-KOUKI-FLG
-                                   MOVE    1           TO  FLG-PTKOHINF
-                               ELSE
-                                   MOVE    "tbl_ptkohinf"
-                                                    TO  MCP-TABLE
-                                   MOVE    "key4"   TO  MCP-PATHNAME
-                                   PERFORM  900-PTKOHINF-READ-N-SEC
-                               END-IF
-                           END-PERFORM
-                       END-IF
-                       MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-                       MOVE    "key4"               TO  MCP-PATHNAME
-                       PERFORM  900-CLOSE-SEC
+           IF      WRK-PARA-SRYYM     <      "200210" 
+             IF      TOUKEI01-RJNHKNNUM     =   "027"
+                 MOVE        "1"          TO  WK-RJN
+             END-IF
+           END-IF
+      *
+      *****MOVE    TOUKEI01-HONKZKKBN  TO  WK-HONKZKKBN
+      *
+           MOVE    ZERO                TO  WK-KOHI-CNT
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       10
+                   OR      TOUKEI01-TKOHHKNNUM (IDX)   =   SPACE
+               IF      TOUKEI01-TRECESKYKBN (IDX)  =   "1"
+                   ADD     1               TO  WK-KOHI-CNT
+               END-IF
+           END-PERFORM
+      *
+           IF  TOUKEI01-HKNNUM     NOT =   SPACE
+      *
+      *        主保険最新情報
+               MOVE    1               TO  IDY
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       5
+                       OR      TOUKEI01-TTEKSTYMD (IDX)  =   SPACE
+                   IF      TOUKEI01-TTEKSTYMD (IDX)
+                                           >   TOUKEI01-TTEKSTYMD (IDY)
+                       MOVE    IDX             TO  IDY
+                   END-IF
+               END-PERFORM
+               MOVE    TOUKEI01-THONKZKKBN (IDY)   TO  WK-HONKZKKBN
+      *
+               IF    ( WRK-PARA-SRYYM      >=  "200210"              )
+               AND   ( WRK-PARA-SRYYM      <   WRK-CONS-SRYYM-200804 )
+      *            ３歳未満の場合、ＷＫ−ＨＯＮＫＺＫＫＢＮに"３"をセット
+                   IF      TOUKEI01-AGE         <     3
+                               MOVE   "3"     TO   WK-HONKZKKBN
+                   END-IF
+               END-IF
+      *        平成２０年４月改正対応
+               IF      WRK-PARA-SRYYM      >=  WRK-CONS-SRYYM-200804
+                   IF      TOUKEI01-SYUGAKUKBN =   1
+                       MOVE   "3"          TO  WK-HONKZKKBN
+                   END-IF
+               END-IF
+      * 
+               IF      WRK-PARA-SRYYM  >=  WRK-CONS-SRYYM-200804
+                   EVALUATE    TOUKEI01-HKNNUM
+                       WHEN    "002" 
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "031"  THRU    "034"  
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "B"
+                               WHEN   "9"   
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "060" 
+                       WHEN    "068" 
+                           IF  (TOUKEI01-AGE  >=   70)  AND
+                               (TOUKEI01-AGE  <=   74)
+                             EVALUATE    WRK-PARA-NYUGAIKBN
+                               WHEN    "1"
+                                   EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                                       WHEN   "1"
+                                       WHEN   "5"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "6"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                                   END-EVALUATE
+                               WHEN    "2"
+                                   EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                                       WHEN   "1"
+                                       WHEN   "4"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "5"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                       WHEN   "6"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                                   END-EVALUATE
+                             END-EVALUATE
+                           END-IF     
+                       WHEN    "039" 
+                       WHEN    "040" 
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "1"
+                                   MOVE   "9"   TO   WK-RJN
+                               WHEN   "3"
+                                   MOVE   "7"   TO   WK-RJN
+                           END-EVALUATE
+                       WHEN    "067" 
+                       WHEN    "069" 
+                           IF      TOUKEI01-AGE  >=   65
+                               MOVE   "?"   TO   WK-HONKZKKBN
+                           ELSE
+                               EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                                   WHEN   "9"
+                                       MOVE   "9"   TO   WK-HONKZKKBN
+                                   WHEN   "8"
+                                       MOVE   "?"   TO   WK-HONKZKKBN
+                                   WHEN   "7"
+                                       MOVE   "7"   TO   WK-HONKZKKBN
+                               END-EVALUATE
+                           END-IF
+                       WHEN    OTHER 
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                     END-EVALUATE
+               END-IF
+      *
+               IF    ( WRK-PARA-SRYYM      >=  "200610" )
+               AND   ( WRK-PARA-SRYYM      <   WRK-CONS-SRYYM-200804 )
+                   EVALUATE    TOUKEI01-HKNNUM
+                       WHEN    "002" 
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "031"  THRU    "034"  
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "B"
+                               WHEN   "9"   
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "060" 
+                       WHEN    "068" 
+                           IF  (TOUKEI01-AGE  >=   70)  AND
+                               (TOUKEI01-AGE  <=   74)
+                             EVALUATE    WRK-PARA-NYUGAIKBN
+                               WHEN    "1"
+                                   EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                                       WHEN   "1"
+                                       WHEN   "5"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "6"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                                   END-EVALUATE
+                               WHEN    "2"
+                                   EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                                       WHEN   "1"
+                                       WHEN   "4"
+                                           MOVE   "9"  TO  WK-HONKZKKBN
+                                       WHEN   "2"
+                                       WHEN   "5"
+                                           MOVE   "8"  TO  WK-HONKZKKBN
+                                       WHEN   "3"
+                                       WHEN   "6"
+                                           MOVE   "7"  TO  WK-HONKZKKBN
+                                   END-EVALUATE
+                             END-EVALUATE
+                           END-IF     
+                       WHEN    OTHER 
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                   END-EVALUATE
+                   IF      TOUKEI01-RJNHKNNUM      =    "027"
+                       EVALUATE   TOUKEI01-RJNPAYKBN
+                           WHEN   "01"
+                               MOVE   "9"   TO   WK-RJN                     
+                           WHEN   "02"
+                               MOVE   "?"   TO   WK-RJN
+                           WHEN   "03"
+                               MOVE   "7"   TO   WK-RJN
+                       END-EVALUATE
                    END-IF
                END-IF
       *
-               IF      WRK-KOUKI-FLG   =   1
-                   MOVE    SPACE       TO  LNK-SYUBETUGET-HKN-HOJOKBN
+               IF    ( WRK-PARA-SRYYM      >=  "200210" )
+               AND   ( WRK-PARA-SRYYM      <=  "200609" )
+      *
+      *            １割、２割負担の高齢者の場合ＷＫ−ＨＯＮＫＺＫＫＢＮに
+      *            "９"または"８"をセット
+      *            老人保険の場合はＷＫ−ＲＪＮにセットする	
+                   EVALUATE    TOUKEI01-HKNNUM
+                       WHEN    "002" 
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE   "8"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "031"  THRU    "034"  
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "B"
+                               WHEN   "9"   
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE   "8"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "060" 
+                       WHEN    "068" 
+                           IF  (TOUKEI01-AGE  >=   70)  AND
+                               (TOUKEI01-AGE  <=   74)
+                               EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                                   WHEN   "1"
+                                   WHEN   "4"
+                                       MOVE   "9"   TO   WK-HONKZKKBN
+                                   WHEN   "2"
+                                   WHEN   "5"
+                                       MOVE   "8"   TO   WK-HONKZKKBN
+                               END-EVALUATE
+                           END-IF     
+                       WHEN    OTHER 
+                           EVALUATE   TOUKEI01-THOJOKBN (IDY)
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "8"
+                                   MOVE   "8"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                   END-EVALUATE
+                   IF      TOUKEI01-RJNHKNNUM      =    "027"
+                       EVALUATE   TOUKEI01-RJNPAYKBN
+                           WHEN   "01"
+                               MOVE   "9"   TO   WK-RJN                     
+                           WHEN   "02"
+                               MOVE   "8"   TO   WK-RJN
+                       END-EVALUATE
+                   END-IF
                END-IF
            END-IF
-           MOVE    TOUKEI01-BIRTHDAY   TO  LNK-SYUBETUGET-BIRTHDAY
       *
-      *    国保のとき９７７の公費の有無
-           IF    ( LNK-SYUBETUGET-BIRTHDAY
-                                       <   19440402 )
-           AND   ( LNK-SYUBETUGET-HKNNUM
-                                       =   "060"    )
-           AND   ( LNK-SYUBETUGET-SRYYM
-                                       >   "201404" )
-               MOVE    "99"                TO  LNK-SYUBETUGET-RJNPAYKBN
-      *
-               MOVE      LNK-SYUBETUGET-SRYYM
-                                           TO  WRK-TEKSTYYMM
-               IF   TOUKEI01-TTEKSTYMD (IDY)(1:6)
-                                           >=  LNK-SYUBETUGET-SRYYM
-                    MOVE  TOUKEI01-TTEKSTYMD (IDY)(7:2)
-                                               TO  WRK-TEKSTDD
-               ELSE
-                   MOVE    01                  TO  WRK-TEKSTDD
+           IF    ( WK-RJN          NOT =   SPACE )     
+           AND   ( TOUKEI01-THONKZKKBN (IDY)
+                                       =   "1"   )     
+               IF      TOUKEI01-HKNNUM =   "063"   OR  "072"   OR
+                                           "073"   OR  "074"   OR
+                                           "075"
+                   MOVE    "2"          TO  WK-IHO
                END-IF
+           END-IF    
       *
-               INITIALIZE                      PTKOHINF-REC
-               MOVE    WRK-PARA-HOSPNUM    TO  PTKOH-HOSPNUM
-               MOVE    TOUKEI01-PTID       TO  PTKOH-PTID
-               MOVE    "977"               TO  PTKOH-KOHNUM
-               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-                   MOVE    "key4"              TO  MCP-PATHNAME
-                   PERFORM 900-PTKOHINF-READ-N-SEC
-                   PERFORM UNTIL   FLG-PTKOHINF    =   1
-                       IF    ( PTKOH-TEKSTYMD  <=  WRK-TEKSTYMD   )
-                       AND   ( WRK-TEKSTYMD    <=  PTKOH-TEKEDYMD )
-                           MOVE    SPACE           TO
-                                               LNK-SYUBETUGET-RJNPAYKBN
-                           MOVE    1               TO  FLG-PTKOHINF
-                       ELSE
-                           MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-                           MOVE    "key4"          TO  MCP-PATHNAME
-                           PERFORM  900-PTKOHINF-READ-N-SEC
-                       END-IF
-                   END-PERFORM
-               END-IF
-               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-               MOVE    "key4"               TO  MCP-PATHNAME
-               PERFORM  900-CLOSE-SEC
-           END-IF
-      *
+           INITIALIZE                  ORCSSYUBETUGETAREA  
+           MOVE    WK-KOKUHO           TO  LNK-SYUBETUGET-KOKUHO
+           MOVE    WK-IHO              TO  LNK-SYUBETUGET-IHO
+           MOVE    WK-RJN              TO  LNK-SYUBETUGET-RJN
+           MOVE    WK-KOHI-CNT         TO  LNK-SYUBETUGET-KOHI-CNT
+           MOVE    WK-HONKZKKBN        TO  LNK-SYUBETUGET-HONKZKKBN
+           MOVE    TOUKEI01-NYUGAIKBN  TO  LNK-SYUBETUGET-NYUGAIKBN
+           MOVE    WRK-PARA-SRYYM      TO  LNK-SYUBETUGET-SRYYM
+           MOVE    TOUKEI01-HKNNUM     TO  LNK-SYUBETUGET-HKNNUM
            CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
            MOVE    LNK-SYUBETUGET-RECESYUBETU
                                        TO  TOUKEI01-RECESYUBETU
       *
-      *    DISPLAY "TOUKEI01-RECESYUBETU: " TOUKEI01-RECESYUBETU
+      *    DISPLAY "TOUKEI01-RECESYUBETU=" TOUKEI01-RECESYUBETU
            .
         20021-RECESYUBETU-SET-EXT.
            EXIT.
@@ -3260,14 +2816,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TO  PTBYO-BYOMEICDSU    
       *
       *    疑いフラグより病名を編集
-           IF    ( PTBYO-UTAGAIFLG NOT =   SPACE )
-           OR    ( PTBYO-HOSOKU-COMMENT
-                                   NOT =   SPACE )
+           IF      PTBYO-UTAGAIFLG NOT =   SPACE
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
                MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
-               MOVE    PTBYO-HOSOKU-COMMENT
-                                           TO  SMKBYO-HOSOKU-COMMENT
                MOVE    PTBYO-BYOMEIHENFLG  TO  SMKBYO-BYOMEIHENFLG
                MOVE    PTBYO-BYOMEICD-G    TO  SMKBYO-BYOMEICD-G
                CALL    "ORCSMKBYOMEI"      USING   ORCSMKBYOMEIAREA
@@ -3283,8 +2835,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    TOUKEI01-SRYYM      TO  TOUKEI03-SRYYM
            MOVE    TOUKEI01-NYUGAIKBN  TO  TOUKEI03-NYUGAIKBN
            MOVE    TOUKEI01-PTID       TO  TOUKEI03-PTID
-           MOVE    TOUKEI01-RECEIPT-KBN
-                                       TO  TOUKEI03-RECEIPT-KBN
            MOVE    TOUKEI01-RECEKA     TO  TOUKEI03-RECEKA
            MOVE    PTBYO-SRYKA         TO  TOUKEI03-SRYKA
            MOVE    PTBYO-SRYYMD        TO  TOUKEI03-SRYYMD
@@ -3295,7 +2845,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    PTBYO-SYUBYOFLG     TO  TOUKEI03-SYUBYOFLG   
            MOVE    PTBYO-MANSEIKBN     TO  TOUKEI03-MANSEIKBN
            MOVE    PTBYO-HKNCOMBI      TO  TOUKEI03-HKNCOMBI
-           MOVE    PTBYO-REZEFLG        TO  TOUKEI03-REZEFLG
+           MOVE    PTBYO-REZEFLG       TO  TOUKEI03-REZEFLG
            IF      WRK-PARA-SRYYM       <   PTBYO-TENKIYMD(1:6)
                CONTINUE
            ELSE    
@@ -3464,25 +3014,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SRY-SRYKAISU (IDX2) TO  TOUKEI02-SRYKAISU
                MOVE    SRY-INPUTNUM (IDX2) TO  TOUKEI02-INPUTNUM
       *
-               IF      SRY-SRYCD    (IDX2) =   WRK-CONS-SRYCD1
-                                           OR  WRK-CONS-SRYCD2
-                                           OR  WRK-CONS-SRYCD3
-                                           OR  WRK-CONS-SRYCD4
-                                           OR  WRK-CONS-SRYCD5
-                                           OR  WRK-CONS-SRYCD6
-                                           OR  WRK-CONS-SRYCD7
-                   COMPUTE TOUKEI02-ZAITEN     =   TOUKEI02-ZAITEN *
-                                                   (-1)
-                   IF      SRY-SRYCD    (IDX2) =   WRK-CONS-SRYCD1
-                       COMPUTE TOUKEI02-YKZTEN     =   ACCT-YKZTEN     *
-                                                       (-1)
-                   ELSE
-                       COMPUTE TOUKEI02-SYUTEN1    =   ACCT-SYUTEN1    *
-                                                       (-1)
-                   END-IF
-               END-IF
-      *
-               INITIALIZE                       TNS-TENSU-REC
+               INITIALIZE                      TNS-TENSU-REC
                MOVE    SRY-SRYCD(IDX2)     TO  TNS-SRYCD
 grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
@@ -3534,7 +3066,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                    PERFORM 500-ERR-HENSYU-SEC
                    PERFORM 500-COBABORT-SEC
                END-IF
-      * 
+      *
                ADD     1               TO  CNT-TOUKEI02 
       *
       *        生保単独で別ファイルがあるとき
@@ -3613,7 +3145,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
        500-COBABORT-EXT.
            EXIT.
       *
-      ************************************ *****************************
+      *****************************************************************
       *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
@@ -3641,210 +3173,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCBT010 END ***"
            .
        300-TERM-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    施設入所情報処理
-      *****************************************************************
-       500-SISETU-HENSYU-SEC             SECTION.
-      *
-           INITIALIZE                      TABLE-PTKOHINF-AREA
-      *
-      *    ９５０（老併）
-           INITIALIZE                      PTKOHINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-           MOVE    KEY-N-PTID          TO  PTKOH-PTID
-           MOVE    "950"               TO  PTKOH-KOHNUM
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-PTKOHINF-READ-N-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTKOHINF  
-           END-IF
-           PERFORM     UNTIL   FLG-PTKOHINF    =   1
-                       OR      TBL-PTKOHINF-MAX
-                                               >=  10
-               IF      PTKOH-SAKJOKBN      =  SPACE
-                   ADD     1               TO  TBL-PTKOHINF-MAX
-                   MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
-                                                   (TBL-PTKOHINF-MAX)
-      *
-                   DISPLAY "   TBL-PTKOHINF-MAX=" TBL-PTKOHINF-MAX
-                           " KOHNUM="
-                                   TBL-PTKOH-KOHNUM   (TBL-PTKOHINF-MAX)
-                           " ST="  TBL-PTKOH-TEKSTYMD (TBL-PTKOHINF-MAX)
-                           " ED="  TBL-PTKOH-TEKEDYMD (TBL-PTKOHINF-MAX)
-      *
-               END-IF
-      *
-               MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-               MOVE    "key4"           TO  MCP-PATHNAME
-               PERFORM  900-PTKOHINF-READ-N-SEC
-           END-PERFORM
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC 
-      *
-      *    ９５１（老健）
-           INITIALIZE                      PTKOHINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-           MOVE    KEY-N-PTID          TO  PTKOH-PTID
-           MOVE    "951"               TO  PTKOH-KOHNUM
-           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-PTKOHINF-READ-N-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PTKOHINF  
-           END-IF
-           PERFORM     UNTIL   FLG-PTKOHINF    =   1
-                       OR      TBL-PTKOHINF-MAX
-                                               >=  10
-               IF      PTKOH-SAKJOKBN      =  SPACE
-                   ADD     1               TO  TBL-PTKOHINF-MAX
-                   MOVE    PTKOHINF-REC    TO  TBL-PTKOHINF-REC
-                                                   (TBL-PTKOHINF-MAX)
-      *
-                   DISPLAY "   TBL-PTKOHINF-MAX=" TBL-PTKOHINF-MAX
-                           " KOHNUM="
-                                   TBL-PTKOH-KOHNUM   (TBL-PTKOHINF-MAX)
-                           " ST="  TBL-PTKOH-TEKSTYMD (TBL-PTKOHINF-MAX)
-                           " ED="  TBL-PTKOH-TEKEDYMD (TBL-PTKOHINF-MAX)
-      *
-               END-IF
-      *
-               MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
-               MOVE    "key4"           TO  MCP-PATHNAME
-               PERFORM  900-PTKOHINF-READ-N-SEC
-           END-PERFORM
-           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-           .
-       500-SISETU-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者レセプト分割情報処理
-      *****************************************************************
-       500-PT-HDIST-DAY-HENSYU-SEC     SECTION.
-      *
-           INITIALIZE                      TBL-PT-HDIST-DAY-T
-      *
-           INITIALIZE                      PT-HDIST-DAY-REC
-           MOVE    SPA-HOSPNUM         TO  PT-HDIST-DAY-HOSPNUM
-           MOVE    WRK-PTID            TO  PT-HDIST-DAY-PTID
-           MOVE    WRK-PARA-SRYYM      TO  PT-HDIST-DAY-SRYYM
-           MOVE    WRK-PARA-NYUGAIKBN  TO  PT-HDIST-DAY-NYUGAIKBN
-           MOVE    PT-HDIST-DAY-REC    TO  MCPDATA-REC
-           MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-PT-HDIST-DAY-READ-N-SEC
-           ELSE
-               MOVE    1                   TO  FLG-PT-HDIST-DAY
-           END-IF
-           PERFORM     UNTIL   FLG-PT-HDIST-DAY    =   1
-                       OR      TBL-PT-HDIST-DAY-MAX
-                                                   >=  10
-               ADD     1                   TO  TBL-PT-HDIST-DAY-MAX
-               MOVE    PT-HDIST-DAY-REC    TO  TBL-PT-HDIST-DAY-REC
-                                               (TBL-PT-HDIST-DAY-MAX)
-      *
-               DISPLAY "   TBL-PT-HDIST-DAY=" TBL-PT-HDIST-DAY-MAX
-                       " DAY=" TBL-PT-HDIST-DAY-DAY
-                                               (TBL-PT-HDIST-DAY-MAX)
-               DISPLAY "      1=" TBL-PT-HDIST-DAY-HKNCOMBI-OCC
-                                               (TBL-PT-HDIST-DAY-MAX 1)
-               DISPLAY "      2=" TBL-PT-HDIST-DAY-HKNCOMBI-OCC
-                                               (TBL-PT-HDIST-DAY-MAX 2)
-      *
-               MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-PT-HDIST-DAY-READ-N-SEC
-           END-PERFORM
-           MOVE    "tbl_pt_hdist_day"  TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-           .
-      *
-       500-PT-HDIST-DAY-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    同日再入院チェック処理
-      *****************************************************************
-       500-ORCSNYUINDAY-CHECK-SEC          SECTION.
-      *
-           INITIALIZE                      ORCSNYUINDAY-AREA
-           MOVE    SPA-HOSPNUM         TO  LNK-NYUINDAY-HOSPNUM
-           MOVE    WRK-PARA-SRYYM      TO  LNK-NYUINDAY-SANTEIYM
-           MOVE    PTINF-PTID          TO  LNK-NYUINDAY-PTID
-           CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
-                                               SPA-AREA
-      *
-           IF      LNK-NYUINDAY-RC     >   0
-               DISPLAY "LNK-NYUINDAY-RC=" LNK-NYUINDAY-RC
-               GO  TO  500-ORCSNYUINDAY-CHECK-EXT
-           END-IF
-      *
-           PERFORM VARYING IDXX    FROM    1   BY  1
-                   UNTIL   IDXX    >       31
-               IF      LNK-NYUINDAY-DOUJITSU-KBN (IDXX)
-                                               =   "1"
-                   MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDXX)
-                                       TO  WRK-HKNCOMBINUM
-                   MOVE    IDXX        TO  IDXD
-                   PERFORM 20011-NYUINACCT-HENSYU-SEC
-               END-IF
-           END-PERFORM
-      *
-           .
-       500-ORCSNYUINDAY-CHECK-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院料と異なる食事算定保険組み合わせチェック処理
-      *****************************************************************
-       500-ORCSSKJHKN-CHECK-SEC            SECTION.
-      *
-           INITIALIZE                  ORCSSKJHKN-AREA
-           MOVE    SPA-HOSPNUM     TO  LNK-SKJHKN-HOSPNUM
-           MOVE    PTINF-PTID      TO  LNK-SKJHKN-PTID
-           MOVE    WRK-PARA-SRYYM  TO  LNK-SKJHKN-SANTEIYM
-           CALL    "ORCSSKJHKN"    USING
-                                       ORCSSKJHKN-AREA
-                                       ORCSNYUINDAY-AREA
-                                       SPA-AREA
-           IF    ( LNK-SKJHKN-RC   =   ZERO )
-               PERFORM VARYING IDXX   FROM    1   BY  1
-                       UNTIL ( IDXX   >       31 )
-                   PERFORM VARYING IDZZ    FROM    1   BY  1
-                           UNTIL ( IDZZ    >   2 )
-                       IF    ( LNK-SKJHKN-HKNCOMBINUM  (IDXX IDZZ)
-                                   NOT =   SPACE )
-                           MOVE    LNK-SKJHKN-HKNCOMBINUM  (IDXX IDZZ)
-                                       TO  WRK-HKNCOMBINUM-G
-                           MOVE    IDXX    TO  IDXD
-                           PERFORM 20011-NYUINACCT-HENSYU-SEC
-                       END-IF
-                   END-PERFORM
-               END-PERFORM
-           END-IF
-      *
-           .
-       500-ORCSNYUINDAY-CHECK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3910,13 +3238,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
                    IF    ( ACCT-ZAITEN         =   ZERO   )
                    OR    ( ACCT-HKNCOMBI       =   "9999" )
                    OR    ( ACCT-JIHOKBN        =   "1"    )
-                       GO  TO  900-SRYACCT-READ-SEC
-                   END-IF
-               END-IF
-      *        包括を含むときでも持参薬入力分は出力しない
-               IF    ( WRK-PARA-HOUKATUKBN =   "2"  )
-                   IF    ( ACCT-JIHOKBN        =   "1"   )
-                   AND   ( ACCT-ZAIKBN         =   3  OR  4 )
                        GO  TO  900-SRYACCT-READ-SEC
                    END-IF
                END-IF
@@ -4055,28 +3376,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
            .
        900-PTKOHINF-READ-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    患者公費情報読込
-      *****************************************************************
-       900-PTKOHINF-READ-N-SEC           SECTION.
-      *
-           PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  PTKOHINF-REC
-               IF      PTKOH-SAKJOKBN      =   "1"
-                   GO  TO  900-PTKOHINF-READ-N-SEC
-               END-IF
-               MOVE    ZERO                TO  FLG-PTKOHINF
-           ELSE
-               INITIALIZE                  PTKOHINF-REC
-               MOVE    1                   TO  FLG-PTKOHINF
-           END-IF
-      *
-           .
-       900-PTKOHINF-READ-N-EXT.
-           EXIT.
-      *
       *****************************************************************
       *    保険番号マスタ検索処理
       *****************************************************************
@@ -4520,24 +3819,6 @@ grpsys     PERFORM 900-DBFETCH-SEC
            END-IF
            .
        900-PTBYO-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    患者レセプト分割読込
-      *****************************************************************
-       900-PT-HDIST-DAY-READ-N-SEC         SECTION.
-      *
-           PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  PT-HDIST-DAY-REC
-               MOVE    ZERO                TO  FLG-PT-HDIST-DAY
-           ELSE
-               MOVE    1                   TO  FLG-PT-HDIST-DAY
-               INITIALIZE                      PT-HDIST-DAY-REC
-           END-IF
-      *
-           .
-       900-PT-HDIST-DAY-READ-N-EXT.
            EXIT.
       *
       *****************************************************************
