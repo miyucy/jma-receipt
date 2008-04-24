@@ -31,18 +31,6 @@
       *  04.01.01    NACL-¾®Æ¦Âô  07/11/16  ¸øÌ³ºÒ³²¡¢¸ø³²¤Î¼ïÊÌÈ½ÄêÄÉ²Ã
       *Ê¿À®£²£°Ç¯£´·î²þÄêÂÐ±þ
       *  04.02.00    NACL-¾®Æ¦Âô  08/04/15  ¥ì¥»¥×¥È¼ïÊÌÂÐ±þ
-      *  04.02.01    NACL-Æ£¸¶    08/04/23  ¸å´ü¹âÎð¼Ô¤ÎÁ¥°÷ÊÝ¸±¤òËÜ¿Í¤È¤¹¤ë
-      *
-      *  04.04.01    NACL-Æ£¸¶    09/02/26  Ê¿À®£²£°Ç¯£´·î°Ê¹ß¤Ë£·£µºÐÅþ
-      *                                     Ã£»þ¤Ë³¤³°¤Ë½»½ê¤òÍ­¤¹¤ë¾ì¹ç
-      *                                     ¤ÎÂÐ±þ
-      *  04.04.02    NACL-Æ£¸¶    10/08/23  ¸å´ü¹âÎðÈó³ºÅöÂÐ±þ
-      *                                     ¡Ê¹âÎð¼õµë¼ÔÉ¼¤¬¤Ê¤¤¾ì¹ç¡Ë
-      * 
-      *  04.05.00    NACL-¾®Æ¦Âô  10/01/07  ¼£¸³¤Î¥ì¥»¥×¥È¼ïÊÌÂÐ±þ
-      *
-      *  04.07.01    NACL-Æ£¸¶    14/03/30  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      *  04.07.02    NACL-Æ£¸¶    14/08/18  £·£µºÐ°Ê¾å¤Î³¤³°µï½»¼Ô£²³äÂÐ±þ
       *****************************************************************
       *
       *
@@ -68,7 +56,6 @@
            03  FLG-SYUNOU                  PIC 9(01).
            03  FLG-PTHKNINF                PIC 9(01).
            03  FLG-PTRSIINF                PIC 9(01).
-           03  FLG-PTKOHINF                PIC 9(01).
            03  FLG-NYUIN-HIT1              PIC 9(01).
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -77,7 +64,6 @@
            03  IDX2                        PIC 9(04).
            03  SYU-IDX                     PIC 9(04).
            03  COMB-IDX                    PIC 9(04).
-           03  IDX-SKJ-TAIHI               PIC 9(04).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -100,12 +86,6 @@
            03  WRK-HKNCOMBINUM-X               PIC X(04).
            03  WRK-HKNCOMBINUM-9  REDEFINES  WRK-HKNCOMBINUM-X
                                                PIC 9(04).
-      *    ¸å´ü¹âÎð¼ÔÈó³ºÅö¥Õ¥é¥°
-           03  WRK-KOUKI-FLG                   PIC 9(01).
-      *
-           03  WRK-TEKSTYMD.
-               05  WRK-TEKSTYYMM               PIC 9(06).
-               05  WRK-TEKSTDD                 PIC 9(02).
       *
       *    ¥ì¥»¥×¥È¼ïÊÌÈ½ÄêÍÑÎÎ°è
        01  WK-RECESYUBETU-AREA.
@@ -174,9 +154,6 @@
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    ´µ¼Ô¸øÈñ¾ðÊó
-       01  PTKOHINF-REC.
-           COPY    "CPPTKOHINF.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -196,9 +173,6 @@
       *
       *    ¥ì¥»¥×¥È¼ïÊÌÊÖµÑ¥µ¥Ö
            COPY    "CPORCSSYUBETUGET.INC".
-      *
-      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö¡ÊÆ±ÆüºÆÆþ±¡¤ÎÊÝ¸±¼èÆÀ¤Ë»ÈÍÑ¡Ë
-           COPY    "CPORCSNYUINDAY.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è
@@ -327,14 +301,12 @@
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    LNK-ORCBT120SUB-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-ORCBT120SUB-PTID     TO  PTNYUINRRK-PTID
-           MOVE    LNK-ORCBT120SUB-RRKNUM   TO  PTNYUINRRK-RRKNUM
-           MOVE    1                        TO  PTNYUINRRK-RRKEDANUM
            MOVE    "tbl_ptnyuinrrk"         TO  MCP-TABLE
-           MOVE    "key"                    TO  MCP-PATHNAME
+           MOVE    "key3"                   TO  MCP-PATHNAME
            PERFORM 910-PTNYUINRRK-SELECT-SEC
            IF      FLG-PTNYUINRRK            =   ZERO
                MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
-               MOVE    "key"                TO  MCP-PATHNAME
+               MOVE    "key3"               TO  MCP-PATHNAME
                PERFORM   910-PTNYUINRRK-READ-SEC
                PERFORM   UNTIL   (FLG-PTNYUINRRK    =   1)  OR
                                  (FLG-NYUIN-HIT1    =   1)
@@ -374,7 +346,7 @@
                        END-IF
                    END-IF
                    MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
-                   MOVE    "key"                TO  MCP-PATHNAME
+                   MOVE    "key3"               TO  MCP-PATHNAME
                    PERFORM 910-PTNYUINRRK-READ-SEC
                END-PERFORM
            ELSE
@@ -382,7 +354,7 @@
            END-IF
       *    ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
            MOVE    "tbl_ptnyuinrrk"         TO  MCP-TABLE
-           MOVE    "key"                    TO  MCP-PATHNAME
+           MOVE    "key3"                   TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
       *Á°ÆüÆþ±¡²Ê¡¿Á°ÆüÉÂÅïÈÖ¹æ¡¿Á°ÆüÉÂ¼¼ÈÖ¹æ¤Î¼èÆÀ
@@ -538,74 +510,25 @@
            IF     LNK-ORCBT120SUB-GAIHAKU-KBN  =  1  OR  2  OR  3
                CONTINUE
            ELSE
-               IF    LNK-ORCBT120SUB-SANTEIYMD(1:6)   >=  "200604"
-                   PERFORM   VARYING   IDX-SKJ-TAIHI  FROM  1 BY  1
-                     UNTIL   IDX-SKJ-TAIHI  >    3
-                     INITIALIZE                          NYUINACCT-REC
-                     MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
-                     MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
-                     MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
-                                                     TO  NACCT-SRYYM
-                     MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-                     EVALUATE   IDX-SKJ-TAIHI
-                         WHEN    1
-                             MOVE    "key30"     TO  MCP-PATHNAME
-                         WHEN    2
-                             MOVE    "key31"     TO  MCP-PATHNAME
-                         WHEN    3
-                             MOVE    "key32"     TO  MCP-PATHNAME
-                     END-EVALUATE
-                     PERFORM 910-NYUINACCT-SELECT-SEC
-                     IF      FLG-NYUINACCT           =   ZERO
-                         MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                         EVALUATE   IDX-SKJ-TAIHI
-                             WHEN    1
-                                 MOVE    "key30"     TO  MCP-PATHNAME
-                             WHEN    2
-                                 MOVE    "key31"     TO  MCP-PATHNAME
-                             WHEN    3
-                                 MOVE    "key32"     TO  MCP-PATHNAME
-                         END-EVALUATE
-                         PERFORM   910-NYUINACCT-READ-SEC
-                         IF      NACCT-DAY(WRK-SANTEIDD)  >
-                                              LNK-ORCBT120SUB-SKJ-KBN
-                             MOVE   NACCT-DAY(WRK-SANTEIDD)   TO
-                                              LNK-ORCBT120SUB-SKJ-KBN
-                         END-IF
-                     END-IF
-      *             Æþ±¡²ñ·×¥¯¥í¡¼¥º
-                     MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-                     EVALUATE   IDX-SKJ-TAIHI
-                         WHEN    1
-                             MOVE    "key30"     TO  MCP-PATHNAME
-                         WHEN    2
-                             MOVE    "key31"     TO  MCP-PATHNAME
-                         WHEN    3
-                             MOVE    "key32"     TO  MCP-PATHNAME
-                     END-EVALUATE
-                     PERFORM   910-DB-CLOSE-SEC
-                   END-PERFORM
-               ELSE
-                   INITIALIZE                          NYUINACCT-REC
-                   MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
-                   MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
-                   MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
-                                                   TO  NACCT-SRYYM
-                   MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-                   MOVE    "key28"                 TO  MCP-PATHNAME
-                   PERFORM 910-NYUINACCT-SELECT-SEC
-                   IF      FLG-NYUINACCT           =   ZERO
-                       MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                       MOVE    "key28"             TO  MCP-PATHNAME
-                       PERFORM   910-NYUINACCT-READ-SEC
-                       MOVE    NACCT-DAY(WRK-SANTEIDD)
-                                         TO  LNK-ORCBT120SUB-SKJ-KBN
-                   END-IF
-      *           Æþ±¡²ñ·×¥¯¥í¡¼¥º
-                   MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-                   MOVE    "key28"                 TO  MCP-PATHNAME
-                   PERFORM   910-DB-CLOSE-SEC
+               INITIALIZE                          NYUINACCT-REC
+               MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
+               MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
+               MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
+                                               TO  NACCT-SRYYM
+               MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+               MOVE    "key28"                 TO  MCP-PATHNAME
+               PERFORM 910-NYUINACCT-SELECT-SEC
+               IF      FLG-NYUINACCT           =   ZERO
+                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+                   MOVE    "key28"             TO  MCP-PATHNAME
+                   PERFORM   910-NYUINACCT-READ-SEC
+                   MOVE    NACCT-DAY(WRK-SANTEIDD)
+                                     TO  LNK-ORCBT120SUB-SKJ-KBN
                END-IF
+      *       Æþ±¡²ñ·×¥¯¥í¡¼¥º
+               MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+               MOVE    "key28"                 TO  MCP-PATHNAME
+               PERFORM   910-DB-CLOSE-SEC
            END-IF
       *
       *    ¼ýÇ¼¾ðÊó¤Î¼èÆÀ
@@ -662,21 +585,6 @@
                MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
                MOVE    "key17"                 TO  MCP-PATHNAME
                PERFORM   910-DB-CLOSE-SEC
-      *
-      *        Æ±ÆüºÆÆþ±¡È½Äê
-               IF    LNK-ORCBT120SUB-NYUIN-KBN    =    1
-                 INITIALIZE                        ORCSNYUINDAY-AREA
-                 MOVE  LNK-ORCBT120SUB-HOSPNUM TO  LNK-NYUINDAY-HOSPNUM
-                 MOVE  LNK-ORCBT120SUB-PTID    TO  LNK-NYUINDAY-PTID
-                 MOVE  LNK-ORCBT120SUB-SANTEIYMD(1:6)
-                                               TO  LNK-NYUINDAY-SANTEIYM
-                 CALL  "ORCSNYUINDAY"   USING      ORCSNYUINDAY-AREA
-                                                   SPA-AREA
-                 IF    LNK-NYUINDAY-DOUJITSU-KBN(WRK-SANTEIDD)  =  "1"
-                   MOVE  LNK-NYUINDAY-DOUJITSU-HKNCOMBI(WRK-SANTEIDD)
-                                     TO  LNK-ORCBT120SUB-HKNCOMBINUM(1)
-                 END-IF
-               END-IF
            END-IF
       *
       *
@@ -790,14 +698,10 @@
            COMPUTE  LNK-ORCBT120SUB-SKJ (SYU-IDX)
                                        =   SYU-SKYMONEY-SKJ
                                        +   SYU-SKYMONEY-SKJ-JIHI
-                                       +   SYU-SKYMONEY-LIFE
-                                       +   SYU-SKYMONEY-LIFE-JIHI
       *    ¿©»ö¾ÃÈñÀÇ³Û
            COMPUTE  LNK-ORCBT120SUB-SKJ-TAX (SYU-IDX)
                                        =   SYU-SKYMONEY-SKJ-TAX
                                        +   SYU-SKYMONEY-SKJ-JIHI-TAX
-                                       +   SYU-SKYMONEY-LIFE-TAX
-                                       +   SYU-SKYMONEY-LIFE-JIHI-TAX
       *    ¼¼ÎÁº¹³Û
            COMPUTE  LNK-ORCBT120SUB-RMSAGAKU (SYU-IDX)
                                        =   SYU-RMSAGAKU
@@ -945,15 +849,6 @@
                GO  TO  240-RECESYUBETU-SET-EXT
            END-IF
       *
-      *    ¼£¸³¤Î¤È¤­
-           IF     LNK-ORCBT120SUB-SANTEIYMD    >=  "20080401"
-               IF    (LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  >=  "900")  AND
-                     (LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  <=  "919")
-                   MOVE    8888                TO  WRK-RECESYUBETU
-                   GO  TO  240-RECESYUBETU-SET-EXT
-               END-IF
-           END-IF
-      *
       *    ¸ø³²ÊÝ¸±¡ÊÆþ±¡¡Ë¤Î¤È¤­
            IF     LNK-ORCBT120SUB-HKNNUM(SYU-IDX)  =
                                                WRK-CONS-KOUGAI-HKNNUM
@@ -1038,99 +933,12 @@
                    END-IF
                END-IF
       *
-      *        ¸å´ü¹âÎð¼ÔÈó³ºÅö
-               MOVE    ZERO            TO  WRK-KOUKI-FLG
-      *
-               IF    ( LNK-ORCBT120SUB-SANTEIYMD(1:6)
-                                      >=  "200804" )
-               AND   ( WRK-AGE        >=  70       )
-                   IF    ( LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
-                                       =   SPACE   OR  "040"   OR  "039"
-                                       OR  "067"   OR  "069"           )
-                   OR    ( LNK-ORCBT120SUB-HKNNUM(SYU-IDX)(1:2)
-                                       =   "98"    OR  "90"    OR  "91")
-                       CONTINUE
-                   ELSE
-                       IF   (  LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
-                                               =   "060"   OR  "068" )
-                       OR   (( LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
-                                           NOT =   "060"   AND "068")
-                               AND
-                             ( LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                                               =   SPACE            ))
-                           MOVE      LNK-ORCBT120SUB-SANTEIYMD(1:6)
-                                                      TO  WRK-TEKSTYYMM
-                           IF      COMB-TEKSTYMD(1:6)  >=
-                                       LNK-ORCBT120SUB-SANTEIYMD(1:6)
-                               MOVE    COMB-TEKSTYMD(7:2)
-                                                       TO  WRK-TEKSTDD
-                           ELSE
-                                MOVE  01               TO  WRK-TEKSTDD
-                           END-IF
-      *
-                           INITIALIZE                      PTKOHINF-REC
-                           MOVE    LNK-ORCBT120SUB-HOSPNUM
-                                                       TO  PTKOH-HOSPNUM
-                           MOVE    COMB-PTID           TO  PTKOH-PTID
-                           MOVE    "976"               TO  PTKOH-KOHNUM
-                           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-                           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-                           MOVE    "key4"              TO  MCP-PATHNAME
-                           PERFORM 900-DBSELECT-SEC
-                           IF      MCP-RC              =   ZERO
-                               MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-                               MOVE    "key4"          TO  MCP-PATHNAME
-                               PERFORM 900-PTKOHINF-READ-N-SEC
-                               PERFORM UNTIL   FLG-PTKOHINF    =   1
-                                   IF    (PTKOH-TEKSTYMD
-                                                       <=  WRK-TEKSTYMD)
-                                   AND   (WRK-TEKSTYMD <=
-                                                       PTKOH-TEKEDYMD  )
-                                       MOVE    1       TO  WRK-KOUKI-FLG
-                                       MOVE    1       TO  FLG-PTKOHINF
-                                   ELSE
-                                       MOVE    "tbl_ptkohinf"
-                                                        TO  MCP-TABLE
-                                       MOVE    "key4"   TO  MCP-PATHNAME
-                                       PERFORM  900-PTKOHINF-READ-N-SEC
-                                   END-IF
-                               END-PERFORM
-                           END-IF
-                           MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-                           MOVE    "key4"               TO  MCP-PATHNAME
-                           PERFORM  910-DB-CLOSE-SEC
-                       END-IF
-                   END-IF
-               END-IF
-      *
       *            £±³ä¡¢£²³äÉéÃ´¤Î¹âÎð¼Ô¤Î¾ì¹ç£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë
       *            "£¹"¤Þ¤¿¤Ï"£¸"¤ò¥»¥Ã¥È
       *            Ï·¿ÍÊÝ¸±¤Î¾ì¹ç¤Ï£×£Ë¡Ý£Ò£Ê£Î¤Ë¥»¥Ã¥È¤¹¤ë
       *
-      *        Ê¿À®£²£µÇ¯£µ·î°Ê¹ß
-               IF     LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "201405"
-                   IF    ( LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
-                                           =   "002" )
-                   AND  ( WRK-AGE          >=  75    )
-                       EVALUATE    LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                           WHEN    "A"
-                           WHEN    "G"
-                           WHEN    "D"
-                               MOVE    "1"
-                                   TO  LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                           WHEN    "B"
-                           WHEN    "H"
-                           WHEN    "E"
-                               MOVE    "2"
-                                   TO  LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                           WHEN    "C"
-                           WHEN    "I"
-                           WHEN    "F"
-                               MOVE    "3"
-                                   TO  LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                       END-EVALUATE
-                   END-IF
-      *
+      *        Ê¿À®£²£°Ç¯£´·î°Ê¹ß
+               IF     LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200804"
                    EVALUATE    LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
                        WHEN    "002" 
                            EVALUATE   LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
@@ -1164,114 +972,8 @@
                            END-EVALUATE
                        WHEN    "060" 
                        WHEN    "068" 
-      *********************IF  (WRK-AGE        >=   70)  AND
-      *********************    (WRK-AGE        <=   74)
-                           IF  (WRK-AGE        >=   70)
-                           AND (WRK-KOUKI-FLG  =    0 )
-                              EVALUATE LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                                   WHEN   "1"
-                                   WHEN   "5"
-                                       MOVE   "9"   TO   WK-HONKZKKBN
-                                   WHEN   "2"
-                                   WHEN   "6"
-                                       MOVE   "8"   TO   WK-HONKZKKBN
-                                   WHEN   "3"
-                                       MOVE   "7"   TO   WK-HONKZKKBN
-                              END-EVALUATE
-                           END-IF     
-                       WHEN    "039" 
-                       WHEN    "040" 
-                           EVALUATE  LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                               WHEN   "1"
-                                   MOVE   "9"   TO   WK-RJN
-                               WHEN   "3"
-                                   MOVE   "7"   TO   WK-RJN
-                           END-EVALUATE
-                       WHEN    "067" 
-                       WHEN    "069" 
-                           IF      WRK-AGE  >=   65
-                               MOVE   "?"   TO   WK-HONKZKKBN
-                           ELSE
-                              EVALUATE LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                                  WHEN   "9"
-                                      MOVE   "9"   TO   WK-HONKZKKBN
-                                  WHEN   "8"
-                                      MOVE   "?"   TO   WK-HONKZKKBN
-                                  WHEN   "7"
-                                      MOVE   "7"   TO   WK-HONKZKKBN
-                              END-EVALUATE
-                           END-IF
-                       WHEN    OTHER 
-                           EVALUATE   LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                               WHEN   "9"
-                                   MOVE   "9"   TO   WK-HONKZKKBN
-                               WHEN   "8"
-                                   MOVE   "8"   TO   WK-HONKZKKBN
-                               WHEN   "7"
-                                   MOVE   "7"   TO   WK-HONKZKKBN
-                           END-EVALUATE
-                   END-EVALUATE
-               END-IF
-      *
-      *        Ê¿À®£²£°Ç¯£´·î¡ÁÊ¿À®£²£µÇ¯£´·î
-               IF    ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  >=  "200804" )
-               AND   ( LNK-ORCBT120SUB-SANTEIYMD(1:6)  <=  "201404" )
-                   IF    ( LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
-                                           =   "002" )
-                   AND  ( WRK-AGE          >=  75    )
-                       EVALUATE    LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                           WHEN    "A"
-                           WHEN    "G"
-                               MOVE    "1"
-                                   TO  LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                           WHEN    "B"
-                           WHEN    "H"
-                               MOVE    "2"
-                                   TO  LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                           WHEN    "C"
-                           WHEN    "I"
-                               MOVE    "3"
-                                   TO  LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                       END-EVALUATE
-                   END-IF
-      *
-                   EVALUATE    LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
-                       WHEN    "002" 
-                           EVALUATE   LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                               WHEN   "A"
-                               WHEN   "B"
-                               WHEN   "C"
-                               WHEN   "9"
-                                   MOVE   "9"   TO   WK-HONKZKKBN
-                               WHEN   "D"
-                               WHEN   "E"
-                               WHEN   "F"
-                               WHEN   "8"
-                                   MOVE   "8"   TO   WK-HONKZKKBN
-                               WHEN   "G"
-                               WHEN   "H"
-                               WHEN   "I"
-                               WHEN   "7"
-                                   MOVE   "7"   TO   WK-HONKZKKBN
-                           END-EVALUATE
-                       WHEN    "031"  THRU    "034"  
-                           EVALUATE   LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
-                               WHEN   "B"
-                               WHEN   "9"   
-                                   MOVE   "9"   TO   WK-HONKZKKBN
-                               WHEN   "E"
-                               WHEN   "8"
-                                   MOVE   "8"   TO   WK-HONKZKKBN
-                               WHEN   "H"
-                               WHEN   "7"
-                                   MOVE   "7"   TO   WK-HONKZKKBN
-                           END-EVALUATE
-                       WHEN    "060" 
-                       WHEN    "068" 
-      *********************IF  (WRK-AGE        >=   70)  AND
-      *********************    (WRK-AGE        <=   74)
-                           IF  (WRK-AGE        >=   70)
-                           AND (WRK-KOUKI-FLG  =    0 )
+                           IF  (WRK-AGE        >=   70)  AND
+                               (WRK-AGE        <=   74)
                               EVALUATE LNK-ORCBT120SUB-HOJOKBN(SYU-IDX)
                                    WHEN   "1"
                                    WHEN   "5"
@@ -1475,57 +1177,6 @@
                                        TO  LNK-SYUBETUGET-SRYYM
            MOVE    LNK-ORCBT120SUB-HKNNUM(SYU-IDX)
                                        TO  LNK-SYUBETUGET-HKNNUM
-           MOVE    PTINF-BIRTHDAY      TO  LNK-SYUBETUGET-BIRTHDAY 
-      *
-      *    ¹ñÊÝ¤Î¤È¤­£¹£·£·¤Î¸øÈñ¤ÎÍ­Ìµ
-           IF    ( LNK-SYUBETUGET-BIRTHDAY
-                                       <   19440402 )
-           AND   ( LNK-SYUBETUGET-HKNNUM
-                                       =   "060"    )
-           AND   ( LNK-SYUBETUGET-SRYYM
-                                       >   "201404" )
-               MOVE    "99"                TO  LNK-SYUBETUGET-RJNPAYKBN
-      *
-               MOVE      LNK-ORCBT120SUB-SANTEIYMD(1:6)
-                                           TO  WRK-TEKSTYYMM
-               IF      COMB-TEKSTYMD(1:6)  >=
-                                       LNK-ORCBT120SUB-SANTEIYMD(1:6)
-                   MOVE    COMB-TEKSTYMD (7:2) TO  WRK-TEKSTDD
-               ELSE
-                   MOVE    01                  TO  WRK-TEKSTDD
-               END-IF
-      *
-               INITIALIZE                      PTKOHINF-REC
-               MOVE    LNK-ORCBT120SUB-HOSPNUM
-                                           TO  PTKOH-HOSPNUM
-               MOVE    COMB-PTID           TO  PTKOH-PTID
-               MOVE    "977"               TO  PTKOH-KOHNUM
-               MOVE    PTKOHINF-REC        TO  MCPDATA-REC
-               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-               MOVE    "key4"              TO  MCP-PATHNAME
-               PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
-                   MOVE    "key4"              TO  MCP-PATHNAME
-                   PERFORM 900-PTKOHINF-READ-N-SEC
-                   PERFORM UNTIL   FLG-PTKOHINF    =   1
-                       IF    ( PTKOH-TEKSTYMD  <=  WRK-TEKSTYMD   )
-                       AND   ( WRK-TEKSTYMD    <=  PTKOH-TEKEDYMD )
-                           MOVE    SPACE           TO
-                                               LNK-SYUBETUGET-RJNPAYKBN
-                           MOVE    1               TO  FLG-PTKOHINF
-                       ELSE
-                           MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-                           MOVE    "key4"          TO  MCP-PATHNAME
-                           PERFORM  900-PTKOHINF-READ-N-SEC
-                       END-IF
-                   END-PERFORM
-               END-IF
-               MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
-               MOVE    "key4"               TO  MCP-PATHNAME
-               PERFORM  910-DB-CLOSE-SEC
-           END-IF
-      *
            CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
            MOVE    LNK-SYUBETUGET-RECESYUBETU  TO    WRK-RECESYUBETU
@@ -1792,27 +1443,6 @@
       *
            .
        910-PTRSIINF-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊóÆÉ¹þ
-      *****************************************************************
-       900-PTKOHINF-READ-N-SEC           SECTION.
-      *
-           PERFORM 900-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  PTKOHINF-REC
-               IF      PTKOH-SAKJOKBN      =   "1"
-                   GO  TO  900-PTKOHINF-READ-N-SEC
-               END-IF
-               MOVE    ZERO                TO  FLG-PTKOHINF
-           ELSE
-               INITIALIZE                  PTKOHINF-REC
-               MOVE    1                   TO  FLG-PTKOHINF
-           END-IF
-      *
-           .
-       900-PTKOHINF-READ-N-EXT.
            EXIT.
       *****************************************************************
       *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý

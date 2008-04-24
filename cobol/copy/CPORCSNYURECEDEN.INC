@@ -38,9 +38,6 @@
            03  LNK-NYURECEDEN-SANTEIYM               PIC  X(06).
       *保険区分（１：社保　２：国保　３：広域連合）
            03  LNK-NYURECEDEN-HKNKBN                 PIC  X(01).
-      *対象保険組合せ番号
-           03  LNK-NYURECEDEN-SET-HKNCOMBI           PIC  9(04)
-                                                          OCCURS 10.
       *返却項目
            03  LNK-NYURECEDEN-HENKYAKU-AREA.
       *入院返却テーブル（添字１：入院料　添字２：特定入院料　３：食事
@@ -53,12 +50,8 @@
                    07  LNK-NYURECEDEN-HKNCOMBI       PIC  9(04).
       *明細数
                    07  LNK-NYURECEDEN-MEISAISU       PIC  9(03).
-      *日別情報
-                   07  LNK-NYURECEDEN-DAY-TBL.
-                       09  LNK-NYURECEDEN-DAY        PIC  9(01)
-                                                          OCCURS 31.
       *レセ電記録エリア
-                   07  LNK-NYURECEDEN-NYUIN          OCCURS 300.
+                   07  LNK-NYURECEDEN-NYUIN          OCCURS 100.
       *レコード識別
                        09  LNK-NYURECEDEN-RECSKB     PIC  X(02).
       *診療識別
