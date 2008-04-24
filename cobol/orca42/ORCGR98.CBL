@@ -59,6 +59,12 @@
       *  03.04.02    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
+      *                                     中国残留法人等の追加
+      *  04.02.02    NACL-藤原    08/03/31  公害レセプト対応
+      *  04.02.03    NACL-藤原    08/04/14  月途中の負担者番号変更対応
+      *                                     （中国残留法人等の公費単独） 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -111,10 +117,14 @@
                                13  SPA-NAI-TSRYYM  PIC 9(06).
                                13  SPA-NAI-JKYSNUM-CHK
                                                    PIC 9(01).
+                               13  SPA-NAI-TKOHNUM PIC X(03).
       *            表示フラグ(1:全体、2:未入力分)
                    07  SPA-NAI-HYOUJIFLG           PIC 9(01).
       *           受給者検証番号チェック区分
                    07  SPA-NAI-JKYSKENSNUMCHKKBN   PIC X(01).
+      *           受給者検証番号チェック区分（中国残留邦人等）
+                   07  SPA-NAI-025-JKYSKENSNUMCHKKBN
+                                                   PIC X(01).
       *        入力項目名
                05  SPA-MCP-WIDGET                  PIC X(64).
       *
@@ -197,6 +207,10 @@
       *    生活保護保険番号 
            03  WRK-CONS-SEIHO-HKNNUM
                                    PIC X(03)   VALUE   "012". 
+      *    
+      *    中国残留邦人等保険番号 
+           03  WRK-CONS-ZANRYUU-HKNNUM
+                                   PIC X(03)   VALUE   "025". 
       *
       *    労災保険番号 
            03  WRK-CONS-ROUSAI-HKNNUM
@@ -205,6 +219,10 @@
       *    自賠責保険番号 
            03  WRK-CONS-JIBAISEKI-HKNNUM
                                    PIC X(03)   VALUE   "973". 
+      *    公害保険番号 
+           03  WRK-CONS-KOUGAI-HKNNUM
+                                   PIC X(03)   VALUE   "975".
+      *
       *    ジョブ管理ＤＢのキー値  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "RECEPT1".
@@ -430,14 +448,15 @@
            EXIT.
       *
       *****************************************************************
-      *    該当診療月の生保の患者情報編集処理
+      *    該当診療月の生保・中国残留邦人等の患者情報編集処理
       *****************************************************************
        3101-SEH-HENSYU-SEC         SECTION.
       *
-      *受給者検証番号チェック区分
+      *    受給者検証番号チェック区分（生保）
            INITIALIZE                  HKNNUM-REC
 grpsys     MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
-           MOVE    "012"           TO  HKN-HKNNUM
+           MOVE    WRK-CONS-SEIHO-HKNNUM
+                                   TO  HKN-HKNNUM
            MOVE    SPA-NAI-SRYYM   TO  HKN-TEKSTYMD (1:6)
            MOVE    "01"            TO  HKN-TEKSTYMD (7:2)  
            MOVE    HKN-TEKSTYMD    TO  HKN-TEKEDYMD
@@ -446,6 +465,20 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
            PERFORM 900-HKNNUM-INV-SEC
            MOVE    HKN-JKYSKENSNUMCHKKBN
                                    TO  SPA-NAI-JKYSKENSNUMCHKKBN
+      *
+      *    受給者検証番号チェック区分（中国残留邦人等）
+           INITIALIZE                  HKNNUM-REC
+grpsys     MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
+           MOVE    WRK-CONS-ZANRYUU-HKNNUM
+                                   TO  HKN-HKNNUM
+           MOVE    SPA-NAI-SRYYM   TO  HKN-TEKSTYMD (1:6)
+           MOVE    "01"            TO  HKN-TEKSTYMD (7:2)  
+           MOVE    HKN-TEKSTYMD    TO  HKN-TEKEDYMD
+           MOVE    "00"            TO  HKN-PAYKBN   
+           MOVE    HKNNUM-REC      TO  MCPDATA-REC
+           PERFORM 900-HKNNUM-INV-SEC
+           MOVE    HKN-JKYSKENSNUMCHKKBN
+                                   TO  SPA-NAI-025-JKYSKENSNUMCHKKBN
       *
            MOVE    ZERO            TO  IDX1
                                        IDX2
@@ -472,11 +505,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKN-HOSPNUM
                    MOVE    "入院外"    TO  SPA-GMN-SRYYMH (21:)
            END-EVALUATE
       *
-      *    診療年月に生保が有効な患者
+      *    診療年月に生保・中国残留邦人等が有効な患者
            INITIALIZE                  PTKOHINF-REC                            
 grpsys     MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
-           MOVE    WRK-CONS-SEIHO-HKNNUM
-                                   TO  PTKOH-KOHNUM
+      *****MOVE    WRK-CONS-SEIHO-HKNNUM
+      *****                        TO  PTKOH-KOHNUM
            MOVE    SPA-NAI-SRYYM   TO  PTKOH-TEKEDYMD (1:6)
            MOVE    "01"            TO  PTKOH-TEKEDYMD (7:2)
            INITIALIZE                  STS-AREA-DAY
@@ -491,17 +524,17 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
            MOVE    PTKOHINF-REC    TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-           MOVE    "key7"          TO  MCP-PATHNAME
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_ptkohinf"  TO  WRK-MCP-TABLE
-               MOVE    "key7"          TO  WRK-MCP-PATHNAME
+               MOVE    "key10"         TO  WRK-MCP-PATHNAME
                PERFORM 910-PTKOHINF-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-PTKOHINF
            END-IF
       *
-      *    今月に生保対象の診療行為があるか
+      *    今月に生保・中国残留邦人等対象の診療行為があるか
            PERFORM UNTIL       FLG-PTKOHINF    =   1
       *
                MOVE    ZERO                TO  FLG-SEIHO
@@ -541,6 +574,8 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                                            WRK-CONS-ROUSAI-HKNNUM    )
                        OR    ( COMB-HKNNUM     =
                                            WRK-CONS-JIBAISEKI-HKNNUM )
+                       OR    ( COMB-HKNNUM     =
+                                           WRK-CONS-KOUGAI-HKNNUM    ) 
                            CONTINUE
                        ELSE    
                            PERFORM VARYING IDX     FROM    1   BY  1
@@ -550,7 +585,15 @@ grpsys             MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                                    OR      FLG-SEIHO   =   1                       
                                IF      COMB-KOHHKNNUM (IDX)    =
                                                WRK-CONS-SEIHO-HKNNUM
-                                   MOVE    1               TO  FLG-SEIHO
+                                           OR  WRK-CONS-ZANRYUU-HKNNUM
+                                   IF    ( COMB-TEKEDYMD
+                                                   <   PTKOH-TEKSTYMD )
+                                   OR    ( COMB-TEKSTYMD
+                                                   >   PTKOH-TEKEDYMD )
+                                       CONTINUE
+                                   ELSE
+                                       MOVE    1       TO  FLG-SEIHO
+                                   END-IF 
                                END-IF
                            END-PERFORM
                        END-IF
@@ -621,6 +664,8 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                                              WRK-CONS-ROUSAI-HKNNUM    )
                                    OR    ( COMB-HKNNUM =
                                              WRK-CONS-JIBAISEKI-HKNNUM )
+                                   OR    ( COMB-HKNNUM     =
+                                             WRK-CONS-KOUGAI-HKNNUM    ) 
                                        CONTINUE
                                    ELSE    
                                        PERFORM VARYING IDX FROM  1 BY  1
@@ -628,10 +673,19 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                                                OR  COMB-KOHHKNNUM (IDX)
                                                        =   SPACE
                                                OR  FLG-SEIHO   =   1                       
-                                           IF      COMB-KOHHKNNUM (IDX)
-                                               =   WRK-CONS-SEIHO-HKNNUM
+                                         IF      COMB-KOHHKNNUM (IDX)
+                                             =
+                                             WRK-CONS-SEIHO-HKNNUM   OR
+                                             WRK-CONS-ZANRYUU-HKNNUM
+                                           IF    ( COMB-TEKEDYMD
+                                                   <   PTKOH-TEKSTYMD )
+                                           OR    ( COMB-TEKSTYMD
+                                                   >   PTKOH-TEKEDYMD )
+                                               CONTINUE
+                                           ELSE
                                                MOVE    1   TO  FLG-SEIHO
-                                           END-IF
+                                           END-IF 
+                                         END-IF
                                        END-PERFORM
                                    END-IF
                                END-IF
@@ -654,12 +708,12 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                END-IF
       *                                      
                MOVE    "tbl_ptkohinf"  TO  WRK-MCP-TABLE
-               MOVE    "key7"          TO  WRK-MCP-PATHNAME
+               MOVE    "key10"         TO  WRK-MCP-PATHNAME
                PERFORM 910-PTKOHINF-NEXT-SEC
            END-PERFORM                                 
       *    カーソルクロース
            MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
-           MOVE    "key7"          TO  MCP-PATHNAME
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *    現在頁                 
            MOVE    1               TO  SPA-GMN-PAGE
@@ -672,7 +726,7 @@ grpsys                         MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
                                                 -   1            )
                                                /   WRK-LINE-MAX
            END-IF                                      
-      *    該当の生保患者がないとき
+      *    該当の生保・中国残留邦人等患者がないとき
            IF      SPA-GMN-MAX     =    ZERO
                MOVE    98              TO  SPA-GMN-CUR
                MOVE    "該当患者なし"  TO  SPA-GMN-TNAME (1 1)
@@ -761,6 +815,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       *****    MOVE    SPA-NAI-SRYYM   TO  SPA-NAI-TSRYYM(IDX1 IDX2)
                MOVE    PTKOH-FTNJANUM  TO  SPA-GMN-TFTNJANUM (IDX1 IDX2)
                MOVE    PTKOH-JKYSNUM   TO  SPA-GMN-TJKYSNUM  (IDX1 IDX2)
+               MOVE    PTKOH-KOHNUM    TO  SPA-NAI-TKOHNUM   (IDX1 IDX2)
                MOVE    PTKOH-KOHID     TO  SPA-NAI-TKOHID    (IDX1 IDX2)
                IF      FLG-MONTHLYNUM  =   ZERO
                    MOVE    MONTHLYNUM-JKYSNUM  
@@ -1019,26 +1074,54 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
       *
       *        受給者検証番号チェック区分よりチェック
                IF    ( SPA-ERRCD       =   SPACE        )
-               AND   ( SPA-NAI-JKYSKENSNUMCHKKBN
-                                       =   "1" OR  "3"  )
-                   INITIALIZE                      LNK-CHKDGT-AREA
-                   MOVE    2                   TO  LNK-I-SYORIKBN
-                   MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
-                                               TO  LNK-I-CODE
-                   CALL    "ORCSCHKDGT"    USING   LNK-CHKDGT-AREA
-                   IF      LNK-O-ERRCD     NOT =   ZERO
+                 EVALUATE    SPA-NAI-TKOHNUM (IDX1 IDX)
+                   WHEN    WRK-CONS-SEIHO-HKNNUM
                        IF      SPA-NAI-JKYSKENSNUMCHKKBN
+                                               =   "1" OR  "3"
+                           INITIALIZE              LNK-CHKDGT-AREA
+                           MOVE    2               TO  LNK-I-SYORIKBN
+                           MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
+                                                   TO  LNK-I-CODE
+                           CALL    "ORCSCHKDGT"    USING
+                                                   LNK-CHKDGT-AREA
+                           IF      LNK-O-ERRCD     NOT =   ZERO
+                               IF      SPA-NAI-JKYSKENSNUMCHKKBN
                                                    =   "1"
-                           MOVE    "0005"          TO  SPA-ERRCD
-                       ELSE
-                           IF      SPA-NAI-JKYSNUM-CHK (IDX1 IDX)
-                                                   =   ZERO
-                               MOVE    1               TO
-                                       SPA-NAI-JKYSNUM-CHK (IDX1 IDX)
-                               MOVE    "0200"          TO  SPA-ERRCD
+                                   MOVE    "0005"      TO  SPA-ERRCD
+                               ELSE
+                                   IF      SPA-NAI-JKYSNUM-CHK(IDX1 IDX)
+                                                       =   ZERO
+                                       MOVE    1           TO
+                                           SPA-NAI-JKYSNUM-CHK(IDX1 IDX)
+                                       MOVE    "0200"      TO  SPA-ERRCD
+                                   END-IF
+                               END-IF 
                            END-IF
-                       END-IF 
-                   END-IF
+                       END-IF
+                   WHEN    WRK-CONS-ZANRYUU-HKNNUM
+                       IF      SPA-NAI-025-JKYSKENSNUMCHKKBN
+                                               =   "1" OR  "3"
+                           INITIALIZE              LNK-CHKDGT-AREA
+                           MOVE    2               TO  LNK-I-SYORIKBN
+                           MOVE    SPA-GMN-TJKYSNUM (IDX1 IDX)
+                                                   TO  LNK-I-CODE
+                           CALL    "ORCSCHKDGT"    USING
+                                                   LNK-CHKDGT-AREA
+                           IF      LNK-O-ERRCD     NOT =   ZERO
+                               IF      SPA-NAI-025-JKYSKENSNUMCHKKBN
+                                                   =   "1"
+                                   MOVE    "0005"      TO  SPA-ERRCD
+                               ELSE
+                                   IF      SPA-NAI-JKYSNUM-CHK(IDX1 IDX)
+                                                       =   ZERO
+                                       MOVE    1           TO
+                                           SPA-NAI-JKYSNUM-CHK(IDX1 IDX)
+                                       MOVE    "0200"      TO  SPA-ERRCD
+                                   END-IF
+                               END-IF 
+                           END-IF
+                       END-IF
+                 END-EVALUATE
                END-IF
            END-IF
       *
@@ -1086,13 +1169,13 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                    GO  TO  41031-KANREN-CHK1-EXT
                END-IF
       *
-      *        生保があるか         
+      *        生保・中国残留邦人等があるか
                MOVE    ZERO                TO  FLG-CHK
       *      
 grpsys         MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
-               MOVE    SPA-NAI-TPTID (IDX1 IDX)
+               MOVE    SPA-NAI-TPTID   (IDX1 IDX)
                                            TO  PTKOH-PTID
-               MOVE    WRK-CONS-SEIHO-HKNNUM
+               MOVE    SPA-NAI-TKOHNUM (IDX1 IDX)
                                            TO  PTKOH-KOHNUM
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
                MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1135,7 +1218,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
 grpsys             MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
                    MOVE    SPA-NAI-TPTID (IDX1 IDX)
                                            TO  MONTHLYNUM-PTID
-                   MOVE    WRK-CONS-SEIHO-HKNNUM
+                   MOVE    SPA-NAI-TKOHNUM (IDX1 IDX)
                                            TO  MONTHLYNUM-KOHNUM
                    MOVE    SPA-NAI-SRYYM   TO  MONTHLYNUM-SRYYM
                    MOVE    SPA-R01-NYUGAIKBN
@@ -1486,7 +1569,7 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
 grpsys                     MOVE    SPA-HOSPNUM TO  MONTHLYNUM-HOSPNUM
                            MOVE    SPA-NAI-TPTID (IDX1 IDX)
                                                TO  MONTHLYNUM-PTID
-                           MOVE    WRK-CONS-SEIHO-HKNNUM
+                           MOVE    SPA-NAI-TKOHNUM (IDX1 IDX)
                                                TO  MONTHLYNUM-KOHNUM
                            MOVE    SPA-NAI-SRYYM
                                                TO  MONTHLYNUM-SRYYM
@@ -1796,7 +1879,8 @@ grpsys                     MOVE    SPA-HOSPNUM TO  MONTHLYNUM-HOSPNUM
                    MOVE    "受給者番号検証番号エラーです"
                                                        TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "生活保護の対象ではありません"
+                   MOVE
+                   "生活保護・中国残留邦人等の対象ではありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "受給者番号は全角・半角の混在はできません"

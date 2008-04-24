@@ -37,6 +37,8 @@
       *  01.00.08    NACL-多々納  03/02/14  法別番号チェック区分追加
       *                                     一括入力へ変更
       *  01.00.09    NACL-多々納  04/02/10  入院食事助成額追加
+      *
+      *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -125,11 +127,11 @@
                        09  SPA-GMN-F1L            PIC X(01).
                        09  SPA-GMN-HKNKOHKBNMEIL  PIC X(08).
                    07  SPA-GMN-HKNKOHKBN-MAX      PIC 9(01).
-                   07  SPA-GMN-RECESKYKBNLST      OCCURS  4.
+                   07  SPA-GMN-RECESKYKBNLST      OCCURS  10.
                        09  SPA-GMN-RECESKYKBNL    PIC X(01).
                        09  SPA-GMN-F1L            PIC X(01).
-                       09  SPA-GMN-RECESKYKBNMEIL PIC X(22).
-                   07  SPA-GMN-RECESKYKBN-MAX     PIC 9(01).
+                       09  SPA-GMN-RECESKYKBNMEIL PIC X(34).
+                   07  SPA-GMN-RECESKYKBN-MAX     PIC 9(02).
       *
                    07  SPA-GMN-RECEFTNDSPKBNLST   OCCURS  2.
                        09  SPA-GMN-RECEFTNDSPKBNL PIC X(01).
@@ -174,7 +176,7 @@
                    07  SPA-GMN-RECESKYKBN-G.
                        09  SPA-GMN-RECESKYKBN     PIC X(01).
                        09  SPA-GMN-F1             PIC X(01).
-                       09  SPA-GMN-RECESKYKBNMEI  PIC X(22).
+                       09  SPA-GMN-RECESKYKBNMEI  PIC X(34).
                    07  SPA-GMN-RECEFTNDSPKBN-G.
                        09  SPA-GMN-RECEFTNDSPKBN  PIC X(01).
                        09  SPA-GMN-F1             PIC X(01).
@@ -513,18 +515,24 @@
            MOVE    3                   TO  SPA-GMN-HKNKOHKBN-MAX
       *
            MOVE    "0"                 TO  SPA-GMN-RECESKYKBNL   (1)
-           MOVE    "社保、国保の両方に印刷"
+           MOVE    "社保、国保、広域連合の場合に印刷"
                                        TO  SPA-GMN-RECESKYKBNMEIL(1)
            MOVE    "1"                 TO  SPA-GMN-RECESKYKBNL   (2)
            MOVE    "社保との併用に限り印刷"
                                        TO  SPA-GMN-RECESKYKBNMEIL(2)
            MOVE    "2"                 TO  SPA-GMN-RECESKYKBNL   (3)
-           MOVE    "国保との併用に限り印刷"
+           MOVE    "国保又は広域連合との併用に限り印刷"
                                        TO  SPA-GMN-RECESKYKBNMEIL(3)
            MOVE    "3"                 TO  SPA-GMN-RECESKYKBNL   (4)
-           MOVE    "社保、国保とも印刷不可"
+           MOVE    "社保、国保、広域連合とも印刷不可"
                                        TO  SPA-GMN-RECESKYKBNMEIL(4)
-           MOVE    4                   TO  SPA-GMN-RECESKYKBN-MAX
+           MOVE    "4"                 TO  SPA-GMN-RECESKYKBNL   (5)
+           MOVE    "国保との併用に限り印刷"
+                                       TO  SPA-GMN-RECESKYKBNMEIL(5)
+           MOVE    "5"                 TO  SPA-GMN-RECESKYKBNL   (6)
+           MOVE    "広域連合との併用に限り印刷"
+                                       TO  SPA-GMN-RECESKYKBNMEIL(6)
+           MOVE    6                   TO  SPA-GMN-RECESKYKBN-MAX
       *
            MOVE    "1"                 TO  SPA-GMN-RECEFTNDSPKBNL(1)
            MOVE    "１０円未満四捨五入する"

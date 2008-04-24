@@ -58,6 +58,8 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
+      *
+      *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -74,6 +76,8 @@
            COPY    "CPRCF007.INC"  REPLACING  //RECE07//
                                    BY         //SPA-RECE07//.
            03  SPA-RECE07-SRYKA-KOKUHO
+                                   PIC X(02).
+           03  SPA-RECE07-SRYKA-KOUIKI
                                    PIC X(02).
            03  SPA-RECE07-RECE-PUTH-T   OCCURS 2.
                05  SPA-RECE07-ZAITAKU-KBN-T
@@ -503,6 +507,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                           TO  SPA-R01-RECE07-HKNJANUM
                                    MOVE    SPA-RECE07-SRYKA-KOKUHO
                                           TO SPA-R01-RECE07-SRYKA-KOKUHO
+                                   MOVE    SPA-RECE07-SRYKA-KOUIKI
+                                          TO SPA-R01-RECE07-SRYKA-KOUIKI
                                    MOVE    SPA-RECE07-RECE-PUTH-T (1)
                                           TO SPA-R01-RECE07-RECE-PUTH(1)
                                    MOVE    SPA-RECE07-RECE-PUTH-T (2)
@@ -559,6 +565,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                            IF    ( SPA-R01-RECE07-SRYKA    =   "XX" )
                            OR    ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                            =   "XX" )
+                           OR    ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                                           =   "XX" )
                                MOVE
                       "処理は正常に終了しましたが主科未設定分があります"
                                                     TO  R99-MSG
@@ -593,6 +601,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                        IF      SPA-R01-AUTODSPKBN   =   "1"
                            IF    ( SPA-R01-RECE07-SRYKA    =   "XX" )
                            OR    ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                           =   "XX" )
+                           OR    ( SPA-R01-RECE07-SRYKA-KOUIKI
                                                            =   "XX" )
                                CONTINUE
                            ELSE
@@ -633,7 +643,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *
            INITIALIZE                  RECE07-REC
-           IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2"
+           IF      SPA-R01-RECEKBN     =   "0" OR  "1" OR  "2" OR  "7"
                MOVE    "HC06"              TO  RECE07-PRTID
            ELSE
                IF      SPA-R01-RECEKBN     =   "3"
@@ -663,10 +673,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            MOVE    RECE07-REC          TO  MCPDATA-REC
            PERFORM 900-RECE07-INV-SEC
            IF      FLG-RECE07          =   ZERO
-               MOVE    RECE07-REC          TO  SPA-RECE07-REC
-               MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM
-               MOVE    "00"                TO  SPA-RECE07-SRYKA 
-                                               SPA-RECE07-SRYKA-KOKUHO
+               MOVE    RECE07-REC      TO  SPA-RECE07-REC
+               MOVE    "99999999"      TO  SPA-RECE07-HKNJANUM
+               MOVE    "00"            TO  SPA-RECE07-SRYKA 
+                                           SPA-RECE07-SRYKA-KOKUHO
+                                           SPA-RECE07-SRYKA-KOUIKI
                INITIALIZE                      SPA-RECE07-RECE-PUTH-T(1)
                                                SPA-RECE07-RECE-PUTH-T(2)
       *
@@ -736,9 +747,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                END-IF  
       *
       *        一括作成のとき主科設定の有無チェック
-      **       IF    ( SPA-R01-FILEKBN         =   "1"         )
-      **       AND   ( SPA-R01-RECEKBN         =   "0" OR  "1" )
-      **       AND   ( SPA-SYUKA-KBN           =   "1"         )
                IF    ( SPA-SYUKA-KBN           =   "1"         )
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key11"             TO  WRK-MCP-PATHNAME
@@ -756,6 +764,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    IF      FLG-RECE07          =   ZERO
                        MOVE    RECE07-SRYKA    TO
                                                SPA-RECE07-SRYKA-KOKUHO
+                   END-IF
+                   MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+                   MOVE    "key11"             TO  WRK-MCP-PATHNAME
+                   MOVE    "6"                 TO  RECE07-TEISYUTUSAKI
+                   MOVE    RECE07-REC          TO  MCPDATA-REC
+                   PERFORM 900-RECE07-INV-SEC
+                   IF      FLG-RECE07          =   ZERO
+                       MOVE    RECE07-SRYKA    TO
+                                               SPA-RECE07-SRYKA-KOUIKI
                    END-IF
                END-IF  
            END-IF

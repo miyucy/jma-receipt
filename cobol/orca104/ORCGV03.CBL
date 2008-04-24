@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL−太田   04/02/19  登録上限数を500に変更
       *  04.02.00    NACL−小豆沢 08/03/19  変更処理のグループ診療対応漏れ
+      *  04.02.00    NACL−小豆沢 08/04/18  レセプト請求コンボの内容に
+      *                                     広域連合を追加
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -571,7 +573,7 @@
            MOVE     4                  TO  SPA-GMN-RECESKYKBN-MAX
       *
            MOVE    "0"                 TO  SPA-GMN-RECESKYKBNL    (1)
-           MOVE    "社保、国保の両方に印刷"
+           MOVE    "社保、国保、広域の場合に印刷"
                                        TO  SPA-GMN-RECESKYKBNMEIL (1)
       *
            MOVE    "1"                 TO  SPA-GMN-RECESKYKBNL    (2)
@@ -579,11 +581,11 @@
                                        TO  SPA-GMN-RECESKYKBNMEIL (2)
       *
            MOVE    "2"                 TO  SPA-GMN-RECESKYKBNL    (3)
-           MOVE    "国保との併用に限り印刷" 
+           MOVE    "国保又は広域との併用に限り印刷" 
                                        TO  SPA-GMN-RECESKYKBNMEIL (3)
       *
            MOVE    "3"                 TO  SPA-GMN-RECESKYKBNL    (4)
-           MOVE    "社保、国保とも印刷不可"
+           MOVE    "社保、国保、広域とも印刷不可"
                                        TO  SPA-GMN-RECESKYKBNMEIL (4)
       *
            . 

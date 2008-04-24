@@ -40,6 +40,7 @@
       *                                     （生保の公費単独のみ） 
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/03/25  広域連合追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -78,19 +79,22 @@
                        09  SPA-GMN-NYUGAIKBN       PIC X(01).
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-NYUGAIKBNMEI    PIC X(06).
-      *                         
-                   07  SPA-GMN-HTEISYUTUSAKILST    OCCURS  3.
-                       09  SPA-GMN-HTEISYUTUSAKIL  PIC X(01).
-                       09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-HTEISYUTUSAKIMEIL
-                                                   PIC X(06).    
+      *
+                   07  SPA-GMN-HTEISYUTUSAKILST-G.                         
+                       09  SPA-GMN-HTEISYUTUSAKILST
+                                                   OCCURS  4.
+                           11  SPA-GMN-HTEISYUTUSAKIL
+                                                   PIC X(01).
+                           11  SPA-GMN-F1L         PIC X(01).
+                           11  SPA-GMN-HTEISYUTUSAKIMEIL
+                                                   PIC X(08).    
                    07  SPA-GMN-HTEISYUTUSAKI-MAX   PIC 9(02).
       *             
                    07  SPA-GMN-HTEISYUTUSAKI-G.
                        09  SPA-GMN-HTEISYUTUSAKI   PIC X(01).
                        09  SPA-GMN-F1              PIC X(01).
                        09  SPA-GMN-HTEISYUTUSAKIMEI
-                                                   PIC X(06).
+                                                   PIC X(08).
       *                         
                    07  SPA-GMN-HYOUJIKBNLST        OCCURS  2.
                        09  SPA-GMN-HYOUJIKBNL      PIC X(01).
@@ -117,7 +121,7 @@
                            11  SPA-GMN-TPTNUM      PIC X(20).
                            11  SPA-GMN-TNAME       PIC X(30).
                            11  SPA-GMN-TTEISYUTUSAKI
-                                                   PIC X(04).
+                                                   PIC X(08).
                            11  SPA-GMN-TRECESYUBETU
                                                    PIC X(10).
                            11  SPA-GMN-THKNJANUM   PIC X(08).
@@ -141,7 +145,7 @@
                        09  SPA-GMN-SELNUM          PIC 9(05).
                        09  SPA-GMN-PTNUM           PIC X(20).
                        09  SPA-GMN-NAME            PIC X(30).
-                       09  SPA-GMN-TEISYUTUSAKI    PIC X(04).
+                       09  SPA-GMN-TEISYUTUSAKI    PIC X(08).
                        09  SPA-GMN-RECESYUBETU     PIC X(20).
                        09  SPA-GMN-HKNJANUM        PIC X(08).
                        09  SPA-GMN-HKNJAMEI        PIC X(20).
@@ -635,30 +639,48 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2009-HOSPNUM
                                        =   SPACE )
                MOVE    "0"                 TO  SYS-2009-SYUKA-KOKUHO
            END-IF
+           IF    ( SYS-2009-SYUKA-KBN  =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOUIKI
+                                       =   SPACE )
+               MOVE    "0"                 TO  SYS-2009-SYUKA-KOUIKI
+           END-IF
       *
-           EVALUATE    SYS-2009-SYUKA-SYAHO
-                                   ALSO    SYS-2009-SYUKA-KOKUHO
-               WHEN    "0"         ALSO    "0"
-                   CONTINUE
-               WHEN    "0"         ALSO    "1"
-               WHEN    "0"         ALSO    "2"
-                   MOVE    "3"     TO  SPA-GMN-HTEISYUTUSAKIL    (1)
-                   MOVE    "国保"  TO  SPA-GMN-HTEISYUTUSAKIMEIL (1)
-                   MOVE    1       TO  SPA-GMN-HTEISYUTUSAKI-MAX
-               WHEN    "1"         ALSO    "0"
-               WHEN    "2"         ALSO    "0"
-                   MOVE    "2"     TO  SPA-GMN-HTEISYUTUSAKIL    (1)
-                   MOVE    "社保"  TO  SPA-GMN-HTEISYUTUSAKIMEIL (1)
-                   MOVE    1       TO  SPA-GMN-HTEISYUTUSAKI-MAX
-               WHEN    OTHER
-                   MOVE    "1"     TO  SPA-GMN-HTEISYUTUSAKIL    (1)
-                   MOVE    "全体"  TO  SPA-GMN-HTEISYUTUSAKIMEIL (1)
-                   MOVE    "2"     TO  SPA-GMN-HTEISYUTUSAKIL    (2)
-                   MOVE    "社保"  TO  SPA-GMN-HTEISYUTUSAKIMEIL (2)
-                   MOVE    "3"     TO  SPA-GMN-HTEISYUTUSAKIL    (3)
-                   MOVE    "国保"  TO  SPA-GMN-HTEISYUTUSAKIMEIL (3)
-                   MOVE    3       TO  SPA-GMN-HTEISYUTUSAKI-MAX
-           END-EVALUATE
+           IF    ( SYS-2009-SYUKA-SYAHO    =   "0" )
+           AND   ( SYS-2009-SYUKA-KOKUHO   =   "0" )
+           AND   ( SYS-2009-SYUKA-KOUIKI   =   "0" )
+               CONTINUE
+           ELSE
+               IF    ( SYS-2009-SYUKA-SYAHO    NOT =   "0" )
+               AND   ( SYS-2009-SYUKA-KOKUHO   NOT =   "0" )
+               AND   ( SYS-2009-SYUKA-KOUIKI   NOT =   "0" )
+                   ADD     1       TO  SPA-GMN-HTEISYUTUSAKI-MAX
+                   MOVE    "1"     TO  SPA-GMN-HTEISYUTUSAKIL
+                                           (SPA-GMN-HTEISYUTUSAKI-MAX)
+                   MOVE    "全体"  TO  SPA-GMN-HTEISYUTUSAKIMEIL
+                                           (SPA-GMN-HTEISYUTUSAKI-MAX)
+               END-IF
+               IF      SYS-2009-SYUKA-SYAHO    NOT =   "0"
+                   ADD     1       TO  SPA-GMN-HTEISYUTUSAKI-MAX
+                   MOVE    "2"     TO  SPA-GMN-HTEISYUTUSAKIL
+                                           (SPA-GMN-HTEISYUTUSAKI-MAX)
+                   MOVE    "社保"  TO  SPA-GMN-HTEISYUTUSAKIMEIL
+                                           (SPA-GMN-HTEISYUTUSAKI-MAX)
+               END-IF
+               IF      SYS-2009-SYUKA-KOKUHO   NOT =   "0"
+                   ADD     1       TO  SPA-GMN-HTEISYUTUSAKI-MAX
+                   MOVE    "3"     TO  SPA-GMN-HTEISYUTUSAKIL
+                                           (SPA-GMN-HTEISYUTUSAKI-MAX)
+                   MOVE    "国保"  TO  SPA-GMN-HTEISYUTUSAKIMEIL
+                                           (SPA-GMN-HTEISYUTUSAKI-MAX)
+               END-IF
+               IF    ( SYS-2009-SYUKA-KOUIKI   NOT =   "0"    )
+                   ADD     1       TO  SPA-GMN-HTEISYUTUSAKI-MAX
+                   MOVE    "4"     TO  SPA-GMN-HTEISYUTUSAKIL
+                                           (SPA-GMN-HTEISYUTUSAKI-MAX)
+                   MOVE    "広域"  TO  SPA-GMN-HTEISYUTUSAKIMEIL
+                                           (SPA-GMN-HTEISYUTUSAKI-MAX)
+               END-IF
+           END-IF
            IF      SPA-GMN-HTEISYUTUSAKI-MAX
                                    >   ZERO    
                MOVE    SPA-GMN-HTEISYUTUSAKILST (1)
@@ -705,6 +727,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                    MOVE    "1"             TO  SYUKA-TEISYUTUSAKI
                WHEN    "3"
                    MOVE    "2"             TO  SYUKA-TEISYUTUSAKI
+               WHEN    "4"
+                   MOVE    "6"             TO  SYUKA-TEISYUTUSAKI
            END-EVALUATE
            MOVE    SPA-NAI-PAGE-TPTNUM (SPA-GMN-PAGE)
                                    TO  SYUKA-PTNUM
@@ -900,6 +924,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                    WHEN    "2"
                        MOVE    "国保"  TO  SPA-GMN-TTEISYUTUSAKI
                                                               (WRK-LINE)
+                   WHEN    "6"
+                       MOVE    "広域"  TO  SPA-GMN-TTEISYUTUSAKI
+                                                              (WRK-LINE)
                END-EVALUATE
                MOVE    LNK-SYUACC-IO-RECESYUBETU(IDX1)
                                        TO  SPA-NAI-TRECESYUBETU
@@ -933,16 +960,19 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                            WHEN    "1"
                            WHEN    "A"
                            WHEN    "D"
+                           WHEN    "G"
                                MOVE    "職務上" 
                                        TO  SPA-GMN-THOJOKBN   (WRK-LINE)
                            WHEN    "2"
                            WHEN    "B"
                            WHEN    "E"
+                           WHEN    "H"
                                MOVE    "下船後３ヶ月以内"
                                        TO  SPA-GMN-THOJOKBN   (WRK-LINE)
                            WHEN    "3"
                            WHEN    "C"
                            WHEN    "F"
+                           WHEN    "I"
                                MOVE    "通勤災害"
                                        TO  SPA-GMN-THOJOKBN   (WRK-LINE)
                    END-EVALUATE
@@ -1074,7 +1104,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    ZERO                TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
       *
-           IF      SPA-ERRCD       NOT =   SPACE
+           IF      SPA-ERRCD       NOT =   SPACE   AND "0103"
                INITIALIZE                  SPA-GMN-SYUKA-TABLE
                                            SPA-GMN-PTNUM-TABLE
                                            SPA-NAI-SYUKA-TABLE
@@ -1258,6 +1288,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                    MOVE    "社保"          TO  SPA-GMN-TEISYUTUSAKI
                WHEN    "2"
                    MOVE    "国保"          TO  SPA-GMN-TEISYUTUSAKI
+               WHEN    "6"
+                   MOVE    "広域"          TO  SPA-GMN-TEISYUTUSAKI
            END-EVALUATE
       *
            EVALUATE    SPA-NAI-RECESYUBETU
@@ -1332,15 +1364,18 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                            WHEN    "1"
                            WHEN    "A"
                            WHEN    "D"
+                           WHEN    "G"
                                MOVE    "職務上"    TO  SPA-GMN-HOJOKBN
                            WHEN    "2"
                            WHEN    "B"
                            WHEN    "E"
+                           WHEN    "H"
                                MOVE    "下船後３ヶ月以内"
                                                    TO  SPA-GMN-HOJOKBN
                            WHEN    "3"
                            WHEN    "C"
                            WHEN    "F"
+                           WHEN    "I"
                                MOVE    "通勤災害"  TO  SPA-GMN-HOJOKBN
                    END-EVALUATE
                END-EVALUATE
@@ -1751,11 +1786,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
                MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
            ELSE
                MOVE    "0007"          TO  SPA-ERRCD
-           END-IF
-      *
-           IF    ( SPA-ERRCD           =   SPACE  )
-           AND   ( SPA-NAI-SRYYM       >=  200804 ) 
-               MOVE    "0200"          TO  SPA-ERRCD
            END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
@@ -2730,10 +2760,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "0103"
                    MOVE    "患者番号選択中です"        TO  SPA-ERRMSG
       *
-               WHEN    "0200"
-                   MOVE
-                       "平成２０年４月改正未対応のため処理できません"
-                                                       TO  SPA-ERRMSG
       *
                WHEN    "1001"
                    MOVE    "主科マスタが更新できませんでした"

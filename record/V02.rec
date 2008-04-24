@@ -387,10 +387,10 @@ V02	{
 		};
 		RECESKYKBN_CMB	{
 			RECESKYKBN	{
-				value	varchar(24);
+				value	varchar(36);
 			};
 			count	int;
-			item	varchar(24)[4];
+			item	varchar(36)[10];
 		};
 		HBTNUMCHKKBN_CMB	{
 			HBTNUMCHKKBN	{

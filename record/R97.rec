@@ -18,10 +18,10 @@ R97	{
 		};
 		HTEISYUTUSAKICOMBO	{
 			HTEISYUTUSAKI	{
-				value	varchar(8);
+				value	varchar(10);
 			};
 			count	int;
-			item	varchar(8)[3];
+			item	varchar(10)[4];
 		};
 		HYOUJIKBNCOMBO	{
 			HYOUJIKBN	{
@@ -40,7 +40,7 @@ R97	{
 			value	varchar(30);
 		};
 		TEISYUTUSAKI	{
-			value	varchar(4);
+			value	varchar(8);
 		};
 		RECESYUBETU	{
 			value	varchar(20);
@@ -81,7 +81,7 @@ R97	{
 					value1	varchar(2);
 					value2	varchar(20);
 					value3	varchar(30);
-					value4	varchar(4);
+					value4	varchar(8);
 					value5	varchar(10);
 					value6	varchar(8);
 					value7	varchar(10);

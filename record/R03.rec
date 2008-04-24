@@ -6,6 +6,10 @@ R03	{
 		B23	{
 			state	int;
 		};
+		LABEL   {
+			style   varchar(20);
+			label   varchar(100);
+		};
 		SRYYM	{
 			value	varchar(7);
 		};
@@ -33,6 +37,9 @@ R03	{
 			value	bool;
 		};
 		DATAKBN3	{
+			value	bool;
+		};
+		DATAKBN5	{
 			value	bool;
 		};
 		DATAKBN32	{

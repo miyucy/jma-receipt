@@ -119,6 +119,7 @@
       *  04.01.02    NACL-藤原    07/11/22  公害レセプト対応
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/04/11  未請求解除時の処理
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -161,6 +162,8 @@
                                    BY         //SPA-RECE07//.
            03  SPA-RECE07-SRYKA-KOKUHO
                                    PIC X(02).
+           03  SPA-RECE07-SRYKA-KOUIKI
+                                   PIC X(02).
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -184,6 +187,7 @@
            03  FLG-ZAISKBKBN       PIC 9(01). 
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-SEIKYU-UMU      PIC 9(01).
+           03  FLG-TAISYO          PIC 9(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -372,6 +376,7 @@
            COPY    "CPSK2003.INC".
       *
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
            COPY    "CPSK4001.INC".
       *
@@ -1469,6 +1474,8 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            INITIALIZE                  SPA-GMN-R01-TBL
                                        SPA-NAI-R01-TBL
            MOVE    ZERO            TO  SPA-NAI-R01-SELNO
+           MOVE    SPACE           TO  SPA-NAI-R01-SYOKBN
+           MOVE    ZERO            TO  FLG-TAISYO 
       *
            INITIALIZE                  SYUKA-REC
 grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
@@ -1554,7 +1561,29 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SS001-HOSPNUM
                                        SPA-NAI-R01-BTPARA-TTAISYO (IDX)
                            END-IF          
                    END-EVALUATE
-               END-IF     
+               END-IF
+      *      
+               IF      SPA-NAI-R01-BTPARA-TTAISYO (IDX)
+                                               =   1
+      *            対象データの一件目の診療年月取得
+                   IF      SPA-NAI-R01-SYOKBN      =   SPACE
+                       IF      SPA-NAI-R01-BTPARA-TSRYYM (IDX)
+                                                <   200804
+                           MOVE    "1"          TO  SPA-NAI-R01-SYOKBN
+                       END-IF
+                   END-IF
+      *
+                   EVALUATE    SPA-NAI-R01-SYOKBN
+                       WHEN    "1"
+                           IF      SPA-NAI-R01-BTPARA-TSRYYM (IDX)
+                                                   >=  200804
+                               MOVE    2               TO  
+                                       SPA-NAI-R01-BTPARA-TTAISYO (IDX)
+                               MOVE    1               TO  FLG-TAISYO 
+                           END-IF
+                   END-EVALUATE
+               END-IF
+      *
                IF      SPA-NAI-R01-BTPARA-TTAISYO (IDX)
                                                =   1
                    ADD     1       TO  SPA-NAI-R01-BTPARA-TAISYO-MAX
@@ -1589,7 +1618,13 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SS001-HOSPNUM
                    MOVE    1           TO  SPA-NAI-R01-BTPARA-HYOUJI-FLG
                    PERFORM 410721-MISEIKYU-DATA-JYOKEN-SEC
                END-IF
-           END-IF 
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-NAI-R01-SYOKBN
+      *
+           IF      FLG-TAISYO          =   1
+               MOVE    "0040"              TO  SPA-ERRCD
+           END-IF
            .
        41072-MISEIKYU-DATA-HENSYU-EXT.
            EXIT.
@@ -1614,7 +1649,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SS001-HOSPNUM
                IF    ( SPA-NAI-R01-BTPARA-HYOUJI-FLG
                                            =   1 )
                AND   ( SPA-NAI-R01-BTPARA-TTAISYO (IDX)
-                                           =   0 )
+                                       NOT =   1 )
                    CONTINUE
                ELSE
                    MOVE    SPA-NAI-R01-BTPARA-TQTORSUB-AREA (IDX)
@@ -3176,7 +3211,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    WRK-ACCT-PTID   TO  RECE10-PTID
            IF      SPA-R01-RECEKBN =   "0"
                MOVE    1               TO  RECE10-TEISYUTUSAKI
-               MOVE    2               TO  RECE10-XXTEISYUTUSAKI 
+               MOVE    2               TO  RECE10-XXTEISYUTUSAKI
            ELSE
                MOVE    5               TO  RECE10-TEISYUTUSAKI
                MOVE    5               TO  RECE10-XXTEISYUTUSAKI 
@@ -3191,6 +3226,27 @@ grpsys             MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                MOVE    "1002"          TO  SPA-ERRCD
                GO  TO  4801-DBDELETE-SYORI-EXT
            END-IF
+      *
+           IF      SPA-R01-RECEKBN =   "0"
+               INITIALIZE                  RECE10-REC
+               MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
+               MOVE    WRK-ACCT-SRYYM  TO  RECE10-SRYYM
+               MOVE    WRK-ACCT-NYUGAIKBN
+                                       TO  RECE10-NYUGAIKBN
+               MOVE    WRK-ACCT-PTID   TO  RECE10-PTID
+               MOVE    6               TO  RECE10-TEISYUTUSAKI
+               MOVE    6               TO  RECE10-XXTEISYUTUSAKI
+               MOVE    RECE10-REC      TO  MCPDATA-REC
+               MOVE    "tbl_seikyu"    TO  MCP-TABLE
+               MOVE    "del7"          TO  MCP-PATHNAME
+               MOVE    "DBDELETE"      TO  MCP-FUNC
+               PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC      NOT =   ZERO
+                   DISPLAY "SEIKYU KEY=" RECE10-KEY
+                   MOVE    "1002"          TO  SPA-ERRCD
+                   GO  TO  4801-DBDELETE-SYORI-EXT
+               END-IF
+           END-IF     
       *
            IF      SPA-R01-RECEKBN     =   "0"
       *        公費請求書削除
@@ -3499,11 +3555,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                MOVE    "99999999"          TO  SPA-RECE07-HKNJANUM 
                MOVE    "00"                TO  SPA-RECE07-SRYKA 
                                                SPA-RECE07-SRYKA-KOKUHO
+                                               SPA-RECE07-SRYKA-KOUIKI
       *
       *        一括作成のとき主科設定の有無チェック
-      **       IF    ( SPA-R01-FILEKBN         =   "1"         )
-      **       AND   ( SPA-R01-RECEKBN         =   "0" OR  "1" )
-      **       AND   ( SPA-SYUKA-KBN           =   "1"         )
                IF    ( SPA-SYUKA-KBN           =   "1"         )
                    MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
                    MOVE    "key11"             TO  WRK-MCP-PATHNAME
@@ -3521,6 +3575,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    IF      FLG-RECE07          =   ZERO
                        MOVE    RECE07-SRYKA    TO
                                                SPA-RECE07-SRYKA-KOKUHO
+                   END-IF
+                   MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+                   MOVE    "key11"             TO  WRK-MCP-PATHNAME
+                   MOVE    "6"                 TO  RECE07-TEISYUTUSAKI
+                   MOVE    RECE07-REC          TO  MCPDATA-REC
+                   PERFORM 900-RECE07-INV-SEC
+                   IF      FLG-RECE07          =   ZERO
+                       MOVE    RECE07-SRYKA    TO
+                                               SPA-RECE07-SRYKA-KOUIKI
                    END-IF
                END-IF  
            END-IF
@@ -3808,6 +3871,24 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            ELSE
                MOVE   SPACE        TO  SYS-2005-REC
            END-IF
+      *
+      *    区分コード０１のデータ読み込み
+           INITIALIZE                  SYS-200501-REC
+           MOVE    "2005"          TO  SYS-200501-KANRICD
+           MOVE    "01"            TO  SYS-200501-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-200501-STYUKYMD
+                                       SYS-200501-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
+           MOVE    SYS-200501-REC  TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE   MCPDATA-REC  TO  SYS-200501-REC
+           ELSE
+               INITIALIZE              SYS-200501-REC
+               MOVE    SYS-2005-TERMID (1:4)
+                                   TO  SYS-200501-TBL (1:4)
+           END-IF
+      *
            IF      SYS-2005-PREFPRGID (1) (1:1)
                                    NOT =  "S"
                    MOVE  "NOPG"    TO  SYS-2005-PREFPRGID (1)
@@ -3830,13 +3911,17 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                                        =   SPACE
                MOVE    ZERO            TO  SYS-2005-FRAME-JIBAIPRTKBN-N
            END-IF
-           IF      SYS-2005-JIBAIPRTKBN
+           IF      SYS-200501-JIBAIPRTKBN
                                        =   SPACE
-               MOVE    ZERO            TO  SYS-2005-JIBAIPRTKBN
+               MOVE    ZERO            TO  SYS-200501-JIBAIPRTKBN
            END-IF
-           IF      SYS-2005-JIBAIPRTKBN-N
+           IF      SYS-200501-JIBAIPRTKBN-N
                                        =   SPACE
-               MOVE    ZERO            TO  SYS-2005-JIBAIPRTKBN-N
+               MOVE    ZERO            TO  SYS-200501-JIBAIPRTKBN-N
+           END-IF
+           IF      SYS-200501-KOUIKIRECEKBN
+                                       =   SPACE
+               MOVE    ZERO            TO  SYS-200501-KOUIKIRECEKBN
            END-IF
       *
            MOVE    SPACE           TO  SHELLTBL
@@ -3944,10 +4029,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                WHEN    "4"
                WHEN    "5"
                    IF      SPA-R01-NYUGAIKBN   =   "1"
-                       MOVE    SYS-2005-JIBAIPRTKBN-N
+                       MOVE    SYS-200501-JIBAIPRTKBN-N
                                                    TO  SHELLTBL-ARG17
                    ELSE
-                       MOVE    SYS-2005-JIBAIPRTKBN
+                       MOVE    SYS-200501-JIBAIPRTKBN
                                                    TO  SHELLTBL-ARG17
                    END-IF
            END-EVALUATE
@@ -4108,6 +4193,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                           TO  SPA-R01-RECE07-HKNJANUM
                            MOVE    SPA-RECE07-SRYKA-KOKUHO
                                           TO SPA-R01-RECE07-SRYKA-KOKUHO
+                           MOVE    SPA-RECE07-SRYKA-KOUIKI
+                                          TO SPA-R01-RECE07-SRYKA-KOUIKI
                            INITIALIZE     SPA-R01-RECE07-RECE-PUTH(1)
                                           SPA-R01-RECE07-RECE-PUTH(2)
                        END-IF
@@ -4132,6 +4219,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "B12"                TO  MCP-WIDGET
                    IF    ( SPA-R01-RECE07-SRYKA    =   "XX" )
                    OR    ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                   =   "XX" )
+                   OR    ( SPA-R01-RECE07-SRYKA-KOUIKI
                                                    =   "XX" )
                        MOVE
                       "処理は正常に終了しましたが主科未設定分があります"
@@ -4691,6 +4780,14 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                            DELIMITED   BY  SIZE
                                            INTO        SPA-ERRMSG
                    END-STRING
+               WHEN    "0040"
+                   STRING
+                   "改正前後（平成２０年４月）が混在しているため"
+                                           DELIMITED   BY  SIZE
+                   "一旦改正前のみ処理対象とします"
+                                           DELIMITED   BY  SIZE
+                                           INTO        SPA-ERRMSG
+                   END-STRING
                WHEN    "1001"
                    MOVE    "レセプト指示コード（個別）が削除できません"
                                                        TO  SPA-ERRMSG
@@ -5189,7 +5286,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
                                    OR      FLG-SEIKYU-UMU  =   1
                EVALUATE    SPA-R01-RECEKBN
                    WHEN    "0"
-                       IF      RECE10-TEISYUTUSAKI =   1   OR  2
+                       IF      RECE10-TEISYUTUSAKI =   1   OR  2   OR  6
                            MOVE    1               TO  FLG-SEIKYU-UMU
                        END-IF
                    WHEN    "6"

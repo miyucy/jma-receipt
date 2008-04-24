@@ -50,6 +50,8 @@
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *
       *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
+      *
+      *  04.02.01    NACL-Æ£¸¶    08/03/25  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -352,6 +354,9 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                    WHEN    "5"
                        MOVE    "¸ø³²"          TO
                                            SPA-H99GMN-TTEISYUTUSAKI(IDX)
+                   WHEN    "6"
+                       MOVE    "¹­°èÏ¢¹ç"      TO
+                                           SPA-H99GMN-TTEISYUTUSAKI(IDX)
                END-EVALUATE
       *
                PERFORM 530-RECESYUBETU-HENSYU-SEC
@@ -361,6 +366,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                EVALUATE    RECE10-TEISYUTUSAKI
                    WHEN    "1"
                    WHEN    "2"
+                   WHEN    "6"
                        MOVE    RECE10-HKNJANUM     TO
                                        SPA-H99GMN-THKNJANUM    (IDX)
                END-EVALUATE
@@ -389,11 +395,16 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                                                SPA-H99GMN-THOJOKBN(IDX)
                        END-EVALUATE
                END-EVALUATE
-               STRING  RECE10-KIGO     DELIMITED   BY  SPACE
-                       "¡¡"            DELIMITED   BY  SIZE
-                       RECE10-NUM      DELIMITED   BY  SPACE
+               EVALUATE    RECE10-TEISYUTUSAKI
+                   WHEN    "6"
+                       MOVE    RECE10-NUM  TO  SPA-H99GMN-TKIGO(IDX)
+                   WHEN    OTHER
+                       STRING  RECE10-KIGO     DELIMITED   BY  SPACE
+                               "¡¡"            DELIMITED   BY  SIZE
+                               RECE10-NUM      DELIMITED   BY  SPACE
                                        INTO    SPA-H99GMN-TKIGO(IDX)
-               END-STRING
+                       END-STRING
+               END-EVALUATE
       *
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
