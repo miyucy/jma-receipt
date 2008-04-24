@@ -23,14 +23,7 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
       *  04.02.01    NACL-藤原    08/04/10  平成２０年４月改正対応
-      *                                     就学前区分追加
-      *
-      *  04.05.01    NACL-藤原    12/07/02  住所欄に番地方書を追加
-      *
-      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
+      *                                     就学前区分追加 
       ************************************************************
       *01  TOUKEI01-REC.
            03  TOUKEI01-KEY.
@@ -42,8 +35,6 @@
                05  TOUKEI01-NYUGAIKBN      PIC  X(01).
       *        患者ＩＤ
                05  TOUKEI01-PTID           PIC  9(10).
-      *        入所中区分
-               05  TOUKEI01-RECEIPT-KBN    PIC  X(10).
       *        レセプト診療科
                05  TOUKEI01-RECEKA         PIC  X(02).
       *        主保険保険番号
@@ -56,8 +47,6 @@
                05  TOUKEI01-HONKZKKBN      PIC  X(01).
       *        補助区分
                05  TOUKEI01-HOJOKBN        PIC  X(01).
-      *        公費ＩＤ（公費単独時使用）
-               05  TOUKEI01-KOH-KOHID      PIC  9(10).
       *
       *        主保険ＩＤ
            03  TOUKEI01-HKNID              PIC  9(10).
@@ -197,7 +186,7 @@
       *        自宅−郵便番号
                05  TOUKEI01-HOME-POST       PIC  X(07).
       *        自宅−住所
-               05  TOUKEI01-HOME-ADRS       PIC  X(400).
+               05  TOUKEI01-HOME-ADRS       PIC  X(200).
       *        自宅−昼電話番号
                05  TOUKEI01-HOME-TEL1       PIC  X(15).
       *       地方公共団体コード

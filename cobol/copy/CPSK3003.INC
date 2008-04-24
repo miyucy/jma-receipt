@@ -64,7 +64,7 @@
       *標準広域連合レセ電総括表印刷指示
                05  SYS-3003-PRTKBN5     PIC  X(01).
       *予備
-           03  SYS-3003-YOBI            PIC  X(466).
+           03                           PIC  X(466).
       *端末ＩＤ
            03  SYS-3003-TERMID          PIC  X(16).
       *オペーレータＩＤ
@@ -75,10 +75,3 @@
            03  SYS-3003-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-3003-UPHMS           PIC  X(06).
-      *主キー更新用項目
-           03  SYS-3003-UPD-KEY.
-               05  SYS-3003-UPD-HOSPNUM     PIC 9(2).
-               05  SYS-3003-UPD-KANRICD     PIC X(04).
-               05  SYS-3003-UPD-KBNCD       PIC X(08).
-               05  SYS-3003-UPD-STYUKYMD    PIC X(08).
-               05  SYS-3003-UPD-EDYUKYMD    PIC X(08).

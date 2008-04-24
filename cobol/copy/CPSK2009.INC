@@ -57,7 +57,7 @@
       *主科広域連合設定フラグ
            03  SYS-2009-SYUKA-KOUIKI    PIC  X(01).
       *予備
-           03  SYS-2009-YOBI            PIC  X(492).
+           03  FILLER                   PIC  X(492).
       *端末ＩＤ
            03  SYS-2009-TERMID          PIC  X(16).
       *オペレータＩＤ
@@ -68,10 +68,3 @@
            03  SYS-2009-UPYMD           PIC  X(08).
       *更新時間
            03  SYS-2009-UPHMS           PIC  X(06).
-      *主キー更新用項目
-           03  SYS-2009-UPD-KEY.
-               05  SYS-2009-UPD-HOSPNUM     PIC 9(2).
-               05  SYS-2009-UPD-KANRICD     PIC X(04).
-               05  SYS-2009-UPD-KBNCD       PIC X(08).
-               05  SYS-2009-UPD-STYUKYMD    PIC X(08).
-               05  SYS-2009-UPD-EDYUKYMD    PIC X(08).

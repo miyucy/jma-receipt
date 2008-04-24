@@ -17,17 +17,7 @@
       ********************************************************************
         02  TID2.
             03  TID2-FIXED1.
-              04  TID2-B10-STATE   PIC S9(9)   BINARY.
-              04  TID2-B10-VISIBLE  PIC X(01).
-              04  TID2-B10-LABEL  PIC X(14).
-              04  TID2-B11-STATE   PIC S9(9)   BINARY.
-              04  TID2-B11-VISIBLE  PIC X(01).
-              04  TID2-B11-LABEL  PIC X(14).
-              04  TID2-B12-LABEL  PIC X(14).
               04  TID2-ID1CODE.
                 05  TID2-VALUE  PIC X(10).
-              04  TID2-ID1MSG-STYLE  PIC X(20).
               04  TID2-ID1MSG.
-                05  TID2-VALUE  PIC X(144).
-              04  TID2-LABEL-STYLE  PIC X(20).
-              04  TID2-LABEL        PIC X(120).
+                05  TID2-VALUE  PIC X(80).
