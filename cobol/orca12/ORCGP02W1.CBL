@@ -4787,6 +4787,20 @@
                            END-IF
                        END-IF
                    END-IF
+      *            ËÜ¿Í¤Ç²¼Á¥¸å¤Ê¤é¸å´ü¹âÎð¼Ô°·¤¤¤È¤¹¤ë
+                   IF      (SPA-PTHKN-HOJOKBN (IDX)    =   "A"
+                                                       OR  "B"
+                                                       OR  "C"
+                                                       OR  "D"
+                                                       OR  "E"
+                                                       OR  "F"
+                                                       OR  "G"
+                                                       OR  "H"
+                                                       OR  "I" )
+                       AND (SPA-PTHKN-HONKZKKBN(IDX)   =   "1" )
+                       AND (SPA-PTHKN-TEKEDYMD (IDX)   >=  "20080401")
+                       MOVE    2                   TO  FLG-RJNCHK
+                   END-IF
       *        ¶¦ºÑ
                WHEN    "031"
                WHEN    "032"
@@ -5920,6 +5934,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            ´Î±ê¼£ÎÅ¡Ê£°£³£¸¡Ë¡Ê£È£²£°¡¥£´°Ê¹ß¡Ë
                  OR  ((SPA-PTKOH-KOHNUM(IDX)   =   "038" )  AND
                       (SPA-PTKOH-TEKSTYMD(IDX) >=  "20080401"))
+      *            »ÄÎ±Ë®¿Í¡Ê£°£²£µ¡Ë¡Ê£È£²£°¡¥£´°Ê¹ß¡Ë
+                 OR  ((SPA-PTKOH-KOHNUM(IDX)   =   "025" )  AND
+                      (SPA-PTKOH-TEKSTYMD(IDX) >=  "20080401"))
+      *
                    MOVE    ZERO                TO  IDY
                    PERFORM VARYING     IDX2    FROM    1   BY  1
                            UNTIL       IDX2    >   SPA-FTN1-MAX
