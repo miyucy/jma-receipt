@@ -129,6 +129,7 @@
            COPY    "CPSK2001.INC".
       *
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
            COPY    "CPSK4001.INC".
       *
@@ -247,6 +248,26 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            ELSE
                INITIALIZE                  SYS-2005-REC
            END-IF
+      *
+      *    レセプト編集情報の取得（区分コード０１）
+           INITIALIZE                  SYS-200501-REC
+           MOVE    "2005"          TO  SYS-200501-KANRICD
+           MOVE    "01"            TO  SYS-200501-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-200501-STYUKYMD
+                                       SYS-200501-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
+           MOVE    SYS-200501-REC  TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+           MOVE    "key10"         TO  WRK-MCP-PATHNAME
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE   MCPDATA-REC  TO  SYS-200501-REC
+           ELSE
+               INITIALIZE              SYS-200501-REC
+               MOVE    SYS-2005-TERMID (1:4)
+                                   TO  SYS-200501-TBL (1:4)
+           END-IF
+      *
            IF      SYS-2005-PREFPRGID (1) (1:1)
                                        NOT =  "S"
                MOVE  "NOPG"                TO  SYS-2005-PREFPRGID (1)
@@ -265,11 +286,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                MOVE    ZERO                TO
                                            SYS-2005-FRAME-JIBAIPRTKBN-N
            END-IF
-           IF      SYS-2005-JIBAIPRTKBN    =   SPACE
-               MOVE    ZERO                TO  SYS-2005-JIBAIPRTKBN
+           IF      SYS-200501-JIBAIPRTKBN    =   SPACE
+               MOVE    ZERO                TO  SYS-200501-JIBAIPRTKBN
            END-IF
-           IF      SYS-2005-JIBAIPRTKBN-N  =   SPACE
-               MOVE    ZERO                TO  SYS-2005-JIBAIPRTKBN-N
+           IF      SYS-200501-JIBAIPRTKBN-N  =   SPACE
+               MOVE    ZERO                TO  SYS-200501-JIBAIPRTKBN-N
            END-IF
       *                
       *    出力先プリンタ名割り当て情報の取得
@@ -511,10 +532,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
            END-EVALUATE
            EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
                WHEN   "1"              ALSO    "2"
-                   MOVE    SYS-2005-JIBAIPRTKBN-N
+                   MOVE    SYS-200501-JIBAIPRTKBN-N
                                                    TO  SHELLTBL-ARG14
                WHEN   "2"              ALSO    "2"
-                   MOVE    SYS-2005-JIBAIPRTKBN    TO  SHELLTBL-ARG14
+                   MOVE    SYS-200501-JIBAIPRTKBN  TO  SHELLTBL-ARG14
                WHEN   OTHER
                    MOVE    "0"                     TO  SHELLTBL-ARG14
            END-EVALUATE
