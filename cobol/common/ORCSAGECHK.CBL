@@ -945,6 +945,14 @@
                            END-IF
                        END-IF
                    END-IF
+      *            Ｈ２０．４から本人であれば後期高齢者
+                   IF     (AGECHK-SRYYMD       >=  "20080401" ) AND
+                          (AGECHK-ROUJIN       =   1          ) AND
+                          (PTHKN-HONKZKKBN     =   "1"        ) AND
+                          (PTHKN-HOJOKBN       >=  "A"  AND
+                                               <=  "I"        )
+                       MOVE    4               TO  FLG-OK
+                   END-IF
                WHEN    "031"
                WHEN    "032"
                WHEN    "033"
