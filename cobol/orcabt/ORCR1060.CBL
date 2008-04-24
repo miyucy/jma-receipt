@@ -1,4 +1,4 @@
-      
+      ********************************************************************
       * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
@@ -31,6 +31,10 @@
       *  04.02.01    NACL-藤原    08/02/19  誕生年の記載の修正
       *  04.02.02    NACL-藤原    08/03/13  平成２０年４月改正対応
       *                                     フラグ、データエリア追加
+      *  04.02.03    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     診療区分６４：病理診断対応
+      *  04.02.04    NACL-藤原    08/04/18  「レセ電通信医２０００６号」
+      *                                     症状詳記区分コード５２の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -388,8 +392,10 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                "【薬事法に規定する治験に係る治験概要】".
            03  FILLER              PIC X(52)   VALUE
                "【疾患別リハビリテーションに係る治療継続の理由等】".
+           03  FILLER              PIC X(52)   VALUE
+               "【廃用をもたらすに至った要因等】".
        01  TBL-RECECOM-AREA-R      REDEFINES   TBL-RECECOM-AREA.
-           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   9.
+           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   10.
       *
       *    疑い編集
        01  WRK-UTAGAI-AREA.
@@ -1777,7 +1783,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    "key9"              TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
       *     
-      *    症状詳記コメント（５０、５１）     
+      *    症状詳記コメント（５０、５１、５２）     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key12"             TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
@@ -1856,6 +1862,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "51"
                        MOVE    1               TO  FLG-RECECOM-SJKBN
                        MOVE    TBL-RECECOM-NAME (9)
+                                               TO  WRK-RECECOM-NAME
+                   WHEN    "52"
+                       MOVE    1               TO  FLG-RECECOM-SJKBN
+                       MOVE    TBL-RECECOM-NAME (10)
                                                TO  WRK-RECECOM-NAME
                END-EVALUATE
            END-IF
@@ -3114,6 +3124,9 @@ grpsys             MOVE    RECE100-HOSPNUM     TO  KEY-N-HOSPNUM
                    ADD     1         TO  CNT-RECE140
                    IF      RECE140-SRYKBN    =   "54"
                        MOVE    "50"          TO  RECE140-SRYKBN
+                   END-IF
+                   IF      RECE140-SRYKBN    =   "64"
+                       MOVE    "60"          TO  RECE140-SRYKBN
                    END-IF
            END-READ
       *

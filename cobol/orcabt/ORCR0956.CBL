@@ -46,6 +46,11 @@
       *  03.05.01    NACL-門脇    07/06/01  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  03.05.03    NACL-門脇    07/07/17  個別時のシステム管理編集修正
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （診療区分６４：病理診断対応）
+      *
+      *  04.02.02    NACL-藤原    08/04/18  「レセ電通信医２０００６号」
+      *                                     症状詳記区分コード５２の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -412,8 +417,10 @@
        01  TBL-RECECOM-AREA.
            03  FILLER              PIC X(52)   VALUE
                "【疾患別リハビリテーションに係る治療継続の理由等】".
+           03  FILLER              PIC X(52)   VALUE
+               "【廃用をもたらすに至った要因等】".
        01  TBL-RECECOM-AREA-R      REDEFINES   TBL-RECECOM-AREA.
-           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   1.
+           03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   2.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -2241,8 +2248,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    ZERO            TO  FLG-RECECOM-SJKBN
       *
       *    症状詳記区分の見出しを記載
-           IF      RECECOM-SJKBN   =   "51"
-               MOVE    "51"            TO  RECECOM-SJKBN
+           IF      RECECOM-SJKBN   =   "51"   OR  "52"
+               MOVE    RECECOM-SJKBN   TO  RECECOM-SJKBN
            ELSE
                MOVE    SPACE           TO  RECECOM-SJKBN
            END-IF 
@@ -2254,6 +2261,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "51"
                        MOVE    1               TO  FLG-RECECOM-SJKBN
                        MOVE    TBL-RECECOM-NAME (1)
+                                               TO  WRK-RECECOM-NAME
+                   WHEN    "52"
+                       MOVE    1               TO  FLG-RECECOM-SJKBN
+                       MOVE    TBL-RECECOM-NAME (2)
                                                TO  WRK-RECECOM-NAME
                END-EVALUATE
            END-IF
@@ -3054,6 +3065,9 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    END-IF
                    IF      RECE87-SRYKBN    =   "99"
                        MOVE    SPACE         TO  RECE87-SRYKBN
+                   END-IF
+                   IF      RECE87-SRYKBN    =   "64"
+                       MOVE    "60"          TO  RECE87-SRYKBN
                    END-IF
            END-READ
       *

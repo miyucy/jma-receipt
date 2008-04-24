@@ -80,6 +80,11 @@
       *  04.01.01    NACL-ÌçÏÆ    07/10/05  Æþ±¡ÅÀÅ©¥³¥á¥ó¥ÈÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/11/01  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.03    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
+      *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
+      *                                     ¡ÊÅÀÅ©ÊÔ½¸½¤Àµ¡Ë
+      *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *                                     ¡ÊºÆ½¢Ï«¡¢¿¦¶ÈÉüµ¢¡§µ­ºÜ½çÂÐ±þ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -686,6 +691,9 @@
       *    ÅÅ»Ò²½²Ã»»
            03  WRK-CONS-SYOSIN-KASAN29 PIC X(09)   VALUE 
                                                    "111012370".
+      *    ½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»
+           03  WRK-CONS-SYOSIN-KASAN30 PIC X(09)   VALUE 
+                                                   "111012470".
       *
       *    Ì¤¼Â»Ü¸º»»
            03  CONS-GENZAN1            PIC X(09)   VALUE   "190080470".
@@ -947,6 +955,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                            PERFORM 2003-SRYKBN11-HENSYU-SEC
       *                ¸¡ºº
                        WHEN    "60"
+                       WHEN    "64"
                            PERFORM 2006-SRYKBN60-CHECK-SEC 
       *                ¤½¤ì°Ê³°
                        WHEN    OTHER
@@ -1445,6 +1454,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                             OR  WRK-CONS-SYOSIN-KASAN27
                                             OR  WRK-CONS-SYOSIN-KASAN28
       ***>                                  OR  WRK-CONS-SYOSIN-KASAN29
+                                            OR  WRK-CONS-SYOSIN-KASAN30
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
@@ -1486,7 +1496,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
        2005-SRYKBNELSE-HENSYU-SEC    SECTION.
       *
       *    ¸¡ºº¤Î¤È¤­ºÞ¤¬°ì¤Ä°Ê¾å¤Ê¤é¡É¡¢¡É¤ÇÊÔ½¸
-           IF  RECE84-SRYKBN         =   "60"
+           IF  RECE84-SRYKBN         =   "60" OR "64"
       *****AND  WRK-ZAIWMAX (6)      >   1
                PERFORM 20051-SRYKBNELSE-KENSA-SEC
            ELSE 
@@ -1920,8 +1930,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
            END-PERFORM
       *             
       *    ¸¡ºº¤Î¤È¤­²ó¿ô¤ò½¸·×
-           IF      WRK-ZAIWMAX(3)     >   ZERO
-           AND     RECE84-SRYKBN      =   "60"
+           IF     (WRK-ZAIWMAX(3)     >   ZERO        )
+           AND    (RECE84-SRYKBN      =   "60" OR "64")
                IF      TBL-ZAIW-SRYCD (3 1)   =   WRK-CONS-SAIKETSU1
                                               OR  WRK-CONS-SAIKETSU2
                                               OR  WRK-CONS-SAIKETSU3 
@@ -2964,51 +2974,90 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
                IF      RECE84-SRYKBN      =  "33"
       *
-                IF   (WRK-SRYSYUKBN      =  "330")
-                AND  (TBL-ZAI-SRYCD(1)   =  "130003710" OR "130003810"
-                                         OR "130700310" OR "130700410"
-                                         OR "130702910" OR "130701010"
-                                         OR "130702810")
-                         MOVE   1              TO  RECE86-TENTEKIKBN
-                END-IF
-                IF   (WRK-SRYSYUKBN      =  "330")
-                AND  (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
-                                         OR "130000310" OR "130008270"
-                                         OR "130701270" OR "130004570"
-                                         OR "130009670" OR "130701370"
-                                         OR "130010570" OR "130702670"
-                                         OR "130010670" OR "130702770"
-                                         OR "130011070"               )
-                AND  (RECE86-TENTEKIKBN  =  ZERO )
-                         MOVE   2              TO  RECE86-TENTEKIKBN
-                END-IF
-                IF   (WRK-SRYSYUKBN      =  "330")
-                AND  (RECE84-ZAITEN  NOT =  ZERO )
-                AND  (RECE84-YKZTEN      =  ZERO )
-                AND  (RECE84-KIZAITEN    =  ZERO )
-                AND  (RECE86-TENTEKIKBN  =  ZERO )
-                         MOVE   3              TO  RECE86-TENTEKIKBN
-                END-IF
+                IF     RECE82-SRYYM      >=  "200804"
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130003710" OR "130003810")
+                          MOVE   1              TO  RECE86-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
+                                          OR "130000310" OR "130010570"
+                                          OR "130010670" OR "130011570")
+                  AND (RECE86-TENTEKIKBN  =  ZERO )
+                          MOVE   2              TO  RECE86-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (RECE84-ZAITEN  NOT =  ZERO )
+                  AND (RECE84-YKZTEN      =  ZERO )
+                  AND (RECE84-KIZAITEN    =  ZERO )
+                  AND (RECE86-TENTEKIKBN  =  ZERO )
+                          MOVE   3              TO  RECE86-TENTEKIKBN
+                  END-IF
       *
-                IF   (WRK-SRYSYUKBN      =  "340")
-                AND  (TBL-ZAI-SRYCD(1)   =  "130004410" OR "130008510"
-                                         OR "130004670"               )
-                AND  (RECE84-YKZTEN      =  ZERO )
-                AND  (RECE84-KIZAITEN    =  ZERO )
-                         MOVE   4              TO  RECE86-TENTEKIKBN
-                END-IF
-                IF   (WRK-SRYSYUKBN      =  "340")
-                AND  (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
-                                         OR "130000310" OR "130008270"
-                                         OR "130701270" OR "130004570"
-                                         OR "130009670" OR "130701370"
-                                         OR "130010570" OR "130702670"
-                                         OR "130010670" OR "130702770"
-                                         OR "130011070"               )
-                AND  (RECE84-YKZTEN      =  ZERO )
-                AND  (RECE84-KIZAITEN    =  ZERO )
-                AND  (RECE86-TENTEKIKBN  =  ZERO )
-                         MOVE   5              TO  RECE86-TENTEKIKBN
+                  IF  (WRK-SRYSYUKBN      =  "340")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130004410" OR "130008510"
+                                          OR "130004670" OR "130008270"
+                                          OR "130011070"               )
+                  AND (RECE84-YKZTEN      =  ZERO )
+                  AND (RECE84-KIZAITEN    =  ZERO )
+                          MOVE   4              TO  RECE86-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "340")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
+                                          OR "130000310" OR "130010570"
+                                          OR "130010670" OR "130011570")
+                  AND (RECE84-YKZTEN      =  ZERO )
+                  AND (RECE84-KIZAITEN    =  ZERO )
+                  AND (RECE86-TENTEKIKBN  =  ZERO )
+                          MOVE   5              TO  RECE86-TENTEKIKBN
+                  END-IF
+                ELSE
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130003710" OR "130003810"
+                                          OR "130700310" OR "130700410"
+                                          OR "130702910" OR "130701010"
+                                          OR "130702810")
+                          MOVE   1              TO  RECE86-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
+                                          OR "130000310" OR "130008270"
+                                          OR "130701270" OR "130004570"
+                                          OR "130009670" OR "130701370"
+                                          OR "130010570" OR "130702670"
+                                          OR "130010670" OR "130702770"
+                                          OR "130011070"               )
+                  AND (RECE86-TENTEKIKBN  =  ZERO )
+                          MOVE   2              TO  RECE86-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (RECE84-ZAITEN  NOT =  ZERO )
+                  AND (RECE84-YKZTEN      =  ZERO )
+                  AND (RECE84-KIZAITEN    =  ZERO )
+                  AND (RECE86-TENTEKIKBN  =  ZERO )
+                          MOVE   3              TO  RECE86-TENTEKIKBN
+                  END-IF
+      *
+                  IF  (WRK-SRYSYUKBN      =  "340")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130004410" OR "130008510"
+                                          OR "130004670"               )
+                  AND (RECE84-YKZTEN      =  ZERO )
+                  AND (RECE84-KIZAITEN    =  ZERO )
+                          MOVE   4              TO  RECE86-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "340")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
+                                          OR "130000310" OR "130008270"
+                                          OR "130701270" OR "130004570"
+                                          OR "130009670" OR "130701370"
+                                          OR "130010570" OR "130702670"
+                                          OR "130010670" OR "130702770"
+                                          OR "130011070"               )
+                  AND (RECE84-YKZTEN      =  ZERO )
+                  AND (RECE84-KIZAITEN    =  ZERO )
+                  AND (RECE86-TENTEKIKBN  =  ZERO )
+                          MOVE   5              TO  RECE86-TENTEKIKBN
+                  END-IF
                 END-IF
       *
                 IF   (WRK-SRYSYUKBN           =  "330")
@@ -3057,6 +3106,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                        END-IF
                      END-IF
                  END-IF
+                 IF   RECE82-SRYYM   >=   "200804"
+                   EVALUATE  TBL-ZAIW-SRYCD1
+                     WHEN     "101130010"
+                       MOVE      ALL "9"     TO  TBL-ZAIW-CDKBN-AREA
+                       MOVE      999999991   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                     WHEN     "101800180"
+                       MOVE      ALL "9"     TO  TBL-ZAIW-CDKBN-AREA
+                       MOVE      999999992   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                   END-EVALUATE
+                 END-IF
                END-IF
                MOVE    TBL-ZAIW-CDKBN-SYO  TO  RECE86-CDKBN-SYO
                MOVE    TBL-ZAIW-CDKBN-BU   TO  RECE86-CDKBN-BU
@@ -3078,7 +3137,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *--------------------------------------------------------------
                MOVE    RECE84-ZAITEN     TO  RECE86-ZAITEN
       *
-               IF      RECE84-SRYKBN     =   "60"
+               IF      RECE84-SRYKBN     =   "60" OR "64"
                        MOVE   TBL-ZAIW-KNSJISKBN
                                              TO  RECE86-KNSJISKBN
                ELSE

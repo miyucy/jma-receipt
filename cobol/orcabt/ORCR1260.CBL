@@ -28,6 +28,10 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （初診（夜間・早朝等）加算追加）
+      *                                     （点滴編集修正）
+      *                                     （診療区分６４：病理診断対応）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -685,6 +689,9 @@
       *    電子化加算
            03  WRK-CONS-SYOSIN-KASAN29 PIC X(09)   VALUE 
                                                    "111012370".
+      *    初診（夜間・早朝等）加算
+           03  WRK-CONS-SYOSIN-KASAN30 PIC X(09)   VALUE 
+                                                   "111012470".
       *
       *    外来迅速検体検査加算
            03  WRK-CONS-GAIJINKEN      PIC X(09)   VALUE 
@@ -899,6 +906,7 @@
                            PERFORM 2003-SRYKBN11-HENSYU-SEC
       *                検査
                        WHEN    "60"
+                       WHEN    "64"
                            PERFORM 2006-SRYKBN60-CHECK-SEC 
       *                それ以外
                        WHEN    OTHER
@@ -1297,6 +1305,7 @@
                                             OR  WRK-CONS-SYOSIN-KASAN26
                                             OR  WRK-CONS-SYOSIN-KASAN27
                                             OR  WRK-CONS-SYOSIN-KASAN28
+                                            OR  WRK-CONS-SYOSIN-KASAN30
                                             OR  CONS-COMMENT5         
                                             OR  CONS-COMMENT6         
                                             OR  CONS-COMMENT7         
@@ -1339,7 +1348,7 @@
        2005-SRYKBNELSE-HENSYU-SEC    SECTION.
       *
       *    検査のとき剤が一つ以上なら”、”で編集
-           IF  RECE220-SRYKBN         =   "60"
+           IF  RECE220-SRYKBN         =   "60" OR "64"
                PERFORM 20051-SRYKBNELSE-KENSA-SEC
            ELSE 
                PERFORM 20052-SRYKBNELSE-CHECK-SEC
@@ -1756,8 +1765,8 @@
            END-PERFORM
       *             
       *    検査のとき回数を集計
-           IF      WRK-ZAIWMAX(3)     >   ZERO
-           AND     RECE220-SRYKBN      =   "60"
+           IF     (WRK-ZAIWMAX(3)      >   ZERO        )
+           AND    (RECE220-SRYKBN      =   "60" OR "64")
                IF      TBL-ZAIW-SRYCD (3 1)   =   WRK-CONS-SAIKETSU1
                                               OR  WRK-CONS-SAIKETSU2
                                               OR  WRK-CONS-SAIKETSU3 
@@ -2719,9 +2728,9 @@
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF                                                      
            IF     (FLG-COMMENT3       =    1                  )   AND
-                  (RECE220-SRYKBN      =   "14" OR "33" OR "90"
+                  (RECE220-SRYKBN     =   "14" OR "33" OR "90"
                                                        OR "92")   AND
-                  (RECE220-ZAITEN      =   ZERO                )      
+                  (RECE220-ZAITEN     =   ZERO                )      
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF     
            IF      RECE220-SAFLG   NOT =   SPACE
@@ -2793,51 +2802,90 @@
       *
                IF      RECE220-SRYKBN      =  "33"
       *
-                IF   (WRK-SRYSYUKBN      =  "330")
-                AND  (TBL-ZAI-SRYCD(1)   =  "130003710" OR "130003810"
-                                         OR "130700310" OR "130700410"
-                                         OR "130702910" OR "130701010"
-                                         OR "130702810")
-                         MOVE   1              TO  RECE240-TENTEKIKBN
-                END-IF
-                IF   (WRK-SRYSYUKBN      =  "330")
-                AND  (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
-                                         OR "130000310" OR "130008270"
-                                         OR "130701270" OR "130004570"
-                                         OR "130009670" OR "130701370"
-                                         OR "130010570" OR "130702670"
-                                         OR "130010670" OR "130702770"
-                                         OR "130011070"               )
-                AND  (RECE240-TENTEKIKBN  =  ZERO )
-                         MOVE   2              TO  RECE240-TENTEKIKBN
-                END-IF
-                IF   (WRK-SRYSYUKBN      =  "330")
-                AND  (RECE220-ZAITEN  NOT =  ZERO )
-                AND  (RECE220-YKZTEN      =  ZERO )
-                AND  (RECE220-KIZAITEN    =  ZERO )
-                AND  (RECE240-TENTEKIKBN  =  ZERO )
-                         MOVE   3              TO  RECE240-TENTEKIKBN
-                END-IF
+                IF     RECE200-SRYYM      >=  "200804"
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130003710" OR "130003810")
+                          MOVE   1              TO  RECE240-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
+                                          OR "130000310" OR "130010570"
+                                          OR "130010670" OR "130011570")
+                  AND (RECE240-TENTEKIKBN  =  ZERO )
+                          MOVE   2              TO  RECE240-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (RECE220-ZAITEN  NOT =  ZERO )
+                  AND (RECE220-YKZTEN      =  ZERO )
+                  AND (RECE220-KIZAITEN    =  ZERO )
+                  AND (RECE240-TENTEKIKBN  =  ZERO )
+                          MOVE   3              TO  RECE240-TENTEKIKBN
+                  END-IF
       *
-                IF   (WRK-SRYSYUKBN      =  "340")
-                AND  (TBL-ZAI-SRYCD(1)   =  "130004410" OR "130008510"
-                                         OR "130004670"               )
-                AND  (RECE220-YKZTEN      =  ZERO )
-                AND  (RECE220-KIZAITEN    =  ZERO )
-                         MOVE   4              TO  RECE240-TENTEKIKBN
-                END-IF
-                IF   (WRK-SRYSYUKBN      =  "340")
-                AND  (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
-                                         OR "130000310" OR "130008270"
-                                         OR "130701270" OR "130004570"
-                                         OR "130009670" OR "130701370"
-                                         OR "130010570" OR "130702670"
-                                         OR "130010670" OR "130702770"
-                                         OR "130011070"               )
-                AND  (RECE220-YKZTEN      =  ZERO )
-                AND  (RECE220-KIZAITEN    =  ZERO )
-                AND  (RECE240-TENTEKIKBN  =  ZERO )
-                         MOVE   5              TO  RECE240-TENTEKIKBN
+                  IF  (WRK-SRYSYUKBN      =  "340")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130004410" OR "130008510"
+                                          OR "130004670" OR "130008270"
+                                          OR "130011070"               )
+                  AND (RECE220-YKZTEN      =  ZERO )
+                  AND (RECE220-KIZAITEN    =  ZERO )
+                          MOVE   4              TO  RECE240-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "340")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
+                                          OR "130000310" OR "130010570"
+                                          OR "130010670" OR "130011570")
+                  AND (RECE220-YKZTEN      =  ZERO )
+                  AND (RECE220-KIZAITEN    =  ZERO )
+                  AND (RECE240-TENTEKIKBN  =  ZERO )
+                          MOVE   5              TO  RECE240-TENTEKIKBN
+                  END-IF
+                ELSE
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130003710" OR "130003810"
+                                          OR "130700310" OR "130700410"
+                                          OR "130702910" OR "130701010"
+                                          OR "130702810")
+                          MOVE   1              TO  RECE240-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
+                                          OR "130000310" OR "130008270"
+                                          OR "130701270" OR "130004570"
+                                          OR "130009670" OR "130701370"
+                                          OR "130010570" OR "130702670"
+                                          OR "130010670" OR "130702770"
+                                          OR "130011070"               )
+                  AND (RECE240-TENTEKIKBN  =  ZERO )
+                          MOVE   2              TO  RECE240-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "330")
+                  AND (RECE220-ZAITEN  NOT =  ZERO )
+                  AND (RECE220-YKZTEN      =  ZERO )
+                  AND (RECE220-KIZAITEN    =  ZERO )
+                  AND (RECE240-TENTEKIKBN  =  ZERO )
+                          MOVE   3              TO  RECE240-TENTEKIKBN
+                  END-IF
+      *
+                  IF  (WRK-SRYSYUKBN      =  "340")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130004410" OR "130008510"
+                                          OR "130004670"               )
+                  AND (RECE220-YKZTEN      =  ZERO )
+                  AND (RECE220-KIZAITEN    =  ZERO )
+                          MOVE   4              TO  RECE240-TENTEKIKBN
+                  END-IF
+                  IF  (WRK-SRYSYUKBN      =  "340")
+                  AND (TBL-ZAI-SRYCD(1)   =  "130000110" OR "130000210"
+                                          OR "130000310" OR "130008270"
+                                          OR "130701270" OR "130004570"
+                                          OR "130009670" OR "130701370"
+                                          OR "130010570" OR "130702670"
+                                          OR "130010670" OR "130702770"
+                                          OR "130011070"               )
+                  AND (RECE220-YKZTEN      =  ZERO )
+                  AND (RECE220-KIZAITEN    =  ZERO )
+                  AND (RECE240-TENTEKIKBN  =  ZERO )
+                          MOVE   5              TO  RECE240-TENTEKIKBN
+                  END-IF
                 END-IF
       *
                 IF   (WRK-SRYSYUKBN           =  "330")
@@ -2923,7 +2971,7 @@
       *--------------------------------------------------------------
                MOVE    RECE220-ZAITEN      TO  RECE240-ZAITEN
       *
-               IF      RECE220-SRYKBN     =   "60"
+               IF      RECE220-SRYKBN     =   "60" OR "64"
                        MOVE   WRK-ZAIW-KNSJISKBN
                                              TO  RECE240-KNSJISKBN
                ELSE
@@ -2976,7 +3024,7 @@
            IF      RECE240-ZAINUM      =   99999999
                MOVE     ZERO               TO  RECE240-ZAINUM
            END-IF
-           IF      RECE240-SRYKBN      =   "60"
+           IF      RECE240-SRYKBN      =   "60" OR "64"
                IF      RECE240-KNSJISKBN   =   2
                    MOVE    5                   TO  RECE240-KNSJISKBN
                ELSE
@@ -3006,7 +3054,8 @@
            END-IF
       *
            IF      RECE240-SRYKBN      NOT =   "21"
-               IF      RECE240-SRYKBN  NOT =   "40" AND "60" AND "80"  
+               IF      RECE240-SRYKBN  NOT =   "40" AND "60" AND "80"
+                                                    AND "64"
                    CONTINUE
                ELSE 
                    INITIALIZE              RECE240-ZAITEN

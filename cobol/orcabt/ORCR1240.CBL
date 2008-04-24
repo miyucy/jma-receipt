@@ -28,6 +28,12 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡ÊÌôºÞ´ÉÍý»ØÆ³ÎÁ¥³¡¼¥ÉÄÉ²Ã¡Ë
+      *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *                                     ¡Êºß»ÙÉÂ¼«Æ°µ­ºÜÂÐ±þ¡Ë
+      *  04.02.02    NACL-ÌçÏÆ    08/04/03  ¡û¡û¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑÊÔ½¸½¤Àµ
+      *  04.02.03    NACL-¾®Æ¦Âô  08/04/08  °åÎÅ¶èÊ¬¥³¥á¥ó¥È²þÄêÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -217,6 +223,7 @@
            03  IDX3                PIC 9(02).
            03  IDX4                PIC 9(04).
            03  IDX5                PIC 9(04).
+           03  IDX6                PIC 9(04).
            03  IDX12               PIC 9(04).
            03  IDX13               PIC 9(04).
            03  IDX14               PIC 9(04).
@@ -329,6 +336,8 @@
                05  WRK-RIHAIGAKU-SANTEI-FLG  PIC X(01).
                05  WRK-RIHAIGAKU-SANTEI-DAY  PIC 9(03)
                                              OCCURS 31.
+      *
+           03  WRK-YAKUKAN-SRYCD     PIC X(09).
       *
        01  WRK-RECE220-REC. 
            COPY    "CPRCF220.INC"  REPLACING   //RECE220//
@@ -469,6 +478,18 @@
            03  CONS-NOUKE-DUMMY     PIC X(09) VALUE "099800321".
       *    ±¿Æ°´ï¥ê¥Ï¼Â»Ü
            03  CONS-UNDOKI-DUMMY    PIC X(09) VALUE "099800331".
+      *
+      *    ÌôºÞ´ÉÍý»ØÆ³ÎÁ¥Æ¡¼¥Ö¥ë¡Ê£²£°£°£¸Ç¯£´·î¿ÇÎÅÊ¬¡Á¡Ë
+       01  TBL-YAKUKAN-AREA.
+           03  FILLER               PIC X(09) VALUE "113010710".
+           03  FILLER               PIC X(09) VALUE "113010810".
+           03  FILLER               PIC X(09) VALUE "120001610".
+      *
+       01  TBL-YAKUKAN-R       REDEFINES   TBL-YAKUKAN-AREA.
+            03  TBL-YAKUKAN    PIC X(09)   OCCURS   3.
+      *
+       01  TBL-YAKUKAN-MAX     PIC 9(02)   VALUE    3.
+      *
       *
        01  TBL-HASSYO-INF.
            03  TBL-HASSYO-KAITATU-COMMENT   PIC 9(01).
@@ -725,9 +746,14 @@
                EVALUATE      RECE220-SRYKBN
                    WHEN      "14"
       *            ¡Êºß»Ù±ç¤Ë´Ø¤¹¤ë¿ÇÎÅ¤Î¥«¥¦¥ó¥È¡Ë
-                      IF  RECE220-FLG-ZAISIEN-COMMENT   =  "1"
+                      IF  RECE220-FLG-ZAISIEN-COMMENT   =  "1" OR "2"
                         MOVE    RECE220-REC    TO   WRK-RECE220-REC
-                        MOVE    1    TO    TBL-ZAISIEN-COMMENT
+                        EVALUATE  RECE220-FLG-ZAISIEN-COMMENT
+                          WHEN      "1"
+                            MOVE  1  TO  TBL-ZAISIEN-COMMENT
+                          WHEN      "2"
+                            MOVE  2  TO  TBL-ZAISIEN-COMMENT
+                        END-EVALUATE
                       END-IF
                    WHEN      "40"
       *            ¡Ê²ðÃ£¸£°ú¤¢¤ê¡Ë
@@ -843,6 +869,7 @@
       *            ¡Ê¼ê½ÑÆü¤Î¥»¥Ã¥È¡Ë
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
                    WHEN      "60"
+                   WHEN      "64"
       *            ¡Ê¡Ê¸¡Áª¡ËÆü¤Î¥»¥Ã¥È¡Ë
                       PERFORM    2001-KENSEN-HANTEI-SEC
                    WHEN      "70"
@@ -901,7 +928,7 @@
            PERFORM   2001-HASSYO-HANTEI-SEC
       *
       *    ºß»Ù±ç¥³¥á¥ó¥È
-           IF  TBL-ZAISIEN-COMMENT    =   1
+           IF  TBL-ZAISIEN-COMMENT   NOT =  ZERO
                   PERFORM    2001-ZAISIEN-COMMENT-SEC
            END-IF
       *
@@ -1010,6 +1037,10 @@
                MOVE     10             TO  WRK-RECE230XX-YUKOKETA(1 1)
                MOVE    "¼ÒÊÝ¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
                                        TO  WRK-RECE230XX-NAME(1 1)
+             WHEN     "8"
+               MOVE     10             TO  WRK-RECE230XX-YUKOKETA(1 1)
+               MOVE    "¸åÊÝ¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ" 
+                                       TO  WRK-RECE230XX-NAME(1 1)
            END-EVALUATE
       *
            MOVE    WRK-RECE230XX-SRYACT-TBL(1 1)
@@ -1047,7 +1078,12 @@
            MOVE    "810000001"         TO  WRK-RECE230XX-SRYCD(1 1)
            MOVE     ZERO               TO  WRK-RECE230XX-SRYSURYO(1 1)
            MOVE     3                  TO  WRK-RECE230XX-YUKOKETA(1 1)
-           MOVE    "ºß»Ù±ç"            TO  WRK-RECE230XX-NAME(1 1)
+           EVALUATE  TBL-ZAISIEN-COMMENT
+             WHEN      1
+               MOVE    "ºß»Ù±ç"        TO  WRK-RECE230XX-NAME(1 1)
+             WHEN      2
+               MOVE    "ºß»ÙÉÂ"        TO  WRK-RECE230XX-NAME(1 1)
+           END-EVALUATE
       *
            MOVE    WRK-RECE230XX-SRYACT-TBL(1 1)
                                        TO  RECE2309-SRYACT-TBL(1)
@@ -2090,40 +2126,21 @@
       *
              MOVE      ZERO            TO      FLG-YAKUKAN-COMMENT
       *
-             INITIALIZE                        SRYACT-REC
-             MOVE    RECE220-HOSPNUM    TO     SRY-HOSPNUM
-             MOVE    RECE220-NYUGAIKBN  TO     SRY-NYUGAIKBN
-             MOVE    RECE220-PTID       TO     SRY-PTID
-             MOVE    RECE220-SRYYM      TO     SRY-SRYYM
-             MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (1)
-             MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (2)
-             MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (3)
-             MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (4)
-             MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (5)
-      *
-             MOVE    SRYACT-REC        TO      MCPDATA-REC
-             MOVE    "tbl_sryact"      TO      MCP-TABLE
-             MOVE    "key7"            TO      MCP-PATHNAME
-             PERFORM   900-DBSELECT-SEC
-      *
-             IF      MCP-RC               =       ZERO
-                 MOVE    "tbl_sryact"  TO      MCP-TABLE
-                 MOVE    "key7"        TO      MCP-PATHNAME
-                 PERFORM  900-SRYACT-READ-SEC
-                 IF      FLG-SRYACT  =  ZERO
-                     MOVE    1         TO      FLG-YAKUKAN-COMMENT
-                 END-IF
+             IF    RECE200-SRYYM    >=  "200804"
+               PERFORM   VARYING   IDX6   FROM    1   BY    1
+                          UNTIL  ( IDX6   >   TBL-YAKUKAN-MAX       )
+                            OR   ( FLG-YAKUKAN-COMMENT   =    1     )
+                  MOVE   TBL-YAKUKAN(IDX6)     TO  WRK-YAKUKAN-SRYCD
+                  PERFORM  2001X-TAIIN-HANTEI-TOUGETU-SEC
+               END-PERFORM
+             ELSE
+                  MOVE   CONS-YAKUKAN-COMMENT  TO  WRK-YAKUKAN-SRYCD
+                  PERFORM  2001X-TAIIN-HANTEI-TOUGETU-SEC
              END-IF
-      *
-             MOVE    "tbl_sryact"      TO      MCP-TABLE
-             MOVE    "key7"            TO      MCP-PATHNAME
-             PERFORM   900-CLOSE-SEC
       *
              IF      FLG-YAKUKAN-COMMENT   =   ZERO
       *
                MOVE      ZERO            TO      WRK-ZENYYMM
-      *
-               MOVE      ZERO            TO      FLG-YAKUKAN-COMMENT
       *
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
@@ -2137,75 +2154,16 @@
                MOVE    LNK-DAY6-KEISAN(1:6)
                                            TO  WRK-ZENYYMM
       *
-               INITIALIZE                        SRYACT-REC
-               MOVE    RECE220-HOSPNUM    TO     SRY-HOSPNUM
-               MOVE    RECE220-NYUGAIKBN  TO     SRY-NYUGAIKBN
-               MOVE    RECE220-PTID       TO     SRY-PTID
-               MOVE    WRK-ZENYYMM        TO     SRY-SRYYM
-               MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (1)
-               MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (2)
-               MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (3)
-               MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (4)
-               MOVE    CONS-YAKUKAN-COMMENT  TO  SRY-SRYCD (5)
-      *
-               MOVE    SRYACT-REC        TO      MCPDATA-REC
-               MOVE    "tbl_sryact"      TO      MCP-TABLE
-               MOVE    "key7"            TO      MCP-PATHNAME
-               PERFORM   900-DBSELECT-SEC
-      *
-               IF      MCP-RC               =       ZERO
-                   MOVE    "tbl_sryact"    TO      MCP-TABLE
-                   MOVE    "key7"          TO      MCP-PATHNAME
-                   PERFORM  900-SRYACT-READ-SEC
-                   PERFORM  UNTIL   FLG-SRYACT           =  1
-      *
-                     INITIALIZE                     SRYACCT-REC
-                     MOVE    SRY-HOSPNUM    TO      ACCT-HOSPNUM
-                     MOVE    SRY-NYUGAIKBN  TO      ACCT-NYUGAIKBN
-                     MOVE    SRY-PTID       TO      ACCT-PTID
-                     MOVE    SRY-SRYKA      TO      ACCT-SRYKA
-                     MOVE    SRY-SRYYM      TO      ACCT-SRYYM
-                     MOVE    SRY-ZAINUM     TO      ACCT-ZAINUM
-      *
-                     MOVE    SRYACCT-REC    TO      MCPDATA-REC
-                     MOVE    "tbl_sryacct"  TO      MCP-TABLE
-                     MOVE    "key31"        TO      MCP-PATHNAME
-                     PERFORM   900-DBSELECT-SEC
-      *
-                     IF  MCP-RC                =  ZERO
-                         MOVE    "tbl_sryacct"  TO      MCP-TABLE
-                         MOVE    "key31"        TO      MCP-PATHNAME
-                         PERFORM   900-DBFETCH-SEC
-                         IF      MCP-RC        =       ZERO
-      *
-                           MOVE    MCPDATA-REC  TO  SRYACCT-REC
-      *
-                           PERFORM    VARYING    IDX  FROM   1   BY   1
-                                UNTIL      IDX      >   31
-                             IF    ACCT-DAY(1 IDX)  NOT =  ZERO
-                                IF    IDX   >   WRK-DAY-YAKUKAN
-                                    MOVE  IDX   TO  WRK-DAY-YAKUKAN
-                                END-IF
-                             END-IF
-                           END-PERFORM
-      *
-                         END-IF
-                     END-IF
-      *
-                     MOVE    "tbl_sryacct"    TO      MCP-TABLE
-                     MOVE    "key31"          TO      MCP-PATHNAME
-                     PERFORM   900-CLOSE-SEC
-      *
-                     MOVE    "tbl_sryact"     TO      MCP-TABLE
-                     MOVE    "key7"           TO      MCP-PATHNAME
-                     PERFORM   900-SRYACT-READ-SEC
-      *
-                   END-PERFORM
+               IF    RECE200-SRYYM    >=  "200804"
+                 PERFORM   VARYING   IDX6   FROM    1   BY    1
+                            UNTIL    IDX6   >   TBL-YAKUKAN-MAX
+                    MOVE   TBL-YAKUKAN(IDX6)     TO  WRK-YAKUKAN-SRYCD
+                    PERFORM  2001Y-TAIIN-HANTEI-ZENGETU-SEC
+                 END-PERFORM
+               ELSE
+                    MOVE   CONS-YAKUKAN-COMMENT  TO  WRK-YAKUKAN-SRYCD
+                    PERFORM  2001Y-TAIIN-HANTEI-ZENGETU-SEC
                END-IF
-      *
-               MOVE    "tbl_sryact"      TO      MCP-TABLE
-               MOVE    "key7"            TO      MCP-PATHNAME
-               PERFORM   900-CLOSE-SEC
       *
              END-IF
       *
@@ -2222,6 +2180,119 @@
       *
            .
        2001-TAIIN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Åö·î¤ËÌôºÞ´ÉÍý»ØÆ³ÎÁ¤¬¤¢¤ë¤«¥Á¥§¥Ã¥¯
+      *****************************************************************
+       2001X-TAIIN-HANTEI-TOUGETU-SEC          SECTION.
+      *
+           INITIALIZE                    SRYACT-REC
+           MOVE    RECE220-HOSPNUM   TO  SRY-HOSPNUM
+           MOVE    RECE220-NYUGAIKBN TO  SRY-NYUGAIKBN
+           MOVE    RECE220-PTID      TO  SRY-PTID
+           MOVE    RECE220-SRYYM     TO  SRY-SRYYM
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (1)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (2)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (3)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (4)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (5)
+           MOVE    SRYACT-REC        TO  MCPDATA-REC
+           MOVE    "tbl_sryact"      TO  MCP-TABLE
+           MOVE    "key7"            TO  MCP-PATHNAME
+           PERFORM   900-DBSELECT-SEC
+      *
+           IF      MCP-RC               =       ZERO
+             MOVE    "tbl_sryact"    TO  MCP-TABLE
+             MOVE    "key7"          TO  MCP-PATHNAME
+             PERFORM  900-SRYACT-READ-SEC
+             IF      FLG-SRYACT  =  ZERO
+                   MOVE    1         TO  FLG-YAKUKAN-COMMENT
+             END-IF
+           END-IF
+      *
+           MOVE    "tbl_sryact"      TO  MCP-TABLE
+           MOVE    "key7"            TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+           .
+       2001X-TAIIN-HANTEI-TOUGETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Á°·î¤ËÌôºÞ´ÉÍý»ØÆ³ÎÁ¤¬¤¢¤ë¤«¥Á¥§¥Ã¥¯
+      *****************************************************************
+       2001Y-TAIIN-HANTEI-ZENGETU-SEC          SECTION.
+      *
+           INITIALIZE                    SRYACT-REC
+           MOVE    RECE220-HOSPNUM   TO  SRY-HOSPNUM
+           MOVE    RECE220-NYUGAIKBN TO  SRY-NYUGAIKBN
+           MOVE    RECE220-PTID      TO  SRY-PTID
+           MOVE    WRK-ZENYYMM       TO  SRY-SRYYM
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (1)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (2)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (3)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (4)
+           MOVE    WRK-YAKUKAN-SRYCD TO  SRY-SRYCD (5)
+           MOVE    SRYACT-REC        TO  MCPDATA-REC
+           MOVE    "tbl_sryact"      TO  MCP-TABLE
+           MOVE    "key7"            TO  MCP-PATHNAME
+           PERFORM   900-DBSELECT-SEC
+      *
+           IF      MCP-RC               =       ZERO
+               MOVE    "tbl_sryact"     TO   MCP-TABLE
+               MOVE    "key7"           TO   MCP-PATHNAME
+               PERFORM  900-SRYACT-READ-SEC
+      *
+               PERFORM  UNTIL   FLG-SRYACT   =  1
+      *
+                 INITIALIZE                  SRYACCT-REC
+                 MOVE    SRY-HOSPNUM    TO   ACCT-HOSPNUM
+                 MOVE    SRY-NYUGAIKBN  TO   ACCT-NYUGAIKBN
+                 MOVE    SRY-PTID       TO   ACCT-PTID
+                 MOVE    SRY-SRYKA      TO   ACCT-SRYKA
+                 MOVE    SRY-SRYYM      TO   ACCT-SRYYM
+                 MOVE    SRY-ZAINUM     TO   ACCT-ZAINUM
+                 MOVE    SRYACCT-REC    TO   MCPDATA-REC
+                 MOVE    "tbl_sryacct"  TO   MCP-TABLE
+                 MOVE    "key31"        TO   MCP-PATHNAME
+                 PERFORM   900-DBSELECT-SEC
+      *
+                 IF  MCP-RC               =  ZERO
+                     MOVE    "tbl_sryacct"  TO  MCP-TABLE
+                     MOVE    "key31"        TO  MCP-PATHNAME
+                     PERFORM   900-DBFETCH-SEC
+                     IF      MCP-RC       =  ZERO
+                       MOVE    MCPDATA-REC  TO  SRYACCT-REC
+                       PERFORM   VARYING   IDX  FROM   1   BY   1
+                                  UNTIL    IDX    >   31
+                         IF    ACCT-DAY(1 IDX)  NOT =  ZERO
+                            IF    IDX   >   WRK-DAY-YAKUKAN
+                                MOVE  IDX   TO  WRK-DAY-YAKUKAN
+                            END-IF
+                         END-IF
+                       END-PERFORM
+                     END-IF
+                 END-IF
+      *
+                 INITIALIZE                  MCPAREA
+                 MOVE    "tbl_sryacct"  TO   MCP-TABLE
+                 MOVE    "key31"        TO   MCP-PATHNAME
+                 PERFORM   900-CLOSE-SEC
+      *
+                 MOVE    "tbl_sryact"   TO   MCP-TABLE
+                 MOVE    "key7"         TO   MCP-PATHNAME
+                 PERFORM   900-SRYACT-READ-SEC
+      *
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "tbl_sryact"      TO      MCP-TABLE
+           MOVE    "key7"            TO      MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+           .
+       2001Y-TAIIN-HANTEI-ZENGETU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4113,114 +4184,151 @@
                    MOVE  4    TO WRK-RECE230XX2-YUKOKETA(MAX-MEISAISU 1)
                    EVALUATE  TBL-RYOCOM2-IRYO-SRYCD(RYO-IDX3 IDX)
                      WHEN      "820000057"
+                     WHEN      "820000096"
                        MOVE "¡Ö£°£±¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000058"
+                     WHEN      "820000097"
                        MOVE "¡Ö£°£²¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000059"
+                     WHEN      "820000098"
                        MOVE "¡Ö£°£³¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000060"
+                     WHEN      "820000099"
                        MOVE "¡Ö£°£´¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000061"
+                     WHEN      "820000100"
                        MOVE "¡Ö£°£µ¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000062"
+                     WHEN      "820000101"
                        MOVE "¡Ö£°£¶¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000063"
+                     WHEN      "820000102"
                        MOVE "¡Ö£°£·¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000064"
+                     WHEN      "820000103"
                        MOVE "¡Ö£°£¸¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000065"
+                     WHEN      "820000104"
                        MOVE "¡Ö£°£¹¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000066"
+                     WHEN      "820000105"
                        MOVE "¡Ö£±£°¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000067"
+                     WHEN      "820000106"
                        MOVE "¡Ö£±£±¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000068"
+                     WHEN      "820000107"
                        MOVE "¡Ö£±£²¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000069"
+                     WHEN      "820000108"
                        MOVE "¡Ö£±£³¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000070"
+                     WHEN      "820000109"
                        MOVE "¡Ö£±£´¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000071"
+                     WHEN      "820000110"
                        MOVE "¡Ö£±£µ¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000072"
+                     WHEN      "820000111"
                        MOVE "¡Ö£±£¶¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000073"
+                     WHEN      "820000112"
                        MOVE "¡Ö£±£·¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000074"
+                     WHEN      "820000113"
                        MOVE "¡Ö£±£¸¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000075"
+                     WHEN      "820000114"
                        MOVE "¡Ö£±£¹¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000076"
+                     WHEN      "820000115"
                        MOVE "¡Ö£²£°¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000077"
+                     WHEN      "820000116"
                        MOVE "¡Ö£²£±¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000078"
+                     WHEN      "820000117"
                        MOVE "¡Ö£²£²¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000079"
+                     WHEN      "820000118"
                        MOVE "¡Ö£²£³¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000080"
+                     WHEN      "820000119"
                        MOVE "¡Ö£²£´¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000081"
+                     WHEN      "820000120"
                        MOVE "¡Ö£²£µ¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000082"
+                     WHEN      "820000121"
                        MOVE "¡Ö£²£¶¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000083"
+                     WHEN      "820000122"
                        MOVE "¡Ö£²£·¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000084"
+                     WHEN      "820000123"
                        MOVE "¡Ö£²£¸¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000085"
+                     WHEN      "820000124"
                        MOVE "¡Ö£²£¹¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000086"
+                     WHEN      "820000125"
                        MOVE "¡Ö£³£°¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000087"
+                     WHEN      "820000126"
                        MOVE "¡Ö£³£±¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000088"
+                     WHEN      "820000127"
                        MOVE "¡Ö£³£²¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000089"
+                     WHEN      "820000128"
                        MOVE "¡Ö£³£³¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000090"
+                     WHEN      "820000129"
                        MOVE "¡Ö£³£´¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000091"
+                     WHEN      "820000130"
                        MOVE "¡Ö£³£µ¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000092"
+                     WHEN      "820000131"
                        MOVE "¡Ö£³£¶¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                      WHEN      "820000093"
+                     WHEN      "820000132"
                        MOVE "¡Ö£³£·¡×"
                               TO WRK-RECE230XX2-NAME(MAX-MEISAISU 1)
                    END-EVALUATE

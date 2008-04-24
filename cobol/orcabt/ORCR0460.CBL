@@ -101,6 +101,11 @@
       *
       *  04.01.01    NACL-門脇    07/10/31  公務災害対応
       *  04.01.02    NACL-門脇    07/11/26  特定器材商品名記載対応
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （初診（夜間・早朝等）加算追加）
+      *                                     （診療区分６４：病理診断対応）
+      *                                     （再就労、職業復帰：記載順対応）
+      *  04.02.02    NACL-門脇    08/04/21  ８０その他記載順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -774,6 +779,8 @@
            03  CONS-SYOSIN-KASAN28 PIC X(09) VALUE "111011810".
       *    電子化加算
            03  CONS-SYOSIN-KASAN29 PIC X(09) VALUE "111012370".
+      *    初診（夜間・早朝等）加算
+           03  CONS-SYOSIN-KASAN30 PIC X(09) VALUE "111012470".
       *
       *    外来迅速検体検査加算
            03  WRK-CONS-GAIJINKEN      PIC X(09)   VALUE 
@@ -1028,6 +1035,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                            PERFORM 2004-SRYKBN12-HENSYU-SEC
       *                検査
                        WHEN    "60"
+                       WHEN    "64"
                            PERFORM 2006-SRYKBN60-CHECK-SEC 
       *                それ以外
                        WHEN    OTHER
@@ -1520,6 +1528,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                                 CONS-SYOSIN-KASAN27 OR
                                                 CONS-SYOSIN-KASAN28 OR
       ***>                                      CONS-SYOSIN-KASAN29 OR
+                                                CONS-SYOSIN-KASAN30 OR
                                                 CONS-COMMENT5       OR
                                                 CONS-COMMENT6       OR
                                                 CONS-COMMENT7       OR
@@ -1710,7 +1719,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
            ELSE            
       *
       *        検査のとき剤が一つ以上なら”、”で編集
-               IF  RECE44-SRYKBN         =   "60"
+               IF  RECE44-SRYKBN         =   "60" OR "64"
                    PERFORM 20051-SRYKBNELSE-KENSA-SEC
                ELSE 
                    PERFORM 20052-SRYKBNELSE-CHECK-SEC
@@ -2134,8 +2143,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
            END-PERFORM
       *             
       *    検査のとき回数を集計
-           IF      WRK-ZAIWMAX(3)     >   ZERO
-           AND     RECE44-SRYKBN      =   "60"
+           IF     (WRK-ZAIWMAX(3)     >   ZERO        )
+           AND    (RECE44-SRYKBN      =   "60" OR "64")
                IF      TBL-ZAIW-SRYCD (3 1)   =   WRK-CONS-SAIKETSU1
                                               OR  WRK-CONS-SAIKETSU2
                                               OR  WRK-CONS-SAIKETSU3 
@@ -3243,6 +3252,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                        END-IF
                      END-IF
                  END-IF
+                 IF   RECE41-SRYYM   >=   "200804"
+                   EVALUATE  TBL-ZAIW-SRYCD1
+                     WHEN     "101130010"
+                       MOVE      ALL "9"     TO  TBL-ZAIW-CDKBN-AREA
+                       MOVE      999999991   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                     WHEN     "101800180"
+                       MOVE      ALL "9"     TO  TBL-ZAIW-CDKBN-AREA
+                       MOVE      999999992   TO  TBL-ZAIW-KOUHYOJYUNNUM
+                   END-EVALUATE
+                 END-IF
                END-IF
                MOVE    TBL-ZAIW-CDKBN-SYO  TO  RECE46-CDKBN-SYO
                MOVE    TBL-ZAIW-CDKBN-BU   TO  RECE46-CDKBN-BU
@@ -3264,7 +3283,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
       *--------------------------------------------------------------
                MOVE    RECE44-ZAITEN     TO  RECE46-ZAITEN
       *
-               IF      RECE44-SRYKBN     =   "60"
+               IF      RECE44-SRYKBN     =   "60" OR "64"
                        MOVE   TBL-ZAIW-KNSJISKBN
                                              TO  RECE46-KNSJISKBN
                ELSE
@@ -3297,6 +3316,17 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                MOVE    RECE44-SAFLG      TO  RECE46-SAFLG
       *
                MOVE    RECE44-OKIKAEFLG  TO  RECE46-OKIKAEFLG
+      *
+               IF      RECE44-SRYKBN     =   "80"
+                 IF  TBL-ZAIW-SRYCD1 = "120002710" OR "120002810" OR
+                                       "120002910" OR "120003010" OR
+                                       "120002470" OR "120002570" OR
+                                       "120003270"
+                       MOVE   ZERO   TO   RECE46-SYOHOUFLG
+                 ELSE
+                       MOVE    1     TO   RECE46-SYOHOUFLG
+                 END-IF
+               END-IF
       *
                WRITE   RECE46-REC
                IF  STS-RECE46          NOT =   ZERO

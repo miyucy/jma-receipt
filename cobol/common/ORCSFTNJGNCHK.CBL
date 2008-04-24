@@ -43,6 +43,7 @@
       *  03.05.03    NACL-ÌçÏÆ    07/08/01  ·îÅÓÃæ¤Î½êÆÀ¾ðÊóÊÑ¹¹ÂÐ±þ
       *  04.01.01    NACL-ÌçÏÆ    08/01/18  ºë¶Ì¸©ÀîÅçÄ®ÃÏÊý¸øÈñÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    08/01/31  ¼¢²ì¸©£´£´£±ÄÉ²Ã¤ËÈ¼¤¦½¤Àµ
+      *  04.02.01    NACL-ÌçÏÆ    08/03/19  À¸ÊÝ¤Î£·£¹Ê»ÍÑ»þ¤ÎÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -83,6 +84,7 @@
            03  WRK-HKNMST-JGNGAK2 PIC 9(06).
            03  WRK-KOHFTN         PIC 9(10).
            03  WRK-SEIKYU         PIC 9(10).
+           03  WRK-SKJ-FTN        PIC 9(10).
            03  WRK-PREFNUM        PIC 9(02).
       *
            03  WRK-TEISYOTOKU     PIC X(01).
@@ -618,6 +620,7 @@
                    MOVE      ZERO          TO      WRK-SEIKYU
                    MOVE      ZERO          TO      FLG-GENMEN
                    MOVE      ZERO          TO      FLG-DAYCHK
+                   MOVE      ZERO          TO      WRK-SKJ-FTN
                    PERFORM   UNTIL    FLG-SYUNOU  =   1
                        MOVE     ZERO       TO      FLG-ARI
                        PERFORM   VARYING   IDX1   FROM  1  BY  1
@@ -671,6 +674,16 @@
                                    END-IF
                                END-EVALUATE
                              END-IF
+                             IF  (LNK-FTNJGNCHK-NYUGAIKBN  = "1"     )
+                             AND (LNK-FTNJGNCHK-KOHNUM     = "012"   )
+                             AND (LNK-FTNJGNCHK-SRYYM     >= "200804")
+                               IF  (SYU-SYUHKNNUM     =   SPACE)
+                               AND (SYU-KOH-HKNNUM(1) =  "079" )
+                               AND (SYU-KOH-HKNNUM(2) =  "012" )
+                                 ADD  SYU-SKJ-FTN-RECE(1)
+                                                   TO  WRK-SKJ-FTN
+                               END-IF
+                             END-IF
                           END-IF
                        END-PERFORM
                        IF      LNK-FTNJGNCHK-NYUGAIKBN  =  "1"
@@ -706,6 +719,9 @@
                        EVALUATE   LNK-FTNJGNCHK-KOHNUM
                          WHEN       "012"
                            IF   WRK-SEIKYU            =   ZERO
+                               MOVE   01        TO  LNK-FTNJGNCHK-RC
+                           END-IF
+                           IF   WRK-SKJ-FTN  >=  14880
                                MOVE   01        TO  LNK-FTNJGNCHK-RC
                            END-IF
                          WHEN       "972"

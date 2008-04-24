@@ -28,6 +28,17 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （特記事項追加対応：２０）
+      *                                     （脳血管リハ（３）コード追加）
+      *                                     （介達牽引発症日記載廃止）
+      *                                     （初診（夜間・早朝等）加算追加）
+      *                                     （診療区分６４：病理診断対応）
+      *                                     （在宅コード追加）
+      *                                     （剤支援記載対象コード修正）
+      *                                     （小児特定疾患カウンセリング料
+      *                                       の自動記載対応）
+      *                                     （在支病自動記載対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -120,6 +131,7 @@
            03  FLG-HOUSIJI-COM                         PIC 9(01).
            03  FLG-OSIN-COM                            PIC 9(01).
            03  FLG-ZAIHOU-COM                          PIC 9(01).
+           03  FLG-SYOUNI-COM                          PIC 9(01).
            03  FLG-HOUTEN-COM                          PIC 9(01).
            03  FLG-SYOBYO-COM                          PIC 9(01).
            03  FLG-RYOYO-COM                           PIC 9(01).
@@ -263,6 +275,7 @@
            03  WRK-SRYCD                               PIC 9(09).
       *
            03  WRK-SISETU613                           PIC 9(01).
+           03  WRK-SISETU695                           PIC 9(01).
       *
            03  WRK-FILMTEN                             PIC 9(07)V9(02).
            03  WRK-FILMTEN2                            PIC 9(07)V9(02).
@@ -360,6 +373,7 @@
            03  CONS-TOKKI17        PIC X(14) VALUE "00000099990117".
            03  CONS-TOKKI18        PIC X(14) VALUE "00000099990118".
            03  CONS-TOKKI19        PIC X(14) VALUE "00000099990119".
+           03  CONS-TOKKI20        PIC X(14) VALUE "00000099990120".
       *
       *    病床数編集フラグ編集の為のコード（特定疾患療養指導料等）
            03  CONS-SIDORYO1       PIC X(09) VALUE "113001810".
@@ -370,10 +384,9 @@
            03  CONS-SIDORYO6       PIC X(09) VALUE "113700810".
       *
       *    在支援フラグ編集の為のコード
-           03  CONS-ZAISIEN1       PIC X(09) VALUE "114001110".
-           03  CONS-ZAISIEN2       PIC X(09) VALUE "114011570".
-           03  CONS-ZAISIEN3       PIC X(09) VALUE "114011670".
-           03  CONS-ZAISIEN4       PIC X(09) VALUE "114011770".
+           03  CONS-ZAISIEN1       PIC X(09) VALUE "114011570".
+           03  CONS-ZAISIEN2       PIC X(09) VALUE "114011670".
+           03  CONS-ZAISIEN3       PIC X(09) VALUE "114011770".
       *
       *    再診（乳幼児）加算
            03  CONS-NYUYOJI        PIC X(09) VALUE "112000970".
@@ -512,6 +525,8 @@
            03  CONS-NOUKE5-COMMENT   PIC X(09)  VALUE  "180030110".
       **   脳血管疾患等リハビリテーション医学管理料（２）
            03  CONS-NOUKE6-COMMENT   PIC X(09)  VALUE  "180030210".
+      *    脳血管疾患等リハビリテーション料（３）
+           03  CONS-NOUKE7-COMMENT   PIC X(09)  VALUE  "180030810".
       *    運動器リハビリテーション料（１）
            03  CONS-UNDOKI1-COMMENT  PIC X(09)  VALUE  "180027810".
       *    運動器リハビリテーション料（２）
@@ -546,6 +561,8 @@
            03  CONS-ZAIHOU-COMMENT   PIC X(09)  VALUE  "114001110".
       *    訪問診療日コメント
            03  CONS-ZAIHOU2-COMMENT  PIC X(09)  VALUE  "840000066".
+      *    在宅患者訪問診療料（居住系）
+           03  CONS-ZAIHOU3-COMMENT  PIC X(09)  VALUE  "114012910".
       *
       *    在宅時医学総合管理料１（院外処方せん）
            03  CONS-ZAIIKAN1-COMMENT PIC X(09)  VALUE  "114012210".
@@ -555,6 +572,21 @@
            03  CONS-ZAIIKAN3-COMMENT PIC X(09)  VALUE  "114012410".
       *    在宅時医学総合管理料２（院外処方せん）
            03  CONS-ZAIIKAN4-COMMENT PIC X(09)  VALUE  "114007510".
+      *    特定施設入居時等医学総合管理料１（処方せんを交付）
+           03  CONS-ZAIIKAN5-COMMENT PIC X(09)  VALUE  "114013010".
+      *    特定施設入居時等医学総合管理料１（処方せんを交付しない）
+           03  CONS-ZAIIKAN6-COMMENT PIC X(09)  VALUE  "114013110".
+      *    特定施設入居時等医学総合管理料２（処方せんを交付）
+           03  CONS-ZAIIKAN7-COMMENT PIC X(09)  VALUE  "114013210".
+      *    特定施設入居時等医学総合管理料２（処方せんを交付しない）
+           03  CONS-ZAIIKAN8-COMMENT PIC X(09)  VALUE  "114013310".
+      *
+      *    小児特定疾患カウンセリング料（１回目）
+           03  CONS-SYOUNI1-COMMENT  PIC X(09)  VALUE  "113000810".
+      *    小児特定疾患カウンセリング料（２回目）
+           03  CONS-SYOUNI2-COMMENT  PIC X(09)  VALUE  "113009910".
+      *    小児特定第１回目カウンセリングコメント
+           03  CONS-SYOUNI3-COMMENT  PIC X(09)  VALUE  "840000104".
       *
       *    外来迅速検体検査加算
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -737,6 +769,7 @@
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *       施設基準情報
               MOVE     ZERO     TO     WRK-SISETU613
+              MOVE     ZERO     TO     WRK-SISETU695
               PERFORM  VARYING  IDXA   FROM   1   BY  1
                         UNTIL   IDXA     >    2
                  INITIALIZE                   SYSKANRI-REC
@@ -755,6 +788,7 @@
                        CONTINUE
                      WHEN     2
                        MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
+                       MOVE  SYS-1006-SSTKIJUN(195)  TO  WRK-SISETU695
                    END-EVALUATE
                  END-IF
               END-PERFORM
@@ -925,6 +959,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                 FLG-OSIN-COM
                                                 FLG-ZAIHOU-COM
                                                 FLG-TAHOKEN
+                                                FLG-SYOUNI-COM
       *
                                MOVE  ZERO  TO   WRK-FILMTEN
       *
@@ -955,7 +990,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        CONS-TOKKI16 OR
                                                        CONS-TOKKI17 OR
                                                        CONS-TOKKI18 OR
-                                                       CONS-TOKKI19
+                                                       CONS-TOKKI19 OR
+                                                       CONS-TOKKI20
                                       CONTINUE
                                  ELSE
                                       MOVE  ZERO  TO   FLG-SHOSAISIN    
@@ -976,6 +1012,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        FLG-OSIN-COM
                                                        FLG-ZAIHOU-COM
                                                        FLG-TAHOKEN
+                                                       FLG-SYOUNI-COM
       *
                                       MOVE  ZERO  TO   WRK-FILMTEN
       *
@@ -1007,6 +1044,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                      FLG-OSIN-COM
                                                      FLG-ZAIHOU-COM
                                                      FLG-TAHOKEN
+                                                     FLG-SYOUNI-COM
       *
                                     MOVE  ZERO  TO   WRK-FILMTEN
       *
@@ -1217,7 +1255,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                       OR  CONS-TOKKI16(6:9)
                                       OR  CONS-TOKKI17(6:9)
                                       OR  CONS-TOKKI18(6:9)
-                                      OR  CONS-TOKKI19(6:9) )
+                                      OR  CONS-TOKKI19(6:9)
+                                      OR  CONS-TOKKI20(6:9) )
              OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
              OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                      (TNS-TEN               =  ZERO )       )
@@ -1254,7 +1293,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        OR  CONS-TOKKI16(6:9)
                                        OR  CONS-TOKKI17(6:9)
                                        OR  CONS-TOKKI18(6:9)
-                                       OR  CONS-TOKKI19(6:9) )
+                                       OR  CONS-TOKKI19(6:9)
+                                       OR  CONS-TOKKI20(6:9) )
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
@@ -1280,8 +1320,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  END-IF
                END-IF
       *
-               IF    ( SRY-SRYKBN         =     "60" )
-               AND   ( TNS-KNSJISKBN      =     2    )
+               IF    ( SRY-SRYKBN         =     "60" OR "64" )
+               AND   ( TNS-KNSJISKBN      =      2           )
                    MOVE    TNS-KNSJISKBN        TO  RECE120-KNSJISKBN
                END-IF
       *
@@ -1311,7 +1351,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *          END-IF
                END-IF
       *
-               IF      SRY-SRYKBN    =   "40" OR "50" OR "54" OR "60"
+               IF      SRY-SRYKBN = "40" OR "50" OR "54" OR "60" OR "64"
                   IF   SRY-SRYCD(IDX2)(1:1)  =  "7"
                   AND  TNS-DATAKBN           =  "3"
                          COMPUTE WRK-FILMTEN2   =
@@ -1873,6 +1913,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            IF      RECE120-SRYKBN      =     "40"
       *       介達牽引（発症日記載）
               IF   RECE100-SRYYM      >=    "200604"
+              AND  RECE100-SRYYM      <=    "200803"
                 IF   SRY-SRYCD(IDX2)  =     CONS-KAITATU-COMMENT
                         MOVE   "1"    TO    RECE100-COMCNTFLG
                         MOVE   "1"    TO    RECE120-KAITATU-COMMENT
@@ -1927,6 +1968,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                             CONS-NOUKE2-COMMENT   OR
                                             CONS-NOUKE3-COMMENT   OR
                                             CONS-NOUKE4-COMMENT   OR
+                                            CONS-NOUKE7-COMMENT   OR
                                             CONS-UNDOKI1-COMMENT  OR
                                             CONS-UNDOKI2-COMMENT  OR
                                             CONS-UNDOKI3-COMMENT  OR
@@ -1981,6 +2023,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                       OR    CONS-NOUKE4-COMMENT
                                       OR    CONS-NOUKE5-COMMENT
                                       OR    CONS-NOUKE6-COMMENT
+                                      OR    CONS-NOUKE7-COMMENT
                         MOVE   "1"    TO    RECE100-COMCNTFLG
                         MOVE   "1"    TO    RECE120-NOUKE-COMMENT
                 END-IF
@@ -2054,6 +2097,18 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    MOVE  SPACE  TO    RECE120-FLG-ZENSOKU-COMMENT
                    MOVE    1    TO    FLG-ZENSOKU-COM
               END-IF
+      *
+              IF   RECE100-SRYYM    >=     "200804"
+                IF   (SRY-SRYCD(IDX2)   =     CONS-SYOUNI1-COMMENT
+                                        OR    CONS-SYOUNI2-COMMENT)
+                AND  (FLG-SYOUNI-COM    =     ZERO                )
+                   MOVE   "1"   TO    RECE120-FLG-SYOUNI-COMMENT
+                END-IF
+                IF    SRY-SRYCD(IDX2)   =     CONS-SYOUNI3-COMMENT
+                   MOVE  SPACE  TO    RECE120-FLG-SYOUNI-COMMENT
+                   MOVE    1    TO    FLG-SYOUNI-COM
+                END-IF
+              END-IF
            END-IF
       *
            IF      RECE120-SRYKBN      =     "14"
@@ -2084,13 +2139,19 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                       OR    CONS-ZAIIKAN2-COMMENT
                                       OR    CONS-ZAIIKAN3-COMMENT
                                       OR    CONS-ZAIIKAN4-COMMENT
+                                      OR    CONS-ZAIIKAN5-COMMENT
+                                      OR    CONS-ZAIIKAN6-COMMENT
+                                      OR    CONS-ZAIIKAN7-COMMENT
+                                      OR    CONS-ZAIIKAN8-COMMENT
                                       OR    CONS-ZAIHOU-COMMENT
+                                      OR    CONS-ZAIHOU3-COMMENT
                    MOVE   "1"   TO    RECE100-COMCNTFLG
                    MOVE   "2"   TO    RECE120-FLG-OSIN-COMMENT
               END-IF
       *
-              IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT
-              AND  FLG-ZAIHOU-COM     =     ZERO
+              IF   (SRY-SRYCD(IDX2)   =     CONS-ZAIHOU-COMMENT
+                                      OR    CONS-ZAIHOU3-COMMENT)
+              AND  (FLG-ZAIHOU-COM    =     ZERO                )
                    MOVE   "1"   TO    RECE120-FLG-ZAIHOU-COMMENT
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-ZAIHOU2-COMMENT
@@ -2098,14 +2159,35 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                    MOVE    1    TO    FLG-ZAIHOU-COM
               END-IF
       *
-              IF  (RECE100-SRYYM      >=     "200604")
-              AND (WRK-SISETU613      =      1      )
-                IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1    OR
-                                            CONS-ZAISIEN2    OR
-                                            CONS-ZAISIEN3    OR
-                                            CONS-ZAISIEN4
-                   MOVE   "1"   TO    RECE100-COMCNTFLG
-                   MOVE   "1"   TO    RECE120-FLG-ZAISIEN-COMMENT
+              IF   WRK-SISETU613      =      1
+                IF   RECE100-SRYYM   >=     "200604"
+                AND  RECE100-SRYYM   <=     "200803"
+                  IF SRY-SRYCD(IDX2)    =     CONS-ZAIHOU-COMMENT   OR
+                                              CONS-ZAISIEN1         OR
+                                              CONS-ZAISIEN2         OR
+                                              CONS-ZAISIEN3
+                     MOVE   "1"   TO    RECE100-COMCNTFLG
+                     MOVE   "1"   TO    RECE120-FLG-ZAISIEN-COMMENT
+                  END-IF
+                END-IF
+                IF   RECE100-SRYYM   >=     "200804"
+                  IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1         OR
+                                              CONS-ZAISIEN2         OR
+                                              CONS-ZAISIEN3
+                     MOVE   "1"   TO    RECE100-COMCNTFLG
+                     MOVE   "1"   TO    RECE120-FLG-ZAISIEN-COMMENT
+                  END-IF
+                END-IF
+              ELSE
+                IF   WRK-SISETU695      =      1
+                  IF   RECE100-SRYYM    >=     "200804"
+                    IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1       OR
+                                                CONS-ZAISIEN2       OR
+                                                CONS-ZAISIEN3
+                       MOVE   "1"   TO    RECE100-COMCNTFLG
+                       MOVE   "2"   TO    RECE120-FLG-ZAISIEN-COMMENT
+                    END-IF
+                  END-IF
                 END-IF
               END-IF
            END-IF
@@ -2152,7 +2234,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
            END-IF
       *
            IF      RECE120-SRYKBN   =  "14" OR "40" OR "50" OR "54"
-                                           OR "60" OR "70" OR "80"
+                                    OR "60" OR "70" OR "80" OR "64"
               SET     TBL-SANSO    TO  1
               SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
                    AT  END
@@ -2288,7 +2370,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                        MOVE  ACCT-ZAITEN       TO   WK-ZAITEN
                        IF    SRY-SRYKBN  =  "31" OR "32" OR "33" OR
                                             "40" OR "50" OR "54" OR
-                                            "60" OR "70" OR "80"
+                                            "60" OR "70" OR "80" OR
+                                            "64"
                            MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
                            COMPUTE  WK-YKZTEN  =  ACCT-KIZAITEN
                                                +  ACCT-YKZTEN
@@ -2309,7 +2392,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                             "31"  OR  "32"  OR  "33" OR
                                             "40"  OR  "50"  OR  "54" OR
                                             "60"  OR  "70"  OR  "80" OR
-                                            "13"  OR  "14"
+                                            "13"  OR  "14"  OR  "64"
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -2332,8 +2415,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                END-IF
                IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
                                       "31"   OR   "32"   OR   "33"   OR
-                                                  "50"   OR   "54"   OR
-                                      "60"   OR   "70"
+                                      "50"   OR   "54"   OR   "60"   OR
+                                      "70"   OR   "64"
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
@@ -2390,6 +2473,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                      EVALUATE    WRK-TNS-TIMEKSNKBN(IDX3)
                          WHEN    1
                          WHEN    5
+                         WHEN    6
                              EVALUATE   RECE100-SHOSHINTIME
                                WHEN   SPACE
                                   MOVE  "1"     TO   RECE100-SHOSHINTIME
@@ -2787,7 +2871,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                         (SRY-SRYCD(IDX3)     NOT =    "114011770")   AND
                         (SRY-SRYCD(IDX3)     NOT =    "114011870")   AND
                         (SRY-SRYCD(IDX3)     NOT =    "114012070")))
-                   OR (  SRY-SRYCD(IDX3)         =    "114001110"  )
+                   OR (  SRY-SRYCD(IDX3) =    CONS-ZAIHOU-COMMENT  )
+                   OR (  SRY-SRYCD(IDX3) =    CONS-ZAIHOU3-COMMENT )
                        MOVE   1              TO   FLG-ZAITAKU
                        ADD    WK-ZAIKAISU    TO   RECE100-KAISU(13)
                        COMPUTE   RECE100-TENSU(13 1)  =
@@ -3012,6 +3097,7 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    検査のレセ点数欄の編集
                WHEN    "60"
+               WHEN    "64"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE100-KAISU(32)
                    END-IF
@@ -3108,10 +3194,10 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                       UNTIL  ( IDU   >   TBL-ZAICHECK-MAX )
                        OR    ( FLG-RINYAK  NOT =  ZERO    )
       *
-              IF  ( IDU  =  1                          )
-              OR  ((IDU  =  2) AND (ACCT-SRYKBN = "60"))
-              OR  ((IDU  =  3) AND (ACCT-SRYKBN = "80"))
-              OR  ((IDU  =  4) AND (ACCT-SRYKBN = "80"))
+              IF  ( IDU  =  1                                  )
+              OR  ((IDU  =  2) AND (ACCT-SRYKBN = "60" OR "64"))
+              OR  ((IDU  =  3) AND (ACCT-SRYKBN = "80"        ))
+              OR  ((IDU  =  4) AND (ACCT-SRYKBN = "80"        ))
       *
                  INITIALIZE                   SRYACT-REC
 grpsys           MOVE  RECE100-HOSPNUM     TO  SRY-HOSPNUM
@@ -3653,8 +3739,10 @@ grpsys         PERFORM 900-DBFETCH-SEC
            END-PERFORM
            IF      FLG-SET    =   ZERO
                MOVE  ZERO                    TO  WRK-SISETU613
+               MOVE  ZERO                    TO  WRK-SISETU695
            ELSE
                MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
+               MOVE  SYS-1006-SSTKIJUN(195)  TO  WRK-SISETU695
            END-IF
       *
            .

@@ -42,6 +42,11 @@
       *
       *  03.04.01    NACL-Æ£¸¶    06/12/21  Æþ±¡ÎÁ²Ã»»¤Î¥³¥á¥ó¥È¤òµ­Ï¿¤¹¤ë
       *  03.05.01    NACL-¾®Æ¦Âô  07/06/06  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *
+      *  04.02.01    NACL-Æ£¸¶    08/03/25  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¹­°èÏ¢¹çÂÐ±þ
+      *                                     ¿ÇÎÅ¶èÊ¬£¶£´¤ò£¶£°¤ËÊÑ¹¹
+      *  04.02.02    NACL-Æ£¸¶    08/04/10  ¥ì¥»ÅÅÍÑÆþ±¡ÎÁ²Ã»»¥Õ¥é¥°ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -143,6 +148,8 @@
            03  FLG-READ                                PIC 9(01).
            03  FLG-RECE65                              PIC 9(01).
       *
+           03  FLG-SYSKANRI            PIC 9(01).
+      *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
@@ -166,6 +173,8 @@
                                        PIC X(01).
                05  WRK-PARA-SYARECEKBN PIC X(01).
                05  WRK-PARA-KKHRECEKBN PIC X(01).
+               05  WRK-PARA-KOUIKIRECEKBN
+                                       PIC X(01).
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-RECEERR             PIC X(200). 
@@ -192,6 +201,8 @@
       *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
+      *
+           COPY    "CPSK200501.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
@@ -260,6 +271,31 @@
            MOVE    "ORCR0250"      TO  JOB-PGID
            PERFORM   900-CALL-ORCSJOB-SEC
       *
+      *    ¥ì¥»¥×¥ÈÊÔ½¸¶èÊ¬¾ðÊó
+           MOVE    SPACE               TO  SYS-200501-REC
+           INITIALIZE                      SYS-200501-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
+           MOVE    "2005"              TO  SYS-200501-KANRICD
+           MOVE    "01"                TO  SYS-200501-KBNCD
+           MOVE    WRK-PARA-SRYYM      TO  SYS-200501-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
+           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
+           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+           ELSE    
+               MOVE    SPACE           TO  SYS-200501-REC
+               INITIALIZE                  SYS-200501-REC
+           END-IF
+           IF      SYS-200501-KOUIKIRECEKBN
+                                       =   SPACE
+               MOVE    ZERO        TO  SYS-200501-KOUIKIRECEKBN
+           END-IF
+           MOVE    SYS-200501-KOUIKIRECEKBN
+                                   TO  WRK-PARA-KOUIKIRECEKBN 
+           DISPLAY "KOUIKIRECEKBN=" WRK-PARA-KOUIKIRECEKBN
+      *
            MOVE    "RECE641"           TO  RECE64PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE64PARA-TERMID
            MOVE    WRK-PARA-HOSPNUM    TO  RECE64PARA-HOSPNUM
@@ -324,10 +360,14 @@
                    MOVE    WRK-HKNCOMBI    TO  RECE64-HKNCOMBI
                END-IF
            ELSE
-               MOVE    RECE64-SRYKBN       TO  RECE641-SRYKBN
-               IF      RECE64-SRYKBN   >=  "90"
-                   IF  RECE64-HKNCOMBI     =   ZERO
-                       MOVE    WRK-HKNCOMBI    TO  RECE64-HKNCOMBI
+               IF      RECE64-SRYKBN   =   "64"
+                   MOVE    "60"            TO  RECE641-SRYKBN
+               ELSE
+                   MOVE    RECE64-SRYKBN       TO  RECE641-SRYKBN
+                   IF      RECE64-SRYKBN   >=  "90"
+                       IF  RECE64-HKNCOMBI     =   ZERO
+                           MOVE    WRK-HKNCOMBI    TO  RECE64-HKNCOMBI
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -350,6 +390,7 @@
            MOVE    RECE64-KNSJISGRPKBN TO  RECE641-KNSJISGRPKBN
            MOVE    RECE64-KNSJISKBN    TO  RECE641-KNSJISKBN
            MOVE    RECE64-DAY-AREA     TO  RECE641-DAY-AREA
+           MOVE    RECE641-NYUKSNFLG   TO  RECE641-NYUKSNFLG
       *
            WRITE   RECE641-REC
            ADD     1                   TO  CNT-OUT
@@ -524,15 +565,16 @@
                                                    OR  "1"  )  AND
                              ( RECE64-TEISYUTUSAKI
                                                    =   "2"  )      )
+                       OR  ( ( WRK-PARA-KOUIKIRECEKBN
+                                                   =   ZERO
+                                                   OR  "1"  )  AND
+                             ( RECE64-TEISYUTUSAKI
+                                                   =   "6"  )      )
                        OR  (   RECE64-RECESYUBETU  =   ZERO   OR 
                                                        8888   OR 
                                                        6666        )
-      ****             OR  ( RECE64-SRYKBN         >=  "90"   AND 
-      ****                                         <   "99"        )
                        OR  ( RECE64-SRYKBN         >=  "95"   AND 
                                                    <   "99"        )
-      ****             OR  ( ( RECE64-SRYKBN = "90" OR "92" )  AND 
-      ****                   ( RECE64-ZAITEN  NOT =  ZERO   )      )
                                CONTINUE
                        ELSE
                            MOVE    1           TO  FLG-READ
@@ -546,6 +588,35 @@
            END-PERFORM
            .
        900-RECE64-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ
+      *****************************************************************
+       910-SYSKANRI-INV-SEC         SECTION.
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       910-SYSKANRI-INV-EXT.
            EXIT.
       *
       *****************************************************************
@@ -563,6 +634,41 @@
                                    SPA-AREA
            .
        900-CALL-ORCSJOB-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
+      *****************************************************************
+       900-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       900-DBSELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *****************************************************************
+       900-DBFETCH-SEC                SECTION.
+      *
+           MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *****************************************************************
+       900-CLOSE-SEC               SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
+           .
+       900-CLOSE-EXT.
            EXIT.
       *
       *****************************************************************

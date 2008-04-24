@@ -52,6 +52,8 @@
       *  03.05.03    NACL-ÌçÏÆ    07/07/17  ¸ÄÊÌ»þ¤Î¥·¥¹¥Æ¥à´ÉÍýÊÔ½¸½¤Àµ
       *  04.01.01    NACL-ÌçÏÆ    07/11/01  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/12/19  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
+      *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡ÊºÆ½¢Ï«¡§±ßÊÑ¹¹ÂÐ±þ¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1499,8 +1501,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       CONS-ROUSAI21
                             ADD    TNS-TEN      TO    WRK-KIN
                          END-IF
-                         IF  SRY-SRYCD(SRYACT-IDX) =  CONS-ROUSAI3  OR
-                                                      CONS-ROUSAI4  OR
+                         IF ( SRY-SRYCD(SRYACT-IDX) = CONS-ROUSAI4  OR
                                                       CONS-ROUSAI5  OR
                                                       CONS-ROUSAI6  OR
                                                       CONS-ROUSAI7  OR
@@ -1516,7 +1517,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       CONS-ROUSAI17 OR
                                                       CONS-ROUSAI18 OR
                                                       CONS-ROUSAI19 OR
-                                                      CONS-ROUSAI20
+                                                      CONS-ROUSAI20 )
+                         OR ((SRY-SRYCD(SRYACT-IDX) = CONS-ROUSAI3 ) AND
+                             (RECE82-SRYYM          < "200804"     ))
                             ADD    TNS-TEN      TO    WRK-KIN2
                          END-IF
                          IF  ( ACCT-SRYKBN                =  "80"    ) 
@@ -1531,9 +1534,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                             ADD    120          TO    WRK-KIN2
                          END-IF
                      ELSE 
-                         IF  SRY-SRYCD(SRYACT-IDX) =  CONS-ROUSAI1  OR
+                         IF ( SRY-SRYCD(SRYACT-IDX) = CONS-ROUSAI1  OR
                                                       CONS-ROUSAI2  OR
-                                                      CONS-ROUSAI3  OR
                                                       CONS-ROUSAI4  OR
                                                       CONS-ROUSAI5  OR
                                                       CONS-ROUSAI6  OR
@@ -1551,7 +1553,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       CONS-ROUSAI18 OR
                                                       CONS-ROUSAI19 OR
                                                       CONS-ROUSAI20 OR
-                                                      CONS-ROUSAI21
+                                                      CONS-ROUSAI21 )
+                         OR ((SRY-SRYCD(SRYACT-IDX) = CONS-ROUSAI3 ) AND
+                             (RECE82-SRYYM          < "200804"     ))
                             ADD    TNS-TEN      TO    WRK-KIN
                             COMPUTE  WRK-TEN  =   WRK-TEN   +
                                      ( TNS-TEN / 10)
@@ -1761,9 +1765,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                      IF       FLG-TENSU      =    ZERO
       *
-                       IF   SRY-SRYCD(SRYACT-IDX) =  CONS-ROUSAI1  OR
+                       IF ( SRY-SRYCD(SRYACT-IDX) =  CONS-ROUSAI1  OR
                                                      CONS-ROUSAI2  OR
-                                                     CONS-ROUSAI3  OR
                                                      CONS-ROUSAI4  OR
                                                      CONS-ROUSAI5  OR
                                                      CONS-ROUSAI6  OR
@@ -1781,7 +1784,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                      CONS-ROUSAI18 OR
                                                      CONS-ROUSAI19 OR
                                                      CONS-ROUSAI20 OR
-                                                     CONS-ROUSAI21
+                                                     CONS-ROUSAI21 )
+                       OR ((SRY-SRYCD(SRYACT-IDX) =  CONS-ROUSAI3 ) AND
+                           (RECE82-SRYYM          <  "200804"     ))
       *
                             COMPUTE  WRK-TEN-JI   =  TNS-TEN / 10
                             COMPUTE  TBL-SYUTEN-JI(IDY)  =

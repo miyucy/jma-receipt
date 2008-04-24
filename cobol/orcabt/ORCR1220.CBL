@@ -29,6 +29,17 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  04.02.01    NACL-ÌçÏÆ    08/03/10  ¡û¡û¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ¤Î¥Õ¥é¥°ÊÔ½¸½¤Àµ
+      *  04.02.02    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡Ê³°Çñ¡§Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ¤Î¿ÇÎÅ¹Ô°Ù
+      *                                             ¥³¡¼¥É¼èÆÀ¡Ë
+      *                                     ¡ÊÆÃµ­»ö¹àÄÉ²ÃÂÐ±þ¡§£²£°¡Ë
+      *                                     ¡ÊÌôºÞ´ÉÍý»ØÆ³ÎÁ¥³¡¼¥ÉÄÉ²Ã¡Ë
+      *                                     ¡ÊÇ¾·ì´É¥ê¥Ï¡Ê£³¡Ë¥³¡¼¥ÉÄÉ²Ã¡Ë
+      *                                     ¡Ê²ðÃ£¸£°úÈ¯¾ÉÆüµ­ºÜÇÑ»ß¡Ë
+      *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
+      *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *                                     ¡Êºß»ÙÉÂ¼«Æ°µ­ºÜÂÐ±þ¡Ë
+      *  04.02.03    NACL-ÌçÏÆ    08/04/03  ¡û¡û¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ¤Î¥Õ¥é¥°ÊÔ½¸½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -360,6 +371,7 @@
                                       OCCURS 31.
       *
            03  WRK-SISETU613       PIC 9(01).
+           03  WRK-SISETU695       PIC 9(01).
       *
       *    ¿ô»úÈ¾³ÑÁ´³ÑÊÑ´¹ÍÑ
            03  WRK-CHAR-IDX PIC 9(02).
@@ -421,6 +433,7 @@
            03  CONS-TOKKI17        PIC X(14) VALUE "00000099990117".
            03  CONS-TOKKI18        PIC X(14) VALUE "00000099990118".
            03  CONS-TOKKI19        PIC X(14) VALUE "00000099990119".
+           03  CONS-TOKKI20        PIC X(14) VALUE "00000099990120".
       *
       *    ÉÂ¾²¿ôÊÔ½¸¥Õ¥é¥°ÊÔ½¸¤Î°Ù¤Î¥³¡¼¥É¡ÊÆÃÄê¼À´µÎÅÍÜ»ØÆ³ÎÁÅù¡Ë
            03  CONS-SIDORYO1       PIC X(09) VALUE "113001810".
@@ -431,10 +444,9 @@
            03  CONS-SIDORYO6       PIC X(09) VALUE "113700810".
       *
       *    ºß»Ù±ç¥Õ¥é¥°ÊÔ½¸¤Î°Ù¤Î¥³¡¼¥É
-           03  CONS-ZAISIEN1       PIC X(09) VALUE "114001110".
-           03  CONS-ZAISIEN2       PIC X(09) VALUE "114011570".
-           03  CONS-ZAISIEN3       PIC X(09) VALUE "114011670".
-           03  CONS-ZAISIEN4       PIC X(09) VALUE "114011770".
+           03  CONS-ZAISIEN1       PIC X(09) VALUE "114011570".
+           03  CONS-ZAISIEN2       PIC X(09) VALUE "114011670".
+           03  CONS-ZAISIEN3       PIC X(09) VALUE "114011770".
       *
       *    ¥Õ¥£¥ë¥àÎÁ¡ÊÆýÍÄ»ù¡Ë²Ã»»
            03  CONS-FILM-YOUJI-KASAN  
@@ -447,7 +459,9 @@
            03  CONS-ZANHAIKI       PIC X(09) VALUE "099309901".
       *
       *    ÌôºÞ´ÉÍý»ØÆ³ÎÁ
-           03  CONS-YAKUKAN-COMMENT  PIC X(09)  VALUE  "120001610".
+           03  CONS-YAKUKAN-COMMENT1 PIC X(09)  VALUE  "113010710".
+           03  CONS-YAKUKAN-COMMENT2 PIC X(09)  VALUE  "113010810".
+           03  CONS-YAKUKAN-COMMENT3 PIC X(09)  VALUE  "120001610".
       *    Æþ±¡±ÉÍÜ¿©»ö»ØÆ³ÎÁ
            03  CONS-NYUEIYO-COMMENT  PIC X(09)  VALUE  "113003310".
       *    Âà±¡Á°Ë¬Ìä»ØÆ³ÎÁ
@@ -552,6 +566,8 @@
            03  CONS-NOUKE5-COMMENT   PIC X(09)  VALUE  "180030110".
       **   Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó°å³Ø´ÉÍýÎÁ¡Ê£²¡Ë
            03  CONS-NOUKE6-COMMENT   PIC X(09)  VALUE  "180030210".
+      *    Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£³¡Ë
+           03  CONS-NOUKE7-COMMENT   PIC X(09)  VALUE  "180030810".
       *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£±¡Ë
            03  CONS-UNDOKI1-COMMENT  PIC X(09)  VALUE  "180027810".
       *    ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÎÁ¡Ê£²¡Ë
@@ -762,6 +778,7 @@
            IF   WRK-PARA-SRYYM    NOT =  ZERO
       *       »ÜÀß´ð½à¾ðÊó
               MOVE     ZERO     TO     WRK-SISETU613
+              MOVE     ZERO     TO     WRK-SISETU695
               PERFORM  VARYING  IDXA   FROM   1   BY  1
                         UNTIL   IDXA     >    2
                 INITIALIZE                      SYSKANRI-REC
@@ -787,6 +804,8 @@
                          WHEN     2
                            MOVE  SYS-1006-SSTKIJUN(113)
                                             TO  WRK-SISETU613
+                           MOVE  SYS-1006-SSTKIJUN(195)
+                                            TO  WRK-SISETU695
                        END-EVALUATE
                     END-IF
                 END-IF
@@ -1214,7 +1233,8 @@
                                                   CONS-TOKKI16 OR
                                                   CONS-TOKKI17 OR
                                                   CONS-TOKKI18 OR
-                                                  CONS-TOKKI19
+                                                  CONS-TOKKI19 OR
+                                                  CONS-TOKKI20
                                  CONTINUE
                             ELSE
                                  MOVE   ZERO   TO   WRK-SRYSURYO
@@ -1454,7 +1474,8 @@
                                      OR  CONS-TOKKI16(6:9)
                                      OR  CONS-TOKKI17(6:9)
                                      OR  CONS-TOKKI18(6:9)
-                                     OR  CONS-TOKKI19(6:9) )
+                                     OR  CONS-TOKKI19(6:9)
+                                     OR  CONS-TOKKI20(6:9) )
             OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
             OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                     (TNS-TEN               =  ZERO )       )
@@ -1511,7 +1532,8 @@
                                        OR  CONS-TOKKI16(6:9)
                                        OR  CONS-TOKKI17(6:9)
                                        OR  CONS-TOKKI18(6:9)
-                                       OR  CONS-TOKKI19(6:9) )
+                                       OR  CONS-TOKKI19(6:9)
+                                       OR  CONS-TOKKI20(6:9) )
               OR     ( SRY-SRYCD(IDX2)(1:3)  =  "001"        )
               OR     ((SRY-SRYCD(IDX2)(1:3)  =  "059") AND
                       (TNS-TEN               =  ZERO )       )
@@ -1556,8 +1578,8 @@
                  END-IF
                END-IF
       *
-               IF    ( SRY-SRYKBN         =     "60" )
-               AND   ( TNS-KNSJISKBN      =     2    )
+               IF    ( SRY-SRYKBN         =    "60" OR "64" )
+               AND   ( TNS-KNSJISKBN      =     2           )
                    MOVE    TNS-KNSJISKBN        TO  RECE220-KNSJISKBN
                END-IF
       *
@@ -1593,7 +1615,7 @@
                MOVE    SRY-AUTOKBN(IDX2)   TO   RECE230-AUTOKBN(IDX4)
                MOVE    SRY-INPUTNUM(IDX2)  TO   RECE230-INPUTNUM(IDX4)
       *
-               IF      SRY-SRYKBN    =   "40" OR "50" OR "54" OR "60"
+               IF      SRY-SRYKBN = "40" OR "50" OR "54" OR "60" OR "64"
                   IF   SRY-SRYCD(IDX2)(1:1)  =  "7"
                   AND  TNS-DATAKBN           =  "3"
                          COMPUTE WRK-FILMTEN2   =
@@ -1903,6 +1925,7 @@
            IF      RECE220-SRYKBN      =     "40"
       *       ²ðÃ£¸£°ú¡ÊÈ¯¾ÉÆüµ­ºÜ¡Ë
               IF   RECE200-SRYYM      >=    "200604"
+              AND  RECE200-SRYYM      <=    "200803"
                 IF   SRY-SRYCD(IDX2)  =     CONS-KAITATU-COMMENT
                         MOVE   "1"    TO    RECE200-COMCNTFLG
                         MOVE   "1"    TO    RECE220-KAITATU-COMMENT
@@ -1957,6 +1980,7 @@
                                             CONS-NOUKE2-COMMENT   OR
                                             CONS-NOUKE3-COMMENT   OR
                                             CONS-NOUKE4-COMMENT   OR
+                                            CONS-NOUKE7-COMMENT   OR
                                             CONS-UNDOKI1-COMMENT  OR
                                             CONS-UNDOKI2-COMMENT  OR
                                             CONS-UNDOKI3-COMMENT  OR
@@ -2011,6 +2035,7 @@
                                       OR    CONS-NOUKE4-COMMENT
                                       OR    CONS-NOUKE5-COMMENT
                                       OR    CONS-NOUKE6-COMMENT
+                                      OR    CONS-NOUKE7-COMMENT
                         MOVE   "1"    TO    RECE200-COMCNTFLG
                         MOVE   "1"    TO    RECE220-NOUKE-COMMENT
                 END-IF
@@ -2041,7 +2066,9 @@
            END-IF
       *
            IF      RECE220-SRYKBN      =     "13"
-              IF   SRY-SRYCD(IDX2)    =     CONS-YAKUKAN-COMMENT
+              IF   SRY-SRYCD(IDX2)    =     CONS-YAKUKAN-COMMENT1 OR
+                                            CONS-YAKUKAN-COMMENT2 OR
+                                            CONS-YAKUKAN-COMMENT3
                    MOVE   "1"   TO    RECE220-FLG-YAKUKAN-COMMENT
               END-IF
               IF   SRY-SRYCD(IDX2)    =     CONS-NYUEIYO-COMMENT
@@ -2100,14 +2127,25 @@
       ***          MOVE    1    TO    FLG-OSIN-COM
       ***     END-IF
       *
-              IF  (RECE200-SRYYM      >=     "200604")
-              AND (WRK-SISETU613      =      1      )
-                IF SRY-SRYCD(IDX2)    =     CONS-ZAISIEN1    OR
-                                            CONS-ZAISIEN2    OR
-                                            CONS-ZAISIEN3    OR
-                                            CONS-ZAISIEN4
-                   MOVE   "1"   TO    RECE200-COMCNTFLG
-                   MOVE   "1"   TO    RECE220-FLG-ZAISIEN-COMMENT
+              IF     WRK-SISETU613      =      1
+                IF     RECE200-SRYYM    >=     "200604"
+                  IF   SRY-SRYCD(IDX2)  =     CONS-ZAISIEN1    OR
+                                              CONS-ZAISIEN2    OR
+                                              CONS-ZAISIEN3
+                       MOVE   "1"   TO    RECE200-COMCNTFLG
+                       MOVE   "1"   TO    RECE220-FLG-ZAISIEN-COMMENT
+                  END-IF
+                END-IF
+              ELSE
+                IF   WRK-SISETU695      =      1
+                  IF   RECE200-SRYYM    >=     "200804"
+                    IF SRY-SRYCD(IDX2)  =     CONS-ZAISIEN1    OR
+                                              CONS-ZAISIEN2    OR
+                                              CONS-ZAISIEN3
+                       MOVE   "1"   TO    RECE200-COMCNTFLG
+                       MOVE   "2"   TO    RECE220-FLG-ZAISIEN-COMMENT
+                    END-IF
+                  END-IF
                 END-IF
               END-IF
            END-IF
@@ -2159,7 +2197,7 @@
            END-IF
       *
            IF      RECE220-SRYKBN   =  "14" OR "40" OR "50" OR "54"
-                                            OR "60" OR "70" OR "80"
+                                    OR "60" OR "70" OR "80" OR "64"
               SET     TBL-SANSO    TO      1
               SEARCH      TBL-SANSO-OCC   VARYING   TBL-SANSO
                    AT  END
@@ -2262,7 +2300,7 @@
                        IF    SRY-SRYKBN  =  "31" OR "32" OR "33" OR
                                             "40" OR "50" OR "54" OR
                                             "60" OR "70" OR "80" OR
-                                            "14"
+                                            "14" OR "64"
                            MOVE   ACCT-SYUTEN1   TO   WK-SYUTEN
                            COMPUTE  WK-YKZTEN  =  ACCT-KIZAITEN
                                                +  ACCT-YKZTEN
@@ -2278,7 +2316,7 @@
                                             "31"  OR  "32"  OR  "33" OR
                                             "40"  OR  "50"  OR  "54" OR
                                             "60"  OR  "70"  OR  "80" OR
-                                            "13"  OR  "14"
+                                            "13"  OR  "14"  OR  "64"
                            MOVE  ZERO          TO   WK-ZAIKAISU
                            MOVE  ZERO          TO   WK-ZAITEN
                            MOVE  ZERO          TO   WK-SYUTEN
@@ -2300,8 +2338,8 @@
                IF    SRY-SRYKBN   =   "21"   OR   "22"   OR   "23"   OR
                                       "31"   OR   "32"   OR   "33"   OR
                                       "40"   OR   "50"   OR   "54"   OR
-                                      "60"   OR   "70"   OR
-                                      "13"   OR   "14"
+                                      "60"   OR   "70"   OR   "13"   OR
+                                      "14"   OR   "64"
                      MOVE    6      TO    IDX3
                END-IF
            END-PERFORM
@@ -2333,6 +2371,7 @@
                      EVALUATE    TNS-TIMEKSNKBN
                          WHEN    1
                          WHEN    5
+                         WHEN    6
                              EVALUATE   RECE200-SHOSHINTIME
                                WHEN   SPACE
                                   MOVE  "1"     TO   RECE200-SHOSHINTIME
@@ -2505,6 +2544,7 @@
                             (WK-YKZTEN   *   WK-ZAIKAISU)
       *    ¸¡ºº¤Î¥ì¥»ÅÀ¿ôÍó¤ÎÊÔ½¸
                WHEN    "60"
+               WHEN    "64"
                    IF    WK-SYUTEN       NOT =   ZERO
                        ADD    WK-ZAIKAISU    TO   RECE200-KAISU(16)
                    END-IF
@@ -2568,10 +2608,10 @@
                       UNTIL  ( IDU   >   TBL-ZAICHECK-MAX )
                        OR    ( FLG-RINYAK  NOT =  ZERO    )
       *
-              IF  ( IDU  =  1                          )
-              OR  ((IDU  =  2) AND (ACCT-SRYKBN = "60"))
-              OR  ((IDU  =  3) AND (ACCT-SRYKBN = "80"))
-              OR  ((IDU  =  4) AND (ACCT-SRYKBN = "80"))
+              IF  ( IDU  =  1                                  )
+              OR  ((IDU  =  2) AND (ACCT-SRYKBN = "60" OR "64"))
+              OR  ((IDU  =  3) AND (ACCT-SRYKBN = "80"        ))
+              OR  ((IDU  =  4) AND (ACCT-SRYKBN = "80"        ))
       *
                  INITIALIZE                  SRYACT-REC
                  MOVE RECE200-HOSPNUM    TO  SRY-HOSPNUM
@@ -3708,12 +3748,12 @@
            MOVE   WRK-GAI2-DAY(SYUKEI-IDX3)   TO   SYUKEI-IDX4
       *
            EVALUATE   WRK-DAY22-NYUKHNKSNKBN(SYUKEI-IDX4)
-               WHEN   099  THRU  100 
+      ***      WHEN   099  THRU  100 
                WHEN   201  THRU  219
                WHEN   221  THRU  222
                WHEN   224
                WHEN   227  THRU  228
-               WHEN   230  THRU  233
+               WHEN   230  THRU  239
                   MOVE   "190108790" TO  WRK-GAI2-SRYCD(SYUKEI-IDX3)
                WHEN   013  THRU  021
                WHEN   101  THRU  109
@@ -5009,7 +5049,7 @@
              IF      SYU-DAY(IDY)    =    "2"
       *
                 IF         WRK-DAY5(IDY)      NOT =  ZERO
-      ***       AND        WRK-DAY1(IDY)      NOT =  ZERO
+                AND        WRK-DAY1(IDY)      NOT =  ZERO
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    RECE200-HOSPNUM TO  COMB-HOSPNUM
                    MOVE    RECE200-PTID    TO  COMB-PTID
@@ -5030,27 +5070,32 @@
                           MOVE    "3"   TO   RECE200-NYUINRYOFLG
                        END-IF
                      ELSE
-                       IF   COMB-HKNNUM       =  "060" OR  "067"
-                                             OR  "068" OR  "069"
-                          MOVE    "4"   TO   RECE200-NYUINRYOFLG
-                       ELSE
-                          MOVE    "5"   TO   RECE200-NYUINRYOFLG
-                       END-IF
+                       EVALUATE  COMB-HKNNUM
+                         WHEN     "060"
+                         WHEN     "067"
+                         WHEN     "068"
+                         WHEN     "069"
+                             MOVE    "4"   TO   RECE200-NYUINRYOFLG
+                         WHEN     "039"
+                         WHEN     "040"
+                             MOVE    "8"   TO   RECE200-NYUINRYOFLG
+                         WHEN      OTHER
+                             MOVE    "5"   TO   RECE200-NYUINRYOFLG
+                       END-EVALUATE
                      END-IF
-                     MOVE       1       TO   FLG-NYUINRYO
-                     MOVE      31       TO   IDY
                    END-IF
                    MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
                    PERFORM 900-CLOSE-SEC
-      ***       ELSE
-      ***          IF      WRK-DAY5(IDY)      NOT =  ZERO
-      ***                 MOVE    "1"   TO   RECE200-NYUINRYOFLG
-      ***          END-IF
+                ELSE
+                   IF      WRK-DAY5(IDY)               NOT =  ZERO
+                   AND     RECE200-NYUINDAY-KBN(IDY)   NOT =  "1"
+                          MOVE    "1"   TO   RECE200-NYUINRYOFLG
+                   END-IF
                 END-IF
       *
-      ***       MOVE      1       TO     FLG-NYUINRYO
-      ***       MOVE     31       TO     IDY
+                MOVE      1       TO     FLG-NYUINRYO
+                MOVE     31       TO     IDY
       *
              END-IF
       *
@@ -5689,8 +5734,10 @@
                END-PERFORM
                IF      FLG-SET    =   ZERO
                    MOVE  ZERO                    TO  WRK-SISETU613
+                   MOVE  ZERO                    TO  WRK-SISETU695
                ELSE
                    MOVE  SYS-1006-SSTKIJUN(113)  TO  WRK-SISETU613
+                   MOVE  SYS-1006-SSTKIJUN(195)  TO  WRK-SISETU695
                END-IF
       *
                MOVE      RECE200-SRYYM   TO  WRK-SRYYM-5000

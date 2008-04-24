@@ -64,6 +64,9 @@
       *  02.09.01    NACL-ÌçÏÆ    06/04/13  £²£°£°£¶Ç¯£´·î²þÀµÂÐ±þ
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *  04.02.02    NACL-ÌçÏÆ    08/04/21  £¸£°¤½¤ÎÂ¾µ­ºÜ½çÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -301,7 +304,7 @@ grpsys     MOVE    RECE06-HOSPNUM       TO      RECE061-HOSPNUM
            IF      RECE06-ZAINUM       =   99999999
                  MOVE     ZERO          TO      RECE061-ZAINUM
            END-IF
-           IF      RECE06-SRYKBN        =       "60"
+           IF      RECE06-SRYKBN        =       "60" OR "64"
               IF   RECE06-KNSJISKBN     =       2
                    MOVE    5            TO      RECE061-KNSJISKBN
               ELSE
@@ -353,8 +356,8 @@ grpsys     MOVE    RECE06-HOSPNUM       TO      RECE061-HOSPNUM
             END-IF 
            END-IF 
            IF      RECE06-SRYKBN        NOT =   "21"
-               IF   RECE06-SRYKBN       NOT =   "40" AND "60" AND "80"  
-      ****     IF   RECE06-SRYKBN       NOT =   "40" AND "80"  
+               IF   RECE06-SRYKBN       NOT =   "40" AND "60" AND "80"
+                                                     AND "64"
                    MOVE    RECE06-ZAITEN    TO      RECE061-ZAITEN
                END-IF
                MOVE   RECE06-CDKBN-SYO     TO  RECE061-CDKBN-SYO
@@ -366,24 +369,12 @@ grpsys     MOVE    RECE06-HOSPNUM       TO      RECE061-HOSPNUM
                MOVE   RECE06-CDKBN-KOUBAN  TO  RECE061-CDKBN-KOUBAN
                MOVE   RECE06-KOUHYOJUNNUM  TO  RECE061-KOUHYOJUNNUM
            END-IF
-      **         IF      RECE06-SRYKBN        =   "60"
-      **            CONTINUE
-      **         ELSE    
-      **             MOVE    RECE06-CDKBN-SYO     TO  RECE061-CDKBN-SYO
-      **             MOVE    RECE06-CDKBN-BU      TO  RECE061-CDKBN-BU
-      **             MOVE    RECE06-CDKBN-KBN     TO  RECE061-CDKBN-KBN
-      **             MOVE    RECE06-CDKBN-KBNNUM  TO  RECE061-CDKBN-KBNNUM
-      **             MOVE    RECE06-CDKBN-KBNNUM-EDA
-      **                                      TO  RECE061-CDKBN-KBNNUM-EDA
-      **             MOVE    RECE06-CDKBN-KOUBAN  TO  RECE061-CDKBN-KOUBAN
-      **             MOVE    RECE06-KOUHYOJUNNUM  TO  RECE061-KOUHYOJUNNUM
-      **         END-IF    
-      **     END-IF
       *
            MOVE   RECE06-SRYSYUKBN   TO   RECE061-SRYSYUKBN
            MOVE   RECE06-DAY         TO   RECE061-DAY
       *
-      *****IF     RECE06-SRYKBN  NOT =  "11" AND "95" AND "96"
+           MOVE   RECE06-SYOHOUFLG   TO   RECE061-SYOHOUFLG
+      *
            IF     RECE06-RECESYUBETU  =  8888
               IF     RECE06-ZAITEN  NOT =  ZERO
                   PERFORM     2101-RECE061-WRITE-SEC

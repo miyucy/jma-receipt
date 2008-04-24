@@ -41,6 +41,8 @@
       *  02.06.04    NACL-門脇    05/11/01  （検選）等コメント対応
       *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
       *  03.05.01    NACL-小豆沢  07/06/05  グループ診療対応
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （診療区分６４：病理診断対応）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -269,7 +271,7 @@
            IF      RECE66-ZAINUM       =   99999999
                  MOVE     ZERO          TO      RECE661-ZAINUM
            END-IF
-           IF      RECE66-SRYKBN        =       "60"
+           IF      RECE66-SRYKBN        =       "60" OR "64"
               IF   RECE66-KNSJISKBN     =       2
                    MOVE    5            TO      RECE661-KNSJISKBN
               ELSE
@@ -310,7 +312,8 @@
            MOVE    RECE66-ASTER         TO      RECE661-ASTER
            MOVE    RECE66-TEKIYO        TO      RECE661-TEKIYO
            IF      RECE66-SRYKBN        NOT =   "21"
-               IF   RECE66-SRYKBN       NOT =   "40" AND "60" AND "80"  
+               IF   RECE66-SRYKBN       NOT =   "40" AND "60" AND "80"
+                                                     AND "64"
                    MOVE    RECE66-ZAITEN    TO      RECE661-ZAITEN
                END-IF
                MOVE   RECE66-CDKBN-SYO     TO  RECE661-CDKBN-SYO

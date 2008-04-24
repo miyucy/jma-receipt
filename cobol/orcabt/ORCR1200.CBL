@@ -141,6 +141,16 @@
                05  KEY-O-HKNCOMBI  PIC 9(04).
                05  KEY-O-SRYKA     PIC X(02).
       *
+       01  KEY-AREA1                   VALUE   LOW-VALUE.
+           03  KEY-NEW1.
+               05  KEY-N1-PTID     PIC 9(10).
+               05  KEY-N1-HKNCOMBI PIC 9(04).
+               05  KEY-N1-SRYKA    PIC X(02).
+           03  KEY-OLD1.
+               05  KEY-O1-PTID     PIC 9(10).
+               05  KEY-O1-HKNCOMBI PIC 9(04).
+               05  KEY-O1-SRYKA    PIC X(02).
+      *
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-SRYYM      PIC X(06).
@@ -644,8 +654,8 @@
       *
       *        診療会計処理
                IF    ( FLG-END             =   ZERO ) 
-               AND   ( TBL-RECE200-HOSPNUM (1)
-                                           >   ZERO )
+      *********AND   ( TBL-RECE200-HOSPNUM (1)
+      *********                            >   ZERO )
                    INITIALIZE                      SRYACCT-REC
                    MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
                    MOVE    KEY-O-PTID          TO  ACCT-PTID
@@ -797,7 +807,10 @@
                IF      WRK-DAY (2 IDX)     =
                                        WRK-COMB-HKNCOMBINUM (IDX1)
                    IF      WRK-HKNCOMBI-SYOKBN (IDX1)   NOT =   SPACE
-                       CONTINUE                    
+      *                公害以外のとき初期化する
+                       IF      WRK-HKNCOMBI-SYOKBN (IDX1)  =   "1"
+                           MOVE    ZERO            TO  WRK-DAY (2 IDX)
+                       END-IF  
                    ELSE     
                        MOVE    WRK-STYMD       TO  WRK-YMD
                        MOVE    IDX             TO  WRK-DD
@@ -950,9 +963,6 @@
       *    病院・診療所区分
            MOVE    SYS-1001-HOSPSBT TO  WRK-RECE200-HOSPSBT               
       *
-      *    入退院履歴より情報取得
-           PERFORM 240-PTNYUINRRK-SYORI-SEC
-      *
            MOVE    WRK-RECE200-REC     TO  TBL-RECE200-OCC (IDXX)
       *
            .
@@ -1015,7 +1025,11 @@
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       TBL-RECE200-MAX
                    OR      TBL-RECE200-HOSPNUM (IDXX)  =   ZERO
-               MOVE    TBL-RECE200-OCC (IDXX)      TO  RECE200-REC
+               MOVE    TBL-RECE200-OCC (IDXX)      TO  WRK-RECE200-REC
+      *
+      *        入退院履歴より情報取得
+               PERFORM 240-PTNYUINRRK-SYORI-SEC
+               MOVE    WRK-RECE200-REC             TO  RECE200-REC
       *
       *        レセプト種別
                PERFORM 2001231-RECESYUBETU-SET-SEC
@@ -1083,13 +1097,13 @@
       *****************************************************************
        2001221-SRYACCT-CHEKCK-SEC                SECTION.
       *
-           MOVE    KEY-NEW             TO  KEY-OLD
+           MOVE    KEY-NEW1            TO  KEY-OLD1
       *
            PERFORM             UNTIL   FLG-SRYACCT     =   1
                                OR      FLG-END         =   1
-               MOVE    ACCT-HKNCOMBI       TO  KEY-N-HKNCOMBI
-               MOVE    ACCT-PTID           TO  KEY-N-PTID 
-               MOVE    ACCT-SRYKA          TO  KEY-N-SRYKA
+               MOVE    ACCT-HKNCOMBI       TO  KEY-N1-HKNCOMBI
+               MOVE    ACCT-PTID           TO  KEY-N1-PTID 
+               MOVE    ACCT-SRYKA          TO  KEY-N1-SRYKA
       *        保険組合せ読込み
                INITIALIZE                  HKNCOMBI-REC
                MOVE    SYS-1001-HOSPNUM    TO  COMB-HOSPNUM
@@ -1119,20 +1133,20 @@
                    MOVE    ACCT-HKNCOMBI       TO  WRK-ERR-HKNCOMBINUM        
                END-IF    
       *
-               MOVE    KEY-NEW             TO  KEY-OLD
+               MOVE    KEY-NEW1            TO  KEY-OLD1
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      FLG-END         =   1      
-                               OR      KEY-NEW     NOT =   KEY-OLD
+                               OR      KEY-NEW1    NOT =   KEY-OLD1
                    IF      WRK-ROUSAIKBN       =   SPACE
                        PERFORM 20012212-SRYSCCT-FILE-SYORI-SEC
                    END-IF 
       *
                    IF      WRK-UPDKBN          =   SPACE                   
       *                同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
-                       MOVE    KEY-NEW             TO  KEY-OLD
+                       MOVE    KEY-NEW1            TO  KEY-OLD1
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
                                    OR      FLG-END         =   1      
-                                   OR      KEY-NEW     NOT =   KEY-OLD
+                                   OR      KEY-NEW1    NOT =   KEY-OLD1
                            MOVE    WRK-SRYACCT-MCP-TABLE
                                                        TO  MCP-TABLE
                            MOVE    WRK-SRYACCT-MCP-PATHNAME
@@ -1169,7 +1183,7 @@
                            MOVE    "1"             TO  WRK-TEISEIKBN
                            MOVE    IDX             TO  WRK-ERR-DAY
                            MOVE    2               TO  WRK-ERR-ERRKBN
-                           MOVE    KEY-N-HKNCOMBI  TO
+                           MOVE    KEY-N1-HKNCOMBI  TO
                                                    WRK-ERR-HKNCOMBINUM
                            MOVE    COMB-TEKSTYMD   TO  WRK-ERR-TEKSTYMD
                        END-IF
@@ -1178,7 +1192,7 @@
                    IF      COMB-TEKSTYMD(1:6)  >   WRK-STYMD (1:6)
                        MOVE    "1"             TO  WRK-TEISEIKBN
                        MOVE    3               TO  WRK-ERR-ERRKBN
-                       MOVE    KEY-N-HKNCOMBI  TO
+                       MOVE    KEY-N1-HKNCOMBI  TO
                                                WRK-ERR-HKNCOMBINUM
                        MOVE    COMB-TEKSTYMD   TO  WRK-ERR-TEKSTYMD    
                    END-IF
@@ -1193,7 +1207,7 @@
                            MOVE    "1"             TO  WRK-TEISEIKBN
                            MOVE    IDX             TO  WRK-ERR-DAY
                            MOVE    4               TO  WRK-ERR-ERRKBN
-                           MOVE    KEY-N-HKNCOMBI  TO
+                           MOVE    KEY-N1-HKNCOMBI  TO
                                                    WRK-ERR-HKNCOMBINUM
                            MOVE    COMB-TEKEDYMD   TO  WRK-ERR-TEKEDYMD
                        END-IF
@@ -1202,7 +1216,7 @@
                    IF      COMB-TEKEDYMD(1:6)  <   WRK-EDYMD (1:6)
                        MOVE    "1"             TO  WRK-TEISEIKBN
                        MOVE    5               TO  WRK-ERR-ERRKBN
-                       MOVE    KEY-N-HKNCOMBI  TO
+                       MOVE    KEY-N1-HKNCOMBI  TO
                                                WRK-ERR-HKNCOMBINUM
                        MOVE    COMB-TEKEDYMD   TO  WRK-ERR-TEKEDYMD
                    END-IF    
@@ -2003,9 +2017,9 @@
            END-IF
       *
            IF      FLG-SRYACCT         =   ZERO
-               MOVE    ACCT-PTID           TO  KEY-N-PTID 
-               MOVE    ACCT-HKNCOMBI       TO  KEY-N-HKNCOMBI
-               MOVE    ACCT-SRYKA          TO  KEY-N-SRYKA
+               MOVE    ACCT-PTID           TO  KEY-N1-PTID 
+               MOVE    ACCT-HKNCOMBI       TO  KEY-N1-HKNCOMBI
+               MOVE    ACCT-SRYKA          TO  KEY-N1-SRYKA
       *
                ADD     1                   TO  CNT-IN-CANCEL
                IF      CNT-IN-CANCEL       =   50

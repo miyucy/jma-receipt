@@ -78,6 +78,8 @@
       *  03.04.03    NACL-藤原    07/03/01  国保レセプト編綴順詳細設定対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *
+      *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -168,7 +170,12 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-PARA-PRTNM-N           PIC X(16). 
                05  WRK-PARA-KKHPRTNM          PIC X(16). 
                05  WRK-PARA-KKHPRTNM-N        PIC X(16). 
+               05  WRK-PARA-KOUIKIPRTNM       PIC X(16). 
+               05  WRK-PARA-KOUIKIPRTNM-N     PIC X(16). 
                05  WRK-PARA-HOSPNUM    PIC  9(02).
+      *
+           03  WRK-PARA-ARG25          PIC X(100).
+           03  WRK-PARA-ARG26          PIC X(100).
       *
            03  WRK-RECE08-PRTRENNUM    PIC 9(06).
       *
@@ -256,12 +263,25 @@ grpsys     COPY    "COMMON-SPA".
                                              WRK-PARA-PRTJYUN
                                              WRK-PARA-PRTNM
                                              WRK-PARA-PRTNM-N
-                                             WRK-PARA-KKHPRTNM
-                                             WRK-PARA-KKHPRTNM-N
+                                             WRK-PARA-ARG25
+                                             WRK-PARA-ARG26
                                              WRK-PARA-HOSPNUM
                                              RECEERR
            END-UNSTRING                                  
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
+      *
+           UNSTRING    WRK-PARA-ARG25  DELIMITED  BY  "#/"
+                                       INTO  WRK-PARA-KKHPRTNM
+                                             WRK-PARA-KOUIKIPRTNM
+           END-UNSTRING                                  
+           UNSTRING    WRK-PARA-ARG26  DELIMITED  BY  "#/"
+                                       INTO  WRK-PARA-KKHPRTNM-N
+                                             WRK-PARA-KOUIKIPRTNM-N
+           END-UNSTRING
+           DISPLAY "KKHPRTNM   =" WRK-PARA-KKHPRTNM " "
+                                  WRK-PARA-KKHPRTNM-N
+           DISPLAY "KOUIKIPRTNM=" WRK-PARA-KOUIKIPRTNM " "
+                                  WRK-PARA-KOUIKIPRTNM-N
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -347,12 +367,22 @@ grpsys     MOVE    SPA-HOSPNUM                  TO  RECE08-HOSPNUM
                                                     TO  RECE08-PRTNM
                            END-IF
                        ELSE
-                           IF      RECE08-RENNUM    =   1
-                               MOVE    WRK-PARA-KKHPRTNM
-                                                    TO  RECE08-PRTNM
+                           IF      RECE08-TEISYUTUSAKI  =   "2"
+                               IF      RECE08-RENNUM    =   1
+                                   MOVE    WRK-PARA-KKHPRTNM
+                                                        TO  RECE08-PRTNM
+                               ELSE
+                                   MOVE    WRK-PARA-KKHPRTNM-N
+                                                        TO  RECE08-PRTNM
+                               END-IF
                            ELSE
-                               MOVE    WRK-PARA-KKHPRTNM-N
-                                                    TO  RECE08-PRTNM
+                               IF      RECE08-RENNUM    =   1
+                                   MOVE    WRK-PARA-KOUIKIPRTNM
+                                                        TO  RECE08-PRTNM
+                               ELSE
+                                   MOVE    WRK-PARA-KOUIKIPRTNM-N
+                                                        TO  RECE08-PRTNM
+                               END-IF
                            END-IF
                        END-IF
                    WHEN    OTHER
@@ -364,7 +394,7 @@ grpsys     MOVE    SPA-HOSPNUM                  TO  RECE08-HOSPNUM
                END-EVALUATE
       *
                DISPLAY "PTNUM=" RECE08-PTNUM "#" RECE08-PRTJYUN-SYUKA
-                                "#" RECE08-PRTRENNUM
+                                "#" RECE08-PRTRENNUM "#" RECE08-PRTNM
       *
                MOVE    RECE08-REC           TO  MCPDATA-REC
                MOVE    "tbl_receprt"        TO  MCP-TABLE

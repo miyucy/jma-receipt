@@ -125,6 +125,7 @@
       *                                     HCN063V03.red
       *
       *  04.02.01    NACL-藤原    08/02/25  対象なしのときのエラー追加
+      *  04.02.02    NACL-藤原    08/03/25  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -241,10 +242,6 @@
                    07  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).                              
                05  WRK-PARA-TERMID64             PIC X(64).
                05  WRK-PARA-SYOKBN               PIC X(01).
-      *********05  WRK-PARA-SYAPRTNM             PIC X(16).
-      *********05  WRK-PARA-KKHPRTNM             PIC X(16). 
-      *********05  WRK-PARA-SYAPRTNM-NEXT        PIC X(16).
-      *********05  WRK-PARA-KKHPRTNM-NEXT        PIC X(16). 
                05  WRK-PARA-PRTKBN               PIC X(01). 
                05  WRK-PARA-HOSPNUM              PIC  9(02).
       *
@@ -297,6 +294,8 @@
            COPY    "HCN08V02.INC".
            COPY    "HCRCP402.INC".
            COPY    "HCRCP403.INC".
+           COPY    "HCM11.INC".
+           COPY    "HCN09.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -886,6 +885,14 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCRCP403
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCRCP403-RENNUM
                        MOVE    HCRCP403            TO  RECE08-PRTDATA
+                   WHEN    "HCN09.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN09
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN09-RENNUM
+                       MOVE    HCN09               TO  RECE08-PRTDATA
+                   WHEN    "HCM11.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM11
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM11-RENNUM
+                       MOVE    HCM11               TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
       *             
@@ -1023,6 +1030,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCN063.red"    ALSO    "2"              
                WHEN    "HCN063V01.red" ALSO    "2"              
                WHEN    "HCN063V02.red" ALSO    "2"              
+               WHEN    "HCM11.red"     ALSO    ANY               
                    MOVE    "医科レセプト（入院外）"    TO  SPRT-TITLE
                WHEN    "HCN06.red"     ALSO    ANY             
                WHEN    "HCN06V01.red"  ALSO    ANY             
@@ -1052,6 +1060,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCN08V01.red"  ALSO    ANY               
                WHEN    "HCN08V02.red"  ALSO    ANY               
                WHEN    "HCRCP403.red"  ALSO    ANY                
+               WHEN    "HCN09.red"     ALSO    ANY               
                    MOVE    "医科レセプト（入院）"      TO  SPRT-TITLE
                END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -1175,7 +1184,7 @@ grpsys         MOVE    PRTKANRI-HOSPNUM
                MOVE    PRTDATA-REC     TO  MCPDATA-REC
                MOVE    "DBDELETE"      TO  MCP-FUNC
                MOVE    "tbl_prtdata"       TO  MCP-TABLE
-               MOVE    "key11"             TO  MCP-PATHNAME
+               MOVE    "del11"             TO  MCP-PATHNAME
 grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
                PERFORM 900-PRTKANRI-FET-SEC

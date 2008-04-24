@@ -43,6 +43,9 @@
       *
       *  03.05.01    NACL-ÌçÏÆ    07/05/25  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
+      *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *  04.02.02    NACL-ÌçÏÆ    08/04/21  £¸£°¤½¤ÎÂ¾µ­ºÜ½çÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -268,7 +271,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            IF      RECE46-ZAINUM       =   99999999
                  MOVE     ZERO          TO      RECE47-ZAINUM
            END-IF
-           IF      RECE46-SRYKBN        =       "60"
+           IF      RECE46-SRYKBN        =       "60" OR "64"
               IF   RECE46-KNSJISKBN     =       2
                    MOVE    5            TO      RECE47-KNSJISKBN
               ELSE
@@ -320,8 +323,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
            END-IF     
            IF      RECE46-SRYKBN        NOT =   "21"
-               IF   RECE46-SRYKBN       NOT =   "40" AND "60" AND "80"  
-      ***      IF   RECE46-SRYKBN       NOT =   "40" AND "80"  
+               IF   RECE46-SRYKBN       NOT =   "40" AND "60" AND "80"
+                                                     AND "64"
                    MOVE    RECE46-ZAITEN    TO      RECE47-ZAITEN
                END-IF
                MOVE   RECE46-CDKBN-SYO     TO  RECE47-CDKBN-SYO
@@ -333,26 +336,14 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE   RECE46-CDKBN-KOUBAN  TO  RECE47-CDKBN-KOUBAN
                MOVE   RECE46-KOUHYOJUNNUM  TO  RECE47-KOUHYOJUNNUM
            END-IF
-      ***      IF      RECE46-SRYKBN        =   "60"
-      ***          CONTINUE
-      ***      ELSE    
-      ***          MOVE    RECE46-CDKBN-SYO     TO  RECE47-CDKBN-SYO
-      ***          MOVE    RECE46-CDKBN-BU      TO  RECE47-CDKBN-BU
-      ***          MOVE    RECE46-CDKBN-KBN     TO  RECE47-CDKBN-KBN
-      ***          MOVE    RECE46-CDKBN-KBNNUM  TO  RECE47-CDKBN-KBNNUM
-      ***          MOVE    RECE46-CDKBN-KBNNUM-EDA
-      ***                                   TO  RECE47-CDKBN-KBNNUM-EDA
-      ***          MOVE    RECE46-CDKBN-KOUBAN  TO  RECE47-CDKBN-KOUBAN
-      ***          MOVE    RECE46-KOUHYOJUNNUM  TO  RECE47-KOUHYOJUNNUM
-      ***      END-IF  
-      ***  END-IF
       *
            MOVE   RECE46-SRYSYUKBN   TO   RECE47-SRYSYUKBN
            MOVE   RECE46-DAY         TO   RECE47-DAY
       *
            MOVE   RECE46-OKIKAEFLG   TO   RECE47-OKIKAEFLG
       *
-      *****IF     RECE46-SRYKBN  NOT =  "11" AND "95" AND "96"
+           MOVE   RECE46-SYOHOUFLG   TO   RECE47-SYOHOUFLG
+      *
            IF     RECE46-SRYKBN  NOT =  "95" AND "96"
                PERFORM     2101-RECE47-WRITE-SEC
            END-IF
