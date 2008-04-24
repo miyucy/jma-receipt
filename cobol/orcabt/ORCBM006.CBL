@@ -31,6 +31,8 @@
       *  03.02.01    NACL-Æ£¸¶    06/07/31  ¹ñÊÝ¼ç²ÊÂÐ±þ
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      * 
+      *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -275,6 +277,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                    =   SPACE )
                MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
            END-IF
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOUIKI
+                                   =   SPACE )
+               MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
+           END-IF
            .
        100-INIT-EXT.
            EXIT.
@@ -300,6 +308,18 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            IF      SYS-2009-SYUKA-KOKUHO =   "1"
                MOVE    ZERO            TO  FLG-END
                MOVE    2               TO  FLG-SYORI
+      *
+               PERFORM 900-SEIKYU-SELECT-SEC
+               PERFORM 2001-HENSYU-SEC
+                       UNTIL       FLG-END     =   1
+      *
+               PERFORM 900-SEIKYU-CLOSE-SEC
+           END-IF    
+      *
+      *    ¹­°èÏ¢¹çÊ¬
+           IF      SYS-2009-SYUKA-KOUIKI =   "1"
+               MOVE    ZERO            TO  FLG-END
+               MOVE    3               TO  FLG-SYORI
       *
                PERFORM 900-SEIKYU-SELECT-SEC
                PERFORM 2001-HENSYU-SEC
@@ -365,6 +385,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    MOVE    "¹ñÊÝ¡¡Æþ±¡"        TO  HC05-TEISYUTUNAME
                WHEN    2                   ALSO    2
                    MOVE    "¹ñÊÝ¡¡Æþ±¡³°"      TO  HC05-TEISYUTUNAME
+               WHEN    1                   ALSO    3
+                   MOVE    "¹­°è¡¡Æþ±¡"        TO  HC05-TEISYUTUNAME
+               WHEN    2                   ALSO    3
+                   MOVE    "¹­°è¡¡Æþ±¡³°"      TO  HC05-TEISYUTUNAME
            END-EVALUATE
       *
            .
@@ -626,18 +650,22 @@ grpsys         PERFORM 900-DBFETCH-SEC
        900-SEIKYU-SELECT-SEC                 SECTION.
       *
            MOVE    SPACE               TO  RECE10-REC  
-grpsys     MOVE    WRK-PARA-HOSPNUM     TO  RECE10-HOSPNUM
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
            MOVE    "00"                TO  RECE10-RECEKA
+           EVALUATE    FLG-SYORI
+               WHEN    "1"
+                   MOVE    1               TO  RECE10-TEISYUTUSAKI
+               WHEN    "2"
+                   MOVE    2               TO  RECE10-TEISYUTUSAKI
+               WHEN    "3"
+                   MOVE    6               TO  RECE10-TEISYUTUSAKI
+           END-EVALUATE
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
-           IF      FLG-SYORI           =   1
-               MOVE    "key44"             TO  WRK-MCP-PATHNAME
-           ELSE
-               MOVE    "key57"             TO  WRK-MCP-PATHNAME
-           END-IF
+           MOVE    "key68"             TO  WRK-MCP-PATHNAME
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBSELECT-SEC
@@ -679,6 +707,7 @@ grpsys         MOVE    RECE10-HOSPNUM      TO  PTINF-HOSPNUM
                ADD     1                   TO  CNT-IN
       *
                DISPLAY "PTNUM=" RECE10-PTNUM 
+                       " TEISYUTUSAKI=" RECE10-TEISYUTUSAKI
            ELSE
                MOVE    1                   TO  FLG-END 
                MOVE    HIGH-VALUE          TO  KEY-NEW

@@ -48,6 +48,8 @@
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *
       *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
+      * 
+      *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -356,15 +358,21 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "¹ñÊÝ¡¦Æþ±¡"    TO  HC05-TEISYUTUNAME
                WHEN    1   ALSO    5   ALSO    1    
                    MOVE    "¸ø³²¡¦Æþ±¡"    TO  HC05-TEISYUTUNAME
+               WHEN    1   ALSO    6   ALSO    1    
+                   MOVE    "¹­°è¡¦Æþ±¡"    TO  HC05-TEISYUTUNAME
                WHEN    1   ALSO    1   ALSO    2 
                    MOVE    "¼ÒÊÝ¡¦Æþ±¡³°"  TO  HC05-TEISYUTUNAME
                WHEN    1   ALSO    2   ALSO    2    
                    MOVE    "¹ñÊÝ¡¦Æþ±¡³°"  TO  HC05-TEISYUTUNAME
                WHEN    1   ALSO    5   ALSO    2    
                    MOVE    "¸ø³²¡¦Æþ±¡³°"  TO  HC05-TEISYUTUNAME
+               WHEN    1   ALSO    6   ALSO    2    
+                   MOVE    "¹­°è¡¦Æþ±¡³°"  TO  HC05-TEISYUTUNAME
                WHEN    2   ALSO    2   ALSO    1    
+               WHEN    2   ALSO    6   ALSO    1    
                    MOVE    "ÆÃÎÅ¡¦Æþ±¡"    TO  HC05-TEISYUTUNAME
                WHEN    2   ALSO    2   ALSO    2    
+               WHEN    2   ALSO    6   ALSO    2    
                    MOVE    "ÆÃÎÅ¡¦Æþ±¡³°"  TO  HC05-TEISYUTUNAME
            END-EVALUATE
       *
@@ -713,6 +721,9 @@ grpsys         MOVE    RECE10-HOSPNUM      TO  PTINF-HOSPNUM
                END-IF
       *
                MOVE    RECE10-TEISYUTUSAKI TO  KEY-N-TEISYUTUSAKI
+               IF      FLG-SYORI           =   2
+                   MOVE    2                   TO  KEY-N-TEISYUTUSAKI
+               END-IF 
                MOVE    RECE10-NYUGAIKBN    TO  KEY-N-NYUGAIKBN
                ADD     1                   TO  CNT-IN
       *

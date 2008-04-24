@@ -31,6 +31,8 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  04.01.01    NACL-小豆沢  07/11/16  公務災害、公害の種別判定追加
       *  04.01.01    NACL-小豆沢  08/02/05  レセプト種別セット修正
+      *
+      *  04.02.01    NACL-藤原    08/04/10  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -135,6 +137,7 @@
                05  WRK-PARA-HOSPNUM            PIC 9(02).
       *
            03  WRK-TOUKEIERR               PIC X(200). 
+           03  WRK-ERRMSG                  PIC X(300).
       *
            03  WRK-MCP-TABLE               PIC X(64).
            03  WRK-MCP-PATHNAME            PIC X(64).
@@ -168,6 +171,7 @@
            03  WK-KOHI-CNT                             PIC 9(02).
            03  WK-HONKZKKBN                            PIC X(01).
            03  WRK-AGE                     PIC 9(03).
+           03  WRK-SYUGAKUKBN              PIC 9(01).
       *
            03  WRK-HKNNUM-AREA.
                05  WRK-HKNNUM-TBL          OCCURS   4.
@@ -206,9 +210,6 @@
            COPY    "CPTTNS.INC".
       *
        01  WRK-CONS-AREA.
-      *    
-      *    生活保護保険番号 
-           03  WRK-CONS-SEIHO-HKNNUM   PIC X(03)   VALUE   "012". 
       *    自費保険番号 
            03  WRK-CONS-JIHI-HKNNUM    PIC X(03)   VALUE   "980". 
       *    労災保険番号 
@@ -219,6 +220,8 @@
            03  WRK-CONS-GENBAKU-HKNNUM PIC X(03)   VALUE   "019".       
       *    公害保険番号 
            03  WRK-CONS-KOUGAI-HKNNUM PIC X(03)    VALUE   "975".       
+      *
+           03  WRK-CONS-SRYYM-200804   PIC 9(06)   VALUE   200804.      
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -1058,6 +1061,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *    出力処理
       *****************************************************************
        2003-OUT-SYORI-SEC              SECTION.
+      *
       *    基本料区分
            MOVE    WRK-KIHONKBN        TO  TOUKEI04-KIHONKBN
       *    時間外区分
@@ -1066,6 +1070,20 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    WRK-SYOKAIKBN       TO  TOUKEI04-SHOUKAIKBN
       *
            WRITE   TOUKEI04-REC
+      *
+           IF      STS-TOUKEI04        =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-TOUKEIERR
+               STRING "日次統計データ 書き込みエラー STS="
+                                               DELIMITED  BY  SIZE
+                       STS-TOUKEI04            DELIMITED  BY  SIZE
+                                               INTO    WRK-TOUKEIERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+      *
            ADD     1                   TO  CNT-TOUKEI04
            .
        2003-OUT-SYORI-EXT.
@@ -1292,21 +1310,29 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        SPA-AREA
            IF      AGECHK-RC           =   ZERO
                MOVE    AGECHK-NENREI       TO  WRK-AGE
+               MOVE    AGECHK-SYUGAKUKBN   TO  WRK-SYUGAKUKBN
            ELSE
                MOVE    ZERO                TO  WRK-AGE
+                                               WRK-SYUGAKUKBN
            END-IF
       *
            IF      TOUKEI04-HKNNUM     NOT =   SPACE
-               IF      TOUKEI04-HKNNUM     =   "060"   OR   "067"  OR
-                                               "068"   OR   "069"
-                   IF      TOUKEI04-HKNNUM     =   "060"  OR  "068"
-                        MOVE   "1"             TO  WK-KOKUHO
-                   ELSE
-                        MOVE   "2"             TO  WK-KOKUHO
-                   END-IF
-               ELSE
-                   MOVE    "1"             TO  WK-IHO
-               END-IF
+               EVALUATE    TOUKEI04-HKNNUM
+                   WHEN    "060"
+                   WHEN    "067"
+                   WHEN    "068"
+                   WHEN    "069"
+                       IF      TOUKEI04-HKNNUM =   "060"   OR   "068"
+                           MOVE   "1"      TO  WK-KOKUHO
+                       ELSE
+                           MOVE   "2"      TO  WK-KOKUHO
+                       END-IF
+                   WHEN    "039"
+                   WHEN    "040"
+                       MOVE   "3"          TO  WK-KOKUHO
+                   WHEN    OTHER
+                       MOVE    "1"         TO  WK-IHO
+               END-EVALUATE
            END-IF
       *
            INITIALIZE                  WRK-HKNNUM-AREA
@@ -1348,8 +1374,116 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    "3"             TO   WK-HONKZKKBN
                    END-IF
                END-IF
+      *        平成２０年４月改正対応
+               IF      WRK-PARA-SRYYMD(1:6)    >=  WRK-CONS-SRYYM-200804
+                   IF      WRK-SYUGAKUKBN      =   1
+                       MOVE   "3"              TO  WK-HONKZKKBN
+                   END-IF
+               END-IF
       * 
-               IF    ( WRK-PARA-SRYYMD(1:6)    >=  "200610" )
+               IF      WRK-PARA-SRYYMD(1:6)    >=  WRK-CONS-SRYYM-200804
+                   IF    ( COMB-HKNNUM     =   "002" )
+                   AND  ( WRK-AGE          >=  75    )
+                       EVALUATE    COMB-HOJOKBN
+                           WHEN    "A"
+                           WHEN    "G"
+                               MOVE    "1"     TO  COMB-HOJOKBN
+                           WHEN    "B"
+                           WHEN    "H"
+                               MOVE    "2"     TO  COMB-HOJOKBN
+                           WHEN    "C"
+                           WHEN    "I"
+                               MOVE    "3"     TO  COMB-HOJOKBN
+                       END-EVALUATE
+                   END-IF
+      *
+                   EVALUATE    COMB-HKNNUM
+                       WHEN    "002" 
+                           EVALUATE   COMB-HOJOKBN
+                               WHEN   "A"
+                               WHEN   "B"
+                               WHEN   "C"
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "D"
+                               WHEN   "E"
+                               WHEN   "F"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "G"
+                               WHEN   "H"
+                               WHEN   "I"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "031"  THRU    "034"  
+                           EVALUATE   COMB-HOJOKBN
+                               WHEN   "B"
+                               WHEN   "9"   
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "E"
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "H"
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                       WHEN    "060" 
+                       WHEN    "068" 
+                           IF  (WRK-AGE  >=   70)  AND
+                               (WRK-AGE  <=   74)
+                               EVALUATE   COMB-HOJOKBN
+                                   WHEN   "1"
+                                   WHEN   "4"
+                                       MOVE   "9"   TO   WK-HONKZKKBN
+                                   WHEN   "2"
+                                   WHEN   "5"
+                                       MOVE   "8"   TO   WK-HONKZKKBN
+                                   WHEN   "3"
+                                   WHEN   "6"
+                                       MOVE   "7"   TO   WK-HONKZKKBN
+                               END-EVALUATE
+                           END-IF     
+                       WHEN    "039" 
+                       WHEN    "040" 
+                           EVALUATE   COMB-HOJOKBN
+                               WHEN   "1"
+                                   MOVE   "9"   TO   WK-RJN
+                               WHEN   "3"
+                                   MOVE   "7"   TO   WK-RJN
+                           END-EVALUATE
+                       WHEN    "067" 
+                       WHEN    "069" 
+                           IF      WRK-AGE       >=   65
+                               MOVE   "?"   TO   WK-HONKZKKBN
+                           ELSE
+                               EVALUATE   COMB-HOJOKBN
+                                   WHEN   "9"
+                                       MOVE   "9"   TO   WK-HONKZKKBN
+                                   WHEN   "8"
+                                       MOVE   "?"   TO   WK-HONKZKKBN
+                                   WHEN   "7"
+                                       MOVE   "7"   TO   WK-HONKZKKBN
+                               END-EVALUATE
+                           END-IF
+                       WHEN    OTHER 
+                           EVALUATE   COMB-HOJOKBN
+                               WHEN   "9"
+                                   MOVE   "9"   TO   WK-HONKZKKBN
+                               WHEN   "8"
+                                   MOVE   "?"   TO   WK-HONKZKKBN
+                               WHEN   "7"
+                                   MOVE   "7"   TO   WK-HONKZKKBN
+                           END-EVALUATE
+                     END-EVALUATE
+      *
+                   IF      COMB-KOH1HKNNUM      =    "027"
+                       MOVE   "?"               TO   WK-RJN
+                   END-IF
+               END-IF
+      *
+               IF    ( WRK-PARA-SRYYMD(1:6)  >= "200610"              )
+               AND   ( WRK-PARA-SRYYMD(1:6)  <  WRK-CONS-SRYYM-200804 )
                    EVALUATE    COMB-HKNNUM
                        WHEN    "002" 
                            EVALUATE   COMB-HOJOKBN
@@ -1590,6 +1724,23 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    1                   TO  FLG-END
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCBT110 "         DELIMITED  BY  SIZE
+                   WRK-TOUKEIERR       DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************

@@ -55,6 +55,9 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
+      *
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *                                     改正に伴う記録条件仕様の変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -156,6 +159,7 @@ grpsys COPY    "COMMON-SPA".
            05  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-RECEERR             PIC X(200). 
+           03  WRK-ERRMSG              PIC X(300).
       *    マルチボリューム識別情報     
            03  WRK-VOLNUM              PIC 9(02).
       *    レセプト番号
@@ -362,6 +366,24 @@ grpsys COPY    "COMMON-SPA".
                WHEN    "2" ALSO    "2"
                    MOVE    "レセ電ファイル作成（国保・入院外）"
                                            TO  JOB-SHELLMSG
+               WHEN    "3" ALSO    ZERO
+                   MOVE    "レセ電ファイル作成（広域）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "3" ALSO    "1"
+                   MOVE    "レセ電ファイル作成（広域・入院）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "3" ALSO    "2"
+                   MOVE    "レセ電ファイル作成（広域・入院外）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "4" ALSO    ZERO
+                   MOVE    "レセ電ファイル作成（国保、広域）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "4" ALSO    "1"
+                   MOVE    "レセ電ファイル作成（国保、広域・入院）"
+                                           TO  JOB-SHELLMSG
+               WHEN    "4" ALSO    "2"
+                   MOVE    "レセ電ファイル作成（国保、広域・入院外）"
+                                           TO  JOB-SHELLMSG
            END-EVALUATE
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
@@ -386,6 +408,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "key24"                 TO  WRK-MCP-PATHNAME
                WHEN    "2" ALSO    ANY
                    MOVE    "key26"                 TO  WRK-MCP-PATHNAME
+               WHEN    "3" ALSO    ANY
+               WHEN    "4" ALSO    ANY
+                   MOVE    "key67"                 TO  WRK-MCP-PATHNAME
            END-EVALUATE
            MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
            PERFORM 900-SEIKYU-SELECT-SEC
@@ -478,7 +503,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                                            WRK-PTNUM-LENGTH
       *
       *???
-               DISPLAY "PTNUM=" RECE10-PTNUM 
+               DISPLAY "PTNUM=" RECE10-PTNUM
+                       " TEISYUTUSAKI=" RECE10-TEISYUTUSAKI 
+                       " RECESYUBETU="  RECE10-RECESYUBETU 
       *???
                PERFORM 900-RECEDEN-SELECT-SEC
                PERFORM     UNTIL   FLG-RECEDEN =   1
@@ -542,8 +569,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            MOVE    "IR,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
       *     
-           MOVE    WRK-PARA-TEISYUTUSAKI
-                                       TO  WRK-DATA
+           EVALUATE    WRK-PARA-TEISYUTUSAKI
+               WHEN    "1"
+                   MOVE    "1"         TO  WRK-DATA
+               WHEN    OTHER
+                   MOVE    "2"         TO  WRK-DATA
+           END-EVALUATE
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *     
@@ -632,7 +663,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                WHEN    "RE"
                    INSPECT RECEDEN-RECEDATA   TALLYING    WRK-MOJISU
                                                FOR ALL "," 
-                   IF      WRK-MOJISU          =   16
+                   IF      WRK-MOJISU          =   16  OR  17
                        PERFORM VARYING IDX FROM    2500 BY  -1
                                UNTIL   IDX <       1
                            IF      RECEDEN-RECEDATA (IDX:1)
@@ -641,19 +672,29 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                                MOVE    1               TO  IDX
                            END-IF    
                        END-PERFORM   
-                       STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
-                                               DELIMITED  BY  SIZE
-                                 ","           DELIMITED  BY  SIZE
-                                 WRK-KAIGYO    DELIMITED  BY  SIZE
-                                 INTO          WRK-REC
-                       END-STRING
+                       IF      WRK-MOJISU          =   16
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,,,,,,,,"   DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                       END-IF
+                       IF      WRK-MOJISU          =   17
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,,,,,,,"    DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                       END-IF
                        MOVE    WRK-REC         TO  RECEDEN-RECEDATA
                    END-IF     
                WHEN    "TO"
                    INSPECT RECEDEN-RECEDATA    TALLYING    WRK-MOJISU
                                                FOR ALL "," 
-                   IF      WRK-MOJISU          =   9
-                       PERFORM VARYING IDX FROM    2500 BY  -1
+                   IF      WRK-MOJISU          =   9   OR  10
+                       PERFORM VARYING IDX FROM    2500    BY  -1
                                UNTIL   IDX <       1
                            IF      RECEDEN-RECEDATA (IDX:1)
                                                    =   WRK-KAIGYO
@@ -661,20 +702,75 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                                MOVE    1               TO  IDX
                            END-IF    
                        END-PERFORM   
-                       STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
-                                               DELIMITED  BY  SIZE
-                                 ","           DELIMITED  BY  SIZE
-                                 WRK-KAIGYO    DELIMITED  BY  SIZE
-                                 INTO          WRK-REC
-                       END-STRING
-                       MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                       IF      WRK-MOJISU          =   9
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,,,,,,"     DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                           MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                       END-IF
+                       IF      WRK-MOJISU          =   10
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,,,,,"      DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                           MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                       END-IF
                    END-IF     
                WHEN    "SY"
-                   IF      RECEDEN-RECEDATA (4:7)
-                                               =   "0000998"
-                       MOVE    "0000999"   TO
-                                           RECEDEN-RECEDATA (4:7)
-                   END-IF
+                   IF      RECEDEN-SRYYM       <   200804
+                       IF      RECEDEN-RECEDATA (4:7)
+                                                   =   "0000998"
+                           MOVE    "0000999"   TO
+                                               RECEDEN-RECEDATA (4:7)
+                       END-IF
+                       INSPECT RECEDEN-RECEDATA    TALLYING  WRK-MOJISU
+                                                   FOR ALL "," 
+                       IF      WRK-MOJISU          =   6
+                           PERFORM VARYING IDX FROM    2500 BY  -1
+                                   UNTIL   IDX <       1
+                               IF      RECEDEN-RECEDATA (IDX:1)
+                                                   =   WRK-KAIGYO
+                                   COMPUTE WRK-NAGASA  =   IDX     -   1
+                                   MOVE    1               TO  IDX
+                               END-IF    
+                           END-PERFORM   
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ","           DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                           MOVE    WRK-REC         TO  RECEDEN-RECEDATA
+                       END-IF     
+                   END-IF     
+               WHEN    "SI"
+               WHEN    "IY"
+                   IF      RECEDEN-SRYYM       <   200804
+                       INSPECT RECEDEN-RECEDATA    TALLYING  WRK-MOJISU
+                                                   FOR ALL "," 
+                       IF      WRK-MOJISU          =   6
+                           PERFORM VARYING IDX FROM    2500 BY  -1
+                                   UNTIL   IDX <       1
+                               IF      RECEDEN-RECEDATA (IDX:1)
+                                                       =   WRK-KAIGYO
+                                   COMPUTE WRK-NAGASA  =   IDX     -   1
+                                   MOVE    1               TO  IDX
+                               END-IF    
+                           END-PERFORM   
+                           STRING    RECEDEN-RECEDATA (1:WRK-NAGASA)
+                                                   DELIMITED  BY  SIZE
+                                     ",,,,,,"      DELIMITED  BY  SIZE
+                                     WRK-KAIGYO    DELIMITED  BY  SIZE
+                                     INTO          WRK-REC
+                           END-STRING
+                           MOVE    WRK-REC     TO  RECEDEN-RECEDATA
+                       END-IF
+                   END-IF     
            END-EVALUATE
       *
            ADD     1                   TO  TABLE-MAX
@@ -707,6 +803,19 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                    UNTIL   IDX >       TABLE-MAX
                MOVE    TBL-RECEDATA (IDX)  TO  RECE30-R
                WRITE   RECE30-R
+      *
+               IF      STS-RECE30          =   "00"
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE               TO  WRK-RECEERR
+                   STRING "ファイル 書き込みエラー STS="
+                                                   DELIMITED  BY  SIZE
+                           STS-RECE30              DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+                   END-STRING
+                   PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
+               END-IF
       *
                ADD     1                   TO  CNT-OUT
            END-PERFORM
@@ -800,11 +909,13 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "パラメタＤＢの更新処理でエラーとなりました"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
                END-IF
            ELSE
                MOVE    "対象のパラメタＤＢが存在しません" 
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
       *
            .
@@ -892,6 +1003,24 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "2" ALSO    "2"
                    MOVE    "レセ電データ（国保・入院外）"
                                            TO  SFILESV-TITLE    (1)
+               WHEN    "3" ALSO    ZERO
+                   MOVE    "レセ電データ（広域）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "3" ALSO    "1"
+                   MOVE    "レセ電データ（広域・入院）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "3" ALSO    "2"
+                   MOVE    "レセ電データ（広域・入院外）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "4" ALSO    ZERO
+                   MOVE    "レセ電データ（国保、広域）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "4" ALSO    "1"
+                   MOVE    "レセ電データ（国保、広域・入院）"
+                                           TO  SFILESV-TITLE    (1)
+               WHEN    "4" ALSO    "2"
+                   MOVE    "レセ電データ（国保、広域・入院外）"
+                                           TO  SFILESV-TITLE    (1)
            END-EVALUATE
            MOVE    "1"             TO  SFILESV-DATA-TYPE(1)
       *
@@ -929,6 +1058,23 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                            FLG-ERR
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCBM500 "         DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1102,6 +1248,25 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE10-HOSPNUM
            MOVE    LNK-PRTKANRI-SRYYM  TO  RECE10-SKYYM
            MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+           EVALUATE    WRK-PARA-TEISYUTUSAKI
+                           ALSO    WRK-PARA-NYUGAIKBN   
+               WHEN    "3" ALSO    ZERO
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI 
+                   MOVE    "%"                 TO  RECE10-NYUGAIKBN
+               WHEN    "3" ALSO    ANY
+                   MOVE    6                   TO  RECE10-TEISYUTUSAKI
+                                                   RECE10-XXTEISYUTUSAKI 
+                   MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+               WHEN    "4" ALSO    ZERO
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI 
+                   MOVE    "%"                 TO  RECE10-NYUGAIKBN
+               WHEN    "4" ALSO    ANY
+                   MOVE    2                   TO  RECE10-TEISYUTUSAKI
+                   MOVE    6                   TO  RECE10-XXTEISYUTUSAKI 
+                   MOVE    WRK-PARA-NYUGAIKBN  TO  RECE10-NYUGAIKBN
+           END-EVALUATE
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
