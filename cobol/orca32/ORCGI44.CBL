@@ -164,7 +164,7 @@
                05  WRK-SURYO-Z2    PIC X(01).
                05  WRK-SURYO-Z3    PIC ZZZ.
            03  WRK-TENSU-X.
-               05  WRK-TEN-F1      PIC X(08).
+               05  FILLER          PIC X(08).
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-TENSUS-X.
                05  WRK-TENSUS-Z    PIC ZZZZ9.99.
@@ -262,7 +262,7 @@
                05  WRK-MEISYO      PIC X(60).
       *    施設規準テーブル
        01  WRK-TBL-SSTKIJUN-AREA.
-           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  3500.
+           03  WRK-TBL-SSTKIJUN-OCC       OCCURS  1000.
                05  WRK-TBL-SSTKIJUN       PIC 9(01).
       *
       *    行位置編集
@@ -466,7 +466,7 @@
            COPY    "CPORCSC00.INC".
       *
       *    算定履歴チェックパラメタ
-      **** COPY    "CPORCSC91.INC".
+           COPY    "CPORCSC91.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -495,7 +495,14 @@
            COPY    "LINKAREA".
       *
        01  SCRAREA.
-           COPY    "ORCA32SCRAREA.INC".
+           COPY    "I41.INC".
+           COPY    "I42.INC".
+           COPY    "I44.INC".
+           COPY    "I47.INC".
+           COPY    "I48.INC".
+           COPY    "I49.INC".
+           COPY    "I4ERR.INC".
+           COPY    "I4ID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1098,16 +1105,8 @@
            END-IF
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL   (FLG-SYSKANRI   =   1    )
-                   OR      (IDX            >=  3500 )
+                   OR      (IDX            >=  1000 )
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
-               EVALUATE     SYS-1006-KBNCD
-                   WHEN     "1"
-                        MOVE    0          TO  IDX
-                   WHEN     "2"
-                        MOVE    500        TO  IDX
-                   WHEN     "7"
-                        MOVE    3000       TO  IDX
-               END-EVALUATE
                PERFORM VARYING IDY         FROM    1   BY  1
                        UNTIL   IDY         >       500
                    ADD     1               TO  IDX
@@ -1279,8 +1278,8 @@
            MOVE    SPACE               TO  TENSUPLUS-REC.
            INITIALIZE                      TENSUPLUS-REC.
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD.
-           MOVE    SPA-I40-SRYYMD      TO  TNSP-YUKOSTYMD.
-           MOVE    SPA-I40-SRYYMD      TO  TNSP-YUKOEDYMD.
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD.
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD.
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC.
@@ -1656,12 +1655,9 @@
        410112-KOUI-SPACHK-SEC          SECTION.
       *
            MOVE    1                   TO  SPA-GMN-CUR.
-           IF      WRK-STR             =   ZERO
-               MOVE    1                   TO  WRK-STR
-           END-IF
       *
       *    変換・削除処理
-           MOVE    WRK-STR             TO  SPA-GMN-IDX
+           MOVE    WRK-STR             TO  SPA-GMN-IDX.
            MOVE    ZERO                TO  WRK-IDX2.
            MOVE    ZERO                TO  FLG-INS.
            PERFORM VARYING SPA-GMN-IDX     FROM    1   BY  1
@@ -1678,8 +1674,8 @@
            END-IF
       *
       *    入力のチェック
-           MOVE    WRK-STR             TO  SPA-GMN-IDX
-           MOVE    ZERO                TO  FLG-INS
+           MOVE    WRK-STR             TO  SPA-GMN-IDX.
+           MOVE    ZERO                TO  FLG-INS.
            PERFORM UNTIL      (SPA-GMN-IDX    >   200  )  OR
                               (SPA-ERRCD   NOT =   SPACE)  OR
                               (FLG-END     NOT =   ZERO )
@@ -1764,6 +1760,7 @@
       *********MOVE    WRK-HENKAN      TO  SPA-GMN-INPUTCD(SPA-GMN-IDX)
                MOVE    "1030"          TO  SPA-ERRCD
                MOVE    "1"             TO  SPA-COM-CUR    (SPA-GMN-IDX)
+               GO  TO                  41011-KOUI-HENDEL-EXT
            END-IF.
       *
        41011-KOUI-HENDEL-EXT.
@@ -2497,7 +2494,6 @@
            INITIALIZE                  SPA-I49GMN-AREA
            MOVE    SPACE               TO  SPA-I49-DATA
            MOVE    SPACE               TO  I49
-           INITIALIZE                      I49
            MOVE    SPACE               TO  I49-PIN
            MOVE    SPACE               TO  I49-PED
       *
@@ -2689,13 +2685,6 @@
       *
                MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN (IDX)
-      *H28.11
-      *        診療区分変更はエラー
-               IF     (SPA-SRYKBN      NOT =   WRK-SRYKBN)
-                   MOVE    "1019"              TO  SPA-ERRCD
-                   MOVE    "1"                 TO  SPA-COM-CUR (IDX)
-               END-IF
-      *
                IF      IDX                 >   1
                    MOVE    "1017"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  SPA-COM-CUR (IDX)
@@ -2855,8 +2844,8 @@
                GO      TO      41014-GYOINSN-EXT
            END-IF.
       *
-           MOVE    SPA-GMN-REC         TO  WRK-GMN-REC
-           INITIALIZE                      SPA-GMN-REC
+           MOVE    SPA-GMN-REC         TO  WRK-GMN-REC.
+           INITIALIZE                      SPA-GMN-REC.
            MOVE    ZERO                TO  IDY.
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   200
@@ -2998,16 +2987,16 @@
        41001-KOUI-ALLCHK-SEC       SECTION.
       *
       *    画面をＳＰＡへ編集
-           MOVE    1                   TO  WRK-IDX2
+           MOVE    1                   TO  WRK-IDX2.
            PERFORM 2002-GMNSPA-SET-SEC.
       *
       *    入力コード・名称チェック処理
-           MOVE    "1"                 TO  FLG-TOROKU
+           MOVE    "1"                 TO  FLG-TOROKU.
            PERFORM 410112-KOUI-SPACHK-SEC
       *
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-MAX     =   ZERO
-                   MOVE    "1021"          TO  SPA-ERRCD
+                   MOVE    "1020"          TO  SPA-ERRCD
                END-IF
            END-IF
            .
@@ -3489,7 +3478,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  I44
       *
-           INITIALIZE                      I44
            MOVE    ZERO                TO  IDX.
       *
            PERFORM VARYING     WRK-IDX     FROM    1   BY  1
@@ -3787,9 +3775,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-ERRMSG
                    MOVE    "手技料を入力して下さい。"
                                        TO  SPA-ERRMSG(31:)
-               WHEN    "1019"
-                   MOVE    "診療区分は変更できません。"
-                                       TO  SPA-ERRMSG
                WHEN    "1020"
                    MOVE    "内容がありませんので、更新はできません。"
                                        TO  SPA-ERRMSG
@@ -3838,10 +3823,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  I4ID1.
            MOVE    SPA-IIDCD           TO  I4ID1-ID1CODE.
            MOVE    WRK-JIDMSG          TO  I4ID1-ID1MSG.
-      *
-           MOVE    "戻る"              TO  I4ID1-B01
-           MOVE    "ＯＫ"              TO  I4ID1-B12
-      *
            MOVE    "B12"               TO  MCP-WIDGET.
       *
            MOVE    "I44"               TO  SPA-MOTOPG.
