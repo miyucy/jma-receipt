@@ -48,8 +48,6 @@
       *  03.05.00    NACL-多々納   07/05/16  グループ診療対応
       *  04.01.00    NACL-多々納   07/11/05  保険追加処理削除対応
       *  04.02.00    NACL-多々納   08/04/28  後期高齢者対応
-      *  04.03.00    NACL-多々納   08/10/08  協会けんぽ、資格取得日対応
-      *  04.05.00    NACL-多々納   09/12/11  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -382,9 +380,6 @@
            COPY    "CPORCSKANACHK.INC".
            COPY    "CPORCXKANACONV.INC".
       *
-      *    全角チェックパラメタ（拡張漢字対応）
-           COPY    "CPORCSKANACHK2.INC".
-      *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
@@ -464,10 +459,6 @@
       *
       *    データベースオープン
            PERFORM 100-DBOPEN-SEC
-      *
-      *    エンコーディング取得処理
-           CALL    "ORCSENCODING"      USING    MCPAREA
-                                                SPA-AREA
       *
       *    システム管理情報　検索処理
            PERFORM 120-CP1001-KENSAKU-SEC
@@ -688,7 +679,7 @@
       *    患者保険ＣＳＶファイルに存在する項目数分、繰り返す
       *    またはレコード終了、または項目エラー４個まで
            PERFORM VARYING   IDX   FROM    1   BY  1
-                   UNTIL   ( IDX           >   19   )
+                   UNTIL   ( IDX           >   18   )
                    OR      ( WRK-PO-ED     >=  300  )
                    OR      ( IDE           >   4    )
       *
@@ -746,7 +737,7 @@
                    OR      ( FLG-COMMA     =   1    )
       *        カンマの位置
                IF    ( CSV-X (IDY)     =   ","  )  OR
-                     ((IDX             =   19   )  AND
+                     ((IDX             =   18   )  AND
                       (CSV-X (IDY)     =   SPACE))
                    MOVE    IDY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
@@ -765,12 +756,6 @@
                    END-IF
                END-IF
            END-PERFORM
-      *
-           IF      FLG-COMMA           =   ZERO
-               IF      WRK-PO-ST       NOT =   WRK-PO-ED
-                   COMPUTE WRK-PO-ED       =   WRK-PO-ED   +   1
-               END-IF
-           END-IF
       *
            .
        210-CHAR-END-GET-EXT.
@@ -884,9 +869,6 @@
       *    １８：更新日
            WHEN    18
                PERFORM 2410-UPYMD-SET-SEC
-      *    １９：取得年月日
-           WHEN    19
-               PERFORM 2410-SKKGETYMD-SET-SEC
       *    フォーマットエラー
            WHEN    OTHER
       *        旧フォーマットの場合
@@ -957,8 +939,6 @@
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"             TO  KANACHK-SYORI
-      *    後ろの全角空白を削除
-           MOVE    "1"             TO  KANACHK-SYORIKBN
            MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
            MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
@@ -973,8 +953,6 @@
       *        半角を全角へ
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "2"             TO  KANACHK-SYORI
-      *            後ろの全角空白を削除
-                   MOVE    "1"             TO  KANACHK-SYORIKBN
                    MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
                    MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
                    CALL    "ORCSKANACHK"       USING
@@ -990,72 +968,12 @@
            IF      WRK-LEN         =   ZERO
                MOVE    1               TO  WRK-LEN
            END-IF
-      **** 後ろの全角空白を削除
-      *    IF      WRK-LEN         >   1
-      *        PERFORM 24021-KUHAKU-DEL-SEC
-      ***  END-IF
+      *    後ろの全角空白を削除
+           IF      WRK-LEN         >   1
+               PERFORM 24021-KUHAKU-DEL-SEC
+           END-IF
            .
        2402-ZENKAKU-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    全角桁数・空白処理（拡張漢字対応）
-      *****************************************************************
-       2402-ZENKAKU-HEN02-SEC        SECTION.
-      *
-           IF      SPA-ENCODING        =   2
-      *        拡張漢字対応
-               PERFORM 24021-ZENKAKU-HEN02C-SEC
-           ELSE
-      *        拡張漢字不可
-               PERFORM 2402-ZENKAKU-HEN-SEC
-           END-IF
-           .
-       2402-ZENKAKU-HEN02-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    全角桁数・空白処理（拡張漢字対応）
-      *****************************************************************
-       24021-ZENKAKU-HEN02C-SEC        SECTION.
-      *
-           INITIALIZE                  ORCSKANACHK2AREA
-           MOVE    "1"             TO  KANACHK2-SYORI
-      *    後ろの全角空白を削除
-           MOVE    "1"             TO  KANACHK2-SYORIKBN
-           MOVE    WRK-DATA        TO  KANACHK2-MAE-INPUT
-           MOVE    WRK-CNT         TO  KANACHK2-MAX-CNT
-           CALL    "ORCSKANACHK2"      USING
-                                       ORCSKANACHK2AREA
-           MOVE    KANACHK2-MAE-INPUT  TO  WRK-DATA
-           MOVE    KANACHK2-MAX        TO  WRK-LEN
-           IF      KANACHK2-RC     NOT =   ZERO
-      *        全角・半角混在エラ−
-               MOVE    3               TO  FLG-ERR
-           ELSE
-               IF      KANACHK2-SYUBETU =   1
-      *        半角を全角へ
-                   INITIALIZE                  ORCSKANACHK2AREA
-                   MOVE    "2"             TO  KANACHK2-SYORI
-      *            後ろの全角空白を削除
-                   MOVE    "1"             TO  KANACHK2-SYORIKBN
-                   MOVE    WRK-DATA        TO  KANACHK2-MAE-INPUT
-                   MOVE    WRK-CNT         TO  KANACHK2-MAX-CNT
-                   CALL    "ORCSKANACHK2"       USING
-                                               ORCSKANACHK2AREA
-                   IF      KANACHK2-RC         =   ZERO
-                       MOVE    KANACHK2-MAX         TO  WRK-LEN
-                       MOVE    KANACHK2-OUT-INPUT   TO  WRK-DATA
-                   END-IF
-               ELSE
-                   MOVE    KANACHK2-OUT-INPUT   TO  WRK-DATA
-               END-IF
-           END-IF
-           IF      WRK-LEN         =   ZERO
-               MOVE    1               TO  WRK-LEN
-           END-IF
-           .
-       24021-ZENKAKU-HEN02C-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1302,14 +1220,6 @@
            PERFORM 2401-SPACE-HENSYU-SEC
            MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  PTHKN-HKNJANUM
-      *
-      *    協会けんぽ対応
-           IF      PTHKN-HKNNUM        =   "001"
-      *        政管で保険者番号が８桁は協会とする
-               IF      WRK-LEN             =   8
-                   MOVE    "009"           TO  PTHKN-HKNNUM
-               END-IF
-           END-IF
       *
            .
        2410-HKNJANUM-SET-EXT.
@@ -1597,7 +1507,7 @@
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
-           PERFORM 2402-ZENKAKU-HEN02-SEC
+           PERFORM 2402-ZENKAKU-HEN-SEC
            IF      FLG-ERR         =   ZERO
                MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  PTHKN-HIHKNJANAME
@@ -1850,34 +1760,6 @@
        2410-UPYMD-SET-EXT.
            EXIT.
       *****************************************************************
-      *    項目１９：資格取得日　処理
-      *****************************************************************
-       2410-SKKGETYMD-SET-SEC          SECTION.
-      *
-      *    未入力
-           IF      FLG-NODATA          =   1
-               GO  TO  2410-SKKGETYMD-SET-EXT
-           END-IF
-      *
-      *    項目桁数不正
-           IF      WRK-MO-CNT          NOT =   8
-               MOVE    2               TO  FLG-ERR
-               GO  TO  2410-SKKGETYMD-SET-EXT
-           END-IF
-      *
-      *    更新日セット
-           MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                   TO   WRK-SYMD
-           PERFORM 31012-SEIWA-HEN-SEC
-           IF      FLG-YMD         =   1
-               MOVE    3               TO  FLG-ERR
-           ELSE
-               MOVE    WRK-SYMD        TO  PTHKN-SKKGETYMD
-           END-IF
-           .
-       2410-SKKGETYMD-SET-EXT.
-           EXIT.
-      *****************************************************************
       *    患者保険マスタ中間データ作成処理
       *****************************************************************
        400-PTHKNINF-ISM-SEC        SECTION.
@@ -2046,9 +1928,6 @@
       *    １８：更新日
            WHEN    18
                MOVE    "更新日  :"     TO  ERR1-KOMOKU(IDE)
-      *    １９：取得日
-           WHEN    19
-               MOVE    "取得日  :"     TO  ERR1-KOMOKU(IDE)
       *    フォーマットエラー
            WHEN    OTHER
                MOVE    "過多項目:"     TO  ERR1-KOMOKU(IDE)

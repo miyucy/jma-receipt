@@ -1007,15 +1007,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "002"
       *            Á¥°÷
                    IF     (PTINF-BIRTHDAY      <=  "19320930" )
-                       IF     (PTHKN-TEKEDYMD      >=  "20080401" )
-                           EVALUATE    PTHKN-HOJOKBN
+                       EVALUATE    PTHKN-HOJOKBN
                            WHEN    "1"
                            WHEN    "2"
                            WHEN    "3"
                            WHEN    SPACE
                                MOVE    "5"             TO  WRK-KEN-ERFLG
-                           END-EVALUATE
-                       END-IF
+                       END-EVALUATE
                    ELSE
                        EVALUATE    PTHKN-HOJOKBN
                            WHEN    "1"

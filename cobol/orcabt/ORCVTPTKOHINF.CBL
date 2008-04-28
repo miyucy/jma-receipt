@@ -44,8 +44,6 @@
       *  03.05.00    NACL-多々納  07/05/16  グループ診療対応
       *  04.01.00    NACL-多々納  07/11/06  公費追加処理削除
       *  04.02.00    NACL-多々納  08/04/28  Ｈ２０．４改正対応他
-      *  04.05.00    NACL-多々納  12/12/26  負担者番号全角対応
-      *  04.08.00    NACL-多々納  17/09/26  法別番号６２判定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -155,7 +153,6 @@
       *
            03  FLG-OK                  PIC 9(01).
            03  FLG-YMD                 PIC 9(01).
-           03  FLG-ZENKAKU             PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -748,12 +745,6 @@
                END-IF
            END-PERFORM
       *
-           IF      FLG-COMMA           =   ZERO
-               IF      WRK-PO-ST       NOT =   WRK-PO-ED
-                   COMPUTE WRK-PO-ED       =   WRK-PO-ED   +   1
-               END-IF
-           END-IF
-      *
            .
        210-CHAR-END-GET-EXT.
            EXIT.
@@ -899,30 +890,19 @@
                IF      WRK-LEN             >   1
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "1"             TO  KANACHK-SYORI
-                   MOVE    WRK-DATA(1:WRK-LEN)
-                                           TO  KANACHK-MAE-INPUT
-                   MOVE    WRK-LEN         TO  KANACHK-MAX-CNT
+                   MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
+                   MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
                    CALL    "ORCSKANACHK"       USING
                                                ORCSKANACHKAREA
-                   IF      FLG-ZENKAKU         =   1
-      *                受給者番号は混在をエラー
-                       IF     (KANACHK-RC          NOT =   ZERO )  OR
-                              (KANACHK-SYUBETU         =   ZERO )  OR
-                              (KANACHK-RC2         NOT =   ZERO )  OR
-                              (WRK-DATA(1:WRK-LEN) NOT =
-                                                   KANACHK-OUT-INPUT)
-                           MOVE    3               TO  FLG-ERR
-                       END-IF
+      *             IF     (KANACHK-RC          =   ZERO  )  AND
+      *                    (KANACHK-RC2     NOT =   7     )
+                   IF     (KANACHK-RC          =   ZERO  )  AND
+                          (KANACHK-SYUBETU     =   1     )  AND
+                          (KANACHK-MAE-INPUT   =   KANACHK-OUT-INPUT)
+                       CONTINUE
                    ELSE
-                       IF     (KANACHK-RC          =   ZERO  )  AND
-                              (KANACHK-SYUBETU     =   1     )  AND
-                              (KANACHK-MAE-INPUT   =
-                                                   KANACHK-OUT-INPUT)
-                           CONTINUE
-                       ELSE
-      *                    全角・混在、間の空白はエラー
-                           MOVE    3               TO  FLG-ERR
-                       END-IF
+      *                全角半角混在、間の空白はエラー
+                       MOVE    3               TO  FLG-ERR
                    END-IF
                END-IF
            END-IF
@@ -1064,10 +1044,6 @@
                WHEN    "38"
                WHEN    "66"
                WHEN    "79"
-      *H27.2
-               WHEN    "54"
-      *H29.10
-               WHEN    "62"
       **コメント START ---------------------------------------------
       *                                 OR  "55"  OR  "56"
       **コメント END   ---------------------------------------------
@@ -1212,7 +1188,6 @@
       *
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
-           MOVE    1               TO  FLG-ZENKAKU
            PERFORM 2401-SPACE-HENSYU-SEC
            MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  PTKOH-FTNJANUM
@@ -1237,7 +1212,6 @@
       *
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
-           MOVE    1               TO  FLG-ZENKAKU
            PERFORM 2401-SPACE-HENSYU-SEC
            MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  PTKOH-JKYSNUM
@@ -1419,10 +1393,10 @@
            IF      FLG-PTNUM           =   1
                MOVE    5               TO  FLG-ERR
            END-IF
-      *    患者情報読み込み
+      *    患者番号読み込み
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
-               MOVE    6               TO  FLG-ERR
+               MOVE    5               TO  FLG-ERR
            END-IF
       *    地方公費チェック
            IF     (FLG-ERR             =   ZERO )
