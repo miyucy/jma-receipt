@@ -190,6 +190,15 @@
                05  WRK-TENSUKEI-TNEN   PIC 9(08).
                05  WRK-TENSUKEI-NNEN   PIC 9(08).
       *
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
+      *    フィルム点数計
+           03  WRK-FIRTEN-KEI      PIC 9(08).
+           03  WRK-FIRTEN-ADD      PIC 9(08).
+           03  WRK-KIZKEI-ADD      PIC 9(08).
+           03  WRK-TENSUKEIS       PIC 9(08)V99.
       *    年齢判定用
            03  WRK-KGNAGE          PIC 9(03).
            03  WRK-JGNAGE          PIC 9(03).
@@ -220,6 +229,12 @@
            03  WRK-YMD.
                05  WRK-YM              PIC X(06).
                05  WRK-DD              PIC 9(02).
+      *    酸素
+           03  WRK-SANSO           PIC 9(08).
+           03  WRK-SANSOKIN        PIC 9(08)V99.
+           03  WRK-SANKEI          PIC 9(08).
+           03  WRK-SANTEN          PIC 9(08).
+           03  WRK-SANSOKIN-SUM    PIC 9(08)V99.
       *
            03  WRK-TNS-JGNAGE      PIC 9(02).
       *
@@ -1302,6 +1317,10 @@
                                                -   WRK-TEI-CNT
                ELSE
                    MOVE    ZERO                TO  WRK-TODAY-CNTG
+               END-IF
+      *        訂正前にないとき、当日分集計
+               IF      WRK-TEI-CNT         =   ZERO
+                   ADD     WRK-TODAY-CNTG     TO  WRK-SANTEI-CNT
                END-IF
            END-IF
            .
@@ -4063,14 +4082,22 @@
        3006-AUTO-KENTAIKASN-SEC         SECTION.
       *
            MOVE    "160177770"         TO  WRK-SRYCD
-      *    同一コードチェック
-           PERFORM 30051-INPUT-CHECK-SEC
-      *    共通チェック処理
-           IF      FLG-ERR             =   ZERO
-               PERFORM 3001-KYOUTU-CHEK-SEC
-           END-IF
+      *    入力判定
+           MOVE    ZERO                TO  FLG-INPUT
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   SPA-MAX-LINE )   OR
+                              (FLG-INPUT   NOT =   ZERO)  OR
+                             ((WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
+                              (WRK-COM-INPUTCD (IDX-Z) =   SPACE ))
       *
-           IF      FLG-ERR         =   ZERO
+             IF      WRK-COM-HKNCOMBI(IDX-Z) NOT =   "9999"
+      *
+               IF     (WRK-COM-SRYKBN  (IDX-Z) =   "60" ) AND
+                      (WRK-COM-INPUTCD (IDX-Z) =   WRK-SRYCD )
+                   MOVE    1                   TO  FLG-INPUT
+               END-IF
+             END-IF
+           END-PERFORM
       *
       *    当日回数
            INITIALIZE                      ORCSC91AREA
@@ -4095,7 +4122,7 @@
                END-IF
            END-IF
       *    入力にないとき、検査数で自動発生
-      *****IF      FLG-INPUT           =   ZERO
+           IF      FLG-INPUT           =   ZERO
       *        点数マスタ編集・基本チェック
                INITIALIZE                  ORCSC92AREA
                MOVE    "2"                 TO  LNK-SC92-KBN
