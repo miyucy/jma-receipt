@@ -43,7 +43,6 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
-       
       *    添字領域
        01  IDX-AREA.
            03  IDX1                PIC 9(05).
@@ -56,9 +55,6 @@
            03  WRK-MCP-RC              PIC ---9.
            03  WRK-STR                 PIC X(500).
            03  WRK-ERRMSG              PIC X(500).
-           03  WRK-PATHNAME            PIC X(64).
-           03  WRK-FUNC                PIC X(64).
-           03  WRK-TABLE               PIC X(64).
       *
        01  ORCXKANACONVAREA.
       *   IN/OUTの長さをMCPDARA-RECに合せるため独自に引数領域を編集
@@ -95,23 +91,13 @@
       *
            COPY    "MCPDATA.INC"       REPLACING   //MCPDATA-//
                                        BY          //WKMCPDATA-//.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
-      *
-       01  JOBKANRI-REC.
-           COPY    "CPJOBKANRI.INC".
-      *
-       01  SYUMEI-REC.
-           COPY    "CPSYUMEI.INC".
-      *
-      *****************************************************************
-      *    サブプロ用　領域
-      *****************************************************************
-      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
-      *
+     *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -137,10 +123,6 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
       *
-           MOVE    MCP-TABLE           TO  WRK-TABLE
-           MOVE    MCP-PATHNAME        TO  WRK-PATHNAME
-           MOVE    MCP-FUNC            TO  WRK-FUNC
-      *
            PERFORM 100-INIT-SEC
       *
            IF    ( MCP-TABLE           =   "metadb"
@@ -153,25 +135,11 @@
                WHEN    "DBDISCONNECT"
                WHEN    "DBSTART"
                WHEN    "DBCOMMIT"
-      *!!!!!   WHEN    "PUTWINDOW"
                    MOVE    LOW-VALUE       TO  MCP-TABLE
                                                MCP-PATHNAME
-      *!!!!!!!!!!!!!!!
                WHEN    "PUTWINDOW"
-                   MOVE    LOW-VALUE       TO  MCP-TABLE
-                                               MCP-PATHNAME
-                   IF     (MCP-PUTTYPE     =   "CHANGE"  OR
-                                               "JOIN"    )
-                     AND  (MCP-WINDOW      =   "M01"    )
-                       IF        SPA-BEDFLG     >   ZERO
-                           MOVE    "M01N"          TO  MCP-WINDOW
-                       END-IF
-                   END-IF
-      *!!!!!!!!!!!!!!!
+                   CONTINUE
                WHEN    OTHER
-                   IF  MCP-FUNC            =   "DBFETCH"
-                       MOVE    LOW-VALUE   TO  MCPDATA-REC
-                   END-IF
                    IF    ( SPA-NOCHK-HOSPNUM   =   "1" )
                        CONTINUE
                    ELSE
@@ -185,68 +153,9 @@
            END-IF
       *
            IF    ( FLG-ERR         =   ZERO )
-      *
-               MOVE    2           TO  MCP-VERSION
-               MOVE    1           TO  MCP-LIMIT
-               MOVE    1           TO  MCP-REDIRECT
-      *
-               IF    ( MCP-TABLE   =   "tbl_srysrh"
-                                    OR "tbl_skysrh"
-                                    OR "tbl_rrksrh"
-                                    OR "tbl_ptsrh"
-                                                    )
-                   MOVE    0       TO  MCP-REDIRECT
-               END-IF
-      *
-               IF    ( MCP-TABLE   =   "tbl_chksnd"
-                                    OR "tbl_sryacct_main"
-                                    OR "tbl_sryacct_sub" )
-                   IF    ( MCP-PATHNAME (1:3)  =   "tmp" )
-                       MOVE    0   TO  MCP-REDIRECT
-                   END-IF
-               END-IF
-      *
-               IF    ( MCP-TABLE   =   "tbl_jobkanri" )
-                   MOVE    MCPDATA-REC TO  JOBKANRI-REC
-                   IF    ( JOB-SHELLID =   "PRGMNT" )
-                       MOVE    0   TO  MCP-REDIRECT
-                   END-IF
-               END-IF
-      *
-               IF    ( MCP-TABLE   =   "tbl_syumei" )
-                   MOVE    MCPDATA-REC
-                                   TO  SYUMEI-REC
-                   IF    ( MCP-FUNC    =   "DBINSERT" )
-                     IF  ( SMEI-DENPEDANUM   <   1 )
-                       OR( SMEI-DENPEDANUM   >   99 )
-                       MOVE    "abort"
-                                   TO  MCP-PATHNAME
-                     END-IF
-                   END-IF
-               END-IF
-      *
-               EVALUATE    MCP-TABLE
-               WHEN    "tbl_sryacct"
-                   CALL    "ORCDBACCT" USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-               WHEN    "tbl_seikyu"
-                   CALL    "ORCDBSEIKYU" USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-               WHEN    "tbl_syunou"
-                   CALL    "ORCDBSYUNOU" USING
-                                       MCPAREA
-                                       MCPDATA-REC
-                                       SPA-AREA
-               WHEN    OTHER
-      *
-                   CALL    "MONFUNC"   USING
-                                       MCPAREA
-                                       MCPDATA-REC
-               END-EVALUATE
+               CALL    "MONFUNC"           USING
+                                           MCPAREA
+                                           MCPDATA-REC
       *
                IF    ( MCP-RC      =   ZERO OR 1)
                    CONTINUE
@@ -258,11 +167,6 @@
                MOVE    51          TO  MCP-RC
                PERFORM 800-EDIT-ERRMSG-SEC
            END-IF
-      *
-           MOVE    WRK-TABLE           TO  MCP-TABLE
-           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
-           MOVE    WRK-FUNC            TO  MCP-FUNC
-           MOVE    ZERO                TO  MCP-LOGFLAG
       *
            .
       *
@@ -278,34 +182,9 @@
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-           MOVE    ZERO                TO  MCP-LOGFLAG
-           IF      MCP-FUNC        =  "DBINSERT" OR "DBUPDATE" 
-                                   OR "DBDELETE"
-               PERFORM 1001-AUDITLOG-PUT-SEC
-           END-IF
-      *
            .
       *
        100-INIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    監視ログ出力指示処理
-      *****************************************************************
-       1001-AUDITLOG-PUT-SEC             SECTION.
-      *
-      *    IF      SPA-TERMID      =   SPACE
-      *        MOVE   "batch"      TO  MCP-LOGCOMMENT
-      *    END-IF
-      *
-      *    EVALUATE    MCP-TABLE
-      *    WHEN    "tbl_lock"
-      *    WHEN    "tbl_ptinf"
-      *    WHEN    "tbl_jobkanri"
-      *        MOVE    1           TO  MCP-LOGFLAG
-      *    END-EVALUATE
-           .
-      *
-       1001-AUDITLOG-PUT-EXT.
            EXIT.
       *****************************************************************
       *    エラーメッセージ編集処理
@@ -343,17 +222,16 @@
       *
            IF    ( MCP-FUNC    =   "DBINSERT"
                                 OR "DBUPDATE" )
-               MOVE    1               TO  IDX1
+               MOVE    ZERO            TO  IDX1
                MOVE    ZERO            TO  KANACONV-RETURN
                PERFORM UNTIL ( IDX1    >=  CONST-MAX-LEN )
                         OR   ( MCPDATA-REC (IDX1 : )   =   SPACE )
                         OR   ( KANACONV-RETURN NOT =   ZERO )
       *
+                   COMPUTE IDX1    =   IDX1    +   1
                    MOVE    MCPDATA-REC (1 :IDX1)
                                        TO  WKMCPDATA-REC
                    PERFORM 800-KANACONV-SEC
-      *
-                   COMPUTE IDX1    =   IDX1    +   1
       *
                END-PERFORM
       *
@@ -369,9 +247,11 @@
       *
                MOVE    MCPDATA-REC     TO  WKMCPDATA-REC
                PERFORM 800-KANACONV-SEC
-               MOVE    1               TO  IDX1
+               MOVE    ZERO            TO  IDX1
                PERFORM UNTIL ( IDX1    >=  CONST-MAX-LEN )
                         OR   ( MCPDATA-REC (IDX1 : )   =   SPACE )
+      *
+                   COMPUTE IDX1    =   IDX1    +   1
       *
                    IF    ( MCPDATA-REC (IDX1 : 1)
                                    NOT =  KANACONV-OUTDATA  (IDX1 : 1))
@@ -402,8 +282,6 @@
                            PERFORM 800-KANACONV-SEC
                        END-PERFORM
                    END-IF
-      *
-                   COMPUTE IDX1    =   IDX1    +   1
       *
                END-PERFORM
            END-IF
