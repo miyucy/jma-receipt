@@ -113,6 +113,7 @@
       *                                     （従来様式：入院外）
       *                                     電話番号桁数修正
       *                                     HCM55V01.red
+      *  04.02.02    NACL-藤原    08/05/09  エラー時終了処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -193,6 +194,8 @@ grpsys     COPY    "COMMON-SPA".
       *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200). 
+           03  WRK-ERRMSG              PIC X(300).
+           03  WRK-MCP-RC              PIC 9(9).
       *
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -616,6 +619,16 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PRTKANRI-HOSPNUM
                    MOVE    "del13"         TO  MCP-PATHNAME
                END-IF
 grpsys         PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC           NOT =   ZERO
+                   MOVE    MCP-RC          TO  WRK-MCP-RC
+                   STRING  "帳票管理ＤＢ削除エラー MCP-RC="
+                                                   DELIMITED  BY  SIZE
+                           WRK-MCP-RC              DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+                   END-STRING
+                   PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
+               END-IF
       *
       *        最新以外の帳票ＤＢを削除
                MOVE    SPACE           TO  PRTDATA-REC
@@ -635,6 +648,16 @@ grpsys         MOVE    SPA-HOSPNUM     TO  PRTDATA-HOSPNUM
                    MOVE    "del13"         TO  MCP-PATHNAME
                END-IF
 grpsys         PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC           NOT =   ZERO
+                   MOVE    MCP-RC          TO  WRK-MCP-RC
+                   STRING  "帳票ＤＢ削除エラー MCP-RC="
+                                                   DELIMITED  BY  SIZE
+                           WRK-MCP-RC              DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+                   END-STRING
+                   PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
+               END-IF
            END-IF                                                
       *
            MOVE    1                   TO  FLG-END     
@@ -1004,6 +1027,19 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
            WRITE   PRT-REC
       *
+           IF      STS-PRT             =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-RECEERR
+               STRING "ファイル 書き込みエラー STS="
+                                               DELIMITED  BY  SIZE
+                       STS-PRT                 DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+      *
            ADD     1                   TO  CNT-OUT     
                                            CNT-IN-CANCEL
       *
@@ -1276,9 +1312,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
-               MOVE    "印刷ＤＢに更新できませんでした"
-                                          TO  WRK-RECEERR
+               STRING "帳票ＤＢに更新できませんでした SPRT-RETURN="
+                                                   DELIMITED  BY  SIZE
+                       SPRT-RETURN                 DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING
                PERFORM 500-ERR-HENSYU-SEC                           
+               PERFORM 500-COBABORT-SEC
            END-IF                                                              
            .
        390-PRINT-OUT-EXT.
@@ -1304,9 +1344,15 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC             =   ZERO
                PERFORM 900-RECEPRT-FET-SEC
            ELSE
-               MOVE    "帳票ＤＢの更新でエラーになりました"
-                                          TO  WRK-RECEERR
+               MOVE    MCP-RC          TO  WRK-MCP-RC
+               STRING
+                   "レセプト明細ＤＢ更新エラー MCP-RC="
+                                                   DELIMITED  BY  SIZE
+                       WRK-MCP-RC                  DELIMITED  BY  SIZE
+                                           INTO    WRK-RECEERR
+               END-STRING
                PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
           END-IF    
            .
        2001-RECEPRT-CLEAR-EXT.
@@ -1342,6 +1388,23 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCR0500 "         DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************

@@ -47,6 +47,8 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
+      *
+      *  04.02.01    NACL-藤原    08/05/09  エラー時終了処理の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,10 +85,6 @@ grpsys     COPY    "COMMON-SPA".
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
-      *
-      *    システム領域
-       01  SYS-AREA.
-           03  SYS-TIME            PIC 9(08).    
       *
       *    カウント領域
        01  CNT-AREA.
@@ -137,6 +135,8 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-RECE08-PRTRENNUM    PIC 9(06).
       *
            03  WRK-RECEERR             PIC X(200). 
+           03  WRK-ERRMSG              PIC X(300).
+           03  WRK-MCP-RC              PIC 9(9).
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -307,9 +307,14 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        PERFORM 500-CANCEL-HENSYU-SEC
                    END-IF
                ELSE
-                   MOVE    "帳票ＤＢの更新でエラーになりました"
-                                              TO  WRK-RECEERR
+                   MOVE    MCP-RC          TO  WRK-MCP-RC
+                   STRING  "レセプト明細ＤＢ更新エラー MCP-RC="
+                                                   DELIMITED  BY  SIZE
+                           WRK-MCP-RC              DELIMITED  BY  SIZE
+                                                   INTO    WRK-RECEERR
+                   END-STRING
                    PERFORM 500-ERR-HENSYU-SEC
+                   PERFORM 500-COBABORT-SEC
                END-IF    
            END-PERFORM    
       *
@@ -350,6 +355,23 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            .
        500-ERR-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラー時終了処理
+      *****************************************************************
+       500-COBABORT-SEC                SECTION.
+      *
+           MOVE    SPACE               TO  WRK-ERRMSG
+           STRING  "ORCR0490 "         DELIMITED  BY  SIZE
+                   WRK-RECEERR         DELIMITED  BY  SIZE
+                   LOW-VALUE           DELIMITED  BY  SIZE
+                                       INTO    WRK-ERRMSG
+           END-STRING
+           CALL    "cobabort"          USING   WRK-ERRMSG
+      *
+           .
+       500-COBABORT-EXT.
            EXIT.
       *
       *****************************************************************
