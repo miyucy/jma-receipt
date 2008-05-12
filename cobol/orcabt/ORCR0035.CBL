@@ -44,6 +44,7 @@
       *  02.06.03    NACL-ÃÝÅÄ    05/05/30  realtime preview ½èÍýÄÉ²Ã
       *
       *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.02.01    NACL-ÌçÏÆ    07/05/12  Âè£³¸øÈñ°Ê¹ß¤ÎÉéÃ´¶èÊ¬ÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -136,11 +137,12 @@ grpsys     COPY    "COMMON-SPA".
            03  HC-IDX                                  PIC 9(03).
            03  KH-IDX                                  PIC 9(03).
            03  BUN-IDX                                 PIC 9(03).
+           03  IDY                                     PIC 9(01).
+           03  IDY2                                    PIC 9(01).
+           03  IDY3                                    PIC 9(01).
       *
       *    ºÞÈÖ¹æ¤ÎÂàÈò
        01  WK-ZAINUM                                   PIC 9(08).
-      *
-      *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-IN                                  PIC X(01).
@@ -153,6 +155,13 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-PARA-HOSPNUM                        PIC 9(02).
       *
            03  WRK-RECEERR             PIC X(200). 
+      *
+           03  WRK-HIKAKU-TABLE.
+               05  WRK-HIKAKU-TBL      OCCURS   4.
+                 07  WRK-HIKAKU-TOTALTEN               PIC 9(08).
+                 07  WRK-HIKAKU-KOJYUN                 PIC 9(01).
+      *
+           03  WRK-HIKAKU-DATA                         PIC X(09).
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -279,9 +288,12 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
        2001-HENSYU-SEC                   SECTION.
       *
            IF (RECE02-HENTOTALTEN(2)       =      ZERO)    AND
-              (RECE02-HENTOTALTEN(3)       =      ZERO)
+              (RECE02-HENTOTALTEN(3)       =      ZERO)    AND
+              (RECE02-HENTOTALTEN(4)       =      ZERO)    AND
+              (RECE02-HENTOTALTEN(5)       =      ZERO)
                CONTINUE
            ELSE
+             IF    RECE02-HENTOTALTEN(1)   NOT =  ZERO
                IF (RECE02-HENTOTALTEN(2)   NOT =  ZERO)              AND
                   (RECE02-HENTOTALTEN(1)   NOT =  RECE02-HENTOTALTEN(2))
                    MOVE      1          TO     BUN-IDX
@@ -292,10 +304,71 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE      2          TO     BUN-IDX
                    PERFORM   20011-RECE04-HENSYU-SEC
                END-IF
+               IF (RECE02-HENTOTALTEN(4)   NOT =  ZERO)              AND
+                  (RECE02-HENTOTALTEN(1)   NOT =  RECE02-HENTOTALTEN(4))
+                   MOVE      3          TO     BUN-IDX
+                   PERFORM   20011-RECE04-HENSYU-SEC
+               END-IF
+               IF (RECE02-HENTOTALTEN(5)   NOT =  ZERO)              AND
+                  (RECE02-HENTOTALTEN(1)   NOT =  RECE02-HENTOTALTEN(5))
+                   MOVE      4          TO     BUN-IDX
+                   PERFORM   20011-RECE04-HENSYU-SEC
+               END-IF
+             ELSE
+                   PERFORM   20011-TENSU-HIKAU-SEC
+             END-IF
            END-IF
       *
            .
        2001-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÀÁµáÅÀ¿ôÈæ³Ó
+      *****************************************************************
+       20011-TENSU-HIKAU-SEC                SECTION.
+      *
+           INITIALIZE               WRK-HIKAKU-TABLE
+      *
+           PERFORM    VARYING    IDY    FROM   1   BY   1
+                       UNTIL   ( IDY      >    4                )
+                         OR    ( RECE02-KOHNUM(IDY)  =  SPACE   )
+                MOVE  RECE02-HENTOTALTEN(IDY + 1)
+                                    TO WRK-HIKAKU-TOTALTEN(IDY)
+                MOVE  IDY           TO WRK-HIKAKU-KOJYUN(IDY)
+           END-PERFORM
+      *
+           PERFORM    VARYING    IDY    FROM   1   BY   1
+                       UNTIL   ( IDY      >    4                )
+                         OR    ( WRK-HIKAKU-KOJYUN(IDY) = ZERO  )
+      *
+              COMPUTE    IDY2  =  IDY  +  1
+      *
+              PERFORM VARYING    IDY3   FROM  IDY2 BY   1
+                        UNTIL  ( IDY3     >    4                )
+                          OR   ( WRK-HIKAKU-KOJYUN(IDY3) = ZERO )
+      *
+                IF       WRK-HIKAKU-TBL(IDY)   <   WRK-HIKAKU-TBL(IDY3)
+                   MOVE  WRK-HIKAKU-TBL(IDY)   TO  WRK-HIKAKU-DATA
+                   MOVE  WRK-HIKAKU-TBL(IDY3)  TO  WRK-HIKAKU-TBL(IDY)
+                   MOVE  WRK-HIKAKU-DATA       TO  WRK-HIKAKU-TBL(IDY3)
+                END-IF
+      *
+              END-PERFORM
+      *
+           END-PERFORM
+      *
+           PERFORM    VARYING    IDY    FROM   1   BY   1
+                       UNTIL   ( IDY      >    4                )
+                         OR    ( WRK-HIKAKU-KOJYUN(IDY)  = ZERO )
+      *
+                   MOVE      WRK-HIKAKU-KOJYUN(IDY)  TO   BUN-IDX
+                   PERFORM   20011-RECE04-HENSYU-SEC
+      *
+           END-PERFORM
+      *
+           .
+       20011-TENSU-HIKAU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -390,13 +463,13 @@ grpsys              (RECE02-HOSPNUM   NOT = RECE04-HOSPNUM)    OR
               END-IF
            ELSE
               IF    KH-IDX      NOT =   ZERO
-                IF    RECE04-KOHBUNRI     =      ZERO
+      ***       IF    RECE04-KOHBUNRI     =      ZERO
                      MOVE    KH-IDX      TO     RECE04-KOHBUNRI
-                ELSE
-                  IF  RECE02-HENTOTALTEN(2)  >  RECE02-HENTOTALTEN(3)
-                     MOVE    KH-IDX      TO     RECE04-KOHBUNRI
-                  END-IF
-                END-IF
+      ***       ELSE
+      ***         IF  RECE02-HENTOTALTEN(2)  >  RECE02-HENTOTALTEN(3)
+      ***            MOVE    KH-IDX      TO     RECE04-KOHBUNRI
+      ***         END-IF
+      ***       END-IF
               END-IF
            END-IF
            .
@@ -461,16 +534,16 @@ grpsys            (RECE02-HOSPNUM       NOT =  RECE05-HOSPNUM)    OR
                      END-IF
                    ELSE
                      IF    KH-IDX      NOT =   ZERO
-                       IF    RECE05-KOHBUNRI     =      ZERO
+      ***              IF    RECE05-KOHBUNRI     =      ZERO
                             MOVE   KH-IDX        TO     RECE05-KOHBUNRI
                             PERFORM      2001131-RECE05-REWRITE-SEC
-                       ELSE
-                         IF  RECE02-HENTOTALTEN(2)  >
-                                                  RECE02-HENTOTALTEN(3)
-                            MOVE   KH-IDX        TO     RECE05-KOHBUNRI
-                            PERFORM      2001131-RECE05-REWRITE-SEC
-                         END-IF
-                       END-IF
+      ***              ELSE
+      ***                IF  RECE02-HENTOTALTEN(2)  >
+      ***                                         RECE02-HENTOTALTEN(3)
+      ***                   MOVE   KH-IDX        TO     RECE05-KOHBUNRI
+      ***                   PERFORM      2001131-RECE05-REWRITE-SEC
+      ***                END-IF
+      ***              END-IF
                      END-IF
                    END-IF
       *

@@ -37,6 +37,7 @@
       *  02.06.01    NACL-ÌçÏÆ    05/06/02  ¸øÈñÊ¬Î¥¶èÊ¬ÊÔ½¸½¤Àµ
       *  02.06.02    NACL-ÃÝÅÄ    05/05/30  realtime preview ½èÍýÄÉ²Ã
       *  03.05.01    NACL-¾®Æ¦Âô  07/06/04  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.02.01    NACL-ÌçÏÆ    07/05/12  Âè£³¸øÈñ°Ê¹ß¤ÎÉéÃ´¶èÊ¬ÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -128,6 +129,9 @@
            03  HC-IDX                                  PIC 9(03).
            03  KH-IDX                                  PIC 9(03).
            03  BUN-IDX                                 PIC 9(03).
+           03  IDY                                     PIC 9(01).
+           03  IDY2                                    PIC 9(01).
+           03  IDY3                                    PIC 9(01).
       *
       *    ºÞÈÖ¹æ¤ÎÂàÈò
        01  WK-ZAINUM                                   PIC 9(08).
@@ -147,6 +151,13 @@
            03  WRK-PARA-HOSPNUM                        PIC 9(02).
       *
            03  WRK-RECEERR             PIC X(200). 
+      *
+           03  WRK-HIKAKU-TABLE.
+               05  WRK-HIKAKU-TBL      OCCURS   4.
+                 07  WRK-HIKAKU-TOTALTEN               PIC 9(08).
+                 07  WRK-HIKAKU-KOJYUN                 PIC 9(01).
+      *
+           03  WRK-HIKAKU-DATA                         PIC X(09).
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -273,9 +284,12 @@
        210-HENSYU-SEC                   SECTION.
       *
            IF (RECE62-HENTOTALTEN(2)       =      ZERO)    AND
-              (RECE62-HENTOTALTEN(3)       =      ZERO)
+              (RECE62-HENTOTALTEN(3)       =      ZERO)    AND
+              (RECE62-HENTOTALTEN(4)       =      ZERO)    AND
+              (RECE62-HENTOTALTEN(5)       =      ZERO)
                CONTINUE
            ELSE
+             IF    RECE62-HENTOTALTEN(1)   NOT =  ZERO
                IF (RECE62-HENTOTALTEN(2)   NOT =  ZERO)              AND
                   (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(2))
                    MOVE      1          TO     BUN-IDX
@@ -286,9 +300,70 @@
                    MOVE      2          TO     BUN-IDX
                    PERFORM   RECE64-HENSYU-SEC
                END-IF
+               IF (RECE62-HENTOTALTEN(4)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(4))
+                   MOVE      3          TO     BUN-IDX
+                   PERFORM   RECE64-HENSYU-SEC
+               END-IF
+               IF (RECE62-HENTOTALTEN(5)   NOT =  ZERO)              AND
+                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(5))
+                   MOVE      4          TO     BUN-IDX
+                   PERFORM   RECE64-HENSYU-SEC
+               END-IF
+             ELSE
+                   PERFORM   2101-TENSU-HIKAU-SEC
+             END-IF
            END-IF
            .
        210-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÀÁµáÅÀ¿ôÈæ³Ó
+      *****************************************************************
+       2101-TENSU-HIKAU-SEC                SECTION.
+      *
+           INITIALIZE               WRK-HIKAKU-TABLE
+      *
+           PERFORM    VARYING    IDY    FROM   1   BY   1
+                       UNTIL   ( IDY      >    4                )
+                         OR    ( RECE62-KOHNUM(IDY)  =  SPACE   )
+                MOVE  RECE62-HENTOTALTEN(IDY + 1)
+                                    TO WRK-HIKAKU-TOTALTEN(IDY)
+                MOVE  IDY           TO WRK-HIKAKU-KOJYUN(IDY)
+           END-PERFORM
+      *
+           PERFORM    VARYING    IDY    FROM   1   BY   1
+                       UNTIL   ( IDY      >    4                )
+                         OR    ( WRK-HIKAKU-KOJYUN(IDY) = ZERO  )
+      *
+              COMPUTE    IDY2  =  IDY  +  1
+      *
+              PERFORM VARYING    IDY3   FROM  IDY2 BY   1
+                        UNTIL  ( IDY3     >    4                )
+                          OR   ( WRK-HIKAKU-KOJYUN(IDY3) = ZERO )
+      *
+                IF       WRK-HIKAKU-TBL(IDY)   <   WRK-HIKAKU-TBL(IDY3)
+                   MOVE  WRK-HIKAKU-TBL(IDY)   TO  WRK-HIKAKU-DATA
+                   MOVE  WRK-HIKAKU-TBL(IDY3)  TO  WRK-HIKAKU-TBL(IDY)
+                   MOVE  WRK-HIKAKU-DATA       TO  WRK-HIKAKU-TBL(IDY3)
+                END-IF
+      *
+              END-PERFORM
+      *
+           END-PERFORM
+      *
+           PERFORM    VARYING    IDY    FROM   1   BY   1
+                       UNTIL   ( IDY      >    4                )
+                         OR    ( WRK-HIKAKU-KOJYUN(IDY)  = ZERO )
+      *
+                   MOVE      WRK-HIKAKU-KOJYUN(IDY)  TO   BUN-IDX
+                   PERFORM   RECE64-HENSYU-SEC
+      *
+           END-PERFORM
+      *
+           .
+       2101-TENSU-HIKAU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -371,13 +446,13 @@
               END-IF
            ELSE
               IF    KH-IDX      NOT =   ZERO
-                IF    RECE64-KOHBUNRI     =      ZERO
+      ***       IF    RECE64-KOHBUNRI     =      ZERO
                      MOVE    KH-IDX      TO     RECE64-KOHBUNRI
-                ELSE
-                  IF  RECE62-HENTOTALTEN(2)  >  RECE62-HENTOTALTEN(3)
-                     MOVE    KH-IDX      TO     RECE64-KOHBUNRI
-                  END-IF
-                END-IF
+      ***       ELSE
+      ***         IF  RECE62-HENTOTALTEN(2)  >  RECE62-HENTOTALTEN(3)
+      ***            MOVE    KH-IDX      TO     RECE64-KOHBUNRI
+      ***         END-IF
+      ***       END-IF
               END-IF
            END-IF
            .
@@ -431,16 +506,16 @@
                      END-IF
                    ELSE
                      IF    KH-IDX      NOT =   ZERO
-                       IF    RECE65-KOHBUNRI     =      ZERO
+      ***              IF    RECE65-KOHBUNRI     =      ZERO
                             MOVE   KH-IDX        TO     RECE65-KOHBUNRI
                             PERFORM      RECE65-REWRITE-SEC
-                       ELSE
-                         IF  RECE62-HENTOTALTEN(2)  >
-                                                  RECE62-HENTOTALTEN(3)
-                            MOVE   KH-IDX        TO     RECE65-KOHBUNRI
-                            PERFORM      RECE65-REWRITE-SEC
-                         END-IF
-                       END-IF
+      ***              ELSE
+      ***                IF  RECE62-HENTOTALTEN(2)  >
+      ***                                         RECE62-HENTOTALTEN(3)
+      ***                   MOVE   KH-IDX        TO     RECE65-KOHBUNRI
+      ***                   PERFORM      RECE65-REWRITE-SEC
+      ***                END-IF
+      ***              END-IF
                      END-IF
                    END-IF
       *
