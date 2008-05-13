@@ -159,6 +159,9 @@
       *
            03  WRK-HIKAKU-DATA                         PIC X(09).
       *
+           03  WRK-3SYU-KBN.
+               05  WRK-3SYU                            PIC X(03).
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -324,6 +327,7 @@
        2101-TENSU-HIKAU-SEC                SECTION.
       *
            INITIALIZE               WRK-HIKAKU-TABLE
+           MOVE     SPACE    TO     WRK-3SYU-KBN
       *
            PERFORM    VARYING    IDY    FROM   1   BY   1
                        UNTIL   ( IDY      >    4                )
@@ -331,6 +335,27 @@
                 MOVE  RECE62-HENTOTALTEN(IDY + 1)
                                     TO WRK-HIKAKU-TOTALTEN(IDY)
                 MOVE  IDY           TO WRK-HIKAKU-KOJYUN(IDY)
+      *
+      *         生保
+                IF    RECE62-KOHNUM(IDY)  =   "012"
+                      MOVE   "1"    TO WRK-3SYU(1:1)
+                END-IF
+      *         結核
+                IF    RECE62-KOHNUM(IDY)  =   "010"  OR  "011"
+                      MOVE   "1"    TO WRK-3SYU(2:1)
+                END-IF
+                IF    RECE62-SRYYM   <   "200604"
+      *           精神
+                  IF  RECE62-KOHNUM(IDY)  =   "020"  OR  "021"
+                      MOVE   "1"    TO WRK-3SYU(3:1)
+                  END-IF
+                ELSE
+      *           自立支援法
+                  IF  RECE62-KOHNUM(IDY)  =   "021"  OR  "015"
+                                          OR  "016"  OR  "024"
+                      MOVE   "1"    TO WRK-3SYU(3:1)
+                  END-IF
+                END-IF
            END-PERFORM
       *
            PERFORM    VARYING    IDY    FROM   1   BY   1
@@ -357,8 +382,13 @@
                        UNTIL   ( IDY      >    4                )
                          OR    ( WRK-HIKAKU-KOJYUN(IDY)  = ZERO )
       *
-                   MOVE      WRK-HIKAKU-KOJYUN(IDY)  TO   BUN-IDX
+              MOVE  WRK-HIKAKU-KOJYUN(IDY)  TO   BUN-IDX
+              IF   (WRK-3SYU-KBN            =   ALL "1")
+              AND  (RECE62-KOHNUM(BUN-IDX)  =   "012"  )
+                   CONTINUE
+              ELSE
                    PERFORM   RECE64-HENSYU-SEC
+              END-IF
       *
            END-PERFORM
       *
