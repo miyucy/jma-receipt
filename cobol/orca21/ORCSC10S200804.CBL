@@ -2070,7 +2070,8 @@
       *            ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê
                    IF     (SPA-SYONIKA         =   1   )  AND
                           (SPA-NYUGAIKBN       =   "2" )  AND
-                          (FLG-SYONIKA-ARI     =   1   )
+                         ((FLG-SYONIKA-ARI     =   1   ) OR
+                          (SPA-SYONIKA-ARI3    =   1   ))
                        PERFORM 3303-SYONIKA-SET-SEC
                    END-IF
                    IF      FLG-SYONIKA       =   1
