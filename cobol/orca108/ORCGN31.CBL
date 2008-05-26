@@ -1030,11 +1030,7 @@
                GO  TO  404-BACKPAGE-EXT
            END-IF
       *
-           IF    ( SPA-GMN-CYOIKI-MAX      =   100  )
-               COMPUTE SPA-NAI-NEXT    =   SPA-NAI-BACK    -   100
-           ELSE
-               MOVE    SPA-NAI-BACK    TO  SPA-NAI-NEXT
-           END-IF
+           COMPUTE SPA-NAI-NEXT    =   SPA-NAI-BACK    -   100
       *
            PERFORM 4100-CYOIKILST-SET-SEC
       *
@@ -1050,6 +1046,8 @@
            IF      SPA-NAI-NEXT    =   ZERO
                GO  TO  405-NEXTPAGE-EXT
            END-IF
+      *
+           MOVE    SPA-NAI-NEXT    TO  SPA-NAI-BACK
       *
            PERFORM 4100-CYOIKILST-SET-SEC
       *
