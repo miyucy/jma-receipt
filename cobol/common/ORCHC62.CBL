@@ -117,10 +117,12 @@
                05  WRK-HENLINE     PIC X(54).
                05  WRK-HENNAIYO    PIC X(24).
                05  WRK-YKZNAME     PIC X(100).
+               05  WRK-YOUHOU      PIC X(100).
                05  WRK-SURYOU      PIC X(09).
                05  WRK-TANI        PIC X(12).
-               05  WRK-YOUHOU      PIC X(100).
                05  WRK-KAISUU      PIC X(03).
+      *
+           03  WRK-HENSYUDATA      PIC X(100).
       *
       *    剤内容領域
        01  WRK-SRY-AREA.
@@ -449,20 +451,8 @@
                    INTO            WRK-YOUHOU
            END-STRING
       *
-      *    文字が多い場合は改行して表示する
-           IF      WRK-YOUHOU(51:)     NOT =   SPACE
-               PERFORM 250-PAGE-CHK-SEC
-               MOVE    WRK-YOUHOU(1:50)    TO  WRK-HENLINE(4:)
-               MOVE    WRK-HENLINE         TO  HCM62-NAIYO1(CNT-LINE)
-               PERFORM 250-PAGE-CHK-SEC
-               MOVE    SPACE               TO  WRK-HENLINE
-               MOVE    WRK-YOUHOU(51:)     TO  WRK-HENLINE(4:)
-               MOVE    WRK-HENLINE         TO  HCM62-NAIYO1(CNT-LINE)
-           ELSE
-               PERFORM 250-PAGE-CHK-SEC
-               MOVE    WRK-YOUHOU          TO  WRK-HENLINE(4:)
-               MOVE    WRK-HENLINE         TO  HCM62-NAIYO1(CNT-LINE)
-           END-IF
+           MOVE    WRK-YOUHOU      TO  WRK-HENSYUDATA
+           PERFORM 250-HENSYU-SYORI-SEC
       *
            .
        240-YOUHOU-HENSYU-EXT.
@@ -492,20 +482,8 @@
                END-IF
            END-IF
       *
-      *    文字が多い場合は改行して表示する
-           IF      WRK-YKZNAME(51:)    NOT =   SPACE
-               PERFORM 250-PAGE-CHK-SEC
-               MOVE    WRK-YKZNAME(1:50)   TO  WRK-HENLINE(4:)
-               MOVE    WRK-HENLINE         TO  HCM62-NAIYO1(CNT-LINE)
-               PERFORM 250-PAGE-CHK-SEC
-               MOVE    SPACE               TO  WRK-HENLINE
-               MOVE    WRK-YKZNAME(51:)    TO  WRK-HENLINE(4:)
-               MOVE    WRK-HENLINE         TO  HCM62-NAIYO1(CNT-LINE)
-           ELSE
-               PERFORM 250-PAGE-CHK-SEC
-               MOVE    WRK-YKZNAME         TO  WRK-HENLINE(4:)
-               MOVE    WRK-HENLINE         TO  HCM62-NAIYO1(CNT-LINE)
-           END-IF
+           MOVE    WRK-YKZNAME     TO  WRK-HENSYUDATA
+           PERFORM 250-HENSYU-SYORI-SEC
       *
            .
        240-YKZNAME-HENSYU-EXT.
@@ -539,15 +517,6 @@
            END-STRING
       *
            PERFORM 250-MHEN-SYORI-SET-SEC
-           COMPUTE IDX-KET1    =   54  -   IDX-KET
-      *
-      *    文字が重なる場合は１行下に表示する
-           IF      HCM62-NAIYO1(CNT-LINE)(IDX-KET1:)   NOT =   SPACE
-               PERFORM 250-PAGE-CHK-SEC
-               MOVE    WRK-HENNAIYO    TO  HCM62-NAIYO2(CNT-LINE)
-           ELSE
-               MOVE    WRK-HENNAIYO    TO  HCM62-NAIYO2(CNT-LINE)
-           END-IF
       *
            .
        240-SURYOU-HENSYU-EXT.
@@ -598,16 +567,6 @@
            END-EVALUATE
       *
            PERFORM 250-MHEN-SYORI-SET-SEC
-           COMPUTE IDX-KET1    =   54  -   IDX-KET
-      *
-      *    文字が重なる場合は１行下に表示する
-           IF    ( HCM62-NAIYO1(CNT-LINE)(IDX-KET1:)   NOT =   SPACE )
-           OR    ( HCM62-NAIYO2(CNT-LINE) NOT =   SPACE )
-               PERFORM 250-PAGE-CHK-SEC
-               MOVE    WRK-HENNAIYO    TO  HCM62-NAIYO2(CNT-LINE)
-           ELSE
-               MOVE    WRK-HENNAIYO    TO  HCM62-NAIYO2(CNT-LINE)
-           END-IF
       *
            .
        240-KAISUU-HENSYU-EXT.
@@ -704,8 +663,63 @@
                END-IF
            END-PERFORM
       *
+           COMPUTE IDX-KET1    =   54  -   IDX-KET
+      *
+      *    文字が重なる場合は１行下に表示する
+           IF    ( HCM62-NAIYO1(CNT-LINE)(IDX-KET1:)   NOT =   SPACE )
+           OR    ( HCM62-NAIYO2(CNT-LINE) NOT =   SPACE )
+               PERFORM 250-PAGE-CHK-SEC
+               MOVE    WRK-HENNAIYO    TO  HCM62-NAIYO2(CNT-LINE)
+           ELSE
+               MOVE    WRK-HENNAIYO    TO  HCM62-NAIYO2(CNT-LINE)
+           END-IF
+      *
            .
        250-MHEN-SYORI-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票文字編集処理
+      *****************************************************************
+       250-HENSYU-SYORI-SEC        SECTION.
+      *
+      *    初期値セット
+           MOVE    1              TO  IDX-STR
+           MOVE    4              TO  IDX-KET
+      *
+      *    編集データがなくなるまで繰り返す
+           PERFORM UNTIL  (IDX-STR     >   100 )
+                   OR     (WRK-HENSYUDATA(IDX-STR:)    =   SPACE)
+      *        改行なら最大字セット
+               IF      WRK-HENSYUDATA(IDX-STR:1)   =   X"0A"
+                   MOVE    54              TO  IDX-KET
+                   ADD     1               TO  IDX-STR
+               ELSE
+      *            全角セット
+                   IF      WRK-HENSYUDATA(IDX-STR:1)    >=  X"A1"
+                       MOVE    WRK-HENSYUDATA(IDX-STR:2)
+                                   TO  WRK-HENLINE(IDX-KET:2)
+                       ADD     2               TO  IDX-STR
+                       ADD     2               TO  IDX-KET
+                   END-IF
+               END-IF
+      *        最大字で改行
+               IF         (IDX-KET         >=  54)
+                   OR    ((IDX-STR         <=  100)
+                   AND    (WRK-HENSYUDATA(IDX-STR:) =   SPACE))
+                   PERFORM 250-PAGE-CHK-SEC
+                   MOVE    WRK-HENLINE     TO  HCM62-NAIYO1(CNT-LINE)
+                   MOVE    SPACE           TO  WRK-HENLINE
+                   MOVE    4               TO  IDX-KET
+      *            改行なら次へ
+                   IF      WRK-HENSYUDATA(IDX-STR:1)   =   X"0A"
+                       COMPUTE IDX-STR =   IDX-STR     +   1
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       250-HENSYU-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
