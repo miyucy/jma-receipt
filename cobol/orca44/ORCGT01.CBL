@@ -5182,6 +5182,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE
       *
            EVALUATE    SPA-TIDCD
+               WHEN    "1010"
                WHEN    "1014"
                WHEN    "1015"
                WHEN    "1016"
