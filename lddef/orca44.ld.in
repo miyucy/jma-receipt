@@ -45,6 +45,8 @@ db	{
 	tbl_prvkanri;
 	tbl_ptinf;
 	tbl_ptnum;
+	tbl_receden;
+	tbl_seikyu;
 	tbl_syskanri;
 	tbl_syuka;
 };
