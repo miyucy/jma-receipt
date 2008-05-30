@@ -3644,24 +3644,38 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EVALUATE    MCP-WIDGET
                WHEN    "B06"
                    MOVE    1               TO  RECE10-TEISYUTUSAKI
-                   EVALUATE    SPA-NAI-2005-SYARECEKBN
-                       WHEN    "1"
+                   EVALUATE    SPA-GMN-NYUGAIKBN
+                                   ALSO    SPA-NAI-2005-SYARECEKBN
+                       WHEN    "0" ALSO    "1"
+                       WHEN    "2" ALSO    "1"
+                       WHEN    "2" ALSO    "3"
                            MOVE    "2"         TO  RECE10-NYUGAIKBN
-                       WHEN    "2"
+                       WHEN    "0" ALSO    "2"
+                       WHEN    "1" ALSO    "2"
+                       WHEN    "1" ALSO    "3"
                            MOVE    "1"         TO  RECE10-NYUGAIKBN
-                       WHEN    "3"
+                       WHEN    "0" ALSO    "3"
                            MOVE    "%"         TO  RECE10-NYUGAIKBN
+                       WHEN    OTHER
+                           MOVE    SPACE       TO  RECE10-NYUGAIKBN
                    END-EVALUATE
                    PERFORM 4601-RECEDEN-CHK-SEC
                WHEN    "B07"
                    MOVE    2               TO  RECE10-TEISYUTUSAKI
-                   EVALUATE    SPA-NAI-2005-KKHRECEKBN
-                       WHEN    "1"
+                   EVALUATE    SPA-GMN-NYUGAIKBN
+                                   ALSO    SPA-NAI-2005-KKHRECEKBN
+                       WHEN    "0" ALSO    "1"
+                       WHEN    "2" ALSO    "1"
+                       WHEN    "2" ALSO    "3"
                            MOVE    "2"         TO  RECE10-NYUGAIKBN
-                       WHEN    "2"
+                       WHEN    "0" ALSO    "2"
+                       WHEN    "1" ALSO    "2"
+                       WHEN    "1" ALSO    "3"
                            MOVE    "1"         TO  RECE10-NYUGAIKBN
-                       WHEN    "3"
+                       WHEN    "0" ALSO    "3"
                            MOVE    "%"         TO  RECE10-NYUGAIKBN
+                       WHEN    OTHER
+                           MOVE    SPACE       TO  RECE10-NYUGAIKBN
                    END-EVALUATE
                    PERFORM 4601-RECEDEN-CHK-SEC
                    IF    ( FLG-RECEDEN-CHK           =   ZERO   )
@@ -3672,25 +3686,39 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
                        MOVE    SPA-NAI-SKYYM   TO  RECE10-SKYYM
                        MOVE    6               TO  RECE10-TEISYUTUSAKI
-                       EVALUATE    SPA-NAI-200501-KOUIKIRECEKBN
-                           WHEN    "1"
-                               MOVE    "2"     TO  RECE10-NYUGAIKBN
-                           WHEN    "2"
-                               MOVE    "1"     TO  RECE10-NYUGAIKBN
-                           WHEN    "3"
-                               MOVE    "%"     TO  RECE10-NYUGAIKBN
+                       EVALUATE    SPA-GMN-NYUGAIKBN
+                                   ALSO    SPA-NAI-200501-KOUIKIRECEKBN
+                           WHEN    "0" ALSO    "1"
+                           WHEN    "2" ALSO    "1"
+                           WHEN    "2" ALSO    "3"
+                               MOVE    "2"         TO  RECE10-NYUGAIKBN
+                           WHEN    "0" ALSO    "2"
+                           WHEN    "1" ALSO    "2"
+                           WHEN    "1" ALSO    "3"
+                               MOVE    "1"         TO  RECE10-NYUGAIKBN
+                           WHEN    "0" ALSO    "3"
+                               MOVE    "%"         TO  RECE10-NYUGAIKBN
+                           WHEN    OTHER
+                               MOVE    SPACE       TO  RECE10-NYUGAIKBN
                        END-EVALUATE
                        PERFORM 4601-RECEDEN-CHK-SEC
                    END-IF
                WHEN    "B08"
                    MOVE    6               TO  RECE10-TEISYUTUSAKI
-                   EVALUATE    SPA-NAI-200501-KOUIKIRECEKBN
-                       WHEN    "1"
+                   EVALUATE    SPA-GMN-NYUGAIKBN
+                                   ALSO    SPA-NAI-200501-KOUIKIRECEKBN
+                       WHEN    "0" ALSO    "1"
+                       WHEN    "2" ALSO    "1"
+                       WHEN    "2" ALSO    "3"
                            MOVE    "2"         TO  RECE10-NYUGAIKBN
-                       WHEN    "2"
+                       WHEN    "0" ALSO    "2"
+                       WHEN    "1" ALSO    "2"
+                       WHEN    "1" ALSO    "3"
                            MOVE    "1"         TO  RECE10-NYUGAIKBN
-                       WHEN    "3"
+                       WHEN    "0" ALSO    "3"
                            MOVE    "%"         TO  RECE10-NYUGAIKBN
+                       WHEN    OTHER
+                           MOVE    SPACE       TO  RECE10-NYUGAIKBN
                    END-EVALUATE
                    PERFORM 4601-RECEDEN-CHK-SEC
            END-EVALUATE
@@ -3750,6 +3778,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *    レセ電データ月遅れ分存在チェック処理
       *****************************************************************
        4601-RECEDEN-CHK-SEC            SECTION.
+      *
+           IF      RECE10-NYUGAIKBN    =   SPACE
+               GO  TO  4601-RECEDEN-CHK-EXT
+           END-IF
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE

@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 月次帳票
-      *  コンポーネント名  : 月遅れ分のレセ電データチェック一覧
+      *  コンポーネント名  : （月遅れ分）レセ電データ未作成患者一覧
       *  管理者            : 
       *  作成日付    作業者        記述
       *  08/05/29    NACL-藤原     新規作成
@@ -96,8 +96,8 @@
        01  HEAD-01.
            03  FILLER                  PIC X(05)   VALUE   SPACE.
            03  H01-SRYYM               PIC X(16).
-           03  FILLER                  PIC X(40)   VALUE
-               "分（月遅れ分）レセ電データチェック一覧".
+           03  FILLER                  PIC X(42)   VALUE
+               "分（月遅れ分）レセ電データ未作成患者一覧".
            03  FILLER                  PIC X(08)   VALUE   "作成日：".
            03  H01-SYSYMD              PIC X(09).
            03  FILLER                  PIC X(04)   VALUE   "  P.".
@@ -243,7 +243,7 @@
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    "ORCBG019"       TO  JOB-PGID
-           MOVE    "レセ電データチェック一覧"
+           MOVE    "レセ電データ未作成患者一覧"
                                     TO  JOB-SHELLMSG
       *
            PERFORM 900-CALL-ORCSJOB-SEC
@@ -520,7 +520,7 @@
                                        TO  SPRT-PRIORITY
            MOVE   "HCPOM.red"          TO  SPRT-PRTID
            MOVE    HCPOM               TO  SPRT-PRTDATA
-           MOVE    "レセ電月遅れ分チェック一覧"
+           MOVE    "レセ電データ未作成患者一覧"
                                        TO  SPRT-TITLE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
