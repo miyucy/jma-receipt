@@ -270,6 +270,8 @@
       *                                     £·£°ºÐÂåÁ°È¾¤ÎÆÃÎãÁ¼ÃÖÂÐ¾Ý¼Ô
       *                                     ÂÐ±þ 
       *                                     ¹ñÊÝ¤Î¤ß£²³ä¤Îµ­ºÜ
+      *  04.02.08    NACL-Æ£¸¶    08/05/07  ¸øÈñ£³¼ï¡¢£´¼ï¤ÎÊ»ÍÑ¤Î
+      *                                     ¥ì¥»¥×¥È¼ïÊÌ¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -600,7 +602,7 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-FTNKBN-AREA.                            
                05  WRK-FTNKBN          PIC X(01).
                05  WRK-KOHNUM          PIC 9(01)
-                                           OCCURS  3.
+                                           OCCURS  4.
                05  WRK-SEHFLG          PIC 9(01).
            03  WRK-SRYCD1-MAX          PIC 9(03).           
            03  WRK-SRYCD71-MAX         PIC 9(03).           
@@ -1820,16 +1822,24 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
       *
       *        Áí·ï¿ô¡¿Áí¹ç·×ÅÀ¿ô¤Î½¸·×
                MOVE    ZERO                TO  SUM-TOTALTEN
-                                               FLG-TOTALTEN       
-               IF      RECE02-RJNHKNNUM    =   SPACE           
-               AND     RECE02-HKNNUM       =   SPACE
-                   IF      RECE02-KOHNUM (3)   NOT =   SPACE
-                       MOVE    RECE02-TOTALTEN (4) TO  SUM-TOTALTEN
+                                               FLG-TOTALTEN
+               IF      RECE02-SRYYM        <   WRK-CONS-SRYYM-200804       
+                  IF      RECE02-RJNHKNNUM    =   SPACE           
+                   AND     RECE02-HKNNUM       =   SPACE
+                       IF      RECE02-KOHNUM (3)   NOT =   SPACE
+                           MOVE    RECE02-TOTALTEN (4) TO  SUM-TOTALTEN
+                       ELSE
+                           MOVE    RECE02-TOTALTEN (2) TO  SUM-TOTALTEN
+                       END-IF
                    ELSE
-                       MOVE    RECE02-TOTALTEN (2) TO  SUM-TOTALTEN
+                       MOVE     RECE02-TOTALTEN (1) TO  SUM-TOTALTEN
                    END-IF
                ELSE
-                   MOVE     RECE02-TOTALTEN (1) TO  SUM-TOTALTEN
+                   IF      RECE02-HKNNUM       =   SPACE
+                       MOVE    RECE02-TOTALTEN (2) TO  SUM-TOTALTEN
+                   ELSE
+                       MOVE    RECE02-TOTALTEN (1) TO  SUM-TOTALTEN
+                   END-IF
                END-IF
       *         
       *        ¥ì¥»¥×¥È¶¦ÄÌ¥ì¥³¡¼¥É
@@ -2386,9 +2396,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
                GO  TO  2005-HENSYU-EXT
            END-IF
       *
-      *    »°¼ï¸øÈñÊ»ÍÑ¤Î¤È¤­
+      *    ¸øÈñÊ»ÍÑ¤Î¤È¤­
            PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       3
+                   UNTIL   IDY >       4
                    OR      RECE02-KOHNUM (IDY) =   SPACE
                COMPUTE IDX     =   IDY     +   1
       *        ¥ì¥»¥×¥ÈÆÃµ­»ö¹àÊÔ½¸¾ðÊó
@@ -2903,6 +2913,12 @@ grpsys         MOVE    RECE041-HOSPNUM TO  COMB-HOSPNUM
                    GO  TO  20070-FTNKBN-HENSYU-EXT
                END-IF
            END-IF
+      *
+      *    Ê¿À®£²£°Ç¯£´·î²þÀµ°Ê¹ß¤ÎÉéÃ´¶èÊ¬ÀßÄê
+           IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM-200804
+               PERFORM 200701-FTNKBN-HENSYU-200804-SEC
+               GO  TO  20070-FTNKBN-HENSYU-EXT
+           END-IF
       *                                                      
       *    ¼çÊÝ¸±¤Î¤ß      
            IF      COMB-HKNNUM    NOT =   SPACE
@@ -3027,6 +3043,127 @@ grpsys         MOVE    RECE041-HOSPNUM TO  COMB-HOSPNUM
       *???              
            .
        20070-FTNKBN-HENSYU-EXT.
+           EXIT. 
+      *
+      *****************************************************************
+      *    Ê¿À®£²£°Ç¯£´·î²þÀµ°Ê¹ß¤ÎÉéÃ´¶èÊ¬ÀßÄê½èÍý
+      *****************************************************************
+       200701-FTNKBN-HENSYU-200804-SEC    SECTION.
+      *
+      *    ¸øÈñ¤ÎÊÔ½¸
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       4
+                   OR      COMB-KOHHKNNUM  (IDX)   =   SPACE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       4
+                       OR      RECE02-KOHNUM(IDY)  =   SPACE
+                   IF     (COMB-KOHHKNNUM(IDX) =
+                                              RECE02-KOHNUM(IDY)) AND
+                          (COMB-KOHID    (IDX) =
+                                              RECE02-KOHID(IDY))
+                       MOVE    1           TO  WRK-KOHNUM (IDY)
+                       MOVE    4           TO  IDY                
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+      *???
+      **     DISPLAY "RECE02(1)=" RECE02-KOHNUM (1) "(2)="
+      **                          RECE02-KOHNUM (2)
+      **             "(3)=" RECE02-KOHNUM (3) "##"
+      **     DISPLAY "(1)=" WRK-KOHNUM (1) "(2)=" WRK-KOHNUM (2)
+      **             "(3)=" WRK-KOHNUM (3) "##"
+      *???
+           IF      COMB-HKNNUM         NOT =   SPACE
+               EVALUATE    WRK-KOHNUM (1)
+                               ALSO    WRK-KOHNUM (2)
+                                           ALSO    WRK-KOHNUM (3)
+                                                   ALSO    WRK-KOHNUM(4)
+      *            £±¼Ô 
+                   WHEN    0   ALSO    0   ALSO    0   ALSO    0
+                       MOVE    "1"            TO  WRK-FTNKBN
+      *            £²¼Ô 
+                   WHEN    1   ALSO    0   ALSO    0   ALSO    0
+                       MOVE    "2"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    1   ALSO    0   ALSO    0
+                       MOVE    "3"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    0   ALSO    1   ALSO    0
+                       MOVE    "E"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    0   ALSO    0   ALSO    1
+                       MOVE    "G"            TO  WRK-FTNKBN
+      *            £³¼Ô 
+                   WHEN    1   ALSO    1   ALSO    0   ALSO    0
+                       MOVE    "4"            TO  WRK-FTNKBN
+                   WHEN    1   ALSO    0   ALSO    1   ALSO    0
+                       MOVE    "M"            TO  WRK-FTNKBN
+                   WHEN    1   ALSO    0   ALSO    0   ALSO    1
+                       MOVE    "N"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    1   ALSO    1   ALSO    0
+                       MOVE    "O"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    1   ALSO    0   ALSO    1
+                       MOVE    "P"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    0   ALSO    1   ALSO    1
+                       MOVE    "Q"            TO  WRK-FTNKBN
+      *            £´¼Ô 
+                   WHEN    1   ALSO    1   ALSO    1   ALSO    0
+                       MOVE    "V"            TO  WRK-FTNKBN
+                   WHEN    1   ALSO    1   ALSO    0   ALSO    1
+                       MOVE    "W"            TO  WRK-FTNKBN
+                   WHEN    1   ALSO    0   ALSO    1   ALSO    1
+                       MOVE    "X"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    1   ALSO    1   ALSO    1
+                       MOVE    "Y"            TO  WRK-FTNKBN
+      *            £µ¼Ô 
+                   WHEN    1   ALSO    1   ALSO    1   ALSO    1
+                       MOVE    "9"            TO  WRK-FTNKBN
+               END-EVALUATE
+           ELSE
+               EVALUATE    WRK-KOHNUM (1)
+                               ALSO    WRK-KOHNUM (2)
+                                           ALSO    WRK-KOHNUM (3)
+                                                   ALSO    WRK-KOHNUM(4)
+      *            £±¼Ô 
+                   WHEN    1   ALSO    0   ALSO    0   ALSO    0
+                       MOVE    "5"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    1   ALSO    0   ALSO    0
+                       MOVE    "6"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    0   ALSO    1   ALSO    0
+                       MOVE    "B"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    0   ALSO    0   ALSO    1
+                       MOVE    "C"            TO  WRK-FTNKBN
+      *            £²¼Ô 
+                   WHEN    1   ALSO    1   ALSO    0   ALSO    0
+                       MOVE    "7"            TO  WRK-FTNKBN
+                   WHEN    1   ALSO    0   ALSO    1   ALSO    0
+                       MOVE    "H"            TO  WRK-FTNKBN
+                   WHEN    1   ALSO    0   ALSO    0   ALSO    1
+                       MOVE    "I"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    1   ALSO    1   ALSO    0
+                       MOVE    "J"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    1   ALSO    0   ALSO    1
+                       MOVE    "K"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    0   ALSO    1   ALSO    1
+                       MOVE    "L"            TO  WRK-FTNKBN
+      *            £³¼Ô 
+                   WHEN    1   ALSO    1   ALSO    1   ALSO    0
+                       MOVE    "R"            TO  WRK-FTNKBN
+                   WHEN    1   ALSO    1   ALSO    0   ALSO    1
+                       MOVE    "S"            TO  WRK-FTNKBN
+                   WHEN    1   ALSO    0   ALSO    1   ALSO    1
+                       MOVE    "T"            TO  WRK-FTNKBN
+                   WHEN    0   ALSO    1   ALSO    1   ALSO    1
+                       MOVE    "U"            TO  WRK-FTNKBN
+      *            £´¼Ô 
+                   WHEN    1   ALSO    1   ALSO    1   ALSO    1
+                       MOVE    "Z"            TO  WRK-FTNKBN
+               END-EVALUATE
+           END-IF
+      *???  
+           IF      WRK-FTNKBN    =   SPACE
+               DISPLAY "FTNKBN ERR " RECE02-PTNUM "##"
+           END-IF
+      *???              
+           .
+       200701-FTNKBN-HENSYU-200804-EXT.
            EXIT. 
       *
       *****************************************************************

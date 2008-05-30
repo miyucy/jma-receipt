@@ -188,6 +188,8 @@
       *                                     公費カウントしない
       *  04.02.06    NACL-藤原    08/04/25  保険履歴の記載変更
       *  04.02.07    NACL-門脇    08/05/22  在総診判定条件修正
+      *  04.02.08    NACL-藤原    08/05/07  公費３種、４種の併用の
+      *                                     レセプト種別の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1820,7 +1822,54 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                    GO  TO  RECESYUBETU-SET-EXT
                END-IF
            END-IF
-      *     
+      *
+      *    平成２０年４月改正以降の種別設定
+           IF      RECE02-SRYYM        >=  WRK-CONS-SRYYM-200804
+               INITIALIZE                  ORCSSYUBETUGETAREA
+               MOVE    1               TO  LNK-SYUBETUGET-SYOFLG
+               MOVE    RECE01-NYUGAIKBN
+                                       TO  LNK-SYUBETUGET-NYUGAIKBN
+               MOVE    RECE02-SRYYM    TO  LNK-SYUBETUGET-SRYYM
+               MOVE    RECE02-HKNNUM   TO  LNK-SYUBETUGET-HKNNUM
+               MOVE    RECE02-HONKZKKBN
+                                       TO  LNK-SYUBETUGET-HKN-HONKZKKBN
+               MOVE    RECE02-HOJOKBN  TO  LNK-SYUBETUGET-HKN-HOJOKBN
+               IF      WRK-JIHI-FLG    =   "1"
+                   MOVE    "8"             TO
+                                       LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
+               END-IF
+               MOVE    WRK-NENREI      TO  LNK-SYUBETUGET-AGE
+               MOVE    RECE01-SYUGAKUKBN
+                                       TO  LNK-SYUBETUGET-SYUGAKUKBN
+               MOVE    RECE01-PREFNUM  TO  LNK-SYUBETUGET-PREFNUM
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       4
+                   MOVE    RECE02-KOHNUM (IDX)     TO
+                                       LNK-SYUBETUGET-KOHNUM     (IDX)
+                   MOVE    RECE02-KOHHBTNUM (IDX)  TO
+                                       LNK-SYUBETUGET-KOHHBTNUM  (IDX)
+                   IF      RECE02-RECESKYKBN (IDX) =   SPACE
+                       MOVE    "1"                 TO
+                                       LNK-SYUBETUGET-RECESKYKBN (IDX)
+                   END-IF 
+               END-PERFORM
+               CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
+      *
+               MOVE    LNK-SYUBETUGET-RECESYUBETU
+                                           TO  RECE02-RECESYUBETU
+               MOVE    LNK-SYUBETUGET-RECESYUBETU-X
+                                           TO  RECE02-RECESYUBETU-X
+      *
+      *        公費分で種別が設定できなかったとき不明分にしない
+               IF    ( IDZ                 =   2    )
+               AND   ( RECE02-RECESYUBETU  =   ZERO ) 
+                   MOVE    5555                TO  RECE02-RECESYUBETU
+               END-IF                 
+      *
+      *        DISPLAY   "RECE02-RECESYUBETU: " RECE02-RECESYUBETU
+               GO  TO  RECESYUBETU-SET-EXT
+           END-IF    
+      *    
       *    自費のときのレセプト種別を編集
            IF     (RECE02-HKNNUM        NOT =   SPACE)   AND
                   (WRK-JIHI-FLG         =   "1"      ) 

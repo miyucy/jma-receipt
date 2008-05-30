@@ -30,6 +30,8 @@
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/05/07  公費３種、４種の併用の
+      *                                     レセプト種別の追加
       *****************************************************************
       *
        01  SPA-R02.
@@ -161,7 +163,8 @@
                    07  SPA-NAI-2003-TABLE.
                        09  SPA-NAI-2003-TBL    OCCURS  50.
                            11  SPA-NAI-2003-TSYUBETU
-                                                   PIC X(04).
+                                                   PIC X(04)
+                                                           OCCURS  5.
                            11  SPA-NAI-2003-TSYUBETUNAME
                                                    PIC X(40).
       *
@@ -218,7 +221,7 @@
                                13  SPA-NAI-SYUBETU-G.
                                    15  SPA-NAI-SYUBETU
                                                    PIC X(04)
-                                                   OCCURS 1.
+                                                   OCCURS 5.
                                13  SPA-NAI-TSYUBETU-SRT1
                                                    PIC X(04).
                                13  SPA-NAI-TPREFKBN

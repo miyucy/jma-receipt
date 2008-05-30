@@ -58,6 +58,8 @@
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *                                     改正に伴う記録条件仕様の変更
+      *  04.02.02    NACL-藤原    08/05/07  公費３種、４種の併用の
+      *                                     レセプト種別の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -636,6 +638,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                        ADD     2               TO  SUM-TOTALKENSU
                    WHEN    "3"
                        ADD     3               TO  SUM-TOTALKENSU
+                   WHEN    "4"
+                       ADD     4               TO  SUM-TOTALKENSU
+                   WHEN    "5"
+                       ADD     5               TO  SUM-TOTALKENSU
                END-EVALUATE
       *
                ADD     RECEDEN-TOTALTEN    TO  SUM-TOTALTEN

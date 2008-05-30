@@ -32,26 +32,47 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-藤原    08/05/07  公費３種、４種の併用の
+      *                                     レセプト種別の追加
       ************************************************************
       *
        01  ORCSSYUBETUGETAREA.
+      *
+           03  LNK-SYUBETUGET-SYOFLG           PIC 9(01).
       *
            03  LNK-SYUBETUGET-IN.
                05  LNK-SYUBETUGET-NYUGAIKBN    PIC X(01).
                05  LNK-SYUBETUGET-SRYYM        PIC 9(06).
                05  LNK-SYUBETUGET-HKNNUM       PIC X(03).
+      *
                05  LNK-SYUBETUGET-KOKUHO       PIC X(01).
                05  LNK-SYUBETUGET-IHO          PIC X(01).
                05  LNK-SYUBETUGET-RJN          PIC X(01).
                05  LNK-SYUBETUGET-KOHI-CNT     PIC 9(01).
                05  LNK-SYUBETUGET-HONKZKKBN    PIC X(01).
       *
-               05  LNK-SYUBETUGET-KOHID        PIC 9(10).
-               05  LNK-SYUBETUGET-RJNPAYKBN    PIC X(02).
+               05  LNK-SYUBETUGET-PREFNUM      PIC X(02).
                05  LNK-SYUBETUGET-HKN-HONKZKKBN
                                                PIC X(01).
                05  LNK-SYUBETUGET-HKN-HOJOKBN  PIC X(01).
-               05  LNK-SYUBETUGET-NENREI       PIC 9(03).
+               05  LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
+                                               PIC X(01).
+      * 
+               05  LNK-SYUBETUGET-HKNKBN       PIC X(01).
+               05  LNK-SYUBETUGET-SAIGAIKBN    PIC X(01).
+      *
+               05  LNK-SYUBETUGET-KOHI-TBL     OCCURS  10.
+                   07  LNK-SYUBETUGET-KOHID        PIC 9(10).
+                   07  LNK-SYUBETUGET-KOHNUM       PIC X(03).
+                   07  LNK-SYUBETUGET-KOHPAYKBN    PIC X(02).
+                   07  LNK-SYUBETUGET-KOHHBTNUM    PIC X(02).
+                   07  LNK-SYUBETUGET-RECESKYKBN   PIC X(01).
+      *
+               05  LNK-SYUBETUGET-AGE          PIC 9(03).
+               05  LNK-SYUBETUGET-SYUGAKUKBN   PIC 9(01).
+      *
+               05  LNK-SYUBETUGET-RJNHKNNUM    PIC X(03).
+               05  LNK-SYUBETUGET-RJNPAYKBN    PIC X(02).
       *
            03  LNK-SYUBETUGET-OT.
                05  LNK-SYUBETUGET-RECESYUBETU  PIC 9(04).

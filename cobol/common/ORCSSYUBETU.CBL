@@ -1906,23 +1906,6 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                MOVE    "8888"      TO  LNK-SYUBETU-RECESYUBETU (IDZZ)
                GO  TO  30011-RECESYUBETU-SET-EXT
            END-IF
-      *         
-           IF      WRK-RECE61-HKNNUM   NOT =   SPACE
-               IF      WRK-RECE61-HKNNUM   =   "060"   OR  "067"   OR
-                                               "068"   OR  "069"
-                   IF      WRK-RECE61-HKNNUM   =   "060"   OR  "068"
-                        MOVE   "1"             TO  WK-KOKUHO
-                   ELSE
-                        MOVE   "2"             TO  WK-KOKUHO
-                   END-IF
-               ELSE
-                   IF      WRK-RECE61-HKNNUM   =   "039"   OR  "040"
-                        MOVE   "3"             TO  WK-KOKUHO
-                   ELSE
-                       MOVE    "1"             TO  WK-IHO
-                   END-IF
-               END-IF
-           END-IF
       *
       *    ¿ÀÆàÀîÃÏÊý¸øÈñÂÐ±þ
            IF    ( LNK-SYUBETU-PREFNUM     =   "14" )
@@ -1945,6 +1928,67 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
                        END-IF
                    END-IF
                END-PERFORM
+           END-IF
+      *
+      *    Ê¿À®£²£°Ç¯£´·î²þÀµ°Ê¹ß¤Î¼ïÊÌÀßÄê
+           IF      LNK-SYUBETU-SRYYM   >=  WRK-CONS-SRYYM-200804
+               INITIALIZE                  ORCSSYUBETUGETAREA
+               MOVE    1               TO  LNK-SYUBETUGET-SYOFLG
+               MOVE    LNK-SYUBETU-NYUGAIKBN
+                                       TO  LNK-SYUBETUGET-NYUGAIKBN
+               MOVE    LNK-SYUBETU-SRYYM
+                                       TO  LNK-SYUBETUGET-SRYYM
+               MOVE    WRK-RECE61-HKNNUM
+                                       TO  LNK-SYUBETUGET-HKNNUM
+               MOVE    WRK-RECE61-HKN-HONKZKKBN
+                                       TO  LNK-SYUBETUGET-HKN-HONKZKKBN
+               MOVE    WRK-RECE61-HOJOKBN
+                                       TO  LNK-SYUBETUGET-HKN-HOJOKBN
+               MOVE    WRK-RECE61-HKNKOHSBTKBN
+                                       TO
+                                       LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
+               MOVE    WRK-NENREI      TO  LNK-SYUBETUGET-AGE
+               MOVE    AGECHK-SYUGAKUKBN
+                                       TO  LNK-SYUBETUGET-SYUGAKUKBN
+               MOVE    LNK-SYUBETU-PREFNUM
+                                       TO  LNK-SYUBETUGET-PREFNUM
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       4
+                   MOVE    WRK-RECE61-KOHHKNNUM-O  (IDX)   TO
+                                       LNK-SYUBETUGET-KOHNUM     (IDX)
+                   MOVE    WRK-RECE61-KOHHBTNUM (IDX)      TO
+                                       LNK-SYUBETUGET-KOHHBTNUM  (IDX)
+                   IF      WRK-RECE61-RECESKYKBN-O (IDX) 
+                                       =   SPACE
+                       MOVE    "1"         TO
+                                       LNK-SYUBETUGET-RECESKYKBN (IDX)
+                   END-IF 
+               END-PERFORM
+               CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
+      *
+               MOVE    LNK-SYUBETUGET-RECESYUBETU
+                                       TO  LNK-SYUBETU-RECESYUBETU(IDZZ)
+      *??
+      *         DISPLAY "SYUBETU=" LNK-SYUBETU-RECESYUBETU(IDZZ)
+      *??
+               GO  TO  30011-RECESYUBETU-SET-EXT
+           END-IF    
+      *         
+           IF      WRK-RECE61-HKNNUM   NOT =   SPACE
+               IF      WRK-RECE61-HKNNUM   =   "060"   OR  "067"   OR
+                                               "068"   OR  "069"
+                   IF      WRK-RECE61-HKNNUM   =   "060"   OR  "068"
+                        MOVE   "1"             TO  WK-KOKUHO
+                   ELSE
+                        MOVE   "2"             TO  WK-KOKUHO
+                   END-IF
+               ELSE
+                   IF      WRK-RECE61-HKNNUM   =   "039"   OR  "040"
+                        MOVE   "3"             TO  WK-KOKUHO
+                   ELSE
+                       MOVE    "1"             TO  WK-IHO
+                   END-IF
+               END-IF
            END-IF
       *
            MOVE    ZERO            TO  WK-KOHI-CNT

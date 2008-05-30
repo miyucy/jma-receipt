@@ -114,6 +114,8 @@
       *
       *  04.02.01    NACL-Æ£¸¶    08/02/25  °ì³çÆþÎÏÂÐ±þ
       *  04.02.02    NACL-Æ£¸¶    08/03/25  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.02.03    NACL-Æ£¸¶    08/05/07  ¸øÈñ£³¼ï¡¢£´¼ï¤ÎÊ»ÍÑ¤Î
+      *                                     ¥ì¥»¥×¥È¼ïÊÌ¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1358,7 +1360,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        SPA-R01-RECE07-NYUGAIKBN )
                    MOVE    SYS-2003-DSPSEQ         TO  IDX
                    MOVE    SYS-2003-SYUBETU (1)    TO
-                                       SPA-NAI-2003-TSYUBETU     (IDX)
+                                       SPA-NAI-2003-TSYUBETU     (IDX 1)
+                   MOVE    SYS-2003-SYUBETU (2)    TO
+                                       SPA-NAI-2003-TSYUBETU     (IDX 2)
+                   MOVE    SYS-2003-SYUBETU (3)    TO
+                                       SPA-NAI-2003-TSYUBETU     (IDX 3)
                    MOVE    SYS-2003-SYURUINAME     TO
                                        SPA-NAI-2003-TSYUBETUNAME (IDX)
                END-IF
@@ -1584,8 +1590,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            SPA-NAI-PRTJYUNI    (IDW IDX)
                    MOVE    SYS-2003-TEISYUTUSAKI   TO
                                            SPA-NAI-TEISYUTUSAKI(IDW IDX)
-                   MOVE    SYS-2003-SYUBETU (1)     TO
-                                           SPA-NAI-SYUBETU-G   (IDW IDX)
+                   MOVE    SYS-2003-SYUBETU (1)    TO
+                                           SPA-NAI-SYUBETU   (IDW IDX 1)
+                   MOVE    SYS-2003-SYUBETU (2)    TO
+                                           SPA-NAI-SYUBETU   (IDW IDX 2)
+                   MOVE    SYS-2003-SYUBETU (3)    TO
+                                           SPA-NAI-SYUBETU   (IDW IDX 3)
+                   MOVE    SYS-2003-SYUBETU (4)    TO
+                                           SPA-NAI-SYUBETU   (IDW IDX 4)
+                   MOVE    SYS-2003-SYUBETU (5)    TO
+                                           SPA-NAI-SYUBETU   (IDW IDX 5)
                    MOVE    SYS-2003-SYURUINAME     TO
                                            SPA-GMN-TSYURUINAME (IDW IDX)
                    MOVE    "T"         TO  SPA-GMN-TCHK-VALUE  (IDW IDX)
@@ -1607,7 +1621,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    ZERO                TO  SPA-GMN-TKENSU (IDW IDX)
       *
                PERFORM VARYING IDY FROM    1   BY  1
-                       UNTIL   IDY >       1
+                       UNTIL   IDY >       5
                        OR      SPA-NAI-SYUBETU (IDW IDX IDY)   =   SPACE 
                    INITIALIZE                  RECE07-REC
                    MOVE    SPA-R01-RECE07-KEY  TO  RECE07-KEY
@@ -1951,16 +1965,24 @@ grpsys                     MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                        ELSE
                            PERFORM VARYING IDZ FROM    1   BY  1
                                    UNTIL   IDZ >       50
-                                   OR  SPA-NAI-2003-TSYUBETU (IDZ)
+                                   OR  SPA-NAI-2003-TSYUBETU (IDZ 1)
                                                =       SPACE
-                               IF      SPA-NAI-TSYUBETU-SRT1 (IDW IDX)
+                               PERFORM VARYING IDXX    FROM    1   BY  1
+                                       UNTIL   IDXX    >       5
+                                       OR  SPA-NAI-2003-TSYUBETU 
+                                                              (IDZ IDXX)
+                                                       =   SPACE
+                                   IF      SPA-NAI-TSYUBETU-SRT1
+                                                             (IDW IDX)
                                            =   SPA-NAI-2003-TSYUBETU
+                                                             (IDZ IDXX)
+                                       MOVE    SPA-NAI-2003-TSYUBETUNAME
                                                              (IDZ)
-                                   MOVE    SPA-NAI-2003-TSYUBETUNAME
-                                                             (IDZ)
-                                       TO  SPA-GMN-TSYURUINAME (IDW IDX)
-                                   MOVE    50          TO  IDZ
-                               END-IF
+                                                           TO
+                                           SPA-GMN-TSYURUINAME (IDW IDX)
+                                       MOVE    50          TO  IDZ
+                                   END-IF
+                               END-PERFORM
                            END-PERFORM
                            IF      SPA-GMN-TSYURUINAME (IDW IDX)
                                                        =   SPACE
@@ -4432,9 +4454,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    AND   ( SPA-NAI-TPAGE-SYUKA (IDW IDX IDXX)
                                                =   0    )
                        CONTINUE
-                   ELSE    
+                   ELSE
+      *¡ú¡ú    
                        PERFORM VARYING IDY FROM    1   BY  1
-                               UNTIL   IDY >       1
+                               UNTIL   IDY >       5
                                OR      SPA-NAI-SYUBETU (IDW IDX IDY)
                                                            =   SPACE
                                OR      SPA-ERRCD       NOT =   SPACE
