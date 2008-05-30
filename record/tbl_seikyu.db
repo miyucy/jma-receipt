@@ -2312,7 +2312,7 @@ path	key68	{
 		SELECT *
 		FROM tbl_seikyu
                 WHERE (      HOSPNUM     =    :HOSPNUM   )
-                  AND (      TEISYUTUSAKI like   :TEISYUTUSAKI )
+                  AND (      TEISYUTUSAKI =   :TEISYUTUSAKI )
                   AND (   (( SRYYM       =    :SKYYM   )
                        AND ( SKYKBN      <>   '0'      )
                        AND (( SKYYM       =   '000000' ) OR ( SKYYM = :SKYYM )))
@@ -2331,13 +2331,12 @@ path	key69	{
 		FROM tbl_seikyu
                 WHERE (      HOSPNUM     =    :HOSPNUM   )
                   AND (      NYUGAIKBN   like :NYUGAIKBN )
-                  AND (      TEISYUTUSAKI =   :TEISYUTUSAKI
-                        OR   TEISYUTUSAKI =   :XXTEISYUTUSAKI )
+                  AND (      TEISYUTUSAKI =   :TEISYUTUSAKI )
                   AND (      SRYYM       <    :SKYYM     )
                   AND (      SKYKBN      <>   '0'        )
                   AND (      SKYYM       =    :SKYYM     )
                   AND (      HENREIYM    =   '000000'    )
-                ORDER  BY  SRYYM,PTNUM
+                ORDER  BY  NYUGAIKBN,SRYYM,PTNUM
 		;
 	};
 };

@@ -101,7 +101,8 @@
       *  04.02.03    NACL-藤原    08/03/31  広域連合対応
       *  04.02.04    NACL-藤原    08/04/21  広域連合の保険者番号指定をしない
       *  04.02.05    NACL-藤原    08/05/14  診療年月による対象帳票の再取得
-      *  04.02.06    NACL-藤原    08/05/27  月遅れ分のレセ電データの有無
+      *
+      *  04.03.01    NACL-藤原    08/05/27  月遅れ分のレセ電データの有無
       *                                     チェック
       *****************************************************************
       *
@@ -713,6 +714,8 @@ grpsys                                         SPA-AREA
            ELSE
                INITIALIZE                  SYS-2005-REC
            END-IF
+           MOVE    SYS-2005-SYARECEKBN TO  SPA-NAI-2005-SYARECEKBN
+           MOVE    SYS-2005-KKHRECEKBN TO  SPA-NAI-2005-KKHRECEKBN
       *
            INITIALIZE                      SYS-200501-REC
            MOVE    "2005"              TO  SYS-200501-KANRICD
@@ -3638,66 +3641,59 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                      RECE10-REC
            MOVE    SPA-HOSPNUM         TO  RECE10-HOSPNUM
            MOVE    SPA-NAI-SKYYM       TO  RECE10-SKYYM
-           EVALUATE    SPA-GMN-NYUGAIKBN
-               WHEN    "0"
-                   MOVE    "%"               TO  RECE10-NYUGAIKBN
-               WHEN    "1"
-                   MOVE    "1"               TO  RECE10-NYUGAIKBN
-               WHEN    "2"
-                   MOVE    "2"               TO  RECE10-NYUGAIKBN
-           END-EVALUATE
            EVALUATE    MCP-WIDGET
                WHEN    "B06"
-                   MOVE    1                 TO  RECE10-TEISYUTUSAKI
-                                                 RECE10-XXTEISYUTUSAKI
+                   MOVE    1               TO  RECE10-TEISYUTUSAKI
+                   EVALUATE    SPA-NAI-2005-SYARECEKBN
+                       WHEN    "1"
+                           MOVE    "2"         TO  RECE10-NYUGAIKBN
+                       WHEN    "2"
+                           MOVE    "1"         TO  RECE10-NYUGAIKBN
+                       WHEN    "3"
+                           MOVE    "%"         TO  RECE10-NYUGAIKBN
+                   END-EVALUATE
+                   PERFORM 4601-RECEDEN-CHK-SEC
                WHEN    "B07"
-                   IF    ( SPA-NAI-200501-KOUIKIKBN  =   "1"    )
+                   MOVE    2               TO  RECE10-TEISYUTUSAKI
+                   EVALUATE    SPA-NAI-2005-KKHRECEKBN
+                       WHEN    "1"
+                           MOVE    "2"         TO  RECE10-NYUGAIKBN
+                       WHEN    "2"
+                           MOVE    "1"         TO  RECE10-NYUGAIKBN
+                       WHEN    "3"
+                           MOVE    "%"         TO  RECE10-NYUGAIKBN
+                   END-EVALUATE
+                   PERFORM 4601-RECEDEN-CHK-SEC
+                   IF    ( FLG-RECEDEN-CHK           =   ZERO   )
+                   AND   ( SPA-NAI-200501-KOUIKIKBN  =   "1"    )
                    AND   ( SPA-NAI-SKYYM             >=  200804 )
-                       MOVE    2             TO  RECE10-TEISYUTUSAKI
-                       MOVE    6             TO  RECE10-XXTEISYUTUSAKI
-                   ELSE
-                       MOVE    2             TO  RECE10-TEISYUTUSAKI
-                                                 RECE10-XXTEISYUTUSAKI
+                       MOVE    SPACE           TO  RECE10-REC
+                       INITIALIZE                  RECE10-REC
+                       MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
+                       MOVE    SPA-NAI-SKYYM   TO  RECE10-SKYYM
+                       MOVE    6               TO  RECE10-TEISYUTUSAKI
+                       EVALUATE    SPA-NAI-200501-KOUIKIRECEKBN
+                           WHEN    "1"
+                               MOVE    "2"     TO  RECE10-NYUGAIKBN
+                           WHEN    "2"
+                               MOVE    "1"     TO  RECE10-NYUGAIKBN
+                           WHEN    "3"
+                               MOVE    "%"     TO  RECE10-NYUGAIKBN
+                       END-EVALUATE
+                       PERFORM 4601-RECEDEN-CHK-SEC
                    END-IF
                WHEN    "B08"
-                   MOVE    6                 TO  RECE10-TEISYUTUSAKI
-                                                 RECE10-XXTEISYUTUSAKI
+                   MOVE    6               TO  RECE10-TEISYUTUSAKI
+                   EVALUATE    SPA-NAI-200501-KOUIKIRECEKBN
+                       WHEN    "1"
+                           MOVE    "2"         TO  RECE10-NYUGAIKBN
+                       WHEN    "2"
+                           MOVE    "1"         TO  RECE10-NYUGAIKBN
+                       WHEN    "3"
+                           MOVE    "%"         TO  RECE10-NYUGAIKBN
+                   END-EVALUATE
+                   PERFORM 4601-RECEDEN-CHK-SEC
            END-EVALUATE
-           MOVE    RECE10-REC          TO  MCPDATA-REC
-           MOVE    "tbl_seikyu"        TO  MCP-TABLE
-           MOVE    "key69"             TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_seikyu"        TO  MCP-TABLE
-               MOVE    "key69"             TO  MCP-PATHNAME
-               PERFORM 900-SEIKYU-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-RECE10
-           END-IF
-      *
-           PERFORM                 UNTIL   FLG-RECE10      =   1
-                                   OR      FLG-RECEDEN-CHK =   1
-               MOVE    SPACE               TO  RECEDEN-REC
-               INITIALIZE                      RECEDEN-REC
-               MOVE    RECE10-KEY          TO  RECEDEN-KEY
-               MOVE    "1"                 TO  RECEDEN-RECKBN
-               MOVE    RECEDEN-REC         TO  MCPDATA-REC
-               PERFORM 900-RECEDEN-READ-SEC
-               IF      FLG-RECEDEN         =   1
-                   MOVE    1                   TO  FLG-RECEDEN-CHK
-               END-IF
-      *
-               MOVE    "tbl_seikyu"        TO  MCP-TABLE
-               MOVE    "key69"             TO  MCP-PATHNAME
-               PERFORM 900-SEIKYU-READ-SEC
-           END-PERFORM
-           MOVE    "tbl_seikyu"        TO  MCP-TABLE
-           MOVE    "key69"             TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           IF      SPA-TIDCD       NOT =   SPACE
-               GO  TO  460-RECEDEN-GID-EXT
-           END-IF
       *
       *    ジョブ管理チェック処理
            IF      SPA-ERRCD       =   SPACE
@@ -3748,6 +3744,46 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        460-RECEDEN-GID-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセ電データ月遅れ分存在チェック処理
+      *****************************************************************
+       4601-RECEDEN-CHK-SEC            SECTION.
+      *
+           MOVE    RECE10-REC          TO  MCPDATA-REC
+           MOVE    "tbl_seikyu"        TO  MCP-TABLE
+           MOVE    "key69"             TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_seikyu"        TO  MCP-TABLE
+               MOVE    "key69"             TO  MCP-PATHNAME
+               PERFORM 900-SEIKYU-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-RECE10
+           END-IF
+      *
+           PERFORM                 UNTIL   FLG-RECE10      =   1
+                                   OR      FLG-RECEDEN-CHK =   1
+               MOVE    SPACE               TO  RECEDEN-REC
+               INITIALIZE                      RECEDEN-REC
+               MOVE    RECE10-KEY          TO  RECEDEN-KEY
+               MOVE    "1"                 TO  RECEDEN-RECKBN
+               MOVE    RECEDEN-REC         TO  MCPDATA-REC
+               PERFORM 900-RECEDEN-READ-SEC
+               IF      FLG-RECEDEN         =   1
+                   MOVE    1                   TO  FLG-RECEDEN-CHK
+               END-IF
+      *
+               MOVE    "tbl_seikyu"        TO  MCP-TABLE
+               MOVE    "key69"             TO  MCP-PATHNAME
+               PERFORM 900-SEIKYU-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_seikyu"        TO  MCP-TABLE
+           MOVE    "key69"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           .
+       4601-RECEDEN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
