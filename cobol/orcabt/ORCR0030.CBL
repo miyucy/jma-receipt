@@ -2442,6 +2442,7 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
                                        TO  WRK-CHIHOU-KIN3
                 END-IF
       *
+             END-IF
            END-IF
       *
            .

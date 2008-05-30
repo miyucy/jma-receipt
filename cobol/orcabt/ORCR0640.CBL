@@ -9520,6 +9520,7 @@
                                        TO  WRK-CHIHOU-KIN-GEN70
                 END-IF
       *
+             END-IF
            END-IF
       *
            .
