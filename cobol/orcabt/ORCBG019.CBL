@@ -454,11 +454,11 @@
            MOVE    LNK-DAY2-EDTYMD3(1:16)
                                        TO  B01-SRYYM
            EVALUATE    RECE10-TEISYUTUSAKI
-               WHEN    "1"
+               WHEN    1
                    MOVE    "º“ ›"          TO  B01-TEISYUTUSAKI
-               WHEN    "2"
+               WHEN    2
                    MOVE    "πÒ ›"          TO  B01-TEISYUTUSAKI
-               WHEN    "3"
+               WHEN    6
                    MOVE    "π≠∞Ë"          TO  B01-TEISYUTUSAKI
            END-EVALUATE
            EVALUATE    RECE10-NYUGAIKBN
