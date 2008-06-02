@@ -2362,6 +2362,10 @@ grpsys                                         SPA-AREA
                                    TO  LNK-SYUBETUGET-SYUGAKUKBN
       *****MOVE    TOUKEI01-PREFNUM
       *****                        TO  LNK-SYUBETUGET-PREFNUM
+           MOVE    TOUKEI01-RJNHKNNUM
+                                   TO  LNK-SYUBETUGET-RJNHKNNUM
+           MOVE    TOUKEI01-RJNPAYKBN
+                                   TO  LNK-SYUBETUGET-RJNPAYKBN
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       10
                MOVE    TOUKEI01-TKOHHKNNUM (IDX)   TO
