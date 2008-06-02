@@ -41,6 +41,7 @@
       *                                     国保のみ２割の記載
       *  04.02.06    NACL-藤原    08/05/07  公費３種、４種の併用の
       *                                     レセプト種別の追加
+      *  04.02.07    NACL-藤原    08/06/2   リアルタイムプレビュー時の表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -879,6 +880,10 @@
            03  WRK-ERR-MSG-8.
                05  FILLER          PIC X(38)   VALUE
                    "６５歳以上で退職国保が使用されています". 
+      *
+           03  WRK-ERR-MSG-9.
+               05  FILLER          PIC X(16)   VALUE
+                   "提出できません。". 
       *
        01  WRK-CONS-AREA.    
       *    固定端末ＩＤ
@@ -2664,6 +2669,14 @@
                END-IF
            END-IF
       *
+      *    リアルタイムプレビュー時の表示
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               MOVE    SPACE                TO  WRK-HC06-HEAD4-G
+               MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
+               MOVE    WRK-ERR-MSG-9        TO  HC06-HEAD4-G (5:)
+               MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (22:)
+           END-IF
+      *
            .
        310-HC101-HEAD-HEN-EXT.
            EXIT.
@@ -3212,6 +3225,10 @@
       *
       *    <公費負担者番号・公費受給者番号>
       *    
+           MOVE    ZERO            TO  IDC
+           MOVE    ZERO            TO  IDD
+                                       IDX4
+                                       IDX5
            IF      WRK-3SYU-KBN           =   ALL "1" AND
                    RECE02-KOHNUM (4)      =   SPACE   AND  
                    RECE02-HKNNUM          =   SPACE            
@@ -3226,21 +3243,21 @@
                COMPUTE IDX1     =   SEIHIDX    +   1
                COMPUTE IDX2     =   IDA        +   1
                COMPUTE IDX3     =   IDB        +   1
-               MOVE    ZERO            TO  IDC
-               MOVE    ZERO            TO  IDD
-                                           IDX4
-                                           IDX5
            ELSE    
       *        ３種以外の場合
                MOVE    1               TO  IDA
                MOVE    2               TO  IDB
-               MOVE    3               TO  IDC
-               MOVE    4               TO  IDD
                MOVE    1               TO  IDX1
                MOVE    2               TO  IDX2
                MOVE    3               TO  IDX3
-               MOVE    4               TO  IDX4
-               MOVE    5               TO  IDX5
+               IF      RECE02-KOHNUM (3)   NOT =   SPACE
+                   MOVE    3               TO  IDC
+                   MOVE    4               TO  IDX4
+               END-IF
+               IF      RECE02-KOHNUM (4)   NOT =   SPACE
+                   MOVE    4               TO  IDD
+                   MOVE    5               TO  IDX5
+               END-IF
            END-IF
       *    公負１
            IF      RECE02-KOHFTNJANUM(IDA)
@@ -4355,6 +4372,11 @@
       *
       *        <請求点・一部負担金>
       *
+      *    
+           MOVE    ZERO            TO  IDC
+           MOVE    ZERO            TO  IDD
+                                       IDX4
+                                       IDX5
            IF      WRK-3SYU-KBN           =   ALL "1" AND
                    RECE02-KOHNUM (4)      =   SPACE   AND  
                    RECE02-HKNNUM          =   SPACE            
@@ -4369,21 +4391,21 @@
                COMPUTE IDX1     =   SEIHIDX    +   1
                COMPUTE IDX2     =   IDA        +   1
                COMPUTE IDX3     =   IDB        +   1
-               MOVE    ZERO            TO  IDC
-               MOVE    ZERO            TO  IDD
-                                           IDX4
-                                           IDX5
            ELSE    
       *        ３種以外の場合
                MOVE    1               TO  IDA
                MOVE    2               TO  IDB
-               MOVE    3               TO  IDC
-               MOVE    4               TO  IDD
                MOVE    1               TO  IDX1
                MOVE    2               TO  IDX2
                MOVE    3               TO  IDX3
-               MOVE    4               TO  IDX4
-               MOVE    5               TO  IDX5
+               IF      RECE02-KOHNUM (3)   NOT =   SPACE
+                   MOVE    3               TO  IDC
+                   MOVE    4               TO  IDX4
+               END-IF
+               IF      RECE02-KOHNUM (4)   NOT =   SPACE
+                   MOVE    4               TO  IDD
+                   MOVE    5               TO  IDX5
+               END-IF
            END-IF
       *    保険（減免）
            EVALUATE    RECE02-GENMENKBN
@@ -4560,7 +4582,7 @@
            END-IF
       *
       *    公費３
-           IF      IDX4                   >   ZERO
+           IF      IDX4                    >   ZERO
                IF    ( RECE02-TOTALTEN (IDX4) >   ZERO                )
                AND   ((RECE02-TOTALTEN (IDX4)
                                    NOT =   RECE02-TOTALTEN (IDX1)) OR
