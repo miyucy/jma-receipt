@@ -108,7 +108,7 @@
       *****************************************************************
        200-MAIN-SEC               SECTION.
       *
-      *    ¾ò·ïÀßÄê½èÍý¡Ê£²£°£°£¸Ç¯£´·î°Ê¹ß¡Ë
+      *    ¾ò·ïÀßÄê½èÍý
            IF      LNK-SYUBETUGET-SYOFLG   =   1
                PERFORM 2001-JYOKEN-HENSYU-SEC
                IF      LNK-SYUBETUGET-RECESYUBETU
@@ -1588,7 +1588,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¾ò·ïÀßÄê½èÍý¡Ê£²£°£°£¸Ç¯£´·î°Ê¹ß¡Ë
+      *    ¾ò·ïÀßÄê½èÍý
       *****************************************************************
        2001-JYOKEN-HENSYU-SEC          SECTION.
       *
@@ -1611,6 +1611,8 @@
           DISPLAY "RECESKYKBN (4) " LNK-SYUBETUGET-RECESKYKBN (4)
           DISPLAY "HKNKBN         " LNK-SYUBETUGET-HKNKBN
           DISPLAY "SAIGAIKBN      " LNK-SYUBETUGET-SAIGAIKBN
+          DISPLAY "RJNHKNNUM      " LNK-SYUBETUGET-RJNHKNNUM
+          DISPLAY "RJNPAYKBN      " LNK-SYUBETUGET-RJNPAYKBN
       *
            MOVE    SPACE               TO  WK-RECESYUBETU-AREA
            INITIALIZE                      WK-RECESYUBETU-AREA
@@ -2014,7 +2016,7 @@
            END-IF
       *
            IF    ( WK-RJN          NOT =   SPACE )     
-           AND   ( LNK-SYUBETUGET-HKN-HOJOKBN
+           AND   ( LNK-SYUBETUGET-HKN-HONKZKKBN
                                        =   "1"   )     
                IF      LNK-SYUBETUGET-HKNNUM
                                        =   "063"   OR  "072"   OR

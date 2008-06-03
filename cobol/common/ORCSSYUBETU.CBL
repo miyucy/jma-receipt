@@ -1930,8 +1930,8 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
                END-PERFORM
            END-IF
       *
-      *    Ê¿À®£²£°Ç¯£´·î²þÀµ°Ê¹ß¤Î¼ïÊÌÀßÄê
-           IF      LNK-SYUBETU-SRYYM   >=  WRK-CONS-SRYYM-200804
+      *    ¼ïÊÌÀßÄê
+      *****IF      LNK-SYUBETU-SRYYM   >=  WRK-CONS-SRYYM-200804
                INITIALIZE                  ORCSSYUBETUGETAREA
                MOVE    1               TO  LNK-SYUBETUGET-SYOFLG
                MOVE    LNK-SYUBETU-NYUGAIKBN
@@ -1952,17 +1952,29 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
                                        TO  LNK-SYUBETUGET-SYUGAKUKBN
                MOVE    LNK-SYUBETU-PREFNUM
                                        TO  LNK-SYUBETUGET-PREFNUM
+               IF      WRK-RECE61-KOHID >   ZERO
+                   MOVE    "027"       TO  LNK-SYUBETUGET-RJNHKNNUM
+                   MOVE    WRK-RECE61-RJNPAYKBN
+                                       TO  LNK-SYUBETUGET-RJNPAYKBN
+               END-IF
+               MOVE    ZERO            TO  IDYY
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       4
-                   MOVE    WRK-RECE61-KOHHKNNUM-O  (IDX)   TO
-                                       LNK-SYUBETUGET-KOHNUM     (IDX)
-                   MOVE    WRK-RECE61-KOHHBTNUM (IDX)      TO
-                                       LNK-SYUBETUGET-KOHHBTNUM  (IDX)
-                   IF      WRK-RECE61-RECESKYKBN-O (IDX) 
+                   IF    ( WRK-RECE61-KOHHKNNUM-O  (IDX)
+                                               NOT =   SPACE )
+                   AND   ( WRK-RECE61-KOHHKNNUM-O  (IDX)
+                                               NOT =   "027" )
+                       ADD     1                               TO  IDYY
+                       MOVE    WRK-RECE61-KOHHKNNUM-O  (IDX)   TO
+                                       LNK-SYUBETUGET-KOHNUM     (IDYY)
+                       MOVE    WRK-RECE61-KOHHBTNUM (IDX)      TO
+                                       LNK-SYUBETUGET-KOHHBTNUM  (IDYY)
+                       IF      WRK-RECE61-RECESKYKBN-O (IDX) 
                                        =   SPACE
-                       MOVE    "1"         TO
-                                       LNK-SYUBETUGET-RECESKYKBN (IDX)
-                   END-IF 
+                           MOVE    "1"         TO
+                                       LNK-SYUBETUGET-RECESKYKBN (IDYY)
+                       END-IF
+                   END-IF     
                END-PERFORM
                CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
@@ -1972,363 +1984,8 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
       *         DISPLAY "SYUBETU=" LNK-SYUBETU-RECESYUBETU(IDZZ)
       *??
                GO  TO  30011-RECESYUBETU-SET-EXT
-           END-IF    
+      *****END-IF    
       *         
-           IF      WRK-RECE61-HKNNUM   NOT =   SPACE
-               IF      WRK-RECE61-HKNNUM   =   "060"   OR  "067"   OR
-                                               "068"   OR  "069"
-                   IF      WRK-RECE61-HKNNUM   =   "060"   OR  "068"
-                        MOVE   "1"             TO  WK-KOKUHO
-                   ELSE
-                        MOVE   "2"             TO  WK-KOKUHO
-                   END-IF
-               ELSE
-                   IF      WRK-RECE61-HKNNUM   =   "039"   OR  "040"
-                        MOVE   "3"             TO  WK-KOKUHO
-                   ELSE
-                       MOVE    "1"             TO  WK-IHO
-                   END-IF
-               END-IF
-           END-IF
-      *
-           MOVE    ZERO            TO  WK-KOHI-CNT
-           PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >       4
-               IF    ( WRK-RECE61-KOHHKNNUM-O  (IDX)   NOT =   SPACE )
-               AND   ( WRK-RECE61-KOHHKNNUM-O  (IDX)   NOT =   "027" )
-               AND   ( WRK-RECE61-RECESKYKBN-O (IDX)       =   SPACE )
-                   ADD     1               TO    WK-KOHI-CNT
-               END-IF
-           END-PERFORM    
-      *
-      *    Ê¡²¬ÃÏÊý¸øÈñÂÐ±þ
-           IF    ( LNK-SYUBETU-PREFNUM     =   "40"                  )
-           AND   ( LNK-SYUBETU-SRYYM       <=  WRK-CONS-SRYYM-200609 )
-               IF      WK-KOKUHO           =   "1" OR  "2"
-                   IF   (WRK-RECE61-KOHHKNNUM-O
-                                             (1)(1:1)  =   "1" OR  "2")
-                   AND  (WRK-RECE61-KOHHBTNUM(1)   NOT =   "41"       )
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-                   IF   (WRK-RECE61-KOHHKNNUM-O
-                                             (2)(1:1)  =   "1" OR  "2")
-                   AND  (WRK-RECE61-KOHHBTNUM(2)   NOT =   "41"       )
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-                   IF   (WRK-RECE61-KOHHKNNUM-O
-                                             (3)(1:1)  =   "1" OR  "2")
-                   AND  (WRK-RECE61-KOHHBTNUM(3)   NOT =   "41"       )
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-                   IF   (WRK-RECE61-KOHHKNNUM-O
-                                             (4)(1:1)  =   "1" OR  "2")
-                   AND  (WRK-RECE61-KOHHBTNUM(4)   NOT =   "41"       )
-                       COMPUTE  WK-KOHI-CNT  =  WK-KOHI-CNT  -  1
-                   END-IF
-               END-IF
-           END-IF
-      *
-           MOVE    WRK-RECE61-HKN-HONKZKKBN
-                                       TO  WK-HONKZKKBN
-      *    £³ºÐÌ¤Ëþ¤Î¾ì¹ç¡¢£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë"£³"¤ò¥»¥Ã¥È
-           IF      WRK-RECE61-HKNID    NOT =   ZERO
-               IF      WRK-NENREI         <   3
-                           MOVE   "3"          TO   WK-HONKZKKBN
-               END-IF
-      *    Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
-               IF      LNK-SYUBETU-SRYYM   >=  WRK-CONS-SRYYM-200804
-                   IF      AGECHK-SYUGAKUKBN   =   1
-                       MOVE   "3"          TO  WK-HONKZKKBN
-                   END-IF
-               END-IF
-           END-IF
-      *
-      *    £±³ä¡¢£²³äÉéÃ´¤Î¹âÎð¼Ô¤Î¾ì¹ç£×£Ë¡Ý£È£Ï£Î£Ë£Ú£Ë£Ë£Â£Î¤Ë
-      *    "£¹"¤Þ¤¿¤Ï"£¸"¤ò¥»¥Ã¥È
-      *    Ï·¿ÍÊÝ¸±¤Î¾ì¹ç¤Ï£×£Ë¡Ý£Ò£Ê£Î¤Ë¥»¥Ã¥È¤¹¤ë	
-           IF      WRK-RECE61-HKNID             NOT =   ZERO
-             EVALUATE    TRUE
-               WHEN      LNK-SYUBETU-SRYYM <= WRK-CONS-SRYYM-200609
-                 EVALUATE    WRK-RECE61-HKNNUM
-                   WHEN    "002" 
-                       EVALUATE   WRK-RECE61-HOJOKBN
-                           WHEN   "A"
-                           WHEN   "B"
-                           WHEN   "C"
-                           WHEN   "9"
-                               MOVE   "9"   TO   WK-HONKZKKBN
-                           WHEN   "D"
-                           WHEN   "E"
-                           WHEN   "F"
-                           WHEN   "8"
-                               MOVE   "8"   TO   WK-HONKZKKBN
-                       END-EVALUATE
-                   WHEN    "031"  THRU    "034"  
-                       EVALUATE   WRK-RECE61-HOJOKBN
-                           WHEN   "B"
-                           WHEN   "9"   
-                               MOVE   "9"   TO   WK-HONKZKKBN
-                           WHEN   "E"
-                           WHEN   "8"
-                               MOVE   "8"   TO   WK-HONKZKKBN
-                       END-EVALUATE
-                   WHEN    "060" 
-                   WHEN    "068" 
-                       IF    ( WRK-NENREI  >=   70 )    AND
-                             ( WRK-NENREI  <=   74 )
-                           EVALUATE    LNK-SYUBETU-NYUGAIKBN
-                               WHEN    "1"
-                                   EVALUATE   WRK-RECE61-HOJOKBN
-                                       WHEN   "1"
-                                       WHEN   "5"
-                                           MOVE   "9"  TO  WK-HONKZKKBN
-                                       WHEN   "2"
-                                       WHEN   "6"
-                                           MOVE   "8"  TO  WK-HONKZKKBN
-                                   END-EVALUATE
-                               WHEN    "2"
-                                   EVALUATE   WRK-RECE61-HOJOKBN
-                                       WHEN   "1"
-                                       WHEN   "4"
-                                           MOVE   "9"  TO  WK-HONKZKKBN
-                                       WHEN   "2"
-                                       WHEN   "5"
-                                           MOVE   "8"  TO  WK-HONKZKKBN
-                                   END-EVALUATE
-                           END-EVALUATE
-                       END-IF     
-                   WHEN    OTHER 
-                       EVALUATE   WRK-RECE61-HOJOKBN
-                           WHEN   "9"
-                               MOVE   "9"   TO   WK-HONKZKKBN
-                           WHEN   "8"
-                               MOVE   "8"   TO   WK-HONKZKKBN
-                       END-EVALUATE
-                 END-EVALUATE
-                 IF      WRK-RECE61-KOHID >   ZERO
-                   EVALUATE   WRK-RECE61-RJNPAYKBN
-                       WHEN   "01"
-                           MOVE   "9"   TO   WK-RJN
-                       WHEN   "02"
-                           MOVE   "8"   TO   WK-RJN
-                   END-EVALUATE
-                 END-IF
-               WHEN      LNK-SYUBETU-SRYYM <  WRK-CONS-SRYYM-200804
-                 EVALUATE    WRK-RECE61-HKNNUM
-                   WHEN    "002" 
-                       EVALUATE   WRK-RECE61-HOJOKBN
-                           WHEN   "A"
-                           WHEN   "B"
-                           WHEN   "C"
-                           WHEN   "9"
-                               MOVE   "9"   TO   WK-HONKZKKBN
-                           WHEN   "D"
-                           WHEN   "E"
-                           WHEN   "F"
-                           WHEN   "8"
-                               MOVE   "?"   TO   WK-HONKZKKBN
-                           WHEN   "G"
-                           WHEN   "H"
-                           WHEN   "I"
-                           WHEN   "7"
-                               MOVE   "7"   TO   WK-HONKZKKBN
-                       END-EVALUATE
-                   WHEN    "031"  THRU    "034"  
-                       EVALUATE   WRK-RECE61-HOJOKBN
-                           WHEN   "B"
-                           WHEN   "9"   
-                               MOVE   "9"   TO   WK-HONKZKKBN
-                           WHEN   "E"
-                           WHEN   "8"
-                               MOVE   "?"   TO   WK-HONKZKKBN
-                           WHEN   "H"
-                           WHEN   "7"
-                               MOVE   "7"   TO   WK-HONKZKKBN
-                       END-EVALUATE
-                   WHEN    "060" 
-                   WHEN    "068" 
-                       IF    ( WRK-NENREI  >=   70 )    AND
-                             ( WRK-NENREI  <=   74 )
-                           EVALUATE    LNK-SYUBETU-NYUGAIKBN
-                               WHEN    "1"
-                                   EVALUATE   WRK-RECE61-HOJOKBN
-                                       WHEN   "1"
-                                       WHEN   "5"
-                                           MOVE   "9"  TO  WK-HONKZKKBN
-                                       WHEN   "2"
-                                       WHEN   "6"
-                                           MOVE   "8"  TO  WK-HONKZKKBN
-                                       WHEN   "3"
-                                           MOVE   "7"  TO  WK-HONKZKKBN
-                                   END-EVALUATE
-                               WHEN    "2"
-                                   EVALUATE   WRK-RECE61-HOJOKBN
-                                       WHEN   "1"
-                                       WHEN   "4"
-                                           MOVE   "9"  TO  WK-HONKZKKBN
-                                       WHEN   "2"
-                                       WHEN   "5"
-                                           MOVE   "8"  TO  WK-HONKZKKBN
-                                       WHEN   "3"
-                                       WHEN   "6"
-                                           MOVE   "7"  TO  WK-HONKZKKBN
-                                   END-EVALUATE
-                           END-EVALUATE
-                       END-IF     
-                   WHEN    OTHER 
-                       EVALUATE   WRK-RECE61-HOJOKBN
-                           WHEN   "9"
-                               MOVE   "9"   TO   WK-HONKZKKBN
-                           WHEN   "8"
-                               MOVE   "?"   TO   WK-HONKZKKBN
-                           WHEN   "7"
-                               MOVE   "7"   TO   WK-HONKZKKBN
-                       END-EVALUATE
-                 END-EVALUATE
-                 IF      WRK-RECE61-KOHID >   ZERO
-                   EVALUATE   WRK-RECE61-RJNPAYKBN
-                       WHEN   "01"
-                           MOVE   "9"   TO   WK-RJN
-                       WHEN   "02"
-                           MOVE   "?"   TO   WK-RJN
-                       WHEN   "03"
-                           MOVE   "7"   TO   WK-RJN
-                   END-EVALUATE
-                 END-IF
-               WHEN      LNK-SYUBETU-SRYYM >=  WRK-CONS-SRYYM-200804
-                 EVALUATE    WRK-RECE61-HKNNUM
-                   WHEN    "002" 
-                       EVALUATE   WRK-RECE61-HOJOKBN
-                           WHEN   "A"
-                           WHEN   "B"
-                           WHEN   "C"
-                           WHEN   "9"
-                               MOVE   "9"   TO   WK-HONKZKKBN
-                           WHEN   "D"
-                           WHEN   "E"
-                           WHEN   "F"
-                           WHEN   "8"
-                               MOVE   "?"   TO   WK-HONKZKKBN
-                           WHEN   "G"
-                           WHEN   "H"
-                           WHEN   "I"
-                           WHEN   "7"
-                               MOVE   "7"   TO   WK-HONKZKKBN
-                       END-EVALUATE
-                   WHEN    "031"  THRU    "034"  
-                       EVALUATE   WRK-RECE61-HOJOKBN
-                           WHEN   "B"
-                           WHEN   "9"   
-                               MOVE   "9"   TO   WK-HONKZKKBN
-                           WHEN   "E"
-                           WHEN   "8"
-                               MOVE   "?"   TO   WK-HONKZKKBN
-                           WHEN   "H"
-                           WHEN   "7"
-                               MOVE   "7"   TO   WK-HONKZKKBN
-                       END-EVALUATE
-                   WHEN    "060" 
-                   WHEN    "068" 
-                       IF    ( WRK-NENREI  >=   70 )    AND
-                             ( WRK-NENREI  <=   74 )
-                           EVALUATE    LNK-SYUBETU-NYUGAIKBN
-                               WHEN    "1"
-                                   EVALUATE   WRK-RECE61-HOJOKBN
-                                       WHEN   "1"
-                                       WHEN   "5"
-                                           MOVE   "9"  TO  WK-HONKZKKBN
-                                       WHEN   "2"
-                                       WHEN   "6"
-                                           MOVE   "8"  TO  WK-HONKZKKBN
-                                       WHEN   "3"
-                                           MOVE   "7"  TO  WK-HONKZKKBN
-                                   END-EVALUATE
-                               WHEN    "2"
-                                   EVALUATE   WRK-RECE61-HOJOKBN
-                                       WHEN   "1"
-                                       WHEN   "4"
-                                           MOVE   "9"  TO  WK-HONKZKKBN
-                                       WHEN   "2"
-                                       WHEN   "5"
-                                           MOVE   "8"  TO  WK-HONKZKKBN
-                                       WHEN   "3"
-                                       WHEN   "6"
-                                           MOVE   "7"  TO  WK-HONKZKKBN
-                                   END-EVALUATE
-                           END-EVALUATE
-                       END-IF     
-                   WHEN    "039" 
-                   WHEN    "040" 
-                       EVALUATE   WRK-RECE61-HOJOKBN
-                           WHEN   "1"
-                               MOVE   "9"   TO   WK-RJN
-                           WHEN   "3"
-                               MOVE   "7"   TO   WK-RJN
-                       END-EVALUATE
-                   WHEN    "067" 
-                   WHEN    "069" 
-                       IF      WRK-NENREI  >=   65
-                           MOVE   "?"   TO   WK-HONKZKKBN
-                       ELSE
-                           EVALUATE   WRK-RECE61-HOJOKBN
-                               WHEN   "9"
-                                   MOVE   "9"   TO   WK-HONKZKKBN
-                               WHEN   "8"
-                                   MOVE   "?"   TO   WK-HONKZKKBN
-                               WHEN   "7"
-                                   MOVE   "7"   TO   WK-HONKZKKBN
-                           END-EVALUATE
-                       END-IF
-                   WHEN    OTHER 
-                       EVALUATE   WRK-RECE61-HOJOKBN
-                           WHEN   "9"
-                               MOVE   "9"   TO   WK-HONKZKKBN
-                           WHEN   "8"
-                               MOVE   "?"   TO   WK-HONKZKKBN
-                           WHEN   "7"
-                               MOVE   "7"   TO   WK-HONKZKKBN
-                       END-EVALUATE
-                 END-EVALUATE
-                 IF      WRK-RECE61-KOHID >   ZERO
-                   EVALUATE   WRK-RECE61-RJNPAYKBN
-                       WHEN   "01"
-                           MOVE   "9"   TO   WK-RJN
-                       WHEN   "02"
-                           MOVE   "?"   TO   WK-RJN
-                       WHEN   "03"
-                           MOVE   "7"   TO   WK-RJN
-                   END-EVALUATE
-                 END-IF
-             END-EVALUATE
-           END-IF
-      *
-           IF    ( WK-RJN          NOT =   SPACE )
-           AND   ( WRK-RECE61-HKN-HONKZKKBN
-                                       =   "1"   )     
-               IF      WRK-RECE61-HKNNUM   =   "063"   OR  "072"   OR
-                                               "073"   OR  "074"   OR
-                                               "075"
-                   MOVE    "2"          TO  WK-IHO
-               END-IF
-           END-IF
-      *
-           INITIALIZE                  ORCSSYUBETUGETAREA  
-           MOVE    WK-KOKUHO           TO  LNK-SYUBETUGET-KOKUHO
-           MOVE    WK-IHO              TO  LNK-SYUBETUGET-IHO
-           MOVE    WK-RJN              TO  LNK-SYUBETUGET-RJN
-           MOVE    WK-KOHI-CNT         TO  LNK-SYUBETUGET-KOHI-CNT
-           MOVE    WK-HONKZKKBN        TO  LNK-SYUBETUGET-HONKZKKBN
-           MOVE    LNK-SYUBETU-NYUGAIKBN
-                                       TO  LNK-SYUBETUGET-NYUGAIKBN
-           MOVE    LNK-SYUBETU-SRYYM   TO  LNK-SYUBETUGET-SRYYM
-           MOVE    WRK-RECE61-HKNNUM   TO  LNK-SYUBETUGET-HKNNUM
-           CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
-      *
-           MOVE    LNK-SYUBETUGET-RECESYUBETU
-                                       TO  LNK-SYUBETU-RECESYUBETU(IDZZ)
-      *??
-      *     DISPLAY "SYUBETU=" LNK-SYUBETU-RECESYUBETU(IDZZ)
-      *??
            .
         30011-RECESYUBETU-SET-EXT.
            EXIT.
