@@ -1,5 +1,6 @@
         02  M96.
     ******* 02  M96-FIXED3.
+              03  M96-B10-STATE       PIC S9(9)   BINARY.
               03  M96-LIST1.
                 04  M96-LIST1-COUNT   PIC S9(9)   BINARY.
                 04  M96-LIST1-ROW PIC S9(9)   BINARY.
@@ -16,12 +17,12 @@
                 04  M96-LIST2-ROW PIC S9(9)   BINARY.
                 04  M96-LIST2-ROWATTR PIC S9(9)   BINARY.
                 04  M96-ITEM        OCCURS  2 TIMES.
+                  05  M96-JOBNAME    PIC X(40).
                   05  M96-STARTYMD   PIC X(9).
                   05  M96-STARTTIME  PIC X(8).
                   05  M96-ENDYMD   PIC X(9).
                   05  M96-ENDTIME  PIC X(8).
-                  05  M96-STEPSTARTTIME  PIC X(8).
-                  05  M96-STEPENDTIME    PIC X(8).
+                  05  M96-LASTYMD  PIC X(9).
                 04  M96-SELECT
                         PIC X       OCCURS  2 TIMES.
               03  M96-SCROLLEDWINDOW1.
@@ -37,8 +38,14 @@
                           PIC X       OCCURS  99 TIMES.
             03  M96-MSG1.
               04  M96-MSG1-STYLE PIC X(20).
-              04  M96-MSG1-VALUE     PIC X(62).
+              04  M96-MSG1-VALUE     PIC X(70).
+            03  M96-MSG1PLUS.
+              04  M96-MSG1PLUS-STYLE PIC X(20).
+              04  M96-MSG1PLUS-VALUE     PIC X(70).
             03  M96-MSG2.
               04  M96-MSG2-STYLE PIC X(20).
-              04  M96-MSG2-VALUE     PIC X(62).
+              04  M96-MSG2-VALUE     PIC X(70).
+            03  M96-MSG2PLUS.
+              04  M96-MSG2PLUS-STYLE PIC X(20).
+              04  M96-MSG2PLUS-VALUE     PIC X(70).
            03 M96-DURATION   PIC S9(09) BINARY.

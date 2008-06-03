@@ -205,16 +205,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        120-JBE-SEC                 SECTION.
       *
       *    レコード存在チェック
-           IF      JOB-SHELLID(1:6)    =   "MSTMNT"
-                                       OR  "PRGMNT"
-                                       OR  "MSTMLI"
+           IF      JOB-SHELLID(1:6)    =   "PRGMNT"
                MOVE    JOB-SHELLID         TO  WRK-SHELLID
                MOVE    SPACE               TO  JOB-SHELLID(7:)
            END-IF
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
-           IF      JOB-SHELLID(1:6)    =   "MSTMNT"
-                                       OR  "PRGMNT"
-                                       OR  "MSTMLI"
+           IF      JOB-SHELLID(1:6)    =   "PRGMNT"
                PERFORM 910-JOBKANRI-INV-SEC
            ELSE
                PERFORM 910-JOBKANRI-INV2-SEC

@@ -13,10 +13,16 @@ fi
 # $1 : 医療機関識別番号(HOSPNUM)
 # $2 : スーパーバイザー
 # $3 : 医療機関識別番号(HOSPID)
+# $4 : 標準マスタエラーファイル名
+# $5 : 標準マスタジョブＩＤ
+# $6 : 標準マスタシェルＩＤ
+# $7 : ライセンスマスタエラーファイル名
+# $8 : ライセンスマスタジョブＩＤ
+# $9 : ライセンスマスタシェルＩＤ
 #------------------------------------
 
 #標準マスタ更新
-sh $SCRIPTSDIR/allways/master_standard_upgrade.sh $1 $2
+sh $SCRIPTSDIR/allways/master_standard_upgrade.sh $1 $2 $4 $5 $6
 
 #ライセンスマスタ更新
-sh $SCRIPTSDIR/allways/master_license_upgrade.sh $1 $2 $3
+sh $SCRIPTSDIR/allways/master_license_upgrade.sh $1 $2 $3 $7 $8 $9

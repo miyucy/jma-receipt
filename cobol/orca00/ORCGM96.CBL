@@ -37,6 +37,7 @@
       *  01.00.06    NACL-伊藤    06/07/12  ライセンスマスタ対応
       *  03.04.01    NACL-森脇    07/01/24  タイマーイベント追加
       *  03.05.00    NACL-多々納  07/05/25  グループ診療対応
+      *  04.03.00    NACL-太田    08/05/27  エラー処理強化
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -49,6 +50,11 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
+      *
+           COPY    "ENUM-VALUE".
+      *
+      *    エラーファイル 名称領域
+           COPY    "CPERRFL.INC".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -80,6 +86,9 @@
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
+           03  WRK-MNTERRFL        PIC X(255).
+           03  WRK-MLIERRFL        PIC X(255).
+           03  WRK-MIDCD           PIC X(04).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -98,6 +107,13 @@
        01  SHELL-AREA.
            03  SHELL-NAME          PIC X(33)  VALUE
                "scripts/allways/master_upgrade.sh".
+      *
+       01  CONST-AREA.
+           03  CONST-MNTJOBID      PIC 9(07)  VALUE    1.
+           03  CONST-MNTSHELLID    PIC X(08)  VALUE    "MSTMNT".
+           03  CONST-MLIJOBID      PIC 9(07)  VALUE    1.
+           03  CONST-MLISHELLID    PIC X(08)  VALUE    "MSTMLI".
+      *
       *
       *****************************************************************
       *    連絡　領域
@@ -211,6 +227,11 @@
       *        画面編集
                IF      FLG-END             =   ZERO
                    PERFORM 500-GMNHEN-SEC
+      *
+                   IF    ( SPA-MIDCD   NOT =   SPACE )
+                       PERFORM 520-MIDSET-SEC
+                   END-IF
+      *
                END-IF
            END-IF
       *
@@ -236,7 +257,6 @@
                WHEN    "MID1"
       *            確認画面より
                    PERFORM 30010-MID1-SET-SEC
-                   MOVE    SPACE               TO  SPA-MIDCD
                WHEN    OTHER
                    MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG
                    MOVE    SPACE               TO  SPA-MIDCD
@@ -251,11 +271,22 @@
       *****************************************************************
        30010-MID1-SET-SEC          SECTION.
       *
+           MOVE    SPACE               TO  WRK-MIDCD
+      *
            EVALUATE    SPA-MIDCD
+               WHEN    "0100"
+                   IF      SPA-MID1-FLG        =   "OK"
+                       MOVE    "0101"      TO  WRK-MIDCD
+                   END-IF
                WHEN    "0101"
       *            削除処理
                    IF      SPA-MID1-FLG        =   "OK"
                        PERFORM 30011-DELETE-SYORI-SEC
+                   END-IF
+               WHEN    "0102"
+      *            削除処理
+                   IF      SPA-MID1-FLG        =   "OK"
+                       PERFORM 2101-CANCEL-SEC
                    END-IF
                WHEN    "0202"
       *            マスタ更新処理
@@ -268,7 +299,10 @@
                        PERFORM 2001-BACK-SYORI-SEC
                    END-IF
            END-EVALUATE
+      *
            MOVE    SPACE               TO  SPA-MID1-FLG
+           MOVE    WRK-MIDCD           TO  SPA-MIDCD
+      *
            .
        30010-MID1-SET-EXT.
            EXIT.
@@ -284,21 +318,8 @@
            PERFORM 310-DBHENSYU-SEC
       *
       *    最新から初期へ
-           MOVE    SPA-GMN-STARTYMD (2)
-                                       TO  SPA-GMN-STARTYMD      (1)
-           MOVE    SPA-GMN-ENDYMD   (2)
-                                       TO  SPA-GMN-ENDYMD        (1)
-           MOVE    SPA-GMN-STARTTIME(2)
-                                       TO  SPA-GMN-STARTTIME     (1)
-           MOVE    SPA-GMN-ENDTIME  (2)
-                                       TO  SPA-GMN-ENDTIME       (1)
-           MOVE    SPA-GMN-STEPSTARTTIME(2)
-                                       TO  SPA-GMN-STEPSTARTTIME (1)
-           MOVE    SPA-GMN-STEPENDTIME  (2)
-                                       TO  SPA-GMN-STEPENDTIME   (1)
-      *
-           MOVE    SPA-NAI-ENDYMD (2)  TO  SPA-NAI-ENDYMD  (1)
-           MOVE    SPA-NAI-ENDTIME(2)  TO  SPA-NAI-ENDTIME (1)
+           MOVE    SPA-GMN-STARTYMD (1)   TO  SPA-GMN-LASTYMD      (1)
+           MOVE    SPA-GMN-STARTYMD (2)   TO  SPA-GMN-LASTYMD      (2)
       *
            MOVE    1                   TO  SPA-M96-CUR
            .
@@ -311,6 +332,9 @@
        310-DBHENSYU-SEC              SECTION.
       *
            INITIALIZE                  SPA-GMN-TBLG3
+                                       SPA-GMN-MSG-G
+           MOVE   ZERO                 TO  SPA-NAI-CANCEL
+      *
       *    ＤＢ管理検索処理
            INITIALIZE                  DBKANRI-REC
            MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
@@ -391,8 +415,6 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *    ＪＯＢ管理検索
            PERFORM 820-JOBKANRI-READ-SEC
       *
-           PERFORM 3103-JOBKANRI-HENSYU2-SEC
-      *
            IF      FLG-INIT             =   ZERO
                MOVE    SPACE                TO  SPA-GMN-MSG1
                                                 SPA-GMN-MSG2
@@ -402,82 +424,115 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                                                 SPA-GMN-MSG2
                MOVE    11                   TO  ID1
            END-IF
-           IF      FLG-SJOBKANRI        =   ZERO
-               IF      JOB-ERRCD(1:2)   =   "99"
-                   MOVE    "マスタ更新は異常終了しました。"
-                                           TO  SPA-GMN-MSG1(ID1:30)
-                   MOVE    "red"           TO  SPA-GMN-MSG1-STYLE
-               ELSE
-                   IF  JOB-ERRCD(1:2)   =   "01"
+      *
+           IF    ( FLG-SJOBKANRI       =   ZERO )
+               IF    ( JOB-ENDTIME NOT =   SPACE )
+                AND  ( JOB-ENDYMD  NOT =   SPACE )
+                   EVALUATE    JOB-ERRCD
+                   WHEN    "00"
+                   WHEN    "0000"
+                       MOVE    "マスタ更新は正常に終了しました。"
+                                           TO  SPA-GMN-MSG1(ID1:32)
+                       MOVE    "blue"      TO  SPA-GMN-MSG1-STYLE
+                   WHEN    "01"
+                   WHEN    "8001"
                        MOVE    "更新データはありませんでした。"
-                                             TO  SPA-GMN-MSG1(ID1:30)
-                       MOVE    "blue"        TO  SPA-GMN-MSG1-STYLE
-                   ELSE
-                       IF  (JOB-ENDTIME       NOT =   SPACE)  AND
-                           (JOB-ENDYMD        NOT =   SPACE)
-                           MOVE    "マスタ更新は正常に終了しました。"
-                                                TO  SPA-GMN-MSG1(ID1:32)
-                           MOVE    "blue"       TO  SPA-GMN-MSG1-STYLE
-                       ELSE
-                           MOVE    "マスタ更新中です。"
-                                                TO  SPA-GMN-MSG1(ID1:18)
-                           MOVE    "blue"       TO  SPA-GMN-MSG1-STYLE
-                       END-IF
-                   END-IF
+                                           TO  SPA-GMN-MSG1(ID1:30)
+                       MOVE    "blue"      TO  SPA-GMN-MSG1-STYLE
+                   WHEN    "98"
+                   WHEN    "8002"
+                       MOVE    "サーバへ接続できませんでした。"
+                                           TO  SPA-GMN-MSG1(ID1:34)
+                       MOVE    "blue"      TO  SPA-GMN-MSG1-STYLE
+                   WHEN    "8888"
+                       MOVE    "マスタ更新を中止しました"
+                                           TO  SPA-GMN-MSG1(ID1:34)
+                       MOVE    "red"       TO  SPA-GMN-MSG1-STYLE
+                       MOVE    JOB-YOBI    TO  SPA-GMN-MSG1PLUS
+                   WHEN    OTHER
+                       MOVE    "マスタ更新は異常終了しました。"
+                                           TO  SPA-GMN-MSG1(ID1:30)
+                       MOVE    "red"       TO  SPA-GMN-MSG1-STYLE
+                       MOVE    JOB-YOBI    TO  SPA-GMN-MSG1PLUS
+                   END-EVALUATE
+               ELSE
+                   MOVE    "マスタ更新中です。"
+                                           TO  SPA-GMN-MSG1(ID1:18)
+                   MOVE    "blue"          TO  SPA-GMN-MSG1-STYLE
+                   MOVE    JOB-SHELLMSG    TO  SPA-GMN-MSG1PLUS
+                   EVALUATE    JOB-STOPFLG
+                   WHEN    ZERO
+                       MOVE    1           TO  SPA-NAI-CANCEL
+                   WHEN    1
+                       MOVE    "処理中止手続き中です"
+                                           TO  SPA-GMN-MSG1PLUS
+                   END-EVALUATE
                END-IF
            ELSE
-               MOVE    SPACE           TO  SPA-GMN-MSG1
+               MOVE    SPACE               TO  SPA-GMN-MSG1
            END-IF
+      *
       *    ライセンスマスタ
-           IF      FLG-SJOBKANRI1       =   ZERO
-               IF      JOB1-ERRCD(1:2)  =   "99"
-                   MOVE    "マスタ更新は異常終了しました。"
-                                           TO  SPA-GMN-MSG2(ID1:30)
-                   MOVE    "red"           TO  SPA-GMN-MSG2-STYLE
-               ELSE
-                 IF      JOB1-ERRCD(1:2)  =   "98"
-                   MOVE    "提供サーバへ接続できませんでした。"
-                                           TO  SPA-GMN-MSG2(ID1:34)
-                   MOVE    "blue"          TO  SPA-GMN-MSG2-STYLE
-                 ELSE
-                   IF  JOB1-ERRCD(1:2)  =   "01"
+           IF    ( FLG-SJOBKANRI1          =   ZERO )
+               IF    ( JOB1-ENDTIME    NOT =   SPACE )
+                AND  ( JOB1-ENDYMD     NOT =   SPACE )
+                   EVALUATE    JOB1-ERRCD
+                   WHEN    "00"
+                   WHEN    "0000"
+                       MOVE    "マスタ更新は正常に終了しました。"
+                                            TO  SPA-GMN-MSG2(ID1:32)
+                       MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
+                   WHEN    "01"
+                   WHEN    "8001"
                        MOVE    "更新データはありませんでした。"
                                              TO  SPA-GMN-MSG2(ID1:30)
                        MOVE    "blue"        TO  SPA-GMN-MSG2-STYLE
-                   ELSE
-                       IF  (JOB1-ENDTIME      NOT =   SPACE)  AND
-                           (JOB1-ENDYMD       NOT =   SPACE)
-                           MOVE    "マスタ更新は正常に終了しました。"
-                                                TO  SPA-GMN-MSG2(ID1:32)
-                           MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
-                       ELSE
-                           MOVE    "マスタ更新中です。"
-                                                TO  SPA-GMN-MSG2(ID1:18)
-                           MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
-                       END-IF
-                   END-IF
-                 END-IF
+                   WHEN    "98"
+                   WHEN    "8002"
+                       MOVE    "提供サーバへ接続できませんでした。"
+                                             TO  SPA-GMN-MSG2(ID1:34)
+                       MOVE    "blue"        TO  SPA-GMN-MSG2-STYLE
+                   WHEN    "8888"
+                       MOVE    "マスタ更新を中止しました"
+                                           TO  SPA-GMN-MSG2(ID1:34)
+                       MOVE    "red"       TO  SPA-GMN-MSG2-STYLE
+                       MOVE    JOB1-YOBI      TO  SPA-GMN-MSG2PLUS
+                   WHEN    OTHER
+                       MOVE    "マスタ更新は異常終了しました。"
+                                             TO  SPA-GMN-MSG2(ID1:30)
+                       MOVE    "red"         TO  SPA-GMN-MSG2-STYLE
+                       MOVE    JOB1-YOBI     TO  SPA-GMN-MSG2PLUS
+                   END-EVALUATE
+               ELSE
+                   MOVE    "マスタ更新中です。"
+                                             TO  SPA-GMN-MSG2(ID1:18)
+                   MOVE    "blue"            TO  SPA-GMN-MSG2-STYLE
+                   MOVE    JOB1-SHELLMSG     TO  SPA-GMN-MSG2PLUS
+                   EVALUATE    JOB1-STOPFLG
+                   WHEN    ZERO
+                       MOVE    1           TO  SPA-NAI-CANCEL
+                   WHEN    1
+                       MOVE    "処理中止手続き中です"
+                                           TO  SPA-GMN-MSG2PLUS
+                   END-EVALUATE
                END-IF
            ELSE
                MOVE    SPACE           TO  SPA-GMN-MSG2
            END-IF
       *
+           PERFORM 3103-JOBKANRI-HENSYU2-SEC
+      *
       *----(03.04.01)--ADD-START---
            MOVE    0           TO  SPA-GMN-DURATION
       *
-           IF    ( FLG-SJOBKANRI       =   ZERO )  AND
-                 ( JOB-ERRCD(1:2)  NOT =   "99" )  AND
-                 ( JOB-ERRCD(1:2)  NOT =   "01" )
+           IF    ( FLG-SJOBKANRI       =   ZERO )
                IF    ( JOB-ENDTIME     =   SPACE)  OR
                      ( JOB-ENDYMD      =   SPACE)
                    MOVE    5           TO  SPA-GMN-DURATION
                END-IF
            END-IF
       *
-           IF    (  FLG-SJOBKANRI1     =   ZERO )  AND
-                 ( JOB1-ERRCD(1:2) NOT =   "99" )  AND
-                 ( JOB1-ERRCD(1:2) NOT =   "98" )  AND
-                 ( JOB1-ERRCD(1:2) NOT =   "01" )
+           IF    (  FLG-SJOBKANRI1     =   ZERO )
                IF    ( JOB1-ENDTIME    =   SPACE)  OR
                      ( JOB1-ENDYMD     =   SPACE)
                    MOVE    5           TO  SPA-GMN-DURATION
@@ -585,65 +640,91 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *****************************************************************
        3103-JOBKANRI-HENSYU2-SEC         SECTION.
       *
-           MOVE    JOB-STARTYMD        TO  WRK-SYMD
-           PERFORM 700-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  SPA-GMN-STARTYMD (2)
+               MOVE    "標準マスタ"    TO  SPA-GMN-JOBNAME (1)
       *
-           MOVE    JOB1-ENDYMD         TO  SPA-NAI-ENDYMD  (2)
-           MOVE    JOB1-ENDTIME        TO  SPA-NAI-ENDTIME (2)
+               MOVE    "ライセンスマスタ"
+                                       TO  SPA-GMN-JOBNAME (2)
       *
-           MOVE    JOB1-ENDYMD         TO  WRK-SYMD
-           PERFORM 700-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG         TO  SPA-GMN-ENDYMD (2)
+           IF    ( FLG-SJOBKANRI        =   ZERO )
       *
-           IF      JOB-STARTTIME       =   SPACE
-               MOVE    SPACE           TO  SPA-GMN-STARTTIME (2)
-           ELSE
-               MOVE    ":"             TO  SPA-GMN-STARTTIME (2)(3:1)
-               MOVE    ":"             TO  SPA-GMN-STARTTIME (2)(6:1)
-               MOVE    JOB-STARTTIME(1:2)
+               MOVE    JOB-STARTYMD    TO  WRK-SYMD
+               PERFORM 700-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-STARTYMD (1)
+      *
+               MOVE    JOB-ENDYMD      TO  WRK-SYMD
+               PERFORM 700-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-ENDYMD (1)
+      *
+               MOVE    JOB-ENDYMD      TO  SPA-NAI-ENDYMD  (1)
+               MOVE    JOB-ENDTIME     TO  SPA-NAI-ENDTIME (1)
+      *
+               IF    ( JOB-STARTTIME   =   SPACE )
+                   MOVE    SPACE       TO  SPA-GMN-STARTTIME (1)
+               ELSE
+                   MOVE    ":"         TO  SPA-GMN-STARTTIME (1)(3:1)
+                   MOVE    ":"         TO  SPA-GMN-STARTTIME (1)(6:1)
+                   MOVE    JOB-STARTTIME(1:2)
+                                       TO  SPA-GMN-STARTTIME (1)(1:2)
+                   MOVE    JOB-STARTTIME(3:2)
+                                       TO  SPA-GMN-STARTTIME (1)(4:2)
+                   MOVE    JOB-STARTTIME(5:2)
+                                       TO  SPA-GMN-STARTTIME (1)(7:2)
+               END-IF
+      *
+               IF    ( JOB-ENDTIME    =   SPACE )
+                   MOVE    SPACE       TO  SPA-GMN-ENDTIME (1)
+               ELSE
+                   MOVE    ":"         TO  SPA-GMN-ENDTIME (1)(3:1)
+                   MOVE    ":"         TO  SPA-GMN-ENDTIME (1)(6:1)
+                   MOVE    JOB-ENDTIME(1:2)
+                                       TO  SPA-GMN-ENDTIME (1)(1:2)
+                   MOVE    JOB-ENDTIME(3:2)
+                                       TO  SPA-GMN-ENDTIME (1)(4:2)
+                   MOVE    JOB-ENDTIME(5:2)
+                                       TO  SPA-GMN-ENDTIME (1)(7:2)
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-SJOBKANRI1       =   ZERO )
+      *
+               MOVE    JOB1-STARTYMD   TO  WRK-SYMD
+               PERFORM 700-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-STARTYMD (2)
+      *
+               MOVE    JOB1-ENDYMD     TO  WRK-SYMD
+               PERFORM 700-SEIWA-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-ENDYMD (2)
+      *
+               MOVE    JOB1-ENDYMD     TO  SPA-NAI-ENDYMD  (2)
+               MOVE    JOB1-ENDTIME    TO  SPA-NAI-ENDTIME (2)
+      *
+               IF    ( JOB1-STARTTIME   =   SPACE )
+                   MOVE    SPACE       TO  SPA-GMN-STARTTIME (2)
+               ELSE
+                   MOVE    ":"         TO  SPA-GMN-STARTTIME (2)(3:1)
+                   MOVE    ":"         TO  SPA-GMN-STARTTIME (2)(6:1)
+                   MOVE    JOB1-STARTTIME(1:2)
                                        TO  SPA-GMN-STARTTIME (2)(1:2)
-               MOVE    JOB-STARTTIME(3:2)
+                   MOVE    JOB1-STARTTIME(3:2)
                                        TO  SPA-GMN-STARTTIME (2)(4:2)
-               MOVE    JOB-STARTTIME(5:2)
+                   MOVE    JOB1-STARTTIME(5:2)
                                        TO  SPA-GMN-STARTTIME (2)(7:2)
-           END-IF.
-           IF      JOB1-ENDTIME        =   SPACE
-               MOVE    SPACE           TO  SPA-GMN-ENDTIME (2)
-           ELSE
-               MOVE    ":"             TO  SPA-GMN-ENDTIME (2)(3:1)
-               MOVE    ":"             TO  SPA-GMN-ENDTIME (2)(6:1)
-               MOVE    JOB1-ENDTIME(1:2)
+               END-IF
+      *
+               IF    ( JOB1-ENDTIME    =   SPACE )
+                   MOVE    SPACE       TO  SPA-GMN-ENDTIME (2)
+               ELSE
+                   MOVE    ":"         TO  SPA-GMN-ENDTIME (2)(3:1)
+                   MOVE    ":"         TO  SPA-GMN-ENDTIME (2)(6:1)
+                   MOVE    JOB1-ENDTIME(1:2)
                                        TO  SPA-GMN-ENDTIME (2)(1:2)
-               MOVE    JOB1-ENDTIME(3:2)
+                   MOVE    JOB1-ENDTIME(3:2)
                                        TO  SPA-GMN-ENDTIME (2)(4:2)
-               MOVE    JOB1-ENDTIME(5:2)
+                   MOVE    JOB1-ENDTIME(5:2)
                                        TO  SPA-GMN-ENDTIME (2)(7:2)
+               END-IF
            END-IF
-           IF     JOB-STEPSTARTTIME    =   SPACE
-               MOVE    SPACE           TO  SPA-GMN-STEPSTARTTIME (2)
-           ELSE
-               MOVE    ":"          TO  SPA-GMN-STEPSTARTTIME (2)(3:1)
-               MOVE    ":"          TO  SPA-GMN-STEPSTARTTIME (2)(6:1)
-               MOVE    JOB-STEPSTARTTIME(1:2)
-                                    TO  SPA-GMN-STEPSTARTTIME (2)(1:2)
-               MOVE    JOB-STEPSTARTTIME(3:2)
-                                    TO  SPA-GMN-STEPSTARTTIME (2)(4:2)
-               MOVE    JOB-STEPSTARTTIME(5:2)
-                                    TO  SPA-GMN-STEPSTARTTIME (2)(7:2)
-           END-IF
-           IF      JOB-STEPENDTIME     =   SPACE
-               MOVE    SPACE           TO  SPA-GMN-STEPENDTIME (2)
-           ELSE
-               MOVE    ":"          TO  SPA-GMN-STEPENDTIME (2)(3:1)
-               MOVE    ":"          TO  SPA-GMN-STEPENDTIME (2)(6:1)
-               MOVE    JOB-STEPENDTIME(1:2)
-                                    TO  SPA-GMN-STEPENDTIME (2)(1:2)
-               MOVE    JOB-STEPENDTIME(3:2)
-                                    TO  SPA-GMN-STEPENDTIME (2)(4:2)
-               MOVE    JOB-STEPENDTIME(5:2)
-                                    TO  SPA-GMN-STEPENDTIME (2)(7:2)
-           END-IF.
+      *
            .
        3103-JOBKANRI-HENSYU2-EXT.
            EXIT.
@@ -660,10 +741,12 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *        情報削除
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 201-DELETE-SEC
-      *----(03.04.01)---ADD-START---
-               WHEN    "CLICKED"   ALSO    "pandatimer1"
-      *----(03.04.01)---ADD-END-----
+      *
+      *        処理中止
+               WHEN    "CLICKED"       ALSO    "B10"
+                   PERFORM 210-CANCEL-SEC
       *        情報
+               WHEN    "CLICKED"   ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 211-JYOUKYOU-SEC
       *        更新
@@ -682,15 +765,57 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *    ＪＯＢ管理検索
            PERFORM 820-JOBKANRI-READ-SEC
       *
-           IF      FLG-SJOBKANRI       =   ZERO
-               MOVE    "0101"              TO  SPA-MIDCD
+           IF    ( FLG-SJOBKANRI       =   ZERO )
+            OR   ( FLG-SJOBKANRI1      =   ZERO )
+               MOVE    "0100"              TO  SPA-MIDCD
            ELSE
                MOVE    "0005"              TO  SPA-ERRCD
            END-IF
            .
        201-DELETE-EXT.
            EXIT.
-     *
+      *
+      *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       210-CANCEL-SEC                  SECTION.
+      *
+           MOVE    "0102"              TO  SPA-MIDCD
+      *
+           .
+       210-CANCEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理中止処理
+      *****************************************************************
+       2101-CANCEL-SEC                  SECTION.
+      *
+           MOVE    "STP"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    CONST-MNTJOBID      TO  JOB-JOBID
+           MOVE    CONST-MNTSHELLID    TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
+           MOVE    1                   TO  JOB-STOPFLG
+           CALL    "ORCSJOB"               USING
+                                           ORCSJOBKANRIAREA
+                                           JOBKANRI-REC
+                                           SPA-AREA
+      *
+           MOVE    "STP"               TO  SJOBKANRI-MODE
+           INITIALIZE                      JOBKANRI1-REC
+           MOVE    CONST-MLIJOBID      TO  JOB1-JOBID
+           MOVE    CONST-MLISHELLID    TO  JOB1-SHELLID
+           MOVE    SPA-HOSPNUM         TO  JOB1-HOSPNUM
+           MOVE    1                   TO  JOB1-STOPFLG
+           CALL    "ORCSJOB"               USING
+                                           ORCSJOBKANRIAREA
+                                           JOBKANRI1-REC
+                                           SPA-AREA
+           PERFORM 211-JYOUKYOU-SEC
+      *
+           .
+       2101-CANCEL-EXT.
+           EXIT.
       *****************************************************************
       *    状況処理
       *****************************************************************
@@ -713,21 +838,25 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            PERFORM 820-JOBKANRI-READ-SEC
       *
            MOVE    ZERO                 TO  FLG-ERR
-           IF      FLG-SJOBKANRI        =   ZERO
-               IF      JOB-ERRCD(1:2)       =   "99"
-                                            OR  "01" 
+           IF    ( FLG-SJOBKANRI         =   ZERO )
+               IF    ( JOB-ENDTIME   NOT =   SPACE)
+                  AND( JOB-ENDYMD    NOT =   SPACE)
                    CONTINUE
                ELSE
-                   IF      (JOB-ENDTIME       NOT =   SPACE)  AND
-                           (JOB-ENDYMD        NOT =   SPACE)
-                       CONTINUE
-                   ELSE
-                       MOVE    1                TO  FLG-ERR
-                   END-IF
+                   MOVE    1             TO  FLG-ERR
                END-IF
            END-IF
       *
-           IF      FLG-ERR             =   1
+           IF    ( FLG-SJOBKANRI1        =   ZERO )
+               IF    (  JOB1-ENDTIME NOT =   SPACE )
+                AND  (  JOB1-ENDYMD  NOT =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    1             TO  FLG-ERR
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-ERR                 =   1 )
                MOVE    "0203"              TO  SPA-ERRCD
            ELSE
                MOVE    "0202"              TO  SPA-MIDCD
@@ -746,8 +875,8 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *        ジョブ管理削除
                MOVE    "DEL"               TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    1                   TO  JOB-JOBID
-               MOVE    "MSTMNT"            TO  JOB-SHELLID
+               MOVE    CONST-MNTJOBID      TO  JOB-JOBID
+               MOVE    CONST-MNTSHELLID    TO  JOB-SHELLID
                MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
@@ -758,8 +887,8 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *    ジョブ管理作成
            MOVE    "JBS"               TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    1                   TO  JOB-JOBID
-           MOVE    "MSTMNT"            TO  JOB-SHELLID
+           MOVE    CONST-MNTJOBID      TO  JOB-JOBID
+           MOVE    CONST-MNTSHELLID    TO  JOB-SHELLID
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
@@ -770,8 +899,8 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *        ジョブ管理削除
                MOVE    "DEL"               TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI1-REC
-               MOVE    1                   TO  JOB1-JOBID
-               MOVE    "MSTMLI"            TO  JOB1-SHELLID
+               MOVE    CONST-MLIJOBID      TO  JOB1-JOBID
+               MOVE    CONST-MLISHELLID    TO  JOB1-SHELLID
                MOVE    SPA-HOSPNUM         TO  JOB1-HOSPNUM
                CALL    "ORCSJOB"           USING
                                            ORCSJOBKANRIAREA
@@ -782,13 +911,22 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *    ジョブ管理作成
            MOVE    "JBS"               TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI1-REC
-           MOVE    1                   TO  JOB1-JOBID
-           MOVE    "MSTMLI"            TO  JOB1-SHELLID
+           MOVE    CONST-MLIJOBID      TO  JOB1-JOBID
+           MOVE    CONST-MLISHELLID    TO  JOB1-SHELLID
            MOVE    SPA-HOSPNUM         TO  JOB1-HOSPNUM
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI1-REC
                                        SPA-AREA
+      *
+           MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
+           MOVE    "ORMNTERR"          TO  ERRFLPARA-FILE-ID
+           MOVE    1                   TO  ERRFLPARA-SYOKBN1
+           MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
+           MOVE    ERRFLPARA           TO  WRK-MNTERRFL
+      *
+           MOVE    "ORMLIERR"          TO  ERRFLPARA-FILE-ID
+           MOVE    ERRFLPARA           TO  WRK-MLIERRFL
       *
       *    最新情報編集
            MOVE    ZERO                TO  FLG-INIT
@@ -803,6 +941,15 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    SPA-HOSPNUM          TO  SHELLTBL-ARG1
            MOVE    SPA-SUPERVISOR       TO  SHELLTBL-ARG2
            MOVE    SPA-HOSPID           TO  SHELLTBL-ARG3
+      *
+           MOVE    WRK-MNTERRFL         TO  SHELLTBL-ARG4
+           MOVE    CONST-MNTJOBID       TO  SHELLTBL-ARG5
+           MOVE    CONST-MNTSHELLID     TO  SHELLTBL-ARG6
+      *
+           MOVE    WRK-MLIERRFL         TO  SHELLTBL-ARG7
+           MOVE    CONST-MLIJOBID       TO  SHELLTBL-ARG8
+           MOVE    CONST-MLISHELLID     TO  SHELLTBL-ARG9
+      *
            MOVE    SHELLTBL             TO  MCPDATA-REC
       *
            MOVE    "SHELL"              TO  MCP-FUNC
@@ -821,41 +968,30 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        30011-DELETE-SYORI-SEC                  SECTION.
       *
-           PERFORM 820-JOBKANRI-READ-SEC
+      *    ジョブ管理削除
+           MOVE    "DEL"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    CONST-MNTJOBID  TO  JOB-JOBID
+           MOVE    CONST-MNTSHELLID TO JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI-REC
+                                   SPA-AREA
       *
-           IF      FLG-SJOBKANRI       =   ZERO
-               IF      (JOB1-ENDTIME   =   SPA-NAI-ENDTIME(2)) AND
-                       (JOB1-ENDYMD    =   SPA-NAI-ENDYMD (2))
       *    ジョブ管理削除
-                   MOVE    "DEL"          TO  SJOBKANRI-MODE
-                   INITIALIZE             JOBKANRI-REC
-                   MOVE    1              TO  JOB-JOBID
-                   MOVE    "MSTMNT"       TO  JOB-SHELLID
-                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
-                   CALL    "ORCSJOB"      USING
-                                          ORCSJOBKANRIAREA
-                                          JOBKANRI-REC
-                                          SPA-AREA
-                   INITIALIZE             SPA-GMN-TBLG2
-                   MOVE    SPACE          TO  SPA-GMN-MSG1
-               ELSE
-                   MOVE    "0004"         TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *    ライセンスマスタ
-           IF      FLG-SJOBKANRI1      =   ZERO
-      *    ジョブ管理削除
-                   MOVE    "DEL"          TO  SJOBKANRI-MODE
-                   INITIALIZE             JOBKANRI1-REC
-                   MOVE    1              TO  JOB1-JOBID
-                   MOVE    "MSTMLI"       TO  JOB1-SHELLID
-                   MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
-                   CALL    "ORCSJOB"      USING
-                                          ORCSJOBKANRIAREA
-                                          JOBKANRI1-REC
-                                          SPA-AREA
-                  MOVE    SPACE          TO  SPA-GMN-MSG2
-           END-IF
+           MOVE    "DEL"           TO  SJOBKANRI-MODE
+           INITIALIZE              JOBKANRI1-REC
+           MOVE    CONST-MLIJOBID  TO  JOB1-JOBID
+           MOVE    CONST-MLISHELLID TO  JOB1-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB1-HOSPNUM
+           CALL    "ORCSJOB"       USING
+                                   ORCSJOBKANRIAREA
+                                   JOBKANRI1-REC
+                                   SPA-AREA
+      *
+           INITIALIZE                  SPA-GMN-TBLG2
+           INITIALIZE                  SPA-GMN-MSG-G
       *
            .
        30011-DELETE-SYORI-EXT.
@@ -869,18 +1005,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 820-JOBKANRI-READ-SEC
       *
            MOVE    SPACE                TO  SPA-MIDCD
-           IF      FLG-SJOBKANRI        =   ZERO
-               IF      JOB-ERRCD(1:2)       =   "99"
-                                            OR  "01"
+           IF    ( FLG-SJOBKANRI        =   ZERO )
+               IF    ( JOB-ENDTIME  NOT =   SPACE )
+                AND  ( JOB-ENDYMD   NOT =   SPACE )
                    CONTINUE
                ELSE
-                   IF      (JOB1-ENDTIME      NOT =   SPACE)  AND
-                           (JOB1-ENDYMD       NOT =   SPACE)
-                       CONTINUE
-                   ELSE
       *            マスタ更新中
-                       MOVE    "0301"              TO  SPA-MIDCD
-                   END-IF
+                   MOVE    "0301"              TO  SPA-MIDCD
+               END-IF
+           END-IF
+           IF    ( FLG-SJOBKANRI1       =   ZERO )
+               IF    ( JOB1-ENDTIME NOT =   SPACE )
+                AND  ( JOB1-ENDYMD  NOT =   SPACE )
+                   CONTINUE
+               ELSE
+      *            マスタ更新中
+                   MOVE    "0301"              TO  SPA-MIDCD
                END-IF
            END-IF
            IF      SPA-MIDCD           =   SPACE
@@ -980,16 +1120,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  M96-LIST1-COUNT
            PERFORM VARYING   IDX   FROM   1   BY   1
                    UNTIL     IDX      >   2
+               MOVE    SPA-GMN-JOBNAME       (IDX) TO  M96-JOBNAME
+                                                                  (IDX)
                MOVE    SPA-GMN-STARTYMD      (IDX) TO  M96-STARTYMD
                                                                   (IDX)
                MOVE    SPA-GMN-STARTTIME     (IDX) TO  M96-STARTTIME
                                                                   (IDX)
                MOVE    SPA-GMN-ENDYMD        (IDX) TO  M96-ENDYMD (IDX)
                MOVE    SPA-GMN-ENDTIME       (IDX) TO  M96-ENDTIME(IDX)
-               MOVE    SPA-GMN-STEPSTARTTIME (IDX) TO  M96-STEPSTARTTIME
-                                                                  (IDX)
-               MOVE    SPA-GMN-STEPENDTIME   (IDX) TO  M96-STEPENDTIME
-                                                                  (IDX)
+               MOVE    SPA-GMN-LASTYMD       (IDX) TO  M96-LASTYMD(IDX)
            END-PERFORM
            MOVE    2                   TO  M96-LIST2-COUNT
       *
@@ -1004,13 +1143,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-MAX3        TO  M96-LIST3-COUNT
       *
            MOVE    SPA-GMN-MSG1            TO  M96-MSG1-VALUE
+           MOVE    SPA-GMN-MSG1PLUS        TO  M96-MSG1PLUS-VALUE
            MOVE    SPA-GMN-MSG1-STYLE      TO  M96-MSG1-STYLE
+                                               M96-MSG1PLUS-STYLE
+      *
            MOVE    SPA-GMN-MSG2            TO  M96-MSG2-VALUE
+           MOVE    SPA-GMN-MSG2PLUS        TO  M96-MSG2PLUS-VALUE
            MOVE    SPA-GMN-MSG2-STYLE      TO  M96-MSG2-STYLE
+                                               M96-MSG2PLUS-STYLE
       *
       *----(03.04.01)--ADD-START---
            MOVE    SPA-GMN-DURATION        TO  M96-DURATION
       *----(03.04.01)--ADD-END-----
+      *
+           MOVE    WIDGET-INSENSITIVE      TO  M96-B10-STATE
+           IF    ( SPA-NAI-CANCEL          =   1 )
+               MOVE    WIDGET-NORMAL       TO  M96-B10-STATE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -1086,9 +1235,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  MID1
            EVALUATE    SPA-MIDCD
+               WHEN    "0100"
+                   MOVE
+                   "更新処理の動作中は情報削除を行わないでください"
+                                       TO  MID1-ID1MSG
                WHEN    "0101"
                    MOVE
                    "ＪＯＢ管理情報を削除します。よろしいですか？"
+                                       TO  MID1-ID1MSG
+               WHEN    "0102"
+                   MOVE    "マスタ更新を中止します。よろしいですか？"
                                        TO  MID1-ID1MSG
                WHEN    "0202"
                    MOVE    "マスタ更新を実行します。よろしいですか？"
@@ -1105,6 +1261,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "B12"               TO  MCP-WIDGET
            EVALUATE    SPA-MIDCD
+               WHEN    "0100"
                WHEN    "0101"
                    MOVE    "B01"               TO  MCP-WIDGET
            END-EVALUATE
@@ -1133,8 +1290,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  ORCSJOBKANRIAREA
            MOVE    "CHK"               TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    1                   TO  JOB-JOBID
-           MOVE    "MSTMNT"            TO  JOB-SHELLID
+           MOVE    CONST-MNTJOBID      TO  JOB-JOBID
+           MOVE    CONST-MNTSHELLID    TO  JOB-SHELLID
       *
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"           USING
@@ -1162,8 +1319,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                  ORCSJOBKANRIAREA
            MOVE    "CHK"               TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI1-REC
-           MOVE    1                   TO  JOB1-JOBID
-           MOVE    "MSTMLI"            TO  JOB1-SHELLID
+           MOVE    CONST-MLIJOBID      TO  JOB1-JOBID
+           MOVE    CONST-MLISHELLID    TO  JOB1-SHELLID
            MOVE    SPA-HOSPNUM         TO  JOB1-HOSPNUM
       *
            CALL    "ORCSJOB"           USING

@@ -28,6 +28,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.03.00     NACL-太田    08/05/28  エラー処理強化対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -158,6 +159,10 @@ grpsys     COPY    "COMMON-SPA".
        01  HKTSANTEI-REC.
            COPY    "CPHKTSANTEI.INC".
       *
+      *    ジョブ管理情報
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
+      *
       *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
@@ -166,15 +171,12 @@ grpsys     COPY    "COMMON-SPA".
       *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
-       01  PARA-REC.
-           03  PARA-DBFILE               PIC X(13).
-           03  PARA-UPFILE               PIC X(100).
-           03  LNK-DBRVERSION            PIC X(21).
-           03  LNK-HOSPNUM               PIC 9(02).
       *
-       PROCEDURE                   DIVISION
+           COPY    "CPMUPLINK.INC".
+      *
+       PROCEDURE                       DIVISION
            USING
-           PARA-REC.
+           LNK-AREA.
       *
       ****************************************************************
       *    主　　処理
@@ -184,7 +186,8 @@ grpsys     COPY    "COMMON-SPA".
            PERFORM 100-INIT-SEC
       *
            PERFORM 200-MAIN-SEC
-                   UNTIL   FLG-IN      =   1
+                   UNTIL ( FLG-IN      =   1 )
+                    OR   ( LNK-RC  NOT =   ZERO )
       *
            PERFORM 300-END-SEC
            .
@@ -210,10 +213,10 @@ grpsys     COPY    "COMMON-SPA".
            ACCEPT  SYS-TIME            FROM    TIME
       *
       *    DB OPEN
-           PERFORM 100-DBOPEN-SEC
-           IF      MCP-RC          NOT =   ZERO
-               DISPLAY "DBOPEN ERR"
-           END-IF.
+      *    PERFORM 100-DBOPEN-SEC
+      *    IF      MCP-RC      NOT =   ZERO
+      *        DISPLAY "DBOPEN ERR"
+      *    END-IF.
       *
            PERFORM 101-ASSIN-GET-SEC
       *
@@ -246,9 +249,9 @@ grpsys     COPY    "COMMON-SPA".
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   PARA-DBFILE         DELIMITED  BY  SPACE
+                   LNK-DBFILE          DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
-                   PARA-UPFILE         DELIMITED  BY  SPACE
+                   LNK-UPFILE          DELIMITED  BY  SPACE
                                        INTO    ASS-IN
            END-STRING
       *
@@ -256,7 +259,7 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
-                   PARA-UPFILE         DELIMITED  BY  SPACE
+                   LNK-UPFILE          DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
                                        INTO    ASS-ERR
            END-STRING
@@ -265,7 +268,7 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
-                   PARA-UPFILE         DELIMITED  BY  SPACE
+                   LNK-UPFILE          DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
                                        INTO    ASS-PLF
            END-STRING
@@ -437,6 +440,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
+               MOVE    1               TO  LNK-RC
                MOVE    2               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
@@ -460,6 +464,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
+               MOVE    2               TO  LNK-RC
                MOVE    3               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
@@ -481,6 +486,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "key"               TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
+               MOVE    3               TO  LNK-RC
                MOVE    4               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
@@ -566,12 +572,28 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        300-END-SEC                     SECTION.
       *
       *    DB DISCONNECT
-           PERFORM 900-DBDISCONNECT-SEC
+      *    PERFORM 900-DBDISCONNECT-SEC
       *
       *    出力ファイル　終了処理
            CLOSE                       IN-FILE
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
+      *
+           IF    ( LNK-RC              =   ZERO )
+               IF    ( CNT-IN      NOT =   LNK-COUNT )
+      *
+                   MOVE    99              TO  LNK-RC
+      *
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    1               TO  JOB-HOSPNUM
+                   MOVE    "tbl_jobkanri"  TO  MCP-TABLE
+                   MOVE    "abort"         TO  MCP-PATHNAME
+                   MOVE    JOBKANRI-REC    TO  MCPDATA-REC
+                   MOVE    "DBSELECT"      TO  MCP-FUNC
+                   PERFORM 900-ORCDBMAIN-SEC
+               END-IF
+      *
+           END-IF
       *
            DISPLAY "*(ORCMUP0131)* INPUT  /I   CNT[" CNT-IN  "]"
            DISPLAY "*(ORCMUP0131)*  INSERT     CNT[" CNT-INS "]"
@@ -579,6 +601,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            DISPLAY "*(ORCMUP0131)*  DELETE     CNT[" CNT-DEL "]"
            DISPLAY "*(ORCMUP0131)* ERR    /O   CNT[" CNT-ERR "]"
            DISPLAY "*(ORCMUP0131)* PLF    /O   CNT[" CNT-PLF "]"
+           DISPLAY "*(ORCMUP0131)* RC             [" LNK-RC "]"
       **** ACCEPT  WRK-IN
            .
        300-END-EXT.

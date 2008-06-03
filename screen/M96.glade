@@ -13,8 +13,8 @@
 <widget>
   <class>GtkWindow</class>
   <name>M96</name>
-  <width>700</width>
-  <height>652</height>
+  <width>660</width>
+  <height>700</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -49,7 +49,7 @@
       <class>GtkButton</class>
       <name>B02</name>
       <x>96</x>
-      <y>620</y>
+      <y>664</y>
       <width>90</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -72,7 +72,7 @@
       <class>GtkButton</class>
       <name>B01</name>
       <x>12</x>
-      <y>620</y>
+      <y>664</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -94,8 +94,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B11</name>
-      <x>520</x>
-      <y>620</y>
+      <x>480</x>
+      <y>664</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -117,8 +117,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
-      <x>604</x>
-      <y>620</y>
+      <x>564</x>
+      <y>664</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -195,99 +195,6 @@
 	<child_name>CList:title</child_name>
 	<name>label112</name>
 	<label>日付</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-    </widget>
-
-    <widget>
-      <class>GtkPandaCList</class>
-      <name>LIST2</name>
-      <x>40</x>
-      <y>440</y>
-      <width>460</width>
-      <height>68</height>
-      <can_focus>True</can_focus>
-      <columns>6</columns>
-      <column_widths>74,64,73,66,67,66</column_widths>
-      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-      <show_titles>True</show_titles>
-      <shadow_type>GTK_SHADOW_IN</shadow_type>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label115</name>
-	<label>処理開始</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label116</name>
-	<label>時間</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label117</name>
-	<label>処理終了</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label118</name>
-	<label>時間</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label119</name>
-	<label>step開始</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label120</name>
-	<label>step終了</label>
 	<justify>GTK_JUSTIFY_CENTER</justify>
 	<wrap>False</wrap>
 	<xalign>0.5</xalign>
@@ -395,10 +302,26 @@
     </widget>
 
     <widget>
+      <class>GtkPandaTimer</class>
+      <name>pandatimer1</name>
+      <x>24</x>
+      <y>16</y>
+      <width>21</width>
+      <height>21</height>
+      <signal>
+	<name>timeout</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Wed, 14 Sep 2005 05:18:47 GMT</last_modification_time>
+      </signal>
+      <duration>5</duration>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
       <name>label67</name>
-      <x>28</x>
-      <y>416</y>
+      <x>40</x>
+      <y>408</y>
       <width>170</width>
       <height>20</height>
       <label>マスタ更新ＪＯＢ管理情報</label>
@@ -411,26 +334,103 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label122</name>
-      <x>8</x>
-      <y>488</y>
-      <width>30</width>
-      <height>20</height>
-      <label>最新</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
+      <class>GtkPandaCList</class>
+      <name>LIST2</name>
+      <x>40</x>
+      <y>432</y>
+      <width>584</width>
+      <height>72</height>
+      <can_focus>True</can_focus>
+      <columns>6</columns>
+      <column_widths>135,80,80,80,80,80</column_widths>
+      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+      <show_titles>True</show_titles>
+      <shadow_type>GTK_SHADOW_IN</shadow_type>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>CList:title</child_name>
+	<name>label215</name>
+	<label>処理名</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>CList:title</child_name>
+	<name>label115</name>
+	<label>処理開始</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>CList:title</child_name>
+	<name>label116</name>
+	<label>時間</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>CList:title</child_name>
+	<name>label117</name>
+	<label>処理終了</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>CList:title</child_name>
+	<name>label118</name>
+	<label>時間</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>CList:title</child_name>
+	<name>label130</name>
+	<label>前回処理日</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
     </widget>
 
     <widget>
       <class>GtkLabel</class>
       <name>label131</name>
-      <x>40</x>
-      <y>520</y>
+      <x>20</x>
+      <y>512</y>
       <width>115</width>
       <height>20</height>
       <label>標準提供マスタ</label>
@@ -445,11 +445,11 @@
     <widget>
       <class>GtkLabel</class>
       <name>label132</name>
-      <x>40</x>
-      <y>540</y>
-      <width>115</width>
+      <x>396</x>
+      <y>632</y>
+      <width>248</width>
       <height>20</height>
-      <label>ライセンスマスタ</label>
+      <label>（株）社会保険研究所の著作物です。</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -460,42 +460,10 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>MSG1</name>
-      <x>160</x>
-      <y>520</y>
-      <width>500</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MSG2</name>
-      <x>160</x>
-      <y>540</y>
-      <width>500</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label132</name>
-      <x>444</x>
-      <y>572</y>
-      <width>430</width>
+      <x>396</x>
+      <y>608</y>
+      <width>248</width>
       <height>20</height>
       <label>相互作用、症状措置、保険者マスタは</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
@@ -509,11 +477,11 @@
     <widget>
       <class>GtkLabel</class>
       <name>label132</name>
-      <x>444</x>
-      <y>592</y>
-      <width>300</width>
+      <x>20</x>
+      <y>556</y>
+      <width>115</width>
       <height>20</height>
-      <label>（株）社会保険研究所の著作物です。</label>
+      <label>ライセンスマスタ</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -523,19 +491,90 @@
     </widget>
 
     <widget>
-      <class>GtkPandaTimer</class>
-      <name>pandatimer1</name>
-      <x>24</x>
-      <y>16</y>
-      <width>21</width>
-      <height>21</height>
+      <class>GtkLabel</class>
+      <name>MSG1PLUS</name>
+      <x>144</x>
+      <y>532</y>
+      <width>500</width>
+      <height>20</height>
+      <label>あああ</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MSG2</name>
+      <x>144</x>
+      <y>556</y>
+      <width>500</width>
+      <height>20</height>
+      <label>いいい</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MSG2PLUS</name>
+      <x>144</x>
+      <y>576</y>
+      <width>500</width>
+      <height>20</height>
+      <label>いいい</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MSG1</name>
+      <x>144</x>
+      <y>512</y>
+      <width>500</width>
+      <height>20</height>
+      <label>あああ</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>B10</name>
+      <x>384</x>
+      <y>664</y>
+      <width>90</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F10</key>
+	<signal>clicked</signal>
+      </accelerator>
       <signal>
-	<name>timeout</name>
+	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Wed, 14 Sep 2005 05:18:47 GMT</last_modification_time>
+	<last_modification_time>Tue, 26 Dec 2000 00:42:45 GMT</last_modification_time>
       </signal>
-      <duration>5</duration>
+      <label>F10 処理中止</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>
 </widget>

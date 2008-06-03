@@ -1,5 +1,8 @@
 M96	{
 	fixed3	{
+		B10	{
+	       		state	int;
+		};
 		LIST1	{
 			count	int;
 			row	int;
@@ -17,12 +20,12 @@ M96	{
 			row	int;
 			rowattr	int;
 			item	{
-				value0	varchar(9);
-				value1	varchar(8);
-				value2	varchar(9);
-				value3	varchar(8);
+				value0	varchar(40);
+				value1	varchar(9);
+				value2	varchar(8);
+				value3	varchar(9);
 				value4	varchar(8);
-				value5	varchar(8);
+				value5	varchar(9);
 			}	[2];
 			select	bool[2];
 		};
@@ -41,11 +44,19 @@ M96	{
 		};
 		MSG1	{
 		        style   varchar(20);
-			value	varchar(62);
+			value	varchar(70);
+		};
+		MSG1PLUS	{
+		        style   varchar(20);
+			value	varchar(70);
 		};
 		MSG2	{
 		        style   varchar(20);
-			value	varchar(62);
+			value	varchar(70);
+		};
+		MSG2PLUS	{
+		        style   varchar(20);
+			value	varchar(70);
 		};
 		pandatimer1     {
 			duration        int;

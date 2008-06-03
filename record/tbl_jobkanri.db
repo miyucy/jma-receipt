@@ -149,3 +149,9 @@ path	all02	{
  		;
 	};
 };
+path	abort	{
+	DBSELECT	{
+		error
+ 		;
+	};
+};
