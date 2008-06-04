@@ -420,6 +420,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  TEKIOUBYOMEI-REC
            MOVE    TEKIOUBYOMEIWK-REC(2:)
                                        TO  TEKIOUBYOMEI-REC
+           MOVE    LNK-MNTYMD          TO  TEKBYO-CREYMD
+                                           TEKBYO-UPYMD
+           MOVE    LNK-MNTHMS          TO  TEKBYO-UPHMS
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE
@@ -442,6 +445,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  TEKIOUBYOMEI-REC
            MOVE    TEKIOUBYOMEIWK-REC(2:)
                                        TO  TEKIOUBYOMEI-REC
+           MOVE    LNK-MNTYMD          TO  TEKBYO-UPYMD
+           MOVE    LNK-MNTHMS          TO  TEKBYO-UPHMS
            MOVE    TEKIOUBYOMEI-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_tekioubyomei"  TO  MCP-TABLE

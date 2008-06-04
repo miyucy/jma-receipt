@@ -493,6 +493,9 @@
       *    連番号（画面表示）
            MOVE    ZERO                TO  CHK-RENNUM
       *
+           MOVE    LNK-MNTYMD          TO  CHK-CREYMD
+                                           CHK-UPYMD
+           MOVE    LNK-MNTHMS          TO  CHK-UPHMS
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
@@ -512,6 +515,8 @@
       *****************************************************************
        20102-CHK-UPD-SEC           SECTION.
       *
+           MOVE    LNK-MNTYMD          TO  CHK-UPYMD
+           MOVE    LNK-MNTHMS          TO  CHK-UPHMS
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE

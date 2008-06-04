@@ -474,6 +474,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSWK-EDYUKYMD      TO  SYS-EDYUKYMD
            MOVE    SYSWK-REC(38:)      TO  SYSKANRI-REC(31:)
       *
+           MOVE    LNK-MNTYMD          TO  SYS-CREYMD
+                                           SYS-UPYMD
+           MOVE    LNK-MNTHMS          TO  SYS-UPHMS
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -495,6 +498,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        20102-SYSKANRI-UPD-SEC           SECTION.
       *
+           MOVE    LNK-MNTYMD          TO  SYS-UPYMD
+           MOVE    LNK-MNTHMS          TO  SYS-UPHMS
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

@@ -482,6 +482,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    HKNWK-PAYKBN        TO  HKN-PAYKBN
            MOVE    HKNWK-TEKEDYMD      TO  HKN-TEKEDYMD
            MOVE    HKNWK-REC(55:)      TO  HKNNUM-REC(24:)
+           MOVE    LNK-MNTYMD          TO  HKN-CREYMD
+                                           HKN-UPYMD
+           MOVE    LNK-MNTHMS          TO  HKN-UPHMS
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
@@ -503,6 +506,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        20102-HKNNUM-UPD-SEC           SECTION.
       *
+           MOVE    LNK-MNTYMD          TO  HKN-UPYMD
+           MOVE    LNK-MNTHMS          TO  HKN-UPHMS
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE

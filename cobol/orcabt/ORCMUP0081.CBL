@@ -375,6 +375,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  SSKIJYO-REC
            MOVE    IN-REC(2:)          TO  SSKIJYO-REC
       *
+           MOVE    LNK-MNTYMD          TO  SSKIJYO-CREYMD
+                                           SSKIJYO-UPYMD
+           MOVE    LNK-MNTHMS          TO  SSKIJYO-UPHMS
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_sskijyo"       TO  MCP-TABLE
@@ -438,6 +441,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  SSKIJYO-REC
            MOVE    IN-REC(2:)          TO  SSKIJYO-REC
       *
+           MOVE    LNK-MNTYMD          TO  SSKIJYO-UPYMD
+           MOVE    LNK-MNTHMS          TO  SSKIJYO-UPHMS
            MOVE    SSKIJYO-REC         TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_sskijyo"       TO  MCP-TABLE

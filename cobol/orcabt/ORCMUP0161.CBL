@@ -424,9 +424,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM 220-PRGOPTION-EDIT-SEC
       *
-           MOVE    WRK-SYMD            TO  PRGOPTION-CREYMD
-           MOVE    SPACE               TO  PRGOPTION-UPYMD
-           MOVE    SYS-TIME(1:6)       TO  PRGOPTION-UPHMS
+           MOVE    LNK-MNTYMD          TO  PRGOPTION-CREYMD
+                                           PRGOPTION-UPYMD
+           MOVE    LNK-MNTHMS          TO  PRGOPTION-UPHMS
            MOVE    PRGOPTION-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_prgoption"     TO  MCP-TABLE
@@ -548,8 +548,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    WRK-OPTION          TO  PRGOPTION-OPTION
       *
-           MOVE    WRK-SYMD            TO  PRGOPTION-UPYMD
-           MOVE    SYS-TIME(1:6)       TO  PRGOPTION-UPHMS
+           MOVE    LNK-MNTYMD          TO  PRGOPTION-UPYMD
+           MOVE    LNK-MNTHMS          TO  PRGOPTION-UPHMS
       *
            .
        220-PRGOPTION-EDIT-EXT.

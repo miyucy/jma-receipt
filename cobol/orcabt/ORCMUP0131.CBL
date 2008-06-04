@@ -432,8 +432,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  HKTSANTEI-REC
            MOVE    HKTSANTEIWK-REC(2:)
                                        TO  HKTSANTEI-REC
-           MOVE    WRK-SYMD            TO  HKTSANTEI-CREYMD
-           MOVE    SYS-TIME(1:6)       TO  HKTSANTEI-UPHMS
+           MOVE    LNK-MNTYMD          TO  HKTSANTEI-CREYMD
+                                           HKTSANTEI-UPYMD
+           MOVE    LNK-MNTHMS          TO  HKTSANTEI-UPHMS
            MOVE    HKTSANTEI-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_hktsantei"     TO  MCP-TABLE
@@ -456,8 +457,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  HKTSANTEI-REC
            MOVE    HKTSANTEIWK-REC(2:)
                                        TO  HKTSANTEI-REC
-           MOVE    WRK-SYMD            TO  HKTSANTEI-UPYMD
-           MOVE    SYS-TIME(1:6)       TO  HKTSANTEI-UPHMS
+           MOVE    LNK-MNTYMD          TO  HKTSANTEI-UPYMD
+           MOVE    LNK-MNTHMS          TO  HKTSANTEI-UPHMS
            MOVE    HKTSANTEI-REC       TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_hktsantei"     TO  MCP-TABLE

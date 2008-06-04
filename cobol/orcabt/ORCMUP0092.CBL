@@ -340,6 +340,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            INITIALIZE                      HKNJA-REC
 grpsys     MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    IN-REC(26:)         TO  HKNJA-REC(3:)
+           MOVE    LNK-MNTYMD          TO  HKNJA-CREYMD
+                                           HKNJA-UPYMD
+           MOVE    LNK-MNTHMS          TO  HKNJA-UPHMS
            MOVE    HKNJA-REC           TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_hknjainf"      TO  MCP-TABLE
@@ -381,6 +384,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM 2099-HKNJA-SET-SEC
       *
+           MOVE    LNK-MNTYMD          TO  HKNJA-UPYMD
+           MOVE    LNK-MNTHMS          TO  HKNJA-UPHMS
            MOVE    HKNJA-REC           TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_hknjainf"      TO  MCP-TABLE

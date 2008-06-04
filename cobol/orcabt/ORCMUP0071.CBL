@@ -369,6 +369,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            INITIALIZE                  INTERACT-REC
            MOVE    IN-REC(2:)          TO  INTERACT-REC
+           MOVE    LNK-MNTYMD          TO  INTERACT-CREYMD
+                                           INTERACT-UPYMD
+           MOVE    LNK-MNTHMS          TO  INTERACT-UPHMS
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_interact"      TO  MCP-TABLE
@@ -432,6 +435,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            INITIALIZE                  INTERACT-REC
            MOVE    IN-REC(2:)          TO  INTERACT-REC
+           MOVE    LNK-MNTYMD          TO  INTERACT-UPYMD
+           MOVE    LNK-MNTHMS          TO  INTERACT-UPHMS
            MOVE    INTERACT-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_interact"      TO  MCP-TABLE

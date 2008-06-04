@@ -433,8 +433,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            INITIALIZE                  HKTSRYCD-REC
            MOVE    HKTSRYCDWK-REC(2:)  TO  HKTSRYCD-REC
-           MOVE    WRK-SYMD            TO  HKTSRYCD-CREYMD
-           MOVE    SYS-TIME(1:6)       TO  HKTSRYCD-UPHMS
+           MOVE    LNK-MNTYMD          TO  HKTSRYCD-CREYMD
+                                           HKTSRYCD-UPYMD
+           MOVE    LNK-MNTHMS          TO  HKTSRYCD-UPHMS
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
@@ -457,8 +458,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  HKTSRYCD-REC
            MOVE    HKTSRYCDWK-REC(2:)
                                        TO  HKTSRYCD-REC
-           MOVE    WRK-SYMD            TO  HKTSRYCD-UPYMD
-           MOVE    SYS-TIME(1:6)       TO  HKTSRYCD-UPHMS
+           MOVE    LNK-MNTYMD          TO  HKTSRYCD-UPYMD
+           MOVE    LNK-MNTHMS          TO  HKTSRYCD-UPHMS
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_hktsrycd"      TO  MCP-TABLE

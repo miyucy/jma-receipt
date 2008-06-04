@@ -482,6 +482,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
            MOVE    SRYCDCHGWK-REC(2:)
                                        TO  SRYCDCHG-REC(3:)
       *
+           MOVE    LNK-MNTYMD          TO  CHG-CREYMD
+                                           CHG-UPYMD
+           MOVE    LNK-MNTHMS          TO  CHG-UPHMS
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_srycdchg"      TO  MCP-TABLE

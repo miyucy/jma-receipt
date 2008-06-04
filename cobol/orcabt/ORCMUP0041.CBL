@@ -520,6 +520,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    CHKWK-RENNUM        TO  CHK-RENNUM
            MOVE    CHKWK-REC(39:)      TO  CHK-REC(32:)
       *
+           MOVE    LNK-MNTYMD          TO  CHK-CREYMD
+                                           CHK-UPYMD
+           MOVE    LNK-MNTHMS          TO  CHK-UPHMS
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE
@@ -541,6 +544,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        20102-CHK-UPD-SEC           SECTION.
       *
+           MOVE    LNK-MNTYMD          TO  CHK-UPYMD
+           MOVE    LNK-MNTHMS          TO  CHK-UPHMS
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_chk"           TO  MCP-TABLE

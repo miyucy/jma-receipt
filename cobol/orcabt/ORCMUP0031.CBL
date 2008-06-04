@@ -417,6 +417,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  BYOMEI-REC
            MOVE    BYOMEIWK-REC(2:)    TO  BYOMEI-REC
       *
+           MOVE    LNK-MNTYMD          TO  BYO-CREYMD
+                                           BYO-UPYMD
+           MOVE    LNK-MNTHMS          TO  BYO-UPHMS
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_byomei"        TO  MCP-TABLE
@@ -439,6 +442,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  BYOMEI-REC
            MOVE    BYOMEIWK-REC(2:)    TO  BYOMEI-REC
       *
+           MOVE    LNK-MNTYMD          TO  BYO-UPYMD
+           MOVE    LNK-MNTHMS          TO  BYO-UPHMS
            MOVE    BYOMEI-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_byomei"        TO  MCP-TABLE

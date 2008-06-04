@@ -20,5 +20,7 @@
            03  LNK-UPFILE              PIC X(100).
            03  LNK-DBRVERSION          PIC X(21).
            03  LNK-HOSPNUM             PIC 9(02).
+           03  LNK-MNTYMD              PIC X(08).
+           03  LNK-MNTHMS              PIC X(06).
            03  LNK-COUNT               PIC 9(06).
            03  LNK-RC                  PIC 9(02).

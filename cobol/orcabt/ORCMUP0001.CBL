@@ -523,6 +523,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNSWK-YUKOEDYMD     TO  TNS-YUKOEDYMD
            MOVE    TNSWK-TENSU-REC(35:)
                                        TO  TNS-TENSU-REC(28:)
+           MOVE    LNK-MNTYMD          TO  TNS-CREYMD
+                                           TNS-UPYMD
+           MOVE    LNK-MNTHMS          TO  TNS-UPHMS
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
@@ -544,6 +547,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        20102-TENSU-UPD-SEC           SECTION.
       *
+           MOVE    LNK-MNTYMD          TO  TNS-UPYMD
+           MOVE    LNK-MNTHMS          TO  TNS-UPHMS
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
@@ -597,6 +602,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    TNSP-KEY            TO  TNSP-UP-KEY
                MOVE    TNS-KEY             TO  TNSP-KEY
       *
+               MOVE    LNK-MNTYMD          TO  TNSP-UPYMD
+               MOVE    LNK-MNTHMS          TO  TNSP-UPHMS
                MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_tensuplus"     TO  MCP-TABLE
@@ -647,6 +654,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    WRK-TENSUPLUS-REC   TO  TENSUPLUS-REC
            MOVE    TNS-KEY             TO  TNSP-KEY
       *
+           MOVE    LNK-MNTYMD          TO  TNSP-CREYMD
+                                           TNSP-UPYMD
+           MOVE    LNK-MNTHMS          TO  TNSP-UPHMS
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE

@@ -369,6 +369,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  KENSASORT-REC
            MOVE    IN-REC(2:)          TO  KENSASORT-REC
       *
+           MOVE    LNK-MNTYMD          TO  KENSASORT-CREYMD
+                                           KENSASORT-UPYMD
+           MOVE    LNK-MNTHMS          TO  KENSASORT-UPHMS
            MOVE    KENSASORT-REC       TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_kensasort"     TO  MCP-TABLE
@@ -439,6 +442,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  KENSASORT-REC
            MOVE    IN-REC(2:)          TO  KENSASORT-REC
       *
+           MOVE    LNK-MNTYMD          TO  KENSASORT-UPYMD
+           MOVE    LNK-MNTHMS          TO  KENSASORT-UPHMS
            MOVE    KENSASORT-REC       TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_kensasort"     TO  MCP-TABLE

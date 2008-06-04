@@ -131,6 +131,9 @@ grpsys     COPY    "COMMON-SPA".
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -213,6 +216,8 @@ grpsys     COPY    "COMMON-SPA".
                                        SPA-AREA
            END-IF
       *
+           PERFORM 800-MCNDATE-SEC
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -264,6 +269,8 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    WRK-UPFILE2         TO  LNK-UPFILE
            MOVE    PARA-DBRVERVION     TO  LNK-DBRVERSION
            MOVE    PARA-HOSPNUM        TO  LNK-HOSPNUM
+           MOVE    SMCNDATE-YMD        TO  LNK-MNTYMD
+           MOVE    SMCNDATE-HMS        TO  LNK-MNTHMS
            MOVE    PARA-COUNT          TO  LNK-COUNT
       *
       *    更新プログラム実行
@@ -289,6 +296,8 @@ grpsys     COPY    "COMMON-SPA".
       *    マスタ管理マスタ更新
            IF      FLG-MSTKANRI        =   ZERO
                MOVE    PARA-DBRVERVION TO  MSTKANRI-DBRVERSION1
+               MOVE    SMCNDATE-YMD    TO  MSTKANRI-UPYMD
+               MOVE    SMCNDATE-HMS    TO  MSTKANRI-UPHMS
                MOVE    MSTKANRI-REC    TO  MCPDATA-REC
                MOVE    "tbl_mstkanri"  TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
@@ -419,6 +428,17 @@ grpsys         PERFORM 910-DBUPDATE-SEC
        300-END-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
+           EXIT.
       *****************************************************************
       *    ジョブ管理サブ
       *****************************************************************

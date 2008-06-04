@@ -428,6 +428,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                        TO  GENERICNAME-REC
            MOVE    WRK-SYMD            TO  GENERIC-CREYMD
            MOVE    SYS-TIME(1:6)       TO  GENERIC-UPHMS
+           MOVE    LNK-MNTYMD          TO  GENERIC-CREYMD
+                                           GENERIC-UPYMD
+           MOVE    LNK-MNTHMS          TO  GENERIC-UPHMS
            MOVE    GENERICNAME-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_genericname"   TO  MCP-TABLE
@@ -450,8 +453,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            INITIALIZE                  GENERICNAME-REC
            MOVE    GENERICNAMEWK-REC(2:)
                                        TO  GENERICNAME-REC
-           MOVE    WRK-SYMD            TO  GENERIC-UPYMD
-           MOVE    SYS-TIME(1:6)       TO  GENERIC-UPHMS
+           MOVE    LNK-MNTYMD          TO  GENERIC-UPYMD
+           MOVE    LNK-MNTHMS          TO  GENERIC-UPHMS
            MOVE    GENERICNAME-REC     TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_genericname"   TO  MCP-TABLE

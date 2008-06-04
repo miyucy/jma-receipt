@@ -445,8 +445,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM 220-TOUKEIMEMO-EDIT-SEC
       *
-           MOVE    WRK-SYMD            TO  TKIMEMO-CREYMD
-           MOVE    SYS-TIME(1:6)       TO  TKIMEMO-UPHMS
+           MOVE    LNK-MNTYMD          TO  TKIMEMO-CREYMD
+                                           TKIMEMO-UPYMD
+           MOVE    LNK-MNTHMS          TO  TKIMEMO-UPHMS
            MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
@@ -468,6 +469,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM 220-TOUKEIMEMO-EDIT-SEC
       *
+           MOVE    LNK-MNTYMD          TO  TKIMEMO-UPYMD
+           MOVE    LNK-MNTHMS          TO  TKIMEMO-UPHMS
            MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
@@ -553,9 +556,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-PERFORM
       *
            MOVE    WRK-MEMO            TO  TKIMEMO-MEMO
-      *
-           MOVE    WRK-SYMD            TO  TKIMEMO-UPYMD
-           MOVE    SYS-TIME(1:6)       TO  TKIMEMO-UPHMS
       *
            .
        220-TOUKEIMEMO-EDIT-EXT.
