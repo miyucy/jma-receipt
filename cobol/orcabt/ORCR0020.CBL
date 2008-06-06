@@ -188,8 +188,8 @@
       *                                     ¸øÈñ¥«¥¦¥ó¥È¤·¤Ê¤¤
       *  04.02.06    NACL-Æ£¸¶    08/04/25  ÊÝ¸±ÍúÎò¤Îµ­ºÜÊÑ¹¹
       *  04.02.07    NACL-ÌçÏÆ    08/05/22  ºßÁí¿ÇÈ½Äê¾ò·ï½¤Àµ
-      *  04.02.08    NACL-Æ£¸¶    08/05/07  ¸øÈñ£³¼ï¡¢£´¼ï¤ÎÊ»ÍÑ¤Î
-      *                                     ¥ì¥»¥×¥È¼ïÊÌ¤ÎÄÉ²Ã
+      *
+      *  04.03.01    NACL-Æ£¸¶    08/05/07  ¸øÈñ£´¼ï¤Þ¤Ç¤ÎÊ»ÍÑ¤Îµ­Ï¿ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1842,6 +1842,10 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                MOVE    RECE01-SYUGAKUKBN
                                        TO  LNK-SYUBETUGET-SYUGAKUKBN
                MOVE    RECE01-PREFNUM  TO  LNK-SYUBETUGET-PREFNUM
+               MOVE    RECE02-RJNHKNNUM
+                                       TO  LNK-SYUBETUGET-RJNHKNNUM
+               MOVE    RECE02-RJNPAYKBN
+                                       TO  LNK-SYUBETUGET-RJNPAYKBN
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX     >       4
                    MOVE    RECE02-KOHNUM (IDX)     TO

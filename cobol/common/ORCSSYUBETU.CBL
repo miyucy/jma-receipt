@@ -66,6 +66,8 @@
       *                                     平成２０年４月以降は公費付加
       *                                     情報より記載判定はしない
       *  04.02.04    NACL-藤原    08/04/23  後期高齢者の船員保険を本人とする
+      *
+      *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1931,60 +1933,56 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
            END-IF
       *
       *    種別設定
-      *****IF      LNK-SYUBETU-SRYYM   >=  WRK-CONS-SRYYM-200804
-               INITIALIZE                  ORCSSYUBETUGETAREA
-               MOVE    1               TO  LNK-SYUBETUGET-SYOFLG
-               MOVE    LNK-SYUBETU-NYUGAIKBN
-                                       TO  LNK-SYUBETUGET-NYUGAIKBN
-               MOVE    LNK-SYUBETU-SRYYM
-                                       TO  LNK-SYUBETUGET-SRYYM
-               MOVE    WRK-RECE61-HKNNUM
-                                       TO  LNK-SYUBETUGET-HKNNUM
-               MOVE    WRK-RECE61-HKN-HONKZKKBN
-                                       TO  LNK-SYUBETUGET-HKN-HONKZKKBN
-               MOVE    WRK-RECE61-HOJOKBN
-                                       TO  LNK-SYUBETUGET-HKN-HOJOKBN
-               MOVE    WRK-RECE61-HKNKOHSBTKBN
-                                       TO
-                                       LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
-               MOVE    WRK-NENREI      TO  LNK-SYUBETUGET-AGE
-               MOVE    AGECHK-SYUGAKUKBN
-                                       TO  LNK-SYUBETUGET-SYUGAKUKBN
-               MOVE    LNK-SYUBETU-PREFNUM
-                                       TO  LNK-SYUBETUGET-PREFNUM
-               IF      WRK-RECE61-KOHID >   ZERO
-                   MOVE    "027"       TO  LNK-SYUBETUGET-RJNHKNNUM
-                   MOVE    WRK-RECE61-RJNPAYKBN
-                                       TO  LNK-SYUBETUGET-RJNPAYKBN
-               END-IF
-               MOVE    ZERO            TO  IDYY
-               PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX     >       4
-                   IF    ( WRK-RECE61-KOHHKNNUM-O  (IDX)
-                                               NOT =   SPACE )
-                   AND   ( WRK-RECE61-KOHHKNNUM-O  (IDX)
-                                               NOT =   "027" )
-                       ADD     1                               TO  IDYY
-                       MOVE    WRK-RECE61-KOHHKNNUM-O  (IDX)   TO
+           INITIALIZE                  ORCSSYUBETUGETAREA
+           MOVE    1               TO  LNK-SYUBETUGET-SYOFLG
+           MOVE    LNK-SYUBETU-NYUGAIKBN
+                                   TO  LNK-SYUBETUGET-NYUGAIKBN
+           MOVE    LNK-SYUBETU-SRYYM
+                                   TO  LNK-SYUBETUGET-SRYYM
+           MOVE    WRK-RECE61-HKNNUM
+                                   TO  LNK-SYUBETUGET-HKNNUM
+           MOVE    WRK-RECE61-HKN-HONKZKKBN
+                                   TO  LNK-SYUBETUGET-HKN-HONKZKKBN
+           MOVE    WRK-RECE61-HOJOKBN
+                                   TO  LNK-SYUBETUGET-HKN-HOJOKBN
+           MOVE    WRK-RECE61-HKNKOHSBTKBN
+                                   TO  LNK-SYUBETUGET-HKN-HKNKOHSBTKBN
+           MOVE    WRK-NENREI      TO  LNK-SYUBETUGET-AGE
+           MOVE    AGECHK-SYUGAKUKBN
+                                   TO  LNK-SYUBETUGET-SYUGAKUKBN
+           MOVE    LNK-SYUBETU-PREFNUM
+                                   TO  LNK-SYUBETUGET-PREFNUM
+           IF      WRK-RECE61-KOHID >   ZERO
+               MOVE    "027"       TO  LNK-SYUBETUGET-RJNHKNNUM
+               MOVE    WRK-RECE61-RJNPAYKBN
+                                   TO  LNK-SYUBETUGET-RJNPAYKBN
+           END-IF
+           MOVE    ZERO            TO  IDYY
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       4
+               IF    ( WRK-RECE61-KOHHKNNUM-O  (IDX)
+                                           NOT =   SPACE )
+               AND   ( WRK-RECE61-KOHHKNNUM-O  (IDX)
+                                           NOT =   "027" )
+                   ADD     1                               TO  IDYY
+                   MOVE    WRK-RECE61-KOHHKNNUM-O  (IDX)   TO
                                        LNK-SYUBETUGET-KOHNUM     (IDYY)
-                       MOVE    WRK-RECE61-KOHHBTNUM (IDX)      TO
+                   MOVE    WRK-RECE61-KOHHBTNUM (IDX)      TO
                                        LNK-SYUBETUGET-KOHHBTNUM  (IDYY)
-                       IF      WRK-RECE61-RECESKYKBN-O (IDX) 
+                   IF      WRK-RECE61-RECESKYKBN-O (IDX) 
                                        =   SPACE
-                           MOVE    "1"         TO
+                       MOVE    "1"         TO
                                        LNK-SYUBETUGET-RECESKYKBN (IDYY)
-                       END-IF
-                   END-IF     
-               END-PERFORM
-               CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
+                   END-IF
+               END-IF     
+           END-PERFORM
+           CALL    "ORCSSYUBETUGET"    USING   ORCSSYUBETUGETAREA
       *
-               MOVE    LNK-SYUBETUGET-RECESYUBETU
+           MOVE    LNK-SYUBETUGET-RECESYUBETU
                                        TO  LNK-SYUBETU-RECESYUBETU(IDZZ)
       *??
       *         DISPLAY "SYUBETU=" LNK-SYUBETU-RECESYUBETU(IDZZ)
       *??
-               GO  TO  30011-RECESYUBETU-SET-EXT
-      *****END-IF    
       *         
            .
         30011-RECESYUBETU-SET-EXT.

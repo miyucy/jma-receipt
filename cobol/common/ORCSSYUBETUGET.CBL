@@ -27,8 +27,8 @@
       *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
       * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
       *  04.02.01    NACL-∆£∏∂    08/03/25   ø¿Æ£≤£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  04.02.02    NACL-∆£∏∂    08/05/07  ∏¯»Ò£≥ºÔ°¢£¥ºÔ§Œ ªÕ—§Œ
-      *                                     •Ï•ª•◊•»ºÔ Ã§Œƒ…≤√
+      *
+      *  04.03.01    NACL-∆£∏∂    08/05/07  ∏¯»Ò£¥ºÔ§ﬁ§«§Œ ªÕ—§Œµ≠œø¬–±˛
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1575,11 +1575,23 @@
                    MOVE    1456     TO  LNK-SYUBETUGET-RECESYUBETU
              END-EVALUATE
            END-IF
+      *
+           MOVE    LNK-SYUBETUGET-RECESYUBETU
+                                        TO  LNK-SYUBETUGET-RECESYUBETU-Y 
+      *     ø¿Æ£≤£∞«Ø£¥∑Ó∞ πﬂ∏¯»Ò£≥ ª°¶£¥ ª§Œ§»§≠
+           IF      LNK-SYUBETUGET-SRYYM    >   WRK-CONS-SRYYM-200803
+               EVALUATE    LNK-SYUBETUGET-RECESYUBETU-Y (3:1)
+                   WHEN    "4"
+                   WHEN    "5"
+                       MOVE    "3"              TO
+                                      LNK-SYUBETUGET-RECESYUBETU-Y (3:1)
+               END-EVALUATE
+           END-IF
       *     
       *    ∆√ ÃŒ≈Õ‹»Ò§Œ§»§≠§Œ•Ï•ª•◊•»ºÔ Ã§Ú ‘Ω∏
            IF      LNK-SYUBETUGET-HKNNUM        =   "068"   OR  "069"
                                                 OR  "040"
-               MOVE    LNK-SYUBETUGET-RECESYUBETU
+               MOVE    LNK-SYUBETUGET-RECESYUBETU-Y
                                         TO  LNK-SYUBETUGET-RECESYUBETU-X 
                MOVE    6666             TO  LNK-SYUBETUGET-RECESYUBETU    
            END-IF
@@ -2043,6 +2055,7 @@
       *??
            DISPLAY "SYUBETU   : " LNK-SYUBETUGET-RECESYUBETU
            DISPLAY "SYUBETU-X : " LNK-SYUBETUGET-RECESYUBETU-X
+           DISPLAY "SYUBETU-Y : " LNK-SYUBETUGET-RECESYUBETU-Y
       *??          
            .
        300-END-EXT.
