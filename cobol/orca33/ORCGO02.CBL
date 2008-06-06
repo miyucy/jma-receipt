@@ -253,7 +253,7 @@
            03   WRK-JOBHMS             PIC X(06).
       *
       *    スパ領域（ワーク）
-           COPY    "COMMON-SPA"    REPLACING  //SPA-//
+           COPY    "COMMON-SPA     REPLACING  //SPA-//
                                    BY         //WRK-SPA-//.
       *
        01  WRK-SHELL-NAME.
@@ -1052,7 +1052,6 @@
                                            TO  WRK-SYMD
                PERFORM 4150-PTNYUINRRK-SEL-SEC
                IF    ( FLG-PTNYUINRRK  =   ZERO )
-                AND  ( PTNYUINRRK-TEIKI-SEIKYUKBN     =   "1" OR "2" )
                    MOVE    WRK-KIKAN-SKYSTYMD (IDX1)  TO  WRK-STYMD
                    MOVE    WRK-KIKAN-SKYEDYMD (IDX1)  TO  WRK-EDYMD
                    IF    ( WRK-STYMD   <   CONST-H180401 )
@@ -1873,7 +1872,12 @@
            MOVE    2                   TO  TEIKIERR-SYOKBN1
       *
            MOVE    SPACE               TO  SHELLTBL
-           MOVE    "teiki1.sh"         TO  SHELLTBL-NAME
+           MOVE    "teiki1.sh"         TO  WRK-SHELL-SHELL
+      *    ファイルデイレクトリ位置指定
+           INITIALIZE              ORCSMKPASSAREA
+           MOVE    WRK-SHELL-NAME      TO  MKPASS-IN-01
+           CALL    "ORCSMKPASS"    USING   ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01        TO  SHELLTBL-NAME
       *
            MOVE    ZERO                TO  WRK-SHELL-SRYYM
            MOVE    SPA-TERMID          TO  WRK-SHELL-TERMID
@@ -1917,7 +1921,7 @@
                    MOVE    SHELLTBL            TO  MCPDATA-REC
                    MOVE    "SHELL"             TO  MCP-FUNC
                    MOVE    "shell"             TO  MCP-TABLE
-                   MOVE    "monthly"           TO  MCP-PATHNAME
+                   MOVE    "shell"             TO  MCP-PATHNAME
                    CALL    "ORCDBMAIN"         USING
                                                MCPAREA
                                                MCPDATA-REC
@@ -2420,7 +2424,6 @@
       * 
            MOVE    SPACE               TO  O02
       *
-           INITIALIZE                      O02
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1                >   SPA-GMN-MAX
                IF    ( SPA-GMN-TRENNUM    (IDX1)   NOT =   ZERO )
@@ -2633,7 +2636,6 @@
            END-EVALUATE
       *
            MOVE    SPACE                TO  OID1
-           INITIALIZE                       OID1
            MOVE    SPA-OIDCD            TO  OID1-ID1CODE
            MOVE    WRK-OIDMSG           TO  OID1-ID1MSG
            MOVE    "B12"                TO  MCP-WIDGET
@@ -2666,7 +2668,6 @@
            END-EVALUATE
       *
            MOVE    SPACE               TO  OID2
-           INITIALIZE                      OID2
            MOVE    SPA-OIDCD2          TO  OID2-ID1CODE
            MOVE    WRK-OIDMSG          TO  OID2-ID1MSG
            MOVE    "B12"               TO  MCP-WIDGET
