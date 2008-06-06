@@ -5953,7 +5953,8 @@
       *    Ï·¿Í¡¦°ìÈÌÈ½Äê
       *    £¶£µºÐ°Ê¾å¤ÇÏ·¿Í¸øÈñ¤Î¤¢¤ë¾ì¹ç¡¢
            IF     (SPA-ERRCD           =   SPACE  )  AND
-                   SPA-NAI-ROUJIN2     =   1
+                  (SPA-NAI-ROUJIN2     =   1      )
+             AND  (WRK-HKNCOMBI    NOT =   "9999" )
                INITIALIZE                  ORCSAGECHKAREA
                MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
                MOVE    SPA-PTID            TO  AGECHK-PTID
