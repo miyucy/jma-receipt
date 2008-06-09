@@ -21,7 +21,7 @@ fi
 HOSPNUM=$1
 ERRFILE=$4
 JOBID=$5
-SHELLID=`printf "%-8s" $6`
+SHELLID=$(printf "%-8s" $6)
 
 HOME=/var/lib/jma-receipt/master
 MSTDIR=lics-$(date +%Y%m%d)
@@ -29,10 +29,11 @@ WGETRCFL=/tmp/.wgetrc.license-master
 LIUPWD=$3
 
 KANRIFILE=ORCADBR-LI.DAT
-UPDKANRIFILE=info/$KANRIFILE
+UPDKANRIFILE=info/${KANRIFILE}
 
-UPDFILE=$HOME/$HOSPNUM/$MSTDIR/ORCADBR.OUT
+UPDFILE=${HOME}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
 LEN=100
+PRFFILE=/tmp/MSTMLI.PRF.$$
 
 function orcawget () {
 #受信ファイル削除
@@ -41,17 +42,17 @@ function orcawget () {
 #	echo "rm start" $1
 		rm $1;
 	fi
-	echo "http_user="${LIUPWD:0:5} > $WGETRCFL
-	echo "http_passwd="${LIUPWD:0:5} >> $WGETRCFL
-	export WGETRC=$WGETRCFL
-	wget -q $WGETOPTION $DBLICENSEPATH/$1
+	echo "http_user="${LIUPWD:0:5} > ${WGETRCFL}
+	echo "http_passwd="${LIUPWD:0:5} >> ${WGETRCFL}
+	export WGETRC=${WGETRCFL}
+	wget -q ${WGETOPTION} ${DBLICENSEPATH}/$1
 #接続確認
 	if [ $? -eq 0 ]	;	then 
 #	echo "wget end OK"
-		rm  $WGETRCFL
+		rm  ${WGETRCFL}
 		return 0;
 	else
-		rm  $WGETRCFL
+		rm  ${WGETRCFL}
 		return 1;
 	fi
 #ファイルサイズチェック
@@ -64,16 +65,16 @@ function orcawget () {
 }
 
 function orcatar () {
-	TARFL=`echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ' `
-	TAR=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[i-1] arr[i]} ' `
-	LOCALFL=`echo $TARFL | awk '{i=split($0,arr,"."); print arr[1]".dat"} ' ` 
-	echo $LOCALFL "LOCALFL"
-	echo $TARFL "TARFL"
+	TARFL=$(echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ')
+	TAR=$(echo ${TARFL} | awk '{i=split($0,arr,"."); print arr[i-1] arr[i]} ' )
+	LOCALFL=$(echo ${TARFL} | awk '{i=split($0,arr,"."); print arr[1]".dat"} ' ) 
+	echo ${LOCALFL} "LOCALFL"
+	echo ${TARFL} "TARFL"
 #受信ファイル削除
 	echo $1
-	if [	$TAR = "targz" ]; then
-		echo $TAR "TAR"
-		tar zxf $TARFL
+	if [	${TAR} = "targz" ]; then
+		echo ${TAR} "TAR"
+		tar zxf ${TARFL}
 		#tar確認
 		if [ $? -eq 0 ]; then 
 			echo "tar end OK"
@@ -86,7 +87,7 @@ function orcatar () {
  		return 0;
  	fi
 #ファイルサイズチェック
-	if [	-s	$LOCALFL	]
+	if [	-s	${LOCALFL}	]
 	then
 		return 0;
 	else
@@ -94,180 +95,191 @@ function orcatar () {
 	fi
 }
 
-function rmmsthomedir () {
-	if	[ -d $HOME/$HOSPNUM/$MSTDIR ];	then 
-		rm -r $HOME/$HOSPNUM/$MSTDIR
+function cleanup () {
+	if	[ -d ${HOME}/${HOSPNUM}/${MSTDIR} ];	then 
+		rm -r ${HOME}/${HOSPNUM}/${MSTDIR}
+	fi
+
+	if [	-e ${PRFFILE}	];	then 
+		rm ${PRFFILE}
 	fi
 }
 
 
 #オフラインメンテナンスであるかチェック
-OFFLINEPATH=`echo $DBLICENSEPATH | sed -ne 's#file://##p'`
-if [ -z $OFFLINEPATH ]; then
+OFFLINEPATH=$(echo ${DBLICENSEPATH} | sed -ne 's#file://##p')
+if [ -z ${OFFLINEPATH} ]; then
     OFFLINE="online"
 else
     OFFLINE="offline"
 fi
 
-echo $MSTDIR
-echo $UPDFILE
+echo ${MSTDIR}
+echo ${UPDFILE}
 
-if [	-s $ERRFILE	];	then 
-  rm $ERRFILE
+if [	-e ${ERRFILE}	];	then 
+  rm ${ERRFILE}
 fi
 
-if ! [	-d	$HOME/$HOSPNUM	];	then 
-	cd $HOME
-	mkdir $HOSPNUM
+if [	-e ${PRFFILE}	];	then 
+  rm ${PRFFILE}
 fi
-if ! [	-d	$HOME/$HOSPNUM/$MSTDIR	];	then 
-	cd $HOME/$HOSPNUM
-	mkdir $MSTDIR
-fi
-if ! [	-d	$HOME/$HOSPNUM/orca-mstlog	];	then 
-	cd $HOME/$HOSPNUM
-	mkdir orca-mstlog 
-fi
-cd $HOME/$HOSPNUM/$MSTDIR
 
-$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID},$HOSPNUM,$ERRFILE,ＤＢレコード管理情報を取得しています,"
-if [  -s $ERRFILE ]	;	then 
-	rmmsthomedir
+
+if ! [	-d	${HOME}/${HOSPNUM}/${MSTDIR}	];	then 
+	mkdir -p ${HOME}/${HOSPNUM}/${MSTDIR}
+fi
+if ! [	-d	${HOME}/${HOSPNUM}/orca-mstlog	];	then 
+	mkdir -p ${HOME}/${HOSPNUM}/orca-mstlog
+fi
+
+if [ $(pgrep -fo "$0 $HOSPNUM") -ne $$ ]; then
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0010,${HOSPNUM},${ERRFILE},,マスタ更新処理は既に実行中です"
+	cleanup
+	exit 99
+fi
+
+
+cd ${HOME}/${HOSPNUM}/${MSTDIR}
+
+${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID},${HOSPNUM},${ERRFILE},ＤＢレコード管理情報を取得しています,"
+if [  -e ${ERRFILE} ]	;	then 
+	cleanup
 	exit 99
 fi
 
 rm -f *.*
-if  [ $OFFLINE = "offline" ]; then
-    if  [ -e $OFFLINEPATH/$UPDKANRIFILE ]; then
-	cp $OFFLINEPATH/$UPDKANRIFILE ./
+if  [ ${OFFLINE} = "offline" ]; then
+    if  [ -e ${OFFLINEPATH}/${UPDKANRIFILE} ]; then
+	cp ${OFFLINEPATH}/${UPDKANRIFILE} ./
 	echo "DBレコード管理情報を複写しました"
     else
 	echo "DBレコード管理情報がありませんでした"
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0001,$HOSPNUM,$ERRFILE,,ＤＢレコード管理情報がありませんでした"
-	rmmsthomedir
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0001,${HOSPNUM},${ERRFILE},,ＤＢレコード管理情報がありませんでした"
+	cleanup
 	exit 99
     fi
 else
 #センタからのDB構造体ダウンロード
-    if	orcawget $UPDKANRIFILE ;	then
+    if	orcawget ${UPDKANRIFILE} ;	then
 	echo "センタからのDBレコード管理情報のダウンロードが終了しました"
     else
 	echo "センタからのDBレコード管理情報のダウンロードに失敗しました"
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8002,$HOSPNUM,$ERRFILE,,センタからのＤＢレコード管理情報のダウンロードに失敗しました"
-	rmmsthomedir
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8002,${HOSPNUM},${ERRFILE},,センタからのＤＢレコード管理情報のダウンロードに失敗しました"
+	cleanup
         exit 99
     fi
-    if  [  -s	$HOME/$HOSPNUM/$MSTDIR/$KANRIFILE	]
+    if  [  -s	${HOME}/${HOSPNUM}/${MSTDIR}/${KANRIFILE}	]
     then
 	echo "センタからのDBレコード管理情報は正常でした"
     else
 	echo "センタからのDBレコード管理情報は空でした"
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0003,$HOSPNUM,$ERRFILE,,ＤＢレコード管理情報は未設定でした"
-	rmmsthomedir
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0003,${HOSPNUM},${ERRFILE},,ＤＢレコード管理情報は未設定でした"
+	cleanup
         exit 99
     fi
 fi
 
 #ダウンロードファイル生成
-	$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCXRMST3 -parameter "$HOSPNUM$2$MSTDIR"
+	${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST3 -parameter "${HOSPNUM}$2${MSTDIR}"
 	if [ $? -ne 0 ]	;	then 
 		echo "ダウンロードファイル生成に失敗しました"
-		$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0005,$HOSPNUM,$ERRFILE,,ダウンロードファイル生成に失敗しました"
-		rmmsthomedir
+		${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0005,${HOSPNUM},${ERRFILE},,ダウンロードファイル生成に失敗しました"
+		cleanup
 		exit 99
 	fi
 #更新用ダウンロードファイル受信
 #ファイルサイズチェック
-	if [	-s	$UPDFILE	]
+	if [	-s	${UPDFILE}	]
 	then
 		echo "更新用ダウンロードファイルの作成が終了しました"
 	else
 		echo "更新用ダウンロードファイルは作成されませんでした"
-		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8001,$HOSPNUM,$ERRFILE,,"
-		rmmsthomedir
+		${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8001,${HOSPNUM},${ERRFILE},,"
+		cleanup
 		exit 99
 	fi
 
-UPDLIST=`awk '{gsub(/\t| |;/,""); print} ' $UPDFILE`
-MSTCOUNT=$(echo $UPDLIST |wc -w)
+UPDLIST=$(awk '{gsub(/\t| |;/,""); print} ' ${UPDFILE})
+MSTCOUNT=$(echo ${UPDLIST} |wc -w)
 MSTSEQ=0
-for UPD in $UPDLIST
+for UPD in ${UPDLIST}
 do
-	MSTSEQ=$(expr $MSTSEQ + 1)
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,$HOSPNUM,$ERRFILE,更新データを取得しています $(printf "%d/%d" $MSTSEQ $MSTCOUNT),"
-	if [  -s $ERRFILE ]	;	then 
-		rmmsthomedir 
+	MSTSEQ=$(expr ${MSTSEQ} + 1)
+        ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},更新データを取得しています $(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})"
+	if [  -e ${ERRFILE} ]	;	then 
+		cleanup 
 		exit 99
 	fi
-	echo ${UPD:34:$LEN}
-	if  [ $OFFLINE = "offline" ]; then
-	    if  [ -e $OFFLINEPATH/${UPD:34:$LEN} ]; then
-		cp $OFFLINEPATH/${UPD:34:$LEN} ./
-		echo ${UPD:34:$LEN} "複写が終了しました"
+	echo ${UPD:34:${LEN}}
+	if  [ ${OFFLINE} = "offline" ]; then
+	    if  [ -e ${OFFLINEPATH}/${UPD:34:${LEN}} ]; then
+		cp ${OFFLINEPATH}/${UPD:34:${LEN}} ./
+		echo ${UPD:34:${LEN}} "複写が終了しました"
 	    else
-		echo ${UPD:34:$LEN} "複写に失敗しました"
-		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0007,$HOSPNUM,$ERRFILE,,複写に失敗しました"
-		rmmsthomedir 
+		echo ${UPD:34:${LEN}} "複写に失敗しました"
+		${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0007,${HOSPNUM},${ERRFILE},,複写に失敗しました"
+		cleanup 
 	        exit 99
 	    fi
 	else
-	    if	orcawget ${UPD:34:$LEN} ;	then
-		echo ${UPD:34:$LEN} "ダウンロードが終了しました"
+	    if	orcawget ${UPD:34:${LEN}} ;	then
+		echo ${UPD:34:${LEN}} "ダウンロードが終了しました"
 	    else
-		echo ${UPD:34:$LEN} "ダウンロードに失敗しました"
-		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0008,$HOSPNUM,$ERRFILE,,ダウンロードに失敗しました"
-		rmmsthomedir 
+		echo ${UPD:34:${LEN}} "ダウンロードに失敗しました"
+		${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0008,${HOSPNUM},${ERRFILE},,ダウンロードに失敗しました"
+		cleanup 
 	        exit 99
 	    fi
 	fi
 done
 
 DATLIST=""
-for UPD in $UPDLIST
+for UPD in ${UPDLIST}
 do
-#	echo $UPD
-	if	orcatar $UPD ;	then
-		echo $UPD "解凍処理が終了しました"
+#	echo ${UPD}
+	if	orcatar ${UPD} ;	then
+		echo ${UPD} "解凍処理が終了しました"
 	else
-		$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0009,$HOSPNUM,$ERRFILE,,解凍処理に失敗しました"
-		echo $UPD "解凍処理に失敗しました"
-		rmmsthomedir 
+		${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0009,${HOSPNUM},${ERRFILE},,解凍処理に失敗しました"
+		echo ${UPD} "解凍処理に失敗しました"
+		cleanup 
 	        exit 99
 	fi
-	DAT=`echo $UPD | awk '{i=split($0,arr,"/");gsub(/.tar.gz/,".dat",arr[i]); print arr[i]} '`
-	DAT=$UPD`wc -l $DAT | awk '{i=split($0,arr," ");printf("#%06d",arr[1])}'`
-	DATLIST=$DATLIST" "$DAT
+	DAT=$(echo ${UPD} | awk '{i=split($0,arr,"/");gsub(/.tar.gz/,".dat",arr[i]); print arr[i]} ')
+	DAT=${UPD}$(wc -l ${DAT} | awk '{i=split($0,arr," ");printf("#%06d",arr[1])}')
+	DATLIST=${DATLIST}" "${DAT}
 done
 #DB構造変更処理
 MSTSEQ=0
-for UPD in $DATLIST
+for UPD in ${DATLIST}
 do
-	MSTSEQ=$(expr $MSTSEQ + 1)
-	UPD1=`echo $UPD | awk '{i=split($0,arr,"#");gsub(/.tar.gz/,".dat",arr[1]); print arr[1] } '`
-	COUNT=`echo $UPD | awk '{i=split($0,arr,"#"); print arr[i]} ' `
-	MSTCNTMSG=$(printf "%d/%d" $MSTSEQ $MSTCOUNT)
-	echo $UPD1 "DB更新"
+	MSTSEQ=$(expr ${MSTSEQ} + 1)
+	UPD1=$(echo ${UPD} | awk '{i=split($0,arr,"#");gsub(/.tar.gz/,".dat",arr[1]); print arr[1] } ')
+	COUNT=$(echo ${UPD} | awk '{i=split($0,arr,"#"); print arr[i]} ' )
+	MSTCNTMSG=$(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})
+	echo ${UPD1} "DB更新"
 #ダウンロードファイル生成
-	$DBSTUB  -dir $LDDIRECTORY -bd orcabt ORCXRMST4 -parameter "$HOSPNUM$MSTDIR$UPD1*****************************************************,$(printf "%06d" $MSTCOUNT),$(printf "%06d" $MSTSEQ),$MSTCNTMSG,$COUNT,$ERRFILE,${JOBID},${SHELLID}"
-	if [  -s $ERRFILE ]	;	then 
-		rmmsthomedir 
+	${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCXRMST4 -parameter "${HOSPNUM}${MSTDIR}${UPD1}*****************************************************,$(printf "%06d" ${MSTCOUNT}),$(printf "%06d" ${MSTSEQ}),${MSTCNTMSG},${COUNT},${ERRFILE},${JOBID},${SHELLID},${PRFFILE}"
+	if [  -e ${ERRFILE} ]	;	then 
+		cleanup 
 		exit 99
 	fi
 done
 
-for TBLNO in `echo $DATLIST | tr -s '[:blank:]' '\n' | sort | cut -c 1,2 | uniq`
+for TBLNO in $(echo ${DATLIST} | tr -s '[:blank:]' '\n' | sort | cut -c 1,2 | uniq)
 do
-	case $TBLNO in
+	case ${TBLNO} in
 	'07')
-	                echo "vacuum analyze tbl_interact;"     | psql $DBNAME ;;
+	                echo "vacuum analyze tbl_interact;"     | psql ${DBNAME} ;;
 	'08')
-	                echo "vacuum analyze tbl_sskijyo;"      | psql $DBNAME ;;
+	                echo "vacuum analyze tbl_sskijyo;"      | psql ${DBNAME} ;;
 	'09')
-	                echo "vacuum analyze tbl_hknjainf;"     | psql $DBNAME ;;
+	                echo "vacuum analyze tbl_hknjainf;"     | psql ${DBNAME} ;;
 	esac
 done
 
 
 echo  "全ての処理が完了しました"
-	rmmsthomedir
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,$HOSPNUM,$ERRFILE,,マスタ更新処理が終了しました"
+	cleanup
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},,マスタ更新処理が終了しました"

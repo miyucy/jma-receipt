@@ -42,10 +42,12 @@ if [ -f ${LOGDIR}/${STARTNAME} ];  then
 fi
 
 #標準マスタ更新
-sh $SCRIPTSDIR/allways/master_standard_upgrade.sh $1 $2 $4 $5 $6  > $TMPLOG
+sh ${SCRIPTSDIR}/allways/master_standard_upgrade.sh $1 $2 $4 $5 $6  > ${TMPLOG}  2>&1
+
+sleep 1
 
 #ライセンスマスタ更新
-sh $SCRIPTSDIR/allways/master_license_upgrade.sh $1 $2 $3 $7 $8 $9 >> $TMPLOG
+sh ${SCRIPTSDIR}/allways/master_license_upgrade.sh $1 $2 $3 $7 $8 $9 >> ${TMPLOG} 2>&1
 
-gzip -c $TMPLOG >> ${LOGDIR}/${STARTNAME}
-rm -f $TMPLOG
+gzip -c ${TMPLOG} >> ${LOGDIR}/${STARTNAME}
+rm -f ${TMPLOG}
