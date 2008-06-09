@@ -89,6 +89,7 @@
            03  WRK-MNTERRFL        PIC X(255).
            03  WRK-MLIERRFL        PIC X(255).
            03  WRK-MIDCD           PIC X(04).
+           03  WRK-MSG             PIC X(200).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -445,7 +446,7 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                                            TO  SPA-GMN-MSG1(ID1:34)
                        MOVE    "blue"      TO  SPA-GMN-MSG1-STYLE
                    WHEN    "8888"
-                       MOVE    "マスタ更新を中止しました"
+                       MOVE    "マスタ更新は中止されました"
                                            TO  SPA-GMN-MSG1(ID1:34)
                        MOVE    "red"       TO  SPA-GMN-MSG1-STYLE
                        MOVE    JOB-YOBI    TO  SPA-GMN-MSG1PLUS
@@ -455,6 +456,15 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                        MOVE    "red"       TO  SPA-GMN-MSG1-STYLE
                        MOVE    JOB-YOBI    TO  SPA-GMN-MSG1PLUS
                    END-EVALUATE
+                   IF    ( JOB-UPDCNT      >   ZERO )
+                       MOVE    SPA-GMN-MSG1 TO  WRK-MSG
+                       MOVE    SPACE        TO  SPA-GMN-MSG1
+                       STRING  WRK-MSG         DELIMITED   BY  SPACE
+                               "【確認リストの出力があります】"
+                                               DELIMITED   BY  SIZE
+                       INTO    SPA-GMN-MSG1
+                       END-STRING
+                   END-IF
                ELSE
                    MOVE    "マスタ更新中です。"
                                            TO  SPA-GMN-MSG1(ID1:18)
@@ -493,7 +503,7 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                                              TO  SPA-GMN-MSG2(ID1:34)
                        MOVE    "blue"        TO  SPA-GMN-MSG2-STYLE
                    WHEN    "8888"
-                       MOVE    "マスタ更新を中止しました"
+                       MOVE    "マスタ更新は中止されました"
                                            TO  SPA-GMN-MSG2(ID1:34)
                        MOVE    "red"       TO  SPA-GMN-MSG2-STYLE
                        MOVE    JOB1-YOBI      TO  SPA-GMN-MSG2PLUS
@@ -503,6 +513,15 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                        MOVE    "red"         TO  SPA-GMN-MSG2-STYLE
                        MOVE    JOB1-YOBI     TO  SPA-GMN-MSG2PLUS
                    END-EVALUATE
+                   IF    ( JOB1-UPDCNT      >   ZERO )
+                        MOVE    SPA-GMN-MSG2 TO  WRK-MSG
+                        MOVE    SPACE        TO  SPA-GMN-MSG2
+                        STRING  WRK-MSG         DELIMITED   BY  SPACE
+                                "【確認リストの出力があります】"
+                                                DELIMITED   BY  SIZE
+                        INTO    SPA-GMN-MSG2
+                        END-STRING
+                    END-IF
                ELSE
                    MOVE    "マスタ更新中です。"
                                              TO  SPA-GMN-MSG2(ID1:18)
@@ -640,7 +659,8 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *****************************************************************
        3103-JOBKANRI-HENSYU2-SEC         SECTION.
       *
-               MOVE    "標準マスタ"    TO  SPA-GMN-JOBNAME (1)
+               MOVE    "標準提供マスタ"
+                                       TO  SPA-GMN-JOBNAME (1)
       *
                MOVE    "ライセンスマスタ"
                                        TO  SPA-GMN-JOBNAME (2)
@@ -741,6 +761,9 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *        情報削除
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 201-DELETE-SEC
+      *        再印刷画面
+               WHEN    "CLICKED"       ALSO    "B09"
+                   PERFORM 209-REPRINT-SEC
       *
       *        処理中止
                WHEN    "CLICKED"       ALSO    "B10"
@@ -775,6 +798,29 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
        201-DELETE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    再印刷画面へ
+      *****************************************************************
+       209-REPRINT-SEC             SECTION.
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "M01"               TO  SPA-MOTOPG
+           MOVE    "XA01"              TO  SPA-SAKIPG
+      *
+           INITIALIZE                  SPA-KYOTUKEY
+           MOVE    CONST-MNTSHELLID    TO  SPA-PRTKANRI-TBL-KEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "XA01    "           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       209-REPRINT-EXT.
+           EXIT.
       *****************************************************************
       *    処理中止処理
       *****************************************************************
