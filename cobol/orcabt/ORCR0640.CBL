@@ -316,6 +316,7 @@
       *  04.02.16    NACL-門脇    08/05/29  現物給付保険者単位条件追加
       *  04.02.17    NACL-門脇    08/06/03  入院時生活療養費の公費対象外対応
       *                                     （群馬県地方公費）
+      *  04.02.18    NACL-門脇    08/06/09  結核＋生保食事療養記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -10884,7 +10885,13 @@
                      END-IF
                   END-IF
                 ELSE
-                  IF    SYU-SKJ-RYOYOHI(IDX3)   =   ZERO
+                  IF  ( SYU-SKJ-RYOYOHI(IDX3)   =   ZERO  )
+                  OR  ((SYU-KOH1HKNNUM      =  "010"     ) AND
+                       (SYU-KOH2HKNNUM(1:1) =  "0"       ) AND
+                       (SYU-KOH3HKNNUM      =   SPACE    ) AND
+                       (SYU-KOH4HKNNUM      =   SPACE    ) AND
+                       (RECE62-KOHNUM(KH-IDX - 1) = "010") AND
+                       (KH-IDX              =   2        ))
                    IF   RECE62-SHOKUJIRYOYOHI(KH-IDX) =  ZERO
                          MOVE    "1"      TO
                                  RECE62-FUKUSHIFLG-SKJ(KH-IDX - 1)
