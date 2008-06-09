@@ -134,8 +134,7 @@ if ! [	-d	${HOME}/${HOSPNUM}/orca-mstlog	];	then
 fi
 
 if [ $(pgrep -fo "$0 $HOSPNUM") -ne $$ ]; then
-	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0010,${HOSPNUM},${ERRFILE},,マスタ更新処理は既に実行中です"
-	cleanup
+	echo "マスタ更新処理は既に実行中です"
 	exit 99
 fi
 
