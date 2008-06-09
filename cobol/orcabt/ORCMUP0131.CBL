@@ -321,6 +321,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    1                   TO  FLG-HKTSANTEI
            END-IF
       *
+      *    包括チェックマスタクローズ
+           MOVE    "tbl_hktsantei"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    追加エラー（同一キー存在）
            IF      FLG-HKTSANTEI       =   ZERO
                MOVE    1               TO  WRK-ERRCD
@@ -333,11 +338,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      WRK-ERRCD       =   ZERO
                ADD     1               TO  CNT-INS
            END-IF
-      *
-      *    包括チェックマスタクローズ
-           MOVE    "tbl_hktsantei"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-TBL-CLOSE-SEC
            .
        2010-INSERT-SYORI-EXT.
            EXIT.
@@ -362,6 +362,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    1                   TO  FLG-HKTSANTEI
            END-IF
       *
+      *    包括チェックマスタクローズ
+           MOVE    "tbl_hktsantei"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    更新エラー（同一キーなし）
            IF      FLG-HKTSANTEI    NOT =  ZERO
                MOVE    3               TO  WRK-ERRCD
@@ -374,11 +379,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      WRK-ERRCD           =   ZERO
                ADD     1               TO  CNT-UPD
            END-IF
-      *
-      *    包括チェックマスタクローズ
-           MOVE    "tbl_hktsantei"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-TBL-CLOSE-SEC
            .
        2020-UPDATE-SYORI-EXT.
            EXIT.
@@ -403,6 +403,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    1                   TO  FLG-HKTSANTEI
            END-IF
       *
+      *    包括チェックマスタクローズ
+           MOVE    "tbl_hktsantei"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    削除エラー（同一キーなし）
            IF      FLG-HKTSANTEI    NOT =  ZERO
                MOVE    4               TO  WRK-ERRCD
@@ -415,11 +420,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      WRK-ERRCD           =   ZERO
                ADD     1               TO  CNT-DEL
            END-IF
-      *
-      *    包括チェックマスタクローズ
-           MOVE    "tbl_hktsantei"     TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-TBL-CLOSE-SEC
            .
        2030-DELETE-SYORI-EXT.
            EXIT.

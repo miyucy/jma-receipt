@@ -436,7 +436,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    PERFORM 20102-SYSKANRI-UPD-SEC
       *
       *            ＤＢ追加
-                   PERFORM 20101-SYSKANRI-INS-SEC
+                   PERFORM 20121-SYSKANRI-INS-SEC
       *
                    MOVE    1                   TO  FLG-SYORI
                ELSE
@@ -453,12 +453,71 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      FLG-SYORI           =   ZERO
       *
       *        ＤＢ追加
-               PERFORM 20101-SYSKANRI-INS-SEC
+               PERFORM 20121-SYSKANRI-INS-SEC
            END-IF
       *
            .
        2012-INSERT-SYORI-EXT.
            EXIT.
+      *****************************************************************
+      *    ＤＢ追加  処理
+      *****************************************************************
+       20121-SYSKANRI-INS-SEC           SECTION.
+      *
+           INITIALIZE                  SYSKANRI-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    SYSWK-KANRICD       TO  SYS-KANRICD
+           MOVE    SYSWK-KBNCD         TO  SYS-KBNCD
+           MOVE    SYSWK-STYUKYMD      TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM                     910-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYS
+           END-IF
+      *
+           MOVE  "tbl_syskanri"        TO  MCP-TABLE
+           MOVE  "key10"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF    ( FLG-SYS         =   ZERO )
+               MOVE    1               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+           ELSE
+      *
+               INITIALIZE                  SYSKANRI-REC
+      *
+               PERFORM 201011-SYSKANRI-EDIT-SEC
+      *
+               MOVE    LNK-MNTYMD          TO  SYS-CREYMD
+                                               SYS-UPYMD
+               MOVE    LNK-MNTHMS          TO  SYS-UPHMS
+      *
+               MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+      *
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC          NOT =   ZERO
+                   MOVE    1               TO  LNK-RC
+                   MOVE    7               TO  WRK-ERRCD
+                   PERFORM 2040-ERR-SYORI-SEC
+               ELSE
+                   ADD     1               TO  CNT-INS
+               END-IF
+           END-IF
+           .
+       20121-SYSKANRI-INS-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    ＤＢ追加  処理
@@ -466,17 +525,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        20101-SYSKANRI-INS-SEC           SECTION.
       *
            INITIALIZE                  SYSKANRI-REC
-      *****MOVE    SYSWK-KEY           TO  SYS-KEY
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
-           MOVE    SYSWK-KANRICD       TO  SYS-KANRICD
-           MOVE    SYSWK-KBNCD         TO  SYS-KBNCD
-           MOVE    SYSWK-STYUKYMD      TO  SYS-STYUKYMD
-           MOVE    SYSWK-EDYUKYMD      TO  SYS-EDYUKYMD
-           MOVE    SYSWK-REC(38:)      TO  SYSKANRI-REC(31:)
+      *
+           PERFORM 201011-SYSKANRI-EDIT-SEC
       *
            MOVE    LNK-MNTYMD          TO  SYS-CREYMD
                                            SYS-UPYMD
            MOVE    LNK-MNTHMS          TO  SYS-UPHMS
+      *
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -493,6 +548,21 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        20101-SYSKANRI-INS-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    ＤＢ追加  処理
+      *****************************************************************
+       201011-SYSKANRI-EDIT-SEC        SECTION.
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    SYSWK-KANRICD       TO  SYS-KANRICD
+           MOVE    SYSWK-KBNCD         TO  SYS-KBNCD
+           MOVE    SYSWK-STYUKYMD      TO  SYS-STYUKYMD
+           MOVE    SYSWK-EDYUKYMD      TO  SYS-EDYUKYMD
+           MOVE    SYSWK-REC(38:)      TO  SYSKANRI-REC(31:)
+      *
+           .
+       201011-SYSKANRI-EDIT-EXT.
+           EXIT.
       *****************************************************************
       *    ＤＢ更新  処理
       *****************************************************************
@@ -699,7 +769,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    SYSWK-KANRITBL        TO  WRK-KANRITBL
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE    "追加エラー"       TO  WRK-MSG-01
+                   MOVE    "登録済みエラー"       TO  WRK-MSG-01
                WHEN    2
                    MOVE    "更新エラー"       TO  WRK-MSG-01
                WHEN    3

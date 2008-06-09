@@ -525,6 +525,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    1                   TO  FLG-SRYCDCHG
            END-IF
       *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_srycdchg"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+      *
       *    削除エラー
            IF      FLG-SRYCDCHG    NOT =   ZERO
                MOVE    4               TO  WRK-ERRCD

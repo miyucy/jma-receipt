@@ -336,6 +336,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    1                   TO  FLG-BYOMEI
            END-IF
       *
+      *    病名マスタクローズ
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    追加エラー
            IF      FLG-BYOMEI          =   ZERO
                MOVE    1               TO  WRK-ERRCD
@@ -348,11 +353,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      WRK-ERRCD       =   ZERO
                ADD     1               TO  CNT-INS
            END-IF
-      *
-      *    病名マスタクローズ
-           MOVE    "tbl_byomei"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-TBL-CLOSE-SEC
       *
            .
        2010-INSERT-SYORI-EXT.
@@ -378,6 +378,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    1                   TO  FLG-BYOMEI
            END-IF
       *
+      *    病名マスタクローズ
+           MOVE    "tbl_byomei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-TBL-CLOSE-SEC
+      *
       *    更新エラー
            IF      FLG-BYOMEI          NOT =   ZERO
                MOVE    3               TO  WRK-ERRCD
@@ -390,11 +395,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      WRK-ERRCD       =   ZERO
                ADD     1               TO  CNT-UPD
            END-IF
-      *
-      *    病名マスタクローズ
-           MOVE    "tbl_byomei"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 900-TBL-CLOSE-SEC
       *
            .
        2020-UPDATE-SYORI-EXT.
