@@ -23,8 +23,9 @@ ORCASCRIPT=$ORCA_DIR/scripts/claim/rb
 #        $10 SINRYONAIYO   X(16)
 #        $11 RENNUM        X(02)
 #        $12 REGIST YMD    X(08)
+#        $13 MEMO INFO     X(02)
 #-------------------------------------------#
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCL0010 -parameter $1,$2,$3,$4,$5,$8,$9,${10},${11},${12},END 
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCL0010 -parameter $1,$2,$3,$4,$5,$8,$9,${10},${11},${12},${13},END 
 
 #-------------------------------------------#
 # Add Start (2001/08/27)
