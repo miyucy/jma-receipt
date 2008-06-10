@@ -62,7 +62,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B01</name>
-      <x>278</x>
+      <x>260</x>
       <y>80</y>
       <width>64</width>
       <height>32</height>

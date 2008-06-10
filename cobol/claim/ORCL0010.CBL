@@ -13,6 +13,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    MCC-藤原     03.01.28  ファイル名に診療科を追加 
       *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
+      *  04.03.00    NACL-多々納  08/06/11  メモ登録の送信対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -65,6 +66,8 @@
                                     PIC  X(02).
                05  WRK-PARA-SYSYMD
                                     PIC  X(08).
+               05  WRK-PARA-MEMO
+                                    PIC  X(02).
       *
            03  WRK-IN               PIC X(01).
       *
@@ -147,6 +150,7 @@
                                             WRK-PARA-SINRYONAIYO
                                             WRK-PARA-RENNUM
                                             WRK-PARA-SYSYMD
+                                            WRK-PARA-MEMO
       *
       *???
            DISPLAY "PARA " WRK-PARA "##"
@@ -184,6 +188,7 @@
            CALL    "ORCL0011"          USING   WRK-PARA-TIME
                                                WRK-PARA-SINRYONAIYO 
                                                WRK-PARA-RENNUM
+                                               WRK-PARA-MEMO
                                                SPA-AREA
                                                WRK-LF01-REC
       *

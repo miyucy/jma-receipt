@@ -47,6 +47,7 @@
       * 03.05.00     NACL-多々納  07/05/09  グループ診療対応
       * 03.05.00     NACL-多々納  07/05/25  UIDテーブル対応
       * 03.05.01     NACL-多々納  07/08/10  受付メモ追加対応
+      * 04.03.00     NACL-多々納  08/06/11  メモ登録の送信対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -586,6 +587,7 @@
       *01  LNK-HKNCOMBI         PIC X(04).
        01  LNK-PARA-SINRYONAIYO PIC X(16).
        01  LNK-PARA-RENNUM      PIC X(02).
+       01  LNK-PARA-MEMO        PIC X(02).
       *    スパ領域
            COPY    "COMMON-SPA".
       *
@@ -610,6 +612,7 @@
            LNK-TIME
            LNK-PARA-SINRYONAIYO
            LNK-PARA-RENNUM
+           LNK-PARA-MEMO
            SPA-AREA
            WRK-LF01-REC
            .
@@ -734,6 +737,12 @@
                MOVE    ZERO                TO  FLG-UID
            ELSE
                MOVE    1                   TO  FLG-UID
+           END-IF
+      *    メモ登録から
+           IF     LNK-PARA-MEMO        =   "@@"
+               IF      FLG-CLMUID          =   ZERO
+                   MOVE    1               TO  FLG-UID
+               END-IF
            END-IF
            .
        100-INIT-EXT.
@@ -917,11 +926,15 @@
            END-IF
       *
            MOVE    "regist"        TO  WRK-LF01-UKEYMD-KREPCODE
-      *    受付から
+      *    患者登録から
            IF      WRK-SRYKA       =   "XX"
                MOVE    "info"          TO  WRK-LF01-UKEYMD-KREPCODE
       *        診療科設定
                PERFORM 2009-SRYKA-SET-SEC
+           END-IF
+      *    メモから
+           IF      LNK-PARA-MEMO       =   "@@"
+               MOVE    "memo"          TO  WRK-LF01-UKEYMD-KREPCODE
            END-IF
       *
            MOVE    "false"         TO  WRK-LF01-NYUGAIKBN

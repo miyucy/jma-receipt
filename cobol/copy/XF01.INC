@@ -55,4 +55,10 @@
               03  XF01-SYORI02.
                 04  XF01-SYORI02-STYLE  PIC X(20).
                 04  XF01-SYORI02-VALUE  PIC X(10).
+              03  XF01-UKETUKE.
+                04  XF01-UKETUKE-STYLE  PIC X(20).
+                04  XF01-UKETUKE-VALUE  PIC X(20).
+              03  XF01-B12S.
+                04  XF01-B12S-STATE  PIC S9(9)   BINARY.
+
 

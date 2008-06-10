@@ -8,6 +8,7 @@ bind	"XF01"		"OpenCOBOL"	"ORCGXF01";
 bind	"XF011"		"OpenCOBOL"	"ORCGXF011";
 bind	"XFERR"		"OpenCOBOL"	"ORCGXFERR";
 bind	"XFID1"		"OpenCOBOL"	"ORCGXFID1";
+bind	"XF01X"		"OpenCOBOL"	"ORCGXF01X";
 
 multiplex_group	orca06;
 
@@ -19,6 +20,7 @@ data	{
 		XF011;
 		XFERR;
 		XFID1;
+		XF01X;
 	};
 };
 
@@ -26,6 +28,7 @@ db	{
 	tbl_syskanri;
 	tbl_ptmemoinf;
         tbl_example;
+        tbl_uketuke;
 };
 
 /* #include "orcadb.inc" */

@@ -3332,9 +3332,17 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *****************************************************************
        493-CLEAR-SEC                   SECTION.
       *
-      *    ＱＲデータ解除処理
-           IF      SPA-U02Q-REGISTID   NOT =   ZERO
-               PERFORM 4906-QRHKCD-KAIJO-SEC
+      **** ＱＲデータ解除処理
+      *    IF      SPA-U02Q-REGISTID   NOT =   ZERO
+      *        PERFORM 4906-QRHKCD-KAIJO-SEC
+      **** END-IF
+      *
+           IF     (SPA-GMN-PTNUM       =   SPACE )
+             AND  (SPA-GMN-NAME        =   SPACE )
+             AND  (SPA-GMN-CUR         =   2     )
+               MOVE    1                   TO  SPA-GMN-CUR
+           ELSE
+               MOVE    2                   TO  SPA-GMN-CUR
            END-IF
       *    クリア
            PERFORM 1009-HEAD-CLEAR-SEC
@@ -3342,7 +3350,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
-           MOVE    2                   TO  SPA-GMN-CUR
+      **** MOVE    2                   TO  SPA-GMN-CUR
            .
        493-CLEAR-EXT.
            EXIT.
@@ -3544,6 +3552,11 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            END-EVALUATE
            MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAYW
            MOVE    SPA-NAI-BIRTHDAY    TO  SPA-BIRTHDAY
+           IF      SPA-GMN-SELNUM      >   ZERO
+      *        受付ＩＤ
+               MOVE    SPA-GMN-TUKEID  (SPA-GMN-SELNUM)
+                                           TO  SPA-P02-UKEID
+           END-IF
       *
       *    画面移行用のパラメタ変更
            MOVE    "U02"               TO  SPA-MOTOPG
@@ -3635,7 +3648,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE.
-           MOVE   "U01    "            TO  MCP-WINDOW.
+           MOVE   "U01"                TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
       *

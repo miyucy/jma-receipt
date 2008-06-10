@@ -74,6 +74,7 @@
            COPY    "XF011.INC".
            COPY    "XFERR.INC".
            COPY    "XFID1.INC".
+           COPY    "XF01X.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

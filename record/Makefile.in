@@ -360,6 +360,7 @@ RECORD_files = \
  	W64.rec \
  	Z08.rec \
 	W34.rec \
+	XF01X.rec \
 
 DEF_files = \
 	HC01.def \

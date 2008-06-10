@@ -72,5 +72,12 @@ XF01	{
 			style	varchar(20);
 			value	varchar(10);
 		};
+		UKETUKE	{
+			style	varchar(20);
+			value	varchar(20);
+		};
+		B12S	{
+	           	state	int;
+		};
 	};
 };

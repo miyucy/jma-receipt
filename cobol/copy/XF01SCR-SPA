@@ -38,6 +38,8 @@
                    07  SPA-GMN-BIRTHDAY        PIC X(10).
                    07  SPA-GMN-NENREI          PIC X(10).
                    07  SPA-GMN-SYSYMD          PIC X(22).
+      *            ºı…’æ Û
+                   07  SPA-GMN-UKEMEI          PIC X(50).
       *
                05  SPA-GMN-TBLG.
                    07  SPA-GMN-TBL             OCCURS  100.
@@ -104,4 +106,24 @@
                05  SPA-XF011-PAGE         PIC 9(03).
                05  SPA-XF011-NEXT         PIC 9(01).
       *
+      *    £√£Ã£¡£…£Õ≤ËÃÃ
+           03  SPA-CLAIM-FLG                        PIC 9(01).
+           03  SPA-CLAIM-MULTIHOST                  PIC 9(01).
+           03  SPA-XF01X-AREA.
+               05  SPA-XF01X-FLG                        PIC X(02).
+               05  SPA-XF01X-CODE                       PIC X(01).
+               05  SPA-XF01X-CUR                        PIC 9(02).
+      *
+               05  SPA-XF01X-GMN-SEL                    PIC 9(03).
+               05  SPA-XF01X-GMN-ADRLST.
+                   07  SPA-U02X-GMN-ADR-TBL        OCCURS  20.
+                       09  SPA-XF01X-GMN-SELNOL     PIC 9(03).
+                       09  SPA-XF01X-GMN-ADRL       PIC X(22).
+                       09  SPA-XF01X-GMN-PORTL      PIC X(22).
+                       09  SPA-XF01X-GMN-MEMOL      PIC X(22).
+                   07  SPA-XF01X-GMN-MAX            PIC 9(04).
+               05  SPA-GMN-SCODE-G.
+                   07  SPA-GMN-SCODE           PIC X(01).
+                   07  SPA-GMN-F1              PIC X(01).
+                   07  SPA-GMN-SCODEMEI        PIC X(18).
       *
