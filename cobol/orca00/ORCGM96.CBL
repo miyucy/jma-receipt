@@ -448,7 +448,7 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                    WHEN    "8888"
                        MOVE    "マスタ更新は中止されました"
                                            TO  SPA-GMN-MSG1(ID1:34)
-                       MOVE    "red"       TO  SPA-GMN-MSG1-STYLE
+                       MOVE    "blue"       TO  SPA-GMN-MSG1-STYLE
                        MOVE    JOB-YOBI    TO  SPA-GMN-MSG1PLUS
                    WHEN    OTHER
                        MOVE    "マスタ更新は異常終了しました。"
@@ -460,7 +460,7 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                        MOVE    SPA-GMN-MSG1 TO  WRK-MSG
                        MOVE    SPACE        TO  SPA-GMN-MSG1
                        STRING  WRK-MSG         DELIMITED   BY  SPACE
-                               "【確認リストの出力があります】"
+                               "【確認リストが作成されました】"
                                                DELIMITED   BY  SIZE
                        INTO    SPA-GMN-MSG1
                        END-STRING
@@ -505,7 +505,7 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                    WHEN    "8888"
                        MOVE    "マスタ更新は中止されました"
                                            TO  SPA-GMN-MSG2(ID1:34)
-                       MOVE    "red"       TO  SPA-GMN-MSG2-STYLE
+                       MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
                        MOVE    JOB1-YOBI      TO  SPA-GMN-MSG2PLUS
                    WHEN    OTHER
                        MOVE    "マスタ更新は異常終了しました。"
@@ -517,7 +517,7 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                         MOVE    SPA-GMN-MSG2 TO  WRK-MSG
                         MOVE    SPACE        TO  SPA-GMN-MSG2
                         STRING  WRK-MSG         DELIMITED   BY  SPACE
-                                "【確認リストの出力があります】"
+                               "【確認リストが作成されました】"
                                                 DELIMITED   BY  SIZE
                         INTO    SPA-GMN-MSG2
                         END-STRING
