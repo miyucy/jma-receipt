@@ -488,7 +488,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    削除エラー
            IF      FLG-ADRS        NOT =   ZERO
-               MOVE    6               TO  WRK-ERRCD
+               MOVE    7               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
                GO  TO  2010-DELETE-SYORI-EXT
            END-IF
@@ -588,11 +588,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE    "登録済エラー"  TO  WRK-MSG-01
+                   MOVE    "住所登録済み"  TO  WRK-MSG-01
                WHEN    2
                    MOVE    "追加エラー"    TO  WRK-MSG-01
                WHEN    3
-                   MOVE    "登録無しエラー"
+                   MOVE    "更新対象なし"
                                            TO  WRK-MSG-01
                WHEN    4
                    MOVE    "更新無しエラー"
@@ -601,6 +601,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "更新エラー"    TO  WRK-MSG-01
                WHEN    6
                    MOVE    "削除エラー"    TO  WRK-MSG-01
+               WHEN    7
+                   MOVE    "削除対象なし"    TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA    TO  PLF-REC

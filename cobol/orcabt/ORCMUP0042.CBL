@@ -370,7 +370,7 @@
            IF      CHKWK-YUKOEDYMD2    =   SPACE
       *        追加エラー
                IF      FLG-CHK             =   ZERO
-                   MOVE    1               TO  WRK-ERRCD
+                   MOVE    5               TO  WRK-ERRCD
                    PERFORM 2040-ERR-SYORI-SEC
                ELSE
       *            ＤＢ追加
@@ -460,7 +460,7 @@
       *
            IF      FLG-CHK             =   ZERO
       *        登録済
-               MOVE    1               TO  WRK-ERRCD
+               MOVE    5               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            ELSE
       *        登録
@@ -581,7 +581,7 @@
                PERFORM 20101-CHK-DEL-SEC
            ELSE
       *        削除エラー
-               MOVE    2               TO  WRK-ERRCD
+               MOVE    3               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
       *
@@ -702,10 +702,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                WHEN    2
                    MOVE    "更新エラー"       TO  WRK-MSG-01
                WHEN   3
-                   MOVE    "更新データなし"   TO  WRK-MSG-01
+                   MOVE    "削除対象なし"     TO  WRK-MSG-01
                WHEN   4
                    MOVE    "削除エラー"
                                                TO  WRK-MSG-01
+               WHEN   5
+                   MOVE    "チェックマスタ登録済み"
+                                              TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA       TO  PLF-REC

@@ -383,7 +383,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    更新エラー（同一キーなし）
            IF      FLG-TOUKEIMEMO     NOT =  ZERO
-               MOVE    3               TO  WRK-ERRCD
+               MOVE    5               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
                GO      TO      2020-UPDATE-SYORI-EXT
            END-IF
@@ -424,7 +424,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    削除エラー（同一キーなし）
            IF      FLG-TOUKEIMEMO     NOT =  ZERO
-               MOVE    4               TO  WRK-ERRCD
+               MOVE    6               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
                GO      TO      2030-DELETE-SYORI-EXT
            END-IF
@@ -589,7 +589,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    TKIMEMOWK-EDYUKYMD  TO  WRK-EDYUKYMD
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "統計メモデータ存在"
+                   MOVE  "統計メモ登録済み"
                                        TO  WRK-MSG-01
                WHEN    2
                    MOVE  "追加エラー"  TO  WRK-MSG-01
@@ -597,6 +597,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    MOVE  "更新エラー"  TO  WRK-MSG-01
                WHEN    4
                    MOVE  "削除エラー"  TO  WRK-MSG-01
+               WHEN    5
+                   MOVE  "更新対象なし"  TO  WRK-MSG-01
+               WHEN    6
+                   MOVE  "削除対象なし"  TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA        TO  PLF-REC

@@ -769,17 +769,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    SYSWK-KANRITBL        TO  WRK-KANRITBL
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE    "登録済みエラー"       TO  WRK-MSG-01
+                   MOVE    "システム管理登録済み"
+                                              TO  WRK-MSG-01
                WHEN    2
                    MOVE    "更新エラー"       TO  WRK-MSG-01
                WHEN    3
-                   MOVE    "更新データなし"   TO  WRK-MSG-01
+                   MOVE    "更新対象なし"     TO  WRK-MSG-01
                WHEN    4
                    MOVE    "削除エラー"       TO  WRK-MSG-01
                WHEN    5
-                   MOVE    "削除データなし"   TO  WRK-MSG-01
+                   MOVE    "削除対象なし"     TO  WRK-MSG-01
                WHEN    7
-                   MOVE    "追加エラー２"     TO  WRK-MSG-01
+                   MOVE    "追加エラー"       TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA       TO  PLF-REC

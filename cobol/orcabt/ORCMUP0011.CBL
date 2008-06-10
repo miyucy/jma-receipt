@@ -394,7 +394,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                PERFORM 900-CLOSE-SEC
       *        追加エラー
                IF      FLG-HKNNUM           =   ZERO
-                   MOVE    1               TO  WRK-ERRCD
+                   MOVE    5               TO  WRK-ERRCD
                    PERFORM 2040-ERR-SYORI-SEC
                    GO      TO      2010-INSERT-SYORI-EXT
                END-IF
@@ -700,11 +700,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                WHEN    2
                    MOVE    "更新エラー"       TO  WRK-MSG-01
                WHEN    3
-                   MOVE    "更新データなし"   TO  WRK-MSG-01
+                   MOVE    "更新対象なし"   TO  WRK-MSG-01
                WHEN    4
                    MOVE    "削除エラー"       TO  WRK-MSG-01
                WHEN    5
-                   MOVE    "保険番号追加済み"
+                   MOVE    "保険番号登録済み"
                                                TO  WRK-MSG-01
            END-EVALUATE
       *

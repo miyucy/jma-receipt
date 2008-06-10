@@ -532,7 +532,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    削除エラー
            IF      FLG-SRYCDCHG    NOT =   ZERO
-               MOVE    4               TO  WRK-ERRCD
+               MOVE    9               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
                GO      TO      2030-DELETE-SYORI-EXT
            END-IF
@@ -599,10 +599,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    CHGWK-RJNSRYCD     TO  WRK-RJNSRYCD
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE    "老人コード存在済" 
+                   MOVE    "老人コード登録済み" 
                                                TO  WRK-MSG-01
                WHEN    2
-                   MOVE    "一般コード存在済"
+                   MOVE    "一般コード登録済み"
                                               TO  WRK-MSG-01
                WHEN    3
                    MOVE    "追加エラー"
@@ -611,7 +611,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "削除エラー"
                                                TO  WRK-MSG-01
                WHEN    5
-                   MOVE    "登録済エラー"
+                   MOVE    "一般老人置換登録済み"
                                                TO  WRK-MSG-01
                WHEN    6
                    MOVE    "点数マスタなし"
@@ -621,6 +621,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                                TO  WRK-MSG-01
                WHEN    8
                    MOVE    "老人コードエラー"
+                                               TO  WRK-MSG-01
+               WHEN    9
+                   MOVE    "削除対象なし"
                                                TO  WRK-MSG-01
            END-EVALUATE
       *

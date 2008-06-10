@@ -373,7 +373,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *        ＤＢ更新
                PERFORM 20101-PRGOPTION-UPD-SEC
            ELSE
-               MOVE    3               TO  WRK-ERRCD
+               MOVE    5               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
       *        ＤＢ追加
                PERFORM 20101-PRGOPTION-INS-SEC
@@ -410,7 +410,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *        ＤＢ削除
                PERFORM 20101-PRGOPTION-DEL-SEC
            ELSE
-               MOVE    4               TO  WRK-ERRCD
+               MOVE    6               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
            .
@@ -580,7 +580,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    PRGOPTIONWK-KBNCD     TO  WRK-KBNCD
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "オプションデータ存在"
+                   MOVE  "オプションマスタ登録済み"
                                        TO  WRK-MSG-01
                WHEN    2
                    MOVE  "追加エラー"  TO  WRK-MSG-01
@@ -588,6 +588,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    MOVE  "更新エラー"  TO  WRK-MSG-01
                WHEN    4
                    MOVE  "削除エラー"  TO  WRK-MSG-01
+               WHEN    5
+                   MOVE  "更新対象なし"  TO  WRK-MSG-01
+               WHEN    6
+                   MOVE  "削除対象なし"  TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA        TO  PLF-REC
