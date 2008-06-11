@@ -6096,6 +6096,342 @@
 
 	  <widget>
 	    <class>GtkNumberEntry</class>
+	    <name>TOTALTEN4</name>
+	    <x>385</x>
+	    <y>700</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>TOTALTEN5</name>
+	    <x>460</x>
+	    <y>700</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>FTNMONEY4</name>
+	    <x>385</x>
+	    <y>715</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>FTNMONEY5</name>
+	    <x>460</x>
+	    <y>715</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>YKZFTN4</name>
+	    <x>385</x>
+	    <y>730</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>YKZFTN5</name>
+	    <x>460</x>
+	    <y>730</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>JNISSU4</name>
+	    <x>385</x>
+	    <y>745</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>JNISSU5</name>
+	    <x>460</x>
+	    <y>745</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>SHORYOYOHI4</name>
+	    <x>385</x>
+	    <y>760</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>SHORYOYOHI5</name>
+	    <x>460</x>
+	    <y>760</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>SHOFTN4</name>
+	    <x>385</x>
+	    <y>775</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>SHOFTN5</name>
+	    <x>460</x>
+	    <y>775</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>SHONISSU4</name>
+	    <x>385</x>
+	    <y>790</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>SHONISSU5</name>
+	    <x>460</x>
+	    <y>790</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>False</editable>
+	    <format>ZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
 	    <name>NKHNTEN01</name>
 	    <x>620</x>
 	    <y>0</y>
@@ -11158,6 +11494,342 @@
 	    <format>ZZ</format>
 	  </widget>
 
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NTOTALTEN4</name>
+	    <x>825</x>
+	    <y>700</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NTOTALTEN5</name>
+	    <x>900</x>
+	    <y>700</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NFTNMONEY4</name>
+	    <x>825</x>
+	    <y>715</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NFTNMONEY5</name>
+	    <x>900</x>
+	    <y>715</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NYKZFTN4</name>
+	    <x>825</x>
+	    <y>730</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NYKZFTN5</name>
+	    <x>900</x>
+	    <y>730</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NJNISSU4</name>
+	    <x>825</x>
+	    <y>745</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NJNISSU5</name>
+	    <x>900</x>
+	    <y>745</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NSHORYOYOHI4</name>
+	    <x>825</x>
+	    <y>760</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NSHORYOYOHI5</name>
+	    <x>900</x>
+	    <y>760</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NSHOFTN4</name>
+	    <x>825</x>
+	    <y>775</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NSHOFTN5</name>
+	    <x>900</x>
+	    <y>775</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZZZZZZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NSHONISSU4</name>
+	    <x>825</x>
+	    <y>790</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZ</format>
+	  </widget>
+
+	  <widget>
+	    <class>GtkNumberEntry</class>
+	    <name>NSHONISSU5</name>
+	    <x>900</x>
+	    <y>790</y>
+	    <width>75</width>
+	    <height>15</height>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:41:59 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 02 Feb 2001 07:42:44 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <format>ZZ</format>
+	  </widget>
+
     <widget>
       <class>GtkLabel</class>
       <name>SHOMIDASI2</name>
@@ -11243,6 +11915,102 @@
       <name>SHOMIDASI3</name>
       <x>210</x>
       <y>660</y>
+      <width>100</width>
+      <height>14</height>
+      <label></label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+ <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI7</name>
+      <x>210</x>
+      <y>760</y>
+      <width>100</width>
+      <height>14</height>
+      <label></label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI8</name>
+      <x>210</x>
+      <y>775</y>
+      <width>100</width>
+      <height>14</height>
+      <label></label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI9</name>
+      <x>210</x>
+      <y>790</y>
+      <width>100</width>
+      <height>14</height>
+      <label></label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI10</name>
+      <x>650</x>
+      <y>760</y>
+      <width>100</width>
+      <height>14</height>
+      <label></label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI11</name>
+      <x>650</x>
+      <y>775</y>
+      <width>100</width>
+      <height>14</height>
+      <label></label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SHOMIDASI12</name>
+      <x>650</x>
+      <y>790</y>
       <width>100</width>
       <height>14</height>
       <label></label>
@@ -11381,6 +12149,199 @@
 	    <xpad>0</xpad>
 	    <ypad>0</ypad>
 	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>TENMIDASI9</name>
+	    <x>210</x>
+	    <y>700</y>
+	    <width>100</width>
+	    <height>14</height>
+	    <label>          πÁ∑◊≈¿øÙ</label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>TENMIDASI10</name>
+	    <x>210</x>
+	    <y>715</y>
+	    <width>100</width>
+	    <height>14</height>
+	    <label>       ∞Ï…Ù…È√¥∂‚</label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>TENMIDASI11</name>
+	    <x>210</x>
+	    <y>730</y>
+	    <width>100</width>
+	    <height>14</height>
+	    <label>ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚</label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>TENMIDASI12</name>
+	    <x>210</x>
+	    <y>745</y>
+	    <width>100</width>
+	    <height>14</height>
+	    <label>              º¬∆¸øÙ</label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>TENMIDASI13</name>
+	    <x>650</x>
+	    <y>700</y>
+	    <width>100</width>
+	    <height>14</height>
+	    <label>          πÁ∑◊≈¿øÙ</label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>TENMIDASI14</name>
+	    <x>650</x>
+	    <y>715</y>
+	    <width>100</width>
+	    <height>14</height>
+	    <label>       ∞Ï…Ù…È√¥∂‚</label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>TENMIDASI15</name>
+	    <x>650</x>
+	    <y>730</y>
+	    <width>100</width>
+	    <height>14</height>
+	    <label>ÃÙ∫ﬁ∞Ï…Ù…È√¥∂‚</label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
+
+	  <widget>
+	    <class>GtkLabel</class>
+	    <name>TENMIDASI16</name>
+	    <x>650</x>
+	    <y>745</y>
+	    <width>100</width>
+	    <height>14</height>
+	    <label>              º¬∆¸øÙ</label>
+	    <justify>GTK_JUSTIFY_RIGHT</justify>
+	    <wrap>False</wrap>
+	    <xalign>1.0</xalign>
+	    <yalign>0.5</yalign>
+	    <xpad>0</xpad>
+	    <ypad>0</ypad>
+	  </widget>
+
+          <widget>
+            <class>GtkLabel</class>
+            <name>label999</name>
+            <x>385</x>
+            <y>683</y>
+            <width>75</width>
+            <height>18</height>
+            <label>∏¯»Ò≈¿øÙ£≥</label>
+            <justify>GTK_JUSTIFY_CENTER</justify>
+            <wrap>False</wrap>
+            <xalign>0.5</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+           <ypad>0</ypad>
+          </widget>
+
+          <widget>
+            <class>GtkLabel</class>
+            <name>label998</name>
+            <x>460</x>
+            <y>683</y>
+            <width>80</width>
+            <height>18</height>
+            <label>∏¯»Ò≈¿øÙ£¥</label>
+            <justify>GTK_JUSTIFY_CENTER</justify>
+            <wrap>False</wrap>
+            <xalign>0.5</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+            <ypad>0</ypad>
+          </widget>
+
+          <widget>
+            <class>GtkLabel</class>
+            <name>label997</name>
+            <x>825</x>
+            <y>683</y>
+            <width>75</width>
+            <height>18</height>
+            <label>∏¯»Ò≈¿øÙ£≥</label>
+            <justify>GTK_JUSTIFY_CENTER</justify>
+            <wrap>False</wrap>
+            <xalign>0.5</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+           <ypad>0</ypad>
+          </widget>
+
+          <widget>
+            <class>GtkLabel</class>
+            <name>label996</name>
+            <x>900</x>
+            <y>683</y>
+            <width>80</width>
+            <height>18</height>
+            <label>∏¯»Ò≈¿øÙ£¥</label>
+            <justify>GTK_JUSTIFY_CENTER</justify>
+            <wrap>False</wrap>
+            <xalign>0.5</xalign>
+            <yalign>0.5</yalign>
+            <xpad>0</xpad>
+            <ypad>0</ypad>
+          </widget>
+
 	</widget>
       </widget>
     </widget>

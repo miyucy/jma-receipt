@@ -52,6 +52,9 @@
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
+      *
+      *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *  04.03.02    NACL-藤原    08/06/06  レセプト種別名称、作成日の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -96,7 +99,7 @@
        01  WRK-AREA.
            03  WRK-Z9              PIC Z9.
            03  WRK-SELNO           PIC 9(02).
-           03  WRK-RECESYUBETU     PIC X(10).
+           03  WRK-RECESYUBETU     PIC X(44).
            03  WRK-YM              PIC X(07). 
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -107,6 +110,7 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+           03  WRK-SYURUINAME      PIC X(40).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -126,6 +130,8 @@
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1005.INC".
+      *
+           COPY    "CPSK2003.INC".
       *
            COPY    "CPRCF010.INC".
       *
@@ -361,14 +367,16 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *
                PERFORM 530-RECESYUBETU-HENSYU-SEC
                MOVE    WRK-RECESYUBETU  TO
-                                       SPA-H99GMN-TRECESYUBETU (IDX)
+                                   SPA-H99GMN-TRECESYUBETU (IDX)
       *
                EVALUATE    RECE10-TEISYUTUSAKI
                    WHEN    "1"
                    WHEN    "2"
                    WHEN    "6"
-                       MOVE    RECE10-HKNJANUM     TO
-                                       SPA-H99GMN-THKNJANUM    (IDX)
+                       IF      RECE10-HKNJANUM     NOT =   "00000000"
+                           MOVE    RECE10-HKNJANUM     TO
+                                           SPA-H99GMN-THKNJANUM (IDX)
+                       END-IF
                END-EVALUATE
       *
                EVALUATE    RECE10-HKNNUM
@@ -405,6 +413,9 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                                        INTO    SPA-H99GMN-TKIGO(IDX)
                        END-STRING
                END-EVALUATE
+               MOVE    RECE10-CREYMD       TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-H99GMN-TCREYMD (IDX)
       *
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -442,6 +453,68 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *
            IF      RECE10-SRYYM        >   "200209"
                MOVE    RECE10-RECESYUBETU  TO  WRK-RECESYUBETU
+               EVALUATE    RECE10-RECESYUBETU  (3:1)
+                   WHEN    "4"
+                   WHEN    "5"
+                       MOVE    "3"             TO  WRK-RECESYUBETU (3:1)
+               END-EVALUATE
+      *
+               INITIALIZE                      SYS-2003-REC
+               MOVE    "2003"              TO  SYS-2003-KANRICD
+               MOVE    SPA-HOSPNUM         TO  SYS-2003-HOSPNUM
+               MOVE    RECE10-SRYYM        TO  SYS-2003-STYUKYMD (1:6)
+               MOVE    "01"                TO  SYS-2003-STYUKYMD (7:2)
+               MOVE    SYS-2003-STYUKYMD   TO  SYS-2003-EDYUKYMD
+               MOVE    SYS-2003-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               ELSE
+                   INITIALIZE                  SYS-2003-REC
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+      *
+               PERFORM    UNTIL   FLG-SYSKANRI     =   1
+                   MOVE    MCPDATA-REC   TO  SYS-2003-REC
+                   IF    ( SYS-2003-TEISYUTUSAKI   =
+                                           RECE10-TEISYUTUSAKI )
+                   AND   ( SYS-2003-NYUGAIKBN      =
+                                           RECE10-NYUGAIKBN    )
+                   AND   ( SYS-2003-SYUBETU (1)    =
+                                           RECE10-RECESYUBETU  )
+                       MOVE    SYS-2003-SYURUINAME(1:6)
+                                               TO  WRK-SYURUINAME
+                       MOVE    5               TO  IDY
+                       PERFORM VARYING IDZ FROM    7   BY  2
+                               UNTIL   IDZ >       39
+                               OR      SYS-2003-SYURUINAME (IDZ:2)
+                                           =       "  "
+                           IF      SYS-2003-SYURUINAME (IDZ:2)
+                                                   =   "　"
+                               CONTINUE
+                           ELSE
+                               ADD     2       TO  IDY
+                               MOVE    SYS-2003-SYURUINAME(IDZ:2)
+                                               TO  WRK-SYURUINAME(IDY:2)
+                           END-IF
+                       END-PERFORM    
+                       MOVE    WRK-SYURUINAME  TO  WRK-RECESYUBETU(5:)
+                       MOVE    1               TO  FLG-SYSKANRI
+                   ELSE
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "key2"              TO  MCP-PATHNAME
+                       PERFORM 900-SYSKANRI-READ-SEC
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+      *
                GO  TO  530-RECESYUBETU-HENSYU-EXT
            END-IF        
       *         
@@ -710,6 +783,8 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                                    TO  H99-THOJOKBN     (IDX)
                MOVE    SPA-H99GMN-TKIGO        (IDX)
                                    TO  H99-TKIGO        (IDX)
+               MOVE    SPA-H99GMN-TCREYMD      (IDX)
+                                   TO  H99-TCREYMD      (IDX)
                MOVE    IDX         TO  H99-COUNT
            END-PERFORM
       ***  MOVE    "T"              TO  H99-SELECT (1)
@@ -784,6 +859,27 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    和暦西暦変換編集処理
+      *****************************************************************
+       5002-HIZUKE-HEN-SEC          SECTION.
+      *
+           IF      WRK-SYMD (1:6)          =   ZERO    OR  SPACE
+               MOVE    SPACE                   TO  WRK-HENYMDG
+           ELSE
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-SYMD            TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"            USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
+           END-IF
+      *
+           .
+       5002-HIZUKE-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    システム管理マスタ読込
       *****************************************************************
        910-SYSKANRI-INV-SEC         SECTION.
@@ -826,6 +922,21 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *
            .
        900-SEIKYU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタＲＥＡＤ
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+grpsys     PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           .
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************

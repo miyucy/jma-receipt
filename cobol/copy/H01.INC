@@ -39,25 +39,25 @@
                 04  H01-TENSU-TBL OCCURS  38.
                   05  H01-TENSU-STATE   PIC S9(9)   BINARY.
                   05  H01-TENSU   PIC S9(8).
-              03  H01-TOTALTEN-G  OCCURS  3.
+              03  H01-TOTALTEN-G  OCCURS  5.
                 04  H01-TOTALTEN-STATE   PIC S9(9)   BINARY.
                 04  H01-TOTALTEN   PIC 9(8).
-              03  H01-FTNMONEY-G  OCCURS  3.
+              03  H01-FTNMONEY-G  OCCURS  5.
                 04  H01-FTNMONEY-STATE   PIC S9(9)   BINARY.
                 04  H01-FTNMONEY   PIC 9(8).
-              03  H01-YKZFTN-G  OCCURS  3.
+              03  H01-YKZFTN-G  OCCURS  5.
                 04  H01-YKZFTN-STATE   PIC S9(9)   BINARY.
                 04  H01-YKZFTN   PIC 9(8).
-              03  H01-JNISSU-G  OCCURS  3.
+              03  H01-JNISSU-G  OCCURS  5.
                 04  H01-JNISSU-STATE   PIC S9(9)   BINARY.
                 04  H01-JNISSU   PIC 9(2).
-              03  H01-SHORYOYOHI-G  OCCURS  3.
+              03  H01-SHORYOYOHI-G  OCCURS  5.
                 04  H01-SHORYOYOHI-STATE   PIC S9(9)   BINARY.
                 04  H01-SHORYOYOHI   PIC 9(8).
-              03  H01-SHOFTN-G  OCCURS  3.
+              03  H01-SHOFTN-G  OCCURS  5.
                 04  H01-SHOFTN-STATE   PIC S9(9)   BINARY.
                 04  H01-SHOFTN   PIC 9(8).
-              03  H01-SHONISSU-G  OCCURS  3.
+              03  H01-SHONISSU-G  OCCURS  5.
                 04  H01-SHONISSU-STATE   PIC S9(9)   BINARY.
                 04  H01-SHONISSU   PIC 9(2).
               03  H01-NKHNTEN-G  OCCURS  38.
@@ -67,27 +67,27 @@
               03  H01-NTENSU-G  OCCURS  3.
                 04  H01-NTENSU-TBL  OCCURS  38.
                   05  H01-NTENSU   PIC S9(8).
-              03  H01-NTOTALTEN-G OCCURS  3.
+              03  H01-NTOTALTEN-G OCCURS  5.
                 04  H01-NTOTALTEN-STATE   PIC S9(9)   BINARY.
                 04  H01-NTOTALTEN   PIC 9(8).
-              03  H01-NFTNMONEY-G OCCURS  3.
+              03  H01-NFTNMONEY-G OCCURS  5.
                 04  H01-NFTNMONEY   PIC 9(8).
-              03  H01-NYKZFTN-G   OCCURS  3.
+              03  H01-NYKZFTN-G   OCCURS  5.
                 04  H01-NYKZFTN   PIC 9(8).
-              03  H01-NJNISSU-G   OCCURS  3.
+              03  H01-NJNISSU-G   OCCURS  5.
                 04  H01-NJNISSU   PIC 9(2).
-              03  H01-NSHORYOYOHI-G  OCCURS  3.
+              03  H01-NSHORYOYOHI-G  OCCURS  5.
                 04  H01-NSHORYOYOHI-STATE   PIC S9(9)   BINARY.
                 04  H01-NSHORYOYOHI   PIC 9(8).
-              03  H01-NSHOFTN-G  OCCURS  3.
+              03  H01-NSHOFTN-G  OCCURS  5.
                 04  H01-NSHOFTN-STATE   PIC S9(9)   BINARY.
                 04  H01-NSHOFTN   PIC 9(8).
-              03  H01-NSHONISSU-G  OCCURS  3.
+              03  H01-NSHONISSU-G  OCCURS  5.
                 04  H01-NSHONISSU-STATE   PIC S9(9)   BINARY.
                 04  H01-NSHONISSU   PIC 9(2).
-              03  H01-SHOMIDASI-G  OCCURS  6.
+              03  H01-SHOMIDASI-G  OCCURS  12.
                 04  H01-SHOMIDASI  PIC X(14).
-              03  H01-TENMIDASI-G  OCCURS  8.
+              03  H01-TENMIDASI-G  OCCURS  16.
                 04  H01-TENMIDASI  PIC X(14).
               03  H01-SKYKBN-COMBO.
                 04  H01-SKYKBN.

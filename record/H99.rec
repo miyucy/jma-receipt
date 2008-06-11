@@ -20,10 +20,11 @@ H99	{
 					value2	varchar(6);
 					value3	varchar(10);
 					value4	varchar(10);
-					value5	varchar(10);
+					value5	varchar(44);
 					value6	varchar(8);
 					value7	varchar(8);
 					value8	varchar(20);
+					value9	varchar(9);
 				}	[5];
 				select	bool[5];
 			};

@@ -939,6 +939,14 @@ H01	{
                     state   int;
 			value	number(8);
 		};
+		TOTALTEN4	{
+                    state   int;
+			value	number(8);
+		};
+		TOTALTEN5	{
+                    state   int;
+			value	number(8);
+		};
 		FTNMONEY1	{
                     state   int;
 			value	number(8);
@@ -948,6 +956,14 @@ H01	{
 			value	number(8);
 		};
 		FTNMONEY3	{
+                    state   int;
+			value	number(8);
+		};
+		FTNMONEY4	{
+                    state   int;
+			value	number(8);
+		};
+		FTNMONEY5	{
                     state   int;
 			value	number(8);
 		};
@@ -963,6 +979,14 @@ H01	{
                     state   int;
 			value	number(8);
 		};
+		YKZFTN4	{
+                    state   int;
+			value	number(8);
+		};
+		YKZFTN5	{
+                    state   int;
+			value	number(8);
+		};
 		JNISSU1	{
                     state   int;
 			value	number(2);
@@ -972,6 +996,14 @@ H01	{
 			value	number(2);
 		};
 		JNISSU3	{
+                    state   int;
+			value	number(2);
+		};
+		JNISSU4	{
+                    state   int;
+			value	number(2);
+		};
+		JNISSU5	{
                     state   int;
 			value	number(2);
 		};
@@ -987,6 +1019,14 @@ H01	{
                     state   int;
 			value	number(8);
 		};
+		SHORYOYOHI4	{
+                    state   int;
+			value	number(8);
+		};
+		SHORYOYOHI5	{
+                    state   int;
+			value	number(8);
+		};
 		SHOFTN1	{
                     state   int;
 			value	number(8);
@@ -999,6 +1039,14 @@ H01	{
                     state   int;
 			value	number(8);
 		};
+		SHOFTN4	{
+                    state   int;
+			value	number(8);
+		};
+		SHOFTN5	{
+                    state   int;
+			value	number(8);
+		};
 		SHONISSU1	{
                     state   int;
 			value	number(2);
@@ -1008,6 +1056,14 @@ H01	{
 			value	number(2);
 		};
 		SHONISSU3	{
+                    state   int;
+			value	number(2);
+		};
+		SHONISSU4	{
+                    state   int;
+			value	number(2);
+		};
+		SHONISSU5	{
                     state   int;
 			value	number(2);
 		};
@@ -1593,6 +1649,14 @@ H01	{
                     state   int;
 			value	number(8);
 		};
+		NTOTALTEN4	{
+                    state   int;
+			value	number(8);
+		};
+		NTOTALTEN5	{
+                    state   int;
+			value	number(8);
+		};
 		NFTNMONEY1	{
 			value	number(8);
 		};
@@ -1600,6 +1664,12 @@ H01	{
 			value	number(8);
 		};
 		NFTNMONEY3	{
+			value	number(8);
+		};
+		NFTNMONEY4	{
+			value	number(8);
+		};
+		NFTNMONEY5	{
 			value	number(8);
 		};
 		NYKZFTN1	{
@@ -1611,6 +1681,12 @@ H01	{
 		NYKZFTN3	{
 			value	number(8);
 		};
+		NYKZFTN4	{
+			value	number(8);
+		};
+		NYKZFTN5	{
+			value	number(8);
+		};
 		NJNISSU1	{
 			value	number(2);
 		};
@@ -1618,6 +1694,12 @@ H01	{
 			value	number(2);
 		};
 		NJNISSU3	{
+			value	number(2);
+		};
+		NJNISSU4	{
+			value	number(2);
+		};
+		NJNISSU5	{
 			value	number(2);
 		};
 		NSHORYOYOHI1	{
@@ -1629,6 +1711,14 @@ H01	{
 			value	number(8);
 		};
 		NSHORYOYOHI3	{
+                    state   int;
+			value	number(8);
+		};
+		NSHORYOYOHI4	{
+                    state   int;
+			value	number(8);
+		};
+		NSHORYOYOHI5	{
                     state   int;
 			value	number(8);
 		};
@@ -1644,6 +1734,14 @@ H01	{
                     state   int;
 			value	number(8);
 		};
+		NSHOFTN4	{
+                    state   int;
+			value	number(8);
+		};
+		NSHOFTN5	{
+                    state   int;
+			value	number(8);
+		};
 		NSHONISSU1	{
                     state   int;
 			value	number(2);
@@ -1653,6 +1751,14 @@ H01	{
 			value	number(2);
 		};
 		NSHONISSU3	{
+                    state   int;
+			value	number(2);
+		};
+		NSHONISSU4	{
+                    state   int;
+			value	number(2);
+		};
+		NSHONISSU5	{
                     state   int;
 			value	number(2);
 		};
@@ -1672,6 +1778,24 @@ H01	{
 			value	varchar(14);
 		};
 		SHOMIDASI6	{
+			value	varchar(14);
+		};
+		SHOMIDASI7	{
+			value	varchar(14);
+		};
+		SHOMIDASI8	{
+			value	varchar(14);
+		};
+		SHOMIDASI9	{
+			value	varchar(14);
+		};
+		SHOMIDASI10	{
+			value	varchar(14);
+		};
+		SHOMIDASI11	{
+			value	varchar(14);
+		};
+		SHOMIDASI12	{
 			value	varchar(14);
 		};
 		TENMIDASI1	{
@@ -1696,6 +1820,30 @@ H01	{
 			value	varchar(14);
 		};
 		TENMIDASI8	{
+			value	varchar(14);
+		};
+		TENMIDASI9	{
+			value	varchar(14);
+		};
+		TENMIDASI10	{
+			value	varchar(14);
+		};
+		TENMIDASI11	{
+			value	varchar(14);
+		};
+		TENMIDASI12	{
+			value	varchar(14);
+		};
+		TENMIDASI13	{
+			value	varchar(14);
+		};
+		TENMIDASI14	{
+			value	varchar(14);
+		};
+		TENMIDASI15	{
+			value	varchar(14);
+		};
+		TENMIDASI16	{
 			value	varchar(14);
 		};
 		};

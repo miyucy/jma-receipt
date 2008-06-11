@@ -71,6 +71,10 @@
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
+      *
+      *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *                                     一括入力対応
+      *  04.03.02    NACL-藤原    08/06/06  レセプト種別名称、作成日の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -101,6 +105,8 @@
            03  FLG-SEIKYU          PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-KOHSKY          PIC 9(01).
+      *
+           03  FLG-TOUROKU         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -139,6 +145,10 @@
                05  WRK-WYY         PIC 9(02).
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
+      *
+      *    入力項目名
+           03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-GMN-CUR         PIC 9(03).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -756,260 +766,172 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                    PERFORM 4102-SRYYM-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "SRYKA"
                    PERFORM 4103-SRYKA-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SKYYM"
-                   PERFORM 4104-SKYYM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "HENREIYM"
-                   PERFORM 4105-HENREIYM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "SKYKBN"
-                   PERFORM 4106-SKYKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN01"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN02"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN03"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN04"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN05"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN06"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN07"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN08"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN09"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN10"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN11"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN12"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN13"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN14"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN15"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN16"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN17"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN18"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN19"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN20"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN21"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN22"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN23"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN24"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN25"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN26"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN27"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN28"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN29"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN30"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN31"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN32"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN33"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN34"
-               WHEN    "ACTIVATE"      ALSO    "NKHNTEN35"
-      **         WHEN    "ACTIVATE"      ALSO    "NKHNTEN36"
-      **         WHEN    "ACTIVATE"      ALSO    "NKHNTEN37"
-      **         WHEN    "ACTIVATE"      ALSO    "NKHNTEN38"
-                   MOVE    MCP-WIDGET (8:2)    TO  WRK-WIDGET 
-                   MOVE    WRK-WIDGET          TO  IDX 
-                   PERFORM 4108-KHNTEN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NKAISU01"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU02"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU03"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU04"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU05"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU06"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU07"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU08"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU09"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU10"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU11"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU12"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU13"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU14"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU15"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU16"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU17"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU18"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU19"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU20"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU21"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU22"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU23"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU24"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU25"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU26"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU27"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU28"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU29"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU30"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU31"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU32"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU33"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU34"
-               WHEN    "ACTIVATE"      ALSO    "NKAISU35"
-      **         WHEN    "ACTIVATE"      ALSO    "NKAISU36"
-      **         WHEN    "ACTIVATE"      ALSO    "NKAISU37"
-      **         WHEN    "ACTIVATE"      ALSO    "NKAISU38"
-                   MOVE    MCP-WIDGET (7:2)    TO  WRK-WIDGET 
-                   MOVE    WRK-WIDGET          TO  IDX  
-                   PERFORM 4109-KAISU-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NTENSU01"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU02"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU03"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU04"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU05"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU06"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU07"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU08"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU09"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU10"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU11"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU12"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU13"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU14"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU15"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU16"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU17"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU18"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU19"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU20"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU21"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU22"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU23"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU24"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU25"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU26"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU27"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU28"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU29"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU30"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU31"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU32"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU33"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU34"
-               WHEN    "ACTIVATE"      ALSO    "NTENSU35"
-      **         WHEN    "ACTIVATE"      ALSO    "NTENSU36"
-      **         WHEN    "ACTIVATE"      ALSO    "NTENSU37"
-      **         WHEN    "ACTIVATE"      ALSO    "NTENSU38"
-                   MOVE    MCP-WIDGET (7:2)    TO  WRK-WIDGET 
-                   MOVE    WRK-WIDGET          TO  IDX  
-                   MOVE    1                   TO  IDY
-                   PERFORM 4110-TENSU-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU101"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU102"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU103"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU104"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU105"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU106"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU107"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU108"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU109"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU110"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU111"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU112"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU113"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU114"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU115"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU116"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU117"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU118"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU119"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU120"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU121"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU122"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU123"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU124"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU125"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU126"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU127"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU128"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU129"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU130"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU131"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU132"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU133"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU134"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU135"
-      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU136"
-      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU137"
-      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU138"
-                   MOVE    MCP-WIDGET (11:2)   TO  WRK-WIDGET 
-                   MOVE    WRK-WIDGET          TO  IDX 
-                   MOVE    2                   TO  IDY 
-                   PERFORM 4110-TENSU-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU201"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU202"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU203"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU204"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU205"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU206"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU207"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU208"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU209"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU210"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU211"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU212"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU213"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU214"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU215"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU216"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU217"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU218"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU219"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU220"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU221"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU222"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU223"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU224"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU225"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU226"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU227"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU228"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU229"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU230"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU231"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU232"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU233"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU234"
-               WHEN    "ACTIVATE"      ALSO    "NKOHTENSU235"
-      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU236"
-      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU237"
-      **         WHEN    "ACTIVATE"      ALSO    "NKOHTENSU238"
-                   MOVE    MCP-WIDGET (11:2)   TO  WRK-WIDGET 
-                   MOVE    WRK-WIDGET          TO  IDX 
-                   MOVE    3                   TO  IDY 
-                   PERFORM 4110-TENSU-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NFTNMONEY1"
-               WHEN    "ACTIVATE"      ALSO    "NFTNMONEY2"
-               WHEN    "ACTIVATE"      ALSO    "NFTNMONEY3"
-                   MOVE    MCP-WIDGET (10:1)   TO  WRK-WIDGET1 
-                   MOVE    WRK-WIDGET1         TO  IDX 
-                   PERFORM 4111-FTNMONEY-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NYKZFTN1"
-               WHEN    "ACTIVATE"      ALSO    "NYKZFTN2"
-               WHEN    "ACTIVATE"      ALSO    "NYKZFTN3"
-                   MOVE    MCP-WIDGET (8:1)    TO  WRK-WIDGET1 
-                   MOVE    WRK-WIDGET1         TO  IDX 
-                   PERFORM 4112-YKZFTN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NJNISSU1"
-               WHEN    "ACTIVATE"      ALSO    "NJNISSU2"
-               WHEN    "ACTIVATE"      ALSO    "NJNISSU3"
-                   MOVE    MCP-WIDGET (8:1)    TO  WRK-WIDGET1 
-                   MOVE    WRK-WIDGET1         TO  IDX 
-                   PERFORM 4113-JNISSU-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NSHORYOYOHI1"
-               WHEN    "ACTIVATE"      ALSO    "NSHORYOYOHI2"
-               WHEN    "ACTIVATE"      ALSO    "NSHORYOYOHI3"
-                   MOVE    MCP-WIDGET (12:1)   TO  WRK-WIDGET1 
-                   MOVE    WRK-WIDGET1         TO  IDX 
-                   PERFORM 4114-SHORYOYOHI-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NSHOFTN1"
-               WHEN    "ACTIVATE"      ALSO    "NSHOFTN2"
-               WHEN    "ACTIVATE"      ALSO    "NSHOFTN3"
-                   MOVE    MCP-WIDGET (8:1)    TO  WRK-WIDGET1 
-                   MOVE    WRK-WIDGET1         TO  IDX 
-                   PERFORM 4115-SHOFTN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NSHONISSU1"
-               WHEN    "ACTIVATE"      ALSO    "NSHONISSU2"
-               WHEN    "ACTIVATE"      ALSO    "NSHONISSU3"
-                   MOVE    MCP-WIDGET (10:1)    TO  WRK-WIDGET1 
-                   MOVE    WRK-WIDGET1         TO  IDX 
-                   PERFORM 4116-SHONISSU-CHK-SEC
+      *        一括分
+               WHEN    "ACTIVATE"       ALSO    ANY
+                   PERFORM 400-ENTRY-SYORI-SEC
            END-EVALUATE
+           .
+      *
+       200-ENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一括分入力処理
+      *****************************************************************
+       400-ENTRY-SYORI-SEC             SECTION.
+      *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-H01GMN-CUR
+      *
+      *    入力チェック処理
+           MOVE    ZERO                TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       400-ENTRY-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *    入力チェック
+           IF      SPA-HENFLG          =   SPACE
+               MOVE    "0015"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-H01GMN-CUR
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+           IF      FLG-TOUROKU         =   1
+      *        更新前
+               PERFORM 4103-KAKUTEI-CHK-SEC
+           END-IF
       *
            .
-       200-ENTRY-EXT.
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    H01-SKYYM       TO  SPA-H01GMN-SKYYM
+           MOVE    H01-HENREIYM    TO  SPA-H01GMN-HENREIYM
+           MOVE    H01-SKYKBN      TO  SPA-H01GMN-SKYKBN-G
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       38
+               MOVE    H01-NKHNTEN (IDX)   TO  SPA-H01GMN-NKHNTEN (IDX)
+               MOVE    H01-NKAISU (IDX)    TO  SPA-H01GMN-NKAISU  (IDX)
+               PERFORM VARYING IDY     FROM    1   BY  1
+                       UNTIL   IDY     >       3
+                   COMPUTE SPA-H01GMN-NTOTALTEN (IDY) = 
+                                      SPA-H01GMN-NTOTALTEN (IDY)     -
+                                      SPA-H01GMN-NTENSU    (IDY IDX)
+                   MOVE    H01-NTENSU (IDY IDX)
+                                       TO  SPA-H01GMN-NTENSU (IDY IDX)
+               END-PERFORM
+           END-PERFORM    
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       5
+               IF      IDX                 >   3
+                   MOVE    H01-NTOTALTEN (IDX)
+                                           TO  SPA-H01GMN-NTOTALTEN(IDX)
+               END-IF
+               MOVE    H01-NFTNMONEY (IDX) TO  SPA-H01GMN-NFTNMONEY(IDX)
+               MOVE    H01-NYKZFTN   (IDX) TO  SPA-H01GMN-NYKZFTN  (IDX)
+               MOVE    H01-NJNISSU   (IDX) TO  SPA-H01GMN-NJNISSU  (IDX)
+               MOVE    H01-NSHORYOYOHI
+                                     (IDX) TO  SPA-H01GMN-NSHORYOYOHI
+                                                                   (IDX)
+               MOVE    H01-NSHOFTN   (IDX) TO  SPA-H01GMN-NSHOFTN  (IDX)
+               MOVE    H01-NSHONISSU (IDX) TO  SPA-H01GMN-NSHONISSU(IDX)
+           END-PERFORM
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM 4104-SKYYM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 4105-HENREIYM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 4106-SKYKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 4108-KHNTEN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       38
+               PERFORM 4109-KAISU-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+               PERFORM VARYING IDY     FROM    1   BY  1
+                       UNTIL   IDY     >   3
+                   PERFORM 4110-TENSU-CHK-SEC
+                   IF      SPA-ERRCD       NOT =   SPACE
+                       GO  TO  4102-KIHON-CHK-EXT
+                   END-IF
+               END-PERFORM
+           END-PERFORM        
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       5
+               PERFORM 4111-FTNMONEY-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+               PERFORM 4112-YKZFTN-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+               PERFORM 4113-JNISSU-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+               PERFORM 4114-SHORYOYOHI-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+               PERFORM 4115-SHOFTN-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+               PERFORM 4116-SHONISSU-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+           END-PERFORM
+           PERFORM VARYING IDX     FROM    4   BY  1
+                   UNTIL   IDX     >       5
+               PERFORM 4117-TOTALTEN-CHK-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+           END-PERFORM
+      *
+           .
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1232,7 +1154,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "1"
                WHEN    "2"
                WHEN    "6"
-                   MOVE    RECE10-HKNJANUM     TO  SPA-H01GMN-HHKNJANUM
+                   IF      RECE10-HKNJANUM     NOT =   "00000000"
+                       MOVE    RECE10-HKNJANUM TO  SPA-H01GMN-HHKNJANUM
+                   END-IF
            END-EVALUATE
       *
            EVALUATE    RECE10-TEISYUTUSAKI
@@ -1350,7 +1274,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-EVALUATE 
       *    
            PERFORM VARYING IDY FROM    1   BY  1
-                   UNTIL   IDY >       3
+                   UNTIL   IDY >       5
                MOVE    RECE10-TOTALTEN (IDY)
                                    TO  SPA-H01GMN-TOTALTEN (IDY)
                                        SPA-H01GMN-NTOTALTEN(IDY)
@@ -1381,7 +1305,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    CONTINUE
                ELSE
                    PERFORM VARYING IDY FROM    1   BY  1
-                           UNTIL   IDY >       3
+                           UNTIL   IDY >       5
                        MOVE    RECE10-SHOKUJIRYOYOHI (IDY)
                                    TO  SPA-H01GMN-SHORYOYOHI (IDY)
                                        SPA-H01GMN-NSHORYOYOHI(IDY)
@@ -1551,9 +1475,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4104-SKYYM-CHK-SEC          SECTION.
       *
-           MOVE    4               TO  SPA-H01GMN-CUR
-      *
-           MOVE    H01-SKYYM       TO  SPA-H01GMN-SKYYM
            MOVE    ZERO            TO  SPA-H01NAI-SKYYM
       *
            IF      SPA-H01GMN-SKYYM    =   SPACE
@@ -1581,8 +1502,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *    更新フラグセット
            MOVE    "1"                 TO  SPA-UPDFLG
       *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    5               TO  SPA-H01GMN-CUR
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    4               TO  SPA-H01GMN-CUR
            END-IF
            .
        4104-SRYYM-CHK-EXT.
@@ -1593,9 +1514,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4105-HENREIYM-CHK-SEC          SECTION.
       *
-           MOVE    5               TO  SPA-H01GMN-CUR
-      *
-           MOVE    H01-HENREIYM    TO  SPA-H01GMN-HENREIYM
            MOVE    ZERO            TO  SPA-H01NAI-HENREIYM
       *
            IF      SPA-H01GMN-HENREIYM =   SPACE
@@ -1624,8 +1542,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *    更新フラグセット
            MOVE    "1"                 TO  SPA-UPDFLG
       *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    6               TO  SPA-H01GMN-CUR
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    5               TO  SPA-H01GMN-CUR
            END-IF
            .
        4105-HENREIYM-CHK-EXT.
@@ -1636,18 +1554,14 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4106-SKYKBN-CHK-SEC             SECTION.
       *
-           MOVE    6                   TO  SPA-H01GMN-CUR
-      *
-           MOVE    H01-SKYKBN          TO  SPA-H01GMN-SKYKBN-G
-      *
            MOVE    SPACE               TO  SPA-H01GMN-SKYKBNMEI 
-           PERFORM VARYING IDY FROM   1   BY  1
-                   UNTIL   IDY >      3
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       3
                IF      SPA-H01GMN-SKYKBN
-                                      =   SPA-H01GMN-SKYKBNL (IDY)
+                                       =   SPA-H01GMN-SKYKBNL (IDY)
                    MOVE    SPA-H01GMN-SKYKBNMEIL (IDY)
-                                          TO  SPA-H01GMN-SKYKBNMEI
-                   MOVE    3              TO  IDY
+                                           TO  SPA-H01GMN-SKYKBNMEI
+                   MOVE    3               TO  IDY
                END-IF
            END-PERFORM
       *
@@ -1658,8 +1572,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *    更新フラグセット
            MOVE    "1"                 TO  SPA-UPDFLG
       *
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    8               TO  SPA-H01GMN-CUR
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    6               TO  SPA-H01GMN-CUR
            END-IF
            .
        4106-SKYKBN-CHK-EXT.
@@ -1670,19 +1584,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4108-KHNTEN-CHK-SEC          SECTION.
       *
-      *
-           MOVE    3                  TO  SPA-H01GMN-CUR
-      *
-           COMPUTE SPA-H01GMN-CUR        =   SPA-H01GMN-CUR     +
-                                          IDX *  5
-           MOVE    H01-NKHNTEN (IDX)      TO  SPA-H01GMN-NKHNTEN (IDX)
-      *
       *    更新フラグセット
            MOVE    "1"                 TO  SPA-UPDFLG
-      *
-           IF      SPA-ERRCD           =   SPACE
-               ADD     1                   TO  SPA-H01GMN-CUR
-           END-IF 
            .
        4108-KHNTEN-CHK-EXT.
            EXIT.
@@ -1693,19 +1596,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4109-KAISU-CHK-SEC          SECTION.
       *
-      *
-           MOVE    4                  TO  SPA-H01GMN-CUR
-      *
-           COMPUTE SPA-H01GMN-CUR        =   SPA-H01GMN-CUR     +
-                                          IDX *  5
-           MOVE    H01-NKAISU (IDX)       TO  SPA-H01GMN-NKAISU (IDX)
-      *
       *    更新フラグセット
            MOVE    "1"                 TO  SPA-UPDFLG
-      *
-           IF      SPA-ERRCD           =   SPACE
-               ADD     1                   TO  SPA-H01GMN-CUR
-           END-IF 
            .
        4109-KAISU-CHK-EXT.
            EXIT.
@@ -1716,29 +1608,12 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4110-TENSU-CHK-SEC          SECTION.
       *
-           MOVE    4                  TO  SPA-H01GMN-CUR
-      *
-           COMPUTE SPA-H01GMN-CUR        =   SPA-H01GMN-CUR     +
-                                          IDY             +
-                                          IDX *  5
-      *
-           COMPUTE SPA-H01GMN-NTOTALTEN (IDY) = 
-                                      SPA-H01GMN-NTOTALTEN (IDY)     -
-                                      SPA-H01GMN-NTENSU    (IDY IDX)
-      *           
-           MOVE    H01-NTENSU (IDY IDX)
-                                       TO  SPA-H01GMN-NTENSU (IDY IDX)
-      *
            COMPUTE SPA-H01GMN-NTOTALTEN (IDY) = 
                                       SPA-H01GMN-NTOTALTEN (IDY)     +
                                       SPA-H01GMN-NTENSU    (IDY IDX)
       *
       *    更新フラグセット
            MOVE    "1"                 TO  SPA-UPDFLG
-      *
-           IF      SPA-ERRCD           =   SPACE
-               ADD     1                   TO  SPA-H01GMN-CUR
-           END-IF 
            .
        4110-TENSU-CHK-EXT.
            EXIT.
@@ -1748,19 +1623,9 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4111-FTNMONEY-CHK-SEC          SECTION.
       *
-           MOVE    182                TO  SPA-H01GMN-CUR
-      *
-           COMPUTE SPA-H01GMN-CUR        =   SPA-H01GMN-CUR     +
-                                          IDX
-      *
-           MOVE    H01-NFTNMONEY (IDX) TO  SPA-H01GMN-NFTNMONEY (IDX)
-      *
       *    更新フラグセット
            MOVE    "1"                 TO  SPA-UPDFLG
       *
-           IF      SPA-ERRCD           =   SPACE
-               ADD     1                   TO  SPA-H01GMN-CUR
-           END-IF 
            .
        4111-FTNMONEY-CHK-EXT.
            EXIT.
@@ -1770,19 +1635,9 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4112-YKZFTN-CHK-SEC          SECTION.
       *
-           MOVE    185                TO  SPA-H01GMN-CUR
-      *
-           COMPUTE SPA-H01GMN-CUR        =   SPA-H01GMN-CUR     +
-                                          IDX
-      *
-           MOVE    H01-NYKZFTN (IDX)      TO  SPA-H01GMN-NYKZFTN (IDX)
-      *
       *    更新フラグセット
            MOVE    "1"                 TO  SPA-UPDFLG
       *
-           IF      SPA-ERRCD           =   SPACE
-               ADD     1                   TO  SPA-H01GMN-CUR
-           END-IF 
            .
        4112-YKZFTN-CHK-EXT.
            EXIT.
@@ -1792,24 +1647,9 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4113-JNISSU-CHK-SEC          SECTION.
       *
-           MOVE    188                TO  SPA-H01GMN-CUR
-      *
-           COMPUTE SPA-H01GMN-CUR        =   SPA-H01GMN-CUR     +
-                                          IDX
-      *
-           MOVE    H01-NJNISSU (IDX)      TO  SPA-H01GMN-NJNISSU (IDX)
-      *
       *    更新フラグセット
            MOVE    "1"                 TO  SPA-UPDFLG
       *
-           IF      SPA-ERRCD          =   SPACE
-               IF      SPA-H01GMN-CUR        =   191
-               AND     SPA-RECE10-NYUGAIKBN  =   "2"
-                   MOVE    8                  TO  SPA-H01GMN-CUR
-               ELSE 
-                   ADD     1                  TO  SPA-H01GMN-CUR
-               END-IF
-           END-IF 
            .
        4113-JNISSU-CHK-EXT.
            EXIT.
@@ -1819,20 +1659,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4114-SHORYOYOHI-CHK-SEC          SECTION.
       *
-           MOVE    191                TO  SPA-H01GMN-CUR
-      *
-           COMPUTE SPA-H01GMN-CUR     =   SPA-H01GMN-CUR     +
-                                          IDX
-      *
-           MOVE    H01-NSHORYOYOHI (IDX)
-                                      TO  SPA-H01GMN-NSHORYOYOHI (IDX)
-      *
       *    更新フラグセット
            MOVE    "1"                TO  SPA-UPDFLG
-      *
-           IF      SPA-ERRCD          =   SPACE
-               ADD     1                  TO  SPA-H01GMN-CUR
-           END-IF 
            .
        4114-SHORYOYOHI-CHK-EXT.
            EXIT.
@@ -1842,19 +1670,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4115-SHOFTN-CHK-SEC          SECTION.
       *
-           MOVE    194                TO  SPA-H01GMN-CUR
-      *
-           COMPUTE SPA-H01GMN-CUR        =   SPA-H01GMN-CUR     +
-                                          IDX
-      *
-           MOVE    H01-NSHOFTN (IDX)      TO  SPA-H01GMN-NSHOFTN (IDX)
-      *
       *    更新フラグセット
            MOVE    "1"                 TO  SPA-UPDFLG
-      *
-           IF      SPA-ERRCD           =   SPACE
-               ADD     1                   TO  SPA-H01GMN-CUR
-           END-IF 
            .
        4115-SHOFTN-CHK-EXT.
            EXIT.
@@ -1864,27 +1681,45 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4116-SHONISSU-CHK-SEC          SECTION.
       *
+      *    更新フラグセット
+           MOVE    "1"                TO  SPA-UPDFLG
+           .
+       4116-SHONISSU-CHK-EXT.
+           EXIT.
       *
-           MOVE    197                TO  SPA-H01GMN-CUR
-      *
-           COMPUTE SPA-H01GMN-CUR     =   SPA-H01GMN-CUR     +
-                                          IDX
-      *
-           MOVE    H01-NSHONISSU (IDX)
-                                      TO  SPA-H01GMN-NSHONISSU (IDX)
+      *****************************************************************
+      *     合計点数（公費３、公費４）チェック処理
+      *****************************************************************
+       4117-TOTALTEN-CHK-SEC          SECTION.
       *
       *    更新フラグセット
            MOVE    "1"                TO  SPA-UPDFLG
-      *
-           IF      SPA-ERRCD          =   SPACE
-               IF      SPA-H01GMN-CUR     =   200
-                   MOVE    8                  TO  SPA-H01GMN-CUR
-               ELSE 
-                   ADD     1                  TO  SPA-H01GMN-CUR
-               END-IF
-           END-IF 
            .
-       4116-SHONISSU-CHK-EXT.
+       4117-TOTALTEN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確定ボタン押下時チェック処理
+      *****************************************************************
+       4103-KAKUTEI-CHK-SEC        SECTION.
+      *
+           IF      SPA-UPDFLG          =   SPACE
+               MOVE    "0010"              TO  SPA-ERRCD
+               GO  TO  4103-KAKUTEI-CHK-EXT
+           END-IF
+      *
+      *
+           IF    ( SPA-H01NAI-SKYYM    >   ZERO  )
+           AND   ( SPA-H01NAI-SRYYM    >   ZERO  )
+               IF      SPA-H01NAI-SKYYM    <   SPA-H01NAI-SRYYM
+                   MOVE    "0002"              TO  SPA-ERRCD
+                   MOVE    4                   TO  SPA-H01GMN-CUR
+               GO  TO  4103-KAKUTEI-CHK-EXT
+               END-IF
+           END-IF
+      *
+           .
+       4103-KAKUTEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1948,52 +1783,15 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        450-KOUSIN-GIDMSG-SEC                SECTION.
       *
-           IF      SPA-HENFLG          =   SPACE
-               MOVE    "0015"              TO  SPA-ERRCD
+      *    入力チェック
+           MOVE    1               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
                GO  TO  450-KOUSIN-GIDMSG-EXT
            END-IF
-      *
-           IF      SPA-UPDFLG          =   SPACE
-               MOVE    "0010"              TO  SPA-ERRCD
-               GO  TO  450-KOUSIN-GIDMSG-EXT
-           END-IF
-      *
-           IF    ( SPA-H01GMN-SKYYM
-                                   NOT =   SPACE )
-           AND   ( SPA-H01NAI-SKYYM    =   ZERO  )
-               MOVE    "0002"              TO  SPA-ERRCD
-               MOVE    4                   TO  SPA-H01GMN-CUR  
-               GO  TO  450-KOUSIN-GIDMSG-EXT
-           END-IF       
-      *
-           IF    ( SPA-H01GMN-HENREIYM
-                                   NOT =   SPACE )
-           AND   ( SPA-H01NAI-HENREIYM =   ZERO  )
-              MOVE    "0002"               TO  SPA-ERRCD
-               MOVE    5                   TO  SPA-H01GMN-CUR  
-               GO  TO  450-KOUSIN-GIDMSG-EXT
-           END-IF
-      *       
-           IF    ( SPA-H01NAI-SKYYM    >   ZERO  )
-           AND   ( SPA-H01NAI-SRYYM    >   ZERO  )
-               IF      SPA-H01NAI-SKYYM    <   SPA-H01NAI-SRYYM
-                   MOVE    "0002"              TO  SPA-ERRCD
-                   MOVE    4                   TO  SPA-H01GMN-CUR  
-                   GO  TO  450-KOUSIN-GIDMSG-EXT
-               END-IF
-           END-IF 
-      *        
-           IF      SPA-H01GMN-SKYKBNMEI
-                                       =   SPACE
-              MOVE    "0001"               TO  SPA-ERRCD
-               MOVE    6                   TO  SPA-H01GMN-CUR  
-               GO  TO  450-KOUSIN-GIDMSG-EXT
-           END-IF       
       *         
       *    ガイドメッセージセット
-           IF      SPA-ERRCD           =   SPACE
-               MOVE    "1001"              TO  SPA-HIDCD
-           END-IF    
+           MOVE    "1001"              TO  SPA-HIDCD
            .
        450-KOUSIN-GIDMSG-EXT.
            EXIT.
@@ -2029,7 +1827,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                CONTINUE
            ELSE
                PERFORM VARYING IDX FROM    1   BY  1
-                       UNTIL   IDX >       3
+                       UNTIL   IDX >       5
                    MOVE    SPA-H01GMN-NJNISSU (IDX)  TO
                                            RECE10-JNISSU   (IDX)
                    MOVE    SPA-H01GMN-NTOTALTEN (IDX)    TO 
@@ -2181,7 +1979,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    SPACE               TO  LINKAREA
       *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
+           MOVE    "CURRENT"           TO  MCP-PUTTYPE
            MOVE    "H01    "           TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW.
@@ -2245,7 +2043,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            END-PERFORM
       *
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL   IDX     >   3
+                   UNTIL   IDX     >   5
                MOVE    SPA-H01GMN-TOTALTEN (IDX)
                                                TO  H01-TOTALTEN (IDX)
                MOVE    SPA-H01GMN-FTNMONEY (IDX)
@@ -2279,19 +2077,33 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    SPA-H01GMN-SHOMIDASI (1)    TO  H01-SHOMIDASI (1)
                                                    H01-SHOMIDASI (4) 
+                                                   H01-SHOMIDASI (7) 
+                                                   H01-SHOMIDASI (10) 
            MOVE    SPA-H01GMN-SHOMIDASI (2)    TO  H01-SHOMIDASI (2)
                                                    H01-SHOMIDASI (5) 
+                                                   H01-SHOMIDASI (8) 
+                                                   H01-SHOMIDASI (11) 
            MOVE    SPA-H01GMN-SHOMIDASI (3)    TO  H01-SHOMIDASI (3)
                                                    H01-SHOMIDASI (6) 
+                                                   H01-SHOMIDASI (9) 
+                                                   H01-SHOMIDASI (12) 
       *
            MOVE    SPA-H01GMN-TENMIDASI (1)    TO  H01-TENMIDASI (1)
                                                    H01-TENMIDASI (5) 
+                                                   H01-TENMIDASI (9) 
+                                                   H01-TENMIDASI (13) 
            MOVE    SPA-H01GMN-TENMIDASI (2)    TO  H01-TENMIDASI (2)
                                                    H01-TENMIDASI (6) 
+                                                   H01-TENMIDASI (10) 
+                                                   H01-TENMIDASI (14) 
            MOVE    SPA-H01GMN-TENMIDASI (3)    TO  H01-TENMIDASI (3)
                                                    H01-TENMIDASI (7) 
+                                                   H01-TENMIDASI (11) 
+                                                   H01-TENMIDASI (15) 
            MOVE    SPA-H01GMN-TENMIDASI (4)    TO  H01-TENMIDASI (4)
                                                    H01-TENMIDASI (8) 
+                                                   H01-TENMIDASI (12) 
+                                                   H01-TENMIDASI (16) 
       *    色の設定
            PERFORM VARYING IDX FROM    1       BY  1
                    UNTIL   IDX     >   38
@@ -2325,16 +2137,21 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                END-PERFORM
            END-PERFORM
            PERFORM VARYING IDX FROM    1       BY  1
-                   UNTIL   IDX     >   3
+                   UNTIL   IDX     >   5
                MOVE    WIDGET-INSENSITIVE
                                    TO  H01-TOTALTEN-STATE  (IDX)
                                        H01-FTNMONEY-STATE  (IDX)
                                        H01-YKZFTN-STATE    (IDX)
                                        H01-JNISSU-STATE    (IDX)
-                                       H01-NTOTALTEN-STATE (IDX)
                                        H01-SHORYOYOHI-STATE(IDX)
                                        H01-SHOFTN-STATE    (IDX)
                                        H01-SHONISSU-STATE  (IDX)
+               IF      IDX             <   4
+                   MOVE    WIDGET-INSENSITIVE
+                                           TO  H01-NTOTALTEN-STATE (IDX)
+               ELSE
+                   MOVE    WIDGET-NORMAL   TO  H01-NTOTALTEN-STATE (IDX)
+               END-IF
                MOVE    SPA-H01GMN-SHO-STATE
                                    TO  H01-NSHORYOYOHI-STATE(IDX)
                                        H01-NSHOFTN-STATE    (IDX)
@@ -2358,84 +2175,461 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
-         EVALUATE    SPA-H01GMN-CUR
-             WHEN    2
-                    MOVE  "PTNUM"        TO  MCP-WIDGET
-             WHEN    1
-                    MOVE  "SRYYM"        TO  MCP-WIDGET
-             WHEN    3
-                    MOVE  "SRYKA"        TO  MCP-WIDGET
-             WHEN    4
-                    MOVE  "SKYYM"        TO  MCP-WIDGET
-             WHEN    5
-                    MOVE  "HENREIYM"     TO  MCP-WIDGET
-             WHEN    6
-                    MOVE  "SKYKBN"       TO  MCP-WIDGET
-             WHEN    8   THRU    182
-                 COMPUTE IDX     =   SPA-H01GMN-CUR     -   3   
-                 DIVIDE   IDX          BY  5
-                                       GIVING       WRK-SYO
-                                       REMAINDER    WRK-AMARI
-                 MOVE    WRK-SYO          TO  WRK-WIDGET 
-                 EVALUATE    WRK-AMARI
-                     WHEN    0
-                         MOVE  "NKHNTEN"  TO  MCP-WIDGET
-                         MOVE  WRK-WIDGET-X TO  MCP-WIDGET (8:2)
-                     WHEN    1
-                         MOVE  "NKAISU"   TO  MCP-WIDGET
-                         MOVE  WRK-WIDGET-X TO  MCP-WIDGET (7:2)
-                     WHEN    2
-                         MOVE  "NTENSU"   TO  MCP-WIDGET
-                         MOVE  WRK-WIDGET-X TO  MCP-WIDGET (7:2)
-                     WHEN    3
-                         MOVE  "NKOHTENSU1"  TO  MCP-WIDGET
-                         MOVE  WRK-WIDGET-X TO  MCP-WIDGET (11:2)
-                     WHEN    4
-                         MOVE  "NKOHTENSU2"  TO  MCP-WIDGET
-                         MOVE  WRK-WIDGET-X TO  MCP-WIDGET (11:2)
+           IF    ( SPA-ERRCD       =   SPACE )
+           AND   ( SPA-H01GMN-CUR  =   ZERO  )
+               PERFORM 50011-INPUT-CUR-SEC
+           END-IF
+      *
+           EVALUATE    SPA-H01GMN-CUR
+               WHEN    2
+                   MOVE    "PTNUM"         TO  MCP-WIDGET
+               WHEN    1
+                   MOVE    "SRYYM"         TO  MCP-WIDGET
+               WHEN    3
+                   MOVE    "SRYKA"         TO  MCP-WIDGET
+               WHEN    4
+                   MOVE    "SKYYM"         TO  MCP-WIDGET
+               WHEN    5
+                   MOVE    "HENREIYM"      TO  MCP-WIDGET
+               WHEN    6
+                   MOVE    "SKYKBN"        TO  MCP-WIDGET
+               WHEN    8   THRU    182
+               WHEN    215 THRU    229
+                   COMPUTE IDX     =   SPA-H01GMN-CUR -   3
+                   IF      SPA-H01GMN-CUR      >=   215
+                       COMPUTE IDX     =   IDX     -   32
+                   END-IF
+                   DIVIDE  IDX         BY  5
+                                       GIVING      WRK-SYO
+                                       REMAINDER   WRK-AMARI
+                   MOVE      WRK-SYO       TO  WRK-WIDGET 
+                   EVALUATE    WRK-AMARI
+                       WHEN    0
+                           MOVE    "NKHNTEN"       TO  MCP-WIDGET
+                           MOVE    WRK-WIDGET-X    TO  MCP-WIDGET (8:2)
+                       WHEN    1
+                           MOVE    "NKAISU"        TO  MCP-WIDGET
+                           MOVE    WRK-WIDGET-X    TO  MCP-WIDGET (7:2)
+                       WHEN    2
+                           MOVE    "NTENSU"        TO  MCP-WIDGET
+                           MOVE    WRK-WIDGET-X    TO  MCP-WIDGET (7:2)
+                       WHEN    3
+                           MOVE    "NKOHTENSU1"    TO  MCP-WIDGET
+                           MOVE    WRK-WIDGET-X    TO  MCP-WIDGET (11:2)
+                       WHEN    4
+                           MOVE    "NKOHTENSU2"    TO  MCP-WIDGET
+                           MOVE    WRK-WIDGET-X    TO  MCP-WIDGET (11:2)
                  END-EVALUATE                    
-             WHEN    183
-                    MOVE  "NFTNMONEY1"   TO  MCP-WIDGET
-             WHEN    184
-                    MOVE  "NFTNMONEY2"   TO  MCP-WIDGET
-             WHEN    185
-                    MOVE  "NFTNMONEY3"   TO  MCP-WIDGET
-             WHEN    186
-                    MOVE  "NYKZFTN1"     TO  MCP-WIDGET
-             WHEN    187
-                    MOVE  "NYKZFTN2"     TO  MCP-WIDGET
-             WHEN    188
-                    MOVE  "NYKZFTN3"     TO  MCP-WIDGET
-             WHEN    189
-                    MOVE  "NJNISSU1"     TO  MCP-WIDGET
-             WHEN    190
-                    MOVE  "NJNISSU2"     TO  MCP-WIDGET
-             WHEN    191
-                    MOVE  "NJNISSU3"     TO  MCP-WIDGET
-             WHEN    192
-                    MOVE  "NSHORYOYOHI1"   TO  MCP-WIDGET
-             WHEN    193
-                    MOVE  "NSHORYOYOHI2"   TO  MCP-WIDGET
-             WHEN    194
-                    MOVE  "NSHORYOYOHI3"   TO  MCP-WIDGET
-             WHEN    195
-                    MOVE  "NSHOFTN1"     TO  MCP-WIDGET
-             WHEN    196
-                    MOVE  "NSHOFTN2"     TO  MCP-WIDGET
-             WHEN    197
-                    MOVE  "NSHOFTN3"     TO  MCP-WIDGET
-             WHEN    198
-                    MOVE  "NSHONISSU1"     TO  MCP-WIDGET
-             WHEN    199
-                    MOVE  "NSHONISSU2"     TO  MCP-WIDGET
-             WHEN    200
-                    MOVE  "NSHONISSU3"     TO  MCP-WIDGET
-             WHEN    300
-                    MOVE  "B12"        TO  MCP-WIDGET   
-         END-EVALUATE
+               WHEN    183
+                   MOVE    "NFTNMONEY1"    TO  MCP-WIDGET
+               WHEN    184
+                   MOVE    "NFTNMONEY2"    TO  MCP-WIDGET
+               WHEN    185
+                   MOVE    "NFTNMONEY3"    TO  MCP-WIDGET
+               WHEN    186
+                   MOVE    "NYKZFTN1"      TO  MCP-WIDGET
+               WHEN    187
+                   MOVE    "NYKZFTN2"      TO  MCP-WIDGET
+               WHEN    188
+                   MOVE    "NYKZFTN3"      TO  MCP-WIDGET
+               WHEN    189
+                   MOVE    "NJNISSU1"      TO  MCP-WIDGET
+               WHEN    190
+                   MOVE    "NJNISSU2"      TO  MCP-WIDGET
+               WHEN    191
+                   MOVE    "NJNISSU3"      TO  MCP-WIDGET
+               WHEN    192
+                   MOVE    "NSHORYOYOHI1"  TO  MCP-WIDGET
+               WHEN    193
+                   MOVE    "NSHORYOYOHI2"  TO  MCP-WIDGET
+               WHEN    194
+                   MOVE    "NSHORYOYOHI3"  TO  MCP-WIDGET
+               WHEN    195
+                   MOVE    "NSHOFTN1"      TO  MCP-WIDGET
+               WHEN    196
+                   MOVE    "NSHOFTN2"      TO  MCP-WIDGET
+               WHEN    197
+                   MOVE    "NSHOFTN3"      TO  MCP-WIDGET
+               WHEN    198
+                   MOVE    "NSHONISSU1"    TO  MCP-WIDGET
+               WHEN    199
+                   MOVE    "NSHONISSU2"    TO  MCP-WIDGET
+               WHEN    200
+                   MOVE    "NSHONISSU3"    TO  MCP-WIDGET
+               WHEN    201
+                   MOVE    "NTOTALTEN4"    TO  MCP-WIDGET
+               WHEN    202
+                   MOVE    "NTOTALTEN5"    TO  MCP-WIDGET
+               WHEN    203
+                   MOVE    "NFTNMONEY4"    TO  MCP-WIDGET
+               WHEN    204
+                   MOVE    "NFTNMONEY5"    TO  MCP-WIDGET
+               WHEN    205
+                   MOVE    "NYKZFTN4"      TO  MCP-WIDGET
+               WHEN    206
+                   MOVE    "NYKZFTN5"      TO  MCP-WIDGET
+               WHEN    207
+                   MOVE    "NJNISSU4"      TO  MCP-WIDGET
+               WHEN    208
+                   MOVE    "NJNISSU5"      TO  MCP-WIDGET
+               WHEN    209
+                   MOVE    "NSHORYOYOHI4"  TO  MCP-WIDGET
+               WHEN    210
+                   MOVE    "NSHORYOYOHI5"  TO  MCP-WIDGET
+               WHEN    211
+                   MOVE    "NSHOFTN4"      TO  MCP-WIDGET
+               WHEN    212
+                   MOVE    "NSHOFTN5"      TO  MCP-WIDGET
+               WHEN    213
+                   MOVE    "NSHONISSU4"    TO  MCP-WIDGET
+               WHEN    214
+                   MOVE    "NSHONISSU5"    TO  MCP-WIDGET
+               WHEN    300
+                   MOVE  "B12"             TO  MCP-WIDGET   
+           END-EVALUATE
       *
            .
        5001-MAPCUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       50011-INPUT-CUR-SEC         SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "PTNUM"
+                   IF      SPA-SYS-1001-HOSPSBT1   =   ZERO
+                       MOVE    4           TO  SPA-H01GMN-CUR
+                   ELSE
+                       MOVE    3           TO  SPA-H01GMN-CUR
+                   END-IF
+               WHEN    "SRYYM"
+                   MOVE    2           TO  SPA-H01GMN-CUR
+               WHEN    "SRYKA"
+                   MOVE    4           TO  SPA-H01GMN-CUR
+               WHEN    "SKYYM"
+                   MOVE    5           TO  SPA-H01GMN-CUR
+               WHEN    "HENREIYM"
+                   MOVE    6           TO  SPA-H01GMN-CUR
+               WHEN    "SKYKBN"
+                   MOVE    8           TO  SPA-H01GMN-CUR
+               WHEN    "NKHNTEN01"
+               WHEN    "NKHNTEN02"
+               WHEN    "NKHNTEN03"
+               WHEN    "NKHNTEN04"
+               WHEN    "NKHNTEN05"
+               WHEN    "NKHNTEN06"
+               WHEN    "NKHNTEN07"
+               WHEN    "NKHNTEN08"
+               WHEN    "NKHNTEN09"
+               WHEN    "NKHNTEN10"
+               WHEN    "NKHNTEN11"
+               WHEN    "NKHNTEN12"
+               WHEN    "NKHNTEN13"
+               WHEN    "NKHNTEN14"
+               WHEN    "NKHNTEN15"
+               WHEN    "NKHNTEN16"
+               WHEN    "NKHNTEN17"
+               WHEN    "NKHNTEN18"
+               WHEN    "NKHNTEN19"
+               WHEN    "NKHNTEN20"
+               WHEN    "NKHNTEN21"
+               WHEN    "NKHNTEN22"
+               WHEN    "NKHNTEN23"
+               WHEN    "NKHNTEN24"
+               WHEN    "NKHNTEN25"
+               WHEN    "NKHNTEN26"
+               WHEN    "NKHNTEN27"
+               WHEN    "NKHNTEN28"
+               WHEN    "NKHNTEN29"
+               WHEN    "NKHNTEN30"
+               WHEN    "NKHNTEN31"
+               WHEN    "NKHNTEN32"
+               WHEN    "NKHNTEN33"
+               WHEN    "NKHNTEN34"
+               WHEN    "NKHNTEN35"
+               WHEN    "NKHNTEN36"
+               WHEN    "NKHNTEN37"
+               WHEN    "NKHNTEN38"
+                   MOVE    WRK-MCP-WIDGET(8:2) TO  WRK-WIDGET
+                   MOVE    WRK-WIDGET          TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   4   +   IDX *  5
+                   IF      IDX             >   35
+                       COMPUTE SPA-H01GMN-CUR  =   SPA-H01GMN-CUR   +
+                                                   32
+                   END-IF
+               WHEN    "NKAISU01"
+               WHEN    "NKAISU02"
+               WHEN    "NKAISU03"
+               WHEN    "NKAISU04"
+               WHEN    "NKAISU05"
+               WHEN    "NKAISU06"
+               WHEN    "NKAISU07"
+               WHEN    "NKAISU08"
+               WHEN    "NKAISU09"
+               WHEN    "NKAISU10"
+               WHEN    "NKAISU11"
+               WHEN    "NKAISU12"
+               WHEN    "NKAISU13"
+               WHEN    "NKAISU14"
+               WHEN    "NKAISU15"
+               WHEN    "NKAISU16"
+               WHEN    "NKAISU17"
+               WHEN    "NKAISU18"
+               WHEN    "NKAISU19"
+               WHEN    "NKAISU20"
+               WHEN    "NKAISU21"
+               WHEN    "NKAISU22"
+               WHEN    "NKAISU23"
+               WHEN    "NKAISU24"
+               WHEN    "NKAISU25"
+               WHEN    "NKAISU26"
+               WHEN    "NKAISU27"
+               WHEN    "NKAISU28"
+               WHEN    "NKAISU29"
+               WHEN    "NKAISU30"
+               WHEN    "NKAISU31"
+               WHEN    "NKAISU32"
+               WHEN    "NKAISU33"
+               WHEN    "NKAISU34"
+               WHEN    "NKAISU35"
+               WHEN    "NKAISU36"
+               WHEN    "NKAISU37"
+               WHEN    "NKAISU38"
+                   MOVE    WRK-MCP-WIDGET(7:2) TO  WRK-WIDGET
+                   MOVE    WRK-WIDGET          TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   5   +   IDX *  5
+                   IF      IDX             >   35
+                       COMPUTE SPA-H01GMN-CUR  =   SPA-H01GMN-CUR   +
+                                                   32
+                   END-IF
+               WHEN    "NTENSU01"
+               WHEN    "NTENSU02"
+               WHEN    "NTENSU03"
+               WHEN    "NTENSU04"
+               WHEN    "NTENSU05"
+               WHEN    "NTENSU06"
+               WHEN    "NTENSU07"
+               WHEN    "NTENSU08"
+               WHEN    "NTENSU09"
+               WHEN    "NTENSU10"
+               WHEN    "NTENSU11"
+               WHEN    "NTENSU12"
+               WHEN    "NTENSU13"
+               WHEN    "NTENSU14"
+               WHEN    "NTENSU15"
+               WHEN    "NTENSU16"
+               WHEN    "NTENSU17"
+               WHEN    "NTENSU18"
+               WHEN    "NTENSU19"
+               WHEN    "NTENSU20"
+               WHEN    "NTENSU21"
+               WHEN    "NTENSU22"
+               WHEN    "NTENSU23"
+               WHEN    "NTENSU24"
+               WHEN    "NTENSU25"
+               WHEN    "NTENSU26"
+               WHEN    "NTENSU27"
+               WHEN    "NTENSU28"
+               WHEN    "NTENSU29"
+               WHEN    "NTENSU30"
+               WHEN    "NTENSU31"
+               WHEN    "NTENSU32"
+               WHEN    "NTENSU33"
+               WHEN    "NTENSU34"
+               WHEN    "NTENSU35"
+               WHEN    "NTENSU36"
+               WHEN    "NTENSU37"
+               WHEN    "NTENSU38"
+                   MOVE    WRK-MCP-WIDGET(7:2) TO  WRK-WIDGET
+                   MOVE    WRK-WIDGET          TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   6   +   IDX *  5
+                   IF      IDX             >   35
+                       COMPUTE SPA-H01GMN-CUR  =   SPA-H01GMN-CUR   +
+                                                   32
+                   END-IF
+               WHEN    "NKOHTENSU101"
+               WHEN    "NKOHTENSU102"
+               WHEN    "NKOHTENSU103"
+               WHEN    "NKOHTENSU104"
+               WHEN    "NKOHTENSU105"
+               WHEN    "NKOHTENSU106"
+               WHEN    "NKOHTENSU107"
+               WHEN    "NKOHTENSU108"
+               WHEN    "NKOHTENSU109"
+               WHEN    "NKOHTENSU110"
+               WHEN    "NKOHTENSU111"
+               WHEN    "NKOHTENSU112"
+               WHEN    "NKOHTENSU113"
+               WHEN    "NKOHTENSU114"
+               WHEN    "NKOHTENSU115"
+               WHEN    "NKOHTENSU116"
+               WHEN    "NKOHTENSU117"
+               WHEN    "NKOHTENSU118"
+               WHEN    "NKOHTENSU119"
+               WHEN    "NKOHTENSU120"
+               WHEN    "NKOHTENSU121"
+               WHEN    "NKOHTENSU122"
+               WHEN    "NKOHTENSU123"
+               WHEN    "NKOHTENSU124"
+               WHEN    "NKOHTENSU125"
+               WHEN    "NKOHTENSU126"
+               WHEN    "NKOHTENSU127"
+               WHEN    "NKOHTENSU128"
+               WHEN    "NKOHTENSU129"
+               WHEN    "NKOHTENSU130"
+               WHEN    "NKOHTENSU131"
+               WHEN    "NKOHTENSU132"
+               WHEN    "NKOHTENSU133"
+               WHEN    "NKOHTENSU134"
+               WHEN    "NKOHTENSU135"
+               WHEN    "NKOHTENSU136"
+               WHEN    "NKOHTENSU137"
+               WHEN    "NKOHTENSU138"
+                   MOVE    WRK-MCP-WIDGET (11:2)
+                                               TO  WRK-WIDGET
+                   MOVE    WRK-WIDGET          TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   7   +   IDX *  5
+                   IF      IDX             >   35
+                       COMPUTE SPA-H01GMN-CUR  =   SPA-H01GMN-CUR   +
+                                                   32
+                   END-IF
+               WHEN    "NKOHTENSU201"
+               WHEN    "NKOHTENSU202"
+               WHEN    "NKOHTENSU203"
+               WHEN    "NKOHTENSU204"
+               WHEN    "NKOHTENSU205"
+               WHEN    "NKOHTENSU206"
+               WHEN    "NKOHTENSU207"
+               WHEN    "NKOHTENSU208"
+               WHEN    "NKOHTENSU209"
+               WHEN    "NKOHTENSU210"
+               WHEN    "NKOHTENSU211"
+               WHEN    "NKOHTENSU212"
+               WHEN    "NKOHTENSU213"
+               WHEN    "NKOHTENSU214"
+               WHEN    "NKOHTENSU215"
+               WHEN    "NKOHTENSU216"
+               WHEN    "NKOHTENSU217"
+               WHEN    "NKOHTENSU218"
+               WHEN    "NKOHTENSU219"
+               WHEN    "NKOHTENSU220"
+               WHEN    "NKOHTENSU221"
+               WHEN    "NKOHTENSU222"
+               WHEN    "NKOHTENSU223"
+               WHEN    "NKOHTENSU224"
+               WHEN    "NKOHTENSU225"
+               WHEN    "NKOHTENSU226"
+               WHEN    "NKOHTENSU227"
+               WHEN    "NKOHTENSU228"
+               WHEN    "NKOHTENSU229"
+               WHEN    "NKOHTENSU230"
+               WHEN    "NKOHTENSU231"
+               WHEN    "NKOHTENSU232"
+               WHEN    "NKOHTENSU233"
+               WHEN    "NKOHTENSU234"
+                   MOVE    WRK-MCP-WIDGET (11:2)
+                                               TO  WRK-WIDGET
+                   MOVE    WRK-WIDGET          TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   8   +   IDX *  5
+               WHEN    "NKOHTENSU235"
+               WHEN    "NKOHTENSU236"
+               WHEN    "NKOHTENSU237"
+                   MOVE    WRK-MCP-WIDGET (11:2)
+                                               TO  WRK-WIDGET
+                   MOVE    WRK-WIDGET          TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   40  +   IDX *  5
+               WHEN    "NKOHTENSU238"
+                   MOVE    183             TO  SPA-H01GMN-CUR
+               WHEN    "NFTNMONEY1"
+               WHEN    "NFTNMONEY2"
+               WHEN    "NFTNMONEY3"
+                   MOVE    WRK-MCP-WIDGET (10:1)
+                                               TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   183 +   IDX
+               WHEN    "NYKZFTN1"
+               WHEN    "NYKZFTN2"
+               WHEN    "NYKZFTN3"
+                   MOVE    WRK-MCP-WIDGET(8:1) TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   186 +   IDX
+               WHEN    "NJNISSU1"
+               WHEN    "NJNISSU2"
+               WHEN    "NJNISSU3"
+                   MOVE    WRK-MCP-WIDGET(8:1) TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   189 +   IDX
+                   IF    ( SPA-H01GMN-CUR        =   192 )
+                   AND   ( SPA-RECE10-NYUGAIKBN  =   "2" )
+                       MOVE    201               TO  SPA-H01GMN-CUR
+                   END-IF
+               WHEN    "NSHORYOYOHI1"
+               WHEN    "NSHORYOYOHI2"
+               WHEN    "NSHORYOYOHI3"
+                   MOVE    WRK-MCP-WIDGET(12:1)
+                                               TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   192 +   IDX
+               WHEN    "NSHOFTN1"
+               WHEN    "NSHOFTN2"
+               WHEN    "NSHOFTN3"
+                   MOVE    WRK-MCP-WIDGET(8:1) TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   195 +   IDX
+               WHEN    "NSHONISSU1"
+               WHEN    "NSHONISSU2"
+               WHEN    "NSHONISSU3"
+                   MOVE    WRK-MCP-WIDGET(10:1)
+                                               TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   198 +   IDX
+               WHEN    "NTOTALTEN4"
+               WHEN    "NTOTALTEN5"
+                   MOVE    WRK-MCP-WIDGET (10:1)
+                                               TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   198 +   IDX
+               WHEN    "NFTNMONEY4"
+               WHEN    "NFTNMONEY5"
+                   MOVE    WRK-MCP-WIDGET (10:1)
+                                               TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   200 +   IDX
+               WHEN    "NYKZFTN4"
+               WHEN    "NYKZFTN5"
+                   MOVE    WRK-MCP-WIDGET(8:1) TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   202 +   IDX
+               WHEN    "NJNISSU4"
+               WHEN    "NJNISSU5"
+                   MOVE    WRK-MCP-WIDGET(8:1) TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   204 +   IDX
+                   IF    ( SPA-H01GMN-CUR          =   209 )
+                   AND   ( SPA-RECE10-NYUGAIKBN    =   "2" )
+                       MOVE    8                   TO  SPA-H01GMN-CUR
+                   END-IF
+               WHEN    "NSHORYOYOHI4"
+               WHEN    "NSHORYOYOHI5"
+                   MOVE    WRK-MCP-WIDGET(12:1)
+                                               TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   206 +   IDX
+               WHEN    "NSHOFTN4"
+               WHEN    "NSHOFTN5"
+                   MOVE    WRK-MCP-WIDGET(8:1) TO  WRK-WIDGET1
+                   MOVE    WRK-WIDGET1         TO  IDX
+                   COMPUTE SPA-H01GMN-CUR  =   208 +   IDX
+               WHEN    "NSHONISSU4"
+                   MOVE    214                 TO  SPA-H01GMN-CUR
+               WHEN    "NSHONISSU5"
+                   MOVE    8                   TO  SPA-H01GMN-CUR
+           END-EVALUATE
+           .
+      *
+       5011-INPUT-CUR-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2573,6 +2767,11 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
            IF      RECE10-SRYYM        >   "200209"
                MOVE    RECE10-RECESYUBETU  TO  WRK-RECESYUBETU
+               EVALUATE    RECE10-RECESYUBETU  (3:1)
+                   WHEN    "4"
+                   WHEN    "5"
+                       MOVE    "3"             TO  WRK-RECESYUBETU (3:1)
+               END-EVALUATE
                GO  TO  530-RECESYUBETU-HENSYU-EXT
            END-IF        
       *         
