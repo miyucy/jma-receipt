@@ -25,7 +25,7 @@
                       07  M95-VALUE   PIC X(30).
                     06  M95-DRCD-COUNT   PIC S9(9)   BINARY.
                     06  M95-DRCD-ITEM
-                            PIC X(30)   OCCURS  20 TIMES.
+                            PIC X(30)   OCCURS  99 TIMES.
                   05  M95-SYORIMEI.
                     06  M95-SYORIMEI-STYLE   PIC X(20).
                     06  M95-SYORIMEI-VALUE   PIC X(30).

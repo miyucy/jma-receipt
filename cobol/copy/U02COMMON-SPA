@@ -110,7 +110,7 @@
       *            ドクター
                    07  SPA-GMN-DRCDLST-G.
                        09  SPA-GMN-DRCDLST            PIC X(29)
-                                                      OCCURS  20.
+                                                      OCCURS  99.
                    07  SPA-DRCD-MAX                   PIC 9(04).
       *            診療内容
                    07  SPA-GMN-SRYNAILST              PIC X(20)

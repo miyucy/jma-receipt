@@ -118,7 +118,7 @@ P02D	{
 				value	varchar(29);
 			};
 			count	int;
-			item	varchar(29)[20];
+			item	varchar(29)[99];
 		};
 		HOKENNAME	{
 			value	varchar(80);

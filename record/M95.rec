@@ -31,7 +31,7 @@ M95	{
 						value	varchar(30);
 					};
 					count	int;
-					item	varchar(30)[20];
+					item	varchar(30)[99];
 				};
 				SYORIMEI	{
 				        style   varchar(20);

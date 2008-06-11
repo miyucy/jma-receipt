@@ -30,6 +30,7 @@
       *  01.00.01    NACL−多々納 04/06/25  診療所で２０名以上を科別へ
       *  01.00.02    NACL−多々納 06/08/16  当日担当医設定追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.03.00    NACL-多々納  08/06/XX  最大９９件対応
       *****************************************************************
       *
       *
@@ -68,7 +69,7 @@
       *    一時領域
        01  WRK-AREA.
            03  WRK-DRCD-TBL-G.
-               05  WRK-DRCD-TBL        OCCURS   20.
+               05  WRK-DRCD-TBL        OCCURS   99.
       *            ドクターコード
                    07  WRK-DRCD             PIC  X(04).
                    07  WRK-DRCD-H           PIC  X(01).
@@ -235,7 +236,7 @@
                        MOVE    1               TO  FLG-CHK
                    END-IF
                    IF      FLG-CHK             =   1
-                       IF      IDX                 >=  20
+                       IF      IDX                 >=  99
                            MOVE    1               TO  FLG-OVER
                        ELSE
                            ADD     1                   TO  IDX
@@ -373,7 +374,7 @@
       *****************************************************************
        1002-DRCD-TBL-SEC            SECTION.
       *
-           IF      IDX3                >=  20
+           IF      IDX3                >=  99
                GO      TO      1002-DRCD-TBL-EXT
            END-IF
            ADD     1                   TO  IDX3
@@ -463,7 +464,7 @@
                        END-IF
                    END-IF
                    IF      FLG-CHK             =   1
-                       IF      IDX                 >=  20
+                       IF      IDX                 >=  99
                            MOVE    1               TO  FLG-OVER
                        ELSE
                            ADD     1                   TO  IDX
@@ -533,8 +534,8 @@
                MOVE    SPACE               TO  ORCSDR-IN-DRCD-H
                MOVE    SYS-1010-NAME       TO  ORCSDR-OUT-DRCDMEI
       *        最後の行へ編集する
-               IF      ORCSDR-DRCD-MAX     =   20
-                   MOVE    20              TO  ORCSDR-DRCD-MAX
+               IF      ORCSDR-DRCD-MAX     =   99
+                   MOVE    99              TO  ORCSDR-DRCD-MAX
                ELSE
                    ADD     1               TO  ORCSDR-DRCD-MAX
                END-IF

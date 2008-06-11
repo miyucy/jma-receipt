@@ -86,7 +86,7 @@
                     06  P02-P020-DRNAME.
                       07  P02-VALUE   PIC X(29).
                     06  P02-P020-DRNAME-COUNT   PIC S9(9)   BINARY.
-                    06  P02-P020-DRNAME-ITEM    PIC X(29)   OCCURS  20.
+                    06  P02-P020-DRNAME-ITEM    PIC X(29)   OCCURS  99.
                   05  P02-P020-SRYNAIYO-COMBO.
                     06  P02-P020-SRYNAIYO.
                       07  P02-VALUE   PIC X(21).

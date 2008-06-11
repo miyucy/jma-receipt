@@ -102,7 +102,7 @@
                   05  P02D-VALUE  PIC X(29).
                 04  P02D-DRCD-COUNT  PIC S9(9)   BINARY.
                 04  P02D-DRCD-ITEM
-                        PIC X(29)   OCCURS  20 TIMES.
+                        PIC X(29)   OCCURS  99 TIMES.
               03  P02D-HOKENNAME.
                 04  P02D-VALUE  PIC X(80).
               03  P02D-KIJYUNYM.

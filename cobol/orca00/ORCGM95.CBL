@@ -77,7 +77,7 @@
                    07  SPA-M95GMN-IN-AREA.
                        09  SPA-M95GMN-SRYKA         PIC X(02).
                        09  SPA-M95GMN-DRCDLST-G.
-                           11  SPA-M95GMN-DRCDLST     OCCURS  20.
+                           11  SPA-M95GMN-DRCDLST     OCCURS  99.
                                13  SPA-M95GMN-DRCDL       PIC X(04).
                                13  SPA-M95GMN-F1L         PIC X(01).
                                13  SPA-M95GMN-DRCDMEIL    PIC X(24).

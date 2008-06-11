@@ -80,7 +80,7 @@ P02	{
 						value	varchar(29);
 					};
 					count	int;
-					item	varchar(29)[20];
+					item	varchar(29)[99];
 				};
 				P020_SRYNAIYO_COMBO	{
 					P020_SRYNAIYO	{

@@ -583,7 +583,7 @@
                        09  SPA-GMN20-TANT1     PIC X(01).
                        09  SPA-GMN20-DRCDMEI   PIC X(24).
                    07  SPA-GMN20-DRCDLST-G.
-                       09  SPA-GMN20-DRCDLST       OCCURS  20.
+                       09  SPA-GMN20-DRCDLST       OCCURS  99.
                            11  SPA-DRCD-CD         PIC X(04).
                            11  SPA-DRCD-H          PIC X(01).
                            11  SPA-DRCD-MEI        PIC X(24).
@@ -1154,7 +1154,7 @@
                        09  SPA-GMN2D-DRCDH1        PIC X(01).
                        09  SPA-GMN2D-DRCDMEI       PIC X(24).
                    07  SPA-GMN2D-DRCDLST-G.
-                       09  SPA-GMN2D-DRCDLST       OCCURS  20.
+                       09  SPA-GMN2D-DRCDLST       OCCURS  99.
                            11  SPA-GMN2D-DRCD-CD         PIC X(04).
                            11  SPA-GMN2D-DRCD-H          PIC X(01).
                            11  SPA-GMN2D-DRCD-MEI        PIC X(24).

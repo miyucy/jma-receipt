@@ -47,7 +47,7 @@
            03  ORCSDR-OUT-AREA.
       *        テーブル
                05  ORCSDR-DRCD-TBL-G.
-                   07  ORCSDR-DRCD-TBL         OCCURS   20.
+                   07  ORCSDR-DRCD-TBL         OCCURS   99.
       *                ドクターコード
                        09  ORCSDR-DRCD             PIC  X(04).
       *

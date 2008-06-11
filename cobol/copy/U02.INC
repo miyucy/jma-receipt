@@ -36,7 +36,7 @@
                 04  U02-DRNAME.
                   05  U02-VALUE   PIC X(29).
                 04  U02-DRNAME-COUNT   PIC S9(9)   BINARY.
-                04  U02-DRNAME-ITEM    PIC X(29)   OCCURS  20 TIMES.
+                04  U02-DRNAME-ITEM    PIC X(29)   OCCURS  99 TIMES.
               03  U02-SRYNAIYO-COMBO.
                 04  U02-SRYNAIYO.
                   05  U02-VALUE   PIC X(21).
