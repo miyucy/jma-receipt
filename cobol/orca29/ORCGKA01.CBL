@@ -86,7 +86,7 @@
       *
                05  SPA-GMN-INITAREA.
                    07  SPA-GMN-DRCD-COMB-G.
-                       09  SPA-GMN-DRCD-COMB       OCCURS  20.
+                       09  SPA-GMN-DRCD-COMB       OCCURS  99.
                            11  SPA-GMN-TDRCD       PIC X(04).
                            11  SPA-GMN-TDRCD1      PIC X(01).
                            11  SPA-GMN-TDRCDMEI    PIC X(24).

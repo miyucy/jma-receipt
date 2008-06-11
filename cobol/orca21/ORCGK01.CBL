@@ -115,7 +115,7 @@
       *
                05  SPA-GMN-KYOUTU-G.
                    07  SPA-GMN-DRCDLST-G.
-                       09  SPA-GMN-DRCDLST                OCCURS  20.
+                       09  SPA-GMN-DRCDLST                OCCURS  99.
                            11  SPA-GMN-DRCDL       PIC X(04).
                            11  SPA-GMN-F1L         PIC X(01).
                            11  SPA-GMN-DRCDMEIL    PIC X(24).
@@ -1255,17 +1255,14 @@
            MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    SPA-GMN-PTNUM       TO  SPTID-PTNUM
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
-      *---(01.00.02) LINE ADD START  ----------------------------------
                                                SPA-AREA
-      *---(01.00.02) LINE ADD END    ----------------------------------
-           IF      SPTID-RC        NOT =   ZERO
+           IF     (SPTID-RC        NOT =   ZERO  )
+           OR     (SPA-GMN-PTNUM       =   SPACE )
                MOVE    "0003"          TO  SPA-ERRCD
                GO  TO                  4101-PTNUM-CHK-EXT
            END-IF
            MOVE    SPTID-PTID          TO  SPA-GMN-PTID
-      *---(01.00.02) LINE ADD START  ----------------------------------
            MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
-      *---(01.00.02) LINE ADD END    ----------------------------------
       *
       *    患者マスター存在チェック
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
@@ -3140,7 +3137,7 @@
                    MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
       *
                WHEN    OTHER
-                   MOVE    SPACE               TO  SPA-ERRMSG
+                   MOVE    SPA-ERRCD           TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  KERR

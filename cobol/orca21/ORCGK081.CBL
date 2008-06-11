@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/17  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.03.00    NACL-多々納  08/06/XX  ドクター表示件数変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -510,7 +511,7 @@
                                        ORCSDRSETAREA
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL      (IDX     >   ORCSDR-DRCD-MAX )  OR
-                              (SPA-K081-DRCD-MAX  >=   20  )
+                              (SPA-K081-DRCD-MAX  >=   99  )
                MOVE    ZERO                TO  FLG-CHK
                PERFORM VARYING     IDZ     FROM   1   BY  1
                        UNTIL      (IDZ     >   SPA-K081-DRCD-MAX )  OR
@@ -558,9 +559,6 @@
                INITIALIZE                  SYS-1010-REC
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
@@ -571,6 +569,9 @@
                                                 (SPA-K081-DRCD-MAX)
            END-IF
       *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            .
        3105-DRCD-ADD-EXT.
            EXIT.

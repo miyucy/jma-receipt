@@ -11,7 +11,7 @@
                   05  K081-VALUE  PIC X(30).
                 04  K081-DRCD-COUNT  PIC S9(9)   BINARY.
                 04  K081-DRCD-ITEM
-                        PIC X(30)   OCCURS  20 TIMES.
+                        PIC X(30)   OCCURS  99 TIMES.
               03  K081-CHK1-G       OCCURS  4.
                 04  K081-CHK1-STATE  PIC S9(9)   BINARY.
                 04  K081-CHK1-STYLE  PIC X(20).

@@ -88,7 +88,7 @@
                    07  SPA-SRYKA-MAX               PIC 9(04).
       *        ドクター
                05  SPA-GMN-DRCD-LISTG.
-                   07  SPA-GMN-DRCD-LIST       OCCURS  20.
+                   07  SPA-GMN-DRCD-LIST       OCCURS  99.
                        09  SPA-GMN-DRCDL           PIC X(04).
                        09  SPA-GMN-F1L             PIC X(01).
                        09  SPA-GMN-DRCDMEIL        PIC X(24).

@@ -92,7 +92,7 @@ KA01	{
 				value	varchar(29);
 			};
 			count	int;
-			item	varchar(29)[20];
+			item	varchar(29)[99];
 		};
 		INNAI	{
 			style	varchar(20);

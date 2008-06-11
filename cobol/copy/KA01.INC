@@ -70,7 +70,7 @@
                   05  KA01-VALUE  PIC X(29).
                 04  KA01-DRCD-COUNT  PIC S9(9)   BINARY.
                 04  KA01-DRCD-ITEM
-                        PIC X(29)   OCCURS  20 TIMES.
+                        PIC X(29)   OCCURS  99 TIMES.
               03  KA01-INNAI.
                 04  KA01-INNAI-STYLE  PIC X(20).
                 04  KA01-INNAI-VALUE  PIC X(16).

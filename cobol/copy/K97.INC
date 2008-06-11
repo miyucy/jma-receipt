@@ -11,11 +11,11 @@
                   05  K97-DRCD-COUNT   PIC S9(9)   BINARY.
                   05  K97-DRCD-ROW PIC S9(9)   BINARY.
                   05  K97-DRCD-ROWATTR PIC S9(9)   BINARY.
-                  05  K97-DRCD-ITEM        OCCURS  20 TIMES.
+                  05  K97-DRCD-ITEM        OCCURS  99 TIMES.
                     06  K97-DRCD    PIC X(4).
                     06  K97-DRCDMEI PIC X(24).
                   05  K97-DRCD-SELECT
-                          PIC X       OCCURS  20 TIMES.
+                          PIC X       OCCURS  99 TIMES.
               03  K97-SCROLLEDWINDOW27.
                 04  K97-SRYKALIST.
                   05  K97-SRYKA-COUNT   PIC S9(9)   BINARY.

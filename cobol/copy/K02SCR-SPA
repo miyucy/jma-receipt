@@ -588,7 +588,7 @@
                    07  SPA-K97-HKN-MAX            PIC 9(04).
       *
                05  SPA-GMN-DRCDLST-G.
-                   07  SPA-GMN-DRCDLST     OCCURS  20.
+                   07  SPA-GMN-DRCDLST     OCCURS  99.
                        09  SPA-GMN-DRCDL       PIC X(04).
                        09  SPA-GMN-F1L         PIC X(01).
                        09  SPA-GMN-DRCDMEIL    PIC X(24).

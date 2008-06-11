@@ -206,7 +206,7 @@
                   05  K03-VALUE   PIC X(29).
                 04  K03-DRCD-COUNT   PIC S9(9)   BINARY.
                 04  K03-DRCD-ITEM
-                        PIC X(29)   OCCURS  20 TIMES.
+                        PIC X(29)   OCCURS  99 TIMES.
               03  K03-NYUKINHOU-COMB.
                 04  K03-NYUKINHOU.
                   05  K03-VALUE   PIC X(30).

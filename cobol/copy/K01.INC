@@ -41,7 +41,7 @@
                 04  K01-DRNAME.
                   05  K01-VALUE   PIC X(29).
                 04  K01-DRNAME-COUNT   PIC S9(9)   BINARY.
-                04  K01-DRNAME-ITEM    PIC X(29)   OCCURS  20 TIMES.
+                04  K01-DRNAME-ITEM    PIC X(29)   OCCURS  99 TIMES.
               03  K01-BUNSANCOMB.
                 04  K01-BUNSAN.
                   05  K01-VALUE   PIC X(20).

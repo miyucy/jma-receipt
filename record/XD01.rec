@@ -49,7 +49,7 @@ XD01	{
 				value	varchar(35);
 			};
 			count	int;
-			item	varchar(35)[20];
+			item	varchar(35)[99];
 		};
 		SRYKA_COMB	{
 			SRYKA	{

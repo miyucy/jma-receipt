@@ -39,7 +39,7 @@
                   05  XD01-VALUE  PIC X(35).
                 04  XD01-DRCD-COUNT  PIC S9(9)   BINARY.
                 04  XD01-DRCD-ITEM
-                        PIC X(35)   OCCURS  20 TIMES.
+                        PIC X(35)   OCCURS  99 TIMES.
               03  XD01-SRYKA-COMB.
                 04  XD01-SRYKA.
                   05  XD01-VALUE  PIC X(15).

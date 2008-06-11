@@ -17,8 +17,8 @@ K97	{
 				item	{
 					value0	varchar(4);
 					value1	varchar(24);
-				}	[20];
-				select	bool[20];
+				}	[99];
+				select	bool[99];
 			};
 		};
 		scrolledwindow27	{

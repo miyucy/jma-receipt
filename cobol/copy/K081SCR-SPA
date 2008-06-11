@@ -68,7 +68,7 @@
                    07  SPA-K081GMN-F1          PIC X(01).
                    07  SPA-K081GMN-DRCDMEI     PIC X(24).
                05  SPA-K081GMN-DRCDLST-G.
-                   07  SPA-K081GMN-DRCDLST     OCCURS  20.
+                   07  SPA-K081GMN-DRCDLST     OCCURS  99.
                        09  SPA-K081GMN-DRCDL       PIC X(04).
                        09  SPA-K081GMN-F1L         PIC X(01).
                        09  SPA-K081GMN-DRCDMEIL    PIC X(24).
