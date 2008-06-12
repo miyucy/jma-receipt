@@ -561,7 +561,18 @@
            ELSE
       *         ›∏±µ≠πÊ°¶»÷πÊ
                IF   ( SPA-Q01-GTBL (5)  =   "1" )
-                   STRING  ",TBL_PTHKNINF D"   DELIMITED  BY  SIZE
+                   STRING  ",(SELECT AA.HOSPNUM,AA.PTID,AA.DELKBN"
+                                                   DELIMITED  BY  SIZE
+                           ",BB.HKNJANUM,BB.HONKZKKBN,BB.HKNNUM"
+                                                   DELIMITED  BY  SIZE
+                           ",BB.KIGO,BB.NUM FROM TBL_HKNCOMBI AA"
+                                                   DELIMITED  BY  SIZE
+                           " LEFT JOIN TBL_PTHKNINF BB ON "
+                                                   DELIMITED  BY  SIZE
+                           "(AA.HOSPNUM=BB.HOSPNUM AND AA.PTID=BB.PTID"
+                                                   DELIMITED  BY  SIZE
+                           " AND AA.HKNID = BB.HKNID)) D"
+                                                   DELIMITED  BY  SIZE
                    INTO    WRK-SQL
                    WITH    POINTER WRK-SQL-PNT
                    END-STRING
@@ -1030,6 +1041,9 @@
       *    ≈≈œ√»÷πÊ∏°∫˜æÚ∑Ô ‘Ω∏ΩËÕ˝
            PERFORM 10011-TEL-SELECT-EDIT-SEC
       *
+      *    ª‡À¥∂Ë ¨∏°∫˜æÚ∑Ô ‘Ω∏ΩËÕ˝
+           PERFORM 10011-DEATH-SELECT-EDIT-SEC
+      *
            .
        1001-PTINF-SQL-EDIT3-EXT.
            EXIT.
@@ -1488,15 +1502,53 @@
       *
                    PERFORM 900-SQL-JYOKEN-EDIT2-SEC
       *
-                   STRING  "("             DELIMITED   BY  SIZE
-                       WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
-                       ".HKNNUM ='"        DELIMITED   BY  SIZE
-                       SPA-Q01-HKNNUM (IDX1)
-                                           DELIMITED   BY  SIZE
-                       "')"                DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
+                   EVALUATE    SPA-Q01-HKNNUM (IDX1)
+                   WHEN    "SHA"
+                       STRING  "("             DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                           ".HKNNUM in ('001','002','003','004'"
+                                               DELIMITED   BY  SIZE
+                           ",'006','007','031','032','033','034','063'"
+                                               DELIMITED   BY  SIZE
+                           ",'072','073','074','075'"
+                                               DELIMITED   BY  SIZE
+                           ")"                 DELIMITED   BY  SIZE
+                           " or ("             DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                           ".HKNNUM is null"   DELIMITED   BY  SIZE
+                           "))"                DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   WHEN    "KOK"
+                       STRING  "("             DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                           ".HKNNUM in ('060','067','068','069')"
+                                               DELIMITED   BY  SIZE
+                           ")"                 DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   WHEN    "KOU"
+                       STRING  "("             DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                           ".HKNNUM in ('039','040')"
+                                               DELIMITED   BY  SIZE
+                           ")"                 DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   WHEN    OTHER
+                       STRING  "("             DELIMITED   BY  SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                           ".HKNNUM ='"        DELIMITED   BY  SIZE
+                           SPA-Q01-HKNNUM (IDX1)
+                                               DELIMITED   BY  SIZE
+                           "')"                DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+		   END-EVALUATE
                END-IF
            END-PERFORM
       *
@@ -1776,7 +1828,7 @@
       *     ›∏±æ Û£”£—£Ã ‘Ω∏ΩËÕ˝
            PERFORM 10011-PTHKNINF-SQL-EDIT-SEC
       *
-           STRING "AND (D.SAKJOKBN = ' ')  "
+           STRING "AND (D.DELKBN = ' ')  "
            DELIMITED   BY  SIZE
            INTO        WRK-SQL
            WITH POINTER WRK-SQL-PNT
@@ -2635,6 +2687,38 @@
       *
            .
        10011-TEL-SELECT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ª‡À¥∂Ë ¨∏°∫˜æÚ∑Ô ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       10011-DEATH-SELECT-EDIT-SEC         SECTION.
+      *
+      *
+           IF      ( SPA-Q01-DEATH         =   SPACE )
+               GO  TO  10011-DEATH-SELECT-EDIT-EXT
+           END-IF
+      *
+           MOVE    1                   TO  CNT-JYOKEN
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+           IF    ( SPA-Q01-DEATH    =  "0" )
+               STRING  "(DEATHKBN   =  ' ')"   DELIMITED   BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           ELSE
+               STRING  "(DEATHKBN   =  '1')"   DELIMITED   BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           END-IF
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+      *
+           .
+       10011-DEATH-SELECT-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    ø«Œ≈≤  ‘Ω∏ΩËÕ˝

@@ -350,6 +350,12 @@
       <width>1000</width>
       <height>653</height>
       <can_focus>True</can_focus>
+      <signal>
+	<name>switch_page</name>
+	<handler>switch_page</handler>
+	<data>SwitchPage</data>
+	<last_modification_time>Wed, 11 Jun 2008 01:14:30 GMT</last_modification_time>
+      </signal>
       <show_tabs>True</show_tabs>
       <show_border>True</show_border>
       <tab_pos>GTK_POS_TOP</tab_pos>
@@ -1886,22 +1892,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label492</name>
-	  <x>675</x>
-	  <y>10</y>
-	  <width>35</width>
-	  <height>25</height>
-	  <label>性別</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label494</name>
 	  <x>340</x>
 	  <y>10</y>
@@ -1962,47 +1952,6 @@
 	  <yalign>0.5</yalign>
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>CMB_SEX</name>
-	  <x>710</x>
-	  <y>10</y>
-	  <width>100</width>
-	  <height>25</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items>
-</items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>SEX</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Wed, 15 May 2002 00:40:21 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Wed, 15 May 2002 00:40:56 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>10</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
-	  </widget>
 	</widget>
 
 	<widget>
@@ -3209,6 +3158,120 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label492</name>
+	  <x>675</x>
+	  <y>10</y>
+	  <width>35</width>
+	  <height>25</height>
+	  <label>性別</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_SEX</name>
+	  <x>710</x>
+	  <y>10</y>
+	  <width>100</width>
+	  <height>25</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items>
+</items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>SEX</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Wed, 15 May 2002 00:40:21 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Wed, 15 May 2002 00:40:56 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>10</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>CMB_DEATH</name>
+	  <x>800</x>
+	  <y>40</y>
+	  <width>80</width>
+	  <height>25</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items>
+</items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>DEATH</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Wed, 15 May 2002 00:40:21 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Wed, 15 May 2002 00:40:56 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>10</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label940</name>
+	  <x>740</x>
+	  <y>40</y>
+	  <width>60</width>
+	  <height>25</height>
+	  <label>死亡区分</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
 

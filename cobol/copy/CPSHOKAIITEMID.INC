@@ -140,3 +140,5 @@
            03  SHKITEMID-RDIO01        PIC 9(05)   VALUE   115.
            03  SHKITEMID-RDIO02        PIC 9(05)   VALUE   116.
            03  SHKITEMID-RDIO03        PIC 9(05)   VALUE   117.
+      *    added at ver4.3.0
+           03  SHKITEMID-DEATH         PIC 9(05)   VALUE   118.

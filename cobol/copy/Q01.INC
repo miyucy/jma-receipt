@@ -51,6 +51,10 @@
                     07  Q01-SRYKA              PIC X(23).
                     07  Q01-CMB-SRYKA-COUNT    PIC S9(9)   BINARY.
                     07  Q01-CMB-SRYKA-ITEM     PIC X(23)   OCCURS  50.
+                  06  Q01-CMB-DEATH.
+                    07  Q01-DEATH              PIC         X(10).
+                    07  Q01-CMB-DEATH-COUNT    PIC S9(9)   BINARY.
+                    07  Q01-CMB-DEATH-ITEM     PIC X(10)   OCCURS  2.
                   06  Q01-CHKTSTPT             PIC X.
                   06  Q01-POST-TBL.
                     07  Q01-POST               PIC X(07)   OCCURS 5.

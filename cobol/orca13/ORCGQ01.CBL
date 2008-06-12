@@ -239,6 +239,8 @@
       *
       *    固定値領域
        01  CONST-AREA.
+           03  CONST-H200401                       PIC X(08)
+                                                   VALUE   "20080401".
            03  CONST-SEX-AREA.
                05  FILLER                          PIC X(10)
                    VALUE   "  すべて　".
@@ -659,6 +661,9 @@
       *    診療科コンボ初期処理
            PERFORM 3101-SRYKA-CMB-SYOKI-SEC
       *
+      *    死亡コンボ初期処理
+           PERFORM 3101-DEATH-CMB-SYOKI-SEC
+      *
       *    状態１コンボ初期処理
            PERFORM 3101-CONDITION1-CMB-SYOKI-SEC
       *
@@ -848,6 +853,24 @@
       *
            .
        3101-SRYKA-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    死亡コンボ
+      *****************************************************************
+       3101-DEATH-CMB-SYOKI-SEC        SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-DEATHLST-G
+      *
+           MOVE    2                   TO  SPA-GMN-Q01-DEATHLST-MAX
+      *
+           MOVE    "0"                 TO  SPA-GMN-Q01-DEATHL    (1)
+           MOVE    "生存"              TO  SPA-GMN-Q01-DEATHMEIL (1)
+      *
+           MOVE    "1"                 TO  SPA-GMN-Q01-DEATHL    (2)
+           MOVE    "死亡"              TO  SPA-GMN-Q01-DEATHMEIL (2)
+      *
+           .
+       3101-DEATH-CMB-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    状態１コンボ初期処理
@@ -1106,7 +1129,6 @@
       *****************************************************************
        3101-HKNKOH-CMB-EDIT-SEC        SECTION.
       *
-      *
            MOVE    SPACE       TO  SPA-GMN-Q01-HKNNUMLST-G
            INITIALIZE              SPA-GMN-Q01-HKNNUMLST-G
       *
@@ -1162,6 +1184,22 @@
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           MOVE    SPA-GMN-Q01-HKNNUMLST-MAX   TO  IDX5
+      *
+           MOVE    "SHA"           TO  SPA-GMN-Q01-HKNNUML   (IDX5 + 1)
+           MOVE    "社保"          TO  SPA-GMN-Q01-HKNNUMMEIL(IDX5 + 1)
+           MOVE    "KOK"           TO  SPA-GMN-Q01-HKNNUML   (IDX5 + 2)
+           MOVE    "国保"          TO  SPA-GMN-Q01-HKNNUMMEIL(IDX5 + 2)
+           IF    ( SPA-SYSYMD          >=  CONST-H200401 )
+               MOVE    "KOU"       TO  SPA-GMN-Q01-HKNNUML   (IDX5 + 3)
+               MOVE    "広域"      TO SPA-GMN-Q01-HKNNUMMEIL(IDX5 + 3)
+               COMPUTE SPA-GMN-Q01-HKNNUMLST-MAX
+                   =   IDX5 + 3
+           ELSE
+               COMPUTE SPA-GMN-Q01-HKNNUMLST-MAX
+                   =   IDX5 + 2
+           END-IF
       *
            .
        3101-HKNKOH-CMB-EDIT-EXT.
@@ -1656,6 +1694,8 @@
            MOVE    Q01-NYUGAIKBN           TO  SPA-GMN-Q01-NYUGAIKBN-G
       *    診療科
            MOVE    Q01-SRYKA               TO  SPA-GMN-Q01-SRYKA-G
+      *    死亡
+           MOVE    Q01-DEATH               TO  SPA-GMN-Q01-DEATH-G
       *    開始患者番号
            MOVE    Q01-STPTNUM             TO  SPA-GMN-Q01-STPTNUM
       *    終了患者番号
@@ -1845,6 +1885,12 @@
       *
       *    診療科チェック
            PERFORM 4117-SRYKA-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-KHN-INPUT-CHK-EXT
+           END-IF
+      *
+      *    死亡チェック
+           PERFORM 4117-DEATH-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4101-KHN-INPUT-CHK-EXT
            END-IF
@@ -2507,6 +2553,36 @@
       *
            .
        4117-SRYKA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    死亡チェック
+      *****************************************************************
+       4117-DEATH-CHK-SEC      SECTION.
+      *
+           IF    ( SPA-GMN-Q01-DEATH-G     =   SPACE )
+               CONTINUE
+           ELSE
+      *
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                       UNTIL ( IDX2    >   SPA-GMN-Q01-DEATHLST-MAX )
+                          OR ( SPA-GMN-Q01-DEATH
+                                       =   SPA-GMN-Q01-DEATHL (IDX2))
+      *
+                   CONTINUE
+      *
+               END-PERFORM
+      *
+               IF    ( IDX2            <=  SPA-GMN-Q01-DEATHLST-MAX )
+                   MOVE    SPA-GMN-Q01-DEATHLST (IDX2)
+                                           TO  SPA-GMN-Q01-DEATH-G
+               ELSE
+                   MOVE    "0128"          TO  SPA-ERRCD
+                   MOVE    156             TO  SPA-GMN-Q01-CUR
+               END-IF
+           END-IF
+      *
+           .
+       4117-DEATH-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5715,6 +5791,7 @@
            MOVE    SPA-NAI-Q01-EDLASTYMD   TO  SPA-Q01-EDLASTYMD
            MOVE    SPA-GMN-Q01-NYUGAIKBN   TO  SPA-Q01-NYUGAIKBN
            MOVE    SPA-GMN-Q01-SRYKA       TO  SPA-Q01-SRYKA
+           MOVE    SPA-GMN-Q01-DEATH       TO  SPA-Q01-DEATH
            MOVE    SPA-GMN-Q01-STPTNUM     TO  SPA-Q01-STPTNUM
            MOVE    SPA-GMN-Q01-EDPTNUM     TO  SPA-Q01-EDPTNUM
            MOVE    SPA-GMN-Q01-CHKTSTPT    TO  SPA-Q01-CHKTSTPT
@@ -6110,6 +6187,7 @@
             OR ( SPA-Q01-EDBIRTHDAY        NOT =   SPACE )
             OR ( SPA-Q01-SEX               NOT =   SPACE )
             OR ( SPA-Q01-TEL-G             NOT =   SPACE )
+            OR ( SPA-Q01-DEATH             NOT =   SPACE )
       *
                MOVE    "1"                 TO  SPA-Q01-GTBL(7)
       *
@@ -6332,6 +6410,18 @@
       *
                MOVE    SPA-GMN-Q01-SRYKALST (IDX1)
                            TO  Q01-CMB-SRYKA-ITEM (IDX1)
+      *
+           END-PERFORM
+      *
+      *    死亡
+           MOVE    SPA-GMN-Q01-DEATH-G     TO  Q01-DEATH
+           MOVE    SPA-GMN-Q01-DEATHLST-MAX
+                                           TO  Q01-CMB-DEATH-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   SPA-GMN-Q01-DEATHLST-MAX )
+      *
+               MOVE    SPA-GMN-Q01-DEATHLST (IDX1)
+                           TO  Q01-CMB-DEATH-ITEM (IDX1)
       *
            END-PERFORM
       *
@@ -6861,6 +6951,8 @@
                MOVE  "STTSYYM"     TO  MCP-WIDGET
            WHEN   155
                MOVE  "EDTSYYM"     TO  MCP-WIDGET
+           WHEN   156
+               MOVE  "DEATH"       TO  MCP-WIDGET
       *
       *    保険・公費タブ
            WHEN   201
@@ -7030,6 +7122,8 @@
            WHEN   "NYUGAIKBN"
                MOVE  109           TO  SPA-GMN-Q01-CUR
            WHEN   "SRYKA"
+               MOVE  156           TO  SPA-GMN-Q01-CUR
+           WHEN   "DEATH"
                MOVE  110           TO  SPA-GMN-Q01-CUR
            WHEN   "STPTNUM"
                MOVE  111           TO  SPA-GMN-Q01-CUR
@@ -7397,6 +7491,9 @@
            WHEN    "0127"
                MOVE    "低所得期間終了入力エラー"
                                        TO  SPA-ERRMSG
+           WHEN    "0128"
+               MOVE    "死亡区分入力エラー"
+                                       TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"
                                        TO  SPA-ERRMSG
@@ -7552,6 +7649,9 @@
                MOVE    1               TO  FLG-PAGENO-00
            WHEN    SHKITEMID-SRYKA
                MOVE    SHODATA-ITEM    TO  Q01-SRYKA
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-DEATH
+               MOVE    SHODATA-ITEM    TO  Q01-DEATH
                MOVE    1               TO  FLG-PAGENO-00
            WHEN    SHKITEMID-STPTNUM
                MOVE    SHODATA-ITEM    TO  Q01-STPTNUM
@@ -8077,6 +8177,14 @@
                MOVE    SHKITEMID-SRYKA
                                    TO  SHODATA-ITEMID
                MOVE    SPA-GMN-Q01-SRYKA
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-DEATH       NOT =   SPACE )
+               MOVE    SHKITEMID-DEATH
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-DEATH
                                    TO  SHODATA-ITEM
                PERFORM 70011-SHOUKAIDATA-INS-SEC
            END-IF
