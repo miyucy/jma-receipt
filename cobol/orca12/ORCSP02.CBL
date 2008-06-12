@@ -864,12 +864,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        本人家族選択区分
                MOVE    SYS-1017-HONKZKKBN-FLG TO
                                                SPA-NAI-HONKZKKBN-FLG
+      *        家族年齢区分
+               IF      SYS-1017-KZKNEN         =   SPACE
+                   MOVE    15                  TO  SPA-NAI-KZKNEN
+               ELSE
+                   MOVE    SYS-1017-KZKNEN     TO  SPA-NAI-KZKNEN
+               END-IF
+      *        被保険者名設定区分
+               MOVE    SYS-1017-HIHKNJAKBN-FLG TO
+                                               SPA-NAI-HIHKNJAKBN-FLG
            ELSE
       *        未登録の時、ゼロとする
                MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
                MOVE    ZERO                    TO  SPA-NAI-KARUTE-HAKKO
                MOVE    ZERO                    TO  SPA-NAI-JIHIHKN-TAX
                MOVE    ZERO                    TO  SPA-NAI-HONKZKKBN-FLG
+      *        家族年齢区分
+               MOVE    15                      TO  SPA-NAI-KZKNEN
+      *        被保険者名設定区分
+               MOVE    ZERO                TO  SPA-NAI-HIHKNJAKBN-FLG
            END-IF
            IF      SPA-NAI-DOUMEI-CHKFLG   =   SPACE
                MOVE    ZERO                TO  SPA-NAI-DOUMEI-CHKFLG
@@ -879,6 +892,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            IF      SPA-NAI-PTNUMDEL-FLG    =   SPACE
                MOVE    ZERO                TO  SPA-NAI-PTNUMDEL-FLG
+           END-IF
+           IF      SPA-NAI-HIHKNJAKBN-FLG  =   SPACE
+               MOVE    ZERO                TO  SPA-NAI-HIHKNJAKBN-FLG
            END-IF
       *    地方公費単独チェックはチェックするを初期とする
            IF      SPA-NAI-KOHONLY-CHKFLG  =   SPACE

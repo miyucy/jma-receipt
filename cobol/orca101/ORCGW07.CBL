@@ -93,6 +93,7 @@
       *                                     病名疾患区分からの自動発生
       *                                     投薬診療種別自動変換
       *                                     初診料の警告対応
+      *  04.03.00    NACL-多々納  08/06/XX  家族年齢、被保険者名区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -376,6 +377,17 @@
                            11  SPA-GMN-HONKZKKBN-FLG-LIST PIC X(28)
                                                             OCCURS  2.
                        09  SPA-GMN-HONKZKKBN-MAX             PIC 9(02).
+      *                家族年齢
+                       09  SPA-GMN-KZKNEN              PIC X(02).
+      *                被保険者区分選択
+                       09  SPA-GMN-HIHKNJAKBN-FLG-G.
+                           11  SPA-GMN-HIHKNJAKBN-FLG         PIC X(01).
+                           11  SPA-GMN-HIHKNJAKBN-F1          PIC X(01).
+                           11  SPA-GMN-HIHKNJAKBN-MEI         PIC X(26).
+                       09  SPA-GMN-HIHKNJAKBN-FLG-COMB.
+                           11  SPA-GMN-HIHKNJAKBN-FLG-LIST PIC X(28)
+                                                            OCCURS  2.
+                       09  SPA-GMN-HIHKNJAKBN-MAX             PIC 9(02).
                    07  SPA-GMN-PAGE3-AREA.
       *                入金管理情報（診療行為機能情報）
                        09  SPA-GMN-SRYNYKNKNRKBN-G.
@@ -833,6 +845,8 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
       *
+           03  WRK-KZKNEN          PIC 9(02).
+      *
            03  WRK-MCP-WIDGET      PIC X(64).
       *
        01  WRK-HEN-AREA.
@@ -1245,6 +1259,12 @@
            MOVE    "1 初期設定なし" 
                                    TO  SPA-GMN-HONKZKKBN-FLG-LIST (2)
            MOVE    2               TO  SPA-GMN-HONKZKKBN-MAX 
+      *    被保険者区分選択
+           MOVE    "0 標準設定（国保は姓名）" 
+                                   TO  SPA-GMN-HIHKNJAKBN-FLG-LIST (1)
+           MOVE    "1 家族は姓のみ"
+                                   TO  SPA-GMN-HIHKNJAKBN-FLG-LIST (2)
+           MOVE    2               TO  SPA-GMN-HIHKNJAKBN-MAX 
       *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
@@ -2073,6 +2093,12 @@
       *        本人・家族区分
                MOVE    SYS-1017-HONKZKKBN-FLG
                                        TO  SPA-GMN-HONKZKKBN-FLG
+      *        家族年齢
+               MOVE    SYS-1017-KZKNEN
+                                       TO  SPA-GMN-KZKNEN
+      *        被保険者区分
+               MOVE    SYS-1017-HIHKNJAKBN-FLG
+                                       TO  SPA-GMN-HIHKNJAKBN-FLG
            END-IF
       *
       *    初期設定
@@ -2178,6 +2204,18 @@
                WHEN    OTHER
                    MOVE    SPA-GMN-HONKZKKBN-FLG-LIST(1)
                                            TO  SPA-GMN-HONKZKKBN-FLG-G
+           END-EVALUATE
+      *    被保険者区分設定
+           EVALUATE    SPA-GMN-HIHKNJAKBN-FLG
+               WHEN    "0"
+                   MOVE    SPA-GMN-HIHKNJAKBN-FLG-LIST(1)
+                                           TO  SPA-GMN-HIHKNJAKBN-FLG-G
+               WHEN    "1"
+                   MOVE    SPA-GMN-HIHKNJAKBN-FLG-LIST(2)
+                                           TO  SPA-GMN-HIHKNJAKBN-FLG-G
+               WHEN    OTHER
+                   MOVE    SPA-GMN-HIHKNJAKBN-FLG-LIST(1)
+                                           TO  SPA-GMN-HIHKNJAKBN-FLG-G
            END-EVALUATE
       *
            MOVE    201                 TO  SPA-GMN-CUR
@@ -3253,6 +3291,8 @@
            MOVE    W07-KOHONLY-CHKFLG  TO  SPA-GMN-KOHONLY-CHKFLG-G
            MOVE    W07-PTNUMDEL-FLG    TO  SPA-GMN-PTNUMDEL-FLG-G
            MOVE    W07-HONKZKKBN       TO  SPA-GMN-HONKZKKBN-FLG-G
+           MOVE    W07-KZKNEN          TO  SPA-GMN-KZKNEN
+           MOVE    W07-HIHKNJAKBN      TO  SPA-GMN-HIHKNJAKBN-FLG-G
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
@@ -3453,6 +3493,14 @@
       *            本人・家族区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4107-HONKZKKBN-FLG-SEC
+                   END-IF
+      *            家族年齢
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-KZKNEN-CHK-SEC
+                   END-IF
+      *            被保険者名設定区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-HIHKNJAKBN-FLG-SEC
                    END-IF
                WHEN    "1038"
       *            ＤＯ初期表示
@@ -4710,6 +4758,61 @@
       *
           .
        4107-HONKZKKBN-FLG-EXT.
+           EXIT.
+      *****************************************************************
+      *    家族年齢設定チェック処理
+      *****************************************************************
+       4107-KZKNEN-CHK-SEC          SECTION.
+      *
+           IF      SPA-GMN-KZKNEN      =   SPACE
+               CONTINUE
+           ELSE
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-KZKNEN      TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF     (SNUM-RC         NOT =   ZERO  )   OR
+                      (SNUM-MINKBN     NOT =   SPACE )   OR
+                      (SNUM-SYOKBN     NOT =   SPACE )
+                   MOVE    210                 TO  SPA-GMN-CUR
+                   MOVE    "1010"              TO  SPA-ERRCD
+               ELSE
+                   MOVE    SNUM-OUTNUM         TO  WRK-KZKNEN
+                   IF      WRK-KZKNEN          =   ZERO
+                       MOVE    SPACE               TO  SPA-GMN-KZKNEN
+                   ELSE
+                       MOVE    WRK-KZKNEN          TO  SPA-GMN-KZKNEN
+                   END-IF
+               END-IF
+           END-IF
+      *
+          .
+       4107-KZKNEN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    被保険者名設定区分チェック処理
+      *****************************************************************
+       4107-HIHKNJAKBN-FLG-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-HIHKNJAKBN-MAX) OR
+                              (FLG-OK  =   1    )
+               IF      SPA-GMN-HIHKNJAKBN-FLG
+                                       =   SPA-GMN-HIHKNJAKBN-FLG-LIST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-HIHKNJAKBN-FLG-LIST(IDX)
+                                          TO  SPA-GMN-HIHKNJAKBN-FLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    211             TO  SPA-GMN-CUR
+               MOVE    "1011"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4107-HIHKNJAKBN-FLG-EXT.
            EXIT.
       *****************************************************************
       *    入金管理区分チェック処理（診療行為機能情報）
@@ -6114,6 +6217,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-KOHONLY-CHKFLG  TO  SYS-1017-KOHONLY-CHKFLG
            MOVE    SPA-GMN-PTNUMDEL-FLG    TO  SYS-1017-PTNUMDEL-FLG
            MOVE    SPA-GMN-HONKZKKBN-FLG   TO  SYS-1017-HONKZKKBN-FLG
+           MOVE    SPA-GMN-KZKNEN          TO  SYS-1017-KZKNEN
+           MOVE    SPA-GMN-HIHKNJAKBN-FLG  TO  SYS-1017-HIHKNJAKBN-FLG
       *
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
@@ -6818,6 +6923,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-HONKZKKBN-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-HONKZKKBN-MAX   TO  W07-HONKZKKBN-COUNT
+      *    家族年齢
+           MOVE    SPA-GMN-KZKNEN      TO  W07-KZKNEN
+      *    被保険者名設定区分
+           MOVE    SPA-GMN-HIHKNJAKBN-FLG-G    TO  W07-HIHKNJAKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-HIHKNJAKBN-MAX
+               MOVE    SPA-GMN-HIHKNJAKBN-FLG-LIST (IDX)
+                                       TO  W07-HIHKNJAKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-HIHKNJAKBN-MAX  TO  W07-HIHKNJAKBN-COUNT
       *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
@@ -7377,6 +7492,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1009"
                    MOVE    "本人・家族区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "1010"
+                   MOVE    "家族年齢は数値で入力して下さい。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "1011"
+                   MOVE    "被保険者名自動記載区分がありません。"
+                                                       TO  SPA-ERRMSG
       *    診療行為機能情報
                WHEN    "2001"
                    MOVE    "入金管理区分がありません。"
@@ -7698,6 +7819,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "PTNUMDEL_FLG"    TO   MCP-WIDGET
                WHEN    209
                    MOVE  "HONKZKKBN"       TO   MCP-WIDGET
+               WHEN    210
+                   MOVE  "KZKNEN"          TO   MCP-WIDGET
+               WHEN    211
+                   MOVE  "HIHKNJAKBN"      TO   MCP-WIDGET
       *診療行為情報
                WHEN    301
                    MOVE  "DOSRYKBN_FLG"    TO   MCP-WIDGET
@@ -7974,6 +8099,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "PTNUMDEL_FLG"
                    MOVE    209              TO  SPA-GMN-CUR
                WHEN    "HONKZKKBN"
+                   MOVE    210              TO  SPA-GMN-CUR
+               WHEN    "KZKNEN"
+                   MOVE    211              TO  SPA-GMN-CUR
+               WHEN    "HIHKNJAKBN"
                    MOVE    999              TO  SPA-GMN-CUR
       *    診療行為情報
                WHEN    "DOSRYKBN_FLG"

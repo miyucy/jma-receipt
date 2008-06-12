@@ -75,6 +75,10 @@
            03  SPA-NAI-PTNUMDEL-FLG       PIC X(01).
       *    本人家族選択区分
            03  SPA-NAI-HONKZKKBN-FLG      PIC X(01).
+      *    家族年齢区分
+           03  SPA-NAI-KZKNEN             PIC 9(02).
+      *    被保険者名設定区分
+           03  SPA-NAI-HIHKNJAKBN-FLG      PIC X(01).
       *
       *    更新時警告あり
            03  SPA-KEI-FLG                PIC 9(01).

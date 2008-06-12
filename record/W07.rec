@@ -346,6 +346,16 @@ W07	{
 					count	int;
 					item	varchar(28)[2];
 				};
+				KZKNEN	{
+					value	varchar(2);
+				};
+				HIHKNJAKBN_COMB	{
+					HIHKNJAKBN	{
+						value	varchar(28);
+					};
+					count	int;
+					item	varchar(28)[5];
+				};
 			};
 			TAGNAME2    {
 			    state   int;

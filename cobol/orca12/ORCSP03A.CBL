@@ -45,6 +45,7 @@
       * 04.01.00     NACL-多々納  07/11/XX  公害保険対応
       * 04.01.00     NACL-多々納  07/12/12  記号番号空白チェック
       * 04.02.00     NACL-多々納  08/03/XX  平成２０年４月改正対応
+      * 04.03.00     NACL-多々納  08/06/XX  家族年齢・被保険者名設定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -528,10 +529,6 @@
       *            その他
                        PERFORM 1003-HKNNUM-HBTNUM-SEC
                END-EVALUATE
-      *        後期高齢者
-      *        IF      SPA-GMN-HKNJANUM(1:2)   =   "39"
-      *            MOVE    "039"           TO  WRK-HKNJA-HKNNUM
-      *        END-IF
            END-IF
       *
            IF      WRK-HKNJA-HKNNUM    =   SPACE
@@ -794,8 +791,10 @@
                CONTINUE
            ELSE
              IF      SPA-GMN-HONKZKKBN-G     =   SPACE
-      *        １５歳未満の時、家族とする
-               IF      SPA-NAI-NENREI-YY   <=  15
+      ***      １５歳未満の時、家族とする
+      **       IF      SPA-NAI-NENREI-YY   <=  15
+      *        家族年齢までを家族とする
+               IF      SPA-NAI-NENREI-YY   <=  SPA-NAI-KZKNEN
                    MOVE    WRK-HONKA-REC (2)   TO  SPA-GMN-HONKZKKBN-G
                ELSE
                    MOVE    WRK-HONKA-REC (1)   TO  SPA-GMN-HONKZKKBN-G
@@ -1875,10 +1874,12 @@
            END-PERFORM
       *
       *    国保、退職国保の場合
-           IF      SPA-GMN-HKNNUM      =   "060"
+           IF     (SPA-GMN-HKNNUM      =   "060"
                                        OR  "067"
                                        OR  "068"
-                                       OR  "069"
+                                       OR  "069"  )
+      *           標準設定の時のみ家族でも姓名編集
+             AND  (SPA-NAI-HIHKNJAKBN-FLG  =   "0" )
                IF      SPA-GMN-HIHKNJANAME     =   SPACE
                    MOVE    SPA-GMN-NAME    TO  SPA-GMN-HIHKNJANAME
                END-IF
