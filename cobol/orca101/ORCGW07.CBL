@@ -492,7 +492,7 @@
                            11  SPA-GMN-TEISEIFLG-MEI   PIC X(38).
                        09  SPA-GMN-TEISEIFLGLST-G.
                            11  SPA-GMN-TEISEIFLG-LST   PIC X(40)
-                                                       OCCURS  2.
+                                                       OCCURS  3.
                            11  SPA-GMN-TEISEIFLG-MAX   PIC 9(03).
       *                皮下筋肉注射料変換選択
                        09  SPA-GMN-CHG310FLG-G.
@@ -1340,8 +1340,11 @@
            MOVE    2                   TO  SPA-GMN-AKUSEIHYO-MAX
       *    同日再診・訂正選択
            MOVE    "0 選択しない"      TO  SPA-GMN-TEISEIFLG-LST(1)
-           MOVE    "1 選択する"        TO  SPA-GMN-TEISEIFLG-LST(2)
-           MOVE    2                   TO  SPA-GMN-TEISEIFLG-MAX
+           MOVE    "1 選択する（OK：同日再診）" 
+                                       TO  SPA-GMN-TEISEIFLG-LST(2)
+           MOVE    "2 選択する（OK：訂正）"
+                                       TO  SPA-GMN-TEISEIFLG-LST(3)
+           MOVE    3                   TO  SPA-GMN-TEISEIFLG-MAX
       *    皮下筋肉注射料変換選択
            MOVE    "0 変換する"        TO  SPA-GMN-CHG310FLG-LST(1)
            MOVE    "1 変換しない"      TO  SPA-GMN-CHG310FLG-LST(2)

@@ -304,7 +304,7 @@
                       07  W07-VALUE   PIC X(40).
                     06  W07-TEISEIFLG-COUNT   PIC S9(9)   BINARY.
                     06  W07-TEISEIFLG-ITEM
-                            PIC X(40)   OCCURS  2 TIMES.
+                            PIC X(40)   OCCURS  3 TIMES.
                   05  W07-CHG310FLG-COMB.
                     06  W07-CHG310FLG.
                       07  W07-VALUE   PIC X(40).

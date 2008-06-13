@@ -1987,14 +1987,18 @@
            IF      SPA-HKNCOMBINUM     =   "9999"
       *       受付あり
               OR  (SPA-UKETUKE-ARI     =   1    )
-              OR  (SPA-TEISEIFLG   NOT =   "1"  )
+              OR  (SPA-TEISEIFLG       =   "0"  )
                CONTINUE
            ELSE
                IF     ( SPA-NYUGAIKBN      =   "2"        ) AND
                       ( SPA-SYORIFLG       =   ZERO       ) AND
                       ( SPA-RRK-LSTYMD     =   SPA-SRYYMD ) AND
                       ( SPA-LSTYMD         =   SPA-SRYYMD )
-                   MOVE    "0100"              TO  SPA-KIDCD
+                   IF      (SPA-TEISEIFLG       =   "1"  )
+                       MOVE    "0100"              TO  SPA-KIDCD
+                   ELSE
+                       MOVE    "0131"              TO  SPA-KIDCD
+                   END-IF
                END-IF
            END-IF
       *    入院日の時、初診料のみ算定する

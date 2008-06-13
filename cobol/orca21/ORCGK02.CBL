@@ -2251,7 +2251,7 @@
                    MOVE    SPACE               TO  SPA-KIDCD
                    MOVE    ZERO                TO  SPA-SYOSIN
                    PERFORM 30019-DOUSAISIN-SEC
-      *        同日再診と訂正選択
+      *        同日再診と訂正選択（ＯＫが同日）
                WHEN    "0100"
                    MOVE    SPACE               TO  SPA-KIDCD
                    MOVE    ZERO                TO  SPA-SYOSIN
@@ -2264,6 +2264,21 @@
                        MOVE    1               TO  SPA-NAI-SYORI
                        MOVE    "01"            TO  K02-DOSELNUM
                        PERFORM 41014-DOSELNUM-SEC
+                   END-IF
+      *
+      *        同日再診と訂正選択（ＯＫが訂正）
+               WHEN    "0131"
+                   MOVE    SPACE               TO  SPA-KIDCD
+                   MOVE    ZERO                TO  SPA-SYOSIN
+                   IF      SPA-KID1-FLG        =   "OK"
+      *                訂正
+                       MOVE    "T"             TO  SPA-GMN-TEISEI
+                       MOVE    1               TO  SPA-NAI-SYORI
+                       MOVE    "01"            TO  K02-DOSELNUM
+                       PERFORM 41014-DOSELNUM-SEC
+                   ELSE
+      *                同日再診
+                       PERFORM 300100-DOUSAISIN-SEC
                    END-IF
       *
                WHEN    "0102"
@@ -13233,6 +13248,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0100"
                    STRING  "当日に受診があります。"
                       "ＯＫで同日再診、ＮＯで訂正表示を行います。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
+               WHEN    "0131"
+                   STRING  "当日に受診があります。"
+                      "ＯＫで訂正、ＮＯで同日再診表示を行います。"
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
