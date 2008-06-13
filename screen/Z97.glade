@@ -197,7 +197,7 @@
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>
 	  <name>label499</name>
-	  <label>ÊÇ¿ô</label>
+	  <label>ÊÇ¿ô¡¦·ï¿ô</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
