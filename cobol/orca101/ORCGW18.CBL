@@ -1770,8 +1770,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "帳票別指定入力エラー"        TO  SPA-ERRMSG
       *----(04.03.01)--ADD-START---
                WHEN    "0011"
-                   MOVE
-                   "所在地は２０文字以内の区分コードを選択して下さい"
+                   MOVE    "医療機関名称は１〜２０文字以内にして下さい"
                                                          TO  SPA-ERRMSG
       *----(04.03.01)--ADD-END-----
                WHEN    "0100"
