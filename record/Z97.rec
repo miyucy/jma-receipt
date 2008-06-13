@@ -19,6 +19,9 @@ Z97	{
 				select	bool[30];
 			};
 		};
+                pandatimer1     {
+			duration        int;
+                };
 		B12	{
 	       	state	int;
 			label	varchar(14);
