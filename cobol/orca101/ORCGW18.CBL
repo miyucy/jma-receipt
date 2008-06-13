@@ -33,6 +33,7 @@
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *  04.01.00    NACL-森脇    07/12/21  公害レセプト追加
       *  04.02.00    NACL-森脇    08/03/17  広域連合追加、お薬手帳追加
+      *  04.03.01    NACL-森脇    08/06/13  レセプト電算追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -86,13 +87,15 @@
       *----(03.04.01)--UPD-START---
       *----(04.01.00)--UPD-START---
       *----(04.02.00)--UPD-START---
+      *----(04.03.01)--UPD-START---
                    07  SPA-GMN-KOUMOKU2.
-                       09  SPA-GMN-PRTKBN-G   OCCURS  18.
+                       09  SPA-GMN-PRTKBN-G   OCCURS  19.
                            11  SPA-GMN-PRTKBN
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTKBNMEI
                                               PIC X(18).
+      *----(04.03.01)--UPD-END-----
       *----(04.02.00)--UPD-END-----
       *----(04.01.00)--UPD-END-----
       *----(03.04.01)--UPD-END-----
@@ -435,7 +438,9 @@
       *----(03.04.01)--UPD-START---
       *----(04.01.00)--UPD-START---
       *----(04.02.00)--UPD-START---
-           MOVE    18                  TO  SPA-GMN-PRTKBN-MAX
+      *----(04.03.01)--UPD-START---
+           MOVE    19                  TO  SPA-GMN-PRTKBN-MAX
+      *----(04.03.01)--UPD-END-----
       *----(04.02.00)--UPD-END-----
       *----(04.01.00)--UPD-END-----
       *----(03.04.01)--UPD-END-----
@@ -747,6 +752,13 @@
            END-IF
       *----(03.04.02)--ADD-END-----
       *
+      *----(04.03.01)--ADD-START---
+           PERFORM 41029-RECEDEN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *----(04.03.01)--ADD-END-----
+      *
            .
        4102-KIHON-CHK-EXT.
            EXIT.
@@ -946,6 +958,39 @@
        41028-PRTKBN-CHK-EXT.
            EXIT.
       *
+      *----(04.03.01)--ADD-START---
+      *****************************************************************
+      *    レセ電チェック
+      *****************************************************************
+       41029-RECEDEN-CHK-SEC       SECTION.
+      *
+          IF      SPA-GMN-PRTKBN(19)   NOT =   SPACE
+               MOVE    SPACE               TO  SYS-1901-REC
+               INITIALIZE                      SYS-1901-REC
+               MOVE    "1901"              TO  SYS-1901-KANRICD
+               MOVE    SPA-GMN-PRTKBN(19)  TO  SYS-1901-KBNCD
+               MOVE    SPA-W01-STYUKYMD    TO  SYS-1901-STYUKYMD
+               MOVE    SPA-W01-STYUKYMD    TO  SYS-1901-EDYUKYMD
+               MOVE    SPA-HOSPNUM         TO  SYS-1901-HOSPNUM
+               MOVE    SYS-1901-REC        TO  MCPDATA-REC
+               PERFORM 900-SYSKANRI-INV-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1901-REC
+               ELSE
+                   INITIALIZE                      SYS-1901-REC
+               END-IF
+               IF    ( SYS-1901-HOSPNAME1MOJI  =   0 ) OR
+                     ( SYS-1901-HOSPNAME1MOJI  >   20 )
+                   COMPUTE SPA-GMN-CUR =   100 +   19
+                   MOVE    "0011"                  TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       41029-RECEDEN-CHK-EXT.
+           EXIT.
+      *
+      *----(04.03.01)--ADD-END-----
       *****************************************************************
       *    更新前チェック処理
       *****************************************************************
@@ -1723,6 +1768,12 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                                          TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "帳票別指定入力エラー"        TO  SPA-ERRMSG
+      *----(04.03.01)--ADD-START---
+               WHEN    "0011"
+                   MOVE
+                   "所在地は２０文字以内の区分コードを選択して下さい"
+                                                         TO  SPA-ERRMSG
+      *----(04.03.01)--ADD-END-----
                WHEN    "0100"
                    MOVE
                    "入力項目があるのに区分コードが入力されていません"
@@ -1921,6 +1972,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    118
                     MOVE  "PRTKBN18"          TO   MCP-WIDGET
       *----(04.02.00)--ADD-END-----
+      *----(04.03.01)--ADD-START---
+                WHEN    119
+                    MOVE  "PRTKBN19"          TO   MCP-WIDGET
+      *----(04.03.01)--ADD-END-----
                 WHEN    200
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -2001,6 +2056,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "PRTKBN14"
                    MOVE    104         TO  SPA-GMN-CUR
                WHEN    "PRTKBN15"
+      *----(04.03.01)--ADD-START---
+                   MOVE    119         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN19"
+      *----(04.03.01)--ADD-END-----
                    MOVE    107         TO  SPA-GMN-CUR
                WHEN    "PRTKBN16"
       *----(04.02.00)--ADD-START---
