@@ -39,6 +39,8 @@
       *                                     £·£°ºÐÂåÁ°È¾¤ÎÆÃÎãÁ¼ÃÖÂÐ¾Ý¼Ô
       *                                     ÂÐ±þ 
       *                                     ¹ñÊÝ¤Î¤ß£²³ä¤Îµ­ºÜ
+      *  04.02.06    NACL-ÌçÏÆ    08/06/12  °¦É²¸©ÃÏÊý¸øÈñÂÐ±þ
+      *                                     ¡Ê°ìÉôÉéÃ´¶âºÆ·ÇÍóÊÔ½¸¡Ë
       *
       *  04.03.01    NACL-Æ£¸¶    08/05/07  ¸øÈñ£´¼ï¤Þ¤Ç¤ÎÊ»ÍÑ¤Îµ­Ï¿ÂÐ±þ
       *  04.03.02    NACL-Æ£¸¶    08/06/02  ¥ê¥¢¥ë¥¿¥¤¥à¥×¥ì¥Ó¥å¡¼»þ¤ÎÉ½¼¨
@@ -2279,8 +2281,9 @@
                  MOVE   "4"     TO   KOHSKY-ZAITAKU
              END-EVALUATE
            END-IF
-           MOVE    RECE02X-ZAITAKU-SAIKEI
-                                       TO  KOHSKY-ZAITAKU-SAIKEI
+           IF      RECE02X-ZAITAKU-SAIKEI  NOT =  999999999
+             MOVE  RECE02X-ZAITAKU-SAIKEI  TO  KOHSKY-ZAITAKU-SAIKEI
+           END-IF
       *    °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³Û¶èÊ¬
            MOVE    RECE02X-SHOKUJIFTNKBN
                                        TO  KOHSKY-SHOKUJIFTNKBN
@@ -4451,7 +4454,7 @@
                    END-IF
                END-IF
            END-IF
-           IF      RECE02-ZAITAKU-SAIKEI  >   ZERO
+           IF      RECE02-ZAITAKU-SAIKEI  NOT =  999999999
                MOVE    "("                    TO  HC06-FTNMONEYSAI(1:1)
                MOVE   RECE02-ZAITAKU-SAIKEI   TO  WRK-KGK7
                MOVE   WRK-KGK7                TO  HC06-FTNMONEYSAI(3:8)
