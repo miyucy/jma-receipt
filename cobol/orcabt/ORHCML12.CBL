@@ -30,15 +30,22 @@
       * 01.01.01     NACL-¿¹ÏÆ    04/03/16  ÅÀ¿ô¤Î·å½¤Àµ
       *  01.01.02    NACL-¿¹ÏÆ    06/07/27  ¥Õ¥é¥°ÄÉ²Ã¡¢MONFUNCÂÐ±þ
       *  03.05.01    NACL-¿¹ÏÆ    07/05/29  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.03.01    NACL-¿¹ÏÆ    08/06/13  £Ã£Ó£Ö¥Õ¥¡¥¤¥ë½ÐÎÏÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
+      *
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
            SELECT  TENSUERR-FILE   ASSIGN  TENSUERR
                                    FILE    STATUS  IS  STS-TENSUERR.
+      *    £Ã£Ó£Ö¥Õ¥¡¥¤¥ë
+           SELECT  TENSUCSV-FILE   ASSIGN  TENSUCSV
+                                   ORGANIZATION    IS  LINE
+                                                       SEQUENTIAL
+                                   FILE    STATUS  IS  STS-TENSUCSV.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
@@ -46,27 +53,53 @@
       *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
        FD  TENSUERR-FILE.
        01  TENSUERR-REC            PIC X(200).
+      *    CSV¥Õ¥¡¥¤¥ë
+       FD  TENSUCSV-FILE.
+       01  TENSUCSV-REC.
+           03  CSV-HOSPNUM         PIC 9(2).
+           03  CSV-FILLER1         PIC X(1).
+           03  CSV-SRYCD           PIC X(9).
+           03  CSV-FILLER2         PIC X(1).
+           03  CSV-YUKOSTYMD       PIC X(8).
+           03  CSV-FILLER3         PIC X(1).
+           03  CSV-YUKOEDYMD       PIC X(8).
+           03  CSV-FILLER4         PIC X(1).
+           03  CSV-NAME            PIC X(100).
+           03  CSV-FILLER5         PIC X(1).
+           03  CSV-TEN             PIC X(14).
+           03  CSV-FILLER6         PIC X(1).
+           03  CSV-TANINAME        PIC X(24).
+           03  CSV-FILLER7         PIC X(1).
+           03  CSV-CSYYOURYO       PIC X(5).
+           03  CSV-FILLER8         PIC X(1).
+           03  CSV-MADOKUKBN       PIC X(8).
+           03  CSV-FILLER9         PIC X(1).
+           03  CSV-SINKEIHAKAIKBN  PIC X(8).
+           03  CSV-FILLER10        PIC X(1).
+           03  CSV-SEIBUTUGAKUKBN  PIC X(8).
+           03  CSV-FILLER11        PIC X(1).
+           03  CSV-ZOEIZAIKBN      PIC X(8).
+           03  CSV-FILLER12        PIC X(1).
+           03  CSV-YKZKBN          PIC X(8).
+           03  CSV-FILLER13        PIC X(1).
+           03  CSV-ZAIGATAKBN      PIC X(8).
+           03  CSV-FILLER14        PIC X(1).
+           03  CSV-KEIKASOCHIYMD   PIC X(8).
+           03  CSV-FILLER15        PIC X(1).
+           03  CSV-YAKKAKJNCD      PIC X(12).
       *
        WORKING-STORAGE             SECTION.
       *    ¥·¥§¥ëÍÑÎÎ°è
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
            COPY    "ORCA-DBPATH".
-      *----(03.05.01)--UPD-START---
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
-      *     COPY    "CPCOMMONDAT2.INC"
-      *                             REPLACING  //RECE01PARA//
-      *                             BY         //TENSUERR//.
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //TENSUERR//.
-      *----(03.05.01)--UPD-END-----
       *     
            COPY    "HCML01.INC".
       *
       *    ¥¹¥ÑÎÎ°è
        01  STS-AREA.
            03  STS-TENSUERR        PIC X(02).
+           03  STS-TENSUCSV        PIC X(02).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -82,23 +115,23 @@
       *
       *    ½¸·×ÎÎ°è
        01  SUM-AREA.
-           03  SUM-PAGE            PIC 9(10).
+           03  SUM-KENSU           PIC 9(07).
       *
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
-      *----(03.05.01)--ADD-START---
-           03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *----(03.05.01)--ADD-END-----
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            COPY    "CPHCMLSHELL.INC"
                                    REPLACING  //SHELL-//
                                    BY         //WRK-PARA-//.
-      *
-       01  INEX-AREA.
-           03  IDX                 PIC 9(02).
-      *
+           03  WRK-PARA-HOSPNUM    PIC 9(02).
+           03  WRK-PARA-CSVKBN     PIC X(1).
+           03  WRK-PARA-FILE       PIC X(1).
+           03  WRK-PARA-CSVDIR     PIC X(100).
+           03  WRK-PARA-CSVFILE    PIC X(100).
+           03  TENSUERR            PIC X(100).
+           03  TENSUCSV            PIC X(100).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -121,9 +154,7 @@
            03  WRK-NAME            PIC X(100).
       *
            03  WRK-PAGE            PIC ZZ,ZZ9.
-      *----(01.01.01)--UPD-START---
            03  WRK-TEN             PIC ZZZ,ZZZ,ZZ9.99.
-      *----(01.01.01)--UPD-END-----
            03  WRK-CSYYOURYO       PIC ZZ,ZZ9.
       *
       *****************************************************************
@@ -179,6 +210,9 @@
       *    LIKE»ÈÍÑKEYÂÐ±þ
            COPY    "CPORCSADDSIGN.INC".
       *
+      *    ¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸£Ä£ÂÀ©¸æ¥µ¥Ö
+           COPY    "CPORCSFILESV.INC".
+      *
       ****************************************************************
        LINKAGE                     SECTION.
        01  COMMAND-PARAM.
@@ -211,7 +245,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SUM-AREA
-grpsys     INITIALIZE                  SPA-AREA
+           INITIALIZE                  SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -230,12 +264,15 @@ grpsys     INITIALIZE                  SPA-AREA
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-AREA
-      *----(03.05.01)--ADD-START---
                                                WRK-PARA-HOSPNUM
                                                TENSUERR
+                                               WRK-PARA-CSVKBN
+                                               WRK-PARA-FILE
+                                               WRK-PARA-CSVDIR
+                                               WRK-PARA-CSVFILE
            END-UNSTRING
+      *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *----(03.05.01)--ADD-END-----
       *
       *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -243,10 +280,8 @@ grpsys     INITIALIZE                  SPA-AREA
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-      *----(03.05.01)--ADD-START---
            MOVE    WRK-PARA-HOSPNUM
                                    TO  JOB-HOSPNUM
-      *----(03.05.01)--ADD-END-----
            MOVE    "ORHCML12"      TO  JOB-PGID
            MOVE    "ÅÀ¿ô¥Þ¥¹¥¿°ìÍ÷É½¡¦ÌôºÞÊ¬Îà¶èÊ¬"
                                    TO  JOB-SHELLMSG
@@ -259,13 +294,6 @@ grpsys     INITIALIZE                  SPA-AREA
                                    TO  WRK-LNKYMD
            PERFORM 831-YMDCONV12-SEC
            MOVE    WRK-LNKYMD      TO  WRK-MSTYMDH
-      *
-      *----(03.05.01)--UPD-START---
-      *     MOVE    "TENSERR"       TO  TENSUERR-FILE-ID
-      *     MOVE    LNK-PRTKANRI-TERMID
-      *                             TO  TENSUERR-TERMID
-      *     MOVE    WRK-PARA-HOSPNUM    TO  TENSUERR-HOSPNUM
-      *----(03.05.01)--UPD-END-----
       *
       *    ¥Ñ¥é¥á¥¿ÊÔ½¸½èÍý
            PERFORM 110-PARA-HENSYU-SEC
@@ -285,9 +313,7 @@ grpsys     INITIALIZE                  SPA-AREA
            MOVE    "*"             TO  SYS-1001-KBNCD
            MOVE    WRK-PARA-MSTYMD TO  SYS-1001-STYUKYMD
                                        SYS-1001-EDYUKYMD
-      *----(03.05.01)--UPD-START---
            MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
-      *----(03.05.01)--UPD-END-----
            MOVE    SYS-1001-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF          FLG-SYSKANRI    =   ZERO
@@ -311,23 +337,77 @@ grpsys     INITIALIZE                  SPA-AREA
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
+           IF      WRK-PARA-CSVKBN =   "1"
+      *        £Ã£Ó£ÖÊÔ½¸½èÍý
+               PERFORM 300-CSV-SEC 
+           ELSE
+      *        Ä¢É¼ÊÔ½¸½èÍý
+               PERFORM 300-PRINT-SEC
+           END-IF
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       200-MAIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ç¡¡¡¡½èÍý¡Ê£Ã£Ó£Ö¡Ë
+      *****************************************************************
+       300-CSV-SEC                 SECTION.
+      *
+           STRING  "/tmp/"             DELIMITED SIZE
+                   WRK-PARA-CSVFILE    DELIMITED SPACE
+                   ".wk"               DELIMITED SIZE
+                               INTO    TENSUCSV
+           END-STRING
+      *
+      *    £Ã£Ó£Ö¥Õ¥¡¥¤¥ë¤ò³«¤¯
+           OPEN    OUTPUT              TENSUCSV-FILE
+      *
       *    Ä¢É¼°õºþ³«»Ï½èÍý
            PERFORM 900-DBSELECT-SEC
+           PERFORM UNTIL   FLG-TENSU   =   1
+      *        Ä¢É¼ÊÔ½¸<CSV>½èÍý
+               PERFORM 330-CSV-HEN-SEC
+           END-PERFORM
+      *    Ä¢É¼°õºþ½ªÎ»½èÍý
+           PERFORM 900-DBCLOSE-SEC
       *
+      *    £Ã£Ó£Ö¥Õ¥¡¥¤¥ë¤òÊÄ¤¸¤ë
+           CLOSE                       TENSUCSV-FILE
+      *
+      *    ¥¯¥é¥¤¥¢¥ó¥ÈÊÝÂ¸¤Î¾ì¹ç
+           IF      WRK-PARA-FILE       =   "1"
+               PERFORM 380-CSV-OUT-SEC
+           END-IF
+      *
+           .
+       300-CSV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¼ç¡¡¡¡½èÍý
+      *****************************************************************
+       300-PRINT-SEC                SECTION.
+      *
+      *    Ä¢É¼°õºþ³«»Ï½èÍý
+           PERFORM 900-DBSELECT-SEC
            PERFORM UNTIL   FLG-TENSU   =   1
       *        Ä¢É¼ÊÔ½¸<¸«½Ð¤·>½èÍý
                PERFORM 310-HEAD-HEN-SEC
       *        Ä¢É¼ÊÔ½¸<ÌÀºÙ>½èÍý
                PERFORM 320-BODY-HEN-SEC
+                       UNTIL   FLG-TENSU   =   1
+                       OR      CNT-LINE    =   15
       *        Ä¢É¼°õºþ½èÍý
                PERFORM 390-PRINT-OUT-SEC
            END-PERFORM
-      *
+      *    Ä¢É¼°õºþ½ªÎ»½èÍý
            PERFORM 900-DBCLOSE-SEC
       *
-           MOVE    1               TO  FLG-END
            .
-       200-MAIN-EXT.
+       300-PRINT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -337,6 +417,7 @@ grpsys     INITIALIZE                  SPA-AREA
       *
            MOVE    ZERO            TO  CNT-LINE
            ADD     1               TO  CNT-PAGE
+                                       SUM-KENSU
       *
            MOVE    SPACE           TO  HCML01
       *
@@ -355,48 +436,43 @@ grpsys     INITIALIZE                  SPA-AREA
       *****************************************************************
        320-BODY-HEN-SEC            SECTION.
       *
-           MOVE    ZERO            TO  CNT-LINE
+      *    ÅÀ¿ôÉÕ²Ã¾ðÊó¸¡º÷
+           PERFORM 900-TENSUPLUS-READ-SEC
+      *    ¹â³ÛÀÁµá»ñÎÁÍÑÌôºÞÊ¬Îà¾ðÊó
+           PERFORM 900-SYS1036-READ-SEC
       *
-           PERFORM UNTIL   FLG-TENSU   =   1
-                   OR      CNT-LINE    =   15
-      *        ÅÀ¿ôÉÕ²Ã¾ðÊó¸¡º÷
-               PERFORM 900-TENSUPLUS-READ-SEC
-      *        ¹â³ÛÀÁµá»ñÎÁÍÑÌôºÞÊ¬Îà¾ðÊó
-               PERFORM 900-SYS1036-READ-SEC
+           IF          FLG-SYSKANRI    =   1
+               MOVE    TNS-NAME        TO  WRK-NAME
+           ELSE
+               MOVE    SPACE           TO  WRK-NAME
+               STRING  TNS-NAME            DELIMITED  BY  SPACE
+                       "¡Ê"                DELIMITED  BY  SIZE
+                       SYS-1036-BUNRUIMEI  DELIMITED  BY  SPACE
+                       "¡Ë"                DELIMITED  BY  SIZE
+                                   INTO    WRK-NAME
+               END-STRING
+           END-IF
       *
-               IF          FLG-SYSKANRI    =   1
-                   MOVE    TNS-NAME        TO  WRK-NAME
-               ELSE
-                   MOVE    SPACE           TO  WRK-NAME
-                   STRING  TNS-NAME            DELIMITED  BY  SPACE
-                           "¡Ê"                DELIMITED  BY  SIZE
-                           SYS-1036-BUNRUIMEI  DELIMITED  BY  SPACE
-                           "¡Ë"                DELIMITED  BY  SIZE
-                                               INTO    WRK-NAME
-                   END-STRING
-               END-IF
+           ADD     1               TO  CNT-LINE
       *
-               ADD     1               TO  CNT-LINE
+           MOVE    TNS-TEN         TO  WRK-TEN
+           MOVE    WRK-TEN         TO  HCML01-TEN(CNT-LINE)
+           MOVE    TNS-CSYYOURYO   TO  WRK-CSYYOURYO
+           MOVE    WRK-CSYYOURYO   TO  HCML01-CSYYOURYO(CNT-LINE)
       *
-               MOVE    TNS-TEN         TO  WRK-TEN
-               MOVE    WRK-TEN         TO  HCML01-TEN(CNT-LINE)
-               MOVE    TNS-CSYYOURYO   TO  WRK-CSYYOURYO
-               MOVE    WRK-CSYYOURYO   TO  HCML01-CSYYOURYO(CNT-LINE)
-      *
-               MOVE    TNS-SRYCD       TO  HCML01-SRYCD(CNT-LINE)
-               MOVE    WRK-NAME        TO  HCML01-NAME(CNT-LINE)
-               MOVE    TNS-TANINAME    TO  HCML01-TANINAME(CNT-LINE)
-               MOVE    TNS-YUKOSTYMD   TO  HCML01-YUKOSTYMD(CNT-LINE)
-               MOVE    TNS-YUKOEDYMD   TO  HCML01-YUKOEDYMD(CNT-LINE)
-               MOVE    TNS-YAKKAKJNCD  TO  HCML01-YAKKAKJNCD(CNT-LINE)
-               MOVE    "-"             TO  HCML01-NYORO(CNT-LINE)
-               IF          TNS-KEIKASOCHIYMD
-                                       NOT =  "00000000"
-                   MOVE    TNS-KEIKASOCHIYMD
-                                       TO HCML01-KEIKASOCHIYMD(CNT-LINE)
-               END-IF
-      *        ËãÆÇ¶èÊ¬
-               EVALUATE  TNS-MADOKUKBN
+           MOVE    TNS-SRYCD       TO  HCML01-SRYCD(CNT-LINE)
+           MOVE    WRK-NAME        TO  HCML01-NAME(CNT-LINE)
+           MOVE    TNS-TANINAME    TO  HCML01-TANINAME(CNT-LINE)
+           MOVE    TNS-YUKOSTYMD   TO  HCML01-YUKOSTYMD(CNT-LINE)
+           MOVE    TNS-YUKOEDYMD   TO  HCML01-YUKOEDYMD(CNT-LINE)
+           MOVE    TNS-YAKKAKJNCD  TO  HCML01-YAKKAKJNCD(CNT-LINE)
+           MOVE    "-"             TO  HCML01-NYORO(CNT-LINE)
+           IF          TNS-KEIKASOCHIYMD   NOT =  "00000000"
+               MOVE    TNS-KEIKASOCHIYMD
+                                   TO  HCML01-KEIKASOCHIYMD(CNT-LINE)
+           END-IF
+      *    ËãÆÇ¶èÊ¬
+           EVALUATE  TNS-MADOKUKBN
                WHEN  "0"
                    MOVE  SPACE         TO  HCML01-MADOKUKBN(CNT-LINE)
                WHEN  "1"
@@ -409,9 +485,9 @@ grpsys     INITIALIZE                  SPA-AREA
                    MOVE  "¸þÀº¿ÀÌô"    TO  HCML01-MADOKUKBN(CNT-LINE)
                WHEN  OTHER
                    MOVE  "¡ö¡ö¡ö¡ö"    TO  HCML01-MADOKUKBN(CNT-LINE)
-               END-EVALUATE
-      *        ¿À·ÐÇË²õºÞ
-               EVALUATE  TNS-SINKEIHAKAIKBN
+           END-EVALUATE
+      *    ¿À·ÐÇË²õºÞ
+           EVALUATE  TNS-SINKEIHAKAIKBN
                WHEN  "0"
                    MOVE  SPACE    TO  HCML01-SINKEIHAKAIKBN(CNT-LINE)
                WHEN  "1"
@@ -420,9 +496,9 @@ grpsys     INITIALIZE                  SPA-AREA
                WHEN  OTHER
                    MOVE  "¡ö¡ö¡ö¡ö"
                                   TO  HCML01-SINKEIHAKAIKBN(CNT-LINE)
-               END-EVALUATE
-      *        À¸Êª³ØÅªÀ½ºÞ
-               EVALUATE  TNS-SEIBUTUGAKUKBN
+           END-EVALUATE
+      *    À¸Êª³ØÅªÀ½ºÞ
+           EVALUATE  TNS-SEIBUTUGAKUKBN
                WHEN  "0"
                    MOVE  SPACE    TO  HCML01-SEIBUTUGAKUKBN(CNT-LINE)
                WHEN  "1"
@@ -431,9 +507,9 @@ grpsys     INITIALIZE                  SPA-AREA
                WHEN  OTHER
                    MOVE  "¡ö¡ö¡ö¡ö"
                                   TO  HCML01-SEIBUTUGAKUKBN(CNT-LINE)
-               END-EVALUATE
-      *        Â¤±ÆºÞ(Â¤±ÆÊä½õºÞ) 
-               EVALUATE  TNS-ZOEIZAIKBN
+           END-EVALUATE
+      *    Â¤±ÆºÞ(Â¤±ÆÊä½õºÞ) 
+           EVALUATE  TNS-ZOEIZAIKBN
                WHEN  "0"
                    MOVE  SPACE        TO  HCML01-ZOEIZAIKBN(CNT-LINE)
                WHEN  "1"
@@ -442,9 +518,9 @@ grpsys     INITIALIZE                  SPA-AREA
                    MOVE  "Â¤±ÆÊä½õ"   TO  HCML01-ZOEIZAIKBN(CNT-LINE)
                WHEN  OTHER
                    MOVE  "¡ö¡ö¡ö¡ö"   TO  HCML01-ZOEIZAIKBN(CNT-LINE)
-               END-EVALUATE
-      *        ÌôºÞ 
-               EVALUATE  TNS-YKZKBN
+           END-EVALUATE
+      *    ÌôºÞ 
+           EVALUATE  TNS-YKZKBN
                WHEN  "1"
                    MOVE  "ÆâÍÑ"       TO  HCML01-YKZKBN(CNT-LINE)
                WHEN  "3"
@@ -459,9 +535,9 @@ grpsys     INITIALIZE                  SPA-AREA
                    MOVE  "»õ²ÊÆÃÄê"   TO  HCML01-YKZKBN(CNT-LINE)
                WHEN  OTHER
                    MOVE  "¡ö¡ö¡ö¡ö"   TO  HCML01-YKZKBN(CNT-LINE)
-               END-EVALUATE
-      *        ºÞ·¿
-               EVALUATE  TNS-ZAIGATAKBN
+           END-EVALUATE
+      *    ºÞ·¿
+           EVALUATE  TNS-ZAIGATAKBN
                WHEN  "0"
                    MOVE  SPACE        TO  HCML01-ZAIGATAKBN(CNT-LINE)
                WHEN  "1"
@@ -472,20 +548,185 @@ grpsys     INITIALIZE                  SPA-AREA
                    MOVE  "±ÕºÞ"       TO  HCML01-ZAIGATAKBN(CNT-LINE)
                WHEN  OTHER
                    MOVE  "¡ö¡ö¡ö¡ö"   TO  HCML01-ZAIGATAKBN(CNT-LINE)
-               END-EVALUATE
+           END-EVALUATE
       *
-               PERFORM 900-DBFETCH-SEC
-      *
-           END-PERFORM
+           PERFORM 900-DBFETCH-SEC
       *
            .
        320-BODY-HEN-EXT.
            EXIT.
       *
       *****************************************************************
+      *    Ä¢É¼ÊÔ½¸<ÌÀºÙ¹Ô>½èÍý
+      *****************************************************************
+       330-CSV-HEN-SEC            SECTION.
+      *
+      *    ÅÀ¿ôÉÕ²Ã¾ðÊó¸¡º÷
+           PERFORM 900-TENSUPLUS-READ-SEC
+      *    ¹â³ÛÀÁµá»ñÎÁÍÑÌôºÞÊ¬Îà¾ðÊó
+           PERFORM 900-SYS1036-READ-SEC
+      *
+           ADD     1               TO  SUM-KENSU
+      *
+           INITIALIZE                  TENSUCSV-REC
+      *
+           IF          FLG-SYSKANRI    =   1
+               MOVE    TNS-NAME        TO  WRK-NAME
+           ELSE
+               MOVE    SPACE           TO  WRK-NAME
+               STRING  TNS-NAME            DELIMITED  BY  SPACE
+                       "¡Ê"                DELIMITED  BY  SIZE
+                       SYS-1036-BUNRUIMEI  DELIMITED  BY  SPACE
+                       "¡Ë"                DELIMITED  BY  SIZE
+                                           INTO    WRK-NAME
+               END-STRING
+           END-IF
+      *
+           MOVE    TNS-HOSPNUM     TO  CSV-HOSPNUM
+           MOVE    TNS-TEN         TO  CSV-TEN
+           MOVE    TNS-CSYYOURYO   TO  CSV-CSYYOURYO
+      *
+           MOVE    TNS-SRYCD       TO  CSV-SRYCD
+           MOVE    WRK-NAME        TO  CSV-NAME
+           MOVE    TNS-TANINAME    TO  CSV-TANINAME
+           MOVE    TNS-YUKOSTYMD   TO  CSV-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD   TO  CSV-YUKOEDYMD
+           MOVE    TNS-YAKKAKJNCD  TO  CSV-YAKKAKJNCD
+           MOVE    TNS-KEIKASOCHIYMD   TO CSV-KEIKASOCHIYMD
+      *    ËãÆÇ¶èÊ¬
+           EVALUATE  TNS-MADOKUKBN
+               WHEN  "0"
+                   MOVE  SPACE         TO  CSV-MADOKUKBN
+               WHEN  "1"
+                   MOVE  "ËãÆÇ"        TO  CSV-MADOKUKBN
+               WHEN  "2"
+                   MOVE  "ÆÇÌô"        TO  CSV-MADOKUKBN
+               WHEN  "3"
+                   MOVE  "³Ð¤»¤¤ºÞ"    TO  CSV-MADOKUKBN
+               WHEN  "5"
+                   MOVE  "¸þÀº¿ÀÌô"    TO  CSV-MADOKUKBN
+               WHEN  OTHER
+                   MOVE  "¡ö¡ö¡ö¡ö"    TO  CSV-MADOKUKBN
+           END-EVALUATE
+      *    ¿À·ÐÇË²õºÞ
+           EVALUATE  TNS-SINKEIHAKAIKBN
+               WHEN  "0"
+                   MOVE  SPACE         TO  CSV-SINKEIHAKAIKBN
+               WHEN  "1"
+                   MOVE  "¿À·ÐÇË²õ"    TO  CSV-SINKEIHAKAIKBN
+               WHEN  OTHER
+                   MOVE  "¡ö¡ö¡ö¡ö"    TO  CSV-SINKEIHAKAIKBN
+           END-EVALUATE
+      *    À¸Êª³ØÅªÀ½ºÞ
+           EVALUATE  TNS-SEIBUTUGAKUKBN
+               WHEN  "0"
+                   MOVE  SPACE         TO  CSV-SEIBUTUGAKUKBN
+               WHEN  "1"
+                   MOVE  "À¸ÊªÀ½ºÞ"    TO  CSV-SEIBUTUGAKUKBN
+               WHEN  OTHER
+                   MOVE  "¡ö¡ö¡ö¡ö"    TO  CSV-SEIBUTUGAKUKBN
+           END-EVALUATE
+      *    Â¤±ÆºÞ(Â¤±ÆÊä½õºÞ) 
+           EVALUATE  TNS-ZOEIZAIKBN
+               WHEN  "0"
+                   MOVE  SPACE        TO  CSV-ZOEIZAIKBN
+               WHEN  "1"
+                   MOVE  "Â¤±ÆºÞ"     TO  CSV-ZOEIZAIKBN
+               WHEN  "2"
+                   MOVE  "Â¤±ÆÊä½õ"   TO  CSV-ZOEIZAIKBN
+               WHEN  OTHER
+                   MOVE  "¡ö¡ö¡ö¡ö"   TO  CSV-ZOEIZAIKBN
+           END-EVALUATE
+      *    ÌôºÞ 
+           EVALUATE  TNS-YKZKBN
+               WHEN  "1"
+                   MOVE  "ÆâÍÑ"       TO  CSV-YKZKBN
+               WHEN  "3"
+                   MOVE  "¤½¤ÎÂ¾"     TO  CSV-YKZKBN
+               WHEN  "4"
+                   MOVE  "Ãí¼Í"       TO  CSV-YKZKBN
+               WHEN  "6"
+                   MOVE  "³°ÍÑ"       TO  CSV-YKZKBN
+               WHEN  "8"
+                   MOVE  "»õ²ÊÌôºÞ"   TO  CSV-YKZKBN
+               WHEN  "9"
+                   MOVE  "»õ²ÊÆÃÄê"   TO  CSV-YKZKBN
+               WHEN  OTHER
+                   MOVE  "¡ö¡ö¡ö¡ö"   TO  CSV-YKZKBN
+           END-EVALUATE
+      *    ºÞ·¿
+           EVALUATE  TNS-ZAIGATAKBN
+               WHEN  "0"
+                   MOVE  SPACE        TO  CSV-ZAIGATAKBN
+               WHEN  "1"
+                   MOVE  "»¶ºÞ"       TO  CSV-ZAIGATAKBN
+               WHEN  "2"
+                   MOVE  "ðùÎ³ºÞ"     TO  CSV-ZAIGATAKBN
+               WHEN  "3"
+                   MOVE  "±ÕºÞ"       TO  CSV-ZAIGATAKBN
+               WHEN  OTHER
+                   MOVE  "¡ö¡ö¡ö¡ö"   TO  CSV-ZAIGATAKBN
+           END-EVALUATE
+      *
+           MOVE    ","                TO  CSV-FILLER1
+                                          CSV-FILLER2
+                                          CSV-FILLER3
+                                          CSV-FILLER4
+                                          CSV-FILLER5
+                                          CSV-FILLER6
+                                          CSV-FILLER7
+                                          CSV-FILLER8
+                                          CSV-FILLER9
+                                          CSV-FILLER10
+                                          CSV-FILLER11
+                                          CSV-FILLER12
+                                          CSV-FILLER13
+                                          CSV-FILLER14
+                                          CSV-FILLER15
+           WRITE   TENSUCSV-REC
+      *
+           PERFORM 900-DBFETCH-SEC
+      *
+           .
+       330-CSV-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ä¢É¼£Ã£Ó£Ö½èÍý
+      *****************************************************************
+       380-CSV-OUT-SEC           SECTION.
+      *
+           INITIALIZE                      ORCSFILESVAREA
+           MOVE    "I"                 TO  SFILESV-MODE
+           MOVE    WRK-PARA-SHELLID    TO  SFILESV-TBL-KEY
+           MOVE    "tensu.sh"          TO  SFILESV-SHELLID(1)
+           MOVE    1                   TO  SFILESV-SHORI-RENNUM(1)
+           MOVE    LNK-PRTKANRI-RENNUM TO  SFILESV-RENNUM(1)
+           MOVE    "/tmp/"             TO  SFILESV-FOR-FOLDER(1)
+           STRING  WRK-PARA-CSVFILE        DELIMITED  BY  SPACE
+                   ".wk"                   DELIMITED  BY  SIZE
+                                   INTO    SFILESV-FOR-DATA (1)
+           END-STRING
+           MOVE    WRK-PARA-CSVDIR     TO  SFILESV-TO-FOLDER(1)
+           MOVE    WRK-PARA-CSVFILE    TO  SFILESV-TO-DATA(1)
+           MOVE    SUM-KENSU           TO  SFILESV-CNT-ALL(1)
+           MOVE    JOB-SHELLMSG        TO  SFILESV-TITLE(1)
+           CALL    "ORCSFILESV"            USING
+                                           ORCSFILESVAREA
+                                           SPA-AREA
+      *
+           .
+       380-CSV-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    Ä¢É¼°õºþ½èÍý
       *****************************************************************
        390-PRINT-OUT-SEC           SECTION.
+      *
+           IF      CNT-LINE        =   ZERO
+               GO  TO  390-PRINT-OUT-EXT
+           END-IF
       *
            INITIALIZE                  ORCSPRTAREA
            MOVE    "INS"           TO  SPRT-MODE
@@ -505,7 +746,7 @@ grpsys     INITIALIZE                  SPA-AREA
                                    TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
-           MOVE    "HCML01"        TO  SPRT-PRTID
+           MOVE    "HCML12"        TO  SPRT-PRTID
            MOVE    "ÅÀ¿ô¥Þ¥¹¥¿°ìÍ÷É½¡¦ÌôºÞÊ¬Îà¶èÊ¬"
                                    TO  SPRT-TITLE
            MOVE    HCML01          TO  SPRT-PRTDATA
@@ -552,10 +793,8 @@ grpsys     INITIALIZE                  SPA-AREA
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID
                                        TO  JOB-SHELLID
-      *----(03.05.01)--ADD-START---
                MOVE    WRK-PARA-HOSPNUM
                                        TO  JOB-HOSPNUM
-      *----(03.05.01)--ADD-END-----
                MOVE    WRK-TENSUERR    TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
                CALL    "ORCSJOB"           USING
@@ -585,10 +824,8 @@ grpsys     INITIALIZE                  SPA-AREA
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-      *----(03.05.01)--ADD-START---
            MOVE    WRK-PARA-HOSPNUM
                                    TO  JOB-HOSPNUM
-      *----(03.05.01)--ADD-END-----
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -639,16 +876,14 @@ grpsys     INITIALIZE                  SPA-AREA
                MOVE    "key23k"  TO  WRK-PATH
            END-EVALUATE
       *
-      *----(03.05.01)--UPD-START---
            MOVE    WRK-PARA-HOSPNUM    TO  TNS-HOSPNUM
-      *----(03.05.01)--UPD-END-----
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            IF          MCP-RC      =   ZERO
                PERFORM 900-DBFETCH-SEC
            ELSE
@@ -666,9 +901,9 @@ grpsys                                     SPA-AREA
            MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            IF          MCP-RC      =   ZERO
                MOVE    ZERO            TO  FLG-TENSU
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
@@ -687,9 +922,9 @@ grpsys                                     SPA-AREA
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            .
        900-DBCLOSE-EXT.
            EXIT.
@@ -704,23 +939,21 @@ grpsys                                     SPA-AREA
            MOVE    TNS-YUKOSTYMD   TO  TNSP-YUKOSTYMD
            MOVE    TNS-YUKOEDYMD   TO  TNSP-YUKOEDYMD
       *
-      *----(03.05.01)--UPD-START---
            MOVE    WRK-PARA-HOSPNUM    TO  TNSP-HOSPNUM
-      *----(03.05.01)--UPD-END-----
            MOVE    TENSUPLUS-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_tensuplus" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            IF          MCP-RC      =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_tensuplus" TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"     USING   MCPAREA
+               CALL    "ORCDBMAIN"     USING   MCPAREA
                                                MCPDATA-REC
-grpsys                                         SPA-AREA
+                                               SPA-AREA
                IF          MCP-RC      =   ZERO
                    MOVE    MCPDATA-REC     TO  TENSUPLUS-REC
                    MOVE    ZERO            TO  FLG-TENSUPLUS
@@ -736,9 +969,9 @@ grpsys                                         SPA-AREA
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_tensuplus" TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
       *
            .
        900-TENSUPLUS-READ-EXT.
@@ -755,9 +988,7 @@ grpsys                                     SPA-AREA
            MOVE    TNSP-TENPUYAKKBN    TO  SYS-1036-KBNCD
            MOVE    WRK-PARA-MSTYMD     TO  SYS-1036-STYUKYMD
                                            SYS-1036-EDYUKYMD
-      *----(03.05.01)--UPD-START---
            MOVE    WRK-PARA-HOSPNUM    TO  SYS-1036-HOSPNUM
-      *----(03.05.01)--UPD-END-----
            MOVE    SYS-1036-REC    TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -776,16 +1007,16 @@ grpsys                                     SPA-AREA
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            IF          MCP-RC          =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"     USING   MCPAREA
+               CALL    "ORCDBMAIN"     USING   MCPAREA
                                                MCPDATA-REC
-grpsys                                         SPA-AREA
+                                               SPA-AREA
                IF          MCP-RC          =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
@@ -798,9 +1029,9 @@ grpsys                                         SPA-AREA
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
       *
            .
        800-SYSKANRI-READ-EXT.
@@ -814,16 +1045,16 @@ grpsys                                     SPA-AREA
            MOVE    "DBOPEN"        TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -836,16 +1067,16 @@ grpsys                                     SPA-AREA
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            .
        900-DBCLOSE-EXT.
            EXIT.

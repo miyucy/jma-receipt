@@ -14,5 +14,6 @@
                     06  Z97-PAGE      PIC X(10).
                     06  Z97-ERRMSG    PIC X(100).
                   05  Z97-SELECT  PIC X       OCCURS  30 TIMES.
+              03  Z97-DURATION    PIC S9(09) BINARY.
               03  Z97-B12-STATE   PIC S9(9)   BINARY.
               03  Z97-B12-LABEL   PIC X(14).

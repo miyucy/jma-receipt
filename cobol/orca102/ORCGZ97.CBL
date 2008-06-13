@@ -44,11 +44,12 @@
       *
       *    スパ領域
            COPY    "COMMON-SPA".
-      *----(01.00.02)--ADD-START---
+      *    共通パラメタ
            COPY    "Z01COMMON-SPA".
+      *    画面ＳＰＡエリア
+           COPY    "Z91SCR-SPA".
       *
            COPY    "ENUM-VALUE".
-      *----(01.00.02)--ADD-END-----
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -61,9 +62,8 @@
       *
        01  WRK-AREA.
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
-      *----(01.00.02)--ADD-START---
            03  WRK-PRT-PAGE        PIC 9(10).
-      *----(01.00.02)--ADD-END-----
+           03  WRK-KENSU-Z         PIC ZZZZZZ9.
       *     
        01  WRK-HEN-AREA.
            03  WRK-HENTIME.
@@ -108,6 +108,14 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
+      *
+           COPY    "ORCA-BLOB".
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -136,6 +144,8 @@
            COPY    "ZID1.INC".
            COPY    "ZID2.INC".
            COPY    "ZID3.INC".
+           COPY    "Z100.INC".
+           COPY    "ZFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -149,30 +159,48 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-      *----(01.00.02)--ADD-START---
            MOVE    SPA-WORK        TO  SPA-Z01KYOUTU
-      *----(01.00.02)--ADD-END-----
+           MOVE    SPA-FREE        TO  SPA-Z91FREE
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    画面遷移
+      *        画面遷移
                WHEN      OTHER
                    PERFORM 200-GMNSENI
            END-EVALUATE.
       *
-      *----(01.00.02)--ADD-START---
+           MOVE    SPA-Z91FREE     TO  SPA-FREE
            MOVE    SPA-Z01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-      *----(01.00.02)--ADD-END-----
       *
            .
            EXIT    PROGRAM
            .
+      *
       *****************************************************************
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
+      *
+           IF      SPA-MOTOPG          =   "ZFIL"
+      *        ファイルエントリ処理(クライアント保存)
+               IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
+                   ADD     1                   TO  SPA-SFILESV-IDX 
+                   PERFORM 3001-FILEENTRY-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
+           END-IF
+      *
+           MOVE    "B01"               TO  MCP-WIDGET
+           MOVE    SPACE               TO  LINKAREA
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "Z97    "           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
       *
            .
        100-INIT-EXT.
@@ -191,11 +219,9 @@
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
-      *----(01.00.02)--ADD-START---
       *    プレビュー画面へ
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 4501-NEXT-GMN-SEC
-      *----(01.00.02)--ADD-END-----
            END-EVALUATE
       *
            .
@@ -207,11 +233,24 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-      *----(01.00.02)--ADD-START---
-           MOVE    SPACE               TO  SPA-Z97-FLG
-      *----(01.00.02)--ADD-END-----
+      *    クライアント保存用作業ファイル削除
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-SFILESV-MAX
+               INITIALIZE              ORCSFDELAREA
+               STRING  SPA-SFILESV-FOR-FOLDER (IDX)
+                                       DELIMITED  BY  SPACE
+                       SPA-SFILESV-FOR-DATA   (IDX) 
+                                       DELIMITED  BY  SPACE
+                                       INTO  IF-FILENAME
+               END-STRING
+               CALL    "orcfiledel"    USING
+                                       ORCSFDELAREA
+           END-PERFORM
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+      *     MOVE    SPACE               TO  SPA-ZID1-FLG
+           MOVE    SPACE               TO  SPA-Z97-FLG
+      *
+           MOVE    "Z91"               TO  SPA-SAKIPG
            MOVE    "Z97"               TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE
@@ -225,7 +264,6 @@
        210-BACK-EXT.
            EXIT.
       *
-      *----(01.00.02)--ADD-START---
       *****************************************************************
       *    更新処理
       *****************************************************************
@@ -246,7 +284,7 @@
            .
        4501-NEXT-GMN-EXT.
            EXIT.
-      *----(01.00.02)--ADD-END-----
+      *
       *****************************************************************
       *    処理確認処理
       *****************************************************************
@@ -254,12 +292,11 @@
       *
            MOVE    SPACE               TO  Z97
            MOVE    ZERO                TO  Z97-COUNT
-      *----(01.00.02)--ADD-START---
            MOVE    WIDGET-INSENSITIVE  TO  Z97-B12-STATE
+      *
+           MOVE    5                   TO  Z97-DURATION
            MOVE    ZERO                TO  WRK-PRT-PAGE
-      *----(01.00.02)--ADD-END-----
       *        
-      *----(01.00.02)--UPD-START---
            IF      SPA-MOTOPG          =   "Z91"
                MOVE    SPACE               TO  SYS-3003-REC 
                INITIALIZE                      SYS-3003-REC
@@ -308,7 +345,6 @@
                    PERFORM 4901-KAKUNIN-HYOUJI-SEC
                END-IF
            END-IF
-      *----(01.00.02)--UPD-END-----
       *
            MOVE    "B01"                TO  MCP-WIDGET
            IF    ( Z97-MSG              =   SPACE )
@@ -323,7 +359,6 @@
       *
            MOVE    SPACE               TO  LINKAREA
       *
-      *----(01.00.02)--ADD-START---
            IF    ( SPA-ZID1-FLG    =   "PV" )
                MOVE    "F12:プレビュー"    TO  Z97-B12-LABEL
                IF    ( WRK-PRT-PAGE    >   ZERO )
@@ -331,7 +366,24 @@
                        MOVE    "B12"            TO  MCP-WIDGET
                END-IF
            END-IF
-      *----(01.00.02)--ADD-END-----
+           IF    ( SPA-ZID1-FLG    =   "SV" )
+               IF      JOB-ENDYMD  NOT =   SPACE
+                   IF      JOB-ERRCD       =   "9999"
+                       CONTINUE
+                   ELSE
+                       IF      SPA-Z97-FILESV-CHK-FLG  =   ZERO
+                           PERFORM 4902-FILE-INFO-CHK-SEC
+                       ELSE
+      *                    ファイルエントリ処理(クライアント保存)
+                           MOVE    1               TO  SPA-SFILESV-IDX 
+                           PERFORM 3001-FILEENTRY-SEC
+                           IF      FLG-END         =   1
+                               GO  TO  490-KAKUNIN-EXT
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF    
+           END-IF
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
            MOVE    "Z97    "           TO  MCP-WINDOW
@@ -341,7 +393,6 @@
        490-KAKUNIN-EXT.
            EXIT.
       *
-      *----(01.00.02)--ADD-START---
       *****************************************************************
       *    処理確認処理
       *****************************************************************
@@ -390,6 +441,101 @@
            EXIT.
       *
       *****************************************************************
+      *    クライアント保存情報チェック処理
+      *****************************************************************
+       4902-FILE-INFO-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSFILESVAREA
+           MOVE    "R"             TO  SFILESV-MODE
+           MOVE    WRK-CONS-JOB-SHELLID
+                                   TO  SFILESV-TBL-KEY
+           CALL    "ORCSFILESV"    USING
+                                       ORCSFILESVAREA
+                                       SPA-AREA  
+           IF      SFILESV-RETURN  =   ZERO
+               INITIALIZE               SPA-SFILESV-AREA
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       100
+                       OR      SFILESV-SHELLID (IDX)
+                                   =       SPACE
+                   MOVE    SFILESV-TITLE        (IDX)
+                                       TO  SPA-SFILESV-TITLE     (IDX)
+                   MOVE    SFILESV-CNT-ALL      (IDX)
+                                       TO  SPA-SFILESV-CNT-ALL   (IDX)
+                   MOVE    SFILESV-FOR-FOLDER   (IDX)
+                                       TO  SPA-SFILESV-FOR-FOLDER(IDX)
+                   MOVE    SFILESV-FOR-DATA     (IDX)
+                                       TO  SPA-SFILESV-FOR-DATA  (IDX)
+                   MOVE    SFILESV-TO-FOLDER    (IDX)
+                                       TO  SPA-SFILESV-TO-FOLDER (IDX)
+                   MOVE    SFILESV-TO-DATA      (IDX)
+                                       TO  SPA-SFILESV-TO-DATA   (IDX)
+                   MOVE    SFILESV-CODE-TYPE    (IDX)
+                                       TO  SPA-SFILESV-CODE-TYPE (IDX)
+                   MOVE    SFILESV-DATA-TYPE    (IDX)
+                                       TO  SPA-SFILESV-DATA-TYPE (IDX)
+                   ADD     1           TO  SPA-SFILESV-MAX
+               END-PERFORM
+      *
+               MOVE    1                   TO  SPA-Z97-FILESV-CHK-FLG
+      *
+               MOVE    1                   TO  Z97-DURATION
+           END-IF
+      *
+           .
+       4902-FILE-INFO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ファイルエントリ処理(クライアント保存)
+      *****************************************************************
+       3001-FILEENTRY-SEC          SECTION.
+      *
+           IF      SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX) =   ZERO
+               GO  TO  3001-FILEENTRY-EXT
+           END-IF
+      *
+           INITIALIZE                      ORCA-BLOB
+           MOVE    "BLOBIMPORT"        TO  MCP-FUNC
+           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "blob"              TO  MCP-TABLE
+           STRING  SPA-SFILESV-FOR-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-FOR-DATA   (SPA-SFILESV-IDX) 
+                                       DELIMITED  BY  SPACE
+                                       INTO  ORCA-BLOB-FILE
+           END-STRING
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+      *
+           INITIALIZE                      ZFIL 
+           MOVE    ORCA-BLOB-OBJECT    TO  ZFIL-OBJECTDATA
+           STRING  SPA-SFILESV-TO-FOLDER (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                   SPA-SFILESV-TO-DATA   (SPA-SFILESV-IDX)
+                                       DELIMITED  BY  SPACE
+                                       INTO  ZFIL-ENTRY1
+           END-STRING
+           MOVE    SPA-SFILESV-TITLE   (SPA-SFILESV-IDX)
+                                       TO  ZFIL-TITLE
+           MOVE    SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
+                                       TO  WRK-KENSU-Z
+           MOVE    WRK-KENSU-Z         TO  ZFIL-KENSU
+      *
+           MOVE    ZERO                TO  Z97-DURATION
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "ZFIL"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+           MOVE    1                   TO  FLG-END
+           .
+       3001-FILEENTRY-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラーメッセージセット処理
       *****************************************************************
        4901-JOB-ERRSET-SEC             SECTION.
@@ -423,7 +569,6 @@
        4901-JOB-ERRSET-EXT.
            EXIT.
       *
-      *----(01.00.02)--ADD-END-----
       *****************************************************************
       *    管理マスター読込（キー）
       *****************************************************************

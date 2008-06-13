@@ -30,15 +30,22 @@
       *  01.00.01    NACL-太田    03/10/15  自費消費税分の考慮漏れを修正
       *  01.00.02    NACL-森脇    06/07/27  フラグ追加、MONFUNC対応
       *  03.05.01    NACL-森脇    07/05/29  グループ診療対応
+      *  04.03.01    NACL-森脇    08/06/13  ＣＳＶファイル出力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
+      *
       *    エラーファイル
-           SELECT  TENSUERR-FILE    ASSIGN  TENSUERR
+           SELECT  TENSUERR-FILE   ASSIGN  TENSUERR
                                    FILE    STATUS  IS  STS-TENSUERR.
+      *    ＣＳＶファイル
+           SELECT  TENSUCSV-FILE   ASSIGN  TENSUCSV
+                                   ORGANIZATION    IS  LINE
+                                                       SEQUENTIAL
+                                   FILE    STATUS  IS  STS-TENSUCSV.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
@@ -46,27 +53,57 @@
       *    エラーファイル
        FD  TENSUERR-FILE.
        01  TENSUERR-REC             PIC X(200). 
+      *    ＣＳＶファイル
+       FD  TENSUCSV-FILE.
+       01  TENSUCSV-REC.
+           03  CSV-HOSPNUM          PIC 9(02).
+           03  CSV-FILLER1          PIC X(1).
+           03  CSV-SRYCD            PIC X(9).
+           03  CSV-FILLER2          PIC X(1).
+           03  CSV-YUKOSTYMD        PIC X(8).
+           03  CSV-FILLER3          PIC X(1).
+           03  CSV-YUKOEDYMD        PIC X(8).
+           03  CSV-FILLER4          PIC X(1).
+           03  CSV-NAME             PIC X(100).
+           03  CSV-FILLER5          PIC X(1).
+           03  CSV-TEN              PIC X(14).
+           03  CSV-FILLER6          PIC X(1).
+           03  CSV-HKNTEK           PIC X(12).
+           03  CSV-FILLER7          PIC X(1).
+           03  CSV-BUI              PIC X(10).
+           03  CSV-FILLER8          PIC X(1).
+           03  CSV-GAITEN           PIC X(3).
+           03  CSV-FILLER9          PIC X(1).
+           03  CSV-NYUTEN           PIC X(3).
+           03  CSV-FILLER10         PIC X(1).
+           03  CSV-KRM1             PIC X(3).
+           03  CSV-FILLER11         PIC X(1).
+           03  CSV-KET1             PIC X(3).
+           03  CSV-FILLER12         PIC X(1).
+           03  CSV-KRM2             PIC X(3).
+           03  CSV-FILLER13         PIC X(1).
+           03  CSV-KET2             PIC X(3).
+           03  CSV-FILLER14         PIC X(1).
+           03  CSV-KRM3             PIC X(3).
+           03  CSV-FILLER15         PIC X(1).
+           03  CSV-KET3             PIC X(3).
+           03  CSV-FILLER16         PIC X(1).
+           03  CSV-KRM4             PIC X(3).
+           03  CSV-FILLER17         PIC X(1).
+           03  CSV-KET4             PIC X(3).
       * 
        WORKING-STORAGE             SECTION.
       *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
            COPY    "ORCA-DBPATH".
-      *----(03.05.01)--UPD-END-----
-      *    エラーファイル 名称領域 
-      *     COPY    "CPCOMMONDAT2.INC"
-      *                             REPLACING  //RECE01PARA//
-      *                             BY         //TENSUERR//.
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
-                                   BY         //TENSUERR//.
-      *----(03.05.01)--UPD-END-----
       *     
            COPY    "HCML07.INC".
       *
       *    スパ領域
        01  STS-AREA.
-           03  STS-TENSUERR         PIC X(02).
+           03  STS-TENSUERR        PIC X(02).
+           03  STS-TENSUCSV        PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -81,23 +118,26 @@
       *
       *    集計領域
        01  SUM-AREA.
-           03  SUM-PAGE            PIC 9(10).
+           03  SUM-KENSU           PIC 9(07).
       *
       *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
-      *----(03.05.01)--ADD-START---
-           03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *----(03.05.01)--ADD-END-----
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            COPY    "CPHCMLSHELL.INC"
                                    REPLACING  //SHELL-//
                                    BY         //WRK-PARA-//.
+           03  WRK-PARA-HOSPNUM    PIC 9(02).
+           03  WRK-PARA-CSVKBN     PIC X(1).
+           03  WRK-PARA-FILE       PIC X(1).
+           03  WRK-PARA-CSVDIR     PIC X(100).
+           03  WRK-PARA-CSVFILE    PIC X(100).
+           03  TENSUERR            PIC X(100).
+           03  TENSUCSV            PIC X(100).
       *
        01  INEX-AREA.
            03  IDX                   PIC 9(02).      
-      *
       *
       *    一時領域
        01  WRK-AREA.
@@ -182,6 +222,9 @@
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
       *
+      *    クライアント保存ＤＢ制御サブ
+           COPY    "CPORCSFILESV.INC".
+      *
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
@@ -214,7 +257,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SUM-AREA
-grpsys     INITIALIZE                  SPA-AREA
+           INITIALIZE                  SPA-AREA
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -233,12 +276,15 @@ grpsys     INITIALIZE                  SPA-AREA
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
                                                WRK-PARA-AREA
-      *----(03.05.01)--ADD-START---
                                                WRK-PARA-HOSPNUM
                                                TENSUERR
+                                               WRK-PARA-CSVKBN
+                                               WRK-PARA-FILE
+                                               WRK-PARA-CSVDIR
+                                               WRK-PARA-CSVFILE
            END-UNSTRING
+      *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *----(03.05.01)--ADD-END-----
       *
       *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
@@ -246,11 +292,9 @@ grpsys     INITIALIZE                  SPA-AREA
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-      *----(03.05.01)--ADD-START---
            MOVE    WRK-PARA-HOSPNUM
                                    TO  JOB-HOSPNUM
-      *----(03.05.01)--ADD-END-----
-           MOVE    "ORHCML01"      TO  JOB-PGID
+           MOVE    "ORHCML10"      TO  JOB-PGID
            MOVE    "点数マスタ一覧表・自費" 
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
@@ -264,13 +308,6 @@ grpsys     INITIALIZE                  SPA-AREA
            MOVE    WRK-LNKYMD       TO  WRK-MAE-INPUT
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-OUT-INPUT    TO  WRK-MSTYMDH
-      *
-      *----(03.05.01)--UPD-START---
-      *     MOVE    "TENSERR"        TO  TENSUERR-FILE-ID
-      *     MOVE    LNK-PRTKANRI-TERMID
-      *                              TO  TENSUERR-TERMID
-      *     MOVE    WRK-PARA-HOSPNUM    TO  TENSUERR-HOSPNUM
-      *----(03.05.01)--UPD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -291,9 +328,7 @@ grpsys     INITIALIZE                  SPA-AREA
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-PARA-MSTYMD     TO  SYS-1001-STYUKYMD
                                            SYS-1001-EDYUKYMD
-      *----(03.05.01)--UPD-START---
            MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
-      *----(03.05.01)--UPD-END-----
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -317,10 +352,16 @@ grpsys     INITIALIZE                  SPA-AREA
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    帳票編集処理
-           PERFORM 2001-PRINT-SEC
+           IF      WRK-PARA-CSVKBN =   "1"
+      *        ＣＳＶ編集処理
+               PERFORM 300-CSV-SEC 
+           ELSE
+      *        帳票編集処理
+               PERFORM 300-PRINT-SEC
+           END-IF
       *
            MOVE    1               TO  FLG-END             
+      *
            .
        200-MAIN-EXT.
            EXIT.
@@ -328,28 +369,58 @@ grpsys     INITIALIZE                  SPA-AREA
       *****************************************************************
       *    主　　処理
       *****************************************************************
-       2001-PRINT-SEC                SECTION.
+       300-CSV-SEC                 SECTION.
       *
-           MOVE    ZERO                TO  FLG-TENSU
-           INITIALIZE                  CNT-AREA
+           STRING  "/tmp/"             DELIMITED SIZE
+                   WRK-PARA-CSVFILE    DELIMITED SPACE
+                   ".wk"               DELIMITED SIZE
+                               INTO    TENSUCSV
+           END-STRING
+      *
+      *    ＣＳＶファイルを開く
+           OPEN    OUTPUT              TENSUCSV-FILE
+      *
+      *    帳票印刷開始処理
+           PERFORM 900-DBSELECT-SEC
+      *    帳票編集<明細>処理
+           PERFORM 330-CSV-HEN-SEC
+                   UNTIL   FLG-TENSU   =   1
+      *    帳票印刷終了処理
+           PERFORM 900-DBCLOSE-SEC
+      *
+      *    ＣＳＶファイルを閉じる
+           CLOSE                       TENSUCSV-FILE
+      *
+      *    クライアント保存の場合
+           IF      WRK-PARA-FILE       =   "1"
+               PERFORM 380-CSV-OUT-SEC
+           END-IF
+      *
+           .
+       300-CSV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    主　　処理
+      *****************************************************************
+       300-PRINT-SEC                SECTION.
       *     
       *    帳票印刷開始処理
            PERFORM 900-DBSELECT-SEC
-      *
            PERFORM UNTIL   FLG-TENSU   =   1
       *        帳票編集<見出し>処理
                PERFORM 310-HEAD-HEN-SEC
       *        帳票編集<明細>処理
                PERFORM 320-BODY-HEN-SEC
+                       UNTIL   FLG-TENSU   =   1
+                       OR      CNT-LINE    =  15 
       *        帳票印刷処理
                PERFORM 390-PRINT-OUT-SEC
            END-PERFORM
-      *
            PERFORM 900-DBCLOSE-SEC
       *
-           ADD     CNT-PAGE             TO  SUM-PAGE     
            .
-       2001-PRINT-EXT.
+       300-PRINT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -359,6 +430,7 @@ grpsys     INITIALIZE                  SPA-AREA
       *
            MOVE    ZERO                TO  CNT-LINE
            ADD     1                   TO  CNT-PAGE
+                                           SUM-KENSU
       *
            INITIALIZE                      HCML07
            MOVE    SPACE               TO  HCML07
@@ -377,31 +449,26 @@ grpsys     INITIALIZE                  SPA-AREA
       *****************************************************************
        320-BODY-HEN-SEC      SECTION.
       *
-           MOVE    ZERO                TO  CNT-LINE
+           ADD     1                  TO  CNT-LINE
       *
-           PERFORM             UNTIL   FLG-TENSU   =   1
-                               OR      CNT-LINE    =  15 
-      *
-               ADD     1                  TO  CNT-LINE
-      *
-      *        診療行為コード
-               MOVE    TNS-SRYCD          TO  HCML07-SRYCD (CNT-LINE)
-      *        品名
-               MOVE    TNS-NAME           TO  HCML07-NAME (CNT-LINE)
-      *        金額
-               MOVE    TNS-TEN            TO  WRK-TEN
-               MOVE    WRK-TEN            TO  HCML07-TEN (CNT-LINE)
-      *        保険適用
-               EVALUATE    TNS-HKNTEKKBN
+      *    診療行為コード
+           MOVE    TNS-SRYCD          TO  HCML07-SRYCD (CNT-LINE)
+      *    品名
+           MOVE    TNS-NAME           TO  HCML07-NAME (CNT-LINE)
+      *    金額
+           MOVE    TNS-TEN            TO  WRK-TEN
+           MOVE    WRK-TEN            TO  HCML07-TEN (CNT-LINE)
+      *    保険適用
+           EVALUATE    TNS-HKNTEKKBN
                WHEN    "0"
                    MOVE    SPACE          TO  HCML07-HKNTEK (CNT-LINE)
                WHEN    "1"
                    MOVE    "保険適用"     TO  HCML07-HKNTEK (CNT-LINE)
                WHEN    "2"
                    MOVE    "保険適用外"   TO  HCML07-HKNTEK (CNT-LINE)
-               END-EVALUATE
-      *        部位区分
-               EVALUATE    TNS-BUIKBN
+           END-EVALUATE
+      *    部位区分
+           EVALUATE    TNS-BUIKBN
                WHEN    "1"
                    MOVE    "頭部"         TO  HCML07-BUI (CNT-LINE)
                WHEN    "2"
@@ -418,50 +485,159 @@ grpsys     INITIALIZE                  SPA-AREA
                    MOVE    "消化管"       TO  HCML07-BUI (CNT-LINE)
                WHEN    "0"
                    MOVE    "その他"       TO  HCML07-BUI (CNT-LINE)
-               END-EVALUATE
+           END-EVALUATE
       *
-      *        点数欄集計先識別（外来）
-               MOVE    TNS-GAITENTTLKBN   TO  WRK-ZZ9
-               MOVE    WRK-ZZ9            TO  HCML07-GAITEN (CNT-LINE)
-      *        点数欄集計先識別（入院）
-               MOVE    TNS-NYUTENTTLKBN   TO  WRK-ZZ9
-               MOVE    WRK-ZZ9            TO  HCML07-NYUTEN (CNT-LINE)
+      *    点数欄集計先識別（外来）
+           MOVE    TNS-GAITENTTLKBN   TO  WRK-ZZ9
+           MOVE    WRK-ZZ9            TO  HCML07-GAITEN (CNT-LINE)
+      *    点数欄集計先識別（入院）
+           MOVE    TNS-NYUTENTTLKBN   TO  WRK-ZZ9
+           MOVE    WRK-ZZ9            TO  HCML07-NYUTEN (CNT-LINE)
       *
-      *        位置１
-               MOVE  TNS-SSTKIJUNCD(1)   TO HCML07-KRM1 (CNT-LINE)
-      *        桁数１
-               MOVE  TNS-SSTKIJUNCD(2)   TO HCML07-KET1 (CNT-LINE)
-      *        位置２
-               MOVE  TNS-SSTKIJUNCD(3)   TO HCML07-KRM2 (CNT-LINE)
-      *        桁数２
-               MOVE  TNS-SSTKIJUNCD(4)   TO HCML07-KET2 (CNT-LINE)
-      *        位置３
-               MOVE  TNS-SSTKIJUNCD(5)   TO HCML07-KRM3 (CNT-LINE)
-      *        桁数３
-               MOVE  TNS-SSTKIJUNCD(6)   TO HCML07-KET3 (CNT-LINE)
-      *        位置４
-               MOVE  TNS-SSTKIJUNCD(7)   TO HCML07-KRM4 (CNT-LINE)
-      *        桁数４
-               MOVE  TNS-SSTKIJUNCD(8)   TO HCML07-KET4 (CNT-LINE)
-      *        有効期間開始日
-               MOVE    TNS-YUKOSTYMD      TO  HCML07-YUKOSTYMD(CNT-LINE)
-      *        "-"
-               MOVE    "-"                TO  HCML07-NYORO(CNT-LINE)
-      *        有効期間終了日
-               MOVE    TNS-YUKOEDYMD      TO  HCML07-YUKOEDYMD(CNT-LINE)
+      *    位置１
+           MOVE  TNS-SSTKIJUNCD(1)   TO HCML07-KRM1 (CNT-LINE)
+      *    桁数１
+           MOVE  TNS-SSTKIJUNCD(2)   TO HCML07-KET1 (CNT-LINE)
+      *    位置２
+           MOVE  TNS-SSTKIJUNCD(3)   TO HCML07-KRM2 (CNT-LINE)
+      *    桁数２
+           MOVE  TNS-SSTKIJUNCD(4)   TO HCML07-KET2 (CNT-LINE)
+      *    位置３
+           MOVE  TNS-SSTKIJUNCD(5)   TO HCML07-KRM3 (CNT-LINE)
+      *    桁数３
+           MOVE  TNS-SSTKIJUNCD(6)   TO HCML07-KET3 (CNT-LINE)
+      *    位置４
+           MOVE  TNS-SSTKIJUNCD(7)   TO HCML07-KRM4 (CNT-LINE)
+      *    桁数４
+           MOVE  TNS-SSTKIJUNCD(8)   TO HCML07-KET4 (CNT-LINE)
+      *    有効期間開始日
+           MOVE    TNS-YUKOSTYMD      TO  HCML07-YUKOSTYMD(CNT-LINE)
+      *    "-"
+           MOVE    "-"                TO  HCML07-NYORO(CNT-LINE)
+      *    有効期間終了日
+           MOVE    TNS-YUKOEDYMD      TO  HCML07-YUKOEDYMD(CNT-LINE)
       *
-               PERFORM 900-DBFETCH-SEC
-      *
-           END-PERFORM
+           PERFORM 900-DBFETCH-SEC
       *
            .
        320-BODY-HEN-EXT.
            EXIT.
       *
       *****************************************************************
+      *    帳票編集<明細行>処理
+      *****************************************************************
+       330-CSV-HEN-SEC             SECTION.
+      *
+           ADD     1               TO  SUM-KENSU
+      *
+           INITIALIZE                  TENSUCSV-REC
+           MOVE    TNS-HOSPNUM     TO  CSV-HOSPNUM
+           MOVE    TNS-SRYCD       TO  CSV-SRYCD
+           MOVE    TNS-YUKOSTYMD   TO  CSV-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD   TO  CSV-YUKOEDYMD
+           MOVE    TNS-NAME        TO  CSV-NAME
+           MOVE    TNS-TEN         TO  CSV-TEN
+      *    保険適用
+           EVALUATE    TNS-HKNTEKKBN
+               WHEN    "0"
+                   MOVE    SPACE          TO  CSV-HKNTEK
+               WHEN    "1"
+                   MOVE    "保険適用"     TO  CSV-HKNTEK
+               WHEN    "2"
+                   MOVE    "保険適用外"   TO  CSV-HKNTEK
+           END-EVALUATE
+      *    部位区分
+           EVALUATE    TNS-BUIKBN
+               WHEN    "1"
+                   MOVE    "頭部"         TO  CSV-BUI
+               WHEN    "2"
+                   MOVE    "躯幹"         TO  CSV-BUI
+               WHEN    "3"
+                   MOVE    "四肢"         TO  CSV-BUI
+               WHEN    "5"
+                   MOVE    "胸部"         TO  CSV-BUI
+               WHEN    "6"
+                   MOVE    "腹部"         TO  CSV-BUI
+               WHEN    "7"
+                   MOVE    "脊椎"         TO  CSV-BUI
+               WHEN    "8"
+                   MOVE    "消化管"       TO  CSV-BUI
+               WHEN    "0"
+                   MOVE    "その他"       TO  CSV-BUI
+           END-EVALUATE
+      *
+           MOVE    TNS-GAITENTTLKBN   TO  CSV-GAITEN 
+           MOVE    TNS-NYUTENTTLKBN   TO  CSV-NYUTEN
+           MOVE    TNS-SSTKIJUNCD(1)  TO  CSV-KRM1
+           MOVE    TNS-SSTKIJUNCD(2)  TO  CSV-KET1
+           MOVE    TNS-SSTKIJUNCD(3)  TO  CSV-KRM2
+           MOVE    TNS-SSTKIJUNCD(4)  TO  CSV-KET2
+           MOVE    TNS-SSTKIJUNCD(5)  TO  CSV-KRM3
+           MOVE    TNS-SSTKIJUNCD(6)  TO  CSV-KET3
+           MOVE    TNS-SSTKIJUNCD(7)  TO  CSV-KRM4
+           MOVE    TNS-SSTKIJUNCD(8)  TO  CSV-KET4
+      *
+           MOVE    ","                 TO  CSV-FILLER1
+                                           CSV-FILLER2
+                                           CSV-FILLER3
+                                           CSV-FILLER4
+                                           CSV-FILLER5
+                                           CSV-FILLER6
+                                           CSV-FILLER7
+                                           CSV-FILLER8
+                                           CSV-FILLER9
+                                           CSV-FILLER10
+                                           CSV-FILLER11
+                                           CSV-FILLER12
+                                           CSV-FILLER13
+                                           CSV-FILLER14
+                                           CSV-FILLER15
+                                           CSV-FILLER16
+                                           CSV-FILLER17
+           WRITE   TENSUCSV-REC
+      *
+           PERFORM 900-DBFETCH-SEC
+      *
+           .
+       330-CSV-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票ＣＳＶ処理
+      *****************************************************************
+       380-CSV-OUT-SEC                SECTION.
+      *
+           INITIALIZE                      ORCSFILESVAREA
+           MOVE    "I"                 TO  SFILESV-MODE
+           MOVE    WRK-PARA-SHELLID    TO  SFILESV-TBL-KEY
+           MOVE    "tensu.sh"          TO  SFILESV-SHELLID(1)
+           MOVE    1                   TO  SFILESV-SHORI-RENNUM(1)
+           MOVE    LNK-PRTKANRI-RENNUM TO  SFILESV-RENNUM(1)
+           MOVE    "/tmp/"             TO  SFILESV-FOR-FOLDER(1)
+           STRING  WRK-PARA-CSVFILE        DELIMITED  BY  SPACE
+                   ".wk"                   DELIMITED  BY  SIZE
+                                   INTO    SFILESV-FOR-DATA (1)
+           END-STRING
+           MOVE    WRK-PARA-CSVDIR     TO  SFILESV-TO-FOLDER(1)
+           MOVE    WRK-PARA-CSVFILE    TO  SFILESV-TO-DATA(1)
+           MOVE    SUM-KENSU           TO  SFILESV-CNT-ALL(1)
+           MOVE    JOB-SHELLMSG        TO  SFILESV-TITLE(1)
+           CALL    "ORCSFILESV"            USING
+                                           ORCSFILESVAREA
+                                           SPA-AREA
+      *
+           .
+       380-CSV-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    帳票印刷処理
       *****************************************************************
        390-PRINT-OUT-SEC                SECTION.
+      *
+           IF      CNT-LINE        =   ZERO
+               GO  TO  390-PRINT-OUT-EXT
+           END-IF
       *
            INITIALIZE                  ORCSPRTAREA
            MOVE    "INS"               TO  SPRT-MODE
@@ -522,10 +698,8 @@ grpsys     INITIALIZE                  SPA-AREA
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID
                                        TO  JOB-SHELLID
-      *----(03.05.01)--ADD-START---
                MOVE    WRK-PARA-HOSPNUM
                                        TO  JOB-HOSPNUM
-      *----(03.05.01)--ADD-END-----
                MOVE    WRK-TENSUERR    TO  JOB-YOBI
                MOVE    "9999"          TO  JOB-ERRCD
                CALL    "ORCSJOB"       USING
@@ -551,14 +725,12 @@ grpsys     INITIALIZE                  SPA-AREA
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    SUM-PAGE        TO  JOB-UPDCNT 
+           MOVE    SUM-KENSU       TO  JOB-UPDCNT 
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
-      *----(03.05.01)--ADD-START---
            MOVE    WRK-PARA-HOSPNUM
                                    TO  JOB-HOSPNUM
-      *----(03.05.01)--ADD-END-----
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
                                    JOBKANRI-REC
@@ -644,16 +816,14 @@ grpsys     INITIALIZE                  SPA-AREA
                    END-EVALUATE 
            END-EVALUATE 
       *
-      *----(03.05.01)--UPD-START---
            MOVE    WRK-PARA-HOSPNUM    TO  TNS-HOSPNUM
-      *----(03.05.01)--UPD-END-----
            MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                PERFORM 900-DBFETCH-SEC
            ELSE
@@ -671,11 +841,11 @@ grpsys                                     SPA-AREA
            MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-END
+               MOVE    ZERO            TO  FLG-TENSU
                MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
            ELSE
                MOVE    1               TO  FLG-TENSU
@@ -692,9 +862,9 @@ grpsys                                     SPA-AREA
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_tensu"     TO  MCP-TABLE
            MOVE    WRK-PATH        TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            .
        900-DBCLOSE-EXT.
            EXIT.
@@ -707,16 +877,16 @@ grpsys                                     SPA-AREA
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            IF      MCP-RC              =   ZERO
                MOVE    "DBFETCH"       TO  MCP-FUNC
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"     USING   MCPAREA
+               CALL    "ORCDBMAIN"     USING   MCPAREA
                                                MCPDATA-REC
-grpsys                                         SPA-AREA
+                                               SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
                ELSE
@@ -729,9 +899,9 @@ grpsys                                         SPA-AREA
            MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
            MOVE    "key10"         TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
       *
            .
        800-SYSKANRI-READ-EXT.
@@ -745,16 +915,16 @@ grpsys                                     SPA-AREA
            MOVE    "DBOPEN"        TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
       *
            MOVE    "DBSTART"       TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            .
        100-DBOPEN-EXT.
            EXIT.
@@ -767,16 +937,16 @@ grpsys                                     SPA-AREA
            MOVE    "DBCOMMIT"      TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
       *
            MOVE    "DBDISCONNECT"  TO  MCP-FUNC.
            MOVE    LOW-VALUE       TO  MCP-TABLE.
            MOVE    LOW-VALUE       TO  MCP-PATHNAME.
-grpsys     CALL    "ORCDBMAIN"     USING   MCPAREA
+           CALL    "ORCDBMAIN"     USING   MCPAREA
                                            MCPDATA-REC
-grpsys                                     SPA-AREA
+                                           SPA-AREA
            .
        900-DBCLOSE-EXT.
            EXIT.

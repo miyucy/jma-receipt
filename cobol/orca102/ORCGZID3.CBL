@@ -93,6 +93,8 @@
            COPY    "ZID1.INC".
            COPY    "ZID2.INC".
            COPY    "ZID3.INC".
+           COPY    "Z100.INC".
+           COPY    "ZFIL.INC".
 
       *
        PROCEDURE                                 DIVISION    USING
