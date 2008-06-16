@@ -572,14 +572,13 @@
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
-           INITIALIZE                  SPA-GMN-KOUMOKU1
-                                       SPA-GMN-KBNCD-G
-                                       SPA-NAI-KOUMOKU
+           INITIALIZE                  SPA-GMN-KBNCD-G
       *
            MOVE    W18-KBNCD       TO  SPA-GMN-KBNCD-G
       *         
            IF      SPA-GMN-KBNCD   =   SPACE
-               CONTINUE
+               INITIALIZE                  SPA-GMN-KOUMOKU1
+                                           SPA-NAI-KOUMOKU
            ELSE
                INITIALIZE                  ORCSNUMAREA
                MOVE    SPA-GMN-KBNCD       TO  SNUM-INX
@@ -789,6 +788,17 @@
                                            =   KANACHK-MAX /   2 
                END-IF
            END-IF 
+      *
+      *----(04.03.01)--ADD-START---
+           IF    ( SPA-NAI-HOSPNAME1MOJI   =   ZERO )  OR
+                 ( SPA-NAI-HOSPNAME1MOJI   >   20 )
+               IF    ( SPA-GMN-PRTKBN(19)  NOT =   SPACE ) AND
+                     ( SPA-GMN-PRTKBN(19)  =   SPA-GMN-KBNCD )
+                   MOVE    "0011"          TO  SPA-ERRCD
+                   MOVE    2               TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *----(04.03.01)--ADD-END-----
       *
            .
        41021-HOSPNAME1-CHK-EXT.
@@ -1770,7 +1780,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "帳票別指定入力エラー"        TO  SPA-ERRMSG
       *----(04.03.01)--ADD-START---
                WHEN    "0011"
-                   MOVE    "医療機関名称は１〜２０文字以内にして下さい"
+                   MOVE
+              "レセプト電算の医療機関名称は１〜２０文字以内にして下さい"
                                                          TO  SPA-ERRMSG
       *----(04.03.01)--ADD-END-----
                WHEN    "0100"
