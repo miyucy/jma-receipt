@@ -1010,6 +1010,7 @@
            AND   ( SPA-GMN-KOUMOKU1
                                    NOT =   SPACE )
                MOVE    "0100"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR 
            END-IF           
       *
            IF      SPA-ERRCD           =   SPACE
