@@ -363,6 +363,7 @@ RECORD_files = \
 	XF01X.rec \
 	Z100.rec \
 	ZFIL.rec \
+	U012.rec \
 
 DEF_files = \
 	HC01.def \

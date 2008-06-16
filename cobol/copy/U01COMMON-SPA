@@ -26,8 +26,15 @@
       *    共通ＳＰＡエリア
       *
        01  SPA-U01KYOUTU.
+      *    システム日付表示
+           03  SPA-GMN-DATE                PIC X(30).
+      *    遷移元
+           03  SPA-NAI-MOTOPG              PIC X(08).
       *    確認画面
            03  SPA-U1ID1-AREA.
                05  SPA-U1IDCD                  PIC X(04).
                05  SPA-U1ID1-FLG               PIC X(02).
+      *   選択一覧へ
+           03  SPA-U012-AREA.
+               05  SPA-U012-MOTOPG              PIC X(08).
       *

@@ -74,6 +74,7 @@
       *
        01  SCRAREA.
            COPY    "U01.INC".
+           COPY    "U012.INC".
            COPY    "U1ERR.INC". 
            COPY    "U1ID1.INC". 
       *

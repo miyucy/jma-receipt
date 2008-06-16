@@ -135,3 +135,48 @@ path	key6 	{
 		;
 	};
 };
+
+path	key7 	{
+	DBSELECT	{
+		DECLARE tbl_uketuke_key7_csr CURSOR FOR
+		SELECT *
+		FROM tbl_uketuke
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   UKEYMD      =   :UKEYMD
+                        AND   UKEID       <>  0
+                        AND   KAIKEITIME  =   0
+			ORDER   BY  UKEID
+		;
+	};
+};
+
+path	key8 	{
+	DBSELECT	{
+		DECLARE tbl_uketuke_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_uketuke
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   UKEYMD      =   :UKEYMD
+                        AND   UKEID       <>  0
+                        AND   KAIKEITIME  <>  0
+			ORDER   BY  KAIKEITIME DESC,
+                                    UKEID
+		;
+	};
+};
+
+path	key9	{
+	DBSELECT	{
+		DECLARE tbl_uketuke_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_uketuke
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   UKEYMD      =   :UKEYMD
+                        AND   UKEID       <>  0
+                        AND   KAIKEITIME  <>  0
+			ORDER   BY  KAIKEITIME,
+                                    UKEID
+		;
+	};
+};
+

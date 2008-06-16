@@ -59,7 +59,7 @@
            03  SPA-GMN-AREA.
                05  SPA-GMN-PAGE              PIC 9(02).
                05  SPA-GMN-CUR               PIC 9(02).
-               05  SPA-GMN-DATE              PIC X(30).
+      *********05  SPA-GMN-DATE              PIC X(30).
                05  SPA-GMN-ICHIRAN.
                07  SPA-GMN-TBL.
                    09  SPA-GMN-TBL2      OCCURS  2.
@@ -94,8 +94,8 @@
            03  SPA-NAI-AREA.
                05  SPA-NAI-SELFLG          PIC 9(01).
                05  SPA-NAI-SELNUM          PIC 9(04).
-               05  SPA-NAI-IRYID           PIC X(10).
-               05  SPA-NAI-MOTOPG          PIC X(08).
+      ****     05  SPA-NAI-IRYID           PIC X(10).
+      ****     05  SPA-NAI-MOTOPG          PIC X(08).
       *
       *        画面遷移用パラメタに患者番号あり
       *        05  SPA-NAI-LNKFLG          PIC X(01).
@@ -306,6 +306,7 @@
       *
        01  SCRAREA.
            COPY    "U01.INC".
+           COPY    "U012.INC".
            COPY    "U1ERR.INC". 
            COPY    "U1ID1.INC". 
       *
@@ -396,19 +397,14 @@
       *        確認画面より
                WHEN    "U1ID1"
                    PERFORM 330-U1ID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+      *
+               WHEN    "U012"
+      *            受付情報表示
+                   PERFORM 340-U012-HEN-SEC
+      *
+               WHEN    OTHER
+                   PERFORM 310-SPASET-SEC
            END-EVALUATE
-      *
-           INITIALIZE                  SPA-U01
-           INITIALIZE                  SPA-U01KYOUTU
-      *
-           PERFORM 310-SPASET-SEC
-      *
-           MOVE    1               TO  SPA-GMN-PAGE
-           MOVE    1               TO  SPA-GMN-CUR
-           MOVE    SPACE           TO  WRK-SYORI
-      *
-      *
            .
        300-SCREEN-EXT.
            EXIT.
@@ -417,6 +413,9 @@
       *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
+      *
+           INITIALIZE                  SPA-U01
+           INITIALIZE                  SPA-U01KYOUTU
       *
       *    画面遷移後、ＬＮＫをセット
            IF      LNK-KYOUTU      NOT =   SPACE
@@ -444,11 +443,28 @@
                MOVE  LNK-DAY3-YOBIMEI  TO  WRK-HENNYOBI
            END-IF
            MOVE    WRK-HENYMDN         TO  SPA-GMN-DATE
-      *
       *    受付情報表示
            PERFORM                     5001-U010-HEN-SEC
+      *
+           MOVE    1               TO  SPA-GMN-PAGE
+           MOVE    1               TO  SPA-GMN-CUR
+           MOVE    SPACE           TO  WRK-SYORI
+      *
            .
        310-SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    選択一覧画面より
+      *****************************************************************
+       340-U012-HEN-SEC               SECTION.
+      *
+           INITIALIZE                  SPA-U01
+      *    受付情報表示
+           PERFORM 5001-U010-HEN-SEC
+           MOVE    1               TO  SPA-GMN-PAGE
+           MOVE    1               TO  SPA-GMN-CUR
+           .
+       340-U012-HEN-EXT.
            EXIT.
       *****************************************************************
       *    確認画面より
@@ -495,6 +511,9 @@
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 4011-UKELIST-SEC
+      *        選択一覧
+               WHEN    "CLICKED"       ALSO    "B09"
+                   PERFORM 490-U012-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -987,7 +1006,29 @@
            .
        210-BACK-EXT.
            EXIT.
+      *****************************************************************
+      *    選択一覧処理
+      *****************************************************************
+       490-U012-SYORI-SEC             SECTION.
       *
+           INITIALIZE                      SPA-U012-AREA
+      *
+           MOVE    "U01"               TO  SPA-U012-MOTOPG
+           MOVE    SPA-U01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    "U01"               TO  SPA-MOTOPG
+           MOVE    "U012"              TO  SPA-SAKIPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "U012"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       490-U012-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    前頁　処理
       *****************************************************************
