@@ -60,10 +60,7 @@
                    07  SPA-GMN-SYUBYOCHK       PIC X(01).
                    07                          PIC X(01).
                    07  SPA-GMN-SYUBYOCHKMEI    PIC X(08).
-               05  SPA-GMN-UTAGAIKKNKBN-G.
-                   07  SPA-GMN-UTAGAIKKNKBN    PIC X(01).
-                   07                          PIC X(01).
-                   07  SPA-GMN-UTAGAIKKNKBNMEI PIC X(08).
+               05  SPA-GMN-UTAGAIKKN           PIC 9(01).
                05  SPA-GMN-KYUSEIKKNKBN-G.
                    07  SPA-GMN-KYUSEIKKNKBN    PIC X(01).
                    07                          PIC X(01).
@@ -108,12 +105,6 @@
                        09  SPA-GMN-SYUBYOCHKL      PIC X(01).
                        09                          PIC X(01).
                        09  SPA-GMN-SYUBYOCHKMEIL   PIC X(08).
-               05  SPA-GMN-UTAGAIKKNKBNLST-G.
-                   07  SPA-GMN-UTAGAIKKNKBN-MAX    PIC 9(03).
-                   07  SPA-GMN-UTAGAIKKNKBNLST     OCCURS   2.
-                       09  SPA-GMN-UTAGAIKKNKBNL   PIC X(01).
-                       09                          PIC X(01).
-                       09  SPA-GMN-UTAGAIKKNKBNMEIL PIC X(08).
                05  SPA-GMN-KYUSEIKKNKBNLST-G.
                    07  SPA-GMN-KYUSEIKKNKBN-MAX    PIC 9(03).
                    07  SPA-GMN-KYUSEIKKNKBNLST     OCCURS   15.
@@ -379,6 +370,7 @@
       *
            END-PERFORM
       *
+      *
       *    コンボボックス初期処理
            PERFORM 3101-COMBO-SYOKI-SEC
       *
@@ -415,13 +407,10 @@
       *
                IF    ( SYS-1101-UTAGAIKKN-X  IS NUMERIC )
       *
-                   EVALUATE    SYS-1101-UTAGAIKKN
-                   WHEN    1
-                       MOVE    "1"     TO  SPA-GMN-UTAGAIKKNKBN
-                   WHEN    2
-                       MOVE    "2"     TO  SPA-GMN-UTAGAIKKNKBN
-                   END-EVALUATE
-      *
+                   MOVE    SYS-1101-UTAGAIKKN
+                                       TO  SPA-GMN-UTAGAIKKN
+               ELSE
+                   MOVE    2           TO  SPA-GMN-UTAGAIKKN
                END-IF
       *
                IF    ( SYS-1101-KYUSEIKKN-X  IS NUMERIC )
@@ -478,13 +467,8 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-SYUBYOCHK-G
            END-IF
       *
-           MOVE    SPA-GMN-UTAGAIKKNKBN TO  WRK-CMB-CD
-           PERFORM 4200-UTAGAIKKNKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-UTAGAIKKNKBNLST (2)
-                                   TO  SPA-GMN-UTAGAIKKNKBN-G
-           ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-UTAGAIKKNKBN-G
+           IF    ( SPA-GMN-UTAGAIKKN    =   ZERO )
+               MOVE    2            TO  SPA-GMN-UTAGAIKKN
            END-IF
       *
            MOVE    SPA-GMN-KYUSEIKKNKBN TO  WRK-CMB-CD
@@ -567,9 +551,6 @@
       *    主病名チェックコンボ設定処理
            PERFORM 3101-SYUBYOCHKLST-SEC
       *
-      *    疑い病名期間チェックコンボ設定処理
-           PERFORM 3101-UTAGAIKKNKBNLST-SEC
-      *
       *    急性病名期間チェックコンボ設定処理
            PERFORM 3101-KYUSEIKKNKBNLST-SEC
       *
@@ -635,27 +616,6 @@
       *
            . 
        3101-SYUBYOCHKLST-EXT.
-           EXIT.
-      *****************************************************************
-      *    疑い病名期間チェックコンボ設定処理
-      *****************************************************************
-       3101-UTAGAIKKNKBNLST-SEC           SECTION.
-      *
-           INITIALIZE                  SPA-GMN-UTAGAIKKNKBNLST-G
-      *
-           MOVE    2               TO  SPA-GMN-UTAGAIKKNKBN-MAX
-      *
-           MOVE    "1"             TO  SPA-GMN-UTAGAIKKNKBNL    (1)
-           MOVE    "１ヶ月"        TO  SPA-GMN-UTAGAIKKNKBNMEIL (1)
-      *
-           MOVE    "2"             TO  SPA-GMN-UTAGAIKKNKBNL    (2)
-           MOVE    "２ヶ月"        TO  SPA-GMN-UTAGAIKKNKBNMEIL (2)
-      *
-           MOVE    SPA-GMN-UTAGAIKKNKBNLST  (2)
-                                   TO  SPA-GMN-UTAGAIKKNKBN-G
-      *
-           . 
-       3101-UTAGAIKKNKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    急性病名期間チェックコンボ設定処理
@@ -973,7 +933,7 @@
       *
            MOVE    W60-BYOSRYKAKBN     TO  SPA-GMN-BYOSRYKAKBN-G
            MOVE    W60-SYUBYOCHK       TO  SPA-GMN-SYUBYOCHK-G
-           MOVE    W60-UTAGAIKKNKBN    TO  SPA-GMN-UTAGAIKKNKBN-G
+           MOVE    W60-UTAGAIKKN       TO  SPA-GMN-UTAGAIKKN
            MOVE    W60-KYUSEIKKNKBN    TO  SPA-GMN-KYUSEIKKNKBN-G
            MOVE    W60-TENKITEKBYOKBN  TO  SPA-GMN-TENKITEKBYOKBN-G
            MOVE    W60-YBKENSAYAKUKBN  TO  SPA-GMN-YBKENSAYAKUKBN-G
@@ -1002,7 +962,7 @@
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
       *
-           PERFORM 4101-UTAGAIKKNKBN-CHK-SEC
+           PERFORM 4101-UTAGAIKKN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1083,22 +1043,21 @@
        4101-SYUBYOCHK-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    疑い期間区分チェック処理
-      *****************************************************************
-       4101-UTAGAIKKNKBN-CHK-SEC       SECTION.
+      *    疑い期間チェック処理
+      ***************************************************************
+       4101-UTAGAIKKN-CHK-SEC          SECTION.
       *
-           MOVE    SPA-GMN-UTAGAIKKNKBN TO  WRK-CMB-CD
-           PERFORM 4200-UTAGAIKKNKBNLST-CHK-SEC
-           IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-UTAGAIKKNKBNLST (2)
-                                   TO  SPA-GMN-UTAGAIKKNKBN-G
+           IF    ( SPA-GMN-UTAGAIKKN   >= 1 )
+            AND  ( SPA-GMN-UTAGAIKKN   <= 9 )
+               CONTINUE
            ELSE
-               MOVE    WRK-CMB-ITM TO  SPA-GMN-UTAGAIKKNKBN-G
+               MOVE    "0001"      TO  SPA-ERRCD
+               MOVE    2           TO  SPA-GMN-CUR
            END-IF
       *
            .
       *
-       4101-UTAGAIKKNKBN-CHK-EXT.
+       4101-UTAGAIKKN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    急性期間区分チェック処理
@@ -1273,30 +1232,6 @@
       *
            .
        4200-SYUBYOCHKLST-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    疑い期間区分コンボチェック処理
-      *****************************************************************
-       4200-UTAGAIKKNKBNLST-CHK-SEC    SECTION.
-      *
-           INITIALIZE                  WRK-CMB-ITM-G
-      *
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB     >   SPA-GMN-UTAGAIKKNKBN-MAX )
-                    OR   ( WRK-CMB-ITM NOT =   SPACE )
-      *
-               IF    ( SPA-GMN-UTAGAIKKNKBNL (IDX-CMB)
-                                   =   WRK-CMB-CD )
-      *
-                   MOVE    SPA-GMN-UTAGAIKKNKBNLST (IDX-CMB)
-                                   TO  WRK-CMB-ITM
-      *
-               END-IF
-      *
-           END-PERFORM
-      *
-           .
-       4200-UTAGAIKKNKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    急性期間区分コンボチェック処理
@@ -1498,6 +1433,8 @@
       *
            END-PERFORM
       *
+           MOVE    2               TO  SPA-GMN-UTAGAIKKN
+      *
       *    コンボボックス初期処理
            PERFORM 3101-COMBO-SYOKI-SEC
       *
@@ -1599,12 +1536,7 @@
       *
            MOVE    SPA-GMN-SYUBYOCHK   TO  SYS-1101-SYUBYOCHKKBN
       *
-           EVALUATE    SPA-GMN-UTAGAIKKNKBN
-           WHEN    "1"
-               MOVE    1               TO  SYS-1101-UTAGAIKKN
-           WHEN    "2"
-               MOVE    2               TO  SYS-1101-UTAGAIKKN
-           END-EVALUATE
+           MOVE    SPA-GMN-UTAGAIKKN   TO  SYS-1101-UTAGAIKKN
       *
            EVALUATE    SPA-GMN-KYUSEIKKNKBN
            WHEN    "0"
@@ -1755,17 +1687,7 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-UTAGAIKKNKBN-G   TO  W60-UTAGAIKKNKBN
-      *
-           MOVE    SPA-GMN-UTAGAIKKNKBN-MAX
-                                           TO  W60-UTAGAIKKNKBN-COUNT
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0        >   SPA-GMN-UTAGAIKKNKBN-MAX )
-      *
-               MOVE    SPA-GMN-UTAGAIKKNKBNLST (IDX0)
-                                       TO  W60-UTAGAIKKNKBN-ITEM (IDX0)
-      *
-           END-PERFORM
+           MOVE    SPA-GMN-UTAGAIKKN       TO  W60-UTAGAIKKN
       *
            MOVE    SPA-GMN-KYUSEIKKNKBN-G   TO  W60-KYUSEIKKNKBN
       *
@@ -1896,7 +1818,7 @@
            WHEN    001
                MOVE    "BYOSRYKAKBN"   TO  MCP-WIDGET
            WHEN    002
-               MOVE    "UTAGAIKKNKBN"  TO  MCP-WIDGET
+               MOVE    "UTAGAIKKN"     TO  MCP-WIDGET
            WHEN    003
                MOVE    "CHKMTRX01"     TO  MCP-WIDGET
            WHEN    004
@@ -1941,7 +1863,7 @@
                MOVE    11              TO  SPA-GMN-CUR
            WHEN    "SYUBYOCHK"
                MOVE    02              TO  SPA-GMN-CUR
-           WHEN    "UTAGAIKKNKBN"
+           WHEN    "UTAGAIKKN"
                MOVE    15              TO  SPA-GMN-CUR
            WHEN    "KYUSEIKKNKBN"
                MOVE    13              TO  SPA-GMN-CUR
@@ -1982,6 +1904,13 @@
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
+           WHEN    "0001"
+               STRING   "疑い病名チェック期間は"
+                                       DELIMITED   BY  SIZE
+                        "１〜９ヶ月の期間で設定してください"
+                                       DELIMITED   BY  SIZE
+               INTO     SPA-ERRMSG
+               END-STRING
            WHEN    "0101"
                MOVE    "病名チェック条件を設定してください"
                                        TO  SPA-ERRMSG

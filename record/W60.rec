@@ -1,5 +1,4 @@
-W60	{
-	fixed1	{
+W60	{ fixed1	{
 		B03	{
 			state	int;
 		};
@@ -17,12 +16,8 @@ W60	{
 			count	int;
 			item	varchar(10)[2];
 		};
-		CMB_UTAGAIKKNKBN	{
-			UTAGAIKKNKBN	{
-				value	varchar(10);
-			};
-			count	int;
-			item	varchar(10)[2];
+		UTAGAIKKN	{
+			value	number(1);
 		};
 		CMB_KYUSEIKKNKBN	{
 			KYUSEIKKNKBN	{
