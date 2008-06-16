@@ -82,11 +82,6 @@
            03  STS-TENSUERR        PIC X(02).
            03  STS-TENSUCSV        PIC X(02).
       *
-      *    ¥¹¥ÑÎÎ°è
-       01  STS-AREA.
-           03  STS-TENSUERR        PIC X(02).
-           03  STS-TENSUCSV        PIC X(02).
-      *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
