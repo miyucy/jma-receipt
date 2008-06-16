@@ -1545,6 +1545,9 @@
                        MOVE    3               TO  SPA-GMN-PAGENO
                        MOVE    ZERO            TO  SPA-GMN-CUR
                    END-IF
+      *        タブ切替
+               WHEN    "CLICKED"       ALSO    "B08"
+                   PERFORM 480-BETUGAMEN-SEC
            END-EVALUATE.
       *
        200-GMNSENI-EXT.
@@ -3001,6 +3004,36 @@
       *
            .
        420-KIRIKAE-EXT.
+           EXIT.
+      *****************************************************************
+      *    タグ切替処理
+      *****************************************************************
+       480-BETUGAMEN-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+           IF      SPA-ERRCD           =   SPACE
+               EVALUATE    SPA-GMN-PAGENO
+                   WHEN    0
+                       MOVE    1               TO  SPA-GMN-PAGENO
+                       MOVE    ZERO            TO  SPA-GMN-CUR
+                   WHEN    1
+                       MOVE    2               TO  SPA-GMN-PAGENO
+                       MOVE    ZERO            TO  SPA-GMN-CUR
+                   WHEN    2
+                       MOVE    3               TO  SPA-GMN-PAGENO
+                       MOVE    ZERO            TO  SPA-GMN-CUR
+                   WHEN    3
+                       MOVE    0               TO  SPA-GMN-PAGENO
+                       MOVE    ZERO            TO  SPA-GMN-CUR
+               END-EVALUATE
+           END-IF
+           .
+       480-BETUGAMEN-EXT.
            EXIT.
       *
       *****************************************************************

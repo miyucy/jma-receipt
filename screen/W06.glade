@@ -35,7 +35,7 @@
   <position>GTK_WIN_POS_CENTER</position>
   <modal>False</modal>
   <allow_shrink>False</allow_shrink>
-  <allow_grow>True</allow_grow>
+  <allow_grow>False</allow_grow>
   <auto_shrink>False</auto_shrink>
 
   <widget>
@@ -2313,7 +2313,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>•ø•÷¿⁄¬ÿ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 

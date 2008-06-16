@@ -916,6 +916,9 @@
       *    登録
                WHEN    "CLICKED"      ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
+      *    タグ切替
+               WHEN    "CLICKED"      ALSO    "B08"
+                   PERFORM 480-BETUGAMEN-SEC
       *    業務権限
                WHEN    "CLICKED"      ALSO    "CHK01"
                WHEN    "CLICKED"      ALSO    "CHK02"
@@ -2544,6 +2547,36 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        4031-DEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    タグ切替処理
+      *****************************************************************
+       480-BETUGAMEN-SEC              SECTION.
+      *
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    1                   TO  FLG-TOUROKU
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-PAGENO      =   1
+                   MOVE    2                   TO  SPA-GMN-PAGENO
+                   MOVE    21                  TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    1                   TO  SPA-GMN-PAGENO
+      *            基本画面
+                   IF      SPA-GMN-SYOKUKBN    =   "1"
+                       MOVE    9               TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    31              TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+           .
+       480-BETUGAMEN-EXT.
            EXIT.
       *
       *****************************************************************
