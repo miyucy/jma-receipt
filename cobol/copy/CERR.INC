@@ -21,5 +21,6 @@
       *****************************************************************
          02  CERR.
             03  CERR-FIXED1.
-              04  CERR-ERRCODE    PIC X(11).
-              04  CERR-ERRMSG PIC X(87).
+              04  CERR-ERRCODE    PIC X(10).
+              04  CERR-ERRMSG     PIC X(88).
+              03  CERR-BYOMEI     PIC X(80).

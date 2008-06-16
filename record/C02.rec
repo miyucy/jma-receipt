@@ -28,6 +28,9 @@ C02	{
 		PTFTNRATE	{
 			value	varchar(4);
 		};
+		LASTYMD {
+			value   varchar(16);
+		};
 		SRYKA_COMBO	{
 			SRYKA	{
 				value	varchar(21);

@@ -99,6 +99,8 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
       *  04.02.01    NACL-藤原    08/03/03  特定疾患区分07,08の追加
+      *
+      *  04.03.01    NACL-藤原    08/06/11  慢性と急性のチェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -142,6 +144,8 @@
            03  FLG-JOBEND          PIC 9(01).
       *
            03  FLG-ROW             PIC 9(01).
+           03  FLG-MANSEI          PIC 9(01).
+           03  FLG-KYUSEI          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -153,6 +157,7 @@
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDXX                PIC 9(04).
+           03  IDZZ                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -197,6 +202,8 @@
                05  WRK-SDD         PIC 9(02).
       *
            03  WRK-SHORIERR        PIC X(200).
+      *
+           03  WRK-ERR-BYOMEI      PIC X(80).
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -568,6 +575,11 @@
                            END-IF
                            PERFORM 3101-USERBYOMEI-LST-SEC
                        END-IF
+                   END-IF    
+               WHEN    "0105"
+      *            慢性と急性の混在警告時の更新の確認
+                   IF      SPA-CID1-FLG        =   "OK"
+                       PERFORM 4502-TOUROKU-SYORI-SEC
                    END-IF    
            END-EVALUATE
       *     
@@ -2878,6 +2890,25 @@ grpsys                                         SPA-AREA
                END-IF
            END-IF    
       *
+      *    警告チェック
+           IF      SPA-ERRCD            =   SPACE
+               PERFORM 4501-KEIKOKU-CHK-SEC
+           END-IF
+      *
+      *    登録処理
+           IF    ( SPA-ERRCD            =   SPACE )
+           AND   ( SPA-CIDCD            =   SPACE )
+               PERFORM 4502-TOUROKU-SYORI-SEC
+           END-IF
+           .
+       450-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    登録処理
+      *****************************************************************
+       4502-TOUROKU-SYORI-SEC                SECTION.
+      *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
@@ -2917,7 +2948,7 @@ grpsys                                         SPA-AREA
                    IF      MCP-RC          NOT =   ZERO 
                        MOVE    "1005"              TO  SPA-ERRCD
                        DISPLAY "UPD USBYOMEI-KEY =>" USBYO-KEY 
-                       GO  TO  450-TOUROKU-EXT
+                       GO  TO  4502-TOUROKU-SYORI-EXT
                    END-IF
                    MOVE    1               TO  WRK-SYOKBN 
                ELSE
@@ -2941,7 +2972,7 @@ grpsys                                         SPA-AREA
                        IF      MCP-RC          NOT =   ZERO 
                            MOVE    "1005"              TO  SPA-ERRCD
                            DISPLAY "UPD USBYOMEI-KEY =>" USBYO-KEY 
-                           GO  TO  450-TOUROKU-EXT
+                           GO  TO  4502-TOUROKU-SYORI-EXT
                        END-IF
                        MOVE    1               TO  WRK-SYOKBN 
                    END-IF
@@ -3032,7 +3063,7 @@ grpsys                                         SPA-AREA
                IF      MCP-RC          NOT =   ZERO 
                    MOVE    "1004"              TO  SPA-ERRCD
                    DISPLAY MCP-FUNC "USERBYOMEI-KEY =>" USBYO-KEY 
-                   GO  TO  450-TOUROKU-EXT
+                   GO  TO  4502-TOUROKU-SYORI-EXT
                END-IF
            END-IF
       *
@@ -3073,7 +3104,50 @@ grpsys                                         SPA-AREA
       *
            PERFORM 420-CLEAR-SEC
            .
-       450-TOUROKU-EXT.
+       4502-TOUROKU-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    警告チェック処理
+      *****************************************************************
+       4501-KEIKOKU-CHK-SEC                SECTION.
+      * 
+           MOVE    SPACE           TO  WRK-ERR-BYOMEI
+      * 
+      *    慢性と急性の警告チェック
+           IF    ( SPA-GMN-C03-UTAGAIFLG       =   "2" OR  "3" ) 
+               MOVE    ZERO                TO  FLG-MANSEI
+                                               FLG-KYUSEI
+               PERFORM VARYING IDZZ    FROM    1   BY  2
+                       UNTIL   IDZZ    >       79
+                   IF      SPA-GMN-C03-BYOMEI (IDZZ:4)
+                                                   =   "慢性"
+                       MOVE    1               TO  FLG-MANSEI
+                   END-IF
+                   IF      SPA-GMN-C03-BYOMEI (IDZZ:4)
+                                                   =   "急性"
+                       MOVE    1               TO  FLG-KYUSEI
+                   END-IF
+                   IF    ( FLG-MANSEI              =   1 )
+                   AND   ( FLG-KYUSEI              =   1 )
+                       MOVE    80                      TO  IDZZ
+                   END-IF
+               END-PERFORM    
+      *
+               IF      FLG-MANSEI              =   1
+                   IF      FLG-KYUSEI              =   1
+                       CONTINUE
+                   ELSE
+                       MOVE    SPA-GMN-C03-BYOMEI
+                                               TO  WRK-ERR-BYOMEI
+                       IF      SPA-CIDCD       =   SPACE
+                           MOVE    "0105"          TO  SPA-CIDCD
+                       END-IF 
+                   END-IF
+               END-IF
+           END-IF
+           .
+       4501-KEIKOKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3913,6 +3987,14 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
                WHEN    "0104"
                    MOVE    "自院病名を削除します。よろしいですか？"
                                        TO  WRK-CIDMSG
+               WHEN    "0105"
+                   STRING
+                       "この病名は「急性」と「慢性」が混在して"
+                                                DELIMITED   BY  SIZE 
+                       "レセプトに記載されます。更新しますか？"
+                                                DELIMITED   BY  SIZE 
+                                               INTO    WRK-CIDMSG
+                   END-STRING
                WHEN    "6666"
                    MOVE    WRK-SHORIERR    TO  WRK-CIDMSG
                WHEN    OTHER
@@ -3923,6 +4005,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
            MOVE    SPACE               TO  SPA-CID1-FLG
       *
            MOVE    SPACE               TO  CID1
+           EVALUATE    SPA-CIDCD
+               WHEN    "0105"
+                   MOVE    WRK-ERR-BYOMEI
+                                       TO  CID1-BYOMEI
+           END-EVALUATE 
            MOVE    SPA-CIDCD           TO  CID1-ID1CODE
            MOVE    WRK-CIDMSG          TO  CID1-ID1MSG
            EVALUATE    SPA-CIDCD

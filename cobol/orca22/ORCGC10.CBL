@@ -57,6 +57,8 @@
       *  04.01.01    NACL-藤原    07/10/11  診療科コピー（移動）機能対応
       *
       *  04.02.01    NACL-藤原    08/03/03  特定疾患区分07,08の追加
+      *
+      *  04.03.01    NACL-藤原    08/06/11  慢性と急性のチェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -97,6 +99,8 @@
       *
            03  FLG-SPASCR          PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
+           03  FLG-MANSEI          PIC 9(01).
+           03  FLG-KYUSEI          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -109,6 +113,7 @@
            03  IDXX                PIC 9(04).
            03  IDXY                PIC 9(04).
            03  IDXZ                PIC 9(04).
+           03  IDZZ                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -1206,12 +1211,24 @@
                END-PERFORM
            END-IF
       *
+      *    慢性と急性の警告チェック
+           IF    ( SPA-ERRCD            =   SPACE       )
+           AND   ( WRK-HENSYU-DATA-O(3) =   "2" OR  "3" )
+               MOVE    SPACE           TO  WRK-ERR-BYOMEI
+                                           WRK-ERR-SRYYMD
+                                           WRK-ERR-SRYKA
+               INITIALIZE                  SPA-C02-KEIKOKU-FLG-AREA
+                                           SPA-C02-KEIKOKU-BYOMEI
+               PERFORM 41014-KEIKOKU-CHK-SEC
+           END-IF
+      *
       *    警告チェック
            IF      SPA-ERRCD            =   SPACE
                MOVE    SPACE           TO  WRK-ERR-BYOMEI
                                            WRK-ERR-SRYYMD
                                            WRK-ERR-SRYKA
                INITIALIZE                  SPA-C02-KEIKOKU-FLG-AREA
+                                           SPA-C02-KEIKOKU-BYOMEI
       *
       *        他診療科の同一病名の警告チェック（診療科複写以外）
                IF    ( SPA-C02-1042-MSG4-DSPKBN
@@ -1904,6 +1921,53 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            END-PERFORM
            .
        41013-KEIKOKU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    警告チェック処理
+      *****************************************************************
+       41014-KEIKOKU-CHK-SEC                SECTION.
+      *
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       5
+                   OR      SPA-ERRCD           NOT =   SPACE
+               IF      WRK-STNUM-O (IDXX)  >   ZERO
+                   PERFORM VARYING IDX     FROM
+                                       WRK-STNUM-O (IDXX)  BY  1
+                           UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
+                           OR      SPA-ERRCD       NOT =   SPACE
+                       MOVE    ZERO                TO  FLG-MANSEI
+                                                       FLG-KYUSEI
+                       PERFORM VARYING IDZZ    FROM    1   BY  2
+                               UNTIL   IDZZ    >       79
+                           IF      SPA-GMN-C02-TBYOMEI (IDX)(IDZZ:4)
+                                                           =   "慢性"
+                               MOVE    1               TO  FLG-MANSEI
+                           END-IF
+                           IF      SPA-GMN-C02-TBYOMEI (IDX)(IDZZ:4)
+                                                       =   "急性"
+                               MOVE    1               TO  FLG-KYUSEI
+                           END-IF
+                           IF    ( FLG-MANSEI              =   1 )
+                           AND   ( FLG-KYUSEI              =   1 )
+                               MOVE    80                      TO  IDZZ
+                           END-IF
+                       END-PERFORM    
+      *
+                       IF      FLG-MANSEI              =   1
+                           IF      FLG-KYUSEI              =   1
+                               CONTINUE
+                           ELSE
+                               MOVE    SPA-GMN-C02-TBYOMEI (IDX)
+                                                   TO  WRK-ERR-BYOMEI
+                               MOVE    "0104"      TO  SPA-ERRCD
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+           .
+       41014-KEIKOKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2720,9 +2784,21 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                                DELIMITED   BY  SIZE 
                                                INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "0104"
+                   STRING
+                       "この病名は「急性」と「慢性」が混在して"
+                                                DELIMITED   BY  SIZE 
+                       "レセプトに記載されます。確認して下さい。"
+                                                DELIMITED   BY  SIZE 
+                                               INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE                TO  CERR
+           EVALUATE    SPA-ERRCD
+               WHEN    "0104"
+                   MOVE    WRK-ERR-BYOMEI  TO  CERR-BYOMEI
+           END-EVALUATE 
            MOVE    SPA-ERRCD            TO  CERR-ERRCODE
            MOVE    SPA-ERRMSG           TO  CERR-ERRMSG
            MOVE    "B01"                TO  MCP-WIDGET
@@ -2777,8 +2853,8 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    "C10"               TO  SPA-MOTOPG
            MOVE    "CID1"              TO  SPA-SAKIPG
       *
-           MOVE    "NEW"               TO  MCP-PUTTYPE.
-           MOVE    "CID1"              TO  MCP-WINDOW.
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "CID1"              TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
       *

@@ -35,6 +35,8 @@
                 04  C02-VALUE   PIC X(60).
               03  C02-PTFTNRATE.
                 04  C02-VALUE   PIC X(4).
+              03  C02-LASTYMD.
+                04  C02-VALUE   PIC X(16).
               03  C02-SRYKA-COMBO.
                 04  C02-SRYKA   PIC X(21).
                 04  C02-SRYKA-COUNT

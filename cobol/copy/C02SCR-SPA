@@ -82,6 +82,9 @@
       *  04.01.01    NACL-藤原    07/10/11  診療科コピー（移動）機能対応
       *
       *  04.02.01    NACL-藤原    08/03/03  特定疾患区分の追加
+      *
+      *  04.03.01    NACL-藤原    08/06/11  前回来院日の追加
+      *                                     慢性と急性のチェック対応
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -143,6 +146,7 @@
                            11  SPA-GMN-C02-SEX         PIC X(02).
                            11  SPA-GMN-C02-BIRTHDAY    PIC X(09).
                            11  SPA-GMN-C02-AGE         PIC X(10).
+                           11  SPA-GMN-C02-LASTYMD     PIC X(16).
       *
                        09  SPA-GMN-C02-HKN-TBL.
                            11  SPA-GMN-C02-HKN-TBLO    OCCURS   200.
@@ -393,6 +397,10 @@
                                                    PIC 9(01).  
                            11  SPA-C02-KEIKOKU-FLG2
                                                    PIC 9(01).  
+                           11  SPA-C02-KEIKOKU-FLG3
+                                                   PIC 9(01).  
+      *            警告メッセージ用病名
+                       09  SPA-C02-KEIKOKU-BYOMEI  PIC X(80).
       *----(01.00.01) LINE ADD START ----------------------------------
       *            更新フラグ
                        09  SPA-C02-UPDFLG          PIC X(01).

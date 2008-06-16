@@ -228,6 +228,9 @@
       *
       *  04.02.01    NACL-藤原    08/03/03  特定疾患区分07,08の追加
       *  04.02.02    NACL-藤原    08/05/07  更新時の診療科未入力エラー
+      *
+      *  04.03.01    NACL-藤原    08/06/11  前回来院日の表示
+      *                                     慢性と急性のチェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -276,6 +279,8 @@
       *
            03  FLG-UPDKBN          PIC 9(01).
            03  FLG-ROW             PIC 9(01).
+           03  FLG-MANSEI          PIC 9(01).
+           03  FLG-KYUSEI          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -293,6 +298,7 @@
       *
            03  IDXX                PIC 9(04).
            03  IDXY                PIC 9(04).
+           03  IDZZ                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -575,6 +581,9 @@
       *    保険組合せセット領域
            COPY    "CPORCSHKNSET.INC".
       *
+      *    前回来院日設定パラメタ
+           COPY    "CPORCSLASTYMD.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -676,6 +685,7 @@
                IF      SPA-CIDCD       NOT =   SPACE
                    EVALUATE    SPA-CIDCD
                        WHEN    "0102"
+                       WHEN    "0104"
                            PERFORM 520-CIDSET-SEC
                            GO  TO  100-INIT-EXT
                    END-EVALUATE
@@ -782,10 +792,38 @@
                    MOVE    SPACE           TO  SPA-CIDCD
                                                SPA-CID1-FLG
                    INITIALIZE              SPA-C02-KEIKOKU-FLG-AREA
+                                           SPA-C02-KEIKOKU-BYOMEI
                    GO      TO      300-SCREEN-EXT
                END-IF
       *
                IF      SPA-CIDCD       =   "0103"
+                   IF      SPA-CID1-FLG    =   "OK"
+                       IF      SPA-C02-KEIKOKU-FLG3
+                                               =   1
+                           MOVE    SPACE               TO  SPA-CID1-FLG
+                           MOVE    "0104"              TO  SPA-CIDCD
+                           GO      TO      300-SCREEN-EXT
+                       ELSE 
+                           IF      SPA-C02-KEIKOKU-FLG2
+                                                   =   1
+                               MOVE    SPACE           TO  SPA-CID1-FLG
+                               MOVE    "0102"          TO  SPA-CIDCD
+                               GO      TO      300-SCREEN-EXT
+                           ELSE 
+                               PERFORM 4502-TOUROKU-SYORI-SEC
+                           END-IF
+                       END-IF
+                   ELSE
+                       MOVE    1               TO  SPA-GMN-C02-CUR
+                   END-IF
+                   MOVE    SPACE           TO  SPA-CIDCD
+                                               SPA-CID1-FLG
+                   INITIALIZE              SPA-C02-KEIKOKU-FLG-AREA
+                                           SPA-C02-KEIKOKU-BYOMEI
+                   GO      TO      300-SCREEN-EXT
+               END-IF
+      *
+               IF      SPA-CIDCD       =   "0104"
                    IF      SPA-CID1-FLG    =   "OK"
                        IF      SPA-C02-KEIKOKU-FLG2
                                                =   1
@@ -801,6 +839,7 @@
                    MOVE    SPACE           TO  SPA-CIDCD
                                                SPA-CID1-FLG
                    INITIALIZE              SPA-C02-KEIKOKU-FLG-AREA
+                                           SPA-C02-KEIKOKU-BYOMEI
                    GO      TO      300-SCREEN-EXT
                END-IF
            END-IF              
@@ -2513,6 +2552,29 @@ grpsys                                         SPA-AREA
                        MOVE    "才"                TO  WRK-NENREI-MEI
                    END-IF
                    MOVE    WRK-NENREI-G        TO  SPA-GMN-C02-AGE
+      *
+      *            前回来院日
+                   INITIALIZE                  ORCSLASTYMDAREA
+                   MOVE    SPA-NAI-C02-PTID    TO  ORCSLASTYMD-PTID
+                   CALL    "ORCSLASTYMD"       USING
+                                               ORCSLASTYMDAREA
+                                               SPA-AREA
+      *            入院中は病棟を表示
+                   IF      ORCSLASTYMD-BRMNUM  =   SPACE
+                       IF      ORCSLASTYMD-LASTYMD NOT =   SPACE
+                           STRING  "前回："    DELIMITED  BY  SIZE
+                                   ORCSLASTYMD-LASTYMDW
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-GMN-C02-LASTYMD
+                           END-STRING
+                       END-IF
+                   ELSE
+                       STRING  "病棟："    DELIMITED  BY  SIZE
+                               ORCSLASTYMD-BRMNUM
+                                           DELIMITED  BY  SIZE
+                                           INTO    SPA-GMN-C02-LASTYMD
+                       END-STRING
+                   END-IF
                END-IF
            END-IF    
       *
@@ -6579,6 +6641,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                        WRK-ERR-SRYKA
       * 
            INITIALIZE                  SPA-C02-KEIKOKU-FLG-AREA
+                                       SPA-C02-KEIKOKU-BYOMEI
       *
       *    他診療科の同一病名の警告チェック
            IF      SPA-C02-1042-MSG4-DSPKBN
@@ -6690,6 +6753,47 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    END-IF
                END-PERFORM
            END-IF
+      *
+      *    慢性と急性の警告チェック
+           IF    ( SPA-NAI-C02-BYOMEICD-MAX    =   1           )
+           AND   ( SPA-GMN-C02-UTAGAIFLG       =   "2" OR  "3" ) 
+               MOVE    ZERO                TO  FLG-MANSEI
+                                               FLG-KYUSEI
+               PERFORM VARYING IDZZ    FROM    1   BY  2
+                       UNTIL   IDZZ    >       79
+                   IF      WRK-PTBYO-BYOMEI (1) (IDZZ:4)
+                                                   =   "慢性"
+                       MOVE    1               TO  FLG-MANSEI
+                   END-IF
+                   IF      WRK-PTBYO-BYOMEI (IDXX) (IDZZ:4)
+                                                   =   "急性"
+                       MOVE    1               TO  FLG-KYUSEI
+                   END-IF
+                   IF    ( FLG-MANSEI              =   1 )
+                   AND   ( FLG-KYUSEI              =   1 )
+                       MOVE    80                      TO  IDZZ
+                   END-IF
+               END-PERFORM    
+      *
+               IF      FLG-MANSEI              =   1
+                   IF      FLG-KYUSEI              =   1
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  SPA-C02-KEIKOKU-FLG3
+                       MOVE    WRK-PTBYO-BYOMEI (1)
+                                               TO  WRK-ERR-BYOMEI
+                       IF      SPA-CIDCD       =   SPACE
+                           MOVE    "0104"          TO  SPA-CIDCD
+                       END-IF 
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF      WRK-ERR-BYOMEI      NOT =   SPACE
+               MOVE    WRK-ERR-BYOMEI      TO  SPA-C02-KEIKOKU-BYOMEI
+               MOVE    SPACE               TO  WRK-ERR-BYOMEI
+           END-IF
+      *
       *         
       *    主病名の存在チェック（警告）
            IF      SPA-GMN-C02-SYUBYOFLG       =   SPACE
@@ -8545,6 +8649,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-GMN-C02-HKNCOMBIMEIH
                                            TO  C02-HKNNAME
            MOVE    SPA-GMN-C02-FTNRATE     TO  C02-PTFTNRATE
+           MOVE    SPA-GMN-C02-LASTYMD     TO  C02-LASTYMD
            MOVE    SPA-GMN-C02-SRYKA-G     TO  C02-SRYKA
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL       IDX         >   SPA-GMN-C02-SRYKA-MAX
@@ -9186,6 +9291,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                                DELIMITED   BY  SIZE 
                                                INTO    WRK-CIDMSG
                    END-STRING
+               WHEN    "0104"
+                   STRING
+                       "この病名は「急性」と「慢性」が混在して"
+                                                DELIMITED   BY  SIZE 
+                       "レセプトに記載されます。更新しますか？"
+                                                DELIMITED   BY  SIZE 
+                                               INTO    WRK-CIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  WRK-CIDMSG
            END-EVALUATE
@@ -9197,7 +9310,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    WRK-CIDMSG          TO  CID1-ID1MSG
            EVALUATE    SPA-CIDCD
                WHEN    "0103"
-                   MOVE    WRK-ERR-BYOMEI  TO  CID1-BYOMEI
+               WHEN    "0104"
+                   MOVE    SPA-C02-KEIKOKU-BYOMEI  TO  CID1-BYOMEI
            END-EVALUATE 
            MOVE    "B12"               TO  MCP-WIDGET
       *
