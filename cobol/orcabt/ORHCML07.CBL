@@ -68,7 +68,7 @@
            03  CSV-FILLER2         PIC X(1).
            03  CSV-NAME            PIC X(60).
            03  CSV-FILLER3         PIC X(1).
-           03  CSV-TEN             PIC X(14).
+           03  CSV-TEN             PIC 9(09)V99.
       *
        WORKING-STORAGE             SECTION.
       *    シェル用領域
