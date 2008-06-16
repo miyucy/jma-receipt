@@ -297,53 +297,34 @@
            MOVE    5                   TO  Z97-DURATION
            MOVE    ZERO                TO  WRK-PRT-PAGE
       *        
-           IF      SPA-MOTOPG          =   "Z91"
-               MOVE    SPACE               TO  SYS-3003-REC 
-               INITIALIZE                      SYS-3003-REC
-               MOVE    "3003"              TO  SYS-3003-KANRICD
-               MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
-               MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
-                                               SYS-3003-EDYUKYMD
-               MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
-               MOVE    SYS-3003-REC        TO  MCPDATA-REC
-               PERFORM 900-SYSKANRI-INV-SEC
-               IF      FLG-SYSKANRI        =   ZERO
-                   MOVE    MCPDATA-REC         TO  SYS-3003-REC 
-                   PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       SYS-3003-JOBID
-      *                ジョブ管理チェック処理
-                       MOVE    "CHK"           TO  SJOBKANRI-MODE
-                       INITIALIZE                  JOBKANRI-REC
-                       MOVE    IDX             TO  JOB-JOBID
-                       MOVE    WRK-CONS-JOB-SHELLID
-                                               TO  JOB-SHELLID
-                       MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-                       CALL    "ORCSJOB"       USING
-                                               ORCSJOBKANRIAREA  
-                                               JOBKANRI-REC 
-                                               SPA-AREA
-                       IF      SJOBKANRI-RETURN    =   ZERO
-                           PERFORM 4901-KAKUNIN-HYOUJI-SEC
-                       END-IF
-                   END-PERFORM
-               END-IF
-           ELSE
-      *        ジョブ管理チェック処理
-               MOVE    "CHK"           TO  SJOBKANRI-MODE
-               INITIALIZE                  JOBKANRI-REC
-               MOVE    WRK-CONS-JOB-JOBID
-                                       TO  JOB-JOBID
-               MOVE    WRK-CONS-JOB-SHELLID
-                                       TO  JOB-SHELLID
-               MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-               CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
-                                       SPA-AREA
-               MOVE    1               TO  IDX 
-               IF      SJOBKANRI-RETURN    =   ZERO
-                   PERFORM 4901-KAKUNIN-HYOUJI-SEC
-               END-IF
+           MOVE    SPACE               TO  SYS-3003-REC 
+           INITIALIZE                      SYS-3003-REC
+           MOVE    "3003"              TO  SYS-3003-KANRICD
+           MOVE    WRK-CONS-3003-KBNCD TO  SYS-3003-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-3003-STYUKYMD
+                                           SYS-3003-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
+           MOVE    SYS-3003-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-3003-REC 
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SYS-3003-JOBID
+      *            ジョブ管理チェック処理
+                   MOVE    "CHK"           TO  SJOBKANRI-MODE
+                   INITIALIZE                  JOBKANRI-REC
+                   MOVE    IDX             TO  JOB-JOBID
+                   MOVE    WRK-CONS-JOB-SHELLID
+                                           TO  JOB-SHELLID
+                   MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+                   CALL    "ORCSJOB"       USING
+                                           ORCSJOBKANRIAREA  
+                                           JOBKANRI-REC 
+                                           SPA-AREA
+                   IF      SJOBKANRI-RETURN    =   ZERO
+                       PERFORM 4901-KAKUNIN-HYOUJI-SEC
+                   END-IF
+               END-PERFORM
            END-IF
       *
            MOVE    "B01"                TO  MCP-WIDGET
@@ -491,6 +472,8 @@
       *****************************************************************
        3001-FILEENTRY-SEC          SECTION.
       *
+           DISPLAY "SPA-SFILESV-CNT-ALL (" SPA-SFILESV-IDX ")="
+                     SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX)
            IF      SPA-SFILESV-CNT-ALL (SPA-SFILESV-IDX) =   ZERO
                GO  TO  3001-FILEENTRY-EXT
            END-IF
