@@ -224,14 +224,16 @@
                                            TO  SPA-Z100-MSG
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       8
-               DISPLAY "SPA-CSV-CHK(" IDX ")=" SPA-CSV-CHK(IDX)
+               MOVE    SPACE       TO  SPA-Z100-FILENAME(IDX)
                IF      SPA-CSV-CHK(IDX)   =   "T"
-                   MOVE    "/tmp/OUTPUT.csv"
-                                       TO  SPA-Z100-FILENAME(IDX)
+                   STRING  "/tmp/OUTPUT"      DELIMITED SIZE
+                           IDX                DELIMITED SIZE
+                           ".csv"             DELIMITED SIZE
+                                        INTO  SPA-Z100-FILENAME(IDX)
+                   END-STRING
                    MOVE    WIDGET-NORMAL
                                        TO  SPA-Z100-FILENAME-STATE(IDX)
                ELSE
-                   MOVE    SPACE       TO  SPA-Z100-FILENAME(IDX)
                    MOVE    WIDGET-INSENSITIVE
                                        TO  SPA-Z100-FILENAME-STATE(IDX)
                END-IF
