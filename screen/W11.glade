@@ -299,6 +299,12 @@
       <y>72</y>
       <width>995</width>
       <height>592</height>
+      <signal>
+	<name>switch_page</name>
+	<handler>switch_page</handler>
+	<data>Switch_Page</data>
+	<last_modification_time>Tue, 08 Aug 2006 05:44:38 GMT</last_modification_time>
+      </signal>
       <can_focus>True</can_focus>
       <show_tabs>True</show_tabs>
       <show_border>True</show_border>
@@ -426,7 +432,8 @@
 	  <signal>
 	    <name>switch_page</name>
 	    <handler>switch_page</handler>
-	    <last_modification_time>Fri, 08 Aug 2003 08:09:17 GMT</last_modification_time>
+	    <data>Switch_Page</data>
+	    <last_modification_time>Tue, 08 Aug 2006 05:44:38 GMT</last_modification_time>
 	  </signal>
 	  <show_tabs>True</show_tabs>
 	  <show_border>True</show_border>

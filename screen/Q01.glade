@@ -353,7 +353,7 @@
       <signal>
 	<name>switch_page</name>
 	<handler>switch_page</handler>
-	<data>SwitchPage</data>
+	<data>Switch_Page</data>
 	<last_modification_time>Wed, 11 Jun 2008 01:14:30 GMT</last_modification_time>
       </signal>
       <show_tabs>True</show_tabs>

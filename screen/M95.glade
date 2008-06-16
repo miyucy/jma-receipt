@@ -100,6 +100,7 @@
       <signal>
 	<name>switch_page</name>
 	<handler>switch_page</handler>
+	<data>Switch_Page</data>
 	<last_modification_time>Tue, 08 Aug 2006 05:44:38 GMT</last_modification_time>
       </signal>
       <show_tabs>True</show_tabs>
