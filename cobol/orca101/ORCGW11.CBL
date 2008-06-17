@@ -1332,11 +1332,14 @@
       *----(02.00.03)--ADD-END-----
       *
       *    タグ切替え
+           WHEN    "CLICKED"       ALSO    "B08"
            WHEN    "CLICKED"       ALSO    "N0101"
            WHEN    "CLICKED"       ALSO    "N0102"
-               PERFORM 460-TAGUCHG-SEC
+               IF      SPA-W01-KANRICD     =   "1031"
+                   PERFORM 460-TAGUCHG-SEC
+               END-IF
       *    帳票オフセット
-           WHEN    "CLICKED"       ALSO    "B08"
+           WHEN    "CLICKED"       ALSO    "B09"
                IF      SPA-W01-KANRICD     =   "1031"
                    PERFORM  4110-W111-SYORI-SEC
                END-IF
@@ -2084,6 +2087,8 @@
            END-IF
       *
            IF      WRK-MCP-WIDGET      =   "N0101"
+            OR   ( WRK-MCP-WIDGET      =   "B08"
+             AND   SPA-GMN-PAGENO      =   2 )
       *        外来画面へ
                MOVE    01                  TO  SPA-GMN-CUR
                MOVE    1                   TO  SPA-GMN-PAGENO
@@ -3317,18 +3322,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-STYUKYMD     TO  W11-STYUKYMD
            MOVE    SPA-GMN-EDYUKYMD     TO  W11-EDYUKYMD
       *
+           MOVE    WIDGET-NORMAL        TO  W11-B03-STATE
+                                            W11-B08-STATE
+                                            W11-B09-STATE
+                                            W11-B10-STATE
+      *
       *----(02.00.03)--ADD-START---
            EVALUATE    SPA-W01-KANRICD
            WHEN    "1030"
                MOVE    WIDGET-INSENSITIVE  TO  W11-YUKOKBN-STATE
                MOVE    WIDGET-INSENSITIVE  TO  W11-SELNUM-STATE
-               MOVE    WIDGET-INSENSITIVE  TO  W11-B03-STATE
-               MOVE    WIDGET-INSENSITIVE  TO  W11-B08-STATE
-               MOVE    WIDGET-INSENSITIVE  TO  W11-B10-STATE
-               IF     (SPA-W01-SELNUM      NOT =   ZERO )
-                   MOVE    WIDGET-NORMAL       TO  W11-B03-STATE
+               IF     (SPA-W01-SELNUM          =   ZERO )
+                   MOVE    WIDGET-INSENSITIVE
+                                               TO  W11-B03-STATE
                END-IF
            WHEN    "1031"
+               MOVE    "タブ切替"              TO  W11-B08-LABEL
+               MOVE    "オフセット"            TO  W11-B09-LABEL
+               MOVE    "印字テスト"            TO  W11-B10-LABEL
                EVALUATE    SPA-GMN-USERKBN
                WHEN    "*"
                    MOVE    WIDGET-INSENSITIVE  TO  W11-YUKOKBN-STATE
@@ -3337,10 +3348,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    OTHER
                    MOVE    WIDGET-NORMAL       TO  W11-YUKOKBN-STATE
                    MOVE    WIDGET-NORMAL       TO  W11-SELNUM-STATE
-                   MOVE    WIDGET-NORMAL       TO  W11-B03-STATE
                END-EVALUATE
-               MOVE    WIDGET-NORMAL      TO  W11-B08-STATE
-               MOVE    WIDGET-NORMAL      TO  W11-B10-STATE
            END-EVALUATE
       *----(02.00.03)--ADD-END-----
       *

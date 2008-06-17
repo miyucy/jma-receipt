@@ -95,6 +95,7 @@
       *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.02.02    NACL-Æ£¸¶    08/04/21  ¹­°èÏ¢¹ç¿ÇÎÅÊó½·ÀÁµá½ñ¶èÊ¬
       *                                     ¤ÎÄÉ²Ã
+      *  04.03.00    NACL-ÂÀÅÄ    08/06/17  ¥¿¥ÖÀÚÂØ¥Ü¥¿¥óÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2784,6 +2785,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
       *    ¥¿¥°
+               WHEN    "CLICKED"       ALSO    "B08"
                WHEN    "CLICKED"       ALSO    "N01"
                WHEN    "CLICKED"       ALSO    "N02"
                WHEN    "CLICKED"       ALSO    "N03"
@@ -4952,6 +4954,12 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        440-TAG-CHANGE-SEC            SECTION.
       *
            EVALUATE    MCP-WIDGET
+               WHEN    "B08"
+                   IF    ( W12-PAGENO  >=  6 )
+                       MOVE    0       TO  IDX
+                   ELSE
+                       COMPUTE IDX =   W12-PAGENO  +   1
+                   END-IF
                WHEN    "N01"
                    MOVE   0            TO  IDX
                WHEN    "N07"

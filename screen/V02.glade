@@ -157,13 +157,24 @@
 
     <widget>
       <class>GtkButton</class>
-      <name>button68</name>
+      <name>B08</name>
       <x>584</x>
       <y>720</y>
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <label></label>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F8</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 16 Jun 2008 06:40:34 GMT</last_modification_time>
+      </signal>
+      <label>•ø•÷¿⁄¬ÿ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 

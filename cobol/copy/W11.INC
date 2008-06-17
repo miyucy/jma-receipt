@@ -21,8 +21,13 @@
                 04  W11-B03-STATE              PIC S9(9)   BINARY.
               03  W11-B08.
                 04  W11-B08-STATE              PIC S9(9)   BINARY.
+                04  W11-B08-LABEL              PIC X(10).
+              03  W11-B09.
+                04  W11-B09-STATE              PIC S9(9)   BINARY.
+                04  W11-B09-LABEL              PIC X(10).
               03  W11-B10.
                 04  W11-B10-STATE              PIC S9(9)   BINARY.
+                04  W11-B10-LABEL              PIC X(10).
               03  W11-NOTE3.
                 04  W11-PAGENO                 PIC S9(9)   BINARY.
                 04  W11-FI23.

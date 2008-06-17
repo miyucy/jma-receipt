@@ -5,9 +5,15 @@ W11	{
 		};
 		B08	{
 			state	int;
+			label	varchar(10);
+		};
+		B09	{
+			state	int;
+			label	varchar(10);
 		};
 		B10	{
 			state	int;
+			label	varchar(10);
 		};
 		n3	{
 			pageno	int;

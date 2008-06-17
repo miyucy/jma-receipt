@@ -868,6 +868,7 @@
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
       *    ¥¿¥°
+               WHEN    "CLICKED"       ALSO    "B08"
                WHEN    "CLICKED"       ALSO    "N01"
                WHEN    "CLICKED"       ALSO    "N02"
                WHEN    "CLICKED"       ALSO    "N03"
@@ -1791,6 +1792,13 @@
        440-TAG-CHANGE-SEC            SECTION.
       *
            EVALUATE    MCP-WIDGET
+               WHEN    "B08"
+                   IF    ( SPA-GMN-PAGENO  >=   3 )
+                       MOVE    0       TO  WRK-PAGENO
+                   ELSE
+                       COMPUTE WRK-PAGENO
+                            =  SPA-GMN-PAGENO   +  1
+                   END-IF
                WHEN    "N01"
                    MOVE   0            TO  WRK-PAGENO
                WHEN    "N02"

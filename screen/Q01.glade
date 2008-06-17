@@ -178,7 +178,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 15 Apr 2002 00:42:11 GMT</last_modification_time>
       </signal>
-      <label>タグ切替</label>
+      <label>タブ切替</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 

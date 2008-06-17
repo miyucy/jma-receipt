@@ -34,6 +34,7 @@
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       * 
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.03.00    NACL-太田    08/06/17  タブ切替ボタン追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1280,6 +1281,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "CLICKED"       ALSO    "DEL_1"
                    PERFORM 490-KOH-DELETE-SEC
       *    タグ
+               WHEN    "CLICKED"       ALSO    "B08"
                WHEN    "CLICKED"       ALSO    "N01"
                WHEN    "CLICKED"       ALSO    "N02"
                    PERFORM 440-TAG-CHANGE-SEC
@@ -3506,6 +3508,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        440-TAG-CHANGE-SEC            SECTION.
       *
            EVALUATE    MCP-WIDGET
+               WHEN    "B08"
+                   IF    ( W121-PAGENO  =   0 )
+                       MOVE    1       TO  IDYY
+                   ELSE
+                       MOVE    0       TO  IDYY
+                   END-IF
                WHEN    "N01"
                    MOVE   0            TO  IDYY
                WHEN    "N02"
