@@ -49,48 +49,6 @@
       *    ²èÌÌ£Ó£Ð£ÁÎÎ°è
            COPY    "Y04SCR-SPA".
       *
-      *01  SPA-Y04.
-      *    03  SPA-Y04-AREA.
-      *        05  SPA-GMN-PAGE            PIC 9(02).
-      *        05  SPA-GMN-LINE            PIC 9(02).
-      *********05  SPA-GMN-MAX             PIC 9(02).
-      *        05  SPA-GMN-CUR             PIC 9(02).
-      *
-      *        05  SPA-GMN-AREA.
-      *            07  SPA-GMN-SINRYO.
-      *                09  SPA-GMN-SINRYOCD    PIC X(02).
-      *                09  SPA-GMN-SK1         PIC X(01).
-      *                09  SPA-GMN-SINRYOMEI   PIC X(10).
-      *            07  SPA-GMN-SINRYOLST       PIC X(14)   OCCURS  10.
-      *
-      *            07  SPA-GMN-DRNAME.
-      *                09  SPA-GMN-DRNCD       PIC X(04).
-      *                09  SPA-GMN-D1          PIC X(01).
-      *                09  SPA-GMN-DRNAMEMEI   PIC X(20).
-      *            07  SPA-GMN-DRNAMELST       PIC X(26)   OCCURS  10.
-      *
-      *            07  SPA-GMN-TBL.
-      *                09  SPA-GMN-TBLO    OCCURS  6.
-      *                    11  SPA-GMN-YYKYMD      PIC X(20).
-      *                    11  SPA-GMN-TBLO2   OCCURS  90.
-      *                        13  SPA-GMN-TSINRYO     PIC X(02).
-      *                        13  SPA-GMN-TYYKTIME    PIC X(05).
-      *                        13  SPA-GMN-TKNJNAME    PIC X(20).
-      *                    11  SPA-GMN-MAX         PIC 9(04).
-      *            07  SPA-GMN-SELBAN          PIC 9(04).
-      *
-      *        05  SPA-NAIB-AREA.
-      *            07  SPA-NAI-DRNCD           PIC X(05).
-      *            07  SPA-NAI-TBL.
-      *                09  SPA-NAI-TBLO    OCCURS  6.
-      *                    11  SPA-NAI-YYKYMD      PIC X(08).
-      *                    11  SPA-NAI-TBLO2   OCCURS  90.
-      *                        13  SPA-NAI-TBANGO      PIC 9(03).
-      *                        13  SPA-NAI-TYYKID      PIC 9(03).
-      *                        13  SPA-NAI-TKYYKTIME   PIC 9(04).
-      *                        13  SPA-NAI-TYYKTIME    PIC 9(04).
-      *                        13  SPA-NAI-TSINRYO     PIC X(10).
-      *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -430,9 +388,18 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           MOVE    SPA-Y01-SRYNAIYOG   TO  SPA-GMN-SINRYO
-           MOVE    SPA-Y01-DRNAME      TO  SPA-GMN-DRNAME
-           MOVE    SPA-Y01-DRCD        TO  SPA-NAI-DRNCD
+      *    ½é´üÉ½¼¨
+           IF      SPA-Y01-YYKINIT-FLG =   "1"
+      *        Á´ÂÎ
+               MOVE    SPA-GMN-SINRYOLST (1)   TO  SPA-GMN-SINRYO
+               MOVE    SPA-GMN-DRNAMELST (1)   TO  SPA-GMN-DRNAME
+               MOVE    "1"                     TO  SPA-NAI-DRNCD(1:1)
+               MOVE    SPA-GMN-DRNCD           TO  SPA-NAI-DRNCD(2:4)
+           ELSE
+               MOVE    SPA-Y01-SRYNAIYOG   TO  SPA-GMN-SINRYO
+               MOVE    SPA-Y01-DRNAME      TO  SPA-GMN-DRNAME
+               MOVE    SPA-Y01-DRCD        TO  SPA-NAI-DRNCD
+           END-IF
       *
            MOVE    SPA-Y01-YYKYMDS     TO  WRK-STR-YMD
            MOVE    1                   TO  SPA-GMN-PAGE
