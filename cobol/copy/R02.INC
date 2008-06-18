@@ -47,6 +47,8 @@
                 05  R02-TPRTFLG         PIC X(2).
               04  R02-FILEKBN.
                 05  R02-VALUE     PIC X(42).
+              04  R02-MSG-STYLE   PIC X(20).
+              04  R02-MSG         PIC X(42).
               04  R02-CREYMD.
                 05  R02-VALUE     PIC X(22).
               04  R02-KENSU.

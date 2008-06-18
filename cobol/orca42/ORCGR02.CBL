@@ -116,6 +116,7 @@
       *  04.02.02    NACL-藤原    08/03/25  平成２０年４月改正対応
       *  04.02.03    NACL-藤原    08/05/07  公費３種、４種の併用の
       *                                     レセプト種別の追加
+      *  04.02.04    NACL-藤原    08/06/18  メッセージの追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1319,6 +1320,23 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
            MOVE    "T"                 TO  SPA-GMN-SYOKBN
            MOVE    ZERO                TO  FLG-PRTNM-SET
            PERFORM 3101-HENSYU-SEC
+      *
+      *    不明分、主科未設定分ありのメッセージ
+           IF    ( SPA-R01-RECE07-SRYKA    =   "XX" )
+           OR    ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                           =   "XX" )
+           OR    ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                           =   "XX" )
+               MOVE    "主科未設定分があります"    TO  SPA-GMN-MSG
+           END-IF
+           IF      SPA-GMN-TPAGE (1 36)    >   ZERO
+               IF      SPA-GMN-MSG             =   SPACE
+                   MOVE    "種別不明分があります"      TO  SPA-GMN-MSG
+               ELSE
+                   MOVE    "種別不明分、主科未設定分があります"
+                                                       TO  SPA-GMN-MSG
+               END-IF
+           END-IF
            .
        310-SPASET-EXT.
            EXIT.
@@ -5444,6 +5462,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-EVALUATE      
       *
            MOVE    SPA-GMN-FILEKBN     TO  R02-FILEKBN
+      *
+           MOVE    SPA-GMN-MSG         TO  R02-MSG
+           MOVE    "red"               TO  R02-MSG-STYLE
       *
            MOVE    SPA-GMN-CREYMD      TO  R02-CREYMD  
       *

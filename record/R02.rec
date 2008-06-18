@@ -1530,6 +1530,10 @@ R02	{
 		FILEKBN	{
 			value	varchar(42);
 		};
+		MSG	{
+			style   varchar(20);
+			value	varchar(42);
+		};
 		CREYMD	{
 			value	varchar(22);
 		};

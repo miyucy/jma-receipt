@@ -32,6 +32,7 @@
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
       *  04.02.02    NACL-藤原    08/05/07  公費３種、４種の併用の
       *                                     レセプト種別の追加
+      *  04.02.03    NACL-藤原    08/06/18  メッセージの追加
       *****************************************************************
       *
        01  SPA-R02.
@@ -53,6 +54,7 @@
                05  SPA-GMN-AREA.
                    07  SPA-GMN-SYOKBN              PIC X(01).
                    07  SPA-GMN-FILEKBN             PIC X(42).
+                   07  SPA-GMN-MSG                 PIC X(42).
                    07  SPA-GMN-CREYMD              PIC X(22).
                    07  SPA-GMN-PAGEH               PIC 9(04).
                    07  SPA-GMN-KENSUH              PIC 9(04).

@@ -9664,6 +9664,22 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MSG</name>
+      <x>10</x>
+      <y>38</y>
+      <width>300</width>
+      <height>18</height>
+      <label>種別不明分・主科未設定分があります</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
   </widget>
 </widget>
 
