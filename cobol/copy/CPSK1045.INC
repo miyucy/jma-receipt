@@ -16,42 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         システム管理マスタ     (CPSK1012.INC)   *
-      *         （１０１２）                            *
-      *         診療内容情報                            *
+      *         システム管理マスタ     (CPSK1043.INC)   *
+      *         （１０４５）                            *
+      *         予約機能情報                            *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  SYS-1012-REC.
-           03  SYS-1012-KEY.
-               05  SYS-1012-HOSPNUM     PIC 9(2).
+       01  SYS-1045-REC.
+           03  SYS-1045-KEY.
+               05  SYS-1045-HOSPNUM     PIC 9(2).
       *管理コード
-               05  SYS-1012-KANRICD     PIC  X(04).
+               05  SYS-1045-KANRICD     PIC  X(04).
       *区分コード
-               05  SYS-1012-KBNCD       PIC  X(08).
+               05  SYS-1045-KBNCD       PIC  X(08).
       *有効開始年月日
-               05  SYS-1012-STYUKYMD    PIC  X(08).
+               05  SYS-1045-STYUKYMD    PIC  X(08).
       *有効終了年月日
-               05  SYS-1012-EDYUKYMD    PIC  X(08).
+               05  SYS-1045-EDYUKYMD    PIC  X(08).
       *管理テーブル
-           03  SYS-1012-TBL.
-      *診療内容
-               05  SYS-1012-SRYNAIYO    PIC  X(40).
-      *診療内容表示名
-               05  SYS-1012-SRYNAIYODSP PIC  X(24).
-      *診療内容初期表示区分
-               05  SYS-1012-SRYNAIYOHYOJI    PIC  X(01).
+           03  SYS-1045-TBL.
+      *初期ドクター表示
+               05  SYS-1045-INIT-DRCD   PIC  X(05).
+      *予約一覧の初期表示
+               05  SYS-1045-YYKINIT-FLG PIC  X(01).
+      *予約枠最大件数
+               05  SYS-1045-YYKMAXCNT   PIC  9(02).
+      *予約票発行区分
+               05  SYS-1045-YYKHYO-KBN  PIC  X(01).
       *予備
-           03                           PIC  X(435).
+               05                       PIC  X(491).
       *端末ＩＤ
-           03  SYS-1012-TERMID          PIC  X(16).
+           03  SYS-1045-TERMID          PIC  X(16).
       *オペーレータＩＤ
-           03  SYS-1012-OPID            PIC  X(16).
+           03  SYS-1045-OPID            PIC  X(16).
       *作成年月日
-           03  SYS-1012-CREYMD          PIC  X(08).
+           03  SYS-1045-CREYMD          PIC  X(08).
       *更新年月日
-           03  SYS-1012-UPYMD           PIC  X(08).
+           03  SYS-1045-UPYMD           PIC  X(08).
       *更新時間
-           03  SYS-1012-UPHMS           PIC  X(06).
+           03  SYS-1045-UPHMS           PIC  X(06).

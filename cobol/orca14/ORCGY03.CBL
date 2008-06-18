@@ -393,11 +393,19 @@
                MOVE    "（未院分）"    TO  SPA-GMN-MIDASI
            END-IF
       *
-           MOVE    SPA-Y01-SRYNAIYOG   TO  SPA-GMN-SINRYO
-           MOVE    SPA-Y01-DRNAME      TO  SPA-GMN-DRNAME
-           MOVE    SPA-Y01-DRCD        TO  SPA-NAI-DRNCD
-      *
            PERFORM 301-INIT-SPATBL-SEC
+      *
+           IF      SPA-Y01-YYKINIT-FLG =   "1"
+      *        全体
+               MOVE    SPA-GMN-SINRYOLST (1)   TO  SPA-GMN-SINRYO
+               MOVE    SPA-GMN-DRNAMELST (1)   TO  SPA-GMN-DRNAME
+               MOVE    "1"                     TO  SPA-NAI-DRNCD(1:1)
+               MOVE    SPA-GMN-DRCD            TO  SPA-NAI-DRNCD(2:4)
+           ELSE
+               MOVE    SPA-Y01-SRYNAIYOG   TO  SPA-GMN-SINRYO
+               MOVE    SPA-Y01-DRNAME      TO  SPA-GMN-DRNAME
+               MOVE    SPA-Y01-DRCD        TO  SPA-NAI-DRNCD
+           END-IF
       *
            MOVE    1               TO  SPA-GMN-PAGE
            PERFORM 310-SPASET-SEC
@@ -649,6 +657,7 @@
                    IF      IDX             =   1
       *                システム管理テーブル編集
                        PERFORM 3011-SYSKANRI-TBL-SEC
+                       MOVE    1               TO  IDX
                    END-IF
       *            テーブル編集
                    PERFORM 31011-YOYAKU-TBLHEN-SEC

@@ -676,7 +676,7 @@ Y01	{
 				value	varchar(29);
 			};
 			count	int;
-			item	varchar(29)[50];
+			item	varchar(29)[99];
 		};
 		SRYNAIYO_COMBO	{
 			SRYNAIYO	{

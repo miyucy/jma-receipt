@@ -280,6 +280,13 @@ W02	{
 				SRYNAIYODSP	{
 					value	varchar(12);
 				};
+				SRYNAIHYOJI_COMB	{
+					SRYNAIHYOJI	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
+				};
 			};
 	            N08	{
 	            	state	int;

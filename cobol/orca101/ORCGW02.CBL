@@ -408,10 +408,18 @@
                        09  SPA-GMN-ICON-FILENAME  PIC X(100).
                    07  SPA-GMN-1013-AREA.
                        09  SPA-GMN-JIHINAME       PIC X(20).
-      *
+      *診療内容情報
                    07  SPA-GMN-1012-AREA.
                        09  SPA-GMN-SRYNAIYO       PIC X(20).
                        09  SPA-GMN-SRYNAIYODSP    PIC X(12).
+                       09  SPA-GMN-SRYNAIHYOJI-G.
+                           11  SPA-GMN-SRYNAIHYOJI  PIC X(01).
+                           11  SPA-GMN-SRYNAIF1     PIC X(01).
+                           11  SPA-GMN-SRYNAIHYOJI-MEI  PIC X(18).
+                       09  SPA-GMN-SRYNAIHYOJI-LST-G.
+                           11  SPA-GMN-SRYNAIHYOJI-LST PIC X(20)
+                                                       OCCURS  5.
+                       09  SPA-SRYNAIHYOJI-MAX        PIC 9(02).
       *
                    07  SPA-GMN-1041-AREA.
                        09  SPA-GMN-NYKN-KBNCD     PIC X(02).
@@ -1066,6 +1074,10 @@
            MOVE    "0         "        TO  SPA-GMN-HYOJIKBN-LST (1)
            MOVE    "1 初期表示"        TO  SPA-GMN-HYOJIKBN-LST (2)
            MOVE    2                   TO  SPA-HYOJIKBN-MAX
+      *    診療内容初期表示区分
+           MOVE    "0         "        TO  SPA-GMN-SRYNAIHYOJI-LST (1)
+           MOVE    "1 初期表示"        TO  SPA-GMN-SRYNAIHYOJI-LST (2)
+           MOVE    2                   TO  SPA-SRYNAIHYOJI-MAX
       *
       *    割引率区分設定処理
            PERFORM 3101-DISCOUNT-KBN-SET-SEC
@@ -1190,6 +1202,16 @@
                        MOVE    SYS-1012-SRYNAIYO   TO  SPA-GMN-SRYNAIYO
                        MOVE    SYS-1012-SRYNAIYODSP
                                                TO  SPA-GMN-SRYNAIYODSP
+                       MOVE    SYS-1012-SRYNAIYOHYOJI
+                                               TO  SPA-GMN-SRYNAIHYOJI
+                       EVALUATE    SYS-1012-SRYNAIYOHYOJI
+                           WHEN    "1"
+                               MOVE    SPA-GMN-SRYNAIHYOJI-LST (2)
+                                               TO  SPA-GMN-SRYNAIHYOJI-G
+                           WHEN    OTHER
+                               MOVE    SPA-GMN-SRYNAIHYOJI-LST (1)
+                                               TO  SPA-GMN-SRYNAIHYOJI-G
+                       END-EVALUATE
       *    入金方法情報
                    WHEN    "1041"
                        MOVE    MCPDATA-REC     TO  SYS-1041-REC
@@ -1265,7 +1287,7 @@
                            MOVE    SPA-GMN-NYKN-JYOTAI-T-LST (03)
                                            TO  SPA-GMN-NYKN-JYOTAI-T-G
                        END-IF
-      *    診療内容名称情報
+      *    予約内容情報
                    WHEN    "1028"
                        MOVE    MCPDATA-REC         TO  SYS-1028-REC
                        MOVE    SYS-1028-YYKKBNNAME
@@ -1921,6 +1943,7 @@
       *    診療内容
            MOVE    W02-SRYNAIYO        TO  SPA-GMN-SRYNAIYO
            MOVE    W02-SRYNAIYODSP     TO  SPA-GMN-SRYNAIYODSP
+           MOVE    W02-SRYNAIHYOJI     TO  SPA-GMN-SRYNAIHYOJI-G
       *
       *    入金方法
            MOVE    W02-NYKN-KBNCD      TO  SPA-GMN-NYKN-KBNCD
@@ -2164,6 +2187,23 @@
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-SRYNAIYODSP
+      *    初期表示
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL      (IDX1    >   SPA-SRYNAIHYOJI-MAX )
+                           OR (FLG-OK  =   1     )
+               IF      SPA-GMN-SRYNAIHYOJI =   SPA-GMN-SRYNAIHYOJI-LST
+                                                        (IDX1)(1:1)
+                   MOVE    SPA-GMN-SRYNAIHYOJI-LST (IDX1)
+                                           TO  SPA-GMN-SRYNAIHYOJI-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *    一覧になければ表示なしとする
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-SRYNAIHYOJI-LST (1)
+                                           TO  SPA-GMN-SRYNAIHYOJI-G
+           END-IF
            .
        41021-KIHON-1012-EXT.
            EXIT.
@@ -3509,6 +3549,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-W01-EDYUKYMD    TO  SYS-1012-EDYUKYMD
                    MOVE    SPA-GMN-SRYNAIYO    TO  SYS-1012-SRYNAIYO
                    MOVE    SPA-GMN-SRYNAIYODSP TO  SYS-1012-SRYNAIYODSP
+                   MOVE    SPA-GMN-SRYNAIHYOJI TO
+                                               SYS-1012-SRYNAIYOHYOJI
                    MOVE    SYS-1012-REC        TO  SYSKANRI-REC
       * 
       *    医療機関情報ー状態情報
@@ -4071,6 +4113,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    診療内容名称情報
            MOVE    SPA-GMN-SRYNAIYO    TO  W02-SRYNAIYO
            MOVE    SPA-GMN-SRYNAIYODSP TO  W02-SRYNAIYODSP
+           MOVE    SPA-GMN-SRYNAIHYOJI-G   TO  W02-SRYNAIHYOJI
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-SRYNAIHYOJI-MAX )
+               MOVE    SPA-GMN-SRYNAIHYOJI-LST (IDX1)
+                                       TO  W02-SRYNAIHYOJI-ITEM(IDX1)
+           END-PERFORM
+           MOVE    SPA-SRYNAIHYOJI-MAX     TO  W02-SRYNAIHYOJI-COUNT
       *
       *    入金方法情報
            MOVE    SPA-GMN-NYKN-KBNCD      TO  W02-NYKN-KBNCD
@@ -4479,6 +4528,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "SRYNAIYO"       TO   MCP-WIDGET
                 WHEN    81
                     MOVE  "SRYNAIYODSP"    TO   MCP-WIDGET
+                WHEN    82
+                    MOVE  "SRYNAIHYOJI"    TO   MCP-WIDGET
       *
                 WHEN    90
                     MOVE  "NYKN_NAME"      TO   MCP-WIDGET
@@ -4643,6 +4694,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               WHEN    "SRYNAIYO"
                   MOVE    81               TO  SPA-GMN-CUR
               WHEN    "SRYNAIYODSP"
+                  MOVE    82               TO  SPA-GMN-CUR
+              WHEN    "SRYNAIHYOJI"
                   MOVE    80               TO  SPA-GMN-CUR
       *       入金方法情報
               WHEN    "NYKN_NAME"

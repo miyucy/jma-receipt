@@ -700,6 +700,35 @@ W07	{
 			TAGNAME6    {
 			  	state   int;
 			};
+			TAG7	{
+				YYKHYO_KBN_COMB	{
+					YYKHYO_KBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
+				};
+				YYKINIT_COMB	{
+					YYKINIT_FLG	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[5];
+				};
+				YYKMAXCNT	{
+					value	number(2);
+				};
+				INIT_DRCD_COMB	{
+					INIT_DRCD	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[99];
+				};
+			};
+			TAGNAME7    {
+			  	state   int;
+			};
 		};
 	};
 };

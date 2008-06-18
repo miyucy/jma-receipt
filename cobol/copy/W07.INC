@@ -461,3 +461,26 @@
                             PIC X(20)   OCCURS  5 TIMES.
                 04  W07-TAGNAME6.
                   05  W07-TAGNAME6-STATE   PIC S9(9)   BINARY.
+                04  W07-TAG7.
+                  05  W07-YYKHYO-KBN-COMB.
+                    06  W07-YYKHYO-KBN.
+                      07  W07-VALUE   PIC X(20).
+                    06  W07-YYKHYO-KBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-YYKHYO-KBN-ITEM
+                            PIC X(20)   OCCURS  5 TIMES.
+                  05  W07-YYKINIT-COMB.
+                    06  W07-YYKINIT-FLG.
+                      07  W07-VALUE   PIC X(20).
+                    06  W07-YYKINIT-FLG-COUNT   PIC S9(9)   BINARY.
+                    06  W07-YYKINIT-FLG-ITEM
+                            PIC X(20)   OCCURS  5 TIMES.
+                  05  W07-YYKMAXCNT.
+                    06  W07-VALUE   PIC S9(2).
+                  05  W07-INIT-DRCD-COMB.
+                    06  W07-INIT-DRCD.
+                      07  W07-VALUE   PIC X(30).
+                    06  W07-INIT-DRCD-COUNT   PIC S9(9)   BINARY.
+                    06  W07-INIT-DRCD-ITEM
+                            PIC X(30)   OCCURS  99 TIMES.
+                04  W07-TAGNAME7.
+                  05  W07-TAGNAME7-STATE   PIC S9(9)   BINARY.

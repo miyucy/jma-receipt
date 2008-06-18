@@ -207,6 +207,12 @@
                     06  W02-VALUE   PIC X(20).
                   05  W02-SRYNAIYODSP.
                     06  W02-VALUE   PIC X(12).
+                  05  W02-SRYNAIHYOJI-COMB.
+                    06  W02-SRYNAIHYOJI.
+                      07  W02-VALUE   PIC X(20).
+                    06  W02-SRYNAIHYOJI-COUNT   PIC S9(9)   BINARY.
+                    06  W02-SRYNAIHYOJI-ITEM
+                            PIC X(20)   OCCURS  5 TIMES.
                 04  W02-N08.
                   05  W02-N08-STATE   PIC S9(9)   BINARY.
                 04  W02-FIXED31.

@@ -86,6 +86,7 @@
       *  04.01.01    NACL-多々納  08/01/2X  プログラムオプション追加
       *  04.01.01    NACL-多々納  08/01/29  予約内容追加
       *  04.02.00    NACL-太田    08/03/06  病棟・病室入院基本料加算情報削除
+      *  04.03.00    NACL-多々納  08/06/18  予約機能情報追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -287,6 +288,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1043 会計照会機能情報".
            03  FILLER              PIC X(35)   VALUE
+               "1045 予約機能情報".
+           03  FILLER              PIC X(35)   VALUE
                "1100 データチェック機能情報".
            03  FILLER              PIC X(35)   VALUE
                "1101 データチェック機能情報２".
@@ -314,11 +317,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   40.
+           03  TBL-KANRICD-TBL         OCCURS   41.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   40.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   41.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -1824,6 +1827,7 @@
                WHEN    "1039"
                WHEN    "1042"
                WHEN    "1043"
+               WHEN    "1045"
                    MOVE    "W07"               TO  SPA-SAKIPG
       *---- (01.02.04) LINE ADD START --------------------------------
                WHEN    "3001"

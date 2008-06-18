@@ -469,7 +469,7 @@
                 04  Y01-DRNAME.
                   05  Y01-VALUE   PIC X(29).
                 04  Y01-DRNAME-COUNT   PIC S9(9)   BINARY.
-                04  Y01-DRNAME-LST     PIC X(29)   OCCURS  50 TIMES.
+                04  Y01-DRNAME-LST     PIC X(29)   OCCURS  99 TIMES.
               03  Y01-SRYNAIYO-COMBO.
                 04  Y01-SRYNAIYO.
                   05  Y01-VALUE   PIC X(21).

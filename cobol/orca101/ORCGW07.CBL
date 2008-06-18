@@ -94,6 +94,7 @@
       *                                     投薬診療種別自動変換
       *                                     初診料の警告対応
       *  04.03.00    NACL-多々納  08/06/XX  家族年齢、被保険者名区分追加
+      *  04.03.00    NACL-多々納  08/06/18  予約機能情報追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -771,6 +772,37 @@
                                                            OCCURS  5.
                        09  SPA-GMN-SRYKA-MAX              PIC 9(04).
       *
+      *            予約機能情報
+                   07  SPA-GMN-PAGE7-AREA.
+      *                初期表示ドクター
+                       09  SPA-GMN-INIT-DRCD-G.
+                           11  SPA-GMN-INIT-DRCD          PIC X(04).
+                           11  SPA-GMN-INIT-DRCD-F1       PIC X(01).
+                           11  SPA-GMN-INIT-DRCDMEI       PIC X(24).
+                       09  SPA-GMN-INIT-DRCD-COMB.
+                           11  SPA-GMN-INIT-DRCD-LIST     PIC X(29)
+                                                          OCCURS  99.
+                       09  SPA-INIT-DRCD-MAX          PIC 9(04).
+      *                予約一覧初期表示
+                       09  SPA-GMN-YYKINIT-FLG-G.
+                           11  SPA-GMN-YYKINIT-FLG         PIC X(01).
+                           11  SPA-GMN-YYKINIT-F1          PIC X(01).
+                           11  SPA-GMN-YYKINIT-MEI         PIC X(18).
+                       09  SPA-GMN-YYKINIT-COMB.
+                           11  SPA-GMN-YYKINIT-LIST        PIC X(20)
+                                                           OCCURS  5.
+                       09  SPA-GMN-YYKINIT-MAX             PIC 9(04).
+                       09  SPA-GMN-YYKMAXCNT               PIC 9(02).
+      *                予約票発行区分
+                       09  SPA-GMN-YYKHYO-KBN-G.
+                           11  SPA-GMN-YYKHYO-KBN          PIC X(01).
+                           11  SPA-GMN-YYKHYO-F1           PIC X(01).
+                           11  SPA-GMN-YYKHYO-MEI          PIC X(18).
+                       09  SPA-GMN-YYKHYO-COMB.
+                           11  SPA-GMN-YYKHYO-LIST         PIC X(20)
+                                                           OCCURS  5.
+                       09  SPA-GMN-YYKHYO-MAX              PIC 9(04).
+      *
                    07  SPA-GMN-DATALST        OCCURS  2.
                        09  SPA-GMN-DATAL      PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
@@ -886,6 +918,9 @@
       *    会計照会機能情報
            COPY  "CPSK1043.INC".
       *
+      *    予約機能情報
+           COPY  "CPSK1045.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -905,6 +940,8 @@
       *
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
+      *    ドクター編集変換サブ
+           COPY    "CPORCSDRSET.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -1111,6 +1148,12 @@
                    WHEN   "1012"
       *                会計照会情報の削除
                        PERFORM  4033-DEL-1043-SEC
+                   WHEN   "1013"
+      *                予約情報の更新
+                       PERFORM  493-KOUSHIN-1045-SEC
+                   WHEN   "1014"
+      *                予約情報の削除
+                       PERFORM  4033-DEL-1045-SEC
                END-EVALUATE
            ELSE
                EVALUATE    SPA-W01-KANRICD
@@ -1122,6 +1165,8 @@
                        MOVE    301          TO  SPA-GMN-CUR
                    WHEN    "1043"
                        MOVE    601          TO  SPA-GMN-CUR
+                   WHEN    "1045"
+                       MOVE    701          TO  SPA-GMN-CUR
                END-EVALUATE
            END-IF
       *
@@ -1476,6 +1521,16 @@
            MOVE    "2 全科"            TO  SPA-GMN-SRYKA-LIST(3)
            MOVE    3                   TO  SPA-GMN-SRYKA-MAX
       *
+      *予約情報
+      *    予約一覧初期
+           MOVE    "0 予約登録内容"    TO  SPA-GMN-YYKINIT-LIST(1)
+           MOVE    "1 全体"            TO  SPA-GMN-YYKINIT-LIST(2)
+           MOVE    2                   TO  SPA-GMN-YYKINIT-MAX
+      *    予約票発行
+           MOVE    "0 発行しない"      TO  SPA-GMN-YYKHYO-LIST(1)
+           MOVE    "1 発行する"        TO  SPA-GMN-YYKHYO-LIST(2)
+           MOVE    2                   TO  SPA-GMN-YYKHYO-MAX
+      *
            EVALUATE    SPA-W01-KANRICD
       *        診療行為情報
                WHEN    "1007"
@@ -1495,6 +1550,9 @@
       *        会計照会機能情報
                WHEN    "1043"
                    PERFORM 310-SPASET-1043-SEC
+      *        予約機能情報
+               WHEN    "1045"
+                   PERFORM 310-SPASET-1045-SEC
            END-EVALUATE
       *
            . 
@@ -3150,6 +3208,118 @@
        310-SPASET-1043-EXT.
            EXIT.
       *****************************************************************
+      *    予約機能スパ初期編集処理
+      *****************************************************************
+       310-SPASET-1045-SEC         SECTION.
+      *
+      *    ドクター編集
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-W01-EDYUKYMD    TO  ORCSDR-SYSYMD
+           MOVE    "1"                 TO  ORCSDR-KBN
+           MOVE    SPACE               TO  ORCSDR-SRYKA
+           MOVE    SPACE               TO  ORCSDR-IN-DRCD
+           CALL   "ORCSDRSET"          USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-INIT-DRCD-COMB
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-INIT-DRCD-MAX
+      *
+           MOVE    SPACE               TO  SYSKANRI-REC
+           INITIALIZE                      SYSKANRI-REC
+           MOVE    "1045"              TO  SYS-KANRICD
+           MOVE    "*"                 TO  SYS-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1045-REC
+           ELSE
+               INITIALIZE  SYS-1045-REC
+           END-IF
+      *
+      *    初期表示ドクター
+           MOVE    SYS-1045-INIT-DRCD(2:4)
+                                       TO  SPA-GMN-INIT-DRCD
+      *    予約一覧の初期表示
+           MOVE    SYS-1045-YYKINIT-FLG
+                                       TO  SPA-GMN-YYKINIT-FLG
+      *    予約枠最大件数
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYS-1045-YYKMAXCNT
+                                       TO  SPA-GMN-YYKMAXCNT
+           ELSE
+               MOVE    10              TO  SPA-GMN-YYKMAXCNT
+           END-IF
+      *    予約票発行区分
+           MOVE    SYS-1045-YYKHYO-KBN
+                                       TO  SPA-GMN-YYKHYO-KBN
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-YYKINIT-MAX
+               IF      SPA-GMN-YYKINIT-FLG
+                                       =   SPA-GMN-YYKINIT-LIST(IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-YYKINIT-LIST(IDY)
+                                           TO  SPA-GMN-YYKINIT-FLG-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-YYKINIT-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-YYKINIT-LIST (1)
+                                       TO  SPA-GMN-YYKINIT-FLG-G
+           END-IF
+      *    ドクター
+           IF      SPA-GMN-INIT-DRCD   =   SPACE
+               MOVE    SPA-GMN-INIT-DRCD-LIST (1)
+                                       TO  SPA-GMN-INIT-DRCD-G
+           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-INIT-DRCD-MAX
+               IF      SPA-GMN-INIT-DRCD
+                                       =   SPA-GMN-INIT-DRCD-LIST(IDY)
+                                                             (1:4)
+                   MOVE    SPA-GMN-INIT-DRCD-LIST(IDY)
+                                           TO  SPA-GMN-INIT-DRCD-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-INIT-DRCD-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               PERFORM 4511-INIT-DRCD-CHK-SEC
+               MOVE    SPACE           TO  SPA-ERRCD
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-YYKHYO-MAX
+               IF      SPA-GMN-YYKHYO-KBN
+                                       =   SPA-GMN-YYKHYO-LIST(IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-YYKHYO-LIST(IDY)
+                                           TO  SPA-GMN-YYKHYO-KBN-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-YYKHYO-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-YYKHYO-LIST (1)
+                                       TO  SPA-GMN-YYKHYO-KBN-G
+           END-IF
+      *
+           MOVE    700                 TO  SPA-GMN-CUR
+      *
+           . 
+       310-SPASET-1045-EXT.
+           EXIT.
+      *****************************************************************
       *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
@@ -3352,6 +3522,12 @@
       *    会計照会機能情報 
            MOVE    W07-SRYKBN-FLG      TO  SPA-GMN-SRYKBN-FLG-G
            MOVE    W07-SRYKA-FLG       TO  SPA-GMN-SRYKA-FLG-G
+      *
+      *    予約機能情報 
+           MOVE    W07-INIT-DRCD       TO  SPA-GMN-INIT-DRCD-G
+           MOVE    W07-YYKINIT-FLG     TO  SPA-GMN-YYKINIT-FLG-G
+           MOVE    W07-YYKMAXCNT       TO  SPA-GMN-YYKMAXCNT
+           MOVE    W07-YYKHYO-KBN      TO  SPA-GMN-YYKHYO-KBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -3644,6 +3820,23 @@
       *            診療科の初期表示
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4311-SRYKA-FLG-CHK-SEC
+                   END-IF
+               WHEN    "1045"
+      *            初期ドクター
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4511-INIT-DRCD-CHK-SEC
+                   END-IF
+      *            予約一覧の初期表示
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4511-YYKINIT-FLG-CHK-SEC
+                   END-IF
+      *            予約枠最大件数
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4511-YYKMAXCNT-CHK-SEC
+                   END-IF
+      *            予約票発行区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4511-YYKHYO-KBN-CHK-SEC
                    END-IF
            END-EVALUATE
       *
@@ -5674,6 +5867,97 @@
            EXIT.
       *
       *****************************************************************
+      *    初期表示ドクターチェック処理（予約機能情報）
+      *****************************************************************
+       4511-INIT-DRCD-CHK-SEC       SECTION.
+      *
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-W01-EDYUKYMD    TO  ORCSDR-SYSYMD
+           MOVE    "2"                 TO  ORCSDR-KBN
+           MOVE    SPACE               TO  ORCSDR-SRYKA
+           MOVE    SPA-GMN-INIT-DRCD-COMB
+                                       TO  ORCSDR-DRCD-TBL-G
+           MOVE    SPA-INIT-DRCD-MAX   TO  ORCSDR-DRCD-MAX
+           MOVE    SPA-GMN-INIT-DRCD-G TO  ORCSDR-IN-DRCD-G
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-INIT-DRCD-COMB
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-INIT-DRCD-MAX
+           MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-INIT-DRCD-G
+           IF     (ORCSDR-ERRCD    NOT =   ZERO )
+               OR (SPA-GMN-INIT-DRCD   =   SPACE )
+               MOVE    700             TO  SPA-GMN-CUR
+               MOVE    "6001"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4511-INIT-DRCD-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初期表示ドクターチェック処理（予約機能情報）
+      *****************************************************************
+       4511-YYKINIT-FLG-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-YYKINIT-MAX )
+                           OR (FLG-OK  =   1    )
+               IF      SPA-GMN-YYKINIT-FLG
+                                       =   SPA-GMN-YYKINIT-LIST(IDX)
+                                                             (1:1)
+                   MOVE    SPA-GMN-YYKINIT-LIST(IDX)
+                                           TO  SPA-GMN-YYKINIT-FLG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    701             TO  SPA-GMN-CUR
+               MOVE    "6002"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4511-YYKINIT-FLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    予約枠最大件数チェック処理（予約機能情報）
+      *****************************************************************
+       4511-YYKMAXCNT-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-YYKMAXCNT   =   ZERO
+               MOVE    702             TO  SPA-GMN-CUR
+               MOVE    "6003"          TO  SPA-ERRCD
+           END-IF
+           .
+       4511-YYKMAXCNT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    予約票発行区分チェック処理（予約機能情報）
+      *****************************************************************
+       4511-YYKHYO-KBN-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-YYKHYO-MAX )
+                          OR  (FLG-OK  =   1    )
+               IF      SPA-GMN-YYKHYO-KBN
+                                       =   SPA-GMN-YYKHYO-LIST(IDX)
+                                                             (1:1)
+                   MOVE    SPA-GMN-YYKHYO-LIST(IDX)
+                                           TO  SPA-GMN-YYKHYO-KBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    703             TO  SPA-GMN-CUR
+               MOVE    "6004"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4511-YYKHYO-KBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -5681,7 +5965,7 @@
            MOVE    "W01"           TO  SPA-SAKIPG
            MOVE    "W07"           TO  SPA-MOTOPG
       *
-           INITIALIZE                  SPA-W01KYOUTU
+      **** INITIALIZE                  SPA-W01KYOUTU
       *
       ***  MOVE   "CHANGE"         TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG      TO  MCP-WINDOW
@@ -5712,6 +5996,8 @@
                    MOVE    "1010"              TO  SPA-WIDCD
                WHEN    "1043"
                    MOVE    "1012"              TO  SPA-WIDCD
+               WHEN    "1045"
+                   MOVE    "1014"              TO  SPA-WIDCD
            END-EVALUATE
       *
            .    
@@ -5947,6 +6233,39 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    削除処理１０４５
+      *****************************************************************
+       4033-DEL-1045-SEC           SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1045-REC
+           INITIALIZE                      SYS-1045-REC
+           MOVE    "1045"              TO  SYS-1045-KANRICD
+           MOVE    "*"                 TO  SYS-1045-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1045-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD    TO  SYS-1045-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1045-HOSPNUM
+           MOVE    SYS-1045-REC        TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           IF      MCP-RC              NOT =   ZERO 
+               MOVE    "9001"              TO  SPA-ERRCD
+               DISPLAY "SYSKANRI-KEY =>" SYS-1045-KEY 
+                       ",MCP-RC:" MCP-RC 
+               GO  TO  4033-DEL-1045-EXT
+           END-IF
+      *
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
+           PERFORM 210-BACK
+           .
+       4033-DEL-1045-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC             SECTION.
@@ -5981,6 +6300,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1043"
                    IF      SPA-ERRCD        =   SPACE
                        MOVE    "1011"           TO  SPA-WIDCD
+                   END-IF
+               WHEN    "1045"
+                   IF      SPA-ERRCD        =   SPACE
+                       MOVE    "1013"           TO  SPA-WIDCD
                    END-IF
               END-EVALUATE
           END-IF
@@ -6448,6 +6771,49 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        493-KOUSHIN-1043-EXT.
            EXIT.
+      ******************************************************************
+      *       登録処理
+      *****************************************************************
+       493-KOUSHIN-1045-SEC        SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1045-REC
+           INITIALIZE                      SYS-1045-REC
+           MOVE    "1045"              TO  SYS-1045-KANRICD
+           MOVE    "*"                 TO  SYS-1045-KBNCD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1045-STYUKYMD
+           MOVE    SPA-W01-STYUKYMD    TO  SYS-1045-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1045-HOSPNUM
+           MOVE    SYS-1045-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI            =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1045-REC
+           ELSE
+               MOVE    SPACE               TO  SYS-1045-REC
+               INITIALIZE                      SYS-1045-REC
+               MOVE    "1045"              TO  SYS-1045-KANRICD
+               MOVE    "*"                 TO  SYS-1045-KBNCD
+           END-IF
+      *
+           MOVE    SPA-W01-STYUKYMD        TO  SYS-1045-STYUKYMD
+           MOVE    SPA-W01-EDYUKYMD        TO  SYS-1045-EDYUKYMD
+           MOVE    "1"                     TO  SYS-1045-INIT-DRCD(1:1)
+           MOVE    SPA-GMN-INIT-DRCD       TO  SYS-1045-INIT-DRCD(2:4)
+           MOVE    SPA-GMN-YYKINIT-FLG     TO  SYS-1045-YYKINIT-FLG
+           MOVE    SPA-GMN-YYKHYO-KBN      TO  SYS-1045-YYKHYO-KBN
+           MOVE    SPA-GMN-YYKMAXCNT       TO  SYS-1045-YYKMAXCNT
+      *
+           MOVE    SYS-1045-REC            TO  SYSKANRI-REC
+      *
+      *    ＤＢ更新処理
+           PERFORM 4910-DBKOUSIN-SEC
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE   "JOIN"               TO  MCP-PUTTYPE
+               PERFORM 210-BACK
+           END-IF
+           .
+       493-KOUSHIN-1045-EXT.
+           EXIT.
       *****************************************************************
       *       入力項目の関連チェック処理
       *****************************************************************
@@ -6574,6 +6940,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        500-GMNHEN-SEC              SECTION.
       *
            MOVE    SPACE           TO  W07
+           INITIALIZE                  W07
       *
            MOVE    SPA-GMN-STYUKYMD    TO  W07-YUKOSTYMD
            MOVE    SPA-GMN-EDYUKYMD    TO  W07-YUKOEDYMD
@@ -7274,6 +7641,34 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-SRYKA-MAX   TO  W07-SRYKA-FLG-COUNT
       *
+      *予約情報
+      *    初期表示ドクター
+           MOVE    SPA-GMN-INIT-DRCD-G TO  W07-INIT-DRCD
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-INIT-DRCD-MAX
+               MOVE    SPA-GMN-INIT-DRCD-LIST (IDX)
+                                       TO  W07-INIT-DRCD-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-INIT-DRCD-MAX   TO  W07-INIT-DRCD-COUNT
+      *    予約一覧初期表示
+           MOVE    SPA-GMN-YYKINIT-FLG-G   TO  W07-YYKINIT-FLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-YYKINIT-MAX
+               MOVE    SPA-GMN-YYKINIT-LIST (IDX)
+                                       TO  W07-YYKINIT-FLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-YYKINIT-MAX TO  W07-YYKINIT-FLG-COUNT
+      *    予約枠最大件数
+           MOVE    SPA-GMN-YYKMAXCNT   TO  W07-YYKMAXCNT
+      *    予約票発行区分
+           MOVE    SPA-GMN-YYKHYO-KBN-G   TO  W07-YYKHYO-KBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-YYKHYO-MAX
+               MOVE    SPA-GMN-YYKHYO-LIST (IDX)
+                                       TO  W07-YYKHYO-KBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-YYKHYO-MAX  TO  W07-YYKHYO-KBN-COUNT
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -7292,6 +7687,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                            W07-TAGNAME4-STATE
                                            W07-TAGNAME5-STATE
                                            W07-TAGNAME6-STATE
+                                           W07-TAGNAME7-STATE
                                            W07-SRYKACD-STATE
       *
            IF      SPA-W01-SELNUM          >   ZERO
@@ -7311,6 +7707,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    WIDGET-NORMAL   TO  W07-TAGNAME5-STATE
                WHEN    "1043" 
                    MOVE    WIDGET-NORMAL   TO  W07-TAGNAME6-STATE
+               WHEN    "1045" 
+                   MOVE    WIDGET-NORMAL   TO  W07-TAGNAME7-STATE
            END-EVALUATE
       *
            IF      SPA-GMN-DATA(7)         =   "1"
@@ -7605,6 +8003,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "5002"
                    MOVE    "診療科の初期表示区分がありません。"
                                                        TO  SPA-ERRMSG
+      *        予約機能情報
+               WHEN    "6001"
+                   MOVE    "初期表示ドクターがありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "6002"
+                   MOVE    "予約一覧初期表示区分がありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "6003"
+                   MOVE    "予約枠最大件数はゼロは入力できません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "6004"
+                   MOVE    "予約票発行区分がありません。"
+                                                       TO  SPA-ERRMSG
       *
                WHEN    "0099"
                    MOVE    "未入力の項目があります"    TO  SPA-ERRMSG
@@ -7678,6 +8089,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    TO  WRK-WIDMSG
                WHEN    "1012"
                    MOVE    "会計照会機能情報を削除します"
+                                                   TO  WRK-WIDMSG
+      *
+               WHEN    "1013"
+                   MOVE    "予約機能情報を登録します"
+                                                   TO  WRK-WIDMSG
+               WHEN    "1014"
+                   MOVE    "予約機能情報を削除します"
                                                    TO  WRK-WIDMSG
            END-EVALUATE
       *
@@ -7932,6 +8350,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "SRYKBN_FLG"      TO   MCP-WIDGET
                WHEN    601
                    MOVE  "SRYKA_FLG"       TO   MCP-WIDGET
+      *予約情報
+               WHEN    700
+                   MOVE  "INIT_DRCD"       TO   MCP-WIDGET
+               WHEN    701
+                   MOVE  "YYKINIT_FLG"     TO   MCP-WIDGET
+               WHEN    702
+                   MOVE  "YYKMAXCNT"       TO   MCP-WIDGET
+               WHEN    703
+                   MOVE  "YYKHYO_KBN"      TO   MCP-WIDGET
       *
                WHEN    999
                    MOVE  "B12"             TO   MCP-WIDGET
@@ -7958,6 +8385,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    600 THRU    699
                    MOVE    5               TO  W07-PAGENO
                    MOVE    5               TO  SPA-GMN-PAGENO
+               WHEN    700 THRU    799
+                   MOVE    6               TO  W07-PAGENO
+                   MOVE    6               TO  SPA-GMN-PAGENO
                WHEN    OTHER
                    MOVE    SPA-GMN-PAGENO  TO  W07-PAGENO
            END-EVALUATE
@@ -8212,6 +8642,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "SRYKBN_FLG"
                    MOVE    601             TO  SPA-GMN-CUR
                WHEN    "SRYKA_FLG"
+                   MOVE    999             TO  SPA-GMN-CUR
+      *予約情報
+               WHEN    "INIT_DRCD"
+                   MOVE    701             TO  SPA-GMN-CUR
+               WHEN    "YYKINIT_FLG"
+                   MOVE    702             TO  SPA-GMN-CUR
+               WHEN    "YYKMAXCNT"
+                   MOVE    703             TO  SPA-GMN-CUR
+               WHEN    "YYKHYO_KBN"
                    MOVE    999             TO  SPA-GMN-CUR
            END-EVALUATE
       *
