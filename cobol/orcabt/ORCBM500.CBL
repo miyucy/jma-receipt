@@ -61,6 +61,8 @@
       *
       *
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *  04.03.02    NACL-藤原    08/06/18  医療機関編集情報からの医療機
+      *                                     関名称、電話番号の編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -177,7 +179,13 @@ grpsys COPY    "COMMON-SPA".
       *    データ長
            03  WRK-DATA-LENGTH         PIC 9(07).        
            03  WRK-PTNUM-LENGTH        PIC 9(07).   
-           03  WRK-LEN                 PIC 9(07).     
+           03  WRK-LEN                 PIC 9(07). 
+      *
+      *    医療機関情報ワーク
+           COPY    "CPSK1001.INC"      REPLACING  //SYS-1001//
+                                       BY         //WRK-SYS-1001//.
+           COPY    "CPSK1002.INC"      REPLACING  //SYS-1002//
+                                       BY         //WRK-SYS-1002//.
       *       
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -239,10 +247,15 @@ grpsys COPY    "COMMON-SPA".
            COPY    "CPSK2005.INC".
       *
       *    医療機関情報（基本）
-           COPY   "CPSK1001.INC".
+           COPY    "CPSK1001.INC".
       *
       *    医療機関情報（住所）
-           COPY   "CPSK1002.INC".
+           COPY    "CPSK1002.INC".
+      *
+      *    医療機関編集情報
+           COPY    "CPSK1900.INC".
+           COPY    "CPSK1901.INC".
+           COPY    "CPSK1902.INC".
       *
            COPY    "CPRCF010.INC".
       *
@@ -460,6 +473,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
+      *
+           IF      FLG-END             =   ZERO
+               MOVE    SYS-1001-HOSPNAME   TO  WRK-SYS-1001-HOSPNAME
+               MOVE    SYS-1002-TEL        TO  WRK-SYS-1002-TEL
+      *        医療機関編集情報
+               PERFORM 900-1900-READ-SEC
+           END-IF    
       *    
            .
        110-SYSKANRI-HENSYU-EXT.
@@ -601,7 +621,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *            
-           MOVE    SYS-1001-HOSPNAME   TO  WRK-DATA
+           MOVE    WRK-SYS-1001-HOSPNAME
+                                       TO  WRK-DATA
            MOVE    40                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *            
@@ -613,7 +634,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *            
-           MOVE    SYS-1002-TEL        TO  WRK-DATA
+           MOVE    WRK-SYS-1002-TEL    TO  WRK-DATA
            MOVE    15                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
@@ -1423,6 +1444,100 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-BTPARA-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関編集情報読み込み
+      *****************************************************************
+       900-1900-READ-SEC           SECTION.
+      *
+      *    医療機関編集情報読み込み
+           MOVE    SPACE           TO  SYS-1900-REC
+           INITIALIZE                  SYS-1900-REC
+           MOVE    "1900"          TO  SYS-1900-KANRICD
+           MOVE    "*"             TO  SYS-1900-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1900-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-1900-STYUKYMD (7:2)
+           MOVE    SYS-1900-STYUKYMD
+                                   TO  SYS-1900-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1900-HOSPNUM
+           MOVE    SYS-1900-REC    TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1900-REC
+               IF      SYS-1900-PRTKBN(19)  NOT =   SPACE
+      *            医療機関名称編集情報
+                   PERFORM 900-1901-READ-SEC
+      *            医療機関住所編集情報
+                   PERFORM 900-1902-READ-SEC
+                END-IF
+           ELSE
+               INITIALIZE                  SYS-1900-REC
+           END-IF
+           .
+      *
+       900-1900-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関名称編集情報読み込み
+      *****************************************************************
+       900-1901-READ-SEC           SECTION.
+      *
+           MOVE    SPACE           TO  SYS-1901-REC
+           INITIALIZE                  SYS-1901-REC
+           MOVE    "1901"          TO  SYS-1901-KANRICD
+           MOVE    SYS-1900-PRTKBN(19)
+                                   TO  SYS-1901-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1901-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-1901-STYUKYMD (7:2)
+           MOVE    SYS-1901-STYUKYMD
+                                   TO  SYS-1901-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1901-HOSPNUM
+           MOVE    SYS-1901-REC    TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1901-REC
+               MOVE    SYS-1901-HOSPNAME1  TO  WRK-SYS-1001-HOSPNAME
+           ELSE
+               INITIALIZE                      SYS-1901-REC
+           END-IF
+           .
+      *
+       900-1901-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関住所編集情報読み込み
+      *****************************************************************
+       900-1902-READ-SEC           SECTION.
+      *
+           MOVE    SPACE           TO  SYS-1902-REC
+           INITIALIZE                  SYS-1902-REC
+           MOVE    "1902"          TO  SYS-1902-KANRICD
+           MOVE    SYS-1900-PRTKBN(19)
+                                   TO  SYS-1902-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM
+                                   TO  SYS-1902-STYUKYMD (1:6)
+           MOVE    "01"            TO  SYS-1902-STYUKYMD (7:2)
+           MOVE    SYS-1902-STYUKYMD
+                                   TO  SYS-1902-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-1902-HOSPNUM
+           MOVE    SYS-1902-REC    TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1902-REC
+               IF      SYS-1902-TEL    NOT =   SPACE
+                   MOVE    SYS-1902-TEL        TO  WRK-SYS-1002-TEL
+               END-IF
+           ELSE
+               INITIALIZE                      SYS-1902-REC
+           END-IF
+           .
+      *
+       900-1902-READ-EXT.
            EXIT.
       *
       *****************************************************************
