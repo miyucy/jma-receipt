@@ -95,6 +95,7 @@
       *                                     初診料の警告対応
       *  04.03.00    NACL-多々納  08/06/XX  家族年齢、被保険者名区分追加
       *  04.03.00    NACL-多々納  08/06/18  予約機能情報追加
+      *  04.03.00    NACL-太田    08/06/19  支払証明書印刷初期設定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -545,6 +546,36 @@
                            11  SPA-GMN-SYUSRYPRTN          PIC X(01).
                            11  SPA-GMN-SYUSRYPRTN-F1       PIC X(01).
                            11  SPA-GMN-SYUSRYPRTNMEI       PIC X(22).
+      *                支払証明書
+                       09  SPA-GMN-S04SHIHARAIKBN-G.
+                           11  SPA-GMN-S04SHIHARAIKBN      PIC X(01).
+                           11  SPA-GMN-S04SHIHARAIKBN-F1   PIC X(01).
+                           11  SPA-GMN-S04SHIHARAIKBNMEI   PIC X(10).
+      *                入外区分
+                       09  SPA-GMN-S04NYUGAIKBN-G.
+                           11  SPA-GMN-S04NYUGAIKBN        PIC X(01).
+                           11  SPA-GMN-S04NYUGAIKBN-F1     PIC X(01).
+                           11  SPA-GMN-S04NYUGAIKBNMEI     PIC X(04).
+      *                期間指定
+                       09  SPA-GMN-S04SRYKBN-G.
+                           11  SPA-GMN-S04SRYKBN           PIC X(01).
+                           11  SPA-GMN-S04SRYKBN-F1        PIC X(01).
+                           11  SPA-GMN-S04SRYKBNMEI        PIC X(06).
+      *                期間区分
+                       09  SPA-GMN-S04KIKANKBN-G.
+                           11  SPA-GMN-S04KIKANKBN         PIC X(01).
+                           11  SPA-GMN-S04KIKANKBN-F1      PIC X(01).
+                           11  SPA-GMN-S04KIKANKBNMEI      PIC X(08).
+      *                請求内容の印字
+                       09  SPA-GMN-S04DSPKBN-G.
+                           11  SPA-GMN-S04DSPKBN           PIC X(01).
+                           11  SPA-GMN-S04DSPKBN-F1        PIC X(01).
+                           11  SPA-GMN-S04DSPKBNMEI        PIC X(18).
+      *                期間終了日後の支払い
+                       09  SPA-GMN-S04SYORIKBN-G.
+                           11  SPA-GMN-S04SYORIKBN        PIC X(01).
+                           11  SPA-GMN-S04SYORIKBN-F1     PIC X(01).
+                           11  SPA-GMN-S04SYORIKBNMEI     PIC X(16).
       *                一括入金画面請求書兼領収書発行
                        09  SPA-GMN-S06SKYPRT-G.
                            11  SPA-GMN-S06SKYPRT           PIC X(01).
@@ -593,79 +624,114 @@
                            11  SPA-GMN-SYUNYKNKNRKBN-MAX   PIC 9(03).
                            11  SPA-GMN-SYUNYKNKNRKBNLST    OCCURS  5.
                                13  SPA-GMN-SYUNYKNKNRKBNL  PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-SYUNYKNKNRKBN-F1L PIC X(01).
                                13  SPA-GMN-SYUNYKNKNRKBNMEIL
                                                            PIC X(38).
                        09  SPA-GMN-SYUSKYPRTGLST-G.
                            11  SPA-GMN-SYUSKYPRTG-MAX      PIC 9(03).
                            11  SPA-GMN-SYUSKYPRTGLST       OCCURS  2.
                                13  SPA-GMN-SYUSKYPRTGL     PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-SYUSKYPRTG-F1L  PIC X(01).
                                13  SPA-GMN-SYUSKYPRTGMEIL
                                                            PIC X(22).
                        09  SPA-GMN-S03SKYMISYUPRTLST-G.
                            11  SPA-GMN-S03SKYMISYUPRT-MAX  PIC 9(03).
                            11  SPA-GMN-S03SKYMISYUPRTLST   OCCURS  2.
                                13  SPA-GMN-S03SKYMISYUPRTL PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-S03SKYMISYUPRT-F1L PIC X(01).
                                13  SPA-GMN-S03SKYMISYUPRTMEIL
                                                            PIC X(30).
                        09  SPA-GMN-SYUSRYPRTGLST-G.
                            11  SPA-GMN-SYUSRYPRTG-MAX      PIC 9(03).
                            11  SPA-GMN-SYUSRYPRTGLST       OCCURS  2.
                                13  SPA-GMN-SYUSRYPRTGL     PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-SYUSRYPRTG-F1L  PIC X(01).
                                13  SPA-GMN-SYUSRYPRTGMEIL
                                                            PIC X(22).
                        09  SPA-GMN-SYUSKYPRTNLST-G.
                            11  SPA-GMN-SYUSKYPRTN-MAX      PIC 9(03).
                            11  SPA-GMN-SYUSKYPRTNLST       OCCURS  2.
                                13  SPA-GMN-SYUSKYPRTNL     PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-SYUSKYPRTN-F1L  PIC X(01).
                                13  SPA-GMN-SYUSKYPRTNMEIL
                                                            PIC X(22).
                        09  SPA-GMN-SYUSRYPRTNLST-G.
                            11  SPA-GMN-SYUSRYPRTN-MAX      PIC 9(03).
                            11  SPA-GMN-SYUSRYPRTNLST       OCCURS  2.
                                13  SPA-GMN-SYUSRYPRTNL     PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-SYUSRYPRTN-F1L  PIC X(01).
                                13  SPA-GMN-SYUSRYPRTNMEIL
                                                            PIC X(22).
                        09  SPA-GMN-S06SKYPRTLST-G.
                            11  SPA-GMN-S06SKYPRT-MAX       PIC 9(03).
                            11  SPA-GMN-S06SKYPRTLST        OCCURS  2.
                                13  SPA-GMN-S06SKYPRTL      PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-S06SKYPRT-F1L   PIC X(01).
                                13  SPA-GMN-S06SKYPRTMEIL
                                                            PIC X(22).
                        09  SPA-GMN-S06SKYSUMLST-G.
                            11  SPA-GMN-S06SKYSUM-MAX       PIC 9(03).
                            11  SPA-GMN-S06SKYSUMLST        OCCURS  5.
                                13  SPA-GMN-S06SKYSUML      PIC X(01).
-                               13                          PIC X(01).
-                               13  SPA-GMN-S06SKYSUMMEIL
-                                                           PIC X(40).
+                               13  SPA-GMN-S06SKYSUM-F1L   PIC X(01).
+                               13  SPA-GMN-S06SKYSUMMEIL   PIC X(40).
                        09  SPA-GMN-S02SKYSAILST-G.
                            11  SPA-GMN-S02SKYSAI-MAX       PIC 9(03).
                            11  SPA-GMN-S02SKYSAILST        OCCURS  5.
                                13  SPA-GMN-S02SKYSAIL      PIC X(01).
-                               13                          PIC X(01).
-                               13  SPA-GMN-S02SKYSAIMEIL
-                                                           PIC X(30).
+                               13  SPA-GMN-S02SKYSAI-F1L   PIC X(01).
+                               13  SPA-GMN-S02SKYSAIMEIL   PIC X(30).
                        09  SPA-GMN-S02SKYMISYUPRTLST-G.
                            11  SPA-GMN-S02SKYMISYUPRT-MAX  PIC 9(03).
                            11  SPA-GMN-S02SKYMISYUPRTLST   OCCURS  5.
                                13  SPA-GMN-S02SKYMISYUPRTL PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-S02SKYMISYUPRT-F1L PIC X(01).
                                13  SPA-GMN-S02SKYMISYUPRTMEIL
                                                            PIC X(30).
                        09  SPA-GMN-TUKISKYMISYUPRTLST-G.
                            11  SPA-GMN-TUKISKYMISYUPRT-MAX  PIC 9(03).
                            11  SPA-GMN-TUKISKYMISYUPRTLST   OCCURS  5.
                                13  SPA-GMN-TUKISKYMISYUPRTL PIC X(01).
-                               13                          PIC X(01).
+                               13  SPA-GMN-TUKISKYMISYUPRT-F1L
+                                                           PIC X(01).
                                13  SPA-GMN-TUKISKYMISYUPRTMEIL
                                                            PIC X(30).
+                       09  SPA-GMN-S04SHIHARAILST-G.
+                           11  SPA-GMN-S04SHIHARAI-MAX     PIC 9(03).
+                           11  SPA-GMN-S04SHIHARAILST      OCCURS  3.
+                               13  SPA-GMN-S04SHIHARAIL    PIC X(01).
+                               13  SPA-GMN-S04SHIHARAI-F1L PIC X(01).
+                               13  SPA-GMN-S04SHIHARAIMEIL PIC X(10).
+                       09  SPA-GMN-S04NYUGAILST-G.
+                           11  SPA-GMN-S04NYUGAI-MAX       PIC 9(03).
+                           11  SPA-GMN-S04NYUGAILST        OCCURS  3.
+                               13  SPA-GMN-S04NYUGAIL      PIC X(01).
+                               13  SPA-GMN-S04NYUGAI-F1L   PIC X(01).
+                               13  SPA-GMN-S04NYUGAIMEIL   PIC X(04).
+                       09  SPA-GMN-S04SRYLST-G.
+                           11  SPA-GMN-S04SRY-MAX          PIC 9(03).
+                           11  SPA-GMN-S04SRYLST           OCCURS  3.
+                               13  SPA-GMN-S04SRYL         PIC X(01).
+                               13  SPA-GMN-S04SRY-F1L      PIC X(01).
+                               13  SPA-GMN-S04SRYMEIL      PIC X(06).
+                       09  SPA-GMN-S04KIKANLST-G.
+                           11  SPA-GMN-S04KIKAN-MAX        PIC 9(03).
+                           11  SPA-GMN-S04KIKANLST         OCCURS  3.
+                               13  SPA-GMN-S04KIKANL       PIC X(01).
+                               13  SPA-GMN-S04KIKAN-F1L    PIC X(01).
+                               13  SPA-GMN-S04KIKANMEIL    PIC X(08).
+                       09  SPA-GMN-S04DSPLST-G.
+                           11  SPA-GMN-S04DSP-MAX          PIC 9(03).
+                           11  SPA-GMN-S04DSPLST           OCCURS  3.
+                               13  SPA-GMN-S04DSPL         PIC X(01).
+                               13  SPA-GMN-S04DSP-F1L      PIC X(01).
+                               13  SPA-GMN-S04DSPMEIL      PIC X(18).
+                       09  SPA-GMN-S04SYORILST-G.
+                           11  SPA-GMN-S04SYORI-MAX        PIC 9(03).
+                           11  SPA-GMN-S04SYORILST         OCCURS  2.
+                               13  SPA-GMN-S04SYORIL       PIC X(01).
+                               13  SPA-GMN-S04SYORI-F1L    PIC X(01).
+                               13  SPA-GMN-S04SYORIMEIL    PIC X(16).
                    07  SPA-GMN-PAGE5-AREA.
       *                病名機能情報
                        09  SPA-GMN-MSG1-DSPKBN-G.
@@ -1220,6 +1286,34 @@
                                        TO  SPA-GMN-HOUKATU-LIST(2)
       *
       *
+           MOVE    "0 発行しない"      TO  SPA-GMN-S04SHIHARAILST(1)
+           MOVE    "1 日別証明書"      TO  SPA-GMN-S04SHIHARAILST(2)
+           MOVE    "2 月別証明書"      TO  SPA-GMN-S04SHIHARAILST(3)
+           MOVE    3                   TO  SPA-GMN-S04SHIHARAI-MAX
+      *
+           MOVE    "0 全て"            TO  SPA-GMN-S04NYUGAILST(1)
+           MOVE    "1 入院"            TO  SPA-GMN-S04NYUGAILST(2)
+           MOVE    "2 外来"            TO  SPA-GMN-S04NYUGAILST(3)
+           MOVE    3                   TO  SPA-GMN-S04NYUGAI-MAX
+      *
+           MOVE    "1 年月日"          TO  SPA-GMN-S04SRYLST(1)
+           MOVE    "2 年"              TO  SPA-GMN-S04SRYLST(2)
+           MOVE    "3 年度"            TO  SPA-GMN-S04SRYLST(3)
+           MOVE    3                   TO  SPA-GMN-S04SRY-MAX
+      *
+           MOVE    "1 診療期間"        TO  SPA-GMN-S04KIKANLST(1)
+           MOVE    "2 支払期間"        TO  SPA-GMN-S04KIKANLST(2)
+           MOVE    2                   TO  SPA-GMN-S04KIKAN-MAX
+      *
+           MOVE    "1 印字する"            TO  SPA-GMN-S04DSPLST(1)
+           MOVE    "2 印字しない"          TO  SPA-GMN-S04DSPLST(2)
+           MOVE    "3 医保分のみ印字する"  TO  SPA-GMN-S04DSPLST(3)
+           MOVE    3                       TO  SPA-GMN-S04DSP-MAX
+      *
+           MOVE    "1 支払額に含める"      TO  SPA-GMN-S04SYORILST(1)
+           MOVE    "2 支払額に含めない"    TO  SPA-GMN-S04SYORILST(2)
+           MOVE    2                       TO  SPA-GMN-S04SYORI-MAX
+      *
            MOVE    "0 標準（行削除する）"
                                        TO  SPA-GMN-SURYOZERO-LIST(1)
            MOVE    "1 入力エラーとする"
@@ -1452,6 +1546,8 @@
            MOVE    "1 前回請求額を印字する"
                                        TO  SPA-GMN-TUKISKYMISYUPRTLST(2)
            MOVE    2                   TO  SPA-GMN-TUKISKYMISYUPRT-MAX
+      *
+           
       *
            MOVE    "0 表示する"        TO  SPA-GMN-MSG1-DSPKBNLST(1)
            MOVE    "1 表示しない"      TO  SPA-GMN-MSG1-DSPKBNLST(2)
@@ -2672,6 +2768,27 @@
                END-PERFORM
            END-PERFORM
       *
+      *    支払証明書印刷画面支払証明書発行区分
+           MOVE    SYS-1039-S04SHIHARAIKBN
+                                       TO  SPA-GMN-S04SHIHARAIKBN
+           PERFORM 4109-S04SHIHARAIKBN-CHK-SEC
+      *    支払証明書印刷画面入外区分
+           MOVE    SYS-1039-S04NYUGAIKBN
+                                       TO  SPA-GMN-S04NYUGAIKBN
+           PERFORM 4109-S04NYUGAIKBN-CHK-SEC
+      *    支払証明書印刷画面期間指定
+           MOVE    SYS-1039-S04SRYKBN  TO  SPA-GMN-S04SRYKBN
+           PERFORM 4109-S04SRYKBN-CHK-SEC
+      *    支払証明書印刷画面期間区分
+           MOVE    SYS-1039-S04KIKANKBN TO SPA-GMN-S04KIKANKBN
+           PERFORM 4109-S04KIKANKBN-CHK-SEC
+      *    支払証明書印刷画面請求内容の印字
+           MOVE    SYS-1039-S04DSPKBN  TO  SPA-GMN-S04DSPKBN
+           PERFORM 4109-S04DSPKBN-CHK-SEC
+      *    支払証明書印刷画面期間終了後の支払い
+           MOVE    SYS-1039-S04SYORIKBN TO SPA-GMN-S04SYORIKBN
+           PERFORM 4109-S04SYORIKBN-CHK-SEC
+      *
            MOVE    49                 TO  SPA-GMN-CUR
       *
            . 
@@ -3488,6 +3605,12 @@
            MOVE    W07-SYUSRYPRTG      TO  SPA-GMN-SYUSRYPRTG-G
            MOVE    W07-SYUSKYPRTN      TO  SPA-GMN-SYUSKYPRTN-G
            MOVE    W07-SYUSRYPRTN      TO  SPA-GMN-SYUSRYPRTN-G
+           MOVE    W07-S04SHIHARAIKBN  TO  SPA-GMN-S04SHIHARAIKBN-G
+           MOVE    W07-S04NYUGAIKBN    TO  SPA-GMN-S04NYUGAIKBN-G
+           MOVE    W07-S04SRYKBN       TO  SPA-GMN-S04SRYKBN-G
+           MOVE    W07-S04KIKANKBN     TO  SPA-GMN-S04KIKANKBN-G
+           MOVE    W07-S04DSPKBN       TO  SPA-GMN-S04DSPKBN-G
+           MOVE    W07-S04SYORIKBN     TO  SPA-GMN-S04SYORIKBN-G
            MOVE    W07-S06SKYPRT       TO  SPA-GMN-S06SKYPRT-G
            MOVE    W07-S06SKYSUM       TO  SPA-GMN-S06SKYSUM-G
            MOVE    W07-S02SKYSAI       TO  SPA-GMN-S02SKYSAI-G
@@ -3750,6 +3873,30 @@
       *            診療費明細書発行区分（入院）チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4110-SYUSRYPRTN-CHK-SEC
+                   END-IF
+      *            支払証明書印刷画面支払証明書発行区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4109-S04SHIHARAIKBN-CHK-SEC
+                   END-IF
+      *            支払証明書印刷画面入外区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4109-S04NYUGAIKBN-CHK-SEC
+                   END-IF
+      *            支払証明書印刷画面期間指定チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4109-S04SRYKBN-CHK-SEC
+                   END-IF
+      *            支払証明書印刷画面期間区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4109-S04KIKANKBN-CHK-SEC
+                   END-IF
+      *            支払証明書印刷画面請求内容の印字チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4109-S04DSPKBN-CHK-SEC
+                   END-IF
+      *            支払証明書印刷画面期間終了後の支払いチェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4109-S04SYORIKBN-CHK-SEC
                    END-IF
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -5314,8 +5461,8 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    42              TO  SPA-GMN-CUR
-               MOVE    "3002"          TO  SPA-ERRCD
+               MOVE    SPA-GMN-SYUNYKNKNRKBNLST (1)
+                                       TO  SPA-GMN-SYUNYKNKNRKBN-G
            END-IF
       *
            .
@@ -5337,8 +5484,8 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    47              TO  SPA-GMN-CUR
-               MOVE    "3006"          TO  SPA-ERRCD
+               MOVE    SPA-GMN-S06SKYPRTLST (1)
+                                       TO  SPA-GMN-S06SKYPRT-G
            END-IF
       *
            .
@@ -5360,8 +5507,8 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    48              TO  SPA-GMN-CUR
-               MOVE    "3007"          TO  SPA-ERRCD
+               MOVE    SPA-GMN-S06SKYSUMLST (1)
+                                       TO  SPA-GMN-S06SKYSUM-G
            END-IF
       *
            .
@@ -5383,8 +5530,8 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    49              TO  SPA-GMN-CUR
-               MOVE    "3008"          TO  SPA-ERRCD
+               MOVE    SPA-GMN-S02SKYSAILST (1)
+                                       TO  SPA-GMN-S02SKYSAI-G
            END-IF
       *
            .
@@ -5452,8 +5599,8 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    40              TO  SPA-GMN-CUR
-               MOVE    "3001"          TO  SPA-ERRCD
+               MOVE    SPA-GMN-SYUSKYPRTGLST (1)
+                                       TO  SPA-GMN-SYUSKYPRTG-G
            END-IF
       *
            .
@@ -5498,8 +5645,8 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    45              TO  SPA-GMN-CUR
-               MOVE    "3005"          TO  SPA-ERRCD
+               MOVE    SPA-GMN-SYUSRYPRTGLST (1)
+                                       TO  SPA-GMN-SYUSRYPRTG-G
            END-IF
       *
            .
@@ -5521,8 +5668,8 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    41              TO  SPA-GMN-CUR
-               MOVE    "3001"          TO  SPA-ERRCD
+               MOVE    SPA-GMN-SYUSKYPRTNLST (1)
+                                       TO  SPA-GMN-SYUSKYPRTN-G
            END-IF
       *
            .
@@ -5544,12 +5691,172 @@
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    46              TO  SPA-GMN-CUR
-               MOVE    "3005"          TO  SPA-ERRCD
+               MOVE    SPA-GMN-SYUSRYPRTNLST (1)
+                                       TO  SPA-GMN-SYUSRYPRTN-G
            END-IF
       *
            .
        4110-SYUSRYPRTN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    支払証明書印刷画面支払証明書発行区分チェック
+      *****************************************************************
+       4109-S04SHIHARAIKBN-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL     ( IDX     >   SPA-GMN-S04SHIHARAI-MAX )
+                    OR       ( FLG-OK  =   1 )
+               IF    ( SPA-GMN-S04SHIHARAIKBN
+                                       =   SPA-GMN-S04SHIHARAIL (IDX))
+                   MOVE    SPA-GMN-S04SHIHARAILST (IDX)
+                                       TO  SPA-GMN-S04SHIHARAIKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF    ( FLG-OK              =   ZERO )
+                   MOVE    SPA-GMN-S04SHIHARAILST (2)
+                                       TO  SPA-GMN-S04SHIHARAIKBN-G
+           END-IF
+      *
+           .
+       4109-S04SHIHARAIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    支払証明書印刷画面入外区分チェック
+      *****************************************************************
+       4109-S04NYUGAIKBN-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL     ( IDX     >   SPA-GMN-S04NYUGAI-MAX )
+                    OR       ( FLG-OK  =   1 )
+               IF    ( SPA-GMN-S04NYUGAIKBN
+                                       =   SPA-GMN-S04NYUGAIL (IDX))
+                   MOVE    SPA-GMN-S04NYUGAILST (IDX)
+                                       TO  SPA-GMN-S04NYUGAIKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF    ( FLG-OK              =   ZERO )
+                   MOVE    SPA-GMN-S04NYUGAILST (1)
+                                       TO  SPA-GMN-S04NYUGAIKBN-G
+           END-IF
+      *
+           .
+       4109-S04NYUGAIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    支払証明書印刷画面期間指定チェック
+      *****************************************************************
+       4109-S04SRYKBN-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL     ( IDX     >   SPA-GMN-S04SRY-MAX )
+                    OR       ( FLG-OK  =   1 )
+               IF    ( SPA-GMN-S04SRYKBN
+                                       =   SPA-GMN-S04SRYL (IDX))
+                   MOVE    SPA-GMN-S04SRYLST (IDX)
+                                       TO  SPA-GMN-S04SRYKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF    ( FLG-OK              =   ZERO )
+                   MOVE    SPA-GMN-S04SRYLST (1)
+                                       TO  SPA-GMN-S04SRYKBN-G
+           END-IF
+      *
+           .
+       4109-S04SRYKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    支払証明書印刷画面期間区分チェック
+      *****************************************************************
+       4109-S04KIKANKBN-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL     ( IDX     >   SPA-GMN-S04KIKAN-MAX )
+                    OR       ( FLG-OK  =   1 )
+               IF    ( SPA-GMN-S04KIKANKBN
+                                       =   SPA-GMN-S04KIKANL (IDX))
+                   MOVE    SPA-GMN-S04KIKANLST (IDX)
+                                       TO  SPA-GMN-S04KIKANKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF    ( FLG-OK              =   ZERO )
+                   MOVE    SPA-GMN-S04KIKANLST (1)
+                                       TO  SPA-GMN-S04KIKANKBN-G
+           END-IF
+      *
+           IF    ( SPA-GMN-S04KIKANKBN =   "1" )
+               IF    ( SPA-GMN-S04SYORIKBN-G  =   SPACE )
+                   MOVE    SPA-GMN-S04DSPLST(1)
+                                       TO  SPA-GMN-S04DSPKBN-G
+                   MOVE    SPA-GMN-S04SYORILST (1)
+                                       TO  SPA-GMN-S04SYORIKBN-G
+               END-IF
+           ELSE
+               MOVE    SPACE           TO  SPA-GMN-S04SYORIKBN-G
+               MOVE    SPA-GMN-S04DSPLST(2)
+                                       TO  SPA-GMN-S04DSPKBN-G
+           END-IF
+      *
+           .
+       4109-S04KIKANKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    支払証明書印刷画面請求内容の印字チェック
+      *****************************************************************
+       4109-S04DSPKBN-CHK-SEC     SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL     ( IDX     >   SPA-GMN-S04DSP-MAX )
+                    OR       ( FLG-OK  =   1 )
+               IF    ( SPA-GMN-S04DSPKBN
+                                       =   SPA-GMN-S04DSPL (IDX))
+                   MOVE    SPA-GMN-S04DSPLST (IDX)
+                                       TO  SPA-GMN-S04DSPKBN-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF    ( FLG-OK              =   ZERO )
+                   MOVE    SPA-GMN-S04DSPLST (1)
+                                       TO  SPA-GMN-S04DSPKBN-G
+           END-IF
+      *
+           .
+       4109-S04DSPKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    支払証明書印刷画面期間終了後の支払いチェック
+      *****************************************************************
+       4109-S04SYORIKBN-CHK-SEC     SECTION.
+      *
+           IF    ( SPA-GMN-S04KIKANKBN =   "1" )
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL     ( IDX     >   SPA-GMN-S04SYORI-MAX )
+                        OR       ( FLG-OK  =   1 )
+                   IF    ( SPA-GMN-S04SYORIKBN
+                                       =   SPA-GMN-S04SYORIL (IDX))
+                       MOVE    SPA-GMN-S04SYORILST (IDX)
+                                       TO  SPA-GMN-S04SYORIKBN-G
+                       MOVE    1       TO  FLG-OK
+                   END-IF
+               END-PERFORM
+               IF    ( FLG-OK              =   ZERO )
+                   MOVE    SPA-GMN-S04SYORILST (1)
+                                       TO  SPA-GMN-S04SYORIKBN-G
+               END-IF
+           END-IF
+      *
+           .
+       4109-S04SYORIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    登録時刻チェック
@@ -6674,6 +6981,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-PERFORM
            END-PERFORM
       *
+           MOVE    SPA-GMN-S04SHIHARAIKBN  TO  SYS-1039-S04SHIHARAIKBN
+           MOVE    SPA-GMN-S04NYUGAIKBN    TO  SYS-1039-S04NYUGAIKBN
+           MOVE    SPA-GMN-S04SRYKBN       TO  SYS-1039-S04SRYKBN
+           MOVE    SPA-GMN-S04KIKANKBN     TO  SYS-1039-S04KIKANKBN
+           MOVE    SPA-GMN-S04DSPKBN       TO  SYS-1039-S04DSPKBN
+           MOVE    SPA-GMN-S04SYORIKBN     TO  SYS-1039-S04SYORIKBN
+      *
            MOVE    SYS-1039-REC            TO  SYSKANRI-REC
       *
       *    ＤＢ更新処理
@@ -7525,6 +7839,66 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-SYUSRYPRTN-MAX
                                        TO  W07-SYUSRYPRTN-COUNT
       *
+      *    支払証明書印刷画面支払証明書発行区分
+           MOVE    SPA-GMN-S04SHIHARAIKBN-G TO  W07-S04SHIHARAIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S04SHIHARAI-MAX
+               MOVE    SPA-GMN-S04SHIHARAILST (IDX)
+                                       TO  W07-S04SHIHARAIKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-S04SHIHARAI-MAX
+                                       TO  W07-S04SHIHARAIKBN-COUNT
+      *
+      *    支払証明書印刷画面入外区分
+           MOVE    SPA-GMN-S04NYUGAIKBN-G TO  W07-S04NYUGAIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S04NYUGAI-MAX
+               MOVE    SPA-GMN-S04NYUGAILST (IDX)
+                                       TO  W07-S04NYUGAIKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-S04NYUGAI-MAX
+                                       TO  W07-S04NYUGAIKBN-COUNT
+      *
+      *    支払証明書印刷画面期間指定
+           MOVE    SPA-GMN-S04SRYKBN-G TO  W07-S04SRYKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S04SRY-MAX
+               MOVE    SPA-GMN-S04SRYLST (IDX)
+                                       TO  W07-S04SRYKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-S04SRY-MAX
+                                       TO  W07-S04SRYKBN-COUNT
+      *
+      *    支払証明書印刷画面期間区分
+           MOVE    SPA-GMN-S04KIKANKBN-G TO  W07-S04KIKANKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S04KIKAN-MAX
+               MOVE    SPA-GMN-S04KIKANLST (IDX)
+                                       TO  W07-S04KIKANKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-S04KIKAN-MAX
+                                       TO  W07-S04KIKANKBN-COUNT
+      *
+      *    支払証明書印刷画面請求内容の印字
+           MOVE    SPA-GMN-S04DSPKBN-G TO  W07-S04DSPKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S04DSP-MAX
+               MOVE    SPA-GMN-S04DSPLST (IDX)
+                                       TO  W07-S04DSPKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-S04DSP-MAX
+                                       TO  W07-S04DSPKBN-COUNT
+      *
+      *    支払証明書印刷画面期間終了後の支払い
+           MOVE    SPA-GMN-S04SYORIKBN-G TO  W07-S04SYORIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S04SYORI-MAX
+               MOVE    SPA-GMN-S04SYORILST (IDX)
+                                       TO  W07-S04SYORIKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-S04SYORI-MAX
+                                       TO  W07-S04SYORIKBN-COUNT
+      *
       *    過去日分の登録時刻
            MOVE    SPA-GMN-SYUSTIME-HH TO  W07-SYUSTIME-HH
            MOVE    SPA-GMN-SYUSTIME-MM TO  W07-SYUSTIME-MM
@@ -7748,6 +8122,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                   (IDX)
                END-PERFORM
            END-IF
+      *
+           MOVE    WIDGET-NORMAL       TO  W07-S04SYORIKBN-STATE
+                                           W07-S04SYORIKBN-ITEM-STATE
+                                           W07-S04DSPKBN-STATE
+                                           W07-S04DSPKBN-ITEM-STATE
+           IF    ( SPA-GMN-S04KIKANKBN =   "2" )
+               MOVE    WIDGET-INSENSITIVE
+                                       TO  W07-S04SYORIKBN-STATE
+                                           W07-S04SYORIKBN-ITEM-STATE
+                                           W07-S04DSPKBN-STATE
+                                           W07-S04DSPKBN-ITEM-STATE
+           END-IF
+      *
            .
        51O-GSRAUTH-EXT.
            EXIT.
@@ -7943,12 +8330,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    INTO    SPA-ERRMSG
                    END-STRING
       *    収納情報
-               WHEN    "3001"
-                   MOVE    "請求書兼領収書発行区分がありません。"
-                                                       TO  SPA-ERRMSG
-               WHEN    "3002"
-                   MOVE    "入金管理区分がありません。"
-                                                       TO  SPA-ERRMSG
                WHEN    "3003"
                    MOVE    "登録時刻入力エラー"
                                                        TO  SPA-ERRMSG
@@ -7957,15 +8338,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        TO  SPA-ERRMSG
                WHEN    "3005"
                    MOVE    "仮締め時刻入力エラー"
-                                                       TO  SPA-ERRMSG
-               WHEN    "3006"
-                   MOVE    "請求書兼領収書発行区分がありません。"
-                                                       TO  SPA-ERRMSG
-               WHEN    "3007"
-                   MOVE    "外来分発行方法がありません。"
-                                                       TO  SPA-ERRMSG
-               WHEN    "3008"
-                   MOVE    "再発行方法がありません。"
                                                        TO  SPA-ERRMSG
                WHEN    "3101"
                    MOVE    "期間の指定に誤りがあります"
@@ -8330,6 +8702,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "SYUKARIED22_HH"  TO   MCP-WIDGET
                WHEN    415
                    MOVE  "SYUKARIED22_MM"  TO   MCP-WIDGET
+               WHEN    419
+                   MOVE  "S04SHIHARAIKBN"  TO   MCP-WIDGET
+               WHEN    420
+                   MOVE  "S04NYUGAIKBN"    TO   MCP-WIDGET
+               WHEN    421
+                   MOVE  "S04SRYKBN"       TO   MCP-WIDGET
+               WHEN    422
+                   MOVE  "S04KIKANKBN"     TO   MCP-WIDGET
+               WHEN    423
+                   MOVE  "S04DSPKBN"       TO   MCP-WIDGET
+               WHEN    424
+                   MOVE  "S04SYORIKBN"     TO   MCP-WIDGET
       *病名・コメント情報
                WHEN    500
                    MOVE  "MSG1_DSPKBN"     TO   MCP-WIDGET
@@ -8580,6 +8964,26 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "SYUSKYPRTN"
                    MOVE    46              TO  SPA-GMN-CUR
                WHEN    "SYUSRYPRTN"
+                   MOVE    419             TO  SPA-GMN-CUR
+               WHEN    "S04SHIHARAIKBN"
+                   MOVE    420             TO  SPA-GMN-CUR
+               WHEN    "S04NYUGAIKBN"
+                   MOVE    421             TO  SPA-GMN-CUR
+               WHEN    "S04SRYKBN"
+                   MOVE    422             TO  SPA-GMN-CUR
+               WHEN    "S04KIKANKBN"
+                   IF    ( SPA-GMN-S04KIKANKBN =   "1" )
+                       MOVE    423         TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    42          TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "S04DSPKBN"
+                   IF    ( SPA-GMN-S04KIKANKBN =   "1" )
+                       MOVE    424         TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    42          TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "S04SYORIKBN"
                    MOVE    42              TO  SPA-GMN-CUR
                WHEN    "SYUNYKNKNRKBN"
                    MOVE    47              TO  SPA-GMN-CUR

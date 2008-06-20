@@ -83,8 +83,20 @@
       *請求一覧画面月別請求書兼領収書未収印字区分
                05  SYS-1039-TUKISKYMISYUPRTKBN
                                         PIC  X(01).
+      *支払証明書印刷画面支払証明書発行区分
+               05  SYS-1039-S04SHIHARAIKBN      PIC X(01).
+      *支払証明書印刷画面入外区分
+               05  SYS-1039-S04NYUGAIKBN        PIC X(01).
+      *支払証明書印刷画面期間指定
+               05  SYS-1039-S04SRYKBN           PIC X(01).
+      *支払証明書印刷画面期間区分
+               05  SYS-1039-S04KIKANKBN         PIC X(01).
+      *支払証明書印刷画面請求内容の印字
+               05  SYS-1039-S04DSPKBN           PIC X(01).
+      *支払証明書印刷画面期間終了後の支払い
+               05  SYS-1039-S04SYORIKBN         PIC X(01).
       *予備
-               05                       PIC  X(438).
+               05                       PIC  X(432).
       *端末ＩＤ
            03  SYS-1039-TERMID          PIC  X(16).
       *オペーレータＩＤ

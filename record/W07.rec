@@ -478,6 +478,52 @@ W07	{
 					count	int;
 					item	varchar(40)[5];
 				};
+				S04SHIHARAIKBN_COMBO	{
+					S04SHIHARAIKBN	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[3];
+				};
+				S04NYUGAIKBN_COMBO	{
+					S04NYUGAIKBN	{
+						value	varchar(6);
+					};
+					count	int;
+					item	varchar(6)[3];
+				};
+				S04SRYKBN_COMBO	{
+					S04SRYKBN	{
+						value	varchar(8);
+					};
+					count	int;
+					item	varchar(8)[3];
+				};
+				S04KIKANKBN_COMBO	{
+					S04KIKANKBN	{
+						value	varchar(10);
+					};
+					count	int;
+					item	varchar(10)[2];
+				};
+				S04DSPKBN_COMBO	{
+					S04DSPKBN	{
+						value	varchar(20);
+						state	int;
+					};
+					count	int;
+					item	varchar(20)[3];
+					state	int;
+				};
+				S04SYORIKBN_COMBO	{
+					S04SYORIKBN	{
+						value	varchar(18);
+						state	int;
+					};
+					count	int;
+					item	varchar(18)[2];
+					state	int;
+				};
 				S06SKYPRT_COMBO	{
 					S06SKYPRT	{
 						value	varchar(24);

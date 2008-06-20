@@ -358,9 +358,36 @@
                       07  W07-VALUE   PIC X(40).
                     06  W07-SYUNYKNKNRKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-SYUNYKNKNRKBN-ITEM    PIC X(40)   OCCURS  5.
+                  05  W07-S04SHIHARAIKBN-COMBO.
+                    06  W07-S04SHIHARAIKBN       PIC X(12).
+                    06  W07-S04SHIHARAIKBN-COUNT PIC S9(9)   BINARY.
+                    06  W07-S04SHIHARAIKBN-ITEM  PIC X(12)   OCCURS  3.
+                  05  W07-S04NYUGAIKBN-COMBO.
+                    06  W07-S04NYUGAIKBN          PIC X(6).
+                    06  W07-S04NYUGAIKBN-COUNT    PIC S9(9)   BINARY.
+                    06  W07-S04NYUGAIKBN-ITEM     PIC X(6)    OCCURS  3.
+                  05  W07-S04SRYKBN-COMBO.
+                    06  W07-S04SRYKBN             PIC X(8).
+                    06  W07-S04SRYKBN-COUNT       PIC S9(9)   BINARY.
+                    06  W07-S04SRYKBN-ITEM        PIC X(8)    OCCURS  3.
+                  05  W07-S04KIKANKBN-COMBO.
+                    06  W07-S04KIKANKBN           PIC X(10).
+                    06  W07-S04KIKANKBN-COUNT     PIC S9(9)   BINARY.
+                    06  W07-S04KIKANKBN-ITEM      PIC X(10)   OCCURS  2.
+                  05  W07-S04DSPKBN-COMBO.
+                    06  W07-S04DSPKBN             PIC X(20).
+                    06  W07-S04DSPKBN-STATE       PIC S9(9)   BINARY.
+                    06  W07-S04DSPKBN-COUNT       PIC S9(9)   BINARY.
+                    06  W07-S04DSPKBN-ITEM        PIC X(20)   OCCURS  3.
+                    06  W07-S04DSPKBN-ITEM-STATE  PIC S9(9)   BINARY.
+                  05  W07-S04-SYORIKBN-COMBO.
+                    06  W07-S04SYORIKBN           PIC X(18).
+                    06  W07-S04SYORIKBN-STATE     PIC S9(9)   BINARY.
+                    06  W07-S04SYORIKBN-COUNT     PIC S9(9)   BINARY.
+                    06  W07-S04SYORIKBN-ITEM      PIC X(18)   OCCURS  2.
+                    06  W07-S04SYORIKBN-ITEM-STATE PIC S9(9)   BINARY.
                   05  W07-S06SKYPRT-COMBO.
-                    06  W07-S06SKYPRT.
-                      07  W07-VALUE   PIC X(24).
+                    06  W07-S06SKYPRT           PIC X(24).
                     06  W07-S06SKYPRT-COUNT   PIC S9(9)   BINARY.
                     06  W07-S06SKYPRT-ITEM    PIC X(24)   OCCURS  5.
                   05  W07-S06SKYSUM-COMBO.
