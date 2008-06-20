@@ -864,7 +864,7 @@
            MOVE    2                   TO  SPA-GMN-Q01-DEATHLST-MAX
       *
            MOVE    "0"                 TO  SPA-GMN-Q01-DEATHL    (1)
-           MOVE    "生存"              TO  SPA-GMN-Q01-DEATHMEIL (1)
+           MOVE    "未設定"            TO  SPA-GMN-Q01-DEATHMEIL (1)
       *
            MOVE    "1"                 TO  SPA-GMN-Q01-DEATHL    (2)
            MOVE    "死亡"              TO  SPA-GMN-Q01-DEATHMEIL (2)
