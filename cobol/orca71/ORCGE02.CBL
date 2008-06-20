@@ -34,8 +34,6 @@
       * 01.00.05     ひさなが     03/05/12  入院関連テーブルの追加
       * 01.00.06     ひさなが     03/06/05  患者ＩＤ置換メッセージの追加
       * 03.05.01     NACL-森脇    07/06/11  グループ診療対応
-      * 04.05.01     NACL-森脇    12/04/19  パッチ対応
-      * 04.08.01     NACL-森脇    14/08/25  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -69,14 +67,13 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *----(04.08.01)--UPD-START---
       *    ＣＳＶ作成条件用ファイル 名称領域
 grpsys*DD  COPY    "CPCOMMONDAT4.INC"
 grpsys*DD                          REPLACING  //ORCGD//
 grpsys     COPY    "CPCOMMONDAT2.INC"
 grpsys                             REPLACING  //RECE01//
 grpsys                             BY         //EIE00//.
-grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
+grpsys     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
       *    ＣＳＶ作成条件１〜９０ファイル 名称領域
 grpsys*DD  COPY    "CPCOMMONDAT4.INC"
@@ -85,12 +82,11 @@ grpsys*DD                          BY         //EIE01//.
 grpsys     COPY    "CPCOMMONDAT2.INC"
 grpsys                             REPLACING  //RECE01//
 grpsys                             BY         //EIE01//.
-grpsys*     03  EIE01PARA-FILE      PIC X(23).
-      *----(04.08.01)--UPD-END-----
+grpsys     03  EIE01PARA-FILE      PIC X(23).
       *
       *    抽出項目用ファイル 名称領域
        01  EIE02PARA.
-           03  FILLER               PIC  X(100).
+           03  FILLER               PIC  X(50).
        01  EIE02PARA-NAME.
            03  FILLER               PIC  X(07) VALUE
                "record/".
@@ -241,14 +237,6 @@ grpsys*     03  EIE01PARA-FILE      PIC X(23).
       *    フィアルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *
-      *    ファイルリネームサブ
-           COPY    "CPORCSSTRING.INC".
-      *    ファイル存在チェック
-           COPY    "CPORCSFILECHK.INC".
-      *
-      *----(04.08.01)--ADD-START---
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
       *    連絡　領域
@@ -280,10 +268,6 @@ grpsys*     03  EIE01PARA-FILE      PIC X(23).
            COPY    "EERR.INC".
            COPY    "EID1.INC".
            COPY    "EID2.INC".
-           COPY    "F01.INC".
-           COPY    "FERR.INC".
-           COPY    "FID1.INC".
-           COPY    "FID2.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -513,22 +497,16 @@ grpsys             MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG5
                        PERFORM T-000-SETTABLE-SEC
                    END-IF
                WHEN    "CLICKED"       ALSO    "B03"
-               WHEN    "CLICKED"       ALSO    "TBL_R"
                    PERFORM T-001-CHUSYUTU-SEC
                WHEN    "CLICKED"       ALSO    "B04"
-               WHEN    "CLICKED"       ALSO    "TBL_L"
                    PERFORM T-001-TORIYAME-SEC
                WHEN    "CLICKED"       ALSO    "B05"
-               WHEN    "CLICKED"       ALSO    "ALL_R"
                    PERFORM T-002-CHUSYUTU-SEC
                WHEN    "CLICKED"       ALSO    "B06"
-               WHEN    "CLICKED"       ALSO    "ALL_L"
                    PERFORM T-002-TORIYAME-SEC
                WHEN    "CLICKED"       ALSO    "B07"
-               WHEN    "CLICKED"       ALSO    "KOUMOKU_UP"
                    PERFORM T-002-AGARU-SEC
                WHEN    "CLICKED"       ALSO    "B08"
-               WHEN    "CLICKED"       ALSO    "KOUMOKU_DOWN"
                    PERFORM T-002-SAGARU-SEC
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM T-001-WRITCHEK-SEC
@@ -544,6 +522,12 @@ grpsys             MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG5
                        MOVE    SPACE               TO    SPA-ERRCD
                        PERFORM VARYING IDX1  FROM  1  BY 1
                                UNTIL   IDX1  >    200
+                           DISPLAY " WK-TBL-MSG (" IDX1 ") = "
+                                     WK-TBL-MSG (IDX1)
+                                   " WK-TBL-KBN1(" IDX1 ") = "
+                                     WK-TBL-KBN1(IDX1)
+                                   " WK-TBL-KBN2(" IDX1 ") = "
+                                     WK-TBL-KBN2(IDX1)
                            IF  (WK-TBL-KBN1 (IDX1)     = "*")  AND
                                (WK-TBL-KBN2 (IDX1) NOT = "*")
                                MOVE    "0002"          TO  SPA-ERRCD
@@ -866,14 +850,11 @@ grpsys*DD                              SPA-AREA
       *
            IF  (WK-TBL-MSG (IDX2)(1:6)  = "JYURRK")       OR
                (WK-TBL-MSG (IDX2)(1:8)  = "PTBYOMEI")     OR
-               (WK-TBL-MSG (IDX2)(1:12) = "SRYACCT_MAIN") OR
-               (WK-TBL-MSG (IDX2)(1:11) = "SRYACCT_SUB")  OR
+               (WK-TBL-MSG (IDX2)(1:7)  = "SRYACCT")      OR
                (WK-TBL-MSG (IDX2)(1:6)  = "SRYACT")       OR
                (WK-TBL-MSG (IDX2)(1:8)  = "WKSRYACT")     OR
                (WK-TBL-MSG (IDX2)(1:6)  = "SANTEI")       OR
-               (WK-TBL-MSG (IDX2)(1:11) = "SEIKYU_MAIN")  OR
-               (WK-TBL-MSG (IDX2)(1:10) = "SEIKYU_KOH")   OR
-               (WK-TBL-MSG (IDX2)(1:10) = "SEIKYU_ETC")   OR
+               (WK-TBL-MSG (IDX2)(1:6)  = "SEIKYU")       OR
                (WK-TBL-MSG (IDX2)(1:5)  = "BD002")        OR
       *修正/*開始*03.05.12*********************************************
                (WK-TBL-MSG (IDX2)(1:9)  = "NYUINACCT")    OR
@@ -886,7 +867,7 @@ grpsys*DD                              SPA-AREA
                MOVE    SPACE               TO  SPA-NAI-SRYYM
            END-IF.
       *
-           IF  SPA-GMN-SRYYM   =  "******" OR  SPACE
+           IF  SPA-GMN-SRYYM   =  "******"
                MOVE    SPACE               TO  SPA-GMN-SRYYM
                MOVE    SPACE               TO  SPA-NAI-SRYYM
            END-IF.
@@ -1238,18 +1219,6 @@ grpsys*DD  MOVE    "ORCE00.CNV"          TO  EIE00PARA-FILE.
 grpsys     MOVE    "ORCGE00"         TO  EIE00PARA-FILE-ID.
 grpsys     MOVE    SPA-HOSPNUM       TO  EIE00PARA-HOSPNUM.
 grpsys     MOVE    SPA-TERMID        TO  EIE00PARA-TERMID.
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    EIE00PARA-BASENAME
-                                       TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    ALL SPACE           TO  EIE00PARA-FULLNAME
-           STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
-                   ".dat"              DELIMITED  BY    SIZE
-                                       INTO       EIE00PARA-FULLNAME
-           END-STRING.
-      *----(04.08.01)--ADD-END-----
            MOVE    SPACE                 TO  WK-TBL1.
            MOVE    1                     TO  IDX1.
            MOVE    ZERO                  TO  IDX2.
@@ -1290,9 +1259,6 @@ grpsys     MOVE    SPA-TERMID        TO  EIE00PARA-TERMID.
                MOVE    EIE02PARA-NAME        TO  MKPASS-IN-01
                CALL    "ORCSMKPASS"          USING   ORCSMKPASSAREA
                MOVE    MKPASS-OT-01          TO  EIE02PARA
-      *
-      *        パッチ対応
-               PERFORM T-000-PATCHCHEK-SEC
       *
                MOVE    1                     TO  IDX4
                MOVE    1                     TO  IDY1
@@ -1353,25 +1319,10 @@ grpsys     MOVE    SPA-TERMID        TO  EIE00PARA-TERMID.
 grpsys     MOVE    "ORCGE01"         TO  EIE01PARA-FILE-ID.
 grpsys     MOVE    SPA-HOSPNUM       TO  EIE01PARA-HOSPNUM.
 grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    EIE01PARA-BASENAME
-                                       TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    ALL SPACE           TO  EIE01PARA-FULLNAME
-           STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
-                   WK-TBL-MSG (IDX1)   DELIMITED  BY    SPACE
-                   ".SLT"              DELIMITED  BY    SIZE
-                                       INTO       EIE01PARA-FULLNAME
-           END-STRING.
-      *----(04.08.01)--ADD-END-----
-      *----(04.08.01)--UPD-START---
-      *     MOVE    ALL SPACE            TO  EIE01PARA-FILE.
-      *     STRING  WK-TBL-MSG (IDX1)    DELIMITED  BY    SPACE
-      *             ".SLT"               DELIMITED  BY    SIZE
-      *                                  INTO       EIE01PARA-FILE.
-      *----(04.08.01)--UPD-END-----
+           MOVE    ALL SPACE            TO  EIE01PARA-FILE.
+           STRING  WK-TBL-MSG (IDX1)    DELIMITED  BY    SPACE
+                   ".SLT"               DELIMITED  BY    SIZE
+                                        INTO       EIE01PARA-FILE.
            OPEN    INPUT                EIE01-FILE.
            IF  STS-EIE01   =   ZERO
                READ    EIE01-FILE
@@ -1492,13 +1443,11 @@ grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
       *
            IF  (SPA-GMN-FILE-KEY(1:6)  = "JYURRK")       OR
                (SPA-GMN-FILE-KEY(1:8)  = "PTBYOMEI")     OR
-               (SPA-GMN-FILE-KEY(1:12) = "SRYACCT_MAIN") OR
+               (SPA-GMN-FILE-KEY(1:7)  = "SRYACCT")      OR
                (SPA-GMN-FILE-KEY(1:6)  = "SRYACT")       OR
                (SPA-GMN-FILE-KEY(1:8)  = "WKSRYACT")     OR
                (SPA-GMN-FILE-KEY(1:6)  = "SANTEI")       OR
-               (SPA-GMN-FILE-KEY(1:11) = "SEIKYU_MAIN")  OR
-               (SPA-GMN-FILE-KEY(1:10) = "SEIKYU_KOH")   OR
-               (SPA-GMN-FILE-KEY(1:10) = "SEIKYU_ETC")   OR
+               (SPA-GMN-FILE-KEY(1:6)  = "SEIKYU")       OR
                (SPA-GMN-FILE-KEY(1:5)  = "BD002")        OR
       *修正/*開始*03.05.12*********************************************
                (SPA-GMN-FILE-KEY(1:9)  = "NYUINACCT")    OR
@@ -1589,25 +1538,10 @@ grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
 grpsys     MOVE    "ORCGE01"         TO  EIE01PARA-FILE-ID.
 grpsys     MOVE    SPA-HOSPNUM       TO  EIE01PARA-HOSPNUM.
 grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    EIE01PARA-BASENAME
-                                       TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    ALL SPACE           TO  EIE01PARA-FULLNAME
-           STRING  SGETTEMP-FULLNAME   DELIMITED  BY    SPACE
-                   WK-TBL-MSG (IDX2)   DELIMITED  BY    SPACE
-                   ".SLT"              DELIMITED  BY    SIZE
-                                       INTO       EIE01PARA-FULLNAME
-           END-STRING.
-      *----(04.08.01)--ADD-END-----
-      *----(04.08.01)--UPD-START---
-      *     MOVE    ALL SPACE             TO  EIE01PARA-FILE.
-      *     STRING  WK-TBL-MSG (IDX2)     DELIMITED  BY    SPACE
-      *             ".SLT"                DELIMITED  BY    SIZE
-      *                                   INTO       EIE01PARA-FILE.
-      *----(04.08.01)--UPD-END-----
+           MOVE    ALL SPACE             TO  EIE01PARA-FILE.
+           STRING  WK-TBL-MSG (IDX2)     DELIMITED  BY    SPACE
+                   ".SLT"                DELIMITED  BY    SIZE
+                                         INTO       EIE01PARA-FILE.
            INITIALIZE                    ORCSMKPASSAREA.
            MOVE    SPACE                 TO  EIE02-FILE-ID.
            STRING  WK-TBL-NAME (IDX2)    DELIMITED  BY  SPACE
@@ -1617,21 +1551,15 @@ grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
            MOVE    EIE02PARA-NAME        TO  MKPASS-IN-01.
            CALL    "ORCSMKPASS"          USING   ORCSMKPASSAREA.
            MOVE    MKPASS-OT-01          TO  EIE02PARA.
-      *
-      *    パッチ対応
-           PERFORM T-000-PATCHCHEK-SEC
-      *
            MOVE    ALL SPACE             TO  SPA-GMN-FILE-ID.
            STRING  "/tmp/"               DELIMITED  BY    SIZE
                    WK-TBL-MSG (IDX2)     DELIMITED  BY    SPACE
                    ".TXT"                DELIMITED  BY    SIZE
-                                         INTO       SPA-GMN-FILE-ID
-           END-STRING.
+                                         INTO       SPA-GMN-FILE-ID.
            MOVE    ALL SPACE             TO  SPA-GMN-FILE-KEY.
            STRING  WK-TBL-MSG (IDX2)     DELIMITED  BY    SPACE
                    "-ALL"                DELIMITED  BY    SIZE
-                                         INTO       SPA-GMN-FILE-KEY
-           END-STRING.
+                                         INTO       SPA-GMN-FILE-KEY.
       *
            IF    ( WK-TBL-MSG (IDX2)     =   "JYURRK-PRV" )
                MOVE    "JYURRK-PRV-ALL3" TO  SPA-GMN-FILE-KEY
@@ -1695,8 +1623,7 @@ grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
                COMPUTE  IDY6   =   IDY6   -   1
                IF  ((WK-TBL-MSG-C3 (IDX4)    =   "char   ")   OR
                     (WK-TBL-MSG-C3 (IDX4)    =   "number ")   OR
-                    (WK-TBL-MSG-C3 (IDX4)    =   "varchar")   OR
-                    (WK-TBL-MSG-C3 (IDX4)    =   "integer"))  AND
+                    (WK-TBL-MSG-C3 (IDX4)    =   "varchar"))  AND
                    (WK-TBL-MSG-C1 (IDX4) NOT =   "#")         AND
                    (WK-SEW04 (IDY9:1)        NOT =  X"2C")
       *修正/*開始*03.06.05*********************************************
@@ -1705,27 +1632,21 @@ grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
                    END-IF
       *修正/*終了*03.06.05*********************************************
                    IF  IDY5   =   ZERO
-                       IF    ( WK-TBL-MSG-C3 (IDX4)  =   "integer")
-                           MOVE    4         TO  WK-SEW05
-                           MOVE    WK-SEW05  TO  WK-TBL-MSG-C5 (IDX4)
-                           MOVE    ZERO      TO  WK-TBL-MSG-C7 (IDX4)
-                       ELSE
-                           MOVE    5         TO  IDY7
-                           MOVE    IDY6      TO  IDY8
-                           MOVE    ZERO      TO  WK-SEW05
-                           MOVE    WK-SEW05  TO  WK-TBL-MSG-C7 (IDX4)
-                           PERFORM UNTIL   IDY8  <     1
-                               IF  WK-SEW04 (IDY8:1)  = X"28"
-                                   MOVE  ZERO       TO  IDY8
-                               ELSE
-                                   MOVE  WK-SEW04 (IDY8:1)
-                                                    TO WK-SEW05 (IDY7:1)
-                                   COMPUTE  IDY7   =   IDY7   -   1
-                                   COMPUTE  IDY8   =   IDY8   -   1
-                               END-IF
-                           END-PERFORM
-                           MOVE    WK-SEW05   TO  WK-TBL-MSG-C5 (IDX4)
-                       END-IF
+                       MOVE    5         TO  IDY7
+                       MOVE    IDY6      TO  IDY8
+                       MOVE    ZERO      TO  WK-SEW05
+                       MOVE    WK-SEW05  TO  WK-TBL-MSG-C7 (IDX4)
+                       PERFORM UNTIL   IDY8  <     1
+                           IF  WK-SEW04 (IDY8:1)  = X"28"
+                               MOVE  ZERO       TO  IDY8
+                           ELSE
+                               MOVE  WK-SEW04 (IDY8:1)
+                                                TO  WK-SEW05 (IDY7:1)
+                               COMPUTE  IDY7   =   IDY7   -   1
+                               COMPUTE  IDY8   =   IDY8   -   1
+                           END-IF
+                       END-PERFORM
+                       MOVE    WK-SEW05   TO  WK-TBL-MSG-C5 (IDX4)
                    ELSE
                        MOVE    5          TO  IDY7
                        MOVE    IDY6       TO  IDY8
@@ -1798,25 +1719,3 @@ grpsys     MOVE    SPA-TERMID        TO  EIE01PARA-TERMID.
        T-000-SETECHEK-01-EXT.
            EXIT.
       *
-      **************************************************
-      *    パッチ対応
-      **************************************************
-       T-000-PATCHCHEK-SEC         SECTION.
-      *
-           INITIALIZE                      ORCSSTRINGAREA
-           MOVE    "sub"               TO  ORCSSTR-COMMAND
-           MOVE    EIE02PARA           TO  ORCSSTR-STRING1
-           MOVE    "record"            TO  ORCSSTR-STRING2
-           MOVE    "patch-lib/record"  TO  ORCSSTR-STRING3
-           CALL    "orcsstring"        USING   ORCSSTRINGAREA
-           IF      ORCSSTR-STRING1     NOT =   SPACE
-               INITIALIZE                  ORCSFILECHKAREA
-               MOVE    ORCSSTR-STRING1     TO  FILECHK-NAME
-               CALL    "ORCSFILECHK"       USING   ORCSFILECHKAREA
-               IF      FILECHK-RC          =   0
-                   MOVE    ORCSSTR-STRING1     TO  EIE02PARA
-               END-IF
-           END-IF.
-      *
-       T-000-PATCHCHEK-EXT.
-           EXIT.
