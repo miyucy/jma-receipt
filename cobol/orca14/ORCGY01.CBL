@@ -668,7 +668,7 @@
               AND (SYS-1045-YYKMAXCNT  >   ZERO )
                MOVE    SYS-1045-YYKMAXCNT  TO  SPA-Y01-YYKMAXCNT
            ELSE
-               MOVE    10                  TO  SPA-Y01-YYKMAXCNT
+               MOVE    12                  TO  SPA-Y01-YYKMAXCNT
            END-IF
       *
       *    ø«Œ≈∆‚Õ∆§Ú£”£–£¡§À•ª•√•»

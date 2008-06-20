@@ -3367,7 +3367,7 @@
                MOVE    SYS-1045-YYKMAXCNT
                                        TO  SPA-GMN-YYKMAXCNT
            ELSE
-               MOVE    10              TO  SPA-GMN-YYKMAXCNT
+               MOVE    12              TO  SPA-GMN-YYKMAXCNT
            END-IF
       *    ÕΩÃÛ…º»Øπ‘∂Ë ¨
            MOVE    SYS-1045-YYKHYO-KBN
