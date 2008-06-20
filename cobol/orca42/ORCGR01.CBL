@@ -120,6 +120,9 @@
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *  04.02.02    NACL-藤原    08/04/11  未請求解除時の処理
+      *
+      *  04.03.01    NACL-藤原    08/06/20  データ入力中の未請求設定遷移
+      *                                     を不可とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4318,6 +4321,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        490-MISEIKYU-ENTRY-SEC       SECTION.
       *
+           IF      SPA-GMN-R01-MAX     >   ZERO
+               MOVE    "0041"              TO  SPA-ERRCD
+               GO  TO  490-MISEIKYU-ENTRY-EXT
+      *
+           END-IF
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -4331,7 +4339,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "7777"          TO  SPA-ERRCD
                    MOVE    SPACE             TO  WRK-RECEERR
-                   STRING  "処理中です【"
+                   STRING  "処理です【"
                                              DELIMITED  BY  SIZE
                            JOB-SHELLMSG      DELIMITED  BY  SPACE
                            "】"              DELIMITED  BY  SIZE      
@@ -4788,6 +4796,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                            DELIMITED   BY  SIZE
                                            INTO        SPA-ERRMSG
                    END-STRING
+               WHEN    "0041"
+                   MOVE    "データが入力してあるので遷移できません"
+                                                       TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "レセプト指示コード（個別）が削除できません"
                                                        TO  SPA-ERRMSG
