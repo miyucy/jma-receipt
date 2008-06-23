@@ -1187,7 +1187,7 @@
       *
            MOVE    SPA-GMN-Q01-HKNNUMLST-MAX   TO  IDX5
       *
-           MOVE    "SHA"           TO  SPA-GMN-Q01-HKNNUML   (IDX5 + 1)
+           MOVE    "SYA"           TO  SPA-GMN-Q01-HKNNUML   (IDX5 + 1)
            MOVE    "社保"          TO  SPA-GMN-Q01-HKNNUMMEIL(IDX5 + 1)
            MOVE    "KOK"           TO  SPA-GMN-Q01-HKNNUML   (IDX5 + 2)
            MOVE    "国保"          TO  SPA-GMN-Q01-HKNNUMMEIL(IDX5 + 2)

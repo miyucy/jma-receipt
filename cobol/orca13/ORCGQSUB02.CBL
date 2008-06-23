@@ -1503,7 +1503,7 @@
                    PERFORM 900-SQL-JYOKEN-EDIT2-SEC
       *
                    EVALUATE    SPA-Q01-HKNNUM (IDX1)
-                   WHEN    "SHA"
+                   WHEN    "SYA"
                        STRING  "("             DELIMITED   BY  SIZE
                            WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
                            ".HKNNUM in ('001','002','003','004'"
