@@ -44,6 +44,7 @@
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  04.02.01    NACL-森脇    08/04/17  平成２０年４月改正対応
       *  04.02.02    NACL-森脇    08/04/25  帳票変更
+      *  04.03.01    NACL-森脇    08/06/24  医療機関情報編集名セット
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -200,6 +201,13 @@
       *
       *    診療科情報
       *     COPY    "CPSK1005.INC".
+      *
+      *----(04.03.01)--ADD-START---
+      *    医療機関編集情報
+           COPY    "CPSK1900.INC".
+      *    医療機関名称編集情報
+           COPY    "CPSK1901.INC".
+      *----(04.03.01)--ADD-END-----
       *
       *    請求管理情報
            COPY    "CPRCF010.INC".
@@ -374,6 +382,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    システム管理基本情報読込
            MOVE    LNK-PRTKANRI-SRYYM  TO  WRK-SYM
            PERFORM 900-SYS1001-READ-SEC
+      *
+      *----(04.03.01)--ADD-START---
+      *    医療機関編集情報
+           PERFORM 900-SYS1900-READ-SEC
+      *----(04.03.01)--ADD-END-----
       *
       *    請求管理読み込み
            EVALUATE    WRK-PARA-TEISYUTUSAKI
@@ -975,11 +988,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
        800-SYSKANRI-READ-SEC       SECTION.
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "key10"         TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "key10"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    ZERO            TO  FLG-SYSKANRI
@@ -991,7 +1004,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            END-IF
       *
            MOVE    "tbl_syskanri"  TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "key10"         TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .
@@ -1008,7 +1021,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
-           MOVE    "*%"                TO  SYS-1001-KBNCD
+           MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-SYMD            TO  SYS-1001-STYUKYMD
                                            SYS-1001-EDYUKYMD
       *     MOVE    LNK-PRTKANRI-SKYYMD TO  SYS-1001-STYUKYMD
@@ -1048,6 +1061,63 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
       * 900-SYS1005-READ-EXT.
       *     EXIT.
       *
+      *----(04.03.01)--ADD-START---
+      *****************************************************************
+      *    医療機関編集情報読み込み
+      *****************************************************************
+       900-SYS1900-READ-SEC           SECTION.
+      *
+      *    医療機関編集情報読み込み
+           MOVE    SPACE               TO  SYS-1900-REC
+           INITIALIZE                      SYS-1900-REC
+           MOVE    "1900"              TO  SYS-1900-KANRICD
+           MOVE    "*"                 TO  SYS-1900-KBNCD
+           MOVE    WRK-SYMD            TO  SYS-1900-STYUKYMD
+                                           SYS-1900-EDYUKYMD
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-1900-HOSPNUM
+           MOVE    SYS-1900-REC        TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1900-REC
+               IF      SYS-1900-PRTKBN(20) NOT =   SPACE
+      *            医療機関名称編集情報
+                   PERFORM 900-SYSY1901-READ-SEC
+               END-IF
+           ELSE
+               INITIALIZE                  SYS-1900-REC
+           END-IF
+      *
+           .
+       900-SYS1900-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医療機関名称編集情報読み込み
+      *****************************************************************
+       900-SYSY1901-READ-SEC           SECTION.
+      *
+      *    医療機関名称編集情報読み込み
+           MOVE    SPACE               TO  SYS-1901-REC
+           INITIALIZE                      SYS-1901-REC
+           MOVE    "1901"              TO  SYS-1901-KANRICD
+           MOVE    SYS-1900-PRTKBN(20) TO  SYS-1901-KBNCD
+           MOVE    WRK-SYMD            TO  SYS-1901-STYUKYMD
+                                           SYS-1901-EDYUKYMD
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-1901-HOSPNUM
+           MOVE    SYS-1901-REC    TO  MCPDATA-REC
+           PERFORM 800-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC     TO  SYS-1901-REC
+               MOVE    SYS-1901-HOSPNAME1  TO  SYS-1001-HOSPNAME
+           ELSE
+               INITIALIZE                  SYS-1901-REC
+           END-IF
+      *
+           .
+       900-SYS1901-READ-EXT.
+           EXIT.
+      *
+      *----(04.03.01)--ADD-END-----
       *****************************************************************
       *    請求管理読込
       *****************************************************************
