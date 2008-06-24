@@ -41,6 +41,7 @@
       *                                     国保のみ２割の記載
       *  04.02.06    NACL-門脇    08/06/12  愛媛県地方公費対応
       *                                     （一部負担金再掲欄編集）
+      *  04.02.07    NACL-門脇    08/06/25  全国公費２種の一部負担金等記載対応
       *
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
       *  04.03.02    NACL-藤原    08/06/02  リアルタイムプレビュー時の表示
@@ -4454,11 +4455,17 @@
                    END-IF
                END-IF
            END-IF
-           IF      RECE02-ZAITAKU-SAIKEI  NOT =  999999999
-               MOVE    "("                    TO  HC06-FTNMONEYSAI(1:1)
-               MOVE   RECE02-ZAITAKU-SAIKEI   TO  WRK-KGK7
-               MOVE   WRK-KGK7                TO  HC06-FTNMONEYSAI(3:8)
-               MOVE    ")"                    TO  HC06-FTNMONEYSAI(11:1)
+           IF      RECE02-ZAITAKU-SAIKEI    NOT =  999999999
+             MOVE    "("                    TO  HC06-FTNMONEYSAI(1:1)
+             MOVE   RECE02-ZAITAKU-SAIKEI   TO  WRK-KGK7
+             MOVE   WRK-KGK7                TO  HC06-FTNMONEYSAI(3:8)
+             MOVE    ")"                    TO  HC06-FTNMONEYSAI(11:1)
+           END-IF
+           IF      RECE02-ZAITAKU-SAIKEI2   NOT =  999999999
+             MOVE    "("                    TO  HC06-FTNMONEYSAI2(1:1)
+             MOVE   RECE02-ZAITAKU-SAIKEI2  TO  WRK-KGK7
+             MOVE   WRK-KGK7                TO  HC06-FTNMONEYSAI2(3:8)
+             MOVE    ")"                    TO  HC06-FTNMONEYSAI2(11:1)
            END-IF
       *
            INITIALIZE                     WRK-FTNMONEY-HENSYU-AREA

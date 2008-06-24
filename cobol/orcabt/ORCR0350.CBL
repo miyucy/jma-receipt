@@ -214,6 +214,7 @@
       *                                     ¡Ê°ìÉôÉéÃ´¶âºÆ·ÇÍóÊÔ½¸¡Ë
       *  04.02.09    NACL-Æ£¸¶    08/06/11  ¥³¥á¥ó¥È¤¬ÅÓÃæ¤Ë¤¢¤ë¾ì¹ç¤Î
       *                                     Ãí²Ã»»¤Ë¤è¤ë²Ã»»¹àÌÜ¤Îµ­ºÜ
+      *  04.02.10    NACL-ÌçÏÆ    08/06/25  Á´¹ñ¸øÈñ£²¼ï¤Î°ìÉôÉéÃ´¶âÅùµ­ºÜÂÐ±þ
       *
       *  04.03.01    NACL-Æ£¸¶    08/05/07  ¸øÈñ£´¼ï¤Þ¤Ç¤ÎÊ»ÍÑ¤Îµ­Ï¿ÂÐ±þ
       *****************************************************************
@@ -2905,6 +2906,12 @@
                   (RECE62-KOUREI-SAIKEI      >  ZERO      ) AND
                   (IDY                       =   1        ))
                MOVE   RECE62-KOUREI-SAIKEI     TO  WRK-NUM
+               MOVE    6                       TO  WRK-NAGASA
+           END-IF
+           IF     (RECE62-SRYYM  >=  WRK-CONS-SRYYM-200804) AND
+                  (RECE62-KOUREI-SAIKEI2 NOT =   999999999) AND
+                  (IDY                       =   2        )
+               MOVE   RECE62-KOUREI-SAIKEI2    TO  WRK-NUM
                MOVE    6                       TO  WRK-NAGASA
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC
