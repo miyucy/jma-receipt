@@ -96,4 +96,6 @@
                        09  SPA-NAI-HOUKNSKBN       PIC  9(02).
       *                内数量
                        09  SPA-NAI-TSURYO          PIC  9(05).
+      *                入院自動発生調剤料
+                       09  SPA-NAI-NYUAUTO         PIC  9(01).
       *

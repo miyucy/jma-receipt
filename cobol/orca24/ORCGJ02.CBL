@@ -255,6 +255,7 @@
            03  IDR5                PIC 9(04).
            03  IDR6                PIC 9(04).
            03  IDX-RRK2            PIC 9(04).
+           03  IDX-RRK3            PIC 9(04).
       *    受診履歴更新用
            03  IDX-JYU             PIC 9(04).
            03  IDX-JYU2            PIC 9(04).
@@ -2394,14 +2395,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                               (13:1)
                    END-IF
                END-IF
-      ******  IF      SPA-RRK-HKNKBN  (IDX)   =   "1"
-      *            MOVE    "(労)"              TO  SPA-GMN-RRKYMD (IDX)
-      *                                                       (13:)
-      *        END-IF
-      *        IF      SPA-RRK-HKNKBN  (IDX)   =   "2"
-      *            MOVE    "(自)"              TO  SPA-GMN-RRKYMD (IDX)
-      *                                                       (13:)
-      ******** END-IF
            END-PERFORM
       *
            .
@@ -2945,7 +2938,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        数量
                MOVE    SRY-SRYSURYO(IDZ)   TO  SPA-NAI-TSURYO (IDX)
            END-IF
-      *
+      *!!
+      *    入院調剤料の自動発生分
+           IF     (SRY-NYUGAIKBN       =   "1"         )  AND
+                  (SRY-SRYKBN          =   "24"
+                                       OR  "26"        )  AND
+                  (SRY-SRYCD  (IDZ)    =   "120001110"
+                                       OR  "120000410" )  AND
+                  (SRY-AUTOKBN (IDZ)   =   "3"         )
+               MOVE    1               TO  SPA-NAI-NYUAUTO  (IDX)
+           END-IF
+      *!!
       *    コメント以外の最終行セット
            IF      SRY-SRYCD  (IDZ)(1:1)   =   "0"  OR  "8"
                CONTINUE
@@ -9003,7 +9006,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    対象がなかった時追加
            IF      IDX-RRK             =   ZERO
                IF      SPA-GNAI-DAY (1 SPA-DAY-IDX)    >   ZERO
-                   PERFORM 41001221-RRK-ADD-SEC
+      *            入院調剤料の自動発生分は追加対象外
+                   IF     (SPA-NAI-NYUAUTO (IDX)   =   1    )  AND
+                          (SPA-GNAI-DAY (1 SPA-DAY-IDX)
+                                                   =   SPA-NAI-DAY
+                                                    (IDX 1 SPA-DAY-IDX))
+                       CONTINUE
+                   ELSE
+                       PERFORM 41001221-RRK-ADD-SEC
+                   END-IF
                END-IF
            ELSE
                IF     (SPA-RRK-ADD (IDX-RRK)   =   "1" )  AND
@@ -9022,16 +9033,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4101220-ZAINUM-HEN-SEC             SECTION.
       *
+      **** PERFORM VARYING     IDR4    FROM    2   BY   1
+      *            UNTIL       IDR4    >   4
+      ****     IF     (SPA-GNAI-DAY (IDR4 SPA-DAY-IDX)
+      *                                NOT =
+      ****             SPA-NAI-DAY (IDX IDR4 SPA-DAY-IDX) )  AND
            PERFORM VARYING     IDR4    FROM    2   BY   1
                    UNTIL       IDR4    >   4
                IF     (SPA-GNAI-DAY (IDR4 SPA-DAY-IDX)
-                                       NOT =
-                       SPA-NAI-DAY (IDX IDR4 SPA-DAY-IDX) )  AND
-                     ((SPA-GNAI-DAY (IDR4 SPA-DAY-IDX)
                                            >   ZERO  )  OR
                       (SPA-NAI-DAY (IDX IDR4 SPA-DAY-IDX)
-                                           >   ZERO  ) )
+                                           >   ZERO  )
                    MOVE    ZERO            TO  IDX-RRK2
+                   MOVE    ZERO            TO  IDX-RRK3
                    MOVE    ZERO            TO  IDR6
                    PERFORM VARYING IDR5    FROM    IDX-RRK   BY   1
                            UNTIL  (IDR5        >   SPA-RRK-MAX )  OR
@@ -9049,17 +9063,36 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        TO  WRK-REN
                                ADD     1               TO  WRK-REN
                            END-IF
+      *                    剤番号存在判定
                            IF      WRK-REN             =   IDR4
                                MOVE    IDR5            TO  IDX-RRK2
+                               PERFORM 41012202-JYURRK-ZAINUM-SEC
+                               IF     (WRK-IDR         =   ZERO )
+                                 AND  (IDR4            =   4    )
+      *                            連番が４で剤番号がない時、再度
+                                   IF      IDX-RRK3        =   ZERO
+                                       MOVE    IDR5        TO  IDX-RRK3
+                                   END-IF
+                                   MOVE    ZERO            TO  IDX-RRK2
+                               END-IF
                            ELSE
                                IF      IDR6            =   ZERO
                                    MOVE    IDR5            TO  IDR6
                                END-IF
                            END-IF
                        END-IF
+      *
+                       IF      SPA-RRK-RRKYMD(IDX-RRK)
+                                           NOT =   SPA-RRK-RRKYMD(IDR5)
+                           MOVE    SPA-RRK-MAX     TO  IDR5
+                       END-IF
                    END-PERFORM
                    IF      IDX-RRK2            =   ZERO
-                       MOVE    IDR6            TO  IDX-RRK2
+                       IF      IDX-RRK3        =   ZERO
+                           MOVE    IDR6            TO  IDX-RRK2
+                       ELSE
+                           MOVE    IDX-RRK3        TO  IDX-RRK2
+                       END-IF
                    END-IF
                    IF      SPA-RRK-RENNUM (IDX-RRK2)   >   3
                        MOVE    4               TO  WRK-REN
@@ -9080,23 +9113,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-NAI-DAY (IDX IDR4 SPA-DAY-IDX)
                                                TO  WRK-DAY-MAE
       *            対象剤判定
-                   MOVE    ZERO                TO  WRK-IDR
-                   MOVE    ZERO                TO  WRK-IDR-MAX
-                   PERFORM VARYING     IDR3    FROM    1   BY   1
-      *********************UNTIL       IDR3    >   60
-                           UNTIL       IDR3    >   135
-                       IF      SPA-RRK-ZAINUM (IDX-RRK2 IDR3)
-                                                  =   SPA-GMN-ZAINUM
-                           MOVE    IDR3           TO  WRK-IDR
-                       END-IF
-                       IF      SPA-RRK-ZAINUM (IDX-RRK2 IDR3)
-                                              NOT =  ZERO
-                           MOVE    IDR3           TO  WRK-IDR-MAX
-                       END-IF
-                   END-PERFORM
+                   PERFORM 41012202-JYURRK-ZAINUM-SEC
       *
                    IF      WRK-IDR             =   ZERO
                        IF      WRK-DAY-S           >   ZERO
+      *                   入院調剤料の自動発生分は追加対象外
+                       AND    (SPA-NAI-NYUAUTO (IDX)   =   ZERO )
       *                    剤追加
                            ADD     1               TO  WRK-IDR-MAX
                            IF      WRK-IDR-MAX     <=  135
@@ -9130,6 +9152,29 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        4101220-ZAINUM-HEN-EXT.
+           EXIT.
+      *            
+      *****************************************************************
+      *    受診履歴テーブル判定処理
+      *****************************************************************
+       41012202-JYURRK-ZAINUM-SEC             SECTION.
+      *
+      *    対象剤判定
+           MOVE    ZERO                TO  WRK-IDR
+           MOVE    ZERO                TO  WRK-IDR-MAX
+           PERFORM VARYING     IDR3    FROM    1   BY   1
+                   UNTIL       IDR3    >   135
+               IF      SPA-RRK-ZAINUM (IDX-RRK2 IDR3)
+                                           =   SPA-GMN-ZAINUM
+                    MOVE    IDR3           TO  WRK-IDR
+               END-IF
+               IF      SPA-RRK-ZAINUM (IDX-RRK2 IDR3)
+                                       NOT =  ZERO
+                   MOVE    IDR3            TO  WRK-IDR-MAX
+               END-IF
+           END-PERFORM
+           .
+       41012202-JYURRK-ZAINUM-EXT.
            EXIT.
       *            
       *****************************************************************
@@ -10456,11 +10501,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      IDX-J025        <=  100
                    MOVE    "エラ−"    TO  SPA-J025-KBNMEI
                                                  (IDX-J025)
-                   MOVE    "収納がまとめ入力分の為、"
-                                       TO  SPA-J025-ERRMSG
-                   MOVE
-                   "再計算できませんので、診療行為で訂正して下さい"
-                                       TO  SPA-J025-ERRMSG(25:)
+                   STRING  "収納がまとめ入力分の為、"
+                           "再計算できませんので、"
+                           "診療行為で訂正して下さい"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-J025-ERRMSG
+                   END-STRING
                END-IF
            END-IF
            IF     (FLG-SYUNOU          =   ZERO ) AND
@@ -12791,24 +12837,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-JIDCD
                WHEN    "0101"
-               MOVE
-               "剤が選択されています。ＯＫ　で選択内容はクリアされます"
-                                       TO  WRK-JIDMSG
-      *----(01.00.01) LINE ADD START ----------------------------------
+                   STRING  "剤が選択されています。"
+                           "ＯＫで選択内容はクリアされます。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0102"
-               MOVE
-           "剤が修正されています。ＯＫで修正分は反映されずに終了します"
-                                       TO  WRK-JIDMSG
-      *----(01.00.01) LINE ADD END   ----------------------------------
+                   STRING  "剤が修正されています。"
+                           "ＯＫで修正分は反映されずに終了します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0103"
-               MOVE
-               "剤選択されました。現在選択中の内容はクリアされます。"
-                                       TO  WRK-JIDMSG
+                   STRING  "剤選択されました。"
+                           "現在選択中の内容はクリアされます。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0104"
-                   MOVE    "現在までの修正分を登録後、受診履歴の選択"
-                                       TO  WRK-JIDMSG1
-                   MOVE    "で当日の剤内容を追加修正します"
-                                       TO  WRK-JIDMSG2
+                   STRING  "現在までの修正分を登録後、受診履歴の選択で"
+                           "当日の剤内容を追加修正します"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
       *
                WHEN    "0134"
                    STRING  "現在までの修正分を登録後、"
@@ -12818,81 +12869,96 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
       *
                WHEN    "0106"
-               MOVE
-           "診療年月が変更されました。現在までの修正分を登録します。"
-                                       TO  WRK-JIDMSG
+                   STRING   "診療年月が変更されました。"
+                            "現在までの修正分を登録します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0107"
-                   MOVE    "診療科が変更されました。現在までの修正分"
-                                       TO  WRK-JIDMSG1
-                   MOVE    "を登録します。"
-                                       TO  WRK-JIDMSG2
+                   STRING  "診療科が変更されました。現在までの修正分を"
+                           "登録します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0108"
-                   MOVE    "診療年月が変更されました。現在までの修正"
-                                       TO  WRK-JIDMSG1
-                   MOVE    "分を登録します。"
-                                       TO  WRK-JIDMSG2
+                   STRING  "診療年月が変更されました。現在までの修正"
+                           "分を登録します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0109"
-                   MOVE    "保険一括変更が選択されました。"
-                                       TO  WRK-JIDMSG
-                   MOVE    "現在までの修正分を登録します。"
-                                       TO  WRK-JIDMSG(31:)
+                   STRING  "保険一括変更が選択されました。"
+                           "現在までの修正分を登録します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0110"
-                   MOVE    "診療区分が変更されました。"
-                                       TO  WRK-JIDMSG
-                   MOVE    "現在までの修正分を登録します。"
-                                       TO  WRK-JIDMSG(27:)
+                   STRING  "診療区分が変更されました。"
+                           "現在までの修正分を登録します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0111"
-                   MOVE    "保険組合せが変更されました。"
-                                       TO  WRK-JIDMSG
-                   MOVE    "現在までの修正分を登録します。"
-                                       TO  WRK-JIDMSG(29:)
+                   STRING  "保険組合せが変更されました。"
+                           "現在までの修正分を登録します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0112"
-                   MOVE    "入外区分が変更されました。"
-                                       TO  WRK-JIDMSG
-                   MOVE    "現在までの修正分を登録します。"
-                                       TO  WRK-JIDMSG(27:)
+                   STRING  "入外区分が変更されました。"
+                           "現在までの修正分を登録します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0113"
-                   MOVE    "現在までの修正分を登録後、"
-                                       TO  WRK-JIDMSG
-                   MOVE    "前頁を表示します。"
-                                       TO  WRK-JIDMSG(27:)
+                   STRING  "現在までの修正分を登録後、"
+                           "前頁を表示します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0114"
-                   MOVE    "現在までの修正分を登録後、"
-                                       TO  WRK-JIDMSG
-                   MOVE    "次頁を表示します。"
-                                       TO  WRK-JIDMSG(27:)
+                   STRING  "現在までの修正分を登録後、"
+                           "次頁を表示します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0115"
-                   MOVE    "診療日を変更します。現在までの修正分の"
-                                       TO  WRK-JIDMSG
-                   MOVE    "登録もしますので取消はできません。"
-                                       TO  WRK-JIDMSG(39:)
+                   STRING  "診療日を変更します。現在までの修正分の"
+                           "登録もしますので取消はできません。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0116"
-                   MOVE    "現在までの修正分を登録後、"
-                                       TO  WRK-JIDMSG
-                   MOVE    "カルテ３号紙を印刷します。"
-                                       TO  WRK-JIDMSG(27:)
+                   STRING  "現在までの修正分を登録後、"
+                           "カルテ３号紙を印刷します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0117"
                    MOVE    "カルテ３号紙を印刷します。"
                                        TO  WRK-JIDMSG
                WHEN    "0118"
-                   MOVE    "まとめ入力分もすべて診療日変更します。"
-                                       TO  WRK-JIDMSG
-                   MOVE    "現在までの修正分の登録もします。"
-                                       TO  WRK-JIDMSG(39:)
+                   STRING  "まとめ入力分もすべて診療日変更します。"
+                           "現在までの修正分の登録もします。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0119"
-                   MOVE    "月上限回数をオーバーするコードがあります。"
-                                       TO  WRK-JIDMSG
-                   MOVE    "追加後、回数を確認して下さい。"
-                                       TO  WRK-JIDMSG(43:)
+                   STRING  "月上限回数をオーバーするコードがあります。"
+                           "追加後、回数を確認して下さい。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
                WHEN    "0120"
       *            内分泌負荷試験
                    MOVE    SPA-NAI-NAIBUNERR
                                        TO  WRK-JIDMSG
                WHEN    "0130"
-                   MOVE    "当月の回数がゼロの剤を削除します。"
-                                       TO  WRK-JIDMSG
-                   MOVE    "復元はできません。よろしいですか？"
-                                       TO  WRK-JIDMSG(35:)
+                   STRING  "当月の回数がゼロの剤を削除します。"
+                           "復元はできません。よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO  WRK-JIDMSG
+                   END-STRING
       *
                WHEN    "0140"
                    STRING  "剤のない受診履歴を削除します。"
@@ -12903,7 +12969,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                WHEN    "0123"
                    STRING  "既に受診のある日です。"
-                                       DELIMITED  BY  SIZE
                            "連番号を追加します。よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-JIDMSG
@@ -12911,7 +12976,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                WHEN    "0124"
                    STRING  "受診の連番号が３以上になります。"
-                                       DELIMITED  BY  SIZE
                            "訂正での展開ができません。よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-JIDMSG
@@ -12968,19 +13032,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0115"
                    MOVE    "診療日の変更、または追加を選択して下さい。"
                                        TO  JID2-ID2MSG
-                   MOVE    "現在までの変更分の登録もしますので"
-                                       TO  JID2-ID2MSG2
-                   MOVE    "取消はできません。"
-                                       TO  JID2-ID2MSG2(35:)
+                   STRING  "現在までの変更分の登録もしますので"
+                           "取消はできません。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  JID2-ID2MSG2
+                   END-STRING
                WHEN    "0118"
-                   MOVE    "診療日の変更、または追加を選択して下さい。"
-                                       TO  JID2-ID2MSG
-                   MOVE    "まとめ入力分をすべて対象とします。"
-                                       TO  JID2-ID2MSG(43:)
-                   MOVE    "現在までの変更分の登録もしますので"
-                                       TO  JID2-ID2MSG2
-                   MOVE    "取消はできません。"
-                                       TO  JID2-ID2MSG2(35:)
+                   STRING  "診療日の変更、または追加を選択して下さい。"
+                           "まとめ入力分をすべて対象とします。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  JID2-ID2MSG
+                   END-STRING
+                   STRING  "現在までの変更分の登録もしますので"
+                           "取消はできません。"
+                                       DELIMITED   BY  SIZE
+                                       INTO  JID2-ID2MSG2
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-JIDCD2
                                        TO  JID2-ID2MSG
