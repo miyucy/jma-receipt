@@ -142,6 +142,12 @@
                05  WRK-RSI-TENSUKEI        PIC 9(08)V99.
                05  WRK-RSI-TENSUKEI2       PIC 9(08)V99.
       *
+      *****03  WRK-SANSO           PIC 9(08).
+           03  WRK-SANSOKIN        PIC 9(08)V99.
+           03  WRK-SANKEI          PIC 9(08).
+           03  WRK-SANTEN          PIC 9(08).
+           03  WRK-SANSOKIN-SUM    PIC 9(08)V99.
+      *
            03  WRK-SYOKEIS         PIC 9(08)V9999.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
            03  WRK-SYOKEI          PIC 9(08).
@@ -157,6 +163,12 @@
       *
            03  WRK-SCNT            PIC 9(03).
       *
+      *
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
+      *
            03  WRK-INPUTCD         PIC X(22).
       *
       *    保存用
@@ -167,6 +179,9 @@
       *    酸素コードテーブル
            COPY     "CMSANSOTBL.INC".
       *
+      *    保険別算定履歴テーブル
+      *    COPY   "CMSANTEITBL.INC".
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -176,11 +191,11 @@
       *
       *    点数マスタ−
       *01  TENSU-REC.
-      *    COPY    "CPTENSU.INC".
+           COPY    "CPTENSU.INC".
       *
       *    算定履歴
-      *01  SANTEI-REC.
-      *    COPY    "CPSANTEI.INC".
+       01  SANTEI-REC.
+           COPY    "CPSANTEI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -918,11 +933,7 @@
                    (SPA-GAI-JIKANKBN   NOT =   ZERO )  AND
                    (WRK-COM-TIMEKSNKBN(IDX-ZS)
                                        NOT =   ZERO )
-               IF      (SPA-GAI-JIKANKBN       =   8 )
-                   CONTINUE
-               ELSE
-                   PERFORM 10019-JIKANKASAN-CHK-SEC
-               END-IF
+               PERFORM 10019-JIKANKASAN-CHK-SEC
            END-IF
       *    時間加算
            IF     ((LNK-ORCSC-TIMEFLG          NOT =   ZERO )  OR
@@ -1014,8 +1025,6 @@
                    MOVE    "2"             TO  WRK-COM-AUTOKBN (IDX-S)
                    MOVE    1               TO  WRK-COM-SANFLG (IDX-S)
                END-IF
-           ELSE
-               MOVE    1               TO  WRK-COM-SANFLG (IDX-T)
            END-IF
            .
        100112-TEITAIJYU-CHK-EXT.
@@ -1341,6 +1350,10 @@
            MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  IDX-ZS
            MOVE    ZERO                TO  IDX-SANSO
+      *****MOVE    ZERO                TO  WRK-SANSO
+           MOVE    ZERO                TO  WRK-SANKEI
+           MOVE    ZERO                TO  WRK-SANTEN
+           MOVE    ZERO                TO  WRK-SANSOKIN-SUM
            MOVE    ZERO                TO  WRK-GRSI-TENSUKEI
            MOVE    ZERO                TO  WRK-RSI-TENSUKEI2
       *
