@@ -33,7 +33,7 @@
       *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
       *  04.01.00    NACL-森脇    07/12/21  公害レセプト追加
       *  04.02.00    NACL-森脇    08/03/17  広域連合追加、お薬手帳追加
-      *  04.03.01    NACL-森脇    08/06/13  レセプト電算追加
+      *  04.03.01    NACL-森脇    08/06/24  レセプト電算、症状詳記追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -89,7 +89,7 @@
       *----(04.02.00)--UPD-START---
       *----(04.03.01)--UPD-START---
                    07  SPA-GMN-KOUMOKU2.
-                       09  SPA-GMN-PRTKBN-G   OCCURS  19.
+                       09  SPA-GMN-PRTKBN-G   OCCURS  20.
                            11  SPA-GMN-PRTKBN
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
@@ -439,7 +439,7 @@
       *----(04.01.00)--UPD-START---
       *----(04.02.00)--UPD-START---
       *----(04.03.01)--UPD-START---
-           MOVE    19                  TO  SPA-GMN-PRTKBN-MAX
+           MOVE    20                  TO  SPA-GMN-PRTKBN-MAX
       *----(04.03.01)--UPD-END-----
       *----(04.02.00)--UPD-END-----
       *----(04.01.00)--UPD-END-----
@@ -1986,6 +1986,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(04.03.01)--ADD-START---
                 WHEN    119
                     MOVE  "PRTKBN19"          TO   MCP-WIDGET
+                WHEN    120
+                    MOVE  "PRTKBN20"          TO   MCP-WIDGET
       *----(04.03.01)--ADD-END-----
                 WHEN    200
                     MOVE  "B12"              TO   MCP-WIDGET
@@ -2077,6 +2079,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    117         TO  SPA-GMN-CUR
                WHEN    "PRTKBN17"
       *----(04.02.00)--ADD-END-----
+      *----(04.03.01)--ADD-START---
+                   MOVE    120         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN20"
+      *----(04.03.01)--ADD-END-----
                    MOVE    109         TO  SPA-GMN-CUR
                WHEN    "PRTKBN18"
                    MOVE    200         TO  SPA-GMN-CUR
