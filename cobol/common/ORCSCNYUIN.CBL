@@ -136,6 +136,7 @@
            03  IDX-3               PIC 9(02).
       *
            03  IDX-K               PIC 9(02).
+           03  IDX-D               PIC 9(02).
       *
            03  IDW                 PIC 9(04).
            03  IDW2                PIC 9(04).
@@ -2279,15 +2280,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM
                    UNTIL   (FLG-SRYACCT        =   1    ) OR
                            (FLG-OK             =   1    )
-      *          投薬関係の有無
-                 IF      ACCT-SRYKBN(1:1)      =   "2"
-                     MOVE    1                 TO  FLG-TOUYAKU
-                 END-IF
+      ***        投薬関係の有無
+      *          IF      ACCT-SRYKBN(1:1)      =   "2"
+      *              MOVE    1                 TO  FLG-TOUYAKU
+      **         END-IF
       *
       *          入院調剤料と麻毒については後で一括変更するのでそのまま
-                 IF      ACCT-SRYKBN             =   "24"  OR "26"
-                       CONTINUE
-                 ELSE
+      *          IF      ACCT-SRYKBN             =   "24"  OR "26"
+      *                CONTINUE
+      ****       ELSE
       *
                    MOVE    JYURRK-SRYYMD(7:2)      TO  IDX-2
                    EVALUATE    JYURRK-RENNUM
@@ -2304,14 +2305,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 4500113-TEISEI-SANTEI-SEC
       *
       *            剤回数　変更
-                   COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
-                                               -   ACCT-DAY
-                                                       (IDX-1 IDX-2)
-                   COMPUTE ACCT-DAY (1 IDX-2)  =   ACCT-DAY (1 IDX-2)
-                                               -   ACCT-DAY
-                                                       (IDX-1 IDX-2)
                    MOVE    ZERO                TO  ACCT-DAY
                                                        (IDX-1 IDX-2)
+      *            剤回数編集
+                   PERFORM 450140-ZAIKAISU-HEN-SEC
       *            回数がゼロの時、削除
                    IF      ACCT-ZAIKAISU       =   ZERO
                        PERFORM 45001121-ZAINUM-DELETE-SEC
@@ -2339,7 +2336,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
       *
-                  END-IF
+      ******      END-IF
       *
                    MOVE    "tbl_sryacct"       TO  MCP-TABLE
                    MOVE    "key5"              TO  MCP-PATHNAME
@@ -2357,6 +2354,28 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        4500112-TEISEI-SRYACCT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *   剤回数編集処理
+      *****************************************************************
+       450140-ZAIKAISU-HEN-SEC          SECTION.
+      *
+           COMPUTE ACCT-DAY (1 IDX-2)  =   ACCT-DAY (2 IDX-2)
+                                       +   ACCT-DAY (3 IDX-2)
+                                       +   ACCT-DAY (4 IDX-2)
+      *
+           MOVE    ZERO                TO  ACCT-ZAIKAISU
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+              IF      ACCT-DAY (1 IDX-D)   >   ZERO
+      *            剤回数集計
+                   COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
+                                               +   ACCT-DAY
+                                                       (1  IDX-D)
+               END-IF
+           END-PERFORM
+           .
+       450140-ZAIKAISU-HEN-EXT.
       *
       *****************************************************************
       *    剤削除処理
@@ -2380,6 +2399,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      MCP-RC          NOT =   ZERO
                 DISPLAY "K08 SRYACT DEL ERR:" MCP-RC
                         ",KEY:" SRY-KEY
+                MOVE    "0005"          TO  SPA-ERRCD
            END-IF
       *    コメント
            INITIALIZE                  PTCOM-REC
@@ -2397,6 +2417,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "K08  PTCOM  DEL ERR:" MCP-RC
                      ",KEY:" PTCOM-KEY
+               MOVE    "0005"          TO  SPA-ERRCD
            END-IF
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
@@ -2409,6 +2430,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "K08 SRYACCT DEL ERR:" MCP-RC
                         ",KEY:" ACCT-KEY
+               MOVE    "0005"          TO  SPA-ERRCD
            END-IF
       *
       *    附加情報削除
@@ -2430,6 +2452,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "K08  SRYACCTPLUS  DEL ERR:" MCP-RC
                      ",KEY:" ACCTP-KEY
+               MOVE    "0005"          TO  SPA-ERRCD
            END-IF
       *
            .
@@ -2459,6 +2482,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 915-SRYACT-NEXT-SEC
            ELSE
                MOVE    1                   TO  FLG-SRYACT
+           END-IF
+      *    投薬関係の有無
+           IF       FLG-SRYACT         =   ZERO
+               IF      (ACCT-SRYKBN        =   "21"
+                                           OR  "22"
+                                           OR  "23" )
+                   IF      (SRY-SRYSYUKBN(3:1)   NOT =   "4" )
+                       MOVE    1                 TO  FLG-TOUYAKU
+                   END-IF
+               END-IF
            END-IF
            PERFORM
                    UNTIL   FLG-SRYACT          =   1
