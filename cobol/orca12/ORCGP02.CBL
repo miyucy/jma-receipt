@@ -2098,14 +2098,14 @@
            IF     (SPA-P02-SYORI       =   1     )
       *        登録不可
                MOVE    "1025"              TO  SPA-ERRCD
-           END-IF
-           IF     (SPA-GMN-PTID        =   ZERO  )
-               MOVE    "1021"              TO  SPA-ERRCD
+           ELSE
+               IF     (SPA-GMN-PTID        =   ZERO  )
+                   MOVE    "1021"              TO  SPA-ERRCD
+               END-IF
            END-IF
            IF      SPA-ERRCD           =   SPACE
                PERFORM 49021-P02Y-SYORI-SEC
            END-IF
-      *
            .
        4902-P02YSYORI-EXT.
            EXIT.
@@ -3698,7 +3698,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-PTID            TO  SHELLTBL-ARG2
            MOVE    "XX"                TO  SHELLTBL-ARG3
            MOVE    WRK-UKETIME         TO  SHELLTBL-ARG4
-           MOVE    SPA-HOSPNUM          TO  SHELLTBL-ARG5
+           MOVE    SPA-HOSPNUM         TO  SHELLTBL-ARG5
       *
            MOVE    SYS-9001-ADDRESS    TO  SHELLTBL-ARG6
            MOVE    SYS-9001-PORT1      TO  SHELLTBL-ARG7
@@ -4769,30 +4769,34 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2509"
                    MOVE    "登録できません"    TO  SPA-ERRMSG
                WHEN    "2510"
-                   MOVE    "旧姓履歴が２０件以上です。"
-                                               TO  SPA-ERRMSG
-                   MOVE    "登録できません。"
-                                               TO  SPA-ERRMSG(27:)
+                   STRING  "旧姓履歴が２０件以上です。"
+                           "登録できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "2530"
                    MOVE    "全角で入力して下さい"    TO  SPA-ERRMSG
                WHEN    "2517"
                    MOVE    "変更年月日が重複しています"  TO  SPA-ERRMSG
       *        患者番号取得エラー
                WHEN    "8000"
-                   MOVE    "自動採番の患者番号が最大値です。"
-                                               TO  SPA-ERRMSG
-                   MOVE    "初期番号から採番しました。"
-                                               TO  SPA-ERRMSG(33:)
+                   STRING  "自動採番の患者番号が最大値です。"
+                           "初期番号から採番しました。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "8001"
-                   MOVE    "患者ＩＤが最大値です。"
-                                               TO  SPA-ERRMSG
-                   MOVE    "初期番号から採番しました。"
-                                               TO  SPA-ERRMSG(23:)
+                   STRING  "患者ＩＤが最大値です。"
+                           "初期番号から採番しました。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "8002"
-                   MOVE    "自動採番の患者番号が最大値になりました。"
-                                               TO  SPA-ERRMSG
-                   MOVE    "連番号桁数を変更して下さい。"
-                                               TO  SPA-ERRMSG(41:)
+                   STRING  "自動採番の患者番号が最大値になりました。"
+                           "連番号桁数を変更して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "8003"
                    MOVE    "患者ＩＤが登録済です。登録できません。"
                                                TO  SPA-ERRMSG
@@ -4933,26 +4937,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-PIDCD
                WHEN    "0101"
-                   MOVE
-                       "内容が修正されています。"
-                                       TO  WRK-PIDMSG(1:)
-                   MOVE
-                        "ＯＫで修正分は反映されずに終了します"
-                                       TO  WRK-PIDMSG(25:)
+                   STRING  "内容が修正されています。"
+                           "ＯＫで修正分は反映されずに終了します"
+                                           DELIMITED  BY  SIZE
+                                           INTO    WRK-PIDMSG
+                   END-STRING
                WHEN    "0103"
-                   MOVE
-                       "該当患者のデータをすべて削除します。"
-                                       TO  WRK-PIDMSG(1:)
-                   MOVE
-                        "よろしいですか？"
-                                       TO  WRK-PIDMSG(37:)
+                   STRING  "該当患者のデータをすべて削除します。"
+                            "よろしいですか？"
+                                           DELIMITED  BY  SIZE
+                                           INTO    WRK-PIDMSG
+                   END-STRING
                WHEN    "0104"
                    STRING    SPA-PIDMSG    DELIMITED  BY  SPACE
                              "を老人負担割合へ追加変更します。"
-                                           DELIMITED  BY  SIZE
                              "よろしいですか？"
                                            DELIMITED  BY  SIZE
-                                       INTO    WRK-PIDMSG
+                                           INTO    WRK-PIDMSG
                    END-STRING
                WHEN    "0105"
       **********   MOVE
@@ -4969,40 +4970,35 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-PIDMSG
                    END-STRING
                WHEN    "0106"
-                   MOVE
-                   "公費の期間が重複します。前の公費を終了させます。"
-                                       TO  WRK-PIDMSG
-                   MOVE
-                        "よろしいですか？"
-                                       TO  WRK-PIDMSG(47:)
+                   STRING  "公費の期間が重複します。"
+                           "前の公費を終了させます。よろしいですか？"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-PIDMSG
+                   END-STRING
                WHEN    "0107"
                    MOVE    SPA-PIDMSG      TO  WRK-PIDMSG
       *        Ｈ１５．４改正から
                WHEN    "0201"
-                   MOVE
-                   "保険が終了しています。終了日を変更します。"
-                                       TO  WRK-PIDMSG
-                   MOVE
-                        "よろしいですか？"
-                                       TO  WRK-PIDMSG(43:)
+                   STRING  "保険が終了しています。終了日を変更します。"
+                           "よろしいですか？"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-PIDMSG
+                   END-STRING
                WHEN    "0202"
-                   MOVE
-                   "保険を切り替えます。よろしいですか？"
+                   MOVE    "保険を切り替えます。よろしいですか？"
                                        TO  WRK-PIDMSG
                WHEN    "0203"
-                   MOVE
-                   "継続は平成１５年３月末で終了しています。"
-                                       TO  WRK-PIDMSG
-                   MOVE
-                        "終了日を変更します。よろしいですか？"
-                                       TO  WRK-PIDMSG(41:)
+                   STRING  "継続は平成１５年３月末で終了しています。"
+                           "終了日を変更します。よろしいですか？"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-PIDMSG
+                   END-STRING
                WHEN    "0204"
-                   MOVE
-                   "任継を切り替えます。切り替え後の終了日を"
-                                       TO  WRK-PIDMSG
-                   MOVE
-                        "確認して下さい。"
-                                       TO  WRK-PIDMSG(41:)
+                   STRING  "任継を切り替えます。"
+                           "切り替え後の終了日を確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    WRK-PIDMSG
+                   END-STRING
       *        Ｈ１８．１０改正から
                WHEN    "0110"
                    STRING  SPA-PIDMSG    DELIMITED  BY  SPACE
@@ -5021,20 +5017,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
       *
                WHEN    "9100"
-                   MOVE    "保険組合の変更で保険期間外の診療が"
-                                               TO  WRK-PIDMSG
-                   MOVE    "存在します。診療を保険変更して下さい。"
-                                               TO  WRK-PIDMSG(35:)
+                   STRING  "保険組合の変更で保険期間外の診療が"
+                           "存在します。診療を保険変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-PIDMSG
+                   END-STRING
                WHEN    "9101"
-                   MOVE    "保険組合の変更で保険期間外の病名が"
-                                               TO  WRK-PIDMSG
-                   MOVE    "存在します。病名を保険変更して下さい。"
-                                               TO  WRK-PIDMSG(35:)
+                   STRING  "保険組合の変更で保険期間外の病名が"
+                           "存在します。病名を保険変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-PIDMSG
+                   END-STRING
                WHEN    "9102"
-                   MOVE    "保険組合の変更で保険期間外の診療と病名が"
-                                               TO  WRK-PIDMSG
-                   MOVE    "存在します。診療と病名を保険変更。"
-                                               TO  WRK-PIDMSG(41:)
+                   STRING  "保険組合の変更で保険期間外の診療と病名が"
+                           "存在します。診療と病名を保険変更。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-PIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-PIDCD
                                        TO  WRK-PIDMSG
