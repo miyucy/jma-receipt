@@ -1,3 +1,16 @@
+--                                    --
+-- 入院基本料テーブルコード追加       --
+-- 190130810 一般病棟１０対１入院基本料（Ｈ２０年３月３１日時点７対１）
+-- 190131010 結核病棟１０対１入院基本料（Ｈ２０年３月３１日時点７対１）
+-- 190131110 専門病院１０対１入院基本料（Ｈ２０年３月３１日時点７対１）
+--                                    --
+-- Create Date : 2008/06/25           --
+--                                    --
+\set ON_ERROR_STOP
+
+
+
+
 delete from tbl_nyuinkhn where khn_srycd = '190130810' and yukostymd  = '20080701';
 delete from tbl_nyuinkhn where khn_srycd = '190131010' and yukostymd  = '20080701';
 delete from tbl_nyuinkhn where khn_srycd = '190131110' and yukostymd  = '20080701';
