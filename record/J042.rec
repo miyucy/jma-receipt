@@ -4,12 +4,10 @@ J042	{
 			value	varchar(40);
 		};
 		scrolledwindow1	{
-			viewport1	{
-				list1	{
-					count	int;
-					item	varchar(40)[50];
-					select	bool[50];
-				};
+			hpos	int;
+			vpos	int;
+			LIST	{
+				value	varchar(2000);
 			};
 		};
 	};

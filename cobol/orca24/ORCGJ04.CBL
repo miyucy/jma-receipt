@@ -544,6 +544,10 @@
                        09  WRK-KNK-SRYYM           PIC X(06).
                        09  WRK-KNK-SRYYMW          PIC X(07).
                        09  WRK-KNK-SRYCD           PIC X(09).
+           03  WRK-KNKMEI-G.
+               05  WRK-KNKMEI-T            OCCURS   50.
+                   07  WRK-KNKMEI          PIC X(38).
+                   07  WRK-KNKCUR          PIC X(02).
       *
        01  WRK-SORT-AREA.
            03  WRK-SRT-TBL2A.
@@ -7349,17 +7353,21 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-KNK-TOUMEI (1)  TO  J042-POP-TOUMEI
       *
            MOVE    ZERO                TO  IDX-X
+           MOVE    SPACE               TO  WRK-KNKMEI-G
            PERFORM VARYING     IDX-K   FROM    1   BY  1
                    UNTIL      (IDX-K       >   30  )   OR
                               (IDX-X       >=  3   )  
                IF      WRK-KNK-KNKMEI (1 IDX-K)    NOT =   SPACE
                    ADD     1               TO  IDX-X
                    MOVE    WRK-KNK-KNKMEI (1 IDX-K)
-                                           TO  J042-KNKMEI (IDX-X)
+      *********                            TO  J042-KNKMEI (IDX-X)
+                                           TO  WRK-KNKMEI (IDX-X)
+                   MOVE    X"0A"           TO  WRK-KNKCUR (IDX-X)
                END-IF
            END-PERFORM
+           MOVE    WRK-KNKMEI-G        TO  J042-LIST
       *
-           MOVE    IDX-X               TO  J042-COUNT
+      *    MOVE    IDX-X               TO  J042-COUNT
       *    初期カーソル設定
            MOVE    "B01"               TO  MCP-WIDGET
       *
