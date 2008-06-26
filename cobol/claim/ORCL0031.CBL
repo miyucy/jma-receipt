@@ -710,12 +710,17 @@
       *    剤毎の処理
            MOVE    ZERO                TO  WRK-ZAINUM
            MOVE    ZERO                TO  FLG-ERR
-      *    入院の時、同じワーク診療行為の判定
-           IF      WRK-NYUGAIKBN       =   "1"
-               PERFORM 2009-WKSRYACT-CHK-SEC
+           IF     (LF04-SRYCD (01)     =   SPACE)
+      *        病名のみ
+               CONTINUE
            ELSE
+      *    入院の時、同じワーク診療行為の判定
+               IF      WRK-NYUGAIKBN       =   "1"
+                   PERFORM 2009-WKSRYACT-CHK-SEC
+               ELSE
       *    外来の時、同じワーク診療行為の判定
-               PERFORM 20010-WKSRYACT-CHK2-SEC
+                   PERFORM 20010-WKSRYACT-CHK2-SEC
+               END-IF
            END-IF
       *
            MOVE    ZERO                TO  FLG-NYUINIDOU
