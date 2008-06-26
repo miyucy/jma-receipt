@@ -710,17 +710,12 @@
       *    剤毎の処理
            MOVE    ZERO                TO  WRK-ZAINUM
            MOVE    ZERO                TO  FLG-ERR
-           IF     (LF04-SRYCD (01)     =   SPACE)
-      *        病名のみ
-               CONTINUE
-           ELSE
       *    入院の時、同じワーク診療行為の判定
-               IF      WRK-NYUGAIKBN       =   "1"
-                   PERFORM 2009-WKSRYACT-CHK-SEC
-               ELSE
+           IF      WRK-NYUGAIKBN       =   "1"
+               PERFORM 2009-WKSRYACT-CHK-SEC
+           ELSE
       *    外来の時、同じワーク診療行為の判定
-                   PERFORM 20010-WKSRYACT-CHK2-SEC
-               END-IF
+               PERFORM 20010-WKSRYACT-CHK2-SEC
            END-IF
       *
            MOVE    ZERO                TO  FLG-NYUINIDOU
@@ -756,14 +751,20 @@
                    PERFORM 2004-WKSRYACT-OUT-SEC
                END-IF
       *
-      *        病名セット処理
-               PERFORM 2006-BYOMEI-SET-SEC
+      ***      病名セット処理
+      ****     PERFORM 2006-BYOMEI-SET-SEC
       *
       *        入院移動処理
                IF      FLG-NYUINIDOU       =   1
                    PERFORM 2007-ORCL0031N-SEC
                END-IF
            END-IF
+      *
+           IF      FLG-END             =   ZERO
+      *        病名セット処理
+               PERFORM 2006-BYOMEI-SET-SEC
+           END-IF
+      *
       *    外来の時、受付に会計待を設定
            IF      WRK-NYUGAIKBN       =   "2"
               AND (FLG-ERR             =   ZERO )
