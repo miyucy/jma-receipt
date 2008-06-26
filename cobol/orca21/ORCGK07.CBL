@@ -156,7 +156,6 @@
            COPY    "K02.INC".
            COPY    "K02N.INC".
            COPY    "K021.INC".
-           COPY    "K022.INC".
            COPY    "K023.INC".
            COPY    "K03.INC".
            COPY    "K04.INC".

@@ -1,7 +1,6 @@
 SRCS = ORCGK01.CBL \
        ORCGK02.CBL \
        ORCGK021.CBL \
-       ORCGK022.CBL \
        ORCGK023.CBL \
        ORCGK03.CBL \
        ORCGK03X.CBL \
