@@ -491,6 +491,7 @@
            03  WRK-ERRMSG                  PIC X(10).
            03  WRK-SKYMONEY                PIC S9(08).
            03  WRK-RJNYMD                  PIC X(08).
+           03  WRK-LASTSRYYM               PIC X(06).
       *
        01  BAK-AREA.
            03  BAK-AGE-G.
@@ -728,6 +729,9 @@
        01  BAKRRK-REC.
            COPY  "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                             BY  //BAKRRK-//.
+       01  NRRK-REC.
+           COPY  "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
+                                            BY  //NRRK-//.
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -930,6 +934,8 @@
       *
       *    収納更新差額取得
            COPY  "CPORCSS002.INC".
+      *
+           COPY  "CPORCSS010.INC".
       *
       *    入院料点数チェックサブ
            COPY  "CPORCSS007.INC".
@@ -7199,6 +7205,8 @@
                GO  TO  4801-PTNYUINRRK-UPD-EXT
            END-IF
       *
+           MOVE    PTNYUINRRK-REC          TO  NRRK-REC
+      *
            EVALUATE WRK-UPDKBN
            WHEN    "INS"
       *        入院履歴マスタ追加
@@ -7248,6 +7256,9 @@
                GO  TO  4801-PTNYUINRRK-UPD-EXT
            END-IF
       *
+           PERFORM 900-NYUINACCT-KEY19-SEL-SEC
+           MOVE    NACCT-SRYYM TO  WRK-LASTSRYYM
+      *
       *    ユーザプログラム用パラメタ編集処理
            PERFORM 4801-USERPGRRK-EDIT-SEC
       *
@@ -7292,6 +7303,15 @@
            PERFORM 4801-PTINF-UPD-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4801-PTNYUINRRK-UPD-EXT
+           END-IF
+      *
+           IF    ( SPA-GMN-I01-SYORIKBN-CD =   "03" )
+               CONTINUE
+           ELSE
+               PERFORM 4801-ORCSS010-SEC
+               IF    ( SPA-ERRCD       NOT =   SPACE )
+                   GO  TO  4801-PTNYUINRRK-UPD-EXT
+               END-IF
            END-IF
       *
       *    前回患者情報を設定
@@ -8311,10 +8331,6 @@
       *
       *    入院履歴枝番号（転科・転室・転棟時に採番）
            MOVE    WRK-RRKEDANUM   TO  PTNYUINRRK-RRKEDANUM
-      *
-           IF    ( WRK-UPDKBN      =   "DEL" )
-               GO  TO  4801-PTNYUINRRK-EDIT-EXT
-           END-IF
       *
       *    病棟番号
            MOVE    SPA-GMN-I01-BTUNAME-CD
@@ -16991,6 +17007,54 @@
        4801-PTINF-UPD-EXT.
            EXIT.
       *****************************************************************
+      *    入院診療行為照会テーブル作成処理
+      *****************************************************************
+       4801-ORCSS010-SEC               SECTION.
+      *
+           MOVE    NRRK-TENNYUYMD  TO  WRK-STYMD
+           MOVE    WRK-LASTSRYYM   TO  WRK-EDYMD
+      *
+           PERFORM 900-NYUINACCT-KEY19-SEL-SEC
+           IF    ( WRK-EDYMD       =   SPACE )
+            OR   ( NACCT-SRYYM >=  WRK-EDYMD (1:6) )
+               MOVE    NACCT-SRYYM TO  WRK-EDYMD
+           END-IF
+      *
+           IF    ( WRK-EDYMD       =   SPACE )
+               MOVE    "4032"          TO  SPA-ERRCD
+               MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+               MOVE    "abort"         TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+           END-IF
+      *
+           DISPLAY "PTID " SPA-NAI-I01-PTID " STSRYYM " WRK-STYMD (1:6)
+                   " EDSRYYM " WRK-EDYMD (1:6)
+      *
+           PERFORM UNTIL ( WRK-STYMD (1:6) >   WRK-EDYMD (1:6))
+                    OR   ( SPA-ERRCD  NOT  =   SPACE )
+      *
+               INITIALIZE                  SS010-AREA
+               MOVE    SPA-NAI-I01-PTID    TO  SS010-PTID
+               MOVE    WRK-STYMD (1:6)     TO  SS010-SRYYM
+               DISPLAY "PTID " SS010-PTID " SRYYM " SS010-SRYYM
+               CALL    "ORCSS010"      USING   SS010-AREA
+                                               SPA-AREA
+               IF    ( SS010-RC        NOT =   ZERO )
+                   MOVE    "4033"          TO  SPA-ERRCD
+               END-IF
+      *
+               MOVE    WRK-STYMD       TO  WRK-YMD
+               MOVE    "2"             TO  WRK-ZOGENPTN
+               MOVE     1              TO  WRK-ZOGEN
+               PERFORM 5002-CALENDAR-SEC
+               MOVE    WRK-KEISANYMD   TO  WRK-STYMD
+      *
+           END-PERFORM
+      *
+           .
+       4801-ORCSS010-EXT.
+           EXIT.
+      *****************************************************************
       *    診療会計テーブルチェック処理
       *****************************************************************
        490-SRYACCT-CHK-SEC             SECTION.
@@ -19109,6 +19173,38 @@
       *
            .
        900-NYUINACCT-KEY17-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計マスター検索
+      *****************************************************************
+       900-NYUINACCT-KEY19-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCT
+      *
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    SPA-NAI-I01-PTID    TO  NACCT-PTID
+           MOVE    "999999"            TO  NACCT-SRYYM
+           MOVE    "5"                 TO  NACCT-ZAISKBKBN
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key19"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-NYUINACCT
+               INITIALIZE                  NYUINACCT-REC
+           END-IF
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key19"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-NYUINACCT-KEY17-SEL-EXT.
            EXIT.
       *****************************************************************
       *    入院会計マスター検索

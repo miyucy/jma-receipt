@@ -326,7 +326,7 @@
            COPY    "CPORCSFDEL.INC".
       *
       *    »ØÄê¿ÇÎÅ¹Ô°Ù·ï¿ôÄ´¥µ¥Ö£²
-           COPY    "CPORCHCG016S02.INC".
+           COPY    "CPORCSS009.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
@@ -799,14 +799,14 @@ grpsys     END-UNSTRING
            PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
       *
                IF    ( NACCT-ZAIKAISU  >   ZERO )
-                   INITIALIZE          HCG016S02-AREA
-                   CALL    "ORCHCG016S02"  USING   HCG016S02-AREA
+                   INITIALIZE          SS009-AREA
+                   CALL    "ORCSS009"  USING   SS009-AREA
                                                    NYUINACCT-REC
                                                    SPA-AREA
-                   IF    ( HCG016S02-RC    =   ZERO )
+                   IF    ( SS009-RC    =   ZERO )
                        PERFORM  20012-NSRYACT-GET-SEC
                    ELSE
-                       DISPLAY "ERR HCG016S02-RC:" HCG016S02-RC
+                       DISPLAY "ERR SS009-RC:" SS009-RC
                    END-IF
                END-IF
       *
@@ -827,16 +827,16 @@ grpsys     END-UNSTRING
        20012-NSRYACT-GET-SEC           SECTION.
       *
            PERFORM VARYING IDX-NACCT   FROM    1   BY  1
-                   UNTIL ( IDX-NACCT   >   HCG016S02-HENKYAKU-MAX )
+                   UNTIL ( IDX-NACCT   >   SS009-HENKYAKU-MAX )
       *
-               MOVE    HCG016S02-SRYKBN (IDX-NACCT)
+               MOVE    SS009-SRYKBN (IDX-NACCT)
                                        TO  WRK-SRYKBN
                IF    ( WRK-SRYKBN      =   "90" OR "92" OR "97" )
                    MOVE    "90"        TO  WRK-SRYKBN
                END-IF
       *
                IF   (  WRK-PARA-SRYKA  NOT =   SPACE  )
-                AND (  WRK-PARA-SRYKA  NOT =   HCG016S02-SRYKA
+                AND (  WRK-PARA-SRYKA  NOT =   SS009-SRYKA
                                                           (IDX-NACCT)  )
                    CONTINUE
                ELSE
@@ -848,7 +848,7 @@ grpsys     END-UNSTRING
                                UNTIL ( IDX-NSRY
                                                >   CONST-NSRYACT-MAX )
       *
-                           IF    ( HCG016S02-SRYCD (IDX-NACCT IDX-NSRY)
+                           IF    ( SS009-SRYCD (IDX-NACCT IDX-NSRY)
                                            NOT =   SPACE )
       *
                                PERFORM 20012-IN01-HEN-SEC
@@ -875,7 +875,7 @@ grpsys     END-UNSTRING
            END-IF
       *
       *
-           MOVE    HCG016S02-SRYCD (IDX-NACCT IDX-NSRY)
+           MOVE    SS009-SRYCD (IDX-NACCT IDX-NSRY)
                                        TO  WRK-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU       NOT =   ZERO )
@@ -897,7 +897,7 @@ grpsys     END-UNSTRING
       *
            MOVE    1               TO  FLG-TARGET
       *
-           IF    ( HCG016S02-ZAIKAISU (IDX-NACCT)
+           IF    ( SS009-ZAIKAISU (IDX-NACCT)
                                        <   1 )
                MOVE    ZERO        TO  FLG-TARGET
            END-IF
@@ -922,14 +922,14 @@ grpsys     END-UNSTRING
       *
            INITIALIZE                  IN01-REC
            MOVE    WRK-SRYKBN          TO  IN01-KEY-SRYKBN
-           MOVE    HCG016S02-SRYKBN(IDX-NACCT)
+           MOVE    SS009-SRYKBN(IDX-NACCT)
                                        TO  IN01-KEY-SRYKBN2
-           MOVE    HCG016S02-SRYKA (IDX-NACCT)
+           MOVE    SS009-SRYKA (IDX-NACCT)
                                        TO  IN01-KEY-SRYKA
            MOVE    TNS-DATAKBN         TO  IN01-KEY-DATAKBN
            MOVE    TNS-KANANAME        TO  IN01-KEY-KANANAME
            MOVE    TNS-SRYCD           TO  IN01-KEY-SRYCD
-           MOVE    HCG016S02-SURYO (IDX-NACCT IDX-NSRY)
+           MOVE    SS009-SURYO (IDX-NACCT IDX-NSRY)
                                        TO  IN01-KEY-SURYO
            PERFORM 900-IN01DYN-READ-SEC
            IF    ( FLG-IN01            =   ZERO )
@@ -941,14 +941,14 @@ grpsys     END-UNSTRING
            ELSE
                INITIALIZE                  IN01-REC
                MOVE    WRK-SRYKBN          TO  IN01-KEY-SRYKBN
-               MOVE    HCG016S02-SRYKBN(IDX-NACCT)
+               MOVE    SS009-SRYKBN(IDX-NACCT)
                                            TO  IN01-KEY-SRYKBN2
-               MOVE    HCG016S02-SRYKA (IDX-NACCT)
+               MOVE    SS009-SRYKA (IDX-NACCT)
                                            TO  IN01-KEY-SRYKA
                MOVE    TNS-DATAKBN         TO  IN01-KEY-DATAKBN
                MOVE    TNS-KANANAME        TO  IN01-KEY-KANANAME
                MOVE    TNS-SRYCD           TO  IN01-KEY-SRYCD
-               MOVE    HCG016S02-SURYO (IDX-NACCT IDX-NSRY)
+               MOVE    SS009-SURYO (IDX-NACCT IDX-NSRY)
                                            TO  IN01-KEY-SURYO
       *
                MOVE    TNS-NAME            TO  IN01-NAME
@@ -957,7 +957,7 @@ grpsys     END-UNSTRING
                IF    ( TNS-TANINAME        NOT =   SPACE )
                    IF    ( TNS-SRYCD
                                                =   "1" )
-                     AND ( HCG016S02-SRYKBN(IDX-NACCT)
+                     AND ( SS009-SRYKBN(IDX-NACCT)
                                                =   "70" )
                      AND ( TNS-TANICD          =   CONST-GAZOU-TANICD )
                        MOVE    "²ó"         TO  IN01-TANI
@@ -981,7 +981,7 @@ grpsys     END-UNSTRING
       *
            COMPUTE IN01-KAISU
                 =  IN01-KAISU
-                +  HCG016S02-ZAIKAISU (IDX-NACCT)
+                +  SS009-ZAIKAISU (IDX-NACCT)
       *
            .
        200121-IN01-ACCT-HEN-EXT.

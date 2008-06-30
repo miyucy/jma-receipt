@@ -137,8 +137,8 @@
                05  CONST-TBL-C     PIC X(20)   VALUE "TBL_PTBYOMEI C".
                05  CONST-TBL-D     PIC X(20)   VALUE "TBL_PTHKNINF D".
                05  CONST-TBL-E     PIC X(20)   VALUE "TBL_PTKOHINF E".
-               05  CONST-TBL-F     PIC X(20)   VALUE "TBL_JYURRK   F".
-               05  CONST-TBL-GT    PIC X(20)   VALUE "TBL_SRYACT   G".
+               05  CONST-TBL-F     PIC X(20)   VALUE "VIEW_Q004    F".
+               05  CONST-TBL-GT    PIC X(20)   VALUE "VIEW_Q003    G".
                05  CONST-TBL-GV    PIC X(20)   VALUE "VIEW_Q002    G".
                05  CONST-TBL-H     PIC X(20)   VALUE "TBL_PTNUM    H".
                05  CONST-TBL-I     PIC X(20)   VALUE "VIEW_Q001    I".
@@ -591,7 +591,7 @@
                 OR   ( SPA-Q01-GTBL (9)  =   "1" )
                    CONTINUE
                ELSE
-                   STRING  ",TBL_JYURRK F"         DELIMITED  BY  SIZE
+                   STRING  ",VIEW_Q004 F"         DELIMITED  BY  SIZE
                    INTO    WRK-SQL
                    WITH    POINTER WRK-SQL-PNT
                    END-STRING
@@ -868,7 +868,7 @@
                    IF    (SPA-Q01-SRYCD (IDX2) NOT =   SPACE )
                        IF    ( SPA-Q01-GTBL(8) =   SPACE )
                            MOVE    IDX2    TO  WRK-NAME-SEQ
-                           STRING  ",TBL_SRYACT G" DELIMITED  BY  SIZE
+                           STRING  ",VIEW_Q003 G" DELIMITED  BY  SIZE
                                    WRK-NAME-SEQ    DELIMITED  BY  SIZE
                            INTO    WRK-SQL
                            WITH    POINTER WRK-SQL-PNT
@@ -886,7 +886,7 @@
                END-PERFORM
            ELSE
                IF    ( SPA-Q01-GTBL(8) =   SPACE )
-                   STRING  ",TBL_SRYACT G"         DELIMITED  BY  SIZE
+                   STRING  ",VIEW_Q003 G"         DELIMITED  BY  SIZE
                    INTO    WRK-SQL
                    WITH    POINTER WRK-SQL-PNT
                    END-STRING
@@ -2005,15 +2005,7 @@
            PERFORM 900-SQL-JYOKEN-EDIT1-SEC
       *
            IF    ( SPA-Q01-GTBL(8) =   SPACE )
-               STRING "((G.SRYYM  <= '"
-                      WRK-EDSRYYMD (1 : 6)
-                      "') AND (G.SRYYM >= '"
-                      WRK-STSRYYMD (1 : 6) 
-                      "')) AND"
-               DELIMITED   BY  SIZE
-               INTO        WRK-SQL
-               WITH POINTER WRK-SQL-PNT
-               END-STRING
+               CONTINUE
            ELSE
                STRING "((G.SRYYMD <= '"
                       WRK-EDSRYYMD
@@ -2091,18 +2083,7 @@
                    PERFORM 900-SQL-JYOKEN-EDIT1-SEC
       *
                    IF    ( SPA-Q01-GTBL(8) =   SPACE )
-                       STRING "(("                 DELIMITED BY SIZE
-                              WRK-SQL-TBL-NAME     DELIMITED BY SPACE
-                              ".SRYYM  <= '"       DELIMITED BY SIZE
-                              WRK-EDSRYYMD (1 : 6) DELIMITED BY SIZE
-                              "') AND ("           DELIMITED BY SIZE
-                              WRK-SQL-TBL-NAME     DELIMITED BY SPACE
-                              ".SRYYM  >= '"       DELIMITED BY SIZE
-                              WRK-STSRYYMD (1 : 6) DELIMITED BY SIZE
-                              "')) AND"            DELIMITED BY SIZE
-                       INTO   WRK-SQL
-                       WITH POINTER WRK-SQL-PNT
-                       END-STRING
+                       CONTINUE
                    ELSE
                        STRING "(("                 DELIMITED BY SIZE
                               WRK-SQL-TBL-NAME     DELIMITED BY SPACE

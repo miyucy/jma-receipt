@@ -1,0 +1,43 @@
+tbl_nshoukai {
+	HOSPNUM				number(2,0);
+	PTID 				number(10);
+	SRYYMD				char(8);
+	SRYKA				char(2);
+	HKNCOMBINUM			char(4);
+	SRYCD				char(9);
+	TERMID   			varchar(16);
+	OPID     			varchar(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+
+primary	{
+	HOSPNUM,PTID,SRYYMD,SRYKA,HKNCOMBINUM,SRYCD ;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_nshoukai_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nshoukai
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA
+			AND   HKNCOMBINUM =   :HKNCOMBINUM
+			AND   SRYYMD      =   :SRYYMD
+			AND   SRYCD       =   :SRYCD
+		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_nshoukai
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE   :SRYYMD
+		;
+	};
+};

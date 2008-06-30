@@ -556,6 +556,9 @@ DB_files = \
 	tbl_shoukaikanri.db \
 	tbl_ptkinki.db \
 	tbl_prgoption.db \
+	tbl_nshoukai.db \
+	view_Q003.db \
+	view_Q004.db \
 
 
 all:   

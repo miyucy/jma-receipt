@@ -299,7 +299,7 @@ grpsys  02 TPTINF-CHK-HOSPNUM              PIC 9(02).
            COPY    "CPORCSKANACHK.INC".
       *
       *    »ØÄê¿ÇÎÅ¹Ô°Ù·ï¿ôÄ´¥µ¥Ö£²
-           COPY    "CPORCHCG016S02.INC".
+           COPY    "CPORCSS009.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPAREA".
@@ -788,14 +788,14 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
            PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
       *
                IF    ( NACCT-ZAIKAISU  >   ZERO )
-                   INITIALIZE          HCG016S02-AREA
-                   CALL    "ORCHCG016S02"  USING   HCG016S02-AREA
+                   INITIALIZE          SS009-AREA
+                   CALL    "ORCSS009"  USING   SS009-AREA
                                                    NYUINACCT-REC
 grpsys                                             SPA-AREA
-                   IF    ( HCG016S02-RC    =   ZERO )
+                   IF    ( SS009-RC    =   ZERO )
                        PERFORM  20012-NSRYACT-GET-SEC
                    ELSE
-                       DISPLAY "ERR HCG016S02-RC:" HCG016S02-RC
+                       DISPLAY "ERR SS009-RC:" SS009-RC
                    END-IF
                END-IF
       *
@@ -816,18 +816,18 @@ grpsys                                             SPA-AREA
        20012-NSRYACT-GET-SEC           SECTION.
       *
            PERFORM VARYING IDX-NACCT   FROM    1   BY  1
-                   UNTIL ( IDX-NACCT   >   HCG016S02-HENKYAKU-MAX )
+                   UNTIL ( IDX-NACCT   >   SS009-HENKYAKU-MAX )
       *
                PERFORM VARYING IDX-NSRY    FROM    1   BY  1
                        UNTIL ( IDX-NSRY    >   CONST-NSRYACT-MAX )
       *
-                   IF    ( HCG016S02-SRYCD (IDX-NACCT IDX-NSRY)
+                   IF    ( SS009-SRYCD (IDX-NACCT IDX-NSRY)
                                    NOT =   SPACE )
                        PERFORM VARYING IDX4    FROM    1   BY  1
                                UNTIL ( IDX4    >   TSRYCD-MAX )
       *
                            IF    ( TSRYCD-SRYCD (IDX4)
-                                       =   HCG016S02-SRYCD
+                                       =   SS009-SRYCD
                                                   (IDX-NACCT IDX-NSRY) )
                                PERFORM 20012-IN01-HEN-SEC
                                MOVE    TSRYCD-MAX  TO  IDX4
@@ -856,9 +856,9 @@ grpsys                                             SPA-AREA
       *
            INITIALIZE                  IN01-REC
            MOVE    IDX4                TO  IN01-KEY-CDSEQ
-           MOVE    HCG016S02-SRYCD (IDX-NACCT IDX-NSRY)
+           MOVE    SS009-SRYCD (IDX-NACCT IDX-NSRY)
                                        TO  IN01-KEY-SRYCD
-           MOVE    HCG016S02-SRYKA (IDX-NACCT)
+           MOVE    SS009-SRYKA (IDX-NACCT)
                                        TO  IN01-KEY-SRYKA
            MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
            MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
@@ -873,9 +873,9 @@ grpsys                                             SPA-AREA
            ELSE
                INITIALIZE                  IN01-REC
                MOVE    IDX4                TO  IN01-KEY-CDSEQ
-               MOVE    HCG016S02-SRYCD (IDX-NACCT IDX-NSRY)
+               MOVE    SS009-SRYCD (IDX-NACCT IDX-NSRY)
                                            TO  IN01-KEY-SRYCD
-               MOVE    HCG016S02-SRYKA (IDX-NACCT)
+               MOVE    SS009-SRYKA (IDX-NACCT)
                                            TO  IN01-KEY-SRYKA
                MOVE    PTINF-KANANAME      TO  IN01-KEY-KANANAME
                MOVE    PTNUM-PTNUM         TO  IN01-KEY-PTNUM
@@ -898,14 +898,14 @@ grpsys                                             SPA-AREA
       *
            COMPUTE IN01-KAISU
                 =  IN01-KAISU
-                +  HCG016S02-ZAIKAISU (IDX-NACCT)
+                +  SS009-ZAIKAISU (IDX-NACCT)
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
       *
                COMPUTE    IN01-DAY (IDX-DAY)
                    =      IN01-DAY (IDX-DAY)
-                   +      HCG016S02-DAY (IDX-NACCT  IDX-DAY)
+                   +      SS009-DAY (IDX-NACCT  IDX-DAY)
       *
            END-PERFORM
       *

@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    指定診療行為件数調サブパラメタ　COPY (CPORCHCG016S02.INC)
+      *    科別・保険別入院会計編集サブ　COPY (CPORCSS009.INC)
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-       01  HCG016S02-AREA.
-           03  HCG016S02-OT-AREA.
-               05  HCG016S02-HENKYAKU-MAX      PIC 9(05).
-               05  HCG016S02-HENKYAKU-TBL      OCCURS  200.
-                   07  HCG016S02-SRYKA         PIC  X(02).
-                   07  HCG016S02-HKNCOMBI      PIC  X(04).
-                   07  HCG016S02-SRYKBN        PIC  X(02).
-                   07  HCG016S02-SRYSYUKBN     PIC  X(03).
-                   07  HCG016S02-ZAITEN        PIC  9(08).
-                   07  HCG016S02-ZAIKAISU      PIC  9(07).
-                   07  HCG016S02-MEISAISU      PIC  9(07).
-                   07  HCG016S02-SRYCDTOTAL    PIC  9(14).
-                   07  HCG016S02-SURYOUTOTAL   PIC  9(07)V9(03).
-                   07  HCG016S02-RUIKEITOTAL   PIC  9(15)V9(03).
-                   07  HCG016S02-SRYCD-OCC     OCCURS  20.
-                       09  HCG016S02-SURYO     PIC  9(05).
-                       09  HCG016S02-SRYCD     PIC  X(09).
-                   07  HCG016S02-DAY-TBL.
-                       09  HCG016S02-DAY       PIC  9(03)
-                                               OCCURS  31.
-           03  HCG016S02-RC                    PIC S9(9) BINARY.
+       01  SS009-AREA.
+           03  SS009-OT-AREA.
+               05  SS009-HENKYAKU-MAX      PIC 9(05).
+               05  SS009-HENKYAKU-TBL      OCCURS  200.
+                   07  SS009-SRYKA         PIC  X(02).
+                   07  SS009-HKNCOMBI      PIC  X(04).
+                   07  SS009-SRYKBN        PIC  X(02).
+                   07  SS009-SRYSYUKBN     PIC  X(03).
+                   07  SS009-ZAITEN        PIC  9(08).
+                   07  SS009-ZAIKAISU      PIC  9(07).
+                   07  SS009-MEISAISU      PIC  9(07).
+                   07  SS009-SRYCDTOTAL    PIC  9(14).
+                   07  SS009-SURYOUTOTAL   PIC  9(07)V9(03).
+                   07  SS009-RUIKEITOTAL   PIC  9(15)V9(03).
+                   07  SS009-SRYCD-OCC     OCCURS  20.
+                       09  SS009-SURYO     PIC  9(05).
+                       09  SS009-SRYCD     PIC  X(09).
+                   07  SS009-DAY-TBL.
+                       09  SS009-DAY       PIC  9(03)
+                                           OCCURS  31.
+           03  SS009-RC                    PIC S9(9) BINARY.

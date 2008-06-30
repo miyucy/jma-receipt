@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION                  DIVISION.
-       PROGRAM-ID.                     ORCHCG016S02.
+       PROGRAM-ID.                     ORCSS009.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 月次帳票
-      *  コンポーネント名  : 指定診療行為件数調サブ
+      *  サブシステム名    : 共通
+      *  コンポーネント名  : 科別・保険別入院会計編集サブ
       *  管理者            :
       *  作成日付    作業者        記述
       *  06/06/20    NACL−太田    新規作成
@@ -120,7 +120,7 @@
       *
       ****************************************************************
        LINKAGE                         SECTION.
-           COPY    "CPORCHCG016S02.INC".
+           COPY    "CPORCSS009.INC".
        01  LNKNACCT-REC.
            COPY    "CPNYUINACCT.INC"
                                    REPLACING   //NACCT//
@@ -129,7 +129,7 @@
       ****************************************************************
        PROCEDURE                       DIVISION
                USING
-           HCG016S02-AREA
+           SS009-AREA
            LNKNACCT-REC
            SPA-AREA
            .
@@ -145,7 +145,7 @@
       *
            PERFORM 300-END-SEC
       *
-           MOVE    FLG-ERR         TO  HCG016S02-RC
+           MOVE    FLG-ERR         TO  SS009-RC
       *
            EXIT PROGRAM
       *
@@ -159,7 +159,7 @@
                                        CNT-AREA
                                        FLG-AREA
                                        WRK-AREA
-                                       HCG016S02-OT-AREA
+                                       SS009-OT-AREA
       *
            .
        100-INIT-EXT.
@@ -339,7 +339,7 @@
                END-IF
                MOVE    HCM34S01-RC         TO  FLG-ERR
       *
-               PERFORM 20011-HCG016S02-OT-EDIT-SEC
+               PERFORM 20011-SS009-OT-EDIT-SEC
       *
            END-PERFORM
       *
@@ -349,7 +349,7 @@
       *****************************************************************
       *    入院会計情報追加処理
       *****************************************************************
-       20011-HCG016S02-OT-EDIT-SEC             SECTION.
+       20011-SS009-OT-EDIT-SEC             SECTION.
       *
            PERFORM VARYING IDX4    FROM    1   BY  1
                    UNTIL ( IDX4    >   HCM34S01-HENKYAKU-MAX )
@@ -374,7 +374,7 @@
       *
                        IF    ( WRK-DAY-G   NOT =   ZERO )
                            IF    ( CONST-ZAINUM-MAX     >   CNT-ZAINUM )
-                               PERFORM 200111-HCG016S02-OT-EDIT-SEC
+                               PERFORM 200111-SS009-OT-EDIT-SEC
                            ELSE
                                DISPLAY "NACCT ZAINUM OVER:" NACCT-PTID
                            END-IF
@@ -386,62 +386,62 @@
            END-PERFORM
       *
            .
-       20011-HCG016S02-OT-EDIT-EXT.
+       20011-SS009-OT-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    入院会計情報追加処理
       *****************************************************************
-       200111-HCG016S02-OT-EDIT-SEC    SECTION.
+       200111-SS009-OT-EDIT-SEC    SECTION.
       *
            COMPUTE CNT-ZAINUM  =   CNT-ZAINUM  +   1
       *
-           MOVE    CNT-ZAINUM  TO  HCG016S02-HENKYAKU-MAX
+           MOVE    CNT-ZAINUM  TO  SS009-HENKYAKU-MAX
       *
            MOVE    WRK-HBTSRYKA    (IDX7)
-                               TO  HCG016S02-SRYKA (CNT-ZAINUM)
+                               TO  SS009-SRYKA (CNT-ZAINUM)
       *
            MOVE    COMB-HKNCOMBINUM
-                               TO  HCG016S02-HKNCOMBI
+                               TO  SS009-HKNCOMBI
                                                    (CNT-ZAINUM)
            MOVE    HCM34S01-SRYKBN (IDX4)
-                               TO  HCG016S02-SRYKBN
+                               TO  SS009-SRYKBN
                                                    (CNT-ZAINUM)
       *
            MOVE    HCM34S01-SRYSYUKBN (IDX4)
-                               TO  HCG016S02-SRYSYUKBN
+                               TO  SS009-SRYSYUKBN
                                                    (CNT-ZAINUM)
       *
            MOVE    HCM34S01-ZAITEN (IDX4)
-                               TO  HCG016S02-ZAITEN
+                               TO  SS009-ZAITEN
                                                    (CNT-ZAINUM)
       *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
       *
-               COMPUTE HCG016S02-ZAIKAISU (CNT-ZAINUM)
-                   =   HCG016S02-ZAIKAISU (CNT-ZAINUM)
+               COMPUTE SS009-ZAIKAISU (CNT-ZAINUM)
+                   =   SS009-ZAIKAISU (CNT-ZAINUM)
                    +   WRK-DAY (IDX-DAY)
       *
                MOVE    WRK-DAY (IDX-DAY)
-                               TO  HCG016S02-DAY
+                               TO  SS009-DAY
                                           (CNT-ZAINUM IDX-DAY)
       *
            END-PERFORM
       *
            MOVE    HCM34S01-MEISAISU (IDX4)
-                               TO  HCG016S02-MEISAISU
+                               TO  SS009-MEISAISU
                                                    (CNT-ZAINUM)
       *
            MOVE    HCM34S01-SRYCDTOTAL (IDX4)
-                               TO  HCG016S02-SRYCDTOTAL
+                               TO  SS009-SRYCDTOTAL
                                                    (CNT-ZAINUM)
       *
            MOVE    HCM34S01-SURYOUTOTAL (IDX4)
-                               TO  HCG016S02-SURYOUTOTAL
+                               TO  SS009-SURYOUTOTAL
                                                    (CNT-ZAINUM)
       *
            MOVE    HCM34S01-RUIKEITOTAL (IDX4)
-                               TO  HCG016S02-RUIKEITOTAL
+                               TO  SS009-RUIKEITOTAL
                                                    (CNT-ZAINUM)
       *
            PERFORM VARYING IDX8    FROM    1   BY  1
@@ -450,17 +450,17 @@
                                    =   SPACE )
       *
                MOVE    HCM34S01-SURYO (IDX4 IDX8)
-                                   TO  HCG016S02-SURYO
+                                   TO  SS009-SURYO
                                                    (CNT-ZAINUM IDX8)
       *
                MOVE    HCM34S01-SRYCD (IDX4 IDX8)
-                                   TO  HCG016S02-SRYCD
+                                   TO  SS009-SRYCD
                                                    (CNT-ZAINUM IDX8)
       *
            END-PERFORM
       *
            .
-       200111-HCG016S02-OT-EDIT-EXT.
+       200111-SS009-OT-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    終了処理

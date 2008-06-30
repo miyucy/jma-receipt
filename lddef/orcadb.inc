@@ -129,4 +129,5 @@ db	{
 	tbl_shoukaidata;
 	tbl_ptkinki;
 	tbl_prgoption;
+	tbl_nshoukai;
 };
