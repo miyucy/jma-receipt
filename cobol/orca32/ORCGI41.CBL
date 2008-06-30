@@ -574,6 +574,9 @@
       *    入院基本点数チェック
            COPY    "CPORCSS007.INC".
       *
+      *    入院行為照会用テーブル作成
+           COPY  "CPORCSS010.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       ***  COPY    "CPORCMCP.INC".
@@ -6048,6 +6051,17 @@
       *                   LNK-SCNYUACCT-RC
       *     END-IF
       *
+      *     入院行為照会用テーブル作成サブ呼び出し
+            INITIALIZE                  SS010-AREA
+            MOVE    SPA-PTID            TO  SS010-PTID
+            MOVE    SYOKIKSN-IN-SANTEISTYMD (1:6)
+                                        TO  SS010-SRYYM
+            CALL    "ORCSS010"      USING   SS010-AREA
+                                            SPA-AREA
+            IF    ( SS010-RC        NOT =   ZERO )
+                MOVE    "0052"          TO  SPA-ERRCD
+            END-IF
+      *
            .
       *
        410191-NYUACCT-SAKUSEI-EXT.
@@ -6195,6 +6209,17 @@
            CALL   "ORCSNYUACCT"    USING   SPA-AREA
                                            ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA  TO  SPA-SRYKA
+      *
+      *     入院行為照会用テーブル作成サブ呼び出し
+            INITIALIZE                  SS010-AREA
+            MOVE    SPA-PTID            TO  SS010-PTID
+            MOVE    SYOKIKSN-IN-SANTEISTYMD (1:6)
+                                        TO  SS010-SRYYM
+            CALL    "ORCSS010"      USING   SS010-AREA
+                                            SPA-AREA
+            IF    ( SS010-RC        NOT =   ZERO )
+                MOVE    "0052"          TO  SPA-ERRCD
+            END-IF
       *
            .
       *
@@ -7530,6 +7555,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    主科設定
            PERFORM    600-SYUKA-SET-SEC
       *
+      *     入院行為照会用テーブル作成サブ呼び出し
+            INITIALIZE                  SS010-AREA
+            MOVE    SPA-GMN-PTID        TO  SS010-PTID
+            MOVE    SPA-NAI-SRYYM       TO  SS010-SRYYM
+            CALL    "ORCSS010"      USING   SS010-AREA
+                                            SPA-AREA
+            IF    ( SS010-RC        NOT =   ZERO )
+                MOVE    "0052"          TO  SPA-ERRCD
+            END-IF
+      *
            .
        4901-NYUINACCT-UPD-EXT.
            EXIT.
@@ -8061,6 +8096,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-ERRMSG(35:20)
                WHEN    "0051"
                    MOVE    "入院カレンダーに重複があります。"
+                                       TO  WRK-ERRMSG
+               WHEN    "0052"
+                   MOVE    "入院行為照会用テーブルの更新に失敗しました"
                                        TO  WRK-ERRMSG
                WHEN    "1005"
                    MOVE    "受診履歴番号が存在しません。"
