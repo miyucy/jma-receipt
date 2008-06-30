@@ -90,6 +90,10 @@
            03  CONST-HBTSRYKA-MAX          PIC 9(05) VALUE  100.
            03  CONST-SRYCD-MAX             PIC 9(05) VALUE 20.
            03  CONST-TCOMBI-MAX            PIC 9(05) VALUE 50.
+           03  CONST-HKNCOMBICD-G.
+               05  CONST-HKNCOMBICD        PIC X(09) VALUE "099999914".
+               05  CONST-HKNCOMBICD-R  REDEFINES   CONST-HKNCOMBICD.
+                   07  CONST-HKNCOMBICD9   PIC 9(09).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -385,6 +389,33 @@
       *
            END-PERFORM
       *
+           IF    ( SS009-ZAIHKNCOMBI-FLG       =   1 )
+               PERFORM VARYING IDX7    FROM    1   BY  1
+                       UNTIL ( IDX7    >   WRK-HBTSRYKA-MAX )
+      *
+                   MOVE    ZERO    TO  WRK-DAY-G
+      *
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+                       IF    ( TCOMBI-HKNCOMBI-DAY (IDX3 IDX-DAY )
+                                           > ZERO )
+                        AND  ( WRK-HBTSRYKA-DAY (IDX7 IDX-DAY )
+                                           > ZERO )
+                           MOVE    1   TO  WRK-DAY (IDX-DAY)
+                       END-IF
+                   END-PERFORM
+      *
+                   IF    ( WRK-DAY-G   NOT =   ZERO )
+                       IF    ( CONST-ZAINUM-MAX >   CNT-ZAINUM )
+                           PERFORM 200112-SS009-OT-EDIT-SEC
+                       ELSE
+                           DISPLAY "NACCT ZAINUM OVER2:" NACCT-PTID
+                       END-IF
+                   END-IF
+      *
+               END-PERFORM
+           END-IF
+      *
            .
        20011-SS009-OT-EDIT-EXT.
            EXIT.
@@ -461,6 +492,49 @@
       *
            .
        200111-SS009-OT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計情報追加処理(保険組合せ：099999914)
+      *****************************************************************
+       200112-SS009-OT-EDIT-SEC    SECTION.
+      *
+           COMPUTE CNT-ZAINUM  =   CNT-ZAINUM  +   1
+      *
+           MOVE    CNT-ZAINUM  TO  SS009-HENKYAKU-MAX
+      *
+           MOVE    WRK-HBTSRYKA    (IDX7)
+                               TO  SS009-SRYKA (CNT-ZAINUM)
+      *
+           MOVE    COMB-HKNCOMBINUM
+                               TO  SS009-HKNCOMBI
+                                                   (CNT-ZAINUM)
+      *
+           PERFORM VARYING IDX-DAY FROM    1   BY  1
+                   UNTIL ( IDX-DAY >   31 )
+      *
+               COMPUTE SS009-ZAIKAISU (CNT-ZAINUM)
+                   =   SS009-ZAIKAISU (CNT-ZAINUM)
+                   +   WRK-DAY (IDX-DAY)
+      *
+               MOVE    WRK-DAY (IDX-DAY)
+                               TO  SS009-DAY
+                                          (CNT-ZAINUM IDX-DAY)
+      *
+           END-PERFORM
+      *
+           MOVE    1           TO  SS009-MEISAISU  (CNT-ZAINUM)
+      *
+           MOVE    CONST-HKNCOMBICD9
+                               TO  SS009-SRYCDTOTAL
+                                                   (CNT-ZAINUM)
+                                   SS009-RUIKEITOTAL
+                                                   (CNT-ZAINUM)
+      *
+           MOVE    CONST-HKNCOMBICD
+                               TO  SS009-SRYCD     (CNT-ZAINUM 1)
+      *
+           .
+       200112-SS009-OT-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    終了処理

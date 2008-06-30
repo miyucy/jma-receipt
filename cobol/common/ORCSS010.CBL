@@ -164,6 +164,7 @@
       *
            IF    ( NACCT-ZAIKAISU  >   ZERO )
                INITIALIZE                  SS009-AREA
+               MOVE    1           TO      SS009-ZAIHKNCOMBI-FLG
                CALL    "ORCSS009"  USING   SS009-AREA
                                            NYUINACCT-REC
                                            SPA-AREA
