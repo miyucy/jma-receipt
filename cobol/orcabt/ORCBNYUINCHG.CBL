@@ -378,6 +378,9 @@
       *    通算日数取得サブ
            COPY "CPORCSTUSAN.INC".
       *
+      *    入院行為照会用テーブル作成
+           COPY  "CPORCSS010.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -2044,6 +2047,17 @@
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key17"             TO  MCP-PATHNAME
            PERFORM  900-CLOSE-SEC
+      *
+      *     入院行為照会用テーブル作成サブ呼び出し
+            INITIALIZE                  SS010-AREA
+            MOVE    PTNYUINRRK-PTID     TO  SS010-PTID
+            MOVE    WRK-PARA-SRYYM      TO  SS010-SRYYM
+            CALL    "ORCSS010"      USING   SS010-AREA
+                                            SPA-AREA
+            IF    ( SS010-RC        NOT =   ZERO )
+                MOVE    "0052"          TO  SPA-ERRCD
+            END-IF
+      *
            .
       *
        410191-NYUACCT-SAKUSEI-EXT.
@@ -2186,6 +2200,18 @@
            CALL   "ORCSNYUACCT"    USING   SPA-AREA
                                            ORCSNYUACCT-AREA
            MOVE   WRK-TAIHI-SRYKA  TO  SPA-SRYKA
+      *
+      *     入院行為照会用テーブル作成サブ呼び出し
+            INITIALIZE                  SS010-AREA
+            MOVE    PTNYUINRRK-PTID     TO  SS010-PTID
+            MOVE    SYOKIKSN-IN-SANTEISTYMD(1:6)
+                                        TO  SS010-SRYYM
+            CALL    "ORCSS010"      USING   SS010-AREA
+                                            SPA-AREA
+            IF    ( SS010-RC        NOT =   ZERO )
+                MOVE    "0052"          TO  SPA-ERRCD
+            END-IF
+      *
       *
            .
       *
