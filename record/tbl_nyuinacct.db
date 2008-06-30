@@ -799,3 +799,10 @@ path	key39 	{
 		;
 	};
 };
+
+path	abort	{
+	DBSELECT	{
+		error
+ 		;
+	};
+};
