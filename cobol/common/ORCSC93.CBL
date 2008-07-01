@@ -86,6 +86,8 @@
            03  FLG-ZAI             PIC 9(01).
       *    発生日フラグ
            03  FLG-HASSYO          PIC 9(01).
+      *    処方せん料フラグ
+           03  FLG-SYOHO           PIC 9(01).
       *
            03  FLG-ZEN             PIC 9(01).
            03  FLG-HOUKATU         PIC 9(01).
@@ -782,11 +784,20 @@
                                                OR  "292"  )
                        MOVE    "21"            TO  WRK-SRYKBN
                    END-IF
+      *            前が処方せん料は薬剤は入力しない
+                   IF     (SPA-COM-SRYKBN (IDX - 1) =   "80" ) AND
+                          (SPA-COM-SRYSYUKBN (IDX - 1)
+                                                   =   "820" )
+                       MOVE    1               TO  FLG-SYOHO
+                   ELSE
+                       MOVE    ZERO            TO  FLG-SYOHO
+                   END-IF
       *            内服の時、前の行為が薬剤に付属できるか判定
                    IF     (IDX                     >   1     ) AND
                           (SPA-COM-KAIFLG(IDX - 1) =   SPACE ) AND
                           (WRK-SRYKBN              =   "21"  )
                      AND  (FLG-HASSYO              =   ZERO  )
+                     AND  (FLG-SYOHO               =   ZERO  )
                        EVALUATE    SPA-COM-SRYKBN(IDX - 1)
                            WHEN    "21"
                            WHEN    "22"
@@ -816,6 +827,7 @@
                           (SPA-COM-KAIFLG(IDX - 1) =   SPACE ) AND
                           (WRK-SRYKBN              =   "23"  )
                      AND  (FLG-HASSYO              =   ZERO  )
+                     AND  (FLG-SYOHO               =   ZERO  )
                        EVALUATE    SPA-COM-SRYKBN(IDX - 1)
       ****指導料削除       WHEN    "13"
                            WHEN    "14"
@@ -842,6 +854,7 @@
                        IF     (IDX                     >   1   )  AND
                               (SPA-COM-KAIFLG(IDX - 1) =   SPACE )
                          AND  (FLG-HASSYO              =   ZERO  )
+                         AND  (FLG-SYOHO               =   ZERO  )
                            EVALUATE    SPA-COM-SRYKBN(IDX - 1)
       ****指導料削除           WHEN    "13"
                                WHEN    "14"
@@ -883,6 +896,7 @@
                                            OR  "21" OR  "22" OR
                                                "23"          )
                      AND  (FLG-HASSYO              =   ZERO  )
+                     AND  (FLG-SYOHO               =   ZERO  )
                        MOVE    SPA-COM-SRYKBN(IDX - 1)
                                                TO  SPA-COM-SRYKBN(IDX)
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
