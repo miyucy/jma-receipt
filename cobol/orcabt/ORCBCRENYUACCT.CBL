@@ -821,6 +821,9 @@
                    WHEN    "2006"
                        MOVE  "入院料加算の取得に失敗しました"
                                                       TO  WRK-NAIYO
+                   WHEN    "2007"
+                       MOVE  "入院行為照会用テーブル更新失敗"
+                                                      TO  WRK-NAIYO
                    END-EVALUATE
            END-IF
            MOVE    WRK-NAIYO           TO  LST-NAIYO (CNT-LINE)
@@ -1981,7 +1984,7 @@
             CALL    "ORCSS010"      USING   SS010-AREA
                                             SPA-AREA
             IF    ( SS010-RC        NOT =   ZERO )
-                MOVE    "0052"          TO  SPA-ERRCD
+                MOVE    "2007"          TO  WRK-ERRCD
             END-IF
       *
            .
@@ -2141,7 +2144,7 @@
             CALL    "ORCSS010"      USING   SS010-AREA
                                             SPA-AREA
             IF    ( SS010-RC        NOT =   ZERO )
-                MOVE    "0052"          TO  SPA-ERRCD
+                MOVE    "2007"          TO  WRK-ERRCD
             END-IF
       *
       *
