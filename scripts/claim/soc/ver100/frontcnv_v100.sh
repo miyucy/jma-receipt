@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # 受付XMLデータ送信で使用するdef/templateファイルの生成(ver1形式出力)
 
