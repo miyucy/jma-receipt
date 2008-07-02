@@ -106,7 +106,7 @@
       *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
            COPY    "HCML02V01.INC" REPLACING   //HCML02V01//
                                    BY          //HCML02//.

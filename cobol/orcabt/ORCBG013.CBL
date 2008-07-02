@@ -244,7 +244,7 @@ grpsys     03  RECEERR                             PIC X(100).
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è

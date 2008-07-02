@@ -154,7 +154,7 @@
       *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
            COPY    "ORCA-BLOB".
       *
       *****************************************************************

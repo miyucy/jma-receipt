@@ -85,7 +85,7 @@ grpsys     SELECT  CSV-FILE        ASSIGN  USERCSV
       *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //ML09ERR//.

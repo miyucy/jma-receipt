@@ -119,7 +119,7 @@
       *
       *    ёдёб╦║╨В
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
       *    ╩ый╖╬злю╫Я
            COPY    "CPORCHCM31.INC".

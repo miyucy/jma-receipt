@@ -50,7 +50,7 @@
       *
       *    シェル用領域
            COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
        01  FLG-AREA.
            03  FLG-SYORI           PIC 9(01).

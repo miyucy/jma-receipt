@@ -217,7 +217,7 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
       *    点数マスタ退避ワーク
            COPY    "CPTTNS.INC".

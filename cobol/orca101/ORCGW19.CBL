@@ -109,7 +109,7 @@
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    Ï¢ÍíÎÎ°è
@@ -467,8 +467,6 @@
            MOVE    SPA-HOSPNUM         TO  SYS-HOSPNUM
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY2
-                                       TO  MCP-PATH
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC

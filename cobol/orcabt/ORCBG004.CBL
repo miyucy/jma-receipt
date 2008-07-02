@@ -195,7 +195,7 @@ grpsys     03  RECEERR                             PIC X(100).
       *
            COPY    "CPSHELLTBL.INC".
       *
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
       *    ´µ¼ÔÆþ±¡ÍúÎò¥ï¡¼¥¯
        01  WKPTNYUINRRK-REC.

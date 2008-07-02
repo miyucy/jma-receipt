@@ -93,7 +93,7 @@ grpsys 01  WRK-PARA-HOSPNUM              PIC 9(02).
       *
            COPY    "MCPDATA.INC".
       *
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.

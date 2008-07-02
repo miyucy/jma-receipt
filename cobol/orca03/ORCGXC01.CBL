@@ -272,7 +272,7 @@
 
            COPY    "CPSHELLTBL.INC".
       *     
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
            COPY    "ORCA-BLOB".
       *
        01  WRK-LNK-AREA.

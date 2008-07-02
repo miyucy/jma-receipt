@@ -166,7 +166,7 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
            COPY    "COMMON-SPA".
       *

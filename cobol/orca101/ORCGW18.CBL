@@ -207,7 +207,7 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".

@@ -248,7 +248,7 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
       *
       *****************************************************************

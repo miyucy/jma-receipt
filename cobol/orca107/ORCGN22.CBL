@@ -53,7 +53,7 @@
       *
            COPY    "ENUM-VALUE".
       *
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
            COPY    "CPSHELLTBL.INC".
       *

@@ -74,7 +74,7 @@
       *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
            COPY    "HCM47.INC".
            COPY    "HCMSL80.INC".

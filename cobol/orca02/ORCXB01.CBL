@@ -108,7 +108,7 @@
            COPY    "CPJOBKANRI.INC".
       *
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
            COPY    "CPORCMCP.INC".
       *
       *****************************************************************
@@ -672,8 +672,6 @@
                MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                MOVE    JOBKANRI-REC        TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
-               MOVE    PATH-TBL-JOBKANRI-DEL12
-                                           TO  MCP-PATH
                MOVE    "tbl_jobkanri"      TO  MCP-TABLE
                MOVE    "del12"             TO  MCP-PATHNAME
 grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA

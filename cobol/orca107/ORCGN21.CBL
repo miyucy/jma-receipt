@@ -204,7 +204,7 @@
       *    LIKE使用KEY対応
            COPY    "CPORCSADDSIGN.INC".
       *
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
            COPY    "ORCA-BLOB".
       *
       *****************************************************************

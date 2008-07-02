@@ -73,7 +73,7 @@
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è

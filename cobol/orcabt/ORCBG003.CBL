@@ -140,7 +140,7 @@ grpsys     03  WRK-DBTABLE                         PIC X(100).
       *
            COPY    "CPSHELLTBL.INC".
       *
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    ファイルレイアウト

@@ -161,7 +161,7 @@ grpsys     03  RECEERR                 PIC X(100).
                05  WRK-KBNCD           PIC X(02).
       *
            COPY    "CPSHELLTBL.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
       *****************************************************************
       *    ファイルレイアウト

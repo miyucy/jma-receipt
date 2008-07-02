@@ -319,7 +319,7 @@ grpsys     03  RECEERR                             PIC X(100).
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
-           COPY    "ORCA-DBPATH".
+      *    COPY    "ORCA-DBPATH".
       *
            COPY    "COMMON-SPA".
       *
@@ -626,7 +626,8 @@ grpsys     MOVE    "key5"          TO  MCP-PATHNAME
                MOVE    SYS-1005-SRYKANAME  TO  WRK-SRYKAMEIL (IDX1)
                MOVE    SYS-1005-SRYKANAME1 TO  WRK-SRYKAMEIL1(IDX1)
       *
-               MOVE    PATH-TBL-SYSKANRI-KEY5  TO  MCP-PATH
+grpsys         MOVE    "tbl_syskanri"  TO  MCP-TABLE
+grpsys         MOVE    "key5"          TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC     TO  SYS-1005-REC
@@ -637,7 +638,8 @@ grpsys     MOVE    "key5"          TO  MCP-PATHNAME
       *
            END-PERFORM
       *
-           MOVE    PATH-TBL-SYSKANRI-KEY5  TO  MCP-PATH
+grpsys     MOVE    "tbl_syskanri"  TO  MCP-TABLE
+grpsys     MOVE    "key5"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
