@@ -79,46 +79,6 @@
            03  NYUKHN-KAGENCD-R     REDEFINES  NYUKHN-KAGENCDINF.
                05  NYUKHN-KAGENCD-T         OCCURS   7.
                  07  NYUKHN-KAGENCD         PIC  X(09).
-      *加減算点数情報
-           03  NYUKHN-KAGENTENINF.
-      *加減算点数１
-               05  NYUKHN-KAGENTEN1    PIC  S9(06).
-      *加減算点数２
-               05  NYUKHN-KAGENTEN2    PIC  S9(06).
-      *加減算点数３
-               05  NYUKHN-KAGENTEN3    PIC  S9(06).
-      *加減算点数４
-               05  NYUKHN-KAGENTEN4    PIC  S9(06).
-      *加減算点数５
-               05  NYUKHN-KAGENTEN5    PIC  S9(06).
-      *加減算点数６
-               05  NYUKHN-KAGENTEN6    PIC  S9(06).
-      *加減算点数７
-               05  NYUKHN-KAGENTEN7    PIC  S9(06).
-      *加減算点数情報再定義
-           03  NYUKHN-KAGENTEN-R   REDEFINES  NYUKHN-KAGENTENINF.
-               05  NYUKHN-KAGENTEN-T         OCCURS   7.
-                 07  NYUKHN-KAGENTEN         PIC  S9(06).
-      *決定点数情報
-           03  NYUKHN-KETTEITENINF.
-      *決定診数１
-               05  NYUKHN-KETTEITEN1   PIC  9(06).
-      *決定点数２
-               05  NYUKHN-KETTEITEN2   PIC  9(06).
-      *決定点数３
-               05  NYUKHN-KETTEITEN3   PIC  9(06).
-      *決定点数４
-               05  NYUKHN-KETTEITEN4   PIC  9(06).
-      *決定点数５
-               05  NYUKHN-KETTEITEN5   PIC  9(06).
-      *決定点数６
-               05  NYUKHN-KETTEITEN6   PIC  9(06).
-      *決定点数７
-               05  NYUKHN-KETTEITEN7   PIC  9(06).
-      *決定点数情報再定義
-           03  NYUKHN-KETTEITEN-R   REDEFINES  NYUKHN-KETTEITENINF.
-               05  NYUKHN-KETTEITEN-T       OCCURS   7.
-                 07  NYUKHN-KETTEI     PIC  9(06).
       *端末ＩＤ
            03  NYUKHN-TERMID           PIC  X(16).
       *オペーレータＩＤ
