@@ -1624,8 +1624,8 @@
            MOVE    2                   TO  SPA-GMN-YYKINIT-MAX
       *    予約票発行
            MOVE    "0 発行しない"      TO  SPA-GMN-YYKHYO-LIST(1)
-           MOVE    "1 発行する"        TO  SPA-GMN-YYKHYO-LIST(2)
-           MOVE    2                   TO  SPA-GMN-YYKHYO-MAX
+      **** MOVE    "1 発行する"        TO  SPA-GMN-YYKHYO-LIST(2)
+           MOVE    1                   TO  SPA-GMN-YYKHYO-MAX
       *
            EVALUATE    SPA-W01-KANRICD
       *        診療行為情報
