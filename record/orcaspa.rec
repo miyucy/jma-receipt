@@ -1,5 +1,5 @@
 spa	{
 #include	"mcpspa.rec"
-	common	byte(12400);
-	free	byte(502000);
+	common	byte(20000);
+	free	byte(600000);
 };

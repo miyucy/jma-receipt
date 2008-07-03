@@ -29,6 +29,6 @@
            02  SPA-WINSTK              PIC X(64)  OCCURS 10.
            02  SPA-WINIDX              PIC S9(9)  BINARY.
       *
-           02  SPA-COMMON              PIC X(12400).
-           02  SPA-FREE                PIC X(502000).
+           02  SPA-COMMON              PIC X(20000).
+           02  SPA-FREE                PIC X(600000).
       *
