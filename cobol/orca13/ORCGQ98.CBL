@@ -44,6 +44,9 @@
       *
        WORKING-STORAGE                 SECTION.
       *
+      *    画面スタイル
+           COPY    "ENUM-VALUE".
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *
@@ -632,9 +635,13 @@
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >       60 )
+               MOVE    "whitebutton"
+                                   TO  Q98-TADRSCHK-STYLE (IDX1)
       *        住所（一覧）
                MOVE    SPA-GMN-Q98-TADRS (IDX1)
                                    TO  Q98-TADRS (IDX1)
+               INSPECT Q98-TADRS (IDX1)(5:16)
+                       REPLACING  ALL "  "  BY  "　"
       *
            END-PERFORM
       *

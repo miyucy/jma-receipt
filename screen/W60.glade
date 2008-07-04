@@ -392,62 +392,6 @@
 
     <widget>
       <class>GtkPandaEntry</class>
-      <name>MTRXNIL3</name>
-      <x>220</x>
-      <y>315</y>
-      <width>65</width>
-      <height>30</height>
-      <sensitive>False</sensitive>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:16 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:44 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text>¡Ý</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>MTRXNIL4</name>
-      <x>220</x>
-      <y>345</y>
-      <width>65</width>
-      <height>30</height>
-      <sensitive>False</sensitive>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:16 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:44 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text>¡Ý</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
       <name>HTTL1</name>
       <x>220</x>
       <y>225</y>
@@ -577,197 +521,6 @@
       <text_visible>True</text_visible>
       <text_max_length>20</text_max_length>
       <text>Ì¾¾Î</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>MTRXNIL1</name>
-      <x>285</x>
-      <y>285</y>
-      <width>65</width>
-      <height>30</height>
-      <sensitive>False</sensitive>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:16 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:44 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text>¡Ý</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>MTRXNIL2</name>
-      <x>350</x>
-      <y>285</y>
-      <width>125</width>
-      <height>30</height>
-      <sensitive>False</sensitive>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:16 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:44 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text>¡Ý</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>MTRX01</name>
-      <x>220</x>
-      <y>285</y>
-      <width>65</width>
-      <height>30</height>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:16 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:44 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text>¡û</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>MTRX02</name>
-      <x>285</x>
-      <y>315</y>
-      <width>65</width>
-      <height>30</height>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:16 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:44 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text>¡û</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>MTRX04</name>
-      <x>285</x>
-      <y>345</y>
-      <width>65</width>
-      <height>30</height>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:16 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:44 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text>¡û</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>MTRX03</name>
-      <x>350</x>
-      <y>315</y>
-      <width>125</width>
-      <height>30</height>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:16 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:44 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text>¡û</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>MTRX05</name>
-      <x>350</x>
-      <y>345</y>
-      <width>125</width>
-      <height>30</height>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:16 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Mon, 05 Apr 2004 05:04:44 GMT</last_modification_time>
-      </signal>
-      <editable>True</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>2</text_max_length>
-      <text>¡û</text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
     </widget>
@@ -934,101 +687,6 @@
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKMTRX04</name>
-      <x>285</x>
-      <y>345</y>
-      <width>65</width>
-      <height>30</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKMTRX05</name>
-      <x>350</x>
-      <y>345</y>
-      <width>125</width>
-      <height>30</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKMTRX01</name>
-      <x>220</x>
-      <y>285</y>
-      <width>65</width>
-      <height>30</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKMTRX02</name>
-      <x>285</x>
-      <y>315</y>
-      <width>65</width>
-      <height>30</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHKMTRX03</name>
-      <x>350</x>
-      <y>315</y>
-      <width>125</width>
-      <height>30</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label307</name>
       <x>480</x>
@@ -1036,22 +694,6 @@
       <width>145</width>
       <height>25</height>
       <label>¡ß¡§¥Á¥§¥Ã¥¯¤·¤Ê¤¤</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label306</name>
-      <x>480</x>
-      <y>325</y>
-      <width>145</width>
-      <height>25</height>
-      <label>¡û¡§¥Á¥§¥Ã¥¯¤¹¤ë</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -1682,6 +1324,160 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHKMTRX01</name>
+      <x>220</x>
+      <y>285</y>
+      <width>65</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>¡û</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHKMTRX02</name>
+      <x>285</x>
+      <y>315</y>
+      <width>65</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>¡û</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHKMTRX03</name>
+      <x>350</x>
+      <y>315</y>
+      <width>125</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>¡û</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHKMTRX04</name>
+      <x>285</x>
+      <y>345</y>
+      <width>65</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>¡û</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHKMTRX05</name>
+      <x>350</x>
+      <y>345</y>
+      <width>125</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 03 Feb 2001 04:43:32 GMT</last_modification_time>
+      </signal>
+      <label>¡û</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label306</name>
+      <x>480</x>
+      <y>325</y>
+      <width>145</width>
+      <height>25</height>
+      <label>¡û¡§¥Á¥§¥Ã¥¯¤¹¤ë</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHKMTRXNIL1</name>
+      <x>285</x>
+      <y>285</y>
+      <width>65</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <label>¡Ý</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHKMTRXNIL2</name>
+      <x>350</x>
+      <y>285</y>
+      <width>125</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <label>¡Ý</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHKMTRXNIL3</name>
+      <x>220</x>
+      <y>315</y>
+      <width>65</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <label>¡Ý</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHKMTRXNIL4</name>
+      <x>220</x>
+      <y>345</y>
+      <width>65</width>
+      <height>30</height>
+      <can_focus>True</can_focus>
+      <label>¡Ý</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>
 </widget>

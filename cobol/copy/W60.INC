@@ -31,10 +31,14 @@
                 04  W60-KYUSEIKKNKBN       PIC X(10).
                 04  W60-KYUSEIKKNKBN-COUNT PIC S9(9)   BINARY.
                 04  W60-KYUSEIKKNKBN-ITEM  PIC X(10)   OCCURS  15.
-              03  W60-MTRX             PIC X(02)
-                                       OCCURS 5.
-              03  W60-CHKMTRX          PIC X(01)
-                                       OCCURS 5.
+              03  W60-CHKMTRXNIL-G.
+                  05  W60-CHKMTRXNIL-OCC   OCCURS 4.
+                   06 W60-CHKMTRXNIL-STATE PIC S9(9)   BINARY.
+                   06 W60-CHKMTRXNIL-STYLE PIC X(20).
+              03  W60-CHKMTRX-G.
+                04  W60-CHKMTRX-OCC    OCCURS 5.
+                  05  W60-CHKMTRX-STYLE    PIC X(20).
+                  05  W60-MTRX         PIC X(02).
               03  W60-CMB-TENKITEKBYOKBN.
                 04  W60-TENKITEKBYOKBN        PIC X(20).
                 04  W60-TENKITEKBYOKBN-COUNT  PIC S9(9)   BINARY.

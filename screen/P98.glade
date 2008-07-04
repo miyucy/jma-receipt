@@ -5,13 +5,9 @@
   <name>P98</name>
   <program_name>P98</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -328,756 +324,6 @@
     </widget>
 
     <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS011</name>
-      <x>56</x>
-      <y>52</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS012</name>
-      <x>200</x>
-      <y>52</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS013</name>
-      <x>344</x>
-      <y>52</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS014</name>
-      <x>488</x>
-      <y>52</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS015</name>
-      <x>632</x>
-      <y>52</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS021</name>
-      <x>56</x>
-      <y>84</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS022</name>
-      <x>200</x>
-      <y>84</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS023</name>
-      <x>344</x>
-      <y>84</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS024</name>
-      <x>488</x>
-      <y>84</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS025</name>
-      <x>632</x>
-      <y>84</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS031</name>
-      <x>56</x>
-      <y>116</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS032</name>
-      <x>200</x>
-      <y>116</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS033</name>
-      <x>344</x>
-      <y>116</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS034</name>
-      <x>488</x>
-      <y>116</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS035</name>
-      <x>632</x>
-      <y>116</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS041</name>
-      <x>56</x>
-      <y>148</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS042</name>
-      <x>200</x>
-      <y>148</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS043</name>
-      <x>344</x>
-      <y>148</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS044</name>
-      <x>488</x>
-      <y>148</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS045</name>
-      <x>632</x>
-      <y>148</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS051</name>
-      <x>56</x>
-      <y>180</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS052</name>
-      <x>200</x>
-      <y>180</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS053</name>
-      <x>344</x>
-      <y>180</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS054</name>
-      <x>488</x>
-      <y>180</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS055</name>
-      <x>632</x>
-      <y>180</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS061</name>
-      <x>56</x>
-      <y>212</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS062</name>
-      <x>200</x>
-      <y>212</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS063</name>
-      <x>344</x>
-      <y>212</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS064</name>
-      <x>488</x>
-      <y>212</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS065</name>
-      <x>632</x>
-      <y>212</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS071</name>
-      <x>56</x>
-      <y>244</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS072</name>
-      <x>200</x>
-      <y>244</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS073</name>
-      <x>344</x>
-      <y>244</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS074</name>
-      <x>488</x>
-      <y>244</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS075</name>
-      <x>632</x>
-      <y>244</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS081</name>
-      <x>56</x>
-      <y>276</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS082</name>
-      <x>200</x>
-      <y>276</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS083</name>
-      <x>344</x>
-      <y>276</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS084</name>
-      <x>488</x>
-      <y>276</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS085</name>
-      <x>632</x>
-      <y>276</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS091</name>
-      <x>56</x>
-      <y>308</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS092</name>
-      <x>200</x>
-      <y>308</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS093</name>
-      <x>344</x>
-      <y>308</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS094</name>
-      <x>488</x>
-      <y>308</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS095</name>
-      <x>632</x>
-      <y>308</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS101</name>
-      <x>56</x>
-      <y>340</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS102</name>
-      <x>200</x>
-      <y>340</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS103</name>
-      <x>344</x>
-      <y>340</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS104</name>
-      <x>488</x>
-      <y>340</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TADRS105</name>
-      <x>632</x>
-      <y>340</y>
-      <width>144</width>
-      <height>32</height>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>20</text_max_length>
-      <text></text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
       <class>GtkNumberEntry</class>
       <name>SELNUM</name>
       <x>80</x>
@@ -1099,82 +345,6 @@
       </signal>
       <editable>True</editable>
       <format>ZZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS011</name>
-      <x>60</x>
-      <y>60</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS021</name>
-      <x>56</x>
-      <y>84</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS031</name>
-      <x>56</x>
-      <y>116</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS041</name>
-      <x>56</x>
-      <y>148</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
     </widget>
 
     <widget>
@@ -1244,877 +414,903 @@
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS051</name>
-      <x>56</x>
-      <y>180</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS061</name>
-      <x>56</x>
-      <y>212</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS012</name>
-      <x>200</x>
+      <class>GtkButton</class>
+      <name>CHK_TADRS011</name>
+      <x>40</x>
       <y>52</y>
-      <width>144</width>
+      <width>148</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
       </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS022</name>
-      <x>200</x>
-      <y>84</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS032</name>
-      <x>200</x>
-      <y>116</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS052</name>
-      <x>200</x>
-      <y>180</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS072</name>
-      <x>200</x>
-      <y>244</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS082</name>
-      <x>200</x>
-      <y>276</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS092</name>
-      <x>200</x>
-      <y>308</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS062</name>
-      <x>200</x>
-      <y>212</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS102</name>
-      <x>200</x>
-      <y>340</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS013</name>
-      <x>344</x>
-      <y>52</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS033</name>
-      <x>344</x>
-      <y>116</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS043</name>
-      <x>344</x>
-      <y>148</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS053</name>
-      <x>344</x>
-      <y>180</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS063</name>
-      <x>344</x>
-      <y>212</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS073</name>
-      <x>344</x>
-      <y>244</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS083</name>
-      <x>344</x>
-      <y>280</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS093</name>
-      <x>344</x>
-      <y>312</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS014</name>
-      <x>488</x>
-      <y>52</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS024</name>
-      <x>488</x>
-      <y>84</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS034</name>
-      <x>488</x>
-      <y>116</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS044</name>
-      <x>488</x>
-      <y>148</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS054</name>
-      <x>488</x>
-      <y>180</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS015</name>
-      <x>632</x>
-      <y>52</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
+      <class>GtkButton</class>
       <name>CHK_TADRS025</name>
       <x>632</x>
       <y>84</y>
-      <width>144</width>
+      <width>148</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
       </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS035</name>
+      <class>GtkButton</class>
+      <name>CHK_TADRS015</name>
       <x>632</x>
+      <y>52</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS024</name>
+      <x>484</x>
+      <y>84</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS014</name>
+      <x>484</x>
+      <y>52</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS023</name>
+      <x>336</x>
+      <y>84</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS013</name>
+      <x>336</x>
+      <y>52</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS022</name>
+      <x>188</x>
+      <y>84</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS021</name>
+      <x>40</x>
+      <y>84</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS012</name>
+      <x>188</x>
+      <y>52</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS034</name>
+      <x>484</x>
       <y>116</y>
-      <width>144</width>
+      <width>148</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
       </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS045</name>
-      <x>632</x>
+      <class>GtkButton</class>
+      <name>CHK_TADRS043</name>
+      <x>336</x>
       <y>148</y>
-      <width>144</width>
+      <width>148</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
       </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS064</name>
-      <x>488</x>
-      <y>212</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS074</name>
-      <x>488</x>
-      <y>244</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS084</name>
-      <x>488</x>
-      <y>276</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS094</name>
-      <x>488</x>
-      <y>308</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS104</name>
-      <x>488</x>
-      <y>340</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS055</name>
-      <x>632</x>
+      <class>GtkButton</class>
+      <name>CHK_TADRS052</name>
+      <x>188</x>
       <y>180</y>
-      <width>144</width>
+      <width>148</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
       </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
+      <class>GtkButton</class>
+      <name>CHK_TADRS051</name>
+      <x>40</x>
+      <y>180</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS033</name>
+      <x>336</x>
+      <y>116</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS042</name>
+      <x>188</x>
+      <y>148</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS041</name>
+      <x>40</x>
+      <y>148</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS032</name>
+      <x>188</x>
+      <y>116</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS031</name>
+      <x>40</x>
+      <y>116</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS062</name>
+      <x>188</x>
+      <y>212</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS063</name>
+      <x>336</x>
+      <y>212</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS064</name>
+      <x>484</x>
+      <y>212</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
       <name>CHK_TADRS065</name>
       <x>632</x>
       <y>212</y>
-      <width>144</width>
+      <width>148</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
       </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS075</name>
-      <x>628</x>
-      <y>248</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS042</name>
-      <x>200</x>
-      <y>148</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS085</name>
+      <class>GtkButton</class>
+      <name>CHK_TADRS055</name>
       <x>632</x>
-      <y>276</y>
-      <width>144</width>
+      <y>180</y>
+      <width>148</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
       </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS091</name>
-      <x>56</x>
+      <class>GtkButton</class>
+      <name>CHK_TADRS054</name>
+      <x>484</x>
+      <y>180</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS053</name>
+      <x>336</x>
+      <y>180</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS045</name>
+      <x>632</x>
+      <y>148</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS044</name>
+      <x>484</x>
+      <y>148</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS035</name>
+      <x>632</x>
+      <y>116</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS061</name>
+      <x>40</x>
+      <y>212</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS102</name>
+      <x>188</x>
+      <y>340</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS103</name>
+      <x>336</x>
+      <y>340</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS101</name>
+      <x>40</x>
+      <y>340</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS104</name>
+      <x>484</x>
+      <y>340</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS093</name>
+      <x>336</x>
       <y>308</y>
-      <width>144</width>
+      <width>148</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
       </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
+      <class>GtkButton</class>
+      <name>CHK_TADRS094</name>
+      <x>484</x>
+      <y>308</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS084</name>
+      <x>484</x>
+      <y>276</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS074</name>
+      <x>484</x>
+      <y>244</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS083</name>
+      <x>336</x>
+      <y>276</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS073</name>
+      <x>336</x>
+      <y>244</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS092</name>
+      <x>188</x>
+      <y>308</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS082</name>
+      <x>188</x>
+      <y>276</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS072</name>
+      <x>188</x>
+      <y>244</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
       <name>CHK_TADRS095</name>
       <x>632</x>
       <y>308</y>
-      <width>144</width>
+      <width>148</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
       </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS103</name>
-      <x>344</x>
-      <y>340</y>
-      <width>144</width>
+      <class>GtkButton</class>
+      <name>CHK_TADRS085</name>
+      <x>632</x>
+      <y>276</y>
+      <width>148</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
       </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
+      <class>GtkButton</class>
+      <name>CHK_TADRS075</name>
+      <x>632</x>
+      <y>244</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS091</name>
+      <x>40</x>
+      <y>308</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS081</name>
+      <x>40</x>
+      <y>276</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TADRS071</name>
+      <x>40</x>
+      <y>244</y>
+      <width>148</width>
+      <height>32</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
       <name>CHK_TADRS105</name>
       <x>632</x>
       <y>340</y>
-      <width>144</width>
+      <width>148</width>
       <height>32</height>
       <can_focus>True</can_focus>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
 	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
+	<last_modification_time>Sat, 13 Jan 2001 09:18:10 GMT</last_modification_time>
       </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS023</name>
-      <x>344</x>
-      <y>84</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS101</name>
-      <x>56</x>
-      <y>340</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS071</name>
-      <x>56</x>
-      <y>244</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TADRS081</name>
-      <x>56</x>
-      <y>276</y>
-      <width>144</width>
-      <height>32</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 03 Sep 2002 05:39:43 GMT</last_modification_time>
-      </signal>
-      <label>checkbutton1</label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
   </widget>
 </widget>

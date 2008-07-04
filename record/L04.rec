@@ -9,29 +9,21 @@ L04	{
 		MESPROC	{
 			value	varchar(10);
 		};
-		MESSTSRYYMD	{
-			value	varchar(10);
-		};
-		MESSTTIME	{
-			value	varchar(10);
-		};
 		CHK_MESSTSRYYMD	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_MESSTTIME	{
-			value	bool;
-		};
-		MESEDSRYYMD	{
-			value	varchar(10);
-		};
-		MESEDTIME	{
-			value	varchar(10);
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_MESEDSRYYMD	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_MESEDTIME	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CMB_PROCKBN	{
 			PROCKBN	{
@@ -43,33 +35,21 @@ L04	{
 		NO01	{
 			value	number (2);
 		};
-		SRYYMD011	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME011	{
-			style   varchar(20);
-			value	varchar(10);
-		};
 		CHK_SRYYMD011	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME011	{
-			value	bool;
-		};
-		SRYYMD012	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME012	{
-			style   varchar(20);
-			value	varchar(10);
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_SRYYMD012	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME012	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		MARK01	{
 			style   varchar(20);
@@ -78,33 +58,21 @@ L04	{
 		NO02	{
 			value	number (2);
 		};
-		SRYYMD021	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME021	{
-			style   varchar(20);
-			value	varchar(10);
-		};
 		CHK_SRYYMD021	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME021	{
-			value	bool;
-		};
-		SRYYMD022	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME022	{
-			style   varchar(20);
-			value	varchar(10);
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_SRYYMD022	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME022	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		MARK02	{
 			style   varchar(20);
@@ -113,33 +81,21 @@ L04	{
 		NO03	{
 			value	number (2);
 		};
-		SRYYMD031	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME031	{
-			style   varchar(20);
-			value	varchar(10);
-		};
 		CHK_SRYYMD031	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME031	{
-			value	bool;
-		};
-		SRYYMD032	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME032	{
-			style   varchar(20);
-			value	varchar(10);
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_SRYYMD032	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME032	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		MARK03	{
 			style   varchar(20);
@@ -148,33 +104,21 @@ L04	{
 		NO04	{
 			value	number (2);
 		};
-		SRYYMD041	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME041	{
-			style   varchar(20);
-			value	varchar(10);
-		};
 		CHK_SRYYMD041	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME041	{
-			value	bool;
-		};
-		SRYYMD042	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME042	{
-			style   varchar(20);
-			value	varchar(10);
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_SRYYMD042	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME042	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		MARK04	{
 			style   varchar(20);
@@ -183,33 +127,21 @@ L04	{
 		NO05	{
 			value	number (2);
 		};
-		SRYYMD051	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME051	{
-			style   varchar(20);
-			value	varchar(10);
-		};
 		CHK_SRYYMD051	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME051	{
-			value	bool;
-		};
-		SRYYMD052	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME052	{
-			style   varchar(20);
-			value	varchar(10);
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_SRYYMD052	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME052	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		MARK05	{
 			style   varchar(20);
@@ -218,33 +150,21 @@ L04	{
 		NO06	{
 			value	number (2);
 		};
-		SRYYMD061	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME061	{
-			style   varchar(20);
-			value	varchar(10);
-		};
 		CHK_SRYYMD061	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME061	{
-			value	bool;
-		};
-		SRYYMD062	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME062	{
-			style   varchar(20);
-			value	varchar(10);
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_SRYYMD062	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME062	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		MARK06	{
 			style   varchar(20);
@@ -253,33 +173,21 @@ L04	{
 		NO07	{
 			value	number (2);
 		};
-		SRYYMD071	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME071	{
-			style   varchar(20);
-			value	varchar(10);
-		};
 		CHK_SRYYMD071	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME071	{
-			value	bool;
-		};
-		SRYYMD072	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME072	{
-			style   varchar(20);
-			value	varchar(10);
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_SRYYMD072	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME072	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		MARK07	{
 			style   varchar(20);
@@ -288,33 +196,21 @@ L04	{
 		NO08	{
 			value	number (2);
 		};
-		SRYYMD081	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME081	{
-			style   varchar(20);
-			value	varchar(10);
-		};
 		CHK_SRYYMD081	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME081	{
-			value	bool;
-		};
-		SRYYMD082	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME082	{
-			style   varchar(20);
-			value	varchar(10);
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_SRYYMD082	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME082	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		MARK08	{
 			style   varchar(20);
@@ -323,33 +219,21 @@ L04	{
 		NO09	{
 			value	number (2);
 		};
-		SRYYMD091	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME091	{
-			style   varchar(20);
-			value	varchar(10);
-		};
 		CHK_SRYYMD091	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME091	{
-			value	bool;
-		};
-		SRYYMD092	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME092	{
-			style   varchar(20);
-			value	varchar(10);
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_SRYYMD092	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME092	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		MARK09	{
 			style   varchar(20);
@@ -358,33 +242,21 @@ L04	{
 		NO10	{
 			value	number (2);
 		};
-		SRYYMD101	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME101	{
-			style   varchar(20);
-			value	varchar(10);
-		};
 		CHK_SRYYMD101	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME101	{
-			value	bool;
-		};
-		SRYYMD102	{
-			style   varchar(20);
-			value	varchar(10);
-		};
-		TIME102	{
-			style   varchar(20);
-			value	varchar(10);
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_SRYYMD102	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		CHK_TIME102	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(10);
 		};
 		MARK10	{
 			style   varchar(20);

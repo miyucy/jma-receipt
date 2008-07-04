@@ -26,35 +26,41 @@ W60	{ fixed1	{
 			count	int;
 			item	varchar(10)[15];
 		};
-		MTRX01	{
-			value	varchar(2);
+		CHKMTRXNIL1	{
+			state	int;
+			style	varchar(20);
 		};
-		MTRX02	{
-			value	varchar(2);
+		CHKMTRXNIL2	{
+			state	int;
+			style	varchar(20);
 		};
-		MTRX03	{
-			value	varchar(2);
+		CHKMTRXNIL3	{
+			state	int;
+			style	varchar(20);
 		};
-		MTRX04	{
-			value	varchar(2);
-		};
-		MTRX05	{
-			value	varchar(2);
+		CHKMTRXNIL4	{
+			state	int;
+			style	varchar(20);
 		};
 		CHKMTRX01	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(2);
 		};
 		CHKMTRX02	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(2);
 		};
 		CHKMTRX03	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(2);
 		};
 		CHKMTRX04	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(2);
 		};
 		CHKMTRX05	{
-			value	bool;
+			style	varchar(20);
+			label	varchar(2);
 		};
 		CMB_TENKITEKBYOKBN	{
 			TENKITEKBYOKBN	{

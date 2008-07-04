@@ -2045,7 +2045,13 @@
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
-           INITIALIZE                  L04
+           MOVE    SPACE                   TO  L04
+           INITIALIZE                          L04
+      *
+           MOVE    "whitebutton"           TO  L04-CHK-MESSTSRYYMD-STYLE
+                                               L04-CHK-MESSTTIME-STYLE
+                                               L04-CHK-MESEDSRYYMD-STYLE
+                                               L04-CHK-MESEDTIME-STYLE
       *
            MOVE    SPA-GMN-L04-MESPROC     TO  L04-MESPROC
            MOVE    SPA-GMN-L04-MESSTSRYYMD TO  L04-MESSTSRYYMD
@@ -2077,7 +2083,7 @@
            END-PERFORM
       *
            PERFORM VARYING IDX-TERM    FROM    1   BY  1
-                   UNTIL ( IDX-TERM    >   SPA-GMN-L04-TERM-MAX )
+                   UNTIL ( IDX-TERM    >   CONST-TERM-MAX )
       *
                MOVE    IDX-TERM        TO  WRK-Z9
                MOVE    WRK-Z9          TO  L04-NO (IDX-TERM)
@@ -2098,8 +2104,11 @@
                                        TO  L04-TIME (IDX-TERM IDX1)
                    END-IF
       *
-                   MOVE    "black" TO  L04-SRYYMD-STYLE (IDX-TERM IDX1)
-                   MOVE    "black" TO  L04-TIME-STYLE   (IDX-TERM IDX1)
+                   MOVE    "whitebutton" 
+                                   TO  L04-CHK-SRYYMD-STYLE
+                                                         (IDX-TERM IDX1)
+                   MOVE    "whitebutton" 
+                                   TO  L04-CHK-TIME-STYLE(IDX-TERM IDX1)
                END-PERFORM
       *
                IF    ( SPA-NAI-L04-HOURSKBN (IDX-TERM) =   "1" )
@@ -2110,15 +2119,19 @@
                IF    ( SPA-GMN-L04-TERM-EDSEL  =   IDX-TERM )
                    EVALUATE    SPA-GMN-L04-PROCKBN
                    WHEN    CONST-UPD
-                           MOVE    "blue-rev"
-                                       TO  L04-SRYYMD-STYLE (IDX-TERM 2)
-                           MOVE    "blue-rev"
-                                       TO  L04-TIME-STYLE   (IDX-TERM 2)
+                           MOVE    "blue-revbutton"
+                                       TO  L04-CHK-SRYYMD-STYLE
+                                                            (IDX-TERM 2)
+                           MOVE    "blue-revbutton"
+                                       TO  L04-CHK-TIME-STYLE
+                                                            (IDX-TERM 2)
                    WHEN    CONST-DEL
-                           MOVE    "yellow-rev"
-                                       TO  L04-SRYYMD-STYLE (IDX-TERM 2)
-                           MOVE    "yellow-rev"
-                                       TO  L04-TIME-STYLE   (IDX-TERM 2)
+                           MOVE    "yellow-revbutton"
+                                       TO  L04-CHK-SRYYMD-STYLE
+                                                            (IDX-TERM 2)
+                           MOVE    "yellow-revbutton"
+                                       TO  L04-CHK-TIME-STYLE
+                                                            (IDX-TERM 2)
                    END-EVALUATE
                END-IF
       *
@@ -2128,10 +2141,12 @@
                                            =   SPA-NAI-L04-STSRYYMD )
                         AND  ( SPA-GMN-L04-TIME   (IDX-TERM 1)
                                            =   SPA-GMN-L04-STTIME )
-                           MOVE    "blue-rev"
-                                       TO  L04-SRYYMD-STYLE (IDX-TERM 1)
-                           MOVE    "blue-rev"
-                                       TO  L04-TIME-STYLE   (IDX-TERM 1)
+                           MOVE    "blue-revbutton"
+                                       TO  L04-CHK-SRYYMD-STYLE
+                                                            (IDX-TERM 1)
+                           MOVE    "blue-revbutton"
+                                       TO  L04-CHK-TIME-STYLE  
+                                                            (IDX-TERM 1)
                        END-IF
                    END-IF
       *
@@ -2140,10 +2155,12 @@
                                            =   SPA-NAI-L04-EDSRYYMD )
                         AND  ( SPA-GMN-L04-TIME   (IDX-TERM 2)
                                            =   SPA-GMN-L04-EDTIME )
-                           MOVE    "blue-rev"
-                                       TO  L04-SRYYMD-STYLE (IDX-TERM 2)
-                           MOVE    "blue-rev"
-                                       TO  L04-TIME-STYLE   (IDX-TERM 2)
+                           MOVE    "blue-revbutton"
+                                       TO  L04-CHK-SRYYMD-STYLE 
+                                                            (IDX-TERM 2)
+                           MOVE    "blue-revbutton"
+                                       TO  L04-CHK-TIME-STYLE
+                                                            (IDX-TERM 2)
                        END-IF
                    END-IF
                END-IF

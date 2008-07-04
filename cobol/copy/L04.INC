@@ -22,14 +22,14 @@
                   05  L04-B04-LABEL    PIC X(10).
                   05  L04-B12-LABEL    PIC X(10).
               03  L04-MESPROC          PIC X(10).
+              03  L04-CHK-MESSTSRYYMD-STYLE PIC X(20).
               03  L04-MESSTSRYYMD      PIC X(10).
+              03  L04-CHK-MESSTTIME-STYLE PIC X(20).
               03  L04-MESSTTIME        PIC X(10).
-              03  L04-CHK-MESSTSRYYMD  PIC X.
-              03  L04-CHK-MESSTTIME    PIC X.
+              03  L04-CHK-MESEDSRYYMD-STYLE PIC X(20).
               03  L04-MESEDSRYYMD      PIC X(10).
+              03  L04-CHK-MESEDTIME-STYLE PIC X(20).
               03  L04-MESEDTIME        PIC X(10).
-              03  L04-CHK-MESEDSRYYMD  PIC X.
-              03  L04-CHK-MESEDTIME    PIC X.
               03  L04-CMB-PROCKBN.
                 04  L04-PROCKBN.
                   05  L04-VALUE        PIC X(50).
@@ -41,15 +41,13 @@
                   05  L04-NO           PIC S9(02).
                   05  L04-HOURS-OCC    OCCURS  2   TIMES.
                     06  L04-SRYYMD-G.
-                      07  L04-SRYYMD-STYLE
+                      07  L04-CHK-SRYYMD-STYLE
                                        PIC X(20).
                       07  L04-SRYYMD   PIC X(10).
                     06  L04-TIME-G.
-                      07  L04-TIME-STYLE
+                      07  L04-CHK-TIME-STYLE
                                        PIC X(20).
                       07  L04-TIME     PIC X(10).
-                    06    L04-CHK-SRYYMD   PIC X.
-                    06    L04-CHK-TIME     PIC X.
                   05  L04-MARK-G.
                       06  L04-MARK-STYLE
                                        PIC X(20).

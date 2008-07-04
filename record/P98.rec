@@ -6,308 +6,208 @@ P98	{
 		POST	{
 			value	varchar(7);
 		};
-		TADRS011	{
-			value	varchar(20);
+		CHK_TADRS011	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS012	{
-			value	varchar(20);
+		CHK_TADRS012	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS013	{
-			value	varchar(20);
+		CHK_TADRS013	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS014	{
-			value	varchar(20);
+		CHK_TADRS014	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS015	{
-			value	varchar(20);
+		CHK_TADRS015	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS021	{
-			value	varchar(20);
+		CHK_TADRS021	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS022	{
-			value	varchar(20);
+		CHK_TADRS022	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS023	{
-			value	varchar(20);
+		CHK_TADRS023	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS024	{
-			value	varchar(20);
+		CHK_TADRS024	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS025	{
-			value	varchar(20);
+		CHK_TADRS025	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS031	{
-			value	varchar(20);
+		CHK_TADRS031	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS032	{
-			value	varchar(20);
+		CHK_TADRS032	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS033	{
-			value	varchar(20);
+		CHK_TADRS033	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS034	{
-			value	varchar(20);
+		CHK_TADRS034	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS035	{
-			value	varchar(20);
+		CHK_TADRS035	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS041	{
-			value	varchar(20);
+		CHK_TADRS041	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS042	{
-			value	varchar(20);
+		CHK_TADRS042	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS043	{
-			value	varchar(20);
+		CHK_TADRS043	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS044	{
-			value	varchar(20);
+		CHK_TADRS044	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS045	{
-			value	varchar(20);
+		CHK_TADRS045	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS051	{
-			value	varchar(20);
+		CHK_TADRS051	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS052	{
-			value	varchar(20);
+		CHK_TADRS052	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS053	{
-			value	varchar(20);
+		CHK_TADRS053	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS054	{
-			value	varchar(20);
+		CHK_TADRS054	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS055	{
-			value	varchar(20);
+		CHK_TADRS055	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS061	{
-			value	varchar(20);
+		CHK_TADRS061	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS062	{
-			value	varchar(20);
+		CHK_TADRS062	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS063	{
-			value	varchar(20);
+		CHK_TADRS063	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS064	{
-			value	varchar(20);
+		CHK_TADRS064	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS065	{
-			value	varchar(20);
+		CHK_TADRS065	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS071	{
-			value	varchar(20);
+		CHK_TADRS071	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS072	{
-			value	varchar(20);
+		CHK_TADRS072	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS073	{
-			value	varchar(20);
+		CHK_TADRS073	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS074	{
-			value	varchar(20);
+		CHK_TADRS074	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS075	{
-			value	varchar(20);
+		CHK_TADRS075	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS081	{
-			value	varchar(20);
+		CHK_TADRS081	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS082	{
-			value	varchar(20);
+		CHK_TADRS082	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS083	{
-			value	varchar(20);
+		CHK_TADRS083	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS084	{
-			value	varchar(20);
+		CHK_TADRS084	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS085	{
-			value	varchar(20);
+		CHK_TADRS085	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS091	{
-			value	varchar(20);
+		CHK_TADRS091	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS092	{
-			value	varchar(20);
+		CHK_TADRS092	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS093	{
-			value	varchar(20);
+		CHK_TADRS093	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS094	{
-			value	varchar(20);
+		CHK_TADRS094	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS095	{
-			value	varchar(20);
+		CHK_TADRS095	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS101	{
-			value	varchar(20);
+		CHK_TADRS101	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS102	{
-			value	varchar(20);
+		CHK_TADRS102	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS103	{
-			value	varchar(20);
+		CHK_TADRS103	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS104	{
-			value	varchar(20);
+		CHK_TADRS104	{
+			style	varchar(20);
+			label	varchar(20);
 		};
-		TADRS105	{
-			value	varchar(20);
+		CHK_TADRS105	{
+			style	varchar(20);
+			label	varchar(20);
 		};
 		SELNUM	{
 			value	number(3);
-		};
-		CHK_TADRS011	{
-			value	bool;
-		};
-		CHK_TADRS021	{
-			value	bool;
-		};
-		CHK_TADRS031	{
-			value	bool;
-		};
-		CHK_TADRS041	{
-			value	bool;
-		};
-		CHK_TADRS051	{
-			value	bool;
-		};
-		CHK_TADRS061	{
-			value	bool;
-		};
-		CHK_TADRS012	{
-			value	bool;
-		};
-		CHK_TADRS022	{
-			value	bool;
-		};
-		CHK_TADRS032	{
-			value	bool;
-		};
-		CHK_TADRS052	{
-			value	bool;
-		};
-		CHK_TADRS072	{
-			value	bool;
-		};
-		CHK_TADRS082	{
-			value	bool;
-		};
-		CHK_TADRS092	{
-			value	bool;
-		};
-		CHK_TADRS062	{
-			value	bool;
-		};
-		CHK_TADRS102	{
-			value	bool;
-		};
-		CHK_TADRS013	{
-			value	bool;
-		};
-		CHK_TADRS033	{
-			value	bool;
-		};
-		CHK_TADRS043	{
-			value	bool;
-		};
-		CHK_TADRS053	{
-			value	bool;
-		};
-		CHK_TADRS063	{
-			value	bool;
-		};
-		CHK_TADRS073	{
-			value	bool;
-		};
-		CHK_TADRS083	{
-			value	bool;
-		};
-		CHK_TADRS093	{
-			value	bool;
-		};
-		CHK_TADRS014	{
-			value	bool;
-		};
-		CHK_TADRS024	{
-			value	bool;
-		};
-		CHK_TADRS034	{
-			value	bool;
-		};
-		CHK_TADRS044	{
-			value	bool;
-		};
-		CHK_TADRS054	{
-			value	bool;
-		};
-		CHK_TADRS015	{
-			value	bool;
-		};
-		CHK_TADRS025	{
-			value	bool;
-		};
-		CHK_TADRS035	{
-			value	bool;
-		};
-		CHK_TADRS045	{
-			value	bool;
-		};
-		CHK_TADRS064	{
-			value	bool;
-		};
-		CHK_TADRS074	{
-			value	bool;
-		};
-		CHK_TADRS084	{
-			value	bool;
-		};
-		CHK_TADRS094	{
-			value	bool;
-		};
-		CHK_TADRS104	{
-			value	bool;
-		};
-		CHK_TADRS055	{
-			value	bool;
-		};
-		CHK_TADRS065	{
-			value	bool;
-		};
-		CHK_TADRS075	{
-			value	bool;
-		};
-		CHK_TADRS042	{
-			value	bool;
-		};
-		CHK_TADRS085	{
-			value	bool;
-		};
-		CHK_TADRS091	{
-			value	bool;
-		};
-		CHK_TADRS095	{
-			value	bool;
-		};
-		CHK_TADRS103	{
-			value	bool;
-		};
-		CHK_TADRS105	{
-			value	bool;
-		};
-		CHK_TADRS023	{
-			value	bool;
-		};
-		CHK_TADRS101	{
-			value	bool;
-		};
-		CHK_TADRS071	{
-			value	bool;
-		};
-		CHK_TADRS081	{
-			value	bool;
 		};
 	};
 };

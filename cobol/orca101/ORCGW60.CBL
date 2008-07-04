@@ -1651,13 +1651,24 @@
            INITIALIZE                  W60
       *
            PERFORM VARYING IDX-MTRX    FROM    1   BY  1
+                   UNTIL ( IDX-MTRX    >   4 )
+      *
+               MOVE    WIDGET-NORMAL
+                                       TO  W60-CHKMTRXNIL-STATE
+                                                         (IDX-MTRX)
+               MOVE    "whitebutton"   TO  W60-CHKMTRXNIL-STYLE
+                                                         (IDX-MTRX)
+           END-PERFORM
+      *
+           PERFORM VARYING IDX-MTRX    FROM    1   BY  1
                    UNTIL ( IDX-MTRX    >   CONST-CHKMTRX-MAX )
       *
+               MOVE    "whitebutton"
+                                   TO  W60-CHKMTRX-STYLE (IDX-MTRX)
+      *
                IF    ( SPA-GMN-CHKMTRX (IDX-MTRX)  =   "1" )
-                   MOVE    "T"     TO  W60-CHKMTRX (IDX-MTRX)
                    MOVE    "¡û"    TO  W60-MTRX    (IDX-MTRX)
                ELSE
-                   MOVE    "F"     TO  W60-CHKMTRX (IDX-MTRX)
                    MOVE    "¡ß"    TO  W60-MTRX    (IDX-MTRX)
                END-IF
       *

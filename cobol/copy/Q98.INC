@@ -19,11 +19,8 @@
             03  Q98-FIXED1.
               04  Q98-POST                 PIC X(7).
               04  Q98-ADRS                 PIC X(100).
-              04  Q98-ADRS-TBL.
-                05  Q98-ADRS-OCC           OCCURS  60.
-                  06  Q98-TADRS            PIC X(20).
               04  Q98-ADRSCHK-TBL.
                 05  Q98-ADRSCHK-OCC        OCCURS  60.
-                  06  Q98-TADRSCHK         PIC X.
-                  06  Q98-TADRSCHK-LBL     PIC X.
+                  06  Q98-TADRSCHK-STYLE   PIC X(20).
+                  06  Q98-TADRS            PIC X(20).
               04  Q98-SELNUM               PIC 9(3).

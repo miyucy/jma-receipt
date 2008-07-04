@@ -1054,6 +1054,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W98-TATE-VALUE(IDX)
              PERFORM VARYING IDY FROM    1   BY  1
                      UNTIL   IDY >       26
+               MOVE    "whitebutton"   TO  W98-CHK-STYLE(IDX IDY)
                MOVE    SPA-GMN-FLG-VALUE (IDX IDY)
                                        TO  W98-FLG-VALUE(IDX IDY)
              END-PERFORM

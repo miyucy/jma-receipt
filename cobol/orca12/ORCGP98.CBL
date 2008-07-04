@@ -42,6 +42,9 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *    画面スタイル
+           COPY    "ENUM-VALUE".
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *
@@ -340,9 +343,12 @@
            PERFORM VARYING     IDXX    FROM    1   BY  1
                    UNTIL       IDXX    >       50
                COMPUTE IDXZ    =       IDXY    +   IDXX
+               MOVE  "whitebutton"         TO  P98-TADRS-STYLE (IDXX)
                MOVE  SPA-GMN98-KBNCD(IDXZ) TO  P98-TADRS(IDXX)(1:3)
                MOVE  SPA-GMN98-TADRS(IDXZ)
                                            TO  P98-TADRS(IDXX)(5:16)
+               INSPECT P98-TADRS(IDXX)(5:16)
+                       REPLACING  ALL "  "  BY  "　"
 	   END-PERFORM
       *
            MOVE    SPA-GMN98-ADRS      TO  P98-ADRS 

@@ -2,14 +2,11 @@
               03  W98-FRA-HATTA.
                 04  W98-FIXED2.
                   05  W98-FIXED2-STATE    PIC S9(09) BINARY.
-                  05  W98-FLG-TABLE.
-                    06  W98-FLG-TABLE1    OCCURS  26.
-                      07  W98-FLG-TABLE2  OCCURS  26.
-                        08  W98-FLG-VALUE PIC X(2).
                   05  W98-CHK-TABLE.
                     06  W98-CHK-TABLE1    OCCURS  26.
                       07  W98-CHK-TABLE2  OCCURS  26.
-                        08  W98-CHK-VALUE PIC X(1).
+                        08  W98-CHK-STYLE PIC X(20).
+                        08  W98-FLG-VALUE PIC X(2).
               03  W98-HAITAUMU-COMBO.
                 04  W98-HAITAUMU.
                   05  W98-VALUE   PIC X(21).

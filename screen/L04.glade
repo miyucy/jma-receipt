@@ -224,60 +224,6 @@
 
     <widget>
       <class>GtkPandaEntry</class>
-      <name>SRYYMD011</name>
-      <x>80</x>
-      <y>80</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME011</name>
-      <x>160</x>
-      <y>80</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
       <name>STSRYYMD</name>
       <x>115</x>
       <y>345</y>
@@ -485,1035 +431,9 @@
     </widget>
 
     <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD012</name>
-      <x>245</x>
-      <y>80</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME012</name>
-      <x>325</x>
-      <y>80</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD021</name>
-      <x>80</x>
-      <y>105</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME021</name>
-      <x>160</x>
-      <y>105</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD022</name>
-      <x>245</x>
-      <y>105</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME022</name>
-      <x>325</x>
-      <y>105</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD031</name>
-      <x>80</x>
-      <y>130</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME031</name>
-      <x>160</x>
-      <y>130</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD032</name>
-      <x>245</x>
-      <y>130</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME032</name>
-      <x>325</x>
-      <y>130</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD041</name>
-      <x>80</x>
-      <y>155</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME041</name>
-      <x>160</x>
-      <y>155</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD042</name>
-      <x>245</x>
-      <y>155</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME042</name>
-      <x>325</x>
-      <y>155</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD051</name>
-      <x>80</x>
-      <y>180</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME051</name>
-      <x>160</x>
-      <y>180</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD052</name>
-      <x>245</x>
-      <y>180</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME052</name>
-      <x>325</x>
-      <y>180</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD061</name>
-      <x>80</x>
-      <y>205</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME061</name>
-      <x>160</x>
-      <y>205</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD062</name>
-      <x>245</x>
-      <y>205</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME062</name>
-      <x>325</x>
-      <y>205</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD071</name>
-      <x>80</x>
-      <y>230</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD081</name>
-      <x>80</x>
-      <y>255</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD091</name>
-      <x>80</x>
-      <y>280</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD101</name>
-      <x>80</x>
-      <y>305</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD072</name>
-      <x>245</x>
-      <y>230</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME071</name>
-      <x>160</x>
-      <y>230</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME081</name>
-      <x>160</x>
-      <y>255</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME091</name>
-      <x>160</x>
-      <y>280</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME101</name>
-      <x>160</x>
-      <y>305</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME072</name>
-      <x>325</x>
-      <y>230</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME082</name>
-      <x>325</x>
-      <y>255</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD082</name>
-      <x>245</x>
-      <y>255</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME092</name>
-      <x>325</x>
-      <y>280</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD092</name>
-      <x>245</x>
-      <y>280</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>TIME102</name>
-      <x>325</x>
-      <y>305</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>SRYYMD102</name>
-      <x>245</x>
-      <y>305</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.1</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
       <class>GtkNumberEntry</class>
       <name>NO01</name>
-      <x>55</x>
+      <x>53</x>
       <y>80</y>
       <width>25</width>
       <height>25</height>
@@ -1536,7 +456,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>NO02</name>
-      <x>55</x>
+      <x>53</x>
       <y>105</y>
       <width>25</width>
       <height>25</height>
@@ -1559,7 +479,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>NO03</name>
-      <x>55</x>
+      <x>53</x>
       <y>130</y>
       <width>25</width>
       <height>25</height>
@@ -1582,7 +502,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>NO04</name>
-      <x>55</x>
+      <x>53</x>
       <y>155</y>
       <width>25</width>
       <height>25</height>
@@ -1605,7 +525,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>NO05</name>
-      <x>55</x>
+      <x>53</x>
       <y>180</y>
       <width>25</width>
       <height>25</height>
@@ -1628,7 +548,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>NO06</name>
-      <x>55</x>
+      <x>53</x>
       <y>205</y>
       <width>25</width>
       <height>25</height>
@@ -1651,7 +571,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>NO07</name>
-      <x>55</x>
+      <x>53</x>
       <y>230</y>
       <width>25</width>
       <height>25</height>
@@ -1674,7 +594,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>NO08</name>
-      <x>55</x>
+      <x>53</x>
       <y>255</y>
       <width>25</width>
       <height>25</height>
@@ -1697,7 +617,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>NO09</name>
-      <x>55</x>
+      <x>53</x>
       <y>280</y>
       <width>25</width>
       <height>25</height>
@@ -1720,7 +640,7 @@
     <widget>
       <class>GtkNumberEntry</class>
       <name>NO10</name>
-      <x>55</x>
+      <x>53</x>
       <y>305</y>
       <width>25</width>
       <height>25</height>
@@ -1741,108 +661,6 @@
     </widget>
 
     <widget>
-      <class>GtkPandaEntry</class>
-      <name>MESSTSRYYMD</name>
-      <x>140</x>
-      <y>30</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.3</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>MESEDSRYYMD</name>
-      <x>305</x>
-      <y>30</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>H17.7.3</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD101</name>
-      <x>80</x>
-      <y>305</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME101</name>
-      <x>160</x>
-      <y>305</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label12</name>
       <x>220</x>
@@ -1859,102 +677,6 @@
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD102</name>
-      <x>245</x>
-      <y>305</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME102</name>
-      <x>325</x>
-      <y>305</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD091</name>
-      <x>80</x>
-      <y>280</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME091</name>
-      <x>160</x>
-      <y>280</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>label11</name>
       <x>220</x>
@@ -1968,270 +690,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD081</name>
-      <x>80</x>
-      <y>255</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME081</name>
-      <x>160</x>
-      <y>255</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD071</name>
-      <x>80</x>
-      <y>230</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME071</name>
-      <x>160</x>
-      <y>230</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD061</name>
-      <x>80</x>
-      <y>205</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME061</name>
-      <x>160</x>
-      <y>205</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD051</name>
-      <x>80</x>
-      <y>180</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD041</name>
-      <x>80</x>
-      <y>155</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD031</name>
-      <x>80</x>
-      <y>130</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD021</name>
-      <x>80</x>
-      <y>105</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD092</name>
-      <x>245</x>
-      <y>280</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
     </widget>
 
     <widget>
@@ -2280,102 +738,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME051</name>
-      <x>160</x>
-      <y>180</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME041</name>
-      <x>160</x>
-      <y>155</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME031</name>
-      <x>160</x>
-      <y>130</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME021</name>
-      <x>160</x>
-      <y>105</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
     </widget>
 
     <widget>
@@ -2456,414 +818,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD082</name>
-      <x>245</x>
-      <y>255</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME092</name>
-      <x>325</x>
-      <y>280</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME082</name>
-      <x>325</x>
-      <y>255</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD072</name>
-      <x>245</x>
-      <y>230</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME072</name>
-      <x>325</x>
-      <y>230</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD062</name>
-      <x>245</x>
-      <y>205</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME062</name>
-      <x>325</x>
-      <y>205</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD052</name>
-      <x>245</x>
-      <y>180</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD042</name>
-      <x>245</x>
-      <y>155</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD032</name>
-      <x>245</x>
-      <y>130</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD022</name>
-      <x>245</x>
-      <y>105</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_SRYYMD012</name>
-      <x>245</x>
-      <y>80</y>
-      <width>80</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME052</name>
-      <x>325</x>
-      <y>180</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME042</name>
-      <x>325</x>
-      <y>155</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME032</name>
-      <x>325</x>
-      <y>130</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME022</name>
-      <x>325</x>
-      <y>105</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
-    </widget>
-
-    <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_TIME012</name>
-      <x>325</x>
-      <y>80</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<after>True</after>
-	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
-      </signal>
-      <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
     </widget>
 
     <widget>
@@ -3027,60 +981,6 @@
     </widget>
 
     <widget>
-      <class>GtkPandaEntry</class>
-      <name>MESSTTIME</name>
-      <x>220</x>
-      <y>30</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
-      <class>GtkPandaEntry</class>
-      <name>MESEDTIME</name>
-      <x>385</x>
-      <y>30</y>
-      <width>60</width>
-      <height>25</height>
-      <signal>
-	<name>changed</name>
-	<handler>entry_changed</handler>
-	<data>CHANGED</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:18:11 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>activate</name>
-	<handler>send_event</handler>
-	<data>ACTIVATE</data>
-	<last_modification_time>Thu, 04 Jan 2001 06:42:26 GMT</last_modification_time>
-      </signal>
-      <editable>False</editable>
-      <text_visible>True</text_visible>
-      <text_max_length>10</text_max_length>
-      <text>13:00</text>
-      <input_mode>XIM</input_mode>
-      <xim_enabled>False</xim_enabled>
-    </widget>
-
-    <widget>
       <class>GtkLabel</class>
       <name>LBL_KIKAN1</name>
       <x>55</x>
@@ -3180,7 +1080,7 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>MESPROC</name>
-      <x>70</x>
+      <x>68</x>
       <y>30</y>
       <width>70</width>
       <height>25</height>
@@ -3215,38 +1115,6 @@
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label16</name>
-      <x>10</x>
-      <y>30</y>
-      <width>60</width>
-      <height>25</height>
-      <label>前回期間</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label13</name>
-      <x>10</x>
-      <y>80</y>
-      <width>35</width>
-      <height>25</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
@@ -3368,147 +1236,783 @@
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
+      <class>GtkButton</class>
       <name>CHK_SRYYMD011</name>
       <x>80</x>
       <y>80</y>
       <width>80</width>
       <height>25</height>
       <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
-	<after>True</after>
 	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
       </signal>
       <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
+      <class>GtkButton</class>
       <name>CHK_TIME011</name>
       <x>160</x>
       <y>80</y>
       <width>60</width>
       <height>25</height>
       <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
-	<after>True</after>
 	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
       </signal>
       <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_MESSTSRYYMD</name>
-      <x>140</x>
-      <y>30</y>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD021</name>
+      <x>80</x>
+      <y>105</y>
       <width>80</width>
       <height>25</height>
       <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
-	<after>True</after>
 	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
       </signal>
       <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
-      <name>CHK_MESSTTIME</name>
-      <x>220</x>
-      <y>30</y>
+      <class>GtkButton</class>
+      <name>CHK_TIME021</name>
+      <x>160</x>
+      <y>105</y>
       <width>60</width>
       <height>25</height>
       <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
-	<after>True</after>
 	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
       </signal>
       <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
+      <class>GtkButton</class>
+      <name>CHK_TIME031</name>
+      <x>160</x>
+      <y>130</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME041</name>
+      <x>160</x>
+      <y>155</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME051</name>
+      <x>160</x>
+      <y>180</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME061</name>
+      <x>160</x>
+      <y>205</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME071</name>
+      <x>160</x>
+      <y>230</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME081</name>
+      <x>160</x>
+      <y>255</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME091</name>
+      <x>160</x>
+      <y>280</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME101</name>
+      <x>160</x>
+      <y>305</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD031</name>
+      <x>80</x>
+      <y>130</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD041</name>
+      <x>80</x>
+      <y>155</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD051</name>
+      <x>80</x>
+      <y>180</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD061</name>
+      <x>80</x>
+      <y>205</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD071</name>
+      <x>80</x>
+      <y>230</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD081</name>
+      <x>80</x>
+      <y>255</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD091</name>
+      <x>80</x>
+      <y>280</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD101</name>
+      <x>80</x>
+      <y>305</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD012</name>
+      <x>245</x>
+      <y>80</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD022</name>
+      <x>245</x>
+      <y>105</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD032</name>
+      <x>245</x>
+      <y>130</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD102</name>
+      <x>245</x>
+      <y>305</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD092</name>
+      <x>245</x>
+      <y>280</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD082</name>
+      <x>245</x>
+      <y>255</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD072</name>
+      <x>245</x>
+      <y>230</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD062</name>
+      <x>245</x>
+      <y>205</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD052</name>
+      <x>245</x>
+      <y>180</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_SRYYMD042</name>
+      <x>245</x>
+      <y>155</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME012</name>
+      <x>325</x>
+      <y>80</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME102</name>
+      <x>325</x>
+      <y>305</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME092</name>
+      <x>325</x>
+      <y>280</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME082</name>
+      <x>325</x>
+      <y>255</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME072</name>
+      <x>325</x>
+      <y>230</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME062</name>
+      <x>325</x>
+      <y>205</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME052</name>
+      <x>325</x>
+      <y>180</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME042</name>
+      <x>325</x>
+      <y>155</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME032</name>
+      <x>325</x>
+      <y>130</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_TIME022</name>
+      <x>325</x>
+      <y>105</y>
+      <width>60</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
       <name>CHK_MESEDSRYYMD</name>
       <x>305</x>
       <y>30</y>
       <width>80</width>
       <height>25</height>
       <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
-      </signal>
-      <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
-	<after>True</after>
 	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
       </signal>
       <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>
-      <class>GtkCheckButton</class>
+      <class>GtkButton</class>
+      <name>CHK_MESSTSRYYMD</name>
+      <x>140</x>
+      <y>30</y>
+      <width>80</width>
+      <height>25</height>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
+      </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
       <name>CHK_MESEDTIME</name>
       <x>385</x>
       <y>30</y>
       <width>60</width>
       <height>25</height>
       <signal>
-	<name>toggled</name>
-	<handler>button_toggled</handler>
-	<last_modification_time>Fri, 02 Feb 2001 03:03:04 GMT</last_modification_time>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
       </signal>
+      <label></label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkButton</class>
+      <name>CHK_MESSTTIME</name>
+      <x>220</x>
+      <y>30</y>
+      <width>60</width>
+      <height>25</height>
       <signal>
 	<name>clicked</name>
 	<handler>send_event</handler>
-	<after>True</after>
 	<data>CLICKED</data>
-	<last_modification_time>Thu, 08 Feb 2001 02:52:13 GMT</last_modification_time>
+	<last_modification_time>Tue, 26 Dec 2000 00:43:04 GMT</last_modification_time>
       </signal>
       <label></label>
-      <active>False</active>
-      <draw_indicator>True</draw_indicator>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label13</name>
+      <x>10</x>
+      <y>80</y>
+      <width>35</width>
+      <height>25</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label16</name>
+      <x>10</x>
+      <y>30</y>
+      <width>60</width>
+      <height>25</height>
+      <label>前回期間</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

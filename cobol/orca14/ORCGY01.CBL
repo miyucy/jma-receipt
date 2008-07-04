@@ -394,7 +394,9 @@
                05  WRK-HDD         PIC Z9.
       *
        01  WRK-GMN-KENSUU.
-           03  WRK-TBL-KENSUU      PIC X(05)   OCCURS 98.
+           03  WRK-GMN-KENSUU-OCC  OCCURS 98.
+               05  WRK-TBL-KENSUU-STYLE    PIC X(20).
+               05  WRK-TBL-KENSUU          PIC X(05).
       *
        01  WRK-CAL-YMD.
            03  WRK-CAL-YEAR        PIC 9(04).
@@ -3840,6 +3842,13 @@
            MOVE    SPA-GMN-TAITIME     TO  Y01-TAIKENSUU
       *    MOVE    SPA-GMN-HYOJHI      TO  Y01-HYOJHI
       *    Í½ÌóÉ½¼¨
+           MOVE    "whitebutton"       TO  Y01-CH-DAY1-STYLE
+                                           Y01-CH-DAY2-STYLE
+                                           Y01-CH-DAY3-STYLE
+                                           Y01-CH-DAY4-STYLE
+                                           Y01-CH-DAY5-STYLE
+                                           Y01-CH-DAY6-STYLE
+                                           Y01-CH-DAY7-STYLE
            MOVE    SPA-GMN-GOKKEN (01) TO  Y01-DAY1
            MOVE    SPA-GMN-GOKKEN (02) TO  Y01-DAY2
            MOVE    SPA-GMN-GOKKEN (03) TO  Y01-DAY3
@@ -3851,6 +3860,7 @@
            INITIALIZE   WRK-GMN-KENSUU
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   98
+               MOVE    "whitebutton"       TO  WRK-TBL-KENSUU-STYLE(IDX)
                MOVE    SPACE               TO  WRK-HKENSUU
                MOVE    SPA-GMN-KENSUU (IDX)
                                            TO  WRK-KENSUU
