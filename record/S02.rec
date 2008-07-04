@@ -38,6 +38,12 @@ S02	{
 		NYU_MISYU	{
 			value	number(09);
 		};
+		GAI_TUKISKY	{
+			value	number(09);
+		};
+		NYU_TUKISKY	{
+			value	number(09);
+		};
 		SRYYM	{
 			value	varchar(7);
 		};

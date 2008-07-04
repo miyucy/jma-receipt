@@ -189,6 +189,9 @@
                    07  SPA-GMN-MISYU.
                        09  SPA-GMN-GAI-MISYU       PIC S9(08).
                        09  SPA-GMN-NYU-MISYU       PIC S9(08).
+                   07  SPA-GMN-TUKISKY.
+                       09  SPA-GMN-GAI-TUKISKY     PIC S9(08).
+                       09  SPA-GMN-NYU-TUKISKY     PIC S9(08).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SRYYM               PIC X(06).
@@ -998,6 +1001,11 @@
       *
       *                Ã§º˝≥€§Ú ‘Ω∏
                        PERFORM 3101-MISYU-EDIT-SEC
+      *
+                       PERFORM 300-SYUNOU-HENSYU-SEC
+                       MOVE    ZERO        TO  SPA-GMN-MAX
+                       INITIALIZE              SPA-GMN-TBL
+                                               SPA-NAI-TBL
                    END-IF
                    GO  TO  320-SENIJI-SYOGMN-EDIT-EXT
                END-IF
@@ -1046,6 +1054,7 @@
                                        SPA-NAI-HEAD
                                        SPA-GMN-TBL
                                        SPA-GMN-MISYU
+                                       SPA-GMN-TUKISKY
                                        SPA-GMN-INPUT
                                        SPA-NAI-TBL
                                        SPA-GMN-MAX
@@ -1290,10 +1299,6 @@
       **************************************************************
        300-SYUNOU-HENSYU-SEC                  SECTION.
       *
-           IF    ( SPA-NAI-LOCK        NOT =  ZERO )
-               GO  TO  300-SYUNOU-HENSYU-EXT
-           END-IF
-      *
            MOVE    SPA-GMN-TBL-SEL     TO  WRK-TBL-SEL-MOT
       *
            MOVE    1                   TO  FLG-SYULIST-ROW
@@ -1301,20 +1306,12 @@
            MOVE    ZERO                TO  SPA-GMN-MAX
            INITIALIZE                      SPA-GMN-TBL
                                            SPA-NAI-TBL
+                                           SPA-GMN-TUKISKY
       *
            MOVE   ZERO                 TO  IDX1
       *
-      *    º˝«º•ﬁ•π•ø°º§Ú ‘Ω∏° ∆˛±° ¨°À
-           IF    ( SPA-GMN-NYUGAIKBN   =   "0" OR  "1" )
-               MOVE    "1"             TO  WRK-NYUGAIKBN
-               PERFORM 3101-SYULIST-EDIT-SEC
-           END-IF
-      *
-      *    º˝«º•ﬁ•π•ø°º§Ú ‘Ω∏° ≥∞ÕË ¨°À
-           IF    ( SPA-GMN-NYUGAIKBN   =   "0" OR  "2" )
-               MOVE    "2"             TO  WRK-NYUGAIKBN
-               PERFORM 3101-SYULIST-EDIT-SEC
-           END-IF
+      *    º˝«º•ﬁ•π•ø°º§Ú ‘Ω∏
+           PERFORM 3101-SYULIST-EDIT-SEC
       *
            MOVE    IDX1                 TO  SPA-GMN-MAX
       *
@@ -1742,13 +1739,12 @@
            MOVE    ZERO                TO  FLG-SYUNOU
            INITIALIZE  SYUNOU-REC
            MOVE    SPA-HOSPNUM          TO  SYU-HOSPNUM
-           MOVE    WRK-NYUGAIKBN       TO  SYU-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  SYU-PTID
            MOVE    SPA-NAI-SRYYM       TO  SYU-SRYYMD (1:6)
            MOVE    "__"                TO  SYU-SRYYMD (7:)
            MOVE    SYUNOU-REC          TO  MCPDATA-REC
            MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key14"             TO  MCP-PATHNAME
+           MOVE    "key29"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
                MOVE    MCPDATA-REC     TO  SYUNOU-REC
@@ -1759,6 +1755,26 @@
            PERFORM UNTIL ( FLG-SYUNOU  =   1 )
       *
                MOVE    ZERO            TO  FLG-SYORI
+      *
+               IF    ( SPA-NAI-LOCK    =  ZERO )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-SYORI
+               END-IF
+      *
+               IF    ( SPA-GMN-NYUGAIKBN   =   "0" OR "1" OR "2" )
+                   IF    ( SPA-GMN-NYUGAIKBN   =   "1" OR "2" )
+                       IF    ( SPA-GMN-NYUGAIKBN
+                                           =   SYU-NYUGAIKBN )
+                           CONTINUE
+                       ELSE
+                           MOVE    1       TO  FLG-SYORI
+                       END-IF
+                   END-IF
+               ELSE
+                           MOVE    1       TO  FLG-SYORI
+               END-IF
+      *
                IF    ( SPA-GMN-SRYKA       NOT =   SPACE )
                    IF    ( SPA-GMN-SRYKA       =   "00" )
                     OR   ( SPA-GMN-SRYKA       =   SYU-SRYKA)
@@ -1784,8 +1800,16 @@
                    PERFORM 3101-SIN-HEN-SEC
                END-IF
       *
+               IF    ( SYU-NYUGAIKBN       =   "1" )
+                   COMPUTE SPA-GMN-NYU-TUKISKY
+                       =   SPA-GMN-NYU-TUKISKY +   SYU-SKYMONEY
+               ELSE
+                   COMPUTE SPA-GMN-GAI-TUKISKY
+                       =   SPA-GMN-GAI-TUKISKY +   SYU-SKYMONEY
+               END-IF
+      *
                MOVE    "tbl_syunou"        TO  MCP-TABLE
-               MOVE    "key14"             TO  MCP-PATHNAME
+               MOVE    "key29"             TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC     TO  SYUNOU-REC
@@ -1795,7 +1819,7 @@
            END-PERFORM
       *
            MOVE    "tbl_syunou"        TO  MCP-TABLE
-           MOVE    "key14"             TO  MCP-PATHNAME
+           MOVE    "key29"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -2459,6 +2483,10 @@
       *
            MOVE    SPA-GMN-NYU-MISYU           TO  S02-NYU-MISYU
       *
+           MOVE    SPA-GMN-GAI-TUKISKY         TO  S02-GAI-TUKISKY
+      *
+           MOVE    SPA-GMN-NYU-TUKISKY         TO  S02-NYU-TUKISKY
+      *
            MOVE    WIDGET-NORMAL               TO  S02-PTNUM-STATE
       *
            MOVE    WIDGET-NORMAL               TO  S02-B04S-STATE
@@ -2655,6 +2683,7 @@
                                        SPA-NAI-HEAD
                                        SPA-GMN-TBL
                                        SPA-GMN-MISYU
+                                       SPA-GMN-TUKISKY
                                        SPA-GMN-INPUT
                                        SPA-NAI-TBL
                                        SPA-GMN-MAX
@@ -2704,6 +2733,10 @@
                IF    ( SPA-ERRCD   =   "9999" )
       *            Ã§º˝≥€§Ú ‘Ω∏
                    PERFORM 3101-MISYU-EDIT-SEC
+                   PERFORM 300-SYUNOU-HENSYU-SEC
+                   MOVE    ZERO        TO  SPA-GMN-MAX
+                   INITIALIZE              SPA-GMN-TBL
+                                           SPA-NAI-TBL
                END-IF
                GO      TO      4102-PTNUM-CHK-EXT
            END-IF
