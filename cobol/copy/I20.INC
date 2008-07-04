@@ -64,11 +64,15 @@
               03  I20-SRT1KBNCOMBO.
                 04  I20-SRT1KBN         PIC X(22).
                 04  I20-SRT1KBN-COUNT   PIC S9(9)   BINARY.
-                04  I20-SRT1KBNLST      PIC X(22)   OCCURS  5 TIMES.
+                04  I20-SRT1KBNLST      PIC X(22)   OCCURS  10 TIMES.
               03  I20-SRT2KBNCOMBO.
                 04  I20-SRT2KBN         PIC X(22).
                 04  I20-SRT2KBN-COUNT   PIC S9(9)   BINARY.
-                04  I20-SRT2KBNLST      PIC X(22)   OCCURS  5 TIMES.
+                04  I20-SRT2KBNLST      PIC X(22)   OCCURS  10 TIMES.
+              03  I20-SRT3KBNCOMBO.
+                04  I20-SRT3KBN         PIC X(22).
+                04  I20-SRT3KBN-COUNT   PIC S9(9)   BINARY.
+                04  I20-SRT3KBNLST      PIC X(22)   OCCURS  10 TIMES.
               03  I20-KJNYMDMES         PIC X(10).
               03  I20-TOTAL             PIC X(22).
               03  I20-SCROLLEDWINDOW28.

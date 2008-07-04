@@ -63,7 +63,7 @@
                        09                      PIC X(01).
                        09  SPA-GMN-TAIINCDMEIL PIC X(20).
                    07  SPA-GMN-TAIINCD-MAX     PIC 9(02). 
-                   07  SPA-GMN-SRTKBNLST       OCCURS  5.
+                   07  SPA-GMN-SRTKBNLST       OCCURS  10.
                        09  SPA-GMN-SRTKBNL     PIC X(01).
                        09                      PIC X(01).
                        09  SPA-GMN-SRTKBNMEIL  PIC X(20).
@@ -115,6 +115,10 @@
                            11  SPA-GMN-SRT2KBN     PIC X(01).
                            11  SPA-GMN-SRT2KBNFL   PIC X(01).
                            11  SPA-GMN-SRT2KBNMEI  PIC X(20).
+                       09  SPA-GMN-SRT3KBN-G.
+                           11  SPA-GMN-SRT3KBN     PIC X(01).
+                           11  SPA-GMN-SRT3KBNFL   PIC X(01).
+                           11  SPA-GMN-SRT3KBNMEI  PIC X(20).
       *
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-TBL-NEXT        PIC 9(01).

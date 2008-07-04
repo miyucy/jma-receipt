@@ -86,14 +86,21 @@ I20	{
 				value	varchar(22);
 			};
 			count	int;
-			item	varchar(22)[5];
+			item	varchar(22)[10];
 		};
 		SRT2KBNCOMBO{
 			SRT2KBN {
 				value	varchar(22);
 			};
 			count	int;
-			item	varchar(22)[5];
+			item	varchar(22)[10];
+		};
+		SRT3KBNCOMBO{
+			SRT3KBN {
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[10];
 		};
 		KJNYMDMES	{
 			value	varchar(10);

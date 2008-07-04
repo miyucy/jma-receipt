@@ -154,8 +154,10 @@
            03  WRK-EDYMD           PIC X(08).
            03  WRK-SRT1KBN         PIC X(01).
            03  WRK-SRT2KBN         PIC X(01).
+           03  WRK-SRT3KBN         PIC X(01).
            03  WRK-LASTSRTKBN      PIC X(01).
            03  WRK-ITEM            PIC X(20).
+           03  WRK-ORDER           PIC X(20).
       *
            03  WRK-FILENM-AREA.
                07  WRK-FILENM      PIC X(100).
@@ -853,11 +855,17 @@
            MOVE    "2"                 TO  SPA-GMN-SRTKBNL (2)
            MOVE    "3"                 TO  SPA-GMN-SRTKBNL (3)
            MOVE    "4"                 TO  SPA-GMN-SRTKBNL (4)
+           MOVE    "5"                 TO  SPA-GMN-SRTKBNL (5)
+           MOVE    "6"                 TO  SPA-GMN-SRTKBNL (6)
+           MOVE    "7"                 TO  SPA-GMN-SRTKBNL (7)
            MOVE    "ÉÂÅï¡¢ÉÂ¼¼½ç"      TO  SPA-GMN-SRTKBNMEIL (1)
            MOVE    "´µ¼ÔÈÖ¹æ½ç"        TO  SPA-GMN-SRTKBNMEIL (2)
            MOVE    "¥«¥Ê»áÌ¾½ç"        TO  SPA-GMN-SRTKBNMEIL (3)
-           MOVE    "Æþ±¡Æü"            TO  SPA-GMN-SRTKBNMEIL (4)
-           MOVE    4                   TO  SPA-GMN-SRTKBN-MAX
+           MOVE    "Æþ±¡Æü¤Î¿·¤·¤¤½ç"  TO  SPA-GMN-SRTKBNMEIL (4)
+           MOVE    "Æþ±¡Æü¤Î¸Å¤¤½ç"    TO  SPA-GMN-SRTKBNMEIL (5)
+           MOVE    "Âà±¡Æü¤Î¿·¤·¤¤½ç"  TO  SPA-GMN-SRTKBNMEIL (6)
+           MOVE    "Âà±¡Æü¤Î¸Å¤¤½ç"    TO  SPA-GMN-SRTKBNMEIL (7)
+           MOVE    7                   TO  SPA-GMN-SRTKBN-MAX
       *
            PERFORM 420-CLEAR-SEC
       *
@@ -1132,6 +1140,7 @@
            MOVE    I20-TAIINCD         TO  SPA-GMN-TAIINCD-G
            MOVE    I20-SRT1KBN         TO  SPA-GMN-SRT1KBN-G
            MOVE    I20-SRT2KBN         TO  SPA-GMN-SRT2KBN-G
+           MOVE    I20-SRT3KBN         TO  SPA-GMN-SRT3KBN-G
       *
       *****MOVE    I20-SELNUM          TO  SPA-GMN-SELNUM
            .
@@ -1207,6 +1216,10 @@
       *    ÊÂ¤Ó½ç£²
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 41031-SRT2KBN-CHK-SEC
+           END-IF
+      *    ÊÂ¤Ó½ç£³
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41031-SRT3KBN-CHK-SEC
            END-IF
            .
       *
@@ -1657,6 +1670,20 @@
        41031-SRT2KBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ÊÂ¤Ó½ç¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       41031-SRT3KBN-CHK-SEC           SECTION.
+      *
+           MOVE    18                  TO  SPA-GMN-CUR
+      *
+           MOVE    SPA-GMN-SRT3KBN     TO  WRK-CMB-CD
+           PERFORM 4200-SRTKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SRT3KBN-G
+      *
+           .
+       41031-SRT3KBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ´ØÏ¢¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        4103-KANREN-CHK-SEC             SECTION.
@@ -1979,6 +2006,7 @@
       *
            MOVE    SPA-GMN-SRT1KBN     TO  WRK-SRT1KBN
            MOVE    SPA-GMN-SRT2KBN     TO  WRK-SRT2KBN
+           MOVE    SPA-GMN-SRT3KBN     TO  WRK-SRT3KBN
       *
            INITIALIZE                  SPA-GMN-KOUMOKU
                                        SPA-GMN-TBL
@@ -2008,6 +2036,10 @@
            MOVE    WRK-SRT2KBN         TO  WRK-CMB-CD
            PERFORM 4200-SRTKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-SRT2KBN-G
+      *
+           MOVE    WRK-SRT3KBN         TO  WRK-CMB-CD
+           PERFORM 4200-SRTKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SRT3KBN-G
       *
            .
        420-CLEAR-EXT.
@@ -2822,6 +2854,11 @@
                PERFORM 45031-SQL-ORDER-SEC
            END-IF
       *
+           IF    ( SPA-GMN-SRT3KBN     NOT =   SPACE )
+               MOVE    SPA-GMN-SRT3KBN TO  WRK-LASTSRTKBN
+               PERFORM 45031-SQL-ORDER-SEC
+           END-IF
+      *
            
            EVALUATE    WRK-LASTSRTKBN
            WHEN    "1"
@@ -2852,6 +2889,13 @@
                WITH    POINTER WRK-SQL-PNT
                END-STRING
       *
+           WHEN    "5"
+               STRING  ",BRMNUM,KANANAME,PTNUM,NYUINYMD,RRKNUM"
+                       DELIMITED  BY  SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+      *
            WHEN    OTHER
                STRING  ",BRMNUM,KANANAME,PTNUM,NYUINYMD,TAIINYMD,RRKNUM"
                        DELIMITED  BY  SIZE
@@ -2869,20 +2913,36 @@
        45031-SQL-ORDER-SEC             SECTION.
       *
            MOVE    SPACE           TO  WRK-ITEM
+           MOVE    SPACE           TO  WRK-ORDER
       *
            EVALUATE    WRK-LASTSRTKBN
            WHEN    "1"
                MOVE    "BRMNUM"    TO  WRK-ITEM
+               MOVE    "ASC"       TO  WRK-ORDER
            WHEN    "2"
                MOVE    "PTNUM"     TO  WRK-ITEM
+               MOVE    "ASC"       TO  WRK-ORDER
            WHEN    "3"
                MOVE    "KANANAME"  TO  WRK-ITEM
+               MOVE    "ASC"       TO  WRK-ORDER
            WHEN    "4"
                MOVE     "NYUINYMD" TO  WRK-ITEM
+               MOVE    "DESC"      TO  WRK-ORDER
+           WHEN    "5"
+               MOVE     "NYUINYMD" TO  WRK-ITEM
+               MOVE    "ASC"       TO  WRK-ORDER
+           WHEN    "6"
+               MOVE     "TAIINYMD" TO  WRK-ITEM
+               MOVE    "DESC"      TO  WRK-ORDER
+           WHEN    "7"
+               MOVE     "TAIINYMD" TO  WRK-ITEM
+               MOVE    "ASC"       TO  WRK-ORDER
            END-EVALUATE
       *
            STRING  ","         DELIMITED  BY  SIZE
                    WRK-ITEM    DELIMITED  BY  SPACE
+                   " "         DELIMITED  BY  SIZE
+                   WRK-ORDER   DELIMITED  BY  SPACE
            INTO    WRK-SQL
            WITH    POINTER WRK-SQL-PNT
            END-STRING
@@ -3147,6 +3207,7 @@
            MOVE    SPA-GMN-TAIINCD-G   TO  I20-TAIINCD
            MOVE    SPA-GMN-SRT1KBN-G   TO  I20-SRT1KBN
            MOVE    SPA-GMN-SRT2KBN-G   TO  I20-SRT2KBN
+           MOVE    SPA-GMN-SRT3KBN-G   TO  I20-SRT3KBN
            MOVE    SPA-GMN-SELNUM      TO  I20-SELNUM
            MOVE    SPA-GMN-TOTAL       TO  I20-TOTAL
       *     
@@ -3186,9 +3247,11 @@
                    UNTIL       IDX         >   SPA-GMN-SRTKBN-MAX
                MOVE    SPA-GMN-SRTKBNLST (IDX) TO  I20-SRT1KBNLST (IDX)
                                                    I20-SRT2KBNLST (IDX)
+                                                   I20-SRT3KBNLST (IDX)
            END-PERFORM
            MOVE    SPA-GMN-SRTKBN-MAX  TO  I20-SRT1KBN-COUNT
                                            I20-SRT2KBN-COUNT
+                                           I20-SRT3KBN-COUNT
       *
            IF      SPA-GMN-MAX             =   ZERO
            AND     SPA-GMN-TNAME (1)   NOT =   SPACE
@@ -3297,6 +3360,8 @@
                    MOVE  "SRT1KBN"         TO  MCP-WIDGET 
                WHEN    17
                    MOVE  "SRT2KBN"         TO  MCP-WIDGET 
+               WHEN    18
+                   MOVE  "SRT3KBN"         TO  MCP-WIDGET 
                WHEN    16
                    MOVE  "TAIINCD"         TO  MCP-WIDGET 
            END-EVALUATE
@@ -3334,6 +3399,8 @@
                WHEN    "SRT1KBN"
                    MOVE    17                  TO  SPA-GMN-CUR
                WHEN    "SRT2KBN"
+                   MOVE    18                  TO  SPA-GMN-CUR
+               WHEN    "SRT3KBN"
                    MOVE    12                  TO  SPA-GMN-CUR
                WHEN    "CHKTESTPT"
                    MOVE    12                  TO  SPA-GMN-CUR
