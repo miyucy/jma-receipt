@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 03.05.00     NACL-多々納  07/05/24  グループ診療対応
+      * 04.03.00     NACL-太田    08/06/20  カスタマイズカルテ印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -104,6 +105,8 @@
            03  WRK-HKNCOMBINUM         PIC X(04).
            03  WRK-HKN-CNT1            PIC 9(04).
            03  WRK-HKN-CNT2            PIC 9(04).
+           03  WRK-PRTNM               PIC X(16).
+           03  WRK-PGID                PIC X(20).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -114,6 +117,12 @@
       *
       *    医療機関情報
            COPY    "CPSK1009.INC".
+      *
+      *    職員情報
+           COPY    "CPSK1010.INC".
+      *
+      *    出力先プリンタ名割り当て情報
+           COPY    "CPSK1031.INC".
       *
       *    患者登録機能制御情報
            COPY  "CPSK1017.INC".
@@ -354,10 +363,88 @@
                MOVE    SYS-1017-KARUTE-BYOMEI  TO  WRK-BYOMEIFLG
            END-IF
       *
+      *    職員情報取得
+           PERFORM 1001-SYS1010-SEL-SEC
+      *
+      *    プリンタ名、プログラム名取得
+           PERFORM 1001-ORCSPRTNM-SEC
+      *
            .
        110-SYOKI-SET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    職員情報取得処理
+      *****************************************************************
+       1001-SYS1010-SEL-SEC            SECTION.
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    "1010"          TO  SYS-KANRICD
+           MOVE    WRK-SYSYMD      TO  SYS-STYUKYMD
+                                           SYS-EDYUKYMD
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+           MOVE    SYSKANRI-REC    TO  SYS-1010-REC
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    NOT =   ZERO )
+                    OR   ( LNK-PRTKANRI-OPID
+                                       =   SYS-1010-USERID )
+      *
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
+               MOVE    SYSKANRI-REC    TO  SYS-1010-REC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"  TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF    ( FLG-SYSKANRI    NOT =   ZERO )
+               INITIALIZE          SYS-1010-REC
+           END-IF
+      *
+           MOVE    SYS-1010-KBNCD      TO  SPA-STAFFCD
+      *
+           .
+       1001-SYS1010-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    プリンタ名、プログラム名取得
+      *****************************************************************
+       1001-ORCSPRTNM-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-PRTNM
+                                           WRK-PGID
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "2"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000001"          TO  ORCSPRTNM-KBNCD
+           MOVE    WRK-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+           MOVE    SYS-1031-PRTNM(1)   TO  WRK-PRTNM
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000001"          TO  ORCSPRTNM-KBNCD
+           MOVE    WRK-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1031-REC
+           IF    ( ORCSPRTNM-RC        =   ZERO )
+              MOVE    ORCSPRTNM-PRTPG     TO  WRK-PGID
+           ELSE
+              MOVE    "ORCHC01"           TO  WRK-PGID
+           END-IF
+      *
+           .
+       1001-ORCSPRTNM-EXT.
+           EXIT.
       *****************************************************************
       *    主　　処理
       *****************************************************************
@@ -381,7 +468,7 @@
                                        TO  SPRT-PRIORITY
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
-           MOVE    LNK-PRTKANRI-PRTNM  TO  SPRT-PRTNM
+           MOVE    WRK-PRTNM           TO  SPRT-PRTNM
            MOVE    "1"                 TO  SPRT-SITEKBN
       *
       *    受診履歴検索
@@ -489,7 +576,7 @@
       *        一括パラメタ
                MOVE    ORCSPRTAREA         TO  ORCHC01-PRTAREA
       *        外来
-               CALL    "ORCHC01"           USING
+               CALL    WRK-PGID            USING
                                            SPA-AREA
                                            ORCHC01AREA
                IF      ORCHC01-RC          =   ZERO
@@ -667,6 +754,47 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 990-DBCLOSE-SEC
            .
        800-SYSKANRI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    管理マスタ検索
+      *****************************************************************
+       900-SYSKANRI-KEY2-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    管理マスタ読込
+      *****************************************************************
+       900-SYSKANRI-KEY2-FET-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 920-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYSKANRI-REC
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           .
+       900-SYSKANRI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
       *    受診履歴読み込み処理
