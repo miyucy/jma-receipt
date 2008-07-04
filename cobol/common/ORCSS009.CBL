@@ -76,6 +76,14 @@
            03  WRK-DAY-G.
                05  WRK-DAY                 PIC 9(03)   OCCURS  31.
       *
+       01  TNRRK-AREA.
+           03  TNRRK-MAX                   PIC 9(05).
+           03  TNRRK-OCC                   OCCURS  100.
+               05  TNRRK-SRYKA             PIC X(02).
+               05  TNRRK-DAY-OCC           OCCURS  31.
+                   07  TNRRK-SRYKA-DAY     PIC 9(01).
+                   07  TNRRK-BRMNUM        PIC X(08).
+      *
        01  TCOMBI-AREA.
            03  TCOMBI-MAX                  PIC 9(05).
            03  TCOMBI-HKNCOMBI-OCC         OCCURS  50.
@@ -87,13 +95,9 @@
       *    固定値領域
        01  CONST-AREA.
            03  CONST-ZAINUM-MAX            PIC 9(05) VALUE  200.
-           03  CONST-HBTSRYKA-MAX          PIC 9(05) VALUE  100.
+           03  CONST-TNRRK-MAX             PIC 9(05) VALUE  100.
            03  CONST-SRYCD-MAX             PIC 9(05) VALUE 20.
            03  CONST-TCOMBI-MAX            PIC 9(05) VALUE 50.
-           03  CONST-HKNCOMBICD-G.
-               05  CONST-HKNCOMBICD        PIC X(09) VALUE "099999914".
-               05  CONST-HKNCOMBICD-R  REDEFINES   CONST-HKNCOMBICD.
-                   07  CONST-HKNCOMBICD9   PIC 9(09).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -175,7 +179,7 @@
       *
            MOVE    LNKNACCT-REC        TO  NYUINACCT-REC
       *
-           PERFORM 2001-HBTSRYKA-HEN-SEC
+           PERFORM 2001-TNRRK-HEN-SEC
       *
            PERFORM 2001-TCOMBI-HEN-SEC
       *
@@ -187,9 +191,9 @@
       *****************************************************************
       *    日別診療科編集処理
       *****************************************************************
-       2001-HBTSRYKA-HEN-SEC           SECTION.
+       2001-TNRRK-HEN-SEC              SECTION.
       *
-           MOVE    ZERO                TO  WRK-HBTSRYKA-G
+           INITIALIZE                  TNRRK-AREA
       *
            PERFORM 900-PTNYUINRRK-KEY41-SEL-SEC
       *
@@ -211,8 +215,44 @@
       *
                PERFORM VARYING IDX-DAY     FROM    WRK-STIDX   BY  1
                        UNTIL ( IDX-DAY     >       WRK-EDIDX )
-                   MOVE    PTNYUINRRK-NYUINKA
-                                       TO  WRK-HBTSRYKA-HBTKA (IDX-DAY)
+      *
+                   PERFORM VARYING IDX5    FROM    1   BY  1
+                       UNTIL ( IDX5    >   TNRRK-MAX )
+                       OR    ( TNRRK-SRYKA (IDX5)
+                                       = PTNYUINRRK-NYUINKA )
+      *
+                       CONTINUE
+      *
+                   END-PERFORM
+      *
+                   MOVE    ZERO        TO  IDX6
+      *
+                   IF    ( IDX5    >   TNRRK-MAX )
+      *
+                       IF    ( TNRRK-MAX
+                                               <   CONST-TNRRK-MAX )
+                           COMPUTE TNRRK-MAX   =   TNRRK-MAX   +   1
+      *
+                           MOVE    TNRRK-MAX   TO  IDX6
+      *
+                           MOVE    PTNYUINRRK-NYUINKA
+                                       TO  TNRRK-SRYKA (IDX6)
+                       END-IF
+                   ELSE
+                       MOVE    IDX5    TO  IDX6
+                   END-IF
+      *
+                   IF    ( IDX6        >   ZERO )
+                       MOVE    1   TO  TNRRK-SRYKA-DAY(IDX6 IDX-DAY)
+                       MOVE    PTNYUINRRK-BRMNUM
+                                   TO  TNRRK-BRMNUM   (IDX6 IDX-DAY)
+                       MOVE    PTNYUINRRK-NYUINKA
+                                   TO  SS009-SRYKA-DAY(IDX-DAY)
+                       MOVE    PTNYUINRRK-BRMNUM
+                                   TO  SS009-BRMNUM-DAY(IDX-DAY)
+                       
+                   END-IF
+      *
                END-PERFORM
       *
                PERFORM 900-PTNYUINRRK-KEY41-FET-SEC
@@ -223,48 +263,8 @@
            MOVE    "key41"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           PERFORM VARYING IDX-DAY FROM    1   BY  1
-                   UNTIL ( IDX-DAY >   31 )
-      *
-               IF    ( WRK-HBTSRYKA-HBTKA (IDX-DAY)    NOT =   ZERO )
-      *
-                   PERFORM VARYING IDX5    FROM    1   BY  1
-                       UNTIL ( IDX5    >   WRK-HBTSRYKA-MAX )
-                       OR    ( WRK-HBTSRYKA (IDX5)
-                                       = WRK-HBTSRYKA-HBTKA (IDX-DAY) )
-      *
-                       CONTINUE
-      *
-                   END-PERFORM
-      *
-                   MOVE    ZERO        TO  IDX6
-      *
-                   IF    ( IDX5    >   WRK-HBTSRYKA-MAX )
-      *
-                       IF    ( WRK-HBTSRYKA-MAX 
-                                               <   CONST-HBTSRYKA-MAX )
-                           COMPUTE WRK-HBTSRYKA-MAX
-                               =   WRK-HBTSRYKA-MAX    +   1
-      *
-                           MOVE    WRK-HBTSRYKA-MAX    TO  IDX6
-      *
-                           MOVE    WRK-HBTSRYKA-HBTKA (IDX-DAY)
-                                       TO  WRK-HBTSRYKA (IDX6)
-                       END-IF
-                   ELSE
-                       MOVE    IDX5    TO  IDX6
-                   END-IF
-      *
-                   IF    ( IDX6        >   ZERO )
-                       MOVE    1   TO  WRK-HBTSRYKA-DAY (IDX6 IDX-DAY)
-                   END-IF
-               END-IF
-      *
-           END-PERFORM
-      *
-      *
            .
-       2001-HBTSRYKA-HEN-EXT.
+       2001-TNRRK-HEN-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ情報編集処理
@@ -361,13 +361,13 @@
                IF    ( HCM34S01-ZAISKBKBN (IDX4)   NOT =   "3" )
                 AND  ( HCM34S01-ZAISKBKBN (IDX4)   NOT =   "5" )
                    PERFORM VARYING IDX7    FROM    1   BY  1
-                           UNTIL ( IDX7    >   WRK-HBTSRYKA-MAX )
+                           UNTIL ( IDX7    >   TNRRK-MAX )
       *
                        MOVE    ZERO    TO  WRK-DAY-G
       *
                        PERFORM VARYING IDX-DAY FROM    1   BY  1
                                UNTIL ( IDX-DAY >   31 )
-                           IF    ( WRK-HBTSRYKA-DAY (IDX7 IDX-DAY )
+                           IF    ( TNRRK-SRYKA-DAY (IDX7 IDX-DAY )
                                                > ZERO )
                             AND  ( HCM34S01-DAY     (IDX4 IDX-DAY )
                                                > ZERO )
@@ -389,32 +389,21 @@
       *
            END-PERFORM
       *
-           IF    ( SS009-ZAIHKNCOMBI-FLG       =   1 )
-               PERFORM VARYING IDX7    FROM    1   BY  1
-                       UNTIL ( IDX7    >   WRK-HBTSRYKA-MAX )
+           PERFORM VARYING IDX-DAY FROM    1   BY  1
+                   UNTIL ( IDX-DAY >   31 )
       *
-                   MOVE    ZERO    TO  WRK-DAY-G
-      *
-                   PERFORM VARYING IDX-DAY FROM    1   BY  1
-                           UNTIL ( IDX-DAY >   31 )
-                       IF    ( TCOMBI-HKNCOMBI-DAY (IDX3 IDX-DAY )
+               IF    ( TCOMBI-HKNCOMBI-DAY (IDX3 IDX-DAY )
                                            > ZERO )
-                        AND  ( WRK-HBTSRYKA-DAY (IDX7 IDX-DAY )
-                                           > ZERO )
-                           MOVE    1   TO  WRK-DAY (IDX-DAY)
-                       END-IF
-                   END-PERFORM
+                   MOVE    TCOMBI-HKNCOMBI (IDX3)
+                                       TO  SS009-HKNCOMBI-DAY (IDX-DAY)
+               END-IF
       *
-                   IF    ( WRK-DAY-G   NOT =   ZERO )
-                       IF    ( CONST-ZAINUM-MAX >   CNT-ZAINUM )
-                           PERFORM 200112-SS009-OT-EDIT-SEC
-                       ELSE
-                           DISPLAY "NACCT ZAINUM OVER2:" NACCT-PTID
-                       END-IF
-                   END-IF
+               IF    ( HCM34S01-SAGAKUCD (IDX-DAY) NOT =   SPACE )
+                   MOVE    HCM34S01-SAGAKUCD (IDX-DAY)
+                                       TO  SS009-SAGAKUCD-DAY (IDX-DAY)
+               END-IF
       *
-               END-PERFORM
-           END-IF
+           END-PERFORM
       *
            .
        20011-SS009-OT-EDIT-EXT.
@@ -428,7 +417,7 @@
       *
            MOVE    CNT-ZAINUM  TO  SS009-HENKYAKU-MAX
       *
-           MOVE    WRK-HBTSRYKA    (IDX7)
+           MOVE    TNRRK-SRYKA    (IDX7)
                                TO  SS009-SRYKA (CNT-ZAINUM)
       *
            MOVE    COMB-HKNCOMBINUM
@@ -492,49 +481,6 @@
       *
            .
        200111-SS009-OT-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院会計情報追加処理(保険組合せ：099999914)
-      *****************************************************************
-       200112-SS009-OT-EDIT-SEC    SECTION.
-      *
-           COMPUTE CNT-ZAINUM  =   CNT-ZAINUM  +   1
-      *
-           MOVE    CNT-ZAINUM  TO  SS009-HENKYAKU-MAX
-      *
-           MOVE    WRK-HBTSRYKA    (IDX7)
-                               TO  SS009-SRYKA (CNT-ZAINUM)
-      *
-           MOVE    COMB-HKNCOMBINUM
-                               TO  SS009-HKNCOMBI
-                                                   (CNT-ZAINUM)
-      *
-           PERFORM VARYING IDX-DAY FROM    1   BY  1
-                   UNTIL ( IDX-DAY >   31 )
-      *
-               COMPUTE SS009-ZAIKAISU (CNT-ZAINUM)
-                   =   SS009-ZAIKAISU (CNT-ZAINUM)
-                   +   WRK-DAY (IDX-DAY)
-      *
-               MOVE    WRK-DAY (IDX-DAY)
-                               TO  SS009-DAY
-                                          (CNT-ZAINUM IDX-DAY)
-      *
-           END-PERFORM
-      *
-           MOVE    1           TO  SS009-MEISAISU  (CNT-ZAINUM)
-      *
-           MOVE    CONST-HKNCOMBICD9
-                               TO  SS009-SRYCDTOTAL
-                                                   (CNT-ZAINUM)
-                                   SS009-RUIKEITOTAL
-                                                   (CNT-ZAINUM)
-      *
-           MOVE    CONST-HKNCOMBICD
-                               TO  SS009-SRYCD     (CNT-ZAINUM 1)
-      *
-           .
-       200112-SS009-OT-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    終了処理

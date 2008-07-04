@@ -133,6 +133,7 @@
            03  WRK-SURYO                       PIC 9(05).
            03  WRK-SRYCDTOTAL                  PIC 9(09).
            03  WRK-BRMSAGAKU                   PIC 9(07).
+           03  WRK-BRMSAGAKUCD                 PIC X(02).
            03  WRK-SKJ-TEN-G.
                05  WRK-SKJ-TEN                 PIC 9(08).
                05  WRK-SKJ-TEN-RYOYO1          PIC 9(08).
@@ -251,6 +252,8 @@
                05  WBRMSAGAKU-SRYKBN           PIC X(02).
       *        ºÞÅÀ¿ô
                05  WBRMSAGAKU-ZAITEN           PIC 9(08).
+      *        ¼¼ÎÁº¹³Û¶èÊ¬¥³¡¼¥É
+               05  WBRMSAGAKU-SAGAKUCD         PIC X(02).
       *        ºÞ²ó¿ô
                05  WBRMSAGAKU-ZAIKAISU         PIC 9(07).
       *        ¿ÇÎÅ¥³¡¼¥É
@@ -376,6 +379,7 @@
                05  SRT-ZAISKBKBN               PIC X(01).
                05  SRT-ZAITEN                  PIC 9(08).
                05  SRT-ZAIKAISU                PIC 9(07).
+               05  SRT-SAGAKUCD                PIC X(02).
                05  SRT-SRYCD-OCC               OCCURS  20.
                    07  SRT-SURYO               PIC 9(05).
                    07  SRT-SRYCD               PIC X(09).
@@ -1418,6 +1422,8 @@
                    MOVE    1           TO  FLG-HIT
                    MOVE    WRK-SYS-5113-BRMSAGAKU(IDX3)
                                        TO  WRK-BRMSAGAKU
+                   MOVE    WRK-SYS-5113-KBNCD    (IDX3)
+                                       TO  WRK-BRMSAGAKUCD
                    IF    ( HCM34S01-SANTEIYM   >=  CONST-H1904 )
                        IF    ( SYS-5000-BRMSGK-TAXKBN  =   "1" )
                            COMPUTE WRK-BRMSAGAKU
@@ -1435,8 +1441,8 @@
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL ( IDXB    >   WBRMSAGAKU-OCC1-MAX )
                      OR  ( IDXB    >   CONST-WBRMSAGAKU-MAX )
-                     OR  ( WRK-BRMSAGAKU
-                                   =   WBRMSAGAKU-ZAITEN(IDXB))
+                     OR  ( WRK-BRMSAGAKUCD
+                                   =   WBRMSAGAKU-SAGAKUCD(IDXB))
       *
                CONTINUE
       *
@@ -1455,6 +1461,8 @@
                                        TO  WBRMSAGAKU-SRYKBN (IDXB)
                    MOVE    WRK-BRMSAGAKU
                                        TO  WBRMSAGAKU-ZAITEN (IDXB)
+                   MOVE    WRK-BRMSAGAKUCD
+                                       TO  WBRMSAGAKU-SAGAKUCD (IDXB)
                    MOVE    NACCT-SRYCDTOTAL
                                        TO  WRK-SRYCDTOTAL
                    MOVE    WRK-SRYCDTOTAL
@@ -3056,8 +3064,10 @@
       *    ¼¼ÎÁº¹³Û£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
            PERFORM 200111-BRMSAGAKU-SRT-SET-SEC
       *
-      *    ÎÅÍÜÃ´Åö¼êÅö£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
-           PERFORM 200111-RYYTAN-SRT-SET-SEC
+           IF    ( WRYYTAN-SRYKBN  NOT =   SPACE )
+      *        ÎÅÍÜÃ´Åö¼êÅö£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+               PERFORM 200111-RYYTAN-SRT-SET-SEC
+           END-IF
       *
            .
        20011-SORTAREA-HEN-EXT.
@@ -3278,6 +3288,9 @@
                MOVE    WBRMSAGAKU-ZAIKAISU(IDXB)
                                            TO  SRT-ZAIKAISU (SRT-MAX)
       *
+               MOVE    WBRMSAGAKU-SAGAKUCD(IDXB)
+                                           TO  SRT-SAGAKUCD (SRT-MAX)
+      *
                MOVE    "3"                 TO  SRT-ZAISKBKBN(SRT-MAX)
                MOVE    WBRMSAGAKU-SRYCD (IDXB)
                                            TO  SRT-SRYCD (SRT-MAX 1)
@@ -3427,6 +3440,13 @@
                        MOVE    SRT-DAY  (IDXB IDXD)
                                                TO  HCM34S01-DAY
                                                            (IDXE IDXD)
+                       IF    ( SRT-ZAISKBKBN(IDXB) =   "3" )
+                           IF    ( SRT-DAY  (IDXB IDXD)    >   1 )
+                               MOVE    SRT-SAGAKUCD (IDXB)
+                                               TO  HCM34S01-SAGAKUCD
+                                                           (IDXD)
+                           END-IF
+                       END-IF
                    END-PERFORM
                END-IF
       *

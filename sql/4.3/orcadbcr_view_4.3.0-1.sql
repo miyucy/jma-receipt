@@ -12,7 +12,7 @@
 create  view view_q003 as
 	select	hospnum,ptid,nyugaikbn,sryka,srycd1,srycd2,srycd3,srycd4,srycd5 from tbl_sryact
 union all
-	select	hospnum,ptid,'1' as nyugaikbn ,sryka,srycd as srycd1 ,'' as srycd2 , '' as srycd3, '' as srycd4,'' as srycd5     from tbl_nshoukai
+	select	hospnum,ptid,'1' as nyugaikbn ,sryka,srycd as srycd1 ,'' as srycd2 , '' as srycd3, '' as srycd4,'' as srycd5     from tbl_nsrysrh
 ;
 
 COMMENT 
@@ -21,7 +21,7 @@ COMMENT
 create  view view_q004 as
 	select	hospnum,ptid,nyugaikbn,sryka,hkncombinum,sryymd from tbl_jyurrk
 union all
-	select	hospnum,ptid,'1' as nyugaikbn ,sryka,hkncombinum, sryymd      from tbl_nshoukai
+	select	a.hospnum,a.ptid,'1' as nyugaikbn ,b.sryka,b.hkncombinum,a.sryymd      from tbl_nrrksrh a,tbl_nsrysrh b where a.hospnum = b.hospnum and a.ptid = b.ptid and a.zainum = b.zainum
 ;
 
 COMMENT 
@@ -145,7 +145,7 @@ CREATE VIEW view_q002 AS
         OR (a.zainum = b.zainum14)) 
         OR (a.zainum = b.zainum15)))
 union all
-	select	hospnum,ptid,'1' as nyugaikbn ,sryka,sryymd,srycd as srycd1 ,'' as srycd2 , '' as srycd3, '' as srycd4,'' as srycd5     from tbl_nshoukai
+	select	a.hospnum,a.ptid,'1' as nyugaikbn ,b.sryka,a.sryymd,b.srycd as srycd1 ,'' as srycd2 , '' as srycd3, '' as srycd4,'' as srycd5     from tbl_nrrksrh a , tbl_nsrysrh b where a.hospnum = b.hospnum and a.ptid = b.ptid and a.zainum = b.zainum 
 ;
 COMMENT 
         ON VIEW view_q002 IS '患者照会ビュー2';

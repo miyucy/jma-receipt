@@ -16,21 +16,19 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    入院診療行為照会テーブル    COPY (CPNSHOUKAI.INC)             *
+      *    入院履歴照会テーブル       COPY (CPNRRKSRH.INC)       *
       ************************************************************
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付     内容
       ************************************************************
-      *01  NSHOUKAI-REC.
-           03  NSHOUKAI-HOSPNUM        PIC 9(02).
-           03  NSHOUKAI-PTID           PIC 9(10).
-           03  NSHOUKAI-SRYYMD         PIC X(08).
-           03  NSHOUKAI-SRYKA          PIC X(02).
-           03  NSHOUKAI-HKNCOMBINUM    PIC X(04).
-           03  NSHOUKAI-SRYCD          PIC X(09).
-           03  NSHOUKAI-TERMID         PIC X(16).
-           03  NSHOUKAI-OPID           PIC X(16).
-           03  NSHOUKAI-CREYMD         PIC X(08).
-           03  NSHOUKAI-UPYMD          PIC X(08).
-           03  NSHOUKAI-UPHMS          PIC X(06).
+      *01  NRRKSRH-REC.
+           03  NRRKSRH-HOSPNUM         PIC 9(02).
+           03  NRRKSRH-PTID            PIC 9(10).
+           03  NRRKSRH-SRYYMD          PIC X(08).
+           03  NRRKSRH-ZAINUM          PIC 9(09).
+           03  NRRKSRH-TERMID          PIC X(16).
+           03  NRRKSRH-OPID            PIC X(16).
+           03  NRRKSRH-CREYMD          PIC X(08).
+           03  NRRKSRH-UPYMD           PIC X(08).
+           03  NRRKSRH-UPHMS           PIC X(06).

@@ -57,6 +57,18 @@
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC X(06).
                05  WRK-SRYDD           PIC 9(02).
+           03  WRK-SRYKA               PIC X(02).
+           03  WRK-ZAINUM              PIC 9(09).
+           03  WRK-KEISANYM.
+               05  WRK-KEISANYM9       PIC 9(06).
+      *
+       01  KEY-AREA.
+           03  KEY-SRYKA               PIC X(02).
+           03  KEY-HKNCOMBI.
+               05  KEY-HKNCOMBI9       PIC 9(04).
+           03  KEY-SRYCD               PIC X(09).
+           03  KEY-BRMNUM              PIC X(08).
+           03  KEY-RM-SAGAKU           PIC X(02).
       *
       *    Æþ±¡¿ÇÎÅ¹Ô°Ù¾È²ñÂàÈòÎÎ°è
        01  TNSHOUKAI-AREA.
@@ -65,11 +77,14 @@
                05  TNSHOUKAI-SRYKA         PIC X(02).
                05  TNSHOUKAI-HKNCOMBI      PIC X(04).
                05  TNSHOUKAI-SRYCD         PIC X(09).
+               05  TNSHOUKAI-BRMNUM        PIC X(08).
+               05  TNSHOUKAI-RM-SAGAKU     PIC X(02).
                05  TNSHOUKAI-DAY           PIC 9(01)
                                            OCCURS   31.
       *
        01  CONST-AREA.
-           03  CONST-TNSHOUKAI-MAX     PIC 9(05)   VALUE   300.
+           03  CONST-TNSHOUKAI-MAX         PIC 9(05)   VALUE   300.
+           03  CONST-HKNCOMBICD            PIC X(09) VALUE "099999914".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -80,8 +95,12 @@
            COPY    "CPNYUINACCT.INC".
       *
       *    Æþ±¡¿ÇÎÅ¹Ô°Ù¾È²ñ¥Æ¡¼¥Ö¥ë
-       01  NSHOUKAI-REC.
-           COPY    "CPNSHOUKAI.INC".
+       01  NSRYSRH-REC.
+           COPY    "CPNSRYSRH.INC".
+      *
+      *    Æþ±¡ÍúÎò¾È²ñ¥Æ¡¼¥Ö¥ë
+       01  NRRKSRH-REC.
+           COPY    "CPNRRKSRH.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
@@ -92,6 +111,11 @@
       *
       *    ²ÊÊÌ¡¦ÊÝ¸±ÊÌÆþ±¡²ñ·×ÊÔ½¸¥µ¥Ö
            COPY    "CPORCSS009.INC".
+      *
+       01  LNKNACCT-REC.
+           COPY    "CPNYUINACCT.INC"
+                                   REPLACING   //NACCT//
+                                   BY          //LNKNACCT//.
       *
       *    Æþ±¡²ñ·×ÊÔ½¸¥µ¥Ö
            COPY    "CPORCHCM34S01.INC".
@@ -136,7 +160,8 @@
                                        FLG-AREA
                                        WRK-AREA
                                        TNSHOUKAI-AREA
-                                       SS009-OT-AREA
+                                       KEY-AREA
+                                       SS009-AREA
       *
            PERFORM 800-MCNDATE-SEC
       *
@@ -148,7 +173,11 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
+           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
+      *
            PERFORM 2001-EDIT-TNSHOUKAI-SEC
+      *
+           PERFORM 2002-EDIT-TNSHOUKAI-SEC
       *
            PERFORM 2001-EDIT-NSHOUKAI-SEC
       *
@@ -160,13 +189,11 @@
       *****************************************************************
        2001-EDIT-TNSHOUKAI-SEC         SECTION.
       *
-           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
-      *
            IF    ( NACCT-ZAIKAISU  >   ZERO )
-               INITIALIZE                  SS009-AREA
-               MOVE    1           TO      SS009-ZAIHKNCOMBI-FLG
+      *
+               MOVE    NYUINACCT-REC   TO  LNKNACCT-REC
                CALL    "ORCSS009"  USING   SS009-AREA
-                                           NYUINACCT-REC
+                                           LNKNACCT-REC
                                            SPA-AREA
                IF    ( SS009-RC    =   ZERO )
                    CONTINUE
@@ -200,26 +227,54 @@
       *****************************************************************
        20011-EDIT-TNSHOUKAI-SEC        SECTION.
       *
+           PERFORM VARYING IDX-DAY FROM    1   BY  1
+                   UNTIL ( IDX-DAY >   31 )
+      *
+               IF    ( SS009-DAY (IDX0 IDX-DAY)    NOT =   ZERO )
+      *
+                   MOVE    SS009-SRYKA   (IDX0)
+                                           TO  KEY-SRYKA
+                   MOVE    SS009-HKNCOMBI(IDX0)
+                                           TO  KEY-HKNCOMBI
+                   MOVE    SS009-SRYCD   (IDX0 IDX1)
+                                           TO  KEY-SRYCD
+                   MOVE    SS009-BRMNUM-DAY(IDX-DAY)
+                                           TO  KEY-BRMNUM
+                   MOVE    SS009-SAGAKUCD-DAY(IDX-DAY)
+                                           TO  KEY-RM-SAGAKU
+                   PERFORM 200111-EDIT-TNSHOUKAI-SEC
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       20011-EDIT-TNSHOUKAI-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¾È²ñÂàÈòÎÎ°è
+      *****************************************************************
+       200111-EDIT-TNSHOUKAI-SEC        SECTION.
+      *
            MOVE    ZERO            TO  IDX-TNSHOUKAI
       *
            PERFORM VARYING IDX3    FROM    1   BY  1
                    UNTIL ( IDX3            >   TNSHOUKAI-MAX )
                     OR   ( IDX-TNSHOUKAI   >   ZERO )
       *
-               IF    ( SS009-SRYKA   (IDX0)
-                                       =   TNSHOUKAI-SRYKA   (IDX3))
-                AND  ( SS009-HKNCOMBI(IDX0)
+               IF        ( KEY-SRYKA   =   TNSHOUKAI-SRYKA   (IDX3))
+                    AND  ( KEY-HKNCOMBI
                                        =   TNSHOUKAI-HKNCOMBI(IDX3))
-                AND  ( SS009-SRYCD   (IDX0 IDX1)
-                                       =   TNSHOUKAI-SRYCD   (IDX3))
+                    AND  ( KEY-SRYCD   =   TNSHOUKAI-SRYCD   (IDX3))
+                    AND  ( KEY-BRMNUM  =   TNSHOUKAI-BRMNUM  (IDX3))
+                    AND  ( KEY-RM-SAGAKU
+                                       =   TNSHOUKAI-RM-SAGAKU(IDX3))
       *
-                   MOVE    IDX3        TO  IDX-TNSHOUKAI
+                       MOVE    IDX3   TO  IDX-TNSHOUKAI
       *
                END-IF
       *
            END-PERFORM
-      *
-           DISPLAY IDX0 " " IDX1 " SS009-SRYCD=" SS009-SRYCD(IDX0 IDX1)
       *
            IF    ( IDX-TNSHOUKAI       =   ZERO )
                IF    ( TNSHOUKAI-MAX  >=  CONST-TNSHOUKAI-MAX )
@@ -229,44 +284,67 @@
       *
                COMPUTE IDX-TNSHOUKAI   =   TNSHOUKAI-MAX   +   1
       *
-               MOVE    SS009-SRYKA   (IDX0)
-                                       TO  TNSHOUKAI-SRYKA
+               MOVE    KEY-SRYKA       TO  TNSHOUKAI-SRYKA
                                                        (IDX-TNSHOUKAI)
-               MOVE    SS009-HKNCOMBI(IDX0)
-                                       TO  TNSHOUKAI-HKNCOMBI
+               MOVE    KEY-HKNCOMBI    TO  TNSHOUKAI-HKNCOMBI
                                                        (IDX-TNSHOUKAI)
-               MOVE    SS009-SRYCD   (IDX0 IDX1)
-                                       TO  TNSHOUKAI-SRYCD
+               MOVE    KEY-SRYCD       TO  TNSHOUKAI-SRYCD
+                                                       (IDX-TNSHOUKAI)
+               MOVE    KEY-BRMNUM      TO  TNSHOUKAI-BRMNUM
+                                                       (IDX-TNSHOUKAI)
+               MOVE    KEY-RM-SAGAKU   TO  TNSHOUKAI-RM-SAGAKU
                                                        (IDX-TNSHOUKAI)
                MOVE    IDX-TNSHOUKAI   TO  TNSHOUKAI-MAX
       *
            END-IF
       *
+           MOVE    1                   TO  TNSHOUKAI-DAY
+                                               (IDX-TNSHOUKAI IDX-DAY)
+      *
+           .
+       200111-EDIT-TNSHOUKAI-EXT.
+           EXIT.
+      *****************************************************************
+      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¾È²ñÂàÈòÎÎ°è¡ÊÊÝ¸±ÁÈ¹ç¤»¡Ë
+      *****************************************************************
+       2002-EDIT-TNSHOUKAI-SEC         SECTION.
+      *
            PERFORM VARYING IDX-DAY FROM    1   BY  1
                    UNTIL ( IDX-DAY >   31 )
       *
-               IF    ( SS009-DAY (IDX0 IDX-DAY)    NOT =   ZERO )
-                   MOVE    1           TO  TNSHOUKAI-DAY
-                                                 (IDX-TNSHOUKAI IDX-DAY)
+               IF    ( NACCT-DAY (IDX-DAY) NOT =   ZERO )
+      *
+                   MOVE    SS009-SRYKA-DAY (IDX-DAY)
+                                           TO  KEY-SRYKA
+                   MOVE    NACCT-DAY (IDX-DAY)
+                                           TO  KEY-HKNCOMBI9
+                   MOVE    CONST-HKNCOMBICD
+                                           TO  KEY-SRYCD
+                   MOVE    SS009-BRMNUM-DAY(IDX-DAY)
+                                           TO  KEY-BRMNUM
+                   MOVE    SS009-SAGAKUCD-DAY(IDX-DAY)
+                                           TO  KEY-RM-SAGAKU
+                   PERFORM 200111-EDIT-TNSHOUKAI-SEC
+      *
                END-IF
       *
            END-PERFORM
       *
            .
-       20011-EDIT-TNSHOUKAI-EXT.
+       2002-EDIT-TNSHOUKAI-EXT.
            EXIT.
       *****************************************************************
       *    Æþ±¡¿ÇÎÅ¹Ô°Ù¾È²ñ¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý
       *****************************************************************
        2001-EDIT-NSHOUKAI-SEC          SECTION.
       *
-           INITIALIZE  NSHOUKAI-REC
-           MOVE    SPA-HOSPNUM     TO  NSHOUKAI-HOSPNUM
-           MOVE    SS010-PTID      TO  NSHOUKAI-PTID
-           MOVE    SS010-SRYYM     TO  NSHOUKAI-SRYYMD
-           MOVE    "%"             TO  NSHOUKAI-SRYYMD (7:1)
-           MOVE    NSHOUKAI-REC    TO  MCPDATA-REC
-           MOVE    "tbl_nshoukai"  TO  MCP-TABLE
+           INITIALIZE  NRRKSRH-REC
+           MOVE    SPA-HOSPNUM     TO  NRRKSRH-HOSPNUM
+           MOVE    SS010-PTID      TO  NRRKSRH-PTID
+           MOVE    SS010-SRYYM     TO  NRRKSRH-SRYYMD
+           MOVE    "%"             TO  NRRKSRH-SRYYMD (7:1)
+           MOVE    NRRKSRH-REC     TO  MCPDATA-REC
+           MOVE    "tbl_nrrksrh"   TO  MCP-TABLE
            MOVE    "del1"          TO  MCP-PATHNAME
            PERFORM 910-DBDELETE-SEC
            IF    ( MCP-RC          =   ZERO )
@@ -276,36 +354,81 @@
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
+           INITIALIZE                  NSRYSRH-REC
+           MOVE    SPA-HOSPNUM     TO  NSRYSRH-HOSPNUM
+           MOVE    SS010-PTID      TO  NSRYSRH-PTID
+           MOVE    SS010-SRYYM     TO  NSRYSRH-SRYYM
+           MOVE    NSRYSRH-REC     TO  MCPDATA-REC
+           MOVE    "tbl_nsrysrh"   TO  MCP-TABLE
+           MOVE    "del1"          TO  MCP-PATHNAME
+           PERFORM 910-DBDELETE-SEC
+           IF    ( MCP-RC          =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    4           TO  SS010-RC
+               PERFORM 990-EXIT-PROGRAM-SEC
+           END-IF
+      *
+           MOVE    SS010-SRYYM     TO  WRK-KEISANYM
+           COMPUTE WRK-ZAINUM  =   WRK-KEISANYM9   *   1000
+      *
            PERFORM VARYING IDX3    FROM    1   BY  1
                    UNTIL ( IDX3    >   TNSHOUKAI-MAX )
+      *
+               COMPUTE WRK-ZAINUM  =   WRK-ZAINUM  +   1
+      *
+               INITIALIZE  NSRYSRH-REC
+               MOVE    SPA-HOSPNUM     TO  NSRYSRH-HOSPNUM
+               MOVE    SS010-PTID      TO  NSRYSRH-PTID
+               MOVE    WRK-ZAINUM      TO  NSRYSRH-ZAINUM
+               MOVE    SS010-SRYYM     TO  NSRYSRH-SRYYM
+               MOVE    TNSHOUKAI-SRYKA (IDX3)
+                                       TO  NSRYSRH-SRYKA
+               MOVE    TNSHOUKAI-HKNCOMBI (IDX3)
+                                       TO  NSRYSRH-HKNCOMBINUM
+               MOVE    TNSHOUKAI-SRYCD (IDX3)
+                                       TO  NSRYSRH-SRYCD
+               MOVE    TNSHOUKAI-BRMNUM (IDX3)
+                                       TO  NSRYSRH-BRMNUM
+               MOVE    TNSHOUKAI-RM-SAGAKU (IDX3)
+                                       TO  NSRYSRH-RM-SAGAKU
+               MOVE    SMCNDATE-YMD    TO  NSRYSRH-CREYMD
+                                           NSRYSRH-UPYMD
+               MOVE    SMCNDATE-HMS    TO  NSRYSRH-UPHMS
+               MOVE    NSRYSRH-REC     TO  MCPDATA-REC
+               MOVE    "tbl_nsrysrh"   TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   CONTINUE
+               ELSE
+                   MOVE    4           TO  SS010-RC
+                   PERFORM 990-EXIT-PROGRAM-SEC
+               END-IF
       *
                PERFORM VARYING IDX-DAY FROM    1   BY  1
                        UNTIL ( IDX-DAY >   31 )
       *
                    IF    ( TNSHOUKAI-DAY (IDX3 IDX-DAY) NOT =  ZERO )
-                       INITIALIZE  NSHOUKAI-REC
-                       MOVE    SPA-HOSPNUM     TO   NSHOUKAI-HOSPNUM
-                       MOVE    SS010-PTID      TO   NSHOUKAI-PTID
-                       MOVE    SS010-SRYYM     TO   WRK-SRYYM
-                       MOVE    IDX-DAY         TO   WRK-SRYDD
-                       MOVE    WRK-SRYYMD      TO   NSHOUKAI-SRYYMD
-                       MOVE    TNSHOUKAI-SRYKA (IDX3)
-                                               TO   NSHOUKAI-SRYKA
-                       MOVE    TNSHOUKAI-HKNCOMBI (IDX3)
-                                               TO   NSHOUKAI-HKNCOMBINUM
-                       MOVE    TNSHOUKAI-SRYCD (IDX3)
-                                               TO   NSHOUKAI-SRYCD
-                       MOVE    SMCNDATE-YMD    TO   NSHOUKAI-CREYMD
-                                                    NSHOUKAI-UPYMD
-                       MOVE    SMCNDATE-HMS    TO   NSHOUKAI-UPHMS
-                       MOVE    NSHOUKAI-REC    TO  MCPDATA-REC
-                       MOVE    "tbl_nshoukai"  TO  MCP-TABLE
+                       INITIALIZE                  NRRKSRH-REC
+                       MOVE    SPA-HOSPNUM     TO  NRRKSRH-HOSPNUM
+                       MOVE    SS010-PTID      TO  NRRKSRH-PTID
+                       MOVE    SS010-SRYYM     TO  WRK-SRYYM
+                       MOVE    IDX-DAY         TO  WRK-SRYDD
+                       MOVE    WRK-SRYYMD      TO  NRRKSRH-SRYYMD
+                       MOVE    WRK-ZAINUM      TO  NRRKSRH-ZAINUM
+                       MOVE    SMCNDATE-YMD    TO  NRRKSRH-CREYMD
+                                                   NRRKSRH-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  NRRKSRH-UPHMS
+                       MOVE    NRRKSRH-REC     TO  MCPDATA-REC
+                       DISPLAY "NRRKSRH-REC =" NRRKSRH-REC
+                       MOVE    "tbl_nrrksrh"   TO  MCP-TABLE
                        MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM 910-DBINSERT-SEC
                        IF    ( MCP-RC          =   ZERO )
                            CONTINUE
                        ELSE
-                           MOVE    4           TO  SS010-RC
+                           MOVE    5           TO  SS010-RC
                            PERFORM 990-EXIT-PROGRAM-SEC
                        END-IF
                    END-IF

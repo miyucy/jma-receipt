@@ -1,0 +1,39 @@
+tbl_nrrksrh {
+	HOSPNUM				number(2,0);
+	PTID 				number(10);
+	SRYYMD				char(8);
+	ZAINUM				number(9);
+	TERMID   			varchar(16);
+	OPID     			varchar(16);
+	CREYMD   			char(8);
+	UPYMD    			char(8);
+	UPHMS				char(6);
+};
+
+primary	{
+	HOSPNUM,PTID,SRYYMD,ZAINUM ;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_nrrksrh_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_nrrksrh
+			WHERE HOSPNUM     =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   SRYYMD      =   :SRYYMD
+			AND   ZAINUM      =   :ZAINUM
+		;
+	};
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_nrrksrh
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE   :SRYYMD
+		;
+	};
+};

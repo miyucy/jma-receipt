@@ -66,6 +66,9 @@
       *
       *联年掐薄瘟吹荚极甘砷么驰
                05  HCM34S01-SENTEI-PTFTN       PIC 9(08).
+      *技瘟汗驰惰尸コ〖ド
+               05  HCM34S01-SAGAKUCD           PIC  X(02)
+                                               OCCURS  31.
       *
       *手笛テ〖ブル
                05  HCM34S01-HENKYAKU-MAX       PIC 9(05).

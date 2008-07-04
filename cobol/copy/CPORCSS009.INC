@@ -23,8 +23,6 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SS009-AREA.
-           03  SS009-IN-AREA.
-               05  SS009-ZAIHKNCOMBI-FLG   PIC 9(01).
            03  SS009-OT-AREA.
                05  SS009-HENKYAKU-MAX      PIC 9(05).
                05  SS009-HENKYAKU-TBL      OCCURS  200.
@@ -38,10 +36,21 @@
                    07  SS009-SRYCDTOTAL    PIC  9(14).
                    07  SS009-SURYOUTOTAL   PIC  9(07)V9(03).
                    07  SS009-RUIKEITOTAL   PIC  9(15)V9(03).
+                   07  SS009-SAGAKUCD      PIC  X(02).
+                   07  SS009-BRMNUM        PIC  X(08).
                    07  SS009-SRYCD-OCC     OCCURS  20.
                        09  SS009-SURYO     PIC  9(05).
                        09  SS009-SRYCD     PIC  X(09).
                    07  SS009-DAY-TBL.
                        09  SS009-DAY       PIC  9(03)
                                            OCCURS  31.
+               05  SS009-DAYINF-G.
+                   07  SS009-DAYINF        OCCURS  31.
+                       09  SS009-SRYKA-DAY PIC  X(04).
+                       09  SS009-BRMNUM-DAY
+                                           PIC  X(08).
+                       09  SS009-HKNCOMBI-DAY
+                                           PIC  X(04).
+                       09  SS009-SAGAKUCD-DAY
+                                           PIC  X(02).
            03  SS009-RC                    PIC S9(9) BINARY.

@@ -50,7 +50,6 @@ db	{
 	tbl_sskijyo;
 	tbl_jinmei;
 	tbl_monthlynum;
-	view_Q001;
 	tbl_yakujyo;
 	tbl_nyuinkhn;
 	tbl_ptnyuinrrk;
@@ -70,7 +69,6 @@ db	{
         tbl_kensasort;
         tbl_senteicdchg;
 	tbl_ptkohftn;
-	view_Q002;
 	tbl_receden;
 	tbl_kohplus;
 	tbl_prvkanri;
@@ -129,5 +127,6 @@ db	{
 	tbl_shoukaidata;
 	tbl_ptkinki;
 	tbl_prgoption;
-	tbl_nshoukai;
+	tbl_nsrysrh;
+	tbl_nrrksrh;
 };
