@@ -349,6 +349,11 @@
            05 PIC  X(30)   VALUE   "外泊のときに入院調剤料が発生し".
            05 PIC  X(30)   VALUE   "ています                      ".
            05 PIC  X(30)   VALUE   "                              ".
+      *                            +---------+---------+---------+.
+           05 PIC  X(06)   VALUE   "120004".
+           05 PIC  X(30)   VALUE   "実日数がゼロ日です。          ".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
       *
       *    ** 130xxx 患者氏名
       *                            +---------+---------+---------+.
@@ -459,7 +464,7 @@
            05 PIC  X(30)   VALUE   "                              ".
       *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  78.
+           05 ERRMES-OCC   OCCURS  79.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   78.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   79.

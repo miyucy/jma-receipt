@@ -2674,9 +2674,7 @@
                        END-IF
       *
       *                実日数退避ワーク編集処理
-                       IF    ( FLG-SHOSAISIN   =   ZERO )
-                           PERFORM 200111-TJNISSU-HEN-SEC
-                       END-IF
+                       PERFORM 200111-TJNISSU-HEN-SEC
       *
       *                算定回数退避ワーク編集処理
                        IF    ( TNS-JITUDAY     =   1 )
@@ -3084,9 +3082,6 @@
       *
       *    実日数算定チェック
            PERFORM 200111-JNISSU-HEN-SEC
-           IF    ( FLG-SHOSAISIN       =   ZERO )
-               GO  TO  200111-TJNISSU-HEN-EXT
-           END-IF
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TJNISSU-MAX )
@@ -3112,13 +3107,15 @@
                MOVE    IDX0        TO  IDXA
            END-IF
       *
-           IF    ( IDXA            >   ZERO )
-               PERFORM VARYING IDX2    FROM    1   BY  1
-                       UNTIL ( IDX2    >   31 )
-                   IF    ( PTZAI-DAY (IDX-ZAI IDX2)   >   ZERO )
-                       MOVE    1   TO  TJNISSU-DAY (IDXA IDX2)
-                   END-IF
-               END-PERFORM
+           IF    ( FLG-SHOSAISIN   =   1 )
+               IF    ( IDXA            >   ZERO )
+                   PERFORM VARYING IDX2    FROM    1   BY  1
+                           UNTIL ( IDX2    >   31 )
+                       IF    ( PTZAI-DAY (IDX-ZAI IDX2)   >   ZERO )
+                           MOVE    1   TO  TJNISSU-DAY (IDXA IDX2)
+                       END-IF
+                   END-PERFORM
+               END-IF
            END-IF
       *
            .
@@ -7577,6 +7574,17 @@
                    END-PERFORM
                END-IF
       *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX13   FROM    1   BY  1
+                   UNTIL ( IDX13   >   TJNISSU-MAX )
+                    OR   ( FLG-CHKEND (12) =   1 )
+               IF    ( TJNISSU-DAY-CNT (IDX13) =   ZERO )
+                   MOVE    TJNISSU-HKNNUM (IDX13)
+                                           TO  SRH-HKNNUM
+                   MOVE    "120004"        TO  WRK-ERRCD
+                   PERFORM 211-ERRMES-HEN-SEC
+               END-IF
            END-PERFORM
       *
            .
