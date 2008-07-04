@@ -3218,11 +3218,27 @@
 	</widget>
 
 	<widget>
+	  <class>GtkLabel</class>
+	  <name>label940</name>
+	  <x>740</x>
+	  <y>40</y>
+	  <width>60</width>
+	  <height>25</height>
+	  <label>ª‡À¥∂Ë ¨</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
 	  <class>GtkPandaCombo</class>
 	  <name>CMB_DEATH</name>
 	  <x>800</x>
 	  <y>40</y>
-	  <width>80</width>
+	  <width>100</width>
 	  <height>25</height>
 	  <value_in_list>False</value_in_list>
 	  <ok_if_empty>True</ok_if_empty>
@@ -3256,22 +3272,6 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label940</name>
-	  <x>740</x>
-	  <y>40</y>
-	  <width>60</width>
-	  <height>25</height>
-	  <label>ª‡À¥∂Ë ¨</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
 	</widget>
       </widget>
 
