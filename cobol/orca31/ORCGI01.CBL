@@ -19204,7 +19204,7 @@
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       900-NYUINACCT-KEY17-SEL-EXT.
+       900-NYUINACCT-KEY19-SEL-EXT.
            EXIT.
       *****************************************************************
       *    入院会計マスター検索
