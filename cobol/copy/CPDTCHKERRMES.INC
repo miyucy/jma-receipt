@@ -463,8 +463,13 @@
            05 PIC  X(30)   VALUE   "してください                  ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "990006".
+           05 PIC  X(30)   VALUE   "点数マスタの器材の単位コードが".
+           05 PIC  X(30)   VALUE   "未設定です。                  ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  79.
+           05 ERRMES-OCC   OCCURS  80.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   79.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   80.

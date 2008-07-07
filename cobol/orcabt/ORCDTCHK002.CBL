@@ -8028,6 +8028,10 @@
       *
            END-IF
       *
+           IF    ( FLG-RECEDEN-CHK     =   1 )
+               PERFORM 200111-KIZAI-TANICD-CHK-SEC
+           END-IF
+      *
       *    院内・院外混在チェック処理
            PERFORM 200111-INNAI-INGAI-CHK-SEC
       *
@@ -8172,6 +8176,51 @@
       *
            .
        200111-NYUKSN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    器材単位コードチェック
+      *****************************************************************
+       200111-KIZAI-TANICD-CHK-SEC     SECTION.
+      *
+           PERFORM VARYING IDX6    FROM    1   BY  1
+                   UNTIL ( IDX6    >   TSRYCD-MAX )
+      *
+               INITIALIZE  WRK-NISSU-DAY-G
+               IF    ( TSRYCD-SRYCD (IDX6)(1:1)    =   "7" )
+                   MOVE    TSRYCD-SRYCD (IDX6)
+                                               TO  WRK-SRYCD
+                   MOVE    TSRYCD-SRYCD (IDX6) TO  WRK-TNS-YMD
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   IF    ( TNS-TANICD          =   SPACE )
+                       PERFORM VARYING IDX-DAY FROM    1   BY  1
+                               UNTIL ( IDX-DAY >   31 )
+                           IF    ( TSRYCD-DAY-NYUGAIKBN (IDX6 IDX-DAY)
+                                           =   ORCBSD01-NYUGAIKBN )
+                               MOVE    1   TO  WRK-NISSU-DAY (IDX-DAY)
+                           END-IF
+                       END-PERFORM
+      *
+                       MOVE    SPACE       TO  WRK-ERRMES-PLUS
+      *
+                       IF    ( WRK-NISSU-DAY-G    NOT  =   ZERO )
+                           PERFORM 200111-NISSU-HEN-SEC
+                           STRING  TNS-NAME        DELIMITED   BY  SPACE
+                                   WRK-NISSU-MES   DELIMITED   BY  SPACE
+                           INTO  WRK-ERRMES-PLUS
+                           END-STRING
+      *
+                           MOVE    "990006"    TO  WRK-ERRCD
+      *
+                           PERFORM 215-ERRMES-HEN-SEC
+                       END-IF
+      *
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       200111-KIZAI-TANICD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    院内・院外混在チェック
