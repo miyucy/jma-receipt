@@ -3777,9 +3777,10 @@
                    EVALUATE    LNK-WKSRY-SRYCD  (IDX IDY)
       *                薬剤情報提供料
                        WHEN    "120002370"
+                           MOVE    1               TO  SPA-YAKJYO-ARI
       *                老人薬剤情報提供料（老人手帳記載あり）
                        WHEN    "113701310"
-                           MOVE    1               TO  SPA-YAKJYO-ARI
+                           MOVE    2               TO  SPA-YAKJYO-ARI
                    END-EVALUATE
                END-PERFORM
            END-IF
