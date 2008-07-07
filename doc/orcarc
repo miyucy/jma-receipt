@@ -121,3 +121,21 @@ style	"pink-rev"	{
 	base[NORMAL] = { 1.0, 0.57, 0.94}
 	fg[NORMAL] = { 0.0, 0.0, 0.0}
 }
+style	"whitebutton"	{
+	fontset = "-misc-fixed-medium-r-normal-*-14-*-*-*-*-*-*-*"
+	bg[NORMAL] = { 1.0, 1.0, 1.0}
+	bg[ACTIVE] = { 1.0, 1.0, 1.0} 
+	bg[PRELIGHT] = { 1.0, 1.0, 1.0}
+}
+style	"blue-revbutton"	{
+	fontset = "-misc-fixed-medium-r-normal-*-14-*-*-*-*-*-*-*"
+	bg[NORMAL] = { 0.5, 1.00, 0.9 }
+	bg[ACTIVE] = { 0.5, 1.00, 0.9 } 
+	bg[PRELIGHT] = {0.5, 1.00, 0.9 }
+}
+style	"yellow-revbutton"	{
+	fontset = "-misc-fixed-medium-r-normal-*-14-*-*-*-*-*-*-*"
+	bg[NORMAL] = { 0.94, 1.00, 0.28}
+	bg[ACTIVE] = { 0.94, 1.00, 0.28}
+	bg[PRELIGHT] = { 0.94, 1.00, 0.28}
+}
