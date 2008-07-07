@@ -128,6 +128,7 @@
       *
            03  WRK-STYMD                       PIC X(08).
            03  WRK-EDYMD                       PIC X(08).
+           03  WRK-LASTSRYYM                   PIC X(06).
            03  WRK-NISSU                       PIC 9(05).
            03  WRK-NISSU1                      PIC 9(05).
            03  WRK-NISSU2                      PIC 9(05).
@@ -270,9 +271,9 @@
                                //SPA-// BY //WRK-SPA-//.
       *
       *    入院履歴ワーク
-       01  WKPTNYUINRRK-REC.
+       01  NRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING
-                               //PTNYUINRRK-// BY //WKPTNYUINRRK-//.
+                               //PTNYUINRRK-// BY //NRRK-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -389,6 +390,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    入院診療行為照会テーブル
+           COPY  "CPORCSS010.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -417,6 +421,8 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
+      *
+           PERFORM 100-INIT-SEC
       *
            PERFORM 1001-SPA-SET-SEC
       *
@@ -464,12 +470,27 @@
                    END-IF
            END-EVALUATE
       *
+           PERFORM 4900-ORCSS010-SEC
+      *
            MOVE      ZERO    TO   SODRNACCT-RC
            .
       *
        000-PROC-EXT.
            EXIT    PROGRAM.
       *
+      *****************************************************************
+      *    初期処理
+      *****************************************************************
+       100-INIT-SEC                    SECTION.
+      *
+           PERFORM 900-NYUINACCT-KEY19-SEL-SEC
+           MOVE    NACCT-SRYYM         TO  WRK-LASTSRYYM
+           MOVE    LNK-PTNYUINRRK-REC  TO  NRRK-REC
+      *
+           .
+      *
+       100-INIT-EXT.
+           EXIT.
       *****************************************************************
       *    SPA基本情報設定処理
       *****************************************************************
@@ -4006,6 +4027,54 @@
        4801-SHOKUJI-200604-EXT.
            EXIT.
       *****************************************************************
+      *    入院診療行為照会テーブル編集サブ呼び出し
+      *****************************************************************
+       4900-ORCSS010-SEC         SECTION.
+      *
+           MOVE    NRRK-TENNYUYMD  TO  WRK-STYMD
+           MOVE    WRK-LASTSRYYM   TO  WRK-EDYMD
+      *
+           PERFORM 900-NYUINACCT-KEY19-SEL-SEC
+           IF    ( WRK-EDYMD       =   SPACE )
+            OR   ( NACCT-SRYYM >=  WRK-EDYMD (1:6) )
+               MOVE    NACCT-SRYYM TO  WRK-EDYMD
+           END-IF
+      *
+           IF    ( WRK-EDYMD       =   SPACE )
+               DISPLAY "SELECT FAILED [NYUINACCT] PTID:"
+                        LNK-PTNYUINRRK-PTID
+               MOVE    1               TO  FLG-END
+               MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+               MOVE    "abort"         TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+           END-IF
+      *
+           PERFORM UNTIL ( WRK-STYMD (1:6) >   WRK-EDYMD (1:6))
+                    OR   ( FLG-END     NOT =   ZERO )
+      *
+               INITIALIZE                      SS010-AREA
+               MOVE    LNK-PTNYUINRRK-PTID TO  SS010-PTID
+               MOVE    WRK-STYMD (1:6)     TO  SS010-SRYYM
+               CALL    "ORCSS010"      USING   SS010-AREA
+                                               SPA-AREA
+               IF    ( SS010-RC        NOT =   ZERO )
+                   MOVE    1           TO  SPA-ERRCD
+               END-IF
+      *
+               MOVE    WRK-STYMD       TO  WRK-YMD
+               MOVE    "2"             TO  WRK-ZOGENPTN
+               MOVE     1              TO  WRK-ZOGEN
+               PERFORM 5002-CALENDAR-SEC
+               MOVE    WRK-KEISANYMD   TO  WRK-STYMD
+      *
+           END-PERFORM
+      *
+           .
+      *
+       4900-ORCSS010-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
@@ -4158,6 +4227,39 @@
        910-NYUINACCT-READ-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入院会計マスター検索
+      *****************************************************************
+       900-NYUINACCT-KEY19-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCT
+      *
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    LNK-PTNYUINRRK-HOSPNUM
+                                       TO  NACCT-HOSPNUM
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    LNK-PTNYUINRRK-PTID TO  NACCT-PTID
+           MOVE    "999999"            TO  NACCT-SRYYM
+           MOVE    "5"                 TO  NACCT-ZAISKBKBN
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key19"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-NYUINACCT
+               INITIALIZE                  NYUINACCT-REC
+           END-IF
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key19"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-NYUINACCT-KEY19-SEL-EXT.
+           EXIT.
       *****************************************************************
       *    ＤＢクローズ処理
       *****************************************************************
