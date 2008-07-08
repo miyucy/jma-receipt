@@ -937,7 +937,8 @@
       *    発行ありで薬剤情報提供料と連動する場合
            IF      SPA-GMN-YAKJYOFLG   =   "1"
                IF      (SYS-1038-YKJCHKKBN =   "1"  )  AND
-                       (SPA-YAKJYO-ARI     =   ZERO )
+                       (SPA-YAKJYO-ARI     =   ZERO
+                                           OR  3    )
                    MOVE    "0"             TO  SPA-GMN-YAKJYOFLG
                END-IF
            END-IF
@@ -987,7 +988,8 @@
       *    発行ありで薬剤情報提供料と連動する場合
            IF      SPA-GMN-OKUSURIFLG  =   "1"
                IF      (SYS-1038-OKUSURIKBN    =   "1"  )  AND
-                       (SPA-YAKJYO-ARI     NOT =   2    )
+                       (SPA-YAKJYO-ARI         =   0
+                                               OR  1    )
                    MOVE    "0"             TO  SPA-GMN-OKUSURIFLG
                END-IF
            END-IF
