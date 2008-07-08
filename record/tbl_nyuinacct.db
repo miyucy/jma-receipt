@@ -806,3 +806,33 @@ path	abort	{
  		;
 	};
 };
+
+path	key40 	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key40_csr CURSOR FOR
+		SELECT  *
+		FROM tbl_nyuinacct
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   '1'
+			AND   PTID        =   :PTID
+                        AND   ZAISKBKBN   =   '5'
+                        AND   SRYYM       >=  :SRYYM
+                        ORDER  BY   SRYYM
+		;
+	};
+};
+
+path	key41 	{
+	DBSELECT	{
+		DECLARE tbl_nyuinacct_key41_csr CURSOR FOR
+		SELECT  *
+		FROM tbl_nyuinacct
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   '1'
+                        AND   ZAISKBKBN   =   '5'
+                        AND   SRYYM       >=  :SRYYM
+                        ORDER  BY   SRYYM,
+                                    PTID
+		;
+	};
+};
