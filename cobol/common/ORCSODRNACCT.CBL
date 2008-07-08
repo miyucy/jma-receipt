@@ -4058,7 +4058,7 @@
                CALL    "ORCSS010"      USING   SS010-AREA
                                                SPA-AREA
                IF    ( SS010-RC        NOT =   ZERO )
-                   MOVE    1           TO  SPA-ERRCD
+                   MOVE    1           TO  FLG-END
                END-IF
       *
                MOVE    WRK-STYMD       TO  WRK-YMD
