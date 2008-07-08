@@ -421,7 +421,6 @@
                                                    NRRKSRH-UPYMD
                        MOVE    SMCNDATE-HMS    TO  NRRKSRH-UPHMS
                        MOVE    NRRKSRH-REC     TO  MCPDATA-REC
-                       DISPLAY "NRRKSRH-REC =" NRRKSRH-REC
                        MOVE    "tbl_nrrksrh"   TO  MCP-TABLE
                        MOVE    "key"           TO  MCP-PATHNAME
                        PERFORM 910-DBINSERT-SEC
@@ -445,7 +444,7 @@
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-           PERFORM 800-DISPLAY-SEC
+      *    PERFORM 800-DISPLAY-SEC
       *
            .
        300-END-EXT.
