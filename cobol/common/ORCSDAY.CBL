@@ -32,6 +32,7 @@
       *  01.00.03    NACL-藤原    02.10.21  漢字項目の空白を全角に修正
       *  01.00.04    NACL-多々納  03.04.16  END-IF,END-SERACH追加
       *  01.00.05    NACL-多々納  04.09.22  海の日、敬老の日変更
+      *  04.03.00    NACL-多々納  08.07.08  明治以前、和暦９９年以上エラー
       *****************************************************************
 001400 ENVIRONMENT         DIVISION.
 001500 CONFIGURATION       SECTION.
@@ -358,9 +359,10 @@
 031800*
 031900*    添え字領域
 032000 01  IDX-AREA.
-032100     03  I                       PIC  9(02)  VALUE  ZERO.
-032200     03  J                       PIC  9(02)  VALUE  ZERO.
+032100     03  I                       PIC  9(02).
+032200     03  J                       PIC  9(02).
            03  IDX                     PIC  9(04).
+           03  IDX-T                   PIC  9(04).
 032300/
 032400***
 032500     COPY  "CPORCSDAY.INC".
@@ -377,20 +379,21 @@
 033400******************************************************************
 033500*        依頼制御処理
 033600******************************************************************
-033700 MAIN-RTN            SECTION.
-033800 MAIN-000.
-033900     MOVE    SPACE           TO  LNK-DAY1-AREA
-034000                                 LNK-DAY2-AREA
-034100                                 LNK-DAY3-AREA
-034200                                 LNK-DAY4-AREA
-034300                                 LNK-DAY5-AREA
-034400                                 LNK-DAY6-AREA
-034500                                 LNK-DAY7-AREA.
-034600     MOVE    ZERO            TO  STS-DAY-RC1
+       MAIN-RTN            SECTION.
+       MAIN-000.
+           INITIALIZE              IDX-AREA
+           MOVE    SPACE           TO  LNK-DAY1-AREA
+                                       LNK-DAY2-AREA
+                                       LNK-DAY3-AREA
+                                       LNK-DAY4-AREA
+                                       LNK-DAY5-AREA
+                                       LNK-DAY6-AREA
+                                       LNK-DAY7-AREA.
+           MOVE    ZERO            TO  STS-DAY-RC1
                                        STS-DAY-RC2
-034700                                 WK-YYMMDD
-034800                                 WK-FLG.
-034900*
+                                       WK-YYMMDD
+                                       WK-FLG.
+      *
            EVALUATE    LNK-DAYX-IRAI
                WHEN    "11"
                WHEN    "12"
@@ -439,111 +442,127 @@
                    MOVE     01             TO  STS-DAY-RC2
            END-EVALUATE
            .
-038700 MAIN-EXT.
-038800     EXIT PROGRAM
-038900     STOP RUN.
-039000******************************************************************
-039100*        暦変換処理                         (IRAI = 11 / 12)     *
-039200******************************************************************
-039300 DTCONV-RTN           SECTION.
-039400 DTCONV-000.
-039500     EVALUATE    LNK-DAY1-IRAI
-039600         WHEN    "11"
-039700         WHEN    "21"
-039800         WHEN    "61"
-039900         WHEN    "71"
-040000                 MOVE    LNK-DAY1-YMD    TO  WK-YYMMDD
-040100         WHEN    "12"
-040200         WHEN    "22"
-040300         WHEN    "32"
-040400         WHEN    "42"
-040500         WHEN    "52"
-040600         WHEN    "62"
-040700         WHEN    "72"
-040800                 MOVE    LNK-DAY1-WYMD   TO  WK-YYMMDD
-040900         WHEN    OTHER
-041000                 MOVE    30              TO  STS-DAY-RC1
-041100                 MOVE    01              TO  STS-DAY-RC2
-041200                 GO  TO      DTCONV-EXT
-041300     END-EVALUATE.
-041400*
-041500     IF    LNK-DAY1-IRAI  =  "12"  OR  "22"  OR  "32"  OR
-041600                             "42"  OR  "52"  OR  "62"  OR
-041700                             "72"
-041800           GO  TO      DTCONV-100
-           END-IF.
-041900*
-042000     PERFORM  YMD-CHK-RTN.
-042100     IF  WK-ERR  =  1
-042200         MOVE    20        TO    STS-DAY-RC1
-042300         GO  TO      DTCONV-EXT
-           END-IF.
-042400*
-042500     SET     IX1    TO     1.
-042600     SEARCH  GENGO-TBL-R2  VARYING  IX1
-042700       AT  END
-042800         MOVE    20        TO    STS-DAY-RC1
-042900         GO  TO      DTCONV-EXT
-043000       WHEN
-043100         GENGO-YYMMDD (IX1)  NOT >  WK-YYMMDD
-043200         COMPUTE  WK-SYY  =  WK-SYY  -  GENGO-YYYY-RR (IX1)  +  1
-043300         MOVE    GENGO-T1 (IX1)    TO    LNK-DAY1-GENGO
-043400         MOVE    GENGO-T2 (IX1)    TO    LNK-DAY1-GENKIGO
-043500         MOVE    GENMEI   (IX1)    TO    LNK-DAY1-GENMEI
-043600         GO  TO      DTCONV-200
-           END-SEARCH.
-043700************
-043800 DTCONV-100.
-043900************
-044000     MOVE    WK-WG         TO    LNK-DAY1-GENGO.
-044100     SET     IX1    TO     1.
-044200     SEARCH  GENGO-TBL-R2  VARYING  IX1
-044300       AT  END
-044400         MOVE    30        TO    STS-DAY-RC1
-044500         MOVE    01        TO    STS-DAY-RC2
-044600         GO  TO      DTCONV-EXT
-044700       WHEN
-044800         GENGO-T1 (IX1)  =  LNK-DAY1-GENGO
-044900         COMPUTE  WK-SYY  =  WK-YY  +  GENGO-YYYY-RR (IX1)  -  1
-045000         MOVE    GENGO-T2 (IX1)    TO    LNK-DAY1-GENKIGO
-045100         MOVE    GENMEI   (IX1)    TO    LNK-DAY1-GENMEI 
-044700       WHEN
-044800         GENGO-T2 (IX1)  =  LNK-DAY1-GENGO
-044900         COMPUTE  WK-SYY  =  WK-YY  +  GENGO-YYYY-RR (IX1)  -  1
-045000         MOVE    GENGO-T1 (IX1)    TO    LNK-DAY1-GENGO
-045000         MOVE    GENGO-T2 (IX1)    TO    LNK-DAY1-GENKIGO
-045100         MOVE    GENMEI   (IX1)    TO    LNK-DAY1-GENMEI
-           END-SEARCH.
-045200     PERFORM  YMD-CHK-RTN.
-045300     IF  WK-ERR  =  1
-045400         MOVE    20          TO    STS-DAY-RC1
-045500         GO  TO      DTCONV-EXT
-           END-IF.
-045600************
-045700 DTCONV-200.
-045800************
-045900     EVALUATE    LNK-DAY1-IRAI
-046000         WHEN    "11"
-046100         WHEN    "21"
-046200         WHEN    "61"
-046300         WHEN    "71"
-046400                 MOVE    GENGO-T1 (IX1)  TO  WK-WG
-046500                 MOVE    WK-YYMMDD       TO  LNK-DAY1-YMD
-046600         WHEN    "12"
-046700         WHEN    "22"
-046800         WHEN    "32"
-046900         WHEN    "42"
-047000         WHEN    "52"
-047100         WHEN    "62"
-047200         WHEN    "72"
-047300                 MOVE    WK-YYMMDD       TO  LNK-DAY1-YMD
-047400         WHEN    OTHER
-047500                 MOVE    30              TO  STS-DAY-RC1
-047600                 MOVE    01              TO  STS-DAY-RC2
-047700                 GO  TO      DTCONV-EXT
-047800     END-EVALUATE.
-047900 DTCONV-EXT.
-048000     EXIT.
+       MAIN-EXT.
+           EXIT PROGRAM
+           STOP RUN.
+      ******************************************************************
+      *        暦変換処理                         (IRAI = 11 / 12)     *
+      ******************************************************************
+       DTCONV-RTN           SECTION.
+       DTCONV-000.
+           EVALUATE    LNK-DAY1-IRAI
+               WHEN    "11"
+               WHEN    "21"
+               WHEN    "61"
+               WHEN    "71"
+      *            西暦
+                   IF      LNK-DAY1-YMD(1:8)   NOT NUMERIC
+                       MOVE    20              TO  STS-DAY-RC1
+                   ELSE
+                       MOVE    LNK-DAY1-YMD    TO  WK-YYMMDD
+                       PERFORM 200-SEIREKI-CHK-SEC
+                   END-IF
+               WHEN    "12"
+               WHEN    "22"
+               WHEN    "32"
+               WHEN    "42"
+               WHEN    "52"
+               WHEN    "62"
+               WHEN    "72"
+      *            和暦
+                   IF      LNK-DAY1-WYMD(1:7)  NOT NUMERIC
+                       MOVE    20              TO  STS-DAY-RC1
+                   ELSE
+                       MOVE    LNK-DAY1-WYMD   TO  WK-YYMMDD
+                       PERFORM 201-WAREKI-CHK-SEC
+                   END-IF
+               WHEN    OTHER
+                       MOVE    30              TO  STS-DAY-RC1
+                       MOVE    01              TO  STS-DAY-RC2
+           END-EVALUATE
+           .
+       DTCONV-EXT.
+           EXIT.
+      ******************************************************************
+      *        西暦編集チェック処理                                    *
+      ******************************************************************
+       200-SEIREKI-CHK-SEC          SECTION.
+      *
+      *    日付チェック
+           PERFORM YMD-CHK-RTN
+           IF      WK-ERR          =   1
+               MOVE    20              TO  STS-DAY-RC1
+           ELSE
+               MOVE    ZERO            TO  IDX-T
+      *        和暦変換
+               SET     IX1    TO     1
+               SEARCH  GENGO-TBL-R2  VARYING  IX1
+               AT  END
+                   MOVE    20          TO    STS-DAY-RC1
+               WHEN
+                   GENGO-YYMMDD (IX1)  <=   WK-YYMMDD
+                   MOVE    IX1         TO  IDX-T
+               END-SEARCH
+           END-IF
+      *    和暦年変換
+           IF     (STS-DAY-RC1         =   ZERO  )
+              AND (IDX-T           NOT =   ZERO  )
+               SET      IX1            TO  IDX-T
+               IF      WK-SYY          <   GENGO-YYYY-RR (IX1)
+                   MOVE    20          TO  STS-DAY-RC1
+               ELSE
+                   COMPUTE WK-SYY          =   WK-SYY
+                                           -   GENGO-YYYY-RR (IX1)  +  1
+                   IF      WK-SYY          >   99
+                       MOVE    20              TO  STS-DAY-RC1
+                   END-IF
+               END-IF
+           END-IF
+           IF      STS-DAY-RC1         =   ZERO
+               MOVE    GENGO-T1 (IX1)      TO  LNK-DAY1-GENGO
+               MOVE    GENGO-T2 (IX1)      TO  LNK-DAY1-GENKIGO
+               MOVE    GENMEI   (IX1)      TO  LNK-DAY1-GENMEI
+               MOVE    GENGO-T1 (IX1)      TO  WK-WG
+               MOVE    WK-YYMMDD           TO  LNK-DAY1-YMD
+           END-IF
+           .
+       200-SEIREKI-CHK-EXT.
+           EXIT.
+      ******************************************************************
+      *        和暦編集チェック処理                                    *
+      ******************************************************************
+       201-WAREKI-CHK-SEC          SECTION.
+      *
+           MOVE    WK-WG         TO    LNK-DAY1-GENGO.
+           SET     IX1    TO     1.
+           SEARCH  GENGO-TBL-R2  VARYING  IX1
+             AT  END
+               MOVE    30        TO    STS-DAY-RC1
+               MOVE    01        TO    STS-DAY-RC2
+             WHEN
+               GENGO-T1 (IX1)  =  LNK-DAY1-GENGO
+               COMPUTE  WK-SYY  =  WK-YY  +  GENGO-YYYY-RR (IX1)  -  1
+               MOVE    GENGO-T2 (IX1)    TO    LNK-DAY1-GENKIGO
+               MOVE    GENMEI   (IX1)    TO    LNK-DAY1-GENMEI 
+             WHEN
+               GENGO-T2 (IX1)  =  LNK-DAY1-GENGO
+               COMPUTE  WK-SYY  =  WK-YY  +  GENGO-YYYY-RR (IX1)  -  1
+               MOVE    GENGO-T1 (IX1)    TO    LNK-DAY1-GENGO
+               MOVE    GENGO-T2 (IX1)    TO    LNK-DAY1-GENKIGO
+               MOVE    GENMEI   (IX1)    TO    LNK-DAY1-GENMEI
+           END-SEARCH
+           IF      STS-DAY-RC1         =   ZERO
+               PERFORM YMD-CHK-RTN
+               IF      WK-ERR          =   1
+                   MOVE    20              TO    STS-DAY-RC1
+               ELSE
+      *            西暦編集
+                   MOVE    WK-YYMMDD       TO  LNK-DAY1-YMD
+               END-IF
+           END-IF
+           .
+       201-WAREKI-CHK-EXT.
+           EXIT.
 048100******************************************************************
 048200*        日付編集処理                       (IRAI = 21 / 22)     *
 048300******************************************************************
@@ -619,10 +638,9 @@
 054900     IF  LNK-DAY3-IRAI   =   "31"
 055000*        *西暦日付による場合
 055100         MOVE    LNK-DAY3-YMD      TO    WK-YYMMDD
-055200         PERFORM  YMD-CHK-RTN
-055300         IF  WK-ERR  =  1
+055200         PERFORM YMD-CHK-RTN
+055300         IF      WK-ERR      =  1
 055400             MOVE    20            TO    STS-DAY-RC1
-055500             GO  TO      DTYOUB-EXT
 055600         END-IF
 055700     ELSE
 055800*        *和暦日付による場合
@@ -630,18 +648,20 @@
 056000         MOVE    LNK-DAY3-YMD      TO    LNK-DAY1-YMD
 056100         PERFORM  DTCONV-RTN
 056200         MOVE    SPACE             TO    LNK-DAY1-AREA
-056300         IF  STS-DAY-RC1  NOT =  ZERO
-056400             GO  TO      DTYOUB-EXT
-056500         END-IF
-056600     END-IF.
-056700*
-056800     PERFORM  YSK-KBN-RTN.
-056900     MOVE    YSK-SYUKJTS              TO    LNK-DAY3-SYUKU.
-057000     MOVE    YSK-KYUJTS               TO    LNK-DAY3-YASUMI.
-057100     PERFORM  YOUBI-SET-RTN.
-057200     MOVE    YOUBI-KBN  (IX-YOUBI)    TO    LNK-DAY3-YOBI.
-057300     MOVE    YOUBI-KIGO (IX-YOUBI)    TO    LNK-DAY3-YOBIKIGO.
-057400     MOVE    YOUBI-MEI  (IX-YOUBI)    TO    LNK-DAY3-YOBIMEI.
+           END-IF
+      *
+           IF      STS-DAY-RC1         =   ZERO
+      *        休日判定
+               PERFORM YSK-KBN-RTN
+               MOVE    YSK-SYUKJTS             TO  LNK-DAY3-SYUKU
+               MOVE    YSK-KYUJTS              TO  LNK-DAY3-YASUMI
+      *        曜日設定
+               PERFORM YOUBI-SET-RTN
+               MOVE    YOUBI-KBN  (IX-YOUBI)   TO  LNK-DAY3-YOBI
+               MOVE    YOUBI-KIGO (IX-YOUBI)   TO  LNK-DAY3-YOBIKIGO
+               MOVE    YOUBI-MEI  (IX-YOUBI)   TO  LNK-DAY3-YOBIMEI
+           END-IF
+           .
 057500 DTYOUB-EXT.
 057600     EXIT.
 057700******************************************************************
@@ -915,7 +935,7 @@
 083100     PERFORM  NISSU-KANSAN-RTN.
 083200     MOVE     WK-YYMMDD             TO    LNK-DAY6-KEISAN.
 083300     PERFORM  YSK-KBN-RTN.
-083400     IF  YSK-KYUJTS   NOT =   1
+083400     IF       YSK-KYUJTS     NOT =   1
 083500         MOVE     WK-YYMMDD         TO    LNK-DAY6-KEISANZEN
 083600                                          LNK-DAY6-KEISANGO
 083700         GO  TO    DTPLMN-DAY-100
@@ -1156,69 +1176,61 @@
 105800     END-IF.
 105900 DTMEND-EXT.
 106000     EXIT.
-106100******************************************************************
-106200*        日付チェック処理
-106300******************************************************************
-106400 YMD-CHK-RTN         SECTION.
-106500 YMD-CHK-000.
-106600*
-106700     MOVE    ZERO                TO    WK-ERR.
-106800*
-106900     IF  WK-MM   IS  NOT  NUMERIC
-107000         MOVE    1               TO    WK-ERR
-107100         GO  TO    YMD-CHK-EXT
-           END-IF.
-      *---- (01.00.02) LINE ADD START ----------------------------------
-106900     IF  WK-DD   IS  NOT  NUMERIC
-107000         MOVE    1               TO    WK-ERR
-107100         GO  TO    YMD-CHK-EXT
-           END-IF.
-      *---- (01.00.02) LINE ADD END ------------------------------------
-107200     IF  (WK-MM  <  1)  OR  (WK-MM  >  12)
-107300         MOVE    1               TO    WK-ERR
-107400         GO  TO    YMD-CHK-EXT
-           END-IF.
-107500*
-107600     IF  WK-MM  =  2
-107700         GO  TO    YMD-CHK-100
-           END-IF.
-107800*
-107900     IF  WK-MM  =  4  OR  6  OR  9  OR  11
-108000         IF  (WK-DD  <  1)  OR  (WK-DD  >  30)
-108100             GO  TO    YMD-CHK-200
-108200         ELSE
-108300             GO  TO    YMD-CHK-EXT
+      ******************************************************************
+      *        日付チェック処理
+      ******************************************************************
+       YMD-CHK-RTN         SECTION.
+       YMD-CHK-000.
+      *
+           MOVE    ZERO                TO    WK-ERR.
+      *    数値チェック
+           IF     (WK-MM (1:2)  IS  NOT  NUMERIC )
+               OR (WK-DD (1:2)  IS  NOT  NUMERIC )
+               MOVE    1               TO    WK-ERR
+           END-IF
+      *    月チェック
+           IF      WK-ERR              =   ZERO
+               IF     (WK-MM           <   1   )
+                  OR  (WK-MM           >   12  )
+                   MOVE    1               TO    WK-ERR
                END-IF
-108400     ELSE
-108500         IF  (WK-DD  <  1)  OR  (WK-DD  >  31)
-108600             GO  TO    YMD-CHK-200
-108700         ELSE
-108800             GO  TO    YMD-CHK-EXT
-               END-IF
-           END-IF.
-108900*************
-109000 YMD-CHK-100.
-109100*************
-109200     PERFORM  URUDOSHI-CHK-RTN.
-109300     IF  WK-UERR  =  ZERO
-109400         IF  (WK-DD  <  1)  OR  (WK-DD  >  28)
-109500             GO  TO    YMD-CHK-200
-109600         ELSE
-109700             GO  TO    YMD-CHK-EXT
-               END-IF
-109800     ELSE
-109900         IF  (WK-DD  <  1)  OR  (WK-DD  >  29)
-110000             GO  TO    YMD-CHK-200
-110100         ELSE
-110200             GO  TO    YMD-CHK-EXT
-               END-IF
-           END-IF.
-110300*************
-110400 YMD-CHK-200.
-110500*************
-110600     MOVE    1              TO    WK-ERR.
+           END-IF
+           IF      WK-ERR              =   ZERO
+      *        日チェック
+               EVALUATE    WK-MM
+                   WHEN    2
+      *                閏年判定
+                       PERFORM URUDOSHI-CHK-RTN
+                       IF      WK-UERR         =   ZERO
+                           IF     (WK-DD       <   1  )
+                               OR (WK-DD       >   28 )
+                               MOVE    1               TO    WK-ERR
+                           END-IF
+                       ELSE
+                           IF     (WK-DD       <   1  )
+                               OR (WK-DD       >   29 )
+                               MOVE    1               TO    WK-ERR
+                           END-IF
+                       END-IF
+                   WHEN    4
+                   WHEN    6
+                   WHEN    9
+                   WHEN    11
+                       IF     (WK-DD       <   1  )
+                           OR (WK-DD       >   30 )
+                           MOVE    1               TO    WK-ERR
+                       END-IF
+                   WHEN    OTHER
+                       IF     (WK-DD       <   1  )
+                           OR (WK-DD       >   31 )
+                           MOVE    1               TO    WK-ERR
+                       END-IF
+               END-EVALUATE
+           END-IF
+           .
 110700 YMD-CHK-EXT.
 110800     EXIT.
+107500*
 110900******************************************************************
 111000*        潤年判定処理
 111100******************************************************************
