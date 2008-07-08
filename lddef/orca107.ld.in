@@ -11,6 +11,7 @@ bind	"N29"		"OpenCOBOL"	"ORCGN29";
 bind	"N21ERR"		"OpenCOBOL"	"ORCGN21ERR";
 bind	"N21ID1"		"OpenCOBOL"	"ORCGN21ID1";
 bind	"N21ID2"		"OpenCOBOL"	"ORCGN21ID2";
+bind	"N21FIL"		"OpenCOBOL"	"ORCGN21FIL";
 
 multiplex_group	orca107;
 
@@ -25,6 +26,7 @@ data	{
 		N21ERR;
 		N21ID1;
 		N21ID2;
+		N21FIL;
 	};
 };
 

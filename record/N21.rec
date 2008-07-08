@@ -1,5 +1,8 @@
 N21	{
 	fixed17	{
+		B09	{
+			state   int;
+		};
 		B11	{
 			state   int;
 		};

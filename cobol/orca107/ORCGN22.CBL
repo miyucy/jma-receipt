@@ -140,6 +140,7 @@
            COPY    "N21ERR.INC".
            COPY    "N21ID1.INC".
            COPY    "N21ID2.INC".
+           COPY    "N21FIL.INC".
       *
        PROCEDURE           DIVISION    USING
            MCPAREA
@@ -265,6 +266,13 @@
       *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
+      *
+           INITIALIZE                  SPA-N22-AREA
+           MOVE    SPA-NAI-SRYCD   TO  SPA-N22-KENCD
+           MOVE    SPA-GMN-KENNAME TO  SPA-N22-KENNAME
+           MOVE    LOW-VALUE       TO  SPA-N22-OBJECT(1)
+                                       SPA-N22-OBJECT(2)
+                                       SPA-N22-OBJECT(3)
       *
       *    取込区分コンボ
            MOVE    "1 マージ"      TO  SPA-N22-COPYKBNLST(1)
@@ -512,6 +520,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1           TO  SPA-N22-CUR
            INITIALIZE              SPA-N22-GAZOCOMBO
            INITIALIZE              SPA-N22-OBJECTAREA
+           MOVE    LOW-VALUE   TO  SPA-N22-OBJECT(1)
+                                   SPA-N22-OBJECT(2)
+                                   SPA-N22-OBJECT(3)
       *----(04.02.01)--ADD-START---
            INITIALIZE              SPA-N22-ENTRY
       *----(04.02.01)--ADD-END-----
@@ -694,6 +705,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            INITIALIZE              SPA-N22-GAZOCOMBO
            INITIALIZE              SPA-N22-OBJECTAREA
+           MOVE    LOW-VALUE   TO  SPA-N22-OBJECT(1)
+                                   SPA-N22-OBJECT(2)
+                                   SPA-N22-OBJECT(3)
            MOVE    ZERO            TO  IDX
       *
            IF  SPA-N22-TGAZO(SPA-N22-SELNUM)   =   "○"
@@ -895,6 +909,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *----(04.02.01)--UPD-END-----
            MOVE    SPA-N22-COPYKBN     TO  SPA-N22-COPY
+           MOVE    LOW-VALUE           TO  SPA-N21FIL-OBJECT
       *
            PERFORM 450-BACK
            .

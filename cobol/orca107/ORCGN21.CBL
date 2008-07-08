@@ -52,6 +52,7 @@
       * 03.04.01     NACL-森脇     06/11/13  半角記号文字数チェック
       * 04.01.01     NACL-森脇     07/12/26  薬剤情報提供書文字数変更
       *                                      形状８行以上の時確認表示
+      * 04.03.01     NACL-森脇     08/06/25  画像選択機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -225,6 +226,7 @@
            COPY    "N21ERR.INC".
            COPY    "N21ID1.INC".
            COPY    "N21ID2.INC".
+           COPY    "N21FIL.INC".
       *
        PROCEDURE               DIVISION
                                    USING
@@ -329,6 +331,9 @@
       *        リスト
                WHEN    "CLICKED"   ALSO    "B04"
                    PERFORM 440-LSTPRT-SEC
+      *        画像
+               WHEN    "CLICKED"   ALSO    "B09"
+                   PERFORM 460-GAZOU-SEC
       *        カーソル移動
                WHEN    "CLICKED"   ALSO    "B10"
                    PERFORM 430-CURMOVE-SEC
@@ -399,6 +404,10 @@
                WHEN    "N22"
                    PERFORM 320-N22-SET-SEC
                    GO  TO  300-SCREEN-EXT
+      *        画像選択画面処理
+               WHEN    "N21FIL"
+                   PERFORM 430-GAZOCHK-HENSYU-SEC
+                   GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
            MOVE    SPACE           TO  SPA-N21ID1-FLG
@@ -418,6 +427,9 @@
       *
            INITIALIZE                  SPA-N21-AREA
            INITIALIZE                  WRK-PIN-AREA
+      *
+           MOVE    LOW-VALUE           TO  SPA-GMN-OBJECT
+                                           SPA-NAI-OBJECT
       *
            MOVE    1               TO  FLG-ROW
            MOVE    2               TO  SPA-GMN-CUR
@@ -448,14 +460,8 @@
            IF      SPA-N22-FLG     =   "OK"
                MOVE    SPACE           TO  SPA-N22-FLG
                MOVE    10              TO  SPA-GMN-CUR
-           ELSE
-               GO  TO  320-N22-SET-EXT
-           END-IF
-      *
-      *    写真があればセット
-           IF      SPA-GMN-PHOTO   NOT =   SPACE
+      *        写真があればセット
                PERFORM 430-GAZOCHK-HENSYU-SEC
-               MOVE    SPACE       TO  SPA-ERRCD
            END-IF
       *
            .
@@ -512,6 +518,8 @@
       *    編集確認終了の場合次の処理を行う
            INITIALIZE                  SPA-GMN-ENTRY
            INITIALIZE                  SPA-NAI-ENTRY
+           MOVE    LOW-VALUE           TO  SPA-GMN-OBJECT
+                                           SPA-NAI-OBJECT
            EVALUATE    SPA-NAI-EVENT
                WHEN    "1"
                    MOVE    SPA-GMN-KENCD       TO  N21-KENCD
@@ -815,17 +823,12 @@
            MOVE    N21-SHAPE       TO  SPA-GMN-SHAPE
            MOVE    N21-MARK        TO  SPA-GMN-MARK
            MOVE    N21-CAUTION     TO  SPA-GMN-CAUTION
-      *
-      *    画像パス編集
-           INITIALIZE                  WRK-FILE-AREA
-           MOVE    N21-PHOTO       TO  WRK-FILEMEI
-           PERFORM 431-PASS-HEN-SEC
-           MOVE    WRK-PASSMEI     TO  SPA-GMN-PHOTO
+           MOVE    N21-PHOTO       TO  SPA-GMN-PHOTO
       *
            INITIALIZE                  WRK-HENSYU-AREA
       *
       *    薬剤画像チェック
-           PERFORM 431-PHOTO-SET-SEC
+           PERFORM 431-GAZO-SET-SEC
       *
       *    薬剤名称チェック
            PERFORM 431-NAME-SET-SEC
@@ -1007,20 +1010,81 @@
       *****************************************************************
        430-GAZOCHK-HENSYU-SEC      SECTION.
       *
-      *    ファイル存在チェック
-           INITIALIZE                  ORCSFILECHKAREA
-           MOVE    SPA-GMN-PHOTO   TO  FILECHK-NAME
-           CALL    "ORCSFILECHK"       USING
-                                       ORCSFILECHKAREA
-      *    画像がない場合は処理抜ける
-           IF      FILECHK-RC      NOT =   0
+           MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
+      *
+           IF      SPA-GMN-PHOTO   =   SPACE
+               GO  TO  430-GAZOCHK-HENSYU-EXT
+           END-IF
+      *
+      *    拡張子が違えば処理抜ける
+           PERFORM 431-GAZO-TYPE-CHK-SEC
+      *
+           IF      FLG-OK          =   1
+               MOVE    "0015"      TO  SPA-ERRCD
+               MOVE    10          TO  SPA-GMN-CUR
+               GO  TO  430-GAZOCHK-HENSYU-EXT
+           END-IF
+      *
+           IF    ( SPA-N21FIL-PHOTO    NOT =   SPACE ) AND
+                 ( SPA-N21FIL-PHOTO    =   SPA-GMN-PHOTO )
+               MOVE    SPA-N21FIL-OBJECT   TO  SPA-GMN-OBJECT
+               GO  TO  430-GAZOCHK-HENSYU-EXT
+           ELSE
+               MOVE    SPACE           TO  SPA-N21FIL-PHOTO
+               MOVE    LOW-VALUE       TO  SPA-N21FIL-OBJECT
+           END-IF
+      *
+      *    画像ファイル存在チェック
+           PERFORM 431-GAZO-FILE-CHK
+      *
+           IF      FLG-OK          =   1
                MOVE    "0014"          TO  SPA-ERRCD
                MOVE    10              TO  SPA-GMN-CUR
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
-      *    拡張子チェック
+      *    画像イメージを表示
+           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+           MOVE    "blob"          TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    SPA-GMN-PHOTO   TO  ORCA-BLOB-FILE
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+           MOVE    ORCA-BLOB-OBJECT    TO  SPA-GMN-OBJECT
+      *
+           .
+       430-GAZOCHK-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画像ファイル存在チェック
+      *****************************************************************
+       431-GAZO-FILE-CHK           SECTION.
+      *
            MOVE    ZERO            TO  FLG-OK
+      *
+      *    画像ファイルがない場合は処理抜ける
+           INITIALIZE                  ORCSFILECHKAREA
+           MOVE    SPA-GMN-PHOTO   TO  FILECHK-NAME
+           CALL    "ORCSFILECHK"       USING
+                                       ORCSFILECHKAREA
+           IF      FILECHK-RC      NOT =   0
+               MOVE    1               TO  FLG-OK
+           END-IF
+      *
+           .
+       431-GAZO-FILE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    拡張子チェック
+      *****************************************************************
+       431-GAZO-TYPE-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO            TO  FLG-OK
+      *
            PERFORM VARYING IDZ     FROM    256 BY -1 
                    UNTIL   IDZ     <       1
                IF      SPA-GMN-PHOTO(IDZ:1)    NOT =   SPACE
@@ -1033,186 +1097,76 @@
                            WHEN    ".jpg"
                            WHEN    ".gif"
                            WHEN    ".png"
-                               MOVE    1           TO  FLG-OK
+                               CONTINUE
                            WHEN    OTHER
-                               MOVE    ZERO        TO  FLG-OK
+                               MOVE    1           TO  FLG-OK
                        END-EVALUATE
+                       MOVE    1               TO  IDZ
                    END-IF
-                   MOVE  1             TO  IDZ
                END-IF
            END-PERFORM
       *
-      *    拡張子があっていれば画像イメージをセット
-           IF      FLG-OK        =   1
-               MOVE    "BLOBIMPORT"    TO  MCP-FUNC
-               MOVE    "blob"          TO  MCP-TABLE
-grpsys         MOVE    "key"           TO  MCP-PATHNAME
-               MOVE    SPA-GMN-PHOTO   TO  ORCA-BLOB-FILE
-grpsys         CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           ORCA-BLOB
-                                           SPA-AREA
-               MOVE    ORCA-BLOB-OBJECT    TO  SPA-GMN-OBJECT
-           ELSE
-               MOVE    "0015"          TO  SPA-ERRCD
-               MOVE    10              TO  SPA-GMN-CUR
-           END-IF
-      *
            .
-       430-GAZOCHK-HENSYU-EXT.
+       431-GAZO-TYPE-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *   薬剤形状データセット処理
+      *    画像パス名編集
       *****************************************************************
-       431-KEIJYO-SET-SEC          SECTION.
+       431-GAZO-PATH-CHK-SEC            SECTION.
       *
-           IF    ( SPA-GMN-COLOR       =   SPACE ) AND
-                 ( SPA-GMN-SHAPE       =   SPACE ) AND
-                 ( SPA-GMN-MARK        =   SPACE )
-               GO  TO  431-KEIJYO-SET-EXT
-           END-IF
+           INITIALIZE                  WRK-FILE-AREA
       *
-           MOVE    1               TO  IDX-GYO
-           MOVE    8               TO  GYO-MAX
-           MOVE    20              TO  KOU-MAX
+           MOVE    SPA-GMN-PHOTO   TO  WRK-PASSMEI
+           MOVE    SPACE           TO  WRK-FILEMEI
+           MOVE    ZERO            TO  FLG-OK
       *
-      *    形状色チェック
-           IF      SPA-GMN-COLOR   NOT =   SPACE
-               MOVE    SPA-GMN-COLOR   TO  WRK-NAIYOU
-      *        文字数チェック
-               PERFORM 430-MOJICHK-HENSYU-SEC
-               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
-                   MOVE    "1004"      TO  SPA-N21IDCD
-                   GO  TO  431-KEIJYO-SET-EXT
+           PERFORM VARYING IDZ     FROM    256 BY -1 
+                   UNTIL   IDZ     <       1
+               IF      WRK-PASSMEI(IDZ:)   NOT =   SPACE
+                   IF    ( WRK-PASSMEI(IDZ:1)  =   "/" ) OR
+                         ( WRK-PASSMEI(IDZ:1)  =   "\" )
+                       IF      WRK-PASSMEI(1:IDZ)
+                                           NOT =   SPA-GMN-FOLDER(1:IDZ)
+                           MOVE    1           TO  FLG-OK
+                       END-IF
+                       COMPUTE IDZ     =   IDZ     +   1
+                       MOVE    WRK-PASSMEI(IDZ:)
+                                           TO  WRK-FILEMEI
+                       MOVE    1           TO  IDZ
+                   END-IF
                END-IF
-           END-IF
-      *
-      *    形状形チェック
-           IF      SPA-GMN-SHAPE   NOT =   SPACE
-               MOVE    SPA-GMN-SHAPE    TO  WRK-NAIYOU
-      *        文字数チェック
-               PERFORM 430-MOJICHK-HENSYU-SEC
-               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
-                   MOVE    "1004"      TO  SPA-N21IDCD
-                   GO  TO  431-KEIJYO-SET-EXT
-               END-IF
-           END-IF
-      *
-      *    形状記号チェック
-           IF      SPA-GMN-MARK   NOT =   SPACE
-               MOVE    SPA-GMN-MARK    TO  WRK-NAIYOU
-               PERFORM 430-KANACHK-HENSYU-SEC
-      *        文字数チェック
-               IF      KANACHK-SYUBETU =   1
-                   MOVE    16              TO  KOU-MAX
-               END-IF
-               PERFORM 430-MOJICHK-HENSYU-SEC
-               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
-                   MOVE    "1004"      TO  SPA-N21IDCD
-                   GO  TO  431-KEIJYO-SET-EXT
-               END-IF
-           END-IF
-      *
-           .
-       431-KEIJYO-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画像パスチェック
-      *****************************************************************
-       431-PASS-HEN-SEC            SECTION.
-      *
-           MOVE    SPACE           TO  WRK-PASSMEI
+           END-PERFORM
       *
            IF      WRK-FILEMEI     =   SPACE
-               GO  TO  431-PASS-HEN-EXT
-           END-IF
-      *
-      *    フォルダがデフォルトと同じならファイル名だけセット
-           PERFORM VARYING IDZ     FROM    128 BY -1 
-                   UNTIL   IDZ     <       1
-               IF      WRK-FILEMEI(IDZ:)   NOT =   SPACE
-                   IF      WRK-FILEMEI(IDZ:1)  =   "/"
-                       MOVE    WRK-FILEMEI     TO  WRK-PASSMEI
-                       MOVE  1     TO  IDZ
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           IF      WRK-PASSMEI         =   SPACE
-               STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
-                       WRK-FILEMEI         DELIMITED  BY  SPACE
-                                   INTO    WRK-PASSMEI
-               END-STRING
+               MOVE    WRK-PASSMEI     TO  WRK-FILEMEI
            END-IF
       *
            .
-       431-PASS-HEN-EXT.
+       431-GAZO-PATH-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    画像フォルダチェック
+      *    画像セット処理
       *****************************************************************
-       431-FOLDER-HEN-SEC          SECTION.
-      *
-           MOVE    SPACE           TO  WRK-FILEMEI
-      *
-           IF      WRK-PASSMEI     =   SPACE
-               GO  TO  431-FOLDER-HEN-EXT
-           END-IF
-      *
-      *    
-           PERFORM VARYING IDZ     FROM 128 BY -1 
-                   UNTIL   IDZ     <    1
-               IF      SPA-GMN-FOLDER(IDZ:)    NOT =   SPACE
-                   IF  SPA-GMN-FOLDER(1:IDZ)   =   WRK-PASSMEI(1:IDZ)
-                       COMPUTE IDZ  =  IDZ +   1
-                       MOVE    WRK-PASSMEI(IDZ:)   TO  WRK-FILEMEI
-                   ELSE
-                       MOVE    WRK-PASSMEI         TO  WRK-FILEMEI
-                   END-IF
-                   MOVE  1                 TO  IDZ
-               END-IF
-           END-PERFORM
-      *
-           .
-       431-FOLDER-HEN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *   薬剤画像データセット処理
-      *****************************************************************
-       431-PHOTO-SET-SEC           SECTION.
-      *
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  431-PHOTO-SET-EXT
-           END-IF
+       431-GAZO-SET-SEC            SECTION.
       *
            IF      SPA-GMN-PHOTO   NOT =   SPACE
-      *        末尾文字編集
-               MOVE    SPA-GMN-PHOTO   TO  WRK-NAIYOU
-               PERFORM 430-KANACHK-HENSYU-SEC
-               MOVE    WRK-NAIYOU      TO  SPA-GMN-PHOTO
-      *        カナチェック
-               IF    ( KANACHK-SYUBETU     NOT =   1    )  OR
-                     ( KANACHK-RC          NOT =   ZERO )  OR
-                     ( KANACHK-RC2             =   7    )
-                   MOVE    "0003"      TO  SPA-ERRCD
-                   MOVE    10          TO  SPA-GMN-CUR
-                   GO  TO  431-PHOTO-SET-EXT
+      *        パス名をフォルダ名とファイル名に分ける
+               PERFORM 431-GAZO-PATH-CHK-SEC
+               IF      FLG-OK          =   ZERO
+                   MOVE    SPACE           TO  SPA-GMN-PHOTO
+                   STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
+                           WRK-FILEMEI         DELIMITED  BY  SPACE
+                                       INTO    SPA-GMN-PHOTO
+                   END-STRING
                END-IF
-               IF      KANACHK-RC2     =   8
-                   MOVE    "0013"      TO  SPA-ERRCD
-                   MOVE    10          TO  SPA-GMN-CUR
-                   GO  TO  431-PHOTO-SET-EXT
-               END-IF
-      *        画像チェック
-               PERFORM 430-GAZOCHK-HENSYU-SEC
            END-IF
       *
+           PERFORM 430-GAZOCHK-HENSYU-SEC
+      *
            .
-       431-PHOTO-SET-EXT.
+       431-GAZO-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1425,6 +1379,62 @@ grpsys         CALL    "ORCDBMAIN"         USING
            EXIT.
       *
       *****************************************************************
+      *   薬剤形状データセット処理
+      *****************************************************************
+       431-KEIJYO-SET-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-COLOR       =   SPACE ) AND
+                 ( SPA-GMN-SHAPE       =   SPACE ) AND
+                 ( SPA-GMN-MARK        =   SPACE )
+               GO  TO  431-KEIJYO-SET-EXT
+           END-IF
+      *
+           MOVE    1               TO  IDX-GYO
+           MOVE    8               TO  GYO-MAX
+           MOVE    20              TO  KOU-MAX
+      *
+      *    形状色チェック
+           IF      SPA-GMN-COLOR   NOT =   SPACE
+               MOVE    SPA-GMN-COLOR   TO  WRK-NAIYOU
+      *        文字数チェック
+               PERFORM 430-MOJICHK-HENSYU-SEC
+               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                   MOVE    "1004"      TO  SPA-N21IDCD
+                   GO  TO  431-KEIJYO-SET-EXT
+               END-IF
+           END-IF
+      *
+      *    形状形チェック
+           IF      SPA-GMN-SHAPE   NOT =   SPACE
+               MOVE    SPA-GMN-SHAPE    TO  WRK-NAIYOU
+      *        文字数チェック
+               PERFORM 430-MOJICHK-HENSYU-SEC
+               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                   MOVE    "1004"      TO  SPA-N21IDCD
+                   GO  TO  431-KEIJYO-SET-EXT
+               END-IF
+           END-IF
+      *
+      *    形状記号チェック
+           IF      SPA-GMN-MARK   NOT =   SPACE
+               MOVE    SPA-GMN-MARK    TO  WRK-NAIYOU
+               PERFORM 430-KANACHK-HENSYU-SEC
+      *        文字数チェック
+               IF      KANACHK-SYUBETU =   1
+                   MOVE    16              TO  KOU-MAX
+               END-IF
+               PERFORM 430-MOJICHK-HENSYU-SEC
+               IF      WRK-NAIYOU(IDX-STR:)    NOT =   SPACE
+                   MOVE    "1004"      TO  SPA-N21IDCD
+                   GO  TO  431-KEIJYO-SET-EXT
+               END-IF
+           END-IF
+      *
+           .
+       431-KEIJYO-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    リスト印刷処理
       *****************************************************************
        440-LSTPRT-SEC              SECTION.
@@ -1494,12 +1504,12 @@ grpsys     CALL    "ORCDBMAIN"         USING
            PERFORM 430-TEXTCHK-SEC
       *
            IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  460-SANSYO-EXT
+               IF      SPA-ERRCD   =   "0014"
+                   MOVE    SPACE       TO  SPA-ERRCD
+               ELSE
+                   GO  TO  460-SANSYO-EXT
+               END-IF
            END-IF
-      *
-           INITIALIZE                  SPA-N22-AREA
-           MOVE    SPA-NAI-SRYCD   TO  SPA-N22-KENCD
-           MOVE    SPA-GMN-KENNAME TO  SPA-N22-KENNAME
       *
            MOVE    SPACE           TO  SPA-MOTOPG
            MOVE    SPA-N21KYOUTU   TO  SPA-WORK
@@ -1534,6 +1544,45 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *
            .
        460-SANSYO-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画像処理
+      *****************************************************************
+       460-GAZOU-SEC               SECTION.
+      *
+           MOVE    SPA-N21KYOUTU   TO  SPA-WORK
+           MOVE    SPA-N21SCRAREA  TO  SPA-FREE
+           MOVE    SPA-AREA        TO  SPA-COMMON
+      *
+           MOVE    "LINK"          TO  MCP-STATUS
+           MOVE    SPACE           TO  MCP-EVENT
+      *
+           CALL    "ORCGN21FIL"        USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-N21SCRAREA
+           MOVE    SPA-WORK        TO  SPA-N21KYOUTU
+      *
+           MOVE    "B01"           TO  MCP-WIDGET
+      *
+           MOVE    "N21"           TO  SPA-MOTOPG
+           MOVE    "N21FIL"        TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "N21FIL"        TO  MCP-WINDOW
+      *
+      *    ＰＵＴ処理
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1               TO  FLG-END
+      *
+           .
+       460-GAZOU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1587,6 +1636,8 @@ grpsys     CALL    "ORCDBMAIN"         USING
                MOVE    3                   TO  SPA-GMN-CUR
                INITIALIZE                      SPA-GMN-ENTRY
                INITIALIZE                      SPA-NAI-AREA
+               MOVE    LOW-VALUE           TO  SPA-GMN-OBJECT
+                                               SPA-NAI-OBJECT
            END-IF
       *
            .
@@ -1624,6 +1675,18 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *    登録処理
       *****************************************************************
        481-KOUSHIN-SEC             SECTION.
+      *
+           IF      SPA-N21FIL-OBJECT   NOT =   LOW-VALUE
+               MOVE    SPA-N21FIL-OBJECT   TO  ORCA-BLOB-OBJECT
+               MOVE    "BLOBEXPORT"        TO  MCP-FUNC
+               MOVE    "blob"              TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    SPA-GMN-PHOTO       TO  ORCA-BLOB-FILE
+               CALL    "ORCDBMAIN"             USING
+                                               MCPAREA
+                                               ORCA-BLOB
+                                               SPA-AREA
+           END-IF
       *
       *    薬剤情報マスタ読み込み
            PERFORM 900-YAKUJYO-READ-SEC
@@ -1683,6 +1746,8 @@ grpsys     CALL    "ORCDBMAIN"         USING
                MOVE    3                   TO  SPA-GMN-CUR
                INITIALIZE                      SPA-GMN-ENTRY
                INITIALIZE                      SPA-NAI-AREA
+               MOVE    LOW-VALUE           TO  SPA-GMN-OBJECT
+                                               SPA-NAI-OBJECT
            END-IF
       *
            .
@@ -1960,10 +2025,14 @@ grpsys     CALL    "ORCDBMAIN"         USING
            MOVE    SPA-GMN-OBJECT      TO  N21-PHOTOAREA
       *
       *    画像パス編集
-           INITIALIZE                      WRK-FILE-AREA
-           MOVE    SPA-GMN-PHOTO       TO  WRK-PASSMEI
-           PERFORM 431-FOLDER-HEN-SEC
-           MOVE    WRK-FILEMEI         TO  N21-PHOTO
+           IF      SPA-GMN-PHOTO   NOT =   SPACE
+               PERFORM 431-GAZO-PATH-CHK-SEC
+               IF      FLG-OK      =   1
+                   MOVE    WRK-PASSMEI     TO  N21-PHOTO
+               ELSE
+                   MOVE    WRK-FILEMEI     TO  N21-PHOTO
+               END-IF
+           END-IF
       *
       *    リストセット
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -1980,9 +2049,12 @@ grpsys     CALL    "ORCDBMAIN"         USING
            MOVE    SPA-GMN-MAX     TO  N21-COUNT
       *
       *    参照ボタン非活性
-           IF      SPA-GMN-FOLDER  =   SPACE
+           IF        ( SPA-GMN-FOLDER  =   SPACE )
+               OR    ( SPA-NAI-SRYCD   =   SPACE )
+               MOVE    WIDGET-INSENSITIVE  TO  N21-B09-STATE
                MOVE    WIDGET-INSENSITIVE  TO  N21-B11-STATE
            ELSE
+               MOVE    WIDGET-NORMAL       TO  N21-B09-STATE
                MOVE    WIDGET-NORMAL       TO  N21-B11-STATE
            END-IF
       *
@@ -2034,13 +2106,13 @@ grpsys     CALL    "ORCDBMAIN"         USING
                    MOVE    "薬剤を指定して下さい"
                                            TO  SPA-ERRMSG
                WHEN    "0013"
-                   MOVE    "フルパスに空白が入力されています"
+                   MOVE    "同名の画像ファイルが存在します"
                                            TO  SPA-ERRMSG
                WHEN    "0014"
-                   MOVE    "フルパスを正しく入力して下さい"
+                   MOVE    "画像ファイルのデータが存在しません"
                                            TO  SPA-ERRMSG
                WHEN    "0015"
-                   MOVE    "画像ファイルではありません"
+                   MOVE    "表示可能な画像ファイルではありません"
                                            TO  SPA-ERRMSG
                WHEN    "0016"
                    MOVE    "枠内に納まるよう編集して下さい"
@@ -2252,6 +2324,8 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *
            INITIALIZE                  SPA-GMN-ENTRY
            INITIALIZE                  SPA-NAI-ENTRY
+           MOVE    LOW-VALUE           TO  SPA-GMN-OBJECT
+                                           SPA-NAI-OBJECT
       *
       *    薬剤情報マスタ読み込み
            PERFORM 900-YAKUJYO-READ-SEC
@@ -2272,9 +2346,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
                MOVE    YAKUJYO-COLOR   TO  SPA-GMN-COLOR
                MOVE    YAKUJYO-SHAPE   TO  SPA-GMN-SHAPE
                MOVE    YAKUJYO-MARK    TO  SPA-GMN-MARK
-               IF      SPA-GMN-PHOTO   NOT =   SPACE
-                   PERFORM 430-GAZOCHK-HENSYU-SEC
-               END-IF
+               PERFORM 430-GAZOCHK-HENSYU-SEC
            END-IF
       *
            MOVE    SPACE           TO  SPA-ERRCD

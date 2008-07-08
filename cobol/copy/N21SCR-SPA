@@ -156,3 +156,7 @@
                05  SPA-N23-CYU     PIC X.
                05  SPA-N23-PRT     PIC X.
                05  SPA-N23-SYU     PIC X     OCCURS  2.
+      *
+           03  SPA-N21FIL-AREA.
+               05  SPA-N21FIL-PHOTO    PIC X(256).
+               05  SPA-N21FIL-OBJECT   PIC X(08).
