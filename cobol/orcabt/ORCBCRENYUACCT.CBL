@@ -54,6 +54,7 @@
       *  04.02.00    NACL-小豆沢  08/03/07  シス管病棟設定の加算判定変更
       *  04.02.00    NACL-小豆沢  08/06/26  他院（特別な関係の医療機関）通算日数
       *                                     カウント変更
+      *  04.03.00    NACL-小豆沢  08/07/08  褥瘡患者管理加算対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2813,6 +2814,11 @@
                    ADD    1                TO  IDX9
                    MOVE   WRK-NYUKHNKSN-SRYCD(IDX8)  TO
                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
+      *            褥瘡患者管理加算のフラグセット
+                   IF   WRK-NYUKHNKSN-SRYCD(IDX8)  =   "190116990"
+                        MOVE   "1"    TO
+                                   LNK-SCNYUACCT-NYUKHNKSN-KBN(IDX9)
+                   END-IF
                END-IF
            END-PERFORM
       *
