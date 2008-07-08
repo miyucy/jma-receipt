@@ -308,6 +308,8 @@
       *****************************************************************
        3101-DRCD-SPASET-SEC            SECTION.
       *
+           MOVE    1                   TO  FLG-GMN-INIT
+      *
            INITIALIZE                  ORCSDRSETAREA
            MOVE    "1"                 TO  ORCSDR-KBN
            MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
@@ -333,7 +335,7 @@
        500-GMNHEN-SEC                  SECTION.
       *
       *    コラムリスト位置保存
-           IF      FLG-GMN-INIT        =   1
+           IF      FLG-GMN-INIT2       =   1
                MOVE    ZERO                TO  WRK-K97-SRYKA-ROW
                MOVE    ZERO                TO  WRK-K97-HKNCOMBI-ROW
            ELSE
@@ -341,7 +343,7 @@
                MOVE    K97-HKNCOMBI-ROW
                                            TO  WRK-K97-HKNCOMBI-ROW
            END-IF
-           IF      FLG-GMN-INIT        =   2
+           IF      FLG-GMN-INIT        =   1
                MOVE    ZERO                TO  WRK-K97-DRCD-ROW
            ELSE
                MOVE    K97-DRCD-ROW        TO  WRK-K97-DRCD-ROW
