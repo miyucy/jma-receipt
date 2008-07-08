@@ -360,6 +360,9 @@
       *  04.02.18    NACL-ÌçÏÆ    08/06/25  Á´¹ñ¸øÈñ£²¼ï¤Î°ìÉôÉéÃ´¶âÅùµ­ºÜÂÐ±þ
       *  04.02.19    NACL-ÌçÏÆ    08/06/30  ¹âÎð¼Ô°ìÈÌ·Ð²áÁ¼ÃÖ±äÄ¹ÂÐ±þ
       *  04.02.20    NACL-ÌçÏÆ    08/07/03  »³Íü¸©£´£±Ï·¿ÍÂÐ±þ
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/07/07  Ê£¿ôÊÝ¸±ÁÈ¤ß¹ç¤ï¤»»ÈÍÑ»þ¤Î
+      *                                     ÀÁµáÅÀ¡¦¼ÂÆü¿ôµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1774,6 +1777,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                   MOVE      1     TO    FLG-ZENKI-TOKUREI
                END-IF
              END-IF
+           END-IF
+      *
+           IF    RECE02-SRYYM            >=  "200804"
+           AND   RECE02-HKNCOMBI(2)   NOT =   ZERO
+                  MOVE     "1"    TO    RECE02-JSKISAIFLG
            END-IF
       *
            IF    RECE02-ZAITAKU    =    "1"  OR  "2"
@@ -9474,6 +9482,7 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
       *¸øÈñ£±¿ÇÎÅ¼ÂÆü¿ô¡¦ÀÁµáÅÀ¿ô
            IF      RECE02-JNISSU   (IDX5)  =   RECE02-JNISSU   (IDX6)
            AND     RECE02-TOTALTEN (IDX5)  =   RECE02-TOTALTEN (IDX6)
+           AND     RECE02-JSKISAIFLG       =   SPACE
                MOVE    ZERO                 TO  OCR2-JNISSU
                                                 OCR2-TENSU   
            ELSE    
@@ -9594,6 +9603,7 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
       *¸øÈñ£²¿ÇÎÅ¼ÂÆü¿ô¡¦ÀÁµáÅÀ¿ô
            IF      RECE02-JNISSU   (IDX6)  =   RECE02-JNISSU   (IDX7)
            AND     RECE02-TOTALTEN (IDX6)  =   RECE02-TOTALTEN (IDX7)
+           AND     RECE02-JSKISAIFLG       =   SPACE
                MOVE    ZERO                 TO  OCR3-JNISSU
                                                 OCR3-TENSU   
            ELSE    

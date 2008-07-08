@@ -87,6 +87,7 @@
       *
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
       *                                     就学前区分の追加
+      *  04.03.01    NACL-門脇    08/07/07  実日数・請求点記載フラグ追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -485,11 +486,11 @@
            03  RECE62-GENGAKURATE         PIC  9(03).
       *減額金額
            03  RECE62-GENGAKU             PIC  9(07).
-      *割引点数単価（未使用）
+      *割引点数単価（７０歳未満現物給付の所得区分として使用）
            03  RECE62-DISCOUNTTENTNK      PIC  X(02).
-      *老人公費負担金額情報（未使用）
+      *老人公費負担金額情報
            03  RECE62-RJNKOHFTNINF        OCCURS  3.
-      *老人外来公費負担額（未使用）
+      *老人外来公費負担額（（１）（２）使用）
                05  RECE62-RJNGAIKOHFTN    PIC  9(09).
       *老人入院公費負担額（未使用）
                05  RECE62-RJNNYUKOHFTN    PIC  9(09).
@@ -559,6 +560,8 @@
                05  RECE62-ZEROKISAIFLGINF OCCURS  5.
                    07  RECE62-ZEROKISAIFLG
                                           PIC  X(01).
+      *実日数・請求点記載フラグ
+           03  RECE62-JSKISAIFLG          PIC  X(01).
       *未請求フラグ
            03  RECE62-MISEIKYU-FLG        PIC X(02).
       *レセプト特記事項編集情報

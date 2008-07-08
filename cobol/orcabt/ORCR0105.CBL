@@ -45,6 +45,8 @@
       *
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
       *  04.03.02    NACL-藤原    08/06/02  リアルタイムプレビュー時の表示
+      *  04.03.03    NACL-門脇    08/07/07  複数保険組み合わせ使用時の
+      *                                     請求点・実日数記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3541,6 +3543,7 @@
                   IF  (RECE02-JNISSU (IDX1)
                                       NOT  =   RECE02-JNISSU (IDX2))
                   OR  (RECE02-TOTALTEN (IDX1)     =   ZERO)
+                  OR  (RECE02-JSKISAIFLG          =   "1" )
                       MOVE    RECE02-JNISSU (IDX2)
                                               TO  WRK-JINISSU2Z
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
@@ -3555,16 +3558,18 @@
                   END-IF
                END-IF
                IF  RECE02-FUKUSHIFLG  =  "1"
-                   IF  RECE02-JNISSU (IDX2)
-                                       NOT =   RECE02-JNISSU (IDX3)
+                   IF (RECE02-JNISSU (IDX2)
+                                  NOT =   RECE02-JNISSU (IDX3))
+                   OR (RECE02-JSKISAIFLG    =   "1"           )
                        MOVE    RECE02-JNISSU (IDX3)
                                                TO  WRK-JINISSU2Z
                        MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
                    END-IF
                ELSE
                    IF      RECE02-TOTALTEN (IDX3)     >   ZERO
-                      IF  RECE02-JNISSU (IDX2)
-                                          NOT =   RECE02-JNISSU (IDX3)
+                      IF (RECE02-JNISSU (IDX2)
+                                     NOT =   RECE02-JNISSU (IDX3))
+                      OR (RECE02-JSKISAIFLG    =   "1"           )
                           MOVE    RECE02-JNISSU (IDX3)
                                                   TO  WRK-JINISSU2Z
                           MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
@@ -4505,9 +4510,10 @@
                    MOVE    WRK-KGK7               TO
                                                   WRK-KOH-FTNMONEY(1)
            END-IF
-           IF      RECE02-TOTALTEN (IDX2) >   ZERO                     
-           AND     RECE02-TOTALTEN (IDX2)
-                                      NOT =   RECE02-TOTALTEN (IDX1)   
+           IF    ( RECE02-TOTALTEN (IDX2) >   ZERO            )
+           AND   ((RECE02-TOTALTEN (IDX2)
+                               NOT =   RECE02-TOTALTEN (IDX1)) OR
+                  (RECE02-JSKISAIFLG      =   "1"            ))
                MOVE    RECE02-TOTALTEN (IDX2) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  WRK-KOH-TOTALTEN(1)
            END-IF
@@ -4564,9 +4570,10 @@
                                               TO  WRK-KGK7
                    MOVE    WRK-KGK7           TO  WRK-KOH-FTNMONEY(2)
            END-IF
-           IF      RECE02-TOTALTEN (IDX3) >   ZERO                      
-           AND     RECE02-TOTALTEN (IDX3)
-                                      NOT =   RECE02-TOTALTEN (IDX2)
+           IF    ( RECE02-TOTALTEN (IDX3) >   ZERO            )
+           AND   ((RECE02-TOTALTEN (IDX3)
+                               NOT =   RECE02-TOTALTEN (IDX2)) OR
+                  (RECE02-JSKISAIFLG      =   "1"            ))
                MOVE    RECE02-TOTALTEN (IDX3) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  WRK-KOH-TOTALTEN(2)
            ELSE
@@ -4637,9 +4644,10 @@
                    MOVE    WRK-KGK7            TO  WRK-KOH-FTNMONEY(3)
                END-IF
       *
-               IF      RECE02-TOTALTEN (IDX4) >   ZERO                      
-               AND     RECE02-TOTALTEN (IDX4)
-                                          NOT =   RECE02-TOTALTEN (IDX3)
+               IF    ( RECE02-TOTALTEN (IDX4) >   ZERO            )
+               AND   ((RECE02-TOTALTEN (IDX4)
+                                   NOT =   RECE02-TOTALTEN (IDX3)) OR
+                      (RECE02-JSKISAIFLG      =   "1"            ))
                    MOVE    RECE02-TOTALTEN (IDX4)
                                               TO  WRK-KGK6
                    MOVE    WRK-KGK6           TO  WRK-KOH-TOTALTEN(3)
@@ -4712,9 +4720,10 @@
                                                TO  WRK-KGK7
                    MOVE    WRK-KGK7            TO  WRK-KOH-FTNMONEY(4)
                END-IF
-               IF      RECE02-TOTALTEN (IDX5) >   ZERO                      
-               AND     RECE02-TOTALTEN (IDX5)
-                                      NOT =   RECE02-TOTALTEN (IDX4)
+               IF    ( RECE02-TOTALTEN (IDX5) >   ZERO            )
+               AND   ((RECE02-TOTALTEN (IDX5)
+                                   NOT =   RECE02-TOTALTEN (IDX4)) OR
+                      (RECE02-JSKISAIFLG      =   "1"            ))
                    MOVE    RECE02-TOTALTEN (IDX5)
                                           TO  WRK-KGK6
                    MOVE    WRK-KGK6       TO  WRK-KOH-TOTALTEN(4)

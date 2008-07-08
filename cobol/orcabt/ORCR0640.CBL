@@ -325,6 +325,9 @@
       *  04.02.22    NACL-ÌçÏÆ    08/06/25  Á´¹ñ¸øÈñ£²¼ï¤Î°ìÉôÉéÃ´¶âÅùµ­ºÜÂÐ±þ
       *  04.02.23    NACL-ÌçÏÆ    08/06/30  ¹âÎð¼Ô°ìÈÌ·Ð²áÁ¼ÃÖ±äÄ¹ÂÐ±þ
       *  04.02.24    NACL-ÌçÏÆ    08/07/03  »³Íü¸©£´£±Ï·¿ÍÂÐ±þ
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/07/07  Ê£¿ôÊÝ¸±ÁÈ¤ß¹ç¤ï¤»»ÈÍÑ»þ¤Î
+      *                                     ÀÁµáÅÀ¡¦¼ÂÆü¿ôµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -9233,6 +9236,11 @@
            MOVE    ZERO                 TO      FLG-ZENKI-TOKUREI
            MOVE    ZERO                 TO      FLG-ZENKOKUKOHI-NISYU
       *
+           IF    RECE62-SRYYM            >=  "200804"
+           AND   RECE62-HKNCOMBI(2)   NOT =   ZERO
+                  MOVE     "1"    TO    RECE62-JSKISAIFLG
+           END-IF
+      *
            IF    RECE62-KOUREI    =    "1"  OR  "2"
               IF    RECE62-KOUREI    =    "1"
                  PERFORM   21048-KEIKASOCHI-HANTEI-SEC
@@ -13953,6 +13961,7 @@
       *¸øÈñ£±¿ÇÎÅ¼ÂÆü¿ô¡¦ÀÁµáÅÀ¿ô
            IF      RECE62-JNISSU   (IDX5)  =   RECE62-JNISSU   (IDX6)
            AND     RECE62-TOTALTEN (IDX5)  =   RECE62-TOTALTEN (IDX6)
+           AND     RECE62-JSKISAIFLG       =   SPACE
                MOVE    ZERO                 TO  OCR2-JNISSU
                                                 OCR2-TENSU   
            ELSE    
@@ -14073,6 +14082,7 @@
       *¸øÈñ£²¿ÇÎÅ¼ÂÆü¿ô¡¦ÀÁµáÅÀ¿ô
            IF      RECE62-JNISSU   (IDX6)  =   RECE62-JNISSU   (IDX7)
            AND     RECE62-TOTALTEN (IDX6)  =   RECE62-TOTALTEN (IDX7)
+           AND     RECE62-JSKISAIFLG       =   SPACE
                MOVE    ZERO                 TO  OCR3-JNISSU
                                                 OCR3-TENSU   
            ELSE    
