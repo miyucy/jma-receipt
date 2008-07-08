@@ -11102,6 +11102,7 @@
                                              "190116990"
                                   MOVE   "1"    TO
                                      LNK-SCNYUACCT-NYUKHNKSN-KBN(IDX9)
+                             END-IF
                          END-IF
            END-PERFORM
       *
