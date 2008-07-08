@@ -43,6 +43,7 @@
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 03.05.00     NACL-小豆沢  07.07.27  療養病棟（病床）入院会計
       *                                     表示区分対応
+      * 04.03.00     NACL-多々納  08/07/09  入院日１回の加算対応
       *****************************************************************
       *
       *
@@ -919,6 +920,16 @@
                ELSE
       *************MOVE    WRK-NISUU-KEI       TO  WRK-ZOGEN
                    MOVE    ZERO                TO  WRK-ZOGEN
+               END-IF
+      *        入院日のみの加算
+               IF      LNK-SCNYUACCT-NYUKHNKSN-KBN (IDX-K)
+                                           =   "1"
+      *            入院処理時のみ行う
+                   IF      LNK-SCNYUACCT-SYORI-KBN     =   "1"
+                       MOVE    1                   TO  WRK-ZOGEN
+                   ELSE
+                       MOVE    1                   TO  FLG-SYORI
+                   END-IF
                END-IF
       *TEST
       *         DISPLAY "NYUKHNKSN-SRYCD:" 
