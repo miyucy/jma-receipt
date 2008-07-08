@@ -41,6 +41,9 @@
       *                                     （在支病自動記載対応）
       *  04.02.02    NACL-門脇    08/06/03  ネブライザー加算編集修正
       *  04.02.03    NACL-門脇    08/06/20  在宅編集修正
+      *
+      *  04.03.01    NACL-門脇    08/07/08  診区１４のコメントのみの剤
+      *                                     編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -975,8 +978,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                END-IF
                    ELSE
                      IF   ACCT-ZAIKAISU  NOT =    ZERO
-                               IF   ACCT-SRYKBN  =  "11"  OR  "12" 
-                                                          OR  "99" 
+                               IF   ACCT-SRYKBN  =  "11" OR "12" OR
+                                                    "14" OR "99"
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1 OR
                                                        CONS-TOKKI2 OR
                                                        CONS-TOKKI3 OR

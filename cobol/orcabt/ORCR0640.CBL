@@ -328,6 +328,8 @@
       *
       *  04.03.01    NACL-門脇    08/07/07  複数保険組み合わせ使用時の
       *                                     請求点・実日数記載対応
+      *  04.03.02    NACL-門脇    08/07/08  診区１４のコメントのみの剤
+      *                                     編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2492,9 +2494,9 @@
                            ELSE
                              IF  (ACCT-ZAIKAISU  NOT =    ZERO)   AND
                                  (FLG-TENTEKIMATOME  =    ZERO)
-                               IF   ACCT-SRYKBN  =  "11"  OR
-                                                    "33"  OR  "99" OR
-                                                    "90"  OR  "92" 
+                               IF   ACCT-SRYKBN  =  "11" OR "14" OR
+                                                    "33" OR "99" OR
+                                                    "90" OR "92"
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1 OR
                                                        CONS-TOKKI2 OR
                                                        CONS-TOKKI3 OR

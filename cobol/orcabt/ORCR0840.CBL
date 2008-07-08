@@ -148,6 +148,9 @@
       *  04.02.05    NACL-ÌçÏÆ    08/06/13  Âà±¡Á°Ë¬Ìä»ØÆ³ÎÁ¡¢Àº¿À²ÊÂà±¡Á°Ë¬Ìä
       *                                     »ØÆ³ÎÁ¤Î¥³¥á¥ó¥ÈÂÐ±þ
       *  04.02.06    NACL-ÌçÏÆ    08/06/20  ºßÂðÊÔ½¸½¤Àµ
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/07/08  ¿Ç¶è£±£´¤Î¥³¥á¥ó¥È¤Î¤ß¤ÎºÞ
+      *                                     ÊÔ½¸ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1635,9 +1638,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    ELSE
                        IF  (ACCT-ZAIKAISU  NOT =    ZERO) AND
                            (FLG-TENTEKIMATOME  =    ZERO)
-                            IF   ACCT-SRYKBN  =  "11"  OR
-                                                 "33"  OR  "99" OR
-                                                 "90"  OR  "92" 
+                            IF   ACCT-SRYKBN  =  "11" OR "14" OR
+                                                 "33" OR "99" OR
+                                                 "90" OR "92"
                                IF  ACCT-SRYCDTOTAL = CONS-TOKKI1  OR
                                                      CONS-TOKKI2  OR
                                                      CONS-TOKKI3  OR

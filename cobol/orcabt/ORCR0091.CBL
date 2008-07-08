@@ -67,6 +67,9 @@
       *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *  04.02.02    NACL-ÌçÏÆ    08/04/21  £¸£°¤½¤ÎÂ¾µ­ºÜ½çÂÐ±þ
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/07/08  ¿Ç¶è£±£´¤Î¥³¥á¥ó¥È¤Î¤ß¤ÎºÞ
+      *                                     ÊÔ½¸ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -380,7 +383,7 @@ grpsys     MOVE    RECE06-HOSPNUM       TO      RECE061-HOSPNUM
                   PERFORM     2101-RECE061-WRITE-SEC
               ELSE
                 IF  ( RECE06-SRYKBN  =  "11" OR "12" OR "99" OR SPACE
-                                             OR "40" OR "80"          )
+                                             OR "40" OR "80" OR "14"  )
                 OR  ( RECE06-SAFLG   NOT =  SPACE                     )
                      PERFORM  2101-RECE061-WRITE-SEC
                 END-IF
