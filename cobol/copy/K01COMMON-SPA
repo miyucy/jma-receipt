@@ -525,5 +525,5 @@
            03  SPA-ETC-MOTOPG          PIC X(08).
       *
       *ヘルプ・発行指示共通
-           03  SPA-ETCKYOUTU-AREA           PIC X(1500).
+           03  SPA-ETCKYOUTU-AREA           PIC X(7500).
       *
