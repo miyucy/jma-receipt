@@ -11097,6 +11097,11 @@
                              ADD    1                TO  IDX9
                              MOVE   WRK-NYUKHNKSN-SRYCD(IDX8)  TO
                                    LNK-SCNYUACCT-NYUKHNKSN-SRYCD(IDX9)
+      *                      褥瘡患者管理加算のフラグセット
+                             IF   WRK-NYUKHNKSN-SRYCD(IDX8)  =
+                                             "190116990"
+                                  MOVE   "1"    TO
+                                     LNK-SCNYUACCT-NYUKHNKSN-KBN(IDX9)
                          END-IF
            END-PERFORM
       *

@@ -49,9 +49,12 @@
                    07  LNK-SCNYUACCT-KAGEN-EDYUKYMD  PIC  X(08).
       *ÄÌ»»»»ÄêºÑÆü¿ô¡ÊÆþ±¡ÎÁ²Ã»»»»ÄêÍÑ¡Ë
            03  LNK-SCNYUACCT-NYUKHN-NISUU            PIC  9(04).
+      *Æþ±¡ÎÁ²Ã»»ÎÎ°è
+           03  LNK-SCNYUACCT-NYUKHNKSN-AREA          OCCURS  20.
+      *Æþ±¡ÎÁ²Ã»»¶èÊ¬
+             05  LNK-SCNYUACCT-NYUKHNKSN-KBN         PIC  X(01).
       *Æþ±¡ÎÁ²Ã»»¿ÇÎÅ¥³¡¼¥É
-           03  LNK-SCNYUACCT-NYUKHNKSN-SRYCD         PIC  X(09)
-                                                     OCCURS  20.
+             05  LNK-SCNYUACCT-NYUKHNKSN-SRYCD       PIC  X(09).
       *³°Çñ¿ÇÎÅ¥³¡¼¥É
            03  LNK-SCNYUACCT-GAIHAKU-SRYCD           PIC  X(09).
       *¼¼ÎÁº¹³Û¿ÇÎÅ¥³¡¼¥É
