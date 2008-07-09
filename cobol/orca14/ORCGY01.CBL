@@ -324,9 +324,9 @@
            03  WRK-DRCD           PIC X(04).
       *
            03  WRK-HKENSUU.
-      *        05  FILLER          PIC X(01).
-               05  WRK-KENSUU      PIC Z,ZZZ.
-      *        05  FILLER          PIC X(01).
+      ****     05  FILLER          PIC X(01).
+               05  WRK-KENSUU      PIC ZZZ.
+               05  FILLER          PIC X(02).
       *
            03  WRK-KNJ.
                05  WRK-PTNUM       PIC X(20).
@@ -1128,7 +1128,8 @@
       *            対象見出日をカレンダーよりセット
                    MOVE    SPA-NAI-YMDR (SPA-SEL-SYUU IDX)(7:2)
                                            TO  SPA-GMN-GOKKEN (IDX)
-                                                          (3:2)
+                                                          (2:2)
+      **                                                  (3:2)
       *            時間帯毎の予約を保存する
                    INITIALIZE                  YYK-REC
                    MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
@@ -3864,7 +3865,7 @@
                MOVE    SPACE               TO  WRK-HKENSUU
                MOVE    SPA-GMN-KENSUU (IDX)
                                            TO  WRK-KENSUU
-      *        MOVE    WRK-HKENSUU(2:4)    TO  WRK-TBL-KENSUU (IDX)
+      **       MOVE    WRK-HKENSUU(2:4)    TO  WRK-TBL-KENSUU (IDX)
                MOVE    WRK-HKENSUU         TO  WRK-TBL-KENSUU (IDX)
            END-PERFORM
            MOVE     WRK-GMN-KENSUU         TO  Y01-FIXED2
