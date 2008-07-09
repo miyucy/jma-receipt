@@ -1042,6 +1042,11 @@
                   (WRK-COM-SRYKBN (IDX-Z)      =   "60"  )
                MOVE    1                   TO  FLG-ARI
            END-IF
+      *    ∏°∫∫≤√ªªŒ¡
+           IF     (WRK-COM-SRYSYUKBN(IDX-Z)    =   "643" )  AND
+                  (WRK-COM-SRYKBN (IDX-Z)      =   "64"  )
+               MOVE    1                   TO  FLG-ARI
+           END-IF
       *
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"          TO  WRK-ERRCD

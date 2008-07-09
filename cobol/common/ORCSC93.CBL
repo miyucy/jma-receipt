@@ -1909,6 +1909,11 @@
                       (SPA-COM-TNSSRYKBN (IDX) =   "60"  )
                    MOVE    1               TO  FLG-ARI
                END-IF
+      *        ÉÂÍý¿ÇÃÇ²Ã»»¤Î¤ß
+               IF     (WRK-SRYSYUKBN           =   "643" )  AND
+                      (SPA-COM-TNSSRYKBN (IDX) =   "64"  )
+                   MOVE    1               TO  FLG-ARI
+               END-IF
            END-IF
       *
            IF      FLG-ARI             =   ZERO
