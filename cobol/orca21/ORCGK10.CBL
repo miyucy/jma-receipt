@@ -404,11 +404,11 @@
            END-IF
            PERFORM
                UNTIL   (FLG-WKSRYACT   =   1 )  OR
-                       (IDX            >   50 )
+                       (IDX            >   100 )
                IF      (WKSRY-ZAINUM       =   1   )  AND
                        (WKSRY-RENNUM       =   1   )
                    ADD     1                   TO  IDX
-                   IF      IDX                 >   50
+                   IF      IDX                 >   100
                        MOVE    1                   TO  SPA-K10-NEXT
                    ELSE
                        PERFORM 3101-TBL-HENSYU-SEC
@@ -1033,26 +1033,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF      SPA-K10-NEXT        =   1
+      *    テーブル再編集
+           PERFORM 310-SPA-SET-SEC
+           MOVE    ZERO                TO  FLG-GMN-INIT
+      ***  IF      SPA-K10-NEXT        =   1
       *        テーブル再編集
-               PERFORM 310-SPA-SET-SEC
-           ELSE
+      *        PERFORM 310-SPA-SET-SEC
+      *    ELSE
       *        行削除
-               MOVE    SPA-K10-SELNUM      TO  IDY
-               PERFORM VARYING    IDX  FROM    SPA-K10-SELNUM   BY  1
-                       UNTIL      IDX      >   SPA-K10-MAX
-                   IF      IDX             =   SPA-K10-SELNUM
-                       INITIALIZE                  SPA-K10-LIST-OCC(IDX)
-                   ELSE
-                       MOVE    IDY         TO  SPA-K10-SEQ (IDX)
-                       MOVE    SPA-K10-LIST-OCC(IDX)
-                                           TO  SPA-K10-LIST-OCC(IDX - 1)
-                       INITIALIZE                  SPA-K10-LIST-OCC(IDX)
-                       ADD     1           TO  IDY
-                   END-IF
-               END-PERFORM
-               COMPUTE SPA-K10-MAX         =   SPA-K10-MAX   -   1
-           END-IF
+      *        MOVE    SPA-K10-SELNUM      TO  IDY
+      *        PERFORM VARYING    IDX  FROM    SPA-K10-SELNUM   BY  1
+      *                UNTIL      IDX      >   SPA-K10-MAX
+      *            IF      IDX             =   SPA-K10-SELNUM
+      *                INITIALIZE                  SPA-K10-LIST-OCC(IDX)
+      *            ELSE
+      *                MOVE    IDY         TO  SPA-K10-SEQ (IDX)
+      *                MOVE    SPA-K10-LIST-OCC(IDX)
+      *                                    TO  SPA-K10-LIST-OCC(IDX - 1)
+      *                INITIALIZE                  SPA-K10-LIST-OCC(IDX)
+      *                ADD     1           TO  IDY
+      *            END-IF
+      *        END-PERFORM
+      *        COMPUTE SPA-K10-MAX         =   SPA-K10-MAX   -   1
+      **** END-IF
            MOVE    SPACE               TO  SPA-K10-GMN-SELNUM
            MOVE    ZERO                TO  SPA-K10-SELNUM
       *
