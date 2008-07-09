@@ -70,6 +70,7 @@
       *
       *  04.03.01    NACL-ÌçÏÆ    08/07/08  ¿Ç¶è£±£´¤Î¥³¥á¥ó¥È¤Î¤ß¤ÎºÞ
       *                                     ÊÔ½¸ÂÐ±þ
+      *  04.03.02    NACL-ÌçÏÆ    08/07/09  ÅêÌô¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -358,10 +359,10 @@ grpsys     MOVE    RECE06-HOSPNUM       TO      RECE061-HOSPNUM
               END-IF
             END-IF 
            END-IF 
-           IF      RECE06-SRYKBN        NOT =   "21"
+           IF      RECE06-SRYKBN        NOT =   "21" AND "22" AND "23"
                IF   RECE06-SRYKBN       NOT =   "40" AND "60" AND "80"
                                                      AND "64"
-                   MOVE    RECE06-ZAITEN    TO      RECE061-ZAITEN
+                   MOVE    RECE06-ZAITEN   TO  RECE061-ZAITEN
                END-IF
                MOVE   RECE06-CDKBN-SYO     TO  RECE061-CDKBN-SYO
                MOVE   RECE06-CDKBN-BU      TO  RECE061-CDKBN-BU

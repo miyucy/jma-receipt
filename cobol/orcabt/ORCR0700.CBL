@@ -46,6 +46,7 @@
       *
       *  04.03.01    NACL-ÌçÏÆ    08/07/08  ¿Ç¶è£±£´¤Î¥³¥á¥ó¥È¤Î¤ß¤ÎºÞ
       *                                     ÊÔ½¸ÂÐ±þ
+      *  04.03.02    NACL-ÌçÏÆ    08/07/09  ÅêÌô¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -314,10 +315,10 @@
            MOVE  RECE66-TENTEKIBAN      TO      RECE661-TENTEKIBAN
            MOVE    RECE66-ASTER         TO      RECE661-ASTER
            MOVE    RECE66-TEKIYO        TO      RECE661-TEKIYO
-           IF      RECE66-SRYKBN        NOT =   "21"
+           IF      RECE66-SRYKBN        NOT =   "21" AND "22" AND "23"
                IF   RECE66-SRYKBN       NOT =   "40" AND "60" AND "80"
                                                      AND "64"
-                   MOVE    RECE66-ZAITEN    TO      RECE661-ZAITEN
+                   MOVE    RECE66-ZAITEN   TO  RECE661-ZAITEN
                END-IF
                MOVE   RECE66-CDKBN-SYO     TO  RECE661-CDKBN-SYO
                MOVE   RECE66-CDKBN-BU      TO  RECE661-CDKBN-BU

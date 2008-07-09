@@ -122,6 +122,8 @@
       *                                     ¡ÊÅÀÅ©ÊÔ½¸½¤Àµ¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *  04.02.02    NACL-ÌçÏÆ    08/05/08  ÅÀÅ©£³£³£²¤Î¼êµ»ÎÁÊÔ½¸
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/07/09  ÅêÌô¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3969,15 +3971,9 @@
                                            TO  RECE66-CDKBN-KBNNUM-EDA
                MOVE    WRK-ZAIW-CDKBN-KOUBAN
                                            TO  RECE66-CDKBN-KOUBAN
-               IF      RECE64-SRYKBN           =   "21"
-               AND     WRK-ZAIW-SRYCD1     NOT =   CONS-TEIGEN
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-ZAIW-KOUHYOJYUNNUM
+               MOVE    WRK-ZAIW-KOUHYOJYUNNUM
                                            TO  RECE66-KOUHYOJUNNUM
-               END-IF
       *
-      *--------------------------------------------------------------
                IF   (RECE62-RECESYUBETU    =  8888   )
                AND  (RECE64-SRYKBN  = "95" OR "96"   )
                    MOVE    RECE64-SYUTEN1    TO  RECE66-ZAITEN
@@ -3997,6 +3993,9 @@
                MOVE       SPACE          TO  RECE66-SRYSYUKBN
                MOVE       ZERO           TO  RECE66-DAY
                EVALUATE  RECE64-SRYKBN
+                 WHEN      "21"
+                 WHEN      "22"
+                 WHEN      "23"
                  WHEN      "33"
                    PERFORM   VARYING   IDW3   FROM    1   BY  1
                               UNTIL    IDW3   >      31

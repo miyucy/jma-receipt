@@ -46,6 +46,8 @@
       *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *  04.02.02    NACL-ÌçÏÆ    08/04/21  £¸£°¤½¤ÎÂ¾µ­ºÜ½çÂÐ±þ
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/07/09  ÅêÌô¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -322,10 +324,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                   END-IF
                END-IF
            END-IF     
-           IF      RECE46-SRYKBN        NOT =   "21"
+           IF      RECE46-SRYKBN        NOT =   "21" AND "22" AND "23"
                IF   RECE46-SRYKBN       NOT =   "40" AND "60" AND "80"
                                                      AND "64"
-                   MOVE    RECE46-ZAITEN    TO      RECE47-ZAITEN
+                   MOVE    RECE46-ZAITEN   TO  RECE47-ZAITEN
                END-IF
                MOVE   RECE46-CDKBN-SYO     TO  RECE47-CDKBN-SYO
                MOVE   RECE46-CDKBN-BU      TO  RECE47-CDKBN-BU

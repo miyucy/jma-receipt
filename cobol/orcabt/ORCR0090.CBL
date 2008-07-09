@@ -183,6 +183,8 @@
       *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *  04.02.02    NACL-ÌçÏÆ    08/04/21  £¸£°¤½¤ÎÂ¾µ­ºÜ½çÂÐ±þ
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/07/09  ÅêÌô¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4330,15 +4332,9 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE04-HOSPNUM     )
                                            TO  RECE06-CDKBN-KBNNUM-EDA
                MOVE    WRK-ZAIW-CDKBN-KOUBAN
                                            TO  RECE06-CDKBN-KOUBAN
-               IF      RECE04-SRYKBN           =   "21"
-               AND     WRK-ZAIW-SRYCD1     NOT =   CONS-TEIGEN
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-ZAIW-KOUHYOJYUNNUM
+               MOVE    WRK-ZAIW-KOUHYOJYUNNUM
                                            TO  RECE06-KOUHYOJUNNUM
-               END-IF
       *
-      *--------------------------------------------------------------
                IF   (RECE02-RECESYUBETU    =  8888   )
                AND  (RECE04-SRYKBN  = "95" OR "96"   )
                    MOVE    RECE04-SYUTEN1    TO  RECE06-ZAITEN
@@ -4358,6 +4354,9 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE04-HOSPNUM     )
                MOVE       SPACE          TO  RECE06-SRYSYUKBN
                MOVE       ZERO           TO  RECE06-DAY
                EVALUATE  RECE04-SRYKBN
+                 WHEN      "21"
+                 WHEN      "22"
+                 WHEN      "23"
                  WHEN      "33"
                    PERFORM   VARYING   IDW3   FROM    1   BY  1
                               UNTIL    IDW3   >      31

@@ -32,6 +32,8 @@
       *                                     ¡Ê½é¿Ç¡ÊÌë´Ö¡¦ÁáÄ«Åù¡Ë²Ã»»ÄÉ²Ã¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *  04.02.02    NACL-ÌçÏÆ    08/04/21  £¸£°¤½¤ÎÂ¾µ­ºÜ½çÂÐ±þ
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/07/09  ÅêÌô¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3099,13 +3101,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                            TO  RECE140-CDKBN-KBNNUM-EDA
                MOVE    WRK-ZAIW-CDKBN-KOUBAN
                                            TO  RECE140-CDKBN-KOUBAN
-               IF      RECE120-SRYKBN           =   "21"
-               AND     WRK-ZAIW-SRYCD1     NOT =   CONS-TEIGEN
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-ZAIW-KOUHYOJYUNNUM
+               MOVE    WRK-ZAIW-KOUHYOJYUNNUM
                                            TO  RECE140-KOUHYOJUNNUM
-               END-IF
       *
                MOVE    RECE120-ZAITEN     TO  RECE140-ZAITEN
       *
@@ -3121,6 +3118,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE       SPACE          TO  RECE140-SRYSYUKBN
                MOVE       ZERO           TO  RECE140-DAY
                EVALUATE  RECE120-SRYKBN
+                 WHEN      "21"
+                 WHEN      "22"
+                 WHEN      "23"
                  WHEN      "33"
                    PERFORM   VARYING   IDW3   FROM    1   BY  1
                               UNTIL    IDW3   >      31
@@ -3205,7 +3205,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            IF      RECE140-SRYKBN      =   "99"
                MOVE    SPACE           TO  RECE140-SRYKBN
            END-IF
-           IF      RECE140-SRYKBN        NOT =   "21"
+           IF      RECE140-SRYKBN        NOT =   "21" AND "22" AND "23"
                IF   RECE140-SRYKBN       NOT =   "40" AND "60" AND "80"
                                                       AND "64"
                    CONTINUE

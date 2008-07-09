@@ -33,6 +33,8 @@
       *                                     ¡ÊÅÀÅ©ÊÔ½¸½¤Àµ¡Ë
       *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
       *  04.02.02    NACL-ÌçÏÆ    08/05/08  ÅÀÅ©£³£³£²¤Î¼êµ»ÎÁÊÔ½¸
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/07/09  ÅêÌô¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2961,15 +2963,9 @@
                                            TO  RECE240-CDKBN-KBNNUM-EDA
                MOVE    WRK-ZAIW-CDKBN-KOUBAN
                                            TO  RECE240-CDKBN-KOUBAN
-               IF      RECE220-SRYKBN           =   "21"
-               AND     WRK-ZAIW-SRYCD1     NOT =   CONS-TEIGEN
-                   CONTINUE
-               ELSE
-                   MOVE    WRK-ZAIW-KOUHYOJYUNNUM
+               MOVE    WRK-ZAIW-KOUHYOJYUNNUM
                                            TO  RECE240-KOUHYOJUNNUM
-               END-IF
       *
-      *--------------------------------------------------------------
                MOVE    RECE220-ZAITEN      TO  RECE240-ZAITEN
       *
                IF      RECE220-SRYKBN     =   "60" OR "64"
@@ -2984,6 +2980,9 @@
                MOVE       SPACE          TO  RECE240-SRYSYUKBN
                MOVE       ZERO           TO  RECE240-DAY
                EVALUATE  RECE220-SRYKBN
+                 WHEN      "21"
+                 WHEN      "22"
+                 WHEN      "23"
                  WHEN      "33"
                    PERFORM   VARYING   IDW3   FROM    1   BY  1
                               UNTIL    IDW3   >      31
@@ -3054,7 +3053,7 @@
                MOVE  SPACE                 TO  RECE240-SRYKBN
            END-IF
       *
-           IF      RECE240-SRYKBN      NOT =   "21"
+           IF      RECE240-SRYKBN      NOT =   "21" AND "22" AND "23"
                IF      RECE240-SRYKBN  NOT =   "40" AND "60" AND "80"
                                                     AND "64"
                    CONTINUE

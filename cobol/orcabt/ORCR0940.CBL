@@ -40,6 +40,8 @@
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （診療区分６４：病理診断対応）
+      *
+      *  04.03.01    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -308,10 +310,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE86-TENTEKIBAN    TO      RECE87-TENTEKIBAN
            MOVE    RECE86-ASTER         TO      RECE87-ASTER 
            MOVE    RECE86-TEKIYO        TO      RECE87-TEKIYO
-           IF      RECE86-SRYKBN        NOT =   "21"
+           IF      RECE86-SRYKBN        NOT =   "21" AND "22" AND "23"
                IF   RECE86-SRYKBN       NOT =   "40" AND "60" AND "80"
                                                      AND "64"
-                   MOVE    RECE86-ZAITEN    TO      RECE87-ZAITEN
+                   MOVE    RECE86-ZAITEN   TO  RECE87-ZAITEN
                END-IF
                MOVE   RECE86-CDKBN-SYO     TO  RECE87-CDKBN-SYO
                MOVE   RECE86-CDKBN-BU      TO  RECE87-CDKBN-BU
