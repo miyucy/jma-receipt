@@ -1496,8 +1496,9 @@
                MOVE    RECE61-MISEIKYU-FLG     TO  RECE62-MISEIKYU-FLG
            END-IF
       *
-      *    医師別出力設定
+      *    医師別出力設定（一括作成時のみ）
            IF    ( IDZ             =   1                     )
+           AND   ( WRK-PARA-SRYYM  NOT =   "000000"          )
            AND   ( SYS-200501-DRCD-PRTKBN
                                    =   "1"                   )
            AND   ( RECE62-SRYYM    >=  WRK-CONS-SRYYM-200804 )
