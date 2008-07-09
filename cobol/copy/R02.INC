@@ -1,5 +1,6 @@
         02  R02.
               04  R02-B13-STATE   PIC S9(09) BINARY.
+              04  R02-B14-STATE   PIC S9(09) BINARY.
               04  R02-SYOKBN.
                 05  R02-SYOKBN-VALUE   PIC X.
                 05  R02-SYOKBN-LABEL   PIC X(9).
@@ -83,6 +84,7 @@
                   06  R02-VALUE   PIC X(14).
                 05  R02-PRTKBN-COUNT   PIC S9(9)   BINARY.
                 05  R02-PRTKBNLST  PIC X(14)   OCCURS  3 TIMES.
+              04  R02-SYUKA-MIDASI PIC X(12).
               04  R02-SYUKA-COMBO.
                 05  R02-SYUKA-STATE   PIC S9(09) BINARY.
                 05  R02-SYUKA.

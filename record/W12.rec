@@ -368,6 +368,20 @@ W12	{
 					count	int;
 					item	varchar(24)[5];
 				};
+				DRCD_PRTKBN_COMBO	{
+					DRCD_PRTKBN	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[2];
+				};
+				DRCD_PRTJYUNKBN_COMBO	{
+					DRCD_PRTJYUNKBN	{
+						value	varchar(26);
+					};
+					count	int;
+					item	varchar(26)[10];
+				};
 			};
 			fi25	{
 				MOJI_COMBO	{

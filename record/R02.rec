@@ -3,6 +3,9 @@ R02	{
 		B13	{
 			state	int;
 		};
+		B14	{
+			state	int;
+		};
 		SYOKBN	{
 			value	bool;
 			label	varchar(9);
@@ -1580,6 +1583,9 @@ R02	{
 			};
 			count	int;
 			item	varchar(14)[3];
+		};
+		SYUKA_MIDASI	{
+			label	varchar(12);
 		};
 		SYUKA_COMBO	{
 			state	int;

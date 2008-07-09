@@ -33,6 +33,8 @@
       *  04.02.02    NACL-藤原    08/05/07  公費３種、４種の併用の
       *                                     レセプト種別の追加
       *  04.02.03    NACL-藤原    08/06/18  メッセージの追加
+      *
+      *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
       *****************************************************************
       *
        01  SPA-R02.
@@ -160,6 +162,8 @@
                    07  SPA-NAI-2005-KOUIKIPRTNM-NEXT-N
                                                    PIC X(16).
                    07  SPA-NAI-2005-PRT-CHECKKBN   PIC X(01).
+                   07  SPA-NAI-2005-DRCD-PRTJYUNKBN
+                                                   PIC X(01).
                    07  SPA-NAI-2008-HYOUJI         PIC 9(01).
       *
                    07  SPA-NAI-2003-TABLE.
@@ -189,6 +193,13 @@
                                                    PIC  X(01).
                    07  SPA-NAI-2008-HKNJANAME      PIC  X(50).
       *
+                   07  SPA-NAI-DRCD-TABLE.
+                       09  SPA-NAI-DRCD-TBL        OCCURS  100.
+                           11  SPA-NAI-DRCD-TDRCD  PIC X(05).
+                           11  SPA-NAI-DRCD-OCC        OCCURS  50.
+                               13  SPA-NAI-DRCD-TPAGE  PIC 9(04).
+                               13  SPA-NAI-DRCD-TKENSU PIC 9(04).
+      *
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-TBL-OCC         OCCURS   19.
                            11  SPA-NAI-TBL-G       OCCURS   36.
@@ -196,6 +207,7 @@
                                                    PIC X(02).
                                13  SPA-NAI-TEISYUTUSAKI
                                                    PIC X(01).
+                               13  SPA-NAI-TDRCD   PIC X(05).
                                13  SPA-NAI-THKNJANUM
                                                    PIC X(08).
                                13  SPA-NAI-THKNJANUM-ERR

@@ -81,6 +81,9 @@
       *
       *  04.02.01    NACL-Æ£¸¶    08/03/25  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.02.02    NACL-Æ£¸¶    08/05/09  ¥¨¥é¡¼»þ½ªÎ»½èÍý¤ÎÄÉ²Ã
+      *
+      *  04.03.01    NACL-Æ£¸¶    08/06/19  °å»ÕÊÌ½ÐÎÏÂÐ±þ
+      *                                     ¡Ö£±£±¡×¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -150,11 +153,18 @@ grpsys     COPY    "COMMON-SPA".
                                                      PIC X(04).
                        09  WRK-PARA-RECE09-NYUGAIKBN PIC X(01).
                    07  WRK-PARA-RECE09-PRTJYUN       PIC X(02).
-                   07  WRK-PARA-RECE09-CHOUKI        PIC X(01).
-                   07  WRK-PARA-RECE09-ZAITAKU       PIC X(01).
-                   07  WRK-PARA-RECE09-KOUGAKU       PIC X(01).
-                   07  WRK-PARA-RECE09-SRT-LAST      PIC X(01).
-                   07  WRK-PARA-RECE09-HKNJANUM      PIC X(08).
+                   07  WRK-PARA-RECE09-DATA.
+                       09  WRK-PARA-RECE09-CHOUKI    PIC X(01).
+                       09  WRK-PARA-RECE09-ZAITAKU   PIC X(01).
+                       09  WRK-PARA-RECE09-KOUGAKU   PIC X(01).
+                       09  WRK-PARA-RECE09-SRT-LAST  PIC X(01).
+                       09  WRK-PARA-RECE09-HKNJANUM  PIC X(08).
+                   07  WRK-PARA-RECE09-DATA-R        REDEFINES
+                                                 WRK-PARA-RECE09-DATA.
+                       09  WRK-PARA-RECE09-DRCD      PIC X(05).
+                       09  WRK-PARA-RECE09-DRCD-PRTJYUNKBN
+                                                     PIC X(01).
+                       09  FILLER                    PIC X(06).
                05  WRK-PARA-RECE09-STDATA            PIC X(100).
                05  WRK-PARA-RECE09-EDDATA            PIC X(100).
                05  WRK-PARA-PRTJYUN           PIC 9(04).
@@ -243,6 +253,8 @@ grpsys     COPY    "COMMON-SPA".
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
+           DISPLAY "*** ORCR0101 START ***"
+      *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
@@ -314,7 +326,12 @@ grpsys     MOVE    SPA-HOSPNUM                  TO  RECE08-HOSPNUM
            MOVE    WRK-PARA-RECE09-TEISYUTUSAKI TO  RECE08-TEISYUTUSAKI
            MOVE    WRK-PARA-RECE09-RECESYUBETU  TO  RECE08-RECESYUBETU
            MOVE    WRK-PARA-RECE09-NYUGAIKBN    TO  RECE08-NYUGAIKBN
-           MOVE    WRK-PARA-RECE09-HKNJANUM     TO  RECE08-HKNJANUM-S
+           IF      WRK-PARA-RECE09-PRTJYUN      =   "11"
+               CONTINUE
+           ELSE
+               MOVE    WRK-PARA-RECE09-HKNJANUM
+                                            TO  RECE08-HKNJANUM-S
+           END-IF
            MOVE    WRK-PARA-SRYKA               TO  RECE08-SRYKA
       *
            MOVE    WRK-PARA-RECE09-STDATA       TO  RECE08-STKANANAME
@@ -559,6 +576,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "05"                    ALSO    ANY
       *            ÆþÎÏ½ç°õºþ¡Ê¸ÄÊÌºîÀ®»þ¡Ë
                    MOVE    "key30"             TO  WRK-MCP-PATHNAME
+               WHEN    "11"                    ALSO    ANY
+      *            °å»ÕÊÌ½ç°õºþ
+                   PERFORM 9002-DRCD-RECEPRT-KEY-HENSYU-SEC
                WHEN    ANY                     ALSO    "4"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                        EVALUATE    WRK-PARA-RECE09-PRTJYUN
@@ -631,7 +651,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *     ÆþÎÏ¥³¡¼¥É¥Þ¥¹¥¿¤ò¼ç¥­¡¼¤è¤ê¸¡º÷½èÍý
+      *    ÊÔÄÖ½ç°õºþ½èÍý
       *****************************************************************
        9001-RECEPRT-KEY-HENSYU-SEC    SECTION.
       *
@@ -650,6 +670,40 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        9001-RECEPRT-KEY-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    °å»ÕÊÌ½ç°õºþ½èÍý
+      *****************************************************************
+       9002-DRCD-RECEPRT-KEY-HENSYU-SEC    SECTION.
+      *
+           IF      WRK-PARA-RECE09-DRCD =   "XXXXX"
+               MOVE    SPACE                TO  RECE08-DRCD
+           ELSE
+               MOVE    WRK-PARA-RECE09-DRCD TO  RECE08-DRCD
+           END-IF
+           MOVE    WRK-PARA-SRYKA       TO  RECE08-DRCD-SRYKA
+      *
+           EVALUATE    WRK-PARA-RECE09-DRCD-PRTJYUNKBN
+                               ALSO    WRK-PARA-RECE09-RECESYUBETU
+               WHEN    "1"     ALSO    "9999"
+                   MOVE    "key45"             TO  WRK-MCP-PATHNAME
+               WHEN    "2"     ALSO    "9999"
+                   MOVE    "key46"             TO  WRK-MCP-PATHNAME
+               WHEN    "3"     ALSO    "9999"
+                   MOVE    "key47"             TO  WRK-MCP-PATHNAME
+               WHEN    "4"     ALSO    "9999"
+                   MOVE    "key48"             TO  WRK-MCP-PATHNAME
+               WHEN    "1"     ALSO    ANY
+               WHEN    "3"     ALSO    ANY
+                   MOVE    "key38"             TO  WRK-MCP-PATHNAME
+               WHEN    "2"     ALSO    ANY
+               WHEN    "4"     ALSO    ANY
+                   MOVE    "key39"             TO  WRK-MCP-PATHNAME
+           END-EVALUATE
+      *
+           .
+       9002-DRCD-RECEPRT-KEY-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

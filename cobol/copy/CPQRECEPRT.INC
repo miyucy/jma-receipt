@@ -1,0 +1,45 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      ************************************************************
+      *    レセプト明細書     COPY (CPQRECEPRT.INC)              *
+      ************************************************************
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *************************************************************
+      *01  QUERY-RECE08-REC.
+      *医療機関番号
+           03  QUERY-RECE08-HOSPNUM        PIC 9(2).
+      *帳票ＩＤ
+           03  QUERY-RECE08-PRTID          PIC X(04).
+      *診療年月
+           03  QUERY-RECE08-RECEYM         PIC X(06).
+      *作成日
+           03  QUERY-RECE08-CREYMD         PIC X(08).
+      *作成時間
+           03  QUERY-RECE08-CREHMS         PIC X(06).
+      *入外区分
+           03  QUERY-RECE08-NYUGAIKBN      PIC X(01).
+      *医師コード
+           03  QUERY-RECE08-DRCD           PIC X(05).
+      *医師別診療科
+           03  QUERY-RECE08-DRCD-SRYKA     PIC X(02).
+      *件数
+           03  QUERY-RECE08-KENSU          PIC 9(06).
+      *ページ
+           03  QUERY-RECE08-PAGE           PIC 9(06).  

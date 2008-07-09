@@ -60,6 +60,8 @@
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
+      *
+      *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -88,6 +90,8 @@
                                    PIC  X(01).
                05  SPA-RECE07-KOUGAKU-TEN-T
                                    PIC  9(07).
+           03  SPA-RECE08-DRCD-SRYKA
+                                   PIC X(02).
       *
       *   
            COPY    "ENUM-VALUE".
@@ -105,6 +109,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-RECE07          PIC 9(01).
+           03  FLG-RECE08          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -144,6 +149,8 @@
       *    レセプト管理     
        01  RECE07-REC. 
            COPY    "CPRCF007.INC".
+      *
+           COPY    "CPRCF008.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -513,6 +520,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                           TO SPA-R01-RECE07-RECE-PUTH(1)
                                    MOVE    SPA-RECE07-RECE-PUTH-T (2)
                                           TO SPA-R01-RECE07-RECE-PUTH(2)
+                                   MOVE    SPA-RECE08-DRCD-SRYKA
+                                          TO SPA-R01-RECE08-DRCD-SRYKA
                                END-IF
                            END-IF   
                        END-IF
@@ -678,8 +687,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                MOVE    "00"            TO  SPA-RECE07-SRYKA 
                                            SPA-RECE07-SRYKA-KOKUHO
                                            SPA-RECE07-SRYKA-KOUIKI
-               INITIALIZE                      SPA-RECE07-RECE-PUTH-T(1)
-                                               SPA-RECE07-RECE-PUTH-T(2)
+               INITIALIZE                  SPA-RECE07-RECE-PUTH-T(1)
+                                           SPA-RECE07-RECE-PUTH-T(2)
+               MOVE    SPACE           TO  SPA-RECE08-DRCD-SRYKA
       *
       *        一括作成で国保処理のとき編綴順設定の有無チェック
                IF    ( SPA-R01-FILEKBN         =   "1"         )
@@ -775,6 +785,23 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                                                SPA-RECE07-SRYKA-KOUIKI
                    END-IF
                END-IF  
+      *
+      *        一括作成のとき医師別設定の有無チェック
+               IF    ( SPA-R01-FILEKBN         =   "1"         )
+                   INITIALIZE                      RECE08-REC
+                   MOVE    RECE07-HOSPNUM      TO  RECE08-HOSPNUM
+                   MOVE    RECE07-PRTID        TO  RECE08-PRTID
+                   MOVE    RECE07-SRYYM        TO  RECE08-RECEYM
+                   MOVE    RECE07-CREYMD       TO  RECE08-CREYMD
+                   MOVE    RECE07-CREHMS       TO  RECE08-CREHMS
+                   MOVE    RECE07-NYUGAIKBN    TO  RECE08-NYUGAIKBN
+                   MOVE    RECE08-REC          TO  MCPDATA-REC
+                   PERFORM 900-RECE08-INV-SEC
+                   IF      FLG-RECE08          =   ZERO
+                       MOVE    RECE08-DRCD-SRYKA   TO
+                                               SPA-RECE08-DRCD-SRYKA
+                   END-IF
+               END-IF
            END-IF
       *
            .
@@ -830,6 +857,36 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-RECE07-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト印刷読込処理
+      *****************************************************************
+       900-RECE08-INV-SEC           SECTION.
+      *
+           MOVE    "tbl_receprt"       TO  MCP-TABLE
+           MOVE    "key44"             TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_receprt"       TO  MCP-TABLE
+               MOVE    "key44"             TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-RECE08
+                   MOVE    MCPDATA-REC         TO  RECE08-REC
+               ELSE
+                   MOVE    1                   TO  FLG-RECE08
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-RECE08
+           END-IF
+      *
+           MOVE    "tbl_receprt"       TO  MCP-TABLE
+           MOVE    "key44"             TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-RECE08-INV-EXT.
            EXIT.
       *
       *****************************************************************

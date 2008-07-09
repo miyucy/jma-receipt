@@ -117,6 +117,9 @@
       *  04.02.03    NACL-藤原    08/05/07  公費３種、４種の併用の
       *                                     レセプト種別の追加
       *  04.02.04    NACL-藤原    08/06/18  メッセージの追加
+      *
+      *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
+      *  04.03.01    NACL-藤原    08/07/09  入力順指定時の出力先設定の不可
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -153,11 +156,17 @@
                05  WRK-RECE09-RECESYUBETU  PIC X(04).
                05  WRK-RECE09-NYUGAIKBN    PIC X(01).
            03  WRK-RECE09-PRTJYUN          PIC X(02).
-           03  WRK-RECE09-CHOUKI           PIC X(01).
-           03  WRK-RECE09-ZAITAKU          PIC X(01).
-           03  WRK-RECE09-KOUGAKU          PIC X(01).
-           03  WRK-RECE09-SRT-LAST         PIC X(01).
-           03  WRK-RECE09-HKNJANUM         PIC X(08).
+           03  WRK-RECE09-DATA.
+               05  WRK-RECE09-CHOUKI       PIC X(01).
+               05  WRK-RECE09-ZAITAKU      PIC X(01).
+               05  WRK-RECE09-KOUGAKU      PIC X(01).
+               05  WRK-RECE09-SRT-LAST     PIC X(01).
+               05  WRK-RECE09-HKNJANUM     PIC X(08).
+           03  WRK-RECE09-DATA-R           REDEFINES    WRK-RECE09-DATA.
+               05  WRK-RECE09-DRCD         PIC X(05).
+               05  WRK-RECE09-DRCD-PRTJYUNKBN
+                                           PIC X(01).
+               05  FILLER                  PIC X(06).
        01  WRK-RECE09-STDATA               PIC X(100).
        01  WRK-RECE09-EDDATA               PIC X(100).
       *
@@ -181,6 +190,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-RECE07          PIC 9(01).
            03  FLG-HKNJAINF        PIC 9(01).
+           03  FLG-QRECEPRT        PIC 9(01).
       *
            03  FLG-PRTNM-SET       PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
@@ -202,6 +212,7 @@
            03  IDX2                PIC 9(04).
       *
            03  IDXX                PIC 9(04).
+           03  IDXY                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -357,6 +368,8 @@
       *
            COPY    "CPSK1005.INC".
       *
+           COPY    "CPSK1010.INC".
+      *
            COPY    "CPSK2002.INC".
       *
       *    レセプト作成指示（印刷順）情報
@@ -384,7 +397,11 @@
        01  RECE07-REC. 
            COPY    "CPRCF007.INC".
       *
+      *    レセプト     
            COPY    "CPRCF008.INC".
+      *
+       01  QUERY-RECE08-REC. 
+           COPY    "CPQRECEPRT.INC".
       *
       *    保険者番号
        01  HKNJAINF-REC.
@@ -894,66 +911,6 @@ grpsys                 MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
            MOVE    "続紙のみ"            TO  SPA-GMN-PRTKBNMEIL (3)
       *
            MOVE    SPA-GMN-PRTKBNLST(01) TO  SPA-GMN-PRTKBN-G
-      *
-      *    診療科の表示（一括作成時のみ）
-           IF    ( SPA-SYUKA-KBN       =   "1"             )
-           AND   ( SPA-R01-FILEKBN     =   "1"             )
-             IF    ( SPA-R01-RECE07-SRYKA
-                                     NOT =   "00" )
-             OR    ( SPA-R01-RECE07-SRYKA-KOKUHO
-                                     NOT =   "00" )
-             OR    ( SPA-R01-RECE07-SRYKA-KOUIKI
-                                     NOT =   "00" )
-               MOVE    "00"                TO  SPA-GMN-SYUKAL   (1)
-               MOVE    "全科"              TO  SPA-GMN-SYUKAMEIL(1)
-               MOVE    1                   TO  IDX
-      *
-               INITIALIZE                  SYS-1005-REC
-               MOVE    "1005"              TO  SYS-1005-KANRICD
-               MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
-                                               SYS-1005-EDYUKYMD
-grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
-               MOVE    SYS-1005-REC        TO  MCPDATA-REC
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-grpsys         PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key2"              TO  MCP-PATHNAME
-                   PERFORM 900-SYSKANRI-READ-SEC 
-               ELSE
-                   INITIALIZE                  SYS-1005-REC
-                   MOVE    1               TO  FLG-SYSKANRI
-               END-IF 
-      *
-               PERFORM         UNTIL       (IDX            >=  41   )
-                               OR          (FLG-SYSKANRI   =   1    )
-                   ADD     1                     TO  IDX
-                   MOVE    MCPDATA-REC           TO  SYS-1005-REC
-                   MOVE    SYS-1005-KBNCD (1:2)  TO
-                                                 SPA-GMN-SYUKAL   (IDX)
-                   MOVE    SYS-1005-SRYKANAME1   TO
-                                                 SPA-GMN-SYUKAMEIL(IDX)
-      *
-                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
-                   MOVE    "key2"              TO  MCP-PATHNAME
-                   PERFORM 900-SYSKANRI-READ-SEC
-               END-PERFORM
-      *
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-      *
-               ADD     1                   TO  IDX
-               MOVE    "XX"                TO  SPA-GMN-SYUKAL   (IDX)
-               MOVE    "主科未設定"        TO  SPA-GMN-SYUKAMEIL(IDX)
-      *
-               MOVE    IDX                   TO  SPA-GMN-SYUKA-MAX
-      * 
-               MOVE    SPA-GMN-SYUKALST (1)
-                                           TO  SPA-GMN-SYUKA-G
-             END-IF
-           END-IF                                                             
       *     
       *    レセプト編集区分情報
            MOVE    SPACE            TO  SYS-2005-REC
@@ -1027,6 +984,157 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                         TO
                                         SYS-200501-KOUIKIPRTNM-NEXT-N
            END-IF
+           IF      SYS-200501-DRCD-PRTKBN
+                                       =   SPACE
+               MOVE    "0"             TO  SYS-200501-DRCD-PRTKBN
+           END-IF
+           IF    ( SYS-200501-DRCD-PRTKBN
+                                       =   "1"   )
+           AND   ( SYS-200501-DRCD-PRTJYUNKBN
+                                       =   SPACE )
+               MOVE    "1"             TO  SYS-200501-DRCD-PRTJYUNKBN
+           END-IF
+           MOVE    SYS-200501-DRCD-PRTJYUNKBN
+                                       TO  SPA-NAI-2005-DRCD-PRTJYUNKBN
+      *
+      *    診療科の表示（一括作成時のみ）
+           IF    ( SPA-SYUKA-KBN       =   "1"             )
+           AND   ( SPA-R01-FILEKBN     =   "1"             )
+             IF    ( SPA-R01-RECE07-SRYKA
+                                     NOT =   "00" )
+             OR    ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                     NOT =   "00" )
+             OR    ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                     NOT =   "00" )
+               MOVE    "00"                TO  SPA-GMN-SYUKAL   (1)
+               MOVE    "全科"              TO  SPA-GMN-SYUKAMEIL(1)
+               MOVE    1                   TO  IDX
+      *
+               INITIALIZE                  SYS-1005-REC
+               MOVE    "1005"              TO  SYS-1005-KANRICD
+               MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
+                                               SYS-1005-EDYUKYMD
+grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+               MOVE    SYS-1005-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC 
+               ELSE
+                   INITIALIZE                  SYS-1005-REC
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF 
+      *
+               PERFORM         UNTIL       (IDX            >=  41   )
+                               OR          (FLG-SYSKANRI   =   1    )
+                   ADD     1                     TO  IDX
+                   MOVE    MCPDATA-REC           TO  SYS-1005-REC
+                   MOVE    SYS-1005-KBNCD (1:2)  TO
+                                                 SPA-GMN-SYUKAL   (IDX)
+                   MOVE    SYS-1005-SRYKANAME1   TO
+                                                 SPA-GMN-SYUKAMEIL(IDX)
+      *
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-PERFORM
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+      *
+               ADD     1                   TO  IDX
+               MOVE    "XX"                TO  SPA-GMN-SYUKAL   (IDX)
+               MOVE    "主科未設定"        TO  SPA-GMN-SYUKAMEIL(IDX)
+      *
+               MOVE    IDX                   TO  SPA-GMN-SYUKA-MAX
+      * 
+               MOVE    SPA-GMN-SYUKALST (1)
+                                           TO  SPA-GMN-SYUKA-G
+             END-IF
+           ELSE
+      *      医師別出力設定のとき
+             IF    ( SYS-200501-DRCD-PRTKBN
+                                         =   "1"   )
+             AND   ( SPA-R01-RECE08-DRCD-SRYKA
+                                     NOT =   SPACE )
+               MOVE    "00"                TO  SPA-GMN-SYUKAL   (1)
+               MOVE    "全科"              TO  SPA-GMN-SYUKAMEIL(1)
+               MOVE    1                   TO  IDX
+      *
+               INITIALIZE                  SYS-1005-REC
+               MOVE    "1005"              TO  SYS-1005-KANRICD
+               MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
+                                               SYS-1005-EDYUKYMD
+grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
+               MOVE    SYS-1005-REC        TO  MCPDATA-REC
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+grpsys         PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC 
+               ELSE
+                   INITIALIZE                  SYS-1005-REC
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF 
+      *
+               PERFORM         UNTIL       (IDX            >=  41   )
+                               OR          (FLG-SYSKANRI   =   1    )
+                   ADD     1                     TO  IDX
+                   MOVE    MCPDATA-REC           TO  SYS-1005-REC
+                   MOVE    SYS-1005-KBNCD (1:2)  TO
+                                                 SPA-GMN-SYUKAL   (IDX)
+                   MOVE    SYS-1005-SRYKANAME1   TO
+                                                 SPA-GMN-SYUKAMEIL(IDX)
+      *
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+               END-PERFORM
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+      *
+               MOVE    IDX                   TO  SPA-GMN-SYUKA-MAX
+      * 
+               MOVE    SPA-GMN-SYUKALST (1)
+                                           TO  SPA-GMN-SYUKA-G
+             END-IF
+           END-IF                                                             
+      *
+      *    一括作成で医師別出力設定のとき
+           IF    ( SYS-200501-DRCD-PRTKBN
+                                       =   "1"   )
+           AND   ( SPA-R01-RECE08-DRCD-SRYKA
+                                   NOT =   SPACE )
+               ADD     1                     TO  SPA-GMN-PRTJYUN-MAX
+               MOVE    "11"                  TO  SPA-GMN-PRTJYUNL
+                                                 (SPA-GMN-PRTJYUN-MAX)
+               EVALUATE    SPA-NAI-2005-DRCD-PRTJYUNKBN
+                   WHEN    "1"
+                       MOVE    "医師別順（カナ氏名順）"
+                                               TO  SPA-GMN-PRTJYUNMEIL
+                                                   (SPA-GMN-PRTJYUN-MAX)
+                   WHEN    "2"
+                       MOVE    "医師別順（患者番号順）"
+                                               TO  SPA-GMN-PRTJYUNMEIL
+                                                   (SPA-GMN-PRTJYUN-MAX)
+                   WHEN    "3"
+                       MOVE    "医師別順（提出先・カナ氏名順）"
+                                               TO  SPA-GMN-PRTJYUNMEIL
+                                                   (SPA-GMN-PRTJYUN-MAX)
+                   WHEN    "4"
+                       MOVE    "医師別順（提出先・患者番号順）"
+                                               TO  SPA-GMN-PRTJYUNMEIL
+                                                   (SPA-GMN-PRTJYUN-MAX)
+               END-EVALUATE
+           END-IF
       *
            IF      SYS-2005-PRTJYUNKBN4 =   SPACE
                IF      SYS-2005-PRTJYUNKBN1 =   SPACE
@@ -1083,7 +1191,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                    END-IF
                END-PERFORM
                IF      SYS-2005-PRTJYUNKBN1
-                                           =   "07"    OR  "08"
+                                           =   "07"    OR  "08"    OR  
+                                               "11" 
                    MOVE    SPA-GMN-PRTJYUN-G   TO  SPA-GMN-PRTJYUN1-G
                ELSE
                    PERFORM VARYING IDX FROM    1   BY  1
@@ -1100,7 +1209,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                    END-PERFORM
                END-IF
                IF      SYS-200501-PRTJYUNKBN5
-                                           =   "07"    OR  "08"
+                                           =   "07"    OR  "08"    OR  
+                                               "11" 
                    MOVE    SPA-GMN-PRTJYUN-G   TO  SPA-GMN-PRTJYUN2-G
                ELSE
                    PERFORM VARYING IDX FROM    1   BY  1
@@ -1316,6 +1426,14 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
                MOVE    ZERO                TO  SPA-GMN-PRTJYUN2-MAX
            END-IF
       *
+      *    医師別出力の編集処理
+           IF    ( SYS-200501-DRCD-PRTKBN
+                                       =   "1"   )
+           AND   ( SPA-R01-RECE08-DRCD-SRYKA
+                                   NOT =   SPACE )
+               PERFORM 3102-DRCD-HENSYU-SEC
+           END-IF
+      *
       *    頁・件数の編集処理
            MOVE    "T"                 TO  SPA-GMN-SYOKBN
            MOVE    ZERO                TO  FLG-PRTNM-SET
@@ -1408,6 +1526,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EVALUATE    SPA-GMN-PRTJYUN
                WHEN    "07"
                WHEN    "08"
+               WHEN    "11"
                    MOVE    SPA-GMN-PREFKBNLST (4)
                                                TO  SPA-GMN-PREFKBN-G
                WHEN    OTHER
@@ -1451,6 +1570,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "07"
                WHEN    "08"
                    PERFORM 3101-PAGE-HENSYU-04-SEC     
+               WHEN    "11"
+                   PERFORM 3101-PAGE-HENSYU-05-SEC     
            END-EVALUATE
       *    
       *    国保分
@@ -1472,6 +1593,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      SPA-R01-RECE07-SRYYM    <   WRK-CONS-SRYYM-200804
                EVALUATE    SPA-GMN-PRTJYUN ALSO    SPA-GMN-PRTJYUN1
                    WHEN    ANY             ALSO    "06"
+                   WHEN    "11"            ALSO    ANY
                        CONTINUE
                    WHEN    "01"            ALSO    ANY
                    WHEN    "02"            ALSO    ANY
@@ -1497,6 +1619,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE    
                EVALUATE    SPA-GMN-PRTJYUN ALSO    SPA-GMN-PRTJYUN1
                                              ALSO    SPA-GMN-PRTJYUN2
+                   WHEN    "11"            ALSO    ANY     ALSO    ANY
+                       CONTINUE
                    WHEN    ANY             ALSO    "06"    ALSO    ANY
                        ADD     1                   TO  SPA-GMN-PAGE-MAX
                    WHEN    "07"            ALSO    ANY     ALSO    ANY
@@ -2193,6 +2317,150 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
+      *    頁・件数の編集処理（医師別）
+      *****************************************************************
+       3101-PAGE-HENSYU-05-SEC            SECTION.
+      *
+           IF      SPA-GMN-SYUKA       =   SPACE   OR  "00"
+               MOVE    50                  TO  IDXX
+           ELSE
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       SPA-GMN-SYUKA-MAX
+                   IF      SPA-GMN-SYUKA       =   SPA-GMN-SYUKAL (IDX)
+                       MOVE    IDX             TO  IDXX
+                       MOVE    SPA-GMN-SYUKA-MAX
+                                               TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF    
+      *
+           INITIALIZE                  SPA-GMN-TBL2
+      *
+           MOVE    ZERO                TO  IDX
+                                           IDW
+           MOVE    1                   TO  IDXY
+           PERFORM UNTIL   IDXY    >   100
+                   OR      IDW     >=  WRK-CONS-PAGE-MAX
+                   OR      SPA-NAI-DRCD-TDRCD (IDXY)
+                                       =   SPACE
+               IF      SPA-NAI-DRCD-TPAGE  (IDXY IDXX)
+                                       >   ZERO
+                   ADD     1                   TO  IDW
+                   MOVE    ZERO                TO  IDX
+                   PERFORM UNTIL   IDXY    >   100
+                           OR      IDX     >=  WRK-CONS-LINE-MAX
+                           OR    ( IDW     =   1       AND
+                                   IDX     >=  32          ) 
+                           OR      SPA-NAI-DRCD-TDRCD (IDXY)
+                                           =   SPACE
+                       IF      SPA-NAI-DRCD-TPAGE  (IDXY IDXX)
+                                               >   ZERO
+                           ADD     1           TO  IDX
+                           MOVE    SPA-NAI-DRCD-TDRCD (IDXY)
+                                               TO  SPA-NAI-TDRCD
+                                                           (IDW IDX)
+      *
+                           IF      SPA-NAI-TDRCD(IDW IDX)
+                                               =   "XXXXX"
+                               MOVE    "医師設定なし"  TO  
+                                               SPA-GMN-TSYURUINAME
+                                                           (IDW IDX)
+                               MOVE    "1"          TO
+                                               SPA-NAI-THKNJANUM-ERR
+                                                           (IDW IDX)
+                           ELSE
+                               MOVE    SPA-NAI-TDRCD (IDW IDX)
+                                                   TO
+                                           SPA-GMN-TSYURUINAME (IDW IDX)
+      *
+                               INITIALIZE              SYS-1010-REC
+                               MOVE    SPA-HOSPNUM TO  SYS-1010-HOSPNUM
+                               MOVE    "1010"      TO  SYS-1010-KANRICD
+                               MOVE    SPA-NAI-TDRCD (IDW IDX)
+                                                   TO  SYS-1010-KBNCD
+                               MOVE    SPA-R01-SRYYM
+                                                   TO  SYS-1010-STYUKYMD
+                                                                   (1:6)
+                               MOVE    "01"        TO  SYS-1010-STYUKYMD
+                                                                   (7:2)
+                               MOVE    SYS-1010-STYUKYMD
+                                                   TO  SYS-1010-EDYUKYMD
+                               MOVE    SYS-1010-REC
+                                                   TO  MCPDATA-REC 
+                               MOVE    "tbl_syskanri"
+                                                   TO  WRK-MCP-TABLE
+                               MOVE    "key10"     TO  WRK-MCP-PATHNAME
+                               PERFORM 900-SYSKANRI-INV-SEC
+                               IF      FLG-SYSKANRI
+                                                   =   ZERO
+                                   MOVE  MCPDATA-REC   TO  SYS-1010-REC
+                                   MOVE  SYS-1010-NAME TO
+                                           SPA-GMN-TSYURUINAME
+                                                       (IDW IDX) (7:)
+                               ELSE
+                                   MOVE    "1"         TO
+                                           SPA-NAI-THKNJANUM-ERR
+                                                               (IDW IDX)
+                               END-IF
+                           END-IF
+      *
+                           MOVE    IDX (3:2)       TO
+                                           SPA-NAI-PRTJYUNI    (IDW IDX)
+                           MOVE    "%"             TO
+                                           SPA-NAI-TEISYUTUSAKI(IDW IDX)
+                           MOVE    "9999"          TO
+                                           SPA-NAI-SYUBETU   (IDW IDX 1)
+                           MOVE    "T"             TO
+                                           SPA-GMN-TCHK-VALUE  (IDW IDX)
+      *
+      *                    プリンタ設定
+                           MOVE    SPA-NAI-PRTNM-G (1)
+                                       TO  SPA-GMN-TPRTNM-G   (IDW IDX)
+                           MOVE    SPA-NAI-PRTNM-G (2)
+                                       TO  SPA-GMN-TPRTNM-N-G (IDW IDX)
+      *                    頁編集処理
+                           ADD     SPA-NAI-DRCD-TPAGE  (IDXY IDXX)
+                                               TO  SPA-GMN-TPAGE
+                                                          (IDW IDX)
+                                                   SPA-NAI-TPAGE-SYUKA
+                                                          (IDW IDX IDXX)
+                                                   SPA-GMN-PAGEH
+                           ADD     SPA-NAI-DRCD-TKENSU (IDXY IDXX)
+                                               TO  SPA-GMN-TKENSU
+                                                          (IDW IDX)
+                                                   SPA-GMN-KENSUH
+                       END-IF    
+      *
+                       ADD     1           TO  IDXY
+                   END-PERFORM
+      *
+               ELSE
+                   ADD     1           TO  IDXY
+               END-IF
+           END-PERFORM    
+      *
+      *    全ての医師が表示できなかったときエラー表示する
+           IF    ( IDXY                <   100               )
+           AND   ( IDW                 >=  WRK-CONS-PAGE-MAX )
+               MOVE    "0100"              TO  SPA-ERRCD
+           END-IF
+      *
+           IF      IDW                 =   ZERO
+               MOVE    "該当なし"          TO  SPA-GMN-TSYURUINAME
+                                                        (1 1)
+               INITIALIZE                  SPA-GMN-TBL2
+               MOVE    1                   TO  SPA-GMN-PAGE-MAX
+                                               SPA-GMN-PAGE-MAX1
+                                               SPA-GMN-PAGE
+           ELSE
+               MOVE    IDW                 TO  SPA-GMN-PAGE-MAX
+                                               SPA-GMN-PAGE-MAX1
+           END-IF
+           .
+       3101-PAGE-HENSYU-05-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    頁編集処理
       *****************************************************************
        31011-SYUKA-PAGE-HENSYU-SEC             SECTION.
@@ -2503,6 +2771,145 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 900-CLOSE-SEC
            .
        31011-PAGE-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医師別編集処理
+      *****************************************************************
+       3102-DRCD-HENSYU-SEC            SECTION.
+      *
+      *    医師別頁                                     
+           INITIALIZE                      QUERY-RECE08-REC
+           MOVE    SPA-HOSPNUM         TO  QUERY-RECE08-HOSPNUM
+           MOVE    SPA-R01-RECE07-PRTID
+                                       TO  QUERY-RECE08-PRTID
+           IF      SPA-R01-RECE07-SYOKBN   =   "1"
+               MOVE    SPA-R01-SRYYM       TO  QUERY-RECE08-RECEYM
+           ELSE
+               MOVE    ZERO                TO  QUERY-RECE08-RECEYM
+           END-IF                                    
+           MOVE    SPA-R01-RECE07-CREYMD
+                                       TO  QUERY-RECE08-CREYMD
+           MOVE    SPA-R01-RECE07-CREHMS
+                                       TO  QUERY-RECE08-CREHMS
+           MOVE    SPA-R01-RECE07-NYUGAIKBN
+                                       TO  QUERY-RECE08-NYUGAIKBN
+           MOVE    QUERY-RECE08-REC    TO  MCPDATA-REC
+           MOVE    "query_receprt"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "query_receprt"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-QUERY-RECE08-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRECEPRT
+           END-IF
+      *
+           PERFORM                     UNTIL   FLG-QRECEPRT  =   1
+               PERFORM VARYING IDXY    FROM    1   BY  1
+                       UNTIL   IDXY    >       100
+                   IF      QUERY-RECE08-DRCD   =   SPACE
+                       MOVE    "XXXXX"         TO  QUERY-RECE08-DRCD
+                   END-IF
+                   IF      SPA-NAI-DRCD-TDRCD (IDXY)
+                                               =   SPACE
+                       MOVE    QUERY-RECE08-DRCD   TO
+                                               SPA-NAI-DRCD-TDRCD (IDXY)
+                   END-IF    
+                   IF      QUERY-RECE08-DRCD   =   SPA-NAI-DRCD-TDRCD
+                                                                  (IDXY)
+                       PERFORM VARYING IDXX    FROM    1   BY  1
+                               UNTIL   IDXX    >       SPA-GMN-SYUKA-MAX
+                           IF      QUERY-RECE08-DRCD-SRYKA
+                                           =   SPA-GMN-SYUKAL (IDXX)
+                               ADD     QUERY-RECE08-PAGE
+                                                       TO
+                                           SPA-NAI-DRCD-TPAGE(IDXY IDXX)
+                                           SPA-NAI-DRCD-TPAGE(IDXY 50)
+                               MOVE    100             TO  IDXY
+                               MOVE    SPA-GMN-SYUKA-MAX
+                                                       TO  IDXX
+                           END-IF    
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "query_receprt"     TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-QUERY-RECE08-NEXT-SEC
+           END-PERFORM    
+           MOVE    "query_receprt"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+      *    医師別件数                                     
+           INITIALIZE                      QUERY-RECE08-REC
+grpsys     MOVE    SPA-HOSPNUM         TO  QUERY-RECE08-HOSPNUM
+           MOVE    SPA-R01-RECE07-PRTID
+                                       TO  QUERY-RECE08-PRTID
+           IF      SPA-R01-RECE07-SYOKBN   =   "1"
+               MOVE    SPA-R01-SRYYM       TO  QUERY-RECE08-RECEYM
+           ELSE
+               MOVE    ZERO                TO  QUERY-RECE08-RECEYM
+           END-IF                                    
+           MOVE    SPA-R01-RECE07-CREYMD
+                                       TO  QUERY-RECE08-CREYMD
+           MOVE    SPA-R01-RECE07-CREHMS
+                                       TO  QUERY-RECE08-CREHMS
+           MOVE    SPA-R01-RECE07-NYUGAIKBN
+                                       TO  QUERY-RECE08-NYUGAIKBN
+           MOVE    QUERY-RECE08-REC          TO  MCPDATA-REC
+           MOVE    "query_receprt"     TO  MCP-TABLE
+           MOVE    "key1"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "query_receprt"     TO  MCP-TABLE
+               MOVE    "key1"              TO  MCP-PATHNAME
+               PERFORM 900-QUERY-RECE08-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-QRECEPRT
+           END-IF
+      *
+           PERFORM                     UNTIL   FLG-QRECEPRT  =   1
+               PERFORM VARYING IDXY    FROM    1   BY  1
+                       UNTIL   IDXY    >       100
+                   IF      QUERY-RECE08-DRCD   =   SPACE
+                       MOVE    "XXXXX"         TO  QUERY-RECE08-DRCD
+                   END-IF
+      *
+                   IF      SPA-NAI-DRCD-TDRCD (IDXY)
+                                               =   SPACE
+                       MOVE    QUERY-RECE08-DRCD   TO
+                                               SPA-NAI-DRCD-TDRCD (IDXY)
+                   END-IF    
+                   IF      QUERY-RECE08-DRCD   =   SPA-NAI-DRCD-TDRCD
+                                                                  (IDXY)
+                       PERFORM VARYING IDXX    FROM    1   BY  1
+                               UNTIL   IDXX    >       SPA-GMN-SYUKA-MAX
+                           IF      QUERY-RECE08-DRCD-SRYKA
+                                           =   SPA-GMN-SYUKAL (IDXX)
+                               ADD     QUERY-RECE08-KENSU
+                                                       TO
+                                       SPA-NAI-DRCD-TKENSU(IDXY IDXX)
+                                       SPA-NAI-DRCD-TKENSU(IDXY 50)
+                               MOVE    100             TO  IDXY
+                               MOVE    SPA-GMN-SYUKA-MAX
+                                                       TO  IDXX
+                           END-IF    
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "query_receprt"     TO  MCP-TABLE
+               MOVE    "key1"              TO  MCP-PATHNAME
+               PERFORM 900-QUERY-RECE08-NEXT-SEC
+           END-PERFORM    
+           MOVE    "query_receprt"     TO  MCP-TABLE
+           MOVE    "key1"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           .
+       3102-DRCD-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2827,6 +3234,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "ACTIVATE"      ALSO    "PRTKBN"
                    IF      SPA-GMN-PRTJYUN =   "05"    OR  "07"
                                                        OR  "08"
+                                                       OR  "11"
                        MOVE    "0013"          TO  SPA-ERRCD
                    END-IF    
            END-EVALUATE
@@ -2953,10 +3361,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            IF      SPA-R01-FILEKBN     =   "1"
                IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
+                                                       OR  "11"
                    MOVE    SPA-GMN-PRTJYUN-G   TO  SPA-GMN-PRTJYUN1-G
                                                    SPA-GMN-PRTJYUN2-G
                ELSE
                    IF      SPA-GMN-PRTJYUN-OLD  =  "07"    OR  "08"
+                                                           OR  "11"
                        MOVE    SPA-GMN-PRTJYUN-G
                                                 TO  SPA-GMN-PRTJYUN1-G
                                                     SPA-GMN-PRTJYUN2-G
@@ -2969,28 +3379,43 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            IF      SPA-ERRCD           =   SPACE
                MOVE    SPA-GMN-PRTJYUN     TO  SPA-GMN-PRTJYUN-OLD
-      *        主科設定時は全科に戻す
-               IF      SPA-GMN-PRTJYUN     =  "07"    OR  "08"
-                   IF    ( SPA-R01-RECE07-SRYKA
-                                           NOT =   "00" )
-                   AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
-                                           NOT =   "00" )
-                   AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
-                                           NOT =   "00" )
-                       IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
-                       AND   ( SPA-GMN-SYUKA   NOT =   "00" )
-                           MOVE    SPA-GMN-SYUKALST (1)
-                                               TO  SPA-GMN-SYUKA-G
-                       END-IF
-                   ELSE
-                       MOVE    SPACE           TO  SPA-GMN-SYUKA-G
-                   END-IF 
+      *        医師別印刷設定時
+               IF      SPA-GMN-PRTJYUN     =  "11"
+                   MOVE    SPA-GMN-SYUKALST (1) TO  SPA-GMN-SYUKA-G
                ELSE
-                   IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
-                   AND   ( SPA-GMN-SYUKA   NOT =   "00" )
-                       MOVE    SPA-GMN-SYUKALST (1) TO  SPA-GMN-SYUKA-G
+                   IF    ( SPA-R01-RECE07-SRYKA
+                                           =   "00" )
+                   AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                           =   "00" )
+                   AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                           =   "00" )
+                       MOVE    SPACE           TO  SPA-GMN-SYUKA-G
+                   ELSE
+      *                主科設定時は全科に戻す
+                       IF      SPA-GMN-PRTJYUN     =  "07"    OR  "08"
+                           IF    ( SPA-R01-RECE07-SRYKA
+                                                   NOT =   "00" )
+                           AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                                  NOT =   "00" )
+                           AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                                  NOT =   "00" )
+                               IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
+                               AND   ( SPA-GMN-SYUKA   NOT =   "00" )
+                                   MOVE    SPA-GMN-SYUKALST (1)
+                                                   TO  SPA-GMN-SYUKA-G
+                               END-IF
+                           ELSE
+                               MOVE    SPACE       TO  SPA-GMN-SYUKA-G
+                           END-IF 
+                       ELSE
+                           IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
+                           AND   ( SPA-GMN-SYUKA   NOT =   "00" )
+                               MOVE    SPA-GMN-SYUKALST (1)
+                                                   TO  SPA-GMN-SYUKA-G
+                           END-IF
+                       END-IF
                    END-IF
-               END-IF
+               END-IF    
       *        頁・件数の編集処理
                MOVE    "T"                 TO  SPA-GMN-SYOKBN
                MOVE    ZERO                TO  FLG-PRTNM-SET
@@ -3034,8 +3459,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      SPA-ERRCD           =   SPACE
       *        主科設定時は全科に戻す
                IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
-               AND   ( SPA-GMN-SYUKA   NOT =   "00" )
-                   MOVE    SPA-GMN-SYUKALST (1) TO  SPA-GMN-SYUKA-G
+                   IF      SPA-GMN-SYUKA   NOT =   "00"
+                       MOVE    SPA-GMN-SYUKALST (1) TO  SPA-GMN-SYUKA-G
+                   END-IF
+                   IF    ( SPA-R01-RECE07-SRYKA
+                                           =   "00" )
+                   AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                           =   "00" )
+                   AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                           =   "00" )
+                       MOVE    SPACE           TO  SPA-GMN-SYUKA-G
+                   END-IF
                END-IF
       *        頁・件数の編集処理
                MOVE    "T"                 TO  SPA-GMN-SYOKBN
@@ -3080,8 +3514,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      SPA-ERRCD           =   SPACE
       *        主科設定時は全科に戻す
                IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
-               AND   ( SPA-GMN-SYUKA   NOT =   "00" )
-                   MOVE    SPA-GMN-SYUKALST (1) TO  SPA-GMN-SYUKA-G
+                   IF      SPA-GMN-SYUKA   NOT =   "00"
+                       MOVE    SPA-GMN-SYUKALST (1) TO  SPA-GMN-SYUKA-G
+                   END-IF
+                   IF    ( SPA-R01-RECE07-SRYKA
+                                           =   "00" )
+                   AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                           =   "00" )
+                   AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                           =   "00" )
+                       MOVE    SPACE           TO  SPA-GMN-SYUKA-G
+                   END-IF
                END-IF
       *        頁・件数の編集処理
                MOVE    "T"                 TO  SPA-GMN-SYOKBN
@@ -3157,7 +3600,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *            *全件印刷
                WHEN    "T"
                    MOVE    199             TO  SPA-GMN-CUR
-                   IF      SPA-GMN-SYUKA   =   "00"    OR  SPACE
+                   IF    ( SPA-GMN-SYUKA   =   "00"    OR  SPACE )
+                   OR    ( SPA-GMN-PRTJYUN =   "11"              )
                        PERFORM VARYING IDW FROM    1   BY  1
                                UNTIL   IDW >       WRK-CONS-PAGE-MAX
                            PERFORM VARYING IDX FROM    1   BY  1
@@ -3333,6 +3777,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF
            END-IF
+           IF      WRK-PRTJYUN         =   "11"
+               MOVE    SPA-NAI-2005-DRCD-PRTJYUNKBN
+                                           TO  WRK-SRT-LAST
+           END-IF
       *             
            IF      SPA-GMN-TSTDATA (IDW IDX)  NOT =   SPACE
                EVALUATE    WRK-PRTJYUN ALSO    WRK-SRT-LAST
@@ -3341,6 +3789,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "07"        ALSO    ANY
                    WHEN    "09"        ALSO    ANY
                    WHEN    "06"        ALSO    "1"
+                   WHEN    "11"        ALSO    "1"
+                   WHEN    "11"        ALSO    "3"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -3375,6 +3825,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "06"        ALSO    "2"
                    WHEN    "08"        ALSO    ANY
                    WHEN    "10"        ALSO    ANY
+                   WHEN    "11"        ALSO    "2"
+                   WHEN    "11"        ALSO    "4"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -3441,6 +3893,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF
            END-IF
+           IF      WRK-PRTJYUN         =   "11"
+               MOVE    SPA-NAI-2005-DRCD-PRTJYUNKBN
+                                           TO  WRK-SRT-LAST
+           END-IF
       *
            IF      SPA-GMN-TEDDATA (IDW IDX)  NOT =   SPACE   
                EVALUATE    WRK-PRTJYUN ALSO    WRK-SRT-LAST
@@ -3449,6 +3905,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "07"        ALSO    ANY
                    WHEN    "09"        ALSO    ANY
                    WHEN    "06"        ALSO    "1"
+                   WHEN    "11"        ALSO    "1"
+                   WHEN    "11"        ALSO    "3"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -3483,6 +3941,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "06"        ALSO    "2"
                    WHEN    "08"        ALSO    ANY
                    WHEN    "10"        ALSO    ANY
+                   WHEN    "11"        ALSO    "2"
+                   WHEN    "11"        ALSO    "4"
       *
       *                半角チェック
                        INITIALIZE                  ORCSKANACHKAREA
@@ -4031,13 +4491,16 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    帳票ファイル作成処理
            MOVE    ZERO            TO  WRK-RECE08-PRTJYUN  
+           MOVE    SPACE           TO  WRK-SRT-LAST
       *
       *    入力順指定
            IF      SPA-GMN-PRTJYUN =   "05"
                PERFORM 4502-RECEPRT-INPUT-HENSYU-SEC
            ELSE
-      *      全体指定
-             IF      SPA-GMN-PRTJYUN =   "07"    OR  "08"
+            EVALUATE    SPA-GMN-PRTJYUN
+             WHEN   "07"
+             WHEN   "08"
+      *        全体指定
                EVALUATE    SPA-GMN-SYUKA
                    WHEN    "00"
                        PERFORM VARYING IDXX    FROM    2   BY  1
@@ -4061,7 +4524,27 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                            END-IF
                        END-PERFORM
                END-EVALUATE
-             ELSE
+             WHEN   "11"
+      *        医師別指定
+               MOVE    SPA-NAI-2005-DRCD-PRTJYUNKBN
+                                           TO  WRK-SRT-LAST
+               EVALUATE    SPA-GMN-SYUKA
+                   WHEN    "00"
+                   WHEN    SPACE
+                       MOVE    "%%"             TO  WRK-SYUKA
+                       PERFORM 4505-DRCD-PRTJYUN-PRINT-SEC
+                   WHEN    OTHER
+                       MOVE    SPA-GMN-SYUKA   TO  WRK-SYUKA
+                       PERFORM VARYING IDXX    FROM    2   BY  1
+                               UNTIL   IDXX    >       SPA-GMN-SYUKA-MAX
+                           IF      WRK-SYUKA   =
+                                               SPA-GMN-SYUKAL (IDXX)
+                               PERFORM 4505-DRCD-PRTJYUN-PRINT-SEC
+                               MOVE    SPA-GMN-SYUKA-MAX    TO  IDXX
+                           END-IF
+                       END-PERFORM        
+               END-EVALUATE
+             WHEN   OTHER
       *        社保出力
                IF      SPA-R01-RECE07-SRYKA    =   "00"
                    MOVE    "%%"             TO  WRK-SYUKA
@@ -4158,59 +4641,59 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    END-EVALUATE
                  END-IF
                END-IF 
-             END-IF    
+            END-EVALUATE
       *
-               MOVE    "%%"             TO  WRK-SYUKA
-      *        特別療養費（広域連合）レセプト出力
-               IF    ( SPA-ERRCD        =   SPACE )
-                   IF    ( SPA-GMN-TCHK-VALUE  (1 33)   =   "T"  )
-                   AND   ( SPA-GMN-TPAGE       (1 33)   >   ZERO )
+            MOVE    "%%"             TO  WRK-SYUKA
+      *     特別療養費（広域連合）レセプト出力
+            IF    ( SPA-ERRCD        =   SPACE )
+                IF    ( SPA-GMN-TCHK-VALUE  (1 33)   =   "T"  )
+                AND   ( SPA-GMN-TPAGE       (1 33)   >   ZERO )
                        MOVE    1           TO  IDW
                        MOVE    "6"         TO  WRK-TEISYUTUSAKI
                        MOVE    "%"         TO  WRK-PREFKBN
                        MOVE    33          TO  IDX
                        MOVE    1           TO  IDY
                        PERFORM 45011-RECEPRT-HENSYU-SEC
-                   END-IF
-               END-IF
-      *        特別療養費（国保）レセプト出力
-               IF    ( SPA-ERRCD        =   SPACE )
-                   IF    ( SPA-GMN-TCHK-VALUE  (1 34)   =   "T"  )
-                   AND   ( SPA-GMN-TPAGE       (1 34)   >   ZERO )
+                END-IF
+            END-IF
+      *     特別療養費（国保）レセプト出力
+            IF    ( SPA-ERRCD        =   SPACE )
+                IF    ( SPA-GMN-TCHK-VALUE  (1 34)   =   "T"  )
+                AND   ( SPA-GMN-TPAGE       (1 34)   >   ZERO )
                        MOVE    1           TO  IDW
                        MOVE    "2"         TO  WRK-TEISYUTUSAKI
                        MOVE    "%"         TO  WRK-PREFKBN
                        MOVE    34          TO  IDX
                        MOVE    1           TO  IDY
                        PERFORM 45011-RECEPRT-HENSYU-SEC
-                   END-IF
-               END-IF
+                END-IF
+            END-IF
       *
-      *        自費レセプト出力
-               IF    ( SPA-ERRCD        =   SPACE )
-                   IF      SPA-GMN-TCHK-VALUE  (1 35)   =   "T"
-                   AND     SPA-GMN-TPAGE       (1 35)   >   ZERO
+      *     自費レセプト出力
+            IF    ( SPA-ERRCD        =   SPACE )
+                IF      SPA-GMN-TCHK-VALUE  (1 35)   =   "T"
+                AND     SPA-GMN-TPAGE       (1 35)   >   ZERO
                        MOVE    1               TO  IDW
                        MOVE    "%"             TO  WRK-TEISYUTUSAKI
                        MOVE    "%"             TO  WRK-PREFKBN
                        MOVE    35              TO  IDX
                        MOVE    1               TO  IDY
                        PERFORM 45011-RECEPRT-HENSYU-SEC
-                   END-IF
-               END-IF
+                END-IF
+            END-IF
       *
-      *        レセプト不明分出力
-               IF    ( SPA-ERRCD        =   SPACE )
-                   IF      SPA-GMN-TCHK-VALUE  (1 36)   =   "T"
-                   AND     SPA-GMN-TPAGE       (1 36)   >   ZERO
+      *     レセプト不明分出力
+            IF    ( SPA-ERRCD        =   SPACE )
+                IF      SPA-GMN-TCHK-VALUE  (1 36)   =   "T"
+                AND     SPA-GMN-TPAGE       (1 36)   >   ZERO
                        MOVE    1               TO  IDW
                        MOVE    "%"             TO  WRK-TEISYUTUSAKI
                        MOVE    "%"             TO  WRK-PREFKBN
                        MOVE    36              TO  IDX
                        MOVE    1               TO  IDY
                        PERFORM 45011-RECEPRT-HENSYU-SEC
-                   END-IF
-               END-IF    
+                END-IF
+            END-IF    
            END-IF
       *
       *    印刷処理開始（ＯＲＣＲ０１０２）
@@ -4510,7 +4993,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    SPA-NAI-SYUBETU (IDW IDX IDY)
                                        TO  WRK-RECE09-RECESYUBETU
-           IF    ( SPA-GMN-PRTJYUN     =   "07"    OR  "08" )
+           IF    ( SPA-GMN-PRTJYUN     =   "07"    OR  "08"
+                                                   OR  "11" )
            AND   ( SPA-NAI-SYUBETU (IDW IDX IDY)
                                        =   "9999"           )        
                MOVE    "%"                 TO  WRK-RECE09-TEISYUTUSAKI
@@ -4547,6 +5031,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    WHEN    "07"                ALSO    ANY
                    WHEN    "09"                ALSO    ANY
                    WHEN    "06"                ALSO    "1"
+                   WHEN    "11"                ALSO    "1"
+                   WHEN    "11"                ALSO    "3"
                        MOVE    SPACE       TO  WRK-RECE09-STDATA
                    WHEN    OTHER
                        MOVE    "0"         TO  WRK-RECE09-STDATA (1:1)
@@ -4558,6 +5044,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    WHEN    "06"                ALSO    "2"
                    WHEN    "08"                ALSO    ANY
                    WHEN    "10"                ALSO    ANY
+                   WHEN    "11"                ALSO    "2"
+                   WHEN    "11"                ALSO    "4"
                        PERFORM VARYING IDZ FROM    20  BY  -1
                                UNTIL   IDZ <       1
                            IF      WRK-RECE09-STDATA(IDZ:1)
@@ -4576,6 +5064,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    WHEN    "07"                ALSO    ANY
                    WHEN    "09"                ALSO    ANY
                    WHEN    "06"                ALSO    "1"
+                   WHEN    "11"                ALSO    "1"
+                   WHEN    "11"                ALSO    "3"
                        MOVE    "ヵ"    TO  WRK-RECE09-EDDATA (1:2)
                    WHEN    OTHER
                        MOVE    "zzzzzzzzzzzzzzzzzzzz"
@@ -4588,6 +5078,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    WHEN    "06"                ALSO    "2"
                    WHEN    "08"                ALSO    ANY
                    WHEN    "10"                ALSO    ANY
+                   WHEN    "11"                ALSO    "2"
+                   WHEN    "11"                ALSO    "4"
                        PERFORM VARYING IDZ FROM    20  BY  -1
                                UNTIL   IDZ <       1
                            IF      WRK-RECE09-EDDATA(IDZ:1)
@@ -4610,6 +5102,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        MOVE  "A"       TO  WRK-RECE09-KOUGAKU
                END-IF
                MOVE    WRK-SRT-LAST    TO  WRK-RECE09-SRT-LAST
+           END-IF
+      *
+           IF      WRK-RECE09-PRTJYUN  =   "11"
+               MOVE    SPA-NAI-2005-DRCD-PRTJYUNKBN
+                                       TO  WRK-RECE09-DRCD-PRTJYUNKBN
+               MOVE    "00000"         TO  WRK-RECE09-DRCD
+               IF      SPA-NAI-SYUBETU (IDW IDX 1) 
+                                   NOT =   "0000" AND "6666" AND
+                                           "8888"    
+                   MOVE    SPA-NAI-TDRCD (IDW IDX)
+                                           TO  WRK-RECE09-DRCD
+               END-IF
            END-IF
       *
       *　　（ＯＲＣＲ０１０１）　
@@ -5023,6 +5527,36 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            PERFORM 4501-PRTJYUN-PRINT-SEC
            .
        4504-ALL-PRTJYUN-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    医師別順出力処理
+      *****************************************************************
+       4505-DRCD-PRTJYUN-PRINT-SEC    SECTION.
+      *
+           MOVE    "1"              TO  WRK-TEISYUTUSAKI
+           MOVE    "%"              TO  WRK-PREFKBN
+      *
+           PERFORM VARYING IDW FROM    1   BY  1
+                   UNTIL   IDW >       SPA-GMN-PAGE-MAX1
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       WRK-CONS-LINE-MAX
+                       OR      SPA-NAI-PRTJYUNI(IDW IDX)   =   SPACE
+                       OR      SPA-ERRCD               NOT =   SPACE
+                   IF    ( IDW                 =   1   )
+                   AND   ( IDX                 >=  33  )
+                       CONTINUE
+                   ELSE 
+                       IF    ( SPA-GMN-TCHK-VALUE  (IDW IDX)   =   "T" )
+                       AND   ( SPA-GMN-TPAGE       (IDW IDX)   >   ZERO)
+                           MOVE    1               TO  IDY
+                           PERFORM 45011-RECEPRT-HENSYU-SEC
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+           .
+       4505-DRCD-PRTJYUN-PRINT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5512,7 +6046,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "  社保"            TO  R02-LABEL1
                MOVE    "  国保"            TO  R02-LABEL2
                MOVE    "  広域"            TO  R02-LABEL3
-               IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
+               IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"   OR
+                                               "11"
                    MOVE    WIDGET-INSENSITIVE  TO  R02-PRTJYUN1-STATE
                                                    R02-PRTJYUN2-STATE
                END-IF
@@ -5536,9 +6071,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    IDX                     TO  R02-PREFKBN-COUNT
            END-PERFORM
            IF    ( SPA-GMN-PRTJYUN1    =   "05"  OR  "06"  OR  "07"
-                                                 OR  "08" )
+                                                 OR  "08"  OR  "11" )
            OR    ( SPA-GMN-PRTJYUN2    =   "05"  OR  "06"  OR  "07"
-                                                 OR  "08" )
+                                                 OR  "08"  OR  "11" )
                MOVE    WIDGET-INSENSITIVE  TO  R02-PREFKBN-STATE
            ELSE 
                MOVE    WIDGET-NORMAL       TO  R02-PREFKBN-STATE
@@ -5639,24 +6174,43 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    WIDGET-INSENSITIVE  TO  R02-B13-STATE
            END-IF
       *
+           IF    ( SPA-GMN-PRTJYUN1    =   "05" )
+               MOVE    WIDGET-INSENSITIVE  TO  R02-B14-STATE
+           ELSE 
+               MOVE    WIDGET-NORMAL       TO  R02-B14-STATE
+           END-IF
+      *
            IF      SPA-GMN-SYUKA-MAX   >   ZERO
-             MOVE    WIDGET-NORMAL       TO  R02-SYUKA-STATE
-      *      平成２０年４月以降の設定
-             IF      SPA-R01-RECE07-SRYYM    >=  WRK-CONS-SRYYM-200804
+             IF      SPA-GMN-PRTJYUN     =   "11"
+               MOVE    WIDGET-NORMAL       TO  R02-SYUKA-STATE
+               MOVE    "医師別診療科"      TO  R02-SYUKA-MIDASI
+             ELSE
                IF    ( SPA-R01-RECE07-SRYKA
-                                       NOT =   "00" )
+                                           =   "00" )
                AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
-                                       NOT =   "00" )
+                                           =   "00" )
                AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
-                                       NOT =   "00" )
-                   MOVE    WIDGET-NORMAL       TO  R02-SYUKA-STATE
+                                           =   "00" )
+                 MOVE    WIDGET-INSENSITIVE  TO  R02-SYUKA-STATE
                ELSE
-                   IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
-                       MOVE    WIDGET-INSENSITIVE  TO  R02-SYUKA-STATE
-                   ELSE
-                     IF      SPA-GMN-PAGE-MAX    =   1
-                         MOVE    WIDGET-NORMAL   TO  R02-SYUKA-STATE
-                     ELSE
+                MOVE    "主科"               TO  R02-SYUKA-MIDASI
+                 MOVE    WIDGET-NORMAL       TO  R02-SYUKA-STATE
+      *          平成２０年４月以降の設定
+                 IF      SPA-R01-RECE07-SRYYM  >=  WRK-CONS-SRYYM-200804
+                  IF    ( SPA-R01-RECE07-SRYKA
+                                          NOT =   "00" )
+                  AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                          NOT =   "00" )
+                  AND   ( SPA-R01-RECE07-SRYKA-KOUIKI
+                                          NOT =   "00" )
+                    MOVE    WIDGET-NORMAL       TO  R02-SYUKA-STATE
+                  ELSE
+                    IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
+                      MOVE    WIDGET-INSENSITIVE  TO  R02-SYUKA-STATE
+                    ELSE
+                      IF      SPA-GMN-PAGE-MAX    =   1
+                          MOVE    WIDGET-NORMAL   TO  R02-SYUKA-STATE
+                      ELSE
                        IF    ( SPA-R01-RECE07-SRYKA        =   "00" )
                        AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
                                                        NOT =   "00" )
@@ -5737,18 +6291,18 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                                    TO  R02-SYUKA-STATE
                            END-IF
                        END-IF
-                     END-IF
-                   END-IF
-               END-IF
-             ELSE
-      *        平成２０年３月までの設定
-               IF    ( SPA-GMN-PRTJYUN     =   "07"    OR  "08" )
-               AND   ( SPA-R01-RECE07-SRYKA
-                                           =   "00"             )
-               AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
-                                           =   "00"             )
-                   MOVE    WIDGET-INSENSITIVE  TO  R02-SYUKA-STATE
-               ELSE
+                      END-IF
+                    END-IF
+                  END-IF
+                 ELSE
+      *           平成２０年３月までの設定
+                  IF    ( SPA-GMN-PRTJYUN     =   "07"    OR  "08" )
+                  AND   ( SPA-R01-RECE07-SRYKA
+                                              =   "00"             )
+                  AND   ( SPA-R01-RECE07-SRYKA-KOKUHO
+                                              =   "00"             )
+                      MOVE    WIDGET-INSENSITIVE  TO  R02-SYUKA-STATE
+                  ELSE
                    IF      SPA-GMN-PAGE-MAX    =   1
                        MOVE    WIDGET-NORMAL       TO  R02-SYUKA-STATE
                    ELSE
@@ -5780,7 +6334,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                            END-IF
                        END-IF
                    END-IF
-               END-IF
+                  END-IF
+                 END-IF    
+               END-IF    
              END-IF    
            ELSE 
                MOVE    WIDGET-INSENSITIVE  TO  R02-SYUKA-STATE
@@ -6758,6 +7314,23 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-HKNJAINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプトデータ読み込み
+      *****************************************************************
+       900-QUERY-RECE08-NEXT-SEC           SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-QRECEPRT
+               MOVE    MCPDATA-REC         TO  QUERY-RECE08-REC
+           ELSE
+               MOVE    1                   TO  FLG-QRECEPRT
+           END-IF
+      *
+           .
+       900-QUERY-RECE08-NEXT-EXT.
            EXIT.
       *
       *****************************************************************

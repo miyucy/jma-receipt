@@ -45,7 +45,8 @@
       *
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
       *  04.03.02    NACL-藤原    08/06/02  リアルタイムプレビュー時の表示
-      *  04.03.03    NACL-門脇    08/07/07  複数保険組み合わせ使用時の
+      *  04.03.03    NACL-藤原    08/06/19  医師別出力対応
+      *  04.03.04    NACL-門脇    08/07/07  複数保険組み合わせ使用時の
       *                                     請求点・実日数記載対応
       *****************************************************************
       *
@@ -6942,6 +6943,10 @@
                            MOVE    HC063           TO RECE08-PRTDATA
                    END-EVALUATE
                END-IF
+      *
+      *        医師別出力設定
+               MOVE    RECE02-DRCD         TO  RECE08-DRCD
+               MOVE    RECE02-DRCD-SRYKA   TO  RECE08-DRCD-SRYKA
       *
                MOVE    "tbl_receprt"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME

@@ -561,6 +561,7 @@ DB_files = \
 	tbl_nsrysrh.db \
 	view_Q003.db \
 	view_Q004.db \
+	query_receprt.db \
 
 
 all:   

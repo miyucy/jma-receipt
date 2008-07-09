@@ -73,6 +73,7 @@ db	{
 	tbl_tensu;
 	tbl_tnkrrk;
 	tbl_tsyrrk;
+	query_receprt;
 };
 
 /* #include "orcadb.inc" */

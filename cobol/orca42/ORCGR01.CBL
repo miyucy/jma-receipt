@@ -123,6 +123,7 @@
       *
       *  04.03.01    NACL-藤原    08/06/20  データ入力中の未請求設定遷移
       *                                     を不可とする
+      *  04.03.02    NACL-藤原    08/06/19  医師別出力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4200,6 +4201,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                           TO SPA-R01-RECE07-SRYKA-KOUIKI
                            INITIALIZE     SPA-R01-RECE07-RECE-PUTH(1)
                                           SPA-R01-RECE07-RECE-PUTH(2)
+                           MOVE    SPACE  TO  SPA-R01-RECE08-DRCD-SRYKA
                        END-IF
                      END-IF
                    ELSE

@@ -129,4 +129,5 @@ db	{
 	tbl_prgoption;
 	tbl_nsrysrh;
 	tbl_nrrksrh;
+	query_receprt;
 };

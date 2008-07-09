@@ -150,6 +150,7 @@
       *  04.02.07    NACL-ÌçÏÆ    08/06/24  ¸å´ü¹âÎð¼Ô¤Î¸½ÊªµëÉÕÂÐ¾ÝÊÔ½¸½¤Àµ
       *
       *  04.03.01    NACL-Æ£¸¶    08/05/07  ¸øÈñ£´¼ï¤Þ¤Ç¤ÎÊ»ÍÑ¤Îµ­Ï¿ÂÐ±þ
+      *  04.03.02    NACL-Æ£¸¶    08/06/19  °å»ÕÊÌ½ÐÎÏÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -506,6 +507,8 @@
       *
            COPY    "CPSK2009.INC".
       *
+           COPY    "CPSK200501.INC".
+      *
       *    ·îÂå¤ï¤ê¼õµë¼ÔÈÖ¹æ
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
@@ -544,6 +547,10 @@
       *
       *    ´µ¼Ô½êÆÀ¾ðÊóÊÔ½¸¥µ¥Ö
            COPY    "CPORCSSYOTOKU.INC".
+      *
+      *    °å»Õ¥³¡¼¥É¼èÆÀ¥µ¥Ö
+       01  ORCSDRCDGETAREA.
+           COPY    "CPORCSDRCDGET.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -735,6 +742,24 @@
                AND   ( SYS-2009-SYUKA-KOUIKI
                                        =   SPACE )
                    MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
+               END-IF
+      *
+               MOVE    SPACE           TO  SYSKANRI-REC
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "2005"          TO  SYS-KANRICD
+               MOVE    "01"            TO  SYS-KBNCD
+               MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
+               MOVE    "01"            TO  SYS-STYUKYMD (7:2)
+               MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+               PERFORM 960-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI    =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-200501-REC
+               ELSE    
+                   INITIALIZE                  SYS-200501-REC
+               END-IF
+               IF      SYS-200501-DRCD-PRTKBN
+                                       =   SPACE
+                   MOVE    "0"         TO  SYS-200501-DRCD-PRTKBN
                END-IF
            END-IF
       *
@@ -1469,6 +1494,36 @@
       *Ì¤ÀÁµá¥Õ¥é¥°
            IF    ( IDZ             =   1   )
                MOVE    RECE61-MISEIKYU-FLG     TO  RECE62-MISEIKYU-FLG
+           END-IF
+      *
+      *    °å»ÕÊÌ½ÐÎÏÀßÄê
+           IF    ( IDZ             =   1                     )
+           AND   ( SYS-200501-DRCD-PRTKBN
+                                   =   "1"                   )
+           AND   ( RECE62-SRYYM    >=  WRK-CONS-SRYYM-200804 )
+               INITIALIZE                      ORCSDRCDGETAREA
+               MOVE    RECE62-HOSPNUM  TO  SPA-HOSPNUM
+               MOVE    "1"             TO  LNK-DRCDGET-I-NYUGAIKBN
+               MOVE    RECE62-SRYYM    TO  LNK-DRCDGET-I-SRYYM
+               MOVE    RECE62-PTID     TO  LNK-DRCDGET-I-PTID
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       10
+                   MOVE    RECE62-HKNCOMBI (IDX)
+                                       TO  LNK-DRCDGET-I-HKNCOMBI (IDX)
+               END-PERFORM
+               MOVE    RECE62-NYUINYMD TO  LNK-DRCDGET-I-NYUINYMD
+               MOVE    RECE62-TEKSTYMD-X
+                                       TO  LNK-DRCDGET-I-TEKSTYMD
+               MOVE    RECE62-TEKEDYMD-X
+                                       TO  LNK-DRCDGET-I-TEKEDYMD
+               CALL    "ORCSDRCDGET"   USING   SPA-AREA
+                                               ORCSDRCDGETAREA
+               IF      LNK-DRCDGET-O-DRCD-SRYKA
+                                       NOT =   SPACE
+                   MOVE    LNK-DRCDGET-O-DRCD  TO  RECE62-DRCD
+                   MOVE    LNK-DRCDGET-O-DRCD-SRYKA
+                                               TO  RECE62-DRCD-SRYKA
+               END-IF 
            END-IF
       *
            PERFORM     220-DATA-WRITE-SEC

@@ -191,6 +191,7 @@
       *  04.02.08    NACL-門脇    08/06/24  後期高齢者の現物給付対象編集修正
       *
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *  04.03.02    NACL-藤原    08/06/19  医師別出力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -650,6 +651,7 @@
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK2005.INC".
+           COPY    "CPSK200501.INC".
       *
            COPY    "CPSK2009.INC".
       *
@@ -707,6 +709,10 @@
       *
       *    患者所得情報編集サブ
            COPY    "CPORCSSYOTOKU.INC".
+      *
+      *    医師コード取得サブ
+       01  ORCSDRCDGETAREA.
+           COPY    "CPORCSDRCDGET.INC".
       *
       ****************************************************************
        LINKAGE                 SECTION.
@@ -823,6 +829,26 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF      SYS-2005-NYUTAIINREKI-KSIKBN
                                        =   SPACE
                    MOVE    "0"         TO  SYS-2005-NYUTAIINREKI-KSIKBN
+               END-IF
+      *
+               MOVE    SPACE           TO  SYSKANRI-REC
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    "2005"          TO  SYS-KANRICD
+               MOVE    "01"            TO  SYS-KBNCD
+               MOVE    WRK-PARA-SRYYM  TO  SYS-STYUKYMD (1:6)
+               MOVE    "01"            TO  SYS-STYUKYMD (7:2)
+               MOVE    SYS-STYUKYMD    TO  SYS-EDYUKYMD
+               MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+               MOVE    "key10"         TO  WRK-MCP-PATHNAME
+               PERFORM 960-KANRIMST-READ-SEC
+               IF      FLG-SYSKANRI    =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYS-200501-REC
+               ELSE    
+                   INITIALIZE                  SYS-200501-REC
+               END-IF
+               IF      SYS-200501-DRCD-PRTKBN
+                                       =   SPACE
+                   MOVE    "0"         TO  SYS-200501-DRCD-PRTKBN
                END-IF
           END-IF
       *
@@ -1540,9 +1566,36 @@ grpsys         MOVE    RECE02-HOSPNUM  TO  SPA-HOSPNUM
                                    =   "1" )               
                PERFORM 240-PTNYUINRRK-SYORI-SEC
            END-IF
-      *未請求フラグ
+      *
+      *    未請求フラグ
            IF    ( IDZ             =   1   )
                MOVE    RECE01-MISEIKYU-FLG     TO  RECE02-MISEIKYU-FLG
+           END-IF
+      *
+      *    医師別出力設定（一括作成時のみ）
+           IF    ( IDZ             =   1                     )
+           AND   ( WRK-PARA-SRYYM  NOT =   "000000"          )
+           AND   ( SYS-200501-DRCD-PRTKBN
+                                   =   "1"                   )
+           AND   ( RECE02-SRYYM    >=  WRK-CONS-SRYYM-200804 )
+               INITIALIZE                      ORCSDRCDGETAREA
+               MOVE    RECE02-HOSPNUM  TO  SPA-HOSPNUM
+               MOVE    "2"             TO  LNK-DRCDGET-I-NYUGAIKBN
+               MOVE    RECE02-SRYYM    TO  LNK-DRCDGET-I-SRYYM
+               MOVE    RECE02-PTID     TO  LNK-DRCDGET-I-PTID
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       10
+                   MOVE    RECE02-HKNCOMBI (IDX)
+                                       TO  LNK-DRCDGET-I-HKNCOMBI (IDX)
+               END-PERFORM
+               CALL    "ORCSDRCDGET"   USING   SPA-AREA
+                                               ORCSDRCDGETAREA
+               IF      LNK-DRCDGET-O-DRCD-SRYKA
+                                       NOT =   SPACE
+                   MOVE    LNK-DRCDGET-O-DRCD  TO  RECE02-DRCD
+                   MOVE    LNK-DRCDGET-O-DRCD-SRYKA
+                                               TO  RECE02-DRCD-SRYKA
+               END-IF 
            END-IF
       *
            PERFORM     220-DATA-WRITE-SEC
