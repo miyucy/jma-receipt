@@ -55,6 +55,7 @@
       * 01.00.24     NACL-多々納  06/03/XX  Ｈ１８．４改正対応
       * 03.04.00     NACL-多々納  06/12/19  外用薬の内服算定追加
       * 04.01.00     NACL-多々納  07/10/XX  悪性腫瘍検査自動設定対応
+      * 04.03.00     NACL-多々納  08/07/01  検査加算種別対応他
       *****************************************************************
       *
       *
@@ -1900,6 +1901,12 @@
       *        処置加算のみ
                IF     (WRK-SRYSYUKBN           =   "403" )  AND
                       (SPA-COM-TNSSRYKBN (IDX) =   "40"  )
+                   MOVE    1               TO  FLG-ARI
+               END-IF
+      *!
+      *        検査加算のみ
+               IF     (WRK-SRYSYUKBN           =   "603" )  AND
+                      (SPA-COM-TNSSRYKBN (IDX) =   "60"  )
                    MOVE    1               TO  FLG-ARI
                END-IF
            END-IF

@@ -1037,6 +1037,11 @@
                    MOVE    IDX-Z           TO  IDX1
                END-IF
            END-PERFORM
+      *    検査加算料
+           IF     (WRK-COM-SRYSYUKBN(IDX-Z)    =   "603" )  AND
+                  (WRK-COM-SRYKBN (IDX-Z)      =   "60"  )
+               MOVE    1                   TO  FLG-ARI
+           END-IF
       *
            IF      FLG-ARI             =   ZERO
                MOVE    "0013"          TO  WRK-ERRCD
@@ -1719,7 +1724,6 @@
       *
            MOVE    WRK-COM-KEI  (IDX-MAX)  TO  LNK-ORCSC-ZAIKEI
            MOVE    WRK-COM-TENSU(IDX-MAX)  TO  LNK-ORCSC-ZAITEN
-      *
            .
        1002-TENSU-KEI-EXT.
            EXIT.
@@ -2123,9 +2127,9 @@
                END-IF
            END-PERFORM
       *
-           IF      IDX-SYU             =   ZERO
-               GO      TO      1006-KASAN-SET-EXT
-           END-IF
+      *    IF      IDX-SYU             =   ZERO
+      *        GO      TO      1006-KASAN-SET-EXT
+      *    END-IF
       *
       *    検査逓減減算
            IF     (WRK-TENSUKEI-TEI    >   ZERO )  OR
@@ -2221,6 +2225,7 @@
                                        +   WRK-TENSUKEI-NNEN
       *
            IF      SPA-HKNKBN          =   1
+             AND  (IDX-SYU         NOT =   ZERO)
       ****   AND  (SPA-RSI-HKNKBN  NOT =   "5" )
              AND  (SPA-RSI-JUNKYO  NOT =   "1" )
       *        労災の外来管理加算読み替え処理
@@ -4198,7 +4203,7 @@
                END-IF
            END-IF
       *    入力にないとき、検査数で自動発生
-      *****IF      FLG-INPUT           =   ZERO
+      **** IF      FLG-INPUT           =   ZERO
       *        点数マスタ編集・基本チェック
                INITIALIZE                  ORCSC92AREA
                MOVE    "2"                 TO  LNK-SC92-KBN
