@@ -3135,7 +3135,7 @@
 	    <widget>
 	      <class>GtkPandaEntry</class>
 	      <name>EDYM02</name>
-	      <x>432</x>
+	      <x>435</x>
 	      <y>88</y>
 	      <width>84</width>
 	      <height>24</height>
