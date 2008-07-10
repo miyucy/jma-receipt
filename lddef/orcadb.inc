@@ -130,4 +130,5 @@ db	{
 	tbl_nsrysrh;
 	tbl_nrrksrh;
 	query_receprt;
+	tbl_pttokki;
 };

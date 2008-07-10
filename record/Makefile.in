@@ -364,6 +364,7 @@ RECORD_files = \
 	ZFIL.rec \
 	U012.rec \
 	N21FIL.rec \
+	P02T.rec \
 
 DEF_files = \
 	HC01.def \
@@ -562,6 +563,7 @@ DB_files = \
 	view_Q003.db \
 	view_Q004.db \
 	query_receprt.db \
+	tbl_pttokki.db \
 
 
 all:   
