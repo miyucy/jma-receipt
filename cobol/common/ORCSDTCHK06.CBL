@@ -74,6 +74,7 @@
            03  WRK-PTBYOMEI-KEY            PIC X(200).
            03  WRK-HKNCOMBI                PIC 9(04).
            03  WRK-ZAIHKNNUM               PIC X(03).
+           03  WRK-BYOEDYMD                PIC X(08).
       *
        01  LEN-AREA.
            03  LEN-CHKMST                  PIC 9(05).
@@ -149,13 +150,15 @@
                                        BY         //LNK-COMB-//.
       *
            COPY    "COMMON-SPA".
+           COPY    "CPDTCHKCOMMON.INC".
       *
        PROCEDURE                    DIVISION    USING
        SDTCHK06AREA
        SYS-1101-REC
        SDTCHK02AREA
        LNK-HKNCOMBI-AREA
-       SPA-AREA.
+       SPA-AREA
+       DTCHKCOMMON-AREA.
       *
       *****************************************************************
       *    主　　処理
@@ -455,7 +458,7 @@
       *
            PERFORM VARYING IDX-COMB    FROM    1   BY  1
                    UNTIL ( IDX-COMB    >   SDTCHK02-O-MAX )
-                    OR   ( COMB-HKNNUM    NOT =   SPACE )
+                    OR   ( COMB-HOSPNUM    NOT =   ZERO )
       *
                IF    ( LNK-COMB-HKNCOMBINUM (IDX-COMB)
                                   =    WRK-HKNCOMBI )
@@ -679,6 +682,39 @@
                        PERFORM 220-TAISYO-HKN-CHK-SEC
                        IF    ( FLG-TAISYO-HKN  =   ZERO )
                            MOVE    ZERO            TO  FLG-LOOP-END
+                       END-IF
+      *
+                       MOVE    ZERO            TO  WRK-HKNCOMBI
+                       PERFORM VARYING IDX-COMB    FROM    1   BY  1
+                               UNTIL ( IDX-COMB    >   THKNCOMBI-MAX )
+                                OR   ( WRK-HKNCOMBI    NOT =   ZERO )
+      *
+                           IF    ( COMB-HKNCOMBINUM
+                                               =   THKNCOMBI-HKNCOMBI
+                                                        (IDX-COMB))
+                               MOVE    THKNCOMBI-HKNCOMBI (IDX-COMB)
+                                                   TO  WRK-HKNCOMBI
+                               MOVE    "99999999"  TO  WRK-BYOEDYMD
+                               IF    ( QDTCHK-TENKIYMD  NOT =   SPACE )
+                                   MOVE    QDTCHK-TENKIYMD
+                                                   TO  WRK-BYOEDYMD
+                               END-IF
+      *
+                               IF    ( QDTCHK-SRYYMD
+                                               <=  COMB-TEKEDYMD )
+                                AND  ( WRK-BYOEDYMD
+                                               >=  COMB-TEKSTYMD )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    ZERO    TO  FLG-LOOP-END
+                               END-IF
+      *
+                           END-IF
+      *
+                       END-PERFORM
+      *
+                       IF    ( WRK-HKNCOMBI    =   ZERO )
+                                   MOVE    ZERO    TO  FLG-LOOP-END
                        END-IF
                    ELSE
                        IF    ( SDTCHK06-HKNKBN      =  CONST-ROSAI
