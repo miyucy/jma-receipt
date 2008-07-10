@@ -5030,7 +5030,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "9102"
                    STRING  "保険組合の変更で保険期間外の診療と病名が"
-                           "存在します。診療と病名を保険変更。"
+                           "あります。"
+                           "診療と病名を保険変更して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-PIDMSG
                    END-STRING
