@@ -61,7 +61,7 @@
     <widget>
       <class>GtkButton</class>
       <name>B01</name>
-      <x>244</x>
+      <x>262</x>
       <y>80</y>
       <width>64</width>
       <height>32</height>
@@ -81,7 +81,7 @@
       <name>ERRMSG</name>
       <x>8</x>
       <y>40</y>
-      <width>560</width>
+      <width>566</width>
       <height>32</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
