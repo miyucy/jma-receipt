@@ -71,6 +71,7 @@
       *  04.03.01    NACL-門脇    08/07/08  診区１４のコメントのみの剤
       *                                     編集対応
       *  04.03.02    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
+      *  04.03.03    NACL-門脇    08/07/14  投薬剤点０（院外等）記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -384,7 +385,8 @@ grpsys     MOVE    RECE06-HOSPNUM       TO      RECE061-HOSPNUM
                   PERFORM     2101-RECE061-WRITE-SEC
               ELSE
                 IF  ( RECE06-SRYKBN  =  "11" OR "12" OR "99" OR SPACE
-                                             OR "40" OR "80" OR "14"  )
+                                             OR "40" OR "80" OR "14"
+                                             OR "21" OR "22" OR "23"  )
                 OR  ( RECE06-SAFLG   NOT =  SPACE                     )
                      PERFORM  2101-RECE061-WRITE-SEC
                 END-IF

@@ -124,6 +124,7 @@
       *  04.02.02    NACL-ÃÁœ∆    08/05/08  ≈¿≈©£≥£≥£≤§ŒºÍµªŒ¡ ‘Ω∏
       *
       *  04.03.01    NACL-ÃÁœ∆    08/07/09  ≈ÍÃÙ§Œµ≠∫‹ΩÁ —ππ° ∆¸…’ΩÁ°À
+      *  04.03.02    NACL-ÃÁœ∆    08/07/14  ≈ÍÃÙ∫ﬁ≈¿£∞° ±°≥∞≈˘°Àµ≠∫‹¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3756,7 +3757,8 @@
                   (RECE64-ZAITEN      =   ZERO                )      
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF     
-           IF      RECE64-SAFLG   NOT =   SPACE
+           IF     (RECE64-SAFLG   NOT =   SPACE)
+           OR     (RECE64-TOYAKUFLG   =   "2"  )
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF  
       *---- (01.00.05) LINE ADD END   --------------------------------

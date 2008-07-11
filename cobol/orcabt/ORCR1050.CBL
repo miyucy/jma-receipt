@@ -34,6 +34,7 @@
       *  04.02.02    NACL-門脇    08/04/21  ８０その他記載順対応
       *
       *  04.03.01    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
+      *  04.03.02    NACL-門脇    08/07/14  投薬剤点０（院外等）記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3014,7 +3015,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                   (RECE120-ZAITEN      =   ZERO)
                GO  TO  440-TNSKAI-SET-EXT
            END-IF
-           IF      RECE120-SAFLG   NOT =   SPACE
+           IF     (RECE120-SAFLG   NOT =   SPACE)
+           OR     (RECE120-TOYAKUFLG   =   "2"  )
                GO  TO  440-TNSKAI-SET-EXT                              
            END-IF  
       *

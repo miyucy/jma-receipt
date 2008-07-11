@@ -47,6 +47,7 @@
       *  04.03.01    NACL-門脇    08/07/08  診区１４のコメントのみの剤
       *                                     編集対応
       *  04.03.02    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
+      *  04.03.03    NACL-門脇    08/07/14  投薬剤点０（院外等）記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -339,7 +340,8 @@
               ELSE
                 IF  ( RECE66-SRYKBN  =  "11" OR "33" OR "99"
                                      OR "90" OR "92" OR SPACE
-                                     OR "40" OR "80" OR "14"  )
+                                     OR "40" OR "80" OR "14"
+                                     OR "21" OR "22" OR "23"  )
                 OR  ( RECE66-SAFLG   NOT =  SPACE             )
                      PERFORM  RECE661-WRITE-SEC
                 END-IF
