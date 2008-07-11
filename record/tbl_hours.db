@@ -11,6 +11,7 @@ tbl_hours {
 	UPHMS				char(6);
 	STSRYYMD			char(8),virtual;
 	EDSRYYMD			char(8),virtual;
+	LIMIT				number(5,0),virtual;
 };
 
 primary	{
@@ -78,3 +79,15 @@ path	all 	{
 	};
 };
 
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_hours_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_hours
+		WHERE 	HOSPNUM	= :HOSPNUM
+		AND	HOURSKBN     LIKE   :HOURSKBN
+		ORDER	BY   ID      DESC
+		LIMIT	:LIMIT
+		;
+	};
+};
