@@ -2428,6 +2428,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                           TO SPA-R01-RECE07-RECE-PUTH(1)
                            MOVE    SPA-RECE07-RECE-PUTH-T (2)
                                           TO SPA-R01-RECE07-RECE-PUTH(2)
+                           MOVE    SPA-RECE08-DRCD-SRYKA
+                                          TO SPA-R01-RECE08-DRCD-SRYKA
                        END-IF
                      END-IF 
                    ELSE
