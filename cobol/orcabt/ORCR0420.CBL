@@ -158,6 +158,7 @@
       *
       *  04.03.01    NACL-門脇    08/07/08  診区１４のコメントのみの剤
       *                                     編集対応
+      *  04.03.02    NACL-門脇    08/07/11  診断書明細書料の摘要欄記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -324,6 +325,7 @@
            03  FLG-WRITE45                             PIC 9(01).
            03  FLG-WRITE45X                            PIC 9(01).
            03  FLG-TAHOKEN                             PIC 9(01).
+           03  FLG-SRYKBN-HEN                          PIC 9(01).
       *
       *    基本点数の非表示判定用フラグ
        01  FLG-KHNTEN-AREA.
@@ -489,6 +491,7 @@
            03  WRK-RENNUM2                             PIC 9(02).
       *
            03  WRK-TEN-KZI                             PIC 9(09).
+           03  WRK-TEN-BUN                             PIC 9(09).
       *
            03  WRK-SYUTEN-JI                           PIC 9(09).
            03  WRK-YKZTEN-JI                           PIC 9(09).
@@ -1333,6 +1336,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        FLG-ZAIHOU-COM
                                                        FLG-TAHOKEN
                                                        FLG-SYOUNI-COM
+                                                       FLG-SRYKBN-HEN
       *
                                MOVE    SPACE   TO      WRK-KYUGYOFLG
       *
@@ -1393,6 +1397,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-ZAIHOU-COM
                                                       FLG-TAHOKEN
                                                       FLG-SYOUNI-COM
+                                                      FLG-SRYKBN-HEN
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -1432,6 +1437,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-ZAIHOU-COM
                                                       FLG-TAHOKEN
                                                       FLG-SYOUNI-COM
+                                                      FLG-SRYKBN-HEN
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -1629,11 +1635,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
              MOVE    TNS-DATAKBN        TO  WRK-TNS-DATAKBN(IDX2)
              MOVE    TNS-TIMEKSNKBN     TO  WRK-TNS-TIMEKSNKBN(IDX2)
       *
-             IF      RECE41-HKNKBN        =  "4"
-             AND     ACCT-SRYKBN          =  "80"
-             AND     SRY-SRYCD(IDX2)(1:5) =  "09593"
+             IF     (RECE41-HKNKBN        =  "4"               )
+             AND    (ACCT-SRYKBN          =  "80"              )
+             AND    (SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592"
+                                                     OR "09593")
+               IF    SRY-SRYCD(IDX2)(1:5) =  "09593"
                  PERFORM   2101213-JIBAI-KIZAI-TENSU-HENSYU-SEC
                  MOVE   WRK-TEN-KZI     TO  WRK-TNS-TEN(IDX2)
+               ELSE
+                 PERFORM   2101214-JIBAI-BUNSYO-TENSU-HENSYU-SEC
+                 MOVE   WRK-TEN-BUN     TO  WRK-TNS-TEN(IDX2)
+               END-IF
              ELSE
                 MOVE    TNS-TEN         TO  WRK-TNS-TEN(IDX2)
              END-IF
@@ -1845,8 +1857,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                   IF ( ACCT-SRYKBN          =  "80"               ) AND
                      ( SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592" )
-                                MOVE   "95"   TO    RECE44-SRYKBN       
-                                                    RECE45-SRYKBN       
+                     EVALUATE  SRY-SRYCD(IDX2)(1:5)
+                      WHEN      "09591"
+                        IF  RECE41-SINDAN-TUU < 2
+                          MOVE   "95"   TO    RECE44-SRYKBN
+                                              RECE45-SRYKBN
+                        END-IF
+                      WHEN      "09592"
+                        IF  RECE41-MEISAI-TUU < 2
+                          MOVE   "95"   TO    RECE44-SRYKBN
+                                              RECE45-SRYKBN
+                        END-IF
+                     END-EVALUATE
+                     MOVE    1          TO    FLG-SRYKBN-HEN
                   ELSE
                    IF ( SRY-SRYCD(IDX2)  =  CONS-ROUSAI2   OR
                                             CONS-ROUSAI3   OR
@@ -1861,6 +1884,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                             CONS-ROUSAI16  OR
                                             CONS-ROUSAI17  OR
                                             CONS-RYOYOTEATE  )
+                   OR ( SRY-SRYCD(IDX2)(1:5) = "09593"       )
                    OR ((SRY-SRYCD(IDX2)  =  CONS-ROUSAI8    ) AND
                        (RECE41-SRYYM     <  "200804"        ))
                      IF     SRY-SRYCD(IDX2)   =   CONS-ROUSAI4
@@ -1870,6 +1894,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                           MOVE   "80"   TO    RECE44-SRYKBN
                                               RECE45-SRYKBN
                      END-IF
+                     MOVE    1          TO    FLG-SRYKBN-HEN
                    ELSE                                                 
                      IF      TNS-SRYKBN         =   "80"
                          IF  TNS-GAITENTTLKBN   =   130
@@ -1877,7 +1902,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                 RECE45-SRYKBN
                          END-IF
                      END-IF
-                     IF  WRK-PARA-JIBAIPRTKBN =  "0"
+                     IF  (WRK-PARA-JIBAIPRTKBN =  "0" )
+                     AND (FLG-SRYKBN-HEN       =  ZERO)
                       IF (( RECE44-SRYKBN     =  "80" ) AND
                           ( RECE44-OKIKAEFLG  =  SPACE))
                       OR (  RECE44-OKIKAEFLG  =  "1"   )
@@ -1943,7 +1969,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                 WRK-TANINAME            
                END-IF                                                   
                IF ( ACCT-SRYKBN          =  "80"              ) AND     
-                  ( SRY-SRYCD(IDX2)(1:5) =  "09593"           )         
+                  ( SRY-SRYCD(IDX2)(1:5) =  "09591" OR "09592"
+                                                    OR "09593")         
                     MOVE  1               TO  RECE45-TENSIKIBETU(IDX4)  
       ***>          MOVE  TNS-TEN         TO  RECE45-TEN(IDX4)          
                     MOVE  WRK-TNS-TEN(IDX2)  TO  RECE45-TEN(IDX4)
@@ -2174,7 +2201,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        CONS-ROUSAI17 OR
                                        CONS-ROUSAI18   )                
                OR (( ACCT-SRYKBN          =  "80"     )   AND           
-                   ( SRY-SRYCD(IDX2)(1:5) =  "09593"  ))                
+                   ( SRY-SRYCD(IDX2)(1:5) =  "09591"
+                                          OR "09592"
+                                          OR "09593"  ))                
                OR (( SRY-SRYCD(IDX2) = CONS-ROUSAI8   )   AND
                    ( RECE41-SRYYM    < "200804"       ))
       *
@@ -2214,10 +2243,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                     OR  ((RECE41-HKNKBN      =   "5") AND
                          (RECE41-KOMUKBN     =   "2"))
                       IF (( ACCT-SRYKBN            =  "80"      ) AND
-                          ( SRY-SRYCD(1)(1:5)      =  "09593"   ) AND
+                          ( SRY-SRYCD(1)(1:5)      =  "09591"
+                                                   OR "09592"
+                                                   OR "09593"   ) AND
                           ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ))
                       OR (( ACCT-SRYKBN            =  "80"      ) AND
-                          ( SRY-SRYCD(1)(1:5)      =  "09593"   ) AND
+                          ( SRY-SRYCD(1)(1:5)      =  "09591"
+                                                   OR "09592"
+                                                   OR "09593"   ) AND
                           ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
       *
                          ADD    1      TO    WRK-MEISAI-CNT             
@@ -2279,10 +2312,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            (SRY-SRYCD(IDX2)(1:1)   =   "8"  )   ) AND
                           ( RECE41-SRYYM    <  "200804"         ))
                       OR (( ACCT-SRYKBN            =  "80"      ) AND
-                          ( SRY-SRYCD(1)(1:5)      =  "09593"   ) AND
+                          ( SRY-SRYCD(1)(1:5)      =  "09591"
+                                                   OR "09592"
+                                                   OR "09593"   ) AND
                           ( SRY-SRYCD(IDX2)(1:1)   =   "8"      ))
                       OR (( ACCT-SRYKBN            =  "80"      ) AND
-                          ( SRY-SRYCD(1)(1:5)      =  "09593"   ) AND
+                          ( SRY-SRYCD(1)(1:5)      =  "09591"
+                                                   OR "09592"
+                                                   OR "09593"   ) AND
                           ( SRY-SRYCD(IDX2)(1:3)   =   "008"    ))
       *
                          ADD    1      TO    WRK-MEISAI-CNT             
@@ -2998,6 +3035,29 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
       *
            .
        2101213-JIBAI-KIZAI-TENSU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自賠責文書料点数編集処理
+      *****************************************************************
+       2101214-JIBAI-BUNSYO-TENSU-HENSYU-SEC     SECTION.
+      *
+           MOVE        ZERO          TO    WRK-TEN-BUN
+      *
+           IF   RECE41-TAXKBN   =   "2"
+              IF    WRK-TAX1001-KBN  =  "1"
+                  COMPUTE  WRK-TEN-BUN  =
+                          (TNS-TEN  *  1.05)  +  0.5
+              ELSE
+                  COMPUTE  WRK-TEN-BUN  =
+                          (TNS-TEN  *  1.05)
+              END-IF
+           ELSE
+              MOVE     TNS-TEN       TO     WRK-TEN-BUN
+           END-IF
+      *
+           .
+       2101214-JIBAI-BUNSYO-TENSU-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6404,6 +6464,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                      FLG-ZAIHOU-COM
                                                      FLG-TAHOKEN
                                                      FLG-SYOUNI-COM
+                                                     FLG-SRYKBN-HEN
       *
                                MOVE    SPACE   TO    WRK-KYUGYOFLG
       *
@@ -6466,6 +6527,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-ZAIHOU-COM
                                                       FLG-TAHOKEN
                                                       FLG-SYOUNI-COM
+                                                      FLG-SRYKBN-HEN
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *
@@ -6507,6 +6569,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                       FLG-ZAIHOU-COM
                                                       FLG-TAHOKEN
                                                       FLG-SYOUNI-COM
+                                                      FLG-SRYKBN-HEN
       *
                                       MOVE  SPACE TO  WRK-KYUGYOFLG
       *

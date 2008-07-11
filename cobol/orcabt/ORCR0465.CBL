@@ -41,6 +41,8 @@
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
       *  04.01.01    NACL-ÌçÏÆ    07/10/31  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/07/11  ¿ÇÃÇ½ñÌÀºÙ½ñÎÁ¤ÎÅ¦Í×Íóµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -694,8 +696,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
            MOVE    WRK-SRYCD1        TO  RECE46-SRYCD1
            MOVE    RECE44-ZAINUM     TO  RECE46-ZAINUM
            MOVE    WRK-LINENUM       TO  RECE46-LINENUM
-           IF    RECE46-SRYCD1(1:5)   =  "09593"
-              MOVE    999               TO  RECE46-GAITENTTLKBN         
+           IF    RECE46-SRYCD1(1:5)   =  "09591" OR "09592" OR "09593"
+              EVALUATE  RECE46-SRYCD1(1:5)
+                WHEN     "09591"
+                WHEN     "09592"
+                   MOVE    999          TO  RECE46-GAITENTTLKBN
+                WHEN     "09593"
+                   MOVE    998          TO  RECE46-GAITENTTLKBN
+              END-EVALUATE
            ELSE                                                         
               MOVE    WRK-GAITENTTLKBN  TO  RECE46-GAITENTTLKBN
            END-IF                                                       
@@ -851,7 +859,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                NOT AT  END
                    MOVE    ZERO      TO  FLG-RECE44
                    ADD     1         TO  CNT-IN-CANCEL
-                   IF      RECE44-MEISAISU    =   ZERO
+                   IF     (RECE44-MEISAISU    =   ZERO        )
+                   OR     (RECE44-SRYKBN      =   "95" OR "96")
                        GO  TO  990-RECE44-NEXT-SEC
                    END-IF       
            END-READ
