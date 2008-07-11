@@ -26,6 +26,7 @@
            03  SBD010-ERRFLPARA        PIC X(100).
            03  SBD010-SIMEKBN          PIC X(01).
            03  SBD010-SRYYMD           PIC X(08).
+           03  SBD010-EDSRYYMD         PIC X(08).
            03  SBD010-NYUGAIKBN        PIC X(01).
            03  SBD010-SUMKBN           PIC X(01).
            03  SBD010-MEISAIKBN        PIC X(01).

@@ -49,3 +49,5 @@
            03  HOURS-STSRYYMD          PIC  X(08).
       *Äù¤áÆü½ªÎ»
            03  HOURS-EDSRYYMD          PIC  X(08).
+      *LIMIT
+           03  HOURS-LIMIT             PIC 9(5).

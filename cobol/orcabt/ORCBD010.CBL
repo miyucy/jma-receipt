@@ -100,6 +100,7 @@
                                        SBD010-HOSPNUM
                                        SBD010-ERRFLPARA
                                        SBD010-SRYYMD
+                                       SBD010-EDSRYYMD
                                        SBD010-NYUGAIKBN
                                        SBD010-SUMKBN
                                        SBD010-MEISAIKBN

@@ -404,16 +404,16 @@
                        END-IF
                    END-PERFORM
       *
-                   IF    ( SYS-TOUKEI-SAVEPARA =   "1" )
-                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
-                   ELSE
-                       MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA
-                   END-IF
                    MOVE    SYS-TOUKEI-REC  TO  SYSKANRI-REC
                    MOVE    SYS-TOUKEI-PRGNAME
                                            TO  WRK-PGID
       *
                    PERFORM 3101-TOKEIMEMO-SEL-SEC
+                   IF    ( TKIMEMO-SAVEPARA =   "1" )
+                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
+                   ELSE
+                       MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA
+                   END-IF
       *
                    MOVE    TKIMEMO-MEMO    TO  SPA-GMN-W10-MEMO
       *
@@ -440,17 +440,17 @@
                            MOVE    "T" TO  SPA-GMN-W10-OPTNINI1  (IDX)
                        END-IF
                    END-PERFORM
-      *
-                   IF    ( SYS-TOUKEI-SAVEPARA =   "1" )
-                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA1
-                   ELSE
-                       MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA1
-                   END-IF
                    MOVE    SYS-TOUKEI-REC  TO  SYSKANRI-REC
                    MOVE    SYS-TOUKEI-PRGNAME
                                            TO  WRK-PGID
       *
                    PERFORM 3101-TOKEIMEMO-SEL-SEC
+      *
+                   IF    ( TKIMEMO-SAVEPARA =   "1" )
+                       MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA1
+                   ELSE
+                       MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA1
+                   END-IF
       *
                    MOVE    TKIMEMO-MEMO    TO  SPA-GMN-W10-MEMO1
       *
@@ -555,15 +555,15 @@
                            END-IF
                        END-PERFORM
       *
-                       IF    ( SYS-3001-SAVEPARA =   "1" )
-                           MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
-                       ELSE
-                           MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA
-                       END-IF
                        MOVE    SYS-3001-REC    TO  SYSKANRI-REC
                        MOVE    SYS-3001-PRGNAME
                                                TO  WRK-PGID
                        PERFORM 3101-TOKEIMEMO-SEL-SEC
+                       IF    ( TKIMEMO-SAVEPARA =   "1" )
+                           MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA
+                       ELSE
+                           MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA
+                       END-IF
                        MOVE    TKIMEMO-MEMO        TO  SPA-GMN-W10-MEMO
                    END-IF
                    MOVE    1                   TO  SPA-GMN-W10-CUR
@@ -594,15 +594,15 @@
                            END-IF
                        END-PERFORM
       *
-                       IF    ( SYS-3002-SAVEPARA =   "1" )
-                           MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA1
-                       ELSE
-                           MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA1
-                       END-IF
                        MOVE    SYS-3002-REC    TO  SYSKANRI-REC
                        MOVE    SYS-3002-PRGNAME
                                                TO  WRK-PGID
                        PERFORM 3101-TOKEIMEMO-SEL-SEC
+                       IF    ( TKIMEMO-SAVEPARA =   "1" )
+                           MOVE    "T"     TO  SPA-GMN-W10-CHK-SAVEPARA1
+                       ELSE
+                           MOVE    "F"     TO  SPA-GMN-W10-CHK-SAVEPARA1
+                       END-IF
                        MOVE    TKIMEMO-MEMO    TO  SPA-GMN-W10-MEMO1
                    END-IF
                    MOVE    101                 TO  SPA-GMN-W10-CUR
@@ -1518,11 +1518,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  SYS-3001-HISSU-KBN(IDX)
                        END-IF
                    END-PERFORM
-                   IF    ( SPA-GMN-W10-CHK-SAVEPARA    =   "T" )
-                       MOVE    "1" TO  SYS-3001-SAVEPARA
-                   ELSE
-                       MOVE    " " TO  SYS-3001-SAVEPARA
-                   END-IF
                    MOVE    SYS-3001-REC         TO  SYSKANRI-REC
                WHEN    "0044"
                WHEN    "3002"
@@ -1555,11 +1550,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  SYS-3002-HISSU-KBN(IDX)
                        END-IF
                    END-PERFORM
-                   IF    ( SPA-GMN-W10-CHK-SAVEPARA1   =   "T" )
-                       MOVE    "1" TO  SYS-3002-SAVEPARA
-                   ELSE
-                       MOVE    " " TO  SYS-3002-SAVEPARA
-                   END-IF
                    MOVE    SYS-3002-REC         TO  SYSKANRI-REC
            END-EVALUATE       
       *     
@@ -1637,6 +1627,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  TKIMEMO-PGID
                MOVE    SPA-GMN-W10-MEMO
                                        TO  TKIMEMO-MEMO
+               IF    ( SPA-GMN-W10-CHK-SAVEPARA    =   "T" )
+                   MOVE    "1"         TO  TKIMEMO-SAVEPARA
+               ELSE
+                   MOVE    " "         TO  TKIMEMO-SAVEPARA
+               END-IF
       *
       *        IF    ( SPA-GMN-W10-CHK-SAVEPARA    =   "F" )
                    MOVE    SPACE       TO  TKIMEMO-PARA-G
@@ -1647,6 +1642,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  TKIMEMO-PGID
                MOVE    SPA-GMN-W10-MEMO1
                                        TO  TKIMEMO-MEMO
+               IF    ( SPA-GMN-W10-CHK-SAVEPARA1   =   "T" )
+                   MOVE    "1"         TO  TKIMEMO-SAVEPARA
+               ELSE
+                   MOVE    " "         TO  TKIMEMO-SAVEPARA
+               END-IF
       *
       *        IF    ( SPA-GMN-W10-CHK-SAVEPARA1   =   "F" )
                    MOVE    SPACE       TO  TKIMEMO-PARA-G

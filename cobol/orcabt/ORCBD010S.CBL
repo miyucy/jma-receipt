@@ -481,9 +481,28 @@
                MOVE     ZERO           TO  WRK-STDAILYKEY-TIME
                MOVE     ALL "9"        TO  WRK-EDDAILYKEY-TIME
       *
-               MOVE    SBD010-SRYYMD       TO  WRK-SYMD
+               IF    ( SBD010-EDSRYYMD     NOT =   SPACE )
+                   MOVE    SBD010-EDSRYYMD TO  WRK-EDDAILYKEY-YMD
+               END-IF
+      *
+               MOVE    WRK-STDAILYKEY-YMD  TO  WRK-SYMD
                PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-EDTYMD3         TO  WRK-PRT-SRYYMD
+               MOVE    WRK-EDTYMD3         TO  WRK-PRT-STYMD
+      *
+               MOVE    WRK-EDDAILYKEY-YMD  TO  WRK-SYMD
+               PERFORM 800-SEIWA-HEN-SEC
+               MOVE    WRK-EDTYMD3 (11:)   TO  WRK-PRT-EDYMD
+      *
+               MOVE    SPACE               TO  WRK-PRT-SRYYMD
+               IF    ( WRK-STDAILYKEY-YMD  =   WRK-EDDAILYKEY-YMD )
+                   MOVE    WRK-PRT-STYMD   TO  WRK-PRT-SRYYMD
+               ELSE
+                   STRING  WRK-PRT-STYMD   DELIMITED   BY  SIZE
+                           "¡Á"            DELIMITED   BY  SIZE
+                           WRK-PRT-EDYMD   DELIMITED   BY  SPACE
+                   INTO    WRK-PRT-SRYYMD
+                   END-STRING
+               END-IF
            ELSE
       *
                INITIALIZE                  SYS-3005-REC

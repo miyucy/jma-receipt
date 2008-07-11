@@ -465,11 +465,10 @@
                    IF    ( WRK-NUM         >   WRK-CONS-LINE-MAX )
                        CONTINUE
                    ELSE
+      *
                        MOVE    SYS-3001-KBNCD(1:3)
                                            TO  WRK-NUM
                        MOVE    WRK-NUM     TO  IDX
-                       MOVE    SYS-3001-SAVEPARA
-                                          TO  SPA-NAI-L01-SAVEPARA (IDX)
                        MOVE    SYS-3001-HCNAME
                                            TO  SPA-GMN-L01-HCNAME (IDX)
                        MOVE    SYS-3001-PRGNAME
@@ -494,6 +493,8 @@
                        MOVE    IDX         TO  WRK-KBNCD
                        PERFORM 900-TOUKEIMEMO-KEY2-SEL-SEC
                        IF    ( FLG-TOUKEIMEMO  =   ZERO )
+                           MOVE    TKIMEMO-SAVEPARA
+                                          TO  SPA-NAI-L01-SAVEPARA (IDX)
                            PERFORM VARYING IDX-PARA    FROM    1   BY  1
                                    UNTIL ( IDX-PARA
                                                >   WRK-CONS-PARA-MAX )

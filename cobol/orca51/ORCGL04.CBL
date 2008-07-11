@@ -465,27 +465,17 @@
                                        WRK-FROMYMD
                                        WRK-FROMTIME
       *
-           EVALUATE    SPA-GMN-L04-VIEW-MODE
-           WHEN    3
-           WHEN    ZERO
-               MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
-               MOVE    "key2"              TO  WRK-MCP-PATHNAME
-           WHEN    1
-               MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
-               MOVE    "key4"              TO  WRK-MCP-PATHNAME
-           WHEN    2
-               MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
-               MOVE    "key4"              TO  WRK-MCP-PATHNAME
-           END-EVALUATE
-      *
            INITIALIZE                  HOURS-REC
       *
            MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
-           MOVE    "2"                 TO  WRK-ZOGENPTN
-           MOVE    CONST-GOBACK-MONTH  TO  WRK-ZOGEN
-           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
-           PERFORM 800-CALENDAR-SEC
-           MOVE    WRK-SYMD            TO  HOURS-SRYYMD
+           IF    ( SPA-GMN-L04-VIEW-MODE   =   1 OR 2 )
+               MOVE    "1"             TO  HOURS-HOURSKBN
+           ELSE
+               MOVE    "%"             TO  HOURS-HOURSKBN
+           END-IF
+           MOVE    20                  TO  HOURS-LIMIT
+           MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
+           MOVE    "key5"              TO  WRK-MCP-PATHNAME
            PERFORM 900-HOURS-SEL-SEC
       *
            MOVE    ZERO                TO  IDX-TERM
@@ -533,13 +523,14 @@
            PERFORM 800-CALENDAR-SEC
            MOVE    WRK-SYMD            TO  HOURS-SRYYMD
            IF    ( SPA-GMN-L04-VIEW-MODE   =   3 )
-               MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
-               MOVE    "key2"              TO  WRK-MCP-PATHNAME
+               MOVE    "%"             TO  HOURS-HOURSKBN
            ELSE
-               MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
-               MOVE    "key4"              TO  WRK-MCP-PATHNAME
+               MOVE    "1"             TO  HOURS-HOURSKBN
            END-IF
+           MOVE    20                  TO  HOURS-LIMIT
       *
+           MOVE    "tbl_hours"         TO  WRK-MCP-TABLE
+           MOVE    "key5"              TO  WRK-MCP-PATHNAME
            PERFORM 900-HOURS-SEL-SEC
       *
            MOVE    1                   TO  IDX-TERM
@@ -1270,13 +1261,9 @@
            INITIALIZE                  HOURS-REC
       *
            MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
-           MOVE    "1"                 TO  WRK-ZOGENPTN
-           MOVE    CONST-GOBACK-DAYS   TO  WRK-ZOGEN
-           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
-           PERFORM 800-CALENDAR-SEC
-      *
-           MOVE    WRK-SYMD            TO  HOURS-SRYYMD
-           PERFORM 900-HOURS-KEY4-SEL-SEC
+           MOVE    "1"                 TO  HOURS-HOURSKBN
+           MOVE    1                   TO  HOURS-LIMIT
+           PERFORM 900-HOURS-KEY5-SEL-SEC
            IF    ( FLG-HOURS           =   ZERO )
                MOVE    HOURS-SRYYMD    TO  WRK-FROMYMD
                MOVE    HOURS-TIME      TO  WRK-FROMTIME
@@ -1778,16 +1765,6 @@
                END-IF
            END-IF
       *
-           MOVE    "1"                 TO  WRK-ZOGENPTN
-           MOVE    CONST-GOBACK-DAYS   TO  WRK-ZOGEN
-           MOVE    SPA-NAI-L04-EDSRYYMD    TO  WRK-SYMD
-           PERFORM 800-CALENDAR-SEC
-           IF    ( SPA-NAI-L04-STSRYYMD    <   WRK-SYMD )
-               MOVE    "1012"          TO  SPA-ERRCD
-               MOVE    3               TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-SELTERM-CHK-EXT
-           END-IF
-      *
            PERFORM 2121-SYS3005-UPD-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  212-TOUROKU-SELTERM-CHK-EXT
@@ -1809,16 +1786,6 @@
            IF    ( SPA-GMN-L04-HOURSKBN    =   SPACE )
                MOVE    "1004"          TO  SPA-ERRCD
                MOVE    10              TO  SPA-GMN-L04-CUR
-               GO  TO  212-TOUROKU-INS-CHK-EXT
-           END-IF
-      *
-           MOVE    "1"                 TO  WRK-ZOGENPTN
-           MOVE    CONST-GOBACK-DAYS   TO  WRK-ZOGEN
-           MOVE    SMCNDATE-YMD        TO  WRK-SYMD
-           PERFORM 800-CALENDAR-SEC
-           IF    ( WRK-SYMD    >   SPA-NAI-L04-EDSRYYMD )
-               MOVE    "1005"          TO  SPA-ERRCD
-               MOVE    7               TO  SPA-GMN-L04-CUR
                GO  TO  212-TOUROKU-INS-CHK-EXT
            END-IF
       *
@@ -2702,16 +2669,16 @@
        900-HOURS-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Äù¤á»þ¹ï´ÉÍý¸¡º÷½èÍý(KEY4)
+      *    Äù¤á»þ¹ï´ÉÍý¸¡º÷½èÍý(KEY5)
       *****************************************************************
-       900-HOURS-KEY4-SEL-SEC          SECTION.
+       900-HOURS-KEY5-SEL-SEC          SECTION.
       *
            MOVE    ZERO                TO  FLG-HOURS
       *
            MOVE    SPA-HOSPNUM         TO  HOURS-HOSPNUM
            MOVE    HOURS-REC           TO  MCPDATA-REC
            MOVE    "tbl_hours"         TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
+           MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  HOURS-REC
@@ -2721,11 +2688,11 @@
            END-IF
       *
            MOVE    "tbl_hours"         TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
+           MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
-       900-HOURS-KEY4-SEL-EXT.
+       900-HOURS-KEY5-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
