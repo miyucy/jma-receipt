@@ -53,7 +53,7 @@
       *    ²èÁüÉ½¼¨ÍÑ
            COPY    "ORCA-BLOB".
       *
-           COPY    "ORCA-DBPATH".
+      *     COPY    "ORCA-DBPATH".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
