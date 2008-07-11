@@ -53,3 +53,5 @@
            03  TKIMEMO-UPYMD               PIC  X(08).
       *更新時間
            03  TKIMEMO-UPHMS               PIC  X(06).
+      *パラメタ保存区分
+           03  TKIMEMO-SAVEPARA            PIC  X(01).

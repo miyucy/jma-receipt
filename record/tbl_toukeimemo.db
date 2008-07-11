@@ -19,6 +19,7 @@ tbl_toukeimemo {
 	CREYMD  	        	char(8);
 	UPYMD   	        	char(8);
 	UPHMS		        	char(6);
+	SAVEPARA		char(1);
 };
 
 primary	{
