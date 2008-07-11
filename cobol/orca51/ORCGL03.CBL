@@ -86,6 +86,7 @@
            03  WRK-MCP-TABLE                   PIC X(64).
            03  WRK-MAE-INPUT                   PIC X(100).
            03  WRK-ATO-INPUT                   PIC X(100).
+           03  WRK-STR                         PIC X(100).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -330,6 +331,8 @@
            ELSE
                MOVE    WTMEMO-MEMO     TO  SPA-GMN-L03-MEMO
            END-IF
+      *
+           PERFORM 240-PARAUPDATE-SEC
       *
            MOVE    2                   TO  SPA-GMN-L03-CUR
       *
@@ -773,15 +776,18 @@
       *
                PERFORM 3101-TOKEIMEMO-SEL-SEC
                IF    ( FLG-TOUKEIMEMO  =   ZERO )
-                   MOVE    WTMEMO-MEMO     TO  TKIMEMO-MEMO
-                   MOVE    SMCNDATE-YMD    TO  TKIMEMO-UPYMD
-                   MOVE    SMCNDATE-HMS    TO  TKIMEMO-UPHMS
-                   MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
-                   MOVE    "tbl_toukeimemo" TO MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM 910-DBUPDATE-SEC
-                   IF    ( MCP-RC          NOT =   ZERO )
-                       MOVE    "0006"      TO  SPA-ERRCD
+                   IF    ( TKIMEMO-MEMO (1:5)  NOT =   "#HOLD" )
+                    AND  ( TKIMEMO-MEMO (1:5)  NOT =   "#hold" )
+                       MOVE    WTMEMO-MEMO     TO  TKIMEMO-MEMO
+                       MOVE    SMCNDATE-YMD    TO  TKIMEMO-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  TKIMEMO-UPHMS
+                       MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
+                       MOVE    "tbl_toukeimemo" TO MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBUPDATE-SEC
+                       IF    ( MCP-RC          NOT =   ZERO )
+                           MOVE    "0006"      TO  SPA-ERRCD
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -971,7 +977,16 @@
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-L03-MEMO    TO  L03-MEMO
+      *
+           MOVE    SPACE               TO  L03-MEMO
+           IF    ( SPA-GMN-L03-MEMO (1:5)  =   "#hold" OR "#HOLD" )
+               UNSTRING    SPA-GMN-L03-MEMO    DELIMITED   BY X"0A"
+               INTO        WRK-STR
+                           L03-MEMO
+               END-UNSTRING
+           ELSE
+               MOVE    SPA-GMN-L03-MEMO    TO  L03-MEMO
+           END-IF
       *
       *    カーソル位置
            PERFORM 5001-MAPCUR-SEC

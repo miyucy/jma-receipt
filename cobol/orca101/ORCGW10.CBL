@@ -672,7 +672,8 @@
                MOVE    SPA-HOSPNUM         TO  TKIMEMO-HOSPNUM
                MOVE    TOUKEIMEMO-REC          TO  MCPDATA-REC
                PERFORM 900-TOUKEIMEMO-KEY-SEL-SEC
-               IF    ( FLG-TOUKEIMEMO  NOT =   ZERO )
+               IF    ( TKIMEMO-MEMO(1:5)   NOT =   "#HOLD" )
+                AND  ( TKIMEMO-MEMO(1:5)   NOT =   "#hold" )
                    INITIALIZE                  TOUKEIMEMO-REC
                    MOVE    WRK-PGID        TO  TKIMEMO-PGID
                    MOVE    "0000"          TO  TKIMEMO-KANRICD
