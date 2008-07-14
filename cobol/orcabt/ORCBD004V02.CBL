@@ -178,6 +178,7 @@ grpsys     03  RECEERR             PIC X(100).
                05  WRK-EDDAILYKEY-TIME PIC X(04).
            03  WRK-STR                 PIC X(300).
            03  WRK-MAIN-PATHNAME   PIC X(64).
+           03  WRK-CREYMD          PIC X(30).
       *
        01  KEY-AREA.
            03  KEY-NEW-TBL.
@@ -431,6 +432,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
                MOVE    "key10"         TO  WRK-MAIN-PATHNAME
            END-IF
       *
+           MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           STRING  "作成日："              DELIMITED   BY  SIZE
+                   WRK-HENYMDG             DELIMITED   BY  SIZE
+           INTO    WRK-CREYMD
+           END-STRING
+      *
            .
        110-PARA-HENSYU-EXT.
            EXIT.
@@ -549,6 +557,8 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                MOVE    "（患者別）"        TO  HCM07-SYORIKBN
            END-EVALUATE
       *----(00.00.03)--ADD-END-----
+      *
+           MOVE    WRK-CREYMD      TO  HCM07-CREYMD
            .
        310-HEAD-HEN-EXT.
            EXIT.

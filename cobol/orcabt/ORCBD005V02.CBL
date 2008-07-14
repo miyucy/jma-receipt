@@ -230,10 +230,11 @@ grpsys         05  WRK-NAI-HOSPNUM     PIC 9(02).
                05  WRK-KIKANSTTIME.
                    07  WRK-KIKANSTTIME-HH          PIC X(04).
                    07  WRK-KIKANSTTIME-MM          PIC X(04).
-               05  WRK-KIKANEDYMD                  PIC X(12).
+               05  WRK-KIKANEDYMD                  PIC X(22).
                05  WRK-KIKANEDTIME.
                    07  WRK-KIKANEDTIME-HH          PIC X(04).
                    07  WRK-KIKANEDTIME-MM          PIC X(04).
+           03  WRK-CREYMD                          PIC X(30).
       *
        01  KEY-AREA.
            03  KEY-BTUNUM          PIC X(02).
@@ -529,6 +530,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                MOVE    SPACE           TO  WRK-PARA-SORTKBN
            END-IF
       *
+           MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
+           PERFORM 31012-SEIWA-HEN-SEC
+           STRING  "作成日："              DELIMITED   BY  SIZE
+                   WRK-HENYMDG             DELIMITED   BY  SIZE
+           INTO    WRK-CREYMD
+           END-STRING
+      *
            .
        110-PARA-HENSYU-EXT.
            EXIT.
@@ -712,7 +720,7 @@ grpsys                                     SPA-AREA
                       "："                 DELIMITED   BY  SIZE
                       WRK-KIKANSTTIME-MM   DELIMITED   BY  SIZE
                       "〜"                 DELIMITED   BY  SIZE
-                      WRK-KIKANEDYMD       DELIMITED   BY  SIZE
+                      WRK-KIKANEDYMD       DELIMITED   BY  SPACE
                       WRK-KIKANEDTIME-HH   DELIMITED   BY  SIZE
                       "："                 DELIMITED   BY  SIZE
                       WRK-KIKANEDTIME-MM   DELIMITED   BY  SIZE
@@ -734,6 +742,8 @@ grpsys                                     SPA-AREA
                MOVE    "（患者別）"
                                    TO  HCM08-SYORIKBN
            END-EVALUATE
+      *
+           MOVE    WRK-CREYMD      TO  HCM08-CREYMD
       *
            .
        310-HEAD-HEN-EXT.
