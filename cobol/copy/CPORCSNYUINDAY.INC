@@ -50,6 +50,14 @@
       *      ２：短期滞在手術基本料２（又は３）−生活療養で入院料未算定日）
                07  LNK-NYUINDAY-TANKI2-KBN    PIC  X(01)  OCCURS  31.
       *
+      *特定入院料算定区分
+             05  LNK-NYUINDAY-TOKUTEI-TBL.
+      *  １：特定入院料以外での入院（生活療養以外）
+      *  ２：特定入院料以外での入院（生活療養）
+      *  ３：特定入院料での入院（生活療養以外）
+      *  ４：特定入院料での入院（生活療養）
+               07  LNK-NYUINDAY-TOKUTEI-KBN   PIC  X(01)  OCCURS  31.
+      *
       *復帰コード（１：算定年月エラー　２：患者検索エラー
       *            ３：入院会計なし　４：入院区分設定なし）
            03  LNK-NYUINDAY-RC                PIC S9(9) BINARY.
