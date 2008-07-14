@@ -1324,6 +1324,9 @@
        41011-INS-SYOKI-SEC             SECTION.
       *
            PERFORM 31011-HOURSKBNLST-SET-SEC
+           MOVE    "1"                 TO  WRK-CMB-CD
+           PERFORM 4200-HOURSKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-L04-HOURSKBN-G
       *
            PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD        TO  SPA-NAI-L04-EDSRYYMD

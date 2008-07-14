@@ -133,7 +133,7 @@ grpsys     03  RECEERR             PIC X(100).
                                    PIC X(04).
                    07  WRK-KIKANSTTIME-MM
                                    PIC X(04).
-               05  WRK-KIKANEDYMD  PIC X(12).
+               05  WRK-KIKANEDYMD  PIC X(22).
                05  WRK-KIKANEDTIME.
                    07  WRK-KIKANEDTIME-HH
                                    PIC X(04).
@@ -385,7 +385,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
       *
                MOVE    SYS-3005-EDSRYYMD   TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG (11:)   TO  WRK-KIKANEDYMD
+               IF    ( SYS-3005-STSRYYMD (1:4)
+                                           =   SYS-3005-EDSRYYMD (1:4))
+                   MOVE    WRK-HENYMDG (11:)   TO  WRK-KIKANEDYMD
+               ELSE
+                   MOVE    WRK-HENYMDG (5:)    TO  WRK-KIKANEDYMD
+               END-IF
       *
                MOVE    SYS-3005-EDTIME     TO  WRK-MAE-INPUT
                PERFORM 800-ZENKAKU-HEN-SEC
@@ -521,7 +526,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                       "¡§"                 DELIMITED   BY  SIZE
                       WRK-KIKANSTTIME-MM   DELIMITED   BY  SIZE
                       "¡Á"                 DELIMITED   BY  SIZE
-                      WRK-KIKANEDYMD       DELIMITED   BY  SIZE
+                      WRK-KIKANEDYMD       DELIMITED   BY  SPACE
                       WRK-KIKANEDTIME-HH   DELIMITED   BY  SIZE
                       "¡§"                 DELIMITED   BY  SIZE
                       WRK-KIKANEDTIME-MM   DELIMITED   BY  SIZE

@@ -463,7 +463,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
       *
                MOVE    SYS-3005-EDSRYYMD   TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG (11:)   TO  WRK-KIKANEDYMD
+               IF    ( SYS-3005-STSRYYMD (1:4)
+                                           =   SYS-3005-EDSRYYMD (1:4))
+                   MOVE    WRK-HENYMDG (11:)   TO  WRK-KIKANEDYMD
+               ELSE
+                   MOVE    WRK-HENYMDG (5:)    TO  WRK-KIKANEDYMD
+               END-IF
       *
                MOVE    SYS-3005-EDTIME     TO  WRK-MAE-INPUT
                PERFORM 800-ZENKAKU-HEN-SEC

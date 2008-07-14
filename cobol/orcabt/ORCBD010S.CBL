@@ -491,7 +491,14 @@
       *
                MOVE    WRK-EDDAILYKEY-YMD  TO  WRK-SYMD
                PERFORM 800-SEIWA-HEN-SEC
-               MOVE    WRK-EDTYMD3 (11:)   TO  WRK-PRT-EDYMD
+               IF    ( WRK-STDAILYKEY-YMD (1:4)
+                                           =   WRK-EDDAILYKEY-YMD (1:4))
+                   MOVE    WRK-EDTYMD3 (11:)
+                                           TO  WRK-PRT-EDYMD
+               ELSE
+                   MOVE    WRK-EDTYMD3 (5:)
+                                           TO  WRK-PRT-EDYMD
+               END-IF
       *
                MOVE    SPACE               TO  WRK-PRT-SRYYMD
                IF    ( WRK-STDAILYKEY-YMD  =   WRK-EDDAILYKEY-YMD )
@@ -529,7 +536,14 @@
       *
                    MOVE    WRK-EDDAILYKEY-YMD  TO  WRK-SYMD
                    PERFORM 800-SEIWA-HEN-SEC
-                   MOVE    WRK-EDTYMD3 (11:)   TO  WRK-PRT-EDYMD
+                   IF    ( WRK-STDAILYKEY-YMD (1:4)
+                                           =   WRK-EDDAILYKEY-YMD (1:4))
+                       MOVE    WRK-EDTYMD3 (11:)
+                                           TO  WRK-PRT-EDYMD
+                   ELSE
+                       MOVE    WRK-EDTYMD3 (5:)
+                                           TO  WRK-PRT-EDYMD
+                   END-IF
       *
                    MOVE    WRK-EDDAILYKEY-TIME TO  WRK-KANACHK-INPUT
                    PERFORM 800-ZENKAKU-HEN-SEC
@@ -1313,7 +1327,8 @@
                            END-IF
                        ELSE
                            IF    ( WRK-MIN-DENPEDANUM      =   1 )
-                            AND  ( SYU-SRYYMD  =  WRK-EDDAILYKEY-YMD )
+                            AND  ( SYU-SRYYMD  >=  WRK-STDAILYKEY-YMD )
+                            AND  ( SYU-SRYYMD  <=  WRK-EDDAILYKEY-YMD )
                                PERFORM 800-CALL-ORCSS003-SEC
                                MOVE    SS003-SYOSAISIN-KBN
                                            TO  BD01001-SYOSAIKBN
