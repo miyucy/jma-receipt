@@ -63,6 +63,7 @@
            03  IDX1                            PIC 9(05).
            03  IDX2                            PIC 9(05).
            03  IDXA                            PIC 9(05).
+           03  IDX-STR                         PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-ERR-CUR                     PIC 9(03).
@@ -782,8 +783,9 @@
       *
                PERFORM 3101-TOKEIMEMO-SEL-SEC
                IF    ( FLG-TOUKEIMEMO  =   ZERO )
-                   IF    ( TKIMEMO-MEMO (1:5)  NOT =   "#HOLD" )
-                    AND  ( TKIMEMO-MEMO (1:5)  NOT =   "#hold" )
+                   IF    ((TKIMEMO-MEMO (1:5)  NOT =   "#HOLD" )
+                    AND  ( TKIMEMO-MEMO (1:5)  NOT =   "#hold"))
+                    OR   ( WRK-MCP-WIDGET          =   "B04"   )
                        MOVE    WTMEMO-MEMO     TO  TKIMEMO-MEMO
                        MOVE    SMCNDATE-YMD    TO  TKIMEMO-UPYMD
                        MOVE    SMCNDATE-HMS    TO  TKIMEMO-UPHMS
@@ -986,10 +988,14 @@
       *
            MOVE    SPACE               TO  G03-MEMO
            IF    ( SPA-GMN-G03-MEMO (1:5)  =   "#hold" OR "#HOLD" )
-               UNSTRING    SPA-GMN-G03-MEMO    DELIMITED   BY X"0A"
-               INTO        WRK-STR
-                           G03-MEMO
+               MOVE    1               TO  IDX-STR
+               MOVE    SPACE           TO  WRK-STR
+               UNSTRING     SPA-GMN-G03-MEMO    DELIMITED   BY X"0A"
+               INTO    WRK-STR
+               WITH    POINTER   IDX-STR
                END-UNSTRING
+               MOVE  SPA-GMN-G03-MEMO (IDX-STR :)
+                                           TO  G03-MEMO
            ELSE
                MOVE    SPA-GMN-G03-MEMO    TO  G03-MEMO
            END-IF
