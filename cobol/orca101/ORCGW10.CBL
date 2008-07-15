@@ -135,8 +135,9 @@
            COPY    "CPSK0043.INC"              REPLACING    //0043//
                                                BY           //TOUKEI//.
       *
+       01  WTMEMO-REC.
            COPY    "CPTOUKEIMEMO.INC"      REPLACING    //TKIMEMO-//
-                                           BY           //WKTKIMEMO-//.
+                                           BY           //WTMEMO-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -670,8 +671,9 @@
                MOVE    SYS-STYUKYMD        TO  TKIMEMO-STYUKYMD
                MOVE    SYS-EDYUKYMD        TO  TKIMEMO-EDYUKYMD
                MOVE    SPA-HOSPNUM         TO  TKIMEMO-HOSPNUM
-               MOVE    TOUKEIMEMO-REC          TO  MCPDATA-REC
+               MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
                PERFORM 900-TOUKEIMEMO-KEY-SEL-SEC
+               MOVE    TOUKEIMEMO-REC      TO  WTMEMO-REC
                IF    ( TKIMEMO-MEMO(1:5)   NOT =   "#HOLD" )
                 AND  ( TKIMEMO-MEMO(1:5)   NOT =   "#hold" )
                    INITIALIZE                  TOUKEIMEMO-REC
@@ -683,6 +685,12 @@
                    MOVE    SPA-HOSPNUM     TO  TKIMEMO-HOSPNUM
                    MOVE    TOUKEIMEMO-REC  TO  MCPDATA-REC
                    PERFORM 900-TOUKEIMEMO-KEY-SEL-SEC
+                   IF    ( FLG-TOUKEIMEMO  =   ZERO )
+                       MOVE    WTMEMO-SAVEPARA
+                                           TO  TKIMEMO-SAVEPARA
+                   ELSE
+                       MOVE    WTMEMO-REC  TO  TOUKEIMEMO-REC
+                   END-IF
                END-IF
            ELSE
                    INITIALIZE                  TOUKEIMEMO-REC
