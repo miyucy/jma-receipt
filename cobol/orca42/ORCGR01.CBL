@@ -4992,7 +4992,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    IF      SPA-NAI-R01-PRTKBN-FLG       =   1
                        STRING  "【提出用レセプト】に変更します"
                                                DELIMITED  BY  SIZE
-                               "（平成２０年３月以前のため）"
+                           "（対象の診療年月が平成２０年３月以前です）"
                                                DELIMITED  BY  SIZE
                                                INTO    RID1-LABEL
                        END-STRING

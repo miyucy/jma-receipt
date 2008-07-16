@@ -5,7 +5,7 @@ RID1	{
 		};
 		LABEL	{
 			style   varchar(20);
-			value	varchar(60);
+			value	varchar(80);
 		};
 		B01	{
 			label	varchar(4);

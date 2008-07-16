@@ -701,13 +701,13 @@
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG1        TO  SPA-GMN-CREYMD
                MOVE    SPA-R01-RECE07-CREHMS(1:2)
-                                           TO  SPA-GMN-CREYMD (13:2)
-               MOVE    ":"                 TO  SPA-GMN-CREYMD (15:1)
+                                           TO  SPA-GMN-CREYMD (11:2)
+               MOVE    ":"                 TO  SPA-GMN-CREYMD (13:1)
                MOVE    SPA-R01-RECE07-CREHMS(3:2)
-                                           TO  SPA-GMN-CREYMD (16:2)
-               MOVE    ":"                 TO  SPA-GMN-CREYMD (18:1)
+                                           TO  SPA-GMN-CREYMD (14:2)
+               MOVE    ":"                 TO  SPA-GMN-CREYMD (16:1)
                MOVE    SPA-R01-RECE07-CREHMS(5:2)
-                                           TO  SPA-GMN-CREYMD (19:2)
+                                           TO  SPA-GMN-CREYMD (17:2)
            END-IF
       *         
       *    レセプト編綴順情報

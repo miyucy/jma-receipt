@@ -624,14 +624,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2001-HOSPNUM
                    MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM
                    MOVE    WRK-HENYMDG3(1:16)  TO  SPA-NAI-SRYYMH
                END-IF     
-               EVALUATE    SYS-2001-PRTKBN
-                   WHEN    SPACE
-                       MOVE    SPA-GMN-PRTKBNLST (1)
-                                                   TO  SPA-GMN-PRTKBN-G
-                   WHEN    "1"
-                       MOVE    SPA-GMN-PRTKBNLST (2)
-                                                   TO  SPA-GMN-PRTKBN-G
-               END-EVALUATE
            ELSE
                MOVE    "T"                 TO  SPA-GMN-IKKATU
                MOVE    "F"                 TO  SPA-GMN-KOBETU
@@ -1028,10 +1020,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMDG3(1:16)   TO  SPA-NAI-SRYYMH
       *
-           IF      SPA-NAI-SRYYM       <   200804
-               MOVE    SPA-GMN-PRTKBNLST (1)
-                                           TO  SPA-GMN-PRTKBN-G
-           END-IF
+      ***  IF      SPA-NAI-SRYYM       <   200804
+      ***      MOVE    SPA-GMN-PRTKBNLST (1)
+      ***                                  TO  SPA-GMN-PRTKBN-G
+      ***  END-IF
       *
            MOVE    7                   TO  SPA-GMN-CUR
       *
@@ -1101,8 +1093,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
       *
            IF    (  SPA-NAI-SRYYM       <   200804 )
            AND   (  SPA-GMN-IKKATU      =   "T"    )
-               MOVE    SPA-GMN-PRTKBNLST (1)
-                                           TO  SPA-GMN-PRTKBN-G
+           AND   (  SPA-GMN-PRTKBN      =   "2"    ) 
+               MOVE    "0012"              TO  SPA-ERRCD
+               GO  TO  4103-PRTKBN-CHK-EXT
            END-IF
       *             
            MOVE    7                  TO  SPA-GMN-CUR
@@ -1523,6 +1516,14 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    入外区分チェック     
            IF      SPA-GMN-NYUGAIKBN          =   SPACE
                MOVE    "0003"              TO  SPA-ERRCD
+               GO  TO  450-TOUROKU-EXT
+           END-IF
+      *
+      *    レセプト作成区分
+           IF    (  SPA-NAI-SRYYM       <   200804 )
+           AND   (  SPA-GMN-IKKATU      =   "T"    )
+           AND   (  SPA-GMN-PRTKBN      =   "2"    ) 
+               MOVE    "0012"              TO  SPA-ERRCD
                GO  TO  450-TOUROKU-EXT
            END-IF
       *
@@ -2821,6 +2822,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "0011"
                    MOVE    "レセプト作成区分入力エラー"
                                                        TO  SPA-ERRMSG
+               WHEN    "0012"
+                   MOVE    "レセプト作成区分入力エラー"
+                                                       TO  SPA-ERRMSG
                WHEN    "0100"
                    MOVE    "主科が設定されていません"  TO  SPA-ERRMSG
                WHEN    "1001"
@@ -2949,6 +2953,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            AND   ( SPA-RIDCD (1:1)      =   "1" )
                MOVE    "【点検用レセプト】"     TO  RID1-LABEL
            END-IF
+      *
            MOVE    "戻る"               TO  RID1-B01-LABEL
            MOVE    "B12"                TO  MCP-WIDGET
       *
