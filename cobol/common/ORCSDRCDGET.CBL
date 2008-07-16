@@ -203,10 +203,12 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
                END-PERFORM
            ELSE            
                MOVE    MCPDATA-REC         TO  PTNYUINRRK-REC
-               IF    ( PTNYUINRRK-TENNYUYMD
+               IF    ( PTNYUINRRK-TENNYUYMD (1:6)
+                                           >   LNK-DRCDGET-I-SRYYM     )
+               OR    (   ( PTNYUINRRK-TENNYUYMD
                                            >   LNK-DRCDGET-I-TEKEDYMD )
-               AND   ( LNK-DRCDGET-I-TEKEDYMD
-                                       NOT =   SPACE                  )
+                      AND( LNK-DRCDGET-I-TEKEDYMD
+                                       NOT =   SPACE                  ))
                    CONTINUE
                ELSE
       *            最新の入院履歴情報取得
