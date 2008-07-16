@@ -1531,7 +1531,7 @@ R02	{
 		};
 		};
 		FILEKBN	{
-			value	varchar(42);
+			value	varchar(52);
 		};
 		MSG	{
 			style   varchar(20);
@@ -1548,26 +1548,26 @@ R02	{
 		};
 		PRTJYUN_COMBO	{
 			PRTJYUN	{
-				value	varchar(31);
+				value	varchar(33);
 			};
 			count	int;
-			item	varchar(31)[10];
+			item	varchar(33)[10];
 		};
 		PRTJYUN1_COMBO	{
 			state	int;
 			PRTJYUN1	{
-				value	varchar(31);
+				value	varchar(33);
 			};
 			count	int;
-			item	varchar(31)[10];
+			item	varchar(33)[10];
 		};
 		PRTJYUN2_COMBO	{
 			state	int;
 			PRTJYUN2	{
-				value	varchar(31);
+				value	varchar(33);
 			};
 			count	int;
-			item	varchar(31)[10];
+			item	varchar(33)[10];
 		};
 		PREFKBN_COMBO	{
 			state	int;

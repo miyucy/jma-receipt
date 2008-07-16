@@ -49,6 +49,7 @@
       *  04.03.03    NACL-門脇    08/07/07  複数保険組み合わせ使用時の
       *                                     請求点・実日数記載対応
       *  04.03.04    NACL-藤原    08/06/19  医師別出力対応
+      *  04.03.05    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -175,13 +176,13 @@
                                    REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *       
-           COPY    "HCN09.INC"     REPLACING  //HCN09//
+           COPY    "HCN09V01.INC"  REPLACING  //HCN09V01//
                                    BY         //HC06//.
-           COPY    "HCM12.INC"     REPLACING  //HCM12//
+           COPY    "HCM12V01.INC"  REPLACING  //HCM12V01//
                                    BY         //HC061//.
-           COPY    "HCM13.INC"     REPLACING  //HCM13//
+           COPY    "HCM13V01.INC"  REPLACING  //HCM13V01//
                                    BY         //HC062//.
-           COPY    "HCM14.INC"     REPLACING  //HCM14//
+           COPY    "HCM14V01.INC"  REPLACING  //HCM14V01//
                                    BY         //HC063//.
       *
       *    フラグ領域
@@ -337,6 +338,7 @@
                05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).
                05  WRK-PARA-SHELLID PIC  X(08).
+           03  WRK-PARA-PRTKBN      PIC  X(01).
            03  WRK-PARA-HOSPNUM     PIC  9(02).
            03  WRK-PARA-ERRFILENM   PIC X(200).
       *
@@ -1107,6 +1109,7 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -2761,7 +2764,10 @@
                MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (22:)
            END-IF
       *
-      *
+      *    点検用レセプト作成時
+           IF      WRK-PARA-PRTKBN     =   "2"
+               MOVE    "点検用レセプト"    TO  HC06-LABEL
+           END-IF     
            .
        310-HCN06-HEAD-HEN-EXT.
            EXIT.
@@ -2976,6 +2982,9 @@
       *
       *           病棟番号・病室番号
                    MOVE    HC06-BTUNUM         TO  HC061-BTUNUM
+      *
+      *            点検用レセプト作成時
+                   MOVE    HC06-LABEL          TO  HC061-LABEL
                WHEN    "1"
                    INITIALIZE                      HC062
                    MOVE    SPACE               TO  HC062
@@ -3054,6 +3063,9 @@
       *
       *           病棟番号・病室番号
                    MOVE    HC06-BTUNUM         TO  HC062-BTUNUM
+      *
+      *            点検用レセプト作成時
+                   MOVE    HC06-LABEL          TO  HC062-LABEL
                WHEN    "2"
                    INITIALIZE                      HC063
                    MOVE    SPACE               TO  HC063
@@ -3132,6 +3144,9 @@
       *
       *           病棟番号・病室番号
                    MOVE    HC06-BTUNUM         TO  HC063-BTUNUM
+      *
+      *            点検用レセプト作成時
+                   MOVE    HC06-LABEL          TO  HC063-LABEL
            END-EVALUATE
            .
        310-HCN061-HEAD-HEN-EXT.
@@ -7508,24 +7523,24 @@
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCN09.red"         TO
+               MOVE    "HCN09V01.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC06                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
                EVALUATE    SYS-2005-NEXTPRTKBN
                    WHEN    ZERO
-                       MOVE    "HCM12.red" TO
+                       MOVE    "HCM12V01.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC061           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
                    WHEN    "1"   
-                       MOVE    "HCM13.red" TO
+                       MOVE    "HCM13V01.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC062           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
                    WHEN    "2"   
-                       MOVE    "HCM14.red" TO
+                       MOVE    "HCM14V01.red" TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                        MOVE    HC063           TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -7759,22 +7774,22 @@
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCN09.red"
+                       WHEN    "HCN09V01.red"
                            MOVE    RECE08-PRTDATA  TO HC06
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC06-PAGE
                            MOVE    HC06            TO RECE08-PRTDATA
-                       WHEN    "HCM12.red"                  
+                       WHEN    "HCM12V01.red"                  
                            MOVE    RECE08-PRTDATA  TO HC061
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC061-PAGE
                            MOVE    HC061           TO RECE08-PRTDATA
-                       WHEN    "HCM13.red"                  
+                       WHEN    "HCM13V01.red"                  
                            MOVE    RECE08-PRTDATA  TO HC062
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC062-PAGE
                            MOVE    HC062           TO RECE08-PRTDATA
-                       WHEN    "HCM14.red"                  
+                       WHEN    "HCM14V01.red"                  
                            MOVE    RECE08-PRTDATA  TO HC063
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC063-PAGE
@@ -8263,6 +8278,9 @@
                        WHEN    "05"
                            MOVE    "4"             TO  RECE07-SYORISBT
                    END-EVALUATE
+               END-IF
+               IF      WRK-PARA-PRTKBN     =   "2"
+                   MOVE    "1"                 TO  RECE07-PRTKBN
                END-IF
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
@@ -9323,6 +9341,7 @@
            IF    ( WRK-PARA-SHELLID
                                    NOT =   "RECEPTX" )
            AND   ( FLG-END             =   ZERO      )
+           AND   ( WRK-PARA-PRTKBN     =   "1"       )
                PERFORM 3001-MISEIKYU-FLG-KOUSIN-SEC
            END-IF 
       *

@@ -124,6 +124,7 @@
       *  04.03.01    NACL-藤原    08/06/20  データ入力中の未請求設定遷移
       *                                     を不可とする
       *  04.03.02    NACL-藤原    08/06/19  医師別出力対応
+      *  04.03.03    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -268,6 +269,7 @@
              05  WRK-SHELL-SYSYMD  PIC X(08).  
            03  WRK-RECEKBN         PIC X(18).
            03  WRK-NYUGAIKBN       PIC X(10).
+           03  WRK-PRTKBN          PIC X(10).
            03  WRK-ERRCD           PIC X(04).
       *
            03  WRK-KBNCD-X.
@@ -637,6 +639,13 @@
       *
            INITIALIZE              SPA-R01-AREA
       *
+      *    点検用レセプト作成時
+           IF      SPA-R01-PRTKBN  =   "2"
+               MOVE    "【点検用】"    TO  WRK-PRTKBN
+           ELSE
+               MOVE    SPACE           TO  WRK-PRTKBN
+           END-IF
+      *
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "0"
                    MOVE    "医　保"    TO  WRK-RECEKBN
@@ -657,7 +666,8 @@
                WHEN    "2"
                    MOVE    "（入院外）"      TO  WRK-NYUGAIKBN
            END-EVALUATE  
-           STRING  WRK-RECEKBN        DELIMITED  BY  SIZE 
+           STRING  WRK-PRTKBN         DELIMITED  BY  SPACE 
+                   WRK-RECEKBN        DELIMITED  BY  SPACE
                    WRK-NYUGAIKBN      DELIMITED  BY  SPACE
                    INTO    SPA-GMN-R01-SYOKBN
            END-STRING
@@ -896,6 +906,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  BTPARA-HOSPNUM
                                                SPA-R99-FLG
                    MOVE    SPACE           TO  SPA-RIDCD      
            END-EVALUATE
+      *
+           MOVE    ZERO           TO  SPA-NAI-R01-PRTKBN-FLG  
       *
            .
        330-RID1-SET-EXT.
@@ -3464,6 +3476,28 @@ grpsys             PERFORM 900-DBSELECT-SEC
                        END-IF 
                    END-IF
            END-EVALUATE
+      *
+           MOVE    ZERO                TO  SPA-NAI-R01-PRTKBN-FLG
+           IF      SPA-ERRCD           =   SPACE
+               EVALUATE    SPA-GMN-R01-SYORI
+                   WHEN    "1"
+                   WHEN    "4"
+                   WHEN    "5"
+                   WHEN    "6"
+                       IF      SPA-NAI-R01-TSRYYM (1)  <   200804
+                           MOVE    1       TO  SPA-NAI-R01-PRTKBN-FLG
+                       END-IF  
+                   WHEN    "2"
+                       IF      SPA-NAI-R01-TEISEIYM    <   200804
+                           MOVE    1       TO  SPA-NAI-R01-PRTKBN-FLG
+                       END-IF  
+                   WHEN    "3"
+                       IF      SPA-NAI-R01-STJYUSINYMD (1:6)
+                                                       <   "200804"
+                           MOVE    1       TO  SPA-NAI-R01-PRTKBN-FLG
+                       END-IF  
+               END-EVALUATE
+           END-IF
            .
        450-TOUROKU-EXT.
            EXIT.
@@ -3635,6 +3669,11 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-2001-HOSPNUM
            MOVE    SPA-R01-RECEKBN     TO  SYS-2001-RECEKBN
            MOVE    SPA-R01-NYUGAIKBN   TO  SYS-2001-NYUGAIKBN
            MOVE    SPA-GMN-R01-SYORI   TO  SYS-2001-SYOSBT 
+           IF      SPA-R01-PRTKBN      =   "1"
+               MOVE    SPACE               TO  SYS-2001-PRTKBN
+           ELSE
+               MOVE    "1"                 TO  SYS-2001-PRTKBN
+           END-IF
            MOVE    SPA-TERMID          TO  SYS-2001-TERMID
            MOVE    SPA-OPID            TO  SYS-2001-OPID
            MOVE    SMCNDATE-YMD        TO  SYS-2001-CREYMD
@@ -3742,7 +3781,13 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                IF      SPA-ERRCD       NOT =   SPACE 
                    GO  TO  450-KOUSHIN-EXT
                END-IF
-           END-IF        
+           END-IF
+      *
+      *    点検用レセプトで平成２００８年３月以前のとき
+           IF      SPA-NAI-R01-PRTKBN-FLG  =   1
+               MOVE    "1"                     TO  SPA-R01-PRTKBN
+           END-IF
+           MOVE    ZERO           TO  SPA-NAI-R01-PRTKBN-FLG
       *
       *    パラメタＤＢ更新
            INITIALIZE                  BTPARA-REC
@@ -4040,6 +4085,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                                                    TO  SHELLTBL-ARG17
                    END-IF
            END-EVALUATE
+           MOVE    SPA-R01-PRTKBN  TO  SHELLTBL-ARG18
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
@@ -4931,13 +4977,29 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    END-STRING                   
                WHEN    "6666"
                    MOVE    "レセプト作成処理中です"    TO  WRK-RIDMSG
-               WHEN    "9999"
-                   MOVE    WRK-RECEERR                 TO  SPA-ERRMSG
            END-EVALUATE
       *
-           MOVE    SPACE                TO  RID1
-           MOVE    SPA-RIDCD            TO  RID1-ID1CODE
-           MOVE    WRK-RIDMSG           TO  RID1-ID1MSG
+           MOVE    SPACE               TO  RID1
+           MOVE    SPA-RIDCD           TO  RID1-ID1CODE
+           MOVE    WRK-RIDMSG          TO  RID1-ID1MSG
+           EVALUATE    SPA-RIDCD
+               WHEN    "1002"
+               WHEN    "1006"
+               WHEN    "1007"
+                   IF      SPA-R01-PRTKBN       =   "2"
+                       MOVE    "【点検用レセプト】"     TO  RID1-LABEL
+                   END-IF
+                   IF      SPA-NAI-R01-PRTKBN-FLG       =   1
+                       STRING  "【提出用レセプト】に変更します"
+                                               DELIMITED  BY  SIZE
+                               "（平成２０年３月以前のため）"
+                                               DELIMITED  BY  SIZE
+                                               INTO    RID1-LABEL
+                       END-STRING
+                    END-IF
+           END-EVALUATE
+           MOVE    "blue"              TO  RID1-LABEL-STYLE
+      *
            EVALUATE    SPA-RIDCD
                WHEN    "1008"
                WHEN    "1009"

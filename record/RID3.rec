@@ -6,5 +6,9 @@ RID3	{
 		ID1MSG	{
 			value	varchar(70);
 		};
+		LABEL	{
+			style   varchar(20);
+			value	varchar(60);
+		};
 	};
 };

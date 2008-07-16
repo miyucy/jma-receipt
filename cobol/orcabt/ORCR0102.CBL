@@ -131,6 +131,8 @@
       *                                     HCM13.red
       *                                     HCM14.red
       *  04.02.04    NACL-藤原    08/05/09  エラー時終了処理の追加
+      *
+      *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -306,6 +308,11 @@
            COPY    "HCM12.INC".
            COPY    "HCM13.INC".
            COPY    "HCM14.INC".
+           COPY    "HCM11V01.INC".
+           COPY    "HCN09V01.INC".
+           COPY    "HCM12V01.INC".
+           COPY    "HCM13V01.INC".
+           COPY    "HCM14V01.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -925,6 +932,26 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM14
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM14-RENNUM
                        MOVE    HCM14               TO  RECE08-PRTDATA
+                   WHEN    "HCN09V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCN09V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN09V01-RENNUM
+                       MOVE    HCN09V01            TO  RECE08-PRTDATA
+                   WHEN    "HCM11V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM11V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM11V01-RENNUM
+                       MOVE    HCM11V01            TO  RECE08-PRTDATA
+                   WHEN    "HCM12V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM12V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM12V01-RENNUM
+                       MOVE    HCM12V01            TO  RECE08-PRTDATA
+                   WHEN    "HCM13V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM13V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM13V01-RENNUM
+                       MOVE    HCM13V01            TO  RECE08-PRTDATA
+                   WHEN    "HCM14V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM14V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM14V01-RENNUM
+                       MOVE    HCM14V01            TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
       *             
@@ -1076,9 +1103,13 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCN063V01.red" ALSO    "2"              
                WHEN    "HCN063V02.red" ALSO    "2"              
                WHEN    "HCM11.red"     ALSO    ANY               
+               WHEN    "HCM11V01.red"  ALSO    ANY               
                WHEN    "HCM12.red"     ALSO    "2"              
+               WHEN    "HCM12V01.red"  ALSO    "2"              
                WHEN    "HCM13.red"     ALSO    "2"              
+               WHEN    "HCM13V01.red"  ALSO    "2"              
                WHEN    "HCM14.red"     ALSO    "2"              
+               WHEN    "HCM14V01.red"  ALSO    "2"              
                    MOVE    "医科レセプト（入院外）"    TO  SPRT-TITLE
                WHEN    "HCN06.red"     ALSO    ANY             
                WHEN    "HCN06V01.red"  ALSO    ANY             
@@ -1109,9 +1140,13 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCN08V02.red"  ALSO    ANY               
                WHEN    "HCRCP403.red"  ALSO    ANY                
                WHEN    "HCN09.red"     ALSO    ANY               
+               WHEN    "HCN09V01.red"  ALSO    ANY               
                WHEN    "HCM12.red"     ALSO    "1"              
+               WHEN    "HCM12V01.red"  ALSO    "1"              
                WHEN    "HCM13.red"     ALSO    "1"              
+               WHEN    "HCM13V01.red"  ALSO    "1"              
                WHEN    "HCM14.red"     ALSO    "1"              
+               WHEN    "HCM14V01.red"  ALSO    "1"              
                    MOVE    "医科レセプト（入院）"      TO  SPRT-TITLE
                END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID

@@ -120,6 +120,22 @@
       <label>ＯＫ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LABEL</name>
+      <x>120</x>
+      <y>10</y>
+      <width>540</width>
+      <height>24</height>
+      <label>提出用レセプトで作成します</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
   </widget>
 </widget>
 

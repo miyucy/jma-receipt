@@ -21,3 +21,5 @@
                 05  RID3-VALUE  PIC X(10).
               04  RID3-ID1MSG.
                 05  RID3-VALUE  PIC X(70).
+              05  RID3-LABEL-STYLE  PIC X(20).
+              05  RID3-LABEL        PIC X(60).

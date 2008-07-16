@@ -47,7 +47,7 @@
                 05  R02-TPRTFLG-STYLE   PIC X(20).
                 05  R02-TPRTFLG         PIC X(2).
               04  R02-FILEKBN.
-                05  R02-VALUE     PIC X(42).
+                05  R02-VALUE     PIC X(52).
               04  R02-MSG-STYLE   PIC X(20).
               04  R02-MSG         PIC X(42).
               04  R02-CREYMD.
@@ -58,21 +58,21 @@
                 05  R02-VALUE   PIC 9(4).
               04  R02-PRTJYUN-COMBO.
                 05  R02-PRTJYUN.
-                  06  R02-VALUE   PIC X(31).
+                  06  R02-VALUE   PIC X(33).
                 05  R02-PRTJYUN-COUNT   PIC S9(9)   BINARY.
-                05  R02-PRTJYUNLST  PIC X(31)   OCCURS  10 TIMES.
+                05  R02-PRTJYUNLST  PIC X(33)   OCCURS  10 TIMES.
               04  R02-PRTJYUN1-COMBO.
                 05  R02-PRTJYUN1-STATE   PIC S9(09) BINARY.
                 05  R02-PRTJYUN1.
-                  06  R02-VALUE   PIC X(31).
+                  06  R02-VALUE   PIC X(33).
                 05  R02-PRTJYUN1-COUNT   PIC S9(9)   BINARY.
-                05  R02-PRTJYUN1LST  PIC X(31)   OCCURS  10 TIMES.
+                05  R02-PRTJYUN1LST  PIC X(33)   OCCURS  10 TIMES.
               04  R02-PRTJYUN2-COMBO.
                 05  R02-PRTJYUN2-STATE   PIC S9(09) BINARY.
                 05  R02-PRTJYUN2.
-                  06  R02-VALUE   PIC X(31).
+                  06  R02-VALUE   PIC X(33).
                 05  R02-PRTJYUN2-COUNT   PIC S9(9)   BINARY.
-                05  R02-PRTJYUN2LST  PIC X(31)   OCCURS  10 TIMES.
+                05  R02-PRTJYUN2LST  PIC X(33)   OCCURS  10 TIMES.
               04  R02-PREFKBN-COMBO.
                 05  R02-PREFKBN-STATE   PIC S9(09) BINARY.
                 05  R02-PREFKBN.

@@ -33,6 +33,7 @@ tbl_recekanri	{
         CHOUKI_KBN          char(1);
         SRT_LAST            char(1);
         KOUGAKU_TEN         number(7);
+        PRTKBN              char(1);
         TERMID              varchar(64);
         OPID                varchar(16);
 };

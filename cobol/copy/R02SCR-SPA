@@ -35,6 +35,7 @@
       *  04.02.03    NACL-藤原    08/06/18  メッセージの追加
       *
       *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
+      *  04.03.02    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        01  SPA-R02.
@@ -55,7 +56,7 @@
                05  SPA-GMN-CUR                     PIC 9(03).
                05  SPA-GMN-AREA.
                    07  SPA-GMN-SYOKBN              PIC X(01).
-                   07  SPA-GMN-FILEKBN             PIC X(42).
+                   07  SPA-GMN-FILEKBN             PIC X(52).
                    07  SPA-GMN-MSG                 PIC X(42).
                    07  SPA-GMN-CREYMD              PIC X(22).
                    07  SPA-GMN-PAGEH               PIC 9(04).
@@ -73,29 +74,29 @@
                    07  SPA-GMN-PRTJYUN-G.
                        09  SPA-GMN-PRTJYUN         PIC X(02).
                        09  SPA-GMN-F1              PIC X(01).
-                       09  SPA-GMN-PRTJYUNMEI      PIC X(28).
+                       09  SPA-GMN-PRTJYUNMEI      PIC X(30).
                    07  SPA-GMN-PRTJYUNLST          OCCURS  10.
                        09  SPA-GMN-PRTJYUNL        PIC X(02).
                        09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-PRTJYUNMEIL     PIC X(28).
+                       09  SPA-GMN-PRTJYUNMEIL     PIC X(30).
                    07  SPA-GMN-PRTJYUN-MAX         PIC 9(02).
                    07  SPA-GMN-PRTJYUN1-G.
                        09  SPA-GMN-PRTJYUN1        PIC X(02).
                        09  SPA-GMN-F1              PIC X(01).
-                       09  SPA-GMN-PRTJYUN1MEI     PIC X(28).
+                       09  SPA-GMN-PRTJYUN1MEI     PIC X(30).
                    07  SPA-GMN-PRTJYUN1LST         OCCURS  10.
                        09  SPA-GMN-PRTJYUN1L       PIC X(02).
                        09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-PRTJYUN1MEIL    PIC X(28).
+                       09  SPA-GMN-PRTJYUN1MEIL    PIC X(30).
                    07  SPA-GMN-PRTJYUN1-MAX        PIC 9(02).
                    07  SPA-GMN-PRTJYUN2-G.
                        09  SPA-GMN-PRTJYUN2        PIC X(02).
                        09  SPA-GMN-F1              PIC X(01).
-                       09  SPA-GMN-PRTJYUN2MEI     PIC X(28).
+                       09  SPA-GMN-PRTJYUN2MEI     PIC X(30).
                    07  SPA-GMN-PRTJYUN2LST         OCCURS  10.
                        09  SPA-GMN-PRTJYUN2L       PIC X(02).
                        09  SPA-GMN-F1L             PIC X(01).
-                       09  SPA-GMN-PRTJYUN2MEIL    PIC X(28).
+                       09  SPA-GMN-PRTJYUN2MEIL    PIC X(30).
                    07  SPA-GMN-PRTJYUN2-MAX        PIC 9(02).
                    07  SPA-GMN-PREFKBN-G.
                        09  SPA-GMN-PREFKBN         PIC X(01).

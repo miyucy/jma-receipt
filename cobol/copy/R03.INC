@@ -1,8 +1,6 @@
         02  R03.
               03  R03-B10-STATE   PIC S9(09) BINARY.
               03  R03-B23-STATE   PIC S9(09) BINARY.
-              03  R03-LABEL-STYLE PIC X(20).
-              03  R03-LABEL       PIC X(100).
               03  R03-SRYYM.
                 04  R03-VALUE   PIC X(7).
               03  R03-SYOKBN.
@@ -15,6 +13,12 @@
                   05  R03-VALUE   PIC X(8).
                 04  R03-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
                 04  R03-NYUGAIKBN-ITEM    PIC X(8)    OCCURS  2 TIMES.
+              03  R03-PRTKBNCOMBO.
+                04  R03-PRTKBN-STATE   PIC S9(09) BINARY.
+                04  R03-PRTKBN.
+                  05  R03-VALUE   PIC X(32).
+                04  R03-PRTKBN-COUNT   PIC S9(9)   BINARY.
+                04  R03-PRTKBN-ITEM    PIC X(32)    OCCURS  2 TIMES.
               03  R03-KOBETU.
                 04  R03-VALUE   PIC X.
               03  R03-DATAKBN1.

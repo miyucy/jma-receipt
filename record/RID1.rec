@@ -3,6 +3,10 @@ RID1	{
 		ID1CODE	{
 			value	varchar(10);
 		};
+		LABEL	{
+			style   varchar(20);
+			value	varchar(60);
+		};
 		B01	{
 			label	varchar(4);
 		};

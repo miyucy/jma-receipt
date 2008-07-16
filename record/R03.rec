@@ -6,10 +6,6 @@ R03	{
 		B23	{
 			state	int;
 		};
-		LABEL   {
-			style   varchar(20);
-			label   varchar(100);
-		};
 		SRYYM	{
 			value	varchar(7);
 		};
@@ -26,6 +22,14 @@ R03	{
 			};
 			count	int;
 			item	varchar(8)[2];
+		};
+		PRTKBNCOMBO	{
+			state	int;
+			PRTKBN	{
+				value	varchar(32);
+			};
+			count	int;
+			item	varchar(32)[2];
 		};
 		KOBETU	{
 			value	bool;

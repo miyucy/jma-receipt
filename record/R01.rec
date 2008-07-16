@@ -81,7 +81,7 @@ R01	{
 		};
 		SYOKBN	{
 		    style   varchar(20); 
-			value	varchar(28);
+			value	varchar(38);
 		};
 		LABEL	{
 			value	varchar(10);
