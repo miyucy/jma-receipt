@@ -145,7 +145,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                MOVE    LNK-DRCDGET-I-PTID  TO  JYURRK-PTID
                MOVE    JYURRK-REC          TO  MCPDATA-REC
                MOVE    "tbl_jyurrk"        TO  WRK-MCP-TABLE
-               MOVE    "key13"             TO  WRK-MCP-PATHNAME
+               MOVE    "key43"             TO  WRK-MCP-PATHNAME
            ELSE
                INITIALIZE                      PTNYUINRRK-REC
 grpsys         MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
