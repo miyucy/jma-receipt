@@ -113,8 +113,9 @@
                                    REPLACING   //RECE01//
                                    BY          //BD01004//.
       *
-           COPY    "HCM51.INC".
-           COPY    "HCM52V02.INC"  REPLACING   //HCM52V02//
+           COPY    "HCM51V02.INC"  REPLACING   //HCM51V02//
+                                   BY          //HCM51//.
+           COPY    "HCM52V03.INC"  REPLACING   //HCM52V03//
                                    BY          //HCM52//.
       *
        01  FLG-AREA.
@@ -202,8 +203,8 @@
            03  WRK-MISYU                   PIC S9(9).
            03  WRK-ZZ9                     PIC ZZ9.
            03  WRK-ZZZZ9                   PIC ZZZZ9.
-           03  WRK-ZZZZZZZ9                PIC -------9.
-           03  WRK-ZZZZZZZZ                PIC --------.
+           03  WRK-ZZZZZZZ9                PIC ---------9.
+           03  WRK-ZZZZZZZZ                PIC ----------.
            03  WRK-CHOSEI                  PIC S9(9).
            03  WRK-9-X.
                05  WRK-9                   PIC 9(01).
@@ -2193,7 +2194,7 @@
       *
            INITIALIZE                  ORCSPRTAREA
            PERFORM 230-PRINT-COMMON-SEC
-           MOVE   "HCM51.red"      TO  SPRT-PRTID
+           MOVE   "HCM51V02.red"   TO  SPRT-PRTID
            MOVE    "¼ýÇ¼ÆüÊó"      TO  SPRT-TITLE
            MOVE    HCM51           TO  SPRT-PRTDATA
            CALL    "ORCSPRT"           USING
@@ -2406,7 +2407,7 @@
       *
            INITIALIZE                  ORCSPRTAREA
            PERFORM 230-PRINT-COMMON-SEC
-           MOVE   "HCM52V02.red"       TO  SPRT-PRTID
+           MOVE   "HCM52V03.red"       TO  SPRT-PRTID
            MOVE    "¼ýÇ¼ÆüÊó¡Ê¹ç·×¡Ë"  TO  SPRT-TITLE
            MOVE    HCM52               TO  SPRT-PRTDATA
            CALL    "ORCSPRT"           USING
