@@ -198,6 +198,7 @@
            03  FLG-PTTEIKIRRK              PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-SRYACCT                 PIC 9(01).
+           03  FLG-NYUKSNCHK               PIC 9(01).
            03  FLG-SYUARI                  PIC 9(01).
            03  FLG-RJN                     PIC 9(01).
            03  FLG-LIFE-RJN                PIC 9(01).
@@ -218,6 +219,7 @@
            03  FLG-SYS5000                 PIC 9(01).
            03  FLG-SYS5001                 PIC 9(01).
            03  FLG-LASTSKJ                 PIC 9(01).
+           03  FLG-HIT                     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -246,10 +248,14 @@
            03  IDX-SYU                     PIC 9(05).
            03  IDX-MATSUBI                 PIC 9(02).
            03  IDX-LIFE                    PIC 9(05).
+           03  IDX-KSN                     PIC 9(05).
+           03  IDX-KSN2                    PIC 9(05).
+           03  IDX-SST                     PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-TUKISU          PIC 9(05).
+           03  CNT-KSN             PIC 9(05).
       *
       *    システム領域
        01  SYS-AREA.
@@ -493,6 +499,12 @@
            03  WRK-SKYMONEY                PIC S9(08).
            03  WRK-RJNYMD                  PIC X(08).
            03  WRK-LASTSRYYM               PIC X(06).
+           03  WRK-KSNNAME                 PIC X(100).
+           03  WRK-KSN-G.
+               05  WRK-KSN-OCC             OCCURS  3.
+                   07  WRK-KSN-SRYCD       PIC X(09).
+                   07  WRK-KSN-CD          PIC X(01).
+           03  WRK-CNT                     PIC 9(05).
       *
        01  BAK-AREA.
            03  BAK-AGE-G.
@@ -688,6 +700,17 @@
                        09  CONST-TOK-LIFECD-LIFE
                                            PIC X(03).
                05  CONST-TOK-LIFECD-MAX    PIC 9(05)   VALUE   19.
+           03  CONST-GMN-KSN-MAX           PIC 9(05)   VALUE   3.
+           03  CONST-KSNCD-G.
+               05  CONST-KSNCD-MAX         PIC 9(05)   VALUE   1.
+               05  CONST-KSNCD-VAL.
+                   07  CONST-KSNCD-JOKUSO
+                                   PIC X(09)   VALUE   "190116990".
+                   07  CONST-KSNCD-DUMMY
+                                   PIC X(09)   VALUE   "         ".
+               05  CONST-KSNCD-R REDEFINES CONST-KSNCD-VAL.
+                   07  CONST-KSNCD-OCC     OCCURS  2.
+                       09  CONST-KSNCD     PIC X(09).
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
@@ -733,6 +756,15 @@
        01  NRRK-REC.
            COPY  "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                             BY  //NRRK-//.
+      *
+       01  SSTKJN-AREA.
+           03  SSTKJN-VAL.
+               05  SSTKJN-VAL1                     PIC X(500).
+               05  SSTKJN-VAL2                     PIC X(500).
+           03  SSTKJN-R    REDEFINES       SSTKJN-VAL.
+               05  SSTKJN-CD                       PIC 9(01)
+                                                   OCCURS  1000.
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -741,6 +773,8 @@
            COPY    "CPSYSKANRI.INC".
       *    （診療科入院科情報）
            COPY    "CPSK1005.INC".
+      *    施設基準
+           COPY    "CPSK1006.INC".
       *    （職員情報）
            COPY    "CPSK1010.INC".
       *
@@ -2363,6 +2397,10 @@
            MOVE    I01-HKNCOMBI        TO  SPA-GMN-I01-HKNCOMBI
       *    特定入院
            MOVE    I01-TOKNYUIN        TO  SPA-GMN-I01-TOKNYUIN
+      *    入院料加算
+           MOVE    I01-KSN (1)         TO  SPA-GMN-I01-KSN (1)
+           MOVE    I01-KSN (2)         TO  SPA-GMN-I01-KSN (2)
+           MOVE    I01-KSN (3)         TO  SPA-GMN-I01-KSN (3)
       *    前受け金
       *    MOVE    I01-MAEUKE          TO  SPA-GMN-I01-MAEUKE
       *    定期請求
@@ -2535,6 +2573,20 @@
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
+      *
+      *
+      *    加算チェック処理
+           PERFORM VARYING IDX-KSN FROM    1   BY  1
+               UNTIL     ( IDX-KSN >   CONST-GMN-KSN-MAX )
+                OR       ( SPA-GMN-I01-KSN-SRYCD (IDX-KSN)
+                                   =   SPACE )
+      *
+               PERFORM 4101-KSN-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+      *
+           END-PERFORM
       *
       *    前受け金チェック処理
       *    PERFORM 4101-MAEUKE-CHK-SEC
@@ -2822,14 +2874,19 @@
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-TOKNYUIN
            MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I01-TOKNYUIN-ORG
                                        SPA-NAI-I01-TOKNYUINMOT
+           MOVE    WRK-CMB-ITM4    TO  SPA-NAI-I01-TOKNYUINCD
       *
       *    算定入院料
            IF    ( SPA-GMN-I01-TOKNYUIN    =   SPACE )
                MOVE    SPA-NAI-I01-KHNRYO-NM
                                        TO  SPA-GMN-I01-SNTNYUIN
+               MOVE    SPA-NAI-I01-KHNRYO-CD
+                                       TO  SPA-NAI-I01-SNTNYUINCD
            ELSE
                MOVE    SPA-GMN-I01-TOKNYUIN-NM
                                        TO  SPA-GMN-I01-SNTNYUIN
+               MOVE    SPA-NAI-I01-TOKNYUINCD
+                                       TO  SPA-NAI-I01-SNTNYUINCD
            END-IF
       *
       *    室料差額
@@ -3774,7 +3831,7 @@
            END-IF
       *
            IF    ( IDX2    =   1 )
-             AND ( SPA-NAI-I01-TNYUINYMD (IDX2)
+             AND ( SPA-NAI-I01-TTAIINYMD (IDX2)
                                =   SPACE )
                GO  TO  4101-NISSU-EDIT2-EXT
            END-IF
@@ -4557,6 +4614,11 @@
            MOVE    WRK-KIHON-KJNYMD    TO  WRK-KJNYMD
            PERFORM 4101-TOKNYUIN-SYOKI-SEC
       *
+      *    入院料加算
+           MOVE    WRK-KIHON-KJNYMD
+                                       TO  WRK-KJNYMD
+           PERFORM 4101-CMB-KSN-SET-SEC
+      *
            .
       *
        4101-BRMNUM-CHK-EXT.
@@ -4880,6 +4942,185 @@
        4101-CMB-TOKNYUIN-SET-EXT.
            EXIT.
       *****************************************************************
+      *    入院料加算コンボ初期設定処理
+      *****************************************************************
+       4101-CMB-KSN-SET-SEC            SECTION.
+      *
+           IF    ( WRK-KJNYMD          =   SPA-NAI-I01-NYUINYMD )
+               PERFORM 41011-CMB-KSN-SET-SEC
+           ELSE
+      *
+               INITIALIZE                  SPA-GMN-I01-CMB-KSN
+                                           SPA-GMN-I01-KSN-TBL
+      *
+           END-IF
+      *
+           .
+       4101-CMB-KSN-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料加算コンボ初期設定処理
+      *****************************************************************
+       41011-CMB-KSN-SET-SEC            SECTION.
+      *
+           PERFORM VARYING IDX-KSN     FROM    1   BY  1
+                   UNTIL ( IDX-KSN     >   CONST-GMN-KSN-MAX )
+               MOVE    SPA-GMN-I01-KSN-SRYCD (IDX-KSN)
+                                       TO  WRK-KSN-SRYCD (IDX-KSN)
+               MOVE    SPA-GMN-I01-KSN-CD    (IDX-KSN)
+                                       TO  WRK-KSN-CD    (IDX-KSN)
+           END-PERFORM
+      *
+           INITIALIZE                      SPA-GMN-I01-CMB-KSN
+                                           SPA-GMN-I01-KSN-TBL
+      *
+           MOVE    1                   TO  SPA-GMN-I01-CMB-KSN-EDITABLE
+      *
+           MOVE    SPACE               TO  WRK-KSNNAME
+                                           WRK-NYUKSNKBN
+                                           WRK-KSN-NYUKSNKBN
+           MOVE    ZERO                TO  CNT-KSN
+      *
+           PERFORM 41011-SYS-1006-SEL-SEC
+      *
+           PERFORM VARYING IDX-KSN     FROM    1   BY  1
+                   UNTIL ( IDX-KSN     >   CONST-KSNCD-MAX )
+                    OR   ( CNT-KSN     >=  CONST-GMN-KSN-MAX )
+      *
+               MOVE    1               TO  FLG-HIT
+      *
+               MOVE    CONST-KSNCD (IDX-KSN)
+                                       TO  WRK-SRYCD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       =   ZERO )
+                   MOVE    TNS-NAME    TO  WRK-KSNNAME
+                   MOVE    TNS-NYUKHNKSNKBN
+                                       TO  WRK-KSN-NYUKSNKBN
+               ELSE
+                   MOVE    ZERO        TO  FLG-HIT
+               END-IF
+      *
+               IF    ( FLG-HIT         =   1 )
+                   PERFORM VARYING IDX5    FROM    1   BY  1
+                       UNTIL ( IDX5    >   10 )
+                        OR   ( FLG-HIT =   ZERO )
+      *
+                       IF    ( TNS-SSTKIJUNCD (IDX5)
+                                           >   ZERO )
+                           MOVE    TNS-SSTKIJUNCD (IDX5)
+                                   TO  IDX-SST
+                           IF    ( SSTKJN-CD (IDX-SST) =   ZERO )
+                               MOVE    ZERO    TO  FLG-HIT
+                           END-IF
+                      END-IF
+                   END-PERFORM
+               END-IF
+      *
+               IF    ( FLG-HIT         =   1 )
+                   EVALUATE    SPA-NAI-I01-SNTNYUINCD
+                   WHEN    "099999950"
+                       MOVE    "190097010"         TO  WRK-SRYCD
+                   WHEN    "099999951"
+                       MOVE    "190097210"         TO  WRK-SRYCD
+                   WHEN    OTHER
+                       MOVE    SPA-NAI-I01-SNTNYUINCD
+                                                   TO  WRK-SRYCD
+                   END-EVALUATE
+                   PERFORM 900-TENSU-KEY-SEL-SEC
+                   MOVE    TNS-NYUKHNKSNKBN        TO  WRK-NYUKSNKBN
+                   IF    ( WRK-NYUKSNKBN       >   ZERO )
+                       DISPLAY "WRK-NYUKSNKBN  =  " WRK-NYUKSNKBN
+                       DISPLAY "WRK-KSN-NYUKSNKBN  = " WRK-KSN-NYUKSNKBN
+                       PERFORM 900-NYUKSNCHK-KEY-SEL-SEC
+                       DISPLAY "NYUKSNCHK-CHKKBN   = " NYUKSNCHK-CHKKBN
+                       IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO            TO  FLG-HIT
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-HIT         =   1 )
+                   COMPUTE CNT-KSN =   CNT-KSN +   1
+                   MOVE    WRK-KSNNAME TO  SPA-GMN-I01-LBLKSN (CNT-KSN)
+                   MOVE    CONST-KSNCD (IDX-KSN)
+                                   TO  SPA-GMN-I01-KSN-SRYCD (CNT-KSN)
+                   MOVE    "1"     TO  SPA-GMN-I01-KSNL      (CNT-KSN 1)
+                   MOVE    "算定しない"
+                                   TO  SPA-GMN-I01-KSNMEIL   (CNT-KSN 1)
+                   MOVE    "2"     TO  SPA-GMN-I01-KSNL      (CNT-KSN 2)
+                   MOVE    "算定する"
+                                   TO  SPA-GMN-I01-KSNMEIL   (CNT-KSN 2)
+                   MOVE    2       TO  SPA-GMN-I01-KSN-CNT   (CNT-KSN)
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX-KSN     FROM    1   BY  1
+                   UNTIL ( IDX-KSN     >   CONST-GMN-KSN-MAX )
+      *
+               MOVE    SPACE           TO  WRK-CMB-CD
+               PERFORM VARYING IDX-KSN2    FROM    1   BY  1
+                       UNTIL ( IDX-KSN2    >   CONST-GMN-KSN-MAX )
+                        OR   ( WRK-CMB-CD  NOT =   SPACE )
+                   IF    ( SPA-GMN-I01-KSN-SRYCD (IDX-KSN)
+                                       =   WRK-KSN-SRYCD (IDX-KSN2))
+                       MOVE    WRK-KSN-CD (IDX-KSN2)
+                                       TO  WRK-CMB-CD
+                   END-IF
+               END-PERFORM
+               PERFORM 4103-CMB-KSN-CHK-SEC
+               IF    ( WRK-CMB-ITM     =   SPACE )
+                   MOVE    "1"         TO  WRK-CMB-CD
+                   PERFORM 4103-CMB-KSN-CHK-SEC
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-KSN (IDX-KSN)
+               ELSE
+                   MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-KSN (IDX-KSN)
+               END-IF
+           END-PERFORM
+      *
+           .
+       41011-CMB-KSN-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    施設基準検索処理
+      *****************************************************************
+       41011-SYS-1006-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  SSTKJN-AREA
+      *
+      *    施設基準情報検索
+           INITIALIZE  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    "1006"          TO  SYS-KANRICD
+           MOVE    WRK-KJNYMD      TO  SYS-STYUKYMD
+                                       SYS-EDYUKYMD
+           PERFORM 900-SYSKANRI-KEY2-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-SYSKANRI    =   1 )
+      *
+               MOVE    SYSKANRI-REC    TO  SYS-1006-REC
+      *
+               EVALUATE    SYS-1006-KBNCD
+               WHEN    "1"
+                   MOVE    SYS-1006-TBL    TO  SSTKJN-VAL1
+               WHEN    "2"
+                   MOVE    SYS-1006-TBL    TO  SSTKJN-VAL2
+               END-EVALUATE
+      *
+               PERFORM 900-SYSKANRI-KEY2-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       41011-SYS-1006-SEL-EXT.
+           EXIT.
+      *****************************************************************
       *    年齢チェック
       *****************************************************************
        41011-PT-AGE-SEC            SECTION.
@@ -5092,6 +5333,9 @@
                MOVE    WRK-TOKNYUIN-NYUINRYOKBN
                                        TO  SPA-GMN-I01-TOKNYUIN-ITM3
                                                        (IDX10)
+               MOVE    WRK-TOKNYUIN-SRYCD-X
+                                       TO  SPA-GMN-I01-TOKNYUIN-ITM4
+                                                       (IDX10)
       *
                IF    ( WRK-TOKNYUIN-SRYCD-X    IS  NUMERIC )
                    COMPUTE SPA-GMN-I01-TOKNYUIN-SRYCDTTL
@@ -5111,6 +5355,9 @@
       *
            INITIALIZE  SPA-GMN-I01-TOKNYUIN
                        SPA-GMN-I01-SNTNYUIN
+                       SPA-NAI-I01-SNTNYUINCD
+                       SPA-NAI-I01-TOKNYUIN-ORG
+                       SPA-NAI-I01-TOKNYUINCD
       *
            PERFORM VARYING IDX10
                    FROM    SPA-GMN-I01-TOKNYUIN-CNT    BY  -1
@@ -5137,6 +5384,8 @@
                                        TO  SPA-GMN-I01-TOKNYUIN
                    MOVE    SPA-GMN-I01-TOKNYUIN-ITM2 (IDX10)
                                        TO  SPA-NAI-I01-TOKNYUIN-ORG
+                   MOVE    SPA-GMN-I01-TOKNYUIN-ITM4 (IDX10)
+                                       TO  SPA-NAI-I01-TOKNYUINCD
                END-IF
       *
            END-PERFORM
@@ -5151,6 +5400,7 @@
                    PERFORM 4103-CMB-TOKNYUIN-SRH2-SEC
                    MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-TOKNYUIN
                    MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I01-TOKNYUIN-ORG
+                   MOVE    WRK-CMB-ITM4    TO  SPA-NAI-I01-TOKNYUINCD
                END-IF
            END-IF
       *
@@ -5164,6 +5414,7 @@
                    PERFORM 4103-CMB-TOKNYUIN-SRH2-SEC
                    MOVE    WRK-CMB-ITM     TO  SPA-GMN-I01-TOKNYUIN
                    MOVE    WRK-CMB-ITM2    TO  SPA-NAI-I01-TOKNYUIN-ORG
+                   MOVE    WRK-CMB-ITM4    TO  SPA-NAI-I01-TOKNYUINCD
                END-IF
            END-IF
       *
@@ -5171,9 +5422,13 @@
            IF    ( SPA-GMN-I01-TOKNYUIN    =   SPACE )
                MOVE    SPA-NAI-I01-KHNRYO-NM
                                        TO  SPA-GMN-I01-SNTNYUIN
+               MOVE    SPA-NAI-I01-KHNRYO-CD
+                                       TO  SPA-NAI-I01-SNTNYUINCD
            ELSE
                MOVE    SPA-GMN-I01-TOKNYUIN-NM
                                        TO  SPA-GMN-I01-SNTNYUIN
+               MOVE    SPA-NAI-I01-TOKNYUINCD
+                                       TO  SPA-NAI-I01-SNTNYUINCD
            END-IF
       *
            .
@@ -5578,11 +5833,15 @@
       *
            MOVE    SPACE           TO  SPA-NAI-I01-TOKNYUIN-ORG
                                        SPA-GMN-I01-SNTNYUIN
+                                       SPA-NAI-I01-SNTNYUINCD
+                                       SPA-NAI-I01-TOKNYUINCD
       *
            IF    ( SPA-GMN-I01-TOKNYUIN
                                        =   SPACE )
                MOVE    SPA-NAI-I01-KHNRYO-NM
                                    TO  SPA-GMN-I01-SNTNYUIN
+               MOVE    SPA-NAI-I01-KHNRYO-CD
+                                   TO  SPA-NAI-I01-SNTNYUINCD
                GO  TO  4101-TOKNYUIN-CHK-EXT
            END-IF
       *
@@ -5593,17 +5852,45 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-TOKNYUIN
                MOVE    WRK-CMB-ITM2
                                    TO  SPA-NAI-I01-TOKNYUIN-ORG
+               MOVE    WRK-CMB-ITM4
+                                   TO  SPA-NAI-I01-TOKNYUINCD
+                                       SPA-NAI-I01-SNTNYUINCD
                MOVE    SPA-GMN-I01-TOKNYUIN-NM
                                    TO  SPA-GMN-I01-SNTNYUIN
+               
            ELSE
                MOVE    "0024"      TO  SPA-ERRCD
                MOVE    16          TO  SPA-GMN-I01-CUR
-               GO  TO  4101-TOKNYUIN-CHK-EXT
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               MOVE    WRK-KIHON-KJNYMD    TO  WRK-KJNYMD
+               PERFORM 4101-CMB-KSN-SET-SEC
            END-IF
       *
            .
       *
        4101-TOKNYUIN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    加算チェック処理
+      *****************************************************************
+       4101-KSN-CHK-SEC            SECTION.
+      *
+           MOVE    SPA-GMN-I01-KSN-CD (IDX-KSN)
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-KSN-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I01-KSN (IDX-KSN)
+           ELSE
+               MOVE    "0030"      TO  SPA-ERRCD
+               COMPUTE SPA-GMN-I01-CUR
+                   =   IDX-KSN     +   26
+           END-IF
+      *
+           .
+      *
+       4101-KSN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    前受け金チェック処理
@@ -6071,6 +6358,10 @@
                                    TO  WRK-CMB-ITM
                    MOVE    SPA-GMN-I01-TOKNYUIN-ITM2 (IDX-CMB)
                                    TO  WRK-CMB-ITM2
+                   MOVE    SPA-GMN-I01-TOKNYUIN-ITM3 (IDX-CMB)
+                                   TO  WRK-CMB-ITM3
+                   MOVE    SPA-GMN-I01-TOKNYUIN-ITM4 (IDX-CMB)
+                                   TO  WRK-CMB-ITM4
                END-IF
            END-PERFORM
       *
@@ -6097,12 +6388,42 @@
                                    TO  WRK-CMB-ITM
                    MOVE    SPA-GMN-I01-TOKNYUIN-ITM2 (IDX-CMB)
                                    TO  WRK-CMB-ITM2
+                   MOVE    SPA-GMN-I01-TOKNYUIN-ITM3 (IDX-CMB)
+                                   TO  WRK-CMB-ITM3
+                   MOVE    SPA-GMN-I01-TOKNYUIN-ITM4 (IDX-CMB)
+                                   TO  WRK-CMB-ITM4
                END-IF
            END-PERFORM
       *
            .
       *
        4103-CMB-TOKNYUIN-SRH2-EXT.
+           EXIT.
+      *****************************************************************
+      *    加算コンボチェック処理
+      *****************************************************************
+       4103-CMB-KSN-CHK-SEC         SECTION.
+      *
+           INITIALIZE              WRK-CMB-G
+      *
+           MOVE    SPA-GMN-I01-KSN-CNT (IDX-KSN)
+                                   TO  WRK-CNT
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   WRK-CNT )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-I01-KSNL (IDX-KSN IDX-CMB)
+                                   =   WRK-CMB-CD )
+                   MOVE    IDX-CMB TO  WRK-CMB-IDX
+                   MOVE    SPA-GMN-I01-KSN-ITM (IDX-KSN IDX-CMB)
+                                   TO  WRK-CMB-ITM
+               END-IF
+           END-PERFORM
+      *
+           .
+      *
+       4103-CMB-KSN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    定期請求コンボチェック処理
@@ -11087,6 +11408,17 @@
                                    WRK-NYUKHNKSN-SRYCD(IDX8)
                END-IF
            END-IF
+      *
+           PERFORM VARYING IDX-KSN FROM    1   BY  1
+                   UNTIL ( IDX-KSN >   CONST-GMN-KSN-MAX )
+               IF    ( SPA-GMN-I01-KSN-SRYCD (IDX-KSN)
+                                       NOT =   SPACE )
+                AND  ( SPA-GMN-I01-KSN-CD (IDX-KSN)     =   "2" )
+                    ADD     1       TO     IDX8
+                    MOVE    SPA-GMN-I01-KSN-SRYCD (IDX-KSN)
+                                    TO     WRK-NYUKHNKSN-SRYCD(IDX8)
+               END-IF
+           END-PERFORM
       *
       *    入院料と入院料加算の併算定チェック
            MOVE    ZERO            TO     IDX9
@@ -17676,6 +18008,24 @@
       *    算定入院料
            MOVE    SPA-GMN-I01-SNTNYUIN    TO  I01-SNTNYUIN
       *
+      *    入院料加算
+           PERFORM VARYING IDX-KSN FROM    1   BY  1
+                   UNTIL ( IDX-KSN >   CONST-GMN-KSN-MAX )
+               MOVE    SPA-GMN-I01-LBLKSN (IDX-KSN)
+                                           TO  I01-LBLKSN (IDX-KSN)
+               MOVE    SPA-GMN-I01-KSN    (IDX-KSN)
+                                           TO  I01-KSN    (IDX-KSN)
+               MOVE    SPA-GMN-I01-KSN-CNT(IDX-KSN)
+                                           TO  I01-KSN-CNT(IDX-KSN)
+               MOVE    SPA-GMN-I01-KSN-CNT(IDX-KSN)
+                                           TO  WRK-CNT
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL     ( IDX1    >   WRK-CNT   )
+                   MOVE    SPA-GMN-I01-KSN-ITM (IDX-KSN IDX1)
+                                           TO  I01-KSN-ITM(IDX-KSN IDX1)
+               END-PERFORM
+           END-PERFORM
+      *
       *    前受け金
       *    MOVE    SPA-GMN-I01-MAEUKE      TO  I01-MAEUKE
       *
@@ -17833,6 +18183,12 @@
                                        I01-TOKNYUIN-STT
                                        I01-TOKNYUIN-ITM-STT
                                        I01-SNTNYUIN-STT
+                                       I01-KSN-STT (1)
+                                       I01-KSN-ITM-STT (1)
+                                       I01-KSN-STT (2)
+                                       I01-KSN-ITM-STT (2)
+                                       I01-KSN-STT (3)
+                                       I01-KSN-ITM-STT (3)
                                        I01-SEIKYU-STT
                                        I01-SEIKYU-ITM-STT
                                        I01-DISPKBN-STT
@@ -17873,6 +18229,12 @@
                                        I01-TOKNYUIN-STT
                                        I01-TOKNYUIN-ITM-STT
                                        I01-SNTNYUIN-STT
+                                       I01-KSN-STT (1)
+                                       I01-KSN-ITM-STT (1)
+                                       I01-KSN-STT (2)
+                                       I01-KSN-ITM-STT (2)
+                                       I01-KSN-STT (3)
+                                       I01-KSN-ITM-STT (3)
       *    照会
            WHEN    "04"
                MOVE    WIDGET-INSENSITIVE  TO  WRK-WIDGET-STATE
@@ -17928,6 +18290,22 @@
                                        TO  I01-KAIGO-STT
                                            I01-KAIGO-ITM-STT
            END-IF
+      *
+           PERFORM VARYING IDX-KSN FROM    1   BY  1
+                   UNTIL ( IDX-KSN >   CONST-GMN-KSN-MAX )
+      *
+               IF    ( SPA-GMN-I01-KSN-SRYCD (IDX-KSN)
+                                           =   SPACE )
+                   MOVE    WIDGET-INSENSITIVE
+                                       TO  I01-KSN-STT (IDX-KSN)
+               END-IF
+               IF    ( SPA-GMN-I01-CMB-KSN-EDITABLE
+                                           =   ZERO )
+                   MOVE    WIDGET-INSENSITIVE
+                                       TO  I01-KSN-STT (IDX-KSN)
+               END-IF
+      *
+           END-PERFORM
       *
       *    入院オーダー遷移
            MOVE    WIDGET-INSENSITIVE  TO  I01-B24-STATE
@@ -17996,6 +18374,12 @@
                                            I01-TOKNYUIN-STT
                                            I01-TOKNYUIN-ITM-STT
                                            I01-SNTNYUIN-STT
+                                           I01-KSN-STT (1)
+                                           I01-KSN-ITM-STT (1)
+                                           I01-KSN-STT (2)
+                                           I01-KSN-ITM-STT (2)
+                                           I01-KSN-STT (3)
+                                           I01-KSN-ITM-STT (3)
                                            I01-SEIKYU-STT
                                            I01-SEIKYU-ITM-STT
                                            I01-DISPKBN-STT
@@ -18061,6 +18445,12 @@
                MOVE    "HKNCOMBI"      TO  MCP-WIDGET
            WHEN    16
                MOVE    "TOKNYUIN"      TO  MCP-WIDGET
+           WHEN    27
+               MOVE    "KSN01"         TO  MCP-WIDGET
+           WHEN    28
+               MOVE    "KSN02"         TO  MCP-WIDGET
+           WHEN    29
+               MOVE    "KSN03"         TO  MCP-WIDGET
            WHEN    18
                MOVE    "SEIKYU"        TO  MCP-WIDGET
            WHEN    19
@@ -18114,6 +18504,12 @@
            WHEN    "HKNCOMBI"
                MOVE    016             TO  SPA-GMN-I01-CUR
            WHEN    "TOKNYUIN"
+               MOVE    027             TO  SPA-GMN-I01-CUR
+           WHEN    "KSN01"
+               MOVE    028             TO  SPA-GMN-I01-CUR
+           WHEN    "KSN02"
+               MOVE    029             TO  SPA-GMN-I01-CUR
+           WHEN    "KSN03"
                MOVE    017             TO  SPA-GMN-I01-CUR
            WHEN    "MAEUKE"
                MOVE    018             TO  SPA-GMN-I01-CUR
@@ -18258,6 +18654,24 @@
       *
            IF    ( SPA-GMN-I01-CUR =   16  )
                IF  ( I01-TOKNYUIN-STT  =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I01-CUR =   27
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I01-CUR =   27  )
+               IF  ( I01-KSN-STT (1)   =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I01-CUR =   28
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I01-CUR =   28  )
+               IF  ( I01-KSN-STT (2)   =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-I01-CUR =   29
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-I01-CUR =   29  )
+               IF  ( I01-KSN-STT (3)   =   WIDGET-INSENSITIVE )
                    COMPUTE SPA-GMN-I01-CUR =   17
                END-IF
            END-IF
@@ -18367,6 +18781,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0029"
                MOVE    "介護異動入力エラー" 
+                                       TO  SPA-ERRMSG
+           WHEN    "0030"
+               MOVE    "入院料加算入力エラー" 
                                        TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "患者番号を入力してください"
@@ -19323,6 +19740,36 @@
            .
       *
        900-PTNYUINRRK-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料加算チェックテーブル検索処理(KEY)
+      *****************************************************************
+       900-NYUKSNCHK-KEY-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUKSNCHK
+      *
+           INITIALIZE                      NYUKSNCHK-REC
+           MOVE    WRK-NYUKSNKBN       TO  NYUKSNCHK-NYUINKBN
+           MOVE    WRK-KSN-NYUKSNKBN   TO  NYUKSNCHK-KSNKBN
+           MOVE    WRK-KJNYMD          TO  NYUKSNCHK-YUKOSTYMD
+                                           NYUKSNCHK-YUKOEDYMD
+           MOVE    NYUKSNCHK-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuksnchk"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUKSNCHK-REC
+           ELSE
+               INITIALIZE                  NYUKSNCHK-REC
+               MOVE    1               TO  FLG-NYUKSNCHK
+           END-IF
+      *
+           MOVE    "tbl_nyuksnchk"     TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-NYUKSNCHK-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

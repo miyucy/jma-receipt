@@ -132,6 +132,14 @@
                    13  SPA-GMN-I01-TOKNYUIN-NM     PIC X(60).
       *          »»ÄêÆþ±¡ÎÁ
                  11  SPA-GMN-I01-SNTNYUIN          PIC X(60).
+      *          Æþ±¡ÎÁ²Ã»»
+                 11  SPA-GMN-I01-KSN-TBL.
+                   13 SPA-GMN-I01-KSN-OCC          OCCURS  3.
+                     15  SPA-GMN-I01-LBLKSN        PIC X(28).
+                     15  SPA-GMN-I01-KSN.
+                       17  SPA-GMN-I01-KSN-CD      PIC X(01).
+                       17  SPA-GMN-I01-KSNFL       PIC X(01).
+                       17  SPA-GMN-I01-KSN-NM      PIC X(18).
       *          Á°¼õ¤±¶â
                  11  SPA-GMN-I01-MAEUKE            PIC S9(5).
       *          Äê´üÀÁµá
@@ -235,10 +243,13 @@
                    13  SPA-NAI-I01-TOKNYUIN-ORG-CD
                                                    PIC X(02).
                  11  SPA-NAI-I01-TOKNYUINMOT       PIC X(3).
+                 11  SPA-NAI-I01-TOKNYUINCD        PIC X(09).
       *          ÉÂÅïÆþ±¡´ðËÜÎÁ
                  11  SPA-NAI-I01-KHNRYO-G.
                     13  SPA-NAI-I01-KHNRYO-CD      PIC X(09).
                     13  SPA-NAI-I01-KHNRYO-NM      PIC X(60).
+      *          »»ÄêÆþ±¡ÎÁ
+                 11  SPA-NAI-I01-SNTNYUINCD        PIC X(09).
       *          ÉÂÅï¼ïÊÌ
                  11  SPA-NAI-I01-BTUSBT            PIC X(02).
                  11  SPA-NAI-I01-BTUKHNKBNCD       PIC X(03).
@@ -386,6 +397,19 @@
                                                    PIC X(3).
                      15    SPA-GMN-I01-TOKNYUIN-ITM3
                                                    PIC X(2).
+                     15    SPA-GMN-I01-TOKNYUIN-ITM4
+                                                   PIC X(9).
+      *          Æþ±¡ÎÁ²Ã»»¥³¥ó¥Ü
+                 11  SPA-GMN-I01-CMB-KSN.
+                   13  SPA-GMN-I01-CMB-KSN-EDITABLE PIC 9(1).
+                   13  SPA-GMN-I01-CMB-KSN-OCC     OCCURS  3.
+                     15  SPA-GMN-I01-KSN-SRYCD     PIC X(9).
+                     15  SPA-GMN-I01-KSN-CNT       PIC 9(5).
+                     15  SPA-GMN-I01-KSN-ITM-OCC   OCCURS  2.
+                       17  SPA-GMN-I01-KSN-ITM.
+                         19  SPA-GMN-I01-KSNL      PIC X(01).
+                         19  SPA-GMN-I01-KSNFLL    PIC X(01).
+                         19  SPA-GMN-I01-KSNMEIL   PIC X(18).
       *          Äê´üÀÁµá¥³¥ó¥Ü
                  11  SPA-GMN-I01-CMB-SEIKYU.
                    13  SPA-GMN-I01-SEIKYU-CNT      PIC 9(5).

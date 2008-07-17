@@ -200,6 +200,48 @@ I01	{
 			value	varchar(60);
 			state	int;
 		};
+		scrw2	{
+			vp1	{
+				fixed7	{
+					LBLKSN01	{
+						value	varchar(28);
+					};
+					LBLKSN02	{
+						value	varchar(28);
+					};
+					LBLKSN03	{
+						value	varchar(28);
+					};
+					CMB_KSN01	{
+						KSN01	{
+							value	varchar(20);
+							state	int;
+						};
+						count	int;
+						item	varchar(20)[05];
+						state	int;
+					};
+					CMB_KSN02	{
+						KSN02	{
+							value	varchar(20);
+							state	int;
+						};
+						count	int;
+						item	varchar(20)[05];
+						state	int;
+					};
+					CMB_KSN03	{
+						KSN03	{
+							value	varchar(20);
+							state	int;
+						};
+						count	int;
+						item	varchar(20)[05];
+						state	int;
+					};
+				};
+			};
+		};
 		CMB_SEIKYU	{
 			SEIKYU	{
 				value	varchar(24);
