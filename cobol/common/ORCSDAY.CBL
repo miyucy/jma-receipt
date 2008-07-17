@@ -38,91 +38,95 @@
 001500 CONFIGURATION       SECTION.
 002000 DATA                DIVISION.
 002100 WORKING-STORAGE SECTION.
-002200 01  WK-YYMMDD                   PIC 9(08).
-002300 01  WK-SYYMMDD      REDEFINES   WK-YYMMDD.
-002400     03  WK-SYY                  PIC 9(04).
-002500     03  WK-SMD                  PIC 9(04).
-002600 01  WK-WYYMMDD      REDEFINES   WK-YYMMDD.
-002700     03  FILLER                  PIC X(01).
-002800     03  WK-WYYMMDD-7.
-002900       05  WK-WG                 PIC 9(01).
-003000       05  WK-WYY                PIC 9(02).
-003100       05  WK-WMD                PIC 9(04).
-003200 01  WK-YYMMDD-R     REDEFINES   WK-YYMMDD.
-003300     03  WK-YY1.
-003400       05  FILLER                PIC 9(01).
-003500       05  WK-GYY1               PIC 9(01).
-003600     03  WK-YMD.
-003700       05  WK-YM.
-003800         07  WK-YY               PIC 9(02).
-003900         07  WK-MM               PIC 9(02).
-004000       05  WK-DD                 PIC 9(02).
-004100 01  WK-YYYYMMDD-R   REDEFINES   WK-YYMMDD.
-004200     03  WK-YYYYMM               PIC 9(06).
-004300     03  FILLER                  PIC 9(02).
+       01  WK-AREA.
+002200     03  WK-YYMMDD                   PIC 9(08).
+002300     03  WK-SYYMMDD      REDEFINES   WK-YYMMDD.
+002400         05  WK-SYY                  PIC 9(04).
+002500         05  WK-SMD                  PIC 9(04).
+002600     03  WK-WYYMMDD      REDEFINES   WK-YYMMDD.
+002700         05  FILLER                  PIC X(01).
+002800         05  WK-WYYMMDD-7.
+002900           07  WK-WG                 PIC 9(01).
+003000           07  WK-WYY                PIC 9(02).
+003100           07  WK-WMD                PIC 9(04).
+003200     03  WK-YYMMDD-R     REDEFINES   WK-YYMMDD.
+003300         05  WK-YY1.
+003400           07  FILLER                PIC 9(01).
+003500           07  WK-GYY1               PIC 9(01).
+003600         05  WK-YMD.
+003700           07  WK-YM.
+003800             09  WK-YY               PIC 9(02).
+003900             09  WK-MM               PIC 9(02).
+004000           07  WK-DD                 PIC 9(02).
+004100     03  WK-YYYYMMDD-R   REDEFINES   WK-YYMMDD.
+004200         05  WK-YYYYMM               PIC 9(06).
+004300         05  FILLER                  PIC 9(02).
 004400*
-004500 01  WK-NENDO                    PIC 9(04).
-004600 01  WK-NISU                     PIC S9(05).
-004700 01  WK-SUUTI                    PIC 9(05).
-004800 01  WK-SYO                      PIC 9(05).
-004900 01  WK-AMARI                    PIC 9(05).
-005000 01  WK-SANSYUTS                 PIC S9(05).
-005100 01  WK-ST                       PIC 9(08).
-005200 01  WK-ST-R         REDEFINES   WK-ST.
-005300     03  WK-ST1                  PIC 9(04).
-005400     03  WK-ST2                  PIC 9(04).
-005500 01  WK-END                      PIC 9(08).
-005600 01  SYURYO-YMD.
-005700     03  SYURYO-YY               PIC 9(04).
-005800     03  SYURYO-MM               PIC 9(02).
-005900     03  SYURYO-DD               PIC 9(02).
-006000 01  KISAN-YMD.
-006100     03  KISAN-YY                PIC 9(04).
-006200     03  KISAN-MM                PIC 9(02).
-006300     03  KISAN-DD                PIC 9(02).
-006400 01  WK-FLG.
-006500     03  WK-ERR                  PIC 9(01).
-006600     03  WK-UERR                 PIC 9(04).
-006700 01  WK-YSKKBN.
-006800     03  YSK-YOUBI               PIC 9(01).
-006900     03  YSK-YOUBI2              PIC 9(01).
-007000     03  YSK-SYUKJTS             PIC 9(01).
-007100     03  YSK-KYUJTS              PIC 9(01).
-007200 01  WK-YSK-YYMM.
-007300     03  WK-YSK-YYYY             PIC 9(04).
-007400     03  WK-YSK-MM               PIC 9(02).
-007500 01  WK-MNS-YMD.
-007600     03  WK-MNS-YY               PIC 9(04).
-007700     03  WK-MNS-MM               PIC 9(02).
-007800     03  WK-MNS-DD               PIC 9(02).
-007900 01  WK-YUKO.
-008000     03  WK-YUKO-YY              PIC 9(04).
-008100     03  WK-YUKO-MM              PIC 9(02).
-008200     03  WK-YUKO-DD              PIC 9(02).
+004500     03  WK-NENDO                    PIC 9(04).
+004600     03  WK-NISU                     PIC S9(05).
+004700     03  WK-SUUTI                    PIC 9(05).
+004800     03  WK-SYO                      PIC 9(05).
+004900     03  WK-AMARI                    PIC 9(05).
+005000     03  WK-SANSYUTS                 PIC S9(05).
+005100     03  WK-ST                       PIC 9(08).
+005200     03  WK-ST-R         REDEFINES   WK-ST.
+005300         05  WK-ST1                  PIC 9(04).
+005400         05  WK-ST2                  PIC 9(04).
+005500     03  WK-END                      PIC 9(08).
+005600     03  SYURYO-YMD.
+005700         05  SYURYO-YY               PIC 9(04).
+005800         05  SYURYO-MM               PIC 9(02).
+005900         05  SYURYO-DD               PIC 9(02).
+006000     03  KISAN-YMD.
+006100         05  KISAN-YY                PIC 9(04).
+006200         05  KISAN-MM                PIC 9(02).
+006300         05  KISAN-DD                PIC 9(02).
+006400     03  WK-FLG.
+006500         05  WK-ERR                  PIC 9(01).
+006600         05  WK-UERR                 PIC 9(04).
+006700     03  WK-YSKKBN.
+006800         05  YSK-YOUBI               PIC 9(01).
+006900         05  YSK-YOUBI2              PIC 9(01).
+007000         05  YSK-SYUKJTS             PIC 9(01).
+007100         05  YSK-KYUJTS              PIC 9(01).
+007200     03  WK-YSK-YYMM.
+007300         05  WK-YSK-YYYY             PIC 9(04).
+007400         05  WK-YSK-MM               PIC 9(02).
+007500     03  WK-MNS-YMD.
+007600         05  WK-MNS-YY               PIC 9(04).
+007700         05  WK-MNS-MM               PIC 9(02).
+007800         05  WK-MNS-DD               PIC 9(02).
+007900     03  WK-YUKO.
+008000         05  WK-YUKO-YY              PIC 9(04).
+008100         05  WK-YUKO-MM              PIC 9(02).
+008200         05  WK-YUKO-DD              PIC 9(02).
+      *
+009300     03  WK-SYSZYB.
+009400         05  WK-SY                   PIC 9(04).
+009500         05  WK-SZ                   PIC 9(04).
+009600         05  WK-SSYB                 PIC 9(05)V9(08).
+009700         05  WK-WORKA                PIC 9(02).
+009800     03  WK-YOUB.
+009900         05  FILLER                  PIC 9(04).
+010000         05  WYOUB-MMDD              PIC 9(04).
+010100     03  WK-SKJYMD.
+010200         05  WK-SKJTYY               PIC 9(04).
+010300         05  WK-SKJTMM               PIC 9(02).
+010400         05  WK-SKJTDD               PIC 9(02).
+           03  WK-DYMMY.
+010200         05  WK-DUMMYN               PIC 9(10).
+008700     03  WK-NISSU-A.
+008800         05  NISU-A                  PIC 9(03).
+008900         05  NISU-B                  PIC 9(05).
+009000         05  KIJYUN-A                PIC S9(05).
+009100         05  KIJYUN-YY               PIC 9(04).
+      *
 008300 01  CST-AREA.
 008400     03  CST1        PIC 999V9(08)   VALUE  365.24217878.
 008500     03  CST2        PIC 99V9(08)    VALUE  20.98819444.
 008600     03  CST3        PIC 9V9(07)     VALUE  2.4194444.
-008700 01  WK-NISSU-A.
-008800     03  NISU-A                  PIC 9(03).
-008900     03  NISU-B                  PIC 9(05).
-009000     03  KIJYUN-A                PIC S9(05).
-009100     03  KIJYUN-YY               PIC 9(04).
+008700 01  WK-NISSU-B.
 009200     03  SYU-W                   PIC S9(03)  VALUE  365.
-009300 01  WK-SYSZYB.
-009400     03  WK-SY                   PIC 9(04).
-009500     03  WK-SZ                   PIC 9(04).
-009600     03  WK-SSYB                 PIC 9(05)V9(08).
-009700     03  WK-WORKA                PIC 9(02).
-009800 01  WK-YOUB.
-009900     03  FILLER                  PIC 9(04).
-010000     03  WYOUB-MMDD              PIC 9(04).
-010100 01  WK-SKJYMD.
-010200     03  WK-SKJTYY               PIC 9(04).
-010300     03  WK-SKJTMM               PIC 9(02).
-010400     03  WK-SKJTDD               PIC 9(02).
-       01  WK-DYMMY.
-010200     03  WK-DUMMYN               PIC 9(10).
 010500*
 010600 01  GENGO-TBL.
 010700     03  FILLER.
@@ -384,6 +388,8 @@
        MAIN-RTN            SECTION.
        MAIN-000.
            INITIALIZE              IDX-AREA
+           INITIALIZE              FLG-AREA
+           INITIALIZE              WK-AREA 
            MOVE    SPACE           TO  LNK-DAY1-AREA
                                        LNK-DAY2-AREA
                                        LNK-DAY3-AREA
@@ -720,6 +726,8 @@
 062400 DTKIKN-RTN           SECTION.
 062500 DTKIKN-000.
 062600*
+           MOVE    ZERO                TO  WK-ST
+           MOVE    ZERO                TO  WK-END
 062700*    *受取日付の西暦 OR 和暦判定（開始年月日）
            EVALUATE    LNK-DAY5-IRAI
            WHEN    "51"
@@ -784,8 +792,8 @@
            MOVE    ZERO                TO  WK-NISU
            MOVE    ZERO                TO  FLG-SYORI-END
            PERFORM
-                   UNTIL  (WK-ST       =   WK-END  )
-                   OR     (STS-DAY-RC1 NOT =   ZERO )
+                   UNTIL  (STS-DAY-RC1 NOT =   ZERO )
+                   OR     (WK-ST           =   WK-END )
                    OR     (FLG-SYORI-END   =   1    )
       *        １年分計算
                IF     (WK-ST  +  10000 )   <=  WK-END
