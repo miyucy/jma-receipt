@@ -5,6 +5,7 @@ create	table	tbl_nsrysrh	(
 	SRYYM	char(6),
 	SRYKA	char(2),
 	HKNCOMBINUM	char(4),
+	SRYKBN	char(2),
 	SRYCD	char(9),
 	BRMNUM	char(8),
 	RM_SAGAKU char(2),

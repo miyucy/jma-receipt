@@ -29,6 +29,7 @@
            03  NSRYSRH-SRYYM           PIC X(06).
            03  NSRYSRH-SRYKA           PIC X(02).
            03  NSRYSRH-HKNCOMBINUM     PIC X(04).
+           03  NSRYSRH-SRYKBN          PIC X(02).
            03  NSRYSRH-SRYCD           PIC X(09).
            03  NSRYSRH-BRMNUM          PIC X(08).
            03  NSRYSRH-RM-SAGAKU       PIC X(02).
