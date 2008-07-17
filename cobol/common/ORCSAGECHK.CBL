@@ -124,6 +124,7 @@
       *
            03  WRK-SEIDONAME           PIC X(20).
       *
+           03  WRK-SRYYMD              PIC X(08).
            03  WRK-BIRTHDAY            PIC X(08).
            03  WRK-ROU-NEN             PIC 9(03).
       *
@@ -243,9 +244,15 @@
                MOVE    AGECHK-BIRTHDAY     TO  WRK-BYMD
                MOVE    AGECHK-BIRTHDAY     TO  WRK-BIRTHDAY
            END-IF
+      *    診療日＜生年月日は０歳とする
+           IF      AGECHK-SRYYMD       <   WRK-BIRTHDAY
+               MOVE    WRK-BIRTHDAY        TO  WRK-SRYYMD
+           ELSE
+               MOVE    AGECHK-SRYYMD       TO  WRK-SRYYMD
+           END-IF
       *
       *    当日の年齢を計算する
-           MOVE    AGECHK-SRYYMD       TO  WRK-SYMD
+           MOVE    WRK-SRYYMD          TO  WRK-SYMD
            COMPUTE WRK-NENREI-YY       =   WRK-SYY
                                        -   WRK-BYY
            IF      WRK-BYMD(5:4)       >   WRK-SYMD(5:4)
@@ -262,12 +269,13 @@
                                        -   1
            END-IF
       *    年齢期間算定
-           IF      WRK-NENREI-MM       =   ZERO
+           IF     (WRK-NENREI-MM       =   ZERO )
+             AND  (WRK-NENREI-YY       =   ZERO )
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY5-AREA
                MOVE    "51"                TO  LNK-DAY5-IRAI
                MOVE    WRK-BIRTHDAY        TO  LNK-DAY5-START
-               MOVE    AGECHK-SRYYMD       TO  LNK-DAY5-END
+               MOVE    WRK-SRYYMD          TO  LNK-DAY5-END
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY5-AREA
                IF      LNK-DAY5-NISSU2     <=  31
@@ -294,7 +302,7 @@
            COMPUTE WRK-B70-YY          =   WRK-B70-YY  +   70
       *
       *    保険年齢を計算する
-           MOVE    AGECHK-SRYYMD       TO  WRK-SYMD
+           MOVE    WRK-SRYYMD          TO  WRK-SYMD
            COMPUTE WRK-NENREI-YY       =   WRK-SYY
                                        -   WRK-BYY
            IF      WRK-BYMD(5:4)       >   WRK-SYMD(5:4)
