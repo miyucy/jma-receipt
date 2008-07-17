@@ -684,3 +684,42 @@
                         08  P02-P025-SRYNAIYO PIC X(30).
                       07  P02-P025-JYUSINLIST2-SELECT PIC X
                                                OCCURS  50 TIMES.
+                04  P02-FP9.
+                  05  P02-P026-SELNUM.
+                    06  P02-VALUE   PIC S9(3).
+                  05  P02-P026-CD.
+                    06  P02-VALUE   PIC X(2).
+                  05  P02-P026-NAIYO.
+                    06  P02-VALUE   PIC X(12).
+                  05  P02-P026-STYM.
+                    06  P02-VALUE   PIC X(7).
+                  05  P02-P026-EDYM.
+                    06  P02-VALUE   PIC X(7).
+                  05  P02-SCROLLEDWINDOW11.
+                    06  P02-HPOS    PIC S9(9)   BINARY.
+                    06  P02-VPOS    PIC S9(9)   BINARY.
+                    06  P02-P026-TOKLST.
+                      07  P02-P026-TOK-COUNT   PIC S9(9)   BINARY.
+                      07  P02-P026-TOK-ROW PIC S9(9)   BINARY.
+                      07  P02-ITEM        OCCURS  50 TIMES.
+                        08  P02-P026-TNUM     PIC X(3).
+                        08  P02-P026-TNYUGAI PIC X(10).
+                        08  P02-P026-TCD     PIC X(2).
+                        08  P02-P026-TNAIYO  PIC X(12).
+                        08  P02-P026-TSTYM   PIC X(10).
+                        08  P02-P026-TEDYM   PIC X(10).
+                      07  P02-P026-TOK-SELECT
+                              PIC X       OCCURS  50 TIMES.
+                  05  P02-P026-NYUGAI-COMB.
+                    06  P02-P026-NYUGAI.
+                      07  P02-VALUE   PIC X(20).
+                    06  P02-P026-NYUGAI-COUNT   PIC S9(9)   BINARY.
+                    06  P02-P026-NYUGAI-ITEM
+                            PIC X(20)   OCCURS  3 TIMES.
+                  05  P02-P026-TOKCD-COMB.
+                    06  P02-P026-TOKCD.
+                      07  P02-VALUE   PIC X(20).
+                    06  P02-P026-TOKCD-COUNT   PIC S9(9)   BINARY.
+                    06  P02-P026-TOKCD-ITEM
+                            PIC X(20)   OCCURS  50 TIMES.
+

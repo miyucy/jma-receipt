@@ -4,7 +4,7 @@ tbl_pttokki {
     PTID                number(10,0);
     RENNUM              number(2,0);
     CD                  char(2);
-    NAIYO               char(8);
+    NAIYO               char(12);
     STYM                char(6);
     EDYM                char(6);
     TERMID              varchar(16);
@@ -32,12 +32,25 @@ path	key		{
 };
 path	key2		{ 	
 	DBSELECT	{
-		DECLARE tbl_pttokki_csr CURSOR FOR
+		DECLARE tbl_pttokki_key2_csr CURSOR FOR
 		SELECT *
 		FROM tbl_pttokki
 			WHERE   HOSPNUM        =   :HOSPNUM
 			AND     NYUGAIKBN      =   :NYUGAIKBN
 			AND     PTID           =   :PTID
+		;
+	};
+};
+path	key3		{ 	
+	DBSELECT	{
+		DECLARE tbl_pttokki_key3_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pttokki
+			WHERE   HOSPNUM        =   :HOSPNUM
+			AND     PTID           =   :PTID
+			ORDER   BY       STYM  DESC,
+                                         EDYM  DESC,
+                                         RENNUM
 		;
 	};
 };

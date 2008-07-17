@@ -46,6 +46,7 @@
       * 03.05.00     NACL-多々納  07/05/XX  グループ診療対応
       * 03.05.00     NACL-多々納  07/06/08  前回来院日追加
       * 03.05.01     NACL-多々納  07/08/28  公費期限切れ区分追加
+      * 04.03.00     NACL-多々納  08/07/22  特記事項追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -120,6 +121,7 @@
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
            03  FLG-PTKOHFTN        PIC 9(01).
+           03  FLG-PTTOKKI         PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
            03  FLG-KOUSIN          PIC 9(01).
@@ -360,6 +362,10 @@
       *    患者公費負担
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
+      *
+      *    患者特記事項マスタ
+       01  PTTOKKI-REC.
+           COPY    "CPPTTOKKI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -2193,6 +2199,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    公費負担ＴＢＬから編集
            PERFORM 100229-KOHFT-TBL-SPA-SEC
       *
+      *    特記事項ＴＢＬから編集
+           PERFORM 100229-PTTOKKI-TBL-SPA-SEC
+      *
       *    患者番号管理(変換)マスタ編集
            PERFORM 970-PTNUM-READ-SEC
       *
@@ -2303,6 +2312,64 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        100229-KOHFT-TBL-SPA-EXT.
+           EXIT.
+      *****************************************************************
+      *    特記事項ＴＢＬから編集処理
+      *****************************************************************
+       100229-PTTOKKI-TBL-SPA-SEC           SECTION.
+      *
+           INITIALIZE                      SPA-GMN26-TOKKI-TBL
+      *    特記事項
+           INITIALIZE                      PTTOKKI-REC
+           MOVE    SPA-HOSPNUM         TO  PTTOKKI-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTTOKKI-PTID
+      *
+           MOVE    PTTOKKI-REC         TO  MCPDATA-REC
+           MOVE    "tbl_pttokki"       TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_pttokki"       TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 991-PTTOKKI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTTOKKI
+           END-IF
+           MOVE    ZERO                TO  IDX
+      *
+           PERFORM
+               UNTIL    FLG-PTTOKKI        =   1
+               ADD     1                   TO  IDX
+               MOVE    SPACE               TO  PARA-REC
+               INITIALIZE                      PARA-REC
+               MOVE    "PTTOKKI"           TO  PARA-FILEMEI
+               MOVE    IDX                 TO  PARA-EDANUM
+               MOVE    PTTOKKI-REC         TO  PARA-DATA-REC
+               PERFORM 400-PARA-INSERT-SEC
+      *        ＳＰＡテーブル編集
+               IF      IDX                 <=  50
+                   MOVE    PTTOKKI-RENNUM      TO  SPA-NAI26-TRENNUM
+                                                                (IDX)
+                   MOVE    PTTOKKI-NYUGAIKBN   TO  SPA-NAI26-TNYUGIKBN
+                                                                 (IDX)
+                   MOVE    PTTOKKI-CD          TO  SPA-GMN26-TCD (IDX)
+                   MOVE    PTTOKKI-NAIYO       TO  SPA-GMN26-TNAIYO
+                                                                 (IDX)
+                   MOVE    PTTOKKI-STYM        TO  SPA-NAI26-TSTYM(IDX)
+                   MOVE    PTTOKKI-EDYM        TO  SPA-NAI26-TEDYM(IDX)
+                   MOVE    IDX                 TO  SPA-GMN26-TMAX
+               END-IF
+      *
+               MOVE    "tbl_pttokki"       TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 991-PTTOKKI-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_pttokki"       TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       100229-PTTOKKI-TBL-SPA-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2671,6 +2738,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    4                   TO  P02-PAGENO
                WHEN    "P025"
                    MOVE    5                   TO  P02-PAGENO
+               WHEN    "P026"
+                   MOVE    6                   TO  P02-PAGENO
                WHEN    OTHER
                    MOVE    "P02 "              TO  SPA-P02-GAMEN
                    MOVE    1                   TO  P02-PAGENO
@@ -2707,6 +2776,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 2001-P024-SET-SEC
       *
            PERFORM 2001-P025-SET-SEC
+      *
+           PERFORM 2001-P026-SET-SEC
       *
       *    主科対応
            IF      SPA-SYUKA-KBN       =   "1"
@@ -3602,6 +3673,53 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        2001-P023-SET-EXT.
            EXIT.
       *****************************************************************
+      *    特記事項画面編集処理
+      *****************************************************************
+       2001-P026-SET-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL    ( IDX     >   SPA-GMN26-TMAX )
+               MOVE    IDX                     TO  WRK-RENNUMZ3
+               MOVE    WRK-RENNUMZ3            TO  P02-P026-TNUM (IDX)
+               MOVE    SPA-GMN26-TNYUGI (IDX)  TO  P02-P026-TNYUGAI(IDX)
+               MOVE    SPA-GMN26-TCD    (IDX)  TO  P02-P026-TCD   (IDX)
+               MOVE    SPA-GMN26-TNAIYO (IDX)  TO  P02-P026-TNAIYO(IDX)
+               MOVE    SPA-GMN26-TSTYM  (IDX)  TO  P02-P026-TSTYM (IDX)
+               MOVE    SPA-GMN26-TEDYM  (IDX)  TO  P02-P026-TEDYM (IDX)
+               IF      IDX             =   SPA-GMN26-SELNUM
+                   MOVE    "T"         TO  P02-P026-TOK-SELECT (IDX)
+               ELSE
+                   MOVE    "F"         TO  P02-P026-TOK-SELECT (IDX)
+               END-IF
+           END-PERFORM
+           MOVE    SPA-GMN26-TMAX      TO  P02-P026-TOK-COUNT
+      *
+           MOVE    SPA-GMN26-SELNUM    TO  P02-P026-SELNUM
+      *
+           MOVE    SPA-GMN26-NYUGAI-G  TO  P02-P026-NYUGAI
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL    ( IDX     >   SPA-GMN26-NYUMAX )
+               MOVE    SPA-GMN26-NYUGAI-LST (IDX)
+                                       TO  P02-P026-NYUGAI-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN26-NYUMAX    TO  P02-P026-NYUGAI-COUNT
+      *
+           MOVE    SPA-GMN26-CD        TO  P02-P026-CD
+           MOVE    SPA-GMN26-NAIYO     TO  P02-P026-NAIYO
+           MOVE    SPA-GMN26-STYM      TO  P02-P026-STYM
+           MOVE    SPA-GMN26-EDYM      TO  P02-P026-EDYM
+      *
+           MOVE    SPA-GMN26-TOKCD-G   TO  P02-P026-TOKCD
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                    UNTIL    ( IDX     >   SPA-GMN26-TOKMAX )
+               MOVE    SPA-GMN26-TOKCD-LST (IDX)
+                                       TO  P02-P026-TOKCD-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN26-TOKMAX    TO  P02-P026-TOKCD-COUNT
+           .
+       2001-P026-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    所得情報画面編集処理
       *****************************************************************
        2001-P024-SET-SEC         SECTION.
@@ -4042,6 +4160,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        991-PTKOHFTN-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    公費負担マスター読み込み
+      *****************************************************************
+       991-PTTOKKI-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTTOKKI-REC
+               MOVE    ZERO            TO  FLG-PTTOKKI
+           ELSE
+               INITIALIZE                  PTTOKKI-REC
+               MOVE    1               TO  FLG-PTTOKKI
+           END-IF
+      *
+           .
+       991-PTTOKKI-READ-EXT.
            EXIT.
       *
       *****************************************************************

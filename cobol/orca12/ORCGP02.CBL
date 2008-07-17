@@ -63,6 +63,7 @@
       *                                     ＱＲ受付削除
       *  04.01.00    NACL-多々納  07/12/XX  患者禁忌薬剤マスタ追加
       *  04.02.00    NACL-多々納  08/03/XX  平成２０年４月改正対応
+      *  04.03.00    NACL-多々納  08/07/22  特記事項追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -367,6 +368,10 @@
       *    患者禁忌薬剤マスタ
        01  PTKINKI-REC.
            COPY    "CPPTKINKI.INC".
+      *
+      *    患者特記事項マスタ
+       01  PTTOKKI-REC.
+           COPY    "CPPTTOKKI.INC".
       *
       *    パラメタテーブル
        01  PARA-REC.
@@ -931,6 +936,12 @@
                                                    SPAAREA
                                                    LINKAREA
                                                    SCRAREA
+      *        特記事項情報
+               WHEN     "P026"
+                   CALL    "ORCGP026"      USING   MCPAREA
+                                                   SPAAREA
+                                                   LINKAREA
+                                                   SCRAREA
       ******   紹介情報入力
       *        WHEN     "P023"
       *            CALL    "ORCGP023"      USING   MCPAREA
@@ -1264,6 +1275,12 @@
                                            SPAAREA
                                            LINKAREA
                                            SCRAREA
+      *    特記事項
+           MOVE    MCPAREA             TO  WRK-MCPAREA
+           CALL    "ORCGP026"      USING   WRK-MCPAREA
+                                           SPAAREA
+                                           LINKAREA
+                                           SCRAREA
       *    紹介情報入力
       *    MOVE    MCPAREA             TO  WRK-MCPAREA
       *    CALL    "ORCGP023"      USING   WRK-MCPAREA
@@ -1340,6 +1357,7 @@
       *********WHEN    "CLICKED"       ALSO    "N06"
                WHEN    "CLICKED"       ALSO    "N07"
                WHEN    "CLICKED"       ALSO    "N08"
+               WHEN    "CLICKED"       ALSO    "N09"
                    PERFORM 460-TAGUCHG-SEC
       *    各画面へ
                WHEN    OTHER
@@ -1405,6 +1423,9 @@
                    MOVE    "P025"          TO  SPA-P02-GAMEN
                    MOVE    "N08"           TO  SPA-P02-WIDGET
                WHEN    "P025"
+                   MOVE    "P026"          TO  SPA-P02-GAMEN
+                   MOVE    "N09"           TO  SPA-P02-WIDGET
+               WHEN    "P026"
                    MOVE    "P020"          TO  SPA-P02-GAMEN
                    MOVE    "N01"           TO  SPA-P02-WIDGET
            END-EVALUATE
@@ -1448,8 +1469,10 @@
       *
            EVALUATE    WRK-P02-GAMEN
                WHEN    "P020"
-                   MOVE    "P025"          TO  SPA-P02-GAMEN
-                   MOVE    "N08"           TO  SPA-P02-WIDGET
+      ****         MOVE    "P025"          TO  SPA-P02-GAMEN
+      ****         MOVE    "N08"           TO  SPA-P02-WIDGET
+                   MOVE    "P026"          TO  SPA-P02-GAMEN
+                   MOVE    "N09"           TO  SPA-P02-WIDGET
                WHEN    "P02"
                    MOVE    "P020"          TO  SPA-P02-GAMEN
                    MOVE    "N01"           TO  SPA-P02-WIDGET
@@ -1465,6 +1488,9 @@
                WHEN    "P025"
                    MOVE    "P024"          TO  SPA-P02-GAMEN
                    MOVE    "N07"           TO  SPA-P02-WIDGET
+               WHEN    "P026"
+                   MOVE    "P025"          TO  SPA-P02-GAMEN
+                   MOVE    "N08"           TO  SPA-P02-WIDGET
            END-EVALUATE
       *
            MOVE    SPA-P02-WIDGET     TO  MCP-WIDGET
@@ -1529,6 +1555,9 @@
       *        旧姓
                WHEN    "N08"
                    MOVE    "P025"          TO  SPA-P02-GAMEN
+      *        特記事項
+               WHEN    "N09"
+                   MOVE    "P026"          TO  SPA-P02-GAMEN
            END-EVALUATE
       *
       *    画面ＳＰＡ編集のみ（各画面の初期編集）
@@ -3102,6 +3131,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
+      *    患者特記事項マスタ
+           INITIALIZE                      PTTOKKI-REC
+           MOVE    SPA-HOSPNUM         TO  PTTOKKI-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTTOKKI-PTID
+           MOVE    PTTOKKI-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_pttokki"       TO  MCP-TABLE
+           MOVE    "del"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
            .
        49911-DB-DELETE-EXT.
            EXIT.
@@ -3337,6 +3378,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "P024"              TO  SPA-P02-GAMEN
                GO  TO                  4901-KOUSINMAE-EXT
            END-IF
+      *    特記事項
+           MOVE    "CLICKED"           TO  MCP-EVENT
+           MOVE    "B12"               TO  MCP-WIDGET
+           MOVE    "PUTG"              TO  MCP-STATUS
+           CALL    "ORCGP026"         USING   MCPAREA
+                                              SPAAREA
+                                               LINKAREA
+                                               SCRAREA
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+           IF  SPA-ERRCD           NOT =   SPACE
+               MOVE    "P026"              TO  SPA-P02-GAMEN
+               GO  TO                  4901-KOUSINMAE-EXT
+           END-IF
       *
       *    -------------------------
            EVALUATE    SPA-P02-GAMEN
@@ -3399,21 +3455,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            END-EVALUATE
       *
-      *
       *    患者番号存在チェック（新規の時、存在しないこと）
            IF      SPA-P02-SYORI       =   1
                PERFORM 491010-PTNUM-DBCHECK-SEC
-               IF  SPA-ERRCD           NOT =   SPACE
-                   GO  TO                  4901-KOUSINMAE-EXT
-               END-IF
            END-IF
-      *    患者番号変換マスタ　変更チェック
-      *****排他制御がかかるはずなので、削除した
-      *    PERFORM 4910-PTNUM-DBCHECK-SEC
-      *    IF  SPA-ERRCD           NOT =   SPACE
-      *        GO  TO                  4901-KOUSINMAE-EXT
-      *****END-IF
-      *
       *
            .
        4901-KOUSINMAE-EXT.
@@ -3942,6 +3987,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE  "P024_TSRSELNUM"  TO   MCP-WIDGET
                    WHEN    5
                        MOVE  "P025_SELNUM1"    TO   MCP-WIDGET
+                   WHEN    6
+                       MOVE  "P026_SELNUM"     TO   MCP-WIDGET
                END-EVALUATE
            ELSE
                MOVE    SPA-P02-WIDGET          TO  MCP-WIDGET
@@ -4778,6 +4825,46 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "全角で入力して下さい"    TO  SPA-ERRMSG
                WHEN    "2517"
                    MOVE    "変更年月日が重複しています"  TO  SPA-ERRMSG
+      *
+      *        特記事項
+               WHEN    "2601"
+                   MOVE    "選択番号エラー"    TO  SPA-ERRMSG
+               WHEN    "2602"
+                   MOVE    "入外区分入力エラー"    TO  SPA-ERRMSG
+               WHEN    "2603"
+                   MOVE    "レセ電は数値で入力して下さい"
+                                                   TO  SPA-ERRMSG
+               WHEN    "2604"
+                   MOVE    "紙レセプト入力エラー" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2605"
+                   MOVE    "開始日入力エラー" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2606"
+                   MOVE    "終了日入力エラー" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2607"
+                   MOVE    "特記内容選択エラー" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2608"
+                   MOVE    "紙レセプトを入力して下さい" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2609"
+                   MOVE    "有効期間を入力して下さい" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2610"
+                   MOVE    "開始年月≦終了年月で入力して下さい" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2611"
+                   MOVE    "レセ電コードで重複があります。" 
+                                                   TO  SPA-ERRMSG
+               WHEN    "2620"
+                   STRING  "特記事項は５０件までの登録です。"
+                           "これ以上追加できません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+      *
       *        患者番号取得エラー
                WHEN    "8000"
                    STRING  "自動採番の患者番号が最大値です。"

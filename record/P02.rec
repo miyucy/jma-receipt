@@ -966,6 +966,54 @@ P02	{
 					};
 				};
 			};
+			FP9	{
+				P026_SELNUM	{
+					value	number(3);
+				};
+				P026_CD	{
+					value	varchar(2);
+				};
+				P026_NAIYO	{
+					value	varchar(12);
+				};
+				P026_STYM	{
+					value	varchar(7);
+				};
+				P026_EDYM	{
+					value	varchar(7);
+				};
+				scrolledwindow11	{
+					hpos	int;
+					vpos	int;
+					P026_TOKLST	{
+						count	int;
+						row	int;
+						item	{
+							value0	varchar(3);
+							value1	varchar(10);
+							value2	varchar(2);
+							value3	varchar(12);
+							value4	varchar(10);
+							value5	varchar(10);
+						}	[50];
+						select	bool[50];
+					};
+				};
+				P026_NYUGAI_COMB	{
+					P026_NYUGAI	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[3];
+				};
+				P026_TOKCD_COMB	{
+					P026_TOKCD	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[50];
+				};
+			};
 		};
 	};
 };

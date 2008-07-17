@@ -44,6 +44,7 @@
       *  03.04.01    NACL-多々納  07/02/16  ＱＲデータ対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  03.05.01    NACL-多々納  07/06/11  氏名変更の予約・受付対応
+      *  04.03.00    NACL-多々納  08/07/22  特記事項追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -115,6 +116,7 @@
            03  FLG-MONTHLYNUM      PIC 9(01).
            03  FLG-PTKOHFTN        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
+           03  FLG-PTTOKKI         PIC 9(01).
            03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-QRCDHKN         PIC 9(01).
       *
@@ -257,6 +259,10 @@
       *    患者公費負担
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
+      *
+      *    患者特記事項マスタ
+       01  PTTOKKI-REC.
+           COPY    "CPPTTOKKI.INC".
       *
       *    QRコード(被保険者証)
        01  QRCDHKN-REC.
@@ -468,6 +474,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    特記事項テーブル更新
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 300-PTTOKKI-SYORI-SEC
+           END-IF
       *    レセプト作成管理マスタ更新
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2009-RECEUPD-UPDATE-SEC
@@ -1821,6 +1831,62 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        300-PTKOHFTN-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    特記事項情報更新処理
+      *****************************************************************
+       300-PTTOKKI-SYORI-SEC         SECTION.
+      *
+      *    特記事項はすべて削除
+           INITIALIZE                      PTTOKKI-REC
+           MOVE    SPA-HOSPNUM         TO  PTTOKKI-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTTOKKI-PTID
+           MOVE    PTTOKKI-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_pttokki"       TO  MCP-TABLE
+           MOVE    "del"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       IDX     >   SPA-GMN26-TMAX
+               INITIALIZE                  PTTOKKI-REC
+               MOVE    SPA-HOSPNUM         TO  PTTOKKI-HOSPNUM
+               MOVE    SPA-GMN-PTID        TO  PTTOKKI-PTID
+               MOVE    SPA-NAI26-TNYUGIKBN(IDX)
+                                           TO  PTTOKKI-NYUGAIKBN
+               MOVE    IDX                 TO  PTTOKKI-RENNUM
+      *        特記事項
+               MOVE    SPA-GMN26-TCD(IDX)
+                                           TO  PTTOKKI-CD
+               MOVE    SPA-GMN26-TNAIYO(IDX)
+                                           TO  PTTOKKI-NAIYO
+               MOVE    SPA-NAI26-TSTYM (IDX)
+                                           TO  PTTOKKI-STYM
+               MOVE    SPA-NAI26-TEDYM (IDX)
+                                           TO  PTTOKKI-EDYM
+      *
+               MOVE    SMCNDATE-YMD        TO  PTTOKKI-CREYMD
+               MOVE    SMCNDATE-YMD        TO  PTTOKKI-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTTOKKI-UPHMS
+               MOVE    SPA-OPID            TO  PTTOKKI-OPID
+      *    追加
+               MOVE    PTTOKKI-REC         TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "tbl_pttokki"       TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "P029 PTTOKKI INS ERR:" MCP-RC
+                                   ",KEY:" PTTOKKI-KEY
+                   MOVE    "9000"              TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+           .
+       300-PTTOKKI-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

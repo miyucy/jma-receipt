@@ -10,7 +10,7 @@ create	table	tbl_pttokki	(
 	PTID		numeric(10,0)  NOT NULL,
 	RENNUM  	numeric(2,0)  NOT NULL,
 	CD  		char(2),
-	NAIYO   	char(8),
+	NAIYO   	char(12),
 	STYM	   	char(6),
 	EDYM	   	char(6),
 	TERMID		varchar(32),

@@ -936,6 +936,62 @@
                    07  SPA-NAI25-KYUSEI                    PIC X(50).
                    07  SPA-NAI25-CHGYMD                    PIC X(08).
       *
+      *    P026(特記事項）
+           03  SPA-P026-AREA.
+               05  SPA-GMN26-CUR             PIC 9(02).
+               05  SPA-GMN26-SYORI           PIC 9(01).
+      *
+      *        初期設定内容
+               05  SPA-GMN26-INIT.
+                   07  SPA-GMN26-NYUGAI-LST        PIC X(20)
+                                                   OCCURS   5.
+                   07  SPA-GMN26-NYUMAX            PIC 9(02).
+                   07  SPA-GMN26-TOKCD-LST         OCCURS   50.
+                       09  SPA-GMN26-TOKCDL        PIC X(02).
+                       09  SPA-GMN26-TKL           PIC X(01).
+                       09  SPA-GMN26-NAIYOL        PIC X(12).
+                   07  SPA-GMN26-TOKMAX            PIC 9(02).
+               05  SPA-GMN26-INAREA.
+                   07  SPA-GMN26-SELNUM            PIC 9(03).
+      *
+                   07  SPA-GMN26-NYUGAI-G.
+                       09  SPA-GMN26-NYUGAI        PIC X(01).
+                       09  SPA-GMN26-N2            PIC X(01).
+                       09  SPA-GMN26-NYUGAI-MEI    PIC X(18).
+      *
+                   07  SPA-GMN26-TOKCD-G.
+                       09  SPA-GMN26-TOKCD         PIC X(02).
+                       09  SPA-GMN26-TF            PIC X(01).
+                       09  SPA-GMN26-TOKCD-MEI     PIC X(08).
+      *
+                   07  SPA-GMN26-CD            PIC X(02).
+                   07  SPA-GMN26-NAIYO         PIC X(12).
+                   07  SPA-GMN26-STYM          PIC X(07).
+                   07  SPA-GMN26-EDYM          PIC X(07).
+      *
+                   07  SPA-MAE26-CD            PIC X(02).
+      *
+                   07  SPA-NAI26-STYM          PIC X(06).
+                   07  SPA-NAI26-EDYM          PIC X(06).
+      *        特記事項リスト
+               05  SPA-GMN26-TOKKI-TBL.
+                   07  SPA-GMN26-TOKK-OCC          OCCURS  50.
+                       09  SPA-GMN26-TNUM          PIC 9(03).
+                       09  SPA-GMN26-TNYUGI        PIC X(18).
+                       09  SPA-GMN26-TCD           PIC X(02).
+                       09  SPA-GMN26-TNAIYO        PIC X(12).
+                       09  SPA-GMN26-TSTYM         PIC X(06).
+                       09  SPA-GMN26-TEDYM         PIC X(06).
+      *
+                       09  SPA-NAI26-TRENNUM       PIC 9(02).
+                       09  SPA-NAI26-TNYUGIKBN     PIC X(01).
+                       09  SPA-NAI26-TSTYM         PIC X(06).
+                       09  SPA-NAI26-TEDYM         PIC X(06).
+      *
+                       09  SPA-NAI26-DELKBN        PIC X(01).
+      *
+                   07  SPA-GMN26-TMAX              PIC 9(03).
+      *
       *    P0201（未登録受付者一覧）
            03  SPA-P0201-AREA.
                05  SPA-GMN201-MAX                   PIC 9(04).
