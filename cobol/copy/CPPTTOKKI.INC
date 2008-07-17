@@ -35,7 +35,7 @@
       *特記事項コード
            03  PTTOKKI-CD              PIC X(02).
       *特記事項内容
-           03  PTTOKKI-NAIYO           PIC X(08).
+           03  PTTOKKI-NAIYO           PIC X(12).
       *開始年月
            03  PTTOKKI-STYM            PIC X(06).
       *終了年月
