@@ -237,6 +237,7 @@
            03  WRK-KBN2                PIC X(01).
            03  WRK-KBN3                PIC X(01).
       *
+           03  WRK-IN-KAISU            PIC 9(03).
       *    算定年月
            03  WRK-SANTEI-YM           PIC X(06).
            03  WRK-SANTEI-ARI          PIC X(06).
@@ -2710,6 +2711,7 @@
                MOVE    WRK-IDX-IN          TO  IDX2
                MOVE    WRK-IDX-IN          TO  SPA-GMN-IDX
            END-IF
+           MOVE    ZERO                TO  WRK-IN-KAISU
       *    点数マスタ編集・基本チェック
            INITIALIZE                  ORCSC92AREA
            MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
@@ -2722,6 +2724,15 @@
                MOVE    WRK-IDX-IN          TO  LNK-SC92-GMN-IDX
                MOVE    SPA-COM-TIMEFLG(WRK-IDX-IN)
                                            TO  FLG-JIKAN
+      *        回数１以上
+               IF      (SPA-COM-KAIFLG (WRK-IDX-IN)    =   "1")  AND
+                       (SPA-COM-KAISU  (WRK-IDX-IN)    >   1  )
+                   MOVE    SPA-COM-KAISU  (WRK-IDX-IN)
+                                               TO  WRK-IN-KAISU
+               ELSE
+                   MOVE    ZERO                TO  WRK-IN-KAISU
+               END-IF
+      *
                INITIALIZE                      SPA-COM-TBLREC
                                                         (WRK-IDX-IN)
                MOVE    WRK-SRYCD           TO  SPA-COM-INPUTCD
@@ -2761,6 +2772,16 @@
                COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX     -   1
                COMPUTE IDX2            =   IDX2            -   1
            ELSE
+      *        回数の再編集
+               IF      WRK-IN-KAISU        >   ZERO
+                   MOVE    WRK-IN-KAISU        TO  SPA-COM-KAISU
+                                                        (SPA-GMN-IDX)
+                   MOVE    "1"                 TO  SPA-COM-KAIFLG
+                                                        (SPA-GMN-IDX)
+      *            再編集処理
+                   MOVE    SPA-GMN-IDX         TO  IDX
+                   PERFORM 3101-INPUTCD-HEN-SEC
+               END-IF
                MOVE    1                  TO  FLG-ADD
            END-IF
       *

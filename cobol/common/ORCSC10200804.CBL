@@ -63,6 +63,7 @@
       * 04.00.00     NACL-多々納  07/09/XX  テーブル４００対応
       * 04.01.00     NACL-多々納  07/10/26  悪性腫瘍特異物資治療管理コメント対応
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
+      * 04.03.00     NACL=多々納  08/07/17  在宅末期医療総合診療料複数回数可
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -735,7 +736,10 @@
                                                OR  "113009470" )
       *        血糖自己測定器加算
              OR  ((WRK-COM-CDKBN-KBN (IDX-SYU) =   "C"  )  AND
-                  (WRK-COM-CDKBN-KBNNUM (IDX-SYU)  =   "150" )))
+                  (WRK-COM-CDKBN-KBNNUM (IDX-SYU)  =   "150" ))
+      *        在宅末期医療総合診療料
+             OR  ((WRK-COM-CDKBN-KBN (IDX-SYU) =   "C"  )  AND
+                  (WRK-COM-CDKBN-KBNNUM (IDX-SYU)  =   "003" )))
                CONTINUE
            ELSE
                MOVE    "0008"          TO  WRK-ERRCD
