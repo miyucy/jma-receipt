@@ -226,6 +226,7 @@
            03  FLG-RECE08          PIC 9(01).
       *
            03  FLG-4001-JIBAIKBN   PIC 9(01).
+           03  FLG-TOUROKU         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -258,6 +259,10 @@
                05  WRK-WMM         PIC 9(02).
                05  WRK-WDD         PIC 9(02).
            03  WRK-HENFLG          PIC 9(01).    
+      *  
+      *    入力項目名
+           03  WRK-MCP-WIDGET      PIC X(64).
+           03  WRK-GMN-CUR         PIC 9(03).
       *     
            03  WRK-SHELL-ARG1.
              05  WRK-SHELL-SRYYM   PIC  X(06).
@@ -897,7 +902,6 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                     PERFORM 460-SEH-ENTRY-SEC
       *     印刷区分
                WHEN    "CLICKED"       ALSO    "B07"
-                    PERFORM 470-SYOKBN-SEC
                WHEN    "CLICKED"       ALSO    "SYOKBN"
                    PERFORM 410-SYOKBN-CHK-SEC
       *    未請求患者設定
@@ -972,34 +976,109 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
-               WHEN    "ACTIVATE"      ALSO    "SRYYM"
-                   PERFORM 4101-SRYYM-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
-                   PERFORM 4102-NYUGAIKBN-CHK-SEC
-               WHEN    "ACTIVATE"      ALSO    "PRTKBN"
-                   PERFORM 4103-PRTKBN-CHK-SEC
-           END-EVALUATE
+           PERFORM 410-ENTRY-SYORI-SEC
       *
            .
        200-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
-      *    診療年月（一括）チェック処理
+      *    一括入力処理
       *****************************************************************
-       4101-SRYYM-CHK-SEC           SECTION.
+       410-ENTRY-SYORI-SEC       SECTION.
       *
-           MOVE    2                  TO  SPA-GMN-CUR
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
       *
-           IF      SPA-GMN-IKKATU         =   "F"
-               MOVE    "0007"             TO  SPA-ERRCD
-               MOVE    3                  TO  SPA-GMN-CUR
-               GO  TO  4101-SRYYM-CHK-EXT
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           .
+       410-ENTRY-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力チェック処理
+      *****************************************************************
+       410-INPUT-CHK-SEC       SECTION.
+      *
+      *   入力チェック
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+               WHEN    "ACTIVATE"      ALSO    "SRYYM"
+      *
+                   IF      SPA-GMN-IKKATU         =   "F"
+                       MOVE    "0007"             TO  SPA-ERRCD
+                       MOVE    3                  TO  SPA-GMN-CUR
+                       GO  TO  410-INPUT-CHK-EXT
+                   END-IF
+           END-EVALUATE
+      * 
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *
+      *    基本チェック処理
+           PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-           MOVE   R03-SRYYM           TO  SPA-GMN-SRYYM
+           IF      FLG-TOUROKU         =   1
+      *        更新前
+               PERFORM 4103-KAKUTEI-CHK-SEC
+           END-IF
+      *
+           .
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面をＳＰＡセット処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC       SECTION.
+      *
+           MOVE    R03-SRYYM           TO  SPA-GMN-SRYYM
+           MOVE    R03-NYUGAIKBN       TO  SPA-GMN-NYUGAIKBN-G
+           MOVE    R03-PRTKBN          TO  SPA-GMN-PRTKBN-G
+      *
+           .
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェック処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC       SECTION.
+      *
+           PERFORM 41021-SRYYM-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 41022-NYUGAIKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 41023-PRTKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           .
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療年月（一括）チェック処理
+      *****************************************************************
+       41021-SRYYM-CHK-SEC           SECTION.
+      *
+           IF      SPA-GMN-IKKATU         =   "F"
+               GO  TO  41021-SRYYM-CHK-EXT
+           END-IF
+      *
            MOVE    ZERO               TO  SPA-NAI-SRYYM
            MOVE    SPACE              TO  SPA-NAI-SRYYMH
       *
@@ -1014,31 +1093,26 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-SRYYM
            ELSE
                MOVE    "0001"          TO  SPA-ERRCD
-               GO  TO  4101-SRYYM-CHK-EXT
            END-IF
-           MOVE    SGDAY-SDAY         TO  WRK-SYMD
-           PERFORM 5002-HIZUKE-HEN-SEC
-           MOVE    WRK-HENYMDG3(1:16)   TO  SPA-NAI-SRYYMH
       *
-      ***  IF      SPA-NAI-SRYYM       <   200804
-      ***      MOVE    SPA-GMN-PRTKBNLST (1)
-      ***                                  TO  SPA-GMN-PRTKBN-G
-      ***  END-IF
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    SGDAY-SDAY         TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG3(1:16)   TO  SPA-NAI-SRYYMH
+           END-IF
       *
-           MOVE    7                   TO  SPA-GMN-CUR
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    2                   TO  SPA-GMN-CUR
+           END-IF 
       *
            .
-       4101-SRYYM-CHK-EXT.
+       41021-SRYYM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    入外区分  入力処理
       *****************************************************************
-       4102-NYUGAIKBN-CHK-SEC                SECTION.
-      *   
-           MOVE    3                    TO  SPA-GMN-CUR
-      *
-           MOVE    R03-NYUGAIKBN        TO  SPA-GMN-NYUGAIKBN-G
+       41022-NYUGAIKBN-CHK-SEC                SECTION.
       *
            MOVE    ZERO               TO  WRK-HENFLG
            PERFORM VARYING IDY FROM   1   BY  1
@@ -1053,26 +1127,25 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            END-PERFORM
            IF      WRK-HENFLG         =   ZERO
                MOVE    "0006"               TO  SPA-ERRCD
-               GO  TO  4102-NYUGAIKBN-CHK-EXT
            END-IF
-      *             
-           MOVE    7                  TO  SPA-GMN-CUR
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    3                   TO  SPA-GMN-CUR
+           END-IF 
            .
-       4102-NYUGAIKBN-CHK-EXT.
+       41022-NYUGAIKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    レセプト作成区分  入力処理
       *****************************************************************
-       4103-PRTKBN-CHK-SEC                SECTION.
-      *   
-           MOVE    4                   TO  SPA-GMN-CUR
-      *
-           MOVE    R03-PRTKBN          TO  SPA-GMN-PRTKBN-G
+       41023-PRTKBN-CHK-SEC                SECTION.
       *
            IF      SPA-GMN-PRTKBN      =   SPACE
-               MOVE    SPA-GMN-PRTKBNLST (1)
-                                           TO  SPA-GMN-PRTKBN-G
+               IF      SPA-GMN-SYOKBN      =   "T"
+                   MOVE    SPA-GMN-PRTKBNLST (1)
+                                               TO  SPA-GMN-PRTKBN-G
+               END-IF
            ELSE
                MOVE    ZERO                TO  WRK-HENFLG
                PERFORM VARYING IDY FROM    1   BY  1
@@ -1095,12 +1168,23 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            AND   (  SPA-GMN-IKKATU      =   "T"    )
            AND   (  SPA-GMN-PRTKBN      =   "2"    ) 
                MOVE    "0012"              TO  SPA-ERRCD
-               GO  TO  4103-PRTKBN-CHK-EXT
            END-IF
-      *             
-           MOVE    7                  TO  SPA-GMN-CUR
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    4                   TO  SPA-GMN-CUR
+           END-IF 
            .
-       4103-PRTKBN-CHK-EXT.
+       41023-PRTKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確定ボタン押下時チェック処理
+      *****************************************************************
+       4103-KAKUTEI-CHK-SEC        SECTION.
+      *   
+      *
+           .
+       4103-KAKUTEI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1159,22 +1243,39 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    処理区分  入力処理
       *****************************************************************
        410-SYOKBN-CHK-SEC                SECTION.
-      *   
-           MOVE    1                   TO  SPA-GMN-CUR
+      *
+      *    入力個所のセット
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "B07"
+                   EVALUATE    R03-SYOKBN-VALUE
+                       WHEN    "T"
+                           MOVE    "F"             TO  R03-SYOKBN-VALUE
+                       WHEN    "F"
+                           MOVE    "T"             TO  R03-SYOKBN-VALUE
+                   END-EVALUATE
+           END-EVALUATE
       *
            MOVE    R03-SYOKBN-VALUE    TO  SPA-GMN-SYOKBN
            EVALUATE    SPA-GMN-SYOKBN
                WHEN    "T"
                    MOVE    "レセプト新規作成" TO  SPA-GMN-SYOKBN-LABEL
                    MOVE    SPA-GMN-PRTKBNLST (1)
-                                              TO  SPA-GMN-PRTKBN-G
+                                              TO  R03-PRTKBN
                WHEN    "F"
                    MOVE    "作成済レセプト再印刷"
                                               TO  SPA-GMN-SYOKBN-LABEL
-                   MOVE    SPACE              TO  SPA-GMN-PRTKBN-G
+                   MOVE    SPACE              TO  R03-PRTKBN
            END-EVALUATE 
       *
-           MOVE    2               TO  SPA-GMN-CUR
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-SYOKBN-CHK-EXT
+           END-IF
            .
        410-SYOKBN-CHK-EXT.
            EXIT.
@@ -1294,6 +1395,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        460-SEH-ENTRY-SEC       SECTION.
       *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  460-SEH-ENTRY-EXT
+           END-IF
+      *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -1339,6 +1447,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *    主科入力処理
       *****************************************************************
        490-SYUKA-ENTRY-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  490-SYUKA-ENTRY-EXT
+           END-IF
       *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
@@ -1387,6 +1502,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        490-MISEIKYU-ENTRY-SEC       SECTION.
       *
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  490-MISEIKYU-ENTRY-EXT
+           END-IF
+      *
       *    ジョブ管理チェック処理
            MOVE    "CHK"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
@@ -1431,55 +1553,29 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    処理区分変更処理
-      *****************************************************************
-       470-SYOKBN-SEC          SECTION.
-      *   
-           MOVE    1                   TO  SPA-GMN-CUR
-      *
-           EVALUATE    R03-SYOKBN-VALUE
-               WHEN    "T"
-                   MOVE    "F"             TO  SPA-GMN-SYOKBN
-               WHEN    "F"
-                   MOVE    "T"             TO  SPA-GMN-SYOKBN
-           END-EVALUATE
-      *             
-           EVALUATE    SPA-GMN-SYOKBN
-               WHEN    "T"
-                   MOVE    "レセプト新規作成" TO  SPA-GMN-SYOKBN-LABEL
-               WHEN    "F"
-                   MOVE    "作成済レセプト再印刷"
-                                              TO  SPA-GMN-SYOKBN-LABEL
-           END-EVALUATE      
-      *     
-           MOVE    2               TO  SPA-GMN-CUR
-           .
-       470-SYOKBN-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    入外区分表示切替処理
       *****************************************************************
        430-HNYUGAIKBN-CHANGE-SEC          SECTION.
       *
+      *    入力個所のセット
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
            EVALUATE    SPA-GMN-NYUGAIKBN
                WHEN    "1"
-                   MOVE    "2"         TO  SPA-GMN-NYUGAIKBN
+                   MOVE    SPA-GMN-NYUGAIKBNLST (2)
+                                               TO  R03-NYUGAIKBN
                WHEN    "2"
-                   MOVE    "1"         TO  SPA-GMN-NYUGAIKBN
+                   MOVE    SPA-GMN-NYUGAIKBNLST (1)
+                                               TO  R03-NYUGAIKBN
            END-EVALUATE
       *
-           MOVE    ZERO               TO  WRK-HENFLG
-           PERFORM VARYING IDY FROM   1   BY  1
-                   UNTIL   IDY >      SPA-GMN-NYUGAIKBN-MAX
-                   OR      WRK-HENFLG =   1
-               IF      SPA-GMN-NYUGAIKBN 
-                               =   SPA-GMN-NYUGAIKBNL (IDY)
-                   MOVE    SPA-GMN-NYUGAIKBNLST (IDY)
-                                      TO  SPA-GMN-NYUGAIKBN-G
-                   MOVE    1          TO  WRK-HENFLG
-               END-IF
-           END-PERFORM
+           MOVE    ZERO                TO  FLG-TOUROKU
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  410-SYOKBN-CHK-EXT
+           END-IF
       *
            IF      SPA-GMN-IKKATU          =   "T" 
                MOVE    2               TO  SPA-GMN-CUR
@@ -1495,6 +1591,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        450-TOUROKU-SEC                SECTION.
       *
+      *    入力チェック
+           MOVE    1               TO  FLG-TOUROKU
+           PERFORM 410-INPUT-CHK-SEC
+           IF      SPA-ERRCD   NOT =   SPACE
+               GO  TO  450-TOUROKU-EXT
+           END-IF
+      *
       *    ジョブ管理チェック処理
            PERFORM 4501-JOBKANRI-CHK-SEC
            IF      SPA-ERRCD      NOT =   SPACE
@@ -1503,29 +1606,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    画面移行用のパラメタ変更
            PERFORM 45011-PARA-HENSYU-SEC
-      *     
-      *    一括作成のときのチェック
-           EVALUATE    SPA-GMN-IKKATU
-               WHEN    "T"
-                   IF      SPA-NAI-SRYYM      =   ZERO
-                       MOVE    "0001"              TO  SPA-ERRCD
-                       GO  TO  450-TOUROKU-EXT
-                   END-IF
-           END-EVALUATE
-      *
-      *    入外区分チェック     
-           IF      SPA-GMN-NYUGAIKBN          =   SPACE
-               MOVE    "0003"              TO  SPA-ERRCD
-               GO  TO  450-TOUROKU-EXT
-           END-IF
-      *
-      *    レセプト作成区分
-           IF    (  SPA-NAI-SRYYM       <   200804 )
-           AND   (  SPA-GMN-IKKATU      =   "T"    )
-           AND   (  SPA-GMN-PRTKBN      =   "2"    ) 
-               MOVE    "0012"              TO  SPA-ERRCD
-               GO  TO  450-TOUROKU-EXT
-           END-IF
       *
       *    自賠責（新様式）のとき健保準拠か労災準拠のチェック
            IF    ( SPA-R01-RECEKBN     =   "4" )
@@ -2757,6 +2837,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF    ( SPA-ERRCD       =   SPACE )
+           AND   ( SPA-GMN-CUR     =   ZERO  )
+               PERFORM 50011-INPUT-CUR-SEC
+           END-IF
+      *
          EVALUATE    SPA-GMN-CUR
              WHEN    1
                     MOVE  "SYOKBN"     TO  MCP-WIDGET
@@ -2775,6 +2860,27 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
+      *    入力個所のセット処理
+      *****************************************************************
+       50011-INPUT-CUR-SEC         SECTION.
+      *
+           EVALUATE    WRK-MCP-WIDGET
+               WHEN    "SRYYM"
+                   MOVE    7           TO  SPA-GMN-CUR
+               WHEN    "NYUGAIKBN"
+                   MOVE    7           TO  SPA-GMN-CUR
+               WHEN    "PRTKBN"
+                   MOVE    7           TO  SPA-GMN-CUR
+               WHEN    "SYOKBN"
+               WHEN    "B07"
+                   MOVE    7           TO  SPA-GMN-CUR
+           END-EVALUATE
+           .
+      *
+       5011-INPUT-CUR-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
@@ -2783,27 +2889,15 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "入力エラーです"            TO  SPA-ERRMSG
+                   MOVE    "診療年月入力エラー"        TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE
                        "作成済のデータがないので再印刷は指定できません"
-                                                       TO  SPA-ERRMSG
-               WHEN    "0003"
-                   MOVE    "入外区分が選択してありません"
-                                                       TO  SPA-ERRMSG
-               WHEN    "0004"
-                   MOVE    "対象のデータを選択してありません"
-                                                       TO  SPA-ERRMSG
-               WHEN    "0005"
-                   MOVE    "対象のデータが選択してあります"
                                                        TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE    "入外区分入力エラー"       TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "個別作成のとき入力できません"
-                                                       TO  SPA-ERRMSG
-               WHEN    "0008"
-                   MOVE    "入院のとき労災・自賠責は選択できません"
                                                        TO  SPA-ERRMSG
                WHEN    "0009"
                    STRING  "該当診療年月は健保準拠の設定ですので"
@@ -2819,9 +2913,6 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                            DELIMITED   BY  SIZE  
                                            INTO        SPA-ERRMSG
                    END-STRING
-               WHEN    "0011"
-                   MOVE    "レセプト作成区分入力エラー"
-                                                       TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE    "レセプト作成区分入力エラー"
                                                        TO  SPA-ERRMSG
