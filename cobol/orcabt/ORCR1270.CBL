@@ -2702,6 +2702,9 @@
                                                    TO  RECE07-STYMD
                    END-EVALUATE
                END-IF
+               IF      WRK-PARA-PRTKBN     =   "2"
+                   MOVE    "1"                 TO  RECE07-PRTKBN
+               END-IF
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
            ELSE
