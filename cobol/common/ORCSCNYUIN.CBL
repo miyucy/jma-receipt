@@ -1934,8 +1934,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-SRYYMD          TO  JYURRK-SRYYMD
            MOVE    1                   TO  JYURRK-RENNUM
       *    £±ÆüÏ¢ÈÖ£±¤È¤¹¤ë
-           MOVE    "JYURRK-KEY5"       TO  WRK-PATH
-      *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -2248,6 +2246,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    ¼õ¿ÇÍúÎòºï½ü
            PERFORM 4500114-TEISEI-JYURRKDEL-SEC
+      *    ºï½ü¤Î»þ¡¢¼õ¿ÇÍúÎò¤ÎÏ¢ÈÖ¹¹¿·
+           IF      SPA-ERRCD           =   SPACE
+               IF     (SPA-SRYKA           =   SPA-OLD-SRYKA)
+                   PERFORM 4500115-TEISEI-RENNUM-SEC
+               END-IF
+           END-IF
       *
            .
        300-TEISEI-SYORI-EXT.
@@ -2700,6 +2704,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-RENNUM-KEY
            MOVE    ZERO                TO  WRK-JYURRK-RENNUM
            MOVE    ZERO                TO  WRK-JYURRK-DOUJI-RENNUM
+           MOVE    ZERO                TO  WRK-DOUJI-RENNUM-KEY
            PERFORM
                    UNTIL       FLG-JYURRK  =   1
                IF      JYURRK-RENNUM       =   WRK-RENNUM-KEY
