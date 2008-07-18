@@ -45,6 +45,8 @@
       *
       *  04.03.01    NACL-門脇    08/07/08  診区１４のコメントのみの剤
       *                                     編集対応
+      *  04.03.02    NACL-門脇    08/07/14  仮レセ作成（院外処方含む）対応
+      *                                     投薬剤点０（院外等）記載
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -329,6 +331,7 @@
                05  WRK-PARA-JOBID  PIC 9(07).
                05  WRK-PARA-SHELLID
                                    PIC X(08).
+           03  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
            03  WRK-SYS-SRYYMD      PIC X(08).
@@ -766,6 +769,7 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -1226,9 +1230,13 @@
                    ELSE
                       IF  (ACCT-ZAIKAISU  NOT =    ZERO)   AND
                           (FLG-TENTEKIMATOME  =    ZERO)
-                         IF   ACCT-SRYKBN  =  "11" OR "14" OR
+                         IF ( ACCT-SRYKBN  =  "11" OR "14" OR
                                               "33" OR "99" OR
-                                              "90" OR "92"
+                                              "90" OR "92" )
+                         OR ((WRK-PARA-PRTKBN
+                                           =  "2"         ) AND
+                             (ACCT-SRYKBN  =  "21" OR "22" OR
+                                              "23"        ))
                             IF  ACCT-SRYCDTOTAL = CONS-TOKKI1  OR
                                                   CONS-TOKKI2  OR
                                                   CONS-TOKKI3  OR
@@ -1598,6 +1606,30 @@
                IF    ( SRY-SRYKBN         =    "60" OR "64" )
                AND   ( TNS-KNSJISKBN      =     2           )
                    MOVE    TNS-KNSJISKBN        TO  RECE220-KNSJISKBN
+               END-IF
+      *
+               IF    ( SRY-SRYKBN   =  "14" OR "21" OR "22" OR "23" )
+               AND   ( RECE220-ZAITEN    =     ZERO                 )
+               AND   ( RECE220-SAFLG     =     SPACE                )
+                  IF   SRY-SRYCD(IDX2)   =     "820000046"
+                     MOVE     "1"         TO    RECE220-SAFLG
+                  END-IF
+               END-IF
+      *
+               IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
+               AND   ( RECE220-ZAITEN     =     ZERO        )
+                  IF     RECE220-SAFLG   NOT =  SPACE
+                        MOVE   SPACE      TO    RECE220-TOYAKUFLG
+                  ELSE
+                    IF  (SRY-SRYCD(IDX2)(1:1)  =  "8"  )
+                    OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
+                      IF   RECE220-TOYAKUFLG = SPACE
+                        MOVE    "2"       TO    RECE220-TOYAKUFLG
+                      END-IF
+                    ELSE
+                        MOVE    "1"       TO    RECE220-TOYAKUFLG
+                    END-IF
+                  END-IF
                END-IF
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC

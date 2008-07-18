@@ -66,6 +66,8 @@
       *
       *  04.01.00    NACL-藤原    07/10/25  公務災害対応
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
+      *
+      *  04.03.03    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -160,6 +162,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-NYUGAIKBN       PIC X(06).
            03  WRK-RECEERR         PIC X(200).
+           03  WRK-PRTKBN          PIC X(10).
            03  WRK-RECEKBN         PIC X(18).
            03  WRK-PREFKBN         PIC X(01).
            03  WRK-TEISYUTUSAKI    PIC X(01).
@@ -452,7 +455,15 @@
       *
            INITIALIZE              SPA-R04-AREA
                                    SPA-GMN-PRTNM-AREA
-      *　　ファイル作成区分
+      *
+      *    点検用レセプト作成時
+           IF      SPA-R01-PRTKBN  =   "2"
+               MOVE    "【点検用】"    TO  WRK-PRTKBN
+           ELSE
+               MOVE    SPACE           TO  WRK-PRTKBN
+           END-IF
+      *
+      *    ファイル作成区分
            EVALUATE    SPA-R01-RECE07-RECEKBN
                WHEN    "3"
                    MOVE    "労災"        TO  WRK-RECEKBN
@@ -476,7 +487,8 @@
                    MOVE    SPA-R01-SRYYM       TO  WRK-SYMD (1:6)
                    MOVE    "01"                TO  WRK-SYMD (7:2) 
                    PERFORM 5002-HIZUKE-HEN-SEC
-                   STRING  WRK-HENYMDG3(1:16)  DELIMITED  BY  SIZE
+                   STRING  WRK-PRTKBN          DELIMITED  BY  SPACE 
+                           WRK-HENYMDG3(1:16)  DELIMITED  BY  SIZE
                            WRK-NYUGAIKBN       DELIMITED  BY  SPACE 
                            WRK-RECEKBN         DELIMITED  BY  SPACE 
                            "一括作成分"        DELIMITED  BY  SIZE
@@ -486,7 +498,8 @@
                    EVALUATE    SPA-R01-RECE07-SYORISBT
                        WHEN    ZERO
                        WHEN    SPACE
-                           STRING  WRK-NYUGAIKBN  DELIMITED  BY  SPACE 
+                           STRING  WRK-PRTKBN     DELIMITED  BY  SPACE 
+                                   WRK-NYUGAIKBN  DELIMITED  BY  SPACE 
                                    WRK-RECEKBN    DELIMITED  BY  SPACE 
                                    "個別作成分"   DELIMITED  BY  SIZE
                                           INTO    SPA-GMN-R04-FILEKBN
@@ -496,7 +509,8 @@
                                                       TO  WRK-SYMD
                            MOVE    "01"               TO  WRK-SYMD (7:)
                            PERFORM 5002-HIZUKE-HEN-SEC
-                           STRING  "訂正日指定　" DELIMITED  BY SIZE
+                           STRING  WRK-PRTKBN     DELIMITED  BY SPACE 
+                                   "訂正日指定　" DELIMITED  BY SIZE
                                    WRK-HENYMDG3 (1:16)
                                                   DELIMITED  BY SIZE
                                    "分"           DELIMITED  BY SIZE
@@ -511,7 +525,8 @@
                                                       TO  WRK-SYMD
                            PERFORM 5002-HIZUKE-HEN-SEC
                            MOVE    WRK-HENYMDG3       TO  WRK-EDYMD
-                           STRING  "受診日指定　" DELIMITED  BY SIZE
+                           STRING  WRK-PRTKBN     DELIMITED  BY SPACE 
+                                   "受診日指定　" DELIMITED  BY SIZE
                                    WRK-STYMD      DELIMITED  BY SIZE
                                    "〜"           DELIMITED  BY SIZE
                                    WRK-EDYMD (17:6)
@@ -523,7 +538,8 @@
                                                       TO  WRK-SYMD
                            MOVE    "01"               TO  WRK-SYMD (7:)
                            PERFORM 5002-HIZUKE-HEN-SEC
-                           STRING  WRK-NYUGAIKBN  DELIMITED  BY SPACE 
+                           STRING  WRK-PRTKBN     DELIMITED  BY  SPACE 
+                                   WRK-NYUGAIKBN  DELIMITED  BY SPACE 
                                    "　照会連携　" DELIMITED  BY SIZE
                                    WRK-HENYMDG3 (1:16)
                                                   DELIMITED  BY SIZE
@@ -532,7 +548,7 @@
                            END-STRING
                    END-EVALUATE
            END-EVALUATE
-      *　　ファイル作成日
+      *    ファイル作成日
            IF      SPA-R01-RECE07-CREYMD   NOT =   SPACE
                MOVE    SPA-R01-RECE07-CREYMD
                                            TO  WRK-SYMD
@@ -2576,6 +2592,10 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPACE                TO  RID3
            MOVE    SPA-RIDCD3           TO  RID3-ID1CODE
            MOVE    WRK-RIDMSG           TO  RID3-ID1MSG
+           MOVE    "blue"               TO  RID3-LABEL-STYLE
+           IF      SPA-R01-PRTKBN       =   "2"
+               MOVE    "【点検用レセプト】"     TO  RID3-LABEL
+           END-IF
            MOVE    "B12"                TO  MCP-WIDGET
       *
            MOVE    "R04"                TO  SPA-MOTOPG

@@ -114,6 +114,8 @@
       *                                     電話番号桁数修正
       *                                     HCM55V01.red
       *  04.02.02    NACL-藤原    08/05/09  エラー時終了処理の追加
+      *
+      *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -314,6 +316,9 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCM58.INC".
            COPY    "HCM59.INC".
            COPY    "HCN58.INC".
+           COPY    "HCM58V01.INC".
+           COPY    "HCM59V01.INC".
+           COPY    "HCN58V01.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -1022,6 +1027,18 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCN58
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN58-RENNUM
                        MOVE    HCN58               TO  RECE08-PRTDATA
+                   WHEN    "HCM58V01.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM58V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM58V01-RENNUM
+                       MOVE    HCM58V01            TO  RECE08-PRTDATA
+                   WHEN    "HCM59V01.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM59V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM59V01-RENNUM
+                       MOVE    HCM59V01            TO  RECE08-PRTDATA
+                   WHEN    "HCN58V01.red"
+                       MOVE    RECE08-PRTDATA      TO  HCN58V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCN58V01-RENNUM
+                       MOVE    HCN58V01            TO  RECE08-PRTDATA
                END-EVALUATE
            END-IF            
            MOVE    RECE08-PRTDATA      TO  PRT-PRTDATA
@@ -1231,6 +1248,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                    END-IF
                WHEN    "HCM58.red"     ALSO    "2"
                WHEN    "HCM59.red"     ALSO    "2"
+               WHEN    "HCM58V01.red"  ALSO    "2"
+               WHEN    "HCM59V01.red"  ALSO    "2"
                    MOVE    "公害レセプト（入院外）"    TO  SPRT-TITLE
                WHEN    "HCN21.red"     ALSO    ANY
                WHEN    "HCN21V01.red"  ALSO    ANY
@@ -1282,6 +1301,8 @@ grpsys         PERFORM 900-DBFETCH-SEC
                    END-IF
                WHEN    "HCN58.red"     ALSO    "1"
                WHEN    "HCM59.red"     ALSO    "1"
+               WHEN    "HCN58V01.red"     ALSO    "1"
+               WHEN    "HCM59V01.red"     ALSO    "1"
                    MOVE    "公害レセプト（入院）"      TO  SPRT-TITLE
            END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID

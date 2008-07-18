@@ -35,6 +35,8 @@
       *                                     診療区分６４：病理診断対応
       *  04.02.04    NACL-藤原    08/04/18  「レセ電通信医２０００６号」
       *                                     症状詳記区分コード５２の追加
+      *
+      *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -114,9 +116,10 @@
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *       
-           COPY    "HCN58.INC".
-           COPY    "HCM59.INC".
+           COPY    "HCN58V01.INC"  REPLACING  //HCN58V01//
+                                   BY         //HCN58//.
+           COPY    "HCM59V01.INC"  REPLACING  //HCM59V01//
+                                   BY         //HCM59//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -242,6 +245,7 @@
                05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).
                05  WRK-PARA-SHELLID PIC  X(08).
+           03  WRK-PARA-PRTKBN      PIC  X(01).
            03  WRK-PARA-HOSPNUM     PIC  9(02).
       *
            03  WRK-SYS-SRYYMD       PIC  X(08).
@@ -642,6 +646,7 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -1144,6 +1149,11 @@
                PERFORM 3101-FUMEI-HENSYU-SEC
            END-IF
       *
+      *    点検用レセプト作成時
+           IF      WRK-PARA-PRTKBN     =   "2"
+               MOVE    "点検用レセプト"    TO  HCN58-LABEL
+           END-IF
+      *
            .
        310-HCN06-HEAD-HEN-EXT.
            EXIT.
@@ -1271,7 +1281,10 @@
       *
       *    カナ氏名
            MOVE    HCN58-KANANAME      TO  HCM59-KANANAME
-           .
+      *
+      *    点検用レセプト作成時
+           MOVE    HCN58-LABEL         TO  HCM59-LABEL
+          .
        310-HCN061-HEAD-HEN-EXT.
            EXIT.
       *
@@ -2447,12 +2460,12 @@
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCN58.red"         TO
+               MOVE    "HCN58V01.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HCN58               TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
-               MOVE    "HCM59.red"         TO
+               MOVE    "HCM59V01.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HCM59               TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -2585,12 +2598,12 @@
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCN58.red"
+                       WHEN    "HCN58V01.red"
                            MOVE    RECE08-PRTDATA  TO HCN58
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HCN58-PAGE
                            MOVE    HCN58            TO RECE08-PRTDATA
-                       WHEN    "HCM59.red"                  
+                       WHEN    "HCM59V01.red"                  
                            MOVE    RECE08-PRTDATA  TO HCM59
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HCM59-PAGE

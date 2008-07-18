@@ -3484,9 +3484,33 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    WHEN    "4"
                    WHEN    "5"
                    WHEN    "6"
-                       IF      SPA-NAI-R01-TSRYYM (1)  <   200804
-                           MOVE    1       TO  SPA-NAI-R01-PRTKBN-FLG
-                       END-IF  
+                       PERFORM VARYING IDX FROM    1   BY  1
+                               UNTIL   IDX >       SPA-GMN-R01-MAX
+                               OR      SPA-NAI-R01-PRTKBN-FLG
+                                           =       1
+      *??
+              DISPLAY "IDX=" IDX "#" SPA-NAI-R01-TTAISYO (IDX) "#"
+                            SPA-NAI-R01-TDELETE (IDX) "#"
+                            SPA-NAI-R01-TSRYYM (IDX) "#"
+      *??
+                           IF    ( SPA-GMN-R01-SYORI
+                                                   =   "4" OR  "5" )
+                           AND   ( SPA-NAI-R01-TTAISYO (IDX)
+                                                   =   0           )
+                               CONTINUE
+                           ELSE  
+                               IF   ( SPA-NAI-R01-TDELETE (IDX)
+                                                   =   1           )
+                                   CONTINUE
+                               ELSE
+                                   IF      SPA-NAI-R01-TSRYYM (IDX)
+                                                       <   200804
+                                       MOVE    1       TO
+                                               SPA-NAI-R01-PRTKBN-FLG
+                                   END-IF  
+                               END-IF  
+                           END-IF  
+                       END-PERFORM  
                    WHEN    "2"
                        IF      SPA-NAI-R01-TEISEIYM    <   200804
                            MOVE    1       TO  SPA-NAI-R01-PRTKBN-FLG

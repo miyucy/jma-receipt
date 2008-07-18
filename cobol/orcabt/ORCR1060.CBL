@@ -35,6 +35,8 @@
       *                                     診療区分６４：病理診断対応
       *  04.02.04    NACL-藤原    08/04/18  「レセ電通信医２０００６号」
       *                                     症状詳記区分コード５２の追加
+      *
+      *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -104,8 +106,10 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-           COPY    "HCM58.INC".
-           COPY    "HCM59.INC".
+           COPY    "HCM58V01.INC"  REPLACING  //HCM58V01//
+                                   BY         //HCM58//.
+           COPY    "HCM59V01.INC"  REPLACING  //HCM59V01//
+                                   BY         //HCM59//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -224,6 +228,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).
                05  WRK-PARA-SHELLID PIC  X(08).
+           03  WRK-PARA-PRTKBN      PIC  X(01).
            03  WRK-PARA-HOSPNUM     PIC  9(02).
       *
            03  WRK-SYS-SRYYMD       PIC  X(08).
@@ -620,6 +625,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -1120,6 +1126,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                PERFORM 3101-FUMEI-HENSYU-SEC
            END-IF
       *
+      *    点検用レセプト作成時
+           IF      WRK-PARA-PRTKBN     =   "2"
+               MOVE    "点検用レセプト"    TO  HCM58-LABEL
+           END-IF
+      *
            .
        310-HC101-HEAD-HEN-EXT.
            EXIT.
@@ -1227,6 +1238,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
       *    カナ氏名
            MOVE    HCM58-KANANAME      TO  HCM59-KANANAME
+      *
+      *    点検用レセプト作成時
+           MOVE    HCM58-LABEL         TO  HCM59-LABEL
            .
        310-HCN061-HEAD-HEN-EXT.
            EXIT.
@@ -2116,12 +2130,12 @@ grpsys     MOVE    RECE100-HOSPNUM      TO  OPECOM-HOSPNUM
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCM58.red"          TO
+               MOVE    "HCM58V01.red"       TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HCM58                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
-               MOVE    "HCM59.red"          TO
+               MOVE    "HCM59V01.red"       TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HCM59                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -2255,12 +2269,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCM58.red"
+                       WHEN    "HCM58V01.red"
                            MOVE    RECE08-PRTDATA  TO HCM58
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HCM58-PAGE
                            MOVE    HCM58            TO RECE08-PRTDATA
-                       WHEN    "HCM59.red"                  
+                       WHEN    "HCM59V01.red"                  
                            MOVE    RECE08-PRTDATA  TO HCM59
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HCM59-PAGE
