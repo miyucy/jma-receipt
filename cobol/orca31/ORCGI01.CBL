@@ -5029,10 +5029,7 @@
                    PERFORM 900-TENSU-KEY-SEL-SEC
                    MOVE    TNS-NYUKHNKSNKBN        TO  WRK-NYUKSNKBN
                    IF    ( WRK-NYUKSNKBN       >   ZERO )
-                       DISPLAY "WRK-NYUKSNKBN  =  " WRK-NYUKSNKBN
-                       DISPLAY "WRK-KSN-NYUKSNKBN  = " WRK-KSN-NYUKSNKBN
                        PERFORM 900-NYUKSNCHK-KEY-SEL-SEC
-                       DISPLAY "NYUKSNCHK-CHKKBN   = " NYUKSNCHK-CHKKBN
                        IF    ( NYUKSNCHK-CHKKBN    =   "1" OR "2" )
                            CONTINUE
                        ELSE
@@ -6587,6 +6584,7 @@
                                    SPA-GMN-I01-CMB-BTUNAME
                                    SPA-GMN-I01-CMB-HKNCOMBI
                                    SPA-GMN-I01-CMB-TOKNYUIN
+                                   SPA-GMN-I01-CMB-KSN
       *
            MOVE    SPA-GMN-I01-SHOKAI-ITM (01)
                                        TO  SPA-GMN-I01-SHOKAI
