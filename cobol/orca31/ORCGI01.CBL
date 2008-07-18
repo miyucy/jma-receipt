@@ -4946,7 +4946,7 @@
       *****************************************************************
        4101-CMB-KSN-SET-SEC            SECTION.
       *
-           IF    ( WRK-KJNYMD          =   SPA-NAI-I01-NYUINYMD )
+           IF    ( SPA-GMN-I01-SYORIKBN-CD =   CONST-NYUIN )
                PERFORM 41011-CMB-KSN-SET-SEC
            ELSE
       *
