@@ -18296,11 +18296,13 @@
                                            =   SPACE )
                    MOVE    WIDGET-INSENSITIVE
                                        TO  I01-KSN-STT (IDX-KSN)
+                                           I01-KSN-ITM-STT (IDX-KSN)
                END-IF
                IF    ( SPA-GMN-I01-CMB-KSN-EDITABLE
                                            =   ZERO )
                    MOVE    WIDGET-INSENSITIVE
                                        TO  I01-KSN-STT (IDX-KSN)
+                                           I01-KSN-ITM-STT (IDX-KSN)
                END-IF
       *
            END-PERFORM
