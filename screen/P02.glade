@@ -9240,11 +9240,51 @@
 	</widget>
 
 	<widget>
+	  <class>GtkPandaCombo</class>
+	  <name>P026_TOKCD_COMB</name>
+	  <x>240</x>
+	  <y>232</y>
+	  <width>180</width>
+	  <height>24</height>
+	  <value_in_list>False</value_in_list>
+	  <ok_if_empty>True</ok_if_empty>
+	  <case_sensitive>False</case_sensitive>
+	  <use_arrows>True</use_arrows>
+	  <use_arrows_always>False</use_arrows_always>
+	  <items></items>
+
+	  <widget>
+	    <class>GtkPandaEntry</class>
+	    <child_name>GtkPandaCombo:entry</child_name>
+	    <name>P026_TOKCD</name>
+	    <can_focus>True</can_focus>
+	    <signal>
+	      <name>activate</name>
+	      <handler>send_event</handler>
+	      <data>ACTIVATE</data>
+	      <last_modification_time>Fri, 11 Jul 2008 07:01:06 GMT</last_modification_time>
+	    </signal>
+	    <signal>
+	      <name>changed</name>
+	      <handler>entry_changed</handler>
+	      <data>CHANGED</data>
+	      <last_modification_time>Fri, 11 Jul 2008 07:01:22 GMT</last_modification_time>
+	    </signal>
+	    <editable>True</editable>
+	    <text_visible>True</text_visible>
+	    <text_max_length>20</text_max_length>
+	    <text></text>
+	    <input_mode>XIM</input_mode>
+	    <xim_enabled>False</xim_enabled>
+	  </widget>
+	</widget>
+
+	<widget>
 	  <class>GtkScrolledWindow</class>
 	  <name>scrolledwindow11</name>
 	  <x>32</x>
 	  <y>32</y>
-	  <width>524</width>
+	  <width>532</width>
 	  <height>136</height>
 	  <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
 	  <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
@@ -9275,7 +9315,7 @@
 	      <last_modification_time>Tue, 25 Sep 2001 05:05:59 GMT</last_modification_time>
 	    </signal>
 	    <columns>6</columns>
-	    <column_widths>34,84,49,102,103,80</column_widths>
+	    <column_widths>34,95,49,102,103,80</column_widths>
 	    <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	    <show_titles>True</show_titles>
 	    <shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -9357,46 +9397,6 @@
 	      <xpad>0</xpad>
 	      <ypad>0</ypad>
 	    </widget>
-	  </widget>
-	</widget>
-
-	<widget>
-	  <class>GtkPandaCombo</class>
-	  <name>P026_TOKCD_COMB</name>
-	  <x>240</x>
-	  <y>232</y>
-	  <width>180</width>
-	  <height>24</height>
-	  <value_in_list>False</value_in_list>
-	  <ok_if_empty>True</ok_if_empty>
-	  <case_sensitive>False</case_sensitive>
-	  <use_arrows>True</use_arrows>
-	  <use_arrows_always>False</use_arrows_always>
-	  <items></items>
-
-	  <widget>
-	    <class>GtkPandaEntry</class>
-	    <child_name>GtkPandaCombo:entry</child_name>
-	    <name>P026_TOKCD</name>
-	    <can_focus>True</can_focus>
-	    <signal>
-	      <name>activate</name>
-	      <handler>send_event</handler>
-	      <data>ACTIVATE</data>
-	      <last_modification_time>Fri, 11 Jul 2008 07:01:06 GMT</last_modification_time>
-	    </signal>
-	    <signal>
-	      <name>changed</name>
-	      <handler>entry_changed</handler>
-	      <data>CHANGED</data>
-	      <last_modification_time>Fri, 11 Jul 2008 07:01:22 GMT</last_modification_time>
-	    </signal>
-	    <editable>True</editable>
-	    <text_visible>True</text_visible>
-	    <text_max_length>20</text_max_length>
-	    <text></text>
-	    <input_mode>XIM</input_mode>
-	    <xim_enabled>False</xim_enabled>
 	  </widget>
 	</widget>
       </widget>

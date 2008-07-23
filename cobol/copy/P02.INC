@@ -703,7 +703,7 @@
                       07  P02-P026-TOK-ROW PIC S9(9)   BINARY.
                       07  P02-ITEM        OCCURS  50 TIMES.
                         08  P02-P026-TNUM     PIC X(3).
-                        08  P02-P026-TNYUGAI PIC X(10).
+                        08  P02-P026-TNYUGAI PIC X(20).
                         08  P02-P026-TCD     PIC X(2).
                         08  P02-P026-TNAIYO  PIC X(12).
                         08  P02-P026-TSTYM   PIC X(10).
