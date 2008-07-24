@@ -161,7 +161,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 09 Feb 2001 02:54:52 GMT</last_modification_time>
       </signal>
-      <label>削除</label>
+      <label>前回セット</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -183,7 +183,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Fri, 09 Feb 2001 02:55:26 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>削除</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
