@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
-      *  04.06.01    NACL-森脇     11/01/13  慢性疾患区分修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -95,7 +94,6 @@
       *
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-USBYOMEI            PIC 9(01).
-           03  FLG-BYOMEI              PIC 9(01).
       *
            03  FLG-ERRARI              PIC 9(01).
            03  FLG-DATAEND             PIC 9(01).
@@ -233,9 +231,6 @@
        01  WKUSBYOMEI-REC.
            COPY    "CPUSERBYOMEI.INC"    REPLACING
                                        //USBYO-// BY //WKUSBYO-//.
-      *    病名
-       01  BYOMEI-REC.
-           COPY    "CPBYOMEI.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -254,8 +249,6 @@
       *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    数字変換領域
-           COPY    "CPORCSNUM.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -787,68 +780,6 @@
                MOVE    "A"         TO  WKUSBYO-CDSYU
            END-IF
       *
-      *    入力コードチェック
-           IF    ( WKUSBYO-BYOMEIINPUTCD(1:1)  =   "." )   OR
-                 ( WKUSBYO-BYOMEIINPUTCD(1:1)  =   "/" )
-               MOVE    3           TO  FLG-ERR
-               GO  TO  2410-BYOMEIINPUTCD-SET-EXT
-           END-IF
-           IF    ( WKUSBYO-BYOMEIINPUTCD(WRK-LEN:1)  =   "+" ) OR
-                 ( WKUSBYO-BYOMEIINPUTCD(WRK-LEN:1)  =   "-" )
-               MOVE    3           TO  FLG-ERR
-               GO  TO  2410-BYOMEIINPUTCD-SET-EXT
-           END-IF
-           COMPUTE WRK-MOJISU  =   WRK-LEN -   1
-           IF    ( WKUSBYO-BYOMEIINPUTCD(WRK-MOJISU:2) =   "＋" )  OR
-                 ( WKUSBYO-BYOMEIINPUTCD(WRK-MOJISU:2) =   "−" )
-               MOVE    3           TO  FLG-ERR
-               GO  TO  2410-BYOMEIINPUTCD-SET-EXT
-           END-IF
-      *     GO  TO  2410-BYOMEIINPUTCD-SET-EXT
-           IF      WRK-LEN =   7
-               INITIALIZE                  ORCSNUMAREA
-               MOVE    WKUSBYO-BYOMEIINPUTCD
-                                       TO  SNUM-INX
-               CALL    "ORCSNUM"           USING
-                                           ORCSNUMAREA
-               IF      SNUM-RC             =   ZERO
-                   MOVE    3           TO  FLG-ERR
-               ELSE
-                   IF    ( WKUSBYO-BYOMEIINPUTCD(1:3)  =   "ZZZ" ) OR
-                         ( WKUSBYO-BYOMEIINPUTCD(4:1)  =   "0" )   OR
-                         ( WKUSBYO-BYOMEIINPUTCD(4:1)  =   "C" )
-                       MOVE    3           TO  FLG-ERR
-                   ELSE
-      *                病名検索チェック
-                       INITIALIZE                  BYOMEI-REC
-                       MOVE    WKUSBYO-BYOMEIINPUTCD
-                                               TO  BYO-BYOMEICD
-                       MOVE    BYOMEI-REC      TO  MCPDATA-REC
-                       MOVE    "tbl_byomei"    TO  MCP-TABLE
-                       MOVE    "key"           TO  MCP-PATHNAME
-                       PERFORM 910-DBSELECT-SEC
-                       IF      MCP-RC          =   ZERO
-                           MOVE    "tbl_byomei"    TO  MCP-TABLE
-                           MOVE    "key"           TO  MCP-PATHNAME
-                           PERFORM 920-DBFETCH-SEC
-                           IF      MCP-RC          =   ZERO
-                               MOVE    ZERO            TO  FLG-BYOMEI
-                           ELSE
-                               MOVE    1               TO  FLG-BYOMEI
-                           END-IF
-                       ELSE
-                           MOVE    1               TO  FLG-BYOMEI
-                       END-IF
-                       MOVE    "tbl_byomei"    TO  MCP-TABLE
-                       MOVE    "key"           TO  MCP-PATHNAME
-                       PERFORM 990-DBCLOSE-SEC
-                       IF      BYO-BYOMEI      NOT =   SPACE
-                           MOVE    3           TO  FLG-ERR
-                       END-IF
-                   END-IF
-               END-IF
-           END-IF
-      *
            .
        2410-BYOMEIINPUTCD-SET-EXT.
            EXIT.
@@ -1051,35 +982,16 @@
            END-IF
       *
       *    該当する区分以外はエラー
-           IF      WRK-MO-CNT      =   1
-               EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-               WHEN    "0"
-               WHEN    "3"
-               WHEN    "4"
-               WHEN    "5"
-               WHEN    "7"
-               WHEN    "8"
-               WHEN    "9"
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WKUSBYO-MANSEIKBN
-               WHEN    OTHER
-                   MOVE    3           TO  FLG-ERR
-               END-EVALUATE
-           ELSE
-               EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-               WHEN    "00"
-               WHEN    "03"
-               WHEN    "04"
-               WHEN    "05"
-               WHEN    "07"
-               WHEN    "08"
-               WHEN    "09"
-                   MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-                                       TO  WKUSBYO-MANSEIKBN
-               WHEN    OTHER
-                   MOVE    3           TO  FLG-ERR
-               END-EVALUATE
-           END-IF
+           EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+           WHEN    "00"
+           WHEN    "03"
+           WHEN    "04"
+           WHEN    "05"
+               MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
+                                   TO  WKUSBYO-MANSEIKBN
+           WHEN    OTHER
+               MOVE    3           TO  FLG-ERR
+           END-EVALUATE
       *
            .
        2410-MANSEIKBN-SET-EXT.
@@ -1158,17 +1070,10 @@
       *    疑いフラグ
            MOVE    LNK-BYO-UTAGAIFLG   TO  WKUSBYO-UTAGAIFLG
       *
-      *    難病外来
-           IF      LNK-BYO-NANBYOCD
-                                   NOT =   ZERO
-               MOVE     LNK-BYO-NANBYOCD
+      *    慢性フラグ
+           IF      WKUSBYO-MANSEIKBN   =  ZERO
+               MOVE    LNK-BYO-MANSEIKBN
                                        TO  WKUSBYO-MANSEIKBN
-           ELSE
-      *        慢性フラグ
-               IF      WKUSBYO-MANSEIKBN   =  ZERO
-                   MOVE    LNK-BYO-MANSEIKBN
-                                           TO  WKUSBYO-MANSEIKBN
-               END-IF
            END-IF
       *
       *    修飾語でない場合
