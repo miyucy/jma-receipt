@@ -43,6 +43,7 @@
       *  04.00.00    NACL-多々納  07/09/XX  テーブル４００対応
       *  04.01.00    NACL-多々納  07/10/XX  悪性腫瘍検査対応
       *  04.01.00    NACL-多々納  07/11/21  器材商品名表示対応
+      *  04.03.00    NACL-多々納  08/07/24  前回ＣＤ追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -451,6 +452,7 @@
            03  WRK-YUKOSTYMD       PIC X(08).
            03  WRK-YUKOEDYMD       PIC X(08).
            03  WRK-SELNUM          PIC 9(03).
+           03  WRK-SETCODE         PIC X(06).
       *
       *
        01  WRK-GMNGYO-AREA.
@@ -938,8 +940,8 @@
                    IF      SPA-MOTOPG2         =   SPACE
                        MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
                    END-IF
-               END-IF
-      *****END-IF
+      *******  END-IF
+           END-IF
       *
       *    内部画面より
            EVALUATE    SPA-MOTOPG
@@ -971,16 +973,6 @@
       *                明細選択
                        PERFORM 3011-K98-SET-SEC
                    END-IF
-      ***********  IF     (SPA-K98-SRYCD-G   NOT =   SPACE )  OR
-      *                   (SPA-GMN5-CUR          =   1     )
-      *                PERFORM 3011-K98-SET-SEC
-      *                MOVE    1                   TO  FLG-GMN
-      *            ELSE
-      *                MOVE    2                   TO  FLG-GMN
-      *                MOVE    3                   TO  SPA-GMN5-CUR
-      *                MOVE    "1"                 TO  SPA-COM-CUR
-      *                                                  (SPA-GMN-IDX)
-      **********   END-IF
                WHEN    "KID1"
                    PERFORM 3001-KID1-SYORI-SEC
                    MOVE    1                   TO  FLG-GMN
@@ -1278,8 +1270,6 @@
                MOVE    50                  TO  SPA-NENREI-YY
            END-IF
       *
-      *****MOVE    "2"                 TO  FLG-TOROKU
-      *
       *    画面編集処理
            PERFORM 3103-SAIHEN-HEN-SEC
       *
@@ -1287,9 +1277,6 @@
            MOVE    "2"             TO  FLG-TOROKU
            PERFORM 510-TBLHEN-SEC
            MOVE    SPACE           TO  FLG-TOROKU
-      *
-      *    カーソルの位置を最初の行へ
-      *****MOVE    "1"                 TO  SPA-COM-CUR (01)
       *
            .
        310-SPA-SET-EXT.
@@ -1580,7 +1567,7 @@
       *    時間外区分は空白
            IF      LNK-WKSRY-AUTOKBN (IDX IDY)
                                        =   "A" OR "B" OR "C"  OR  "D"
-                                       OR  "E" OR "F" OR "G"
+                                       OR  "E" OR "F" OR "G"  OR  "H"
                MOVE    SPACE           TO  SPA-COM-AUTOKBN (IDX2)
            END-IF
       *    数量入力時
@@ -1709,8 +1696,11 @@
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 420-CLERA-SEC
       *    削除
-               WHEN    "CLICKED"       ALSO    "B03"
+               WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 430-SETDEL-SEC
+      *    前回ＣＤ
+               WHEN    "CLICKED"       ALSO    "B03"
+                   PERFORM 440-ZEN-INPUTCD-SEC
       *    入力コード
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 440-INPUTCD-SEC
@@ -5612,6 +5602,7 @@
            IF      SPA-K05-MAE-SRYYMD  NOT =   SPACE
                MOVE    SPA-K05-MAE-SRYYMD      TO  SPA-SRYYMD
            END-IF
+           MOVE    SPA-GMN-SETCODE     TO  WRK-SETCODE
       *
            INITIALIZE              SPA-SCR-REC
            INITIALIZE              SPA-K05-AREA
@@ -5619,6 +5610,8 @@
            MOVE    SPA-SRYYMD          TO  SPA-K05-MAE-SRYYMD
       *    入外区分、老人区分初期表示
            PERFORM 3101-NYUGAI-SET-SEC
+      *    前回のセットコード
+           MOVE    WRK-SETCODE         TO  SPA-MAE-SETCODE
       *
            MOVE    SPACE               TO  SPA-K05-SYORI
            MOVE    1                   TO  SPA-GMN5-CUR
@@ -5632,8 +5625,6 @@
       *****************************************************************
        430-SETDEL-SEC                  SECTION.
       *
-      *    MOVE    "3"                 TO  SPA-K05-SYORI
-      *****MOVE    1                   TO  SPA-GMN5-CUR
            IF     (SPA-GMN-SETCODE     NOT =   SPACE )  AND
                   (SPA-K05-SYORI       =   "2"       )
               MOVE    "0001"               TO  SPA-KIDCD
@@ -5644,6 +5635,26 @@
       *
            .
        430-SETDEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前回コード画面へ　処理
+      *****************************************************************
+       440-ZEN-INPUTCD-SEC             SECTION.
+      *
+           MOVE    SPA-MAE-SETCODE     TO  SPA-GMN-SETCODE
+           MOVE    1                   TO  FLG-IN-SETCODE
+      *    セットコード
+           PERFORM 41011-SETCODE-HEN-SEC
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-KIDCD           =   "0003" )
+      *        セット内容を展開する
+               PERFORM 30011-SYUSEI-HEN-SEC
+               MOVE    SPACE               TO  SPA-KID1-FLG
+               MOVE    SPACE               TO  SPA-KIDCD
+           END-IF
+           .
+       440-ZEN-INPUTCD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5723,76 +5734,6 @@
            MOVE    3                   TO  SPA-GMN5-CUR
            .
        460-ATOGMN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    予約登録へ
-      *****************************************************************
-       430-YOYAKU-SEC             SECTION.
-      *
-      *    更新前のチェック
-           MOVE    "1"                 TO  FLG-TOROKU
-           PERFORM 510-TBLHEN-SEC
-           MOVE    SPACE               TO  FLG-TOROKU
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      480-YOYAKU-EXT
-           END-IF
-      *
-      *    画面移行用のパラメタ変更
-           MOVE    "K05"               TO  SPA-MOTOPG
-           MOVE    "K05"               TO  SPA-MOTOPG3
-           MOVE    "Y01"               TO  SPA-SAKIPG
-      *    戻り時、画面を元へ戻す
-           MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-KYOTUKEY        TO  LNK-COMMON
-           MOVE    SPA-K02             TO  LNK-SCRSPA
-      *
-           MOVE    SPACE               TO  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
-      **** MOVE    "JOIN"              TO  MCP-PUTTYPE.
-           MOVE   "Y01"                TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       480-YOYAKU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    受付一覧へ
-      *****************************************************************
-       490-UKEICHI-SEC             SECTION.
-      *
-      *    更新前のチェック
-           MOVE    "1"                 TO  FLG-TOROKU
-           PERFORM 510-TBLHEN-SEC
-           MOVE    SPACE               TO  FLG-TOROKU
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      490-UKEICHI-EXT
-           END-IF
-      *
-           MOVE    "U01"               TO  SPA-SAKIPG
-           MOVE    "K05"               TO  SPA-MOTOPG
-      *
-           MOVE    SPACE               TO  LINKAREA
-           MOVE    SPA-KYOTUKEY        TO  LNK-COMMON
-           MOVE    SPA-K02             TO  LNK-SCRSPA
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
-      **** MOVE    "JOIN"              TO  MCP-PUTTYPE.
-           MOVE    "U01"               TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       490-UKEICHI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5906,9 +5847,7 @@
       *****************************************************************
        41002-KOUSIN-SYORI-SEC          SECTION.
       *
-      *----(01.00.01) LINE ADD START ----------------------------------
            MOVE    SPACE               TO  SPA-UPDFLG
-      *----(01.00.01) LINE ADD END   ----------------------------------
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -5937,7 +5876,9 @@
       *    患者が選択されてない時、年齢を戻す
            IF      SPA-GMN-PTNUM       =   SPACE
       *        初期設定
+               MOVE    SPA-GMN-SETCODE     TO  WRK-SETCODE
                PERFORM 310-SPA-INITSET-SEC
+               MOVE    WRK-SETCODE         TO  SPA-MAE-SETCODE
                GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
       *
@@ -6150,7 +6091,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBINSERT"          TO  MCP-FUNC
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
            IF      MCP-RC          NOT =   ZERO
@@ -6178,133 +6119,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        410023-INPUTCD-TBLINS-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    入力コード更新処理
-      *****************************************************************
-      *410024-INPUTCD-TBLUPD-SEC             SECTION.
-      *
-      *
-      *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL      (IDX         >   5   )  OR
-      *                       (SPA-K051-INPUTCD (IDX)  =   SPACE )
-      *
-      *        INITIALIZE                      INPUTCD-REC
-      *        MOVE    SPA-HOSPNUM          TO  ICD-HOSPNUM
-      ******** EVALUATE    TRUE
-      *            WHEN    SPA-K051-INPUTCD (IDX)(5:)  =   SPACE
-      *                MOVE    "4"                 TO  ICD-CDSYU
-      *            WHEN    SPA-K051-INPUTCD (IDX)(6:)  =   SPACE
-      *                MOVE    "5"                 TO  ICD-CDSYU
-      *            WHEN    SPA-K051-INPUTCD (IDX)(6:)  NOT =   SPACE
-      *                MOVE    "6"                 TO  ICD-CDSYU
-      ******** END-EVALUATE
-      *        MOVE    SPA-K051-CDSYU  (IDX)
-      *                                    TO  ICD-CDSYU
-      *        MOVE    SPA-K051-INPUTCD (IDX)
-      *                                    TO  ICD-INPUTCD
-      *
-      *        MOVE    INPUTCD-REC         TO  MCPDATA-REC
-      *        MOVE    "tbl_inputcd"       TO  MCP-TABLE
-      *        MOVE    "key2"              TO  MCP-PATHNAME
-      *        PERFORM 910-DBSELECT-SEC
-      *        IF      MCP-RC              =   ZERO
-      *            MOVE    "tbl_inputcd"       TO  MCP-TABLE
-      *            MOVE    "key2"              TO  MCP-PATHNAME
-      *            PERFORM                     920-INPUTCD-NEXT-SEC
-      *        ELSE
-      *            MOVE    1                   TO  FLG-INPUTCD
-      *        END-IF
-      *
-      *        MOVE    "tbl_inputcd"       TO  MCP-TABLE
-      *        MOVE    "key2"              TO  MCP-PATHNAME
-      *        PERFORM 990-DBCLOSE-SEC
-      *
-      *        IF     (FLG-INPUTCD         =   ZERO  )  AND
-      *               (ICD-INPUTCD         =   SPA-K051-INPUTCD (IDX))
-      *            更新処理
-      *            MOVE    SPA-GMN-DSPNAME     TO  ICD-DSPNAME
-      *
-      *            MOVE    SMCNDATE-YMD        TO  ICD-UPYMD
-      *            MOVE    SMCNDATE-HMS        TO  ICD-UPHMS
-      *
-      *            MOVE    INPUTCD-REC         TO  MCPDATA-REC
-      *            MOVE    "DBUPDATE"          TO  MCP-FUNC
-      *            MOVE    "tbl_inputcd"       TO  MCP-TABLE
-      *            MOVE    "key2"              TO  MCP-PATHNAME
-      *            CALL    "MONFUNC"           USING
-      *                                        MCPAREA
-      *                                        MCPDATA-REC
-      *            IF      MCP-RC          NOT =   ZERO
-      *                DISPLAY "K05 INPUTCD UPD ERR:"  MCP-RC
-      *                MOVE    "5006"          TO  SPA-ERRCD
-      *            END-IF
-      *        ELSE
-      *            追加処理
-      *            MOVE    SPA-K051-INPUTCD (IDX)  TO  WRK-ICD-INPUTCD
-      *            MOVE    SPA-K051-CDSYU   (IDX)  TO  WRK-CDSYU
-      *            MOVE    IDX                     TO  WRK-DSPSEQ
-      *            PERFORM 410022-INPUTCD-INS-SEC
-      *        END-IF
-      *    END-PERFORM
-      *
-      *    削除処理
-      *
-      *    INITIALIZE                      INPUTCD-REC
-      *    MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
-      *    MOVE    SPA-GMN-SETCODE     TO  ICD-SRYCD
-      *
-      *    MOVE    INPUTCD-REC         TO  MCPDATA-REC
-      *    MOVE    "tbl_inputcd"       TO  MCP-TABLE
-      *    MOVE    "key4"              TO  MCP-PATHNAME
-      *    PERFORM 910-DBSELECT-SEC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "tbl_inputcd"       TO  MCP-TABLE
-      *        MOVE    "key4"              TO  MCP-PATHNAME
-      *        PERFORM                     920-INPUTCD-NEXT-SEC
-      *    ELSE
-      *        MOVE    1                   TO  FLG-INPUTCD
-      *    END-IF
-      *    PERFORM UNTIL    FLG-INPUTCD    =   1
-      *        IF      ICD-INPUTCD         =   SPA-GMN-SETCODE
-      *            CONTINUE
-      *        ELSE
-      *            MOVE    ZERO                TO  FLG-OK
-      *            PERFORM VARYING     IDX     FROM    1   BY  1
-      *                     UNTIL     (IDX         >   5)  OR
-      *                               (FLG-OK      =   1 )
-      *                IF      ICD-INPUTCD         =   SPA-K051-INPUTCD
-      *                                                           (IDX)
-      *                    MOVE    1               TO  FLG-OK
-      *                 END-IF
-      *            END-PERFORM
-      *            IF      FLG-OK              =   ZERO
-      *                MOVE    INPUTCD-REC         TO  MCPDATA-REC
-      *                MOVE    "DBDELETE"          TO  MCP-FUNC
-      *                MOVE    "tbl_inputcd"       TO  MCP-TABLE
-      *                MOVE    "del12"             TO  MCP-PATHNAME
-      *                CALL    "MONFUNC"           USING
-      *                                            MCPAREA
-      *                                            MCPDATA-REC
-      *                IF      MCP-RC          NOT =   ZERO
-      *                    DISPLAY "K05 INPUTCD DEL ERR:"  MCP-RC
-      *                    MOVE    "5007"          TO  SPA-ERRCD
-      *                END-IF
-      *            END-IF
-      *        END-IF
-      *        MOVE    "tbl_inputcd"       TO  MCP-TABLE
-      *        MOVE    "key4"              TO  MCP-PATHNAME
-      *        PERFORM                     920-INPUTCD-NEXT-SEC
-      *
-      *    END-PERFORM
-      *
-      *    MOVE    "tbl_inputcd"       TO  MCP-TABLE
-      *    MOVE    "key4"              TO  MCP-PATHNAME
-      *    PERFORM 990-DBCLOSE-SEC
-      *
-      *    .
-      *410025-INPUTCD-TBLDEL-EXT.
-     **    EXIT.
       *
       *****************************************************************
       *    入力コード削除処理
