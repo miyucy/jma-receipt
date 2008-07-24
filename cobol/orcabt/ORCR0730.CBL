@@ -50,6 +50,7 @@
       *                                     請求点・実日数記載対応
       *  04.03.04    NACL-藤原    08/06/19  医師別出力対応
       *  04.03.05    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *  04.03.06    NACL-藤原    08/07/23  船員保険３割の「職務上の事由」の記載
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2517,14 +2518,17 @@
                        WHEN    "1"
                        WHEN    "A"
                        WHEN    "D"
+                       WHEN    "G"
                            MOVE    "職務上"              TO  HC06-JIYU
                        WHEN    "2"
                        WHEN    "B"
                        WHEN    "E"
+                       WHEN    "H"
                            MOVE    "下船後３ヶ月以内"    TO  HC06-JIYU
                        WHEN    "3"
                        WHEN    "C"
                        WHEN    "F"
+                       WHEN    "I"
                            MOVE    "通勤災害"            TO  HC06-JIYU
                    END-EVALUATE
            END-EVALUATE        
