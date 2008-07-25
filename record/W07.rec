@@ -278,6 +278,13 @@ W07	{
 					count	int;
 					item	varchar(12)[2];
 				};
+				NYUKENSA_COMB	{
+					NYUKENSA	{
+						value	varchar(12);
+					};
+					count	int;
+					item	varchar(12)[2];
+				};
 			};
 			TAGNAME1    {
 			    state   int;

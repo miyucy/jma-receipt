@@ -1506,6 +1506,7 @@
              AND  (SPA-NAI-ROUJIN      =   1 )
                MOVE    ZERO            TO  FLG-AUTO-OK
            END-IF
+      *
            .
        10023-AUTOCHK-EXT.
            EXIT.

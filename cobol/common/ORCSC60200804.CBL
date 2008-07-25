@@ -48,6 +48,8 @@
       *  03.04.00    NACL-多々納  07/01/26  コンタクトレンズ検査チェック追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０．４改正対応
+      *  04.03.00    NACL-多々納  08/07/XX  病理診断加算・検査加算種別追加
+      *  04.03.00    NACL-多々納  08/07/25  入院時初回加算自動算定追加
       *****************************************************************
       *
       *
@@ -239,6 +241,8 @@
       *
            03  WRK-TNS-JGNAGE      PIC 9(02).
       *
+           03  WRK-AUTOKBN         PIC X(01).
+      *
       *    検査　判断グループ
        01  WRK-KENSA-AREA.
            03  WRK-KENSA-TBL                       OCCURS   20.
@@ -286,6 +290,13 @@
            03  WRK-KAISU-H             PIC X(04).
       *    末日
            03  WRK-MATU                    PIC 9(02).
+      *    入院時初回加算用
+           03  WRK-HOU-DAY             PIC 9(02).
+           03  FLG-HOUKNS-ARI          PIC 9(01).
+           03  FLG-SYOKAI-ARI          PIC 9(01).
+           03  FLG-KENSA-ARI           PIC 9(01).
+           03  WRK-HOU-YMD             PIC X(08).
+      *
       *    入院逓減用
        01  TBL-TEIGEN-AREA.
            03  TBL-TEIGEN-OCC          OCCURS   20.
@@ -1421,91 +1432,6 @@
                MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
            END-IF
       *
-      *!!!!!!!!!!!!!!!!!!!1
-               GO      TO      100113-NYUINSYOKAI-EXT
-           MOVE    WRK-COM-INPUTCD (IDX-Z)
-                                      TO  WRK-SRYCD
-           MOVE    ZERO               TO  WRK-TEI-CNT
-           IF      LNK-ORCSC-SYORIFLG  =   1
-               PERFORM VARYING     IDT     FROM    1   BY  1
-                       UNTIL      (IDT     >   SPA-MAX-LINE )  OR
-                                  (LNK-ORCSC-TEI-SRYCD(IDT)
-                                           =   SPACE )
-                   IF      WRK-SRYCD       =   LNK-ORCSC-TEI-SRYCD(IDT)
-                       ADD     LNK-ORCSC-TEI-KAISU(IDT)
-                                           TO  WRK-TEI-CNT
-                   END-IF
-               END-PERFORM
-           END-IF
-      *
-      *    算定履歴検索（算定履歴区分は１とする）
-           INITIALIZE                  SANTEI-REC
-           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
-           MOVE    SPA-PTID            TO  SANTEI-PTID
-           MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
-           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
-           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
-           MOVE    ZERO                TO  SANTEI-SRYKA
-           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
-      *
-           MOVE    SANTEI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key8"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_santei"        TO  MCP-TABLE
-               MOVE    "key8"              TO  MCP-PATHNAME
-               PERFORM 920-SANTEI-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SANTEI
-           END-IF
-           MOVE    ZERO                TO  FLG-SYOKAI-OK
-           PERFORM UNTIL   (FLG-SANTEI     =   1   )  OR
-                           (FLG-SYOKAI-OK  =   1   )
-               MOVE    SANTEI-SRYYM        TO  WRK-YM
-               MOVE    ZERO                TO  WRK-DD
-               PERFORM VARYING    IDX2     FROM    1   BY  1
-                       UNTIL     (IDX2     >   31  )  OR
-                                 (FLG-SYOKAI-OK    =   1   )
-                   IF      SANTEI-DAY (IDX2)   NOT =   ZERO
-                       MOVE    IDX2            TO  WRK-DD
-                       IF     (LNK-ORCSC-NYUINYMD
-                                               <=  WRK-YMD )  AND
-                              (LNK-ORCSC-TAIINYMD
-                                               >=  WRK-YMD )
-                           MOVE    1           TO  FLG-SYOKAI-OK
-                       END-IF
-      *                訂正の時当日分は算定なしとする
-                       IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
-                              (WRK-YMD             =   SPA-SRYYMD) AND
-                              (WRK-TEI-CNT         >   ZERO )
-                           MOVE    ZERO        TO  FLG-SYOKAI-OK
-                       END-IF
-                   END-IF
-               END-PERFORM
-               IF      SANTEI-SRYYM        <   LNK-ORCSC-NYUINYMD(1:6)
-                   MOVE    1                   TO  FLG-SANTEI
-               ELSE
-                   MOVE    "tbl_santei"        TO  MCP-TABLE
-                   MOVE    "key8"              TO  MCP-PATHNAME
-                   PERFORM 920-SANTEI-READ-SEC
-               END-IF
-           END-PERFORM
-      *
-           MOVE    "tbl_santei"        TO  MCP-TABLE
-           MOVE    "key8"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      FLG-SYOKAI-OK       =   1
-               MOVE    "9031"              TO  WRK-ERRCD
-               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
-           END-IF
-      *   １回のみ
-           IF   (WRK-COM-NYU-KAI (IDX-Z)   >   1 )  OR
-                (LNK-ORCSC-KAISU           >   1 )
-               MOVE    "9035"              TO  WRK-ERRCD
-               MOVE    "1"                 TO  WRK-COM-CUR (IDX-Z)
-           END-IF
            .
        100113-NYUINSYOKAI-EXT.
            EXIT.
@@ -1838,6 +1764,11 @@
                                                    TO  WRK-TENSUKEI
                        ELSE
                            PERFORM 10041-HOUKNS-ADD-SEC
+                           IF     (SPA-ERRCD       =   SPACE    )
+                           AND    (WRK-HOUKNS-CNT(IDX) >=   10  )
+                               MOVE    1           TO  WRK-COM-HOUKNS-10
+                                                             (WRK-IDX)
+                           END-IF
                        END-IF
                    WHEN    2
       *                内分泌学検査の包括
@@ -3383,6 +3314,10 @@
            MOVE    ZERO                TO  FLG-KENTAI2
            MOVE    ZERO                TO  WRK-KENTAI2-CNT
            MOVE    ZERO                TO  WRK-KENTAI-DAY
+      *    入院時初回加算用
+           MOVE    ZERO                TO  WRK-HOU-DAY
+           MOVE    ZERO                TO  FLG-HOUKNS-ARI
+           MOVE    ZERO                TO  FLG-SYOKAI-ARI
       *
            MOVE    ZERO                TO  WRK-KENIDX
            INITIALIZE                  WRK-KENSA-AREA
@@ -3483,7 +3418,17 @@
                                                    OR "180000210"
                    MOVE    1               TO  FLG-FUKA
                END-IF
-      *
+      *        入院時
+               IF      (SPA-NYUGAIKBN          =   "1" )
+      *            検体検査１０項目以上算定
+                   IF     (WRK-COM-HOUKNS-10 (IDX) =   1  )
+                       MOVE    1                   TO  FLG-HOUKNS-ARI
+                   END-IF
+      *            入院時初回加算算定
+                   IF      WRK-COM-INPUTCD (IDX)   =   "160161510"
+                       MOVE    1                   TO  FLG-SYOKAI-ARI
+                   END-IF
+                END-IF
       *        検査で入院回数の時、回数集計
                IF     (SPA-NYUGAIKBN               =   "1" )  AND
                       (WRK-COM-SRYKBN (IDX)(1:1)   =   "6" )  AND
@@ -3497,6 +3442,7 @@
                    MOVE    ZERO                TO  FLG-BV-ARI
                    MOVE    ZERO                TO  FLG-BA-ARI
                    MOVE    ZERO                TO  WRK-KENIDX
+                   MOVE    ZERO                TO  FLG-HOUKNS-ARI
                END-IF
              END-IF
            END-PERFORM
@@ -3510,68 +3456,26 @@
                        WHEN    01
                            MOVE    "160061710"     TO  WRK-KEN-SRYCD
                                                                 (IDX)
-      *******************  IF      LNK-ORCSC-ROUJIN      =   ZERO
-      *                        MOVE    "160061710" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      *                    ELSE
-      *                        MOVE    "160700510" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      ******************** END-IF
                        WHEN    02
       *                血液学的判断料
                            MOVE    "160061810" TO  WRK-KEN-SRYCD
                                                                 (IDX)
-      ***************      IF      LNK-ORCSC-ROUJIN      =   ZERO
-      *                        MOVE    "160061810" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      *                    ELSE
-      *                        MOVE    "160700610" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      *************        END-IF
                        WHEN    03
       *                生化学的（１）判断料
                            MOVE    "160061910" TO  WRK-KEN-SRYCD
                                                                 (IDX)
-      ************         IF      LNK-ORCSC-ROUJIN      =   ZERO
-      *                        MOVE    "160061910" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      *                    ELSE
-      *                        MOVE    "160700710" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      **************       END-IF
                        WHEN    04
       *                生化学的（２）判断料
                            MOVE    "160062010" TO  WRK-KEN-SRYCD
                                                                (IDX)
-      *************        IF      LNK-ORCSC-ROUJIN      =   ZERO
-      *                        MOVE    "160062010" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      *                    ELSE
-      *                        MOVE    "160700810" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      ***************      END-IF
                        WHEN    05
       *                免疫学的判断料
                            MOVE    "160062110" TO  WRK-KEN-SRYCD
                                                                 (IDX)
-      ***************      IF      LNK-ORCSC-ROUJIN      =   ZERO
-      *                        MOVE    "160062110" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      *                    ELSE
-      *                        MOVE    "160700910" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      ****************     END-IF
                        WHEN    06
       *                微生物学的判断料
                            MOVE    "160062210" TO  WRK-KEN-SRYCD
                                                                 (IDX)
-      *****************    IF      LNK-ORCSC-ROUJIN      =   ZERO
-      *                        MOVE    "160062210" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      *                    ELSE
-      *                        MOVE    "160701010" TO  WRK-KEN-SRYCD
-      *                                                         (IDX)
-      ****************     END-IF
       *                病理学的検査診断料
                        WHEN    07
                            MOVE    "160062310"     TO  WRK-KEN-SRYCD
@@ -3709,6 +3613,7 @@
                    MOVE    "160170170"         TO  WRK-SRYCD
                END-IF
                MOVE    WRK-KENTAI-DAY      TO  WRK-SAI-DAY
+               MOVE    SPACE               TO  WRK-AUTOKBN
                PERFORM 3005-AUTO-SAIKETU-SEC
       *        検体管理加算３が算定できない時、２を試す
                IF     (FLG-ERR         NOT =   ZERO )  AND
@@ -3716,6 +3621,7 @@
       *            検体検査管理加算２
                    MOVE    "160182770"         TO  WRK-SRYCD
                    MOVE    WRK-KENTAI-DAY      TO  WRK-SAI-DAY
+                   MOVE    SPACE               TO  WRK-AUTOKBN
                    PERFORM 3005-AUTO-SAIKETU-SEC
       *            検体管理加算２が算定できない時、１加算する
                    IF     (FLG-ERR         NOT =   ZERO )
@@ -3731,6 +3637,15 @@
                   (SPA-NYUGAIKBN       =   2  )  AND
                   (SPA-KENSAAUTO-FLG   =   "1")
                PERFORM 3006-AUTO-KENTAIKASN-SEC
+           END-IF
+      *VER.4.3
+      *    入院時初回加算自動発生（訂正時はなし）
+           IF     (SPA-NYUGAIKBN       =   1  )  AND
+                  (LNK-ORCSC-SYORIFLG  =   0  )  AND
+                  (SPA-NYUKENSA-FLG    =   "1"  )  AND
+                  (WRK-HOU-DAY         >   ZERO )  AND
+                  (FLG-SYOKAI-ARI      =   ZERO )
+               PERFORM 3008-AUTO-NYUSYOKAI-SEC
            END-IF
       *
       *    採血料自動発生なし
@@ -3872,6 +3787,14 @@
                IF     (WRK-BC-DAY      =   ZERO )  OR
                       (WRK-BC-DAY      >   IDN1 )
                    MOVE    IDN1            TO  WRK-BC-DAY
+               END-IF
+           END-IF
+      *    入院時初回加算
+           IF      FLG-HOUKNS-ARI      =   1
+      *        入院時の初日
+               IF     (WRK-HOU-DAY     =   ZERO )  OR
+                      (WRK-HOU-DAY     >   IDN1 )
+                   MOVE    IDN1            TO  WRK-HOU-DAY
                END-IF
            END-IF
       *    採血料（動脈）
@@ -4025,6 +3948,10 @@
       *
                MOVE    "4"             TO  LNK-ORCSC-AUTOKBN
                                                    (07 IDXS)
+               IF      WRK-AUTOKBN     NOT =   SPACE
+                   MOVE    WRK-AUTOKBN     TO  LNK-ORCSC-AUTOKBN
+                                                   (07 IDXS)
+               END-IF
       *        入院回数
                IF      WRK-SAI-DAY     NOT =   ZERO
                     MOVE    "*/"           TO  LNK-ORCSC-INPUTCD
@@ -4418,6 +4345,267 @@
       *
            .
        30071-BA-DAY-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院時初回加算自動発生処理
+      *****************************************************************
+       3008-AUTO-NYUSYOKAI-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-KENSA-ARI
+      *
+           MOVE    SPA-SRYYMD          TO  WRK-HOU-YMD
+           MOVE    WRK-HOU-DAY         TO  WRK-HOU-YMD(7:2)
+      *    今回入力内容チェック
+           PERFORM 30080-INPUT-CHK-SEC
+      *    算定履歴からの判定
+           IF      FLG-KENSA-ARI       =   ZERO
+               PERFORM 30081-SANTEIRRK-CHK-SEC
+           END-IF
+      *    診療行為から検体検査の算定確認
+           IF      FLG-KENSA-ARI       =   ZERO
+               PERFORM 30082-SRYACT-KENCHK-SEC
+           END-IF
+      *    入院時初回加算算定
+           IF      FLG-KENSA-ARI       =   ZERO
+               MOVE    "160161510"         TO  WRK-SRYCD
+               MOVE    WRK-HOU-DAY         TO  WRK-SAI-DAY
+               MOVE    "7"                 TO  WRK-AUTOKBN
+               PERFORM 3005-AUTO-SAIKETU-SEC
+           END-IF
+           MOVE    SPACE               TO  WRK-AUTOKBN
+      *
+           .
+       3008-AUTO-NYUSYOKAI-EXT.
+           EXIT.
+      *****************************************************************
+      *    今回入力分からの判定処理
+      *****************************************************************
+       30080-INPUT-CHK-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   SPA-MAX-LINE  )
+                         OR  ((WRK-COM-INPUTCD (IDX2)  =   SPACE ) AND
+                              (WRK-GMN-INPUTCD (IDX2)  =   SPACE ))
+                         OR   (FLG-KENSA-ARI       =   1    )
+               IF     (WRK-COM-HKNCOMBI (IDX2)     =   "9999" )
+                 OR   (WRK-COM-SRYKBN  (IDX2)  NOT =   "60"   )
+                 OR   (WRK-COM-DATAKBN (IDX2)  NOT =   "1"    )
+                   CONTINUE
+               ELSE
+                   IF     (WRK-COM-CDKBN-KBN(IDX2)
+                                                =   "D"   )  AND
+                          (WRK-COM-CDKBN-KBNNUM (IDX2)
+                                                =  "007" )
+      *                算定日判定
+                       MOVE    ZERO                TO  IDN1
+                       PERFORM VARYING     IDN2    FROM    1   BY  1
+                               UNTIL       IDN2    >   31
+                           IF      WRK-COM-NYUINDAY (IDX2 IDN2) >  ZERO
+                               MOVE    IDN2            TO  IDN1
+                               MOVE    31              TO  IDN2
+                           END-IF
+                       END-PERFORM
+                       IF      IDN1            =   ZERO
+                           MOVE    SPA-SRYYMD (7:2)    TO  IDN1
+                       END-IF
+      *                生体検査１０項目算定日より前日に算定
+                       IF     IDN1             <   WRK-HOU-DAY
+                           MOVE    1           TO  FLG-KENSA-ARI
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       30080-INPUT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    算定履歴からの判定処理
+      *****************************************************************
+       30081-SANTEIRRK-CHK-SEC         SECTION.
+      *
+      *    算定履歴から判断料等の算定確認
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    SPA-K02N-NYUINYMD (1:6) TO  SANTEI-SRYYM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key14"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key14"             TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           PERFORM UNTIL   (FLG-SANTEI     =   1   )  OR
+                           (FLG-KENSA-ARI  =   1   )
+               MOVE    SANTEI-SRYYM        TO  WRK-YM
+               MOVE    ZERO                TO  WRK-DD
+               PERFORM VARYING    IDX2     FROM    1   BY  1
+                       UNTIL     (IDX2     >   31  )  OR
+                                 (FLG-KENSA-ARI    =   1   )
+                   IF      SANTEI-DAY (IDX2)   NOT =   ZERO
+                       MOVE    IDX2            TO  WRK-DD
+                       IF     (WRK-YMD         >=  SPA-K02N-NYUINYMD)
+                          AND (WRK-YMD         <=  SPA-K02N-TAIINYMD)
+                           PERFORM 30081-SYOKAI-CHK-SEC
+                       END-IF
+                       IF      WRK-YMD         >   SPA-K02N-TAIINYMD
+                           MOVE    31          TO  IDX2
+                       END-IF
+                   END-IF
+               END-PERFORM
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key14"              TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key14"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       30081-SANTEIRRK-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院時初回算定有無判定
+      *****************************************************************
+       30081-SYOKAI-CHK-SEC         SECTION.
+      *
+           EVALUATE    SANTEI-SRYCD
+      *        入院時初回加算
+               WHEN    "160161510"
+      *        基本的検体検査実施料
+               WHEN    "160145410"
+               WHEN    "160165310"
+                   MOVE    1               TO  FLG-KENSA-ARI
+      *        生化学的（１）判断料
+               WHEN    "160061910"
+      *            生体検査１０項目算定日より前日に算定
+                   IF     WRK-YMD          <   WRK-HOU-YMD
+                       MOVE    1           TO  FLG-KENSA-ARI
+                   END-IF
+           END-EVALUATE
+           .
+       30081-SYOKAI-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院時初回算定有無判定
+      *****************************************************************
+       30082-SRYACT-KENCHK-SEC         SECTION.
+      *
+           MOVE    SPACE               TO  SRYACCT-REC
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    SPA-K02N-NYUINYMD (1:6)
+                                       TO  ACCT-STSRYYM
+           MOVE    SPA-K02N-TAIINYMD (1:6)
+                                       TO  ACCT-EDSRYYM
+           MOVE    "60"                TO  ACCT-SRYKBN
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key50"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key50"             TO  MCP-PATHNAME
+               PERFORM 940-SRYACCT-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACCT
+           END-IF
+           PERFORM UNTIL       (FLG-SRYACCT      =   1   )
+                           OR  (FLG-KENSA-ARI    =   1   )
+               MOVE    ACCT-SRYYM          TO  WRK-YM
+               MOVE    ZERO                TO  WRK-DD
+               PERFORM VARYING    IDX2     FROM    1   BY  1
+                       UNTIL     (IDX2     >   31  )  OR
+                                 (FLG-KENSA-ARI    =   1   )
+                   IF      ACCT-DAY (1 IDX2)   NOT =   ZERO
+                       MOVE    IDX2            TO  WRK-DD
+      *                入院期間中
+                       IF     (WRK-YMD         >=  SPA-K02N-NYUINYMD)
+                          AND (WRK-YMD         <=  SPA-K02N-TAIINYMD)
+      *                   算定日より前
+                          AND (WRK-YMD         <   WRK-HOU-YMD      )
+                           PERFORM 300821-KENSACD-CHK-SEC
+                       END-IF
+                       IF      WRK-YMD         >   SPA-K02N-TAIINYMD
+                           MOVE    31          TO  IDX2
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "tbl_sryacct"       TO  MCP-TABLE
+               MOVE    "key50"             TO  MCP-PATHNAME
+               PERFORM 940-SRYACCT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key50"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       30082-SRYACT-KENCHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為判定処理
+      *****************************************************************
+       300821-KENSACD-CHK-SEC        SECTION.
+      *
+      *    診療会計マスターから診療行為マスターを検索する
+           MOVE    SPACE               TO  SRYACT-REC
+           INITIALIZE                      SRYACT-REC
+           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
+           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
+           MOVE    ACCT-PTID           TO  SRY-PTID
+           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
+           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
+           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
+      *
+           MOVE    SRYACT-REC          TO  MCPDATA-REC
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_sryact"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SRYACT-NEXT-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SRYACT
+           END-IF
+           PERFORM UNTIL     (FLG-SRYACT   =   1   )
+                        OR   (FLG-KENSA-ARI    =   1  )
+               PERFORM VARYING     IDX3    FROM    1   BY  1
+                       UNTIL      (IDX3        >   5   )  OR
+                                  (SRY-SRYCD(IDX3) =   SPACE )
+                             OR   (FLG-KENSA-ARI   =   1  )
+                   IF      SRY-SRYCD (IDX3)(1:1)   =   "1"
+      *                点数マスタより、区分番号編集
+                       MOVE    SRY-SRYCD (IDX3)    TO  TNS-SRYCD
+                       PERFORM 910-TENSU-READ-SEC
+      *                血液学的検査
+                       IF     (TNS-CDKBN-KBN       =   "D"   ) AND
+                              (TNS-CDKBN-KBNNUM    =   "007" )
+                           MOVE    1               TO  FLG-KENSA-ARI
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *
+               MOVE    "tbl_sryact"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SRYACT-NEXT-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_sryact"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       300821-KENSACD-CHK-EXT.
            EXIT.
       *****************************************************************
       *    点数マスター読込

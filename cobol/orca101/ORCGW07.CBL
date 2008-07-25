@@ -97,6 +97,7 @@
       *  04.03.00    NACL-多々納  08/06/18  予約機能情報追加
       *  04.03.00    NACL-太田    08/06/19  支払証明書印刷初期設定追加
       *  04.03.00    NACL-多々納  08/07/04  お薬手帳発行追加
+      *  04.03.00    NACL-多々納  08/07/24  入院時初回加算自動発生追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -301,6 +302,14 @@
                            11  SPA-GMN-BYOMEIAUTO-MEI   PIC X(10).
                        09  SPA-GMN-BYOMEIAUTO-COMB.
                            11  SPA-GMN-BYOMEIAUTO-LIST      PIC X(12)
+                                                           OCCURS  2.
+      *                入院時初回加算の自動発生
+                       09  SPA-GMN-NYUKENSA-G.
+                           11  SPA-GMN-NYUKENSA       PIC X(01).
+                           11  SPA-GMN-NYUKENSA-F     PIC X(01).
+                           11  SPA-GMN-NYUKENSA-MEI   PIC X(10).
+                       09  SPA-GMN-NYUKENSA-COMB.
+                           11  SPA-GMN-NYUKENSA-LIST      PIC X(12)
                                                            OCCURS  2.
       *
                    07  SPA-GMN-PAGE2-AREA.
@@ -1830,6 +1839,9 @@
       *        病名からの自動発生
                MOVE    SYS-1008-BYOMEIAUTO-FLG
                                        TO  SPA-GMN-BYOMEIAUTO
+      *        入院時初回加算の自動発生
+               MOVE    SYS-1008-NYUKENSA-FLG
+                                       TO  SPA-GMN-NYUKENSA
       *
       *        時間外加算チェック
                MOVE    SYS-1008-JIKANTOKU-CHK
@@ -2212,6 +2224,19 @@
                    MOVE    SPA-GMN-DATALST(IDY)
                                                TO SPA-GMN-BYOMEIAUTO-G
                    MOVE    1                   TO  FLG-OK
+                   MOVE    SPA-GMN-DATA-MAX    TO  IDY
+               END-IF
+           END-PERFORM
+      *    入院時初回加算の自動発生
+           IF      SPA-GMN-NYUKENSA     =   SPACE
+               MOVE    "0"              TO  SPA-GMN-NYUKENSA
+           END-IF
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-NYUKENSA
+                                           =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST(IDY)
+                                               TO SPA-GMN-NYUKENSA-G
                    MOVE    SPA-GMN-DATA-MAX    TO  IDY
                END-IF
            END-PERFORM
@@ -3571,6 +3596,8 @@
            MOVE    W07-TEINYUAUTO      TO  SPA-GMN-TEINYUAUTO-G
       *    病名からの自動発生
            MOVE    W07-BYOMEIAUTO      TO  SPA-GMN-BYOMEIAUTO-G
+      *    入院時初回加算の自動発生
+           MOVE    W07-NYUKENSA        TO  SPA-GMN-NYUKENSA-G
       *
            MOVE    W07-LASTKIKAN       TO  SPA-GMN-LAST-KIKAN
       *
@@ -3747,6 +3774,10 @@
       *            病名からの自動発生
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4103-BYOMEIAUTO-CHK-SEC
+                   END-IF
+      *            入院時初回加算の自動発生
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4103-NYUKENSA-CHK-SEC
                    END-IF
       *            外来管理加算チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -4245,6 +4276,30 @@
       *
           .
        4103-BYOMEIAUTO-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院時初回加算の自動発生チェック処理
+      *****************************************************************
+       4103-NYUKENSA-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+      *
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-GMN-DATA-MAX
+               IF      SPA-GMN-NYUKENSA    =   SPA-GMN-DATAL(IDY)
+                   MOVE    SPA-GMN-DATALST (IDY)
+                                           TO  SPA-GMN-NYUKENSA-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0085"              TO  SPA-ERRCD
+               MOVE    88                  TO  SPA-GMN-CUR
+           END-IF
+      *
+          .
+       4103-NYUKENSA-CHK-EXT.
            EXIT.
       *****************************************************************
       *    訂正時の自動発生（特定疾患処方管理）チェック処理
@@ -6846,6 +6901,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-TEINYUAUTO      TO  SYS-1008-TEINYUAUTO-FLG
       *    病名疾患区分からの自動発生
            MOVE    SPA-GMN-BYOMEIAUTO      TO  SYS-1008-BYOMEIAUTO-FLG
+      *    入院時初回加算の自動発生
+           MOVE    SPA-GMN-NYUKENSA        TO  SYS-1008-NYUKENSA-FLG
       *
       *    時間外加算乳幼児チェック
            MOVE    SPA-GMN-JIKANTOKU-CHK   TO
@@ -7561,6 +7618,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-BYOMEIAUTO-ITEM(IDY)
            END-PERFORM
            MOVE    SPA-GMN-DATA-MAX    TO  W07-BYOMEIAUTO-COUNT
+      *    入院時初回加算の自動発生
+           MOVE    SPA-GMN-NYUKENSA-G  TO  W07-NYUKENSA
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-DATA-MAX
+               MOVE    SPA-GMN-DATALST(IDY)
+                                       TO  W07-NYUKENSA-ITEM(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-DATA-MAX    TO  W07-NYUKENSA-COUNT
       *
       *    時間外加算チェック
            MOVE    SPA-GMN-JIKANTOKU-CHK-G TO  W07-JIKANTOKU-CHK
@@ -8296,6 +8361,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0084"
                    MOVE    "病名疾患区分からの自動発生チェックエラー"
                                                     TO  SPA-ERRMSG
+               WHEN    "0085"
+                   MOVE    "入院時初回加算自動発生チェックエラー"
+                                                    TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "時間外加算（乳幼児）チェックエラー"
                                                        TO  SPA-ERRMSG
@@ -8636,6 +8704,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "TEINYUAUTO"      TO   MCP-WIDGET
                WHEN    87
                    MOVE  "BYOMEIAUTO"      TO   MCP-WIDGET
+               WHEN    88
+                   MOVE  "NYUKENSA"        TO   MCP-WIDGET
       *        時間外加算チェック
                WHEN    50
                    MOVE  "JIKANTOKU_CHK"   TO   MCP-WIDGET
@@ -8906,6 +8976,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "TEINYUAUTO"
                    MOVE    87              TO  SPA-GMN-CUR
                WHEN    "BYOMEIAUTO"
+                   MOVE    88              TO  SPA-GMN-CUR
+               WHEN    "NYUKENSA"
                    MOVE    10              TO  SPA-GMN-CUR
       *
                WHEN    "KIKAN"

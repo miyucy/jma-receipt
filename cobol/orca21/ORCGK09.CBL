@@ -2046,7 +2046,8 @@
                    IF     (FLG-WRITE           =   1   )  AND
                           (SRY-AUTOKBN (IDX)   =   "4"
                                                OR  "5"
-                                               OR  "6"  )
+                                               OR  "6"
+                                               OR  "7"  )
                        MOVE    SPACE           TO  WKSRY-AUTOKBN (IDY)
                    END-IF
                    MOVE    SRY-INPUTNUM (IDX)  TO  WKSRY-INPUTNUM (IDY)
@@ -2295,6 +2296,7 @@
            IF      LNK-WKSRY-AUTOKBN(IDX 1)    =   "4"
                                                OR  "5"
                                                OR  "6"
+                                               OR  "7"
                MOVE    SPACE           TO  WRK-SRYSYUMEI-H
                MOVE    "◎"            TO  WRK-SRYSYUMEI-H
                MOVE    SPA-GMN-TMEISYO (IDG)
@@ -2900,7 +2902,8 @@
                IF     (FLG-DOALL           =   1  )  AND
                       (SRY-AUTOKBN (1)     =   "4"
                                            OR  "5"
-                                           OR  "6" )
+                                           OR  "6"
+                                           OR  "7" )
                    CONTINUE
                ELSE
       *        すべてを対象とする

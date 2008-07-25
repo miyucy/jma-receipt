@@ -811,6 +811,13 @@
                    MOVE    SYS-1008-BYOMEIAUTO-FLG
                                            TO  SPA-BYOMEIAUTO-FLG
                END-IF
+      *        入院時初回加算の自動発生
+               IF      SYS-1008-NYUKENSA-FLG   =   SPACE
+                   MOVE    "0"             TO  SPA-NYUKENSA-FLG
+               ELSE
+                   MOVE    SYS-1008-NYUKENSA-FLG
+                                           TO  SPA-NYUKENSA-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
@@ -836,6 +843,7 @@
                MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
                MOVE    "0"                 TO  SPA-ZENHKNCHK-FLG
                MOVE    "1"                 TO  SPA-BYOMEIAUTO-FLG
+               MOVE    "0"                 TO  SPA-NYUKENSA-FLG
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -1471,6 +1479,13 @@
                    MOVE    SYS-1008-KENSAAUTO-FLG
                                            TO  SPA-KENSAAUTO-FLG
                END-IF
+      *        入院時初回加算の自動発生
+               IF      SYS-1008-NYUKENSA-FLG   =   SPACE
+                   MOVE    "0"             TO  SPA-NYUKENSA-FLG
+               ELSE
+                   MOVE    SYS-1008-NYUKENSA-FLG
+                                           TO  SPA-NYUKENSA-FLG
+               END-IF
            ELSE
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
       *
@@ -1490,6 +1505,7 @@
                MOVE    "1"                 TO  SPA-BYOHYOKBN-FLG
                MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
                MOVE    "0"                 TO  SPA-ZENHKNCHK-FLG
+               MOVE    "0"                 TO  SPA-NYUKENSA-FLG
           END-IF
       *
            MOVE    "tbl_syskanri"      TO  MCP-TABLE

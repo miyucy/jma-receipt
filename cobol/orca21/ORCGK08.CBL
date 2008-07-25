@@ -1612,6 +1612,7 @@
                    IF      LNK-WKSRY-AUTOKBN (IDX IDZ)   =   "3"
                                                          OR  "4"
                                                          OR  "6"
+                                                         OR  "7"
                        MOVE    1                   TO  SPA-NAI-JIDFLG
                                                               (IDX-NAI)
                    END-IF
@@ -1632,6 +1633,12 @@
                                                          OR  "6" ) AND
                           (SPA-SYORIFLG        =   1     )  AND
                           (SPA-TEISEI-FLG      =   "0"   )
+                       MOVE    ZERO                TO  SPA-NAI-JIDFLG
+                                                              (IDX-NAI)
+                   END-IF
+      *            入院初回加算の訂正は削除なし
+                   IF     (LNK-WKSRY-AUTOKBN (IDX IDZ)   =   "7" ) AND
+                          (SPA-SYORIFLG        =   1     )
                        MOVE    ZERO                TO  SPA-NAI-JIDFLG
                                                               (IDX-NAI)
                    END-IF

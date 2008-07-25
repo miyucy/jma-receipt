@@ -212,7 +212,10 @@
                        09  SPA-COM-HOUKATU-ZAI   PIC  9(01).
       *                 Ò≥Á•®•È°›•«°º•ø
                        09  SPA-COM-HOUKATU-ERR   PIC  9(01).
-      *!????
+      *ver.4.3
+      *                ∏°¬Œ∏°∫∫£±£∞π‡Ã‹° ∆˛±°ΩÈ≤Û≤√ªªÕ—°À
+                       09  SPA-COM-HOUKNS-10     PIC  9(01).
+      *
       *        ø«Œ≈≤Ò∑◊…Ì≤√π‡Ã‹
                        09  SPA-COM-PLUS-AREA.
       *                ºÍµªÀË
