@@ -247,28 +247,35 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCM21V02.INC".
            COPY    "HCM21V03.INC".
            COPY    "HCM21V04.INC".
+           COPY    "HCM21V05.INC".
            COPY    "HCM22.INC".
            COPY    "HCM22V01.INC".
            COPY    "HCM22V02.INC".
            COPY    "HCM22V03.INC".
            COPY    "HCM22V04.INC".
+           COPY    "HCM22V05.INC".
            COPY    "HCM24.INC".
            COPY    "HCM24V01.INC".
            COPY    "HCM24V02.INC".
            COPY    "HCM24V03.INC".
            COPY    "HCM24V04.INC".
+           COPY    "HCM24V05.INC".
            COPY    "HCM18.INC".
            COPY    "HCM18V01.INC".
            COPY    "HCM18V02.INC".
            COPY    "HCM18V03.INC".
            COPY    "HCM18V04.INC".
+           COPY    "HCM18V05.INC".
            COPY    "HCM20.INC".
            COPY    "HCM20V01.INC".
            COPY    "HCM20V02.INC".
            COPY    "HCM20V03.INC".
            COPY    "HCM20V04.INC".
+           COPY    "HCM20V05.INC".
            COPY    "HCM56.INC".
+           COPY    "HCM56V01.INC".
            COPY    "HCM57.INC".
+           COPY    "HCM57V01.INC".
       *
            COPY    "HCN21.INC".
            COPY    "HCN21V01.INC".
@@ -289,17 +296,25 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCM23V02.INC".
            COPY    "HCM23V03.INC".
            COPY    "HCM23V04.INC".
+           COPY    "HCM23V05.INC".
            COPY    "HCM29.INC".
            COPY    "HCM29V01.INC".
            COPY    "HCM29V02.INC".
+           COPY    "HCM29V03.INC".
            COPY    "HCM25.INC".
+           COPY    "HCM25V01.INC".
            COPY    "HCM26.INC".
+           COPY    "HCM26V01.INC".
            COPY    "HCM48.INC".
+           COPY    "HCM48V01.INC".
            COPY    "HCM49.INC".
+           COPY    "HCM49V01.INC".
            COPY    "HCM53.INC".
+           COPY    "HCM53V01.INC".
       *    COPY    "HCM54.INC".
            COPY    "HCM55.INC".
            COPY    "HCM55V01.INC".
+           COPY    "HCM55V02.INC".
       *
            COPY    "HCN23.INC".
            COPY    "HCN23V01.INC".
@@ -773,6 +788,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM21V04
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM21V04-RENNUM
                        MOVE    HCM21V04            TO  RECE08-PRTDATA
+                   WHEN    "HCM21V05.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM21V05
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM21V05-RENNUM
+                       MOVE    HCM21V05            TO  RECE08-PRTDATA
                    WHEN    "HCM22.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM22
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM22-RENNUM
@@ -793,6 +812,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM22V04
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM22V04-RENNUM
                        MOVE    HCM22V04            TO  RECE08-PRTDATA
+                   WHEN    "HCM22V05.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM22V05
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM22V05-RENNUM
+                       MOVE    HCM22V05            TO  RECE08-PRTDATA
                    WHEN    "HCM24.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM24
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM24-RENNUM
@@ -813,6 +836,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM24V04
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM24V04-RENNUM
                        MOVE    HCM24V04            TO  RECE08-PRTDATA
+                   WHEN    "HCM24V05.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM24V05
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM24V05-RENNUM
+                       MOVE    HCM24V05            TO  RECE08-PRTDATA
                    WHEN    "HCM18.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM18
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM18-RENNUM
@@ -833,6 +860,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM18V04
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM18V04-RENNUM
                        MOVE    HCM18V04            TO  RECE08-PRTDATA
+                   WHEN    "HCM18V05.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM18V05
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM18V05-RENNUM
+                       MOVE    HCM18V05            TO  RECE08-PRTDATA
                    WHEN    "HCM20.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM20
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM20-RENNUM
@@ -853,6 +884,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM20V04
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM20V04-RENNUM
                        MOVE    HCM20V04            TO  RECE08-PRTDATA
+                   WHEN    "HCM20V05.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM20V05
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM20V05-RENNUM
+                       MOVE    HCM20V05            TO  RECE08-PRTDATA
                    WHEN    "HCM23.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM23
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM23-RENNUM
@@ -873,6 +908,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM23V04
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM23V04-RENNUM
                        MOVE    HCM23V04            TO  RECE08-PRTDATA
+                   WHEN    "HCM23V05.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM23V05
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM23V05-RENNUM
+                       MOVE    HCM23V05            TO  RECE08-PRTDATA
                    WHEN    "HCM29.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM29
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM29-RENNUM
@@ -885,14 +924,26 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM29V02
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM29V02-RENNUM
                        MOVE    HCM29V02            TO  RECE08-PRTDATA
+                   WHEN    "HCM29V03.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM29V03
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM29V03-RENNUM
+                       MOVE    HCM29V03            TO  RECE08-PRTDATA
                    WHEN    "HCM25.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM25
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM25-RENNUM
                        MOVE    HCM25               TO  RECE08-PRTDATA
+                   WHEN    "HCM25V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM25V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM25V01-RENNUM
+                       MOVE    HCM25V01            TO  RECE08-PRTDATA
                    WHEN    "HCM26.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCM26
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM26-RENNUM
                        MOVE    HCM26               TO  RECE08-PRTDATA
+                   WHEN    "HCM26V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM26V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM26V01-RENNUM
+                       MOVE    HCM26V01            TO  RECE08-PRTDATA
                    WHEN    "HCN21.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN21
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN21-RENNUM
@@ -961,6 +1012,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM48
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM48-RENNUM
                        MOVE    HCM48               TO  RECE08-PRTDATA
+                   WHEN    "HCM48V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM48V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM48V01-RENNUM
+                       MOVE    HCM48V01            TO  RECE08-PRTDATA
                    WHEN    "HCN48.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN48
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN48-RENNUM
@@ -969,6 +1024,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM49
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM49-RENNUM
                        MOVE    HCM49               TO  RECE08-PRTDATA
+                   WHEN    "HCM49V01.red"                  
+                       MOVE    RECE08-PRTDATA      TO  HCM49V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM49V01-RENNUM
+                       MOVE    HCM49V01            TO  RECE08-PRTDATA
                    WHEN    "HCN50.red"                  
                        MOVE    RECE08-PRTDATA      TO  HCN50
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCN50-RENNUM
@@ -982,6 +1041,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM53
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM53-RENNUM
                        MOVE    HCM53               TO  RECE08-PRTDATA
+                   WHEN    "HCM53V01.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM53V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM53V01-RENNUM
+                       MOVE    HCM53V01            TO  RECE08-PRTDATA
       ***          WHEN    "HCM54.red"
       ***              MOVE    RECE08-PRTDATA      TO  HCM54
       ***              MOVE    WRK-HEN-RENNUM-AREA TO  HCM54-RENNUM
@@ -994,6 +1057,10 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM55V01
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM55V01-RENNUM
                        MOVE    HCM55V01            TO  RECE08-PRTDATA
+                   WHEN    "HCM55V02.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM55V02
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM55V02-RENNUM
+                       MOVE    HCM55V02            TO  RECE08-PRTDATA
                    WHEN    "HCN53.red"
                    WHEN    "HCN54.red"
                        MOVE    RECE08-PRTDATA      TO  HCN53
@@ -1011,10 +1078,18 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                        MOVE    RECE08-PRTDATA      TO  HCM56
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM56-RENNUM
                        MOVE    HCM56               TO  RECE08-PRTDATA
+                   WHEN    "HCM56V01.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM56V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM56V01-RENNUM
+                       MOVE    HCM56V01            TO  RECE08-PRTDATA
                    WHEN    "HCM57.red"
                        MOVE    RECE08-PRTDATA      TO  HCM57
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM57-RENNUM
                        MOVE    HCM57               TO  RECE08-PRTDATA
+                   WHEN    "HCM57V01.red"
+                       MOVE    RECE08-PRTDATA      TO  HCM57V01
+                       MOVE    WRK-HEN-RENNUM-AREA TO  HCM57V01-RENNUM
+                       MOVE    HCM57V01            TO  RECE08-PRTDATA
                    WHEN    "HCM58.red"
                        MOVE    RECE08-PRTDATA      TO  HCM58
                        MOVE    WRK-HEN-RENNUM-AREA TO  HCM58-RENNUM
@@ -1189,45 +1264,57 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM21V02.red"  ALSO    ANY
                WHEN    "HCM21V03.red"  ALSO    ANY
                WHEN    "HCM21V04.red"  ALSO    ANY
+               WHEN    "HCM21V05.red"  ALSO    ANY
                WHEN    "HC22"          ALSO    ANY 
                WHEN    "HCM22.red"     ALSO    ANY
                WHEN    "HCM22V01.red"  ALSO    ANY
                WHEN    "HCM22V02.red"  ALSO    ANY
                WHEN    "HCM22V03.red"  ALSO    ANY
                WHEN    "HCM22V04.red"  ALSO    ANY
+               WHEN    "HCM22V05.red"  ALSO    ANY
                WHEN    "HC18"          ALSO    ANY 
                WHEN    "HCM18.red"     ALSO    ANY
                WHEN    "HCM18V01.red"  ALSO    ANY
                WHEN    "HCM18V02.red"  ALSO    ANY
                WHEN    "HCM18V03.red"  ALSO    ANY
                WHEN    "HCM18V04.red"  ALSO    ANY
+               WHEN    "HCM18V05.red"  ALSO    ANY
                WHEN    "HC20"          ALSO    ANY 
                WHEN    "HCM20.red"     ALSO    ANY
                WHEN    "HCM20V01.red"  ALSO    ANY
                WHEN    "HCM20V02.red"  ALSO    ANY
                WHEN    "HCM20V03.red"  ALSO    ANY
                WHEN    "HCM20V04.red"  ALSO    ANY
+               WHEN    "HCM20V05.red"  ALSO    ANY
                WHEN    "HC24"          ALSO    ANY 
                WHEN    "HCM24.red"     ALSO    "2"
                WHEN    "HCM24V01.red"  ALSO    "2"
                WHEN    "HCM24V02.red"  ALSO    "2"
                WHEN    "HCM24V03.red"  ALSO    "2"
                WHEN    "HCM24V04.red"  ALSO    "2"
+               WHEN    "HCM24V05.red"  ALSO    "2"
                WHEN    "HCM56.red"     ALSO    "2"
+               WHEN    "HCM56V01.red"  ALSO    "2"
                WHEN    "HCM57.red"     ALSO    "2"
-                   MOVE    "労災レセプト（入院外）"    TO  SPRT-TITLE
+               WHEN    "HCM57V01.red"  ALSO    "2"
+               MOVE    "労災レセプト（入院外）"    TO  SPRT-TITLE
                WHEN    "HCM23.red"     ALSO    ANY
                WHEN    "HCM23V01.red"  ALSO    ANY
                WHEN    "HCM23V02.red"  ALSO    ANY
                WHEN    "HCM23V03.red"  ALSO    ANY
                WHEN    "HCM23V04.red"  ALSO    ANY
+               WHEN    "HCM23V05.red"  ALSO    ANY
                WHEN    "HCM48.red"     ALSO    ANY
+               WHEN    "HCM48V01.red"  ALSO    ANY
                WHEN    "HCM53.red"     ALSO    ANY
+               WHEN    "HCM53V01.red"  ALSO    ANY
                WHEN    "HCM54.red"     ALSO    ANY
                WHEN    "HCM29.red"     ALSO    "2"
                WHEN    "HCM29V01.red"  ALSO    "2"
                WHEN    "HCM29V02.red"  ALSO    "2"
+               WHEN    "HCM29V03.red"  ALSO    "2"
                WHEN    "HCM49.red"     ALSO    "2"
+               WHEN    "HCM49V01.red"  ALSO    "2"
                    IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                        MOVE    "自賠責（新様式）レセプト（入院外）"
                                                        TO  SPRT-TITLE
@@ -1237,8 +1324,11 @@ grpsys         PERFORM 900-DBFETCH-SEC
                    END-IF
                WHEN    "HCM55.red"     ALSO    ANY
                WHEN    "HCM55V01.red"  ALSO    ANY
+               WHEN    "HCM55V02.red"  ALSO    ANY
                WHEN    "HCM25.red"     ALSO    "2"
+               WHEN    "HCM25V01.red"  ALSO    "2"
                WHEN    "HCM26.red"     ALSO    "2"
+               WHEN    "HCM26V01.red"  ALSO    "2"
                    IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                        MOVE    "自賠責（従来様式）レセプト（入院外）"
                                                        TO  SPRT-TITLE
@@ -1256,6 +1346,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCN21V02.red"  ALSO    ANY
                WHEN    "HCN21V03.red"  ALSO    ANY
                WHEN    "HCN21V04.red"  ALSO    ANY
+               WHEN    "HCN21V05.red"  ALSO    ANY
                WHEN    "HCN22.red"     ALSO    ANY
                WHEN    "HCN22V01.red"  ALSO    ANY
                WHEN    "HCN22V02.red"  ALSO    ANY
@@ -1267,8 +1358,11 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM24V02.red"  ALSO    "1"
                WHEN    "HCM24V03.red"  ALSO    "1"
                WHEN    "HCM24V04.red"  ALSO    "1"
+               WHEN    "HCM24V05.red"  ALSO    "1"
                WHEN    "HCM56.red"     ALSO    "1"
+               WHEN    "HCM56V01.red"  ALSO    "1"
                WHEN    "HCM57.red"     ALSO    "1"
+               WHEN    "HCM57V01.red"  ALSO    "1"
                    MOVE    "労災レセプト（入院）"      TO  SPRT-TITLE
                WHEN    "HCN23.red"     ALSO    ANY
                WHEN    "HCN23V01.red"  ALSO    ANY
@@ -1281,7 +1375,9 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM29.red"     ALSO    "1"
                WHEN    "HCM29V01.red"  ALSO    "1"
                WHEN    "HCM29V02.red"  ALSO    "1"
+               WHEN    "HCM29V03.red"  ALSO    "1"
                WHEN    "HCM49.red"     ALSO    "1"
+               WHEN    "HCM49V01.red"  ALSO    "1"
                    IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                        MOVE    "自賠責（新様式）レセプト（入院）"
                                                        TO  SPRT-TITLE

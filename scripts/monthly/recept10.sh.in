@@ -25,6 +25,8 @@ fi
 #        $10 作成時間
 #        $16 HOSPNUM 
 #        $17 様式区分
+#        $18 レセプト作成区分
+#            1:提出用レセ、2:点検用レセ
 #-------------------------------------------#
 ##      エラーファイル削除
 	echo $#
@@ -69,7 +71,7 @@ fi
         if  [ -e $4 ]; then
             exit 
         else 
-     	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0840 -parameter $1$3$5$6,${17},${16},${4}      >> $LOG_FILE 2>&1
+     	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0840 -parameter $1$3$5$6,${17},${18},${16},${4}      >> $LOG_FILE 2>&1
 
         fi
 
@@ -163,16 +165,16 @@ fi
                        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0951 -parameter $9${10}$1$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
                     fi
                 else    
-                    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0960 -parameter $9${10}$1$2$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
+                    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0960 -parameter $9${10}$1$2$3$8$5$6,${18},${16},${4}   >> $LOG_FILE 2>&1
                     if  [ -e $4 ]; then
                        exit 
                     else 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0961 -parameter $9${10}$1$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0961 -parameter $9${10}$1$3$8$5$6,${18},${16},${4}   >> $LOG_FILE 2>&1
                     fi
                     if  [ -e $4 ]; then
                        exit 
                     else 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0962 -parameter $9${10}$1$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0962 -parameter $9${10}$1$3$8$5$6,$${18},{16},${4}   >> $LOG_FILE 2>&1
                     fi
                 fi
             else
@@ -186,16 +188,16 @@ fi
                        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0951 -parameter $9${10}$1$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
                     fi
                 else    
-                    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0960 -parameter $9${10}$1$2$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
+                    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0960 -parameter $9${10}$1$2$3$8$5$6,${18},${16},${4}   >> $LOG_FILE 2>&1
                     if  [ -e $4 ]; then
                        exit 
                     else 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0961 -parameter $9${10}$1$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0961 -parameter $9${10}$1$3$8$5$6,${18},${16},${4}   >> $LOG_FILE 2>&1
                     fi
                     if  [ -e $4 ]; then
                        exit 
                     else 
-                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0962 -parameter $9${10}$1$3$8$5$6,${16},${4}   >> $LOG_FILE 2>&1
+                       $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCR0962 -parameter $9${10}$1$3$8$5$6,${18},${16},${4}   >> $LOG_FILE 2>&1
                     fi
                 fi
             fi

@@ -33,6 +33,8 @@
       *                                     （診療区分６４：病理診断対応）
       *  04.02.02    NACL-藤原    08/04/18  「レセ電通信医２０００６号」
       *                                     症状詳記区分コード５２の追加
+      *
+      *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -117,10 +119,14 @@
                                    BY         //RECEERR//.
       *
       *    公務災害
-           COPY    "HCM56.INC".
+      *****COPY    "HCM56.INC".
+           COPY    "HCM56V01.INC"  REPLACING  //HCM56V01//
+                                   BY         //HCM56//.
       *
       *    公務災害（続紙） 
-           COPY    "HCM57.INC".
+      *****COPY    "HCM57.INC".
+           COPY    "HCM57V01.INC"  REPLACING  //HCM57V01//
+                                   BY         //HCM57//.
       *
       *    フラグ領域
        01  STS-AREA.
@@ -249,6 +255,7 @@
                05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).
                05  WRK-PARA-SHELLID PIC  X(08).
+           03  WRK-PARA-PRTKBN      PIC  X(01).
            03  WRK-PARA-HOSPNUM     PIC  9(02).
       *
            03  WRK-SYS-SRYYMD       PIC  X(08).
@@ -574,6 +581,7 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -1290,6 +1298,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                END-IF
            END-IF
       *
+      *    点検用レセプト作成時
+           IF      WRK-PARA-PRTKBN     =   "2"
+               MOVE    "点検用レセプト"    TO  HCM56-LABEL
+           END-IF
+      *
            .
        310-HC101-HEAD-HEN-EXT.
            EXIT.
@@ -1310,6 +1323,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    HCM56-KANANAME      TO  HCM57-KANANAME
       *    氏名
            MOVE    HCM56-NAME          TO  HCM57-NAME
+      *
+      *    点検用レセプト作成時
+           MOVE    HCM56-LABEL         TO  HCM57-LABEL
       *
            .
        310-HCM57-HEAD-HEN-EXT.
@@ -2182,14 +2198,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCM56.red"      TO
+               MOVE    "HCM56V01.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
-               MOVE    HCM56                TO
+               MOVE    HCM56               TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
-               MOVE    "HCM57.red"      TO
+               MOVE    "HCM57V01.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
-               MOVE    HCM57                TO
+               MOVE    HCM57               TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            END-IF        
       *
@@ -2317,12 +2333,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCM56.red"                  
+                       WHEN    "HCM56V01.red"                  
                            MOVE    RECE08-PRTDATA  TO HCM56
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HCM56-PAGE
                            MOVE    HCM56           TO RECE08-PRTDATA
-                       WHEN    "HCM57.red"                  
+                       WHEN    "HCM57V01.red"                  
                            MOVE    RECE08-PRTDATA  TO HCM57
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HCM57-PAGE
@@ -2431,6 +2447,9 @@ grpsys         MOVE    RECE08-HOSPNUM      TO  RECE07-HOSPNUM
                                                    TO  RECE07-STYMD
                    END-EVALUATE
                END-IF 
+               IF      WRK-PARA-PRTKBN     =   "2"
+                   MOVE    "1"                 TO  RECE07-PRTKBN
+               END-IF
                MOVE    1                   TO  RECE07-PAGE
            ELSE
                ADD     1                   TO  RECE07-PAGE

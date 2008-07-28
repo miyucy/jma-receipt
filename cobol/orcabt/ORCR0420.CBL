@@ -159,6 +159,8 @@
       *  04.03.01    NACL-ÌçÏÆ    08/07/08  ¿Ç¶è£±£´¤Î¥³¥á¥ó¥È¤Î¤ß¤ÎºÞ
       *                                     ÊÔ½¸ÂÐ±þ
       *  04.03.02    NACL-ÌçÏÆ    08/07/11  ¿ÇÃÇ½ñÌÀºÙ½ñÎÁ¤ÎÅ¦Í×Íóµ­ºÜÂÐ±þ
+      *  04.03.03    NACL-ÌçÏÆ    08/07/14  ²¾¥ì¥»ºîÀ®¡Ê±¡³°½èÊý´Þ¤à¡ËÂÐ±þ
+      *                                     ÅêÌôºÞÅÀ£°¡Ê±¡³°Åù¡Ëµ­ºÜ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -456,6 +458,7 @@
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
            03  WRK-PARA-JIBAIPRTKBN                    PIC X(01).
+           03  WRK-PARA-PRTKBN                         PIC X(01).
            03  WRK-PARA-HOSPNUM                        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD                          PIC X(08).
@@ -1000,6 +1003,7 @@
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
                                                WRK-PARA-JIBAIPRTKBN
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -1348,8 +1352,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                END-IF
                    ELSE
                              IF   ACCT-ZAIKAISU  NOT =    ZERO
-                               IF   ACCT-SRYKBN  =  "11" OR "12" OR
-                                                    "14" OR "99"
+                               IF ( ACCT-SRYKBN  =  "11" OR "12" OR
+                                                    "14" OR "99" )
+                               OR ((WRK-PARA-PRTKBN
+                                                 =  "2"          ) AND
+                                   (ACCT-SRYKBN  =  "21" OR "22" OR
+                                                    "23"        ))
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1  OR
                                                        CONS-TOKKI2  OR
                                                        CONS-TOKKI3  OR
@@ -1774,6 +1782,30 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  IF    TNS-KNSJISGRPKBN = 1 OR 2 OR 3 OR 4 OR 5 OR 6
                   MOVE  TNS-KNSJISGRPKBN  TO    RECE44-KNSJISGRPKBN
                  END-IF
+               END-IF
+      *
+               IF    ( SRY-SRYKBN   =  "14" OR "21" OR "22" OR "23" )
+               AND   ( RECE44-ZAITEN     =     ZERO                 )
+               AND   ( RECE44-SAFLG      =     SPACE                )
+                  IF   SRY-SRYCD(IDX2)   =     "820000046"
+                     MOVE     "1"         TO    RECE44-SAFLG
+                  END-IF
+               END-IF
+      *
+               IF    ( SRY-SRYKBN   =  "21" OR "22" OR "23" )
+               AND   ( RECE44-ZAITEN     =     ZERO         )
+                  IF     RECE44-SAFLG   NOT =  SPACE
+                        MOVE   SPACE      TO    RECE44-TOYAKUFLG
+                  ELSE
+                    IF  (SRY-SRYCD(IDX2)(1:1)  =  "8"  )
+                    OR  (SRY-SRYCD(IDX2)(1:3)  =  "008")
+                      IF   RECE44-TOYAKUFLG = SPACE
+                        MOVE    "2"       TO    RECE44-TOYAKUFLG
+                      END-IF
+                    ELSE
+                        MOVE    "1"       TO    RECE44-TOYAKUFLG
+                    END-IF
+                  END-IF
                END-IF
       *
                IF     SRY-SRYCD(IDX2)  IS  NUMERIC
@@ -6476,8 +6508,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                END-IF
                            ELSE
                              IF   ACCT-ZAIKAISU  NOT =    ZERO
-                               IF   ACCT-SRYKBN  =  "11" OR "12" OR
-                                                    "14" OR "99"
+                               IF ( ACCT-SRYKBN  =  "11" OR "12" OR
+                                                    "14" OR "99" )
+                               OR ((WRK-PARA-PRTKBN
+                                                 =  "2"          ) AND
+                                   (ACCT-SRYKBN  =  "21" OR "22" OR
+                                                    "23"        ))
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1  OR
                                                        CONS-TOKKI2  OR
                                                        CONS-TOKKI3  OR

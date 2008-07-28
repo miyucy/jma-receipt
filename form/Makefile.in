@@ -425,6 +425,21 @@ FORM_files = \
 	      HCM58V01.red \
 	      HCM59V01.red \
 	      HCN58V01.red \
+	      HCN22V05.red \
+	      HCM21V05.red \
+	      HCM24V05.red \
+	      HCM18V05.red \
+	      HCM20V05.red \
+	      HCM56V01.red \
+	      HCM57V01.red \
+	      HCM23V05.red \
+	      HCM29V03.red \
+	      HCM25V01.red \
+	      HCM26V01.red \
+	      HCM48V01.red \
+	      HCM49V01.red \
+	      HCM53V01.red \
+	      HCM55V02.red \
 
 all:   
 

@@ -74,6 +74,8 @@
       *                                     （診療区分６４：病理診断対応）
       *  04.02.02    NACL-藤原    08/04/18  「レセ電通信医２０００６号」
       *                                     症状詳記区分コード５２の追加
+      *
+      *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -178,7 +180,8 @@
       *****COPY    "HCM22V01.INC"  REPLACING  //HCM22V01//
       *****COPY    "HCM22V02.INC"  REPLACING  //HCM22V02//
       *****COPY    "HCM22V03.INC"  REPLACING  //HCM22V03//
-           COPY    "HCM22V04.INC"  REPLACING  //HCM22V04//
+      *****COPY    "HCM22V04.INC"  REPLACING  //HCM22V04//
+           COPY    "HCM22V05.INC"  REPLACING  //HCM22V05//
                                    BY         //HC22//.
       *
       *    長期・短期（続紙）     
@@ -188,7 +191,8 @@
       *****COPY    "HCM24V01.INC"  REPLACING  //HCM24V01//
       *****COPY    "HCM24V02.INC"  REPLACING  //HCM24V02//
       *****COPY    "HCM24V03.INC"  REPLACING  //HCM24V03//
-           COPY    "HCM24V04.INC"  REPLACING  //HCM24V04//
+      *****COPY    "HCM24V04.INC"  REPLACING  //HCM24V04//
+           COPY    "HCM24V05.INC"  REPLACING  //HCM24V05//
                                    BY         //HC24//.
       *
       *    フラグ領域
@@ -306,6 +310,7 @@
                05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).
                05  WRK-PARA-SHELLID PIC  X(08).
+           03  WRK-PARA-PRTKBN      PIC  X(01).
            03  WRK-PARA-HOSPNUM     PIC  9(02).
       *
            03  WRK-SYS-SRYYMD       PIC  X(08).
@@ -589,6 +594,7 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -1281,6 +1287,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    RECE41-RECEKAISU        TO  WRK-RECEKAISU
            MOVE    WRK-RECEKAISU           TO  HC22-KAI
       *
+      *    点検用レセプト作成時
+           IF      WRK-PARA-PRTKBN     =   "2"
+               MOVE    "点検用レセプト"    TO  HC22-LABEL
+           END-IF
+      *
            .
        310-HC101-HEAD-HEN-EXT.
            EXIT.
@@ -1333,6 +1344,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    RECE41-KANANAME     TO  HC24-PTKANANAME
       *    年齢
            MOVE    WRK-NENREI-X        TO  HC24-PTAGE
+      *
+      *    点検用レセプト作成時
+           MOVE    HC22-LABEL          TO  HC24-LABEL
       *
            .
        310-HC101-HEAD-HEN-EXT.
@@ -2256,12 +2270,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCM22V04.red"      TO
+               MOVE    "HCM22V05.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC22                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
-               MOVE    "HCM24V04.red"      TO
+               MOVE    "HCM24V05.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC24                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -2397,12 +2411,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCM22V04.red"                  
+                       WHEN    "HCM22V05.red"                  
                            MOVE    RECE08-PRTDATA  TO HC22
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC22-PAGE
                            MOVE    HC22            TO RECE08-PRTDATA
-                       WHEN    "HCM24V04.red"                  
+                       WHEN    "HCM24V05.red"                  
                            MOVE    RECE08-PRTDATA  TO HC24
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC24-PAGE
@@ -2512,6 +2526,9 @@ grpsys         MOVE    RECE08-HOSPNUM      TO  RECE07-HOSPNUM
                                                    TO  RECE07-STYMD
                    END-EVALUATE
                END-IF 
+               IF      WRK-PARA-PRTKBN     =   "2"
+                   MOVE    "1"                 TO  RECE07-PRTKBN
+               END-IF
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
            ELSE
