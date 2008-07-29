@@ -448,6 +448,15 @@ FORM_files = \
 	      HCN53V01.red \
 	      HCN54V01.red \
 	      HCN55V01.red \
+	      HCM18V05P.red \
+	      HCM20V05P.red \
+	      HCM21V05P.red \
+	      HCM22V05P.red \
+	      HCM24V05P.red \
+	      HCN21V05P.red \
+	      HCN22V05P.red \
+	      HCN50V01P.red \
+	      HCN51V01P.red \
 
 all:   
 
