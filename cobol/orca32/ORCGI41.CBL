@@ -95,6 +95,7 @@
       *  04.02.00    NACL-小豆沢  08/06/26  他院（特別な関係の医療機関）通算日数
       *                                     カウント変更
       *  04.03.00    NACL-小豆沢  08/07/08  褥瘡患者管理加算対応
+      *  04.03.00    NACL-小豆沢  08/07/29  最終入院病室の表示追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -166,6 +167,8 @@
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDX2                PIC 9(04).
+           03  IDX3                PIC 9(04).
            03  IDX6                PIC 9(04).
            03  IDX7                PIC 9(04).
            03  IDX8                PIC 9(03).
@@ -357,10 +360,17 @@
                05  WRK-NYUIN-BTUDAY    PIC 9(04)   OCCURS  6.
                05  WRK-LAST-RECNO      PIC 9(01).
                05  WRK-NYUIN-BTUDAY-Z  PIC ZZZ9.
+      *
       *    入院料重複チェック
            03  WRK-NYUDAY-TBL.
                05  WRK-NYUDAY-OCC      OCCURS   31.
                    07  WRK-NYUDAY      PIC 9(01).
+      *
+      *    最終入院病室表示用
+           03  WRK-BRMNUM              PIC X(06).
+           03  WRK-Z6-X.
+               05  WRK-Z6              PIC ZZZZZZ.
+           03  WRK-BRMNUM-9            PIC 9(06).
       *
       *    回数一括変更用
        01  WRK-DAY-AREA.
@@ -1482,7 +1492,7 @@
            EXIT.
       *
       *****************************************************************
-      *   病棟別日数編集処理
+      *   病棟別日数編集処理（最終入院病室の編集も併せて行う）
       *****************************************************************
        3103-BTUDAY-EDIT-SEC            SECTION.
       *
@@ -1492,6 +1502,7 @@
            MOVE    SPACE               TO  SPA-GMN-SYUBETSU4
            MOVE    SPACE               TO  SPA-GMN-SYUBETSU5
            MOVE    SPACE               TO  SPA-GMN-SYUBETSU6
+           MOVE    SPACE               TO  SPA-GMN-LASTNYUIN
       *
       *    最終入院履歴を確定
            INITIALIZE                      PTNYUINRRK-REC
@@ -1506,6 +1517,37 @@
                MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
                MOVE    "key9"          TO  MCP-PATHNAME
                PERFORM 970-PTNYUINRRK-READ-SEC
+      *
+      *        最終入院病室表示エリアの編集
+               IF     PTNYUINRRK-JTIKBN  NOT =  "5"  AND "6"
+                   MOVE   "最終入院【"  TO  SPA-GMN-LASTNYUIN(1:10)
+                   PERFORM    3103-BTU-TANNAME-EDIT-SEC
+                   MOVE   SYS-5001-BTU-TANNAME
+                                       TO  SPA-GMN-LASTNYUIN(11:10)
+                   IF      PTNYUINRRK-BRMNUM(3:6)  NUMERIC
+                       MOVE    PTNYUINRRK-BRMNUM(3:6)  TO  WRK-BRMNUM-9
+                       MOVE    WRK-BRMNUM-9            TO  WRK-Z6
+                       MOVE    ZERO                    TO  IDX2
+                       PERFORM VARYING     IDX     FROM    1   BY  1
+                           UNTIL       IDX     >   6
+                             IF      WRK-Z6-X(IDX:1)     NOT =   SPACE
+                                ADD     1               TO  IDX2
+                                MOVE    WRK-Z6-X(IDX:1) TO  WRK-BRMNUM
+                                                            (IDX2:1)
+                             END-IF
+                       END-PERFORM
+                       MOVE   WRK-BRMNUM
+                                       TO  SPA-GMN-LASTNYUIN(21:IDX2)
+                       COMPUTE   IDX3   =  21 + IDX2  +  1
+                       MOVE   "号室】"   TO  SPA-GMN-LASTNYUIN(IDX3:6)
+                   ELSE
+                       MOVE   PTNYUINRRK-BRMNUM(3:6)
+                                       TO  SPA-GMN-LASTNYUIN(21:6)
+                       COMPUTE   IDX3   =  21 + IDX2  +  1
+                       MOVE   "号室】"   TO  SPA-GMN-LASTNYUIN(27:6)
+                   END-IF
+               END-IF
+      *
            ELSE
                INITIALIZE                  PTNYUINRRK-REC
                MOVE    1               TO  FLG-PTNYUINRRK
@@ -1611,37 +1653,21 @@
                                                         SPA-SYSYMD
                                 IF   PTNYUINRRK-RRKEDANUM  NOT =
                                               PTNYUINRRK-MAXEDANUM
-                                  IF  PTNYUINRRK-TENSTUYMD  =
-                                                  PTNYUINRRK-TAIINYMD
-                                      MOVE  PTNYUINRRK-TAIINYMD
-                                                   TO  LNK-DAY5-END
-                                  ELSE
-      *                               転出日のマイナス１日
-                                      INITIALIZE   LNK-DAY6-AREA
-                                      MOVE  "61"   TO  LNK-DAY6-IRAI
-                                      MOVE  PTNYUINRRK-TENSTUYMD
-                                                   TO  LNK-DAY6-KIJUN
-                                      MOVE  "1"    TO  LNK-DAY6-ZOGENPTN
-                                      MOVE  -1     TO  LNK-DAY6-ZOGEN
-                                      CALL  "ORCSDAY"    USING
-                                                         STS-AREA-DAY
-                                                         LNK-DAY6-AREA
-                                      MOVE   LNK-DAY6-KEISAN
-                                                   TO  LNK-DAY5-END
-                                  END-IF
+      *                             転出日のマイナス１日
+                                    INITIALIZE   LNK-DAY6-AREA
+                                    MOVE  "61"   TO  LNK-DAY6-IRAI
+                                    MOVE  PTNYUINRRK-TENSTUYMD
+                                                 TO  LNK-DAY6-KIJUN
+                                    MOVE  "1"    TO  LNK-DAY6-ZOGENPTN
+                                    MOVE  -1     TO  LNK-DAY6-ZOGEN
+                                    CALL  "ORCSDAY"    USING
+                                                       STS-AREA-DAY
+                                                       LNK-DAY6-AREA
+                                    MOVE   LNK-DAY6-KEISAN
+                                                 TO  LNK-DAY5-END
                                 ELSE
-      *                           転出日のマイナス１日
-                                  INITIALIZE   LNK-DAY6-AREA
-                                  MOVE  "61"   TO  LNK-DAY6-IRAI
-                                  MOVE  PTNYUINRRK-TENSTUYMD
-                                               TO  LNK-DAY6-KIJUN
-                                  MOVE  "1"    TO  LNK-DAY6-ZOGENPTN
-                                  MOVE  -1     TO  LNK-DAY6-ZOGEN
-                                  CALL  "ORCSDAY"    USING
-                                                     STS-AREA-DAY
-                                                     LNK-DAY6-AREA
-                                  MOVE   LNK-DAY6-KEISAN
-                                               TO  LNK-DAY5-END
+                                    MOVE  PTNYUINRRK-TAIINYMD
+                                                 TO  LNK-DAY5-END
                                 END-IF
                                ELSE
                                   MOVE  SPA-SYSYMD TO  LNK-DAY5-END
@@ -2831,12 +2857,14 @@
            MOVE    "black"             TO  I41-SYUBETSU4-STYLE.
            MOVE    "black"             TO  I41-SYUBETSU5-STYLE.
            MOVE    "black"             TO  I41-SYUBETSU6-STYLE.
+           MOVE    "black"             TO  I41-LASTNYUIN-STYLE.
            MOVE    SPA-GMN-SYUBETSU1   TO  I41-SYUBETSU1.
            MOVE    SPA-GMN-SYUBETSU2   TO  I41-SYUBETSU2.
            MOVE    SPA-GMN-SYUBETSU3   TO  I41-SYUBETSU3.
            MOVE    SPA-GMN-SYUBETSU4   TO  I41-SYUBETSU4.
            MOVE    SPA-GMN-SYUBETSU5   TO  I41-SYUBETSU5.
            MOVE    SPA-GMN-SYUBETSU6   TO  I41-SYUBETSU6.
+           MOVE    SPA-GMN-LASTNYUIN   TO  I41-LASTNYUIN.
       *    入院科
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-GMN-SRYKA-MAX-41

@@ -2689,10 +2689,26 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>SYUBETSU1</name>
+      <name>LASTNYUIN</name>
       <x>8</x>
       <y>113</y>
-      <width>140</width>
+      <width>256</width>
+      <height>24</height>
+      <label>*</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SYUBETSU1</name>
+      <x>280</x>
+      <y>115</y>
+      <width>110</width>
       <height>24</height>
       <label>*</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
@@ -2706,9 +2722,9 @@
     <widget>
       <class>GtkLabel</class>
       <name>SYUBETSU2</name>
-      <x>160</x>
-      <y>113</y>
-      <width>140</width>
+      <x>400</x>
+      <y>115</y>
+      <width>110</width>
       <height>24</height>
       <label>*</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
@@ -2722,9 +2738,9 @@
     <widget>
       <class>GtkLabel</class>
       <name>SYUBETSU3</name>
-      <x>312</x>
-      <y>113</y>
-      <width>140</width>
+      <x>520</x>
+      <y>115</y>
+      <width>110</width>
       <height>24</height>
       <label>*</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
@@ -2738,9 +2754,9 @@
     <widget>
       <class>GtkLabel</class>
       <name>SYUBETSU4</name>
-      <x>460</x>
-      <y>113</y>
-      <width>140</width>
+      <x>640</x>
+      <y>115</y>
+      <width>110</width>
       <height>24</height>
       <label>*</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
@@ -2754,9 +2770,9 @@
     <widget>
       <class>GtkLabel</class>
       <name>SYUBETSU5</name>
-      <x>609</x>
-      <y>113</y>
-      <width>140</width>
+      <x>760</x>
+      <y>115</y>
+      <width>110</width>
       <height>24</height>
       <label>*</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
@@ -2770,9 +2786,9 @@
     <widget>
       <class>GtkLabel</class>
       <name>SYUBETSU6</name>
-      <x>760</x>
-      <y>113</y>
-      <width>140</width>
+      <x>880</x>
+      <y>115</y>
+      <width>110</width>
       <height>24</height>
       <label>*</label>
       <justify>GTK_JUSTIFY_LEFT</justify>

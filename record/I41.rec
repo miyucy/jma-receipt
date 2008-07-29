@@ -251,5 +251,9 @@ I41	{
 			style   varchar(20);
 			value	varchar(20);
 		};
+		LASTNYUIN	{
+			style   varchar(20);
+			value	varchar(40);
+		};
 	};
 };

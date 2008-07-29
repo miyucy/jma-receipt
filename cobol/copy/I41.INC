@@ -121,3 +121,8 @@
               05  I41-VALUE       PIC X(20).
             04  I41-SYUBETSU6.
               05  I41-VALUE       PIC X(20).
+          03  I41-LASTNYUIN-G.
+            04  I41-LASTNYUIN-STYLE.
+              05  I41-VALUE       PIC X(20).
+            04  I41-LASTNYUIN.
+              05  I41-VALUE       PIC X(40).
