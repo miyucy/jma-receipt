@@ -41,6 +41,8 @@
       *
       *  04.02.02    NACL-藤原    08/04/18  「レセ電通信医２０００６号」
       *                                     症状詳記区分コード５２の追加
+      *
+      *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -153,10 +155,11 @@
                                    BY         //RECEERR//.
       *
       *    短期（３４７０２）     
-           COPY    "HCN50.INC".
+           COPY    "HCN50V01.INC"  REPLACING  //HCN50V01//
+                                   BY         //HCN50//.
       *
       *    長期・短期（続紙）     
-           COPY    "HCM24V04.INC"  REPLACING  //HCM24V04//
+           COPY    "HCM24V05.INC"  REPLACING  //HCM24V05//
                                    BY         //HC24//.
       *
       *    フラグ領域
@@ -293,6 +296,7 @@
                05  WRK-PARA-RECEYM  PIC  X(06).
                05  WRK-PARA-JOBID   PIC  9(07).
                05  WRK-PARA-SHELLID PIC  X(08).
+           03  WRK-PARA-PRTKBN      PIC  X(01).
            03  WRK-PARA-HOSPNUM     PIC  9(02).
       *
            03  WRK-SYS-SRYYMD       PIC  X(08).
@@ -596,6 +600,7 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -1226,6 +1231,11 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    RECE82-RECEKAISU    TO  WRK-RECEKAISU
            MOVE    WRK-RECEKAISU       TO  HCN50-KAI
       *
+      *    点検用レセプト作成時
+           IF      WRK-PARA-PRTKBN     =   "2"
+               MOVE    "点検用レセプト"    TO  HCN50-LABEL
+           END-IF
+      *
            .
        20021-HEAD-HEN-EXT.
            EXIT.
@@ -1277,6 +1287,9 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    RECE82-KANANAME     TO  HC24-PTKANANAME
       *    年齢
            MOVE    WRK-NENREI-X        TO  HC24-PTAGE
+      *
+      *    点検用レセプト作成時
+           MOVE    HCN50-LABEL         TO  HC24-LABEL
       *
            .
        310-HC24-HEAD-HEN-EXT.
@@ -2546,12 +2559,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCN50.red"         TO
+               MOVE    "HCN50V01.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HCN50                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
-               MOVE    "HCM24V04.red"      TO
+               MOVE    "HCM24V05.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
                MOVE    HC24                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
@@ -2681,12 +2694,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                    MOVE    "/"                 TO  WRK-PAGE-HEN
                    MOVE    TBL-RECE-MAX        TO  WRK-PAGE2
                    EVALUATE    RECE08-FORMID
-                       WHEN    "HCN50.red"                  
+                       WHEN    "HCN50V01.red"                  
                            MOVE    RECE08-PRTDATA  TO HCN50
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HCN50-PAGE
                            MOVE    HCN50           TO RECE08-PRTDATA
-                       WHEN    "HCM24V04.red"                  
+                       WHEN    "HCM24V05.red"                  
                            MOVE    RECE08-PRTDATA  TO HC24
                            MOVE    WRK-HEN-PAGE-AREA
                                                    TO HC24-PAGE
@@ -2777,6 +2790,9 @@ grpsys         MOVE    RECE08-HOSPNUM      TO  RECE07-HOSPNUM
                MOVE    RECE08-OPID         TO  RECE07-OPID
                IF      WRK-PARA-SYOKBN     =   "2"
                    MOVE    ZERO            TO  RECE07-SYORISBT
+               END-IF
+               IF      WRK-PARA-PRTKBN     =   "2"
+                   MOVE    "1"                 TO  RECE07-PRTKBN
                END-IF
                MOVE    1                   TO  RECE07-PAGE
                MOVE    1                   TO  RECE07-KENSU
