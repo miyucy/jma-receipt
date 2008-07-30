@@ -112,13 +112,12 @@
                05  WRK-PARA-ERRFNAME   PIC X(200).
                05  WRK-PARA-JOBID      PIC 9(07).
                05  WRK-PARA-SHELLID    PIC X(08).
+               05  WRK-PARA-BTPARA-SHELLID
+                                       PIC X(08).
       *
        01  CONST-AREA.
            03  CONST-SCRIPTID          PIC X(20)   VALUE   "ORCBQ02.sh".
            03  CONST-PTINF-MAX         PIC 9(05)   VALUE   500.
-           03  CONST-JOBID             PIC 9(07)   VALUE   2.
-           03  CONST-SHELLID           PIC X(08)
-               VALUE   "ORCBQ01".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -137,6 +136,7 @@
            COPY    "CPBTPARA.INC".
            COPY    "CPQTORMAIN.INC".
            COPY    "CPQTORSUB.INC".
+           COPY    "CPQTOANY.INC".
       *
       *    入院診療会計マスター
        01  NYUINACCT-REC.
@@ -222,6 +222,7 @@
                                                WRK-PARA-ERRFNAME
                                                WRK-PARA-JOBID
                                                WRK-PARA-SHELLID
+                                               WRK-PARA-BTPARA-SHELLID
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -244,8 +245,9 @@
       *
            INITIALIZE                  BTPARA-REC
            MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
-           MOVE    CONST-SHELLID       TO  BTPARA-SHELLID
-           MOVE    CONST-JOBID         TO  BTPARA-JOBID
+           MOVE    WRK-PARA-BTPARA-SHELLID
+                                       TO  BTPARA-SHELLID
+           MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "del3"              TO  MCP-PATHNAME
@@ -264,10 +266,10 @@
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-           PERFORM 2001-QTORSUB-EDIT-SEC
+           PERFORM 2001-PTINF-EDIT-SEC
       *
            IF    ( FLG-END         =   ZERO )
-               PERFORM 2001-QTORMAIN-EDIT-SEC
+               PERFORM 2001-QLINK-EDIT-SEC
            END-IF
       *
            .
@@ -277,19 +279,27 @@
       *****************************************************************
       *    患者情報編集処理
       *****************************************************************
-       2001-QTORSUB-EDIT-SEC           SECTION.
+       2001-PTINF-EDIT-SEC           SECTION.
       *
       *    患者対象データ検索処理
            PERFORM 900-QUERY-PTINF-KEY2-SEL-SEC
       *
            PERFORM UNTIL ( FLG-PTINF   NOT =   ZERO )
                     OR   ( FLG-END     NOT =   ZERO )
-                    OR   ( CNT-PTINF      >=   CONST-PTINF-MAX )
       *
-               PERFORM 20011-QTORSUB-EDIT-SEC
+               IF        ( WKBQ01-LNKKBN   =   "1" )
+                   IF    ( CNT-PTINF      >=   CONST-PTINF-MAX )
+                       MOVE    1           TO  FLG-PTINF
+                   ELSE
+                       PERFORM 20011-QTORSUB-EDIT-SEC
+                   END-IF
+               ELSE
+                   PERFORM 20011-QTOANY-EDIT-SEC
+               END-IF
       *
-      *        患者マスタ読込処理
-               PERFORM 900-QUERY-PTINF-FET-SEC
+               IF    ( FLG-PTINF       =   ZERO )
+                   PERFORM 900-QUERY-PTINF-FET-SEC
+               END-IF
       *
            END-PERFORM
       *
@@ -298,7 +308,7 @@
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       2001-QTORSUB-EDIT-EXT.
+       2001-PTINF-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    患者情報編集処理
@@ -378,15 +388,44 @@
        20011-QTORSUB-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    照会連携データ作成処理
+      *****************************************************************
+       20011-QTOANY-EDIT-SEC           SECTION.
+      *
+           COMPUTE CNT-PTINF   =   CNT-PTINF   +   1
+      *
+           INITIALIZE                  QTOANY-AREA
+           MOVE    QUERY-PTINF-PTID    TO  QTOANY-PTID
+           MOVE    QUERY-PTINF-PTNUM   TO  QTOANY-PTNUM
+      *
+           PERFORM 200111-BTPARA-COMMON-SEC
+      *
+           MOVE    2                   TO  BTPARA-DSP-RENNUM
+           MOVE    CNT-PTINF           TO  BTPARA-RENNUM
+           MOVE    QTOANY-AREA         TO  BTPARA-INFO-PARA
+           MOVE    BTPARA-REC          TO  MCPDATA-REC
+           MOVE    "tbl_btpara"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    "0002"          TO  WRK-BQERRCD
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           .
+       20011-QTOANY-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    バッチパラメタ共通項目編集処理
       *****************************************************************
        200111-BTPARA-COMMON-SEC        SECTION.
       *
            INITIALIZE                  BTPARA-REC
            MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
-           MOVE    CONST-SHELLID       TO  BTPARA-SHELLID
+           MOVE    WRK-PARA-BTPARA-SHELLID
+                                       TO  BTPARA-SHELLID
            MOVE    WRK-PARA-OPID       TO  BTPARA-RUN-OPID
-           MOVE    CONST-JOBID         TO  BTPARA-JOBID
+           MOVE    WRK-PARA-JOBID      TO  BTPARA-JOBID
            MOVE    CONST-SCRIPTID      TO  BTPARA-SCRIPTID
            MOVE    WRK-PARA-TERMID     TO  BTPARA-TERMID
            MOVE    SMCNDATE-YMD        TO  BTPARA-CREYMD
@@ -399,36 +438,60 @@
       *****************************************************************
       *    患者情報編集処理
       *****************************************************************
-       2001-QTORMAIN-EDIT-SEC          SECTION.
+       2001-QLINK-EDIT-SEC          SECTION.
       *
-           INITIALIZE                  QTORMAIN-AREA
+           IF        ( WKBQ01-LNKKBN   =   "1" )
+               INITIALIZE                  QTORMAIN-AREA
       *
-           MOVE    WKBQ01-SRYYM        TO  QTORM-SRYYM
-           MOVE    WKBQ01-NYUGAIKBN    TO  QTORM-NYUGAIKBN
-           MOVE    SMCNDATE-YMD        TO  QTORM-CREYMD
-           MOVE    SMCNDATE-HMS        TO  QTORM-CREHMS
-           MOVE    CNT-PTINF           TO  QTORM-PTINF-CNT
-           MOVE    CNT-GIHO            TO  QTORM-GIHO-CNT
-           MOVE    CNT-GRSI            TO  QTORM-GRSI-CNT
-           MOVE    CNT-GJBI            TO  QTORM-GJBI-CNT
-           MOVE    CNT-GKGI            TO  QTORM-GKGI-CNT
-           MOVE    CNT-NIHO            TO  QTORM-NIHO-CNT
-           MOVE    CNT-NRSI            TO  QTORM-NRSI-CNT
-           MOVE    CNT-NJBI            TO  QTORM-NJBI-CNT
-           MOVE    CNT-NKGI            TO  QTORM-NKGI-CNT
+               MOVE    WKBQ01-SRYYM        TO  QTORM-SRYYM
+               MOVE    WKBQ01-NYUGAIKBN    TO  QTORM-NYUGAIKBN
+               MOVE    SMCNDATE-YMD        TO  QTORM-CREYMD
+               MOVE    SMCNDATE-HMS        TO  QTORM-CREHMS
+               MOVE    CNT-PTINF           TO  QTORM-PTINF-CNT
+               MOVE    CNT-GIHO            TO  QTORM-GIHO-CNT
+               MOVE    CNT-GRSI            TO  QTORM-GRSI-CNT
+               MOVE    CNT-GJBI            TO  QTORM-GJBI-CNT
+               MOVE    CNT-GKGI            TO  QTORM-GKGI-CNT
+               MOVE    CNT-NIHO            TO  QTORM-NIHO-CNT
+               MOVE    CNT-NRSI            TO  QTORM-NRSI-CNT
+               MOVE    CNT-NJBI            TO  QTORM-NJBI-CNT
+               MOVE    CNT-NKGI            TO  QTORM-NKGI-CNT
       *
-           PERFORM 200111-BTPARA-COMMON-SEC
+               PERFORM 200111-BTPARA-COMMON-SEC
       *
-           MOVE    1                   TO  BTPARA-DSP-RENNUM
-           MOVE    1                   TO  BTPARA-RENNUM
-           MOVE    QTORMAIN-AREA       TO  BTPARA-INFO-PARA
-           MOVE    BTPARA-REC          TO  MCPDATA-REC
-           MOVE    "tbl_btpara"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBINSERT-SEC
-           IF    ( MCP-RC          NOT =   ZERO )
-               MOVE    "0003"          TO  WRK-BQERRCD
-               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1                   TO  BTPARA-DSP-RENNUM
+               MOVE    1                   TO  BTPARA-RENNUM
+               MOVE    QTORMAIN-AREA       TO  BTPARA-INFO-PARA
+               MOVE    BTPARA-REC          TO  MCPDATA-REC
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    "0003"          TO  WRK-BQERRCD
+                   PERFORM 500-ERR-HENSYU-SEC
+               END-IF
+           ELSE
+               INITIALIZE                  QTOANY-AREA
+      *
+               MOVE    WKBQ01-SRYYM        TO  QTOANY-SRYYM
+               MOVE    WKBQ01-NYUGAIKBN    TO  QTOANY-NYUGAIKBN
+               MOVE    SMCNDATE-YMD        TO  QTOANY-CREYMD
+               MOVE    SMCNDATE-HMS        TO  QTOANY-CREHMS
+               MOVE    CNT-PTINF           TO  QTOANY-PTINF-CNT
+      *
+               PERFORM 200111-BTPARA-COMMON-SEC
+      *
+               MOVE    1                   TO  BTPARA-DSP-RENNUM
+               MOVE    1                   TO  BTPARA-RENNUM
+               MOVE    QTOANY-AREA         TO  BTPARA-INFO-PARA
+               MOVE    BTPARA-REC          TO  MCPDATA-REC
+               MOVE    "tbl_btpara"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    "0003"          TO  WRK-BQERRCD
+                   PERFORM 500-ERR-HENSYU-SEC
+               END-IF
            END-IF
       *
            IF    ( FLG-END             =   ZERO )
@@ -483,7 +546,7 @@
            END-IF
       *
            .
-       2001-QTORMAIN-EDIT-EXT.
+       2001-QLINK-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    エラー出力処理
@@ -598,9 +661,9 @@
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
-           MOVE    CONST-JOBID     TO  JOB-JOBID
-           MOVE    CONST-SHELLID   TO  JOB-SHELLID
-           MOVE    "明細書連携データ作成"
+           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID   TO  JOB-SHELLID
+           MOVE    "連携データ作成"
                                    TO  JOB-SHELLMSG
            MOVE    "ORCBQ02"       TO  JOB-PGID
            CALL    "ORCSJOB"       USING
@@ -620,8 +683,8 @@
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
-           MOVE    CONST-JOBID     TO  JOB-JOBID
-           MOVE    CONST-SHELLID   TO  JOB-SHELLID
+           MOVE    WRK-PARA-JOBID   TO  JOB-JOBID
+           MOVE    WRK-PARA-SHELLID TO  JOB-SHELLID
            MOVE    CNT-PTINF       TO  JOB-UPDCNT
       *
            CALL    "ORCSJOB"       USING

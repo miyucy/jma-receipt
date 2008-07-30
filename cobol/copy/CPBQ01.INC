@@ -47,5 +47,7 @@
            03  BQ01-SRYYM              PIC 9(06).
       *    Æþ³°¶èÊ¬
            03  BQ01-NYUGAIKBN          PIC X(01).
+      *    Ï¢·È¶èÊ¬
+           03  BQ01-LNKKBN             PIC X(01).
       *    SQL
            03  BQ01-SQL                PIC X(15000).

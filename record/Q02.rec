@@ -12,6 +12,9 @@ Q02	{
 		B09	{
 			state	int;
 		};
+		B09S	{
+			state	int;
+		};
 		B10	{
 			state	int;
 		};
@@ -21,7 +24,7 @@ Q02	{
 		B12	{
 			state	int;
 		};
-		B24	{
+		B12S	{
 			state	int;
 		};
 		HYODAI	{

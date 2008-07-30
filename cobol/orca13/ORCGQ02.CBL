@@ -119,6 +119,7 @@
            03  IDX5                                PIC 9(05).
            03  IDX-LEN                             PIC 9(05).
            03  IDX-GMN                             PIC 9(05).
+           03  IDX-JOBID                           PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -240,6 +241,8 @@
                VALUE   2.
            03  CONST-JOB-SHELLID                   PIC X(08)
                VALUE   "ORCBQ01".
+           03  CONST-BTPARA-SHELLID-LNK01          PIC X(08)
+               VALUE   "ORCBQL01".
            03  CONST-RECE-MAX      PIC 9(05)   VALUE 500.
            03  CONST-LINE-MAX      PIC 9(05)   VALUE 200.
       *
@@ -709,6 +712,7 @@
            MOVE    SPA-SYSYMD          TO  BQ01-KJYNYMD
            MOVE    SPA-Q02-Q03-SRYYM   TO  BQ01-SRYYM
            MOVE    SPA-Q02-Q03-NYUGAIKBN TO BQ01-NYUGAIKBN
+           MOVE    SPA-Q02-Q03-LNKKBN  TO  BQ01-LNKKBN
       *
       *     PERFORM 3101-SQL-EDIT-SEC
            INITIALIZE  QSUB02-LNK
@@ -746,6 +750,13 @@
       *    IDは検索結果印刷に併せる
            MOVE    CONST-JOB-SHELLID
                                    TO  SHELLTBL-ARG9
+           IF    ( SPA-Q02-Q03-LNKKBN  =   "1" )
+               MOVE    CONST-JOB-SHELLID
+                                   TO  SHELLTBL-ARG10
+           ELSE
+               MOVE    CONST-BTPARA-SHELLID-LNK01
+                                   TO  SHELLTBL-ARG10
+           END-IF
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -1207,8 +1218,9 @@
       *    次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 210-TUGI-PAGE-SEC
-      *    明細書連携
+      *    他業務連携
                WHEN    "CLICKED"       ALSO    "B09"
+               WHEN    "CLICKED"       ALSO    "B09S"
                    PERFORM 480-Q03-SENI-SEC
       *    情報削除
                WHEN    "CLICKED"       ALSO    "B10"
@@ -1220,7 +1232,7 @@
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 480-PRINT-KAKUNIN-SEC
       *    処理確認画面
-               WHEN    "CLICKED"       ALSO    "B24"
+               WHEN    "CLICKED"       ALSO    "B12S"
                    PERFORM 490-KAKUNIN-SEC
            END-EVALUATE
       *
@@ -1706,6 +1718,12 @@
            MOVE    SPACE           TO  SPA-Q02-Q03-SENI-AREA
            INITIALIZE                  SPA-Q02-Q03-SENI-AREA
       *
+           IF    ( WRK-MCP-WIDGET  =   "B09" )
+               MOVE    "1"         TO  SPA-Q02-Q03-LNKKBN
+           ELSE
+               MOVE    "2"         TO  SPA-Q02-Q03-LNKKBN
+           END-IF
+      *
            MOVE    SPA-Q01-NYUGAIKBN
                                    TO  SPA-Q02-Q03-NYUGAIKBN
            EVALUATE    TRUE
@@ -2008,8 +2026,9 @@
            END-IF
       *
            MOVE    WIDGET-NORMAL           TO  Q02-B10-STATE
-                                               Q02-B24-STATE
+                                               Q02-B12S-STATE
                                                Q02-B09-STATE
+                                               Q02-B09S-STATE
       *    検索結果件数がゼロ件でない場合はボタンを活性にする
            IF  ( SPA-GMN-Q02-TOTAL-NUM     >   ZERO )
                MOVE    WIDGET-NORMAL       TO  Q02-B05-STATE
@@ -2024,6 +2043,7 @@
                                                Q02-B06-STATE
                                                Q02-B07-STATE
                                                Q02-B09-STATE
+                                               Q02-B09S-STATE
                                                Q02-B11-STATE
                                                Q02-B12-STATE
            END-IF
@@ -2459,51 +2479,32 @@
       *
            MOVE    ZERO            TO  FLG-JOBEND
       *
-      *    ジョブ管理チェック処理
-           MOVE    "CHK"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    CONST-JOBID     TO  JOB-JOBID
-           MOVE    CONST-JOB-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           CALL    "ORCSJOB"       USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
-                                       SPA-AREA
-           IF    ( SJOBKANRI-RETURN    =   ZERO )
-               IF    ( JOB-ENDYMD      =   SPACE )
-                   MOVE    ZERO        TO  FLG-JOBEND
-               ELSE
-                   MOVE    1           TO  FLG-JOBEND
-               END-IF
-           ELSE
-                   MOVE    2           TO  FLG-JOBEND
-           END-IF
+           PERFORM VARYING IDX-JOBID   FROM    1   BY  1
+                   UNTIL ( IDX-JOBID       >   CONST-JOBID2 )
+                    OR   ( FLG-JOBEND  NOT =   ZERO )
       *
-           IF    ( FLG-JOBEND      =   ZERO )
-               CONTINUE
-           ELSE
       *        ジョブ管理チェック処理
                MOVE    "CHK"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
-               MOVE    CONST-JOBID2    TO  JOB-JOBID
+               MOVE    IDX-JOBID       TO  JOB-JOBID
                MOVE    CONST-JOB-SHELLID
                                        TO  JOB-SHELLID
                MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                CALL    "ORCSJOB"       USING
-                                           ORCSJOBKANRIAREA
-                                           JOBKANRI-REC
-                                           SPA-AREA
-               IF    ( SJOBKANRI-RETURN    =   ZERO )
-                   IF    ( JOB-ENDYMD      =   SPACE )
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
+                                       SPA-AREA
+               IF    ( SJOBKANRI-RETURN =  ZERO )
+                   IF    ( JOB-ENDYMD  =   SPACE )
                        MOVE    ZERO    TO  FLG-JOBEND
                    ELSE
                        MOVE    1       TO  FLG-JOBEND
                    END-IF
                ELSE
-                       MOVE    2       TO  FLG-JOBEND
+                   MOVE    2           TO  FLG-JOBEND
                END-IF
-           END-IF
+      *
+           END-PERFORM
       *
            .
        900-JOBKANRI-CHK-EXT.

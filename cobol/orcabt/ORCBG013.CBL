@@ -88,7 +88,9 @@ grpsys*DD  03  FILLER                      PIC X(04)   VALUE   ".dat".
            03  FLG-PTNUM                           PIC 9(01).
            03  FLG-PTINF                           PIC 9(01).
            03  FLG-SYSKANRI                        PIC 9(01).
+           03  FLG-BTPARA                          PIC 9(01).
            03  FLG-LOOPEND                         PIC 9(01).
+           03  FLG-TARGET                          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -156,6 +158,14 @@ grpsys     03  RECEERR                             PIC X(100).
                05  WRK-FILEMEI-CD  PIC X(06).
            03  WRK-SRYYMD                          PIC X(08).
       *
+       01  CONST-AREA.
+           03  CONST-BTPARA-SHELLID        PIC X(08)
+                                           VALUE   "ORCBQL01".
+           03  CONST-BTPARA-JOBID          PIC 9(07)
+                                           VALUE   2.
+           03  CONST-BTPARA-DSP-RENNUM     PIC 9(03)
+                                           VALUE   2.
+      *
        01  ERR-EDIT-AREA.
            03  ERR-PTID                            PIC 9(10).
            03  ERR-PTNUM                           PIC X(20).
@@ -206,6 +216,11 @@ grpsys     03  RECEERR                             PIC X(100).
            COPY    "CPPARA.INC".
            COPY    "CPSYUPARA01.INC".
            COPY    "CPSYUPARA02.INC".
+      *
+      *    パラメタ
+       01  BTPARA-REC.
+           COPY    "CPBTPARA.INC".
+           COPY    "CPQTOANY.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -468,11 +483,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *
            EVALUATE    WRK-PARA-PTNUM
       *    外来全患者
            WHEN    SPACE
                PERFORM 210-GAI-ALL-HEN-SEC
+               IF    ( FLG-END     NOT =   ZERO )
+                   GO  TO  200-MAIN-EXT
+               END-IF
+      *    外来照会連携
+           WHEN    "*"
+               PERFORM 210-QLINK-HEN-SEC
                IF    ( FLG-END     NOT =   ZERO )
                    GO  TO  200-MAIN-EXT
                END-IF
@@ -491,7 +511,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    会計カード編集処理−外来対象診療年月全患者−
+      *    −外来対象診療年月全患者−
       *****************************************************************
        210-GAI-ALL-HEN-SEC             SECTION.
       *
@@ -519,8 +539,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            CLOSE   BG01301-FILE
       *
            OPEN    I-O     BG01301-FILE
-      *
-           MOVE    ZERO            TO  FLG-SYUNOU
       *
            PERFORM 900-SYUNOU-KEY52-SEL-SEC
       *
@@ -559,6 +577,65 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            .
        2101-BG01301-OUT-EXT.
+           EXIT.
+      *****************************************************************
+      *    −照会連携−
+      *****************************************************************
+       210-QLINK-HEN-SEC           SECTION.
+      *
+      *    処理対象患者ファイル出力処理
+           PERFORM 2102-BG01301-OUT-SEC
+      *
+           IF    ( FLG-END         =   ZERO )
+      *        外来月別請求書編集処理
+               PERFORM 2101-TUKISKY-HEN-SEC
+           END-IF
+      *
+           .
+       210-QLINK-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    処理対象患者ファイル出力処理
+      *****************************************************************
+       2102-BG01301-OUT-SEC              SECTION.
+      *
+           OPEN    OUTPUT  BG01301-FILE
+      *
+           PERFORM 900-BTPARA-KEY8-SEL-SEC
+           MOVE    BTPARA-INFO-PARA
+                                   TO  QTOANY-AREA
+      *
+           PERFORM UNTIL ( FLG-BTPARA  NOT =   ZERO )
+      *
+               MOVE    1           TO  FLG-TARGET
+      *
+               MOVE    QTOANY-PTID TO  WRK-PTID
+               PERFORM 900-PTINF-KEY-SEL-SEC
+               IF    ( PTINF-TSTPTNUMKBN     = "1" )
+                   MOVE    ZERO    TO  FLG-TARGET
+               END-IF
+      *
+               IF    ( FLG-TARGET  =   1 )
+                   INITIALIZE          BG01301-REC
+                   MOVE    QTOANY-PTNUM    TO  BG01301-PTNUM
+                   MOVE    QTOANY-PTID     TO  BG01301-PTID
+                   WRITE   BG01301-REC
+               END-IF
+      *
+               PERFORM 900-BTPARA-KEY8-FET-SEC
+               MOVE    BTPARA-INFO-PARA
+                                   TO  QTOANY-AREA
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_btpara"    TO  MCP-TABLE
+           MOVE    "key8"          TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           CLOSE   BG01301-FILE
+      *
+           .
+       2102-BG01301-OUT-EXT.
            EXIT.
       *****************************************************************
       *    患者情報エラー編集処理
@@ -1238,6 +1315,8 @@ grpsys     MOVE    BG01301PARA     TO  IF-FILENAME
       *****************************************************************
        900-SYUNOU-KEY52-SEL-SEC        SECTION.
       *
+           MOVE    ZERO            TO  FLG-SYUNOU
+      *
            INITIALIZE                  SYUNOU-REC
 grpsys*DD  MOVE    SPA-HOSPID      TO  SYU-HOSPID
 grpsys     MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
@@ -1269,6 +1348,8 @@ grpsys     END-STRING
       *****************************************************************
        900-SYUNOU-KEY52-FET-SEC        SECTION.
       *
+           MOVE    ZERO            TO  FLG-SYUNOU
+      *
            MOVE    "tbl_syunou"    TO  MCP-TABLE
            MOVE    "key52"         TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
@@ -1280,6 +1361,56 @@ grpsys     END-STRING
       *
            .
        900-SYUNOU-KEY52-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    バッチパラメタ検索処理
+      *****************************************************************
+       900-BTPARA-KEY8-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BTPARA
+      *
+           INITIALIZE                  BTPARA-REC
+           MOVE    SPA-HOSPNUM     TO  BTPARA-HOSPNUM
+           MOVE    CONST-BTPARA-SHELLID
+                                   TO  BTPARA-SHELLID
+           MOVE    CONST-BTPARA-JOBID
+                                   TO  BTPARA-JOBID
+           MOVE    CONST-BTPARA-DSP-RENNUM
+                                   TO  BTPARA-DSP-RENNUM
+      *
+           MOVE    BTPARA-REC      TO  MCPDATA-REC
+           MOVE    "tbl_btpara"    TO  MCP-TABLE
+           MOVE    "key8"          TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  BTPARA-REC
+           ELSE
+               INITIALIZE              BTPARA-REC
+               MOVE    1           TO  FLG-BTPARA
+           END-IF
+      *
+           .
+       900-BTPARA-KEY8-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    バッチパラメタ検索処理
+      *****************************************************************
+       900-BTPARA-KEY8-FET-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-BTPARA
+      *
+           MOVE    "tbl_btpara"    TO  MCP-TABLE
+           MOVE    "key8"          TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  BTPARA-REC
+           ELSE
+               INITIALIZE              BTPARA-REC
+               MOVE    1           TO  FLG-BTPARA
+           END-IF
+      *
+           .
+       900-BTPARA-KEY8-FET-EXT.
            EXIT.
       *****************************************************************
       *    システム管理検索処理(KEY2)

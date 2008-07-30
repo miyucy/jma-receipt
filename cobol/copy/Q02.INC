@@ -21,10 +21,11 @@
               04  Q02-B06-STATE                PIC S9(9)   BINARY.
               04  Q02-B07-STATE                PIC S9(9)   BINARY.
               04  Q02-B09-STATE                PIC S9(9)   BINARY.
+              04  Q02-B09S-STATE               PIC S9(9)   BINARY.
               04  Q02-B10-STATE                PIC S9(9)   BINARY.
               04  Q02-B11-STATE                PIC S9(9)   BINARY.
               04  Q02-B12-STATE                PIC S9(9)   BINARY.
-              04  Q02-B24-STATE                PIC S9(9)   BINARY.
+              04  Q02-B12S-STATE               PIC S9(9)   BINARY.
               04  Q02-HYODAI                   PIC X(100).
               04  Q02-JYOKEN1                  PIC X(100).
               04  Q02-JYOKEN2                  PIC X(100).

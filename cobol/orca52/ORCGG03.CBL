@@ -643,18 +643,23 @@
                    GO  TO  41012-PARA-NAIYO-CHK-EXT
                END-IF
            WHEN    "PTNUM"
-               INITIALIZE                  ORCSPTNUMAREA
-               MOVE    SPA-GMN-G03-PARA (IDXA)
+               IF    ( SPA-GMN-G03-PARA (IDXA)    =   "*" or "¡ö" )
+                   MOVE    "*"         TO  SPA-NAI-G03-HENPARA (IDXA)
+                                           SPA-GMN-G03-PARA (IDXA)
+               ELSE
+                   INITIALIZE                  ORCSPTNUMAREA
+                   MOVE    SPA-GMN-G03-PARA (IDXA)
                                        TO  SPTNUM-PTNUM
-               CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
-                                                   SPA-AREA
-               IF    ( SPTNUM-RC       NOT =   20 )
-                   MOVE    SPTNUM-PTNUM
+                   CALL    "ORCSPTNUM" USING   ORCSPTNUMAREA
+                                               SPA-AREA
+                   IF    ( SPTNUM-RC       NOT =   20 )
+                       MOVE    SPTNUM-PTNUM
                                        TO  SPA-NAI-G03-HENPARA (IDXA)
                                            SPA-GMN-G03-PARA    (IDXA)
-               ELSE
-                   MOVE    "0002"      TO  SPA-ERRCD
-                   GO  TO  41012-PARA-NAIYO-CHK-EXT
+                   ELSE
+                       MOVE    "0002"      TO  SPA-ERRCD
+                       GO  TO  41012-PARA-NAIYO-CHK-EXT
+                   END-IF
                END-IF
            WHEN    OTHER
                MOVE    SPA-GMN-G03-PARA (IDXA)

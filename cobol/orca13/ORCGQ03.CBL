@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 患者照会
-      *  コンポーネント名  : 明細書連携確認画面（Ｑ０３）
+      *  コンポーネント名  : 他業務連携確認画面（Ｑ０３）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/06/11    MCC−太田     新規作成
@@ -194,18 +194,22 @@
       *
            INITIALIZE                      SPA-Q03
       *
-           PERFORM 3101-COMBO-SYOKI-SEC
-      *
            MOVE    212                     TO  SPA-GMN-Q03-CUR
       *
-           MOVE    SPA-Q02-Q03-SRYYM       TO  WRK-SYMD
-           PERFORM 800-NENGETU-HEN-SEC
-           MOVE    WRK-HENYMDG             TO  SPA-GMN-Q03-SRYYM
-           MOVE    WRK-SYMD                TO  SPA-NAI-Q03-SRYYM
+           IF    ( SPA-Q02-Q03-LNKKBN      =   "1" )
+               PERFORM 3101-COMBO-SYOKI-SEC
       *
-           MOVE    SPA-Q02-Q03-NYUGAIKBN   TO  WRK-CMB-CD
-           PERFORM 4200-NYUGAIKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM             TO  SPA-GMN-Q03-NYUGAIKBN-G
+               MOVE    SPA-Q02-Q03-SRYYM   TO  WRK-SYMD
+               PERFORM 800-NENGETU-HEN-SEC
+               MOVE    WRK-HENYMDG         TO  SPA-GMN-Q03-SRYYM
+               MOVE    WRK-SYMD            TO  SPA-NAI-Q03-SRYYM
+      *
+               MOVE    SPA-Q02-Q03-NYUGAIKBN
+                                           TO  WRK-CMB-CD
+               PERFORM 4200-NYUGAIKBNLST-CHK-SEC
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-Q03-NYUGAIKBN-G
+      *
+           END-IF
       *
            .
        300-SCREEN-EXT.
@@ -298,14 +302,16 @@
       *    画面をＳＰＡにセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-      *        診療年月チェック
-               PERFORM 4100-SRYYM-CHK-SEC
-           END-IF
+           IF    ( SPA-Q02-Q03-LNKKBN      =   "1" )
+               IF    ( SPA-ERRCD   =   SPACE )
+      *            診療年月チェック
+                   PERFORM 4100-SRYYM-CHK-SEC
+               END-IF
       *
-           IF    ( SPA-ERRCD   =   SPACE )
-      *        入外区分チェック
-               PERFORM 4100-NYUGAIKBN-CHK-SEC
+               IF    ( SPA-ERRCD   =   SPACE )
+      *            入外区分チェック
+                   PERFORM 4100-NYUGAIKBN-CHK-SEC
+               END-IF
            END-IF
       *
            .
@@ -465,8 +471,15 @@
            INITIALIZE                  Q03
       *
            MOVE    "3101"                  TO  Q03-ID1CODE
-           MOVE    "個別明細書連携データを作成します"
+      *
+           IF    ( SPA-Q02-Q03-LNKKBN      =   "1" )
+               MOVE    "明細書連携データを作成します"
                                            TO  Q03-ID1MSG
+               MOVE    "診療年月"          TO  Q03-LBLSRYYM
+           ELSE
+               MOVE    "月次統計連携データを作成します"
+                                           TO  Q03-ID1MSG
+           END-IF
       *
            MOVE    SPA-GMN-Q03-SRYYM       TO  Q03-SRYYM
       *
@@ -481,10 +494,33 @@
                                                                 (IDX1)
            END-PERFORM
       *
+      *    項目状態編集
+           PERFORM 5001-GMNHEN-STATE-SEC
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
        500-GMNHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    画面項目状態編集処理
+      *****************************************************************
+       5001-GMNHEN-STATE-SEC           SECTION.
+      *
+           MOVE    WIDGET-NORMAL           TO  Q03-SRYYM-STATE
+                                               Q03-NYUGAIKBN-STATE
+                                               Q03-NYUGAIKBN-ITEM-STATE
+           IF    ( SPA-Q02-Q03-LNKKBN      =   "1" )
+               CONTINUE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  Q03-SRYYM-STATE
+                                               Q03-NYUGAIKBN-STATE
+                                               Q03-NYUGAIKBN-ITEM-STATE
+           END-IF
+      *
+           .
+       5001-GMNHEN-STATE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -496,6 +532,8 @@
                   (SPA-GMN-Q03-CUR    =   ZERO )
                PERFORM 5011-INPUT-CUR-SEC
            END-IF
+      *
+           PERFORM 5012-SKIP-CUR-SEC
       *
            EVALUATE    SPA-GMN-Q03-CUR
            WHEN   001
@@ -526,6 +564,27 @@
            .
       *
        5011-INPUT-CUR-EXT.
+           EXIT.
+      *****************************************************************
+      *    カーソルスキップ処理
+      *****************************************************************
+       5012-SKIP-CUR-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-Q03-CUR =   1   )
+               IF  ( Q03-SRYYM-STATE   =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-Q03-CUR =   2
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-Q03-CUR =   2   )
+               IF  ( Q03-NYUGAIKBN-STATE   =   WIDGET-INSENSITIVE )
+                   COMPUTE SPA-GMN-Q03-CUR =   212
+               END-IF
+           END-IF
+      *
+           .
+      *
+       5012-SKIP-CUR-EXT.
            EXIT.
       *****************************************************************
       *    エラーメッセージ表示理

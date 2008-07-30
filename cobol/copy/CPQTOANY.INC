@@ -15,19 +15,19 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-        02  Q03.
-            03  Q03-FIXED1.
-              04  Q03-ID1CODE         PIC X(10).
-              04  Q03-ID1MSG          PIC X(80).
-              04  Q03-LBLSRYYM        PIC X(10).
-              04  Q03-SRYYM           PIC X(10).
-              04  Q03-SRYYM-STATE     PIC S9(9)   BINARY.
-              04  Q03-CMB-NYUGAIKBN.
-                  05  Q03-NYUGAIKBN   PIC X(12).
-                  05  Q03-NYUGAIKBN-STATE     PIC S9(9)   BINARY.
-                  05  Q03-CMB-NYUGAIKBN-COUNT
-                                      PIC S9(9)   BINARY.
-                  05  Q03-CMB-NYUGAIKBN-ITEM
-                                      PIC X(12)   OCCURS  2.
-                  05  Q03-NYUGAIKBN-ITEM-STATE
-                                      PIC S9(9)   BINARY.
+      ************************************************************
+      *    照会連携データ                                        *
+      ************************************************************
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ************************************************************
+       01  QTOANY-AREA.
+           03  QTOANY-SRYYM            PIC X(06).
+           03  QTOANY-NYUGAIKBN        PIC X(01).
+           03  QTOANY-CREYMD           PIC X(08).
+           03  QTOANY-CREHMS           PIC X(06).
+           03  QTOANY-PTINF-CNT        PIC 9(08).
+           03  QTOANY-PTID             PIC 9(10).
+           03  QTOANY-PTNUM            PIC X(20).
+      *

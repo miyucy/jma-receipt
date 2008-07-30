@@ -657,6 +657,12 @@
                            15  SPA-GMN-Q03-NYUGAIKBNFLL PIC X(01).
                            15  SPA-GMN-Q03-NYUGAIKBNMEIL
                                                        PIC X(10).
+                   07  SPA-GMN-Q03-GYOUMLST-G.
+                       13  SPA-GMN-Q03-GYOUMLST-MAX    PIC 9(05).
+                       13  SPA-GMN-Q03-GYOUMLST        OCCURS  2.
+                           15  SPA-GMN-Q03-GYOUML      PIC X(01).
+                           15  SPA-GMN-Q03-GYOUMFLL    PIC X(01).
+                           15  SPA-GMN-Q03-GYOUMMEIL   PIC X(20).
                05  SPA-Q03-NAI-AREA.
                    07  SPA-NAI-Q03-SRYYM               PIC X(08).
       *
@@ -958,6 +964,8 @@
                    07  SPA-Q02-Q03-SRYYM               PIC  X(08).
       *            Æþ³°¶èÊ¬
                    07  SPA-Q02-Q03-NYUGAIKBN           PIC  X(01).
+      *            Ï¢·È¶èÊ¬
+                   07  SPA-Q02-Q03-LNKKBN              PIC  X(1).
       *            Ìá¤ë¡¿£Ï£Ë¥Õ¥é¥°(O)
                    07  SPA-Q02-Q03-RTOK-FLG            PIC  9(01).
       *        Q01¢«¢ªQ96Á«°Ü¾ðÊó
