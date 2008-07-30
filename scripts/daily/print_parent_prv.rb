@@ -18,7 +18,7 @@
 # (2007/05/31 ) グループ診療対応(hospnum追加)
 # (2007/06/19 ) 労災枠なし対応
 # (2007/12/27 ) patch-lib 対応
-# (2008/07/29 ) 労災枠なし対応
+# (2008/07/30 ) 労災、自賠枠なし対応
 #
 
 # ※複数のプロセスの実行はできない
@@ -436,7 +436,7 @@ end
 			ls_w1 = 'HCN51P.red'
 			red_file = std_form + ls_w1
    			puts 'rousai hit!!'
-#   -----------> 労災分(2008/7/29)
+#   -----------> 労災分(2008/7/30)
 		when	'HCM22V05.red'
 			ls_w1 = 'HCM22V05P.red'
 			red_file = std_form + ls_w1
@@ -500,6 +500,31 @@ end
 			ls_w1 = 'HCN54.red'
 			red_file = std_form + ls_w1
    			puts 'jibai hit!!'
+#   -----------> 自賠分(2008/7/30)
+		when	'HCM23V05.red'
+			ls_w1 = 'HCM48V01.red'
+			red_file = std_form + ls_w1
+		when	'HCM29V03.red'
+			ls_w1 = 'HCM49V01.red'
+			red_file = std_form + ls_w1
+		when	'HCM53V01.red'
+			ls_w1 = 'HCM54V01.red'
+			red_file = std_form + ls_w1
+		when	'HCM29V03.red'
+			ls_w1 = 'HCM49V01.red'
+			red_file = std_form + ls_w1
+		when	'HCM23V05.red'
+			ls_w1 = 'HCN48V01.red'
+			red_file = std_form + ls_w1
+		when	'HCM29V03.red'
+			ls_w1 = 'HCM49V01.red'
+			red_file = std_form + ls_w1
+		when	'HCN53V01.red'
+			ls_w1 = 'HCN54V01.red'
+			red_file = std_form + ls_w1
+		when	'HCM29V03.red'
+			ls_w1 = 'HCM49V01.red'
+			red_file = std_form + ls_w1
 		end
 	end
 #   労災の枠なし帳票をスイッチする ed
