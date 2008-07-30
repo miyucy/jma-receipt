@@ -164,3 +164,17 @@ path	key7		{
 		;
 	};
 };
+
+path	key8		{ 	
+	DBSELECT	{
+		DECLARE tbl_btpara_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_btpara
+			WHERE 	HOSPNUM	= :HOSPNUM
+			AND	SHELLID     =   :SHELLID
+			AND	JOBID       =   :JOBID
+			AND	DSP_RENNUM  =   :DSP_RENNUM
+			ORDER	BY	RENNUM
+		;
+	};
+};
