@@ -191,6 +191,9 @@
       *********05  SPA-RSI-HKNKBN          PIC  X(01).
       *保険名称（保険者番号編集）
                05  SPA-HKNCOMBIMEI-60       PIC X(60).
+      *保険組合せ有効期間（入院まとめチェック）
+               05  SPA-COB-TEKSTYMD         PIC X(08).
+               05  SPA-COB-TEKEDYMD         PIC X(08).
       *前回保険組合せ判定用
                05  SPA-HKNCHK-FLG          PIC 9(01).
                05  SPA-HKNCHK-CHK          PIC 9(01).

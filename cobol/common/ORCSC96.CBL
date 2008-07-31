@@ -1012,6 +1012,12 @@
                                        DELIMITED  BY  SPACE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "9038"
+                   STRING  "保険組合せ有効期間外の日が指定されました。"
+                           "日を修正して下さい。"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "9100"
                    STRING  "診療内容が４００行を超えます。"
                            "会計照会で訂正して下さい。"

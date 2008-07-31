@@ -31,6 +31,7 @@
       *  01.00.02    NACL-多々納  06/02/09  MONFUNC 対応
       *                                     退院の翌日入院の対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.03.00    NACL-多々納  08/08/01  保険組合せ期間チェック追加
       *****************************************************************
       *
       *
@@ -69,6 +70,7 @@
            03  FLG-SRYACCT-DEL     PIC 9(01).
       *
            03  FLG-NASI            PIC 9(01).
+           03  FLG-HKN-CHK         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -86,6 +88,8 @@
            03  IDX-S               PIC 9(02).
            03  IDX-E               PIC 9(02).
            03  IDX-TAI             PIC 9(04).
+      *
+           03  IDX-TOU             PIC 9(03).
       *
       *    一時領域
        01  WRK-AREA.
@@ -123,6 +127,13 @@
                     07  WRK-DAY        PIC 9(03)
                                            OCCURS  31.
       *
+           03  WRK-STYMD.
+               05  WRK-STYM.
+                   07  WRK-STYY        PIC 9(04).
+                   07  WRK-STMM        PIC 9(02).
+               05  WRK-STDD            PIC 9(02).
+           03  WRK-HKNERR              PIC X(01).
+      *
       *    投薬日
        01  TBL-TOUYAKU-AREA.
            03  TBL-TOUYAKU-OCC1        OCCURS   3.
@@ -131,11 +142,13 @@
                    07  TBL-TOU-AREA        OCCURS   10.
                        09  TBL-TOU-SRYKA       PIC X(02).
                        09  TBL-TOU-HKNCOMBI    PIC X(04).
+                       09  TBL-TOU-HKNERR      PIC X(01).
                05  TBL-DOKUYAKU-OCC        OCCURS   31.
                    07  TBL-DOK-DAY         PIC 9(01).
                    07  TBL-DOK-AREA        OCCURS   10.
                        09  TBL-DOK-SRYKA       PIC X(02).
                        09  TBL-DOK-HKNCOMBI    PIC X(04).
+                       09  TBL-DOK-HKNERR      PIC X(01).
       *    調剤料
        01  TBL-CHOZAI-AREA.
            03  TBL-CHOZAI-OCC         OCCURS   10.
@@ -170,6 +183,13 @@
                05  TBL-NYU-DAY         PIC 9(01).
                05  TBL-NYU-SRYKA       PIC X(02).
                05  TBL-NYU-HKNCOMBI    PIC X(04).
+      *
+      *    保険組合せ期間
+       01  TBL-HKNCOMBI-AREA.
+           03  TBL-HKNCOMBI-OCC         OCCURS   50.
+               05  TBL-HKNCOMBINUM         PIC X(04).
+               05  TBL-TEKSTYMD            PIC X(08).
+               05  TBL-TEKEDYMD            PIC X(08).
       *
       *
       *****************************************************************
@@ -274,6 +294,8 @@
       *
       *    入院・外泊の編集
            PERFORM 200-GAIHAKU-HEN-SEC
+      *    保険組合せの編集
+           PERFORM 200-HKNCOMBI-HEN-SEC
       *
            EVALUATE    ORCSCHO-KBN
       *        通常
@@ -454,13 +476,39 @@
       *****************************************************************
        100111-TOU-SRYKAHEN-SEC             SECTION.
       *
+           MOVE    ZERO                 TO  FLG-HKN-CHK
+           MOVE    WRK-SRYYM            TO  WRK-STYMD(1:6)
+           MOVE    IDX3                 TO  WRK-STYMD(7:2)
+           IF      IDX                  =   IDX1
+      *        翌月
+               COMPUTE WRK-STMM         =   WRK-STMM   +   1
+               IF      WRK-STMM         >   12
+                   COMPUTE WRK-STYY         =   WRK-STYY   +   1
+                   MOVE    1                TO  WRK-STMM
+               END-IF
+           END-IF
+           PERFORM VARYING     IDX-H    FROM    1   BY  1
+                   UNTIL       IDX-H    >   50
+               IF      ACCT-HKNCOMBI    =   TBL-HKNCOMBINUM (IDX-H)
+                   IF     (WRK-STYMD       <   TBL-TEKSTYMD (IDX-H))
+                      OR  (WRK-STYMD       >   TBL-TEKEDYMD (IDX-H))
+                       MOVE    1               TO  FLG-HKN-CHK
+                   END-IF
+                   MOVE    50               TO  IDX-H
+               END-IF
+           END-PERFORM
+      *
            PERFORM VARYING     IDX-T    FROM    1   BY  1
                    UNTIL       IDX-T    >   10
                IF      TBL-TOU-SRYKA (IDX1 IDX3 IDX-T) =   SPACE
                    MOVE    ACCT-SRYKA      TO  TBL-TOU-SRYKA
-                                                       (IDX1 IDX3 IDX-T)
+                                                    (IDX1 IDX3 IDX-T)
                    MOVE    ACCT-HKNCOMBI   TO  TBL-TOU-HKNCOMBI
-                                                       (IDX1 IDX3 IDX-T)
+                                                    (IDX1 IDX3 IDX-T)
+                   IF      FLG-HKN-CHK         =   1
+                       MOVE    "1"             TO  TBL-TOU-HKNERR
+                                                    (IDX1 IDX3 IDX-T)
+                   END-IF
                END-IF
                IF     (TBL-TOU-SRYKA (IDX1 IDX3 IDX-T)
                                                =   ACCT-SRYKA  )   AND 
@@ -485,6 +533,10 @@
                                                        (IDX1 IDX3 IDX-T)
                    MOVE    ACCT-HKNCOMBI   TO  TBL-DOK-HKNCOMBI
                                                        (IDX1 IDX3 IDX-T)
+                   IF      FLG-HKN-CHK         =   1
+                       MOVE    "1"             TO  TBL-DOK-HKNERR
+                                                    (IDX1 IDX3 IDX-T)
+                   END-IF
                END-IF
                IF     (TBL-DOK-SRYKA (IDX1 IDX3 IDX-T)
                                                =   ACCT-SRYKA  )   AND 
@@ -792,6 +844,57 @@
        200-GAIHAKU-HEN-EXT.
            EXIT.
       *****************************************************************
+      *    保険組合せの編集処理
+      *****************************************************************
+       200-HKNCOMBI-HEN-SEC             SECTION.
+      *
+           INITIALIZE                  TBL-HKNCOMBI-AREA
+      *    保険組合マスター編集
+           MOVE    SPACE               TO  HKNCOMBI-REC
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
+           MOVE    SPA-PTID            TO  COMB-PTID
+      *
+           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-HKNCOMBI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HKNCOMBI
+               INITIALIZE                  HKNCOMBI-REC
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM
+               UNTIL      (FLG-HKNCOMBI        =   1      )  OR
+                          (IDX                 >=  50     )
+      *        対象の保険組合せのみ編集
+               IF     (COMB-DELKBN     NOT =   "1"   )  AND
+                     ((SPA-SRYYMD(1:6)     >=  COMB-TEKSTYMD(1:6))
+                  AND (SPA-SRYYMD(1:6)     <=  COMB-TEKEDYMD(1:6)))
+                   ADD     1               TO  IDX
+                   MOVE    COMB-HKNCOMBINUM    TO  TBL-HKNCOMBINUM
+                                                               (IDX)
+                   MOVE    COMB-TEKSTYMD       TO  TBL-TEKSTYMD
+                                                               (IDX)
+                   MOVE    COMB-TEKEDYMD       TO  TBL-TEKEDYMD
+                                                               (IDX)
+               END-IF
+      *
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-HKNCOMBI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       200-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    入院調剤料と麻毒の確定処理
       *****************************************************************
        300-CHOZAI-HEN-SEC             SECTION.
@@ -1012,15 +1115,29 @@
                GO      TO      4002-TOU-ADD-SYORI-EXT
            END-IF
       *
+      *    保険組合せの期間チェック
+           MOVE    ZERO                TO  IDX-TOU
+           PERFORM VARYING     IDX-T   FROM    1   BY  1
+                   UNTIL      (IDX-T   >   10  )  OR
+                              (TBL-TOU-SRYKA(2 IDX IDX-T)  =  SPACE)
+               IF     (TBL-TOU-HKNCOMBI (2 IDX IDX-T)  NOT =   SPACE)
+               AND    (TBL-TOU-HKNERR (2 IDX IDX-T)    =   SPACE  )
+                   MOVE    IDX-T               TO  IDX-TOU
+                   MOVE    10                  TO  IDX-T
+               END-IF
+           END-PERFORM
+           IF      IDX-TOU             =   ZERO
+               MOVE    1               TO  IDX-TOU
+           END-IF
       *    当日調剤料指定がない時、作成へ
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   10  )
                IF      TBL-CHO-ZAINUM(IDX2)    =   ZERO
                    MOVE    "1"                 TO  TBL-CHO-ADD (IDX2)
       *            当日入力の科・保険で作成する
-                   MOVE    TBL-TOU-SRYKA   (2 IDX 1)
+                   MOVE    TBL-TOU-SRYKA   (2 IDX IDX-TOU)
                                            TO  TBL-CHO-SRYKA(IDX2)
-                   MOVE    TBL-TOU-HKNCOMBI(2 IDX 1)
+                   MOVE    TBL-TOU-HKNCOMBI(2 IDX IDX-TOU)
                                            TO  TBL-CHO-HKNCOMBI (IDX2)
                    MOVE    1               TO  TBL-CHO-DAY (IDX2 1 IDX)
                    MOVE    1               TO  TBL-CHO-DAY (IDX2 2 IDX)
@@ -1110,15 +1227,29 @@
                GO      TO      4004-MAD-ADD-SYORI-EXT
            END-IF
       *
+      *    保険組合せの期間チェック
+           MOVE    ZERO                TO  IDX-TOU
+           PERFORM VARYING     IDX-T   FROM    1   BY  1
+                   UNTIL      (IDX-T   >   10  )  OR
+                              (TBL-DOK-SRYKA(2 IDX IDX-T)  =  SPACE)
+               IF     (TBL-DOK-HKNCOMBI (2 IDX IDX-T)  NOT =   SPACE)
+               AND    (TBL-DOK-HKNERR (2 IDX IDX-T)    =   SPACE  )
+                   MOVE    IDX-T               TO  IDX-TOU
+                   MOVE    10                  TO  IDX-T
+               END-IF
+           END-PERFORM
+           IF      IDX-TOU             =   ZERO
+               MOVE    1               TO  IDX-TOU
+           END-IF
       *    当日調剤料指定がない時、作成へ
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   10  )
                IF      TBL-MAD-ZAINUM(IDX2)    =   ZERO
                    MOVE    "1"                 TO  TBL-MAD-ADD (IDX2)
       *            当日入力の科・保険で作成する
-                   MOVE    TBL-DOK-SRYKA(2 IDX 1)
+                   MOVE    TBL-DOK-SRYKA(2 IDX IDX-TOU)
                                            TO  TBL-MAD-SRYKA(IDX2)
-                   MOVE    TBL-DOK-HKNCOMBI(2 IDX 1)
+                   MOVE    TBL-DOK-HKNCOMBI(2 IDX IDX-TOU)
                                            TO  TBL-MAD-HKNCOMBI (IDX2)
                    MOVE    1               TO  TBL-MAD-DAY (IDX2 1 IDX)
                    MOVE    1               TO  TBL-MAD-DAY (IDX2 2 IDX)
@@ -1179,6 +1310,10 @@
                          ( FLG-SRYACCT-DEL     =   1     )
                        PERFORM 40052-SRYACCT-DEL-SEC
                    ELSE
+      *                保険組合せ期間チェック
+                       MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
+                       MOVE    ACCT-DAY-AREA       TO  WRK-DAY-AREA
+                       PERFORM 40054-HKNCOMBI-CHK-SEC
       *
                        MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
                        MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
@@ -1516,6 +1651,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-HKNCOMBI
            MOVE    TBL-CHO-DAY-AREA(IDX)
                                        TO  WRK-DAY-AREA
+      *    保険組合せ期間チェック
+           PERFORM 40054-HKNCOMBI-CHK-SEC
       *    会計照会作成処理
            PERFORM 40052-SRYACCT-INS-SEC
            IF      ORCSCHO-ERRCD   NOT =   ZERO
@@ -1527,6 +1664,59 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        40052-CHOUZAI-INS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ期間チェック処理
+      *****************************************************************
+       40054-HKNCOMBI-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKN-CHK
+           MOVE    SPACE               TO  WRK-HKNERR
+           PERFORM VARYING     IDX-H   FROM    1    BY  1
+                   UNTIL      (IDX-H   >   50  )  OR
+                              (TBL-HKNCOMBINUM (IDX-H)  =   SPACE )
+                         OR   (FLG-HKN-CHK     =   1    )
+                         OR   (WRK-HKNERR  NOT =   SPACE)
+              IF      WRK-HKNCOMBI     =   TBL-HKNCOMBINUM (IDX-H)
+                  MOVE    1            TO  FLG-HKN-CHK
+                  IF     (TBL-TEKSTYMD (IDX-H) (1:6)
+                                           =   ORCSCHO-SRYYM)
+                     OR  (TBL-TEKEDYMD (IDX-H) (1:6)
+                                           =   ORCSCHO-SRYYM)
+                       PERFORM 400541-HKNCOMBI-KIKAN-SEC
+                  END-IF
+              END-IF
+           END-PERFORM
+           IF      FLG-HKN-CHK         =   ZERO
+               MOVE    1                   TO  ORCSCHO-HKNERR
+           END-IF
+           IF      WRK-HKNERR          =   "1"
+               MOVE    1                   TO  ORCSCHO-HKNERR
+           END-IF
+           .
+       40054-HKNCOMBI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険期間チェック処理
+      *****************************************************************
+       400541-HKNCOMBI-KIKAN-SEC         SECTION.
+      *
+           MOVE    ORCSCHO-SRYYM       TO  WRK-STYMD
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               IF      WRK-DAY (1 IDX-D)   NOT =   ZERO
+                   MOVE    IDX-D           TO  WRK-STDD
+                   IF     (WRK-STYMD       <   TBL-TEKSTYMD (IDX-H))
+                      OR  (WRK-STYMD       >   TBL-TEKEDYMD (IDX-H))
+                      MOVE    "1"              TO  WRK-HKNERR
+                      MOVE    31               TO  IDX2
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       400541-HKNCOMBI-KIKAN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1963,6 +2153,23 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        910-PTNYUINRRK-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院履歴マスター読込
+      *****************************************************************
+       910-HKNCOMBI-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
+               MOVE    ZERO            TO  FLG-HKNCOMBI
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    1               TO  FLG-HKNCOMBI
+           END-IF
+      *
+           .
+       910-HKNCOMBI-READ-EXT.
            EXIT.
       *****************************************************************
       *    受診履歴順読み

@@ -60,6 +60,7 @@
       *  04.01.00    NACL-多々納  07/10/22  公務災害追加
       *  04.01.00    NACL-多々納  07/11/27  公害追加
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正
+      *  04.03.00    NACL-多々納  08/08/01  保険組合せ期間チェック処理追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -206,6 +207,8 @@
            03  FLG-RSIHKN-OK       PIC 9(01).
            03  FLG-RSIHKN-OK2      PIC 9(01).
            03  FLG-RRKNUM-ARI      PIC 9(01).
+      *
+           03  FLG-HKN-CHK         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -2082,6 +2085,10 @@
                                        TO  SPA-NAI-TTEKSTYMD  (IDH)
                MOVE    ORCSHKN-NAI-TEKEDYMD (IDX)
                                        TO  SPA-NAI-TTEKEDYMD  (IDH)
+               MOVE    ORCSHKN-GMN-TEKSTYMD (IDX)
+                                       TO  SPA-GMN-TTEKSTYMD  (IDH)
+               MOVE    ORCSHKN-GMN-TEKEDYMD (IDX)
+                                       TO  SPA-GMN-TTEKEDYMD  (IDH)
       *        自賠責・労務災害保険の時、健保準拠かの判定
                IF      ORCSHKN-NAI-RSI-HKNKBN (IDX)    =   "4"
                                                        OR  "5"
@@ -2520,6 +2527,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    ZERO            TO  SPA-NAI-ROUJIN (IDX)
            END-IF
+      *    有効期間判定
+           MOVE    ZERO                TO  FLG-HKN-CHK
+           MOVE    ACCT-SRYYM          TO  WRK-SRYYMD(1:6)
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               IF      ACCT-DAY (1 IDX-D)  NOT =   ZERO
+                   MOVE    IDX-D           TO  WRK-SRYDD
+                   IF     (WRK-SRYYMD      <   COMB-TEKSTYMD)
+                     OR   (WRK-SRYYMD      >   COMB-TEKEDYMD)
+                       MOVE    1           TO  SPA-NAI-HKNCOMBIERR
+                                                                (IDX)
+                       MOVE    1           TO  FLG-HKN-CHK
+                       MOVE    31          TO  IDX-D
+                   END-IF
+               END-IF
+           END-PERFORM
       *
            ADD     1                   TO  IDG
            IF      IDG                 >   400
@@ -2745,6 +2768,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SRY-SRYSYUKBN       TO  SPA-NAI-SRYSYU (IDG)
       *保険組合せ
            MOVE    ACCT-HKNCOMBI       TO  SPA-GMN-THKNCOMBI (IDG)
+      *!!
+      *期間エラー
+           IF      FLG-HKN-CHK         =   1
+               IF      IDG             <   400
+                   MOVE    ALL "#"     TO  SPA-GMN-THKNCOMBI (IDG + 1)
+               END-IF
+           END-IF
       *回数
            PERFORM VARYING    IDK      FROM    1   BY  1
                    UNTIL      IDK      >   31
@@ -3424,6 +3454,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    "red"               TO  J02-NYUINMSG1-STYLE
            MOVE    "red"               TO  J02-NYUINMSG2-STYLE
+      *
+      *    保険組合せ期間
+           MOVE    SPA-GMN-HKNCOMBMSG TO  J02-HKNCOMBMSG-VALUE
+           MOVE    "black"            TO  J02-HKNCOMBMSG-STYLE
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC
@@ -4470,43 +4504,48 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-RSI-SHOBYOYMD
                        MOVE    SPA-NAI-TRSI-JUNKYO (IDH)
                                                TO  SPA-NAI-RSI-JUNKYO
+      *                期間外の日があれば期間編集
+                       IF     (SPA-NAI-TTEKSTYMD (IDH)(1:6)
+                                                   =   SPA-NAI-SRYYM)
+                       OR     (SPA-NAI-TTEKEDYMD (IDH)(1:6)
+                                                   =   SPA-NAI-SRYYM)
+                           PERFORM 410110-HKNCOMBMSG-SEC
+                       ELSE
+                           MOVE    SPACE       TO  SPA-GMN-HKNCOMBMSG
+                       END-IF
                    END-IF
                END-PERFORM
-      *!       MOVE    SPA-GMN-HKNCOMBI    TO  WRK-HKNCOMBI
-      *        PERFORM 510-HKNCOMBI-MEI-SEC
-      *        MOVE    WRK-HKNCOMBIMEI     TO  SPA-GMN-HKNCOMBIMEI
-      *----(01.00.01) LINE ADD START ----------------------------------
-      *        老人判定
-      *        IF     (COMB-KOH1HKNNUM     =   "027"  )  OR
-      *               (COMB-KOH2HKNNUM     =   "027"  )  OR
-      *               (COMB-KOH3HKNNUM     =   "027"  )  OR
-      *               (COMB-KOH4HKNNUM     =   "027"  )  OR
-      *               (SPA-J02-ROUJIN      =   1      )
-      *            MOVE    1               TO  SPA-NAI-ROUJIN
-      *                                               (SPA-NAI-BANGO)
-      *        ELSE
-      *            MOVE    ZERO            TO  SPA-NAI-ROUJIN
-      *                                              (SPA-NAI-BANGO)
-      *        END-IF
-      *        労災・自賠責の場合、老人でも一般とする
-      *        IF      SPA-NAI-HKNKBN      =   1
-      *            MOVE    ZERO            TO  SPA-NAI-ROUJIN
-      *                                              (SPA-NAI-BANGO)
-      *        END-IF
-      *
-      *        MOVE    SPA-NAI-ROUJIN   (SPA-NAI-BANGO)
-      *!                                   TO  SPA-GMN-ROUJIN
-      *----(01.00.01) LINE ADD START ----------------------------------
       *
                MOVE    1                   TO  SPA-IDXZ
       *
-      *******  MOVE    2                   TO  SPA-GMN-CUR
                MOVE    11                  TO  SPA-GMN-CUR
                MOVE    ZERO                TO  SPA-DAY-IDX
            END-IF
       *
            .
        41011-BANGO-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ期間編集処理
+      *****************************************************************
+       410110-HKNCOMBMSG-SEC             SECTION.
+      *
+           IF    ((SPA-NAI-TTEKSTYMD (IDH)(1:6)   =   SPA-NAI-SRYYM)
+              AND (SPA-NAI-TTEKSTYMD (IDH)(7:2)   >   "01"         ))
+           OR    ((SPA-NAI-TTEKEDYMD (IDH)(1:6)   =   SPA-NAI-SRYYM)
+              AND (SPA-NAI-TTEKEDYMD (IDH)(7:2)   <   SPA-SRYMATU ))
+               MOVE    SPACE               TO  SPA-GMN-HKNCOMBMSG
+               STRING  "（"
+                   SPA-GMN-TTEKSTYMD  (IDH)
+                   "〜"
+                   SPA-GMN-TTEKEDYMD  (IDH)
+                   "）"                DELIMITED  BY  SIZE
+                                       INTO    SPA-GMN-HKNCOMBMSG
+               END-STRING
+           END-IF
+           .
+       410110-HKNCOMBMSG-EXT.
            EXIT.
       *
       *****************************************************************
@@ -11911,7 +11950,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    診療会計マスターより編集をする
            PERFORM 410181-SRYACCT-HEN-SEC
-      *
+      *    保険組合せ期間外あり
+           IF      ORCSCHO-HKNERR      =   1
+               MOVE    "K005"              TO  SPA-ERRCD
+           END-IF
            MOVE    1                   TO  SPA-GMN-CUR
            .
        4110-CHOZAI-EXT.
@@ -12786,6 +12828,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "K004"
                    MOVE    "警告！！日上限回数をオーバーしています。"
                                        TO  WRK-ERRMSG
+               WHEN    "K005"
+                   STRING  "警告！！"
+                       "保険組合せ有効期間外の調剤料が算定されました。"
+                       "保険一括変更をして下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-ERRMSG
+                   END-STRING
       *@@
                WHEN    "9009"
                    STRING  "レセプトの４月改正は未対応です。"

@@ -55,6 +55,7 @@
       * 04.01.00     NACL-多々納  07/11/21  器材商品名表示対応
       * 04.01.00     NACL-多々納  07/12/XX  患者禁忌薬剤対応
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
+      * 04.03.00     NACL-多々納  08/08/01  保険組合せ期間チェック追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2464,6 +2465,11 @@
                                        TO  SPA-KOH3HKNNUM
            MOVE    SPA-NAI-KOH4HKNNUM  (IDX)
                                        TO  SPA-KOH4HKNNUM
+      *    有効期間
+           MOVE    SPA-NAI-TEKSTYMD  (IDX)
+                                       TO  SPA-COB-TEKSTYMD
+           MOVE    SPA-NAI-TEKEDYMD  (IDX)
+                                       TO  SPA-COB-TEKEDYMD
       *
       *    労災 四肢区分
            MOVE    SPA-NAI-RSI-SISIKBN (IDX)
@@ -5253,6 +5259,39 @@
                    IF     (SPA-SYORIFLG        =   1   )  AND
                           (IDX             NOT =   WRK-SRYDD)
                        MOVE    "9008"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+      *    保険組合せ期間との日付チェック
+           IF      SPA-COB-TEKSTYMD(1:6)   =   SPA-SRYYMD(1:6)
+               MOVE    SPA-COB-TEKSTYMD(7:2)   TO  WRK-STDD
+           ELSE
+               MOVE    01                      TO  WRK-STDD
+           END-IF
+           IF      SPA-COB-TEKEDYMD(1:6)   =   SPA-SRYYMD(1:6)
+               MOVE    SPA-COB-TEKEDYMD(7:2)   TO  WRK-EDDD
+           ELSE
+               MOVE    SPA-SRYLST-DD           TO  WRK-EDDD
+           END-IF
+           MOVE    SPA-NAI-SRYYMD (7:2)    TO  WRK-SRYDD
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   31  )
+                          OR  (SPA-ERRCD   NOT =   SPACE )
+              IF      LNK-SC97-NYU-DAY (IDX)   NOT =   ZERO
+                   IF     (IDX             >=  WRK-STDD )  AND
+                          (IDX             <=  WRK-EDDD )
+                       CONTINUE
+                   ELSE
+                       MOVE    "9038"          TO  SPA-ERRCD
+                       MOVE    SPACE           TO  SPA-ERRMSG2
+                       STRING  WRK-STDD
+                               "日〜"
+                               WRK-EDDD
+                              "日が当月の有効期間です。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG2
+                       END-STRING
                    END-IF
                END-IF
            END-PERFORM

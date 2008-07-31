@@ -39,6 +39,7 @@
       *  04.01.00    NACL-多々納  07/11/XX  公務災害・公害対応
       *                                     器材商品名コード対応
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
+      *  04.03.00    NACL-多々納  08/08/01  入院調剤料保険期間チェック対応
       *****************************************************************
       *
       *
@@ -221,6 +222,8 @@
            03  WRK-RENNUM              PIC 9(01).
            03  WRK-DOUJI-RENNUM-KEY    PIC 9(01).
            03  WRK-CNT-DOUJI           PIC 9(01).
+      *
+           03  WRK-HKNERR              PIC X(01).
       *
       *    診療行為内容比較用テーブル
        01  TBL-AREA.
@@ -456,6 +459,19 @@
                MOVE    ORCSCNYUIN-ERRMSG  TO  SPA-ERRMSG2
            END-IF
       *
+      *    調剤料保険組合せ期間外作成
+           IF     (SPA-ERRCD           =   SPACE )
+               IF      WRK-HKNERR          =   "1"
+                   STRING  "警告！！"
+                           "保険組合せ有効期間外の入院調剤料が"
+                           "あります。"
+                           "会計照会で保険変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG2
+                   END-STRING
+               END-IF
+           END-IF
+      *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *
            .
@@ -603,6 +619,9 @@
                CALL    "ORCSCHOZAI"        USING
                                            SPA-AREA
                                            ORCSCHOZAIAREA
+               IF      ORCSCHO-HKNERR      NOT =   ZERO
+                   MOVE    ORCSCHO-HKNERR          TO  WRK-HKNERR
+               END-IF
       *
       *        来月の調剤料を算定しなおす
                PERFORM 600-NEXT-CHOZAI-SEC
@@ -729,6 +748,9 @@
            CALL    "ORCSCHOZAI"        USING
                                        SPA-AREA
                                        ORCSCHOZAIAREA
+           IF      ORCSCHO-HKNERR      NOT =   ZERO
+               MOVE    ORCSCHO-HKNERR          TO  WRK-HKNERR
+           END-IF
       *
            .
        600-NEXT-CHOZAI-EXT.
@@ -2246,7 +2268,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    受診履歴削除
            PERFORM 4500114-TEISEI-JYURRKDEL-SEC
-      *    削除の時、受診履歴の連番更新
+      *    受診履歴の連番更新
            IF      SPA-ERRCD           =   SPACE
                IF     (SPA-SRYKA           =   SPA-OLD-SRYKA)
                AND    (SPA-OLD-HKNCOMBI    NOT =   SPA-HKNCOMBINUM  )

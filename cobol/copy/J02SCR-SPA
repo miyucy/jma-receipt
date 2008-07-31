@@ -74,6 +74,7 @@
                                                      OCCURS   31.
                        09  SPA-GMN-HKNCOMBI          PIC X(04).
                        09  SPA-GMN-HKNCOMBIMEI       PIC X(100).
+                       09  SPA-GMN-HKNCOMBMSG        PIC X(36).
                        09  SPA-GMN-FTNRATEMEI        PIC X(10).
                        09  SPA-GMN-BSRYKAMEI         PIC X(12).
       *
@@ -218,6 +219,9 @@
                            11  SPA-NAI-TKOH4HKNNUM     PIC  X(03).
                            11  SPA-NAI-TTEKSTYMD       PIC  X(08).
                            11  SPA-NAI-TTEKEDYMD       PIC  X(08).
+      *                    適用期間
+                           11  SPA-GMN-TTEKSTYMD       PIC  X(09).
+                           11  SPA-GMN-TTEKEDYMD       PIC  X(09).
                        09  SPA-HKN-MAX             PIC  9(04).
       *
       *    保険組合せ一覧画面用
@@ -227,6 +231,7 @@
                05  SPA-J021-ENDFLG             PIC 9(01).
                05  SPA-HKN-NENREI              PIC 9(03).
                05  SPA-J021-KOHCHK             PIC 9(01).
+               05  SPA-J021-KEIFLG             PIC 9(01).
                05  SPA-J021-TBL.
                    07  SPA-J021-TBLREC         OCCURS   40.
                        09  SPA-J021-THKNCOMBI      PIC 9(04).

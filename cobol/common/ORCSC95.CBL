@@ -2892,6 +2892,10 @@
                                        TO  SPA-NAI-KOH3HKNNUM (IDX)
                MOVE    ORCSHKN-NAI-KOH4HKNNUM (IDX)
                                        TO  SPA-NAI-KOH4HKNNUM (IDX)
+               MOVE    ORCSHKN-NAI-TEKSTYMD (IDX)
+                                       TO  SPA-NAI-TEKSTYMD (IDX)
+               MOVE    ORCSHKN-NAI-TEKEDYMD (IDX)
+                                       TO  SPA-NAI-TEKEDYMD (IDX)
       *
                MOVE    ORCSHKN-NAI-FTNRATE (IDX)
                                        TO  SPA-NAI-TFTNRATE (IDX)

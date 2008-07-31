@@ -54,6 +54,7 @@
       *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *  04.01.00    NACL-多々納  07/12/06  公害保険対応
       *  04.03.00    NACL-多々納  08/07/08  お薬手帳発行の連動
+      *  04.03.00    NACL-多々納  08/08/01  入院調剤料保険組合せ期間チェック追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -6443,7 +6444,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
       *
            IF     (SPA-ERRMSG2     NOT =   SPACE  )  AND
-                  (SPA-ERRCD       NOT =   "K001" )
+                  (SPA-ERRCD       NOT =   "K001")
       *        エラー画面２
                PERFORM 5101-KERR2-SET-SEC
                GO      TO      510-ERRSET-EXT

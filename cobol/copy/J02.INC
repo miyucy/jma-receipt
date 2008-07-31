@@ -91,6 +91,9 @@
               03  J02-NYUINMSG2.
                 04  J02-NYUINMSG2-STYLE   PIC X(20).
                 04  J02-NYUINMSG2-VALUE   PIC X(50).
+              03  J02-HKNCOMBMSG.
+                04  J02-HKNCOMBMSG-STYLE   PIC X(20).
+                04  J02-HKNCOMBMSG-VALUE   PIC X(36).
               03  J02-B04.
                 04  J02-B04-STATE   PIC S9(9)   BINARY.
               03  J02-B05.

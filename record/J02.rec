@@ -237,6 +237,10 @@ J02	{
 		    style   varchar(20);
 			value	varchar(50);
 		};
+		HKNCOMBMSG	{
+		        style   varchar(20);
+			value	varchar(36);
+		};
 		B04	{
 	           	state	int;
 		};
