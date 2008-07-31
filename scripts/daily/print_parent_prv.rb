@@ -514,7 +514,7 @@ end
 			ls_w1 = 'HCM49V01.red'
 			red_file = std_form + ls_w1
 		when	'HCM23V05.red'
-			ls_w1 = 'HCN48V01.red'
+			ls_w1 = 'HCM48V01.red'
 			red_file = std_form + ls_w1
 		when	'HCM29V03.red'
 			ls_w1 = 'HCM49V01.red'
