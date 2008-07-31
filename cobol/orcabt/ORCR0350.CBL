@@ -217,6 +217,7 @@
       *  04.02.10    NACL-門脇    08/06/25  全国公費２種の一部負担金等記載対応
       *
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *  04.03.02    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -402,6 +403,7 @@
            03  FLG-CHK                 PIC 9(01).
            03  FLG-PRT                 PIC 9(01).
            03  FLG-KOUI                PIC 9(01).
+           03  FLG-TOYAKUFLG           PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -1784,6 +1786,8 @@
            PERFORM                 UNTIL   FLG-END     =   1
                                    OR      KEY-NEW1
                                                    NOT =   KEY-OLD1
+      *
+               MOVE    ZERO               TO  FLG-TOYAKUFLG
       *
       *        入院会計取得処理（提出先別）
                PERFORM 2001-NYURECEDEN-GET-SEC
@@ -3192,6 +3196,14 @@
       *
       *        明細テーブル退避処理
                PERFORM 20071-ZAI-TAIHI-SEC
+      *
+      *        仮レセデータフラグ設定
+               IF      RECE641-TOYAKUFLG =   SPACE
+                   MOVE    ZERO              TO  FLG-TOYAKUFLG
+               ELSE
+                   MOVE    1                 TO  FLG-TOYAKUFLG
+               END-IF
+      *
       *       摘要データ編集処理
                IF      FLG-END           =   ZERO
                    PERFORM 20074-ZAI-KOUI-SORT-SEC
@@ -4153,7 +4165,8 @@
            IF      RECE65-SRYCD (IDX)  =   WRK-CONS-TEIGEN
                CONTINUE
            ELSE
-               IF      RECE641-YKZTEN    =   ZERO
+               IF    ( RECE641-YKZTEN    =   ZERO  )
+               AND   ( RECE641-TOYAKUFLG =   SPACE )
                    GO  TO  200711-YKZ-TAIHI-EXT
                END-IF
            END-IF
@@ -4347,6 +4360,14 @@
                                            WRK-FUKUSHIFLG-SKJINF-AREA
                    PERFORM 20070-FTNKBN-HENSYU-SEC
                    MOVE    "60"                TO  WRK-SRYKBN
+      *
+      *            仮レセデータフラグ設定
+                   IF      WRK-RECE641-TOYAKUFLG =   SPACE
+                       MOVE    ZERO              TO  FLG-TOYAKUFLG
+                   ELSE
+                       MOVE    1                 TO  FLG-TOYAKUFLG
+                   END-IF
+      *
                    PERFORM VARYING IDZ4    FROM    1   BY  1
                            UNTIL   IDZ4    >       50
                            OR      TBL-KENSA-RECE65-REC  (IDZ3 IDZ4)
@@ -6824,8 +6845,13 @@
       *          
       *    キー編集処理
            PERFORM 50011-KEY-HENSYU-SEC
-      *          
-           MOVE    "1"                 TO  RECEDEN-RECKBN
+      *
+      *    仮レセ（院外処方含む）かどうかの区分設定
+           IF      FLG-TOYAKUFLG       =   ZERO
+               MOVE    "1"                 TO  RECEDEN-RECKBN
+           ELSE
+               MOVE    "9"                 TO  RECEDEN-RECKBN
+           END-IF
            MOVE    WRK-RENNUM          TO  RECEDEN-RENNUM
            MOVE    WRK-PARA-SYSYMD     TO  RECEDEN-CREYMD
            IF      FLG-TOTALTEN        =   1

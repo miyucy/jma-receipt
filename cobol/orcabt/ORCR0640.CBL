@@ -865,7 +865,6 @@
                05  WRK-PARA-SYSYMD                     PIC X(08).
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
-           03  WRK-PARA-PRTKBN                         PIC X(01).
            03  WRK-PARA-HOSPNUM                        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD                          PIC X(08).
@@ -1483,7 +1482,6 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
-                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -2500,8 +2498,7 @@
                                IF ( ACCT-SRYKBN  =  "11" OR "14" OR
                                                     "33" OR "99" OR
                                                     "90" OR "92" )
-                               OR ((WRK-PARA-PRTKBN
-                                                 =  "2"          ) AND
+                               OR ((RECE62-SRYYM >= 200804       ) AND
                                    (ACCT-SRYKBN  =  "21" OR "22" OR
                                                     "23"        ))
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1 OR

@@ -47,6 +47,8 @@
       *                                     広域連合対応
       *                                     診療区分６４を６０に変更
       *  04.02.02    NACL-藤原    08/04/10  レセ電用入院料加算フラグ追加
+      *
+      *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -390,7 +392,8 @@
            MOVE    RECE64-KNSJISGRPKBN TO  RECE641-KNSJISGRPKBN
            MOVE    RECE64-KNSJISKBN    TO  RECE641-KNSJISKBN
            MOVE    RECE64-DAY-AREA     TO  RECE641-DAY-AREA
-           MOVE    RECE641-NYUKSNFLG   TO  RECE641-NYUKSNFLG
+           MOVE    RECE64-NYUKSNFLG    TO  RECE641-NYUKSNFLG
+           MOVE    RECE64-TOYAKUFLG    TO  RECE641-TOYAKUFLG
       *
            WRITE   RECE641-REC
            ADD     1                   TO  CNT-OUT

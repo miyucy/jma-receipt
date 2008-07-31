@@ -497,17 +497,6 @@
            DISPLAY "ORCR0030 start = [" WRK-ARG "]"
            CALL    "ORCR0030"          USING
                                        WRK-ARG
-      *
-           MOVE     SPACE       TO WRK-ARG
-           STRING   WRK-PARA2      DELIMITED   BY  SIZE
-                    ","            DELIMITED   BY  SIZE
-                    WRK-PARA-HOSPNUM
-                                   DELIMITED   BY  SIZE
-                    ","            DELIMITED   BY  SIZE
-                    RECEERR        DELIMITED   BY  SPACE
-                                   INTO    WRK-ARG
-           END-STRING
-           DISPLAY "ORCR0035 start = [" WRK-ARG "]"
            CALL    "ORCR0035"          USING
                                        WRK-ARG
            CALL    "ORCR0038"          USING
@@ -739,33 +728,8 @@
            DISPLAY "ORCR0630 start = [" WRK-ARG "]"
            CALL    "ORCR0630"          USING
                                    WRK-ARG
-      *
-           MOVE     SPACE       TO WRK-ARG
-           STRING   WRK-PARA2      DELIMITED   BY  SIZE
-                    ","            DELIMITED   BY  SIZE
-                    WRK-PARA-PRTKBN
-                                   DELIMITED   BY  SIZE
-                    ","            DELIMITED   BY  SIZE
-                    WRK-PARA-HOSPNUM
-                                   DELIMITED   BY  SIZE
-                    ","            DELIMITED   BY  SIZE
-                    RECEERR        DELIMITED   BY  SPACE
-                                   INTO    WRK-ARG
-           END-STRING
-           DISPLAY "ORCR0640 start = [" WRK-ARG "]"
            CALL    "ORCR0640"          USING
                                    WRK-ARG
-      *
-           MOVE     SPACE       TO WRK-ARG
-           STRING   WRK-PARA2      DELIMITED   BY  SIZE
-                    ","            DELIMITED   BY  SIZE
-                    WRK-PARA-HOSPNUM
-                                   DELIMITED   BY  SIZE
-                    ","            DELIMITED   BY  SIZE
-                    RECEERR        DELIMITED   BY  SPACE
-                                   INTO    WRK-ARG
-           END-STRING
-           DISPLAY "ORCR0650 start = [" WRK-ARG "]"
            CALL    "ORCR0650"          USING
                                    WRK-ARG
       *
@@ -781,9 +745,32 @@
            CALL    "ORCR0680"          USING
                                    WRK-ARG
       *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA2      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-PRTKBN
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0690 start = [" WRK-ARG "]"
            CALL    "ORCR0690"          USING
                                    WRK-ARG
       *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA2      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0700 start = [" WRK-ARG "]"
            CALL    "ORCR0700"          USING
                                    WRK-ARG
       *

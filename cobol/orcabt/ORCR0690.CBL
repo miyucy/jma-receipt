@@ -124,7 +124,8 @@
       *  04.02.02    NACL-門脇    08/05/08  点滴３３２の手技料編集
       *
       *  04.03.01    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
-      *  04.03.02    NACL-門脇    08/07/14  投薬剤点０（院外等）記載対応
+      *  04.03.02    NACL-門脇    08/07/14  仮レセ作成（院外処方含む）対応
+      *                                     投薬剤点０（院外等）記載
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -320,7 +321,8 @@
                05  WRK-PARA-SYSYMD             PIC  X(08).
                05  WRK-PARA-JOBID              PIC  9(07).
                05  WRK-PARA-SHELLID            PIC  X(08).
-           03  WRK-PARA-HOSPNUM                PIC  9(02).
+           03  WRK-PARA-PRTKBN                 PIC X(01).
+           03  WRK-PARA-HOSPNUM                PIC 9(02).
       *
            03  WRK-RECEERR         PIC X(200).
       *
@@ -994,6 +996,7 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -4322,7 +4325,12 @@
                NOT AT  END
                    MOVE    ZERO      TO  FLG-RECE64
                    ADD     1         TO  CNT-IN-CANCEL
-
+      *
+      *            提出用のとき院外処方等の剤は対象としない
+                   IF    ( WRK-PARA-PRTKBN         =   "1"   )
+                   AND   ( RECE64-TOYAKUFLG    NOT =   SPACE )
+                       GO  TO  990-RECE64-NEXT-SEC
+                   END-IF
            END-READ
       *
            .
