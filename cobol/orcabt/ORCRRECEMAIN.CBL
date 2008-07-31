@@ -488,9 +488,6 @@
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA2      DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
-                    WRK-PARA-PRTKBN
-                                   DELIMITED   BY  SIZE
-                    ","            DELIMITED   BY  SIZE
                     WRK-PARA-HOSPNUM
                                    DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
@@ -521,8 +518,31 @@
                                        WRK-ARG
            CALL    "ORCR0055"          USING
                                        WRK-ARG
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA2      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-PRTKBN
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
            CALL    "ORCR0090"          USING
                                        WRK-ARG
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA2      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
            CALL    "ORCR0091"          USING
                                        WRK-ARG
       *
