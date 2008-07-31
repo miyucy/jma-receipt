@@ -2689,24 +2689,8 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>LASTNYUIN</name>
-      <x>8</x>
-      <y>113</y>
-      <width>256</width>
-      <height>24</height>
-      <label>*</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>SYUBETSU1</name>
-      <x>280</x>
+      <x>255</x>
       <y>115</y>
       <width>110</width>
       <height>24</height>
@@ -2722,23 +2706,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>SYUBETSU2</name>
-      <x>400</x>
-      <y>115</y>
-      <width>110</width>
-      <height>24</height>
-      <label>*</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SYUBETSU3</name>
-      <x>520</x>
+      <x>380</x>
       <y>115</y>
       <width>110</width>
       <height>24</height>
@@ -2754,7 +2722,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>SYUBETSU4</name>
-      <x>640</x>
+      <x>630</x>
       <y>115</y>
       <width>110</width>
       <height>24</height>
@@ -2770,7 +2738,7 @@
     <widget>
       <class>GtkLabel</class>
       <name>SYUBETSU5</name>
-      <x>760</x>
+      <x>755</x>
       <y>115</y>
       <width>110</width>
       <height>24</height>
@@ -2787,6 +2755,38 @@
       <class>GtkLabel</class>
       <name>SYUBETSU6</name>
       <x>880</x>
+      <y>115</y>
+      <width>110</width>
+      <height>24</height>
+      <label>*</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LASTNYUIN</name>
+      <x>8</x>
+      <y>115</y>
+      <width>235</width>
+      <height>24</height>
+      <label>*</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SYUBETSU3</name>
+      <x>505</x>
       <y>115</y>
       <width>110</width>
       <height>24</height>
