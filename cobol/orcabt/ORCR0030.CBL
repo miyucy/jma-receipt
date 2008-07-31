@@ -775,7 +775,7 @@
                05  WRK-PARA-SYSYMD                     PIC X(08).
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
-           03  WRK-PARA-PRTKBN                         PIC X(01).
+      *****03  WRK-PARA-PRTKBN                         PIC X(01).
            03  WRK-PARA-HOSPNUM                        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD                          PIC X(08).
@@ -1431,7 +1431,6 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
-                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -2616,10 +2615,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                              IF   ACCT-ZAIKAISU  NOT =    ZERO
                                IF ( ACCT-SRYKBN  =  "11" OR "12" OR
                                                     "14" OR "99" )
-                               OR ((WRK-PARA-PRTKBN
-                                                 =  "2"          ) AND
+                               OR ((RECE02-SRYYM >= 200804       ) AND
                                    (ACCT-SRYKBN  =  "21" OR "22" OR
                                                     "23"        ))
+      *******                  OR ((WRK-PARA-PRTKBN
+      *******                                    =  "2"          ) AND
+      *******                      (ACCT-SRYKBN  =  "21" OR "22" OR
+      *******                                       "23"        ))
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1 OR
                                                        CONS-TOKKI2 OR
                                                        CONS-TOKKI3 OR
