@@ -48,6 +48,8 @@
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
       *                                     広域連合対応
       *                                     診療区分６４を６０に変更
+      *
+      *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -356,6 +358,7 @@ grpsys     MOVE    RECE04-HOSPNUM      TO  RECE041-HOSPNUM
            MOVE    RECE04-TEIGENRATE   TO  RECE041-TEIGENRATE
            MOVE    RECE04-KNSJISGRPKBN TO  RECE041-KNSJISGRPKBN
            MOVE    RECE04-KNSJISKBN    TO  RECE041-KNSJISKBN
+           MOVE    RECE04-TOYAKUFLG    TO  RECE041-TOYAKUFLG
            MOVE    RECE04-DAY-AREA     TO  RECE041-DAY-AREA
       *
            WRITE   RECE041-REC
