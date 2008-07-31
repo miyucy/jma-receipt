@@ -2498,26 +2498,32 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ACCT-JIHOKBN         TO  SPA-NAI-JIHOKBN (IDX)
       *
       *    Ï·¿ÍÈ½Äê
-           INITIALIZE                  HKNCOMBI-REC
-           MOVE    SPA-HOSPNUM          TO  COMB-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  COMB-PTID
-           MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM
+           IF      ACCT-HKNCOMBI       =   "9999"
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    "00000000"          TO  COMB-TEKSTYMD
+               MOVE    "99999999"          TO  COMB-TEKEDYMD
+           ELSE
+               INITIALIZE                  HKNCOMBI-REC
+               MOVE    SPA-HOSPNUM          TO  COMB-HOSPNUM
+               MOVE    SPA-GMN-PTID        TO  COMB-PTID
+               MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM
       *
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
+               MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 940-HKNCOMBI-NEXT-SEC
-           ELSE
-               MOVE    1               TO  FLG-HKNCOMBI
-               INITIALIZE                  HKNCOMBI-REC
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+                   MOVE    "key"               TO  MCP-PATHNAME
+                   PERFORM 940-HKNCOMBI-NEXT-SEC
+               ELSE
+                   MOVE    1               TO  FLG-HKNCOMBI
+                   INITIALIZE                  HKNCOMBI-REC
+               END-IF
+               MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
            END-IF
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
            IF     (COMB-KOH1HKNNUM     =   "027"  )  OR
                   (COMB-KOH2HKNNUM     =   "027"  )  OR
                   (COMB-KOH3HKNNUM     =   "027"  )  OR
