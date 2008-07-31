@@ -1383,7 +1383,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCN21V02.red"  ALSO    ANY
                WHEN    "HCN21V03.red"  ALSO    ANY
                WHEN    "HCN21V04.red"  ALSO    ANY
-               WHEN    "HCN21V05.red"  ALSO    ANY
                WHEN    "HCN22.red"     ALSO    ANY
                WHEN    "HCN22V01.red"  ALSO    ANY
                WHEN    "HCN22V02.red"  ALSO    ANY
