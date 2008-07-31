@@ -1345,6 +1345,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                WHEN    "HCM53.red"     ALSO    ANY
                WHEN    "HCM53V01.red"  ALSO    ANY
                WHEN    "HCM54.red"     ALSO    ANY
+               WHEN    "HCM54V01.red"  ALSO    ANY
                WHEN    "HCM29.red"     ALSO    "2"
                WHEN    "HCM29V01.red"  ALSO    "2"
                WHEN    "HCM29V02.red"  ALSO    "2"
