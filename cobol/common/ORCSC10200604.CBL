@@ -5269,9 +5269,9 @@
                IF      WRK-COM-INPUTCD (IDY)   NOT =   "099110001"  AND
                                                        "099120001"
                    MOVE    SPACE               TO  WRK-GMN-INPUTCD(IDY)
-                   IF      WRK-COM-ZAIEND (IDY)    =   "1"
-                       MOVE    SPA-MAX-LINE        TO  IDY
-                   END-IF
+               END-IF
+               IF      WRK-COM-ZAIEND (IDY)    =   "1"
+                   MOVE    SPA-MAX-LINE        TO  IDY
                END-IF
            END-PERFORM
            .
