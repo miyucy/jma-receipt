@@ -21,3 +21,5 @@
                 05  TID2-VALUE  PIC X(10).
               04  TID2-ID1MSG.
                 05  TID2-VALUE  PIC X(100).
+              04  TID2-LABEL-STYLE  PIC X(20).
+              04  TID2-LABEL        PIC X(80).

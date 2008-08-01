@@ -35,6 +35,14 @@ T01	{
 			state	int;
 			value	varchar(8);
 		};
+		PRTKBN_COMBO	{
+			state   int;
+			PRTKBN	{
+				value	varchar(32);
+			};
+			count	int;
+			item	varchar(32)[5];
+		};
 		DATA_COMBO	{
 			state   int;
 			DATA	{

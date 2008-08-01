@@ -6,5 +6,9 @@ TID2	{
 		ID1MSG	{
 			value	varchar(100);
 		};
+		LABEL   {
+			style	varchar(20);
+			value	varchar(80);
+		};
 	};
 };

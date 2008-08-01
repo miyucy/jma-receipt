@@ -63,6 +63,7 @@
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
       *  04.03.02    NACL-藤原    08/06/18  医療機関編集情報からの医療機
       *                                     関名称、電話番号の編集対応
+      *  04.03.03    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -162,6 +163,7 @@ grpsys COPY    "COMMON-SPA".
            05  WRK-PARA-DATAKBN        PIC X(01).
            05  WRK-PARA-FIXEDSIZE      PIC 9(07).
            05  WRK-PARA-HOSPNUM        PIC 9(02).
+           05  WRK-PARA-PRTKBN         PIC X(01).
       *
            03  WRK-RECEERR             PIC X(200). 
            03  WRK-ERRMSG              PIC X(300).
@@ -180,15 +182,13 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-DATA-LENGTH         PIC 9(07).        
            03  WRK-PTNUM-LENGTH        PIC 9(07).   
            03  WRK-LEN                 PIC 9(07). 
-      *
-      *    医療機関情報ワーク
-           COPY    "CPSK1001.INC"      REPLACING  //SYS-1001//
-                                       BY         //WRK-SYS-1001//.
-           COPY    "CPSK1002.INC"      REPLACING  //SYS-1002//
-                                       BY         //WRK-SYS-1002//.
       *       
            03  WRK-MCP-TABLE           PIC X(64).
            03  WRK-MCP-PATHNAME        PIC X(64).
+      *       
+           03  WRK-MCP-RECEDEN-TABLE   PIC X(64).
+           03  WRK-MCP-RECEDEN-PATHNAME
+                                       PIC X(64).
       *
       *     右ずめ編集用     
            03  WRK-HENKAN              PIC X(20).
@@ -220,6 +220,12 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-BTPARA-STNO PIC 9(02).
                05  WRK-BTPARA-EDNO PIC 9(02).
                05  WRK-BTPARA-WRNO PIC 9(02).  
+      *
+      *    医療機関情報ワーク
+           COPY    "CPSK1001.INC"      REPLACING  //SYS-1001//
+                                       BY         //WRK-SYS-1001//.
+           COPY    "CPSK1002.INC"      REPLACING  //SYS-1002//
+                                       BY         //WRK-SYS-1002//.
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG             PIC 9(08).
@@ -351,6 +357,7 @@ grpsys COPY    "COMMON-SPA".
                                                WRK-PARA-NYUGAIKBN
                                                WRK-PARA-DATAKBN
                                                WRK-PARA-FIXEDSIZE
+                                               WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
            END-UNSTRING
@@ -536,7 +543,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                END-PERFORM
       *
                MOVE    "tbl_receden"       TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    WRK-MCP-RECEDEN-PATHNAME
+                                           TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
       *
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
@@ -1342,8 +1350,15 @@ grpsys     PERFORM 900-DBFETCH-SEC
            MOVE    RECE10-KEY          TO  RECEDEN-KEY
            MOVE    "1"                 TO  RECEDEN-RECKBN
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
+           IF      WRK-PARA-PRTKBN     =   "1"
+               MOVE    "key2"              TO  WRK-MCP-RECEDEN-PATHNAME
+           ELSE
+               MOVE    "key4"              TO  WRK-MCP-RECEDEN-PATHNAME
+           END-IF
+      *
            MOVE    "tbl_receden"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    WRK-MCP-RECEDEN-PATHNAME
+                                       TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 900-RECEDEN-READ-SEC
@@ -1360,7 +1375,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
        900-RECEDEN-READ-SEC           SECTION.
       *
            MOVE    "tbl_receden"       TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    WRK-MCP-RECEDEN-PATHNAME
+                                       TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-RECEDEN

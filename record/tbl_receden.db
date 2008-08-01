@@ -139,3 +139,25 @@ path	key3	{
 		;
 	};
 };
+
+path	key4	{
+	DBSELECT	{
+		DECLARE tbl_receden_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receden
+		WHERE	HOSPNUM		=	:HOSPNUM
+		  AND	SRYYM		=	:SRYYM
+		  AND	NYUGAIKBN	=	:NYUGAIKBN
+		  AND	PTID		=	:PTID
+		  AND	RECEKA		=	:RECEKA
+		  AND	TEISYUTUSAKI	=	:TEISYUTUSAKI
+		  AND	RECESYUBETU	=	:RECESYUBETU
+		  AND	HKNJANUM	=	:HKNJANUM
+		  AND	HOJOKBN_KEY	=	:HOJOKBN_KEY
+		  AND	TEKSTYMD	=	:TEKSTYMD
+		  AND   RECKBN		<>	'2'  
+		  ORDER  BY  RENNUM
+		;
+	};
+};
+

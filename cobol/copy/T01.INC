@@ -16,6 +16,13 @@
               03  T01-HKNJANUM1-STATE   PIC S9(9)   BINARY.
               03  T01-HKNJANUM1.
                 04  T01-VALUE   PIC X(8).
+              03  T01-PRTKBN-COMBO.
+                04  T01-PRTKBN-STATE PIC S9(9)   BINARY.
+                04  T01-PRTKBN.
+                  05  T01-VALUE    PIC X(32).
+                04  T01-PRTKBN-COUNT PIC S9(9)   BINARY.
+                04  T01-PRTKBN-ITEM
+                        PIC X(32)   OCCURS  5 TIMES.
               03  T01-DATA-COMBO.
                 04  T01-DATA-STATE PIC S9(9)   BINARY.
                 04  T01-DATA.
