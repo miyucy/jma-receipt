@@ -1260,6 +1260,9 @@
                MOVE     SPACE       TO WRK-ARG
                STRING   WRK-PARA4      DELIMITED   BY  SIZE
                         ","            DELIMITED   BY  SIZE
+                        WRK-PARA-PRTKBN
+                                       DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
                         WRK-PARA-HOSPNUM
                                        DELIMITED   BY  SIZE
                         ","            DELIMITED   BY  SIZE
