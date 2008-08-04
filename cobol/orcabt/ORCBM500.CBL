@@ -98,7 +98,7 @@ grpsys COPY    "COMMON-SPA".
            03  FILLER              PIC X(05)   VALUE 
                                                "/tmp/".
            03  RECE30PARA-HOSPNUM  PIC 9(02).
-           03  FILLER              PIC X(07)   VALUE 
+           03  RECE30PARA-FILENM   PIC X(07)   VALUE 
                                                "RECEDEN".
            03  RECE30PARA-RENNUM   PIC 9(02).
            03  FILLER              PIC X(04)   VALUE   ".txt".
@@ -219,7 +219,10 @@ grpsys COPY    "COMMON-SPA".
                                    PIC X(01).
                05  WRK-BTPARA-STNO PIC 9(02).
                05  WRK-BTPARA-EDNO PIC 9(02).
-               05  WRK-BTPARA-WRNO PIC 9(02).  
+               05  WRK-BTPARA-WRNO PIC 9(02).
+      * 
+      *    タイトル
+           03  WRK-SFILESV-TITLE       PIC X(100).
       *
       *    医療機関情報ワーク
            COPY    "CPSK1001.INC"      REPLACING  //SYS-1001//
@@ -574,6 +577,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
       * 
       *    合計書レコード
            IF      FLG-ERR         =   ZERO
+      *???
+               DISPLAY "2008 WRITE VOL="  WRK-VOLNUM 
+      *???
                MOVE    9               TO  FLG-DATA 
                PERFORM 2008-HENSYU-SEC
            END-IF
@@ -589,6 +595,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            COMPUTE WRK-FILE-RENNUM =   WRK-VOLNUM  +   1
            MOVE    WRK-FILE-RENNUM     TO  RECE30PARA-RENNUM
            MOVE    WRK-PARA-HOSPNUM    TO  RECE30PARA-HOSPNUM
+           IF      WRK-PARA-PRTKBN     =   "1"
+               MOVE    "RECEDEN"           TO  RECE30PARA-FILENM
+           ELSE
+               MOVE    "TENKENT"           TO  RECE30PARA-FILENM
+           END-IF
       *
            OPEN    OUTPUT              RECE30-FILE  
       *
@@ -1013,11 +1024,19 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  SFILESV-SKYYMD   (1)
            MOVE    WRK-PARA-FOLDER TO  SFILESV-FOR-FOLDER
                                                         (1)
-           STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                   "RECEIPTC.UKE"      DELIMITED  BY  SIZE
-                                       INTO  SFILESV-FOR-DATA (1)
-           END-STRING
-           MOVE    "RECEIPTC.UKE"  TO  SFILESV-TO-DATA  (1)
+           IF      WRK-PARA-PRTKBN =   "1"
+               STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                       "RECEIPTC.UKE"      DELIMITED  BY  SIZE
+                                           INTO  SFILESV-FOR-DATA (1)
+               END-STRING
+               MOVE    "RECEIPTC.UKE"  TO  SFILESV-TO-DATA  (1)
+           ELSE
+               STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                       "TENKENRC.UKE"      DELIMITED  BY  SIZE
+                                           INTO  SFILESV-FOR-DATA (1)
+               END-STRING
+               MOVE    "TENKENRC.UKE"  TO  SFILESV-TO-DATA  (1)
+           END-IF
            MOVE    CNT-OUT         TO  SFILESV-CNT-ALL  (1)
            EVALUATE    WRK-PARA-TEISYUTUSAKI
                            ALSO    WRK-PARA-NYUGAIKBN   
@@ -1058,6 +1077,14 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    "レセ電データ（国保、広域・入院外）"
                                            TO  SFILESV-TITLE    (1)
            END-EVALUATE
+           IF      WRK-PARA-PRTKBN =   "2"
+               MOVE    SFILESV-TITLE (1)   TO  WRK-SFILESV-TITLE
+               MOVE    SPACE               TO  SFILESV-TITLE (1)
+               STRING  "【点検用】"        DELIMITED  BY  SIZE
+                       WRK-SFILESV-TITLE   DELIMITED  BY  SPACE
+                                           INTO    SFILESV-TITLE (1)
+               END-STRING
+           END-IF       
            MOVE    "1"             TO  SFILESV-DATA-TYPE(1)
       *
            CALL    "ORCSFILESV"    USING
