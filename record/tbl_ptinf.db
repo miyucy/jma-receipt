@@ -67,6 +67,7 @@ tbl_ptinf {
 	SRYYMD				char(8),virtual;
 	SRYYM				char(6),virtual;
 	HKNKBN2				char(1),virtual;
+	VPTNUM				char(20),virtual;
 };
 
 primary	{
@@ -424,5 +425,38 @@ path	st_key1	{
 		AND    A.TSTPTNUMKBN    <>      '1'
 		ORDER BY  B.PTNUM
         ;
+	};
+};
+path	key20	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key20_csr CURSOR FOR
+		SELECT distinct a.*,b.ptnum
+		FROM tbl_jyurrk c,tbl_ptinf a,tbl_ptnum b
+			WHERE     c.HOSPNUM     =   :HOSPNUM
+               AND    c.SRYYMD    >=  :UPYMD
+               AND    c.SRYYMD    <=  :CREYMD
+               AND    a.HOSPNUM    =   :HOSPNUM
+               AND    a.PTID      =   c.PTID
+               AND    b.HOSPNUM    =   :HOSPNUM
+               AND    b.PTID      =   c.PTID
+               AND    b.PTNUM     =    :VPTNUM
+			ORDER BY  b.PTNUM
+		;
+	};
+};
+path	key21	{
+	DBSELECT	{
+		DECLARE tbl_ptinf_key21_csr CURSOR FOR
+		SELECT distinct a.*,b.ptnum
+		FROM tbl_ptnyuinrrk c,tbl_ptinf a,tbl_ptnum b
+			WHERE     c.HOSPNUM     =   :HOSPNUM
+               AND    c.TAIINYMD  >=  :UPYMD
+               AND    a.HOSPNUM    =   :HOSPNUM
+               AND    a.PTID      =   c.PTID
+               AND    b.HOSPNUM    =   :HOSPNUM
+               AND    b.PTID      =   c.PTID
+               AND    b.PTNUM     =    :VPTNUM
+			ORDER BY  b.PTNUM
+		;
 	};
 };
