@@ -259,7 +259,7 @@
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBZ003"          TO  JOB-PGID
-           MOVE    "外来診療録（カルテ１号紙）（標準）一括印刷"
+           MOVE    "外来診療録（カルテ１号紙）一括印刷"
                                        TO  JOB-SHELLMSG
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"               USING
