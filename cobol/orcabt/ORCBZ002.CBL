@@ -30,6 +30,7 @@
       * 01.00.01     NACL-多々納  04/12/15  入院印刷追加
       * 03.05.00     NACL-多々納  07/05/24  グループ診療対応
       * 03.05.00     NACL-多々納  07/06/26  外来カルテ印刷内容選択追加
+      * 03.05.00     NACL-多々納  08/08/04  患者指定機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -96,10 +97,12 @@
            03  WRK-PARA-SRYYM-END      PIC X(06).
            03  WRK-PARA-SRYKA          PIC X(02).
            03  WRK-PARA-NYUGAIKBN      PIC X(01).
+           03  WRK-PARA-PTNUM          PIC X(20).
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
+           03  WRK-MCP-PATHNAME        PIC X(64).
       *
            03  WRK-SYSYMD.
                05  WRK-SYSYY           PIC 9(04).
@@ -230,6 +233,7 @@
                                        WRK-PARA-SRYYM-END
                                        WRK-PARA-SRYKA
                                        WRK-PARA-NYUGAIKBN
+                                       WRK-PARA-PTNUM
       *
       *    ＳＰＡ設定
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -422,13 +426,20 @@
            MOVE    WRK-PARA-SRYYM-END  TO  PTINF-CREYMD(1:6)
            MOVE    "31"                TO  PTINF-CREYMD(7:2)
       *
+           IF    ( WRK-PARA-PTNUM      =   SPACE )
+               MOVE    "key10"         TO  WRK-MCP-PATHNAME
+           ELSE
+               MOVE    WRK-PARA-PTNUM  TO  PTINF-VPTNUM
+               MOVE    "key20"         TO  WRK-MCP-PATHNAME
+           END-IF
+      *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTINF-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTINF
@@ -463,11 +474,11 @@
                END-IF
       *
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTINF-READ-SEC
            END-PERFORM
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
              .
@@ -487,17 +498,25 @@
            MOVE    WRK-PARA-SRYYM-END  TO  PTINF-CREYMD(1:6)
            MOVE    "31"                TO  PTINF-CREYMD(7:2)
       *
+           IF    ( WRK-PARA-PTNUM      =   SPACE )
+               MOVE    "key15"         TO  WRK-MCP-PATHNAME
+           ELSE
+               MOVE    WRK-PARA-PTNUM  TO  PTINF-VPTNUM
+               MOVE    "key21"         TO  WRK-MCP-PATHNAME
+           END-IF
+      *
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key15"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
-               MOVE    "key15"             TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTINF-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTINF
            END-IF
+           DISPLAY "FLG-PTINF =" FLG-PTINF
            PERFORM
                    UNTIL     (FLG-PTINF    =   1  )  OR
                              (FLG-END      =   1  )
@@ -521,16 +540,17 @@
       *
                IF      ORCHC33-RC          =   ZERO
                    ADD     ORCHC33-PAGE        TO  CNT-PAGE
+                   DISPLAY "ORCHC33-PAGE =" ORCHC33-PAGE
                ELSE
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
       *
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
-               MOVE    "key15"             TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-PTINF-READ-SEC
            END-PERFORM
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
-           MOVE    "key15"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
              .
