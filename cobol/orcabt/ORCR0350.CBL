@@ -218,6 +218,7 @@
       *
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
       *  04.03.02    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *  04.03.03    NACL-藤原    08/08/05  患者登録特記事項入力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2293,7 +2294,29 @@
            END-IF
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
+      *
       *    特記事項
+           IF      RECE62-PTTOKKI-AREA     NOT =   SPACE
+      *        患者特記事項情報
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       5
+                   IF      RECE62-PTTOKKI-CD (IDX)
+                                           NOT =   SPACE
+                       PERFORM VARYING IDZ FROM    1   BY  1
+                               UNTIL   IDZ >       5
+                           IF      RECE62-TOKKI (IDZ)  =   SPACE
+                               MOVE    RECE62-PTTOKKI-CD (IDX)
+                                               TO  RECE62-TOKKI (IDZ)
+                           END-IF
+                           IF      RECE62-PTTOKKI-CD (IDX)
+                                               =   RECE62-TOKKI (IDZ)      
+                               MOVE    5       TO  IDZ
+                           END-IF
+                       END-PERFORM
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
            IF      RECE62-2006-RECEDEN-TOKKIINF
                                    NOT =   SPACE
       *        レセプト特記事項編集情報
@@ -2315,7 +2338,9 @@
                    END-IF
                END-PERFORM
            END-IF
+      *
            IF      FLG-RECE67          =   ZERO
+      *        レセプトカスタマイズ情報
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       5
                    IF      RECE67-TOKKI (IDX)  NOT =   SPACE

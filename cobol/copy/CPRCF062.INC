@@ -90,6 +90,8 @@
       *
       *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
       *  04.03.02    NACL-門脇    08/07/07  実日数・請求点記載フラグ追加
+      *  04.03.03    NACL-藤原    08/08/05  患者登録特記事項入力対応
+      *                                     患者特記事項追加
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -641,3 +643,9 @@
                05  RECE62-NYUINDAY-KBN    PIC  X(01)
                                                OCCURS  31.
       *
+      *患者特記事項情報
+           03  RECE62-PTTOKKI-AREA.
+               05  RECE62-PTTOKKINF           OCCURS  5.
+                   07  RECE62-PTTOKKI-NAIYO
+                                          PIC  X(12).
+                   07  RECE62-PTTOKKI-CD  PIC  X(02).

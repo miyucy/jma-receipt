@@ -98,6 +98,8 @@
       *
       *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
       *  04.03.02    NACL-門脇    08/07/07  実日数・請求点記載フラグ追加
+      *  04.03.03    NACL-藤原    08/08/05  患者登録特記事項入力対応
+      *                                     患者特記事項追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -537,3 +539,9 @@
                        09  RECE02-2006-TEKIYOU-COMMENT2KBN
                                           PIC  X(01).
       *
+      *患者特記事項情報
+           03  RECE02-PTTOKKI-AREA.
+               05  RECE02-PTTOKKINF           OCCURS  5.
+                   07  RECE02-PTTOKKI-NAIYO
+                                          PIC  X(12).
+                   07  RECE02-PTTOKKI-CD  PIC  X(02).

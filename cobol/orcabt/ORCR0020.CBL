@@ -192,6 +192,7 @@
       *
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
       *  04.03.02    NACL-藤原    08/06/19  医師別出力対応
+      *  04.03.03    NACL-藤原    08/08/05  患者登録特記事項入力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -345,6 +346,7 @@
            03  FLG-NYUINACCT                           PIC 9(01).
            03  FLG-HKNCOMBI                            PIC 9(01).
            03  FLG-KYUSEIRRK                           PIC 9(01).
+           03  FLG-PTTOKKI                             PIC 9(01).
       *
            03  FLG-SET                                 PIC 9(01).
            03  FLG-ROUJINHOKEN                         PIC 9(01).
@@ -386,6 +388,7 @@
            03  IDY1                                    PIC 9(03).
            03  IDY2                                    PIC 9(03).
            03  IDZ                                     PIC 9(02).
+           03  IDXX                                    PIC 9(03).
            03  TOKKI-IDX                               PIC 9(02).
            03  SYSKAN-IDX                              PIC 9(03).
            03  SYOTOKU-IDX                             PIC 9(02).
@@ -512,6 +515,13 @@
        01  WRK-HKNNUM-REC.
            COPY    "CPHKNNUM.INC"  REPLACING  //HKN-//
                                    BY         //WRK-HKN-//.
+      *
+      *    患者特記事項情報
+       01  TABLE-PTTOKKI-AREA.
+           03  TBL-PTTOKKI-OCC                 OCCURS  100.
+               05  TBL-PTTOKKI-CD              PIC X(02).
+               05  TBL-PTTOKKI-NAIYO           PIC X(12).
+           03  TBL-PTTOKKI-MAX                 PIC 9(03).
       *
        01  WRK-CONS-AREA.
       *    
@@ -682,6 +692,10 @@
       *    旧姓履歴情報
        01  KYUSEIRRK-REC.
            COPY    "CPKYUSEIRRK.INC".
+      *
+      *    患者特記事項情報
+       01  PTTOKKI-REC.
+           COPY    "CPPTTOKKI.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -955,6 +969,10 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *            保険履歴情報編集処理
                    IF      IDZ             =   1               
                        PERFORM 230-RECE09-HENSYU-SEC
+                   END-IF
+      *            患者特記情報取得処理
+                   IF      IDZ             =   1               
+                       PERFORM 230-PTTOKKI-HENSYU-SEC
                    END-IF
       *            
       *            編集処理
@@ -1596,6 +1614,19 @@ grpsys         MOVE    RECE02-HOSPNUM  TO  SPA-HOSPNUM
                    MOVE    LNK-DRCDGET-O-DRCD-SRYKA
                                                TO  RECE02-DRCD-SRYKA
                END-IF 
+           END-IF
+      *
+      *    患者特記事項
+           IF      IDZ             =   1
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL   IDX >       5
+                       OR      IDX >       TBL-PTTOKKI-MAX
+                   MOVE    TBL-PTTOKKI-CD (IDX)    TO  
+                                               RECE02-PTTOKKI-CD   (IDX)
+                   MOVE    TBL-PTTOKKI-NAIYO
+                                          (IDX)    TO  
+                                               RECE02-PTTOKKI-NAIYO(IDX)
+               END-PERFORM
            END-IF
       *
            PERFORM     220-DATA-WRITE-SEC
@@ -3034,6 +3065,57 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            EXIT.
       * 
       *****************************************************************
+      *    患者特記事項情報取得処理
+      *****************************************************************
+       230-PTTOKKI-HENSYU-SEC          SECTION.
+      *
+           INITIALIZE                      TABLE-PTTOKKI-AREA
+           MOVE    ZERO                TO  IDXX
+      *
+           IF      RECE01-SRYYM        <   WRK-CONS-SRYYM-200804
+               GO  TO   230-PTTOKKI-HENSYU-EXT
+           END-IF
+      *
+           INITIALIZE                      PTTOKKI-REC
+           MOVE    RECE01-HOSPNUM      TO  PTTOKKI-HOSPNUM
+           MOVE    RECE01-PTID         TO  PTTOKKI-PTID
+           MOVE    "1"                 TO  PTTOKKI-NYUGAIKBN
+           MOVE    RECE01-SRYYM        TO  PTTOKKI-STYM
+                                           PTTOKKI-EDYM
+           MOVE    PTTOKKI-REC         TO  MCPDATA-REC
+           MOVE    "tbl_pttokki"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_pttokki"       TO  MCP-TABLE
+               MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 900-PTTOKKI-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTTOKKI  
+           END-IF
+      *
+           PERFORM             UNTIL   FLG-PTTOKKI     =   1
+                                       OR  IDXX        >=  100
+               ADD     1               TO  IDXX
+               MOVE    PTTOKKI-CD      TO  TBL-PTTOKKI-CD    (IDXX)
+               MOVE    PTTOKKI-NAIYO   TO  TBL-PTTOKKI-NAIYO (IDXX)
+      * 
+               MOVE    "tbl_pttokki"   TO  MCP-TABLE
+               MOVE    "key4"          TO  MCP-PATHNAME
+               PERFORM 900-PTTOKKI-READ-SEC
+           END-PERFORM
+      * 
+           MOVE    "tbl_pttokki"       TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           MOVE    IDXX                TO  TBL-PTTOKKI-MAX
+      *
+           .
+       230-PTTOKKI-HENSYU-EXT.
+           EXIT.
+      * 
+      *****************************************************************
       *    入退院履歴より情報取得処理
       *****************************************************************
        240-PTNYUINRRK-SYORI-SEC                   SECTION.
@@ -3909,6 +3991,24 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-KYUSEIRRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者特記事項読込
+      *****************************************************************
+       900-PTTOKKI-READ-SEC           SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTTOKKI-REC
+               MOVE    ZERO            TO  FLG-PTTOKKI
+           ELSE
+               INITIALIZE                  PTTOKKI-REC
+               MOVE    1               TO  FLG-PTTOKKI
+           END-IF
+      *
+           .
+       900-PTTOKKI-READ-EXT.
            EXIT.
       *
       *****************************************************************

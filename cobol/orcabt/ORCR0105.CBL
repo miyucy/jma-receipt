@@ -49,6 +49,7 @@
       *  04.03.04    NACL-門脇    08/07/07  複数保険組み合わせ使用時の
       *                                     請求点・実日数記載対応
       *  04.03.05    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *  04.03.06    NACL-藤原    08/08/05  患者登録特記事項入力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -263,6 +264,7 @@
            03  IDY2                PIC 9(03).
            03  IDY3                PIC 9(03).
            03  IDXX                PIC 9(03).
+           03  IDWW                PIC 9(03).
            03  IDXY                PIC 9(03).
            03  IDZZ                PIC 9(03).
       *
@@ -3760,7 +3762,7 @@
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL ( IDX                 >   5     )
                    OR    ( RECE02-TOKKI(IDX)   =   SPACE )
-                   OR    ( IDZ                 =   4     ) 
+                   OR      HC06-TOKKI (5)  NOT =   SPACE
       *
                PERFORM VARYING IDY     FROM    1   BY  1
                        UNTIL ( IDY             >   TBL-TOKKI-MAX  )
@@ -3773,27 +3775,63 @@
                END-PERFORM
            END-PERFORM
       *
+      *    患者特記事項編集情報
+           IF      RECE02-PTTOKKI-AREA     NOT =   SPACE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX                 >   5
+                       OR      HC06-TOKKI (5)  NOT =   SPACE
+                       OR      RECE02-PTTOKKI-NAIYO(IDX)   =   SPACE
+                   PERFORM VARYING IDWW    FROM    1   BY  1
+                           UNTIL   IDWW    >       5
+                       IF      HC06-TOKKI (IDWW)   =   SPACE
+                           MOVE    RECE02-PTTOKKI-NAIYO(IDX)        
+                                                TO  HC06-TOKKI (IDWW)
+                       END-IF
+                       IF      RECE02-PTTOKKI-NAIYO(IDX)
+                                                =   HC06-TOKKI (IDWW)
+                           MOVE    5            TO  IDWW
+                       END-IF    
+                   END-PERFORM
+               END-PERFORM
+           END-IF
+      *
       *    レセプト特記事項編集情報
            IF      RECE02-2006-TOKKIINF    NOT =   SPACE
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX                 >   4
-                       OR      IDZ                 =   4     
-                       OR      RECE02-2006-TOKKI(IDX)  =   SPACE
-                   ADD     1                    TO  IDZ    
-                   MOVE    RECE02-2006-TOKKI (IDX)           
-                                                TO  HC06-TOKKI (IDZ)
+                       OR      HC06-TOKKI (5)  NOT =   SPACE
+                       OR      RECE02-2006-TOKKI (IDX) =   SPACE
+                   PERFORM VARYING IDWW    FROM    1   BY  1
+                           UNTIL   IDWW    >       5
+                       IF      HC06-TOKKI (IDWW)   =   SPACE
+                           MOVE    RECE02-2006-TOKKI (IDX)           
+                                                TO  HC06-TOKKI (IDWW)
+                       END-IF
+                       IF      RECE02-2006-TOKKI (IDX)
+                                                =   HC06-TOKKI (IDWW)
+                           MOVE    5            TO  IDWW
+                       END-IF    
+                   END-PERFORM
                END-PERFORM
            END-IF
       *
       *    県単用項目
            IF      FLG-RECE11           =   ZERO
                PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX                 >   4
-                       OR      IDZ                 =   4     
+                       UNTIL   IDX                 >   5
+                       OR      HC06-TOKKI (5)  NOT =   SPACE
                        OR      RECE11-HC06-TOKKI(IDX)  =   SPACE
-                   ADD     1                    TO  IDZ    
-                   MOVE    RECE11-HC06-TOKKI (IDX)           
-                                                TO  HC06-TOKKI (IDZ)
+                   PERFORM VARYING IDWW    FROM    1   BY  1
+                           UNTIL   IDWW    >       5
+                       IF      HC06-TOKKI (IDWW)   =   SPACE
+                           MOVE    RECE11-HC06-TOKKI (IDX)
+                                                TO  HC06-TOKKI (IDWW)
+                       END-IF
+                       IF      RECE11-HC06-TOKKI (IDX)
+                                                =   HC06-TOKKI (IDWW)
+                           MOVE    5            TO  IDWW
+                       END-IF    
+                   END-PERFORM
                END-PERFORM
            END-IF
       *
@@ -7783,6 +7821,28 @@
                MOVE    RECE02-TOKKI (IDX)  TO  WRK-TOKKI
                PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
            END-PERFORM
+      *
+      *    特記事項（患者特記事項情報）
+           IF      RECE02-PTTOKKI-AREA     NOT =   SPACE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       5
+                       OR      RECE02-PTTOKKI-NAIYO (IDX)
+                                               =   SPACE
+                   MOVE    RECE02-PTTOKKI-NAIYO (IDX) 
+                                               TO  WRK-TOKKI-X
+                   MOVE    SPACE               TO  WRK-TOKKI
+                   PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
+               END-PERFORM
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       5
+                       OR      RECE02-PTTOKKI-CD (IDX)
+                                               =   SPACE
+                   MOVE    SPACE               TO  WRK-TOKKI-X
+                   MOVE    RECE02-PTTOKKI-CD (IDX) 
+                                               TO  WRK-TOKKI
+                   PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
+               END-PERFORM
+           END-IF
       *
       *    特記事項（レセプト特記事項編集情報）
            IF      RECE02-2006-TOKKIINF    NOT =   SPACE

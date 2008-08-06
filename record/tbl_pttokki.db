@@ -82,3 +82,20 @@ path	del2 	{
 		;
 	};
 };
+
+path	key4		{
+	DBSELECT	{
+		DECLARE tbl_pttokki_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_pttokki
+			WHERE   HOSPNUM        =   :HOSPNUM
+			AND     NYUGAIKBN      <>  :NYUGAIKBN
+			AND     PTID           =   :PTID
+			AND     STYM           <=  :STYM
+			AND     EDYM           >=  :EDYM
+			ORDER   BY       STYM  DESC,
+			                 EDYM  DESC,
+			                 RENNUM
+		;
+	};
+};

@@ -51,6 +51,7 @@
       *  04.03.04    NACL-藤原    08/06/19  医師別出力対応
       *  04.03.05    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *  04.03.06    NACL-藤原    08/07/23  船員保険３割の「職務上の事由」の記載
+      *  04.03.07    NACL-藤原    08/08/05  患者登録特記事項入力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -267,6 +268,7 @@
            03  IDY4                PIC 9(03).                           
            03  IDY5                PIC 9(03).
            03  IDXX                PIC 9(03).                           
+           03  IDWW                PIC 9(03).
            03  IDXY                PIC 9(03).
            03  IDZZ                PIC 9(03).
       *
@@ -3874,7 +3876,7 @@
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL ( IDX                 >   5     )
                    OR    ( RECE62-TOKKI(IDX)   =   SPACE )
-                   OR    ( IDZ                 =   4     ) 
+                   OR    ( HC06-TOKKI (5)  NOT =   SPACE )
       *
                PERFORM VARYING IDY     FROM    1   BY  1
                        UNTIL ( IDY             >   TBL-TOKKI-MAX  )
@@ -3887,27 +3889,63 @@
                END-PERFORM
            END-PERFORM
       *
+      *    患者特記事項編集情報
+           IF      RECE62-PTTOKKI-AREA     NOT =   SPACE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX                 >   5
+                       OR      HC06-TOKKI (5)  NOT =   SPACE
+                       OR      RECE62-PTTOKKI-NAIYO(IDX)   =   SPACE
+                   PERFORM VARYING IDWW    FROM    1   BY  1
+                           UNTIL   IDWW    >       5
+                       IF      HC06-TOKKI (IDWW)   =   SPACE
+                           MOVE    RECE62-PTTOKKI-NAIYO(IDX)        
+                                                TO  HC06-TOKKI (IDWW)
+                       END-IF
+                       IF      RECE62-PTTOKKI-NAIYO(IDX)
+                                                =   HC06-TOKKI (IDWW)
+                           MOVE    5            TO  IDWW
+                       END-IF    
+                   END-PERFORM
+               END-PERFORM
+           END-IF
+      *
       *    レセプト特記事項編集情報
            IF      RECE62-2006-TOKKIINF    NOT =   SPACE
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX                 >   4
-                       OR      IDZ                 =   4     
-                       OR      RECE62-2006-TOKKI(IDX)  =   SPACE
-                   ADD     1                    TO  IDZ    
-                   MOVE    RECE62-2006-TOKKI (IDX)           
-                                                TO  HC06-TOKKI (IDZ)
+                       OR      HC06-TOKKI (5)  NOT =   SPACE
+                       OR      RECE62-2006-TOKKI (IDX) =   SPACE
+                   PERFORM VARYING IDWW    FROM    1   BY  1
+                           UNTIL   IDWW    >       5
+                       IF      HC06-TOKKI (IDWW)   =   SPACE
+                           MOVE    RECE62-2006-TOKKI (IDX)           
+                                                TO  HC06-TOKKI (IDWW)
+                       END-IF
+                       IF      RECE62-2006-TOKKI (IDX)
+                                                =   HC06-TOKKI (IDWW)
+                           MOVE    5            TO  IDWW
+                       END-IF    
+                   END-PERFORM
                END-PERFORM
            END-IF
       *
       *    県単用項目
            IF      FLG-RECE67           =   ZERO
                PERFORM VARYING IDX     FROM    1   BY  1
-                       UNTIL   IDX                 >   4
-                       OR      IDZ                 =   4     
+                       UNTIL   IDX                 >   5
+                       OR      HC06-TOKKI (5)  NOT =   SPACE
                        OR      RECE67-HC06-TOKKI(IDX)  =   SPACE
-                   ADD     1                    TO  IDZ    
-                   MOVE    RECE67-HC06-TOKKI (IDX)           
-                                                TO  HC06-TOKKI (IDZ)
+                   PERFORM VARYING IDWW    FROM    1   BY  1
+                           UNTIL   IDWW    >       5
+                       IF      HC06-TOKKI (IDWW)   =   SPACE
+                           MOVE    RECE67-HC06-TOKKI (IDX)
+                                                TO  HC06-TOKKI (IDWW)
+                       END-IF
+                       IF      RECE67-HC06-TOKKI (IDX)
+                                                =   HC06-TOKKI (IDWW)
+                           MOVE    5            TO  IDWW
+                       END-IF    
+                   END-PERFORM
                END-PERFORM
            END-IF
       *
@@ -8681,6 +8719,28 @@
                                                    TO  WRK-TOKKI
                        PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
                    END-IF
+               END-PERFORM
+           END-IF
+      *
+      *    特記事項（患者特記事項情報）
+           IF      RECE62-PTTOKKI-AREA     NOT =   SPACE
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       5
+                       OR      RECE62-PTTOKKI-NAIYO (IDX)
+                                               =   SPACE
+                   MOVE    RECE62-PTTOKKI-NAIYO (IDX) 
+                                               TO  WRK-TOKKI-X
+                   MOVE    SPACE               TO  WRK-TOKKI
+                   PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
+               END-PERFORM
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL   IDX     >       5
+                       OR      RECE62-PTTOKKI-CD (IDX)
+                                               =   SPACE
+                   MOVE    SPACE               TO  WRK-TOKKI-X
+                   MOVE    RECE62-PTTOKKI-CD (IDX) 
+                                               TO  WRK-TOKKI
+                   PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
                END-PERFORM
            END-IF
       *
