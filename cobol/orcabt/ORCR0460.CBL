@@ -1080,6 +1080,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                END-IF
       *
       *        電子化加算編集
+               MOVE    ZERO      TO    FLG-TEIGEN
                IF      TBL-DENSHI-FLG          =   1
                    PERFORM 2010-DENSHI-HENSYU-SEC
                END-IF
