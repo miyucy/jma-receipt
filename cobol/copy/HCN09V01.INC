@@ -58,7 +58,7 @@
             02  HCN09V01-JIYU   PIC X(20).
             02  HCN09V01-SEXN   PIC X(2).
             02  HCN09V01-TOKKI
-                    PIC X(12)   OCCURS  4 TIMES.
+                    PIC X(12)   OCCURS  5 TIMES.
             02  HCN09V01-HOSPTEL    PIC X(15).
             02  HCN09V01-SRYKA  PIC X(30).
             02  HCN09V01-BEDSU  PIC X(4).
