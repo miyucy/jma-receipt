@@ -2689,86 +2689,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>SYUBETSU1</name>
-      <x>255</x>
-      <y>115</y>
-      <width>110</width>
-      <height>24</height>
-      <label>*</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SYUBETSU2</name>
-      <x>380</x>
-      <y>115</y>
-      <width>110</width>
-      <height>24</height>
-      <label>*</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SYUBETSU4</name>
-      <x>630</x>
-      <y>115</y>
-      <width>110</width>
-      <height>24</height>
-      <label>*</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SYUBETSU5</name>
-      <x>755</x>
-      <y>115</y>
-      <width>110</width>
-      <height>24</height>
-      <label>*</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SYUBETSU6</name>
-      <x>880</x>
-      <y>115</y>
-      <width>110</width>
-      <height>24</height>
-      <label>*</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>LASTNYUIN</name>
       <x>8</x>
       <y>115</y>
@@ -2785,10 +2705,90 @@
 
     <widget>
       <class>GtkLabel</class>
+      <name>SYUBETSU1</name>
+      <x>255</x>
+      <y>115</y>
+      <width>114</width>
+      <height>24</height>
+      <label>*</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SYUBETSU2</name>
+      <x>380</x>
+      <y>115</y>
+      <width>114</width>
+      <height>24</height>
+      <label>*</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
       <name>SYUBETSU3</name>
       <x>505</x>
       <y>115</y>
-      <width>110</width>
+      <width>114</width>
+      <height>24</height>
+      <label>*</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SYUBETSU4</name>
+      <x>630</x>
+      <y>115</y>
+      <width>114</width>
+      <height>24</height>
+      <label>*</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SYUBETSU5</name>
+      <x>755</x>
+      <y>115</y>
+      <width>114</width>
+      <height>24</height>
+      <label>*</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>SYUBETSU6</name>
+      <x>880</x>
+      <y>115</y>
+      <width>114</width>
       <height>24</height>
       <label>*</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
