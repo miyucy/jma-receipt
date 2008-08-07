@@ -13,7 +13,7 @@ create	table	tbl_pttokki	(
 	NAIYO   	char(12),
 	STYM	   	char(6),
 	EDYM	   	char(6),
-	TERMID		varchar(32),
+	TERMID		varchar(16),
 	OPID		varchar(16),
 	CREYMD		char(8),
 	UPYMD		char(8),
