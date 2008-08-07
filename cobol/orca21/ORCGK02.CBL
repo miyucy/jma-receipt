@@ -12937,6 +12937,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ¾®»ù²Ê»þ´Ö³°
            IF      SPA-GMN-JIKANMSG    =   SPACE
                MOVE    SPACE               TO  K02-JIKANMSG-VALUE
+      *
+      *£È£²£°¡¥£´¤«¤é»ÜÀßÆþµïÃæ¤ÎÆÃµ­»ö¹à¤òÊÔ½¸
+               IF      SPA-PTTOKK-NAIYO    NOT =   SPACE
+                   MOVE    "blue"              TO  K02-JIKANMSG-STYLE
+                   MOVE    SPA-PTTOKK-NAIYO    TO  K02-JIKANMSG-VALUE
+               END-IF
            ELSE
                MOVE    "red"               TO  K02-JIKANMSG-STYLE
                MOVE    SPA-GMN-JIKANMSG    TO  K02-JIKANMSG-VALUE

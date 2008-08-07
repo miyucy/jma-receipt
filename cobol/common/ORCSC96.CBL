@@ -1969,6 +1969,13 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K026"
+                   STRING  "警告！！"
+                           "初診算定日より１月以内です。"
+                           "初診算定日した保険を確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG

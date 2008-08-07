@@ -229,6 +229,10 @@
                05  SPA-DOUJITU             PIC  9(01).
       *同日初診算定日（直帰）
                05  SPA-DOUYMD              PIC  X(08).
+      *初診算定日（労災以外）
+               05  SPA-SYOYMD-HKN          PIC  X(08).
+      *初診算定日（労災）
+               05  SPA-SYOYMD-RSI          PIC  X(08).
       *外来診療料算定有無
                05  SPA-GAIRAISIN           PIC  9(01).
       *特定疾患有無（病名）
@@ -312,6 +316,9 @@
                        09  SPA-TEI-DOUJI-RENNUM    PIC  9(01).
       *主ドクター
                05  SPA-DRCD-NAME           PIC X(50).
+      *施設入居(H20.9)
+               05  SPA-PTTOKK-KBN              PIC X(02).
+               05  SPA-PTTOKK-NAIYO            PIC X(12).
       *
       *入院用（Ｋ０２Ｎ）
       *        入院日

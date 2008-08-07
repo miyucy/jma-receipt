@@ -61,6 +61,7 @@
       * 04.01.00     NACL-多々納  07/12/XX  .213 自動変換システム設定対応
       *                                     アトピー性皮膚炎の年齢対応
       * 04.02.00     NACL-多々納  08/03/XX  平成２０年４月改正対応
+      * 04.03.00     NACL=多々納  08/08/07  労災初診料Ｈ２０年４月改正対応他
       *****************************************************************
       *
       *
@@ -168,6 +169,7 @@
            03  FLG-HENKAN           PIC 9(01).
            03  FLG-DOUJI-HEN        PIC 9(01).
            03  FLG-TAKA             PIC 9(01).
+           03  FLG-SYOHEN           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -218,6 +220,7 @@
            03  WRK-TEI-KAISU       PIC 9(04).
       *
            03  WRK-SYOYMD          PIC X(08).
+           03  WRK-SYOYMD-K        PIC X(08).
            03  WRK-KEIYMD          PIC X(08).
            03  WRK-KEIYMDZEN       PIC X(08).
       *
@@ -2077,6 +2080,8 @@
                           (SPA-NYUGAIKBN       =   "2" )  AND
                          ((FLG-SYONIKA-ARI     =   1   ) OR
                           (SPA-SYONIKA-ARI3    =   1   ))
+      *            施設入居者以外
+                     AND  (SPA-PTTOKK-KBN      =   SPACE )
                        PERFORM 3303-SYONIKA-SET-SEC
                    END-IF
                    IF      FLG-SYONIKA       =   1
@@ -2159,9 +2164,33 @@
                    PERFORM 2001-SRYCD-TBL-SEC
                END-IF
            END-IF
+      *!!
+           IF      SPA-PTTOKK-KBN  NOT =   SPACE
+      *        小児科外来診察料は算定なしとする
+               MOVE    ZERO                TO  SPA-SYONIKA-ARI2
+               MOVE    ZERO                TO  SPA-SYONIKA-ARI3
+           END-IF
+      *    労災・自賠責、コメント以外
+           IF     (SPA-HKNKBN          =   1   )
+             OR   (WRK-SRYCD(1:2)      =   "83" )
+               CONTINUE
+           ELSE
+      *    施設入居者はダミー
+               IF      SPA-PTTOKK-KBN  NOT =   SPACE
+                   IF      SPA-SYOSIN          =   1
+                       MOVE    "099110001"         TO  WRK-SRYCD
+                   ELSE
+                       MOVE    "099120001"         TO  WRK-SRYCD
+                   END-IF
+               END-IF
+           END-IF
       *
       *    初診料自動追加処理
            PERFORM 3301-SYOSIN-SYORI-SEC
+      *
+           IF      SPA-PTTOKK-KBN  NOT =   SPACE
+               GO      TO      2002-KNH-SYOSIN-SET-EXT
+           END-IF
       *
            IF      WRK-SRYCD(1:2)      =   "83"
                MOVE    "0109"              TO  SPA-KIDCD
@@ -3060,6 +3089,12 @@
        330121-SIDOU-CHK-SEC               SECTION.
       *
            MOVE    SPA-SYOYMD          TO  WRK-SYOYMD
+           MOVE    ZERO                TO  FLG-SYOHEN
+      *    初診算定日が診療日以前の時
+           IF     (SPA-SYOYMD-OLD  NOT =  SPACE     ) AND
+                  (WRK-SYOYMD          >  SPA-SRYYMD)
+               MOVE    SPA-SYOYMD-OLD     TO  WRK-SYOYMD
+           END-IF
       *    同日初診がある時、同日初診
            IF      WRK-SRYKA           =   SPACE
                MOVE    SPA-SRYKA       TO  WRK-SRYKA
@@ -3071,6 +3106,7 @@
                    IF      SPA-DOU-SRYYMD(IDX) >   WRK-SYOYMD
                        MOVE    SPA-DOU-SRYYMD(IDX)
                                                TO  WRK-SYOYMD
+                       MOVE    1               TO  FLG-SYOHEN
                    END-IF
                    MOVE    10          TO  IDX
                END-IF
@@ -3118,20 +3154,60 @@
                            MOVE    "0034"          TO  SPA-ERRCD
                        END-IF
                    ELSE
-      *****************IF      WRK-KEIYMDZEN   =   SPA-SRYYMD
-      *                ELSE
-                           IF      FLG-TAIIN       =   1
-                               MOVE    "0120"          TO  SPA-ERRCD
-                           ELSE
-                               MOVE    "0034"          TO  SPA-ERRCD
-                           END-IF
-      *****************END-IF
+                       IF      FLG-TAIIN       =   1
+                           MOVE    "0120"          TO  SPA-ERRCD
+                       ELSE
+                            MOVE    "0034"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+      *       初診算定日からの１ヵ月以内のエラーで同日初診日でない時
+                   IF     (SPA-ERRCD           =   "0034")  AND
+                          (FLG-SYOHEN          =   ZERO  )  AND
+                          (SPA-SYOYMD-RSI  NOT =   SPACE )  AND
+                          (SPA-SYOYMD-HKN  NOT =   SPACE )
+                       PERFORM 2302-ERRCHK-SEC
                    END-IF
                WHEN    WRK-KEIYMD          =   SPA-SRYYMD
                    CONTINUE
            END-EVALUATE
            .
        330121-SIDOU-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診算定日の警告チェック処理
+      *****************************************************************
+       2302-ERRCHK-SEC               SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SYOYMD-K
+      *    保険が労災の時
+           IF     (SPA-HKNKBN          =   1   )
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+      *        規準日が労災以外の初診日であれば、労災の初診日でチェック
+               IF     (WRK-SYOYMD          =   SPA-SYOYMD-HKN )
+                   MOVE    SPA-SYOYMD-RSI      TO  WRK-SYOYMD-K
+               END-IF
+           ELSE
+               IF     (WRK-SYOYMD          =   SPA-SYOYMD-RSI )
+      *        規準日が労災の初診日であれば、労災以外の初診日でチェック
+                  MOVE    SPA-SYOYMD-HKN      TO  WRK-SYOYMD-K
+               END-IF
+           END-IF
+           IF      WRK-SYOYMD-K    NOT =   SPACE
+      *        初診料算定日＋１月後
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE    WRK-SYOYMD-K        TO  LNK-DAY6-KIJUN
+               MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+               MOVE    1                   TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+               IF      LNK-DAY6-KEISAN     <=  SPA-SRYYMD
+                   MOVE    SPACE           TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       2302-ERRCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5250,6 +5326,12 @@
       *    その他の自動発生分
            IF     WRK-SRYCD            =   "830000020"   OR
                                            "830000021"
+               MOVE    1               TO  FLG-ARI
+           END-IF
+      *
+      *    ダミー
+           IF     WRK-SRYCD            =   "099110001"   OR
+                                           "099120001"
                MOVE    1               TO  FLG-ARI
            END-IF
       *    継続管理加算自動発生分

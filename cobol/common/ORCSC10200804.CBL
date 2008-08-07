@@ -64,6 +64,7 @@
       * 04.01.00     NACL-多々納  07/10/26  悪性腫瘍特異物資治療管理コメント対応
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       * 04.03.00     NACL=多々納  08/07/17  在宅末期医療総合診療料複数回数可
+      * 04.03.00     NACL=多々納  08/08/07  労災初診料Ｈ２０年４月改正対応他
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -123,6 +124,7 @@
       *
            03  FLG-JIKASAN         PIC 9(01).
            03  FLG-TAIIN           PIC 9(01).
+           03  FLG-SYOHEN           PIC 9(01).
       *
            03  FLG-TBL             PIC 9(01).
            03  FLG-DEL             PIC 9(01).
@@ -296,6 +298,7 @@
       *
       *    初診算定日
            03  WRK-SYOYMD              PIC X(08).
+           03  WRK-SYOYMD-K            PIC X(08).
       *    入院日＋７日
            03  WRK-NYUINYMD-7           PIC X(08).
       *
@@ -4829,6 +4832,8 @@
                    MOVE    LNK-ORCSC-SYOYMD-OLD    TO  WRK-SYOYMD
                END-IF
            END-IF
+      *
+           MOVE    ZERO                TO  FLG-SYOHEN
       *    同じ科で同日初診がある時、同日初診
            IF      WRK-COM-SRYKA (IDX-Z)   =   SPACE
                MOVE    SPA-SRYKA           TO  WRK-SRYKA
@@ -4860,6 +4865,7 @@
                   (IDX-SINSATU2        >   ZERO)
                IF      WRK-COM-SRYKA(IDX-SINSATU2) =   WRK-SRYKA
                    MOVE    SPA-SRYYMD      TO  WRK-SYOYMD
+                   MOVE    1               TO  FLG-SYOHEN
                END-IF
            END-IF
       *@
@@ -4932,6 +4938,15 @@
                            END-IF
                        END-IF
                    END-IF
+      *!!!
+      *       初診算定日からの１ヵ月以内のエラーで、同日初診・退院以外
+      *       労災・労災外の初診算定がある時
+                   IF     (SPA-ERRCD           =   "0034")  AND
+                          (FLG-SYOHEN          =   ZERO  )  AND
+                          (SPA-SYOYMD-RSI  NOT =   SPACE )  AND
+                          (SPA-SYOYMD-HKN  NOT =   SPACE )
+                       PERFORM 2302-ERRCHK-SEC
+                   END-IF
                WHEN    WRK-KEIYMD          =   SPA-SRYYMD
                    CONTINUE
            END-EVALUATE
@@ -4941,6 +4956,62 @@
            END-IF
            .
        230-SIDOU-SYOSIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    初診算定日の警告チェック処理
+      *****************************************************************
+       2302-ERRCHK-SEC               SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SYOYMD-K
+      *    保険が労災の時
+           IF     (SPA-HKNKBN          =   1   )
+             AND  (SPA-RSI-JUNKYO  NOT =   "1" )
+      *        規準日が労災以外の初診日であれば、労災の初診日でチェック
+               IF     (WRK-SYOYMD          =   SPA-SYOYMD-HKN )
+                   MOVE    SPA-SYOYMD-RSI      TO  WRK-SYOYMD-K
+               END-IF
+           ELSE
+               IF     (WRK-SYOYMD          =   SPA-SYOYMD-RSI )
+      *        規準日が労災の初診日であれば、労災以外の初診日でチェック
+                  MOVE    SPA-SYOYMD-HKN      TO  WRK-SYOYMD-K
+               END-IF
+           END-IF
+           IF      WRK-SYOYMD-K    NOT =   SPACE
+      *        初診料算定日＋１月後
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY6-AREA
+               MOVE    "61"                TO  LNK-DAY6-IRAI
+               MOVE    WRK-SYOYMD-K        TO  LNK-DAY6-KIJUN
+               MOVE    "2"                 TO  LNK-DAY6-ZOGENPTN
+               MOVE    1                   TO  LNK-DAY6-ZOGEN
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY6-AREA
+      *TEST
+      *        DISPLAY "C10 WRK-SYOYMD-K:" WRK-SYOYMD-K
+      *          ",LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+      *          ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
+      *TEST
+               IF      LNK-DAY6-KEISAN     <=  SPA-SRYYMD
+                   MOVE    SPACE           TO  SPA-ERRCD
+               ELSE
+                   IF      FLG-SIDOU       NOT =   1
+                       IF      WRK-KEIYMDZEN   <=   SPA-SRYYMD
+                           MOVE    SPACE           TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               END-IF
+               IF      SPA-ERRCD           =   SPACE
+                   IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
+                     AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
+                       MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                       MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                                (IDX-Z)
+                       MOVE    "K026"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+           .
+       2302-ERRCHK-EXT.
            EXIT.
       *****************************************************************
       *    入院中の回数チェック処理
