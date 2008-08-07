@@ -66,6 +66,7 @@
       *                                     平成２０年４月以降は公費付加
       *                                     情報より記載判定はしない
       *  04.02.04    NACL-藤原    08/04/23  後期高齢者の船員保険を本人とする
+      *  04.02.05    NACL-門脇    08/08/07  精神通院の請求点判定追加
       *
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
       *****************************************************************
@@ -1020,8 +1021,10 @@ grpsys                                             SPA-AREA
                ELSE
                    MOVE    1                      TO  IDX1
                    IF   COMB-KOHHKNNUM (IDX)  =  "972" OR "974" OR "012"
+                                                       OR "021"
                      IF    ( WRK-TEISEIKBN       NOT =   SPACE )
-                     AND   ( COMB-KOHHKNNUM (IDX)    =   "012" )
+                     AND   ( COMB-KOHHKNNUM (IDX)    =   "012"
+                                                     OR  "021" )
                      AND   ( COMB-HKNNUM             =   SPACE )
                          CONTINUE
                      ELSE 
