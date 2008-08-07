@@ -52,6 +52,8 @@
       *  04.03.05    NACL-Æ£¸¶    08/07/09  ²¾¥ì¥»ºîÀ®¡Ê±¡³°½èÊý´Þ¤à¡ËÂÐ±þ
       *  04.03.06    NACL-Æ£¸¶    08/07/23  Á¥°÷ÊÝ¸±£³³ä¤Î¡Ö¿¦Ì³¾å¤Î»öÍ³¡×¤Îµ­ºÜ
       *  04.03.07    NACL-Æ£¸¶    08/08/05  ´µ¼ÔÅÐÏ¿ÆÃµ­»ö¹àÆþÎÏÂÐ±þ
+      *  04.03.08    NACL-Æ£¸¶    08/07/23  µÜ¾ë¸©¡¢´ä¼ê¸©ÃÏ¿ÌÂÐ±þ
+      *                                     £²£°£°£¸Ç¯£¶·î¡ÁÂÐ¾Ý 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -2774,6 +2776,19 @@
            IF      WRK-PARA-PRTKBN     =   "2"
                MOVE    "ÅÀ¸¡ÍÑ¥ì¥»¥×¥È"    TO  HC06-LABEL
            END-IF     
+      *
+      *    µÜ¾ë¸©¡¢´ä¼ê¸©ÃÏ¿ÌÂÐ±þ
+           IF      CNT-PAGE            =   1
+               IF    ( RECE62-PREFNUM      =   "03"    OR  "04" )
+               AND   ( RECE62-SRYYM        >=  200806           )
+                   EVALUATE    RECE62-RJNGAIKOHFTN (1)
+                       WHEN    1
+                           MOVE    "¡ÊÉÔ¾Ü¡Ë"  TO  HC06-HEAD4 (2)(1:8)
+                       WHEN    2
+                           MOVE    "¡ÊºÒ£±¡Ë"  TO  HC06-HEAD4 (2)(1:8)
+                   END-EVALUATE
+               END-IF
+           END-IF
            .
        310-HCN06-HEAD-HEN-EXT.
            EXIT.
@@ -8765,6 +8780,16 @@
                        PERFORM 39041-RECE10-TOKKI-HENSYU-SEC
                    END-IF
                END-PERFORM
+           END-IF
+      *
+      *    µÜ¾ë¸©¡¢´ä¼ê¸©ÃÏ¿ÌÂÐ±þ
+           IF    ( RECE62-PREFNUM      =   "03"    OR  "04" )
+           AND   ( RECE62-SRYYM        >=  200806           )
+               IF      RECE62-RJNGAIKOHFTN (1)
+                                           >   ZERO
+                   MOVE    RECE62-RJNGAIKOHFTN (1)
+                                           TO  RECE10-ETC-YKZFTN (1)
+               END-IF
            END-IF
       *
            MOVE    "00000000000000000000000000000000000000000000000000"
