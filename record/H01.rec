@@ -1862,6 +1862,10 @@ H01	{
 		HENREIYM	{
 			value	varchar(7);
 		};
+		SKYYM_KOHSKY	{
+			 state   int;
+			value	varchar(7);
+		};
 		SRYKANAME	{
                     style   varchar(20);
 			value	varchar(18);
