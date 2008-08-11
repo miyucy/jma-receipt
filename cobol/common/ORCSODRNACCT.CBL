@@ -33,6 +33,7 @@
       *  02.07.02    NACL-小豆沢  05.12.12  転科、転棟、転室対応
       *  02.07.03    NACL-小豆沢  05.12.13  入院取消対応
       *  03.05.00    NACL-太田    07/05/28  グループ診療対応
+      *  04.03.00    NACL-小豆沢  08/08/11  特定入院料コード取得をサブプロに変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -392,6 +393,9 @@
       *
       *    入院診療行為照会テーブル
            COPY  "CPORCSS010.INC".
+      *
+      *    特定入院料コード取得サブ
+           COPY  "CPORCSTOKNYUIN.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -1852,170 +1856,21 @@
       *    特定入院料セット処理
       *****************************************************************
        4801-TOKTEI-NYUIN-SET-SEC   SECTION.
-      *    病棟
-           IF  LNK-PTNYUINRRK-TOKUTEI-KBN   =   "1"
-             EVALUATE    LNK-PTNYUINRRK-TOKUTEI-NYUIN
-               WHEN    "01"
-                       MOVE   "190075810"   TO  SYOKIKSN-IN-KHNSRYCD
-             END-EVALUATE
-           END-IF
-      *    病棟
-           IF  LNK-PTNYUINRRK-TOKUTEI-KBN   =   "2"
-             EVALUATE    LNK-PTNYUINRRK-TOKUTEI-NYUIN
-               WHEN    "01"
-                       MOVE   "190111110"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "02"
-                       MOVE   "190111210"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "03"
-                       MOVE   "190055210"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "04"
-                       MOVE   "190055310"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "05"
-                       MOVE   "190739910"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "06"
-                       MOVE   "190740110"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "07"
-                       MOVE   "190055010"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "08"
-                       MOVE   "190055110"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "09"
-                       MOVE   "190028910"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "10"
-                   IF  SYOKIKSN-IN-SANTEISTYMD(1:6) <= "200603"
-                       MOVE   "190111410"   TO  SYOKIKSN-IN-KHNSRYCD
-                   ELSE
-                       MOVE   "190121010"   TO  SYOKIKSN-IN-KHNSRYCD
-                   END-IF
-               WHEN    "11"
-                   IF  SYOKIKSN-IN-SANTEISTYMD(1:6) <= "200603"
-                       MOVE   "190066910"   TO  SYOKIKSN-IN-KHNSRYCD
-                   ELSE
-                       MOVE   "190121110"   TO  SYOKIKSN-IN-KHNSRYCD
-                   END-IF
-               WHEN    "12"
-                   IF  SYOKIKSN-IN-SANTEISTYMD(1:6) <= "200603"
-                       MOVE   "190067010"   TO  SYOKIKSN-IN-KHNSRYCD
-                   ELSE
-                       MOVE   "190121210"   TO  SYOKIKSN-IN-KHNSRYCD
-                   END-IF
-               WHEN    "13"
-                       MOVE   "190075910"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "14"
-                       MOVE   "190075810"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "15"
-                       MOVE   "190813410"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "16"
-                       MOVE   "190124910"   TO  SYOKIKSN-IN-KHNSRYCD
-             END-EVALUATE
-           END-IF
-      *    病室
-           IF  LNK-PTNYUINRRK-TOKUTEI-KBN   =   "3"
-             EVALUATE    LNK-PTNYUINRRK-TOKUTEI-NYUIN
-               WHEN    "01"
-                       MOVE   "190075710"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "02"
-                       MOVE   "190774110"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "03"
-                       MOVE   "190024510"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "04"
-                       MOVE   "190110210"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "05"
-                       MOVE   "190110310"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "06"
-                       MOVE   "190024310"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "07"
-                       MOVE   "190110410"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "08"
-                       MOVE   "190110510"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "09"
-                       MOVE   "190024610"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "10"
-                       MOVE   "190024710"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "11"
-                       MOVE   "190066710"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "12"
-                       MOVE   "190066810"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "13"
-                       MOVE   "190024810"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "14"
-                       MOVE   "190075510"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "15"
-                       MOVE   "190788810"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "16"
-                       MOVE   "190116310"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "17"
-                       MOVE   "190117310"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "18"
-                       MOVE   "190117410"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "20"
-                       MOVE   "190076710"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "21"
-                       MOVE   "190076810"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "22"
-                       MOVE   "190799410"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "23"
-                       MOVE   "190808910"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "24"
-                       MOVE   "190799510"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "25"
-                       MOVE   "190121310"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "26"
-                       MOVE   "190121410"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "27"
-                       MOVE   "190121510"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "28"
-                       MOVE   "190121610"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "29"
-                       MOVE   "190121710"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "30"
-                       MOVE   "190121810"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "31"
-                       MOVE   "190122010"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "32"
-                       MOVE   "190122110"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "33"
-                       MOVE   "190122210"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "34"
-                       MOVE   "190122310"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "35"
-                       MOVE   "190122410"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "36"
-                       MOVE   "190122510"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "37"
-                       MOVE   "190123710"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "38"
-                       MOVE   "190123810"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "39"
-                       MOVE   "190123910"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "40"
-                       MOVE   "190124010"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "41"
-                       MOVE   "190124110"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "42"
-                       MOVE   "190124210"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "43"
-                       MOVE   "190124310"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "44"
-                       MOVE   "190124410"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "45"
-                       MOVE   "190124510"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "46"
-                       MOVE   "190124610"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "47"
-                       MOVE   "190124710"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "48"
-                       MOVE   "190124810"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "49"
-                       MOVE   "190125010"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "50"
-                       MOVE   "190125310"   TO  SYOKIKSN-IN-KHNSRYCD
-               WHEN    "51"
-                       MOVE   "190125210"   TO  SYOKIKSN-IN-KHNSRYCD
-             END-EVALUATE
+      *
+      *    特定入院料コードをサブプロより取得
+           INITIALIZE                           ORCSTOKNYUIN-AREA
+           MOVE    PTNYUINRRK-TOKUTEI-KBN   TO  LNK-TOKNYUIN-KBN
+           MOVE    PTNYUINRRK-TOKUTEI-NYUIN TO  LNK-TOKNYUIN-NYUIN
+           MOVE    SYOKIKSN-IN-SANTEISTYMD(1:6)
+                                            TO  LNK-TOKNYUIN-SANTEIYM
+           CALL    "ORCSTOKNYUIN"      USING    ORCSTOKNYUIN-AREA
+                                                SPA-AREA
+           IF      LNK-TOKNYUIN-RC          =   ZERO
+               MOVE   LNK-TOKNYUIN-SRYCD    TO  SYOKIKSN-IN-KHNSRYCD
            END-IF
       *
            .
-       4801-BTU-TOKTEI-NYUIN-SET-EXT.
+       4801-TOKTEI-NYUIN-SET-EXT.
            EXIT.
       *
       *****************************************************************
