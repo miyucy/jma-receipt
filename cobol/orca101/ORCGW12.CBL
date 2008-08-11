@@ -95,8 +95,12 @@
       *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.02.02    NACL-Æ£¸¶    08/04/21  ¹­°èÏ¢¹ç¿ÇÎÅÊó½·ÀÁµá½ñ¶èÊ¬
       *                                     ¤ÎÄÉ²Ã
+      *
       *  04.03.00    NACL-ÂÀÅÄ    08/06/17  ¥¿¥ÖÀÚÂØ¥Ü¥¿¥óÄÉ²Ã
       *  04.03.01    NACL-Æ£¸¶    08/06/19  °å»ÕÊÌ½ÐÎÏÂÐ±þ
+      *  04.03.02    NACL-Æ£¸¶    08/08/07  Ï«ºÒ¥³¥á¥ó¥Èµ­ºÜ¶èÊ¬
+      *                                     Æþ±¡ÎÁÌ¤»»Äê»þ¥³¥á¥ó¥Èµ­ºÜ¶èÊ¬
+      *                                     Ï«ºÒÏÈµ­ºÜ¶èÊ¬¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -252,6 +256,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-KOUIKIKBNMEI
                                               PIC X(32).
+                       09  SPA-GMN-COMMENT-NYUINRYO-G.
+                           11  SPA-GMN-COMMENT-NYUINRYO
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-COMMENT-NYUINRYOMEI
+                                              PIC X(32).
                        09  SPA-GMN-RECECOMKBN-G.
                            11  SPA-GMN-RECECOMKBN
                                               PIC X(01).
@@ -313,6 +323,24 @@
                            11  SPA-GMN-PRT-CHECKKBNMEI
                                               PIC X(20).
       *
+                       09  SPA-GMN-FRAME-ROUPRTKBN-G.
+                           11  SPA-GMN-FRAME-ROUPRTKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-FRAME-ROUPRTKBNMEI
+                                              PIC X(20).
+                       09  SPA-GMN-FRAME-ROUPRTKBN-N-G.
+                           11  SPA-GMN-FRAME-ROUPRTKBN-N
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-FRAME-ROUPRTKBN-NMEI
+                                              PIC X(20).
+                       09  SPA-GMN-COMMENT-ROU-G.
+                           11  SPA-GMN-COMMENT-ROU
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-COMMENT-ROUMEI
+                                              PIC X(20).
                        09  SPA-GMN-FRAME-JIBAIPRTKBN-G.
                            11  SPA-GMN-FRAME-JIBAIPRTKBN
                                               PIC X(01).
@@ -666,6 +694,15 @@
                    07  SPA-GMN-KOUIKIKBN-MAX
                                               PIC 9(02).    
       *                                        
+                   07  SPA-GMN-COMMENT-NYUINRYOLST       OCCURS  5.
+                       09  SPA-GMN-COMMENT-NYUINRYOL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-COMMENT-NYUINRYOMEIL
+                                              PIC X(32).
+                   07  SPA-GMN-COMMENT-NYUINRYO-MAX
+                                              PIC 9(02).    
+      *                                        
                    07  SPA-GMN-RECECOMKBNLST  OCCURS  2.
                        09  SPA-GMN-RECECOMKBNL
                                               PIC X(01).
@@ -912,7 +949,33 @@
                    07  SPA-GMN-SYUKA-KOUIKI-MAX
                                                PIC 9(02).   
       * 
-                   07  SPA-GMN-FRAME-JIBAIPRTKBNLST  OCCURS  2.
+                   07  SPA-GMN-FRAME-ROUPRTKBNLST      OCCURS  2.
+                       09  SPA-GMN-FRAME-ROUPRTKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-FRAME-ROUPRTKBNMEIL
+                                              PIC X(20).
+                   07  SPA-GMN-FRAME-ROUPRTKBN-MAX PIC 9(02).   
+      * 
+                   07  SPA-GMN-FRAME-ROUPRTKBN-NLST    OCCURS  2.
+                       09  SPA-GMN-FRAME-ROUPRTKBN-NL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-FRAME-ROUPRTKBN-NMEIL
+                                              PIC X(20).
+                   07  SPA-GMN-FRAME-ROUPRTKBN-N-MAX
+                                              PIC 9(02).   
+      * 
+                   07  SPA-GMN-COMMENT-ROULST          OCCURS  2.
+                       09  SPA-GMN-COMMENT-ROUL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-COMMENT-ROUMEIL
+                                              PIC X(20).
+                   07  SPA-GMN-COMMENT-ROU-MAX
+                                              PIC 9(02).   
+      * 
+                   07  SPA-GMN-FRAME-JIBAIPRTKBNLST    OCCURS  2.
                        09  SPA-GMN-FRAME-JIBAIPRTKBNL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
@@ -1471,6 +1534,24 @@
            MOVE    "¹ñÊÝÊ¬¤È¹­°èÏ¢¹çÊ¬¤ò¤Þ¤È¤á¤ÆºîÀ®"
                                        TO  SPA-GMN-KOUIKIKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-KOUIKIKBN-MAX 
+      *     
+           MOVE    "0"                 TO  SPA-GMN-COMMENT-NYUINRYOL(1)
+           MOVE    "¼«Æ°µ­ºÜ¤·¤Ê¤¤"
+                                       TO  SPA-GMN-COMMENT-NYUINRYOMEIL
+                                                                    (1)
+           MOVE    "1"                 TO  SPA-GMN-COMMENT-NYUINRYOL(2)
+           MOVE    "¡Ö¼«Èñ¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ¡×¤Èµ­ºÜ"
+                                       TO  SPA-GMN-COMMENT-NYUINRYOMEIL
+                                                                    (2)
+           MOVE    "2"                 TO  SPA-GMN-COMMENT-NYUINRYOL(3)
+           MOVE    "¡ÖÂ¾ÊÝ¸±¤Ë¤ÆÆþ±¡ÎÁ»»ÄêºÑ¡×¤Èµ­ºÜ"
+                                       TO  SPA-GMN-COMMENT-NYUINRYOMEIL
+                                                                    (3)
+           MOVE    "3"                 TO  SPA-GMN-COMMENT-NYUINRYOL(4)
+           MOVE    "ÊÝ¸±ÁÈ¹ç¤»¤Ë½à¤º¤ë¼«Æ°µ­ºÜ"
+                                       TO  SPA-GMN-COMMENT-NYUINRYOMEIL
+                                                                    (4)
+           MOVE    4                   TO  SPA-GMN-COMMENT-NYUINRYO-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN1L    (1)
            MOVE    "¼ïÊÌ¡¦ÊÝ¸±¼ÔÈÖ¹æ¡¦¥«¥Ê»áÌ¾½ç"
@@ -1765,6 +1846,29 @@
            MOVE    "2"             TO  SPA-GMN-SYUKA-KOUIKIL    (3)
            MOVE    "²ÊÊÌ°õºþ¤Î¤ß"  TO  SPA-GMN-SYUKA-KOUIKIMEIL (3)
            MOVE    3               TO  SPA-GMN-SYUKA-KOUIKI-MAX 
+      *
+           MOVE    "0"             TO  SPA-GMN-FRAME-ROUPRTKBNL    (1)
+           MOVE    "ÏÈ¤òµ­ºÜ¤·¤Ê¤¤"
+                                   TO  SPA-GMN-FRAME-ROUPRTKBNMEIL (1)
+           MOVE    "1"             TO  SPA-GMN-FRAME-ROUPRTKBNL    (2)
+           MOVE    "ÏÈ¤òµ­ºÜ¤¹¤ë"  TO  SPA-GMN-FRAME-ROUPRTKBNMEIL (2)
+           MOVE    2               TO  SPA-GMN-FRAME-ROUPRTKBN-MAX 
+      *
+           MOVE    "0"             TO  SPA-GMN-FRAME-ROUPRTKBN-NL  (1)
+           MOVE    "ÏÈ¤òµ­ºÜ¤·¤Ê¤¤"
+                                   TO
+                                   SPA-GMN-FRAME-ROUPRTKBN-NMEIL   (1)
+           MOVE    "1"             TO  SPA-GMN-FRAME-ROUPRTKBN-NL  (2)
+           MOVE    "ÏÈ¤òµ­ºÜ¤¹¤ë"  TO
+                                   SPA-GMN-FRAME-ROUPRTKBN-NMEIL   (2)
+           MOVE    2               TO  SPA-GMN-FRAME-ROUPRTKBN-N-MAX 
+      *
+           MOVE    "0"             TO  SPA-GMN-COMMENT-ROUL    (1)
+           MOVE    "½ýÉÂ¤Î·Ð²áÍó¤Ëµ­ºÜ"
+                                   TO  SPA-GMN-COMMENT-ROUMEIL (1)
+           MOVE    "1"             TO  SPA-GMN-COMMENT-ROUL    (2)
+           MOVE    "Å¬ÍÑÍó¤Ëµ­ºÜ"  TO  SPA-GMN-COMMENT-ROUMEIL (2)
+           MOVE    2               TO  SPA-GMN-COMMENT-ROU-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-FRAME-JIBAIPRTKBNL    (1)
            MOVE    "ÏÈ¤òµ­ºÜ¤·¤Ê¤¤"
@@ -2426,6 +2530,58 @@
                END-IF
            END-PERFORM
       *
+           MOVE    SYS-200501-COMMENT-NYUINRYO-KSIKBN
+                                       TO  SPA-GMN-COMMENT-NYUINRYO
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-COMMENT-NYUINRYO-MAX
+               IF      SPA-GMN-COMMENT-NYUINRYO 
+                               =   SPA-GMN-COMMENT-NYUINRYOL (IDY)
+                   MOVE    SPA-GMN-COMMENT-NYUINRYOLST (IDY)
+                                       TO  SPA-GMN-COMMENT-NYUINRYO-G
+                   MOVE    SPA-GMN-COMMENT-NYUINRYO-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SYS-200501-FRAME-ROUPRTKBN
+                                       TO  SPA-GMN-FRAME-ROUPRTKBN
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >   SPA-GMN-FRAME-ROUPRTKBN-MAX
+               IF      SPA-GMN-FRAME-ROUPRTKBN
+                           =   SPA-GMN-FRAME-ROUPRTKBNL (IDY)
+                   MOVE    SPA-GMN-FRAME-ROUPRTKBNLST (IDY)
+                                       TO  SPA-GMN-FRAME-ROUPRTKBN-G
+                   MOVE    SPA-GMN-FRAME-ROUPRTKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SYS-200501-FRAME-ROUPRTKBN-N
+                                       TO  SPA-GMN-FRAME-ROUPRTKBN-N
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >   SPA-GMN-FRAME-ROUPRTKBN-N-MAX
+               IF      SPA-GMN-FRAME-ROUPRTKBN-N
+                           =   SPA-GMN-FRAME-ROUPRTKBN-NL (IDY)
+                   MOVE    SPA-GMN-FRAME-ROUPRTKBN-NLST (IDY)
+                                       TO  SPA-GMN-FRAME-ROUPRTKBN-N-G
+                   MOVE    SPA-GMN-FRAME-ROUPRTKBN-N-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SYS-200501-COMMENT-ROU-KSIKBN
+                                       TO  SPA-GMN-COMMENT-ROU
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >   SPA-GMN-COMMENT-ROU-MAX
+               IF      SPA-GMN-COMMENT-ROU
+                           =   SPA-GMN-COMMENT-ROUL (IDY)
+                   MOVE    SPA-GMN-COMMENT-ROULST (IDY)
+                                       TO  SPA-GMN-COMMENT-ROU-G
+                   MOVE    SPA-GMN-COMMENT-ROU-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+      *
       *    ¥ì¥»¥×¥È¡ÊÊÔÄÖ½ç¡Ë¾ðÊó
            MOVE    SPACE               TO  SYS-2008-REC
            INITIALIZE                      SYS-2008-REC
@@ -2823,6 +2979,20 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    WRK-CONS-JYOKEN-TENSU
                                            TO  SPA-GMN-NI-JYOKEN6
            END-IF                                              
+           IF     SPA-GMN-FRAME-ROUPRTKBN    =   SPACE
+               MOVE    SPA-GMN-FRAME-ROUPRTKBNLST (1)
+                                           TO
+                                       SPA-GMN-FRAME-ROUPRTKBN-G
+           END-IF                                              
+           IF     SPA-GMN-FRAME-ROUPRTKBN-N  =   SPACE
+               MOVE    SPA-GMN-FRAME-ROUPRTKBN-NLST (1)
+                                           TO
+                                       SPA-GMN-FRAME-ROUPRTKBN-N-G
+           END-IF                                              
+           IF     SPA-GMN-COMMENT-ROU    =   SPACE
+               MOVE    SPA-GMN-COMMENT-ROULST (1)
+                                           TO  SPA-GMN-COMMENT-ROU-G
+           END-IF                                              
            IF     SPA-GMN-FRAME-JIBAIPRTKBN    =   SPACE
                MOVE    SPA-GMN-FRAME-JIBAIPRTKBNLST (1)
                                            TO
@@ -2840,6 +3010,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            IF     SPA-GMN-JIBAIPRTKBN-N  =   SPACE
                MOVE    SPA-GMN-JIBAIPRTKBN-NLST (1)
                                            TO  SPA-GMN-JIBAIPRTKBN-N-G
+           END-IF                                              
+           IF     SPA-GMN-COMMENT-NYUINRYO-G   =   SPACE
+               MOVE    SPA-GMN-COMMENT-NYUINRYOLST (2)
+                                           TO
+                                           SPA-GMN-COMMENT-NYUINRYO-G
            END-IF                                              
       *
            MOVE    1                   TO  SPA-GMN-CUR
@@ -2939,6 +3114,8 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-RJNGNBKKBN      TO  SPA-GMN-RJNGNBKKBN-G 
            MOVE    W12-JIHITEKKSIKBN   TO  SPA-GMN-JIHITEKKSIKBN-G 
            MOVE    W12-KOUIKIKBN       TO  SPA-GMN-KOUIKIKBN-G 
+           MOVE    W12-COMMENT-NYUINRYO
+                                       TO  SPA-GMN-COMMENT-NYUINRYO-G 
            MOVE    W12-SYAPRTNM-NEXT   TO  SPA-GMN-SYAPRTNM-NEXT
            MOVE    W12-KKHPRTNM-NEXT   TO  SPA-GMN-KKHPRTNM-NEXT
            MOVE    W12-SRYKAHENKBN     TO  SPA-GMN-SRYKAHENKBN-G
@@ -2962,6 +3139,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-KOUIKIPRTNM-NEXT-N
                                        TO  SPA-GMN-KOUIKIPRTNM-NEXT-N
       *
+           MOVE    W12-FRAME-ROU       TO  SPA-GMN-FRAME-ROUPRTKBN-G
+           MOVE    W12-FRAME-ROU-N     TO  SPA-GMN-FRAME-ROUPRTKBN-N-G
+           MOVE    W12-COMMENT-ROU     TO  SPA-GMN-COMMENT-ROU-G
            MOVE    W12-FRAME-JIBAI     TO  SPA-GMN-FRAME-JIBAIPRTKBN-G
            MOVE    W12-FRAME-JIBAI-N   TO  SPA-GMN-FRAME-JIBAIPRTKBN-N-G
            MOVE    W12-JIBAIPRTKBN     TO  SPA-GMN-JIBAIPRTKBN-G
@@ -3090,6 +3270,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
+           PERFORM 4163-COMMENT-NYUINRYO-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
            PERFORM 4106-PREFPRGID-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
@@ -3161,6 +3346,21 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
       *
            PERFORM 4157-PRTJYUN5-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4164-FRAME-ROUPRTKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4165-FRAME-ROUPRTKBN-N-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4166-COMMENT-ROU-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -3909,7 +4109,35 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF    
       *
            .
-       4118-KOUIKIKBN-CHK-EXT.
+       4156-KOUIKIKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÎÁÌ¤»»Äê»þ¥³¥á¥ó¥Èµ­ºÜ¶èÊ¬¥Á¥§¥Ã¥¯
+      *****************************************************************
+       4163-COMMENT-NYUINRYO-CHK-SEC      SECTION.
+      *
+           IF      SPA-GMN-COMMENT-NYUINRYO    =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-COMMENT-NYUINRYO-MAX
+                        OR     SPA-GMN-COMMENT-NYUINRYO
+                                   =   SPA-GMN-COMMENT-NYUINRYOL (IDY)
+                   CONTINUE
+               END-PERFORM
+      * 
+               IF      IDY <=      SPA-GMN-COMMENT-NYUINRYO-MAX
+                   MOVE    SPA-GMN-COMMENT-NYUINRYOLST (IDY)
+                                          TO  SPA-GMN-COMMENT-NYUINRYO-G
+               ELSE
+                   MOVE    60             TO  SPA-GMN-CUR
+                   MOVE    "0054"         TO  SPA-ERRCD
+               END-IF
+           END-IF    
+      *
+           .
+       4163-COMMENT-NYUINRYO-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4874,6 +5102,93 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    ÏÈµ­ºÜ¶èÊ¬¡ÊÏ«ºÒ¡¦Æþ±¡³°¡Ë¥Á¥§¥Ã¥¯
+      *****************************************************************
+       4164-FRAME-ROUPRTKBN-CHK-SEC  SECTION.
+      *
+           IF      SPA-GMN-FRAME-ROUPRTKBN   =   SPACE
+               CONTINUE         
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-FRAME-ROUPRTKBN-MAX
+                   IF      SPA-GMN-FRAME-ROUPRTKBN
+                                   =   SPA-GMN-FRAME-ROUPRTKBNL (IDY)
+                       MOVE    SPA-GMN-FRAME-ROUPRTKBNLST (IDY)
+                                       TO  SPA-GMN-FRAME-ROUPRTKBN-G
+                       MOVE    SPA-GMN-FRAME-ROUPRTKBN-MAX
+                                       TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-FRAME-ROUPRTKBNMEI    =   SPACE
+                   MOVE    212                 TO  SPA-GMN-CUR
+                   MOVE    "0055"              TO  SPA-ERRCD
+               END-IF
+           END-IF     
+      *
+           .
+       4164-FRAME-ROUPRTKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÏÈµ­ºÜ¶èÊ¬¡ÊÏ«ºÒ¡¦Æþ±¡¡Ë¥Á¥§¥Ã¥¯
+      *****************************************************************
+       4165-FRAME-ROUPRTKBN-N-CHK-SEC  SECTION.
+      *
+           IF      SPA-GMN-FRAME-ROUPRTKBN-N   =   SPACE
+               CONTINUE         
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >   SPA-GMN-FRAME-ROUPRTKBN-N-MAX
+                   IF      SPA-GMN-FRAME-ROUPRTKBN-N
+                                   =   SPA-GMN-FRAME-ROUPRTKBN-NL(IDY)
+                       MOVE    SPA-GMN-FRAME-ROUPRTKBN-NLST (IDY)
+                                       TO  SPA-GMN-FRAME-ROUPRTKBN-N-G
+                       MOVE    SPA-GMN-FRAME-ROUPRTKBN-N-MAX
+                                       TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-FRAME-ROUPRTKBN-NMEI    =   SPACE
+                   MOVE    213                 TO  SPA-GMN-CUR
+                   MOVE    "0056"              TO  SPA-ERRCD
+               END-IF
+           END-IF     
+      *
+           .
+       4165-FRAME-ROUPRTKBN-N-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ï«ºÒ¥³¥á¥ó¥Èµ­ºÜ¶èÊ¬¥Á¥§¥Ã¥¯
+      *****************************************************************
+       4166-COMMENT-ROU-CHK-SEC  SECTION.
+      *
+           IF      SPA-GMN-COMMENT-ROU   =   SPACE
+               CONTINUE         
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-COMMENT-ROU-MAX
+                   IF      SPA-GMN-COMMENT-ROU
+                                   =   SPA-GMN-COMMENT-ROUL (IDY)
+                       MOVE    SPA-GMN-COMMENT-ROULST (IDY)
+                                       TO  SPA-GMN-COMMENT-ROU-G
+                       MOVE    SPA-GMN-COMMENT-ROU-MAX
+                                       TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-COMMENT-ROUMEI    =   SPACE
+                   MOVE    214                 TO  SPA-GMN-CUR
+                   MOVE    "0057"              TO  SPA-ERRCD
+               END-IF
+           END-IF     
+      *
+           .
+       4166-COMMENT-ROU-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ÏÈµ­ºÜ¶èÊ¬¡Ê¼«ÇåÀÕ¡¦Æþ±¡³°¡Ë¥Á¥§¥Ã¥¯
       *****************************************************************
        4146-FRAME-JIBAIPRTKBN-CHK-SEC  SECTION.
@@ -5145,7 +5460,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                            WHEN    0
                                MOVE    1            TO  SPA-GMN-CUR
                            WHEN    1
-                               MOVE    200          TO  SPA-GMN-CUR
+                               MOVE    212          TO  SPA-GMN-CUR
                            WHEN    2
                                MOVE    100          TO  SPA-GMN-CUR
                            WHEN    3
@@ -5504,6 +5819,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-DRCD-PRTKBN     TO  SYS-200501-DRCD-PRTKBN
            MOVE    SPA-GMN-DRCD-PRTJYUNKBN TO
                                            SYS-200501-DRCD-PRTJYUNKBN
+           MOVE    SPA-GMN-COMMENT-NYUINRYO
+                                           TO
+                                   SYS-200501-COMMENT-NYUINRYO-KSIKBN
+           MOVE    SPA-GMN-FRAME-ROUPRTKBN
+                                           TO
+                                           SYS-200501-FRAME-ROUPRTKBN
+           MOVE    SPA-GMN-FRAME-ROUPRTKBN-N
+                                           TO
+                                           SYS-200501-FRAME-ROUPRTKBN-N
+           MOVE    SPA-GMN-COMMENT-ROU     TO
+                                           SYS-200501-COMMENT-ROU-KSIKBN
            MOVE    SYS-200501-REC          TO  SYSKANRI-REC
       *     
            PERFORM 800-MCNDATE-SEC
@@ -5779,6 +6105,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-RJNGNBKKBN-G     TO  W12-RJNGNBKKBN
            MOVE    SPA-GMN-JIHITEKKSIKBN-G  TO  W12-JIHITEKKSIKBN
            MOVE    SPA-GMN-KOUIKIKBN-G      TO  W12-KOUIKIKBN
+           MOVE    SPA-GMN-COMMENT-NYUINRYO-G
+                                            TO  W12-COMMENT-NYUINRYO
            MOVE    SPA-GMN-RECECOMKBN-G     TO  W12-RECECOMKBN
            MOVE    SPA-GMN-SRYKAHENKBN-G    TO  W12-SRYKAHENKBN
            MOVE    SPA-GMN-BTUNUM-KSIKBN-G  TO  W12-BTUNUM-KSIKBN
@@ -5990,6 +6318,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W12-KOUIKIKBN-COUNT 
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-COMMENT-NYUINRYO-MAX
+               MOVE    SPA-GMN-COMMENT-NYUINRYOLST (IDY)
+                                       TO  W12-COMMENT-NYUINRYOLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-COMMENT-NYUINRYO-MAX
+                                       TO  W12-COMMENT-NYUINRYO-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-RECECOMKBN-MAX
                MOVE    SPA-GMN-RECECOMKBNLST (IDY)
                                        TO  W12-RECECOMKBNLST (IDY)
@@ -6062,6 +6398,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPA-GMN-JBAIPRTNM-NEXT-N
                                        TO  W12-JBAIPRTNM-NEXT-N
+      *
+           MOVE    SPA-GMN-FRAME-ROUPRTKBN-G
+                                       TO  W12-FRAME-ROU
+      *
+           MOVE    SPA-GMN-FRAME-ROUPRTKBN-N-G
+                                       TO  W12-FRAME-ROU-N
+      *
+           MOVE    SPA-GMN-COMMENT-ROU-G
+                                       TO  W12-COMMENT-ROU
       *
            MOVE    SPA-GMN-FRAME-JIBAIPRTKBN-G
                                        TO  W12-FRAME-JIBAI
@@ -6284,6 +6629,32 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  W12-SYUKA-KOUIKI-COUNT 
      *     
            PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-FRAME-ROUPRTKBN-MAX
+               MOVE    SPA-GMN-FRAME-ROUPRTKBNLST (IDY)
+                                           TO
+                                           W12-FRAME-ROULST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-FRAME-ROUPRTKBN-MAX
+                                           TO  W12-FRAME-ROU-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-FRAME-ROUPRTKBN-N-MAX
+               MOVE    SPA-GMN-FRAME-ROUPRTKBN-NLST (IDY)
+                                           TO  W12-FRAME-ROU-NLST(IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-FRAME-ROUPRTKBN-N-MAX
+                                           TO  W12-FRAME-ROU-N-COUNT 
+     *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >   SPA-GMN-COMMENT-ROU-MAX
+               MOVE    SPA-GMN-COMMENT-ROULST (IDY)
+                                           TO
+                                           W12-COMMENT-ROULST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-COMMENT-ROU-MAX
+                                           TO  W12-COMMENT-ROU-COUNT 
+     *     
+           PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   SPA-GMN-FRAME-JIBAIPRTKBN-MAX
                MOVE    SPA-GMN-FRAME-JIBAIPRTKBNLST (IDY)
                                            TO
@@ -6487,6 +6858,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "°å»ÕÊÌ½ÐÎÏÀßÄêÆþÎÏ¥¨¥é¡¼"    TO  SPA-ERRMSG
                WHEN    "0053"
                    MOVE    "°å»ÕÊÌ½ÐÎÏ½çÆþÎÏ¥¨¥é¡¼"      TO  SPA-ERRMSG
+               WHEN    "0054"
+                   MOVE    "Æþ±¡ÎÁÌ¤»»Äê»þ¥³¥á¥ó¥Èµ­ºÜ¶èÊ¬ÆþÎÏ¥¨¥é¡¼"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0055"
+                   MOVE    "Ï«ºÒ¡¦ÏÈµ­ºÜ¶èÊ¬¡ÊÆþ±¡³°¡ËÆþÎÏ¥¨¥é¡¼"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0056"
+                   MOVE    "Ï«ºÒ¡¦ÏÈµ­ºÜ¶èÊ¬¡ÊÆþ±¡¡ËÆþÎÏ¥¨¥é¡¼"
+                                                         TO  SPA-ERRMSG
+               WHEN    "0057"
+                   MOVE    "Ï«ºÒ¥³¥á¥ó¥Èµ­ºÜ¶èÊ¬ÆþÎÏ¥¨¥é¡¼"
+                                                         TO  SPA-ERRMSG
       *
                WHEN    "0096"
                    STRING  "°ì³çºîÀ®½ÐÎÏ½ç¡Ê¹ñÊÝ¡Ë¤Î»ØÄê¤¬ÊÔÄÖ½ç¤Ç¤¹¡£"
@@ -6664,6 +7047,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                              TO   MCP-WIDGET
                 WHEN    49
                     MOVE  "PRTJYUNKBN5"      TO   MCP-WIDGET
+                WHEN    60
+                    MOVE  "COMMENT_NYUINRYO" TO   MCP-WIDGET
       *
                 WHEN    200
                     MOVE  "FRAME_JIBAI"      TO   MCP-WIDGET
@@ -6689,6 +7074,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "JBAIPRTNM_N"      TO   MCP-WIDGET
                 WHEN    209
                     MOVE  "JBAIPRTNM_NEXT_N" TO   MCP-WIDGET
+                WHEN    212
+                    MOVE  "FRAME_ROU"        TO   MCP-WIDGET
+                WHEN    213
+                    MOVE  "FRAME_ROU_N"      TO   MCP-WIDGET
+                WHEN    214 
+                    MOVE  "COMMENT_ROU"      TO   MCP-WIDGET
       *
                 WHEN    50
                     MOVE  "MOJI_KISAIKBN"    TO   MCP-WIDGET
@@ -6771,8 +7162,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
             EVALUATE    SPA-GMN-CUR
                 WHEN    1   THRU    10
                 WHEN    12  THRU    49
+                WHEN    60 
                     MOVE    0                TO  W12-PAGENO
-                WHEN    200 THRU    211
+                WHEN    200 THRU    214
                     MOVE    1                TO  W12-PAGENO
                 WHEN    100 THRU    110
                     MOVE    2                TO  W12-PAGENO
@@ -6833,17 +7225,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "RJNGNBKKBN"
                    MOVE    20          TO  SPA-GMN-CUR
                WHEN    "JIHITEKKSIKBN"
-                   MOVE    44           TO  SPA-GMN-CUR
+                   MOVE    44          TO  SPA-GMN-CUR
                WHEN    "KOUIKIKBN"
-                   MOVE    8           TO  SPA-GMN-CUR
+                   MOVE    60          TO  SPA-GMN-CUR
+               WHEN    "COMMENT_NYUINRYO"
+                   MOVE    9           TO  SPA-GMN-CUR
                WHEN    "PREFPRGID"
                    IF      SPA-BEDSU       >   ZERO
                        MOVE    13          TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    9           TO  SPA-GMN-CUR
+                       MOVE    28          TO  SPA-GMN-CUR
                    END-IF
                WHEN    "PREFPRGID1"
-                   MOVE    9           TO  SPA-GMN-CUR
+                   MOVE    28          TO  SPA-GMN-CUR
                WHEN    "SYAPRTNM"
                    MOVE    17          TO  SPA-GMN-CUR
                WHEN    "SYAPRTNM_NEXT"
@@ -6860,7 +7254,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF      SPA-BEDSU       >   ZERO
                        MOVE    24              TO  SPA-GMN-CUR
                    ELSE
-                       MOVE    28              TO  SPA-GMN-CUR
+                       MOVE    8               TO  SPA-GMN-CUR
                    END-IF
                WHEN    "SYAPRTNM_N"
                    MOVE    25          TO  SPA-GMN-CUR
@@ -6875,7 +7269,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "KOUIKIPRTNM_NEXT_N"
                    MOVE    14          TO  SPA-GMN-CUR
                WHEN    "NEXTPRTKBN"
-                   MOVE    28          TO  SPA-GMN-CUR
+                   MOVE    8           TO  SPA-GMN-CUR
                WHEN    "AUTODSPKBN"
                    MOVE    42          TO  SPA-GMN-CUR
                WHEN    "PRT_CHECKKBN"
@@ -6895,6 +7289,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "PRTJYUNKBN2"
                    MOVE    99          TO  SPA-GMN-CUR
       *
+               WHEN    "FRAME_ROU"
+                   MOVE    213         TO  SPA-GMN-CUR
+               WHEN    "FRAME_ROU_N"
+                   MOVE    214         TO  SPA-GMN-CUR
+               WHEN    "COMMENT_ROU"
+                   MOVE    200         TO  SPA-GMN-CUR
                WHEN    "FRAME_JIBAI"
                    MOVE    201         TO  SPA-GMN-CUR
                WHEN    "FRAME_JIBAI_N"

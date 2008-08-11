@@ -90,6 +90,12 @@
                     06  W12-KOUIKIKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-KOUIKIKBNLST
                             PIC X(34)   OCCURS  4 TIMES.
+                  05  W12-COMMENT-NYUINRYO-COMBO.
+                    06  W12-COMMENT-NYUINRYO.
+                      07  W12-VALUE   PIC X(34).
+                    06  W12-COMMENT-NYUINRYO-COUNT   PIC S9(9)   BINARY.
+                    06  W12-COMMENT-NYUINRYOLST
+                            PIC X(34)   OCCURS  5 TIMES.
                   05  W12-PREFPRGID.
                     06  W12-VALUE   PIC X(15).
                   05  W12-PREFPRGID1-STATE   PIC S9(9)   BINARY.
@@ -173,6 +179,24 @@
                     06  W12-PRTJYUNKBN2LST
                             PIC X(31)   OCCURS  10 TIMES.
                 04  W12-FI29.
+                  05  W12-FRAME-ROU-COMBO.
+                    06  W12-FRAME-ROU.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-FRAME-ROU-COUNT   PIC S9(9)   BINARY.
+                    06  W12-FRAME-ROULST
+                            PIC X(22)   OCCURS  2 TIMES.
+                  05  W12-FRAME-ROU-N-COMBO.
+                    06  W12-FRAME-ROU-N.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-FRAME-ROU-N-COUNT   PIC S9(9)   BINARY.
+                    06  W12-FRAME-ROU-NLST
+                            PIC X(22)   OCCURS  2 TIMES.
+                  05  W12-COMMENT-ROU-COMBO.
+                    06  W12-COMMENT-ROU.
+                      07  W12-VALUE   PIC X(22).
+                    06  W12-COMMENT-ROU-COUNT   PIC S9(9)   BINARY.
+                    06  W12-COMMENT-ROULST
+                            PIC X(22)   OCCURS  2 TIMES.
                   05  W12-FRAME-JIBAI-COMBO.
                     06  W12-FRAME-JIBAI.
                       07  W12-VALUE   PIC X(22).

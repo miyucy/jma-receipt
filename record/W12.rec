@@ -107,6 +107,13 @@ W12	{
 					count	int;
 					item	varchar(34)[4];
 				};
+				COMMENT_NYUINRYO_COMBO	{
+					COMMENT_NYUINRYO	{
+						value	varchar(34);
+					};
+					count	int;
+					item	varchar(34)[5];
+				};
 				PREFPRGID	{
 					value	varchar(15);
 				};
@@ -215,6 +222,27 @@ W12	{
 				};
 			};
 			fi29	{
+				FRAME_ROU_COMBO	{
+					FRAME_ROU	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
+				FRAME_ROU_N_COMBO	{
+					FRAME_ROU_N	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
+				COMMENT_ROU_COMBO	{
+					COMMENT_ROU	{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[2];
+				};
 				FRAME_JIBAI_COMBO	{
 					FRAME_JIBAI	{
 						value	varchar(22);
