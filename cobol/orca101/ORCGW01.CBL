@@ -87,6 +87,7 @@
       *  04.01.01    NACL-多々納  08/01/29  予約内容追加
       *  04.02.00    NACL-太田    08/03/06  病棟・病室入院基本料加算情報削除
       *  04.03.00    NACL-多々納  08/06/18  予約機能情報追加
+      *  04.03.00    NACL-多々納  08/08/11  外来迅速検体検査設定追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -256,6 +257,8 @@
            03  FILLER              PIC X(35)   VALUE
                "1014 包括診療行為設定情報".
            03  FILLER              PIC X(35)   VALUE
+               "1016 外来迅速検体検査設定情報".
+           03  FILLER              PIC X(35)   VALUE
                "1017 患者登録機能情報".
            03  FILLER              PIC X(35)   VALUE
                "1018 患者状態コメント情報".
@@ -317,11 +320,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   41.
+           03  TBL-KANRICD-TBL         OCCURS   42.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   41.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   42.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -493,6 +496,7 @@
            COPY    "W32.INC".
            COPY    "W33.INC".
            COPY    "W34.INC".
+           COPY    "W35.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -973,6 +977,12 @@
            IF      SPA-GMN-STYUKYMD   =   SPACE
                IF      WRK-MCP-WIDGET     =   "STYUKYMD"
                    MOVE    "00000000"         TO  SPA-GMN-STYUKYMD
+      *!!!
+      *        外来迅速検体検査はＨ２０．４からとする
+                   IF      SPA-GMN-KANRICD    =   "1016"
+                       MOVE    "H20. 4. 1"         TO  SPA-GMN-STYUKYMD
+                   END-IF
+      *!!!
                END-IF
                GO  TO  4102-STYUKYMD-CHK-EXT
            END-IF
@@ -982,13 +992,16 @@
            IF      SPA-ERRCD            =   SPACE
                MOVE    WRK-SYMD             TO  SPA-NAI-STYUKYMD 
                MOVE    WRK-HENYMDG          TO  SPA-GMN-STYUKYMD
+      *        外来迅速検体検査はＨ２０．４からとする
+               IF      SPA-GMN-KANRICD    =   "1016"
+                   IF      SPA-NAI-STYUKYMD    <   "20080401"
+                       MOVE    "1016"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+      *!!!
            ELSE
                MOVE    3                  TO  SPA-GMN-CUR
-               GO  TO  4102-STYUKYMD-CHK-EXT
            END-IF
-      *
-      *****MOVE    4                   TO  SPA-GMN-CUR
-      *
            .
        4102-STYUKYMD-CHK-EXT.
            EXIT.
@@ -1818,6 +1831,8 @@
                    MOVE    "W06"               TO  SPA-SAKIPG
                WHEN    "1014" 
                    MOVE    "W32"               TO  SPA-SAKIPG
+               WHEN    "1016" 
+                   MOVE    "W35"               TO  SPA-SAKIPG
                WHEN    "1007" 
       *---- (01.05.01) LINE ADD START --------------------------------
       *********WHEN    "1008"
@@ -2306,6 +2321,12 @@
                WHEN    "0022"
                    MOVE    "有効期間の変更はできません。"
                                                    TO  SPA-ERRMSG
+               WHEN    "1016" 
+                   STRING  "外来迅速検体検査設定は平成２０年４月１日"
+                           "以降の開始日として下さい。"
+                                               DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE                TO  WERR

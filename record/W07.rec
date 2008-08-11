@@ -259,10 +259,10 @@ W07	{
 				};
 				KENSAAUTO_COMB	{
 					KENSAAUTO	{
-						value	varchar(12);
+						value	varchar(30);
 					};
 					count	int;
-					item	varchar(12)[2];
+					item	varchar(30)[3];
 				};
 				BYOMEIAUTO_COMB	{
 					BYOMEIAUTO	{

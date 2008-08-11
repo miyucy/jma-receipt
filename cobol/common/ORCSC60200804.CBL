@@ -147,6 +147,7 @@
            03  IDX-STR             PIC 9(04).
            03  IDX-SANSO           PIC 9(04).
            03  IDX-KEN             PIC 9(04).
+           03  IDX-G               PIC 9(04).
       *
            03  IDX-N2              PIC 9(02).
       *    一時領域
@@ -220,12 +221,14 @@
       *    検体検査管理加算
            03  FLG-KENTAI              PIC 9(01).
            03  WRK-KENTAI-DAY          PIC 9(02).
-      *    検体検査加算
+      *    外来迅速検体検査加算
            03  FLG-KENTAI-CHK          PIC 9(01).
            03  FLG-KENTAI2             PIC 9(01).
            03  WRK-KENTAI-SRYKA        PIC X(02). 
            03  WRK-KENTAI-HKNCOMBI     PIC X(04). 
            03  WRK-KENTAI2-CNT         PIC 9(03). 
+           03  FLG-KENTAI-NO            PIC 9(01).
+           03  FLG-KENTAI-CHK2          PIC 9(01).
       *
            03  WRK-TEI-CNT             PIC 9(03).
       *
@@ -543,62 +546,64 @@
            03  WRK-JYU-FLG             PIC X(01).
       *
       *    検体検査迅速実施加算対象
-       01  TBL-KENSA-TAI-AREA.
-           03  FILLER          PIC X(09)  VALUE    "160000310".
-           03  FILLER          PIC X(09)  VALUE    "160005010".
-           03  FILLER          PIC X(09)  VALUE    "160006810".
-           03  FILLER          PIC X(09)  VALUE    "160007610".
-           03  FILLER          PIC X(09)  VALUE    "160008010".
-           03  FILLER          PIC X(09)  VALUE    "160010010".
-           03  FILLER          PIC X(09)  VALUE    "160012010".
-           03  FILLER          PIC X(09)  VALUE    "160014510".
-           03  FILLER          PIC X(09)  VALUE    "160114010".
-           03  FILLER          PIC X(09)  VALUE    "160017010".
-           03  FILLER          PIC X(09)  VALUE    "160017410".
-           03  FILLER          PIC X(09)  VALUE    "160018910".
-           03  FILLER          PIC X(09)  VALUE    "160019010".
-           03  FILLER          PIC X(09)  VALUE    "160131950".
-           03  FILLER          PIC X(09)  VALUE    "160019210".
-           03  FILLER          PIC X(09)  VALUE    "160132150".
-           03  FILLER          PIC X(09)  VALUE    "160019310".
-           03  FILLER          PIC X(09)  VALUE    "160132250".
-           03  FILLER          PIC X(09)  VALUE    "160020010".
-           03  FILLER          PIC X(09)  VALUE    "160020210".
-           03  FILLER          PIC X(09)  VALUE    "160020410".
-           03  FILLER          PIC X(09)  VALUE    "160020910".
-           03  FILLER          PIC X(09)  VALUE    "160021110".
-           03  FILLER          PIC X(09)  VALUE    "160132450".
-           03  FILLER          PIC X(09)  VALUE    "160021410".
-           03  FILLER          PIC X(09)  VALUE    "160132650".
-           03  FILLER          PIC X(09)  VALUE    "160021510".
-           03  FILLER          PIC X(09)  VALUE    "160132750".
-           03  FILLER          PIC X(09)  VALUE    "160019410".
-           03  FILLER          PIC X(09)  VALUE    "160137950".
-           03  FILLER          PIC X(09)  VALUE    "160138150".
-           03  FILLER          PIC X(09)  VALUE    "160138750".
-           03  FILLER          PIC X(09)  VALUE    "160019510".
-           03  FILLER          PIC X(09)  VALUE    "160020610".
-           03  FILLER          PIC X(09)  VALUE    "160023410".
-           03  FILLER          PIC X(09)  VALUE    "160022410".
-           03  FILLER          PIC X(09)  VALUE    "160022510".
-           03  FILLER          PIC X(09)  VALUE    "160022610".
-           03  FILLER          PIC X(09)  VALUE    "160167250".
-           03  FILLER          PIC X(09)  VALUE    "160151050".
-           03  FILLER          PIC X(09)  VALUE    "160031710".
-           03  FILLER          PIC X(09)  VALUE    "160033210".
-           03  FILLER          PIC X(09)  VALUE    "160033310".
-           03  FILLER          PIC X(09)  VALUE    "160036510".
-           03  FILLER          PIC X(09)  VALUE    "160036710".
-           03  FILLER          PIC X(09)  VALUE    "160037510".
-           03  FILLER          PIC X(09)  VALUE    "160037210".
-           03  FILLER          PIC X(09)  VALUE    "160054710".
-           03  FILLER          PIC X(09)  VALUE    "160057710".
+      *01  TBL-KENSA-TAI-AREA.
+      *    03  FILLER          PIC X(09)  VALUE    "160000310".
+      *    03  FILLER          PIC X(09)  VALUE    "160005010".
+      *    03  FILLER          PIC X(09)  VALUE    "160006810".
+      *    03  FILLER          PIC X(09)  VALUE    "160007610".
+      *    03  FILLER          PIC X(09)  VALUE    "160008010".
+      *    03  FILLER          PIC X(09)  VALUE    "160010010".
+      *    03  FILLER          PIC X(09)  VALUE    "160012010".
+      *    03  FILLER          PIC X(09)  VALUE    "160014510".
+      *    03  FILLER          PIC X(09)  VALUE    "160114010".
+      *    03  FILLER          PIC X(09)  VALUE    "160017010".
+      *    03  FILLER          PIC X(09)  VALUE    "160017410".
+      *    03  FILLER          PIC X(09)  VALUE    "160018910".
+      *    03  FILLER          PIC X(09)  VALUE    "160019010".
+      *    03  FILLER          PIC X(09)  VALUE    "160131950".
+      *    03  FILLER          PIC X(09)  VALUE    "160019210".
+      *    03  FILLER          PIC X(09)  VALUE    "160132150".
+      *    03  FILLER          PIC X(09)  VALUE    "160019310".
+      *    03  FILLER          PIC X(09)  VALUE    "160132250".
+      *    03  FILLER          PIC X(09)  VALUE    "160020010".
+      *    03  FILLER          PIC X(09)  VALUE    "160020210".
+      *    03  FILLER          PIC X(09)  VALUE    "160020410".
+      *    03  FILLER          PIC X(09)  VALUE    "160020910".
+      *    03  FILLER          PIC X(09)  VALUE    "160021110".
+      *    03  FILLER          PIC X(09)  VALUE    "160132450".
+      *    03  FILLER          PIC X(09)  VALUE    "160021410".
+      *    03  FILLER          PIC X(09)  VALUE    "160132650".
+      *    03  FILLER          PIC X(09)  VALUE    "160021510".
+      *    03  FILLER          PIC X(09)  VALUE    "160132750".
+      *    03  FILLER          PIC X(09)  VALUE    "160019410".
+      *    03  FILLER          PIC X(09)  VALUE    "160137950".
+      *    03  FILLER          PIC X(09)  VALUE    "160138150".
+      *    03  FILLER          PIC X(09)  VALUE    "160138750".
+      *    03  FILLER          PIC X(09)  VALUE    "160019510".
+      *    03  FILLER          PIC X(09)  VALUE    "160020610".
+      *    03  FILLER          PIC X(09)  VALUE    "160023410".
+      *    03  FILLER          PIC X(09)  VALUE    "160022410".
+      *    03  FILLER          PIC X(09)  VALUE    "160022510".
+      *    03  FILLER          PIC X(09)  VALUE    "160022610".
+      *    03  FILLER          PIC X(09)  VALUE    "160167250".
+      *    03  FILLER          PIC X(09)  VALUE    "160151050".
+      *    03  FILLER          PIC X(09)  VALUE    "160031710".
+      *    03  FILLER          PIC X(09)  VALUE    "160033210".
+      *    03  FILLER          PIC X(09)  VALUE    "160033310".
+      *    03  FILLER          PIC X(09)  VALUE    "160036510".
+      *    03  FILLER          PIC X(09)  VALUE    "160036710".
+      *    03  FILLER          PIC X(09)  VALUE    "160037510".
+      *    03  FILLER          PIC X(09)  VALUE    "160037210".
+      *    03  FILLER          PIC X(09)  VALUE    "160054710".
+      *    03  FILLER          PIC X(09)  VALUE    "160057710".
       *
-       01  TBL-KENSA-TAI-AREA-R    REDEFINES  TBL-KENSA-TAI-AREA.
-           03  TBL-KENSA-TAI-OCC        OCCURS  49  INDEXED  TAI-IDX.
-               05  TBL-TAI-SRYCD        PIC X(09).
-       01  KEN-TAI-MAX                  PIC 9(04)   VALUE   49.
+      *01  TBL-KENSA-TAI-AREA-R    REDEFINES  TBL-KENSA-TAI-AREA.
+      *    03  TBL-KENSA-TAI-OCC        OCCURS  49  INDEXED  TAI-IDX.
+      *        05  TBL-TAI-SRYCD        PIC X(09).
+      *01  KEN-TAI-MAX                  PIC 9(04)   VALUE   49.
       *
+      *    検体検査迅速実施加算対象
+           COPY    "CMGAIKENSATBL.INC".
       *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
@@ -611,6 +616,8 @@
       *
       *    システム管理マスタ（施設基準）
            COPY    "CPSK1006.INC".
+      *    システム管理マスタ（外来迅速検体検査情報）
+           COPY    "CPSK1016.INC".
       *
       *    点数マスタ−
       *01  TENSU-REC.
@@ -3299,6 +3306,9 @@
                GO      TO      300-AUTO-SYORI-EXT
            END-IF
       *
+      *    外来迅速検体検査設定情報
+           PERFORM 3009-SYS1016-HEN-SEC
+      *
            MOVE    ZERO                TO  IDXS
       *
            MOVE    ZERO                TO  FLG-BV
@@ -3312,6 +3322,7 @@
       *    検体検査管理加算
            MOVE    ZERO                TO  FLG-KENTAI
            MOVE    ZERO                TO  FLG-KENTAI2
+           MOVE    ZERO                TO  FLG-KENTAI-NO
            MOVE    ZERO                TO  WRK-KENTAI2-CNT
            MOVE    ZERO                TO  WRK-KENTAI-DAY
       *    入院時初回加算用
@@ -3375,7 +3386,7 @@
                            ADD     1       TO  WRK-KEN-KBN (WRK-KENIDX)
                        END-IF
                    END-IF
-      *            検体検査加算
+      *            外来迅速検体検査加算
                    PERFORM 3004-KENTAI-CHK-SEC
       *
       *            採血料区分判定
@@ -3632,10 +3643,13 @@
                END-IF
            END-IF
       *Ｈ１８／４
-      *    検体検査加算
+      *    外来迅速検体検査加算
            IF     (FLG-KENTAI2         =   1  )  AND
                   (SPA-NYUGAIKBN       =   2  )  AND
-                  (SPA-KENSAAUTO-FLG   =   "1")
+                  (SPA-KENSAAUTO-FLG   =   "1"
+                                       OR  "2" )
+      *    すべてシステム管理に設定されていること
+           AND    (FLG-KENTAI-NO       =   ZERO )
                PERFORM 3006-AUTO-KENTAIKASN-SEC
            END-IF
       *VER.4.3
@@ -3705,9 +3719,44 @@
            .
        300-AUTO-SYORI-EXT.
            EXIT.
-      *
       *****************************************************************
-      *    検体検査加算チェック処理
+      *    外来迅速検体検査加算チェック処理
+      *****************************************************************
+       3009-SYS1016-HEN-SEC              SECTION.
+      *
+      *    外来迅速検体検査設定情報
+           MOVE    SPACE               TO  SYS-1016-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1016-HOSPNUM
+           MOVE    "1016"              TO  SYS-1016-KANRICD
+           MOVE    "1"                 TO  SYS-1016-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1016-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1016-EDYUKYMD
+      *
+           MOVE    SYS-1016-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1016-REC
+           ELSE
+               INITIALIZE                  SYS-1016-REC
+           END-IF
+      *
+           .
+       3009-SYS1016-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    外来迅速検体検査加算チェック処理
       *****************************************************************
        3004-KENTAI-CHK-SEC              SECTION.
       *
@@ -3721,6 +3770,12 @@
                                                            (TAI-IDX)
                        MOVE    1                   TO  FLG-KENTAI-CHK
            END-SEARCH
+           IF      FLG-KENTAI-CHK      =   1
+      *        システム管理設定分を対象とする
+               IF      SPA-KENSAAUTO-FLG   =   "2"
+                   PERFORM 30041-KENSAAUTO-CHK-SEC
+               END-IF
+           END-IF
            IF      FLG-KENTAI-CHK      =   1
                IF      FLG-KENTAI2         =   ZERO
                    IF      WRK-COM-SRYKA (IDX)     =   SPACE
@@ -3743,6 +3798,30 @@
       *
            .
        3004-KENTAI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来迅速検体検査対象判定処理
+      *****************************************************************
+       30041-KENSAAUTO-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-KENTAI-CHK2
+           PERFORM VARYING     IDX-G   FROM    1   BY  1
+                   UNTIL      (IDX-G   >   55  )
+                        OR    (SYS-1016-SRYCD (IDX-G)  =   SPACE)
+                        OR    (FLG-KENTAI-CHK2 =   1    )
+               IF      SYS-1016-SRYCD (IDX-G)  =   WRK-COM-INPUTCD (IDX)
+                   MOVE    1               TO  FLG-KENTAI-CHK2
+               END-IF
+           END-PERFORM
+      *    システム管理に設定されていない検査の時、自動発生なしとする
+           IF      FLG-KENTAI-CHK2      =   ZERO
+               MOVE    1                   TO  FLG-KENTAI-NO
+               MOVE    ZERO                TO  FLG-KENTAI-CHK
+           END-IF
+      *
+           .
+       30041-KENSAAUTO-CHK-EXT.
            EXIT.
       *
       *****************************************************************

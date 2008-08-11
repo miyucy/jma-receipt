@@ -184,10 +184,10 @@
                             PIC X(16)   OCCURS  2 TIMES.
                   05  W07-KENSAAUTO-COMB.
                     06  W07-KENSAAUTO.
-                      07  W07-VALUE   PIC X(12).
+                      07  W07-VALUE   PIC X(30).
                     06  W07-KENSAAUTO-COUNT   PIC S9(9)   BINARY.
                     06  W07-KENSAAUTO-ITEM
-                            PIC X(12)   OCCURS  2 TIMES.
+                            PIC X(30)   OCCURS  3 TIMES.
                   05  W07-BYOMEIAUTO-COMB.
                     06  W07-BYOMEIAUTO.
                       07  W07-VALUE   PIC X(12).

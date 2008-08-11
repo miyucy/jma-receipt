@@ -286,10 +286,11 @@
                        09  SPA-GMN-KENSAAUTO-G.
                            11  SPA-GMN-KENSAAUTO           PIC X(01).
                            11  SPA-GMN-KENSAAUTO-F1        PIC X(01).
-                           11  SPA-GMN-KENSAAUTO-MEI       PIC X(10).
+                           11  SPA-GMN-KENSAAUTO-MEI       PIC X(28).
                        09  SPA-GMN-KENSAAUTO-COMB.
-                           11  SPA-GMN-KENSAAUTO-LIST      PIC X(12)
-                                                           OCCURS  2.
+                           11  SPA-GMN-KENSAAUTO-LIST      PIC X(30)
+                                                           OCCURS  3.
+                       09  SPA-KENSAAUTO-MAX               PIC 9(02).
       *                訂正時の自動発生（入院）
                        09  SPA-GMN-TEINYUAUTO-G.
                            11  SPA-GMN-TEINYUAUTO       PIC X(01).
@@ -1073,6 +1074,7 @@
            COPY    "W32.INC".
            COPY    "W33.INC".
            COPY    "W34.INC".
+           COPY    "W35.INC".
            COPY    "W60.INC".
            COPY    "W61.INC".
            COPY    "W62.INC".
@@ -1372,6 +1374,9 @@
       *    検体検査加算自動発生
            MOVE    "0 算定しない"      TO  SPA-GMN-KENSAAUTO-LIST(1)
            MOVE    "1 算定する"        TO  SPA-GMN-KENSAAUTO-LIST(2)
+           MOVE    "2 算定する（設定）"
+                                       TO  SPA-GMN-KENSAAUTO-LIST(3)
+           MOVE    3                   TO  SPA-KENSAAUTO-MAX
       *
            MOVE    "0 すべての病名"    TO  SPA-GMN-BYOMEIKBN-LIST(1)
            MOVE    "1 継続病名のみ"    TO  SPA-GMN-BYOMEIKBN-LIST(2)
@@ -2185,17 +2190,20 @@
                                                TO  SPA-GMN-ZAIJUNKBN-G
            END-EVALUATE
       *    検体検査加算自動発生
-           EVALUATE    SPA-GMN-KENSAAUTO
-                WHEN    "0"
-                    MOVE    SPA-GMN-KENSAAUTO-LIST(1)
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-KENSAAUTO-MAX
+               IF      SPA-GMN-KENSAAUTO  =    SPA-GMN-KENSAAUTO-LIST
+                                                         (IDY)(1:1)
+                   MOVE    SPA-GMN-KENSAAUTO-LIST(IDY)
+                                           TO  SPA-GMN-KENSAAUTO-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+                MOVE    SPA-GMN-KENSAAUTO-LIST(1)
                                                TO  SPA-GMN-KENSAAUTO-G
-                WHEN    "1"
-                    MOVE    SPA-GMN-KENSAAUTO-LIST(2)
-                                               TO  SPA-GMN-KENSAAUTO-G
-                WHEN    OTHER
-                    MOVE    SPA-GMN-KENSAAUTO-LIST(1)
-                                               TO  SPA-GMN-KENSAAUTO-G
-            END-EVALUATE
+            END-IF
       *    訂正時の自動発生（入院）
            IF     SPA-GMN-TEINYUAUTO  =   SPACE
       *        未設定は外来と同様
@@ -4333,7 +4341,7 @@
            MOVE    ZERO                TO  FLG-OK
       *
            PERFORM VARYING     IDY     FROM    1   BY  1
-                   UNTIL       IDY     >   2
+                   UNTIL       IDY     >   SPA-KENSAAUTO-MAX
                IF      SPA-GMN-KENSAAUTO  =    SPA-GMN-KENSAAUTO-LIST
                                                          (IDY)(1:1)
                    MOVE    SPA-GMN-KENSAAUTO-LIST(IDY)
@@ -7596,11 +7604,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    検体検査加算自動発生
            MOVE    SPA-GMN-KENSAAUTO-G TO  W07-KENSAAUTO
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   2
+                   UNTIL       IDX     >   SPA-KENSAAUTO-MAX
                MOVE    SPA-GMN-KENSAAUTO-LIST (IDX)
                                        TO  W07-KENSAAUTO-ITEM(IDX)
            END-PERFORM
-           MOVE    2                   TO  W07-KENSAAUTO-COUNT
+           MOVE    SPA-KENSAAUTO-MAX   TO  W07-KENSAAUTO-COUNT
       *
       *    訂正時の自動発生（入院）
            MOVE    SPA-GMN-TEINYUAUTO-G    TO  W07-TEINYUAUTO
