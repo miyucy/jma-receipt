@@ -423,38 +423,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label1668</name>
-      <x>44</x>
-      <y>36</y>
-      <width>268</width>
-      <height>20</height>
-      <label>登録済み迅速検査項目</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label1672</name>
-      <x>572</x>
-      <y>36</y>
-      <width>268</width>
-      <height>20</height>
-      <label>外来迅速検体検加算査算定検査一覧</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow2</name>
       <x>564</x>
@@ -634,6 +602,38 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1672</name>
+      <x>572</x>
+      <y>36</y>
+      <width>268</width>
+      <height>20</height>
+      <label>外来迅速検体検査加算算定検査一覧</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1668</name>
+      <x>44</x>
+      <y>36</y>
+      <width>438</width>
+      <height>20</height>
+      <label>登録済み外来迅速検査項目（検査日に情報提供を行う検査）</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
