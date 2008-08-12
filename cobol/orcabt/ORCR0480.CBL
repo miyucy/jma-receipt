@@ -312,7 +312,7 @@
                05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).
                05  WRK-PARA-SHELLID PIC  X(08).
-           03  WRK-PARA-COMMENT     PIC  X(01).
+           03  WRK-PARA-RECECOM     PIC  X(01).
            03  WRK-PARA-FRAME       PIC  X(01).
            03  WRK-PARA-PRTKBN      PIC  X(01).
            03  WRK-PARA-HOSPNUM     PIC  9(02).
