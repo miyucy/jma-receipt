@@ -1868,7 +1868,7 @@
            MOVE    "傷病の経過欄に記載"
                                    TO  SPA-GMN-COMMENT-ROUMEIL (1)
            MOVE    "1"             TO  SPA-GMN-COMMENT-ROUL    (2)
-           MOVE    "適用欄に記載"  TO  SPA-GMN-COMMENT-ROUMEIL (2)
+           MOVE    "摘要欄に記載"  TO  SPA-GMN-COMMENT-ROUMEIL (2)
            MOVE    2               TO  SPA-GMN-COMMENT-ROU-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-FRAME-JIBAIPRTKBNL    (1)
