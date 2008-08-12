@@ -73,6 +73,8 @@
       *                                     症状詳記区分コード５２の追加
       *
       *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *  04.03.02    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
+      *  04.03.03    NACL-藤原    08/08/11  コメント記載箇所選択機能対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -323,6 +325,8 @@
                05  WRK-PARA-RECEYM  PIC  X(06). 
                05  WRK-PARA-JOBID   PIC  9(07).
                05  WRK-PARA-SHELLID PIC  X(08).
+           03  WRK-PARA-RECECOM     PIC  X(01).
+           03  WRK-PARA-FRAME       PIC  X(01).
            03  WRK-PARA-PRTKBN      PIC  X(01).
            03  WRK-PARA-HOSPNUM     PIC  9(02).
       *
@@ -613,6 +617,8 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-RECECOM
+                                               WRK-PARA-FRAME
                                                WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
                                                RECEERR
@@ -2255,13 +2261,25 @@ grpsys     PERFORM 900-DBSELECT-SEC
       * 
            MOVE    CNT-PAGE            TO  TBL-RECE-RENNUM(TBL-RECE-MAX)
            IF      CNT-PAGE            =   1
-               MOVE    "HCM21V05.red"      TO
+               EVALUATE  WRK-PARA-FRAME
+                   WHEN      "0"
+                       MOVE    "HCM21V05.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
+                   WHEN      "1"
+                       MOVE    "HCM21V05P.red"     TO
+                                       TBL-RECE-FORMID  (TBL-RECE-MAX)
+               END-EVALUATE
                MOVE    HC21                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            ELSE
-               MOVE    "HCM24V05.red"      TO
+               EVALUATE  WRK-PARA-FRAME
+                   WHEN      "0"
+                       MOVE    "HCM24V05.red"      TO
                                        TBL-RECE-FORMID  (TBL-RECE-MAX)
+                   WHEN      "1"
+                       MOVE    "HCM24V05P.red"     TO
+                                       TBL-RECE-FORMID  (TBL-RECE-MAX)
+               END-EVALUATE
                MOVE    HC24                TO
                                        TBL-RECE-PRTDATA (TBL-RECE-MAX)
            END-IF        

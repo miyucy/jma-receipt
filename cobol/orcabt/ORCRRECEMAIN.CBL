@@ -48,6 +48,7 @@
       *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *
       *  04.03.01    NACL-Æ£¸¶    08/07/09  ²¾¥ì¥»ºîÀ®¡Ê±¡³°½èÊý´Þ¤à¡ËÂÐ±þ
+      *  04.03.02    NACL-Æ£¸¶    08/08/07  Ï«ºÒ¤ÎÏÈ°õºþÁªÂòµ¡Ç½ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -924,6 +925,9 @@
       *    Ï«ºÒ¡ÊÆþ±¡³°¡Ë½èÍý
       *****************************************************************
        2003-ROUSAI-GAIRAI-SEC                SECTION.
+      *???
+           DISPLAY "ROUSAI="   WRK-PARA-A13
+      *???
       *
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA0      DELIMITED   BY  SIZE
@@ -1017,6 +1021,8 @@
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA3      DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
+                    WRK-PARA-A13   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
                     WRK-PARA-PRTKBN
                                    DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
@@ -1033,6 +1039,20 @@
                                        WRK-ARG
            CALL    "ORCR0482"          USING
                                        WRK-ARG
+      *
+           MOVE     SPACE       TO WRK-ARG
+           STRING   WRK-PARA3      DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-PRTKBN
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    WRK-PARA-HOSPNUM
+                                   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
+                    RECEERR        DELIMITED   BY  SPACE
+                                   INTO    WRK-ARG
+           END-STRING
+           DISPLAY "ORCR0483 start = [" WRK-ARG "]"
            CALL    "ORCR0483"          USING
                                        WRK-ARG
       *
@@ -1120,6 +1140,9 @@
       *    Ï«ºÒ¡ÊÆþ±¡¡Ë½èÍý
       *****************************************************************
        2004-ROUSAI-NYUIN-SEC                SECTION.
+      *???
+           DISPLAY "ROUSAI="    WRK-PARA-A13
+      *???
       *
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA0      DELIMITED   BY  SIZE
@@ -1245,6 +1268,8 @@
                MOVE     SPACE       TO WRK-ARG
                STRING   WRK-PARA3      DELIMITED   BY  SIZE
                         ","            DELIMITED   BY  SIZE
+                        WRK-PARA-A13   DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
                         WRK-PARA-PRTKBN
                                        DELIMITED   BY  SIZE
                         ","            DELIMITED   BY  SIZE
@@ -1260,6 +1285,8 @@
                MOVE     SPACE       TO WRK-ARG
                STRING   WRK-PARA4      DELIMITED   BY  SIZE
                         ","            DELIMITED   BY  SIZE
+                        WRK-PARA-A13   DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
                         WRK-PARA-PRTKBN
                                        DELIMITED   BY  SIZE
                         ","            DELIMITED   BY  SIZE
@@ -1272,6 +1299,18 @@
                DISPLAY "ORCR0961 start = [" WRK-ARG "]"
                CALL    "ORCR0961"          USING
                                            WRK-ARG
+               MOVE     SPACE       TO WRK-ARG
+               STRING   WRK-PARA4      DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        WRK-PARA-PRTKBN
+                                       DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        WRK-PARA-HOSPNUM
+                                       DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        RECEERR        DELIMITED   BY  SPACE
+                                       INTO    WRK-ARG
+               END-STRING
                DISPLAY "ORCR0962 start = [" WRK-ARG "]"
                CALL    "ORCR0962"          USING
                                            WRK-ARG

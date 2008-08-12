@@ -99,6 +99,8 @@
       *
       *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
       *  04.03.02    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *  04.03.03    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
+      *  04.03.04    NACL-藤原    08/08/11  コメント記載箇所選択機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2242,6 +2244,21 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                                =   SPACE
                        MOVE    ZERO        TO  SYS-200501-KOUIKIRECEKBN
                    END-IF
+                   IF      SYS-200501-FRAME-ROUPRTKBN
+                                               =   SPACE
+                       MOVE    ZERO            TO
+                                           SYS-200501-FRAME-ROUPRTKBN
+                   END-IF
+                   IF      SYS-200501-FRAME-ROUPRTKBN-N
+                                               =   SPACE
+                       MOVE    ZERO            TO
+                                           SYS-200501-FRAME-ROUPRTKBN-N
+                   END-IF
+                   IF      SYS-200501-COMMENT-NYUINRYO-KSIKBN
+                                               =   SPACE
+                       MOVE    ZERO            TO
+                                   SYS-200501-COMMENT-NYUINRYO-KSIKBN
+                   END-IF
       *
                    MOVE    SPACE           TO  SHELLTBL
                    EVALUATE    SPA-R01-RECEKBN
@@ -2333,7 +2350,13 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                        MOVE    SYS-2005-KKHRECEKBN
                                                TO  SHELLTBL-ARG13
                    END-IF
-                   MOVE    "00"            TO  SHELLTBL-ARG14
+                   EVALUATE    SPA-R01-RECEKBN
+                       WHEN    "3"
+                           MOVE    SYS-200501-COMMENT-NYUINRYO-KSIKBN
+                                                   TO  SHELLTBL-ARG14
+                       WHEN    OTHER
+                           MOVE    "00"            TO  SHELLTBL-ARG14
+                   END-EVALUATE
                    EVALUATE    SPA-R01-RECEKBN
                        WHEN    "4"
                            IF      SPA-GMN-NYUGAIKBN   =   "1"
@@ -2341,6 +2364,14 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                                    TO  SHELLTBL-ARG15
                            ELSE
                                MOVE    SYS-2005-FRAME-JIBAIPRTKBN
+                                                   TO  SHELLTBL-ARG15
+                           END-IF
+                       WHEN    "3"
+                           IF      SPA-GMN-NYUGAIKBN   =   "1"
+                               MOVE    SYS-200501-FRAME-ROUPRTKBN-N
+                                                   TO  SHELLTBL-ARG15
+                           ELSE
+                               MOVE    SYS-200501-FRAME-ROUPRTKBN
                                                    TO  SHELLTBL-ARG15
                            END-IF
                    END-EVALUATE

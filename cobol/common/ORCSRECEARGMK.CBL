@@ -35,6 +35,8 @@
       *  04.01.01    NACL-藤原    07/11/22  公害レセプト対応
       *
       *  04.02.01    NACL-藤原    08/04/24  平成２０年４月改正対応
+      *
+      *  04.03.01    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -293,6 +295,16 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
            END-IF
            IF      SYS-200501-JIBAIPRTKBN-N  =   SPACE
                MOVE    ZERO                TO  SYS-200501-JIBAIPRTKBN-N
+           END-IF
+           IF      SYS-200501-FRAME-ROUPRTKBN
+                                           =   SPACE
+               MOVE    ZERO                TO
+                                           SYS-200501-FRAME-ROUPRTKBN
+           END-IF
+           IF      SYS-200501-FRAME-ROUPRTKBN-N
+                                           =   SPACE
+               MOVE    ZERO                TO
+                                           SYS-200501-FRAME-ROUPRTKBN-N
            END-IF
       *                
       *    出力先プリンタ名割り当て情報の取得
@@ -553,6 +565,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
            MOVE    LINK-PTRSI-HKNKBN
                                    TO  SHELLTBL-ARG12
            EVALUATE   LINK-NYUGAIKBN   ALSO    LINK-HKNKBN
+               WHEN   "1"              ALSO    "1"
+                   MOVE    SYS-200501-FRAME-ROUPRTKBN-N
+                                                   TO  SHELLTBL-ARG13
+               WHEN   "2"              ALSO    "1"
+                   MOVE    SYS-200501-FRAME-ROUPRTKBN
+                                                   TO  SHELLTBL-ARG13
                WHEN   "1"              ALSO    "2"
                    MOVE    SYS-2005-FRAME-JIBAIPRTKBN-N
                                                    TO  SHELLTBL-ARG13
