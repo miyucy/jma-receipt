@@ -43,6 +43,8 @@
       *
       *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *  04.03.02    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
+      *                                     枠印刷のときは年金証書番号を
+      *                                     全て記載する
       *  04.03.03    NACL-藤原    08/08/11  コメント記載箇所選択機能対応
       *****************************************************************
       *
@@ -1140,7 +1142,11 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    WRK-NENREI-X        TO  HCN51-NENREI
       *    年金証書番号
            MOVE    RECE82-KOFUNUM(1:2) TO  HCN51-KOFUNUM (1:2)
-           MOVE    RECE82-KOFUNUM(4:)  TO  HCN51-KOFUNUM (4:)
+           IF      WRK-PARA-FRAME      =   "1"
+               MOVE    RECE82-KOFUNUM(3:)  TO  HCN51-KOFUNUM (3:)
+           ELSE
+               MOVE    RECE82-KOFUNUM(4:)  TO  HCN51-KOFUNUM (4:)
+           END-IF
       *    新継区分
            MOVE    RECE82-SINKEI       TO  HCN51-SINKEI
       *    転帰事由
