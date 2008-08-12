@@ -5,14 +5,14 @@ tbl_toukeimemo {
 	KBNCD                   char(8);
 	STYUKYMD                char(8);
 	EDYUKYMD                char(8);
-	PARA1                   char(20);
-	PARA2                   char(20);
-	PARA3                   char(20);
-	PARA4                   char(20);
-	PARA5                   char(20);
-	PARA6                   char(20);
-	PARA7                   char(20);
-	PARA8                   char(20);
+	PARA1                   varchar(20);
+	PARA2                   varchar(20);
+	PARA3                   varchar(20);
+	PARA4                   varchar(20);
+	PARA5                   varchar(20);
+	PARA6                   varchar(20);
+	PARA7                   varchar(20);
+	PARA8                   varchar(20);
 	MEMO                    varchar(6000);
 	TERMID  	        	varchar(32);
 	OPID             		varchar(16);
@@ -20,6 +20,8 @@ tbl_toukeimemo {
 	UPYMD   	        	char(8);
 	UPHMS		        	char(6);
 	SAVEPARA		char(1);
+	PARA9                   varchar(20);
+	PARA10                  varchar(20);
 };
 
 primary	{

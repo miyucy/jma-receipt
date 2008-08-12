@@ -37,10 +37,20 @@
                05  TKIMEMO-STYUKYMD        PIC  X(08).
       *有効期間終了日
                05  TKIMEMO-EDYUKYMD        PIC  X(08).
-      *入力パラメータ
+      *入力パラメータ（１〜８）
            03  TKIMEMO-PARA-G.
-               05  TKIMEMO-PARA            PIC  X(20)
-                                           OCCURS  8.
+               05  TKIMEMO-PARA-ITEM.
+                   07  TKIMEMO-PARA01          PIC  X(20).
+                   07  TKIMEMO-PARA02          PIC  X(20).
+                   07  TKIMEMO-PARA03          PIC  X(20).
+                   07  TKIMEMO-PARA04          PIC  X(20).
+                   07  TKIMEMO-PARA05          PIC  X(20).
+                   07  TKIMEMO-PARA06          PIC  X(20).
+                   07  TKIMEMO-PARA07          PIC  X(20).
+                   07  TKIMEMO-PARA08          PIC  X(20).
+               05  TKIMEMO-PARA-R      REDEFINES    TKIMEMO-PARA-ITEM.
+                   07  TKIMEMO-PARA            PIC  X(20)
+                                               OCCURS  8.
       *メモ
            03  TKIMEMO-MEMO                PIC  X(6000).
       *端末ＩＤ
@@ -55,3 +65,7 @@
            03  TKIMEMO-UPHMS               PIC  X(06).
       *パラメタ保存区分
            03  TKIMEMO-SAVEPARA            PIC  X(01).
+      *パラメタ９
+           03  TKIMEMO-PARA09              PIC  X(20).
+      *パラメタ１０
+           03  TKIMEMO-PARA10              PIC  X(20).
