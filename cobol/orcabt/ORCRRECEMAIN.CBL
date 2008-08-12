@@ -49,6 +49,7 @@
       *
       *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *  04.03.02    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
+      *  04.03.03    NACL-藤原    08/08/11  コメント記載箇所選択機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -126,6 +127,7 @@
                05  WRK-PARA-HOSPID                     PIC  X(24).
                03  WRK-PARA-HOSPNUM                    PIC  9(02).
                03  WRK-PARA-PRTKBN                     PIC  X(01).
+               05  WRK-PARA-A35                        PIC  X(01).
       *
            03  WRK-PARA0.
                05  WRK-PARA0-A1.
@@ -352,6 +354,7 @@
                                          WRK-PARA-HKNKBN
                                          WRK-PARA-SHORI-KBN
                                          WRK-PARA-HOSPNUM
+                                         WRK-PARA-A35
                                          RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
@@ -1021,6 +1024,8 @@
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA3      DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
+                    WRK-PARA-A35   DELIMITED   BY  SIZE
+                    ","            DELIMITED   BY  SIZE
                     WRK-PARA-A13   DELIMITED   BY  SIZE
                     ","            DELIMITED   BY  SIZE
                     WRK-PARA-PRTKBN
@@ -1268,6 +1273,8 @@
                MOVE     SPACE       TO WRK-ARG
                STRING   WRK-PARA3      DELIMITED   BY  SIZE
                         ","            DELIMITED   BY  SIZE
+                        WRK-PARA-A35   DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
                         WRK-PARA-A13   DELIMITED   BY  SIZE
                         ","            DELIMITED   BY  SIZE
                         WRK-PARA-PRTKBN
@@ -1284,6 +1291,8 @@
                                            WRK-ARG
                MOVE     SPACE       TO WRK-ARG
                STRING   WRK-PARA4      DELIMITED   BY  SIZE
+                        ","            DELIMITED   BY  SIZE
+                        WRK-PARA-A35   DELIMITED   BY  SIZE
                         ","            DELIMITED   BY  SIZE
                         WRK-PARA-A13   DELIMITED   BY  SIZE
                         ","            DELIMITED   BY  SIZE

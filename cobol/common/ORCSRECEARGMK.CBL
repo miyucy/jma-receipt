@@ -37,6 +37,7 @@
       *  04.02.01    NACL-藤原    08/04/24  平成２０年４月改正対応
       *
       *  04.03.01    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
+      *  04.03.02    NACL-藤原    08/08/11  コメント記載箇所選択機能対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -305,6 +306,11 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                            =   SPACE
                MOVE    ZERO                TO
                                            SYS-200501-FRAME-ROUPRTKBN-N
+           END-IF
+           IF      SYS-200501-COMMENT-ROU-KSIKBN
+                                           =   SPACE
+               MOVE    ZERO                TO
+                                           SYS-200501-COMMENT-ROU-KSIKBN
            END-IF
       *                
       *    出力先プリンタ名割り当て情報の取得
@@ -696,6 +702,8 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
            MOVE    LINK-HKNKBN     TO  SHELLTBL-ARG32
            MOVE    LINK-SHORI-KBN  TO  SHELLTBL-ARG33
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG34
+           MOVE    SYS-200501-COMMENT-ROU-KSIKBN
+                                   TO  SHELLTBL-ARG35
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE

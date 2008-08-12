@@ -4006,10 +4006,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                        =   SPACE
                MOVE    ZERO            TO  SYS-200501-FRAME-ROUPRTKBN-N
            END-IF
-           IF      SYS-200501-COMMENT-NYUINRYO-KSIKBN
+           IF      SYS-200501-COMMENT-ROU-KSIKBN
                                        =   SPACE
-               MOVE    ZERO            TO
-                                   SYS-200501-COMMENT-NYUINRYO-KSIKBN
+               MOVE    ZERO            TO  SYS-200501-COMMENT-ROU-KSIKBN
            END-IF
       *
            MOVE    SPACE           TO  SHELLTBL
@@ -4103,7 +4102,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
            END-IF
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "3"
-                   MOVE    SYS-200501-COMMENT-NYUINRYO-KSIKBN
+                   MOVE    SYS-200501-COMMENT-ROU-KSIKBN
                                            TO  SHELLTBL-ARG14
                WHEN    OTHER
                    MOVE    WRK-PREFNUM     TO  SHELLTBL-ARG14

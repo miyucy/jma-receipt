@@ -923,10 +923,17 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            PERFORM 330-HC101-TENSU-HEN-SEC
       *
       *    帳票編集<傷病の経過>処理
-           PERFORM 360-HC101-COMMENT-HEN-SEC 
+           IF      WRK-PARA-RECECOM    =   "0"
+               PERFORM 360-HC101-COMMENT-HEN-SEC
+           END-IF 
       *
       *    帳票編集<適用（点数）>処理
            PERFORM 340-HC101-ZAI-HEN-SEC
+      *
+      *    帳票編集<傷病の経過>処理
+           IF      WRK-PARA-RECECOM    =   "1"
+               PERFORM 360-HC101-COMMENT-HEN-SEC
+           END-IF 
       *
       *    帳票印刷処理（続紙）
            IF      CNT-PAGE           >   1
@@ -1386,6 +1393,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
            MOVE    ZERO                TO  WRK-RECECOM
                                            WRK-KEIKA-LINE
+      *
+      *    適用欄に記載するときの設定
+           IF      WRK-PARA-RECECOM    =   "1"
+               MOVE    WRK-KEIKA-HC18-LINE     TO  WRK-KEIKA-LINE
+           END-IF
       *     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key11"             TO  WRK-MCP-PATHNAME

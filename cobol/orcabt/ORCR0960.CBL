@@ -44,6 +44,7 @@
       *
       *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *  04.03.02    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
+      *  04.03.03    NACL-藤原    08/08/11  コメント記載箇所選択機能対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -297,6 +298,7 @@
                05  WRK-PARA-RECEYM  PIC  X(06).
                05  WRK-PARA-JOBID   PIC  9(07).
                05  WRK-PARA-SHELLID PIC  X(08).
+           03  WRK-PARA-RECECOM     PIC  X(01).
            03  WRK-PARA-FRAME       PIC  X(01).
            03  WRK-PARA-PRTKBN      PIC  X(01).
            03  WRK-PARA-HOSPNUM     PIC  9(02).
@@ -602,6 +604,7 @@
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
+                                               WRK-PARA-RECECOM
                                                WRK-PARA-FRAME
                                                WRK-PARA-PRTKBN
                                                WRK-PARA-HOSPNUM
@@ -1047,7 +1050,9 @@ grpsys        PERFORM 900-DBSELECT-SEC
            PERFORM 20023-BYOMEI-HEN-SEC
       *
       *    帳票編集<傷病の経過>処理
-           PERFORM 20024-COMMENT-HEN-SEC 
+           IF      WRK-PARA-RECECOM    =   "0"
+               PERFORM 20024-COMMENT-HEN-SEC
+           END-IF 
       *
       *    帳票編集<入退院履歴・入院基本料種別の続き>処理
            PERFORM 380-HC101-NYUTAI-RIREKI-HEN-SEC
@@ -1057,6 +1062,11 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *
       *    帳票編集<適用（点数）>処理
            PERFORM 20025-ZAI-HEN-SEC
+      *
+      *    帳票編集<傷病の経過>処理
+           IF      WRK-PARA-RECECOM    =   "1"
+               PERFORM 20024-COMMENT-HEN-SEC
+           END-IF 
       *
       *    帳票編集<適用（金額）>処理
            PERFORM 20026-ZAI-HEN1-SEC
@@ -2007,6 +2017,11 @@ grpsys        PERFORM 900-DBSELECT-SEC
            MOVE    ZERO                TO  FLG-RECECOM-SJKBN
            MOVE    SPACE               TO  WRK-RECECOM-NAME 
                                            WRK-RECECOM-SJKBN
+      *
+      *    適用欄に記載するときの設定
+           IF      WRK-PARA-RECECOM    =   "1"
+               MOVE    WRK-KEIKA-HCN50-LINE    TO  WRK-KEIKA-LINE
+           END-IF
       *     
       *    適用欄コメント     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE

@@ -1071,13 +1071,20 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            PERFORM 320-HC101-BYOMEI-HEN-SEC
       *
       *    帳票編集<傷病の経過>処理
-           PERFORM 360-HC101-COMMENT-HEN-SEC 
+           IF      WRK-PARA-RECECOM    =   "0"
+               PERFORM 360-HC101-COMMENT-HEN-SEC
+           END-IF 
       *
       *    帳票編集<手術歴>処理
            PERFORM 380-HC101-OPECOM-HEN-SEC 
       *
       *    帳票編集<適用（点数）>処理
            PERFORM 340-HC101-ZAI-HEN-SEC
+      *
+      *    帳票編集<傷病の経過>処理
+           IF      WRK-PARA-RECECOM    =   "1"
+               PERFORM 360-HC101-COMMENT-HEN-SEC
+           END-IF 
       *
       *    帳票編集<適用（金額）>処理
            PERFORM 350-HC101-ZAI-HEN1-SEC
@@ -1916,6 +1923,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    ZERO                TO  FLG-RECECOM-SJKBN
            MOVE    SPACE               TO  WRK-RECECOM-NAME 
                                            WRK-RECECOM-SJKBN
+      *
+      *    適用欄に記載するときの設定
+           IF      WRK-PARA-RECECOM    =   "1"
+               MOVE    WRK-KEIKA-HC21-LINE     TO  WRK-KEIKA-LINE
+           END-IF
       *     
       *    適用欄コメント     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
