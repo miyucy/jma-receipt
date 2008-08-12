@@ -119,15 +119,15 @@
                05  WRK-PARA-A27                        PIC  X(16).
                05  WRK-PARA-A28                        PIC  X(34).
                05  WRK-PARA-A29                        PIC  X(34).
+               05  WRK-PARA-A35                        PIC  X(01).
       *
                05  WRK-PARA-PTID                       PIC  9(10).
                05  WRK-PARA-NYUGAIKBN                  PIC  X(01).
                05  WRK-PARA-HKNKBN                     PIC  X(01).
                05  WRK-PARA-SHORI-KBN                  PIC  X(01).
                05  WRK-PARA-HOSPID                     PIC  X(24).
-               03  WRK-PARA-HOSPNUM                    PIC  9(02).
-               03  WRK-PARA-PRTKBN                     PIC  X(01).
-               05  WRK-PARA-A35                        PIC  X(01).
+               05  WRK-PARA-HOSPNUM                    PIC  9(02).
+               05  WRK-PARA-PRTKBN                     PIC  X(01).
       *
            03  WRK-PARA0.
                05  WRK-PARA0-A1.
@@ -1019,7 +1019,6 @@
            PERFORM 900-DBDISCONNECT-SEC
       *    前回分削除(存在すれば)
            PERFORM 200101-PRVDATA-DEL-SEC
-      *
       *
            MOVE     SPACE       TO WRK-ARG
            STRING   WRK-PARA3      DELIMITED   BY  SIZE
