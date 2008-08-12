@@ -24,6 +24,9 @@
            03  SS001-PTID                          PIC 9(10).
            03  SS001-SRYYM                         PIC X(06).
            03  SS001-SRYKAKBN                      PIC X(01).
+           03  SS001-KIKANKBN                      PIC X(01).
+           03  SS001-STDAY                         PIC 9(02).
+           03  SS001-EDDAY                         PIC 9(02).
            03  SS001-HKNGRP-G.
       *
                05  SS001-NIHO-FLG                  PIC 9(01).

@@ -57,6 +57,7 @@
            03  FLG-TOUKEIMEMO                  PIC 9(01).
            03  FLG-ERR                         PIC 9(01).
            03  FLG-HIT                         PIC 9(01).
+           03  FLG-UPDATE-SYSKANRI             PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                            PIC 9(05).
@@ -105,7 +106,7 @@
       *
        01  WRK-CONS-AREA.
       *    ¥Ñ¥é¥á¡¼¥¿ºÇÂç¸Ä¿ô
-           03  WRK-CONS-PARA-MAX               PIC 9(05) VALUE 8.
+           03  WRK-CONS-PARA-MAX               PIC 9(05) VALUE 10.
       *
        01  WTMEMO-AREA.
            COPY    "CPTOUKEIMEMO.INC"  REPLACING   //TKIMEMO-//
@@ -502,8 +503,8 @@
       *
            MOVE    ZERO                        TO  WRK-PARA-NUM
            IF    ( WRK-MCP-WIDGET (1:4)    =   "PARA" )
-            AND  ( WRK-MCP-WIDGET (5:3)    IS  NUMERIC )
-               MOVE    WRK-MCP-WIDGET (7:1)    TO  WRK-PARA-NUM
+            AND  ( WRK-MCP-WIDGET (5:4)    IS  NUMERIC )
+               MOVE    WRK-MCP-WIDGET (7:2)    TO  WRK-PARA-NUM
            END-IF
       *
            PERFORM VARYING IDXA    FROM    1   BY  1
@@ -730,7 +731,9 @@
            IF    ( SPA-NAI-G03-PARAARI =   1 )
                PERFORM 2401-PARAUPDATE-SEC
                IF    ( SPA-ERRCD       =   SPACE )
-                   PERFORM 2402-PARAUPDATE-SEC
+                   IF    ( FLG-UPDATE-SYSKANRI =   1 )
+                       PERFORM 2402-PARAUPDATE-SEC
+                   END-IF
                END-IF
       *
            END-IF
@@ -782,14 +785,16 @@
       *****************************************************************
        2401-PARAUPDATE-SEC             SECTION.
       *
+           MOVE    1               TO  FLG-UPDATE-SYSKANRI
+      *
            PERFORM 3102-TOKEIMEMO-SEL-SEC
            MOVE    TOUKEIMEMO-REC  TO  WTMEMO-AREA
            IF    ( FLG-TOUKEIMEMO  =   ZERO )
       *
                PERFORM 3101-TOKEIMEMO-SEL-SEC
                IF    ( FLG-TOUKEIMEMO  =   ZERO )
-                   IF    ((TKIMEMO-MEMO (1:5)  NOT =   "#HOLD" )
-                    AND  ( TKIMEMO-MEMO (1:5)  NOT =   "#hold"))
+                   IF    ((TKIMEMO-MEMO (1:10) NOT =   "¡ô£è£ï£ì£ä")
+                    AND   ( TKIMEMO-MEMO (1:10) NOT =   "¡ô£È£Ï£Ì£Ä"))
                     OR   ( WRK-MCP-WIDGET          =   "B04"   )
                        MOVE    WTMEMO-MEMO     TO  TKIMEMO-MEMO
                        MOVE    SMCNDATE-YMD    TO  TKIMEMO-UPYMD
@@ -801,6 +806,10 @@
                        IF    ( MCP-RC          NOT =   ZERO )
                            MOVE    "0006"      TO  SPA-ERRCD
                        END-IF
+                   END-IF
+                   IF    ( TKIMEMO-MEMO (1:10)     =   "¡ô£è£ï£ì£ä"
+                                                OR =   "¡ô£È£Ï£Ì£Ä" )
+                       MOVE    ZERO    TO   FLG-UPDATE-SYSKANRI
                    END-IF
                END-IF
            END-IF
@@ -992,7 +1001,8 @@
            END-PERFORM
       *
            MOVE    SPACE               TO  G03-MEMO
-           IF    ( SPA-GMN-G03-MEMO (1:5)  =   "#hold" OR "#HOLD" )
+           IF    ( SPA-GMN-G03-MEMO (1:10)
+                   =   "¡ô£è£ï£ì£ä" OR "¡ô£È£Ï£Ì£Ä" )
                MOVE    1               TO  IDX-STR
                MOVE    SPACE           TO  WRK-STR
                UNSTRING     SPA-GMN-G03-MEMO    DELIMITED   BY X"0A"
@@ -1028,21 +1038,25 @@
            WHEN    01
                MOVE    "CHK01"             TO  MCP-WIDGET
            WHEN    02
-               MOVE    "PARA011"           TO  MCP-WIDGET
+               MOVE    "PARA0101"          TO  MCP-WIDGET
            WHEN    03
-               MOVE    "PARA012"           TO  MCP-WIDGET
+               MOVE    "PARA0102"          TO  MCP-WIDGET
            WHEN    04
-               MOVE    "PARA013"           TO  MCP-WIDGET
+               MOVE    "PARA0103"          TO  MCP-WIDGET
            WHEN    05
-               MOVE    "PARA014"           TO  MCP-WIDGET
+               MOVE    "PARA0104"          TO  MCP-WIDGET
            WHEN    06
-               MOVE    "PARA015"           TO  MCP-WIDGET
+               MOVE    "PARA0105"          TO  MCP-WIDGET
            WHEN    07
-               MOVE    "PARA016"           TO  MCP-WIDGET
+               MOVE    "PARA0106"          TO  MCP-WIDGET
            WHEN    08
-               MOVE    "PARA017"           TO  MCP-WIDGET
+               MOVE    "PARA0107"          TO  MCP-WIDGET
            WHEN    09
-               MOVE    "PARA018"           TO  MCP-WIDGET
+               MOVE    "PARA0108"          TO  MCP-WIDGET
+           WHEN    10
+               MOVE    "PARA0109"          TO  MCP-WIDGET
+           WHEN    11
+               MOVE    "PARA0110"          TO  MCP-WIDGET
            WHEN    99
                MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
@@ -1059,21 +1073,25 @@
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "CHK01"
                MOVE    02                  TO  SPA-GMN-G03-CUR
-           WHEN    "PARA011"
+           WHEN    "PARA0101"
                MOVE    03                  TO  SPA-GMN-G03-CUR
-           WHEN    "PARA012"
+           WHEN    "PARA0102"
                MOVE    04                  TO  SPA-GMN-G03-CUR
-           WHEN    "PARA013"
+           WHEN    "PARA0103"
                MOVE    05                  TO  SPA-GMN-G03-CUR
-           WHEN    "PARA014"
+           WHEN    "PARA0104"
                MOVE    06                  TO  SPA-GMN-G03-CUR
-           WHEN    "PARA015"
+           WHEN    "PARA0105"
                MOVE    07                  TO  SPA-GMN-G03-CUR
-           WHEN    "PARA016"
+           WHEN    "PARA0106"
                MOVE    08                  TO  SPA-GMN-G03-CUR
-           WHEN    "PARA017"
+           WHEN    "PARA0107"
                MOVE    09                  TO  SPA-GMN-G03-CUR
-           WHEN    "PARA018"
+           WHEN    "PARA0108"
+               MOVE    10                  TO  SPA-GMN-G03-CUR
+           WHEN    "PARA0109"
+               MOVE    11                  TO  SPA-GMN-G03-CUR
+           WHEN    "PARA0110"
                MOVE    99                  TO  SPA-GMN-G03-CUR
            END-EVALUATE
       *
@@ -1101,7 +1119,7 @@
       *
            END-PERFORM
       *
-           IF    ( SPA-GMN-G03-CUR >   9 )
+           IF    ( SPA-GMN-G03-CUR >   11 )
                MOVE    99          TO  SPA-GMN-G03-CUR
            END-IF
       *

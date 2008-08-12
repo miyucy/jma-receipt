@@ -57,6 +57,7 @@
            03  FLG-TOUKEIMEMO                  PIC 9(01).
            03  FLG-ERR                         PIC 9(01).
            03  FLG-HIT                         PIC 9(01).
+           03  FLG-UPDATE-SYSKANRI             PIC 9(01).
       *
        01  IDX-AREA.
            03  IDX0                            PIC 9(05).
@@ -725,7 +726,9 @@
            IF    ( SPA-NAI-L03-PARAARI =   1 )
                PERFORM 2401-PARAUPDATE-SEC
                IF    ( SPA-ERRCD       =   SPACE )
-                   PERFORM 2402-PARAUPDATE-SEC
+                   IF    ( FLG-UPDATE-SYSKANRI =   1 )
+                       PERFORM 2402-PARAUPDATE-SEC
+                   END-IF
                END-IF
       *
            END-IF
@@ -776,6 +779,8 @@
       *****************************************************************
        2401-PARAUPDATE-SEC             SECTION.
       *
+           MOVE    1               TO  FLG-UPDATE-SYSKANRI
+      *
            PERFORM 3102-TOKEIMEMO-SEL-SEC
            MOVE    TOUKEIMEMO-REC  TO  WTMEMO-AREA
            IF    ( FLG-TOUKEIMEMO  =   ZERO )
@@ -783,8 +788,8 @@
                PERFORM 3101-TOKEIMEMO-SEL-SEC
                IF    ( FLG-TOUKEIMEMO  =   ZERO )
                    DISPLAY "WRK-MCP-WIDGET =" WRK-MCP-WIDGET
-                   IF    (( TKIMEMO-MEMO (1:5) NOT =   "#HOLD")
-                    AND   ( TKIMEMO-MEMO (1:5) NOT =   "#hold"))
+                   IF    (( TKIMEMO-MEMO (1:10) NOT =   "¡ô£è£ï£ì£ä")
+                    AND   ( TKIMEMO-MEMO (1:10) NOT =   "¡ô£È£Ï£Ì£Ä"))
                     OR   ( WRK-MCP-WIDGET          =   "B04"   )
                        MOVE    WTMEMO-MEMO     TO  TKIMEMO-MEMO
                        MOVE    SMCNDATE-YMD    TO  TKIMEMO-UPYMD
@@ -796,6 +801,10 @@
                        IF    ( MCP-RC          NOT =   ZERO )
                            MOVE    "0006"      TO  SPA-ERRCD
                        END-IF
+                   END-IF
+                   IF    ( TKIMEMO-MEMO (1:10) =   "¡ô£è£ï£ì£ä"
+                                                OR "¡ô£È£Ï£Ì£Ä" )
+                       MOVE    ZERO            TO  FLG-UPDATE-SYSKANRI
                    END-IF
                END-IF
            END-IF
@@ -987,7 +996,8 @@
       *
       *
            MOVE    SPACE               TO  L03-MEMO
-           IF    ( SPA-GMN-L03-MEMO (1:5)  =   "#hold" OR "#HOLD" )
+           IF    ( SPA-GMN-L03-MEMO (1:10) =   "¡ô£è£ï£ì£ä"
+                                            OR "¡ô£È£Ï£Ì£Ä" )
                MOVE    1               TO  IDX-STR
                MOVE    SPACE           TO  WRK-STR
                UNSTRING     SPA-GMN-L03-MEMO    DELIMITED   BY X"0A"

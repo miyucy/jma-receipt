@@ -133,7 +133,7 @@
            03  WRK-CHK-CUR                     PIC 9(05).
            03  WRK-MCP-WIDGET                  PIC X(64).
            03  WRK-PARA-NUM1                   PIC 9(02).
-           03  WRK-PARA-NUM2                   PIC 9(01).
+           03  WRK-PARA-NUM2                   PIC 9(02).
            03  WRK-MAE-INPUT                   PIC X(100).
            03  WRK-ATO-INPUT                   PIC X(100).
            03  WRK-PRT-PAGE                    PIC 9(10).
@@ -179,11 +179,13 @@
       *
        01  WRK-CONS-AREA.
       *    パラメータ最大個数
-           03  WRK-CONS-PARA-MAX               PIC 9(05) VALUE 8.
+           03  WRK-CONS-PARA-MAX               PIC 9(05) VALUE 10.
       *    最大明細数
            03  WRK-CONS-LINE-MAX               PIC 9(05) VALUE 100.
       *    １画面あたりの最大明細数
            03  WRK-CONS-SCR-MAX                PIC 9(05) VALUE 10.
+      *    １パラメタのカーソル予約数
+           03  WRK-CONS-PARA-CUR               PIC 9(05) VALUE 50.
       *    システム管理ＤＢ（３００３）のキー値  
            03  WRK-CONS-3003-KBNCD PIC X(08)   VALUE   "052".
       *    印刷管理ＤＢのキー値  
@@ -495,8 +497,21 @@
                                    UNTIL ( IDX-PARA
                                                >   WRK-CONS-PARA-MAX )
       *
-                               MOVE    TKIMEMO-PARA (IDX-PARA)
-                                   TO  SPA-GMN-G01-PARA (IDX  IDX-PARA)
+                               EVALUATE    IDX-PARA
+                               WHEN    9
+                                   MOVE    TKIMEMO-PARA09
+                                               TO  SPA-GMN-G01-PARA
+                                                         (IDX  IDX-PARA)
+                               WHEN    10
+                                   MOVE    TKIMEMO-PARA10
+                                               TO  SPA-GMN-G01-PARA
+                                                         (IDX  IDX-PARA)
+                               WHEN    OTHER
+                                   MOVE    TKIMEMO-PARA (IDX-PARA)
+                                               TO  SPA-GMN-G01-PARA
+                                                         (IDX  IDX-PARA)
+      *
+                               END-EVALUATE
       *
                            END-PERFORM
       *
@@ -585,10 +600,12 @@
            ELSE
       *
                COMPUTE SPA-GMN-G01-CUR
-                   =   SPA-G01-CUR +   WRK-CONS-PARA-MAX   +   1
+                   =   SPA-G01-IDX
+                   *   WRK-CONS-PARA-CUR
+                   +   1
       *
                IF    ( SPA-G01-IDX    >=   WRK-CONS-SCR-MAX )
-                   MOVE    99      TO  SPA-GMN-G01-CUR
+                   MOVE    999     TO  SPA-GMN-G01-CUR
                END-IF
       *
                MOVE    SPA-G01-SEL TO  IDX0
@@ -853,7 +870,7 @@
            IF    ( WRK-MCP-WIDGET (1:4)    =   "PARA" )
             AND  ( WRK-MCP-WIDGET (5:3)    IS  NUMERIC )
                MOVE    WRK-MCP-WIDGET (5:2)    TO  WRK-PARA-NUM1
-               MOVE    WRK-MCP-WIDGET (7:1)    TO  WRK-PARA-NUM2
+               MOVE    WRK-MCP-WIDGET (7:2)    TO  WRK-PARA-NUM2
            END-IF
       *
            PERFORM VARYING IDXC    FROM    1   BY  1
@@ -887,7 +904,7 @@
       *
       *    エラー時のカーソル位置を決定
            COMPUTE WRK-ERR-CUR =  ( IDXC   -   1 )
-                               *  ( WRK-CONS-PARA-MAX + 1 )
+                               *  WRK-CONS-PARA-CUR
                                +  IDXB
                                +  1
       *
@@ -1257,7 +1274,7 @@
            MOVE    G01-CHK-VALUE (IDX) TO  SPA-GMN-G01-CHK-VALUE (IDZ)
       *
            COMPUTE SPA-GMN-G01-CUR   = ( IDX -   1 )
-                                 *   ( WRK-CONS-PARA-MAX    +     1 )
+                                 *     WRK-CONS-PARA-CUR
                                  +     1
                                  +     1
       *
@@ -1538,6 +1555,10 @@
                                            TO  SHELLTBL-ARG23
                    MOVE    SPA-NAI-G01-HENPARA (IDY 8)
                                            TO  SHELLTBL-ARG24
+                   MOVE    SPA-NAI-G01-HENPARA (IDY 9)
+                                           TO  SHELLTBL-ARG25
+                   MOVE    SPA-NAI-G01-HENPARA (IDY 10)
+                                           TO  SHELLTBL-ARG26
                    MOVE    SHELLTBL        TO  MCPDATA-REC
                    MOVE    "SHELL"         TO  MCP-FUNC
                    MOVE    "shell"         TO  MCP-TABLE
@@ -1667,8 +1688,20 @@
                                            =   "YM" OR "KKNYM" OR "YMD")
                                    CONTINUE
                                ELSE
-                                   MOVE  SPA-GMN-G01-PARA (IDY IDX-PARA)
+                                   EVALUATE    IDX-PARA
+                                   WHEN    9
+                                       MOVE    SPA-GMN-G01-PARA
+                                                          (IDY IDX-PARA)
+                                               TO  TKIMEMO-PARA09
+                                   WHEN    10
+                                       MOVE    SPA-GMN-G01-PARA
+                                                          (IDY IDX-PARA)
+                                               TO  TKIMEMO-PARA10
+                                   WHEN    OTHER
+                                       MOVE    SPA-GMN-G01-PARA
+                                                          (IDY IDX-PARA)
                                            TO  TKIMEMO-PARA (IDX-PARA)
+                                   END-EVALUATE
                                END-IF
       *
                            END-PERFORM
@@ -1850,7 +1883,7 @@
            MOVE    IDX             TO  SPA-G01-IDX
       *
            COMPUTE SPA-G01-CUR     = ( IDX    -   1 )
-                                   * ( WRK-CONS-PARA-MAX   +   1 )
+                                   *   WRK-CONS-PARA-CUR
                                    +   1
       *
            MOVE    SPA-G01KYOUTU   TO  SPA-WORK
@@ -2128,187 +2161,227 @@
            PERFORM 5012-CUR-SKIP-SEC
       *
            EVALUATE    SPA-GMN-G01-CUR
-           WHEN    01
-               MOVE    "CHK01"             TO  MCP-WIDGET
-           WHEN    02
-               MOVE    "PARA011"           TO  MCP-WIDGET
-           WHEN    03
-               MOVE    "PARA012"           TO  MCP-WIDGET
-           WHEN    04
-               MOVE    "PARA013"           TO  MCP-WIDGET
-           WHEN    05
-               MOVE    "PARA014"           TO  MCP-WIDGET
-           WHEN    06
-               MOVE    "PARA015"           TO  MCP-WIDGET
-           WHEN    07
-               MOVE    "PARA016"           TO  MCP-WIDGET
-           WHEN    08
-               MOVE    "PARA017"           TO  MCP-WIDGET
-           WHEN    09
-               MOVE    "PARA018"           TO  MCP-WIDGET
-           WHEN    10
+           WHEN    001
+               MOVE    "CHK01"              TO  MCP-WIDGET
+           WHEN    002
+               MOVE    "PARA0101"           TO  MCP-WIDGET
+           WHEN    003
+               MOVE    "PARA0102"           TO  MCP-WIDGET
+           WHEN    004
+               MOVE    "PARA0103"           TO  MCP-WIDGET
+           WHEN    005
+               MOVE    "PARA0104"           TO  MCP-WIDGET
+           WHEN    006
+               MOVE    "PARA0105"           TO  MCP-WIDGET
+           WHEN    007
+               MOVE    "PARA0106"           TO  MCP-WIDGET
+           WHEN    008
+               MOVE    "PARA0107"           TO  MCP-WIDGET
+           WHEN    009
+               MOVE    "PARA0108"           TO  MCP-WIDGET
+           WHEN    010
+               MOVE    "PARA0109"           TO  MCP-WIDGET
+           WHEN    011
+               MOVE    "PARA0110"           TO  MCP-WIDGET
+           WHEN    051
                MOVE    "CHK02"             TO  MCP-WIDGET
-           WHEN    11
-               MOVE    "PARA021"           TO  MCP-WIDGET
-           WHEN    12
-               MOVE    "PARA022"           TO  MCP-WIDGET
-           WHEN    13
-               MOVE    "PARA023"           TO  MCP-WIDGET
-           WHEN    14
-               MOVE    "PARA024"           TO  MCP-WIDGET
-           WHEN    15
-               MOVE    "PARA025"           TO  MCP-WIDGET
-           WHEN    16
-               MOVE    "PARA026"           TO  MCP-WIDGET
-           WHEN    17
-               MOVE    "PARA027"           TO  MCP-WIDGET
-           WHEN    18
-               MOVE    "PARA028"           TO  MCP-WIDGET
-           WHEN    19
+           WHEN    052
+               MOVE    "PARA0201"           TO  MCP-WIDGET
+           WHEN    053
+               MOVE    "PARA0202"           TO  MCP-WIDGET
+           WHEN    054
+               MOVE    "PARA0203"           TO  MCP-WIDGET
+           WHEN    055
+               MOVE    "PARA0204"           TO  MCP-WIDGET
+           WHEN    056
+               MOVE    "PARA0205"           TO  MCP-WIDGET
+           WHEN    057
+               MOVE    "PARA0206"           TO  MCP-WIDGET
+           WHEN    058
+               MOVE    "PARA0207"           TO  MCP-WIDGET
+           WHEN    059
+               MOVE    "PARA0208"           TO  MCP-WIDGET
+           WHEN    060
+               MOVE    "PARA0209"           TO  MCP-WIDGET
+           WHEN    061
+               MOVE    "PARA0210"           TO  MCP-WIDGET
+           WHEN    101
                MOVE    "CHK03"             TO  MCP-WIDGET
-           WHEN    20
-               MOVE    "PARA031"           TO  MCP-WIDGET
-           WHEN    21
-               MOVE    "PARA032"           TO  MCP-WIDGET
-           WHEN    22
-               MOVE    "PARA033"           TO  MCP-WIDGET
-           WHEN    23
-               MOVE    "PARA034"           TO  MCP-WIDGET
-           WHEN    24
-               MOVE    "PARA035"           TO  MCP-WIDGET
-           WHEN    25
-               MOVE    "PARA036"           TO  MCP-WIDGET
-           WHEN    26
-               MOVE    "PARA037"           TO  MCP-WIDGET
-           WHEN    27
-               MOVE    "PARA038"           TO  MCP-WIDGET
-           WHEN    28
+           WHEN    102
+               MOVE    "PARA0301"           TO  MCP-WIDGET
+           WHEN    103
+               MOVE    "PARA0302"           TO  MCP-WIDGET
+           WHEN    104
+               MOVE    "PARA0303"           TO  MCP-WIDGET
+           WHEN    105
+               MOVE    "PARA0304"           TO  MCP-WIDGET
+           WHEN    106
+               MOVE    "PARA0305"           TO  MCP-WIDGET
+           WHEN    107
+               MOVE    "PARA0306"           TO  MCP-WIDGET
+           WHEN    108
+               MOVE    "PARA0307"           TO  MCP-WIDGET
+           WHEN    109
+               MOVE    "PARA0308"           TO  MCP-WIDGET
+           WHEN    110
+               MOVE    "PARA0309"           TO  MCP-WIDGET
+           WHEN    111
+               MOVE    "PARA0310"           TO  MCP-WIDGET
+           WHEN    151
                MOVE    "CHK04"             TO  MCP-WIDGET
-           WHEN    29
-               MOVE    "PARA041"           TO  MCP-WIDGET
-           WHEN    30
-               MOVE    "PARA042"           TO  MCP-WIDGET
-           WHEN    31
-               MOVE    "PARA043"           TO  MCP-WIDGET
-           WHEN    32
-               MOVE    "PARA044"           TO  MCP-WIDGET
-           WHEN    33
-               MOVE    "PARA045"           TO  MCP-WIDGET
-           WHEN    34
-               MOVE    "PARA046"           TO  MCP-WIDGET
-           WHEN    35
-               MOVE    "PARA047"           TO  MCP-WIDGET
-           WHEN    36
-               MOVE    "PARA048"           TO  MCP-WIDGET
-           WHEN    37
+           WHEN    152
+               MOVE    "PARA0401"           TO  MCP-WIDGET
+           WHEN    153
+               MOVE    "PARA0402"           TO  MCP-WIDGET
+           WHEN    154
+               MOVE    "PARA0403"           TO  MCP-WIDGET
+           WHEN    155
+               MOVE    "PARA0404"           TO  MCP-WIDGET
+           WHEN    156
+               MOVE    "PARA0405"           TO  MCP-WIDGET
+           WHEN    157
+               MOVE    "PARA0406"           TO  MCP-WIDGET
+           WHEN    158
+               MOVE    "PARA0407"           TO  MCP-WIDGET
+           WHEN    159
+               MOVE    "PARA0408"           TO  MCP-WIDGET
+           WHEN    160
+               MOVE    "PARA0409"           TO  MCP-WIDGET
+           WHEN    161
+               MOVE    "PARA0410"           TO  MCP-WIDGET
+           WHEN    201
                MOVE    "CHK05"             TO  MCP-WIDGET
-           WHEN    38
-               MOVE    "PARA051"           TO  MCP-WIDGET
-           WHEN    39
-               MOVE    "PARA052"           TO  MCP-WIDGET
-           WHEN    40
-               MOVE    "PARA053"           TO  MCP-WIDGET
-           WHEN    41
-               MOVE    "PARA054"           TO  MCP-WIDGET
-           WHEN    42
-               MOVE    "PARA055"           TO  MCP-WIDGET
-           WHEN    43
-               MOVE    "PARA056"           TO  MCP-WIDGET
-           WHEN    44
-               MOVE    "PARA057"           TO  MCP-WIDGET
-           WHEN    45
-               MOVE    "PARA058"           TO  MCP-WIDGET
-           WHEN    46
+           WHEN    202
+               MOVE    "PARA0501"           TO  MCP-WIDGET
+           WHEN    203
+               MOVE    "PARA0502"           TO  MCP-WIDGET
+           WHEN    204
+               MOVE    "PARA0503"           TO  MCP-WIDGET
+           WHEN    205
+               MOVE    "PARA0504"           TO  MCP-WIDGET
+           WHEN    206
+               MOVE    "PARA0505"           TO  MCP-WIDGET
+           WHEN    207
+               MOVE    "PARA0506"           TO  MCP-WIDGET
+           WHEN    208
+               MOVE    "PARA0507"           TO  MCP-WIDGET
+           WHEN    209
+               MOVE    "PARA0508"           TO  MCP-WIDGET
+           WHEN    210
+               MOVE    "PARA0509"           TO  MCP-WIDGET
+           WHEN    211
+               MOVE    "PARA0510"           TO  MCP-WIDGET
+           WHEN    251
                MOVE    "CHK06"             TO  MCP-WIDGET
-           WHEN    47
-               MOVE    "PARA061"           TO  MCP-WIDGET
-           WHEN    48
-               MOVE    "PARA062"           TO  MCP-WIDGET
-           WHEN    49
-               MOVE    "PARA063"           TO  MCP-WIDGET
-           WHEN    50
-               MOVE    "PARA064"           TO  MCP-WIDGET
-           WHEN    51
-               MOVE    "PARA065"           TO  MCP-WIDGET
-           WHEN    52
-               MOVE    "PARA066"           TO  MCP-WIDGET
-           WHEN    53
-               MOVE    "PARA067"           TO  MCP-WIDGET
-           WHEN    54
-               MOVE    "PARA068"           TO  MCP-WIDGET
-           WHEN    55
+           WHEN    252
+               MOVE    "PARA0601"           TO  MCP-WIDGET
+           WHEN    253
+               MOVE    "PARA0602"           TO  MCP-WIDGET
+           WHEN    254
+               MOVE    "PARA0603"           TO  MCP-WIDGET
+           WHEN    255
+               MOVE    "PARA0604"           TO  MCP-WIDGET
+           WHEN    256
+               MOVE    "PARA0605"           TO  MCP-WIDGET
+           WHEN    257
+               MOVE    "PARA0606"           TO  MCP-WIDGET
+           WHEN    258
+               MOVE    "PARA0607"           TO  MCP-WIDGET
+           WHEN    259
+               MOVE    "PARA0608"           TO  MCP-WIDGET
+           WHEN    260
+               MOVE    "PARA0609"           TO  MCP-WIDGET
+           WHEN    261
+               MOVE    "PARA0610"           TO  MCP-WIDGET
+           WHEN    301
                MOVE    "CHK07"             TO  MCP-WIDGET
-           WHEN    56
-               MOVE    "PARA071"           TO  MCP-WIDGET
-           WHEN    57
-               MOVE    "PARA072"           TO  MCP-WIDGET
-           WHEN    58
-               MOVE    "PARA073"           TO  MCP-WIDGET
-           WHEN    59
-               MOVE    "PARA074"           TO  MCP-WIDGET
-           WHEN    60
-               MOVE    "PARA075"           TO  MCP-WIDGET
-           WHEN    61
-               MOVE    "PARA076"           TO  MCP-WIDGET
-           WHEN    62
-               MOVE    "PARA077"           TO  MCP-WIDGET
-           WHEN    63
-               MOVE    "PARA078"           TO  MCP-WIDGET
-           WHEN    64
+           WHEN    302
+               MOVE    "PARA0701"           TO  MCP-WIDGET
+           WHEN    303
+               MOVE    "PARA0702"           TO  MCP-WIDGET
+           WHEN    304
+               MOVE    "PARA0703"           TO  MCP-WIDGET
+           WHEN    305
+               MOVE    "PARA0704"           TO  MCP-WIDGET
+           WHEN    306
+               MOVE    "PARA0705"           TO  MCP-WIDGET
+           WHEN    307
+               MOVE    "PARA0706"           TO  MCP-WIDGET
+           WHEN    308
+               MOVE    "PARA0707"           TO  MCP-WIDGET
+           WHEN    309
+               MOVE    "PARA0708"           TO  MCP-WIDGET
+           WHEN    310
+               MOVE    "PARA0709"           TO  MCP-WIDGET
+           WHEN    311
+               MOVE    "PARA0710"           TO  MCP-WIDGET
+           WHEN    351
                MOVE    "CHK08"             TO  MCP-WIDGET
-           WHEN    65
-               MOVE    "PARA081"           TO  MCP-WIDGET
-           WHEN    66
-               MOVE    "PARA082"           TO  MCP-WIDGET
-           WHEN    67
-               MOVE    "PARA083"           TO  MCP-WIDGET
-           WHEN    68
-               MOVE    "PARA084"           TO  MCP-WIDGET
-           WHEN    69
-               MOVE    "PARA085"           TO  MCP-WIDGET
-           WHEN    70
-               MOVE    "PARA086"           TO  MCP-WIDGET
-           WHEN    71
-               MOVE    "PARA087"           TO  MCP-WIDGET
-           WHEN    72
-               MOVE    "PARA088"           TO  MCP-WIDGET
-           WHEN    73
+           WHEN    352
+               MOVE    "PARA0801"           TO  MCP-WIDGET
+           WHEN    353
+               MOVE    "PARA0802"           TO  MCP-WIDGET
+           WHEN    354
+               MOVE    "PARA0803"           TO  MCP-WIDGET
+           WHEN    355
+               MOVE    "PARA0804"           TO  MCP-WIDGET
+           WHEN    356
+               MOVE    "PARA0805"           TO  MCP-WIDGET
+           WHEN    357
+               MOVE    "PARA0806"           TO  MCP-WIDGET
+           WHEN    358
+               MOVE    "PARA0807"           TO  MCP-WIDGET
+           WHEN    359
+               MOVE    "PARA0808"           TO  MCP-WIDGET
+           WHEN    360
+               MOVE    "PARA0809"           TO  MCP-WIDGET
+           WHEN    361
+               MOVE    "PARA0810"           TO  MCP-WIDGET
+           WHEN    401
                MOVE    "CHK09"             TO  MCP-WIDGET
-           WHEN    74
-               MOVE    "PARA091"           TO  MCP-WIDGET
-           WHEN    75
-               MOVE    "PARA092"           TO  MCP-WIDGET
-           WHEN    76
-               MOVE    "PARA093"           TO  MCP-WIDGET
-           WHEN    77
-               MOVE    "PARA094"           TO  MCP-WIDGET
-           WHEN    78
-               MOVE    "PARA095"           TO  MCP-WIDGET
-           WHEN    79
-               MOVE    "PARA096"           TO  MCP-WIDGET
-           WHEN    80
-               MOVE    "PARA097"           TO  MCP-WIDGET
-           WHEN    81
-               MOVE    "PARA098"           TO  MCP-WIDGET
-           WHEN    82
+           WHEN    402
+               MOVE    "PARA0901"           TO  MCP-WIDGET
+           WHEN    403
+               MOVE    "PARA0902"           TO  MCP-WIDGET
+           WHEN    404
+               MOVE    "PARA0903"           TO  MCP-WIDGET
+           WHEN    405
+               MOVE    "PARA0904"           TO  MCP-WIDGET
+           WHEN    406
+               MOVE    "PARA0905"           TO  MCP-WIDGET
+           WHEN    407
+               MOVE    "PARA0906"           TO  MCP-WIDGET
+           WHEN    408
+               MOVE    "PARA0907"           TO  MCP-WIDGET
+           WHEN    409
+               MOVE    "PARA0908"           TO  MCP-WIDGET
+           WHEN    410
+               MOVE    "PARA0909"           TO  MCP-WIDGET
+           WHEN    411
+               MOVE    "PARA0910"           TO  MCP-WIDGET
+           WHEN    451
                MOVE    "CHK10"             TO  MCP-WIDGET
-           WHEN    83
-               MOVE    "PARA101"           TO  MCP-WIDGET
-           WHEN    84
-               MOVE    "PARA102"           TO  MCP-WIDGET
-           WHEN    85
-               MOVE    "PARA103"           TO  MCP-WIDGET
-           WHEN    86
-               MOVE    "PARA104"           TO  MCP-WIDGET
-           WHEN    87
-               MOVE    "PARA105"           TO  MCP-WIDGET
-           WHEN    88
-               MOVE    "PARA106"           TO  MCP-WIDGET
-           WHEN    89
-               MOVE    "PARA107"           TO  MCP-WIDGET
-           WHEN    90
-               MOVE    "PARA108"           TO  MCP-WIDGET
-           WHEN    99
+           WHEN    452
+               MOVE    "PARA1001"           TO  MCP-WIDGET
+           WHEN    453
+               MOVE    "PARA1002"           TO  MCP-WIDGET
+           WHEN    454
+               MOVE    "PARA1003"           TO  MCP-WIDGET
+           WHEN    455
+               MOVE    "PARA1004"           TO  MCP-WIDGET
+           WHEN    456
+               MOVE    "PARA1005"           TO  MCP-WIDGET
+           WHEN    457
+               MOVE    "PARA1006"           TO  MCP-WIDGET
+           WHEN    458
+               MOVE    "PARA1007"           TO  MCP-WIDGET
+           WHEN    459
+               MOVE    "PARA1008"           TO  MCP-WIDGET
+           WHEN    460
+               MOVE    "PARA1009"           TO  MCP-WIDGET
+           WHEN    461
+               MOVE    "PARA1010"           TO  MCP-WIDGET
+           WHEN    999
                MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -2323,194 +2396,227 @@
       *
            EVALUATE    WRK-MCP-WIDGET
            WHEN    "CHK01"
-               MOVE    01                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA011"
-               MOVE    02                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA012"
-               MOVE    03                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA013"
-               MOVE    04                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA014"
-               MOVE    05                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA015"
-               MOVE    06                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA016"
-               MOVE    07                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA017"
-               MOVE    08                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA018"
-               MOVE    09                  TO  SPA-GMN-G01-CUR
+               MOVE    002                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0101"
+               MOVE    003                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0102"
+               MOVE    004                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0103"
+               MOVE    005                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0104"
+               MOVE    006                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0105"
+               MOVE    007                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0106"
+               MOVE    008                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0107"
+               MOVE    009                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0108"
+               MOVE    010                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0109"
+               MOVE    011                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0110"
+               MOVE    051                 TO  SPA-GMN-G01-CUR
            WHEN    "CHK02"
-               MOVE    10                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA021"
-               MOVE    11                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA022"
-               MOVE    12                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA023"
-               MOVE    13                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA024"
-               MOVE    14                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA025"
-               MOVE    15                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA026"
-               MOVE    16                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA027"
-               MOVE    17                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA028"
-               MOVE    18                  TO  SPA-GMN-G01-CUR
+               MOVE    052                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0201"
+               MOVE    053                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0202"
+               MOVE    054                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0203"
+               MOVE    055                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0204"
+               MOVE    056                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0205"
+               MOVE    057                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0206"
+               MOVE    058                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0207"
+               MOVE    059                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0208"
+               MOVE    060                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0209"
+               MOVE    061                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0210"
+               MOVE    101                 TO  SPA-GMN-G01-CUR
            WHEN    "CHK03"
-               MOVE    19                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA031"
-               MOVE    20                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA032"
-               MOVE    21                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA033"
-               MOVE    22                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA034"
-               MOVE    23                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA035"
-               MOVE    24                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA036"
-               MOVE    25                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA037"
-               MOVE    26                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA038"
-               MOVE    27                  TO  SPA-GMN-G01-CUR
+               MOVE    102                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0301"
+               MOVE    103                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0302"
+               MOVE    104                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0303"
+               MOVE    105                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0304"
+               MOVE    106                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0305"
+               MOVE    107                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0306"
+               MOVE    108                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0307"
+               MOVE    109                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0308"
+               MOVE    110                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0309"
+               MOVE    111                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0310"
+               MOVE    151                 TO  SPA-GMN-G01-CUR
            WHEN    "CHK04"
-               MOVE    28                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA041"
-               MOVE    29                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA042"
-               MOVE    30                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA043"
-               MOVE    31                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA044"
-               MOVE    32                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA045"
-               MOVE    33                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA046"
-               MOVE    34                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA047"
-               MOVE    35                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA048"
-               MOVE    36                  TO  SPA-GMN-G01-CUR
+               MOVE    152                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0401"
+               MOVE    153                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0402"
+               MOVE    154                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0403"
+               MOVE    155                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0404"
+               MOVE    156                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0405"
+               MOVE    157                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0406"
+               MOVE    158                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0407"
+               MOVE    159                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0408"
+               MOVE    160                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0409"
+               MOVE    161                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0410"
+               MOVE    201                 TO  SPA-GMN-G01-CUR
            WHEN    "CHK05"
-               MOVE    37                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA051"
-               MOVE    38                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA052"
-               MOVE    39                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA053"
-               MOVE    40                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA054"
-               MOVE    41                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA055"
-               MOVE    42                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA056"
-               MOVE    43                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA057"
-               MOVE    44                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA058"
-               MOVE    45                  TO  SPA-GMN-G01-CUR
+               MOVE    202                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0501"
+               MOVE    203                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0502"
+               MOVE    204                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0503"
+               MOVE    205                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0504"
+               MOVE    206                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0505"
+               MOVE    207                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0506"
+               MOVE    208                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0507"
+               MOVE    209                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0508"
+               MOVE    210                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0509"
+               MOVE    211                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0510"
+               MOVE    251                 TO  SPA-GMN-G01-CUR
            WHEN    "CHK06"
-               MOVE    46                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA061"
-               MOVE    47                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA062"
-               MOVE    48                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA063"
-               MOVE    49                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA064"
-               MOVE    50                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA065"
-               MOVE    51                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA066"
-               MOVE    52                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA067"
-               MOVE    53                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA068"
-               MOVE    54                  TO  SPA-GMN-G01-CUR
+               MOVE    252                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0601"
+               MOVE    253                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0602"
+               MOVE    254                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0603"
+               MOVE    255                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0604"
+               MOVE    256                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0605"
+               MOVE    257                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0606"
+               MOVE    258                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0607"
+               MOVE    259                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0608"
+               MOVE    260                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0609"
+               MOVE    261                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0610"
+               MOVE    301                 TO  SPA-GMN-G01-CUR
            WHEN    "CHK07"
-               MOVE    55                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA071"
-               MOVE    56                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA072"
-               MOVE    57                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA073"
-               MOVE    58                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA074"
-               MOVE    59                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA075"
-               MOVE    60                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA076"
-               MOVE    61                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA077"
-               MOVE    62                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA078"
-               MOVE    63                  TO  SPA-GMN-G01-CUR
+               MOVE    302                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0701"
+               MOVE    303                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0702"
+               MOVE    304                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0703"
+               MOVE    305                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0704"
+               MOVE    306                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0705"
+               MOVE    307                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0706"
+               MOVE    308                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0707"
+               MOVE    309                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0708"
+               MOVE    310                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0709"
+               MOVE    311                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0710"
+               MOVE    351                 TO  SPA-GMN-G01-CUR
            WHEN    "CHK08"
-               MOVE    64                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA081"
-               MOVE    65                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA082"
-               MOVE    66                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA083"
-               MOVE    67                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA084"
-               MOVE    68                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA085"
-               MOVE    69                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA086"
-               MOVE    70                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA087"
-               MOVE    71                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA088"
-               MOVE    72                  TO  SPA-GMN-G01-CUR
+               MOVE    352                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0801"
+               MOVE    353                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0802"
+               MOVE    354                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0803"
+               MOVE    355                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0804"
+               MOVE    356                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0805"
+               MOVE    357                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0806"
+               MOVE    358                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0807"
+               MOVE    359                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0808"
+               MOVE    360                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0809"
+               MOVE    361                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0810"
+               MOVE    401                 TO  SPA-GMN-G01-CUR
            WHEN    "CHK09"
-               MOVE    73                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA091"
-               MOVE    74                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA092"
-               MOVE    75                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA093"
-               MOVE    76                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA094"
-               MOVE    77                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA095"
-               MOVE    78                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA096"
-               MOVE    79                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA097"
-               MOVE    80                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA098"
-               MOVE    81                  TO  SPA-GMN-G01-CUR
+               MOVE    402                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0901"
+               MOVE    403                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0902"
+               MOVE    404                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0903"
+               MOVE    405                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0904"
+               MOVE    406                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0905"
+               MOVE    407                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0906"
+               MOVE    408                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0907"
+               MOVE    409                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0908"
+               MOVE    410                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0909"
+               MOVE    411                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA0910"
+               MOVE    451                 TO  SPA-GMN-G01-CUR
            WHEN    "CHK10"
-               MOVE    82                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA101"
-               MOVE    83                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA102"
-               MOVE    84                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA103"
-               MOVE    85                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA104"
-               MOVE    86                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA105"
-               MOVE    87                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA106"
-               MOVE    88                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA107"
-               MOVE    89                  TO  SPA-GMN-G01-CUR
-           WHEN    "PARA108"
-               MOVE    90                  TO  SPA-GMN-G01-CUR
+               MOVE    452                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA1001"
+               MOVE    453                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA1002"
+               MOVE    454                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA1003"
+               MOVE    455                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA1004"
+               MOVE    456                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA1005"
+               MOVE    457                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA1006"
+               MOVE    458                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA1007"
+               MOVE    459                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA1008"
+               MOVE    460                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA1009"
+               MOVE    461                 TO  SPA-GMN-G01-CUR
+           WHEN    "PARA1010"
+               MOVE    462                 TO  SPA-GMN-G01-CUR
            WHEN    "B12"
-               MOVE    99                  TO  SPA-GMN-G01-CUR
-           END-EVALUATE
-      *
-           EVALUATE    WRK-MCP-WIDGET
-           WHEN    "PARA108"
-               MOVE    99                  TO  SPA-GMN-G01-CUR
-           WHEN    OTHER
-               COMPUTE SPA-GMN-G01-CUR =   SPA-GMN-G01-CUR +   1
+               MOVE    999                 TO  SPA-GMN-G01-CUR
            END-EVALUATE
       *
            .
@@ -2522,14 +2628,18 @@
       *****************************************************************
        5012-CUR-SKIP-SEC               SECTION.
       *
+           DISPLAY "BF SPA-GMN-G01-CUR =" SPA-GMN-G01-CUR
+      *
       *    非活性項目にカーソルが移動した場合はスキップする
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   WRK-CONS-SCR-MAX )
                COMPUTE WRK-CHK-CUR = ( IDX1    -   1 )
-                                   * WRK-CONS-PARA-MAX
-                                   + IDX1
-               IF    ( SPA-GMN-G01-CUR             = WRK-CHK-CUR  )
-                AND  ( G01-CHK-STATE(IDX1)     = WIDGET-INSENSITIVE )
+                                   * WRK-CONS-PARA-CUR
+                                   + 1
+               DISPLAY "SPA-GMN-G01-CUR:WRK-CHK-CUR" SPA-GMN-G01-CUR ":"
+                                        WRK-CHK-CUR
+               IF    ( SPA-GMN-G01-CUR     =   WRK-CHK-CUR  )
+                AND  ( G01-CHK-STATE(IDX1) =   WIDGET-INSENSITIVE )
                    COMPUTE SPA-GMN-G01-CUR =   SPA-GMN-G01-CUR   + 1
                END-IF
       *
@@ -2537,18 +2647,27 @@
                        UNTIL ( IDX2    >   WRK-CONS-PARA-MAX )
                    COMPUTE WRK-CHK-CUR = WRK-CHK-CUR
                                        + 1
-                   IF    ( SPA-GMN-G01-CUR         = WRK-CHK-CUR  )
+                   IF    ( SPA-GMN-G01-CUR     = WRK-CHK-CUR  )
                     AND  ( G01-PARA-STATE(IDX1 IDX2)
                                                = WIDGET-INSENSITIVE )
-                       COMPUTE SPA-GMN-G01-CUR =   SPA-GMN-G01-CUR   + 1
+                       IF    ( IDX2    >=  WRK-CONS-PARA-MAX )
+                           COMPUTE SPA-GMN-G01-CUR
+                                 = IDX1    * WRK-CONS-PARA-CUR
+                                 + IDX1
+                       ELSE
+                           COMPUTE SPA-GMN-G01-CUR
+                               =   SPA-GMN-G01-CUR +   1
+                       END-IF
                    END-IF
                END-PERFORM
       *
            END-PERFORM
       *
-           IF    ( SPA-GMN-G01-CUR >   90 )
-               MOVE    99          TO  SPA-GMN-G01-CUR
+           IF    ( SPA-GMN-G01-CUR >   462 )
+               MOVE    999         TO  SPA-GMN-G01-CUR
            END-IF
+      *
+           DISPLAY "AF SPA-GMN-G01-CUR =" SPA-GMN-G01-CUR
       *
            .
       *

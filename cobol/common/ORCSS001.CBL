@@ -69,6 +69,8 @@
            03  WRK-SRYKA               PIC X(02).
            03  WRK-STIDX               PIC 9(02).
            03  WRK-EDIDX               PIC 9(02).
+           03  WRK-STDAY               PIC 9(02).
+           03  WRK-EDDAY               PIC 9(02).
            03  WRK-YMD.
                05  WRK-YYYYMM          PIC X(06).
                05  WRK-DD              PIC 9(02).
@@ -169,6 +171,13 @@ grpsys     COPY  "COMMON-SPA".
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
+           IF    ( SS001-KIKANKBN  =   "1" )
+               MOVE    SS001-STDAY TO  WRK-STDAY
+               MOVE    SS001-EDDAY TO  WRK-EDDAY
+           ELSE
+               MOVE    1           TO  WRK-STDAY
+               MOVE    31          TO  WRK-EDDAY
+           END-IF
       *
            .
        100-INIT-EXT.
@@ -297,8 +306,8 @@ grpsys     COPY  "COMMON-SPA".
       *
                        PERFORM 200111-HKNBUNRUI-SEC
       *
-                       PERFORM VARYING IDX-DAY FROM    1   BY  1
-                               UNTIL ( IDX-DAY >   31 )
+                       PERFORM VARYING IDX-DAY FROM    WRK-STDAY   BY  1
+                               UNTIL ( IDX-DAY >       WRK-EDDAY )
       *
                            IF    ( TNYURRK-SRYKA (IDX-DAY)
                                                NOT =   SPACE )
@@ -373,6 +382,14 @@ grpsys     COPY  "COMMON-SPA".
                                        TO  WRK-EDIDX
                END-IF
       *
+               IF    ( WRK-STDAY       >   WRK-STIDX )
+                   MOVE    WRK-STDAY   TO  WRK-STIDX
+               END-IF
+      *
+               IF    ( WRK-EDDAY       <   WRK-EDIDX )
+                   MOVE    WRK-EDDAY   TO  WRK-EDIDX
+               END-IF
+      *
                PERFORM VARYING IDX-DAY     FROM    WRK-STIDX   BY  1
                        UNTIL ( IDX-DAY     >       WRK-EDIDX )
                    MOVE    PTNYUINRRK-NYUINKA
@@ -397,8 +414,8 @@ grpsys     COPY  "COMMON-SPA".
       *
            INITIALIZE                  TCOMBI-AREA
       *
-           PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   31 )
+           PERFORM VARYING IDX1    FROM    WRK-STDAY   BY  1
+                   UNTIL ( IDX1    >       WRK-EDDAY )
       *
                IF    ( NACCT-DAY (IDX1)    >   ZERO )
       *

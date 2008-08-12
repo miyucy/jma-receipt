@@ -195,6 +195,7 @@
            03  CNT-RSIJBI-KIN                      PIC 9(05).
            03  CNT-RSIJBI-TEN                      PIC 9(05).
            03  CNT-RENNUM                          PIC 9(05).
+           03  CNT-SRYACCT                         PIC 9(05).
       *
       *    システム領域
        01  SYS-AREA.
@@ -239,6 +240,8 @@
            03  IDX31                               PIC 9(05).
            03  IDX32                               PIC 9(05).
            03  IDX33                               PIC 9(05).
+           03  IDX34                               PIC 9(05).
+           03  IDX35                               PIC 9(05).
            03  IDXA                                PIC 9(05).
            03  IDXB                                PIC 9(05).
            03  IDXC                                PIC 9(05).
@@ -406,6 +409,9 @@
            03  WRK-NUM                             PIC 9(01).
            03  WRK-DBYMD                           PIC X(08).
            03  WRK-HOKEN                           PIC X(01).
+           03  WRK-PRT-STDAY                       PIC Z9.
+           03  WRK-PRT-EDDAY                       PIC Z9.
+           03  WRK-PRT-KIKAN                       PIC X(20).
       *
        01  COMMENT-CHK-AREA.
            03  COMMENT-IDX                         PIC 9(03).
@@ -1092,6 +1098,24 @@
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-EDTYMD3 (1:16)  TO  WRK-HCM34-SRYYM
       *
+      *    期間
+           IF    ( ORCHCM34-KIKANKBN  =   "1" )
+               MOVE    SPACE          TO   WRK-MAE-INPUT
+               MOVE    ORCHCM34-STDAY TO   WRK-PRT-STDAY
+               MOVE    ORCHCM34-EDDAY TO   WRK-PRT-EDDAY
+               STRING  "（"           DELIMITED    BY  SIZE
+                       WRK-PRT-STDAY  DELIMITED    BY  SIZE
+                       "日"           DELIMITED    BY  SIZE
+                       "〜"           DELIMITED    BY  SIZE
+                       WRK-PRT-EDDAY  DELIMITED    BY  SIZE
+                       "日"           DELIMITED    BY  SIZE
+                       "）"           DELIMITED    BY  SIZE				
+               INTO    WRK-MAE-INPUT
+               END-STRING
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  WRK-PRT-KIKAN
+           END-IF
+      *
       *    作成日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
@@ -1245,11 +1269,8 @@
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-           MOVE    ORCHCM34-SRYYM      TO  WRK-SYMD
-           PERFORM 800-GETUMATU-SEC
-           MOVE    WRK-SYMD            TO  PTNYUINRRK-NYUINYMD
-           MOVE    ORCHCM34-SRYYM      TO  PTNYUINRRK-TAIINYMD
-           MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
+           MOVE    ORCHCM34-EDSRYYMD   TO  PTNYUINRRK-NYUINYMD
+           MOVE    ORCHCM34-STSRYYMD   TO  PTNYUINRRK-TAIINYMD
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
@@ -1341,22 +1362,7 @@
            MOVE    ZERO                TO  WRK-HCM34-SRYKA-MAX
            MOVE    SPACE               TO  WRK-HCM34-SRYKA-G
       *
-           MOVE    ZERO                TO  FLG-SRYACCT
-           INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
-           MOVE    ORCHCM34-NYUGAIKBN  TO  ACCT-NYUGAIKBN
-           MOVE    SPA-PTID            TO  ACCT-PTID
-           MOVE    ORCHCM34-SRYYM      TO  ACCT-SRYYM
-      *
-           MOVE    SRYACCT-REC         TO  MCPDATA-REC
-           MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key23"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC        NOT =   ZERO )
-               MOVE    1               TO  FLG-SRYACCT
-           ELSE
-               MOVE    MCPDATA-REC     TO  SRYACCT-REC
-           END-IF
+           PERFORM 900-SRYACCT-KEY23-SEL-SEC
       *
            MOVE    ZERO                TO  WKSRYACCT-MAX
            INITIALIZE                      WKSRYACCT-REC
@@ -1389,14 +1395,7 @@
                    END-IF
                END-IF
       *
-               MOVE    "tbl_sryacct"       TO  MCP-TABLE
-               MOVE    "key23"             TO  MCP-PATHNAME
-               PERFORM 910-DBFETCH-SEC
-               IF    ( MCP-RC        NOT =   ZERO )
-                   MOVE    1               TO  FLG-SRYACCT
-               ELSE
-                   MOVE    MCPDATA-REC     TO  SRYACCT-REC
-               END-IF
+               PERFORM 900-SRYACCT-KEY23-FET-SEC
       *
            END-PERFORM
       *
@@ -1459,9 +1458,9 @@
       *    保険番号検索
            MOVE    ZERO                TO  FLG-HKNNUM
            INITIALIZE                  HKNNUM-REC
-           MOVE    SPA-HOSPNUM          TO  HKN-HOSPNUM
-           MOVE    SPA-SYSYMD          TO  HKN-TEKSTYMD
-           MOVE    SPA-SYSYMD          TO  HKN-TEKEDYMD
+           MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
+           MOVE    ORCHCM34-STSRYYMD   TO  HKN-TEKSTYMD
+           MOVE    ORCHCM34-STSRYYMD   TO  HKN-TEKEDYMD
            MOVE    HKNNUM-REC          TO  MCPDATA-REC
            MOVE    "tbl_hknnum"        TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
@@ -1653,9 +1652,9 @@
       *    診療行為編集処理
            PERFORM 2001-SRYACT-HEN-SEC
       *
-           IF    ( CNT-PAGE        =   ZERO )
-            OR   (   ( CNT-PAGE        >   ZERO )
-                AND  ( CNT-SRYACT-LINE >   ZERO ))
+           IF    ( ORCHCM34-PRTCTRLKBN =   "1" )
+            OR  (( CNT-SRYACT-LINE     >   ZERO )
+             AND ( CNT-SRYACCT         >   ZERO ))
                PERFORM 290-PRINT-SEC
            END-IF
       *
@@ -1683,10 +1682,10 @@
                    MOVE    ZERO    TO  FLG-TARGET
                END-IF
       *
-               IF    ( ORCHCM34-SRYYM
-                                   >=  ORCSHKN-NAI-TEKSTYMD(IDX1)(1:6))
-                AND  ( ORCHCM34-SRYYM
-                                   <=  ORCSHKN-NAI-TEKEDYMD(IDX1)(1:6))
+               IF    ( ORCHCM34-STSRYYMD
+                                   <=  ORCSHKN-NAI-TEKEDYMD(IDX1))
+                AND  ( ORCHCM34-EDSRYYMD
+                                   >=  ORCSHKN-NAI-TEKSTYMD(IDX1))
                    CONTINUE
                ELSE
                    MOVE    ZERO    TO  FLG-TARGET
@@ -1810,8 +1809,13 @@
                     OR   ( FLG-HOUKATU NOT = ZERO )
       *
                IF    ( ACCT-ZAITEN     NOT =   ZERO )
-                AND  ( ACCT-ZAIKAISU   NOT =   ZERO )
-                    MOVE   1           TO  FLG-HOUKATU
+                   PERFORM VARYING IDX34   FROM    ORCHCM34-STDAY  BY  1
+                           UNTIL ( IDX34   >       ORCHCM34-EDDAY )
+                            OR   ( FLG-HOUKATU     =   1 )
+                        IF    ( ACCT-DAY ( 1 IDX34)    >   ZERO )
+                            MOVE   1       TO  FLG-HOUKATU
+                        END-IF
+                    END-PERFORM
                END-IF
       *
                MOVE    "tbl_sryacct"   TO  MCP-TABLE
@@ -1907,8 +1911,8 @@
                    MOVE    ZERO    TO  FLG-TARGET
                END-IF
       *
-               IF    ( ORCHCM34-SRYYM  >=  PTHKN-TEKSTYMD (1:6))
-                AND  ( ORCHCM34-SRYYM  <=  PTHKN-TEKEDYMD (1:6))
+               IF    ( ORCHCM34-STSRYYMD  <=  PTHKN-TEKEDYMD )
+                AND  ( ORCHCM34-EDSRYYMD  >=  PTHKN-TEKSTYMD )
                    CONTINUE
                ELSE
                    MOVE    ZERO    TO  FLG-TARGET
@@ -2155,6 +2159,15 @@
                        MOVE    "下船３月"  TO  WRK-PTHKN-HOJOKBNMEI
                    END-EVALUATE
                END-IF
+      *    後期高齢者
+           WHEN    "039"
+           WHEN    "040"
+               EVALUATE    WRK-PTHKN-HOJOKBN
+               WHEN    "1"
+                   MOVE    "１割"          TO  WRK-PTHKN-HOJOKBNMEI
+               WHEN    "3" 
+                   MOVE    "３割"          TO  WRK-PTHKN-HOJOKBNMEI
+               END-EVALUATE
       *    その他
            WHEN    OTHER
       *        自費
@@ -2255,8 +2268,8 @@
                    MOVE    ZERO        TO  FLG-TARGET
                END-IF
       *
-               IF    ( ORCHCM34-SRYYM  >=  PTKOH-TEKSTYMD (1:6))
-                AND  ( ORCHCM34-SRYYM  <=  PTKOH-TEKEDYMD (1:6))
+               IF    ( ORCHCM34-STSRYYMD  <=  PTKOH-TEKEDYMD )
+                AND  ( ORCHCM34-EDSRYYMD  >=  PTKOH-TEKSTYMD )
                    CONTINUE
                ELSE
                    MOVE    ZERO        TO  FLG-TARGET
@@ -2393,11 +2406,10 @@
            END-IF
            MOVE    ORCHCM34-NYUGAIKBN  TO  PTBYO-NYUGAIKBN
       *
-           MOVE    ORCHCM34-SRYYM      TO  PTBYO-TENKIYMD
-           MOVE    "01"                TO  PTBYO-TENKIYMD (7:2)
+           MOVE    ORCHCM34-STSRYYMD   TO  PTBYO-TENKIYMD
       *
-           MOVE    PTBYO-TENKIYMD      TO  WRK-SYMD
-           MOVE    "2"                 TO  WRK-ZOGENPTN
+           MOVE    ORCHCM34-EDSRYYMD   TO  WRK-SYMD
+           MOVE    "1"                 TO  WRK-ZOGENPTN
            MOVE    1                   TO  WRK-ZOGEN
            PERFORM 800-CALENDAR-SEC
            MOVE    WRK-SYMD            TO  PTBYO-SRYYMD
@@ -2873,8 +2885,8 @@
                COMPUTE WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
                    =   WKACCT-ZAIKAISU  (WKSRYACCT-IDX)
                    +   ACCT-ZAIKAISU
-               PERFORM VARYING IDX1    FROM    1   BY  1
-                       UNTIL ( IDX1    >   31 )
+               PERFORM VARYING IDX1    FROM    ORCHCM34-STDAY   BY  1
+                       UNTIL ( IDX1    >   ORCHCM34-EDDAY )
                    COMPUTE WKACCT-DAY (WKSRYACCT-IDX 1 IDX1)
                         =  WKACCT-DAY (WKSRYACCT-IDX 1 IDX1)
                         +   ACCT-DAY (1 IDX1)
@@ -3054,8 +3066,9 @@
                            MOVE    WRK-SRYSYUKBN
                                        TO  SRT-SRYACCT-OPE-SRYSYUKBN
                                                               (SRT-IDX1)
-                           PERFORM VARYING IDX0    FROM    1   BY  1
-                                   UNTIL ( IDX0    >   31 )
+                           PERFORM VARYING IDX0
+                                   FROM    ORCHCM34-STDAY   BY  1
+                                   UNTIL ( IDX0    >   ORCHCM34-EDDAY )
                                     OR   ( SRT-SRYACCT-OPE-DAY(SRT-IDX1)
                                                NOT =   ZERO )
                                IF    ( ACCT-DAY (1 IDX0)   >   ZERO )
@@ -3387,6 +3400,8 @@
            IF    ( FLG-EDIT            =   ZERO )
                GO  TO  20011-SRYACT-HEN-EXT
            END-IF
+      *
+           COMPUTE CNT-SRYACCT =   CNT-SRYACCT     +   1
       *
            MOVE    ZERO                TO  CNT-HOUSRYACT
            MOVE    ZERO                TO  FLG-SRYACT-HEN5
@@ -3750,8 +3765,8 @@
       *    保険組合せ
            MOVE    ACCT-HKNCOMBI       TO  WRK-SRYACT-HKNCOMBI
       *    回数
-           PERFORM VARYING IDX8    FROM    1   BY  1
-                   UNTIL ( IDX8    >   31 )
+           PERFORM VARYING IDX8    FROM    ORCHCM34-STDAY   BY  1
+                   UNTIL ( IDX8    >   ORCHCM34-EDDAY )
                MOVE    ACCT-DAY  (1 IDX8)
                                        TO  WRK-SRYACT-DAY-Z (IDX8)
            END-PERFORM
@@ -4839,8 +4854,8 @@
       *
            PERFORM VARYING IDX22   FROM    SNTYMD-MAX   BY  -1
                    UNTIL ( IDX22       <   1 )
-                    OR   ( SNTYMD-NYUINYMD (IDX22) (1:6)
-                                       >   ORCHCM34-SRYYM )
+                    OR   ( SNTYMD-NYUINYMD (IDX22) 
+                                       >   ORCHCM34-EDSRYYMD )
       *
                PERFORM VARYING IDX18   FROM    1   BY  1
                        UNTIL ( IDX18   >   WRK-SHONUM-MAX )
@@ -4871,11 +4886,8 @@
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
-           MOVE    ORCHCM34-SRYYM      TO  WRK-SYMD
-           PERFORM 800-GETUMATU-SEC
-           MOVE    WRK-SYMD            TO  PTNYUINRRK-NYUINYMD
-           MOVE    ORCHCM34-SRYYM      TO  PTNYUINRRK-TAIINYMD
-           MOVE    "01"                TO  PTNYUINRRK-TAIINYMD (7:2)
+           MOVE    ORCHCM34-EDSRYYMD   TO  PTNYUINRRK-NYUINYMD
+           MOVE    ORCHCM34-STSRYYMD   TO  PTNYUINRRK-TAIINYMD
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key24"             TO  MCP-PATHNAME
@@ -5021,6 +5033,15 @@
                                        TO  WRK-EDIDX
                END-IF
       *
+      *
+               IF    ( ORCHCM34-STDAY      >   WRK-STIDX )
+                   MOVE    ORCHCM34-STDAY  TO  WRK-STIDX
+               END-IF
+      *
+               IF    ( ORCHCM34-EDDAY      <   WRK-EDIDX )
+                   MOVE    ORCHCM34-EDDAY  TO  WRK-EDIDX
+               END-IF
+      *
                PERFORM VARYING IDX-DAY     FROM    WRK-STIDX   BY  1
                        UNTIL ( IDX-DAY     >       WRK-EDIDX )
                    MOVE    PTNYUINRRK-NYUINKA
@@ -5035,8 +5056,8 @@
            MOVE    "key41"                     TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           PERFORM VARYING IDX-DAY FROM    1   BY  1
-                   UNTIL ( IDX-DAY >   31 )
+           PERFORM VARYING IDX-DAY FROM    ORCHCM34-STDAY   BY  1
+                   UNTIL ( IDX-DAY >   ORCHCM34-EDDAY )
       *
                IF    ( WRK-HBTSRYKA-HBTKA (IDX-DAY)    NOT =   ZERO )
                    PERFORM VARYING IDX23    FROM    1   BY  1
@@ -5081,8 +5102,8 @@
       *****************************************************************
        20021-TCOMBI-HEN-SEC            SECTION.
       *
-           PERFORM VARYING IDX25   FROM    1   BY  1
-                   UNTIL ( IDX25   >   31 )
+           PERFORM VARYING IDX25   FROM    ORCHCM34-STDAY   BY  1
+                   UNTIL ( IDX25   >   ORCHCM34-EDDAY )
       *
                IF    ( NACCT-DAY (IDX25)   >   ZERO )
       *
@@ -5159,6 +5180,13 @@
                    MOVE    ORCHCM34-SRYKAKBN   TO  HCM34S01-SRYKAKBN
                    MOVE    ORCHCM34-SRYKA      TO  HCM34S01-SRYKA
                    MOVE    ORCHCM34-SRYKADAY-G TO  HCM34S01-SRYKADAY-G
+                   IF    ( ORCHCM34-KIKANKBN   =   "1" )
+                       MOVE    "1"             TO  HCM34S01-KIKANKBN
+                       MOVE    ORCHCM34-STSRYYMD
+                                               TO  HCM34S01-SKYSTYMD
+                       MOVE    ORCHCM34-EDSRYYMD
+                                               TO  HCM34S01-SKYEDYMD
+                   END-IF
       *
                    IF    ( COMB-HKNNUM         =     "971" OR "973" )
       *
@@ -5195,8 +5223,9 @@
       *
                        MOVE    ZERO    TO  WRK-DAY-G
       *
-                       PERFORM VARYING IDX-DAY FROM    1   BY  1
-                               UNTIL ( IDX-DAY >   31 )
+                       PERFORM VARYING IDX-DAY
+                               FROM    ORCHCM34-STDAY   BY  1
+                               UNTIL ( IDX-DAY >   ORCHCM34-EDDAY )
                            IF    ( WRK-HBTSRYKA-DAY (IDX29 IDX-DAY )
                                                > ZERO )
                             AND  ( HCM34S01-DAY     (IDX28 IDX-DAY )
@@ -5249,8 +5278,8 @@
            MOVE    HCM34S01-MEISAISU   (IDX28)
                                        TO  ACCT-MEISAISU
       *
-           PERFORM VARYING IDX-DAY FROM    1   BY  1
-                   UNTIL ( IDX-DAY >   31 )
+           PERFORM VARYING IDX-DAY FROM    ORCHCM34-STDAY   BY  1
+                   UNTIL ( IDX-DAY >   ORCHCM34-EDDAY )
       *
                MOVE    WRK-DAY (IDX-DAY)
                                        TO  ACCT-DAY (1 IDX-DAY)
@@ -6211,6 +6240,10 @@
       *
            MOVE    WRK-HCM34-SRYYM         TO  HCM341-SRYYM
       *
+           IF    ( ORCHCM34-KIKANKBN  =   "1" )
+               MOVE    WRK-PRT-KIKAN       TO  HCM341-KIKAN
+           END-IF
+      *
            IF    ( ORCHCM34-NYUGAIKBN  =   "1" )
                MOVE    "入院"              TO  HCM341-NYUGAI
            ELSE
@@ -6270,6 +6303,10 @@
            COMPUTE CNT-PAGE    =   CNT-PAGE    +   1
       *
            MOVE    WRK-HCM34-SRYYM         TO  HCM342-SRYYM
+      *
+           IF    ( ORCHCM34-KIKANKBN  =   "1" )
+               MOVE    WRK-PRT-KIKAN       TO  HCM342-KIKAN
+           END-IF
       *
            IF    ( ORCHCM34-NYUGAIKBN  =   "1" )
                MOVE    "入院"              TO  HCM342-NYUGAI
@@ -6697,6 +6734,26 @@
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC              =   ZERO )
                    MOVE    MCPDATA-REC     TO  SRYACCT-REC
+      *
+                   MOVE    ZERO            TO  ACCT-ZAIKAISU
+                   PERFORM VARYING IDX35   FROM    1   BY  1
+                           UNTIL ( IDX35   >      31 )
+      *
+                       IF    ( IDX35       >=  ORCHCM34-STDAY )
+                        AND  ( IDX35       <=  ORCHCM34-EDDAY )
+      *
+                           COMPUTE ACCT-ZAIKAISU
+                               =   ACCT-ZAIKAISU
+                               +   ACCT-DAY (1 IDX35)
+                       ELSE
+                           MOVE    ZERO    TO  ACCT-DAY (1 IDX35)
+                                               ACCT-DAY (2 IDX35)
+                                               ACCT-DAY (3 IDX35)
+                                               ACCT-DAY (4 IDX35)
+                       END-IF
+      *
+                   END-PERFORM
+      *
                    IF    ( ORCHCM34-SRYKAKBN   =   "1" )
                        IF    ( ORCHCM34-SRYKA  NOT =   ACCT-SRYKA )
                            MOVE    ZERO    TO  FLG-LOOPEND
@@ -6718,6 +6775,7 @@
                            MOVE    ZERO        TO  FLG-LOOPEND
                        END-IF
                    END-IF
+      *
                ELSE
                    MOVE    1               TO  FLG-SRYACCT
                END-IF
@@ -6841,10 +6899,8 @@
       *
            MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
            MOVE    NACCT-PTID          TO  PTNYUINRRK-PTID
-           MOVE    NACCT-SRYYM         TO  PTNYUINRRK-TENNYUYMD
-           MOVE    "31"                TO  PTNYUINRRK-TENNYUYMD
-           MOVE    NACCT-SRYYM         TO  PTNYUINRRK-TENSTUYMD
-           MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD
+           MOVE    ORCHCM34-EDSRYYMD   TO  PTNYUINRRK-TENNYUYMD
+           MOVE    ORCHCM34-STSRYYMD   TO  PTNYUINRRK-TENSTUYMD
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key41"             TO  MCP-PATHNAME
@@ -6876,6 +6932,69 @@
       *
            .
        900-PTNYUINRRK-KEY41-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計検索処理
+      *****************************************************************
+       900-SRYACCT-KEY23-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+      *
+           INITIALIZE                      SRYACCT-REC
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
+           MOVE    ORCHCM34-NYUGAIKBN  TO  ACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  ACCT-PTID
+           MOVE    ORCHCM34-SRYYM      TO  ACCT-SRYYM
+      *
+           MOVE    SRYACCT-REC         TO  MCPDATA-REC
+           MOVE    "tbl_sryacct"       TO  MCP-TABLE
+           MOVE    "key23"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               PERFORM 900-SRYACCT-KEY23-FET-SEC
+           ELSE
+               MOVE    1               TO  FLG-SRYACCT
+           END-IF
+      *
+           .
+       900-SRYACCT-KEY23-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療会計FETCH処理
+      *****************************************************************
+       900-SRYACCT-KEY23-FET-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SRYACCT
+           MOVE    ZERO                TO  FLG-LOOPEND
+      *
+           PERFORM UNTIL ( FLG-SRYACCT NOT =   ZERO )
+                    OR   ( FLG-LOOPEND NOT =   ZERO )
+      *
+               MOVE    "tbl_sryacct"   TO  MCP-TABLE
+               MOVE    "key23"         TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC     TO  SRYACCT-REC
+      *
+                   PERFORM VARYING IDX34
+                           FROM    ORCHCM34-STDAY  BY  1
+                           UNTIL ( IDX34   >   ORCHCM34-EDDAY )
+                            OR   ( FLG-LOOPEND     =   1 )
+      *
+                       IF    ( ACCT-DAY ( 1 IDX34 )    >   ZERO )
+                           MOVE    1       TO  FLG-LOOPEND
+                       END-IF
+      *
+                   END-PERFORM
+      *
+               ELSE
+                   MOVE    1               TO  FLG-SRYACCT
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       900-SRYACCT-KEY23-FET-EXT.
            EXIT.
       *****************************************************************
       *    保険組合せ取得処理

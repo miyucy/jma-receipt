@@ -64,883 +64,1103 @@ G01	{
 			value	bool;
 			label	varchar(80);
 		};
-		PARA011	{
+		PARA0101	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA012	{
+		PARA0102	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA013	{
+		PARA0103	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA014	{
+		PARA0104	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA015	{
+		PARA0105	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA016	{
+		PARA0106	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA017	{
+		PARA0107	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA018	{
+		PARA0108	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARAHYOJI011	{
+		PARA0109	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARA0110	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARAHYOJI0101	{
+			value	varchar(20);
+		};
+		PARAHYOJI0102	{
+			value	varchar(20);
+		};
+		PARAHYOJI0103	{
 			value	varchar(20);
 		};
-		PARAHYOJI012	{
+		PARAHYOJI0104	{
 			value	varchar(20);
 		};
-		PARAHYOJI013	{
+		PARAHYOJI0105	{
 			value	varchar(20);
 		};
-		PARAHYOJI014	{
+		PARAHYOJI0106	{
 			value	varchar(20);
 		};
-		PARAHYOJI015	{
+		PARAHYOJI0107	{
 			value	varchar(20);
 		};
-		PARAHYOJI016	{
+		PARAHYOJI0108	{
 			value	varchar(20);
 		};
-		PARAHYOJI017	{
+		PARAHYOJI0109	{
 			value	varchar(20);
 		};
-		PARAHYOJI018	{
+		PARAHYOJI0110	{
 			value	varchar(20);
 		};
-		PARAMARK011	{
+		PARAMARK0101	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK012	{
+		PARAMARK0102	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK013	{
+		PARAMARK0103	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK014	{
+		PARAMARK0104	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK015	{
+		PARAMARK0105	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK016	{
+		PARAMARK0106	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK017	{
+		PARAMARK0107	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK018	{
+		PARAMARK0108	{
 			style   varchar(20);
 			value	varchar(01);
+		};
+		PARAMARK0109	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK0110	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARA0201	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARA0202	{
+	           	state	int;
+			value	varchar(20);
 		};
-		PARA021	{
+		PARA0203	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA022	{
+		PARA0204	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA023	{
+		PARA0205	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA024	{
+		PARA0206	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA025	{
+		PARA0207	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA026	{
+		PARA0208	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA027	{
+		PARA0209	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA028	{
+		PARA0210	{
 	           	state	int;
+			value	varchar(20);
+		};
+		PARAHYOJI0201	{
+			value	varchar(20);
+		};
+		PARAHYOJI0202	{
 			value	varchar(20);
 		};
-		PARAHYOJI021	{
+		PARAHYOJI0203	{
 			value	varchar(20);
 		};
-		PARAHYOJI022	{
+		PARAHYOJI0204	{
 			value	varchar(20);
 		};
-		PARAHYOJI023	{
+		PARAHYOJI0205	{
 			value	varchar(20);
 		};
-		PARAHYOJI024	{
+		PARAHYOJI0206	{
 			value	varchar(20);
 		};
-		PARAHYOJI025	{
+		PARAHYOJI0207	{
 			value	varchar(20);
 		};
-		PARAHYOJI026	{
+		PARAHYOJI0208	{
 			value	varchar(20);
 		};
-		PARAHYOJI027	{
+		PARAHYOJI0209	{
 			value	varchar(20);
 		};
-		PARAHYOJI028	{
+		PARAHYOJI0210	{
 			value	varchar(20);
+		};
+		PARAMARK0201	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK0202	{
+			style   varchar(20);
+			value	varchar(01);
 		};
-		PARAMARK021	{
+		PARAMARK0203	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK022	{
+		PARAMARK0204	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK023	{
+		PARAMARK0205	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK024	{
+		PARAMARK0206	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK025	{
+		PARAMARK0207	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK026	{
+		PARAMARK0208	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK027	{
+		PARAMARK0209	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK028	{
+		PARAMARK0210	{
 			style   varchar(20);
 			value	varchar(01);
+		};
+		PARA0301	{
+	           	state	int;
+			value	varchar(20);
 		};
-		PARA031	{
+		PARA0302	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA032	{
+		PARA0303	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA033	{
+		PARA0304	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA034	{
+		PARA0305	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA035	{
+		PARA0306	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA036	{
+		PARA0307	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA037	{
+		PARA0308	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA038	{
+		PARA0309	{
 	           	state	int;
+			value	varchar(20);
+		};
+		PARA0310	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARAHYOJI0301	{
 			value	varchar(20);
 		};
-		PARAHYOJI031	{
+		PARAHYOJI0302	{
 			value	varchar(20);
 		};
-		PARAHYOJI032	{
+		PARAHYOJI0303	{
 			value	varchar(20);
 		};
-		PARAHYOJI033	{
+		PARAHYOJI0304	{
 			value	varchar(20);
 		};
-		PARAHYOJI034	{
+		PARAHYOJI0305	{
 			value	varchar(20);
 		};
-		PARAHYOJI035	{
+		PARAHYOJI0306	{
 			value	varchar(20);
 		};
-		PARAHYOJI036	{
+		PARAHYOJI0307	{
 			value	varchar(20);
 		};
-		PARAHYOJI037	{
+		PARAHYOJI0308	{
 			value	varchar(20);
 		};
-		PARAHYOJI038	{
+		PARAHYOJI0309	{
 			value	varchar(20);
 		};
-		PARAMARK031	{
+		PARAHYOJI0310	{
+			value	varchar(20);
+		};
+		PARAMARK0301	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK0302	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK032	{
+		PARAMARK0303	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK033	{
+		PARAMARK0304	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK034	{
+		PARAMARK0305	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK035	{
+		PARAMARK0306	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK036	{
+		PARAMARK0307	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK037	{
+		PARAMARK0308	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK038	{
+		PARAMARK0309	{
 			style   varchar(20);
 			value	varchar(01);
+		};
+		PARAMARK0310	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARA0401	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARA0402	{
+	           	state	int;
+			value	varchar(20);
 		};
-		PARA041	{
+		PARA0403	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA042	{
+		PARA0404	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA043	{
+		PARA0405	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA044	{
+		PARA0406	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA045	{
+		PARA0407	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA046	{
+		PARA0408	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA047	{
+		PARA0409	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA048	{
+		PARA0410	{
 	           	state	int;
+			value	varchar(20);
+		};
+		PARAHYOJI0401	{
+			value	varchar(20);
+		};
+		PARAHYOJI0402	{
 			value	varchar(20);
 		};
-		PARAHYOJI041	{
+		PARAHYOJI0403	{
 			value	varchar(20);
 		};
-		PARAHYOJI042	{
+		PARAHYOJI0404	{
 			value	varchar(20);
 		};
-		PARAHYOJI043	{
+		PARAHYOJI0405	{
 			value	varchar(20);
 		};
-		PARAHYOJI044	{
+		PARAHYOJI0406	{
 			value	varchar(20);
 		};
-		PARAHYOJI045	{
+		PARAHYOJI0407	{
 			value	varchar(20);
 		};
-		PARAHYOJI046	{
+		PARAHYOJI0408	{
 			value	varchar(20);
 		};
-		PARAHYOJI047	{
+		PARAHYOJI0409	{
 			value	varchar(20);
 		};
-		PARAHYOJI048	{
+		PARAHYOJI0410	{
 			value	varchar(20);
+		};
+		PARAMARK0401	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK0402	{
+			style   varchar(20);
+			value	varchar(01);
 		};
-		PARAMARK041	{
+		PARAMARK0403	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK042	{
+		PARAMARK0404	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK043	{
+		PARAMARK0405	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK044	{
+		PARAMARK0406	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK045	{
+		PARAMARK0407	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK046	{
+		PARAMARK0408	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK047	{
+		PARAMARK0409	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK048	{
+		PARAMARK0410	{
 			style   varchar(20);
 			value	varchar(01);
+		};
+		PARA0501	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARA0502	{
+	           	state	int;
+			value	varchar(20);
 		};
-		PARA051	{
+		PARA0503	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA052	{
+		PARA0504	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA053	{
+		PARA0505	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA054	{
+		PARA0506	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA055	{
+		PARA0507	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA056	{
+		PARA0508	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA057	{
+		PARA0509	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA058	{
+		PARA0510	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARAHYOJI051	{
+		PARAHYOJI0501	{
 			value	varchar(20);
 		};
-		PARAHYOJI052	{
+		PARAHYOJI0502	{
 			value	varchar(20);
 		};
-		PARAHYOJI053	{
+		PARAHYOJI0503	{
 			value	varchar(20);
 		};
-		PARAHYOJI054	{
+		PARAHYOJI0504	{
 			value	varchar(20);
 		};
-		PARAHYOJI055	{
+		PARAHYOJI0505	{
 			value	varchar(20);
 		};
-		PARAHYOJI056	{
+		PARAHYOJI0506	{
 			value	varchar(20);
 		};
-		PARAHYOJI057	{
+		PARAHYOJI0507	{
 			value	varchar(20);
 		};
-		PARAHYOJI058	{
+		PARAHYOJI0508	{
 			value	varchar(20);
+		};
+		PARAHYOJI0509	{
+			value	varchar(20);
+		};
+		PARAHYOJI0510	{
+			value	varchar(20);
+		};
+		PARAMARK0501	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK0502	{
+			style   varchar(20);
+			value	varchar(01);
 		};
-		PARAMARK051	{
+		PARAMARK0503	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK052	{
+		PARAMARK0504	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK053	{
+		PARAMARK0505	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK054	{
+		PARAMARK0506	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK055	{
+		PARAMARK0507	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK056	{
+		PARAMARK0508	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK057	{
+		PARAMARK0509	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK058	{
+		PARAMARK0510	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARA061	{
+		PARA0601	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA062	{
+		PARA0602	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA063	{
+		PARA0603	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA064	{
+		PARA0604	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA065	{
+		PARA0605	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA066	{
+		PARA0606	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA067	{
+		PARA0607	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA068	{
+		PARA0608	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARAHYOJI061	{
+		PARA0609	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARA0610	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARAHYOJI0601	{
+			value	varchar(20);
+		};
+		PARAHYOJI0602	{
+			value	varchar(20);
+		};
+		PARAHYOJI0603	{
 			value	varchar(20);
 		};
-		PARAHYOJI062	{
+		PARAHYOJI0604	{
 			value	varchar(20);
 		};
-		PARAHYOJI063	{
+		PARAHYOJI0605	{
 			value	varchar(20);
 		};
-		PARAHYOJI064	{
+		PARAHYOJI0606	{
 			value	varchar(20);
 		};
-		PARAHYOJI065	{
+		PARAHYOJI0607	{
 			value	varchar(20);
 		};
-		PARAHYOJI066	{
+		PARAHYOJI0608	{
 			value	varchar(20);
 		};
-		PARAHYOJI067	{
+		PARAHYOJI0609	{
 			value	varchar(20);
 		};
-		PARAHYOJI068	{
+		PARAHYOJI0610	{
 			value	varchar(20);
 		};
-		PARAMARK061	{
+		PARAMARK0601	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK062	{
+		PARAMARK0602	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK063	{
+		PARAMARK0603	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK064	{
+		PARAMARK0604	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK065	{
+		PARAMARK0605	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK066	{
+		PARAMARK0606	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK067	{
+		PARAMARK0607	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK068	{
+		PARAMARK0608	{
 			style   varchar(20);
 			value	varchar(01);
+		};
+		PARAMARK0609	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK0610	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARA0701	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARA0702	{
+	           	state	int;
+			value	varchar(20);
 		};
-		PARA071	{
+		PARA0703	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA072	{
+		PARA0704	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA073	{
+		PARA0705	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA074	{
+		PARA0706	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA075	{
+		PARA0707	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA076	{
+		PARA0708	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA077	{
+		PARA0709	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA078	{
+		PARA0710	{
 	           	state	int;
+			value	varchar(20);
+		};
+		PARAHYOJI0701	{
+			value	varchar(20);
+		};
+		PARAHYOJI0702	{
 			value	varchar(20);
 		};
-		PARAHYOJI071	{
+		PARAHYOJI0703	{
 			value	varchar(20);
 		};
-		PARAHYOJI072	{
+		PARAHYOJI0704	{
 			value	varchar(20);
 		};
-		PARAHYOJI073	{
+		PARAHYOJI0705	{
 			value	varchar(20);
 		};
-		PARAHYOJI074	{
+		PARAHYOJI0706	{
 			value	varchar(20);
 		};
-		PARAHYOJI075	{
+		PARAHYOJI0707	{
 			value	varchar(20);
 		};
-		PARAHYOJI076	{
+		PARAHYOJI0708	{
 			value	varchar(20);
 		};
-		PARAHYOJI077	{
+		PARAHYOJI0709	{
 			value	varchar(20);
 		};
-		PARAHYOJI078	{
+		PARAHYOJI0710	{
 			value	varchar(20);
+		};
+		PARAMARK0701	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK0702	{
+			style   varchar(20);
+			value	varchar(01);
 		};
-		PARAMARK071	{
+		PARAMARK0703	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK072	{
+		PARAMARK0704	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK073	{
+		PARAMARK0705	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK074	{
+		PARAMARK0706	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK075	{
+		PARAMARK0707	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK076	{
+		PARAMARK0708	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK077	{
+		PARAMARK0709	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK078	{
+		PARAMARK0710	{
 			style   varchar(20);
 			value	varchar(01);
+		};
+		PARA0801	{
+	           	state	int;
+			value	varchar(20);
 		};
-		PARA081	{
+		PARA0802	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA082	{
+		PARA0803	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA083	{
+		PARA0804	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA084	{
+		PARA0805	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA085	{
+		PARA0806	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA086	{
+		PARA0807	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA087	{
+		PARA0808	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA088	{
+		PARA0809	{
 	           	state	int;
+			value	varchar(20);
+		};
+		PARA0810	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARAHYOJI0801	{
 			value	varchar(20);
 		};
-		PARAHYOJI081	{
+		PARAHYOJI0802	{
 			value	varchar(20);
 		};
-		PARAHYOJI082	{
+		PARAHYOJI0803	{
 			value	varchar(20);
 		};
-		PARAHYOJI083	{
+		PARAHYOJI0804	{
 			value	varchar(20);
 		};
-		PARAHYOJI084	{
+		PARAHYOJI0805	{
 			value	varchar(20);
 		};
-		PARAHYOJI085	{
+		PARAHYOJI0806	{
 			value	varchar(20);
 		};
-		PARAHYOJI086	{
+		PARAHYOJI0807	{
 			value	varchar(20);
 		};
-		PARAHYOJI087	{
+		PARAHYOJI0808	{
 			value	varchar(20);
 		};
-		PARAHYOJI088	{
+		PARAHYOJI0809	{
 			value	varchar(20);
 		};
-		PARAMARK081	{
+		PARAHYOJI0810	{
+			value	varchar(20);
+		};
+		PARAMARK0801	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK0802	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK082	{
+		PARAMARK0803	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK083	{
+		PARAMARK0804	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK084	{
+		PARAMARK0805	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK085	{
+		PARAMARK0806	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK086	{
+		PARAMARK0807	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK087	{
+		PARAMARK0808	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK088	{
+		PARAMARK0809	{
 			style   varchar(20);
 			value	varchar(01);
+		};
+		PARAMARK0810	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARA0901	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARA0902	{
+	           	state	int;
+			value	varchar(20);
 		};
-		PARA091	{
+		PARA0903	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA092	{
+		PARA0904	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA093	{
+		PARA0905	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA094	{
+		PARA0906	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA095	{
+		PARA0907	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA096	{
+		PARA0908	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA097	{
+		PARA0909	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA098	{
+		PARA0910	{
 	           	state	int;
+			value	varchar(20);
+		};
+		PARAHYOJI0901	{
+			value	varchar(20);
+		};
+		PARAHYOJI0902	{
 			value	varchar(20);
 		};
-		PARAHYOJI091	{
+		PARAHYOJI0903	{
 			value	varchar(20);
 		};
-		PARAHYOJI092	{
+		PARAHYOJI0904	{
 			value	varchar(20);
 		};
-		PARAHYOJI093	{
+		PARAHYOJI0905	{
 			value	varchar(20);
 		};
-		PARAHYOJI094	{
+		PARAHYOJI0906	{
 			value	varchar(20);
 		};
-		PARAHYOJI095	{
+		PARAHYOJI0907	{
 			value	varchar(20);
 		};
-		PARAHYOJI096	{
+		PARAHYOJI0908	{
 			value	varchar(20);
 		};
-		PARAHYOJI097	{
+		PARAHYOJI0909	{
 			value	varchar(20);
 		};
-		PARAHYOJI098	{
+		PARAHYOJI0910	{
 			value	varchar(20);
+		};
+		PARAMARK0901	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK0902	{
+			style   varchar(20);
+			value	varchar(01);
 		};
-		PARAMARK091	{
+		PARAMARK0903	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK092	{
+		PARAMARK0904	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK093	{
+		PARAMARK0905	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK094	{
+		PARAMARK0906	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK095	{
+		PARAMARK0907	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK096	{
+		PARAMARK0908	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK097	{
+		PARAMARK0909	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK098	{
+		PARAMARK0910	{
 			style   varchar(20);
 			value	varchar(01);
+		};
+		PARA1001	{
+	           	state	int;
+			value	varchar(20);
+		};
+		PARA1002	{
+	           	state	int;
+			value	varchar(20);
 		};
-		PARA101	{
+		PARA1003	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA102	{
+		PARA1004	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA103	{
+		PARA1005	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA104	{
+		PARA1006	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA105	{
+		PARA1007	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA106	{
+		PARA1008	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA107	{
+		PARA1009	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA108	{
+		PARA1010	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARAHYOJI101	{
+		PARAHYOJI1001	{
 			value	varchar(20);
 		};
-		PARAHYOJI102	{
+		PARAHYOJI1002	{
 			value	varchar(20);
 		};
-		PARAHYOJI103	{
+		PARAHYOJI1003	{
 			value	varchar(20);
 		};
-		PARAHYOJI104	{
+		PARAHYOJI1004	{
 			value	varchar(20);
 		};
-		PARAHYOJI105	{
+		PARAHYOJI1005	{
 			value	varchar(20);
 		};
-		PARAHYOJI106	{
+		PARAHYOJI1006	{
 			value	varchar(20);
 		};
-		PARAHYOJI107	{
+		PARAHYOJI1007	{
 			value	varchar(20);
 		};
-		PARAHYOJI108	{
+		PARAHYOJI1008	{
 			value	varchar(20);
+		};
+		PARAHYOJI1009	{
+			value	varchar(20);
+		};
+		PARAHYOJI1010	{
+			value	varchar(20);
+		};
+		PARAMARK1001	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK1002	{
+			style   varchar(20);
+			value	varchar(01);
 		};
-		PARAMARK101	{
+		PARAMARK1003	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK102	{
+		PARAMARK1004	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK103	{
+		PARAMARK1005	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK104	{
+		PARAMARK1006	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK105	{
+		PARAMARK1007	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK106	{
+		PARAMARK1008	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK107	{
+		PARAMARK1009	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK108	{
+		PARAMARK1010	{
 			style   varchar(20);
 			value	varchar(01);
 		};

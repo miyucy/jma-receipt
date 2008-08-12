@@ -29,12 +29,12 @@
                 04  G03-CHK-VALUE     PIC X.
                 04  G03-CHK-LABEL     PIC X(80).
               03  G03-PARA-G.
-                04  G03-PARA-TBL      OCCURS  8.
+                04  G03-PARA-TBL      OCCURS  10.
                   05  G03-PARA-STATE  PIC S9(9)   BINARY.
                   05  G03-PARA        PIC X(20).
-                04  G03-PARAHYOJI-G   OCCURS  8.
+                04  G03-PARAHYOJI-G   OCCURS  10.
                   05  G03-PARAHYOJI   PIC X(20).
-                04  G03-PARAMARK-G   OCCURS  8.
+                04  G03-PARAMARK-G   OCCURS   10.
                   05  G03-PARAMARK-STYLE
                                       PIC X(20).
                   05  G03-PARAMARK    PIC X(01).

@@ -35,25 +35,25 @@
                        09  SPA-GMN-G01-NUM         PIC X(03).
                        09  SPA-GMN-G01-HCNAME      PIC X(80).
                        09  SPA-GMN-G01-PRGNAME     PIC X(24).
-                       09  SPA-GMN-G01-PARAHYOJI-G OCCURS  8.
+                       09  SPA-GMN-G01-PARAHYOJI-G OCCURS  10.
                            11  SPA-GMN-G01-PARAHYOJI
                                                    PIC X(20).
                        09  SPA-GMN-G01-PARA-TBL.
-                           11  SPA-GMN-G01-PARA-G  OCCURS  8.
+                           11  SPA-GMN-G01-PARA-G  OCCURS  10.
                                13  SPA-GMN-G01-PARA
                                                    PIC X(20).
       *
                05  SPA-NAI-G01-AREA.
                    07  SPA-NAI-G01-TBL             OCCURS  100.
                        09  SPA-NAI-G01-SAVEPARA    PIC X(01).
-                       09  SPA-NAI-G01-PARA-G      OCCURS  8.
+                       09  SPA-NAI-G01-PARA-G      OCCURS  10.
                            11  SPA-NAI-G01-PARA    PIC X(20).
                        09  SPA-NAI-G01-HENPARA-TBL.
                            11  SPA-NAI-G01-HENPARA-G
-                                                   OCCURS  8.
+                                                   OCCURS  10.
                                13  SPA-NAI-G01-HENPARA
                                                    PIC X(20).
-                       09  SPA-NAI-G01-HISSU-KBN-G OCCURS  8.
+                       09  SPA-NAI-G01-HISSU-KBN-G OCCURS  10.
                            11  SPA-NAI-G01-HISSU-KBN
                                                    PIC X(01).
            03  SPA-G03-AREA.
@@ -69,23 +69,23 @@
                    07  SPA-GMN-G03-PRGNAME         PIC X(24).
                    07  SPA-GMN-G03-PARAHYOJI-G.
                        09  SPA-GMN-G03-PARAHYOJI   PIC X(20)
-                                                   OCCURS  8.
+                                                   OCCURS  10.
                    07  SPA-GMN-G03-PARA-G.
                        09  SPA-GMN-G03-PARA        PIC X(20)
-                                                   OCCURS  8.
+                                                   OCCURS  10.
                    07  SPA-GMN-G03-MEMO            PIC X(6000).
       *
                05  SPA-NAI-G03-AREA.
                    07  SPA-NAI-G03-PARAARI         PIC 9(01).
                    07  SPA-NAI-G03-PARA-G.
                        09  SPA-NAI-G03-PARA        PIC X(20)
-                                                   OCCURS  8.
+                                                   OCCURS  10.
                    07  SPA-NAI-G03-HENPARA-G.
                        09  SPA-NAI-G03-HENPARA     PIC X(20)
-                                                   OCCURS  8.
+                                                   OCCURS  10.
                    07  SPA-NAI-G03-HISSU-KBN-G.
                        09  SPA-NAI-G03-HISSU-KBN   PIC X(01)
-                                                   OCCURS  8.
+                                                   OCCURS  10.
                    07  SPA-NAI-G03-STATUS          PIC 9(01).
       *
            03  SPA-G02-AREA.

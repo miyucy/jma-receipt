@@ -129,7 +129,7 @@
       *
        01  CONST-AREA.
            03  CONST-3001-PARA-MAX PIC 9(05)   VALUE 8.
-           03  CONST-3002-PARA-MAX PIC 9(05)   VALUE 8.
+           03  CONST-3002-PARA-MAX PIC 9(05)   VALUE 10.
            03  CONST-MEMO-MAX    PIC 9(05)     VALUE 6000.
       *
            COPY    "CPSK0043.INC"              REPLACING    //0043//
@@ -428,7 +428,7 @@
                                        TO  SPA-GMN-W10-PRGNAME1
                                            SPA-W10-PRGNAME
                    PERFORM VARYING IDX FROM    1   BY  1
-                           UNTIL   IDX >       CONST-3001-PARA-MAX
+                           UNTIL   IDX >       CONST-3002-PARA-MAX
                        MOVE    SYS-TOUKEI-PARAHYOJI(IDX)
                                        TO  SPA-GMN-W10-PARAHYOJI1(IDX)
                        MOVE    SYS-TOUKEI-PARA     (IDX)
@@ -675,8 +675,8 @@
                MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
                PERFORM 900-TOUKEIMEMO-KEY-SEL-SEC
                MOVE    TOUKEIMEMO-REC      TO  WTMEMO-REC
-               IF    ( TKIMEMO-MEMO(1:5)   NOT =   "#HOLD" )
-                AND  ( TKIMEMO-MEMO(1:5)   NOT =   "#hold" )
+               IF    ( TKIMEMO-MEMO(1:10)   NOT =   "¡ô£È£Ï£Ì£Ä" )
+                AND  ( TKIMEMO-MEMO(1:10)   NOT =   "¡ô£è£ï£ì£ä" )
                    INITIALIZE                  TOUKEIMEMO-REC
                    MOVE    WRK-PGID        TO  TKIMEMO-PGID
                    MOVE    "0000"          TO  TKIMEMO-KANRICD
@@ -771,6 +771,8 @@
                WHEN    "CLICKED"       ALSO    "OPTHISSU061"
                WHEN    "CLICKED"       ALSO    "OPTHISSU071"
                WHEN    "CLICKED"       ALSO    "OPTHISSU081"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU091"
+               WHEN    "CLICKED"       ALSO    "OPTHISSU101"
                    MOVE    MCP-WIDGET  TO      WRK-WIDGET
                    PERFORM 4211-OPTHISSU-CHK-SEC
       *    Ç¤°Õ¥ª¥×¥·¥ç¥ó¥Ü¥¿¥ó
@@ -792,6 +794,8 @@
                WHEN    "CLICKED"       ALSO    "OPTNINI061"
                WHEN    "CLICKED"       ALSO    "OPTNINI071"
                WHEN    "CLICKED"       ALSO    "OPTNINI081"
+               WHEN    "CLICKED"       ALSO    "OPTNINI091"
+               WHEN    "CLICKED"       ALSO    "OPTNINI101"
                    MOVE    MCP-WIDGET  TO      WRK-WIDGET
                    PERFORM 4212-OPTNINI-CHK-SEC
                WHEN    "CLICKED"       ALSO    "CHK_SAVEPARA"
@@ -2139,6 +2143,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "PARAHYOJI81"    TO   MCP-WIDGET
                 WHEN    119
                     MOVE  "PARA81"         TO   MCP-WIDGET
+                WHEN    120
+                    MOVE  "PARAHYOJI91"    TO   MCP-WIDGET
+                WHEN    121
+                    MOVE  "PARA91"         TO   MCP-WIDGET
+                WHEN    122
+                    MOVE  "PARAHYOJI101"   TO   MCP-WIDGET
+                WHEN    123
+                    MOVE  "PARA101"        TO   MCP-WIDGET
       *
                 WHEN    999
                     MOVE  "B12"            TO   MCP-WIDGET
@@ -2232,6 +2244,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "PARAHYOJI81"
                    MOVE    119         TO  SPA-GMN-W10-CUR
                WHEN    "PARA81"
+                   MOVE    120         TO  SPA-GMN-W10-CUR
+               WHEN    "PARAHYOJI91"
+                   MOVE    121         TO  SPA-GMN-W10-CUR
+               WHEN    "PARA91"
+                   MOVE    122         TO  SPA-GMN-W10-CUR
+               WHEN    "PARAHYOJI101"
+                   MOVE    123         TO  SPA-GMN-W10-CUR
+               WHEN    "PARA101"
                    MOVE    999         TO  SPA-GMN-W10-CUR
            END-EVALUATE
       *

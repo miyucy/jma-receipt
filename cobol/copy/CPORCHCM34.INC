@@ -41,6 +41,14 @@
                                            OCCURS  31.
       *        保険区分 0:保険毎に改頁1:社保2:国保3:その他
                05  ORCHCM34-HOKEN          PIC X(01).
+      *        印刷区分 1:対象診療行為がなくても印刷する
+               05  ORCHCM34-PRTCTRLKBN     PIC X(01).
+      *        期間区分 1:期間指定あり
+               05  ORCHCM34-KIKANKBN       PIC X(01).
+               05  ORCHCM34-STDAY          PIC 9(02).
+               05  ORCHCM34-EDDAY          PIC 9(02).
+               05  ORCHCM34-STSRYYMD       PIC X(08).
+               05  ORCHCM34-EDSRYYMD       PIC X(08).
       *        一括パラメタ
                05  ORCHCM34-PRTAREA        PIC X(25000).
       *

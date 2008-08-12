@@ -15,91 +15,113 @@ G03	{
 			value	bool;
 			label	varchar(80);
 		};
-		PARA011	{
+		PARA0101	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA012	{
+		PARA0102	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA013	{
+		PARA0103	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA014	{
+		PARA0104	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA015	{
+		PARA0105	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA016	{
+		PARA0106	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA017	{
+		PARA0107	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARA018	{
+		PARA0108	{
 	           	state	int;
 			value	varchar(20);
 		};
-		PARAHYOJI011	{
+		PARA0109	{
+	           	state	int;
 			value	varchar(20);
 		};
-		PARAHYOJI012	{
+		PARA0110	{
+	           	state	int;
 			value	varchar(20);
 		};
-		PARAHYOJI013	{
+		PARAHYOJI0101	{
 			value	varchar(20);
 		};
-		PARAHYOJI014	{
+		PARAHYOJI0102	{
 			value	varchar(20);
 		};
-		PARAHYOJI015	{
+		PARAHYOJI0103	{
 			value	varchar(20);
 		};
-		PARAHYOJI016	{
+		PARAHYOJI0104	{
 			value	varchar(20);
 		};
-		PARAHYOJI017	{
+		PARAHYOJI0105	{
 			value	varchar(20);
 		};
-		PARAHYOJI018	{
+		PARAHYOJI0106	{
 			value	varchar(20);
 		};
-		PARAMARK011	{
+		PARAHYOJI0107	{
+			value	varchar(20);
+		};
+		PARAHYOJI0108	{
+			value	varchar(20);
+		};
+		PARAHYOJI0109	{
+			value	varchar(20);
+		};
+		PARAHYOJI0110	{
+			value	varchar(20);
+		};
+		PARAMARK0101	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK012	{
+		PARAMARK0102	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK013	{
+		PARAMARK0103	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK014	{
+		PARAMARK0104	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK015	{
+		PARAMARK0105	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK016	{
+		PARAMARK0106	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK017	{
+		PARAMARK0107	{
 			style   varchar(20);
 			value	varchar(01);
 		};
-		PARAMARK018	{
+		PARAMARK0108	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK0109	{
+			style   varchar(20);
+			value	varchar(01);
+		};
+		PARAMARK0110	{
 			style   varchar(20);
 			value	varchar(01);
 		};

@@ -40,3 +40,4 @@
               03  HCM341V01-MARK     PIC X(4).
               03  HCM341V01-TEKIYO   PIC X(52).
               03  HCM341V01-DAY  PIC X(3)    OCCURS  31 TIMES.
+            02  HCM341V01-KIKAN  PIC X(20).

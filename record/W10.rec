@@ -202,6 +202,18 @@ W10	{
 				PARA81	{
 					value	varchar(10);
 				};
+				PARAHYOJI91	{
+					value	varchar(20);
+				};
+				PARA91	{
+					value	varchar(10);
+				};
+				PARAHYOJI101	{
+					value	varchar(20);
+				};
+				PARA101	{
+					value	varchar(10);
+				};
 				OPTHISSU011	{
 					value	bool;
 				};
@@ -248,6 +260,18 @@ W10	{
 					value	bool;
 				};
 				OPTNINI081	{
+					value	bool;
+				};
+				OPTHISSU091	{
+					value	bool;
+				};
+				OPTNINI091	{
+					value	bool;
+				};
+				OPTHISSU101	{
+					value	bool;
+				};
+				OPTNINI101	{
 					value	bool;
 				};
 				scrolledwindow2	{

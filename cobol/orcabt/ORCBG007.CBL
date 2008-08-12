@@ -93,6 +93,7 @@
            03  FLG-PTNUM                           PIC 9(01).
            03  FLG-PTINF                           PIC 9(01).
            03  FLG-LOOPEND                         PIC 9(01).
+           03  FLG-KIKAN-DAY                       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -134,6 +135,8 @@
            03  WRK-PARA-SRYKAKBN                   PIC X(01).
            03  WRK-PARA-SRYKA                      PIC X(02).
            03  WRK-PARA-HOKEN                      PIC X(01).
+           03  WRK-PARA-STDAY                      PIC X(05).
+           03  WRK-PARA-EDDAY                      PIC X(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -169,6 +172,11 @@
            03  WRK-HOKENBUNRUI                     PIC X(01).
            03  WRK-NYUGAI                          PIC 9(01).
            03  WRK-PTID                            PIC 9(10).
+           03  WRK-STDAY                           PIC 9(02).
+           03  WRK-EDDAY                           PIC 9(02).
+           03  WRK-GETUMATU-G.
+               05  WRK-GETUMATU-YM                 PIC X(06).
+               05  WRK-GETUMATU-DD                 PIC 9(02).
       *
        01  SORTKEY-AREA.
       *    病棟番号・カナ氏名順
@@ -287,6 +295,9 @@
       *    保険分類
            COPY    "CPORCSS001.INC".
       *
+      *    数値変換
+           COPY    "CPORCSNUM.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -366,6 +377,8 @@ grpsys     INITIALIZE                  SPA-AREA
                                        WRK-PARA-SRYKAKBN
                                        WRK-PARA-SRYKA
                                        WRK-PARA-HOKEN
+                                       WRK-PARA-STDAY
+                                       WRK-PARA-EDDAY
 grpsys     END-UNSTRING
       *
       *    ＳＰＡエリアセット処理
@@ -399,6 +412,14 @@ grpsys     END-UNSTRING
                MOVE    "4"             TO  WRK-PARA-SRTKBN
            END-IF
       *
+           MOVE    WRK-PARA-SRYYM      TO  WRK-SYMD
+           PERFORM 800-GETUMATU-SEC
+           MOVE    WRK-SYMD            TO  WRK-GETUMATU-G
+      *
+           MOVE    ZERO                TO  FLG-KIKAN-DAY
+           MOVE    1                   TO  WRK-STDAY
+           MOVE    WRK-GETUMATU-DD     TO  WRK-EDDAY
+      *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
@@ -423,6 +444,8 @@ grpsys     END-UNSTRING
            MOVE    ZERO                TO  CNT-BG007
                                            CNT-PAGE
                                            CNT-JOB-UPDCNT
+      *
+           PERFORM 1001-PARA-CHK-SEC
       *
            .
        100-INIT-EXT.
@@ -474,6 +497,79 @@ grpsys     END-UNSTRING
       *
            .
        110-ORCSPRTAREA-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    パラメタチェック処理
+      *****************************************************************
+       1001-PARA-CHK-SEC               SECTION.
+      *
+           IF    ( WRK-PARA-STDAY      NOT =   SPACE )
+      *
+               MOVE    1                   TO  FLG-KIKAN-DAY
+      *
+               INITIALIZE                  ORCSNUMAREA
+               MOVE   WRK-PARA-STDAY       TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                           ORCSNUMAREA
+               IF    ( SNUM-RC             =   ZERO )
+                   EVALUATE    TRUE
+                   WHEN  ( SNUM-OUTNUM     <   1 )
+                       MOVE    1           TO  WRK-STDAY
+                   WHEN  ( SNUM-OUTNUM     >   WRK-GETUMATU-DD )
+                       MOVE    WRK-GETUMATU-DD
+                                           TO  WRK-STDAY
+                   WHEN    OTHER
+                       MOVE    SNUM-OUTNUM TO  WRK-STDAY
+                   END-EVALUATE
+               ELSE
+                   MOVE    "開始日を正しく入力してください。"
+                                           TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    1               TO  FLG-END
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-END             =   ZERO )
+               IF    ( WRK-PARA-EDDAY      NOT =   SPACE )
+      *
+                   MOVE    1               TO  FLG-KIKAN-DAY
+      *
+                   INITIALIZE                  ORCSNUMAREA
+                   MOVE   WRK-PARA-EDDAY       TO  SNUM-INX
+                   CALL    "ORCSNUM"           USING
+                                               ORCSNUMAREA
+                   IF    ( SNUM-RC             =   ZERO )
+                       EVALUATE    TRUE
+                       WHEN  ( SNUM-OUTNUM     <   1 )
+                           MOVE    1           TO  WRK-EDDAY
+                       WHEN  ( SNUM-OUTNUM     >   WRK-GETUMATU-DD )
+                           MOVE    WRK-GETUMATU-DD
+                                               TO  WRK-EDDAY
+                       WHEN    OTHER
+                           MOVE    SNUM-OUTNUM TO  WRK-EDDAY
+                       END-EVALUATE
+                   ELSE
+                       MOVE    "終了日を正しく入力してください。"
+                                               TO  WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       MOVE    1               TO  FLG-END
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-END             =   ZERO )
+               IF    ( WRK-STDAY       <=  WRK-EDDAY )
+                   CONTINUE
+               ELSE
+                   MOVE    "開始日＞終了日で指定されています。"
+                                           TO  WRK-RECEERR
+                   PERFORM 500-ERR-HENSYU-SEC
+                   MOVE    1               TO  FLG-END
+               END-IF
+           END-IF
+      *
+           .
+       1001-PARA-CHK-EXT.
            EXIT.
       *****************************************************************
       *    主　　処理
@@ -845,7 +941,7 @@ grpsys     END-UNSTRING
       *
            MOVE    ZERO            TO  FLG-SRYACCT
       *
-           PERFORM 900-SRYACCT-KEY43-SEL-SEC
+           PERFORM 900-SRYACCT-KEY51-SEL-SEC
       *
            MOVE    ZERO            TO  KEY-PTID
       *
@@ -884,12 +980,12 @@ grpsys     END-UNSTRING
       *
                END-IF
       *
-               PERFORM 900-SRYACCT-KEY43-FET-SEC
+               PERFORM 900-SRYACCT-KEY51-FET-SEC
       *
            END-PERFORM
       *
            MOVE    "tbl_sryacct"   TO  MCP-TABLE
-           MOVE    "key43"         TO  MCP-PATHNAME
+           MOVE    "key51"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            CLOSE   BG00701-FILE
@@ -997,6 +1093,21 @@ grpsys     END-UNSTRING
            MOVE    BG00701-HOKENBUNRUI TO  ORCHCM34-HOKEN
            MOVE    BG00701-SRYKA       TO  ORCHCM34-SRYKA
            MOVE    BG00701-SRYKADAY-G  TO  ORCHCM34-SRYKADAY-G
+           IF    ( FLG-KIKAN-DAY       =   1 )
+               MOVE    "1"             TO  ORCHCM34-KIKANKBN
+           END-IF
+      *
+           MOVE    WRK-STDAY           TO  ORCHCM34-STDAY
+           MOVE    WRK-EDDAY           TO  ORCHCM34-EDDAY
+      *
+           MOVE    WRK-PARA-SRYYM      TO  ORCHCM34-STSRYYMD
+           MOVE    WRK-STDAY           TO  ORCHCM34-STSRYYMD (7:2)
+           MOVE    WRK-PARA-SRYYM      TO  ORCHCM34-EDSRYYMD
+           MOVE    WRK-EDDAY           TO  ORCHCM34-EDSRYYMD (7:2)
+           IF    ( WRK-PARA-PTNUM      NOT =   SPACE )
+               MOVE    "1"             TO  ORCHCM34-PRTCTRLKBN
+           END-IF
+      *
            MOVE    ORCSPRTAREA         TO  ORCHCM34-PRTAREA
       *
            CALL    "ORCHCM34"          USING
@@ -1147,6 +1258,13 @@ grpsys     END-UNSTRING
                ELSE
                    MOVE    SPACE           TO  SS001-SRYKAKBN
                END-IF
+      *
+               IF    ( FLG-KIKAN-DAY       =   1 )
+                   MOVE    "1"             TO  SS001-KIKANKBN
+                   MOVE    WRK-STDAY       TO  SS001-STDAY
+                   MOVE    WRK-EDDAY       TO  SS001-EDDAY
+               END-IF
+      *
                CALL    "ORCSS001"              USING   SS001-AREA
                                                        SPA-AREA
       *
@@ -1322,11 +1440,10 @@ grpsys     END-UNSTRING
       *    対象患者抽出
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM          TO  PTNYUINRRK-HOSPNUM
-           MOVE    WRK-PARA-SRYYM      TO  WRK-SYMD
-           PERFORM 800-GETUMATU-SEC
-           MOVE    WRK-SYMD            TO  PTNYUINRRK-TENNYUYMD
+           MOVE    WRK-PARA-SRYYM      TO  PTNYUINRRK-TENNYUYMD
+           MOVE    WRK-EDDAY           TO  PTNYUINRRK-TENNYUYMD(7:2)
            MOVE    WRK-PARA-SRYYM      TO  PTNYUINRRK-TENSTUYMD
-           MOVE    "01"                TO  PTNYUINRRK-TENSTUYMD(7:2)
+           MOVE    WRK-STDAY           TO  PTNYUINRRK-TENSTUYMD(7:2)
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key43"             TO  MCP-PATHNAME
@@ -1361,9 +1478,9 @@ grpsys     END-UNSTRING
        900-PTNYUINRRK-KEY43-FET-EXT.
            EXIT.
       *****************************************************************
-      *    診療会計検索処理(KEY43)
+      *    診療会計検索処理(KEY51)
       *****************************************************************
-       900-SRYACCT-KEY43-SEL-SEC       SECTION.
+       900-SRYACCT-KEY51-SEL-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-SRYACCT
       *
@@ -1374,36 +1491,52 @@ grpsys     END-UNSTRING
            MOVE    WRK-PARA-SRYYM  TO  ACCT-SRYYM
            MOVE    SRYACCT-REC     TO  MCPDATA-REC
            MOVE    "tbl_sryacct"       TO  MCP-TABLE
-           MOVE    "key43"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           MOVE    "key51"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SRYACCT-REC
+               PERFORM 900-SRYACCT-KEY51-FET-SEC
            ELSE
                INITIALIZE                  SRYACCT-REC
                MOVE    1               TO  FLG-SRYACCT
            END-IF
       *
            .
-       900-SRYACCT-KEY43-SEL-EXT.
+       900-SRYACCT-KEY51-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    診療会計FETCH処理(KEY43)
+      *    診療会計FETCH処理(KEY51)
       *****************************************************************
-       900-SRYACCT-KEY43-FET-SEC       SECTION.
+       900-SRYACCT-KEY51-FET-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-SRYACCT
+           MOVE    ZERO                TO  FLG-LOOPEND
       *
-           MOVE    "tbl_sryacct"   TO  MCP-TABLE
-           MOVE    "key43"         TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC TO  SRYACCT-REC
-           ELSE
-               MOVE    1               TO  FLG-SRYACCT
-           END-IF
+           PERFORM UNTIL ( FLG-SRYACCT NOT =   ZERO )
+                    OR   ( FLG-LOOPEND NOT =   ZERO )
+      *
+               MOVE    "tbl_sryacct"   TO  MCP-TABLE
+               MOVE    "key51"         TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC              =   ZERO )
+                   MOVE    MCPDATA-REC TO  SRYACCT-REC
+      *
+                   PERFORM VARYING IDX-DAY FROM    WRK-STDAY   BY  1
+                           UNTIL ( IDX-DAY >       WRK-EDDAY )
+                            OR   ( FLG-LOOPEND =   1 )
+      *
+                       IF    ( ACCT-DAY (1 IDX-DAY)  >   ZERO )
+                           MOVE    1   TO  FLG-LOOPEND
+                       END-IF
+      *
+                   END-PERFORM
+      *
+               ELSE
+                   MOVE    1           TO  FLG-SRYACCT
+               END-IF
+           END-PERFORM
       *
            .
-       900-SRYACCT-KEY43-FET-EXT.
+       900-SRYACCT-KEY51-FET-EXT.
            EXIT.
       *****************************************************************
       *    患者情報検索処理(KEY)

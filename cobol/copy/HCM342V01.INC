@@ -22,3 +22,4 @@
               03  HCM342V01-HKNCOMBINUM2 PIC X(4).
               03  HCM342V01-TEKIYO   PIC X(52).
               03  HCM342V01-DAY  PIC X(3)    OCCURS  31 TIMES.
+            02  HCM342V01-KIKAN  PIC X(20).
