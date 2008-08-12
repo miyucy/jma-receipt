@@ -2306,6 +2306,9 @@
            IF      WRK-SRYCD(1:2)      =   "83"
                GO      TO      3301-SYOSIN-SYORI-EXT
            END-IF
+           IF      SPA-PTTOKK-KBN  NOT =   SPACE
+               GO      TO      3301-SYOSIN-SYORI-EXT
+           END-IF
       *
       *    外来で診察料の時、時間外区分を付ける
            IF     (SPA-SYORIFLG        =   ZERO )  AND
