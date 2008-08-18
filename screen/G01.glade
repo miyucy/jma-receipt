@@ -3342,7 +3342,7 @@
       <class>GtkCheckButton</class>
       <name>CHK04</name>
       <x>50</x>
-      <y>224</y>
+      <y>218</y>
       <width>770</width>
       <height>20</height>
       <can_focus>True</can_focus>
