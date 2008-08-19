@@ -154,6 +154,7 @@
       *  04.03.02    NACL-門脇    08/07/11  診断書明細書料の摘要欄記載対応
       *  04.03.03    NACL-門脇    08/07/14  仮レセ作成（院外処方含む）対応
       *                                     投薬剤点０（院外等）記載
+      *  04.03.04    NACL-門脇    08/08/19  入院料未算定時のコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -977,6 +978,8 @@
            COPY    "CPSK1001.INC".
            COPY    "CPSK1006.INC".
       *
+           COPY    "CPSK200501.INC".
+      *
            COPY    "CPSK4003.INC".
       *
            COPY    "CPSK5000.INC".
@@ -1302,6 +1305,25 @@ grpsys       PERFORM 900-DBSELECT-SEC
              MOVE    "key8"             TO  MCP-PATHNAME
              PERFORM 900-CLOSE-SEC
       *
+           END-IF
+      *
+           INITIALIZE                   SYSKANRI-REC
+           MOVE    "2005"           TO  SYS-KANRICD
+           MOVE    "01"             TO  SYS-KBNCD
+           MOVE    WRK-PARA-SRYYM   TO  SYS-STYUKYMD (1:6)
+           MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+           MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+           MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
+           MOVE    SYSKANRI-REC     TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI     =   ZERO
+                MOVE  MCPDATA-REC   TO  SYS-200501-REC
+           ELSE
+                INITIALIZE              SYS-200501-REC
+           END-IF
+           IF      SYS-200501-COMMENT-NYUINRYO-KSIKBN
+                                    =   SPACE
+               MOVE    "1"   TO  SYS-200501-COMMENT-NYUINRYO-KSIKBN
            END-IF
       *
            OPEN    OUTPUT              RECE844-FILE
@@ -8250,12 +8272,6 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *****************************************************************
        26011-NYUINRYOFLG-SET-SEC               SECTION.
       *
-      *    入院基本料無し、又は、組み合わせ＝自費・・・１
-      *    組み合わせ＝労災                      ・・・２
-      *    組み合わせ＝自賠責                    ・・・３
-      *    組み合わせ＝国保                      ・・・４
-      *    組み合わせ＝社保                      ・・・５
-      *
            MOVE     SPACE    TO    RECE82-NYUINRYOFLG
       *
            PERFORM  VARYING  IDY    FROM    1   BY  1
@@ -8265,48 +8281,20 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *
                 IF         WRK-DAY5(IDY)      NOT =  ZERO
                 AND        WRK-DAY1(IDY)      NOT =  ZERO
-                   INITIALIZE                  HKNCOMBI-REC
-                   MOVE    RECE82-HOSPNUM  TO  COMB-HOSPNUM
-                   MOVE    RECE82-PTID     TO  COMB-PTID
-                   MOVE    WRK-DAY5(IDY)   TO  COMB-HKNCOMBINUM
-                   MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
-                   PERFORM 900-HKNCOMBI-INV-SEC
-                   IF      FLG-HKNCOMBI    =   ZERO
-                     IF   COMB-HKNNUM(1:2)  =  "98"
-                     OR   COMB-HKNNUM       =  "971"
-                     OR   COMB-HKNNUM       =  "973"
-                     OR   COMB-HKNNUM       =  "975"
-                       IF   COMB-HKNNUM(1:2)  =  "98"
-                          MOVE    "1"   TO   RECE82-NYUINRYOFLG
-                       END-IF
-                       IF   COMB-HKNNUM       =  "971"
-                          MOVE    "2"   TO   RECE82-NYUINRYOFLG
-                       END-IF
-                       IF   COMB-HKNNUM       =  "973"
-                          MOVE    "3"   TO   RECE82-NYUINRYOFLG
-                       END-IF
-                       IF   COMB-HKNNUM       =  "975"
-                          MOVE    "7"   TO   RECE82-NYUINRYOFLG
-                       END-IF
-                     ELSE
-                       EVALUATE  COMB-HKNNUM
-                         WHEN     "060"
-                         WHEN     "067"
-                         WHEN     "068"
-                         WHEN     "069"
-                             MOVE    "4"   TO   RECE82-NYUINRYOFLG
-                         WHEN     "039"
-                         WHEN     "040"
-                             MOVE    "8"   TO   RECE82-NYUINRYOFLG
-                         WHEN      OTHER
-                             MOVE    "5"   TO   RECE82-NYUINRYOFLG
-                       END-EVALUATE
-                     END-IF
-                   END-IF
+                   PERFORM   260111-NYUINRYOFLG-HENSYU-SEC
                 ELSE
                    IF      WRK-DAY5(IDY)              NOT =  ZERO
                    AND     RECE82-NYUINDAY-KBN(IDY)   NOT =  "1"
-                          MOVE    "1"   TO   RECE82-NYUINRYOFLG
+                     EVALUATE  SYS-200501-COMMENT-NYUINRYO-KSIKBN
+                       WHEN     "0"
+                          MOVE   SPACE    TO   RECE82-NYUINRYOFLG
+                       WHEN     "1"
+                          MOVE    "1"     TO   RECE82-NYUINRYOFLG
+                       WHEN     "2"
+                          MOVE    "6"     TO   RECE82-NYUINRYOFLG
+                       WHEN     "3"
+                          PERFORM   260111-NYUINRYOFLG-HENSYU-SEC
+                     END-EVALUATE
                    END-IF
                 END-IF
       *
@@ -8319,6 +8307,64 @@ grpsys     PERFORM  900-DBSELECT-SEC
       *
            .
        26011-NYUINRYOFLG-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険編集
+      *****************************************************************
+       260111-NYUINRYOFLG-HENSYU-SEC               SECTION.
+      *
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    RECE82-HOSPNUM  TO  COMB-HOSPNUM
+           MOVE    RECE82-PTID     TO  COMB-PTID
+           MOVE    WRK-DAY5(IDY)   TO  COMB-HKNCOMBINUM
+           MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
+           PERFORM 900-HKNCOMBI-INV-SEC
+           IF      FLG-HKNCOMBI    =   ZERO
+              IF   COMB-HKNNUM(1:2)  =  "98"
+              OR   COMB-HKNNUM       =  "971"
+              OR   COMB-HKNNUM       =  "973"
+              OR   COMB-HKNNUM       =  "975"
+                IF   COMB-HKNNUM(1:2)  =  "98"
+                   MOVE    "1"   TO   RECE82-NYUINRYOFLG
+                END-IF
+                IF   COMB-HKNNUM       =  "971"
+                   IF   RECE82-HKNNUM  =  "971"
+                     CONTINUE
+      ***            MOVE   "2"  TO   RECE82-NYUINRYOFLG
+                   ELSE
+                     MOVE   "2"  TO   RECE82-NYUINRYOFLG
+                   END-IF
+                END-IF
+                IF   COMB-HKNNUM       =  "973"
+                   IF   RECE82-HKNNUM  =  "973"
+                     CONTINUE
+      ***            MOVE   "3"  TO   RECE82-NYUINRYOFLG
+                   ELSE
+                     MOVE   "3"  TO   RECE82-NYUINRYOFLG
+                   END-IF
+                END-IF
+                IF   COMB-HKNNUM       =  "975"
+                   MOVE    "7"   TO   RECE82-NYUINRYOFLG
+                END-IF
+              ELSE
+                EVALUATE  COMB-HKNNUM
+                  WHEN     "060"
+                  WHEN     "067"
+                  WHEN     "068"
+                  WHEN     "069"
+                    MOVE   "4"   TO   RECE82-NYUINRYOFLG
+                  WHEN     "039"
+                  WHEN     "040"
+                    MOVE   "8"   TO   RECE82-NYUINRYOFLG
+                  WHEN      OTHER
+                    MOVE   "5"   TO   RECE82-NYUINRYOFLG
+                END-EVALUATE
+              END-IF
+           END-IF
+      *
+           .
+       260111-NYUINRYOFLG-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

@@ -35,6 +35,8 @@
       *  04.02.02    NACL-門脇    08/04/03  ○○にて入院料算定済編集修正
       *  04.02.03    NACL-小豆沢  08/04/08  医療区分コメント改定対応
       *  04.02.04    NACL-門脇    08/05/07  退院時服薬指導加算算定日記載修正
+      *
+      *  04.03.01    NACL-門脇    08/08/19  入院料未算定時のコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1039,6 +1041,14 @@
              WHEN     "5"
                MOVE     10             TO  WRK-RECE230XX-YUKOKETA(1 1)
                MOVE    "社保にて入院料算定済" 
+                                       TO  WRK-RECE230XX-NAME(1 1)
+             WHEN     "6"
+               MOVE     11             TO  WRK-RECE230XX-YUKOKETA(1 1)
+               MOVE    "他保険にて入院料算定済" 
+                                       TO  WRK-RECE230XX-NAME(1 1)
+             WHEN     "7"
+               MOVE     10             TO  WRK-RECE230XX-YUKOKETA(1 1)
+               MOVE    "公害にて入院料算定済" 
                                        TO  WRK-RECE230XX-NAME(1 1)
              WHEN     "8"
                MOVE     10             TO  WRK-RECE230XX-YUKOKETA(1 1)

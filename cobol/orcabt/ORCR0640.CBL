@@ -333,6 +333,7 @@
       *                                     編集対応
       *  04.03.03    NACL-門脇    08/07/14  仮レセ作成（院外処方含む）対応
       *                                     投薬剤点０（院外等）記載
+      *  04.03.04    NACL-門脇    08/08/19  入院料未算定時のコメント対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1817,6 +1818,10 @@
            IF      SYS-200501-KOUIKIOCRKBN
                                     =   SPACE
                MOVE    ZERO             TO  SYS-200501-KOUIKIOCRKBN
+           END-IF
+           IF      SYS-200501-COMMENT-NYUINRYO-KSIKBN
+                                    =   SPACE
+               MOVE    "1"   TO  SYS-200501-COMMENT-NYUINRYO-KSIKBN
            END-IF
       *
            MOVE    "tbl_syskanri"       TO  MCP-TABLE
@@ -9759,11 +9764,6 @@
       *****************************************************************
        210441-NYUINRYOFLG-SET-SEC               SECTION.
       *
-      *    入院基本料無し、又は、組み合わせ＝自費・・・１
-      *    組み合わせ＝労災                      ・・・２
-      *    組み合わせ＝自賠責                    ・・・３
-      *    以外＝他保険                          ・・・６
-      *
            MOVE     SPACE    TO    RECE62-NYUINRYOFLG
       *
            PERFORM  VARYING  IDY    FROM    1   BY  1
@@ -9773,40 +9773,20 @@
       *
                 IF         WRK-DAY5(IDY)      NOT =  ZERO
                 AND        WRK-DAY1(IDY)      NOT =  ZERO
-                   INITIALIZE                  HKNCOMBI-REC
-                   MOVE    RECE62-HOSPNUM  TO  COMB-HOSPNUM
-                   MOVE    RECE62-PTID     TO  COMB-PTID
-                   MOVE    WRK-DAY5(IDY)   TO  COMB-HKNCOMBINUM
-                   MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
-                   PERFORM 900-HKNCOMBI-INV-SEC
-                   IF      FLG-HKNCOMBI    =   ZERO
-                     IF   COMB-HKNNUM(1:2)  =  "98"
-                     OR   COMB-HKNNUM       =  "971"
-                     OR   COMB-HKNNUM       =  "973"
-                     OR   COMB-HKNNUM       =  "975"
-                       IF   COMB-HKNNUM(1:2)  =  "98"
-                          MOVE    "1"   TO   RECE62-NYUINRYOFLG
-                       END-IF
-                       IF   COMB-HKNNUM       =  "971"
-                          MOVE    "2"   TO   RECE62-NYUINRYOFLG
-                       END-IF
-                       IF   COMB-HKNNUM       =  "973"
-                          MOVE    "3"   TO   RECE62-NYUINRYOFLG
-                       END-IF
-                       IF   COMB-HKNNUM       =  "975"
-                          MOVE    "7"   TO   RECE62-NYUINRYOFLG
-                       END-IF
-                     ELSE
-                          MOVE    "6"   TO   RECE62-NYUINRYOFLG
-                     END-IF
-                   END-IF
-                   MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-                   PERFORM 900-CLOSE-SEC
+                   PERFORM  2104411-NYUINRYOFLG-HENSYU-SEC
                 ELSE
                    IF      WRK-DAY5(IDY)              NOT =  ZERO
                    AND     RECE62-NYUINDAY-KBN(IDY)   NOT =  "1"
-                          MOVE    "1"   TO   RECE62-NYUINRYOFLG
+                     EVALUATE  SYS-200501-COMMENT-NYUINRYO-KSIKBN
+                       WHEN     "0"
+                          MOVE   SPACE    TO   RECE62-NYUINRYOFLG
+                       WHEN     "1"
+                          MOVE    "1"     TO   RECE62-NYUINRYOFLG
+                       WHEN     "2"
+                          MOVE    "6"     TO   RECE62-NYUINRYOFLG
+                       WHEN     "3"
+                          PERFORM  2104411-NYUINRYOFLG-HENSYU-SEC
+                     END-EVALUATE
                    END-IF
                 END-IF
       *
@@ -9819,6 +9799,47 @@
       *
            .
        210441-NYUINRYOFLG-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険編集
+      *****************************************************************
+       2104411-NYUINRYOFLG-HENSYU-SEC               SECTION.
+      *
+           INITIALIZE                  HKNCOMBI-REC
+           MOVE    RECE62-HOSPNUM  TO  COMB-HOSPNUM
+           MOVE    RECE62-PTID     TO  COMB-PTID
+           MOVE    WRK-DAY5(IDY)   TO  COMB-HKNCOMBINUM
+           MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
+           PERFORM 900-HKNCOMBI-INV-SEC
+           IF      FLG-HKNCOMBI    =   ZERO
+              IF   COMB-HKNNUM(1:2)  =  "98"
+              OR   COMB-HKNNUM       =  "971"
+              OR   COMB-HKNNUM       =  "973"
+              OR   COMB-HKNNUM       =  "975"
+                IF   COMB-HKNNUM(1:2)  =  "98"
+                   MOVE    "1"   TO   RECE62-NYUINRYOFLG
+                END-IF
+                IF   COMB-HKNNUM       =  "971"
+                   MOVE    "2"   TO   RECE62-NYUINRYOFLG
+                END-IF
+                IF   COMB-HKNNUM       =  "973"
+                   MOVE    "3"   TO   RECE62-NYUINRYOFLG
+                END-IF
+                IF   COMB-HKNNUM       =  "975"
+                   MOVE    "7"   TO   RECE62-NYUINRYOFLG
+                END-IF
+              ELSE
+                   CONTINUE
+      ***          MOVE    "6"   TO   RECE62-NYUINRYOFLG
+              END-IF
+           END-IF
+           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       2104411-NYUINRYOFLG-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
