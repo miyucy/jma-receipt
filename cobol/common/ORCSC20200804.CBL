@@ -46,6 +46,7 @@
       *  03.04.00    NACL-多々納  07/02/XX  包括保険同時入力追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
+      *  04.03.00    NACL-多々納  08/08/18  特定疾患処方管理加算単独対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1401,6 +1402,20 @@
                IF      FLG-SYOHOSENN       =   ZERO
                    MOVE    "1014"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-T1)
+      *            処方料もない時、警告とする
+                   IF      FLG-SYOHORYO        =   ZERO
+                       MOVE    SPACE           TO  SPA-ERRCD
+                       MOVE    SPACE           TO  WRK-COM-CUR (IDX-T1)
+                       IF     (WRK-COM-KZMFLG (IDX-T1) =   SPACE) AND
+                              (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    "K114"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                              (IDX-T1)
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-T1)
+                           MOVE    IDX-T1          TO  LNK-ORCSC-KEI-IDX
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
@@ -1409,6 +1424,20 @@
                IF      FLG-SYOHORYO        =   ZERO
                    MOVE    "1015"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-T2)
+      *            処方せん料もない時、警告とする
+                   IF      FLG-SYOHOSENN        =   ZERO
+                       MOVE    SPACE           TO  SPA-ERRCD
+                       MOVE    SPACE           TO  WRK-COM-CUR (IDX-T2)
+                       IF     (WRK-COM-KZMFLG (IDX-T2) =   SPACE) AND
+                              (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    "K115"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                              (IDX-T2)
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-T2)
+                           MOVE    IDX-T2          TO  LNK-ORCSC-KEI-IDX
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
@@ -1417,6 +1446,20 @@
                IF      FLG-SYOHOSENN       =   ZERO
                    MOVE    "1038"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-T1)
+      *            処方料もない時、警告とする
+                   IF      FLG-SYOHORYO        =   ZERO
+                       MOVE    SPACE           TO  SPA-ERRCD
+                       MOVE    SPACE           TO  WRK-COM-CUR (IDX-T1)
+                       IF     (WRK-COM-KZMFLG (IDX-T1) =   SPACE) AND
+                              (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    "K038"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                              (IDX-T1)
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-T1)
+                           MOVE    IDX-T1          TO  LNK-ORCSC-KEI-IDX
+                       END-IF
+                   END-IF
                ELSE
       *            長期投薬があること
                   IF      FLG-CHOUKI          =   ZERO
@@ -1433,11 +1476,25 @@
                END-IF
            END-IF
       *
-      *    特定疾患処方管理加算処方料がある時の、処方料があること
+      *    長期投薬加算処方料がある時の、処方料があること
            IF      FLG-CHOKIKA2        =   1
                IF      FLG-SYOHORYO        =   ZERO
                    MOVE    "1037"              TO  SPA-ERRCD
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-T2)
+      *            処方せん料もない時、警告とする
+                   IF      FLG-SYOHOSENN        =   ZERO
+                       MOVE    SPACE           TO  SPA-ERRCD
+                       MOVE    SPACE           TO  WRK-COM-CUR (IDX-T2)
+                       IF     (WRK-COM-KZMFLG (IDX-T2) =   SPACE) AND
+                              (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    "K037"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                              (IDX-T2)
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                              (IDX-T2)
+                           MOVE    IDX-T2          TO  LNK-ORCSC-KEI-IDX
+                       END-IF
+                   END-IF
                ELSE
       *            長期投薬があること
                    IF      FLG-CHOUKI          =   ZERO
@@ -2753,8 +2810,6 @@
                                                          (02 IDXS)
                END-IF
            END-PERFORM
-      *
-      *
            .
        3001-GENHEN-EXT.
            EXIT.

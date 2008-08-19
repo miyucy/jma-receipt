@@ -1534,15 +1534,33 @@
                    MOVE    "保険の変更はできません"
                                        TO  SPA-ERRMSG(25:)
                WHEN    "1014"
-                   MOVE    "処方箋料を算定しません。"
-                                       TO  SPA-ERRMSG(1:)
-                   MOVE    "特定疾患処方管理加算は算定できません"
-                                       TO  SPA-ERRMSG(25:)
+                   STRING  "処方せん料を算定しません。"
+                           "特定疾患処方管理加算（処方せん料）は"
+                           "算定できません"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1015"
-                   MOVE    "処方料を算定しません。"
-                                       TO  SPA-ERRMSG(1:)
-                   MOVE    "特定疾患処方管理加算は算定できません"
-                                       TO  SPA-ERRMSG(23:)
+                   STRING  "処方料を算定しません。"
+                           "特定疾患処方管理加算（処方料）は"
+                           "算定できません"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *VER.4.3.0 から警告へ
+               WHEN    "K114"
+                   STRING  "警告！処方せん料を算定しません。"
+                           "特定疾患処方管理加算のみの算定となります。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K115"
+                   STRING  "警告！処方料を算定しません。"
+                           "特定疾患処方管理加算のみの算定となります。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "1016"
                    MOVE    "初診料への自動変更はできません。"
                                        TO  SPA-ERRMSG
@@ -1685,6 +1703,20 @@
                                        TO  SPA-ERRMSG
                    MOVE    "長期投薬加算（処方せん料）は算定できません"
                                        TO  SPA-ERRMSG(29:)
+      *VER.4.3.0 から警告追加
+               WHEN    "K038"
+                   STRING  "警告！処方せん料を算定しません。"
+                           "長期投薬加算（処方せん料）のみの算定と"
+                           "なります"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "K037"
+                   STRING  "警告！処方料を算定しません。"
+                           "長期投薬加算（処方料）のみの算定となります"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1039"
                    MOVE    "既に処方せん料が算定済みです。"
                                        TO  SPA-ERRMSG
