@@ -53,6 +53,7 @@
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDM                 PIC 9(04).
+           03  IDM2                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -70,7 +71,8 @@
       *
            03  WRK-KANJI           PIC X(100).
       *    包括検査数
-           03  WRK-SURYO-2         PIC Z9.
+           03  WRK-SURYO-2X            PIC X(02).
+           03  WRK-SURYO-2             PIC Z9.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -257,10 +259,19 @@
       *
       *    項目数は２桁とする
            MOVE    ORCSMEIHEN-SURYO    TO  WRK-SURYO-2
+           MOVE    SPACE               TO  WRK-SURYO-2X
+           MOVE    ZERO                TO  IDM2
+           PERFORM VARYING     IDM     FROM    1  BY  1
+                   UNTIL       IDM     >   2
+               IF      WRK-SURYO-2(IDM:1)  NOT =   SPACE
+                   ADD     1                   TO  IDM2
+                   MOVE    WRK-SURYO-2(IDM:1)  TO  WRK-SURYO-2X(IDM2:1)
+               END-IF
+           END-PERFORM
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI
-           MOVE    WRK-SURYO-2         TO  KANACHK-MAE-INPUT
+           MOVE    WRK-SURYO-2X        TO  KANACHK-MAE-INPUT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            IF      KANACHK-RC          =   ZERO
