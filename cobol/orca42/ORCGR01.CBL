@@ -3480,7 +3480,8 @@ grpsys             PERFORM 900-DBSELECT-SEC
            END-EVALUATE
       *
            MOVE    ZERO                TO  SPA-NAI-R01-PRTKBN-FLG
-           IF      SPA-ERRCD           =   SPACE
+           IF    ( SPA-ERRCD           =   SPACE )
+           AND   ( SPA-R01-PRTKBN      =   "2"   )
                EVALUATE    SPA-GMN-R01-SYORI
                    WHEN    "1"
                    WHEN    "4"
@@ -3490,11 +3491,6 @@ grpsys             PERFORM 900-DBSELECT-SEC
                                UNTIL   IDX >       SPA-GMN-R01-MAX
                                OR      SPA-NAI-R01-PRTKBN-FLG
                                            =       1
-      *??
-              DISPLAY "IDX=" IDX "#" SPA-NAI-R01-TTAISYO (IDX) "#"
-                            SPA-NAI-R01-TDELETE (IDX) "#"
-                            SPA-NAI-R01-TSRYYM (IDX) "#"
-      *??
                            IF    ( SPA-GMN-R01-SYORI
                                                    =   "4" OR  "5" )
                            AND   ( SPA-NAI-R01-TTAISYO (IDX)
@@ -3671,6 +3667,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                                        SPA-R01-STOPFLG    
            MOVE    SPACE           TO  SPA-R99-CANCEL
       *
+      *    点検用レセプトで平成２００８年３月以前のとき
+           IF    ( SPA-NAI-R01-PRTKBN-FLG  =   1   )
+           AND   ( SPA-R01-PRTKBN          =   "2" )
+               MOVE    "1"                     TO  SPA-R01-PRTKBN
+           END-IF
+           MOVE    ZERO           TO  SPA-NAI-R01-PRTKBN-FLG
+      *
       *    レセプト指示更新
            INITIALIZE                  SYS-2001-REC
            MOVE    "2001"              TO  SYS-2001-KANRICD
@@ -3808,12 +3811,6 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    GO  TO  450-KOUSHIN-EXT
                END-IF
            END-IF
-      *
-      *    点検用レセプトで平成２００８年３月以前のとき
-           IF      SPA-NAI-R01-PRTKBN-FLG  =   1
-               MOVE    "1"                     TO  SPA-R01-PRTKBN
-           END-IF
-           MOVE    ZERO           TO  SPA-NAI-R01-PRTKBN-FLG
       *
       *    パラメタＤＢ更新
            INITIALIZE                  BTPARA-REC
