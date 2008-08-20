@@ -7331,6 +7331,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-1043-EDYUKYMD
            MOVE    SPA-GMN-SRYKBN-FLG      TO  SYS-1043-SRYKBN-FLG
            MOVE    SPA-GMN-SRYKA-FLG       TO  SYS-1043-SRYKA-FLG
+           MOVE    SPA-GMN-RESPRV043       TO  SYS-1043-RESPRVFLG
       *
            MOVE    SYS-1043-REC            TO  SYSKANRI-REC
       *
