@@ -65,6 +65,7 @@
            03  IDX2                        PIC 9(04).
            03  SYU-IDX                     PIC 9(04).
            03  COMB-IDX                    PIC 9(04).
+           03  IDX-SKJ-TAIHI               PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -511,25 +512,74 @@
            IF     LNK-ORCBT120SUB-GAIHAKU-KBN  =  1  OR  2  OR  3
                CONTINUE
            ELSE
-               INITIALIZE                          NYUINACCT-REC
-               MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
-               MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
-               MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
-                                               TO  NACCT-SRYYM
-               MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-               MOVE    "key28"                 TO  MCP-PATHNAME
-               PERFORM 910-NYUINACCT-SELECT-SEC
-               IF      FLG-NYUINACCT           =   ZERO
-                   MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
-                   MOVE    "key28"             TO  MCP-PATHNAME
-                   PERFORM   910-NYUINACCT-READ-SEC
-                   MOVE    NACCT-DAY(WRK-SANTEIDD)
-                                     TO  LNK-ORCBT120SUB-SKJ-KBN
+               IF    LNK-ORCBT120SUB-SANTEIYMD(1:6)   >=  "200604"
+                   PERFORM   VARYING   IDX-SKJ-TAIHI  FROM  1 BY  1
+                     UNTIL   IDX-SKJ-TAIHI  >    3
+                     INITIALIZE                          NYUINACCT-REC
+                     MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
+                     MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
+                     MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
+                                                     TO  NACCT-SRYYM
+                     MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+                     EVALUATE   IDX-SKJ-TAIHI
+                         WHEN    1
+                             MOVE    "key30"     TO  MCP-PATHNAME
+                         WHEN    2
+                             MOVE    "key31"     TO  MCP-PATHNAME
+                         WHEN    3
+                             MOVE    "key32"     TO  MCP-PATHNAME
+                     END-EVALUATE
+                     PERFORM 910-NYUINACCT-SELECT-SEC
+                     IF      FLG-NYUINACCT           =   ZERO
+                         MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+                         EVALUATE   IDX-SKJ-TAIHI
+                             WHEN    1
+                                 MOVE    "key30"     TO  MCP-PATHNAME
+                             WHEN    2
+                                 MOVE    "key31"     TO  MCP-PATHNAME
+                             WHEN    3
+                                 MOVE    "key32"     TO  MCP-PATHNAME
+                         END-EVALUATE
+                         PERFORM   910-NYUINACCT-READ-SEC
+                         IF      NACCT-DAY(WRK-SANTEIDD)  >
+                                              LNK-ORCBT120SUB-SKJ-KBN
+                             MOVE   NACCT-DAY(WRK-SANTEIDD)   TO
+                                              LNK-ORCBT120SUB-SKJ-KBN
+                         END-IF
+                     END-IF
+      *             入院会計クローズ
+                     MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+                     EVALUATE   IDX-SKJ-TAIHI
+                         WHEN    1
+                             MOVE    "key30"     TO  MCP-PATHNAME
+                         WHEN    2
+                             MOVE    "key31"     TO  MCP-PATHNAME
+                         WHEN    3
+                             MOVE    "key32"     TO  MCP-PATHNAME
+                     END-EVALUATE
+                     PERFORM   910-DB-CLOSE-SEC
+                   END-PERFORM
+               ELSE
+                   INITIALIZE                          NYUINACCT-REC
+                   MOVE    LNK-ORCBT120SUB-HOSPNUM TO  NACCT-HOSPNUM
+                   MOVE    LNK-ORCBT120SUB-PTID    TO  NACCT-PTID
+                   MOVE    LNK-ORCBT120SUB-SANTEIYMD(1:6)
+                                                   TO  NACCT-SRYYM
+                   MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+                   MOVE    "key28"                 TO  MCP-PATHNAME
+                   PERFORM 910-NYUINACCT-SELECT-SEC
+                   IF      FLG-NYUINACCT           =   ZERO
+                       MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+                       MOVE    "key28"             TO  MCP-PATHNAME
+                       PERFORM   910-NYUINACCT-READ-SEC
+                       MOVE    NACCT-DAY(WRK-SANTEIDD)
+                                         TO  LNK-ORCBT120SUB-SKJ-KBN
+                   END-IF
+      *           入院会計クローズ
+                   MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+                   MOVE    "key28"                 TO  MCP-PATHNAME
+                   PERFORM   910-DB-CLOSE-SEC
                END-IF
-      *       入院会計クローズ
-               MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
-               MOVE    "key28"                 TO  MCP-PATHNAME
-               PERFORM   910-DB-CLOSE-SEC
            END-IF
       *
       *    収納情報の取得
