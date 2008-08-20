@@ -657,6 +657,8 @@
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *    表示名称編集パラメタ領域
+           COPY    "CPORCSMEIHEN.INC".
       *
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -1941,11 +1943,6 @@
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   IDX-MAX
                IF      WRK-COM-INPUTCD(IDY)(1:1)   =   "1"
-      ************ MOVE    WRK-COM-INPUTCD(IDY)    TO  TNS-SRYCD
-      *            PERFORM 910-TENSU-READ-SEC
-      *            IF      FLG-TENSU           =   ZERO
-      *                MOVE    TNS-NAME        TO  WRK-GMN-MEISYO (IDY)
-      ************ END-IF
                    MOVE    IDY                 TO  WRK-IDX
                END-IF
            END-PERFORM
@@ -1954,28 +1951,39 @@
            END-IF
       *
       *    包括の最後の行に包括数を編集する
-           MOVE    WRK-HOUKNS-CNT(IDX)     TO  WRK-Z9
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "2"                 TO  KANACHK-SYORI
-           MOVE    WRK-Z9              TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           IF      KANACHK-RC          =   ZERO
-               MOVE    KANACHK-OUT-INPUT(1:4)
-                                       TO  WRK-HEN-Z9
-           ELSE
-               MOVE    SPACE           TO  WRK-HEN-Z9
-           END-IF
+           INITIALIZE                  ORCSMEIHENAREA
+           MOVE    "2"                 TO  ORCSMEIHEN-KBN
+           MOVE    WRK-HOUKNS-CNT(IDX) TO  ORCSMEIHEN-SURYO
+           MOVE    WRK-GMN-MEISYO (WRK-IDX)
+                                       TO  ORCSMEIHEN-TNS-NAME
+           CALL    "ORCSMEIHEN"        USING
+                                       SPA-AREA
+                                       ORCSMEIHENAREA
+           MOVE    ORCSMEIHEN-MEISYO   TO  WRK-GMN-MEISYO (WRK-IDX)
+      *
+      *    包括の最後の行に包括数を編集する
+      *    MOVE    WRK-HOUKNS-CNT(IDX)     TO  WRK-Z9
+      *    INITIALIZE                  ORCSKANACHKAREA
+      *    MOVE    "2"                 TO  KANACHK-SYORI
+      *    MOVE    WRK-Z9              TO  KANACHK-MAE-INPUT
+      *    CALL    "ORCSKANACHK"       USING
+      *                                ORCSKANACHKAREA
+      *    IF      KANACHK-RC          =   ZERO
+      *        MOVE    KANACHK-OUT-INPUT(1:4)
+      *                                TO  WRK-HEN-Z9
+      *    ELSE
+      *        MOVE    SPACE           TO  WRK-HEN-Z9
+      *    END-IF
       *****IF      WRK-GMN-INPUTCD(IDX-MAX)(1:1)   =   "*"
       *        MOVE    SPACE           TO  WRK-GMN-MEISYO (IDX-MAX)
       *****END-IF
-           MOVE    WRK-GMN-MEISYO (WRK-IDX)    TO  WRK-MEISYO
-           MOVE    SPACE               TO  WRK-GMN-MEISYO  (WRK-IDX)
-           STRING  WRK-MEISYO          DELIMITED   BY  SPACE
-                   "　　項目数："      DELIMITED   BY  SIZE
-                   WRK-HEN-Z9          DELIMITED   BY  SIZE
-                   INTO                    WRK-GMN-MEISYO (WRK-IDX)
-           END-STRING
+      *    MOVE    WRK-GMN-MEISYO (WRK-IDX)    TO  WRK-MEISYO
+      *    MOVE    SPACE               TO  WRK-GMN-MEISYO  (WRK-IDX)
+      *    STRING  WRK-MEISYO          DELIMITED   BY  SPACE
+      *            "　　項目数："      DELIMITED   BY  SIZE
+      *            WRK-HEN-Z9          DELIMITED   BY  SIZE
+      *            INTO                    WRK-GMN-MEISYO (WRK-IDX)
+      *    END-STRING
       *
            .
        10041-HOUKNS-ADD-EXT.

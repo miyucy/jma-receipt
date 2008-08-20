@@ -2214,14 +2214,15 @@
       *****************************************************************
        30112-AKUSEI-COMMENT-SEC       SECTION.
       *
-           ADD     1                   TO  SPA-GMN-IDX 
+           ADD     1                   TO  SPA-GMN-IDX
+           IF      SPA-GMN-IDX         <=  SPA-GMN-MAX
+               PERFORM 41014-GYOINSN-SEC
+           END-IF
            MOVE    SPA-GMN-IDX         TO  IDX-S
            IF      SPA-K98-SRYCD-G   NOT =   SPACE
                PERFORM 3011-K98-SET-SEC
            ELSE
       *    コメントコード追加
-               ADD     1               TO  SPA-GMN-IDX
-               PERFORM 41014-GYOINSN-SEC
                IF      SPA-ERRCD       =   SPACE
                    MOVE    "830000015"     TO  SPA-GMN-INPUTCD
                                                        (SPA-GMN-IDX)

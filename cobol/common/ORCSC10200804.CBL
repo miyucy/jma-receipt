@@ -141,6 +141,8 @@
            03  FLG-KANWA           PIC 9(01).
            03  FLG-MAYAKU          PIC 9(01).
       *
+           03  FLG-SANTEI-ARI      PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -327,6 +329,12 @@
                05  WRK-LST-YY          PIC 9(04).
                05  WRK-LST-MM          PIC 9(02).
                05  WRK-LST-DD          PIC 9(02).
+      *    悪性マーカ初回月チェック
+           03  WRK-AKU-YMD.
+               05  WRK-AKU-YY          PIC 9(04).
+               05  WRK-AKU-MM          PIC 9(02).
+               05  WRK-AKU-DD          PIC 9(02).
+           03  WRK-AKUSEI-YMD          PIC X(40).
       *!
       *    酸素
            03  IDX-SANSO               PIC 9(04).
@@ -622,7 +630,8 @@
            MOVE    ZERO                TO  FLG-TIME-NYU
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-MAX-LINE      ) OR
-                              (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+                             ((WRK-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
+                              (WRK-COM-INPUTCD (IDX-Z) =   SPACE ))
       *
                ADD     1                   TO  IDX-MAX
       *
@@ -1162,6 +1171,11 @@
                                                    "113001310"  OR
                                                    "113002110"
                PERFORM 10012-AKUSEI-SEC
+           END-IF
+      *!!
+      *    腫瘍マーカー検査初回月加算チェック
+           IF      WRK-COM-INPUTCD (IDX-Z)     =   "113001470" 
+               PERFORM 10012-AKUSEI-SYOKAI-SEC
            END-IF
       *
       *    ニコチン依存管理料チェック
@@ -2354,6 +2368,126 @@
            .
        10012-AKUSEI-EXT.
            EXIT.
+      *****************************************************************
+      *    腫瘍マーカー検査初回月加算チェック処理
+      *****************************************************************
+       10012-AKUSEI-SYOKAI-SEC           SECTION.
+      *
+           IF      WRK-ERRCD           =   SPACE
+      *        悪性腫瘍特異物資治療管理料が算定済みはエラー
+               PERFORM 100121-AKUSEI-SANTEI-SEC
+               IF      FLG-SANTEI-ARI      =   1
+                   IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE )
+                      AND (LNK-ORCSC-KEI-IDX       =   ZERO  )
+                       MOVE    IDX-Z            TO  LNK-ORCSC-KEI-IDX
+                       MOVE    "K134"           TO  WRK-ERRCD
+                       MOVE    "1"              TO  WRK-COM-CUR
+                                                             (IDX-Z)
+                       MOVE    "1"              TO  WRK-COM-KZMFLG
+                                                              (IDX-Z)
+                       MOVE    WRK-AKUSEI-YMD  TO  LNK-ORCSC-ERRMSG
+                   END-IF
+               END-IF
+           END-IF
+           .
+       10012-AKUSEI-SYOKAI-EXT.
+           EXIT.
+      *@
+      *****************************************************************
+      *    悪性腫瘍特異物資治療管理料算定済チェック処理
+      *****************************************************************
+       100121-AKUSEI-SANTEI-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SANTEI-ARI
+           MOVE    SPACE               TO  WRK-AKU-YMD
+      *
+           MOVE    "113001210"         TO  WRK-SRYCD
+           PERFORM 1001211-AKUSEI-SANTEIKEN-SEC
+      *
+           MOVE    "113001310"         TO  WRK-SRYCD
+           PERFORM 1001211-AKUSEI-SANTEIKEN-SEC
+      *
+           MOVE    "113002110"         TO  WRK-SRYCD
+           PERFORM 1001211-AKUSEI-SANTEIKEN-SEC
+      *
+           MOVE    SPACE               TO  WRK-AKUSEI-YMD
+           IF      WRK-AKU-YMD     NOT =   SPACE
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    WRK-AKU-YMD         TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+               STRING  "前回算定日："
+                       LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                      INTO                 WRK-AKUSEI-YMD
+               END-STRING
+           END-IF
+           .
+       100121-AKUSEI-SANTEI-EXT.
+           EXIT.
+      *@
+      *****************************************************************
+      *    特定薬剤治療加算料チェック処理
+      *****************************************************************
+       1001211-AKUSEI-SANTEIKEN-SEC    SECTION.
+      *
+           MOVE    "key15"             TO  WRK-DBPATH
+      *    算定履歴検索
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYCD           TO  SANTEI-SRYCD
+           MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key15"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_santei"        TO  MCP-TABLE
+               MOVE    "key15"             TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           PERFORM     UNTIL   FLG-SANTEI      =   1
+               MOVE    ZERO                TO  WRK-LST-DD
+               MOVE    SANTEI-SRYYM        TO  WRK-LST-YMD(1:6)
+               PERFORM VARYING     IDX-Y2  FROM    1   BY  1
+                       UNTIL       IDX-Y2      >   31
+                   IF      SANTEI-DAY (IDX-Y2) >   ZERO
+                       MOVE    IDX-Y2          TO  WRK-LST-DD
+                       IF      WRK-LST-YMD     >=  SPA-SRYYMD
+                           MOVE    31          TO  IDX-Y2
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *        訂正の時、当日分はチェックしない
+               IF     (LNK-ORCSC-SYORIFLG   =   1  )  AND
+                      (WRK-LST-YMD          =   SPA-SRYYMD)
+                   CONTINUE
+               ELSE
+                   MOVE    1                TO  FLG-SANTEI-ARI
+                   MOVE    1                TO  FLG-SANTEI
+                   IF      WRK-LST-YMD      >=  WRK-AKU-YMD
+                       MOVE    WRK-LST-YMD      TO  WRK-AKU-YMD
+                   END-IF
+               END-IF
+               IF      FLG-SANTEI          =   ZERO
+                   MOVE    "tbl_santei"        TO  MCP-TABLE
+                   MOVE    "key15"             TO  MCP-PATHNAME
+                   PERFORM 920-SANTEI-READ-SEC
+               END-IF
+           END-PERFORM
+      *
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key15"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       1001211-AKUSEI-SANTEIKEN-EXT.
+           EXIT.
+      *
       *@
       *****************************************************************
       *    特定薬剤治療加算料チェック処理

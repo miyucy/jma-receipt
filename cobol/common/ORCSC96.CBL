@@ -2008,6 +2008,13 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "K134"
+                   STRING  "警告！悪性腫瘍特異物資治療管理料は"
+                           "すでに算定済みです。"
+                           "初回加算は算定できません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD
                                        TO  SPA-ERRMSG
