@@ -326,6 +326,7 @@
       *  04.02.23    NACL-ÌçÏÆ    08/06/30  ¹âÎð¼Ô°ìÈÌ·Ð²áÁ¼ÃÖ±äÄ¹ÂÐ±þ
       *  04.02.24    NACL-ÌçÏÆ    08/07/03  »³Íü¸©£´£±Ï·¿ÍÂÐ±þ
       *  04.02.25    NACL-ÌçÏÆ    08/07/23  ´ä¼ê¡¦µÜ¾ëÆâÎ¦ÃÏ¿ÌÂÐ±þ
+      *  04.02.26    NACL-ÌçÏÆ    08/08/20  ÂçºåÉÜÃÏÊý¸øÈñÂÐ±þ
       *
       *  04.03.01    NACL-ÌçÏÆ    08/07/07  Ê£¿ôÊÝ¸±ÁÈ¤ß¹ç¤ï¤»»ÈÍÑ»þ¤Î
       *                                     ÀÁµáÅÀ¡¦¼ÂÆü¿ôµ­ºÜÂÐ±þ
@@ -9922,7 +9923,11 @@
                       IF   RECE62-RJNGENMENKBN  =   "1"
                           MOVE   1    TO   FLG-RJNGENMEN-CHIARI
                       END-IF
-                      MOVE    1       TO   FLG-KEISAN
+                      IF   FLG-ZENKOKUKOHI-NISYU  =  2
+                        MOVE     2    TO   FLG-KEISAN
+                      ELSE
+                        MOVE     1    TO   FLG-KEISAN
+                      END-IF
                       PERFORM 2104422-ICHIBUFTN-KOH-HEN1-SEC
                    END-IF
                  END-IF
@@ -10059,20 +10064,37 @@
       *****************************************************************
        2104421-ICHIBUFTN-KOH-SET-SEC               SECTION.
       *
-           IF  FLG-KEISAN  =  1
-             IF  FTN-KOH-XX2  >   WRK-KINGAKU
-                  MOVE     WRK-KINGAKU  TO  FTN-KOH-XX2
-             END-IF
-             COMPUTE  FTN-KOH-YY2  =  WRK-KINGAKU  -  FTN-KOH-XX2
-             IF  WRK-FTNKEI   >   FTN-KOH-YY2
-                  ADD      FTN-KOH-YY2  TO  RECE62-FTNMONEY(1)
-                                            FTN-KOH-XX2
-                                            WRK-KOH-GAI
-             ELSE
-                  ADD      WRK-FTNKEI   TO  RECE62-FTNMONEY(1)
-                                            FTN-KOH-XX2
-                                            WRK-KOH-GAI
-             END-IF
+           IF  FLG-KEISAN   NOT =  ZERO
+             EVALUATE   FLG-KEISAN
+               WHEN         1
+                 IF  FTN-KOH-XX2  >   WRK-KINGAKU
+                      MOVE   WRK-KINGAKU    TO  FTN-KOH-XX2
+                 END-IF
+                 COMPUTE  FTN-KOH-YY2  =   WRK-KINGAKU -  FTN-KOH-XX2
+                 IF  WRK-FTNKEI   >   FTN-KOH-YY2
+                      ADD    FTN-KOH-YY2    TO  RECE62-FTNMONEY(1)
+                                                FTN-KOH-XX2
+                                                WRK-KOH-GAI
+                 ELSE
+                      ADD    WRK-FTNKEI     TO  RECE62-FTNMONEY(1)
+                                                FTN-KOH-XX2
+                                                WRK-KOH-GAI
+                 END-IF
+               WHEN         2
+                 IF  FTN-KOH-XX3  >   WRK-KINGAKU
+                      MOVE   WRK-KINGAKU    TO  FTN-KOH-XX3
+                 END-IF
+                 COMPUTE  FTN-KOH-YY3  =   WRK-KINGAKU -  FTN-KOH-XX3
+                 IF  WRK-FTNKEI   >   FTN-KOH-YY3
+                      ADD    FTN-KOH-YY3    TO  RECE62-FTNMONEY(1)
+                                                FTN-KOH-XX3
+                                                WRK-KOH-GAI
+                 ELSE
+                      ADD    WRK-FTNKEI     TO  RECE62-FTNMONEY(1)
+                                                FTN-KOH-XX3
+                                                WRK-KOH-GAI
+                 END-IF
+             END-EVALUATE
            ELSE
              EVALUATE   FLG-KEISAN2
                WHEN        ZERO
@@ -10747,11 +10769,16 @@
                                    WRK-SKJ-FTN(KH-IDX)
                 ELSE
       ***         IF     (RECE62-KOUREI          =  "1" OR "2")
-                  IF     (RECE62-KOUREI          =  "1"       )
-                  AND    (RECE62-SRYYM          >=  "200610"  )
-                  AND    (WRK-PREFNUM            =   33       )
-                  AND    (RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                         >=  "1" AND <=  "8")
+                  IF    ((RECE62-KOUREI          =  "1"       ) AND
+                         (RECE62-SRYYM          >=  "200610"  ) AND
+                         (WRK-PREFNUM            =   33       ) AND
+                         (RECE62-KOHNUM(KH-IDX - 1)(1:1)
+                                         >=  "1" AND <=  "8"  ))
+                  OR    ((RECE62-KOUREI          =  "1"       ) AND
+                         (RECE62-SRYYM          >=  "200804"  ) AND
+                         (WRK-PREFNUM            =   27       ) AND
+                         (RECE62-KOHNUM(KH-IDX - 1)(1:1)
+                                         >=  "1" AND <=  "8"  ))
                      ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                    RECE62-FTNMONEY(KH-IDX)
                                    RECE62-FTNMONEY-KOJ(KH-IDX)
@@ -13452,6 +13479,22 @@
                   MOVE      1       TO     FLG-ZENKOKUKOHI-NISYU
                END-IF
       *
+             END-IF
+      *
+             IF    WRK-PREFNUM       =  "27"
+               IF  ( RECE62-HKNNUM       NOT = SPACE             )
+               AND ( RECE62-KOHNUM(1)(1:1)   =  "0"              )
+               AND ( RECE62-KOHNUM(1)    NOT =  "012" AND "025"  )
+               AND ( RECE62-KOHNUM(2)(1:1)  >=  "1" AND <= "8"   )
+               AND ( RECE62-KOHNUM(3)        = SPACE             )
+               AND ( RECE62-KOHNUM(4)        = SPACE             )
+      *
+                  MOVE      2       TO     FLG-ZENKOKUKOHI-NISYU
+      *
+                  IF    RECE62-HKNCOMBI(2)   =   ZERO
+                     MOVE   ZERO    TO     FLG-ZENKOKUKOHI-NISYU
+                  END-IF
+               END-IF
              END-IF
       *
       *      ¼ç¡ÜÁ´£Á¡Ü£±£²¡¢¼ç¡Ü£±£²
