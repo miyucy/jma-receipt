@@ -1492,6 +1492,9 @@
                WHEN   79
                    MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
            END-EVALUATE
+           IF  TNS-SRYCD      =    "190121810"
+                   MOVE    "1"     TO  WRK-TOKUBETSU-NYUIN
+           END-IF
            .
       *
        48011-TENSU-SEL-EXT.
