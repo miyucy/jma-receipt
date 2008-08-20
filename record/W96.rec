@@ -1,0 +1,384 @@
+W96	{
+	fixed1	{
+		NAME01	{
+			value	varchar(30);
+		};
+		SCRIPT01	{
+			value	varchar(100);
+		};
+		CMB_MON01	{
+			MON01	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[13];
+		};
+		CMB_DOM01	{
+			DOM01	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[32];
+		};
+		CMB_DOW01	{
+			DOW01	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[08];
+		};
+		CMB_HOUR01	{
+			HOUR01	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[25];
+		};
+		EXEC01	{
+			label	varchar(10);
+			value	bool;
+		};
+		NAME02	{
+			value	varchar(30);
+		};
+		SCRIPT02	{
+			value	varchar(100);
+		};
+		CMB_MON02	{
+			MON02	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[13];
+		};
+		CMB_DOM02	{
+			DOM02	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[32];
+		};
+		CMB_DOW02	{
+			DOW02	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[08];
+		};
+		CMB_HOUR02	{
+			HOUR02	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[25];
+		};
+		EXEC02	{
+			label	varchar(10);
+			value	bool;
+		};
+		NAME03	{
+			value	varchar(30);
+		};
+		SCRIPT03	{
+			value	varchar(100);
+		};
+		CMB_MON03	{
+			MON03	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[13];
+		};
+		CMB_DOM03	{
+			DOM03	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[32];
+		};
+		CMB_DOW03	{
+			DOW03	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[08];
+		};
+		CMB_HOUR03	{
+			HOUR03	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[25];
+		};
+		EXEC03	{
+			label	varchar(10);
+			value	bool;
+		};
+		NAME04	{
+			value	varchar(30);
+		};
+		SCRIPT04	{
+			value	varchar(100);
+		};
+		CMB_MON04	{
+			MON04	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[13];
+		};
+		CMB_DOM04	{
+			DOM04	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[32];
+		};
+		CMB_DOW04	{
+			DOW04	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[08];
+		};
+		CMB_HOUR04	{
+			HOUR04	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[25];
+		};
+		EXEC04	{
+			label	varchar(10);
+			value	bool;
+		};
+		NAME05	{
+			value	varchar(30);
+		};
+		SCRIPT05	{
+			value	varchar(100);
+		};
+		CMB_MON05	{
+			MON05	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[13];
+		};
+		CMB_DOM05	{
+			DOM05	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[32];
+		};
+		CMB_DOW05	{
+			DOW05	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[08];
+		};
+		CMB_HOUR05	{
+			HOUR05	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[25];
+		};
+		EXEC05	{
+			label	varchar(10);
+			value	bool;
+		};
+		NAME06	{
+			value	varchar(30);
+		};
+		SCRIPT06	{
+			value	varchar(100);
+		};
+		CMB_MON06	{
+			MON06	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[13];
+		};
+		CMB_DOM06	{
+			DOM06	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[32];
+		};
+		CMB_DOW06	{
+			DOW06	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[08];
+		};
+		CMB_HOUR06	{
+			HOUR06	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[25];
+		};
+		EXEC06	{
+			label	varchar(10);
+			value	bool;
+		};
+		NAME07	{
+			value	varchar(30);
+		};
+		SCRIPT07	{
+			value	varchar(100);
+		};
+		CMB_MON07	{
+			MON07	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[13];
+		};
+		CMB_DOM07	{
+			DOM07	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[32];
+		};
+		CMB_DOW07	{
+			DOW07	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[08];
+		};
+		CMB_HOUR07	{
+			HOUR07	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[25];
+		};
+		EXEC07	{
+			label	varchar(10);
+			value	bool;
+		};
+		NAME08	{
+			value	varchar(30);
+		};
+		SCRIPT08	{
+			value	varchar(100);
+		};
+		CMB_MON08	{
+			MON08	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[13];
+		};
+		CMB_DOM08	{
+			DOM08	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[32];
+		};
+		CMB_DOW08	{
+			DOW08	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[08];
+		};
+		CMB_HOUR08	{
+			HOUR08	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[25];
+		};
+		EXEC08	{
+			label	varchar(10);
+			value	bool;
+		};
+		NAME09	{
+			value	varchar(30);
+		};
+		SCRIPT09	{
+			value	varchar(100);
+		};
+		CMB_MON09	{
+			MON09	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[13];
+		};
+		CMB_DOM09	{
+			DOM09	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[32];
+		};
+		CMB_DOW09	{
+			DOW09	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[08];
+		};
+		CMB_HOUR09	{
+			HOUR09	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[25];
+		};
+		EXEC09	{
+			label	varchar(10);
+			value	bool;
+		};
+		NAME10	{
+			value	varchar(30);
+		};
+		SCRIPT10	{
+			value	varchar(100);
+		};
+		CMB_MON10	{
+			MON10	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[13];
+		};
+		CMB_DOM10	{
+			DOM10	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[32];
+		};
+		CMB_DOW10	{
+			DOW10	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[08];
+		};
+		CMB_HOUR10	{
+			HOUR10	{
+				value	varchar(2);
+			};
+			count	int;
+			item	varchar(2)[25];
+		};
+		EXEC10	{
+			label	varchar(10);
+			value	bool;
+		};
+	};
+};

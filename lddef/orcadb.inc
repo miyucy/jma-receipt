@@ -131,4 +131,5 @@ db	{
 	tbl_nrrksrh;
 	query_receprt;
 	tbl_pttokki;
+	tbl_cron;
 };

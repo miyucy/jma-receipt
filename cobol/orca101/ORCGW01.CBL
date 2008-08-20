@@ -88,6 +88,7 @@
       *  04.02.00    NACL-太田    08/03/06  病棟・病室入院基本料加算情報削除
       *  04.03.00    NACL-多々納  08/06/18  予約機能情報追加
       *  04.03.00    NACL-多々納  08/08/11  外来迅速検体検査設定追加
+      *  04.03.00    NACL-太田    08/08/19  ＣＲＯＮ情報設定画面
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -173,6 +174,7 @@
            03  FLG-TOUROKU                        PIC 9(01).
       *
            03  FLG-CHK                            PIC 9(01).
+           03  FLG-HIT                            PIC 9(01).
       *
       *
       *    添字領域
@@ -333,15 +335,17 @@
            03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
            03  FILLER              PIC X(35)   VALUE
+               "9600 ＣＲＯＮ設定情報".
+           03  FILLER              PIC X(35)   VALUE
                "9700 ユーザプログラム起動情報".
            03  FILLER              PIC X(35)   VALUE
                "9800 排他制御情報".
        01  TBL-KANRICD-G-AREAR         REDEFINES   TBL-KANRICD-G-AREA.
-           03  TBL-KANRICD-G-TBL           OCCURS   4.
+           03  TBL-KANRICD-G-TBL           OCCURS   5.
                05  TBL-KANRICD-G           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-G        PIC X(30).
-       01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   4.
+       01  TBL-KANRICDG-MAX                 PIC 9(04)   VALUE   5.
       *
       *入院のみ
        01  TBL-KANRICD-N-AREA.
@@ -370,16 +374,18 @@
            03  FILLER              PIC X(35)   VALUE
                "9000 ＣＬＡＩＭ接続情報".
            03  FILLER              PIC X(35)   VALUE
+               "9600 ＣＲＯＮ設定情報".
+           03  FILLER              PIC X(35)   VALUE
                "9700 ユーザプログラム起動情報".
            03  FILLER              PIC X(35)   VALUE
                "9800 排他制御情報".
       *
        01  TBL-KANRICD-N-AREAR         REDEFINES   TBL-KANRICD-N-AREA.
-           03  TBL-KANRICD-N-TBL           OCCURS   14.
+           03  TBL-KANRICD-N-TBL           OCCURS   15.
                05  TBL-KANRICD-N           PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI-N        PIC X(30).
-       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   14.
+       01  TBL-KANRICDN-MAX                PIC 9(04)   VALUE   15.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -502,6 +508,7 @@
            COPY    "W62.INC".
            COPY    "W63.INC".
            COPY    "W64.INC".
+           COPY    "W96.INC".
            COPY    "W98.INC".
            COPY    "W981.INC".
            COPY    "W97.INC".
@@ -634,12 +641,27 @@
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL      (IDX         >   TBL-KANRICDG-MAX) OR
                                   (IDX-MAX     >=  100  )
-                   ADD     1                   TO  IDX-MAX
-                   MOVE    TBL-KANRICD-G (IDX) TO  SPA-GMN-KANRICDL
+      *
+                   MOVE    ZERO        TO  FLG-HIT
+      *
+                   IF    ( TBL-KANRICD-G (IDX)  =   "9600" )
+                       IF    ( SPA-HOSPNUM      =   1 )
+                        AND  ( SPA-SUPERVISOR   =   "T" )
+                           MOVE    1       TO  FLG-HIT
+                       END-IF
+                   ELSE
+                           MOVE    1       TO  FLG-HIT
+                   END-IF
+      *
+                   IF    ( FLG-HIT         =   1 )
+                       ADD     1               TO  IDX-MAX
+                       MOVE    TBL-KANRICD-G (IDX)
+                                               TO  SPA-GMN-KANRICDL
                                                            (IDX-MAX)
-                   MOVE    TBL-KANRICDMEI-G(IDX)
+                       MOVE    TBL-KANRICDMEI-G(IDX)
                                                TO  SPA-GMN-KANRICDMEIL
                                                             (IDX-MAX)
+                   END-IF
                END-PERFORM
                MOVE    IDX-MAX             TO  SPA-GMN-KANRICD-MAX
                MOVE    1                   TO  SPA-GMN-CUR
@@ -650,11 +672,24 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   TBL-KANRICDN-MAX )  OR
                               (IDX-MAX     >=  100  )
-               ADD     1                   TO  IDX-MAX
-               MOVE    TBL-KANRICD-N (IDX) TO  SPA-GMN-KANRICDL
+               MOVE    ZERO        TO  FLG-HIT
+      *
+               IF    ( TBL-KANRICD-N (IDX)  =   "9600" )
+                   IF    ( SPA-HOSPNUM      =   1 )
+                    AND  ( SPA-SUPERVISOR   =   "T" )
+                       MOVE    1       TO  FLG-HIT
+                   END-IF
+               ELSE
+                       MOVE    1       TO  FLG-HIT
+               END-IF
+      *
+               IF    ( FLG-HIT         =   1 )
+                   ADD     1                   TO  IDX-MAX
+                   MOVE    TBL-KANRICD-N (IDX) TO  SPA-GMN-KANRICDL
                                                            (IDX-MAX)
-               MOVE    TBL-KANRICDMEI-N(IDX) TO  SPA-GMN-KANRICDMEIL
+                   MOVE    TBL-KANRICDMEI-N(IDX) TO  SPA-GMN-KANRICDMEIL
                                                            (IDX-MAX)
+               END-IF
            END-PERFORM
            MOVE    IDX-MAX             TO  SPA-GMN-KANRICD-MAX
            MOVE    1                   TO  SPA-GMN-CUR
@@ -1149,6 +1184,7 @@
                WHEN    "2006"
                WHEN    "2007"
                WHEN    "1910"
+               WHEN    "9600"
                WHEN    "9700"
       *            期間指定なし
                    MOVE    SPACE           TO  SPA-GMN-KBNCD
@@ -1791,6 +1827,7 @@
              OR                            "1010"
              OR                            "1014"
              OR                            "1910"
+             OR                            "9600"
              OR                            "9700")
       *---- (01.05.24) LINE ADD END   --------------------------------
                CONTINUE
@@ -1910,6 +1947,8 @@
                    MOVE    "W33"               TO  SPA-SAKIPG
                WHEN    "9000"
                    MOVE    "W99"               TO  SPA-SAKIPG
+               WHEN    "9600"
+                   MOVE    "W96"               TO  SPA-SAKIPG
                WHEN    "9700"
                    MOVE    "W97"               TO  SPA-SAKIPG
       *        排他 INS ST

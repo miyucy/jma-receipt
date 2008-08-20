@@ -365,6 +365,7 @@ RECORD_files = \
 	U012.rec \
 	N21FIL.rec \
 	W35.rec \
+        W96.rec \
 
 DEF_files = \
 	HC01.def \
@@ -564,6 +565,7 @@ DB_files = \
 	view_Q004.db \
 	query_receprt.db \
 	tbl_pttokki.db \
+	tbl_cron.db \
 
 
 all:   
