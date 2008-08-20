@@ -241,6 +241,8 @@
       *        ユーザプログラム起動
                05  SPA-NAI-GYOUMU-FLG             PIC X(01).
                05  SPA-NAI-GYOUMU-ARI             PIC 9(01).
+      *        レセプトプレビュー区分
+               05  SPA-NAI-RESPRVFLG              PIC X(01).
       *
       *    フラグ領域
        01  STS-AREA.
@@ -494,6 +496,7 @@
       *    プレビュー用
            03  WRK-PRV-HKNKBN          PIC X(01).
            03  WRK-PRV-RSI-HKNKBN      PIC X(01).
+           03  WRK-PRV-KBN             PIC X(01).
       *
            03  CNT-ZAI                 PIC 9(04).
       *
@@ -547,6 +550,8 @@
            COPY    "CPSK4001.INC".
       *    チェック機能制御情報 
            COPY    "CPSK1008.INC".
+      *    診療行為機能制御情報 
+           COPY    "CPSK1038.INC".
       *
       *    入院指示せん設定情報
            COPY  "CPSK5007.INC".
@@ -1140,6 +1145,8 @@
            ELSE
                MOVE    ZERO                TO  SPA-USERPG-MAX
            END-IF
+      *    レセプトプレビュー区分初期処理
+           PERFORM 3100-RESPRV-SET-SEC
       *
             .
        310-SPA-SET-EXT.
@@ -1223,6 +1230,51 @@
       *
             .
        3100-ZAIJUN-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *     レセプトプレビュー区分初期処理
+      *****************************************************************
+       3100-RESPRV-SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                  SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+      *
+      *    システム管理検索
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 960-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1038-REC
+               INITIALIZE                  SYS-1038-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+           ELSE
+               INITIALIZE                      SYS-1038-REC
+           END-IF
+           IF      SYS-1038-RESPRVFLG  =   "1"  OR  "2"
+               MOVE    SYS-1038-RESPRVFLG  TO  SPA-NAI-RESPRVFLG
+           ELSE
+               MOVE    "1"                 TO  SPA-NAI-RESPRVFLG
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+            .
+       3100-RESPRV-SET-EXT.
            EXIT.
       *****************************************************************
       *     パラメタファイルよりワーク編集とＳＯＲＴ処理
@@ -6029,6 +6081,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-HKNKBN          =   "2"
                MOVE    "3"                 TO  WRK-PRV-HKNKBN
            END-IF
+      *    レセプトプレビュー区分
+           MOVE    SPA-NAI-RESPRVFLG   TO  WRK-PRV-KBN
            CALL    "ORCSRECEARGMK"     USING
                                        "1"
                                        SPA-PTID
@@ -6036,6 +6090,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        SPA-NYUGAIKBN
                                        WRK-PRV-HKNKBN
                                        WRK-PRV-RSI-HKNKBN
+                                       WRK-PRV-KBN
                                        SPA-AREA
       *
            .

@@ -1978,6 +1978,8 @@
       *
            INITIALIZE                  SPA-NAI-SRYKBN-FLG
            INITIALIZE                  SPA-NAI-SRYKA-FLG
+      *    レセプトプレビュー
+           MOVE    "1"                 TO  SPA-NAI-RESPRVFLG
       *    診療科
            MOVE    SPACE               TO  SYS-1043-REC
            MOVE    "1043"              TO  SYS-1043-KANRICD
@@ -2007,6 +2009,12 @@
                    MOVE    ZERO                TO  SPA-NAI-SRYKA-FLG
                ELSE
                    MOVE    SYS-1043-SRYKA-FLG  TO  SPA-NAI-SRYKA-FLG
+               END-IF
+      *        レセプトプレビュー
+               IF      SYS-1043-RESPRVFLG  =   "1"  OR  "2"
+                   MOVE    SYS-1043-RESPRVFLG  TO  SPA-NAI-RESPRVFLG
+               ELSE
+                   MOVE    "1"                 TO  SPA-NAI-RESPRVFLG
                END-IF
            END-IF
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -12452,6 +12460,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "2"                 TO  SPA-XC01-HKNKBN
            END-IF
       *
+           MOVE    SPA-NAI-RESPRVFLG   TO  SPA-XC01-RESPRVFLG
+      *
            MOVE    SPACE               TO  SPA-XC01-CHK
            MOVE    ZERO                TO  WRK-RRK-HKNKBN
            CALL    "ORCSRECEARGMK"     USING
@@ -12462,6 +12472,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************    WRK-RRK-HKNKBN
                                        SPA-XC01-HKNKBN
                                        SPA-XC01-RSI-HKNKBN
+                                       SPA-XC01-RESPRVFLG
                                        SPA-AREA
       *
            .

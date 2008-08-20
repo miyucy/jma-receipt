@@ -196,6 +196,8 @@
                05  SPA-GMN-NYUIN-AREA.
                    07  SPA-GMN-NYUINMSG          PIC X(50)
                                                  OCCURS   2.
+      *        レセプトプレビュー
+               05  SPA-NAI-RESPRVFLG             PIC X(01).
       *
       *        保険組合せ一覧
                05  SPA-HKNCOMI-AREA.
@@ -315,4 +317,5 @@
                05  SPA-XC01-CHK            PIC X(01).
                05  SPA-XC01-HKNKBN         PIC X(01).
                05  SPA-XC01-RSI-HKNKBN     PIC X(01).
+               05  SPA-XC01-RESPRVFLG      PIC X(01).
       *

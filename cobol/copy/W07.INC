@@ -347,6 +347,12 @@
                     06  W07-OKUSURIKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-OKUSURIKBN-ITEM
                             PIC X(60)   OCCURS  5 TIMES.
+                  05  W07-RESPRV038-COMB.
+                    06  W07-RESPRV038.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-RESPRV038-COUNT   PIC S9(9)   BINARY.
+                    06  W07-RESPRV038-ITEM
+                            PIC X(40)   OCCURS  5 TIMES.
                 04  W07-TAGNAME3.
                   05  W07-TAGNAME3-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG4.
@@ -498,6 +504,12 @@
                     06  W07-SRYKA-FLG-COUNT   PIC S9(9)   BINARY.
                     06  W07-SRYKA-FLG-ITEM
                             PIC X(20)   OCCURS  5 TIMES.
+                  05  W07-RESPRV043-COMB.
+                    06  W07-RESPRV043.
+                      07  W07-VALUE   PIC X(40).
+                    06  W07-RESPRV043-COUNT   PIC S9(9)   BINARY.
+                    06  W07-RESPRV043-ITEM
+                            PIC X(40)   OCCURS  5 TIMES.
                 04  W07-TAGNAME6.
                   05  W07-TAGNAME6-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG7.

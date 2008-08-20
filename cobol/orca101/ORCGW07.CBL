@@ -534,6 +534,15 @@
                            11  SPA-GMN-OKUSURIKBN-LST   PIC X(60)
                                                         OCCURS  5.
                            11  SPA-GMN-OKUSURIKBN-MAX   PIC 9(02).
+      *                レセプトブレビュー
+                       09  SPA-GMN-RESPRV038-G.
+                           11  SPA-GMN-RESPRV038       PIC X(01).
+                           11  SPA-GMN-RESPRV038-F1    PIC X(01).
+                           11  SPA-GMN-RESPRV038-MEI   PIC X(38).
+                       09  SPA-GMN-RESPRV038-COMB.
+                           11  SPA-GMN-RESPRV038-LST   PIC X(40)
+                                                        OCCURS  5.
+                           11  SPA-GMN-RESPRV038-MAX   PIC 9(02).
       *
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
@@ -857,6 +866,15 @@
                            11  SPA-GMN-SRYKA-LIST         PIC X(20)
                                                            OCCURS  5.
                        09  SPA-GMN-SRYKA-MAX              PIC 9(04).
+      *                レセプトブレビュー
+                       09  SPA-GMN-RESPRV043-G.
+                           11  SPA-GMN-RESPRV043       PIC X(01).
+                           11  SPA-GMN-RESPRV043-F1    PIC X(01).
+                           11  SPA-GMN-RESPRV043-MEI   PIC X(38).
+                       09  SPA-GMN-RESPRV043-COMB.
+                           11  SPA-GMN-RESPRV043-LIST   PIC X(40)
+                                                        OCCURS  5.
+                           11  SPA-GMN-RESPRV043-MAX   PIC 9(02).
       *
       *            予約機能情報
                    07  SPA-GMN-PAGE7-AREA.
@@ -1523,6 +1541,10 @@
            MOVE    "0 変換する"        TO  SPA-GMN-CHGSRYSYU-LST(1)
            MOVE    "1 変換しない"      TO  SPA-GMN-CHGSRYSYU-LST(2)
            MOVE    2                   TO  SPA-GMN-CHGSRYSYU-MAX
+      *    レセプトブレビュー
+           MOVE    "1 院外処方含まない"    TO  SPA-GMN-RESPRV038-LST(1)
+           MOVE    "2 院外処方含む"        TO  SPA-GMN-RESPRV038-LST(2)
+           MOVE    2                   TO  SPA-GMN-RESPRV038-MAX
       *
            MOVE    "0 発行しない"      TO  SPA-GMN-SYUSKYPRTGLST(1)
            MOVE    "1 発行する"        TO  SPA-GMN-SYUSKYPRTGLST(2)
@@ -1647,6 +1669,10 @@
            MOVE    "1 前回表示科"      TO  SPA-GMN-SRYKA-LIST(2)
            MOVE    "2 全科"            TO  SPA-GMN-SRYKA-LIST(3)
            MOVE    3                   TO  SPA-GMN-SRYKA-MAX
+      *    レセプトブレビュー
+           MOVE    "1 院外処方含まない"    TO  SPA-GMN-RESPRV043-LIST(1)
+           MOVE    "2 院外処方含む"        TO  SPA-GMN-RESPRV043-LIST(2)
+           MOVE    2                   TO  SPA-GMN-RESPRV043-MAX
       *
       *予約情報
       *    予約一覧初期
@@ -2474,6 +2500,8 @@
            MOVE    SYS-1038-CHG310FLG      TO  SPA-GMN-CHG310FLG
       *    投薬診療種別変換選択
            MOVE    SYS-1038-CHGSRYSYU-FLG  TO  SPA-GMN-CHGSRYSYU
+      *    レセプトブレビュー
+           MOVE    SYS-1038-RESPRVFLG      TO  SPA-GMN-RESPRV038
       *
       *    入金管理区分
            MOVE    ZERO                TO  FLG-OK
@@ -2700,6 +2728,24 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-CHGSRYSYU-LST (1)
                                        TO  SPA-GMN-CHGSRYSYU-G
+           END-IF
+      *
+      *    レセプトブレビュー
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL  (IDY         >   SPA-GMN-RESPRV038-MAX )
+                       OR (FLG-OK      =   1       )
+               IF      SPA-GMN-RESPRV038
+                                       =   SPA-GMN-RESPRV038-LST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-RESPRV038-LST (IDY)
+                                       TO  SPA-GMN-RESPRV038-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-RESPRV038-LST (1)
+                                       TO  SPA-GMN-RESPRV038-G
            END-IF
       *
            MOVE    301                  TO  SPA-GMN-CUR
@@ -3352,6 +3398,9 @@
       *    診療科の初期表示
            MOVE    SYS-1043-SRYKA-FLG
                                        TO  SPA-GMN-SRYKA-FLG
+      *    レセプトブレビュー
+           MOVE    SYS-1043-RESPRVFLG
+                                       TO  SPA-GMN-RESPRV043
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY         FROM    1   BY  1
@@ -3388,6 +3437,24 @@
                MOVE    SPA-GMN-SRYKA-LIST (1)
                                        TO  SPA-GMN-SRYKA-FLG-G
            END-IF
+      *    レセプトブレビュー
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL  (IDY         >   SPA-GMN-RESPRV043-MAX )
+                       OR (FLG-OK      =   1       )
+               IF      SPA-GMN-RESPRV043
+                                       =   SPA-GMN-RESPRV043-LIST (IDY)
+                                                             (1:1)
+                   MOVE    SPA-GMN-RESPRV043-LIST (IDY)
+                                       TO  SPA-GMN-RESPRV043-G
+                   MOVE    1           TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-RESPRV043-LIST (1)
+                                       TO  SPA-GMN-RESPRV043-G
+           END-IF
+      *
       *
            MOVE    600                 TO  SPA-GMN-CUR
       *
@@ -3670,6 +3737,7 @@
            MOVE    W07-TEISEIFLG       TO  SPA-GMN-TEISEIFLG-G
            MOVE    W07-CHG310FLG       TO  SPA-GMN-CHG310FLG-G
            MOVE    W07-CHGSRYSYU       TO  SPA-GMN-CHGSRYSYU-G
+           MOVE    W07-RESPRV038       TO  SPA-GMN-RESPRV038-G
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -3718,6 +3786,7 @@
       *    会計照会機能情報 
            MOVE    W07-SRYKBN-FLG      TO  SPA-GMN-SRYKBN-FLG-G
            MOVE    W07-SRYKA-FLG       TO  SPA-GMN-SRYKA-FLG-G
+           MOVE    W07-RESPRV043       TO  SPA-GMN-RESPRV043-G
       *
       *    予約機能情報 
            MOVE    W07-INIT-DRCD       TO  SPA-GMN-INIT-DRCD-G
@@ -3910,6 +3979,10 @@
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-CHGSRYSYU-CHK-SEC
                    END-IF
+      *            レセプトブレビュー
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-RESPRV038-CHK-SEC
+                   END-IF
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-SRYNYKNKNRKBN-CHK-SEC
@@ -4048,6 +4121,10 @@
       *            診療科の初期表示
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4311-SRYKA-FLG-CHK-SEC
+                   END-IF
+      *            レセプトブレビュー
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4311-RESPRV043-CHK-SEC
                    END-IF
                WHEN    "1045"
       *            初期ドクター
@@ -5551,6 +5628,31 @@
        4108-CHGSRYSYU-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    レセプトブレビューチェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-RESPRV038-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-RESPRV038-MAX)
+                       OR     (FLG-OK  =   1    ) 
+               IF      SPA-GMN-RESPRV038
+                                       =   SPA-GMN-RESPRV038-LST (IDX)
+                                                          (1:1)
+                   MOVE    SPA-GMN-RESPRV038-LST(IDX)
+                                          TO  SPA-GMN-RESPRV038-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    308             TO  SPA-GMN-CUR
+               MOVE    "2015"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-RESPRV038-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    お薬手帳発行チェック処理（診療行為機能情報）
       *****************************************************************
        4108-OKUSURIKBN-CHK-SEC      SECTION.
@@ -6301,6 +6403,30 @@
            .
        4311-SRYKA-FLG-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    レセプトブレビューチェック処理（会計照会機能情報）
+      *****************************************************************
+       4311-RESPRV043-CHK-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-RESPRV043-MAX
+               IF      SPA-GMN-RESPRV043
+                                       =   SPA-GMN-RESPRV043-LIST(IDX)
+                                                             (1:1)
+                   MOVE    SPA-GMN-RESPRV043-LIST(IDX)
+                                           TO  SPA-GMN-RESPRV043-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    602             TO  SPA-GMN-CUR
+               MOVE    "5003"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4311-RESPRV043-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    初期表示ドクターチェック処理（予約機能情報）
@@ -7036,6 +7162,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-CHG310FLG       TO  SYS-1038-CHG310FLG
       *
            MOVE    SPA-GMN-CHGSRYSYU       TO  SYS-1038-CHGSRYSYU-FLG
+           MOVE    SPA-GMN-RESPRV038       TO  SYS-1038-RESPRVFLG
       *
            MOVE    SYS-1038-REC            TO  SYSKANRI-REC
       *
@@ -7867,6 +7994,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-CHGSRYSYU-MAX
                                        TO  W07-CHGSRYSYU-COUNT
+      *    レセプトブレビュー（診療行為機能情報）
+           MOVE    SPA-GMN-RESPRV038-G   TO  W07-RESPRV038
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-RESPRV038-MAX
+               MOVE    SPA-GMN-RESPRV038-LST (IDX)
+                                       TO  W07-RESPRV038-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-RESPRV038-MAX
+                                       TO  W07-RESPRV038-COUNT
       *
       *    複数科まとめ（診療行為機能情報）
            MOVE    SPA-GMN-KAGRPFLG-G  TO  W07-KAGRPFLG
@@ -8163,6 +8299,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-SRYKA-FLG-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-SRYKA-MAX   TO  W07-SRYKA-FLG-COUNT
+      *    レセプトブレビュー（会計照会機能情報）
+           MOVE    SPA-GMN-RESPRV043-G   TO  W07-RESPRV043
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-RESPRV043-MAX
+               MOVE    SPA-GMN-RESPRV043-LIST (IDX)
+                                       TO  W07-RESPRV043-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-RESPRV043-MAX
+                                       TO  W07-RESPRV043-COUNT
       *
       *予約情報
       *    初期表示ドクター
@@ -8484,6 +8629,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2014"
                    MOVE    "お薬手帳発行区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "2015"
+                   MOVE    "レセプトプレビュー区分がありません。"
+                                                       TO  SPA-ERRMSG
       *    収納情報
                WHEN    "3003"
                    MOVE    "登録時刻入力エラー"
@@ -8529,6 +8677,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                        TO  SPA-ERRMSG
                WHEN    "5002"
                    MOVE    "診療科の初期表示区分がありません。"
+                                                       TO  SPA-ERRMSG
+               WHEN    "5003"
+                   MOVE    "レセプトプレビュー区分がありません。"
                                                        TO  SPA-ERRMSG
       *        予約機能情報
                WHEN    "6001"
@@ -8788,6 +8939,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "CHG310FLG"       TO   MCP-WIDGET
                WHEN    307
                    MOVE  "CHGSRYSYU"       TO   MCP-WIDGET
+               WHEN    308
+                   MOVE  "RESPRV038"       TO   MCP-WIDGET
       *        請求選択
                WHEN    320
                    MOVE  "SRYNYKNKNRKBN"   TO   MCP-WIDGET
@@ -8893,6 +9046,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "SRYKBN_FLG"      TO   MCP-WIDGET
                WHEN    601
                    MOVE  "SRYKA_FLG"       TO   MCP-WIDGET
+               WHEN    602
+                   MOVE  "RESPRV043"       TO   MCP-WIDGET
       *予約情報
                WHEN    700
                    MOVE  "INIT_DRCD"       TO   MCP-WIDGET
@@ -9097,6 +9252,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       ********     MOVE    320             TO  SPA-GMN-CUR
                    MOVE    307             TO  SPA-GMN-CUR
                WHEN    "CHGSRYSYU"
+      **********   MOVE    320             TO  SPA-GMN-CUR
+                   MOVE    308             TO  SPA-GMN-CUR
+               WHEN    "RESPRV038"
                    MOVE    320             TO  SPA-GMN-CUR
                WHEN    "SRYNYKNKNRKBN"
                    MOVE    321             TO  SPA-GMN-CUR
@@ -9209,6 +9367,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "SRYKBN_FLG"
                    MOVE    601             TO  SPA-GMN-CUR
                WHEN    "SRYKA_FLG"
+      ***********  MOVE    999             TO  SPA-GMN-CUR
+                   MOVE    602             TO  SPA-GMN-CUR
+               WHEN    "RESPRV043"
                    MOVE    999             TO  SPA-GMN-CUR
       *予約情報
                WHEN    "INIT_DRCD"
