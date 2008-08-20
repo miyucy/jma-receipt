@@ -355,12 +355,10 @@
                                          WRK-PARA-SHORI-KBN
                                          WRK-PARA-HOSPNUM
                                          WRK-PARA-A35
+                                         WRK-PARA-PRTKBN 
                                          RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *??
-           MOVE    "1"             TO  WRK-PARA-PRTKBN
-      *??
       *
       *
            MOVE     WRK-PARA-A1    TO  WRK-PARA0-A1

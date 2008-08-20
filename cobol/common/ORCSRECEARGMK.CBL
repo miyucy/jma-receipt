@@ -38,6 +38,7 @@
       *
       *  04.03.01    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
       *  04.03.02    NACL-藤原    08/08/11  コメント記載箇所選択機能対応
+      *  04.03.03    NACL-藤原    08/08/19  仮レセ作成（院外処方含む）対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -175,6 +176,7 @@
        01  LINK-NYUGAIKBN              PIC X(01).
        01  LINK-HKNKBN                 PIC X(01).
        01  LINK-PTRSI-HKNKBN           PIC X(01).
+       01  LINK-PRTKBN                 PIC X(01).
       *01  LINK-ERRCD                  PIC X(04).
            COPY    "COMMON-SPA".
       *
@@ -187,6 +189,7 @@
                LINK-NYUGAIKBN
                LINK-HKNKBN
                LINK-PTRSI-HKNKBN
+               LINK-PRTKBN
       *        LINK-ERRCD
                SPA-AREA.
       *
@@ -209,6 +212,7 @@
       *???
            DISPLAY "ORCSRECEARGMK ST =" LINK-NYUGAIKBN " " LINK-HKNKBN
                                     " " LINK-PTRSI-HKNKBN
+                                    " " LINK-PRTKBN
       *???     
            INITIALIZE                  WRK-AREA
                                        FLG-AREA
@@ -704,6 +708,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG34
            MOVE    SYS-200501-COMMENT-ROU-KSIKBN
                                    TO  SHELLTBL-ARG35
+           MOVE    LINK-PRTKBN     TO  SHELLTBL-ARG36
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
