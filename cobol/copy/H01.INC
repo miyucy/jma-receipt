@@ -98,8 +98,11 @@
                 04  H01-VALUE   PIC X(7).
               03  H01-HENREIYM.
                 04  H01-VALUE   PIC X(7).
+              03  H01-LABEL-KOHSKY         PIC X(16).
               03  H01-SKYYM-KOHSKY-STATE   PIC S9(9)   BINARY.
               03  H01-SKYYM-KOHSKY         PIC X(7).
+              03  H01-HENREIYM-KOHSKY-STATE   PIC S9(9)   BINARY.
+              03  H01-HENREIYM-KOHSKY         PIC X(7).
               03  H01-SRYKANAME.
                 04  H01-SRYKANAME-STYLE   PIC X(20).
                 04  H01-SRYKANAME-VALUE   PIC X(18).

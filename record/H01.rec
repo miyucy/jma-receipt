@@ -1862,8 +1862,15 @@ H01	{
 		HENREIYM	{
 			value	varchar(7);
 		};
+		LABEL_KOHSKY	{
+			value	varchar(16);
+		};
 		SKYYM_KOHSKY	{
-			 state   int;
+			state   int;
+			value	varchar(7);
+		};
+		HENREIYM_KOHSKY	{
+			state   int;
 			value	varchar(7);
 		};
 		SRYKANAME	{

@@ -148,6 +148,7 @@
                05  WRK-WDD         PIC 9(02).
       *
            03  WRK-SKYYM-OLD       PIC 9(08).
+           03  WRK-HENREIYM-OLD    PIC 9(08).
       *
       *    入力項目名
            03  WRK-MCP-WIDGET      PIC X(64).
@@ -840,11 +841,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *    入力前データ
            MOVE    SPA-H01NAI-SKYYM
                                    TO  WRK-SKYYM-OLD
+           MOVE    SPA-H01NAI-HENREIYM
+                                   TO  WRK-HENREIYM-OLD
       *
            MOVE    H01-SKYYM       TO  SPA-H01GMN-SKYYM
            MOVE    H01-SKYYM-KOHSKY
                                    TO  SPA-H01GMN-SKYYM-KOHSKY
            MOVE    H01-HENREIYM    TO  SPA-H01GMN-HENREIYM
+           MOVE    H01-HENREIYM-KOHSKY
+                                   TO  SPA-H01GMN-HENREIYM-KOHSKY
            MOVE    H01-SKYKBN      TO  SPA-H01GMN-SKYKBN-G
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       38
@@ -897,6 +902,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
            PERFORM 4107-SKYYM-KOHSKY-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+           PERFORM 4118-HENREIYM-KOHSKY-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
@@ -1409,6 +1418,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    "01"                TO  WRK-SYMD (7:2) 
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG(1:6)    TO  SPA-H01GMN-SKYYM-KOHSKY
+               MOVE    KOHSKY-HENREIYM     TO
+                                           SPA-H01NAI-HENREIYM-KOHSKY
+                                           WRK-SYMD (1:6)
+               MOVE    "01"                TO  WRK-SYMD (7:2) 
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG(1:6)    TO
+                                           SPA-H01GMN-HENREIYM-KOHSKY
                MOVE    1                   TO  SPA-H01NAI-KOHSKY-FLG
            ELSE
                MOVE    ZERO                TO  SPA-H01NAI-KOHSKY-FLG
@@ -1426,7 +1442,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        41021-H99-HENSYU-SEC         SECTION.
       *
-           INITIALIZE                  SPA-H99GMN-AREA
+           INITIALIZE                      SPA-H99GMN-AREA
            MOVE    SPACE               TO  SPA-H99-AREA
       *
            MOVE    SPA-H01GMN-PTNUM    TO  SPA-H99GMN-PTNUM
@@ -1541,8 +1557,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                    MOVE    "0002"          TO  SPA-ERRCD
                END-IF
            END-IF
-      *    更新フラグセット
-      ***  MOVE    "1"                 TO  SPA-UPDFLG
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    4               TO  SPA-H01GMN-CUR
@@ -1581,8 +1595,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                END-IF
            END-IF
       *
-      *    更新フラグセット
-      ***  MOVE    "1"                 TO  SPA-UPDFLG
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    5               TO  SPA-H01GMN-CUR
@@ -1650,14 +1662,49 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                    MOVE    "0002"          TO  SPA-ERRCD
                END-IF
            END-IF
-      *    更新フラグセット
-      ***  MOVE    "1"                 TO  SPA-UPDFLG
       *
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    7               TO  SPA-H01GMN-CUR
            END-IF
            .
        4107-SKYYM-KOHSKY-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    返戻年月（公費請求書）入力処理
+      *****************************************************************
+       4118-HENREIYM-KOHSKY-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  SPA-H01NAI-HENREIYM-KOHSKY
+      *
+           IF      SPA-H01GMN-HENREIYM-KOHSKY =   SPACE
+               CONTINUE
+           ELSE
+      *    日付画面チェックサブ
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    "1"                 TO  SGDAY-INTYPE
+               MOVE    SPA-H01GMN-HENREIYM-KOHSKY TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-OTDAY(1:6)
+                                       TO  SPA-H01GMN-HENREIYM-KOHSKY
+                   MOVE    SGDAY-SDAY (1:6)
+                                       TO  SPA-H01NAI-HENREIYM-KOHSKY
+                   IF      SPA-H01NAI-HENREIYM-KOHSKY
+                                           <   SPA-H01NAI-SRYYM
+                       MOVE    "0002"          TO  SPA-ERRCD
+                   END-IF
+               ELSE
+                   MOVE    "0002"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    301             TO  SPA-H01GMN-CUR
+           END-IF
+           .
+       4118-HENREIYM-KOHSKY-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1693,8 +1740,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                                       SPA-H01GMN-NTOTALTEN (IDY)     +
                                       SPA-H01GMN-NTENSU    (IDY IDX)
       *
-      *    更新フラグセット
-      ***  MOVE    "1"                 TO  SPA-UPDFLG
            .
        4110-TENSU-CHK-EXT.
            EXIT.
@@ -1789,15 +1834,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                GO  TO  4103-KAKUTEI-CHK-EXT
            END-IF
       *
-      **     IF    ( SPA-H01NAI-SKYYM    >   ZERO  )
-      **     AND   ( SPA-H01NAI-SRYYM    >   ZERO  )
-      **         IF      SPA-H01NAI-SKYYM    <   SPA-H01NAI-SRYYM
-      **             MOVE    "0002"              TO  SPA-ERRCD
-      **             MOVE    4                   TO  SPA-H01GMN-CUR
-      **         GO  TO  4103-KAKUTEI-CHK-EXT
-      **         END-IF
-      **     END-IF
-      *
            .
        4103-KAKUTEI-CHK-EXT.
            EXIT.
@@ -1807,10 +1843,19 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4104-GMN-SPA-HENSYU-SEC         SECTION.
       *
+      *    返戻年月が変更になったとき公費分が未入力ならセットする
+           IF    ( SPA-H01NAI-HENREIYM NOT =   WRK-HENREIYM-OLD )
+           AND   (  SPA-H01NAI-HENREIYM-KOHSKY
+                                           =   ZERO             )
+               MOVE    SPA-H01GMN-HENREIYM TO
+                                           SPA-H01GMN-HENREIYM-KOHSKY
+               MOVE    SPA-H01NAI-HENREIYM TO 
+                                           SPA-H01NAI-HENREIYM-KOHSKY
+           END-IF
+      *
       *    請求年月が変更になったとき公費分が未入力ならセットする
            IF    ( SPA-H01NAI-SKYYM    NOT =   WRK-SKYYM-OLD )
-           AND   (  SPA-H01NAI-SKYYM-KOHSKY
-                                           =   ZERO          )
+           AND   ( SPA-H01NAI-SKYYM-KOHSKY =   ZERO          )
                MOVE    SPA-H01GMN-SKYYM    TO  SPA-H01GMN-SKYYM-KOHSKY
                MOVE    SPA-H01NAI-SKYYM    TO  SPA-H01NAI-SKYYM-KOHSKY
            END-IF
@@ -1996,7 +2041,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    MOVE    MCPDATA-REC         TO  KOHSKY-REC
                    MOVE    SPA-H01NAI-SKYYM-KOHSKY
                                                TO  KOHSKY-SKYYM
-                   MOVE    SPA-H01NAI-HENREIYM TO  KOHSKY-HENREIYM
+                   MOVE    SPA-H01NAI-HENREIYM-KOHSKY
+                                               TO  KOHSKY-HENREIYM
                    MOVE    SPA-H01GMN-SKYKBN   TO  KOHSKY-SKYKBN
                    MOVE    "1"                 TO  KOHSKY-TEISEIKBN
                    MOVE    SMCNDATE-YMD        TO  KOHSKY-UPDYMD
@@ -2105,12 +2151,17 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-H01GMN-SKYYM       TO  H01-SKYYM
            MOVE    SPA-H01GMN-SKYYM-KOHSKY
                                           TO  H01-SKYYM-KOHSKY
+           MOVE    SPA-H01GMN-HENREIYM    TO  H01-HENREIYM
+           MOVE    SPA-H01GMN-HENREIYM-KOHSKY
+                                          TO  H01-HENREIYM-KOHSKY
+           MOVE    "（公費請求書分）"     TO  H01-LABEL-KOHSKY
            IF      SPA-H01NAI-KOHSKY-FLG  =   ZERO
                MOVE    WIDGET-INSENSITIVE  TO  H01-SKYYM-KOHSKY-STATE
+                                               H01-HENREIYM-KOHSKY-STATE
            ELSE
                MOVE    WIDGET-NORMAL       TO  H01-SKYYM-KOHSKY-STATE
+                                               H01-HENREIYM-KOHSKY-STATE
            END-IF
-           MOVE    SPA-H01GMN-HENREIYM    TO  H01-HENREIYM
            MOVE    SPA-H01GMN-SKYKBN-G    TO  H01-SKYKBN
            PERFORM VARYING IDX FROM    1       BY  1
                    UNTIL       IDX             >   3
@@ -2305,6 +2356,9 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "SKYKBN"        TO  MCP-WIDGET
                WHEN    7
                    MOVE    "SKYYM_KOHSKY"  TO  MCP-WIDGET
+               WHEN    301
+                   MOVE    "HENREIYM_KOHSKY"
+                                           TO  MCP-WIDGET
                WHEN    8   THRU    182
                WHEN    215 THRU    229
                    COMPUTE IDX     =   SPA-H01GMN-CUR -   3
@@ -2432,6 +2486,8 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                        MOVE    8           TO  SPA-H01GMN-CUR
                    END-IF
                WHEN    "SKYYM_KOHSKY"
+                   MOVE    301         TO  SPA-H01GMN-CUR
+               WHEN    "HENREIYM_KOHSKY"
                    MOVE    8           TO  SPA-H01GMN-CUR
                WHEN    "NKHNTEN01"
                WHEN    "NKHNTEN02"
