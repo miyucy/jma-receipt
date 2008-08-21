@@ -51,37 +51,40 @@
       *    画面用ＳＰＡ
        01  SPA-W96.
            03  SPA-GMN-CUR                        PIC 9(03).
+           03  SPA-GMN-B08-PUSHED                 PIC 9(03).
+           03  SPA-GMN-MODE                       PIC 9(01).
            03  SPA-GMN-AREA.
                05  SPA-GMN-CRON-G.
                    07  SPA-GMN-CRON-OCC           OCCURS  10.
                        09  SPA-GMN-NAME           PIC X(30).
                        09  SPA-GMN-SCRIPT         PIC X(100).
-                       09  SPA-GMN-DOW-G.
-                           11  SPA-GMN-DOW        PIC X(1).
-                           11  SPA-GMN-DOWFL      PIC X(1).
-                           11  SPA-GMN-DOWMEI     PIC X(8).
-                       09  SPA-GMN-MON            PIC X(2).
-                       09  SPA-GMN-DOM            PIC X(2).
-                       09  SPA-GMN-HOUR           PIC X(2).
-                       09  SPA-GMN-EXEC           PIC X(1).
-               05  SPA-GMN-COMBO-AREA.
-                   07  SPA-GMN-DOWLST-G.
-                      09  SPA-GMN-DOW-MAX         PIC 9(03).
-                      09  SPA-GMN-DOWLST          OCCURS   8.
-                          11  SPA-GMN-DOWL        PIC X(01).
-                          11  SPA-GMN-DOWFLL      PIC X(01).
-                          11  SPA-GMN-DOWMEIL     PIC X(08).
-                   07  SPA-GMN-MONLST-G.
-                      09  SPA-GMN-MON-MAX         PIC 9(03).
-                      09  SPA-GMN-MONLST          OCCURS  13
+                       09  SPA-GMN-SCHEDULE-G.
+                           11  SPA-GMN-DOW-G.
+                               13  SPA-GMN-DOW    PIC X(1).
+                               13  SPA-GMN-DOWFL  PIC X(1).
+                               13  SPA-GMN-DOWMEI PIC X(8).
+                           11  SPA-GMN-MON        PIC X(2).
+                           11  SPA-GMN-DOM        PIC X(2).
+                           11  SPA-GMN-HOUR       PIC X(2).
+                           11  SPA-GMN-EXEC       PIC X(1).
+           03  SPA-GMN-COMBO-AREA.
+               05  SPA-GMN-DOWLST-G.
+                   07  SPA-GMN-DOW-MAX            PIC 9(03).
+                   07  SPA-GMN-DOWLST             OCCURS   8.
+                       09  SPA-GMN-DOWL           PIC X(01).
+                       09  SPA-GMN-DOWFLL         PIC X(01).
+                       09  SPA-GMN-DOWMEIL        PIC X(08).
+               05  SPA-GMN-MONLST-G.
+                   07  SPA-GMN-MON-MAX            PIC 9(03).
+                   07  SPA-GMN-MONLST             OCCURS  13
                                                   PIC X(02).
-                   07  SPA-GMN-DOMLST-G.
-                      09  SPA-GMN-DOM-MAX         PIC 9(03).
-                      09  SPA-GMN-DOMLST          OCCURS  32
+               05  SPA-GMN-DOMLST-G.
+                   07  SPA-GMN-DOM-MAX            PIC 9(03).
+                   07  SPA-GMN-DOMLST             OCCURS  32
                                                   PIC X(02).
-                   07  SPA-GMN-HOURLST-G.
-                      09  SPA-GMN-HOUR-MAX        PIC 9(03).
-                      09  SPA-GMN-HOURLST         OCCURS  25
+               05  SPA-GMN-HOURLST-G.
+                   07  SPA-GMN-HOUR-MAX           PIC 9(03).
+                   07  SPA-GMN-HOURLST            OCCURS  25
                                                   PIC X(02).
       *
       *    フラグエリア
@@ -91,6 +94,8 @@
            03  FLG-KANACHK-ERR                     PIC 9(01).
       *
        01  CNT-AREA.
+           03  CNT-JMAID                           PIC 9(04).
+           03  CNT-USRID                           PIC 9(04).
            03  CNT-CRONID                          PIC 9(04).
       *
       *    添字領域
@@ -99,6 +104,8 @@
            03  IDX1                                PIC 9(05).
            03  IDX-CRON                            PIC 9(05).
            03  IDX-CMB                             PIC 9(05).
+           03  IDX-JMA                             PIC 9(05).
+           03  IDX-USR                             PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -115,7 +122,9 @@
       *
       *    固定値領域
        01  CONST-AREA.
-           03  CONST-CRON-MAX                  PIC 9(03)   VALUE 10.
+           03  CONST-CRON-MAX                      PIC 9(03)   VALUE 10.
+           03  CONST-JMA-MAX                       PIC 9(03)   VALUE 5.
+           03  CONST-MAINTENANCE                   PIC 9(03)   VALUE 1.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -317,11 +326,18 @@
       *
            PERFORM 900-CRON-ALL-SEL-SEC
       *
-           MOVE    ZERO            TO  IDX-CRON
+           MOVE    ZERO            TO  IDX-JMA
+           MOVE    5               TO  IDX-USR
       *
            PERFORM UNTIL ( FLG-CRON    NOT =   ZERO )
       *
-               COMPUTE IDX-CRON    =   IDX-CRON    +   1
+               IF    ( CRON-CRONID >=  1000 )
+                   COMPUTE IDX-USR =   IDX-USR     +   1
+                   MOVE    IDX-USR TO  IDX-CRON
+               ELSE
+                   COMPUTE IDX-JMA =   IDX-JMA     +   1
+                   MOVE    IDX-JMA TO  IDX-CRON
+               END-IF
       *
                IF    ( CRON-RUN    =   ZERO )
                    MOVE    "F"         TO  SPA-GMN-EXEC (IDX-CRON)
@@ -345,7 +361,7 @@
       *
            PERFORM 4102-KIHON-CHK-SEC
            MOVE    SPACE               TO  SPA-ERRCD
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    036                 TO  SPA-GMN-CUR
       *
            .
        310-SPASET-EXT.
@@ -497,6 +513,14 @@
       *    クリア
            WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 420-CLEAR-SEC
+           WHEN    "CLICKED"       ALSO    "B08"
+      *
+               COMPUTE SPA-GMN-B08-PUSHED  =   SPA-GMN-B08-PUSHED  +   1
+      *
+           WHEN    "CLICKED"       ALSO    "B11"
+      *
+               PERFORM 470-MAINTENANCE-MODE-CHK-SEC
+      *
       *    登録
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 480-TOUROKU-SEC
@@ -565,10 +589,15 @@
       *
            PERFORM VARYING IDX-CRON    FROM    1   BY  1
                    UNTIL ( IDX-CRON    >   CONST-CRON-MAX )
-               MOVE    W96-NAME   (IDX-CRON)
+      *
+               IF    ( IDX-CRON        >  CONST-JMA-MAX )
+                OR   ( SPA-GMN-MODE    =  CONST-MAINTENANCE )
+                   MOVE    W96-NAME   (IDX-CRON)
                                        TO  SPA-GMN-NAME   (IDX-CRON)
-               MOVE    W96-SCRIPT (IDX-CRON)
+                   MOVE    W96-SCRIPT (IDX-CRON)
                                        TO  SPA-GMN-SCRIPT (IDX-CRON)
+               END-IF
+      *
                MOVE    W96-DOW    (IDX-CRON)
                                        TO  SPA-GMN-DOW-G  (IDX-CRON)
                MOVE    W96-MON    (IDX-CRON)
@@ -865,10 +894,18 @@
       *****************************************************************
        420-CLEAR-SEC               SECTION.
       *
-           INITIALIZE                  SPA-GMN-CRON-G
-      *
            PERFORM VARYING IDX-CRON    FROM    1   BY  1
                    UNTIL ( IDX-CRON    >   CONST-CRON-MAX )
+      *
+               IF    ( SPA-GMN-MODE    =   CONST-MAINTENANCE )
+                       INITIALIZE          SPA-GMN-CRON-OCC (IDX-CRON)
+               ELSE
+                   IF    ( IDX-CRON    >   CONST-JMA-MAX )
+                       INITIALIZE          SPA-GMN-CRON-OCC (IDX-CRON)
+                   ELSE
+                       INITIALIZE          SPA-GMN-SCHEDULE-G (IDX-CRON)
+                   END-IF
+               END-IF
       *
                MOVE    "F"             TO  SPA-GMN-EXEC (IDX-CRON)
       *
@@ -876,10 +913,24 @@
       *
            PERFORM 4102-KIHON-CHK-SEC
            MOVE    SPACE               TO  SPA-ERRCD
-           MOVE    1                   TO  SPA-GMN-CUR
+           MOVE    036                 TO  SPA-GMN-CUR
       *
            .
        420-CLEAR-EXT.
+           EXIT.
+      *****************************************************************
+      *    メンテナンスモードチェック処理
+      *****************************************************************
+       470-MAINTENANCE-MODE-CHK-SEC    SECTION.
+      *
+           IF    ( SPA-GMN-B08-PUSHED  =   2 )
+               MOVE    CONST-MAINTENANCE   TO  SPA-GMN-MODE
+           ELSE
+               MOVE    ZERO                TO  SPA-GMN-B08-PUSHED
+           END-IF
+      *
+           .
+       470-MAINTENANCE-MODE-CHK-EXT.
            EXIT.
       *****************************************************************
       *    登録処理
@@ -918,14 +969,22 @@
                MOVE    "4001"      TO  SPA-ERRCD
            END-IF
       *
-           MOVE    1000            TO  CNT-CRONID
+           MOVE    ZERO            TO  CNT-JMAID
+           MOVE    1000            TO  CNT-USRID
            PERFORM VARYING IDX-CRON    FROM    1   BY  1
                    UNTIL ( IDX-CRON    >   CONST-CRON-MAX )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
                IF    ( SPA-GMN-NAME (IDX-CRON) NOT =   SPACE )
       *
-                   COMPUTE CNT-CRONID  =   CNT-CRONID  +   1
+                   IF    ( IDX-CRON    >   CONST-JMA-MAX )
+                       COMPUTE CNT-USRID   =   CNT-USRID   +   1
+                       MOVE    CNT-USRID   TO  CNT-CRONID
+                   ELSE
+                       COMPUTE CNT-JMAID   =   CNT-JMAID   +   1
+                       MOVE    CNT-JMAID   TO  CNT-CRONID
+                   END-IF
+      *
       *
                    INITIALIZE              CRON-REC
                    MOVE    CNT-CRONID  TO  CRON-CRONID
@@ -1023,8 +1082,24 @@
       *
            INITIALIZE                      W96
       *
+           MOVE    "black"             TO  W96-LBLJMASCRIPTS-STYLE
+           IF    ( SPA-GMN-MODE        =   CONST-MAINTENANCE )
+               MOVE    "red"           TO  W96-LBLJMASCRIPTS-STYLE
+           END-IF
+      *
            PERFORM VARYING IDX-CRON    FROM    1   BY  1
                    UNTIL ( IDX-CRON    >   CONST-CRON-MAX )
+      *
+               MOVE    WIDGET-NORMAL   TO  W96-NAME-STATE  (IDX-CRON)
+                                           W96-SCRIPT-STATE(IDX-CRON)
+               IF    ( SPA-GMN-MODE    =   CONST-MAINTENANCE )
+                OR   ( IDX-CRON        >   CONST-JMA-MAX )
+                   CONTINUE
+               ELSE
+                   MOVE    WIDGET-INSENSITIVE
+                                       TO  W96-NAME-STATE  (IDX-CRON)
+                                           W96-SCRIPT-STATE(IDX-CRON)
+               END-IF
       *
                MOVE    SPA-GMN-NAME   (IDX-CRON)
                                        TO  W96-NAME   (IDX-CRON)
@@ -1284,8 +1359,14 @@
                                    +   7
            WHEN    "EXEC01"    THRU    "EXEC09"
                MOVE    WRK-MCP-WIDGET (5:2)    TO  WRK-NUM99-X
-               COMPUTE SPA-GMN-CUR = ( WRK-NUM99 - 1 ) *   7
+               IF    ( SPA-GMN-MODE    =   CONST-MAINTENANCE )
+                OR   ( WRK-NUM99       >   CONST-JMA-MAX )
+                   COMPUTE SPA-GMN-CUR = ( WRK-NUM99 - 1 ) *   7
                                    +   8
+               ELSE
+                   COMPUTE SPA-GMN-CUR = ( WRK-NUM99 - 1 ) *   7
+                                   +   10
+               END-IF
            WHEN    "EXEC10"
                COMPUTE SPA-GMN-CUR =   212
            END-EVALUATE

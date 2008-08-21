@@ -1,9 +1,14 @@
 W96	{
 	fixed1	{
+		LBLJMASCRIPTS	{
+			style   varchar(20);
+		};
 		NAME01	{
+			state	int;
 			value	varchar(30);
 		};
 		SCRIPT01	{
+			state	int;
 			value	varchar(100);
 		};
 		CMB_MON01	{
@@ -39,9 +44,11 @@ W96	{
 			value	bool;
 		};
 		NAME02	{
+			state	int;
 			value	varchar(30);
 		};
 		SCRIPT02	{
+			state	int;
 			value	varchar(100);
 		};
 		CMB_MON02	{
@@ -77,9 +84,11 @@ W96	{
 			value	bool;
 		};
 		NAME03	{
+			state	int;
 			value	varchar(30);
 		};
 		SCRIPT03	{
+			state	int;
 			value	varchar(100);
 		};
 		CMB_MON03	{
@@ -115,9 +124,11 @@ W96	{
 			value	bool;
 		};
 		NAME04	{
+			state	int;
 			value	varchar(30);
 		};
 		SCRIPT04	{
+			state	int;
 			value	varchar(100);
 		};
 		CMB_MON04	{
@@ -153,9 +164,11 @@ W96	{
 			value	bool;
 		};
 		NAME05	{
+			state	int;
 			value	varchar(30);
 		};
 		SCRIPT05	{
+			state	int;
 			value	varchar(100);
 		};
 		CMB_MON05	{
@@ -191,9 +204,11 @@ W96	{
 			value	bool;
 		};
 		NAME06	{
+			state	int;
 			value	varchar(30);
 		};
 		SCRIPT06	{
+			state	int;
 			value	varchar(100);
 		};
 		CMB_MON06	{
@@ -229,9 +244,11 @@ W96	{
 			value	bool;
 		};
 		NAME07	{
+			state	int;
 			value	varchar(30);
 		};
 		SCRIPT07	{
+			state	int;
 			value	varchar(100);
 		};
 		CMB_MON07	{
@@ -267,9 +284,11 @@ W96	{
 			value	bool;
 		};
 		NAME08	{
+			state	int;
 			value	varchar(30);
 		};
 		SCRIPT08	{
+			state	int;
 			value	varchar(100);
 		};
 		CMB_MON08	{
@@ -305,9 +324,11 @@ W96	{
 			value	bool;
 		};
 		NAME09	{
+			state	int;
 			value	varchar(30);
 		};
 		SCRIPT09	{
+			state	int;
 			value	varchar(100);
 		};
 		CMB_MON09	{
@@ -343,9 +364,11 @@ W96	{
 			value	bool;
 		};
 		NAME10	{
+			state	int;
 			value	varchar(30);
 		};
 		SCRIPT10	{
+			state	int;
 			value	varchar(100);
 		};
 		CMB_MON10	{

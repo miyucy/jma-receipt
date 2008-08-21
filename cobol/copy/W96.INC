@@ -17,9 +17,13 @@
       ********************************************************************
         02  W96.
       *     02  W96-FIXED1.
+              03  W96-LBLJMASCRIPTS-STYLE
+                                       PIC X(20).
               03  W96-CRON-G.
                 04  W96-CRON-OCC       OCCURS  10.
+                  05  W96-NAME-STATE   PIC S9(9)   BINARY.
                   05  W96-NAME         PIC X(30).
+                  05  W96-SCRIPT-STATE PIC S9(9)   BINARY.
                   05  W96-SCRIPT       PIC X(100).
                   05  W96-CMB-MON.
                     06  W96-MON        PIC X(2).
