@@ -2628,16 +2628,12 @@
       *****************************************************************
        5012-CUR-SKIP-SEC               SECTION.
       *
-           DISPLAY "BF SPA-GMN-G01-CUR =" SPA-GMN-G01-CUR
-      *
       *    非活性項目にカーソルが移動した場合はスキップする
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   WRK-CONS-SCR-MAX )
                COMPUTE WRK-CHK-CUR = ( IDX1    -   1 )
                                    * WRK-CONS-PARA-CUR
                                    + 1
-               DISPLAY "SPA-GMN-G01-CUR:WRK-CHK-CUR" SPA-GMN-G01-CUR ":"
-                                        WRK-CHK-CUR
                IF    ( SPA-GMN-G01-CUR     =   WRK-CHK-CUR  )
                 AND  ( G01-CHK-STATE(IDX1) =   WIDGET-INSENSITIVE )
                    COMPUTE SPA-GMN-G01-CUR =   SPA-GMN-G01-CUR   + 1
@@ -2666,8 +2662,6 @@
            IF    ( SPA-GMN-G01-CUR >   462 )
                MOVE    999         TO  SPA-GMN-G01-CUR
            END-IF
-      *
-           DISPLAY "AF SPA-GMN-G01-CUR =" SPA-GMN-G01-CUR
       *
            .
       *
