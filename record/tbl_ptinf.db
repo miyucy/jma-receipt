@@ -495,7 +495,7 @@ path	key22	{
 		WHERE A.HOSPNUM = :HOSPNUM
 		 AND  A.TSTPTNUMKBN <> '1'
 		 AND  B.FLG IS  NULL
-		ORDER BY PTID;
+		ORDER BY PTID
 		;
 	};
 };
