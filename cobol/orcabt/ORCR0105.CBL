@@ -894,8 +894,8 @@
                    "６５歳以上で退職国保が使用されています". 
       *
            03  WRK-ERR-MSG-9.
-               05  FILLER          PIC X(16)   VALUE
-                   "提出できません。". 
+               05  FILLER          PIC X(48)   VALUE
+                   "【リアルタイムプレビューより作成のため提出不可】". 
       *
        01  WRK-CONS-AREA.    
       *    固定端末ＩＤ
@@ -2688,7 +2688,7 @@
                MOVE    SPACE                TO  WRK-HC06-HEAD4-G
                MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
                MOVE    WRK-ERR-MSG-9        TO  HC06-HEAD4-G (5:)
-               MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (22:)
+               MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (53:)
            END-IF
       *
       *    点検用レセプト作成時
