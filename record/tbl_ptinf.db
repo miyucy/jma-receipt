@@ -494,6 +494,8 @@ path	key22	{
 		) D ON (D.HOSPNUM = A.HOSPNUM AND D.PTID = A.PTID)
 		WHERE A.HOSPNUM = :HOSPNUM
 		 AND  A.TSTPTNUMKBN <> '1'
+		 AND( A.CREYMD  = '        ' OR
+		      A.CREYMD <=    :ED_SRYYMD )
 		 AND  B.FLG IS  NULL
 		ORDER BY PTID
 		;
