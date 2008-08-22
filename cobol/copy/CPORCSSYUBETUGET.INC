@@ -34,6 +34,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *                                     レセプト種別（紙レセプト）の追加
       ************************************************************
       *
        01  ORCSSYUBETUGETAREA.
@@ -75,8 +76,11 @@
                05  LNK-SYUBETUGET-RJNPAYKBN    PIC X(02).
       *
            03  LNK-SYUBETUGET-OT.
+      *        レセプト種別（レセ電）
                05  LNK-SYUBETUGET-RECESYUBETU  PIC 9(04).
+      *        レセプト種別（特別療養費）
                05  LNK-SYUBETUGET-RECESYUBETU-X
                                                PIC 9(04).
+      *        レセプト種別（紙レセプト）
                05  LNK-SYUBETUGET-RECESYUBETU-Y
                                                PIC 9(04).

@@ -35,6 +35,10 @@
       *                                     （生保の公費単独のみ） 
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *
+      *  04.03.01    NACL-藤原    08/08/22  公費４種までの併用の記録対応
+      *                                     レセプト種別はレセプト種別
+      *                                     （紙レセプト）から表示する
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -953,7 +957,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                                MOVE    "広域"  TO  
                                    SPA-GMN-R96-PTNUM-TTEISYUTUSAKI(IDX1)
                        END-EVALUATE
-                       EVALUATE    LNK-SYUBETU-RECESYUBETU  (IDY)
+                       EVALUATE    LNK-SYUBETU-RECESYUBETU-Y  (IDY)
                            WHEN    "0000"
                                MOVE    "不明分"
                                    TO  SPA-GMN-R96-PTNUM-TRECESYUBETU
@@ -963,7 +967,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  LNK-SYUBETU-HOSPNUM
                                    TO  SPA-GMN-R96-PTNUM-TRECESYUBETU
                                                               (IDX1)
                            WHEN    OTHER
-                               MOVE    LNK-SYUBETU-RECESYUBETU  (IDY)
+                               MOVE    LNK-SYUBETU-RECESYUBETU-Y  (IDY)
                                    TO  SPA-GMN-R96-PTNUM-TRECESYUBETU
                                                               (IDX1)
                        END-EVALUATE

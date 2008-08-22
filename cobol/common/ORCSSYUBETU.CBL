@@ -69,6 +69,7 @@
       *  04.02.05    NACL-門脇    08/08/07  精神通院の請求点判定追加
       *
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *                                     レセプト種別（紙レセプト）の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1983,6 +1984,9 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
       *
            MOVE    LNK-SYUBETUGET-RECESYUBETU
                                        TO  LNK-SYUBETU-RECESYUBETU(IDZZ)
+           MOVE    LNK-SYUBETUGET-RECESYUBETU-Y
+                                       TO  LNK-SYUBETU-RECESYUBETU-Y
+                                                                  (IDZZ)
       *??
       *         DISPLAY "SYUBETU=" LNK-SYUBETU-RECESYUBETU(IDZZ)
       *??

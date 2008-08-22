@@ -41,6 +41,8 @@
       *
       *  04.02.01    NACL-Æ£¸¶    08/03/04  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.02.02    NACL-Æ£¸¶    08/03/25  ¹­°èÏ¢¹çÄÉ²Ã
+      *
+      *  04.03.01    NACL-Æ£¸¶    08/08/22  ¸øÈñ£´¼ï¤Þ¤Ç¤ÎÊ»ÍÑ¤Îµ­Ï¿ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -943,6 +945,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
                        MOVE    LNK-SYUACC-IO-RECESYUBETU(IDX1)
                                        TO  SPA-GMN-TRECESYUBETU
                                                               (WRK-LINE)
+                       EVALUATE    LNK-SYUACC-IO-RECESYUBETU(IDX1)(3:1)
+                           WHEN    "4"
+                           WHEN    "5"
+                               MOVE    "3"             TO
+                                   SPA-GMN-TRECESYUBETU (WRK-LINE)(3:1)
+                       END-EVALUATE
                END-EVALUATE
                MOVE    LNK-SYUACC-IO-HKNJANUM   (IDX1)
                                        TO  SPA-NAI-THKNJANUM  (WRK-LINE)
@@ -1300,7 +1308,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  HKNJA-HOSPNUM
                WHEN    OTHER
                    MOVE    SPA-NAI-RECESYUBETU
                                            TO  SPA-GMN-RECESYUBETU
+                   EVALUATE    SPA-NAI-RECESYUBETU (3:1)
+                       WHEN    "4"
+                       WHEN    "5"
+                           MOVE    "3"     TO  SPA-GMN-RECESYUBETU (3:1)
                    END-EVALUATE
+           END-EVALUATE
       *
            INITIALIZE                  SPA-NAI-SELNUM1
                                        SPA-GMN-PTNUM-TABLE
