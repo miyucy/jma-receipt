@@ -37,6 +37,7 @@
       *                                     症状詳記区分コード５２の追加
       *
       *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *  04.03.02    NACL-藤原    08/08/22  リアルタイムプレビュー時の表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -252,6 +253,8 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            03  WRK-UPDCNT          PIC 9(08).
       *
            03  WRK-HSEQNUM         PIC 9(08).
+      *
+           03  WRK-HCM58-HEAD1-G   PIC X(128).
       *
            03  WRK-SUM-TENSU       PIC 9(08).
       *
@@ -500,6 +503,10 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *
            03  WRK-ERR-MSG-6           PIC X(30)  VALUE
                "【未請求設定の患者です】".
+      *
+           03  WRK-ERR-MSG-7.
+               05  FILLER          PIC X(48)   VALUE
+                   "【リアルタイムプレビューより作成のため提出不可】". 
       *
        01  WRK-CONS-AREA.    
       *    改行コード
@@ -1129,6 +1136,14 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN     =   "2"
                MOVE    "点検用レセプト"    TO  HCM58-LABEL
+           END-IF
+      *
+      *    リアルタイムプレビュー時の表示
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               MOVE    SPACE                TO  WRK-HCM58-HEAD1-G
+               MOVE    HCM58-HEAD1-G (5:)   TO  WRK-HCM58-HEAD1-G
+               MOVE    WRK-ERR-MSG-7        TO  HCM58-HEAD1-G (5:)
+               MOVE    WRK-HCM58-HEAD1-G    TO  HCM58-HEAD1-G (53:)
            END-IF
       *
            .

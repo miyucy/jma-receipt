@@ -37,6 +37,7 @@
       *                                     症状詳記区分コード５２の追加
       *
       *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *  04.03.02    NACL-藤原    08/08/22  リアルタイムプレビュー時の表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -263,6 +264,8 @@
            03  WRK-KIGO            PIC X(50).
       *
            03  WRK-ERRMSG          PIC X(40).
+      *
+           03  WRK-HCN58-HEAD1-G   PIC X(128).
       *
            03  WRK-OPECOM-MCP-TABLE       PIC X(64).
            03  WRK-OPECOM-MCP-PATHNAME    PIC X(64).
@@ -521,6 +524,13 @@
                                    PIC X(08).
                    07  FILLER          PIC X(28)   VALUE
                    "は適用年月日外となっています". 
+      *
+           03  WRK-ERR-MSG-6           PIC X(30)  VALUE
+               "【未請求設定の患者です】".
+      *
+           03  WRK-ERR-MSG-7.
+               05  FILLER          PIC X(48)   VALUE
+                   "【リアルタイムプレビューより作成のため提出不可】". 
       *    改行コード
            03  WRK-CONS-RETURN         PIC X(01)   VALUE   X"0A".
       *
@@ -1152,6 +1162,14 @@
       *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN     =   "2"
                MOVE    "点検用レセプト"    TO  HCN58-LABEL
+           END-IF
+      *
+      *    リアルタイムプレビュー時の表示
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               MOVE    SPACE                TO  WRK-HCN58-HEAD1-G
+               MOVE    HCN58-HEAD1-G (5:)   TO  WRK-HCN58-HEAD1-G
+               MOVE    WRK-ERR-MSG-7        TO  HCN58-HEAD1-G (5:)
+               MOVE    WRK-HCN58-HEAD1-G    TO  HCN58-HEAD1-G (53:)
            END-IF
       *
            .
