@@ -32,6 +32,7 @@
       *  01.00.02    NACL-多々納  06/01/25  MONFUNCへ変更
       *  03.05.00    NACL-多々納  07/05/23  グループ診療対応
       *  04.01.00    NACL-多々納  07/11/22  器材商品名コード対応
+      *  04.03.00    NACL-多々納  08/08/26  院外処方対応追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -318,7 +319,16 @@
                                            OR  "22"
                                            OR  "23"
                                            OR  "14" )
-               MOVE     1                  TO  FLG-SYORI
+      *        院外処方は対象外
+               IF      (LNK-WKSRY-SRYSYUKBN(1) =   "212"
+                                               OR  "222"
+                                               OR  "232"
+                                               OR  "148"
+                                               OR  "149")
+                   CONTINUE
+               ELSE
+                   MOVE     1                  TO  FLG-SYORI
+               END-IF
            END-IF
       *    注射処方箋発行
            IF      (LNK-ORDERPRT-CHUSYA    =   1   )  AND

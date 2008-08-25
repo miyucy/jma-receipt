@@ -559,15 +559,15 @@
                            PERFORM 100101-SRYSYUMEI-HEN-SEC
                        END-IF
                    END-IF
-               WHEN    "212"
-               WHEN    "222"
-               WHEN    "232"
+      *        WHEN    "212"
+      *        WHEN    "222"
+      *        WHEN    "232"
       *            院外処方は外来のみ
-                   IF      SPA-NYUGAIKBN   =   "1"
-                       MOVE    "9028"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR
-                                                             (IDX-Z)
-                   END-IF
+      *            IF      SPA-NYUGAIKBN   =   "1"
+      *                MOVE    "9028"          TO  WRK-ERRCD
+      *                MOVE    "1"             TO  WRK-COM-CUR
+      *                                                      (IDX-Z)
+      *            END-IF
                WHEN    "214"
                WHEN    "224"
                WHEN    "234"
@@ -1299,7 +1299,9 @@
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            ELSE
       *        院外分
-               PERFORM 3001-INGAI-SYORI-SEC
+               IF      SPA-NYUGAIKBN       =   "2"
+                   PERFORM 3001-INGAI-SYORI-SEC
+               END-IF
       *        院内分
                IF     (SPA-ERRCD           =   SPACE )
                   AND (LNK-ORCSC-KIDCD     =   SPACE )

@@ -9872,12 +9872,25 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF     (SPA-COM-SRYKBN (IDX)    =   "21"
                                                OR  "22"
                                                OR  "23" )
-                   MOVE    1               TO  SPA-NAI-SYOHOU
+      *            院外処方は対象外
+                   IF     (SPA-COM-SRYSYUKBN (IDX) =   "212"
+                                                   OR  "222"
+                                                   OR  "232")
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  SPA-NAI-SYOHOU
+                   END-IF
                END-IF
                IF     (SPA-COM-SRYKBN (IDX)    =   "14" ) AND
                       (SPA-COM-INPUTCD(IDX)(1:1)   =   "6"
                                                    OR  "7")
-                   MOVE    1               TO  SPA-NAI-SYOHOU
+      *            院外処方は対象外
+                   IF     (SPA-COM-SRYSYUKBN (IDX) =   "148"
+                                                   OR  "149" )
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  SPA-NAI-SYOHOU
+                   END-IF
                END-IF
       *
                IF     (SPA-COM-SRYKBN (IDX)    =   "31"

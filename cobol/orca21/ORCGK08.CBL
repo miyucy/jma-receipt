@@ -2979,9 +2979,18 @@
                IF     (LNK-WKSRY-SRYKBN (IDX)  =   "21"
                                                OR  "22"
                                                OR  "23" )
-                   MOVE    1               TO  SPA-NAI-SYOHOU
+      *            院外処方は対象外
+                   IF     (LNK-WKSRY-SRYSYUKBN (IDX)   =   "212"
+                                                       OR  "222"
+                                                       OR  "232")
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  SPA-NAI-SYOHOU
+                   END-IF
                END-IF
                IF     (LNK-WKSRY-SRYKBN (IDX)      =   "14" )
+                  AND (LNK-WKSRY-SRYSYUKBN (IDX)   NOT =   "148"
+                                                       AND "149" )
                     PERFORM VARYING     IDX2    FROM    1   BY  1
                             UNTIL      (IDX2    >   5   )  OR
                                        (SPA-NAI-SYOHOU  =   1  )

@@ -614,6 +614,13 @@
       *                    MOVE    "1"             TO  SPA-COM-CUR(IDX)
       *                END-IF
       *!           END-IF
+      *!           退院時院外処方コメントは入院のみ
+                   IF      WRK-SRYSYUKBN       =   "982"
+                       IF      SPA-NYUGAIKBN       =   "2"
+                           MOVE    "9024"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  SPA-COM-CUR(IDX)
+                       END-IF
+                   END-IF
                WHEN    OTHER
       *        その他
                    IF      FLG-JIHI            =   1
