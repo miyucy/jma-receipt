@@ -1,7 +1,7 @@
-#!/usr/bin/ruby1.8
+#!/usr/bin/ruby
 require 'date'
 
-ENV['PATH'] = "/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+ENV['PATH'] = "/home/ikegam/rep/jma-receipt/jma-receipt/scripts/tools:/home/ikegam/rep/jma-receipt/jma-receipt/scripts/tools:/home/ikegam/rep/jma-receipt/jma-receipt/scripts/tools:/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
 
 list = `psql orca -At -F ',' -c 'SELECT DOW,MON,DOM,HOUR,SCRIPT from tbl_cron where RUN = \'1\'\;'`.split("\n").map{|r|
   r = r.split(/,/).map{|c| c = "." * c.length if c =~ /^\*/; c }
