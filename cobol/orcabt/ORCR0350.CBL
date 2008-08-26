@@ -3249,6 +3249,8 @@
                INITIALIZE                  TBL-KENSA-RECE64-AREA
            END-IF
       *
+           MOVE    ZERO               TO  FLG-TOYAKUFLG
+      *
       *    ÆþÂà±¡ÍúÎòÊÔ½¸½èÍý
            PERFORM 20079-HC101-NYUTAI-RIREKI-HEN-SEC
       *
