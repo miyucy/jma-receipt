@@ -560,6 +560,7 @@
                    MOVE    SNTYMD-NYUINYMD(IDX2)
                                                TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG(1:4)    TO  HCN02-NYUINGEN
                    MOVE    WRK-HENYMDG(5:4)    TO  HCN02-NYUINYY
                    MOVE    WRK-HENYMDG(11:4)   TO  HCN02-NYUINMM
                    MOVE    WRK-HENYMDG(17:4)   TO  HCN02-NYUINDD
@@ -568,6 +569,7 @@
                    MOVE    SNTYMD-TAIINYMD(IDX2)
                                                TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG(1:4)    TO  HCN02-TAIINGEN
                    MOVE    WRK-HENYMDG(5:4)    TO  HCN02-TAIINYY
                    MOVE    WRK-HENYMDG(11:4)   TO  HCN02-TAIINMM
                    MOVE    WRK-HENYMDG(17:4)   TO  HCN02-TAIINDD
@@ -604,6 +606,8 @@
                    MOVE    SNTYMD-NYUINYMD(IDX2)
                                                TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG(1:4)    TO  HCN02-NYUINGEN
+                                                   HCN02-KIKANSTRGEN
                    MOVE    WRK-HENYMDG(5:4)    TO  HCN02-NYUINYY
                                                    HCN02-KIKANSTRYY
                    MOVE    WRK-HENYMDG(11:4)   TO  HCN02-NYUINMM
@@ -617,6 +621,9 @@
                    MOVE    SNTYMD-TAIINYMD(IDX2)
                                                TO  WRK-SYMD
                    PERFORM 31012-SEIWA-HEN-SEC
+                   MOVE    WRK-HENYMDG(1:4)    TO  HCN02-TAIINGEN
+                                                   HCN02-KIKANENDGEN
+                                                   HCN02-TKIKANGEN
                    MOVE    WRK-HENYMDG(5:4)    TO  HCN02-TAIINYY
                                                    HCN02-KIKANENDYY
                                                    HCN02-TKIKANYY
