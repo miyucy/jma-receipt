@@ -36,7 +36,7 @@
               03  HCN02-KIKANSTRMM    PIC X(4).
               03  HCN02-KIKANSTRDD    PIC X(4).
             02  HCN02-KIKANENDYMD.
-              03  HCN02-KIKANEDGEN    PIC X(4).
+              03  HCN02-KIKANENGEN    PIC X(4).
               03  HCN02-KIKANENDYY    PIC X(4).
               03  HCN02-KIKANENDMM    PIC X(4).
               03  HCN02-KIKANENDDD    PIC X(4).
