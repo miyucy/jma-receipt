@@ -327,6 +327,7 @@
       *  04.02.24    NACL-門脇    08/07/03  山梨県４１老人対応
       *  04.02.25    NACL-門脇    08/07/23  岩手・宮城内陸地震対応
       *  04.02.26    NACL-門脇    08/08/20  大阪府地方公費対応
+      *  04.02.27    NACL-門脇    08/08/26  ７０歳未満現物給付マル長に関する修正
       *
       *  04.03.01    NACL-門脇    08/07/07  複数保険組み合わせ使用時の
       *                                     請求点・実日数記載対応
@@ -9984,7 +9985,11 @@
       *
            ELSE
              MOVE      1      TO    FLG-HOKENICHIBU
-             IF     SYU-KOHTAIYKZKBN  =   "9"
+             IF   ( SYU-KOHTAIYKZKBN  = "9"            )
+             OR   ((SYU-KOH-HKNNUM(1) = "972" OR "974") AND
+                   (SYU-KOH-HKNNUM(2) = SPACE         ) AND
+                   (SYU-KOH-HKNNUM(3) = SPACE         ) AND
+                   (SYU-KOH-HKNNUM(4) = SPACE         ))
                  ADD    SYU-TOTAL-HKNTEN    TO  WRK-JYOGENKBN-TEN
                  ADD    SYU-KOH-FTN         TO  WRK-KOH-FTN-GEN70
              END-IF
@@ -11983,9 +11988,15 @@
                    ELSE
                      MOVE  35400                TO  WRK-CHK-KINGAKU2
                    END-IF
-                 WHEN       ANY         ALSO     2
+                 WHEN       ZERO        ALSO     2
                    MOVE    10000                TO  WRK-CHK-KINGAKU2
-                 WHEN       ANY         ALSO     3
+                 WHEN       1           ALSO     2
+                   MOVE    WRK-KINGAKU-GENBUTU3 TO  WRK-CHK-KINGAKU
+                   MOVE    10000                TO  WRK-CHK-KINGAKU2
+                 WHEN       ZERO        ALSO     3
+                   MOVE    20000                TO  WRK-CHK-KINGAKU2
+                 WHEN       1           ALSO     3
+                   MOVE    WRK-KINGAKU-GENBUTU3 TO  WRK-CHK-KINGAKU
                    MOVE    20000                TO  WRK-CHK-KINGAKU2
                  WHEN       ZERO        ALSO     4
                    MOVE    WRK-KINGAKU-GENBUTU  TO  WRK-CHK-KINGAKU2

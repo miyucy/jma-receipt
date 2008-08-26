@@ -362,6 +362,7 @@
       *  04.02.20    NACL-門脇    08/07/03  山梨県４１老人対応
       *  04.02.21    NACL-門脇    08/07/23  岩手・宮城内陸地震対応
       *  04.02.22    NACL-門脇    08/08/20  大阪府地方公費対応
+      *  04.02.23    NACL-門脇    08/08/26  ７０歳未満現物給付マル長に関する修正
       *
       *  04.03.01    NACL-門脇    08/07/07  複数保険組み合わせ使用時の
       *                                     請求点・実日数記載対応
@@ -7463,9 +7464,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    ELSE
                      MOVE  35400                TO  WRK-CHK-KINGAKU2
                    END-IF
-                 WHEN       ANY         ALSO     2
+                 WHEN       ZERO        ALSO     2
                    MOVE    10000                TO  WRK-CHK-KINGAKU2
-                 WHEN       ANY         ALSO     3
+                 WHEN       1           ALSO     2
+                   MOVE    WRK-KINGAKU-GENBUTU3 TO  WRK-CHK-KINGAKU
+                   MOVE    10000                TO  WRK-CHK-KINGAKU2
+                 WHEN       ZERO        ALSO     3
+                   MOVE    20000                TO  WRK-CHK-KINGAKU2
+                 WHEN       1           ALSO     3
+                   MOVE    WRK-KINGAKU-GENBUTU3 TO  WRK-CHK-KINGAKU
                    MOVE    20000                TO  WRK-CHK-KINGAKU2
                  WHEN       ZERO        ALSO     4
                    MOVE    WRK-KINGAKU-GENBUTU  TO  WRK-CHK-KINGAKU2
