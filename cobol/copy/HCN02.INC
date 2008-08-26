@@ -16,10 +16,12 @@
               03  HCN02-PTBIRTHDD PIC X(4).
             02  HCN02-PTNENREI  PIC X(3).
             02  HCN02-NYUINYMD.
+              03  HCN02-NYUINGEN  PIC X(4).
               03  HCN02-NYUINYY   PIC X(4).
               03  HCN02-NYUINMM   PIC X(4).
               03  HCN02-NYUINDD   PIC X(4).
             02  HCN02-TAIINYMD.
+              03  HCN02-TAIINGEN  PIC X(4).
               03  HCN02-TAIINYY   PIC X(4).
               03  HCN02-TAIINMM   PIC X(4).
               03  HCN02-TAIINDD   PIC X(4).
@@ -29,16 +31,19 @@
                     PIC X(12)   OCCURS  3 TIMES.
             02  HCN02-KIKAN PIC X(4).
             02  HCN02-KIKANSTRYMD.
+              03  HCN02-KIKANSTRGEN   PIC X(4).
               03  HCN02-KIKANSTRYY    PIC X(4).
               03  HCN02-KIKANSTRMM    PIC X(4).
               03  HCN02-KIKANSTRDD    PIC X(4).
             02  HCN02-KIKANENDYMD.
+              03  HCN02-KIKANEDGEN    PIC X(4).
               03  HCN02-KIKANENDYY    PIC X(4).
               03  HCN02-KIKANENDMM    PIC X(4).
               03  HCN02-KIKANENDDD    PIC X(4).
             02  HCN02-YOBI  PIC X(14).
             02  HCN02-TKIKAN    PIC X(4).
             02  HCN02-TKIKANYMD.
+              03  HCN02-TKIKANGEN PIC X(4).
               03  HCN02-TKIKANYY  PIC X(4).
               03  HCN02-TKIKANMM  PIC X(4).
               03  HCN02-TKIKANDD  PIC X(4).
