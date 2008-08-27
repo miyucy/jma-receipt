@@ -1,0 +1,23 @@
+#!/bin/sh
+PATH=/usr/bin:/usr/sbin:/bin:/sbin
+BACKUP_DIR=/var/tmp/dbbackup
+DUMPFILE=${BACKUP_DIR}/orca_db_dump.gz
+
+umask 077
+
+[ -d ${BACKUP_DIR}  ] || mkdir -p ${BACKUP_DIR}
+[ -f @jma-receipt-env@ ] || exit 404
+. @jma-receipt-env@
+
+
+for COUNT in 6 5 4 3 2 1
+do
+  if [ -f ${DUMPFILE}.${COUNT} ]; then
+    mv ${DUMPFILE}.${COUNT} ${DUMPFILE}.`expr ${COUNT} + 1`
+  fi
+done
+
+[ -f ${DUMPFILE}.7 ] && rm -f  ${DUMPFILE}.7
+
+pg_dump -cO orca | gzip  ${DUMPFILE}.1
+
