@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        :   ＯＲＣＡ
       *  サブシステム名    :   月次帳票
-      *  コンポーネント名  :   未来院患者リスト
+      *  コンポーネント名  :   診療行為未入力患者一覧表
       *  管理者            : 
       *  作成日付    作業者        記述
       *  08/08/20    NACL-森脇     新規作成
@@ -256,7 +256,8 @@
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    "ORCBG020"          TO  JOB-PGID
-           MOVE    "未来院患者リスト"  TO  JOB-SHELLMSG
+           MOVE    "診療行為未入力患者一覧表"
+                                       TO  JOB-SHELLMSG
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
@@ -518,7 +519,7 @@
            MOVE    LNK-PRTKANRI-SHORI-RENNUM   TO  SPRT-SHORI-RENNUM
            MOVE    LNK-PRTKANRI-PRIORITY       TO  SPRT-PRIORITY
            MOVE    "HCM63.red"                 TO  SPRT-PRTID
-           MOVE    "未来院患者リスト"          TO  SPRT-TITLE
+           MOVE    "診療行為未入力患者一覧表"  TO  SPRT-TITLE
            MOVE    HCM63                       TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID         TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID           TO  SPRT-OPID
