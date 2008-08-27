@@ -286,12 +286,12 @@
            COPY    "CPTENSU.INC".
       *
       *    »»ÄêÍúÎò
-       01  SANTEI-REC.
-           COPY    "CPSANTEI.INC".
+      *01  SANTEI-REC.
+      *    COPY    "CPSANTEI.INC".
       *
       *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿¡Ý
-       01  CHK-REC.
-           COPY    "CPCHK.INC".
+      *01  CHK-REC.
+      *    COPY    "CPCHK.INC".
       *
       *    ¼õ¿ÇÍúÎò
        01  JYURRK-REC.
@@ -3060,6 +3060,7 @@
                END-EVALUATE
              END-IF
            END-PERFORM
+           MOVE    ZERO                TO  FLG-ALL
            IF      FLG-ERR             =   1
                GO      TO      3002-KASAN-SYORI-EXT
            END-IF
