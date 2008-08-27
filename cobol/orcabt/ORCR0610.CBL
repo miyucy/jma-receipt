@@ -473,8 +473,10 @@
            02  WRK-HKNCOMBI-REC        OCCURS  10. 
            COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
                                        BY         //WRK-COMB-//.
-           03  WRK-HKNCOMBI-SYOKBN     PIC X(01).   
-           03  WRK-HKNCOMBI-ERR-DAY    PIC 9(02).   
+           02  WRK-HKNCOMBI-ERR        OCCURS  10. 
+               03  WRK-HKNCOMBI-SYOKBN PIC X(01).   
+               03  WRK-HKNCOMBI-ERR-DAY
+                                       PIC 9(02).   
       *
        01  WRK-CONS-AREA.
       *    Ï«ºÒÊÝ¸±ÈÖ¹æ 
