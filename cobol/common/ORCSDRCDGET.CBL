@@ -220,8 +220,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
                    END-IF
       *
       *???
-                       DISPLAY "RRK="  PTNYUINRRK-HKNCOMBINUM  "#"
-                       DISPLAY "LNK="  LNK-DRCDGET-I-HKNCOMBI-OCC  "#"
+      **                 DISPLAY "RRK="  PTNYUINRRK-HKNCOMBINUM  "#"
+      **                 DISPLAY "LNK="  LNK-DRCDGET-I-HKNCOMBI-OCC  "#"
       *???
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       10
@@ -262,7 +262,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            AND   ( LNK-DRCDGET-O-DRCD-SRYKA
                                        =   SPACE )
       *???
-               DISPLAY "WRK=" WRK-PTNYUINRRK-NYUINKA "#"
+      **         DISPLAY "WRK=" WRK-PTNYUINRRK-NYUINKA "#"
       *???
                IF      WRK-PTNYUINRRK-DRCD1    NOT =   SPACE
                    MOVE    WRK-PTNYUINRRK-DRCD1
@@ -288,10 +288,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *???
-             DISPLAY "DRCD="  LNK-DRCDGET-O-DRCD
-                         "#"  LNK-DRCDGET-O-DRCD-SRYKA
-      *???
+           DISPLAY "DRCD="  LNK-DRCDGET-O-DRCD
+                            "#"  LNK-DRCDGET-O-DRCD-SRYKA
       *
            .
        300-END-EXT.

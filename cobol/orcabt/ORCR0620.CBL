@@ -1876,6 +1876,8 @@
                                            TO  RECE62-RECESYUBETU
                MOVE    LNK-SYUBETUGET-RECESYUBETU-X
                                            TO  RECE62-RECESYUBETU-X
+               MOVE    LNK-SYUBETUGET-RECESYUBETU-Y
+                                           TO  RECE62-RECESYUBETU-Y
       *
       *        公費分で種別が設定できなかったとき不明分にしない
                IF    ( IDZ                 =   2    )

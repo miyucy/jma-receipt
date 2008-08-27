@@ -3195,7 +3195,7 @@
                            MOVE    "£´Âà¿¦"        TO  HC06-HKNSBT1
                    END-EVALUATE
                ELSE
-                   EVALUATE    RECE62-RECESYUBETU (2:1)
+                   EVALUATE    RECE62-RECESYUBETU-Y (2:1)
                        WHEN    "1"
                            EVALUATE    RECE62-TEISYUTUSAKI
                                WHEN    1
@@ -3239,14 +3239,12 @@
                            MOVE    "£³£³Ê»"        TO  HC06-HKNSBT2
                    END-EVALUATE
                ELSE
-                   EVALUATE    RECE62-RECESYUBETU (3:1)
+                   EVALUATE    RECE62-RECESYUBETU-Y (3:1)
                        WHEN    "1"
                            MOVE    "£±Ã±ÆÈ"        TO  HC06-HKNSBT2
                        WHEN    "2"
                            MOVE    "£²£²Ê»"        TO  HC06-HKNSBT2
                        WHEN    "3"
-                       WHEN    "4"
-                       WHEN    "5"
                            MOVE    "£³£³Ê»"        TO  HC06-HKNSBT2
                    END-EVALUATE
                END-IF
@@ -3280,7 +3278,7 @@
                            MOVE    "£¹¹âÆþ£·"   TO  HC06-HONKZK
                    END-EVALUATE
                ELSE
-                   EVALUATE    RECE62-RECESYUBETU (4:1)
+                   EVALUATE    RECE62-RECESYUBETU-Y (4:1)
                        WHEN    "1"
                            MOVE    "£±ËÜÆþ"     TO  HC06-HONKZK
                        WHEN    "3"
@@ -7715,6 +7713,12 @@
                MOVE    ZERO                TO  RECE08-RECESYUBETU
            ELSE      
                MOVE    RECE62-RECESYUBETU  TO  RECE08-RECESYUBETU
+      *        Ê¿À®£²£°Ç¯£´·î°Ê¹ß¸øÈñ£³Ê»¡¦£´Ê»¤Î¤È¤­
+               EVALUATE    RECE62-RECESYUBETU (3:1)
+                   WHEN    "4"
+                   WHEN    "5"
+                       MOVE    "3"         TO  RECE08-RECESYUBETU (3:1)
+               END-EVALUATE
            END-IF    
            MOVE    RECE62-PTNUM        TO  RECE08-PTNUM
            PERFORM VARYING IDX FROM    20  BY  -1
@@ -7988,7 +7992,7 @@
            IF      FLG-RECE-PUT-UM     =   ZERO
       *        ¥ì¥»¥×¥È¼ïÊÌ°õºþ¶èÊ¬
                EVALUATE    SYS-2008-RECESYUBETU-PRTJYUN
-                                   ALSO    RECE62-RECESYUBETU (2:1)
+                                   ALSO    RECE62-RECESYUBETU-Y (2:1)
                    WHEN    "1"     ALSO    "1"
                    WHEN    "2"     ALSO    "1"
                    WHEN    "3"     ALSO    "3"
@@ -8011,9 +8015,9 @@
                    WHEN    "3"     ALSO    "4"
                        MOVE    "3"     TO  RECE08-RECESYUBETU-SRT (1:1)
                END-EVALUATE    
-               MOVE    RECE62-RECESYUBETU (3:2)
+               MOVE    RECE62-RECESYUBETU-Y (3:2)
                                        TO  RECE08-RECESYUBETU-SRT (2:2)
-               IF      RECE62-RECESYUBETU (4:1)  =   "0"
+               IF      RECE62-RECESYUBETU-Y (4:1)  =   "0"
                    MOVE    "A"         TO  RECE08-RECESYUBETU-SRT (3:1)
                END-IF
       *
@@ -8096,8 +8100,8 @@
                                MOVE    TBL-KOH-RECE-PUTB-REC (IDXX IDY)
                                                    TO  RECE-PUTB-REC
       *
-                               IF    ( RECE-PUTB-KOUHI-NUM =   "XXX" )
-                               AND   ( RECE62-RECESYUBETU  =
+                               IF    ( RECE-PUTB-KOUHI-NUM  =   "XXX" )
+                               AND   ( RECE62-RECESYUBETU-Y =
                                                RECE-PUTB-SYUBETU-NYU )
                                    PERFORM 390111-HENTETU-HENSYU-SEC
                                END-IF
@@ -8128,14 +8132,14 @@
                                                    TO  RECE-PUTB-REC
                                    IF    ( RECE62-KOHNUM (IDX) =
                                                RECE-PUTB-KOUHI-NUM   )
-                                   AND   ( RECE62-RECESYUBETU  =
+                                   AND   ( RECE62-RECESYUBETU-Y  =
                                                RECE-PUTB-SYUBETU-NYU )
                                        PERFORM 390111-HENTETU-HENSYU-SEC
                                    END-IF
                                END-PERFORM
       *
       *                        »°ºÐÌ¤Ëþ¤Î¤ß
-                               IF      RECE62-RECESYUBETU (4:1)  =   "3"
+                               IF      RECE62-RECESYUBETU-Y (4:1)  = "3"
                                    PERFORM VARYING IDY FROM    1   BY  1
                                            UNTIL   IDY >
                                                WRK-CONS-KOHLIST-MAX
@@ -8148,7 +8152,7 @@
                                                    TO  RECE-PUTB-REC
                                        IF    ( RECE62-KOHNUM (IDX) =
                                                RECE-PUTB-KOUHI-NUM   )
-                                       AND   ( RECE62-RECESYUBETU (2:1)
+                                       AND   ( RECE62-RECESYUBETU-Y(2:1)
                                                                   =
                                            RECE-PUTB-SYUBETU-NYU (2:1) )
                                            PERFORM
@@ -8170,7 +8174,7 @@
                        OR      FLG-HENSYU  =   1
                    MOVE    TBL-SYUBETU-RECE-PUTB-REC (IDXX IDY)
                                            TO  RECE-PUTB-REC
-                   IF      RECE62-RECESYUBETU  =
+                   IF      RECE62-RECESYUBETU-Y    =
                                                RECE-PUTB-SYUBETU-NYU
                        PERFORM 390111-HENTETU-HENSYU-SEC
                    END-IF

@@ -151,6 +151,8 @@
                05  RECE02-TEKEDYMD-X      PIC  X(08). 
       *記載用レセプト種別（特別療養費）
            03  RECE02-RECESYUBETU-X       PIC  X(04).
+      *記載用レセプト種別（紙レセプト）
+           03  RECE02-RECESYUBETU-Y       PIC  X(04).
       *主科情報
            03  RECE02-SYUKA-AREA.
       *主科

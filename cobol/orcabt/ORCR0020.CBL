@@ -1948,6 +1948,8 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO
                                            TO  RECE02-RECESYUBETU
                MOVE    LNK-SYUBETUGET-RECESYUBETU-X
                                            TO  RECE02-RECESYUBETU-X
+               MOVE    LNK-SYUBETUGET-RECESYUBETU-Y
+                                           TO  RECE02-RECESYUBETU-Y
       *
       *        公費分で種別が設定できなかったとき不明分にしない
                IF    ( IDZ                 =   2    )
