@@ -14,9 +14,9 @@
   <class>GtkWindow</class>
   <name>K09</name>
   <x>254</x>
-  <y>140</y>
+  <y>130</y>
   <width>760</width>
-  <height>602</height>
+  <height>612</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
