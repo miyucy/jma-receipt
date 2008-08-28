@@ -43,6 +43,7 @@
       *  01.00.13    NACL-小豆沢  05/10/17  入金額ゼロでも入金方法を
       *                                     セットする
       *  03.05.00    NACL-太田    07.05.15  グループ診療対応
+      *  04.03.00    NACL-多々納  08.08.27  退院時院外処方せん印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -223,6 +224,9 @@
            03  WRK-LASTSRYYM               PIC X(06).
            03  WRK-STYMD                   PIC X(08).
            03  WRK-EDYMD                   PIC X(08).
+      *!!
+      *I041用
+           03  IDX-D                    PIC 9(04).
       *
        01  KBT-AREA.
            03  KBT-OCC                             OCCURS  3.
@@ -488,6 +492,9 @@
       *    ユーザプログラム起動サブパラメタ
            COPY    "CPORCSUSERCHK.INC".
       *
+      *    入院院外処方せんパラメタ領域
+           COPY    "CPORCSNYUINSHO.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -511,6 +518,7 @@
            COPY    "I0ERR.INC".
            COPY    "I0ID1.INC".
            COPY    "I0ID2.INC".
+           COPY    "I041.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -620,6 +628,14 @@
                PERFORM 3001-I0ID1-SET-SEC
                MOVE   SPACE        TO  SPA-I0IDCD
                GO  TO      300-SCREEN-EXT
+           WHEN    "I041"
+      *        院外処方せんドクター設定画面より
+      *        院外処方せん発行ありとする
+               IF      SPA-GMN-I041-FLG    =   1
+                   MOVE    SPA-GMN-I04-SHOHOU-ITM (2)
+                                       TO  SPA-GMN-I04-SHOHOU
+               END-IF
+               GO  TO      300-SCREEN-EXT
            END-EVALUATE
       *
            MOVE    SPACE           TO  SPA-I0IDCD
@@ -658,6 +674,9 @@
       *
            MOVE    SPACE           TO  SPA-I04
            INITIALIZE                  SPA-I04
+      *!!
+           MOVE    SPACE           TO  SPA-I041
+           INITIALIZE                  SPA-I041
       *
       *    引継ぎ項目設定処理
            PERFORM 3100-SYOKI-SET-SEC
@@ -750,6 +769,15 @@
            ELSE
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I04-DR
            END-IF
+      *    退院時院外処方せん発行
+           EVALUATE    SYS-5000-SHOHOUKBN
+               WHEN    "1"
+                   MOVE    SPA-GMN-I04-SHOHOU-ITM (2)
+                                           TO  SPA-GMN-I04-SHOHOU
+               WHEN    OTHER
+                   MOVE    SPA-GMN-I04-SHOHOU-ITM (1)
+                                           TO  SPA-GMN-I04-SHOHOU
+           END-EVALUATE
       *
       *    発効日
            MOVE    SPA-SYSYMDWH        TO  SPA-GMN-I04-HAKYMD
@@ -1127,6 +1155,9 @@
       *
       *    ユーザープログラムコンボ
            PERFORM 3100-CMB-USERPG-SET-SEC
+      *!!
+      *    院外処方せんコンボ
+           PERFORM 3100-CMB-SHOHOU-SET-SEC
       *
             .
        3100-CMB-SYOKI-EXT.
@@ -1333,6 +1364,22 @@
            .
        3100-CMB-USERPG-SET-EXT.
            EXIT.
+      *!!
+      *****************************************************************
+      *    院外処方せんコンボ得処理
+      *****************************************************************
+       3100-CMB-SHOHOU-SET-SEC         SECTION.
+      *
+           MOVE    "0 発行なし"        TO  SPA-GMN-I04-SHOHOU-ITM (1)
+           MOVE    "1 発行する"        TO  SPA-GMN-I04-SHOHOU-ITM (2)
+           MOVE    2                   TO  SPA-GMN-I04-SHOHOU-CNT
+      *
+           MOVE    SPA-GMN-I04-SHOHOU-ITM (1)
+                                       TO  SPA-GMN-I04-SHOHOU
+           .
+       3100-CMB-SHOHOU-SET-EXT.
+           EXIT.
+      *!!
       *****************************************************************
       *    未収データ取得処理
       *****************************************************************
@@ -2382,6 +2429,16 @@
                MOVE    SPA-GMN-I04-USERPG-ITM (IDX1)
                                            TO  I04-USERPG-ITM (IDX1)
            END-PERFORM
+      *!!
+      *    院外処方せん印刷
+           MOVE    SPA-GMN-I04-SHOHOU      TO  I04-SHOHOSEN
+           MOVE    SPA-GMN-I04-SHOHOU-CNT  TO  I04-SHOHOSEN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL     ( IDX1    >   SPA-GMN-I04-SHOHOU-CNT   )
+               MOVE    SPA-GMN-I04-SHOHOU-ITM (IDX1)
+                                           TO  I04-SHOHOSEN-ITEM(IDX1)
+           END-PERFORM
+      *!!
       *
       *
       *    保険組み合わせリスト
@@ -2624,6 +2681,8 @@
                MOVE    "SRYPRTOUT"     TO  MCP-WIDGET
            WHEN    008
                MOVE    "USERPG"        TO  MCP-WIDGET
+           WHEN    009
+               MOVE    "SHOHOSEN"        TO  MCP-WIDGET
            WHEN    101
                MOVE    "SELNUM"        TO  MCP-WIDGET
            WHEN    102
@@ -2652,6 +2711,9 @@
            WHEN    "SRYPRTOUT"
                MOVE    003             TO  SPA-GMN-I04-CUR
            WHEN    "TAIPRTOUT"
+     ********* MOVE    004             TO  SPA-GMN-I04-CUR
+               MOVE    009             TO  SPA-GMN-I04-CUR
+           WHEN    "SHOHOSEN"
                MOVE    004             TO  SPA-GMN-I04-CUR
            WHEN    "DR"
                MOVE    212             TO  SPA-GMN-I04-CUR
@@ -2701,6 +2763,11 @@
       *    登録
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 450-TOUROKU-SEC
+      *!!
+      *    院外処方せん
+           WHEN    "CLICKED"       ALSO    "B10"
+               PERFORM 409-I041-SET-SEC
+      *!!
            END-EVALUATE
           .
       *
@@ -2839,6 +2906,9 @@
       *
       *    ユーザープログラム
            MOVE    I04-USERPG      TO  SPA-GMN-I04-USERPG
+      *
+      *    ユーザープログラム
+           MOVE    I04-SHOHOSEN        TO  SPA-GMN-I04-SHOHOU
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -2890,6 +2960,13 @@
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
+      *!!
+      *    院外処方せん発行チェック処理
+           PERFORM 4100-SHOHOU-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *!!
       *
       *    主治医氏名チェック処理
            PERFORM 4100-DR-CHK-SEC
@@ -3643,6 +3720,39 @@
            .
        4100-TAIPRTOUT-CHK-EXT.
            EXIT.
+      *!!
+      *****************************************************************
+      *    院外処方せん発行チェック処理
+      *****************************************************************
+       4100-SHOHOU-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-I04-SHOHOU   =   SPACE )
+               MOVE    SPA-GMN-I04-SHOHOU-ITM (1)
+                                   TO  SPA-GMN-I04-SHOHOU
+           END-IF
+      *
+           MOVE    ZERO            TO  WRK-CMB-IDX
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-I04-SHOHOU-CNT )
+      *
+               IF    ( SPA-GMN-I04-SHOHOU-ITM (IDX-CMB)(1:1)
+                                   =   SPA-GMN-I04-SHOHOU-CD )
+                   MOVE    SPA-GMN-I04-SHOHOU-ITM (IDX-CMB)
+                                           TO  SPA-GMN-I04-SHOHOU
+                   MOVE    IDX-CMB         TO  WRK-CMB-IDX
+                   MOVE    SPA-GMN-I04-SHOHOU-CNT
+                                           TO  IDX-CMB
+               END-IF
+           END-PERFORM
+           IF    ( WRK-CMB-IDX     =   ZERO )
+               MOVE    SPA-GMN-I04-SHOHOU-ITM (1)
+                                   TO  SPA-GMN-I04-SHOHOU
+           END-IF
+      *
+           .
+       4100-SHOHOU-CHK-EXT.
+           EXIT.
+      *!!
       *****************************************************************
       *    主治医氏名チェック処理
       *****************************************************************
@@ -5312,9 +5422,120 @@
                PERFORM 451-TAIPRT-OUT-SEC
            END-IF
       *
+      *!!
+      *     院外処方せん印刷
+           IF      SPA-GMN-I04-SHOHOU-CD   =   "1"
+               PERFORM 451-SHOHOSEN-PRINT-SEC
+           END-IF
+      *!!
            .
        451-PRTOUT-EXT.
            EXIT.
+      *!!
+      *****************************************************************
+      *    院外処方せん印刷処理
+      *****************************************************************
+       409-I041-SET-SEC              SECTION.
+      *
+           IF      SPA-NAI-I041-KBN    =   ZERO
+               INITIALIZE                  SPA-I041
+      *
+               INITIALIZE                  ORCSNYUINSHOAREA
+               MOVE    "1"                 TO  ORCSNYUINSHO-KBN
+               MOVE    SPA-NAI-I04-NYUINYMD    TO  ORCSNYUINSHO-NYUINYMD
+               MOVE    SPA-NAI-I04-TAIINYMD    TO  ORCSNYUINSHO-TAIINYMD
+               CALL    "ORCSNYUINSHO"      USING
+                                           WRK-SPA-AREA
+                                           ORCSNYUINSHOAREA
+               PERFORM VARYING     IDX-D   FROM    1   BY  1
+                       UNTIL      (IDX-D   >   ORCSNYUINSHO-SRYKA-MAX )
+                   MOVE    ORCSNYUINSHO-SRYKA (IDX-D)
+                                           TO  SPA-NAI-I041-SRYKA(IDX-D)
+               END-PERFORM
+               MOVE    ORCSNYUINSHO-SRYKA-MAX  TO  SPA-GMN-I041-MAX
+           END-IF
+           IF     (SPA-GMN-I041-MAX      >   ZERO )
+               PERFORM 4091-I041-SEC
+           ELSE
+               MOVE    "0013"            TO  SPA-ERRCD
+           END-IF
+           .
+       409-I041-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    院外処方せん画面遷移処理
+      *****************************************************************
+       4091-I041-SEC              SECTION.
+      *
+      *    初期画面セット
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-I0KYOUTU        TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-I0FREE          TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGI041"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-I0FREE
+           MOVE    SPA-WORK        TO  SPA-I0KYOUTU
+      *
+      *    共通キー編集
+           MOVE    SPACE               TO  SPA-ERRMSG
+      *
+           MOVE    "I04"               TO  SPA-MOTOPG
+           MOVE    "I041"              TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "I041"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       4091-I041-EXT.
+           EXIT.
+      *****************************************************************
+      *    院外処方せん印刷処理
+      *****************************************************************
+       451-SHOHOSEN-PRINT-SEC              SECTION.
+      *
+           INITIALIZE                  ORCSNYUINSHOAREA
+           MOVE    "2"                 TO  ORCSNYUINSHO-KBN
+           IF      SPA-GMN-I04-DR-CD   NOT =   SPACE
+               MOVE    "1"             TO  ORCSNYUINSHO-SYUDRCD (1:1)
+               MOVE    SPA-GMN-I04-DR-CD
+                                       TO  ORCSNYUINSHO-SYUDRCD (2:4)
+           END-IF
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   5   )
+                         OR   (SPA-NAI-I041-SRYKA (IDX-D)  =   SPACE )
+               MOVE    SPA-NAI-I041-SRYKA (IDX-D)
+                                           TO  ORCSNYUINSHO-SRYKA(IDX-D)
+               IF      SPA-NAI-I041-DRCD (IDX-D)   NOT =   SPACE
+                   MOVE    "1"             TO  ORCSNYUINSHO-DRCD (IDX-D)
+                                                                 (1:1)
+                   MOVE    SPA-NAI-I041-DRCD (IDX-D) 
+                                           TO  ORCSNYUINSHO-DRCD (IDX-D)
+                                                                 (2:4)
+               END-IF
+           END-PERFORM
+           MOVE    SPA-NAI-I04-NYUINYMD    TO  ORCSNYUINSHO-NYUINYMD
+           MOVE    SPA-NAI-I04-TAIINYMD    TO  ORCSNYUINSHO-TAIINYMD
+           CALL    "ORCSNYUINSHO"      USING
+                                       WRK-SPA-AREA
+                                       ORCSNYUINSHOAREA
+           .
+       451-SHOHOSEN-PRINT-EXT.
+           EXIT.
+      *!!
       *****************************************************************
       *    請求書兼領収書出力処理
       *****************************************************************
@@ -5710,6 +5931,12 @@
            WHEN    "0012"
                MOVE    "入金の取扱い入力エラー"
                                        TO  SPA-ERRMSG
+           WHEN    "0013"
+               STRING  "院外処方の投薬はありません。"
+                       "院外処方せんは発行しません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+               END-STRING
            WHEN    "1001"
                MOVE    "定期請求処理中のため登録はできません"
                                        TO  SPA-ERRMSG

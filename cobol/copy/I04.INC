@@ -310,3 +310,10 @@
                     06  I04-THKNCOMBI      PIC X(50).
                   05  I04-HKNCOMBILST-SELECT
                                            PIC X     OCCURS  15 TIMES.
+              03  I04-CMB-SHOHOSEN.
+                04  I04-SHOHOSEN.
+                  05  I04-VALUE   PIC X(20).
+                04  I04-SHOHOSEN-COUNT   PIC S9(9)   BINARY.
+                04  I04-SHOHOSEN-ITEM
+                        PIC X(20)   OCCURS  2 TIMES.
+

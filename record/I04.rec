@@ -419,5 +419,12 @@ I04	{
 				select	bool[15];
 			};
 		};
+		CMB_SHOHOSEN	{
+			SHOHOSEN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
 	};
 };

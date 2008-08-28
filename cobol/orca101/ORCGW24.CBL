@@ -49,6 +49,7 @@
       *  03.05.00    NACL-太田    07.05.18  グループ診療対応
       *  03.05.00    NACL-小豆沢  07.07.27  療養病棟（病床）入院会計
       *                                     表示区分対応
+      *  04.03.00    NACL-多々納  08.08.28  退院時院外処方せん区分追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -627,6 +628,9 @@
       *
       *    療養入院表示区分コンボ
            PERFORM 310-RYOYODSPLST-SET-SEC
+      *!!
+      *    退院時院外処方せん発行区分コンボ
+           PERFORM 310-SHOHOUKBNLST-SET-SEC
       *
            .
        310-CMB-SYOKI-EXT.
@@ -858,6 +862,25 @@
            .
        310-SRYPRTKBNLST-SET-EXT.
            EXIT.
+      *!
+      *****************************************************************
+      *    退院時院外処方せん発行区分コンボ
+      *****************************************************************
+       310-SHOHOUKBNLST-SET-SEC    SECTION.
+      *
+           MOVE    2               TO  SPA-GMN-W24-SHOHOUKBN-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-SHOHOUKBNL   (1)
+           MOVE    "発行しない"    TO  SPA-GMN-W24-SHOHOUKBNMEIL(1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-SHOHOUKBNL   (2)
+           MOVE    "発行する"      TO  SPA-GMN-W24-SHOHOUKBNMEIL(2)
+      *
+      *
+           .
+       310-SHOHOUKBNLST-SET-EXT.
+           EXIT.
+      *!
       *****************************************************************
       *    退院証明書発行区分コンボ
       *****************************************************************
@@ -1373,6 +1396,17 @@
                MOVE    SPA-GMN-W24-TAIKSIKBNLST (1)
                                            TO  SPA-GMN-W24-TAIKSIKBN-G
            END-IF
+      *!!
+      *    退院時院外処方せん発行区分
+           MOVE    SYS-5000-SHOHOUKBN   TO  WRK-CMB-CD
+           PERFORM 4200-SHOHOUKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-SHOHOUKBN-G
+           ELSE
+               MOVE    SPA-GMN-W24-SHOHOUKBNLST (1)
+                                           TO  SPA-GMN-W24-SHOHOUKBN-G
+           END-IF
+      *!!
       *
       *    減算情報
            IF    ( SPA-W01-EDYUKYMD    >=  CONST-H180401 )
@@ -1380,7 +1414,6 @@
            ELSE
                PERFORM 3101-GENZAN-EDIT-SEC
            END-IF
-      *
            .
        310-INPUT-AREA-EDIT-EXT.
            EXIT.
@@ -1693,6 +1726,9 @@
       *    療養入院表示区分
            MOVE    W24-RYOYODSP        TO  SPA-GMN-W24-RYOYODSP-G
       *
+      *    退院時院外処方せん区分
+           MOVE    W24-SHOHOUKBN       TO  SPA-GMN-W24-SHOHOUKBN-G
+      *
            .
       *
        4101-GMN-SPA-SET-EXT.
@@ -1869,6 +1905,14 @@
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
+      *
+      *!!
+      *    退院時院外処方せん発行チェック処理
+           PERFORM 4101-SHOHOUKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *!!
       *
       *    療養入院表示区分チェック処理
            PERFORM 4100-RYOYODSP-CHK-SEC
@@ -2328,6 +2372,10 @@
            ELSE
                PERFORM 48111-GENZAN-EDIT-SEC
            END-IF
+      *
+      *    退院時院外処方せん発行区分
+           MOVE    SPA-GMN-W24-SHOHOUKBN
+                                   TO  SYS-5000-SHOHOUKBN
       *
            .
       *
@@ -3000,6 +3048,25 @@
        4101-SRYPRTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    退院時院外処方せん発行区分チェック処理
+      *****************************************************************
+       4101-SHOHOUKBN-CHK-SEC       SECTION.
+      *
+           MOVE    SPA-GMN-W24-SHOHOUKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SHOHOUKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-SHOHOUKBNLST (1)
+                                       TO  SPA-GMN-W24-SHOHOUKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SHOHOUKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-SHOHOUKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    請求書未収額印刷区分チェック処理
       *****************************************************************
        4101-MISYUPRTKBN-CHK-SEC       SECTION.
@@ -3376,6 +3443,28 @@
            .
       *
        4200-SRYPRTKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    退院時院外処方せん発行区分コンボチェック処理
+      *****************************************************************
+       4200-SHOHOUKBNLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+      *
+           PERFORM VARYING IDX-CMB     FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-W24-SHOHOUKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-SHOHOUKBNL   (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-SHOHOUKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+           END-PERFORM
+           .
+       4200-SHOHOUKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    退院証明書発行区分サーチ処理
@@ -3760,6 +3849,8 @@
            MOVE    SPA-GMN-W24-RYOYODSPLST (1)
                                    TO  SPA-GMN-W24-RYOYODSP-G
       *
+           MOVE    SPA-GMN-W24-SHOHOUKBNLST    (1)
+                                   TO  SPA-GMN-W24-SHOHOUKBN-G
       *
       *    入院加算名称編集処理
            PERFORM 4201-NYUKSNMEI-EDIT-SEC
@@ -4301,6 +4392,19 @@
                                        TO  W24-TAIKSIKBN-ITM (IDX0)
       *
            END-PERFORM
+      *!!
+      *    退院時院外処方せん発行区分
+           MOVE    SPA-GMN-W24-SHOHOUKBN-G
+                                       TO  W24-SHOHOUKBN
+           MOVE    SPA-GMN-W24-SHOHOUKBN-MAX
+                                       TO  W24-SHOHOUKBN-COUNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   SPA-GMN-W24-SHOHOUKBN-MAX )
+      *
+               MOVE    SPA-GMN-W24-SHOHOUKBNLST (IDX0)
+                                       TO  W24-SHOHOUKBN-ITEM (IDX0)
+      *
+           END-PERFORM
       *
       *    標欠減額区分
            MOVE    SPA-GMN-W24-HYOUKETU-G
@@ -4575,6 +4679,9 @@
                MOVE    "TEIKISAGAKUACT" TO MCP-WIDGET
            WHEN    059
                MOVE    "RYOYODSP"      TO MCP-WIDGET
+      *    退院時院外処方せん
+           WHEN    060
+               MOVE    "SHOHOUKBN"     TO MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -4702,6 +4809,9 @@
            WHEN    "ADLINPUT"
                MOVE    059             TO  SPA-GMN-W24-CUR
            WHEN    "TEIKISAGAKUACT"
+      ******** MOVE    212             TO  SPA-GMN-W24-CUR
+               MOVE    060             TO  SPA-GMN-W24-CUR
+           WHEN    "SHOHOUKBN"
                MOVE    212             TO  SPA-GMN-W24-CUR
            WHEN    "RYOYODSP"
                MOVE    008             TO  SPA-GMN-W24-CUR

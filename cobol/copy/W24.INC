@@ -201,4 +201,10 @@
                                                OCCURS  5.
                 05  W24-RYOYODSP-ITM-STATE     PIC S9(9)
                                                BINARY.
+              03  W24-CMB-SHOHOUKBN.
+                04  W24-SHOHOUKBN.
+                  05  W24-VALUE   PIC X(20).
+                04  W24-SHOHOUKBN-COUNT   PIC S9(9)   BINARY.
+                04  W24-SHOHOUKBN-ITEM
+                        PIC X(20)   OCCURS  5 TIMES.
 

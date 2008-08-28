@@ -13,6 +13,7 @@ bind	"I06"		"OpenCOBOL"	"ORCGI06";
 bind	"I0ERR"		"OpenCOBOL"	"ORCGI0ERR";
 bind	"I0ID1"		"OpenCOBOL"	"ORCGI0ID1";
 bind	"I0ID2"		"OpenCOBOL"	"ORCGI0ID2";
+bind	"I041"		"OpenCOBOL"	"ORCGI041";
 
 multiplex_group	orca31;
 
@@ -29,6 +30,7 @@ data	{
 		I0ERR;
 		I0ID1;
 		I0ID2;
+		I041;
 	};
 };
 

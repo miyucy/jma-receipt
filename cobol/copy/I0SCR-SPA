@@ -823,7 +823,14 @@
                                                        PIC X(01).
                            13   SPA-GMN-I04-USERPGFL   PIC X(01).
                            13   SPA-GMN-I04-USERPG-NM  PIC X(20).
-      *
+      *!!
+      *                院外処方せん
+                       11  SPA-GMN-I04-SHOHOU.
+                           13   SPA-GMN-I04-SHOHOU-CD
+                                                       PIC X(01).
+                           13   SPA-GMN-I04-SHOHOUFL   PIC X(01).
+                           13   SPA-GMN-I04-SHOHOU-NM  PIC X(18).
+      *!!
                    09  SPA-GMN-I04-KBT-AREA.
                        11  SPA-GMN-I04-KBT-TITLE       PIC X(30).
                        11  SPA-GMN-I04-SKY1ST          PIC S9(10).
@@ -972,6 +979,15 @@
                                15  SPA-GMN-I04-USERPGL     PIC X(01).
                                15  SPA-GMN-I04-USERPGFLL   PIC X(01).
                                15  SPA-GMN-I04-USERPGMEIL  PIC X(20).
+      *!!
+      *                    院外処方せん
+                       11  SPA-GMN-I04-CMB-SHOHOU-G.
+                           13  SPA-GMN-I04-SHOHOU-CNT      PIC 9(5).
+                           13  SPA-GMN-I04-SHOHOU-ITM      OCCURS  2.
+                               15  SPA-GMN-I04-SHOHOUL     PIC X(01).
+                               15  SPA-GMN-I04-SHOHOUFLL   PIC X(01).
+                               15  SPA-GMN-I04-SHOHOUMEIL  PIC X(18).
+      *!!
          03  SPA-I05.
            05  SPA-I05-AREA.
                07  SPA-GMN-I05-CUR                   PIC 9(03).
@@ -1016,3 +1032,22 @@
              07  SPA-I0-UPD-TAX-SAI                  PIC S9(08).
              07  SPA-I0-SYUNOU-DAT                   PIC X(3000).
              07  SPA-I0-SYUDAY-DAT                   PIC X(4000).
+      *!!
+      *院外処方せんドクター設定
+         03  SPA-I041.
+           05  SPA-I041-AREA.
+               07  SPA-NAI-I041-KBN                   PIC 9(01).
+               07  SPA-GMN-I041-CUR                   PIC 9(03).
+               07  SPA-GMN-I041-AREA.
+                   09  SPA-GMN-I041-DRCD-G        OCCURS   5.
+                       11  SPA-GMN-I041-DRCD      PIC X(04).
+                       11  SPA-GMN-I041-DRCDF     PIC X(01).
+                       11  SPA-GMN-I041-DRCD-MEI  PIC X(24).
+                   09  SPA-GMN-I041-FLG           PIC 9(01).
+               07  SPA-NAI-I041-AREA.
+                   09  SPA-NAI-I041-OCC           OCCURS   5.
+                       11  SPA-NAI-I041-SRYKA        PIC X(02).
+                       11  SPA-GMN-I041-SRYKA-MEI    PIC X(18).
+                       11  SPA-NAI-I041-DRCD         PIC X(04).
+                   09  SPA-GMN-I041-MAX              PIC 9(02).
+      *

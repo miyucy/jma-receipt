@@ -19,6 +19,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.04.00    NACL-多々納  06/10/26  検索画面連絡情報移動他 
+      *  04.03.00    NACL-多々納  08/08/28  退院時院外処方せん区分追加
       *****************************************************************
       *
        01  SPA-W24FREE.
@@ -178,6 +179,13 @@
                    13  SPA-GMN-W24-TAIKSIKBN           PIC X(01).
                    13                                  PIC X(01).
                    13  SPA-GMN-W24-TAIKSIKBNMEI        PIC X(18).
+      *!!
+      *          退院時院外処方せん発行区分
+                 11  SPA-GMN-W24-SHOHOUKBN-G.
+                   13  SPA-GMN-W24-SHOHOUKBN           PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-SHOHOUKBNMEI        PIC X(28).
+      *!!
       *        コンボ項目領域
                09  SPA-GMN-W24-CMB-DAT-AREA.
       *          入院時食事療養
@@ -239,6 +247,15 @@
                        15  SPA-GMN-W24-SRYPRTKBNL      PIC X(01).
                        15                              PIC X(01).
                        15  SPA-GMN-W24-SRYPRTKBNMEIL   PIC X(28).
+      *!!
+      *          退院時院外処方せん発行区分
+                 11  SPA-GMN-W24-SHOHOUKBNLST-G.
+                   13  SPA-GMN-W24-SHOHOUKBN-MAX       PIC 9(03).
+                   13  SPA-GMN-W24-SHOHOUKBNLST        OCCURS  5.
+                       15  SPA-GMN-W24-SHOHOUKBNL      PIC X(01).
+                       15                              PIC X(01).
+                       15  SPA-GMN-W24-SHOHOUKBNMEIL   PIC X(28).
+      *!!
       *
       *          退院証明書発行区分
                  11  SPA-GMN-W24-TAIPRTKBNLST-G.

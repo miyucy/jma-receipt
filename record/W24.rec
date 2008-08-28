@@ -427,5 +427,12 @@ W24	{
 			item	varchar(20)[05];
 			state	int;
 		};
+		CMB_SHOHOUKBN	{
+			SHOHOUKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[05];
+		};
 	};
 };

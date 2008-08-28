@@ -65,6 +65,7 @@
       * 04.01.00     NACL-多々納  08/01/20  編集処理変更
       *                                     パラメタによる編集対応
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
+      * 04.03.00     NACL-多々納  08/08/28  退院時院外処方せん対応
       *****************************************************************
       *
       *
@@ -602,7 +603,11 @@
            INITIALIZE                  WRK-SYOHOU-AREA
            INITIALIZE                  WRK-BIKOU-AREA
       *
-           ACCEPT  SYS-TIME            FROM    TIME
+      *---(04.03.00) LINE UPD START ------------------------------------
+      **** ACCEPT  SYS-TIME            FROM    TIME
+      *    ファイル名編集処理
+           PERFORM 1001-HC02-FILE-SEC
+      *---(04.03.00) LINE UPD END   ------------------------------------
       *
       *    プログラムオプション取込み
            PERFORM 100-OPTION-SELECT-SEC
@@ -681,11 +686,46 @@
       *
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
+      *
            OPEN    OUTPUT               PRT-FILE
       *
            .
        400-SYOKI-PRINT-EXT.
            EXIT.
+      *---(04.03.00) LINE ADD START ------------------------------------
+      *****************************************************************
+      *    ファイル名処理
+      *****************************************************************
+       1001-HC02-FILE-SEC            SECTION.
+      *
+           MOVE    1                   TO  WRK-PAGE
+           MOVE    1                   TO  WRK-FILE-CNT2
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM
+               UNTIL       FLG-OK      =   1
+               MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
+               MOVE    "HC2Q"              TO  HC01PARA-FORM-ID
+               MOVE    SPA-TERMID          TO  HC01PARA-TERMID
+               MOVE    WRK-PAGE            TO  HC01PARA-CNT
+      *
+               ACCEPT  SYS-TIME            FROM    TIME
+               COMPUTE WRK-SYS-TIME        =   SYS-TIME
+                                           +   WRK-FILE-CNT2
+               MOVE    WRK-SYS-TIME        TO  HC01PARA-SYOHMS
+      *
+               OPEN    INPUT               PRT-FILE
+               IF      STS-PARA        NOT =   ZERO
+                   MOVE    1               TO  FLG-OK
+               END-IF
+               CLOSE                       PRT-FILE
+           END-PERFORM
+           MOVE    ZERO                TO  WRK-PAGE
+           MOVE    ZERO                TO  WRK-FILE-CNT2
+      *
+           .
+       1001-HC02-FILE-EXT.
+           EXIT.
+      *---(04.03.00) LINE ADD START ------------------------------------
       *
       *****************************************************************
       *    帳票印刷処理
@@ -729,7 +769,10 @@
                                        OR  "3"
                                        OR  "4"
                                        OR  "5"
-                                       OR  "A"   )
+                                       OR  "A"
+      *---(04.03.00) LINE ADD START ------------------------------------
+                                       OR  "N"   )
+      *---(04.03.00) LINE ADD END   ------------------------------------
                AND (IDX-QR1            >   ZERO  )
       *        医師・交付日未設定は作成なし
                IF      (WRK-DRCD           =   SPACE )
@@ -1765,6 +1808,10 @@
       *            前回処方（内容変更）
                WHEN    "D"
       *            前回処方（日数ゼロ）（選択）
+      *---(04.03.00) LINE ADD START ------------------------------------
+               WHEN    "N"
+      *            退院時処方せん
+      *---(04.03.00) LINE ADD END   ------------------------------------
                    PERFORM 2004-HENKOU-SYORI-SEC
                WHEN    "B"
                WHEN    "C"
