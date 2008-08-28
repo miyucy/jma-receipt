@@ -1887,14 +1887,6 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
            MOVE    SPACE               TO  WK-RECESYUBETU-AREA
            INITIALIZE                      WK-RECESYUBETU-AREA
       *
-      *    保険変更後、訂正していないとき
-      *    保険組合せがないとき
-           IF      WRK-RECE61-TEISEIKBN
-                                   =   "1"
-               MOVE    "0000"      TO  LNK-SYUBETU-RECESYUBETU (IDZZ)
-               GO  TO  30011-RECESYUBETU-SET-EXT
-           END-IF
-      *
       *    労災・自賠責のときレセプト種別の設定はなし
            IF      WRK-RECE61-HKNNUM   =   WRK-CONS-ROUSAI-HKNNUM  OR
                                            WRK-CONS-JIBAI-HKNNUM 
@@ -1903,6 +1895,14 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *
       *    公害のときレセプト種別の設定はなし
            IF      WRK-RECE61-HKNNUM   =   WRK-CONS-KOUGAI-HKNNUM
+               GO  TO  30011-RECESYUBETU-SET-EXT
+           END-IF
+      *
+      *    保険変更後、訂正していないとき
+      *    保険組合せがないとき
+           IF      WRK-RECE61-TEISEIKBN
+                                   =   "1"
+               MOVE    "0000"      TO  LNK-SYUBETU-RECESYUBETU (IDZZ)
                GO  TO  30011-RECESYUBETU-SET-EXT
            END-IF
       *     
