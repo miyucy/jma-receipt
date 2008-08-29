@@ -6,7 +6,10 @@
             02  HCN58V01-HEAD1-G.
               03  HCN58V01-HEAD1
                       PIC X(62)   OCCURS  2 TIMES.
-            02  HCN58V01-KIGONUM    PIC X(20).
+            02  HCN58V01-KIGONUM    PIC X(24).
+            02  HCN58V01-KIGONUM2-G.
+              03  HCN58V01-KIGONUM2
+                      PIC X(24)   OCCURS  2 TIMES.
             02  HCN58V01-KANANAME   PIC X(40).
             02  HCN58V01-NAME   PIC X(50).
             02  HCN58V01-SEX

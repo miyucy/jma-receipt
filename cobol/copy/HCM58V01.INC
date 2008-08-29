@@ -6,7 +6,10 @@
             02  HCM58V01-HEAD1-G.
               03  HCM58V01-HEAD1
                       PIC X(62)   OCCURS  2 TIMES.
-            02  HCM58V01-KIGONUM    PIC X(20).
+            02  HCM58V01-KIGONUM    PIC X(24).
+            02  HCM58V01-KIGONUM2-G.
+              03  HCM58V01-KIGONUM2
+                      PIC X(24)   OCCURS  2 TIMES.
             02  HCM58V01-KANANAME   PIC X(40).
             02  HCM58V01-NAME   PIC X(50).
             02  HCM58V01-SEX
@@ -31,9 +34,10 @@
                     PIC X(7)    OCCURS  37 TIMES.
             02  HCM58V01-KAISU
                     PIC X(3)    OCCURS  38 TIMES.
-            02  HCM58V01-TENSU-G        OCCURS  2 TIMES.
-              03  HCM58V01-TENSU
-                      PIC X(7)    OCCURS  38 TIMES.
+            02  HCM58V01-SYUGITEN
+                    PIC X(7)    OCCURS  38 TIMES.
+            02  HCM58V01-YKZTEN
+                    PIC X(7)    OCCURS  38 TIMES.
             02  HCM58V01-SYOUKEI
                     PIC X(7)    OCCURS  2 TIMES.
             02  HCM58V01-GOKEI
