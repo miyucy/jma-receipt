@@ -28,6 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       *  Maj/Min/Rev ½¤Àµ¼Ô        ÆüÉÕ      ÆâÍÆ
       *  03.05.01    NACL-¿¹ÏÆ     07/06/06  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.03.01    NACL-¿¹ÏÆ     08/08/29  ¥Ñ¥é¥á¥¿Áý²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -156,7 +157,7 @@ grpsys     03  RECEERR             PIC X(100).
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SRYKA      PIC X(02).
            03  WRK-PARA-SRYCD      PIC X(20)
-                                   OCCURS  5.
+                                   OCCURS  7.
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -220,9 +221,9 @@ grpsys  02 TPTINF-CHK-HOSPNUM              PIC 9(02).
            03  CONST-TOTAL-IDX             PIC 9(05)   VALUE 52.
            03  CONST-TPTINF-MAX            PIC 9(05)   VALUE 1000.
            03  CONST-TSRYCD-MAX            PIC 9(05)   VALUE 100.
-           03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 5.
+           03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 7.
            03  CONST-NSRYACT-MAX           PIC 9(05)   VALUE 20.
-           03  CONST-PARA-SRYCD-MAX        PIC 9(05)   VALUE 5.
+           03  CONST-PARA-SRYCD-MAX        PIC 9(05)   VALUE 7.
       *
            COPY    "CPSHELLTBL.INC".
       *
@@ -375,6 +376,8 @@ grpsys                                         RECEERR
                                                WRK-PARA-SRYCD (3)
                                                WRK-PARA-SRYCD (4)
                                                WRK-PARA-SRYCD (5)
+                                               WRK-PARA-SRYCD (6)
+                                               WRK-PARA-SRYCD (7)
 grpsys     END-UNSTRING
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *

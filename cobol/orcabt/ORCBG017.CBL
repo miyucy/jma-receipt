@@ -28,6 +28,7 @@
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
       *  03.05.00    NACL-ÂÀÅÄ    07/05/28  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  04.03.01    NACL-¿¹ÏÆ    08/08/29  ¥Ñ¥é¥á¥¿Áý²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -156,7 +157,7 @@
            03  WRK-PARA-NYUGAIKBN  PIC X(01).
            03  WRK-PARA-SRYKA      PIC X(02).
            03  WRK-PARA-SRYKBN     PIC X(02)
-                                   OCCURS  5.
+                                   OCCURS  7.
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -193,7 +194,7 @@
       *
        01  TSRYKBN-AREA.
            03  TSRYKBN-MAX         PIC 9(03).
-           03  TSRYKBN-OCC         OCCURS  10.
+           03  TSRYKBN-OCC         OCCURS  14.
                05  TSRYKBN-SRYKBN  PIC X(02).
       *
        01  TPTINF-AREA.
@@ -217,10 +218,10 @@
            03  CONST-GAZOU-TANICD          PIC X(03)   VALUE "006".
            03  CONST-LINE-MAX              PIC 9(05)   VALUE 80.
            03  CONST-TPTINF-MAX            PIC 9(05)   VALUE 1000.
-           03  CONST-TSRYKBN-MAX           PIC 9(05)   VALUE 10.
-           03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 5.
+           03  CONST-TSRYKBN-MAX           PIC 9(05)   VALUE 14.
+           03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 7.
            03  CONST-NSRYACT-MAX           PIC 9(05)   VALUE 20.
-           03  CONST-PARA-SRYKBN-MAX       PIC 9(05)   VALUE 5.
+           03  CONST-PARA-SRYKBN-MAX       PIC 9(05)   VALUE 7.
            03  CONST-SRYKBN-G.
                05  CONST-SRYKBN-VAL.
                    07              PIC X(08)   VALUE   "11000000".
@@ -399,6 +400,8 @@
                                                WRK-PARA-SRYKBN (3)
                                                WRK-PARA-SRYKBN (4)
                                                WRK-PARA-SRYKBN (5)
+                                               WRK-PARA-SRYKBN (6)
+                                               WRK-PARA-SRYKBN (7)
 grpsys     END-UNSTRING
       *
            MOVE    WRK-PARA-HOSPNUM
@@ -504,6 +507,20 @@ grpsys     END-UNSTRING
        1101-TSRYKBN-HEN-SEC             SECTION.
       *
            MOVE    ZERO            TO  CNT-INPUT-ITEM
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0            >   CONST-PARA-SRYKBN-MAX )
+                   OR    ( TSRYKBN-MAX     >=  CONST-TSRYKBN-MAX )
+               IF    ( WRK-PARA-SRYKBN (IDX0)  =   "*" )
+                   COMPUTE CNT-INPUT-ITEM  =   CNT-INPUT-ITEM  +   1
+                   PERFORM VARYING IDX1    FROM    1   BY  1
+                           UNTIL ( IDX1    >   CONST-SRYKBN-MAX )
+                       COMPUTE TSRYKBN-MAX =   TSRYKBN-MAX  +   1
+                       MOVE    CONST-SRYKBN (IDX1)
+                                       TO  TSRYKBN-SRYKBN (TSRYKBN-MAX)
+                   END-PERFORM
+               END-IF
+           END-PERFORM
       *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   CONST-PARA-SRYKBN-MAX )
