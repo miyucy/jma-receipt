@@ -38,6 +38,7 @@
       *
       *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *  04.03.02    NACL-藤原    08/08/22  リアルタイムプレビュー時の表示
+      *  04.03.03    NACL-藤原    08/08/29  記号番号の記載方法の変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -262,6 +263,7 @@
       *
            03  WRK-NUM             PIC X(50).
            03  WRK-KIGO            PIC X(50).
+           03  WRK-KIGO-LEN        PIC 9(03).
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -1066,6 +1068,7 @@
       *    記号番号
            MOVE    SPACE               TO  WRK-KIGO
                                            WRK-NUM
+           MOVE    ZERO                TO  WRK-KIGO-LEN
            IF      RECE200-KIGO    NOT =   SPACE 
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "2"                 TO  KANACHK-SYORI 
@@ -1074,6 +1077,7 @@
                IF      KANACHK-RC          =   ZERO
                    MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
                                                TO  WRK-KIGO
+                   ADD     KANACHK-MAX         TO  WRK-KIGO-LEN
                END-IF
            END-IF
            IF      RECE200-NUM     NOT =   SPACE 
@@ -1084,16 +1088,25 @@
                IF      KANACHK-RC          =   ZERO
                    MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
                                                TO  WRK-NUM
+                   ADD     KANACHK-MAX         TO  WRK-KIGO-LEN
                END-IF
            END-IF
            IF      WRK-NUM             =   SPACE
                MOVE    WRK-KIGO            TO  HCN58-KIGONUM
            ELSE
-               STRING  WRK-KIGO            DELIMITED   BY  SPACE
-                       "−"                DELIMITED   BY  SIZE
-                       WRK-NUM             DELIMITED   BY  SPACE
-                                           INTO    HCN58-KIGONUM
-               END-STRING
+               IF      WRK-KIGO-LEN        <=  22
+                   STRING  WRK-KIGO            DELIMITED   BY  SPACE
+                           "−"                DELIMITED   BY  SIZE
+                           WRK-NUM             DELIMITED   BY  SPACE
+                                               INTO    HCN58-KIGONUM
+                   END-STRING
+               ELSE
+                   STRING  WRK-KIGO            DELIMITED   BY  SPACE
+                           "−"                DELIMITED   BY  SIZE
+                                               INTO    HCN58-KIGONUM2(1)
+                   END-STRING
+                   MOVE    WRK-NUM             TO  HCN58-KIGONUM2(2)
+               END-IF
            END-IF     
       *
       *    カナ氏名
