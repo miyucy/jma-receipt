@@ -20,6 +20,26 @@ M00	{
 			style   varchar(20);
 			value	varchar(100);
 		};
+		MNTTITLE	{
+			value	varchar(20);
+		};
+		MNTYMD	{
+			value	varchar(20);
+		};
+		MNTMSG	{
+			style   varchar(20);
+			value	varchar(70);
+		};
+		MLITITLE	{
+			value	varchar(20);
+		};
+		MLIYMD	{
+			value	varchar(20);
+		};
+		MLIMSG	{
+			style   varchar(20);
+			value	varchar(70);
+		};
 		HTML1	{
 			value	varchar(200);
 		};

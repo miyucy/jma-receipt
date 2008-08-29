@@ -63,6 +63,7 @@
       *  03.03.00    NACL-多々納  06/10/24  排他制御初期設定修正
       *  03.04.01    NACL-森脇    06/12/13  ユーザーＨＴＭＬ表示
       *  03.04.02    NACL-多々納  07/01/16  患者番号構成年切替え月追加
+      *  04.03.00    NACL-太田    08/08/25  マスタ更新処理状況表示
       *****************************************************************
       *
       *
@@ -139,7 +140,20 @@
            03  WRK-PRGNAME         PIC X(08).
            03  WRK-DBVERSION       PIC X(64).
            03  WRK-SYSBASE-CNT     PIC 9(04).
+           03  WRK-JOBID           PIC 9(07).
+           03  WRK-SHELLID         PIC X(08).
+           03  WRK-MNTTITLE        PIC X(20).
+           03  WRK-MNTYMDW         PIC X(09).
+           03  WRK-MNTMSG-STYLE    PIC X(20).
+           03  WRK-MNTMSG          PIC X(70).
+           03  WRK-MSG             PIC X(70).
       *
+      *
+       01  CONST-AREA.
+           03  CONST-MNTJOBID      PIC 9(07)  VALUE    1.
+           03  CONST-MNTSHELLID    PIC X(08)  VALUE    "MSTMNT".
+           03  CONST-MLIJOBID      PIC 9(07)  VALUE    1.
+           03  CONST-MLISHELLID    PIC X(08)  VALUE    "MSTMLI".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -180,10 +194,16 @@
       *    マスタ管理
        01  MSTKANRI-REC.
            COPY    "CPMSTKANRI.INC".
+      *    ジョブ管理
+       01  JOBKANRI-REC.
+           COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *   ジョブ管理ＤＢ制御サブ
+           COPY    "CPORCSJOBKANRI.INC".
       *
       *    システムバージョン取得
            COPY    "CPORCSVERSION.INC".
@@ -771,6 +791,24 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+           MOVE    "black"             TO  SPA-GMN-MNTMSG-STYLE
+           MOVE    "black"             TO  SPA-GMN-MLIMSG-STYLE
+           IF    ( SPA-ERRCD           =   SPACE )
+               MOVE    CONST-MNTJOBID      TO  WRK-JOBID
+               MOVE    CONST-MNTSHELLID    TO  WRK-SHELLID
+               PERFORM 3101-MNTUPD-EDIT-SEC
+               MOVE    WRK-MNTYMDW         TO  SPA-GMN-MNTYMD
+               MOVE    WRK-MNTMSG-STYLE    TO  SPA-GMN-MNTMSG-STYLE
+               MOVE    WRK-MNTMSG          TO  SPA-GMN-MNTMSG
+      *
+               MOVE    CONST-MLIJOBID      TO  WRK-JOBID
+               MOVE    CONST-MLISHELLID    TO  WRK-SHELLID
+               PERFORM 3101-MNTUPD-EDIT-SEC
+               MOVE    WRK-MNTYMDW         TO  SPA-GMN-MLIYMD
+               MOVE    WRK-MNTMSG-STYLE    TO  SPA-GMN-MLIMSG-STYLE
+               MOVE    WRK-MNTMSG          TO  SPA-GMN-MLIMSG
+           END-IF
+      *
       *    点数マスタ更新判定(2006/7/27分更新）
            PERFORM 3101-MSTKANRI-SET-SEC
       *
@@ -888,6 +926,88 @@
        3101-MSTKANRI-SET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    マスタ更新情報編集処理
+      *****************************************************************
+       3101-MNTUPD-EDIT-SEC            SECTION.
+      *
+           MOVE    SPACE           TO  WRK-MNTYMDW
+                                       WRK-MNTMSG-STYLE
+                                       WRK-MNTMSG
+      *
+      *    ＪＯＢ管理 
+           INITIALIZE                  ORCSJOBKANRIAREA
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-JOBID       TO  JOB-JOBID
+           MOVE    WRK-SHELLID     TO  JOB-SHELLID
+      *
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
+                                       SPA-AREA
+           IF    ( SJOBKANRI-RETURN    =   ZERO )
+      *
+               INITIALIZE                      STS-AREA-DAY
+               INITIALIZE                      LNK-DAY2-AREA
+               MOVE    "21"                TO  LNK-DAY2-IRAI
+               MOVE    JOB-STARTYMD        TO  LNK-DAY2-YMD
+               CALL    "ORCSDAY"           USING
+                                           STS-AREA-DAY
+                                           LNK-DAY2-AREA
+               IF    ( STS-DAY-RC1         =   ZERO )
+                   MOVE    LNK-DAY2-EDTYMD1
+                                           TO  WRK-MNTYMDW
+               END-IF
+      *
+               IF    ( JOB-ENDTIME NOT =   SPACE )
+                AND  ( JOB-ENDYMD  NOT =   SPACE )
+                   EVALUATE    JOB-ERRCD
+                   WHEN    "00"
+                   WHEN    "0000"
+                       MOVE    "マスタ更新は正常に終了しました。"
+                                           TO  WRK-MNTMSG
+                       MOVE    "blue"      TO  WRK-MNTMSG-STYLE
+                   WHEN    "01"
+                   WHEN    "8001"
+                       MOVE    "更新データはありませんでした。"
+                                           TO  WRK-MNTMSG
+                       MOVE    "blue"      TO  WRK-MNTMSG-STYLE
+                   WHEN    "98"
+                   WHEN    "8002"
+                       MOVE    "サーバへ接続できませんでした。"
+                                           TO  WRK-MNTMSG
+                       MOVE    "blue"      TO  WRK-MNTMSG-STYLE
+                   WHEN    "8888"
+                       MOVE    "マスタ更新は中止されました"
+                                           TO  WRK-MNTMSG
+                       MOVE    "blue"      TO  WRK-MNTMSG-STYLE
+                   WHEN    OTHER
+                       MOVE    "マスタ更新は異常終了しました。"
+                                           TO  WRK-MNTMSG
+                       MOVE    "red"       TO  WRK-MNTMSG-STYLE
+                   END-EVALUATE
+                   IF    ( JOB-UPDCNT      >   ZERO )
+                       MOVE    WRK-MNTMSG  TO  WRK-MSG
+                       MOVE    SPACE       TO  WRK-MNTMSG
+                       STRING  WRK-MSG         DELIMITED   BY  SPACE
+                               "【確認リストが作成されました】"
+                                               DELIMITED   BY  SIZE
+                       INTO    WRK-MNTMSG
+                       END-STRING
+                   END-IF
+               ELSE
+                   MOVE    "マスタ更新中です。"
+                                           TO  WRK-MNTMSG
+                   MOVE    "blue"          TO  WRK-MNTMSG-STYLE
+               END-IF
+      *
+           END-IF
+      *
+           .
+       3101-MNTUPD-EDIT-EXT.
+           EXIT.
       *****************************************************************
       *    定点調査研究事業 収集データ・作成送信チェック処理
       *****************************************************************
@@ -1187,6 +1307,29 @@
            MOVE    SPA-GMN-GSEL        TO  M00-SELNUM
            MOVE    SPA-GMN-LBLMSG      TO  M00-LBLMSG
            MOVE    SPA-GMN-LBLMSG2     TO  M00-LBLMSG2
+           IF    ( SPA-GMN-MNTYMD      NOT =   SPACE )
+            OR   ( SPA-GMN-MNTMSG      NOT =   SPACE )
+               MOVE    "標準提供マスタ"    TO  M00-MNTTITLE
+               STRING  "最終更新日 "       DELIMITED   BY  SIZE
+                       SPA-GMN-MNTYMD      DELIMITED   BY  SIZE
+               INTO    M00-MNTYMD
+               END-STRING
+               MOVE    SPA-GMN-MNTMSG      TO  M00-MNTMSG
+               MOVE    SPA-GMN-MNTMSG-STYLE
+                                           TO  M00-MNTMSG-STYLE
+           END-IF
+      *
+           IF    ( SPA-GMN-MLIYMD      NOT =   SPACE )
+            OR   ( SPA-GMN-MLIMSG      NOT =   SPACE )
+               MOVE    "ライセンスマスタ"  TO  M00-MLITITLE
+               STRING  "最終更新日 "       DELIMITED   BY  SIZE
+                       SPA-GMN-MLIYMD      DELIMITED   BY  SIZE
+               INTO    M00-MLIYMD
+               END-STRING
+               MOVE    SPA-GMN-MLIMSG      TO  M00-MLIMSG
+               MOVE    SPA-GMN-MLIMSG-STYLE
+                                           TO  M00-MLIMSG-STYLE
+           END-IF
       *
            IF    ( M00-LBLMSG          =   SPACE )
                MOVE    SPACE           TO  M00-LBLMSG-STYLE

@@ -514,12 +514,108 @@
       <class>GtkLabel</class>
       <name>LBLMSG2</name>
       <x>288</x>
-      <y>68</y>
+      <y>128</y>
       <width>600</width>
       <height>24</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MLIYMD</name>
+      <x>136</x>
+      <y>624</y>
+      <width>184</width>
+      <height>24</height>
+      <label>H20.08.08</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MLIMSG</name>
+      <x>8</x>
+      <y>648</y>
+      <width>496</width>
+      <height>24</height>
+      <label>¥Þ¥¹¥¿¹¹¿·½èÍýÃæ¤Ç¤¹¡£</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MNTMSG</name>
+      <x>8</x>
+      <y>600</y>
+      <width>504</width>
+      <height>24</height>
+      <label>¥Þ¥¹¥¿¹¹¿·½èÍýÃæ¤Ç¤¹¡££²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ£¶£·£¸£¹£°£±£²£³£´£µ</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MNTTITLE</name>
+      <x>8</x>
+      <y>576</y>
+      <width>120</width>
+      <height>24</height>
+      <label>É¸½à¥Þ¥¹¥¿</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MLITITLE</name>
+      <x>8</x>
+      <y>624</y>
+      <width>120</width>
+      <height>24</height>
+      <label>¥é¥¤¥»¥ó¥¹¥Þ¥¹¥¿</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>True</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MNTYMD</name>
+      <x>136</x>
+      <y>576</y>
+      <width>184</width>
+      <height>24</height>
+      <label>H20.08.08</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
