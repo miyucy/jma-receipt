@@ -34,10 +34,9 @@
                     PIC X(7)    OCCURS  37 TIMES.
             02  HCM58V01-KAISU
                     PIC X(3)    OCCURS  38 TIMES.
-            02  HCM58V01-SYUGITEN
-                    PIC X(7)    OCCURS  38 TIMES.
-            02  HCM58V01-YKZTEN
-                    PIC X(7)    OCCURS  38 TIMES.
+            02  HCM58V01-TENSU-G        OCCURS  2 TIMES.
+              03  HCM58V01-TENSU
+                      PIC X(7)    OCCURS  38 TIMES.
             02  HCM58V01-SYOUKEI
                     PIC X(7)    OCCURS  2 TIMES.
             02  HCM58V01-GOKEI
