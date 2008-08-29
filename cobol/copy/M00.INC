@@ -38,6 +38,16 @@
               04  M00-LBLMSG2-G.
                 05  M00-LBLMSG2-STYLE   PIC X(20).
                 05  M00-LBLMSG2         PIC X(100).
+              04  M00-MNTTITLE          PIC X(20).
+              04  M00-MNTYMD            PIC X(20).
+              04  M00-MNTMSG-G.
+                05  M00-MNTMSG-STYLE    PIC X(20).
+                05  M00-MNTMSG          PIC X(70).
+              04  M00-MLITITLE          PIC X(20).
+              04  M00-MLIYMD            PIC X(20).
+              04  M00-MLIMSG-G.
+                05  M00-MLIMSG-STYLE    PIC X(20).
+                05  M00-MLIMSG          PIC X(70).
               04  M00-HTML1-G.
                 05  M00-HTML1          PIC X(200).
               04  M00-B11-LABEL        PIC X(10).

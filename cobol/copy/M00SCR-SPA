@@ -33,6 +33,14 @@
                    07  SPA-GMN-GSEL    PIC 9(02).
                    07  SPA-GMN-LBLMSG  PIC X(60).
                    07  SPA-GMN-LBLMSG2 PIC X(100).
+                   07  SPA-GMN-MNTYMD  PIC X(09).
+                   07  SPA-GMN-MNTMSG-STYLE
+                                       PIC X(20).
+                   07  SPA-GMN-MNTMSG  PIC X(70).
+                   07  SPA-GMN-MLIYMD  PIC X(09).
+                   07  SPA-GMN-MLIMSG-STYLE
+                                       PIC X(20).
+                   07  SPA-GMN-MLIMSG  PIC X(70).
                    07  SPA-GMN-ERRCD   PIC X(04).
       *
       ***      05  SPA-M95GMN-AREA.
