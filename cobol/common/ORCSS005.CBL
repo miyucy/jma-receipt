@@ -303,6 +303,8 @@
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-5015-REC
       *
+           PERFORM 800-MCNDATE-SEC
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -608,6 +610,17 @@
       *
            .
        300-END-EXT.
+           EXIT.
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
       *    カレンダー処理
