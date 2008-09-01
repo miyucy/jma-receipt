@@ -1845,8 +1845,9 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *
       *    返戻年月が変更になったとき公費分が未入力ならセットする
            IF    ( SPA-H01NAI-HENREIYM NOT =   WRK-HENREIYM-OLD )
-           AND   (  SPA-H01NAI-HENREIYM-KOHSKY
+           AND   ( SPA-H01NAI-HENREIYM-KOHSKY
                                            =   ZERO             )
+           AND   ( SPA-H01NAI-KOHSKY-FLG   =   1                )  
                MOVE    SPA-H01GMN-HENREIYM TO
                                            SPA-H01GMN-HENREIYM-KOHSKY
                MOVE    SPA-H01NAI-HENREIYM TO 
@@ -1856,6 +1857,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *    請求年月が変更になったとき公費分が未入力ならセットする
            IF    ( SPA-H01NAI-SKYYM    NOT =   WRK-SKYYM-OLD )
            AND   ( SPA-H01NAI-SKYYM-KOHSKY =   ZERO          )
+           AND   ( SPA-H01NAI-KOHSKY-FLG   =   1             )  
                MOVE    SPA-H01GMN-SKYYM    TO  SPA-H01GMN-SKYYM-KOHSKY
                MOVE    SPA-H01NAI-SKYYM    TO  SPA-H01NAI-SKYYM-KOHSKY
            END-IF
