@@ -270,9 +270,10 @@
                05  TNYUKSN-HKNCOMBI                PIC 9(04).
                05  TNYUKSN-HKNCOMBI-DAY            PIC 9(01)
                                                    OCCURS  31.
-               05  TNYUKSN-ERR-CNT                 PIC 9(02).
-               05  TNYUKSN-ERR-DAY-G.
-                   07  TNYUKSN-ERR-DAY             PIC 9(01)
+               05  TNYUKSN-ERR-OCC                 OCCURS  3.
+                   07  TNYUKSN-ERR-CNT             PIC 9(02).
+                   07  TNYUKSN-ERR-DAY-G.
+                       09  TNYUKSN-ERR-DAY         PIC 9(01)
                                                    OCCURS  31.
       *
          02  SRH-AREA.
