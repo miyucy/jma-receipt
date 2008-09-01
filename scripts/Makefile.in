@@ -82,7 +82,8 @@ shell_sources = \
         monthly/prtdbdel.sh.in \
         allways/ykjchk.sh.in \
 	allways/chkmst2.sh.in \
-	tools/dbbackup.sh.in
+	tools/dbbackup.sh.in \
+	tools/run_master_upgrade.sh.in
 
 ruby_scripts = \
 	daily/print-data.rb \

@@ -135,7 +135,7 @@ fi
 
 if [ $(pgrep -fo "$0 $HOSPNUM") -ne $$ ]; then
 	echo "マスタ更新処理は既に実行中です"
-	exit 99
+	exit 1
 fi
 
 
@@ -196,7 +196,7 @@ fi
 		echo "更新用ダウンロードファイルは作成されませんでした"
 		${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}8001,${HOSPNUM},${ERRFILE},,"
 		cleanup
-		exit 99
+		exit 0
 	fi
 
 UPDLIST=$(awk '{gsub(/\t| |;/,""); print} ' ${UPDFILE})
@@ -282,3 +282,5 @@ done
 echo  "全ての処理が完了しました"
 	cleanup
 	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},,マスタ更新処理が終了しました"
+
+	exit 0
