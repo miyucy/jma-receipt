@@ -46,9 +46,9 @@ if [ $? -ne 0 ]; then
 fi
 
 ${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBCHECKREDL -parameter "${MNTERRFL}"
-if [	-e ${MLIERRFL}	];	then 
-  cat ${MLIERRFL}
-  rm ${MLIERRFL}
+if [	-e ${MNTERRFL}	];	then 
+  cat ${MNTERRFL}
+  rm ${MNTERRFL}
   exit 103
 fi
 
