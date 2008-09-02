@@ -1920,7 +1920,9 @@
                    (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:2)
                                        =   "83"      )   OR
                    (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
-                                       =   "0083"    ))  AND
+                                       =   "0083"    )   OR
+                   (TBL-WKSRY-SRYCD (TBL-MAX IDX-S)(1:4)
+                                       =   "0085"    ))  AND
                    (LF04-ALSNAME (IDX1 IDX2)
                                    NOT =   SPACE )
       *        コメント
