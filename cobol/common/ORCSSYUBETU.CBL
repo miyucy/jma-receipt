@@ -70,6 +70,7 @@
       *
       *  04.03.01    NACL-Æ£¸¶    08/05/07  ¸øÈñ£´¼ï¤Þ¤Ç¤ÎÊ»ÍÑ¤Îµ­Ï¿ÂÐ±þ
       *                                     ¥ì¥»¥×¥È¼ïÊÌ¡Ê»æ¥ì¥»¥×¥È¡Ë¤ÎÄÉ²Ã
+      *  04.03.02    NACL-ÌçÏÆ    08/09/02  ÀÁµáÅÀÈ½ÄêÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1011,6 +1012,9 @@ grpsys                 MOVE    COMB-HOSPNUM
       *                ¸øÈñ£É£Ä
                        MOVE    COMB-KOHID (IDX)
                                            TO  LNK-FTNJGNCHK-KOHID
+      *                ÅÔÆ»ÉÜ¸©ÈÖ¹æ
+                       MOVE    LNK-SYUBETU-PREFNUM
+                                           TO  LNK-FTNJGNCHK-PREFNUM
       *
                        CALL    "ORCSFTNJGNCHK"     USING
                                                    ORCSFTNJGNCHKAREA
@@ -1021,11 +1025,12 @@ grpsys                                             SPA-AREA
                    END-IF
                ELSE
                    MOVE    1                      TO  IDX1
-                   IF   COMB-KOHHKNNUM (IDX)  =  "972" OR "974" OR "012"
-                                                       OR "021"
+      **>          IF   COMB-KOHHKNNUM (IDX)  =  "972" OR "974" OR "012"
+      **>                                              OR "021"
                      IF    ( WRK-TEISEIKBN       NOT =   SPACE )
-                     AND   ( COMB-KOHHKNNUM (IDX)    =   "012"
-                                                     OR  "021" )
+      **>            AND   ( COMB-KOHHKNNUM (IDX)    =   "012"
+      **>                                            OR  "021" )
+                     AND   ( COMB-KOHHKNNUM (IDX)(1:1)  =  "0" )
                      AND   ( COMB-HKNNUM             =   SPACE )
                          CONTINUE
                      ELSE 
@@ -1046,6 +1051,10 @@ grpsys                 MOVE    COMB-HOSPNUM
       *                ¸øÈñ£É£Ä
                        MOVE    COMB-KOHID (IDX)
                                            TO  LNK-FTNJGNCHK-KOHID
+      *                ÅÔÆ»ÉÜ¸©ÈÖ¹æ
+                       MOVE    LNK-SYUBETU-PREFNUM
+                                           TO  LNK-FTNJGNCHK-PREFNUM
+      *
                        CALL    "ORCSFTNJGNCHK"     USING
                                                    ORCSFTNJGNCHKAREA
 grpsys                                             SPA-AREA
@@ -1053,7 +1062,7 @@ grpsys                                             SPA-AREA
                            MOVE       1            TO    FLG-KOHRECEDSP
                        END-IF
                      END-IF
-                   END-IF
+      **>          END-IF
                END-IF       
       *
                IF     IDX1                =   1
