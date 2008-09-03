@@ -1873,6 +1873,10 @@ H01	{
 			state   int;
 			value	varchar(7);
 		};
+		MSG	{
+                    style   varchar(20);
+			value	varchar(50);
+		};
 		SRYKANAME	{
                     style   varchar(20);
 			value	varchar(18);

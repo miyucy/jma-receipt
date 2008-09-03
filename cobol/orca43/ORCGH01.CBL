@@ -1862,6 +1862,13 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                MOVE    SPA-H01NAI-SKYYM    TO  SPA-H01NAI-SKYYM-KOHSKY
            END-IF
       *
+      *    公費分の請求年月が未入力のとき返戻年月も未入力とする
+           IF    ( SPA-H01NAI-SKYYM-KOHSKY =   ZERO          )
+           AND   ( SPA-H01NAI-KOHSKY-FLG   =   1             )  
+               MOVE    SPACE               TO SPA-H01GMN-HENREIYM-KOHSKY
+               MOVE    ZERO                TO SPA-H01NAI-HENREIYM-KOHSKY
+           END-IF
+      *
            .
        4104-GMN-SPA-HENSYU-EXT.
            EXIT.
@@ -2161,8 +2168,18 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                MOVE    WIDGET-INSENSITIVE  TO  H01-SKYYM-KOHSKY-STATE
                                                H01-HENREIYM-KOHSKY-STATE
            ELSE
-               MOVE    WIDGET-NORMAL       TO  H01-SKYYM-KOHSKY-STATE
+               MOVE    WIDGET-NORMAL       TO  H01-SKYYM-KOHSKY-STATE           
                                                H01-HENREIYM-KOHSKY-STATE
+               IF    ( SPA-H01NAI-SKYYM
+                                      NOT =   SPA-H01NAI-SKYYM-KOHSKY  )
+               AND   ( SPA-H01NAI-SRYYM
+                                      NOT =   SPA-H01NAI-SKYYM AND ZERO)
+               AND   ( SPA-H01NAI-SKYYM-KOHSKY
+                                          =   SPA-H01NAI-SRYYM OR  ZERO)
+               AND   ( SPA-H01GMN-SKYKBN  =   "1" OR  "2"              )
+                   MOVE    "公費請求書分は月遅れ請求にはなりません"
+                                              TO  H01-MSG-VALUE
+               END-IF                             
            END-IF
            MOVE    SPA-H01GMN-SKYKBN-G    TO  H01-SKYKBN
            PERFORM VARYING IDX FROM    1       BY  1
@@ -2282,6 +2299,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                            H01-HHKNJANUM-STYLE
                                            H01-HKIGO-STYLE
                                            H01-HHOJOKBN-STYLE
+           MOVE    "darkgreen"         TO  H01-MSG-STYLE
       *
       *    入力の設定
            IF      SPA-SYS-1001-HOSPSBT1   =   "0"

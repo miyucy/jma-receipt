@@ -13109,22 +13109,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label1002</name>
-      <x>496</x>
-      <y>72</y>
-      <width>54</width>
-      <height>20</height>
-      <label>手提钳奉</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>LABEL1584</name>
       <x>825</x>
       <y>4</y>
@@ -13165,6 +13149,38 @@
       <label>∈给锐懒滇今尸∷</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>True</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label1002</name>
+      <x>496</x>
+      <y>72</y>
+      <width>54</width>
+      <height>20</height>
+      <label>手提钳奉</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MSG</name>
+      <x>624</x>
+      <y>72</y>
+      <width>350</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
       <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
