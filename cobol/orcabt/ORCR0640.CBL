@@ -9279,8 +9279,10 @@
            MOVE    ZERO                 TO      FLG-ZENKI-TOKUREI
            MOVE    ZERO                 TO      FLG-ZENKOKUKOHI-NISYU
       *
-           IF    RECE62-SRYYM            >=  "200804"
-           AND   RECE62-HKNCOMBI(2)   NOT =   ZERO
+           IF   (RECE62-SRYYM            >=  "200804")
+           AND  (RECE62-HKNCOMBI(2)   NOT =   ZERO   )
+           AND  (RECE62-KOHNUM(1)     NOT =   SPACE  )
+           AND  (RECE62-KOHNUM(2)     NOT =   SPACE  )
                   MOVE     "1"    TO    RECE62-JSKISAIFLG
            END-IF
       *

@@ -1787,8 +1787,10 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
              END-IF
            END-IF
       *
-           IF    RECE02-SRYYM            >=  "200804"
-           AND   RECE02-HKNCOMBI(2)   NOT =   ZERO
+           IF   (RECE02-SRYYM            >=  "200804")
+           AND  (RECE02-HKNCOMBI(2)   NOT =   ZERO   )
+           AND  (RECE02-KOHNUM(1)     NOT =   SPACE  )
+           AND  (RECE02-KOHNUM(2)     NOT =   SPACE  )
                   MOVE     "1"    TO    RECE02-JSKISAIFLG
            END-IF
       *
