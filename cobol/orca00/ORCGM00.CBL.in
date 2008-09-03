@@ -816,6 +816,9 @@
            PERFORM 3102-TEITEN-CHK-SEC
       *
       *     リダイレクタ不整チェック追加
+           IF  MCP-DBSTATUS                =   "REDL"
+               MOVE    "1015"              TO  SPA-ERRCD
+           END-IF
            IF  MCP-DBSTATUS                =   "DISC"
                MOVE    "1006"              TO  SPA-ERRCD
            END-IF
@@ -1334,7 +1337,11 @@
            IF    ( M00-LBLMSG          =   SPACE )
                MOVE    SPACE           TO  M00-LBLMSG-STYLE
            ELSE
-               MOVE    "red"           TO  M00-LBLMSG-STYLE
+               IF    ( SPA-ERRCD       =   "1015" )
+                   MOVE    "blue"      TO  M00-LBLMSG-STYLE
+               ELSE
+                   MOVE    "red"       TO  M00-LBLMSG-STYLE
+               END-IF
            END-IF
            IF    ( M00-LBLMSG2         =   SPACE )
                MOVE    SPACE           TO  M00-LBLMSG2-STYLE
@@ -1540,6 +1547,10 @@
                                                TO  SPA-ERRMSG (1:40)
                    MOVE    "ルが未送信です。"
                                                TO  SPA-ERRMSG (41:)
+               WHEN    "1015"
+                   MOVE
+                      "従サーバに接続しています。"
+                                               TO  SPA-ERRMSG
            END-EVALUATE
 	   .
       *
