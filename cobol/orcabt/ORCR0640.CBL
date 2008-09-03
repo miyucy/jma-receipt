@@ -546,6 +546,7 @@
            03  IDYX                                    PIC 9(02).
            03  IDZX                                    PIC 9(02).
            03  IDY                                     PIC 9(03).
+           03  IDY2                                    PIC 9(03).
            03  IDY3                                    PIC 9(03).
            03  IDZ                                     PIC 9(03).
            03  IDW                                     PIC 9(03).
@@ -1055,6 +1056,8 @@
            03  WRK-FORMALNAME                  PIC  X(300).
       *
            03  WRK-HOKENICHIBUGAK              PIC  9(07).
+      *
+           03  WRK-KOHCNT                      PIC  9(01).
       *
       *    ¸ÇÄêÃÍ
        01  CONST-AREA.
@@ -9279,11 +9282,20 @@
            MOVE    ZERO                 TO      FLG-ZENKI-TOKUREI
            MOVE    ZERO                 TO      FLG-ZENKOKUKOHI-NISYU
       *
-           IF   (RECE62-SRYYM            >=  "200804")
-           AND  (RECE62-HKNCOMBI(2)   NOT =   ZERO   )
-           AND  (RECE62-KOHNUM(1)     NOT =   SPACE  )
-           AND  (RECE62-KOHNUM(2)     NOT =   SPACE  )
-                  MOVE     "1"    TO    RECE62-JSKISAIFLG
+           MOVE    ZERO                 TO      WRK-KOHCNT
+           IF      RECE62-SRYYM   >=   "200804"
+              PERFORM   VARYING  IDY2    FROM    1   BY   1
+                         UNTIL   IDY2      >     4
+                 IF   (RECE62-KOHNUM(IDY2)  NOT =  SPACE          )
+                 AND  (RECE62-KOHNUM(IDY2)  NOT =  "972" AND "974")
+                     ADD       1        TO      WRK-KOHCNT
+                 END-IF
+              END-PERFORM
+      *
+              IF   (RECE62-HKNCOMBI(2)   NOT =   ZERO)
+              AND  (WRK-KOHCNT               >    1  )
+                     MOVE     "1"       TO      RECE62-JSKISAIFLG
+              END-IF
            END-IF
       *
            IF    RECE62-KOUREI    =    "1"  OR  "2"

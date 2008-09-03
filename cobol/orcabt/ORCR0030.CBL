@@ -921,6 +921,8 @@
       *
            03  WRK-HOKENICHIBUGAK              PIC  9(07).
       *
+           03  WRK-KOHCNT                      PIC  9(01).
+      *
       *---------------------------------------------------------------
       *  ²ó¿ô¸º»»ÍÑÂàÈòÎÎ°è
       *
@@ -1787,11 +1789,20 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
              END-IF
            END-IF
       *
-           IF   (RECE02-SRYYM            >=  "200804")
-           AND  (RECE02-HKNCOMBI(2)   NOT =   ZERO   )
-           AND  (RECE02-KOHNUM(1)     NOT =   SPACE  )
-           AND  (RECE02-KOHNUM(2)     NOT =   SPACE  )
+           MOVE      ZERO         TO    WRK-KOHCNT
+           IF      RECE02-SRYYM   >=   "200804"
+              PERFORM   VARYING  IDY2    FROM    1   BY   1
+                         UNTIL   IDY2      >     4
+                 IF   (RECE02-KOHNUM(IDY2)  NOT =  SPACE          )
+                 AND  (RECE02-KOHNUM(IDY2)  NOT =  "972" AND "974")
+                     ADD    1     TO    WRK-KOHCNT
+                 END-IF
+              END-PERFORM
+      *
+              IF   (RECE02-HKNCOMBI(2)   NOT =   ZERO)
+              AND  (WRK-KOHCNT               >    1  )
                   MOVE     "1"    TO    RECE02-JSKISAIFLG
+              END-IF
            END-IF
       *
            IF    RECE02-ZAITAKU    =    "1"  OR  "2"
