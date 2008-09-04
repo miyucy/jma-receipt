@@ -2992,7 +2992,8 @@
       *    自動加算　存在チェック
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
-           PERFORM VARYING     IDX1    FROM    IDX-Z  BY  1
+      *****PERFORM VARYING     IDX1    FROM    IDX-Z  BY  1
+           PERFORM VARYING     IDX1    FROM    IDX-S  BY  1
                    UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
                               (FLG-ARI                 =   1    ) OR
                               (WRK-COM-INPUTCD (IDX1)  =   SPACE  AND
@@ -3084,7 +3085,6 @@
                END-EVALUATE
                MOVE    ZERO                TO  WRK-IDX
            END-IF
-      *
       *
            MOVE    ZERO                TO  FLG-ARI
            MOVE    WRK-SCR-REC         TO  HZN-SCR-REC
