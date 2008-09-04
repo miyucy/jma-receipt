@@ -167,7 +167,9 @@
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK009"
                    CALL    "ORCDTCHK009"       USING
                                                DTCHK-RC
-                                               COMMAND-PARAM
+                                               WRK-PARA
+                                               DTCHKERRPARA
+                                               ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK009"
                END-IF
@@ -178,7 +180,9 @@
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK004"
                    CALL    "ORCDTCHK004"       USING
                                                DTCHK-RC
-                                               COMMAND-PARAM
+                                               WRK-PARA
+                                               DTCHKERRPARA
+                                               ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK004"
            END-IF
@@ -188,7 +192,9 @@
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK005"
                    CALL    "ORCDTCHK005"       USING
                                                DTCHK-RC
-                                               COMMAND-PARAM
+                                               WRK-PARA
+                                               DTCHKERRPARA
+                                               ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK005"
            END-IF
@@ -199,7 +205,9 @@
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK006"
                    CALL    "ORCDTCHK006"       USING
                                                DTCHK-RC
-                                               COMMAND-PARAM
+                                               WRK-PARA
+                                               DTCHKERRPARA
+                                               ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK006"
                END-IF
@@ -210,7 +218,9 @@
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK001"
                    CALL    "ORCDTCHK001"       USING
                                                DTCHK-RC
-                                               COMMAND-PARAM
+                                               WRK-PARA
+                                               DTCHKERRPARA
+                                               ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK001"
            END-IF
@@ -220,7 +230,9 @@
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK002"
                    CALL    "ORCDTCHK002"       USING
                                                DTCHK-RC
-                                               COMMAND-PARAM
+                                               WRK-PARA
+                                               DTCHKERRPARA
+                                               ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK002"
            END-IF
@@ -230,7 +242,9 @@
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK010"
                    CALL    "ORCDTCHK010"       USING
                                                DTCHK-RC
-                                               COMMAND-PARAM
+                                               WRK-PARA
+                                               DTCHKERRPARA
+                                               ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK001"
            END-IF
@@ -240,7 +254,9 @@
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK008"
                    CALL    "ORCDTCHK008"       USING
                                                DTCHK-RC
-                                               COMMAND-PARAM
+                                               WRK-PARA
+                                               DTCHKERRPARA
+                                               ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK008"
            END-IF
@@ -251,7 +267,9 @@
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK007"
                    CALL    "ORCDTCHK007"       USING
                                                DTCHK-RC
-                                               COMMAND-PARAM
+                                               WRK-PARA
+                                               DTCHKERRPARA
+                                               ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK007"
                END-IF
@@ -262,7 +280,9 @@
                    DISPLAY SMCNDATE-HMS "ST:ORCDTCHK003"
                    CALL    "ORCDTCHK003"       USING
                                                DTCHK-RC
-                                               COMMAND-PARAM
+                                               WRK-PARA
+                                               DTCHKERRPARA
+                                               ORCBSD01PARA
                    PERFORM 800-MCNDATE-SEC
                    DISPLAY SMCNDATE-HMS "ED:ORCDTCHK003"
            END-IF

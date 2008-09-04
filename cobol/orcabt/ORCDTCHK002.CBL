@@ -535,16 +535,6 @@
        01  KEY-AREA.
            03  KEY-HKNCOMBI                            PIC 9(04).
       *
-      *    パラメタ領域
-       01  WRK-PARA.
-           COPY    "CPORCSPRTLNK.INC".
-           03  WRK-PARA-JOBID                      PIC 9(07).
-           03  WRK-PARA-SHELLID                    PIC X(08).
-           03  WRK-PARA-HOSPNUM                    PIC 9(02).
-      *
-      *    データチェック一括処理パラメータ
-           COPY    "CPORCBSD01PARA.INC".
-      *
       *    剤番号退避
        01  PTZAI-AREA.
         02 PTZAI-MAX                           PIC 9(05).
@@ -873,13 +863,26 @@
       ****************************************************************
        LINKAGE                         SECTION.
        01  DTCHK-RC        PIC S9(09).
-       01  COMMAND-PARAM.
-           02  FILLER      PIC X(2000).
+      *    パラメタ領域
+       01  WRK-PARA.
+           COPY    "CPORCSPRTLNK.INC".
+           03  WRK-PARA-JOBID      PIC 9(07).
+           03  WRK-PARA-SHELLID    PIC X(08).
+           03  WRK-PARA-HOSPNUM    PIC 9(02).
+      *
+      *    エラーファイルファイル名称領域 
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
+                                   BY         //LNKDTCHKERRPARA//.
+      *
+      *    データチェック一括処理パラメータ
+           COPY    "CPORCBSD01PARA.INC".
       ****************************************************************
        PROCEDURE                       DIVISION
                USING
-           DTCHK-RC
-           COMMAND-PARAM.
+                                               DTCHK-RC
+                                               WRK-PARA
+                                               LNKDTCHKERRPARA
+                                               ORCBSD01PARA.
       *
       *****************************************************************
       *    主処理
@@ -906,44 +909,9 @@
                                        CNT-AREA
                                        FLG-AREA
                                        WRK-AREA
-                                       WRK-PARA
-                                       ORCBSD01PARA
                                        SPA-AREA
       *
-           UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
-                                       INTO    LNK-PRTKANRI-RENNUM
-                                               LNK-PRTKANRI-TBL-KEY
-                                               LNK-PRTKANRI-TBL-GROUP
-                                               LNK-PRTKANRI-SHORI-RENNUM
-                                               LNK-PRTKANRI-SRYYM
-                                               LNK-PRTKANRI-SKYYMD
-                                               LNK-PRTKANRI-SHELLID
-                                               LNK-PRTKANRI-PRIORITY
-                                               LNK-PRTKANRI-TERMID
-                                               LNK-PRTKANRI-OPID
-                                               LNK-PRTKANRI-PRTNM
-                                               WRK-PARA-JOBID
-                                               WRK-PARA-SHELLID
-                                               WRK-PARA-HOSPNUM
-                                               DTCHKERRPARA
-                                               ORCBSD01-IKTKBT
-                                               ORCBSD01-SRYYM
-                                               ORCBSD01-NYUGAIKBN
-                                               ORCBSD01-CHKKBN-G
-                                               ORCBSD01-SYAHOPROCKBN
-                                               ORCBSD01-KOKUHOPROCKBN
-                                               ORCBSD01-RSIPROCKBN
-                                               ORCBSD01-JBIPROCKBN
-                                               ORCBSD01-JIHIPROCKBN
-                                               ORCBSD01-INGAIPROCKBN
-                                               ORCBSD01-PRTSRTKBN
-                                               ORCBSD01-PRTPTLSTKBN
-                                               ORCBSD01-SRYYMDKBN
-                                               ORCBSD01-STSRYYMD
-                                               ORCBSD01-EDSRYYMD
-                                               ORCBSD01-KGIPROCKBN
-                                               ORCBSD01-KOUKIPROCKBN
-           END-UNSTRING
+           MOVE    LNKDTCHKERRPARA     TO  DTCHKERRPARA
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
