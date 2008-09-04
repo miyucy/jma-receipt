@@ -20,6 +20,10 @@ M00	{
 			style   varchar(20);
 			value	varchar(100);
 		};
+		LBLMSG3	{
+			style   varchar(20);
+			value	varchar(60);
+		};
 		MNTTITLE	{
 			value	varchar(20);
 		};
