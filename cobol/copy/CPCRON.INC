@@ -30,15 +30,15 @@
       *処理名
            03  CRON-NAME               PIC X(30).
       *分
-           03  CRON-MIN                PIC X(02).
+           03  CRON-CRNMIN             PIC X(02).
       *時
-           03  CRON-HOUR               PIC X(02).
+           03  CRON-CRNHOUR            PIC X(02).
       *日
-           03  CRON-DOM                PIC X(02).
+           03  CRON-CRNDOM             PIC X(02).
       *月
-           03  CRON-MON                PIC X(02).
+           03  CRON-CRNMON             PIC X(02).
       *曜日
-           03  CRON-DOW                PIC X(01).
+           03  CRON-CRNDOW             PIC X(01).
       *スクリプト名
            03  CRON-SCRIPT             PIC X(100).
       *端末ＩＤ

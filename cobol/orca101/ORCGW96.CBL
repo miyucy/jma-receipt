@@ -345,10 +345,10 @@
                    MOVE    "T"         TO  SPA-GMN-EXEC (IDX-CRON)
                END-IF
                MOVE    CRON-NAME       TO  SPA-GMN-NAME (IDX-CRON)
-               MOVE    CRON-HOUR       TO  SPA-GMN-HOUR (IDX-CRON)
-               MOVE    CRON-DOM        TO  SPA-GMN-DOM  (IDX-CRON)
-               MOVE    CRON-MON        TO  SPA-GMN-MON  (IDX-CRON)
-               MOVE    CRON-DOW        TO  SPA-GMN-DOW  (IDX-CRON)
+               MOVE    CRON-CRNHOUR    TO  SPA-GMN-HOUR (IDX-CRON)
+               MOVE    CRON-CRNDOM     TO  SPA-GMN-DOM  (IDX-CRON)
+               MOVE    CRON-CRNMON     TO  SPA-GMN-MON  (IDX-CRON)
+               MOVE    CRON-CRNDOW     TO  SPA-GMN-DOW  (IDX-CRON)
                MOVE    CRON-SCRIPT     TO  SPA-GMN-SCRIPT (IDX-CRON)
       *
                PERFORM 900-CRON-ALL-FET-SEC
@@ -995,15 +995,15 @@
                    END-IF
                    MOVE    SPA-GMN-NAME (IDX-CRON)
                                        TO  CRON-NAME
-                   MOVE    "00"        TO  CRON-MIN
+                   MOVE    "00"        TO  CRON-CRNMIN
                    MOVE    SPA-GMN-HOUR (IDX-CRON)
-                                       TO  CRON-HOUR
+                                       TO  CRON-CRNHOUR
                    MOVE    SPA-GMN-DOM  (IDX-CRON)
-                                       TO  CRON-DOM
+                                       TO  CRON-CRNDOM
                    MOVE    SPA-GMN-MON  (IDX-CRON)
-                                       TO  CRON-MON
+                                       TO  CRON-CRNMON
                    MOVE    SPA-GMN-DOW  (IDX-CRON)
-                                       TO  CRON-DOW
+                                       TO  CRON-CRNDOW
                    MOVE    SPA-GMN-SCRIPT (IDX-CRON)
                                        TO  CRON-SCRIPT
                    MOVE    SMCNDATE-YMD

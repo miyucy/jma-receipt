@@ -2,11 +2,11 @@ tbl_cron {
 	CRONID				number(4,0);
 	RUN				char(1);
 	NAME				varchar(30);
-	MIN				char(02);
-	HOUR				char(02);
-	DOM				char(02);
-	MON				char(02);
-	DOW				char(01);
+	CRNMIN				char(02);
+	CRNHOUR				char(02);
+	CRNDOM				char(02);
+	CRNMON				char(02);
+	CRNDOW				char(01);
 	SCRIPT				varchar(100);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
