@@ -15134,8 +15134,9 @@
               END-IF
            END-IF.
            IF      WK-1001-PREFNUM       =   40
-              IF   LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1)
-                                               >=  "1" AND <=  "8"
+              IF  (LNK-SYU-KOH-HKNNUM(KOH-IDX)(1:1)
+                                               >=  "1" AND <=  "8")
+              AND (LNK-SYU-SRYYMD(1:6)         >=  "200810"       )
                  MOVE         1      TO      FLG-HIKOTEI
               END-IF
            END-IF.
