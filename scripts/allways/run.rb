@@ -1,11 +1,10 @@
 #!/usr/bin/ruby
 require 'date'
 
-list = `psql orca -At -F ',' -c 'SELECT CRDOW,CRMON,CRDOM,CRHOUR,SCRIPT from tbl_cron where RUN = \'1\'\;'`.split("\n").map{|r|
+list = `psql orca -At -F ',' -c 'SELECT CRNDOW,CRNMON,CRNDOM,CRNHOUR,SCRIPT from tbl_cron where RUN = \'1\'\;'`.split("\n").map{|r|
   r = r.split(/,/).map{|c| c = "." * c.length if c =~ /^\*/; c }
   [sprintf("%s %s/%s/.. %s", r[0], r[1], r[2], r[3]), r[4..-1].join(" ")]
 }
-
 time = DateTime.now.strftime("%w %D %H")
 
 list.each { |cmd|
