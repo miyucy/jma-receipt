@@ -130,6 +130,7 @@
            03  WRK-GAIHAKU-TEN                 PIC 9(08).
            03  WRK-KHNTEN                      PIC 9(08).
            03  WRK-KSNTEN                      PIC 9(08).
+           03  WRK-KHNSRYCD                    PIC X(09).
            03  WRK-SURYO                       PIC 9(05).
            03  WRK-SRYCDTOTAL                  PIC 9(09).
            03  WRK-BRMSAGAKU                   PIC 9(07).
@@ -1257,13 +1258,20 @@
                    MOVE    LNK-SROUNYUIN-MEISAISU (IDXD)
                                    TO  WGAIHAKU-MEISAISU  (IDXA IDXB)
       *
-                   PERFORM VARYING IDXC    FROM    2   BY  1
+                   MOVE    2       TO  WRK-STIDX
+                   IF    ( HCM34S01-EXGAIHAKU          =   "1" )
+                       MOVE    1   TO  WRK-STIDX
+                   END-IF
+                   MOVE    ZERO    TO  IDX0
+                   PERFORM VARYING IDXC    FROM    WRK-STIDX   BY  1
                            UNTIL ( IDXC                >   20 )
                             OR   ( LNK-SROUNYUIN-SRYCD (IDXD IDXC)
-                                                       =   SPACE )
+                                                   =   SPACE )
+      *
+                       COMPUTE IDX0    =   IDX0    +   1
       *
                        MOVE    LNK-SROUNYUIN-SRYCD (IDXD IDXC)
-                               TO  WGAIHAKU-SRYCD (IDXA IDXB IDXC - 1)
+                               TO  WGAIHAKU-SRYCD (IDXA IDXB IDX0)
       *
                    END-PERFORM
                END-IF

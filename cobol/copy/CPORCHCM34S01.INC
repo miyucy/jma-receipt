@@ -61,6 +61,8 @@
            03  HCM34S01-SRYKADAY-G.
                05  HCM34S01-SRYKADAY           PIC 9(01)
                                                OCCURS  31.
+      *≥∞«Ò ‘Ω∏•—•ø°º•Û∂Ë ¨
+           03  HCM34S01-EXGAIHAKU              PIC X(01).
       * ÷µ—π‡Ã‹
            03  HCM34S01-HENKYAKU-AREA.
       *

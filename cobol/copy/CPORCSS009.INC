@@ -23,6 +23,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SS009-AREA.
+           03  SS009-EXGAIHAKU             PIC X(01).
            03  SS009-OT-AREA.
                05  SS009-HENKYAKU-MAX      PIC 9(05).
                05  SS009-HENKYAKU-TBL      OCCURS  200.

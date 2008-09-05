@@ -332,6 +332,7 @@
                MOVE    NACCT-SRYYM         TO  HCM34S01-SANTEIYM
                MOVE    COMB-HKNCOMBINUM    TO  HCM34S01-HKNCOMBI
                MOVE    COMB-HKNNUM         TO  HCM34S01-HKNNUM
+               MOVE    SS009-EXGAIHAKU     TO  HCM34S01-EXGAIHAKU
       *
                IF    ( COMB-HKNNUM         =     "971" OR "973" )
       *

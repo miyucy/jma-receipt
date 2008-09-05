@@ -61,6 +61,8 @@
            03  WRK-ZAINUM              PIC 9(09).
            03  WRK-KEISANYM.
                05  WRK-KEISANYM9       PIC 9(06).
+           03  WRK-ZAISKBKBN           PIC X(01).
+           03  WRK-SRYCD               PIC X(09).
       *
        01  KEY-AREA.
            03  KEY-SRYKA               PIC X(02).
@@ -87,6 +89,7 @@
        01  CONST-AREA.
            03  CONST-TNSHOUKAI-MAX         PIC 9(05)   VALUE   300.
            03  CONST-HKNCOMBICD            PIC X(09) VALUE "099999914".
+           03  CONST-GAIHAKUCD             PIC X(09) VALUE "099999911".
       *
       *****************************************************************
       *    •’•°•§•Î•Ï•§•¢•¶•»
@@ -175,10 +178,18 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
+           MOVE    "5"                 TO  WRK-ZAISKBKBN
            PERFORM 900-NYUINACCT-KEY17-SEL-SEC
       *
            PERFORM 2001-EDIT-TNSHOUKAI-SEC
       *
+           MOVE    CONST-HKNCOMBICD    TO  WRK-SRYCD
+           PERFORM 2002-EDIT-TNSHOUKAI-SEC
+      *
+           MOVE    "2"                 TO  WRK-ZAISKBKBN
+           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
+      *
+           MOVE    CONST-GAIHAKUCD     TO  WRK-SRYCD
            PERFORM 2002-EDIT-TNSHOUKAI-SEC
       *
            PERFORM 2001-EDIT-NSHOUKAI-SEC
@@ -193,6 +204,7 @@
       *
            IF    ( NACCT-ZAIKAISU  >   ZERO )
       *
+               MOVE    "1"             TO  SS009-EXGAIHAKU
                MOVE    NYUINACCT-REC   TO  LNKNACCT-REC
                CALL    "ORCSS009"  USING   SS009-AREA
                                            LNKNACCT-REC
@@ -312,7 +324,7 @@
        200111-EDIT-TNSHOUKAI-EXT.
            EXIT.
       *****************************************************************
-      *    ∆˛±°ø«Œ≈π‘∞Ÿæ»≤Ò¬‡»ÚŒŒ∞Ë°  ›∏±¡»πÁ§ª°À
+      *    ∆˛±°ø«Œ≈π‘∞Ÿæ»≤Ò¬‡»ÚŒŒ∞Ë°  ›∏±¡»πÁ§ª°¶≥∞«Ò°À
       *****************************************************************
        2002-EDIT-TNSHOUKAI-SEC         SECTION.
       *
@@ -323,12 +335,11 @@
       *
                    MOVE    SS009-SRYKA-DAY (IDX-DAY)
                                            TO  KEY-SRYKA
-                   MOVE    NACCT-DAY (IDX-DAY)
+                   MOVE    SS009-HKNCOMBI-DAY (IDX-DAY)
                                            TO  KEY-HKNCOMBI9
                    MOVE    "00"
                                            TO  KEY-SRYKBN
-                   MOVE    CONST-HKNCOMBICD
-                                           TO  KEY-SRYCD
+                   MOVE    WRK-SRYCD       TO  KEY-SRYCD
                    MOVE    SS009-BRMNUM-DAY(IDX-DAY)
                                            TO  KEY-BRMNUM
                    MOVE    SS009-SAGAKUCD-DAY(IDX-DAY)
@@ -512,7 +523,7 @@
            MOVE    SS010-PTID          TO  NACCT-PTID
            MOVE    SS010-SRYYM         TO  NACCT-SRYYM
            MOVE    "1"                 TO  NACCT-NYUGAIKBN
-           MOVE    "5"                 TO  NACCT-ZAISKBKBN
+           MOVE    WRK-ZAISKBKBN       TO  NACCT-ZAISKBKBN
            MOVE    NYUINACCT-REC       TO  MCPDATA-REC
            MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
            MOVE    "key17"             TO  MCP-PATHNAME

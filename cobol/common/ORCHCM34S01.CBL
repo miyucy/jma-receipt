@@ -145,6 +145,7 @@
            03  WRK-GAIHAKU-TEN                 PIC 9(08).
            03  WRK-KHNTEN                      PIC S9(08).
            03  WRK-KSNTEN                      PIC S9(08).
+           03  WRK-KHNSRYCD                    PIC X(09).
            03  WRK-HYOKETU-TEN                 PIC S9(08).
            03  WRK-HYOKETU-SRYCD               PIC X(09).
            03  WRK-SENTEI-ZAITEN               PIC  9(08).
@@ -1257,6 +1258,7 @@
       *
       *    入院基本料のコードを探す
            MOVE    ZERO                TO  WRK-KHNTEN
+           MOVE    SPACE               TO  WRK-KHNSRYCD
            MOVE    ZERO                TO  WRK-HYOKETU-TEN
            MOVE    SPACE               TO  WRK-HYOKETU-SRYCD
            MOVE    ZERO                TO  IDX-KHN
@@ -1293,11 +1295,13 @@
       *
            MOVE    NSRY-SRYCD (IDX-KHN)
                                        TO  WRK-TNS-SRYCD
+                                           WRK-KHNSRYCD
       *
       *    看護比率基準未達のチェック
            PERFORM 2001111-KNGMITATU-CHK-SEC
            IF    ( WRK-GAIHAKU-KHNTEN  NOT =   ZERO )
                MOVE    WRK-GAIHAKU-KHNTEN  TO  WRK-KHNTEN
+               MOVE    WRK-TNS-SRYCD       TO  WRK-KHNSRYCD
            END-IF
       *
       *    IF    ( WRK-HYOKETU-TEN NOT =   ZERO )
@@ -1524,6 +1528,14 @@
                END-EVALUATE
            END-IF
       *
+           IF    ( WRK-KHNSRYCD   NOT =   SPACE )
+           AND   ( WRK-KHNSRYCD   IS  NUMERIC )
+               MOVE    WRK-KHNSRYCD   TO  WRK-SRYCD
+               COMPUTE WRK-GAIHAKU-SRYCDTOTAL
+                   =   WRK-GAIHAKU-SRYCDTOTAL
+                   +   WRK-SRYCD-9
+           END-IF
+      *
            IF    ( WRK-GAIHAKU-SRYCD   NOT =   SPACE )
            AND   ( WRK-GAIHAKU-SRYCD   IS  NUMERIC )
                MOVE    WRK-GAIHAKU-SRYCD   TO  WRK-SRYCD
@@ -1693,8 +1705,17 @@
                    MOVE    WRK-GAIHAKU-SRYCDTOTAL
                                        TO  WGAIHAKU-SRYCDTOTAL
                                                            (IDXA IDXB)
-                   MOVE    WRK-GAIHAKU-SRYCD
+      *
+                   IF    ( HCM34S01-EXGAIHAKU =   "1" )
+                       MOVE    WRK-KHNSRYCD
                                        TO  WGAIHAKU-SRYCD  (IDXA IDXB 1)
+      *
+                       MOVE    WRK-GAIHAKU-SRYCD
+                                       TO  WGAIHAKU-SRYCD  (IDXA IDXB 2)
+                   ELSE
+                       MOVE    WRK-GAIHAKU-SRYCD
+                                       TO  WGAIHAKU-SRYCD  (IDXA IDXB 1)
+                   END-IF
       *            IF    ( WRK-HYOKETU-SRYCD   NOT =   SPACE )
       *                MOVE    WRK-HYOKETU-SRYCD
       *                                TO  WGAIHAKU-SRYCD  (IDXA IDXB 2)
