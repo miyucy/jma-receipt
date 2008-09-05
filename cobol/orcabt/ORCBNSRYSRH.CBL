@@ -228,7 +228,7 @@
                                    TO  JOB-SHELLID
            MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    "ORCBNSRYSRH"   TO  JOB-PGID
-           MOVE    "入院診療行為照会データ作成"
+           MOVE    "入院診療行為照会情報作成"
                                    TO  JOB-SHELLMSG
            PERFORM 800-ORCSJOB-SEC
       *
@@ -373,7 +373,7 @@
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBNSRYSRH"       TO  JOB-PGID
-           MOVE    "入院診療行為照会データ作成"
+           MOVE    "入院診療行為照会情報作成"
                                        TO  JOB-SHELLMSG
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
            PERFORM 800-ORCSJOB-SEC
