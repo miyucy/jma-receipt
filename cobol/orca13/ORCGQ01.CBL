@@ -121,6 +121,9 @@
            03  IDXA                                PIC 9(04).
            03  IDXB                                PIC 9(04).
            03  IDXC                                PIC 9(04).
+           03  IDXD                                PIC 9(04).
+           03  IDXE                                PIC 9(04).
+           03  IDXF                                PIC 9(04).
            03  IDXZ                                PIC 9(04).
            03  IDX-LEN                             PIC 9(05).
            03  IDX-CMB                             PIC 9(05).
@@ -172,6 +175,10 @@
            03  WRK-SIZE                            PIC S9(05).
            03  WRK-SIZE-STR                        PIC X(500).
            03  WRK-SIZE-TMP                        PIC X(500).
+           03  WRK-NAME                            PIC X(200).
+           03  WRK-NAME-G.
+               05  WRK-NAME1                       PIC X(100).
+               05  WRK-NAME2                       PIC X(100).
            03  WRK-NAME1-G.
                05  WRK-NAME11           PIC X(20).
                05  WRK-NAME12           PIC X(50).
@@ -188,8 +195,8 @@
            03  WRK-UID                  PIC X(36).
            03  WRK-CMB-CD                          PIC X(50).
            03  WRK-CMB-ITM-G.
-               07  WRK-CMB-ITM                     PIC X(200).
-               07  WRK-CMB-ITM2                    PIC X(200).
+               05  WRK-CMB-ITM                     PIC X(200).
+               05  WRK-CMB-ITM2                    PIC X(200).
            03  WRK-QIDMSG                          PIC X(80).
            03  WRK-UPDKBN               PIC X(03).
       *
@@ -5801,10 +5808,17 @@
       *
                MOVE    SPA-GMN-Q01-JYUSHO  (IDXC)
                                            TO  SPA-Q01-JYUSHO  (IDXC)
+               INSPECT SPA-Q01-JYUSHO (IDXC)
+                       REPLACING   ALL "¡ö" BY  "%%"
                MOVE    SPA-GMN-Q01-KANANAME(IDXC) 
-                                           TO  SPA-Q01-KANANAME(IDXC)
+                                           TO  WRK-NAME
+               PERFORM 49011-EDIT-SRHNAME-SEC
+               MOVE    WRK-NAME            TO  SPA-Q01-KANANAME(IDXC)
+      *
                MOVE    SPA-GMN-Q01-NAME    (IDXC)
-                                           TO  SPA-Q01-NAME    (IDXC)
+                                           TO  WRK-NAME
+               PERFORM 49011-EDIT-SRHNAME-SEC
+               MOVE    WRK-NAME            TO  SPA-Q01-NAME    (IDXC)
       *
            END-PERFORM
       *
@@ -5837,6 +5851,9 @@
       *
                MOVE    SPA-GMN-Q01-COMMENT (IDXC)
                                            TO  SPA-Q01-COMMENT (IDXC)
+      *
+               INSPECT SPA-Q01-COMMENT (IDXC)
+                       REPLACING   ALL "¡ö" BY  "%%"
       *
                MOVE    SPA-GMN-Q01-TEL (IDXC)
                                            TO  SPA-Q01-TEL (IDXC)
@@ -5953,6 +5970,64 @@
        4901-SPASET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    »áÌ¾¸¡º÷¾ò·ïÊÔ½¸½èÍý
+      *****************************************************************
+       49011-EDIT-SRHNAME-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-NAME-G
+           MOVE    1                   TO  IDXD
+           PERFORM VARYING IDXF    FROM    1   BY  2
+                   UNTIL ( IDXF    >   200 )
+               IF    ( WRK-NAME (IDXF:2)   =   "¡ö" )
+                   COMPUTE IDXE    =   IDXF    +   2
+                   IF    ( WRK-NAME (IDXE:2)   =   "¡¡" )
+                       COMPUTE IDXE            =   IDXE     +  2
+                   END-IF
+                   IF    ( WRK-NAME (IDXE:)    =   SPACE )
+                       MOVE    SPACE               TO  WRK-NAME2
+                   ELSE
+                       MOVE    WRK-NAME (IDXE:)    TO  WRK-NAME2
+                   END-IF
+                   MOVE    200                 TO  IDXF
+               ELSE
+                       MOVE    WRK-NAME (IDXF:2)   TO  WRK-NAME1
+                                                               (IDXD:2)
+                       COMPUTE IDXD    =   IDXD    +   2
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE           TO  WRK-NAME
+           IF    ( WRK-NAME1       NOT =   SPACE )
+            AND  ( WRK-NAME2           =   SPACE )
+               STRING  WRK-NAME1       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+               INTO    WRK-NAME
+               END-STRING
+           END-IF
+           IF    ( WRK-NAME1       NOT =   SPACE )
+            AND  ( WRK-NAME2       NOT =   SPACE )
+               STRING  WRK-NAME1       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                       "¡¡"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+               INTO    WRK-NAME
+               END-STRING
+           END-IF
+           IF    ( WRK-NAME1           =   SPACE )
+            AND  ( WRK-NAME2       NOT =   SPACE )
+               STRING  "%"             DELIMITED  BY  SIZE
+                       "¡¡"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+               INTO    WRK-NAME
+               END-STRING
+           END-IF
+      *
+           .
+       49011-EDIT-SRHNAME-EXT.
+           EXIT.
       *****************************************************************
       *       ½ÅÊ£¥Á¥§¥Ã¥¯
       *****************************************************************

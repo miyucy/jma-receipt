@@ -98,6 +98,9 @@
            03  IDX4                PIC 9(04).
            03  IDX5                PIC 9(05).
            03  IDXA                PIC 9(04).
+           03  IDXD                PIC 9(05).
+           03  IDXE                PIC 9(05).
+           03  IDXF                PIC 9(05).
            03  IDX-CMB             PIC 9(05).
       *
       *    °ì»þÎÎ°è
@@ -140,7 +143,7 @@
            03  WRK-BRMNUM-Z        PIC ZZZZZZZ9.
       *
            03  WRK-JYOKEN-AREA.
-               05  WRK-NAME        PIC X(100).
+               05  WRK-NAME        PIC X(200).
                05  WRK-STAGE       PIC 9(03).
                05  WRK-EDAGE       PIC 9(03). 
                05  WRK-ADRS        PIC X(150).
@@ -204,6 +207,9 @@
            03  WRK-AGE-G.
                05  WRK-AGE-Z                       PIC ---9.
                05  WRK-AGE-MEI                     PIC X(04).
+           03  WRK-NAME-G.
+               05  WRK-NAME1                       PIC X(100).
+               05  WRK-NAME2                       PIC X(100).
       *
        01  WRK-CONS-AREA.
            03  WRK-CONS-AGE-TABLE.
@@ -2389,17 +2395,8 @@
       *
       *    ´µ¼Ô»áÌ¾ 
            IF      SPA-GMN-NAME        NOT =   SPACE
-               MOVE    ZERO                TO  WRK-MOJISU1
-               PERFORM VARYING IDX FROM    30   BY  -1
-                       UNTIL   IDX <       1
-                   IF      SPA-GMN-NAME (IDX:1) NOT =   SPACE
-                       MOVE    IDX              TO  WRK-MOJISU1
-                       MOVE    1                TO  IDX
-                   END-IF
-               END-PERFORM
                MOVE    SPA-GMN-NAME        TO  WRK-NAME
-               COMPUTE WRK-MOJISU1     =   WRK-MOJISU1    +   1            
-               MOVE    "%"                 TO  WRK-NAME (WRK-MOJISU1:1) 
+               PERFORM 49011-EDIT-SRHNAME-SEC
            END-IF                               
       *
       *    ³«»ÏÇ¯Îð
@@ -2454,6 +2451,8 @@
                MOVE    SPA-GMN-ADRS        TO  WRK-ADRS
                COMPUTE WRK-MOJISU2     =   WRK-MOJISU2     +   1            
                MOVE    "%"                 TO  WRK-ADRS (WRK-MOJISU2:1) 
+               INSPECT WRK-ADRS
+                       REPLACING   ALL "¡ö" BY  "%%"
            END-IF                               
       *
       *    £Ó£Ñ£ÌºîÀ®
@@ -2484,10 +2483,11 @@
       *        ´µ¼Ô»áÌ¾¡ÊÁ°Êý°ìÃ×¡Ë
                IF      SPA-GMN-NAME        NOT =   SPACE
                    PERFORM 45011-JYOKEN-HENSYU-SEC
-                   STRING  "kananame like '"       DELIMITED  BY  SIZE
-                           WRK-NAME (1:WRK-MOJISU1)
-                                                   DELIMITED  BY  SIZE
-                           "'"                     DELIMITED  BY  SIZE                        
+                   STRING  "(( name like '"        DELIMITED  BY  SIZE
+                           WRK-NAME                DELIMITED  BY  SPACE
+                           "')OR( kananame like '" DELIMITED  BY  SIZE
+                           WRK-NAME                DELIMITED  BY  SPACE
+                           "'))"                   DELIMITED  BY  SIZE
                            INTO    WRK-SQL
                            WITH    POINTER WRK-SQL-PNT
                    END-STRING
@@ -2674,6 +2674,64 @@
        4501-SQL-EDIT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    »áÌ¾¸¡º÷¾ò·ïÊÔ½¸½èÍý
+      *****************************************************************
+       49011-EDIT-SRHNAME-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-NAME-G
+           MOVE    1                   TO  IDXD
+           PERFORM VARYING IDXF    FROM    1   BY  2
+                   UNTIL ( IDXF    >   200 )
+               IF    ( WRK-NAME (IDXF:2)   =   "¡ö" )
+                   COMPUTE IDXE    =   IDXF    +   2
+                   IF    ( WRK-NAME (IDXE:2)   =   "¡¡" )
+                       COMPUTE IDXE            =   IDXE     +  2
+                   END-IF
+                   IF    ( WRK-NAME (IDXE:)    =   SPACE )
+                       MOVE    SPACE               TO  WRK-NAME2
+                   ELSE
+                       MOVE    WRK-NAME (IDXE:)    TO  WRK-NAME2
+                   END-IF
+                   MOVE    200                 TO  IDXF
+               ELSE
+                       MOVE    WRK-NAME (IDXF:2)   TO  WRK-NAME1
+                                                               (IDXD:2)
+                       COMPUTE IDXD    =   IDXD    +   2
+               END-IF
+           END-PERFORM
+      *
+           MOVE    SPACE           TO  WRK-NAME
+           IF    ( WRK-NAME1       NOT =   SPACE )
+            AND  ( WRK-NAME2           =   SPACE )
+               STRING  WRK-NAME1       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+               INTO    WRK-NAME
+               END-STRING
+           END-IF
+           IF    ( WRK-NAME1       NOT =   SPACE )
+            AND  ( WRK-NAME2       NOT =   SPACE )
+               STRING  WRK-NAME1       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+                       "¡¡"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+               INTO    WRK-NAME
+               END-STRING
+           END-IF
+           IF    ( WRK-NAME1           =   SPACE )
+            AND  ( WRK-NAME2       NOT =   SPACE )
+               STRING  "%"             DELIMITED  BY  SIZE
+                       "¡¡"            DELIMITED  BY  SIZE
+                       WRK-NAME2       DELIMITED  BY  SPACE
+                       "%"             DELIMITED  BY  SIZE
+               INTO    WRK-NAME
+               END-STRING
+           END-IF
+      *
+           .
+       49011-EDIT-SRHNAME-EXT.
+           EXIT.
       *****************************************************************
       *    ¾ò·ïÊÔ½¸½èÍý
       *****************************************************************
