@@ -83,8 +83,6 @@
        01  IDX-AREA.
            03  IDX-STR             PIC 9(04).
            03  IDX-STR1            PIC 9(04).
-           03  IDX-KET             PIC 9(04).
-           03  IDX-KET1            PIC 9(04).
       *
            03  IDX-ZAI             PIC 9(03).
            03  IDX-SRY             PIC 9(02).
@@ -646,28 +644,21 @@
        250-MHEN-SYORI-SET-SEC      SECTION.
       *
       *    初期値セット
-           MOVE    1               TO  IDX-STR
-           MOVE    0               TO  IDX-KET
+           MOVE    1              TO  IDX-STR
+           MOVE    0              TO  IDX-STR1
       *
       *    最大文字を超えるか編集データがなくなるまで繰り返す
            PERFORM UNTIL  (IDX-STR     >   23 )
                    OR     (WRK-HENNAIYO(IDX-STR:)    =   SPACE)
-      *        全角セット
-               IF      WRK-HENNAIYO(IDX-STR:1)    >=  X"A1"
-                   ADD     2               TO  IDX-STR
-                   ADD     2               TO  IDX-KET
-      *        半角セット
-               ELSE
-                   ADD     1               TO  IDX-STR
-                   ADD     1               TO  IDX-KET
-               END-IF
+               ADD     1               TO  IDX-STR
+               ADD     1               TO  IDX-STR1
            END-PERFORM
       *
-           COMPUTE IDX-KET1    =   54  -   IDX-KET
+           COMPUTE IDX-STR     =   54  -   IDX-STR1
       *
       *    文字が重なる場合は１行下に表示する
-           IF    ( HCM62-NAIYO1(CNT-LINE)(IDX-KET1:)   NOT =   SPACE )
-           OR    ( HCM62-NAIYO2(CNT-LINE) NOT =   SPACE )
+           IF    ( HCM62-NAIYO2(CNT-LINE)              NOT =   SPACE )
+           OR    ( HCM62-NAIYO1(CNT-LINE)(IDX-STR:)    NOT =   SPACE )
                PERFORM 250-PAGE-CHK-SEC
                MOVE    WRK-HENNAIYO    TO  HCM62-NAIYO2(CNT-LINE)
            ELSE
@@ -685,36 +676,24 @@
       *
       *    初期値セット
            MOVE    1              TO  IDX-STR
-           MOVE    4              TO  IDX-KET
+           MOVE    4              TO  IDX-STR1
       *
       *    編集データがなくなるまで繰り返す
            PERFORM UNTIL  (IDX-STR     >   100 )
                    OR     (WRK-HENSYUDATA(IDX-STR:)    =   SPACE)
-      *        改行なら最大字セット
-               IF      WRK-HENSYUDATA(IDX-STR:1)   =   X"0A"
-                   MOVE    54              TO  IDX-KET
-                   ADD     1               TO  IDX-STR
-               ELSE
-      *            全角セット
-                   IF      WRK-HENSYUDATA(IDX-STR:1)    >=  X"A1"
-                       MOVE    WRK-HENSYUDATA(IDX-STR:2)
-                                   TO  WRK-HENLINE(IDX-KET:2)
-                       ADD     2               TO  IDX-STR
-                       ADD     2               TO  IDX-KET
-                   END-IF
-               END-IF
+      *        全角セット
+               MOVE    WRK-HENSYUDATA(IDX-STR:2)
+                                       TO  WRK-HENLINE(IDX-STR1:2)
+               ADD     2               TO  IDX-STR
+               ADD     2               TO  IDX-STR1
       *        最大字で改行
-               IF         (IDX-KET         >=  54)
+               IF         (IDX-STR1        >=  54)
                    OR    ((IDX-STR         <=  100)
                    AND    (WRK-HENSYUDATA(IDX-STR:) =   SPACE))
                    PERFORM 250-PAGE-CHK-SEC
                    MOVE    WRK-HENLINE     TO  HCM62-NAIYO1(CNT-LINE)
                    MOVE    SPACE           TO  WRK-HENLINE
-                   MOVE    4               TO  IDX-KET
-      *            改行なら次へ
-                   IF      WRK-HENSYUDATA(IDX-STR:1)   =   X"0A"
-                       COMPUTE IDX-STR =   IDX-STR     +   1
-                   END-IF
+                   MOVE    4               TO  IDX-STR1
                END-IF
            END-PERFORM
       *
