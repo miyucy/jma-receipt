@@ -364,6 +364,7 @@
       *  04.02.22    NACL-ÌçÏÆ    08/08/20  ÂçºåÉÜÃÏÊý¸øÈñÂÐ±þ
       *  04.02.23    NACL-ÌçÏÆ    08/08/26  £·£°ºÐÌ¤Ëþ¸½ÊªµëÉÕ¥Þ¥ëÄ¹¤Ë´Ø¤¹¤ë½¤Àµ
       *  04.02.24    NACL-ÌçÏÆ    08/09/08  Ê¼¸Ë¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  04.02.25    NACL-ÌçÏÆ    08/09/09  ·úÀßÏ¢¹çÁÈ¹ç¡ÜÀº¿À¡¢·ë³ËÂÐ±þ
       *
       *  04.03.01    NACL-ÌçÏÆ    08/07/07  Ê£¿ôÊÝ¸±ÁÈ¤ß¹ç¤ï¤»»ÈÍÑ»þ¤Î
       *                                     ÀÁµáÅÀ¡¦¼ÂÆü¿ôµ­ºÜÂÐ±þ
@@ -780,7 +781,6 @@
                05  WRK-PARA-SYSYMD                     PIC X(08).
                05  WRK-PARA-JOBID                      PIC 9(07).
                05  WRK-PARA-SHELLID                    PIC X(08).
-      *****03  WRK-PARA-PRTKBN                         PIC X(01).
            03  WRK-PARA-HOSPNUM                        PIC 9(02).
       *
            03  WRK-SYS-SRYYMD                          PIC X(08).
@@ -2662,10 +2662,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                OR ((RECE02-SRYYM >= 200804       ) AND
                                    (ACCT-SRYKBN  =  "21" OR "22" OR
                                                     "23"        ))
-      *******                  OR ((WRK-PARA-PRTKBN
-      *******                                    =  "2"          ) AND
-      *******                      (ACCT-SRYKBN  =  "21" OR "22" OR
-      *******                                       "23"        ))
                                  IF  ACCT-SRYCDTOTAL = CONS-TOKKI1 OR
                                                        CONS-TOKKI2 OR
                                                        CONS-TOKKI3 OR
@@ -8208,7 +8204,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                               "133181" OR "133199" OR
                               "133207" OR "133223" OR
                               "133249" OR "133256" OR
-                              "133272"
+                              "133272" OR "233064"
                IF  RECE02-RJNHKNNUM  NOT =  SPACE
                 CONTINUE
                ELSE
@@ -8817,7 +8813,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                         "133181" OR "133199" OR
                                         "133207" OR "133223" OR
                                         "133249" OR "133256" OR
-                                        "133272"               ))
+                                        "133272" OR "233064"   ))
                      MOVE  "1"  TO
                              RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                ELSE
