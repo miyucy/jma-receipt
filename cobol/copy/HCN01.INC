@@ -9,7 +9,8 @@
               03  HCN01-BIRTHMM   PIC X(2).
               03  HCN01-BIRTHDD   PIC X(2).
             02  HCN01-NENREI    PIC X(3).
-            02  HCN01-SEX   PIC X(2)    OCCURS  2 TIMES.
+            02  HCN01-SEX
+                    PIC X(2)    OCCURS  2 TIMES.
             02  HCN01-ADRS  PIC X(100).
             02  HCN01-TEL   PIC X(15).
             02  HCN01-RENNAME   PIC X(58).
@@ -20,7 +21,8 @@
             02  HCN01-KINADRS   PIC X(116).
             02  HCN01-KINTEL    PIC X(15).
             02  HCN01-SINRYOKA  PIC X(10).
-            02  HCN01-DR    PIC X(26)   OCCURS  3 TIMES.
+            02  HCN01-DR
+                    PIC X(26)   OCCURS  3 TIMES.
             02  HCN01-SYUTOKYMD.
               03  HCN01-SYUTOKGG  PIC X(4).
               03  HCN01-SYUTOKYY  PIC X(2).
@@ -67,3 +69,6 @@
                 04  HCN01-ENDYY PIC X(2).
                 04  HCN01-ENDMM PIC X(2).
                 04  HCN01-ENDDD PIC X(2).
+              03  HCN01-TENKI
+                      PIC X(2)    OCCURS  3 TIMES.
+              03  HCN01-TENKIMSG  PIC X(2).

@@ -74,6 +74,7 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-HKNJAINF        PIC 9(01).
            03  FLG-PTRSIINF        PIC 9(01).
+           03  FLG-LOOP-END        PIC 9(01).
       *
            03  FLG-OK              PIC 9(01).
       *
@@ -137,7 +138,7 @@
            03  WRK-MAE-INPUT           PIC X(200).
            03  WRK-OUT-INPUT           PIC X(200).
       *
-           03  WRK-Z9                  PIC Z9.
+           03  WRK-ZZZ9                PIC ZZZ9.
            03  WRK-Z3                  PIC ZZ9.
       *
        01  WRK-HENSYU-AREA.
@@ -201,6 +202,9 @@
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *
+      *    患者登録機能制御情報
+           COPY  "CPSK1017.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -221,6 +225,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *    病名編集サブ
+           COPY    "CPORCSMKBYOMEI.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -296,6 +303,22 @@
                                            ORCSPRTNMAREA
                                            SPA-AREA
                                            SYS-1034-REC
+      *
+           MOVE    SPACE               TO  SYS-1017-REC
+           INITIALIZE                  SYS-1017-REC
+           MOVE    "1017"              TO  SYS-1017-KANRICD
+           MOVE    "*"                 TO  SYS-1017-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1017-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1017-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1017-HOSPNUM
+           MOVE    SYS-1017-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-READ-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1017-REC
+           ELSE
+               INITIALIZE                  SYS-1017-REC
+           END-IF
+      *
            .
        110-PARA-HENSYU-EXT.
            EXIT.
@@ -577,16 +600,15 @@
       *    保険項目編集
            PERFORM 3001-HCN01-ALLHENSYU-SEC
       *
-      *-   IF      SPA-SRYKA      NOT =   SPACE
-      *-       病名を印刷する
-      *-       PERFORM 3002-BYOMEI-PRT-SEC
-      *-   ELSE
-      *-       カルテ印刷
-      *-       PERFORM 2003-HCN01-PRINT-SEC
-      *-   END-IF
+           IF   (  SPA-SRYKA                 NOT =   SPACE )
+            AND (  SYS-1017-KARUTE-BYOMEI    NOT =   "2" )
+      *        病名を印刷する
+               PERFORM 3002-BYOMEI-PRT-SEC
+           ELSE
+      *        カルテ印刷
+               PERFORM 2003-HCN01-PRINT-SEC
+           END-IF
       *
-      *    カルテ印刷
-           PERFORM 2003-HCN01-PRINT-SEC
            .
        300-ALL-PRT-EXT.
            EXIT.
@@ -865,6 +887,7 @@
        3002-BYOMEI-PRT-SEC        SECTION.
       *
       *    患者病名マスタより編集
+           MOVE    10                  TO  CNT-MEI
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  WRK-PRT-CNT
       *
@@ -886,6 +909,7 @@
            END-IF
            PERFORM 
                    UNTIL   FLG-PTBYOMEI    NOT =   ZERO
+      *
                ADD     1               TO  IDX
                IF      WRK-PRT-CNT     =   1
                    IF      IDX             >   10
@@ -924,11 +948,11 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF      IDX             >   ZERO
-               IF      WRK-PRT-CNT     =   1
+           IF      WRK-PRT-CNT     =   1
       *            カルテ印刷
-                   PERFORM 2003-HCN01-PRINT-SEC
-               ELSE
+               PERFORM 2003-HCN01-PRINT-SEC
+           ELSE
+               IF      IDX             >   ZERO
       *            続紙印刷
                    PERFORM 2005-HCN011-PRINT-SEC
                END-IF
@@ -942,12 +966,17 @@
       *****************************************************************
        3103-HCN01-BYOMEI-SET-SEC          SECTION.
       *
+           INITIALIZE                  ORCSMKBYOMEIAREA
+           MOVE    PTBYO-UTAGAIFLG TO  SMKBYO-UTAGAIFLG
       *    カルテ病名がある時はカルテ病名
-           IF      PTBYO-CHARTBYOMEI   =   SPACE
-               MOVE    PTBYO-BYOMEI        TO  HCN01-BYOMEI (IDX)
+           IF    ( PTBYO-CHARTBYOMEI   =   SPACE )
+               MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
            ELSE
-               MOVE    PTBYO-CHARTBYOMEI   TO  HCN01-BYOMEI (IDX)
+               MOVE    PTBYO-CHARTBYOMEI   TO  SMKBYO-BYOMEI
            END-IF
+           CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
+           MOVE    SMKBYO-BYOMEI       TO  HCN01-BYOMEI (IDX)
+      *
       *    開始年月日（診療年月日）
            MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
@@ -964,6 +993,19 @@
                MOVE    WRK-HDD             TO  HCN01-ENDDD  (IDX)
            END-IF
       *
+           EVALUATE    PTBYO-TENKIKBN
+           WHEN    "1"
+               MOVE    "○"            TO  HCN01-TENKI(IDX 1)
+           WHEN    "2"
+               MOVE    "○"            TO  HCN01-TENKI(IDX 3)
+               MOVE    "死"            TO  HCN01-TENKIMSG(IDX)
+           WHEN    "3"
+               MOVE    "○"            TO  HCN01-TENKI(IDX 2)
+           WHEN    "8"
+               MOVE    "○"            TO  HCN01-TENKI(IDX 3)
+               MOVE    "移"            TO  HCN01-TENKIMSG(IDX)
+           END-EVALUATE
+      *
            .
        3103-HCN01-BYOMEI-SET-EXT.
            EXIT.
@@ -973,8 +1015,8 @@
        3104-HCN011-BYOMEI-SET-SEC          SECTION.
       *
            ADD     1                   TO  CNT-MEI
-           MOVE    CNT-MEI             TO  WRK-Z9
-           MOVE    WRK-Z9              TO  HCN011-CD (IDX)
+           MOVE    CNT-MEI             TO  WRK-ZZZ9
+           MOVE    WRK-ZZZ9            TO  HCN011-CD (IDX)
       *
       *    カルテ病名がある時はカルテ病名
            IF      PTBYO-CHARTBYOMEI   =   SPACE
@@ -997,6 +1039,19 @@
                MOVE    WRK-HMM             TO  HCN011-ENDMM  (IDX)
                MOVE    WRK-HDD             TO  HCN011-ENDDD  (IDX)
            END-IF
+      *
+           EVALUATE    PTBYO-TENKIKBN
+           WHEN    "1"
+               MOVE    "○"            TO  HCN011-TENKI(IDX 1)
+           WHEN    "2"
+               MOVE    "○"            TO  HCN011-TENKI(IDX 3)
+               MOVE    "死"            TO  HCN011-TENKIMSG(IDX)
+           WHEN    "3"
+               MOVE    "○"            TO  HCN011-TENKI(IDX 2)
+           WHEN    "8"
+               MOVE    "○"            TO  HCN011-TENKI(IDX 3)
+               MOVE    "移"            TO  HCN011-TENKIMSG(IDX)
+           END-EVALUATE
       *
            .
        3104-HCN011-BYOMEI-SET-EXT.
@@ -1198,13 +1253,41 @@
       *****************************************************************
        950-PTBYOMEI-READ-SEC         SECTION.
       *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
-               MOVE    ZERO            TO  FLG-PTBYOMEI
-           ELSE
-               MOVE    1               TO  FLG-PTBYOMEI
-           END-IF
+      *
+           MOVE    ZERO                TO  FLG-LOOP-END
+      *
+           PERFORM UNTIL ( FLG-PTBYOMEI    NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               MOVE    "DBFETCH"           TO  MCP-FUNC
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
+                   MOVE    ZERO            TO  FLG-PTBYOMEI
+      *
+                   MOVE    1               TO  FLG-LOOP-END
+      *
+                   IF    ( SYS-1017-KARUTE-BYOMEI    =   "1"  )
+                    AND  ( PTBYO-TENKIYMD        NOT =   SPACE)
+                       MOVE    ZERO        TO  FLG-LOOP-END
+                   END-IF
+      *
+                   IF    ( PTBYO-NYUGAIKBN =   SPACE )
+                    OR   ( PTBYO-NYUGAIKBN =   "1" )
+                       CONTINUE
+                   ELSE
+                       MOVE    ZERO        TO  FLG-LOOP-END
+                   END-IF
+      *
+               ELSE
+                   MOVE    1               TO  FLG-PTBYOMEI
+               END-IF
+      *
+      *
+           END-PERFORM
+      *
       *
            .
        950-PTBYOMEI-READ-EXT.

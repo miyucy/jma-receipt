@@ -366,7 +366,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Mon, 25 Dec 2000 04:57:13 GMT</last_modification_time>
       </signal>
-      <label>続紙発行</label>
+      <label>続紙頭書</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
