@@ -1308,6 +1308,7 @@
       *
            INITIALIZE                  M00
       *
+           MOVE    SYS-1001-HOSPNAME   TO  M00-TITLE
            MOVE    SPA-GMN-GSEL        TO  M00-SELNUM
            MOVE    SPA-GMN-LBLMSG      TO  M00-LBLMSG
            MOVE    SPA-GMN-LBLMSG2     TO  M00-LBLMSG2
