@@ -13489,6 +13489,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2001"
                WHEN    "2002"
                WHEN    "0127"
+               WHEN    "0131"
                    MOVE    "£Î£Ï"            TO  KID1-B01
            END-EVALUATE
       *
