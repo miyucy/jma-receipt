@@ -39,10 +39,8 @@ fi
 OLDLOG=/home/orca/orcbsd01.log
 LOGFILE="/var/log/jma-receipt/${15}orcb041.log"
 
-    echo "ccccc" > /tmp/ccc.txt
 for p in $(pgrep -f "$0 $1" ) ; do
   if [ $p -ne $$ ]; then
-    echo "aaaa" > /tmp/aaa.txt
     pkill -P $p
   fi
 done
@@ -69,7 +67,6 @@ if [ $(pgrep -fn "$0 $1") -eq $$ ] ; then
         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${13}${14},${15}
 
 ##      作業ファイル削除
-        echo "$$" > /tmp/test.$$
         rm /tmp/${15}00DTCHK*.dat
         rm /tmp/${15}00DCACCT*.dat
         rm /tmp/${15}00DCSRY*.dat
