@@ -196,6 +196,7 @@
            03  FLG-CHKMST                              PIC 9(01).
            03  FLG-TENSU                               PIC 9(01).
            03  FLG-PTBYOMEI                            PIC 9(01).
+           03  FLG-NYUINACCT                           PIC 9(01).
            03  FLG-DTCHK003                            PIC 9(01).
            03  FLG-DTCHK008                            PIC 9(01).
            03  FLG-DTCHK009                            PIC 9(01).
@@ -523,6 +524,7 @@
            03  WRK-HKNFLG                              PIC 9(01).
            03  WRK-SRTKBN                              PIC X(01).
            03  WRK-BYOEDYMD                            PIC X(08).
+           03  WRK-ZAISKBKBN                           PIC X(01).
       *
        01  TKANRIRYO-AREA.
            03  TKANRIRYO-OCC                           OCCURS  9.
@@ -819,6 +821,10 @@
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
+      *    入院会計
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
+      *
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
@@ -848,6 +854,9 @@
       *
       *    病名編集サブ
            COPY    "CPORCSMKBYOMEI.INC".
+      *
+      *    入院料未算定日取得サブ
+           COPY    "CPORCSNYUINDAY.INC".
       *
       *    保険組合せ取得サブ
            COPY    "CPORCSDTCHK02.INC".
@@ -1699,6 +1708,7 @@
                                        THKNCOMBI-AREA
                                        TNACCT-KKN-AREA
                                        TKHNRYO-HKNCOMBI-AREA
+                                       TNYUINRYO-AREA
                                        TNACCT-GAIHAKU-AREA
                                        TSRYCD-AREA
                                        TJNISSU-AREA
@@ -1801,6 +1811,16 @@
       *
            END-PERFORM
       *
+           IF    ( ORCBSD01-NYUGAIKBN      =   "1" )
+      *
+               PERFORM 200111-TNYUINRYO-TAIHI-SEC
+      *
+               PERFORM 200111-TKHNRYO-HKNCOMBI-HEN-SEC
+      *
+               PERFORM 200111-NACCT-GAIHAKU-TAIHI-SEC
+      *
+           END-IF
+      *
            .
        200111-SRYINF-TAIHI-EXT.
            EXIT.
@@ -1877,14 +1897,6 @@
       *
            IF    ( FLG-STS-HKNCOMBI    =   1 )
                PERFORM 200111-NACCT-KKN-TAIHI-SEC
-           END-IF
-      *
-           IF    ( FLG-STS-NYUKHN  =   1 )
-               PERFORM 200111-TKHNRYO-HKNCOMBI-HEN-SEC
-           END-IF
-      *
-           IF    ( FLG-STS-GAIHAKU  =   1 )
-               PERFORM 200111-NACCT-GAIHAKU-TAIHI-SEC
            END-IF
       *
            .
@@ -3102,51 +3114,122 @@
       *****************************************************************
        200111-TKHNRYO-HKNCOMBI-HEN-SEC     SECTION.
       *
-           PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   TKHNRYO-HKNCOMBI-MAX )
-                    OR   ( DCACCT-HKNCOMBI
+           PERFORM VARYING IDX-DAY FROM    1   BY  1
+                   UNTIL ( IDX-DAY >   31 )
+      *
+               IF    ( TNYUINRYO-DAY (IDX-DAY)     =   1 )
+                AND  ( TNACCT-KKN-DAY(IDX-DAY) >   ZERO )
+      *
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0    >   TKHNRYO-HKNCOMBI-MAX )
+                            OR   ( TNACCT-KKN-DAY(IDX-DAY)
                                    =   TKHNRYO-HKNCOMBI (IDX0) )
       *
-               CONTINUE
+                       CONTINUE
       *
-           END-PERFORM
+                   END-PERFORM
       *
-           IF    ( IDX0                    >   TKHNRYO-HKNCOMBI-MAX )
+                   IF    ( IDX0            >   TKHNRYO-HKNCOMBI-MAX )
       *
-               IF    ( CONST-TKHNRYO-HKNCOMBI-MAX
+                       IF    ( CONST-TKHNRYO-HKNCOMBI-MAX
                                            >   TKHNRYO-HKNCOMBI-MAX )
       *
-                   COMPUTE TKHNRYO-HKNCOMBI-MAX
-                       =   TKHNRYO-HKNCOMBI-MAX    +   1
+                           COMPUTE TKHNRYO-HKNCOMBI-MAX
+                               =   TKHNRYO-HKNCOMBI-MAX    +   1
       *
-                   MOVE    DCACCT-HKNCOMBI
+                           MOVE    TNACCT-KKN-DAY(IDX-DAY)
                                    TO  TKHNRYO-HKNCOMBI
                                               (TKHNRYO-HKNCOMBI-MAX)
-                   MOVE    1       TO  TKHNRYO-HKNCOMBI-DAY
-                                      (TKHNRYO-HKNCOMBI-MAX DCACCT-DAY)
+                           MOVE    1       TO  TKHNRYO-HKNCOMBI-DAY
+                                      (TKHNRYO-HKNCOMBI-MAX IDX-DAY)
+                       END-IF
+                   ELSE
+                       MOVE    1       TO  TKHNRYO-HKNCOMBI-DAY
+                                      (IDX0 IDX-DAY)
+                   END-IF
                END-IF
-           ELSE
-                   MOVE    1       TO  TKHNRYO-HKNCOMBI-DAY
-                                      (IDX0 DCACCT-DAY)
-           END-IF
+           END-PERFORM
       *
            .
        200111-NACCT-KHNRYO-TAIHI-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院料算定日退避処理
+      *****************************************************************
+       200111-TNYUINRYO-TAIHI-SEC       SECTION.
+      *
+           INITIALIZE  ORCSNYUINDAY-AREA
+           MOVE    DTCHK003-HOSPNUM    TO  LNK-NYUINDAY-HOSPNUM
+           MOVE    DTCHK003-PTID       TO  LNK-NYUINDAY-PTID
+           MOVE    ORCBSD01-SRYYM      TO  LNK-NYUINDAY-SANTEIYM
+           CALL    "ORCSNYUINDAY"          USING
+                                           ORCSNYUINDAY-AREA
+                                           SPA-AREA
+           IF    ( LNK-NYUINDAY-RC     NOT =   ZERO )
+               INITIALIZE              ORCSNYUINDAY-AREA
+           END-IF
+           PERFORM VARYING     IDX-DAY    FROM    1   BY  1
+                   UNTIL     ( IDX-DAY    >   31 )
+      *
+               IF    ( LNK-NYUINDAY-KBN (IDX-DAY) =   "1" )
+                   MOVE    1       TO  TNYUINRYO-DAY (IDX-DAY)
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "1"                     TO  WRK-ZAISKBKBN
+           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+      *
+               IF    ( NACCT-SRYCDTOTAL    =    099999916 )
+                   CONTINUE
+               ELSE
+      *
+      *            入院料を算定している日にちを退避
+                   PERFORM VARYING     IDX-DAY    FROM    1   BY  1
+                           UNTIL     ( IDX-DAY    >   31 )
+      *
+                       IF   ( NACCT-DAY(IDX-DAY)  >   ZERO )
+                           MOVE    1       TO  TNYUINRYO-DAY (IDX-DAY)
+                       END-IF
+      *
+                   END-PERFORM
+               END-IF
+      *
+               PERFORM 900-NYUINACCT-KEY17-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key17"                 TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       200111-TNYUINRYO-TAIHI-EXT.
            EXIT.
       *****************************************************************
       *    外泊退避処理
       *****************************************************************
        200111-NACCT-GAIHAKU-TAIHI-SEC   SECTION.
       *
+           MOVE    "2"                 TO  WRK-ZAISKBKBN
+           PERFORM 900-NYUINACCT-KEY17-SEL-SEC
+      *
       *    外泊している日にちを退避
            PERFORM VARYING     IDX-DAY FROM    1   BY  1
                    UNTIL     ( IDX-DAY >   31 )
       *
-               IF   ( PTZAI-DAY(IDX-ZAI IDX-DAY)   >   ZERO )
-                   MOVE    1   TO  TNACCT-GAIHAKU-DAY (IDX-DAY)
+               IF    ( TNYUINRYO-DAY (IDX-DAY)     =   1   )
+                   MOVE    NACCT-DAY (IDX-DAY)
+                               TO  TNACCT-GAIHAKU-DAY (IDX-DAY)
                END-IF
       *
            END-PERFORM
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key17"             TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
        200111-NACCT-GAIHAKU-TAIHI-EXT.
@@ -7336,7 +7419,9 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   31 )
       *
-               IF    ( TNACCT-GAIHAKU-DAY (IDX0)    >   ZERO )
+               IF    ( TNACCT-GAIHAKU-DAY (IDX0)    =   ZERO OR 4 )
+                   CONTINUE
+               ELSE
                    IF    ( TNYUIN-CHOZAI-DAY (IDX0)    =   1 )
                        COMPUTE CNT-GAIHAKU-ERR
                            =   CNT-GAIHAKU-ERR +   1
@@ -7776,31 +7861,42 @@
                        END-PERFORM
       *
                        IF    ( IDX0    >   TKHNRYO-HKNCOMBI-MAX )
-                               COMPUTE TNYUKSN-ERR-CNT (IDX23 1)
-                                   =   TNYUKSN-ERR-CNT (IDX23 1)
+                           COMPUTE TNYUKSN-ERR-CNT (IDX23 2)
+                               =   TNYUKSN-ERR-CNT (IDX23 2)
+                               +   1
+      *
+                           MOVE    1   TO  TNYUKSN-ERR-DAY
+                                                   (IDX23 2 IDX22)
+                       ELSE
+                           IF    ( TNYUINRYO-DAY (IDX22)   =   1 )
+                               IF    ( TKHNRYO-HKNCOMBI-DAY (IDX0 IDX22)
+                                                           =   ZERO )
+                                   COMPUTE TNYUKSN-ERR-CNT (IDX23 1)
+                                       =   TNYUKSN-ERR-CNT (IDX23 1)
+                                       +   1
+      *
+                                   MOVE    1   TO  TNYUKSN-ERR-DAY
+                                                   (IDX23 1 IDX22)
+                               ELSE
+                                   IF    ( TNACCT-GAIHAKU-DAY (IDX22)
+                                                       =   ZERO OR 4)
+                                       CONTINUE
+                                   ELSE
+                                       COMPUTE TNYUKSN-ERR-CNT (IDX23 3)
+                                           =   TNYUKSN-ERR-CNT (IDX23 3)
+                                           +   1
+      *
+                                       MOVE    1   TO  TNYUKSN-ERR-DAY
+                                                         (IDX23 3 IDX22)
+                                   END-IF
+                               END-IF
+                           ELSE
+                               COMPUTE TNYUKSN-ERR-CNT (IDX23 2)
+                                   =   TNYUKSN-ERR-CNT (IDX23 2)
                                    +   1
       *
                                MOVE    1   TO  TNYUKSN-ERR-DAY
-                                                       (IDX23 1 IDX22)
-                       ELSE
-                           IF    ( TKHNRYO-HKNCOMBI-DAY (IDX0 IDX22)
-                                           =   ZERO )
-                               IF    ( TNACCT-GAIHAKU-DAY (IDX22)
-                                                       =   ZERO )
-                                   COMPUTE TNYUKSN-ERR-CNT (IDX23 2)
-                                       =   TNYUKSN-ERR-CNT (IDX23 2)
-                                       +   1
-      *
-                                   MOVE    1   TO  TNYUKSN-ERR-DAY
                                                        (IDX23 2 IDX22)
-                               ELSE
-                                   COMPUTE TNYUKSN-ERR-CNT (IDX23 3)
-                                       =   TNYUKSN-ERR-CNT (IDX23 3)
-                                       +   1
-      *
-                                   MOVE    1   TO  TNYUKSN-ERR-DAY
-                                                       (IDX23 3 IDX22)
-                               END-IF
                            END-IF
                        END-IF
       *
@@ -10411,6 +10507,52 @@
            .
       *
        900-BYOMEI-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計検索処理
+      *****************************************************************
+       900-NYUINACCT-KEY17-SEL-SEC    SECTION.
+      *
+           MOVE    ZERO                    TO  FLG-NYUINACCT
+      *
+           INITIALIZE                          NYUINACCT-REC
+           MOVE    DTCHK003-HOSPNUM        TO  NACCT-HOSPNUM
+           MOVE    DTCHK003-PTID           TO  NACCT-PTID
+           MOVE    ORCBSD01-SRYYM          TO  NACCT-SRYYM
+           MOVE    WRK-ZAISKBKBN           TO  NACCT-ZAISKBKBN
+           MOVE    NYUINACCT-REC           TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key17"                 TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC                  =   ZERO )
+               MOVE    MCPDATA-REC         TO  NYUINACCT-REC
+           ELSE
+               INITIALIZE                      NYUINACCT-REC
+               MOVE    1                   TO  FLG-NYUINACCT
+           END-IF
+      *
+           .
+       900-NYUINACCT-KEY17-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計FETCH処理
+      *****************************************************************
+       900-NYUINACCT-KEY17-FET-SEC    SECTION.
+      *
+           MOVE    ZERO                    TO  FLG-NYUINACCT
+      *
+           MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
+           MOVE    "key17"                 TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC                  =   ZERO )
+               MOVE    MCPDATA-REC         TO  NYUINACCT-REC
+           ELSE
+               INITIALIZE                      NYUINACCT-REC
+               MOVE    1                   TO  FLG-NYUINACCT
+           END-IF
+      *
+           .
+       900-NYUINACCT-KEY17-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

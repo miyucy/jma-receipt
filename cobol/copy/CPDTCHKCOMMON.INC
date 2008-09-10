@@ -60,6 +60,10 @@
          02  TNACCT-KKN-AREA.
            03  TNACCT-KKN-DAY                          PIC 9(03)
                                                        OCCURS 31.
+      *
+         02  TNYUINRYO-AREA.
+           03  TNYUINRYO-DAY                           PIC 9(03)
+                                                       OCCURS 31.
          02  TKHNRYO-HKNCOMBI-AREA.
            03  TKHNRYO-HKNCOMBI-MAX                    PIC 9(05).
            03  TKHNRYO-HKNCOMBI-OCC                    OCCURS 20.
