@@ -7861,12 +7861,21 @@
                        END-PERFORM
       *
                        IF    ( IDX0    >   TKHNRYO-HKNCOMBI-MAX )
-                           COMPUTE TNYUKSN-ERR-CNT (IDX23 2)
-                               =   TNYUKSN-ERR-CNT (IDX23 2)
-                               +   1
+                           IF    ( TNYUINRYO-DAY (IDX22)   =   1 )
+                               COMPUTE TNYUKSN-ERR-CNT (IDX23 1)
+                                   =   TNYUKSN-ERR-CNT (IDX23 1)
+                                   +   1
       *
-                           MOVE    1   TO  TNYUKSN-ERR-DAY
+                               MOVE    1   TO  TNYUKSN-ERR-DAY
+                                                 (IDX23 1 IDX22)
+                           ELSE
+                               COMPUTE TNYUKSN-ERR-CNT (IDX23 2)
+                                   =   TNYUKSN-ERR-CNT (IDX23 2)
+                                   +   1
+      *
+                               MOVE    1   TO  TNYUKSN-ERR-DAY
                                                    (IDX23 2 IDX22)
+                           END-IF
                        ELSE
                            IF    ( TNYUINRYO-DAY (IDX22)   =   1 )
                                IF    ( TKHNRYO-HKNCOMBI-DAY (IDX0 IDX22)
