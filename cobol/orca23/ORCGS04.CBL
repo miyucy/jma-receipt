@@ -88,6 +88,11 @@
                    07  FILLER              PIC X(01).
                    07  SPA-GMN-DSPMEI      PIC X(18).
       *
+               05  SPA-GMN-SUMKBN-G.
+                   07  SPA-GMN-SUMKBN      PIC X(01).
+                   07  FILLER              PIC X(01).
+                   07  SPA-GMN-SUMMEI      PIC X(16).
+      *
                05  SPA-GMN-SYORIKBN-G.
                    07  SPA-GMN-SYORIKBN    PIC X(01).
                    07  FILLER              PIC X(01).
@@ -126,19 +131,19 @@
                        09  FILLER              PIC X(01).
                        09  SPA-GMN-KIKANMEIL   PIC X(08).
       *
-               05  SPA-GMN-SUMLIST-G.
-                   07  SPA-GMN-SUMLIST-MAX     PIC 9(05).
-                   07  SPA-GMN-SUMLIST             OCCURS  2.
-                       09  SPA-GMN-SUMKBNL     PIC X(01).
-                       09  FILLER              PIC X(01).
-                       09  SPA-GMN-SUMMEIL     PIC X(04).
-      *
                05  SPA-GMN-DSPLIST-G.
                    07  SPA-GMN-DSPLIST-MAX     PIC 9(05).
                    07  SPA-GMN-DSPLIST             OCCURS  3.
                        09  SPA-GMN-DSPKBNL     PIC X(01).
                        09  FILLER              PIC X(01).
                        09  SPA-GMN-DSPMEIL     PIC X(18).
+      *
+               05  SPA-GMN-SUMKBNLIST-G.
+                   07  SPA-GMN-SUMKBNLIST-MAX  PIC 9(05).
+                   07  SPA-GMN-SUMKBNLIST      OCCURS  2.
+                       09  SPA-GMN-SUMKBNL     PIC X(01).
+                       09  FILLER              PIC X(01).
+                       09  SPA-GMN-SUMKBNMEIL  PIC X(16).
       *
                05  SPA-GMN-SYORILIST-G.
                    07  SPA-GMN-SYORILIST-MAX   PIC 9(05).
@@ -423,6 +428,7 @@
            MOVE    S04-ENDSRYYMD   TO  SPA-GMN-ENDSRYYMD
            MOVE    S04-KIKANKBN    TO  SPA-GMN-KIKANKBN-G
            MOVE    S04-DSPKBN      TO  SPA-GMN-DSPKBN-G
+           MOVE    S04-SUMKBN      TO  SPA-GMN-SUMKBN-G
            MOVE    S04-SYORIKBN    TO  SPA-GMN-SYORIKBN-G
            MOVE    S04-JIHIKBN     TO  SPA-GMN-JIHIKBN-G
       *
@@ -460,6 +466,10 @@
       *
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4001-DSPKBN-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 4001-SUMKBN-SEC
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -568,6 +578,7 @@
            MOVE    SYS-1039-S04SRYKBN      TO  SPA-GMN-SRYKBN
            MOVE    SYS-1039-S04KIKANKBN    TO  SPA-GMN-KIKANKBN
            MOVE    SYS-1039-S04DSPKBN      TO  SPA-GMN-DSPKBN
+           MOVE    SYS-1039-S04SUMKBN      TO  SPA-GMN-SUMKBN
            MOVE    SYS-1039-S04SYORIKBN    TO  SPA-GMN-SYORIKBN
       *
            PERFORM 4001-SIHARAIKBN-SEC
@@ -578,6 +589,7 @@
            PERFORM 4001-ENDSRYYMD-SEC
            PERFORM 4001-KIKANKBN-SEC
            PERFORM 4001-DSPKBN-SEC
+           PERFORM 4001-SUMKBN-SEC
            PERFORM 4001-SYORIKBN-SEC
            PERFORM 4001-JIHIKBN-SEC
       *
@@ -601,6 +613,8 @@
            PERFORM 3101-KIKANLIST-SET-SEC
       *
            PERFORM 3101-DSPLIST-SET-SEC
+      *
+           PERFORM 3101-SUMKBNLIST-SET-SEC
       *
            PERFORM 3101-SYORILIST-SET-SEC
       *
@@ -687,6 +701,22 @@
       *
            .
        3101-DSPLIST-SET-EXT.
+           EXIT.
+      *************************************************************
+      *    期間開始前診療分の支払い
+      *************************************************************
+       3101-SUMKBNLIST-SET-SEC         SECTION.
+      *
+           INITIALIZE                  SPA-GMN-SUMKBNLIST-G
+      *
+           MOVE    "1 支払額に含める"      TO  SPA-GMN-SUMKBNLIST(1)
+      *
+           MOVE    "2 支払額に含めない"    TO  SPA-GMN-SUMKBNLIST(2)
+      *
+           MOVE    2               TO  SPA-GMN-SUMKBNLIST-MAX
+      *
+           .
+       3101-SUMKBNLIST-SET-EXT.
            EXIT.
       *************************************************************
       *    処理区分設定処理
@@ -936,14 +966,17 @@
            END-IF
       *
            IF    ( SPA-GMN-KIKANKBN    =   "1" )
-               IF    ( SPA-GMN-SYORIKBN-G  =   SPACE )
+               IF    ( S04-LBLSUMKBN   =   SPACE )
                    MOVE    SPA-GMN-DSPLIST(1)
                                        TO  SPA-GMN-DSPKBN-G
+                   MOVE    SPA-GMN-SUMKBNLIST (2)
+                                       TO  SPA-GMN-SUMKBN-G
                    MOVE    SPA-GMN-SYORILIST (1)
                                        TO  SPA-GMN-SYORIKBN-G
                END-IF
            ELSE
                MOVE    SPACE           TO  SPA-GMN-SYORIKBN-G
+                                           SPA-GMN-SUMKBN-G
                MOVE    SPA-GMN-DSPLIST(2)
                                        TO  SPA-GMN-DSPKBN-G
                MOVE    SPA-GMN-JIHILIST(1)
@@ -983,6 +1016,36 @@
        4001-DSPKBN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    期間開始診療分の支払い
+      *****************************************************************
+       4001-SUMKBN-SEC           SECTION.
+      *
+           IF    ( SPA-GMN-KIKANKBN    =   "1" )
+      *
+               MOVE    ZERO            TO  FLG-OK
+      *
+               PERFORM VARYING IDX     FROM    1   BY  1
+                       UNTIL ( IDX     >   SPA-GMN-SUMKBNLIST-MAX )
+                        OR   ( FLG-OK
+                                   NOT =   ZERO )
+                   IF    ( SPA-GMN-SUMKBN
+                                       =   SPA-GMN-SUMKBNL(IDX) )
+                       MOVE    SPA-GMN-SUMKBNLIST(IDX)
+                                       TO  SPA-GMN-SUMKBN-G
+                       MOVE    1       TO  FLG-OK
+                   END-IF
+               END-PERFORM
+      *
+               IF    ( FLG-OK          =   ZERO )
+                   MOVE    SPA-GMN-SUMKBNLIST(2)
+                                       TO  SPA-GMN-SUMKBN-G
+               END-IF
+           END-IF
+      *
+           .
+       4001-SUMKBN-EXT.
+           EXIT.
       *****************************************************************
       *    処理区分
       *****************************************************************
@@ -1105,6 +1168,7 @@
            MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-S01-SHR-NYUGAIKBN
            MOVE    SPA-GMN-KIKANKBN    TO  SPA-S01-SHR-KIKANKBN
            MOVE    SPA-GMN-DSPKBN      TO  SPA-S01-SHR-DSPKBN
+           MOVE    SPA-GMN-SUMKBN      TO  SPA-S01-SHR-SUMKBN
            MOVE    SPA-GMN-SYORIKBN    TO  SPA-S01-SHR-SYORIKBN
       *
            EVALUATE    SPA-GMN-SRYKBN
@@ -1147,13 +1211,13 @@
            EVALUATE    SPA-GMN-JIHIKBN
                WHEN    "0"
                    MOVE    0           TO  SPA-S01-SHR-HCM50FLG
-                   MOVE    "0"         TO  SPA-S01-SHR-SUMKBN
+                   MOVE    "0"         TO  SPA-S01-SHR-JIHSUMKBN
                WHEN    "1"
                    MOVE    1           TO  SPA-S01-SHR-HCM50FLG
-                   MOVE    "0"         TO  SPA-S01-SHR-SUMKBN
+                   MOVE    "0"         TO  SPA-S01-SHR-JIHSUMKBN
                WHEN    "2"
                    MOVE    1           TO  SPA-S01-SHR-HCM50FLG
-                   MOVE    "1"         TO  SPA-S01-SHR-SUMKBN
+                   MOVE    "1"         TO  SPA-S01-SHR-JIHSUMKBN
            END-EVALUATE
       *
            PERFORM 210-BACK
@@ -1306,6 +1370,15 @@
                                        TO  S04-DSP-LIST(IDX)
            END-PERFORM
       *
+      *    期間開始診療分の支払い
+           MOVE    SPA-GMN-SUMKBN-G      TO  S04-SUMKBN
+           MOVE    SPA-GMN-SUMKBNLIST-MAX   TO  S04-SUMKBN-COUNT
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL ( IDX     >   SPA-GMN-SUMKBNLIST-MAX )
+               MOVE    SPA-GMN-SUMKBNLIST(IDX)
+                                       TO  S04-SUMKBN-LIST(IDX)
+           END-PERFORM
+      *
       *    処理区分コンボ
            MOVE    SPA-GMN-SYORIKBN-G      TO  S04-SYORIKBN
            MOVE    SPA-GMN-SYORILIST-MAX   TO  S04-SYORI-COUNT
@@ -1325,17 +1398,24 @@
       *
            IF    ( SPA-GMN-KIKANKBN =   "2" )
                MOVE    SPACE               TO  S04-LBLSYORIKBN
+                                               S04-LBLSUMKBN
                MOVE    WIDGET-INSENSITIVE  TO  S04-SYORIKBN-STATE
                                                S04-SYORI-LIST-STATE
+                                               S04-SUMKBN-STATE
+                                               S04-SUMKBN-LIST-STATE
                                                S04-DSPKBN-STATE
                                                S04-DSP-LIST-STATE
                                                S04-JIHIKBN-STATE
                                                S04-JIHI-LIST-STATE
            ELSE
-               MOVE    "期間終了日以後の支払い"
+               MOVE    "期間開始日前診療分の支払い"
+                                           TO  S04-LBLSUMKBN
+               MOVE    "期間終了日後の支払い"
                                            TO  S04-LBLSYORIKBN
                MOVE    WIDGET-NORMAL       TO  S04-SYORIKBN-STATE
                                                S04-SYORI-LIST-STATE
+                                               S04-SUMKBN-STATE
+                                               S04-SUMKBN-LIST-STATE
                                                S04-DSPKBN-STATE
                                                S04-DSP-LIST-STATE
                                                S04-JIHIKBN-STATE
@@ -1415,6 +1495,8 @@
                MOVE    "KIKANKBN"      TO  MCP-WIDGET
            WHEN   7
                MOVE    "DSPKBN"        TO  MCP-WIDGET
+           WHEN   10
+               MOVE    "SUMKBN"        TO  MCP-WIDGET
            WHEN   8
                MOVE    "SYORIKBN"      TO  MCP-WIDGET
            WHEN   9
@@ -1454,6 +1536,12 @@
                    MOVE    99          TO  SPA-GMN-CUR
                END-IF
            WHEN    "DSPKBN"
+               IF      SPA-GMN-KIKANKBN    =   "1"
+                   MOVE    10          TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    99          TO  SPA-GMN-CUR
+               END-IF
+           WHEN    "SUMKBN"
                IF      SPA-GMN-KIKANKBN    =   "1"
                    MOVE    8           TO  SPA-GMN-CUR
                ELSE

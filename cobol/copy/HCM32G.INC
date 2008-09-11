@@ -31,3 +31,10 @@
             02  HCM32G-HOSPADRS2    PIC X(100).
             02  HCM32G-HOSPNAME PIC X(60).
             02  HCM32G-HOSPTEL  PIC X(15).
+            02  HCM32G-VER040300        OCCURS  12 TIMES.
+              03  HCM32G-SRYYY    PIC X(10).
+              03  HCM32G-SRYMM    PIC X(10).
+              03  HCM32G-BFNYUKINMSG  PIC X(20).
+              03  HCM32G-BFNYUKIN PIC X(11).
+              03  HCM32G-BFYEN    PIC X(2).
+            02  HCM32G-PAGE PIC X(10).

@@ -64,6 +64,7 @@
            03  FLG-PTNUM           PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-TAISYO          PIC 9(01).
+           03  FLG-LOOP-END        PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -88,8 +89,6 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-TABLE           PIC X(10).
-           03  WRK-PATH            PIC X(10).
       *
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -115,6 +114,7 @@
                    07  WRK-SYOKUJI    PIC S9(11).
                    07  WRK-JIHI       PIC S9(11).
                    07  WRK-GAKU       PIC S9(11).
+                   07  WRK-BFGAKU     PIC S9(11).
       *
            03  WRK-GHENSYU-TBL.
                05  WRK-GHKNTEN     PIC S9(07).
@@ -395,14 +395,6 @@
       *****************************************************************
        210-HENSYU-SEC              SECTION.
       *
-           IF    ( ORCHCM31-KIKANKBN   =   "2" )
-               MOVE    "tbl_syunou"    TO  WRK-TABLE
-               MOVE    "key50"         TO  WRK-PATH
-           ELSE
-               MOVE    "tbl_syunou"    TO  WRK-TABLE
-               MOVE    "key49"         TO  WRK-PATH
-           END-IF
-      *
       *    収納マスター読み込み
            PERFORM 900-SYUNOU-SELECT-SEC
       *
@@ -427,8 +419,8 @@
       *
            END-PERFORM
       *
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key50"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -582,6 +574,22 @@
                    =   WRK-FTNMONEY
                    +   WRK-SKJMONEY
       *
+               IF    ( ORCHCM31-SUMKBN     =   "1" )
+                   IF    ( WRK-HKN-SKYMONEY
+                                           >   HCM31S01-BFKINGAKU (1))
+                       COMPUTE WRK-BFGAKU (IDX2)
+                           =   WRK-BFGAKU (IDX2)
+                           +   HCM31S01-BFKINGAKU (1)
+                       COMPUTE WRK-HKN-SKYMONEY
+                           =   WRK-HKN-SKYMONEY
+                           -   HCM31S01-BFKINGAKU (1)
+                   ELSE
+                       COMPUTE WRK-BFGAKU (IDX2)
+                           =   WRK-BFGAKU (IDX2) +   WRK-HKN-SKYMONEY
+                       MOVE    ZERO        TO  WRK-HKN-SKYMONEY
+                   END-IF
+               END-IF
+      *
                IF    ( WRK-HKN-SKYMONEY    >   HCM31S01-KINGAKU (1) )
                    COMPUTE WRK-GAKU (IDX2)
                        =   WRK-GAKU (IDX2) +   HCM31S01-KINGAKU (1)
@@ -591,7 +599,12 @@
                END-IF
            ELSE
                COMPUTE WRK-GAKU (IDX2)
-                   =   WRK-GAKU (IDX2) +   HCM31S01-KINGAKU (1)
+                   =   WRK-GAKU (IDX2)     +   HCM31S01-KINGAKU (1)
+               IF    ( ORCHCM31-SUMKBN     =   "1" )
+                   COMPUTE WRK-BFGAKU (IDX2)
+                       =   WRK-BFGAKU (IDX2)
+                       +   HCM31S01-BFKINGAKU (1)
+               END-IF
            END-IF
       *
            .
@@ -705,6 +718,8 @@
                                    TO  HCM31S01-STYMD
            MOVE    ORCHCM31-ENDSRYYMD
                                    TO  HCM31S01-EDYMD
+           MOVE    ORCHCM31-SUMKBN
+                                   TO  HCM31S01-SUMKBN
       *    支払い金額サブプロ呼び出し
            CALL    "ORCHCM31S01"       USING
                                        HCM31S01-AREA
@@ -758,6 +773,12 @@
       *
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
             AND  ( ORCHCM31-DSPKBN     =   "2"   )
+            AND  ( WRK-GAKU (IDX4) =   ZERO )
+                   MOVE    ZERO    TO  FLG-TAISYO
+           END-IF
+      *
+           IF    ( ORCHCM31-KIKANKBN   =   "1"   )
+            AND  ( ORCHCM31-SUMKBN     =   "1"   )
             AND  ( WRK-GAKU (IDX4) =   ZERO )
                    MOVE    ZERO    TO  FLG-TAISYO
            END-IF
@@ -834,7 +855,17 @@
       *    日付
            MOVE    WRK-HIDUKE(IDX4)    TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG(11:12)  TO  HCM31N-SRYYMD(CNT-LINE)
+           IF    ( ORCHCM31-SUMKBN     =   "1" )
+               MOVE    WRK-HENYMDG(1:10)
+                                       TO  HCM31N-SRYYY(CNT-LINE)
+               STRING  "　　"              DELIMITED   BY  SIZE
+                       WRK-HENYMDG(11:)    DELIMITED   BY  SIZE
+               INTO    HCM31N-SRYMMDD(CNT-LINE)
+               END-STRING
+           ELSE
+               MOVE    WRK-HENYMDG(11:12)
+                                       TO  HCM31N-SRYYMD(CNT-LINE)
+           END-IF
       *
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
             AND  ( ORCHCM31-DSPKBN     =   "1" OR "3" )
@@ -874,6 +905,17 @@
                MOVE    WRK-GAKU(IDX4)  TO  WRK-Z9
                MOVE    WRK-Z9          TO  HCM31N-SKYMONEY(CNT-LINE)
                MOVE    "円"            TO  HCM31N-YEN     (CNT-LINE)
+           END-IF
+      *
+           IF    ( ORCHCM31-SUMKBN     =   "1" )
+               IF    ( WRK-BFGAKU(IDX4)    NOT =   ZERO )
+                   MOVE    "期間前支払金額"
+                                       TO  HCM31N-BFNYUKINMSG(CNT-LINE)
+                   MOVE    WRK-BFGAKU(IDX4)
+                                       TO  WRK-Z9
+                   MOVE    WRK-Z9      TO  HCM31N-BFNYUKIN(CNT-LINE)
+                   MOVE    "円"        TO  HCM31N-BFYEN   (CNT-LINE)
+               END-IF
            END-IF
       *
            COMPUTE WRK-GHKNTEN
@@ -973,6 +1015,10 @@
       *
                 MOVE    HCM31N-SRYYMD   (IDX-LINE)
                                        TO  HCM31G-SRYYMD   (IDX-LINE)
+                MOVE    HCM31N-SRYYY   (IDX-LINE)
+                                       TO  HCM31G-SRYYY    (IDX-LINE)
+                MOVE    HCM31N-SRYMMDD (IDX-LINE)
+                                       TO  HCM31G-SRYMMDD  (IDX-LINE)
                 MOVE    HCM31N-HKNTEN   (IDX-LINE)
                                        TO  HCM31G-HKNTEN   (IDX-LINE)
                 MOVE    HCM31N-TEN      (IDX-LINE)
@@ -989,6 +1035,15 @@
                                        TO  HCM31G-SKYMONEY (IDX-LINE)
                 MOVE    HCM31N-YEN      (IDX-LINE)
                                        TO  HCM31G-YEN      (IDX-LINE)
+                MOVE    HCM31N-BFNYUKINMSG (IDX-LINE)
+                                       TO  HCM31G-BFNYUKINMSG
+                                                           (IDX-LINE)
+                MOVE    HCM31N-BFNYUKIN (IDX-LINE)
+                                       TO  HCM31G-BFNYUKIN
+                                                           (IDX-LINE)
+                MOVE    HCM31N-BFYEN (IDX-LINE)
+                                       TO  HCM31G-BFYEN
+                                                           (IDX-LINE)
       *
             END-PERFORM
       *
@@ -1184,12 +1239,12 @@
            END-EVALUATE
       *
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key50"         TO  MCP-PATHNAME
       *
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  SYUNOU-REC
+               PERFORM 900-SYUNOU-READ-SEC
            ELSE
                MOVE    1           TO  FLG-SYUNOU
                INITIALIZE              SYUNOU-REC
@@ -1204,15 +1259,36 @@
       *****************************************************************
        900-SYUNOU-READ-SEC         SECTION.
       *
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-PATH        TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-           ELSE
-               MOVE    1               TO  FLG-SYUNOU
-               INITIALIZE              SYUNOU-REC
-           END-IF
+           MOVE    ZERO            TO  FLG-LOOP-END
+           MOVE    ZERO            TO  FLG-SYUNOU
+      *
+           PERFORM UNTIL ( FLG-SYUNOU      NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               MOVE    "tbl_syunou"    TO  MCP-TABLE
+               MOVE    "key50"         TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYUNOU-REC
+      *
+                   MOVE    1           TO  FLG-LOOP-END
+      *
+                   IF    ( ORCHCM31-KIKANKBN   =   "1" )
+                       IF    ( ORCHCM31-SUMKBN =   "2" )
+                           IF    ( SYU-SRYYMD >=   ORCHCM31-STRSRYYMD )
+                            AND  ( SYU-SRYYMD <=   ORCHCM31-ENDSRYYMD )
+                               CONTINUE
+                           ELSE
+                               MOVE    ZERO    TO  FLG-LOOP-END
+                           END-IF
+                       END-IF
+                   END-IF
+      *
+               ELSE
+                   MOVE    1               TO  FLG-SYUNOU
+                   INITIALIZE              SYUNOU-REC
+               END-IF
+           END-PERFORM
       *
            .
        900-SYUNOU-READ-EXT.
@@ -1276,6 +1352,20 @@
       *
            .
        910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       911-DBSELECT-SEC          SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    テーブル読込処理

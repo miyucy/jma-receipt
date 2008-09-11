@@ -1,6 +1,7 @@
       *******************************************************************
       * Project code name "ORCA"
-      * z”’·‹vxr+ryrÀ”≠”{r«”≠“±´MA standard receipt softwareq≤Î      * Copyright(C) 2002 JMA (Japan Medical Association)
+      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
       *
@@ -19,6 +20,7 @@
               04  S04-B10-STATE            PIC S9(9)   BINARY.
               04  S04-B12-STATE            PIC S9(9)   BINARY.
               04  S04-LBLKARA              PIC X(2).
+              04  S04-LBLSUMKBN            PIC X(30).
               04  S04-LBLSYORIKBN          PIC X(22).
               04  S04-SIHARAICOMBO.
                   05  S04-SIHARAIKBN       PIC X(12).
@@ -45,6 +47,12 @@
                   05  S04-DSP-COUNT        PIC S9(9)   BINARY.
                   05  S04-DSP-LIST         PIC X(20)   OCCURS  3.
                   05  S04-DSP-LIST-STATE   PIC S9(9)   BINARY.
+              04  S04-SUMKBNCOMBO.
+                  05  S04-SUMKBN            PIC X(18).
+                  05  S04-SUMKBN-STATE      PIC S9(9)   BINARY.
+                  05  S04-SUMKBN-COUNT      PIC S9(9)   BINARY.
+                  05  S04-SUMKBN-LIST       PIC X(18)   OCCURS  2.
+                  05  S04-SUMKBN-LIST-STATE PIC S9(9)   BINARY.
               04  S04-SYORICOMBO.
                   05  S04-SYORIKBN         PIC X(18).
                   05  S04-SYORIKBN-STATE   PIC S9(9)   BINARY.

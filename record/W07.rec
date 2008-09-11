@@ -536,6 +536,15 @@ W07	{
 					item	varchar(20)[3];
 					state	int;
 				};
+				S04SUMKBN_COMBO	{
+					S04SUMKBN	{
+						value	varchar(18);
+						state	int;
+					};
+					count	int;
+					item	varchar(18)[2];
+					state	int;
+				};
 				S04SYORIKBN_COMBO	{
 					S04SYORIKBN	{
 						value	varchar(18);

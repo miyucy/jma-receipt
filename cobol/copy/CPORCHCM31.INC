@@ -32,7 +32,9 @@
            03  ORCHCM31-ENDSRYYMD       PIC  X(08).
       *    期間指定区分
            03  ORCHCM31-KIKANKBN        PIC X(01).
-      *    期間終了日以後の支払い区分
+      *    期間終了日前の支払い区分
+           03  ORCHCM31-SUMKBN          PIC X(01).
+      *    期間終了日後の支払い区分
            03  ORCHCM31-SYORIKBN        PIC X(01).
       *    請求内容の印字区分
            03  ORCHCM31-DSPKBN          PIC X(01).

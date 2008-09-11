@@ -72,7 +72,7 @@
            03  WRK-PARA-PGTYPE                 PIC X(20).
            03  WRK-PARA-PGNAME                 PIC X(20).
            03  WRK-PARA-STAFFCD                PIC X(05).
-           03  WRK-PARA-SUMKBN                 PIC X(01).
+           03  WRK-PARA-JIHSUMKBN              PIC X(01).
       *
       *    システム領域
        01  SYS-AREA.
@@ -197,7 +197,8 @@
                                        ORCHCM31-DSPKBN
                                        ORCHCM31-PTID
                                        ORCHCM31-NYUGAI
-                                       WRK-PARA-SUMKBN
+                                       WRK-PARA-JIHSUMKBN
+                                       ORCHCM31-SUMKBN
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -229,7 +230,7 @@
       *
            WHEN    "HC50"
       *
-               IF    ( WRK-PARA-SUMKBN     =   "1" )
+               IF    ( WRK-PARA-JIHSUMKBN      =   "1" )
                    STRING  "自費月別："        DELIMITED   BY  SIZE
                            PTINF-NAME          DELIMITED   BY  SPACE
                    INTO    WRK-PRTTITLE
@@ -333,7 +334,7 @@
                INITIALIZE                      ORCHCM50AREA
                MOVE    ORCHCM31-STRSRYYMD  TO  ORCHCM50-STRSRYYMD
                MOVE    ORCHCM31-ENDSRYYMD  TO  ORCHCM50-ENDSRYYMD
-               MOVE    WRK-PARA-SUMKBN     TO  ORCHCM50-SUMKBN
+               MOVE    WRK-PARA-JIHSUMKBN  TO  ORCHCM50-SUMKBN
                MOVE    ORCHCM31-PTID       TO  ORCHCM50-PTID
                MOVE    ORCHCM31-NYUGAI     TO  ORCHCM50-NYUGAI
                CALL    WRK-PARA-PGNAME USING   SPA-AREA

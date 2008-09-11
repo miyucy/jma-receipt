@@ -9,6 +9,9 @@ S04	{
 		LBLKARA	{
 			value	varchar(2);
 		};
+		LBLSUMKBN	{
+			value	varchar(30);
+		};
 		LBLSYORIKBN	{
 			value	varchar(22);
 		};
@@ -54,6 +57,15 @@ S04	{
 			};
 			count	int;
 			item	varchar(20)[3];
+			state	int;
+		};
+		SUMKBNCOMBO	{
+			SUMKBN	{
+				value	varchar(18);
+				state	int;
+			};
+			count	int;
+			item	varchar(18)[2];
 			state	int;
 		};
 		SYORICOMBO	{

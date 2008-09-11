@@ -98,6 +98,7 @@
       *  04.03.00    NACL-ÂÀÅÄ    08/06/19  »ÙÊ§¾ÚÌÀ½ñ°õºþ½é´üÀßÄêÄÉ²Ã
       *  04.03.00    NACL-Â¿¡¹Ç¼  08/07/04  ¤ªÌô¼êÄ¢È¯¹ÔÄÉ²Ã
       *  04.03.00    NACL-Â¿¡¹Ç¼  08/07/24  Æþ±¡»þ½é²ó²Ã»»¼«Æ°È¯À¸ÄÉ²Ã
+      *  04.03.00    NACL-ÂÀÅÄ    08/09/09  »ÙÊ§¾ÚÌÀ½ñ°õºþ½é´üÀßÄêÄÉ²Ã¤ÎÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -600,6 +601,11 @@
                            11  SPA-GMN-S04DSPKBN           PIC X(01).
                            11  SPA-GMN-S04DSPKBN-F1        PIC X(01).
                            11  SPA-GMN-S04DSPKBNMEI        PIC X(18).
+      *                ´ü´Ö³«»ÏÁ°¿ÇÎÅÊ¬¤Î»ÙÊ§¤¤
+                       09  SPA-GMN-S04SUMKBN-G.
+                           11  SPA-GMN-S04SUMKBN       PIC X(01).
+                           11  SPA-GMN-S04SUMKBN-F1    PIC X(01).
+                           11  SPA-GMN-S04SUMKBNMEI    PIC X(16).
       *                ´ü´Ö½ªÎ»Æü¸å¤Î»ÙÊ§¤¤
                        09  SPA-GMN-S04SYORIKBN-G.
                            11  SPA-GMN-S04SYORIKBN        PIC X(01).
@@ -755,6 +761,12 @@
                                13  SPA-GMN-S04DSPL         PIC X(01).
                                13  SPA-GMN-S04DSP-F1L      PIC X(01).
                                13  SPA-GMN-S04DSPMEIL      PIC X(18).
+                       09  SPA-GMN-S04SUMKBNLST-G.
+                           11  SPA-GMN-S04SUMKBN-MAX       PIC 9(03).
+                           11  SPA-GMN-S04SUMKBNLST        OCCURS  2.
+                               13  SPA-GMN-S04SUMKBNL      PIC X(01).
+                               13  SPA-GMN-S04SUMKBN-F1L   PIC X(01).
+                               13  SPA-GMN-S04SUMKBNMEIL   PIC X(16).
                        09  SPA-GMN-S04SYORILST-G.
                            11  SPA-GMN-S04SYORI-MAX        PIC 9(03).
                            11  SPA-GMN-S04SYORILST         OCCURS  2.
@@ -1349,6 +1361,10 @@
            MOVE    "2 °õ»ú¤·¤Ê¤¤"          TO  SPA-GMN-S04DSPLST(2)
            MOVE    "3 °åÊÝÊ¬¤Î¤ß°õ»ú¤¹¤ë"  TO  SPA-GMN-S04DSPLST(3)
            MOVE    3                       TO  SPA-GMN-S04DSP-MAX
+      *
+           MOVE    "1 »ÙÊ§³Û¤Ë´Þ¤á¤ë"      TO  SPA-GMN-S04SUMKBNLST(1)
+           MOVE    "2 »ÙÊ§³Û¤Ë´Þ¤á¤Ê¤¤"    TO  SPA-GMN-S04SUMKBNLST(2)
+           MOVE    2                       TO  SPA-GMN-S04SUMKBN-MAX
       *
            MOVE    "1 »ÙÊ§³Û¤Ë´Þ¤á¤ë"      TO  SPA-GMN-S04SYORILST(1)
            MOVE    "2 »ÙÊ§³Û¤Ë´Þ¤á¤Ê¤¤"    TO  SPA-GMN-S04SYORILST(2)
@@ -2901,6 +2917,9 @@
       *    »ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌÀÁµáÆâÍÆ¤Î°õ»ú
            MOVE    SYS-1039-S04DSPKBN  TO  SPA-GMN-S04DSPKBN
            PERFORM 4109-S04DSPKBN-CHK-SEC
+      *    »ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ´ü´Ö³«»ÏÁ°¿ÇÎÅÊ¬¤Î»ÙÊ§¤¤
+           MOVE    SYS-1039-S04SUMKBN TO SPA-GMN-S04SUMKBN
+           PERFORM 4109-S04SUMKBN-CHK-SEC
       *    »ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ´ü´Ö½ªÎ»¸å¤Î»ÙÊ§¤¤
            MOVE    SYS-1039-S04SYORIKBN TO SPA-GMN-S04SYORIKBN
            PERFORM 4109-S04SYORIKBN-CHK-SEC
@@ -3751,6 +3770,7 @@
            MOVE    W07-S04SRYKBN       TO  SPA-GMN-S04SRYKBN-G
            MOVE    W07-S04KIKANKBN     TO  SPA-GMN-S04KIKANKBN-G
            MOVE    W07-S04DSPKBN       TO  SPA-GMN-S04DSPKBN-G
+           MOVE    W07-S04SUMKBN    TO  SPA-GMN-S04SUMKBN-G
            MOVE    W07-S04SYORIKBN     TO  SPA-GMN-S04SYORIKBN-G
            MOVE    W07-S06SKYPRT       TO  SPA-GMN-S06SKYPRT-G
            MOVE    W07-S06SKYSUM       TO  SPA-GMN-S06SKYSUM-G
@@ -4047,6 +4067,10 @@
       *            »ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌÀÁµáÆâÍÆ¤Î°õ»ú¥Á¥§¥Ã¥¯
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4109-S04DSPKBN-CHK-SEC
+                   END-IF
+      *            »ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ´ü´Ö³«»ÏÁ°¿ÇÎÅÊ¬¤Î»ÙÊ§¤¤¥Á¥§¥Ã¥¯
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4109-S04SUMKBN-CHK-SEC
                    END-IF
       *            »ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ´ü´Ö½ªÎ»¸å¤Î»ÙÊ§¤¤¥Á¥§¥Ã¥¯
                    IF      SPA-ERRCD           =   SPACE
@@ -6027,11 +6051,14 @@
                IF    ( SPA-GMN-S04SYORIKBN-G  =   SPACE )
                    MOVE    SPA-GMN-S04DSPLST(1)
                                        TO  SPA-GMN-S04DSPKBN-G
+                   MOVE    SPA-GMN-S04SUMKBNLST (2)
+                                       TO  SPA-GMN-S04SUMKBN-G
                    MOVE    SPA-GMN-S04SYORILST (1)
                                        TO  SPA-GMN-S04SYORIKBN-G
                END-IF
            ELSE
                MOVE    SPACE           TO  SPA-GMN-S04SYORIKBN-G
+               MOVE    SPACE           TO  SPA-GMN-S04SUMKBN-G
                MOVE    SPA-GMN-S04DSPLST(2)
                                        TO  SPA-GMN-S04DSPKBN-G
            END-IF
@@ -6062,6 +6089,32 @@
       *
            .
        4109-S04DSPKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    »ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ´ü´Ö³«»Ï¿ÇÎÅÊ¬¤Î»ÙÊ§¤¤¥Á¥§¥Ã¥¯
+      *****************************************************************
+       4109-S04SUMKBN-CHK-SEC     SECTION.
+      *
+           IF    ( SPA-GMN-S04KIKANKBN =   "1" )
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL     ( IDX     >   SPA-GMN-S04SUMKBN-MAX )
+                        OR       ( FLG-OK  =   1 )
+                   IF    ( SPA-GMN-S04SUMKBN
+                                       =   SPA-GMN-S04SUMKBNL (IDX))
+                       MOVE    SPA-GMN-S04SUMKBNLST (IDX)
+                                       TO  SPA-GMN-S04SUMKBN-G
+                       MOVE    1       TO  FLG-OK
+                   END-IF
+               END-PERFORM
+               IF    ( FLG-OK              =   ZERO )
+                   MOVE    SPA-GMN-S04SUMKBNLST (2)
+                                       TO  SPA-GMN-S04SUMKBN-G
+               END-IF
+           END-IF
+      *
+           .
+       4109-S04SUMKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    »ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ´ü´Ö½ªÎ»¸å¤Î»ÙÊ§¤¤¥Á¥§¥Ã¥¯
@@ -7246,6 +7299,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-S04KIKANKBN     TO  SYS-1039-S04KIKANKBN
            MOVE    SPA-GMN-S04DSPKBN       TO  SYS-1039-S04DSPKBN
            MOVE    SPA-GMN-S04SYORIKBN     TO  SYS-1039-S04SYORIKBN
+           MOVE    SPA-GMN-S04SUMKBN    TO  SYS-1039-S04SUMKBN
       *
            MOVE    SYS-1039-REC            TO  SYSKANRI-REC
       *
@@ -8185,6 +8239,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-S04SYORI-MAX
                                        TO  W07-S04SYORIKBN-COUNT
       *
+      *    »ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ´ü´Ö½ªÎ»¸å¤Î»ÙÊ§¤¤
+           MOVE    SPA-GMN-S04SUMKBN-G TO  W07-S04SUMKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S04SUMKBN-MAX
+               MOVE    SPA-GMN-S04SUMKBNLST (IDX)
+                                       TO  W07-S04SUMKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-S04SUMKBN-MAX
+                                       TO  W07-S04SUMKBN-COUNT
+      *
       *    ²áµîÆüÊ¬¤ÎÅÐÏ¿»þ¹ï
            MOVE    SPA-GMN-SYUSTIME-HH TO  W07-SYUSTIME-HH
            MOVE    SPA-GMN-SYUSTIME-MM TO  W07-SYUSTIME-MM
@@ -8420,12 +8484,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    WIDGET-NORMAL       TO  W07-S04SYORIKBN-STATE
                                            W07-S04SYORIKBN-ITEM-STATE
+                                           W07-S04SUMKBN-STATE
+                                           W07-S04SUMKBN-ITEM-STATE
                                            W07-S04DSPKBN-STATE
                                            W07-S04DSPKBN-ITEM-STATE
            IF    ( SPA-GMN-S04KIKANKBN =   "2" )
                MOVE    WIDGET-INSENSITIVE
                                        TO  W07-S04SYORIKBN-STATE
                                            W07-S04SYORIKBN-ITEM-STATE
+                                           W07-S04SUMKBN-STATE
+                                           W07-S04SUMKBN-ITEM-STATE
                                            W07-S04DSPKBN-STATE
                                            W07-S04DSPKBN-ITEM-STATE
            END-IF
@@ -9026,6 +9094,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    423
                    MOVE  "S04DSPKBN"       TO   MCP-WIDGET
                WHEN    424
+                   MOVE  "S04SUMKBN"    TO   MCP-WIDGET
+               WHEN    425
                    MOVE  "S04SYORIKBN"     TO   MCP-WIDGET
       *ÉÂÌ¾¡¦¥³¥á¥ó¥È¾ðÊó
                WHEN    500
@@ -9302,6 +9372,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "S04DSPKBN"
                    IF    ( SPA-GMN-S04KIKANKBN =   "1" )
                        MOVE    424         TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    42          TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "S04SUMKBN"
+                   IF    ( SPA-GMN-S04KIKANKBN =   "1" )
+                       MOVE    425         TO  SPA-GMN-CUR
                    ELSE
                        MOVE    42          TO  SPA-GMN-CUR
                    END-IF

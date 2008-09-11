@@ -1635,8 +1635,10 @@
                                    TO  SHELLTBL-ARG24
            MOVE    SPA-S01-SHR-NYUGAIKBN
                                    TO  SHELLTBL-ARG25
-           MOVE    SPA-S01-SHR-SUMKBN
+           MOVE    SPA-S01-SHR-JIHSUMKBN
                                    TO  SHELLTBL-ARG26
+           MOVE    SPA-S01-SHR-SUMKBN
+                                   TO  SHELLTBL-ARG27
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE

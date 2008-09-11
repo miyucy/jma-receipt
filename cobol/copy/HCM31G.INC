@@ -33,3 +33,10 @@
             02  HCM31G-HOSPNAME PIC X(60).
             02  HCM31G-HOSPTEL  PIC X(15).
             02  HCM31G-NYUGAI   PIC X(8).
+            02  HCM31G-VER040300        OCCURS  30 TIMES.
+              03  HCM31G-SRYYY    PIC X(10).
+              03  HCM31G-SRYMMDD  PIC X(16).
+              03  HCM31G-NEW  PIC X(10).
+              03  HCM31G-BFNYUKINMSG  PIC X(20).
+              03  HCM31G-BFNYUKIN PIC X(11).
+              03  HCM31G-BFYEN    PIC X(10).

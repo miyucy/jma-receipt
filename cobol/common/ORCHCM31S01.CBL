@@ -58,6 +58,7 @@
                05  WRK-SIHARAI-OCC     OCCURS  100.
                    07  WRK-SIHARAI-YMD PIC X(08).
                    07  WRK-SIHARAI-KIN PIC S9(10).
+                   07  WRK-SIHARAI-BFKIN PIC S9(10).
       *
        01  CONST-AREA.
            03  CONST-SIHARAI-MAX       PIC 9(05)   VALUE   100.
@@ -183,8 +184,19 @@
                    COMPUTE IDX1    =   IDX1    +   1
                    MOVE    SMEI-NYUHEN-YMD
                                        TO  WRK-SIHARAI-YMD (IDX1)
-                   MOVE    SMEI-NYUHEN-MONEY
+                   IF    ( HCM31S01-SUMKBN =   "1" )
+                       IF    ( SMEI-NYUHEN-YMD
+                                       >=  HCM31S01-STYMD )
+                           MOVE    SMEI-NYUHEN-MONEY
                                        TO  WRK-SIHARAI-KIN (IDX1)
+                       ELSE
+                           MOVE    SMEI-NYUHEN-MONEY
+                                       TO  WRK-SIHARAI-BFKIN (IDX1)
+                       END-IF
+                   ELSE
+                       MOVE    SMEI-NYUHEN-MONEY
+                                       TO  WRK-SIHARAI-KIN (IDX1)
+                   END-IF
                END-IF
       *
                MOVE    "tbl_syumei"    TO  MCP-TABLE
@@ -267,6 +279,10 @@
                    COMPUTE HCM31S01-KINGAKU (1)
                        =   HCM31S01-KINGAKU (1)
                        +   WRK-SIHARAI-KIN (IDX0)
+      *
+                   COMPUTE HCM31S01-BFKINGAKU (1)
+                       =   HCM31S01-BFKINGAKU (1)
+                       +   WRK-SIHARAI-BFKIN (IDX0)
       *
                END-PERFORM
       *

@@ -63,6 +63,7 @@
            03  FLG-PTNUM           PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-TAISYO          PIC 9(01).
+           03  FLG-LOOP-END        PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -87,9 +88,6 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-TABLE           PIC X(10).
-           03  WRK-PATH            PIC X(10).
-      *
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -104,8 +102,8 @@
                05  WRK-KEY-YMD     PIC X(08).
                05  WRK-HEN-MAX     PIC 9(04).
                05  WRK-NYUIN       PIC 9(01).
-      *        ºÇÂç£²£µ·ï¡¦¡¦¡¦£²£µ·ïÌÜ¤ÏÊÂ¤ÓÂØ¤¨ÍÑ
-               05  WRK-HENSYU-OCC  OCCURS  25.
+      *        ºÇÂç£¸£°£±·ï¡¦¡¦¡¦£¸£°£±·ïÌÜ¤ÏÊÂ¤ÓÂØ¤¨ÍÑ
+               05  WRK-HENSYU-OCC  OCCURS  801.
                    07  WRK-HENSYU-KEY.
                        09  WRK-NYUGAIKBN  PIC X(01).
                        09  WRK-HIDUKE PIC X(06).
@@ -114,6 +112,7 @@
                    07  WRK-SYOKUJI    PIC S9(11).
                    07  WRK-JIHI       PIC S9(11).
                    07  WRK-GAKU       PIC S9(11).
+                   07  WRK-BFGAKU     PIC S9(11).
       *
            03  WRK-GHENSYU-TBL.
                05  WRK-GHKNTEN     PIC S9(07).
@@ -391,14 +390,6 @@
       *****************************************************************
        210-HENSYU-SEC              SECTION.
       *
-           IF    ( ORCHCM31-KIKANKBN   =   "2" )
-               MOVE    "tbl_syunou"    TO  WRK-TABLE
-               MOVE    "key50"         TO  WRK-PATH
-           ELSE
-               MOVE    "tbl_syunou"    TO  WRK-TABLE
-               MOVE    "key49"         TO  WRK-PATH
-           END-IF
-      *
       *    ¼ýÇ¼¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
            PERFORM 900-SYUNOU-SELECT-SEC
       *
@@ -423,8 +414,8 @@
       *
            END-PERFORM
       *
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key50"         TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
@@ -579,6 +570,22 @@
                    =   WRK-FTNMONEY
                    +   WRK-SKJMONEY
       *
+               IF    ( ORCHCM31-SUMKBN     =   "1" )
+                   IF    ( WRK-HKN-SKYMONEY
+                                           >   HCM31S01-BFKINGAKU (1))
+                       COMPUTE WRK-BFGAKU (IDX2)
+                           =   WRK-BFGAKU (IDX2)
+                           +   HCM31S01-BFKINGAKU (1)
+                       COMPUTE WRK-HKN-SKYMONEY
+                           =   WRK-HKN-SKYMONEY
+                           -   HCM31S01-BFKINGAKU (1)
+                   ELSE
+                       COMPUTE WRK-BFGAKU (IDX2)
+                           =   WRK-BFGAKU (IDX2) +   WRK-HKN-SKYMONEY
+                       MOVE    ZERO        TO  WRK-HKN-SKYMONEY
+                   END-IF
+               END-IF
+      *
                IF    ( WRK-HKN-SKYMONEY    >   HCM31S01-KINGAKU (1) )
                    COMPUTE WRK-GAKU (IDX2)
                        =   WRK-GAKU (IDX2) +   HCM31S01-KINGAKU (1)
@@ -588,7 +595,12 @@
                END-IF
            ELSE
                COMPUTE WRK-GAKU (IDX2)
-                   =   WRK-GAKU (IDX2) +   HCM31S01-KINGAKU (1)
+                   =   WRK-GAKU (IDX2)     +   HCM31S01-KINGAKU (1)
+               IF    ( ORCHCM31-SUMKBN     =   "1" )
+                   COMPUTE WRK-BFGAKU (IDX2)
+                       =   WRK-BFGAKU (IDX2)
+                       +   HCM31S01-BFKINGAKU (1)
+               END-IF
            END-IF
       *
            .
@@ -701,6 +713,8 @@
                                    TO  HCM31S01-STYMD
            MOVE    ORCHCM31-ENDSRYYMD
                                    TO  HCM31S01-EDYMD
+           MOVE    ORCHCM31-SUMKBN
+                                   TO  HCM31S01-SUMKBN
       *    »ÙÊ§¤¤¶â³Û¥µ¥Ö¥×¥í¸Æ¤Ó½Ð¤·
            CALL    "ORCHCM31S01"       USING
                                        HCM31S01-AREA
@@ -723,10 +737,10 @@
                    IF      WRK-HENSYU-KEY (IDX)
                                    >   WRK-HENSYU-KEY (IDY)
                        MOVE    WRK-HENSYU-OCC(IDX)
-                                       TO  WRK-HENSYU-OCC(25)
+                                       TO  WRK-HENSYU-OCC(801)
                        MOVE    WRK-HENSYU-OCC(IDY)
                                        TO  WRK-HENSYU-OCC(IDX)
-                       MOVE    WRK-HENSYU-OCC(25)
+                       MOVE    WRK-HENSYU-OCC(801)
                                        TO  WRK-HENSYU-OCC(IDY)
                    END-IF
                END-PERFORM
@@ -754,6 +768,12 @@
       *
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
             AND  ( ORCHCM31-DSPKBN     =   "2"   )
+            AND  ( WRK-GAKU (IDX4) =   ZERO )
+                   MOVE    ZERO    TO  FLG-TAISYO
+           END-IF
+      *
+           IF    ( ORCHCM31-KIKANKBN   =   "1"   )
+            AND  ( ORCHCM31-SUMKBN     =   "1"   )
             AND  ( WRK-GAKU (IDX4) =   ZERO )
                    MOVE    ZERO    TO  FLG-TAISYO
            END-IF
@@ -811,6 +831,14 @@
                MOVE    "¿ÇÎÅ·î"        TO  HCM32N-LABELYM
            END-IF
       *
+           IF    ( ORCHCM31-SUMKBN     =   "1" )
+               MOVE    CNT-PAGE        TO  WRK-Z3
+               STRING  WRK-Z3          DELIMITED   BY  SIZE
+                       "ÊÇ"            DELIMITED   BY  SIZE
+               INTO    HCM32N-PAGE
+               END-STRING
+           END-IF
+      *
            .
        240-HEAD-HEN-EXT.
            EXIT.
@@ -829,8 +857,17 @@
            MOVE    WRK-HIDUKE(IDX4)    TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 31012-SEIWA-HEN-SEC
-           MOVE    WRK-HENYMDG(11:6)
-                                       TO  HCM32N-SRYYYMM(CNT-LINE)
+           IF    ( ORCHCM31-SUMKBN     =   "1" )
+               MOVE    WRK-HENYMDG(1:10)
+                                       TO  HCM32N-SRYYY(CNT-LINE)
+               STRING  "¡¡¡¡"              DELIMITED   BY  SIZE
+                       WRK-HENYMDG(11:6)   DELIMITED   BY  SIZE
+               INTO    HCM32N-SRYMM(CNT-LINE)
+               END-STRING
+           ELSE
+               MOVE    WRK-HENYMDG(11:6)
+                                      TO  HCM32N-SRYYYMM(CNT-LINE)
+           END-IF
       *
            IF    ( ORCHCM31-KIKANKBN   =   "1"   )
             AND  ( ORCHCM31-DSPKBN     =   "1" OR "3" )
@@ -869,6 +906,17 @@
                MOVE    WRK-GAKU(IDX4)  TO  WRK-Z9
                MOVE    WRK-Z9          TO  HCM32N-SKYMONEY(CNT-LINE)
                MOVE    "±ß"            TO  HCM32N-YEN     (CNT-LINE)
+           END-IF
+      *
+           IF    ( ORCHCM31-SUMKBN     =   "1" )
+               IF    ( WRK-BFGAKU(IDX4)    NOT =   ZERO )
+                   MOVE    "´ü´ÖÁ°»ÙÊ§¶â³Û"
+                                       TO  HCM32N-BFNYUKINMSG(CNT-LINE)
+                   MOVE    WRK-BFGAKU(IDX4)
+                                       TO  WRK-Z9
+                   MOVE    WRK-Z9      TO  HCM32N-BFNYUKIN(CNT-LINE)
+                   MOVE    "±ß"        TO  HCM32N-BFYEN   (CNT-LINE)
+               END-IF
            END-IF
       *
            COMPUTE WRK-GHKNTEN
@@ -955,6 +1003,7 @@
       *
            INITIALIZE                      HCM32G
       *
+           MOVE    HCM32N-PAGE         TO  HCM32G-PAGE
            MOVE    HCM32N-STRSRYYMD    TO  HCM32G-STRSRYYMD
            MOVE    HCM32N-ENDSRYYMD    TO  HCM32G-ENDSRYYMD
            MOVE    HCM32N-PTNUM        TO  HCM32G-PTNUM
@@ -967,6 +1016,10 @@
       *
                 MOVE    HCM32N-SRYYYMM (IDX-LINE)
                                        TO  HCM32G-SRYYYMM  (IDX-LINE)
+                MOVE    HCM32N-SRYYY   (IDX-LINE)
+                                       TO  HCM32G-SRYYY    (IDX-LINE)
+                MOVE    HCM32N-SRYMM   (IDX-LINE)
+                                       TO  HCM32G-SRYMM    (IDX-LINE)
                 MOVE    HCM32N-HKNTEN   (IDX-LINE)
                                        TO  HCM32G-HKNTEN   (IDX-LINE)
                 MOVE    HCM32N-TEN      (IDX-LINE)
@@ -983,6 +1036,15 @@
                                        TO  HCM32G-SKYMONEY (IDX-LINE)
                 MOVE    HCM32N-YEN      (IDX-LINE)
                                        TO  HCM32G-YEN      (IDX-LINE)
+                MOVE    HCM32N-BFNYUKINMSG (IDX-LINE)
+                                       TO  HCM32G-BFNYUKINMSG
+                                                           (IDX-LINE)
+                MOVE    HCM32N-BFNYUKIN (IDX-LINE)
+                                       TO  HCM32G-BFNYUKIN
+                                                           (IDX-LINE)
+                MOVE    HCM32N-BFYEN (IDX-LINE)
+                                       TO  HCM32G-BFYEN
+                                                           (IDX-LINE)
       *
             END-PERFORM
       *
@@ -1177,12 +1239,12 @@
            END-EVALUATE
       *
            MOVE    SYUNOU-REC      TO  MCPDATA-REC
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-PATH        TO  MCP-PATHNAME
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key50"         TO  MCP-PATHNAME
       *
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC TO  SYUNOU-REC
+               PERFORM 900-SYUNOU-READ-SEC
            ELSE
                MOVE    1           TO  FLG-SYUNOU
                INITIALIZE              SYUNOU-REC
@@ -1197,15 +1259,36 @@
       *****************************************************************
        900-SYUNOU-READ-SEC         SECTION.
       *
-           MOVE    WRK-TABLE       TO  MCP-TABLE
-           MOVE    WRK-PATH        TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYUNOU-REC
-           ELSE
-               MOVE    1               TO  FLG-SYUNOU
-               INITIALIZE              SYUNOU-REC
-           END-IF
+           MOVE    ZERO            TO  FLG-LOOP-END
+           MOVE    ZERO            TO  FLG-SYUNOU
+      *
+           PERFORM UNTIL ( FLG-SYUNOU      NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               MOVE    "tbl_syunou"    TO  MCP-TABLE
+               MOVE    "key50"         TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC TO  SYUNOU-REC
+      *
+                   MOVE    1           TO  FLG-LOOP-END
+      *
+                   IF    ( ORCHCM31-KIKANKBN   =   "1" )
+                       IF    ( ORCHCM31-SUMKBN =   "2" )
+                           IF    ( SYU-SRYYMD >=   ORCHCM31-STRSRYYMD )
+                            AND  ( SYU-SRYYMD <=   ORCHCM31-ENDSRYYMD )
+                               CONTINUE
+                           ELSE
+                               MOVE    ZERO    TO  FLG-LOOP-END
+                           END-IF
+                       END-IF
+                   END-IF
+      *
+               ELSE
+                   MOVE    1               TO  FLG-SYUNOU
+                   INITIALIZE              SYUNOU-REC
+               END-IF
+           END-PERFORM
       *
            .
        900-SYUNOU-READ-EXT.
@@ -1269,6 +1352,20 @@
       *
            .
        910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *****************************************************************
+       911-DBSELECT-SEC          SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+       911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
       *    ¥Æ¡¼¥Ö¥ëÆÉ¹þ½èÍý
