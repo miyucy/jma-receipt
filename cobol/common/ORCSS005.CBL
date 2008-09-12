@@ -502,6 +502,7 @@
                                MOVE    "1"         TO  SYS-5014-DISPKBN
                            END-IF
                            IF    ( SYS-5014-DISPKBN    =   "1" )
+                            AND  ( RYOCOM-MONTH    NOT =   ZERO )
                                PERFORM 2001-IRYOKBN-DATA-INS-SEC
                            END-IF
                        END-IF
