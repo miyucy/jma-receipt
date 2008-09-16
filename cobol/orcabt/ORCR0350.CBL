@@ -221,6 +221,8 @@
       *  04.03.03    NACL-Æ£¸¶    08/08/05  ´µ¼ÔÅÐÏ¿ÆÃµ­»ö¹àÆþÎÏÂÐ±þ
       *  04.03.04    NACL-Æ£¸¶    08/07/23  µÜ¾ë¸©¡¢´ä¼ê¸©ÃÏ¿ÌÂÐ±þ
       *                                     £²£°£°£¸Ç¯£¶·î¡ÁÂÐ¾Ý 
+      *  04.03.05    NACL-Æ£¸¶    08/09/16  ¸å´ü¹âÎð¼Ô¤Î£Î£É¥ì¥³¡¼¥É¤Îºî
+      *                                     À®¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4808,7 +4810,7 @@
                END-IF
                IF    ( RECE62-TEISYUTUSAKI   =   "6"                  )
                AND   ( RECE62-RJNGAIFTN  >=  SYS-200501-NI-JYOKEN (2) )
-                       PERFORM 200725-NIKKEI-HENSYU-SEC
+                       PERFORM 200721-NI-KAISU-HENSYU-SEC
                END-IF
            END-IF
       *
@@ -5064,6 +5066,10 @@
                END-IF
                IF    ( RECE62-TEISYUTUSAKI   =   "2"                )
                AND   ( RECE62-RJNGAIFTN  >=  SYS-2005-NI-JYOKEN (4) )
+                       PERFORM 200725-NIKKEI-HENSYU-SEC
+               END-IF
+               IF    ( RECE62-TEISYUTUSAKI   =   "6"                  )
+               AND   ( RECE62-RJNGAIFTN  >=  SYS-200501-NI-JYOKEN (2) )
                        PERFORM 200725-NIKKEI-HENSYU-SEC
                END-IF
            END-IF
