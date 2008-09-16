@@ -415,6 +415,9 @@
       *****************************************************************
        200-SHOHOU-PRINT-SEC            SECTION.
       *
+           MOVE    ORCSNYUINSHO-TAIINYMD
+                                       TO  SPA-SRYYMD
+      *
            INITIALIZE                  TBL-SHOHOU-AREA
       *    院外処方の内容編集
            PERFORM 1001-SRYKA-TBL-SEC
@@ -446,7 +449,7 @@
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "1"                 TO  ORCSPRTNM-KBN
            MOVE    "00000002"          TO  ORCSPRTNM-KBNCD
-           MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
            MOVE    "2"                 TO  SPA-NYUGAIKBN
            CALL    "ORCSPRTNM"         USING
                                        ORCSPRTNMAREA
