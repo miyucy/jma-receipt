@@ -367,6 +367,8 @@ RECORD_files = \
 	W35.rec \
         W96.rec \
         I041.rec \
+        KA02.rec \
+        KA021.rec \
 
 DEF_files = \
 	HC01.def \
