@@ -331,6 +331,7 @@
       *  04.02.28    NACL-門脇    08/09/08  兵庫県地方公費対応
       *  04.02.29    NACL-門脇    08/09/09  建設連合組合＋精神、結核対応
       *  04.02.30    NACL-門脇    08/09/10  広島県地方公費対応
+      *  04.02.31    NACL-門脇    08/09/16  一部負担金再掲欄記載修正
       *
       *  04.03.01    NACL-門脇    08/07/07  複数保険組み合わせ使用時の
       *                                     請求点・実日数記載対応
@@ -12255,16 +12256,33 @@
                                             RECE62-FTNMONEY-KOJ(2)
                   END-IF
                   MOVE     FTN-KOH-XXX  TO  RECE62-KOUREI-SAIKEI
+      *
                   IF  RECE62-KOHNUM(1)   =  SPACE
                      MOVE  ZERO         TO  RECE62-KOUREI-SAIKEI
                   ELSE
-                     IF  RECE62-HKNCOMBI(2)  =  ZERO
-                       IF  (FTN-KOH-XXX        = RECE62-FTNMONEY(1))
-                       AND (FLG-SAIKEI-KISAI   = ZERO              )
-                           MOVE  ZERO   TO  RECE62-KOUREI-SAIKEI
-                       END-IF
-                     END-IF
+                    IF  FLG-SAIKEI-KISAI  NOT = ZERO
+                         CONTINUE
+                    ELSE
+                      IF  (RECE62-KOHNUM(1)   NOT = "972" AND "974")
+                      AND (RECE62-TOTALTEN(1) = RECE62-TOTALTEN(2) )
+                      AND (FTN-KOH-XXX        = RECE62-FTNMONEY(1) )
+                           MOVE  ZERO     TO  RECE62-KOUREI-SAIKEI
+                      END-IF
+      *
+                      IF  (RECE62-KOHNUM(1)       = "972" OR  "974")
+                      AND (RECE62-KOHNUM(2)   NOT = "972" AND "974")
+                      AND (RECE62-TOTALTEN(1) = RECE62-TOTALTEN(3) )
+                      AND (FTN-KOH-XXX        = RECE62-FTNMONEY(1) )
+                           MOVE  ZERO     TO  RECE62-KOUREI-SAIKEI
+                      END-IF
+      *
+                      IF  (RECE62-KOHNUM(1)  = "972" OR "974")
+                      AND (RECE62-KOHNUM(2)  = SPACE         )
+                           MOVE  ZERO     TO  RECE62-KOUREI-SAIKEI
+                      END-IF
+                    END-IF
                   END-IF
+      *
                   IF  FTN-KOH-XX3   NOT =   ZERO
                     MOVE   FTN-KOH-XX3  TO  RECE62-KOUREI-SAIKEI2
                   ELSE
