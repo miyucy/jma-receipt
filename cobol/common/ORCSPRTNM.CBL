@@ -34,6 +34,7 @@
       * 01.00.02     NACL-太田    05/10/24   MONFUNC 対応
       * 01.00.03     NACL-多々納  06/04/10   診療費明細書追加
       * 04.00.00     NACL-多々納  08/01/25   標準の旧処方せん名対応
+      * 04.03.00     NACL-多々納  08/09/04   入院お薬手帳等対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -228,6 +229,12 @@
       *            診療費明細書
                    WHEN    "00000008"
                        MOVE    "ORCHCN04"      TO  ORCSPRTNM-PRTPG
+      *            薬剤情報
+                   WHEN    "00000009"
+                       MOVE    "ORCHCN30"      TO  ORCSPRTNM-PRTPG
+      *            お薬手帳
+                   WHEN    "00000010"
+                       MOVE    "ORCHCN62"      TO  ORCSPRTNM-PRTPG
                END-EVALUATE
            ELSE
       *        外来

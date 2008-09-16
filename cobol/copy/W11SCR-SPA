@@ -98,7 +98,7 @@
                                13  SPA-GMN-TNAME-N     PIC X(30).
                                13  SPA-GMN-TPRTNM-N    PIC X(16).
       *                    入院・プログラム名
-                           11  SPA-GMN-TBL02-N         OCCURS  8.
+                           11  SPA-GMN-TBL02-N         OCCURS  10.
                                13  SPA-GMN-TORGPGNM-N
                                                        PIC X(20).
                                13  SPA-GMN-TORGPGCHK-N

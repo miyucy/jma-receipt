@@ -64,6 +64,7 @@
       * 04.00000     NACL-多々納  07/09/19  処方せんＱＲプログラム追加他
       * 04.02.01     NACL-森脇    08/03/06  お薬手帳追加
       * 04.02.02     NACL-森脇    08/03/26  薬剤情報提供書プログラム選択
+      * 04.03.00     NACL-多々納  08/09/08  入院お薬手帳等追加対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -798,6 +799,9 @@
            MOVE    "指示箋"            TO  SPA-GMN-TNAME-N (8)
            MOVE    "診療費明細書"      TO  SPA-GMN-TNAME-N (9)
       *
+           MOVE    "薬剤情報提供書"    TO  SPA-GMN-TNAME-N (10)
+           MOVE    "お薬手帳"          TO  SPA-GMN-TNAME-N (11)
+      *
       *    カルテ１号紙
            MOVE    "ORCHCN01"          TO  SPA-GMN-TORGPGNM-N (1)
            MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(1)
@@ -830,8 +834,16 @@
            MOVE    "ORCHCN04"          TO  SPA-GMN-TORGPGNM-N (8)
            MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(8)
            MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(8)
+      *    薬剤情報提供書
+           MOVE    "ORCHCN30"          TO  SPA-GMN-TORGPGNM-N (9)
+           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(9)
+           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(9)
+      *    お薬手帳
+           MOVE    "ORCHCN62"          TO  SPA-GMN-TORGPGNM-N (10)
+           MOVE    "T"                 TO  SPA-GMN-TORGPGCHK-N(10)
+           MOVE    "F"                 TO  SPA-GMN-TCSTPGCHK-N(10)
       *    入院帳票
-           MOVE    8                   TO  SPA-NPGNM-MAX
+           MOVE    10                  TO  SPA-NPGNM-MAX
       *
            MOVE    4                   TO  SPA-NPGNM-MAX2
       *
@@ -1311,6 +1323,8 @@
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK06N"
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK07N"
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK08N"
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK09N"
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK10N"
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-NYU-ORCAORGCHK-CHK-SEC
       *    カスタマイズプログラム選択時 ＝ 入院 ＝
@@ -1322,6 +1336,8 @@
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK06N"
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK07N"
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK08N"
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK09N"
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK10N"
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-NYU-ORCACSTCHK-CHK-SEC
       *    確定
@@ -1434,6 +1450,8 @@
            MOVE    W11-ORCACSTNM06N    TO  SPA-GMN-TCSTPGNM-N (6)
            MOVE    W11-ORCACSTNM07N    TO  SPA-GMN-TCSTPGNM-N (7)
            MOVE    W11-ORCACSTNM08N    TO  SPA-GMN-TCSTPGNM-N (8)
+           MOVE    W11-ORCACSTNM09N    TO  SPA-GMN-TCSTPGNM-N (9)
+           MOVE    W11-ORCACSTNM10N    TO  SPA-GMN-TCSTPGNM-N (10)
       *    処方せん
            MOVE    W11-ORCAORGNM02     TO  SPA-GMN-TORGPGNM (02)
       *
@@ -2034,6 +2052,12 @@
                    WHEN    8
                        MOVE    W11-ORCAORGCHK08N
                                    TO  SPA-GMN-TORGPGCHK-N (8)
+                   WHEN    9
+                       MOVE    W11-ORCAORGCHK09N
+                                   TO  SPA-GMN-TORGPGCHK-N (9)
+                   WHEN    10
+                       MOVE    W11-ORCAORGCHK10N
+                                   TO  SPA-GMN-TORGPGCHK-N (10)
                END-EVALUATE
            END-IF
       *
@@ -2068,6 +2092,12 @@
                                    TO  SPA-GMN-TCSTPGCHK-N (IDX1)
                    WHEN    8
                        MOVE    W11-ORCACSTCHK08N
+                                   TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+                   WHEN    9
+                       MOVE    W11-ORCACSTCHK09N
+                                   TO  SPA-GMN-TCSTPGCHK-N (IDX1)
+                   WHEN    10
+                       MOVE    W11-ORCACSTCHK10N
                                    TO  SPA-GMN-TCSTPGCHK-N (IDX1)
                END-EVALUATE
            END-IF
@@ -3018,6 +3048,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    COMPUTE SPA-GMN-CUR =   8       +   60
                END-IF
            END-IF
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-TCSTPGNM-N (9)  =   SPACE )
+               IF  ( W11-ORCACSTCHK09N     =   "F" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   8       +   60
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE  )  AND
+                  (SPA-GMN-TCSTPGNM-N (10)  =   SPACE )
+               IF  ( W11-ORCACSTCHK10N     =   "F" )
+                   CONTINUE
+               ELSE
+                   MOVE    "0004"          TO  SPA-ERRCD
+                   COMPUTE SPA-GMN-CUR =   8       +   60
+               END-IF
+           END-IF
            .
        4901-CSTPGNM-CHK-EXT.
            EXIT.
@@ -3250,6 +3298,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                         TO  W11-ORCAORGNM07N
            MOVE    SPA-GMN-TORGPGNM-N  (8)
                                         TO  W11-ORCAORGNM08N
+           MOVE    SPA-GMN-TORGPGNM-N  (9)
+                                        TO  W11-ORCAORGNM09N
+           MOVE    SPA-GMN-TORGPGNM-N  (10)
+                                        TO  W11-ORCAORGNM10N
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-ORGPGNM03N-MAX
@@ -3274,16 +3326,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-TCSTPGNM-N (6)  TO  W11-ORCACSTNM06N
            MOVE    SPA-GMN-TCSTPGNM-N (7)  TO  W11-ORCACSTNM07N
            MOVE    SPA-GMN-TCSTPGNM-N (8)  TO  W11-ORCACSTNM08N
+           MOVE    SPA-GMN-TCSTPGNM-N (9)  TO  W11-ORCACSTNM09N
+           MOVE    SPA-GMN-TCSTPGNM-N (10) TO  W11-ORCACSTNM10N
       *
            MOVE    SPA-GMN-TORGPGCHK-N (5) TO  W11-ORCAORGCHK05N
            MOVE    SPA-GMN-TORGPGCHK-N (6) TO  W11-ORCAORGCHK06N
            MOVE    SPA-GMN-TORGPGCHK-N (7) TO  W11-ORCAORGCHK07N
            MOVE    SPA-GMN-TORGPGCHK-N (8) TO  W11-ORCAORGCHK08N
+           MOVE    SPA-GMN-TORGPGCHK-N (9) TO  W11-ORCAORGCHK09N
+           MOVE    SPA-GMN-TORGPGCHK-N(10) TO  W11-ORCAORGCHK10N
       *
            MOVE    SPA-GMN-TCSTPGCHK-N (5) TO  W11-ORCACSTCHK05N
            MOVE    SPA-GMN-TCSTPGCHK-N (6) TO  W11-ORCACSTCHK06N
            MOVE    SPA-GMN-TCSTPGCHK-N (7) TO  W11-ORCACSTCHK07N
            MOVE    SPA-GMN-TCSTPGCHK-N (8) TO  W11-ORCACSTCHK08N
+           MOVE    SPA-GMN-TCSTPGCHK-N (9) TO  W11-ORCACSTCHK09N
+           MOVE    SPA-GMN-TCSTPGCHK-N(10) TO  W11-ORCACSTCHK10N
       *
            MOVE    SPA-GMN-SYOHOGEPRTFLG-G   TO  W11-SYOHOGEPRTFLG
       *
@@ -3584,6 +3642,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            入院最終、確定へ
                    MOVE    78           TO  SPA-GMN-CUR
                WHEN    "ORCACSTNM08N"
+      *            入院最終、確定へ
+      **********   MOVE    999          TO  SPA-GMN-CUR
+                   MOVE    79           TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM09N"
+                   MOVE    80           TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM10N"
       *            入院最終、確定へ
                    MOVE    999          TO  SPA-GMN-CUR
       *

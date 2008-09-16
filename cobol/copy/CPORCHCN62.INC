@@ -1,0 +1,61 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      *----------------------------------------------------------*
+      *    お薬手帳（入院）パラメタ作成パラ   COPY (CPORCHCN62.INC)
+      *----------------------------------------------------------*
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ************************************************************
+      *
+       01  ORCHCN62AREA.
+      *    診療日
+           03  ORCHCN62-SRYYMD          PIC X(08).
+      *    処理回数
+           03  ORCHCN62-CNT             PIC 9(03).
+      *    ドクター
+           03  ORCHCN62-DRCD            PIC X(05).
+      *    病棟
+           03  ORCHCN62-BTUNAME         PIC X(20).
+      *    病室
+           03  ORCHCN62-ROOMNO          PIC X(06).
+      *    処方内容
+           03  ORCHCN62-DATA-REC.
+      *        最大件数
+               05  ORCHCN62-ZAI-MAX         PIC 9(03).
+      *        剤テーブル
+               05  ORCHCN62-REC-TBL         OCCURS   100.
+      *            剤回数
+                   07  ORCHCN62-ZAIKAIKEI       PIC 9(03).
+      *            診療区分
+                   07  ORCHCN62-SRYKBN          PIC X(02).
+      *            診療種別
+                   07  ORCHCN62-SRYSYUKBN       PIC X(03).
+      *            剤番号
+                   07  ORCHCN62-ZAINUM          PIC  9(08).
+      *            剤内容
+                   07  ORCHCN62-NAI-TBL         OCCURS   50.
+      *                コード
+                       09  ORCHCN62-SRYCD           PIC  X(09).
+      *                数量
+                       09  ORCHCN62-SRYSURYO        PIC  9(05)V9(03).
+      *                回数（外用薬）
+                       09  ORCHCN62-SRYKAISU        PIC  9(03).
+      *                コメント名称
+                       09  ORCHCN62-INPUTCOMENT     PIC  X(80).
+      *

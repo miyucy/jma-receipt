@@ -73,6 +73,8 @@
       *
        01  SCRAREA.
            COPY    "KA01.INC".
+           COPY    "KA02.INC".
+           COPY    "KA021.INC".
            COPY    "KAERR.INC".
            COPY    "KAID1.INC".
            COPY    "KAID2.INC".

@@ -16,28 +16,37 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    入院院外処方せん編集パラ   COPY (CPORCSNYUINSHO.INC)
+      *    入院薬剤情報パラメタ作成パラ      COPY (CPORCSCHN30.INC)
+      *                                          (ORCSCHN30 で使用）
       *----------------------------------------------------------*
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
-       01  ORCSNYUINSHOAREA.
-      *    処理区分（１：診療科編集、２：処方せん印刷、３：診療科のみ)
-           03  ORCSNYUINSHO-KBN        PIC X(01).
-      *    入院日（必須）
-           03  ORCSNYUINSHO-NYUINYMD   PIC X(08).
-      *    退院日（必須）
-           03  ORCSNYUINSHO-TAIINYMD   PIC X(08).
-      *    入・出力（処理区分＝１ は出力、２ は 入力項目）
-           03  ORCSNYUINSHO-SRYKA-AREA.
-               05  ORCSNYUINSHO-SRYKA-G    OCCURS   5.
-      *            診療科
-                   07  ORCSNYUINSHO-SRYKA      PIC X(02).
-      *            ドクター
-                   07  ORCSNYUINSHO-DRCD       PIC X(05).
-               05  ORCSNYUINSHO-SRYKA-MAX      PIC 9(02).
-      *    主治医（処理区分＝２ でドクターがない時のみ必須）
-           03  ORCSNYUINSHO-SYUDRCD    PIC X(05).
+       01  ORCSCHN30AREA.
+      *
+      *    処理区分(N:入院印刷画面）
+           03  ORCSHCN30-KBN             PIC X(01).
+      *    交付日
+           03  ORCSHCN30-SRYYMD          PIC X(08).
+      *    ドクター
+           03  ORCSHCN30-DRCD            PIC X(05).
+      *    病棟
+           03  ORCSHCN30-BTUNAME         PIC X(20).
+      *    病室
+           03  ORCSHCN30-ROOMNO          PIC X(06).
+      *
+      *    処方内容
+           03  ORCSHCN30-DATA-REC.
+               05  ORCSHCN30-ZAI-MAX         PIC 9(03).
+               05  ORCSHCN30-REC-TBL     OCCURS   100.
+                   07  ORCSHCN30-ZAIKAIKEI       PIC 9(03).
+                   07  ORCSHCN30-SRYKBN          PIC X(02).
+                   07  ORCSHCN30-SRYSYUKBN       PIC X(03).
+                   07  ORCSHCN30-NAI-TBL         OCCURS   50.
+                       09  ORCSHCN30-SRYCD           PIC  X(09).
+                       09  ORCSHCN30-SRYSURYO        PIC  9(05)V9(03).
+                       09  ORCSHCN30-SRYKAISU        PIC  9(03).
+                       09  ORCSHCN30-ZAIKAISU        PIC  9(03).
       *

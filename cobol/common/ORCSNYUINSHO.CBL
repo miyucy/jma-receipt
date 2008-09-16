@@ -222,6 +222,7 @@
                ",ORCSNYUINSHO-KBN:" ORCSNYUINSHO-KBN
                ",ORCSNYUINSHO-NYUINYMD:" ORCSNYUINSHO-NYUINYMD
                ",ORCSNYUINSHO-TAIINYMD:" ORCSNYUINSHO-TAIINYMD
+               ",SRYKA:" ORCSNYUINSHO-SRYKA (1)
       *TEST
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
@@ -232,6 +233,7 @@
       *            ¿ÇÎÅ²ÊÊÔ½¸½èÍý
                    PERFORM 100-SRYKA-HENSYU-SEC
                WHEN    "2"
+               WHEN    "3"
       *            ±¡³°½èÊý¤»¤ó°õºþ½èÍý
                    PERFORM 200-SHOHOU-PRINT-SEC
            END-EVALUATE
@@ -314,6 +316,12 @@
                        ADD     ACCT-DAY (1 IDY2)   TO  WRK-ZAIKAISU
                    END-IF
                END-PERFORM
+      *        ¿ÇÎÅ²Ê»ØÄê»þ
+               IF      ORCSNYUINSHO-KBN    =   "3"
+                   IF      ORCSNYUINSHO-SRYKA (1)  NOT =   ACCT-SRYKA
+                       MOVE    ZERO            TO  WRK-ZAIKAISU
+                   END-IF
+               END-IF
                IF      WRK-ZAIKAISU        >   ZERO
       *            Æþ±¡´ü´ÖÃæ¤Ë»»Äê¤¬¤¢¤ì¤Ð¡¢ÂÐ¾Ý
                    EVALUATE    ORCSNYUINSHO-KBN
@@ -370,6 +378,7 @@
                IF      SRY-SRYSYUKBN       =   "212"
                                            OR  "222"
                                            OR  "232"
+                                           OR  "292"
                                            OR  "148"
                                            OR  "149"
                    MOVE    1               TO  FLG-YAKU-ARI
@@ -414,7 +423,6 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   5  )   OR
                               (TBL-SRYKA (IDX) =   SPACE )
-               MOVE    ORCSNYUINSHO-SYUDRCD    TO  TBL-DRCD (IDX)
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL       IDX2    >   5
                    IF      TBL-SRYKA (IDX) =   ORCSNYUINSHO-SRYKA
@@ -502,6 +510,7 @@
                IF      SRY-SRYSYUKBN       =   "212"
                                            OR  "222"
                                            OR  "232"
+                                           OR  "292"
                                            OR  "148"
                                            OR  "149"
                                            OR  "982"

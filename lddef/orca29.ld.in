@@ -5,6 +5,8 @@ textsize	400;
 
 bind	""		"OpenCOBOL"	"ORCGKA01";
 bind	"KA01"		"OpenCOBOL"	"ORCGKA01";
+bind	"KA02"		"OpenCOBOL"	"ORCGKA02";
+bind	"KA021"		"OpenCOBOL"	"ORCGKA021";
 bind	"KAERR"		"OpenCOBOL"	"ORCGKAERR";
 bind	"KAID1"		"OpenCOBOL"	"ORCGKAID1";
 bind	"KAID2"		"OpenCOBOL"	"ORCGKAID2";
@@ -16,6 +18,8 @@ data	{
 	spa	orcaspa;
 	window	{
 		KA01;
+		KA02;
+		KA021;
 		KAERR;
 		KAID1;
 		KAID2;
@@ -47,6 +51,7 @@ db	{
         tbl_tensuplus2;
         tbl_genericname;
 	tbl_prgoption;
+        tbl_ptnyuinrrk;
 };
 
 /* #include "orcadb.inc" */
