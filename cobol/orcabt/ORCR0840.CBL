@@ -2206,11 +2206,27 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SRY-INPUTNUM(IDX2) TO    RECE85-INPUTNUM(IDX4)
       *
                IF   RECE82-HKNKBN    NOT  =  "4"                        
-                  IF      TNS-SRYKBN         =     "80"
+                  IF ( SRY-SRYCD(IDX2)  =  CONS-ROUSAI2   OR
+                                           CONS-ROUSAI4   OR
+                                           CONS-ROUSAI5   OR
+                                           CONS-ROUSAI6   OR
+                                           CONS-ROUSAI7   OR
+                                           CONS-ROUSAI8   OR
+                                           CONS-ROUSAI9   OR
+                                           CONS-ROUSAI10  OR
+                                           CONS-ROUSAI11  OR
+                                           CONS-ROUSAI12    )
+                  OR ((SRY-SRYCD(IDX2)  =  CONS-ROUSAI3    ) AND
+                      (RECE82-SRYYM     <  "200804"        ))
+                          MOVE   "80"        TO    RECE84-SRYKBN
+                                                   RECE85-SRYKBN
+                  ELSE
+                    IF      TNS-SRYKBN         =     "80"
                       IF  TNS-NYUTENTTLKBN   =     130
                           MOVE   "13"        TO    RECE84-SRYKBN
                                                    RECE85-SRYKBN
                       END-IF
+                    END-IF
                   END-IF
                ELSE                                                     
                   IF      SRY-SRYCD(IDX2)    =     CONS-YOUBUKASAN

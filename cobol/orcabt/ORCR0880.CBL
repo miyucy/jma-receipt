@@ -467,116 +467,45 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
                OR     ( RECE82-HKNID     NOT =   RECE84-HKNID        )
                OR     ( RECE82-TEKSTYMD  NOT =   RECE84-TEKSTYMD     )
       *
-               EVALUATE   RECE82-HKNKBN
-                WHEN       "1"
-                WHEN       "2"
-                 EVALUATE      RECE84-SRYKBN
-                   WHEN      "11"
-                      MOVE   ZERO      TO  FLG-COMMENT
-                      IF   FLG-COMMENT  =  ZERO
-                         IF    RECE84-FLG-SYODOU-COMMENT   =    "1"
-                            MOVE  99   TO  FLG-COMMENT
-                            PERFORM    2001-SYODOU-COMMENT-SEC
-                         END-IF
-                      END-IF
-                      IF   FLG-COMMENT  =  ZERO
-                         IF  (RECE82-KYUKYU-PRTKBN    =      1       )
-                         AND (RECE84-SRYCDTOTAL(6:9)  =   CONS-KYUKYU)
-                             MOVE  99  TO  FLG-COMMENT
-                             IF   RECE82-SRYYM   >=  "200604"
-                               PERFORM  2001-KYUKYU-COMMENT200604-SEC
-                             ELSE
-                               PERFORM  2001-KYUKYU-COMMENT-SEC
-                             END-IF
-                         END-IF
-                      END-IF
-                      IF   FLG-COMMENT  =  ZERO
-                          MOVE       RECE84-REC    TO   RECE841-REC
-                          WRITE      RECE841-REC
-                          ADD     1          TO      CNT-RECE84
-                          PERFORM    2002-RECE85-TENSOU-SEC
-                      END-IF
-                   WHEN   OTHER
-                      MOVE       RECE84-REC    TO   RECE841-REC
-                      WRITE      RECE841-REC
-                      ADD     1          TO      CNT-RECE84
-                      PERFORM    2002-RECE85-TENSOU-SEC
-                 END-EVALUATE
-      *
-                WHEN       "4"
-                 EVALUATE      RECE84-SRYKBN
-                   WHEN      "11"
-                      EVALUATE   RECE82-JIBAIKBN
-                        WHEN       "1"
-                          IF    RECE84-FLG-SYODOU-COMMENT   =    "1"
-                             PERFORM    2001-SYODOU-COMMENT-SEC
-                          ELSE
-                             MOVE       RECE84-REC    TO   RECE841-REC
-                             WRITE      RECE841-REC
-                             ADD     1          TO      CNT-RECE84
-                             PERFORM    2002-RECE85-TENSOU-SEC
-                          END-IF
-                        WHEN       "2"
-                          MOVE       RECE84-REC    TO   RECE841-REC
-                          WRITE      RECE841-REC
-                          ADD     1          TO      CNT-RECE84
-                          PERFORM    2002-RECE85-TENSOU-SEC
-                      END-EVALUATE
-                   WHEN      "80"
-                      IF  ( RECE82-KYUKYU-PRTKBN    =      1         )
-                      AND ( RECE84-SRYCDTOTAL(6:9)  =   CONS-KYUKYU  )
-                          IF   RECE82-SRYYM   >=  "200604"
-                            PERFORM  2001-KYUKYU-COMMENT200604-SEC
-                          ELSE
-                            PERFORM  2001-KYUKYU-COMMENT-SEC
-                          END-IF
-                      ELSE
-                          MOVE       RECE84-REC    TO   RECE841-REC
-                          WRITE      RECE841-REC
-                          ADD     1          TO      CNT-RECE84
-                          PERFORM    2002-RECE85-TENSOU-SEC
-                      END-IF         
-                   WHEN   OTHER
-                      MOVE       RECE84-REC    TO   RECE841-REC
-                      WRITE      RECE841-REC
-                      ADD     1          TO      CNT-RECE84
-                      PERFORM    2002-RECE85-TENSOU-SEC
-                 END-EVALUATE
-      *
-                WHEN       "5"
-                 EVALUATE      RECE84-SRYKBN
-                   WHEN      "11"
-                      MOVE   ZERO      TO  FLG-COMMENT
-                      IF   FLG-COMMENT  =  ZERO
-                         IF    RECE84-FLG-SYODOU-COMMENT   =    "1"
-                         AND   RECE82-KOMUKBN              =    "1"
-                            MOVE  99   TO  FLG-COMMENT
-                            PERFORM    2001-SYODOU-COMMENT-SEC
-                         END-IF
-                      END-IF
-                      IF   FLG-COMMENT  =  ZERO
-                         IF  (RECE82-KYUKYU-PRTKBN    =      1       )
-                         AND (RECE84-SRYCDTOTAL(6:9)  =   CONS-KYUKYU)
-                             MOVE  99  TO  FLG-COMMENT
-                             IF   RECE82-SRYYM   >=  "200604"
-                               PERFORM  2001-KYUKYU-COMMENT200604-SEC
-                             ELSE
-                               PERFORM  2001-KYUKYU-COMMENT-SEC
-                             END-IF
-                         END-IF
-                      END-IF
-                      IF   FLG-COMMENT  =  ZERO
-                          MOVE       RECE84-REC    TO   RECE841-REC
-                          WRITE      RECE841-REC
-                          ADD     1          TO      CNT-RECE84
-                          PERFORM    2002-RECE85-TENSOU-SEC
-                      END-IF
-                   WHEN   OTHER
-                      MOVE       RECE84-REC    TO   RECE841-REC
-                      WRITE      RECE841-REC
-                      ADD     1          TO      CNT-RECE84
-                      PERFORM    2002-RECE85-TENSOU-SEC
-                 END-EVALUATE
+               EVALUATE   RECE84-SRYKBN
+                 WHEN      "11"
+                   IF  ((RECE82-HKNKBN   =  "4") AND
+                        (RECE82-JIBAIKBN =  "2"))
+                   OR  ((RECE82-HKNKBN   =  "5") AND
+                        (RECE82-KOMUKBN  =  "2"))
+                       MOVE       RECE84-REC    TO   RECE841-REC
+                       WRITE      RECE841-REC
+                       ADD     1          TO      CNT-RECE84
+                       PERFORM    2002-RECE85-TENSOU-SEC
+                   ELSE
+                     IF    RECE84-FLG-SYODOU-COMMENT   =    "1"
+                       PERFORM    2001-SYODOU-COMMENT-SEC
+                     ELSE
+                       MOVE       RECE84-REC    TO   RECE841-REC
+                       WRITE      RECE841-REC
+                       ADD     1          TO      CNT-RECE84
+                       PERFORM    2002-RECE85-TENSOU-SEC
+                     END-IF
+                   END-IF
+                 WHEN      "80"
+                   IF  ( RECE82-KYUKYU-PRTKBN    =      1         )
+                   AND ( RECE84-SRYCDTOTAL(6:9)  =   CONS-KYUKYU  )
+                       IF   RECE82-SRYYM   >=  "200604"
+                         PERFORM  2001-KYUKYU-COMMENT200604-SEC
+                       ELSE
+                         PERFORM  2001-KYUKYU-COMMENT-SEC
+                       END-IF
+                   ELSE
+                       MOVE       RECE84-REC    TO   RECE841-REC
+                       WRITE      RECE841-REC
+                       ADD     1          TO      CNT-RECE84
+                       PERFORM    2002-RECE85-TENSOU-SEC
+                   END-IF
+                 WHEN   OTHER
+                       MOVE       RECE84-REC    TO   RECE841-REC
+                       WRITE      RECE841-REC
+                       ADD     1          TO      CNT-RECE84
+                       PERFORM    2002-RECE85-TENSOU-SEC
                END-EVALUATE
       *
                PERFORM 990-RECE84-NEXT-SEC

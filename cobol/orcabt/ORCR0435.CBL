@@ -464,108 +464,42 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
                MOVE          SPACE       TO      RECE441-REC
                INITIALIZE                        RECE441-REC
       *
-               EVALUATE   RECE41-HKNKBN
-                WHEN       "1"
-                WHEN       "2"
-                WHEN       "3"
-                 EVALUATE      RECE44-SRYKBN
-                   WHEN      "11"
-                      MOVE   ZERO      TO  FLG-COMMENT
-                      IF   FLG-COMMENT  =  ZERO
-                         IF    RECE44-FLG-SYODOU-COMMENT   =    "1"
-                            MOVE  99   TO  FLG-COMMENT
-                            PERFORM    2001-SYODOU-COMMENT-SEC
-                         END-IF
-                      END-IF
-                      IF   FLG-COMMENT  =  ZERO
-                         IF  (RECE41-KYUKYU-PRTKBN   =      1       )
-                         AND (RECE44-SRYCDTOTAL(6:9) =  CONS-KYUKYU1
-                                                     OR CONS-KYUKYU2)
-                             MOVE  99  TO  FLG-COMMENT
-                             PERFORM  2001-KYUKYU-COMMENT-SEC
-                         END-IF
-                      END-IF
-                      IF   FLG-COMMENT  =  ZERO
-                          MOVE       RECE44-REC    TO   RECE441-REC
-                          WRITE      RECE441-REC
-                          ADD     1          TO      CNT-RECE44
-                          PERFORM    2002-RECE45-TENSOU-SEC
-                      END-IF
-                   WHEN   OTHER
-                      MOVE       RECE44-REC    TO   RECE441-REC
-                      WRITE      RECE441-REC
-                      ADD     1          TO      CNT-RECE44
-                      PERFORM    2002-RECE45-TENSOU-SEC
-                 END-EVALUATE
-      *
-                WHEN       "4"
-                 EVALUATE      RECE44-SRYKBN
-                   WHEN      "11"
-                      EVALUATE   RECE41-JIBAIKBN
-                        WHEN       "1"
-                          IF    RECE44-FLG-SYODOU-COMMENT   =    "1"
-                            PERFORM    2001-SYODOU-COMMENT-SEC
-                          ELSE
-                            MOVE       RECE44-REC    TO   RECE441-REC
-                            WRITE      RECE441-REC
-                            ADD     1          TO      CNT-RECE44
-                            PERFORM    2002-RECE45-TENSOU-SEC
-                          END-IF
-                        WHEN       "2"
-                          MOVE       RECE44-REC    TO   RECE441-REC
-                          WRITE      RECE441-REC
-                          ADD     1          TO      CNT-RECE44
-                          PERFORM    2002-RECE45-TENSOU-SEC
-                      END-EVALUATE
-                   WHEN      "80"
-                      IF  ( RECE41-KYUKYU-PRTKBN    =      1         )
-                      AND ( RECE44-SRYCDTOTAL(6:9)  =   CONS-KYUKYU1
-                                                   OR   CONS-KYUKYU2 )        
-                          PERFORM    2001-KYUKYU-COMMENT-SEC
-                      ELSE
-                          MOVE       RECE44-REC    TO   RECE441-REC
-                          WRITE      RECE441-REC
-                          ADD     1          TO      CNT-RECE44
-                          PERFORM    2002-RECE45-TENSOU-SEC
-                      END-IF         
-                   WHEN   OTHER
-                      MOVE       RECE44-REC    TO   RECE441-REC
-                      WRITE      RECE441-REC
-                      ADD     1          TO      CNT-RECE44
-                      PERFORM    2002-RECE45-TENSOU-SEC
-                 END-EVALUATE
-      *
-                WHEN       "5"
-                 EVALUATE      RECE44-SRYKBN
-                   WHEN      "11"
-                      MOVE   ZERO      TO  FLG-COMMENT
-                      IF   FLG-COMMENT  =  ZERO
-                         IF    RECE44-FLG-SYODOU-COMMENT   =    "1"
-                         AND   RECE41-KOMUKBN              =    "1"
-                            MOVE  99   TO  FLG-COMMENT
-                            PERFORM    2001-SYODOU-COMMENT-SEC
-                         END-IF
-                      END-IF
-                      IF   FLG-COMMENT  =  ZERO
-                         IF  (RECE41-KYUKYU-PRTKBN   =      1       )
-                         AND (RECE44-SRYCDTOTAL(6:9) =  CONS-KYUKYU1
-                                                     OR CONS-KYUKYU2)
-                             MOVE  99  TO  FLG-COMMENT
-                             PERFORM  2001-KYUKYU-COMMENT-SEC
-                         END-IF
-                      END-IF
-                      IF   FLG-COMMENT  =  ZERO
-                          MOVE       RECE44-REC    TO   RECE441-REC
-                          WRITE      RECE441-REC
-                          ADD     1          TO      CNT-RECE44
-                          PERFORM    2002-RECE45-TENSOU-SEC
-                      END-IF
-                   WHEN   OTHER
-                      MOVE       RECE44-REC    TO   RECE441-REC
-                      WRITE      RECE441-REC
-                      ADD     1          TO      CNT-RECE44
-                      PERFORM    2002-RECE45-TENSOU-SEC
-                 END-EVALUATE
+               EVALUATE   RECE44-SRYKBN
+                 WHEN      "11"
+                   IF  ((RECE41-HKNKBN   =  "4") AND
+                        (RECE41-JIBAIKBN =  "2"))
+                   OR  ((RECE41-HKNKBN   =  "5") AND
+                        (RECE41-KOMUKBN  =  "2"))
+                       MOVE       RECE44-REC    TO   RECE441-REC
+                       WRITE      RECE441-REC
+                       ADD     1          TO      CNT-RECE44
+                       PERFORM    2002-RECE45-TENSOU-SEC
+                   ELSE
+                     IF    RECE44-FLG-SYODOU-COMMENT   =    "1"
+                       PERFORM    2001-SYODOU-COMMENT-SEC
+                     ELSE
+                       MOVE       RECE44-REC    TO   RECE441-REC
+                       WRITE      RECE441-REC
+                       ADD     1          TO      CNT-RECE44
+                       PERFORM    2002-RECE45-TENSOU-SEC
+                     END-IF
+                   END-IF
+                 WHEN      "80"
+                   IF  ( RECE41-KYUKYU-PRTKBN    =      1         )
+                   AND ( RECE44-SRYCDTOTAL(6:9)  =   CONS-KYUKYU1
+                                                OR   CONS-KYUKYU2 )
+                       PERFORM    2001-KYUKYU-COMMENT-SEC
+                   ELSE
+                       MOVE       RECE44-REC    TO   RECE441-REC
+                       WRITE      RECE441-REC
+                       ADD     1          TO      CNT-RECE44
+                       PERFORM    2002-RECE45-TENSOU-SEC
+                   END-IF
+                 WHEN   OTHER
+                       MOVE       RECE44-REC    TO   RECE441-REC
+                       WRITE      RECE441-REC
+                       ADD     1          TO      CNT-RECE44
+                       PERFORM    2002-RECE45-TENSOU-SEC
                END-EVALUATE
       *
                PERFORM 990-RECE44-NEXT-SEC
