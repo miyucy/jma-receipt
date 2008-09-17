@@ -811,7 +811,7 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    CONST-MNTSHELLID    TO  SPA-PRTKANRI-TBL-KEY
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
            MOVE   "XA01    "           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
