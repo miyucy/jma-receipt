@@ -23,6 +23,8 @@ where pgid = 'ORCBD010'
 alter table tbl_toukeimemo
    add column savepara    char (01);
 
+update tbl_toukeimemo set savepara = '';
+
 update tbl_toukeimemo set savepara = encode(substr(decode(replace(a.kanritbl,'\\','\\\\'),'escape')||decode(repeat(' ',500),'escape'),495,1),'escape')
 from tbl_syskanri a
 where
