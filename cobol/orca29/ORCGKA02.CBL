@@ -4038,9 +4038,6 @@
                        WHEN    5
                            MOVE    SPA-GMN-INPUT (IDX-STR)
                                                    TO  KA02-INPUT05
-      **************   WHEN    6
-      **************       MOVE    SPA-GMN-INPUT (IDX-STR)
-      ********                                     TO  KA02-INPUT06
                    END-EVALUATE
                    ADD     1               TO  IDX-STR
                END-PERFORM
@@ -4048,7 +4045,11 @@
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX     >   31
                MOVE    SPA-GMN-DAY (IDX)   TO  WRK-ZZ9
-               MOVE    WRK-ZZ9             TO  KA02-DAY (IDX)
+               IF      WRK-ZZ9(1:1)        =   SPACE
+                   MOVE    WRK-ZZ9(2:2)        TO  KA02-DAY (IDX)(1:2)
+               ELSE
+                   MOVE    WRK-ZZ9             TO  KA02-DAY (IDX)
+               END-IF
            END-PERFORM
       *
            IF      SPA-NAI-INNAI       =   1
