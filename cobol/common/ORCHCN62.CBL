@@ -156,7 +156,7 @@
                05  FILLER          PIC X(01)   VALUE   SPACE.
                05  WRK-ROOMNO      PIC X(06).
            03  WRK-LINE-3.
-               05  FILLER          PIC X(06)   VALUE   "処方日".
+               05  FILLER          PIC X(06)   VALUE   "交付日".
                05  FILLER          PIC X(01)   VALUE   SPACE.
                05  WRK-SRYYMDG     PIC X(04).
                05  WRK-SRYYMDY     PIC X(02).

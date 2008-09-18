@@ -2118,6 +2118,7 @@
            END-PERFORM
            INITIALIZE                  SPA-GMN-SELNUM2
            INITIALIZE                  SPA-GMN-INPUT-AREA
+           INITIALIZE                  SPA-GMN-MEISAI-AREA
            MOVE    ZERO                TO  SPA-SEL-SYORI
            IF      FLG-OK              =   ZERO
                IF      SPA-GMN-SELNUM1     >   ZERO
@@ -2162,15 +2163,13 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-JYURRK-MAX
                IF      KA02-RRKLIST-SELECT (IDX)   =   "T"
-                   IF      SPA-GMN-NUM (IDX)   NOT =   SPA-GMN-SELNUM1
-                       MOVE    SPA-GMN-NUM  (IDX)      TO  WRK-SELNUM
-                       MOVE    SPA-JYURRK-MAX          TO  IDX
-                   END-IF
+                   MOVE    SPA-GMN-NUM  (IDX)      TO  WRK-SELNUM
+                   MOVE    SPA-JYURRK-MAX          TO  IDX
                END-IF
            END-PERFORM
       *
-           IF     (WRK-SELNUM          >   ZERO ) AND
-                  (WRK-SELNUM      NOT =   SPA-GMN-SELNUM1)
+           IF     (WRK-SELNUM          >   ZERO )
+      ****        (WRK-SELNUM      NOT =   SPA-GMN-SELNUM1)
                MOVE    WRK-SELNUM          TO  SPA-GMN-SELNUM1
                MOVE    SPA-GMN-SELNUM1     TO  KA02-SELNUM1
                PERFORM 4001-SELNUM1-CHK-SEC
