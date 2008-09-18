@@ -9,17 +9,25 @@ ETC_files = \
 	orcadbs.inc \
 	jma-receipt.env \
 	jma-receipt.conf \
+	jma-receipt-crontab \
 	ORCADC.PARA
 
 DBGROUP_files = dbgroup.inc 
 
-all:   
+jma-receipt-crontab: jma-receipt-crontab.in
+	sed -e "s|@SCRIPTSDIR@|${scriptsdir}|" \
+	-e "s|@PATCHSCRIPTSDIR@|${PATCHSCRIPTSDIR}|" \
+	-e "s|@SITESCRIPTSDIR@|${SITESCRIPTSDIR}|" $< > $@
+
+all: jma-receipt-crontab
 
 filecheck:
 
-clean: 
+clean:
+	-rm -f jma-receipt-crontab
 
-distclean: 
+distclean:
+	-rm -f jma-receipt-crontab
 	-rm -f jma-receipt.env
 	-rm -f Makefile
 

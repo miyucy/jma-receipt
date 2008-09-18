@@ -1,0 +1,5 @@
+PATH="/sbin:/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+PATH="${PATH}:@SITESCRIPTSDIR@/tools:@PATCHSCRIPTSDIR@/tools:@SCRIPTSDIR@/tools"
+
+
+10 * * * * orca /usr/lib/jma-receipt/site-lib/scripts/allways/run.rb
