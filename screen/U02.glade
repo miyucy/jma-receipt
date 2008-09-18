@@ -745,72 +745,6 @@
     </widget>
 
     <widget>
-      <class>GtkPandaCList</class>
-      <name>MIKAKUNINN_LIST</name>
-      <x>544</x>
-      <y>144</y>
-      <width>408</width>
-      <height>116</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>select_row</name>
-	<handler>selection_changed</handler>
-	<data>SELECT</data>
-	<last_modification_time>Mon, 25 Dec 2000 07:09:17 GMT</last_modification_time>
-      </signal>
-      <signal>
-	<name>unselect_row</name>
-	<handler>selection_changed</handler>
-	<data>SELECT</data>
-	<last_modification_time>Mon, 25 Dec 2000 07:09:37 GMT</last_modification_time>
-      </signal>
-      <columns>3</columns>
-      <column_widths>114,182,40</column_widths>
-      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
-      <show_titles>True</show_titles>
-      <shadow_type>GTK_SHADOW_IN</shadow_type>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label72</name>
-	<label>名称</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label73</name>
-	<label>記号番号／受給者番号</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-
-      <widget>
-	<class>GtkLabel</class>
-	<child_name>CList:title</child_name>
-	<name>label84</name>
-	<label>最終確認日</label>
-	<justify>GTK_JUSTIFY_CENTER</justify>
-	<wrap>False</wrap>
-	<xalign>0.5</xalign>
-	<yalign>0.5</yalign>
-	<xpad>0</xpad>
-	<ypad>0</ypad>
-      </widget>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B11S</name>
       <x>856</x>
@@ -1714,6 +1648,72 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkPandaCList</class>
+      <name>MIKAKUNINN_LIST</name>
+      <x>544</x>
+      <y>144</y>
+      <width>408</width>
+      <height>116</height>
+      <can_focus>True</can_focus>
+      <signal>
+	<name>select_row</name>
+	<handler>selection_changed</handler>
+	<data>SELECT</data>
+	<last_modification_time>Mon, 25 Dec 2000 07:09:17 GMT</last_modification_time>
+      </signal>
+      <signal>
+	<name>unselect_row</name>
+	<handler>selection_changed</handler>
+	<data>SELECT</data>
+	<last_modification_time>Mon, 25 Dec 2000 07:09:37 GMT</last_modification_time>
+      </signal>
+      <columns>3</columns>
+      <column_widths>77,230,30</column_widths>
+      <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+      <show_titles>True</show_titles>
+      <shadow_type>GTK_SHADOW_IN</shadow_type>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>CList:title</child_name>
+	<name>label72</name>
+	<label>名称</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>CList:title</child_name>
+	<name>label73</name>
+	<label>記号番号／受給者番号</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
+
+      <widget>
+	<class>GtkLabel</class>
+	<child_name>CList:title</child_name>
+	<name>label84</name>
+	<label>最終確認日</label>
+	<justify>GTK_JUSTIFY_CENTER</justify>
+	<wrap>False</wrap>
+	<xalign>0.5</xalign>
+	<yalign>0.5</yalign>
+	<xpad>0</xpad>
+	<ypad>0</ypad>
+      </widget>
     </widget>
   </widget>
 </widget>
