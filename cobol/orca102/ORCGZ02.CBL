@@ -38,6 +38,7 @@
       *                                     MONFUNCÂÐ±þÂ¾
       *  03.04.00    NACL-Â¿¡¹Ç¼  07/01/24  H19/4/1¤«¤é¼«ÈñÁí³ÛÀßÄêÄÉ²Ã
       *  04.02.00    NACL-Â¿¡¹Ç¼  08/03/07  ÉÂÍý¿ÇÃÇÈ½ÄêÄÉ²Ã
+      *  04.03.00    NACL-Â¿¡¹Ç¼  08/09/19  ¼«ÇåÀÕ½¸·×Åù¼è°·ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -104,6 +105,23 @@
                    09  SPA-GMN-BUIKBNMEIL      PIC X(06).
                05  SPA-GMN-BUIKBN-MAX          PIC 9(02).    
                05  SPA-GMN-INPCHKKBN           PIC 9(01).
+      *        ¼«ÇåÀÕ½¸·×Åù¼è°·¡Ê³°Íè¡Ë
+               05  SPA-GMN-GAIJIBAIKBN-G.
+                   07  SPA-GMN-GAIJIBAIKBN     PIC X(01).
+                   07  SPA-GMN-GAIF1           PIC X(01).
+                   07  SPA-GMN-GAIJIBAIKBN-MEI PIC X(38).
+               05  SPA-GMN-GAIJIBAIKBN-LST     OCCURS   10
+                                               PIC X(40).
+               05  SPA-GMN-GAIJIBAI-MAX        PIC 9(02).
+      *        ¼«ÇåÀÕ½¸·×Åù¼è°·¡ÊÆþ±¡¡Ë
+               05  SPA-GMN-NYUJIBAIKBN-G.
+                   07  SPA-GMN-NYUJIBAIKBN     PIC X(01).
+                   07  SPA-GMN-NYUF1           PIC X(01).
+                   07  SPA-GMN-NYUJIBAIKBN-MEI PIC X(38).
+               05  SPA-GMN-NYUJIBAIKBN-LST     OCCURS   10
+                                               PIC X(40).
+               05  SPA-GMN-NYUJIBAI-MAX        PIC 9(02).
+      *
       *********05  SPA-GMN-CUR                 PIC X(30).
                05  SPA-GMN-CUR                 PIC 9(02).
       *
@@ -138,6 +156,7 @@
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
+           03  IDX                               PIC 9(04).
            03  IDXX                              PIC 9(02).
            03  IDXY                              PIC 9(02).
            03  IDXZ                              PIC 9(02).
@@ -401,6 +420,34 @@
            MOVE    "0"                   TO  SPA-GMN-BUIKBNL    (8)
            MOVE    "¤½¤ÎÂ¾"              TO  SPA-GMN-BUIKBNMEIL (8)
            MOVE    8                     TO  SPA-GMN-BUIKBN-MAX
+      *    ¼«ÇåÀÕ
+           IF      SPA-Z01-SRYCD(1:5)  =   "09593"
+      *        ¼«ÇåÀÕ½¸·×Åù¼è°·¡Ê³°Íè¡Ë
+               MOVE    "1 ½é¿Ç"            TO  SPA-GMN-GAIJIBAIKBN-LST
+                                                                   (1)
+               MOVE    "2 ºÆ¿Ç"            TO  SPA-GMN-GAIJIBAIKBN-LST
+                                                                   (2)
+               MOVE    "3 »ØÆ³´ÉÍý"        TO  SPA-GMN-GAIJIBAIKBN-LST
+                                                                   (3)
+               MOVE    "4 µßµÞ°åÎÅ´ÉÍý²Ã»»"  
+                                           TO  SPA-GMN-GAIJIBAIKBN-LST
+                                                                   (4)
+               MOVE    "5 ¤½¤ÎÂ¾"          TO  SPA-GMN-GAIJIBAIKBN-LST
+                                                                   (5)
+               MOVE    5                   TO  SPA-GMN-GAIJIBAI-MAX
+      *        ¼«ÇåÀÕ½¸·×Åù¼è°·¡ÊÆþ±¡¡Ë
+               MOVE    "1 ½é¿Ç"            TO  SPA-GMN-NYUJIBAIKBN-LST
+                                                                   (1)
+               MOVE    "4 µßµÞ°åÎÅ´ÉÍý²Ã»»"  
+                                           TO  SPA-GMN-NYUJIBAIKBN-LST
+                                                                   (2)
+               MOVE    "5 ¤½¤ÎÂ¾"          TO  SPA-GMN-NYUJIBAIKBN-LST
+                                                                   (3)
+               MOVE    3                   TO  SPA-GMN-NYUJIBAI-MAX
+           ELSE
+               MOVE    0                   TO  SPA-GMN-GAIJIBAI-MAX
+               MOVE    0                   TO  SPA-GMN-NYUJIBAI-MAX
+           END-IF
       *
       *    ¼«Èñ¥³¡¼¥É¤Î»þ¡¢¶â³Û¼ïÊÌÉ½¼¨¤È¤¹¤ë
            MOVE    ZERO                TO  SPA-JIHIKBN
@@ -506,6 +553,9 @@
                    END-PERFORM
       *
       ************ MOVE  TNSP-INPCHKKBN      TO  SPA-GMN-INPCHKKBN  
+      *        ¼«ÇåÀÕ½¸·×Åù¼è°·
+               MOVE  TNS-GAIJIBAIKBN     TO  SPA-GMN-GAIJIBAIKBN
+               MOVE  TNS-NYUJIBAIKBN     TO  SPA-GMN-NYUJIBAIKBN
            ELSE
       *        ½é´üÀßÄê
                MOVE    SPA-GMN-HKNTEKKBNLST (01)
@@ -523,6 +573,21 @@
                    MOVE    SPA-GMN-BUIKBNLST (1)
                                            TO  SPA-GMN-BUIKBN-G
                END-IF
+           END-IF
+           IF      SPA-Z01-SRYCD(1:5)  =   "09593"
+      *        ¼«ÇåÀÕ½¸·×Åù¼è°·
+               IF      SPA-GMN-GAIJIBAIKBN     =   ZERO
+                                               OR  SPACE
+                   MOVE    "5"                 TO  SPA-GMN-GAIJIBAIKBN
+               END-IF
+               IF      SPA-GMN-NYUJIBAIKBN     =   ZERO
+                                               OR  SPACE
+                   MOVE    "5"                 TO  SPA-GMN-NYUJIBAIKBN
+               END-IF
+               PERFORM 3010-JIBAIKBN-HEN-SEC
+           ELSE
+               MOVE    SPACE               TO  SPA-GMN-GAIJIBAIKBN
+               MOVE    SPACE               TO  SPA-GMN-NYUJIBAIKBN
            END-IF
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¾ðÊó¸¡º÷
@@ -554,7 +619,46 @@
            .
        310-SPASET-EXT.
            EXIT.
+      *****************************************************************
+      *    ¼«ÇåÀÕ½¸·×Åù¼è°·ÊÔ½¸½èÍý
+      *****************************************************************
+       3010-JIBAIKBN-HEN-SEC            SECTION.
       *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-GAIJIBAI-MAX
+               IF      SPA-GMN-GAIJIBAIKBN
+                                       =   SPA-GMN-GAIJIBAIKBN-LST
+                                                   (IDX)(1:1)
+                   MOVE    SPA-GMN-GAIJIBAIKBN-LST (IDX)
+                                           TO  SPA-GMN-GAIJIBAIKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-GAIJIBAIKBN-LST (5)
+                                           TO  SPA-GMN-GAIJIBAIKBN-G
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-NYUJIBAI-MAX
+               IF      SPA-GMN-NYUJIBAIKBN
+                                       =   SPA-GMN-NYUJIBAIKBN-LST
+                                                   (IDX)(1:1)
+                   MOVE    SPA-GMN-NYUJIBAIKBN-LST (IDX)
+                                           TO  SPA-GMN-NYUJIBAIKBN-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-NYUJIBAIKBN-LST (3)
+                                           TO  SPA-GMN-NYUJIBAIKBN-G
+           END-IF
+      *
+           .
+       3010-JIBAIKBN-HEN-EXT.
+           EXIT.
       *****************************************************************
       *    ³ÎÇ§²èÌÌ¡Ê£Ã£É£Ä£±¡Ë£Ï£Ë½èÍý
       *****************************************************************
@@ -678,8 +782,11 @@
            MOVE    Z02-NYUTENTTLKBN    TO  SPA-GMN-NYUTENTTLKBN
            MOVE    Z02-BUIKBN          TO  SPA-GMN-BUIKBN-G
            MOVE    Z02-INPCHKKBN       TO  SPA-GMN-INPCHKKBN
-           .
       *
+           MOVE    Z02-GAIJIBAIKBN     TO  SPA-GMN-GAIJIBAIKBN-G
+           MOVE    Z02-NYUJIBAIKBN     TO  SPA-GMN-NYUJIBAIKBN-G
+      *
+           .
        4101-GMN-SPA-SET-EXT.
            EXIT.
       *
@@ -720,6 +827,12 @@
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-JIHIKBN     NOT =   ZERO
                    PERFORM 508-JIHI-KBN-SEC
+               END-IF
+           END-IF
+      *    ¼«ÇåÀÕ½¸·×Åù¼è°·¶èÊ¬
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-Z01-SRYCD(1:5)  =   "09593"
+                   PERFORM 508-JIBAIKBN-CHK-SEC
                END-IF
            END-IF
            .
@@ -916,6 +1029,16 @@
            END-IF
            .
        508-JIHI-KBN-EXT.
+           EXIT.
+      *
+      ****************************************************************
+      *    ¼«ÇåÀÕ½¸·×Åù¼è°·¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      ****************************************************************
+       508-JIBAIKBN-CHK-SEC      SECTION.
+      *
+           PERFORM 3010-JIBAIKBN-HEN-SEC
+           .
+       508-JIBAIKBN-CHK-EXT.
            EXIT.
       *
       ****************************************************************
@@ -1543,6 +1666,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO                    TO  TNS-BUIKBN
            END-IF
       *
+      *        ¼«ÇåÀÕ½¸·×Åù¼è°·
+           IF      SPA-Z01-SRYCD(1:5)  =   "09593"
+               MOVE   SPA-GMN-GAIJIBAIKBN  TO  TNS-GAIJIBAIKBN
+               MOVE   SPA-GMN-NYUJIBAIKBN  TO  TNS-NYUJIBAIKBN
+           ELSE
+               MOVE   ZERO                 TO  TNS-GAIJIBAIKBN
+               MOVE   ZERO                 TO  TNS-NYUJIBAIKBN
+           END-IF
       *****MOVE  SPA-GMN-INPCHKKBN             TO  TNSP-INPCHKKBN
            .
        4121-KOUMOKUISO-EXT.
@@ -1680,6 +1811,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    "¶â³ÛÆâÍÆ"          TO  Z02-LABEL1
            END-IF
+      *    ¼«ÇåÀÕ½¸·×Åù¼è°·
+           MOVE    SPA-GMN-GAIJIBAIKBN-G   TO  Z02-GAIJIBAIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >       SPA-GMN-GAIJIBAI-MAX
+               MOVE    SPA-GMN-GAIJIBAIKBN-LST (IDX)
+                                       TO  Z02-GAIJIBAIKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-GAIJIBAI-MAX   TO  Z02-GAIJIBAIKBN-COUNT
+      *
+           MOVE    SPA-GMN-NYUJIBAIKBN-G   TO  Z02-NYUJIBAIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >       SPA-GMN-NYUJIBAI-MAX
+               MOVE    SPA-GMN-NYUJIBAIKBN-LST (IDX)
+                                       TO  Z02-NYUJIBAIKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-NYUJIBAI-MAX   TO  Z02-NYUJIBAIKBN-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1733,9 +1880,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "NYUTENTTLKBN"      TO  MCP-WIDGET
                WHEN    18
                    MOVE    "BUIKBN"            TO  MCP-WIDGET
+               WHEN    20
+                   MOVE    "GAIJIBAIKBN"       TO  MCP-WIDGET
+               WHEN    21
+                   MOVE    "NYUJIBAIKBN"       TO  MCP-WIDGET
                WHEN    19
                    MOVE    "INPCHKKBN"         TO  MCP-WIDGET
-               WHEN    20
+               WHEN    90
                    MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
       *
@@ -1789,9 +1940,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "NYUTENTTLKBN"
                    MOVE    18                  TO  SPA-GMN-CUR
                WHEN    "BUIKBN"
+                   IF      SPA-Z01-SRYCD(1:5)  =   "09593"
+                       MOVE    20                  TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    19                  TO  SPA-GMN-CUR
+                   END-IF
+               WHEN    "GAIJIBAIKBN"
+                   MOVE    21                  TO  SPA-GMN-CUR
+               WHEN    "NYUJIBAIKBN"
                    MOVE    19                  TO  SPA-GMN-CUR
                WHEN    "INPCHKKBN"
-                   MOVE    20                  TO  SPA-GMN-CUR
+      ************ MOVE    20                  TO  SPA-GMN-CUR
+                   MOVE    90                  TO  SPA-GMN-CUR
            END-EVALUATE
       *
            .

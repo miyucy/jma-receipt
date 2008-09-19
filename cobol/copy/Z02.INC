@@ -71,4 +71,17 @@
                 04  Z02-VALUE   PIC S9(1).
               03  Z02-LABEL1.
                 04  Z02-VALUE   PIC X(20).
+              03  Z02-GAIJIBAIKBN-COMB.
+                04  Z02-GAIJIBAIKBN.
+                  05  Z02-VALUE   PIC X(40).
+                04  Z02-GAIJIBAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  Z02-GAIJIBAIKBN-ITEM
+                        PIC X(40)   OCCURS  10 TIMES.
+              03  Z02-NYUJIBAIKBN-COMB.
+                04  Z02-NYUJIBAIKBN.
+                  05  Z02-VALUE   PIC X(40).
+                04  Z02-NYUJIBAIKBN-COUNT   PIC S9(9)   BINARY.
+                04  Z02-NYUJIBAIKBN-ITEM
+                        PIC X(40)   OCCURS  10 TIMES.
+
 
