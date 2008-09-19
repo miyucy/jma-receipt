@@ -290,9 +290,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN01</name>
-      <x>120</x>
+      <x>116</x>
       <y>100</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -305,9 +305,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN02</name>
-      <x>120</x>
+      <x>116</x>
       <y>124</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -320,9 +320,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN03</name>
-      <x>120</x>
+      <x>116</x>
       <y>148</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -335,9 +335,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN04</name>
-      <x>120</x>
+      <x>116</x>
       <y>172</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -350,9 +350,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN05</name>
-      <x>120</x>
+      <x>116</x>
       <y>196</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -365,9 +365,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN06</name>
-      <x>120</x>
+      <x>116</x>
       <y>220</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -380,9 +380,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN07</name>
-      <x>120</x>
+      <x>116</x>
       <y>244</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -395,9 +395,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN08</name>
-      <x>120</x>
+      <x>116</x>
       <y>268</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -410,9 +410,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN09</name>
-      <x>120</x>
+      <x>116</x>
       <y>292</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -425,9 +425,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN10</name>
-      <x>120</x>
+      <x>116</x>
       <y>316</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -440,9 +440,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN11</name>
-      <x>120</x>
+      <x>116</x>
       <y>340</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -455,9 +455,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN12</name>
-      <x>120</x>
+      <x>116</x>
       <y>364</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -470,9 +470,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN13</name>
-      <x>120</x>
+      <x>116</x>
       <y>388</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -485,9 +485,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN14</name>
-      <x>120</x>
+      <x>116</x>
       <y>412</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -500,9 +500,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN15</name>
-      <x>120</x>
+      <x>116</x>
       <y>436</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -515,9 +515,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN16</name>
-      <x>120</x>
+      <x>116</x>
       <y>460</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -530,9 +530,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN17</name>
-      <x>120</x>
+      <x>116</x>
       <y>484</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -545,9 +545,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN18</name>
-      <x>120</x>
+      <x>116</x>
       <y>508</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -560,9 +560,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN19</name>
-      <x>120</x>
+      <x>116</x>
       <y>532</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -575,9 +575,9 @@
     <widget>
       <class>GtkPandaEntry</class>
       <name>SRYKBN20</name>
-      <x>120</x>
+      <x>116</x>
       <y>556</y>
-      <width>25</width>
+      <width>28</width>
       <height>24</height>
       <editable>False</editable>
       <text_visible>True</text_visible>
@@ -2009,38 +2009,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label152</name>
-      <x>116</x>
-      <y>80</y>
-      <width>32</width>
-      <height>16</height>
-      <label>診区</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label153</name>
-      <x>148</x>
-      <y>76</y>
-      <width>155</width>
-      <height>24</height>
-      <label>入力コード</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label154</name>
       <x>328</x>
       <y>80</y>
@@ -2896,6 +2864,38 @@
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label153</name>
+      <x>148</x>
+      <y>76</y>
+      <width>155</width>
+      <height>24</height>
+      <label>入力コード</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label152</name>
+      <x>116</x>
+      <y>80</y>
+      <width>32</width>
+      <height>20</height>
+      <label>診区</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
