@@ -163,6 +163,7 @@ filecheck:
 	-name "allways" -o \
 	-name "daily" -o \
 	-name "monthly" -o \
+	-name "tools" -o \
 	-name "claim" -o \
 	-name "def" -o \
 	-name "dtd" -o \
@@ -188,6 +189,7 @@ install: all
 	$(INSTALL) -d $(scriptsdir)
 	$(INSTALL) -d $(scriptsdir)/allways
 	$(INSTALL) -d $(scriptsdir)/daily
+	$(INSTALL) -d $(scriptsdir)/tools
 	$(INSTALL) -d $(scriptsdir)/monthly
 	$(INSTALL) -d $(scriptsdir)/monthly/lib
 	$(INSTALL) -d $(scriptsdir)/monthly/lib/orcadas
