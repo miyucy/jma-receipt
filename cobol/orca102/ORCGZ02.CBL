@@ -554,8 +554,8 @@
       *
       ************ MOVE  TNSP-INPCHKKBN      TO  SPA-GMN-INPCHKKBN  
       *        自賠責集計等取扱
-               MOVE  TNS-GAIJIBAIKBN     TO  SPA-GMN-GAIJIBAIKBN
-               MOVE  TNS-NYUJIBAIKBN     TO  SPA-GMN-NYUJIBAIKBN
+               MOVE    TNS-NAMECHGKBN      TO  SPA-GMN-GAIJIBAIKBN
+               MOVE    TNS-KANANAMECHGKBN  TO  SPA-GMN-NYUJIBAIKBN
            ELSE
       *        初期設定
                MOVE    SPA-GMN-HKNTEKKBNLST (01)
@@ -1668,11 +1668,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *        自賠責集計等取扱
            IF      SPA-Z01-SRYCD(1:5)  =   "09593"
-               MOVE   SPA-GMN-GAIJIBAIKBN  TO  TNS-GAIJIBAIKBN
-               MOVE   SPA-GMN-NYUJIBAIKBN  TO  TNS-NYUJIBAIKBN
+               MOVE   SPA-GMN-GAIJIBAIKBN  TO  TNS-NAMECHGKBN
+               MOVE   SPA-GMN-NYUJIBAIKBN  TO  TNS-KANANAMECHGKBN
            ELSE
-               MOVE   ZERO                 TO  TNS-GAIJIBAIKBN
-               MOVE   ZERO                 TO  TNS-NYUJIBAIKBN
+               MOVE   ZERO                 TO  TNS-NAMECHGKBN
+               MOVE   ZERO                 TO  TNS-KANANAMECHGKBN
            END-IF
       *****MOVE  SPA-GMN-INPCHKKBN             TO  TNSP-INPCHKKBN
            .

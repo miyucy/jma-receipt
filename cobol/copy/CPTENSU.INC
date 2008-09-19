@@ -159,14 +159,10 @@
            03  TNS-KOKUCHI-KOUBAN      PIC  9(02).
            03  TNS-KOKUJISKBKBN1       PIC  9(01).
            03  TNS-KOKUJISKBKBN2       PIC  9(01).
+      *(09593XXXX 自賠責集計等取扱（外来）で使用)
            03  TNS-NAMECHGKBN          PIC  9(01).
-      *    自賠責集計等取扱（外来）
-           03  TNS-GAIJIBAIKBN         REDEFINES   TNS-NAMECHGKBN
-                                       PIC  9(01).
+      *(09593XXXX 自賠責集計等取扱（入院）で使用)
            03  TNS-KANANAMECHGKBN      PIC  9(01).
-      *    自賠責集計等取扱（入院）
-           03  TNS-NYUJIBAIKBN         REDEFINES   TNS-KANANAMECHGKBN
-                                       PIC  9(01).
            03  TNS-IDOKANREN           PIC  X(09).
            03  TNS-KOUHYOJYUNNUM       PIC  9(09).
            03  TNS-YAKKAKJNCD          PIC  X(12).
