@@ -2351,14 +2351,20 @@
                GO      TO      10012-AKUSEI-EXT
            END-IF
       *@
+           IF      WRK-COM-INPUTCD (IDX-Z + 1) =   "113001470" 
+               COMPUTE IDX-Z2              =   IDX-Z   +  1
+           ELSE
+               MOVE    IDX-Z               TO  IDX-Z2
+           END-IF
+      *
       *    腫瘍マーカー一覧展開選択
            IF      LNK-ORCSC-AKUSEIHYOFLG  =   "1"
       *        診療行為一覧へ遷移
                MOVE    "AK98"              TO  WRK-ERRCD
-               MOVE    "A"                 TO  WRK-COM-CUR (IDX-Z)
+               MOVE    "A"                 TO  WRK-COM-CUR (IDX-Z2)
            ELSE
       *        コメント自動発生
-               MOVE    IDX-Z               TO  IDX-S
+               MOVE    IDX-Z2               TO  IDX-S
                PERFORM 1100-KASAN-SET-SEC
                IF      FLG-ADD             =   1
                    MOVE    "1"                 TO  WRK-COM-CUR (IDX-S)
@@ -2432,7 +2438,6 @@
       *****************************************************************
        1001211-AKUSEI-SANTEIKEN-SEC    SECTION.
       *
-           MOVE    "key15"             TO  WRK-DBPATH
       *    算定履歴検索
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
