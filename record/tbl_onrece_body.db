@@ -1,0 +1,166 @@
+tbl_onrece_body   {
+        HOSPNUM			number(2,0);
+	TEISYUTUSAKI		char(1);
+	SRYYM			char(6);
+	UCNT			number(3);
+	SCNT			number(2);
+	RENNUM			number(3);
+	RECEIPT_NO		number(6);
+#---> キー部
+	UKEYMD			char(8);
+	SKYYMD			char(8);
+	RECV_FLG		number(1);
+	AMOUNT_FLG		number(1);
+	SEND_FLG		number(1);
+	NYUGAIKBN		char(1);
+	RECESYUBETU		char(4);
+	SRYYM_B			char(6);
+	NAME			varchar(40);
+	SEX			char(1);
+	BIRTHDAY		char(8);
+	PTNUM			char(20);
+	PTID			number(10);
+	HKNJANUM		char(8);
+	KIGO			varchar(40);
+	NUM			varchar(40);
+	J_DAY			number(2);
+	H_TTL_TEN		number(8);
+	FTNNUM_1		varchar(40);
+	JKYNUM_1		varchar(40);
+	K_J_DAY1		number(2);
+	K_TTL_TEN_1		number(8);
+	FTNNUM_2		varchar(40);
+	JKYNUM_2		varchar(40);
+	K_J_DAY2		number(2);
+	K_TTL_TEN_2		number(8);
+	FTNNUM_3		varchar(40);
+	JKYNUM_3		varchar(40);
+	K_J_DAY3		number(2);
+	K_TTL_TEN_3		number(8);
+	FTNNUM_4		varchar(40);
+	JKYNUM_4		varchar(40);
+	K_J_DAY4		number(2);
+	K_TTL_TEN_4		number(8);
+	KAKUTEI_KBN		char(1);
+	ERR_KBN			char(2);
+#---> 受付・事務点検固有情報
+	U_ERR_CODE		char(4);
+	U_ERR_MSG_1		varchar(400);
+	U_ERR_MSG_2		varchar(512);
+	U_ERR_SRYKBN		char(2);
+	U_ERR_INFO		varchar(400);
+	U_TEN_NG		number(8);
+	U_TEN_OK		number(8);
+	END_FLG			number(1);
+	TERMID			varchar(16);
+	OPID  			varchar(16);
+	CREYMD			char(8);
+	UPYMD 			char(8);
+	UPHMS 			char(6);
+#-----> 検索用項目
+	UCNT_V			number(3),virtual;
+	SCNT_V			number(3),virtual;
+};
+
+primary {
+        HOSPNUM,TEISYUTUSAKI,SRYYM,UCNT,SCNT,RENNUM,RECEIPT_NO;
+};
+
+path    key             {
+        DBSELECT        {
+                DECLARE tbl_onrece_body_key_csr CURSOR FOR
+                SELECT *
+                FROM tbl_onrece_body
+                WHERE	HOSPNUM		= :HOSPNUM
+                    AND	TEISYUTUSAKI	= :TEISYUTUSAKI
+                    AND	SRYYM		= :SRYYM
+                    AND	UCNT		= :UCNT
+                    AND	SCNT		= :SCNT
+                    AND	RENNUM		= :RENNUM
+                    AND	RECEIPT_NO	= :RECEIPT_NO
+                ;
+        };
+};
+
+
+path    key1            {
+        DBSELECT        {
+                DECLARE tbl_onrece_body_key1_csr CURSOR FOR
+                SELECT *
+                FROM tbl_onrece_body
+                WHERE	HOSPNUM		= :HOSPNUM
+                    AND	TEISYUTUSAKI	= :TEISYUTUSAKI
+                    AND	SRYYM		= :SRYYM
+                    AND	UCNT		= :UCNT
+                    AND	SCNT		= :SCNT
+                    AND	RENNUM		= :RENNUM
+		ORDER	BY	RECEIPT_NO
+                ;
+        };
+};
+
+path    upd1    {
+        DBUPDATE        {
+                UPDATE  tbl_onrece_body
+                                SET
+        HOSPNUM		=	:HOSPNUM,
+	TEISYUTUSAKI	=	:TEISYUTUSAKI,
+	SRYYM		=	:SRYYM,
+	UCNT		=	:UCNT,
+	SCNT		=	:SCNT,
+	RENNUM		=	:RENNUM,
+	RECEIPT_NO	=	:RECEIPT_NO,
+	UKEYMD		=	:UKEYMD,
+	SKYYMD		=	:SKYYMD,
+	RECV_FLG	=	:RECV_FLG,
+	AMOUNT_FLG	=	:AMOUNT_FLG,
+	SEND_FLG	=	:SEND_FLG,
+	NYUGAIKBN	=	:NYUGAIKBN,
+	RECESYUBETU	=	:RECESYUBETU,
+	SRYYM_B		=	:SRYYM_B,
+	NAME		=	:NAME,
+	SEX		=	:SEX,
+	BIRTHDAY	=	:BIRTHDAY,
+	PTNUM		=	:PTNUM,
+	PTID		=	:PTID,
+	HKNJANUM	=	:HKNJANUM,
+	KIGO		=	:KIGO,
+	NUM		=	:NUM,
+	J_DAY		=	:J_DAY,
+	H_TTL_TEN	=	:H_TTL_TEN,
+	FTNNUM_1	=	:FTNNUM_1,
+	JKYNUM_1	=	:JKYNUM_1,
+	K_J_DAY1	=	:K_J_DAY1,
+	K_TTL_TEN_1	=	:K_TTL_TEN_1,
+	FTNNUM_2	=	:FTNNUM_2,
+	JKYNUM_2	=	:JKYNUM_2,
+	K_J_DAY2	=	:K_J_DAY2,
+	K_TTL_TEN_2	=	:K_TTL_TEN_2,
+	FTNNUM_3	=	:FTNNUM_3,
+	JKYNUM_3	=	:JKYNUM_3,
+	K_J_DAY3	=	:K_J_DAY3,
+	K_TTL_TEN_3	=	:K_TTL_TEN_3,
+	FTNNUM_4	=	:FTNNUM_4,
+	JKYNUM_4	=	:JKYNUM_4,
+	K_J_DAY4	=	:K_J_DAY4,
+	K_TTL_TEN_4	=	:K_TTL_TEN_4,
+	KAKUTEI_KBN	=	:KAKUTEI_KBN,
+	ERR_KBN		=	:ERR_KBN,
+	U_ERR_CODE	=	:U_ERR_CODE,
+	U_ERR_MSG_1	=	:U_ERR_MSG_1,
+	U_ERR_MSG_2	=	:U_ERR_MSG_2,
+	U_ERR_SRYKBN	=	:U_ERR_SRYKBN,
+	U_ERR_INFO	=	:U_ERR_INFO,
+	U_TEN_NG	=	:U_TEN_NG,
+	U_TEN_OK	=	:U_TEN_OK
+                WHERE	HOSPNUM		= :HOSPNUM
+                    AND	TEISYUTUSAKI	= :TEISYUTUSAKI
+                    AND	SRYYM		= :SRYYM
+                    AND	UCNT		= :UCNT_V
+                    AND	SCNT		= :SCNT_V
+                    AND	RENNUM		= :RENNUM
+                    AND	RECEIPT_NO	= :RECEIPT_NO
+                ;
+        };
+};
+

@@ -12,6 +12,12 @@ T01	{
 		B08	{
 			state	int;
 		};
+		B15	{
+			state	int;
+		};
+		B16	{
+			state	int;
+		};
 		B19	{
 			state	int;
 		};

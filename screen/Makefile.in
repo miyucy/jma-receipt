@@ -172,6 +172,7 @@ SCREEN_screen = \
 	T02.glade \
 	T03.glade \
 	T04.glade \
+	T05.glade \
 	T99.glade \
 	TERR.glade \
 	TID1.glade \

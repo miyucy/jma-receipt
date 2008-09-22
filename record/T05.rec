@@ -1,0 +1,52 @@
+T05	{
+	fixed1	{
+		SELNUM	{
+			value	number(2);
+		};
+		fileentry1	{
+			objectdata	object;
+			 entry1 {
+				 value varchar(200);
+			};
+		};
+		ERRMSG1	{
+			style	varchar(20);
+			value	varchar(100);
+		};
+		ERRMSG2	{
+			style   varchar(20);
+			value	varchar(100);
+		};
+		scrolledwindow1	{
+			hpos	int;
+			vpos	int;
+			DATALST	{
+				count	int;
+				row	int;
+				item	{
+					value0  varchar(2);
+					value1  varchar(35);
+					value2  varchar(6);
+					value3  varchar(9);
+					value4  varchar(2);
+					value5  varchar(2);
+					value6  varchar(100);
+					value7  varchar(2);
+					value8  varchar(2);
+					value9  varchar(3);
+				}	[50];
+				select  bool[50];
+			};
+		};
+		SELNAME1	{
+			value	varchar(100);
+		};
+		SELNAME2	{
+			value	varchar(10);
+		};
+		ERRDETAIL	{
+			style   varchar(20);
+			value   varchar(100);
+		};
+	};
+};

@@ -83,7 +83,8 @@ shell_sources = \
         allways/ykjchk.sh.in \
 	allways/chkmst2.sh.in \
 	tools/dbbackup.sh.in \
-	tools/run_master_upgrade.sh.in
+	tools/run_master_upgrade.sh.in \
+	monthly/receipt_export.sh.in
 
 ruby_scripts = \
 	daily/print-data.rb \

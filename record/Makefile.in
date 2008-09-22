@@ -175,6 +175,7 @@ RECORD_files = \
 	T02.rec \
 	T03.rec \
 	T04.rec \
+	T05.rec \
 	T99.rec \
 	TERR.rec \
 	TID1.rec \
@@ -569,6 +570,8 @@ DB_files = \
 	query_receprt.db \
 	tbl_pttokki.db \
 	tbl_cron.db \
+	tbl_onrece_kanri.db \
+	tbl_onrece_body.db \
 
 
 all:   

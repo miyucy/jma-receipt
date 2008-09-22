@@ -108,6 +108,7 @@
       *  04.03.02    NACL-Æ£¸¶    08/07/09  ²¾¥ì¥»ºîÀ®¡Ê±¡³°½èÊý´Þ¤à¡ËÂÐ±þ
       *  04.03.03    NACL-Æ£¸¶    08/07/23  µÜ¾ë¸©¡¢´ä¼ê¸©ÃÏ¿ÌÂÐ±þ
       *                                     £²£°£°£¸Ç¯£¶·î¡ÁÂÐ¾Ý 
+      *  04.03.04    NACL-Æ£¸¶    08/09/03  ¥ª¥ó¥é¥¤¥óÀÁµá¡Ê¸ÄÊÌÀÁµá¡ËÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -422,6 +423,7 @@
            COPY    "T02.INC".
            COPY    "T03.INC".
            COPY    "T04.INC".
+           COPY    "T05.INC".
            COPY    "T91.INC".
            COPY    "T99.INC".
            COPY    "TERR.INC".
@@ -758,13 +760,19 @@ grpsys                                         SPA-AREA
            MOVE    SYS-200501-KOUIKIRECEKBN
                                        TO  SPA-NAI-200501-KOUIKIRECEKBN
       *
+           MOVE    WIDGET-INSENSITIVE  TO  SPA-B15-STATE
+                                           SPA-B16-STATE
            IF      SYS-2005-SYARECEKBN =   "1" OR  "2" OR  "3"
                MOVE    WIDGET-NORMAL       TO  SPA-B06-STATE
+                                               SPA-B15-STATE
+                                               SPA-B16-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  SPA-B06-STATE
            END-IF
            IF      SYS-2005-KKHRECEKBN =   "1" OR  "2" OR  "3"
                MOVE    WIDGET-NORMAL       TO  SPA-B07-STATE
+                                               SPA-B15-STATE
+                                               SPA-B16-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  SPA-B07-STATE
            END-IF
@@ -772,6 +780,8 @@ grpsys                                         SPA-AREA
                                        =   "1" OR  "2" OR  "3"
                IF      SYS-200501-KOUIKIKBN    =   "0"
                    MOVE    WIDGET-NORMAL       TO  SPA-B08-STATE
+                                                   SPA-B15-STATE
+                                                   SPA-B16-STATE
                ELSE
                    MOVE    WIDGET-INSENSITIVE  TO  SPA-B08-STATE
                END-IF
@@ -1965,6 +1975,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *     °õºþ
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-PRINT-GID-SEC
+      *     ¥Ç¡¼¥¿¼è¤ê¹þ¤ß
+               WHEN    "CLICKED"       ALSO    "B15"
+                   PERFORM 480-DATA-EXPORT-SEC
       *     ¸øÈñ£Ã£Ó£Ö¥Ç¡¼¥¿ºîÀ®
                WHEN    "CLICKED"       ALSO    "B19"
                    MOVE    SPACE           TO  SPA-T99-MOTOPG
@@ -4512,6 +4525,43 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
+      *    ¥Ç¡¼¥¿¼è¤ê¹þ¤ß²èÌÌ
+      *****************************************************************
+       480-DATA-EXPORT-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-T01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-T01FREE         TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGT05"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-T01FREE
+           MOVE    SPA-WORK            TO  SPA-T01KYOUTU
+      *
+           MOVE    "T01"                TO  SPA-MOTOPG
+           MOVE    "T05"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "T05"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+      *
+           .
+       480-DATA-EXPORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ¸øÈñ¸ÄÊÌ»ØÄê²èÌÌ
       *****************************************************************
        490-KOBETU-SEC             SECTION.
@@ -4851,6 +4901,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-B06-STATE       TO  T01-B06-STATE
            MOVE    SPA-B07-STATE       TO  T01-B07-STATE
            MOVE    SPA-B08-STATE       TO  T01-B08-STATE
+           MOVE    SPA-B15-STATE       TO  T01-B15-STATE
+           MOVE    SPA-B16-STATE       TO  T01-B16-STATE
            MOVE    SPA-B19-STATE       TO  T01-B19-STATE
            MOVE    SPA-B20-STATE       TO  T01-B20-STATE
            MOVE    SPA-B21-STATE       TO  T01-B21-STATE

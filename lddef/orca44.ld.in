@@ -8,6 +8,7 @@ bind	"T01"		"OpenCOBOL"	"ORCGT01";
 bind	"T02"		"OpenCOBOL"	"ORCGT02";
 bind	"T03"		"OpenCOBOL"	"ORCGT03";
 bind	"T04"		"OpenCOBOL"	"ORCGT04";
+bind	"T05"		"OpenCOBOL"	"ORCGT05";
 bind	"T91"		"OpenCOBOL"	"ORCGT91";
 bind	"T99"		"OpenCOBOL"	"ORCGT99";
 bind	"TERR"		"OpenCOBOL"	"ORCGTERR";
@@ -25,6 +26,7 @@ data	{
 		T02;
 		T03;
 		T04;
+		T05;
 		T91;
 		T99;
 		TERR;
@@ -40,6 +42,8 @@ db	{
 	tbl_file_info;
 	tbl_hknjainf;
 	tbl_jobkanri;
+	tbl_onrece_kanri;
+	tbl_onrece_body;
 	tbl_prtdata;
 	tbl_prtkanri;
 	tbl_prvkanri;
