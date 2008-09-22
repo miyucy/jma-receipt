@@ -269,7 +269,7 @@
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
-           COPY    "DB-WORK".
+           COPY    "ORCA-BLOB".
       *
       *****************************************************************
       *    連絡領域
@@ -735,15 +735,17 @@
            END-STRING
       *  
       *    BLOBEXPORT  ---> サーバへの保存用FUNCTION
-           MOVE    T05-OBJECTDATA      TO  DB-WORK-OBJECT
+           INITIALIZE                      ORCA-BLOB
+           MOVE    T05-OBJECTDATA      TO  ORCA-BLOB-OBJECT
            MOVE    SPA-NAI-T05-SAVE-NAME(IDY)
-                                       TO  DB-WORK-FILE
+                                       TO  ORCA-BLOB-FILE
            MOVE   'BLOBEXPORT'         TO  MCP-FUNC
            MOVE    "blob"              TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           CALL    'MONFUNC'           USING
+           CALL   "ORCDBMAIN"          USING
                                        MCPAREA
-                                       DB-WORK
+                                       ORCA-BLOB
+                                       SPA-AREA
       *
       *    取り込みファイルチェック処理
            PERFORM 7002-FILE-CHECK-SEC
