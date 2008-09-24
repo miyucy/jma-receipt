@@ -423,7 +423,13 @@
       *    拡張構成前桁数チェック
            IF      WRK-END         NOT =   SPA-1009-KKCKSIMAEKETA
                MOVE    "0001"          TO  SPA-ERRCD
-           ELSE
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+               IF     SPA-GMN014-PTNUM1(1:1)   =   "*"
+                   MOVE    "0004"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
                EVALUATE    SPA-1009-KKCKSIKBN
       *        拡張構成 <フリー + 連番号 + フリー>
                    WHEN    "1"
@@ -624,6 +630,9 @@
                    MOVE    "桁数と違います"        TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "検証番号が取得できませんでした。"
+                                           TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "１桁目に ＊ は設定できません。"
                                            TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "既に登録済の患者番号です"  TO  SPA-ERRMSG
