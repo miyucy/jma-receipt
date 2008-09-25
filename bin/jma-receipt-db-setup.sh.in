@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # Project code name "ORCA"
 # 日医標準レセプトソフト(JMA standard receipt software)
@@ -101,11 +101,11 @@ echo
 
 RC=0
 
-sh "$INITDIR"/orca-db-create.sh
+bash "$INITDIR"/orca-db-create.sh
 if [ $? -eq 0 ] ; then
-    sh "$INITDIR"/orca-db-install.sh
+    bash "$INITDIR"/orca-db-install.sh
     if [ $? -eq 0 ] ; then
-	sh "$INITDIR"/orca-db-clear.sh
+	bash "$INITDIR"/orca-db-clear.sh
 	if [ $? -ne 0 ] ; then
 	    RC=1
 	fi
@@ -117,7 +117,7 @@ else
 fi
 
 if [ ${RC} -eq 0 ] ; then
-    sh "$ORCALIBDIR"/bin/jma-receipt-db-check.sh
+    bash "$ORCALIBDIR"/bin/jma-receipt-db-check.sh
     if [ $? -eq 0 ] ; then
 	if [ -e "$SYSCONFDIR"/database-non-upgrade ] ; then
 	    rm -f "$SYSCONFDIR"/database-non-upgrade

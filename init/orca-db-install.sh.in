@@ -242,7 +242,7 @@ do
 #
 	if	[ -s $HOME/$MSTDIR/$UPD2 ]; then
 	    if	[ "${UPD2:0:7}" = "ORCADBC" ]; then
-		su - orca -c "sh $HOME/$MSTDIR/$UPD2 $DBNAME $INSTALLLOG $THISTIMELOG"
+		su - orca -c "bash $HOME/$MSTDIR/$UPD2 $DBNAME $INSTALLLOG $THISTIMELOG"
 	    else
 		su - orca -c "psql -e orca < $HOME/$MSTDIR/$UPD2 2>&1 | tee -a $INSTALLLOG $THISTIMELOG"
 	    fi
