@@ -687,7 +687,7 @@
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
-	<modifiers>0</modifiers>
+	<modifiers>GDK_SHIFT_MASK</modifiers>
 	<key>GDK_F9</key>
 	<signal>clicked</signal>
       </accelerator>
