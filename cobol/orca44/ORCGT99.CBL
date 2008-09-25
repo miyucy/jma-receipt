@@ -254,7 +254,11 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           IF      SPA-MOTOPG          =   "T05"
+               MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
+           ELSE
+               MOVE    "T01"               TO  SPA-SAKIPG
+           END-IF
            MOVE    "T99"               TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE

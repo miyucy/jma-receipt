@@ -70,19 +70,18 @@
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-PARA                PIC 9(01).
+           03  FLG-SYSKANRI            PIC 9(01).
+           03  FLG-ONRECE-K            PIC 9(01).
+           03  FLG-ONRECE-B            PIC 9(01).
       *
            03  FLG-DATAEND             PIC 9(01).
+           03  FLG-MATCH               PIC 9(01).
+           03  FLG-SET                 PIC 9(01).
            03  FLG-AREA1.
-               05  FLG-ERR             PIC 9(01).
                05  FLG-COMMA           PIC 9(01).
                05  FLG-DELI1           PIC 9(01).
                05  FLG-DELI2           PIC 9(01).
                05  FLG-NODATA          PIC 9(01).
-           03  FLG-ONRECE-K            PIC 9(01).
-           03  FLG-ONRECE-B            PIC 9(01).
-           03  FLG-NG                  PIC 9(01).
-           03  FLG-MATCH               PIC 9(01).
-           03  FLG-ERRARI              PIC 9(01).
       *
       *    カウンタ
        01  CNT-AREA.
@@ -125,13 +124,6 @@
                05  WRK-PO-ED           PIC 9(04).
            03  WRK-KOUMOKU-NO          PIC 9(04).
       *
-           03  WRK-HENKAN-AREA.
-               05  WRK-HENKAN-IN       PIC X(50).
-               05  WRK-HENKAN-OUT      PIC X(25).
-               03  WRK-MOJI-IN         PIC X(02).
-               03  WRK-MOJI-OUT        PIC X(01).
-               03  WRK-HENKAN-LEN      PIC 9(02).
-      *
            03  WRK-MOVE-AREA.
                05  WRK-MO-ST           PIC 9(04).
                05  WRK-MO-CNT          PIC 9(04).
@@ -147,15 +139,6 @@
        01  CNT-RESEDEN.
            03  PATIENT-CNT             PIC 9(05).
            03  NOPATIENT-CNT           PIC 9(05).
-           03  HO-CNT                  PIC 9(05).
-           03  RO-CNT                  PIC 9(05).
-           03  KO-CNT                  PIC 9(05).
-           03  SY-CNT                  PIC 9(05).
-           03  SI-CNT                  PIC 9(05).
-           03  IY-CNT                  PIC 9(05).
-           03  CO-CNT                  PIC 9(05).
-           03  ALL-TENSU-CNT           PIC 9(10).
-           03  ALL-LINE-CNT            PIC 9(10).
            03  KO-B-CNT                PIC 9(05).
            03  UKE-CNT                 PIC 9(03).
            03  SEI-CNT                 PIC 9(03).
@@ -165,7 +148,6 @@
            03  WRK-SRYYM               PIC X(6).
            03  WRK-SKYYMD              PIC X(8).
            03  WRK-UKEYMD              PIC X(8).
-           03  WRK-SEND-FLG            PIC 9(1).
            03  WRK-RECV-FLG            PIC 9(1).
            03  WRK-AMOUNT-FLG          PIC 9(1).
            03  WRK-CHG-FLG             PIC 9(1).
@@ -174,6 +156,12 @@
            03  CK-RECV-FLG             PIC 9(1).
            03  CK-AMOUNT-FLG           PIC 9(1).
            03  HIT-K                   PIC 9(3).
+      *
+      *    患者番号構成管理情報退避用領域
+       01  TBL-SYS1009-T.
+           03  TBL-SYS1009-OCC         OCCURS  10.
+               05  TBL-SYS1009         PIC X(610).
+           03  TBL-SYS1009-MAX         PIC 9(02).
       *
        01  WRK-ONRECE-B-REC.
            COPY    "CPONRECE-BODY.INC" REPLACING   //ONRECE-B-//
@@ -200,6 +188,9 @@
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *    患者番号構成管理情報
+           COPY    "CPSK1009.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -228,6 +219,9 @@
       *
       *    数字変換領域
            COPY    "CPORCSNUM.INC".
+      *
+      *   患者番号変換サブ
+           COPY    "CPORCSPTNUM.INC".
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
@@ -313,6 +307,45 @@
            MOVE    "オンライン請求（データ取り込み）"
                                    TO  JOB-SHELLMSG
            PERFORM 900-CALL-ORCSJOB-SEC
+      *
+      *    患者番号構成管理情報編集
+           INITIALIZE                      TBL-SYS1009-T
+      *
+           INITIALIZE                      SYS-1009-REC
+           MOVE    "1009"              TO  SYS-1009-KANRICD
+           MOVE    "*"                 TO  SYS-1009-KBNCD
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
+           MOVE    SYS-1009-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key8"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               PERFORM UNTIL ( FLG-SYSKANRI    =    1  )
+                       OR    ( TBL-SYS1009-MAX >=  100 )
+                   ADD     1                 TO  TBL-SYS1009-MAX
+                   MOVE    MCPDATA-REC       TO  TBL-SYS1009
+                                                     (TBL-SYS1009-MAX)
+      *
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key8"              TO  MCP-PATHNAME
+                   PERFORM 900-SYSKANRI-READ-SEC
+      *
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key8"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           IF      TBL-SYS1009-MAX     =   ZERO
+               MOVE    "患者番号構成管理情報が取得できませんでした。"
+                                         TO  WRK-CSVERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -352,8 +385,7 @@
            MOVE    ZERO                TO  READ-CNT
            MOVE    ZERO                TO  WRK-KOUMOKU-NO
            MOVE    ZERO                TO  WRK-MOVE-AREA
-           MOVE    ZERO                TO  READ-CNT
-                                           IDZZ
+           MOVE    ZERO                TO  IDZZ
            INITIALIZE                      WRK-POINT-AREA
            INITIALIZE                      CNT-RESEDEN
            INITIALIZE                      WRK-RESEDEN
@@ -451,7 +483,6 @@
       *
            MOVE    ZERO            TO  WRK-POINT-AREA
            MOVE    ZERO            TO  IDE
-           MOVE    ZERO            TO  FLG-ERRARI
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
       *
@@ -697,6 +728,9 @@
                    EVALUATE    WRK-KOUMOKU-NO
       *                ２： レセプト番号
                        WHEN    2
+      *                    エラー分件数
+                           ADD  1              TO  NOPATIENT-CNT
+      *
                            MOVE    SPA-HOSPNUM TO  TBL-B-HOSPNUM(IDZZ)
       *
                            MOVE    WRK-TEISYUTUSAKI
@@ -766,6 +800,14 @@
                            IF      LNK-ZENHANCNV-RC    =   ZERO
                                MOVE    LNK-ZENHANCNV-OT-SYMD (1:6)
                                                TO  TBL-B-SRYYM-B(IDZZ)
+      *                        PTID 編集 
+                               PERFORM 500-PTID-HENSYU-SEC
+                               IF      SPTNUM-RC   =   00
+                                   MOVE    SPTNUM-PTID     TO
+                                                       TBL-B-PTID (IDZZ)
+                               ELSE
+                                   DISPLAY "ORCSPTNUM ERR " SPTNUM-RC
+                               END-IF
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "診療年月エラー DATA="
@@ -1045,6 +1087,13 @@
                        WHEN    8 
                            MOVE  PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                                TO  TBL-B-PTNUM(IDZZ)
+                           PERFORM 500-PTID-HENSYU-SEC
+                           IF      SPTNUM-RC   =   00
+                               MOVE    SPTNUM-PTID     TO
+                                                       TBL-B-PTID (IDZZ)
+                           ELSE
+                               DISPLAY "ORCSPTNUM ERR " SPTNUM-RC
+                           END-IF
                        WHEN    9
                            MOVE PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                                TO  TBL-B-HKNJANUM(IDZZ)
@@ -1199,8 +1248,6 @@
       *        ＤＢ追加処理 
                PERFORM  200111-DB-INSERT-SEC
            ELSE
-      *        管理データ項目設定処理
-      *********PERFORM  200112-ONRECE-K-SET-SEC
       *
       *        チェック処理
                PERFORM VARYING   IDX   FROM    1   BY  1
@@ -1274,15 +1321,12 @@
            MOVE   WRK-UKEYMD           TO  ONRECE-K-UKEYMD
            MOVE   WRK-RECV-FLG         TO  ONRECE-K-RECV-FLG
            MOVE   WRK-AMOUNT-FLG       TO  ONRECE-K-AMOUNT-FLG
-           MOVE   WRK-SEND-FLG         TO  ONRECE-K-SEND-FLG
            MOVE   UKE-CNT              TO  ONRECE-K-UCNT
            MOVE   SEI-CNT              TO  ONRECE-K-SCNT
       *
-           MOVE   READ-CNT             TO  ONRECE-K-SEND-TOTAL-CNT
+           MOVE   IDZZ                 TO  ONRECE-K-SEND-TOTAL-CNT
            MOVE   PATIENT-CNT          TO  ONRECE-K-SEND-PATIENT-CNT
            MOVE   NOPATIENT-CNT        TO  ONRECE-K-NOSEND-PATIENT-CNT
-           MOVE   ALL-TENSU-CNT        TO  ONRECE-K-SEND-TOTAL-TENSU
-           MOVE   ALL-LINE-CNT         TO  ONRECE-K-SEND-TOTAL-LINECNT
       *
            .
        200112-ONRECE-K-SET-EXT.
@@ -1377,6 +1421,7 @@
                MOVE    TBL-K-RENNUM(IDX)   TO  ONRECE-B-RENNUM
                MOVE    TBL-B-RECEIPT-NO(IDYY)
                                            TO  ONRECE-B-RECEIPT-NO
+               MOVE    "key"               TO  WRK-MCP-PATHNAME
                PERFORM 900-ONRECE-B-SELECT-SEC
                IF      FLG-ONRECE-B        =   ZERO
                    IF    ( TBL-B-NYUGAIKBN(IDYY)
@@ -1425,30 +1470,27 @@
        200114-HASP-MOD-SEC         SECTION.
       *
       *    管理レコード更新
-           MOVE   TBL-ONRECE-K-REC (HIT-K)
+           MOVE    TBL-ONRECE-K-REC (HIT-K)
                                        TO  ONRECE-K-REC
-           MOVE   WRK-UKEYMD           TO  ONRECE-K-UKEYMD
-           MOVE   WRK-RECV-FLG         TO  ONRECE-K-RECV-FLG
-           MOVE   WRK-AMOUNT-FLG       TO  ONRECE-K-AMOUNT-FLG
-           MOVE   READ-CNT             TO  ONRECE-K-SEND-TOTAL-CNT
-           MOVE   PATIENT-CNT          TO  ONRECE-K-SEND-PATIENT-CNT
-           MOVE   ALL-TENSU-CNT        TO  ONRECE-K-SEND-TOTAL-TENSU
-           MOVE   ALL-LINE-CNT         TO  ONRECE-K-SEND-TOTAL-LINECNT
+           MOVE    UKE-CNT             TO  ONRECE-K-UCNT
+           MOVE    WRK-UKEYMD          TO  ONRECE-K-UKEYMD
+           MOVE    WRK-RECV-FLG        TO  ONRECE-K-RECV-FLG
       *
            MOVE    TBL-K-UCNT (HIT-K)  TO  ONRECE-K-UCNT-V
            MOVE    TBL-K-SCNT (HIT-K)  TO  ONRECE-K-SCNT-V
            PERFORM 900-ONRECE-KANRI-UPDATE-SEC
       *
-      *    明細レコード更新
+      *    明細レコード更新（エラー分）
            PERFORM VARYING   IDZZ  FROM    1   BY  1
-                   UNTIL   ( IDZZ          >   WRK-CONS-ONRECE-B-MAX )
-                   OR      ( TBL-B-HOSPNUM(IDZZ)
-                                           =   ZERO                  )
+                   UNTIL     IDZZ          >   WRK-CONS-ONRECE-B-MAX
+                   OR        TBL-B-HOSPNUM(IDZZ)
+                                           =   ZERO
                MOVE    TBL-ONRECE-B-REC(IDZZ)
                                            TO  ONRECE-B-REC
                MOVE    TBL-K-UCNT  (HIT-K) TO  ONRECE-B-UCNT
                MOVE    TBL-K-SCNT  (HIT-K) TO  ONRECE-B-SCNT
                MOVE    TBL-K-RENNUM(HIT-K) TO  ONRECE-B-RENNUM
+               MOVE    "key"               TO  WRK-MCP-PATHNAME
                PERFORM 900-ONRECE-B-SELECT-SEC
                PERFORM 900-ONRECE-B-CLOSE-SEC
       *??
@@ -1487,9 +1529,7 @@
       *
                    MOVE    TBL-ONRECE-B-REC(IDZZ)  
                                        TO  WRK-ONRECE-B-REC
-                   MOVE    TBL-K-UCNT  (HIT-K) TO  ONRECE-B-UCNT
-                   MOVE    TBL-K-SCNT  (HIT-K) TO  ONRECE-B-SCNT
-                   MOVE    TBL-K-RENNUM(HIT-K) TO  ONRECE-B-RENNUM
+                   MOVE    UKE-CNT     TO  ONRECE-K-UCNT
                    MOVE    WRK-ONRECE-B-UKEYMD
                                        TO  ONRECE-B-UKEYMD
                    MOVE    WRK-ONRECE-B-RECV-FLG
@@ -1512,6 +1552,7 @@
                                        TO  ONRECE-B-UCNT-V
                    MOVE    TBL-K-SCNT(HIT-K)   
                                        TO  ONRECE-B-SCNT-V
+                   MOVE    "upd1"      TO  WRK-MCP-PATHNAME
                    PERFORM 900-ONRECE-B-UPDATE-SEC
                ELSE
                    DISPLAY "hasp no fetch !! UCNT="
@@ -1521,6 +1562,18 @@
                            TBL-B-RECEIPT-NO (IDZZ)
                END-IF
            END-PERFORM
+      *
+      *    明細レコード更新
+           MOVE    TBL-ONRECE-B-REC (1)
+                                       TO  ONRECE-B-REC
+           MOVE    UKE-CNT             TO  ONRECE-B-UCNT
+           MOVE    WRK-UKEYMD          TO  ONRECE-B-UKEYMD
+           MOVE    WRK-RECV-FLG        TO  ONRECE-B-RECV-FLG
+           MOVE    TBL-K-RENNUM(HIT-K) TO  ONRECE-B-RENNUM
+           MOVE    TBL-K-UCNT  (HIT-K) TO  ONRECE-B-UCNT-V
+           MOVE    TBL-K-SCNT  (HIT-K) TO  ONRECE-B-SCNT-V
+           MOVE    "upd2"              TO  WRK-MCP-PATHNAME
+           PERFORM 900-ONRECE-B-UPDATE-SEC
       *
            .
        200114-HASP-MOD-EXT.
@@ -1538,8 +1591,9 @@
            MOVE   WRK-SKYYMD           TO  ONRECE-K-SKYYMD
                                            ONRECE-K-SYORIYMD
            MOVE   WRK-AMOUNT-FLG       TO  ONRECE-K-AMOUNT-FLG
-           MOVE   WRK-SEND-FLG         TO  ONRECE-K-SEND-FLG
            MOVE   PATIENT-CNT          TO  ONRECE-K-SEND-PATIENT-CNT
+           MOVE   IDZZ                 TO  ONRECE-K-SEND-TOTAL-CNT
+           MOVE   NOPATIENT-CNT        TO  ONRECE-K-NOSEND-PATIENT-CNT
       *
            MOVE    TBL-K-UCNT(HIT-K)   TO  ONRECE-K-UCNT-V
            MOVE    TBL-K-SCNT(HIT-K)   TO  ONRECE-K-SCNT-V
@@ -1555,6 +1609,7 @@
                MOVE    TBL-K-RENNUM(HIT-K) TO  ONRECE-B-RENNUM
                MOVE    TBL-B-RECEIPT-NO (IDZZ)
                                            TO  ONRECE-B-RECEIPT-NO
+               MOVE    "key"               TO  WRK-MCP-PATHNAME
                PERFORM 900-ONRECE-B-SELECT-SEC
                PERFORM 900-ONRECE-B-CLOSE-SEC
       *
@@ -1607,6 +1662,7 @@
                        MOVE    ONRECE-B-REC    TO  WRK-ONRECE-B-REC
                        MOVE    TBL-ONRECE-B-REC(IDZZ)  
                                                TO  ONRECE-B-REC
+                       MOVE    SEI-CNT         TO  ONRECE-K-SCNT
                        MOVE    WRK-ONRECE-B-UKEYMD
                                                TO  ONRECE-B-UKEYMD
                        MOVE    WRK-ONRECE-B-RECV-FLG
@@ -1629,12 +1685,13 @@
                                                TO  ONRECE-B-UCNT-V
                        MOVE    TBL-K-SCNT(HIT-K)   
                                                TO  ONRECE-B-SCNT-V
+                       MOVE    "upd1"      TO  WRK-MCP-PATHNAME
                        PERFORM 900-ONRECE-B-UPDATE-SEC
                    END-IF
                ELSE    
                    MOVE    TBL-ONRECE-B-REC (IDZZ) TO  ONRECE-B-REC
                    MOVE    TBL-K-UCNT     (HIT-K)  TO  ONRECE-B-UCNT
-                   MOVE    TBL-K-SCNT     (HIT-K)  TO  ONRECE-B-SCNT
+                   MOVE    SEI-CNT                 TO  ONRECE-B-SCNT
                    MOVE    TBL-K-RENNUM   (HIT-K)  TO  ONRECE-B-RENNUM
                    MOVE    TBL-K-UKEYMD   (HIT-K)  TO  ONRECE-B-UKEYMD
                    MOVE    TBL-K-RECV-FLG (HIT-K)  TO  ONRECE-B-RECV-FLG
@@ -1691,6 +1748,47 @@
       *
            .
        500-COBABORT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者番号構成情報取得処理
+      *****************************************************************
+       500-PTID-HENSYU-SEC            SECTION.
+      *
+      *    患者番号構成情報取得
+           MOVE    ZERO               TO  FLG-SET
+      *
+           PERFORM VARYING IDZ     FROM    1   BY  1
+                   UNTIL   IDZ     >       TBL-SYS1009-MAX
+               MOVE  TBL-SYS1009 (IDZ)     TO  SYS-1009-REC
+               IF    ( SYS-1009-STYUKYMD (1:6)
+                                           <=  TBL-B-SRYYM-B (IDZZ)    )
+               AND   ( TBL-B-SRYYM-B(IDZZ) <=  SYS-1009-EDYUKYMD (1:6) )
+                   MOVE     1                   TO  FLG-SET
+                   MOVE    TBL-SYS1009-MAX      TO  IDZ
+               END-IF
+           END-PERFORM
+           IF     FLG-SET              =   ZERO
+               INITIALIZE                  SYS-1009-REC
+               DISPLAY "患者番号構成情報が取得できません"
+           END-IF
+      *
+           MOVE    SYS-1009-PTNUMKSIKBN
+                                       TO  SPA-1009-PTNUMKSIKBN
+           MOVE    SYS-1009-HJNKSIKBN  TO  SPA-1009-HJNKSIKBN
+           MOVE    SYS-1009-HJNKSINENKBN
+                                       TO  SPA-1009-HJNKSINENKBN
+           MOVE    SYS-1009-HJNKSIRENNUMKBN
+                                       TO  SPA-1009-HJNKSIRENNUMKBN
+           MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                       TO  SPA-1009-HJNKSIRENNUMKETA
+      *
+           INITIALIZE                      ORCSPTNUMAREA
+           MOVE    TBL-B-PTNUM(IDZZ)   TO  SPTNUM-PTNUM
+           CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
+                                               SPA-AREA
+           .
+       500-PTID-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1848,7 +1946,7 @@
       *
            MOVE    ONRECE-B-REC        TO  MCPDATA-REC
            MOVE    "tbl_onrece_body"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 900-ONRECE-B-FETCH-SEC
@@ -1931,7 +2029,7 @@
            MOVE    ONRECE-B-REC        TO  MCPDATA-REC
       *
            MOVE   "tbl_onrece_body"    TO  MCP-TABLE
-           MOVE    "upd1"              TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
@@ -1969,10 +2067,25 @@
        900-ONRECE-B-CLOSE-SEC      SECTION.
       *
            MOVE   "tbl_onrece_body"    TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
            .
        900-ONRECE-B-CLOSE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    システム管理マスタＲＥＡＤ
+      *****************************************************************
+       900-SYSKANRI-READ-SEC         SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           .
+       900-SYSKANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************

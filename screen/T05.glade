@@ -13,8 +13,8 @@
 <widget>
   <class>GtkWindow</class>
   <name>T05</name>
-  <width>900</width>
-  <height>350</height>
+  <width>905</width>
+  <height>355</height>
   <title>(T05)オンライン請求結果データ取込</title>
   <type>GTK_WINDOW_DIALOG</type>
   <position>GTK_WIN_POS_CENTER</position>
@@ -118,24 +118,6 @@
       </signal>
       <editable>True</editable>
       <format>ZZ</format>
-    </widget>
-
-    <widget>
-      <class>GtkButton</class>
-      <name>B10</name>
-      <x>624</x>
-      <y>320</y>
-      <width>80</width>
-      <height>24</height>
-      <can_focus>True</can_focus>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Tue, 08 Jul 2008 07:44:16 GMT</last_modification_time>
-      </signal>
-      <label>F10:詳細</label>
-      <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
     <widget>

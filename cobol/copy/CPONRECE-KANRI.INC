@@ -45,8 +45,6 @@
            03  ONRECE-K-RECV-FLG   PIC 9(1).
       *請求確定ファイル格納フラグ（格納：１）
             03  ONRECE-K-AMOUNT-FLG PIC 9(1).
-      *レセ電ファイル格納フラグ（格納：１）未使用
-           03  ONRECE-K-SEND-FLG   PIC 9(1).
       *エラーなしで送信した件数
            03  ONRECE-K-SEND-PATIENT-CNT
                                    PIC 9(5).
@@ -56,13 +54,8 @@
       *合計件数(上の総和)
            03  ONRECE-K-SEND-TOTAL-CNT 
                                    PIC 9(5).
-      *未使用
-           03  ONRECE-K-SEND-TOTAL-TENSU
-                                   PIC 9(10).
-           03  ONRECE-K-SEND-TOTAL-LINECNT
-                                   PIC 9(10).
       *端末ＩＤ
-           03  ONRECE-K-TERMID     PIC X(16).
+           03  ONRECE-K-TERMID     PIC X(64).
       *オペーレータＩＤ
            03  ONRECE-K-OPID       PIC X(16).
       *作成年月日

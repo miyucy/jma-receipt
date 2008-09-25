@@ -11,13 +11,10 @@ tbl_onrece_kanri   {
 	SKYYMD			char(8);
 	RECV_FLG		number(1);
 	AMOUNT_FLG		number(1);
-	SEND_FLG		number(1);
 	SEND_PATIENT_CNT	number(5);
 	NOSEND_PATIENT_CNT	number(5);
 	SEND_TOTAL_CNT		number(5);
-	SEND_TOTAL_TENSU	number(10);
-	SEND_TOTAL_LINECNT	number(10);
-	TERMID			varchar(16);
+	TERMID			varchar(64);
 	OPID  			varchar(16);
 	CREYMD			char(8);
 	UPYMD 			char(8);
@@ -86,15 +83,15 @@ path    upd1    {
         DBUPDATE        {
                 UPDATE  tbl_onrece_kanri
                                 SET
+	SCNT		=	:SCNT,
 	UKEYMD		=	:UKEYMD,
 	SKYYMD		=	:SKYYMD,
 	RECV_FLG	=	:RECV_FLG,
 	AMOUNT_FLG	=	:AMOUNT_FLG,
-	SEND_FLG	=	:SEND_FLG,
 	SEND_PATIENT_CNT	=	:SEND_PATIENT_CNT,
 	SEND_TOTAL_CNT	=	:SEND_TOTAL_CNT,
-	SEND_TOTAL_TENSU	=	:SEND_TOTAL_TENSU,
-	SEND_TOTAL_LINECNT	=	:SEND_TOTAL_LINECNT
+	UPYMD 		=	:UPYMD,
+	UPHMS 		=	:UPHMS
                 WHERE	HOSPNUM		= :HOSPNUM
                     AND	TEISYUTUSAKI	= :TEISYUTUSAKI
                     AND	SRYYM		= :SRYYM

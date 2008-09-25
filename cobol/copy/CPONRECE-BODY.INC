@@ -34,7 +34,6 @@
            03  ONRECE-B-SKYYMD     PIC X(8).
            03  ONRECE-B-RECV-FLG   PIC 9(1).
            03  ONRECE-B-AMOUNT-FLG PIC 9(1).
-           03  ONRECE-B-SEND-FLG   PIC 9(1).
            03  ONRECE-B-NYUGAIKBN  PIC X(1).
            03  ONRECE-B-RECESYUBETU
                                    PIC X(4).
@@ -70,7 +69,7 @@
            03  ONRECE-B-U-TEN-OK   PIC 9(8).
            03  ONRECE-B-END-FLG    PIC 9(1).
       *端末ＩＤ
-           03  ONRECE-B-TERMID     PIC X(16).
+           03  ONRECE-B-TERMID     PIC X(64).
       *オペーレータＩＤ
            03  ONRECE-B-OPID       PIC X(16).
       *作成年月日

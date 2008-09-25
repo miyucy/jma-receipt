@@ -11,7 +11,6 @@ tbl_onrece_body   {
 	SKYYMD			char(8);
 	RECV_FLG		number(1);
 	AMOUNT_FLG		number(1);
-	SEND_FLG		number(1);
 	NYUGAIKBN		char(1);
 	RECESYUBETU		char(4);
 	SRYYM_B			char(6);
@@ -52,7 +51,7 @@ tbl_onrece_body   {
 	U_TEN_NG		number(8);
 	U_TEN_OK		number(8);
 	END_FLG			number(1);
-	TERMID			varchar(16);
+	TERMID			varchar(64);
 	OPID  			varchar(16);
 	CREYMD			char(8);
 	UPYMD 			char(8);
@@ -114,7 +113,6 @@ path    upd1    {
 	SKYYMD		=	:SKYYMD,
 	RECV_FLG	=	:RECV_FLG,
 	AMOUNT_FLG	=	:AMOUNT_FLG,
-	SEND_FLG	=	:SEND_FLG,
 	NYUGAIKBN	=	:NYUGAIKBN,
 	RECESYUBETU	=	:RECESYUBETU,
 	SRYYM_B		=	:SRYYM_B,
@@ -152,7 +150,9 @@ path    upd1    {
 	U_ERR_SRYKBN	=	:U_ERR_SRYKBN,
 	U_ERR_INFO	=	:U_ERR_INFO,
 	U_TEN_NG	=	:U_TEN_NG,
-	U_TEN_OK	=	:U_TEN_OK
+	U_TEN_OK	=	:U_TEN_OK,
+	UPYMD 		=	:UPYMD,
+	UPHMS 		=	:UPHMS
                 WHERE	HOSPNUM		= :HOSPNUM
                     AND	TEISYUTUSAKI	= :TEISYUTUSAKI
                     AND	SRYYM		= :SRYYM
@@ -163,4 +163,23 @@ path    upd1    {
                 ;
         };
 };
+
+path    upd2    {
+        DBUPDATE        {
+                UPDATE  tbl_onrece_body
+                                SET
+	UKEYMD		=	:UKEYMD,
+	RECV_FLG	=	:RECV_FLG,
+	UPYMD 		=	:UPYMD,
+	UPHMS 		=	:UPHMS
+                WHERE	HOSPNUM		= :HOSPNUM
+                    AND	TEISYUTUSAKI	= :TEISYUTUSAKI
+                    AND	SRYYM		= :SRYYM
+                    AND	UCNT		= :UCNT_V
+                    AND	SCNT		= :SCNT_V
+                    AND	RENNUM		= :RENNUM
+                ;
+        };
+};
+
 
