@@ -733,13 +733,16 @@
                    WRK-FILENM          DELIMITED   BY  SPACE
                                INTO    SPA-NAI-T05-SAVE-NAME (IDY)
            END-STRING
+      *??
+           DISPLAY "NAME=" IDY "#" SPA-NAI-T05-SAVE-NAME (IDY)
+      *??
       *  
       *    BLOBEXPORT  ---> サーバへの保存用FUNCTION
            INITIALIZE                      ORCA-BLOB
            MOVE    T05-OBJECTDATA      TO  ORCA-BLOB-OBJECT
            MOVE    SPA-NAI-T05-SAVE-NAME(IDY)
                                        TO  ORCA-BLOB-FILE
-           MOVE   'BLOBEXPORT'         TO  MCP-FUNC
+           MOVE    "BLOBEXPORT"        TO  MCP-FUNC
            MOVE    "blob"              TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            CALL   "ORCDBMAIN"          USING
@@ -1968,6 +1971,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "読み込みファイルがありません" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "対象のデータを選択してありません"
                                                TO  SPA-ERRMSG
                WHEN    "7777"
                    MOVE    WRK-RECEERR         TO  SPA-ERRMSG

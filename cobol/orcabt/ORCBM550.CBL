@@ -82,6 +82,7 @@
            03  FLG-ONRECE-B            PIC 9(01).
            03  FLG-NG                  PIC 9(01).
            03  FLG-MATCH               PIC 9(01).
+           03  FLG-ERRARI              PIC 9(01).
       *
       *    カウンタ
        01  CNT-AREA.
@@ -97,6 +98,7 @@
            03  IDX                     PIC 9(05).
            03  IDY                     PIC 9(05).
            03  IDZ                     PIC 9(03).
+           03  IDE                     PIC 9(03).
            03  IDXX                    PIC 9(03).
            03  IDYY                    PIC 9(05).
            03  IDZZ                    PIC 9(05).
@@ -116,6 +118,7 @@
       *
            03  WRK-CSVERR              PIC X(200). 
            03  WRK-ERRMSG              PIC X(300).
+           03  WRK-MCP-RC              PIC 9(9).
       *
            03  WRK-POINT-AREA.
                05  WRK-PO-ST           PIC 9(04).
@@ -385,7 +388,6 @@
                CALL    "orcsjistoeuc"      USING
                                            ORCSJISTOEUC
                MOVE    SJISTOEUC-OUTDATA   TO  WRK-PARA-REC
-               DISPLAY "WRK-PARA-REC = " WRK-PARA-REC(1:21)
       *
                EVALUATE    WRK-FILE-TMP (6:6)
                    WHEN    "RIhasp"
@@ -448,6 +450,8 @@
        20011-PARA-SPLIT-SEC          SECTION.
       *
            MOVE    ZERO            TO  WRK-POINT-AREA
+           MOVE    ZERO            TO  IDE
+           MOVE    ZERO            TO  FLG-ERRARI
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
       *
@@ -456,6 +460,7 @@
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   SPLIT-CNT)
                    OR      ( WRK-PO-ED     >=  500  )
+                   OR      ( IDE           >   4    )
       *
                MOVE    ZERO            TO  FLG-AREA1
                COMPUTE WRK-PO-ST   =   WRK-PO-ED   +   1
@@ -1173,13 +1178,10 @@
            MOVE   WRK-TEISYUTUSAKI TO  ONRECE-K-TEISYUTUSAKI
            MOVE   WRK-SRYYM        TO  ONRECE-K-SRYYM
       *
-           MOVE  "key2"            TO  WRK-MCP-PATHNAME
-      *
            PERFORM 900-ONRECE-KANRIANRI-SELECT-SEC
            PERFORM             UNTIL   FLG-ONRECE-K    =   1
                ADD  1                  TO  TBL-ONRECE-K-MAX
                IF      TBL-ONRECE-K-MAX       >   WRK-CONS-ONRECE-K-MAX
-                   DISPLAY "*** ORCBM550 TABLE OVER  ONRECE-K"
                    MOVE    "*** ORCBM550 TABLE OVER  ONRECE-K"
                                                TO  WRK-CSVERR
                    PERFORM 500-ERR-HENSYU-SEC
@@ -1192,22 +1194,20 @@
            END-PERFORM
            PERFORM 900-ONRECE-KANRI-CLOSE-SEC
       *
+      *    管理データなしのとき
            IF      TBL-ONRECE-K-MAX       =   ZERO
       *        ＤＢ追加処理 
                PERFORM  200111-DB-INSERT-SEC
            ELSE
       *        管理データ項目設定処理
-               PERFORM  200112-ONRECE-K-SET-SEC
+      *********PERFORM  200112-ONRECE-K-SET-SEC
       *
+      *        チェック処理
                PERFORM VARYING   IDX   FROM    1   BY  1
                        UNTIL   ( IDX           >   TBL-ONRECE-K-MAX )
                        OR      ( FLG-MATCH     =   1                )
-      *            管理データチェック処理
                    PERFORM 200113-ONRECE-K-CHK-SEC
                END-PERFORM
-      *??
-           DISPLAY "FLG-MATCH=" FLG-MATCH "#"
-      *??
       *
                IF      FLG-MATCH           =  ZERO
       *            ＤＢ追加処理 
@@ -1217,10 +1217,10 @@
                    EVALUATE    WRK-FILE-TMP (6:6)
                        WHEN    "RIhasp"
                        WHEN    "RIuasp"
-      *                    管理、明細データ作成処理 （受付）
+      *                    受付更新処理
                            PERFORM 200114-HASP-MOD-SEC
                        WHEN    "RIfixf"
-      *                    管理、明細データ作成処理 （請求確定）
+      *                    請求確定更新処理
                            PERFORM 200115-FIXF-MOD-SEC
                    END-EVALUATE
                END-IF
@@ -1281,13 +1281,6 @@
            MOVE   READ-CNT             TO  ONRECE-K-SEND-TOTAL-CNT
            MOVE   PATIENT-CNT          TO  ONRECE-K-SEND-PATIENT-CNT
            MOVE   NOPATIENT-CNT        TO  ONRECE-K-NOSEND-PATIENT-CNT
-      *    MOVE   HO-CNT               TO  ONRECE-K-SEND-HO-CNT
-      *    MOVE   RO-CNT               TO  ONRECE-K-SEND-RO-CNT
-      *    MOVE   KO-CNT               TO  ONRECE-K-SEND-KO-CNT
-      *    MOVE   SY-CNT               TO  ONRECE-K-SEND-SY-CNT
-      *    MOVE   SI-CNT               TO  ONRECE-K-SEND-SI-CNT
-      *    MOVE   IY-CNT               TO  ONRECE-K-SEND-IY-CNT
-      *    MOVE   CO-CNT               TO  ONRECE-K-SEND-CO-CNT
            MOVE   ALL-TENSU-CNT        TO  ONRECE-K-SEND-TOTAL-TENSU
            MOVE   ALL-LINE-CNT         TO  ONRECE-K-SEND-TOTAL-LINECNT
       *
@@ -1300,85 +1293,76 @@
       *****************************************************************
        200113-ONRECE-K-CHK-SEC         SECTION.
       *
-           EVALUATE    TBL-K-RECV-FLG (IDX)
-                                   ALSO    TBL-K-AMOUNT-FLG (IDX)
-      *                受付有              請求有
-               WHEN    1           ALSO    1
-                   PERFORM 2001131-CHK110-SEC
-               WHEN     1          ALSO    0
-                   PERFORM 2001133-CHK100-SEC
-               WHEN     0          ALSO    1
-                   PERFORM 2001135-CHK010-SEC
+           EVALUATE    WRK-FILE-TMP(6:6)  
+               WHEN    "RIhasp"
+               WHEN    "RIuasp"
+                   IF    ( TBL-K-HOSPNUM(IDX)  =   SPA-HOSPNUM      )
+                   AND   ( TBL-K-TEISYUTUSAKI(IDX) 
+                                               =   WRK-TEISYUTUSAKI )
+                   AND   ( TBL-K-SRYYM (IDX)   =   WRK-SRYYM        )
+                   AND   ( TBL-K-UCNT  (IDX)   =   UKE-CNT          )
+                       IF      TBL-K-UKEYMD(IDX)   =   SPACE
+                           MOVE    1                   TO  FLG-MATCH
+                           MOVE  IDX                   TO  HIT-K
+                           MOVE    TBL-ONRECE-K-MAX    TO  IDX
+                       ELSE
+                           IF      TBL-K-UKEYMD(IDX)   =   WRK-UKEYMD
+      *********************    PERFORM 2001131-HASP-CHK-SEC      
+                               DISPLAY "RIhasp perfect hit OK !!"
+                               MOVE    2                   TO  FLG-MATCH
+                               MOVE    TBL-ONRECE-K-MAX    TO  IDX
+                           ELSE
+      *********************    PERFORM 2001131-HASP-CHK-SEC      
+                               DISPLAY "RIhasp ukeymd unmatych !!"
+                               MOVE    2                   TO  FLG-MATCH
+                               MOVE    TBL-ONRECE-K-MAX    TO  IDX
+                           END-IF
+                       END-IF
+                   END-IF
+               WHEN    "RIfixf"
+                   IF    ( TBL-K-HOSPNUM(IDX)  =   SPA-HOSPNUM      )
+                   AND   ( TBL-K-TEISYUTUSAKI(IDX) 
+                                               =   WRK-TEISYUTUSAKI )
+                   AND   ( TBL-K-SRYYM (IDX)   =   WRK-SRYYM        )
+      *                 
+                       IF    ( TBL-K-UCNT(IDX) NOT =   UKE-CNT )
+                       AND   ( TBL-K-SCNT(IDX)     =   SEI-CNT )
+                           DISPLAY "RIfixf ucnt unmatch !! "
+                           MOVE    2                   TO  FLG-MATCH
+                           MOVE    TBL-ONRECE-K-MAX    TO  IDX
+                       END-IF
+      *                 
+                       IF    ( TBL-K-UCNT(IDX)     =   UKE-CNT     )
+                       AND   ( TBL-K-SCNT(IDX)     =   SEI-CNT     )
+                       AND   ( TBL-K-SKYYMD(IDX)   =   WRK-SKYYMD  ) 
+                       AND   ( TBL-K-SEND-PATIENT-CNT(IDX)
+                                                   =   PATIENT-CNT )
+                           MOVE  2                     TO  FLG-MATCH
+                           MOVE  TBL-ONRECE-K-MAX      TO  IDX
+                       END-IF    
+      *                 
+                       IF    ( TBL-K-UCNT(IDX)     =   UKE-CNT    )
+                       AND   ( ONRECE-K-SCNT       =   ZERO       )
+      *****************IF    ( TBL-K-UKEYMD(IDX)   <=  WRK-SKYYMD )
+                           MOVE    1                   TO  FLG-MATCH
+                           MOVE  IDX                   TO  HIT-K
+                           MOVE    TBL-ONRECE-K-MAX    TO  IDX
+                       END-IF
+                   END-IF
            END-EVALUATE
+      *
+      *??
+            DISPLAY "FLG-MATCH=" FLG-MATCH
+      *??
       *
            .
        200113-ONRECE-K-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    管理データチェック処理 (受付有、請求有)
+      *    明細データチェック処理
       *****************************************************************
-       2001131-CHK110-SEC      SECTION.
-      * 
-           EVALUATE    WRK-FILE-TMP(6:6)   
-               WHEN    "RIhasp"
-               WHEN    "RIuasp"
-                   IF    ( TBL-K-HOSPNUM(IDX)  =   ONRECE-K-HOSPNUM  )
-                   AND   ( TBL-K-TEISYUTUSAKI(IDX) 
-                                               =
-                                               ONRECE-K-TEISYUTUSAKI )
-                   AND   ( TBL-K-SRYYM(IDX)    =   ONRECE-K-SRYYM    )
-                   AND   ( TBL-K-UCNT(IDX)     =   ONRECE-K-UCNT     )
-                   AND   ( TBL-K-UKEYMD(IDX)   =   ONRECE-K-UKEYMD   )
-                       DISPLAY "RIhasp part hit !!"
-                       PERFORM 20011311-CHK110-HASP-SEC
-                       IF    FLG-MATCH             =   1
-                           MOVE    2                   TO  FLG-MATCH
-                           MOVE    IDX                 TO  HIT-K
-                           MOVE    TBL-ONRECE-K-MAX    TO  IDX
-                           DISPLAY "RIhasp perfect hit OK !!"
-                       END-IF
-                   ELSE
-                       DISPLAY "RIhasp unmatch !!"
-                   END-IF
-               WHEN    "RIfixf"
-                   IF    ( TBL-K-HOSPNUM(IDX)  =   ONRECE-K-HOSPNUM  )
-                   AND   ( TBL-K-TEISYUTUSAKI(IDX) 
-                                               =
-                                               ONRECE-K-TEISYUTUSAKI )
-                   AND   ( TBL-K-SRYYM(IDX)    =   ONRECE-K-SRYYM    )
-                   AND   ( TBL-K-UCNT(IDX)     =   ONRECE-K-UCNT     )
-                   AND   ( TBL-K-SCNT(IDX)     =   ONRECE-K-SCNT     )
-                   AND   ( TBL-K-SKYYMD(IDX)   =   ONRECE-K-SKYYMD   ) 
-                   AND   ( TBL-K-SEND-PATIENT-CNT(IDX)
-                                               =
-                                           ONRECE-K-SEND-PATIENT-CNT )
-                       DISPLAY "RIfixf perfect hit !!"
-                       MOVE  TBL-ONRECE-K-MAX      TO  IDX
-                       MOVE  2                     TO  FLG-MATCH
-                   ELSE
-                       DISPLAY "RIfixf unmatch !!"
-                   END-IF
-           END-EVALUATE
-      *
-           .
-       2001131-CHK110-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    明細データチェック処理 (受付有、請求有)
-      *****************************************************************
-       20011311-CHK110-HASP-SEC    SECTION.
-      *
-      *   テーブルに貯めたBODYレコードのエラー分についての比較を行い
-      *   OKなら内容を更新する。
-           MOVE    TBL-K-HOSPNUM(IDX)  TO  ONRECE-B-HOSPNUM
-           MOVE    TBL-K-TEISYUTUSAKI(IDX)
-                                       TO  ONRECE-B-TEISYUTUSAKI
-           MOVE    TBL-K-SRYYM   (IDX) TO  ONRECE-B-SRYYM
-           MOVE    TBL-K-UCNT    (IDX) TO  ONRECE-B-UCNT
-           MOVE    TBL-K-SCNT    (IDX) TO  ONRECE-B-SCNT
-           MOVE    TBL-K-RENNUM  (IDX) TO  ONRECE-B-RENNUM
+       2001131-HASP-CHK-SEC    SECTION.
       *
            PERFORM VARYING IDYY    FROM    1   BY  1
                    UNTIL   IDYY            >   WRK-CONS-ONRECE-B-MAX
@@ -1393,7 +1377,6 @@
                MOVE    TBL-K-RENNUM(IDX)   TO  ONRECE-B-RENNUM
                MOVE    TBL-B-RECEIPT-NO(IDYY)
                                            TO  ONRECE-B-RECEIPT-NO
-               MOVE    "key"               TO  WRK-MCP-PATHNAME
                PERFORM 900-ONRECE-B-SELECT-SEC
                IF      FLG-ONRECE-B        =   ZERO
                    IF    ( TBL-B-NYUGAIKBN(IDYY)
@@ -1433,234 +1416,80 @@
            END-PERFORM
       *
            .
-       20011311-CHK110-HASP-EXT.
+       2001131-HASP-CHK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    管理データチェック処理 (受付有、請求無)
-      *****************************************************************
-       2001133-CHK100-SEC      SECTION.
-      *
-           EVALUATE    WRK-FILE-TMP(6:6)   
-               WHEN    "RIhasp"
-               WHEN    "RIuasp"
-                   IF    ( TBL-K-HOSPNUM(IDX)  =   ONRECE-K-HOSPNUM  )
-                   AND   ( TBL-K-TEISYUTUSAKI(IDX) 
-                                               =
-                                               ONRECE-K-TEISYUTUSAKI )
-                   AND   ( TBL-K-SRYYM(IDX)    =   ONRECE-K-SRYYM    )
-                   AND   ( TBL-K-UCNT(IDX)     =   ONRECE-K-UCNT     )
-                   AND   ( TBL-K-UKEYMD(IDX)   =   ONRECE-K-UKEYMD   )
-                       DISPLAY "RIhasp perfect hit !!"
-                       MOVE    IDX                 TO  HIT-K
-                       MOVE  1                     TO  FLG-MATCH
-                       MOVE    TBL-ONRECE-K-MAX    TO  IDX
-                   ELSE
-                       DISPLAY "RIhasp unmatch !!"
-                   END-IF
-               WHEN    "RIfixf"
-                   IF    ( TBL-K-HOSPNUM(IDX)  =   ONRECE-K-HOSPNUM  )
-                   AND   ( TBL-K-TEISYUTUSAKI(IDX) 
-                                               =
-                                               ONRECE-K-TEISYUTUSAKI )
-                   AND   ( TBL-K-SRYYM(IDX)    =   ONRECE-K-SRYYM    )
-                   AND   ( TBL-K-UCNT(IDX)     =   ONRECE-K-UCNT     )
-                   AND   ( TBL-K-UKEYMD(IDX)   <=  ONRECE-K-SKYYMD   )
-                       DISPLAY "RIfixf parts   hit !!"
-                       PERFORM 20011341-FIXF-CHK100-1-SEC
-                       IF      FLG-MATCH           =   1
-                           MOVE  2                     TO  FLG-MATCH
-                           MOVE  IDX                   TO  HIT-K
-                           MOVE    TBL-ONRECE-K-MAX    TO  IDX
-                           DISPLAY "RIfixf perfect hit OK !!"
-                       END-IF
-                   ELSE
-                       DISPLAY "RIfixf unmatch !!"
-                   END-IF
-           END-EVALUATE
-      *
-           .
-       2001133-CHK100-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    請求データ　処理 
-      *****************************************************************
-       20011341-FIXF-CHK100-1-SEC    SECTION.
-      *
-      *   テーブルに貯めたBODYレコードのエラー分についての比較を行い
-      *   OKなら内容を更新する。 
-      *
-           PERFORM VARYING   IDYY  FROM    1   BY  1
-                   UNTIL   ( IDYY          >   WRK-CONS-ONRECE-B-MAX )
-                   OR      ( TBL-B-HOSPNUM(IDYY)
-                                           =   ZERO                  )
-               IF      TBL-B-KAKUTEI-KBN(IDYY) =   "2"
-                   DISPLAY "RIfixf err record !!"
-      *
-                   INITIALIZE                      ONRECE-B-REC
-                   MOVE    TBL-K-HOSPNUM(IDX)  TO  ONRECE-B-HOSPNUM
-                   MOVE    TBL-K-TEISYUTUSAKI(IDX)
-                                               TO  ONRECE-B-TEISYUTUSAKI
-                   MOVE    TBL-K-SRYYM(IDX)    TO  ONRECE-B-SRYYM
-                   MOVE    TBL-K-UCNT(IDX)     TO  ONRECE-B-UCNT
-                   MOVE    TBL-K-SCNT(IDX)     TO  ONRECE-B-SCNT
-                   MOVE    TBL-K-RENNUM(IDX)   TO  ONRECE-B-RENNUM
-                   MOVE    TBL-B-RECEIPT-NO(IDYY)
-                                               TO  ONRECE-B-RECEIPT-NO
-                   MOVE    "key"               TO  WRK-MCP-PATHNAME
-                   PERFORM 900-ONRECE-B-SELECT-SEC
-                   IF      FLG-ONRECE-B        =   1
-                       DISPLAY "abort sec ??"
-                       DISPLAY "IDX       =  " IDX
-                       DISPLAY "hospnum   =  " ONRECE-B-HOSPNUM
-                       DISPLAY "teisyutu  =  " ONRECE-B-TEISYUTUSAKI
-                       DISPLAY "sryym     =  " ONRECE-B-SRYYM
-                       DISPLAY "ucnt      =  " ONRECE-B-UCNT
-                       DISPLAY "scnt      =  " ONRECE-B-SCNT
-                       DISPLAY "rennum1   =  " ONRECE-B-RENNUM
-                       DISPLAY "rennum    =  " ONRECE-B-RECEIPT-NO
-                   END-IF
-      *
-                   IF    ( TBL-B-NYUGAIKBN(IDYY)
-                                               =   ONRECE-B-NYUGAIKBN )
-                   AND   ( TBL-B-SRYYM-B(IDYY) =   ONRECE-B-SRYYM-B   )
-                   AND   ( TBL-B-NAME   (IDYY) =   ONRECE-B-NAME      )
-      *****        AND   ( TBL-B-SEX    (IDYY) =   ONRECE-B-SEX       )
-                   AND   ( TBL-B-BIRTHDAY(IDYY)
-                                               =   ONRECE-B-BIRTHDAY  )
-                       IF      TBL-B-PTNUM(IDYY)
-                                               NOT =  SPACE
-                           IF    ( TBL-B-PTNUM(IDYY)   =
-                                                       ONRECE-B-PTNUM )
-                           AND   ( TBL-B-PTID(IDYY)    =
-                                                       ONRECE-B-PTID  )
-                               MOVE  1                 TO  FLG-MATCH            
-                               DISPLAY "perfect match !!    " 
-                           ELSE
-                               DISPLAY " no match !!    " 
-                               MOVE  ZERO              TO  FLG-MATCH            
-                               MOVE  WRK-CONS-ONRECE-B-MAX
-                                                       TO  IDYY
-                           END-IF
-                       ELSE
-                           DISPLAY "perfect match !!    " 
-                       END-IF
-                   ELSE
-                       MOVE  ZERO                  TO  FLG-MATCH            
-                       MOVE  WRK-CONS-ONRECE-B-MAX TO  IDYY
-                       DISPLAY " no match !!    " 
-                   END-IF
-      *
-                   PERFORM 900-ONRECE-B-CLOSE-SEC
-               END-IF
-           END-PERFORM
-      *
-           .
-       20011341-FIXF-CHK100-1-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    管理データチェック処理 (受付無、請求有)
-      *****************************************************************
-       2001135-CHK010-SEC      SECTION.
-      * 
-           EVALUATE    WRK-FILE-TMP(6:6)   
-               WHEN    "RIhasp"
-               WHEN    "RIuasp"
-                   IF    ( TBL-K-HOSPNUM(IDX)  =   ONRECE-K-HOSPNUM  )
-                   AND   ( TBL-K-TEISYUTUSAKI(IDX) 
-                                               =
-                                               ONRECE-K-TEISYUTUSAKI )
-                   AND   ( TBL-K-SRYYM(IDX)    =   ONRECE-K-SRYYM    )
-                   AND   ( TBL-K-UCNT(IDX)     =   ONRECE-K-UCNT     )
-                       DISPLAY "RIfixf part    hit !!"
-                       PERFORM 20011311-CHK110-HASP-SEC
-                       IF      FLG-MATCH           =   1
-                           MOVE  IDX                   TO  HIT-K
-                           MOVE    TBL-ONRECE-K-MAX    TO  IDX
-                           DISPLAY "RIhasp(010) perfect hit OK !!"
-                       END-IF
-                   ELSE
-                       DISPLAY "RIhasp(010) unmatch !!"
-                   END-IF
-               WHEN    "RIfixf"
-                   IF    ( TBL-K-HOSPNUM(IDX)  =   ONRECE-K-HOSPNUM  )
-                   AND   ( TBL-K-TEISYUTUSAKI(IDX) 
-                                               =
-                                               ONRECE-K-TEISYUTUSAKI )
-                   AND   ( TBL-K-SRYYM(IDX)    =   ONRECE-K-SRYYM    )
-                   AND   ( TBL-K-UCNT(IDX)     =   ONRECE-K-UCNT     )
-                   AND   ( TBL-K-SCNT(IDX)     =   ONRECE-K-SCNT     )
-                   AND   ( TBL-K-SKYYMD(IDX)   =   ONRECE-K-SKYYMD   )
-                   AND   ( TBL-K-SEND-PATIENT-CNT(IDX)
-                                               =
-                                           ONRECE-K-SEND-PATIENT-CNT )
-                       DISPLAY "RIfixf perfect hit !!"
-                       MOVE    TBL-ONRECE-K-MAX    TO  IDX
-                       MOVE  1                     TO  FLG-MATCH
-                   ELSE
-                       DISPLAY "RIfixf unmatch !!"
-                   END-IF
-           END-EVALUATE   
-      *
-           .
-       2001135-CHK010-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    受付（一部更新）処理
+      *    受付更新処理
       *****************************************************************
        200114-HASP-MOD-SEC         SECTION.
       *
+      *    管理レコード更新
            MOVE   TBL-ONRECE-K-REC (HIT-K)
                                        TO  ONRECE-K-REC
            MOVE   WRK-UKEYMD           TO  ONRECE-K-UKEYMD
            MOVE   WRK-RECV-FLG         TO  ONRECE-K-RECV-FLG
            MOVE   WRK-AMOUNT-FLG       TO  ONRECE-K-AMOUNT-FLG
-      *
            MOVE   READ-CNT             TO  ONRECE-K-SEND-TOTAL-CNT
            MOVE   PATIENT-CNT          TO  ONRECE-K-SEND-PATIENT-CNT
-      *    MOVE   NOPATIENT-CNT        TO  ONRECE-K-NOSEND-PATIENT-CNT
-      *    MOVE   HO-CNT               TO  ONRECE-K-SEND-HO-CNT
-      *    MOVE   RO-CNT               TO  ONRECE-K-SEND-RO-CNT
-      *    MOVE   KO-CNT               TO  ONRECE-K-SEND-KO-CNT
-      *    MOVE   SY-CNT               TO  ONRECE-K-SEND-SY-CNT
-      *    MOVE   SI-CNT               TO  ONRECE-K-SEND-SI-CNT
-      *    MOVE   IY-CNT               TO  ONRECE-K-SEND-IY-CNT
-      *    MOVE   CO-CNT               TO  ONRECE-K-SEND-CO-CNT
            MOVE   ALL-TENSU-CNT        TO  ONRECE-K-SEND-TOTAL-TENSU
            MOVE   ALL-LINE-CNT         TO  ONRECE-K-SEND-TOTAL-LINECNT
       *
-           MOVE    TBL-K-UCNT(HIT-K)   TO  ONRECE-K-UCNT-V
-           MOVE    TBL-K-SCNT(HIT-K)   TO  ONRECE-K-SCNT-V
+           MOVE    TBL-K-UCNT (HIT-K)  TO  ONRECE-K-UCNT-V
+           MOVE    TBL-K-SCNT (HIT-K)  TO  ONRECE-K-SCNT-V
            PERFORM 900-ONRECE-KANRI-UPDATE-SEC
       *
+      *    明細レコード更新
            PERFORM VARYING   IDZZ  FROM    1   BY  1
                    UNTIL   ( IDZZ          >   WRK-CONS-ONRECE-B-MAX )
                    OR      ( TBL-B-HOSPNUM(IDZZ)
                                            =   ZERO                  )
-               MOVE    TBL-ONRECE-B-REC(IDZZ)  
-                                       TO  ONRECE-B-REC
-      *
-               MOVE    TBL-K-UKEYMD(HIT-K) 
-                                       TO  ONRECE-B-UKEYMD
-               MOVE    TBL-K-RECV-FLG(HIT-K)
-                                       TO  ONRECE-B-RECV-FLG
-      *
-               MOVE    TBL-K-UCNT(HIT-K)   
-                                       TO  ONRECE-B-UCNT
-               MOVE    TBL-K-SCNT(HIT-K)   
-                                       TO  ONRECE-B-SCNT
-               MOVE    TBL-B-RECEIPT-NO(IDZZ)
-                                       TO  ONRECE-B-RECEIPT-NO
-               MOVE    "key"           TO  WRK-MCP-PATHNAME
+               MOVE    TBL-ONRECE-B-REC(IDZZ)
+                                           TO  ONRECE-B-REC
+               MOVE    TBL-K-UCNT  (HIT-K) TO  ONRECE-B-UCNT
+               MOVE    TBL-K-SCNT  (HIT-K) TO  ONRECE-B-SCNT
+               MOVE    TBL-K-RENNUM(HIT-K) TO  ONRECE-B-RENNUM
                PERFORM 900-ONRECE-B-SELECT-SEC
                PERFORM 900-ONRECE-B-CLOSE-SEC
+      *??
+               DISPLAY "IDZZ=" IDZZ "#" FLG-ONRECE-B "#"
+      *??
       *
                IF      FLG-ONRECE-B    =   ZERO
+                   IF    ( TBL-B-NYUGAIKBN (IDZZ)
+                                           =   ONRECE-B-NYUGAIKBN )
+                   AND   ( TBL-B-SRYYM-B (IDZZ)
+                                           =   ONRECE-B-SRYYM-B   )
+                   AND   ( TBL-B-NAME    (IDZZ)
+                                           =   ONRECE-B-NAME      )
+                   AND   ( TBL-B-BIRTHDAY (IDZZ)
+                                           =   ONRECE-B-BIRTHDAY  )
+                       IF      TBL-B-PTNUM(IDYY)
+                                               NOT =   SPACE
+                           IF    ( TBL-B-PTNUM (IDZZ)  =
+                                                       ONRECE-B-PTNUM )
+                           AND   ( TBL-B-PTID  (IDZZ)  =
+                                                       ONRECE-B-PTID  )
+                               CONTINUE
+                           ELSE
+                               DISPLAY "hasp PTNUM no match !! PTNUM="
+                                           TBL-B-PTNUM (IDZZ) " PTID="
+                                           TBL-B-PTID  (IDZZ) 
+                           END-IF
+                       END-IF
+                   ELSE
+                       DISPLAY "hasp no match !! NYUGAIKBN="
+                                   TBL-B-NYUGAIKBN (IDZZ) " SRYYM="
+                                   TBL-B-SRYYM-B   (IDZZ) " NAME="
+                                   TBL-B-NAME      (IDZZ) " BIRTHDAY="
+                                   TBL-B-BIRTHDAY  (IDZZ) 
+                   END-IF
+      *
                    MOVE    TBL-ONRECE-B-REC(IDZZ)  
                                        TO  WRK-ONRECE-B-REC
+                   MOVE    TBL-K-UCNT  (HIT-K) TO  ONRECE-B-UCNT
+                   MOVE    TBL-K-SCNT  (HIT-K) TO  ONRECE-B-SCNT
+                   MOVE    TBL-K-RENNUM(HIT-K) TO  ONRECE-B-RENNUM
                    MOVE    WRK-ONRECE-B-UKEYMD
                                        TO  ONRECE-B-UKEYMD
                    MOVE    WRK-ONRECE-B-RECV-FLG
@@ -1683,11 +1512,13 @@
                                        TO  ONRECE-B-UCNT-V
                    MOVE    TBL-K-SCNT(HIT-K)   
                                        TO  ONRECE-B-SCNT-V
-                   MOVE    SMCNDATE-YMD
-                                       TO  ONRECE-B-UPYMD
-                   MOVE    SMCNDATE-HMS
-                                       TO  ONRECE-B-UPHMS
                    PERFORM 900-ONRECE-B-UPDATE-SEC
+               ELSE
+                   DISPLAY "hasp no fetch !! UCNT="
+                           TBL-K-UCNT  (HIT-K) " SCNT="
+                           TBL-K-SCNT  (HIT-K) " RENNUM="
+                           TBL-K-RENNUM(HIT-K) " RECEIPT-NO="
+                           TBL-B-RECEIPT-NO (IDZZ)
                END-IF
            END-PERFORM
       *
@@ -1696,38 +1527,83 @@
            EXIT.
       *
       *****************************************************************
-      *    管理、明細データ作成処理 （請求確定）
+      *    請求確定更新処理
       *****************************************************************
        200115-FIXF-MOD-SEC         SECTION.
       *
-           MOVE    ONRECE-K-SKYYMD     TO  ONRECE-K-SYORIYMD
-           MOVE    TBL-K-UKEYMD(HIT-K) TO  ONRECE-K-UKEYMD
-           MOVE    TBL-K-RECV-FLG(HIT-K)
-                                       TO  ONRECE-K-RECV-FLG
+      *    管理レコード更新
+           MOVE   TBL-ONRECE-K-REC (HIT-K)
+                                       TO  ONRECE-K-REC
+           MOVE   SEI-CNT              TO  ONRECE-K-SCNT
+           MOVE   WRK-SKYYMD           TO  ONRECE-K-SKYYMD
+                                           ONRECE-K-SYORIYMD
+           MOVE   WRK-AMOUNT-FLG       TO  ONRECE-K-AMOUNT-FLG
+           MOVE   WRK-SEND-FLG         TO  ONRECE-K-SEND-FLG
+           MOVE   PATIENT-CNT          TO  ONRECE-K-SEND-PATIENT-CNT
+      *
            MOVE    TBL-K-UCNT(HIT-K)   TO  ONRECE-K-UCNT-V
            MOVE    TBL-K-SCNT(HIT-K)   TO  ONRECE-K-SCNT-V
            PERFORM 900-ONRECE-KANRI-UPDATE-SEC
       *
            PERFORM VARYING   IDZZ  FROM    1   BY  1
-                   UNTIL   ( IDZZ          >   WRK-CONS-ONRECE-B-MAX)
-               IF      TBL-B-HOSPNUM(IDZZ)     =   ZERO
-                   MOVE  WRK-CONS-ONRECE-B-MAX     TO    IDZZ
-               ELSE
-                   MOVE    TBL-ONRECE-B-REC (IDZZ) TO  ONRECE-B-REC
-      *
-                   MOVE    TBL-K-UKEYMD   (HIT-K)  TO  ONRECE-B-UKEYMD
-                   MOVE    TBL-K-RECV-FLG (HIT-K)  TO  ONRECE-B-RECV-FLG
-      *
-                   IF      TBL-B-KAKUTEI-KBN (IDZZ)
-                                                   =  "2"
-                       MOVE    TBL-K-UCNT(HIT-K)   
-                                           TO  ONRECE-B-UCNT
-                       MOVE    TBL-K-SCNT(HIT-K)   
-                                           TO  ONRECE-B-SCNT
-                       MOVE    TBL-B-RECEIPT-NO(IDZZ)
+                   UNTIL   ( IDZZ          >   WRK-CONS-ONRECE-B-MAX )
+                   OR      ( TBL-B-HOSPNUM(IDZZ)     =   ZERO        )
+               MOVE    TBL-ONRECE-B-REC(IDZZ)
+                                           TO  ONRECE-B-REC
+               MOVE    TBL-K-UCNT  (HIT-K) TO  ONRECE-B-UCNT
+               MOVE    TBL-K-SCNT  (HIT-K) TO  ONRECE-B-SCNT
+               MOVE    TBL-K-RENNUM(HIT-K) TO  ONRECE-B-RENNUM
+               MOVE    TBL-B-RECEIPT-NO (IDZZ)
                                            TO  ONRECE-B-RECEIPT-NO
-                       MOVE    "key"       TO  WRK-MCP-PATHNAME
-                       PERFORM 900-ONRECE-B-SELECT-SEC
+               PERFORM 900-ONRECE-B-SELECT-SEC
+               PERFORM 900-ONRECE-B-CLOSE-SEC
+      *
+      *??
+               DISPLAY "IDZZ=" IDZZ "#" TBL-B-KAKUTEI-KBN (IDZZ) 
+                              "#"  FLG-ONRECE-B "#"
+      *??
+               IF      FLG-ONRECE-B    =   ZERO
+                   IF      TBL-B-KAKUTEI-KBN (IDZZ)    =  "2"
+                       IF    ( TBL-B-NYUGAIKBN (IDZZ)
+                                               =   ONRECE-B-NYUGAIKBN )
+                       AND   ( TBL-B-SRYYM-B (IDZZ)
+                                               =   ONRECE-B-SRYYM-B   )
+                       AND   ( TBL-B-NAME    (IDZZ)
+                                               =   ONRECE-B-NAME      )
+                       AND   ( TBL-B-BIRTHDAY (IDZZ)
+                                               =   ONRECE-B-BIRTHDAY  )
+                           IF      TBL-B-PTNUM(IDYY)
+                                                   NOT =   SPACE
+                               IF    ( TBL-B-PTNUM (IDZZ)  =
+                                                       ONRECE-B-PTNUM )
+                               AND   ( TBL-B-PTID  (IDZZ)  =
+                                                       ONRECE-B-PTID  )
+                                   CONTINUE
+                               ELSE
+                                   DISPLAY
+                                       "fixf PTNUM no match !! PTNUM="
+                                           TBL-B-PTNUM (IDZZ) " PTID="
+                                           TBL-B-PTID  (IDZZ) 
+                               END-IF
+                           END-IF
+                       ELSE
+                           DISPLAY "fixf no match !! NYUGAIKBN="
+                                   TBL-B-NYUGAIKBN (IDZZ) " SRYYM="
+                                   TBL-B-SRYYM-B   (IDZZ) " NAME="
+                                   TBL-B-NAME      (IDZZ) " BIRTHDAY="
+                                   TBL-B-BIRTHDAY  (IDZZ) 
+                       END-IF
+                   ELSE
+                       DISPLAY "fixf noerr fetch !! "
+                   END-IF
+               ELSE
+                   IF      TBL-B-KAKUTEI-KBN (IDZZ)    =  "2"
+                       DISPLAY "fixf err no fetch !! "
+                   END-IF
+               END-IF
+      *
+               IF      FLG-ONRECE-B    =   ZERO
+                   IF      TBL-B-KAKUTEI-KBN (IDZZ)    =  "2"
                        MOVE    ONRECE-B-REC    TO  WRK-ONRECE-B-REC
                        MOVE    TBL-ONRECE-B-REC(IDZZ)  
                                                TO  ONRECE-B-REC
@@ -1754,9 +1630,15 @@
                        MOVE    TBL-K-SCNT(HIT-K)   
                                                TO  ONRECE-B-SCNT-V
                        PERFORM 900-ONRECE-B-UPDATE-SEC
-                   ELSE
-                       PERFORM 900-ONRECE-B-INSERT-SEC
                    END-IF
+               ELSE    
+                   MOVE    TBL-ONRECE-B-REC (IDZZ) TO  ONRECE-B-REC
+                   MOVE    TBL-K-UCNT     (HIT-K)  TO  ONRECE-B-UCNT
+                   MOVE    TBL-K-SCNT     (HIT-K)  TO  ONRECE-B-SCNT
+                   MOVE    TBL-K-RENNUM   (HIT-K)  TO  ONRECE-B-RENNUM
+                   MOVE    TBL-K-UKEYMD   (HIT-K)  TO  ONRECE-B-UKEYMD
+                   MOVE    TBL-K-RECV-FLG (HIT-K)  TO  ONRECE-B-RECV-FLG
+                   PERFORM 900-ONRECE-B-INSERT-SEC
                END-IF
            END-PERFORM
            .
@@ -1853,8 +1735,8 @@
        900-ONRECE-KANRIANRI-SELECT-SEC     SECTION.
       *
            MOVE    ONRECE-K-REC        TO  MCPDATA-REC
-           MOVE   "tbl_onrece_kanri"   TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           MOVE    "tbl_onrece_kanri"  TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 900-ONRECE-KANRI-FETCH-SEC
@@ -1872,8 +1754,8 @@
       *****************************************************************
        900-ONRECE-KANRI-FETCH-SEC      SECTION.
       *
-           MOVE   "tbl_onrece_kanri"   TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           MOVE    "tbl_onrece_kanri"  TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE   ZERO                 TO  FLG-ONRECE-K
@@ -1890,6 +1772,11 @@
       *    管理ファイルUPDATE処理
       *****************************************************************
        900-ONRECE-KANRI-UPDATE-SEC     SECTION.
+      *??
+           DISPLAY "K UPDATE=" ONRECE-K-UCNT "#" 
+                               ONRECE-K-SCNT "#"
+                               ONRECE-K-RENNUM "#" 
+      *??
       *
            MOVE    SMCNDATE-YMD        TO  ONRECE-K-UPYMD
            MOVE    SMCNDATE-HMS        TO  ONRECE-K-UPHMS
@@ -1900,7 +1787,17 @@
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
-                   CALL "coblog" USING "abort update"
+               CALL "coblog" USING "abort update"
+      *
+               MOVE    SPACE               TO  WRK-CSVERR
+               MOVE    MCP-RC              TO  WRK-MCP-RC
+               STRING  "管理ＤＢ更新エラー MCP-RC="
+                                               DELIMITED  BY  SIZE
+                           WRK-MCP-RC          DELIMITED  BY  SIZE
+                                               INTO    WRK-CSVERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
            .
        900-ONRECE-KANRI-UPDATE-EXT.
@@ -1910,6 +1807,11 @@
       *    管理ファイルINSERT処理
       *****************************************************************
        900-ONRECE-KANRI-INSERT-SEC     SECTION.
+      *??
+           DISPLAY "K INSERT=" ONRECE-K-UCNT "#" 
+                               ONRECE-K-SCNT "#"
+                               ONRECE-K-RENNUM "#" 
+      *??
       *
            MOVE    SMCNDATE-YMD        TO  ONRECE-K-CREYMD
            MOVE    SMCNDATE-YMD        TO  ONRECE-K-UPYMD
@@ -1924,6 +1826,16 @@
            IF      MCP-RC          NOT =   ZERO
                    INITIALIZE          ONRECE-K-REC
                    CALL "coblog" USING "abort insert"
+      *
+               MOVE    SPACE               TO  WRK-CSVERR
+               MOVE    MCP-RC              TO  WRK-MCP-RC
+               STRING  "管理ＤＢ更新エラー MCP-RC="
+                                               DELIMITED  BY  SIZE
+                           WRK-MCP-RC          DELIMITED  BY  SIZE
+                                               INTO    WRK-CSVERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
            .
        900-ONRECE-KANRI-INSERT-EXT.
@@ -1935,8 +1847,8 @@
        900-ONRECE-B-SELECT-SEC     SECTION.
       *
            MOVE    ONRECE-B-REC        TO  MCPDATA-REC
-           MOVE   "tbl_onrece_body"    TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           MOVE    "tbl_onrece_body"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 900-ONRECE-B-FETCH-SEC
@@ -1970,6 +1882,12 @@
       *    BODYファイルINSERT　処理
       *****************************************************************
        900-ONRECE-B-INSERT-SEC     SECTION.
+      *??
+           DISPLAY "B INSERT=" ONRECE-B-UCNT "#" 
+                               ONRECE-B-SCNT "#"
+                               ONRECE-B-RENNUM "#" 
+                               ONRECE-B-RECEIPT-NO "#" 
+      *??
       *
            MOVE    SMCNDATE-YMD        TO  ONRECE-B-CREYMD
            MOVE    SMCNDATE-YMD        TO  ONRECE-B-UPYMD
@@ -1982,7 +1900,16 @@
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                CALL "coblog" USING "abort insert"
-               DISPLAY "rece no = " MCPDATA-REC(1:50)
+      *
+               MOVE    SPACE               TO  WRK-CSVERR
+               MOVE    MCP-RC              TO  WRK-MCP-RC
+               STRING  "明細ＤＢ更新エラー MCP-RC="
+                                               DELIMITED  BY  SIZE
+                           WRK-MCP-RC          DELIMITED  BY  SIZE
+                                               INTO    WRK-CSVERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
            .
        900-ONRECE-B-INSERT-EXT.
@@ -1993,6 +1920,12 @@
       *****************************************************************
        900-ONRECE-B-UPDATE-SEC     SECTION.
       *
+      *??
+           DISPLAY "B UPDATE=" ONRECE-B-UCNT "#" 
+                               ONRECE-B-SCNT "#"
+                               ONRECE-B-RENNUM "#" 
+                               ONRECE-B-RECEIPT-NO "#" 
+      *??
            MOVE    SMCNDATE-YMD        TO  ONRECE-B-UPYMD
            MOVE    SMCNDATE-HMS        TO  ONRECE-B-UPHMS
            MOVE    ONRECE-B-REC        TO  MCPDATA-REC
@@ -2003,7 +1936,16 @@
            PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                CALL    "coblog" USING "abort update"
-               DISPLAY "rece no = " MCPDATA-REC(1:50)
+      *
+               MOVE    SPACE               TO  WRK-CSVERR
+               MOVE    MCP-RC              TO  WRK-MCP-RC
+               STRING  "明細ＤＢ更新エラー MCP-RC="
+                                               DELIMITED  BY  SIZE
+                           WRK-MCP-RC          DELIMITED  BY  SIZE
+                                               INTO    WRK-CSVERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
            END-IF
            .
        900-ONRECE-B-UPDATE-EXT.
@@ -2014,8 +1956,8 @@
       *****************************************************************
        900-ONRECE-KANRI-CLOSE-SEC      SECTION.
       *
-           MOVE   "tbl_onrece_kanri"   TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           MOVE    "tbl_onrece_kanri"  TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
            .
        900-ONRECE-KANRI-CLOSE-EXT.
@@ -2027,7 +1969,7 @@
        900-ONRECE-B-CLOSE-SEC      SECTION.
       *
            MOVE   "tbl_onrece_body"    TO  MCP-TABLE
-           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+           MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
            .
        900-ONRECE-B-CLOSE-EXT.
