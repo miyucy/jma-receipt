@@ -5127,8 +5127,14 @@ grpsys            CALL    "ORCDBMAIN"         USING   MCPAREA
       *    »ÙÊ§¶èÊ¬¤ÏÏ·¿Í¡Ê£°£²£·¡Ë¤Î¤ß
            IF      WRK-KEN-HKNNUM      =   "027"
                MOVE    1                   TO  FLG-RJN
-               IF     (HKN-PAYKBN (1:1)    =   SPA-HOSPSBT)  AND
-                      (HKN-PAYKBN (2:1)    =   SPA-ROUPAYKBN)
+      *        £È£±£²¡¥£±£²¡¥£³£±¤Þ¤Ç¤Î»ÙÊ§¶èÊ¬¤Ï£°£°
+               IF     (WRK-KEN-TEKEDYMD    >=  "20010101"   )
+                   IF     (HKN-PAYKBN (1:1)    =   SPA-HOSPSBT)  AND
+                          (HKN-PAYKBN (2:1)    =   SPA-ROUPAYKBN)
+                       MOVE    1               TO  FLG-HKNNUM
+                       MOVE    SPACE           TO  WRK-KEN-ERFLG
+                   END-IF
+               ELSE
                    MOVE    1               TO  FLG-HKNNUM
                    MOVE    SPACE           TO  WRK-KEN-ERFLG
                END-IF

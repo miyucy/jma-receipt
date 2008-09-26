@@ -1295,8 +1295,14 @@
                                            =   ZERO  OR  SPACE ) OR
                   (SPA-NAI-KTEKSTYMD (IDX-K)
                                            <   "20021001"))
-               MOVE    SPA-NAI-HOSPSBT         TO  HKN-PAYKBN(1:1)
-               MOVE    SPA-NAI-ROUPAYKBN       TO  HKN-PAYKBN(2:1)
+      *        £È£±£²¡¥£±£²¡¥£³£±¤Þ¤Ç¤Î»ÙÊ§¶èÊ¬¤Ï£°£°
+               IF      SPA-NAI-KTEKEDYMD (IDX-K)
+                                               >=  "20010101"
+                   MOVE    SPA-NAI-HOSPSBT         TO  HKN-PAYKBN(1:1)
+                   MOVE    SPA-NAI-ROUPAYKBN       TO  HKN-PAYKBN(2:1)
+               ELSE
+                   MOVE    ZERO                TO  HKN-PAYKBN
+               END-IF
            ELSE
                MOVE    SPA-NAI-PTKOH-PAYKBN (IDX-K)
                                            TO  HKN-PAYKBN

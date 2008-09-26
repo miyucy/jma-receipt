@@ -4485,6 +4485,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0127"
                    MOVE    "生活保護・残留邦人等の期間が重複しています"
                                                TO  SPA-ERRMSG
+      *Ｈ２０．１０から
+               WHEN    "K100"
+                   STRING  "警告！協会の前に政管があります。"
+                           "適用開始日は１日で登録して下さい。"
+                                               DELIMITED   BY  SPACE
+                                               INTO   SPA-ERRMSG
+                   END-STRING
       *    更新前エラー
                WHEN    "0100"
                    MOVE    "カナ氏名は必ず入力して下さい"

@@ -1799,8 +1799,11 @@
                                            TO  WRK-PAYKBN
            IF     (WRK-HKNNUM          =   "027"  )  AND
                   (WRK-PAYKBN          =   ZERO  OR  SPACE )
-               MOVE    SPA-NAI-HOSPSBT         TO  WRK-PAYKBN(1:1)
-               MOVE    SPA-NAI-ROUPAYKBN       TO  WRK-PAYKBN(2:1)
+      *        £È£±£²¡¥£±£²¡¥£³£±¤Þ¤Ç¤Î»ÙÊ§¶èÊ¬¤Ï£°£°
+               IF      WRK-TEKEDYMD        >=  "20010101"
+                   MOVE    SPA-NAI-HOSPSBT         TO  WRK-PAYKBN(1:1)
+                   MOVE    SPA-NAI-ROUPAYKBN       TO  WRK-PAYKBN(2:1)
+               END-IF
            END-IF
            PERFORM 31012-HKNNUM-SET-SEC
            IF     (SPA-GMN-KOHNUM (IDY)        =   "027" )  AND
