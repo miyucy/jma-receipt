@@ -39,16 +39,3 @@ where
     a.hospnum = 0 ;
 
 delete from tbl_syskanri where hospnum = 0;
-
-
-
-		update tbl_syskanri set kanritbl = encode(substr(decode(replace(a.kanritbl,E'\\',E'\\\\'),'escape')||decode(repeat(' ',500),'escape'),1,494)||(substr(decode(replace(tbl_syskanri.kanritbl,E'\\',E'\\\\'),'escape')||decode(repeat(' ',500),'escape'),495,1)),'escape')
-		from tbl_syskanri a
-		where
-		tbl_syskanri.hospnum = a.hospnum
-		and  a.kanricd in ('0043','0044')
-		and  tbl_syskanri.kanricd in ('3001','3002')
-		and  substr(decode(replace(rpad(a.kanritbl,500),E'\\',E'\\\\'),'escape'),161,24)
-		  =  substr(decode(replace(rpad(tbl_syskanri.kanritbl,500),E'\\',E'\\\\'),'escape'),161,24);
-		;
-
