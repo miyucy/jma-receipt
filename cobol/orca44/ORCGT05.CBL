@@ -136,7 +136,6 @@
            03  IDX                     PIC 9(03).
            03  IDY                     PIC 9(02).
            03  IDZ                     PIC 9(03).
-           03  IDE                     PIC 9(02).
            03  IDYY                    PIC 9(05).
            03  IDXX                    PIC 9(05).
            03  IDXY                    PIC 9(05).
@@ -475,12 +474,9 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    "JOIN"          TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *        UPLOAD(サーバへのデータ保存)削除処理
+      *        取り込みファイル削除処理
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM  220-DEL-GID-SEC
-      *        詳細画面へ
-               WHEN    "CLICKED"       ALSO    "B10"
-                   PERFORM  220-NEXT-SEC
       *        ＤＢ登録
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 210-TOUROKU-GID-SEC
@@ -804,7 +800,7 @@
            IF      IDY                 >   1
                IF      SPA-NAI-T05-TSRYYM (1)
                                        NOT =   SPA-NAI-T05-TSRYYM(IDY)
-                   MOVE  "対象年月(診療年月)を確認してください"
+                   MOVE  "対象年月（診療年月）を確認してください"
                                            TO  SPA-GMN-T05-ERRMSG2
                                                SPA-NAI-T05-ERR-MSG(IDY)
                    MOVE  "○"              TO  SPA-GMN-T05-TFLG4  (IDY)
@@ -854,6 +850,35 @@
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
                            END-IF
+      *                    送信回
+                           IF      MOJI-CNT            =   26
+                               MOVE    WRK-FILENM (20:3)   TO  SNUM-INX
+                               CALL    "ORCSNUM"           USING
+                                                           ORCSNUMAREA
+                               IF    ( SNUM-RC             =   ZERO  )
+                               AND   ( SNUM-MINKBN         =   SPACE )
+                               AND   ( SNUM-SYOKBN         =   SPACE )
+                               AND   ( SNUM-SEISUU         <=  3     )
+                               AND   ( SNUM-OUTNUM         >   ZERO  )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1           TO  WRK-ERRMSG1
+                               END-IF
+                           END-IF
+      *                    拡張子
+                           IF      MOJI-CNT            =   26
+                               IF      WRK-FILENM (23:4)   =   ".csv"
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1           TO  WRK-ERRMSG1
+                               END-IF
+                           ELSE    
+                               IF      WRK-FILENM (32:4)   =   ".csv"
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1           TO  WRK-ERRMSG1
+                               END-IF
+                           END-IF
                        WHEN    OTHER
                            MOVE    1                   TO  WRK-ERRMSG1
                            MOVE    1                   TO  WRK-ERRMSG2
@@ -876,10 +901,39 @@
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
                            END-IF
+      *                    送信回
+                           IF      MOJI-CNT            =   27
+                               MOVE    WRK-FILENM (20:3)   TO  SNUM-INX
+                               CALL    "ORCSNUM"           USING
+                                                           ORCSNUMAREA
+                               IF    ( SNUM-RC             =   ZERO  )
+                               AND   ( SNUM-MINKBN         =   SPACE )
+                               AND   ( SNUM-SYOKBN         =   SPACE )
+                               AND   ( SNUM-SEISUU         <=  3     )
+                               AND   ( SNUM-OUTNUM         >   ZERO  )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1           TO  WRK-ERRMSG1
+                               END-IF
+                           END-IF
       *                    請求確定回
                            IF      MOJI-CNT            =   27
                                IF    ( WRK-FILENM (23:1)   >=   "1" )
                                AND   ( WRK-FILENM (23:1)   <=   "9" )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1           TO  WRK-ERRMSG1
+                               END-IF
+                           END-IF
+      *                    拡張子
+                           IF      MOJI-CNT            =   27
+                               IF      WRK-FILENM (24:4)   =   ".csv"
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1           TO  WRK-ERRMSG1
+                               END-IF
+                           ELSE    
+                               IF      WRK-FILENM (32:4)   =   ".csv"
                                    CONTINUE
                                ELSE
                                    MOVE    1           TO  WRK-ERRMSG1
@@ -924,7 +978,6 @@
            END-IF
       *
            PERFORM 900-PARA-READ-SEC
-      *
       *
            PERFORM             UNTIL   FLG-PARA    =   1
                                OR      WRK-ERRMSG1 >   ZERO
@@ -1052,16 +1105,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
        70021-HEAD-CHECK-SEC          SECTION.
       *
            MOVE    ZERO            TO  WRK-POINT-AREA
-           MOVE    ZERO            TO  IDE
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
       *
       *    患者ＣＳＶファイルに存在する項目数分、繰り返す
-      *    またはレコード終了、または項目エラー４個まで
+      *    またはレコード終了まで
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   SPILIT-CNT)
                    OR      ( WRK-PO-ED     >=  500  )
-                   OR      ( IDE           >   4    )
       *
                MOVE    ZERO            TO  FLG-AREA1
                COMPUTE WRK-PO-ST   =   WRK-PO-ED   +   1
@@ -1120,6 +1171,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *                ３：請求確定年月日
                        WHEN    3
                            PERFORM 2410S-SKYYMD-SET-SEC
+      *                ４：審査支払機関コード
+                       WHEN    4
+                           EVALUATE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                               WHEN    "1"
+                               WHEN    "2"
+                                   CONTINUE
+                               WHEN    OTHER
+                                   MOVE    16          TO  WRK-ERRMSG1
+                           END-EVALUATE
       *                ９：送信回
                        WHEN    9
                            INITIALIZE                  ORCSNUMAREA
@@ -1127,7 +1187,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        TO  SNUM-INX
                            CALL    "ORCSNUM"           USING
                                                        ORCSNUMAREA
-                           IF      SNUM-RC             =   ZERO
+                           IF    ( SNUM-RC             =   ZERO  )
+                           AND   ( SNUM-MINKBN         =   SPACE )
+                           AND   ( SNUM-SYOKBN         =   SPACE )
+                           AND   ( SNUM-SEISUU         <=  3     )
+                           AND   ( SNUM-OUTNUM         >   ZERO  )
                                MOVE    SNUM-OUTNUM     TO
                                                SPA-GMN-T05-TUKAISU(IDY)
                            ELSE
@@ -1140,7 +1204,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        TO  SNUM-INX
                            CALL    "ORCSNUM"           USING
                                                        ORCSNUMAREA
-                           IF      SNUM-RC             =   ZERO
+                           IF    ( SNUM-RC             =   ZERO  )
+                           AND   ( SNUM-MINKBN         =   SPACE )
+                           AND   ( SNUM-SYOKBN         =   SPACE )
+                           AND   ( SNUM-SEISUU         =   1     )
+                           AND   ( SNUM-OUTNUM         >   ZERO  )
                                MOVE    SNUM-OUTNUM     TO
                                                SPA-GMN-T05-TSKAISU(IDY)
                            ELSE
@@ -1385,17 +1453,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            .
        220-DEL-EXT.
            EXIT.
-      *
-      *****************************************************************
-      *    詳細画面へ
-      *****************************************************************
-       220-NEXT-SEC                SECTION.
-      *
-      *
-           .
-       220-NEXT-EXT.
-           EXIT.
-      *
       *
       *****************************************************************
       *    全角ＪＩＳ→ＥＵＣ変換処理

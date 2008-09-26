@@ -953,7 +953,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
-                           IF      SNUM-RC      =   ZERO
+                           IF    ( SNUM-RC             =   ZERO  )
+                           AND   ( SNUM-MINKBN         =   SPACE )
+                           AND   ( SNUM-SYOKBN         =   SPACE )
+                           AND   ( SNUM-SEISUU         <=  3     )
+                           AND   ( SNUM-OUTNUM         >   ZERO  )
                                MOVE    SNUM-OUTNUM TO  TBL-B-UCNT(IDZZ)
                                                         UKE-CNT
                            ELSE
@@ -973,7 +977,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
-                           IF      SNUM-RC      =   ZERO
+                           IF    ( SNUM-RC             =   ZERO  )
+                           AND   ( SNUM-MINKBN         =   SPACE )
+                           AND   ( SNUM-SYOKBN         =   SPACE )
+                           AND   ( SNUM-SEISUU         =   1     )
+                           AND   ( SNUM-OUTNUM         >   ZERO  )
                                MOVE    SNUM-OUTNUM TO  TBL-B-SCNT(IDZZ)
                                                        SEI-CNT
                            ELSE
@@ -1011,7 +1019,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
-                           IF      SNUM-RC      =   ZERO
+                           IF    ( SNUM-RC             =   ZERO  )
+                           AND   ( SNUM-MINKBN         =   SPACE )
+                           AND   ( SNUM-SYOKBN         =   SPACE )
+                           AND   ( SNUM-SEISUU         <=  6     )
+                           AND   ( SNUM-OUTNUM         >   ZERO  )
                                MOVE    SNUM-OUTNUM TO  TBL-B-RECEIPT-NO
                                                                  (IDZZ)
                            ELSE
@@ -1107,7 +1119,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
-                           IF      SNUM-RC      =   ZERO
+                           IF    ( SNUM-RC             =   ZERO  )
+                           AND   ( SNUM-MINKBN         =   SPACE )
+                           AND   ( SNUM-SYOKBN         =   SPACE )
                                MOVE    SNUM-OUTNUM TO
                                                TBL-B-H-TTL-TEN(IDZZ)
                            END-IF
@@ -1121,12 +1135,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            TO  TBL-B-JKYNUM
                                                        (IDZZ KO-B-CNT)
                        WHEN   19
-                          INITIALIZE          ORCSNUMAREA
-                          MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           INITIALIZE          ORCSNUMAREA
+                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SNUM-INX
-                          CALL    "ORCSNUM"    USING
+                           CALL    "ORCSNUM"   USING
                                                ORCSNUMAREA
-                          IF      SNUM-RC      =   ZERO
+                           IF    ( SNUM-RC             =   ZERO  )
+                           AND   ( SNUM-MINKBN         =   SPACE )
+                           AND   ( SNUM-SYOKBN         =   SPACE )
                                MOVE    SNUM-OUTNUM TO
                                        TBL-B-K-TTL-TEN(IDZZ KO-B-CNT)
                            END-IF
@@ -1145,7 +1161,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
-                           IF      SNUM-RC      =   ZERO
+                           IF    ( SNUM-RC             =   ZERO  )
+                           AND   ( SNUM-MINKBN         =   SPACE )
+                           AND   ( SNUM-SYOKBN         =   SPACE )
                                MOVE    SNUM-OUTNUM TO
                                        TBL-B-K-TTL-TEN(IDZZ KO-B-CNT)
                            END-IF
@@ -1164,7 +1182,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
-                           IF      SNUM-RC      =   ZERO
+                           IF    ( SNUM-RC             =   ZERO  )
+                           AND   ( SNUM-MINKBN         =   SPACE )
+                           AND   ( SNUM-SYOKBN         =   SPACE )
                                MOVE    SNUM-OUTNUM TO
                                        TBL-B-K-TTL-TEN(IDZZ KO-B-CNT)
                            END-IF
@@ -1183,7 +1203,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
-                           IF      SNUM-RC      =   ZERO
+                           IF    ( SNUM-RC             =   ZERO  )
+                           AND   ( SNUM-MINKBN         =   SPACE )
+                           AND   ( SNUM-SYOKBN         =   SPACE )
                                MOVE    SNUM-OUTNUM TO
                                        TBL-B-K-TTL-TEN(IDZZ KO-B-CNT)
                            END-IF
@@ -1367,12 +1389,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                =   WRK-TEISYUTUSAKI )
                    AND   ( TBL-K-SRYYM (IDX)   =   WRK-SRYYM        )
       *                 
-                       IF    ( TBL-K-UCNT(IDX) NOT =   UKE-CNT )
-                       AND   ( TBL-K-SCNT(IDX)     =   SEI-CNT )
-                           DISPLAY "RIfixf ucnt unmatch !! "
-                           MOVE    2                   TO  FLG-MATCH
-                           MOVE    TBL-ONRECE-K-MAX    TO  IDX
-                       END-IF
+      *****************IF    ( TBL-K-UCNT(IDX) NOT =   UKE-CNT )
+      *****************AND   ( TBL-K-SCNT(IDX)     =   SEI-CNT )
+      *****************    DISPLAY "RIfixf ucnt unmatch !! "
+      *****************    MOVE    ZERO                TO  FLG-MATCH
+      *****************    MOVE    TBL-ONRECE-K-MAX    TO  IDX
+      *****************END-IF
       *                 
                        IF    ( TBL-K-UCNT(IDX)     =   UKE-CNT     )
                        AND   ( TBL-K-SCNT(IDX)     =   SEI-CNT     )
@@ -1384,7 +1406,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        END-IF    
       *                 
                        IF    ( TBL-K-UCNT(IDX)     =   UKE-CNT    )
-                       AND   ( ONRECE-K-SCNT       =   ZERO       )
+                       AND   ( TBL-K-SCNT(IDX)     =   ZERO       )
       *****************IF    ( TBL-K-UKEYMD(IDX)   <=  WRK-SKYYMD )
                            MOVE    1                   TO  FLG-MATCH
                            MOVE  IDX                   TO  HIT-K
