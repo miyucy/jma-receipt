@@ -4487,8 +4487,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
       *Ｈ２０．１０から
                WHEN    "K100"
-                   STRING  "警告！協会の前に政管があります。"
-                           "適用開始日は１日で登録して下さい。"
+                   STRING  "警告！"
+                           "政管からの保険証切替えであれば"
+                           "適用開始日を１日で登録して下さい。"
                                                DELIMITED   BY  SPACE
                                                INTO   SPA-ERRMSG
                    END-STRING
