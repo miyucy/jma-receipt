@@ -1510,7 +1510,7 @@
                                                DELIMITED   BY  SIZE
                            ",'006','007','031','032','033','034','063'"
                                                DELIMITED   BY  SIZE
-                           ",'072','073','074','075'"
+                           ",'072','073','074','075','009'"
                                                DELIMITED   BY  SIZE
                            ")"                 DELIMITED   BY  SIZE
                            " or ("             DELIMITED   BY  SIZE
