@@ -40,6 +40,8 @@
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
       *  04.01.01    NACL-ÌçÏÆ    07/11/01  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/09/25  ¼«ÇåÀÕ£°£¹£µ£¹£³¤Î½¸·×ÀèÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -187,6 +189,7 @@
       *    Åº»úÎÎ°è
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
+           03  IDX2                PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDW                 PIC 9(04).
            03  DAY-IDX             PIC 9(02).
@@ -207,6 +210,10 @@
            03  WRK-RECEERR         PIC X(200).
            03  WRK-RENNUM          PIC 9(02).
            03  WRK-CNT-MEISAI      PIC 9(04).
+      *
+           03  WRK-TAIHI-SRYYMD.
+               05  WRK-TAIHI-SRYYM             PIC  9(06).
+               05  WRK-TAIHI-SRYD              PIC  9(02).
       *
        01  WRK-RECE85-REC. 
            COPY    "CPRCF085.INC"  REPLACING   //RECE85//
@@ -488,8 +495,24 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
                      END-IF
                    END-IF
                  WHEN      "80"
-                   IF  ( RECE82-KYUKYU-PRTKBN    =      1         )
-                   AND ( RECE84-SRYCDTOTAL(6:9)  =   CONS-KYUKYU  )
+                   IF (( RECE82-KYUKYU-PRTKBN    =      1         ) AND
+                       ( RECE84-SRYCDTOTAL(6:9)  =   CONS-KYUKYU  ))
+                   OR (( RECE84-JIBAISYUKEIKBN   =      4         ) AND
+                       ( RECE84-SRYCDTOTAL(6:5)  =   "09593"      ))
+                       MOVE    SPACE   TO   WRK-TAIHI-SRYYMD
+                       IF  (RECE84-JIBAISYUKEIKBN   =    4   )
+                       AND (RECE84-SRYCDTOTAL(6:5)  = "09593")
+                         PERFORM  VARYING  IDX2  FROM  1  BY  1
+                                   UNTIL   IDX2   >   31
+                           IF  RECE84-KAISU(1 IDX2)   NOT =    ZERO
+                             MOVE  RECE84-SRYYM  TO  WRK-TAIHI-SRYYM
+                             MOVE  IDX2          TO  WRK-TAIHI-SRYD
+                             MOVE  31            TO  IDX2
+                           END-IF
+                         END-PERFORM
+                       ELSE
+                         MOVE  RECE82-KYUKYUYMD  TO  WRK-TAIHI-SRYYMD
+                       END-IF
                        IF   RECE82-SRYYM   >=  "200604"
                          PERFORM  2001-KYUKYU-COMMENT200604-SEC
                        ELSE
@@ -564,10 +587,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE851PARA-HOSPNUM
            MOVE    9                    TO  RECE851-YUKOKETA(2)
       * 
            MOVE    "»»Äê¡¡¡¡¡¡·î¡¡¡¡Æü" TO  RECE851-NAME(2)
-           MOVE     RECE82-KYUKYUYMD(5:2)
+      **   MOVE     RECE82-KYUKYUYMD(5:2)
+           MOVE     WRK-TAIHI-SRYYMD(5:2)
                                         TO  DAY-IDX
            MOVE     TBL-TUKI(DAY-IDX)   TO  RECE851-NAME(2)(7:4)
-           MOVE     RECE82-KYUKYUYMD(7:2)
+      **   MOVE     RECE82-KYUKYUYMD(7:2)
+           MOVE     WRK-TAIHI-SRYYMD(7:2)
                                         TO  DAY-IDX
            MOVE     TBL-DAY(DAY-IDX)    TO  RECE851-NAME(2)(13:4)
       *

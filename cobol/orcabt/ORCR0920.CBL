@@ -39,6 +39,7 @@
       *  04.01.02    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *
       *  04.03.01    NACL-ÌçÏÆ    08/07/11  ¿ÇÃÇ½ñÌÀºÙ½ñÎÁ¤ÎÅ¦Í×Íóµ­ºÜÂÐ±þ
+      *  04.03.02    NACL-ÌçÏÆ    08/09/25  ¼«ÇåÀÕ£°£¹£µ£¹£³¤Î½¸·×ÀèÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -675,7 +676,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
            MOVE    RECE84-ZAINUM     TO  RECE86-ZAINUM
            MOVE    WRK-LINENUM       TO  RECE86-LINENUM
            IF   RECE86-SRYCD1   =  "101110020"
-                MOVE    778             TO  RECE86-NYUTENTTLKBN
+                MOVE    777             TO  RECE86-NYUTENTTLKBN
            ELSE
               IF  (RECE86-SRYCD1(1:5)   =  "09594")
               OR  (RECE86-SRYCD1  =  "101910010" OR "101910020" OR
@@ -688,13 +689,19 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                   EVALUATE  RECE86-SRYCD1(1:5)
                     WHEN     "09591"
                     WHEN     "09592"
-                       MOVE    999          TO  RECE86-NYUTENTTLKBN
+                        MOVE     999       TO  RECE86-NYUTENTTLKBN
                     WHEN     "09593"
-                       MOVE    998          TO  RECE86-NYUTENTTLKBN
+                      EVALUATE  RECE84-JIBAISYUKEIKBN
+                        WHEN   0
+                        WHEN   5
+                          MOVE   998       TO  RECE86-NYUTENTTLKBN
+                        WHEN   1
+                          MOVE   111       TO  RECE86-NYUTENTTLKBN
+                        WHEN   4
+                          MOVE   778       TO  RECE86-NYUTENTTLKBN
+                      END-EVALUATE
                   END-EVALUATE
                 ELSE
-      ****        MOVE    TBL-ZAI-TENTTLKBN(1)
-      ****                              TO  RECE86-NYUTENTTLKBN
                   MOVE    WRK-NYUTENTTLKBN  TO  RECE86-NYUTENTTLKBN
                 END-IF
               END-IF

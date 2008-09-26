@@ -43,6 +43,7 @@
       *  04.01.02    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *
       *  04.03.01    NACL-ÌçÏÆ    08/07/11  ¿ÇÃÇ½ñÌÀºÙ½ñÎÁ¤ÎÅ¦Í×Íóµ­ºÜÂÐ±þ
+      *  04.03.02    NACL-ÌçÏÆ    08/09/25  ¼«ÇåÀÕ£°£¹£µ£¹£³¤Î½¸·×ÀèÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -696,17 +697,33 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
            MOVE    WRK-SRYCD1        TO  RECE46-SRYCD1
            MOVE    RECE44-ZAINUM     TO  RECE46-ZAINUM
            MOVE    WRK-LINENUM       TO  RECE46-LINENUM
-           IF    RECE46-SRYCD1(1:5)   =  "09591" OR "09592" OR "09593"
-              EVALUATE  RECE46-SRYCD1(1:5)
-                WHEN     "09591"
-                WHEN     "09592"
-                   MOVE    999          TO  RECE46-GAITENTTLKBN
-                WHEN     "09593"
-                   MOVE    998          TO  RECE46-GAITENTTLKBN
-              END-EVALUATE
-           ELSE                                                         
-              MOVE    WRK-GAITENTTLKBN  TO  RECE46-GAITENTTLKBN
-           END-IF                                                       
+           IF     RECE46-SRYCD1  = "101110030"
+                   MOVE    777          TO  RECE46-GAITENTTLKBN
+           ELSE
+             IF    RECE46-SRYCD1(1:5)   =  "09591" OR "09592" OR "09593"
+               EVALUATE  RECE46-SRYCD1(1:5)
+                 WHEN     "09591"
+                 WHEN     "09592"
+                     MOVE     999       TO  RECE46-GAITENTTLKBN
+                 WHEN     "09593"
+                   EVALUATE  RECE44-JIBAISYUKEIKBN
+                     WHEN   0
+                     WHEN   5
+                       MOVE   998       TO  RECE46-GAITENTTLKBN
+                     WHEN   1
+                       MOVE   111       TO  RECE46-GAITENTTLKBN
+                     WHEN   2
+                       MOVE   121       TO  RECE46-GAITENTTLKBN
+                     WHEN   3
+                       MOVE   131       TO  RECE46-GAITENTTLKBN
+                     WHEN   4
+                       MOVE   778       TO  RECE46-GAITENTTLKBN
+                   END-EVALUATE
+               END-EVALUATE
+             ELSE                                                         
+               MOVE   WRK-GAITENTTLKBN  TO  RECE46-GAITENTTLKBN
+             END-IF
+           END-IF
       *
            IF      IDY   =   WRK-TBLMAX
                 MOVE    1      TO     RECE46-ZAILAST

@@ -161,6 +161,7 @@
       *  04.03.02    NACL-門脇    08/07/11  診断書明細書料の摘要欄記載対応
       *  04.03.03    NACL-門脇    08/07/14  仮レセ作成（院外処方含む）対応
       *                                     投薬剤点０（院外等）記載
+      *  04.03.04    NACL-門脇    08/09/25  自賠責０９５９３の集計先対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -441,6 +442,7 @@
                05  WRK-TNS-OSINKBN                     PIC 9(01).
                05  WRK-TNS-KNSJISKBN                   PIC 9(01).
                05  WRK-TNS-SRYCD                       PIC X(09).
+               05  WRK-TNS-JIBAISYUKEIKBN              PIC 9(01).
       *
       *    手技点・薬剤等点数用領域
        01  TBL-TENSUG-JI.
@@ -1942,12 +1944,34 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    OR ( SRY-SRYCD(IDX2)(1:5) = "09593"       )
                    OR ((SRY-SRYCD(IDX2)  =  CONS-ROUSAI8    ) AND
                        (RECE41-SRYYM     <  "200804"        ))
-                     IF     SRY-SRYCD(IDX2)   =   CONS-ROUSAI4
-                          MOVE   "13"   TO    RECE44-SRYKBN
-                                              RECE45-SRYKBN
+                     IF  SRY-SRYCD(IDX2)(1:5) = "09593"
+                       MOVE  TNS-NAMECHGKBN
+                                      TO  WRK-TNS-JIBAISYUKEIKBN(IDX2)
+                                          RECE44-JIBAISYUKEIKBN
+                       EVALUATE  TNS-NAMECHGKBN
+                         WHEN      0
+                         WHEN      4
+                         WHEN      5
+                            MOVE   "80"   TO    RECE44-SRYKBN
+                                                RECE45-SRYKBN
+                         WHEN      1
+                            MOVE   "11"   TO    RECE44-SRYKBN
+                                                RECE45-SRYKBN
+                         WHEN      2
+                            MOVE   "12"   TO    RECE44-SRYKBN
+                                                RECE45-SRYKBN
+                         WHEN      3
+                            MOVE   "13"   TO    RECE44-SRYKBN
+                                                RECE45-SRYKBN
+                       END-EVALUATE
                      ELSE
-                          MOVE   "80"   TO    RECE44-SRYKBN
-                                              RECE45-SRYKBN
+                       IF     SRY-SRYCD(IDX2)   =   CONS-ROUSAI4
+                            MOVE   "13"   TO    RECE44-SRYKBN
+                                                RECE45-SRYKBN
+                       ELSE
+                            MOVE   "80"   TO    RECE44-SRYKBN
+                                                RECE45-SRYKBN
+                       END-IF
                      END-IF
                      MOVE    1          TO    FLG-SRYKBN-HEN
                    ELSE                                                 
@@ -3070,6 +3094,11 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                           MOVE     1       TO    FLG-TAIGAI
                       END-IF
                   END-PERFORM
+              END-IF
+              IF      TNS-NAMECHGKBN  =  ZERO OR 5
+                  CONTINUE
+              ELSE
+                  MOVE     1       TO    FLG-TAIGAI
               END-IF
       *
       *       特定器材等消費税計算
@@ -4693,9 +4722,30 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    ELSE
                     IF ( ACCT-SRYKBN          =  "80"    )  AND         
                        ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
-                       COMPUTE    RECE41-KINGAKU2(6)  =                 
-                                  RECE41-KINGAKU2(6)  +                 
-                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)  
+                     EVALUATE  WRK-TNS-JIBAISYUKEIKBN(IDX3)
+                       WHEN       0
+                       WHEN       5
+                         COMPUTE    RECE41-KINGAKU2(6)  =
+                                    RECE41-KINGAKU2(6)  +
+                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                       WHEN       1
+                         COMPUTE    RECE41-KINGAKU2(1)  =
+                                    RECE41-KINGAKU2(1)  +
+                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                       WHEN       2
+                         COMPUTE    RECE41-KINGAKU2(2)  =
+                                    RECE41-KINGAKU2(2)  +
+                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                       WHEN       3
+                         ADD    WK-ZAIKAISU   TO   RECE41-KAISU2(3)
+                         COMPUTE    RECE41-KINGAKU2(3)  =
+                                    RECE41-KINGAKU2(3)  +
+                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                       WHEN       4
+                         COMPUTE    RECE41-KINGAKU2(4)  =
+                                    RECE41-KINGAKU2(4)  +
+                                   (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                     END-EVALUATE
                     ELSE                                                
                      IF  SRY-SRYCD(IDX3)      =    CONS-RYOYOTEATE
                        COMPUTE    RECE41-KINGAKU2(6)  =                 
@@ -5507,9 +5557,27 @@ grpsys        MOVE    SPA-HOSPNUM         TO  SYS-4003-HOSPNUM
                    ELSE
                     IF ( ACCT-SRYKBN          =  "80"    )  AND         
                        ( SRY-SRYCD(IDX3)(1:5) =  "09593" )              
-                       COMPUTE    RECE41-SONOTAKIN-JYU  =               
-                                  RECE41-SONOTAKIN-JYU  +               
-                                 (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)  
+                     EVALUATE   RECE41-JIBAIKBN
+                       WHEN       "1"
+                         EVALUATE  WRK-TNS-JIBAISYUKEIKBN(IDX3)
+                           WHEN       0
+                           WHEN       5
+                             COMPUTE  RECE41-SONOTAKIN-JYU  =
+                                      RECE41-SONOTAKIN-JYU  +
+                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                           WHEN       1
+                           WHEN       2
+                           WHEN       3
+                           WHEN       4
+                             COMPUTE  WRK-KINGAKU-JI   =
+                                      WRK-KINGAKU-JI   +
+                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                         END-EVALUATE
+                       WHEN       "2"
+                             COMPUTE  RECE41-SONOTAKIN-JYU  =
+                                      RECE41-SONOTAKIN-JYU  +
+                                     (WRK-TNS-TEN(IDX3) * ACCT-ZAIKAISU)
+                     END-EVALUATE
                     ELSE                                                
                      IF  SRY-SRYCD(IDX3)      =    CONS-RYOYOTEATE
                        COMPUTE    RECE41-SONOTAKIN-JYU  =               

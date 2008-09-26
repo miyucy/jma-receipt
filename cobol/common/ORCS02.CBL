@@ -229,6 +229,8 @@
       *  04.02.21    NACL-ÌçÏÆ    08/09/01  ÆÁÅç¸©ÃÏÊý¸øÈñÂÐ±þ¡ÊÆýÍÄ»ù¡Ë
       *  04.02.22    NACL-ÌçÏÆ    08/09/04  Ê¡²¬¸©ÃÏÊý¸øÈñÂÐ±þ
       *  04.02.23    NACL-ÌçÏÆ    08/09/09  ·úÀßÏ¢¹çÁÈ¹ç¡ÜÀº¿À¡¢·ë³ËÂÐ±þ
+      *
+      *  04.03.01    NACL-ÌçÏÆ    08/09/25  ¼«ÇåÀÕ£°£¹£µ£¹£³¤Î½¸·×ÀèÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -1661,6 +1663,10 @@
            IF   (WK-HKNKBN               =    "1")   AND
                 (LNK-SYU-SYUHKNNUM       =    "973") AND
                 (LNK-SYU-PTFTNRATE       =     100 )
+      *
+      *          ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¾ðÊó¤ÎÊÔ½¸¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë
+                 PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
+      *
               IF   FLG-KENPOJYUNKYO  =  ZERO
                  COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
                          (LNK-SYU-RSISHOSHIN-MONEY  *  WK-KSNRATE)
@@ -1669,9 +1675,6 @@
                          (LNK-SYU-RSISAISHIN-MONEY  *  WK-KSNRATE)
                                                     +  0.5
               END-IF
-      *
-      *          ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¾ðÊó¤ÎÊÔ½¸¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë
-                 PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
       *
                  COMPUTE    LNK-SYU-SKYMONEY  =   
                             LNK-SYU-SKYMONEY         +
@@ -1717,6 +1720,10 @@
            IF   (WK-HKNKBN               =    "1")   AND
                 (LNK-SYU-SYUHKNNUM       =    "973") AND
                 (LNK-SYU-PTFTNRATE       =    ZERO )
+      *
+      *       ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¾ðÊó¤ÎÊÔ½¸¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë
+              PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
+      *
               IF   FLG-KENPOJYUNKYO  =  ZERO
                  COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
                          (LNK-SYU-RSISHOSHIN-MONEY  *  WK-KSNRATE)
@@ -1725,9 +1732,6 @@
                          (LNK-SYU-RSISAISHIN-MONEY  *  WK-KSNRATE)
                                                     +  0.5
               END-IF
-      *
-      *       ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¾ðÊó¤ÎÊÔ½¸¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë
-              PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
       *
               MOVE    ZERO      TO       LNK-SYU-SKYMONEY
               IF    LNK-SYU-SRYYMD(1:6)       >=   "200704"
@@ -2102,6 +2106,32 @@
                               MOVE    "1"     TO    FLG-TAIGAI
                          END-IF
                        END-PERFORM
+      *
+                       MOVE  LNK-S02-SONOTA-SRYCD(IDX4) TO WK-SRYCD
+                       PERFORM TENSU-TBL-SEC
+                       IF   TNS-KANANAMECHGKBN  =  ZERO OR 5
+                          CONTINUE
+                       ELSE
+                          COMPUTE  WK-KEISAN  =
+                                   LNK-S02-SONOTA-ZAIKAISU(IDX4) *
+                                   LNK-S02-SONOTA-TANKA(IDX4)
+                          IF  LNK-SYU-RSIETC-MONEY >= WK-KEISAN
+                              COMPUTE  LNK-SYU-RSIETC-MONEY =
+                                       LNK-SYU-RSIETC-MONEY -
+                                       WK-KEISAN
+                          ELSE
+                              MOVE   ZERO   TO   LNK-SYU-RSIETC-MONEY
+                          END-IF
+                          EVALUATE  TNS-KANANAMECHGKBN
+                            WHEN        1
+                            WHEN        4
+                              COMPUTE  LNK-SYU-RSISHOSHIN-MONEY =
+                                       LNK-SYU-RSISHOSHIN-MONEY +
+                                       WK-KEISAN
+                          END-EVALUATE
+                          MOVE       "1"     TO    FLG-TAIGAI
+                       END-IF
+      *
                        IF   FLG-TAIGAI  =  SPACE
                           ADD     1     TO   IDX7
                           MOVE    LNK-S02-SONOTA-SRYCD(IDX4)
