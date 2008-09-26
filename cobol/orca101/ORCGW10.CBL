@@ -491,6 +491,9 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE   SPA-W10-AREA
+      *
+           CALL    "ORCSUPDTOUKEIPRM"  USING   SPA-AREA
+      *
            MOVE    SPA-W01-STYUKYMD    TO  SPA-W10-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD    TO  SPA-W10-EDYUKYMD
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-W10-STYUKYMDH

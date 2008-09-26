@@ -403,6 +403,8 @@
            INITIALIZE                  SPA-L01FREE
                                        SPA-L01KYOUTU
       *
+           CALL    "ORCSUPDTOUKEIPRM"  USING   SPA-AREA
+      *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL ( IDX >       WRK-CONS-LINE-MAX )
                MOVE    "F"             TO  SPA-GMN-L01-CHK-VALUE (IDX)
