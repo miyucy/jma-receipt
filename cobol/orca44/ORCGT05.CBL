@@ -772,6 +772,32 @@
                    WHEN    OTHER
                        MOVE    "変換不能のデータがあります"
                                                TO  SPA-GMN-T05-ERRMSG1
+                       EVALUATE    WRK-ERRMSG1
+                           WHEN    10
+                               MOVE    "送信回エラー"
+                                               TO  SPA-GMN-T05-ERRMSG2
+                           WHEN    11
+                               MOVE    "請求確定回エラー"
+                                               TO  SPA-GMN-T05-ERRMSG2
+                           WHEN    12
+                               MOVE    "診療年月エラー"
+                                               TO  SPA-GMN-T05-ERRMSG2
+                           WHEN    13
+                               MOVE    "送信年月日エラー"
+                                               TO  SPA-GMN-T05-ERRMSG2
+                           WHEN    14
+                               MOVE    "請求年月エラー"
+                                               TO  SPA-GMN-T05-ERRMSG2
+                           WHEN    15
+                               MOVE    "請求確定年月日エラー"
+                                               TO  SPA-GMN-T05-ERRMSG2
+                           WHEN    16
+                               MOVE    "審査支払機関コードエラー"
+                                               TO  SPA-GMN-T05-ERRMSG2
+                           WHEN    17
+                               MOVE    "送信回エラー"
+                                               TO  SPA-GMN-T05-ERRMSG2
+                       END-EVALUATE
                END-EVALUATE
                GO  TO  700-EXPORT-EXT
            END-IF
@@ -1004,11 +1030,11 @@
                    END-IF
       *
                    IF      CNT-PARA            =   WK-HEAD-LINE
-      *                ヘッダ項目取得処理
+      *                ヘッダ項目取得チェック処理
                        PERFORM 70021-HEAD-CHECK-SEC
                    END-IF
                    IF      CNT-PARA            >=  WK-BODY-LINE
-      *                明細カウント処理
+      *                明細項目取得チェック処理
                        PERFORM 70022-BODY-CHECK-SEC
                    END-IF
       *
@@ -1291,7 +1317,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      LNK-ZENHANCNV-RC    =   ZERO
                MOVE    LNK-ZENHANCNV-OT-NUM
                                            TO  SPA-GMN-T05-TUKAISU(IDY)
-           END-IF
+           ELSE
+               MOVE    17                  TO  WRK-ERRMSG1
+           END-IF                 
            .
        2404-UKE-SENDNUM-SET-EXT.
            EXIT.
