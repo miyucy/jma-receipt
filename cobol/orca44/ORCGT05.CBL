@@ -1410,6 +1410,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        210-TOUROKU-GID-SEC                 SECTION.
       *
+           INITIALIZE                      SPA-GMN-T05-KOUMOKU
+                                           SPA-NAI-T05-KOUMOKU
+           MOVE    T05-ENTRY1          TO  SPA-GMN-T05-ENTRY1
+           MOVE    ZERO                TO  WRK-ERRMSG1
+                                           WRK-ERRMSG2
+      *
            IF      SPA-GMN-T05-DATALST-MAX =   ZERO
                MOVE    "0002"              TO  SPA-ERRCD
                GO  TO  210-TOUROKU-GID-EXT
@@ -1478,6 +1484,36 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                    TO  SHELLTBL-ARG8
            MOVE    SPA-NAI-T05-SAVE-NAME(5)
                                    TO  SHELLTBL-ARG9
+           MOVE    SPA-NAI-T05-SAVE-NAME(6)
+                                   TO  SHELLTBL-ARG10
+           MOVE    SPA-NAI-T05-SAVE-NAME(7)
+                                   TO  SHELLTBL-ARG11
+           MOVE    SPA-NAI-T05-SAVE-NAME(8)
+                                   TO  SHELLTBL-ARG12
+           MOVE    SPA-NAI-T05-SAVE-NAME(9)
+                                   TO  SHELLTBL-ARG13
+           MOVE    SPA-NAI-T05-SAVE-NAME(10)
+                                   TO  SHELLTBL-ARG14
+           MOVE    SPA-NAI-T05-SAVE-NAME(11)
+                                   TO  SHELLTBL-ARG15
+           MOVE    SPA-NAI-T05-SAVE-NAME(12)
+                                   TO  SHELLTBL-ARG16
+           MOVE    SPA-NAI-T05-SAVE-NAME(13)
+                                   TO  SHELLTBL-ARG17
+           MOVE    SPA-NAI-T05-SAVE-NAME(14)
+                                   TO  SHELLTBL-ARG18
+           MOVE    SPA-NAI-T05-SAVE-NAME(15)
+                                   TO  SHELLTBL-ARG19
+           MOVE    SPA-NAI-T05-SAVE-NAME(16)
+                                   TO  SHELLTBL-ARG20
+           MOVE    SPA-NAI-T05-SAVE-NAME(17)
+                                   TO  SHELLTBL-ARG21
+           MOVE    SPA-NAI-T05-SAVE-NAME(18)
+                                   TO  SHELLTBL-ARG22
+           MOVE    SPA-NAI-T05-SAVE-NAME(19)
+                                   TO  SHELLTBL-ARG23
+           MOVE    SPA-NAI-T05-SAVE-NAME(20)
+                                   TO  SHELLTBL-ARG24
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
