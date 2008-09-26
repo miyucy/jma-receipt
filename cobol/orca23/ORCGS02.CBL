@@ -3104,8 +3104,6 @@
                                                WRK-SPA-AREA
                MOVE    SPACE           TO  WRK-SPA-PRT-FLG
       *
-               MOVE   SPACE        TO  SPA-SRYYMD(7:2)
-      *
            END-IF
       *
            .
@@ -3342,8 +3340,6 @@
                MOVE    "001%"          TO  WRK-FILEMEI-CD
                PERFORM 4801-DELETE-PARA-SEC
            END-IF
-      *
-           MOVE   SPACE        TO  SPA-SRYYMD(7:2)
       *
            .
        4201-GAI-SAIHAKKOU-EXT.
