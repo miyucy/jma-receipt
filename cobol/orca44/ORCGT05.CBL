@@ -416,6 +416,8 @@
                            GO  TO  330-TID1-SET-EXT
                        END-IF
                   WHEN    "1002"
+                       MOVE    SPACE           TO  SPA-TIDCD
+                                                   SPA-TID1-FLG
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
                        GO  TO  330-TID1-SET-EXT
@@ -1350,13 +1352,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    ZERO                TO  SPA-GMN-T05-DATALST-MAX
            ELSE
                PERFORM VARYING IDXX    FROM    IDX     BY  1
-                       UNTIL   IDXX    >=      SPA-GMN-T05-DATALST-MAX
-                   COMPUTE IDXY    =   IDXX    +   1
-                   MOVE    SPA-GMN-T05-DATALST (IDXY)
+                       UNTIL   IDXX    >       SPA-GMN-T05-DATALST-MAX
+                   IF      IDXX            =   SPA-GMN-T05-DATALST-MAX
+                       INITIALIZE          SPA-GMN-T05-DATALST (IDXX)
+                       INITIALIZE          SPA-NAI-T05-DATALST (IDXX)
+                   ELSE 
+                       COMPUTE IDXY    =   IDXX    +   1
+                       MOVE    SPA-GMN-T05-DATALST (IDXY)
                                            TO  SPA-GMN-T05-DATALST(IDXX)
-                   MOVE    SPA-NAI-T05-DATALST (IDXY)
+                       MOVE    SPA-NAI-T05-DATALST (IDXY)
                                            TO  SPA-NAI-T05-DATALST(IDXX)
-                   MOVE    IDXX            TO  SPA-GMN-T05-TRENNUM(IDXX)
+                       MOVE    IDXX        TO  SPA-GMN-T05-TRENNUM(IDXX)
+                   END-IF
                END-PERFORM
                COMPUTE SPA-GMN-T05-DATALST-MAX
                            =   SPA-GMN-T05-DATALST-MAX    -   1

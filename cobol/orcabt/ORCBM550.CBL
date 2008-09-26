@@ -601,13 +601,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF    ( WRK-MO-CNT          =   1 ) AND
                  ( PARA-DATA (WRK-MO-ST:WRK-MO-CNT) =   X"0D" )
                MOVE  1                 TO  FLG-NODATA
-               CALL "coblog" USING "kara data1 !!"
            END-IF
       *
            IF    ( WRK-MO-CNT          =   1 ) AND
                  ( PARA-DATA (WRK-MO-ST:WRK-MO-CNT) =   X"0A" )
                MOVE  1                 TO  FLG-NODATA
-               CALL "coblog" USING "kara data2 !!"
            END-IF
       *
            .
@@ -1457,6 +1455,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            TO  IDYY
                END-IF
       *
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-ONRECE-B-CLOSE-SEC
            END-PERFORM
       *
@@ -1841,7 +1840,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE
                MOVE    1                   TO  FLG-ONRECE-K
                INITIALIZE                      ONRECE-K-REC
-               CALL "coblog" USING "abort select"
            END-IF
            .
        900-ONRECE-KANRIANRI-SELECT-EXT.
@@ -1951,7 +1949,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                PERFORM 900-ONRECE-B-FETCH-SEC
            ELSE
-               CALL "coblog" USING "abort select"
+               INITIALIZE                      ONRECE-B-REC
+               MOVE  1                     TO  FLG-ONRECE-B
            END-IF
            .
        900-ONRECE-B-SELECT-EXT.
