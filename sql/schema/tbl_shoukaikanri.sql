@@ -11,8 +11,8 @@ CREATE TABLE tbl_shoukaikanri (
     uphms character(6)
 );
 
+COMMENT ON TABLE tbl_shoukaikanri IS '´µ¼Ô¾È²ñ¸¡º÷¾ò·ï´ÉÍý';
+
 ALTER TABLE ONLY tbl_shoukaikanri
     ADD CONSTRAINT tbl_shoukaikanri_primary_key PRIMARY KEY (hospnum, uid);
-
-COMMENT ON TABLE tbl_shoukaikanri IS '´µ¼Ô¾È²ñ¸¡º÷¾ò·ï´ÉÍý';
 

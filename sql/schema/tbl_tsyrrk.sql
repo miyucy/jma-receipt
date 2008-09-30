@@ -13,8 +13,8 @@ CREATE TABLE tbl_tsyrrk (
     hkntekkbn character(1)
 );
 
+COMMENT ON TABLE tbl_tsyrrk IS 'Äã½êÆÀ¼ÔÍúÎò';
+
 ALTER TABLE ONLY tbl_tsyrrk
     ADD CONSTRAINT tbl_tsyrrk_primary_key PRIMARY KEY (hospnum, ptid, ninstymd);
-
-COMMENT ON TABLE tbl_tsyrrk IS 'Äã½êÆÀ¼ÔÍúÎò';
 

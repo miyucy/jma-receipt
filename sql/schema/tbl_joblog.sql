@@ -10,8 +10,8 @@ CREATE TABLE tbl_joblog (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_joblog IS 'ジョブログ管理';
+
 ALTER TABLE ONLY tbl_joblog
     ADD CONSTRAINT tbl_joblog_primary_key PRIMARY KEY (hospnum, logymd, logtime, progname, kbnid);
-
-COMMENT ON TABLE tbl_joblog IS 'ジョブログ管理';
 

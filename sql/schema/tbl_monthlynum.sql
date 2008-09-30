@@ -13,8 +13,8 @@ CREATE TABLE tbl_monthlynum (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_monthlynum IS '月代り受給者番号';
+
 ALTER TABLE ONLY tbl_monthlynum
     ADD CONSTRAINT tbl_monthlynum_primary_key PRIMARY KEY (hospnum, ptid, kohnum, kohid, sryym, nyugaikbn);
-
-COMMENT ON TABLE tbl_monthlynum IS '月代り受給者番号';
 

@@ -62,8 +62,8 @@ CREATE TABLE tbl_ptbyomei (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_ptbyomei IS '患者病名';
+
 ALTER TABLE ONLY tbl_ptbyomei
     ADD CONSTRAINT tbl_ptbyomei_primary_key PRIMARY KEY (hospnum, ptid, sryka, sryymd, rennum);
-
-COMMENT ON TABLE tbl_ptbyomei IS '患者病名';
 

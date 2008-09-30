@@ -110,8 +110,8 @@ CREATE TABLE tbl_hkncombi (
     hyojikbn character(1)
 );
 
+COMMENT ON TABLE tbl_hkncombi IS '保険組合せ';
+
 ALTER TABLE ONLY tbl_hkncombi
     ADD CONSTRAINT tbl_hkncombi_primary_key PRIMARY KEY (hospnum, ptid, hkncombinum);
-
-COMMENT ON TABLE tbl_hkncombi IS '保険組合せ';
 

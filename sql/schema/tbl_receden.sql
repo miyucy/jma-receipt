@@ -17,8 +17,8 @@ CREATE TABLE tbl_receden (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_receden IS 'レセプト電算';
+
 ALTER TABLE ONLY tbl_receden
     ADD CONSTRAINT tbl_receden_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, tekstymd, reckbn, rennum);
-
-COMMENT ON TABLE tbl_receden IS 'レセプト電算';
 

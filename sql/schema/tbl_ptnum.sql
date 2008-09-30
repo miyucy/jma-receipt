@@ -14,10 +14,10 @@ CREATE TABLE tbl_ptnum (
     hospnum numeric(2,0) NOT NULL
 );
 
-CREATE INDEX idx_ptnum_ptnum ON tbl_ptnum USING btree (hospnum, ptnum);
+COMMENT ON TABLE tbl_ptnum IS '患者番号変換';
 
 ALTER TABLE ONLY tbl_ptnum
     ADD CONSTRAINT tbl_ptnum_primary_key PRIMARY KEY (hospnum, ptid);
 
-COMMENT ON TABLE tbl_ptnum IS '患者番号変換';
+CREATE INDEX idx_ptnum_ptnum ON tbl_ptnum USING btree (hospnum, ptnum);
 

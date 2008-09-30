@@ -61,14 +61,14 @@ CREATE TABLE tbl_ptinf (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_ptinf IS '患者情報';
+
+ALTER TABLE ONLY tbl_ptinf
+    ADD CONSTRAINT tbl_ptinf_primary_key PRIMARY KEY (hospnum, ptid);
+
 CREATE INDEX idx_ptinf_birthday ON tbl_ptinf USING btree (birthday);
 
 CREATE INDEX idx_ptinf_kananame ON tbl_ptinf USING btree (hospnum, kananame);
 
 CREATE INDEX idx_ptinf_name ON tbl_ptinf USING btree (hospnum, name);
-
-ALTER TABLE ONLY tbl_ptinf
-    ADD CONSTRAINT tbl_ptinf_primary_key PRIMARY KEY (hospnum, ptid);
-
-COMMENT ON TABLE tbl_ptinf IS '患者情報';
 

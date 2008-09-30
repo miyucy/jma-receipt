@@ -35,10 +35,10 @@ CREATE TABLE tbl_syuka (
     hospnum numeric(2,0) NOT NULL
 );
 
-CREATE INDEX idx_syuka_sryym ON tbl_syuka USING btree (hospnum, nyugaikbn, sryym);
+COMMENT ON TABLE tbl_syuka IS '¼ç²Ê';
 
 ALTER TABLE ONLY tbl_syuka
     ADD CONSTRAINT tbl_syuka_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, ten_kbn, sryym, teisyutusaki, hknjanum, hojokbn, recesyubetu, sryka);
 
-COMMENT ON TABLE tbl_syuka IS '¼ç²Ê';
+CREATE INDEX idx_syuka_sryym ON tbl_syuka USING btree (hospnum, nyugaikbn, sryym);
 

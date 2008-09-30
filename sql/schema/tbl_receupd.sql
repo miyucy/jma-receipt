@@ -25,10 +25,10 @@ CREATE TABLE tbl_receupd (
     hospnum numeric(2,0) NOT NULL
 );
 
-CREATE INDEX idx_receupd_upymd ON tbl_receupd USING btree (hospnum, upymd, nyugaikbn);
+COMMENT ON TABLE tbl_receupd IS 'レセプト作成管理';
 
 ALTER TABLE ONLY tbl_receupd
     ADD CONSTRAINT tbl_receupd_primary_key PRIMARY KEY (hospnum, ptid, nyugaikbn, sryka, sryym, hknkbn, hknkbn2);
 
-COMMENT ON TABLE tbl_receupd IS 'レセプト作成管理';
+CREATE INDEX idx_receupd_upymd ON tbl_receupd USING btree (hospnum, upymd, nyugaikbn);
 

@@ -21,10 +21,10 @@ CREATE TABLE tbl_chk005 (
     hospnum numeric(2,0) NOT NULL
 );
 
-CREATE INDEX idx_chk005_rennum ON tbl_chk005 USING btree (hospnum, chkkbn, rennum);
+COMMENT ON TABLE tbl_chk005 IS 'チェック5';
 
 ALTER TABLE ONLY tbl_chk005
     ADD CONSTRAINT tbl_chk005_primary_key PRIMARY KEY (hospnum, chkkbn, id, rennum);
 
-COMMENT ON TABLE tbl_chk005 IS 'チェック5';
+CREATE INDEX idx_chk005_rennum ON tbl_chk005 USING btree (hospnum, chkkbn, rennum);
 

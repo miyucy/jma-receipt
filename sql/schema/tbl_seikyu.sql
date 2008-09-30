@@ -460,3 +460,5 @@ COMMENT ON TABLE tbl_seikyu IS 'ÀÁµá´ÉÍý';
 ALTER TABLE ONLY tbl_seikyu
     ADD CONSTRAINT tbl_seikyu_primary_key PRIMARY KEY (hospnum, sryym, nyugaikbn, ptid, receka, teisyutusaki, recesyubetu, hknjanum, hojokbn_key, tekstymd);
 
+CREATE INDEX idx_seikyu_skyym ON tbl_seikyu USING btree (hospnum, skyym, skykbn);
+

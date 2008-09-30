@@ -18,11 +18,14 @@ CREATE TABLE tbl_toukeimemo (
     creymd character(8),
     upymd character(8),
     uphms character(6),
-    hospnum numeric(2,0) NOT NULL
+    hospnum numeric(2,0) NOT NULL,
+    savepara character(1),
+    para9 character varying(20),
+    para10 character varying(20)
 );
+
+COMMENT ON TABLE tbl_toukeimemo IS '統計覚書';
 
 ALTER TABLE ONLY tbl_toukeimemo
     ADD CONSTRAINT tbl_toukeimemo_primary_key PRIMARY KEY (hospnum, pgid, kanricd, kbncd, styukymd, edyukymd);
-
-COMMENT ON TABLE tbl_toukeimemo IS '統計覚書';
 

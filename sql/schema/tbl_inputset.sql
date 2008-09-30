@@ -20,8 +20,8 @@ CREATE TABLE tbl_inputset (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_inputset IS '入力セット';
+
 ALTER TABLE ONLY tbl_inputset
     ADD CONSTRAINT tbl_inputset_primary_key PRIMARY KEY (hospnum, setcd, yukostymd, yukoedymd, setseq);
-
-COMMENT ON TABLE tbl_inputset IS '入力セット';
 

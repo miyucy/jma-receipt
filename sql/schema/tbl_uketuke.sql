@@ -23,8 +23,8 @@ CREATE TABLE tbl_uketuke (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_uketuke IS '受付';
+
 ALTER TABLE ONLY tbl_uketuke
     ADD CONSTRAINT tbl_uketuke_primary_key PRIMARY KEY (hospnum, ukeymd, ukeid);
-
-COMMENT ON TABLE tbl_uketuke IS '受付';
 

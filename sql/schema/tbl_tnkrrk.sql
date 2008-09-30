@@ -13,8 +13,8 @@ CREATE TABLE tbl_tnkrrk (
     hkntekkbn character(1)
 );
 
+COMMENT ON TABLE tbl_tnkrrk IS 'Ç¯¶âÍúÎò';
+
 ALTER TABLE ONLY tbl_tnkrrk
     ADD CONSTRAINT tbl_tnkrrk_primary_key PRIMARY KEY (hospnum, ptid, stymd);
-
-COMMENT ON TABLE tbl_tnkrrk IS 'Ç¯¶âÍúÎò';
 

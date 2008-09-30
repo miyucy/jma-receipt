@@ -48,12 +48,12 @@ CREATE TABLE tbl_jyurrk_prv (
     hospnum numeric(2,0) NOT NULL
 );
 
-CREATE INDEX idx_jyurrk_prv_sryymd ON tbl_jyurrk_prv USING btree (hospnum, sryymd, nyugaikbn);
-
-CREATE INDEX idx_jyurrk_prv_upymd ON tbl_jyurrk_prv USING btree (hospnum, upymd, nyugaikbn);
+COMMENT ON TABLE tbl_jyurrk_prv IS '受診履歴(プレビュー)';
 
 ALTER TABLE ONLY tbl_jyurrk_prv
     ADD CONSTRAINT tbl_jyurrk_prv_primary_key PRIMARY KEY (hospnum, ptid, nyugaikbn, sryka, sryymd, rennum, douji_rennum, kaikei_rennum, edanum);
 
-COMMENT ON TABLE tbl_jyurrk_prv IS '受診履歴(プレビュー)';
+CREATE INDEX idx_jyurrk_prv_sryymd ON tbl_jyurrk_prv USING btree (hospnum, sryymd, nyugaikbn);
+
+CREATE INDEX idx_jyurrk_prv_upymd ON tbl_jyurrk_prv USING btree (hospnum, upymd, nyugaikbn);
 

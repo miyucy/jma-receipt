@@ -58,8 +58,8 @@ CREATE TABLE tbl_orderprt (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_orderprt IS '¥ª¡¼¥ÀÄ¢É¼';
+
 ALTER TABLE ONLY tbl_orderprt
     ADD CONSTRAINT tbl_orderprt_primary_key PRIMARY KEY (hospnum, ptid, ptnum, nyugaikbn, sryka, hkncombi, sysymd, printymd, printhms, prtkbn, ordernum, rennum);
-
-COMMENT ON TABLE tbl_orderprt IS '¥ª¡¼¥ÀÄ¢É¼';
 

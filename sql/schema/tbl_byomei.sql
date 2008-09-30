@@ -24,12 +24,12 @@ CREATE TABLE tbl_byomei (
     uphms character(6)
 );
 
-CREATE INDEX idx_byomei_byomei ON tbl_byomei USING btree (byomei);
-
-CREATE INDEX idx_byomei_byomeikana ON tbl_byomei USING btree (byomeikana);
+COMMENT ON TABLE tbl_byomei IS '病名';
 
 ALTER TABLE ONLY tbl_byomei
     ADD CONSTRAINT tbl_byomei_primary_key PRIMARY KEY (byomeicd);
 
-COMMENT ON TABLE tbl_byomei IS '病名';
+CREATE INDEX idx_byomei_byomei ON tbl_byomei USING btree (byomei);
+
+CREATE INDEX idx_byomei_byomeikana ON tbl_byomei USING btree (byomeikana);
 

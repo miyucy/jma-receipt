@@ -29,7 +29,21 @@ CREATE VIEW view_q002 AS
         OR (a.zainum = b.zainum12)) 
         OR (a.zainum = b.zainum13)) 
         OR (a.zainum = b.zainum14)) 
-        OR (a.zainum = b.zainum15)));
+        OR (a.zainum = b.zainum15))) UNION ALL SELECT a.hospnum,
+           a.ptid,
+           '1' AS nyugaikbn,
+           b.sryka,
+           a.sryymd,
+           b.srycd AS srycd1,
+           '' AS srycd2,
+           '' AS srycd3,
+           '' AS srycd4,
+           '' AS srycd5 
+      FROM tbl_nrrksrh a,
+           tbl_nsrysrh b 
+     WHERE (((a.hospnum = b.hospnum) 
+       AND (a.ptid = b.ptid)) 
+       AND (a.zainum = b.zainum));
 
 COMMENT 
         ON VIEW view_q002 IS '患者照会ビュー2';

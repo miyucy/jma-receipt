@@ -6,7 +6,7 @@ CREATE TABLE tbl_rececom (
     hkncombi numeric(4,0) NOT NULL,
     srydd character(2) NOT NULL,
     sjkbn character(2) NOT NULL,
-    "comment" character varying(1600),
+    comment character varying(1600),
     termid character varying(16),
     opid character varying(16),
     creymd character(8),
@@ -15,8 +15,8 @@ CREATE TABLE tbl_rececom (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_rececom IS 'レセプトコメント';
+
 ALTER TABLE ONLY tbl_rececom
     ADD CONSTRAINT tbl_rececom_primary_key PRIMARY KEY (hospnum, ptid, nyugaikbn, sryka, sryym, hkncombi, srydd, sjkbn);
-
-COMMENT ON TABLE tbl_rececom IS 'レセプトコメント';
 

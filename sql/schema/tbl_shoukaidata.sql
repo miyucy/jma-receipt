@@ -10,8 +10,8 @@ CREATE TABLE tbl_shoukaidata (
     uphms character(6)
 );
 
+COMMENT ON TABLE tbl_shoukaidata IS '患者照会検索条件用データ';
+
 ALTER TABLE ONLY tbl_shoukaidata
     ADD CONSTRAINT tbl_shoukaidata_primary_key PRIMARY KEY (hospnum, uid, itemid);
-
-COMMENT ON TABLE tbl_shoukaidata IS '患者照会検索条件用データ';
 

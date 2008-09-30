@@ -16,8 +16,8 @@ CREATE TABLE tbl_ptkohftn (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_ptkohftn IS '吹荚给锐砷么';
+
 ALTER TABLE ONLY tbl_ptkohftn
     ADD CONSTRAINT tbl_ptkohftn_primary_key PRIMARY KEY (hospnum, ptid, kohid, rennum);
-
-COMMENT ON TABLE tbl_ptkohftn IS '吹荚给锐砷么';
 

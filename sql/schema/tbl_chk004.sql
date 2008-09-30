@@ -13,8 +13,8 @@ CREATE TABLE tbl_chk004 (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_chk004 IS 'チェック4';
+
 ALTER TABLE ONLY tbl_chk004
     ADD CONSTRAINT tbl_chk004_primary_key PRIMARY KEY (hospnum, kanricd, kbncd, styukymd, edyukymd);
-
-COMMENT ON TABLE tbl_chk004 IS 'チェックマスタ４';
 

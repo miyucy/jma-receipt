@@ -15,8 +15,8 @@ CREATE TABLE tbl_odritem (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_odritem IS '入院オーダ項目';
+
 ALTER TABLE ONLY tbl_odritem
     ADD CONSTRAINT tbl_odritem_primary_key PRIMARY KEY (hospnum, karte_key, ordernum, itemnum);
-
-COMMENT ON TABLE tbl_odritem IS '入院オーダ項目';
 

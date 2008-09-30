@@ -30,8 +30,8 @@ CREATE TABLE tbl_tensuplus (
     jgncntetc numeric(3,0) DEFAULT 0
 );
 
+COMMENT ON TABLE tbl_tensuplus IS '点数付加';
+
 ALTER TABLE ONLY tbl_tensuplus
     ADD CONSTRAINT tbl_tensuplus_primary_key PRIMARY KEY (hospnum, srycd, yukostymd, yukoedymd);
-
-COMMENT ON TABLE tbl_tensuplus IS '点数付加';
 

@@ -16,12 +16,12 @@ CREATE TABLE tbl_help (
     hospnum numeric(2,0) NOT NULL
 );
 
-CREATE INDEX idx_help_key_opid ON tbl_help USING btree (hospnum, key_opid);
-
-CREATE INDEX idx_help_menu ON tbl_help USING btree (hospnum, menu);
+COMMENT ON TABLE tbl_help IS '¥Ø¥ë¥×';
 
 ALTER TABLE ONLY tbl_help
     ADD CONSTRAINT tbl_help_primary_key PRIMARY KEY (hospnum, helpkbn, key_opid, ldname, menunum1, menunum2, edanum);
 
-COMMENT ON TABLE tbl_help IS '¥Ø¥ë¥×';
+CREATE INDEX idx_help_key_opid ON tbl_help USING btree (hospnum, key_opid);
+
+CREATE INDEX idx_help_menu ON tbl_help USING btree (hospnum, menu);
 

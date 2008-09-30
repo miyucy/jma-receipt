@@ -15,10 +15,10 @@ CREATE TABLE tbl_adrs (
     hospnum numeric(2,0) NOT NULL
 );
 
-CREATE INDEX idx_adrs_post ON tbl_adrs USING btree (hospnum, post);
+COMMENT ON TABLE tbl_adrs IS '住所';
 
 ALTER TABLE ONLY tbl_adrs
     ADD CONSTRAINT tbl_adrs_primary_key PRIMARY KEY (hospnum, lpubcd, post, rennum);
 
-COMMENT ON TABLE tbl_adrs IS '主科情報';
+CREATE INDEX idx_adrs_post ON tbl_adrs USING btree (hospnum, post);
 

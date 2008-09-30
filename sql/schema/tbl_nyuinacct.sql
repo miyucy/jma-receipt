@@ -56,8 +56,8 @@ CREATE TABLE tbl_nyuinacct (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_nyuinacct IS '入院会計';
+
 ALTER TABLE ONLY tbl_nyuinacct
     ADD CONSTRAINT tbl_nyuinacct_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryym, srykbn, zainum);
-
-COMMENT ON TABLE tbl_nyuinacct IS '入院会計';
 

@@ -22,7 +22,7 @@ CREATE TABLE tbl_ptrsiinf (
     sinsatuend character(8),
     kakuninymd character(8),
     sakujokbn character(1),
-    "comment" character varying(200),
+    comment character varying(200),
     saigaikbn character(1),
     jibaiseikbn character(1),
     drcd character(5),
@@ -37,8 +37,8 @@ CREATE TABLE tbl_ptrsiinf (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_ptrsiinf IS '´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó';
+
 ALTER TABLE ONLY tbl_ptrsiinf
     ADD CONSTRAINT tbl_ptrsiinf_primary_key PRIMARY KEY (hospnum, ptid, hknid);
-
-COMMENT ON TABLE tbl_ptrsiinf IS '´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó';
 

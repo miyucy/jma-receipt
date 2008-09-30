@@ -9,8 +9,8 @@ CREATE TABLE tbl_kensasort (
     uphms character(6)
 );
 
+COMMENT ON TABLE tbl_kensasort IS '検査分類';
+
 ALTER TABLE ONLY tbl_kensasort
     ADD CONSTRAINT tbl_kensasort_primary_key PRIMARY KEY (knsbunrui, srycd);
-
-COMMENT ON TABLE tbl_kensasort IS '検査分類';
 

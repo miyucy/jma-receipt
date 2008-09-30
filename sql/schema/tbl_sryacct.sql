@@ -151,10 +151,10 @@ CREATE TABLE tbl_sryacct (
     hospnum numeric(2,0) NOT NULL
 );
 
-CREATE INDEX idx_sryacct_ptid_sryym ON tbl_sryacct USING btree (hospnum, nyugaikbn, ptid, sryym);
+COMMENT ON TABLE tbl_sryacct IS '©гне╡Я╥в';
 
 ALTER TABLE ONLY tbl_sryacct
     ADD CONSTRAINT tbl_sryacct_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryym, srykbn, zainum);
 
-COMMENT ON TABLE tbl_sryacct IS '©гне╡Я╥в';
+CREATE INDEX idx_sryacct_ptid_sryym ON tbl_sryacct USING btree (hospnum, nyugaikbn, ptid, sryym);
 

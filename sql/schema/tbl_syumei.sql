@@ -29,8 +29,8 @@ CREATE TABLE tbl_syumei (
     syuedanum numeric(2,0)
 );
 
+COMMENT ON TABLE tbl_syumei IS '¼ýÇ¼ÌÀºÙ';
+
 ALTER TABLE ONLY tbl_syumei
     ADD CONSTRAINT tbl_syumei_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, denpnum, denpedanum);
-
-COMMENT ON TABLE tbl_syumei IS '¼ýÇ¼ÌÀºÙ';
 

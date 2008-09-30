@@ -95,8 +95,8 @@ CREATE TABLE tbl_wksryact (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_wksryact IS 'ワ〖ク壳闻乖百';
+
 ALTER TABLE ONLY tbl_wksryact
     ADD CONSTRAINT tbl_wksryact_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryymd, hkncombi, zainum, rennum);
-
-COMMENT ON TABLE tbl_wksryact IS 'ワ〖ク壳闻乖百';
 

@@ -6,10 +6,10 @@ CREATE TABLE tbl_jinmei (
     hospnum numeric(2,0) NOT NULL
 );
 
-CREATE INDEX idx_jinmei_kana ON tbl_jinmei USING btree (hospnum, kana);
+COMMENT ON TABLE tbl_jinmei IS '人名辞書';
 
 ALTER TABLE ONLY tbl_jinmei
     ADD CONSTRAINT tbl_jinmei_primary_key PRIMARY KEY (hospnum, kanji, kana);
 
-COMMENT ON TABLE tbl_jinmei IS '人名辞書';
+CREATE INDEX idx_jinmei_kana ON tbl_jinmei USING btree (hospnum, kana);
 

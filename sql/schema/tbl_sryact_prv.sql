@@ -51,8 +51,8 @@ CREATE TABLE tbl_sryact_prv (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_sryact_prv IS '壳闻乖百(プレビュ〖)';
+
 ALTER TABLE ONLY tbl_sryact_prv
     ADD CONSTRAINT tbl_sryact_prv_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryym, zainum, rennum);
-
-COMMENT ON TABLE tbl_sryact_prv IS '壳闻乖百(プレビュ〖)';
 

@@ -48,12 +48,12 @@ CREATE TABLE tbl_jyurrk (
     hospnum numeric(2,0) NOT NULL
 );
 
-CREATE INDEX idx_jyurrk_sryymd ON tbl_jyurrk USING btree (hospnum, sryymd, nyugaikbn);
-
-CREATE INDEX idx_jyurrk_upymd ON tbl_jyurrk USING btree (hospnum, upymd, nyugaikbn);
+COMMENT ON TABLE tbl_jyurrk IS '¼õ¿ÇÍúÎò';
 
 ALTER TABLE ONLY tbl_jyurrk
     ADD CONSTRAINT tbl_jyurrk_primary_key PRIMARY KEY (hospnum, ptid, nyugaikbn, sryka, sryymd, rennum, douji_rennum, kaikei_rennum, edanum);
 
-COMMENT ON TABLE tbl_jyurrk IS '¼õ¿ÇÍúÎò';
+CREATE INDEX idx_jyurrk_sryymd ON tbl_jyurrk USING btree (hospnum, sryymd, nyugaikbn);
+
+CREATE INDEX idx_jyurrk_upymd ON tbl_jyurrk USING btree (hospnum, upymd, nyugaikbn);
 

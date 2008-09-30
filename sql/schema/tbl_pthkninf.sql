@@ -22,8 +22,8 @@ CREATE TABLE tbl_pthkninf (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_pthkninf IS '患者保険情報';
+
 ALTER TABLE ONLY tbl_pthkninf
     ADD CONSTRAINT tbl_pthkninf_primary_key PRIMARY KEY (hospnum, ptid, hknid);
-
-COMMENT ON TABLE tbl_pthkninf IS '患者保険情報';
 

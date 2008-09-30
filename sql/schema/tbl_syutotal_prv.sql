@@ -182,11 +182,15 @@ CREATE TABLE tbl_syutotal_prv (
     ryo_tgmoney numeric(7,0) DEFAULT 0,
     ryo_tgmoney_tax numeric(7,0) DEFAULT 0,
     shohou_sai numeric(7,0) DEFAULT 0,
-    hospnum numeric(2,0) NOT NULL
+    hospnum numeric(2,0) NOT NULL,
+    byr_hknten numeric(7,0) DEFAULT 0,
+    byr_money numeric(7,0) DEFAULT 0,
+    byr_tgmoney numeric(7,0) DEFAULT 0,
+    byr_tgmoney_tax numeric(7,0) DEFAULT 0
 );
+
+COMMENT ON TABLE tbl_syutotal_prv IS '収納合計(プレビュー)';
 
 ALTER TABLE ONLY tbl_syutotal_prv
     ADD CONSTRAINT tbl_syutotal_prv_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, denpnum, creymd);
-
-COMMENT ON TABLE tbl_syutotal_prv IS '収納合計(プレビュー)';
 

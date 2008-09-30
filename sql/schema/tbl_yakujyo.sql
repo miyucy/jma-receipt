@@ -16,8 +16,8 @@ CREATE TABLE tbl_yakujyo (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_yakujyo IS 'ÌôºÞ¾ðÊó';
+
 ALTER TABLE ONLY tbl_yakujyo
     ADD CONSTRAINT tbl_yakujyo_primary_key PRIMARY KEY (hospnum, srycd, teknum);
-
-COMMENT ON TABLE tbl_yakujyo IS 'ÌôºÞ¾ðÊó';
 

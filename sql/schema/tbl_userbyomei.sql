@@ -46,8 +46,8 @@ CREATE TABLE tbl_userbyomei (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_userbyomei IS '自院病名';
+
 ALTER TABLE ONLY tbl_userbyomei
     ADD CONSTRAINT tbl_userbyomei_primary_key PRIMARY KEY (hospnum, cdsyu, byomeiinputcd);
-
-COMMENT ON TABLE tbl_userbyomei IS '自院病名';
 

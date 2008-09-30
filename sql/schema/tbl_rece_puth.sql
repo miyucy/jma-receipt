@@ -25,8 +25,8 @@ CREATE TABLE tbl_rece_puth (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_rece_puth IS 'レセプト編綴順ヘッダ';
+
 ALTER TABLE ONLY tbl_rece_puth
     ADD CONSTRAINT tbl_rece_puth_primary_key PRIMARY KEY (hospnum, styukymd, edyukymd);
-
-COMMENT ON TABLE tbl_rece_puth IS 'レセプト編綴順ヘッダ';
 

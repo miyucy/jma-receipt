@@ -44,8 +44,8 @@ CREATE TABLE tbl_ptnyuinrrk (
     kaigokbn character(1)
 );
 
+COMMENT ON TABLE tbl_ptnyuinrrk IS '斯樊ェ情咺昳';
+
 ALTER TABLE ONLY tbl_ptnyuinrrk
     ADD CONSTRAINT tbl_ptnyuinrrk_primary_key PRIMARY KEY (hospnum, ptid, rrknum, rrkedanum);
-
-COMMENT ON TABLE tbl_ptnyuinrrk IS '斯樊ェ情咺昳';
 

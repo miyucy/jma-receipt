@@ -25,14 +25,14 @@ CREATE TABLE tbl_order (
     hospnum numeric(2,0) NOT NULL
 );
 
+COMMENT ON TABLE tbl_order IS '入院オーダ';
+
+ALTER TABLE ONLY tbl_order
+    ADD CONSTRAINT tbl_order_primary_key PRIMARY KEY (hospnum, karte_key, ordernum);
+
 CREATE INDEX idx_order_ptnum ON tbl_order USING btree (hospnum, ptnum);
 
 CREATE INDEX idx_order_sryymd ON tbl_order USING btree (hospnum, sryymd);
 
 CREATE INDEX idx_order_ukeymd ON tbl_order USING btree (hospnum, ukeymd);
-
-ALTER TABLE ONLY tbl_order
-    ADD CONSTRAINT tbl_order_primary_key PRIMARY KEY (hospnum, karte_key, ordernum);
-
-COMMENT ON TABLE tbl_order IS '入院オーダ';
 

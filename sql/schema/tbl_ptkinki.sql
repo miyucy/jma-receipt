@@ -9,6 +9,8 @@ CREATE TABLE tbl_ptkinki (
     uphms character(6)
 );
 
+COMMENT ON TABLE tbl_ptkinki IS '´µ¼Ô¶Ø´÷ÌôºÞ';
+
 ALTER TABLE ONLY tbl_ptkinki
     ADD CONSTRAINT tbl_ptkinki_primary_key PRIMARY KEY (hospnum, ptid, srycd);
 

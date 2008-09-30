@@ -18,8 +18,8 @@ CREATE TABLE tbl_ptkohinf (
     tekedchkkbn character(1)
 );
 
+COMMENT ON TABLE tbl_ptkohinf IS '´µ¼Ô¸øÈñ¾ðÊó';
+
 ALTER TABLE ONLY tbl_ptkohinf
     ADD CONSTRAINT tbl_ptkohinf_primary_key PRIMARY KEY (hospnum, ptid, kohid);
-
-COMMENT ON TABLE tbl_ptkohinf IS '´µ¼Ô¸øÈñ¾ðÊó';
 

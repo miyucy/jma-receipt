@@ -9,9 +9,9 @@ CREATE TABLE tbl_interact (
     uphms character(6)
 );
 
+COMMENT ON TABLE tbl_interact IS '相互作用';
+
 CREATE INDEX idx_interact_drugcd ON tbl_interact USING btree (drugcd);
 
 CREATE INDEX idx_interact_drugcd2 ON tbl_interact USING btree (drugcd2);
-
-COMMENT ON TABLE tbl_interact IS '相互作用';
 

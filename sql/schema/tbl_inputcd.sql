@@ -13,10 +13,10 @@ CREATE TABLE tbl_inputcd (
     hospnum numeric(2,0) NOT NULL
 );
 
-CREATE INDEX idx_inputcd_key2 ON tbl_inputcd USING btree (srycd, hospnum);
+COMMENT ON TABLE tbl_inputcd IS '入力コード';
 
 ALTER TABLE ONLY tbl_inputcd
     ADD CONSTRAINT tbl_inputcd_primary_key PRIMARY KEY (hospnum, cdsyu, inputcd);
 
-COMMENT ON TABLE tbl_inputcd IS '入力コード';
+CREATE INDEX idx_inputcd_key2 ON tbl_inputcd USING btree (srycd, hospnum);
 
