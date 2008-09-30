@@ -529,6 +529,9 @@
       *
            03  WK-SRYCD                    PIC  X(09).
       *
+           03  WK-RSISDO-MONEY             PIC  9(09).
+           03  WK-RSISDO-MONEY2            PIC  9(09).
+      *
       *    ¸øÈñ¤Î´µ¼ÔÉéÃ´¾å¸Â²ó¿ô¤È¾å¸Â¶â³Û¤ÎÂàÈòÍÑ¥¨¥ê¥¢
        01  HOKEN-MAX-AREA.
            03  MAX-KAI-KOHI1-D         PIC 9(05).
@@ -1622,14 +1625,21 @@
       *          ¼«ÇåÀÕ¤½¤ÎÂ¾¥³¡¼¥É¾ðÊó¤ÎÊÔ½¸¡Ê£°£¹£µ£¹£±¡¥£¹£²¡¥£¹£³¡Ë
                  PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
       *
-              IF   FLG-KENPOJYUNKYO      =     ZERO
-                 COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
-                         (LNK-SYU-RSISHOSHIN-MONEY  *  WK-4001-KSNRATE)
-                                                    +  0.5      
-                 COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
-                         (LNK-SYU-RSISAISHIN-MONEY  *  WK-4001-KSNRATE)
-                                                    +  0.5
-              END-IF
+                 IF   FLG-KENPOJYUNKYO      =     ZERO
+                    COMPUTE  LNK-SYU-RSISHOSHIN-MONEY =
+                            (LNK-SYU-RSISHOSHIN-MONEY * WK-4001-KSNRATE)
+                                                      +  0.5
+                    COMPUTE  LNK-SYU-RSISAISHIN-MONEY =
+                            (LNK-SYU-RSISAISHIN-MONEY * WK-4001-KSNRATE)
+                                                      +  0.5
+      *
+                    COMPUTE  WK-RSISDO-MONEY2 =
+                            (WK-RSISDO-MONEY  *  WK-4001-KSNRATE)
+                                              +  0.5
+                    COMPUTE  LNK-SYU-RSISDO-MONEY     =
+                             LNK-SYU-RSISDO-MONEY     +
+                             WK-RSISDO-MONEY2
+                 END-IF
       *
                  COMPUTE    LNK-SYU-SKYMONEY  =   LNK-SYU-SKYMONEY  +
                                             LNK-SYU-RSISHOSHIN-MONEY +
@@ -1673,12 +1683,19 @@
               PERFORM   500-JIBAI-SONOTA-HENSYU-SEC
       *
               IF   FLG-KENPOJYUNKYO      =     ZERO
-                 COMPUTE  LNK-SYU-RSISHOSHIN-MONEY  =
-                         (LNK-SYU-RSISHOSHIN-MONEY  *  WK-4001-KSNRATE)
-                                                    +  0.5      
-                 COMPUTE  LNK-SYU-RSISAISHIN-MONEY  =
-                         (LNK-SYU-RSISAISHIN-MONEY  *  WK-4001-KSNRATE)
-                                                    +  0.5
+                 COMPUTE  LNK-SYU-RSISHOSHIN-MONEY =
+                         (LNK-SYU-RSISHOSHIN-MONEY * WK-4001-KSNRATE)
+                                                   +  0.5
+                 COMPUTE  LNK-SYU-RSISAISHIN-MONEY =
+                         (LNK-SYU-RSISAISHIN-MONEY * WK-4001-KSNRATE)
+                                                   +  0.5
+      *
+                 COMPUTE  WK-RSISDO-MONEY2 =
+                         (WK-RSISDO-MONEY  *  WK-4001-KSNRATE)
+                                           +  0.5
+                 COMPUTE  LNK-SYU-RSISDO-MONEY     =
+                          LNK-SYU-RSISDO-MONEY     +
+                          WK-RSISDO-MONEY2
               END-IF
       *
               MOVE    ZERO      TO       LNK-SYU-SKYMONEY
@@ -1978,7 +1995,10 @@
       ******************************************************************
        500-JIBAI-SONOTA-HENSYU-SEC          SECTION.
       *
-           INITIALIZE                            WK-4003-TAIGAI.
+           INITIALIZE            WK-4003-TAIGAI.
+      *
+           MOVE    ZERO    TO    WK-RSISDO-MONEY
+                                 WK-RSISDO-MONEY2.
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡Ê£´£°£°£³¡Ë¤«¤é¾ÃÈñÀÇÂÐ¾Ý³°¥³¡¼¥É¼èÆÀ
       *
@@ -2078,10 +2098,19 @@
                                        LNK-SYU-RSISHOSHIN-MONEY +
                                        WK-KEISAN
                             WHEN        2
-                            WHEN        3
                               COMPUTE  LNK-SYU-RSISAISHIN-MONEY =
                                        LNK-SYU-RSISAISHIN-MONEY +
                                        WK-KEISAN
+                            WHEN        3
+                              IF   FLG-KENPOJYUNKYO  =  ZERO
+                                COMPUTE  WK-RSISDO-MONEY        =
+                                         WK-RSISDO-MONEY        +
+                                         WK-KEISAN
+                              ELSE
+                                COMPUTE  LNK-SYU-RSISDO-MONEY   =
+                                         LNK-SYU-RSISDO-MONEY   +
+                                         WK-KEISAN
+                              END-IF
                           END-EVALUATE
                           MOVE       "1"     TO    FLG-TAIGAI
                        END-IF
