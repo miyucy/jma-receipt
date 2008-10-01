@@ -10556,6 +10556,10 @@
            IF     LNK-SCNYUACCT-RC   NOT =  ZERO
                DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
                          LNK-SCNYUACCT-RC
+               MOVE     "2016"       TO   SPA-ERRCD
+               MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+               MOVE    "abort"         TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
            END-IF
       *
       *-------入院時食事時間区分対応ここから-----------------------------------
@@ -18825,6 +18829,16 @@
            WHEN    "2008"
                MOVE    "負担金計算処理に失敗しました"
                                        TO  SPA-ERRMSG
+           WHEN    "2016"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "点数マスタ有効期間外の入院会計"
+                                           DELIMITED   BY  SPACE
+                       "を作成しようとした為、"
+                                           DELIMITED   BY  SPACE
+                       "更新処理に失敗しました"
+                                           DELIMITED   BY  SPACE
+               INTO    SPA-ERRMSG
+               END-STRING
            WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
