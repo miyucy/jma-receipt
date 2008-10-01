@@ -42,12 +42,6 @@
       *                                     新規・訂正追加
       *  03.05.01    NACL-多々納  07/08/16  患者メモ追加
       *  04.02.01    NACL-多々納  08/03/14  Ｈ２０年４月改正対応
-      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
-      *  04.05.00    NACL-多々納  10/01/XX  治験・拡張漢字対応
-      *  04.06.00    NACL-多々納  10/11/16  マル長負担額を保険負担額反映
-      *  04.08.00    NACL-多々納  13/01/15  診療回数テーブル１０対応
-      *  04.08.00    NACL-多々納  17/05/12  用法コード名称編集対応
-      *  04.08.00    NACL-多々納  17/12/XX  剤オーバー対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -103,7 +97,6 @@
       ***  03  FLG-LF03            PIC 9(01).
            03  FLG-CLMUID          PIC 9(01).
            03  FLG-PTMEMOINF       PIC 9(01).
-           03  FLG-SRYACCTPLUS     PIC 9(01).
       *
            03  FLG-KAISU           PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -111,9 +104,6 @@
       *
            03  FLG-SYOHOU          PIC 9(01).
            03  FLG-ERR             PIC 9(01).
-           03  FLG-GENTEN          PIC 9(01).
-      *    剤オーバー
-           03  FLG-ERROVER         PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -177,7 +167,6 @@
            03  WRK-SRYYMD          PIC X(08). 
            03  WRK-FILMCNT         PIC 9(02). 
            03  WRK-SURYO           PIC ZZZZZZZ9.999.
-           03  WRK-SURYO-5         PIC ZZZZZ9.99999.
            03  WRK-FILMNUM         PIC ZZZZZZ.
            03  WRK-FILMDEV         PIC ZZ.
            03  WRK-Z9              PIC ----------------.
@@ -194,10 +183,10 @@
            03  WRK-KEI-TEN         PIC 9(08)V9(03).
            03  WRK-KEI-TEN1        PIC 9(08)V9(03).
            03  WRK-KEI-TEN2        PIC 9(08).
-           03  WRK-SURYO9          PIC 9(05)V9(05).
+           03  WRK-SURYO9          PIC 9(05)V9(03).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO9.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(05).
+               05  WRK-SURYO-S2    PIC 9(03).
       *
            03  WRK-ZZZ             PIC Z99.
            03  WRK-999             PIC 9(03).
@@ -213,13 +202,6 @@
                05  WRK-MEMO-04         PIC X(1000).
                05  WRK-MEMO-05         PIC X(1000).
                05  WRK-MEMO-OK         PIC X(1000).
-      *
-           03  WRK-KOUMOKU             PIC X(200).
-      *
-           03  WRK-ACCT-ZAITEN         PIC S9(07).
-           03  WRK-ACCT-SYUTEN1        PIC S9(07).
-           03  WRK-ACCT-KIZAITEN       PIC S9(07).
-           03  WRK-ACCT-YKZTEN         PIC S9(07).
       *
       *    自費名称テーブル
        01  TBL-JIHIMSG-AREA.
@@ -264,7 +246,7 @@
       *@@@@        07  TBL-ALSNAME    PIC  X(40).
                    07  TBL-ALSNAME    PIC  X(80).
       *数量(Z編集)
-                   07  TBL-SURYO      PIC  S9(07)V9(5).
+                   07  TBL-SURYO      PIC  S9(07)V999.
       *数量コード
                    07  TBL-SURYOCD    PIC  X(02).
       *単位
@@ -369,10 +351,6 @@
        01  PTMEMOINF-REC.
            COPY    "CPPTMEMOINF.INC".
       *
-      *    診療会計附加情報マスタ−
-       01  SRYACCTPLUS-REC.
-           COPY    "CPSRYACCTPLUS.INC".
-      *
       *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
@@ -384,9 +362,6 @@
                05  SYS-MI          PIC 9(02).
                05  SYS-SS          PIC 9(02).
                05  SYS-TT          PIC 9(02).
-      *H28.4
-      * 湿布薬（減）
-       01  CONS-SPCM-SRYCD         PIC X(09)   VALUE    "820000047".
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -412,9 +387,6 @@
        01  ST          PIC 9(2).
       * 
            COPY    "CPMML0031.INC".
-      *
-      *    全角チェックパラメタ
-           COPY    "CPORCSKANACHK.INC".
       * 
       *****************************************************************
       *    連絡　領域
@@ -481,10 +453,6 @@
       *        DISPLAY "*** ORCL0021 LF03 INVALID ***"
       *        MOVE    1               TO  FLG-END
       *****END-IF
-      *
-           INITIALIZE                  IDX-AREA
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  WRK-AREA
       *
       *    UID検索
            INITIALIZE                      CLMUID-REC
@@ -641,10 +609,9 @@
                    MOVE    JYURRK-ZAINUM (IDX-JYU) TO  WRK-ZAINUM
                    COMPUTE IDX-REN         =   JYURRK-RENNUM
                                            +   1
-      *ver.4.8
-      ****         IF      IDX-REN         >   4
-      *                MOVE    4               TO  IDX-REN
-      *****        END-IF
+                   IF      IDX-REN         >   4
+                       MOVE    4               TO  IDX-REN
+                   END-IF
                    PERFORM 2002-SRYACT-SYORI-SEC
                END-PERFORM
              END-IF
@@ -692,20 +659,10 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
       * 作成者 施設情報名
-      *        拡張漢字変換
-               MOVE    SYS-1001-HOSPNAME   TO  WRK-KOUMOKU
-               PERFORM 800-ORCSKANACHK-SEC
-               MOVE    WRK-KOUMOKU         TO  SYS-1001-HOSPNAME
-      *
                MOVE  SYS-1001-HOSPNAME      TO  
                        WRK-LF02-CRE001-FACILITYNAME
                        WRK-LF02-CRE401-FACILITYNAME
       *管理者名
-      *        拡張漢字変換
-               MOVE    SYS-1001-KANRINAME   TO  WRK-KOUMOKU
-               PERFORM 800-ORCSKANACHK-SEC
-               MOVE    WRK-KOUMOKU          TO  SYS-1001-KANRINAME
-      *
                MOVE  SYS-1001-KANRINAME     TO  
                        WRK-LF02-CRE001-FULLNAME
                        WRK-LF02-CRE401-FULLNAME  
@@ -798,10 +755,6 @@
            ELSE
                INITIALIZE                      SYS-1010-REC
            END-IF
-      *    拡張漢字変換
-           MOVE    SYS-1010-NAME       TO  WRK-KOUMOKU
-           PERFORM 800-ORCSKANACHK-SEC
-           MOVE    WRK-KOUMOKU         TO  SYS-1010-NAME
       *
            .
        2001-DRCD-NAME-EXT.
@@ -855,39 +808,20 @@
       *            自賠責
                    MOVE    "R3"        TO  WRK-LF02-HKNSBTCODE
                    MOVE    "自賠責"    TO  WRK-LF02-HKNSBT
-               WHEN    "975"
-      *            公害
-                   MOVE    "K5"        TO  WRK-LF02-HKNSBTCODE
-                   MOVE    "公害"      TO  WRK-LF02-HKNSBT
                WHEN    OTHER
-                   EVALUATE    COMB-HKNNUM(1:2)
-                   WHEN    "98"
+                   IF      COMB-HKNNUM(1:2)   =   "98"
       *                自費
                        MOVE    "Z"         TO  WRK-LF02-HKNSBTCODE(1:1)
                        MOVE    COMB-HKNNUM(3:1)
                                            TO  WRK-LF02-HKNSBTCODE(2:1)
                        MOVE    "自費"
                                            TO  WRK-LF02-HKNSBT
-                   WHEN    "90"
-      *                治験
-                       MOVE    "A"         TO  WRK-LF02-HKNSBTCODE(1:1)
-                       MOVE    COMB-HKNNUM(3:1)
-                                           TO  WRK-LF02-HKNSBTCODE(2:1)
-                       MOVE    "治験"
-                                           TO  WRK-LF02-HKNSBT
-                   WHEN    "91"
-      *                治験
-                       MOVE    "B"         TO  WRK-LF02-HKNSBTCODE(1:1)
-                       MOVE    COMB-HKNNUM(3:1)
-                                           TO  WRK-LF02-HKNSBTCODE(2:1)
-                       MOVE    "治験"
-                                           TO  WRK-LF02-HKNSBT
-                   WHEN    OTHER
+                   ELSE
       *                その他（下２桁）
                        MOVE    COMB-HKNNUM     TO  WRK-999
                        MOVE    WRK-999         TO  WRK-ZZZ
                        MOVE    WRK-ZZZ(2:2)    TO  WRK-LF02-HKNSBTCODE
-                   END-EVALUATE
+                   END-IF
            END-EVALUATE
       *
            .
@@ -986,8 +920,6 @@
            MOVE    ZERO                TO  IDX-SATU
            PERFORM
                    UNTIL   FLG-SRYACT      =   1
-      *H29.12  剤オーバー
-                     OR   (FLG-ERROVER     NOT =   ZERO )
                MOVE    SRY-SRYSYUKBN       TO  WRK-SRYSYUKBN
                MOVE    SRY-SRYKBN          TO  WRK-SRYKBN
                MOVE    SRY-SRYSYUKBN       TO  WRK-SRYKBN3
@@ -1001,8 +933,6 @@
                    END-IF
                    PERFORM VARYING     IDXA    FROM    1   BY  1
                            UNTIL       IDXA    >   5
-      *H29.12  剤オーバー
-                     OR   (FLG-ERROVER     NOT =   ZERO )
                        IF      SRY-SRYCD (IDXA)    NOT =   SPACE
                            PERFORM 20022-SRYACT-HANTEI-SEC
                        END-IF
@@ -1078,9 +1008,7 @@
       *    ３０剤以上の時エラー
            IF      IDX-LF2             >   30
                DISPLAY "ZAI 30 OVER ???"
-      *!!!     MOVE    30              TO  IDX-LF2
-               MOVE    1               TO  FLG-ERROVER
-               GO      TO      20021-SRYACCT-SYORI-EXT
+               MOVE    30              TO  IDX-LF2
            END-IF
       *
            MOVE    IDX-LF2             TO  IDX-LF
@@ -1118,34 +1046,15 @@
                    MOVE    CLAIM007-MAX    TO  IDX
                END-IF
            END-PERFORM
-      *    付加情報検索
-           MOVE    ZERO                TO  FLG-GENTEN
-           IF      ACCT-ZAIREQFLG      =   "1"
-               PERFORM 950-SRYACCTPLUS-READ-SEC
-               IF      ACCTP-PLUSKBN       =   1
-                   MOVE    1               TO  FLG-GENTEN
-               END-IF
-           END-IF
       *
       *    請求点数
-           IF      FLG-GENTEN          =   ZERO
-               MOVE    ACCT-ZAITEN         TO  WRK-ACCT-ZAITEN
-               MOVE    ACCT-SYUTEN1        TO  WRK-ACCT-SYUTEN1
-               MOVE    ACCT-KIZAITEN       TO  WRK-ACCT-KIZAITEN
-               MOVE    ACCT-YKZTEN         TO  WRK-ACCT-YKZTEN
-           ELSE
-               COMPUTE WRK-ACCT-ZAITEN     =   ACCT-ZAITEN   *   -1
-               COMPUTE WRK-ACCT-SYUTEN1    =   ACCT-SYUTEN1  *   -1
-               COMPUTE WRK-ACCT-KIZAITEN   =   ACCT-KIZAITEN *   -1
-               COMPUTE WRK-ACCT-YKZTEN     =   ACCT-YKZTEN   *   -1
-           END-IF
-           MOVE    WRK-ACCT-ZAITEN         TO  TBL-TENNSUALL (IDX-LF)
-           MOVE    WRK-ACCT-SYUTEN1        TO  TBL-SYUGI (IDX-LF)
-           MOVE    WRK-ACCT-KIZAITEN       TO  TBL-ZAIRYOU (IDX-LF)
-           MOVE    WRK-ACCT-YKZTEN         TO  TBL-YAKUZAI (IDX-LF)
+           MOVE    ACCT-ZAITEN         TO  TBL-TENNSUALL (IDX-LF)
+           MOVE    ACCT-SYUTEN1        TO  TBL-SYUGI (IDX-LF)
+           MOVE    ACCT-KIZAITEN       TO  TBL-ZAIRYOU (IDX-LF)
+           MOVE    ACCT-YKZTEN         TO  TBL-YAKUZAI (IDX-LF)
       *    請求金額
-           COMPUTE WRK-ACCT-ZAITEN         =   WRK-ACCT-ZAITEN * 10
-           MOVE    WRK-ACCT-ZAITEN         TO  TBL-GINGAKUALL(IDX-LF)
+           COMPUTE ACCT-ZAITEN         =   ACCT-ZAITEN * 10
+           MOVE    ACCT-ZAITEN         TO  TBL-GINGAKUALL(IDX-LF)
       *
       *
       *    診察の時、添え字保存
@@ -1186,10 +1095,6 @@
                    ELSE
       *                （減）を削除
                        IF      SRY-SRYCD (IDXA)    =   "820000047"
-      *H26.10            (精減）
-                                                   OR  "820000166"
-      *H28.4             湿布薬（減）
-                                                   OR  CONS-SPCM-SRYCD
                            CONTINUE
                        ELSE
                            ADD     1               TO  IDX-IJ
@@ -1290,11 +1195,6 @@
                MOVE    TNS-NAME            TO  TBL-ADMINISTRATION
                                                             (IDX-LF)
            END-IF
-      *H29.5
-      *    フリーコメントの内容セット
-           IF      SRY-INPUTNUM (IDXA)  NOT =   ZERO
-               PERFORM 200251-PTCOM-SET02-SEC
-           END-IF
       *
            .
        20025-YOUHOU-HEN-EXT.
@@ -1310,25 +1210,20 @@
            IF      (SRY-SRYKBN         =   "12"  )  AND
                    (SRY-SRYCD (IDXA)(1:1)   =   "1"  )  AND
                    (TNS-DATAKBN        =   "2"  )  AND
-                   (TNS-TIMEKSNKBN     >=  1    AND  <=  7  )
+                   (TNS-TIMEKSNKBN     >=  1    AND  <=  6  )
                EVALUATE    TNS-TIMEKSNKBN
       *            時間外加算処理
                    WHEN    1
-      *            時間外特例加算処理
                    WHEN    5
                        MOVE    "123"           TO  WRK-SRYKBN3
       *            休日加算処理
                    WHEN    2
-      *            休日加算処理（初診）
-                   WHEN    3
                        MOVE    "124"           TO  WRK-SRYKBN3
       *            深夜加算処理
-                   WHEN    4
+                   WHEN    3
                        MOVE    "125"           TO  WRK-SRYKBN3
       *            夜間・早朝加算
                    WHEN    6
-      *            夜間加算
-                   WHEN    7
                        MOVE    "126"           TO  WRK-SRYKBN3
                END-EVALUATE
                ADD     1               TO  IDX-LF
@@ -1506,9 +1401,7 @@
                WHEN    "6"
                WHEN    "7"
       *             薬剤料逓減の時、点数を−とする
-                   IF     (SRY-SRYCD (IDXA)    =   "630010002")
-      *H26.10          減点
-                      OR  (TNS-TENSIKIBETU     =   7          )
+                   IF      SRY-SRYCD (IDXA)    =   "630010002"
       *                診療コード
                        MOVE    SRY-SRYCD(IDXA)     TO  TBL-IJICD
                                                        (IDX-LF IDX-IJ)
@@ -1522,6 +1415,22 @@
                        MOVE    "2"                 TO  TBL-SRYSYUBETSU
                                                        (IDX-LF IDX-IJ)
       *
+                       COMPUTE TBL-TENNSUALL (IDX-LF)
+                                              =   TBL-TENNSUALL (IDX-LF)
+                                               *   -1
+                       COMPUTE TBL-GINGAKUALL (IDX-LF)
+                                               =   TBL-GINGAKUALL
+                                                               (IDX-LF)
+                                               *   -1
+                        COMPUTE TBL-YAKUZAI (IDX-LF)
+                                               =   TBL-YAKUZAI (IDX-LF)
+                                               *   -1
+                        COMPUTE TBL-SYUGI (IDX-LF)
+                                               =   TBL-SYUGI (IDX-LF)
+                                               *   -1
+                        COMPUTE TBL-ZAIRYOU (IDX-LF)
+                                               =   TBL-ZAIRYOU (IDX-LF)
+                                               *   -1
                         MOVE    ZERO        TO  TBL-SURYO
                                                        (IDX-LF IDX-IJ)
                         MOVE    SPACE       TO  TBL-SURYOCD
@@ -1611,8 +1520,6 @@
       *
       *            %加算の時点数なし
                    IF      TNS-TENSIKIBETU     =   5  OR  6
-      *                減点
-                                               OR  7
                        CONTINUE
                    ELSE
       *                請求点数
@@ -1766,25 +1673,6 @@
            END-IF
            .
        200221-PTCOM-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者コメントから編集する 
-      *****************************************************************
-       200251-PTCOM-SET02-SEC              SECTION.
-      *
-           MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
-           MOVE    SRY-PTID            TO  PTCOM-PTID
-           MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
-           MOVE    SRY-SRYCD (IDXA)    TO  PTCOM-SRYCD
-           MOVE    SRY-INPUTNUM(IDXA)  TO  PTCOM-RENNUM
-      *主キーで検索
-           PERFORM 950-PTCOM-READ-SEC
-           IF      FLG-PTCOM           =   ZERO
-               MOVE    PTCOM-INPUTCOMENT   TO  TBL-ADMINISTRATION
-                                                            (IDX-LF)
-           END-IF
-           .
-       200251-PTCOM-SET02-EXT.
            EXIT.
       *****************************************************************
       *    受付メモ編集処理
@@ -1956,6 +1844,7 @@
                    MOVE    TBL-PPSFLG (IDX-LF)
                                                TO  WRK-LF02-PPSFLG
                                                              (IDX-LF)
+      *
                    PERFORM VARYING     IDX-S  FROM    1   BY  1
       *@                   UNTIL       IDX-S  >   20
                            UNTIL       IDX-S  >   30
@@ -1966,15 +1855,6 @@
       *
       *            括りメモ
                    MOVE    TBL-MEMO (IDX-LF)   TO  WRK-LF02-MEMO(IDX-LF)
-      *H29.12
-      *           剤オーバー
-                  IF     (FLG-ERROVER         =   1 )
-                     AND (IDX-LF              =   30 )
-                       MOVE    "明細数がオーバーしました"
-                                              TO  WRK-LF02-EVENT
-                                                          (IDX-LF 1)
-                  END-IF
-      *
                END-IF
            END-PERFORM
       *
@@ -2020,19 +1900,9 @@
                MOVE    SPACE               TO  WRK-LF02-SURYO
                                                         (IDX-LF IDX-S)
            ELSE
-      *        小数点以下４桁以上判定
-               MOVE    TBL-SURYO (IDX-LF IDX-S)    TO  WRK-SURYO9
-               IF      WRK-SURYO-S2(4:2)       =   ZERO
-      *            小数点以下３桁まで
-                   MOVE    TBL-SURYO (IDX-LF IDX-S)    TO  WRK-SURYO
-                   MOVE    WRK-SURYO           TO  WRK-LF02-SURYO
+               MOVE    TBL-SURYO (IDX-LF IDX-S)    TO  WRK-SURYO
+               MOVE    WRK-SURYO           TO  WRK-LF02-SURYO
                                                         (IDX-LF IDX-S)
-               ELSE
-      *            小数点以下４桁以上
-                   MOVE    TBL-SURYO (IDX-LF IDX-S)    TO  WRK-SURYO-5
-                   MOVE    WRK-SURYO-5         TO  WRK-LF02-SURYO
-                                                        (IDX-LF IDX-S)
-               END-IF
            END-IF
       *数量コード
            MOVE    TBL-SURYOCD (IDX-LF IDX-S) 
@@ -2139,19 +2009,12 @@
                GO      TO      2005-SYUNOU-SET-EXT
            END-IF
       *
-      *    マル長の公費負担を保険適用金額へ
-           IF      SYU-HKNTEKKBN   =   "1"
-               MOVE    SYU-KOH-FTN         TO  SYU-HKNTEKMONEY
-               MOVE    ZERO                TO  SYU-KOH-FTN
-           END-IF
-      *
       *    請求点数
            ADD     1                   TO  IDX-LF2
       *    ２０剤以上の時エラー
       *@   IF      IDX-LF2             >   20
            IF      IDX-LF2             >   30
                DISPLAY "ZAI 30 OVER ???"
-               MOVE    1               TO  FLG-ERROVER
            ELSE
                MOVE    IDX-LF2             TO  IDX-LF
                PERFORM 20051-SEIKYU-TEN-SEC
@@ -2165,7 +2028,6 @@
       *@       IF      IDX-LF2             >   20
                IF      IDX-LF2             >   30
                    DISPLAY "ZAI 30 OVER ???"
-                   MOVE    1               TO  FLG-ERROVER
                ELSE
                    MOVE    IDX-LF2             TO  IDX-LF
                    PERFORM 20052-JIHI-TEN-SEC
@@ -2179,7 +2041,6 @@
       *@       IF      IDX-LF2             >   20
                IF      IDX-LF2             >   30
                    DISPLAY "ZAI 30 OVER ???"
-                   MOVE    1               TO  FLG-ERROVER
                ELSE
                    MOVE    IDX-LF2             TO  IDX-LF
                    PERFORM 20053-JIHITEX-TEN-SEC
@@ -2279,7 +2140,6 @@
                END-EVALUATE
            END-PERFORM
       *    保険適用金額
-      *
            ADD     1                   TO  IDX-IJ
            ADD     1                   TO  IDX-IJ2
            MOVE    IDX-IJ2             TO  TBL-IJICD(IDX-LF IDX-IJ)
@@ -2655,7 +2515,6 @@
            IF      IDX-LF2             >   30
                DISPLAY "ZAI 30 OVER ???"
                MOVE    1                   TO  FLG-ERR
-               MOVE    1                   TO  FLG-ERROVER
                GO      TO      200531-IDX-CNT-EXT
            END-IF
            MOVE    TBL-KAISU  (IDX-LF) TO  TBL-KAISU (IDX-LF2)
@@ -2827,10 +2686,6 @@
            IF      SRY-RENNUM          =   1
                PERFORM 200201-JIHI-ACCT-SEC
            END-IF
-      *H29.12  剤オーバー
-           IF      FLG-ERROVER     NOT =   ZERO
-               GO      TO      20020-JIHI-SYORI-EXT
-           END-IF
       *
            PERFORM VARYING     IDXA    FROM    1   BY  1
                    UNTIL       IDXA    >   5
@@ -2879,9 +2734,7 @@
       *    ３０剤以上の時エラー
            IF      IDX-LF2             >   30
                DISPLAY "ZAI 30 OVER ???"
-      *!!!     MOVE    30              TO  IDX-LF2
-               MOVE    1               TO  FLG-ERROVER
-               GO      TO      200201-JIHI-ACCT-EXT
+               MOVE    30              TO  IDX-LF2
            END-IF
       *
            MOVE    IDX-LF2             TO  IDX-LF
@@ -2937,12 +2790,6 @@
            MOVE    SRY-JIHIMONEY(IDXA) TO  TBL-MEISAITANKA
                                                       (IDX-LF IDX-IJ)
            MOVE    1                   TO  TBL-SURYO  (IDX-LF IDX-IJ)
-      *H30.2
-      *    メモにフリーコメントの内容セット
-           IF      SRY-INPUTNUM (IDXA)  NOT =   ZERO
-               PERFORM 200221-PTCOM-SET-SEC
-           END-IF
-      *
       *    自費合計
            ADD     SRY-JIHIMONEY(IDXA) TO  TBL-GINGAKUALL(IDX-LF)
            .
@@ -2996,20 +2843,6 @@
       *                                    UIDIO-AREA, ST
            .
        500-UUID-SET-EXT.
-           EXIT.
-      *****************************************************************
-      *    全角拡張漢字変換処理
-      *****************************************************************
-       800-ORCSKANACHK-SEC        SECTION.
-      *
-           INITIALIZE                  ORCSKANACHKAREA
-           MOVE    "1"                 TO  KANACHK-SYORI
-           MOVE    WRK-KOUMOKU         TO  KANACHK-MAE-INPUT
-           CALL    "ORCSKANACHK"       USING
-                                       ORCSKANACHKAREA
-           MOVE    KANACHK-MAE-INPUT   TO  WRK-KOUMOKU
-           .
-       800-ORCSKANACHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3273,48 +3106,6 @@
       *
            .
        910-PTMEMOINF-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療会計マスター読込（主キー）
-      *****************************************************************
-       950-SRYACCTPLUS-READ-SEC           SECTION.
-      *
-           MOVE    SPACE               TO  SRYACCTPLUS-REC
-           INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
-           MOVE    ACCT-PTID           TO  ACCTP-PTID
-           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
-           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
-           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
-           MOVE    1                   TO  ACCTP-RENNUM
-      *
-           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
-           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryacctplus"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
-                   MOVE    ZERO                TO  FLG-SRYACCTPLUS
-               ELSE
-                   MOVE    1                   TO  FLG-SRYACCTPLUS
-                   INITIALIZE                  SRYACCTPLUS-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCTPLUS
-               INITIALIZE                  SRYACCTPLUS-REC
-           END-IF
-      *
-           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       950-SRYACCTPLUS-READ-EXT.
            EXIT.
       *
       *****************************************************************
