@@ -1,7 +1,5 @@
         02  C50.
    *******  02  C50-FIXED1.
-              03  C50-COMMENT.
-                04  C50-VALUE   PIC X(800).
               03  C50-BUNNUM.
                 04  C50-VALUE   PIC S9(3).
               03  C50-SRYYM.
@@ -85,3 +83,9 @@
                 04  C50-SJKBN-COUNT   PIC S9(9)   BINARY.
                 04  C50-SJKBN-ITEM
                         PIC X(53)   OCCURS  20 TIMES.
+              03  C50-SCROLLEDWINDOW3.
+                04  C50-HPOS    PIC S9(9)   BINARY.
+                04  C50-VPOS    PIC S9(9)   BINARY.
+                04  C50-COMMENT.
+                  05  C50-VALUE   PIC X(800).
+

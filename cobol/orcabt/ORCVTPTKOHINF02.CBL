@@ -889,6 +889,8 @@
                        MOVE    "20010101"          TO  WRK-HEN-TEKSTYMD
                        MOVE    "00"                TO  WRK-HEN-PAYKBN
                        PERFORM 5001421-KOHHENKOU-SEC
+                       MOVE    PTKOHINF-REC        TO  TBL-PTKOHINF-REC
+                                                              (IDX)
                    ELSE
       *                保険者マスタなし
                        MOVE    3               TO  FLG-ERR
