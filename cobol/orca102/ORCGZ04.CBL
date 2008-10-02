@@ -672,7 +672,7 @@
            MOVE    2                   TO  SPA-GMN-SOURYO-MAX
       *    内服算定
            MOVE    "0 なし"            TO  SPA-GMN-NAIFUKUKBN-LST(1)
-           MOVE    "1 内服として算定可能な外用"
+           MOVE    "1 内服として算定可"
                                        TO  SPA-GMN-NAIFUKUKBN-LST(2)
            MOVE    2                   TO  SPA-GMN-NAIFUKU-MAX
       *    一般名記載区分

@@ -792,6 +792,21 @@
                                                OR  "292"  )
                        MOVE    "21"            TO  WRK-SRYKBN
                    END-IF
+      *!
+      *            注射薬で内服算定の判定
+                   IF     (WRK-SRYKBN          =   "30"  )  AND
+                          (SPA-COM-NAIFUKUKBN (IDX)
+                                               =   1     )  AND
+                          (WRK-SRYSYUKBN       =   "210" OR
+                                                   "211" OR
+                                                   "212"
+                                               OR  "213"
+                                               OR  "214"
+                                               OR  "290"
+                                               OR  "291"
+                                               OR  "292"  )
+                       MOVE    "21"            TO  WRK-SRYKBN
+                   END-IF
       *            前が処方せん料は薬剤は入力しない
                    IF     (SPA-COM-SRYKBN (IDX - 1) =   "80" ) AND
                           (SPA-COM-SRYSYUKBN (IDX - 1)
@@ -1509,6 +1524,14 @@
                                                                   (IDX)
                            MOVE    "980"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
+      *                    入院時は982 へ
+                           IF      SPA-NYUGAIKBN   =   "1"
+                               IF      SPA-COM-SRYSYUKBN(IDX - 1)
+                                                   NOT =   "980"
+                                   MOVE    "982"   TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+                               END-IF
+                           END-IF
       *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
