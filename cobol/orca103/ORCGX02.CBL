@@ -216,7 +216,6 @@
       *     
        01  CONST-AREA.
            03  CONST-TEKCD-MAX     PIC 9(05)   VALUE   200.
-           03  CONST-X03TEKCD-MAX  PIC 9(05)   VALUE   100.
            03  CONST-LINE-MAX      PIC 9(03)   VALUE   20. 
            03  CONST-PAGE-MAX      PIC 9(02)   VALUE   10.
       *
@@ -1410,12 +1409,6 @@
       *
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
-      *
-           IF    ( SPA-ERRCD   =   SPACE )
-               IF    ( SPA-GMN-TBL-MAX     >   CONST-X03TEKCD-MAX )
-                   MOVE    "0014"          TO  SPA-ERRCD
-               END-IF
-           END-IF
       *
            IF    ( SPA-ERRCD   =   SPACE )
       *

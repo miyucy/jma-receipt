@@ -137,8 +137,8 @@ X04	{
 					value2	varchar(100);
 					value3	varchar(4);
 					value4	varchar(4);
-				}	[100];
-				select	bool[100];
+				}	[200];
+				select	bool[200];
 			};
 		};
 		scrolledwindow3	{

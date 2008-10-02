@@ -36,8 +36,8 @@ X03	{
 					value0	varchar(4);
 					value1	varchar(100);
 					value2	varchar(4);
-				}	[100];
-				select	bool[100];
+				}	[200];
+				select	bool[200];
 			};
 		};
 		RCHKKBNMEI	{
@@ -64,8 +64,8 @@ X03	{
 					value0	varchar(4);
 					value1	varchar(100);
 					value2	varchar(4);
-				}	[100];
-				select	bool[100];
+				}	[200];
+				select	bool[200];
 			};
 		};
 		CMB_CHKKBN	{

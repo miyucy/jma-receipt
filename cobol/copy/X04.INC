@@ -82,14 +82,14 @@
                   05  X04-BYOLST-COUNT   PIC S9(9)   BINARY.
                   05  X04-BYOLST-ROW PIC S9(9)   BINARY.
                   05  X04-BYOLST-ROWATTR PIC S9(9)   BINARY.
-                  05  X04-BYOLST-ITEM        OCCURS  100 TIMES.
+                  05  X04-BYOLST-ITEM        OCCURS  200 TIMES.
                     06  X04-TNO       PIC X(3).
                     06  X04-TMARK     PIC X(1).
                     06  X04-TBYOMEI   PIC X(100).
                     06  X04-TJYKN     PIC X(4).
                     06  X04-TUTAGAI   PIC X(4).
                   05  X04-BYOLST-SELECT
-                          PIC X       OCCURS  100 TIMES.
+                          PIC X       OCCURS  200 TIMES.
               03  X04-SCROLLEDWINDOW3.
                 04  X04-SRCBYOLST.
                   05  X04-LBLSRCBYOCD      PIC X(10).
