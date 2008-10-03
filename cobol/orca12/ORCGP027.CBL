@@ -588,38 +588,50 @@
                END-IF
       *
       *        泼年砷铜の箕、减惦荚戎规肋年
-               IF      LNK-COMB-KOH1HKNNUM (IDX)   =   "051"
+               IF     (LNK-COMB-KOH1HKNNUM (IDX)   =   "051"
                                                    OR  "052"
                                                    OR  "091"
                                                    OR  "015"
-                                                   OR  "016"
+                                                   OR  "016" )
+      *            颂长苹の孟数给锐
+                   OR ((LNK-COMB-KOH1HKNNUM (IDX)  =   "183" ) AND
+                       (SPA-PREFNUM                 =   01   ))
                    MOVE    LNK-COMB-KOH1HKNNUM (IDX)   TO  WRK-KOHNUM
                    MOVE    LNK-COMB-KOH1ID (IDX)       TO  WRK-KOHID
                    PERFORM 3202-JKYSNUM-HENSYU-SEC
                END-IF
-               IF      LNK-COMB-KOH2HKNNUM (IDX)   =   "051"
+               IF     (LNK-COMB-KOH2HKNNUM (IDX)   =   "051"
                                                    OR  "052"
                                                    OR  "091"
                                                    OR  "015"
-                                                   OR  "016"
+                                                   OR  "016" )
+      *            颂长苹の孟数给锐
+                   OR ((LNK-COMB-KOH2HKNNUM (IDX)  =   "183" ) AND
+                       (SPA-PREFNUM                 =   01   ))
                    MOVE    LNK-COMB-KOH2HKNNUM (IDX)   TO  WRK-KOHNUM
                    MOVE    LNK-COMB-KOH2ID (IDX)       TO  WRK-KOHID
                    PERFORM 3202-JKYSNUM-HENSYU-SEC
                END-IF
-               IF      LNK-COMB-KOH3HKNNUM (IDX)   =   "051"
+               IF     (LNK-COMB-KOH3HKNNUM (IDX)   =   "051"
                                                    OR  "052"
                                                    OR  "091"
                                                    OR  "015"
-                                                   OR  "016"
+                                                   OR  "016" )
+      *            颂长苹の孟数给锐
+                   OR ((LNK-COMB-KOH3HKNNUM (IDX)  =   "183" ) AND
+                       (SPA-PREFNUM                 =   01   ))
                    MOVE    LNK-COMB-KOH3HKNNUM (IDX)   TO  WRK-KOHNUM
                    MOVE    LNK-COMB-KOH3ID (IDX)       TO  WRK-KOHID
                    PERFORM 3202-JKYSNUM-HENSYU-SEC
                END-IF
-               IF      LNK-COMB-KOH4HKNNUM (IDX)   =   "051"
+               IF     (LNK-COMB-KOH4HKNNUM (IDX)   =   "051"
                                                    OR  "052"
                                                    OR  "091"
                                                    OR  "015"
-                                                   OR  "016"
+                                                   OR  "016" )
+      *            颂长苹の孟数给锐
+                   OR ((LNK-COMB-KOH4HKNNUM (IDX)  =   "183" ) AND
+                       (SPA-PREFNUM                 =   01   ))
                    MOVE    LNK-COMB-KOH4HKNNUM (IDX)   TO  WRK-KOHNUM
                    MOVE    LNK-COMB-KOH4ID (IDX)       TO  WRK-KOHID
                    PERFORM 3202-JKYSNUM-HENSYU-SEC
