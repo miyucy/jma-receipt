@@ -881,18 +881,18 @@
                    WHEN    SPACE
                        MOVE  "入院会計を更新しました" TO  WRK-NAIYO
       *
-                       IF   WRK-PARA-SRYYM = "200804"
-                         PERFORM 20021-GAITOU-HENSYU-SEC
-      *
-                         EVALUATE   FLG-TAISYO
-                          WHEN        1
-                        MOVE  "入院会計を更新しました（後期高齢該当）"
-                                                      TO  WRK-NAIYO
-                          WHEN        2
-                        MOVE  "入院会計を更新しました（生活療養該当）"
-                                                      TO  WRK-NAIYO
-                         END-EVALUATE
-                       END-IF
+      **                 IF   WRK-PARA-SRYYM = "200804"
+      **                   PERFORM 20021-GAITOU-HENSYU-SEC
+      **
+      **                   EVALUATE   FLG-TAISYO
+      **                    WHEN        1
+      **                  MOVE  "入院会計を更新しました（後期高齢該当）"
+      **                                                TO  WRK-NAIYO
+      **                    WHEN        2
+      **                  MOVE  "入院会計を更新しました（生活療養該当）"
+      **                                                TO  WRK-NAIYO
+      **                   END-EVALUATE
+      **                 END-IF
       *
                    WHEN    "2003"
                        MOVE  "通算日数の取得に失敗しました"
