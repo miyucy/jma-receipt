@@ -43,6 +43,7 @@
       *  04.02.07    NACL-ÌçÏÆ    08/06/12  °¦É²¸©ÃÏÊý¸øÈñÂÐ±þ
       *                                     ¡Ê°ìÉôÉéÃ´¶âºÆ·ÇÍóÊÔ½¸¡Ë
       *  04.02.08    NACL-ÌçÏÆ    08/06/25  Á´¹ñ¸øÈñ£²¼ï¤Î°ìÉôÉéÃ´¶âÅùµ­ºÜÂÐ±þ
+      *  04.02.09    NACL-ÌçÏÆ    08/10/02  ËÌ³¤Æ»ÆÃÄê¼À´µÂÐ±þ
       *
       *  04.03.01    NACL-Æ£¸¶    08/05/07  ¸øÈñ£´¼ï¤Þ¤Ç¤ÎÊ»ÍÑ¤Îµ­Ï¿ÂÐ±þ
       *  04.03.02    NACL-Æ£¸¶    08/06/02  ¥ê¥¢¥ë¥¿¥¤¥à¥×¥ì¥Ó¥å¡¼»þ¤ÎÉ½¼¨
@@ -5507,12 +5508,17 @@
                                     >=  "1" AND <=  "8") AND
                   (RECE62-TOTALTEN (IDX2) >   ZERO     ))
            OR    ((RECE62-SRYYM          >=  "200510"  ) AND
+                  (RECE62-SRYYM          <   "200810"  ) AND
                   (SYS-1001-PREFNUM       =    01      ) AND
                   (RECE62-KOHNUM(1)       =  "051"     ) AND
                   ((RECE62-KOHJKYSNUM(1)(1:2) >= "91"
                                           AND <= "95" ) OR
                    (RECE62-KOHJKYSNUM(1)(1:2) >= "71"
                                           AND <= "88" )) AND
+                  (RECE62-TOTALTEN (IDX2) >   ZERO     ))
+           OR    ((RECE62-SRYYM          >=  "200810"  ) AND
+                  (SYS-1001-PREFNUM       =    01      ) AND
+                  (RECE62-KOHNUM(1)       =  "183"     ) AND
                   (RECE62-TOTALTEN (IDX2) >   ZERO     ))
                MOVE    RECE62-TOTALTEN (IDX2) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  WRK-KOH-TOTALTEN(1)
@@ -5628,12 +5634,17 @@
                                     >=  "1" AND <=  "8") AND
                   (RECE62-TOTALTEN (IDX3) >   ZERO     ))
            OR    ((RECE62-SRYYM          >=  "200510"  ) AND
+                  (RECE62-SRYYM          <   "200810"  ) AND
                   (SYS-1001-PREFNUM       =    01      ) AND
                   (RECE62-KOHNUM(2)       =  "051"     ) AND
                   ((RECE62-KOHJKYSNUM(2)(1:2) >= "91"
                                           AND <= "95" ) OR
                    (RECE62-KOHJKYSNUM(2)(1:2) >= "71"
                                           AND <= "88" )) AND
+                  (RECE62-TOTALTEN (IDX3) >   ZERO     ))
+           OR    ((RECE62-SRYYM          >=  "200810"  ) AND
+                  (SYS-1001-PREFNUM       =    01      ) AND
+                  (RECE62-KOHNUM(2)       =  "183"     ) AND
                   (RECE62-TOTALTEN (IDX3) >   ZERO     ))
                MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  WRK-KOH-TOTALTEN(2)
@@ -5754,6 +5765,7 @@
                     (  RECE62-KOHNUM(3)(1:1)   >=  "1" AND <=  "8") AND
                     (  RECE62-TOTALTEN (IDX4)  >   ZERO           )    )
                OR  ((  RECE62-SRYYM            >=  "200510"  ) AND
+                    (  RECE62-SRYYM            <   "200810"  ) AND
                     (  SYS-1001-PREFNUM        =   01        ) AND
                     (  RECE62-KOHNUM(3)        =   "051"     ) AND
                     (( RECE62-KOHJKYSNUM(3)(1:2)
@@ -5763,6 +5775,10 @@
                                                >=  "71"
                                                    AND <=  "88" )) AND
                      ( RECE62-TOTALTEN (IDX4)  >   ZERO          )     )
+               OR  ((  RECE62-SRYYM            >=  "200810"  ) AND
+                    (  SYS-1001-PREFNUM        =   01        ) AND
+                    (  RECE62-KOHNUM(3)        =   "183"     ) AND
+                    (  RECE62-TOTALTEN (IDX4)  >   ZERO      ))
                    MOVE    RECE62-TOTALTEN (IDX4)  TO  WRK-KGK10
                    MOVE    WRK-KGK10               TO
                                                    WRK-KOH-TOTALTEN(3)
@@ -5890,6 +5906,7 @@
                     (  RECE62-KOHNUM(4)(1:1)   >=  "1" AND <=  "8") AND
                     (  RECE62-TOTALTEN (IDX5)  >   ZERO           )    )
                OR  ((  RECE62-SRYYM            >=  "200510"  ) AND
+                    (  RECE62-SRYYM            <   "200810"  ) AND
                     (  SYS-1001-PREFNUM        =   01        ) AND
                     (  RECE62-KOHNUM(4)        =   "051"     ) AND
                     (( RECE62-KOHJKYSNUM(4)(1:2)
@@ -5899,6 +5916,10 @@
                                                >=  "71"
                                                    AND <=  "88" )) AND
                      ( RECE62-TOTALTEN (IDX5)  >   ZERO          )     )
+               OR  ((  RECE62-SRYYM            >=  "200810"  ) AND
+                    (  SYS-1001-PREFNUM        =   01        ) AND
+                    (  RECE62-KOHNUM(4)        =   "183"     ) AND
+                    (  RECE62-TOTALTEN (IDX5)  >   ZERO      ))
                    MOVE    RECE62-TOTALTEN (IDX5)  TO  WRK-KGK10
                    MOVE    WRK-KGK10               TO
                                                    WRK-KOH-TOTALTEN(4)

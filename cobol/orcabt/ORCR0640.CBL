@@ -333,6 +333,7 @@
       *  04.02.30    NACL-ÌçÏÆ    08/09/10  ¹­Åç¸©ÃÏÊý¸øÈñÂÐ±þ
       *  04.02.31    NACL-ÌçÏÆ    08/09/16  °ìÉôÉéÃ´¶âºÆ·ÇÍóµ­ºÜ½¤Àµ
       *  04.02.32    NACL-ÌçÏÆ    08/09/24  ¹âÎð¼Ô°ìÈÌ·Ð²áÁ¼ÃÖ±äÄ¹ÂÐ±þ½¤Àµ
+      *  04.02.33    NACL-ÌçÏÆ    08/10/02  ËÌ³¤Æ»ÆÃÄê¼À´µÂÐ±þ
       *
       *  04.03.01    NACL-ÌçÏÆ    08/07/07  Ê£¿ôÊÝ¸±ÁÈ¤ß¹ç¤ï¤»»ÈÍÑ»þ¤Î
       *                                     ÀÁµáÅÀ¡¦¼ÂÆü¿ôµ­ºÜÂÐ±þ
@@ -9406,6 +9407,7 @@
                                         FLG-DOTANDOKU
            IF   ( WRK-PREFNUM         =  "01"     )
            AND  ( RECE62-SRYYM       >=  "200510" )
+           AND  ( RECE62-SRYYM       <   "200810" )
              PERFORM   VARYING  IDX1    FROM    1   BY  1
                         UNTIL   IDX1      >     4
                IF RECE62-KOHNUM(IDX1)(1:1) =  "0" OR "9"
@@ -10808,6 +10810,10 @@
                          (WRK-PREFNUM            =   27       ) AND
                          (RECE62-KOHNUM(KH-IDX - 1)(1:1)
                                          >=  "1" AND <=  "8"  ))
+                  OR    ((RECE62-KOUREI          =  "1" OR "2") AND
+                         (RECE62-SRYYM          >=  "200810"  ) AND
+                         (WRK-PREFNUM            =   01       ) AND
+                         (RECE62-KOHNUM(KH-IDX - 1) = "183"   ))
                      ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                    RECE62-FTNMONEY(KH-IDX)
                                    RECE62-FTNMONEY-KOJ(KH-IDX)
@@ -10917,9 +10923,12 @@
                 IF  (  FLG-ZENKI-TOKUREI         =   1             )
                 AND (  KH-IDX                    =   2             )
                 AND (((WRK-PREFNUM               = "13"          ) AND
-                      (RECE62-KOHNUM(KH-IDX - 1) = "151" OR "451")))
+                      (RECE62-KOHNUM(KH-IDX - 1) = "151" OR "451"))
       **>         OR ((WRK-PREFNUM               = "28"          ) AND
-      **>             (RECE62-KOHNUM(KH-IDX - 1) = "186"         )))
+      **>             (RECE62-KOHNUM(KH-IDX - 1) = "186"         ))
+                  OR ((WRK-PREFNUM               = "01"          ) AND
+                      (RECE62-KOHNUM(KH-IDX - 1) = "183"         ) AND
+                      (RECE62-SRYYM             >= "200810"      )))
                     COMPUTE  WRK-TAIHI-GENKIN2 = SYU-TOTAL-HKNTEN
                                                * 10
                                                * 20
@@ -11251,6 +11260,9 @@
                   (RECE62-SRYYM             >=  "200702"      ))
              OR  ((RECE62-KOHNUM(KOHFTN-IDX) =  "025"         )   AND
                   (RECE62-SRYYM             >=  "200804"      ))
+             OR  ((WRK-PREFNUM               =  "01"          )   AND
+                  (RECE62-KOHNUM(KOHFTN-IDX) =  "183"         )   AND
+                  (RECE62-SRYYM             >=  "200810"      ))
       *
                IF ((RECE62-KOHNUM(KOHFTN-IDX) =  "015" OR "016")  AND
                    (RECE62-SRYYM             >=  "200604"      ))
@@ -11258,7 +11270,8 @@
                    (RECE62-KOHNUM(KOHFTN-IDX) =  "051"         )  AND
                    (RECE62-KOHJKYSNUM(KOHFTN-IDX)(1:2) >= "91"
                                                    AND <= "95" )  AND
-                   (RECE62-SRYYM             >=  "200510"      ))
+                   (RECE62-SRYYM             >=  "200510"      )  AND
+                   (RECE62-SRYYM             <   "200810"      ))
                OR ((FLG-ZENKI-TOKUREI         =   1            )  AND
                    (RECE62-KOHNUM(KOHFTN-IDX) =  "051"         )  AND
                    (KOHFTN-IDX                =   1            ))
@@ -11270,6 +11283,16 @@
       **>          (WRK-PREFNUM               =  "28"          )  AND
       **>          (RECE62-KOHNUM(KOHFTN-IDX) =  "186"         )  AND
       **>          (KOHFTN-IDX                =   1            ))
+               OR ((WRK-PREFNUM               =  "01"          )  AND
+                   (RECE62-KOHNUM(KOHFTN-IDX) =  "183"         )  AND
+                   (RECE62-KOHJKYSNUM(KOHFTN-IDX)(1:2) >= "91"
+                                                   AND <= "95" )  AND
+                   (RECE62-SRYYM             >=  "200810"      ))
+               OR ((FLG-ZENKI-TOKUREI         =   1            )  AND
+                   (WRK-PREFNUM               =  "01"          )  AND
+                   (RECE62-KOHNUM(KOHFTN-IDX) =  "183"         )  AND
+                   (KOHFTN-IDX                =   1            )  AND
+                   (RECE62-SRYYM             >=  "200810"      ))
                 CONTINUE
                ELSE
                 COMPUTE  WRK-FTNKEI2 = RECE62-FTNMONEY(KOHFTN-IDX + 1)
@@ -11435,6 +11458,11 @@
                    (RECE62-KOHNUM(KOHFTN-IDX) =  "151" OR "451"))
                OR ((WRK-PREFNUM      =   28           ) AND
                    (RECE62-KOHNUM(KOHFTN-IDX) =  "186"         ))
+               OR ((WRK-PREFNUM      =   01           ) AND
+                   (RECE62-KOHNUM(KOHFTN-IDX) =  "183") AND
+                   (RECE62-KOHFTNJANUM(KOHFTN-IDX)(5:3)
+                                              =  "602") AND
+                   (RECE62-SRYYM          >=  "200810"))
                      MOVE  "1"   TO
                              RECE62-KISAIFLG(KOHFTN-IDX + 1)
                END-IF
@@ -11442,6 +11470,11 @@
                                                        OR "051" )
                OR ((WRK-PREFNUM      =   13           ) AND
                    (RECE62-KOHNUM(KOHFTN-IDX) =  "151" OR "451"))
+               OR ((WRK-PREFNUM      =   01           ) AND
+                   (RECE62-KOHNUM(KOHFTN-IDX) =  "183") AND
+                   (RECE62-KOHFTNJANUM(KOHFTN-IDX)(5:3)
+                                              =  "602") AND
+                   (RECE62-SRYYM          >=  "200810"))
                OR ((RECE62-KOHNUM(KOHFTN-IDX) =  "010" OR "021") AND
                    (RECE62-HKNJANUM(1:6)
                                      =  "133033" OR "133280" OR
@@ -12113,6 +12146,9 @@
       ***          OR  ((WRK-PREFNUM             =   33           ) AND
       ***               (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
       ***                                       >= "1" AND <=  "8"))
+                   OR  ((WRK-PREFNUM               =  01          ) AND
+                        (RECE62-KOHNUM(KOHFTN-IDX) = "183"        ) AND
+                        (RECE62-SRYYM             >= "200810"     ))
                       MOVE  WRK-TAIHI-FTNMONEY    (KOHFTN-IDX + 1)
                                 TO  RECE62-FTNMONEY(KOHFTN-IDX + 1)
                       MOVE  WRK-TAIHI-FTNMONEY-KOJ(KOHFTN-IDX + 1)
@@ -12181,6 +12217,10 @@
       **>  OR  ((FLG-ZENKI-TOKUREI     =   1  ) AND
       **>       (WRK-PREFNUM           = "28" ) AND
       **>       (RECE62-KOHNUM(1)      = "186"))
+           OR  ((FLG-ZENKI-TOKUREI     =   1  ) AND
+                (WRK-PREFNUM           = "01" ) AND
+                (RECE62-KOHNUM(1)      = "183") AND
+                (RECE62-SRYYM      >= "200810"))
               PERFORM  210463-ZENKI-TOKUREI-OKIKAE-SEC
            END-IF
       *
@@ -12203,6 +12243,7 @@
                                                AND <= "95") OR
                         (RECE62-KOHJKYSNUM(1)(1:2) >= "71"
                                                AND <= "88"))
+                   AND ( RECE62-SRYYM      <  "200810"     )
                       CONTINUE
                    ELSE
                       PERFORM  210462-GENGAKU-OKIKAE-SEC
@@ -12230,7 +12271,8 @@
            MOVE     ZERO     TO    FLG-SAIKEI-KISAI
            EVALUATE   WRK-PREFNUM
              WHEN       "01"
-               IF  RECE62-SRYYM   >=  "200510"
+               IF  (RECE62-SRYYM   >=  "200510")
+               AND (RECE62-SRYYM   <   "200810")
                  PERFORM  VARYING  KOHFTN-IDX  FROM  1  BY  1
                            UNTIL   KOHFTN-IDX   >    4
                    IF  ( RECE62-KOHNUM(KOHFTN-IDX) =  "051"         )
@@ -12238,6 +12280,14 @@
                                                         AND <= "95") OR
                         (RECE62-KOHJKYSNUM(KOHFTN-IDX)(1:2) >= "71"
                                                         AND <= "88"))
+                       MOVE     1     TO    FLG-SAIKEI-KISAI
+                   END-IF
+                 END-PERFORM
+               END-IF
+               IF  RECE62-SRYYM   >=  "200810"
+                 PERFORM  VARYING  KOHFTN-IDX  FROM  1  BY  1
+                           UNTIL   KOHFTN-IDX   >    4
+                   IF    RECE62-KOHNUM(KOHFTN-IDX) =  "183"
                        MOVE     1     TO    FLG-SAIKEI-KISAI
                    END-IF
                  END-PERFORM
@@ -13077,6 +13127,9 @@
                                        OR "451"))
       **>   OR  ((WRK-PREFNUM           = "28" ) AND
       **>        (RECE62-KOHNUM(1)      = "186"))
+            OR  ((WRK-PREFNUM           = "01" ) AND
+                 (RECE62-KOHNUM(1)      = "183") AND
+                 (RECE62-SRYYM      >= "200810"))
              CONTINUE
             ELSE
              IF  WRK-KOH-GENDOGAKU   NOT =  ZERO
@@ -13163,8 +13216,16 @@
                  (RECE62-KOHNUM(1)  = "151" OR "451"))
       **>  OR   ((WRK-PREFNUM       = "28"          ) AND
       **>        (RECE62-KOHNUM(1)  = "186"         ))
-             IF  (WRK-PREFNUM        =  "01"                   )
-             AND (RECE62-KOHJKYSNUM(1)(1:2) >= "91" AND <= "95")
+           OR   ((WRK-PREFNUM       = "01"          ) AND
+                 (RECE62-KOHNUM(1)  = "183"         ) AND
+                 (RECE62-SRYYM     >= "200810"      ))
+             IF  ((WRK-PREFNUM        =  "01"                   ) AND
+                  (RECE62-KOHNUM(1)   =  "051"                  ) AND
+                  (RECE62-KOHJKYSNUM(1)(1:2) >= "91" AND <= "95") AND
+                  (RECE62-SRYYM       <  "200810"               ))
+             OR  ((WRK-PREFNUM        =  "01"                   ) AND
+                  (RECE62-KOHNUM(1)   =  "183"                  ) AND
+                  (RECE62-KOHJKYSNUM(1)(1:2) >= "91" AND <= "95"))
               CONTINUE
              ELSE
               COMPUTE  WRK-FTNKEI2 = RECE62-FTNMONEY(2) + WRK-SKJ-FTN(2)
@@ -13549,6 +13610,7 @@
       *
            IF   ( WRK-PREFNUM         =  "01"     )
            AND  ( RECE62-SRYYM       >=  "200510" )
+           AND  ( RECE62-SRYYM       <   "200810" )
              PERFORM   VARYING  IDX1    FROM    1   BY  1
                         UNTIL   IDX1      >     4
                IF  ( RECE62-KOHNUM(IDX1) =  "051"         )
