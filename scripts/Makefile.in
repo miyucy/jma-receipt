@@ -100,6 +100,7 @@ ruby_scripts = \
 	allways/cachetoprgdir.rb \
 	allways/program_upgrade_exec.rb \
 	allways/program_upgrade_check.rb \
+	allways/run.rb \
 	monthly/das-upload.rb \
 	monthly/lib/orcadas/command.rb \
 	monthly/lib/orcadas/formdata.rb \

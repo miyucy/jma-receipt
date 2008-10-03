@@ -15,9 +15,9 @@ ETC_files = \
 DBGROUP_files = dbgroup.inc 
 
 jma-receipt-crontab: jma-receipt-crontab.in
-	sed -e "s|@SCRIPTSDIR@|${scriptsdir}|" \
-	-e "s|@PATCHSCRIPTSDIR@|${PATCHSCRIPTSDIR}|" \
-	-e "s|@SITESCRIPTSDIR@|${SITESCRIPTSDIR}|" $< > $@
+	sed -e "s|@SCRIPTSDIR@|$(scriptsdir)|g" \
+	-e "s|@PATCHSCRIPTSDIR@|$(PATCHSCRIPTSDIR)|g" \
+	-e "s|@SITESCRIPTSDIR@|$(SITESCRIPTSDIR)|g" $< > $@
 
 all: jma-receipt-crontab
 
