@@ -204,6 +204,7 @@
            03  FLG-RJN                     PIC 9(01).
            03  FLG-LIFE-RJN                PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
+           03  FLG-NYUINACT                PIC 9(01).
            03  FLG-NYUINACCTARI            PIC 9(01).
            03  FLG-WKPTTEIKIRRK            PIC 9(01).
            03  FLG-HKNCOMBIGET             PIC 9(01).
@@ -221,6 +222,7 @@
            03  FLG-SYS5001                 PIC 9(01).
            03  FLG-LASTSKJ                 PIC 9(01).
            03  FLG-HIT                     PIC 9(01).
+           03  FLG-PASS                    PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -252,6 +254,7 @@
            03  IDX-KSN                     PIC 9(05).
            03  IDX-KSN2                    PIC 9(05).
            03  IDX-SST                     PIC 9(05).
+           03  IDX-NSRY                    PIC 9(05).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -873,6 +876,10 @@
       *    入院会計
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
+      *
+      *    入院診療行為
+       01  NYUINACT-REC.
+           COPY    "CPNYUINACT.INC".
       *
       *    患者保険情報
        01  PTHKNINF-REC.
@@ -10556,10 +10563,6 @@
            IF     LNK-SCNYUACCT-RC   NOT =  ZERO
                DISPLAY  "ORCGI01 ORCSNYUACCT ERR RC = "
                          LNK-SCNYUACCT-RC
-               MOVE     "2016"       TO   SPA-ERRCD
-               MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-               MOVE    "abort"         TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
            END-IF
       *
       *-------入院時食事時間区分対応ここから-----------------------------------
@@ -17240,20 +17243,20 @@
                PERFORM 910-DBSELECT-SEC
            END-IF
       *
-           DISPLAY "PTID " SPA-NAI-I01-PTID " STSRYYM " WRK-STYMD (1:6)
-                   " EDSRYYM " WRK-EDYMD (1:6)
-      *
            PERFORM UNTIL ( WRK-STYMD (1:6) >   WRK-EDYMD (1:6))
                     OR   ( SPA-ERRCD  NOT  =   SPACE )
       *
-               INITIALIZE                  SS010-AREA
-               MOVE    SPA-NAI-I01-PTID    TO  SS010-PTID
-               MOVE    WRK-STYMD (1:6)     TO  SS010-SRYYM
-               DISPLAY "PTID " SS010-PTID " SRYYM " SS010-SRYYM
-               CALL    "ORCSS010"      USING   SS010-AREA
-                                               SPA-AREA
-               IF    ( SS010-RC        NOT =   ZERO )
-                   MOVE    "4033"          TO  SPA-ERRCD
+               PERFORM 48011-NYUINACCT-KIGEN-CHK-SEC
+               IF    ( FLG-PASS            =   ZERO )
+      *
+                   INITIALIZE                  SS010-AREA
+                   MOVE    SPA-NAI-I01-PTID    TO  SS010-PTID
+                   MOVE    WRK-STYMD (1:6)     TO  SS010-SRYYM
+                   CALL    "ORCSS010"      USING   SS010-AREA
+                                                   SPA-AREA
+                   IF    ( SS010-RC        NOT =   ZERO )
+                       MOVE    "4033"          TO  SPA-ERRCD
+                   END-IF
                END-IF
       *
                MOVE    WRK-STYMD       TO  WRK-YMD
@@ -17266,6 +17269,64 @@
       *
            .
        4801-ORCSS010-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計診療行為有効期間チェック処理
+      *****************************************************************
+       48011-NYUINACCT-KIGEN-CHK-SEC   SECTION.
+      *
+           MOVE    ZERO                TO  FLG-PASS
+      *
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
+           MOVE    "1"                 TO  NACCT-NYUGAIKBN
+           MOVE    SPA-NAI-I01-PTID    TO  NACCT-PTID
+           MOVE    WRK-STYMD (1:6)     TO  NACCT-SRYYM
+           PERFORM 900-NYUINACCT-KEY7-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-NYUINACCT   NOT =   ZERO )
+      *
+               PERFORM 900-NYUINACT-KEY9-SEL-SEC
+      *
+               PERFORM VARYING IDX-NSRY    FROM    1   BY  1
+                       UNTIL ( IDX-NSRY        >   5 )
+                        OR   ( NSRY-SRYCD (IDX-NSRY)
+                                               =   SPACE )
+                        OR   ( FLG-PASS    NOT =   ZERO )
+      *
+                   INITIALIZE              TNS-TENSU-REC
+                   MOVE    SPA-HOSPNUM     TO  TNS-HOSPNUM
+                   MOVE    NSRY-SRYCD (IDX-NSRY)
+                                           TO  TNS-SRYCD
+                   MOVE    NSRY-SRYYM      TO  TNS-YUKOSTYMD (1:6)
+                   MOVE    "01"            TO  TNS-YUKOSTYMD (7:2)
+                   MOVE    TNS-YUKOSTYMD   TO  TNS-YUKOEDYMD
+                   MOVE    TNS-TENSU-REC   TO  MCPDATA-REC
+      *
+                   MOVE    "tbl_tensu"     TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+                   IF    ( MCP-RC          =   ZERO )
+                       CONTINUE
+                   ELSE
+                       MOVE    1           TO  FLG-PASS
+                   END-IF
+      *
+                   MOVE    "tbl_tensu"     TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBCLOSECURSOR-SEC
+               END-PERFORM
+      *
+               PERFORM 900-NYUINACCT-KEY7-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key7"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC 
+      *
+           .
+       48011-NYUINACCT-KIGEN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療会計テーブルチェック処理
@@ -18829,16 +18890,6 @@
            WHEN    "2008"
                MOVE    "負担金計算処理に失敗しました"
                                        TO  SPA-ERRMSG
-           WHEN    "2016"
-               MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "点数マスタ有効期間外の入院会計"
-                                           DELIMITED   BY  SPACE
-                       "を作成しようとした為、"
-                                           DELIMITED   BY  SPACE
-                       "更新処理に失敗しました"
-                                           DELIMITED   BY  SPACE
-               INTO    SPA-ERRMSG
-               END-STRING
            WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"
                                        TO  SPA-ERRMSG
@@ -19487,6 +19538,45 @@
       *****************************************************************
       *    入院会計マスター検索
       *****************************************************************
+       900-NYUINACCT-KEY7-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCT
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key7"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           ELSE
+               MOVE    1                  TO  FLG-NYUINACCT
+           END-IF
+      *
+           .
+       900-NYUINACCT-KEY7-SEL-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院会計マスター読込
+      *****************************************************************
+       900-NYUINACCT-KEY7-FET-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINACCT
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key7"             TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACCT-REC
+           ELSE
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *
+           .
+       900-NYUINACCT-KEY7-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計マスター検索
+      *****************************************************************
        900-NYUINACCT-KEY19-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-NYUINACCT
@@ -19537,6 +19627,37 @@
        910-NYUINACCT-SELECT-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入院診療行為検索
+      *****************************************************************
+       900-NYUINACT-KEY9-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-NYUINACT
+      *
+           INITIALIZE                      NYUINACT-REC
+           MOVE    NACCT-HOSPNUM        TO  NSRY-HOSPNUM
+           MOVE    NACCT-NYUGAIKBN     TO  NSRY-NYUGAIKBN
+           MOVE    NACCT-PTID          TO  NSRY-PTID
+           MOVE    NACCT-SRYYM         TO  NSRY-SRYYM
+           MOVE    NACCT-ZAINUM        TO  NSRY-ZAINUM
+           MOVE    NYUINACT-REC        TO  MCPDATA-REC
+           MOVE    "tbl_nyuinact"      TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF   (  MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  NYUINACT-REC
+           ELSE
+               INITIALIZE                  NYUINACT-REC
+               MOVE    1               TO  FLG-NYUINACT
+           END-IF
+      *
+           MOVE    "tbl_nyuinact"      TO  MCP-TABLE
+           MOVE    "key9"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-NYUINACT-KEY9-SEL-EXT.
+           EXIT.
       *****************************************************************
       *    入院会計マスター読込
       *****************************************************************
