@@ -103,6 +103,7 @@
       *  04.02.05    NACL-門脇    08/06/15  入院料加算外泊チェック
       *  03.02.06    NACL-門脇    08/07/28  計算優先順位編集修正（長期）
       *  03.02.07    NACL-門脇    08/08/27  入院料加算外泊チェック修正
+      *  04.02.08    NACL-門脇    08/10/07  入院基本料有効期間チェック
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -129,6 +130,7 @@
            03  WRK-CHECK-STDAY             PIC 9(02).
            03  WRK-CHECK-EDDAY             PIC 9(02).
            03  WRK-MSGCD                   PIC 9(02).
+           03  WRK-NYUINRYO-ERR            PIC 9(01).
       *
        01  WRK-ROSAI-AREA.
            03  WRK-SYUTEN                  PIC 9(09).
@@ -691,6 +693,12 @@
              END-PERFORM
              IF   WRK-MSGCD   NOT =  ZERO
                 MOVE     WRK-MSGCD    TO    LNK-S02-RC
+             END-IF
+           END-IF.
+      *
+           IF    LNK-S02-RC   =   ZERO
+             IF   WRK-NYUINRYO-ERR  =  1
+                MOVE     17     TO    LNK-S02-RC
              END-IF
            END-IF.
       *
@@ -2124,6 +2132,13 @@ grpsys                            SPA-AREA
       **************************************************************
        NYUINACCT-GET-SEC           SECTION.
       *
+           IF    (NACCT-ZAITEN          = ZERO           )
+           AND   (NACCT-SRYYM(1:6)      = SYU-SRYYMD(1:6))
+           AND   (NACCT-ZAISKBKBN       = "1"            )
+           AND   (NACCT-SRYCDTOTAL  NOT = 99999916       )
+               MOVE      1      TO     WRK-NYUINRYO-ERR
+           END-IF
+      *
            IF    (NACCT-ZAITEN    NOT = ZERO           ) AND
                  (NACCT-SRYYM(1:6)    = SYU-SRYYMD(1:6))
       *
@@ -2664,6 +2679,12 @@ grpsys                              SPA-AREA
       *
               END-PERFORM
       *
+           ELSE
+      *
+              IF   LNK-SROUNYUIN-RC   =   7
+                   MOVE    1    TO   WRK-NYUINRYO-ERR
+              END-IF
+      *
            END-IF
       *
            .
@@ -2730,6 +2751,10 @@ grpsys                            SPA-AREA
                                 WHEN     6
                                     MOVE  TNS-TEN  TO  WRK-HYOKETU-TEN
                               END-EVALUATE
+                         END-IF
+                     ELSE
+                         IF  NYUINACT-IDX    =    1
+                              MOVE    1    TO   WRK-NYUINRYO-ERR
                          END-IF
                      END-IF                  
                END-PERFORM
