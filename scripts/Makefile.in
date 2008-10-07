@@ -82,7 +82,7 @@ shell_sources = \
         monthly/prtdbdel.sh.in \
         allways/ykjchk.sh.in \
 	allways/chkmst2.sh.in \
-	tools/dbbackup.sh.in \
+	tools/db-backup.sh.in \
 	tools/run_master_upgrade.sh.in \
 	monthly/receipt_export.sh.in
 
