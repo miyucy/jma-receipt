@@ -1378,6 +1378,11 @@
                CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
                                                SPA-AREA
                MOVE    STUSAN-NISSU01  TO  SPA-GMN-NYUINNISSU
+      *        自院再入院時に日数をプラス１する
+               IF      PTNYUINRRK-DOUJITSUKBN    =   "1"
+                   ADD    1            TO  SPA-GMN-NYUINNISSU
+               END-IF
+      *
                MOVE    STUSAN-NISSU03  TO  SPA-GMN-TSUSANNISSU
            ELSE
                MOVE    ZERO            TO  SPA-GMN-NYUINNISSU
