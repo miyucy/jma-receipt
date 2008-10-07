@@ -456,6 +456,10 @@
       *
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
+      *---(04.03.00) LINE ADD START ------------------------------------
+      *    出力先プリンタ名割り当て情報（入院）
+           COPY  "CPSK1034.INC".
+      *---(04.03.00) LINE ADD END   ------------------------------------
       *
       *---(03.04.01) LINE ADD START -----------------------------------
       *    医療機関編集情報
@@ -743,6 +747,13 @@
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1031-PRTNM(2)   TO  MKPRT-PRTNM
+      *---(04.03.00) LINE ADD START ------------------------------------
+      *    退院時院外処方せん（入院）
+            IF    (ORCHC19-KBN         =   "N"       )  AND
+                  (SYS-1034-PRTNM(12)  NOT =   SPACE )
+                MOVE   SYS-1034-PRTNM(12)  TO  MKPRT-PRTNM
+            END-IF
+      *---(04.03.00) LINE ADD START ------------------------------------
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
@@ -1707,6 +1718,20 @@
                                            ORCSPRTNMAREA
                                            SPA-AREA
                                            SYS-1031-REC
+      *---(04.03.00) LINE ADD START ------------------------------------
+      *    退院時院外処方せん（入院）
+           IF      ORCHC19-KBN         =   "N"
+               INITIALIZE                      SYS-1034-REC
+               INITIALIZE                      ORCSPRTNMAREA
+               MOVE    "2"                 TO  ORCSPRTNM-KBN
+               MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
+               MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+               CALL    "ORCSPRTNM"         USING
+                                               ORCSPRTNMAREA
+                                               SPA-AREA
+                                               SYS-1034-REC
+           END-IF
+      *---(04.03.00) LINE END START ------------------------------------
       *
       *    処方箋ＧＥ出力情報編集
            MOVE    SPACE               TO  SYS-1030-REC
