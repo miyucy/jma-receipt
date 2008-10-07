@@ -17455,6 +17455,8 @@
                    MOVE    "2014"  TO  SPA-ERRCD
                WHEN    16
                    MOVE    "2015"  TO  SPA-ERRCD
+               WHEN    17
+                   MOVE    "2016"  TO  SPA-ERRCD
                WHEN    OTHER
                    MOVE    "2008"  TO  SPA-ERRCD
                END-EVALUATE
@@ -18882,6 +18884,14 @@
                STRING  "入院料の算定が無い日に入院料加算が"
                                            DELIMITED   BY  SPACE
                        "算定されています。"
+                                           DELIMITED   BY  SPACE
+                       "確認してください"
+                                           DELIMITED   BY  SPACE
+               INTO    SPA-ERRMSG
+               END-STRING
+           WHEN    "2016"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "入院料の有効期間が切れています。"
                                            DELIMITED   BY  SPACE
                        "確認してください"
                                            DELIMITED   BY  SPACE
