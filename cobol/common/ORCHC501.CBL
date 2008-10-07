@@ -1389,6 +1389,7 @@
        200-HEAD-PRINT-SEC             SECTION.
       *
            INITIALIZE                  WRK-SYOHOU-AREA
+           INITIALIZE                  WRK-BIKOU-COMMENT-AREA
            MOVE    1                   TO  IDX-H
            MOVE    1                   TO  WRK-PAGE-MAX
            MOVE    ZERO                TO  IDX-LINE
@@ -1401,6 +1402,7 @@
       *    処方日・時間はクリア
            MOVE    SPACE               TO  WRK-SYSYMD
            MOVE    SPACE               TO  WRK-TIME-G
+           INITIALIZE                      WRK-TIME-G
       *    年齢
            MOVE    SPACE               TO  WRK-AGE-HEN
       *    印刷処理
