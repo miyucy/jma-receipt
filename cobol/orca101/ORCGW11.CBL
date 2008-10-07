@@ -801,6 +801,8 @@
       *
            MOVE    "薬剤情報提供書"    TO  SPA-GMN-TNAME-N (10)
            MOVE    "お薬手帳"          TO  SPA-GMN-TNAME-N (11)
+           MOVE    "処方せん（退院時院外）"
+                                       TO  SPA-GMN-TNAME-N (12)
       *
       *    カルテ１号紙
            MOVE    "ORCHCN01"          TO  SPA-GMN-TORGPGNM-N (1)
