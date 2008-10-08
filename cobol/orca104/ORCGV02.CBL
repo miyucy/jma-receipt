@@ -1943,7 +1943,14 @@
            PERFORM 900-HKNNUM-INV-SEC
            IF      FLG-HKNNUM              =   ZERO
                MOVE    MCPDATA-REC             TO  HKNNUM-REC
-           ELSE
+      *        開始日に変更があれば削除して追加
+               IF      HKN-TEKSTYMD        NOT =   SPA-V01-STYUKYMD
+                   PERFORM 4901-KOUSHIN-DEL-SEC
+                   MOVE    1               TO  FLG-HKNNUM
+                   INITIALIZE                      HKNNUM-REC
+               END-IF
+           END-IF
+           IF      FLG-HKNNUM          NOT =   ZERO
                MOVE    SPACE                   TO  HKNNUM-REC
                INITIALIZE                      HKNNUM-REC
       *********MOVE    SPA-HOSPID              TO  HKN-HOSPID
@@ -2060,6 +2067,22 @@
            END-IF
            .
        490-KOUSHIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    更新分削除処理
+      *****************************************************************
+       4901-KOUSHIN-DEL-SEC           SECTION.
+      *
+           MOVE    HKNNUM-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_hknnum"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           .
+       4901-KOUSHIN-DEL-EXT.
            EXIT.
       *
       *****************************************************************
