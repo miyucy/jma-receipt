@@ -618,7 +618,7 @@
                    OR      ( FLG-COMMA     =   1    )
       *        カンマの位置
                IF    ( CSV-X (IDY)     =   "," )  OR
-                     ((IDX             =   49  OR  48) AND
+                     ((IDX             =   49   ) AND
                      ( CSV-X (IDY)     =   SPACE))
                    MOVE    IDY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
@@ -638,6 +638,11 @@
                END-IF
            END-PERFORM
       *
+           IF      FLG-COMMA           =   ZERO
+               IF      WRK-PO-ST       NOT =   WRK-PO-ED
+                   COMPUTE WRK-PO-ED       =   WRK-PO-ED   +   1
+               END-IF
+           END-IF
            .
        210-CHAR-END-GET-EXT.
            EXIT.
