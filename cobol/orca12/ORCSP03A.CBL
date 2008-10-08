@@ -2014,14 +2014,6 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2003-HONKAKBN-SEICHK-SEC
            END-IF
-      *TEST
-      *    協会チェック
-           IF     (SPA-ERRCD           =   SPACE )
-               IF      SPA-GMN-HKNNUM      =   "009"
-                   PERFORM 2009-HKNNUM-009CHK-SEC
-               END-IF
-           END-IF
-      *TEST
       *    保険期間重複チェック
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2004-KANREN-HKN-CHECK-SEC
@@ -2290,64 +2282,6 @@
       *
            .
        2003-HOJOKBN-SEICHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険期間エラーチェック処理
-      *****************************************************************
-       2009-HKNNUM-009CHK-SEC      SECTION.
-      *
-           IF     (SPA-NAI-SKKGETYMD   NOT =   SPACE)
-             AND  (SPA-NAI-SKKGETYMD       <   "20081001")
-             AND  (SPA-NAI-HTEKSTYMD(7:2)  NOT =   "01"  )
-             AND ((SPA-NAI-HKNSTR      =   ZERO      ) OR
-                  (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
-                                        =   "1"      ))
-               IF      SPA-HKNJA-KEIFLG        =   SPACE
-      *            前の保険が政管であること
-                   PERFORM 20091-HKNNUM-001CHK02-SEC
-                   IF      FLG-CHK             =   1
-                       MOVE    "K100"              TO  SPA-ERRCD
-                       MOVE    "1"                 TO  SPA-HKNJA-KEIFLG
-                       MOVE    16                  TO  SPA-GMN-CUR
-                   END-IF
-               END-IF
-           END-IF
-           .
-       2009-HKNNUM-009CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    保険期間エラーチェック処理
-      *****************************************************************
-       20091-HKNNUM-001CHK02-SEC    SECTION.
-      *
-           MOVE    ZERO                TO  FLG-CHK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX             >   SPA-PTHKN-MAX )  OR
-                              (SPA-ERRCD   NOT =   SPACE )
-      *        現在表示分、削除分はチェックしない
-               IF     (IDX             =   SPA-NAI-HKNSTR ) OR
-                      (SPA-PTHKN-SAKJOKBN(IDX)     =   "1" )
-                   CONTINUE
-               ELSE
-                   IF      SPA-PTHKN-HKNNUM (IDX)  =   "001"
-      *            範囲の重複
-                      IF    ((SPA-PTHKN-TEKEDYMD (IDX)
-                                           <   SPA-NAI-HTEKSTYMD)  OR
-                              (SPA-PTHKN-TEKSTYMD (IDX)
-                                           >   SPA-NAI-HTEKEDYMD))
-                       AND   (SPA-PTHKN-TEKEDYMD (IDX)(1:6)
-                                           <   SPA-NAI-HTEKSTYMD(1:6))
-                           CONTINUE
-                       ELSE
-                           MOVE    1            TO  FLG-CHK
-                       END-IF
-                   END-IF
-               END-IF
-           END-PERFORM
-           .
-       20091-HKNNUM-001CHK02-EXT.
            EXIT.
       *
       *****************************************************************
