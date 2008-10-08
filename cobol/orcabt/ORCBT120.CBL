@@ -28,10 +28,6 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
-      *
-      *  04.05.01    NACL-藤原    12/07/02  住所欄に番地方書を追加
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -67,7 +63,7 @@
                                    REPLACING  //TEIKI01PARA//
                                    BY         //TOUKEI04PARA//.
       *
-           COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
+           COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TOUKEIERR//.
       *
       *    フラグ領域
@@ -265,7 +261,6 @@
       *    日次統計用入院情報取得サブ
            COPY    "CPORCBT120SUB.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -318,21 +313,6 @@
                                                TOUKEIERR
            END-UNSTRING 
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *     
-           MOVE    "TOKEI110"          TO  TOUKEI04PARA-FILE-ID
-           MOVE    WRK-PARA-TERMID     TO  TOUKEI04PARA-TERMID
-           MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    TOUKEIERR           TO  SGETTEMP-BASENAMES  (1)
-           MOVE    TOUKEI04PARA-BASENAME
-                                       TO  SGETTEMP-BASENAMES  (2)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SPACE               TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  TOUKEIERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  TOUKEI04PARA-FULLNAME
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -390,6 +370,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
+      *     
+           MOVE    "TOKEI110"          TO  TOUKEI04PARA-FILE-ID
+           MOVE    WRK-PARA-TERMID     TO  TOUKEI04PARA-TERMID
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI04PARA-HOSPNUM
       *
            OPEN    OUTPUT              TOUKEI04-FILE
            CLOSE                       TOUKEI04-FILE
@@ -419,8 +403,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                PERFORM   900-PTNYUINRRK-READ-SEC
                MOVE      PTNYUINRRK-PTID    TO  WRK-NEW-PTID
                PERFORM   UNTIL   FLG-PTNYUINRRK    =   1
-                   IF     PTNYUINRRK-RRKEDANUM    =   1
-                          PERFORM   2001-HENSYU-SEC
+                   IF    WRK-OLD-PTID       NOT =   WRK-NEW-PTID
+                       MOVE   WRK-NEW-PTID  TO  WRK-OLD-PTID 
+                       PERFORM   2001-HENSYU-SEC
                    END-IF
                    MOVE    "tbl_ptnyuinrrk"         TO  MCP-TABLE
                    MOVE    "key40"                  TO  MCP-PATHNAME
@@ -464,8 +449,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                   MOVE  WRK-PARA-SRYYMD
                                      TO  LNK-ORCBT120SUB-SANTEIYMD
                   MOVE    "00"       TO  LNK-ORCBT120SUB-SRYKA
-                  MOVE  PTNYUINRRK-RRKNUM
-                                     TO  LNK-ORCBT120SUB-RRKNUM
                   CALL    "ORCBT120SUB"  USING
                                          ORCBT120SUB-AREA
                                          SPA-AREA
@@ -529,10 +512,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            MOVE    PTINF-SEX           TO  TOUKEI04-SEX
            MOVE    PTINF-BIRTHDAY      TO  TOUKEI04-BIRTHDAY
            MOVE    PTINF-HOME-POST     TO  TOUKEI04-HOME-POST
-           STRING  PTINF-HOME-ADRS     DELIMITED   BY  SPACE
-                   PTINF-HOME-BANTI    DELIMITED   BY  SPACE
-                                       INTO        TOUKEI04-HOME-ADRS
-           END-STRING
+           MOVE    PTINF-HOME-ADRS     TO  TOUKEI04-HOME-ADRS
            MOVE    PTINF-HOME-TEL1     TO  TOUKEI04-HOME-TEL
            INITIALIZE                  ADRS-REC
            MOVE    PTINF-HOME-POST TO  ADRS-POST
