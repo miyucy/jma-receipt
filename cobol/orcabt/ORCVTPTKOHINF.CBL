@@ -745,6 +745,12 @@
                END-IF
            END-PERFORM
       *
+           IF      FLG-COMMA           =   ZERO
+               IF      WRK-PO-ST       NOT =   WRK-PO-ED
+                   COMPUTE WRK-PO-ED       =   WRK-PO-ED   +   1
+               END-IF
+           END-IF
+      *
            .
        210-CHAR-END-GET-EXT.
            EXIT.
