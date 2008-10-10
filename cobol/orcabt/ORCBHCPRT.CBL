@@ -145,6 +145,12 @@
       *    入院指示箋パラメタ
            COPY    "CPORCHC503.INC".
       *
+      *    薬情一覧印刷パラメタ
+           COPY    "CPORCHCN30.INC".
+      *
+      *    お薬手帳パラメタ
+           COPY    "CPORCHCN62.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -203,36 +209,57 @@
        200-MAIN-SEC                    SECTION.
       *
            EVALUATE   WRK-PARA-PGID
+      *
            WHEN    ONPRTID-ORCHCM19
                PERFORM 210-ORCHCM19-SEC
+      *
            WHEN    ONPRTID-ORCHCN01
                PERFORM 210-ORCHCN01-SEC
+      *
            WHEN    ONPRTID-ORCHCN02
                PERFORM 210-ORCHCN02-SEC
+      *
            WHEN    ONPRTID-ORCHCN03
                PERFORM 210-ORCHCN03-SEC
+      *
            WHEN    ONPRTID-ORCHCN04
                PERFORM 210-ORCHCN04-SEC
+      *
            WHEN    ONPRTID-ORCHC01
                PERFORM 210-ORCHC01-SEC
+      *
            WHEN    ONPRTID-ORCHC03
                PERFORM 210-ORCHC03-SEC
+      *
            WHEN    ONPRTID-ORCHC30
                PERFORM 210-ORCHC30-SEC
+      *
            WHEN    ONPRTID-ORCHC33
                PERFORM 210-ORCHC33-SEC
+      *
            WHEN    ONPRTID-ORCHC04
                PERFORM 210-ORCHC04-SEC
+      *
            WHEN    ONPRTID-ORCHC62
                PERFORM 210-ORCHC62-SEC
+      *
            WHEN    ONPRTID-ORCHCN33
                PERFORM 210-ORCHCN33-SEC
+      *
            WHEN    ONPRTID-ORCHC501
                PERFORM 210-ORCHC501-SEC
+      *
            WHEN    ONPRTID-ORCHC502
                PERFORM 210-ORCHC502-SEC
+      *
            WHEN    ONPRTID-ORCHC503
                PERFORM 210-ORCHC503-SEC
+      *
+           WHEN    ONPRTID-ORCHCN30
+               PERFORM 210-ORCHCN30-SEC
+      *
+           WHEN    ONPRTID-ORCHCN62
+               PERFORM 210-ORCHCN62-SEC
            END-EVALUATE
       *
            .
@@ -612,6 +639,56 @@
       *
            .
        210-ORCHC503-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬情一覧発行処理
+      *****************************************************************
+       210-ORCHCN30-SEC                 SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHCN30AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000009"          TO  ORCSPRTNM-KBNCD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHCN30AREA
+      *
+           .
+       210-ORCHCN30-EXT.
+           EXIT.
+      *****************************************************************
+      *    お薬手帳発行処理
+      *****************************************************************
+       210-ORCHCN62-SEC                 SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHCN62AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000010"          TO  ORCSPRTNM-KBNCD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHCN62AREA
+      *
+           .
+       210-ORCHCN62-EXT.
            EXIT.
       *****************************************************************
       *    パラメタ取得処理
