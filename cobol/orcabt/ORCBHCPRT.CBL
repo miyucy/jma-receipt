@@ -118,6 +118,33 @@
       *    入院診療費明細書パラメタ
            COPY    "CPORCHCN04.INC".
       *
+      *    外来カルテパラメタ
+           COPY    "CPORCHC01.INC".
+      *
+      *    請求書兼領収書パラメタ
+           COPY    "CPORCHC03.INC".
+      *
+      *    薬情一覧印刷パラメタ
+           COPY    "CPORCHC30.INC".
+      *
+      *    カルテ３号様式（外来）パラメタ
+           COPY    "CPORCHC33.INC".
+      *
+      *    診療費明細書パラメタ
+           COPY    "CPORCHC04.INC".
+      *
+      *    お薬手帳パラメタ
+           COPY    "CPORCHC62.INC".
+      *
+      *    入院処方箋パラメタ
+           COPY    "CPORCHC501.INC".
+      *
+      *    注射処方箋パラメタ
+           COPY    "CPORCHC502.INC".
+      *
+      *    入院指示箋パラメタ
+           COPY    "CPORCHC503.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -186,6 +213,26 @@
                PERFORM 210-ORCHCN03-SEC
            WHEN    ONPRTID-ORCHCN04
                PERFORM 210-ORCHCN04-SEC
+           WHEN    ONPRTID-ORCHC01
+               PERFORM 210-ORCHC01-SEC
+           WHEN    ONPRTID-ORCHC03
+               PERFORM 210-ORCHC03-SEC
+           WHEN    ONPRTID-ORCHC30
+               PERFORM 210-ORCHC30-SEC
+           WHEN    ONPRTID-ORCHC33
+               PERFORM 210-ORCHC33-SEC
+           WHEN    ONPRTID-ORCHC04
+               PERFORM 210-ORCHC04-SEC
+           WHEN    ONPRTID-ORCHC62
+               PERFORM 210-ORCHC62-SEC
+           WHEN    ONPRTID-ORCHCN33
+               PERFORM 210-ORCHCN33-SEC
+           WHEN    ONPRTID-ORCHC501
+               PERFORM 210-ORCHC501-SEC
+           WHEN    ONPRTID-ORCHC502
+               PERFORM 210-ORCHC502-SEC
+           WHEN    ONPRTID-ORCHC503
+               PERFORM 210-ORCHC503-SEC
            END-EVALUATE
       *
            .
@@ -315,6 +362,256 @@
       *
            .
        210-ORCHCN04-EXT.
+           EXIT.
+      *****************************************************************
+      *    外来カルテ発行処理
+      *****************************************************************
+       210-ORCHC01-SEC                 SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHC01AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000001"          TO  ORCSPRTNM-KBNCD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHC01AREA
+      *
+           .
+       210-ORCHC01-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求書兼領収書発行処理
+      *****************************************************************
+       210-ORCHC03-SEC                 SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHC03AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000003"          TO  ORCSPRTNM-KBNCD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHC03AREA
+      *
+           .
+       210-ORCHC03-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬情一覧発行処理
+      *****************************************************************
+       210-ORCHC30-SEC                 SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHC30AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000004"          TO  ORCSPRTNM-KBNCD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHC30AREA
+      *
+           .
+       210-ORCHC30-EXT.
+           EXIT.
+      *****************************************************************
+      *    カルテ３号様式（外来）発行処理
+      *****************************************************************
+       210-ORCHC33-SEC                 SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHC33AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000005"          TO  ORCSPRTNM-KBNCD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHC33AREA
+      *
+           .
+       210-ORCHC33-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療費明細書発行処理
+      *****************************************************************
+       210-ORCHC04-SEC                 SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHC04AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000008"          TO  ORCSPRTNM-KBNCD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHC04AREA
+      *
+           .
+       210-ORCHC04-EXT.
+           EXIT.
+      *****************************************************************
+      *    お薬手帳発行処理
+      *****************************************************************
+       210-ORCHC62-SEC                 SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHC62AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000009"          TO  ORCSPRTNM-KBNCD
+           MOVE    "2"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHC62AREA
+      *
+           .
+       210-ORCHC62-EXT.
+           EXIT.
+      *****************************************************************
+      *    カルテ３号（入院)発行処理
+      *****************************************************************
+       210-ORCHCN33-SEC                SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHC33AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000004"          TO  ORCSPRTNM-KBNCD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHC33AREA
+      *
+           .
+       210-ORCHCN33-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院処方箋発行処理
+      *****************************************************************
+       210-ORCHC501-SEC                SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHC501AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000005"          TO  ORCSPRTNM-KBNCD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHC501AREA
+      *
+           .
+       210-ORCHC501-EXT.
+           EXIT.
+      *****************************************************************
+      *    注射処方箋発行処理
+      *****************************************************************
+       210-ORCHC502-SEC                SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHC502AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000006"          TO  ORCSPRTNM-KBNCD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHC502AREA
+      *
+           .
+       210-ORCHC502-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院指示箋発行処理
+      *****************************************************************
+       210-ORCHC503-SEC                SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ORCHC503AREA
+      *
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "00000007"          TO  ORCSPRTNM-KBNCD
+           MOVE    "1"                 TO  ORCSPRTNM-NYUGAIKBN
+           PERFORM 800-ORCSPRTNM-SEC
+      *
+           CALL    WRK-PRINT-PG        USING
+                                       SPA-AREA
+                                       ORCHC503AREA
+      *
+           .
+       210-ORCHC503-EXT.
            EXIT.
       *****************************************************************
       *    パラメタ取得処理
