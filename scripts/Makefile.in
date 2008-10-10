@@ -79,6 +79,7 @@ shell_sources = \
 	allways/master_license_upgrade.sh.in \
 	allways/ORCBQ02.sh.in \
 	daily/online-reprint.sh.in \
+	daily/online-print.sh.in \
         monthly/prtdbdel.sh.in \
         allways/ykjchk.sh.in \
 	allways/chkmst2.sh.in \

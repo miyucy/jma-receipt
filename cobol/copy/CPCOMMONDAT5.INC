@@ -28,4 +28,6 @@
            03  FILLER                  PIC  X(05) VALUE "/tmp/".
            03  TEIKI01PARA-HOSPNUM     PIC  9(02).
            03  TEIKI01PARA-FILE-ID     PIC  X(08).
+           03  TEIKI01PARA-FILE-NO     REDEFINES TEIKI01PARA-FILE-ID
+                                       PIC  9(08) .
            03  TEIKI01PARA-TERMID      PIC  X(32).
