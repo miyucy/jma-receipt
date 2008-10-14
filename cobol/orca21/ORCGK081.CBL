@@ -30,6 +30,7 @@
       *  01.00.01    NACL-多々納  05/11/17  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.03.00    NACL-多々納  08/06/XX  ドクター表示件数変更
+      *  04.03.00    NACL-多々納  08/10/09  ユーザプログラム対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -317,6 +318,7 @@
       *
            INITIALIZE                  SPA-K081GMN-AREA
       *
+      *
            MOVE    SPACE               TO  SYS-5007-REC
            INITIALIZE                      SYS-5007-REC
            MOVE    "5007"              TO  SYS-5007-KANRICD
@@ -337,6 +339,12 @@
                MOVE    MCPDATA-REC         TO  SYS-5007-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
            ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+               INITIALIZE                      SYS-5007-REC
+           END-IF
+      *
+           IF      SPA-NAI-SIJISENKBN  NOT =   "1"
+      *        指示せん発行なし
                MOVE    1                   TO  FLG-SYSKANRI
                INITIALIZE                      SYS-5007-REC
            END-IF
@@ -528,8 +536,178 @@
                END-IF
            END-PERFORM
            MOVE    SPA-K081GMN-DRCDLST(1)  TO  SPA-K081GMN-DRCD-G
+      *
+      *    ユーザプログラム起動初期処理
+           IF      SPA-ETC-MOTOPG      =   "K02N"
+               PERFORM 3101-USERPG-SET-SEC
+           ELSE
+               INITIALIZE                  SPA-K081GMN-USERPG-AREA
+           END-IF
            .
        310-SPA-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    指示せん発行初期処理
+      *****************************************************************
+       3101-SPA-HENSYU-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  SYS-5007-REC
+           INITIALIZE                      SYS-5007-REC
+           MOVE    "5007"              TO  SYS-5007-KANRICD
+           MOVE    SPA-SRYYMD          TO  SYS-5007-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-5007-EDYUKYMD
+      *
+           MOVE    SPA-HOSPNUM         TO  SYS-5007-HOSPNUM
+           MOVE    SYS-5007-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+           END-IF
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-5007-REC
+               MOVE    ZERO                TO  FLG-SYSKANRI
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+               INITIALIZE                      SYS-5007-REC
+           END-IF
+           PERFORM
+                   UNTIL       FLG-SYSKANRI    =   1
+               MOVE    MCPDATA-REC         TO  SYS-5007-REC
+               EVALUATE    SYS-5007-KBNCD
+                   WHEN    "01"
+      *                入院処方箋
+                       PERFORM VARYING IDX     FROM    1   BY  1
+                               UNTIL   IDX     >   4
+                           MOVE    SYS-5007-SIJISEN-HEAD(IDX)
+                                           TO  SPA-K081GMN-CHK1(IDX)
+                           IF      SYS-5007-SIJISEN-PRT (IDX)   >   ZERO
+                               MOVE    1       TO  SPA-K081GMN-CHK1FLG
+                                                                (IDX)
+                               MOVE    1           TO  FLG-SYOHOU-ARI
+                           END-IF
+                       END-PERFORM
+                   WHEN    "03"
+      *                注射処方箋
+                       PERFORM VARYING IDX     FROM    1   BY  1
+                               UNTIL   IDX     >   4
+                           MOVE    SYS-5007-SIJISEN-HEAD(IDX)
+                                           TO  SPA-K081GMN-CHK2(IDX)
+                           IF      SYS-5007-SIJISEN-PRT (IDX)   >   ZERO
+                               MOVE    1       TO  SPA-K081GMN-CHK2FLG
+                                                                (IDX)
+                               MOVE    1           TO  FLG-CHUSYA-ARI
+                           END-IF
+                       END-PERFORM
+                   WHEN    "05"
+      *                指示箋
+                       PERFORM VARYING IDX     FROM    1   BY  1
+                               UNTIL   IDX     >   4
+                           MOVE    SYS-5007-SIJISEN-HEAD(IDX)
+                                           TO  SPA-K081GMN-CHK3(IDX)
+                           IF      SYS-5007-SIJISEN-PRT (IDX)   >   ZERO
+                               MOVE    1       TO  SPA-K081GMN-CHK3FLG
+                                                                (IDX)
+                               MOVE    1           TO  FLG-SIJISEN-ARI
+                           END-IF
+                       END-PERFORM
+               END-EVALUATE
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-5007-REC
+                   MOVE    ZERO                TO  FLG-SYSKANRI
+               ELSE
+                   MOVE    1                   TO  FLG-SYSKANRI
+               END-IF
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    入院処方箋
+           MOVE    "0 発行しない"      TO  SPA-K081GMN-SYOHOU-LST(1)
+           MOVE    "1 発行する"        TO  SPA-K081GMN-SYOHOU-LST(2)
+           MOVE    2                   TO  SPA-K081-SYOHOU-MAX
+           IF      FLG-SYOHOU-ARI      =   ZERO
+               MOVE    1                   TO  SPA-K081-SYOHOU-MAX
+           END-IF
+           IF     (FLG-SYOHOU-ARI      =   1   )  AND
+                  (SPA-NAI-SYOHOU      =   1   )
+               MOVE    SPA-K081GMN-SYOHOU-LST(2)
+                                       TO  SPA-K081GMN-SYOHOU-G
+           ELSE
+               MOVE    SPA-K081GMN-SYOHOU-LST(1)
+                                       TO  SPA-K081GMN-SYOHOU-G
+           END-IF
+           PERFORM 3102-SYOHOU-CHK-SEC
+      *    注射処方箋
+           MOVE    "0 発行しない"      TO  SPA-K081GMN-CHUSYA-LST(1)
+           MOVE    "1 発行する"        TO  SPA-K081GMN-CHUSYA-LST(2)
+           MOVE    2                   TO  SPA-K081-CHUSYA-MAX
+           IF      FLG-CHUSYA-ARI      =   ZERO
+               MOVE    1                   TO  SPA-K081-CHUSYA-MAX
+           END-IF
+           IF     (FLG-CHUSYA-ARI      =   1   )  AND
+                  (SPA-NAI-CHUSYA      =   1   )
+               MOVE    SPA-K081GMN-CHUSYA-LST(2)
+                                       TO  SPA-K081GMN-CHUSYA-G
+           ELSE
+               MOVE    SPA-K081GMN-CHUSYA-LST(1)
+                                       TO  SPA-K081GMN-CHUSYA-G
+           END-IF
+           PERFORM 3103-CHUSYA-CHK-SEC
+      *    指示箋
+           MOVE    "0 発行しない"      TO  SPA-K081GMN-SIJISEN-LST(1)
+           MOVE    "1 発行する"        TO  SPA-K081GMN-SIJISEN-LST(2)
+           MOVE    2                   TO  SPA-K081-SIJISEN-MAX
+           IF      FLG-SIJISEN-ARI     =   ZERO
+               MOVE    1                   TO  SPA-K081-SIJISEN-MAX
+           END-IF
+           IF     (FLG-SIJISEN-ARI     =   1   )  AND
+                  (SPA-NAI-SIJISEN     =   1   )
+               MOVE    SPA-K081GMN-SIJISEN-LST(2)
+                                       TO  SPA-K081GMN-SIJISEN-G
+           ELSE
+               MOVE    SPA-K081GMN-SIJISEN-LST(1)
+                                       TO  SPA-K081GMN-SIJISEN-G
+           END-IF
+           PERFORM 3104-SIJISEN-CHK-SEC
+      *
+           .
+       3101-SPA-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *     ユーザプログラム起動初期処理
+      *****************************************************************
+       3101-USERPG-SET-SEC              SECTION.
+      *
+           MOVE    "0 Ｕ・Ｐ指示なし"      TO  SPA-K081GMN-USERPG-LIST
+                                                                  (1)
+           IF      SPA-K081NAI-GYOUMU-ARI  =   "1"
+      *        実行するプログラムがある時
+               MOVE    "1 Ｕ・Ｐ指示あり"  TO  SPA-K081GMN-USERPG-LIST
+                                                                  (2)
+               MOVE    2                   TO  SPA-K081GMN-USERPG-MAX
+               IF      SPA-K081NAI-GYOUMU-FLG  =   "1"
+                   MOVE    SPA-K081GMN-USERPG-LIST (2)
+                                               TO  SPA-K081GMN-USERPG-G
+               ELSE
+                   MOVE    SPA-K081GMN-USERPG-LIST (1)
+                                               TO  SPA-K081GMN-USERPG-G
+               END-IF
+           ELSE
+      *        実行するプログラムがない時
+               MOVE    1                   TO  SPA-K081GMN-USERPG-MAX
+               MOVE    SPA-K081GMN-USERPG-LIST(1)
+                                               TO  SPA-K081GMN-USERPG-G
+           END-IF
+           .
+       3101-USERPG-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -742,6 +920,8 @@
            MOVE    K081-SIJISEN        TO  SPA-K081GMN-SIJISEN-G
            MOVE    K081-DRCD           TO  SPA-K081GMN-DRCD-G
       *
+           MOVE    K081-USERPG         TO  SPA-K081GMN-USERPG-G
+      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -764,6 +944,10 @@
       *    ドクター
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4103-DRCD-CHK-SEC
+           END-IF
+      *    ユーザプログラム
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 4103-USERPG-CHK-SEC
            END-IF
       *
            .
@@ -938,6 +1122,35 @@
       *
            .
        4103-DRCD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ユーザプログラム処理
+      *****************************************************************
+       4103-USERPG-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-K081GMN-USERPG-MAX
+               IF      SPA-K081GMN-USERPG  =   SPA-K081GMN-USERPG-LIST
+                                                         (IDX)(1:1)
+                   MOVE    SPA-K081GMN-USERPG-LIST(IDX)
+                                           TO  SPA-K081GMN-USERPG-G
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               IF     (SPA-K081NAI-GYOUMU-ARI  =   "1"   )  AND
+                      (SPA-K081NAI-GYOUMU-FLG  =   "1"   )
+                   MOVE    SPA-K081GMN-USERPG-LIST (2)
+                                           TO  SPA-K081GMN-USERPG-G
+               ELSE
+                   MOVE    SPA-K081GMN-USERPG-LIST (1)
+                                           TO  SPA-K081GMN-USERPG-G
+               END-IF
+           END-IF
+           .
+       4103-USERPG-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1390,6 +1603,14 @@
                END-IF
            END-PERFORM
       *
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX         >   SPA-K081GMN-USERPG-MAX
+               MOVE    SPA-K081GMN-USERPG-LIST (IDX)
+                                           TO  K081-USERPG-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-K081GMN-USERPG-MAX  TO  K081-USERPG-COUNT
+           MOVE    SPA-K081GMN-USERPG-G    TO  K081-USERPG
+      *
            PERFORM 5001-MAPCUR-SEC
            .
        500-GMNHEN-EXT.
@@ -1486,6 +1707,8 @@
                    MOVE    04          TO  SPA-K081GMN-CUR
       *
                WHEN    "DRCD"
+                   MOVE    99          TO  SPA-K081GMN-CUR
+               WHEN    "USERPG"
                    MOVE    99          TO  SPA-K081GMN-CUR
            END-EVALUATE
       *

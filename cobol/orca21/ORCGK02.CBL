@@ -927,6 +927,9 @@
       *   算定履歴更新サブ
            COPY    "CPORCSSANTEI.INC".
       *
+      *    ユーザプログラム起動サブパラメタ
+           COPY    "CPORCSUSERCHK.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -1330,6 +1333,9 @@
       *
                WHEN    "M01"
       *            業務選択画面より
+                   PERFORM 30010-INIT-GMN-SEC
+               WHEN    "XD01"
+      *             ユーザプログラム実行画面より
                    PERFORM 30010-INIT-GMN-SEC
                WHEN    OTHER
       *            外部・患者決定
@@ -3329,6 +3335,21 @@
       *
            IF      FLG-PARA            =   1
                CLOSE                       PARA-FILE
+           END-IF
+      *
+           IF      FLG-PARASET         =   ZERO  OR  2
+      *         クリア
+                INITIALIZE                 SPA-K021GMN-AREA
+                INITIALIZE                 SPA-K97-AREA
+                INITIALIZE                 SPA-K052-AREA
+                INITIALIZE                 SPA-K10GMN-AREA
+                INITIALIZE                 SPA-K99GMN-AREA
+                INITIALIZE                 SPA-K023GMN-AREA
+                INITIALIZE                 SPA-K98GMN-AREA
+                INITIALIZE                 SPA-K05-AREA
+                INITIALIZE                 SPA-K051-AREA
+                INITIALIZE                 SPA-K09KYOU-AREA
+                INITIALIZE                 SPA-K07-AREA
            END-IF
       *
            .
@@ -9738,45 +9759,6 @@
       *    ドクター
            MOVE    SPA-NAI-RRK-DRCD (SPA-NAI-DOSELNUM)
                                        TO  SPA-DRCD
-      *    複数診療科・保険
-      *    INITIALIZE                  SPA-TEI-AREA
-      *    IF      SPA-NAI-GRP-DENPNUM(SPA-NAI-DOSELNUM)
-      *                                >   ZERO
-      *        MOVE    SPA-NAI-DOSELNUM    TO  IDX-F2
-      *        MOVE    ZERO                TO  FLG-FUKU-END
-      *        MOVE    ZERO                TO  IDX-F3
-      *        PERFORM VARYING     IDX-F   FROM    IDX-F2 BY 1
-      *                UNTIL      (FLG-FUKU-END    =   1 ) OR
-      *                           (IDX-F           >   SPA-GMN-MAX1)
-      *            IF      SPA-NAI-GRP-DENPNUM(SPA-NAI-DOSELNUM)
-      *                                    =   SPA-NAI-GRP-DENPNUM
-      *                                                         (IDX-F)
-      *                MOVE    SPA-NAI-GRP-RENNUM(IDX-F) TO  IDX-F3
-      *                IF     (IDX-F3          >=   1 )  AND
-      *                       (IDX-F3          <=   15)
-      *                    MOVE    SPA-NAI-RRK-DENPNUM (IDX-F)
-      *                                        TO  SPA-TEI-DENPNUM
-      *                                                       (IDX-F3)
-      *                    MOVE    SPA-NAI-RRK-SRYKA   (IDX-F)
-      *                                        TO  SPA-TEI-SRYKA
-      *                                                       (IDX-F3)
-      *                    MOVE    SPA-NAI-RRK-HKNCOMBI (IDX-F)
-      *                                        TO  SPA-TEI-HKNCOMBI
-      *                                                       (IDX-F3)
-      *                    MOVE    SPA-NAI-RENNUM (IDX-F)
-      *                                        TO  SPA-TEI-RENNUM
-      *                                                       (IDX-F3)
-      *                    MOVE    SPA-NAI-DOUJI-RENNUM (IDX-F)
-      *                                        TO  SPA-TEI-DOUJI-RENNUM
-      *                                                       (IDX-F3)
-      *                ELSE
-      *                    MOVE    "0141"          TO  SPA-ERRCD
-      *                END-IF
-      *            ELSE
-      *                MOVE    1               TO  FLG-FUKU-END
-      *            END-IF
-      *        END-PERFORM
-      **** END-IF
       *
       *    訂正処理
            MOVE    1                   TO  SPA-SYORIFLG
@@ -12144,6 +12126,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-EVALUATE
            MOVE    SPACE               TO  SPA-KID1-FLG
       *
+      *    ユーザプログラム起動
+           PERFORM 4907-USERPG-SEC
+           IF      FLG-END             =   1
+               CONTINUE
+           ELSE
+      *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
@@ -12169,24 +12157,89 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO            TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-GMN-PAGE
-      **
-      **** 選択画面戻る
-      *****MOVE    "K01"               TO  SPA-SAKIPG
-      *    MOVE    "K02"               TO  SPA-MOTOPG
-      *    MOVE    SPACE               TO  SPA-MOTOPG2
       *
-      *    MOVE    SPACE               TO  LINKAREA
-      *    INITIALIZE                      SPA-KYOTUKEY
-      *
-      *    MOVE   "CHANGE"             TO  MCP-PUTTYPE
-      *    MOVE    "K01"               TO  MCP-WINDOW
-      *
-      *    PERFORM 900-PUT-WINDOW
-      *
-      *****MOVE    1                   TO  FLG-END
+           END-IF
            .
        4510-SNRYO-NYU-EXT.
            EXIT.
+      *****************************************************************
+      *    ユーザプログラム起動処理
+      *****************************************************************
+       4907-USERPG-SEC  SECTION.
+      *
+      *    追加
+           MOVE    1               TO  SPA-SYORI-FLG
+           IF      SPA-GMN-USERPG      =   "1"
+      *        ユーザプログラム実行画面表示へ
+               PERFORM 49071-XD01-SYORI-SEC
+           ELSE
+               IF      SPA-NAI-GYOUMU-ARI  =   "1"
+      *            起動するユーザプログラムある時、実行
+                   INITIALIZE                      ORCSUSERCHKAREA
+                   MOVE    "K02"               TO  ORCSUSERCHK-GMNPG
+                   MOVE    "2"                 TO  ORCSUSERCHK-SYORI
+                   MOVE    SPA-SYSYMD          TO  ORCSUSERCHK-SYSYMD
+                   MOVE    SPA-SRYYMD          TO  ORCSUSERCHK-SRYYMD
+                   MOVE    SPA-PTID            TO  ORCSUSERCHK-PTID
+                   MOVE    SPA-PTNUM           TO  ORCSUSERCHK-PTNUM
+                   MOVE    SPA-SRYKA           TO  ORCSUSERCHK-SRYKA
+                   MOVE    SPA-HKNCOMBINUM     TO  ORCSUSERCHK-HKNCOMBI
+                   MOVE    SPA-DRCD            TO  ORCSUSERCHK-DRCD
+                   MOVE    SPA-SYORI-FLG       TO  ORCSUSERCHK-SYORI-FLG
+                   CALL    "ORCSUSERCHK"       USING
+                                               ORCSUSERCHKAREA
+                                               SPA-AREA
+               END-IF
+           END-IF
+      *
+           .
+       4907-USERPG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ユーザプログラム実行画面表示処理
+      *****************************************************************
+       49071-XD01-SYORI-SEC              SECTION.
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *    共通キー編集
+           MOVE    "K02"               TO  SPA-MOTOPG
+           MOVE    "XD01"              TO  SPA-SAKIPG
+           MOVE    SPA-AREA            TO  LNK-KYOUTU
+      *
+      *    共通のキーをクリアする
+           MOVE    SPACE               TO  SPA-ERRMSG
+           INITIALIZE                      SPA-KYOTUKEY
+           INITIALIZE                      SPA-K01KYOUTU
+      *
+           MOVE    SPACE               TO  SPA-PRT-FLG
+           INITIALIZE                  SPA-K02
+           INITIALIZE                  SPA-SCR-REC
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           MOVE    "K02"               TO  SPA-MOTOPG
+           MOVE    "K02"               TO  SPA-SAKIPG
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPACE               TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "K02"               TO  SPA-MOTOPG
+           MOVE    "XD01"              TO  SPA-SAKIPG
+      *
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    "XD01"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       49071-XD01-SYORI-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    薬剤情報発行処理
@@ -13358,10 +13411,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO    WRK-KIDMSG
                    END-STRING
                WHEN    "0130"
-                   MOVE    "長期投薬加算が算定できます。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "ＯＫで自動算定します。"
-                                       TO  WRK-KIDMSG(29:)
+                   STRING  "長期投薬加算が算定できます。"
+                           "ＯＫで自動算定します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0114"
                    MOVE    "厚生労働大臣が定める患者の再診４回目以降へ"
                                        TO  WRK-KIDMSG
@@ -13379,31 +13433,33 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-KIDMSG(29:)
                WHEN    "0127"
                    STRING  "ＯＫで展開中の中途終了データを削除します。"
-                                           DELIMITED   BY  SIZE
                            "よろしいですか？"
                                            DELIMITED   BY  SIZE
                                    INTO    WRK-KIDMSG
                    END-STRING
                WHEN    "0118"
-                   MOVE    "この保険の中途終了データが存在します。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "ＯＫで中途終了内容へ置換えます。"
-                                       TO  WRK-KIDMSG(41:)
+                   STRING  "この保険の中途終了データが存在します。"
+                           "ＯＫで中途終了内容へ置換えます。"
+                                           DELIMITED   BY  SIZE
+                                   INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0119"
-                   MOVE    "既に他保険で受診済みです。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "ＯＫで他保険にて算定済へ置換えます"
-                                       TO  WRK-KIDMSG(27:)
+                   STRING  "既に他保険で受診済みです。"
+                           "ＯＫで他保険にて算定済へ置換えます"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0120"
                    MOVE    "再診料（３月超）（５回以内）へ"
                                        TO  WRK-KIDMSG
                    MOVE    "振替えます。よろしいですか？"
                                        TO  WRK-KIDMSG(31:)
                WHEN    "0121"
-                   MOVE    "入院中の患者です。入院画面へ遷移します。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "よろしいですか？"
-                                       TO  WRK-KIDMSG(41:)
+                   STRING  "入院中の患者です。入院画面へ遷移します。"
+                           "よろしいですか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0128"
                    STRING  "入院中です。"
                            "アフターケア以外ですので入院画面へ"
@@ -13425,10 +13481,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "表示内容をクリアします。よろしいですか？"
                                        TO  WRK-KIDMSG(27:)
                WHEN    "0160"
-                   MOVE    "包括検査で同じ検査があります。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "ＯＫですべての同一検査を削除します。"
-                                       TO  WRK-KIDMSG(31:)
+                   STRING  "包括検査で同じ検査があります。"
+                           "ＯＫですべての同一検査を削除します。"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0180"
                    MOVE    "個別療法が１０単位を超えます。"
                                        TO  WRK-KIDMSG
@@ -13440,15 +13497,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "現在の診療内容をクリアしますか？"
                                        TO  WRK-KIDMSG(29:)
                WHEN    "2001"
-                   MOVE    "内服薬剤が７種類以上になります。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "逓減しますか？"
-                                       TO  WRK-KIDMSG(33:)
+                   STRING   "内服薬剤が７種類以上になります。"
+                           "逓減しますか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "2002"
-                   MOVE    "内服薬剤が７種類以上になります。"
-                                       TO  WRK-KIDMSG
-                   MOVE    "７種類以上の処方せん料にしますか？"
-                                       TO  WRK-KIDMSG(33:)
+                   STRING  "内服薬剤が７種類以上になります。"
+                           "７種類以上の処方せん料にしますか？"
+                                       DELIMITED   BY  SIZE
+                                       INTO    WRK-KIDMSG
+                   END-STRING
                WHEN    "0140"
                    STRING  "初回算定日を算定履歴に作成します。"
                                            DELIMITED  BY  SIZE
@@ -13516,10 +13575,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-KIDCD2
                WHEN    "0117"
-                   MOVE    "登録後、帳票を発行する時は各帳票の発行を、"
-                                       TO  WRK-KIDMSG
-                   MOVE    "発行しない時は登録を押下して下さい。"
-                                       TO  WRK-KIDMSG(43:)
+                   STRING  "登録後、帳票を発行する時は各帳票の発行を、"
+                           "発行しない時は登録を押下して下さい。"
+                                           DELIMITED  BY  SIZE
+                                       INTO  WRK-KIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-KIDCD2
                                        TO  WRK-KIDMSG
@@ -13528,6 +13588,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  KID2
            MOVE    SPA-KIDCD2          TO  KID2-ID2CODE
            MOVE    WRK-KIDMSG          TO  KID2-ID2MSG
+      *    ユーザプログラム起動初期表示
+           PERFORM 5301-USERPG-SET-SEC
       *
            MOVE    "B12"               TO  MCP-WIDGET
       *
@@ -13543,6 +13605,46 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        530-KID2SET-EXT.
+           EXIT.
+      *****************************************************************
+      *     ユーザプログラム起動初期処理
+      *****************************************************************
+       5301-USERPG-SET-SEC              SECTION.
+      *
+           INITIALIZE                      ORCSUSERCHKAREA
+           MOVE    "K02"               TO  ORCSUSERCHK-GMNPG
+           MOVE    "1"                 TO  ORCSUSERCHK-SYORI
+           CALL    "ORCSUSERCHK"       USING
+                                       ORCSUSERCHKAREA
+                                       SPA-AREA
+           MOVE    ORCSUSERCHK-GYOUMU-FLG  TO  SPA-NAI-GYOUMU-FLG
+           MOVE    ORCSUSERCHK-GYOUMU-ARI  TO  SPA-NAI-GYOUMU-ARI
+      *
+           MOVE    "0 Ｕ・Ｐ指示なし"      TO  SPA-GMN-USERPG-LIST (1)
+           IF      SPA-NAI-GYOUMU-ARI  =   "1"
+      *        実行するプログラムがある時
+               MOVE    "1 Ｕ・Ｐ指示あり"  TO  SPA-GMN-USERPG-LIST (2)
+               MOVE    2                   TO  SPA-USERPG-MAX
+               IF      SPA-NAI-GYOUMU-FLG  =   "1"
+                   MOVE    SPA-GMN-USERPG-LIST (2) TO  SPA-GMN-USERPG-G
+               ELSE
+                   MOVE    SPA-GMN-USERPG-LIST (1) TO  SPA-GMN-USERPG-G
+               END-IF
+           ELSE
+      *        実行するプログラムがない時
+               MOVE    1                   TO  SPA-USERPG-MAX
+               MOVE    SPA-GMN-USERPG-LIST(1)  TO  SPA-GMN-USERPG-G
+           END-IF
+      *
+           MOVE    SPA-GMN-USERPG-G    TO  KID2-USERPG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-USERPG-MAX
+               MOVE    SPA-GMN-USERPG-LIST (IDX)
+                                       TO  KID2-USERPG-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-USERPG-MAX      TO  KID2-USERPG-COUNT
+            .
+       5301-USERPG-SET-EXT.
            EXIT.
       *
       *****************************************************************

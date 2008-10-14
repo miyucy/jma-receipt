@@ -31,6 +31,9 @@
                05  SPA-NAI-CHUSYA                  PIC 9(01).
                05  SPA-NAI-SIJISEN                 PIC 9(01).
                05  SPA-K081-OKFLG                  PIC 9(01).
+      *    ユーザプログラム起動有無
+               05  SPA-K081NAI-GYOUMU-FLG             PIC X(01).
+               05  SPA-K081NAI-GYOUMU-ARI             PIC 9(01).
       *
       *    入院指示せん印刷画面
            03  SPA-K081GMN-AREA.
@@ -89,4 +92,16 @@
                    07  SPA-K081GMN-CHK3KBN         PIC 9(01).
                    07  SPA-K081GMN-CHK3FLG         PIC 9(01).
                    07  SPA-K081GMN-CHK3-VALUE      PIC X(01).
+      *
+      *    ユーザプログラム画面用
+           03  SPA-K081GMN-USERPG-AREA.
+      *        Ｕ・Ｐ
+               05  SPA-K081GMN-USERPG-G.
+                   09  SPA-K081GMN-USERPG            PIC X(01).
+                   09  SPA-K081GMN-UP1               PIC X(01).
+                   09  SPA-K081GMN-USERPGMEI         PIC X(18).
+               05  SPA-K081GMN-USERPG-LSTG.
+                   09  SPA-K081GMN-USERPG-LIST     PIC X(20)
+                                                   OCCURS  2.
+               05  SPA-K081GMN-USERPG-MAX          PIC 9(02).
       *

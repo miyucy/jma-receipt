@@ -6,5 +6,12 @@ KID2	{
 		ID2MSG	{
 			value	varchar(80);
 		};
+		USERPG_COMB	{
+			USERPG	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[2];
+		};
 	};
 };

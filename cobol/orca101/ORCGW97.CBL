@@ -400,7 +400,14 @@
                                        TO  SPA-GMN-GYOUMUMEIL (6)
            MOVE    "K08"               TO  SPA-NAI-GYOUMUIDL  (6)
       *
-           MOVE    6                   TO  SPA-GYOUMU-MAX
+           MOVE    "外来中途終了(K02)"
+                                       TO  SPA-GMN-GYOUMUMEIL (7)
+           MOVE    "K02"               TO  SPA-NAI-GYOUMUIDL  (7)
+           MOVE    "入院中途終了(K02N)"
+                                       TO  SPA-GMN-GYOUMUMEIL (8)
+           MOVE    "K02N"              TO  SPA-NAI-GYOUMUIDL  (8)
+      *
+           MOVE    8                   TO  SPA-GYOUMU-MAX
       *    業務初期表示
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GYOUMU-MAX
@@ -416,6 +423,8 @@
            MOVE    "9704"          TO  SPA-9700-GYOUMU-KANRICD (4)
            MOVE    "9705"          TO  SPA-9700-GYOUMU-KANRICD (5)
            MOVE    "9706"          TO  SPA-9700-GYOUMU-KANRICD (6)
+           MOVE    "9707"          TO  SPA-9700-GYOUMU-KANRICD (7)
+           MOVE    "9708"          TO  SPA-9700-GYOUMU-KANRICD (8)
       *
       *    業務初期表示
            MOVE    SPACE               TO  SYS-9700-REC

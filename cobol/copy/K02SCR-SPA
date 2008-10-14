@@ -308,6 +308,25 @@
                05  SPA-SYOKAI-SRYCD           PIC  X(09).
                05  SPA-SYOKAI-IDX             PIC  9(04).
       *
+      *悪性腫瘍検査検索用
+           03  SPA-AKUSEI-IDX              PIC 9(04).
+           03  SPA-AKUSEI-FLG              PIC 9(01).
+      *    ユーザプログラム起動有無
+           03  SPA-NAI-GYOMU-AREA.
+               05  SPA-NAI-GYOUMU-FLG             PIC X(01).
+               05  SPA-NAI-GYOUMU-ARI             PIC 9(01).
+      *    ユーザプログラム画面用
+           03  SPA-GMN-USERPG-AREA.
+      *        Ｕ・Ｐ
+               05  SPA-GMN-USERPG-G.
+                   09  SPA-GMN-USERPG            PIC X(01).
+                   09  SPA-GMN-UP1               PIC X(01).
+                   09  SPA-GMN-USERPGMEI         PIC X(18).
+               05  SPA-GMN-USERPG-LSTG.
+                   09  SPA-GMN-USERPG-LIST     PIC X(20)
+                                                   OCCURS  2.
+               05  SPA-USERPG-MAX                 PIC 9(02).
+      *
       *    Ｋ０５画面固有ＳＰＡ
            03  SPA-K05-AREA.
                05  SPA-GMN-SETCODE         PIC X(06).
@@ -457,11 +476,6 @@
                    07  SPA-NAI-K07-SELNUM           PIC 9(04).
       *
       *    Ｋ９８画面用
-      *
-      *悪性腫瘍検査検索用
-           03  SPA-AKUSEI-IDX              PIC 9(04).
-           03  SPA-AKUSEI-FLG              PIC 9(01).
-      *
            03  SPA-K98-MOTOPG              PIC X(08).
            03  SPA-K98GMN-AREA.
                05  SPA-K98-GMN-CUR               PIC 9(02).

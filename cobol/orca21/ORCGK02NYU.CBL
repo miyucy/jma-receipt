@@ -57,6 +57,7 @@
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       * 04.03.00     NACL-多々納  08/08/01  保険組合せ期間チェック追加
       * 04.03.00     NACL-多々納  08/09/03  投薬帳票印刷対応
+      * 04.03.00     NACL-多々納  08/10/09  ユーザプログラム対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -212,6 +213,8 @@
            03  FLG-MOD-FLG           PIC 9(01).
       *    画面変更
            03  FLG-HENKOU            PIC 9(01).
+      *    入院指示せん
+           03  FLG-SIJISEN-OK        PIC 9(01).
       *    入院指示せん
            03  FLG-SIJISEN           PIC 9(01).
       *    初期
@@ -820,6 +823,9 @@
       *   算定履歴更新サブ
            COPY    "CPORCSSANTEI.INC".
       *
+      *    ユーザプログラム起動サブパラメタ
+           COPY    "CPORCSUSERCHK.INC".
+      *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
@@ -1189,6 +1195,9 @@
       *
                WHEN    "M01"
       *            業務選択画面より
+                   PERFORM 30010-INIT-GMN-SEC
+               WHEN    "XD01"
+      *             ユーザプログラム実行画面より
                    PERFORM 30010-INIT-GMN-SEC
                WHEN    OTHER
       *            外部・患者決定
@@ -9862,11 +9871,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    入院指示せん発行チェック
            PERFORM 451091-SIJISEN-CHK-SEC
+      *    ユーザプログラム起動
+           PERFORM 451092-USERPG-CHK-SEC
       *
+           MOVE    ZERO                TO  FLG-SIJISEN-OK
            IF     (SPA-NAI-SIJISENKBN  =   1  )  AND
                  ((SPA-NAI-SYOHOU      =   1 )  OR
                   (SPA-NAI-CHUSYA      =   1 )  OR
                   (SPA-NAI-SIJISEN     =   1 ))
+               MOVE    1                   TO  FLG-SIJISEN-OK
+           END-IF
+           IF      SPA-NAI-GYOUMU-ARI  =   "1"
+      *        ユーザプログラム起動あり
+               MOVE    1                   TO  FLG-SIJISEN-OK
+           END-IF
+           IF      FLG-SIJISEN-OK       =   1
       *        入院指示せん発行あり
                PERFORM 450192-K081-SYORI-SEC
            ELSE
@@ -9969,6 +9988,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        451091-SIJISEN-CHK-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    ユーザプログラム起動初期
+      *****************************************************************
+       451092-USERPG-CHK-SEC              SECTION.
+      *
+           INITIALIZE                      ORCSUSERCHKAREA
+           MOVE    "K02N"              TO  ORCSUSERCHK-GMNPG
+           MOVE    "1"                 TO  ORCSUSERCHK-SYORI
+           CALL    "ORCSUSERCHK"       USING
+                                       ORCSUSERCHKAREA
+                                       SPA-AREA
+           MOVE    ORCSUSERCHK-GYOUMU-FLG  TO  SPA-NAI-GYOUMU-FLG
+           MOVE    ORCSUSERCHK-GYOUMU-ARI  TO  SPA-NAI-GYOUMU-ARI
+           .
+       451092-USERPG-CHK-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    入院指示せん指示画面へ（Ｋ０８１）
       *****************************************************************
@@ -9976,6 +10013,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPACE               TO  SPA-MOTOPG
+      *
+      *    ユーザプログラム起動有無
+           MOVE    SPA-NAI-GYOUMU-FLG  TO  SPA-K081NAI-GYOUMU-FLG
+           MOVE    SPA-NAI-GYOUMU-ARI  TO  SPA-K081NAI-GYOUMU-ARI
+           MOVE    "K02N"              TO  SPA-ETC-MOTOPG
       *
            MOVE    SPA-K081            TO  SPA-ETCKYOUTU-AREA
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -10029,6 +10071,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 45900-SIJISEN-SYORI-SEC
            END-IF
       *
+      *    ユーザプログラム起動
+           PERFORM 4907-USERPG-SEC
+           IF      FLG-END             =   1
+               CONTINUE
+           ELSE
+      *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
@@ -10053,6 +10101,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO            TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-GMN-PAGE
+      *
+           END-IF
       *
            .
        4510-SNRYO-NYU-EXT.
@@ -10253,6 +10303,89 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        459001-PRTNUM-HEN-EXT.
            EXIT.
+      *****************************************************************
+      *    ユーザプログラム起動処理
+      *****************************************************************
+       4907-USERPG-SEC  SECTION.
+      *
+      *    追加
+           MOVE    1                   TO  SPA-SYORI-FLG
+      *    ドクターは指示画面
+           IF      SPA-K081GMN-DRCD    NOT =   SPACE
+               MOVE    "1"                 TO  SPA-DRCD(1:1)
+               MOVE    SPA-K081GMN-DRCD    TO  SPA-DRCD(2:4)
+           END-IF
+           IF      SPA-K081GMN-USERPG  =   "1"
+      *        ユーザプログラム実行画面表示へ
+               PERFORM 49071-XD01-SYORI-SEC
+           ELSE
+               IF      SPA-NAI-GYOUMU-ARI  =   "1"
+      *            起動するユーザプログラムある時、実行
+                   INITIALIZE                      ORCSUSERCHKAREA
+                   MOVE    "K02N"              TO  ORCSUSERCHK-GMNPG
+                   MOVE    "2"                 TO  ORCSUSERCHK-SYORI
+                   MOVE    SPA-SYSYMD          TO  ORCSUSERCHK-SYSYMD
+                   MOVE    SPA-SRYYMD          TO  ORCSUSERCHK-SRYYMD
+                   MOVE    SPA-PTID            TO  ORCSUSERCHK-PTID
+                   MOVE    SPA-PTNUM           TO  ORCSUSERCHK-PTNUM
+                   MOVE    SPA-SRYKA           TO  ORCSUSERCHK-SRYKA
+                   MOVE    SPA-HKNCOMBINUM     TO  ORCSUSERCHK-HKNCOMBI
+                   MOVE    SPA-DRCD            TO  ORCSUSERCHK-DRCD
+                   MOVE    SPA-SYORI-FLG       TO  ORCSUSERCHK-SYORI-FLG
+                   CALL    "ORCSUSERCHK"       USING
+                                               ORCSUSERCHKAREA
+                                               SPA-AREA
+               END-IF
+           END-IF
+      *
+           .
+       4907-USERPG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ユーザプログラム実行画面表示処理
+      *****************************************************************
+       49071-XD01-SYORI-SEC              SECTION.
+      *
+      *    排他制御解除処理
+           PERFORM 990-LOCK-OUT-SEC
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *    共通キー編集
+           MOVE    "K02N"              TO  SPA-MOTOPG
+           MOVE    "XD01"              TO  SPA-SAKIPG
+           MOVE    SPA-AREA            TO  LNK-KYOUTU
+      *
+      *    共通のキーをクリアする
+           MOVE    SPACE               TO  SPA-ERRMSG
+           INITIALIZE                      SPA-KYOTUKEY
+           INITIALIZE                      SPA-K01KYOUTU
+      *
+           MOVE    SPACE               TO  SPA-PRT-FLG
+           INITIALIZE                  SPA-K02
+           INITIALIZE                  SPA-SCR-REC
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           MOVE    "K02N"              TO  SPA-MOTOPG
+           MOVE    "K02N"              TO  SPA-SAKIPG
+      *
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPACE               TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "K02N"              TO  SPA-MOTOPG
+           MOVE    "XD01"              TO  SPA-SAKIPG
+      *
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    "XD01"              TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       49071-XD01-SYORI-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    禁忌更新前のチェック処理

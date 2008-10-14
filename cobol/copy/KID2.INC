@@ -21,3 +21,9 @@
                 04  KID2-VALUE  PIC X(10).
               03  KID2-ID2MSG.
                 04  KID2-VALUE  PIC X(80).
+              03  KID2-USERPG-COMB.
+                04  KID2-USERPG.
+                  05  KID2-VALUE  PIC X(20).
+                04  KID2-USERPG-COUNT  PIC S9(9)   BINARY.
+                04  KID2-USERPG-ITEM
+                        PIC X(20)   OCCURS  2 TIMES.

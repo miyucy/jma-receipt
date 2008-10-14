@@ -460,6 +460,12 @@
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "1"                 TO  ORCSHKN-KBN
            MOVE    SPACE               TO  ORCSHKN-KBN2
+      *    ÃæÅÓ½ªÎ»¡¦Æþ±¡¤ÏÊñ³ç¤â
+           IF      SPA-MAE-MOTOPG      =   "K02"
+                                       OR  "K02N"
+                                       OR  "K08"
+               MOVE    "1"                 TO  ORCSHKN-KBN2
+           END-IF
            CALL    "ORCSHKNSET"        USING
                                        SPA-AREA
                                        ORCSHKNSETAREA

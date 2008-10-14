@@ -100,5 +100,12 @@ K081	{
 			count	int;
 			item	varchar(12)[2];
 		};
+		USERPG_COMB	{
+			USERPG	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[2];
+		};
 	};
 };

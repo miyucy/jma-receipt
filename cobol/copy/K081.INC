@@ -39,3 +39,9 @@
                 04  K081-SYOHOU-COUNT  PIC S9(9)   BINARY.
                 04  K081-SYOHOU-ITEM
                         PIC X(12)   OCCURS  2 TIMES.
+              03  K081-USERPG-COMB.
+                04  K081-USERPG.
+                  05  K081-VALUE  PIC X(30).
+                04  K081-USERPG-COUNT  PIC S9(9)   BINARY.
+                04  K081-USERPG-ITEM
+                        PIC X(30)   OCCURS  2 TIMES.
