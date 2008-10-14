@@ -557,6 +557,18 @@
                MOVE    SPACE           TO  SPA-MOTOPG
                MOVE    SPA-WIDGET      TO  MCP-WIDGET
                MOVE    SPACE           TO  SPA-WIDGET
+               IF      SPA-KEI-ERRCD       =   "9100"
+                                           OR  "9101"
+                                           OR  "9102"
+                   PERFORM 49021-KOUSIN-AFTER-SEC
+               IF  ( FLG-END           =   1 )  OR
+                   ( SPA-FLG-END       =   1 )
+                   CONTINUE
+               ELSE
+      *            画面編集
+                   PERFORM 500-GMNHEN-SEC
+               END-IF
+               END-IF
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
@@ -857,15 +869,23 @@
                        PERFORM 4991-DELETE-SYORI-SEC
                    END-IF
       *        保険変更確認
-               WHEN    "9100"
-               WHEN    "9101"
-               WHEN    "9102"
-               WHEN    "9103"
-               WHEN    "9104"
+      *******  WHEN    "9100"
+      *        WHEN    "9101"
+      *        WHEN    "9102"
+      *            IF      SPA-PID1-FLG        =   "OK"
+      *                PERFORM  49021-KOUSIN-AFTER-SEC
+      *            ELSE
+      *                PERFORM  49021-KOUSIN-AFTER-SEC
+      ***********  END-IF
+      *        保険変更確認
+               WHEN    "K910"
+               WHEN    "K911"
+               WHEN    "K912"
                    IF      SPA-PID1-FLG        =   "OK"
-                       PERFORM  49021-KOUSIN-AFTER-SEC
+                       MOVE    SPACE               TO  SPA-PIDCD
+                       PERFORM 4900-TOROKU-SYORI2-SEC
                    ELSE
-                       PERFORM  49021-KOUSIN-AFTER-SEC
+                       MOVE    ZERO            TO  SPA-KEI2-FLG
                    END-IF
       *        保険重複確認
                WHEN    "0105"
@@ -3160,18 +3180,44 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO                  490-TOUROKU-EXT
            END-IF
       *
+      *    保険組合せの変更による履歴チェック
+           IF      SPA-P02-SYORI    NOT=   1
+               MOVE    SPA-P02KYOUTU   TO  SPA-WORK
+               MOVE    SPA-P02SCRAREA  TO  SPA-FREE
+               MOVE    SPA-AREA        TO  SPA-COMMON
+      *        更新サブへ
+               CALL    "ORCGP029"      USING   MCPAREA
+                                               SPAAREA
+               MOVE    SPA-COMMON      TO  SPA-AREA
+               MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+               MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+           END-IF
+      *
+           IF     (SPA-ERRCD           =   SPACE )   AND
+                  (SPA-PIDCD           =   SPACE )
+               PERFORM 4900-TOROKU-SYORI2-SEC
+           END-IF
+           .
+       490-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    更新処理
+      *****************************************************************
+       4900-TOROKU-SYORI2-SEC           SECTION.
+      *
       *    ＣＬＡＩＭ接続チェック処理
            MOVE    ZERO                TO  FLG-CLAIM
            PERFORM 4905-CLAIM-CHK-SEC
-           IF      FLG-CLAIM       =   2
-               GO      TO      490-TOUROKU-EXT
-           END-IF
-      *
+           IF      FLG-CLAIM           =   2
+               CONTINUE
+           ELSE
       *    更新処理
-           MOVE    ZERO                TO  FLG-CLAIM-OK
-           PERFORM 4902-KOUSIN-SYORI-SEC
+               MOVE    ZERO                TO  FLG-CLAIM-OK
+               PERFORM 4902-KOUSIN-SYORI-SEC
+           END-IF
            .
-       490-TOUROKU-EXT.
+       4900-TOROKU-SYORI2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3185,23 +3231,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    更新サブへ
            CALL    "ORCGP029"      USING   MCPAREA
                                            SPAAREA
-                                           LINKAREA
-      *
            MOVE    SPA-COMMON      TO  SPA-AREA
            MOVE    SPA-WORK        TO  SPA-P02KYOUTU
            MOVE    SPA-FREE        TO  SPA-P02SCRAREA
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4902-KOUSIN-SYORI-EXT
-           END-IF
       *
-           IF      SPA-KEI-ERRCD   NOT =   SPACE
-               MOVE    SPA-KEI-ERRCD       TO  SPA-PIDCD
-               MOVE    1                   TO  SPA-KEI-FLG
-               GO      TO      4902-KOUSIN-SYORI-EXT
+           IF     (SPA-ERRCD           =   SPACE )   AND
+                  (SPA-PIDCD           =   SPACE )
+               IF      SPA-KEI-ERRCD   NOT =   SPACE
+      ****         MOVE    SPA-KEI-ERRCD       TO  SPA-PIDCD
+                   MOVE    SPA-KEI-ERRCD       TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-KEI-FLG
+               END-IF
            END-IF
       *
       *    登録後、処理
-           PERFORM  49021-KOUSIN-AFTER-SEC
+           IF     (SPA-ERRCD           =   SPACE )   AND
+                  (SPA-PIDCD           =   SPACE )   AND
+                  (FLG-END             =   ZERO  )
+               PERFORM  49021-KOUSIN-AFTER-SEC
+           END-IF
            .
        4902-KOUSIN-SYORI-EXT.
            EXIT.
@@ -4929,6 +4977,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
+               WHEN    "9100"
+                   STRING  "保険組合の変更で保険期間外の診療が"
+                           "存在します。診療を保険変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "9101"
+                   STRING  "保険組合の変更で保険期間外の病名が"
+                           "存在します。病名を保険変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "9102"
+                   STRING  "保険組合の変更で保険期間外の診療と病名が"
+                           "あります。"
+                           "診療と病名を保険変更して下さい。"
+                                       DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
@@ -5103,22 +5170,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO  WRK-PIDMSG
                    END-STRING
       *
-               WHEN    "9100"
-                   STRING  "保険組合の変更で保険期間外の診療が"
-                           "存在します。診療を保険変更して下さい。"
+               WHEN    "K910"
+                   STRING  "警告！"
+                           "保険組合せ更新で期間外の診療が"
+                           "発生します。"
+                           "よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-PIDMSG
                    END-STRING
-               WHEN    "9101"
-                   STRING  "保険組合の変更で保険期間外の病名が"
-                           "存在します。病名を保険変更して下さい。"
+               WHEN    "K911"
+                   STRING  "警告！"
+                           "保険組合せ更新で期間外の病名が"
+                           "発生します。"
+                           "よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-PIDMSG
                    END-STRING
-               WHEN    "9102"
-                   STRING  "保険組合の変更で保険期間外の診療と病名が"
-                           "あります。"
-                           "診療と病名を保険変更して下さい。"
+               WHEN    "K912"
+                   STRING  "警告！"
+                           "保険組合せ更新で期間外の診療と病名が"
+                           "発生します。"
+                           "よろしいですか？"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-PIDMSG
                    END-STRING

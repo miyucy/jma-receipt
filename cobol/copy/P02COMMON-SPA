@@ -81,6 +81,7 @@
            03  SPA-NAI-HIHKNJAKBN-FLG      PIC X(01).
       *
       *    更新時警告あり
+           03  SPA-KEI2-FLG               PIC 9(01).
            03  SPA-KEI-FLG                PIC 9(01).
            03  SPA-KEI-ERRCD              PIC X(04).
       *

@@ -2510,9 +2510,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                  HKNCOMBI-REC
                MOVE    "00000000"          TO  COMB-TEKSTYMD
                MOVE    "99999999"          TO  COMB-TEKEDYMD
+               MOVE    ZERO                TO  FLG-HKNCOMBI
            ELSE
                INITIALIZE                  HKNCOMBI-REC
-               MOVE    SPA-HOSPNUM          TO  COMB-HOSPNUM
+               MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
                MOVE    SPA-GMN-PTID        TO  COMB-PTID
                MOVE    ACCT-HKNCOMBI       TO  COMB-HKNCOMBINUM
       *
@@ -2524,6 +2525,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "tbl_hkncombi"      TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
                    PERFORM 940-HKNCOMBI-NEXT-SEC
+                   IF      COMB-DELKBN     NOT  =   SPACE
+      *                削除は対象外
+                       MOVE    1               TO  FLG-HKNCOMBI
+                       INITIALIZE                  HKNCOMBI-REC
+                   END-IF
                ELSE
                    MOVE    1               TO  FLG-HKNCOMBI
                    INITIALIZE                  HKNCOMBI-REC
@@ -2544,8 +2550,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    有効期間判定
            MOVE    ZERO                TO  FLG-HKN-CHK
            MOVE    ACCT-SRYYM          TO  WRK-SRYYMD(1:6)
+           IF      FLG-HKNCOMBI        =   1
+               MOVE    1                   TO  FLG-HKN-CHK
+           END-IF
            PERFORM VARYING     IDX-D   FROM    1   BY  1
-                   UNTIL       IDX-D   >   31
+                   UNTIL      (IDX-D       >   31  )
+                       OR     (FLG-HKN-CHK =   1   )
                IF      ACCT-DAY (1 IDX-D)  NOT =   ZERO
                    MOVE    IDX-D           TO  WRK-SRYDD
                    IF     (WRK-SRYYMD      <   COMB-TEKSTYMD)

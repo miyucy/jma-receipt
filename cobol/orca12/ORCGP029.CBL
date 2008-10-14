@@ -168,6 +168,7 @@
                05  WRK-SDD         PIC 9(02).
       *
            03  WRK-ERRCD           PIC X(04).
+           03  WRK-PIDCD           PIC X(04).
       *
            03  WRK-UKEID           PIC 9(05).
            03  WRK-HKN-CNT         PIC 9(04).
@@ -335,12 +336,13 @@
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
       *
-           COPY    "LINKAREA".
+      ***  COPY    "LINKAREA".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
            SPAAREA
-           LINKAREA.
+      **** LINKAREA
+           .
       *
       *****************************************************************
       *    主　　処理
@@ -354,8 +356,11 @@
       *    初期　処理
            PERFORM 100-INIT-SEC
       *
+           IF     (SPA-PIDCD       =   SPACE  )
+             AND  (SPA-ERRCD       =   SPACE  )
       *    ＤＢ更新処理
-           PERFORM 200-MAIN-SEC
+               PERFORM 200-MAIN-SEC
+           END-IF
       *
            MOVE    SPA-P02KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -378,9 +383,74 @@
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
+      *    保険組合せ変更の期間外チェック
+           IF      SPA-GMN-PTID    NOT =   ZERO
+               IF      SPA-KEI2-FLG        =   ZERO
+                   PERFORM 1001-HKNCOMBI-KIKANCHK-SEC
+               END-IF
+           END-IF
       *
            .
        100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せ変更の期間外チェック処理
+      *****************************************************************
+       1001-HKNCOMBI-KIKANCHK-SEC       SECTION.
+      *
+           MOVE    SPACE               TO  SPA-KEI-ERRCD
+           MOVE    SPACE               TO  WRK-PIDCD
+      *    パラメタファイルより
+           INITIALIZE                      PARA-REC
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "HKNCOMBI"          TO  PARA-FILEMEI
+      *
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+           PERFORM
+               UNTIL  (FLG-PARA            =   1 )
+               OR     (SPA-KEI-ERRCD   NOT =   SPACE )
+               MOVE    PARA-DATA-REC       TO  HKNCOMBI-REC
+               MOVE    SPA-GMN-PTID        TO  COMB-PTID
+               MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
+               PERFORM 940-HKNCOMBI-READ-SEC
+      *        保険変更による受診履歴修正の有無チェック
+               IF      FLG-HKNCOMBI        =   ZERO
+                   IF     (HZN-COMB-TEKSTYMD   NOT =   COMB-TEKSTYMD) OR
+                          (HZN-COMB-TEKEDYMD   NOT =   COMB-TEKEDYMD) OR
+                          (HZN-COMB-DELKBN     NOT =   COMB-DELKBN  )
+                       PERFORM 2501-HKNCOMBI-CHK-SEC
+                   END-IF
+               END-IF
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    1                   TO  SPA-KEI2-FLG
+           MOVE    SPACE               TO  SPA-KEI-ERRCD
+           IF      WRK-PIDCD       NOT =   SPACE
+               MOVE    WRK-PIDCD           TO  SPA-PIDCD
+            END-IF
+            MOVE    SPACE               TO  WRK-PIDCD
+           .
+       1001-HKNCOMBI-KIKANCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1251,7 +1321,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        2501-HKNCOMBI-CHK-SEC             SECTION.
       *
-      *
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-REC
            MOVE    HZN-COMB-HOSPNUM    TO  JYURRK-HOSPNUM
@@ -1281,10 +1350,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    IF     (JYURRK-SRYYMD       <   COMB-TEKSTYMD)  OR
                           (JYURRK-SRYYMD       >   COMB-TEKEDYMD)
                        MOVE    "9100"          TO  SPA-KEI-ERRCD
+                       MOVE    "K910"          TO  WRK-PIDCD
                    END-IF
                ELSE
       *            削除の時
                    MOVE    "9100"          TO  SPA-KEI-ERRCD
+                   MOVE    "K910"          TO  WRK-PIDCD
                END-IF
            END-IF
       *
@@ -1320,16 +1391,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                           (PTBYO-SRYYMD        >   COMB-TEKEDYMD)
                        IF      SPA-KEI-ERRCD       =   SPACE
                            MOVE    "9101"          TO  SPA-KEI-ERRCD
+                           MOVE    "K911"          TO  WRK-PIDCD
                        ELSE
                            MOVE    "9102"          TO  SPA-KEI-ERRCD
+                           MOVE    "K912"          TO  WRK-PIDCD
                        END-IF
                    END-IF
                ELSE
       *            削除の時
                    IF      SPA-KEI-ERRCD       =   SPACE
                        MOVE    "9101"          TO  SPA-KEI-ERRCD
+                       MOVE    "K911"          TO  WRK-PIDCD
                    ELSE
                        MOVE    "9102"          TO  SPA-KEI-ERRCD
+                       MOVE    "K912"          TO  WRK-PIDCD
                    END-IF
                END-IF
            END-IF
