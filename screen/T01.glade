@@ -1563,17 +1563,6 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>GDK_SHIFT_MASK</modifiers>
-	<key>GDK_F3</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Mon, 25 Dec 2000 08:28:20 GMT</last_modification_time>
-      </signal>
       <label>データ取込</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
@@ -1586,17 +1575,6 @@
       <width>80</width>
       <height>24</height>
       <can_focus>True</can_focus>
-      <accelerator>
-	<modifiers>GDK_SHIFT_MASK</modifiers>
-	<key>GDK_F4</key>
-	<signal>clicked</signal>
-      </accelerator>
-      <signal>
-	<name>clicked</name>
-	<handler>send_event</handler>
-	<data>CLICKED</data>
-	<last_modification_time>Mon, 25 Dec 2000 08:28:20 GMT</last_modification_time>
-      </signal>
       <label>個別指示</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>

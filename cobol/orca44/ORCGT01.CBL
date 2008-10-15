@@ -424,7 +424,7 @@
            COPY    "T03.INC".
            COPY    "T04.INC".
            COPY    "T05.INC".
-           COPY    "T06.INC".
+      *    COPY    "T06.INC".
            COPY    "T09.INC".
            COPY    "T91.INC".
            COPY    "T99.INC".
@@ -5044,11 +5044,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                T01-DATAKBN2-VALUE
            END-IF
            MOVE    WIDGET-INSENSITIVE  TO  T01-HKNJANUM1-STATE
-      *??
-           MOVE    WIDGET-INSENSITIVE  TO  T01-B15-STATE
-           MOVE    WIDGET-INSENSITIVE  TO  T01-B16-STATE
-        
-      *??
       *
            PERFORM 5001-MAPCUR-SEC
       *
