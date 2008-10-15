@@ -3411,7 +3411,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG3
       *
            MOVE    CONST-JOBID         TO  SHELLTBL-ARG5
            MOVE    CONST-JOB-SHELLID   TO  SHELLTBL-ARG6
-      *    
+      *
+           MOVE    SPA-STAFFCD         TO  SHELLTBL-ARG7
+      *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE
