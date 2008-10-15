@@ -1941,8 +1941,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:19:49 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>CARUTE</group>
@@ -1967,8 +1966,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:20:08 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>SYOHO</group>
@@ -1993,10 +1991,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:20:30 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>RYOSYU</group>
@@ -2021,10 +2016,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>YAKUJYO</group>
@@ -2049,9 +2041,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>SIHARAI1</group>
@@ -2076,9 +2066,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>SRYROKU</group>
@@ -2103,9 +2091,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>SIHARAI2</group>
@@ -2130,9 +2116,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>MEISAI</group>
@@ -2157,9 +2141,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>TECHO</group>
@@ -2436,8 +2418,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:20:56 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>CARUTE</group>
@@ -2462,8 +2443,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:21:39 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>SYOHO</group>
@@ -2488,8 +2468,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:21:58 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>RYOSYU</group>
@@ -2514,9 +2493,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:33 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>YAKUJYO</group>
@@ -2541,9 +2518,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 04 Jul 2003 06:16:25 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>SIHARAI1</group>
@@ -2568,9 +2543,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 04 Jul 2003 06:16:25 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>SRYROKU</group>
@@ -2595,9 +2568,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 04 Jul 2003 06:16:25 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>SIHARAI2</group>
@@ -2622,9 +2593,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 04 Jul 2003 06:16:25 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>MEISAI</group>
@@ -2649,9 +2618,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 04 Jul 2003 06:16:25 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>TECHO</group>
@@ -4286,10 +4253,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU01</group>
@@ -4314,10 +4278,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU04</group>
@@ -4342,10 +4303,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU03</group>
@@ -4370,10 +4328,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU02</group>
@@ -4398,10 +4353,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU01</group>
@@ -4426,10 +4378,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU02</group>
@@ -4454,10 +4403,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU03</group>
@@ -4482,10 +4428,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU04</group>
@@ -4538,10 +4481,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU05</group>
@@ -4594,10 +4534,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU07</group>
@@ -4734,10 +4671,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU05</group>
@@ -4762,10 +4696,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU07</group>
@@ -4790,10 +4721,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU08</group>
@@ -4818,10 +4746,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU09</group>
@@ -4846,10 +4771,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU10</group>
@@ -4874,10 +4796,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU08</group>
@@ -4902,10 +4821,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU09</group>
@@ -4930,10 +4846,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU10</group>
@@ -4958,10 +4871,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU06</group>
@@ -4986,10 +4896,7 @@
 		<data>CLICKED</data>
 		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
 	      </signal>
-	      <label>_
-
-
-</label>
+	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU06</group>
