@@ -424,6 +424,8 @@
            COPY    "T03.INC".
            COPY    "T04.INC".
            COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T09.INC".
            COPY    "T91.INC".
            COPY    "T99.INC".
            COPY    "TERR.INC".
@@ -1978,6 +1980,9 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *     データ取り込み
                WHEN    "CLICKED"       ALSO    "B15"
                    PERFORM 480-DATA-EXPORT-SEC
+      *     レセ電データ個別指示
+               WHEN    "CLICKED"       ALSO    "B16"
+                   PERFORM 480-RECEDEN-KOBETU-SEC
       *     公費ＣＳＶデータ作成
                WHEN    "CLICKED"       ALSO    "B19"
                    MOVE    SPACE           TO  SPA-T99-MOTOPG
@@ -4562,6 +4567,29 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
+      *    レセ電データ個別指示画面
+      *****************************************************************
+       480-RECEDEN-KOBETU-SEC             SECTION.
+      *
+           MOVE    SPA-T01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-T01FREE         TO  SPA-FREE
+      *
+           MOVE    "T01"               TO  SPA-MOTOPG
+           MOVE    "T06"               TO  SPA-SAKIPG
+      *
+           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+      *
+           .
+       480-RECEDEN-KOBETU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    公費個別指定画面
       *****************************************************************
        490-KOBETU-SEC             SECTION.
@@ -5016,6 +5044,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                T01-DATAKBN2-VALUE
            END-IF
            MOVE    WIDGET-INSENSITIVE  TO  T01-HKNJANUM1-STATE
+      *??
+           MOVE    WIDGET-INSENSITIVE  TO  T01-B15-STATE
+           MOVE    WIDGET-INSENSITIVE  TO  T01-B16-STATE
+        
+      *??
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -5404,11 +5437,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                            DELIMITED  BY  SIZE
                        "セプト電算データを作成しますか（症状詳記の印刷"
                                            DELIMITED  BY  SIZE
-                       "を指定）"
-                                           DELIMITED  BY  SIZE
+                       "を指定）"          DELIMITED  BY  SIZE
                                            INTO  WRK-TIDMSG
                        END-STRING
-                       MOVE    ZERO             TO  FLG-RECEDEN-CHK
                    END-IF
            END-EVALUATE
       *
@@ -5429,11 +5460,16 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1023"
                WHEN    "1024"
                WHEN    "1025"
+      ***             IF      FLG-RECEDEN-CHK      =   1
+      ***                 MOVE    "red"            TO  TID2-ID1MSG-STYLE
+      ***             END-IF
                    MOVE    "blue"               TO  TID2-LABEL-STYLE
                    IF      SPA-GMN-PRTKBN       =   "2"
                        MOVE    "【点検用】"         TO  TID2-LABEL
                     END-IF
            END-EVALUATE
+      * 
+           MOVE    ZERO             TO  FLG-RECEDEN-CHK
       *
            MOVE    "B12"                TO  MCP-WIDGET
       *
@@ -5658,11 +5694,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
        900-DBSELECT-SEC                SECTION.
       *
            MOVE    "DBSELECT"          TO  MCP-FUNC
-grpsys     PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              =   ZERO
                CONTINUE
            ELSE
                DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+               CALL    "coblog" USING "SELECT ERR table=" MCP-TABLE
                        " pathname="        MCP-PATHNAME
            END-IF
            .
