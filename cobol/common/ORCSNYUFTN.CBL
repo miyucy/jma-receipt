@@ -4954,6 +4954,7 @@ grpsys                                    SPA-AREA
                                                 SINRYO-COUNT)
                                     END-EVALUATE
                                    WHEN   "90"
+                                   WHEN   "92"
                                        COMPUTE  TBL-TGMONEY(15)  =
                                                 TBL-TGMONEY(15)  +
                                                (SRY-JIHIMONEY(IDZ) *
@@ -5267,6 +5268,7 @@ grpsys                                    SPA-AREA
                                                 SINRYO-COUNT)
                                     END-EVALUATE
                                    WHEN   "90"
+                                   WHEN   "92"
                                        COMPUTE  TBL-TGMONEY-TAX(15)  =
                                                 TBL-TGMONEY-TAX(15)  +
                                                (SRY-JIHIMONEY(IDZ) *
