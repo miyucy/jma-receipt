@@ -354,7 +354,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
 grpsys     MOVE    SPA-HOSPNUM         TO  PRVKANRI-HOSPNUM
            MOVE    PRVKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
-           MOVE    "tbl_prtkanri"      TO  MCP-TABLE
+           MOVE    "tbl_prvkanri"      TO  MCP-TABLE
            MOVE    "del13"             TO  MCP-PATHNAME
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC              NOT  =   ZERO
