@@ -193,6 +193,7 @@
       *  04.03.01    NACL-Æ£¸¶    08/05/07  ¸øÈñ£´¼ï¤Þ¤Ç¤ÎÊ»ÍÑ¤Îµ­Ï¿ÂÐ±þ
       *  04.03.02    NACL-Æ£¸¶    08/06/19  °å»ÕÊÌ½ÐÎÏÂÐ±þ
       *  04.03.03    NACL-Æ£¸¶    08/08/05  ´µ¼ÔÅÐÏ¿ÆÃµ­»ö¹àÆþÎÏÂÐ±þ
+      *  04.03.04    NACL-ÌçÏÆ    08/10/16  ¸øÈñ¡ÝÄã£²¡¦Äã£±¹àÌÜÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1770,6 +1771,8 @@ grpsys             MOVE   RECE01-HOSPNUM   TO  HKN-HOSPNUM
                    IF       FLG-HKNNUM     =   ZERO
                        MOVE   HKN-HBTNUM          TO
                                        RECE02-KOHHBTNUM        (IDX2)
+                       MOVE   HKN-HON-GAIFTNKBN   TO
+                                       RECE02-HON-GAIFTNKBN    (IDX2)
                        MOVE   HKN-HON-GAIKFTNRATE TO
                                        RECE02-HON-GAIKFTNRATE  (IDX2)
                        MOVE   HKN-HON-GAIKJGNGAK  TO
@@ -1786,6 +1789,42 @@ grpsys             MOVE   RECE01-HOSPNUM   TO  HKN-HOSPNUM
                                        RECE02-HON-GAIMGAIJGNGAK(IDX2)
                        MOVE   HKN-HON-GAIMJGNCNT  TO
                                        RECE02-HON-GAIMJGNCNT   (IDX2)
+                       MOVE   HKN-TSY-GAIFTNKBN   TO
+                                       RECE02-TSY-GAIFTNKBN    (IDX2)
+                       MOVE   HKN-TSY-GAIKFTNRATE TO
+                                       RECE02-TSY-GAIKFTNRATE  (IDX2)
+                       MOVE   HKN-TSY-GAIKJGNGAK  TO
+                                       RECE02-TSY-GAIKJGNGAK   (IDX2)
+                       MOVE   HKN-TSY-GAIDJGNGAK  TO
+                                       RECE02-TSY-GAIDJGNGAK   (IDX2)
+                       MOVE   HKN-TSY-GAIDJGNCNT  TO
+                                       RECE02-TSY-GAIDJGNCNT   (IDX2)
+                       MOVE   HKN-TSY-GAIMNAIJGNGAK
+                                                  TO
+                                       RECE02-TSY-GAIMNAIJGNGAK(IDX2)
+                       MOVE   HKN-TSY-GAIMGAIJGNGAK
+                                                  TO
+                                       RECE02-TSY-GAIMGAIJGNGAK(IDX2)
+                       MOVE   HKN-TSY-GAIMJGNCNT  TO
+                                       RECE02-TSY-GAIMJGNCNT   (IDX2)
+                       MOVE   HKN-TNK-GAIFTNKBN   TO
+                                       RECE02-TNK-GAIFTNKBN    (IDX2)
+                       MOVE   HKN-TNK-GAIKFTNRATE TO
+                                       RECE02-TNK-GAIKFTNRATE  (IDX2)
+                       MOVE   HKN-TNK-GAIKJGNGAK  TO
+                                       RECE02-TNK-GAIKJGNGAK   (IDX2)
+                       MOVE   HKN-TNK-GAIDJGNGAK  TO
+                                       RECE02-TNK-GAIDJGNGAK   (IDX2)
+                       MOVE   HKN-TNK-GAIDJGNCNT  TO
+                                       RECE02-TNK-GAIDJGNCNT   (IDX2)
+                       MOVE   HKN-TNK-GAIMNAIJGNGAK
+                                                  TO
+                                       RECE02-TNK-GAIMNAIJGNGAK(IDX2)
+                       MOVE   HKN-TNK-GAIMGAIJGNGAK
+                                                  TO
+                                       RECE02-TNK-GAIMGAIJGNGAK(IDX2)
+                       MOVE   HKN-TNK-GAIMJGNCNT  TO
+                                       RECE02-TNK-GAIMJGNCNT   (IDX2)
                    END-IF
       *             
       *            À¸ÊÝËô¤ÏÃæ¹ñ»ÄÎ±Ë®¿ÍÅù¤Î¤È¤­·îÂå¤ï¤ê¼õµë¼ÔÈÖ¹æ¥Þ¥¹¥¿

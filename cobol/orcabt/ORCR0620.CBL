@@ -152,6 +152,7 @@
       *  04.03.01    NACL-Æ£¸¶    08/05/07  ¸øÈñ£´¼ï¤Þ¤Ç¤ÎÊ»ÍÑ¤Îµ­Ï¿ÂÐ±þ
       *  04.03.02    NACL-Æ£¸¶    08/06/19  °å»ÕÊÌ½ÐÎÏÂÐ±þ
       *  04.03.03    NACL-Æ£¸¶    08/08/05  ´µ¼ÔÅÐÏ¿ÆÃµ­»ö¹àÆþÎÏÂÐ±þ
+      *  04.03.04    NACL-ÌçÏÆ    08/10/16  ¸øÈñ¡ÝÄã£²¡¦Äã£±¹àÌÜÊÔ½¸
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1713,6 +1714,8 @@
                    IF       FLG-HKNNUM     =   ZERO
                        MOVE   HKN-HBTNUM           TO
                                            RECE62-KOHHBTNUM      (IDX2)
+                       MOVE   HKN-HON-NYUFTNKGN    TO
+                                           RECE62-HON-NYUFTNKBN  (IDX2)
                        MOVE   HKN-HON-NYUKFTNRATE  TO
                                            RECE62-HON-NYUKFTNRATE(IDX2)
                        MOVE   HKN-HON-NYUDJGNGAK   TO
@@ -1723,6 +1726,30 @@
                                            RECE62-HON-NYUMJGNCNT (IDX2)
                        MOVE   HKN-HON-NYUSKJRYYKBN TO
                                            RECE62-HON-NYUSKJRYYKBN(IDX2)
+                       MOVE   HKN-TSY-NYUFTNNBK    TO
+                                           RECE62-TSY-NYUFTNKBN  (IDX2)
+                       MOVE   HKN-TSY-NYUKFTNRATE  TO
+                                           RECE62-TSY-NYUKFTNRATE(IDX2)
+                       MOVE   HKN-TSY-NYUDJGNGAK   TO
+                                           RECE62-TSY-NYUDJGNGAK (IDX2)
+                       MOVE   HKN-TSY-NYUMJGNGAK   TO
+                                           RECE62-TSY-NYUMJGNGAK (IDX2)
+                       MOVE   HKN-TSY-NYUMJGNCNT   TO
+                                           RECE62-TSY-NYUMJGNCNT (IDX2)
+                       MOVE   HKN-TSY-NYUSKJRYYKBN TO
+                                           RECE62-TSY-NYUSKJRYYKBN(IDX2)
+                       MOVE   HKN-TNK-NYUFTNKBN    TO
+                                           RECE62-TNK-NYUFTNKBN  (IDX2)
+                       MOVE   HKN-TNK-NYUKFTNRATE  TO
+                                           RECE62-TNK-NYUKFTNRATE(IDX2)
+                       MOVE   HKN-TNK-NYUDJGNGAK   TO
+                                           RECE62-TNK-NYUDJGNGAK (IDX2)
+                       MOVE   HKN-TNK-NYUMJGNGAK   TO
+                                           RECE62-TNK-NYUMJGNGAK (IDX2)
+                       MOVE   HKN-TNK-NYUMJGNCNT   TO
+                                           RECE62-TNK-NYUMJGNCNT (IDX2)
+                       MOVE   HKN-TNK-NYUSKJRYYKBN TO
+                                           RECE62-TNK-NYUSKJRYYKBN(IDX2)
                    END-IF
       *            
                    MOVE   PTKOH-FTNJANUM   TO RECE62-KOHFTNJANUM(IDX2)
