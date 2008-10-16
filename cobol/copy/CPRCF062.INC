@@ -94,6 +94,7 @@
       *                                     ´µ¼ÔÆÃµ­»ö¹àÄÉ²Ã
       *  04.03.04    NACL-ÌçÏÆ    08/09/05  ¥ì¥»ÅÅÍÑÉéÃ´¶èÊ¬ÊÔ½¸¥Õ¥é¥°ÄÉ²Ã
       *                                     Í½È÷ÄÉ²Ã
+      *  04.03.05    NACL-ÌçÏÆ    08/10/16  ¸øÈñ¡ÝÄã£²¡¦Äã£±¹àÌÜÄÉ²Ã
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -224,21 +225,45 @@
                    07  RECE62-KOHTEKSTYMD PIC  X(08).
       *¸øÈñ¡ÝÅ¬ÍÑ½ªÎ»Ç¯·îÆü
                    07  RECE62-KOHTEKEDYMD PIC  X(08).
+      *
+      *¸øÈñ¡ÝËÜ¿Í¡ÝÆþ±¡¡ÝÉéÃ´¶èÊ¬
+                   07  RECE62-HON-NYUFTNKBN     PIC  X(01).
       *¸øÈñ¡ÝËÜ¿Í¡ÝÆþ±¡¡Ý²ó¡ÝÉéÃ´³ä¹ç
-                   07  RECE62-HON-NYUKFTNRATE
-                                          PIC  9(03).
+                   07  RECE62-HON-NYUKFTNRATE   PIC  9(03).
       *¸øÈñ¡ÝËÜ¿Í¡ÝÆþ±¡¡ÝÆü¡Ý¾å¸Â³Û
-                   07  RECE62-HON-NYUDJGNGAK
-                                          PIC  9(06).
+                   07  RECE62-HON-NYUDJGNGAK    PIC  9(06).
       *¸øÈñ¡ÝËÜ¿Í¡ÝÆþ±¡¡Ý·î¡Ý¾å¸Â³Û
-                   07  RECE62-HON-NYUMJGNGAK
-                                          PIC  9(06).
+                   07  RECE62-HON-NYUMJGNGAK    PIC  9(06).
       *¸øÈñ¡ÝËÜ¿Í¡ÝÆþ±¡¡Ý·î¡Ý¾å¸Â²ó¿ô
-                   07  RECE62-HON-NYUMJGNCNT
-                                          PIC  9(02).
+                   07  RECE62-HON-NYUMJGNCNT    PIC  9(02).
       *¸øÈñ¡ÝËÜ¿Í¡ÝÆþ±¡¡Ý¿©»öÎÅÍÜ¶èÊ¬
-                   07  RECE62-HON-NYUSKJRYYKBN
-                                          PIC  X(01).
+                   07  RECE62-HON-NYUSKJRYYKBN  PIC  X(01).
+      *
+      *¸øÈñ¡ÝÄã£²¡ÝÆþ±¡¡ÝÉéÃ´¶èÊ¬
+                   07  RECE62-TSY-NYUFTNKBN     PIC  X(01).
+      *¸øÈñ¡ÝÄã£²¡ÝÆþ±¡¡Ý²ó¡ÝÉéÃ´³ä¹ç
+                   07  RECE62-TSY-NYUKFTNRATE   PIC  9(03).
+      *¸øÈñ¡ÝÄã£²¡ÝÆþ±¡¡ÝÆü¡Ý¾å¸Â³Û
+                   07  RECE62-TSY-NYUDJGNGAK    PIC  9(06).
+      *¸øÈñ¡ÝÄã£²¡ÝÆþ±¡¡Ý·î¡Ý¾å¸Â³Û
+                   07  RECE62-TSY-NYUMJGNGAK    PIC  9(06).
+      *¸øÈñ¡ÝÄã£²¡ÝÆþ±¡¡Ý·î¡Ý¾å¸Â²ó¿ô
+                   07  RECE62-TSY-NYUMJGNCNT    PIC  9(02).
+      *¸øÈñ¡ÝÄã£²¡ÝÆþ±¡¡Ý¿©»öÎÅÍÜ¶èÊ¬
+                   07  RECE62-TSY-NYUSKJRYYKBN  PIC  X(01).
+      *
+      *¸øÈñ¡ÝÄã£±¡ÝÆþ±¡¡ÝÉéÃ´¶èÊ¬
+                   07  RECE62-TNK-NYUFTNKBN     PIC  X(01).
+      *¸øÈñ¡ÝÄã£±¡ÝÆþ±¡¡Ý²ó¡ÝÉéÃ´³ä¹ç
+                   07  RECE62-TNK-NYUKFTNRATE   PIC  9(03).
+      *¸øÈñ¡ÝÄã£±¡ÝÆþ±¡¡ÝÆü¡Ý¾å¸Â³Û
+                   07  RECE62-TNK-NYUDJGNGAK    PIC  9(06).
+      *¸øÈñ¡ÝÄã£±¡ÝÆþ±¡¡Ý·î¡Ý¾å¸Â³Û
+                   07  RECE62-TNK-NYUMJGNGAK    PIC  9(06).
+      *¸øÈñ¡ÝÄã£±¡ÝÆþ±¡¡Ý·î¡Ý¾å¸Â²ó¿ô
+                   07  RECE62-TNK-NYUMJGNCNT    PIC  9(02).
+      *¸øÈñ¡ÝÄã£±¡ÝÆþ±¡¡Ý¿©»öÎÅÍÜ¶èÊ¬
+                   07  RECE62-TNK-NYUSKJRYYKBN  PIC  X(01).
       *
       *ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¾ðÊó
            03  RECE62-HKNCOMBIINF-AREA.

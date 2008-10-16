@@ -102,6 +102,7 @@
       *                                     ´µ¼ÔÆÃµ­»ö¹àÄÉ²Ã
       *  04.03.04    NACL-ÌçÏÆ    08/09/05  ¥ì¥»ÅÅÍÑÉéÃ´¶èÊ¬ÊÔ½¸¥Õ¥é¥°ÄÉ²Ã
       *                                     Í½È÷ÄÉ²Ã
+      *  04.03.05    NACL-ÌçÏÆ    08/10/16  ¸øÈñ¡ÝÄã£²¡¦Äã£±¹àÌÜÄÉ²Ã
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -233,27 +234,57 @@
                    07  RECE02-KOHTEKSTYMD PIC  X(08).
       *¸øÈñ¡ÝÅ¬ÍÑ½ªÎ»Ç¯·îÆü
                    07  RECE02-KOHTEKEDYMD PIC  X(08).
+      *
+      *¸øÈñ¡ÝËÜ¿Í¡Ý³°Íè¡ÝÉéÃ´¶èÊ¬
+                   07  RECE02-HON-GAIFTNKBN      PIC  X(01).
       *¸øÈñ¡ÝËÜ¿Í¡Ý³°Íè¡Ý²ó¡ÝÉéÃ´³ä¹ç
-                   07 RECE02-HON-GAIKFTNRATE
-                                          PIC  9(03).
+                   07  RECE02-HON-GAIKFTNRATE    PIC  9(03).
       *¸øÈñ¡ÝËÜ¿Í¡Ý³°Íè¡Ý²ó¡Ý¾å¸Â³Û
-                   07 RECE02-HON-GAIKJGNGAK
-                                          PIC  9(06).
+                   07  RECE02-HON-GAIKJGNGAK     PIC  9(06).
       *¸øÈñ¡ÝËÜ¿Í¡Ý³°Íè¡ÝÆü¡Ý¾å¸Â³Û
-                   07 RECE02-HON-GAIDJGNGAK
-                                          PIC  9(06).
+                   07  RECE02-HON-GAIDJGNGAK     PIC  9(06).
       *¸øÈñ¡ÝËÜ¿Í¡Ý³°Íè¡ÝÆü¡Ý¾å¸Â²ó¿ô
-                   07 RECE02-HON-GAIDJGNCNT
-                                          PIC  9(02).
+                   07  RECE02-HON-GAIDJGNCNT     PIC  9(02).
       *¸øÈñ¡ÝËÜ¿Í¡Ý³°Íè¡Ý·î¡Ý±¡Æâ¡Ý¾å¸Â³Û
-                   07 RECE02-HON-GAIMNAIJGNGAK
-                                          PIC  9(06).
+                   07  RECE02-HON-GAIMNAIJGNGAK  PIC  9(06).
       *¸øÈñ¡ÝËÜ¿Í¡Ý³°Íè¡Ý·î¡Ý±¡³°¡Ý¾å¸Â³Û
-                   07 RECE02-HON-GAIMGAIJGNGAK
-                                          PIC  9(06).
+                   07  RECE02-HON-GAIMGAIJGNGAK  PIC  9(06).
       *¸øÈñ¡ÝËÜ¿Í¡Ý³°Íè¡Ý·î¡Ý¾å¸Â²ó¿ô
-                   07 RECE02-HON-GAIMJGNCNT
-                                          PIC  9(02).
+                   07  RECE02-HON-GAIMJGNCNT     PIC  9(02).
+      *
+      *¸øÈñ¡ÝÄã£²¡Ý³°Íè¡ÝÉéÃ´¶èÊ¬
+                   07  RECE02-TSY-GAIFTNKBN      PIC  X(01).
+      *¸øÈñ¡ÝÄã£²¡Ý³°Íè¡Ý²ó¡ÝÉéÃ´³ä¹ç
+                   07  RECE02-TSY-GAIKFTNRATE    PIC  9(03).
+      *¸øÈñ¡ÝÄã£²¡Ý³°Íè¡Ý²ó¡Ý¾å¸Â³Û
+                   07  RECE02-TSY-GAIKJGNGAK     PIC  9(06).
+      *¸øÈñ¡ÝÄã£²¡Ý³°Íè¡ÝÆü¡Ý¾å¸Â³Û
+                   07  RECE02-TSY-GAIDJGNGAK     PIC  9(06).
+      *¸øÈñ¡ÝÄã£²¡Ý³°Íè¡ÝÆü¡Ý¾å¸Â²ó¿ô
+                   07  RECE02-TSY-GAIDJGNCNT     PIC  9(02).
+      *¸øÈñ¡ÝÄã£²¡Ý³°Íè¡Ý·î¡Ý±¡Æâ¡Ý¾å¸Â³Û
+                   07  RECE02-TSY-GAIMNAIJGNGAK  PIC  9(06).
+      *¸øÈñ¡ÝÄã£²¡Ý³°Íè¡Ý·î¡Ý±¡³°¡Ý¾å¸Â³Û
+                   07  RECE02-TSY-GAIMGAIJGNGAK  PIC  9(06).
+      *¸øÈñ¡ÝÄã£²¡Ý³°Íè¡Ý·î¡Ý¾å¸Â²ó¿ô
+                   07  RECE02-TSY-GAIMJGNCNT     PIC  9(02).
+      *
+      *¸øÈñ¡ÝÄã£±¡Ý³°Íè¡ÝÉéÃ´¶èÊ¬
+                   07  RECE02-TNK-GAIFTNKBN      PIC  X(01).
+      *¸øÈñ¡ÝÄã£±¡Ý³°Íè¡Ý²ó¡ÝÉéÃ´³ä¹ç
+                   07  RECE02-TNK-GAIKFTNRATE    PIC  9(03).
+      *¸øÈñ¡ÝÄã£±¡Ý³°Íè¡Ý²ó¡Ý¾å¸Â³Û
+                   07  RECE02-TNK-GAIKJGNGAK     PIC  9(06).
+      *¸øÈñ¡ÝÄã£±¡Ý³°Íè¡ÝÆü¡Ý¾å¸Â³Û
+                   07  RECE02-TNK-GAIDJGNGAK     PIC  9(06).
+      *¸øÈñ¡ÝÄã£±¡Ý³°Íè¡ÝÆü¡Ý¾å¸Â²ó¿ô
+                   07  RECE02-TNK-GAIDJGNCNT     PIC  9(02).
+      *¸øÈñ¡ÝÄã£±¡Ý³°Íè¡Ý·î¡Ý±¡Æâ¡Ý¾å¸Â³Û
+                   07  RECE02-TNK-GAIMNAIJGNGAK  PIC  9(06).
+      *¸øÈñ¡ÝÄã£±¡Ý³°Íè¡Ý·î¡Ý±¡³°¡Ý¾å¸Â³Û
+                   07  RECE02-TNK-GAIMGAIJGNGAK  PIC  9(06).
+      *¸øÈñ¡ÝÄã£±¡Ý³°Íè¡Ý·î¡Ý¾å¸Â²ó¿ô
+                   07  RECE02-TNK-GAIMJGNCNT     PIC  9(02).
       *
       *ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¾ðÊó
            03  RECE02-HKNCOMBIINF-AREA.
