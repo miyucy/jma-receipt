@@ -7,7 +7,7 @@ db_group {
 db_group "log" {
  priority 100;
  type "PostgreSQL";
- port "localhost";
+ port "sub-jma-receipt";
  name "orca";
  file "/var/lib/jma-receipt/dbredirector/orca.log";
  redirect_port "localhost";
