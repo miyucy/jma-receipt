@@ -319,7 +319,7 @@
 	  <last_modification_time>Thu, 29 Jun 2006 08:38:03 GMT</last_modification_time>
 	</signal>
 	<columns>2</columns>
-	<column_widths>22,80</column_widths>
+	<column_widths>28,80</column_widths>
 	<selection_mode>GTK_SELECTION_MULTIPLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -361,7 +361,7 @@
 	  <widget>
 	    <class>GtkLabel</class>
 	    <name>label17</name>
-	    <x>384</x>
+	    <x>380</x>
 	    <y>0</y>
 	    <width>88</width>
 	    <height>16</height>
