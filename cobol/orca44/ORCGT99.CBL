@@ -165,7 +165,11 @@
            COPY    "T03.INC".
            COPY    "T04.INC".
            COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T09.INC".
            COPY    "T91.INC".
+           COPY    "T98.INC".
            COPY    "T99.INC".
            COPY    "TERR.INC".
            COPY    "TID1.INC".
@@ -257,7 +261,11 @@
            IF      SPA-MOTOPG          =   "T05"
                MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
            ELSE
-               MOVE    "T01"               TO  SPA-SAKIPG
+               IF      SPA-T99-MOTOPG      =   "T06"
+                   MOVE    "T06"               TO  SPA-SAKIPG
+               ELSE
+                   MOVE    "T01"               TO  SPA-SAKIPG
+               END-IF
            END-IF
            MOVE    "T99"               TO  SPA-MOTOPG
       *

@@ -176,6 +176,10 @@ RECORD_files = \
 	T03.rec \
 	T04.rec \
 	T05.rec \
+	T06.rec \
+	T07.rec \
+	T09.rec \
+	T98.rec \
 	T99.rec \
 	TERR.rec \
 	TID1.rec \

@@ -1,0 +1,24 @@
+T98	{
+	fixed1	{
+		ID1CODE	{
+			value	varchar(4);
+		};
+		ID1MSG	{
+			value	varchar(80);
+		};
+		PRTKBN_COMBO	{
+			PRTKBN	{
+				value	varchar(32);
+			};
+			count	int;
+			item	varchar(32)[5];
+		};
+		DATA_COMBO	{
+			DATA	{
+				value	varchar(38);
+			};
+			count	int;
+			item	varchar(38)[5];
+		};
+	};
+};

@@ -145,6 +145,8 @@
                                    REPLACING  //LNK-//
                                    BY         //SPA-LNK-//.
       *
+           COPY    "T06SCR-SPA".
+      *
            COPY    "ENUM-VALUE".
       *
       *    フラグ領域
@@ -424,9 +426,11 @@
            COPY    "T03.INC".
            COPY    "T04.INC".
            COPY    "T05.INC".
-      *     COPY    "T06.INC".
-      *     COPY    "T09.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T09.INC".
            COPY    "T91.INC".
+           COPY    "T98.INC".
            COPY    "T99.INC".
            COPY    "TERR.INC".
            COPY    "TID1.INC".
@@ -578,10 +582,7 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           INITIALIZE              SPA-T01-AREA
-                                   SPA-T02-AREA
-                                   SPA-T03-AREA
-                                   SPA-T04-AREA
+           INITIALIZE              SPA-T01FREE
       *
       *    出力先プリンタ名割り当て情報編集
            MOVE    SPACE               TO  SYS-1031-REC
@@ -4571,9 +4572,13 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        480-RECEDEN-KOBETU-SEC             SECTION.
       *
+           INITIALIZE              SPA-T06
+           MOVE    SPA-NAI-1031-PRTNM
+                                   TO  SPA-NAI-T06-1031-PRTNM
+      *
            MOVE    SPA-T01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
-           MOVE    SPA-T01FREE         TO  SPA-FREE
+           MOVE    SPA-T06             TO  SPA-FREE
       *
            MOVE    "T01"               TO  SPA-MOTOPG
            MOVE    "T06"               TO  SPA-SAKIPG

@@ -1,0 +1,95 @@
+T06	{
+	fixed6	{
+		B17	{
+			state   int;
+		};
+		SELNUM	{
+			value	number(4);
+		};
+		SRYYM	{
+			value	varchar(7);
+		};
+		PTNUM	{
+			value	varchar(20);
+		};
+		NYUGAIKBN	{
+			value	varchar(1);
+		};
+		NAME	{
+			value	varchar(40);
+		};
+		SRYYM_H	{
+			value	varchar(7);
+		};
+		SKYYMD_H	{
+			value	varchar(10);
+		};
+		TEISYUTUSAKI1	{
+                        state   int;
+			value	bool;
+		};
+		TEISYUTUSAKI2	{
+                        state   int;
+			value	bool;
+		};
+		TEISYUTUSAKI3	{
+                        state   int;
+			value	bool;
+		};
+		scrolledwindow3	{
+			KANRI_LIST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(4);
+					value2	varchar(9);
+					value3	varchar(3);
+					value4	varchar(9);
+					value5	varchar(2);
+					value6	varchar(5);
+					value7	varchar(5);
+				}	[500];
+				select	bool[500];
+			};
+		};
+		scrolledwindow2	{
+			BODY_LIST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(2);
+					value2	varchar(20);
+					value3	varchar(40);
+					value4	varchar(6);
+					value5	varchar(9);
+					value6	varchar(4);
+					value7	varchar(8);
+					value8	varchar(40);
+					value9	varchar(4);
+					value10	varchar(200);
+				}	[1000];
+				select	bool[1000];
+			};
+		};
+		scrolledwindow1	{
+			RECE_LIST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(2);
+					value2	varchar(20);
+					value3	varchar(40);
+					value4	varchar(6);
+					value5	varchar(4);
+					value6	varchar(8);
+					value7	varchar(40);
+					value8	varchar(2);
+					value9	varchar(9);
+				}	[1000];
+				select	bool[1000];
+			};
+		};
+	};
+};

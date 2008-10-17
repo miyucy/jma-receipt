@@ -2341,3 +2341,43 @@ path	key69	{
 	};
 };
 
+path	key70	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key70_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE   HOSPNUM      =    :HOSPNUM
+                  AND   PTID         =    :PTID
+                  AND   NYUGAIKBN    like :NYUGAIKBN
+                  AND  (TEISYUTUSAKI =  :TEISYUTUSAKI  OR
+                        TEISYUTUSAKI =  :XXTEISYUTUSAKI)
+                  AND   SRYYM        =  :SRYYM
+                  AND ((SKYYM        =  '000000' ) OR ( SKYYM = :SKYYM ))
+                  AND   SKYKBN       <>  '0'      
+                  AND   HKNNUM_S     <>  '040'
+                  AND   HKNNUM_S     <>  '068'
+                  AND   HKNNUM_S     <>  '069'
+		;
+	};
+};
+
+path	key71	{
+	DBSELECT	{
+		DECLARE tbl_seikyu_key71_csr CURSOR FOR
+		SELECT *
+		FROM tbl_seikyu
+                WHERE   HOSPNUM      =    :HOSPNUM
+                  AND   PTID         =    :PTID
+                  AND   NYUGAIKBN    like :NYUGAIKBN
+                  AND  (TEISYUTUSAKI =  :TEISYUTUSAKI  OR
+                        TEISYUTUSAKI =  :XXTEISYUTUSAKI)
+                  AND   SRYYM        =  :SRYYM
+                  AND   SKYYM        =  :SKYYM
+                  AND   SKYKBN       <>  '0'      
+                  AND   HKNNUM_S     <>  '040'
+                  AND   HKNNUM_S     <>  '068'
+                  AND   HKNNUM_S     <>  '069'
+		;
+	};
+};
+

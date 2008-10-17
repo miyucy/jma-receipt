@@ -130,6 +130,7 @@
            03  CO-CNT                  PIC 9(05).
            03  ALL-TENSU-CNT           PIC 9(10).
            03  ALL-LINE-CNT            PIC 9(10).
+           03  ERR-CNT                 PIC 9(10).
       *
       *    添字領域
        01  IDX-AREA.
@@ -285,7 +286,11 @@
            COPY    "T03.INC".
            COPY    "T04.INC".
            COPY    "T05.INC".
+           COPY    "T06.INC".
+           COPY    "T07.INC".
+           COPY    "T09.INC".
            COPY    "T91.INC".
+           COPY    "T98.INC".
            COPY    "T99.INC".
            COPY    "TERR.INC".
            COPY    "TID1.INC".
@@ -690,6 +695,7 @@
            MOVE    T05-ENTRY1          TO  SPA-GMN-T05-ENTRY1
            MOVE    ZERO                TO  WRK-ERRMSG1
                                            WRK-ERRMSG2
+                                           ERR-CNT
       *
       *    ファイル名取得
            MOVE    SPACE               TO  WRK-FILENM
@@ -760,11 +766,17 @@
                    WHEN    2
                        MOVE    "ファイル名を確認してください"
                                                TO  SPA-GMN-T05-ERRMSG1
+                       MOVE    "都道府県番号、医療機関コードエラー"
+                                               TO  SPA-GMN-T05-ERRMSG2
                    WHEN    3
                        MOVE    "既に取り込み済のファイルです"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    9
                        MOVE    "ファイルがオープンできません"
+                                               TO  SPA-GMN-T05-ERRMSG1
+                   WHEN    98
+                       MOVE
+                   "エラーが１０００件を超えているので取り込めません。"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    99
                        MOVE    "これ以上取り込めません。"
@@ -869,12 +881,14 @@
                                CONTINUE
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
+                               MOVE    2               TO  WRK-ERRMSG2
                            END-IF
       *                    点数表区分
                            IF      WRK-FILENM (10:1)   =   "1"
                                CONTINUE
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
+                               MOVE    3               TO  WRK-ERRMSG2
                            END-IF
       *                    送信回
                            IF      MOJI-CNT            =   26
@@ -889,6 +903,7 @@
                                    CONTINUE
                                ELSE
                                    MOVE    1           TO  WRK-ERRMSG1
+                                   MOVE    4           TO  WRK-ERRMSG2
                                END-IF
                            END-IF
       *                    拡張子
@@ -897,12 +912,14 @@
                                    CONTINUE
                                ELSE
                                    MOVE    1           TO  WRK-ERRMSG1
+                                   MOVE    5           TO  WRK-ERRMSG2
                                END-IF
                            ELSE    
                                IF      WRK-FILENM (32:4)   =   ".csv"
                                    CONTINUE
                                ELSE
                                    MOVE    1           TO  WRK-ERRMSG1
+                                   MOVE    5           TO  WRK-ERRMSG2
                                END-IF
                            END-IF
                        WHEN    OTHER
@@ -920,12 +937,14 @@
                                CONTINUE
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
+                               MOVE    2               TO  WRK-ERRMSG2
                            END-IF
       *                    点数表区分
                            IF      WRK-FILENM (10:1)   =   "1"
                                CONTINUE
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
+                               MOVE    3               TO  WRK-ERRMSG2
                            END-IF
       *                    送信回
                            IF      MOJI-CNT            =   27
@@ -940,6 +959,7 @@
                                    CONTINUE
                                ELSE
                                    MOVE    1           TO  WRK-ERRMSG1
+                                   MOVE    4           TO  WRK-ERRMSG2
                                END-IF
                            END-IF
       *                    請求確定回
@@ -949,6 +969,7 @@
                                    CONTINUE
                                ELSE
                                    MOVE    1           TO  WRK-ERRMSG1
+                                   MOVE    6           TO  WRK-ERRMSG2
                                END-IF
                            END-IF
       *                    拡張子
@@ -957,18 +978,21 @@
                                    CONTINUE
                                ELSE
                                    MOVE    1           TO  WRK-ERRMSG1
+                                   MOVE    5           TO  WRK-ERRMSG2
                                END-IF
                            ELSE    
                                IF      WRK-FILENM (32:4)   =   ".csv"
                                    CONTINUE
                                ELSE
                                    MOVE    1           TO  WRK-ERRMSG1
+                                   MOVE    5           TO  WRK-ERRMSG2
                                END-IF
                            END-IF
                        WHEN    OTHER
                            MOVE    1                   TO  WRK-ERRMSG1
                            MOVE    1                   TO  WRK-ERRMSG2
                    END-EVALUATE
+      *
                    MOVE    10              TO  SPILIT-CNT
                WHEN    OTHER
                    MOVE    1               TO  WRK-ERRMSG1
@@ -978,10 +1002,28 @@
                MOVE    "ファイル名を確認してください"
                                            TO  SPA-GMN-T05-ERRMSG1
            END-IF
-           IF      WRK-ERRMSG2         =   1
-               MOVE    "ファイル名の長さが異なります"
+           EVALUATE    WRK-ERRMSG2
+               WHEN    1
+                   MOVE    "ファイル名の長さが異なります"
                                            TO  SPA-GMN-T05-ERRMSG2
-           END-IF
+               WHEN    2
+                   MOVE    "審査支払機関コードエラー"
+                                           TO  SPA-GMN-T05-ERRMSG2
+               WHEN    3
+                   MOVE    "点数表区分エラー"
+                                           TO  SPA-GMN-T05-ERRMSG2
+               WHEN    4
+                   MOVE    "送信回エラー"
+                                           TO  SPA-GMN-T05-ERRMSG2
+               WHEN    5
+                   MOVE    "拡張子エラー"
+                                           TO  SPA-GMN-T05-ERRMSG2
+               WHEN    6
+                   MOVE    "請求確定回エラー"
+                                           TO  SPA-GMN-T05-ERRMSG2
+               WHEN    OTHER
+                   MOVE    SPACE           TO  SPA-GMN-T05-ERRMSG2
+           END-EVALUATE
            .
        7001-FILENM-CHECK-EXT.
            EXIT.
@@ -1028,7 +1070,6 @@
                                MOVE    2               TO  WK-BODY-LINE
                        END-EVALUATE
                    END-IF
-      *
                    IF      CNT-PARA            =   WK-HEAD-LINE
       *                ヘッダ項目取得チェック処理
                        PERFORM 70021-HEAD-CHECK-SEC
@@ -1121,6 +1162,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                END-PERFORM
            END-IF
+      *
+      *    エラー件数のチェック（１０００件超えた場合は取り込み不可）
+           IF      ERR-CNT                 >   1000
+               MOVE    98                      TO  WRK-ERRMSG1
+           END-IF
            .
        7002-FILE-CHECK-EXT.
            EXIT.
@@ -1161,8 +1207,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF      FLG-DATAEND     =   ZERO
+                IF     CNT-PARA        =   WK-HEAD-LINE
       *            ヘッダ項目別編集処理
                    PERFORM 700211-HEAD-HENSYU-SEC
+                ELSE
+      *            ボディ項目別編集処理
+                   PERFORM 700211-BODY-HENSYU-SEC
+                END-IF
                END-IF
            END-PERFORM
       *
@@ -1247,6 +1298,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
        700211-HEAD-HENSYU-EXT.
            EXIT.
       *
+      *
+      *****************************************************************
+      *    ボディ項目別編集処理
+      *****************************************************************
+       700211-BODY-HENSYU-SEC        SECTION.
+      *
+           EVALUATE    WRK-KOUMOKU-NO
+      *    ２９：確定区分
+               WHEN    29
+                   IF  PARA-DATA (WRK-MO-ST:WRK-MO-CNT) = "2"
+                       ADD   1         TO  ERR-CNT
+                   END-IF
+           END-EVALUATE
+      *
+           .
+       700211-BODY-HENSYU-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    診療年月（受付）変換処理
       *****************************************************************
@@ -1315,8 +1384,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "2"                 TO  LNK-ZENHANCNV-SYORI
            CALL    "ORCSZENHANCNV"     USING   ORCSZENHANCNVAREA
            IF      LNK-ZENHANCNV-RC    =   ZERO
-               MOVE    LNK-ZENHANCNV-OT-NUM
+               IF      LNK-ZENHANCNV-OT-NUM    =   ZERO
+                   MOVE    17              TO  WRK-ERRMSG1
+               ELSE
+                   MOVE    LNK-ZENHANCNV-OT-NUM
                                            TO  SPA-GMN-T05-TUKAISU(IDY)
+               END-IF                 
            ELSE
                MOVE    17                  TO  WRK-ERRMSG1
            END-IF                 
@@ -1384,9 +1457,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "RIhasp"
                WHEN    "RIuasp"
                    ADD     1               TO  SPA-GMN-T05-TCNT(IDY)
+                                               ERR-CNT
                WHEN    "RIfixf"
-                   IF      PARA-DATA (1:1) =   "2"
-                     ADD   1                   TO  SPA-GMN-T05-TCNT(IDY)
+                 IF      PARA-DATA (1:1) =   "2"
+                   ADD     1               TO  SPA-GMN-T05-TCNT(IDY)
+                   MOVE    30              TO  SPILIT-CNT
+                   PERFORM 70021-HEAD-CHECK-SEC
                  END-IF
            END-EVALUATE
       *
@@ -2256,13 +2332,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            IF    ( WRK-MO-CNT          =   1 ) AND
                  ( PARA-DATA (WRK-MO-ST:WRK-MO-CNT) =   X"0D" )
                MOVE  1                 TO  FLG-NODATA
-               CALL "coblog" USING "kara data1 !!"
            END-IF
       *
            IF    ( WRK-MO-CNT          =   1 ) AND
                  ( PARA-DATA (WRK-MO-ST:WRK-MO-CNT) =   X"0A" )
                MOVE  1                 TO  FLG-NODATA
-               CALL "coblog" USING "kara data2 !!"
            END-IF
       *
            .
@@ -2350,6 +2424,8 @@ grpsys     PERFORM 900-DBFETCH-SEC
                CONTINUE
            ELSE
                DISPLAY "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+               CALL "coblog" USING "SELECT ERR table=" MCP-TABLE
                        " pathname="        MCP-PATHNAME
            END-IF
            .

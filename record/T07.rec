@@ -1,0 +1,34 @@
+T07	{
+	fixed32	{
+		TEISYUTUSAKI	{
+			value	varchar(4);
+		};
+		SRYYM		{
+			value	varchar(6);
+		};
+		PTNUM		{
+			value	varchar(20);
+		};
+		NAME		{
+			value	varchar(40);
+		};
+		scrolledwindow26	{
+			LIST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(8);
+					value2	varchar(2);
+					value3	varchar(8);
+					value4	varchar(3);
+					value5	varchar(2);
+					value6	varchar(4);
+					value7	varchar(8);
+					value8	varchar(40);
+				}	[100];
+				select	bool[100];
+			};
+		};
+	};
+};

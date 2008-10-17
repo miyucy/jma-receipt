@@ -11,61 +11,49 @@
       *     Everyone is granted permission to use, copy, modify and
       * redistribute this program, but only under the conditions described
       * in the JMA Open Source License. You should have received a copy of
-      * this licence along with this program. If not, stop using this
+      * this license along with this program. If not, stop using this
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-       IDENTIFICATION                            DIVISION.
-       PROGRAM-ID.                               ORCGTID1.
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCGT07.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 総括表・公費請求書
-      *  コンポーネント名  : 確認画面１（ＴＩＤ１）
+      *  コンポーネント名  : オンライン請求−レセ電個別履歴
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  00/12/01    MCC−藤原　   新規作成
+      *  08/09/05    NACL−藤原    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      *  01.01.01    MCC-藤原     01/09/21  JOINの修正      
-      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *****************************************************************
-      *
-       ENVIRONMENT                               DIVISION.
-       CONFIGURATION                             SECTION.
-       INPUT-OUTPUT                              SECTION.
+       ENVIRONMENT                 DIVISION.
+       CONFIGURATION               SECTION.
+       INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-       DATA                                      DIVISION.
-      *FILE                                      SECTION.
+       DATA                        DIVISION.
+       FILE                        SECTION.
       *
-       WORKING-STORAGE                           SECTION.
+       WORKING-STORAGE             SECTION.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    レセプト作成指示共通パラメタ
-           COPY    "T01COMMON-SPA".
-      *
-      *    フラグ領域
-       01  FLG-AREA.
-           03  FLG-END                           PIC 9(01).
+           COPY    "T06SCR-SPA".
       *
       *****************************************************************
-      *    ファイルレイアウト
+      *    サブプロ用領域
       *****************************************************************
-      *
-      *****************************************************************
-      *    サブプロ用　領域
-      *****************************************************************
-      *
+      *     
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    連絡　領域
+      *    連絡領域
       *****************************************************************
-        LINKAGE                                  SECTION.
+        LINKAGE                     SECTION.
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
@@ -88,93 +76,70 @@
            COPY    "TID1.INC".
            COPY    "TID2.INC".
            COPY    "TFIL.INC".
-
       *
-       PROCEDURE                                 DIVISION    USING
-                                                 MCPAREA
-                                                 SPAAREA
-                                                 LINKAREA
-                                                 SCRAREA.
+       PROCEDURE                   DIVISION    USING
+                                               MCPAREA
+                                               SPAAREA
+                                               LINKAREA
+                                               SCRAREA.
       *
       *****************************************************************
-      *    主　　処理
+      *    主処理
       *****************************************************************
-       000-PROC-SEC                              SECTION.
+       000-PROC-SEC                SECTION.
       *
-           MOVE    SPA-COMMON                    TO  SPA-AREA
-           MOVE    SPA-WORK                      TO  SPA-T01KYOUTU
-      * 
-           EVALUATE    MCP-STATUS                ALSO    MCP-EVENT
-               WHEN    "LINK"                    ALSO    ANY
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-T06
+      *
+           EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
+               WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN     "PUTG"                   ALSO   "CLICKED"
-                   PERFORM 200-GMNSENI
-           END-EVALUATE.
+               WHEN      OTHER
+                   PERFORM 210-BACK
+           END-EVALUATE
       *
-           MOVE    SPA-T01KYOUTU                 TO  SPA-WORK
-           MOVE    SPA-AREA                      TO  SPA-COMMON
+           MOVE    SPA-AREA        TO  SPA-COMMON
       *
-           EXIT    PROGRAM.
+           .
+           EXIT    PROGRAM
+           .
       *****************************************************************
-      *    初期　処理
+      *    初期処理
       *****************************************************************
-       100-INIT-SEC                              SECTION.
-      *
+       100-INIT-SEC                SECTION.
            .
        100-INIT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    画面遷移処理
+      *    戻る処理
       *****************************************************************
-       200-GMNSENI                               SECTION.
+       210-BACK                    SECTION.
+      *   
+           MOVE    "T06"               TO  SPA-SAKIPG
+           MOVE    "T07"               TO  SPA-MOTOPG
       *
-           EVALUATE    MCP-EVENT                 ALSO    MCP-WIDGET
-      *        戻る
-               WHEN    "CLICKED"                 ALSO    "B01"
-                   MOVE    SPACE                 TO  SPA-TID1-FLG
-                   PERFORM 210-BACK
-      *     登録
-               WHEN    "CLICKED"                 ALSO    "B12"
-                   MOVE    "OK"                  TO  SPA-TID1-FLG
-                   PERFORM 210-BACK
-           END-EVALUATE
-      *
-           .
-       200-GMNSENI-EXT.
-           EXIT.
-      *****************************************************************
-      *    戻る　処理
-      *****************************************************************
-       210-BACK                                  SECTION.
-      *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "TID1"              TO  SPA-MOTOPG
-      *
-      ***  MOVE    "BACK"              TO  MCP-PUTTYPE
-           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE   "JOIN"               TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                             TO  FLG-END
            .
-      *
        210-BACK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ＰＵＴ　処理
+      *    ＰＵＴ処理
       *****************************************************************
-       900-PUT-WINDOW                            SECTION.
+       900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"       TO  MCP-FUNC
+           MOVE   "PUTWINDOW"          TO  MCP-FUNC
            CALL   "ORCDBMAIN"       USING
                                         MCPAREA
                                         MCPDATA-REC
                                         SPA-AREA
            .
+      *
        900-PUT-WINDOW-EXT.
            EXIT.
-      *
