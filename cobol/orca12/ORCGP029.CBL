@@ -356,9 +356,15 @@
       *    初期　処理
            PERFORM 100-INIT-SEC
       *
-           IF     (SPA-PIDCD       =   SPACE  )
-             AND  (SPA-ERRCD       =   SPACE  )
-      *    ＤＢ更新処理
+      *    保険組合せ変更の期間外チェック
+           IF     (SPA-P02-SYORI   NOT =   1    )  AND
+                  (SPA-KEI2-FLG        =   ZERO )
+               PERFORM 1001-HKNCOMBI-KIKANCHK-SEC
+               MOVE    1               TO  FLG-END
+           END-IF
+      *
+           IF      FLG-END         =   ZERO
+      *        ＤＢ更新処理
                PERFORM 200-MAIN-SEC
            END-IF
       *
@@ -383,12 +389,6 @@
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
-      *    保険組合せ変更の期間外チェック
-           IF      SPA-GMN-PTID    NOT =   ZERO
-               IF      SPA-KEI2-FLG        =   ZERO
-                   PERFORM 1001-HKNCOMBI-KIKANCHK-SEC
-               END-IF
-           END-IF
       *
            .
        100-INIT-EXT.
@@ -448,11 +448,9 @@
            IF      WRK-PIDCD       NOT =   SPACE
                MOVE    WRK-PIDCD           TO  SPA-PIDCD
             END-IF
-            MOVE    SPACE               TO  WRK-PIDCD
            .
        1001-HKNCOMBI-KIKANCHK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
@@ -502,10 +500,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            PERFORM
-               UNTIL   FLG-PARA            =   1
+               UNTIL  (FLG-PARA            =   1 )
                EVALUATE    PARA-FILEMEI
-      **********   WHEN    "PTINF"
-      *********        PERFORM 210-PTINF-SYORI-SEC
                    WHEN    "PTHKNINF"
                        PERFORM 220-PTHKNINF-SYORI-SEC
                        ADD     1        TO  WRK-HKN-CNT
@@ -541,6 +537,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 990-PARA-READ-SEC
            END-PERFORM
+      *
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -575,7 +572,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        200-MAIN-EXT.
            EXIT.
-           .
       *
       *****************************************************************
       *    レセプト作成管理マスタ更新処理

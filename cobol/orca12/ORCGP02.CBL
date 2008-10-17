@@ -3181,16 +3181,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    保険組合せの変更による履歴チェック
-           IF      SPA-P02-SYORI    NOT=   1
-               MOVE    SPA-P02KYOUTU   TO  SPA-WORK
-               MOVE    SPA-P02SCRAREA  TO  SPA-FREE
-               MOVE    SPA-AREA        TO  SPA-COMMON
-      *        更新サブへ
-               CALL    "ORCGP029"      USING   MCPAREA
-                                               SPAAREA
-               MOVE    SPA-COMMON      TO  SPA-AREA
-               MOVE    SPA-WORK        TO  SPA-P02KYOUTU
-               MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+           IF      SPA-P02-SYORI   NOT =   1
+               IF      SPA-KEI2-FLG        =   ZERO
+                   MOVE    SPA-P02KYOUTU   TO  SPA-WORK
+                   MOVE    SPA-P02SCRAREA  TO  SPA-FREE
+                   MOVE    SPA-AREA        TO  SPA-COMMON
+      *            更新サブへ
+                   CALL    "ORCGP029"      USING   MCPAREA
+                                                   SPAAREA
+                   MOVE    SPA-COMMON      TO  SPA-AREA
+                   MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+                   MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+               END-IF
            END-IF
       *
            IF     (SPA-ERRCD           =   SPACE )   AND
@@ -4401,10 +4403,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "警告！受給者番号検証番号がエラーです。"
                                                TO  SPA-ERRMSG
                WHEN    "0085"
-                 MOVE    "公費に適用年齢の指定があります。"
-                                               TO  SPA-ERRMSG
-                 MOVE    "適用終了日を入力してください。"
-                                               TO  SPA-ERRMSG(33:)
+                   STRING  "公費に適用年齢の指定があります。"
+                           "適用終了日を入力してください。"
+                                       DELIMITED  BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "0086"
                    MOVE    "公費の年齢適用エラーです"
                                                TO  SPA-ERRMSG
