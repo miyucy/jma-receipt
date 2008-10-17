@@ -29,7 +29,7 @@
                     PIC X(50)   OCCURS  3 TIMES.
             02  HCN02-NISSU
                     PIC X(12)   OCCURS  3 TIMES.
-            02  HCN02-KIKAN PIC X(4).
+            02  HCN02-KIKAN PIC X(5).
             02  HCN02-KIKANSTRYMD.
               03  HCN02-KIKANSTRGEN   PIC X(4).
               03  HCN02-KIKANSTRYY    PIC X(4).
@@ -41,7 +41,7 @@
               03  HCN02-KIKANENDMM    PIC X(4).
               03  HCN02-KIKANENDDD    PIC X(4).
             02  HCN02-YOBI  PIC X(14).
-            02  HCN02-TKIKAN    PIC X(4).
+            02  HCN02-TKIKAN    PIC X(5).
             02  HCN02-TKIKANYMD.
               03  HCN02-TKIKANGEN PIC X(4).
               03  HCN02-TKIKANYY  PIC X(4).
