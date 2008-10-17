@@ -28,7 +28,7 @@ done
 # copy scripts file
 echo -n "Copying scripts files..."
 for d in scripts/daily  scripts/kaisei scripts/monthly  \
-	 scripts/kentan scripts/allways scripts/allways; do
+	 scripts/kentan scripts/allways scripts/tools; do
   if test -d "${SITESRCDIR}/${d}"; then
     mkdir -p "${SITEDIR}/${d}"
     for f in `ls ${SITESRCDIR}/${d}`; do 
