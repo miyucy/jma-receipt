@@ -179,7 +179,7 @@ filecheck:
 	-name "lib" -o \
 	-name "orcadas" -o \
 	-printf "file\t%f\n") \
-	|sort +1 |uniq -u -f1
+	|sort -k2 |uniq -u -f1
 
 clean: 
 	-rm -f $(noinst_shell_scripts)

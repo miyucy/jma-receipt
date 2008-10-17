@@ -585,7 +585,7 @@ filecheck:
 	-name ".cvsignore" -o \
 	-name "*.bak" -o \
 	-printf "file\t%f\n") \
-	|sort +1 |uniq -u -f1 
+	|sort -k2 |uniq -u -f1 
 
 clean: 
 

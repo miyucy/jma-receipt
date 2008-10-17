@@ -60,7 +60,7 @@ filecheck:
 	-name "ORCGM00.CBL.in" -o \
 	-name "kanaconv.h" -o \
 	-printf "file\t%f\n") \
-	|sort +1 |uniq -u -f1 
+	|sort -k2 |uniq -u -f1 
 
 install: all installdirs
 	for f in $(COBJS) $(OBJS) $(EXEC); do \
