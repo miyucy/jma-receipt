@@ -268,5 +268,8 @@ J02	{
 		B11S	{
 	           	state	int;
 		};
+		B01S	{
+	           	state	int;
+		};
 	};
 };

@@ -112,4 +112,6 @@
                 04  J02-B10S-STATE   PIC S9(9)   BINARY.
               03  J02-B11S.
                 04  J02-B11S-STATE   PIC S9(9)   BINARY.
+              03  J02-B01S.
+                04  J02-B01S-STATE   PIC S9(9)   BINARY.
 

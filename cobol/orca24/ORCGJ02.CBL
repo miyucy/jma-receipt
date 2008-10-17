@@ -3536,6 +3536,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-NORMAL       TO  J02-B09S-STATE
                MOVE    WIDGET-NORMAL       TO  J02-B10S-STATE
                MOVE    WIDGET-NORMAL       TO  J02-B11S-STATE
+               MOVE    WIDGET-NORMAL       TO  J02-B01S-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  J02-B04-STATE
                MOVE    WIDGET-INSENSITIVE  TO  J02-B05-STATE
@@ -3546,6 +3547,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-INSENSITIVE  TO  J02-B09S-STATE
                MOVE    WIDGET-INSENSITIVE  TO  J02-B10S-STATE
                MOVE    WIDGET-INSENSITIVE  TO  J02-B11S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  J02-B01S-STATE
            END-IF
            .
        51O-GSRAUTH-EXT.
