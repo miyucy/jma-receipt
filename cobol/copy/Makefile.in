@@ -1495,6 +1495,7 @@ COPYS = \
 	T07.INC \
 	T09.INC \
 	T98.INC \
+	T06SCR-SPA \
 
 
 DBPATH = \
