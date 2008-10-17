@@ -25,7 +25,7 @@ alter table tbl_toukeimemo
 
 update tbl_toukeimemo set savepara = '';
 
-update tbl_toukeimemo set savepara = encode(substr(decode(replace(a.kanritbl,E'\\',E'\\\\'),'escape')||decode(repeat(' ',500),'escape'),495,1),'escape')
+update tbl_toukeimemo set savepara = encode(substr(decode(a.kanritbl,'escape')||decode(repeat(' ',500),'escape'),495,1),'escape')
 from tbl_syskanri a
 where
      tbl_toukeimemo.hospnum = a.hospnum 
