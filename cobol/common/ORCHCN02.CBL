@@ -52,7 +52,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-           COPY    "HCN02.INC".
+           COPY    "HCN02V02.INC".
       *
       *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
            COPY    "CPCOMMONPRT.INC".
@@ -312,7 +312,7 @@
       *
             INITIALIZE                 ORCSMKPRTAREA
             MOVE   "HC01.sh"           TO  MKPRT-ID
-            MOVE   "HCN02.red"         TO  MKPRT-DIA
+            MOVE   "HCN02V02.red"      TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   SYS-1034-PRTNM(2)   TO  MKPRT-PRTNM
