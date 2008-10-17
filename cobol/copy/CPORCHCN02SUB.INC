@@ -47,15 +47,15 @@
       *入院料名称
                05  LNK-ORCHCN02SUB-SYUBETUMEI         PIC  X(50).
       *入院日数
-               05  LNK-ORCHCN02SUB-NISSU              PIC  9(04).
+               05  LNK-ORCHCN02SUB-NISSU              PIC  9(05).
       *入院期間
-             04  LNK-ORCHCN02SUB-KIKAN                PIC  9(04).
+             04  LNK-ORCHCN02SUB-KIKAN                PIC  9(05).
       *入院期間開始日
              04  LNK-ORCHCN02SUB-KIKANSTRYMD          PIC  X(08).
       *入院期間終了日
              04  LNK-ORCHCN02SUB-KIKANENDYMD          PIC  X(08).
       *選定入院期間
-             04  LNK-ORCHCN02SUB-TKIKAN               PIC  9(04).
+             04  LNK-ORCHCN02SUB-TKIKAN               PIC  9(05).
       *
       *復帰コード（１：パラメタエラー　２：入院会計なし
       *            ３：通算取得エラー）

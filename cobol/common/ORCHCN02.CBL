@@ -109,7 +109,7 @@
            03  WRK-ADRS            PIC X(200).
            03  WRK-NENREI-X.
                05  WRK-NENREI      PIC 9(03).
-           03  WRK-YOBI-NISSU      PIC 9(04).
+           03  WRK-YOBI-NISSU      PIC 9(05).
       *
       *    文字変換
            03  WRK-ZENKAKU-G.
@@ -121,6 +121,7 @@
       *
            03  WRK-Z3              PIC ZZ9.
            03  WRK-Z4              PIC ZZZ9.
+           03  WRK-Z5              PIC ZZZZ9.
       *
            03  WRK-ERRMSG          PIC X(40).
       *
@@ -663,13 +664,13 @@
                    MOVE  LNK-ORCHCN02SUB-SYUBETUMEI(MEISAI-IDX)
                                            TO   HCN02-SYUBETU(KISAI-IDX)
                    MOVE  LNK-ORCHCN02SUB-NISSU(MEISAI-IDX)
-                                           TO   WRK-Z4
-                   MOVE  WRK-Z4            TO   HCN02-NISSU(KISAI-IDX)
+                                           TO   WRK-Z5
+                   MOVE  WRK-Z5            TO   HCN02-NISSU(KISAI-IDX)
                    MOVE  "日間"            TO   HCN02-NISSU(KISAI-IDX)
-                                                           (5:)
+                                                           (6:)
                END-IF
            END-PERFORM
-           COMPUTE   WRK-Z4   =   LNK-ORCHCN02SUB-NISSU(1)   +
+           COMPUTE   WRK-Z5   =   LNK-ORCHCN02SUB-NISSU(1)   +
                                   LNK-ORCHCN02SUB-NISSU(2)   +
                                   LNK-ORCHCN02SUB-NISSU(3)   +
                                   LNK-ORCHCN02SUB-NISSU(4)   +
@@ -679,10 +680,10 @@
                                   LNK-ORCHCN02SUB-NISSU(8)   +
                                   LNK-ORCHCN02SUB-NISSU(9)   +
                                   LNK-ORCHCN02SUB-NISSU(10)
-           MOVE  WRK-Z4                    TO   HCN02-KIKAN
+           MOVE  WRK-Z5                    TO   HCN02-KIKAN
       *
-           MOVE   LNK-ORCHCN02SUB-TKIKAN   TO   WRK-Z4
-           MOVE   WRK-Z4                   TO   HCN02-TKIKAN
+           MOVE   LNK-ORCHCN02SUB-TKIKAN   TO   WRK-Z5
+           MOVE   WRK-Z5                   TO   HCN02-TKIKAN
       *
       *    予備エリアの印字
            MOVE      ZERO         TO      FLG-YOBI
@@ -698,9 +699,9 @@
            END-PERFORM
            IF     FLG-YOBI     =     1
                MOVE  "上記他"              TO   HCN02-YOBI(1:6)
-               MOVE  WRK-YOBI-NISSU        TO   WRK-Z4
-               MOVE  WRK-Z4                TO   HCN02-YOBI(7:4)
-               MOVE  "日有"                TO   HCN02-YOBI(11:4)
+               MOVE  WRK-YOBI-NISSU        TO   WRK-Z5
+               MOVE  WRK-Z5                TO   HCN02-YOBI(7:5)
+               MOVE  "日有"                TO   HCN02-YOBI(12:4)
            END-IF
       *
            .
