@@ -45,6 +45,7 @@ db	{
 	tbl_ptrsiinf;
 	tbl_ldmap;
 	tbl_lock;
+        tbl_ptkohftn;
 };
 */
 
