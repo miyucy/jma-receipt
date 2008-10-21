@@ -1,5 +1,8 @@
 #!/usr/bin/ruby
 require 'date'
+require 'syslog'
+
+lockdir = '/tmp/jma-receipt-lock'
 
 list = `psql orca -At -F ',' -c "SELECT CRNDOW,CRNMON,CRNDOM,CRNHOUR,SCRIPT from tbl_cron where RUN = \'1\'\;"`.split("\n").map{|r|
   r = r.split(/,/).map{|c| c = "." * c.length if c =~ /^\*/; c }
@@ -7,8 +10,21 @@ list = `psql orca -At -F ',' -c "SELECT CRNDOW,CRNMON,CRNDOM,CRNHOUR,SCRIPT from
 }
 time = DateTime.now.strftime("%w %D %H")
 
-list.each { |cmd|
+list.each {|cmd|
   next unless /#{cmd[0]}/ =~ time
-  open("/tmp/jma-receipt-cron-lock", "w"){|f| f.flock(File::LOCK_EX); `#{cmd[1]}`; f.flock(File::LOCK_UN) }
+  begin
+    Dir.mkdir(lockdir)
+    `#{cmd[1]}`
+    Dir.rmdir(lockdir)
+  rescue Errno::EEXIST
+    Syslog.open("jma-receipt-cron") {|s|
+      s.log(Syslog::LOG_CRIT, "found #{lockdir}. jma-receipt-cron locking now. don't execute #{cmd[1]}")
+    }
+    next
+  rescue => e
+    Syslog.open("jma-receipt-cron") {|s|
+      s.log(Syslog::LOG_CRIT, e.to_s)
+    }
+    abort
+  end
 }
-
