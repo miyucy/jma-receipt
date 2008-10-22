@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-多々納  07/05/10  グループ診療対応
       *  04.02.00    NACL-多々納  08/03/XX  お薬手帳対応
+      *  04.03.00    NACL-多々納  08/10/22  包括保険対象対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -782,7 +783,7 @@
       *    保険組合せ
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "1"                 TO  ORCSHKN-KBN
-           MOVE    SPACE               TO  ORCSHKN-KBN2
+           MOVE    "1"                 TO  ORCSHKN-KBN2
            CALL    "ORCSHKNSET"        USING
                                        SPA-AREA
                                        ORCSHKNSETAREA
@@ -843,9 +844,9 @@
            PERFORM
                    UNTIL   (SPA-JYURRK-MAX >=  40   )  OR
                            (FLG-JYURRK     =   1    )
-               IF      JYURRK-HKNCOMBINUM  =   "9999"
-                   CONTINUE
-               ELSE
+      ******** IF      JYURRK-HKNCOMBINUM  =   "9999"
+      *            CONTINUE
+      ******** ELSE
       *            伝票番号毎にテーブル編集
                    IF     (IDX             >   ZERO )  AND
                           (JYURRK-EDANUM   =   1    )
@@ -856,7 +857,7 @@
                    END-IF
                    ADD     1               TO  IDX
                    MOVE    JYURRK-REC      TO  WRK-JYURRK-REC (IDX)
-               END-IF
+      *********END-IF
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-JYURRK-READ-SEC
            END-PERFORM
@@ -2880,6 +2881,14 @@
                    PERFORM 4104-TBL-CHK-SEC
                END-IF
            END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-HKNCOMBINUM =   "9999"
+                   MOVE    "0011"          TO  SPA-ERRCD
+                   MOVE    3               TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            IF      SPA-ERRCD           =   SPACE
                MOVE    1                   TO  SPA-PRINT-SYORI
                MOVE    "0201"              TO  SPA-KAID1CD
@@ -2926,6 +2935,13 @@
                IF      SPA-ERRCD       =   SPACE
       *            対象チェック処理
                    PERFORM 4104-TBL-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-HKNCOMBINUM =   "9999"
+                   MOVE    "0011"          TO  SPA-ERRCD
+                   MOVE    3               TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
@@ -3066,6 +3082,13 @@
                IF      SPA-ERRCD       =   SPACE
       *            対象チェック処理
                    PERFORM 4104-TBL-CHK-SEC
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN-HKNCOMBINUM =   "9999"
+                   MOVE    "0011"          TO  SPA-ERRCD
+                   MOVE    3               TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
@@ -3803,31 +3826,41 @@
                    MOVE    "日数は１で入力して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "数量・日数の変更中です。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "変更確定を押下して下さい"
-                                       TO  SPA-ERRMSG(25:)
+                   STRING  "数量・日数の変更中です。"
+                           "変更確定を押下して下さい"
+                                           DELIMITED  BY  SIZE
+                                           INTO   SPA-ERRMSG
+                   END-STRING
                WHEN    "0100"
                    MOVE    "履歴番号が選択されていません。"
                                        TO  SPA-ERRMSG
+               WHEN    "0011"
+                   STRING  "包括分入力での処方せん印刷はできません。"
+                           "薬情か手帳の印刷を行って下さい。"
+                                           DELIMITED  BY  SIZE
+                                           INTO   SPA-ERRMSG
+                   END-STRING
                WHEN    "0101"
                    MOVE    "明細がありません。印刷しません。"
                                        TO  SPA-ERRMSG
                WHEN    "1030"
-                   MOVE    "処方せんプログラムがありません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "システム管理を確認して下さい。"
-                                       TO  SPA-ERRMSG(33:)
+                   STRING  "処方せんプログラムがありません。"
+                           "システム管理を確認して下さい。"
+                                           DELIMITED  BY  SIZE
+                                           INTO   SPA-ERRMSG
+                   END-STRING
                WHEN    "1031"
-                   MOVE    "薬剤情報印刷プログラムがありません。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "システム管理を確認して下さい。"
-                                       TO  SPA-ERRMSG(35:)
+                   STRING  "薬剤情報印刷プログラムがありません。"
+                           "システム管理を確認して下さい。"
+                                           DELIMITED  BY  SIZE
+                                           INTO   SPA-ERRMSG
+                   END-STRING
                WHEN    "K001"
-                   MOVE    "警告！交付日で対象外のコードがあります。"
-                                       TO  SPA-ERRMSG
-                   MOVE    "空白で印刷されます。"
-                                       TO  SPA-ERRMSG(41:)
+                   STRING  "警告！交付日で対象外のコードがあります。"
+                           "空白で印刷されます。"
+                                           DELIMITED  BY  SIZE
+                                           INTO   SPA-ERRMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  SPA-ERRMSG
            END-EVALUATE

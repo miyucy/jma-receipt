@@ -38,6 +38,7 @@
       *                                     MONFUNCÂÐ±þ
       * 01.00.09     NACL-Â¿¡¹Ç¼  06/01/24  ÍÑÎÌ³ä¹ç¥³¡¼¥ÉÄÉ²Ã
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/12/11  µ¯¾²ÄÉ²Ã
+      * 04.03.00     NACL-Â¿¡¹Ç¼  08/10/21  Êñ³çÊÝ¸±¤òÂÐ¾Ý¤È¤¹¤ë
       *****************************************************************
       *
       *
@@ -373,10 +374,10 @@
                        MOVE    1               TO  FLG-SYORI
                    END-IF
                END-IF
-      *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
-               IF     (WRK-HKNCOMBINUM     =   "9999")
-                   MOVE    ZERO                TO  FLG-SYORI
-               END-IF
+      ***      Êñ³çÊÝ¸±ÂÐ¾Ý³°
+      *        IF     (WRK-HKNCOMBINUM     =   "9999")
+      *            MOVE    ZERO                TO  FLG-SYORI
+      ***      END-IF
       *        ÊÔ½¸
                IF      FLG-SYORI           =   1
                    MOVE    JYURRK-DENPNUM      TO  WRK-DENPNUM
@@ -440,12 +441,12 @@
       *
            PERFORM
                    UNTIL       FLG-JYURRK      =   1
-      *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
-               IF     (JYURRK-HKNCOMBINUM      =   "9999")
-                   CONTINUE
-               ELSE
+      ***      Êñ³çÊÝ¸±ÂÐ¾Ý³°
+      *        IF     (JYURRK-HKNCOMBINUM      =   "9999")
+      *            CONTINUE
+      ***      ELSE
                    PERFORM 100211-JYURRK-CHK-SEC
-               END-IF
+      ***      END-IF
       *
                MOVE    "key6"              TO  MCP-PATHNAME
                PERFORM 970-JYURRK-NEXT-SEC
@@ -484,11 +485,11 @@
                    UNTIL       FLG-JYURRK      =   1
       *
       *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
-               IF     (JYURRK-HKNCOMBINUM      =   "9999")
-                   CONTINUE
-               ELSE
+      *        IF     (JYURRK-HKNCOMBINUM      =   "9999")
+      *            CONTINUE
+      ***      ELSE
                    PERFORM 100211-JYURRK-CHK-SEC
-               END-IF
+      ***      END-IF
       *
                MOVE    "key26"             TO  MCP-PATHNAME
                PERFORM 970-JYURRK-NEXT-SEC
@@ -887,7 +888,7 @@
                                                "22"  OR
                                                "23"    )
       *            Êñ³çÊÝ¸±¤ÏÂÐ¾Ý³°
-                 AND  (WRK-HKNCOMBINUM NOT =   "9999"  )
+      ******     AND  (WRK-HKNCOMBINUM NOT =   "9999"  )
                    MOVE    WKSRY-ZAITENKEI         TO  WRK-ZAITENKEI
                    PERFORM 20031-WKSRYACT-HEN-SEC
                END-IF
