@@ -416,6 +416,14 @@
        01  PTMEMOINF-REC.
            COPY    "CPPTMEMOINF.INC".
       *
+      *    入院診療行為照会テーブル
+       01  NSRYSRH-REC.
+           COPY    "CPNSRYSRH.INC".
+      *
+      *    入院履歴照会テーブル
+       01  NRRKSRH-REC.
+           COPY    "CPNRRKSRH.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -3159,6 +3167,30 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_pttokki"       TO  MCP-TABLE
            MOVE    "del"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *    入院履歴照会テーブル
+           INITIALIZE                      NRRKSRH-REC
+           MOVE    SPA-HOSPNUM         TO  NRRKSRH-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  NRRKSRH-PTID
+           MOVE    NRRKSRH-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_nrrksrh"       TO  MCP-TABLE
+           MOVE    "del2"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *    入院診療行為照会テーブル
+           INITIALIZE                      NSRYSRH-REC
+           MOVE    SPA-HOSPNUM         TO  NSRYSRH-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  NSRYSRH-PTID
+           MOVE    NSRYSRH-REC         TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_nsrysrh"       TO  MCP-TABLE
+           MOVE    "del2"              TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
