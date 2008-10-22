@@ -60,6 +60,11 @@
                                    REPLACING  //LNK-//
                                    BY         //SPA-LNK-//.
       *
+           COPY    "T06SCR-SPA".
+           COPY    "CPORCSPRTLNK.INC"
+                                   REPLACING  //LNK-//
+                                   BY         //SPA-T06-LNK-//.
+      *
       *    レセプト作成指示共通パラメタ
            COPY    "T01COMMON-SPA".
       *
@@ -188,8 +193,20 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
-           MOVE    SPA-FREE        TO  SPA-T01FREE
            MOVE    SPA-WORK        TO  SPA-T01KYOUTU
+           IF      SPA-T99-MOTOPG  =   "T06"
+               MOVE    SPA-FREE            TO  SPA-T06
+               INITIALIZE                      SPA-T01FREE
+               MOVE    SPA-T06-SFILESV-OCC (1)
+                                           TO  SPA-SFILESV-OCC (1)
+               MOVE    SPA-T06-SFILESV-IDX TO  SPA-SFILESV-IDX
+               MOVE    SPA-T06-SFILESV-MAX TO  SPA-SFILESV-MAX
+               MOVE    SPA-GMN-T98-PRTKBN  TO  SPA-GMN-DATAKBN
+               MOVE    SPA-NAI-T06-SRYYM-H TO  SPA-NAI-SKYYM 
+           ELSE
+               MOVE    SPA-FREE            TO  SPA-T01FREE
+               INITIALIZE                      SPA-T06 
+           END-IF
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
@@ -201,7 +218,15 @@
       *
            MOVE    SPA-T01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
-           MOVE    SPA-T01FREE     TO  SPA-FREE
+           IF      SPA-T99-MOTOPG  =   "T06"
+               MOVE    SPA-SFILESV-OCC (1)
+                                       TO  SPA-T06-SFILESV-OCC (1)
+               MOVE    SPA-SFILESV-IDX TO  SPA-T06-SFILESV-IDX
+               MOVE    SPA-SFILESV-MAX TO  SPA-T06-SFILESV-MAX
+               MOVE    SPA-T06         TO  SPA-FREE
+           ELSE
+               MOVE    SPA-T01FREE     TO  SPA-FREE
+           END-IF
       *
            .
            EXIT    PROGRAM
@@ -215,7 +240,7 @@
            AND   ( SPA-T99-MOTOPG  NOT =   "T04"  )
       *        ファイルエントリ処理(クライアント保存)
                IF      SPA-SFILESV-MAX     >   SPA-SFILESV-IDX
-                   ADD     1                   TO  SPA-SFILESV-IDX 
+                   ADD     1                   TO  SPA-SFILESV-IDX
                    PERFORM 3001-FILEENTRY-SEC
                   GO  TO  100-INIT-EXT
                END-IF
@@ -285,7 +310,6 @@
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
-      *****MOVE    SPACE               TO  T99
            INITIALIZE                      T99
            MOVE    ZERO                TO  T99-COUNT
       *

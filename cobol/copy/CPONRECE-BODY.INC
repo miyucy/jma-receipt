@@ -30,6 +30,8 @@
            03  ONRECE-B-SCNT       PIC 9(2).
            03  ONRECE-B-RENNUM     PIC 9(3).
            03  ONRECE-B-RECEIPT-NO PIC 9(6).
+      *    オンラインレセ電実施日
+           03  ONRECE-B-SYORIYMD   PIC X(8).
            03  ONRECE-B-UKEYMD     PIC X(8).
            03  ONRECE-B-SKYYMD     PIC X(8).
            03  ONRECE-B-RECV-FLG   PIC 9(1).
@@ -46,13 +48,16 @@
            03  ONRECE-B-HKNJANUM   PIC X(8).
            03  ONRECE-B-KIGO       PIC X(40).
            03  ONRECE-B-NUM        PIC X(40).
-           03  ONRECE-B-H-J-DAY    PIC 9(2).
+           03  ONRECE-B-TEISYUTUSAKI-B
+                                   PIC X(1).
+           03  ONRECE-B-RECEKA     PIC X(02).
+           03  ONRECE-B-HOJOKBN    PIC X(01).
+           03  ONRECE-B-TEKSTYMD   PIC X(08).
            03  ONRECE-B-H-TTL-TEN  PIC 9(8).
            03  ONRECE-B-KO-AREA.
               05  ONRECE-B-KO-A        OCCURS  4.
                 07  ONRECE-B-FTNNUM    PIC X(40).
                 07  ONRECE-B-JKYNUM    PIC X(40).
-                07  ONRECE-B-K-J-DAY   PIC 9(2).
                 07  ONRECE-B-K-TTL-TEN PIC 9(8).
            03  ONRECE-B-KAKUTEI-KBN
                                    PIC X(1).
@@ -82,4 +87,6 @@
            03  ONRECE-B-VIRTUAL.
               05  ONRECE-B-UCNT-V  PIC 9(3).
               05  ONRECE-B-SCNT-V  PIC 9(3).
+              05  ONRECE-B-XXTEISYUTUSAKI
+                                   PIC X(1).
 

@@ -1,0 +1,141 @@
+#!/bin/bash
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+#-------------------------------------------#
+#    レセ電ファイル作成処理
+#        ${1}-${11} 印刷ＤＢ用固定引数
+#        ${12}-${13}
+#        提出先、連番
+#        ${17} レセ電ファイル出力先
+#        ${18} JOBID 
+#        ${19} SHELLID
+#        ${20} エラーファイル名 
+#        ${21} ファイル出力先区分
+#        ${22} 端末ｉｐアドレス
+#        ${23} HOSPNUM
+#        ${24} レセプト作成区分
+#            1:提出用レセ、2:点検用レセ
+#-------------------------------------------#
+
+    rennum=0
+##  2HD flesize  
+    fixedsize=1441500
+
+##  エラーファイル削除
+	echo $#
+	echo "echo " ${20}
+    if  [ -e ${20} ]; then
+        rm ${20}
+    fi
+
+    LOG_FILE="/var/log/jma-receipt/${23}recept4_kobetu.log"
+
+    echo "arg13 = [" ${17} "]"  >$LOG_FILE
+    echo "arg18 = [" ${22} "]" >>$LOG_FILE
+    echo "arg21 = [" ${24} "]" >>$LOG_FILE
+    echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
+
+    RECEFILE1="RECEIPTC"
+    RECEFILE2="RECEDEN"
+
+    if  [ ${24} -eq '2' ]; then
+	RECEFILE1="TENKENRC"
+	RECEFILE2="TENKENT"
+	echo "file name change!" >>$LOG_FILE
+    fi
+
+#   該当ファイル削除
+	rm  ${17}${23}${RECEFILE1}*.UKE
+	rm  /tmp/${23}${RECEFILE2}*.txt
+
+#   レセ電ファイル作成
+
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM520 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${13},${17},${18},${19},${21},$fixedsize,${24},${23},${20} >> $LOG_FILE 2>&1
+    if  [ -e ${20} ]; then
+        echo "--- BM520 err file exist ---" >> $LOG_FILE 2>&1
+        exit 
+    fi
+        
+#   症状詳記作成
+#
+#    rennum=$(expr $rennum + 1) 
+#    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM530 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${18},${19},${23},${20} >> $LOG_FILE 2>&1
+#    if  [ -e ${20} ]; then
+#        echo "--- BM510 err file exist ---" >>$LOG_FILE
+#        exit 
+#    fi
+        
+
+#   漢字コード変換（ＥＵＣからシフトＪＩＳ）	
+
+	NUM=0
+    while [ $NUM -lt 100 ]
+    do
+        NUM=`expr $NUM + 1`
+        FILENUM='0'$NUM
+    	    echo "filenum"
+            echo  ${FILENUM:${#FILENUM}-2:2}
+	    if  test -s "/tmp/${23}${RECEFILE2}${FILENUM:${#FILENUM}-2:2}.txt"; then
+    	    echo ${FILENUM:${#FILENUM}-2:2}
+	    else
+    	    echo ${FILENUM:${#FILENUM}-2:2} "nothing"
+		    break
+	    fi
+	    if  test "${FILENUM:${#FILENUM}-2:2}"	=	"01"; then
+		    echo "先頭ファイルの処理(sjis変換)"
+		    nkf -s /tmp/${23}${RECEFILE2}${FILENUM:${#FILENUM}-2:2}.txt > ${17}${23}${RECEFILE1}.UKE
+	    else
+		    echo "２番目以降のファイルの処理(sjis変換)"
+		    nkf -s /tmp/${23}${RECEFILE2}${FILENUM:${#FILENUM}-2:2}.txt > ${17}${23}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE
+	    fi
+    done
+
+#   先頭ファイルのみ処理 
+
+    if  [ -e ${17}${23}${RECEFILE1}.UKE ]; then
+        echo "--- RECEIPTC.UKE exist ---" >>$LOG_FILE
+    fi
+    FDDHOST=`echo ${22}|tr \[\] "  "`
+    echo "FDDHOST = " $FDDHOST
+##
+		    echo "先頭ファイルの処理(fdw処理)" ${17}${23}${RECEFILE1}.UKE
+##    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}
+##    exit 
+##
+    if  [ ${21} -eq '1' ]; then
+        echo "--- fdw-> fd start ---" >>$LOG_FILE
+	$FDW -host $FDDHOST -command fd-write.sh ${17}${23}${RECEFILE1}.UKE ${RECEFILE1}.UKE
+	RC=$?
+        echo "--- fdw-> fd end   ---[" $RC  "]" >>$LOG_FILE
+	if  [ $RC -ne '0' ]; then
+	    ERRCD='0000'$RC
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD:${#ERRCD}-4:4},${23} >> $LOG_FILE
+        echo "--- fdw-> fd err   ---" >>$LOG_FILE
+            exit
+	fi
+    fi
+
+    if  [ ${21} -eq '2' ]; then
+        echo "--- fdw-> mo start ---" >>$LOG_FILE
+	$FDW -host $FDDHOST -command mo-write.sh ${17}${23}${RECEFILE1}.UKE ${RECEFILE1}.UKE
+	RC=$?
+        echo "--- fdw-> mo end   ---[" $RC  "]" >>$LOG_FILE
+	if  [ $RC -ne '0' ]; then
+	    ERRCD='0000'$RC
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD:${#ERRCD}-4:4},${23} >> $LOG_FILE
+            echo "--- fdw-> mo err   ---" >>$LOG_FILE
+            exit
+	fi
+    fi
+
+    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19},${23} >> $LOG_FILE
+
+    exit 

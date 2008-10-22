@@ -1068,6 +1068,7 @@
                    PERFORM 400-T07-SYORI-SEC
       *    処理確認
                WHEN    "CLICKED"       ALSO    "B24"
+                   MOVE    "T06"               TO  SPA-T99-MOTOPG
                    PERFORM 490-KAKUNIN-SEC
       *    提出先設定
                WHEN    "CLICKED"       ALSO    "TEISYUTUSAKI1"
@@ -2611,15 +2612,111 @@
            MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           MOVE    "DBINSERT"          TO  MCP-FUNC
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
+           PERFORM 900-DBINSERT-SEC
            IF      MCP-RC      NOT =   ZERO
                MOVE    "1002"          TO  SPA-ERRCD
                GO  TO  460-RECEDEN-EXT
            END-IF
+      *
+      *    個別作成レセ電データ更新処理
+      *
+           INITIALIZE                  ONRECE-K-REC
+           MOVE   SPA-HOSPNUM      TO  ONRECE-K-HOSPNUM
+           IF      SPA-GMN-T06-TEISYUTUSAKI1
+                                   =   "T"
+               MOVE   "1"              TO  ONRECE-K-TEISYUTUSAKI
+           ELSE
+               MOVE   "2"              TO  ONRECE-K-TEISYUTUSAKI
+           END-IF
+           MOVE    SPA-NAI-T06-SRYYM-H
+                                   TO  ONRECE-K-SRYYM
+           MOVE    ZERO            TO  ONRECE-K-UCNT
+                                       ONRECE-K-SCNT
+           MOVE    "tbl_onrece_kanri"
+                                   TO  MCP-TABLE
+           MOVE    "key5"          TO  MCP-PATHNAME
+           PERFORM 900-ONRECE-KANRI-SELECT-SEC
+      * 
+           MOVE    "tbl_onrece_kanri"
+                                   TO  MCP-TABLE
+           MOVE    "key5"          TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           IF      FLG-ONRECE-K    =   1
+               INITIALIZE                  ONRECE-K-REC
+               MOVE   SPA-HOSPNUM      TO  ONRECE-K-HOSPNUM
+               IF      SPA-GMN-T06-TEISYUTUSAKI1
+                                       =   "T"
+                   MOVE   "1"              TO  ONRECE-K-TEISYUTUSAKI
+               ELSE
+                   MOVE   "2"              TO  ONRECE-K-TEISYUTUSAKI
+               END-IF
+               MOVE    SPA-NAI-T06-SRYYM-H
+                                       TO  ONRECE-K-SRYYM
+               MOVE    ZERO            TO  ONRECE-K-UCNT
+                                           ONRECE-K-SCNT
+               MOVE    ZERO            TO  ONRECE-K-RENNUM
+           END-IF
+      *
+           ADD     1                   TO  ONRECE-K-RENNUM
+           MOVE    SMCNDATE-YMD        TO  ONRECE-K-CREYMD
+           MOVE    SMCNDATE-YMD        TO  ONRECE-K-UPYMD
+           MOVE    SMCNDATE-HMS        TO  ONRECE-K-UPHMS
+           MOVE    ONRECE-K-REC        TO  MCPDATA-REC
+           MOVE    "tbl_onrece_kanri"  TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBINSERT-SEC
+           IF      MCP-RC      NOT =   ZERO
+               MOVE    "1009"          TO  SPA-ERRCD
+               GO  TO  460-RECEDEN-EXT
+           END-IF
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-T06-RECE-MAX
+               INITIALIZE                  ONRECE-B-REC
+               MOVE    SPA-HOSPNUM         TO  ONRECE-B-HOSPNUM
+               MOVE    ONRECE-K-TEISYUTUSAKI
+                                           TO  ONRECE-B-TEISYUTUSAKI
+               MOVE    ONRECE-K-SRYYM      TO  ONRECE-B-SRYYM
+               MOVE    ONRECE-K-UCNT       TO  ONRECE-B-UCNT
+               MOVE    ONRECE-K-SCNT       TO  ONRECE-B-SCNT
+               MOVE    ONRECE-K-RENNUM     TO  ONRECE-B-RENNUM               
+               MOVE    IDX                 TO  ONRECE-B-RECEIPT-NO
+               MOVE    SPA-NAI-T06-RECE10-SRYYM       (IDX)
+                                           TO  ONRECE-B-SRYYM-B
+               MOVE    SPA-NAI-T06-RECE10-TEISYUTUSAKI(IDX)
+                                           TO  ONRECE-B-TEISYUTUSAKI-B
+               MOVE    SPA-NAI-T06-RECE10-NYUGAIKBN   (IDX)
+                                           TO  ONRECE-B-NYUGAIKBN
+               MOVE    SPA-NAI-T06-RECE10-PTID        (IDX)
+                                           TO  ONRECE-B-PTID
+               MOVE    SPA-NAI-T06-RECE10-RECESYUBETU (IDX)
+                                           TO  ONRECE-B-RECESYUBETU
+               MOVE    SPA-NAI-T06-RECE10-HKNJANUM    (IDX)
+                                           TO  ONRECE-B-HKNJANUM
+               MOVE    SPA-NAI-T06-RECE10-RECEKA      (IDX)
+                                           TO  ONRECE-B-RECEKA
+               MOVE    SPA-NAI-T06-RECE10-HOJOKBN     (IDX)
+                                           TO  ONRECE-B-HOJOKBN
+               MOVE    SPA-NAI-T06-RECE10-TEKSTYMD    (IDX)
+                                           TO  ONRECE-B-TEKSTYMD
+               MOVE    SPA-GMN-T06-R-TPTNUM           (IDX)
+                                           TO  ONRECE-B-PTNUM
+               MOVE    SMCNDATE-YMD        TO  ONRECE-B-CREYMD
+               MOVE    SMCNDATE-YMD        TO  ONRECE-B-UPYMD
+               MOVE    SMCNDATE-HMS        TO  ONRECE-B-UPHMS
+               MOVE    ONRECE-B-REC        TO  MCPDATA-REC
+               MOVE    "tbl_onrece_body"
+                                           TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBINSERT-SEC
+               IF      MCP-RC      NOT =   ZERO
+                   CALL    "coblog" USING "SELECT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+                   MOVE    "1010"          TO  SPA-ERRCD
+                   GO  TO  460-RECEDEN-EXT
+               END-IF
+           END-PERFORM
       *
            MOVE    ZERO                TO  WRK-CONS-JOB-JOBID
                                            WRK-PRTKANRI-RENNUM
@@ -2664,9 +2761,7 @@
       *                                 
            MOVE    SPACE           TO  LNK-PRTKANRI-AREA
            INITIALIZE                  LNK-PRTKANRI-AREA
-           ADD     1               TO  WRK-PRTKANRI-RENNUM
-           MOVE    WRK-PRTKANRI-RENNUM
-                                   TO  LNK-PRTKANRI-RENNUM 
+           MOVE    1               TO  LNK-PRTKANRI-RENNUM 
            MOVE    WRK-CONS-PRTKANRI-TBL-KEY
                                    TO  LNK-PRTKANRI-TBL-KEY 
            MOVE    WRK-CONS-PRTKANRI-TBL-GROUP
@@ -2675,8 +2770,7 @@
                                    TO  LNK-PRTKANRI-SRYYM 
            MOVE    SPA-NAI-T06-SKYYMD-H
                                    TO  LNK-PRTKANRI-SKYYMD
-      *??     MOVE    "recept4_kobetu.sh"
-           MOVE    "recept4.sh"
+           MOVE    "recept4_kobetu.sh"
                                    TO  LNK-PRTKANRI-SHELLID
            MOVE    ZERO            TO  LNK-PRTKANRI-PRIORITY
            MOVE    SPA-TERMID      TO  LNK-PRTKANRI-TERMID
@@ -2704,27 +2798,26 @@
            MOVE    LNK-PRTKANRI-OPID
                                    TO  SHELLTBL-ARG10      
            MOVE    LNK-PRTKANRI-PRTNM
-                                   TO  SHELLTBL-ARG11      
-           EVALUATE    SPA-GMN-T06-TEISYUTUSAKI1
-               WHEN    "T"
-                   MOVE    "1"         TO  SHELLTBL-ARG12
-               WHEN    "F"
-                   MOVE    "4"         TO  SHELLTBL-ARG12
-           END-EVALUATE
+                                   TO  SHELLTBL-ARG11
+      *      
+           MOVE    ONRECE-K-TEISYUTUSAKI
+                                   TO  SHELLTBL-ARG12
+           MOVE    ONRECE-K-RENNUM TO  SHELLTBL-ARG13
+      *               
            IF      SPA-GMN-T98-DATAKBN  =  "1"  OR  "2"
                MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
            END-IF
            STRING  SYS-2005-RECEDENOUT DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
-                               INTO    SHELLTBL-ARG13
+                               INTO    SHELLTBL-ARG17
            END-STRING
            MOVE    WRK-CONS-JOB-JOBID
-                                   TO  SHELLTBL-ARG14
+                                   TO  SHELLTBL-ARG18
            MOVE    WRK-CONS-JOB-SHELLID
-                                   TO  SHELLTBL-ARG15         
-           MOVE    RECEERR         TO  SHELLTBL-ARG16
+                                   TO  SHELLTBL-ARG19         
+           MOVE    RECEERR         TO  SHELLTBL-ARG20
            MOVE    SPA-GMN-T98-DATAKBN
-                                   TO  SHELLTBL-ARG17
+                                   TO  SHELLTBL-ARG21
       *ipアドレス取得
            MOVE    "DBFETCH"       TO  MCP-FUNC
            MOVE    "metadb"        TO  MCP-TABLE
@@ -2733,13 +2826,10 @@
                                        MCPAREA
                                        DBMETA
                                        SPA-AREA
-           MOVE    DBMETA-HOST     TO  SHELLTBL-ARG18
-      *?? 
-           MOVE    "1"             TO  SHELLTBL-ARG19
-      *?? 
-grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
+           MOVE    DBMETA-HOST     TO  SHELLTBL-ARG22
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG23
            MOVE    SPA-GMN-T98-PRTKBN
-                                   TO  SHELLTBL-ARG21
+                                   TO  SHELLTBL-ARG24
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -2832,11 +2922,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            IF      FLG-SYSKANRI        =   ZERO     
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               PERFORM 900-DBUPDATE-SEC
            ELSE
-               MOVE    "DBINSERT"          TO  MCP-FUNC
+               PERFORM 900-DBINSERT-SEC
            END-IF         
-           PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "SYSKANRI 3003  ERR KEY = ["
                                   MCP-RC  " " SYS-3003-KEY  "]"   
@@ -3068,10 +3157,10 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
            IF      SPA-GMN-T06-TEISYUTUSAKI1
                                       =   "T"
                MOVE    "1"                 TO  ONRECE-B-TEISYUTUSAKI
-      *??                                      ONRECE-B-XXTEISYUTUSAKI
+                                               ONRECE-B-XXTEISYUTUSAKI
            ELSE
                MOVE    "6"                 TO  ONRECE-B-TEISYUTUSAKI
-      *??      MOVE    "2"                 TO  ONRECE-B-XXTEISYUTUSAKI
+               MOVE    "2"                 TO  ONRECE-B-XXTEISYUTUSAKI
            END-IF
            MOVE    SPA-GMN-T06-NYUGAIKBN
                                    TO  ONRECE-B-NYUGAIKBN
@@ -3545,6 +3634,12 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
                WHEN    "1004"
                    MOVE    "パラメタＤＢが更新できません"
                                                        TO  SPA-ERRMSG
+               WHEN    "1009"
+                   MOVE    "オンライン管理ＤＢが更新できません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "1010"
+                   MOVE    "オンライン明細ＤＢが更新できません"
+                                                       TO  SPA-ERRMSG
                WHEN    "7777"
                WHEN    "9999"
                    MOVE    WRK-RECEERR                 TO  SPA-ERRMSG
@@ -3997,6 +4092,46 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
       *
            .
        900-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＩＮＳＥＲＴ処理
+      *****************************************************************
+       900-DBINSERT-SEC                SECTION.
+      *
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "INSERT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+               CALL    "coblog" USING "INSERT ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+                       " mcp-rc="          MCP-RC
+           END-IF
+           .
+       900-DBINSERT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＵＰＤＡＴＥ処理
+      *****************************************************************
+       900-DBUPDATE-SEC                SECTION.
+      *
+           MOVE    "DBUPDATE"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "UPDATE ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+               CALL    "coblog" USING "UPDATE ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+                       " mcp-rc="          MCP-RC
+           END-IF
+           .
+       900-DBINSERT-EXT.
            EXIT.
       *
       *****************************************************************

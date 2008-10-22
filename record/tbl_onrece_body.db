@@ -7,6 +7,7 @@ tbl_onrece_body   {
 	RENNUM			number(3);
 	RECEIPT_NO		number(6);
 #---> キー部
+	SYORIYMD		char(8);
 	UKEYMD			char(8);
 	SKYYMD			char(8);
 	RECV_FLG		number(1);
@@ -22,23 +23,22 @@ tbl_onrece_body   {
 	HKNJANUM		char(8);
 	KIGO			varchar(40);
 	NUM			varchar(40);
-	J_DAY			number(2);
+	TEISYUTUSAKI_B		char(1);
+	RECEKA  		char(2);
+	HOJOKBN			char(1);
+	TEKSTYMD        	char(8);
 	H_TTL_TEN		number(8);
 	FTNNUM_1		varchar(40);
 	JKYNUM_1		varchar(40);
-	K_J_DAY1		number(2);
 	K_TTL_TEN_1		number(8);
 	FTNNUM_2		varchar(40);
 	JKYNUM_2		varchar(40);
-	K_J_DAY2		number(2);
 	K_TTL_TEN_2		number(8);
 	FTNNUM_3		varchar(40);
 	JKYNUM_3		varchar(40);
-	K_J_DAY3		number(2);
 	K_TTL_TEN_3		number(8);
 	FTNNUM_4		varchar(40);
 	JKYNUM_4		varchar(40);
-	K_J_DAY4		number(2);
 	K_TTL_TEN_4		number(8);
 	KAKUTEI_KBN		char(1);
 	ERR_KBN			char(2);
@@ -59,6 +59,7 @@ tbl_onrece_body   {
 #-----> 検索用項目
 	UCNT_V			number(3),virtual;
 	SCNT_V			number(3),virtual;
+	XXTEISYUTUSAKI		char(1),virtual;
 };
 
 primary {
@@ -81,10 +82,60 @@ path    key             {
         };
 };
 
-
 path    key1            {
         DBSELECT        {
                 DECLARE tbl_onrece_body_key1_csr CURSOR FOR
+                SELECT *
+                FROM tbl_onrece_body
+                WHERE	HOSPNUM		= :HOSPNUM
+                    AND	TEISYUTUSAKI	= :TEISYUTUSAKI
+                    AND	SRYYM		= :SRYYM
+                    AND	UCNT		= :UCNT
+                    AND	SCNT		= :SCNT
+                    AND	RENNUM		= :RENNUM
+                    AND	KAKUTEI_KBN	= '2'
+		ORDER	BY	RECEIPT_NO
+                ;
+        };
+};
+
+path    key2            {
+        DBSELECT        {
+                DECLARE tbl_onrece_body_key2_csr CURSOR FOR
+                SELECT *
+                FROM tbl_onrece_body
+                WHERE	HOSPNUM		= :HOSPNUM
+                    AND	TEISYUTUSAKI	= :TEISYUTUSAKI
+                    AND	SRYYM		= :SRYYM
+                    AND	NYUGAIKBN	= :NYUGAIKBN
+                    AND	SRYYM_B		= :SRYYM_B
+                    AND	PTID		= :PTID 
+                    AND	KAKUTEI_KBN	like :KAKUTEI_KBN
+		ORDER	BY	SYORIYMD DESC
+                ;
+        };
+};
+
+path    key3            {
+        DBSELECT        {
+                DECLARE tbl_onrece_body_key3_csr CURSOR FOR
+                SELECT *
+                FROM tbl_onrece_body
+                WHERE	HOSPNUM		= :HOSPNUM
+                  AND  (TEISYUTUSAKI =  :TEISYUTUSAKI  OR
+                        TEISYUTUSAKI =  :XXTEISYUTUSAKI)
+                    AND	SRYYM		= :SRYYM
+                    AND	NYUGAIKBN	= :NYUGAIKBN
+                    AND	SRYYM_B		= :SRYYM_B
+                    AND	PTID		= :PTID 
+		ORDER	BY	SYORIYMD DESC
+                ;
+        };
+};
+
+path    key4            {
+        DBSELECT        {
+                DECLARE tbl_onrece_body_key4_csr CURSOR FOR
                 SELECT *
                 FROM tbl_onrece_body
                 WHERE	HOSPNUM		= :HOSPNUM
@@ -109,6 +160,7 @@ path    upd1    {
 	SCNT		=	:SCNT,
 	RENNUM		=	:RENNUM,
 	RECEIPT_NO	=	:RECEIPT_NO,
+	SYORIYMD	=	:SYORIYMD,
 	UKEYMD		=	:UKEYMD,
 	SKYYMD		=	:SKYYMD,
 	RECV_FLG	=	:RECV_FLG,
@@ -124,23 +176,21 @@ path    upd1    {
 	HKNJANUM	=	:HKNJANUM,
 	KIGO		=	:KIGO,
 	NUM		=	:NUM,
-	J_DAY		=	:J_DAY,
+	RECEKA		=	:RECEKA,
+	HOJOKBN		=	:HOJOKBN,
+	TEKSTYMD	=	:TEKSTYMD,
 	H_TTL_TEN	=	:H_TTL_TEN,
 	FTNNUM_1	=	:FTNNUM_1,
 	JKYNUM_1	=	:JKYNUM_1,
-	K_J_DAY1	=	:K_J_DAY1,
 	K_TTL_TEN_1	=	:K_TTL_TEN_1,
 	FTNNUM_2	=	:FTNNUM_2,
 	JKYNUM_2	=	:JKYNUM_2,
-	K_J_DAY2	=	:K_J_DAY2,
 	K_TTL_TEN_2	=	:K_TTL_TEN_2,
 	FTNNUM_3	=	:FTNNUM_3,
 	JKYNUM_3	=	:JKYNUM_3,
-	K_J_DAY3	=	:K_J_DAY3,
 	K_TTL_TEN_3	=	:K_TTL_TEN_3,
 	FTNNUM_4	=	:FTNNUM_4,
 	JKYNUM_4	=	:JKYNUM_4,
-	K_J_DAY4	=	:K_J_DAY4,
 	K_TTL_TEN_4	=	:K_TTL_TEN_4,
 	KAKUTEI_KBN	=	:KAKUTEI_KBN,
 	ERR_KBN		=	:ERR_KBN,
