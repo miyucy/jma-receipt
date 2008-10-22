@@ -37,3 +37,13 @@ path	del1 	{
 		;
 	};
 };
+
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_nrrksrh
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+		;
+	};
+};
