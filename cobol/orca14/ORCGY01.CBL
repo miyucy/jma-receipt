@@ -241,7 +241,7 @@
       *
       *            ドクターの専門家
                    07  SPA-NAI-DRCD-AREA.
-                       09  SPA-NAI-DR-SEMON        OCCURS  50.
+                       09  SPA-NAI-DR-SEMON        OCCURS  99.
                            11  SPA-NAI-DR-SEMONKACD   PIC X(02)
                                                       OCCURS  5.
       *
