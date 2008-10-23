@@ -579,7 +579,7 @@
       <class>GtkToggleButton</class>
       <name>BHK2</name>
       <x>954</x>
-      <y>185</y>
+      <y>186</y>
       <width>56</width>
       <height>18</height>
       <can_focus>True</can_focus>
@@ -604,7 +604,7 @@
       <class>GtkToggleButton</class>
       <name>BHK3</name>
       <x>954</x>
-      <y>202</y>
+      <y>204</y>
       <width>56</width>
       <height>18</height>
       <can_focus>True</can_focus>
@@ -629,7 +629,7 @@
       <class>GtkToggleButton</class>
       <name>BHK4</name>
       <x>954</x>
-      <y>219</y>
+      <y>222</y>
       <width>56</width>
       <height>18</height>
       <can_focus>True</can_focus>
@@ -654,7 +654,7 @@
       <class>GtkToggleButton</class>
       <name>BHK5</name>
       <x>954</x>
-      <y>236</y>
+      <y>240</y>
       <width>56</width>
       <height>18</height>
       <can_focus>True</can_focus>
