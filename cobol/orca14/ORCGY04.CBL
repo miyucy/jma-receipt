@@ -365,7 +365,7 @@
            END-IF
       *
            PERFORM
-                   UNTIL      (SPA-DRCD-MAX      >=  50  )   OR
+                   UNTIL      (SPA-DRCD-MAX      >=  100 )   OR
                               (FLG-SYSKANRI      =   1   )
       *
                MOVE    MCPDATA-REC      TO  SYS-1010-REC

@@ -41,7 +41,7 @@
                        09  SPA-GMN-DRNCD       PIC X(04).
                        09  SPA-GMN-D1          PIC X(01).
                        09  SPA-GMN-DRNAMEMEI   PIC X(24).
-                   07  SPA-GMN-DRNAMELST       PIC X(29)   OCCURS  50.
+                   07  SPA-GMN-DRNAMELST       PIC X(29)   OCCURS  100.
                    07  SPA-DRCD-MAX            PIC 9(04).
       *
                    07  SPA-GMN-TBL.

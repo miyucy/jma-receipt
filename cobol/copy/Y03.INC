@@ -47,4 +47,4 @@
                 04  Y03-DRNAME.
                   05  Y03-VALUE   PIC X(29).
                 04  Y03-DRNAME-COUNT   PIC S9(9)   BINARY.
-                04  Y03-DRNAME-ITEM    PIC X(29)   OCCURS  50 TIMES.
+                04  Y03-DRNAME-ITEM    PIC X(29)   OCCURS  100 TIMES.
