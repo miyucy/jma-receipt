@@ -844,9 +844,9 @@
            PERFORM
                    UNTIL   (SPA-JYURRK-MAX >=  40   )  OR
                            (FLG-JYURRK     =   1    )
-      ******** IF      JYURRK-HKNCOMBINUM  =   "9999"
-      *            CONTINUE
-      ******** ELSE
+               IF      JYURRK-HKNCOMBINUM  =   "9999"
+                   CONTINUE
+               ELSE
       *            ÅÁÉ¼ÈÖ¹æËè¤Ë¥Æ¡¼¥Ö¥ëÊÔ½¸
                    IF     (IDX             >   ZERO )  AND
                           (JYURRK-EDANUM   =   1    )
@@ -857,7 +857,7 @@
                    END-IF
                    ADD     1               TO  IDX
                    MOVE    JYURRK-REC      TO  WRK-JYURRK-REC (IDX)
-      *********END-IF
+               END-IF
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-JYURRK-READ-SEC
            END-PERFORM
