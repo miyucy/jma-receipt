@@ -13,10 +13,10 @@
                   05  T07-LIST-ROW       PIC S9(9)   BINARY.
                   05  T07-LIST-ITEM      OCCURS  100 TIMES.
                     06  T07-TRENNUM      PIC X(3).
-                    06  T07-TSKYYMD      PIC X(8).
-                    06  T07-TSCNT        PIC X(2).
-                    06  T07-TUKEYMD      PIC X(8).
+                    06  T07-TUKEYMD      PIC X(9).
                     06  T07-TUCNT        PIC X(3).
+                    06  T07-TSKYYMD      PIC X(9).
+                    06  T07-TSCNT        PIC X(2).
                     06  T07-TNYUGAIKBN   PIC X(2).
                     06  T07-TRECESYUBETU PIC X(4).
                     06  T07-THKNJANUM    PIC X(8).

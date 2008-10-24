@@ -426,7 +426,7 @@
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
       *
       *        元の画面へ戻す
-               IF      SPA-MOTOPG      =   "XB01"
+               IF      SPA-MOTOPG      =   "XA01"  OR  "XB01"
                    MOVE    LNK-COMMON      TO  SPA-KYOTUKEY
                    MOVE    LNK-SCRSPA      TO  SPA-T06
                    MOVE    SPA-WORK        TO  SPA-T01KYOUTU
@@ -1119,6 +1119,9 @@
       *    削除
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 440-SAKUJYO-GID-SEC
+      *     再印刷
+               WHEN    "CLICKED"       ALSO    "B05"
+                   PERFORM 450-REPRINT-SEC
       *    前回作成分表示
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 480-ZENKAI-HYOUJI-TID-SEC
@@ -2597,6 +2600,35 @@
       *
           .
        440-SAKUJYO-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    再印刷画面へ
+      *****************************************************************
+       450-REPRINT-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-COMMON
+           MOVE    SPA-T06             TO  LNK-SCRSPA
+      *
+      *    画面移行用のパラメタ変更
+           MOVE    "T06"               TO  SPA-MOTOPG
+           MOVE    "XA01"              TO  SPA-SAKIPG
+      *
+           MOVE    WRK-CONS-PRTKANRI-TBL-KEY
+                                       TO  SPA-PRTKANRI-TBL-KEY
+      *          
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   "XA01   "            TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       450-REPRINT-EXT.
            EXIT.
       *
       *****************************************************************
