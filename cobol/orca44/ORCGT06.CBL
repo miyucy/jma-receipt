@@ -396,6 +396,9 @@
                END-IF
                IF      SPA-TIDCD       NOT =   SPACE
                    EVALUATE    SPA-TIDCD
+                       WHEN    "1002"
+                           PERFORM 530-TID2SET-SEC
+                           GO  TO  100-INIT-EXT
                        WHEN    "2001"
                        WHEN    "2003"
                        WHEN    "2007"
@@ -456,10 +459,11 @@
                    PERFORM 340-TID2-SET-SEC
                    GO      TO      300-SCREEN-EXT
                WHEN    "T07"
-                   INITIALIZE              SPA-T01KYOUTU
-                   INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
-                                           SPA-NAI-T06-RECE-KOUMOKU
-                   MOVE    4               TO  SPA-GMN-T06-CUR
+                   MOVE    "1002"          TO  SPA-TIDCD
+      ***             INITIALIZE              SPA-T01KYOUTU
+      ***             INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
+      ***                                     SPA-NAI-T06-RECE-KOUMOKU
+      ***             MOVE    4               TO  SPA-GMN-T06-CUR
                    GO      TO      300-SCREEN-EXT
                WHEN    "T98"
                    PERFORM 350-T98-SET-SEC
@@ -933,11 +937,11 @@
                    WHEN    "1009"
                        EVALUATE    SPA-T01-WIDGET
                            WHEN    "TEISYUTUSAKI1"
-                               MOVE    T06-TEISYUTUSAKI1
-                                       TO  SPA-GMN-T06-TEISYUTUSAKI1
+                               MOVE    "T" TO  SPA-GMN-T06-TEISYUTUSAKI1
+                               MOVE    "F" TO  SPA-GMN-T06-TEISYUTUSAKI2
                            WHEN    "TEISYUTUSAKI2"
-                               MOVE    T06-TEISYUTUSAKI2
-                                       TO  SPA-GMN-T06-TEISYUTUSAKI2
+                               MOVE    "F" TO  SPA-GMN-T06-TEISYUTUSAKI1
+                               MOVE    "T" TO  SPA-GMN-T06-TEISYUTUSAKI2
                            WHEN    "SRYYM_H"
                                CONTINUE
                        END-EVALUATE
@@ -1168,6 +1172,7 @@
            AND   ( SPA-GMN-T06-RECE-MAX
                                        >   ZERO )
                MOVE    "1009"          TO  SPA-TIDCD
+               MOVE    MCP-WIDGET      TO  SPA-T01-WIDGET
                GO  TO  400-TEISYUTUSAKI-EXT
            END-IF 
       *
@@ -1258,6 +1263,7 @@
                    AND   ( SPA-GMN-T06-RECE-MAX
                                            >   ZERO )
                        MOVE    "1009"          TO  SPA-TIDCD
+                       MOVE    "SRYYM_H"       TO  SPA-T01-WIDGET
                        GO  TO  410-SRYYM-H-CHK-EXT
                    END-IF
       *            管理情報編集処理
@@ -1431,7 +1437,16 @@
       *    患者番号が存在するとき追加処理
            IF      SPA-GMN-T06-B-TPTNUM   (SPA-NAI-T06-BODY-SELNUM)
                                    NOT =   SPACE
-               PERFORM 41041-TUIKA-SEC
+      *        患者マスター存在チェック
+               MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+               MOVE    SPA-NAI-T06-B-TPTID (SPA-NAI-T06-BODY-SELNUM)
+                                           TO  PTINF-PTID
+               PERFORM 900-PTINF-READ-SEC
+               IF      FLG-PTINF       NOT =   ZERO
+                   MOVE    "0003"              TO  SPA-ERRCD
+               ELSE
+                   PERFORM 41041-TUIKA-SEC
+               END-IF
                IF      SPA-ERRCD            =   SPACE
                    MOVE    ZERO             TO  SPA-NAI-T06-BODY-SELNUM
                ELSE
@@ -3394,10 +3409,6 @@
       *****************************************************************
        400-T07-SYORI-SEC           SECTION.
       *
-      *??     IF      SPA-GMN-T06-SELNUM  =   ZERO
-      *??         GO  TO  400-T07-SYORI-EXT
-      *??     END-IF
-      *
            INITIALIZE                  T07
            MOVE    SPA-GMN-T06-PTNUM       TO  T07-PTNUM
            MOVE    SPA-GMN-T06-NAME        TO  T07-NAME
@@ -3880,7 +3891,8 @@
                WHEN    "0013"
                    MOVE    "請求年月日入力エラー"      TO  SPA-ERRMSG
                WHEN    "0014"
-                   MOVE    "対象の請求管理は返戻年月が行なわれています"
+                   MOVE
+                      "対象の請求管理は返戻年月の設定が行なわれています"
                                                        TO  SPA-ERRMSG
                WHEN    "0015"
                    MOVE
@@ -3947,7 +3959,6 @@
        520-TIDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  WRK-TIDMSG
-                                           SPA-T01-WIDGET
       *
            EVALUATE    SPA-TIDCD
                WHEN    "1003"
@@ -3968,7 +3979,6 @@
                WHEN    "1009"
                    MOVE    "未処理データがありますが変更しますか"
                                        TO  WRK-TIDMSG
-                   MOVE    MCP-WIDGET  TO  SPA-T01-WIDGET
                WHEN    "2001"
                    MOVE    "媒体をドライブにセットして下さい"
                                        TO  WRK-TIDMSG

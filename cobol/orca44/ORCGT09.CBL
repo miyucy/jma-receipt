@@ -231,6 +231,13 @@
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
+               IF      SPA-TIDCD       NOT =   SPACE
+                   EVALUATE    SPA-TIDCD
+                       WHEN    "1002"
+                           PERFORM 530-TID2SET-SEC
+                           GO  TO  100-INIT-EXT
+                   END-EVALUATE
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -258,10 +265,11 @@
                    PERFORM 340-TID2-SET-SEC
                    GO      TO      300-SCREEN-EXT
                WHEN    "T07"
-                   INITIALIZE              SPA-T01KYOUTU
-                   MOVE    ZERO            TO  SPA-GMN-T09-SELNUM
-                                               (SPA-NAI-T09-SELNUM)
-                   MOVE    ZERO            TO  SPA-NAI-T09-SELNUM
+                   MOVE    "1002"          TO  SPA-TIDCD
+      ***          INITIALIZE              SPA-T01KYOUTU
+      ***          MOVE    ZERO            TO  SPA-GMN-T09-SELNUM
+      ***                                      (SPA-NAI-T09-SELNUM)
+      ***          MOVE    ZERO            TO  SPA-NAI-T09-SELNUM
       ***          MOVE    4               TO  SPA-GMN-T09-CUR
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
