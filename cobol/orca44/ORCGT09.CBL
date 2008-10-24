@@ -51,6 +51,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SEIKYU          PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-ONRECE-B        PIC 9(01).
       *
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-SET             PIC 9(02).
@@ -65,12 +66,14 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-Z9              PIC Z9.
            03  WRK-SELNO           PIC 9(02).
            03  WRK-RECE-MAX        PIC 9(04).
       *
            03  WRK-SEL-IDX         PIC 9(02).
            03  WRK-ERR-IDX         PIC 9(02).
+      *
+           03  WRK-Z9              PIC Z9.
+           03  WRK-ZZ9             PIC ZZ9.
       *
            03  WRK-GKN-T09.
                05  WRK-GMN-T09-SELNUM-OCC.
@@ -114,6 +117,9 @@
       *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
+      *
+       01  ONRECE-B-REC.
+           COPY    "CPONRECE-BODY.INC".
       *
       *****************************************************************
       *    サブプロ用領域
@@ -216,8 +222,15 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
+               IF      FLG-END             =   1
+                   GO  TO  100-INIT-EXT
+               END-IF
       *        画面編集
                PERFORM 500-GMNHEN-SEC
+               IF      SPA-ERRCD       NOT =   SPACE
+                   PERFORM 510-ERRSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -240,6 +253,16 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "TID1"
                    PERFORM 330-TID1-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "TID2"
+                   PERFORM 340-TID2-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "T07"
+                   INITIALIZE              SPA-T01KYOUTU
+                   MOVE    ZERO            TO  SPA-GMN-T09-SELNUM
+                                               (SPA-NAI-T09-SELNUM)
+                   MOVE    ZERO            TO  SPA-NAI-T09-SELNUM
+      ***          MOVE    4               TO  SPA-GMN-T09-CUR
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -269,6 +292,48 @@
        330-TID1-SET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    確認画面（ＴＩＤ２）ＯＫ処理
+      *****************************************************************
+       340-TID2-SET-SEC            SECTION.
+      *
+           IF      SPA-TID1-FLG    =   "OK"
+               EVALUATE    SPA-TIDCD
+                   WHEN    "1002"
+      *                作成日のチェック
+                       IF      SPA-NAI-T09-TCREYMD (SPA-NAI-T09-SELNUM)
+                                           <   SPA-NAI-T09-TUKEYMD
+                                                   (SPA-NAI-T09-SELNUM)
+                           MOVE    "1006"             TO  SPA-TIDCD
+                           MOVE    SPACE              TO  SPA-TID1-FLG
+                           GO  TO  340-TID2-SET-EXT
+                       ELSE 
+      *                    追加処理
+                           MOVE    ZERO    TO  SPA-NAI-T09-SELNUM
+                       END-IF      
+               END-EVALUATE 
+           ELSE
+               IF      SPA-TID1-FLG    =   "NO"
+                   EVALUATE    SPA-TIDCD
+                       WHEN    "1002"
+      *                    個人履歴表示
+                           PERFORM 400-T07-SYORI-SEC
+                           MOVE    SPACE              TO  SPA-TID1-FLG
+                           GO  TO  340-TID2-SET-EXT
+                   END-EVALUATE 
+               END-IF
+           END-IF
+      *
+           INITIALIZE                  SPA-T01KYOUTU
+      *
+           MOVE    ZERO            TO  SPA-GMN-T09-SELNUM
+                                               (SPA-NAI-T09-SELNUM)
+           MOVE    ZERO            TO  SPA-NAI-T09-SELNUM
+      *
+           MOVE    4               TO  SPA-GMN-T06-CUR
+           .
+       340-TID2-SET-EXT.
+           EXIT.
       *
       *****************************************************************
       *    画面遷移処理
@@ -521,7 +586,16 @@
                                    =   "1"
                MOVE    "1002"          TO  SPA-TIDCD
                MOVE    IDX             TO  SPA-NAI-T09-SELNUM
+               GO  TO  410211-SELNUM-HENSYU-EXT
            END-IF
+      *
+      *    作成日のチェック
+           IF      SPA-NAI-T09-TCREYMD (WRK-SELNO)
+                                   <   SPA-NAI-T09-TUKEYMD (WRK-SELNO)      
+               MOVE    "1006"          TO  SPA-TIDCD
+               MOVE    IDX             TO  SPA-NAI-T09-SELNUM
+               GO  TO  410211-SELNUM-HENSYU-EXT
+         END-IF 
       *
           .
         410211-SELNUM-HENSYU-EXT.
@@ -614,7 +688,7 @@
            END-PERFORM
       *    選択項目があるか
            IF      WRK-RECE-MAX    =   SPA-GMN-T06-RECE-MAX
-               MOVE    "0004"          TO  SPA-ERRCD
+               MOVE    "0005"          TO  SPA-ERRCD
            ELSE
       *        選択項目がすべて一覧に追加できるか
                IF      WRK-RECE-MAX    >   WRK-CONS-LINE-MAX
@@ -665,6 +739,116 @@
            EXIT.
       *
       *****************************************************************
+      *    個人履歴表示
+      *****************************************************************
+       400-T07-SYORI-SEC           SECTION.
+      *
+      *??     IF      SPA-GMN-T06-SELNUM  =   ZERO
+      *??         GO  TO  400-T07-SYORI-EXT
+      *??     END-IF
+      *
+           INITIALIZE                      T07
+           MOVE    SPA-GMN-T09-TPTNUM (SPA-NAI-T09-SELNUM)
+                                           TO  T07-PTNUM
+           MOVE    SPA-GMN-T09-TNAME  (SPA-NAI-T09-SELNUM)
+                                           TO  T07-NAME
+           MOVE    SPA-GMN-T06-SRYYM       TO  T07-SRYYM
+           IF      SPA-GMN-T06-TEISYUTUSAKI1
+                                       =   "T"
+               MOVE    "社保"              TO  T07-TEISYUTUSAKI
+           ELSE
+               MOVE    "国保"              TO  T07-TEISYUTUSAKI
+           END-IF
+      *
+           MOVE    ZERO            TO  IDX
+           INITIALIZE                  ONRECE-B-REC
+           MOVE    SPA-HOSPNUM     TO  ONRECE-B-HOSPNUM
+           MOVE    SPA-NAI-T06-SRYYM-H
+                                   TO  ONRECE-B-SRYYM
+           MOVE    SPA-NAI-T09-RECE10-TSRYYM (SPA-NAI-T09-SELNUM)
+                                   TO  ONRECE-B-SRYYM-B
+           MOVE    SPA-NAI-T09-RECE10-TPTID (SPA-NAI-T09-SELNUM)
+                                   TO  ONRECE-B-PTID
+           IF      SPA-GMN-T06-TEISYUTUSAKI1
+                                      =   "T"
+               MOVE    "1"                 TO  ONRECE-B-TEISYUTUSAKI
+                                               ONRECE-B-XXTEISYUTUSAKI
+           ELSE
+               MOVE    "6"                 TO  ONRECE-B-TEISYUTUSAKI
+               MOVE    "2"                 TO  ONRECE-B-XXTEISYUTUSAKI
+           END-IF
+           MOVE    SPA-NAI-T09-RECE10-TNYUGAIKBN (SPA-NAI-T09-SELNUM)
+                                   TO  ONRECE-B-NYUGAIKBN
+      *
+           MOVE    "tbl_onrece_body"
+                                   TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
+           PERFORM 900-ONRECE-BODY-SELECT-SEC
+      *
+           PERFORM         UNTIL   FLG-ONRECE-B    =   1
+               ADD     1               TO  IDX
+               MOVE    IDX             TO  WRK-ZZ9
+               MOVE    WRK-ZZ9         TO  T07-TRENNUM (IDX)
+               MOVE    ONRECE-B-SKYYMD TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  T07-TSKYYMD (IDX)
+               MOVE    ONRECE-B-SCNT   TO  WRK-Z9
+               MOVE    WRK-Z9          TO  T07-TSCNT   (IDX)
+               MOVE    ONRECE-B-UKEYMD TO  WRK-SYMD
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  T07-TUKEYMD (IDX)
+               MOVE    ONRECE-B-UCNT   TO  WRK-ZZ9
+               MOVE    WRK-ZZ9         TO  T07-TUCNT   (IDX)
+               EVALUATE    ONRECE-B-NYUGAIKBN
+                   WHEN    "1"
+                       MOVE    "入"        TO  T07-TNYUGAIKBN (IDX)
+                   WHEN    "2"
+                       MOVE    "外"        TO  T07-TNYUGAIKBN (IDX)
+               END-EVALUATE
+               MOVE    ONRECE-B-RECESYUBETU
+                                       TO  T07-TRECESYUBETU   (IDX)
+               MOVE    ONRECE-B-HKNJANUM
+                                       TO  T07-THKNJANUM      (IDX)
+               STRING  ONRECE-B-KIGO   DELIMITED   BY  SPACE
+                       "　"            DELIMITED   BY  SIZE
+                       ONRECE-B-NUM    DELIMITED   BY  SPACE
+                                       INTO    T07-TKIGO (IDX)
+               END-STRING
+      * 
+               MOVE    IDX             TO  T07-LIST-COUNT
+      * 
+               MOVE    "tbl_onrece_body"
+                                       TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               PERFORM 900-ONRECE-BODY-FETCH-SEC
+           END-PERFORM
+      * 
+           MOVE    "tbl_onrece_body"
+                                   TO  MCP-TABLE
+           MOVE    "key3"          TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           IF      IDX             =   ZERO
+               GO  TO  400-T07-SYORI-EXT
+           END-IF
+      *
+           MOVE    "B01"                TO  MCP-WIDGET
+      *
+           MOVE    "T09"                TO  SPA-MOTOPG
+           MOVE    "T07"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+           .
+       400-T07-SYORI-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
@@ -677,8 +861,14 @@
            END-IF
       *
            IF      SPA-TIDCD       NOT =   SPACE
-               PERFORM 520-TIDSET-SEC
-               GO  TO  500-SET-SCREEN-EXT
+               EVALUATE    SPA-TIDCD
+                   WHEN    "1002"
+                       PERFORM 530-TID2SET-SEC
+                       GO  TO  500-SET-SCREEN-EXT
+                   WHEN    OTHER
+                       PERFORM 520-TIDSET-SEC
+                       GO  TO  500-SET-SCREEN-EXT
+               END-EVALUATE
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -833,7 +1023,7 @@
                WHEN    "0002"
                    MOVE    "選択番号が重複しています"  TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "違う患者番号を選択しないで下さい"
+                   MOVE    "複数の患者は、同時に選択できません。"
                                                        TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "これ以上データの追加はできません"
@@ -880,7 +1070,7 @@
       *
            EVALUATE    SPA-TIDCD
                WHEN    "1002"
-                   MOVE    "既に請求済ですが作成しますか"
+                   MOVE    "既に請求済ですが個別指示の対象としますか"
                                            TO  TID1-ID1MSG
            END-EVALUATE
       *
@@ -902,6 +1092,40 @@
        520-TIDSET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    確認メッセージ表示処理
+      *****************************************************************
+       530-TID2SET-SEC              SECTION.
+      *
+           MOVE    SPACE                TO  TID2
+           MOVE    SPA-TIDCD            TO  TID2-ID1CODE
+      *
+           EVALUATE    SPA-TIDCD
+               WHEN    "1002"
+                   MOVE    "既に請求済ですが作成しますか"
+                                            TO  TID2-ID1MSG
+           END-EVALUATE
+      *
+           MOVE    "F11:個人履歴"       TO  TID2-B11-LABEL
+           MOVE    "F12:作成する"       TO  TID2-B12-LABEL
+           MOVE    "blue"               TO  TID2-LABEL-STYLE
+           MOVE    "black"              TO  TID2-ID1MSG-STYLE
+      *
+           MOVE    "B01"                TO  MCP-WIDGET
+      *
+           MOVE    "T09"                TO  SPA-MOTOPG
+           MOVE    "TID2"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "TID2"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END              
+      *
+           .
+       530-TID2SET-EXT.
+           EXIT.
       *
       *****************************************************************
       *    和暦西暦変換編集処理
@@ -982,6 +1206,41 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *
            .
        900-PTINF-READ-N-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    明細ファイルSELECT処理
+      *****************************************************************
+       900-ONRECE-BODY-SELECT-SEC     SECTION.
+      *
+           MOVE    ONRECE-B-REC        TO  MCPDATA-REC
+      *
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               PERFORM 900-ONRECE-BODY-FETCH-SEC
+           ELSE
+               INITIALIZE                      ONRECE-B-REC
+               MOVE  1                     TO  FLG-ONRECE-B
+           END-IF
+           .
+       900-ONRECE-BODY-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    明細ファイルFETCH処理
+      *****************************************************************
+       900-ONRECE-BODY-FETCH-SEC      SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE  MCPDATA-REC           TO  ONRECE-B-REC
+               MOVE  ZERO                  TO  FLG-ONRECE-B
+           ELSE
+               INITIALIZE                      ONRECE-B-REC
+               MOVE  1                     TO  FLG-ONRECE-B
+           END-IF
+           .
+       900-ONRECE-BODY-FETCH-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢＳＥＬＥＣＴ処理

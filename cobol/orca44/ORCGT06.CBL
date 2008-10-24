@@ -109,7 +109,6 @@
            03  WRK-GMN-CUR         PIC 9(02).
            03  WRK-RECEERR         PIC X(200).
            03  WRK-TIDMSG          PIC X(200).
-           03  WRK-SRYYM-OLD       PIC 9(06).
            03  WRK-PAGE            PIC ZZZZZZZZZ9.
            03  WRK-Z9              PIC Z9.
            03  WRK-ZZ9             PIC ZZ9.
@@ -453,7 +452,14 @@
                WHEN    "TID1"
                    PERFORM 330-TID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
+               WHEN    "TID2"
+                   PERFORM 340-TID2-SET-SEC
+                   GO      TO      300-SCREEN-EXT
                WHEN    "T07"
+                   INITIALIZE              SPA-T01KYOUTU
+                   INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
+                                           SPA-NAI-T06-RECE-KOUMOKU
+                   MOVE    4               TO  SPA-GMN-T06-CUR
                    GO      TO      300-SCREEN-EXT
                WHEN    "T98"
                    PERFORM 350-T98-SET-SEC
@@ -548,6 +554,7 @@
       *
            INITIALIZE                  SPA-NAI-T06-KANRI-SELNUM
                                        SPA-NAI-T06-BODY-SELNUM
+                                       SPA-NAI-T06-SYORIFLG
       *
            INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
                                        SPA-NAI-T06-RECE-KOUMOKU
@@ -750,6 +757,12 @@
                END-IF
            END-IF
       *
+           IF      SPA-T01-SYORIFLG    =   ZERO    OR  9
+               MOVE    1                   TO  SPA-NAI-T06-SYORIFLG
+           ELSE
+               MOVE    ZERO                TO  SPA-NAI-T06-SYORIFLG
+           END-IF
+      *
            MOVE    1               TO  SPA-GMN-T06-CUR
       *
            INITIALIZE                  SPA-T01KYOUTU
@@ -901,26 +914,11 @@
            IF      SPA-TID1-FLG    =   "OK"
                EVALUATE    SPA-TIDCD
                    WHEN    "1005"
+                   WHEN    "1008"
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK-SYORI-SEC
                    WHEN    "1003"
                        PERFORM 460-CLEAR-SEC
-                   WHEN    "1002"
-      *                作成日のチェック
-                       IF      SPA-NAI-T09-TCREYMD (1)
-                                           <   SPA-NAI-T09-TUKEYMD (1)      
-                           MOVE    "1006"             TO  SPA-TIDCD
-                           MOVE    SPACE              TO  SPA-TID1-FLG
-                           GO  TO  330-TID1-SET-EXT
-                       ELSE 
-      *                    追加処理
-                           PERFORM 410411-TUIKA-HENSYU-SEC
-                           INITIALIZE          SPA-GMN-T06-RECE-KOUMOKU
-                                               SPA-NAI-T06-RECE-KOUMOKU
-                           MOVE    SPA-GMN-T06-RECE-MAX
-                                                TO  T06-RECE-LIST-ROW
-                           MOVE    4            TO  SPA-GMN-T06-CUR
-                       END-IF      
                    WHEN    "1006"
       *                追加処理
                        PERFORM 410411-TUIKA-HENSYU-SEC
@@ -932,6 +930,19 @@
                    WHEN    "1007"
       *                追加処理
                        PERFORM 440-SAKUJYO-SEC
+                   WHEN    "1009"
+                       EVALUATE    SPA-T01-WIDGET
+                           WHEN    "TEISYUTUSAKI1"
+                               MOVE    T06-TEISYUTUSAKI1
+                                       TO  SPA-GMN-T06-TEISYUTUSAKI1
+                           WHEN    "TEISYUTUSAKI2"
+                               MOVE    T06-TEISYUTUSAKI2
+                                       TO  SPA-GMN-T06-TEISYUTUSAKI2
+                           WHEN    "SRYYM_H"
+                               CONTINUE
+                       END-EVALUATE
+      *                管理情報編集処理
+                       PERFORM 3101-ONRECE-KANRI-HENSYU-SEC
                    WHEN    "2001"
       *                ジョブ管理チェック処理
                        PERFORM 4501-JOBKANRI-CHK-SEC
@@ -953,13 +964,70 @@
                    WHEN    "2007"
                        MOVE    "2003"          TO  SPA-TIDCD
                        GO  TO  330-TID1-SET-EXT
+                   WHEN    "1009"
+                       EVALUATE    SPA-T01-WIDGET
+                           WHEN    "SRYYM_H"
+                               MOVE    SPA-NAI-T06-SRYYM-OLD
+                                               TO  SPA-NAI-T06-SRYYM-H
+                               MOVE    SPA-GMN-T06-SRYYM-OLD
+                                               TO  SPA-GMN-T06-SRYYM-H
+                       END-EVALUATE
                END-EVALUATE
            END-IF
       *
            INITIALIZE                  SPA-T01KYOUTU
       *
+           INITIALIZE                  SPA-NAI-T06-SRYYM-OLD
+                                       SPA-GMN-T06-SRYYM-OLD
+      *
            .
        330-TID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（ＴＩＤ２）ＯＫ処理
+      *****************************************************************
+       340-TID2-SET-SEC            SECTION.
+      *
+           IF      SPA-TID1-FLG    =   "OK"
+               EVALUATE    SPA-TIDCD
+                   WHEN    "1002"
+      *                作成日のチェック
+                       IF      SPA-NAI-T09-TCREYMD (1)
+                                           <   SPA-NAI-T09-TUKEYMD (1)      
+                           MOVE    "1006"             TO  SPA-TIDCD
+                           MOVE    SPACE              TO  SPA-TID1-FLG
+                           GO  TO  340-TID2-SET-EXT
+                       ELSE 
+      *                    追加処理
+                           PERFORM 410411-TUIKA-HENSYU-SEC
+                           INITIALIZE          SPA-GMN-T06-RECE-KOUMOKU
+                                               SPA-NAI-T06-RECE-KOUMOKU
+                           MOVE    SPA-GMN-T06-RECE-MAX
+                                                TO  T06-RECE-LIST-ROW
+                           MOVE    4            TO  SPA-GMN-T06-CUR
+                       END-IF      
+               END-EVALUATE 
+           ELSE
+               IF      SPA-TID1-FLG    =   "NO"
+                   EVALUATE    SPA-TIDCD
+                       WHEN    "1002"
+      *                    個人履歴表示
+                           PERFORM 400-T07-SYORI-SEC
+                           MOVE    SPACE              TO  SPA-TID1-FLG
+                           GO  TO  340-TID2-SET-EXT
+                   END-EVALUATE 
+               END-IF
+           END-IF
+      *
+           INITIALIZE                  SPA-T01KYOUTU
+      *
+           INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-RECE-KOUMOKU
+      *
+           MOVE    4               TO  SPA-GMN-T06-CUR
+           .
+       340-TID2-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1091,10 +1159,12 @@
                MOVE    "0022"          TO  SPA-ERRCD
                GO  TO  400-TEISYUTUSAKI-EXT
            END-IF
-      *
-           IF      SPA-GMN-T06-RECE-MAX
-                                       >   ZERO
-               MOVE    "0011"              TO  SPA-ERRCD
+      *    未処理分があるときのチェック 
+           IF    ( SPA-NAI-T06-SYORIFLG
+                                       =   ZERO )
+           AND   ( SPA-GMN-T06-RECE-MAX
+                                       >   ZERO )
+               MOVE    "1009"          TO  SPA-TIDCD
                GO  TO  400-TEISYUTUSAKI-EXT
            END-IF 
       *
@@ -1149,15 +1219,11 @@
                MOVE    "0022"          TO  SPA-ERRCD
                GO  TO  410-SRYYM-H-CHK-EXT
            END-IF
-      *
-           IF      SPA-GMN-T06-RECE-MAX
-                                   >   ZERO
-               MOVE    "0011"          TO  SPA-ERRCD
-               GO  TO  410-SRYYM-H-CHK-EXT
-           END-IF
       *  
            MOVE    SPA-NAI-T06-SRYYM-H
-                                   TO  WRK-SRYYM-OLD
+                                   TO  SPA-NAI-T06-SRYYM-OLD
+           MOVE    SPA-GMN-T06-SRYYM-H
+                                   TO  SPA-GMN-T06-SRYYM-OLD
            MOVE    ZERO            TO  SPA-NAI-T06-SRYYM-H
       *
            MOVE    T06-SRYYM-H     TO  SPA-GMN-T06-SRYYM-H
@@ -1180,13 +1246,28 @@
                END-IF
            END-IF
       *
-           IF      SPA-NAI-T06-SRYYM-H
-                               NOT =   WRK-SRYYM-OLD
-      *        管理情報編集処理
-               PERFORM 3101-ONRECE-KANRI-HENSYU-SEC
+           IF      SPA-ERRCD       =   SPACE
+               IF      SPA-NAI-T06-SRYYM-H
+                                   NOT =   SPA-NAI-T06-SRYYM-OLD
+      *            未処理分があるときのチェック 
+                   IF    ( SPA-NAI-T06-SYORIFLG
+                                           =   ZERO )
+                   AND   ( SPA-GMN-T06-RECE-MAX
+                                           >   ZERO )
+                       MOVE    "1009"          TO  SPA-TIDCD
+                       GO  TO  410-SRYYM-H-CHK-EXT
+                   END-IF
+      *            管理情報編集処理
+                   PERFORM 3101-ONRECE-KANRI-HENSYU-SEC
+               END-IF
+           ELSE
+               MOVE    SPA-NAI-T06-SRYYM-OLD   TO  SPA-NAI-T06-SRYYM-H
+               MOVE    SPA-GMN-T06-SRYYM-OLD   TO  SPA-GMN-T06-SRYYM-H
            END-IF
       *
            IF      SPA-ERRCD       =   SPACE
+               INITIALIZE                  SPA-NAI-T06-SRYYM-OLD
+                                           SPA-GMN-T06-SRYYM-OLD
                MOVE    2               TO  SPA-GMN-T06-CUR
            END-IF
       *
@@ -1361,6 +1442,8 @@
       *
       *    患者番号不明のとき氏名から検索
            MOVE    ZERO                TO  IDX
+                                           IDY
+                                           IDZ
            INITIALIZE                      WRK-RECE10-REC
                                            SPA-T09-AREA
       *
@@ -1409,7 +1492,7 @@
                        MOVE    SPA-GMN-T06-NYUGAIKBN
                                                TO  RECE10-NYUGAIKBN
                    WHEN    OTHER
-                      MOVE    "%"             TO  RECE10-NYUGAIKBN
+                      MOVE    "%"              TO  RECE10-NYUGAIKBN
                END-EVALUATE
                MOVE    RECE10-REC          TO  MCPDATA-REC
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
@@ -1431,14 +1514,24 @@
                PERFORM         UNTIL       FLG-SEIKYU     =   1
                                OR          IDX            >=  20
                    MOVE    MCPDATA-REC         TO  RECE10-REC
-      *            返戻分は対象外
-                   IF      RECE10-HENREIYM =   "000000"
-                       ADD     1               TO  IDX
-                       PERFORM 42031-T09-HENSYU-SEC
-                       IF      IDX             =   1    
-                           MOVE    RECE10-REC      TO  WRK-RECE10-REC
+      *            月遅れ分、請求しないは対象外
+                   IF    ( RECE10-SKYKBN   NOT =   "0"             )
+                   AND   ( RECE10-SKYYM    =   "000000"
+                                           OR  SPA-NAI-T06-SRYYM-H )
+      *                返戻分は対象外
+                       IF      RECE10-HENREIYM =   "000000"
+                           ADD     1               TO  IDX
+                           PERFORM 42031-T09-HENSYU-SEC
+                           IF      IDX             =   1    
+                               MOVE    RECE10-REC  TO  WRK-RECE10-REC
+                           END-IF
+                       ELSE
+                           ADD     1               TO  IDY
                        END-IF
+                   ELSE
+                       ADD     1               TO  IDZ
                    END-IF
+                   
       *
                    MOVE    "tbl_seikyu"        TO  MCP-TABLE
                    MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -1460,7 +1553,21 @@
       *
            EVALUATE    IDX
                WHEN    ZERO
-                   MOVE    "0007"          TO  SPA-ERRCD
+                   IF    ( IDY             =   0 )
+                   AND   ( IDZ             =   0 )
+                       MOVE    "0007"          TO  SPA-ERRCD
+                   ELSE 
+                       IF    ( IDY             >   0 )
+                       AND   ( IDZ             >   0 )
+                           MOVE    "0015"          TO  SPA-ERRCD
+                       ELSE
+                           IF    ( IDY             >   0 )
+                               MOVE    "0014"          TO  SPA-ERRCD
+                           ELSE
+                               MOVE    "0016"          TO  SPA-ERRCD
+                           END-IF 
+                       END-IF 
+                   END-IF 
                WHEN    1
                    MOVE    WRK-RECE10-REC  TO  RECE10-REC
                    PERFORM 42031-SEIKYU-CHK-SEC
@@ -1832,19 +1939,30 @@
            END-IF
       *
            MOVE    ZERO                TO  IDX
+                                           IDY
+                                           IDZ
            INITIALIZE                      WRK-RECE10-REC
                                            SPA-T09-AREA
       *
            PERFORM         UNTIL       FLG-SEIKYU     =   1
                            OR          IDX            >=  20
                MOVE    MCPDATA-REC         TO  RECE10-REC
-      *        返戻分は対象外
-               IF      RECE10-HENREIYM =   "000000"
-                   ADD     1               TO  IDX
-                   PERFORM 42031-T09-HENSYU-SEC
-                   IF      IDX             =   1    
-                       MOVE    RECE10-REC      TO  WRK-RECE10-REC
+      *        月遅れ分、請求しないは対象外
+               IF    ( RECE10-SKYKBN   NOT =   "0"             )
+               AND   ( RECE10-SKYYM    =   "000000"
+                                       OR  SPA-NAI-T06-SRYYM-H )
+      *            返戻分は対象外
+                   IF      RECE10-HENREIYM =   "000000"
+                       ADD     1               TO  IDX
+                       PERFORM 42031-T09-HENSYU-SEC
+                       IF      IDX             =   1    
+                           MOVE    RECE10-REC  TO  WRK-RECE10-REC
+                       END-IF
+                   ELSE
+                       ADD     1               TO  IDY
                    END-IF
+               ELSE
+                   ADD     1               TO  IDZ
                END-IF
       *
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
@@ -1858,10 +1976,28 @@
       *
            EVALUATE    IDX
                WHEN    ZERO
-                   MOVE    "0007"          TO  SPA-ERRCD
+                   IF    ( IDY             =   0 )
+                   AND   ( IDZ             =   0 )
+                       MOVE    "0007"          TO  SPA-ERRCD
+                   ELSE 
+                       IF    ( IDY             >   0 )
+                       AND   ( IDZ             >   0 )
+                           MOVE    "0015"          TO  SPA-ERRCD
+                       ELSE
+                           IF    ( IDY             >   0 )
+                               MOVE    "0014"          TO  SPA-ERRCD
+                           ELSE
+                               MOVE    "0016"          TO  SPA-ERRCD
+                           END-IF 
+                       END-IF 
+                   END-IF 
                WHEN    1
                    MOVE    WRK-RECE10-REC   TO  RECE10-REC
                    PERFORM 42031-SEIKYU-CHK-SEC
+                   IF      SPA-TIDCD       =   "1002"
+                       MOVE    RECE10-NYUGAIKBN
+                                           TO  SPA-GMN-T06-NYUGAIKBN
+                   END-IF  
                    INITIALIZE              SPA-T09-AREA
                WHEN    OTHER
                    PERFORM 42032-T09-HENSYU-SEC
@@ -1940,8 +2076,8 @@
       *    公費単独で生保又は中国残留邦人等のとき負担者番号、
       *    受給者番号をセット
            IF    ( RECE10-HKNNUM       =   SPACE              )
-           AND   ( RECE10-KOHNUM (1)   =   "012"   OR  "025"  )
-           AND   ( RECE10-KOHNUM (2)   =   SPACE              )
+             IF    ( RECE10-KOHNUM (1)   =   "012"   OR  "025"  )
+             AND   ( RECE10-KOHNUM (2)   =   SPACE              )
                INITIALIZE                  PTKOHINF-REC
                MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
                MOVE    RECE10-PTID     TO  PTKOH-PTID
@@ -1985,8 +2121,18 @@
                                                DELIMITED   BY  SPACE
                                        INTO    SPA-GMN-T09-TKIGO  (IDX)
                END-STRING
-               MOVE    SPACE           TO  SPA-NAI-T09-RECE10-TKIGO(IDX)
-                                           SPA-NAI-T09-RECE10-TNUM (IDX)
+      **       MOVE    SPACE           TO  SPA-NAI-T09-RECE10-TKIGO(IDX)
+      **                                   SPA-NAI-T09-RECE10-TNUM (IDX)
+             ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
+               MOVE    RECE10-PTID     TO  PTKOH-PTID
+               MOVE    RECE10-KOHID(1) TO  PTKOH-KOHID
+               MOVE    PTKOHINF-REC    TO  MCPDATA-REC
+               PERFORM 900-PTKOHINF-READ-SEC
+               MOVE    PTKOH-FTNJANUM  TO  SPA-NAI-T09-RECE10-TKIGO(IDX)
+               MOVE    PTKOH-JKYSNUM   TO  SPA-NAI-T09-RECE10-TNUM (IDX)
+             END-IF
            ELSE
                MOVE    RECE10-KIGO     TO  SPA-NAI-T09-RECE10-TKIGO(IDX)
                MOVE    RECE10-NUM      TO  SPA-NAI-T09-RECE10-TNUM (IDX)
@@ -2036,21 +2182,45 @@
            MOVE    RECE10-PTID     TO  ONRECE-B-PTID
            MOVE    RECE10-NYUGAIKBN
                                    TO  ONRECE-B-NYUGAIKBN
+           MOVE    RECE10-RECESYUBETU
+                                   TO  ONRECE-B-RECESYUBETU
+           MOVE    SPA-GMN-T09-THKNJANUM (IDX)
+                                   TO  ONRECE-B-HKNJANUM
            MOVE    "1"             TO  ONRECE-B-KAKUTEI-KBN
       *
            MOVE    "tbl_onrece_body"
                                    TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "key5"          TO  MCP-PATHNAME
            PERFORM 900-ONRECE-BODY-SELECT-SEC
+           PERFORM             UNTIL   FLG-ONRECE-B    =   1
+                               OR       SPA-NAI-T09-TSEIKYU (IDX)
+                                                       =   "1"
+               IF      RECE10-HKNNUM   NOT =   SPACE
+                   IF    ( RECE10-KIGO     =   ONRECE-B-KIGO )
+                   AND   ( RECE10-NUM      =   ONRECE-B-NUM  )
+                       MOVE    "1"     TO  SPA-NAI-T09-TSEIKYU (IDX)
+                   END-IF
+               ELSE
+                   IF    ( SPA-NAI-T09-RECE10-TKIGO(IDX)
+                                           =   ONRECE-B-FTNNUM (1) )
+                   AND   ( SPA-NAI-T09-RECE10-TNUM (IDX)
+                                           =   ONRECE-B-JKYNUM (1) )
+                       MOVE    "1"     TO  SPA-NAI-T09-TSEIKYU (IDX)
+                   END-IF
+               END-IF
+      * 
+               MOVE    "tbl_onrece_body"
+                                       TO  MCP-TABLE
+               MOVE    "key5"          TO  MCP-PATHNAME
+               PERFORM 900-ONRECE-BODY-FETCH-SEC
+           END-PERFORM
            MOVE    "tbl_onrece_body"
                                    TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "key5"          TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
-           IF      FLG-ONRECE-B    =   ZERO
-               MOVE    "1"             TO  SPA-NAI-T09-TSEIKYU (IDX)
-           END-IF
       *
       *    最新の受付日
+      *    請求管理と同じ条件のデータの受付日を取得
            INITIALIZE                  ONRECE-B-REC
            MOVE    SPA-HOSPNUM     TO  ONRECE-B-HOSPNUM
            MOVE    RECE10-TEISYUTUSAKI
@@ -2061,19 +2231,72 @@
            MOVE    RECE10-PTID     TO  ONRECE-B-PTID
            MOVE    RECE10-NYUGAIKBN
                                    TO  ONRECE-B-NYUGAIKBN
+           MOVE    RECE10-RECESYUBETU
+                                   TO  ONRECE-B-RECESYUBETU
+           MOVE    SPA-GMN-T09-THKNJANUM (IDX)
+                                   TO  ONRECE-B-HKNJANUM
            MOVE    "%"             TO  ONRECE-B-KAKUTEI-KBN
       *
            MOVE    "tbl_onrece_body"
                                    TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "key5"          TO  MCP-PATHNAME
            PERFORM 900-ONRECE-BODY-SELECT-SEC
+           PERFORM             UNTIL   FLG-ONRECE-B    =   1
+                               OR      SPA-NAI-T09-TUKEYMD (IDX)
+                                                       >   ZERO
+               IF      RECE10-HKNNUM   NOT =   SPACE
+                   IF    ( RECE10-KIGO     =   ONRECE-B-KIGO )
+                   AND   ( RECE10-NUM      =   ONRECE-B-NUM  )
+                       MOVE    ONRECE-B-UKEYMD
+                                           TO  SPA-NAI-T09-TUKEYMD (IDX)
+                   END-IF
+               ELSE
+                   IF    ( SPA-NAI-T09-RECE10-TKIGO(IDX)
+                                           =   ONRECE-B-FTNNUM (1) )
+                   AND   ( SPA-NAI-T09-RECE10-TNUM (IDX)
+                                           =   ONRECE-B-JKYNUM (1) )
+                       MOVE    ONRECE-B-UKEYMD
+                                           TO  SPA-NAI-T09-TUKEYMD (IDX)
+                   END-IF
+               END-IF
+      * 
+               MOVE    "tbl_onrece_body"
+                                       TO  MCP-TABLE
+               MOVE    "key5"          TO  MCP-PATHNAME
+               PERFORM 900-ONRECE-BODY-FETCH-SEC
+           END-PERFORM
            MOVE    "tbl_onrece_body"
                                    TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
+           MOVE    "key5"          TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
-           IF      FLG-ONRECE-B    =   ZERO
-               MOVE    ONRECE-B-UKEYMD TO  SPA-NAI-T09-TUKEYMD (IDX)
-           END-IF
+      *
+      *    請求管理と同じ条件の請求済データがない場合最新の受付日を取得
+           IF      SPA-NAI-T09-TUKEYMD (IDX)
+                                   =   ZERO
+               INITIALIZE                  ONRECE-B-REC
+               MOVE    SPA-HOSPNUM     TO  ONRECE-B-HOSPNUM
+               MOVE    RECE10-TEISYUTUSAKI
+                                       TO  ONRECE-B-TEISYUTUSAKI
+               MOVE    SPA-NAI-T06-SRYYM-H
+                                       TO  ONRECE-B-SRYYM
+               MOVE    RECE10-SRYYM    TO  ONRECE-B-SRYYM-B
+               MOVE    RECE10-PTID     TO  ONRECE-B-PTID
+               MOVE    RECE10-NYUGAIKBN
+                                       TO  ONRECE-B-NYUGAIKBN
+               MOVE    "%"             TO  ONRECE-B-KAKUTEI-KBN
+      *
+               MOVE    "tbl_onrece_body"
+                                       TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-ONRECE-BODY-SELECT-SEC
+               MOVE    "tbl_onrece_body"
+                                       TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+               IF      FLG-ONRECE-B    =   ZERO
+                   MOVE    ONRECE-B-UKEYMD TO  SPA-NAI-T09-TUKEYMD (IDX)
+               END-IF
+           END-IF 
       *
            MOVE    IDX             TO  SPA-GMN-T09-MAX
            .
@@ -2259,6 +2482,14 @@
       *    入力中のチェック 
            IF      SPA-NAI-T06-PTID    >   ZERO
                MOVE    "1005"          TO  SPA-TIDCD
+               GO  TO  210-BACK-EXT
+           END-IF
+      *    未処理分があるときのチェック 
+           IF    ( SPA-NAI-T06-SYORIFLG
+                                       =   ZERO )
+           AND   ( SPA-GMN-T06-RECE-MAX
+                                       >   ZERO )
+               MOVE    "1008"          TO  SPA-TIDCD
                GO  TO  210-BACK-EXT
            END-IF
       *    
@@ -3125,14 +3356,15 @@
            .
        4901-JOB-ERRSET-EXT.
            EXIT.
+      *
       *****************************************************************
       *    個人履歴表示
       *****************************************************************
        400-T07-SYORI-SEC           SECTION.
       *
-           IF      SPA-GMN-T06-SELNUM  =   ZERO
-               GO  TO  400-T07-SYORI-EXT
-           END-IF
+      *??     IF      SPA-GMN-T06-SELNUM  =   ZERO
+      *??         GO  TO  400-T07-SYORI-EXT
+      *??     END-IF
       *
            INITIALIZE                  T07
            MOVE    SPA-GMN-T06-PTNUM       TO  T07-PTNUM
@@ -3333,8 +3565,14 @@
            END-IF
       *
            IF      SPA-TIDCD       NOT =   SPACE
-               PERFORM 520-TIDSET-SEC
-               GO  TO  500-SET-SCREEN-EXT
+               EVALUATE    SPA-TIDCD
+                   WHEN    "1002"
+                       PERFORM 530-TID2SET-SEC
+                       GO  TO  500-SET-SCREEN-EXT
+                   WHEN    OTHER
+                       PERFORM 520-TIDSET-SEC
+                       GO  TO  500-SET-SCREEN-EXT
+               END-EVALUATE
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -3594,25 +3832,32 @@
                WHEN    "0006"
                    MOVE    "診療年月入力エラー"        TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "対象の請求管理が存在しません"
+                   MOVE    "対象の請求データがありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0008"
-                   MOVE    "対象一覧に存在します"      TO  SPA-ERRMSG
+                   MOVE    "個別指示一覧に選択済です"  TO  SPA-ERRMSG
                WHEN    "0009"
                    MOVE    "診療年月入力エラー"        TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "対象のレセ電データが存在しません"
-                                                       TO  SPA-ERRMSG
-               WHEN    "0011"
-                   MOVE
-                  "個別指示一覧にデータが選択してあるので変更できません"
+                   MOVE    "対象のレセ電データがありません"
                                                        TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE
-                      "月遅れ分の診療年月の入力エラーです"
+                   "請求する診療年月より未来の診療年月が入力されました"
                                                        TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "請求年月日入力エラー"      TO  SPA-ERRMSG
+               WHEN    "0014"
+                   MOVE    "対象の請求管理は返戻年月が行なわれています"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0015"
+                   MOVE
+            "対象の請求管理は返戻年月、月遅れ等の設定が行なわれています"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0016"
+                   MOVE
+                     "対象の請求管理は月遅れ等の設定が行なわれています"
+                                                       TO  SPA-ERRMSG
                WHEN    "0022"
                    MOVE    "項目の入力途中です"        TO  SPA-ERRMSG
                WHEN    "0023"
@@ -3665,16 +3910,14 @@
            EXIT.
       *
       *****************************************************************
-      *    エラーメッセージ表示理
+      *    確認画面１表示処理
       *****************************************************************
        520-TIDSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  WRK-TIDMSG
+                                           SPA-T01-WIDGET
       *
            EVALUATE    SPA-TIDCD
-               WHEN    "1002"
-                   MOVE    "既に請求済ですが作成しますか"
-                                                         TO  WRK-TIDMSG
                WHEN    "1003"
                    MOVE    "入力をすべてクリアします"    TO  WRK-TIDMSG
                WHEN    "1004"
@@ -3687,6 +3930,13 @@
                WHEN    "1007"
                    MOVE    "選択された項目を削除しますか？"
                                        TO  WRK-TIDMSG
+               WHEN    "1008"
+                   MOVE    "未処理データがありますが終了しますか"
+                                       TO  WRK-TIDMSG
+               WHEN    "1009"
+                   MOVE    "未処理データがありますが変更しますか"
+                                       TO  WRK-TIDMSG
+                   MOVE    MCP-WIDGET  TO  SPA-T01-WIDGET
                WHEN    "2001"
                    MOVE    "媒体をドライブにセットして下さい"
                                        TO  WRK-TIDMSG
@@ -3742,6 +3992,44 @@
            .
        520-TIDSET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    確認メッセージ表示処理
+      *****************************************************************
+       530-TID2SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TIDMSG
+      *
+           MOVE    SPACE                TO  TID2
+           MOVE    SPA-TIDCD            TO  TID2-ID1CODE
+      *
+           EVALUATE    SPA-TIDCD
+               WHEN    "1002"
+                   MOVE    "既に請求済ですが個別指示の対象としますか"
+                                            TO  TID2-ID1MSG
+           END-EVALUATE
+      *
+           MOVE    "F11:個人履歴"       TO  TID2-B11-LABEL
+           MOVE    "F12:作成する"       TO  TID2-B12-LABEL
+           MOVE    "blue"               TO  TID2-LABEL-STYLE
+           MOVE    "black"              TO  TID2-ID1MSG-STYLE
+      *
+           MOVE    "B01"                TO  MCP-WIDGET
+      *
+           MOVE    "T06"                TO  SPA-MOTOPG
+           MOVE    "TID2"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "TID2"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END              
+      *
+           .
+       530-TID2SET-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    管理ファイルＳＥＬＥＣＴ処理

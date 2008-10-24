@@ -101,9 +101,13 @@
                        09  SPA-NAI-T06-SRYYM-H     PIC 9(06).
                        09  SPA-NAI-T06-SKYYMD-H    PIC 9(08).
       *
+                       09  SPA-NAI-T06-SRYYM-OLD   PIC 9(06).
+                       09  SPA-GMN-T06-SRYYM-OLD   PIC X(06).
+      *
                        09  SPA-NAI-T06-KANRI-SELNUM
                                                    PIC 9(03).                   
-                       09  SPA-NAI-T06-BODY-SELNUM PIC 9(04).                   
+                       09  SPA-NAI-T06-BODY-SELNUM PIC 9(04).
+                       09  SPA-NAI-T06-SYORIFLG    PIC 9(01).                   
       *
                        09  SPA-NAI-T06-RECE-KOUMOKU.
                            11  SPA-NAI-T06-SELNUM  PIC 9(04).                   

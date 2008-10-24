@@ -95,8 +95,8 @@
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN      OTHER
-                   PERFORM 210-BACK
+               WHEN     "PUTG"           ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
            END-EVALUATE
       *
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -113,11 +113,26 @@
            EXIT.
       *
       *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        戻る
+               WHEN    "CLICKED"       ALSO    "B01"
+                   PERFORM 210-BACK
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る処理
       *****************************************************************
        210-BACK                    SECTION.
       *   
-           MOVE    "T06"               TO  SPA-SAKIPG
+           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
            MOVE    "T07"               TO  SPA-MOTOPG
       *
            MOVE   "JOIN"               TO  MCP-PUTTYPE

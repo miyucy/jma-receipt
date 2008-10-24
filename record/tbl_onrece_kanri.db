@@ -53,6 +53,7 @@ path    key1            {
                     AND	SRYYM		= :SRYYM
                     AND	UCNT		= :UCNT
                     AND	SCNT		= :SCNT
+                    AND	RENNUM		= 0
                 ;
         };
 };
@@ -65,6 +66,7 @@ path    key2            {
                 WHERE	HOSPNUM		= :HOSPNUM
                     AND	TEISYUTUSAKI	= :TEISYUTUSAKI
                     AND	SRYYM		= :SRYYM
+                    AND	RENNUM		= 0
                 ;
         };
 };
@@ -76,6 +78,7 @@ path    key3            {
                 FROM tbl_onrece_kanri
                 WHERE	HOSPNUM		= :HOSPNUM
                     AND	SRYYM		= :SRYYM
+                    AND	RENNUM		= 0
                 ;
         };
 };
@@ -89,7 +92,7 @@ path    key4            {
                     AND	TEISYUTUSAKI	= :TEISYUTUSAKI
                     AND	SRYYM		= :SRYYM
                     AND	RENNUM		= 0
-                    ORDER BY SYORIYMD
+                    ORDER BY SYORIYMD,UCNT DESC
                 ;
         };
 };

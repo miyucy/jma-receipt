@@ -28,17 +28,17 @@ tbl_onrece_body   {
 	HOJOKBN			char(1);
 	TEKSTYMD        	char(8);
 	H_TTL_TEN		number(8);
-	FTNNUM_1		varchar(40);
-	JKYNUM_1		varchar(40);
+	FTNNUM_1		varchar(8);
+	JKYNUM_1		varchar(7);
 	K_TTL_TEN_1		number(8);
-	FTNNUM_2		varchar(40);
-	JKYNUM_2		varchar(40);
+	FTNNUM_2		varchar(8);
+	JKYNUM_2		varchar(7);
 	K_TTL_TEN_2		number(8);
-	FTNNUM_3		varchar(40);
-	JKYNUM_3		varchar(40);
+	FTNNUM_3		varchar(8);
+	JKYNUM_3		varchar(7);
 	K_TTL_TEN_3		number(8);
-	FTNNUM_4		varchar(40);
-	JKYNUM_4		varchar(40);
+	FTNNUM_4		varchar(8);
+	JKYNUM_4		varchar(7);
 	K_TTL_TEN_4		number(8);
 	KAKUTEI_KBN		char(1);
 	ERR_KBN			char(2);
@@ -111,6 +111,7 @@ path    key2            {
                     AND	SRYYM_B		= :SRYYM_B
                     AND	PTID		= :PTID 
                     AND	KAKUTEI_KBN	like :KAKUTEI_KBN
+                    AND	RENNUM		= 0
 		ORDER	BY	SYORIYMD DESC
                 ;
         };
@@ -128,7 +129,8 @@ path    key3            {
                     AND	NYUGAIKBN	= :NYUGAIKBN
                     AND	SRYYM_B		= :SRYYM_B
                     AND	PTID		= :PTID 
-		ORDER	BY	SYORIYMD DESC
+                    AND	RENNUM		= 0
+		ORDER	BY	SYORIYMD DESC,UCNT DESC
                 ;
         };
 };
@@ -145,6 +147,26 @@ path    key4            {
                     AND	SCNT		= :SCNT
                     AND	RENNUM		= :RENNUM
 		ORDER	BY	RECEIPT_NO
+                ;
+        };
+};
+
+path    key5            {
+        DBSELECT        {
+                DECLARE tbl_onrece_body_key5_csr CURSOR FOR
+                SELECT *
+                FROM tbl_onrece_body
+                WHERE	HOSPNUM		= :HOSPNUM
+                    AND	TEISYUTUSAKI	= :TEISYUTUSAKI
+                    AND	SRYYM		= :SRYYM
+                    AND	NYUGAIKBN	= :NYUGAIKBN
+                    AND	SRYYM_B		= :SRYYM_B
+                    AND	PTID		= :PTID 
+                    AND	RECESYUBETU     = :RECESYUBETU
+                    AND	HKNJANUM	= :HKNJANUM
+                    AND	KAKUTEI_KBN	like :KAKUTEI_KBN
+                    AND	RENNUM		= 0
+		ORDER	BY	SYORIYMD DESC
                 ;
         };
 };

@@ -5446,6 +5446,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPACE                TO  TID2
            MOVE    SPA-TIDCD            TO  TID2-ID1CODE
            MOVE    WRK-TIDMSG           TO  TID2-ID1MSG
+           MOVE    "F11:°õºþ¤·¤Ê¤¤"     TO  TID2-B11-LABEL
+           MOVE    "F12:°õºþ¤¹¤ë"       TO  TID2-B12-LABEL
       *
            EVALUATE    SPA-TIDCD
                WHEN    "1010"
@@ -5460,9 +5462,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1023"
                WHEN    "1024"
                WHEN    "1025"
-      ***             IF      FLG-RECEDEN-CHK      =   1
-      ***                 MOVE    "red"            TO  TID2-ID1MSG-STYLE
-      ***             END-IF
+                   IF      FLG-RECEDEN-CHK      =   1
+                       MOVE    "red"            TO  TID2-ID1MSG-STYLE
+                   ELSE
+                       MOVE    "black"          TO  TID2-ID1MSG-STYLE
+                   END-IF
                    MOVE    "blue"               TO  TID2-LABEL-STYLE
                    IF      SPA-GMN-PRTKBN       =   "2"
                        MOVE    "¡ÚÅÀ¸¡ÍÑ¡Û"         TO  TID2-LABEL

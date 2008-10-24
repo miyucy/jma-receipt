@@ -56,8 +56,8 @@
            03  ONRECE-B-H-TTL-TEN  PIC 9(8).
            03  ONRECE-B-KO-AREA.
               05  ONRECE-B-KO-A        OCCURS  4.
-                07  ONRECE-B-FTNNUM    PIC X(40).
-                07  ONRECE-B-JKYNUM    PIC X(40).
+                07  ONRECE-B-FTNNUM    PIC X(8).
+                07  ONRECE-B-JKYNUM    PIC X(7).
                 07  ONRECE-B-K-TTL-TEN PIC 9(8).
            03  ONRECE-B-KAKUTEI-KBN
                                    PIC X(1).

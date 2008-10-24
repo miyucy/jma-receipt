@@ -1621,6 +1621,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPACE                TO  TID2
            MOVE    SPA-TIDCD            TO  TID2-ID1CODE
            MOVE    WRK-TIDMSG           TO  TID2-ID1MSG
+           MOVE    "F11:°õºþ¤·¤Ê¤¤"     TO  TID2-B11-LABEL
+           MOVE    "F12:°õºþ¤¹¤ë"       TO  TID2-B12-LABEL
+           MOVE    "blue"               TO  TID2-LABEL-STYLE
+           MOVE    "black"              TO  TID2-ID1MSG-STYLE
+      *
            MOVE    "B12"                TO  MCP-WIDGET
       *
            MOVE    "T02"                TO  SPA-MOTOPG

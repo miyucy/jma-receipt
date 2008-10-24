@@ -118,6 +118,7 @@
            03  WRK-CSVERR              PIC X(200). 
            03  WRK-ERRMSG              PIC X(300).
            03  WRK-MCP-RC              PIC 9(9).
+           03  WRK-HKNJANUM            PIC X(08).
       *
            03  WRK-POINT-AREA.
                05  WRK-PO-ST           PIC 9(04).
@@ -1106,7 +1107,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            END-IF
                        WHEN    9
                            MOVE PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                               TO  WRK-HKNJANUM
+                           PERFORM VARYING IDE FROM    1   BY  1
+                                   UNTIL   IDE >       8
+                               IF      WRK-HKNJANUM (IDE:1)
+                                                   NOT =   SPACE
+                                   MOVE    WRK-HKNJANUM (IDE:)  
                                                TO  TBL-B-HKNJANUM(IDZZ)
+                                   MOVE    8   TO  IDE
+                               END-IF
+                           END-PERFORM
                        WHEN   10
                            MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  TBL-B-KIGO(IDZZ)
