@@ -622,13 +622,6 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
-           IF    (SPA-Y01-YYKYMDS  NUMERIC  )  AND
-                 (SPA-Y01-YYKYMDS  NOT =   SPACE )  AND
-                 (SPA-Y01-YYKYMDS  NOT =   ZERO  )
-               MOVE    SPA-Y01-YYKYMDS     TO  WRK-SYSYMD
-           ELSE
-               MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
-           END-IF
            INITIALIZE              SPA-Y01-AREA
       *
       *    ½é´üÉ½¼¨¾ðÊó
@@ -636,8 +629,8 @@
            MOVE    SPA-HOSPNUM         TO  SYS-1045-HOSPNUM
            MOVE    "1045"              TO  SYS-1045-KANRICD
            MOVE    "*"                 TO  SYS-1045-KBNCD
-           MOVE    WRK-SYSYMD          TO  SYS-1045-STYUKYMD
-           MOVE    WRK-SYSYMD          TO  SYS-1045-EDYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1045-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1045-EDYUKYMD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
            MOVE    SYS-1045-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -676,8 +669,8 @@
       *    ¿ÇÎÅÆâÍÆ¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
            MOVE    SPACE               TO  SYS-1012-REC
            MOVE    "1012"              TO  SYS-1012-KANRICD
-           MOVE    WRK-SYSYMD          TO  SYS-1012-STYUKYMD
-           MOVE    WRK-SYSYMD          TO  SYS-1012-EDYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1012-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1012-EDYUKYMD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
            MOVE    SPA-HOSPNUM         TO  SYS-1012-HOSPNUM
            MOVE    SYS-1012-REC        TO  MCPDATA-REC
@@ -732,8 +725,8 @@
       *    ¿ÇÎÅ²Ê
            MOVE    SPACE               TO  SYS-1005-KEY
            MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    WRK-SYSYMD          TO  SYS-1005-STYUKYMD
-           MOVE    WRK-SYSYMD          TO  SYS-1005-EDYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1005-EDYUKYMD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
@@ -778,8 +771,8 @@
       *    ¿¦°÷¾ðÊó¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
            MOVE    SPACE               TO  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
-           MOVE    WRK-SYSYMD          TO  SYS-1010-STYUKYMD
-           MOVE    WRK-SYSYMD          TO  SYS-1010-EDYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
@@ -858,8 +851,8 @@
            MOVE    SPACE               TO  SYS-0051-REC
            INITIALIZE                  SYS-0051-REC
            MOVE    "0051"              TO  SYS-0051-KANRICD
-           MOVE    WRK-SYSYMD          TO  SYS-0051-STYUKYMD
-           MOVE    WRK-SYSYMD          TO  SYS-0051-EDYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-0051-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-0051-EDYUKYMD
       *
            MOVE    SPA-HOSPNUM         TO  SYS-0051-HOSPNUM
            MOVE    SYS-0051-REC        TO  MCPDATA-REC
@@ -909,8 +902,8 @@
            MOVE    SPACE               TO  SYS-1028-REC
            INITIALIZE                  SYS-1028-REC
            MOVE    "1028"              TO  SYS-1028-KANRICD
-           MOVE    WRK-SYSYMD          TO  SYS-1028-STYUKYMD
-           MOVE    WRK-SYSYMD          TO  SYS-1028-EDYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1028-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1028-EDYUKYMD
       *
            MOVE    SPA-HOSPNUM         TO  SYS-1028-HOSPNUM
            MOVE    SYS-1028-REC        TO  MCPDATA-REC
@@ -967,6 +960,25 @@
                MOVE    SPA-GMN-YYKKBNLST (SPA-YYKKBN-HYOJI)
                                            TO  SPA-GMN-YYKKBN-G
            END-IF
+      *
+           IF    (SPA-Y01-YYKYMDS  NUMERIC  )  AND
+                 (SPA-Y01-YYKYMDS  NOT =   SPACE )  AND
+                 (SPA-Y01-YYKYMDS  NOT =   ZERO  )
+               MOVE    SPA-Y01-YYKYMDS     TO  WRK-SYSYMD
+           ELSE
+               MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
+           END-IF
+      *    Í½ÌóÆüÊÔ½¸
+           PERFORM 3101-YYKYMD-HENSYU-SEC
+      *
+           .
+       310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Í½ÌóÆü¤«¤é¤ÎÊÔ½¸½èÍý
+      *****************************************************************
+       3101-YYKYMD-HENSYU-SEC         SECTION.
       *
            MOVE    "21"                TO  LNK-DAY2-IRAI
            MOVE    WRK-SYSYMD          TO  LNK-DAY2-YMD
@@ -1054,9 +1066,8 @@
            MOVE    ZERO             TO  SPA-SEL-TIME
            PERFORM 4001-KNJICHI-SEC
       *
-      *
            .
-       31O-SPASET-EXT.
+       3101-YYKYMD-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1497,7 +1508,9 @@
                END-IF
            END-IF
       *
-           MOVE    3                   TO  SPA-GMN-CUR
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    3                   TO  SPA-GMN-CUR
+           END-IF
            .
        41012-DRNAME-EXT.
            EXIT.
@@ -1566,8 +1579,8 @@
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    "1"                 TO  SYS-1010-KBNCD(1:1)
            MOVE    SPA-GMN-DRCD        TO  SYS-1010-KBNCD(2:4)
-           MOVE    ORCSDR-SYSYMD       TO  SYS-1010-STYUKYMD
-           MOVE    ORCSDR-SYSYMD       TO  SYS-1010-EDYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
       *
       *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
@@ -1607,6 +1620,8 @@
                    ADD     1               TO  SPA-DRCD-MAX
                END-IF
                MOVE    SPA-GMN-DRNAME      TO  SPA-GMN-DRCDLST
+                                                      (SPA-DRCD-MAX)
+               MOVE    WRK-NAI-DR-SEMON    TO  SPA-NAI-DR-SEMON
                                                       (SPA-DRCD-MAX)
                MOVE    1                   TO  FLG-HENFLG
            END-IF
@@ -2252,15 +2267,12 @@
       *    Í½Ìó´µ¼Ô°ìÍ÷ºÆÊÔ½¸
            PERFORM 4001-KNJICHI-SEC
       *
-      *
       *    Í½Ìó½èÍýÃæ¤Ç¤Ê¤¯¡¢ÁªÂò¿ô¤¬¤¢¤ë»þ¡¢ÁªÂòÈÖ¹æ¤Ø
            IF      SPA-YYK-SYORI       =   ZERO
-               IF      SPA-GMN-MAX      >   ZERO
-                   MOVE    12               TO  SPA-GMN-CUR
+               IF      SPA-GMN-MAX         >   ZERO
+                   MOVE    12              TO  SPA-GMN-CUR
                ELSE
-      ***********  IF      SPA-GMN-CUR      =   12
-                       MOVE    3            TO  SPA-GMN-CUR
-      ***********  END-IF
+                   MOVE    3               TO  SPA-GMN-CUR
                END-IF
            ELSE
                MOVE    5               TO  SPA-GMN-CUR
@@ -3179,6 +3191,7 @@
       *    Í½ÌóÄÉ²Ã½èÍý
       *****************************************************************
        4901-YYKADD-SEC             SECTION.
+      *
       *    Í½Ìó£É£Ä¡á£°£°¸¡º÷
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
