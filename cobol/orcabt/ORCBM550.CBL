@@ -97,6 +97,7 @@
            03  IDX                     PIC 9(05).
            03  IDY                     PIC 9(05).
            03  IDZ                     PIC 9(03).
+           03  IDW                     PIC 9(03).
            03  IDE                     PIC 9(03).
            03  IDXX                    PIC 9(03).
            03  IDYY                    PIC 9(05).
@@ -492,7 +493,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   SPLIT-CNT)
                    OR      ( WRK-PO-ED     >=  500  )
-                   OR      ( IDE           >   4    )
+      ****         OR      ( IDE           >   4    )
       *
                MOVE    ZERO            TO  FLG-AREA1
                COMPUTE WRK-PO-ST   =   WRK-PO-ED   +   1
@@ -1108,13 +1109,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        WHEN    9
                            MOVE PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-HKNJANUM
-                           PERFORM VARYING IDE FROM    1   BY  1
-                                   UNTIL   IDE >       8
-                               IF      WRK-HKNJANUM (IDE:1)
+                           PERFORM VARYING IDW FROM    1   BY  1
+                                   UNTIL   IDW >       8
+                               IF      WRK-HKNJANUM (IDW:1)
                                                    NOT =   SPACE
-                                   MOVE    WRK-HKNJANUM (IDE:)  
+                                   MOVE    WRK-HKNJANUM (IDW:)  
                                                TO  TBL-B-HKNJANUM(IDZZ)
-                                   MOVE    8   TO  IDE
+                                   MOVE    8   TO  IDW
                                END-IF
                            END-PERFORM
                        WHEN   10
