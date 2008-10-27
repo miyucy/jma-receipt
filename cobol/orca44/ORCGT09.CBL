@@ -758,10 +758,6 @@
       *****************************************************************
        400-T07-SYORI-SEC           SECTION.
       *
-      *??     IF      SPA-GMN-T06-SELNUM  =   ZERO
-      *??         GO  TO  400-T07-SYORI-EXT
-      *??     END-IF
-      *
            INITIALIZE                      T07
            MOVE    SPA-GMN-T09-TPTNUM (SPA-NAI-T09-SELNUM)
                                            TO  T07-PTNUM

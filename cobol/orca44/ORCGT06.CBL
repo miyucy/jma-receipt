@@ -83,7 +83,8 @@
       *
            03  FLG-CHK                 PIC 9(01).
            03  FLG-ERR                 PIC 9(01).
-           03  FLG-ROW                 PIC 9(01).
+           03  FLG-RECE-ROW            PIC 9(01).
+           03  FLG-BODY-ROW            PIC 9(01).
            03  FLG-TOUROKU             PIC 9(01).
            03  FLG-HIT                 PIC 9(02).
       *
@@ -129,7 +130,8 @@
            03  WRK-STPAGE          PIC 9(05).
            03  WRK-EDPAGE          PIC 9(05).
       *
-           03  WRK-T06-ROW         PIC S9(09).
+           03  WRK-T06-BODY-ROW    PIC S9(09).
+           03  WRK-T06-RECE-ROW    PIC S9(09).
       *
       *    ¥Ñ¥é¥á¥¿£Ä£ÂÊÔ½¸ÍÑ
            03  WRK-BTPARA-INFO-PARA.
@@ -1418,6 +1420,7 @@
       *
            IF      WRK-SELNO           >   ZERO
                MOVE    WRK-SELNO           TO  SPA-NAI-T06-BODY-SELNUM
+                                               T06-BODY-LIST-ROW
       *
       *        ÁªÂò¹àÌÜÊÔ½¸½èÍý
                PERFORM 4601-BODYLST-HENSYU-SEC
@@ -2613,7 +2616,7 @@
       *
            IF      SPA-GMN-T06-RECE-MAX
                                        =   ZERO
-               MOVE    ZERO                TO  FLG-ROW
+               MOVE    ZERO                TO  FLG-RECE-ROW
            ELSE
                COMPUTE IDX     =   SPA-GMN-T06-SELNUM  -   1
                MOVE    IDX                 TO  T06-RECE-LIST-ROW
@@ -3648,11 +3651,17 @@
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
-      **     IF      FLG-ROW             =   1
-      **         MOVE    ZERO                TO  WRK-T06-ROW
-      **     ELSE
-      **         MOVE    T06-ROW             TO  WRK-T06-ROW
-      **     END-IF
+           IF      FLG-BODY-ROW             =   1
+               MOVE    ZERO                TO  WRK-T06-BODY-ROW
+           ELSE
+               MOVE    T06-BODY-LIST-ROW   TO  WRK-T06-BODY-ROW
+           END-IF
+      *
+           IF      FLG-RECE-ROW             =   1
+               MOVE    ZERO                TO  WRK-T06-RECE-ROW
+           ELSE
+               MOVE    T06-RECE-LIST-ROW   TO  WRK-T06-RECE-ROW
+           END-IF
       * 
            INITIALIZE                  T06
       *     
@@ -3689,8 +3698,8 @@
            MOVE    SPA-GMN-T06-KANRI-MAX
                                        TO  T06-KANRI-LIST-COUNT
            MOVE    ZERO                TO  T06-KANRI-LIST-ROW
-      **     IF      WRK-T06-ROW         >   ZERO
-      **         MOVE    WRK-T06-ROW         TO  T06-ROW
+      **     IF      WRK-T06-RECE-ROW         >   ZERO
+      **         MOVE    WRK-T06-RECE-ROW         TO  T06-ROW
       **     END-IF
       *     
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -3729,9 +3738,9 @@
            MOVE    SPA-GMN-T06-BODY-MAX
                                        TO  T06-BODY-LIST-COUNT
            MOVE    ZERO                TO  T06-BODY-LIST-ROW
-      **     IF      WRK-T06-ROW         >   ZERO
-      **         MOVE    WRK-T06-ROW         TO  T06-ROW
-      **     END-IF
+           IF      WRK-T06-BODY-ROW         >   ZERO
+               MOVE    WRK-T06-BODY-ROW         TO  T06-BODY-LIST-ROW
+           END-IF
       *     
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       SPA-GMN-T06-RECE-MAX
@@ -3770,9 +3779,9 @@
            MOVE    SPA-GMN-T06-RECE-MAX
                                        TO  T06-RECE-LIST-COUNT
            MOVE    ZERO                TO  T06-RECE-LIST-ROW
-      **     IF      WRK-T06-ROW         >   ZERO
-      **         MOVE    WRK-T06-ROW         TO  T06-ROW
-      **     END-IF
+           IF      WRK-T06-RECE-ROW         >   ZERO
+               MOVE    WRK-T06-RECE-ROW         TO  T06-RECE-LIST-ROW
+           END-IF
       *
       *
            MOVE    SPA-GMN-T06-SRYYM-H     TO  T06-SRYYM-H
