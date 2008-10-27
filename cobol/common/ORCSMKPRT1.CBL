@@ -377,6 +377,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF        ( STS-IN     NOT  =   ZERO )
                    DISPLAY "INPUT OPEN ERR"
            ELSE
+               INITIALIZE   PRT-IN-REC
                READ PRT-IN-FILE
                MOVE HC01PARA-FORM-ID   TO PRTOUTPARA-FORM-ID
                MOVE SPA-PRT-UUID       TO PRTOUTPARA-UUID
