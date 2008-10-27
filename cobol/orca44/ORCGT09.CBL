@@ -1088,8 +1088,8 @@
            MOVE    SPA-TIDCD           TO  TID1-ID1CODE
       *
            EVALUATE    SPA-TIDCD
-               WHEN    "1002"
-                   MOVE    "既に請求済ですが個別指示の対象としますか"
+               WHEN    "1006"
+                   MOVE    "作成日が受付日以前ですが作成しますか"
                                            TO  TID1-ID1MSG
            END-EVALUATE
       *
@@ -1121,8 +1121,8 @@
       *
            EVALUATE    SPA-TIDCD
                WHEN    "1002"
-                   MOVE    "既に請求済ですが作成しますか"
-                                            TO  TID2-ID1MSG
+                   MOVE    "既に請求済ですが個別指示の対象としますか"
+                                           TO  TID2-ID1MSG
            END-EVALUATE
       *
            MOVE    "F11:個人履歴"       TO  TID2-B11-LABEL

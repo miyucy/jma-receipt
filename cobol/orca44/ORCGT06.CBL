@@ -932,6 +932,7 @@
                        PERFORM 410411-TUIKA-HENSYU-SEC
                        INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
+                       INITIALIZE              SPA-T09-AREA
                        MOVE    SPA-GMN-T06-RECE-MAX
                                                 TO  T06-RECE-LIST-ROW
                        MOVE    4                TO  SPA-GMN-T06-CUR  
@@ -987,6 +988,7 @@
       *
            INITIALIZE                  SPA-NAI-T06-SRYYM-OLD
                                        SPA-GMN-T06-SRYYM-OLD
+           INITIALIZE                  SPA-T09-AREA
       *
            .
        330-TID1-SET-EXT.
@@ -1011,6 +1013,7 @@
                            PERFORM 410411-TUIKA-HENSYU-SEC
                            INITIALIZE          SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
+                           INITIALIZE              SPA-T09-AREA
                            MOVE    SPA-GMN-T06-RECE-MAX
                                                 TO  T06-RECE-LIST-ROW
                            MOVE    4            TO  SPA-GMN-T06-CUR
@@ -1033,6 +1036,7 @@
       *
            INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
                                        SPA-NAI-T06-RECE-KOUMOKU
+           INITIALIZE                  SPA-T09-AREA
       *
            MOVE    4               TO  SPA-GMN-T06-CUR
            .
@@ -1595,7 +1599,7 @@
                WHEN    1
                    MOVE    WRK-RECE10-REC  TO  RECE10-REC
                    PERFORM 42031-SEIKYU-CHK-SEC
-                   INITIALIZE              SPA-T09-AREA
+      *************INITIALIZE              SPA-T09-AREA
                    IF      SPA-ERRCD   NOT =   SPACE
                        INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
@@ -2022,7 +2026,7 @@
                        MOVE    RECE10-NYUGAIKBN
                                            TO  SPA-GMN-T06-NYUGAIKBN
                    END-IF  
-                   INITIALIZE              SPA-T09-AREA
+      *************INITIALIZE              SPA-T09-AREA
                WHEN    OTHER
                    PERFORM 42032-T09-HENSYU-SEC
                    GO  TO  41041-TUIKA-EXT
@@ -2320,7 +2324,7 @@
                IF      FLG-ONRECE-B    =   ZERO
                    MOVE    ONRECE-B-UKEYMD TO  SPA-NAI-T09-TUKEYMD (IDX)
                END-IF
-           END-IF 
+           END-IF
       *
            MOVE    IDX             TO  SPA-GMN-T09-MAX
            .
@@ -2365,6 +2369,7 @@
       * 
            INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
                                        SPA-NAI-T06-RECE-KOUMOKU
+                                       SPA-T09-AREA
       *
            MOVE    SPA-GMN-T06-RECE-MAX
                                     TO  T06-RECE-LIST-ROW
@@ -3972,7 +3977,8 @@
       *
            EVALUATE    SPA-TIDCD
                WHEN    "1003"
-                   MOVE    "入力をすべてクリアします"    TO  WRK-TIDMSG
+                   MOVE
+                   "入力された内容をすべてクリアします"  TO  WRK-TIDMSG
                WHEN    "1004"
                    MOVE    "前回個別作成分を表示します"  TO  WRK-TIDMSG
                WHEN    "1005"
@@ -3981,7 +3987,7 @@
                    MOVE    "作成日が受付日以前ですが作成しますか"
                                                          TO  WRK-TIDMSG
                WHEN    "1007"
-                   MOVE    "選択された項目を削除しますか？"
+                   MOVE    "選択された患者を処理対象から削除しますか？"
                                        TO  WRK-TIDMSG
                WHEN    "1008"
                    MOVE    "未処理データがありますが終了しますか"
