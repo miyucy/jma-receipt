@@ -344,7 +344,7 @@
                        09  SPA-GMN-T05-TSKAISU     PIC 9(02).
                        09  SPA-GMN-T05-TNAIYO      PIC X(100).
                        09  SPA-GMN-T05-TFLG4       PIC X(02).
-                       09  SPA-GMN-T05-TCNT        PIC 9(04).
+                       09  SPA-GMN-T05-TCNT        PIC 9(05).
                    07  SPA-GMN-T05-DATALST-MAX     PIC 9(02).
       *                                             
                    07  SPA-GMN-T05-KOUMOKU.

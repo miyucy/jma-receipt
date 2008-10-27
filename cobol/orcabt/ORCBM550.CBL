@@ -1332,6 +1332,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    OR      ( TBL-B-HOSPNUM(IDZZ)
                                            =   ZERO                 )
                MOVE    TBL-ONRECE-B-REC(IDZZ)  TO  ONRECE-B-REC
+               MOVE    ONRECE-K-SYORIYMD       TO  ONRECE-B-SYORIYMD
+               EVALUATE    WRK-FILE-TMP (6:6)
+                   WHEN    "RIhasp"
+                   WHEN    "RIuasp"
+                       MOVE    "2"             TO  ONRECE-B-KAKUTEI-KBN
+               END-EVALUATE
                PERFORM 900-ONRECE-B-INSERT-SEC
            END-PERFORM
       *
@@ -1695,6 +1701,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    TBL-ONRECE-B-REC(IDZZ)  
                                                TO  ONRECE-B-REC
                        MOVE    SEI-CNT         TO  ONRECE-K-SCNT
+                       MOVE    WRK-ONRECE-B-SYORIYMD
+                                               TO  ONRECE-B-SYORIYMD
                        MOVE    WRK-ONRECE-B-UKEYMD
                                                TO  ONRECE-B-UKEYMD
                        MOVE    WRK-ONRECE-B-RECV-FLG
@@ -1727,6 +1735,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    TBL-K-RENNUM   (HIT-K)  TO  ONRECE-B-RENNUM
                    MOVE    TBL-K-UKEYMD   (HIT-K)  TO  ONRECE-B-UKEYMD
                    MOVE    TBL-K-RECV-FLG (HIT-K)  TO  ONRECE-B-RECV-FLG
+                   MOVE    WRK-SKYYMD              TO  ONRECE-B-SYORIYMD
                    PERFORM 900-ONRECE-B-INSERT-SEC
                END-IF
            END-PERFORM

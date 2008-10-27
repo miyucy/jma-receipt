@@ -104,7 +104,7 @@
                05  WRK-FILENMSS        PIC X(01)  OCCURS   50.
       *
            03  WRK-NUM                 PIC ZZ.
-           03  WRK-NUM3                PIC ZZZ.
+           03  WRK-NUM5                PIC ZZZZZ.
       *
            03  WK-HEAD-LINE            PIC 9(03).
            03  WK-BODY-LINE            PIC 9(03).
@@ -482,12 +482,12 @@
       *        取り込みファイル削除処理
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM  220-DEL-GID-SEC
-      *        ＤＢ登録
-               WHEN    "CLICKED"       ALSO    "B11"
-                   PERFORM 210-TOUROKU-GID-SEC
       *        UPLOAD(サーバへのデータ保存)処理
-               WHEN    "CLICKED"       ALSO    "B12"
+               WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 700-EXPORT-SEC
+      *        ＤＢ登録
+               WHEN    "CLICKED"       ALSO    "B12"
+                   PERFORM 210-TOUROKU-GID-SEC
                END-EVALUATE
       *
            .
@@ -2093,8 +2093,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                MOVE  SPA-GMN-T05-TFLG4 (IDX)
                                        TO  T05-DATALST-TFLG4   (IDX)
                MOVE  SPA-GMN-T05-TCNT (IDX)
-                                       TO  WRK-NUM3
-               MOVE    WRK-NUM3        TO  T05-DATALST-TCNT    (IDX)
+                                       TO  WRK-NUM5
+               MOVE    WRK-NUM5        TO  T05-DATALST-TCNT    (IDX)
                IF      IDX             =   SPA-NAI-T05-SELNUM
                    MOVE    "T"             TO  T05-DATALST-SELECT (IDX)
                ELSE
