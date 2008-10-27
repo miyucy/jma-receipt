@@ -460,11 +460,14 @@
                    PERFORM 340-TID2-SET-SEC
                    GO      TO      300-SCREEN-EXT
                WHEN    "T07"
-                   MOVE    "1002"          TO  SPA-TIDCD
-      ***             INITIALIZE              SPA-T01KYOUTU
-      ***             INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
-      ***                                     SPA-NAI-T06-RECE-KOUMOKU
-      ***             MOVE    4               TO  SPA-GMN-T06-CUR
+                   IF      SPA-T07-FLG     =   "1"
+                       MOVE    "1002"          TO  SPA-TIDCD
+                   ELSE
+                       INITIALIZE              SPA-T01KYOUTU
+    ***                INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
+    ***                                        SPA-NAI-T06-RECE-KOUMOKU
+                       MOVE    4               TO  SPA-GMN-T06-CUR
+                   END-IF
                    GO      TO      300-SCREEN-EXT
                WHEN    "T98"
                    PERFORM 350-T98-SET-SEC
@@ -1018,6 +1021,7 @@
                    EVALUATE    SPA-TIDCD
                        WHEN    "1002"
       *                    改客旺悟山绩
+                           MOVE    "1"                TO  SPA-T07-FLG
                            PERFORM 400-T07-SYORI-SEC
                            MOVE    SPACE              TO  SPA-TID1-FLG
                            GO  TO  340-TID2-SET-EXT
@@ -1141,6 +1145,7 @@
                    PERFORM 400-RECEDEN-SYORI-SEC
       *    改客旺悟山绩
                WHEN    "CLICKED"       ALSO    "B17"
+                   MOVE    SpACE               TO  SPA-T07-FLG
                    PERFORM 400-T07-SYORI-SEC
       *    借妄澄千
                WHEN    "CLICKED"       ALSO    "B24"

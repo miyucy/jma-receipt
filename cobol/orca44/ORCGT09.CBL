@@ -268,12 +268,15 @@
                    PERFORM 340-TID2-SET-SEC
                    GO      TO      300-SCREEN-EXT
                WHEN    "T07"
-                   MOVE    "1002"          TO  SPA-TIDCD
-      ***          INITIALIZE              SPA-T01KYOUTU
-      ***          MOVE    ZERO            TO  SPA-GMN-T09-SELNUM
-      ***                                      (SPA-NAI-T09-SELNUM)
-      ***          MOVE    ZERO            TO  SPA-NAI-T09-SELNUM
-      ***          MOVE    4               TO  SPA-GMN-T09-CUR
+                   IF      SPA-T07-FLG     =   "1"
+                       MOVE    "1002"          TO  SPA-TIDCD
+                   ELSE
+                       INITIALIZE              SPA-T01KYOUTU
+      ****             MOVE    ZERO            TO  SPA-GMN-T09-SELNUM
+      ****                                         (SPA-NAI-T09-SELNUM)
+      ****             MOVE    ZERO            TO  SPA-NAI-T09-SELNUM
+                       MOVE    4               TO  SPA-GMN-T09-CUR
+                   END-IF    
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
@@ -328,6 +331,7 @@
                    EVALUATE    SPA-TIDCD
                        WHEN    "1002"
       *                    ¸Ä¿ÍÍúÎòÉ½¼¨
+                           MOVE    "1"                TO  SPA-T07-FLG
                            PERFORM 400-T07-SYORI-SEC
                            MOVE    SPACE              TO  SPA-TID1-FLG
                            GO  TO  340-TID2-SET-EXT
@@ -800,6 +804,10 @@
                ADD     1               TO  IDX
                MOVE    IDX             TO  WRK-ZZ9
                MOVE    WRK-ZZ9         TO  T07-TRENNUM (IDX)
+               IF      ONRECE-B-KAKUTEI-KBN
+                                       =   "1"
+                   MOVE    "ºÑ"            TO  T07-TSEIKYU (IDX)
+               END-IF
                MOVE    ONRECE-B-SKYYMD TO  WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG     TO  T07-TSKYYMD (IDX)
