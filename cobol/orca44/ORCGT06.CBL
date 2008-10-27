@@ -399,6 +399,7 @@
                        WHEN    "1002"
                            PERFORM 530-TID2SET-SEC
                            GO  TO  100-INIT-EXT
+                       WHEN    "1006"
                        WHEN    "2001"
                        WHEN    "2003"
                        WHEN    "2007"
@@ -3449,6 +3450,10 @@
                ADD     1               TO  IDX
                MOVE    IDX             TO  WRK-ZZ9
                MOVE    WRK-ZZ9         TO  T07-TRENNUM (IDX)
+               IF      ONRECE-B-KAKUTEI-KBN
+                                       =   "1"
+                   MOVE    "บั"            TO  T07-TSEIKYU (IDX)
+               END-IF
                MOVE    ONRECE-B-SKYYMD TO  WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG     TO  T07-TSKYYMD (IDX)

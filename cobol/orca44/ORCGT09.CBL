@@ -236,6 +236,9 @@
                        WHEN    "1002"
                            PERFORM 530-TID2SET-SEC
                            GO  TO  100-INIT-EXT
+                       WHEN    "1006"
+                           PERFORM 520-TIDSET-SEC
+                           GO  TO  100-INIT-EXT
                    END-EVALUATE
                END-IF
            END-IF

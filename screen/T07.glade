@@ -13,7 +13,7 @@
 <widget>
   <class>GtkWindow</class>
   <name>T07</name>
-  <width>697</width>
+  <width>715</width>
   <height>590</height>
   <signal>
     <name>map_event</name>
@@ -181,9 +181,9 @@
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow26</name>
-      <x>18</x>
+      <x>12</x>
       <y>50</y>
-      <width>660</width>
+      <width>693</width>
       <height>432</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
@@ -207,8 +207,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Thu, 07 Feb 2002 06:04:12 GMT</last_modification_time>
 	</signal>
-	<columns>9</columns>
-	<column_widths>25,75,19,93,30,29,37,80,166</column_widths>
+	<columns>10</columns>
+	<column_widths>25,29,75,19,93,30,29,37,80,166</column_widths>
 	<selection_mode>GTK_SELECTION_MULTIPLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -218,6 +218,19 @@
 	  <child_name>CList:title</child_name>
 	  <name>label462</name>
 	  <label>»÷πÊ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label562</name>
+	  <label>¿¡µ·</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>
