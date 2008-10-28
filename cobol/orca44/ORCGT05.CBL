@@ -104,6 +104,7 @@
                05  WRK-FILENMSS        PIC X(01)  OCCURS   50.
       *
            03  WRK-NUM                 PIC ZZ.
+           03  WRK-NUM3                PIC ZZZ.
            03  WRK-NUM5                PIC ZZZZZ.
       *
            03  WK-HEAD-LINE            PIC 9(03).
@@ -119,18 +120,7 @@
            03  CNT-PARA                PIC 9(05).
            03  MOJI-CNT                PIC 9(03).
            03  SPILIT-CNT              PIC 9(03).
-       01  CNT-RESEDEN. 
-           03  PATIENT-CNT             PIC 9(05). 
-           03  HO-CNT                  PIC 9(05).
-           03  RO-CNT                  PIC 9(05).
-           03  KO-CNT                  PIC 9(05).
-           03  SY-CNT                  PIC 9(05).
-           03  SI-CNT                  PIC 9(05).
-           03  IY-CNT                  PIC 9(05).
-           03  CO-CNT                  PIC 9(05).
-           03  ALL-TENSU-CNT           PIC 9(10).
-           03  ALL-LINE-CNT            PIC 9(10).
-           03  ERR-CNT                 PIC 9(10).
+           03  ERR-CNT                 PIC 9(03).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -633,17 +623,17 @@
                    IF      SPA-GMN-T05-TUKAISU (SPA-NAI-T05-SELNUM)
                                            >   ZERO
                        MOVE    SPA-GMN-T05-TUKAISU (SPA-NAI-T05-SELNUM)   
-                                           TO  WRK-NUM
-                       MOVE    WRK-NUM     TO  SPA-GMN-T05-SELNAME2(1:2)
-                       MOVE    "²ó"        TO  SPA-GMN-T05-SELNAME2(3:)
+                                           TO  WRK-NUM3
+                       MOVE    WRK-NUM3    TO  SPA-GMN-T05-SELNAME2(1:3)
+                       MOVE    "²ó"        TO  SPA-GMN-T05-SELNAME2(4:)
                    END-IF
                WHEN    "RIfixf"
                    IF    SPA-GMN-T05-TSKAISU (SPA-NAI-T05-SELNUM)
                                            >   ZERO
                        MOVE    SPA-GMN-T05-TSKAISU (SPA-NAI-T05-SELNUM)
-                                           TO  WRK-NUM
-                       MOVE    WRK-NUM     TO  SPA-GMN-T05-SELNAME2(1:2)
-                       MOVE    "²ó"        TO  SPA-GMN-T05-SELNAME2(3:)
+                                           TO  WRK-NUM3
+                       MOVE    WRK-NUM3    TO  SPA-GMN-T05-SELNAME2(1:3)
+                       MOVE    "²ó"        TO  SPA-GMN-T05-SELNAME2(4:)
                  END-IF
            END-EVALUATE
       *
@@ -931,6 +921,7 @@
       *            ÀÁµá³ÎÄê¾õ¶·¥Õ¥¡¥¤¥ë
                    EVALUATE    MOJI-CNT
                        WHEN    27
+                       WHEN    29
                        WHEN    35
       *                    ¿³ºº»ÙÊ§µ¡´Ø¥³¡¼¥É
                            IF      WRK-FILENM (7:1)    =   "1" OR  "2"
@@ -947,7 +938,7 @@
                                MOVE    3               TO  WRK-ERRMSG2
                            END-IF
       *                    Á÷¿®²ó
-                           IF      MOJI-CNT            =   27
+                           IF      MOJI-CNT            =   27  OR  29
                                MOVE    WRK-FILENM (20:3)   TO  SNUM-INX
                                CALL    "ORCSNUM"           USING
                                                            ORCSNUMAREA
@@ -972,6 +963,21 @@
                                    MOVE    6           TO  WRK-ERRMSG2
                                END-IF
                            END-IF
+                           IF      MOJI-CNT            =   29
+                               MOVE    WRK-FILENM (23:3)   TO  SNUM-INX
+                               CALL    "ORCSNUM"           USING
+                                                           ORCSNUMAREA
+                               IF    ( SNUM-RC             =   ZERO  )
+                               AND   ( SNUM-MINKBN         =   SPACE )
+                               AND   ( SNUM-SYOKBN         =   SPACE )
+                               AND   ( SNUM-SEISUU         <=  3     )
+                               AND   ( SNUM-OUTNUM         >   ZERO  )
+                                   CONTINUE
+                               ELSE
+                                   MOVE    1           TO  WRK-ERRMSG1
+                                   MOVE    6           TO  WRK-ERRMSG2
+                               END-IF
+                           END-IF
       *                    ³ÈÄ¥»Ò
                            IF      MOJI-CNT            =   27
                                IF      WRK-FILENM (24:4)   =   ".csv"
@@ -981,11 +987,20 @@
                                    MOVE    5           TO  WRK-ERRMSG2
                                END-IF
                            ELSE    
-                               IF      WRK-FILENM (32:4)   =   ".csv"
-                                   CONTINUE
-                               ELSE
-                                   MOVE    1           TO  WRK-ERRMSG1
-                                   MOVE    5           TO  WRK-ERRMSG2
+                               IF      MOJI-CNT            =   29
+                                   IF      WRK-FILENM (26:4)   =  ".csv"
+                                       CONTINUE
+                                   ELSE
+                                       MOVE    1       TO  WRK-ERRMSG1
+                                       MOVE    5       TO  WRK-ERRMSG2
+                                   END-IF
+                               ELSE    
+                                   IF      WRK-FILENM (32:4)   =  ".csv"
+                                       CONTINUE
+                                   ELSE
+                                       MOVE    1       TO  WRK-ERRMSG1
+                                       MOVE    5       TO  WRK-ERRMSG2
+                                   END-IF
                                END-IF
                            END-IF
                        WHEN    OTHER
@@ -1284,7 +1299,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            IF    ( SNUM-RC             =   ZERO  )
                            AND   ( SNUM-MINKBN         =   SPACE )
                            AND   ( SNUM-SYOKBN         =   SPACE )
-                           AND   ( SNUM-SEISUU         =   1     )
+                           AND   ( SNUM-SEISUU         =   1   OR  3 )
                            AND   ( SNUM-OUTNUM         >   ZERO  )
                                MOVE    SNUM-OUTNUM     TO
                                                SPA-GMN-T05-TSKAISU(IDY)
@@ -2077,11 +2092,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                MOVE  SPA-GMN-T05-TSENDYMD (IDX)
                                        TO  T05-DATALST-TSENDYM (IDX)
                MOVE  SPA-GMN-T05-TUKAISU (IDX)
-                                       TO  WRK-NUM
-               MOVE    WRK-NUM         TO  T05-DATALST-TUKAISU (IDX)
+                                       TO  WRK-NUM3
+               MOVE    WRK-NUM3        TO  T05-DATALST-TUKAISU (IDX)
                MOVE  SPA-GMN-T05-TSKAISU (IDX)
-                                       TO  WRK-NUM
-               MOVE    WRK-NUM         TO  T05-DATALST-TSKAISU (IDX)
+                                       TO  WRK-NUM3
+               MOVE    WRK-NUM3        TO  T05-DATALST-TSKAISU (IDX)
                MOVE  SPA-GMN-T05-TNAIYO (IDX)
                                        TO  T05-DATALST-TDATA   (IDX)
                EVALUATE    SPA-NAI-T05-TFLG3 (IDX)

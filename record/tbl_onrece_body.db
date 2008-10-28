@@ -3,7 +3,7 @@ tbl_onrece_body   {
 	TEISYUTUSAKI		char(1);
 	SRYYM			char(6);
 	UCNT			number(3);
-	SCNT			number(2);
+	SCNT			number(3);
 	RENNUM			number(3);
 	RECEIPT_NO		number(6);
 #---> キー部
@@ -42,6 +42,7 @@ tbl_onrece_body   {
 	K_TTL_TEN_4		number(8);
 	KAKUTEI_KBN		char(1);
 	ERR_KBN			char(2);
+	SEIKYU_INFO		varchar(40);
 #---> 受付・事務点検固有情報
 	U_ERR_CODE		char(4);
 	U_ERR_MSG_1		varchar(400);
@@ -50,7 +51,11 @@ tbl_onrece_body   {
 	U_ERR_INFO		varchar(400);
 	U_TEN_NG		number(8);
 	U_TEN_OK		number(8);
+	U_HENREI_FLG		char(1);
+	U_YOBI1			varchar(10);
+	U_YOBI2			varchar(10);
 	END_FLG			number(1);
+#-----
 	TERMID			varchar(64);
 	OPID  			varchar(16);
 	CREYMD			char(8);
@@ -198,6 +203,7 @@ path    upd1    {
 	HKNJANUM	=	:HKNJANUM,
 	KIGO		=	:KIGO,
 	NUM		=	:NUM,
+	TEISYUTUSAKI_B	=	:TEISYUTUSAKI_B,
 	RECEKA		=	:RECEKA,
 	HOJOKBN		=	:HOJOKBN,
 	TEKSTYMD	=	:TEKSTYMD,
@@ -216,6 +222,7 @@ path    upd1    {
 	K_TTL_TEN_4	=	:K_TTL_TEN_4,
 	KAKUTEI_KBN	=	:KAKUTEI_KBN,
 	ERR_KBN		=	:ERR_KBN,
+	SEIKYU_INFO	=	:SEIKYU_INFO,
 	U_ERR_CODE	=	:U_ERR_CODE,
 	U_ERR_MSG_1	=	:U_ERR_MSG_1,
 	U_ERR_MSG_2	=	:U_ERR_MSG_2,
@@ -223,6 +230,9 @@ path    upd1    {
 	U_ERR_INFO	=	:U_ERR_INFO,
 	U_TEN_NG	=	:U_TEN_NG,
 	U_TEN_OK	=	:U_TEN_OK,
+	U_HENREI_FLG	=	:U_HENREI_FLG,
+	U_YOBI1		=	:U_YOBI1,
+	U_YOBI2		=	:U_YOBI2,
 	UPYMD 		=	:UPYMD,
 	UPHMS 		=	:UPHMS
                 WHERE	HOSPNUM		= :HOSPNUM

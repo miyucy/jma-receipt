@@ -21,8 +21,8 @@
                     06  T05-DATALST-TFILENM PIC X(35).
                     06  T05-DATALST-TSRYYM  PIC X(6).
                     06  T05-DATALST-TSENDYM PIC X(9).
-                    06  T05-DATALST-TUKAISU PIC X(2).
-                    06  T05-DATALST-TSKAISU PIC X(2).
+                    06  T05-DATALST-TUKAISU PIC X(3).
+                    06  T05-DATALST-TSKAISU PIC X(3).
                     06  T05-DATALST-TDATA   PIC X(100).
                     06  T05-DATALST-TFLG3   PIC X(2).
                     06  T05-DATALST-TFLG4   PIC X(2).

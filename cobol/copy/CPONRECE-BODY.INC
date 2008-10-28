@@ -27,7 +27,7 @@
                                    PIC X(1).
            03  ONRECE-B-SRYYM      PIC X(6).
            03  ONRECE-B-UCNT       PIC 9(3).
-           03  ONRECE-B-SCNT       PIC 9(2).
+           03  ONRECE-B-SCNT       PIC 9(3).
            03  ONRECE-B-RENNUM     PIC 9(3).
            03  ONRECE-B-RECEIPT-NO PIC 9(6).
       *    オンラインレセ電実施日
@@ -62,6 +62,8 @@
            03  ONRECE-B-KAKUTEI-KBN
                                    PIC X(1).
            03  ONRECE-B-ERR-KBN    PIC X(2).
+           03  ONRECE-B-SEIKYU-INFO
+                                   PIC X(40).
            03  ONRECE-B-U-ERR-CODE PIC X(4).
            03  ONRECE-B-U-ERR-MSG-1
                                    PIC X(400).
@@ -72,6 +74,10 @@
            03  ONRECE-B-U-ERR-INFO PIC X(400).
            03  ONRECE-B-U-TEN-NG   PIC 9(8).
            03  ONRECE-B-U-TEN-OK   PIC 9(8).
+           03  ONRECE-B-U-HENREI-FLG
+                                   PIC X(01).
+           03  ONRECE-B-U-YOBI1    PIC X(10). 
+           03  ONRECE-B-U-YOBI2    PIC X(10). 
            03  ONRECE-B-END-FLG    PIC 9(1).
       *端末ＩＤ
            03  ONRECE-B-TERMID     PIC X(64).

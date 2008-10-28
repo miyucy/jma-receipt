@@ -340,8 +340,8 @@
                        09  SPA-GMN-T05-TFILENM     PIC X(35).
                        09  SPA-GMN-T05-TSRYYM      PIC X(06).
                        09  SPA-GMN-T05-TSENDYMD    PIC X(09).
-                       09  SPA-GMN-T05-TUKAISU     PIC 9(02).
-                       09  SPA-GMN-T05-TSKAISU     PIC 9(02).
+                       09  SPA-GMN-T05-TUKAISU     PIC 9(03).
+                       09  SPA-GMN-T05-TSKAISU     PIC 9(03).
                        09  SPA-GMN-T05-TNAIYO      PIC X(100).
                        09  SPA-GMN-T05-TFLG4       PIC X(02).
                        09  SPA-GMN-T05-TCNT        PIC 9(05).

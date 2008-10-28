@@ -32,7 +32,7 @@
       *受付回数
            03  ONRECE-K-UCNT       PIC 9(3).
       *請求回数
-           03  ONRECE-K-SCNT       PIC 9(2).
+           03  ONRECE-K-SCNT       PIC 9(3).
       *個別レセ電実施時の回数(暫定 初回は 1)
            03  ONRECE-K-RENNUM     PIC 9(3).
       *オンラインレセ電実施日

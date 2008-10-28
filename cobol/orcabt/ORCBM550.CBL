@@ -442,8 +442,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            WHEN  OTHER
       *                        ÌÀºÙ
                                ADD     1               TO  IDZZ
-                               MOVE    17              TO  SPLIT-CNT
-                               MOVE    18              TO  SPLIT-CNT1
+                               MOVE    18              TO  SPLIT-CNT
+                               MOVE    19              TO  SPLIT-CNT1
                                PERFORM 20011-PARA-SPLIT-SEC
                        END-EVALUATE
                    WHEN    "RIfixf"
@@ -877,7 +877,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        WHEN    12
                            MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-U-ERR-MSG-2(IDZZ)
-      *                £±£³¡§ ¥¨¥é¡¼»ö¹à
+      *                £±£³¡§ ¿ÇÎÅ¼±ÊÌ
                        WHEN    13
                            MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-U-ERR-SRYKBN(IDZZ)
@@ -885,6 +885,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        WHEN    14
                            MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-U-ERR-INFO(IDZZ)
+      *                £±£·¡§ÀÁµá¾ðÊó
+                       WHEN    17
+                           MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+                                           TO  TBL-B-SEIKYU-INFO (IDZZ)
+      *                £±£¸¡§ÊÖÌáºÆÀÁµá
+                       WHEN    18
+                           IF      WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+                                                       =   "£±"
+                               MOVE    "1"         TO
+                                               TBL-B-U-HENREI-FLG (IDZZ)
+                           END-IF
                    END-EVALUATE
            END-EVALUATE
       *
@@ -982,7 +993,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            IF    ( SNUM-RC             =   ZERO  )
                            AND   ( SNUM-MINKBN         =   SPACE )
                            AND   ( SNUM-SYOKBN         =   SPACE )
-                           AND   ( SNUM-SEISUU         =   1     )
+                           AND   ( SNUM-SEISUU         =   1   OR  3 )
                            AND   ( SNUM-OUTNUM         >   ZERO  )
                                MOVE    SNUM-OUTNUM TO  TBL-B-SCNT(IDZZ)
                                                        SEI-CNT
@@ -1232,6 +1243,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        WHEN   30
                            MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-ERR-KBN(IDZZ)
+                       WHEN   31
+                           MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+                                           TO  TBL-B-SEIKYU-INFO (IDZZ)
                    END-EVALUATE
            END-EVALUATE
       *
@@ -1586,6 +1600,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TO  ONRECE-B-U-TEN-NG
                    MOVE    WRK-ONRECE-B-U-TEN-OK
                                        TO  ONRECE-B-U-TEN-OK
+                   MOVE    WRK-ONRECE-B-U-HENREI-FLG
+                                       TO  ONRECE-B-U-HENREI-FLG
+                   MOVE    WRK-ONRECE-B-SEIKYU-INFO
+                                       TO  ONRECE-B-SEIKYU-INFO
                    MOVE    TBL-K-UCNT(HIT-K)   
                                        TO  ONRECE-B-UCNT-V
                    MOVE    TBL-K-SCNT(HIT-K)   
@@ -1721,6 +1739,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  ONRECE-B-U-TEN-NG
                        MOVE    WRK-ONRECE-B-U-TEN-OK
                                                TO  ONRECE-B-U-TEN-OK
+                       MOVE    WRK-ONRECE-B-SEIKYU-INFO
+                                               TO  ONRECE-B-SEIKYU-INFO
                        MOVE    TBL-K-UCNT(HIT-K)   
                                                TO  ONRECE-B-UCNT-V
                        MOVE    TBL-K-SCNT(HIT-K)   

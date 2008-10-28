@@ -3,7 +3,7 @@ tbl_onrece_kanri   {
 	TEISYUTUSAKI		char(1);
 	SRYYM			char(6);
 	UCNT			number(3);
-	SCNT			number(2);
+	SCNT			number(3);
 	RENNUM			number(3);
 #---> •≠°º…Ù
 	SYORIYMD		char(8);
