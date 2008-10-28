@@ -46,6 +46,7 @@
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
            03  FLG-ERR                     PIC 9(01).
+           03  FLG-LOOP-END                PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -94,10 +95,13 @@
       *
       *    固定値領域
        01  CONST-AREA.
+           03  CONST-H180401               PIC X(08) VALUE "20060401".
            03  CONST-ZAINUM-MAX            PIC 9(05) VALUE  200.
            03  CONST-TNRRK-MAX             PIC 9(05) VALUE  100.
            03  CONST-SRYCD-MAX             PIC 9(05) VALUE 20.
            03  CONST-TCOMBI-MAX            PIC 9(05) VALUE 50.
+           03  CONST-OTHER                 PIC X(01) VALUE " ".
+           03  CONST-NSRYSRH               PIC X(01) VALUE "1".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -118,6 +122,8 @@
       *****************************************************************
       *    サブプロ用領域
       *****************************************************************
+      *
+           COPY    "CPORCSS006.INC".
       *
       *    入院会計編集サブ
            COPY    "CPORCHCM34S01.INC".
@@ -216,43 +222,10 @@
                PERFORM VARYING IDX-DAY     FROM    WRK-STIDX   BY  1
                        UNTIL ( IDX-DAY     >       WRK-EDIDX )
       *
-                   PERFORM VARYING IDX5    FROM    1   BY  1
-                       UNTIL ( IDX5    >   TNRRK-MAX )
-                       OR    ( TNRRK-SRYKA (IDX5)
-                                       = PTNYUINRRK-NYUINKA )
-      *
-                       CONTINUE
-      *
-                   END-PERFORM
-      *
-                   MOVE    ZERO        TO  IDX6
-      *
-                   IF    ( IDX5    >   TNRRK-MAX )
-      *
-                       IF    ( TNRRK-MAX
-                                               <   CONST-TNRRK-MAX )
-                           COMPUTE TNRRK-MAX   =   TNRRK-MAX   +   1
-      *
-                           MOVE    TNRRK-MAX   TO  IDX6
-      *
-                           MOVE    PTNYUINRRK-NYUINKA
-                                       TO  TNRRK-SRYKA (IDX6)
-                       END-IF
-                   ELSE
-                       MOVE    IDX5    TO  IDX6
-                   END-IF
-      *
-                   IF    ( IDX6        >   ZERO )
-                       MOVE    1   TO  TNRRK-SRYKA-DAY(IDX6 IDX-DAY)
-                       MOVE    PTNYUINRRK-BRMNUM
-                                   TO  TNRRK-BRMNUM   (IDX6 IDX-DAY)
-                       MOVE    PTNYUINRRK-NYUINKA
+                   MOVE    PTNYUINRRK-NYUINKA
                                    TO  SS009-SRYKA-DAY(IDX-DAY)
-                       MOVE    PTNYUINRRK-BRMNUM
+                   MOVE    PTNYUINRRK-BRMNUM
                                    TO  SS009-BRMNUM-DAY(IDX-DAY)
-                       
-                   END-IF
-      *
                END-PERFORM
       *
                PERFORM 900-PTNYUINRRK-KEY41-FET-SEC
@@ -262,6 +235,46 @@
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key41"             TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           PERFORM VARYING IDX-DAY     FROM    1   BY  1
+                   UNTIL ( IDX-DAY     >       31 )
+      *
+               IF    ( SS009-SRYKA-DAY(IDX-DAY)
+                                   NOT =   SPACE )
+      *
+                   PERFORM VARYING IDX5    FROM    1   BY  1
+                       UNTIL ( IDX5    >   TNRRK-MAX )
+                       OR    ( TNRRK-SRYKA (IDX5)
+                                       = SS009-SRYKA-DAY(IDX-DAY))
+      *
+                       CONTINUE
+      *
+                   END-PERFORM
+      *
+                   MOVE    ZERO        TO  IDX6
+      *
+                   IF    ( IDX5    >   TNRRK-MAX )
+      *
+                       IF    ( TNRRK-MAX       <   CONST-TNRRK-MAX )
+                           COMPUTE TNRRK-MAX   =   TNRRK-MAX   +   1
+      *
+                           MOVE    TNRRK-MAX   TO  IDX6
+      *
+                           MOVE    SS009-SRYKA-DAY(IDX-DAY)
+                                       TO  TNRRK-SRYKA (IDX6)
+                       END-IF
+                   ELSE
+                       MOVE    IDX5    TO  IDX6
+                   END-IF
+      *
+                   IF    ( IDX6        >   ZERO )
+                       MOVE    1   TO  TNRRK-SRYKA-DAY(IDX6 IDX-DAY)
+                       MOVE    SS009-BRMNUM-DAY(IDX-DAY)
+                                   TO  TNRRK-BRMNUM   (IDX6 IDX-DAY)
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
       *
            .
        2001-TNRRK-HEN-EXT.
@@ -327,14 +340,43 @@
                PERFORM 900-HKNCOMBI-KEY-SEL-SEC
       *
                INITIALIZE                  HCM34S01-AREA
-               MOVE    NACCT-HOSPNUM        TO  HCM34S01-HOSPNUM
+               MOVE    NACCT-HOSPNUM       TO  HCM34S01-HOSPNUM
                MOVE    NACCT-PTID          TO  HCM34S01-PTID
                MOVE    NACCT-SRYYM         TO  HCM34S01-SANTEIYM
                MOVE    COMB-HKNCOMBINUM    TO  HCM34S01-HKNCOMBI
                MOVE    COMB-HKNNUM         TO  HCM34S01-HKNNUM
                MOVE    SS009-EXGAIHAKU     TO  HCM34S01-EXGAIHAKU
+               IF    ( SS009-REQUEST       =   CONST-NSRYSRH )
+                   MOVE    "1"             TO  HCM34S01-KIKANKBN
+                   MOVE    SS009-STYMD     TO  HCM34S01-SKYSTYMD
+                   MOVE    SS009-EDYMD     TO  HCM34S01-SKYEDYMD
       *
-               IF    ( COMB-HKNNUM         =     "971" OR "973" )
+                   INITIALIZE                  SS006-AREA
+                   MOVE    SS009-STYMD     TO  SS006-SKYSTYMD
+                   MOVE    SS009-EDYMD     TO  SS006-SKYEDYMD
+                   MOVE    "1"             TO  SS006-SKYKBN
+                   CALL    "ORCSS006"          USING
+                                               SS006-AREA
+                                               SPA-AREA
+                   IF    ( SS009-STYMD     <   CONST-H180401 )
+                       CONTINUE
+                   ELSE
+                       MOVE    SS006-DOJITUFLG-ST
+                                           TO  HCM34S01-DOJITUFLG-ST
+                       MOVE    SS006-TIMEKBN-ST
+                                           TO  HCM34S01-TIMEKBN-ST
+                   END-IF
+                   IF    ( SS009-EDYMD     <  CONST-H180401 )
+                       CONTINUE
+                   ELSE
+                       MOVE    SS006-DOJITUFLG-ED
+                                           TO  HCM34S01-DOJITUFLG-ED
+                       MOVE    SS006-TIMEKBN-ED
+                                           TO  HCM34S01-TIMEKBN-ED
+                   END-IF
+               END-IF
+      *
+               IF    ( COMB-HKNNUM         =   "971" OR "973" )
       *
                    CALL    "ORCHCM34S02"       USING HCM34S01-AREA
                                                      SPA-AREA
@@ -509,12 +551,9 @@
            MOVE    PTNYUINRRK-REC      TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key41"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-           ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
-               INITIALIZE                  PTNYUINRRK-REC
+               PERFORM 900-PTNYUINRRK-KEY41-FET-SEC
            END-IF
       *
            .
@@ -525,15 +564,33 @@
       *****************************************************************
        900-PTNYUINRRK-KEY41-FET-SEC     SECTION.
       *
-           MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key41"             TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
-           ELSE
-               MOVE    1               TO  FLG-PTNYUINRRK
-               INITIALIZE                  PTNYUINRRK-REC
-           END-IF
+           MOVE    ZERO                TO  FLG-LOOP-END
+      *
+           PERFORM UNTIL ( FLG-PTNYUINRRK  NOT =   ZERO )
+                    OR   ( FLG-LOOP-END    NOT =   ZERO )
+      *
+               MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
+               MOVE    "key41"             TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC     TO  PTNYUINRRK-REC
+      *
+                   MOVE    1               TO  FLG-LOOP-END
+      *
+                   IF    ( SS009-REQUEST   =   CONST-NSRYSRH )
+                       IF    ( PTNYUINRRK-RRKNUM
+                                           =   SS009-RRKNUM )
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO    TO  FLG-LOOP-END
+                       END-IF
+                   END-IF
+      *
+               ELSE
+                   MOVE    1               TO  FLG-PTNYUINRRK
+                   INITIALIZE                  PTNYUINRRK-REC
+               END-IF
+           END-PERFORM
       *
            .
        900-PTNYUINRRK-KEY41-FET-EXT.
