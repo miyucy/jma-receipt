@@ -27,6 +27,7 @@
            03  NRRKSRH-PTID            PIC 9(10).
            03  NRRKSRH-SRYYMD          PIC X(08).
            03  NRRKSRH-ZAINUM          PIC 9(09).
+           03  NRRKSRH-RRKNUM          PIC 9(03).
            03  NRRKSRH-TERMID          PIC X(16).
            03  NRRKSRH-OPID            PIC X(16).
            03  NRRKSRH-CREYMD          PIC X(08).

@@ -1,8 +1,9 @@
 tbl_nrrksrh {
 	HOSPNUM				number(2,0);
-	PTID 				number(10);
+	PTID 				number(10,0);
 	SRYYMD				char(8);
-	ZAINUM				number(9);
+	ZAINUM				number(9,0);
+	RRKNUM				number(3,0);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);
 	CREYMD   			char(8);
