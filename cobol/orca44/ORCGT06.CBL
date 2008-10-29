@@ -987,6 +987,12 @@
                                MOVE    SPA-GMN-T06-SRYYM-OLD
                                                TO  SPA-GMN-T06-SRYYM-H
                        END-EVALUATE
+                   WHEN    "1006"
+                       IF      SPA-NAI-T06-SELNUM  >   ZERO
+                           INITIALIZE          SPA-GMN-T06-RECE-KOUMOKU
+                                               SPA-NAI-T06-RECE-KOUMOKU
+                       END-IF
+                       MOVE    4                TO  SPA-GMN-T06-CUR  
                END-EVALUATE
            END-IF
       *
@@ -2231,6 +2237,11 @@
                                OR       SPA-NAI-T09-TSEIKYU (IDX)
                                                        =   "1"
                IF      RECE10-HKNNUM   NOT =   SPACE
+      *??
+             DISPLAY "ptnum =" idx " PTNUM=" RECE10-PTNUM
+             DISPLAY "kigo  =" RECE10-KIGO "#" ONRECE-B-KIGO "#"
+             DISPLAY "num   =" RECE10-NUM  "#" ONRECE-B-NUM "#"
+      *??
                    IF    ( RECE10-KIGO     =   ONRECE-B-KIGO )
                    AND   ( RECE10-NUM      =   ONRECE-B-NUM  )
                        MOVE    "1"     TO  SPA-NAI-T09-TSEIKYU (IDX)
@@ -2253,6 +2264,9 @@
                                    TO  MCP-TABLE
            MOVE    "key5"          TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *??
+             DISPLAY "SPA-NAI-T09-TSEIKYU=" SPA-NAI-T09-TSEIKYU (IDX)
+      *??
       *
       *    最新の受付日
       *    請求管理と同じ条件のデータの受付日を取得
@@ -2282,7 +2296,7 @@
                IF      RECE10-HKNNUM   NOT =   SPACE
                    IF    ( RECE10-KIGO     =   ONRECE-B-KIGO )
                    AND   ( RECE10-NUM      =   ONRECE-B-NUM  )
-                       MOVE    ONRECE-B-UKEYMD
+                       MOVE    ONRECE-B-SYORIYMD
                                            TO  SPA-NAI-T09-TUKEYMD (IDX)
                    END-IF
                ELSE
@@ -2290,7 +2304,7 @@
                                            =   ONRECE-B-FTNNUM (1) )
                    AND   ( SPA-NAI-T09-RECE10-TNUM (IDX)
                                            =   ONRECE-B-JKYNUM (1) )
-                       MOVE    ONRECE-B-UKEYMD
+                       MOVE    ONRECE-B-SYORIYMD
                                            TO  SPA-NAI-T09-TUKEYMD (IDX)
                    END-IF
                END-IF
@@ -2332,6 +2346,10 @@
                    MOVE    ONRECE-B-UKEYMD TO  SPA-NAI-T09-TUKEYMD (IDX)
                END-IF
            END-IF
+      *??
+             DISPLAY "SPA-NAI-T09-TUKEYMD=" SPA-NAI-T09-TUKEYMD (IDX)
+             DISPLAY "SPA-NAI-T09-TCREYMD=" SPA-NAI-T09-TCREYMD (IDX)
+      *??
       *
            MOVE    IDX             TO  SPA-GMN-T09-MAX
            .
@@ -3997,8 +4015,12 @@
                WHEN    "1005"
                    MOVE    "入力途中ですが終了しますか"  TO  WRK-TIDMSG
                WHEN    "1006"
-                   MOVE    "作成日が受付日以前ですが作成しますか"
-                                                         TO  WRK-TIDMSG
+                   STRING   "請求データの作成日がレセ送信日以前ですが"
+                                       DELIMITED  BY  SIZE
+                            "個別指示の対象としますか"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-TIDMSG
+                   END-STRING
                WHEN    "1007"
                    MOVE    "選択された患者を処理対象から削除しますか？"
                                        TO  WRK-TIDMSG

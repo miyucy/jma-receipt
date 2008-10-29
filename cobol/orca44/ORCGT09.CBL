@@ -1085,8 +1085,12 @@
       *
            EVALUATE    SPA-TIDCD
                WHEN    "1006"
-                   MOVE    "作成日が受付日以前ですが作成しますか"
-                                           TO  TID1-ID1MSG
+                   STRING   "請求データの作成日がレセ送信日以前ですが"
+                                       DELIMITED  BY  SIZE
+                            "個別指示の対象としますか"
+                                       DELIMITED  BY  SIZE
+                                       INTO    TID1-ID1MSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    "戻る"              TO  TID1-B01-LABEL
