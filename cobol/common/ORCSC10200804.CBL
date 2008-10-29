@@ -696,8 +696,8 @@
                   AND (WRK-ERRCD               =   SPACE )
       *?????          (WRK-COM-SRYKBN (IDX-Z)  =   "14" )
       *??????     AND  WRK-COM-SRYSYUKBN(IDX-Z)  = "140" )
-                  IF      (WRK-COM-KAIFLG (IDX-Z)  =   1  )  AND
-                          (WRK-COM-KAISU(IDX-Z)    >   1  )
+      *?????      IF      (WRK-COM-KAIFLG (IDX-Z)  =   1  )  AND
+                  IF      (WRK-COM-KAISU(IDX-Z)    >   1  )
                        PERFORM 10012-KAISU-CHK-SEC
                    END-IF
                END-IF
@@ -1339,42 +1339,54 @@
       *****************************************************************
        10013-JBI-SINSATU-CHK-SEC       SECTION.
       *
-      *    初診料の判定
-           IF      WRK-COM-INPUTCD(IDX-Z)  =   "111000110"
-                                           OR  "111011810"
-      *        初診料の時、過去に受診がないこと
-      *        受診歴を検索する  医療機関、患者ＩＤ
-               INITIALIZE                  JYURRK-REC
-               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
-               MOVE    SPA-PTID            TO  JYURRK-PTID
-               MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-               MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
+           EVALUATE    WRK-COM-INPUTCD(IDX-Z)
+      *       初診料・同日初診
+               WHEN    "111000110"
+               WHEN    "111011810"
+      *            受診履歴判定
+                   PERFORM 100131-RSIJYURRKCHK-SEC
+           END-EVALUATE
+           .
+       10013-JBI-SINSATU-CHK-EXT.
+           EXIT.
       *
-               MOVE    JYURRK-REC          TO  MCPDATA-REC
+      *****************************************************************
+      *    初診算定時の受診チェック処理
+      *****************************************************************
+       100131-RSIJYURRKCHK-SEC       SECTION.
+      *
+      *    初診料の時、過去に受診がないこと
+      *    受診歴を検索する  医療機関、患者ＩＤ
+           INITIALIZE                  JYURRK-REC
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key15"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
                MOVE    "key15"             TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-                   MOVE    "key15"             TO  MCP-PATHNAME
-                   PERFORM 970-JYURRK-READ-SEC
-               ELSE
-                   INITIALIZE                  JYURRK-REC
-                   MOVE    1               TO  FLG-JYURRK
-               END-IF
-               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    "key15"             TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
-               IF      FLG-JYURRK          =   ZERO
-                   IF      JYURRK-SRYYMD       <   SPA-SRYYMD
-                       MOVE    "8002"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key15"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-JYURRK          =   ZERO
+               IF      JYURRK-SRYYMD       <   SPA-SRYYMD
+                   MOVE    "8002"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR
                                                          (IDX-Z)
-                   END-IF
                END-IF
            END-IF
            .
-       10013-JBI-SINSATU-CHK-EXT.
+       100131-RSIJYURRKCHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1382,78 +1394,23 @@
       *****************************************************************
        10013-RSI-SINSATU-CHK-SEC       SECTION.
       *
-      *    労災の診察料の判定
-           IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110010"
-      *TE  同日初診
-                                           OR  "101110040"
-      *        初診料の時、過去に受診がないこと
-      *        受診歴を検索する  医療機関、患者ＩＤ
-               INITIALIZE                  JYURRK-REC
-               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
-               MOVE    SPA-PTID            TO  JYURRK-PTID
-               MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
-               MOVE    SPA-HKNCOMBINUM     TO  JYURRK-HKNCOMBINUM
-      *
-               MOVE    JYURRK-REC          TO  MCPDATA-REC
-               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    "key15"             TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-                   MOVE    "key15"             TO  MCP-PATHNAME
-                   PERFORM 970-JYURRK-READ-SEC
-               ELSE
-                   INITIALIZE                  JYURRK-REC
-                   MOVE    1               TO  FLG-JYURRK
-               END-IF
-               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    "key15"             TO  MCP-PATHNAME
-               PERFORM 990-DBCLOSE-SEC
-               IF      FLG-JYURRK          =   ZERO
-                   IF      JYURRK-SRYYMD       <   SPA-SRYYMD
-                       MOVE    "8002"          TO  WRK-ERRCD
-                       MOVE    "1"             TO  WRK-COM-CUR
-                                                         (IDX-Z)
-                       GO      TO      10013-RSI-SINSATU-CHK-EXT
-                   END-IF
-               END-IF
-           END-IF
-      *
-      *    救急医療管理加算
-      **** IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110030"
-      *        同一傷病に付き１回
-      *        IF      LNK-ORCSC-RSI-KYUKASN   =   1
-      *            MOVE    "8003"          TO  WRK-ERRCD
-      *            MOVE    "1"             TO  WRK-COM-CUR
-      *                                                  (IDX-Z)
-      *            GO      TO      10013-RSI-SINSATU-CHK-EXT
-      *        END-IF
-      **** END-IF
-      *
-      *    療養の給付請求書取扱料
-      **** IF      WRK-COM-INPUTCD(IDX-Z)  =   "101130020"
-      *        同一傷病に付き１回
-      *        IF      LNK-ORCSC-RSI-KYUFU     =   1
-      *            MOVE    "8011"          TO  WRK-ERRCD
-      *            MOVE    "1"             TO  WRK-COM-CUR
-      *                                                  (IDX-Z)
-      *            GO      TO      10013-RSI-SINSATU-CHK-EXT
-      *        END-IF
-      **** END-IF
+           EVALUATE    WRK-COM-INPUTCD(IDX-Z)
+      *    初診料・同日初診
+           WHEN    "101110010"
+           WHEN    "101110040"
+      *        受診履歴判定
+               PERFORM 100131-RSIJYURRKCHK-SEC
       *
       *    再診時療養指導管理料
-           IF      WRK-COM-INPUTCD(IDX-Z)  =   "101120030"
+           WHEN    "101120030"
       *        初診料算定時、エラー
                IF      LNK-ORCSC-SYOSIN2       =   1
                    MOVE    "8013"          TO  WRK-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR
+                    MOVE    "1"             TO  WRK-COM-CUR
                                                          (IDX-Z)
-                   GO      TO      10013-RSI-SINSATU-CHK-EXT
                END-IF
-           END-IF
-      *
       *    救急医療管理加算（入院）入院日から７日以内
-           IF      WRK-COM-INPUTCD(IDX-Z)  =   "101110020"
+           WHEN    "101110020"
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY6-AREA
                MOVE    "61"                TO  LNK-DAY6-IRAI
@@ -1470,12 +1427,14 @@
                    MOVE    "8028"          TO  WRK-ERRCD
                    MOVE    "1"             TO  WRK-COM-CUR
                                                          (IDX-Z)
-                   GO      TO      10013-RSI-SINSATU-CHK-EXT
                END-IF
-           END-IF
+           END-EVALUATE
+      *
       *    労災の時、労災コードで判定する
-           IF      WRK-KAISU           =   ZERO
-               PERFORM 20012-RSISINSATU-CHK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               IF      WRK-KAISU           =   ZERO
+                   PERFORM 20012-RSISINSATU-CHK-SEC
+               END-IF
            END-IF
       *
            .
@@ -5275,9 +5234,12 @@
                IF     (IDX-SYU             >   ZERO )  AND
                       (IDX-GAIKAN          =   ZERO )  AND
                       (LNK-ORCSC-GAIFLG    =   ZERO )  AND
-      *                自動算定なしの時、追加しない
-                      (LNK-ORCSC-GAIKANRIKBN-CHK   NOT =   "2"
-                                                       AND "3" )
+      *************    自動算定なしの時、追加しない
+      *               (LNK-ORCSC-GAIKANRIKBN-CHK   NOT =   "2"
+      **************                                   AND "3" )
+      *                自動算定あり時追加
+                      (LNK-ORCSC-GAIKANRIKBN-CHK   =   "0"
+                                                   OR  "1" )
                    IF     (LNK-ORCSC-TOKUTEI-KNJ2  =   1  )  OR
                           (LNK-ORCSC-TOKUTEI-KNJ   =   1  )  OR
                           (LNK-ORCSC-GAIRAI-NASI   =   1  )
@@ -5436,9 +5398,12 @@
                           (IDX-GAIKAN          =   ZERO )  AND
                           (LNK-ORCSC-SYOSIN    =   ZERO )  AND
                           (LNK-ORCSC-SYOSIN2   =   ZERO )
-      *                自動算定なしの時、追加しない
-                 AND  (LNK-ORCSC-GAIKANRIKBN-CHK   NOT =   "2" 
-                                                       AND "3" )
+      **********       自動算定なしの時、追加しない
+      *          AND  (LNK-ORCSC-GAIKANRIKBN-CHK   NOT =   "2" 
+      *********                                        AND "3" )
+      *                自動算定あり時追加
+                 AND  (LNK-ORCSC-GAIKANRIKBN-CHK   =   "0"
+                                                   OR  "1" )
                        MOVE    IDX-SYU2        TO  IDX-Z
                        PERFORM
                            UNTIL  (WRK-COM-SRYKBN (IDX-Z)

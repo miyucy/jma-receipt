@@ -183,7 +183,7 @@
                            11  SPA-GMN-GAIKANRIKBN-MEI     PIC X(30).
                        09  SPA-GMN-GAIKANRIKBN-COMB.
                            11  SPA-GMN-GAIKANRIKBN-LIST    PIC X(32)
-                                                           OCCURS  5.
+                                                           OCCURS  9.
                        09  SPA-GAIKANRIKBN-MAX             PIC 9(02).
       *                外来カーソル移動
                        09  SPA-GMN-GAIMOVE-G.
@@ -1325,7 +1325,9 @@
            MOVE    "2 削除後の自動発生なし" 
                                        TO  SPA-GMN-GAIKANRIKBN-LIST(3)
            MOVE    "3 自動発生なし"    TO  SPA-GMN-GAIKANRIKBN-LIST(4)
-           MOVE    4                   TO  SPA-GAIKANRIKBN-MAX
+           MOVE    "4 削除後の自動発生・確認なし" 
+                                       TO  SPA-GMN-GAIKANRIKBN-LIST(5)
+           MOVE    5                   TO  SPA-GAIKANRIKBN-MAX
       *
            MOVE    "0 標準"            TO  SPA-GMN-GAIMOVE-LIST(1)
            MOVE    "1 保険組合せ"      TO  SPA-GMN-GAIMOVE-LIST(2)
@@ -1993,22 +1995,24 @@
             END-EVALUATE
       *
            IF      SPA-GMN-GAIKANRIKBN-CHK   =   SPACE
-                MOVE    "1"     TO  SPA-GMN-GAIKANRIKBN-CHK
+                MOVE    "1"            TO  SPA-GMN-GAIKANRIKBN-CHK
            END-IF
-           EVALUATE    SPA-GMN-GAIKANRIKBN-CHK
-                WHEN    "1"
-                    MOVE    SPA-GMN-GAIKANRIKBN-LIST(2)
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GAIKANRIKBN-MAX
+               IF      SPA-GMN-GAIKANRIKBN-CHK
+                                       =   SPA-GMN-GAIKANRIKBN-LIST(IDY)
+                                                               (1:1)
+                   MOVE    SPA-GMN-GAIKANRIKBN-LIST(IDY)
+                                               TO SPA-GMN-GAIKANRIKBN-G
+                   MOVE    1                   TO  FLG-OK
+                   MOVE    SPA-GAIKANRIKBN-MAX TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+                MOVE    SPA-GMN-GAIKANRIKBN-LIST(1)
                                                TO  SPA-GMN-GAIKANRIKBN-G
-                WHEN    "2"
-                    MOVE    SPA-GMN-GAIKANRIKBN-LIST(3)
-                                               TO  SPA-GMN-GAIKANRIKBN-G
-                WHEN    "3"
-                    MOVE    SPA-GMN-GAIKANRIKBN-LIST(4)
-                                               TO  SPA-GMN-GAIKANRIKBN-G
-                WHEN    OTHER
-                    MOVE    SPA-GMN-GAIKANRIKBN-LIST(1)
-                                               TO  SPA-GMN-GAIKANRIKBN-G
-            END-EVALUATE
+           END-IF
       *
       *    時間外加算特例乳幼児
            MOVE    ZERO                TO  FLG-OK

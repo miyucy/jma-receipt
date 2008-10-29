@@ -667,8 +667,8 @@
                   AND (WRK-ERRCD               =   SPACE )
       *?????          (WRK-COM-SRYKBN (IDX-Z)  =   "14" )
       *??????     AND  WRK-COM-SRYSYUKBN(IDX-Z)  = "140" )
-                  IF      (WRK-COM-KAIFLG (IDX-Z)  =   1  )  AND
-                          (WRK-COM-KAISU(IDX-Z)    >   1  )
+      *?????      IF      (WRK-COM-KAIFLG (IDX-Z)  =   1  )  AND
+                  IF      (WRK-COM-KAISU(IDX-Z)    >   1  )
                        PERFORM 10012-KAISU-CHK-SEC
                    END-IF
                END-IF

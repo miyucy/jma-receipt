@@ -9330,12 +9330,17 @@
                    END-IF
                ELSE
                    IF      LNK-ORCSC-KIDCD     =   "0102"
+                       IF     (SPA-GAIKANRIKBN-CHK  =   "4" ) AND
+                              (FLG-TOROKU           =   SPACE  )
+                           MOVE    SPACE           TO  LNK-ORCSC-KIDCD
+                       ELSE
                        MOVE    SPACE           TO  SPA-COM-INPUTCD
                                                     (LNK-ORCSC-CHK-IDX)
                        MOVE    SPACE           TO  SPA-GMN-INPUTCD
                                                     (LNK-ORCSC-CHK-IDX)
                        MOVE    SPACE           TO  LNK-ORCSC-KIDCD
                        MOVE    1               TO  FLG-TUIKA
+                       END-IF
                    END-IF
                END-IF
       *

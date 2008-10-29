@@ -83,7 +83,7 @@ W07	{
 						value	varchar(32);
 					};
 					count	int;
-					item	varchar(32)[5];
+					item	varchar(32)[9];
 				};
 				GAIMOVE_COMBO	{
 					GAIMOVE	{

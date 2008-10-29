@@ -67,7 +67,7 @@
                     06  W07-GAIKANKBN.
                       07  W07-VALUE   PIC X(32).
                     06  W07-GAIKANKBN-COUNT   PIC S9(9)   BINARY.
-                    06  W07-GAIKANKBN-ITEM    PIC X(32)   OCCURS  5.
+                    06  W07-GAIKANKBN-ITEM    PIC X(32)   OCCURS  9.
                   05  W07-GAIMOVE-COMBO.
                     06  W07-GAIMOVE.
                       07  W07-VALUE   PIC X(22).
