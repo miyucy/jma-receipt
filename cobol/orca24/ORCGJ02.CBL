@@ -578,13 +578,6 @@
       *    保険別算定履歴テーブル
            COPY    "CMSANTEITBL.INC".
       *
-      *   日本語数字
-       01  TBL-SUJI-AREA.
-           03  FILLER          PIC X(20)   VALUE
-              "１２３４５６７８９０".
-       01  TBL-SUJI-R          REDEFINES   TBL-SUJI-AREA.
-           03  TBL-SUJI        PIC X(02)   OCCURS   10.
-      *
       *    受診履歴
        01  WRK-JYURRK-REC.
            COPY    "CPJYURRK.INC"     REPLACING
@@ -5282,20 +5275,40 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        41016-HENSRYYMD-CHK-SEC             SECTION.
       *
+           IF      SPA-LOCK            =   ZERO
+               CONTINUE
+           ELSE
+               MOVE    "0076"          TO  SPA-ERRCD
+           END-IF
       *    剤修正のチェック
            IF      SPA-GMN-BANGO   NOT =   ZERO
-               MOVE    "0009"          TO  SPA-ERRCD
-               GO      TO      41016-HENSRYYMD-CHK-EXT
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0009"          TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            IF     (SPA-J02-SYORI       =   2  )  AND
                   (SPA-NAI-RRKSELNUM   >   ZERO )
                CONTINUE
            ELSE
-               MOVE    "0012"          TO  SPA-ERRCD
-               GO      TO      41016-HENSRYYMD-CHK-EXT
+               IF      SPA-ERRCD           =   SPACE
+                   MOVE    "0012"          TO  SPA-ERRCD
+               END-IF
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+      *        変更受診日チェック処理
+               PERFORM 410161-HENSRYYMD-INCHK-SEC
+           END-IF
+      *
+           .
+       41016-HENSRYYMD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   変更受診日チェック処理
+      *****************************************************************
+       410161-HENSRYYMD-INCHK-SEC             SECTION.
       *
            MOVE    4                   TO  SPA-GMN-CUR
            IF      J02-HENSRYYMD   NOT =   SPA-GMN-HENSRYYMD
@@ -5336,16 +5349,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "0007"          TO  SPA-ERRCD
                END-IF
            END-IF
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO     41016-HENSRYYMD-CHK-EXT
+           IF      SPA-ERRCD           =   SPACE
+      *        受診日チェック
+               PERFORM 410161-HENSRYDAY-CHK-SEC
            END-IF
+           .
+       410161-HENSRYYMD-INCHK-EXT.
+           EXIT.
       *
-      *****IF      SPA-NAI-HENSRYYMD(1:6)  =   SPA-NAI-SRYYM
-      *        CONTINUE
-      *    ELSE
-      *        MOVE    "0008"          TO  SPA-ERRCD
-      *        GO      TO      41016-HENSRYYMD-CHK-EXT
-      *****END-IF
+      *****************************************************************
+      *   変更受診日チェック処理
+      *****************************************************************
+       410161-HENSRYDAY-CHK-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
            MOVE    SPACE               TO  WRK-HKNNUM
@@ -5463,7 +5478,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            .
-       41016-HENSRYYMD-CHK-EXT.
+       410161-HENSRYDAY-CHK-EXT.
            EXIT.
       *****************************************************************
       *    更新の確認メッセージ処理
@@ -12783,6 +12798,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                WHEN    "0075"
                    STRING  "変更前と変更後が同日です。"
+                           "診療日変更はできません。"
+                                       DELIMITED   BY  SIZE
+                                       INTO   WRK-ERRMSG
+                   END-STRING
+      *
+               WHEN    "0076"
+                   STRING  "他端末で使用中です。" 
                            "診療日変更はできません。"
                                        DELIMITED   BY  SIZE
                                        INTO   WRK-ERRMSG
