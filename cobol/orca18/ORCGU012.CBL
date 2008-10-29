@@ -891,7 +891,7 @@
                          OR (FLG-OK    =   1    )
                IF      SPA-GMN-SRYNAIYOCDL (IDX2)
                                            =   SPA-GMN-SRYNAIYOCD
-                   IF      IDX2            =   SPA-DRCD-MAX
+                   IF      IDX2            =   SPA-SRYNAI-MAX
                        MOVE    SPA-GMN-SRYNAIYO-LIST(01)
                                            TO  SPA-GMN-SRYNAIYOCD-G
                    ELSE
