@@ -1972,8 +1972,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *??
       *
            MOVE    SMCNDATE-YMD        TO  ONRECE-K-CREYMD
-           MOVE    SMCNDATE-YMD        TO  ONRECE-K-UPYMD
-           MOVE    SMCNDATE-HMS        TO  ONRECE-K-UPHMS
       *
            MOVE    ONRECE-K-REC        TO  MCPDATA-REC
       *
@@ -2049,8 +2047,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *??
       *
            MOVE    SMCNDATE-YMD        TO  ONRECE-B-CREYMD
-           MOVE    SMCNDATE-YMD        TO  ONRECE-B-UPYMD
-           MOVE    SMCNDATE-HMS        TO  ONRECE-B-UPHMS
            MOVE    ONRECE-B-REC        TO  MCPDATA-REC
       *
            MOVE   "tbl_onrece_body"    TO  MCP-TABLE

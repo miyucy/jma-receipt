@@ -507,6 +507,8 @@
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
+           INITIALIZE                  SPA-T06-AREA
+      *
       *    診療年月
            IF      SPA-SYSYMD(7:2)     >   "10"
                MOVE    SPA-SYSYMD  (1:6)   TO  SPA-NAI-T06-SRYYM-H
@@ -638,7 +640,7 @@
            INITIALIZE                  SPA-GMN-T06-BODY-TBL
                                        SPA-NAI-T06-BODY-TBL
       *
-           MOVE    ZERO            TO  IDX
+           MOVE    ZERO            TO  IDXX
       *
            INITIALIZE                  ONRECE-B-REC
            MOVE   SPA-HOSPNUM      TO  ONRECE-B-HOSPNUM
@@ -662,50 +664,52 @@
            PERFORM 900-ONRECE-BODY-SELECT-SEC
       *
            PERFORM         UNTIL   FLG-ONRECE-B    =   1
-               ADD     1               TO  IDX
-               MOVE    IDX             TO  SPA-GMN-T06-B-TRENNUM   (IDX)
+                           OR      IDXX            >=  1000
+               ADD     1               TO  IDXX
+               MOVE    IDXX            TO  SPA-GMN-T06-B-TRENNUM (IDXX)
                MOVE    ONRECE-B-NYUGAIKBN
-                                       TO  SPA-NAI-T06-B-TNYUGAIKBN(IDX)
-               EVALUATE    SPA-NAI-T06-B-TNYUGAIKBN (IDX)
+                                       TO  SPA-NAI-T06-B-TNYUGAIKBN
+                                                                 (IDXX)
+               EVALUATE    SPA-NAI-T06-B-TNYUGAIKBN (IDXX)
                    WHEN    "1"
                        MOVE    "入"    TO
-                                           SPA-GMN-T06-B-TNYUGAIKBN(IDX)
+                                       SPA-GMN-T06-B-TNYUGAIKBN(IDXX)
                    WHEN    "2"
                        MOVE    "外"    TO
-                                           SPA-GMN-T06-B-TNYUGAIKBN(IDX)
+                                       SPA-GMN-T06-B-TNYUGAIKBN(IDXX)
                END-EVALUATE
-               MOVE    ONRECE-B-PTNUM  TO  SPA-GMN-T06-B-TPTNUM  (IDX)
-               MOVE    ONRECE-B-PTID   TO  SPA-NAI-T06-B-TPTID   (IDX)
-               MOVE    ONRECE-B-NAME   TO  SPA-GMN-T06-B-TNAME   (IDX)
-               MOVE    ONRECE-B-SRYYM  TO  SPA-NAI-T06-B-TSRYYM  (IDX)
+               MOVE    ONRECE-B-PTNUM  TO  SPA-GMN-T06-B-TPTNUM  (IDXX)
+               MOVE    ONRECE-B-PTID   TO  SPA-NAI-T06-B-TPTID   (IDXX)
+               MOVE    ONRECE-B-NAME   TO  SPA-GMN-T06-B-TNAME   (IDXX)
+               MOVE    ONRECE-B-SRYYM  TO  SPA-NAI-T06-B-TSRYYM  (IDXX)
                                            WRK-SYMD (1:6)
                MOVE    "01"            TO  WRK-SYMD (7:2)
                PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYM       TO  SPA-GMN-T06-B-TSRYYM   (IDX)
+               MOVE    WRK-HENYM       TO  SPA-GMN-T06-B-TSRYYM   (IDXX)
                MOVE    ONRECE-B-BIRTHDAY
-                                       TO  SPA-NAI-T06-B-TBIRTHDAY(IDX)
+                                       TO  SPA-NAI-T06-B-TBIRTHDAY(IDXX)
                                            WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-T06-B-TBIRTHDAY(IDX)
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-T06-B-TBIRTHDAY(IDXX)
                MOVE    ONRECE-B-RECESYUBETU
                                        TO  SPA-GMN-T06-B-TRECESYUBETU
-                                                                  (IDX)
+                                                                  (IDXX)
                MOVE    ONRECE-B-HKNJANUM
-                                       TO  SPA-GMN-T06-B-THKNJANUM(IDX)
+                                       TO  SPA-GMN-T06-B-THKNJANUM(IDXX)
                STRING  ONRECE-B-KIGO   DELIMITED   BY  SPACE
                        "　"            DELIMITED   BY  SIZE
                        ONRECE-B-NUM    DELIMITED   BY  SPACE
-                                       INTO    SPA-GMN-T06-B-TKIGO(IDX)
+                                       INTO    SPA-GMN-T06-B-TKIGO(IDXX)
                END-STRING
                MOVE    ONRECE-B-U-ERR-CODE
-                                       TO  SPA-GMN-T06-B-TERRCD   (IDX)
+                                       TO  SPA-GMN-T06-B-TERRCD   (IDXX)
                MOVE    ONRECE-B-U-ERR-MSG-1
-                                       TO  SPA-GMN-T06-B-TERR     (IDX)
+                                       TO  SPA-GMN-T06-B-TERR     (IDXX)
       *
                MOVE    ONRECE-B-RECEIPT-NO
                                        TO  SPA-NAI-T06-B-TRECEIPT-NO
-                                                                  (IDX)
-      ***      MOVE    ONRECE-B-SEX    TO  SPA-NAI-T06-B-TSEX     (IDX)
+                                                                  (IDXX)
+      ***      MOVE    ONRECE-B-SEX    TO  SPA-NAI-T06-B-TSEX     (IDXX)
       * 
                MOVE    "tbl_onrece_body"
                                        TO  MCP-TABLE
@@ -718,7 +722,7 @@
            MOVE    "key1"          TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-           MOVE    IDX             TO  SPA-GMN-T06-BODY-MAX
+           MOVE    IDXX            TO  SPA-GMN-T06-BODY-MAX
       *
            .
        3102-ONRECE-BODY-HENSYU-EXT.
