@@ -426,6 +426,7 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   5  )   OR
                               (TBL-SRYKA (IDX) =   SPACE )
+               MOVE    ORCSNYUINSHO-SYUDRCD    TO  TBL-DRCD (IDX)
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL       IDX2    >   5
                    IF      TBL-SRYKA (IDX) =   ORCSNYUINSHO-SRYKA
