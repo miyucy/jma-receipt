@@ -2231,8 +2231,12 @@
       *    請求済かどうか
            INITIALIZE                  ONRECE-B-REC
            MOVE    SPA-HOSPNUM     TO  ONRECE-B-HOSPNUM
-           MOVE    RECE10-TEISYUTUSAKI
-                                   TO  ONRECE-B-TEISYUTUSAKI
+           IF      RECE10-TEISYUTUSAKI =   "1"
+               MOVE    RECE10-TEISYUTUSAKI
+                                       TO  ONRECE-B-TEISYUTUSAKI
+           ELSE
+               MOVE    "2"             TO  ONRECE-B-TEISYUTUSAKI
+           END-IF
            MOVE    SPA-NAI-T06-SRYYM-H
                                    TO  ONRECE-B-SRYYM
            MOVE    RECE10-SRYYM    TO  ONRECE-B-SRYYM-B
@@ -2280,8 +2284,12 @@
       *    請求管理と同じ条件のデータの受付日を取得
            INITIALIZE                  ONRECE-B-REC
            MOVE    SPA-HOSPNUM     TO  ONRECE-B-HOSPNUM
-           MOVE    RECE10-TEISYUTUSAKI
-                                   TO  ONRECE-B-TEISYUTUSAKI
+           IF      RECE10-TEISYUTUSAKI =   "1"
+               MOVE    RECE10-TEISYUTUSAKI
+                                       TO  ONRECE-B-TEISYUTUSAKI
+           ELSE
+               MOVE    "2"             TO  ONRECE-B-TEISYUTUSAKI
+           END-IF
            MOVE    SPA-NAI-T06-SRYYM-H
                                    TO  ONRECE-B-SRYYM
            MOVE    RECE10-SRYYM    TO  ONRECE-B-SRYYM-B
@@ -2332,8 +2340,12 @@
                                    =   ZERO
                INITIALIZE                  ONRECE-B-REC
                MOVE    SPA-HOSPNUM     TO  ONRECE-B-HOSPNUM
+           IF      RECE10-TEISYUTUSAKI =   "1"
                MOVE    RECE10-TEISYUTUSAKI
                                        TO  ONRECE-B-TEISYUTUSAKI
+           ELSE
+               MOVE    "2"             TO  ONRECE-B-TEISYUTUSAKI
+           END-IF
                MOVE    SPA-NAI-T06-SRYYM-H
                                        TO  ONRECE-B-SRYYM
                MOVE    RECE10-SRYYM    TO  ONRECE-B-SRYYM-B
@@ -2351,14 +2363,15 @@
                MOVE    "key2"          TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
                IF      FLG-ONRECE-B    =   ZERO
-                   MOVE    ONRECE-B-UKEYMD TO  SPA-NAI-T09-TUKEYMD (IDX)
+                   MOVE    ONRECE-B-SYORIYMD
+                                           TO  SPA-NAI-T09-TUKEYMD (IDX)
                END-IF
            END-IF
       *??
            DISPLAY "IDX=" IDX
            DISPLAY "UKEYMD=" SPA-NAI-T09-TUKEYMD (IDX)
            DISPLAY "CREYMD=" SPA-NAI-T09-TCREYMD (IDX)
-           DISPLAY "CREYMD=" SPA-NAI-T09-TSEIKYU (IDX)
+           DISPLAY "SEIKYU=" SPA-NAI-T09-TSEIKYU (IDX)
       *??
       *
            MOVE    IDX             TO  SPA-GMN-T09-MAX
