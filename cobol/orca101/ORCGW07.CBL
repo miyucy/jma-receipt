@@ -99,6 +99,7 @@
       *  04.03.00    NACL-多々納  08/07/04  お薬手帳発行追加
       *  04.03.00    NACL-多々納  08/07/24  入院時初回加算自動発生追加
       *  04.03.00    NACL-太田    08/09/09  支払証明書印刷初期設定追加の追加
+      *  04.03.00    NACL-多々納  08/10/30  世帯主名自動記載区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -400,8 +401,17 @@
                            11  SPA-GMN-HIHKNJAKBN-MEI         PIC X(26).
                        09  SPA-GMN-HIHKNJAKBN-FLG-COMB.
                            11  SPA-GMN-HIHKNJAKBN-FLG-LIST PIC X(28)
-                                                            OCCURS  2.
+                                                            OCCURS  5.
                        09  SPA-GMN-HIHKNJAKBN-MAX             PIC 9(02).
+      *                世帯主名自動記載区分
+                       09  SPA-GMN-SETAIKBN-FLG-G.
+                           11  SPA-GMN-SETAIKBN-FLG          PIC X(01).
+                           11  SPA-GMN-SETAIKBN-F1           PIC X(01).
+                           11  SPA-GMN-SETAIKBN-MEI          PIC X(26).
+                       09  SPA-GMN-SETAIKBN-FLG-COMB.
+                           11  SPA-GMN-SETAIKBN-FLG-LIST     PIC X(28)
+                                                             OCCURS  5.
+                       09  SPA-GMN-SETAIKBN-MAX              PIC 9(02).
                    07  SPA-GMN-PAGE3-AREA.
       *                入金管理情報（診療行為機能情報）
                        09  SPA-GMN-SRYNYKNKNRKBN-G.
@@ -1465,6 +1475,12 @@
            MOVE    "1 家族は姓のみ"
                                    TO  SPA-GMN-HIHKNJAKBN-FLG-LIST (2)
            MOVE    2               TO  SPA-GMN-HIHKNJAKBN-MAX 
+      *    世帯主名自動記載区分
+           MOVE    "0 自動記載しない" 
+                                   TO  SPA-GMN-SETAIKBN-FLG-LIST (1)
+           MOVE    "1 自動記載する"
+                                   TO  SPA-GMN-SETAIKBN-FLG-LIST (2)
+           MOVE    2               TO  SPA-GMN-SETAIKBN-MAX 
       *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
@@ -2352,6 +2368,9 @@
       *        被保険者区分
                MOVE    SYS-1017-HIHKNJAKBN-FLG
                                        TO  SPA-GMN-HIHKNJAKBN-FLG
+      *        世帯主名自動記載区分
+               MOVE    SYS-1017-SETAIKBN-FLG
+                                       TO  SPA-GMN-SETAIKBN-FLG
            END-IF
       *
       *    初期設定
@@ -2470,6 +2489,26 @@
                    MOVE    SPA-GMN-HIHKNJAKBN-FLG-LIST(1)
                                            TO  SPA-GMN-HIHKNJAKBN-FLG-G
            END-EVALUATE
+      *    世帯主自動記載設定
+           IF      SPA-GMN-SETAIKBN-FLG    =   SPACE
+               MOVE    "1"                 TO  SPA-GMN-SETAIKBN-FLG
+           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SETAIKBN-MAX
+               IF      SPA-GMN-SETAIKBN-FLG
+                                       =   SPA-GMN-SETAIKBN-FLG-LIST
+                                                         (IDX)(1:1)
+                   MOVE    SPA-GMN-SETAIKBN-FLG-LIST(IDX)
+                                           TO  SPA-GMN-SETAIKBN-FLG-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-SETAIKBN-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-SETAIKBN-FLG-LIST(2)
+                                           TO  SPA-GMN-SETAIKBN-FLG-G
+           END-IF
       *
            MOVE    201                 TO  SPA-GMN-CUR
       *
@@ -3745,6 +3784,7 @@
            MOVE    W07-HONKZKKBN       TO  SPA-GMN-HONKZKKBN-FLG-G
            MOVE    W07-KZKNEN          TO  SPA-GMN-KZKNEN
            MOVE    W07-HIHKNJAKBN      TO  SPA-GMN-HIHKNJAKBN-FLG-G
+           MOVE    W07-SETAIKBN        TO  SPA-GMN-SETAIKBN-FLG-G
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
@@ -3973,6 +4013,10 @@
       *            被保険者名設定区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4107-HIHKNJAKBN-FLG-SEC
+                   END-IF
+      *            世帯主名自動記載区分
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-SETAIKBN-FLG-SEC
                    END-IF
                WHEN    "1038"
       *            ＤＯ初期表示
@@ -5366,6 +5410,31 @@
       *
           .
        4107-HIHKNJAKBN-FLG-EXT.
+           EXIT.
+      *****************************************************************
+      *    世帯主名自動記載区分チェック処理
+      *****************************************************************
+       4107-SETAIKBN-FLG-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-SETAIKBN-MAX) OR
+                              (FLG-OK  =   1    )
+               IF      SPA-GMN-SETAIKBN-FLG
+                                       =   SPA-GMN-SETAIKBN-FLG-LIST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-SETAIKBN-FLG-LIST(IDX)
+                                          TO  SPA-GMN-SETAIKBN-FLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    212             TO  SPA-GMN-CUR
+               MOVE    "1012"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4107-SETAIKBN-FLG-EXT.
            EXIT.
       *****************************************************************
       *    入金管理区分チェック処理（診療行為機能情報）
@@ -7166,6 +7235,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-HONKZKKBN-FLG   TO  SYS-1017-HONKZKKBN-FLG
            MOVE    SPA-GMN-KZKNEN          TO  SYS-1017-KZKNEN
            MOVE    SPA-GMN-HIHKNJAKBN-FLG  TO  SYS-1017-HIHKNJAKBN-FLG
+           MOVE    SPA-GMN-SETAIKBN-FLG    TO  SYS-1017-SETAIKBN-FLG
       *
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
@@ -7943,6 +8013,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-HIHKNJAKBN-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-HIHKNJAKBN-MAX  TO  W07-HIHKNJAKBN-COUNT
+      *    世帯主名自動記載区分
+           MOVE    SPA-GMN-SETAIKBN-FLG-G  TO  W07-SETAIKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-SETAIKBN-MAX
+               MOVE    SPA-GMN-SETAIKBN-FLG-LIST (IDX)
+                                       TO  W07-SETAIKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-SETAIKBN-MAX    TO  W07-SETAIKBN-COUNT
       *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
@@ -8656,6 +8734,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1011"
                    MOVE    "被保険者名自動記載区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "1012"
+                   MOVE    "世帯主名自動記載区分がありません。"
+                                                       TO  SPA-ERRMSG
       *    診療行為機能情報
                WHEN    "2001"
                    MOVE    "入金管理区分がありません。"
@@ -8997,6 +9078,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "KZKNEN"          TO   MCP-WIDGET
                WHEN    211
                    MOVE  "HIHKNJAKBN"      TO   MCP-WIDGET
+               WHEN    212
+                   MOVE  "SETAIKBN"        TO   MCP-WIDGET
       *診療行為情報
                WHEN    301
                    MOVE  "DOSRYKBN_FLG"    TO   MCP-WIDGET
@@ -9311,6 +9394,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "KZKNEN"
                    MOVE    211              TO  SPA-GMN-CUR
                WHEN    "HIHKNJAKBN"
+                   MOVE    212              TO  SPA-GMN-CUR
+               WHEN    "SETAIKBN"
                    MOVE    999              TO  SPA-GMN-CUR
       *    診療行為情報
                WHEN    "DOSRYKBN_FLG"

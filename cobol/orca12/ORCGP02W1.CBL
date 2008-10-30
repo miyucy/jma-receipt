@@ -886,18 +886,7 @@
                    PERFORM 4910-RSKOH-PARAOUT-SEC
       *        カナ氏名検索
                WHEN    "P100"
-                   IF  ( SPA-GMN-P100-FLG-BTN  NOT =   ZERO )
-                       MOVE    SPA-GMN-P100-KAKUTEI-NAME
-                                               TO  SPA-GMN-NAME
-                                                   SPA-GMN-OLD-NAME
-                                                   SPA-GMN-NAMEH
-                       IF  SPA-GMN-SETAINUSI      =   SPACE
-                           MOVE    SPA-GMN-NAME   TO  SPA-GMN-SETAINUSI
-                       END-IF
-                   END-IF
-      *
-                   MOVE    2                   TO  SPA-GMN-CUR
-      *----(01.00.15) LINE ADD END   ---------------------------------
+                   PERFORM 3010-P100-HEN-SEC
       *        患者複写
                WHEN    "P02E"
       *            保険組合せ作成
@@ -915,9 +904,31 @@
                    MOVE    1                  TO  SPA-GMN-CUR
            END-EVALUATE
       *
-      *
            .
        300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    カナ氏名検索画面より処理
+      *****************************************************************
+       3010-P100-HEN-SEC              SECTION.
+      *
+           IF    ( SPA-GMN-P100-FLG-BTN  NOT =   ZERO )
+               MOVE    SPA-GMN-P100-KAKUTEI-NAME
+                                           TO  SPA-GMN-NAME
+                                               SPA-GMN-OLD-NAME
+                                               SPA-GMN-NAMEH
+      *        世帯主名
+               IF  SPA-GMN-SETAINUSI      =   SPACE
+                   IF      SPA-NAI-SETAIKBN-FLG    =   "1"
+                       MOVE    SPA-GMN-NAME    TO  SPA-GMN-SETAINUSI
+                   END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    2                   TO  SPA-GMN-CUR
+           .
+       3010-P100-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3213,7 +3224,9 @@
            MOVE    SPA-GMN-NAME        TO  SPA-GMN-NAMEH
       *    世帯主へ
            IF      SPA-GMN-SETAINUSI   =   SPACE
-               MOVE    SPA-GMN-NAME        TO  SPA-GMN-SETAINUSI
+               IF      SPA-NAI-SETAIKBN-FLG    =   "1"
+                   MOVE    SPA-GMN-NAME        TO  SPA-GMN-SETAINUSI
+               END-IF
            END-IF
       *
       *    同姓同名

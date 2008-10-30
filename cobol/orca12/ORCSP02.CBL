@@ -879,6 +879,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        ÈïÊÝ¸±¼ÔÌ¾ÀßÄê¶èÊ¬
                MOVE    SYS-1017-HIHKNJAKBN-FLG TO
                                                SPA-NAI-HIHKNJAKBN-FLG
+      *        À¤ÂÓ¼çÌ¾¼«Æ°µ­ºÜ¶èÊ¬
+               MOVE    SYS-1017-SETAIKBN-FLG
+                                           TO  SPA-NAI-SETAIKBN-FLG
            ELSE
       *        Ì¤ÅÐÏ¿¤Î»þ¡¢¥¼¥í¤È¤¹¤ë
                MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
@@ -889,6 +892,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    15                      TO  SPA-NAI-KZKNEN
       *        ÈïÊÝ¸±¼ÔÌ¾ÀßÄê¶èÊ¬
                MOVE    ZERO                TO  SPA-NAI-HIHKNJAKBN-FLG
+      *        À¤ÂÓ¼çÌ¾¼«Æ°µ­ºÜ¶èÊ¬
+               MOVE    "1"                 TO  SPA-NAI-SETAIKBN-FLG
            END-IF
            IF      SPA-NAI-DOUMEI-CHKFLG   =   SPACE
                MOVE    ZERO                TO  SPA-NAI-DOUMEI-CHKFLG
@@ -909,6 +914,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-NAI-HONKZKKBN-FLG   =   SPACE
                MOVE    "0"                 TO  SPA-NAI-HONKZKKBN-FLG
+           END-IF
+      *
+           IF      SPA-NAI-SETAIKBN-FLG    =   SPACE
+               MOVE    "1"                 TO  SPA-NAI-SETAIKBN-FLG
            END-IF
       *
            .
@@ -2511,15 +2520,28 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 4001-SEIWA-YMDEDIT-SEC
            MOVE    WRK-HENYMD          TO  SPA-PTKOH-KAKUNINYMDW (IDX)
       *
+           IF     (PTKOH-KOHNUM        =   "027") AND
+                  (PTKOH-TEKSTYMD      >=  "20010101" )  AND
+                  (PTKOH-TEKEDYMD      <=  "20020930" )
+               IF     (PTKOH-PAYKBN    NOT =   ZERO   )
+                   MOVE    ZERO                TO  PTKOH-PAYKBN
+                   MOVE    PTKOH-PAYKBN        TO  SPA-PTKOH-PAYKBN
+                                                                (IDX)
+               END-IF
+           END-IF
       *    ÊÝ¸±¸øÈñ¶èÊ¬ÊÔ½¸
            MOVE    PTKOH-KOHNUM        TO  WRK-HKNNUM
            MOVE    PTKOH-PAYKBN        TO  WRK-PAYKBN
            MOVE    PTKOH-TEKSTYMD      TO  WRK-TEKSTYMD
            MOVE    PTKOH-TEKEDYMD      TO  WRK-TEKEDYMD
+      *
            IF     (WRK-HKNNUM          =   "027") AND
                   (WRK-PAYKBN          =   ZERO OR SPACE)
-               MOVE    SPA-NAI-HOSPSBT         TO  WRK-PAYKBN(1:1)
-               MOVE    SPA-NAI-ROUPAYKBN       TO  WRK-PAYKBN(2:1)
+      *        £È£±£²¡¥£±£²¡¥£³£±¤Þ¤Ç¤Î»ÙÊ§¶èÊ¬¤Ï£°£°
+               IF      WRK-TEKEDYMD        >=  "20010101"
+                   MOVE    SPA-NAI-HOSPSBT         TO  WRK-PAYKBN(1:1)
+                   MOVE    SPA-NAI-ROUPAYKBN       TO  WRK-PAYKBN(2:1)
+               END-IF
            END-IF
            PERFORM 1002211-HKNNUM-SET-SEC
            IF     (PTKOH-KOHNUM        =   "027" )  AND
@@ -4006,7 +4028,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1009-REC
+     **********MOVE    MCPDATA-REC         TO  SYS-1009-REC
                MOVE    ZERO                TO  FLG-SYSKANRI
            ELSE
                MOVE    1                   TO  FLG-SYSKANRI

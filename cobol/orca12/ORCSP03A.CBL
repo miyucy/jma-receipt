@@ -69,6 +69,7 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-KAKUTEI         PIC 9(01).
            03  FLG-KOH-CHK         PIC 9(01).
+           03  FLG-HONKZKKBN       PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -1228,6 +1229,11 @@
                    PERFORM 3101101-HOJO-KYURATE-SEC
                END-IF
            END-IF
+           IF     (SPA-MAE-HONKZKKBN   =   SPA-GMN-HONKZKKBN)
+               MOVE    ZERO            TO  FLG-HONKZKKBN
+           ELSE
+               MOVE    1               TO  FLG-HONKZKKBN
+           END-IF
            MOVE    SPA-GMN-HONKZKKBN   TO  SPA-MAE-HONKZKKBN
       *
            .
@@ -1811,21 +1817,23 @@
            IF     (SPA-GMN-HKNNUM      NOT =   SPACE  )
            AND    (SPA-NAI-HIHKNFLG        =   ZERO   )
       *
+               EVALUATE    SPA-GMN-HONKZKKBN
+               WHEN    "1"
       *        本人の場合、氏名を編集する
-               IF     (SPA-GMN-HONKZKKBN       =   "1" )
                    IF     (SPA-GMN-HIHKNJANAME =   SPACE     )  OR
                          ((SPA-HEN-FLG         =   1         ) AND
                           (SPA-HZN-NAME        =   SPA-GMN-HIHKNJANAME))
                        MOVE    SPA-GMN-NAME    TO  SPA-GMN-HIHKNJANAME
                    END-IF
-               ELSE
+               WHEN    "2"
       *            家族の場合、世帯主名か氏名
                    IF     (SPA-GMN-HIHKNJANAME    =   SPACE )  OR
-                          (SPA-GMN-HIHKNJANAME    =   SPA-GMN-NAME AND
-                           SPA-HZN-NAME           =   SPACE  )
+                         ((SPA-GMN-HIHKNJANAME    =   SPA-GMN-NAME ) AND
+                          (SPA-HZN-NAME           =   SPACE   OR
+                           FLG-HONKZKKBN          =   1      ) )
                        PERFORM 10011-HIHKNJANAME-HENSYU-SEC
                    END-IF
-               END-IF
+               END-EVALUATE
            END-IF
       *    記号全角チェック
            IF      SPA-GMN-HIHKNJANAME    NOT =   SPACE
@@ -1848,13 +1856,13 @@
                                                OR  "067"
                                                OR  "068"
                                                OR  "069" )
+                   OR  (SPA-NAI-SETAIKBN-FLG   NOT =   "1"  )
                    CONTINUE
                ELSE
                    MOVE    SPA-GMN-HIHKNJANAME     TO  SPA-GMN-SETAINUSI
                END-IF
            END-IF
            .
-      *
        1001-HIHKNJANAME-CHK-EXT.
            EXIT.
       *
@@ -1880,15 +1888,17 @@
                                        OR  "068"
                                        OR  "069"  )
       *           標準設定の時のみ家族でも姓名編集
-             AND  (SPA-NAI-HIHKNJAKBN-FLG  =   "0" )
+             AND  (SPA-NAI-HIHKNJAKBN-FLG  =   "0"  )
                IF      SPA-GMN-HIHKNJANAME     =   SPACE
                    MOVE    SPA-GMN-NAME    TO  SPA-GMN-HIHKNJANAME
                END-IF
                IF     (SPA-GMN-SETAINUSI   =   SPACE )  OR
                       (SPA-GMN-SETAINUSI   =   SPA-GMN-NAME)
-      *             世帯主名が空白で氏名と同じ時、姓だけ
-                    MOVE    SPA-GMN-NAME(1:IDX-S1)
+                   IF      SPA-NAI-SETAIKBN-FLG   =   "1"
+      *            世帯主名が空白で氏名と同じ時、姓だけ
+                        MOVE    SPA-GMN-NAME(1:IDX-S1)
                                                  TO  SPA-GMN-SETAINUSI
+                   END-IF
                END-IF
            ELSE
       *        国保以外
@@ -1899,8 +1909,10 @@
                    MOVE    SPA-GMN-NAME(1:IDX-S1)
                                                  TO  SPA-GMN-HIHKNJANAME
       *            世帯主名が空白で氏名と同じ時、姓だけ
-                   MOVE    SPA-GMN-NAME(1:IDX-S1)
+                   IF      SPA-NAI-SETAIKBN-FLG   =   "1"
+                       MOVE    SPA-GMN-NAME(1:IDX-S1)
                                                  TO  SPA-GMN-SETAINUSI
+                   END-IF
                END-IF
            END-IF
            .

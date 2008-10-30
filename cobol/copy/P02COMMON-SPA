@@ -79,6 +79,8 @@
            03  SPA-NAI-KZKNEN             PIC 9(02).
       *    被保険者名設定区分
            03  SPA-NAI-HIHKNJAKBN-FLG      PIC X(01).
+      *    世帯主名自動記載区分
+           03  SPA-NAI-SETAIKBN-FLG       PIC X(01).
       *
       *    更新時警告あり
            03  SPA-KEI2-FLG               PIC 9(01).
