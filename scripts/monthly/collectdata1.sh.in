@@ -19,6 +19,7 @@ fi
 #        $6  JOBID
 #        $7  SHELLID
 #        $8  UPLOAD (0:送信なし、1:送信あり、送信のみ)
+#        $9  HOSPID
 #-------------------------------------------#
 
 COLLECTG=collectg.csv
@@ -116,7 +117,7 @@ function make_upload_file () {
 
   if  [ $8 -ne '0' ]; then
     echo "収集データ送信処理 起動" 2>&1 | tee -a $LOGFILE
-    $DASUPLOAD $2 &
+    $DASUPLOAD $2 $9 &
     rm -f $DASDIR/$2/tmp/$COLLECTG
     rm -f $DASDIR/$2/tmp/$COLLECTN
   fi

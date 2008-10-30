@@ -65,9 +65,11 @@
       *    フラグ領域
        01  STS-AREA.
            03  STS-DATA            PIC X(02).
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
+           03  FLG-JOBLOG          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -107,6 +109,22 @@
            03  FILLER             PIC X(11)   VALUE
                "}".
       *
+       01  SHELL-AREA.
+           05  SHELL-NAME         PIC X(28) VALUE
+                                  "scripts/allways/das-check.sh".
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    ジョブログ
+       01  JOBLOG-REC.
+           COPY    "CPJOBLOG.INC".
+      *
+      *    シェル起動
+           COPY    "CPSHELLTBL.INC".
+           COPY    "CPMKPASS.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -114,9 +132,9 @@
       *    日付サブルーチン領域
            COPY  "CPORCSDAY.INC".
            COPY  "CPORCSLNK.INC".
+      *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *
       *
            COPY    "MCPDATA.INC".
       *
@@ -143,6 +161,7 @@
            COPY    "MVER.INC".
            COPY    "M98.INC".
            COPY    "MUID.INC".
+           COPY    "M99.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -262,6 +281,7 @@
       *
            INITIALIZE                  SPA-MUID-AREA
            MOVE    1                   TO  SPA-MUID-CUR
+           MOVE    SPA-HOSPID          TO  SPA-MUID-HOSPID
            .
        310-SPASET-EXT.
            EXIT.
@@ -275,6 +295,9 @@
       *        終了
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
+      *        タイマーイベント
+               WHEN    "CLICKED"   ALSO    "pandatimer1"
+                   PERFORM 213-JYOKYO-SEC
       *        登録更新
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 212-TOROKU-SEC
@@ -305,6 +328,7 @@
       *
            MOVE    MUID-USER           TO  SPA-MUID-USER
            MOVE    MUID-PASSWORD       TO  SPA-MUID-PASSWORD
+      *****MOVE    MUID-HOSPID         TO  SPA-MUID-HOSPID
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -402,8 +426,8 @@
                PERFORM 2120-TXT-DATA-OUT-SEC
            END-IF
            IF      SPA-ERRCD           =   SPACE
+               MOVE    1               TO  SPA-MUID-DURATION
                MOVE    "1000"          TO  SPA-ERRCD
-               MOVE    1               TO  SPA-MUID-END
            END-IF
            .
        212-TOROKU-EXT.
@@ -461,6 +485,23 @@
                PERFORM 21201-DATA-WRITE-SEC
            END-IF
            CLOSE                       USER-FILE
+      *
+      *    シェル起動処理
+           MOVE    SPACE           TO  SHELLTBL
+           INITIALIZE                  ORCSMKPASSAREA
+           MOVE    SHELL-NAME      TO  MKPASS-IN-01
+           MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG1
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG2
+           CALL    "ORCSMKPASS"        USING
+                                       ORCSMKPASSAREA
+           MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
+           MOVE    SHELLTBL        TO  MCPDATA-REC
+           MOVE    "SHELL"         TO  MCP-FUNC
+           MOVE    "shell"         TO  MCP-TABLE
+           MOVE    "shell"         TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
            .
        2120-TXT-DATA-OUT-EXT.
            EXIT.
@@ -498,6 +539,39 @@
        210-BACK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    状況
+      *****************************************************************
+       213-JYOKYO-SEC              SECTION.
+      *
+           PERFORM 900-JOBLOG-READ-SEC
+      *
+           IF      FLG-JOBLOG      =   1
+               MOVE    5               TO  SPA-MUID-DURATION
+               MOVE    SPACE           TO  SPA-ERRCD
+           ELSE
+               MOVE    ZERO            TO  SPA-MUID-DURATION
+               IF      JOBLOG-ERRCD    =   "200"
+                                       OR  "401"
+                                       OR  "403"
+                                       OR  "404"
+                                       OR  "999"
+                   MOVE    SPACE           TO  SPA-ERRCD
+                   STRING  "0"                 DELIMITED BY SIZE
+                           JOBLOG-ERRCD        DELIMITED BY SIZE
+                           INTO                SPA-ERRCD
+                   END-STRING
+                   IF      JOBLOG-ERRCD    =   "200"
+                       MOVE    1               TO  SPA-MUID-END
+                   END-IF
+               ELSE
+                   MOVE    JOBLOG-ERRCD    TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       213-JYOKYO-EXT.
+           EXIT.
       *
       *****************************************************************
       *    自画面編集処理
@@ -535,6 +609,8 @@
       *
            MOVE    SPA-MUID-USER       TO  MUID-USER
            MOVE    SPA-MUID-PASSWORD   TO  MUID-PASSWORD
+           MOVE    SPA-MUID-HOSPID     TO  MUID-HOSPID
+           MOVE    SPA-MUID-DURATION   TO  MUID-DURATION
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -585,25 +661,50 @@
       *
             EVALUATE    SPA-ERRCD
                 WHEN    "0001"
-                    MOVE    "ＵＳＥＲ入力エラー"
+                    MOVE    "定点参加番号が不正です。"
                                                 TO  SPA-ERRMSG
                 WHEN    "0002"
-                    MOVE    "ＵＳＥＲを入力して下さい。"
+                    MOVE    "定点参加番号を入力して下さい。"
                                                 TO  SPA-ERRMSG
                 WHEN    "0003"
-                    MOVE    "ＰＡＳＳＷＯＲＤ入力エラー"
+                    MOVE    "パスワードが不正です。"
                                                 TO  SPA-ERRMSG
                 WHEN    "0004"
-                    MOVE    "ＰＡＳＳＷＯＲＤを入力して下さい。"
+                    MOVE    "パスワードを入力して下さい。"
                                                 TO  SPA-ERRMSG
                 WHEN    "1000"
-                    MOVE    "データ出力が正常終了しました。"
-                                                TO  SPA-ERRMSG
+                    MOVE    SPACE               TO  SPA-ERRMSG
+                    STRING  "接続確認中です。２〜３秒程待って"
+                                              DELIMITED BY SIZE
+                            "からボタンをクリックして下さい。"
+                                              DELIMITED BY SIZE
+                                              INTO  SPA-ERRMSG
+                    END-STRING
                 WHEN    "9000"
-                    MOVE    "データＯＰＥＮがエラーです"
+                    MOVE    "設定ファイルのＯＰＥＮに失敗しました。"
                                                 TO  SPA-ERRMSG
                 WHEN    "9001"
-                    MOVE    "データ出力がエラーです"
+                    MOVE    "設定ファイルの出力に失敗しました。"
+                                                TO  SPA-ERRMSG
+                WHEN    "0200"
+                    MOVE    "正しく接続できました。"
+                                                TO  SPA-ERRMSG
+                WHEN    "0401"
+                    MOVE    SPACE               TO  SPA-ERRMSG
+                    STRING  "定点参加番号またはパスワードに"
+                                              DELIMITED BY SIZE
+                            "誤りがあります。"
+                                              DELIMITED BY SIZE
+                                              INTO  SPA-ERRMSG
+                    END-STRING
+                WHEN    "0403"
+                    MOVE    "医療機関ＩＤに誤りがあります。"
+                                                TO  SPA-ERRMSG
+                WHEN    "0404"
+                    MOVE    "ファイルが見つかりません。"
+                                                TO  SPA-ERRMSG
+                WHEN    "0999"
+                    MOVE    "収集サーバが見つかりません。"
                                                 TO  SPA-ERRMSG
                 WHEN    OTHER
                     MOVE    SPACE               TO  SPA-ERRMSG
@@ -653,11 +754,55 @@
            EXIT.
       *
       *****************************************************************
+      *    ジョブログ読み込み
+      *****************************************************************
+       900-JOBLOG-READ-SEC         SECTION.
+      *
+           INITIALIZE                  JOBLOG-REC
+           MOVE    SPA-HOSPNUM     TO  JOBLOG-HOSPNUM
+           MOVE    "das-check"     TO  JOBLOG-PROGNAME
+           MOVE    JOBLOG-REC      TO  MCPDATA-REC
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "tbl_joblog"    TO  MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_joblog"    TO  MCP-TABLE
+               MOVE    "key4"          TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC          =   ZERO
+                   MOVE    ZERO            TO  FLG-JOBLOG
+                   MOVE    MCPDATA-REC     TO  JOBLOG-REC
+               ELSE
+                   MOVE    1               TO  FLG-JOBLOG
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-JOBLOG
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR" TO  MCP-FUNC
+           MOVE    "tbl_joblog"    TO  MCP-TABLE
+           MOVE    "key4"          TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+            .
+       900-JOBLOG-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE   "PUTWINDOW"          TO  MCP-FUNC.
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC.
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA

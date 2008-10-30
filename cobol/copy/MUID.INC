@@ -4,3 +4,6 @@
                 04  MUID-VALUE  PIC X(30).
               03  MUID-PASSWORD.
                 04  MUID-VALUE  PIC X(30).
+              03  MUID-HOSPID.
+                04  MUID-VALUE  PIC X(30).
+              03  MUID-DURATION PIC S9(09) BINARY.

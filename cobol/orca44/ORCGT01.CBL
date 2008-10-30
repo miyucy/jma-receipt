@@ -4181,6 +4181,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            MOVE    WRK-CONS-JOB-SHELLID-COLLECT
                                    TO  SHELLTBL-ARG7
            MOVE    WRK-DASUPLOAD   TO  SHELLTBL-ARG8
+           MOVE    SPA-HOSPID      TO  SHELLTBL-ARG9
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

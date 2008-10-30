@@ -10,11 +10,13 @@ fi
 . $JMARECEIPT_ENV
 
 HOSPNUM=$1
+HOSPID=$2
 
 export CLIENT_CONFIG_FILE="$SYSCONFDIR/das-upload.d/das-upload${HOSPNUM}.conf"
 if [ ! -f $CLIENT_CONFIG_FILE ]; then
     exit
 fi
+export DAS_CHECK_HOSPID=$HOSPID
 
 FILE_PREFIX="collect-"
 UPLOAD_COMMAND=`dirname $0`/das-upload.rb

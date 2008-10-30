@@ -1,0 +1,33 @@
+#!/bin/bash
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+HOSPNUM=$1
+HOSPID=$2
+LOGDIR=/var/log/jma-receipt
+
+export DAS_CHECK_HOSPID=$HOSPID
+export CLIENT_CONFIG_FILE="$SYSCONFDIR/das-upload.d/das-upload${HOSPNUM}.conf"
+if [ ! -f $CLIENT_CONFIG_FILE ]; then
+    exit
+fi
+
+UPLOAD_COMMAND=$SCRIPTSDIR/monthly/das-upload.rb
+LOGFILE=$LOGDIR/"$HOSPNUM"das-check.log
+
+# delete login check log
+$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-check","D",,,,,$HOSPNUM 2>&1 | tee -a $LOGFILE
+
+RESULT=`$UPLOAD_COMMAND -a 2>&1|head -1`
+if [ "LOGIN OK" = "$RESULT" ]; then
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-check","2","0","","200","login success",$HOSPNUM 2>&1 | tee -a $LOGFILE
+else
+  $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOBLOG -parameter "das-check","2","1","","${RESULT:0:3}","${RESULT:4}",$HOSPNUM 2>&1 | tee -a $LOGFILE
+fi

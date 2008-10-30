@@ -127,18 +127,24 @@ grpsys COPY    "COMMON-SPA".
       *
            PERFORM 2001-JOBLOG-SET-SEC
       *
-           PERFORM 2002-JOBLOG-READ-SEC
-      *
-           IF      FLG-JOBLOG          =  ZERO
-               PERFORM 2001-JOBLOG-SET-SEC
-               MOVE    "key"              TO  MCP-PATHNAME
-               MOVE    "DBUPDATE"         TO  MCP-FUNC
-               PERFORM 900-JOBLOG-ACC-SEC
+           IF    ( WRK-PARA-PROGNAME   =  "das-check" )
+           AND   ( WRK-PARA-KBNID      =  "D" )
+               PERFORM 2002-JOBLOG-DELETE-1-SEC
            ELSE
-               PERFORM 2001-JOBLOG-SET-SEC
-               MOVE    "key"              TO  MCP-PATHNAME
-               MOVE    "DBINSERT"         TO  MCP-FUNC
-               PERFORM 900-JOBLOG-ACC-SEC
+      *
+               PERFORM 2002-JOBLOG-READ-SEC
+      *
+               IF      FLG-JOBLOG          =  ZERO
+                   PERFORM 2001-JOBLOG-SET-SEC
+                   MOVE    "key"              TO  MCP-PATHNAME
+                   MOVE    "DBUPDATE"         TO  MCP-FUNC
+                   PERFORM 900-JOBLOG-ACC-SEC
+               ELSE
+                   PERFORM 2001-JOBLOG-SET-SEC
+                   MOVE    "key"              TO  MCP-PATHNAME
+                   MOVE    "DBINSERT"         TO  MCP-FUNC
+                   PERFORM 900-JOBLOG-ACC-SEC
+               END-IF
            END-IF
            .
        200-MAIN-EXT.
@@ -208,6 +214,20 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            .
        2002-JOBLOG-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    JOBLOGºï½ü
+      *****************************************************************
+       2002-JOBLOG-DELETE-1-SEC        SECTION.
+      *
+           MOVE    JOBLOG-REC          TO  MCPDATA-REC
+           MOVE    "tbl_joblog"        TO  MCP-TABLE
+           MOVE    "del2"              TO  MCP-PATHNAME
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           .
+       2002-JOBLOG-DELETE-1-EXT.
            EXIT.
       *
       *****************************************************************

@@ -194,6 +194,11 @@
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *
            03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   100.     
+      *    ジョブ管理ＤＢのキー値（データ収集）  
+           03  WRK-CONS-JOB-SHELLID-COLLECT
+                                  PIC X(08)    VALUE   "COLLECT".
+           03  WRK-CONS-JOB-JOBID-COLLECT
+                                   PIC 9(07)   VALUE   1.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -255,6 +260,7 @@
            COPY    "MVER.INC".
            COPY    "M98.INC".
            COPY    "MUID.INC".
+           COPY    "M99.INC".
       *
       *
        PROCEDURE                   DIVISION    USING
@@ -482,6 +488,9 @@
       *     処理確認
       *        WHEN    "CLICKED"       ALSO    "B13"
       ****         PERFORM 490-KAKUNIN-SEC
+      *     データ収集処理確認
+               WHEN    "CLICKED"       ALSO    "B13"
+                  PERFORM 490-COLLECT-KAKUNIN-SEC
       *     設定
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 490-SETTEI-SYORI-SEC
@@ -894,6 +903,86 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    データ収集処理確認処理
+      *****************************************************************
+       490-COLLECT-KAKUNIN-SEC     SECTION.
+      * 
+           INITIALIZE                  M99
+           MOVE    ZERO            TO  M99-COUNT
+      *
+           MOVE    5               TO  M99-DURATION
+      *
+      *    ジョブ管理チェック処理
+           MOVE    "CHK"           TO  SJOBKANRI-MODE
+           INITIALIZE                  JOBKANRI-REC
+           MOVE    WRK-CONS-JOB-JOBID-COLLECT
+                                   TO  JOB-JOBID
+                                       IDX
+           MOVE    WRK-CONS-JOB-SHELLID-COLLECT
+                                   TO  JOB-SHELLID
+           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
+           CALL    "ORCSJOB"           USING
+                                       ORCSJOBKANRIAREA
+                                       JOBKANRI-REC
+                                       SPA-AREA
+           IF      SJOBKANRI-RETURN    =   ZERO
+               MOVE    JOB-JOBID           TO  M99-RENNUM   (IDX)
+               MOVE    JOB-SHELLMSG        TO  M99-SHORINM  (IDX)
+               MOVE    JOB-STARTTIME(1:2)  TO  WRK-HH
+               MOVE    JOB-STARTTIME(3:2)  TO  WRK-MM
+               MOVE    JOB-STARTTIME(5:2)  TO  WRK-SS
+               MOVE    WRK-HENTIME         TO  M99-STARTTIME(IDX)
+               MOVE    JOB-ENDTIME(1:2)    TO  WRK-HH
+               MOVE    JOB-ENDTIME(3:2)    TO  WRK-MM
+               MOVE    JOB-ENDTIME(5:2)    TO  WRK-SS
+               MOVE    WRK-HENTIME         TO  M99-ENDTIME  (IDX)
+               MOVE    JOB-UPDCNT          TO  WRK-PAGE
+               MOVE    WRK-PAGE            TO  M99-PAGE     (IDX)
+               MOVE    JOB-YOBI            TO  M99-ERRMSG   (IDX)
+               IF      JOB-ENDYMD      =   SPACE
+                   MOVE    "処理中です"        TO  M99-MSG
+               ELSE
+                   IF      JOB-ERRCD       =   SPACE
+                       CONTINUE
+                   ELSE
+                       STRING  JOB-YOBI        DELIMITED  BY  SPACE
+                               "【"            DELIMITED  BY  SIZE
+                               JOB-SHELLMSG    DELIMITED  BY  SPACE
+                               "】"            DELIMITED  BY  SIZE
+                                         INTO  M99-MSG
+                       END-STRING
+                   END-IF
+                   MOVE    IDX                 TO  M99-COUNT
+               END-IF
+           END-IF
+      *
+           MOVE    "B11"               TO  MCP-WIDGET
+           IF    ( M99-MSG             =   SPACE )
+               MOVE    "B01"           TO  MCP-WIDGET
+               IF    ( M99-COUNT       >   ZERO )
+                   MOVE    "処理は正常に終了しました"
+                                               TO  M99-MSG
+               ELSE
+                   MOVE    "該当する処理はありません"
+                                               TO  M99-MSG
+               END-IF
+           END-IF
+      *
+           MOVE    "M98"                 TO  SPA-MOTOPG
+           MOVE    "M99"                 TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                 TO  MCP-PUTTYPE
+           MOVE    "M99"                 TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END 
+      *
+           .
+       490-COLLECT-KAKUNIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    設定処理
       *****************************************************************
        490-SETTEI-SYORI-SEC        SECTION.
@@ -937,6 +1026,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
        4902-MUID-SET-SEC               SECTION.
       *
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM
+           MOVE    SPA-HOSPID          TO  SPA-MUID-HOSPID
+           MOVE    SPA-MUID-HOSPID     TO  MUID-HOSPID
       *
            OPEN    INPUT               USER-FILE
            IF      STS-DATA        NOT =   ZERO

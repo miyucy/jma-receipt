@@ -6,5 +6,11 @@ MUID	{
 		PASSWORD	{
 			value	varchar(30);
 		};
+		HOSPID	{
+			value	varchar(30);
+		};
+		pandatimer1     {
+			duration        int;
+		};
 	};
 };

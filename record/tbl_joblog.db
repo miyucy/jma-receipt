@@ -71,3 +71,22 @@ path	all		{
 		;
 	};
 };
+path	key4		{ 	
+	DBSELECT	{
+		DECLARE tbl_joblog_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_joblog
+	WHERE 	HOSPNUM	= :HOSPNUM
+		AND   PROGNAME = 	:PROGNAME
+		;
+	};
+};
+path	del2	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_joblog
+	WHERE 	HOSPNUM	= :HOSPNUM
+			AND   PROGNAME = 	:PROGNAME
+		;
+	};
+};

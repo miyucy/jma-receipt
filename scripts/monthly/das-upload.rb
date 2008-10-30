@@ -62,12 +62,30 @@ module OrcaDAS
       formdata = OrcaDAS::FormData.new
       data = File.open(filename).read
       formdata.add_data(data, filename)
+      form = OrcaDAS::FormData::Content.new("id",Digest::SHA1.hexdigest(DAS_CHECK_HOSPID),"id")
+      form.encoding = "quoted-printable"
+      formdata.add(form)
       http_post(url, formdata.header, formdata.body, config){ |res|
         if res.code.to_i != 200
           raise res.code + " " + res.msg
         end
       }
       STDERR.puts "UP #{filename}"
+      return true
+    end
+
+    def login_check(config=@config)
+      url = config["Host"] + config["Path"]
+      formdata = OrcaDAS::FormData.new
+      form = OrcaDAS::FormData::Content.new("id",Digest::SHA1.hexdigest(DAS_CHECK_HOSPID),"id")
+      form.encoding = "quoted-printable"
+      formdata.add(form)
+      http_post(url, formdata.header, formdata.body, config){ |res|
+        if res.code.to_i != 200
+          raise res.code + " " + res.msg
+        end
+      }
+      STDERR.puts "LOGIN OK"
       return true
     end
 
@@ -98,7 +116,9 @@ module OrcaDAS
       num = 3
       num.times{
         begin
-          if opt == "-c"
+          if opt == "-a"
+            exit!(das.login_check ? 0 : 1)
+          elsif opt == "-c"
             exit!(das.server_check ? 0 : 1)
           else
             exit!(das.run(opt) ? 0 : 1)
@@ -116,5 +136,6 @@ module OrcaDAS
   end
 end
 
+DAS_CHECK_HOSPID = ENV['DAS_CHECK_HOSPID']
 CLIENT_CONFIG_FILE = ENV['CLIENT_CONFIG_FILE']
 OrcaDAS::Command.main(ARGV) if $0 == __FILE__

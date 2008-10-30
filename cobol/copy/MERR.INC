@@ -21,5 +21,5 @@
       ************************************************************
          02  MERR.
             03  MERR-FIXED1.
-              04  MERR-ERRCODE    PIC X(11).
-              04  MERR-ERRMSG PIC X(61).
+              04  MERR-ERRCODE    PIC X(10).
+              04  MERR-ERRMSG PIC X(80).
