@@ -120,8 +120,11 @@
                         08  W11-VALUE   PIC X(20).
                       07  W11-ORCAORGNM08N.
                         08  W11-VALUE   PIC X(20).
-                      07  W11-ORCAORGNM09N.
-                        08  W11-VALUE   PIC X(20).
+                      07  W11-ORCAORGNM-N09COMBO.
+                        08  W11-ORCAORGNM-N09  PIC X(20).
+                        08  W11-ORCAORGNM-N09-COUNT  PIC S9(9)   BINARY.
+                        08  W11-ORCAORGNM-N09LST PIC X(20)
+                                               OCCURS  5 TIMES.
                       07  W11-ORCAORGNM10N.
                         08  W11-VALUE   PIC X(20).
                       07  W11-ORCACSTNM05N.

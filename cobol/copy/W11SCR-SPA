@@ -115,6 +115,11 @@
                                                    OCCURS  5.
                            11  SPA-GMN-ORGPGNM03N-MAX
                                                    PIC 9(04).
+                       09  SPA-GMN-ORGPGNM09NLST-G.
+                           11  SPA-GMN-ORGPGNM09NMEIL PIC X(20)
+                                                   OCCURS  5.
+                           11  SPA-GMN-ORGPGNM09N-MAX
+                                                   PIC 9(04).
       *
       *                院外処方せん
                        09  SPA-GMN-ORGPGNM02LST-G.
