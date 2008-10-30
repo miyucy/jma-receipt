@@ -216,14 +216,6 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *TEST
-           DISPLAY "ORCSNYUINSH START"
-               ",SPA-PTID:" SPA-PTID ",SPA-PTNUM:" SPA-PTNUM
-               ",ORCSNYUINSHO-KBN:" ORCSNYUINSHO-KBN
-               ",ORCSNYUINSHO-NYUINYMD:" ORCSNYUINSHO-NYUINYMD
-               ",ORCSNYUINSHO-TAIINYMD:" ORCSNYUINSHO-TAIINYMD
-               ",SRYKA:" ORCSNYUINSHO-SRYKA (1)
-      *TEST
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
