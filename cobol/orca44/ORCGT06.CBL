@@ -1008,7 +1008,7 @@
                                                TO  SPA-GMN-T06-SRYYM-H
                        END-EVALUATE
                    WHEN    "1006"
-                       IF      SPA-NAI-T06-SELNUM  >   ZERO
+                       IF      SPA-NAI-T06-BODY-SELNUM  >   ZERO
                            INITIALIZE          SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
                        END-IF
@@ -1065,10 +1065,6 @@
            END-IF
       *
            INITIALIZE                  SPA-T01KYOUTU
-      *
-           INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
-                                       SPA-NAI-T06-RECE-KOUMOKU
-           INITIALIZE                  SPA-T09-AREA
       *
            MOVE    4               TO  SPA-GMN-T06-CUR
            .
@@ -2358,6 +2354,12 @@
                    MOVE    ONRECE-B-UKEYMD TO  SPA-NAI-T09-TUKEYMD (IDX)
                END-IF
            END-IF
+      *??
+           DISPLAY "IDX=" IDX
+           DISPLAY "UKEYMD=" SPA-NAI-T09-TUKEYMD (IDX)
+           DISPLAY "CREYMD=" SPA-NAI-T09-TCREYMD (IDX)
+           DISPLAY "CREYMD=" SPA-NAI-T09-TSEIKYU (IDX)
+      *??
       *
            MOVE    IDX             TO  SPA-GMN-T09-MAX
            .
@@ -3946,15 +3948,18 @@
                    MOVE    "請求年月日入力エラー"      TO  SPA-ERRMSG
                WHEN    "0014"
                    MOVE
-                      "対象の請求管理は返戻年月の設定が行なわれています"
+                   "対象の請求データは返戻年月の設定が行なわれています"
                                                        TO  SPA-ERRMSG
                WHEN    "0015"
-                   MOVE
-            "対象の請求管理は返戻年月、月遅れ等の設定が行なわれています"
-                                                       TO  SPA-ERRMSG
+                   STRING  "対象の請求データは返戻年月、"
+                                                   DELIMITED  BY  SIZE
+                           "月遅れ等の設定が行なわれています"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0016"
                    MOVE
-                     "対象の請求管理は月遅れ等の設定が行なわれています"
+                   "対象の請求データは月遅れ等の設定が行なわれています"
                                                        TO  SPA-ERRMSG
                WHEN    "0022"
                    MOVE    "項目の入力途中です"        TO  SPA-ERRMSG
