@@ -4572,10 +4572,6 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        480-RECEDEN-KOBETU-SEC             SECTION.
       *
-           INITIALIZE              SPA-T06
-           MOVE    SPA-NAI-1031-PRTNM
-                                   TO  SPA-NAI-T06-1031-PRTNM
-      *
            MOVE    SPA-T01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
            MOVE    SPA-T06             TO  SPA-FREE
@@ -5449,6 +5445,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "F11:°õºþ¤·¤Ê¤¤"     TO  TID2-B11-LABEL
            MOVE    "F12:°õºþ¤¹¤ë"       TO  TID2-B12-LABEL
       *
+           MOVE    "black"          TO  TID2-ID1MSG-STYLE
+                                        TID2-LABEL-STYLE
            EVALUATE    SPA-TIDCD
                WHEN    "1010"
                WHEN    "1014"
@@ -5464,8 +5462,6 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1025"
                    IF      FLG-RECEDEN-CHK      =   1
                        MOVE    "red"            TO  TID2-ID1MSG-STYLE
-                   ELSE
-                       MOVE    "black"          TO  TID2-ID1MSG-STYLE
                    END-IF
                    MOVE    "blue"               TO  TID2-LABEL-STYLE
                    IF      SPA-GMN-PRTKBN       =   "2"

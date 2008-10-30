@@ -232,6 +232,8 @@
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
+           COPY    "CPSK1031.INC".
+      *
            COPY    "CPSK3003.INC".
       *
            COPY    "CPSK2005.INC".
@@ -508,6 +510,24 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE                  SPA-T06-AREA
+      *
+      *    出力先プリンタ名割り当て情報編集
+           MOVE    SPACE               TO  SYS-1031-REC
+           INITIALIZE                  SYS-1031-REC
+           MOVE    "1031"              TO  SYS-1031-KANRICD
+           MOVE    "*"                 TO  SYS-1031-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1031-STYUKYMD
+                                           SYS-1031-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
+           MOVE    SYS-1031-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1031-REC
+           ELSE    
+               INITIALIZE                  SYS-1031-REC
+           END-IF
+           MOVE    SYS-1031-PRTNM (5)
+                                   TO  SPA-NAI-T06-1031-PRTNM
       *
       *    診療年月
            IF      SPA-SYSYMD(7:2)     >   "10"
@@ -2237,11 +2257,6 @@
                                OR       SPA-NAI-T09-TSEIKYU (IDX)
                                                        =   "1"
                IF      RECE10-HKNNUM   NOT =   SPACE
-      *??
-             DISPLAY "ptnum =" idx " PTNUM=" RECE10-PTNUM
-             DISPLAY "kigo  =" RECE10-KIGO "#" ONRECE-B-KIGO "#"
-             DISPLAY "num   =" RECE10-NUM  "#" ONRECE-B-NUM "#"
-      *??
                    IF    ( RECE10-KIGO     =   ONRECE-B-KIGO )
                    AND   ( RECE10-NUM      =   ONRECE-B-NUM  )
                        MOVE    "1"     TO  SPA-NAI-T09-TSEIKYU (IDX)
@@ -2264,9 +2279,6 @@
                                    TO  MCP-TABLE
            MOVE    "key5"          TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
-      *??
-             DISPLAY "SPA-NAI-T09-TSEIKYU=" SPA-NAI-T09-TSEIKYU (IDX)
-      *??
       *
       *    最新の受付日
       *    請求管理と同じ条件のデータの受付日を取得
@@ -2346,10 +2358,6 @@
                    MOVE    ONRECE-B-UKEYMD TO  SPA-NAI-T09-TUKEYMD (IDX)
                END-IF
            END-IF
-      *??
-             DISPLAY "SPA-NAI-T09-TUKEYMD=" SPA-NAI-T09-TUKEYMD (IDX)
-             DISPLAY "SPA-NAI-T09-TCREYMD=" SPA-NAI-T09-TCREYMD (IDX)
-      *??
       *
            MOVE    IDX             TO  SPA-GMN-T09-MAX
            .
