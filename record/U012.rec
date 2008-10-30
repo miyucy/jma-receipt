@@ -51,5 +51,9 @@ U012	{
 		MIDASI	{
 			value	varchar(12);
 		};
+		NEXT	{
+			style	varchar(20);
+			value	varchar(20);
+		};
 	};
 };

@@ -1565,6 +1565,23 @@
                                            TO  U012-LKAITIME (IDX)
            END-PERFORM
            MOVE    SPA-GMN-MAX         TO  U012-LIST-COUNT
+      *    次頁あり
+           IF      SPA-GMN-NEXT        =   1
+               IF      SPA-GMN-PAGE        =   1
+                   MOVE    "次頁有り"          TO  U012-NEXT-VALUE
+               ELSE
+                   MOVE    "前頁・次頁有り"    TO  U012-NEXT-VALUE
+               END-IF
+               MOVE    "red"               TO  U012-NEXT-STYLE
+           ELSE
+               IF      SPA-GMN-PAGE        >   1
+                   MOVE    "前頁有り"          TO  U012-NEXT-VALUE
+                   MOVE    "red"               TO  U012-NEXT-STYLE
+               ELSE
+                   MOVE    SPACE               TO  U012-NEXT-VALUE
+                   MOVE    "black"             TO  U012-NEXT-STYLE
+               END-IF
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
            .

@@ -44,3 +44,6 @@
                           PIC X       OCCURS  200 TIMES.
               03  U012-MIDASI.
                 04  U012-VALUE  PIC X(12).
+              03  U012-NEXT.
+                04  U012-NEXT-STYLE   PIC X(20).
+                04  U012-NEXT-VALUE   PIC X(20).
