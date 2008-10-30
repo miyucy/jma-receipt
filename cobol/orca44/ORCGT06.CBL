@@ -1011,6 +1011,8 @@
                        IF      SPA-NAI-T06-BODY-SELNUM  >   ZERO
                            INITIALIZE          SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
+                                               SPA-NAI-T06-BODY-SELNUM
+                                               SPA-T09-AREA
                        END-IF
                        MOVE    4                TO  SPA-GMN-T06-CUR  
                END-EVALUATE
@@ -1062,6 +1064,13 @@
                            GO  TO  340-TID2-SET-EXT
                    END-EVALUATE 
                END-IF
+           END-IF
+      *
+           IF      SPA-NAI-T06-BODY-SELNUM  >   ZERO
+               INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-BODY-SELNUM
+                                       SPA-T09-AREA
            END-IF
       *
            INITIALIZE                  SPA-T01KYOUTU
@@ -1486,9 +1495,7 @@
                ELSE
                    PERFORM 41041-TUIKA-SEC
                END-IF
-               IF      SPA-ERRCD            =   SPACE
-                   MOVE    ZERO             TO  SPA-NAI-T06-BODY-SELNUM
-               ELSE
+               IF      SPA-TIDCD        =   SPACE
                    INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
                                            SPA-NAI-T06-RECE-KOUMOKU
                    MOVE    ZERO        TO  SPA-NAI-T06-BODY-SELNUM
@@ -1628,18 +1635,24 @@
                WHEN    1
                    MOVE    WRK-RECE10-REC  TO  RECE10-REC
                    PERFORM 42031-SEIKYU-CHK-SEC
-      *************INITIALIZE              SPA-T09-AREA
                    IF      SPA-ERRCD   NOT =   SPACE
                        INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
                        MOVE    ZERO        TO  SPA-NAI-T06-BODY-SELNUM
                     END-IF
+                   IF    ( SPA-ERRCD            =   SPACE )
+                   AND   ( SPA-TIDCD            =   SPACE )
+                       CONTINUE
+                   ELSE
+                       GO  TO  4601-BODYLST-HENSYU-EXT
+                   END-IF
                WHEN    OTHER
                    PERFORM 42032-T09-HENSYU-SEC
                    GO  TO  4601-BODYLST-HENSYU-EXT
            END-EVALUATE
       *
-           IF      SPA-ERRCD            =   SPACE
+           IF    ( SPA-ERRCD            =   SPACE )
+           AND   ( SPA-TIDCD            =   SPACE )
                MOVE    ZERO             TO  SPA-NAI-T06-BODY-SELNUM
                MOVE    4                TO  SPA-GMN-T06-CUR
            ELSE
@@ -2417,6 +2430,7 @@
       * 
            INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
                                        SPA-NAI-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-BODY-SELNUM
                                        SPA-T09-AREA
       *
            MOVE    SPA-GMN-T06-RECE-MAX
