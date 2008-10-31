@@ -442,8 +442,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            WHEN  OTHER
       *                        лю╨ы
                                ADD     1               TO  IDZZ
-                               MOVE    18              TO  SPLIT-CNT
-                               MOVE    19              TO  SPLIT-CNT1
+                               MOVE    20              TO  SPLIT-CNT
+                               MOVE    21              TO  SPLIT-CNT1
                                PERFORM 20011-PARA-SPLIT-SEC
                        END-EVALUATE
                    WHEN    "RIfixf"
@@ -1446,9 +1446,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
            END-EVALUATE
       *
-      *??
-            DISPLAY "FLG-MATCH=" FLG-MATCH
-      *??
       *
            .
        200113-ONRECE-K-CHK-EXT.
@@ -1545,9 +1542,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    "key"               TO  WRK-MCP-PATHNAME
                PERFORM 900-ONRECE-B-SELECT-SEC
                PERFORM 900-ONRECE-B-CLOSE-SEC
-      *??
-               DISPLAY "IDZZ=" IDZZ "#" FLG-ONRECE-B "#"
-      *??
       *
                IF      FLG-ONRECE-B    =   ZERO
                    IF    ( TBL-B-NYUGAIKBN (IDZZ)
@@ -1665,10 +1659,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                PERFORM 900-ONRECE-B-SELECT-SEC
                PERFORM 900-ONRECE-B-CLOSE-SEC
       *
-      *??
-               DISPLAY "IDZZ=" IDZZ "#" TBL-B-KAKUTEI-KBN (IDZZ) 
-                              "#"  FLG-ONRECE-B "#"
-      *??
                IF      FLG-ONRECE-B    =   ZERO
                    IF      TBL-B-KAKUTEI-KBN (IDZZ)    =  "2"
                        IF    ( TBL-B-NYUGAIKBN (IDZZ)
