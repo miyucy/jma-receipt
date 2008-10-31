@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.03.00    NACL-太田   08/10/31   オン帳票バッチ起動対応
       *****************************************************************
       *
       *
@@ -135,6 +136,9 @@
       *    入院薬情報出力パラメタ
            COPY    "CPORCHCN30.INC".
       *
+      *    オンライン帳票共通パラメタ
+           COPY    "CPONPRTDATA.INC".
+      *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
@@ -167,6 +171,7 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  ORCHCN30AREA
+           INITIALIZE                  ONPRTDATA
       *
            EVALUATE    ORCSHCN30-KBN
                WHEN    "N"
@@ -226,9 +231,11 @@
            MOVE    ORCSHCN30-ROOMNO    TO  ORCHCN30-ROOMNO
       *
            IF      WRK-YAKJYO-PG   NOT =   SPACE
-               CALL    WRK-YAKJYO-PG       USING
+               MOVE    WRK-YAKJYO-PG   TO  ONPRTDATA-PGID
+               MOVE    ORCHCN30AREA    TO  ONPRTDATA-DATA
+               CALL    "ORCHCOMMON"        USING
                                            SPA-AREA
-                                           ORCHCN30AREA
+                                           ONPRTDATA
            END-IF
       *
            .

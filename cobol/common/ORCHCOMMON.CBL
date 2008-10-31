@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION          DIVISION.
-       PROGRAM-ID.             ORCHCN30OP.
+       PROGRAM-ID.             ORCHCOMMON.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 薬情一覧印刷
-      *  コンポーネント名  : 薬情一覧印刷（ＨＣ３０）バッチ起動
+      *  サブシステム名    : オンライン帳票
+      *  コンポーネント名  : オンライン帳票バッチ起動
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  08/10/10    NACL−森脇    新規作成
+      *  08/10/31    NACL−太田    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -52,8 +52,8 @@
                                    //SPA-//    BY //PSPA-//.
       *
        FD  PARA02-FILE.
-           COPY    "CPORCHCN30.INC" REPLACING   //ORCHCN30//
-                                   BY          //PORCHCN30//.
+           COPY    "CPONPRTDATA.INC"   REPLACING   //ONPRTDATA//
+                                       BY          //PONPRTDATA//.
       *
       *
        WORKING-STORAGE             SECTION.
@@ -104,11 +104,11 @@
         LINKAGE                     SECTION.
       *
            COPY    "COMMON-SPA".
-           COPY    "CPORCHCN30.INC".
+           COPY    "CPONPRTDATA.INC".
       *
        PROCEDURE                   DIVISION    USING
            SPA-AREA
-           ORCHCN30AREA
+           ONPRTDATA
            .
       *
       *****************************************************************
@@ -131,9 +131,9 @@
            WRITE   PSPA-AREA
            CLOSE   PARA01-FILE
       *
-           OPEN    OUTPUT              PARA02-FILE
-           MOVE    ORCHCN30AREA     TO  PORCHCN30AREA
-           WRITE   PORCHCN30AREA
+           OPEN    OUTPUT               PARA02-FILE
+           MOVE    ONPRTDATA       TO   PONPRTDATA
+           WRITE   PONPRTDATA
            CLOSE   PARA02-FILE
       *
            MOVE    SPACE           TO  SHELLTBL
@@ -144,10 +144,10 @@
                                    ORCSMKPASSAREA
            MOVE    MKPASS-OT-01    TO  SHELLTBL-NAME
       *
-           MOVE    ONPRTID-ORCHCN30
-                                   TO  SHELLTBL-ARG1
+           MOVE    ONPRTDATA-PGID  TO  SHELLTBL-ARG1
            MOVE    OPPARA01        TO  SHELLTBL-ARG2
            MOVE    OPPARA02        TO  SHELLTBL-ARG3
+           MOVE    "1"             TO  SHELLTBL-ARG7
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

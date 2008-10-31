@@ -17,10 +17,11 @@ fi
 #        $4  PARA03
 #        $5  PARA04
 #        $6  PARA05
+#        $7  FLG(CALL形式  (共通:1/独自:BLANK)
 #-------------------------------------------#
 LOGFILE=/tmp/online-print.log
 
-	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBHCPRT -parameter $1,$2,$3,$4,$5,$6  2>&1 | tail -n 1000 > ${LOGFILE} 
+	$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBHCPRT -parameter $1,$2,$3,$4,$5,$6,$7  2>&1 | tail -n 1000 > ${LOGFILE} 
 
 	[ -f "$2" ] && rm $2
 	[ -f "$3" ] && rm $3

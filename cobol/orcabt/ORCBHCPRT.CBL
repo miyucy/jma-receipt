@@ -84,6 +84,7 @@
        01  WRK-PARA-AREA.
       *
            03  WRK-PARA-PGID           PIC X(20).
+           03  WRK-PARA-CALLKBN        PIC X(1).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -151,6 +152,9 @@
       *    お薬手帳パラメタ
            COPY    "CPORCHCN62.INC".
       *
+      *    オンライン帳票共通パラメタ
+           COPY    "CPONPRTDATA.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -198,6 +202,7 @@
                                                OPPARA03
                                                OPPARA04
                                                OPPARA05
+                                               WRK-PARA-CALLKBN
            END-UNSTRING
       *
            .
@@ -208,62 +213,87 @@
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-           EVALUATE   WRK-PARA-PGID
+           IF    ( WRK-PARA-CALLKBN    =   "1" )
+               PERFORM 210-ORCHCOMMON-SEC
+           ELSE
       *
-           WHEN    ONPRTID-ORCHCM19
-               PERFORM 210-ORCHCM19-SEC
+               EVALUATE   WRK-PARA-PGID
       *
-           WHEN    ONPRTID-ORCHCN01
-               PERFORM 210-ORCHCN01-SEC
+               WHEN    ONPRTID-ORCHCM19
+                   PERFORM 210-ORCHCM19-SEC
       *
-           WHEN    ONPRTID-ORCHCN02
-               PERFORM 210-ORCHCN02-SEC
+               WHEN    ONPRTID-ORCHCN01
+                   PERFORM 210-ORCHCN01-SEC
       *
-           WHEN    ONPRTID-ORCHCN03
-               PERFORM 210-ORCHCN03-SEC
+               WHEN    ONPRTID-ORCHCN02
+                   PERFORM 210-ORCHCN02-SEC
       *
-           WHEN    ONPRTID-ORCHCN04
-               PERFORM 210-ORCHCN04-SEC
+               WHEN    ONPRTID-ORCHCN03
+                   PERFORM 210-ORCHCN03-SEC
       *
-           WHEN    ONPRTID-ORCHC01
-               PERFORM 210-ORCHC01-SEC
+               WHEN    ONPRTID-ORCHCN04
+                   PERFORM 210-ORCHCN04-SEC
       *
-           WHEN    ONPRTID-ORCHC03
-               PERFORM 210-ORCHC03-SEC
+               WHEN    ONPRTID-ORCHC01
+                   PERFORM 210-ORCHC01-SEC
       *
-           WHEN    ONPRTID-ORCHC30
-               PERFORM 210-ORCHC30-SEC
+               WHEN    ONPRTID-ORCHC03
+                   PERFORM 210-ORCHC03-SEC
       *
-           WHEN    ONPRTID-ORCHC33
-               PERFORM 210-ORCHC33-SEC
+               WHEN    ONPRTID-ORCHC30
+                   PERFORM 210-ORCHC30-SEC
       *
-           WHEN    ONPRTID-ORCHC04
-               PERFORM 210-ORCHC04-SEC
+               WHEN    ONPRTID-ORCHC33
+                   PERFORM 210-ORCHC33-SEC
       *
-           WHEN    ONPRTID-ORCHC62
-               PERFORM 210-ORCHC62-SEC
+               WHEN    ONPRTID-ORCHC04
+                   PERFORM 210-ORCHC04-SEC
       *
-           WHEN    ONPRTID-ORCHCN33
-               PERFORM 210-ORCHCN33-SEC
+               WHEN    ONPRTID-ORCHC62
+                   PERFORM 210-ORCHC62-SEC
       *
-           WHEN    ONPRTID-ORCHC501
-               PERFORM 210-ORCHC501-SEC
+               WHEN    ONPRTID-ORCHCN33
+                   PERFORM 210-ORCHCN33-SEC
       *
-           WHEN    ONPRTID-ORCHC502
-               PERFORM 210-ORCHC502-SEC
+               WHEN    ONPRTID-ORCHC501
+                   PERFORM 210-ORCHC501-SEC
       *
-           WHEN    ONPRTID-ORCHC503
-               PERFORM 210-ORCHC503-SEC
+               WHEN    ONPRTID-ORCHC502
+                   PERFORM 210-ORCHC502-SEC
       *
-           WHEN    ONPRTID-ORCHCN30
-               PERFORM 210-ORCHCN30-SEC
+               WHEN    ONPRTID-ORCHC503
+                   PERFORM 210-ORCHC503-SEC
       *
-           WHEN    ONPRTID-ORCHCN62
-               PERFORM 210-ORCHCN62-SEC
-           END-EVALUATE
+               WHEN    ONPRTID-ORCHCN30
+                   PERFORM 210-ORCHCN30-SEC
+      *
+               WHEN    ONPRTID-ORCHCN62
+                   PERFORM 210-ORCHCN62-SEC
+              END-EVALUATE
+           END-IF
       *
            .
        200-MAIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    オンライン帳票共通発行パラメタ
+      *****************************************************************
+       210-ORCHCOMMON-SEC                SECTION.
+      *
+           MOVE    OPPARA01        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  SPA-AREA
+      *
+           MOVE    OPPARA02        TO  OPPARA00
+           PERFORM 800-GET-PAPA-SEC
+           MOVE    WRK-STR         TO  ONPRTDATA
+      *
+           CALL    WRK-PARA-PGID       USING
+                                       SPA-AREA
+                                       ONPRTDATA
+      *
+           .
+       210-ORCHCOMMON-EXT.
            EXIT.
       *****************************************************************
       *    処方箋発行パラメタ
