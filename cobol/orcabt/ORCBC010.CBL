@@ -36,6 +36,9 @@
       *  04.02.02    NACL-門脇    08/08/07  精神通院の請求点判定追加
       *
       *  04.03.01    NACL-門脇    08/09/02  請求点判定追加
+      *  04.03.02    NACL-伊藤    08/10/31  公費単独の室料差額
+      *                                     本人・家族区分の見直し
+      *                                     ０件の場合正常終了とする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -149,7 +152,8 @@
       *
       *01  PRGSKBNO                PIC X(08)  VALUE "20071029".
       *01  PRGSKBNO                PIC X(08)  VALUE "20080428".
-       01  PRGSKBNO                PIC X(08)  VALUE "20080826".
+      *01  PRGSKBNO                PIC X(08)  VALUE "20080826".
+       01  PRGSKBNO                PIC X(08)  VALUE "20081031".
       *
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
@@ -2064,7 +2068,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            ELSE
                IF      COMB-KOH1HKNNUM     =   "027"
                    MOVE    COMB-KOH1ID         TO  COLDAT01-KOHID
-                   MOVE    "0"                 TO  COLDAT01-HONKZKKBN
+                   MOVE    "0"                 TO  WK-HONKZKKBN
                ELSE
                    MOVE    ZERO                TO  COLDAT01-KOHID
                    EVALUATE    PTHKN-HKNNUM
@@ -2074,58 +2078,58 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
                                WHEN   "B"
                                WHEN   "C"
                                WHEN   "9"
-                                   MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                   MOVE    "0" TO  WK-HONKZKKBN
                                WHEN   "D"
                                WHEN   "E"
                                WHEN   "F"
                                WHEN   "8"
-                                   MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                   MOVE    "0" TO  WK-HONKZKKBN
                                WHEN   "G"
                                WHEN   "H"
                                WHEN   "I"
                                WHEN   "7"
-                                   MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                   MOVE    "0" TO  WK-HONKZKKBN
                            END-EVALUATE
                        WHEN    "031"  THRU    "034"
                            EVALUATE   PTHKN-HOJOKBN
                                WHEN   "B"
                                WHEN   "9"
-                                   MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                   MOVE    "0" TO  WK-HONKZKKBN
                                WHEN   "E"
                                WHEN   "8"
-                                   MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                   MOVE    "0" TO  WK-HONKZKKBN
                                WHEN   "H"
                                WHEN   "7"
-                                   MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                   MOVE    "0" TO  WK-HONKZKKBN
                              END-EVALUATE
                        WHEN    "060"
                        WHEN    "068"
                            EVALUATE   PTHKN-HOJOKBN
                                WHEN   "1"
                                WHEN   "4"
-                                   MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                   MOVE    "0" TO  WK-HONKZKKBN
                                WHEN   "2"
                                WHEN   "5"
-                                   MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                   MOVE    "0" TO  WK-HONKZKKBN
                                WHEN   "3"
                                WHEN   "6"
-                                   MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                   MOVE    "0" TO  WK-HONKZKKBN
                               END-EVALUATE
                       WHEN    "040"
                       WHEN    "039"
                           EVALUATE   PTHKN-HOJOKBN
                               WHEN   "1"
                               WHEN   "3"
-                                 MOVE    "0"   TO  COLDAT01-HONKZKKBN
+                                 MOVE    "0"   TO  WK-HONKZKKBN
                           END-EVALUATE
                       WHEN    OTHER
                           EVALUATE   PTHKN-HOJOKBN
                              WHEN   "9"
-                                 MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                 MOVE    "0" TO  WK-HONKZKKBN
                              WHEN   "8"
-                                 MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                 MOVE    "0" TO  WK-HONKZKKBN
                              WHEN   "7"
-                                 MOVE    "0" TO  COLDAT01-HONKZKKBN
+                                 MOVE    "0" TO  WK-HONKZKKBN
                          END-EVALUATE
                    END-EVALUATE
                END-IF
@@ -3996,7 +4000,8 @@ grpsys             MOVE    SPA-HOSPNUM             TO  PTCOM-HOSPNUM
                                              + (ACCT-ZAITEN
                                              *  ACCT-ZAIKAISU)
                   ELSE
-                  IF        ACCT-SRYKBN        =    "95"   OR  "96"
+                  IF      ( ACCT-SRYKBN         =   "95"   OR  "96" )
+                   OR     ( COLDAT02-SRYCD      =   "099999912" )
                      CONTINUE
                   ELSE
                      IF        ACCT-SRYCDTOTAL    =    630010002
@@ -4129,9 +4134,9 @@ grpsys             MOVE    SPA-HOSPNUM             TO  PTCOM-HOSPNUM
                    COLDAT03-FILE
       *
            IF      CNT-COLDAT01           =   ZERO  
-               MOVE    "処理対象のデータがありませんでした"
-                                           TO  WRK-COLDATERR
-               PERFORM 500-ERR-HENSYU-SEC
+               OPEN    OUTPUT              COLDAT911-FILE
+               CLOSE                       COLDAT911-FILE
+               MOVE    ZERO            TO  CNT-COLDAT91
            END-IF
       *
       *    ステップ管理終了処理

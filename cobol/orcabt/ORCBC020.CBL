@@ -381,9 +381,11 @@
                                        COLDAT01-FILE
                                        COLDAT02-FILE
                                        COLDAT03-FILE
-                   OUTPUT              COLDAT04-FILE
       *
            PERFORM 900-COLDAT91-READ-SEC
+           IF      CNT-COLDAT91        >   ZERO
+               OPEN    OUTPUT              COLDAT04-FILE
+           END-IF
            PERFORM UNTIL        FLG-COLDAT91    =   1
                    PERFORM 1001-FILE-HENSYU-SEC
                    PERFORM 900-COLDAT91-READ-SEC
@@ -1436,11 +1438,11 @@
                    COLDAT02-FILE
                    COLDAT04-FILE
       *
-           IF      CNT-COLDAT01           =   ZERO  
-               MOVE    "処理対象のデータがありませんでした"
-                                           TO  WRK-COLDATERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
+      **   IF      CNT-COLDAT01           =   ZERO  
+      **       MOVE    "処理対象のデータがありませんでした"
+      **                                   TO  WRK-COLDATERR
+      **       PERFORM 500-ERR-HENSYU-SEC
+      **   END-IF
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
