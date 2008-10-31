@@ -1229,11 +1229,6 @@
                    PERFORM 3101101-HOJO-KYURATE-SEC
                END-IF
            END-IF
-           IF     (SPA-MAE-HONKZKKBN   =   SPA-GMN-HONKZKKBN)
-               MOVE    ZERO            TO  FLG-HONKZKKBN
-           ELSE
-               MOVE    1               TO  FLG-HONKZKKBN
-           END-IF
            MOVE    SPA-GMN-HONKZKKBN   TO  SPA-MAE-HONKZKKBN
       *
            .
@@ -1813,6 +1808,13 @@
                MOVE    1               TO  SPA-NAI-HIHKNFLG
            END-IF
       *
+      *    新規時
+           IF      (SPA-NAI-HKNSTR         =   ZERO  ) OR
+                   (SPA-PTHKN-SINKIKBN (SPA-NAI-HKNSTR)
+                                           =   "1"    )
+               MOVE    1                   TO  FLG-HONKZKKBN
+           END-IF
+      *
       *    新規の時、氏名または、世帯主を編集
            IF     (SPA-GMN-HKNNUM      NOT =   SPACE  )
            AND    (SPA-NAI-HIHKNFLG        =   ZERO   )
@@ -1823,14 +1825,14 @@
                    IF     (SPA-GMN-HIHKNJANAME =   SPACE     )  OR
                          ((SPA-HEN-FLG         =   1         ) AND
                           (SPA-HZN-NAME        =   SPA-GMN-HIHKNJANAME))
+                      OR  (FLG-HONKZKKBN          =   1     )
                        MOVE    SPA-GMN-NAME    TO  SPA-GMN-HIHKNJANAME
                    END-IF
                WHEN    "2"
       *            家族の場合、世帯主名か氏名
                    IF     (SPA-GMN-HIHKNJANAME    =   SPACE )  OR
                          ((SPA-GMN-HIHKNJANAME    =   SPA-GMN-NAME ) AND
-                          (SPA-HZN-NAME           =   SPACE   OR
-                           FLG-HONKZKKBN          =   1      ) )
+                          (FLG-HONKZKKBN          =   1     ))
                        PERFORM 10011-HIHKNJANAME-HENSYU-SEC
                    END-IF
                END-EVALUATE
