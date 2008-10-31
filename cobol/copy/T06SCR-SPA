@@ -70,6 +70,7 @@
                            11  SPA-GMN-T06-R-TKIGO     PIC X(40).
                            11  SPA-GMN-T06-R-THOJOKBN  PIC X(02).
                            11  SPA-GMN-T06-R-TCREYMD   PIC X(09).
+                           11  SPA-GMN-T06-R-TERR      PIC X(01).
                        09  SPA-GMN-T06-RECE-MAX        PIC 9(04).
       *
                    07  SPA-GMN-T06-KOUMOKU.

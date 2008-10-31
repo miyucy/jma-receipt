@@ -1,5 +1,8 @@
             02  T06.
+              03  T06-B08-STATE   PIC S9(9)   BINARY.
+              03  T06-B12-STATE   PIC S9(9)   BINARY.
               03  T06-B17-STATE   PIC S9(9)   BINARY.
+              03  T06-B18-STATE   PIC S9(9)   BINARY.
               03  T06-SELNUM.
                 04  T06-VALUE   PIC S9(4).
               03  T06-SRYYM.
@@ -62,6 +65,7 @@
                   05  T06-RECE-LIST-ITEM          OCCURS  1000 TIMES.
                     06  T06-RECE-TRENNUM      PIC X(4).
                     06  T06-RECE-TNYUGAIKBN   PIC X(2).
+                    06  T06-RECE-TERR         PIC X(2).
                     06  T06-RECE-TPTNUM       PIC X(20).
                     06  T06-RECE-TNAME        PIC X(40).
                     06  T06-RECE-TSRYYM       PIC X(6).

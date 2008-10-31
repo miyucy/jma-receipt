@@ -176,6 +176,20 @@ path    key5            {
         };
 };
 
+path    key6            {
+        DBSELECT        {
+                DECLARE tbl_onrece_body_key6_csr CURSOR FOR
+                SELECT *
+                FROM tbl_onrece_body
+                WHERE	HOSPNUM		= :HOSPNUM
+                    AND	TEISYUTUSAKI	= :TEISYUTUSAKI
+                    AND	SRYYM		= :SRYYM
+                    AND	RENNUM		> 0
+                    ORDER BY RENNUM DESC,RECEIPT_NO
+                ;
+        };
+};
+
 path    upd1    {
         DBUPDATE        {
                 UPDATE  tbl_onrece_body
