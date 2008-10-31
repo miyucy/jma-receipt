@@ -374,6 +374,7 @@ RECORD_files = \
         I041.rec \
         KA02.rec \
         KA021.rec \
+        M99.rec \
 
 DEF_files = \
 	HC01.def \
