@@ -204,6 +204,8 @@
                    07  SPA-NAI-SRYYMD          PIC X(08).
       *            ≤ËÃÃºıø«Õ˙ŒÚ•∆°º•÷•Î∫«¬Á
                    07  SPA-WKSRY-MAX               PIC 9(04).
+      *         Ò≥Á ›∏±¬–æ›∂Ë ¨
+               05  SPA-NAI-YKJOKUKBN       PIC 9(01).
       *
       *    ≤ËÃÃ•π•—ŒŒ∞Ë£≤
        01  SPA-KA01-DATA.
@@ -382,6 +384,8 @@
            COPY    "CPSK1010.INC".
       *    ƒ¢…º£–£«
            COPY    "CPSK1032.INC".
+      *    ø«Œ≈π‘∞Ÿ¥…Õ˝æ Û 
+           COPY    "CPSK1038.INC".
       *
       *    ¥µº‘•ﬁ•π•ø°›
        01  PTINF-REC.
@@ -780,10 +784,15 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *     Ò≥Á ›∏±¬–æ›∂Ë ¨
+           PERFORM 30001-YKJOKUKBN-SET-SEC
+      *
       *     ›∏±¡»πÁ§ª
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "1"                 TO  ORCSHKN-KBN
-           MOVE    "1"                 TO  ORCSHKN-KBN2
+           IF      SPA-NAI-YKJOKUKBN   =   1
+               MOVE    "1"                 TO  ORCSHKN-KBN2
+           END-IF
            CALL    "ORCSHKNSET"        USING
                                        SPA-AREA
                                        ORCSHKNSETAREA
@@ -813,6 +822,42 @@
        3001-SPA-SET-EXT.
            EXIT.
       *
+      *****************************************************************
+      *     Ò≥Á ›∏±¬–æ›∂Ë ¨
+      *****************************************************************
+       30001-YKJOKUKBN-SET-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  SPA-NAI-YKJOKUKBN
+      *
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                  SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+               IF      FLG-SYSKANRI        =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1038-REC
+      *             Ò≥Á ›∏±§Ú¬–æ›§»§π§Î
+                   IF      SYS-1038-YKJOKUKBN  =   "1"
+                       MOVE    1               TO  SPA-NAI-YKJOKUKBN
+                   END-IF
+               END-IF
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       30001-YKJOKUKBN-SET-EXT.
+           EXIT.
       *****************************************************************
       *    ºıø«Õ˙ŒÚ ‘Ω∏ΩËÕ˝
       *****************************************************************
@@ -844,7 +889,8 @@
            PERFORM
                    UNTIL   (SPA-JYURRK-MAX >=  40   )  OR
                            (FLG-JYURRK     =   1    )
-               IF      JYURRK-HKNCOMBINUM  =   "9999"
+               IF     (JYURRK-HKNCOMBINUM  =   "9999"  )
+                 AND  (SPA-NAI-YKJOKUKBN   =   ZERO    )
                    CONTINUE
                ELSE
       *            ≈¡…º»÷πÊÀË§À•∆°º•÷•Î ‘Ω∏

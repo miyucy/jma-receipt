@@ -100,6 +100,7 @@
       *  04.03.00    NACL-多々納  08/07/24  入院時初回加算自動発生追加
       *  04.03.00    NACL-太田    08/09/09  支払証明書印刷初期設定追加の追加
       *  04.03.00    NACL-多々納  08/10/30  世帯主名自動記載区分追加
+      *                                     薬情・お薬手帳対象追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -554,6 +555,15 @@
                            11  SPA-GMN-RESPRV038-LST   PIC X(40)
                                                         OCCURS  5.
                            11  SPA-GMN-RESPRV038-MAX   PIC 9(02).
+      *                薬情・お薬手帳
+                       09  SPA-GMN-YKJOKUKBN-G.
+                           11  SPA-GMN-YKJOKUKBN       PIC X(01).
+                           11  SPA-GMN-YKJOKUKBN-F1    PIC X(01).
+                           11  SPA-GMN-YKJOKUKBN-MEI   PIC X(58).
+                       09  SPA-GMN-YKJOKUKBN-COMB.
+                           11  SPA-GMN-YKJOKUKBN-LST   PIC X(60)
+                                                        OCCURS  5.
+                           11  SPA-GMN-YKJOKUKBN-MAX   PIC 9(02).
       *
                    07  SPA-GMN-PAGE4-AREA.
       *                入金管理情報（収納機能情報）
@@ -1528,6 +1538,12 @@
            MOVE    "1 薬剤情報提供料（手帳に記載する）と連動する"
                                        TO  SPA-GMN-OKUSURIKBN-LST(2)
            MOVE    2                   TO  SPA-GMN-OKUSURIKBN-MAX
+      *    薬情・お薬手帳対象
+           MOVE    "0 包括分入力の保険を対象としない"
+                                       TO  SPA-GMN-YKJOKUKBN-LST(1)
+           MOVE    "1 包括分入力の保険を対象とする"
+                                       TO  SPA-GMN-YKJOKUKBN-LST(2)
+           MOVE    2                   TO  SPA-GMN-YKJOKUKBN-MAX
       *
            MOVE    "1 伝票の古い未収順に入金"
                                        TO  SPA-GMN-SYUNYKNKNRKBNLST(1)
@@ -2478,17 +2494,22 @@
                                            TO  SPA-GMN-HONKZKKBN-FLG-G
            END-EVALUATE
       *    被保険者区分設定
-           EVALUATE    SPA-GMN-HIHKNJAKBN-FLG
-               WHEN    "0"
-                   MOVE    SPA-GMN-HIHKNJAKBN-FLG-LIST(1)
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-HIHKNJAKBN-MAX
+               IF      SPA-GMN-HIHKNJAKBN-FLG
+                                       =   SPA-GMN-HIHKNJAKBN-FLG-LIST
+                                                         (IDX)(1:1)
+                   MOVE    SPA-GMN-HIHKNJAKBN-FLG-LIST(IDX)
                                            TO  SPA-GMN-HIHKNJAKBN-FLG-G
-               WHEN    "1"
-                   MOVE    SPA-GMN-HIHKNJAKBN-FLG-LIST(2)
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-HIHKNJAKBN-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-HIHKNJAKBN-FLG-LIST(1)
                                            TO  SPA-GMN-HIHKNJAKBN-FLG-G
-               WHEN    OTHER
-                   MOVE    SPA-GMN-HIHKNJAKBN-FLG-LIST(1)
-                                           TO  SPA-GMN-HIHKNJAKBN-FLG-G
-           END-EVALUATE
+           END-IF
       *    世帯主自動記載設定
            IF      SPA-GMN-SETAIKBN-FLG    =   SPACE
                MOVE    "1"                 TO  SPA-GMN-SETAIKBN-FLG
@@ -2546,6 +2567,8 @@
            MOVE    SYS-1038-YKJCHKKBN  TO  SPA-GMN-YKJCHKKBN
       *    お薬手帳発行
            MOVE    SYS-1038-OKUSURIKBN     TO  SPA-GMN-OKUSURIKBN
+      *    薬情・お薬手帳対象
+           MOVE    SYS-1038-YKJOKUKBN      TO  SPA-GMN-YKJOKUKBN
       *
            MOVE    SYS-1038-DOSRYKBNFLG    TO  SPA-GMN-DOSRYKBNFLG
            MOVE    SYS-1038-WKSRYHYOFLG    TO  SPA-GMN-WKSRYHYOFLG
@@ -2664,6 +2687,24 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-OKUSURIKBN-LST (1)
                                        TO  SPA-GMN-OKUSURIKBN-G
+           END-IF
+      *    薬情・お薬手帳対象
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-YKJOKUKBN-MAX
+               IF      SPA-GMN-YKJOKUKBN
+                                       =   SPA-GMN-YKJOKUKBN-LST(IDY)
+                                                                 (1:1)
+                   MOVE    SPA-GMN-YKJOKUKBN-LST (IDY)
+                                           TO  SPA-GMN-YKJOKUKBN-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-YKJOKUKBN-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-YKJOKUKBN-LST (1)
+                                       TO  SPA-GMN-YKJOKUKBN-G
            END-IF
       *    ＤＯ初期表示
            MOVE    ZERO                TO  FLG-OK
@@ -3801,6 +3842,7 @@
            MOVE    W07-CHG310FLG       TO  SPA-GMN-CHG310FLG-G
            MOVE    W07-CHGSRYSYU       TO  SPA-GMN-CHGSRYSYU-G
            MOVE    W07-RESPRV038       TO  SPA-GMN-RESPRV038-G
+           MOVE    W07-YKJOKUKBN       TO  SPA-GMN-YKJOKUKBN-G
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
@@ -4074,6 +4116,10 @@
       *            お薬手帳発行チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4108-OKUSURIKBN-CHK-SEC
+                   END-IF
+      *            薬情・お薬手帳対象チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4108-YKJOKUKBN-CHK-SEC
                    END-IF
                WHEN    "1039"
       *            請求書兼領収書発行区分（外来）チェック
@@ -5750,7 +5796,7 @@
        4108-RESPRV038-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    お薬手帳発行チェック処理（診療行為機能情報）
+      *    薬情・お薬手帳対象チェック処理（診療行為機能情報）
       *****************************************************************
        4108-OKUSURIKBN-CHK-SEC      SECTION.
       *
@@ -5772,6 +5818,30 @@
       *
            .
        4108-OKUSURIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    お薬手帳発行チェック処理（診療行為機能情報）
+      *****************************************************************
+       4108-YKJOKUKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-YKJOKUKBN-MAX
+               IF      SPA-GMN-YKJOKUKBN
+                                       =   SPA-GMN-YKJOKUKBN-LST(IDX)
+                                                                (1:1)
+                   MOVE    SPA-GMN-YKJOKUKBN-LST(IDX)
+                                          TO  SPA-GMN-YKJOKUKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    326             TO  SPA-GMN-CUR
+               MOVE    "2016"          TO  SPA-ERRCD
+           END-IF
+      *
+           .
+       4108-YKJOKUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入金管理区分チェック処理（収納行為機能情報）
@@ -7287,6 +7357,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-AKUSEIHYO       TO  SYS-1038-AKUSEIHYOFLG
            MOVE    SPA-GMN-TEISEIFLG       TO  SYS-1038-TEISEIFLG
            MOVE    SPA-GMN-CHG310FLG       TO  SYS-1038-CHG310FLG
+           MOVE    SPA-GMN-YKJOKUKBN       TO  SYS-1038-YKJOKUKBN
       *
            MOVE    SPA-GMN-CHGSRYSYU       TO  SYS-1038-CHGSRYSYU-FLG
            MOVE    SPA-GMN-RESPRV038       TO  SYS-1038-RESPRVFLG
@@ -8140,6 +8211,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-RESPRV038-MAX
                                        TO  W07-RESPRV038-COUNT
+      *    薬情・お薬手帳対象（診療行為機能情報）
+           MOVE    SPA-GMN-YKJOKUKBN-G TO  W07-YKJOKUKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-YKJOKUKBN-MAX
+               MOVE    SPA-GMN-YKJOKUKBN-LST (IDX)
+                                       TO  W07-YKJOKUKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-YKJOKUKBN-MAX
+                                       TO  W07-YKJOKUKBN-COUNT
       *
       *    複数科まとめ（診療行為機能情報）
            MOVE    SPA-GMN-KAGRPFLG-G  TO  W07-KAGRPFLG
@@ -8786,6 +8866,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2015"
                    MOVE    "レセプトプレビュー区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "2016"
+                   MOVE    "薬情・お薬手帳対象区分がありません。"
+                                                       TO  SPA-ERRMSG
       *    収納情報
                WHEN    "3003"
                    MOVE    "登録時刻入力エラー"
@@ -9110,6 +9193,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "YKJCHKKBN"       TO   MCP-WIDGET
                WHEN    325
                    MOVE  "OKUSURIKBN"       TO   MCP-WIDGET
+               WHEN    326
+                   MOVE  "YKJOKUKBN"       TO   MCP-WIDGET
       *収納情報
                WHEN    40
                    MOVE  "SYUSKYPRTG"      TO   MCP-WIDGET
@@ -9427,6 +9512,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "YKJCHKKBN"
                    MOVE    325             TO  SPA-GMN-CUR
                WHEN    "OKUSURIKBN"
+                   MOVE    326             TO  SPA-GMN-CUR
+               WHEN    "YKJOKUKBN"
                    MOVE    999             TO  SPA-GMN-CUR
       *
       *収納情報

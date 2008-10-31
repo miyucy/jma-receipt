@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  04.03.00    NACL-Â¿¡¹Ç¼  08/10/31  Êñ³çÊÝ¸±ÂÐ¾ÝÂÐ±þ
       *****************************************************************
       *
       *
@@ -62,6 +63,7 @@
            03  FLG-OK2             PIC 9(01).
            03  FLG-ZAITAKU-ARI     PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
+           03  FLG-YKJOKUKBN       PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -204,6 +206,8 @@
       *
       *    Ä¢É¼£Ð£Ç
            COPY    "CPSK1032.INC".
+      *    ¿ÇÎÅ¹Ô°Ù´ÉÍý¾ðÊó 
+           COPY    "CPSK1038.INC".
       *
       *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
       *01  TENSU-REC.
@@ -316,6 +320,35 @@
                MOVE    1                   TO  FLG-ERR
            END-IF
       *
+           MOVE    ZERO                TO  FLG-YKJOKUKBN
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷¡Ê¿ÇÎÅ¹Ô°Ù°ì³çÆþ¶â´ÉÍý¾ðÊó¡Ë
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                  SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1038-REC
+      *            Êñ³çÊÝ¸±¤òÂÐ¾Ý¤È¤¹¤ë
+                   IF      SYS-1038-YKJOKUKBN  =   "1"
+                       MOVE    1               TO  FLG-YKJOKUKBN
+                   END-IF
+               END-IF
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
            .
        100-INIT-EXT.
            EXIT.
@@ -500,6 +533,7 @@
                END-IF
       *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
                IF     (WRK-HKNCOMBINUM     =   "9999")
+               AND    (FLG-YKJOKUKBN       =   ZERO  )
                    MOVE    ZERO                TO  FLG-SYORI
                END-IF
       *        ÊÔ½¸
@@ -567,6 +601,7 @@
                    UNTIL       FLG-JYURRK      =   1
       *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
                IF     (JYURRK-HKNCOMBINUM      =   "9999")
+               AND    (FLG-YKJOKUKBN           =   ZERO  )
                    CONTINUE
                ELSE
                    PERFORM 100211-JYURRK-CHK-SEC
@@ -610,6 +645,7 @@
       *
       *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
                IF     (JYURRK-HKNCOMBINUM      =   "9999")
+               AND    (FLG-YKJOKUKBN           =   ZERO  )
                    CONTINUE
                ELSE
                    PERFORM 100211-JYURRK-CHK-SEC
@@ -1082,12 +1118,16 @@
                                            OR  "14"
                                            OR  "98"  )
       *           Êñ³çÊÝ¸±Ê¬¤ÏÂÐ¾Ý³°
-                  AND (WRK-HKNCOMBINUM NOT =   "9999" )
-                   ADD     1                   TO  LNK-WKSRYACT-MAX
-                   MOVE    WKSRYACT-REC        TO  LNK-WKSRYACT-REC
+                   IF      (WRK-HKNCOMBINUM    =   "9999" )
+                   AND    (FLG-YKJOKUKBN       =   ZERO   )
+                       CONTINUE
+                   ELSE
+                       ADD     1                   TO  LNK-WKSRYACT-MAX
+                       MOVE    WKSRYACT-REC        TO  LNK-WKSRYACT-REC
                                                   (LNK-WKSRYACT-MAX)
-                   MOVE    WRK-DRCD            TO  LNK-WKSRY-DRCD
+                       MOVE    WRK-DRCD            TO  LNK-WKSRY-DRCD
                                                   (LNK-WKSRYACT-MAX)
+                   END-IF
                END-IF
       *
                MOVE    "tbl_wksryact"      TO  MCP-TABLE

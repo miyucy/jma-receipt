@@ -38,6 +38,7 @@
       *                                     MONFUNCÂÐ±þ
       * 01.00.09     NACL-Â¿¡¹Ç¼  06/01/24  ÍÑÎÌ³ä¹ç¥³¡¼¥ÉÄÉ²Ã
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/12/11  µ¯¾²ÄÉ²Ã
+      * 04.03.00     NACL-Â¿¡¹Ç¼  08/10/31  Êñ³çÊÝ¸±¤òÂÐ¾Ý¤È¤¹¤ë
       *****************************************************************
       *
       *
@@ -69,6 +70,7 @@
            03  FLG-PRINT           PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
            03  FLG-YSET            PIC 9(01).
+           03  FLG-YKJOKUKBN       PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -143,6 +145,9 @@
       *    Ä¢É¼£Ð£Ç
            COPY    "CPSK1032.INC".
       *
+      *    ¿ÇÎÅ¹Ô°Ù´ÉÍý¾ðÊó 
+           COPY    "CPSK1038.INC".
+      *
       *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
@@ -208,6 +213,8 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  ORCHC30AREA
       *
+           PERFORM 100-INIT-SYORI-SEC
+      *
            EVALUATE    ORCSCH30-KBN
                WHEN    "1"
                WHEN    "2"
@@ -247,6 +254,44 @@
            .
       *
       *****************************************************************
+      *    ½é´ü°õºþ½èÍý
+      *****************************************************************
+       100-INIT-SYORI-SEC             SECTION.
+      *
+           MOVE    ZERO                TO  FLG-YKJOKUKBN
+      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷¡Ê¿ÇÎÅ¹Ô°Ù°ì³çÆþ¶â´ÉÍý¾ðÊó¡Ë
+           MOVE    SPACE               TO  SYS-1038-REC
+           INITIALIZE                  SYS-1038-REC
+           MOVE    "1038"              TO  SYS-1038-KANRICD
+           MOVE    "*"                 TO  SYS-1038-KBNCD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-STYUKYMD
+           MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
+           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  SYS-1038-REC
+      *            Êñ³çÊÝ¸±¤òÂÐ¾Ý¤È¤¹¤ë
+                   IF      SYS-1038-YKJOKUKBN  =   "1"
+                       MOVE    1               TO  FLG-YKJOKUKBN
+                   END-IF
+               END-IF
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       100-INIT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    °õºþ½èÍý
       *****************************************************************
        300-HC30-PRINT-SEC             SECTION.
@@ -265,41 +310,6 @@
            END-IF
            MOVE    ORCSPRTNM-PRTPG     TO  WRK-YAKJYO-PG
       *
-      *    Ä¢É¼¥×¥í¥°¥é¥à¼èÆÀ
-      ***  MOVE    SPACE               TO  WRK-YAKJYO-PG
-      *    MOVE    SPACE               TO  SYS-1032-REC
-      *    INITIALIZE                      SYS-1032-REC
-      *    MOVE    "1032"              TO  SYS-1032-KANRICD
-      *    MOVE    "00000004"          TO  SYS-1032-KBNCD
-      *
-      *    MOVE    SYS-1032-REC        TO  MCPDATA-REC
-      *    MOVE    "DBSELECT"          TO  MCP-FUNC
-      *    MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *    MOVE    SPA-SRYYMD          TO  ORC-DBYMD
-      *    CALL    "ORCMCPSUB"          USING
-      *                                 MCPAREA
-      *                                 ORCMCPAREA
-      *                                 MCPDATA-REC
-      *    IF      MCP-RC              =   ZERO
-      *        MOVE    "SYSKANRI-KEY"      TO  ORC-DBPATH
-      *        PERFORM 960-KANRIMST-READ-SEC
-      *    ELSE
-      *        INITIALIZE                  SYS-1032-REC
-      *        MOVE    1               TO  FLG-SYSKANRI
-      *    END-IF
-      *    IF      FLG-SYSKANRI        =   ZERO
-      *        MOVE    MCPDATA-REC         TO  SYS-1032-REC
-      *        ÆÈ¼«³«È¯Ê¬
-      *        IF      SYS-1032-ORCACSTCHK     =   "T"
-      *            MOVE    SYS-1032-ORCACSTNM  TO  WRK-YAKJYO-PG
-      *        ELSE
-      *        £Ï£Ò£Ã£ÁÉ¸½àÊ¬
-      *            MOVE    SYS-1032-ORCAORGNM  TO  WRK-YAKJYO-PG
-      *        END-IF
-      *    END-IF
-      *    IF      WRK-YAKJYO-PG       =   SPACE
-      *        MOVE    "ORCHC30"           TO  WRK-YAKJYO-PG
-      *****END-IF
       *    ¥É¥¯¥¿¡¼ÊÑ¹¹
            MOVE    SPA-DRCD            TO  WRK-HZN-DRCD
            IF      WRK-DRCD        NOT =   SPACE
@@ -375,6 +385,7 @@
                END-IF
       *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
                IF     (WRK-HKNCOMBINUM     =   "9999")
+               AND    (FLG-YKJOKUKBN       =   ZERO  )
                    MOVE    ZERO                TO  FLG-SYORI
                END-IF
       *        ÊÔ½¸
@@ -442,6 +453,7 @@
                    UNTIL       FLG-JYURRK      =   1
       *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
                IF     (JYURRK-HKNCOMBINUM      =   "9999")
+               AND    (FLG-YKJOKUKBN           =   ZERO  )
                    CONTINUE
                ELSE
                    PERFORM 100211-JYURRK-CHK-SEC
@@ -485,6 +497,7 @@
       *
       *        Êñ³çÊÝ¸±ÂÐ¾Ý³°
                IF     (JYURRK-HKNCOMBINUM      =   "9999")
+               AND    (FLG-YKJOKUKBN       =   ZERO  )
                    CONTINUE
                ELSE
                    PERFORM 100211-JYURRK-CHK-SEC
@@ -887,9 +900,13 @@
                                                "22"  OR
                                                "23"    )
       *            Êñ³çÊÝ¸±¤ÏÂÐ¾Ý³°
-                 AND  (WRK-HKNCOMBINUM NOT =   "9999"  )
-                   MOVE    WKSRY-ZAITENKEI         TO  WRK-ZAITENKEI
-                   PERFORM 20031-WKSRYACT-HEN-SEC
+                   IF     (WRK-HKNCOMBINUM     =   "9999")
+                   AND    (FLG-YKJOKUKBN       =   ZERO  )
+                       CONTINUE
+                   ELSE
+                       MOVE    WKSRY-ZAITENKEI         TO  WRK-ZAITENKEI
+                       PERFORM 20031-WKSRYACT-HEN-SEC
+                   END-IF
                END-IF
       *
                MOVE    "key2"              TO  MCP-PATHNAME
