@@ -266,19 +266,21 @@
       *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
+           COPY    "CPORCHCN30.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
        COPY    "COMMON-SPA".
-       COPY    "CPORCHCN30.INC".
+       COPY    "CPONPRTDATA.INC".
       *
       ******************************************************************
        PROCEDURE               DIVISION
                                    USING
                                    SPA-AREA
-                                   ORCHCN30AREA.
+                                   ONPRTDATA.
       *
       *****************************************************************
       *    主　　処理
@@ -306,6 +308,8 @@
            INITIALIZE                  CNT-AREA
       *
            ACCEPT  SYS-TIME    FROM    TIME
+      *
+           MOVE    ONPRTDATA-DATA  TO  ORCHCN30AREA
       *
       *    出力先プリンタ名割り当て情報
            PERFORM 900-1031-READ-SEC
