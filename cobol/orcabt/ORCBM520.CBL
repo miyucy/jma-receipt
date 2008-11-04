@@ -269,7 +269,7 @@
       ****************************************************************
        LINKAGE                 SECTION.
        01  COMMAND-PARAM.
-           02  FILLER      PIC X(256).
+           02  FILLER      PIC X(1000).
       ****************************************************************
        PROCEDURE                   DIVISION
                USING
@@ -1264,7 +1264,7 @@
       *     
            INITIALIZE                      RECEDEN-REC
            MOVE    ONRECE-B-HOSPNUM    TO  RECEDEN-HOSPNUM
-           MOVE    ONRECE-B-SRYYM      TO  RECEDEN-SRYYM
+           MOVE    ONRECE-B-SRYYM-B    TO  RECEDEN-SRYYM
            MOVE    ONRECE-B-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
            MOVE    ONRECE-B-PTID       TO  RECEDEN-PTID
            MOVE    ONRECE-B-RECEKA     TO  RECEDEN-RECEKA
