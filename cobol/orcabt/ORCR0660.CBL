@@ -95,6 +95,7 @@
       *  04.02.03    NACL-門脇    08/05/07  退院時服薬指導加算算定日記載修正
       *
       *  04.03.01    NACL-門脇    08/08/19  入院料未算定時のコメント対応
+      *  04.03.02    NACL-門脇    08/11/04  リハビリ発症日年月日対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -348,6 +349,9 @@
            03  RYO-IDX3            PIC 9(03).
            03  IDA                 PIC 9(04).
            03  IDB                 PIC 9(04).
+           03  IDC1                PIC 9(02).
+           03  IDC2                PIC 9(02).
+           03  IDC3                PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -2373,28 +2377,24 @@
       *
            EVALUATE      WRK-SRYCD
              WHEN       CONS-KYUSEI
-               MOVE    16   TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-               MOVE    "脳血管疾患急性発症　　　月　　日"
+               MOVE    19   TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+               MOVE    "脳血管疾患急性発症　　　年　　月　　日"
                             TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(21:4)
-               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(27:4)
+               MOVE    21   TO  IDC1
+               MOVE    27   TO  IDC2
+               MOVE    33   TO  IDC3
+               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                COMPUTE WRK-ZAINUM    =  99998000
                                      + (IDX16 + (IDX14 * 31))
                MOVE    "40" TO  WRK-SRYKBN
              WHEN       CONS-SINDAI
-               MOVE    20   TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-               MOVE    "心大血管疾患リハ：治療開始　　　月　　日"
+               MOVE    23   TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+               MOVE    "心大血管疾患リハ：治療開始　　　年　　月　　日"
                             TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(29:4)
-               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(35:4)
+               MOVE    29   TO  IDC1
+               MOVE    35   TO  IDC2
+               MOVE    41   TO  IDC3
+               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99998200 + IDX14
                ELSE
@@ -2405,35 +2405,30 @@
              WHEN       CONS-NOUKE
                EVALUATE   FLG-COMOKIKAE2
                  WHEN       0
-                   MOVE    18  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-                   MOVE    "脳血管疾患等リハ：発症　　　月　　日"
+                   MOVE    21  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+                   MOVE    "脳血管疾患等リハ：発症　　　年　　月　　日"
                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(25:4)
-                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(31:4)
+                   MOVE    25  TO  IDC1
+                   MOVE    31  TO  IDC2
+                   MOVE    37  TO  IDC3
+                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                  WHEN       1
-                   MOVE    18  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-                   MOVE    "脳血管疾患等リハ：手術　　　月　　日"
+                   MOVE    21  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+                   MOVE    "脳血管疾患等リハ：手術　　　年　　月　　日"
                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(25:4)
-                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(31:4)
+                   MOVE    25  TO  IDC1
+                   MOVE    31  TO  IDC2
+                   MOVE    37  TO  IDC3
+                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                  WHEN       2
-                   MOVE    20  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-                   MOVE    "脳血管疾患等リハ：急性増悪　　　月　　日"
+                   MOVE    23  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+                   MOVE
+                       "脳血管疾患等リハ：急性増悪　　　年　　月　　日"
                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(29:4)
-                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(35:4)
+                   MOVE    29  TO  IDC1
+                   MOVE    35  TO  IDC2
+                   MOVE    41  TO  IDC3
+                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99998400 + IDX14
@@ -2445,35 +2440,29 @@
              WHEN       CONS-UNDOKI
                EVALUATE   FLG-COMOKIKAE2
                  WHEN       0
-                   MOVE    15  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-                   MOVE    "運動器リハ：発症　　　月　　日"
+                   MOVE    18  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+                   MOVE    "運動器リハ：発症　　　年　　月　　日"
                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(19:4)
-                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(25:4)
+                   MOVE    19  TO  IDC1
+                   MOVE    25  TO  IDC2
+                   MOVE    31  TO  IDC3
+                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                  WHEN       1
-                   MOVE    15  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-                   MOVE    "運動器リハ：手術　　　月　　日"
+                   MOVE    18  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+                   MOVE    "運動器リハ：手術　　　年　　月　　日"
                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(19:4)
-                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(25:4)
+                   MOVE    19  TO  IDC1
+                   MOVE    25  TO  IDC2
+                   MOVE    31  TO  IDC3
+                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                  WHEN       2
-                   MOVE    17  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-                   MOVE    "運動器リハ：急性増悪　　　月　　日"
+                   MOVE    20  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+                   MOVE    "運動器リハ：急性増悪　　　年　　月　　日"
                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(23:4)
-                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(29:4)
+                   MOVE    23  TO  IDC1
+                   MOVE    29  TO  IDC2
+                   MOVE    35  TO  IDC3
+                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99998600 + IDX14
@@ -2483,15 +2472,13 @@
                END-IF
                MOVE    "80" TO  WRK-SRYKBN
              WHEN       CONS-KOKYUKI
-               MOVE    17   TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-               MOVE    "呼吸器リハ：治療開始　　　月　　日"
+               MOVE    20   TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+               MOVE    "呼吸器リハ：治療開始　　　年　　月　　日"
                             TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(23:4)
-               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(29:4)
+               MOVE    23   TO  IDC1
+               MOVE    29   TO  IDC2
+               MOVE    35   TO  IDC3
+               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99998800 + IDX14
                ELSE
@@ -2500,15 +2487,13 @@
                END-IF
                MOVE    "80" TO  WRK-SRYKBN
              WHEN       CONS-SESSYOKU
-               MOVE    18   TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-               MOVE    "摂食機能療法：治療開始　　　月　　日"
+               MOVE    21   TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+               MOVE    "摂食機能療法：治療開始　　　年　　月　　日"
                             TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(25:4)
-               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(31:4)
+               MOVE    25   TO  IDC1
+               MOVE    31   TO  IDC2
+               MOVE    37   TO  IDC3
+               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99999000 + IDX14
                ELSE
@@ -2519,35 +2504,29 @@
              WHEN       CONS-NANBYO
                EVALUATE   FLG-COMOKIKAE2
                  WHEN       0
-                   MOVE    16  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-                   MOVE    "難病患者リハ：発症　　　月　　日"
+                   MOVE    19  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+                   MOVE    "難病患者リハ：発症　　　年　　月　　日"
                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(21:4)
-                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(27:4)
+                   MOVE    21  TO  IDC1
+                   MOVE    27  TO  IDC2
+                   MOVE    33  TO  IDC3
+                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                  WHEN       1
-                   MOVE    16  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-                   MOVE    "難病患者リハ：手術　　　月　　日"
+                   MOVE    19  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+                   MOVE    "難病患者リハ：手術　　　年　　月　　日"
                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(21:4)
-                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(27:4)
+                   MOVE    21  TO  IDC1
+                   MOVE    27  TO  IDC2
+                   MOVE    33  TO  IDC3
+                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                  WHEN       2
-                   MOVE    18  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-                   MOVE    "難病患者リハ：急性増悪　　　月　　日"
+                   MOVE    21  TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+                   MOVE    "難病患者リハ：急性増悪　　　年　　月　　日"
                                TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-                   MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(25:4)
-                   MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-                   MOVE    TBL-DAY(DAY-IDX2)
-                               TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(31:4)
+                   MOVE    25  TO  IDC1
+                   MOVE    31  TO  IDC2
+                   MOVE    37  TO  IDC3
+                   PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                END-EVALUATE
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99999200 + IDX14
@@ -2557,15 +2536,13 @@
                END-IF
                MOVE    "80" TO  WRK-SRYKBN
              WHEN       CONS-SYOGAI
-               MOVE    18   TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
-               MOVE    "障害児（者）リハ：発症　　　月　　日"
+               MOVE    21   TO  WRK-RECE65XX-YUKOKETA(IDX-RECE65 1)
+               MOVE    "障害児（者）リハ：発症　　　年　　月　　日"
                             TO  WRK-RECE65XX-NAME(IDX-RECE65 1)
-               MOVE    WRK-KYUSEIYMD(5:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(25:4)
-               MOVE    WRK-KYUSEIYMD(7:2)   TO  DAY-IDX2
-               MOVE    TBL-DAY(DAY-IDX2)
-                            TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(31:4)
+               MOVE    25   TO  IDC1
+               MOVE    31   TO  IDC2
+               MOVE    37   TO  IDC3
+               PERFORM 200111-HASSYO-COMMENT-HIZUKE-SEC
                IF      FLG-RIHA      =  1
                  COMPUTE WRK-ZAINUM    =  99999400 + IDX14
                ELSE
@@ -2656,6 +2633,53 @@
       *
            .
        20011-HASSYO-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    発症日のコメント編集（年月日）
+      *****************************************************************
+       200111-HASSYO-COMMENT-HIZUKE-SEC          SECTION.
+      *
+           INITIALIZE                         STS-AREA-DAY
+           INITIALIZE                         LNK-DAY2-AREA
+           MOVE    "21"                   TO  LNK-DAY2-IRAI
+           MOVE    WRK-KYUSEIYMD          TO  LNK-DAY2-YMD
+           CALL    "ORCSDAY"    USING     STS-AREA-DAY
+                                          LNK-DAY2-AREA
+           IF      STS-DAY-RC1            =   ZERO
+              MOVE    LNK-DAY2-EDTYMD1-Y   TO  WRK-TAIHI-XX
+              INITIALIZE                       ORCSKANACHKAREA
+              MOVE    "2"                  TO  KANACHK-SYORI
+              MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
+              CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+              IF      KANACHK-RC      =   ZERO
+                 MOVE    KANACHK-OUT-INPUT(1:4)
+                       TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(IDC1:4)
+              END-IF
+      *
+              MOVE    LNK-DAY2-EDTYMD1-M   TO  WRK-TAIHI-XX
+              INITIALIZE                       ORCSKANACHKAREA
+              MOVE    "2"                  TO  KANACHK-SYORI
+              MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
+              CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+              IF      KANACHK-RC      =   ZERO
+                 MOVE    KANACHK-OUT-INPUT(1:4)
+                       TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(IDC2:4)
+              END-IF
+      *
+              MOVE    LNK-DAY2-EDTYMD1-D   TO  WRK-TAIHI-XX
+              INITIALIZE                       ORCSKANACHKAREA
+              MOVE    "2"                  TO  KANACHK-SYORI
+              MOVE    WRK-TAIHI-XX         TO  KANACHK-MAE-INPUT
+              CALL    "ORCSKANACHK"    USING   ORCSKANACHKAREA
+              IF      KANACHK-RC      =   ZERO
+                 MOVE    KANACHK-OUT-INPUT(1:4)
+                       TO  WRK-RECE65XX-NAME(IDX-RECE65 1)(IDC3:4)
+              END-IF
+           END-IF
+      *
+           .
+       200111-HASSYO-COMMENT-HIZUKE-EXT.
            EXIT.
       *
       *****************************************************************
