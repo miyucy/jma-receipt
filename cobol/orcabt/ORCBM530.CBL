@@ -1013,7 +1013,7 @@
       *     
            INITIALIZE                      RECEDEN-REC
            MOVE    ONRECE-B-HOSPNUM    TO  RECEDEN-HOSPNUM
-           MOVE    ONRECE-B-SRYYM      TO  RECEDEN-SRYYM
+           MOVE    ONRECE-B-SRYYM-B    TO  RECEDEN-SRYYM
            MOVE    ONRECE-B-NYUGAIKBN  TO  RECEDEN-NYUGAIKBN
            MOVE    ONRECE-B-PTID       TO  RECEDEN-PTID
            MOVE    ONRECE-B-RECEKA     TO  RECEDEN-RECEKA
@@ -1087,7 +1087,7 @@
       *
            INITIALIZE                      RECE10-REC
            MOVE    ONRECE-B-HOSPNUM    TO  RECE10-HOSPNUM
-           MOVE    ONRECE-B-SRYYM      TO  RECE10-SRYYM
+           MOVE    ONRECE-B-SRYYM-B    TO  RECE10-SRYYM
            MOVE    ONRECE-B-NYUGAIKBN  TO  RECE10-NYUGAIKBN
            MOVE    ONRECE-B-PTID       TO  RECE10-PTID
            MOVE    ONRECE-B-RECEKA     TO  RECE10-RECEKA
