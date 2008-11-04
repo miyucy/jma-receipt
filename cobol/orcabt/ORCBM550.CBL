@@ -442,8 +442,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            WHEN  OTHER
       *                        ÌÀºÙ
                                ADD     1               TO  IDZZ
-                               MOVE    20              TO  SPLIT-CNT
-                               MOVE    21              TO  SPLIT-CNT1
+                               MOVE    22              TO  SPLIT-CNT
+                               MOVE    23              TO  SPLIT-CNT1
                                PERFORM 20011-PARA-SPLIT-SEC
                        END-EVALUATE
                    WHEN    "RIfixf"
@@ -896,6 +896,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    "1"         TO
                                                TBL-B-U-HENREI-FLG (IDZZ)
                            END-IF
+      *                £±£¹¡§Í½È÷£±
+                       WHEN    19
+                           MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+                                           TO  TBL-B-U-YOBI1     (IDZZ)
+      *                £²£°¡§Í½È÷£²
+                       WHEN    20
+                           MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+                                           TO  TBL-B-U-YOBI2     (IDZZ)
                    END-EVALUATE
            END-EVALUATE
       *
