@@ -48,6 +48,7 @@
            03  ONRECE-B-HKNJANUM   PIC X(8).
            03  ONRECE-B-KIGO       PIC X(40).
            03  ONRECE-B-NUM        PIC X(40).
+           03  ONRECE-B-HKNNUM     PIC X(03).
            03  ONRECE-B-TEISYUTUSAKI-B
                                    PIC X(1).
            03  ONRECE-B-RECEKA     PIC X(02).

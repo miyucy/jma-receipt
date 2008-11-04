@@ -98,6 +98,7 @@
                            11  SPA-GMN-T06-SRYYM   PIC X(07).
       *
                05  SPA-NAI-T06-AREA.
+                   07  SPA-NAI-T06-SYSYM-2         PIC 9(06).
                    07  SPA-NAI-T06-KOUMOKU.
                        09  SPA-NAI-T06-SRYYM-H     PIC 9(06).
                        09  SPA-NAI-T06-SKYYMD-H    PIC 9(08).
@@ -132,10 +133,10 @@
                            11  SPA-NAI-T06-B-TSRYYM    PIC 9(06).
                            11  SPA-NAI-T06-B-TRECEIPT-NO
                                                        PIC 9(06).
-      ***                  11  SPA-NAI-T06-B-TSEX      PIC X(01).
       *
                    07  SPA-NAI-T06-RECE-TBL.
                        09  SPA-NAI-T06-RECE-G      OCCURS   1000.
+                           11  SPA-NAI-T06-R-THKNNUM   PIC X(03).
                            11  SPA-NAI-T06-RECE10-KEY.
                                13  SPA-NAI-T06-RECE10-HOSPNUM
                                                        PIC 9(02).
@@ -158,17 +159,15 @@
                                13  SPA-NAI-T06-RECE10-TEKSTYMD
                                                        PIC X(08).
       *
-      ***                  11  SPA-NAI-T06-ONRECE-BODY-KEY.
-      ***                      13  SPA-NAI-T06-ONRECE-B-UCNT
-      ***                                              PIC 9(3).
-      ***                      13  SPA-NAI-T06-ONRECE-B-SCNT
-      ***                                              PIC 9(2).
-      ***                      13  SPA-NAI-T06-ONRECE-B-RENNUM
-      ***                                              PIC 9(3).
-      ***                      13  SPA-NAI-T06-ONRECE-B-RECEIPT-NO
-      ***                                              PIC 9(6).
-      *
                05  SPA-NAI-T06-1031-PRTNM      PIC X(16). 
+      *
+      *    作成履歴画面
+           03  SPA-T08-AREA.
+               05  SPA-GMN-T08-MAX             PIC 9(03).
+               05 SPA-NAI-T08-AREA.
+                   07  SPA-NAI-T08-OCC         OCCURS  100.
+                       09  SPA-NAI-T08-TRENNUM PIC 9(03).
+                   05  SPA-NAI-T08-SELNUM      PIC 9(03).
       *
       *    レセプト検索画面
            03  SPA-T09-AREA.

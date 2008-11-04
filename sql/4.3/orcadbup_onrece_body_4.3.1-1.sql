@@ -32,6 +32,7 @@ create	table	tbl_onrece_body	(
 	HKNJANUM	char(8),
 	KIGO		varchar(40),
 	NUM		varchar(40),
+	HKNNUM		char(3),
 	TEISYUTUSAKI_B	char(1),
 	RECEKA  	char(2),
 	HOJOKBN		char(1),

@@ -175,6 +175,7 @@ SCREEN_screen = \
 	T05.glade \
 	T06.glade \
 	T07.glade \
+	T08.glade \
 	T09.glade \
 	T98.glade \
 	T99.glade \

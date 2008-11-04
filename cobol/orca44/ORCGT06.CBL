@@ -23,7 +23,7 @@
       *  コンポーネント名  : レセ電データ個別指示
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  8/09/29     NACL−藤原    新規作成
+      *  08/09/29     NACL−藤原    新規作成
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
@@ -325,6 +325,7 @@
            COPY    "T05.INC".
            COPY    "T06.INC".
            COPY    "T07.INC".
+           COPY    "T08.INC".
            COPY    "T09.INC".
            COPY    "T91.INC".
            COPY    "T98.INC".
@@ -464,6 +465,8 @@
                WHEN    "TID2"
                    PERFORM 340-TID2-SET-SEC
                    GO      TO      300-SCREEN-EXT
+               WHEN    "T08"
+                   GO      TO      300-SCREEN-EXT
                WHEN    "T07"
                    IF      SPA-T07-FLG     =   "1"
                        MOVE    "1002"          TO  SPA-TIDCD
@@ -549,6 +552,18 @@
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYM           TO  SPA-GMN-T06-SRYYM-H
            END-IF
+      *
+      *    システム日付−２ヵ月
+           INITIALIZE                      STS-AREA-DAY
+           INITIALIZE                      LNK-DAY6-AREA
+           MOVE  "61"                  TO  LNK-DAY6-IRAI
+           MOVE  SPA-SYSYMD            TO  LNK-DAY6-KIJUN
+           MOVE  "2"                   TO  LNK-DAY6-ZOGENPTN
+           MOVE  -2                    TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN(1:6)
+                                       TO  SPA-NAI-T06-SYSYM-2
       *
       *    請求年月日
            MOVE    SPA-SYSYMD          TO  SPA-NAI-T06-SKYYMD-H
@@ -1190,8 +1205,8 @@
                    MOVE    SPACE               TO  SPA-T07-FLG
                    PERFORM 400-T07-SYORI-SEC
       *    作成履歴表示
-      **       WHEN    "CLICKED"       ALSO    "B18"
-      **           PERFORM 400-T08-SYORI-SEC
+               WHEN    "CLICKED"       ALSO    "B18"
+                   PERFORM 400-T08-SYORI-SEC
       *    処理確認
                WHEN    "CLICKED"       ALSO    "B24"
                    MOVE    "T06"               TO  SPA-T99-MOTOPG
@@ -1329,6 +1344,9 @@
                INITIALIZE                  SPA-NAI-T06-SRYYM-OLD
                                            SPA-GMN-T06-SRYYM-OLD
                MOVE    2               TO  SPA-GMN-T06-CUR
+               IF      SPA-NAI-T06-SYSYM-2 >=  SPA-NAI-T06-SRYYM-H
+                   MOVE    "2001"              TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            .
@@ -2501,6 +2519,8 @@
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMDG     TO  SPA-GMN-T06-R-TCREYMD (IDX)
       *
+           MOVE    RECE10-HKNNUM   TO  SPA-NAI-T06-R-THKNNUM (IDX)
+      *
            .
        410411-TUIKA-HENSYU-EXT.
            EXIT.
@@ -2792,7 +2812,15 @@
                GO  TO  480-ZENKAI-HYOUJI-TID-EXT
            END-IF
       *
-           MOVE    "1004"              TO  SPA-TIDCD
+      *    未処理分があるときのチェック 
+           IF    ( SPA-NAI-T06-SYORIFLG
+                                   =   ZERO )
+           AND   ( SPA-GMN-T06-RECE-MAX
+                                   >   ZERO )
+               MOVE    "1010"          TO  SPA-TIDCD
+           ELSE
+               MOVE    "1004"          TO  SPA-TIDCD
+           END-IF
            .
        480-ZENKAI-HYOUJI-TID-EXT.
            EXIT.
@@ -2960,6 +2988,8 @@
                MOVE    RECE10-CREYMD   TO  WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-T06-R-TCREYMD (IDX)
+      *
+               MOVE    RECE10-HKNNUM   TO  SPA-NAI-T06-R-THKNNUM (IDX)
       * 
                MOVE    "tbl_onrece_body"
                                        TO  MCP-TABLE
@@ -3137,10 +3167,9 @@
                                    TO  BTPARA-SHELLID
            MOVE    SPA-HOSPNUM     TO  BTPARA-HOSPNUM
            MOVE    BTPARA-REC      TO  MCPDATA-REC
-           MOVE    "DBDELETE"      TO  MCP-FUNC
            MOVE    "tbl_btpara"    TO  MCP-TABLE
            MOVE    "del1"          TO  MCP-PATHNAME
-           PERFORM 900-ORCDBMAIN-SEC
+           PERFORM 900-DBDELETE-SEC
            IF      MCP-RC          >   ZERO
                MOVE    "1001"          TO  SPA-ERRCD
                GO  TO  460-RECEDEN-EXT
@@ -3218,9 +3247,22 @@
            END-IF
       *
            ADD     1                   TO  ONRECE-K-RENNUM
+           IF      SPA-NAI-T06-KANRI-SELNUM
+                                       >   ZERO
+               INITIALIZE                      ORCSGDAYAREA
+               MOVE    SPA-GMN-T06-K-TSKYYMD (SPA-NAI-T06-KANRI-SELNUM)
+                                           TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+               IF      SGDAY-RC            =   ZERO
+                   MOVE    SGDAY-SDAY          TO  ONRECE-K-SKYYMD
+               END-IF
+           END-IF
+           MOVE    SPA-GMN-T06-RECE-MAX
+                                       TO  ONRECE-K-SEND-TOTAL-CNT
            MOVE    SMCNDATE-YMD        TO  ONRECE-K-CREYMD
-           MOVE    SMCNDATE-YMD        TO  ONRECE-K-UPYMD
-           MOVE    SMCNDATE-HMS        TO  ONRECE-K-UPHMS
+           MOVE    SPA-TERMID          TO  ONRECE-K-TERMID
+           MOVE    SPA-OPID            TO  ONRECE-K-OPID
            MOVE    ONRECE-K-REC        TO  MCPDATA-REC
            MOVE    "tbl_onrece_kanri"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -3269,6 +3311,8 @@
                                            TO  ONRECE-B-NAME
                MOVE    SPA-GMN-T06-R-TKIGO            (IDX)
                                            TO  ONRECE-B-KIGO
+               MOVE    SPA-NAI-T06-R-THKNNUM      (IDX)
+                                           TO  ONRECE-B-HKNNUM
                MOVE    SMCNDATE-YMD        TO  ONRECE-B-CREYMD
                MOVE    ONRECE-B-REC        TO  MCPDATA-REC
                MOVE    "tbl_onrece_body"
@@ -3800,6 +3844,68 @@
            EXIT.
       *
       *****************************************************************
+      *    作成履歴表示
+      *****************************************************************
+       400-T08-SYORI-SEC           SECTION.
+      *
+           MOVE    ZERO            TO  IDX
+           INITIALIZE                  ONRECE-K-REC
+           MOVE    SPA-HOSPNUM     TO  ONRECE-K-HOSPNUM
+           MOVE    SPA-NAI-T06-SRYYM-H
+                                   TO  ONRECE-K-SRYYM
+           IF      SPA-GMN-T06-TEISYUTUSAKI1
+                                       =   "T"
+               MOVE   "1"              TO  ONRECE-K-TEISYUTUSAKI
+           ELSE
+               MOVE   "2"              TO  ONRECE-K-TEISYUTUSAKI
+           END-IF
+      *
+           MOVE    "tbl_onrece_kanri"
+                                   TO  MCP-TABLE
+           MOVE    "key6"          TO  MCP-PATHNAME
+           PERFORM 900-ONRECE-KANRI-SELECT-SEC
+      * 
+           MOVE    "tbl_onrece_kanri"
+                                   TO  MCP-TABLE
+           MOVE    "key6"          TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           IF      FLG-ONRECE-K    =   1
+               GO  TO  400-T08-SYORI-EXT
+           END-IF
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPA-T01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-T06             TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGT08"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-T06
+           MOVE    SPA-WORK            TO  SPA-T01KYOUTU
+      *
+           MOVE    "T06"                TO  SPA-MOTOPG
+           MOVE    "T08"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "T08"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+           .
+       400-T08-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    氏名検索へ
       *****************************************************************
        480-KENSAKU-SEC             SECTION.
@@ -4090,6 +4196,9 @@
            MOVE    WIDGET-NORMAL       TO  T06-B08-STATE
                                            T06-B18-STATE
                                            T06-B12-STATE
+           IF      SPA-NAI-T06-SYSYM-2 >=  SPA-NAI-T06-SRYYM-H
+               MOVE    WIDGET-INSENSITIVE  TO  T06-B12-STATE
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -4242,6 +4351,9 @@
                WHEN    "1010"
                    MOVE    "オンライン明細ＤＢが更新できません"
                                                        TO  SPA-ERRMSG
+               WHEN    "2001"
+                   MOVE    "入力された診療月のデータは閲覧のみ可能です"
+                                                       TO  SPA-ERRMSG
                WHEN    "7777"
                WHEN    "9999"
                    MOVE    WRK-RECEERR                 TO  SPA-ERRMSG
@@ -4296,6 +4408,10 @@
                                        TO  WRK-TIDMSG
                WHEN    "1009"
                    MOVE    "未処理データがありますが変更しますか"
+                                       TO  WRK-TIDMSG
+               WHEN    "1010"
+                   MOVE
+                 "未処理データがありますが前回個別作成分を表示しますか"
                                        TO  WRK-TIDMSG
                WHEN    "2001"
                    MOVE    "媒体をドライブにセットして下さい"
@@ -4776,6 +4892,26 @@
                DISPLAY "UPDATE ERR table=" MCP-TABLE
                        " pathname="        MCP-PATHNAME
                CALL    "coblog" USING "UPDATE ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+                       " mcp-rc="          MCP-RC
+           END-IF
+           .
+       900-DBINSERT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢＤＥＬＥＴＥ処理
+      *****************************************************************
+       900-DBDELETE-SEC                SECTION.
+      *
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               CONTINUE
+           ELSE
+               DISPLAY "DELETE ERR table=" MCP-TABLE
+                       " pathname="        MCP-PATHNAME
+               CALL    "coblog" USING "DELETE ERR table=" MCP-TABLE
                        " pathname="        MCP-PATHNAME
                        " mcp-rc="          MCP-RC
            END-IF
