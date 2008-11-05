@@ -1147,13 +1147,20 @@
                                                TO  T06-RECE-LIST-ROW
                    END-IF
                END-PERFORM
+      *
+               INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-BODY-SELNUM
+                                       SPA-T09-AREA
            END-IF
       *
-           INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
-                                   SPA-NAI-T06-RECE-KOUMOKU
-                                   SPA-NAI-T06-BODY-SELNUM
-                                   SPA-T09-AREA
-      *
+           IF      SPA-NAI-T06-BODY-SELNUM
+                                       >   ZERO
+               INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-RECE-KOUMOKU
+                                       SPA-NAI-T06-BODY-SELNUM
+                                       SPA-T09-AREA
+           END-IF
            MOVE    SPACE           TO  SPA-TID1-FLG
            MOVE    SPACE           TO  SPA-TIDCD
            MOVE    4               TO  SPA-GMN-T06-CUR      
