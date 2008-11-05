@@ -360,6 +360,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       20
                    OR      WRK-PARA-FILE(IDXX) =   SPACE
+                   OR      FLG-END             =   1
                MOVE  WRK-PARA-FILE(IDXX)   TO  WRK-FILE-TMP
       *
                EVALUATE    WRK-FILE-TMP(6:6)
@@ -413,6 +414,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 900-PARA-READ-SEC
       *
            PERFORM             UNTIL   FLG-PARA    =   1
+                               OR      FLG-END     =   1
       *
       *        文字コード変換
                MOVE  PARA-DATA             TO  SJISTOEUC-INDATA
@@ -471,8 +473,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            CLOSE   PARA-FILE
       *
-      *    ＤＢ更新処理
-           PERFORM 20011-DB-UPDATE-SEC
+           IF      FLG-END             =   ZERO
+      *        ＤＢ更新処理
+               PERFORM 20011-DB-UPDATE-SEC
+           END-IF
       *
            .
        2001-PARA-HENSYU-EXT.
@@ -493,7 +497,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   SPLIT-CNT)
                    OR      ( WRK-PO-ED     >=  500  )
-      ****         OR      ( IDE           >   4    )
+                   OR      ( FLG-END       =   1    )
       *
                MOVE    ZERO            TO  FLG-AREA1
                COMPUTE WRK-PO-ST   =   WRK-PO-ED   +   1
