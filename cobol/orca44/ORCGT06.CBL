@@ -974,6 +974,7 @@
                        PERFORM 410411-TUIKA-HENSYU-SEC
                        INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
+                                               SPA-NAI-T06-BODY-SELNUM
                        INITIALIZE              SPA-T09-AREA
                        MOVE    SPA-GMN-T06-RECE-MAX
                                                 TO  T06-RECE-LIST-ROW
@@ -1064,6 +1065,7 @@
                            PERFORM 410411-TUIKA-HENSYU-SEC
                            INITIALIZE          SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
+                                               SPA-NAI-T06-BODY-SELNUM
                            INITIALIZE              SPA-T09-AREA
                            MOVE    SPA-GMN-T06-RECE-MAX
                                                 TO  T06-RECE-LIST-ROW
@@ -3248,17 +3250,8 @@
            END-IF
       *
            ADD     1                   TO  ONRECE-K-RENNUM
-           IF      SPA-NAI-T06-KANRI-SELNUM
-                                       >   ZERO
-               INITIALIZE                      ORCSGDAYAREA
-               MOVE    SPA-GMN-T06-K-TSKYYMD (SPA-NAI-T06-KANRI-SELNUM)
-                                           TO  SGDAY-INDAY
-               CALL    "ORCSGDAY"          USING
-                                           ORCSGDAYAREA
-               IF      SGDAY-RC            =   ZERO
-                   MOVE    SGDAY-SDAY          TO  ONRECE-K-SKYYMD
-               END-IF
-           END-IF
+           MOVE    SPA-NAI-T06-SKYYMD-H
+                                       TO  ONRECE-K-SKYYMD
            MOVE    SPA-GMN-T06-RECE-MAX
                                        TO  ONRECE-K-SEND-TOTAL-CNT
            MOVE    SMCNDATE-YMD        TO  ONRECE-K-CREYMD
