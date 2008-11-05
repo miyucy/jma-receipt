@@ -298,10 +298,8 @@
            IF      SPA-GMN-T06-TEISYUTUSAKI1
                                       =   "T"
                MOVE    "1"                 TO  ONRECE-B-TEISYUTUSAKI
-                                               ONRECE-B-XXTEISYUTUSAKI
            ELSE
-               MOVE    "6"                 TO  ONRECE-B-TEISYUTUSAKI
-               MOVE    "2"                 TO  ONRECE-B-XXTEISYUTUSAKI
+               MOVE    "2"                 TO  ONRECE-B-TEISYUTUSAKI
            END-IF
            MOVE    SPA-NAI-T08-TRENNUM (SPA-NAI-T08-SELNUM)
                                    TO  ONRECE-B-RENNUM
