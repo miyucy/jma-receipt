@@ -449,7 +449,7 @@
                    MOVE    LNK-SCRSPA      TO  SPA-T06
                    MOVE    SPA-WORK        TO  SPA-T01KYOUTU
                    PERFORM 3101-U01SPASET-SEC
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
                END-IF
       *         
                MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
@@ -458,15 +458,16 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "T99"
                    PERFORM 320-T99-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
                WHEN    "TID1"
                    PERFORM 330-TID1-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
                WHEN    "TID2"
                    PERFORM 340-TID2-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
                WHEN    "T08"
-                   GO      TO      300-SCREEN-EXT
+                   INITIALIZE              SPA-T01KYOUTU
+                   GO  TO  300-SCREEN-EXT
                WHEN    "T07"
                    IF      SPA-T07-FLG     =   "1"
                        MOVE    "1002"          TO  SPA-TIDCD
@@ -476,13 +477,13 @@
     ***                                        SPA-NAI-T06-RECE-KOUMOKU
                        MOVE    4               TO  SPA-GMN-T06-CUR
                    END-IF
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
                WHEN    "T98"
                    PERFORM 350-T98-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
                WHEN    "T09"
                    PERFORM 340-T09-SET-SEC
-                   GO      TO      300-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -972,12 +973,18 @@
                    WHEN    "1006"
       *                追加処理
                        PERFORM 410411-TUIKA-HENSYU-SEC
+      *
+                       IF      SPA-GMN-T06-SELNUM  =   ZERO
+                           MOVE    SPA-GMN-T06-RECE-MAX
+                                                   TO  T06-RECE-LIST-ROW
+                       ELSE
+                           MOVE    SPA-GMN-T06-SELNUM
+                                                   TO  T06-RECE-LIST-ROW
+                       END-IF
                        INITIALIZE              SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-BODY-SELNUM
                        INITIALIZE              SPA-T09-AREA
-                       MOVE    SPA-GMN-T06-RECE-MAX
-                                                TO  T06-RECE-LIST-ROW
                        MOVE    4                TO  SPA-GMN-T06-CUR  
                    WHEN    "1007"
       *                追加処理
@@ -991,7 +998,10 @@
                                MOVE    "F" TO  SPA-GMN-T06-TEISYUTUSAKI1
                                MOVE    "T" TO  SPA-GMN-T06-TEISYUTUSAKI2
                            WHEN    "SRYYM_H"
-                               CONTINUE
+                               IF      SPA-NAI-T06-SYSYM-2
+                                               >=  SPA-NAI-T06-SRYYM-H
+                                   MOVE    "2001"      TO  SPA-ERRCD
+                               END-IF
                        END-EVALUATE
       *                管理情報編集処理
                        PERFORM 3101-ONRECE-KANRI-HENSYU-SEC
@@ -1063,12 +1073,18 @@
                        ELSE 
       *                    追加処理
                            PERFORM 410411-TUIKA-HENSYU-SEC
+      *
+                           IF      SPA-GMN-T06-SELNUM  =   ZERO
+                               MOVE    SPA-GMN-T06-RECE-MAX
+                                                   TO  T06-RECE-LIST-ROW
+                           ELSE
+                               MOVE    SPA-GMN-T06-SELNUM
+                                                   TO  T06-RECE-LIST-ROW
+                           END-IF
                            INITIALIZE          SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-BODY-SELNUM
                            INITIALIZE              SPA-T09-AREA
-                           MOVE    SPA-GMN-T06-RECE-MAX
-                                                TO  T06-RECE-LIST-ROW
                            MOVE    4            TO  SPA-GMN-T06-CUR
                        END-IF      
                END-EVALUATE 
@@ -1126,6 +1142,9 @@
                        MOVE    SPA-GMN-T09-TPTNUM  (IDY)
                                                TO  RECE10-PTNUM
                        PERFORM 410411-TUIKA-HENSYU-SEC
+      *
+                       MOVE    SPA-GMN-T06-RECE-MAX
+                                               TO  T06-RECE-LIST-ROW
                    END-IF
                END-PERFORM
            END-IF
@@ -1773,6 +1792,7 @@
        4101-GMN-SPA-SET-SEC       SECTION.
       *
            MOVE    T06-SKYYMD-H    TO  SPA-GMN-T06-SKYYMD-H
+      *
            IF      SPA-NAI-T06-BODY-SELNUM =   ZERO
                MOVE    T06-PTNUM       TO  SPA-GMN-T06-PTNUM
                MOVE    T06-SRYYM       TO  SPA-GMN-T06-SRYYM
@@ -1812,9 +1832,9 @@
            AND   ( SPA-NAI-T06-PTID    >   ZERO  )
       *****AND   ( SPA-GMN-T06-NYUGAIKBN
       *****                        NOT =   SPACE )
-               IF      SPA-GMN-T06-SELNUM  =   ZERO
+      *??      IF      SPA-GMN-T06-SELNUM  =   ZERO
                    PERFORM 41041-TUIKA-SEC
-               END-IF
+      *??      END-IF
            END-IF
       *
            .
@@ -1989,9 +2009,11 @@
        41041-TUIKA-SEC                SECTION.
       *
       *    追加できるか
-           IF      SPA-GMN-T06-RECE-MAX =   WRK-CONS-LINE-MAX
-               MOVE    "0002"              TO  SPA-ERRCD
-               GO      TO      41041-TUIKA-EXT
+           IF      SPA-GMN-T06-SELNUM  =   ZERO
+               IF      SPA-GMN-T06-RECE-MAX =   WRK-CONS-LINE-MAX
+                   MOVE    "0002"              TO  SPA-ERRCD
+                   GO      TO      41041-TUIKA-EXT
+               END-IF
            END-IF
       *
       *    請求管理とのチェック処理
@@ -2446,14 +2468,19 @@
       *
       *    追加処理
            PERFORM 410411-TUIKA-HENSYU-SEC
+      *
+           IF      SPA-GMN-T06-SELNUM  =   ZERO
+               MOVE    SPA-GMN-T06-RECE-MAX
+                                        TO  T06-RECE-LIST-ROW
+           ELSE
+               MOVE    SPA-GMN-T06-SELNUM
+                                        TO  T06-RECE-LIST-ROW
+           END-IF
       * 
            INITIALIZE                  SPA-GMN-T06-RECE-KOUMOKU
                                        SPA-NAI-T06-RECE-KOUMOKU
                                        SPA-NAI-T06-BODY-SELNUM
                                        SPA-T09-AREA
-      *
-           MOVE    SPA-GMN-T06-RECE-MAX
-                                    TO  T06-RECE-LIST-ROW
       *
            MOVE    4                TO  SPA-GMN-T06-CUR
            .
@@ -2465,12 +2492,16 @@
       *****************************************************************
        410411-TUIKA-HENSYU-SEC           SECTION.
       *
-           ADD     1                TO  SPA-GMN-T06-RECE-MAX
-           MOVE    SPA-GMN-T06-RECE-MAX
-                                    TO  SPA-GMN-T06-R-TRENNUM
-                                            (SPA-GMN-T06-RECE-MAX)
-           MOVE    SPA-GMN-T06-RECE-MAX
-                                    TO  IDX
+           IF      SPA-GMN-T06-SELNUM  =   ZERO
+               ADD     1                   TO  SPA-GMN-T06-RECE-MAX
+               MOVE    SPA-GMN-T06-RECE-MAX
+                                           TO  SPA-GMN-T06-R-TRENNUM
+                                                (SPA-GMN-T06-RECE-MAX)
+               MOVE    SPA-GMN-T06-RECE-MAX
+                                           TO  IDX
+           ELSE
+               MOVE    SPA-GMN-T06-SELNUM  TO  IDX
+           END-IF    
       *
            MOVE    RECE10-KEY      TO  SPA-NAI-T06-RECE10-KEY (IDX)
       *   
