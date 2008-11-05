@@ -121,6 +121,8 @@
       *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
       *  04.03.02    NACL-藤原    08/07/09  入力順指定時の出力先設定の不可
       *  04.03.03    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *  04.03.04    NACL-藤原    08/11/05  医師別出力時の「主科未設定分」
+      *                                     を表示しないようにする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -6050,9 +6052,14 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-GMN-SYUKA-G     TO  R02-SYUKA
            PERFORM VARYING IDX FROM    1       BY  1
                    UNTIL       IDX             >   SPA-GMN-SYUKA-MAX
-               MOVE    SPA-GMN-SYUKALST(IDX)
-                                           TO  R02-SYUKALST (IDX)
-               MOVE    IDX                 TO  R02-SYUKA-COUNT
+               IF    ( SPA-GMN-PRTJYUN         =   "11" )
+               AND   ( SPA-GMN-SYUKAL(IDX)     =   "XX" )
+                   CONTINUE
+               ELSE
+                  MOVE    SPA-GMN-SYUKALST(IDX)
+                                              TO  R02-SYUKALST (IDX)
+                  MOVE    IDX                 TO  R02-SYUKA-COUNT
+               END-IF
            END-PERFORM
       *
            IF      SPA-R01-FILEKBN     =   "1"
