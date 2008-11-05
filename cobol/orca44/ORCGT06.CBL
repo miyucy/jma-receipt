@@ -1005,6 +1005,7 @@
                        PERFORM 3201-RECEDEN-NEXT-SEC
                        GO  TO  330-TID1-SET-EXT
                    WHEN    "1004"
+                   WHEN    "1010"
                        PERFORM 480-ZENKAI-HYOUJI-SEC
                END-EVALUATE
            ELSE        

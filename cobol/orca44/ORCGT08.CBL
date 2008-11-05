@@ -441,11 +441,11 @@
       *****************************************************************
        440-BACK-HENSYU-SEC             SECTION.
       *
-           IF      SPA-NAI-T08-SELNUM  =  1
+           IF      SPA-NAI-T08-SELNUM  =  SPA-GMN-T08-MAX
                GO  TO  440-BACK-HENSYU-EXT
            END-IF
       *
-           COMPUTE SPA-NAI-T08-SELNUM  =   SPA-NAI-T08-SELNUM  -   1
+           COMPUTE SPA-NAI-T08-SELNUM  =   SPA-NAI-T08-SELNUM  +   1
            PERFORM 3101-RECE-LIST-HENSYU-SEC
       *
           .
@@ -457,11 +457,11 @@
       *****************************************************************
        450-NEXT-HENSYU-SEC             SECTION.
       *
-           IF      SPA-NAI-T08-SELNUM  =  SPA-GMN-T08-MAX
+           IF      SPA-NAI-T08-SELNUM  =  1
                GO  TO  440-BACK-HENSYU-EXT
            END-IF
       *
-           COMPUTE SPA-NAI-T08-SELNUM  =   SPA-NAI-T08-SELNUM  +   1
+           COMPUTE SPA-NAI-T08-SELNUM  =   SPA-NAI-T08-SELNUM  -   1
            PERFORM 3101-RECE-LIST-HENSYU-SEC
       *
           .
