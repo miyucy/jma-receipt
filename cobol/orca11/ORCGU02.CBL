@@ -541,6 +541,7 @@
            MOVE    2                   TO  SPA-GMN-CUR
            MOVE    1                   TO  SPA-GMN-PAGE
       *
+           MOVE    SPACE               TO  WRK-MOTOPG
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
@@ -553,24 +554,30 @@
                    MOVE    LNK-COMMON      TO  SPA-KYOUTU
                    MOVE    LNK-SCRSPA      TO  SPA-U02
                END-IF
-      *        予約とエラー表示の時、そのまま画面表示へ
-               IF      WRK-MOTOPG          =   "Y01"
-                                           OR  "XF01"
-      *            予約，受付編集
+      *
+               EVALUATE    WRK-MOTOPG
+               WHEN    "Y01"
+               WHEN    "XF01"
+      *        予約、メモ登録
+      *            受付編集
                    PERFORM 3101-UKETU-HEN-SEC
       *            患者メモ表示処理
                    PERFORM 410119-PTMEMOINF-SEC
-                   GO      TO      300-SCREEN-EXT
-               END-IF
+      *            受付選択表示処理
+                   IF      SPA-GMN-SELNUM  NOT =   ZERO
+                       PERFORM 3102-MAEUKETUKE-SEC
+                   END-IF
       *        外部より選択がある時
-               IF      WRK-MOTOPG(1:3)     =   "U01"  OR
-                                               "P97"
+               WHEN   "U01"
+               WHEN   "P97"
                    PERFORM 3101-U01SPASET-SEC
-                   GO      TO      300-SCREEN-EXT
-               ELSE
+               WHEN    OTHER
                    MOVE    SPA-MOTOPG          TO  SPA-MOTOPG2
-               END-IF
+                   MOVE    SPACE               TO  WRK-MOTOPG
+               END-EVALUATE
            END-IF
+           IF      WRK-MOTOPG          =   SPACE
+      *
       *    内部画面より
            EVALUATE    SPA-MOTOPG
                WHEN    "U02X"
@@ -620,6 +627,8 @@
                    END-IF
            END-EVALUATE
       *
+           END-IF
+      *
            .
        300-SCREEN-EXT.
            EXIT.
@@ -646,6 +655,37 @@
            END-IF
           .
        3009-P02UKEID-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    受付選択表示処理処理
+      *****************************************************************
+       3102-MAEUKETUKE-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  SPA-GMN-SELNUM
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-UKE-MAX
+      *        受付ＩＤ
+               IF      SPA-NAI-UKEID   NOT =   ZERO
+                   IF      SPA-GMN-TUKEID (IDX)    =   SPA-NAI-UKEID
+                       MOVE    IDX                 TO  SPA-GMN-SELNUM
+                       MOVE    SPA-UKE-MAX         TO  IDX
+                   END-IF
+               ELSE
+                   IF     (SPA-GMN-TKYYKTIME  (IDX)
+                                               =   SPA-NAI-KYYKTIME) AND
+                          (SPA-GMN-TYYKID  (IDX)
+                                               =   SPA-NAI-YYKID  )
+                       MOVE    IDX                 TO  SPA-GMN-SELNUM
+                       MOVE    SPA-UKE-MAX         TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      SPA-GMN-SELNUM      NOT =   ZERO
+               PERFORM 4104-SELNUM-CHK-SEC
+           END-IF
+          .
+       3102-MAEUKETUKE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -676,62 +716,62 @@
       *****************************************************************
       *    ＱＲより受付処理
       *****************************************************************
-       30010-QRHKN-UKETUKE-SEC              SECTION.
+      *30010-QRHKN-UKETUKE-SEC              SECTION.
       *
-           MOVE    SPA-U02Q-DATA-G     TO  WRK-U02Q-DATA-G
+      *    MOVE    SPA-U02Q-DATA-G     TO  WRK-U02Q-DATA-G
       *
-           MOVE    SPA-U02Q-PTNUM      TO  SPA-GMN-PTNUM
-           MOVE    SPA-U02Q-PTNUM      TO  U02-PTNUM
-           MOVE    1                   TO  FLG-IN-PTNUM
-           PERFORM 4101-PTNUM-CHK-SEC
-           MOVE    WRK-U02Q-DATA-G     TO  SPA-U02Q-DATA-G
+      *    MOVE    SPA-U02Q-PTNUM      TO  SPA-GMN-PTNUM
+      *    MOVE    SPA-U02Q-PTNUM      TO  U02-PTNUM
+      *    MOVE    1                   TO  FLG-IN-PTNUM
+      *    PERFORM 4101-PTNUM-CHK-SEC
+      *    MOVE    WRK-U02Q-DATA-G     TO  SPA-U02Q-DATA-G
       *
       *    選択の保険を含む保険組合せを選択とする
-           MOVE    ZERO                TO  WRK-IDXH
-           MOVE    ZERO                TO  WRK-CNT-HKN
-           MOVE    ZERO                TO  WRK-CNT-HKN2
-           PERFORM VARYING     IDX-C   FROM    1   BY  1
-                   UNTIL       IDX-C   >   SPA-COMBI-MAX
-               IF      SPA-NAI-COB-HKNID (IDX-C)   =   WRK-U02Q-HKNID
-                   MOVE    SPA-GMN-HKNCOMBINUM (IDX-C)
-                                               TO  SPA-GMN-COMBINUM
-                   IF      WRK-IDXH            =   ZERO
-                       MOVE    IDX-C               TO  WRK-IDXH
-                   END-IF
-                   MOVE    ZERO                TO  WRK-CNT-HKN2
-                   IF      SPA-GMN-KOH1-TANSEIDONAME(IDX-C)
-                                               NOT =   SPACE
-                       ADD     1               TO  WRK-CNT-HKN2
-                   END-IF
-                   IF      SPA-GMN-KOH2-TANSEIDONAME(IDX-C)
-                                               NOT =   SPACE
-                       ADD     1               TO  WRK-CNT-HKN2
-                   END-IF
-                   IF      SPA-GMN-KOH3-TANSEIDONAME(IDX-C)
-                                               NOT =   SPACE
-                       ADD     1               TO  WRK-CNT-HKN2
-                   END-IF
-                   IF      SPA-GMN-KOH4-TANSEIDONAME(IDX-C)
-                                               NOT =   SPACE
-                       ADD     1               TO  WRK-CNT-HKN2
-                   END-IF
-                   IF      WRK-CNT-HKN         <=  WRK-CNT-HKN2
-                       MOVE    IDX-C               TO  WRK-IDXH
-                       MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
-                   END-IF
-             END-IF
-           END-PERFORM
+      *    MOVE    ZERO                TO  WRK-IDXH
+      *    MOVE    ZERO                TO  WRK-CNT-HKN
+      *    MOVE    ZERO                TO  WRK-CNT-HKN2
+      *    PERFORM VARYING     IDX-C   FROM    1   BY  1
+      *            UNTIL       IDX-C   >   SPA-COMBI-MAX
+      *        IF      SPA-NAI-COB-HKNID (IDX-C)   =   WRK-U02Q-HKNID
+      *            MOVE    SPA-GMN-HKNCOMBINUM (IDX-C)
+      *                                        TO  SPA-GMN-COMBINUM
+      *            IF      WRK-IDXH            =   ZERO
+      *                MOVE    IDX-C               TO  WRK-IDXH
+      *            END-IF
+      *            MOVE    ZERO                TO  WRK-CNT-HKN2
+      *            IF      SPA-GMN-KOH1-TANSEIDONAME(IDX-C)
+      *                                        NOT =   SPACE
+      *                ADD     1               TO  WRK-CNT-HKN2
+      *            END-IF
+      *            IF      SPA-GMN-KOH2-TANSEIDONAME(IDX-C)
+      *                                        NOT =   SPACE
+      *                ADD     1               TO  WRK-CNT-HKN2
+      *            END-IF
+      *            IF      SPA-GMN-KOH3-TANSEIDONAME(IDX-C)
+      *                                        NOT =   SPACE
+      *                ADD     1               TO  WRK-CNT-HKN2
+      *            END-IF
+      *            IF      SPA-GMN-KOH4-TANSEIDONAME(IDX-C)
+      *                                        NOT =   SPACE
+      *                ADD     1               TO  WRK-CNT-HKN2
+      *            END-IF
+      *            IF      WRK-CNT-HKN         <=  WRK-CNT-HKN2
+      *                MOVE    IDX-C               TO  WRK-IDXH
+      *                MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
+      *            END-IF
+      *      END-IF
+      *    END-PERFORM
       *
-           IF      WRK-IDXH            =   ZERO
-               MOVE    1               TO  IDX-C
-           ELSE
-               MOVE    WRK-IDXH        TO  IDX-C
-           END-IF
-           MOVE    SPA-GMN-HKNCOMBINUM (IDX-C)
-                                       TO  SPA-GMN-COMBINUM
-           .
-       30010-QRHKN-UKETUKE-EXT.
-           EXIT.
+      *    IF      WRK-IDXH            =   ZERO
+      *        MOVE    1               TO  IDX-C
+      *    ELSE
+      *        MOVE    WRK-IDXH        TO  IDX-C
+      *    END-IF
+      *    MOVE    SPA-GMN-HKNCOMBINUM (IDX-C)
+      *                                TO  SPA-GMN-COMBINUM
+      *    .
+      *30010-QRHKN-UKETUKE-EXT.
+      **** EXIT.
       *
       *****************************************************************
       *    スパ初期編集処理
@@ -2353,6 +2393,10 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    SPA-GMN-SELNUM          TO  IDX
            MOVE    SPA-GMN-TPTNUM   (IDX)  TO  SPA-GMN-PTNUM
            MOVE    SPA-GMN-TPTID    (IDX)  TO  SPA-GMN-PTID
+      *
+           MOVE    SPA-GMN-TUKEID   (IDX)  TO  SPA-NAI-UKEID
+           MOVE    SPA-GMN-TKYYKTIME(IDX)  TO  SPA-NAI-KYYKTIME
+           MOVE    SPA-GMN-TYYKID   (IDX)  TO  SPA-NAI-YYKID
       *
            MOVE    SPA-GMN-TNAME    (IDX)  TO  SPA-GMN-NAME
            MOVE    SPA-GMN-TSRYKA-G (IDX)  TO  SPA-GMN-SRYKA-G
@@ -5644,6 +5688,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    4               TO  SPA-GMN-CUR
                WHEN    "SRYKA"
                    MOVE    5               TO  SPA-GMN-CUR
+      *            患者指定がなければ、選択へ
+                   IF     (SPA-GMN-NAME        =   SPACE )
+                   AND    (SPA-GMN-PTNUM       =   SPACE )
+                   AND    (SPA-UKE-MAX         >   ZERO  )
+                       MOVE    1               TO  SPA-GMN-CUR
+                   END-IF
                WHEN    "DRNAME"
                    MOVE    6               TO  SPA-GMN-CUR
                WHEN    "SRYNAIYO"

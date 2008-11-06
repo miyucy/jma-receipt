@@ -182,6 +182,10 @@
                    07  SPA-NAI-SEX                     PIC X(01).
                    07  SPA-NAI-NENREI                  PIC 9(03).
       *
+                   07  SPA-NAI-UKEID                   PIC 9(05).
+                   07  SPA-NAI-KYYKTIME                PIC X(04).
+                   07  SPA-NAI-YYKID                   PIC X(02).
+      *
       *---- (01.00.03) LINE MOD END -----------------------------------
       *            ·Ù¹ð
                    07  SPA-NAI-KEIFLG                 PIC 9(01).
