@@ -2643,17 +2643,18 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-      *    入力中のチェック 
-           IF      SPA-NAI-T06-PTID    >   ZERO
-               MOVE    "1005"          TO  SPA-TIDCD
-               GO  TO  210-BACK-EXT
-           END-IF
       *    未処理分があるときのチェック 
            IF    ( SPA-NAI-T06-SYORIFLG
                                        =   ZERO )
            AND   ( SPA-GMN-T06-RECE-MAX
                                        >   ZERO )
                MOVE    "1008"          TO  SPA-TIDCD
+               GO  TO  210-BACK-EXT
+           END-IF
+      *
+      *    入力中のチェック 
+           IF      SPA-NAI-T06-PTID    >   ZERO
+               MOVE    "1005"          TO  SPA-TIDCD
                GO  TO  210-BACK-EXT
            END-IF
       *    
@@ -3346,6 +3347,8 @@
                MOVE    SPA-NAI-T06-R-THKNNUM      (IDX)
                                            TO  ONRECE-B-HKNNUM
                MOVE    SMCNDATE-YMD        TO  ONRECE-B-CREYMD
+               MOVE    SPA-TERMID          TO  ONRECE-B-TERMID
+               MOVE    SPA-OPID            TO  ONRECE-B-OPID
                MOVE    ONRECE-B-REC        TO  MCPDATA-REC
                MOVE    "tbl_onrece_body"
                                            TO  MCP-TABLE
@@ -3942,6 +3945,12 @@
       *****************************************************************
        480-KENSAKU-SEC             SECTION.
       *
+      *    入力中のチェック 
+           IF      SPA-NAI-T06-PTID    >   ZERO
+               MOVE    "0022"          TO  SPA-ERRCD
+               GO  TO  480-KENSAKU-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-T06             TO  LNK-SCRSPA
@@ -4351,7 +4360,7 @@
                    "対象の請求データは月遅れ等の設定が行なわれています"
                                                        TO  SPA-ERRMSG
                WHEN    "0022"
-                   MOVE    "項目の入力途中です"        TO  SPA-ERRMSG
+                   MOVE    "患者情報を入力中です"      TO  SPA-ERRMSG
                WHEN    "0023"
                    MOVE    "選択番号入力エラー"        TO  SPA-ERRMSG
                WHEN    "0024"
@@ -4424,7 +4433,9 @@
                WHEN    "1004"
                    MOVE    "前回個別作成分を表示します"  TO  WRK-TIDMSG
                WHEN    "1005"
-                   MOVE    "入力途中ですが終了しますか"  TO  WRK-TIDMSG
+                   MOVE
+                       "患者情報を入力中ですが終了しますか"
+                                                         TO  WRK-TIDMSG
                WHEN    "1006"
                    STRING   "請求データの作成日がレセ送信日以前ですが"
                                        DELIMITED  BY  SIZE
