@@ -185,6 +185,7 @@
       *  04.02.02    NACL-ÌçÏÆ    08/04/21  £¸£°¤½¤ÎÂ¾µ­ºÜ½çÂÐ±þ
       *  04.02.03    NACL-ÌçÏÆ    08/07/18  ºÆ¿Ç¤Î²Ã»»ÊÔ½¸ÂÐ±þ
       *  04.02.04    NACL-ÌçÏÆ    08/08/05  ºÆ¿Ç¤Î²Ã»»ÊÔ½¸ÂÐ±þ½¤Àµ
+      *  04.02.05    NACL-ÌçÏÆ    08/11/06  Èé²¼¶ÚÆù¡¢ÀÅÌ®Ãí¼Í¤Îµ­ºÜÊÑ¹¹ÂÐ±þ
       *
       *  04.03.01    NACL-ÌçÏÆ    08/07/09  ÅêÌô¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *  04.03.02    NACL-ÌçÏÆ    08/07/14  ²¾¥ì¥»ºîÀ®¡Ê±¡³°½èÊý´Þ¤à¡ËÂÐ±þ
@@ -2590,11 +2591,11 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                       AND (IDX1              =   4    ) )
                    CONTINUE
                ELSE    
-                   IF   (RECE04-SRYKBN     =   "31" OR "32")
-                   AND  (FLG-HIKAKIN       =    1          )
-                   AND  (IDX1              =    3          )
-                       CONTINUE
-                   ELSE    
+      ***          IF   (RECE04-SRYKBN     =   "31" OR "32")
+      ***          AND  (FLG-HIKAKIN       =    1          )
+      ***          AND  (IDX1              =    3          )
+      ***              CONTINUE
+      ***          ELSE    
                        IF   RECE04-SRYKBN     =   "31" OR "32"
                          IF   WRK-TBLMAX      >    ZERO
                              MOVE     SPACE      TO  WRK-ZAI-MK
@@ -2611,7 +2612,7 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                                PERFORM 430-TBLZAI-HEN-SEC
                            END-IF    
                        END-PERFORM
-                   END-IF    
+      ***          END-IF    
                END-IF
                IF      WRK-ZAIWMAX (IDX1)    >   ZERO        
                    MOVE    SPACE             TO  WRK-ZAI
@@ -2739,12 +2740,28 @@ grpsys         OR     ( RECE04-HOSPNUM   NOT =   RECE05-HOSPNUM      )
                END-IF
            END-PERFORM
       *
-           IF   ( RECE04-SRYKBN               = "31" OR "32" )
-           AND  ( TBL-ZAIW-NAME (3 1)         = SPACE )
-           AND  ( TBL-ZAIW-NAME (3 WRK-WIDX2) = SPACE )
-           AND  ( WRK-WIDX1                   = 3     )
-           AND  ( WRK-WIDX2               NOT = 1     )
+      ***  IF   ( RECE04-SRYKBN               = "31" OR "32" )
+      ***  AND  ( TBL-ZAIW-NAME (3 1)         = SPACE )
+      ***  AND  ( TBL-ZAIW-NAME (3 WRK-WIDX2) = SPACE )
+      ***  AND  ( WRK-WIDX1                   = 3     )
+      ***  AND  ( WRK-WIDX2               NOT = 1     )
+      ***          MOVE    1                 TO  FLG-NOPRT
+      ***  END-IF
+           IF     RECE04-SRYKBN   = "31" OR "32"
+              IF  FLG-HIKAKIN     =  ZERO
+                IF   ( TBL-ZAIW-NAME (3 1)         = SPACE )
+                AND  ( TBL-ZAIW-NAME (3 2)     NOT = SPACE )
+                AND  ( WRK-WIDX1                   = 3     )
+                AND  ( WRK-WIDX2                   = 1     )
                    MOVE    1                 TO  FLG-NOPRT
+                END-IF
+              ELSE
+                IF   ( TBL-ZAIW-NAME (3 1)         = SPACE )
+                AND  ( WRK-WIDX1                   = 3     )
+                AND  ( WRK-WIDX2                   = 1     )
+                   MOVE    1                 TO  FLG-NOPRT
+                END-IF
+              END-IF
            END-IF
       *
            .
