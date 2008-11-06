@@ -105,6 +105,7 @@
            DISPLAY "SYORI="  LNK-ZENHANCNV-SYORI
            DISPLAY "DATA ="  LNK-ZENHANCNV-IN-DATA
            DISPLAY "LEN  ="  LNK-ZENHANCNV-IN-LEN
+           DISPLAY "LEN1 ="  LNK-ZENHANCNV-IN-LEN1
       *??
       *
            MOVE    ZERO                TO  LNK-ZENHANCNV-RC    
@@ -142,7 +143,13 @@
       *    日付変換処理
       *****************************************************************
        200-YMD-HENSYU-SEC       SECTION.
-      *    
+      *
+           IF      LNK-ZENHANCNV-IN-LEN
+                                   NOT =   LNK-ZENHANCNV-IN-LEN1
+              MOVE    9               TO  LNK-ZENHANCNV-RC
+              GO  TO  200-YMD-HENSYU-EXT
+           END-IF
+      *
            MOVE    ZERO                TO  FLG-YM
       *
            IF      LNK-ZENHANCNV-IN-DATA (1:4) 

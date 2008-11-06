@@ -450,7 +450,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        END-EVALUATE
                    WHEN    "RIfixf"
       *                請求確認
-                       EVALUATE    PARA-DATA (1:1)
+                       EVALUATE    WRK-PARA-REC (1:1)
                            WHEN    "1" 
       *                        ヘッダ
                                ADD     1               TO  IDZZ
@@ -502,7 +502,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    ZERO            TO  FLG-AREA1
                COMPUTE WRK-PO-ST   =   WRK-PO-ED   +   1
       *
-               IF    ( PARA-DATA (WRK-PO-ST:)
+               IF    ( WRK-PARA-REC (WRK-PO-ST:)
                                        =   SPACE )
                OR    ( FLG-DATAEND     =   1     )
                    MOVE    1               TO  FLG-DATAEND
@@ -605,12 +605,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF    ( WRK-MO-CNT          =   1 ) AND
-                 ( PARA-DATA (WRK-MO-ST:WRK-MO-CNT) =   X"0D" )
+                 ( WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT) =   X"0D" )
                MOVE  1                 TO  FLG-NODATA
            END-IF
       *
            IF    ( WRK-MO-CNT          =   1 ) AND
-                 ( PARA-DATA (WRK-MO-ST:WRK-MO-CNT) =   X"0A" )
+                 ( WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT) =   X"0A" )
                MOVE  1                 TO  FLG-NODATA
            END-IF
       *
@@ -668,7 +668,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            INITIALIZE          ORCSZENHANCNVAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  LNK-ZENHANCNV-IN-DATA
-                           MOVE    14          TO  LNK-ZENHANCNV-IN-LEN
+                           MOVE    16          TO  LNK-ZENHANCNV-IN-LEN
+                           MOVE    WRK-MO-CNT  TO  LNK-ZENHANCNV-IN-LEN1
                            MOVE    "1"         TO  LNK-ZENHANCNV-SYORI
                            CALL    "ORCSZENHANCNV" USING
                                                    ORCSZENHANCNVAREA
@@ -680,7 +681,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "診療年月エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -692,7 +694,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            INITIALIZE          ORCSZENHANCNVAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  LNK-ZENHANCNV-IN-DATA
-                           MOVE    20          TO  LNK-ZENHANCNV-IN-LEN
+                           MOVE    22          TO  LNK-ZENHANCNV-IN-LEN
+                           MOVE    WRK-MO-CNT  TO  LNK-ZENHANCNV-IN-LEN1
                            MOVE    "1"         TO  LNK-ZENHANCNV-SYORI
                            CALL    "ORCSZENHANCNV" USING
                                                    ORCSZENHANCNVAREA
@@ -701,6 +704,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                    TO  TBL-B-UKEYMD
                                                                (IDZZ)
                                                        WRK-UKEYMD
+                           ELSE
+                               MOVE    SPACE       TO  WRK-CSVERR
+                               STRING  "送信年月日エラー DATA="
+                                                   DELIMITED  BY  SIZE
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    WRK-CSVERR
+                               END-STRING
+                               PERFORM 500-ERR-HENSYU-SEC
+                               PERFORM 500-COBABORT-SEC
                            END-IF
       *                ９： 送信回数
                        WHEN    9
@@ -708,10 +722,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  LNK-ZENHANCNV-IN-DATA
                            MOVE    6           TO  LNK-ZENHANCNV-IN-LEN
+                           MOVE    WRK-MO-CNT  TO  LNK-ZENHANCNV-IN-LEN1
                            MOVE    "2"         TO  LNK-ZENHANCNV-SYORI
                            CALL    "ORCSZENHANCNV" USING
                                                    ORCSZENHANCNVAREA
-                           IF      LNK-ZENHANCNV-RC    =   ZERO
+                           IF    ( LNK-ZENHANCNV-RC        =   ZERO )
+                           AND   ( LNK-ZENHANCNV-OT-NUM    >=  1   AND
+                                                           <=  999  )
                                MOVE    LNK-ZENHANCNV-OT-NUM
                                                    TO  UKE-CNT
                                                        TBL-B-UCNT (IDZZ)
@@ -719,7 +736,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "送信回数エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -753,7 +771,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    "2"         TO  LNK-ZENHANCNV-SYORI
                            CALL    "ORCSZENHANCNV" USING
                                                    ORCSZENHANCNVAREA
-                           IF      LNK-ZENHANCNV-RC    =   ZERO
+                           IF    ( LNK-ZENHANCNV-RC    =   ZERO      )
+                           AND   ( LNK-ZENHANCNV-OT-NUM   >=  1   AND
+                                                          <=  999999 )
                                MOVE    LNK-ZENHANCNV-OT-NUM 
                                                    TO  TBL-B-RECEIPT-NO
                                                                (IDZZ)
@@ -761,7 +781,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "レセプト番号エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -785,7 +806,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "患者番号エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -798,16 +820,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  LNK-ZENHANCNV-IN-DATA
                            MOVE    14          TO  LNK-ZENHANCNV-IN-LEN
+                           MOVE    WRK-MO-CNT  TO  LNK-ZENHANCNV-IN-LEN1
                            MOVE    "1"         TO  LNK-ZENHANCNV-SYORI
                            CALL    "ORCSZENHANCNV" USING
                                                    ORCSZENHANCNVAREA
                            IF      LNK-ZENHANCNV-RC    =   ZERO
                                MOVE    LNK-ZENHANCNV-OT-SYMD (1:6)
                                                TO  TBL-B-SRYYM-B(IDZZ)
-      *                        PTID 編集 
+      *                        診療年月からPTIDを編集 
                                PERFORM 500-PTID-HENSYU-SEC
                                IF      SPTNUM-RC   =   00
-                                   MOVE    SPTNUM-PTID     TO
+                                   MOVE    SPTNUM-PTID TO
                                                        TBL-B-PTID (IDZZ)
                                ELSE
                                    DISPLAY "ORCSPTNUM ERR " SPTNUM-RC
@@ -816,7 +839,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "診療年月エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -825,12 +849,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            END-IF
       *                ７： 入外区分
                        WHEN    7
-                           IF      WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
-                                                   =   "入院外"
-                               MOVE    "2"     TO  TBL-B-NYUGAIKBN(IDZZ)
-                           ELSE
-                               MOVE    "1"     TO  TBL-B-NYUGAIKBN(IDZZ)
-                           END-IF
+                           EVALUATE    WRK-PARA-REC
+                                           (WRK-MO-ST:WRK-MO-CNT)
+                               WHEN    "入院外"
+                                   MOVE    "2" TO  TBL-B-NYUGAIKBN(IDZZ)
+                               WHEN    "入　院"
+                                   MOVE    "1" TO  TBL-B-NYUGAIKBN(IDZZ)
+                               WHEN    OTHER
+                                   MOVE    SPACE       TO  WRK-CSVERR
+                                   STRING  "入外区分エラー DATA="
+                                                   DELIMITED  BY  SIZE
+                                           WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    WRK-CSVERR
+                                   END-STRING
+                                   PERFORM 500-ERR-HENSYU-SEC
+                                   PERFORM 500-COBABORT-SEC
+                           END-EVALUATE
       *                ８： 患者氏名
                        WHEN    8
                            MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -841,6 +877,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  LNK-ZENHANCNV-IN-DATA
                            MOVE    20          TO  LNK-ZENHANCNV-IN-LEN
+                           MOVE    WRK-MO-CNT  TO  LNK-ZENHANCNV-IN-LEN1
                            MOVE    "1"         TO  LNK-ZENHANCNV-SYORI
                            CALL    "ORCSZENHANCNV" USING
                                                    ORCSZENHANCNVAREA
@@ -851,7 +888,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "生年月日エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -864,6 +902,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  LNK-ZENHANCNV-IN-DATA
                            MOVE    8           TO  LNK-ZENHANCNV-IN-LEN
+                           MOVE    WRK-MO-CNT  TO  LNK-ZENHANCNV-IN-LEN1
                            MOVE    "3"         TO  LNK-ZENHANCNV-SYORI
                            CALL    "ORCSZENHANCNV" USING
                                                    ORCSZENHANCNVAREA
@@ -872,12 +911,23 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                (1:LNK-ZENHANCNV-OT-LEN)
                                                    TO
                                                TBL-B-U-ERR-CODE(IDZZ)
+                           ELSE
+                               MOVE    SPACE       TO  WRK-CSVERR
+                               STRING  "エラーコードエラー DATA="
+                                                   DELIMITED  BY  SIZE
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    WRK-CSVERR
+                               END-STRING
+                               PERFORM 500-ERR-HENSYU-SEC
+                               PERFORM 500-COBABORT-SEC
                            END-IF
-      *                １１： エラーメッセージ1
+      *                １１：エラーメッセージ１
                        WHEN    11
                            MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-U-ERR-MSG-1(IDZZ)
-      *                １２： エラーメッセージ2
+      *                １２：エラーメッセージ２
                        WHEN    12
                            MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-U-ERR-MSG-2(IDZZ)
@@ -920,7 +970,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        2001132-FIXF-KOUMOKU-BETU-SEC     SECTION.
       *
-           EVALUATE    PARA-DATA(1:1)
+           EVALUATE    WRK-PARA-REC(1:1)
       *        ヘッダ
                WHEN    "1" 
                    EVALUATE    WRK-KOUMOKU-NO
@@ -930,7 +980,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                            INITIALIZE              ORCSGDAYAREA
                            MOVE    "1"         TO  SGDAY-INTYPE
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SGDAY-INDAY
                            CALL    "ORCSGDAY"  USING
                                                ORCSGDAYAREA
@@ -953,7 +1003,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "請求年月エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -961,20 +1012,35 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                PERFORM 500-COBABORT-SEC
                            END-IF 
                        WHEN    3
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-SKYYMD
                                                    TBL-B-SKYYMD(IDZZ)
                        WHEN    4
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           IF      WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+                                               =   "1" OR  "2"
+                               MOVE    WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-TEISYUTUSAKI
                                                    TBL-B-TEISYUTUSAKI
                                                            (IDZZ)
+                           ELSE
+                               MOVE    SPACE       TO  WRK-CSVERR
+                               STRING  "審査支払機関コードエラー DATA="
+                                                   DELIMITED  BY  SIZE
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
+                                                   DELIMITED  BY  SIZE
+                                                   INTO    WRK-CSVERR
+                               END-STRING
+                               PERFORM 500-ERR-HENSYU-SEC
+                               PERFORM 500-COBABORT-SEC
+                           END-IF
                            MOVE    1           TO  TBL-B-AMOUNT-FLG
                                                            (IDZZ)
                                                    WRK-AMOUNT-FLG
                        WHEN    9
                            INITIALIZE          ORCSNUMAREA
-                            MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
@@ -989,7 +1055,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "送信回数エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -998,7 +1065,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            END-IF
                        WHEN   10
                            INITIALIZE          ORCSNUMAREA
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
@@ -1013,7 +1080,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "請求確定回数エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -1040,7 +1108,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    SEI-CNT     TO  TBL-B-SCNT(IDZZ)
       *
                            INITIALIZE          ORCSNUMAREA
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
@@ -1055,7 +1123,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "レセプト番号エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -1063,7 +1132,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                PERFORM 500-COBABORT-SEC
                            END-IF
                        WHEN    3 
-                           MOVE  PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  TBL-B-RECESYUBETU
                                                                  (IDZZ)
                            IF      TBL-B-RECESYUBETU(IDZZ)(4:1)  =
@@ -1074,7 +1143,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            END-IF
                        WHEN    4 
                            INITIALIZE                      ORCSGDAYAREA
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SGDAY-INDAY
                            MOVE    "1"         TO  SGDAY-INTYPE
                            CALL    "ORCSGDAY"      USING
@@ -1086,7 +1155,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "診療年月エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                              (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -1101,7 +1171,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  TBL-B-SEX(IDZZ)
                        WHEN    7 
                            INITIALIZE                      ORCSGDAYAREA
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SGDAY-INDAY
                            CALL    "ORCSGDAY"      USING
                                                    ORCSGDAYAREA
@@ -1112,7 +1182,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SPACE       TO  WRK-CSVERR
                                STRING  "生年月日エラー DATA="
                                                    DELIMITED  BY  SIZE
-                                       PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                                       WRK-PARA-REC
+                                              (WRK-MO-ST:WRK-MO-CNT)
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-CSVERR
                                END-STRING
@@ -1120,17 +1191,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                PERFORM 500-COBABORT-SEC
                            END-IF
                        WHEN    8 
-                           MOVE  PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  TBL-B-PTNUM(IDZZ)
                            PERFORM 500-PTID-HENSYU-SEC
                            IF      SPTNUM-RC   =   00
-                               MOVE    SPTNUM-PTID     TO
-                                                       TBL-B-PTID (IDZZ)
+                               MOVE    SPTNUM-PTID TO  TBL-B-PTID (IDZZ)
                            ELSE
                                DISPLAY "ORCSPTNUM ERR " SPTNUM-RC
                            END-IF
                        WHEN    9
-                           MOVE PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-HKNJANUM
                            PERFORM VARYING IDW FROM    1   BY  1
                                    UNTIL   IDW >       8
@@ -1149,7 +1219,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  TBL-B-NUM(IDZZ)
                        WHEN   12
                            INITIALIZE          ORCSNUMAREA
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
@@ -1170,7 +1240,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        (IDZZ KO-B-CNT)
                        WHEN   19
                            INITIALIZE          ORCSNUMAREA
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"   USING
                                                ORCSNUMAREA
@@ -1191,7 +1261,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        (IDZZ KO-B-CNT)
                        WHEN   22
                            INITIALIZE          ORCSNUMAREA
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
@@ -1212,7 +1282,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        (IDZZ KO-B-CNT)
                        WHEN   25
                            INITIALIZE          ORCSNUMAREA
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
@@ -1233,7 +1303,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        (IDZZ KO-B-CNT)
                        WHEN   28
                            INITIALIZE          ORCSNUMAREA
-                           MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  SNUM-INX
                            CALL    "ORCSNUM"    USING
                                                ORCSNUMAREA
@@ -1244,9 +1314,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TBL-B-K-TTL-TEN(IDZZ KO-B-CNT)
                            END-IF
                        WHEN   29
-                           MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-KAKUTEI-KBN(IDZZ)
-                           IF    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+                           IF      WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            =   "1"
                                ADD  1          TO  PATIENT-CNT
                            ELSE

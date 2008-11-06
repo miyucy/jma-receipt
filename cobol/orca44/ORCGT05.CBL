@@ -1342,9 +1342,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 7002-FILE-CONVERT-SEC
       *
            INITIALIZE                      ORCSZENHANCNVAREA
-           MOVE    SJISTOEUC-OUTDATA(1:14)
+           MOVE    SJISTOEUC-OUTDATA(1:WRK-MO-CNT)
                                        TO  LNK-ZENHANCNV-IN-DATA
-           MOVE    14                  TO  LNK-ZENHANCNV-IN-LEN
+           MOVE    16                  TO  LNK-ZENHANCNV-IN-LEN
+           MOVE    WRK-MO-CNT          TO  LNK-ZENHANCNV-IN-LEN1
            MOVE    "1"                 TO  LNK-ZENHANCNV-SYORI
            CALL    "ORCSZENHANCNV"     USING   ORCSZENHANCNVAREA
            IF      LNK-ZENHANCNV-RC    =   ZERO
@@ -1369,9 +1370,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 7002-FILE-CONVERT-SEC
       *
            INITIALIZE                      ORCSZENHANCNVAREA
-           MOVE    SJISTOEUC-OUTDATA(1:20)
+           MOVE    SJISTOEUC-OUTDATA(1:WRK-MO-CNT)
                                        TO  LNK-ZENHANCNV-IN-DATA
-           MOVE    20                  TO  LNK-ZENHANCNV-IN-LEN
+           MOVE    22                  TO  LNK-ZENHANCNV-IN-LEN
+           MOVE    WRK-MO-CNT          TO  LNK-ZENHANCNV-IN-LEN1
            MOVE    "1"                 TO  LNK-ZENHANCNV-SYORI
            CALL    "ORCSZENHANCNV"     USING   ORCSZENHANCNVAREA
            IF      LNK-ZENHANCNV-RC    =   ZERO
@@ -1394,9 +1396,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 7002-FILE-CONVERT-SEC
       *
            INITIALIZE                      ORCSZENHANCNVAREA
-           MOVE    SJISTOEUC-OUTDATA(1:6)
+           MOVE    SJISTOEUC-OUTDATA(1:WRK-MO-CNT)
                                        TO  LNK-ZENHANCNV-IN-DATA
            MOVE    6                   TO  LNK-ZENHANCNV-IN-LEN
+           MOVE    WRK-MO-CNT          TO  LNK-ZENHANCNV-IN-LEN1
            MOVE    "2"                 TO  LNK-ZENHANCNV-SYORI
            CALL    "ORCSZENHANCNV"     USING   ORCSZENHANCNVAREA
            IF      LNK-ZENHANCNV-RC    =   ZERO

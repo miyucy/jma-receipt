@@ -37,8 +37,10 @@
            03  LNK-ZENHANCNV-IN.
       *        入力文字
                05  LNK-ZENHANCNV-IN-DATA     PIC X(50).
-      * 
+      *        入力チェック文字数
                05  LNK-ZENHANCNV-IN-LEN      PIC 9(02).
+      *        入力文字数 
+               05  LNK-ZENHANCNV-IN-LEN1     PIC 9(02).
       *
       *    出力情報
            03  LNK-ZENHANCNV-OUT.
