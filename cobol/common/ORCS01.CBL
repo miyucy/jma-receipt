@@ -14076,7 +14076,8 @@
                                 TO   LNK-SYU-KOH-YKZFTNKBN(KOH-IDX)
                IF    ZAN-KOHI-T(KOH-IDX)   NOT =   ZERO                 
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =                      
-                             ZAN-KOHI-T(KOH-IDX)  +  5                  
+      ***                    ZAN-KOHI-T(KOH-IDX)  +  5                  
+                             ZAN-KOHI-T(KOH-IDX)  +  4                  
                    COMPUTE   WK-FTN      =                              
                              ZAN-KOHI-T(KOH-IDX)  /  10                 
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =                      
@@ -14345,7 +14346,8 @@
                                                         (KOH-IDX)
                IF    ZAN-KOHI-T(KOH-IDX)   NOT =   ZERO
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =
-                             ZAN-KOHI-T(KOH-IDX)  +  5
+      ***                    ZAN-KOHI-T(KOH-IDX)  +  5
+                             ZAN-KOHI-T(KOH-IDX)  +  4
                    COMPUTE   WK-FTN      =
                              ZAN-KOHI-T(KOH-IDX)  /  10
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =
@@ -16169,7 +16171,8 @@
       *
            IF    ZAN-KOHI-T(KOH-IDX)   NOT =   ZERO
                COMPUTE   ZAN-KOHI-T(KOH-IDX) =
-                         ZAN-KOHI-T(KOH-IDX) +   5
+      ***                ZAN-KOHI-T(KOH-IDX) +   5
+                         ZAN-KOHI-T(KOH-IDX) +   4
                COMPUTE   WK-FTN      =
                          ZAN-KOHI-T(KOH-IDX) /  10
                COMPUTE   ZAN-KOHI-T(KOH-IDX) =

@@ -232,6 +232,7 @@
       *  04.02.24    NACL-ÌçÏÆ    08/10/02  ËÌ³¤Æ»ÆÃÄê¼À´µÂÐ±þ
       *  04.02.25    NACL-ÌçÏÆ    08/10/22  ¿À¸Í»ÔÃÏÊý¸øÈñÂçºåÉÜÂÐ±þ
       *  04.02.26    NACL-ÌçÏÆ    08/11/05  Ä»¼è¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  04.02.27    NACL-ÌçÏÆ    08/11/05  ¾å¸Â¤Ë¿©»ö¤ò´Þ¤à¾ì¹ç¤Î»ÄÊÔ½¸½¤Àµ
       *
       *  04.03.01    NACL-ÌçÏÆ    08/09/25  ¼«ÇåÀÕ£°£¹£µ£¹£³¤Î½¸·×ÀèÂÐ±þ
       ****************************************************************
@@ -14377,7 +14378,8 @@
                          LNK-SYU-KOH-COMPFTN(KOH-IDX)     
                IF    ZAN-KOHI-T(KOH-IDX)   NOT =   ZERO
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =
-                             ZAN-KOHI-T(KOH-IDX)  +  5
+      ***                    ZAN-KOHI-T(KOH-IDX)  +  5
+                             ZAN-KOHI-T(KOH-IDX)  +  4
                    COMPUTE   WK-FTN      =
                              ZAN-KOHI-T(KOH-IDX)  /  10
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =
@@ -14682,7 +14684,8 @@
                          LNK-SYU-KOH-COMPFTN(KOH-IDX)     
                IF    ZAN-KOHI-T(KOH-IDX)   NOT =   ZERO
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =
-                             ZAN-KOHI-T(KOH-IDX)  +  5
+      ***                    ZAN-KOHI-T(KOH-IDX)  +  5
+                             ZAN-KOHI-T(KOH-IDX)  +  4
                    COMPUTE   WK-FTN      =
                              ZAN-KOHI-T(KOH-IDX)  /  10
                    COMPUTE   ZAN-KOHI-T(KOH-IDX) =
@@ -17218,7 +17221,8 @@
       *
            IF    ZAN-KOHI-T(KOH-IDX)   NOT =   ZERO
                COMPUTE   ZAN-KOHI-T(KOH-IDX) =
-                         ZAN-KOHI-T(KOH-IDX) +   5
+      ***                ZAN-KOHI-T(KOH-IDX) +   5
+                         ZAN-KOHI-T(KOH-IDX) +   4
                COMPUTE   WK-FTN      =
                          ZAN-KOHI-T(KOH-IDX) /  10
                COMPUTE   ZAN-KOHI-T(KOH-IDX) =
