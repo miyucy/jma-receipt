@@ -2212,7 +2212,7 @@
                MOVE    PTKOH-FTNJANUM  TO  SPA-NAI-T09-RECE10-TKIGO(IDX)
                MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
                MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
-               MOVE    RECE10-KOHNUM (1)
+               MOVE    RECE10-KOHID (1)
                                        TO  MONTHLYNUM-KOHID
                MOVE    RECE10-SRYYM    TO  MONTHLYNUM-SRYYM
                MOVE    RECE10-NYUGAIKBN
