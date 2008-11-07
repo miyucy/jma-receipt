@@ -1088,14 +1088,17 @@
                WHEN    "1006"
                    STRING   "請求データの作成日がレセ送信日以前ですが"
                                        DELIMITED  BY  SIZE
-                            "個別指示の対象としますか"
+                            "個別指示の対象としますか（"
                                        DELIMITED  BY  SIZE
+                            SPA-GMN-T09-TCREYMD (SPA-NAI-T09-SELNUM)
+                                       DELIMITED  BY  SIZE
+                            "）"       DELIMITED  BY  SIZE
                                        INTO    TID1-ID1MSG
                    END-STRING
            END-EVALUATE
       *
-           MOVE    "戻る"              TO  TID1-B01-LABEL
-           MOVE    "ＯＫ"              TO  TID1-B12-LABEL
+           MOVE    "いいえ"         TO  TID1-B01-LABEL
+           MOVE    "は  い"         TO  TID1-B12-LABEL
            MOVE    "B12"               TO  MCP-WIDGET
       *
            MOVE    "T09"               TO  SPA-MOTOPG
