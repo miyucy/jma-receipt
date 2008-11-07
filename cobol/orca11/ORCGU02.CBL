@@ -560,13 +560,11 @@
                WHEN    "XF01"
       *        予約、メモ登録
       *            受付編集
-                   PERFORM 3101-UKETU-HEN-SEC
+                   IF      SPA-GMN-SELNUM      =   ZERO
+                       PERFORM 3101-UKETU-HEN-SEC
+                   END-IF
       *            患者メモ表示処理
                    PERFORM 410119-PTMEMOINF-SEC
-      *            受付選択表示処理
-                   IF      SPA-GMN-SELNUM  NOT =   ZERO
-                       PERFORM 3102-MAEUKETUKE-SEC
-                   END-IF
       *        外部より選択がある時
                WHEN   "U01"
                WHEN   "P97"
@@ -638,9 +636,10 @@
       *****************************************************************
        3009-P02UKEID-CHK-SEC              SECTION.
       *
-           MOVE    ZERO                 TO  SPA-GMN-SELNUM
-           PERFORM VARYING     IDX   FROM   1   BY  1
-                   UNTIL       IDX   >   SPA-UKE-MAX
+           MOVE    ZERO                TO  SPA-GMN-SELNUM
+           MOVE    ZERO                TO  SPA-NAI-SELNUM
+           PERFORM VARYING     IDX     FROM   1   BY  1
+                   UNTIL       IDX     >   SPA-UKE-MAX
       *        受付ＩＤ
                IF      SPA-GMN-TUKEID (IDX)    =   SPA-P02-UKEID
                    IF     (SPA-PTNUM       NOT =   SPACE  )  AND
@@ -655,37 +654,6 @@
            END-IF
           .
        3009-P02UKEID-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    受付選択表示処理処理
-      *****************************************************************
-       3102-MAEUKETUKE-SEC              SECTION.
-      *
-           MOVE    ZERO                TO  SPA-GMN-SELNUM
-           PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL       IDX     >   SPA-UKE-MAX
-      *        受付ＩＤ
-               IF      SPA-NAI-UKEID   NOT =   ZERO
-                   IF      SPA-GMN-TUKEID (IDX)    =   SPA-NAI-UKEID
-                       MOVE    IDX                 TO  SPA-GMN-SELNUM
-                       MOVE    SPA-UKE-MAX         TO  IDX
-                   END-IF
-               ELSE
-                   IF     (SPA-GMN-TKYYKTIME  (IDX)
-                                               =   SPA-NAI-KYYKTIME) AND
-                          (SPA-GMN-TYYKID  (IDX)
-                                               =   SPA-NAI-YYKID  )
-                       MOVE    IDX                 TO  SPA-GMN-SELNUM
-                       MOVE    SPA-UKE-MAX         TO  IDX
-                   END-IF
-               END-IF
-           END-PERFORM
-           IF      SPA-GMN-SELNUM      NOT =   ZERO
-               PERFORM 4104-SELNUM-CHK-SEC
-           END-IF
-          .
-       3102-MAEUKETUKE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2478,6 +2446,10 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                IF      SPA-GMN-TUKETIME(SPA-GMN-SELNUM)    =  SPACE
       *         受付完了へ
                    MOVE    62                  TO  SPA-GMN-CUR
+      *            予約分の時、保険組合せへ
+                   IF      SPA-NAI-YYKID   NOT =   ZERO
+                       MOVE    09                  TO  SPA-GMN-CUR
+                   END-IF
                ELSE
                    IF     (SPA-GMN-PTID        =   ZERO  )
       *                権限がある場合
@@ -3915,12 +3887,12 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *        保険・公費情報更新
                PERFORM 4904-HKN-KOUSIN-SEC
            END-IF
-           IF      SPA-ERRCD           =   SPACE
+      ***  IF      SPA-ERRCD           =   SPACE
       *        ＱＲデータ更新
-               IF      SPA-U02Q-REGISTID   NOT =   ZERO
-                   PERFORM 4905-QRHKCD-KOUSIN-SEC
-               END-IF
-           END-IF
+      *        IF      SPA-U02Q-REGISTID   NOT =   ZERO
+      *            PERFORM 4905-QRHKCD-KOUSIN-SEC
+      *        END-IF
+      *****END-IF
       *
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  49001-KOUSIN-EXT
@@ -4270,15 +4242,26 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4902-UKEUPD-SEC              SECTION.
       *
-           INITIALIZE                        UKETUKE-REC
-           MOVE    SPA-HOSPNUM               TO  UKE-HOSPNUM
-           MOVE    SPA-SYSYMD                TO  UKE-UKEYMD
-           MOVE    SPA-GMN-TUKEID  (IDX)     TO  UKE-UKEID
+           INITIALIZE                      UKETUKE-REC
+           MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
+           MOVE    SPA-SYSYMD          TO  UKE-UKEYMD
+           MOVE    SPA-NAI-UKEID       TO  UKE-UKEID
       *
-           PERFORM  900-UKETUKE-READ-SEC
-           IF      FLG-UKETUKE         NOT =   ZERO
-               MOVE    "1003"              TO  SPA-ERRCD
-               DISPLAY "U02 UKETUKE UPD ERR KEY:" UKE-KEY
+           PERFORM 900-UKETUKE-READ-SEC
+           IF      FLG-UKETUKE         =   ZERO
+      *        会計済み
+               IF      UKE-KAIKEITIME      >   ZERO
+                   MOVE    "1009"              TO  SPA-ERRCD
+               END-IF
+           ELSE
+      *        受付ＩＤなし
+               MOVE    "1008"              TO  SPA-ERRCD
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    ZERO                TO  SPA-GMN-SELNUM
+               MOVE    ZERO                TO  SPA-NAI-SELNUM
+      *        受付一覧編集
+               PERFORM 3101-UKETU-HEN-SEC
                GO      TO      4902-UKEUPD-EXT
            END-IF
       *
@@ -4298,27 +4281,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-TKYYKTIME(IDX)    TO  UKE-KEYYYKTIME
                MOVE    SPA-GMN-TYYKID   (IDX)    TO  UKE-YYKID
            END-IF
-      *****MOVE    UKE-UKEYMD                TO  UKE-CREYMD
-      *****                                      UKE-UPYMD
-      *
-      **** PERFORM  900-UKETUKE-READ-SEC
-      *    IF      FLG-UKETUKE         NOT =   ZERO
-      *        MOVE    "1003"              TO  SPA-ERRCD
-      *        DISPLAY "U02 UKETUKE UPD ERR KEY:" UKE-KEY
-      *        GO      TO      4902-UKEUPD-EXT
-      *****END-IF
       *
            MOVE    SMCNDATE-YMD        TO  UKE-UPYMD
            MOVE    SMCNDATE-HMS        TO  UKE-UPHMS
       *
            MOVE    SPA-OPID            TO  UKE-OPID
       *
-      *
            MOVE    UKETUKE-REC         TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_uketuke"       TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
@@ -4902,7 +4875,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                      UKETUKE-REC
            MOVE    SPA-HOSPNUM             TO  UKE-HOSPNUM
            MOVE    SPA-SYSYMD              TO  UKE-UKEYMD
-           MOVE    SPA-GMN-TUKEID(IDX)     TO  UKE-UKEID
+      **** MOVE    SPA-GMN-TUKEID(IDX)     TO  UKE-UKEID
+           MOVE    SPA-NAI-UKEID           TO  UKE-UKEID
       *
            PERFORM 900-UKETUKE-READ-SEC
            IF      FLG-UKETUKE         =   ZERO
@@ -5853,15 +5827,30 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "受付マスタの削除処理でエラーになりました"
                                                 TO  SPA-ERRMSG
                WHEN    "1006"
-                   MOVE    "既に受付ＩＤが登録されています。"
-                                                TO  SPA-ERRMSG
-                   MOVE    "再度、受付登録をして下さい。"
-                                                TO  SPA-ERRMSG(33:)
+                   STRING  "既に受付ＩＤが登録されています。"
+                           "再度、受付登録をして下さい。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1007"
                    MOVE    "受付ＩＤが９９９９９を超えます。"
                                                 TO  SPA-ERRMSG
                    MOVE    "これ以上受付はできません。"
                                                 TO  SPA-ERRMSG(33:)
+               WHEN    "1008"
+                   STRING  "受付が削除されています。"
+                           "更新はできません。"
+                           "再度、受付登録をして下さい。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "1009"
+                   STRING  "受付は受診済みとなっています。"
+                           "更新はできません。"
+                           "再度、受付登録をして下さい。"
+                                                DELIMITED  BY  SIZE
+                                                INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "0200"
                    MOVE    "患者登録処理済みのＱＲデータはありません。"
                                                 TO  SPA-ERRMSG
