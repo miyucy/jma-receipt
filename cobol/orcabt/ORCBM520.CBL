@@ -1246,6 +1246,7 @@
            IF      MCP-RC              =   ZERO
                MOVE  MCPDATA-REC           TO  ONRECE-B-REC
                MOVE  ZERO                  TO  FLG-ONRECE-B
+               ADD   1                     TO  CNT-IN
            ELSE
                INITIALIZE                      ONRECE-B-REC
                MOVE  1                     TO  FLG-END

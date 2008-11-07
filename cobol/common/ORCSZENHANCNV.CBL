@@ -101,12 +101,6 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
-      *??
-           DISPLAY "SYORI="  LNK-ZENHANCNV-SYORI
-           DISPLAY "DATA ="  LNK-ZENHANCNV-IN-DATA
-           DISPLAY "LEN  ="  LNK-ZENHANCNV-IN-LEN
-           DISPLAY "LEN1 ="  LNK-ZENHANCNV-IN-LEN1
-      *??
       *
            MOVE    ZERO                TO  LNK-ZENHANCNV-RC    
       *    処理区分により検索処理
@@ -125,13 +119,19 @@
                INITIALIZE                  LNK-ZENHANCNV-OUT
            END-IF
       *??
-           DISPLAY "RC   ="  LNK-ZENHANCNV-RC
-           DISPLAY "SYMD ="  LNK-ZENHANCNV-OT-SYMD
-           DISPLAY "WYMD ="  LNK-ZENHANCNV-OT-WYMD
-           DISPLAY "GYMD ="  LNK-ZENHANCNV-OT-GYMD
-           DISPLAY "DATA ="  LNK-ZENHANCNV-OT-DATA
-           DISPLAY "LEN  ="  LNK-ZENHANCNV-OT-LEN
-           DISPLAY "NUM  ="  LNK-ZENHANCNV-OT-NUM
+           IF      LNK-ZENHANCNV-RC    >   0
+               DISPLAY "SYORI="  LNK-ZENHANCNV-SYORI
+               DISPLAY "DATA ="  LNK-ZENHANCNV-IN-DATA
+               DISPLAY "LEN  ="  LNK-ZENHANCNV-IN-LEN
+               DISPLAY "LEN1 ="  LNK-ZENHANCNV-IN-LEN1
+               DISPLAY "RC   ="  LNK-ZENHANCNV-RC
+           END-IF
+      ***  DISPLAY "SYMD ="  LNK-ZENHANCNV-OT-SYMD
+      ***  DISPLAY "WYMD ="  LNK-ZENHANCNV-OT-WYMD
+      ***  DISPLAY "GYMD ="  LNK-ZENHANCNV-OT-GYMD
+      ***  DISPLAY "DATA ="  LNK-ZENHANCNV-OT-DATA
+      ***  DISPLAY "LEN  ="  LNK-ZENHANCNV-OT-LEN
+      ***  DISPLAY "NUM  ="  LNK-ZENHANCNV-OT-NUM
       *??
            .
        000-PROC-EXT.

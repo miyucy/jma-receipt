@@ -2649,8 +2649,12 @@
                                        =   ZERO )
            AND   ( SPA-GMN-T06-RECE-MAX
                                        >   ZERO )
-               MOVE    "1008"          TO  SPA-TIDCD
-               GO  TO  210-BACK-EXT
+               IF      SPA-NAI-T06-SYSYM-2 >=  SPA-NAI-T06-SRYYM-H
+                   CONTINUE
+               ELSE
+                   MOVE    "1008"          TO  SPA-TIDCD
+                   GO  TO  210-BACK-EXT
+               END-IF
            END-IF
       *
       *    入力中のチェック 

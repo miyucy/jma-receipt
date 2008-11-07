@@ -38,7 +38,9 @@ fi
 
     LOG_FILE="/var/log/jma-receipt/${23}recept4_kobetu.log"
 
-    echo "arg17 = [" ${17} "]"  >$LOG_FILE
+    echo "arg12 = [" ${12} "]"  >$LOG_FILE
+    echo "arg13 = [" ${13} "]" >>$LOG_FILE
+    echo "arg17 = [" ${17} "]" >>$LOG_FILE
     echo "arg21 = [" ${21} "]" >>$LOG_FILE
     echo "arg22 = [" ${22} "]" >>$LOG_FILE
     echo "arg23 = [" ${23} "]" >>$LOG_FILE
