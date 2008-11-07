@@ -3365,7 +3365,8 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
-      *
+      *    受付一覧
+           PERFORM 3101-UKETU-HEN-SEC
       **** MOVE    2                   TO  SPA-GMN-CUR
            .
        493-CLEAR-EXT.
