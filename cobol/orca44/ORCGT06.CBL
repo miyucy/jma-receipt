@@ -718,7 +718,8 @@
                MOVE    ONRECE-B-PTNUM  TO  SPA-GMN-T06-B-TPTNUM  (IDXX)
                MOVE    ONRECE-B-PTID   TO  SPA-NAI-T06-B-TPTID   (IDXX)
                MOVE    ONRECE-B-NAME   TO  SPA-GMN-T06-B-TNAME   (IDXX)
-               MOVE    ONRECE-B-SRYYM  TO  SPA-NAI-T06-B-TSRYYM  (IDXX)
+               MOVE    ONRECE-B-SRYYM-B
+                                       TO  SPA-NAI-T06-B-TSRYYM  (IDXX)
                                            WRK-SYMD (1:6)
                MOVE    "01"            TO  WRK-SYMD (7:2)
                PERFORM 5002-HIZUKE-HEN-SEC
