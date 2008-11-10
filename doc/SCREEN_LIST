@@ -5,10 +5,11 @@ M02.glade	orca00	(M02)マスタ登録
 M95.glade	orca00	(M95)業務選択−日付セット
 M96.glade	orca00	(M96)マスタ更新管理一覧
 M97.glade	orca00	(M97)プログラム更新管理一覧
+M98.glade	orca00	(M98)データ収集閲覧画面
+M99.glade	orca00	(M99)処理結果
 MERR.glade	orca00	(MERR)エラー情報
 MID1.glade	orca00	(MID1)確認画面
 MVER.glade	orca00	(MVER)情報
-M98.glade	orca00	(M98)データ収集閲覧画面
 MUID.glade	orca00	(MUID)収集データアップロードユーザ設定
 
 XA01.glade	orca01	(XA01)再印刷選択画面
