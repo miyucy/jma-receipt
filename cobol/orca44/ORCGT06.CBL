@@ -3001,11 +3001,15 @@
                MOVE    WRK-HENYMDG (1:6)
                                        TO  SPA-GMN-T06-R-TSRYYM (IDX)
       *
-               STRING  RECE10-KIGO     DELIMITED   BY  SPACE
-                       "¡¡"            DELIMITED   BY  SIZE
-                       RECE10-NUM      DELIMITED   BY  SPACE
+               IF      RECE10-HKNNUM   =   SPACE
+                   MOVE    ONRECE-B-KIGO   TO  SPA-GMN-T06-R-TKIGO (IDX)
+               ELSE
+                   STRING  RECE10-KIGO     DELIMITED   BY  SPACE
+                           "¡¡"            DELIMITED   BY  SIZE
+                           RECE10-NUM      DELIMITED   BY  SPACE
                                        INTO    SPA-GMN-T06-R-TKIGO (IDX)
-               END-STRING
+                   END-STRING
+              END-IF
       *
               EVALUATE    RECE10-HKNNUM
                    WHEN    "002"
