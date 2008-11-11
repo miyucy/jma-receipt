@@ -825,11 +825,19 @@
                                        TO  T07-TRECESYUBETU   (IDX)
                MOVE    ONRECE-B-HKNJANUM
                                        TO  T07-THKNJANUM      (IDX)
-               STRING  ONRECE-B-KIGO   DELIMITED   BY  SPACE
-                       "¡¡"            DELIMITED   BY  SIZE
-                       ONRECE-B-NUM    DELIMITED   BY  SPACE
-                                       INTO    T07-TKIGO (IDX)
-               END-STRING
+               IF      ONRECE-B-RECESYUBETU    =   "1212"  OR  "1211"
+                   STRING  ONRECE-B-FTNNUM (1) DELIMITED   BY  SPACE
+                           "¡¡"                DELIMITED   BY  SIZE
+                           ONRECE-B-JKYNUM (1) DELIMITED   BY  SPACE
+                                               INTO    T07-TKIGO (IDX)
+                   END-STRING
+               ELSE
+                   STRING  ONRECE-B-KIGO   DELIMITED   BY  SPACE
+                           "¡¡"            DELIMITED   BY  SIZE
+                           ONRECE-B-NUM    DELIMITED   BY  SPACE
+                                           INTO    T07-TKIGO (IDX)
+                   END-STRING
+               END-IF
       * 
                MOVE    IDX             TO  T07-LIST-COUNT
       * 
