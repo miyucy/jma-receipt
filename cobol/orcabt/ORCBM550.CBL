@@ -1072,7 +1072,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            IF    ( SNUM-RC             =   ZERO  )
                            AND   ( SNUM-MINKBN         =   SPACE )
                            AND   ( SNUM-SYOKBN         =   SPACE )
-                           AND   ( SNUM-SEISUU         =   1   OR  3 )
+                           AND   ( SNUM-SEISUU         >=  1   AND
+                                                       <=  3     )
                            AND   ( SNUM-OUTNUM         >   ZERO  )
                                MOVE    SNUM-OUTNUM TO  TBL-B-SCNT(IDZZ)
                                                        SEI-CNT
@@ -1370,6 +1371,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-PERFORM
            PERFORM 900-ONRECE-KANRI-CLOSE-SEC
       *
+      *??
+           DISPLAY "TBL-ONRECE-K-MAX=" TBL-ONRECE-K-MAX "#"
+      *??
       *    管理データなしのとき
            IF      TBL-ONRECE-K-MAX       =   ZERO
       *        ＤＢ追加処理 
@@ -1382,6 +1386,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        OR      ( FLG-MATCH     =   1                )
                    PERFORM 200113-ONRECE-K-CHK-SEC
                END-PERFORM
+      *??
+           DISPLAY "FLG-MATCH=" FLG-MATCH "#"
+      *??
       *
                IF      FLG-MATCH           =  ZERO
       *            ＤＢ追加処理 

@@ -1334,7 +1334,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            IF    ( SNUM-RC             =   ZERO  )
                            AND   ( SNUM-MINKBN         =   SPACE )
                            AND   ( SNUM-SYOKBN         =   SPACE )
-                           AND   ( SNUM-SEISUU         =   1   OR  3 )
+                           AND   ( SNUM-SEISUU         >=  1   AND
+                                                       <=  3     )
                            AND   ( SNUM-OUTNUM         >   ZERO  )
                                MOVE    SNUM-OUTNUM     TO
                                                SPA-GMN-T05-TSKAISU(IDY)
