@@ -535,7 +535,7 @@
                                    TO  SPA-NAI-T06-1031-PRTNM
       *
       *    診療年月
-           IF      SPA-SYSYMD(7:2)     >   "10"
+           IF      SPA-SYSYMD(7:2)     >   "12"
                MOVE    SPA-SYSYMD  (1:6)   TO  SPA-NAI-T06-SRYYM-H
                MOVE    SPA-SYSYMDWH(1:6)   TO  SPA-GMN-T06-SRYYM-H
            ELSE
@@ -3849,11 +3849,19 @@
                                        TO  T07-TRECESYUBETU   (IDX)
                MOVE    ONRECE-B-HKNJANUM
                                        TO  T07-THKNJANUM      (IDX)
-               STRING  ONRECE-B-KIGO   DELIMITED   BY  SPACE
-                       "　"            DELIMITED   BY  SIZE
-                       ONRECE-B-NUM    DELIMITED   BY  SPACE
-                                       INTO    T07-TKIGO (IDX)
-               END-STRING
+               IF      ONRECE-B-RECESYUBETU    =   "1212"  OR  "1211"
+                   STRING  ONRECE-B-FTNNUM (1) DELIMITED   BY  SPACE
+                           "　"                DELIMITED   BY  SIZE
+                           ONRECE-B-JKYNUM (1) DELIMITED   BY  SPACE
+                                               INTO    T07-TKIGO (IDX)
+                   END-STRING
+               ELSE
+                   STRING  ONRECE-B-KIGO   DELIMITED   BY  SPACE
+                           "　"            DELIMITED   BY  SIZE
+                           ONRECE-B-NUM    DELIMITED   BY  SPACE
+                                           INTO    T07-TKIGO (IDX)
+                   END-STRING
+               END-IF
       * 
                MOVE    IDX             TO  T07-LIST-COUNT
       * 
