@@ -89,6 +89,9 @@
            03  WRK-GMN-CUR             PIC 9(02).
            03  WRK-MCP-WIDGET          PIC X(64).
       *
+           03  WRK-MCP-TABLE           PIC X(64).
+           03  WRK-MCP-PATHNAME        PIC X(64).
+      *
            03  WRK-RECEERR             PIC X(200).
       *
            03  WRK-POINT-AREA.
@@ -136,6 +139,7 @@
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PARA                PIC 9(01).
+           03  FLG-ONRECE-K            PIC 9(01).
       * 
            03  FLG-TOUROKU             PIC 9(01).
            03  FLG-ROW                 PIC 9(01).
@@ -221,9 +225,8 @@
       *
            COPY    "CPSK3003.INC".
       *
+       01  ONRECE-K-REC.
            COPY    "CPONRECE-KANRI.INC".
-      *
-           COPY    "CPONRECE-BODY.INC".
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -762,6 +765,9 @@
                    WHEN    3
                        MOVE    "既に取り込み済のファイルです"
                                                TO  SPA-GMN-T05-ERRMSG1
+                   WHEN    4
+                       MOVE    "既にＤＢ登録済のファイルです"
+                                               TO  SPA-GMN-T05-ERRMSG1
                    WHEN    9
                        MOVE    "ファイルがオープンできません"
                                                TO  SPA-GMN-T05-ERRMSG1
@@ -1177,6 +1183,34 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        GO  TO  7002-FILE-CHECK-EXT
                    END-IF
                END-PERFORM
+           END-IF
+      *
+      *    ＤＢ登録済のファイルかどうかの確認
+           INITIALIZE                  ONRECE-K-REC
+           MOVE   SPA-HOSPNUM      TO  ONRECE-K-HOSPNUM
+           MOVE   SPA-NAI-T05-TFLG3 (IDY)
+                                   TO  ONRECE-K-TEISYUTUSAKI
+           MOVE   SPA-NAI-T05-TSRYYM(IDY)
+                                   TO  ONRECE-K-SRYYM
+           MOVE    SPA-GMN-T05-TUKAISU(IDY) 
+                                   TO  ONRECE-K-UCNT
+           EVALUATE    WRK-FILENM(1:6)
+               WHEN    "RIhasp"
+               WHEN    "RIuasp"
+                   MOVE    "key7"          TO  WRK-MCP-PATHNAME
+               WHEN    "RIfixf"
+                   MOVE    SPA-GMN-T05-TSKAISU(IDY)
+                                       TO  ONRECE-K-SCNT
+                   MOVE    "key5"          TO  WRK-MCP-PATHNAME
+           END-EVALUATE
+           MOVE    "tbl_onrece_kanri"
+                                   TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME
+                                   TO  MCP-PATHNAME
+           PERFORM 900-ONRECE-KANRI-READ-SEC
+           IF      FLG-ONRECE-K    =   ZERO
+               MOVE    4               TO  WRK-ERRMSG1
+               GO  TO  7002-FILE-CHECK-EXT
            END-IF
       *
       *    エラー件数のチェック（１０００件超えた場合は取り込み不可）
@@ -2416,6 +2450,41 @@ grpsys     PERFORM 900-DBFETCH-SEC
            END-IF
            .
        900-SYSKANRI-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    管理ファイル読み込み処理
+      *****************************************************************
+       900-ONRECE-KANRI-READ-SEC     SECTION.
+      *
+           MOVE    ONRECE-K-REC        TO  MCPDATA-REC
+      *
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_onrece_kanri"
+                                       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME
+                                       TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE   ZERO                 TO  FLG-ONRECE-K
+                   MOVE   MCPDATA-REC          TO  ONRECE-K-REC
+               ELSE
+                   INITIALIZE                      ONRECE-K-REC
+                   MOVE   1                    TO  FLG-ONRECE-K
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-ONRECE-K
+               INITIALIZE                      ONRECE-K-REC
+           END-IF
+      * 
+           MOVE    "tbl_onrece_kanri"
+                                   TO  MCP-TABLE
+           MOVE    WRK-MCP-PATHNAME
+                                   TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           .
+       900-ONRECE-KANRI-READ-EXT.
            EXIT.
       *
       *****************************************************************

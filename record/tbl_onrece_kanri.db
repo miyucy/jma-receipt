@@ -126,6 +126,19 @@ path    key6            {
         };
 };
 
+path    key7             {
+        DBSELECT        {
+                DECLARE tbl_onrece_kanri_key7_csr CURSOR FOR
+                SELECT *
+                FROM tbl_onrece_kanri
+                WHERE	HOSPNUM		= :HOSPNUM
+                    AND	TEISYUTUSAKI	= :TEISYUTUSAKI
+                    AND	SRYYM		= :SRYYM
+                    AND	UCNT		= :UCNT
+                ;
+        };
+};
+
 path    upd1    {
         DBUPDATE        {
                 UPDATE  tbl_onrece_kanri
