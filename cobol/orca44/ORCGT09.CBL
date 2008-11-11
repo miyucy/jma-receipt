@@ -988,7 +988,7 @@
        5001-MAPCUR-SEC             SECTION.
       *
            IF    ( SPA-ERRCD           =   SPACE )
-           AND   ( SPA-GMN-T09-CUR     =   ZERO  )
+      *****AND   ( SPA-GMN-T09-CUR     =   ZERO  )
                PERFORM 50011-INPUT-CUR-SEC
            END-IF
       *
@@ -1015,6 +1015,15 @@
       *    入力個所のセット処理
       *****************************************************************
        50011-INPUT-CUR-SEC             SECTION.
+      *
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       5
+               IF      SPA-GMN-T09-SELNUM (IDXX)
+                                       =   ZERO
+                   MOVE    IDXX            TO  SPA-GMN-T09-CUR
+                   GO  TO  50011-INPUT-CUR-EXT
+               END-IF
+           END-PERFORM
       *
            EVALUATE    WRK-MCP-WIDGET
                WHEN    "SELNUM01"
