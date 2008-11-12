@@ -944,33 +944,33 @@
       *****************************************************************
       *    ＱＲデータ処理
       *****************************************************************
-       3101-QRDATA-CHK-SEC              SECTION.
+      *3101-QRDATA-CHK-SEC              SECTION.
       *
-           INITIALIZE                      QRCDHKN-REC
-           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
-           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
-           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
-               PERFORM 900-QRCDHKN-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-QRCDHKN
-               INITIALIZE                      QRCDHKN-REC
-           END-IF
-           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           IF      FLG-QRCDHKN         =   ZERO
-               MOVE    1                   TO  SPA-QRFLG
-           ELSE
-               MOVE    ZERO                TO  SPA-QRFLG
-           END-IF
-           .
-       3101-QRDATA-CHK-EXT.
-           EXIT.
+      *    INITIALIZE                      QRCDHKN-REC
+      *    MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
+      *    MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+      *    MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+      *    MOVE    "key5"              TO  MCP-PATHNAME
+      *    PERFORM 910-DBSELECT-SEC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+      *        MOVE    "key5"              TO  MCP-PATHNAME
+      *        PERFORM 900-QRCDHKN-READ-SEC
+      *    ELSE
+      *        MOVE    1                   TO  FLG-QRCDHKN
+      *        INITIALIZE                      QRCDHKN-REC
+      *    END-IF
+      *    MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+      *    MOVE    "key5"              TO  MCP-PATHNAME
+      *    PERFORM 990-DBCLOSE-SEC
+      *    IF      FLG-QRCDHKN         =   ZERO
+      *        MOVE    1                   TO  SPA-QRFLG
+      *    ELSE
+      *        MOVE    ZERO                TO  SPA-QRFLG
+      *    END-IF
+      *    .
+      *3101-QRDATA-CHK-EXT.
+      *    EXIT.
       *****************************************************************
       *    予約，受付編集処理
       *****************************************************************
@@ -3279,10 +3279,10 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *****************************************************************
        210-BACK                        SECTION.
       *
-      *    ＱＲデータ解除処理
-           IF      SPA-U02Q-REGISTID   NOT =   ZERO
-               PERFORM 4906-QRHKCD-KAIJO-SEC
-           END-IF
+      ***  ＱＲデータ解除処理
+      *    IF      SPA-U02Q-REGISTID   NOT =   ZERO
+      *        PERFORM 4906-QRHKCD-KAIJO-SEC
+      **** END-IF
       *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
@@ -4768,48 +4768,48 @@ grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
       *    ＱＲデータ更新処理
       *****************************************************************
-       4905-QRHKCD-KOUSIN-SEC              SECTION.
+      *4905-QRHKCD-KOUSIN-SEC              SECTION.
       *
-           INITIALIZE                      QRCDHKN-REC
-           MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
-           MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
-           MOVE    SPA-U02Q-REGISTID   TO  QRCDHKN-REGISTID
-           MOVE    QRCDHKN-REC         TO  MCPDATA-REC
-           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-QRCDHKN-READ-SEC
-           ELSE
-               MOVE    1                   TO  FLG-QRCDHKN
-               INITIALIZE                      QRCDHKN-REC
-           END-IF
-           MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+      *    INITIALIZE                      QRCDHKN-REC
+      *    MOVE    SPA-HOSPNUM         TO  QRCDHKN-HOSPNUM
+      *    MOVE    SPA-SYSYMD          TO  QRCDHKN-REGISTYMD
+      *    MOVE    SPA-U02Q-REGISTID   TO  QRCDHKN-REGISTID
+      *    MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+      *    MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+      *    MOVE    "key"               TO  MCP-PATHNAME
+      *    PERFORM 910-DBSELECT-SEC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+      *        MOVE    "key"               TO  MCP-PATHNAME
+      *        PERFORM 900-QRCDHKN-READ-SEC
+      *    ELSE
+      *        MOVE    1                   TO  FLG-QRCDHKN
+      *        INITIALIZE                      QRCDHKN-REC
+      *    END-IF
+      *    MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+      *    MOVE    "key"               TO  MCP-PATHNAME
+      *    PERFORM 990-DBCLOSE-SEC
       *
-           IF      FLG-QRCDHKN         =   ZERO
-               MOVE    1                   TO  QRCDHKN-MOD-FLG2
+      *    IF      FLG-QRCDHKN         =   ZERO
+      *        MOVE    1                   TO  QRCDHKN-MOD-FLG2
       *
-               MOVE    QRCDHKN-REC         TO  MCPDATA-REC
-               MOVE    "DBUPDATE"          TO  MCP-FUNC
-               MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                   MCPDATA-REC
-                                                   SPA-AREA
-               IF      MCP-RC          NOT =   ZERO 
-                   MOVE    "1001"              TO  SPA-ERRCD
-                   DISPLAY "U02Q QRCDHKN KEY UPD ERR:"  MCP-RC
-                           ",KEY:" QRCDHKN-KEY
-               END-IF
-           END-IF
-           INITIALIZE                  SPA-U02Q-DATA-G
-           .
-       4905-QRHKCD-KOUSIN-EXT.
-           EXIT.
+      *        MOVE    QRCDHKN-REC         TO  MCPDATA-REC
+      *        MOVE    "DBUPDATE"          TO  MCP-FUNC
+      *        MOVE    "tbl_qrcdhkn"       TO  MCP-TABLE
+      *        MOVE    "key"               TO  MCP-PATHNAME
+grpsys*        CALL    "ORCDBMAIN"         USING   MCPAREA
+      *                                            MCPDATA-REC
+      *                                            SPA-AREA
+      *        IF      MCP-RC          NOT =   ZERO 
+      *            MOVE    "1001"              TO  SPA-ERRCD
+      *            DISPLAY "U02Q QRCDHKN KEY UPD ERR:"  MCP-RC
+      *                    ",KEY:" QRCDHKN-KEY
+      *        END-IF
+      *    END-IF
+      *    INITIALIZE                  SPA-U02Q-DATA-G
+      *    .
+      *4905-QRHKCD-KOUSIN-EXT.
+      *    EXIT.
       *****************************************************************
       *    ＱＲデータ解除処理
       *****************************************************************
@@ -4862,11 +4862,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-GMN-SELNUM      =   ZERO   
                MOVE    "0016"              TO  SPA-ERRCD
+               IF      SPA-UKE-MAX         >   ZERO
+                   MOVE    1                   TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    2                   TO  SPA-GMN-CUR
+               END-IF
                GO  TO  491-SAKUJO-EXT
            END-IF
       *
            IF  SPA-GMN-TUKETIME(SPA-GMN-SELNUM) =  SPACE
                MOVE    "0017"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN-CUR
                GO  TO  491-SAKUJO-EXT
            END-IF
       *
@@ -5045,9 +5051,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF    
       *---- (01.00.04) LINE MOD END -----------------------------------
       *    ＱＲデータ解除処理
-           IF      SPA-U02Q-REGISTID   NOT =   ZERO
-               PERFORM 4906-QRHKCD-KAIJO-SEC
-           END-IF
+      **** IF      SPA-U02Q-REGISTID   NOT =   ZERO
+      *        PERFORM 4906-QRHKCD-KAIJO-SEC
+      **** END-IF
       *
       *    共通ＳＰＡセット
            PERFORM 4921-SPA-SET-SEC
@@ -5140,9 +5146,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *    ＱＲデータ解除処理
-           IF      SPA-U02Q-REGISTID   NOT =   ZERO
-               PERFORM 4906-QRHKCD-KAIJO-SEC
-           END-IF
+      **** IF      SPA-U02Q-REGISTID   NOT =   ZERO
+      *        PERFORM 4906-QRHKCD-KAIJO-SEC
+      **** END-IF
       *
            PERFORM 4921-SPA-SET-SEC
            IF      SPA-GMN-SELNUM      >   ZERO
@@ -5183,10 +5189,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "0022"              TO  SPA-ERRCD
                GO       TO      494-ORCGC02-EXT
            END-IF
-      *    ＱＲデータ解除処理
-           IF      SPA-U02Q-REGISTID   NOT =   ZERO
-               PERFORM 4906-QRHKCD-KAIJO-SEC
-           END-IF
+      **** ＱＲデータ解除処理
+      *    IF      SPA-U02Q-REGISTID   NOT =   ZERO
+      *        PERFORM 4906-QRHKCD-KAIJO-SEC
+      **** END-IF
       *
            PERFORM 4921-SPA-SET-SEC
       *
@@ -5223,9 +5229,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                GO       TO      495-ORCGS02-EXT
            END-IF
       *    ＱＲデータ解除処理
-           IF      SPA-U02Q-REGISTID   NOT =   ZERO
-               PERFORM 4906-QRHKCD-KAIJO-SEC
-           END-IF
+      ***  IF      SPA-U02Q-REGISTID   NOT =   ZERO
+      *        PERFORM 4906-QRHKCD-KAIJO-SEC
+      **** END-IF
       *
            PERFORM 4921-SPA-SET-SEC
       *
@@ -5262,9 +5268,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                GO       TO      496-ORCGJ02-EXT
            END-IF
       *    ＱＲデータ解除処理
-           IF      SPA-U02Q-REGISTID   NOT =   ZERO
-               PERFORM 4906-QRHKCD-KAIJO-SEC
-           END-IF
+      **   IF      SPA-U02Q-REGISTID   NOT =   ZERO
+      *        PERFORM 4906-QRHKCD-KAIJO-SEC
+      **** END-IF
       *
            PERFORM 4921-SPA-SET-SEC
       *
