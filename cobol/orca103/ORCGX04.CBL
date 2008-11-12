@@ -3519,6 +3519,7 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    WIDGET-NORMAL       TO  X04-BYOMEI-STATE
       *
            IF    ( SPA-GMN-BYOLST-MAX  >=  CONST-BYOLST-MAX )
+            AND  ( SPA-NAI-INPUT-MODE  =   ZERO )
                MOVE    WIDGET-INSENSITIVE  TO  X04-B05-STATE
            END-IF
       *
