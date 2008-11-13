@@ -1111,6 +1111,9 @@
                                                    TO  WRK-DRCD(2:4)
                    END-IF
                END-IF
+               IF     (WKSRY-INPUTCD(1)(1:1)   =   "#" )
+                   MOVE    WKSRY-INPUTCD(1)(2:4)   TO  WRK-HKNCOMBINUM
+               END-IF
       *        ÅêÌô¤ÈºßÂð¤Î¤ßÂÐ¾Ý¤È¤¹¤ë
                IF     (WKSRY-SRYKBN        =   "21"
                                            OR  "22"
@@ -1119,7 +1122,7 @@
                                            OR  "98"  )
       *           Êñ³çÊÝ¸±Ê¬¤ÏÂÐ¾Ý³°
                    IF      (WRK-HKNCOMBINUM    =   "9999" )
-                   AND    (FLG-YKJOKUKBN       =   ZERO   )
+                   AND     (FLG-YKJOKUKBN      =   ZERO   )
                        CONTINUE
                    ELSE
                        ADD     1                   TO  LNK-WKSRYACT-MAX
