@@ -1126,9 +1126,9 @@
                END-PERFORM
       *
                IF    ( SUMSKY-SYURRKNUM (SUMSKY-IDX)
-                                       <   SYURRK-SYURRKNUM )
+                                       <=   SYURRK-SYURRKNUM )
                 AND  ( SUMSKY-SYUEDANUM (SUMSKY-IDX)
-                                       <   SYURRK-SYUEDANUM )
+                                       <=   SYURRK-SYUEDANUM )
                    MOVE    SYURRK-SYURRKNUM
                                    TO  SUMSKY-SYURRKNUM (SUMSKY-IDX)
                    MOVE    SYURRK-SYUEDANUM
@@ -1136,9 +1136,9 @@
                END-IF
       *
                IF    ( SUMSKY-MAX-RRKNUM
-                                       <   SYURRK-SYURRKNUM )
+                                       <=   SYURRK-SYURRKNUM )
                 AND  ( SUMSKY-MAX-EDANUM
-                                       <   SYURRK-SYUEDANUM )
+                                       <=   SYURRK-SYUEDANUM )
                    MOVE    SYURRK-SRYKA
                                    TO  SUMSKY-MAX-SRYKA
                    MOVE    SYURRK-SYURRKNUM
