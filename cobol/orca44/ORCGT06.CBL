@@ -798,7 +798,7 @@
                            END-IF       
                        END-IF
                    ELSE
-                       MOVE    "1001"              TO  SPA-ERRCD
+                       MOVE    "1005"              TO  SPA-ERRCD
                    END-IF
                ELSE
       *            印刷処理
@@ -4403,6 +4403,9 @@
                WHEN    "1004"
                    MOVE    "パラメタＤＢが更新できません"
                                                        TO  SPA-ERRMSG
+               WHEN    "1005"
+                   MOVE    "パラメタＤＢが存在しません" 
+                                                       TO  SPA-ERRMSG
                WHEN    "1009"
                    MOVE    "オンライン管理ＤＢが更新できません"
                                                        TO  SPA-ERRMSG
@@ -4796,13 +4799,12 @@
       *****************************************************************
        900-BTPARA-READ-SEC         SECTION.
       *
-           MOVE    BTPARA-REC          TO  MCPDATA-REC
            MOVE    "tbl_btpara"        TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
+           MOVE    "key3"              TO  MCP-PATHNAME
+grpsys     PERFORM 900-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_btpara"        TO  MCP-TABLE
-               MOVE    "key5"              TO  MCP-PATHNAME
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-BTPARA-READ-N-SEC
            ELSE
                MOVE    1                   TO  FLG-BTPARA
@@ -4810,7 +4812,7 @@
            END-IF
       *
            MOVE    "tbl_btpara"        TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
            .
