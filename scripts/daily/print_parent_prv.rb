@@ -19,6 +19,7 @@
 # (2007/06/19 ) 労災枠なし対応
 # (2007/12/27 ) patch-lib 対応
 # (2008/07/30 ) 労災、自賠枠なし対応
+# (2008/11/12 ) レイアウトオプション対応
 #
 
 # ※複数のプロセスの実行はできない
@@ -262,13 +263,16 @@ end
 
 # ============================================================
 
-
 # dataファイルの読み込み
 # 入力ファイルの読み込み処理
 open(data_file, "r") do |fp|
 	word1 = fp.read
 end
 
+# LAYEROPTION 設定
+
+  word1.scan(/MonpeLayerIn(.*)MonpeLayerOut/)
+  LAYEROPTION = $1.to_s
 
 # -----------------------------------
 
@@ -550,10 +554,10 @@ end
 		when	''
 			puts	'出力区分未設定'
 		when	'1'     # 印刷のみの指示
-		puts	'take Start [' + psfile_name + ']'
+		puts	'take1 Start [' + psfile_name + ']'
 			w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name
 		when	'2'     # 印刷＆PSファイル出力の指示
-		puts	'take Start [' + psfile_name + ']'
+		puts	'take2 Start [' + psfile_name + ']'
 			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
 			if psfile_name == ''
 				puts	'出力ファイル名未設定'
@@ -563,11 +567,12 @@ end
 				w_exec = RED_EXECPS + ' ' + red_file + ' ' + temp_file + ' -x ' + offset_x + ' -y ' + offset_y + ' -p ' + lp_name + ' -o ' + psfile_name
 			end
 		when	'3'     # PSファイル出力の指示
+		puts	'take3 Start [' + psfile_name + ']'
 			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
 			if psfile_name == ''
 				puts	'出力ファイル名未設定'
 			else
-				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + psfile_name
+				w_exec = RED_EXEC + ' ' + red_file + ' ' + temp_file + ' -o ' + psfile_name + ' ' + LAYEROPTION
 			end
 		when	'4'     # PSファイル出力の指示
 			# 出力ファイル名が指定されていなかったら、通常の印刷処理を行う
