@@ -1276,7 +1276,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            END-IF       
                        END-IF
                    ELSE
-                       MOVE    "1001"              TO  SPA-ERRCD
+                       MOVE    "1003"              TO  SPA-ERRCD
                    END-IF
                ELSE
       *            印刷処理
@@ -5164,6 +5164,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                        TO  SPA-ERRMSG
                WHEN    "1002"
                    MOVE    "パラメタＤＢの更新処理でエラーとなりました" 
+                                                       TO  SPA-ERRMSG
+               WHEN    "1003"
+                   MOVE    "パラメタＤＢが存在しません" 
                                                        TO  SPA-ERRMSG
                WHEN    "1004"
                    MOVE    "ジョブ管理ＤＢが削除できませんでした"

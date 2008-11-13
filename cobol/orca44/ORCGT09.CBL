@@ -707,6 +707,9 @@
                MOVE    "0005"          TO  SPA-ERRCD
            ELSE
       *        選択項目がすべて一覧に追加できるか
+               IF      SPA-GMN-T06-SELNUM  >   ZERO
+                   COMPUTE WRK-RECE-MAX    =   WRK-RECE-MAX    -   1
+               END-IF
                IF      WRK-RECE-MAX    >   WRK-CONS-LINE-MAX
                    MOVE    "0099"          TO  SPA-ERRCD
                END-IF

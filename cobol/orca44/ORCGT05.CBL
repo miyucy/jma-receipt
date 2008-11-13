@@ -123,7 +123,7 @@
            03  CNT-PARA                PIC 9(05).
            03  MOJI-CNT                PIC 9(03).
            03  SPILIT-CNT              PIC 9(03).
-           03  ERR-CNT                 PIC 9(03).
+           03  ERR-CNT                 PIC 9(04).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
