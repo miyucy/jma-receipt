@@ -15710,7 +15710,8 @@
       *
                  IF    ZAN-KOHI-D(IDX2 KOH-IDX)   NOT =   ZERO
                      COMPUTE   ZAN-KOHI-D(IDX2 KOH-IDX) =
-                               ZAN-KOHI-D(IDX2 KOH-IDX) +  5
+      ***                      ZAN-KOHI-D(IDX2 KOH-IDX) +  5
+                               ZAN-KOHI-D(IDX2 KOH-IDX) +  4
                      COMPUTE   WK-FTN      =
                                ZAN-KOHI-D(IDX2 KOH-IDX) /  10
                      COMPUTE   ZAN-KOHI-D(IDX2 KOH-IDX) =
