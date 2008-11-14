@@ -242,6 +242,8 @@
                05  WRK-HMM         PIC Z9.
                05  FILLER          PIC X(01)   VALUE  ".".
                05  WRK-HDD         PIC Z9.
+      *≤ËÃÃπ‘£Õ£¡£ÿ
+       01  MAX-GMN                 PIC 9(04)   VALUE   600.
       *
       *    £”£–£¡ ›¬∏
            COPY    "COMMON-SPA"    REPLACING
@@ -1153,7 +1155,7 @@
            PERFORM
                    UNTIL   (FLG-JYURRK     =   1 )
                        OR  (SPA-WKSRY-MAX  >=  100 )
-                       OR  (IDG            >=  200 )
+                       OR  (IDG            >=  MAX-GMN )
                PERFORM VARYING     IDX-J   FROM    1   BY  1
                        UNTIL      (IDX-J           >   15  )
                    IF      JYURRK-ZAINUM (IDX-J)   NOT =   ZERO
@@ -1170,8 +1172,8 @@
            PERFORM 990-DBCLOSE-SEC
       *
       *    ∫«¬Á∑ÔøÙ
-           IF      IDG                 >   200
-               MOVE    200                 TO  SPA-MEISAI-MAX
+           IF      IDG                 >   MAX-GMN
+               MOVE    MAX-GMN             TO  SPA-MEISAI-MAX
            ELSE
                MOVE    IDG                 TO  SPA-MEISAI-MAX
            END-IF
@@ -1576,14 +1578,16 @@
                                                     (SPA-WKSRY-MAX)
       *        ∫ﬁ∆‚£±π‘Ã‹
                IF      IDX                 =   1
-                   ADD     1               TO  IDG
-                   PERFORM 31011-GYO1-HEN-SEC
+                   ADD     1                   TO  IDG
+                   IF      IDG                 <=  MAX-GMN
+                       PERFORM 31011-GYO1-HEN-SEC
+                   END-IF
                END-IF
       *
       *        ∫ﬁÃ¿∫Ÿ ‘Ω∏
                PERFORM VARYING     IDZ     FROM    1   BY  1
                        UNTIL      (IDZ         >   5   )  OR
-                                  (IDG         >=  200 )  OR
+                                  (IDG         >=  MAX-GMN )  OR
                                   (IDX-W       >=  50  )  OR
                                   (LNK-WKSRY-SRYCD (IDX IDZ) =  SPACE)
                    ADD     1                   TO  IDX-W
@@ -1603,7 +1607,7 @@
       *
       *    ∫ﬁΩ™Œª ‘Ω∏
            ADD     1                   TO  IDG
-           IF      IDG                 <=  200
+           IF      IDG                 <=  MAX-GMN
                MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
            END-IF
       *
@@ -2828,7 +2832,7 @@
                                         =   SPACE )
                MOVE    ZERO                TO  FLG-OK
                PERFORM VARYING     IDG     FROM    IDX-G   BY  1
-                       UNTIL      (IDG     >   200 )   OR
+                       UNTIL      (IDG     >   MAX-GMN )   OR
                                   (FLG-OK  =   1   )
                    IF      SPA-WKSRY-SRYCD (IDX-W IDX)
                                        =   SPA-NAI-TSRYCD (IDG)

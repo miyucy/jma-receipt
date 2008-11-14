@@ -65,13 +65,13 @@
                 04  KA02-MEILIST.
                   05  KA02-MEILIST-COUNT  PIC S9(9)   BINARY.
                   05  KA02-MEILIST-ROW    PIC S9(9)   BINARY.
-                  05  KA02-ITEM       OCCURS  200 TIMES.
+                  05  KA02-ITEM       OCCURS  600 TIMES.
                     06  KA02-MNUM   PIC X(3).
                     06  KA02-MSYORI PIC X(2).
                     06  KA02-MDEL   PIC X(2).
                     06  KA02-MEISAI PIC X(200).
                   05  KA02-MEILIST-SELECT
-                          PIC X       OCCURS  200 TIMES.
+                          PIC X       OCCURS  600 TIMES.
               03  KA02-NYUINKIKAN.
                 04  KA02-VALUE  PIC X(30).
               03  KA02-INNAI.

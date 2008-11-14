@@ -95,7 +95,7 @@
                    07  SPA-JYURRK-MAX            PIC 9(04).
       *        内容
                05  SPA-GMN-MEISAI-AREA.
-                   07  SPA-GMN-MEISAI-TBL        OCCURS   200.
+                   07  SPA-GMN-MEISAI-TBL        OCCURS   600.
                        09  SPA-GMN-TBANGO        PIC 9(03).
                        09  SPA-GMN-TSEL          PIC X(01).
                        09  SPA-GMN-TFLG          PIC X(02).
@@ -193,7 +193,7 @@
                05  SPA-KA021-ENDIDX             PIC 9(03).
       *        内容
                05  SPA-KA021-MEISAI-AREA.
-                   07  SPA-KA021-MEISAI-TBL        OCCURS   200.
+                   07  SPA-KA021-MEISAI-TBL        OCCURS   600.
                        09  SPA-KA021-TBANGO        PIC 9(03).
                        09  SPA-KA021-TSEL          PIC X(01).
                        09  SPA-KA021-TFLG          PIC X(02).
