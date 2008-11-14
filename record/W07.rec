@@ -798,13 +798,6 @@ W07	{
 			  	state   int;
 			};
 			TAG7	{
-				YYKHYO_KBN_COMB	{
-					YYKHYO_KBN	{
-						value	varchar(20);
-					};
-					count	int;
-					item	varchar(20)[5];
-				};
 				YYKINIT_COMB	{
 					YYKINIT_FLG	{
 						value	varchar(20);

@@ -531,12 +531,6 @@
                 04  W07-TAGNAME6.
                   05  W07-TAGNAME6-STATE   PIC S9(9)   BINARY.
                 04  W07-TAG7.
-                  05  W07-YYKHYO-KBN-COMB.
-                    06  W07-YYKHYO-KBN.
-                      07  W07-VALUE   PIC X(20).
-                    06  W07-YYKHYO-KBN-COUNT   PIC S9(9)   BINARY.
-                    06  W07-YYKHYO-KBN-ITEM
-                            PIC X(20)   OCCURS  5 TIMES.
                   05  W07-YYKINIT-COMB.
                     06  W07-YYKINIT-FLG.
                       07  W07-VALUE   PIC X(20).
