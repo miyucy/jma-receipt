@@ -1748,7 +1748,7 @@
            MOVE    SPACE           TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"          TO  SYS-1010-KANRICD
-           MOVE    SPA-DRCD        TO  SYS-1010-KBNCD
+           MOVE    ORCHCN30-DRCD   TO  SYS-1010-KBNCD
            MOVE    SPA-SRYYMD      TO  SYS-1010-STYUKYMD
            MOVE    SPA-SRYYMD      TO  SYS-1010-EDYUKYMD
            MOVE    SPA-HOSPNUM     TO  SYS-1010-HOSPNUM
