@@ -745,7 +745,7 @@
     <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow3</name>
-      <x>460</x>
+      <x>470</x>
       <y>10</y>
       <width>500</width>
       <height>70</height>
