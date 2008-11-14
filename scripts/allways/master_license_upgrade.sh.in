@@ -34,6 +34,7 @@ UPDKANRIFILE=info/${KANRIFILE}
 UPDFILE=${HOME}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
 LEN=100
 PRFFILE=/tmp/MSTMLI.PRF.$$
+VACUUMCOUNT=1000
 
 CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
 
@@ -284,12 +285,14 @@ do
 	DATLIST=${DATLIST}" "${DAT}
 done
 #DB構造変更処理
+UPDCOUNT=0
 MSTSEQ=0
 for UPD in ${DATLIST}
 do
 	MSTSEQ=$(expr ${MSTSEQ} + 1)
 	UPD1=$(echo ${UPD} | awk '{i=split($0,arr,"#");gsub(/.tar.gz/,".dat",arr[1]); print arr[1] } ')
 	COUNT=$(echo ${UPD} | awk '{i=split($0,arr,"#"); print arr[i]} ' )
+	UPDCOUNT=$(expr ${UPDCOUNT} + ${COUNT})
 	MSTCNTMSG=$(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})
 	echo ${UPD1} "DB更新"
 #ダウンロードファイル生成
@@ -300,18 +303,20 @@ do
 	fi
 done
 
-for TBLNO in $(echo ${DATLIST} | tr -s '[:blank:]' '\n' | sort | cut -c 1,2 | uniq)
-do
-	case ${TBLNO} in
-	'07')
-	                echo "vacuum analyze tbl_interact;"     | psql ${DBNAME} ;;
-	'08')
-	                echo "vacuum analyze tbl_sskijyo;"      | psql ${DBNAME} ;;
-	'09')
-	                echo "vacuum analyze tbl_hknjainf;"     | psql ${DBNAME} ;;
-	esac
-done
-
+if [ ${UPDCOUNT} -ge ${VACUUMCOUNT} ] ; then
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},マスタを最適化しています,"
+	for TBLNO in $(echo ${DATLIST} | tr -s '[:blank:]' '\n' | sort | cut -c 1,2 | uniq)
+	do
+		case ${TBLNO} in
+		'07')
+		                echo "vacuum analyze tbl_interact;"     | psql ${DBNAME} ;;
+		'08')
+		                echo "vacuum analyze tbl_sskijyo;"      | psql ${DBNAME} ;;
+		'09')
+		                echo "vacuum analyze tbl_hknjainf;"     | psql ${DBNAME} ;;
+		esac
+	done
+fi
 
 echo  "全ての処理が完了しました"
 	cleanup

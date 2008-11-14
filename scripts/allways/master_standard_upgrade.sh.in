@@ -31,6 +31,7 @@ UPDKANRIFILE=info/ORCADBR-3.DAT
 UPDFILE=${HOME}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
 LEN=100
 PRFFILE=/tmp/MSTMNT.PRF.$$
+VACUUMCOUNT=1000
 
 CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
 
@@ -262,13 +263,14 @@ do
 	DATLIST=${DATLIST}" "${DAT}
 done
 #DB構造変更処理
-TENSUCNT=0
+UPDCOUNT=0
 MSTSEQ=0
 for UPD in ${DATLIST}
 do
 	MSTSEQ=$(expr ${MSTSEQ} + 1)
 	UPD1=$(echo ${UPD} | awk '{i=split($0,arr,"#");gsub(/.tar.gz/,".dat",arr[1]); print arr[1] } ')
 	COUNT=$(echo ${UPD} | awk '{i=split($0,arr,"#"); print arr[i]} ' )
+	UPDCOUNT=$(expr ${UPDCOUNT} + ${COUNT})
 	MSTCNTMSG=$(printf "%d/%d" ${MSTSEQ} ${MSTCOUNT})
 	echo ${UPD1} "DB更新"
 #ダウンロードファイル生成
@@ -286,46 +288,48 @@ do
 #	fi
 done
 
-for TBLNO in $(echo ${DATLIST} | tr -s '[:blank:]' '\n' | sort | cut -c 1,2 | uniq)
-do
-	case ${TBLNO} in
-	'00')
-	                echo "vacuum analyze tbl_tensu ;"      | psql ${DBNAME} ;;
-	'01')
-	                echo "vacuum analyze tbl_hknnum ;"      | psql ${DBNAME} ;;
-	'02')
-	                echo "vacuum analyze tbl_syskanri;"     | psql ${DBNAME} ;;
-	'03')
-	                echo "vacuum analyze tbl_byomei;"       | psql ${DBNAME} ;;
-	'04')
-	                echo "vacuum analyze tbl_chk;"          | psql ${DBNAME} ;;
-	'05')
-	                echo "vacuum analyze tbl_srycdchg;"     | psql ${DBNAME} ;;
-	'06')
-	                echo "vacuum analyze tbl_kensasort;"    | psql ${DBNAME} ;;
-#	'07')
-#	                echo "vacuum analyze tbl_interact;"     | psql ${DBNAME} ;;
-#	'08')
-#	                echo "vacuum analyze tbl_sskijyo;"      | psql ${DBNAME} ;;
-#	'09')
-#	                echo "vacuum analyze tbl_hknjainf;"     | psql ${DBNAME} ;;
-	'10')
-	                echo "vacuum analyze tbl_adrs;"         | psql ${DBNAME} ;;
-	'11')
-	                echo "vacuum analyze tbl_tekioubyomei;" | psql ${DBNAME} ;;
-	'12')
-	                echo "vacuum analyze tbl_genericname;"  | psql ${DBNAME} ;;
-	'13')
-	                echo "vacuum analyze tbl_hktsantei;"    | psql ${DBNAME} ;;
-	'14')
-	                echo "vacuum analyze tbl_hktsrycd;"     | psql ${DBNAME} ;;
-	'15')
-	                echo "vacuum analyze tbl_toukeimemo;"   | psql ${DBNAME} ;;
-	'16')
-	                echo "vacuum analyze tbl_prgoption;"    | psql ${DBNAME} ;;
-	esac
-done
-
+if [ ${UPDCOUNT} -ge ${VACUUMCOUNT} ] ; then
+	${DBSTUB} -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "STS${JOBID}${SHELLID}0000,${HOSPNUM},${ERRFILE},マスタを最適化しています,"
+	for TBLNO in $(echo ${DATLIST} | tr -s '[:blank:]' '\n' | sort | cut -c 1,2 | uniq)
+	do
+		case ${TBLNO} in
+		'00')
+		                echo "vacuum analyze tbl_tensu ;"      | psql ${DBNAME} ;;
+		'01')
+		                echo "vacuum analyze tbl_hknnum ;"      | psql ${DBNAME} ;;
+		'02')
+		                echo "vacuum analyze tbl_syskanri;"     | psql ${DBNAME} ;;
+		'03')
+		                echo "vacuum analyze tbl_byomei;"       | psql ${DBNAME} ;;
+		'04')
+		                echo "vacuum analyze tbl_chk;"          | psql ${DBNAME} ;;
+		'05')
+		                echo "vacuum analyze tbl_srycdchg;"     | psql ${DBNAME} ;;
+		'06')
+		                echo "vacuum analyze tbl_kensasort;"    | psql ${DBNAME} ;;
+	#	'07')
+	#	                echo "vacuum analyze tbl_interact;"     | psql ${DBNAME} ;;
+	#	'08')
+	#	                echo "vacuum analyze tbl_sskijyo;"      | psql ${DBNAME} ;;
+	#	'09')
+	#	                echo "vacuum analyze tbl_hknjainf;"     | psql ${DBNAME} ;;
+		'10')
+		                echo "vacuum analyze tbl_adrs;"         | psql ${DBNAME} ;;
+		'11')
+		                echo "vacuum analyze tbl_tekioubyomei;" | psql ${DBNAME} ;;
+		'12')
+		                echo "vacuum analyze tbl_genericname;"  | psql ${DBNAME} ;;
+		'13')
+		                echo "vacuum analyze tbl_hktsantei;"    | psql ${DBNAME} ;;
+		'14')
+		                echo "vacuum analyze tbl_hktsrycd;"     | psql ${DBNAME} ;;
+		'15')
+		                echo "vacuum analyze tbl_toukeimemo;"   | psql ${DBNAME} ;;
+		'16')
+		                echo "vacuum analyze tbl_prgoption;"    | psql ${DBNAME} ;;
+		esac
+	done
+fi
 
 
 echo  "全ての処理が完了しました"

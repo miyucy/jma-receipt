@@ -433,9 +433,15 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                    EVALUATE    JOB-ERRCD
                    WHEN    "00"
                    WHEN    "0000"
-                       MOVE    "マスタ更新は正常に終了しました。"
+                       IF    ( JOB-UPDCNT      >   ZERO )
+                           MOVE    "マスタ更新結果に問題があります。"
                                            TO  SPA-GMN-MSG1(ID1:32)
-                       MOVE    "blue"      TO  SPA-GMN-MSG1-STYLE
+                           MOVE    "blue"  TO  SPA-GMN-MSG1-STYLE
+                       ELSE
+                           MOVE    "マスタ更新は正常に終了しました。"
+                                           TO  SPA-GMN-MSG1(ID1:32)
+                           MOVE    "blue"  TO  SPA-GMN-MSG1-STYLE
+                       END-IF
                    WHEN    "01"
                    WHEN    "8001"
                        MOVE    "更新データはありませんでした。"
@@ -490,9 +496,15 @@ grpsys       MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                    EVALUATE    JOB1-ERRCD
                    WHEN    "00"
                    WHEN    "0000"
-                       MOVE    "マスタ更新は正常に終了しました。"
-                                            TO  SPA-GMN-MSG2(ID1:32)
-                       MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
+                       IF    ( JOB1-UPDCNT      >   ZERO )
+                           MOVE    "マスタ更新結果に問題があります。"
+                                                TO  SPA-GMN-MSG2(ID1:32)
+                           MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
+                       ELSE
+                           MOVE    "マスタ更新は正常に終了しました。"
+                                                TO  SPA-GMN-MSG2(ID1:32)
+                           MOVE    "blue"       TO  SPA-GMN-MSG2-STYLE
+                       END-IF
                    WHEN    "01"
                    WHEN    "8001"
                        MOVE    "更新データはありませんでした。"
