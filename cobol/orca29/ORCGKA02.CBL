@@ -642,7 +642,7 @@
       *    ¸òÉÕÆü
            MOVE    SPA-SRYYMDW(1:9)    TO  SPA-GMN-KOUFUYMD
            MOVE    SPA-SRYYMD          TO  SPA-NAI-KOUFUYMD
-      *    ³°Íè
+      *    Æþ±¡
            MOVE    "1"                 TO  SPA-NYUGAIKBN
       *    ´µ¼Ô¾ðÊó¸¡º÷
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
@@ -3092,6 +3092,9 @@
            INITIALIZE                  SPA-GMN-SELNUM1
            INITIALIZE                  SPA-GMN-SELNUM2
            INITIALIZE                  SPA-WKSRY-MAX
+           INITIALIZE                  SPA-GMN-MEISAI-AREA
+           INITIALIZE                  SPA-NAI-WKSRY-TBL
+           INITIALIZE                  SPA-KA021
       *    ¼õ¿ÇÍúÎòÊÔ½¸
            PERFORM 30011-JYURRK-HENSYU-SEC
            IF      SPA-JYURRK-MAX      >   ZERO
@@ -3384,6 +3387,7 @@
            MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
       *
       *    ½èÊýäµ°õºþ
+           INITIALIZE                      ORCHC19AREA
            MOVE    "N"                 TO  ORCHC19-KBN
            MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
            MOVE    "1"                 TO  SPA-DRCD(1:1)
@@ -3436,7 +3440,6 @@
                                                        =   ZERO   )
                           CONTINUE
                        ELSE
-      *
                            ADD     1           TO  IDX2
                            MOVE    SPA-PARA-SRYCD (IDX-W IDX-W2)
                                            TO  ORCHC19-SRYCD (IDX1 IDX2)
