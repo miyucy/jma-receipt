@@ -35,36 +35,72 @@ UPDFILE=${HOME}/${HOSPNUM}/${MSTDIR}/ORCADBR.OUT
 LEN=100
 PRFFILE=/tmp/MSTMLI.PRF.$$
 
-function orcawget () {
+CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
+
+orcawget () {
 #受信ファイル削除
 	if [	-e	$1	]
 	then
 #	echo "rm start" $1
 		rm $1;
 	fi
-	echo "http_user="${LIUPWD:0:5} > ${WGETRCFL}
-	echo "http_passwd="${LIUPWD:0:5} >> ${WGETRCFL}
-	export WGETRC=${WGETRCFL}
-	wget -q ${WGETOPTION} ${DBLICENSEPATH}/$1
+	if [	-n	"$OBSOLETEDL"	]
+	then
+		echo "http_user="${LIUPWD:0:5} > ${WGETRCFL}
+		echo "http_passwd="${LIUPWD:0:5} >> ${WGETRCFL}
+		export WGETRC=${WGETRCFL}
+		wget -q ${WGETOPTION} ${DBLICENSEPATH}/$1
+	else
+		`dirname $0`/orcadt_verify.rb --dir . --cacert ${CACERTFILE} --user ${LIUPWD:0:5} --password ${LIUPWD:0:5} ${DBLICENSEPATH}/$1.p7m
+	fi
 #接続確認
 	if [ $? -eq 0 ]	;	then 
 #	echo "wget end OK"
-		rm  ${WGETRCFL}
-		return 0;
+		if [	-n	"$OBSOLETEDL"	]
+		then
+			rm  ${WGETRCFL}
+		fi
+#ファイルサイズチェック
+		if [	-s	./`basename $1`	]
+		then
+			return 0;
+		else
+			return 1;
+		fi
 	else
-		rm  ${WGETRCFL}
+		if [	-n	"$OBSOLETEDL"	]
+		then
+			rm  ${WGETRCFL}
+		fi
 		return 1;
 	fi
-#ファイルサイズチェック
-	if [	-s	$1	]
+}
+
+orcacp () {
+	if [	-e	$1	]
 	then
-		return 0;
+		rm $1;
+	fi
+	if [	-n	"$OBSOLETEDL"	]
+	then
+		cp $1 ./
+	else
+		`dirname $0`/orcadt_verify.rb --dir . --cacert ${CACERTFILE} $1.p7m
+	fi
+	if [ $? -eq 0 ]	;	then 
+#ファイルサイズチェック
+		if [	-s	./`basename $1`	]
+		then
+			return 0;
+		else
+			return 1;
+		fi
 	else
 		return 1;
 	fi
 }
 
-function orcatar () {
+orcatar () {
 	TARFL=$(echo $1 | awk '{i=split($0,arr,"/"); print arr[i]} ')
 	TAR=$(echo ${TARFL} | awk '{i=split($0,arr,"."); print arr[i-1] arr[i]} ' )
 	LOCALFL=$(echo ${TARFL} | awk '{i=split($0,arr,"."); print arr[1]".dat"} ' ) 
@@ -95,7 +131,7 @@ function orcatar () {
 	fi
 }
 
-function cleanup () {
+cleanup () {
 	if	[ -d ${HOME}/${HOSPNUM}/${MSTDIR} ];	then 
 		rm -r ${HOME}/${HOSPNUM}/${MSTDIR}
 	fi
@@ -149,8 +185,7 @@ fi
 
 rm -f *.*
 if  [ ${OFFLINE} = "offline" ]; then
-    if  [ -e ${OFFLINEPATH}/${UPDKANRIFILE} ]; then
-	cp ${OFFLINEPATH}/${UPDKANRIFILE} ./
+    if  orcacp ${OFFLINEPATH}/${UPDKANRIFILE} ; then
 	echo "DBレコード管理情報を複写しました"
     else
 	echo "DBレコード管理情報がありませんでした"
@@ -210,22 +245,21 @@ do
 		cleanup 
 		exit 99
 	fi
-	echo ${UPD:34:${LEN}}
+	echo ${UPD:35:${LEN}}
 	if  [ ${OFFLINE} = "offline" ]; then
-	    if  [ -e ${OFFLINEPATH}/${UPD:34:${LEN}} ]; then
-		cp ${OFFLINEPATH}/${UPD:34:${LEN}} ./
-		echo ${UPD:34:${LEN}} "複写が終了しました"
+	    if  orcacp ${OFFLINEPATH}/${UPD:35:${LEN}} ; then
+		echo ${UPD:35:${LEN}} "複写が終了しました"
 	    else
-		echo ${UPD:34:${LEN}} "複写に失敗しました"
+		echo ${UPD:35:${LEN}} "複写に失敗しました"
 		${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0007,${HOSPNUM},${ERRFILE},,複写に失敗しました"
 		cleanup 
 	        exit 99
 	    fi
 	else
-	    if	orcawget ${UPD:34:${LEN}} ;	then
-		echo ${UPD:34:${LEN}} "ダウンロードが終了しました"
+	    if	orcawget ${UPD:35:${LEN}} ;	then
+		echo ${UPD:35:${LEN}} "ダウンロードが終了しました"
 	    else
-		echo ${UPD:34:${LEN}} "ダウンロードに失敗しました"
+		echo ${UPD:35:${LEN}} "ダウンロードに失敗しました"
 		${DBSTUB}  -dir ${LDDIRECTORY} -bd orcabt ORCBJOB2 -parameter "JBE${JOBID}${SHELLID}0008,${HOSPNUM},${ERRFILE},,ダウンロードに失敗しました"
 		cleanup 
 	        exit 99

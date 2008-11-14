@@ -14,7 +14,25 @@ umask 022
 PACKAGEFILE=patch@VERSION@.gz
 PATCHDIR=/var/lib/jma-receipt/patch
 
-FTP=$PGUPGRADEPATH/@VERSION@
+PRGPATH=$PGUPGRADEPATH/@VERSION@
+
+CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
+
+#オフラインメンテナンスであるかチェック
+OFFLINEPATH=`echo $PRGPATH | sed -ne 's#file://##p'`
+if [ -z $OFFLINEPATH ]; then
+  OFFLINE="online"
+else
+  OFFLINE="offline"
+  PRGPATH=$OFFLINEPATH
+fi
+
+#旧方式か？
+if [ -n	"$OBSOLETEDL" ]; then
+  OBSDL=yes
+else
+  OBSDL=no
+fi
 
 if ! [ -d $PATCHDIR ];	then
 	echo "パッチディレクトリが存在しません"
@@ -22,6 +40,6 @@ if ! [ -d $PATCHDIR ];	then
 fi
 
 #更新プログラムダウンロード
-ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $PATCHDIR $FTP
+ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $PATCHDIR $PRGPATH $OFFLINE $CACERTFILE $OBSDL $WGETOPTION
 
 exit

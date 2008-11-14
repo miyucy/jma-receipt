@@ -29,8 +29,10 @@ PRGPATH=$PGUPGRADEPATH/@VERSION@
 
 LOG="$LOGDIR"/program_upgrade_online.log
 
+CACERTFILE=/etc/ssl/certs/orca-project-ca-1.crt
+
 # echo message (default character-code EUC)
-function echomsg() {
+echomsg() {
   if [ "${LANG}" = "ja_JP.UTF-8" ] || [ "${LANG}" = "ja_JP.UTF8" ]; then
     echo `echo $1 | nkf -wE | tee -a $2`
   else
@@ -50,6 +52,13 @@ else
 fi
 echomsg ${OFFLINE} ${LOG}
 
+#旧方式か？
+if [ -n	"$OBSOLETEDL" ]; then
+  OBSDL=yes
+else
+  OBSDL=no
+fi
+
 if ! [ -d $HOME/$PRGDIR ]; then 
   cd $HOME
   mkdir $PRGDIR
@@ -58,7 +67,7 @@ cd $HOME/$PRGDIR
 rm -f $HOME/$PRGDIR/*
 
 #更新プログラムダウンロード
-ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $PATCHDIR $PRGPATH $OFFLINE $WGETOPTION
+ruby $SCRIPTSDIR/allways/cachedl.rb $PACKAGEFILE $PATCHDIR $PRGPATH $OFFLINE $CACERTFILE $OBSDL $WGETOPTION
 if [ $? -ne 0 ] ; then
   echomsg "更新プログラムのダウンロードに失敗しました" ${LOG}
   rm -rf $HOME/$PRGDIR

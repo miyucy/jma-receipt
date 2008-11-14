@@ -104,6 +104,7 @@ ruby_scripts = \
 	allways/program_upgrade_exec.rb \
 	allways/program_upgrade_check.rb \
 	allways/run.rb \
+	allways/orcadt_verify.rb \
 	monthly/das-upload.rb \
 	monthly/lib/orcadas/command.rb \
 	monthly/lib/orcadas/formdata.rb \
