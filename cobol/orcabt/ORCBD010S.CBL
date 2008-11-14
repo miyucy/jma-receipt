@@ -1127,24 +1127,26 @@
       *
                IF    ( SUMSKY-SYURRKNUM (SUMSKY-IDX)
                                        <=   SYURRK-SYURRKNUM )
-                AND  ( SUMSKY-SYUEDANUM (SUMSKY-IDX)
+                   IF ( SUMSKY-SYUEDANUM (SUMSKY-IDX)
                                        <=   SYURRK-SYUEDANUM )
-                   MOVE    SYURRK-SYURRKNUM
+                       MOVE    SYURRK-SYURRKNUM
                                    TO  SUMSKY-SYURRKNUM (SUMSKY-IDX)
-                   MOVE    SYURRK-SYUEDANUM
+                       MOVE    SYURRK-SYUEDANUM
                                    TO  SUMSKY-SYUEDANUM (SUMSKY-IDX)
+                   END-IF
                END-IF
       *
                IF    ( SUMSKY-MAX-RRKNUM
                                        <=   SYURRK-SYURRKNUM )
-                AND  ( SUMSKY-MAX-EDANUM
+                   IF  ( SUMSKY-MAX-EDANUM
                                        <=   SYURRK-SYUEDANUM )
-                   MOVE    SYURRK-SRYKA
+                       MOVE    SYURRK-SRYKA
                                    TO  SUMSKY-MAX-SRYKA
-                   MOVE    SYURRK-SYURRKNUM
+                       MOVE    SYURRK-SYURRKNUM
                                    TO  SUMSKY-MAX-RRKNUM
-                   MOVE    SYURRK-SYUEDANUM
+                       MOVE    SYURRK-SYUEDANUM
                                    TO  SUMSKY-MAX-EDANUM
+                   END-IF
                END-IF
       *
                COMPUTE SUMSKY-TOTAL-SKYMONEY
