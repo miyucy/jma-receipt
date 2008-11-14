@@ -772,11 +772,10 @@
                        MOVE    "ファイルがオープンできません"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    98
-                       MOVE
-                   "エラーが１０００件を超えているので取り込めません。"
+                       MOVE    "エラー取り込みは１０００件までです"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    99
-                       MOVE    "これ以上取り込めません。"
+                       MOVE    "これ以上取り込めません"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    OTHER
                        MOVE    "変換不能のデータがあります"
