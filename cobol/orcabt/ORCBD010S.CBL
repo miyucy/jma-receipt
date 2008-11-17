@@ -1417,7 +1417,8 @@
                    END-IF
                ELSE
                    IF    ( WRK-MIN-DENPEDANUM      =   1 )
-                    AND  ( SYU-SRYYMD  =  WRK-EDDAILYKEY-YMD )
+                    AND  ( SYU-SRYYMD  >=  WRK-STDAILYKEY-YMD )
+                    AND  ( SYU-SRYYMD  <=  WRK-EDDAILYKEY-YMD )
                        PERFORM 800-CALL-ORCSS003-SEC
                        MOVE    SS003-SYOSAISIN-KBN
                                    TO  BD01001-SYOSAIKBN
