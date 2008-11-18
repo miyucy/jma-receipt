@@ -1964,6 +1964,7 @@
                        IF      SPA-PRINT-SYORI     =   1
                            INITIALIZE              SPA-PARA-WKSRY-TBL
                            INITIALIZE              SPA-KA02-PRT
+                           MOVE    ZERO            TO  SPA-WKSRY-MAX
                        END-IF
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
@@ -3399,10 +3400,14 @@
            MOVE    SPA-PARA-SRYKA      TO  SPA-SRYKA
            PERFORM 41021-ORCHC19-HENSYU-SEC
       *
-           MOVE    "01"                TO  SPA-PRT-FLG
-           CALL    WRK-SYOHOU-PG       USING   SPA-AREA
-                                               ORCHC19AREA
-           MOVE    HZN-SPA-AREA         TO  SPA-AREA
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    "01"                TO  SPA-PRT-FLG
+               CALL    WRK-SYOHOU-PG       USING   SPA-AREA
+                                                   ORCHC19AREA
+           END-IF
+           MOVE    SPA-ERRCD           TO  WRK-ERRCD
+           MOVE    HZN-SPA-AREA        TO  SPA-AREA
+           MOVE    WRK-ERRCD           TO  SPA-ERRCD
       *
            IF      SPA-PRINT-SYORI     =   1
                INITIALIZE              SPA-PARA-WKSRY-TBL
@@ -3461,6 +3466,9 @@
                END-PERFORM
            END-PERFORM
       *
+           IF      ORCHC19-ZAI-MAX     =   ZERO
+               MOVE    "0101"          TO  SPA-ERRCD
+           END-IF
            .
        41021-ORCHC19-HENSYU-EXT.
            EXIT.
@@ -3493,8 +3501,10 @@
                CALL    "ORCSCHN30"         USING   SPA-AREA
                                                    ORCSCHN30AREA
            END-IF
+           MOVE    SPA-ERRCD           TO  WRK-ERRCD
       *
-           MOVE    HZN-SPA-AREA         TO  SPA-AREA
+           MOVE    HZN-SPA-AREA        TO  SPA-AREA
+           MOVE    WRK-ERRCD           TO  SPA-ERRCD
       *
            IF      SPA-PRINT-SYORI     =   1
                INITIALIZE              SPA-PARA-WKSRY-TBL
