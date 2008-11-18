@@ -2628,7 +2628,7 @@
                    UNTIL      (IDX         >   50  )  OR
                               (SPA-ERRCD   NOT =   SPACE )
                ADD     1               TO  IDY
-               IF      IDY             >   6
+               IF      IDY             >   5
                    MOVE    1               TO  IDY
                END-IF
                IF     (SPA-GMN-INPUT (IDX)     =   SPACE )  OR
@@ -3183,7 +3183,7 @@
            IF     (SPA-ERRCD           =   SPACE ) AND
                   (SPA-INPUT-PAGE      >   ZERO  )
                COMPUTE IDX-STR         =   SPA-INPUT-PAGE
-                                       *   6
+                                       *   5
                                        +   1
                IF     (IDX-STR         <=  50 )  AND
                       (SPA-GMN-INPUT (IDX-STR) NOT =   SPACE )
