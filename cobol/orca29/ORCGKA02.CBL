@@ -3391,6 +3391,7 @@
            END-IF
            MOVE    ORCSPRTNM-PRTPG     TO  WRK-SYOHOU-PG
       *
+           MOVE    SPA-NAI-KOUFUYMD    TO  SPA-SRYYMD
       *    ½èÊýäµ°õºþ
            INITIALIZE                      ORCHC19AREA
            MOVE    "N"                 TO  ORCHC19-KBN
