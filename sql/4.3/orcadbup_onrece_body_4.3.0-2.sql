@@ -6,4 +6,4 @@
 
 \set ON_ERROR_STOP
 
-CREATE INDEX idx_onbody_ptid ON tbl_onrece_body USING btree (hospnum,teisyutusaki, sryym,ptid);
+CREATE INDEX idx_onrece_body_ptid ON tbl_onrece_body USING btree (hospnum,teisyutusaki, sryym,ptid);
