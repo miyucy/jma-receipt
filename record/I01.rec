@@ -200,7 +200,6 @@ I01	{
 			value	varchar(60);
 			state	int;
 		};
-		scrw2	{
 			vp1	{
 				fixed7	{
 					LBLKSN01	{
@@ -241,7 +240,6 @@ I01	{
 					};
 				};
 			};
-		};
 		CMB_SEIKYU	{
 			SEIKYU	{
 				value	varchar(24);
