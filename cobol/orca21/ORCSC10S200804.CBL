@@ -3166,8 +3166,8 @@
       *       初診算定日からの１ヵ月以内のエラーで同日初診日でない時
                    IF     (SPA-ERRCD           =   "0034")  AND
                           (FLG-SYOHEN          =   ZERO  )  AND
-                          (SPA-SYOYMD-RSI  NOT =   SPACE )  AND
-                          (SPA-SYOYMD-HKN  NOT =   SPACE )
+                          (SPA-SYOYMD-RSI  NOT =   SPACE )
+      ***********   AND   (SPA-SYOYMD-HKN  NOT =   SPACE )
                        PERFORM 2302-ERRCHK-SEC
                    END-IF
                WHEN    WRK-KEIYMD          =   SPA-SRYYMD
@@ -3192,7 +3192,11 @@
            ELSE
                IF     (WRK-SYOYMD          =   SPA-SYOYMD-RSI )
       *        規準日が労災の初診日であれば、労災以外の初診日でチェック
-                  MOVE    SPA-SYOYMD-HKN      TO  WRK-SYOYMD-K
+                   MOVE    SPA-SYOYMD-HKN      TO  WRK-SYOYMD-K
+      *            労災以外の初診がなければ警告とする
+                   IF      SPA-SYOYMD-HKN      =   SPACE
+                       MOVE    SPACE           TO  SPA-ERRCD
+                   END-IF
                END-IF
            END-IF
            IF      WRK-SYOYMD-K    NOT =   SPACE

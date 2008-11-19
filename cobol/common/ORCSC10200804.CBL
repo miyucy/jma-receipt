@@ -4966,6 +4966,11 @@
                    MOVE    1               TO  FLG-SYOHEN
                END-IF
            END-IF
+      *    初診入力がある時
+           IF      LNK-ORCSC-SYOSIN2   =   1
+               MOVE    SPA-SRYYMD      TO  WRK-SYOYMD
+               MOVE    1               TO  FLG-SYOHEN
+           END-IF
       *@
       *    小児指導管理料は退院日のみ判定とする
            IF      WRK-COM-INPUTCD(IDX-Z)  =   "113002210"
@@ -5041,8 +5046,8 @@
       *       労災・労災外の初診算定がある時
                    IF     (SPA-ERRCD           =   "0034")  AND
                           (FLG-SYOHEN          =   ZERO  )  AND
-                          (SPA-SYOYMD-RSI  NOT =   SPACE )  AND
-                          (SPA-SYOYMD-HKN  NOT =   SPACE )
+                          (SPA-SYOYMD-RSI  NOT =   SPACE )
+      *****        AND    (SPA-SYOYMD-HKN  NOT =   SPACE )
                        PERFORM 2302-ERRCHK-SEC
                    END-IF
                WHEN    WRK-KEIYMD          =   SPA-SRYYMD
@@ -5071,7 +5076,18 @@
            ELSE
                IF     (WRK-SYOYMD          =   SPA-SYOYMD-RSI )
       *        規準日が労災の初診日であれば、労災以外の初診日でチェック
-                  MOVE    SPA-SYOYMD-HKN      TO  WRK-SYOYMD-K
+                   MOVE    SPA-SYOYMD-HKN      TO  WRK-SYOYMD-K
+      *            労災以外の初診がなければ警告とする
+                   IF      SPA-SYOYMD-HKN      =   SPACE
+                       MOVE    SPACE           TO  SPA-ERRCD
+                       IF     (WRK-COM-KZMFLG (IDX-Z)  =   SPACE)
+                         AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
+                           MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                                (IDX-Z)
+                           MOVE    "K026"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
                END-IF
            END-IF
            IF      WRK-SYOYMD-K    NOT =   SPACE
