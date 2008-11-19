@@ -12,7 +12,7 @@ tbl_nrrksrh {
 };
 
 primary	{
-	HOSPNUM,PTID,SRYYMD,ZAINUM ;
+	HOSPNUM,PTID,SRYYMD,ZAINUM,RRKNUM ;
 };
 
 path	key 	{
@@ -24,6 +24,7 @@ path	key 	{
 			AND   PTID        =   :PTID
 			AND   SRYYMD      =   :SRYYMD
 			AND   ZAINUM      =   :ZAINUM
+			AND   RRKNUM      =   :RRKNUM
 		;
 	};
 };
