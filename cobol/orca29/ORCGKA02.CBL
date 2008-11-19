@@ -2991,12 +2991,14 @@
            END-PERFORM
       *
            IF      SPA-ERRCD           =   SPACE
-               MOVE    ZERO            TO  SPA-SEL-SYORI
-               MOVE    ZERO                TO  SPA-KEIFLG2
-               PERFORM 30012-MEISAI-SYORI-SEC
+               IF      SPA-PRINT-SYORI     =   ZERO
+                   MOVE    ZERO                TO  SPA-SEL-SYORI
+                   MOVE    ZERO                TO  SPA-KEIFLG2
+                   PERFORM 30012-MEISAI-SYORI-SEC
+               END-IF
            END-IF
           .
-       409-TOUROKU-EXT.
+       4091-WKSRY-PARA-HEN-EXT.
            EXIT.
       *****************************************************************
       *    登録済みチェック処理
@@ -3265,6 +3267,7 @@
       *            対象チェック処理
                    IF      SPA-PARA-SRYKA      =   SPACE
       *                受診内容をパラメタへ編集
+                       MOVE    1                   TO  SPA-PRINT-SYORI
                        PERFORM 4091-WKSRY-PARA-HEN-SEC
                        MOVE    1                   TO  SPA-PRINT-SYORI
                    END-IF
@@ -3307,6 +3310,7 @@
       *            対象チェック処理
                    IF      SPA-PARA-SRYKA      =   SPACE
       *                受診内容をパラメタへ編集
+                       MOVE    1                   TO  SPA-PRINT-SYORI
                        PERFORM 4091-WKSRY-PARA-HEN-SEC
                        MOVE    1                   TO  SPA-PRINT-SYORI
                    END-IF
@@ -3351,6 +3355,7 @@
       *            対象チェック処理
                    IF      SPA-PARA-SRYKA      =   SPACE
       *                受診内容をパラメタへ編集
+                       MOVE    1               TO  SPA-PRINT-SYORI
                        PERFORM 4091-WKSRY-PARA-HEN-SEC
                        MOVE    1               TO  SPA-PRINT-SYORI
                    END-IF
@@ -3413,6 +3418,9 @@
            IF      SPA-PRINT-SYORI     =   1
                INITIALIZE              SPA-PARA-WKSRY-TBL
                INITIALIZE              SPA-KA02-PRT
+               MOVE    ZERO                TO  SPA-SEL-SYORI
+               MOVE    ZERO                TO  SPA-KEIFLG2
+               PERFORM 30012-MEISAI-SYORI-SEC
            END-IF
            .
        4102-SYOHOU-PRINT-EXT.
@@ -3510,6 +3518,9 @@
            IF      SPA-PRINT-SYORI     =   1
                INITIALIZE              SPA-PARA-WKSRY-TBL
                INITIALIZE              SPA-KA02-PRT
+               MOVE    ZERO                TO  SPA-SEL-SYORI
+               MOVE    ZERO                TO  SPA-KEIFLG2
+               PERFORM 30012-MEISAI-SYORI-SEC
            END-IF
            .
        4103-YAKJYO-PRINT-EXT.
@@ -3709,6 +3720,9 @@
            IF      SPA-PRINT-SYORI     =   1
                INITIALIZE              SPA-PARA-WKSRY-TBL
                INITIALIZE              SPA-KA02-PRT
+               MOVE    ZERO                TO  SPA-SEL-SYORI
+               MOVE    ZERO                TO  SPA-KEIFLG2
+               PERFORM 30012-MEISAI-SYORI-SEC
            END-IF
            .
        4104-OKUSURI-PRINT-EXT.
