@@ -3,6 +3,7 @@ CREATE TABLE tbl_nrrksrh (
     ptid numeric(10,0) NOT NULL,
     sryymd character(8) NOT NULL,
     zainum numeric(9,0) NOT NULL,
+    rrknum numeric(3,0),
     termid character varying(16),
     opid character varying(16),
     creymd character(8),
