@@ -9087,10 +9087,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      IDX-RRK             =   ZERO
                IF      SPA-GNAI-DAY (1 SPA-DAY-IDX)    >   ZERO
       *            入院調剤料の自動発生分は追加対象外
-                   IF     (SPA-NAI-NYUAUTO (IDX)   =   1    )  AND
-                          (SPA-GNAI-DAY (1 SPA-DAY-IDX)
+                   IF     (SPA-NAI-NYUAUTO (IDX)   =   1    )
+                   AND   ((SPA-GNAI-DAY (1 SPA-DAY-IDX)
                                                    =   SPA-NAI-DAY
                                                     (IDX 1 SPA-DAY-IDX))
+                     OR   (SPA-NAI-DAY (IDX 1 SPA-DAY-IDX)
+                                                   =   ZERO  ))
                        CONTINUE
                    ELSE
                        PERFORM 41001221-RRK-ADD-SEC
