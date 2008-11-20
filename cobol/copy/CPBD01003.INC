@@ -28,9 +28,9 @@
                05  BD01003-SRT-SRYKA               PIC X(02).
            03  BD01003-SEIKYU-AREA.
                05  BD01003-SEIKYU-TOTAL            PIC S9(9)
-                                                   OCCURS  4.
+                                                   OCCURS  8.
                05  BD01003-SEIKYU-VAL.
-                   07  BD01003-SEIKYU-OCC          OCCURS  4.
+                   07  BD01003-SEIKYU-OCC          OCCURS  8.
                        09  BD01003-SEIKYU          PIC S9(10)
                                                    OCCURS  15.
            03  BD01003-JIHI-AREA.

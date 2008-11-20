@@ -35,18 +35,6 @@
        FILE-CONTROL.
       *
       *    中間ファイル
-           SELECT  BD01001-FILE   ASSIGN   BD01001PARA
-                                  ORGANIZATION    IS  INDEXED
-                                  ACCESS  MODE    IS  DYNAMIC
-                                  RECORD  KEY     IS  BD01001-KEY
-                                  FILE    STATUS  IS  STS-BD01001.
-      *
-           SELECT  BD01002-FILE   ASSIGN   BD01002PARA
-                                  ORGANIZATION    IS  INDEXED
-                                  ACCESS  MODE    IS  DYNAMIC
-                                  RECORD  KEY     IS  BD01002-KEY
-                                  FILE    STATUS  IS  STS-BD01002.
-      *
            SELECT  BD01003-FILE   ASSIGN   BD01003PARA
                                   ORGANIZATION    IS  INDEXED
                                   ACCESS  MODE    IS  DYNAMIC
@@ -67,14 +55,6 @@
       *
        FILE                        SECTION.
       *
-       FD  BD01001-FILE.
-       01  BD01001-REC.
-           COPY    "CPBD01001.INC".
-      *
-       FD  BD01002-FILE.
-       01  BD01002-REC.
-           COPY    "CPBD01002.INC".
-      *
        FD  BD01003-FILE.
        01  BD01003-REC.
            COPY    "CPBD01003.INC".
@@ -90,20 +70,9 @@
        WORKING-STORAGE             SECTION.
       *
        01  STS-AREA.
-           03  STS-BD01001                 PIC X(02).
-           03  STS-BD01002                 PIC X(02).
            03  STS-BD01003                 PIC X(02).
            03  STS-BD01004                 PIC X(02).
            03  STS-RECEERR                 PIC X(02).
-      *
-      *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING   //RECE01//
-                                   BY          //BD01001//.
-      *
-           COPY    "CPCOMMONDAT2.INC"
-                                   REPLACING   //RECE01//
-                                   BY          //BD01002//.
       *
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01//
@@ -115,31 +84,25 @@
       *
            COPY    "HCM51V02.INC"  REPLACING   //HCM51V02//
                                    BY          //HCM51//.
-           COPY    "HCM52V03.INC"  REPLACING   //HCM52V03//
+           COPY    "HCM52V04.INC"  REPLACING   //HCM52V04//
                                    BY          //HCM52//.
       *
        01  FLG-AREA.
            03  FLG-END                     PIC 9(01).
            03  FLG-SYUNOU                  PIC 9(01).
            03  FLG-SYUMEI                  PIC 9(01).
-           03  FLG-SMEITMP                 PIC 9(01).
-           03  FLG-SYURRK                  PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
-           03  FLG-BD01001                 PIC 9(01).
-           03  FLG-BD01002                 PIC 9(01).
            03  FLG-BD01003                 PIC 9(01).
            03  FLG-BD01004                 PIC 9(01).
-           03  FLG-HKNCOMBI                PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-PTNUM                   PIC 9(01).
            03  FLG-TARGET                  PIC 9(01).
       *
        01  CNT-AREA.
-           03  CNT-RENNUM                  PIC 9(05).
            03  CNT-PAGE                    PIC 9(05).
            03  CNT-LINE                    PIC 9(05).
-           03  CNT-BD01002                 PIC 9(05).
            03  CNT-NO                      PIC 9(05).
+           03  CNT-SMEI                    PIC 9(05).
       *
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
@@ -163,6 +126,8 @@
            03  IDX-CHOSEI                  PIC 9(02).
            03  IDX-GENMEN                  PIC 9(02).
            03  IDX-KOUKI                   PIC 9(02).
+           03  IDX-S02                     PIC 9(05).
+           03  IDX-HS02                    PIC 9(05).
       *
        01  WRK-AREA.
            03  WRK-RECEERR                 PIC X(200).
@@ -176,6 +141,8 @@
            03  WRK-EDDAILYKEY.
                05  WRK-EDDAILYKEY-YMD      PIC X(08).
                05  WRK-EDDAILYKEY-TIME     PIC X(04).
+           03  WRK-SYOSAIKBN               PIC X(01).
+           03  WRK-HS02-MAX                PIC 9(05).
            03  WRK-KANACHK-INPUT           PIC X(100).
            03  WRK-KANACHK-MAX             PIC 9(05).
            03  WRK-PRT-SAKYMD              PIC X(22).
@@ -190,51 +157,19 @@
                05  WRK-PRT-EDTIME-MM       PIC X(04).
            03  WRK-OUT-INPUT               PIC X(300).
            03  WRK-OUT-MAX                 PIC 9(05).
-           03  WRK-HOKEN                   PIC 9(02).
-           03  WRK-HKNNUM                  PIC X(03).
-           03  WRK-HOJOKBN                 PIC X(01).
-           03  WRK-HOKENMSG                PIC X(10).
-           03  WRK-HKNTEN                  PIC S9(10).
-           03  WRK-FTNMONEY                PIC S9(10).
-           03  WRK-SKJMONEY                PIC S9(10).
-           03  WRK-JIHIMONEY               PIC S9(10).
-           03  WRK-HOHO                    PIC X(02).
-           03  WRK-HKNCOMBINUM             PIC X(04).
-           03  WRK-MISYU                   PIC S9(9).
            03  WRK-ZZ9                     PIC ZZ9.
            03  WRK-ZZZZ9                   PIC ZZZZ9.
            03  WRK-ZZZZZZZ9                PIC ---------9.
            03  WRK-ZZZZZZZZ                PIC ----------.
+           03  WRK-ZZZZZZ9                 PIC -------9.
            03  WRK-CHOSEI                  PIC S9(9).
            03  WRK-9-X.
                05  WRK-9                   PIC 9(01).
-           03  WRK-MIN-DENPEDANUM          PIC 9(02).
            03  WRK-SAGAKU                  PIC S9(9).
            03  WRK-SKYTTL-G.
                05  WRK-SKYTTL-MAX          PIC 9(03).
                05  WRK-SKYTTL-OCC          OCCURS  15.
                    07  WRK-SKYTTLMSG       PIC X(12).
-      *
-       01  SUMSKY-AREA.
-        02 SUMSKY-IDX                  PIC 9(05).
-        02 SUMSKY-MAX                  PIC 9(05).
-        02 SUMSKY-MAX-SRYKA            PIC X(02).
-        02 SUMSKY-MAX-RRKNUM-G.
-           03  SUMSKY-MAX-RRKNUM       PIC 9(9).
-           03  SUMSKY-MAX-EDANUM       PIC 9(9).
-        02 SUMSKY-TOTAL-SKYMONEY       PIC S9(09).
-        02 SUMSKY-OCC                  OCCURS  100.
-           COPY    "CPBD01001.INC"     REPLACING   //BD01001//
-                                       BY          //SUMSKY//.
-      *
-       01  SUMNYUKIN-AREA.
-        02 SUMNYUKIN-IDX               PIC 9(05).
-        02 SUMNYUKIN-MAX               PIC 9(05).
-        02 SUMNYUKIN-MIN-DENPEDANUM    PIC 9(02).
-        02 SUMNYUKIN-TOTAL-NYUKIN      PIC S9(09).
-        02 SUMNYUKIN-OCC               OCCURS  100.
-           COPY    "CPBD01002.INC"     REPLACING   //BD01002//
-                                       BY          //SUMNYUKIN//.
       *
        01  TTL-AREA.
            03  TTL-SYOSIN              PIC     S9(10).
@@ -250,6 +185,7 @@
       *
        01  KEY-AREA.
            03  KEY-NYUGAIKBN                   PIC X(01).
+           03  KEY-PTID                        PIC 9(10).
            03  KEY-DENPNUM                     PIC 9(07).
            03  KEY-SRYKA                       PIC X(02).
       *
@@ -294,8 +230,15 @@
            03  CONST-TEISEI                    PIC X(01) VALUE "8".
            03  CONST-HENKIN                    PIC X(01) VALUE "4".
            03  CONST-TORIKESI                  PIC X(02) VALUE "6".
-           03  CONST-SUMSKY-MAX            PIC 9(05)   VALUE 100.
-           03  CONST-SUMNYUKIN-MAX         PIC 9(05)   VALUE 100.
+      *
+           03  CONST-TTLSEIKYUREL              PIC 9(02) VALUE 1.
+           03  CONST-TTLGENMEN                 PIC 9(02) VALUE 2.
+           03  CONST-TTLCHOSEI                 PIC 9(02) VALUE 3.
+           03  CONST-TTLSEIKYU                 PIC 9(02) VALUE 4.
+           03  CONST-TTLNYUKIN                 PIC 9(02) VALUE 5.
+           03  CONST-TTLSYOSIN                 PIC 9(02) VALUE 6.
+           03  CONST-TTLSAISIN                 PIC 9(02) VALUE 7.
+           03  CONST-TTLSYOSAI                 PIC 9(02) VALUE 8.
       *
        01  RECEERR                         PIC X(100).
       *
@@ -326,15 +269,6 @@
        01  SMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
-      *    収納明細マスタ(作業用）
-       01  SMEITMP-REC.
-           COPY    "CPSYUMEI.INC"  REPLACING   //SMEI-//
-                                   BY          //SMEITMP-//.
-      *
-      *    収納履歴マスタ
-       01  SYURRK-REC.
-           COPY    "CPSYURRK.INC".
-      *
       *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
@@ -343,7 +277,7 @@
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    患者番号
+      *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
@@ -361,6 +295,9 @@
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
+      *
+      *    収納明細編集サブ
+           COPY    "CPORCBD010S02.INC".
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
@@ -429,8 +366,6 @@
                                            CNT-AREA
                                            FLG-AREA
                                            WRK-AREA
-                                           SUMSKY-AREA
-                                           SUMNYUKIN-AREA
                                            KEY-AREA
                                            SRH-AREA
       *
@@ -450,16 +385,6 @@
            MOVE    "収納日報"      TO  JOB-SHELLMSG
            MOVE    SBD010-HOSPNUM    TO  JOB-HOSPNUM
            PERFORM 800-ORCSJOB-SEC
-      *
-           MOVE    SBD010-HOSPNUM TO BD01001PARA-HOSPNUM
-           MOVE    "BD01001"       TO  BD01001PARA-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID
-                                   TO  BD01001PARA-TERMID
-      *
-           MOVE    SBD010-HOSPNUM TO BD01002PARA-HOSPNUM
-           MOVE    "BD01002"       TO  BD01002PARA-FILE-ID
-           MOVE    LNK-PRTKANRI-TERMID
-                                   TO  BD01002PARA-TERMID
       *
            MOVE    SBD010-HOSPNUM TO BD01003PARA-HOSPNUM
            MOVE    "BD01003"       TO  BD01003PARA-FILE-ID
@@ -770,8 +695,8 @@
                MOVE    7                   TO  IDX-ROUSAI
                MOVE    8                   TO  IDX-JIBAI 
                MOVE    9                   TO  IDX-KOUGAI
-               MOVE    10                  TO  IDX-CHOSEI
-               MOVE    11                  TO  IDX-GENMEN
+               MOVE    10                  TO  IDX-GENMEN
+               MOVE    11                  TO  IDX-CHOSEI
       *
                MOVE    11                  TO  WRK-SKYTTL-MAX
       *
@@ -784,8 +709,8 @@
                MOVE    "労　災"            TO  WRK-SKYTTLMSG(IDX-ROUSAI)
                MOVE    "自賠責"            TO  WRK-SKYTTLMSG(IDX-JIBAI)
                MOVE    "公　害"            TO  WRK-SKYTTLMSG(IDX-KOUGAI)
-               MOVE    "調整金"            TO  WRK-SKYTTLMSG(IDX-CHOSEI)
                MOVE    "減免額"            TO  WRK-SKYTTLMSG(IDX-GENMEN)
+               MOVE    "調整金"            TO  WRK-SKYTTLMSG(IDX-CHOSEI)
            WHEN  OTHER
       *
                MOVE    1                   TO  IDX-SYAHON
@@ -798,8 +723,8 @@
                MOVE    8                   TO  IDX-ROUSAI
                MOVE    9                   TO  IDX-JIBAI 
                MOVE    10                  TO  IDX-KOUGAI
-               MOVE    11                  TO  IDX-CHOSEI
-               MOVE    12                  TO  IDX-GENMEN
+               MOVE    11                  TO  IDX-GENMEN
+               MOVE    12                  TO  IDX-CHOSEI
       *
                MOVE    12                  TO  WRK-SKYTTL-MAX
       *
@@ -813,8 +738,8 @@
                MOVE    "労　災"            TO  WRK-SKYTTLMSG(IDX-ROUSAI)
                MOVE    "自賠責"            TO  WRK-SKYTTLMSG(IDX-JIBAI)
                MOVE    "公　害"            TO  WRK-SKYTTLMSG(IDX-KOUGAI)
-               MOVE    "調整金"            TO  WRK-SKYTTLMSG(IDX-CHOSEI)
                MOVE    "減免額"            TO  WRK-SKYTTLMSG(IDX-GENMEN)
+               MOVE    "調整金"            TO  WRK-SKYTTLMSG(IDX-CHOSEI)
            END-EVALUATE
       *
            .
@@ -827,8 +752,6 @@
       *
            PERFORM 2001-EDIT-SYUNOU-SEC
       *
-           PERFORM 2001-EDIT-BD004-SEC
-      *
            PERFORM 2001-EDIT-FORM-SEC
       *
            .
@@ -840,23 +763,21 @@
       *****************************************************************
        2001-EDIT-SYUNOU-SEC        SECTION.
       *
-           OPEN    OUTPUT          BD01001-FILE
-                                   BD01002-FILE
-      *
            OPEN    OUTPUT          BD01003-FILE
            CLOSE   BD01003-FILE
-      *
            OPEN    I-O             BD01003-FILE
+      *
+           OPEN    OUTPUT          BD01004-FILE
       *
            PERFORM 900-SYUMEI-KEY8-SEL-SEC
       *
            PERFORM UNTIL ( FLG-SYUMEI  NOT =   ZERO )
       *
                MOVE    SMEI-NYUGAIKBN  TO  KEY-NYUGAIKBN
+               MOVE    SMEI-PTID       TO  KEY-PTID
                MOVE    SMEI-DENPNUM    TO  KEY-DENPNUM
-               INITIALIZE                  SUMSKY-AREA
-                                           SUMNYUKIN-AREA
-                                           WRK-MIN-DENPEDANUM
+      *
+               MOVE    ZERO            TO  CNT-SMEI
       *
                PERFORM 900-SYUNOU-KEY-SEL-SEC
       *
@@ -865,27 +786,20 @@
                PERFORM 900-PTNUM-KEY-SEL-SEC
       *
                PERFORM UNTIL ( FLG-SYUMEI      NOT =   ZERO )
+                        OR   ( KEY-PTID        NOT =   SMEI-PTID )
                         OR   ( KEY-NYUGAIKBN   NOT =   SMEI-NYUGAIKBN )
                         OR   ( KEY-DENPNUM     NOT =   SMEI-DENPNUM )
       *
+                   COMPUTE CNT-SMEI    =   CNT-SMEI    +   1
+      *
                    IF    ( PTINF-TSTPTNUMKBN   NOT =   "1" )
+                    AND  ( CNT-SMEI                =   1 )
                        PERFORM 20011-EDIT-SYUNOU-SEC
                    END-IF
       *
                    PERFORM 900-SYUMEI-KEY8-FET-SEC
       *
                END-PERFORM
-      *
-               IF    ( SUMSKY-MAX      >   ZERO )
-      *
-                   PERFORM 20011-WRITE-BD01001-SEC
-               ELSE
-                   IF    ( SUMNYUKIN-MAX   >   ZERO )
-                       PERFORM 20012-WRITE-BD01001-SEC
-                   END-IF
-               END-IF
-      *
-               PERFORM 20011-WRITE-BD01002-SEC
       *
            END-PERFORM
       *
@@ -894,9 +808,8 @@
            PERFORM 910-DBCLOSECURSOR-SEC
       *
       *
-           CLOSE   BD01001-FILE
-                   BD01002-FILE
-                   BD01003-FILE
+           CLOSE   BD01003-FILE
+                   BD01004-FILE
       *
            .
        2001-EDIT-SYUNOU-EXT.
@@ -906,761 +819,194 @@
       *****************************************************************
        20011-EDIT-SYUNOU-SEC       SECTION.
       *
-           IF    ( SMEI-SYURRKNUM  NOT =   ZERO )
-               PERFORM 200111-EDIT-SUMSKY-SEC
-           END-IF
+           INITIALIZE                  SBD010S02-AREA
+           MOVE    WRK-STDAILYKEY  TO  SBD010S02-STDAILYKEY
+           MOVE    WRK-EDDAILYKEY  TO  SBD010S02-EDDAILYKEY
+           CALL    "ORCBD010S02"   USING
+                                   SYUNOU-REC
+                                   SBD010-AREA
+                                   SBD010S02-AREA
+                                   SPA-AREA
       *
-           IF    ( SMEI-NYUHEN-MONEY   NOT =   ZERO )
-               PERFORM 200111-EDIT-SUMNYUKIN-SEC
-           END-IF
+           PERFORM VARYING IDX-S02 FROM    1   BY  1
+                   UNTIL ( IDX-S02 >   SBD010S02-MAX )
       *
-           IF    ( WRK-MIN-DENPEDANUM  =   ZERO )
-            OR   ( WRK-MIN-DENPEDANUM  >   SMEI-DENPEDANUM )
-               MOVE    SMEI-DENPEDANUM TO  WRK-MIN-DENPEDANUM
-           END-IF
+               MOVE    ZERO        TO  WRK-SYOSAIKBN
+               IF    ( SYU-NYUGAIKBN       =   "1" )
+                   IF    ( SYU-CREATEKBN   =   "1" )
+                       MOVE    "3" TO  WRK-SYOSAIKBN
+                   ELSE
+                       MOVE    "4" TO  WRK-SYOSAIKBN
+                   END-IF
+               ELSE
+                   IF    ( SBD010S02-LAST  (IDX-S02)       =   1 )
+                       IF    ( SBD010S02-MIN-DENPEDANUM    =   1 )
+                        AND  ( SYU-SRYYMD  >=  WRK-STDAILYKEY-YMD )
+                        AND  ( SYU-SRYYMD  <=  WRK-EDDAILYKEY-YMD )
+                           PERFORM 800-CALL-ORCSS003-SEC
+                           MOVE    SS003-SYOSAISIN-KBN
+                                       TO  WRK-SYOSAIKBN
+                       END-IF
+                   END-IF
+               END-IF
+      *
+               PERFORM 2001-EDIT-BD01003-SEC
+      *
+               PERFORM 2001-EDIT-BD01004-SEC
+      *
+           END-PERFORM
       *
            .
        20011-EDIT-SYUNOU-EXT.
            EXIT.
       *****************************************************************
-      *    請求情報編集処理
-      *****************************************************************
-       200111-EDIT-SUMSKY-SEC      SECTION.
-      *
-           PERFORM 900-SYURRK-KEY3-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-SYURRK  NOT =   ZERO )
-      *
-               MOVE    SYURRK-HKNCOMBINUM
-                                   TO  WRK-HKNCOMBINUM
-               PERFORM 2001111-EDIT-HOKEN-SEC
-               IF    ( WRK-HOKEN   >   ZERO )
-                   PERFORM 2001111-EDIT-SUMSKY-SEC
-               END-IF
-      *
-               PERFORM 900-SYURRK-KEY3-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_syurrk"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       200111-EDIT-SUMSKY-EXT.
-           EXIT.
-      *****************************************************************
-      *    請求情報編集処理
-      *****************************************************************
-       2001111-EDIT-SUMSKY-SEC     SECTION.
-      *
-           MOVE    ZERO            TO  SUMSKY-IDX
-           PERFORM VARYING IDX-SUM FROM    1   BY  1
-                   UNTIL ( IDX-SUM     >   SUMSKY-MAX )
-                    OR   ( SUMSKY-IDX  >   ZERO )
-      *
-               IF    ( SUMSKY-SRYKA (IDX-SUM)
-                                   =   SYURRK-SRYKA )
-                AND  ( SUMSKY-HOKEN (IDX-SUM)
-                                   =   WRK-HOKEN )
-                   MOVE    IDX-SUM TO  SUMSKY-IDX
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( SUMSKY-IDX      =   ZERO )
-               IF    ( SUMSKY-MAX >=   CONST-SUMSKY-MAX )
-                   CONTINUE
-               ELSE
-                   COMPUTE SUMSKY-MAX  =   SUMSKY-MAX  +   1
-                   MOVE    SUMSKY-MAX  TO  SUMSKY-IDX
-                   MOVE    SYURRK-NYUGAIKBN TO SUMSKY-SRT-NYUGAIKBN
-                                                            (SUMSKY-IDX)
-                   IF    ( SBD010-SUMKBN   =   ZERO )
-                       MOVE    "00"        TO  SUMSKY-SRT-SRYKA
-                                                            (SUMSKY-IDX)
-                   ELSE
-                       MOVE    SYURRK-SRYKA
-                                           TO  SUMSKY-SRT-SRYKA
-                                                            (SUMSKY-IDX)
-                   END-IF
-                   MOVE    SYURRK-DENPNUM  TO  SUMSKY-DENPNUM
-                                                            (SUMSKY-IDX)
-                   MOVE    SYURRK-SYURRKNUM TO SUMSKY-SYURRKNUM
-                                                            (SUMSKY-IDX)
-                   MOVE    SYURRK-SYUEDANUM TO SUMSKY-SYUEDANUM
-                                                            (SUMSKY-IDX)
-                   MOVE    PTNUM-PTNUM     TO SUMSKY-PTNUM
-                                                            (SUMSKY-IDX)
-                   MOVE    PTINF-NAME      TO SUMSKY-NAME
-                                                            (SUMSKY-IDX)
-                   MOVE    SYU-SRYYMD      TO SUMSKY-SRYYMD (SUMSKY-IDX)
-                   MOVE    SYU-DENPPRTYMD  TO SUMSKY-DENPPRTYMD
-                                                            (SUMSKY-IDX)
-                   MOVE    WRK-HOKEN       TO SUMSKY-HOKEN  (SUMSKY-IDX)
-                   MOVE    SYURRK-SRYKA    TO SUMSKY-SRYKA  (SUMSKY-IDX)
-               END-IF
-           END-IF
-      *
-           IF    ( SUMSKY-IDX      NOT =   ZERO )
-               MOVE    ZERO            TO  WRK-HKNTEN
-                                           WRK-FTNMONEY
-                                           WRK-SKJMONEY
-                                           WRK-JIHIMONEY
-      *
-               IF    ( WRK-HKNNUM (1:2)    =   "98" )
-      *
-                   COMPUTE WRK-JIHIMONEY
-                       =   SYURRK-HKNTEKMONEY
-                       +   SYURRK-RJN-FTN
-                       +   SYURRK-KOH-FTN
-                       +   SYURRK-RSI-TOTAL
-      *
-                       +   SYURRK-SKYMONEY-SKJ-KEI
-                       +   SYURRK-SKYMONEY-LIFE-KEI
-      *
-                       +   SYURRK-RMSAGAKU
-                       +   SYURRK-SKYMONEY-SKJ-JIHI-KEI
-                       +   SYURRK-SKYMONEY-LIFE-JIHI-KEI
-                       +   SYURRK-TOTAL-TGMONEY
-                       +   SYURRK-TOTAL-TGMONEY-TAX
-                       +   SYURRK-JIHI-TOTAL
-                       +   SYURRK-JIHI-TOTAL-TAX
-      *
-                   IF    ( SYU-SRYYMD  <   CONST-H190401 )
-                       COMPUTE WRK-JIHIMONEY
-                           =   WRK-JIHIMONEY
-                       +   SYURRK-JIHI-TAX
-                       IF    ( WRK-HOJOKBN     =   "1" )
-                           COMPUTE WRK-JIHIMONEY
-                               =   WRK-JIHIMONEY
-      *                        +   SYURRK-SKYMONEY-TAX-SAI
-                       END-IF
-                   END-IF
-               ELSE
-                   COMPUTE WRK-HKNTEN  =   SYURRK-TOTAL-HKNTEN
-      *
-                   COMPUTE WRK-FTNMONEY =  SYURRK-HKNTEKMONEY
-                                       +   SYURRK-RJN-FTN
-                                       +   SYURRK-KOH-FTN
-                                       +   SYURRK-RSI-TOTAL
-      *
-                   COMPUTE WRK-SKJMONEY =  SYURRK-SKYMONEY-SKJ-KEI
-                                       +   SYURRK-SKYMONEY-LIFE-KEI
-      *
-                   COMPUTE WRK-JIHIMONEY = SYURRK-RMSAGAKU
-                                       +   SYURRK-SKYMONEY-SKJ-JIHI-KEI
-                                       +   SYURRK-SKYMONEY-LIFE-JIHI-KEI
-                                       +   SYURRK-TOTAL-TGMONEY
-                                       +   SYURRK-TOTAL-TGMONEY-TAX
-                                       +   SYURRK-JIHI-TOTAL
-                                       +   SYURRK-JIHI-TOTAL-TAX
-                   IF    ( SYU-SRYYMD  <   CONST-H190401 )
-                       COMPUTE WRK-JIHIMONEY   =   WRK-JIHIMONEY
-                                               +   SYURRK-JIHI-TAX
-                   END-IF
-               END-IF
-      *
-               COMPUTE SUMSKY-HOKENTEN  (SUMSKY-IDX)
-                   =   SUMSKY-HOKENTEN  (SUMSKY-IDX)
-                   +   WRK-HKNTEN
-      *
-               COMPUTE SUMSKY-SKYMONEY  (SUMSKY-IDX)
-                   =   SUMSKY-SKYMONEY  (SUMSKY-IDX)
-                   +   SYURRK-SKYMONEY
-      *
-               COMPUTE SUMSKY-FTNMONEY  (SUMSKY-IDX)
-                   =   SUMSKY-FTNMONEY  (SUMSKY-IDX)
-                   +   WRK-FTNMONEY
-                   +   WRK-SKJMONEY
-      *
-               COMPUTE SUMSKY-JIHIMONEY (SUMSKY-IDX)
-                   =   SUMSKY-JIHIMONEY (SUMSKY-IDX)
-                   +   WRK-JIHIMONEY
-      *
-               COMPUTE SUMSKY-CHOSEI (SUMSKY-IDX)
-                   =   SUMSKY-CHOSEI (SUMSKY-IDX)
-                   +   SYURRK-CHOSEI
-      *
-               COMPUTE SUMSKY-GENMEN (SUMSKY-IDX)
-                   =   SUMSKY-GENMEN (SUMSKY-IDX)
-                   +   SYURRK-DISCOUNT-MONEY
-      *
-               COMPUTE WRK-SAGAKU
-                   =   SYURRK-SKYMONEY
-                   - ( WRK-FTNMONEY
-                   +   WRK-SKJMONEY
-                   +   WRK-JIHIMONEY
-                   +   SYURRK-CHOSEI
-                   +   SYURRK-DISCOUNT-MONEY )
-      *
-               IF    ( WRK-SAGAKU      NOT =   ZERO )
-                   EVALUATE    TRUE
-                   WHEN    ( SYURRK-DISCOUNT-MONEY     NOT =   ZERO )
-                       COMPUTE SUMSKY-GENMEN (SUMSKY-IDX)
-                           =   SUMSKY-GENMEN (SUMSKY-IDX)
-                           +   WRK-SAGAKU
-                   WHEN    ( SYURRK-CHOSEI             NOT =   ZERO )
-                       COMPUTE SUMSKY-CHOSEI (SUMSKY-IDX)
-                           =   SUMSKY-CHOSEI (SUMSKY-IDX)
-                           +   WRK-SAGAKU
-                   WHEN    ( WRK-JIHIMONEY             NOT =   ZERO )
-                       COMPUTE SUMSKY-JIHIMONEY (SUMSKY-IDX)
-                           =   SUMSKY-JIHIMONEY (SUMSKY-IDX)
-                           +   WRK-SAGAKU
-                   WHEN    OTHER
-                       COMPUTE SUMSKY-FTNMONEY  (SUMSKY-IDX)
-                           =   SUMSKY-FTNMONEY  (SUMSKY-IDX)
-                           +   WRK-SAGAKU
-                   END-EVALUATE
-               END-IF
-      *
-               PERFORM VARYING IDX-JIHI    FROM    1   BY  1
-                       UNTIL ( IDX-JIHI    >   CONST-ETCJIHI-MAX )
-      *
-                   COMPUTE SUMSKY-ETCJIHI (SUMSKY-IDX IDX-JIHI)
-                       =   SUMSKY-ETCJIHI (SUMSKY-IDX IDX-JIHI)
-                       +   SYURRK-JIHI-TAXNASI (IDX-JIHI)
-                       +   SYURRK-JIHI-TAXARI  (IDX-JIHI)
-      *
-               END-PERFORM
-      *
-               IF    ( SUMSKY-SYURRKNUM (SUMSKY-IDX)
-                                       <=   SYURRK-SYURRKNUM )
-                   IF ( SUMSKY-SYUEDANUM (SUMSKY-IDX)
-                                       <=   SYURRK-SYUEDANUM )
-                       MOVE    SYURRK-SYURRKNUM
-                                   TO  SUMSKY-SYURRKNUM (SUMSKY-IDX)
-                       MOVE    SYURRK-SYUEDANUM
-                                   TO  SUMSKY-SYUEDANUM (SUMSKY-IDX)
-                   END-IF
-               END-IF
-      *
-               IF    ( SUMSKY-MAX-RRKNUM
-                                       <=   SYURRK-SYURRKNUM )
-                   IF  ( SUMSKY-MAX-EDANUM
-                                       <=   SYURRK-SYUEDANUM )
-                       MOVE    SYURRK-SRYKA
-                                   TO  SUMSKY-MAX-SRYKA
-                       MOVE    SYURRK-SYURRKNUM
-                                   TO  SUMSKY-MAX-RRKNUM
-                       MOVE    SYURRK-SYUEDANUM
-                                   TO  SUMSKY-MAX-EDANUM
-                   END-IF
-               END-IF
-      *
-               COMPUTE SUMSKY-TOTAL-SKYMONEY
-                   =   SUMSKY-TOTAL-SKYMONEY
-                   +   SYURRK-SKYMONEY
-      *
-           END-IF
-      *
-           .
-       2001111-EDIT-SUMSKY-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険編集処理
-      *****************************************************************
-       2001111-EDIT-HOKEN-SEC      SECTION.
-      *
-           MOVE    ZERO            TO  WRK-HOKEN
-           MOVE    SPACE           TO  WRK-HKNNUM
-                                       WRK-HOJOKBN
-      *
-           PERFORM 900-HKNCOMBI-KEY-SEL-SEC
-           IF    ( FLG-HKNCOMBI    =   ZERO )
-      *
-               MOVE    COMB-HKNNUM  TO WRK-HKNNUM
-               MOVE    COMB-HOJOKBN TO WRK-HOJOKBN
-      *
-               EVALUATE    COMB-HKNNUM
-               WHEN    SPACE
-                   MOVE    IDX-KOHTAN    TO  WRK-HOKEN
-               WHEN    "975"
-                   MOVE    IDX-KOUGAI    TO  WRK-HOKEN
-               WHEN    "973"
-                   MOVE    IDX-JIBAI     TO  WRK-HOKEN
-               WHEN    "971"
-                   MOVE    IDX-ROUSAI    TO  WRK-HOKEN
-               WHEN    "039"
-               WHEN    "040"
-                   MOVE    IDX-KOUKI     TO  WRK-HOKEN
-               WHEN    "060"
-               WHEN    "067"
-               WHEN    "068"
-               WHEN    "069"
-                   IF    ( SYU-KOH1HKNNUM      =   "027" )
-                       MOVE    IDX-KOKRJN TO WRK-HOKEN
-                   ELSE
-                       MOVE    IDX-KOKIPN TO WRK-HOKEN
-                   END-IF
-               WHEN    OTHER
-                   IF    ( COMB-HKNNUM (1:2)   =   "98" )
-                       MOVE    IDX-JIHHKN TO WRK-HOKEN
-                   ELSE
-                       IF    ( COMB-KOH1HKNNUM =   "027" )
-                           MOVE    IDX-SYARJN  TO WRK-HOKEN
-                       ELSE
-                           EVALUATE    COMB-HONKZKKBN
-                           WHEN    "1"
-                               MOVE    IDX-SYAHON
-                                               TO  WRK-HOKEN
-                           WHEN    "2"
-                               MOVE    IDX-SYAKZK
-                                               TO  WRK-HOKEN
-                           END-EVALUATE
-                       END-IF
-                   END-IF
-               END-EVALUATE
-           END-IF
-      *
-           .
-       2001111-EDIT-HOKEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    入金情報集計処理
-      *****************************************************************
-       200111-EDIT-SUMNYUKIN-SEC   SECTION.
-      *
-           MOVE    SPACE               TO  WRK-HOHO
-           EVALUATE    SMEI-JOUTAIKBN
-           WHEN    CONST-TEISEI
-               IF    ( SMEI-NYUHEN-MONEY   <   ZERO )
-                   MOVE    CONST-HOHO-HENKIN
-                                       TO  WRK-HOHO
-               ELSE
-                   MOVE    SMEI-NYUKIN-HOHO
-                                       TO  WRK-HOHO
-               END-IF
-           WHEN    CONST-HENKIN
-               MOVE    CONST-HOHO-HENKIN
-                                       TO  WRK-HOHO
-           WHEN    CONST-TORIKESI
-               MOVE    CONST-HOHO-TORIKESI
-                                       TO  WRK-HOHO
-           WHEN    OTHER
-               MOVE    SMEI-NYUKIN-HOHO    TO  WRK-HOHO
-           END-EVALUATE
-      *
-           MOVE    ZERO            TO  SUMNYUKIN-IDX
-           PERFORM VARYING IDX-SUM FROM    1   BY  1
-                   UNTIL ( IDX-SUM     >   SUMNYUKIN-MAX )
-                    OR   ( SUMNYUKIN-IDX  >   ZERO )
-      *
-               IF    ( SUMNYUKIN-HOHO (IDX-SUM)
-                                   =   WRK-HOHO )
-                   MOVE    IDX-SUM TO  SUMNYUKIN-IDX
-               END-IF
-      *
-           END-PERFORM
-      *
-           IF    ( SUMNYUKIN-IDX      =   ZERO )
-               IF    ( SUMNYUKIN-MAX >=   CONST-SUMNYUKIN-MAX )
-                   CONTINUE
-               ELSE
-                   COMPUTE SUMNYUKIN-MAX   =   SUMNYUKIN-MAX  +   1
-                   MOVE    SUMNYUKIN-MAX   TO  SUMNYUKIN-IDX
-                   MOVE    SMEI-NYUGAIKBN  TO  SUMNYUKIN-NYUGAIKBN
-                                                     (SUMNYUKIN-IDX)
-                   MOVE    SMEI-DENPNUM    TO  SUMNYUKIN-DENPNUM
-                                                     (SUMNYUKIN-IDX)
-                   MOVE    SMEI-DENPEDANUM TO  SUMNYUKIN-DENPEDANUM
-                                                     (SUMNYUKIN-IDX)
-                   MOVE    WRK-HOHO        TO  SUMNYUKIN-HOHO
-                                                     (SUMNYUKIN-IDX)
-               END-IF
-           END-IF
-      *
-           IF    ( SUMNYUKIN-IDX       NOT =   ZERO )
-               COMPUTE SUMNYUKIN-NYUKIN (SUMNYUKIN-IDX)
-                   =   SUMNYUKIN-NYUKIN (SUMNYUKIN-IDX)
-                   +   SMEI-NYUHEN-MONEY
-      *
-               IF    ( SUMNYUKIN-DENPEDANUM (SUMNYUKIN-IDX)
-                                       >   SMEI-DENPEDANUM )
-                   MOVE    SMEI-DENPEDANUM
-                                           TO  SUMNYUKIN-DENPEDANUM
-                                                     (SUMNYUKIN-IDX)
-               END-IF
-      *
-               IF    ( SUMNYUKIN-MIN-DENPEDANUM
-                                           =   ZERO )
-                OR   ( SUMNYUKIN-MIN-DENPEDANUM
-                                           >   SMEI-DENPEDANUM )
-                   MOVE    SMEI-DENPEDANUM TO  SUMNYUKIN-MIN-DENPEDANUM
-               END-IF
-      *
-               COMPUTE SUMNYUKIN-TOTAL-NYUKIN
-                   =   SUMNYUKIN-TOTAL-NYUKIN
-                   +   SMEI-NYUHEN-MONEY
-      *
-           END-IF
-      *
-           .
-       200111-EDIT-SUMNYUKIN-EXT.
-           EXIT.
-      *****************************************************************
       *    中間ファイル出力処理
       *****************************************************************
-       20011-WRITE-BD01001-SEC     SECTION.
+       2001-EDIT-BD01003-SEC           SECTION.
       *
-           IF    ( SBD010-MEISAIKBN    =   ZERO )
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                   UNTIL ( IDX0    >   SUMSKY-MAX )
+           INITIALIZE                      BD01003-REC
+           MOVE    SYU-NYUGAIKBN       TO  BD01003-SRT-NYUGAIKBN
+           MOVE    SBD010S02-KEYSRYKA (IDX-S02)
+                                       TO  BD01003-SRT-SRYKA
       *
-                   MOVE    SUMSKY-OCC (IDX0)
-                                   TO  BD01001-REC
-      *
-                   MOVE    SUMSKY-MAX-RRKNUM-G
-                                   TO  BD01001-MAX-SYURRKNUM-G
-      *
-                   IF    ( BD01001-SYURRKNUM-G
-                                       =   BD01001-MAX-SYURRKNUM-G )
-                    AND  ( BD01001-SYUEDANUM
-                                       =   BD01001-MAX-SYUEDANUM )
-      *
-                       PERFORM 200111-EDIT-MISYU-SEC
-                       MOVE    WRK-MISYU   TO  BD01001-MISYU
-      *
-                       IF    ( BD01001-SRT-NYUGAIKBN       =   "1" )
-                           IF    ( SYU-CREATEKBN   =   "1" )
-                               MOVE    "3" TO  BD01001-SYOSAIKBN
-                           ELSE
-                               MOVE    "4" TO  BD01001-SYOSAIKBN
-                           END-IF
-                       ELSE
-                           IF    ( WRK-MIN-DENPEDANUM      =   1 )
-                            AND  ( SYU-SRYYMD  >=  WRK-STDAILYKEY-YMD )
-                            AND  ( SYU-SRYYMD  <=  WRK-EDDAILYKEY-YMD )
-                               PERFORM 800-CALL-ORCSS003-SEC
-                               MOVE    SS003-SYOSAISIN-KBN
-                                           TO  BD01001-SYOSAIKBN
-                            END-IF
-                       END-IF
-                   END-IF
-                   MOVE    ZERO           TO  BD01001-SKYNYUKBN
-      *
-                   PERFORM 20011-WRITE-BD01003-SEC
-      *
-                   WRITE   BD01001-REC
-      *
-               END-PERFORM
-      *
-           ELSE
-      *
-               INITIALIZE              BD01001-REC
-      *
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   SUMSKY-MAX )
-      *
-                   IF    ( IDX0    =   1 )
-                       MOVE    SUMSKY-OCC (IDX0)
-                                   TO  BD01001-REC
-      *
-                       MOVE    SUMSKY-MAX-RRKNUM-G
-                                   TO  BD01001-MAX-SYURRKNUM-G
-                   ELSE
-      *
-                       COMPUTE BD01001-HOKENTEN
-                           =   BD01001-HOKENTEN
-                           +   SUMSKY-HOKENTEN (IDX0)
-      *
-                       COMPUTE BD01001-SKYMONEY
-                           =   BD01001-SKYMONEY
-                           +   SUMSKY-SKYMONEY (IDX0)
-      *
-                       COMPUTE BD01001-FTNMONEY
-                           =   BD01001-FTNMONEY
-                           +   SUMSKY-FTNMONEY (IDX0)
-      *
-                       COMPUTE BD01001-JIHIMONEY
-                           =   BD01001-JIHIMONEY
-                           +   SUMSKY-JIHIMONEY(IDX0)
-      *
-                       COMPUTE BD01001-CHOSEI
-                           =   BD01001-CHOSEI
-                           +   SUMSKY-CHOSEI   (IDX0)
-      *
-                       COMPUTE BD01001-GENMEN
-                           =   BD01001-GENMEN
-                           +   SUMSKY-GENMEN   (IDX0)
-      *
-                       PERFORM VARYING IDX-JIHI    FROM    1   BY  1
-                           UNTIL ( IDX-JIHI    >   CONST-ETCJIHI-MAX )
-      *
-                           COMPUTE BD01001-ETCJIHI (IDX-JIHI)
-                               =   BD01001-ETCJIHI (IDX-JIHI)
-                               +   SUMSKY-ETCJIHI  (IDX0 IDX-JIHI)
-      *
-                       END-PERFORM
-      *
-                       IF    ( BD01001-SYURRKNUM-G
-                                       <   SUMSKY-SYURRKNUM-G (IDX0) )
-                           MOVE    SUMSKY-SYURRKNUM-G (IDX0)
-                                       TO  BD01001-SYURRKNUM-G
-                           MOVE    SUMSKY-HOKEN (IDX0)
-                                       TO  BD01001-HOKEN
-                           MOVE    SUMSKY-SRT-SRYKA (IDX0)
-                                       TO  BD01001-SRT-SRYKA
-                           MOVE    SUMSKY-SRYKA (IDX0)
-                                       TO  BD01001-SRYKA
-                       END-IF
-                   END-IF
-      *
-               END-PERFORM
-      *
-               IF    ( BD01001-SRT-NYUGAIKBN       =   "1" )
-                   IF    ( SYU-CREATEKBN   =   "1" )
-                       MOVE    "3" TO  BD01001-SYOSAIKBN
-                   ELSE
-                       MOVE    "4" TO  BD01001-SYOSAIKBN
-                   END-IF
-               ELSE
-                   IF    ( WRK-MIN-DENPEDANUM      =   1 )
-                    AND  ( SYU-SRYYMD  >=  WRK-STDAILYKEY-YMD )
-                    AND  ( SYU-SRYYMD  <=  WRK-EDDAILYKEY-YMD )
-                       PERFORM 800-CALL-ORCSS003-SEC
-                       MOVE    SS003-SYOSAISIN-KBN
-                                   TO  BD01001-SYOSAIKBN
-                    END-IF
-               END-IF
-               MOVE    ZERO        TO  BD01001-SKYNYUKBN
-      *
-               PERFORM 200111-EDIT-MISYU-SEC
-               MOVE    WRK-MISYU   TO  BD01001-MISYU
-      *
-               PERFORM 20011-WRITE-BD01003-SEC
-      *
-               WRITE   BD01001-REC
-      *
-           END-IF
-      *
-           .
-       20011-WRITE-BD01001-EXT.
-           EXIT.
-      *****************************************************************
-      *    中間ファイル出力処理
-      *****************************************************************
-       200111-EDIT-MISYU-SEC       SECTION.
-      *
-           INITIALIZE              WRK-MISYU
-           PERFORM 900-SMEITMP-KEY16-SEL-SEC
-           COMPUTE WRK-MISYU
-               =   SUMSKY-TOTAL-SKYMONEY
-               +   SMEITMP-SKYMONEY
-               -   SUMNYUKIN-TOTAL-NYUKIN
-               -   SMEITMP-NYUHEN-MONEY
-      *
-           .
-       200111-EDIT-MISYU-EXT.
-           EXIT.
-           .
-      *****************************************************************
-      *    中間ファイル出力処理
-      *****************************************************************
-       20012-WRITE-BD01001-SEC     SECTION.
-      *
-           MOVE    1               TO  FLG-SYURRK
-           PERFORM 900-SMEITMP-KEY15-SEL-SEC
-           IF    ( FLG-SMEITMP    =   ZERO )
-               PERFORM 900-SYURRK-KEY-SEL-SEC
-           END-IF
-      *
-           IF    ( FLG-SYURRK      =   ZERO )
-               MOVE    SYURRK-HKNCOMBINUM
-                                   TO  WRK-HKNCOMBINUM
-               PERFORM 2001111-EDIT-HOKEN-SEC
-               IF    ( WRK-HOKEN   >   ZERO )
-                   INITIALIZE                  BD01001-REC
-                   MOVE    SYURRK-NYUGAIKBN
-                                           TO  BD01001-SRT-NYUGAIKBN
-                   IF    ( SBD010-SUMKBN   =   ZERO )
-                       MOVE    "00"        TO  BD01001-SRT-SRYKA
-                   ELSE
-                       MOVE    SYURRK-SRYKA
-                                           TO  BD01001-SRT-SRYKA
-                   END-IF
-                   MOVE    SYURRK-DENPNUM  TO  BD01001-DENPNUM
-                   MOVE    SYURRK-SYURRKNUM TO BD01001-SYURRKNUM
-                                               BD01001-MAX-SYURRKNUM
-                   MOVE    SYURRK-SYUEDANUM TO BD01001-SYUEDANUM
-                                               BD01001-MAX-SYUEDANUM
-                   MOVE    PTNUM-PTNUM     TO  BD01001-PTNUM
-                   MOVE    PTINF-NAME      TO  BD01001-NAME
-                   MOVE    SYU-SRYYMD      TO  BD01001-SRYYMD
-                   MOVE    SYU-DENPPRTYMD  TO  BD01001-DENPPRTYMD
-                   MOVE    WRK-HOKEN       TO  BD01001-HOKEN
-                   MOVE    SYURRK-SRYKA    TO  BD01001-SRYKA
-      *
-                   IF    ( BD01001-SRT-NYUGAIKBN       =   "1" )
-                       IF    ( SYU-CREATEKBN   =   "1" )
-                           MOVE    "3" TO  BD01001-SYOSAIKBN
-                       ELSE
-                           MOVE    "4" TO  BD01001-SYOSAIKBN
-                       END-IF
-                   END-IF
-                   MOVE    "1"         TO  BD01001-SKYNYUKBN
-      *
-                   PERFORM 200111-EDIT-MISYU-SEC
-                   MOVE    WRK-MISYU       TO  BD01001-MISYU
-      *
-                   PERFORM 20011-WRITE-BD01003-SEC
-      *
-                   WRITE   BD01001-REC
-      *
-                   MOVE    SYURRK-SRYKA    TO  SUMSKY-MAX-SRYKA
-               END-IF
-      *
-           ELSE
-               MOVE    SYU-HKNCOMBINUM
-                                   TO  WRK-HKNCOMBINUM
-               PERFORM 2001111-EDIT-HOKEN-SEC
-               IF    ( WRK-HOKEN   >   ZERO )
-                   INITIALIZE                  BD01001-REC
-                   MOVE    SYU-NYUGAIKBN
-                                           TO  BD01001-SRT-NYUGAIKBN
-                   IF    ( SBD010-SUMKBN   =   ZERO )
-                       MOVE    "00"        TO  BD01001-SRT-SRYKA
-                   ELSE
-                       MOVE    SYU-SRYKA   TO  BD01001-SRT-SRYKA
-                   END-IF
-                   MOVE    SYU-DENPNUM     TO  BD01001-DENPNUM
-                   MOVE    0               TO  BD01001-SYURRKNUM
-                                               BD01001-MAX-SYURRKNUM
-                   MOVE    0               TO  BD01001-SYUEDANUM
-                                               BD01001-MAX-SYUEDANUM
-                   MOVE    PTNUM-PTNUM     TO  BD01001-PTNUM
-                   MOVE    PTINF-NAME      TO  BD01001-NAME
-                   MOVE    SYU-SRYYMD      TO  BD01001-SRYYMD
-                   MOVE    SYU-DENPPRTYMD  TO  BD01001-DENPPRTYMD
-                   MOVE    WRK-HOKEN       TO  BD01001-HOKEN
-                   MOVE    SYU-SRYKA       TO  BD01001-SRYKA
-      *
-                   IF    ( BD01001-SRT-NYUGAIKBN       =   "1" )
-                       IF    ( SYU-CREATEKBN   =   "1" )
-                           MOVE    "3" TO  BD01001-SYOSAIKBN
-                       ELSE
-                           MOVE    "4" TO  BD01001-SYOSAIKBN
-                       END-IF
-                   END-IF
-                   MOVE    "1"             TO  BD01001-SKYNYUKBN
-      *
-                   PERFORM 200111-EDIT-MISYU-SEC
-                   MOVE    WRK-MISYU       TO  BD01001-MISYU
-      *
-                   PERFORM 20011-WRITE-BD01003-SEC
-      *
-                   WRITE   BD01001-REC
-      *
-                   MOVE    SYU-SRYKA       TO  SUMSKY-MAX-SRYKA
-               END-IF
-           END-IF
-      *
-           .
-       20012-WRITE-BD01001-EXT.
-           EXIT.
-      *****************************************************************
-      *    中間ファイル出力処理
-      *****************************************************************
-       20011-WRITE-BD01002-SEC     SECTION.
-      *
-           IF    ( SBD010-MEISAIKBN    =   ZERO )
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   SUMNYUKIN-MAX )
-      *
-                   MOVE    SUMNYUKIN-OCC (IDX0)
-                                       TO  BD01002-REC
-                   MOVE    SUMNYUKIN-MAX
-                                       TO  BD01002-CNT
-      *
-                   PERFORM 20012-WRITE-BD01003-SEC
-      *
-                   WRITE   BD01002-REC
-      *
-               END-PERFORM
-           ELSE
-      *
-               INITIALIZE              BD01002-REC
-      *
-               PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >   SUMNYUKIN-MAX )
-      *
-                   IF    ( IDX0    =   1 )
-                       MOVE    SUMNYUKIN-OCC (IDX0)
-                                   TO  BD01002-REC
-                   ELSE
-                       COMPUTE BD01002-NYUKIN
-                           =   BD01002-NYUKIN
-                           +   SUMNYUKIN-NYUKIN   (IDX0)
-                       IF    ( BD01002-DENPEDANUM
-                                       >   SUMNYUKIN-DENPEDANUM (IDX0))
-                           MOVE    SUMNYUKIN-DENPEDANUM (IDX0)
-                                   TO  BD01002-DENPEDANUM
-                           MOVE    SUMNYUKIN-HOHO (IDX0)
-                                   TO  BD01002-HOHO
-                       END-IF
-                   END-IF
-      *
-               END-PERFORM
-      *
-               PERFORM 20012-WRITE-BD01003-SEC
-      *
-               MOVE    1           TO  BD01002-CNT
-               WRITE   BD01002-REC
-      *
-           END-IF
-      *
-           .
-       20011-WRITE-BD01002-EXT.
-           EXIT.
-      *****************************************************************
-      *    中間ファイル出力処理
-      *****************************************************************
-       20011-WRITE-BD01003-SEC     SECTION.
-      *
-           INITIALIZE              BD01003-REC
-           MOVE    BD01001-SRT-NYUGAIKBN   TO  BD01003-SRT-NYUGAIKBN
-           MOVE    BD01001-SRT-SRYKA       TO  BD01003-SRT-SRYKA
            PERFORM 900-BD01003-READ-SEC
-           IF    ( FLG-BD01003     =   ZERO )
+           IF    ( FLG-BD01003         =   ZERO )
                PERFORM 20011-EDIT-BD01003-SEC
                REWRITE BD01003-REC
            ELSE
-               INITIALIZE              BD01003-REC
-               MOVE    BD01001-SRT-NYUGAIKBN
-                                           TO  BD01003-SRT-NYUGAIKBN
-               MOVE    BD01001-SRT-SRYKA   TO  BD01003-SRT-SRYKA
+               INITIALIZE                  BD01003-REC
+               MOVE    SYU-NYUGAIKBN   TO  BD01003-SRT-NYUGAIKBN
+               MOVE    SBD010S02-KEYSRYKA (IDX-S02)
+                                       TO  BD01003-SRT-SRYKA
                PERFORM 20011-EDIT-BD01003-SEC
                WRITE   BD01003-REC
            END-IF
       *
            .
-       20011-WRITE-BD01003-EXT.
+       2001-EDIT-BD01003-EXT.
            EXIT.
       *****************************************************************
       *    中間ファイル出力処理
       *****************************************************************
-       20012-WRITE-BD01003-SEC     SECTION.
+       20011-EDIT-BD01003-SEC          SECTION.
       *
-           INITIALIZE                      BD01003-REC
-           MOVE    SYU-NYUGAIKBN       TO  BD01003-SRT-NYUGAIKBN
-           IF    ( SBD010-SUMKBN   =   ZERO )
-               MOVE    "00"            TO  BD01003-SRT-SRYKA
-           ELSE
-               MOVE    SUMSKY-MAX-SRYKA TO BD01003-SRT-SRYKA
-           END-IF
-           PERFORM 900-BD01003-READ-SEC
-           IF    ( FLG-BD01003     =   ZERO )
+           MOVE    SBD010S02-HOKEN (IDX-S02)
+                                       TO  IDX-HOKEN
+      *
+           COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLSEIKYUREL)
+               =   BD01003-SEIKYU-TOTAL (CONST-TTLSEIKYUREL)
+               +   SBD010S02-SEIKYU (IDX-S02)
+               -   SBD010S02-GENMEN (IDX-S02)
+               -   SBD010S02-CHOSEI (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLSEIKYUREL IDX-HOKEN)
+               =   BD01003-SEIKYU (CONST-TTLSEIKYUREL IDX-HOKEN)
+               +   SBD010S02-HKNSEIKYU (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLSEIKYUREL IDX-JIHHKN)
+               =   BD01003-SEIKYU (CONST-TTLSEIKYUREL IDX-JIHHKN)
+               +   SBD010S02-JIHSEIKYU (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLGENMEN)
+               =   BD01003-SEIKYU-TOTAL (CONST-TTLGENMEN)
+               +   SBD010S02-GENMEN (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLGENMEN IDX-HOKEN)
+               =   BD01003-SEIKYU (CONST-TTLGENMEN IDX-HOKEN)
+               +   SBD010S02-HKNGENMEN (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLGENMEN IDX-JIHHKN)
+               =   BD01003-SEIKYU (CONST-TTLGENMEN IDX-JIHHKN)
+               +   SBD010S02-JIHGENMEN (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLSEIKYU)
+               =   BD01003-SEIKYU-TOTAL (CONST-TTLSEIKYU)
+               +   SBD010S02-SEIKYU (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLSEIKYU IDX-HOKEN)
+               =   BD01003-SEIKYU (CONST-TTLSEIKYU IDX-HOKEN)
+               +   SBD010S02-HKNSEIKYU (IDX-S02)
+               +   SBD010S02-HKNGENMEN (IDX-S02)
+               +   SBD010S02-HKNCHOSEI (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLSEIKYU IDX-JIHHKN)
+               =   BD01003-SEIKYU (CONST-TTLSEIKYU IDX-JIHHKN)
+               +   SBD010S02-JIHSEIKYU (IDX-S02)
+               +   SBD010S02-JIHGENMEN (IDX-S02)
+               +   SBD010S02-JIHCHOSEI (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLCHOSEI)
+               =   BD01003-SEIKYU-TOTAL (CONST-TTLCHOSEI)
+               +   SBD010S02-CHOSEI (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLCHOSEI IDX-HOKEN)
+               =   BD01003-SEIKYU (CONST-TTLCHOSEI IDX-HOKEN)
+               +   SBD010S02-HKNCHOSEI (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLCHOSEI IDX-JIHHKN)
+               =   BD01003-SEIKYU (CONST-TTLCHOSEI IDX-JIHHKN)
+               +   SBD010S02-JIHCHOSEI (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLNYUKIN)
+               =   BD01003-SEIKYU-TOTAL (CONST-TTLNYUKIN)
+               +   SBD010S02-NYUKIN (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLNYUKIN IDX-HOKEN)
+               =   BD01003-SEIKYU (CONST-TTLNYUKIN IDX-HOKEN)
+               +   SBD010S02-HKNNYUKIN (IDX-S02)
+      *
+           COMPUTE BD01003-SEIKYU (CONST-TTLNYUKIN IDX-JIHHKN)
+               =   BD01003-SEIKYU (CONST-TTLNYUKIN IDX-JIHHKN)
+               +   SBD010S02-JIHNYUKIN (IDX-S02)
+      *
+           EVALUATE    WRK-SYOSAIKBN
+           WHEN    "1"
+               COMPUTE BD01003-SEIKYU (CONST-TTLSYOSIN IDX-HOKEN)
+                   =   BD01003-SEIKYU (CONST-TTLSYOSIN IDX-HOKEN)
+                   +   1
+               COMPUTE BD01003-SEIKYU (CONST-TTLSYOSAI IDX-HOKEN)
+                   =   BD01003-SEIKYU (CONST-TTLSYOSAI IDX-HOKEN)
+                   +   1
+      *
+               COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLSYOSIN)
+                   =   BD01003-SEIKYU-TOTAL (CONST-TTLSYOSIN)
+                   +   1
+      *
+               COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLSYOSAI)
+               =       BD01003-SEIKYU-TOTAL (CONST-TTLSYOSAI)
+                   +   1
+           WHEN    "2"
+               COMPUTE BD01003-SEIKYU (CONST-TTLSAISIN IDX-HOKEN)
+                   =   BD01003-SEIKYU (CONST-TTLSAISIN IDX-HOKEN)
+                   +   1
+               COMPUTE BD01003-SEIKYU (CONST-TTLSYOSAI IDX-HOKEN)
+                   =   BD01003-SEIKYU (CONST-TTLSYOSAI IDX-HOKEN)
+                   +   1
+      *
+               COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLSAISIN)
+                   =   BD01003-SEIKYU-TOTAL (CONST-TTLSAISIN)
+                   +   1
+      *
+               COMPUTE BD01003-SEIKYU-TOTAL (CONST-TTLSYOSAI)
+               =       BD01003-SEIKYU-TOTAL (CONST-TTLSYOSAI)
+                   +   1
+           END-EVALUATE
+      *
+           MOVE    SBD010S02-HOHO-MAX (IDX-S02)
+                                       TO  WRK-HS02-MAX
+           PERFORM VARYING IDX-HS02    FROM    1   BY  1
+                   UNTIL ( IDX-HS02    >   WRK-HS02-MAX )
       *
                MOVE    11              TO  IDX-HOHO
       *
-               EVALUATE    BD01002-HOHO
+               EVALUATE    SBD010S02-HOHO (IDX-S02 IDX-HS02)
                WHEN    CONST-HOHO-HENKIN
                    MOVE    12          TO  IDX-HOHO
                WHEN    CONST-HOHO-TORIKESI
                    MOVE    13          TO  IDX-HOHO
                WHEN    OTHER
-                   MOVE    BD01002-HOHO    TO  SRH-CD
+                   MOVE    SBD010S02-HOHO (IDX-S02 IDX-HS02)
+                                       TO  SRH-CD
                    PERFORM 250-GET-1041-SEC
                    IF    ( SRH-IDX     >=  1 )
                     AND  ( SRH-IDX     <=  10 )
@@ -1668,235 +1014,126 @@
                    END-IF
                END-EVALUATE
       *
-               COMPUTE BD01003-NYUKIN-TOTAL
-                   =   BD01003-NYUKIN-TOTAL
-                   +   BD01002-NYUKIN
-      *
                COMPUTE BD01003-NYUKIN (IDX-HOHO)
                    =   BD01003-NYUKIN (IDX-HOHO)
-                   +   BD01002-NYUKIN
+                   +   SBD010S02-HOHOMONEY (IDX-S02 IDX-HS02)
       *
-               REWRITE BD01003-REC
+           END-PERFORM
       *
-           END-IF
-      *
-           .
-       20012-WRITE-BD01003-EXT.
-           EXIT.
-      *****************************************************************
-      *    中間ファイル編集処理
-      *****************************************************************
-       20011-EDIT-BD01003-SEC      SECTION.
-      *
-           COMPUTE BD01003-SEIKYU-TOTAL (1)
-               =   BD01003-SEIKYU-TOTAL (1)
-               +   BD01001-SKYMONEY
-      *
-           COMPUTE BD01003-SEIKYU (1 BD01001-HOKEN)
-               =   BD01003-SEIKYU (1 BD01001-HOKEN)
-               +   BD01001-FTNMONEY
-      *
-           COMPUTE BD01003-SEIKYU (1 IDX-JIHHKN)
-               =   BD01003-SEIKYU (1 IDX-JIHHKN)
-               +   BD01001-JIHIMONEY
-      *
-           COMPUTE BD01003-SEIKYU (1 IDX-CHOSEI)
-               =   BD01003-SEIKYU (1 IDX-CHOSEI)
-               +   BD01001-CHOSEI
-      *
-           COMPUTE BD01003-SEIKYU (1 IDX-GENMEN)
-               =   BD01003-SEIKYU (1 IDX-GENMEN)
-               +   BD01001-GENMEN
-      *
-           EVALUATE    BD01001-SYOSAIKBN
-           WHEN    "1"
-               COMPUTE BD01003-SEIKYU (2 BD01001-HOKEN)
-                   =   BD01003-SEIKYU (2 BD01001-HOKEN)
-                   +   1
-               COMPUTE BD01003-SEIKYU (4 BD01001-HOKEN)
-                   =   BD01003-SEIKYU (4 BD01001-HOKEN)
-                   +   1
-      *
-               COMPUTE BD01003-SEIKYU-TOTAL (2)
-                   =   BD01003-SEIKYU-TOTAL (2)
-                   +   1
-      *
-               COMPUTE BD01003-SEIKYU-TOTAL (4)
-               =       BD01003-SEIKYU-TOTAL (4)
-                   +   1
-           WHEN    "2"
-               COMPUTE BD01003-SEIKYU (3 BD01001-HOKEN)
-                   =   BD01003-SEIKYU (3 BD01001-HOKEN)
-                   +   1
-               COMPUTE BD01003-SEIKYU (4 BD01001-HOKEN)
-                   =   BD01003-SEIKYU (4 BD01001-HOKEN)
-                   +   1
-      *
-               COMPUTE BD01003-SEIKYU-TOTAL (3)
-                   =   BD01003-SEIKYU-TOTAL (3)
-                   +   1
-      *
-               COMPUTE BD01003-SEIKYU-TOTAL (4)
-               =       BD01003-SEIKYU-TOTAL (4)
-                   +   1
-           END-EVALUATE
-      *
+           COMPUTE BD01003-NYUKIN-TOTAL
+               =   BD01003-NYUKIN-TOTAL
+               +   SBD010S02-NYUKIN (IDX-S02)
       *
            PERFORM VARYING IDX-JIHI    FROM    1   BY  1
                    UNTIL ( IDX-JIHI    >   CONST-ETCJIHI-MAX )
       *
                COMPUTE BD01003-JIHI (IDX-JIHI)
                    =   BD01003-JIHI (IDX-JIHI)
-                   +   BD01001-ETCJIHI (IDX-JIHI)
+                   +   SBD010S02-ETCJIHI (IDX-S02 IDX-JIHI)
       *
                COMPUTE BD01003-JIHI-TOTAL
                    =   BD01003-JIHI-TOTAL
-                   +   BD01001-ETCJIHI (IDX-JIHI)
+                   +   SBD010S02-ETCJIHI (IDX-S02 IDX-JIHI)
            END-PERFORM
       *
            .
        20011-EDIT-BD01003-EXT.
            EXIT.
-      *
       *****************************************************************
       *   帳票元データ編集処理
       *****************************************************************
-       2001-EDIT-BD004-SEC         SECTION.
-      *
-           OPEN    INPUT   BD01001-FILE
-                           BD01002-FILE
-           OPEN    OUTPUT  BD01004-FILE
-      *
-           PERFORM 900-BD01001-READ-SEC
-      *
-           PERFORM UNTIL ( FLG-BD01001 NOT =   ZERO )
-      *
-               MOVE    BD01001-SRT-NYUGAIKBN   TO  KEY-NYUGAIKBN
-               MOVE    BD01001-SRT-SRYKA       TO  KEY-SRYKA
-               PERFORM UNTIL ( FLG-BD01001         NOT =   ZERO )
-                         OR  ( BD01001-SRT-NYUGAIKBN
-                                                   NOT = KEY-NYUGAIKBN )
-                         OR  ( BD01001-SRT-SRYKA   NOT = KEY-SRYKA )
-      *
-                   MOVE    ZERO                TO  CNT-RENNUM
-                   MOVE    BD01001-DENPNUM     TO  KEY-DENPNUM
-                   PERFORM UNTIL ( FLG-BD01001     NOT =   ZERO )
-                             OR  ( BD01001-SRT-NYUGAIKBN
-                                                   NOT = KEY-NYUGAIKBN )
-                             OR  ( BD01001-SRT-SRYKA
-                                                   NOT = KEY-SRYKA )
-                             OR  ( BD01001-DENPNUM NOT = KEY-DENPNUM )
-      *
-                       PERFORM 20011-EDIT-BD01004-SEC
-      *
-                       PERFORM 900-BD01001-READ-SEC
-      *
-                   END-PERFORM
-               END-PERFORM
-      *
-           END-PERFORM
-      *
-           CLOSE   BD01001-FILE
-                   BD01002-FILE
-                   BD01004-FILE
-      *
-           .
-       2001-EDIT-BD004-EXT.
-           EXIT.
-      *****************************************************************
-      *   帳票元データ編集処理
-      *****************************************************************
-       20011-EDIT-BD01004-SEC          SECTION.
+       2001-EDIT-BD01004-SEC           SECTION.
       *
            PERFORM 20011-EDIT-BD01004-COMMON-SEC
-           MOVE    BD01001-SKYNYUKBN   TO  BD01004-SKYNYUKBN
-           MOVE    BD01001-HOKENTEN    TO  BD01004-HOKENTEN
-           MOVE    BD01001-SKYMONEY    TO  BD01004-SKYMONEY
-           MOVE    BD01001-FTNMONEY    TO  BD01004-FTNMONEY
-           MOVE    BD01001-JIHIMONEY   TO  BD01004-JIHIMONEY
-           MOVE    BD01001-CHOSEI      TO  BD01004-CHOSEI
-           MOVE    BD01001-GENMEN      TO  BD01004-GENMEN
+      *
+           MOVE    SBD010S02-HKNTEN (IDX-S02)
+                                       TO  BD01004-HOKENTEN
+           MOVE    SBD010S02-SEIKYU (IDX-S02)
+                                       TO  BD01004-SKYMONEY
+           MOVE    SBD010S02-HKNSEIKYU (IDX-S02)
+                                       TO  BD01004-FTNMONEY
+           MOVE    SBD010S02-JIHSEIKYU (IDX-S02)
+                                       TO  BD01004-JIHIMONEY
+           MOVE    SBD010S02-CHOSEI (IDX-S02)
+                                       TO  BD01004-CHOSEI
+           MOVE    SBD010S02-GENMEN (IDX-S02)
+                                       TO  BD01004-GENMEN
            PERFORM VARYING IDX-JIHI    FROM    1   BY  1
                    UNTIL ( IDX-JIHI    >   CONST-ETCJIHI-MAX )
-               MOVE    BD01001-ETCJIHI (IDX-JIHI)
+               MOVE    SBD010S02-ETCJIHI (IDX-S02 IDX-JIHI)
                                        TO  BD01004-ETCJIHI (IDX-JIHI)
            END-PERFORM
-           MOVE    BD01001-SYOSAIKBN   TO  BD01004-SYOSAIKBN
+           MOVE    WRK-SYOSAIKBN       TO  BD01004-SYOSAIKBN
       *
-           IF    ( BD01001-SYURRKNUM   =   BD01001-MAX-SYURRKNUM )
-            AND  ( BD01001-SYUEDANUM   =   BD01001-MAX-SYUEDANUM )
+           MOVE    SBD010S02-HOHO-MAX (IDX-S02)
+                                       TO  WRK-HS02-MAX
       *
-               PERFORM 20012-EDIT-BD01004-SEC
+           IF    ( WRK-HS02-MAX        >   ZERO )
+      *
+               PERFORM VARYING IDX-HS02    FROM    1   BY  1
+                       UNTIL ( IDX-HS02    >   WRK-HS02-MAX )
+      *
+                   IF    ( IDX-HS02    >   1 )
+                       PERFORM 20011-EDIT-BD01004-COMMON-SEC
+                       MOVE    "1"     TO  BD01004-SKYNYUKBN
+                   END-IF
+                   MOVE    IDX-HS02    TO  BD01004-RENNUM2
+      *
+                   MOVE    SBD010S02-HOHO (IDX-S02 IDX-HS02)
+                                       TO  BD01004-HOHO
+                   MOVE    SBD010S02-HOHOMONEY (IDX-S02 IDX-HS02)
+                                       TO  BD01004-NYUKIN
+                   IF    ( IDX-HS02    =   WRK-HS02-MAX )
+                       MOVE    "1"     TO  BD01004-DSPMISYUKBN
+                       MOVE    SBD010S02-MISYU (IDX-S02)
+                                       TO  BD01004-MISYU
+                   END-IF
+      *
+                   WRITE   BD01004-REC
+      *
+               END-PERFORM
       *
            ELSE
+               MOVE    1               TO  BD01004-RENNUM2
+               MOVE    "1"             TO  BD01004-DSPMISYUKBN
+               MOVE    SBD010S02-MISYU (IDX-S02)
+                                       TO  BD01004-MISYU
                WRITE   BD01004-REC
            END-IF
       *
            .
-       20011-EDIT-BD01004-EXT.
+       2001-EDIT-BD01004-EXT.
            EXIT.
       *****************************************************************
       *   帳票元データ編集処理（請求・入金共通項目）
       *****************************************************************
        20011-EDIT-BD01004-COMMON-SEC   SECTION.
       *
-           COMPUTE CNT-RENNUM  =   CNT-RENNUM  +   1
-      *
            INITIALIZE                  BD01004-REC
-           MOVE    BD01001-SRT-NYUGAIKBN
-                                       TO  BD01004-SRT-NYUGAIKBN
-           MOVE    BD01001-SRT-SRYKA   TO  BD01004-SRT-SRYKA
-           MOVE    CNT-RENNUM          TO  BD01004-RENNUM
-           MOVE    BD01001-DENPNUM     TO  BD01004-DENPNUM
-           MOVE    CNT-RENNUM          TO  BD01004-RENNUM
-           MOVE    BD01001-PTNUM       TO  BD01004-PTNUM
-           MOVE    BD01001-NAME        TO  BD01004-NAME
-           MOVE    BD01001-SRYYMD      TO  BD01004-SRYYMD
-           MOVE    BD01001-DENPPRTYMD  TO  BD01004-DENPPRTYMD
-           MOVE    BD01001-HOKEN       TO  BD01004-HOKEN
-           MOVE    BD01001-SRYKA       TO  BD01004-SRYKA
+           MOVE    SYU-NYUGAIKBN       TO  BD01004-SRT-NYUGAIKBN
+           MOVE    SBD010S02-KEYSRYKA (IDX-S02)
+                                       TO  BD01004-SRT-SRYKA
+           MOVE    SYU-DENPNUM         TO  BD01004-DENPNUM
+           MOVE    SBD010S02-DENPEDANUM (IDX-S02)
+                                       TO  BD01004-DENPEDANUM
+           MOVE    SBD010S02-SYURRKNUM  (IDX-S02)
+                                       TO  BD01004-SYURRKNUM
+           MOVE    SBD010S02-SYUEDANUM  (IDX-S02)
+                                       TO  BD01004-SYUEDANUM
+           MOVE    SBD010S02-RENNUM     (IDX-S02)
+                                       TO  BD01004-RENNUM
+           MOVE    PTNUM-PTNUM         TO  BD01004-PTNUM
+           MOVE    PTINF-NAME          TO  BD01004-NAME
+           MOVE    SYU-SRYYMD          TO  BD01004-SRYYMD
+           MOVE    SYU-DENPPRTYMD      TO  BD01004-DENPPRTYMD
+           MOVE    SBD010S02-HOKEN (IDX-S02)
+                                       TO  BD01004-HOKEN
+           MOVE    SBD010S02-SRYKA (IDX-S02)
+                                       TO  BD01004-SRYKA
+           MOVE    ZERO                TO  BD01004-SKYNYUKBN
       *
            .
        20011-EDIT-BD01004-COMMON-EXT.
-           EXIT.
-      *****************************************************************
-      *   帳票元データ編集処理（入金情報より）
-      *****************************************************************
-       20012-EDIT-BD01004-SEC            SECTION.
-      *
-           MOVE    ZERO            TO  CNT-BD01002
-      *
-           PERFORM 901-BD01002-START-SEC
-           IF    ( FLG-BD01002     =   ZERO )
-               PERFORM UNTIL ( FLG-BD01002 NOT =   ZERO )
-      *
-                   COMPUTE CNT-BD01002 =   CNT-BD01002 +   1
-      *
-                   IF    ( CNT-BD01002 >   1 )
-                       PERFORM 20011-EDIT-BD01004-COMMON-SEC
-                       MOVE    "1"         TO  BD01004-SKYNYUKBN
-                   END-IF
-      *
-                   IF    ( CNT-BD01002 =   BD01002-CNT )
-                       MOVE    BD01001-MISYU
-                                           TO  BD01004-MISYU
-                   END-IF
-      *
-                   MOVE    BD01002-HOHO    TO  BD01004-HOHO
-                   MOVE    BD01002-NYUKIN  TO  BD01004-NYUKIN
-      *
-                   WRITE   BD01004-REC
-      *
-                   PERFORM 901-BD01002-READ-SEC
-      *
-               END-PERFORM
-           ELSE
-               MOVE    BD01001-MISYU   TO  BD01004-MISYU
-               WRITE   BD01004-REC
-           END-IF
-      *
-           .
-       20012-EDIT-BD01004-EXT.
            EXIT.
       *****************************************************************
       *   帳票編集処理
@@ -2018,11 +1255,13 @@
            COMPUTE CNT-LINE    =   CNT-LINE   +   1
       *
            IF    ( BD01004-RENNUM  =   1 )
+            AND  ( BD01004-RENNUM2 =   1 )
                COMPUTE CNT-NO  =   CNT-NO     +   1
            END-IF
       *
            IF    ( CNT-LINE        =   1 )
-            OR   ( BD01004-RENNUM  =   1 )
+            OR  (( BD01004-RENNUM  =   1 )
+              AND( BD01004-RENNUM2 =   1 ))
                MOVE    CNT-NO          TO  WRK-ZZ9
                MOVE    WRK-ZZ9         TO  HCM51-NO (CNT-LINE)
                MOVE    BD01004-DENPNUM     TO  HCM51-DENPNUM (CNT-LINE)
@@ -2106,9 +1345,10 @@
                END-EVALUATE
            END-IF
       *
-           MOVE    BD01004-MISYU           TO  WRK-ZZZZZZZ9
-           MOVE    WRK-ZZZZZZZ9            TO  HCM51-MISYU(CNT-LINE)
-      *
+           IF    ( BD01004-DSPMISYUKBN     =   "1" )
+               MOVE    BD01004-MISYU       TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCM51-MISYU(CNT-LINE)
+           END-IF
       *
            IF    ( BD01004-SYOSAIKBN   =   "1" )
                COMPUTE TTL-SYOSIN
@@ -2305,11 +1545,15 @@
        221-BODY-SEC                SECTION.
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
-                   UNTIL ( IDX1    >   4 )
+                   UNTIL ( IDX1    >   8 )
       *
                MOVE    ZERO        TO  FLG-TARGET
                IF    ( BD01003-SRT-NYUGAIKBN   =   "1" )
-                   IF    ( IDX1        =   1 )
+                   IF    ( IDX1        =   CONST-TTLSEIKYUREL
+                                        OR CONST-TTLGENMEN
+                                        OR CONST-TTLCHOSEI
+                                        OR CONST-TTLSEIKYU
+                                        OR CONST-TTLNYUKIN )
                        MOVE    1           TO  FLG-TARGET
                    END-IF
                ELSE
@@ -2325,14 +1569,24 @@
                            UNTIL ( IDX2    >   WRK-SKYTTL-MAX )
       *
                        IF    ( IDX1        =   1 )
-                           MOVE   WRK-SKYTTLMSG (IDX2)
-			                       TO  HCM52-SKYTTLMSG(IDX2)
+                           IF    ( IDX2        =   IDX-GENMEN
+                                                OR IDX-CHOSEI )
+                               CONTINUE
+                           ELSE
+                               MOVE   WRK-SKYTTLMSG (IDX2)
+                                           TO  HCM52-SKYTTLMSG(IDX2)
+                           END-IF
                        END-IF
       *
-                       MOVE    BD01003-SEIKYU(IDX1 IDX2)
-                                               TO  WRK-ZZZZZZZ9
-                       MOVE    WRK-ZZZZZZZ9    TO  HCM52-SKYMONEY
-                                                       (IDX1 IDX2)
+                       IF    ( IDX2        =   IDX-GENMEN
+                                            OR IDX-CHOSEI )
+                           CONTINUE
+                       ELSE
+                           MOVE    BD01003-SEIKYU(IDX1 IDX2)
+                                           TO  WRK-ZZZZZZZ9
+                           MOVE    WRK-ZZZZZZZ9
+                                           TO  HCM52-SKYMONEY(IDX1 IDX2)
+                       END-IF
                    END-PERFORM
       *
                END-IF
@@ -2410,7 +1664,7 @@
       *
            INITIALIZE                  ORCSPRTAREA
            PERFORM 230-PRINT-COMMON-SEC
-           MOVE   "HCM52V03.red"       TO  SPRT-PRTID
+           MOVE   "HCM52V04.red"       TO  SPRT-PRTID
            MOVE    "収納日報（合計）"  TO  SPRT-TITLE
            MOVE    HCM52               TO  SPRT-PRTDATA
            CALL    "ORCSPRT"           USING
@@ -2545,18 +1799,6 @@
       *    中間ファイル削除処理
       *****************************************************************
        800-DEL-FILE-SEC            SECTION.
-      *
-      *    ファイル削除
-           MOVE    ZERO            TO  IF-RESULT
-           MOVE    BD01001PARA     TO  IF-FILENAME
-           CALL    "orcfiledel"    USING
-                                       ORCSFDELAREA
-      *
-      *    ファイル削除
-           MOVE    ZERO            TO  IF-RESULT
-           MOVE    BD01002PARA     TO  IF-FILENAME
-           CALL    "orcfiledel"    USING
-                                       ORCSFDELAREA
       *
       *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
@@ -2696,70 +1938,6 @@
        900-SYUMEI-KEY8-FET-EXT.
            EXIT.
       *****************************************************************
-      *    収納明細検索処理
-      *****************************************************************
-       900-SMEITMP-KEY15-SEL-SEC     SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SMEITMP
-      *
-           INITIALIZE                  SMEITMP-REC
-           MOVE    SYU-HOSPNUM      TO  SMEITMP-HOSPNUM
-           MOVE    SYU-NYUGAIKBN   TO  SMEITMP-NYUGAIKBN
-           MOVE    SYU-PTID        TO  SMEITMP-PTID
-           MOVE    SYU-DENPNUM     TO  SMEITMP-DENPNUM
-           MOVE    WRK-MIN-DENPEDANUM
-                                   TO  SMEITMP-DENPEDANUM
-           MOVE    SMEITMP-REC    TO  MCPDATA-REC
-           MOVE    "tbl_syumei"    TO  MCP-TABLE
-           MOVE    "key15"         TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC TO  SMEITMP-REC
-           ELSE
-               INITIALIZE              SMEITMP-REC
-               MOVE    1           TO  FLG-SMEITMP
-           END-IF
-      *
-           MOVE    "tbl_syumei"    TO  MCP-TABLE
-           MOVE    "key15"         TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-SMEITMP-KEY15-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    収納明細検索処理
-      *****************************************************************
-       900-SMEITMP-KEY16-SEL-SEC     SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SMEITMP
-      *
-           INITIALIZE                  SMEITMP-REC
-           MOVE    SYU-HOSPNUM      TO  SMEITMP-HOSPNUM
-           MOVE    SYU-NYUGAIKBN   TO  SMEITMP-NYUGAIKBN
-           MOVE    SYU-PTID        TO  SMEITMP-PTID
-           MOVE    SYU-DENPNUM     TO  SMEITMP-DENPNUM
-           MOVE    WRK-MIN-DENPEDANUM
-                                   TO  SMEITMP-DENPEDANUM
-           MOVE    SMEITMP-REC    TO  MCPDATA-REC
-           MOVE    "tbl_syumei"    TO  MCP-TABLE
-           MOVE    "key16"         TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SMEITMP-REC
-           ELSE
-               INITIALIZE                  SMEITMP-REC
-               MOVE    1               TO  FLG-SMEITMP
-           END-IF
-      *
-           MOVE    "tbl_syumei"    TO  MCP-TABLE
-           MOVE    "key16"         TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-SMEITMP-KEY16-SEL-EXT.
-           EXIT.
-      *****************************************************************
       *    システム管理検索処理
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC  SECTION.
@@ -2827,114 +2005,6 @@
       *
            .
        900-SYSKANRI-KEY2-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    収納履歴検索処理
-      *****************************************************************
-       900-SYURRK-KEY-SEL-SEC      SECTION.
-      *
-           MOVE    ZERO               TO  FLG-SYURRK
-      *
-           INITIALIZE                     SYURRK-REC
-           MOVE    SMEITMP-HOSPNUM     TO  SYURRK-HOSPNUM
-           MOVE    SMEITMP-NYUGAIKBN  TO  SYURRK-NYUGAIKBN
-           MOVE    SMEITMP-PTID       TO  SYURRK-PTID
-           MOVE    SMEITMP-DENPNUM    TO  SYURRK-DENPNUM
-           MOVE    SMEITMP-SYURRKNUM  TO  SYURRK-SYURRKNUM
-           MOVE    SMEITMP-SYUEDANUM  TO  SYURRK-SYUEDANUM
-           MOVE    SYURRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_syurrk"    TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC TO  SYURRK-REC
-           ELSE
-               INITIALIZE              SYURRK-REC
-               MOVE    1           TO  FLG-SYURRK
-           END-IF
-      *
-           MOVE    "tbl_syurrk"    TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-SYURRK-KEY-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    収納履歴検索処理
-      *****************************************************************
-       900-SYURRK-KEY3-SEL-SEC      SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SYURRK
-      *
-           INITIALIZE                  SYURRK-REC
-           MOVE    SMEI-HOSPNUM     TO  SYURRK-HOSPNUM
-           MOVE    SMEI-NYUGAIKBN  TO  SYURRK-NYUGAIKBN
-           MOVE    SMEI-PTID       TO  SYURRK-PTID
-           MOVE    SMEI-DENPNUM    TO  SYURRK-DENPNUM
-           MOVE    SMEI-SYURRKNUM  TO  SYURRK-SYURRKNUM
-           MOVE    SYURRK-REC      TO  MCPDATA-REC
-           MOVE    "tbl_syurrk"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC TO  SYURRK-REC
-           ELSE
-               INITIALIZE              SYURRK-REC
-               MOVE    1           TO  FLG-SYURRK
-           END-IF
-      *
-           .
-       900-SYURRK-KEY3-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    収納履歴検索処理
-      *****************************************************************
-       900-SYURRK-KEY3-FET-SEC      SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SYURRK
-      *
-           MOVE    "tbl_syurrk"    TO  MCP-TABLE
-           MOVE    "key3"          TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC TO  SYURRK-REC
-           ELSE
-               INITIALIZE              SYURRK-REC
-               MOVE    1           TO  FLG-SYURRK
-           END-IF
-      *
-           .
-       900-SYURRK-KEY3-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険組合せ取得処理
-      *****************************************************************
-       900-HKNCOMBI-KEY-SEL-SEC       SECTION.
-      *
-           MOVE    ZERO                TO  FLG-HKNCOMBI
-      *
-           INITIALIZE                  HKNCOMBI-REC
-           MOVE    SYU-HOSPNUM          TO  COMB-HOSPNUM
-           MOVE    SYU-PTID            TO  COMB-PTID
-           MOVE    WRK-HKNCOMBINUM     TO  COMB-HKNCOMBINUM
-           MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  HKNCOMBI-REC
-           ELSE
-               INITIALIZE                  HKNCOMBI-REC
-               MOVE    1               TO  FLG-HKNCOMBI
-           END-IF
-      *
-           MOVE    "tbl_hkncombi"      TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-HKNCOMBI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    患者番号検索処理
@@ -3023,80 +2093,6 @@
       *
            .
        900-SYUNOU-KEY-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    中間ファイル読込処理
-      *****************************************************************
-       900-BD01001-READ-SEC        SECTION.
-      *
-           MOVE    ZERO            TO  FLG-BD01001
-      *
-           READ    BD01001-FILE    NEXT
-           AT  END
-               MOVE    1           TO  FLG-BD01001
-           END-READ
-      *
-           .
-       900-BD01001-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    中間ファイルSTART処理
-      *****************************************************************
-       901-BD01002-START-SEC       SECTION.
-      *
-           MOVE    ZERO            TO  FLG-BD01002
-      *
-           INITIALIZE                  BD01002-KEY
-           MOVE    BD01001-SRT-NYUGAIKBN
-                                   TO  BD01002-NYUGAIKBN
-           MOVE    BD01001-DENPNUM TO  BD01002-DENPNUM
-      *
-           START   BD01002-FILE
-               KEY IS  >=   BD01002-KEY
-           INVALID
-               MOVE    1               TO  FLG-BD01002
-           NOT INVALID
-               PERFORM 901-BD01002-READ-SEC
-           END-START
-      *
-           .
-       901-BD01002-START-EXT.
-           EXIT.
-      *****************************************************************
-      *    中間ファイル読込処理
-      *****************************************************************
-       901-BD01002-READ-SEC        SECTION.
-      *
-           MOVE    ZERO            TO  FLG-BD01002
-      *
-           READ    BD01002-FILE    NEXT
-           AT  END
-                   MOVE    1       TO  FLG-BD01002
-           NOT AT END
-               IF    ( BD01001-SRT-NYUGAIKBN
-                                       NOT =   BD01002-NYUGAIKBN )
-                OR   ( BD01001-DENPNUM NOT =   BD01002-DENPNUM )
-                   MOVE    1       TO  FLG-BD01002
-               END-IF
-           END-READ
-      *
-           .
-       901-BD01002-READ-EXT.
-           EXIT.
-      *****************************************************************
-      *    中間ファイル読込処理
-      *****************************************************************
-       900-BD01002-READ-SEC        SECTION.
-      *
-           MOVE    ZERO            TO  FLG-BD01002
-      *
-           READ    BD01002-FILE    NEXT
-           AT  END
-               MOVE    1           TO  FLG-BD01002
-           END-READ
-      *
-           .
-       900-BD01002-READ-EXT.
            EXIT.
       *****************************************************************
       *    中間ファイル読込処理
