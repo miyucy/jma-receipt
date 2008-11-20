@@ -14,4 +14,4 @@
                   05  T98-1VALUE    PIC X(38).
                 04  T98-DATA-COUNT PIC S9(9)   BINARY.
                 04  T98-DATA-ITEM
-                        PIC X(38)   OCCURS  5 TIMES.
+                        PIC X(38)   OCCURS  6 TIMES.

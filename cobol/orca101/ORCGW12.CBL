@@ -101,14 +101,25 @@
       *  04.03.02    NACL-藤原    08/08/07  労災コメント記載区分
       *                                     入院料未算定時コメント記載区分
       *                                     労災枠記載区分の追加
+      *
+      *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
+      *  04.04.02    NACL-藤原    09/11/20  レセ電出力先チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
+      *    
+           SELECT  WRK-FILE        ASSIGN  WRKPARA
+                                   FILE    STATUS  IS  STS-WRK.
       *
        DATA                    DIVISION.
+       FILE                    SECTION.
+      *
+      * 
+       FD  WRK-FILE.
+       01  WRK-R                       PIC X(10).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -268,6 +279,12 @@
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-RECECOMKBNMEI
                                               PIC X(24).
+                       09  SPA-GMN-RECEDEN-CDRKBN-G.
+                           11  SPA-GMN-RECEDEN-CDRKBN
+                                              PIC X(01).
+                           11  SPA-GMN-F1     PIC X(01).
+                           11  SPA-GMN-RECEDEN-CDRKBNMEI
+                                              PIC X(18).
                        09  SPA-GMN-SRYKAHENKBN-G.
                            11  SPA-GMN-SRYKAHENKBN
                                               PIC X(01).
@@ -711,6 +728,15 @@
                                               PIC X(24).
                    07  SPA-GMN-RECECOMKBN-MAX PIC 9(02).    
       *                                        
+                   07  SPA-GMN-RECEDEN-CDRKBNLST  OCCURS  2.
+                       09  SPA-GMN-RECEDEN-CDRKBNL
+                                              PIC X(01).
+                       09  SPA-GMN-F1L        PIC X(01).
+                       09  SPA-GMN-RECEDEN-CDRKBNMEIL
+                                              PIC X(18).
+                   07  SPA-GMN-RECEDEN-CDRKBN-MAX
+                                              PIC 9(02).    
+      *                                        
                    07  SPA-GMN-SRYKAHENKBNLST OCCURS  2.
                        09  SPA-GMN-SRYKAHENKBNL
                                               PIC X(01).
@@ -1023,6 +1049,8 @@
       *
            COPY    "ENUM-VALUE".
       *
+       01  STS-AREA.
+           03  STS-WRK             PIC X(02).
       *
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -1066,6 +1094,8 @@
       *
            03  WRK-KBNCD.
                05  WRK-KBNCD-9     PIC 9(08).
+      *
+       01  WRKPARA                 PIC X(40).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1120,6 +1150,9 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *
+      *    ファイル削除パラメタ
+           COPY    "CPORCSFDEL.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -1504,6 +1537,12 @@
            MOVE    "レセ電データに記録しない"
                                        TO  SPA-GMN-RECECOMKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-RECECOMKBN-MAX 
+      *     
+           MOVE    "0"                 TO  SPA-GMN-RECEDEN-CDRKBNL   (1)
+           MOVE    "しない"            TO  SPA-GMN-RECEDEN-CDRKBNMEIL(1)
+           MOVE    "1"                 TO  SPA-GMN-RECEDEN-CDRKBNL   (2)
+           MOVE    "する"              TO  SPA-GMN-RECEDEN-CDRKBNMEIL(2)
+           MOVE    2                   TO  SPA-GMN-RECEDEN-CDRKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-SRYKAHENKBNL    (1)
            MOVE    "診療科を表示する"  TO  SPA-GMN-SRYKAHENKBNMEIL (1)
@@ -2485,6 +2524,19 @@
            MOVE    SYS-200501-NI-JYOKEN (2)
                                        TO  SPA-GMN-NI-JYOKEN6
       *
+           MOVE    SYS-200501-RECEDEN-CDRKBN
+                                       TO  SPA-GMN-RECEDEN-CDRKBN
+           PERFORM VARYING IDY FROM    1   BY  1
+                   UNTIL   IDY >       SPA-GMN-RECEDEN-CDRKBN-MAX
+               IF      SPA-GMN-RECEDEN-CDRKBN 
+                                   =   SPA-GMN-RECEDEN-CDRKBNL (IDY)
+                   MOVE    SPA-GMN-RECEDEN-CDRKBNLST (IDY)
+                                           TO  SPA-GMN-RECEDEN-CDRKBN-G
+                   MOVE    SPA-GMN-RECEDEN-CDRKBN-MAX
+                                           TO  IDY
+               END-IF
+           END-PERFORM
+      *
            MOVE    SYS-200501-KOUIKIPRTNM
                                        TO  SPA-GMN-KOUIKIPRTNM         
            MOVE    SYS-200501-KOUIKIPRTNM-NEXT
@@ -2903,6 +2955,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    SPA-GMN-RECECOMKBNLST (1)
                                            TO  SPA-GMN-RECECOMKBN-G
            END-IF                                              
+           IF     SPA-GMN-RECEDEN-CDRKBN
+                                       =   SPACE
+               MOVE    SPA-GMN-RECEDEN-CDRKBNLST (1)
+                                           TO  SPA-GMN-RECEDEN-CDRKBN-G
+           END-IF                                              
            IF     SPA-GMN-SRYKAHENKBN  =   SPACE
                MOVE    SPA-GMN-SRYKAHENKBNLST (1)
                                            TO  SPA-GMN-SRYKAHENKBN-G
@@ -3123,6 +3180,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    W12-SRYKAHENKBN     TO  SPA-GMN-SRYKAHENKBN-G
            MOVE    W12-BTUNUM-KSIKBN   TO  SPA-GMN-BTUNUM-KSIKBN-G
            MOVE    W12-RECECOMKBN      TO  SPA-GMN-RECECOMKBN-G
+           MOVE    W12-RECEDEN-CDRKBN  TO  SPA-GMN-RECEDEN-CDRKBN-G
            MOVE    W12-SYAPRTNM-N      TO  SPA-GMN-SYAPRTNM-N
            MOVE    W12-KKHPRTNM-N      TO  SPA-GMN-KKHPRTNM-N
            MOVE    W12-SYAPRTNM-NEXT-N TO  SPA-GMN-SYAPRTNM-NEXT-N
@@ -3443,6 +3501,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                GO      TO      4102-KIHON-CHK-EXT
            END-IF
       *
+           PERFORM 4167-RECEDEN-CDRKBN-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO      TO      4102-KIHON-CHK-EXT
+           END-IF
+      *
            PERFORM 4125-MOJI-KISAIKBN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      4102-KIHON-CHK-EXT
@@ -3686,6 +3749,31 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        4103-RECEDENOUT-CHK-SEC       SECTION.
       *
+           IF      SPA-GMN-RECEDENOUT  =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRKPARA
+               STRING  SPA-GMN-RECEDENOUT  DELIMITED   BY  SPACE
+                       "/W12.txt"          DELIMITED   BY  SIZE
+                                           INTO    WRKPARA
+               END-STRING
+      *
+               OPEN    INPUT               WRK-FILE
+               IF      STS-WRK             =   "00"
+                   CLOSE   WRK-FILE
+               ELSE
+                   OPEN    OUTPUT              WRK-FILE
+                   IF      STS-WRK             =   "00"
+                       CLOSE   WRK-FILE
+                       MOVE    ZERO                TO  IF-RESULT
+                       MOVE    WRKPARA             TO  IF-FILENAME
+                       CALL    "orcfiledel"    USING   ORCSFDELAREA
+                   ELSE
+                       MOVE    102                 TO  SPA-GMN-CUR
+                       MOVE    "0058"              TO  SPA-ERRCD
+                   END-IF
+               END-IF     
+           END-IF     
       *
            .
        4103-RECEDENOUT-CHK-EXT.
@@ -5045,6 +5133,34 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    レセ電ＣＤ−Ｒ出力区分チェック
+      *****************************************************************
+       4167-RECEDEN-CDRKBN-CHK-SEC       SECTION.
+      *
+           IF      SPA-GMN-RECEDEN-CDRKBN  =   SPACE
+               CONTINUE
+           ELSE
+               PERFORM VARYING IDY FROM    1   BY  1
+                       UNTIL   IDY >       SPA-GMN-RECEDEN-CDRKBN-MAX
+                   IF      SPA-GMN-RECEDEN-CDRKBN
+                                   =   SPA-GMN-RECEDEN-CDRKBNL (IDY)
+                       MOVE    SPA-GMN-RECEDEN-CDRKBNLST (IDY)
+                                           TO  SPA-GMN-RECEDEN-CDRKBN-G
+                       MOVE    SPA-GMN-RECEDEN-CDRKBN-MAX
+                                           TO  IDY
+                   END-IF                                     
+               END-PERFORM
+      *     
+               IF      SPA-GMN-RECEDEN-CDRKBNMEI   =   SPACE
+                   MOVE    111                     TO  SPA-GMN-CUR
+                   MOVE    "0103"                  TO  SPA-ERRCD
+               END-IF
+           END-IF    
+           .
+       4167-RECEDEN-CDRKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    入退院履歴記載区分（入院外レセプトのみ）チェック
       *****************************************************************
        4144-NYUTAIINREKI-KSIKBN-CHK-SEC       SECTION.
@@ -5832,6 +5948,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            SYS-200501-FRAME-ROUPRTKBN-N
            MOVE    SPA-GMN-COMMENT-ROU     TO
                                            SYS-200501-COMMENT-ROU-KSIKBN
+           MOVE    SPA-GMN-RECEDEN-CDRKBN  TO  SYS-200501-RECEDEN-CDRKBN
            MOVE    SYS-200501-REC          TO  SYSKANRI-REC
       *     
            PERFORM 800-MCNDATE-SEC
@@ -6153,6 +6270,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-NI-JYOKEN4       TO  W12-NI-JYOKEN4
            MOVE    SPA-GMN-NI-JYOKEN5       TO  W12-NI-JYOKEN5
            MOVE    SPA-GMN-NI-JYOKEN6       TO  W12-NI-JYOKEN6
+           MOVE    SPA-GMN-RECEDEN-CDRKBN-G TO  W12-RECEDEN-CDRKBN
       *     
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       SPA-GMN-BYOMEIHENKBN-MAX
@@ -6687,6 +6805,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-JIBAIPRTKBN-N-MAX
                                            TO  W12-JIBAIPRTKBN-N-COUNT 
+      *     
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       SPA-GMN-RECEDEN-CDRKBN-MAX
+               MOVE    SPA-GMN-RECEDEN-CDRKBNLST (IDY)
+                                       TO  W12-RECEDEN-CDRKBNLST (IDY)
+           END-PERFORM
+           MOVE    SPA-GMN-RECEDEN-CDRKBN-MAX
+                                       TO  W12-RECEDEN-CDRKBN-COUNT 
      *
            IF      SPA-BEDSU       >   ZERO
                MOVE    WIDGET-NORMAL       TO  W12-PREFPRGID1-STATE
@@ -6872,6 +6998,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0057"
                    MOVE    "労災コメント記載区分入力エラー"
                                                          TO  SPA-ERRMSG
+               WHEN    "0058"
+                   MOVE    "レセ電出力先入力エラー"      TO  SPA-ERRMSG
       *
                WHEN    "0096"
                    STRING  "一括作成出力順（国保）の指定が編綴順です。"
@@ -6903,6 +7031,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0102"
                    MOVE    "社保または国保、広域の設定がありません"
+                                               TO  SPA-ERRMSG
+               WHEN    "0103"
+                   MOVE    "レセ電ＣＤ−Ｒ出力入力エラー"
                                                TO  SPA-ERRMSG
       *
                WHEN    "1003"
@@ -7149,6 +7280,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "NI_JYOKEN5"        TO   MCP-WIDGET
                 WHEN    110
                     MOVE  "NI_JYOKEN6"        TO   MCP-WIDGET
+                WHEN    111
+                    MOVE  "RECEDEN_CDRKBN"    TO   MCP-WIDGET
       * 
                 WHEN    11
                     MOVE  "KKHPRTKBN"        TO   MCP-WIDGET
@@ -7168,7 +7301,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE    0                TO  W12-PAGENO
                 WHEN    200 THRU    214
                     MOVE    1                TO  W12-PAGENO
-                WHEN    100 THRU    110
+                WHEN    100 THRU    111
                     MOVE    2                TO  W12-PAGENO
                 WHEN    70  THRU    79
                     MOVE    3                TO  W12-PAGENO
@@ -7401,6 +7534,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "NI_JYOKEN4"
                    MOVE    110         TO  SPA-GMN-CUR
                WHEN    "NI_JYOKEN6"
+                   MOVE    111         TO  SPA-GMN-CUR
+               WHEN    "RECEDEN_CDRKBN"
                    MOVE    99          TO  SPA-GMN-CUR
            END-EVALUATE
       *

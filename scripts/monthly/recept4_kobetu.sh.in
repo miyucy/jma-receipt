@@ -96,9 +96,25 @@ fi
 	    if  test "${FILENUM:${#FILENUM}-2:2}"	=	"01"; then
 		    echo "先頭ファイルの処理(sjis変換)"
 		    nkf -s /tmp/${23}${RECEFILE2}${FILENUM:${#FILENUM}-2:2}.txt > ${17}${23}${RECEFILE1}.UKE
+#		    RC=$?
+#		    echo "--- nkf end   ---[" $RC  "]" >>$LOG_FILE
+#		    if  [ $RC -ne '0' ]; then
+#			ERRCD='0000'$RC
+#			$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD:${#ERRCD}-4:4},${23} >> $LOG_FILE
+#			echo "--- nkf err   ---" >>$LOG_FILE
+#			exit
+#		    fi
 	    else
 		    echo "２番目以降のファイルの処理(sjis変換)"
 		    nkf -s /tmp/${23}${RECEFILE2}${FILENUM:${#FILENUM}-2:2}.txt > ${17}${23}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE
+#		    RC=$?
+#		    echo "--- nkf end   ---[" $RC  "]" >>$LOG_FILE
+#		    if  [ $RC -ne '0' ]; then
+#			ERRCD='0000'$RC
+#			$DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD:${#ERRCD}-4:4},${23} >> $LOG_FILE
+#			echo "--- nkf err   ---" >>$LOG_FILE
+#			exit
+#		    fi
 	    fi
     done
 
@@ -136,6 +152,22 @@ fi
 	    ERRCD='0000'$RC
 	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD:${#ERRCD}-4:4},${23} >> $LOG_FILE
             echo "--- fdw-> mo err   ---" >>$LOG_FILE
+            exit
+	fi
+    fi
+
+#   ＣＤ−Ｒ出力のときisoファイル作成
+    if  [ ${21} -eq '6' ]; then
+        echo "--- iso start ---" >>$LOG_FILE
+        DIR=`mktemp -d`
+        cp ${17}${23}${RECEFILE1}.UKE ${DIR}/${RECEFILE1}.UKE
+        mkisofs --input-charset cp437 -o ${17}${23}${RECEFILE1}.iso ${DIR}/
+	RC=$?
+        echo "--- iso end   ---[" $RC  "]" >>$LOG_FILE
+	if  [ $RC -ne '0' ]; then
+	    ERRCD='0000'$RC
+	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${18}${19}'  '${ERRCD:${#ERRCD}-4:4},${23} >> $LOG_FILE
+            echo "--- iso err   ---" >>$LOG_FILE
             exit
 	fi
     fi

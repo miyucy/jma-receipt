@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -896,7 +897,7 @@
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
       *        ファイル保存情報更新
-               IF      WRK-PARA-DATAKBN    =   "5"
+               IF      WRK-PARA-DATAKBN    =   "5" OR  "6"
                    PERFORM 3001-FILE-INFO-INSERT-SEC
                END-IF
            END-IF
@@ -936,18 +937,34 @@
                                    TO  SFILESV-SKYYMD   (1)
            MOVE    WRK-PARA-FOLDER TO  SFILESV-FOR-FOLDER
                                                         (1)
-           IF      WRK-PARA-PRTKBN =   "1"
-               STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                       "RECEIPTC.UKE"      DELIMITED  BY  SIZE
-                                           INTO  SFILESV-FOR-DATA (1)
-               END-STRING
-               MOVE    "RECEIPTC.UKE"  TO  SFILESV-TO-DATA  (1)
+           IF      WRK-PARA-DATAKBN    =   "5"
+               IF      WRK-PARA-PRTKBN     =   "1"
+                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                           "RECEIPTC.UKE"      DELIMITED  BY  SIZE
+                                               INTO  SFILESV-FOR-DATA(1)
+                   END-STRING
+                   MOVE    "RECEIPTC.UKE"  TO  SFILESV-TO-DATA  (1)
+               ELSE
+                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                           "TENKENRC.UKE"      DELIMITED  BY  SIZE
+                                               INTO  SFILESV-FOR-DATA(1)
+                   END-STRING
+                   MOVE    "TENKENRC.UKE"  TO  SFILESV-TO-DATA  (1)
+               END-IF
            ELSE
-               STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                       "TENKENRC.UKE"      DELIMITED  BY  SIZE
-                                           INTO  SFILESV-FOR-DATA (1)
-               END-STRING
-               MOVE    "TENKENRC.UKE"  TO  SFILESV-TO-DATA  (1)
+               IF      WRK-PARA-PRTKBN     =   "1"
+                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                           "RECEIPTC.iso"      DELIMITED  BY  SIZE
+                                               INTO  SFILESV-FOR-DATA(1)
+                   END-STRING
+                   MOVE    "RECEIPTC.iso"  TO  SFILESV-TO-DATA  (1)
+               ELSE
+                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                           "TENKENRC.iso"      DELIMITED  BY  SIZE
+                                               INTO  SFILESV-FOR-DATA(1)
+                   END-STRING
+                   MOVE    "TENKENRC.iso"  TO  SFILESV-TO-DATA  (1)
+               END-IF
            END-IF
            MOVE    CNT-OUT         TO  SFILESV-CNT-ALL  (1)
            EVALUATE    WRK-PARA-TEISYUTUSAKI

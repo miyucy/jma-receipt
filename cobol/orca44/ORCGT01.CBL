@@ -109,6 +109,8 @@
       *  04.03.03    NACL-藤原    08/07/23  宮城県、岩手県地震対応
       *                                     ２００８年６月〜対象 
       *  04.03.04    NACL-藤原    08/09/03  オンライン請求（個別請求）対応
+      *
+      *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -619,33 +621,6 @@ grpsys                                         SPA-AREA
                MOVE    IDX                 TO  SPA-GMN-T03-PRTNM-MAX
            END-PERFORM
       *
-      *    クライアント保存可否情報取得サブ
-           INITIALIZE                      ORCSCLIENTSVAREA
-           CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
-                                               SPA-AREA
-      *
-           MOVE    "1"             TO  SPA-GMN-DATAKBNL        (1)
-           MOVE    "フロッピィ"    TO  SPA-GMN-DATAKBNMEIL     (1)
-           MOVE    "2"             TO  SPA-GMN-DATAKBNL        (2)
-           MOVE    "ＭＯ"          TO  SPA-GMN-DATAKBNMEIL     (2)
-           MOVE    "3"             TO  SPA-GMN-DATAKBNL        (3)
-           MOVE    "システム管理設定場所（フロッピィ用）"
-                                   TO  SPA-GMN-DATAKBNMEIL     (3)
-           MOVE    "4"             TO  SPA-GMN-DATAKBNL        (4)
-           MOVE    "システム管理設定場所（ＭＯ用）"
-                                   TO  SPA-GMN-DATAKBNMEIL     (4)
-           MOVE    4               TO  SPA-GMN-DATAKBN-MAX
-           IF      SCLIENTSV-CLIENT-SAVE
-                                   =   "1"
-               MOVE    "5"             TO  SPA-GMN-DATAKBNL        (5)
-               MOVE    "クライアント保存"
-                                       TO  SPA-GMN-DATAKBNMEIL     (5)
-               MOVE    5               TO  SPA-GMN-DATAKBN-MAX
-           END-IF
-      *
-           MOVE    SPA-GMN-DATAKBNLST (1)
-                                   TO  SPA-GMN-DATAKBN-G
-      *
            IF      SPA-BEDSU       >   ZERO
                MOVE    "0"             TO  SPA-GMN-NYUGAIKBNL        (1)
                MOVE    "入院・入院外"  TO  SPA-GMN-NYUGAIKBNMEIL     (1)
@@ -742,7 +717,7 @@ grpsys                                         SPA-AREA
            MOVE    "01"                TO  SYS-200501-KBNCD
            MOVE    SPA-NAI-SKYYM       TO  SYS-200501-STYUKYMD (1:6)
            MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-2005-STYUKYMD   TO  SYS-200501-EDYUKYMD
+           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
            MOVE    SYS-200501-REC      TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
@@ -758,6 +733,10 @@ grpsys                                         SPA-AREA
            IF      SYS-200501-KOUIKIRECEKBN
                                        =   SPACE
                MOVE    "0"                 TO  SYS-200501-KOUIKIRECEKBN
+           END-IF 
+           IF      SYS-200501-RECEDEN-CDRKBN
+                                       =   SPACE
+               MOVE    "0"                 TO  SYS-200501-RECEDEN-CDRKBN
            END-IF 
            MOVE    SYS-200501-KOUIKIKBN
                                        TO  SPA-NAI-200501-KOUIKIKBN
@@ -814,6 +793,40 @@ grpsys                                         SPA-AREA
                                            SPA-DATAKBN1-STATE       
                                            SPA-DATAKBN2-STATE       
                                            SPA-B21-STATE
+      *
+      *    クライアント保存可否情報取得サブ
+           INITIALIZE                      ORCSCLIENTSVAREA
+           CALL    "ORCSCLIENTSV"      USING   ORCSCLIENTSVAREA
+                                               SPA-AREA
+      *
+           MOVE    "1"             TO  SPA-GMN-DATAKBNL        (1)
+           MOVE    "フロッピィ"    TO  SPA-GMN-DATAKBNMEIL     (1)
+           MOVE    "2"             TO  SPA-GMN-DATAKBNL        (2)
+           MOVE    "ＭＯ"          TO  SPA-GMN-DATAKBNMEIL     (2)
+           MOVE    "3"             TO  SPA-GMN-DATAKBNL        (3)
+           MOVE    "システム管理設定場所（フロッピィ用）"
+                                   TO  SPA-GMN-DATAKBNMEIL     (3)
+           MOVE    "4"             TO  SPA-GMN-DATAKBNL        (4)
+           MOVE    "システム管理設定場所（ＭＯ用）"
+                                   TO  SPA-GMN-DATAKBNMEIL     (4)
+           MOVE    4               TO  SPA-GMN-DATAKBN-MAX
+           IF      SCLIENTSV-CLIENT-SAVE
+                                   =   "1"
+               MOVE    "5"             TO  SPA-GMN-DATAKBNL        (5)
+               MOVE    "クライアント保存"
+                                       TO  SPA-GMN-DATAKBNMEIL     (5)
+               MOVE    5               TO  SPA-GMN-DATAKBN-MAX
+      *
+               IF      SYS-200501-RECEDEN-CDRKBN   =   "1"
+                   MOVE    "6"             TO  SPA-GMN-DATAKBNL    (6)
+                   MOVE    "クライアント保存（ＣＤ−Ｒ用）"
+                                           TO  SPA-GMN-DATAKBNMEIL (6)
+                   MOVE    6               TO  SPA-GMN-DATAKBN-MAX
+               END-IF
+           END-IF
+      *
+           MOVE    SPA-GMN-DATAKBNLST (1)
+                                   TO  SPA-GMN-DATAKBN-G
       *
       *    レセプト編集区分情報（主科情報）
            MOVE    SPACE               TO  SYS-2009-REC
@@ -1332,7 +1345,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
            IF      SYS-2005-RECEDENOUT  =   SPACE
                MOVE    "/var/tmp/"      TO  SYS-2005-RECEDENOUT
            END-IF    
-           IF      SPA-GMN-DATAKBN  =  "1"  OR  "2"
+           IF      SPA-GMN-DATAKBN  =  "1"  OR  "2" OR  "5" OR  "6"
                MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
            END-IF
       *
@@ -1854,7 +1867,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      SYS-2005-RECEDENOUT  =   SPACE
                MOVE    "/var/tmp/"      TO  SYS-2005-RECEDENOUT
            END-IF    
-           IF      SPA-GMN-DATAKBN  =  "1"  OR  "2"
+           IF      SPA-GMN-DATAKBN  =  "1"  OR  "2" OR  "5" OR  "6"
                MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
            END-IF
       * 
@@ -1894,7 +1907,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  SHELLTBL-ARG4
            MOVE    SPA-NAI-T04-TRENNUM       (SPA-NAI-T04-SELNUM)
                                    TO  SHELLTBL-ARG5
-           MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG6
+           IF      SPA-GMN-DATAKBN  =  "6"
+               MOVE    "5"             TO  SHELLTBL-ARG6
+           ELSE
+               MOVE    SPA-GMN-DATAKBN TO  SHELLTBL-ARG6
+           END-IF
            MOVE    SPA-NAI-T04-TTO-FOLDER   (SPA-NAI-T04-SELNUM)
                                    TO  SHELLTBL-ARG7
            MOVE    SPA-NAI-T04-TTO-DATA     (SPA-NAI-T04-SELNUM)
@@ -1929,7 +1946,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                        MCPDATA-REC
                                        SPA-AREA
       *
-           IF    ( SPA-GMN-DATAKBN =   "5" )
+           IF    ( SPA-GMN-DATAKBN =   "5" OR  "6" )
                MOVE    "SV"            TO  SPA-TID1-FLG
            ELSE
                MOVE    "FI"            TO  SPA-TID1-FLG
@@ -4087,7 +4104,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                WHEN    "B08"
                    MOVE    "3"         TO  SHELLTBL-ARG12
            END-EVALUATE
-           IF      SPA-GMN-DATAKBN  =  "1"  OR  "2"
+           IF      SPA-GMN-DATAKBN  =  "1"  OR  "2" OR  "5" OR  "6"
                MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
            END-IF
            STRING  SYS-2005-RECEDENOUT DELIMITED  BY  SPACE
@@ -4124,7 +4141,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM 45012-JOBID-UPD-SEC
       *
-           IF    ( SPA-GMN-DATAKBN =   "5" )
+           IF    ( SPA-GMN-DATAKBN =   "5" OR  "6" )
                MOVE    "SV"            TO  SPA-TID1-FLG
            END-IF
       *

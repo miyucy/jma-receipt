@@ -18,7 +18,7 @@ T98	{
 				value	varchar(38);
 			};
 			count	int;
-			item	varchar(38)[5];
+			item	varchar(38)[6];
 		};
 	};
 };

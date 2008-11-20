@@ -64,6 +64,8 @@
       *  04.03.02    NACL-藤原    08/06/18  医療機関編集情報からの医療機
       *                                     関名称、電話番号の編集対応
       *  04.03.03    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *
+      *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -601,7 +603,20 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                MOVE    "TENKENT"           TO  RECE30PARA-FILENM
            END-IF
       *
-           OPEN    OUTPUT              RECE30-FILE  
+           OPEN    OUTPUT              RECE30-FILE
+      *
+           IF      STS-RECE30          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-RECEERR
+               STRING "ファイル オープンエラー STS="
+                                               DELIMITED  BY  SIZE
+                       STS-RECE30              DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
       *
            MOVE    ZERO                TO  WRK-DATA-LENGTH
       *
@@ -984,7 +999,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
       *        ファイル保存情報更新
-               IF      WRK-PARA-DATAKBN    =   "5"
+               IF      WRK-PARA-DATAKBN    =   "5" OR  "6"
                    PERFORM 3001-FILE-INFO-INSERT-SEC
                END-IF
            END-IF
@@ -1024,18 +1039,34 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                    TO  SFILESV-SKYYMD   (1)
            MOVE    WRK-PARA-FOLDER TO  SFILESV-FOR-FOLDER
                                                         (1)
-           IF      WRK-PARA-PRTKBN =   "1"
-               STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                       "RECEIPTC.UKE"      DELIMITED  BY  SIZE
-                                           INTO  SFILESV-FOR-DATA (1)
-               END-STRING
-               MOVE    "RECEIPTC.UKE"  TO  SFILESV-TO-DATA  (1)
+           IF      WRK-PARA-DATAKBN    =   "5"
+               IF      WRK-PARA-PRTKBN     =   "1"
+                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                           "RECEIPTC.UKE"      DELIMITED  BY  SIZE
+                                               INTO  SFILESV-FOR-DATA(1)
+                   END-STRING
+                   MOVE    "RECEIPTC.UKE"  TO  SFILESV-TO-DATA  (1)
+               ELSE
+                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                           "TENKENRC.UKE"      DELIMITED  BY  SIZE
+                                               INTO  SFILESV-FOR-DATA(1)
+                   END-STRING
+                   MOVE    "TENKENRC.UKE"  TO  SFILESV-TO-DATA  (1)
+               END-IF
            ELSE
-               STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
-                       "TENKENRC.UKE"      DELIMITED  BY  SIZE
-                                           INTO  SFILESV-FOR-DATA (1)
-               END-STRING
-               MOVE    "TENKENRC.UKE"  TO  SFILESV-TO-DATA  (1)
+               IF      WRK-PARA-PRTKBN     =   "1"
+                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                           "RECEIPTC.iso"      DELIMITED  BY  SIZE
+                                               INTO  SFILESV-FOR-DATA(1)
+                   END-STRING
+                   MOVE    "RECEIPTC.iso"  TO  SFILESV-TO-DATA  (1)
+               ELSE
+                   STRING  WRK-PARA-HOSPNUM    DELIMITED  BY  SIZE
+                           "TENKENRC.iso"      DELIMITED  BY  SIZE
+                                               INTO  SFILESV-FOR-DATA(1)
+                   END-STRING
+                   MOVE    "TENKENRC.iso"  TO  SFILESV-TO-DATA  (1)
+               END-IF
            END-IF
            MOVE    CNT-OUT         TO  SFILESV-CNT-ALL  (1)
            EVALUATE    WRK-PARA-TEISYUTUSAKI
@@ -1153,6 +1184,20 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            MOVE    WRK-REC             TO  RECE30-R         
            WRITE   RECE30-R
+      *
+           IF      STS-RECE30          =   "00"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  WRK-RECEERR
+               STRING "ファイル 書き込みエラー STS="
+                                               DELIMITED  BY  SIZE
+                       STS-RECE30              DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+      *
            ADD     1                   TO  CNT-OUT
       *
            COMPUTE WRK-DATA-LENGTH  =   WRK-DATA-LENGTH

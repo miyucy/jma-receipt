@@ -276,6 +276,12 @@
                     06  W12-VALUE   PIC S9(8).
                   05  W12-NI-JYOKEN6.
                     06  W12-VALUE   PIC S9(8).
+                  05  W12-RECEDEN-CDRKBN-COMBO.
+                    06  W12-RECEDEN-CDRKBN.
+                      07  W12-VALUE   PIC X(20).
+                    06  W12-RECEDEN-CDRKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-RECEDEN-CDRKBNLST
+                            PIC X(20)   OCCURS  2 TIMES.
                 04  W12-FI26.
                   05  W12-PREFKBN-PRTJYUN-COMBO.
                     06  W12-PREFKBN-PRTJYUN.

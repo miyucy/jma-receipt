@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -850,7 +851,7 @@
            IF      SYS-2005-RECEDENOUT  =   SPACE
                MOVE    "/var/tmp/"      TO  SYS-2005-RECEDENOUT
            END-IF    
-           IF      SPA-GMN-T98-DATAKBN  =  "1"  OR  "2"
+           IF      SPA-GMN-T98-DATAKBN  =  "1"  OR  "2" OR  "5" OR  "6"
                MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
            END-IF
       *
@@ -3458,7 +3459,7 @@
                                    TO  SHELLTBL-ARG12
            MOVE    ONRECE-K-RENNUM TO  SHELLTBL-ARG13
       *               
-           IF      SPA-GMN-T98-DATAKBN  =  "1"  OR  "2"
+           IF      SPA-GMN-T98-DATAKBN  =  "1"  OR  "2" OR  "5" OR  "6"
                MOVE    "/tmp/"     TO  SYS-2005-RECEDENOUT
            END-IF
            STRING  SYS-2005-RECEDENOUT DELIMITED  BY  SPACE
@@ -3495,7 +3496,7 @@
       *
            PERFORM 45012-JOBID-UPD-SEC
       *
-           IF    ( SPA-GMN-T98-DATAKBN =   "5" )
+           IF    ( SPA-GMN-T98-DATAKBN =   "5" OR  "6" )
                MOVE    "SV"            TO  SPA-TID1-FLG
            END-IF
       *

@@ -37,7 +37,8 @@ fi
 
         rm -f $LOG_FILE
 
-        echo "arg9  = [" ${9} "]"   >$LOG_FILE
+        echo "arg6  = [" ${6} "]"   >$LOG_FILE
+        echo "arg9  = [" ${9} "]"   >>$LOG_FILE
         echo "arg13 = [" ${13} "]"  >>$LOG_FILE
         echo "arg14 = [" ${14} "]"  >>$LOG_FILE
         echo "hostname =  [" `hostname`  "]" >>$LOG_FILE

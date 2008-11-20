@@ -346,6 +346,13 @@ W12	{
 				NI_JYOKEN6 {
 					value	number(8);
 				};
+				RECEDEN_CDRKBN_COMBO	{
+					RECEDEN_CDRKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
 			};
 			fi26	{
 				PR_PRTJYUN_COMBO	{
