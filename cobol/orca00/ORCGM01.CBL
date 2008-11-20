@@ -49,6 +49,7 @@
       *  01.02.10    NACL-伊藤    02/02/22  MONFUNC 対応
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示フラグ追加
       *  03.05.00    NACL-多々納  07/05/25  グループ診療対応
+      *  04.04.00    NACL-森脇    08/11/20  印刷削除ボタン追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -332,6 +333,14 @@
        3001-MID1-SYORI-SEC              SECTION.
       *
            EVALUATE    SPA-MIDCD
+               WHEN    "0001"
+                   IF      SPA-MID1-FLG        =   "OK"
+      *                印刷削除処理へ
+                       PERFORM 30012-PRTDEL-SYORI-SEC
+                   END-IF
+                   MOVE    1               TO  SPA-GMN-CUR
+                   MOVE    SPACE           TO  SPA-MID1-FLG
+                   MOVE    SPACE           TO  SPA-MIDCD
                WHEN    "0101"
                    IF      SPA-MID1-FLG        =   "OK"
       *                マスタ更新処理へ
@@ -430,6 +439,35 @@
            .
       *
        30011-MSTMNT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    印刷削除処理
+      *****************************************************************
+       30012-PRTDEL-SYORI-SEC          SECTION.
+      *
+      *    印刷削除処理
+           MOVE    "orc_cups_del.sh"   TO  SHELL-SHELL
+      *
+           MOVE    SPACE               TO  SHELLTBL
+           MOVE    SHELL-NAME          TO  SHELLTBL-NAME
+           MOVE    SHELL-ARG1          TO  SHELLTBL-ARG1
+           MOVE    SHELL-ARG2          TO  SHELLTBL-ARG2
+           MOVE    SHELL-ARG3          TO  SHELLTBL-ARG3
+           MOVE    SHELL-ARG4          TO  SHELLTBL-ARG4
+           MOVE    SHELLTBL            TO  MCPDATA-REC
+      *
+           MOVE    "SHELL"             TO  MCP-FUNC
+           MOVE    "shell"             TO  MCP-TABLE
+           MOVE    "shell"             TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING
+                                           MCPAREA
+                                           MCPDATA-REC
+                                           SPA-AREA
+      *
+           .
+      *
+       30012-PRTDEL-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -612,6 +650,9 @@
       *    オンライン再印刷
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 470-REPRINT-SEC
+      *    印刷削除
+               WHEN    "CLICKED"       ALSO    "B07"
+                   MOVE    "0001"      TO  SPA-MIDCD
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
@@ -1353,6 +1394,10 @@
        520-KIDSET-SEC              SECTION.
       *
            EVALUATE    SPA-MIDCD
+               WHEN    "0001"
+                   MOVE
+               "スプールに溜っているすべての印刷データを削除します。"
+                                           TO  WRK-MIDMSG
                WHEN    "0101"
                    MOVE    "処理を開始します。"
                                            TO  WRK-MIDMSG
