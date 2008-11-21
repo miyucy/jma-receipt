@@ -2509,7 +2509,8 @@
       *        住所（前方一致）
                IF      SPA-GMN-ADRS        NOT =   SPACE
                    PERFORM 45011-JYOKEN-HENSYU-SEC
-                   STRING  "home_adrs like '"      DELIMITED  BY  SIZE
+                   STRING  "home_adrs || home_banti LIKE '"
+                                                   DELIMITED  BY  SIZE
                            WRK-ADRS (1:WRK-MOJISU2)
                                                    DELIMITED  BY  SIZE
                            "'"                     DELIMITED  BY  SIZE                        

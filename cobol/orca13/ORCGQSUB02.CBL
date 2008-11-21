@@ -2371,7 +2371,8 @@
                    MOVE    SPA-Q01-JYUSHO (IDX1)   TO  WRK-STR
                    PERFORM 900-STR-LEN-GET-SEC
       *
-                   STRING  "(HOME_ADRS LIKE '"     DELIMITED   BY  SIZE
+                   STRING  "(HOME_ADRS || HOME_BANTI LIKE '"
+                                                   DELIMITED   BY  SIZE
                            SPA-Q01-JYUSHO (IDX1)(1: WRK-STR-LEN) 
                                                    DELIMITED   BY  SIZE
                            "%')"                   DELIMITED   BY  SIZE
