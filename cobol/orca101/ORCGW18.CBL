@@ -34,6 +34,7 @@
       *  04.01.00    NACL-森脇    07/12/21  公害レセプト追加
       *  04.02.00    NACL-森脇    08/03/17  広域連合追加、お薬手帳追加
       *  04.03.01    NACL-森脇    08/06/24  レセプト電算、症状詳記追加
+      *  04.04.00    NACL-森脇    08/11/21  光ディスク等送付書追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -84,21 +85,15 @@
                        09  SPA-GMN-TEL        PIC X(15).              
                        09  SPA-GMN-FAX        PIC X(15).              
       *
-      *----(03.04.01)--UPD-START---
-      *----(04.01.00)--UPD-START---
-      *----(04.02.00)--UPD-START---
-      *----(04.03.01)--UPD-START---
+      *----(04.04.00)--UPD-START---
                    07  SPA-GMN-KOUMOKU2.
-                       09  SPA-GMN-PRTKBN-G   OCCURS  20.
+                       09  SPA-GMN-PRTKBN-G   OCCURS  21.
                            11  SPA-GMN-PRTKBN
                                               PIC X(02).
                            11  SPA-GMN-F1     PIC X(01).
                            11  SPA-GMN-PRTKBNMEI
                                               PIC X(18).
-      *----(04.03.01)--UPD-END-----
-      *----(04.02.00)--UPD-END-----
-      *----(04.01.00)--UPD-END-----
-      *----(03.04.01)--UPD-END-----
+      *----(04.04.00)--UPD-END-----
       *                                        
                    07  SPA-GMN-KBNCDLST-G.
                        09  SPA-GMN-KBNCDLST   OCCURS  99.
@@ -437,15 +432,9 @@
       *
            INITIALIZE   SPA-W18-AREA
       *
-      *----(03.04.01)--UPD-START---
-      *----(04.01.00)--UPD-START---
-      *----(04.02.00)--UPD-START---
-      *----(04.03.01)--UPD-START---
-           MOVE    20                  TO  SPA-GMN-PRTKBN-MAX
-      *----(04.03.01)--UPD-END-----
-      *----(04.02.00)--UPD-END-----
-      *----(04.01.00)--UPD-END-----
-      *----(03.04.01)--UPD-END-----
+      *----(04.04.00)--UPD-START---
+           MOVE    21                  TO  SPA-GMN-PRTKBN-MAX
+      *----(04.04.00)--UPD-END-----
       *
            MOVE    SPA-W01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
@@ -1991,6 +1980,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                 WHEN    120
                     MOVE  "PRTKBN20"          TO   MCP-WIDGET
       *----(04.03.01)--ADD-END-----
+      *----(04.04.00)--ADD-START---
+                WHEN    121
+                    MOVE  "PRTKBN21"          TO   MCP-WIDGET
+      *----(04.04.00)--ADD-END-----
                 WHEN    200
                     MOVE  "B12"              TO   MCP-WIDGET
             END-EVALUATE
@@ -2031,29 +2024,37 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    10          TO  SPA-GMN-CUR
                WHEN    "FAX"
                    MOVE    200         TO  SPA-GMN-CUR
+      *----(04.04.00)--UPD-START---
                WHEN    "PRTKBN1"
                    MOVE    102         TO  SPA-GMN-CUR
                WHEN    "PRTKBN2"
                    MOVE    103         TO  SPA-GMN-CUR
                WHEN    "PRTKBN3"
-      *----(04.01.00)--UPD-START---
                    MOVE    114         TO  SPA-GMN-CUR
-      *----(04.01.00)--UPD-END-----
+               WHEN    "PRTKBN14"
+                   MOVE    104         TO  SPA-GMN-CUR
                WHEN    "PRTKBN4"
                    MOVE    105         TO  SPA-GMN-CUR
                WHEN    "PRTKBN5"
                    MOVE    106         TO  SPA-GMN-CUR
                WHEN    "PRTKBN6"
-      *----(03.04.01)--ADD-START---
-      *----(04.01.00)--UPD-START---
                    MOVE    115         TO  SPA-GMN-CUR
-      *----(04.01.00)--UPD-END-----
+               WHEN    "PRTKBN15"
+                   MOVE    119         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN19"
+                   MOVE    120         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN20"
+                   MOVE    121         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN21"
+                   MOVE    107         TO  SPA-GMN-CUR
                WHEN    "PRTKBN7"
                    MOVE    108         TO  SPA-GMN-CUR
                WHEN    "PRTKBN8"
-      *----(04.01.00)--UPD-START---
                    MOVE    116         TO  SPA-GMN-CUR
-      *----(04.01.00)--UPD-END-----
+               WHEN    "PRTKBN16"
+                   MOVE    117         TO  SPA-GMN-CUR
+               WHEN    "PRTKBN17"
+                   MOVE    109         TO  SPA-GMN-CUR
                WHEN    "PRTKBN9"
                    MOVE    110         TO  SPA-GMN-CUR
                WHEN    "PRTKBN10"
@@ -2063,32 +2064,10 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "PRTKBN12"
                    MOVE    113         TO  SPA-GMN-CUR
                WHEN    "PRTKBN13"
-      *----(04.02.00)--UPD-START---
-      *----(03.04.01)--ADD-END-----
                    MOVE    118         TO  SPA-GMN-CUR
-      *----(04.01.00)--ADD-START---
-      *----(04.02.00)--UPD-END-----
-               WHEN    "PRTKBN14"
-                   MOVE    104         TO  SPA-GMN-CUR
-               WHEN    "PRTKBN15"
-      *----(04.03.01)--ADD-START---
-                   MOVE    119         TO  SPA-GMN-CUR
-               WHEN    "PRTKBN19"
-      *----(04.03.01)--ADD-END-----
-                   MOVE    107         TO  SPA-GMN-CUR
-               WHEN    "PRTKBN16"
-      *----(04.02.00)--ADD-START---
-                   MOVE    117         TO  SPA-GMN-CUR
-               WHEN    "PRTKBN17"
-      *----(04.02.00)--ADD-END-----
-      *----(04.03.01)--ADD-START---
-                   MOVE    120         TO  SPA-GMN-CUR
-               WHEN    "PRTKBN20"
-      *----(04.03.01)--ADD-END-----
-                   MOVE    109         TO  SPA-GMN-CUR
                WHEN    "PRTKBN18"
                    MOVE    200         TO  SPA-GMN-CUR
-      *----(04.01.00)--ADD-END-----
+      *----(04.04.00)--UPD-END-----
            END-EVALUATE
       *
            .

@@ -188,6 +188,13 @@ W18	{
 					count	int;
 					item	varchar(21)[99];
 				};
+				PRTKBN21_COMBO	{
+					PRTKBN21	{
+						value	varchar(21);
+					};
+					count	int;
+					item	varchar(21)[99];
+				};
 			};
 		};
 		HHOSPNAME	{
