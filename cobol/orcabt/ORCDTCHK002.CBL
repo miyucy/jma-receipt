@@ -7967,7 +7967,9 @@
                    UNTIL ( IDX6    >   TSRYCD-MAX )
       *
                INITIALIZE  WRK-NISSU-DAY-G
+      *        器材（酸素補正率を除く）の単位コードをチェックする。
                IF    ( TSRYCD-SRYCD (IDX6)(1:1)    =   "7" )
+                AND  ( TSRYCD-SRYCD (IDX6)     NOT =   "770020070" )
                    MOVE    TSRYCD-SRYCD (IDX6)
                                                TO  WRK-SRYCD
                    MOVE    TSRYCD-SRYCD (IDX6) TO  WRK-TNS-YMD
