@@ -7,11 +7,18 @@ X04	{
 			label	varchar(10);
 			state	int;
 		};
+		B06	{
+			label	varchar(10);
+		};
 		B09	{
 			state	int;
 		};
 		B10	{
 			state	int;
+		};
+		LBLREIGAIYKZ	{
+			style	varchar(20);
+			value	varchar(30);
 		};
 		BTN_ALLINS	{
 			state	int;

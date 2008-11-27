@@ -307,6 +307,7 @@
            03  CONST-SRCBYOLST-MAX         PIC 9(05)   VALUE   50.
            03  CONST-CDLST-MAX             PIC 9(05)   VALUE   30.
            03  CONST-SRTKBN-MAX            PIC 9(05)   VALUE   50.
+           03  CONST-REIGAIYKZ-MAX         PIC 9(05)   VALUE   100.
       *
            03  CONST-JYKNKBN-G.
                05  CONST-JYKNKBN-MAX    PIC 9(05) VALUE 4.
@@ -432,6 +433,7 @@
            COPY    "X03.INC".
            COPY    "X04.INC".
            COPY    "X05.INC".
+           COPY    "X06.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -545,6 +547,8 @@
            WHEN    "X03"
                PERFORM 340-X03-SET-SEC
                GO  TO  300-SCREEN-EXT
+           WHEN    "X06"
+               GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -559,6 +563,7 @@
        310-SPASET-SEC                  SECTION.
       *
            INITIALIZE                  SPA-X04
+                                       SPA-X06-AREA
       *
            MOVE    SPA-X01-STYUKYMDH   TO  SPA-GMN-STYUKYMD
            MOVE    SPA-X01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
@@ -596,6 +601,26 @@
                                            SPA-GMN-SRCUTAGAIKBN-G
       *
            PERFORM 3101-BYOLST-SEC
+      *
+           IF    ( SPA-X01-CHKKBN      =   "1" )
+               PERFORM 900-CHKSND-KEY3-SEL-SEC
+      *
+               PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
+                        OR   ( SPA-X06-MAX    >=  CONST-REIGAIYKZ-MAX )
+      *
+                   COMPUTE SPA-X06-MAX
+                       =   SPA-X06-MAX +   1
+      *
+                   MOVE    CHKSND-CD   TO  SPA-X06-TEKCD (SPA-X06-MAX)
+      *
+                   PERFORM 900-CHKSND-KEY3-FET-SEC
+      *
+               END-PERFORM
+      *
+               MOVE    "tbl_chksnd"    TO  MCP-TABLE
+               MOVE    "key3"          TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+           END-IF
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
@@ -991,6 +1016,11 @@
       *    病名登録
            WHEN    "CLICKED"       ALSO    "B05"
                PERFORM 4101-BYOTRK-SEC
+      *    チェック項目複写
+           WHEN    "CLICKED"       ALSO    "B06"
+               IF    ( SPA-X01-CHKKBN      =   "1" )
+                   PERFORM 409-X06-SENI-SEC
+               END-IF
       *    病名削除
            WHEN    "CLICKED"       ALSO    "B07"
            WHEN    "CLICKED"       ALSO    "BTN_DEL"
@@ -2978,6 +3008,45 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    例外薬剤登録画面
+      *****************************************************************
+       409-X06-SENI-SEC                SECTION.
+      *
+           PERFORM 220-CLEAR-SEC
+      *
+           MOVE    SPA-X01KYOUTU   TO  SPA-WORK
+           MOVE    SPA-AREA        TO  SPA-COMMON
+           MOVE    SPA-X04         TO  SPA-X01SONOTA
+           MOVE    SPA-X01FREE     TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGX06"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-X01KYOUTU
+           MOVE    SPA-FREE        TO  SPA-X01FREE
+           MOVE    SPA-X01SONOTA   TO  SPA-X04
+      *
+           MOVE    "X06"               TO  SPA-SAKIPG
+           MOVE    "X04"               TO  SPA-MOTOPG
+      *
+           MOVE   "NEW"                TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       409-X06-SENI-EXT.
+           EXIT.
+      *****************************************************************
       *    チェック項目複写処理
       *****************************************************************
        409-X03-SENI-SEC                SECTION.
@@ -3166,6 +3235,7 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            PERFORM VARYING IDXD    FROM    1   BY  1
                    UNTIL ( IDXD    >   SPA-GMN-BYOLST-MAX )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
       *
                INITIALIZE                  CHKSND-REC
                MOVE    SPA-X01-CHKKBN      TO  CHKSND-CHKKBN
@@ -3205,15 +3275,62 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                PERFORM 910-DBINSERT-SEC
                IF    ( MCP-RC              NOT =   ZERO )
                    MOVE    "1001"                  TO  SPA-ERRCD
-                   GO  TO  490-KOUSHIN-EXT
                END-IF
            END-PERFORM
       *
-           MOVE   "JOIN"               TO   MCP-PUTTYPE
-           PERFORM 210-BACK
+           IF    ( SPA-ERRCD           =    SPACE )
+               IF    ( SPA-X06-MAX         >    ZERO )
+                   PERFORM 4901-REIGAIYKZ-KOUSHIN-SEC
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =    SPACE )
+               MOVE   "JOIN"               TO   MCP-PUTTYPE
+               PERFORM 210-BACK
+           END-IF
       *
            .
        490-KOUSHIN-EXT.
+           EXIT.
+      *****************************************************************
+      *    例外薬剤更新処理
+      *****************************************************************
+       4901-REIGAIYKZ-KOUSHIN-SEC      SECTION.
+      *
+      *
+           PERFORM VARYING IDXD    FROM    1   BY  1
+                   UNTIL ( IDXD    >   SPA-X06-MAX )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               INITIALIZE                  CHKSND-REC
+               MOVE    SPA-X01-CHKKBN      TO  CHKSND-CHKKBN
+               MOVE    SPA-X01-SRYCD       TO  CHKSND-SRYCD
+               MOVE    SPA-X01-STYUKYMD    TO  CHKSND-YUKOSTYMD
+               MOVE    SPA-X01-EDYUKYMD    TO  CHKSND-YUKOEDYMD
+               MOVE    "3"                 TO  CHKSND-CDKBN
+      *
+               MOVE    IDXD                TO  CHKSND-RENNUM
+      *
+               MOVE    SPA-X06-TEKCD(IDXD) TO  CHKSND-CD
+               MOVE    SPA-GMN-NYUGAIKBN   TO  CHKSND-NYUGAIKBN
+      *
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD        TO  CHKSND-CREYMD
+                                               CHKSND-UPYMD
+               MOVE    SMCNDATE-HMS        TO  CHKSND-UPHMS
+      *
+               MOVE    SPA-HOSPNUM         TO  CHKSND-HOSPNUM
+               MOVE    CHKSND-REC          TO  MCPDATA-REC
+               MOVE    "tbl_chksnd"        TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBINSERT-SEC
+               IF    ( MCP-RC              NOT =   ZERO )
+                   MOVE    "1004"          TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+      *
+           .
+       4901-REIGAIYKZ-KOUSHIN-EXT.
            EXIT.
       *****************************************************************
       *    適用コード編集処理
@@ -3573,6 +3690,16 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        X04-UTAGAIKBN-ITEM-STATE
            END-IF
       *
+           IF    ( SPA-X01-CHKKBN  =   "1" )
+               MOVE    "例外薬剤"  TO  X04-B06-LABEL
+           END-IF
+      *
+           MOVE    "blue"          TO  X04-LBLREIGAIYKZ-STYLE
+           IF    ( SPA-X06-MAX     >   ZERO )
+               MOVE    "例外薬剤の登録があります。"
+                                   TO  X04-LBLREIGAIYKZ
+           END-IF
+      *
       *    カーソル位置
            PERFORM 5001-MAPCUR-SEC
       *
@@ -3776,6 +3903,7 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    "病名の登録がありません"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
+           WHEN    "1004"
                MOVE    "更新ができませんでした"
                                        TO  SPA-ERRMSG
            WHEN    "1002"
@@ -3950,6 +4078,62 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            .
       *
        900-CHKSND-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ２検索処理
+      *****************************************************************
+       900-CHKSND-KEY3-SEL-SEC       SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHKSND
+      *
+           INITIALIZE                      CHKSND-REC
+           MOVE    SPA-X01-CHKKBN      TO  CHKSND-CHKKBN
+           MOVE    SPA-X01-SRYCD       TO  CHKSND-SRYCD
+           IF    ( SPA-X01-SEL-STYUKYMD    =    SPACE )
+               MOVE    SPA-X01-STYUKYMD
+                                       TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
+           ELSE
+               MOVE    SPA-X01-SEL-STYUKYMD
+                                       TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
+           END-IF
+           MOVE    "3"                 TO  CHKSND-CDKBN
+      *
+           MOVE    SPA-HOSPNUM         TO  CHKSND-HOSPNUM
+           MOVE    CHKSND-REC          TO  MCPDATA-REC
+           MOVE    "tbl_chksnd"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  CHKSND-REC
+           ELSE
+               MOVE    1               TO  FLG-CHKSND
+               INITIALIZE                  CHKSND-REC
+           END-IF
+      *
+           .
+      *
+       900-CHKSND-KEY3-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ２FETCH処理
+      *****************************************************************
+       900-CHKSND-KEY3-FET-SEC      SECTION.
+      *
+           MOVE    "tbl_chksnd"        TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC    =     ZERO )
+               MOVE    MCPDATA-REC     TO  CHKSND-REC
+           ELSE
+               MOVE    1               TO  FLG-CHKSND
+               INITIALIZE                  CHKSND-REC
+           END-IF
+      *
+           .
+      *
+       900-CHKSND-KEY3-FET-EXT.
            EXIT.
       *****************************************************************
       *    システム管理検索処理

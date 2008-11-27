@@ -275,6 +275,7 @@
            COPY    "X03.INC".
            COPY    "X04.INC".
            COPY    "X05.INC".
+           COPY    "X06.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -1121,8 +1122,8 @@
                                        TO  WRK-SRYCD
       *
            PERFORM VARYING IDX3    FROM    1   BY  1
-                   UNTIL  (IDX3    >   CONST-LINE-MAX  )   OR
-                          (WRK-SRYCD (IDX3:1)
+                   UNTIL  (IDX3    >   20  )   OR
+                          (WRK-SRYCD (IDX3:)
                                    =   SPACE  )
       *
                COMPUTE WRK-MOJI    =   WRK-MOJI    +   1

@@ -73,6 +73,11 @@
       *----(01.00.02)--ADD-START---
                07  SPA-X97-FLG                 PIC X(02).
       *----(01.00.02)--ADD-END-----
+      *£Ø£°£¶²èÌÌ¤è¤ê
+           05  SPA-X06-AREA.
+               07  SPA-X06-MAX             PIC 9(05).
+               07  SPA-X06-TEKCD           PIC X(09)
+                                           OCCURS  100.
       *£Ø£¹£¸²èÌÌ¤è¤ê
            05  SPA-X98-AREA.
                07  SPA-X98-SYORIKBN        PIC X(01).

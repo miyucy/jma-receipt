@@ -3,6 +3,7 @@ SRCS = ORCGX01.CBL \
        ORCGX03.CBL \
        ORCGX04.CBL \
        ORCGX05.CBL \
+       ORCGX06.CBL \
        ORCGX91.CBL \
        ORCGX97.CBL \
        ORCGX98.CBL \

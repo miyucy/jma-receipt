@@ -113,6 +113,19 @@
                        09  SPA-X03-NAI-TSEL-YUKOEDYMD  PIC X(08).
                05  SPA-X03-NAI-KJNYMD                  PIC X(08).
       *
+      *    £Ø£°£¶²èÌÌÍÑ
+           03  SPA-GMN-X06-AREA.
+               05  SPA-GMN-X06-PAGE                PIC 9(03).
+               05  SPA-GMN-X06-CUR                 PIC 9(03).
+               05  SPA-GMN-X06-SRYCD               PIC X(09).
+               05  SPA-GMN-X06-NAME                PIC X(100).
+               05  SPA-GMN-X06-TEK-G.
+                   07  SPA-GMN-X06-TEK-MAX         PIC 9(05).
+                   07  SPA-GMN-X06-TEK-OCC         OCCURS  100.
+                       09  SPA-GMN-X06-TEKCD       PIC X(20).
+                       09  SPA-GMN-X06-TEKNAME     PIC X(100).
+                       09  SPA-GMN-X06-TEKCDBF     PIC X(20).
+      *
       *    £Ø£¹£¸²èÌÌÍÑ
            03  SPA-X98-MOTOPG                    PIC X(08).
            03  SPA-X98GMN-AREA.

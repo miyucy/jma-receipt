@@ -362,6 +362,7 @@
            COPY    "X03.INC".
            COPY    "X04.INC".
            COPY    "X05.INC".
+           COPY    "X06.INC".
            COPY    "X91.INC".
            COPY    "X97.INC".
            COPY    "X98.INC".
@@ -2043,7 +2044,7 @@
                WHEN    "ACTIVATE"      ALSO    "SELNUM3"
                WHEN    "ACTIVATE"      ALSO    "SELNUM4"
                WHEN    "ACTIVATE"      ALSO    "SELNUM5"
-                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" )
+                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
                        MOVE    MCP-WIDGET(7:1)     TO  IDX-N
                        MOVE    ZERO                TO  FLG-TOUROKU
                        PERFORM 41011-SELNUM-ALLCHK-SEC
@@ -2317,7 +2318,7 @@
                IF      SPA-X98-GMN-SYORI2  =   SPACE
                    PERFORM 41013-KENSA-GRP-SEC
                ELSE
-                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" )
+                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
                        PERFORM 41014-KENSA-SEL-SEC
                    ELSE
                        PERFORM 41012-SRYCD-SEL-SEC
@@ -2325,7 +2326,7 @@
                END-IF
            ELSE
       *********PERFORM 41014-KENSA-SEL-SEC
-               IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" )
+               IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
                    PERFORM 41014-KENSA-SEL-SEC
                ELSE
                    PERFORM 41012-SRYCD-SEL-SEC
@@ -2558,14 +2559,14 @@
                IF      SPA-X98-GMN-SYORI2  =   SPACE
                    PERFORM 41013-KENSA-GRP-SEC
                ELSE
-                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" )
+                   IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
                        PERFORM 41014-KENSA-SEL-SEC
                    ELSE
                        PERFORM 41012-SRYCD-SEL-SEC
                    END-IF
                END-IF
            ELSE
-               IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" )
+               IF    ( SPA-X98-MOTOPG  =   "X02" OR "X05" OR "X06")
                    PERFORM 41014-KENSA-SEL-SEC
                ELSE
                    PERFORM 41012-SRYCD-SEL-SEC

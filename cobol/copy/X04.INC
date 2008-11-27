@@ -4,8 +4,12 @@
               03  X04-B05-G.
                   05  X04-B05-LABEL PIC X(10).
                   05  X04-B05-STATE PIC S9(9)   BINARY.
+              03  X04-B06-LABEL PIC X(10).
               03  X04-B09-STATE PIC S9(9)   BINARY.
               03  X04-B10-STATE PIC S9(9)   BINARY.
+              03  X04-LBLREIGAIYKZ-G.
+                04  X04-LBLREIGAIYKZ-STYLE  PIC X(20).
+                04  X04-LBLREIGAIYKZ        PIC X(30).
               03  X04-BTN-ALLINS-STATE PIC S9(9)   BINARY.
               03  X04-CHKKBN.
                 04  X04-VALUE   PIC X(50).

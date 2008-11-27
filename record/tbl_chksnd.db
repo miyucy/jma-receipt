@@ -58,6 +58,7 @@ path	key2	{
 			AND   SRYCD       =   :SRYCD
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			AND   CDKBN       =   '1'
 			ORDER   BY        SRYCD,
                                           RENNUM
 		;
@@ -91,6 +92,7 @@ path	key4	{
 			AND   SRYCD       =   :SRYCD
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			AND   CDKBN       =   '1'
 			ORDER   BY        SRYCD,
                                           RENNUM
 		;
@@ -107,6 +109,7 @@ path	key5	{
 			AND   CDKBN       =   :CDKBN
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			AND   CDKBN       =   '1'
 			ORDER   BY        SRYCD,
                                           RENNUM
 		;
@@ -175,6 +178,7 @@ path	key6	{
 		WHERE 	HOSPNUM	= :HOSPNUM
 			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
+			AND   CDKBN       =   '1'
 			ORDER  BY  YUKOSTYMD,
                                    RENNUM
 		;
@@ -270,6 +274,7 @@ path	key11	{
 		AND A.YUKOSTYMD    <= :YUKOSTYMD
 		AND A.YUKOEDYMD    >= :YUKOEDYMD
 		AND A.RENNUM        = 1 
+		AND A.CDKBN       =   '1'
 		AND B.HOSPNUM	= A.HOSPNUM
 		AND B.SRYCD         = A.SRYCD
 		AND B.YUKOSTYMD    <= :YUKOSTYMD
@@ -289,6 +294,7 @@ path	key12	{
 		WHERE 	HOSPNUM	= :HOSPNUM
 			AND   CHKKBN    =   :CHKKBN
 			AND   SRYCD       =   :SRYCD
+			AND   CDKBN       =   '1'
 			AND   RENNUM      =   1
 			ORDER  BY  YUKOSTYMD,
                                    RENNUM
@@ -322,6 +328,7 @@ path	key14	{
 		FROM tbl_chksnd
 		WHERE 	HOSPNUM	= :HOSPNUM
 			AND CHKKBN    in ( '1','2')
+			AND   CDKBN       =   '1'
 			 GROUP  BY  CHKKBN,SRYCD,YUKOSTYMD,YUKOEDYMD,CDKBN
 			 ORDER BY  CHKKBN,SRYCD,YUKOSTYMD,YUKOEDYMD,CDKBN
 		;
@@ -337,6 +344,7 @@ path	key15	{
 			AND 	CHKKBN  = :CHKKBN
 			AND   YUKOSTYMD  <=   :YUKOSTYMD
 			AND   YUKOEDYMD  >=   :YUKOEDYMD
+			AND   CDKBN       =   '1'
 			AND   RENNUM      =   1
 			ORDER   BY        SRYCD
 		;
