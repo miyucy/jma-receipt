@@ -87,7 +87,8 @@ shell_sources = \
 	tools/db-backup.sh.in \
 	tools/run_master_upgrade.sh.in \
 	monthly/receipt_export.sh.in \
-	allways/das-check.sh.in
+	allways/das-check.sh.in \
+	allways/orc_cups_del.sh.in
 
 ruby_scripts = \
 	daily/print-data.rb \
