@@ -337,6 +337,7 @@
            03  CNT-GAIHAKU-ERR                         PIC 9(06).
            03  CNT-CHIHOU                              PIC 9(06).
            03  CNT-UNCHIHOU                            PIC 9(06).
+           03  CNT-CHKSND                              PIC 9(06).
       *
       *    システム領域
        01  SYS-AREA.
@@ -1689,9 +1690,6 @@
       *
       *            患者番号取得処理
                    PERFORM 900-PTNUM-KEY-SEL-SEC
-      *
-           DISPLAY "---------------------------------"
-           DISPLAY "PTNUM-PTNUM [" PTNUM-PTNUM "]"
       *
       *            チェック項目情報退避処理
                    PERFORM 20011-CHK-DATA-TAIHI-SEC
@@ -5381,9 +5379,7 @@
                                            CHKSND-YUKOEDYMD
            MOVE    WRK-PARA-HOSPNUM    TO  CHKSND-HOSPNUM
            MOVE    CHKSND-REC          TO  TCHKSND-REC
-           DISPLAY "CHKSND-SRYCD =" CHKSND-SRYCD
            PERFORM 900-CHKSND-KEY13-SEL-SEC
-           DISPLAY "FLG-CHKSND =" FLG-CHKSND
            IF    ( FLG-CHKSND           =   ZERO )
                IF    ( CHKSND-NYUGAIKBN    =   SPACE )
                 OR   ( CHKSND-NYUGAIKBN    =   ORCBSD01-NYUGAIKBN )
@@ -5399,8 +5395,14 @@
       *
                MOVE    TSRYKA-SRYCD-DAY-G (IDX6 IDX7)
                                        TO  WRK-CHKDAY-G
-               PERFORM 2001121-REIGAIYKZ-CHK-SEC
-               DISPLAY "WRK-CHKDAY-G [" WRK-CHKDAY-G "]"
+               MOVE    "1"             TO  WRK-CHK-CHKKBN
+               MOVE    "3"             TO  WRK-CHK-CDKBN
+               MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  WRK-CHK-SRYCD
+               PERFORM 900-DTCHK008-READ-SEC
+               IF    ( FLG-DTCHK008    =   1 )
+                   PERFORM 2001121-REIGAIYKZ-CHK-SEC
+               END-IF
                IF    ( WRK-CHKDAY-G    NOT =   ZERO )
       *
                    MOVE    TCHKSND-REC         TO  CHKSND-REC
@@ -5453,6 +5455,8 @@
       *****************************************************************
        2001121-REIGAIYKZ-CHK-SEC       SECTION.
       *
+           MOVE    ZERO                TO  CNT-CHKSND
+      *
            INITIALIZE                      CHKSND-REC
            MOVE    "1"                 TO  CHKSND-CHKKBN
            MOVE    "3"                 TO  CHKSND-CDKBN
@@ -5462,7 +5466,6 @@
                                            CHKSND-YUKOEDYMD
            MOVE    WRK-PARA-HOSPNUM    TO  CHKSND-HOSPNUM
            PERFORM 900-DTCHK010-START-SEC
-           DISPLAY "FLG-DTCHK010 =" FLG-DTCHK010
            IF    ( FLG-DTCHK010        =   ZERO )
                PERFORM UNTIL ( FLG-DTCHK010    NOT =   ZERO )
       *
@@ -5483,6 +5486,8 @@
                    MOVE    CHKSND-REC  TO  DTCHK010-REC
                    WRITE   DTCHK010-REC
       *
+                   COMPUTE CNT-CHKSND  =   CNT-CHKSND  +   1
+      *
                    PERFORM 900-CHKSND-KEY3-FET-SEC
       *
                END-PERFORM
@@ -5490,6 +5495,14 @@
                MOVE    "tbl_chksnd"    TO  MCP-TABLE
                MOVE    "key3"          TO  MCP-PATHNAME
                PERFORM 910-DBCLOSECURSOR-SEC
+      *
+               IF    ( CNT-CHKSND      =   ZERO )
+                   MOVE    "1"         TO  WRK-CHK-CHKKBN
+                   MOVE    "3"         TO  WRK-CHK-CDKBN
+                   MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                       TO  WRK-CHK-SRYCD
+                   PERFORM 900-DTCHK008-WRITE-SEC
+               END-IF
       *
            END-IF
       *
@@ -10391,6 +10404,9 @@
       *
            MOVE    CHKSND-REC      TO  DTCHK010-REC
                                        KEYCHKSND-REC
+      *
+           MOVE    ZERO            TO  DTCHK010-YUKOSTYMD
+                                       DTCHK010-YUKOEDYMD
       *
            START   DTCHK010-FILE
                KEY IS  >=   DTCHK010-KEY
