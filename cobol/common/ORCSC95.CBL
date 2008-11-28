@@ -557,6 +557,14 @@
                    PERFORM 11012-BYOMEI-HENSYU-SEC
       *            特定疾患の有無検索
                    PERFORM 11011-TOKUTEI-SYORI-SEC
+      *        保険変更時
+               WHEN    "H"
+      *            保険組合せチェック・編集
+                   IF      SPA-HKNCOMBINUM     =   SPACE
+                       PERFORM 100131-HKNCOMBI-CHK-SEC
+                   ELSE
+                       PERFORM 400-HKNCOMBI-CHKHEN-SEC
+                   END-IF
            END-EVALUATE
       *
            .
@@ -2963,6 +2971,33 @@
       *****************************************************************
        100131-HKNCOMBI-CHK-SEC             SECTION.
       *
+           PERFORM 400-HKNCOMBI-CHKHEN-SEC
+           IF      FLG-HKNCOMBICHK     =   ZERO
+               MOVE    SPACE           TO  SPA-ERRCD
+               MOVE    ZERO            TO  SPA-HKN-ERR
+      *        前回の保険組合せが使用できない時、１件目
+      *        Ｋ１０からの時は、そのまま
+               IF      LNK-SC95-PG         =   "K10"
+                   MOVE    SPACE               TO  SPA-GMN-HKNCOMBI-G
+                   MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
+                   MOVE    ZERO                TO  SPA-HKNKBN
+                   MOVE    ZERO                TO  SPA-HKNID
+                   MOVE    SPACE               TO  SPA-RSI-HKNKBN
+                   GO      TO      100131-HKNCOMBI-CHK-EXT
+               END-IF
+      *
+      *        省略時の保険組合せ決定
+               PERFORM 1001311-HKNCOMBI-SET-SEC
+      *        前回の保険組合せとの判定
+               IF     (WRK-MAE-HKNCOMBI    NOT =   SPACE )
+                 AND  (SPA-ZENHKNCHK-FLG       =   "1"   )
+                   PERFORM 1001312-MAE-HKNCOMBICHEK-SEC
+               END-IF
+           END-IF
+      *!!!!
+      *!!!!
+                   GO      TO      100131-HKNCOMBI-CHK-EXT
+      *!!!!
       *    前回の保険組合せが使用できるかのチェック
            MOVE    ZERO                TO  FLG-HKNCOMBICHK
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3064,7 +3099,6 @@
       *
            .
        100131-HKNCOMBI-CHK-EXT.
-      *
            EXIT.
       *
       *****************************************************************
@@ -3114,29 +3148,11 @@
            IF      WRK-IDXH            =   ZERO
                MOVE    1               TO  WRK-IDXH
            END-IF
-     *
+      *
            MOVE    SPA-GMN-THKNCOMBINUM (WRK-IDXH)
                                        TO  SPA-HKNCOMBINUM
-     *
-           MOVE    SPA-GMN-HKN-LIST (WRK-IDXH)
-                                       TO  SPA-GMN-HKNCOMBI-G
-           MOVE    SPA-GMN-TFTNRATEMEI (WRK-IDXH)
-                                       TO  SPA-GMN-FTNRATEMEI
-      *    労災判定
-           IF      SPA-NAI-HKNNUM (WRK-IDXH)   =   "971"
-                                               OR  "973"
-               MOVE    1                   TO  SPA-HKNKBN
-           ELSE
-               MOVE    ZERO                TO  SPA-HKNKBN
-           END-IF
-      *    公害判定
-           IF      SPA-NAI-HKNNUM (WRK-IDXH)   =   "975"
-               MOVE    2                   TO  SPA-HKNKBN
-           END-IF
-           MOVE    SPA-NAI-HKNID (WRK-IDXH)
-                                       TO  SPA-HKNID
-           MOVE    SPA-NAI-RSI-HKNKBN (WRK-IDXH)
-                                       TO  SPA-RSI-HKNKBN
+      *    保険決定
+           PERFORM 400-HKNCOMBI-CHKHEN-SEC
       *
            .
        1001311-HKNCOMBI-SET-EXT.
@@ -3184,6 +3200,184 @@
            END-IF
            .
        1001312-MAE-HKNCOMBICHEK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険組合せチェック・編集処理
+      *****************************************************************
+       400-HKNCOMBI-CHKHEN-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNCOMBICHK
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-HKN-MAX
+               IF      SPA-HKNCOMBINUM     =   SPA-GMN-THKNCOMBINUM
+                                                         (IDY)
+                   MOVE    1               TO  FLG-HKNCOMBICHK
+                   MOVE    IDY             TO  IDX
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-HKNCOMBICHK     =   ZERO
+      *        選択した保険がない場合、エラー
+               MOVE   "1034"               TO  SPA-ERRCD
+               MOVE    4                   TO  SPA-HKN-ERR
+           ELSE
+      *        保険情報編集・年齢
+               IF      LNK-SC95-KBN        =   "H"
+                   PERFORM 4001-HKNCOMBI-HEN-SEC
+               ELSE
+                   MOVE    SPA-GMN-HKN-LIST (IDX)
+                                       TO  SPA-GMN-HKNCOMBI-G
+               END-IF
+           END-IF
+      *
+           .
+       400-HKNCOMBI-CHKHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    保険情報編集・年齢編集処理
+      *****************************************************************
+       4001-HKNCOMBI-HEN-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  SPA-HKN-ERR
+      *
+           MOVE    SPA-GMN-HKN-LIST (IDX)
+                                       TO  SPA-GMN-HKNCOMBI-G
+           MOVE    SPA-GMN-TFTNRATEMEI (IDX)
+                                       TO  SPA-GMN-FTNRATEMEI
+           MOVE    SPA-NAI-TFTNRATE    (IDX)
+                                       TO  SPA-GMN-FTNRATE
+      *    共通ＳＰＡへ
+           MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
+           MOVE    SPA-NAI-THKNCOMBIMEI(IDX)
+                                       TO  SPA-HKNCOMBIMEI
+           MOVE    SPA-GMN-HKNCOMBIMEI TO  SPA-HKNCOMBIMEI-60
+           MOVE    SPA-NAI-TFTNRATE    (IDX)
+                                       TO  SPA-FTNRATE
+           MOVE    SPA-GMN-TFTNRATEMEI (IDX)
+                                       TO  SPA-FTNRATEMEI
+           MOVE    SPA-NAI-HKNNUM     (IDX)
+                                       TO  SPA-HKNNUM
+           MOVE    SPA-NAI-KOH1HKNNUM  (IDX)
+                                       TO  SPA-KOH1HKNNUM
+           MOVE    SPA-NAI-KOH2HKNNUM  (IDX)
+                                       TO  SPA-KOH2HKNNUM
+           MOVE    SPA-NAI-KOH3HKNNUM  (IDX)
+                                       TO  SPA-KOH3HKNNUM
+           MOVE    SPA-NAI-KOH4HKNNUM  (IDX)
+                                       TO  SPA-KOH4HKNNUM
+      *    有効期間
+           MOVE    SPA-NAI-TEKSTYMD  (IDX)
+                                       TO  SPA-COB-TEKSTYMD
+           MOVE    SPA-NAI-TEKEDYMD  (IDX)
+                                       TO  SPA-COB-TEKEDYMD
+      *
+      *    労災 四肢区分
+           MOVE    SPA-NAI-RSI-SISIKBN (IDX)
+                                       TO  SPA-RSI-SISIKBN
+      *    労災 傷病年月日
+           MOVE    SPA-NAI-RSI-SHOBYOYMD (IDX)
+                                       TO  SPA-RSI-SHOBYOYMD
+           MOVE    SPA-NAI-RSI-HKNKBN (IDX)
+                                       TO  SPA-RSI-HKNKBN
+      *    労災判定
+           IF      SPA-HKNNUM          =   "971"
+                                       OR  "973"
+               MOVE    1               TO  SPA-HKNKBN
+           ELSE
+               MOVE    ZERO            TO  SPA-HKNKBN
+          END-IF
+      *    公害判定
+           IF      SPA-HKNNUM          =   "975"
+               MOVE    2               TO  SPA-HKNKBN
+           END-IF
+      *
+      *    保険算定年齢チェック等
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
+           MOVE    SPA-PTID            TO  AGECHK-PTID
+           MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
+           MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+           MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+                                       SPA-AREA
+           IF      AGECHK-FTNRATE  NOT =   ZERO
+      *        負担率
+               MOVE    AGECHK-FTNRATEMEI   TO  SPA-GMN-FTNRATEMEI
+               MOVE    AGECHK-FTNRATEMEI   TO  SPA-FTNRATEMEI
+               MOVE    AGECHK-FTNRATE      TO  SPA-GMN-FTNRATE
+               MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
+           END-IF
+           MOVE    SPACE               TO  SPA-RSI-JUNKYO
+           EVALUATE    AGECHK-HKNKBN
+      *        自賠責の健保準拠判定
+               WHEN     4
+                   MOVE    "4"             TO  SPA-RSI-HKNKBN
+                   MOVE    "1"             TO  SPA-RSI-JUNKYO
+      *        公務災害の健保準拠判定
+               WHEN    5
+                   MOVE    "5"             TO  SPA-RSI-HKNKBN
+                   MOVE    "1"             TO  SPA-RSI-JUNKYO
+           END-EVALUATE
+      *
+           MOVE    ZERO                TO  SPA-RJN-ERR
+           MOVE    ZERO                TO  SPA-HKN-ERR
+           MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
+           MOVE    ZERO                TO  SPA-NAI-KOHFLG
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
+      *
+      *    Ｈ１５．４以降の保険期間が違う時
+           IF      AGECHK-HKNCHK       =   1
+               MOVE    "1028"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-HKN-ERR
+           END-IF
+      *    Ｈ１５．４以降の公費期間が違う時
+           IF      AGECHK-HKNCHK       =   2
+               MOVE    "1032"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-HKN-ERR
+           END-IF
+      *    老人でＨ１４．１０の保険変更がない時
+           IF      AGECHK-RJNCHK       =   1
+               MOVE    "1027"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-RJN-ERR
+           END-IF
+      *    老人でＨ１８．１０の保険変更がない時（２割）
+           IF      AGECHK-RJNCHK       =   3
+               MOVE    "1070"              TO  SPA-ERRCD
+               MOVE    2                   TO  SPA-RJN-ERR
+           END-IF
+      *    Ｈ２０．４から後期高齢者の保険がない時
+           IF      AGECHK-RJNCHK       =   4
+               MOVE    "1076"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-RJN-ERR
+           END-IF
+           IF      AGECHK-RJNCHK       =   2
+               MOVE    1                   TO  SPA-NAI-ROUFLG
+           ELSE
+               MOVE    ZERO                TO  SPA-NAI-ROUFLG
+           END-IF
+      *
+      *    老人判定
+           MOVE    AGECHK-ROUJIN       TO  SPA-NAI-ROUJIN
+      *
+      *    地方公費単独
+           IF      AGECHK-KOHCHK       =   1
+               MOVE    ZERO            TO  SPA-NAI-KOHFLG-ERR
+               MOVE    1               TO  SPA-NAI-KOHFLG
+           END-IF
+      *
+      *    国保 前期高齢者変更チェック
+           IF      AGECHK-KAKUNINCHK   =   1
+               MOVE    ZERO            TO  SPA-NAI-ZENKIFLG-ERR
+               MOVE    1               TO  SPA-NAI-ZENKIFLG
+           END-IF
+           .
+       4001-HKNCOMBI-HEN-EXT.
            EXIT.
       *
       *****************************************************************

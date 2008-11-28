@@ -166,6 +166,8 @@
                        09  SPA-MAE-SRYKAMEI    PIC X(12).
       *            メモ登録有無
                    07  SPA-NAI-MEMOKBN           PIC X(01).
+      *        中途終了データ展開エラーあり
+               05  SPA-NAI-WKSRYERR          PIC 9(01).
       *        先ＰＧ
                05  SPA-NAI-SAKIPG            PIC X(08).
       *        複数診療科あり
