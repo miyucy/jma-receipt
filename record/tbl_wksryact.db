@@ -313,3 +313,20 @@ path	key10 	{
 		;
 	};
 };
+
+path	key11 	{
+	DBSELECT	{
+		DECLARE tbl_wksryact_key11_csr CURSOR FOR
+		SELECT *
+		FROM tbl_wksryact
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN    =   :NYUGAIKBN
+			AND   SRYYMD       =   :SRYYMD
+			ORDER   BY        PTID,
+                                          SRYKA,
+                                          HKNCOMBI,
+                                          ZAINUM,
+                                          RENNUM
+		;
+	};
+};
