@@ -1709,12 +1709,16 @@
                        ADD     1               TO  SPA-COM-NYU-KAI
                                                        (SPA-GMN-IDX)
                    ELSE
-                       MOVE    "9007"          TO  SPA-ERRCD
+                       MOVE    "9007"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  SPA-COM-CUR
+                                                       (SPA-GMN-IDX)
                    END-IF
       *            訂正の時、訂正日のみ
                    IF     (SPA-SYORIFLG        =   1   )  AND
                           (IDX             NOT =   WRK-SRYDD)
-                       MOVE    "9008"          TO  SPA-ERRCD
+                       MOVE    "9008"          TO  WRK-ERRCD
+                       MOVE    "1"             TO  SPA-COM-CUR
+                                                       (SPA-GMN-IDX)
                    END-IF
                END-IF
            END-PERFORM
