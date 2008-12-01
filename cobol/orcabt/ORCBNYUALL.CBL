@@ -137,6 +137,10 @@
                05  SYS-YY              PIC 9(02).
                05  SYS-MM              PIC 9(02).
                05  SYS-DD              PIC 9(02).
+           03  SYS-TIME.
+               05  SYS-THH             PIC 9(02).
+               05  SYS-TMM             PIC 9(02).
+               05  SYS-TSS             PIC 9(02).
       *
       *    ¥Ñ¥é¥á¥¿ÎÎ°è
        01  WRK-PARA.
@@ -201,8 +205,9 @@
                05  FILLER              PIC X(08)   VALUE
                    "¿ÇÎÅÆü¡§".
                05  ERR-SRYYMD          PIC X(22).
-               05  FILLER              PIC X(05)   VALUE   SPACE.
+               05  FILLER              PIC X(10)   VALUE   SPACE.
                05  ERR-SYSYMD          PIC X(10)   VALUE   SPACE.
+               05  ERR-TIME            PIC X(07)   VALUE   SPACE.
                05  ERR-PAGE            PIC ZZZ9.
                05  FILLER              PIC X(02)   VALUE   "ÊÇ".
            03  LST-ERR-HEAD2.
@@ -243,10 +248,11 @@
                05  FILLER              PIC X(08)   VALUE
                    "¿ÇÎÅÆü¡§".
                05  PRT-SRYYMD          PIC X(22).
-               05  FILLER              PIC X(05)   VALUE   SPACE.
+               05  FILLER              PIC X(10)   VALUE   SPACE.
                05  PRT-SYSYMD          PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(02)   VALUE   "P.".
+               05  PRT-TIME            PIC X(07)   VALUE   SPACE.
                05  PRT-PAGE            PIC ZZZ9.
+               05  FILLER              PIC X(02)   VALUE   "ÊÇ".
            03  LST-PRT-HEAD2.
                05  FILLER              PIC X(20)   VALUE
                    "´µ¼ÔÈÖ¹æ".
@@ -297,6 +303,12 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+           03  WRK-HENTIME.
+               05  FILLER          PIC X(01)   VALUE   "(".
+               05  WRK-THH         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ":".
+               05  WRK-TMM         PIC 9(02).
+               05  FILLER          PIC X(01)   VALUE   ")".
       *
       *½èÍýºÇÂç¹Ô
        01  MAX-LINE-VALUE          PIC 9(04)   VALUE   400.
@@ -614,6 +626,13 @@
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  ERR-SYSYMD
            MOVE    WRK-HENYMDG         TO  PRT-SYSYMD
+      *
+      *    ½èÍý»þ´Ö
+           ACCEPT  SYS-TIME            FROM    TIME
+           MOVE    SYS-THH             TO  WRK-THH
+           MOVE    SYS-TMM             TO  WRK-TMM
+           MOVE    WRK-HENTIME         TO  ERR-TIME
+           MOVE    WRK-HENTIME         TO  PRT-TIME
       *
       *£Ó£Ð£ÁÀßÄê
       *    ¿ÇÎÅÆü
