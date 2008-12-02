@@ -756,6 +756,9 @@
            INITIALIZE              SPA-SCR-REC
       *
            MOVE    ALL "*"             TO  SPA-TERMID
+      *    オペレータＩＤ
+           MOVE    LNK-PRTKANRI-OPID   TO  SPA-OPID
+           INSPECT SPA-OPID            REPLACING  ALL " "  BY  "*"
       *    入外区分
            MOVE    "1"                 TO  SPA-NYUGAIKBN
       *
@@ -868,8 +871,12 @@
            END-IF
            PERFORM
                UNTIL   FLG-WKSRYACT   =   1
-               MOVE    WKSRYACT-REC        TO  DATA-REC
-               WRITE   DATA-REC
+      *        更新処理中
+               IF      WKSRY-MOD-FLG       =   ZERO
+                   MOVE    WKSRYACT-REC        TO  DATA-REC
+                   WRITE   DATA-REC
+               END-IF
+      *
                MOVE    "tbl_wksryact"      TO  MCP-TABLE
                MOVE    "key11"             TO  MCP-PATHNAME
                PERFORM 940-WKSRYACT-READ-SEC
@@ -918,10 +925,6 @@
                        MOVE    1               TO  FLG-SYORI-ERR
                    END-IF
                END-IF
-      *        更新処理中
-               IF      WKSRY-MOD-FLG   NOT =   ZERO
-                   MOVE    1               TO  FLG-SYORI-ERR
-               END-IF
       *        対象データあり
                IF      FLG-SYORI-ERR       =   ZERO
                    ADD     1                   TO  CNT-IN
@@ -937,14 +940,8 @@
                END-IF
       *
                PERFORM 900-DATA-READ-SEC
-      ***      MOVE    "tbl_wksryact"      TO  MCP-TABLE
-      *        MOVE    "key11"              TO  MCP-PATHNAME
-      ***      PERFORM 940-WKSRYACT-READ-SEC
            END-PERFORM
       *
-      *    MOVE    "tbl_wksryact"      TO  MCP-TABLE
-      *    MOVE    "key11"             TO  MCP-PATHNAME
-      *    PERFORM 990-DBCLOSE-SEC
            CLOSE                       DATA-FILE
       *
            IF      LNK-WKSRYACT-MAX    >   ZERO
