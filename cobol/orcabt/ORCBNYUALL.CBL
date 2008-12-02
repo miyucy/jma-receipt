@@ -105,6 +105,7 @@
            03  FLG-ERR                 PIC 9(01).
            03  FLG-TOROKU              PIC 9(01).
            03  FLG-END-SYORI           PIC 9(01).
+           03  FLG-END-SYORI2          PIC 9(01).
            03  FLG-LOCKERR             PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
       *
@@ -1552,19 +1553,32 @@
       *****************************************************************
        530-TBLCHI-SYORI-SEC          SECTION.
       *
-           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-           INITIALIZE                  ORCSC100AREA
-           MOVE    "2"                 TO  ORCSC100-KBN
-           MOVE    "1"                 TO  ORCSC100-TOROKU
-           MOVE    ZERO                TO  ORCSC100-INIT
-           MOVE    ZERO                TO  ORCSC100-KENSADEL
-           MOVE    ZERO                TO  ORCSC100-RIHTEI
-           CALL    "ORCSC100"          USING
-                                       ORCSC100AREA
-                                       SPA-AREA
-                                       SPA-K02
-                                       SPA-SCR-REC
-           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           MOVE    ZERO                TO  FLG-END-SYORI2
+           PERFORM
+               UNTIL    FLG-END-SYORI2 =   1
+      *
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+               INITIALIZE                  ORCSC100AREA
+               MOVE    "2"                 TO  ORCSC100-KBN
+               MOVE    "1"                 TO  ORCSC100-TOROKU
+               MOVE    ZERO                TO  ORCSC100-INIT
+               MOVE    ZERO                TO  ORCSC100-KENSADEL
+               MOVE    ZERO                TO  ORCSC100-RIHTEI
+               CALL    "ORCSC100"          USING
+                                           ORCSC100AREA
+                                           SPA-AREA
+                                           SPA-K02
+                                           SPA-SCR-REC
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *        ·Ù¹ð¤ÏÅÐÏ¿ÂÐ¾Ý
+               IF      SPA-ERRCD(1:1)      =   "K"
+                   MOVE    ZERO                TO  FLG-ERR
+                   PERFORM 30010-KEIMSGSYORI-SEC
+                   MOVE    ZERO                TO  FLG-END-SYORI2
+               ELSE
+                   MOVE    1                   TO  FLG-END-SYORI2
+               END-IF
+           END-PERFORM
       *
            .
        530-TBLCHI-SYORI-EXT.
