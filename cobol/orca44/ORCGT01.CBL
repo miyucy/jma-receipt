@@ -111,6 +111,7 @@
       *  04.03.04    NACL-藤原    08/09/03  オンライン請求（個別請求）対応
       *
       *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
+      *  04.04.02    NACL-藤原    09/11/25  光ディスク等送付書作成対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -438,6 +439,7 @@
            COPY    "TERR.INC".
            COPY    "TID1.INC".
            COPY    "TID2.INC".
+           COPY    "TID3.INC".
            COPY    "TFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -563,6 +565,9 @@
                    GO      TO      300-SCREEN-EXT
                WHEN    "TID2"
                    PERFORM 340-TID2-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+               WHEN    "TID3"
+                   PERFORM 370-TID3-SET-SEC
                    GO      TO      300-SCREEN-EXT
                WHEN    "T02"
                    PERFORM 350-T02-SET-SEC
@@ -738,10 +743,30 @@ grpsys                                         SPA-AREA
                                        =   SPACE
                MOVE    "0"                 TO  SYS-200501-RECEDEN-CDRKBN
            END-IF 
+           IF      SYS-200501-RECEDEN-CDRKBN
+                                       =   SPACE
+               MOVE    "0"                 TO  SYS-200501-RECEDEN-CDRKBN
+           END-IF 
+           IF      SYS-200501-RECEDEN-LST1KBN
+                                       =   SPACE
+               MOVE    "1"                 TO
+                                           SYS-200501-RECEDEN-LST1KBN
+           END-IF 
+           IF      SYS-200501-RECEDEN-LST2KBN
+                                       =   SPACE
+               MOVE    "0"                 TO
+                                           SYS-200501-RECEDEN-LST2KBN
+           END-IF 
            MOVE    SYS-200501-KOUIKIKBN
                                        TO  SPA-NAI-200501-KOUIKIKBN
            MOVE    SYS-200501-KOUIKIRECEKBN
                                        TO  SPA-NAI-200501-KOUIKIRECEKBN
+           MOVE    SYS-200501-RECEDEN-LST1KBN
+                                       TO
+                                       SPA-NAI-200501-RECEDEN-LST1KBN
+           MOVE    SYS-200501-RECEDEN-LST2KBN
+                                       TO
+                                       SPA-NAI-200501-RECEDEN-LST2KBN
       *
            MOVE    WIDGET-INSENSITIVE  TO  SPA-B15-STATE
                                            SPA-B16-STATE
@@ -1960,6 +1985,48 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            PERFORM 490-KAKUNIN-SEC      
            .
        3601-CSV-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（ＴＩＤ３）ＯＫ処理
+      *****************************************************************
+       370-TID3-SET-SEC            SECTION.
+      *
+           IF      SPA-TID1-FLG    =   "NO"
+               EVALUATE    SPA-TIDCD
+                   WHEN    "1010"
+                   WHEN    "1014"
+                   WHEN    "1015"
+                   WHEN    "1016"
+                   WHEN    "1017"
+                   WHEN    "1018"
+                   WHEN    "1020"
+                   WHEN    "1021"
+                   WHEN    "1022"
+                   WHEN    "1023"
+                   WHEN    "1024"
+                   WHEN    "1025"
+      *                ジョブ管理チェック処理
+                       PERFORM 4501-JOBKANRI-CHK-SEC
+                       IF      SPA-ERRCD       =   SPACE
+                           MOVE    SPA-TID1-FLG    TO  SPA-RECEDEN-FLG 
+                           IF      SPA-GMN-DATAKBN     =   "1" OR  "2"
+                               MOVE    SPACE           TO  SPA-TID1-FLG
+                               MOVE    "2001"          TO  SPA-TIDCD
+                               GO  TO  370-TID3-SET-EXT
+                           ELSE
+                               PERFORM 460-RECEDEN-SEC
+                               GO  TO  370-TID3-SET-EXT
+                           END-IF
+                       END-IF
+               END-EVALUATE 
+           END-IF
+      *
+           MOVE    1               TO  SPA-GMN-CUR
+      *
+           INITIALIZE                  SPA-T01KYOUTU
+           .
+       370-TID3-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4130,6 +4197,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECEERR-HOSPNUM
                                    TO  SHELLTBL-ARG19
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG20
            MOVE    SPA-GMN-PRTKBN  TO  SHELLTBL-ARG21
+           MOVE    SPA-NAI-200501-RECEDEN-LST1KBN
+                                   TO  SHELLTBL-ARG22
+           MOVE    SPA-NAI-200501-RECEDEN-LST2KBN
+                                   TO  SHELLTBL-ARG23
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
@@ -4888,6 +4959,28 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            IF      SPA-TIDCD       NOT =   SPACE
                EVALUATE    SPA-TIDCD
+                   WHEN    "1010"
+                   WHEN    "1014"
+                   WHEN    "1015"
+                   WHEN    "1016"
+                   WHEN    "1017"
+                   WHEN    "1018"
+                   WHEN    "1020"
+                   WHEN    "1021"
+                   WHEN    "1022"
+                   WHEN    "1023"
+                   WHEN    "1024"
+                   WHEN    "1025"
+                       IF    ( SPA-NAI-200501-RECEDEN-LST1KBN
+                                               =   "1" )
+                       OR  ( ( SPA-NAI-200501-RECEDEN-LST2KBN
+                                               =   "1" )   AND
+                             ( SPA-GMN-PRTKBN  =   "1" )       )
+                           PERFORM 530-TID2SET-SEC
+                       ELSE
+                           PERFORM 540-TID3SET-SEC
+                       END-IF
+                       GO  TO  500-SET-SCREEN-EXT
                    WHEN    "1001"
                    WHEN    "1002"
                    WHEN    "1003"  
@@ -4897,20 +4990,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    "1007"
                    WHEN    "1008"
                    WHEN    "1009"
-                   WHEN    "1010"
                    WHEN    "1011"
-                   WHEN    "1014"  
-                   WHEN    "1015"
-                   WHEN    "1016"
-                   WHEN    "1017"
-                   WHEN    "1018"  
                    WHEN    "1019"  
-                   WHEN    "1020"
-                   WHEN    "1021"  
-                   WHEN    "1022"  
-                   WHEN    "1023"
-                   WHEN    "1024"  
-                   WHEN    "1025"  
                        PERFORM 530-TID2SET-SEC
                        GO  TO  500-SET-SCREEN-EXT
                    WHEN    OTHER
@@ -5221,7 +5302,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    エラーメッセージ表示理
+      *    確認メッセージ１表示処理
       *****************************************************************
        520-TIDSET-SEC              SECTION.
       *
@@ -5309,9 +5390,8 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
        520-TIDSET-EXT.
            EXIT.
       *
-      *
       *****************************************************************
-      *    確認メッセージ表示処理
+      *    確認メッセージ２表示処理
       *****************************************************************
        530-TID2SET-SEC              SECTION.
       *
@@ -5346,94 +5426,62 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE
                        "レセ電総括表（広域）の印刷処理を行います" 
                                        TO  WRK-TIDMSG
-               WHEN    "1010"
-                   MOVE    "社保分のレセプト電算データを作成します"
-                                       TO  WRK-TIDMSG
-                   MOVE    "（症状詳記の印刷を指定）"
-                                       TO  WRK-TIDMSG (39:)
                WHEN    "1011"
                    MOVE    "チェックリストの印刷処理を行います"
+                                       TO  WRK-TIDMSG
+               WHEN    "1019"
+                   MOVE    "主科未設定リストの印刷処理を行います"
+                                       TO  WRK-TIDMSG
+               WHEN    "1010"
+                   MOVE    "社保分のレセプト電算データを作成します"
                                        TO  WRK-TIDMSG
                WHEN    "1014"
                    MOVE    "国保分のレセプト電算データを作成します"
                                        TO  WRK-TIDMSG
-                   MOVE    "（症状詳記の印刷を指定）"
-                                       TO  WRK-TIDMSG (39:)
                WHEN    "1015"
                    MOVE
                        "社保分（入院）のレセプト電算データを作成します"
                                        TO  WRK-TIDMSG
-                   MOVE    "（症状詳記の印刷を指定）"
-                                       TO  WRK-TIDMSG (47:)
                WHEN    "1016"
                    MOVE
                    "社保分（入院外）のレセプト電算データを作成します"
                                        TO  WRK-TIDMSG
-                   MOVE    "（症状詳記の印刷を指定）"
-                                       TO  WRK-TIDMSG (49:)
                WHEN    "1017"
                    MOVE
                        "国保分（入院）のレセプト電算データを作成します"
                                        TO  WRK-TIDMSG
-                   MOVE    "（症状詳記の印刷を指定）"
-                                       TO  WRK-TIDMSG (47:)
                WHEN    "1018"
                    MOVE
                    "国保分（入院外）のレセプト電算データを作成します"
                                        TO  WRK-TIDMSG
-                   MOVE    "（症状詳記の印刷を指定）"
-                                       TO  WRK-TIDMSG (49:)
-               WHEN    "1019"
-                   MOVE    "主科未設定リストの印刷処理を行います"
+               WHEN    "1020"
+                   MOVE
+                       "広域分（入院）のレセプト電算データを作成します"
                                        TO  WRK-TIDMSG
-               WHEN    "1020"
-                   STRING
-                   "広域分（入院）のレセプト電算データを作成します"
-                                           DELIMITED  BY  SIZE
-                   "（症状詳記の印刷を指定）"
-                                           DELIMITED  BY  SIZE
-                                           INTO  WRK-TIDMSG
-                   END-STRING
                WHEN    "1021"
-                   STRING
-                 "広域分（入院外）のレセプト電算データを作成します"
-                                           DELIMITED  BY  SIZE
-                   "（症状詳記の印刷を指定）"
-                                           DELIMITED  BY  SIZE
-                                           INTO  WRK-TIDMSG
-                   END-STRING
+                   MOVE
+                   "広域分（入院外）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
                WHEN    "1022"
-                   STRING
-                 "広域分のレセプト電算データを作成します"
-                                           DELIMITED  BY  SIZE
-                   "（症状詳記の印刷を指定）"
-                                           DELIMITED  BY  SIZE
-                                           INTO  WRK-TIDMSG
-                   END-STRING
+                   MOVE    "広域分のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
                WHEN    "1023"
-                   STRING
-                   "国保・広域分（入院）のレセプト電算データを"
+                   STRING  "国保・広域分（入院）のレセプト電算データを"
                                            DELIMITED  BY  SIZE
-                   "作成します（症状詳記の印刷を指定）"
-                                           DELIMITED  BY  SIZE
+                           "作成します"    DELIMITED  BY  SIZE
                                            INTO  WRK-TIDMSG
                    END-STRING
                WHEN    "1024"
                    STRING
-                 "国保・広域分（入院外）のレセプト電算データを"
+                       "国保・広域分（入院外）のレセプト電算データを"
                                            DELIMITED  BY  SIZE
-                   "作成します（症状詳記の印刷を指定）"
-                                           DELIMITED  BY  SIZE
+                           "作成します"    DELIMITED  BY  SIZE
                                            INTO  WRK-TIDMSG
                    END-STRING
                WHEN    "1025"
-                   STRING
-                 "国保・広域分のレセプト電算データを"
-                                           DELIMITED  BY  SIZE
-                   "作成します（症状詳記の印刷を指定）"
-                                           DELIMITED  BY  SIZE
-                                           INTO  WRK-TIDMSG
-                   END-STRING
+                   MOVE
+                       "国保・広域分のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
            END-EVALUATE
       *
            EVALUATE    SPA-TIDCD
@@ -5449,64 +5497,199 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "1023"
                WHEN    "1024"
                WHEN    "1025"
-                   IF      FLG-RECEDEN-CHK      =   1
+               IF      FLG-RECEDEN-CHK      =   1
+                   STRING  "月遅れ分のレセ電データがありません。"
+                                               DELIMITED  BY  SIZE
+                           "このままレセプト電算データを作成しますか"
+                                               DELIMITED  BY  SIZE
+                                               INTO  WRK-TIDMSG
+                   END-STRING
+               END-IF
+           END-EVALUATE
+      *
+           MOVE    SPACE           TO  TID2
+      *
+           MOVE    "black"         TO  TID2-ID1MSG-STYLE
+                                       TID2-LABEL-STYLE
+      *
+           MOVE    SPA-TIDCD       TO  TID2-ID1CODE
+      *
+           EVALUATE    SPA-TIDCD
+               WHEN    "1010"
+               WHEN    "1014"
+               WHEN    "1015"
+               WHEN    "1016"
+               WHEN    "1017"
+               WHEN    "1018"
+               WHEN    "1020"
+               WHEN    "1021"
+               WHEN    "1022"
+               WHEN    "1023"
+               WHEN    "1024"
+               WHEN    "1025"
+                   IF  ( SPA-NAI-200501-RECEDEN-LST1KBN
+                                           =   "1" )
+                   AND ( ( SPA-NAI-200501-RECEDEN-LST2KBN
+                                           =   "1" )   AND
+                         ( SPA-GMN-PRTKBN  =   "1" )       )
                        STRING
-                       "月遅れ分のレセ電データがありません。このままレ"
-                                           DELIMITED  BY  SIZE
-                       "セプト電算データを作成しますか（症状詳記の印刷"
-                                           DELIMITED  BY  SIZE
-                       "を指定）"          DELIMITED  BY  SIZE
-                                           INTO  WRK-TIDMSG
+                         WRK-TIDMSG          DELIMITED  BY  SPACE
+                         "（症状詳記、光ディスク等送付書の印刷を指定）"
+                                             DELIMITED  BY  SIZE
+                                             INTO  TID2-ID1MSG
                        END-STRING
+                   ELSE
+                       IF    SPA-NAI-200501-RECEDEN-LST1KBN
+                                               =   "1"
+                           STRING  WRK-TIDMSG      DELIMITED  BY  SPACE
+                                   "（症状詳記の印刷を指定）"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO  TID2-ID1MSG
+                           END-STRING
+                       ELSE
+                           STRING  WRK-TIDMSG      DELIMITED  BY  SPACE
+                                   "（光ディスク等送付書の印刷を指定）"
+                                                   DELIMITED  BY  SIZE
+                                                   INTO  TID2-ID1MSG
+                           END-STRING
+                       END-IF 
+                   END-IF    
+                   IF      FLG-RECEDEN-CHK =   1
+                       MOVE    "red"           TO  TID2-ID1MSG-STYLE
                    END-IF
+                   MOVE    "blue"              TO  TID2-LABEL-STYLE
+                   IF      SPA-GMN-PRTKBN      =   "2"
+                       MOVE    "【点検用】"        TO  TID2-LABEL
+                   END-IF
+               WHEN    OTHER
+                   MOVE    WRK-TIDMSG      TO  TID2-ID1MSG
            END-EVALUATE
       *
-           MOVE    SPACE                TO  TID2
-           MOVE    SPA-TIDCD            TO  TID2-ID1CODE
-           MOVE    WRK-TIDMSG           TO  TID2-ID1MSG
-           MOVE    "F11:印刷しない"     TO  TID2-B11-LABEL
-           MOVE    "F12:印刷する"       TO  TID2-B12-LABEL
-      *
-           MOVE    "black"          TO  TID2-ID1MSG-STYLE
-                                        TID2-LABEL-STYLE
-           EVALUATE    SPA-TIDCD
-               WHEN    "1010"
-               WHEN    "1014"
-               WHEN    "1015"
-               WHEN    "1016"
-               WHEN    "1017"
-               WHEN    "1018"
-               WHEN    "1020"
-               WHEN    "1021"
-               WHEN    "1022"
-               WHEN    "1023"
-               WHEN    "1024"
-               WHEN    "1025"
-                   IF      FLG-RECEDEN-CHK      =   1
-                       MOVE    "red"            TO  TID2-ID1MSG-STYLE
-                   END-IF
-                   MOVE    "blue"               TO  TID2-LABEL-STYLE
-                   IF      SPA-GMN-PRTKBN       =   "2"
-                       MOVE    "【点検用】"         TO  TID2-LABEL
-                    END-IF
-           END-EVALUATE
+           MOVE    "F11:印刷しない"
+                                   TO  TID2-B11-LABEL
+           MOVE    "F12:印刷する"  TO  TID2-B12-LABEL
       * 
-           MOVE    ZERO             TO  FLG-RECEDEN-CHK
+           MOVE    ZERO            TO  FLG-RECEDEN-CHK
       *
-           MOVE    "B12"                TO  MCP-WIDGET
+           MOVE    "B12"           TO  MCP-WIDGET
       *
-           MOVE    "T01"                TO  SPA-MOTOPG
-           MOVE    "TID2"               TO  SPA-SAKIPG
+           MOVE    "T01"           TO  SPA-MOTOPG
+           MOVE    "TID2"          TO  SPA-SAKIPG
       *
-           MOVE    "NEW"                TO  MCP-PUTTYPE
-           MOVE    "TID2"               TO  MCP-WINDOW
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "TID2"          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                    TO  FLG-END              
+           MOVE    1               TO  FLG-END              
       *
            .
        530-TID2SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認メッセージ３表示処理
+      *****************************************************************
+       540-TID3SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TIDMSG
+      *
+           EVALUATE    SPA-TIDCD
+               WHEN    "1010"
+                   MOVE    "社保分のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+               WHEN    "1014"
+                   MOVE    "国保分のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+               WHEN    "1015"
+                   MOVE
+                       "社保分（入院）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+               WHEN    "1016"
+                   MOVE
+                   "社保分（入院外）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+               WHEN    "1017"
+                   MOVE
+                       "国保分（入院）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+               WHEN    "1018"
+                   MOVE
+                   "国保分（入院外）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+               WHEN    "1020"
+                   MOVE
+                       "広域分（入院）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+               WHEN    "1021"
+                   MOVE
+                   "広域分（入院外）のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+               WHEN    "1022"
+                   MOVE    "広域分のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+               WHEN    "1023"
+                   STRING  "国保・広域分（入院）のレセプト電算データを"
+                                           DELIMITED  BY  SIZE
+                           "作成します"    DELIMITED  BY  SIZE
+                                           INTO  WRK-TIDMSG
+                   END-STRING
+               WHEN    "1024"
+                   STRING
+                       "国保・広域分（入院外）のレセプト電算データを"
+                                           DELIMITED  BY  SIZE
+                           "作成します"    DELIMITED  BY  SIZE
+                                           INTO  WRK-TIDMSG
+                   END-STRING
+               WHEN    "1025"
+                   MOVE
+                       "国保・広域分のレセプト電算データを作成します"
+                                       TO  WRK-TIDMSG
+           END-EVALUATE
+      *
+           IF      FLG-RECEDEN-CHK      =   1
+               STRING  "月遅れ分のレセ電データがありません。このままレ"
+                                           DELIMITED  BY  SIZE
+                       "セプト電算データを作成しますか"
+                                           DELIMITED  BY  SIZE
+                                           INTO  WRK-TIDMSG
+               END-STRING
+           END-IF
+      *
+           MOVE    SPACE           TO  TID3
+      *
+           MOVE    SPA-TIDCD       TO  TID3-ID1CODE
+      *
+           MOVE    WRK-TIDMSG      TO  TID3-ID1MSG
+      *
+           MOVE    "F12:作成する"  TO  TID3-B12-LABEL
+      *
+           MOVE    "black"         TO  TID3-ID1MSG-STYLE
+                                       TID3-LABEL-STYLE
+           IF      FLG-RECEDEN-CHK =   1
+               MOVE    "red"           TO  TID3-ID1MSG-STYLE
+           END-IF
+           MOVE    "blue"              TO  TID3-LABEL-STYLE
+           IF      SPA-GMN-PRTKBN      =   "2"
+               MOVE    "【点検用】"        TO  TID3-LABEL
+           END-IF
+      * 
+           MOVE    ZERO            TO  FLG-RECEDEN-CHK
+      *
+           MOVE    "B12"           TO  MCP-WIDGET
+      *
+           MOVE    "T01"           TO  SPA-MOTOPG
+           MOVE    "TID3"          TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"           TO  MCP-PUTTYPE
+           MOVE    "TID3"          TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1               TO  FLG-END              
+      *
+           .
+       540-TID3SET-EXT.
            EXIT.
       *
       *****************************************************************

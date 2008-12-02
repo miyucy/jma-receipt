@@ -23,6 +23,8 @@ fi
 #        ${23} HOSPNUM
 #        ${24} レセプト作成区分
 #            1:提出用レセ、2:点検用レセ
+#        ${25} 症状詳記作成区分
+#            1:作成する
 #-------------------------------------------#
 
     rennum=0
@@ -45,6 +47,7 @@ fi
     echo "arg22 = [" ${22} "]" >>$LOG_FILE
     echo "arg23 = [" ${23} "]" >>$LOG_FILE
     echo "arg24 = [" ${24} "]" >>$LOG_FILE
+    echo "arg25 = [" ${25} "]" >>$LOG_FILE
     echo "hostname =  [" `hostname`  "]" >>$LOG_FILE
 
     RECEFILE1="RECEIPTC"
@@ -69,14 +72,14 @@ fi
     fi
         
 #   症状詳記作成
-
-    rennum=$(expr $rennum + 1) 
-    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM530 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${13},${18},${19},${23},${20} >> $LOG_FILE 2>&1
-    if  [ -e ${20} ]; then
-        echo "--- BM530 err file exist ---" >>$LOG_FILE
-        exit 
-    fi
-        
+    if  [ ${25} -eq '1' ]; then
+        rennum=$(expr $rennum + 1) 
+        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM530 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${13},${18},${19},${23},${20} >> $LOG_FILE 2>&1
+        if  [ -e ${20} ]; then
+            echo "--- BM530 err file exist ---" >>$LOG_FILE
+            exit 
+        fi
+   fi     
 
 #   漢字コード変換（ＥＵＣからシフトＪＩＳ）	
 

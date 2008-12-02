@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
+      *  04.04.02    NACL-藤原    09/11/25  症状詳記作成区分追加
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -334,6 +335,7 @@
            COPY    "TERR.INC".
            COPY    "TID1.INC".
            COPY    "TID2.INC".
+           COPY    "TID3.INC".
            COPY    "TFIL.INC".
       *
        PROCEDURE                       DIVISION    USING
@@ -580,6 +582,30 @@
                                        SPA-GMN-T06-TEISYUTUSAKI2-STATE
            MOVE    WIDGET-INSENSITIVE  TO
                                        SPA-GMN-T06-TEISYUTUSAKI3-STATE
+      *
+      *    症状詳記作成区分
+           INITIALIZE                      SYS-200501-REC
+           MOVE    "2005"              TO  SYS-200501-KANRICD
+           MOVE    "01"                TO  SYS-200501-KBNCD
+           MOVE    SPA-NAI-T06-SRYYM-H TO  SYS-200501-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
+           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
+           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE   MCPDATA-REC          TO  SYS-200501-REC
+           ELSE
+               INITIALIZE                  SYS-200501-REC
+           END-IF
+           IF      SYS-200501-RECEDEN-LST1KBN
+                                       =   SPACE
+               MOVE    "1"                 TO
+                                           SYS-200501-RECEDEN-LST1KBN
+           END-IF 
+           MOVE    SYS-200501-RECEDEN-LST1KBN
+                                       TO
+                                   SPA-NAI-T06-200501-RECEDEN-LST1KBN
       *
       *    管理情報編集処理
            PERFORM 3101-ONRECE-KANRI-HENSYU-SEC
@@ -3485,6 +3511,8 @@
            MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG23
            MOVE    SPA-GMN-T98-PRTKBN
                                    TO  SHELLTBL-ARG24
+           MOVE    SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                   TO  SHELLTBL-ARG25
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC

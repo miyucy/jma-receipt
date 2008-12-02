@@ -185,6 +185,7 @@ RECORD_files = \
 	TERR.rec \
 	TID1.rec \
 	TID2.rec \
+	TID3.rec \
 	TFIL.rec \
 	U01.rec \
 	U02.rec \

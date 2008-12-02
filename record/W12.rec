@@ -353,6 +353,20 @@ W12	{
 					count	int;
 					item	varchar(20)[2];
 				};
+				RECEDEN_LST1KBN_COMBO	{
+					RECEDEN_LST1KBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
+				RECEDEN_LST2KBN_COMBO	{
+					RECEDEN_LST2KBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[2];
+				};
 			};
 			fi26	{
 				PR_PRTJYUN_COMBO	{

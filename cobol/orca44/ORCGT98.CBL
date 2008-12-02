@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
+      *  04.04.02    NACL-藤原    09/11/25  症状詳記作成区分追加
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -38,6 +39,8 @@
        FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
+      *
+           COPY    "ENUM-VALUE".
       *
            COPY    "COMMON-SPA".
       *
@@ -102,6 +105,7 @@
            COPY    "TERR.INC".
            COPY    "TID1.INC".
            COPY    "TID2.INC".
+           COPY    "TID3.INC".
            COPY    "TFIL.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -453,7 +457,12 @@
                WHEN    "CLICKED"       ALSO    "B11"
                    MOVE    "NO"            TO  SPA-TID1-FLG
                WHEN    "CLICKED"       ALSO    "B12"
-                   MOVE    "OK"            TO  SPA-TID1-FLG
+                   IF      SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                                   =   "0"
+                       MOVE    "NO"            TO  SPA-TID1-FLG
+                   ELSE
+                       MOVE    "OK"            TO  SPA-TID1-FLG
+                   END-IF
            END-EVALUATE
       *
            PERFORM 210-BACK
@@ -490,9 +499,16 @@
       *
            INITIALIZE                  T98
       *
-           MOVE
+           IF      SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                           =   "0"
+               MOVE
+               "レセプト電算データを作成します"
+                                           TO  T98-ID1MSG
+           ELSE
+               MOVE
                "レセプト電算データを作成します（症状詳記の印刷を指定）"
-                                       TO  T98-ID1MSG
+                                           TO  T98-ID1MSG
+           END-IF
       *
            MOVE    SPA-GMN-T98-DATAKBN-G
                                        TO  T98-DATA
@@ -511,6 +527,15 @@
                                            TO  T98-PRTKBN-ITEM (IDX)
            END-PERFORM
            MOVE    SPA-GMN-T98-PRTKBN-MAX  TO  T98-PRTKBN-COUNT
+      *
+           IF      SPA-NAI-T06-200501-RECEDEN-LST1KBN
+                                           =   "0"
+               MOVE    WIDGET-INSENSITIVE  TO  T98-B11-STATE
+               MOVE    "F12:作成する"      TO  T98-B12-LABEL
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  T98-B11-STATE
+               MOVE    "F12:印刷する"      TO  T98-B12-LABEL
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
       *

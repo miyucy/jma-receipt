@@ -20,5 +20,11 @@ T98	{
 			count	int;
 			item	varchar(38)[6];
 		};
+		B11	{
+			state	int;
+		};
+		B12	{
+			label	varchar(14);
+		};
 	};
 };
