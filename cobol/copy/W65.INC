@@ -17,91 +17,128 @@
                 04  W65-JNISSUKBN-ITEM     PIC X(60)   OCCURS  10 TIMES.
               03  W65-CMB-JNISSUTAIKBN.
                 04  W65-JNISSUTAIKBN       PIC X(30).
+                04  W65-JNISSUTAIKBN-STATE PIC S9(9)   BINARY.
                 04  W65-JNISSUTAIKBN-COUNT PIC S9(9)   BINARY.
                 04  W65-JNISSUTAIKBN-ITEM  PIC X(30)   OCCURS  10 TIMES.
+                04  W65-JNISSUTAIKBN-ITEM-STATE
+                                           PIC S9(9)   BINARY.
               03  W65-CMB-TOTALTENKBN.
                 04  W65-TOTALTENKBN        PIC X(60).
                 04  W65-TOTALTENKBN-COUNT  PIC S9(9)   BINARY.
                 04  W65-TOTALTENKBN-ITEM   PIC X(60)   OCCURS  10 TIMES.
               03  W65-CMB-TOTALTENTAIKBN.
                 04  W65-TOTALTENTAIKBN     PIC X(30).
+                04  W65-TOTALTENTAIKBN-STATE PIC S9(9)   BINARY.
                 04  W65-TOTALTENTAIKBN-COUNT
                                            PIC S9(9)   BINARY.
                 04  W65-TOTALTENTAIKBN-ITEM
                                            PIC X(30)   OCCURS  10 TIMES.
+                04  W65-TOTALTENTAIKBN-ITEM-STATE PIC S9(9)   BINARY.
               03  W65-CMB-FTNMONEYKBNG.
                 04  W65-FTNMONEYKBNG       PIC X(60).
                 04  W65-FTNMONEYKBNG-COUNT PIC S9(9)   BINARY.
                 04  W65-FTNMONEYKBNG-ITEM  PIC X(60)   OCCURS  10 TIMES.
               03  W65-CMB-FTNMONEYTAIKBNG.
                 04  W65-FTNMONEYTAIKBNG    PIC X(30).
+                04  W65-FTNMONEYTAIKBNG-STATE
+                                           PIC S9(9)   BINARY.
                 04  W65-FTNMONEYTAIKBNG-COUNT
                                            PIC S9(9)   BINARY.
                 04  W65-FTNMONEYTAIKBNG-ITEM
                                            PIC X(30)   OCCURS  10 TIMES.
+                04  W65-FTNMONEYTAIKBNG-ITEM-STATE
+                                           PIC S9(9)   BINARY.
               03  W65-CMB-FTNMONEYKBNN.
                 04  W65-FTNMONEYKBNN       PIC X(60).
                 04  W65-FTNMONEYKBNN-COUNT PIC S9(9)   BINARY.
                 04  W65-FTNMONEYKBNN-ITEM  PIC X(60)   OCCURS  10 TIMES.
               03  W65-CMB-FTNMONEYTAIKBNN.
                 04  W65-FTNMONEYTAIKBNN    PIC X(30).
+                04  W65-FTNMONEYTAIKBNN-STATE
+                                           PIC S9(9)   BINARY.
                 04  W65-FTNMONEYTAIKBNN-COUNT
                                            PIC S9(9)   BINARY.
                 04  W65-FTNMONEYTAIKBNN-ITEM
                                            PIC X(30)   OCCURS  10 TIMES.
+                04  W65-FTNMONEYTAIKBNN-ITEM-STATE
+                                           PIC S9(9)   BINARY.
               03  W65-CMB-FTNZEROKBNG.
                 04  W65-FTNZEROKBNG        PIC X(60).
                 04  W65-FTNZEROKBNG-COUNT  PIC S9(9)   BINARY.
                 04  W65-FTNZEROKBNG-ITEM   PIC X(60)   OCCURS  10 TIMES.
               03  W65-CMB-FTNZEROTAIKBNG.
                 04  W65-FTNZEROTAIKBNG   PIC X(30).
+                04  W65-FTNZEROTAIKBNG-STATE
+                                           PIC S9(9)   BINARY.
                 04  W65-FTNZEROTAIKBNG-COUNT
                                            PIC S9(9)   BINARY.
                 04  W65-FTNZEROTAIKBNG-ITEM
                                            PIC X(30)   OCCURS  10 TIMES.
+                04  W65-FTNZEROTAIKBNG-ITEM-STATE
+                                           PIC S9(9)   BINARY.
               03  W65-CMB-FTNZEROKBNN.
                 04  W65-FTNZEROKBNN        PIC X(60).
                 04  W65-FTNZEROKBNN-COUNT  PIC S9(9)   BINARY.
                 04  W65-FTNZEROKBNN-ITEM   PIC X(60)   OCCURS  10 TIMES.
               03  W65-CMB-FTNZEROTAIKBNN.
                 04  W65-FTNZEROTAIKBNN     PIC X(30).
+                04  W65-FTNZEROTAIKBNN-STATE
+                                           PIC S9(9)   BINARY.
                 04  W65-FTNZEROTAIKBNN-COUNT
                                            PIC S9(9)   BINARY.
                 04  W65-FTNZEROTAIKBNN-ITEM
                                            PIC X(30)   OCCURS  10 TIMES.
+                04  W65-FTNZEROTAIKBNN-ITEM-STATE
+                                           PIC S9(9)   BINARY.
               03  W65-CMB-SKJKBN.
                 04  W65-SKJKBN             PIC X(60).
                 04  W65-SKJKBN-COUNT       PIC S9(9)   BINARY.
                 04  W65-SKJKBN-ITEM        PIC X(60)   OCCURS  10 TIMES.
               03  W65-CMB-SKJTAIKBN.
                 04  W65-SKJTAIKBN          PIC X(30).
+                04  W65-SKJTAIKBN-STATE
+                                           PIC S9(9)   BINARY.
                 04  W65-SKJTAIKBN-COUNT    PIC S9(9)   BINARY.
                 04  W65-SKJTAIKBN-ITEM     PIC X(30)   OCCURS  10 TIMES.
+                04  W65-SKJTAIKBN-ITEM-STATE
+                                           PIC S9(9)   BINARY.
               03  W65-CMB-OCRKBN.
                 04  W65-OCRKBN             PIC X(60).
                 04  W65-OCRKBN-COUNT       PIC S9(9)   BINARY.
                 04  W65-OCRKBN-ITEM        PIC X(60)   OCCURS  10 TIMES.
               03  W65-CMB-OCRTAIKBN.
                 04  W65-OCRTAIKBN          PIC X(30).
+                04  W65-OCRTAIKBN-STATE
+                                           PIC S9(9)   BINARY.
                 04  W65-OCRTAIKBN-COUNT    PIC S9(9)   BINARY.
                 04  W65-OCRTAIKBN-ITEM     PIC X(30)   OCCURS  10 TIMES.
+                04  W65-OCRTAIKBN-ITEM-STATE
+                                           PIC S9(9)   BINARY.
               03  W65-CMB-HEIYOJIKBN.
                 04  W65-HEIYOJIKBN         PIC X(60).
                 04  W65-HEIYOJIKBN-COUNT   PIC S9(9)   BINARY.
                 04  W65-HEIYOJIKBN-ITEM    PIC X(60)   OCCURS  10 TIMES.
               03  W65-CMB-HEIYOJITAIKBN.
                 04  W65-HEIYOJITAIKBN      PIC X(30).
+                04  W65-HEIYOJITAIKBN-STATE
+                                           PIC S9(9)   BINARY.
                 04  W65-HEIYOJITAIKBN-COUNT
                                            PIC S9(9)   BINARY.
                 04  W65-HEIYOJITAIKBN-ITEM PIC X(30)   OCCURS  10 TIMES.
+                04  W65-HEIYOJITAIKBN-ITEM-STATE
+                                           PIC S9(9)   BINARY.
               03  W65-CMB-JYUHENKBN.
                 04  W65-JYUHENKBN          PIC X(60).
                 04  W65-JYUHENKBN-COUNT    PIC S9(9)   BINARY.
                 04  W65-JYUHENKBN-ITEM     PIC X(60)   OCCURS  10 TIMES.
               03  W65-CMB-JYUHENTAIKBN.
                 04  W65-JYUHENTAIKBN       PIC X(30).
+                04  W65-JYUHENTAIKBN-STATE
+                                           PIC S9(9)   BINARY.
                 04  W65-JYUHENTAIKBN-COUNT PIC S9(9)   BINARY.
                 04  W65-JYUHENTAIKBN-ITEM  PIC X(30)   OCCURS  10 TIMES.
+                04  W65-JYUHENTAIKBN-ITEM-STATE
+                                           PIC S9(9)   BINARY.
               03  W65-YUKOSTYMD-G.
                 04  W65-YUKOSTYMD          PIC X(10).
                 04  W65-YUKOSTYMD-STATE    PIC S9(9)   BINARY.

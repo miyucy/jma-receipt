@@ -320,7 +320,7 @@
       *
       *    固定値領域
        01  CONST-AREA.
-           03  CONST-KOHLST-MAX           PIC 9(03) VALUE 3.
+           03  CONST-KOHLST-MAX           PIC 9(03) VALUE 100.
            03  CONST-RIREKILST-MAX        PIC 9(03) VALUE 20.
       *
       *****************************************************************
@@ -712,11 +712,11 @@
            INITIALIZE                  SPA-GMN-OCRKBNLST-G
       *
            MOVE    "0"             TO  SPA-GMN-OCRKBNL    (1)
-           MOVE    "上位日数点数と同日数点数の場合、省略する"
+           MOVE    "上位日数点数と同日数点数の場合、“０”とする"
                                    TO  SPA-GMN-OCRKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-OCRKBNL    (2)
-           MOVE    "上位日数点数と同日数点数の場合、省略しない"
+           MOVE    "上位日数点数と同日数点数の場合、“０”としない"
                                    TO  SPA-GMN-OCRKBNMEIL (2)
       *
            MOVE    2               TO  SPA-GMN-OCRKBN-MAX
@@ -779,7 +779,8 @@
            INITIALIZE                  SPA-GMN-COMMONTAIKBNLST-G
       *
            MOVE    "0"             TO  SPA-GMN-COMMONTAIKBNL    (1)
-           MOVE    "請求分全て"    TO  SPA-GMN-COMMONTAIKBNMEIL (1)
+           MOVE    "レセプト請求分全て" 
+                                   TO  SPA-GMN-COMMONTAIKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-COMMONTAIKBNL    (2)
            MOVE    "国保・広域（請求分内）"
@@ -2081,7 +2082,7 @@
                        MOVE    HKN-SEIDONAME   TO  SPA-GMN-KOHNAME
                    ELSE
                        MOVE    2               TO  SPA-GMN-CUR
-                       MOVE    "0002"          TO  SPA-ERRCD
+                       MOVE    "0006"          TO  SPA-ERRCD
                    END-IF
                END-IF
            END-IF
@@ -2098,6 +2099,10 @@
            MOVE    SPA-GMN-JNISSUKBN       TO  WRK-CMB-CD
            PERFORM 4200-JNISSUKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-JNISSUKBN-G
+      *
+           IF    ( SPA-GMN-JNISSUKBN       =   "0" )
+               MOVE    "0"                 TO  SPA-GMN-JNISSUTAIKBN
+           END-IF
       *
            .
       *
@@ -2125,6 +2130,10 @@
            PERFORM 4200-TOTALTENKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-TOTALTENKBN-G
       *
+           IF    ( SPA-GMN-TOTALTENKBN     =   "0" )
+               MOVE    "0"                 TO  SPA-GMN-TOTALTENTAIKBN
+           END-IF
+      *
            .
       *
        4101-TOTALTENKBN-CHK-EXT.
@@ -2150,6 +2159,10 @@
            MOVE    SPA-GMN-FTNMONEYKBNG    TO  WRK-CMB-CD
            PERFORM 4200-FTNMONEYKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-FTNMONEYKBNG-G
+      *
+           IF    ( SPA-GMN-FTNMONEYKBNG    =   "0" )
+               MOVE    "0"                 TO  SPA-GMN-FTNMONEYTAIKBNG
+           END-IF
       *
            .
       *
@@ -2177,6 +2190,10 @@
            PERFORM 4200-FTNMONEYKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-FTNMONEYKBNN-G
       *
+           IF    ( SPA-GMN-FTNMONEYKBNN    =   "0" )
+               MOVE    "0"                 TO  SPA-GMN-FTNMONEYTAIKBNN
+           END-IF
+      *
            .
       *
        4101-FTNMONEYKBNN-CHK-EXT.
@@ -2202,6 +2219,10 @@
            MOVE    SPA-GMN-FTNZEROKBNG     TO  WRK-CMB-CD
            PERFORM 4200-FTNZEROKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-FTNZEROKBNG-G
+      *
+           IF    ( SPA-GMN-FTNZEROKBNG     =   "0" )
+               MOVE    "0"                 TO  SPA-GMN-FTNZEROTAIKBNG
+           END-IF
       *
            .
       *
@@ -2229,6 +2250,10 @@
            PERFORM 4200-FTNZEROKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-FTNZEROKBNN-G
       *
+           IF    ( SPA-GMN-FTNZEROKBNN     =   "0" )
+               MOVE    "0"                 TO  SPA-GMN-FTNZEROTAIKBNN
+           END-IF
+      *
            .
       *
        4101-FTNZEROKBNN-CHK-EXT.
@@ -2254,6 +2279,10 @@
            MOVE    SPA-GMN-SKJKBN          TO  WRK-CMB-CD
            PERFORM 4200-SKJKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-SKJKBN-G
+      *
+           IF    ( SPA-GMN-SKJKBN          =   "0" )
+               MOVE    "0"                 TO  SPA-GMN-SKJTAIKBN
+           END-IF
       *
            .
       *
@@ -2281,6 +2310,10 @@
            PERFORM 4200-OCRKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-OCRKBN-G
       *
+           IF    ( SPA-GMN-OCRKBN          =   "0" )
+               MOVE    "0"                 TO  SPA-GMN-OCRTAIKBN
+           END-IF
+      *
            .
       *
        4101-OCRKBN-CHK-EXT.
@@ -2307,6 +2340,10 @@
            PERFORM 4200-HEIYOJIKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-HEIYOJIKBN-G
       *
+           IF    ( SPA-GMN-HEIYOJIKBN          =   "0" )
+               MOVE    "0"                 TO  SPA-GMN-HEIYOJITAIKBN
+           END-IF
+      *
            .
       *
        4101-HEIYOJIKBN-CHK-EXT.
@@ -2332,6 +2369,10 @@
            MOVE    SPA-GMN-JYUHENKBN       TO  WRK-CMB-CD
            PERFORM 4200-JYUHENKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-JYUHENKBN-G
+      *
+           IF    ( SPA-GMN-JYUHENKBN          =   "0" )
+               MOVE    "0"                 TO  SPA-GMN-JYUHENTAIKBN
+           END-IF
       *
            .
       *
@@ -2929,14 +2970,85 @@
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
-           MOVE    WIDGET-NORMAL       TO  W65-B06-STATE
-                                           W65-B07-STATE
-                                           W65-B08-STATE
-                                           W65-KOHNUM-STATE
-                                           W65-KOHNAME-STATE
-                                           W65-YUKOSTYMD-STATE
-                                           W65-YUKOEDYMD-STATE
-                                           W65-SELNUM2-STATE
+           MOVE    WIDGET-NORMAL   TO  W65-B06-STATE
+                                       W65-B07-STATE
+                                       W65-B08-STATE
+                                       W65-KOHNUM-STATE
+                                       W65-KOHNAME-STATE
+                                       W65-YUKOSTYMD-STATE
+                                       W65-YUKOEDYMD-STATE
+                                       W65-SELNUM2-STATE
+                                       W65-JNISSUTAIKBN-STATE
+                                       W65-JNISSUTAIKBN-ITEM-STATE
+                                       W65-TOTALTENTAIKBN-STATE
+                                       W65-TOTALTENTAIKBN-ITEM-STATE
+                                       W65-FTNMONEYTAIKBNG-STATE
+                                       W65-FTNMONEYTAIKBNG-ITEM-STATE
+                                       W65-FTNMONEYTAIKBNN-STATE
+                                       W65-FTNMONEYTAIKBNN-ITEM-STATE
+                                       W65-FTNZEROTAIKBNG-STATE
+                                       W65-FTNZEROTAIKBNG-ITEM-STATE
+                                       W65-FTNZEROTAIKBNN-STATE
+                                       W65-FTNZEROTAIKBNN-ITEM-STATE
+                                       W65-SKJTAIKBN-STATE
+                                       W65-SKJTAIKBN-ITEM-STATE
+                                       W65-OCRTAIKBN-STATE
+                                       W65-OCRTAIKBN-ITEM-STATE
+                                       W65-HEIYOJITAIKBN-STATE
+                                       W65-HEIYOJITAIKBN-ITEM-STATE
+                                       W65-JYUHENTAIKBN-STATE
+                                       W65-JYUHENTAIKBN-ITEM-STATE
+      *
+           IF    ( SPA-GMN-JNISSUKBN    =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-JNISSUTAIKBN-STATE
+                                       W65-JNISSUTAIKBN-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-TOTALTENKBN  =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-TOTALTENTAIKBN-STATE
+                                       W65-TOTALTENTAIKBN-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-FTNMONEYKBNG    =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-FTNMONEYTAIKBNG-STATE
+                                       W65-FTNMONEYTAIKBNG-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-FTNMONEYKBNN    =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-FTNMONEYTAIKBNN-STATE
+                                       W65-FTNMONEYTAIKBNN-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-FTNZEROKBNG    =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-FTNZEROTAIKBNG-STATE
+                                       W65-FTNZEROTAIKBNG-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-FTNZEROKBNN    =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-FTNZEROTAIKBNN-STATE
+                                       W65-FTNZEROTAIKBNN-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-SKJKBN    =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-SKJTAIKBN-STATE
+                                       W65-SKJTAIKBN-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-OCRKBN    =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-OCRTAIKBN-STATE
+                                       W65-OCRTAIKBN-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-HEIYOJIKBN    =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-HEIYOJITAIKBN-STATE
+                                       W65-HEIYOJITAIKBN-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-JYUHENKBN    =   "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-JYUHENTAIKBN-STATE
+                                       W65-JYUHENTAIKBN-ITEM-STATE
+           END-IF
       *
            IF    ( SPA-GMN-KOHLST-MAX  >=  CONST-KOHLST-MAX )
                MOVE    WIDGET-INSENSITIVE  TO  W65-B06-STATE
@@ -3113,6 +3225,76 @@
                END-IF
            END-IF
       *
+           IF    ( SPA-GMN-CUR         =   4 )
+               IF    ( W65-JNISSUTAIKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    5           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   6 )
+               IF    ( W65-TOTALTENTAIKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    7           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   8 )
+               IF    ( W65-FTNMONEYTAIKBNG-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    9           TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   10 )
+               IF    ( W65-FTNMONEYTAIKBNN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    11          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   12 )
+               IF    ( W65-FTNZEROTAIKBNG-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    13          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   14 )
+               IF    ( W65-FTNZEROTAIKBNN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    15          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   16 )
+               IF    ( W65-SKJTAIKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    17          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   18 )
+               IF    ( W65-OCRTAIKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    19          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   20 )
+               IF    ( W65-HEIYOJITAIKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    21          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   22 )
+               IF    ( W65-JYUHENTAIKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    23          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            IF    ( SPA-NAI-INPUT-MODE  =   2 )
                EVALUATE    SPA-GMN-CUR
                WHEN    2
@@ -3148,6 +3330,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0005"
                MOVE    "地方公費の番号を入力してください"
+                                       TO  SPA-ERRMSG
+           WHEN    "0006"
+               MOVE    "有効期間に該当公費番号のマスタがありません"
                                        TO  SPA-ERRMSG
            WHEN    "0014"
                MOVE    "基準日入力エラー"
