@@ -712,11 +712,11 @@
            INITIALIZE                  SPA-GMN-OCRKBNLST-G
       *
            MOVE    "0"             TO  SPA-GMN-OCRKBNL    (1)
-           MOVE    "上位日数点数と同日数点数の場合、“０”とする"
+           MOVE    "上位日数点数と同日数点数の場合、０とする"
                                    TO  SPA-GMN-OCRKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-OCRKBNL    (2)
-           MOVE    "上位日数点数と同日数点数の場合、“０”としない"
+           MOVE    "上位日数点数と同日数点数の場合、０としない"
                                    TO  SPA-GMN-OCRKBNMEIL (2)
       *
            MOVE    2               TO  SPA-GMN-OCRKBN-MAX
