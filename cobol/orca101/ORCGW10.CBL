@@ -40,7 +40,20 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
+      *    統計メモ更新データ
+           SELECT  MST-FILE    ASSIGN
+                               "/tmp/ORCADBR-toukeimemo_x.x.x-x.dat"
+                               ORGANIZATION    IS  LINE SEQUENTIAL
+                               FILE    STATUS  IS  STS-MST.
+      *
        DATA                    DIVISION.
+       FILE                    SECTION.
+      *
+       FD  MST-FILE.
+       01  TOUKEIMEMOWK-REC.
+           03  TKIMEMOWK-SYORIKBN             PIC  X(01).
+           COPY    "CPTOUKEIMEMO.INC"  REPLACING   //TKIMEMO-//
+                                              BY   //TKIMEMOWK-//.
       *
        WORKING-STORAGE             SECTION.
       *
@@ -66,8 +79,10 @@
            03  FLG-CHK-END         PIC 9(01).
            03  FLG-PARA-SET        PIC 9(01).
       *
-      *    カウント領域
+       01  STS-AREA.
+           03  STS-MST             PIC X(02).
       *
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
       *
@@ -103,6 +118,7 @@
            03  WRK-KANRICD         PIC X(04).
            03  WRK-KBNCD           PIC X(08).
            03  WRK-PRGNAME         PIC X(100).
+           03  WRK-LEN             PIC 9(08).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1698,7 +1714,46 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-           IF    ( MCP-RC              NOT =   ZERO )
+           IF    ( MCP-RC              =   ZERO )
+               IF    ( SPA-W10-MODE    =   ZERO )
+                   CONTINUE
+               ELSE
+                   OPEN OUTPUT MST-FILE
+                   INITIALIZE                  TOUKEIMEMOWK-REC
+                   MOVE    "U"             TO  TKIMEMOWK-SYORIKBN
+                   MOVE    TOUKEIMEMO-REC  TO  TOUKEIMEMOWK-REC (2:)
+                   MOVE    SPACE           TO  TKIMEMOWK-MEMO
+                   MOVE    1               TO  WRK-LEN
+                   STRING  TKIMEMO-MEMO    DELIMITED   BY  SIZE
+                   INTO    TKIMEMOWK-MEMO
+                   WITH    POINTER     WRK-LEN
+                   END-STRING
+                   COMPUTE WRK-LEN =   WRK-LEN -   1
+      *
+                   MOVE    SPACE           TO  TKIMEMOWK-MEMO
+                   MOVE    1               TO  IDX1
+                   PERFORM VARYING IDX0    FROM    1   BY  1
+                           UNTIL ( IDX0  > WRK-LEN )
+                            OR   ( IDX1  > WRK-LEN )
+                            OR   ( TKIMEMO-MEMO (IDX0 :) = SPACE )
+      *
+                       IF    ( TKIMEMO-MEMO (IDX0:1) = X"0A" )
+                           MOVE    "\n"    TO TKIMEMOWK-MEMO (IDX1:2)
+                           COMPUTE IDX1    =   IDX1    +   2
+                       ELSE
+                           MOVE    TKIMEMO-MEMO (IDX0:1)
+                                           TO TKIMEMOWK-MEMO (IDX1:2)
+                           COMPUTE IDX1    =   IDX1    +   1
+                       END-IF
+      *
+                   END-PERFORM
+      *
+                   MOVE    SPACE           TO TKIMEMOWK-SAVEPARA
+                   WRITE   TOUKEIMEMOWK-REC
+      *
+                   CLOSE   MST-FILE
+               END-IF
+           ELSE
                MOVE    "1003"          TO  SPA-ERRCD
            END-IF
       *
