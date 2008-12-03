@@ -66,3 +66,5 @@
       *
       *¸¡º÷ÍÑ¹àÌÜ
            03  CHKTRD-SELNAME            PIC  X(200).
+           03  CHKTRD-SELCDSYU           PIC X(1).
+           03  CHKTRD-SELINPUTCD         PIC X(20).
