@@ -295,6 +295,8 @@
            03  WRK-CMB-CD                                  PIC X(10).
            03  WRK-CMB-ITM-G.
                05  WRK-CMB-ITM                             PIC X(200).
+           03  WRK-ERRSTYMD                                PIC X(09).
+           03  WRK-ERREDYMD                                PIC X(09).
            03  WRK-SELNUM-G.
                05  WRK-SELNUM-MUL                          PIC X(50).
                05  WRK-INPUT-MODE                          PIC 9(01).
@@ -1434,6 +1436,8 @@
        4100-RIREKI-CHK-SEC             SECTION.
       *
            MOVE    ZERO            TO  FLG-KIKAN-DABURI
+           MOVE    SPACE           TO  WRK-ERRSTYMD
+                                       WRK-ERREDYMD
       *
            INITIALIZE                  SYSKANRI-REC
            MOVE    "2010"          TO  SYS-KANRICD
@@ -1456,6 +1460,12 @@
                      OR  ( SPA-NAI-YUKOSTYMD >   SYS-2010-EDYUKYMD )
                        CONTINUE
                    ELSE
+                       MOVE    SYS-2010-STYUKYMD TO    WRK-YMD
+                       PERFORM 800-HIZUKE-CHK-SEC
+                       MOVE    WRK-HENYMDG       TO    WRK-ERRSTYMD
+                       MOVE    SYS-2010-EDYUKYMD TO    WRK-YMD
+                       PERFORM 800-HIZUKE-CHK-SEC
+                       MOVE    WRK-HENYMDG       TO    WRK-ERREDYMD
                        MOVE    1             TO  FLG-KIKAN-DABURI
                    END-IF
                END-IF
@@ -3161,8 +3171,14 @@
                MOVE     "有効期間終了日を入力してください"
                                        TO  SPA-ERRMSG
            WHEN    "1104"
-               MOVE    "有効期間の重複するデータが存在します"
-                                       TO  SPA-ERRMSG
+               STRING  "有効期間の重複するデータが存在します（"
+                                           DELIMITED   BY  SIZE
+                       WRK-ERRSTYMD        DELIMITED   BY  SIZE
+                       " 〜 "              DELIMITED   BY  SIZE
+                       WRK-ERREDYMD        DELIMITED   BY  SIZE
+                       "）"                DELIMITED   BY  SIZE
+               INTO    SPA-ERRMSG
+               END-STRING
            WHEN    "1001"
                MOVE    "追加可能最大件数に達しました"
                                        TO  SPA-ERRMSG
