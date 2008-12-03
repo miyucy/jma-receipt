@@ -73,3 +73,5 @@
                05  CHK-UPCDKBN         PIC X(1).
                05  CHK-UPCD            PIC X(9).
            03  CHK-SELNAME             PIC X(200).
+           03  CHK-SELCDSYU            PIC X(1).
+           03  CHK-SELINPUTCD          PIC X(20).

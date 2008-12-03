@@ -29,6 +29,8 @@ tbl_chk	{
 	UPCD				varchar(9),virtual;
 #-----> 検索キー用項目
 	SELNAME			char(200),virtual;
+	SELCDSYU		char(1),virtual;
+	SELINPUTCD		char(20),virtual;
 };
 
 primary	{
@@ -339,3 +341,68 @@ path	key14	{
 	};
 };
 
+path	key15	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key15_csr CURSOR FOR
+                SELECT A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD FROM TBL_CHK A,TBL_TENSU B , TBL_INPUTCD C
+                WHERE   A.HOSPNUM =  :HOSPNUM
+                AND  A.CHKKBN     =  :CHKKBN
+                AND A.GRPNUM     =    :GRPNUM
+                AND A.YUKOSTYMD    <= :YUKOSTYMD
+                AND A.YUKOEDYMD    >= :YUKOEDYMD
+                AND B.HOSPNUM       = A.HOSPNUM
+                AND B.SRYCD         = A.SRYCD
+                AND B.YUKOSTYMD    <= :YUKOSTYMD
+                AND B.YUKOEDYMD    >= :YUKOEDYMD
+                AND A.SRYCD         = C.SRYCD
+                AND A.HOSPNUM       = C.HOSPNUM
+                AND C.CDSYU         = :SELCDSYU
+                AND C.INPUTCD       = :SELINPUTCD
+                GROUP BY B.KANANAME,A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD
+                ORDER BY B.KANANAME,A.SRYCD
+                ;
+	};
+};
+
+path	key16	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key16_csr CURSOR FOR
+                SELECT A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD FROM TBL_CHK A,TBL_TENSU B , TBL_INPUTCD C
+                WHERE   A.HOSPNUM =  :HOSPNUM
+                AND  A.CHKKBN     =  :CHKKBN
+                AND A.GRPNUM     =    :GRPNUM
+                AND A.YUKOSTYMD    <= :YUKOSTYMD
+                AND A.YUKOEDYMD    >= :YUKOEDYMD
+                AND B.HOSPNUM       = A.HOSPNUM
+                AND B.SRYCD         = A.SRYCD
+                AND B.YUKOSTYMD    <= :YUKOSTYMD
+                AND B.YUKOEDYMD    >= :YUKOEDYMD
+                AND A.SRYCD         = C.SRYCD
+                AND A.HOSPNUM       = C.HOSPNUM
+                AND C.CDSYU         = :SELCDSYU
+                AND C.INPUTCD       LIKE :SELINPUTCD
+                GROUP BY B.KANANAME,A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD
+                ORDER BY B.KANANAME,A.SRYCD
+                ;
+	};
+};
+
+path	key17	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_key17_csr CURSOR FOR
+		SELECT A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD FROM TBL_CHK A,TBL_TENSU B
+		WHERE 	A.HOSPNUM = :HOSPNUM
+		AND  A.CHKKBN     = :CHKKBN
+		AND A.GRPNUM     =    :GRPNUM
+		AND A.YUKOSTYMD    <= :YUKOSTYMD
+		AND A.YUKOEDYMD    >= :YUKOEDYMD
+		AND B.HOSPNUM       = A.HOSPNUM
+		AND B.SRYCD         = A.SRYCD
+		AND B.SRYCD         = :SRYCD
+		AND B.YUKOSTYMD    <= :YUKOSTYMD
+		AND B.YUKOEDYMD    >= :YUKOEDYMD
+		GROUP BY B.KANANAME,A.SRYCD,A.YUKOSTYMD,A.YUKOEDYMD
+		ORDER BY B.KANANAME,A.SRYCD
+		;
+	};
+};
