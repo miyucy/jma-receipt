@@ -63,6 +63,7 @@
            03  FLG-CHKTRD                  PIC 9(01).
            03  FLG-CHK005                  PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
+           03  FLG-INPUTCD                 PIC 9(01).
            03  FLG-HIZUKE-ERR              PIC 9(01).
            03  FLG-ENTRYCHK                PIC 9(01).
            03  FLG-SRYCD-DEL               PIC 9(01).
@@ -71,6 +72,7 @@
            03  FLG-RCHKLST-ROW             PIC 9(01).
            03  FLG-SELCHKLST-ROW           PIC 9(01).
            03  FLG-TEKIOUBYOMEI            PIC 9(01).
+           03  FLG-KANJI                   PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -87,6 +89,8 @@
            03  IDX-LST                     PIC 9(05).
       *
        01  WRK-AREA.
+           03  WRK-TABLE                   PIC X(64).
+           03  WRK-PATHNAME                PIC X(64).
            03  WRK-MCP-WIDGET              PIC X(64).
            03  WRK-YMD                     PIC X(10).
            03  WRK-SYMD                    PIC X(08).
@@ -95,7 +99,8 @@
            03  WRK-CMB-ITM-G.
                07  WRK-CMB-ITM             PIC X(200).
            03  WRK-ZZZZ                    PIC ZZZZ.
-           03  WRK-SRYCD                   PIC X(09).
+           03  WRK-CDSYUBETU               PIC X(01).
+           03  WRK-SRYCD                   PIC X(20).
            03  WRK-SKIP-MAX                PIC 9(05).
            03  WRK-KJNYMD-MOT              PIC X(08).
            03  WRK-KANACHK-MAE-INPUT       PIC X(400).
@@ -109,6 +114,7 @@
                05  WRK-KEY-CD-OCC          OCCURS  21.
                    07  WRK-KEY-CD          PIC X(07).
                    07  WRK-KEY-CDSEP       PIC X(01).
+           03  WRK-MOJI                    PIC 9(03).
       *
        01  WRK-LCHKLST-AREA.
            03  WRK-LCHKLST-MAX             PIC 9(05).
@@ -166,6 +172,10 @@
       *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
+      *
+      *    自院マスター
+       01  INPUTCD-REC.
+           COPY    "CPINPUTCD.INC".
       *
       *    チェック
        01  CHK-REC.
@@ -485,30 +495,109 @@
       *****************************************************************
        3101-SELCHKLST-HEN-SEC          SECTION.
       *
-           EVALUATE    SPA-X03-GMN-CHKKBN
-           WHEN    "1"
-           WHEN    "2"
-           WHEN    "6"
-               PERFORM 3101-SELCHKLST-CHKSND-SEC
-           WHEN    "M"
-               IF    ( SPA-X03-GMN-SELNAME =   SPACE )
-                   INITIALIZE              SPA-X03-GMN-SELCHKLST
-                                           SPA-X03-NAI-SELCHKLST
-                                           SPA-X03-GMN-NEXT
-               ELSE
-                   PERFORM 3101-SELCHKLST-TEKBYO-SEC
-               END-IF
-           WHEN    "7"
-               PERFORM 3101-SELCHKLST-CHKTRD-SEC
-           WHEN    "8"
-           WHEN    "9"
-               PERFORM 3101-SELCHKLST-CHK005-SEC
-           WHEN    OTHER
-               PERFORM 3101-SELCHKLST-CHKMST-SEC
-           END-EVALUATE
+           MOVE    ZERO                TO  FLG-KANJI
+           MOVE    ZERO                TO  WRK-MOJI
+           MOVE    SPACE               TO  WRK-CDSYUBETU
+           MOVE    SPACE               TO  WRK-SRYCD
+      *
+           IF  ( SPA-X03-GMN-SELNAME (1:1) =   "P"  OR  "S" )
+               MOVE    "0012"      TO  SPA-ERRCD
+	       MOVE    2           TO  SPA-X03-GMN-CUR
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 41011-INPUTCD-SELECT-EDIT-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               EVALUATE    SPA-X03-GMN-CHKKBN
+               WHEN    "1"
+               WHEN    "2"
+               WHEN    "6"
+                   PERFORM 3101-SELCHKLST-CHKSND-SEC
+               WHEN    "M"
+                   IF    ( SPA-X03-GMN-SELNAME =   SPACE )
+                       INITIALIZE              SPA-X03-GMN-SELCHKLST
+                                               SPA-X03-NAI-SELCHKLST
+                                               SPA-X03-GMN-NEXT
+                   ELSE
+                       PERFORM 3101-SELCHKLST-TEKBYO-SEC
+                   END-IF
+               WHEN    "7"
+                   PERFORM 3101-SELCHKLST-CHKTRD-SEC
+               WHEN    "8"
+               WHEN    "9"
+                   PERFORM 3101-SELCHKLST-CHK005-SEC
+               WHEN    OTHER
+                   PERFORM 3101-SELCHKLST-CHKMST-SEC
+               END-EVALUATE
+           END-IF
       *
            . 
        3101-SELCHKLST-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力コードマスタ−検索条件編集処理
+      *****************************************************************
+       41011-INPUTCD-SELECT-EDIT-SEC   SECTION.
+      *
+           MOVE    SPA-X03-GMN-SELNAME TO  WRK-SRYCD
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL  (IDX0    >   20  )
+                    OR    (WRK-SRYCD (IDX0:)   =   SPACE )
+      *
+               COMPUTE WRK-MOJI    =   WRK-MOJI    +   1
+      *
+           END-PERFORM
+      *
+           IF  ( WRK-MOJI          >   ZERO )
+      *
+      *        全角半角混在チェック
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    WRK-SRYCD       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+               IF      ( KANACHK-RC    NOT =   ZERO )
+                   MOVE    "0003"      TO  SPA-ERRCD
+                   MOVE    2           TO  SPA-X03-GMN-CUR
+               END-IF
+      *
+               IF    ( SPA-ERRCD       =   SPACE )
+                   EVALUATE    KANACHK-SYUBETU
+      *            半角入力
+                   WHEN    1
+                       MOVE    ZERO        TO  FLG-KANJI
+      *
+                       IF  ( WRK-SRYCD (1:WRK-MOJI) IS  NUMERIC )
+                           EVALUATE    WRK-MOJI
+                           WHEN    4
+                               MOVE    "4" TO  WRK-CDSYUBETU
+                           WHEN    5
+                               MOVE    "5" TO  WRK-CDSYUBETU
+                           WHEN    6
+                           WHEN    3
+                               MOVE   "6"  TO  WRK-CDSYUBETU
+                           WHEN    OTHER
+                               MOVE    "6" TO  WRK-CDSYUBETU
+                           END-EVALUATE
+                       ELSE
+                           MOVE    "A"     TO  WRK-CDSYUBETU
+                       END-IF
+      *            全角入力
+                   WHEN    2
+                       MOVE    1           TO  FLG-KANJI
+                       MOVE    "J"         TO  WRK-CDSYUBETU
+                   WHEN    OTHER
+                       MOVE    "0003"      TO  SPA-ERRCD
+                       MOVE    2           TO  SPA-X03-GMN-CUR
+                   END-EVALUATE
+               END-IF
+           END-IF
+      *
+           .
+      *
+       41011-INPUTCD-SELECT-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    チェック項目リスト編集処理（チェックマスタより）
@@ -522,14 +611,68 @@
       *
            MOVE    ZERO                TO  CNT-SELCHKLST
       *
-      *    チェックマスタ検索
-           PERFORM 900-CHK-KEY11-SEL-SEC
-           IF    ( FLG-CHK         =   ZERO )
-               PERFORM 900-CHK-KEY11-FET-SEC
-               IF    ( FLG-CHK     =   ZERO )
-                   COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
+           IF    ( WRK-MOJI            >   ZERO )
+               MOVE    "tbl_chk"       TO  WRK-TABLE
+               MOVE    "key15"         TO  WRK-PATHNAME
+               PERFORM 900-CHK-KEY15-SEL-SEC
+               IF    ( FLG-CHK         =   ZERO )
+                   PERFORM 900-CHK-FET-SEC
+                   IF    ( FLG-CHK     =   ZERO )
+                       COMPUTE CNT-SELCHKLST
+                             = CNT-SELCHKLST   +   1
+                   END-IF
+               END-IF
+               PERFORM 31011-SELCHKLST-CHKMST-SEC
+      *
+               IF    ( CNT-SELCHKLST   =   ZERO )
+                   MOVE    "tbl_chk"   TO  WRK-TABLE
+                   MOVE    "key16"     TO  WRK-PATHNAME
+                   PERFORM 900-CHK-KEY16-SEL-SEC
+                   IF    ( FLG-CHK         =   ZERO )
+                       PERFORM 900-CHK-FET-SEC
+                       IF    ( FLG-CHK     =   ZERO )
+                           COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
+                       END-IF
+                   END-IF
+                   PERFORM 31011-SELCHKLST-CHKMST-SEC
+               END-IF
+      *
+               IF    ( CNT-SELCHKLST   =   ZERO )
+                AND  ( WRK-MOJI    =   9 )
+                AND  ( FLG-KANJI   =   ZERO )
+                   MOVE    "tbl_chk"   TO  WRK-TABLE
+                   MOVE    "key17"     TO  WRK-PATHNAME
+                   PERFORM 900-CHK-KEY17-SEL-SEC
+                   IF    ( FLG-CHK         =   ZERO )
+                       PERFORM 900-CHK-FET-SEC
+                       IF    ( FLG-CHK     =   ZERO )
+                           COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
+                       END-IF
+                   END-IF
+                   PERFORM 31011-SELCHKLST-CHKMST-SEC
                END-IF
            END-IF
+      *
+           IF    ( CNT-SELCHKLST   =   ZERO )
+               MOVE    "tbl_chk"       TO  WRK-TABLE
+               MOVE    "key11"         TO  WRK-PATHNAME
+               PERFORM 900-CHK-KEY11-SEL-SEC
+               IF    ( FLG-CHK         =   ZERO )
+                   PERFORM 900-CHK-FET-SEC
+                   IF    ( FLG-CHK     =   ZERO )
+                       COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
+                   END-IF
+                   PERFORM 31011-SELCHKLST-CHKMST-SEC
+               END-IF
+           END-IF
+      *
+           . 
+       3101-SELCHKLST-CHKMST-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェック項目リスト編集処理（チェックマスタより）
+      *****************************************************************
+       31011-SELCHKLST-CHKMST-SEC      SECTION.
       *
       *    読込スキップ処理
            PERFORM 3101-SELCHKLST-SKIP-SEC
@@ -596,15 +739,15 @@
                                                                (IDX-LST)
       *
       *        チェックマスタ読込処理
-               PERFORM 900-CHK-KEY11-FET-SEC
+               PERFORM 900-CHK-FET-SEC
                IF    ( FLG-CHK     =   ZERO )
                    COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
                END-IF
       *
            END-PERFORM
       *
-           MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key11"             TO  MCP-PATHNAME
+           MOVE    WRK-TABLE           TO  MCP-TABLE
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-CHK             =   ZERO )
@@ -614,7 +757,7 @@
            END-IF
       *
            . 
-       3101-SELCHKLST-CHKMST-EXT.
+       31011-SELCHKLST-CHKMST-EXT.
            EXIT.
       *****************************************************************
       *    チェック項目リスト編集処理（チェックマスタ２より）
@@ -628,14 +771,68 @@
       *
            MOVE    ZERO                TO  CNT-SELCHKLST
       *
-      *    チェックマスタ検索
-           PERFORM 900-CHKSND-KEY11-SEL-SEC
-           IF    ( FLG-CHKSND         =   ZERO )
-               PERFORM 900-CHKSND-KEY11-FET-SEC
-               IF    ( FLG-CHKSND     =   ZERO )
-                   COMPUTE CNT-SELCHKLST  = CNT-SELCHKLST   +   1
+           IF    ( WRK-MOJI            >   ZERO )
+               MOVE    "tbl_chksnd"    TO  WRK-TABLE
+               MOVE    "key16"         TO  WRK-PATHNAME
+               PERFORM 900-CHKSND-KEY16-SEL-SEC
+               IF    ( FLG-CHKSND         =   ZERO )
+                   PERFORM 900-CHKSND-FET-SEC
+                   IF    ( FLG-CHKSND  =   ZERO )
+                       COMPUTE CNT-SELCHKLST
+                             = CNT-SELCHKLST   +   1
+                   END-IF
+               END-IF
+               PERFORM 31011-SELCHKLST-CHKSND-SEC
+      *
+               IF    ( CNT-SELCHKLST   =   ZERO )
+                   MOVE    "tbl_chksnd"    TO  WRK-TABLE
+                   MOVE    "key17"         TO  WRK-PATHNAME
+                   PERFORM 900-CHKSND-KEY17-SEL-SEC
+                   IF    ( FLG-CHKSND      =   ZERO )
+                       PERFORM 900-CHKSND-FET-SEC
+                       IF    ( FLG-CHKSND     =   ZERO )
+                           COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
+                       END-IF
+                   END-IF
+                   PERFORM 31011-SELCHKLST-CHKSND-SEC
+               END-IF
+      *
+               IF    ( CNT-SELCHKLST   =   ZERO )
+                AND  ( WRK-MOJI    =   9 )
+                AND  ( FLG-KANJI   =   ZERO )
+                   MOVE    "tbl_chksnd"    TO  WRK-TABLE
+                   MOVE    "key18"         TO  WRK-PATHNAME
+                   PERFORM 900-CHKSND-KEY18-SEL-SEC
+                   IF    ( FLG-CHKSND         =   ZERO )
+                       PERFORM 900-CHKSND-FET-SEC
+                       IF    ( FLG-CHKSND     =   ZERO )
+                           COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
+                       END-IF
+                   END-IF
+                   PERFORM 31011-SELCHKLST-CHKSND-SEC
                END-IF
            END-IF
+      *
+           IF    ( CNT-SELCHKLST   =   ZERO )
+               MOVE    "tbl_chksnd"       TO  WRK-TABLE
+               MOVE    "key11"         TO  WRK-PATHNAME
+               PERFORM 900-CHKSND-KEY11-SEL-SEC
+               IF    ( FLG-CHKSND         =   ZERO )
+                   PERFORM 900-CHKSND-FET-SEC
+                   IF    ( FLG-CHKSND     =   ZERO )
+                       COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
+                   END-IF
+                   PERFORM 31011-SELCHKLST-CHKSND-SEC
+               END-IF
+           END-IF
+      *
+           . 
+       3101-SELCHKLST-CHKSND-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェック項目リスト編集処理（チェックマスタ２より）
+      *****************************************************************
+       31011-SELCHKLST-CHKSND-SEC      SECTION.
       *
       *    読込スキップ処理
            PERFORM 3101-SELCHKLST-SKIP-SEC
@@ -704,15 +901,15 @@
                                                            (IDX-LST)
       *
       *        チェックマスタ読込処理
-               PERFORM 900-CHKSND-KEY11-FET-SEC
+               PERFORM 900-CHKSND-FET-SEC
                IF    ( FLG-CHKSND     =    ZERO )
                    COMPUTE CNT-SELCHKLST   = CNT-SELCHKLST   +   1
                END-IF
       *
            END-PERFORM
       *
-           MOVE    "tbl_chksnd"           TO  MCP-TABLE
-           MOVE    "key11"                TO  MCP-PATHNAME
+           MOVE    WRK-TABLE           TO  MCP-TABLE
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-CHKSND              =   ZERO )
@@ -722,7 +919,7 @@
            END-IF
       *
            . 
-       3101-SELCHKLST-CHKSND-EXT.
+       31011-SELCHKLST-CHKSND-EXT.
            EXIT.
       *****************************************************************
       *    チェック項目リスト編集処理（チェックマスタ３より）
@@ -736,14 +933,68 @@
       *
            MOVE    ZERO                TO  CNT-SELCHKLST
       *
-      *    チェックマスタ検索
-           PERFORM 900-CHKTRD-KEY11-SEL-SEC
-           IF    ( FLG-CHKTRD         =   ZERO )
-               PERFORM 900-CHKTRD-KEY11-FET-SEC
-               IF    ( FLG-CHKTRD     =   ZERO )
-                   COMPUTE CNT-SELCHKLST  = CNT-SELCHKLST   +   1
+           IF    ( WRK-MOJI            >   ZERO )
+               MOVE    "tbl_chktrd"       TO  WRK-TABLE
+               MOVE    "key15"         TO  WRK-PATHNAME
+               PERFORM 900-CHKTRD-KEY15-SEL-SEC
+               IF    ( FLG-CHKTRD         =   ZERO )
+                   PERFORM 900-CHKTRD-FET-SEC
+                   IF    ( FLG-CHKTRD     =   ZERO )
+                       COMPUTE CNT-SELCHKLST
+                             = CNT-SELCHKLST   +   1
+                   END-IF
+               END-IF
+               PERFORM 31011-SELCHKLST-CHKTRD-SEC
+      *
+               IF    ( CNT-SELCHKLST   =   ZERO )
+                   MOVE    "tbl_chktrd"   TO  WRK-TABLE
+                   MOVE    "key16"     TO  WRK-PATHNAME
+                   PERFORM 900-CHKTRD-KEY16-SEL-SEC
+                   IF    ( FLG-CHKTRD         =   ZERO )
+                       PERFORM 900-CHKTRD-FET-SEC
+                       IF    ( FLG-CHKTRD     =   ZERO )
+                           COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
+                       END-IF
+                   END-IF
+                   PERFORM 31011-SELCHKLST-CHKTRD-SEC
+               END-IF
+      *
+               IF    ( CNT-SELCHKLST   =   ZERO )
+                AND  ( WRK-MOJI    =   9 )
+                AND  ( FLG-KANJI   =   ZERO )
+                   MOVE    "tbl_chktrd"   TO  WRK-TABLE
+                   MOVE    "key17"     TO  WRK-PATHNAME
+                   PERFORM 900-CHKTRD-KEY17-SEL-SEC
+                   IF    ( FLG-CHKTRD         =   ZERO )
+                       PERFORM 900-CHKTRD-FET-SEC
+                       IF    ( FLG-CHKTRD     =   ZERO )
+                           COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
+                       END-IF
+                   END-IF
+                   PERFORM 31011-SELCHKLST-CHKTRD-SEC
                END-IF
            END-IF
+      *
+           IF    ( CNT-SELCHKLST   =   ZERO )
+               MOVE    "tbl_chktrd"       TO  WRK-TABLE
+               MOVE    "key11"         TO  WRK-PATHNAME
+               PERFORM 900-CHKTRD-KEY11-SEL-SEC
+               IF    ( FLG-CHKTRD         =   ZERO )
+                   PERFORM 900-CHKTRD-FET-SEC
+                   IF    ( FLG-CHKTRD     =   ZERO )
+                       COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
+                   END-IF
+                   PERFORM 31011-SELCHKLST-CHKTRD-SEC
+               END-IF
+           END-IF
+      *
+           . 
+       3101-SELCHKLST-CHKTRD-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェック項目リスト編集処理（チェックマスタ３より）
+      *****************************************************************
+       31011-SELCHKLST-CHKTRD-SEC       SECTION.
       *
       *    読込スキップ処理
            PERFORM 3101-SELCHKLST-SKIP-SEC
@@ -812,15 +1063,15 @@
                                                            (IDX-LST)
       *
       *        チェックマスタ読込処理
-               PERFORM 900-CHKTRD-KEY11-FET-SEC
+               PERFORM 900-CHKTRD-FET-SEC
                IF    ( FLG-CHKTRD     =    ZERO )
                    COMPUTE CNT-SELCHKLST   = CNT-SELCHKLST   +   1
                END-IF
       *
            END-PERFORM
       *
-           MOVE    "tbl_chktrd"           TO  MCP-TABLE
-           MOVE    "key11"                TO  MCP-PATHNAME
+           MOVE    WRK-TABLE              TO  MCP-TABLE
+           MOVE    WRK-PATHNAME           TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-CHKTRD              =   ZERO )
@@ -830,7 +1081,7 @@
            END-IF
       *
            . 
-       3101-SELCHKLST-CHKTRD-EXT.
+       31011-SELCHKLST-CHKTRD-EXT.
            EXIT.
       *****************************************************************
       *    チェック項目リスト編集処理（チェックマスタ５より）
@@ -1031,7 +1282,7 @@
                PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
                         OR   ( CNT-SELCHKLST   >   WRK-SKIP-MAX )
       *
-                   PERFORM 900-CHKSND-KEY11-FET-SEC
+                   PERFORM 900-CHKSND-FET-SEC
                    IF    ( FLG-CHKSND      =   ZERO )
                        COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
                    END-IF
@@ -1051,7 +1302,7 @@
                PERFORM UNTIL ( FLG-CHKTRD  NOT =   ZERO )
                         OR   ( CNT-SELCHKLST   >   WRK-SKIP-MAX )
       *
-                   PERFORM 900-CHKTRD-KEY11-FET-SEC
+                   PERFORM 900-CHKTRD-FET-SEC
                    IF    ( FLG-CHKTRD      =   ZERO )
                        COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
                    END-IF
@@ -1072,7 +1323,7 @@
                PERFORM UNTIL ( FLG-CHK     NOT =   ZERO )
                         OR   ( CNT-SELCHKLST   >   WRK-SKIP-MAX )
       *
-                   PERFORM 900-CHK-KEY11-FET-SEC
+                   PERFORM 900-CHK-FET-SEC
                    IF    ( FLG-CHK     =   ZERO )
                        COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
                    END-IF
@@ -1317,17 +1568,14 @@
                PERFORM 800-ENRTRY-CHK-SEC
                MOVE    WRK-KANACHK-OUT-INPUT
                                            TO  SPA-X03-GMN-SELNAME
-               IF    ( FLG-ENTRYCHK    NOT =   2 )
-                   MOVE    "0003"          TO  SPA-ERRCD
-                   MOVE    2               TO  SPA-X03-GMN-CUR
-               END-IF
-               MOVE    WRK-KANACHK-OUT-INPUT
-                                           TO  SPA-X03-GMN-SELNAME
            END-IF
       *
            IF    ( WRK-MCP-WIDGET          =   "SELNAME" )
                MOVE    1                   TO  SPA-X03-GMN-PAGE
-               PERFORM 3101-SELCHKLST-HEN-SEC
+      *
+               IF  ( SPA-ERRCD             =   SPACE )
+                   PERFORM 3101-SELCHKLST-HEN-SEC
+               END-IF
            END-IF
       *
            .
@@ -2760,6 +3008,9 @@
            WHEN    "0003"
                MOVE    "チェック名称入力エラー"
                                        TO  SPA-ERRMSG
+           WHEN    "0012"
+               MOVE    "セットコードは入力できません"
+                                           TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "登録上限数を超えています"
                                        TO  SPA-ERRMSG
@@ -2881,12 +3132,94 @@
        900-CHK-KEY11-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    チェックマスタ読込処理（ＫＥＹ１１）
+      *    チェックマスタ検索処理
       *****************************************************************
-       900-CHK-KEY11-FET-SEC           SECTION.
+       900-CHK-KEY15-SEL-SEC           SECTION.
       *
+           MOVE    ZERO                TO  FLG-CHK
+      *
+           INITIALIZE                      CHK-REC
+           MOVE    SPA-X03-GMN-CHKKBN  TO  CHK-CHKKBN
+           MOVE    SPA-X03-NAI-KJNYMD  TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
+           MOVE    WRK-CDSYUBETU       TO  CHK-SELCDSYU
+           MOVE    SPA-X03-GMN-SELNAME TO  CHK-SELINPUTCD
+           MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "tbl_chk"           TO  MCP-TABLE
-           MOVE    "key11"             TO  MCP-PATHNAME
+           MOVE    "key15"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-CHK
+               INITIALIZE                  CHK-REC
+           END-IF
+      *
+           .
+       900-CHK-KEY15-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ検索処理
+      *****************************************************************
+       900-CHK-KEY16-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+      *
+           INITIALIZE                      CHK-REC
+           MOVE    SPA-X03-GMN-CHKKBN  TO  CHK-CHKKBN
+           MOVE    SPA-X03-NAI-KJNYMD  TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
+           MOVE    WRK-CDSYUBETU       TO  CHK-SELCDSYU
+           STRING  SPA-X03-GMN-SELNAME DELIMITED   BY  SPACE
+                   "%"                 DELIMITED   BY  SIZE
+           INTO    CHK-SELINPUTCD
+           END-STRING
+           MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    CHK-REC             TO  MCPDATA-REC
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-CHK
+               INITIALIZE                  CHK-REC
+           END-IF
+      *
+           .
+       900-CHK-KEY16-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ検索処理
+      *****************************************************************
+       900-CHK-KEY17-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+      *
+           INITIALIZE                      CHK-REC
+           MOVE    SPA-X03-GMN-CHKKBN  TO  CHK-CHKKBN
+           MOVE    SPA-X03-NAI-KJNYMD  TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
+           MOVE    SPA-X03-GMN-SELNAME TO  CHK-SRYCD
+           MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    CHK-REC             TO  MCPDATA-REC
+           MOVE    "tbl_chk"           TO  MCP-TABLE
+           MOVE    "key17"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-CHK
+               INITIALIZE                  CHK-REC
+           END-IF
+      *
+           .
+       900-CHK-KEY17-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ読込処理
+      *****************************************************************
+       900-CHK-FET-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+      *
+           MOVE    WRK-TABLE           TO  MCP-TABLE
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  CHK-REC
@@ -2896,7 +3229,7 @@
            END-IF
       *
            .
-       900-CHK-KEY11-FET-EXT.
+       900-CHK-FET-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ２検索処理（ＫＥＹ１１）
@@ -2943,12 +3276,92 @@
        900-CHKSND-KEY11-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    チェックマスタ２読込処理（ＫＥＹ１１）
+      *    チェックマスタ２検索処理
       *****************************************************************
-       900-CHKSND-KEY11-FET-SEC        SECTION.
+       900-CHKSND-KEY16-SEL-SEC           SECTION.
       *
-           MOVE    "tbl_chksnd"            TO  MCP-TABLE
-           MOVE    "key11"                 TO  MCP-PATHNAME
+           MOVE    ZERO                TO  FLG-CHKSND
+      *
+           INITIALIZE                      CHKSND-REC
+           MOVE    SPA-X03-GMN-CHKKBN  TO  CHKSND-CHKKBN
+           MOVE    SPA-X03-NAI-KJNYMD  TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
+           MOVE    WRK-CDSYUBETU       TO  CHKSND-SELCDSYU
+           MOVE    SPA-X03-GMN-SELNAME TO  CHKSND-SELINPUTCD
+           MOVE    SPA-HOSPNUM         TO  CHKSND-HOSPNUM
+           MOVE    CHKSND-REC             TO  MCPDATA-REC
+           MOVE    "tbl_chksnd"        TO  MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-CHKSND
+               INITIALIZE                  CHKSND-REC
+           END-IF
+      *
+           .
+       900-CHKSND-KEY16-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ２検索処理
+      *****************************************************************
+       900-CHKSND-KEY17-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHKSND
+      *
+           INITIALIZE                      CHKSND-REC
+           MOVE    SPA-X03-GMN-CHKKBN  TO  CHKSND-CHKKBN
+           MOVE    SPA-X03-NAI-KJNYMD  TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
+           MOVE    WRK-CDSYUBETU       TO  CHKSND-SELCDSYU
+           STRING  SPA-X03-GMN-SELNAME DELIMITED   BY  SPACE
+                   "%"                 DELIMITED   BY  SIZE
+           INTO    CHKSND-SELINPUTCD
+           END-STRING
+           MOVE    SPA-HOSPNUM         TO  CHKSND-HOSPNUM
+           MOVE    CHKSND-REC             TO  MCPDATA-REC
+           MOVE    "tbl_chksnd"        TO  MCP-TABLE
+           MOVE    "key17"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-CHKSND
+               INITIALIZE                  CHKSND-REC
+           END-IF
+      *
+           .
+       900-CHKSND-KEY17-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ２検索処理
+      *****************************************************************
+       900-CHKSND-KEY18-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHKSND
+      *
+           INITIALIZE                      CHKSND-REC
+           MOVE    SPA-X03-GMN-CHKKBN  TO  CHKSND-CHKKBN
+           MOVE    SPA-X03-NAI-KJNYMD  TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
+           MOVE    SPA-X03-GMN-SELNAME TO  CHKSND-SRYCD
+           MOVE    SPA-HOSPNUM         TO  CHKSND-HOSPNUM
+           MOVE    CHKSND-REC             TO  MCPDATA-REC
+           MOVE    "tbl_chksnd"        TO  MCP-TABLE
+           MOVE    "key18"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-CHKSND
+               INITIALIZE                  CHKSND-REC
+           END-IF
+      *
+           .
+       900-CHKSND-KEY18-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ２読込処理
+      *****************************************************************
+       900-CHKSND-FET-SEC                  SECTION.
+      *
+           MOVE    WRK-TABLE            TO  MCP-TABLE
+           MOVE    WRK-PATHNAME         TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  CHKSND-REC
@@ -2958,7 +3371,7 @@
            END-IF
       *
            .
-       900-CHKSND-KEY11-FET-EXT.
+       900-CHKSND-FET-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ３検索処理（ＫＥＹ１１）
@@ -3005,12 +3418,92 @@
        900-CHKTRD-KEY11-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    チェックマスタ３読込処理（ＫＥＹ１１）
+      *    チェックマスタ３検索処理
       *****************************************************************
-       900-CHKTRD-KEY11-FET-SEC        SECTION.
+       900-CHKTRD-KEY15-SEL-SEC           SECTION.
       *
+           MOVE    ZERO                TO  FLG-CHKTRD
+      *
+           INITIALIZE                      CHKTRD-REC
+           MOVE    SPA-X03-GMN-CHKKBN  TO  CHKTRD-CHKKBN
+           MOVE    SPA-X03-NAI-KJNYMD  TO  CHKTRD-YUKOSTYMD
+                                           CHKTRD-YUKOEDYMD
+           MOVE    WRK-CDSYUBETU       TO  CHKTRD-SELCDSYU
+           MOVE    SPA-X03-GMN-SELNAME TO  CHKTRD-SELINPUTCD
+           MOVE    SPA-HOSPNUM         TO  CHKTRD-HOSPNUM
+           MOVE    CHKTRD-REC             TO  MCPDATA-REC
            MOVE    "tbl_chktrd"            TO  MCP-TABLE
-           MOVE    "key11"                 TO  MCP-PATHNAME
+           MOVE    "key15"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-CHKTRD
+               INITIALIZE                  CHKTRD-REC
+           END-IF
+      *
+           .
+       900-CHKTRD-KEY15-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ３検索処理
+      *****************************************************************
+       900-CHKTRD-KEY16-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHKTRD
+      *
+           INITIALIZE                      CHKTRD-REC
+           MOVE    SPA-X03-GMN-CHKKBN  TO  CHKTRD-CHKKBN
+           MOVE    SPA-X03-NAI-KJNYMD  TO  CHKTRD-YUKOSTYMD
+                                           CHKTRD-YUKOEDYMD
+           MOVE    WRK-CDSYUBETU       TO  CHKTRD-SELCDSYU
+           STRING  SPA-X03-GMN-SELNAME DELIMITED   BY  SPACE
+                   "%"                 DELIMITED   BY  SIZE
+           INTO    CHKTRD-SELINPUTCD
+           END-STRING
+           MOVE    SPA-HOSPNUM         TO  CHKTRD-HOSPNUM
+           MOVE    CHKTRD-REC             TO  MCPDATA-REC
+           MOVE    "tbl_chktrd"            TO  MCP-TABLE
+           MOVE    "key16"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-CHKTRD
+               INITIALIZE                  CHKTRD-REC
+           END-IF
+      *
+           .
+       900-CHKTRD-KEY16-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ３検索処理
+      *****************************************************************
+       900-CHKTRD-KEY17-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHKTRD
+      *
+           INITIALIZE                      CHKTRD-REC
+           MOVE    SPA-X03-GMN-CHKKBN  TO  CHKTRD-CHKKBN
+           MOVE    SPA-X03-NAI-KJNYMD  TO  CHKTRD-YUKOSTYMD
+                                           CHKTRD-YUKOEDYMD
+           MOVE    SPA-X03-GMN-SELNAME TO  CHKTRD-SRYCD
+           MOVE    SPA-HOSPNUM         TO  CHKTRD-HOSPNUM
+           MOVE    CHKTRD-REC             TO  MCPDATA-REC
+           MOVE    "tbl_chktrd"            TO  MCP-TABLE
+           MOVE    "key17"             TO  MCP-PATHNAME
+           PERFORM 911-DBSELECT-SEC
+           IF    ( MCP-RC          NOT =   ZERO )
+               MOVE    1               TO  FLG-CHKTRD
+               INITIALIZE                  CHKTRD-REC
+           END-IF
+      *
+           .
+       900-CHKTRD-KEY17-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェックマスタ３読込処理
+      *****************************************************************
+       900-CHKTRD-FET-SEC        SECTION.
+      *
+           MOVE    WRK-TABLE            TO  MCP-TABLE
+           MOVE    WRK-PATHNAME         TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  CHKTRD-REC
@@ -3020,7 +3513,7 @@
            END-IF
       *
            .
-       900-CHKTRD-KEY11-FET-EXT.
+       900-CHKTRD-FET-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ５検索処理
@@ -3163,6 +3656,31 @@
       *
            .
        900-TENSU-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    入力コードマスター読込処理
+      *****************************************************************
+       900-INPUTCD-SEL-KEY2-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-INPUTCD
+      *
+           MOVE    INPUTCD-REC         TO  MCPDATA-REC
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF  ( MCP-RC        =   ZERO )
+               MOVE    MCPDATA-REC TO  INPUTCD-REC
+           ELSE
+               MOVE    1           TO  FLG-INPUTCD
+           END-IF
+      *
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+      *
+       900-INPUTCD-SEL-KEY2-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
