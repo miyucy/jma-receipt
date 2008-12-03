@@ -70,3 +70,5 @@
       *
       *¸¡º÷ÍÑ¹àÌÜ
            03  CHKSND-SELNAME            PIC  X(200).
+           03  CHKSND-SELCDSYU           PIC X(1).
+           03  CHKSND-SELINPUTCD         PIC X(20).
