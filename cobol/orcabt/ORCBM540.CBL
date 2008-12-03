@@ -65,6 +65,9 @@
        01  CNT-AREA.
            03  CNT-PAGE            PIC 9(01).
       *
+       01  INDEX-AREA.
+           03  IDX                 PIC 9(03).
+      *
       *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
@@ -162,6 +165,9 @@
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
+      *
+      *    県名取得パラメタ
+           COPY    "CPORCSPREF.INC".
       *
       *    共通パラメタ
            COPY    "MCPAREA".
@@ -338,15 +344,24 @@
       *
            ADD     1                   TO  CNT-PAGE
       *
+           INITIALIZE                      SPREF-AREA
+           CALL    "ORCSPREF"          USING   SPREF-AREA
+                                               SPA-AREA
+      *
+           MOVE    SYS-1001-PREFNUM    TO  IDX
            EVALUATE   WRK-PARA-TEISYUTUSAKI
                WHEN    "1"
-                   STRING  "社会保険診療報酬支払基金　御中"
+                   STRING  SPREF-PREFNAME1 (IDX)
+                                       DELIMITED    BY  SPACE
+                           "社会保険診療報酬支払基金　御中"
                                        DELIMITED    BY  SIZE
                                        INTO    HCM64-TEISYUTUSAKI
                    END-STRING
                WHEN    "2"
                WHEN    "4"
-                   STRING  "国民健康保険団体連合会　御中"
+                   STRING  SPREF-PREFNAME1 (IDX)
+                                       DELIMITED    BY  SPACE
+                           "国民健康保険団体連合会　御中"
                                        DELIMITED    BY  SIZE
                                        INTO    HCM64-TEISYUTUSAKI
                    END-STRING
