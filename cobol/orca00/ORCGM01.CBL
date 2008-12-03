@@ -1087,6 +1087,8 @@
       *****************************************************************
        460-M95-SEC                    SECTION.
       *
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPACE               TO  SPA-SAKIPG
            MOVE    SPA-M00KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
       *

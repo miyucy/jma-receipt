@@ -1122,6 +1122,8 @@
       *****************************************************************
        460-M95-SEC                    SECTION.
       *
+           MOVE    SPACE               TO  SPA-MOTOPG
+           MOVE    SPACE               TO  SPA-SAKIPG
            MOVE    SPA-M00KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
       *
@@ -1149,6 +1151,7 @@
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                    TO  FLG-END
+      *
       *
            .
        460-M95-EXT.
