@@ -88,7 +88,8 @@
       *  04.02.00    NACL-太田    08/03/06  病棟・病室入院基本料加算情報削除
       *  04.03.00    NACL-多々納  08/06/18  予約機能情報追加
       *  04.03.00    NACL-多々納  08/08/11  外来迅速検体検査設定追加
-      *  04.03.00    NACL-太田    08/08/19  ＣＲＯＮ情報設定画面
+      *  04.03.00    NACL-太田    08/08/19  ＣＲＯＮ情報設定画面追加
+      *  04.04.00    NACL-太田    08/12/02  公費付加情報設定画面追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -313,6 +314,8 @@
            03  FILLER              PIC X(35)   VALUE
                "2007 公費番号まとめ記載情報".
            03  FILLER              PIC X(35)   VALUE
+               "2010 公費付加情報".
+           03  FILLER              PIC X(35)   VALUE
                "3001 統計帳票出力情報（日次）".
            03  FILLER              PIC X(35)   VALUE
                "3002 統計帳票出力情報（月次）".
@@ -322,11 +325,11 @@
                "4001 労災自賠医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   42.
+           03  TBL-KANRICD-TBL         OCCURS   43.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   42.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   43.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -508,6 +511,7 @@
            COPY    "W62.INC".
            COPY    "W63.INC".
            COPY    "W64.INC".
+           COPY    "W65.INC".
            COPY    "W96.INC".
            COPY    "W98.INC".
            COPY    "W981.INC".
@@ -1183,6 +1187,7 @@
                WHEN    "5006"
                WHEN    "2006"
                WHEN    "2007"
+               WHEN    "2010"
                WHEN    "1910"
                WHEN    "9600"
                WHEN    "9700"
@@ -1823,6 +1828,7 @@
              OR                            "5006"
              OR                            "2006"
              OR                            "2007"
+             OR                            "2010"
       *---- (01.05.24) LINE ADD START --------------------------------
              OR                            "1010"
              OR                            "1014"
@@ -1896,6 +1902,8 @@
                    MOVE    "W61"               TO  SPA-SAKIPG
                WHEN    "2007"
                    MOVE    "W64"               TO  SPA-SAKIPG
+               WHEN    "2010"
+                   MOVE    "W65"               TO  SPA-SAKIPG
               WHEN    "1030"
               WHEN    "1031"
                    MOVE    "W11"               TO  SPA-SAKIPG
