@@ -1262,6 +1262,12 @@
                        MOVE    "1098"          TO  SPA-PIDCD
                    END-IF
                END-IF
+               MOVE    SPA-GMN21-RENRAKU-ADRS
+                                           TO  SPA-MAE-RENRAKU-ADRS
+               MOVE    SPA-GMN21-OFFICE-ADRS
+                                           TO  SPA-MAE-OFFICE-ADRS
+               MOVE    SPA-GMN21-KISEI-ADRS
+                                           TO  SPA-MAE-KISEI-ADRS
            ELSE
                IF      SPA-GMN982-MAX      >  1
                    PERFORM 41012-P982-SYORI-SEC
