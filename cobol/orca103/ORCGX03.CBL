@@ -845,9 +845,9 @@
            MOVE    ZERO                TO  CNT-SELCHKLST
       *
       *    チェックマスタ検索
-           PERFORM 900-CHK005-KEY5-SEL-SEC
+           PERFORM 900-CHK005-KEY7-SEL-SEC
            IF    ( FLG-CHK005         =   ZERO )
-               PERFORM 900-CHK005-KEY5-FET-SEC
+               PERFORM 900-CHK005-KEY7-FET-SEC
                IF    ( FLG-CHK005     =   ZERO )
                    COMPUTE CNT-SELCHKLST  = CNT-SELCHKLST   +   1
                END-IF
@@ -909,7 +909,7 @@
                                                            (IDX-LST)
       *
       *        チェックマスタ読込処理
-               PERFORM 900-CHK005-KEY5-FET-SEC
+               PERFORM 900-CHK005-KEY7-FET-SEC
                IF    ( FLG-CHK005     =    ZERO )
                    COMPUTE CNT-SELCHKLST   = CNT-SELCHKLST   +   1
                END-IF
@@ -917,7 +917,7 @@
            END-PERFORM
       *
            MOVE    "tbl_chk005"           TO  MCP-TABLE
-           MOVE    "key5"                 TO  MCP-PATHNAME
+           MOVE    "key7"                 TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-CHK005              =   ZERO )
@@ -1062,7 +1062,7 @@
                PERFORM UNTIL ( FLG-CHK005  NOT =   ZERO )
                         OR   ( CNT-SELCHKLST   >   WRK-SKIP-MAX )
       *
-                   PERFORM 900-CHK005-KEY5-FET-SEC
+                   PERFORM 900-CHK005-KEY7-FET-SEC
                    IF    ( FLG-CHK005      =   ZERO )
                        COMPUTE CNT-SELCHKLST = CNT-SELCHKLST   +   1
                    END-IF
@@ -3025,7 +3025,7 @@
       *****************************************************************
       *    チェックマスタ５検索処理
       *****************************************************************
-       900-CHK005-KEY5-SEL-SEC        SECTION.
+       900-CHK005-KEY7-SEL-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-CHK005
       *
@@ -3034,29 +3034,18 @@
            MOVE    SPA-X03-NAI-KJNYMD  TO  CHK005-YUKOSTYMD
                                            CHK005-YUKOEDYMD
       *
-           PERFORM VARYING IDX0    FROM    70  BY  -1
-                   UNTIL ( IDX0    <   1 )
-                    OR   ( SPA-X03-GMN-SELNAME (IDX0:1)
-                               NOT =   SPACE )
+           STRING  SPA-X03-GMN-SELNAME     DELIMITED   BY  SPACE
+                   "%"                     DELIMITED   BY  SIZE
+           INTO    CHK005-BYOMEI
+           END-STRING
       *
-               CONTINUE
-      *
-           END-PERFORM
-      *
-           IF    ( IDX0    >   ZERO )
-               STRING  SPA-X03-GMN-SELNAME (1:IDX0)
-                                           DELIMITED   BY  SIZE
-                       "%"                 DELIMITED   BY  SIZE
-               INTO    CHK005-SELNAME
-               END-STRING
-           ELSE
-               MOVE    "%"             TO  CHK005-SELNAME
-           END-IF
+           INSPECT CHK005-BYOMEI
+                   REPLACING   ALL "＊"    BY  "%%"
       *
            MOVE    SPA-HOSPNUM         TO  CHK005-HOSPNUM
            MOVE    CHK005-REC          TO  MCPDATA-REC
            MOVE    "tbl_chk005"        TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
+           MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC          NOT =   ZERO )
                MOVE    1               TO  FLG-CHK005
@@ -3064,15 +3053,15 @@
            END-IF
       *
            .
-       900-CHK005-KEY5-SEL-EXT.
+       900-CHK005-KEY7-SEL-EXT.
            EXIT.
       *****************************************************************
       *    チェックマスタ５読込処理
       *****************************************************************
-       900-CHK005-KEY5-FET-SEC         SECTION.
+       900-CHK005-KEY7-FET-SEC         SECTION.
       *
            MOVE    "tbl_chk005"        TO  MCP-TABLE
-           MOVE    "key5"              TO  MCP-PATHNAME
+           MOVE    "key7"              TO  MCP-PATHNAME
            PERFORM 910-DBFETCH-SEC
            IF    ( MCP-RC          =   ZERO )
                MOVE    MCPDATA-REC     TO  CHK005-REC
@@ -3082,7 +3071,7 @@
            END-IF
       *
            .
-       900-CHK005-KEY5-FET-EXT.
+       900-CHK005-KEY7-FET-EXT.
            EXIT.
       *****************************************************************
       *    適応病名マスタ検索処理（ＫＥＹ４）
