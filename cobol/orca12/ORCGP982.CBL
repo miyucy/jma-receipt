@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  05/11/14  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  04.04.00    NACL-多々納  08/12/03  住所から郵便番号設定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -50,12 +51,15 @@
       *
       *    患者画面スパ領域
            COPY    "P02SCR-SPA".
+      *   
+           COPY    "ENUM-VALUE".
       *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-ADRS            PIC 9(01).
+           03  FLG-KENSAKU         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -68,6 +72,7 @@
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDY                 PIC 9(04).
+           03  IDX-STR             PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -80,11 +85,15 @@
                05  WRK-SEMM        PIC 9(02).
                05  WRK-SEDD        PIC 9(02).
       *
-           03  WRK-Z9              PIC ZZ9.
+           03  WRK-TOWNNAME            PIC X(100).
+           03  WRK-ADRSNAME            PIC X(102).
+           03  WRK-MAX-CNT             PIC 9(04).
+           03  WRK-Z9                  PIC ZZ9.
       *
-           03  WRK-DBPATH            PIC X(64).
+           03  WRK-DBPATH              PIC X(64).
       *
-           03  WRK-ERRMSG          PIC X(40).
+           03  WRK-ERRMSG              PIC X(40).
+      *
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -109,6 +118,8 @@
            COPY    "CPORCSNUM.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *    全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -235,6 +246,8 @@
            MOVE    SPACE               TO  SPA-GMN982-SELNUM
            MOVE    ZERO                TO  SPA-NAI982-SELNUM
            MOVE    ZERO                TO  SPA-GMN982-NEXT
+           MOVE    1                   TO  SPA-GMN982-PAGE
+           MOVE    SPACE               TO  SPA-GMN982-KEYNAME
       *
            PERFORM 310-SPA-SET-SEC
       *    １件のみの時、対象とする
@@ -258,8 +271,22 @@
       *****************************************************************
        310-SPA-SET-SEC             SECTION.
       *
-      *    一覧読込み
-           INITIALIZE                      SPA-GMN982-TBL-G
+           IF      SPA-GMN982-KBN      =   2
+      *        住所から検索
+               PERFORM 3102-ADRS-HEN-SEC
+           ELSE
+      *        郵便番号等から検索
+               PERFORM 3101-POST-HEN-SEC
+           END-IF
+      *
+           .
+       310-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    郵便番号等検索処理
+      *****************************************************************
+       3101-POST-HEN-SEC               SECTION.
       *
            INITIALIZE                      ADRS-REC
            IF      SPA-GMN982-LPUBCD(5:1)  =   SPACE
@@ -294,6 +321,24 @@
                MOVE    "key5"              TO  WRK-DBPATH
            END-IF
       *
+      *    一覧表編集処理
+           PERFORM 3101-TBLHENSYU-SEC 
+           .
+       3101-POST-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    一覧表編集処理
+      *****************************************************************
+       3101-TBLHENSYU-SEC               SECTION.
+      *
+           INITIALIZE                      SPA-GMN982-TBL-G
+      *
+           COMPUTE IDX-STR             =  (SPA-GMN982-PAGE  -  1 )
+                                       *   100
+                                       +   1
+           MOVE    ZERO                TO  SPA-GMN982-NEXT
+      *
            MOVE    SPA-HOSPNUM         TO  ADRS-HOSPNUM
            MOVE    ADRS-REC            TO  MCPDATA-REC
            MOVE    "tbl_adrs"          TO  MCP-TABLE
@@ -308,19 +353,26 @@
            END-IF
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDX2
-           PERFORM UNTIL    (FLG-ADRS      =   1   )  OR
-                            (IDX           >=  100  )
+           MOVE    ZERO                TO  SPA-GMN982-MAX
+           PERFORM UNTIL    (FLG-ADRS          =   1   )
+                       OR   (SPA-GMN982-NEXT   =   1   )
                ADD     1                   TO  IDX2
-               IF      SPA-GMN982-NEXT     <   IDX2
-                   ADD     1               TO  SPA-GMN982-MAX
+               IF      IDX2                >=  IDX-STR
                    ADD     1               TO  IDX
-                   MOVE    IDX             TO  SPA-GMN982-SEQNO (IDX)
-                   MOVE    ADRS-POST       TO  SPA-GMN982-TPOST (IDX)
-                   MOVE    ADRS-LPUBCD     TO  SPA-GMN982-TLPUBCD (IDX)
-      *************MOVE    ADRS-TOWNNAME   TO  SPA-GMN982-TTOWNNAME(IDX)
-                   MOVE    ADRS-EDITADRS-NAME
-                                           TO  SPA-GMN982-TTOWNNAME(IDX)
-                   MOVE    ADRS-EDANUM     TO  SPA-GMN982-TRENNUM(IDX)
+                   IF      IDX             >   100
+                       MOVE    1               TO  SPA-GMN982-NEXT
+                   ELSE
+                       ADD     1               TO  SPA-GMN982-MAX
+                       MOVE    IDX             TO  SPA-GMN982-SEQNO(IDX)
+                       MOVE    ADRS-POST       TO  SPA-GMN982-TPOST(IDX)
+                       MOVE    ADRS-LPUBCD     TO  SPA-GMN982-TLPUBCD
+                                                                   (IDX)
+                       MOVE    ADRS-EDITADRS-NAME
+                                               TO  SPA-GMN982-TTOWNNAME
+                                                                   (IDX)
+                       MOVE    ADRS-EDANUM     TO  SPA-GMN982-TRENNUM
+                                                                   (IDX)
+                   END-IF
                END-IF
       *
                MOVE    "tbl_adrs"          TO  MCP-TABLE
@@ -331,16 +383,72 @@
            MOVE    WRK-DBPATH          TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF     (SPA-GMN982-MAX          =   100  )  AND
-                  (FLG-ADRS                =   ZERO )
-               MOVE    "0005"              TO  SPA-ERRCD
-               MOVE    IDX2                TO  SPA-GMN982-NEXT
-           ELSE
-               MOVE    ZERO                TO  SPA-GMN982-NEXT
-           END-IF
-      *
            .
-       310-SPA-SET-EXT.
+       3101-TBLHENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    住所からの検索処理
+      *****************************************************************
+       3102-ADRS-HEN-SEC               SECTION.
+      *
+           IF      SPA-GMN982-KEYNAME  =   SPACE
+               PERFORM 31021-ADRS-INITHEN-SEC
+           ELSE
+      *        改ページ
+               INITIALIZE                      ADRS-REC
+               MOVE    SPA-GMN982-KEYNAME  TO  ADRS-EDITADRS-NAME
+               MOVE    "key8"              TO  WRK-DBPATH
+      *        一覧表編集処理
+               PERFORM 3101-TBLHENSYU-SEC
+           END-IF
+           .
+       3102-ADRS-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    住所からの検索処理
+      *****************************************************************
+       31021-ADRS-INITHEN-SEC              SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN982-TOWNNAME TO  KANACHK-MAE-INPUT
+           MOVE    100                 TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAX         TO  WRK-MAX-CNT
+      *
+           MOVE    SPA-GMN982-TOWNNAME TO  WRK-TOWNNAME
+           MOVE    ZERO                TO  FLG-KENSAKU
+           PERFORM UNTIL   FLG-KENSAKU     =   1
+      *
+               MOVE    SPACE               TO  WRK-ADRSNAME
+               STRING  "%"
+                       SPA-GMN982-TOWNNAME(1:WRK-MAX-CNT)
+                                               DELIMITED  BY  SIZE
+                       "%"                     DELIMITED  BY  SIZE
+                                           INTO    WRK-ADRSNAME
+               END-STRING
+      *
+               INITIALIZE                      ADRS-REC
+               MOVE    WRK-ADRSNAME        TO  ADRS-EDITADRS-NAME
+               MOVE    "key8"              TO  WRK-DBPATH
+      *        一覧表編集処理
+               PERFORM 3101-TBLHENSYU-SEC
+               IF      SPA-GMN982-MAX      =   ZERO
+                   IF      WRK-MAX-CNT     >   6
+                       COMPUTE WRK-MAX-CNT     =   WRK-MAX-CNT   -   2
+                   ELSE
+                       MOVE    1               TO  FLG-KENSAKU
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-KENSAKU
+                   MOVE    WRK-ADRSNAME    TO  SPA-GMN982-KEYNAME
+               END-IF
+           END-PERFORM
+           .
+       31021-ADRS-INITHEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -351,11 +459,21 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
-                   INITIALIZE                      SPA-GMN982-KEY
+                   INITIALIZE                  SPA-GMN982-KEY
+                   MOVE    SPACE               TO  SPA-GMN982-TOWNNAME
                    PERFORM 210-BACK
+      *        前頁
+               WHEN    "CLICKED"       ALSO    "B06"
+                   PERFORM 260-MAE-PAGE-SEC
       *        次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 220-NEXT-HEN-SEC
+      *        郵便番号のみ
+               WHEN    "CLICKED"       ALSO    "B10"
+                   PERFORM 2100-B10-SYORI-SEC
+      *        確定
+               WHEN    "CLICKED"       ALSO    "B12"
+                   PERFORM 2120-B12-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -411,17 +529,21 @@
                                        >   SPA-GMN982-MAX
                MOVE    "0002"              TO  SPA-ERRCD
            ELSE
-               MOVE    SPA-NAI982-SELNUM   TO  IDX
-               MOVE    SPA-GMN982-TPOST   (IDX)
+               IF      SPA-GMN982-KBN      =   2
+                   MOVE    2                   TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    SPA-NAI982-SELNUM   TO  IDX
+                   MOVE    SPA-GMN982-TPOST   (IDX)
                                            TO  SPA-GMN982-POST
-               MOVE    SPA-GMN982-TLPUBCD (IDX)
+                   MOVE    SPA-GMN982-TLPUBCD (IDX)
                                            TO  SPA-GMN982-LPUBCD
-               MOVE    SPA-GMN982-TRENNUM (IDX)
+                   MOVE    SPA-GMN982-TRENNUM (IDX)
                                            TO  SPA-GMN982-RENNUM
-               MOVE    SPA-GMN982-TTOWNNAME (IDX)
+                   MOVE    SPA-GMN982-TTOWNNAME (IDX)
                                            TO  SPA-GMN982-TOWNNAME
       *
-               PERFORM 210-BACK
+                   PERFORM 210-BACK
+               END-IF
            END-IF
            .
        41011-SELNUM-CHK-EXT.
@@ -434,7 +556,7 @@
       *        行選択
            MOVE    ZERO                TO  SPA-NAI982-SELNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   200
+                   UNTIL       IDX     >   100
                IF      P982-SELECT (IDX)    =   "T"
                    MOVE    SPA-GMN982-SEQNO (IDX)
                                             TO  SPA-NAI982-SELNUM
@@ -451,6 +573,48 @@
            EXIT.
       *
       *****************************************************************
+      *    郵便番号のみ処理
+      *****************************************************************
+       2100-B10-SYORI-SEC       SECTION.
+      *
+           IF      SPA-NAI982-SELNUM   <   1   OR
+                                       >   SPA-GMN982-MAX
+               MOVE    "0002"              TO  SPA-ERRCD
+           ELSE
+               MOVE    SPA-NAI982-SELNUM   TO  IDX
+               MOVE    SPA-GMN982-TPOST   (IDX)
+                                           TO  SPA-GMN982-POST
+               PERFORM 210-BACK
+           END-IF
+           .
+       2100-B10-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    確定処理
+      *****************************************************************
+       2120-B12-SYORI-SEC       SECTION.
+      *
+           IF      SPA-NAI982-SELNUM   <   1   OR
+                                       >   SPA-GMN982-MAX
+               MOVE    "0002"              TO  SPA-ERRCD
+           ELSE
+               MOVE    SPA-NAI982-SELNUM   TO  IDX
+               MOVE    SPA-GMN982-TPOST   (IDX)
+                                           TO  SPA-GMN982-POST
+               MOVE    SPA-GMN982-TLPUBCD (IDX)
+                                           TO  SPA-GMN982-LPUBCD
+               MOVE    SPA-GMN982-TRENNUM (IDX)
+                                           TO  SPA-GMN982-RENNUM
+               MOVE    SPA-GMN982-TTOWNNAME (IDX)
+                                           TO  SPA-GMN982-TOWNNAME
+      *
+               PERFORM 210-BACK
+           END-IF
+           .
+       2120-B12-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    次頁処理
       *****************************************************************
        220-NEXT-HEN-SEC       SECTION.
@@ -458,10 +622,26 @@
            IF      SPA-GMN982-NEXT     =   ZERO
                MOVE    "0003"          TO  SPA-ERRCD
            ELSE
+               ADD     1               TO  SPA-GMN982-PAGE
                PERFORM 310-SPA-SET-SEC
            END-IF
            .
        220-NEXT-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前頁処理
+      *****************************************************************
+       260-MAE-PAGE-SEC       SECTION.
+      *
+           IF      SPA-GMN982-PAGE     =   1
+               MOVE    "0004"          TO  SPA-ERRCD
+           ELSE
+               COMPUTE SPA-GMN982-PAGE     =   SPA-GMN982-PAGE  -  1
+               PERFORM 310-SPA-SET-SEC
+           END-IF
+           .
+       260-MAE-PAGE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -529,6 +709,29 @@
       *
            MOVE    SPA-GMN982-SELNUM   TO  P982-SELNUM
       *
+           IF      SPA-GMN982-NEXT     =   1
+               IF      SPA-GMN982-PAGE     =   1
+                   MOVE    "次頁あり"          TO  P982-NEXT-VALUE
+                   MOVE    "red"               TO  P982-NEXT-STYLE
+               ELSE
+                   MOVE    "前・次頁あり"      TO  P982-NEXT-VALUE
+                   MOVE    "red"               TO  P982-NEXT-STYLE
+               END-IF
+           ELSE
+               IF      SPA-GMN982-PAGE     >   1
+                   MOVE    "前頁あり"          TO  P982-NEXT-VALUE
+                   MOVE    "red"               TO  P982-NEXT-STYLE
+               END-IF
+           END-IF
+      *    選択機能
+           IF      SPA-GMN982-KBN      =   2
+               MOVE    WIDGET-NORMAL       TO  P982-B10-STATE
+               MOVE    WIDGET-NORMAL       TO  P982-B12-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  P982-B10-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  P982-B12-STATE
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -543,12 +746,12 @@
            EVALUATE    SPA-GMN-CUR
                WHEN    01
                    MOVE    "SELNUM"        TO  MCP-WIDGET
+               WHEN    02
+                   MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
            .
        5001-MAPCUR-EXT.
            EXIT.
-      *
-      *
       *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************
@@ -564,6 +767,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0003"
                    MOVE    "次ページはありません"
+                                       TO  SPA-ERRMSG
+               WHEN    "0004"
+                   MOVE    "前次ページはありません"
                                        TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE    "対象のデータが１００件以上あります"

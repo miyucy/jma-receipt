@@ -34,3 +34,11 @@
                     06  P982-LPUBCD   PIC X(5).
                     06  P982-TOWNNAME  PIC X(100).
                   05  P982-SELECT PIC X       OCCURS  100 TIMES.
+              03  P982-NEXT.
+                04  P982-NEXT-STYLE   PIC X(20).
+                04  P982-NEXT-VALUE   PIC X(20).
+              03  P982-B10.
+                04  P982-B10-STATE   PIC S9(9)   BINARY.
+              03  P982-B12.
+                04  P982-B12-STATE   PIC S9(9)   BINARY.
+

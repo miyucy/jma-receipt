@@ -435,6 +435,7 @@
                    07  SPA-MAE-SEX             PIC X(01).
                    07  SPA-MAE-BIRTHDAY        PIC X(09).
                    07  SPA-MAE-POST            PIC X(07).
+                   07  SPA-MAE-ADRS            PIC X(100).
                    07  SPA-MAE-DISCOUNTKBN     PIC X(02).
                    07  SPA-MAE-HONKZKKBN       PIC X(01).
       *        ÃÏÊý¸øÈñÃ±ÆÈ¥Á¥§¥Ã¥¯
@@ -732,6 +733,10 @@
                    07  SPA-GMN21-KISEI-ADRS        PIC X(100).
                    07  SPA-GMN21-KISEI-BANTI       PIC X(100).
                    07  SPA-GMN21-KISEI-TEL         PIC X(15).
+               05  SPA-NAI21-AREA.
+                   07  SPA-MAE-RENRAKU-ADRS        PIC X(100).
+                   07  SPA-MAE-OFFICE-ADRS         PIC X(100).
+                   07  SPA-MAE-KISEI-ADRS          PIC X(100).
       *
       *    P024(½êÆÀ¼Ô¾ðÊó¡Ë
            03  SPA-P024-AREA.
@@ -1058,8 +1063,10 @@
       *
       *    ½»½ê°ìÍ÷¡Ê£Ð£¹£¸£²¡Ë
            03  SPA-P982-AREA.
+               05  SPA-GMN982-KBN                   PIC 9(01).
                05  SPA-GMN982-CUR                   PIC 9(02).
-               05  SPA-GMN982-NEXT                  PIC 9(04). 
+               05  SPA-GMN982-PAGE                  PIC 9(04). 
+               05  SPA-GMN982-NEXT                  PIC 9(01). 
       *        ¸µ£Ð£Ç
                05  SPA-GMN982-MOTOPG                PIC X(08).
       *
@@ -1068,6 +1075,8 @@
                    07  SPA-GMN982-POST              PIC X(07).
                    07  SPA-GMN982-RENNUM            PIC 9(02).
                05  SPA-GMN982-TOWNNAME              PIC X(100).
+     *
+               05  SPA-GMN982-KEYNAME               PIC X(100).
      *
                05  SPA-GMN982-SELNUM                PIC X(03).
                05  SPA-NAI982-SELNUM                PIC 9(03).

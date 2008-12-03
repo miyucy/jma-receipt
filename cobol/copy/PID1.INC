@@ -25,3 +25,7 @@
                 04  PID1-VALUE  PIC X(10).
               03  PID1-ID1MSG.
                 04  PID1-VALUE  PIC X(80).
+              03  PID1-B01.
+                04  PID1-LABEL  PIC X(4).
+              03  PID1-B12.
+                04  PID1-LABEL  PIC X(4).

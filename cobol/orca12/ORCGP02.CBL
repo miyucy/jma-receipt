@@ -911,6 +911,32 @@
                        MOVE    "P02 "          TO  SPA-P02-GAMEN
                        PERFORM 3002-GMNSET-SEC
                    END-IF
+      *        住所確認
+               WHEN    "1098"
+                   IF      SPA-PID1-FLG        =   "OK"
+                       EVALUATE    SPA-GMN21-INKBN
+                       WHEN    1
+                           MOVE    SPA-GMN982-TOWNNAME
+                                            TO  SPA-GMN21-RENRAKU-ADRS
+                           MOVE    SPA-GMN21-RENRAKU-ADRS
+                                               TO  SPA-MAE-RENRAKU-ADRS
+                       WHEN    2
+                           MOVE    SPA-GMN982-TOWNNAME
+                                               TO  SPA-GMN21-OFFICE-ADRS
+                           MOVE    SPA-GMN21-OFFICE-NAME
+                                               TO  SPA-MAE-OFFICE-ADRS
+                       WHEN    3
+                           MOVE    SPA-GMN982-TOWNNAME
+                                               TO  SPA-GMN21-KISEI-ADRS
+                           MOVE    SPA-GMN21-KISEI-ADRS
+                                               TO  SPA-MAE-KISEI-ADRS
+                       WHEN    OTHER
+                           MOVE    SPA-GMN982-TOWNNAME
+                                               TO  SPA-GMN-EDITADRS-NAME
+                           MOVE    SPA-GMN-EDITADRS-NAME
+                                               TO  SPA-MAE-ADRS
+                       END-EVALUATE
+                   END-IF
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-PIDCD
@@ -5229,6 +5255,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-PIDMSG
                    END-STRING
+               WHEN    "1098"
+                   STRING  "入力した住所が郵便番号の住所と違います。"
+                           "変更しますか？"
+                                       DELIMITED  BY  SIZE
+                                       INTO  WRK-PIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-PIDCD
                                        TO  WRK-PIDMSG
@@ -5239,6 +5271,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
+           MOVE    "戻る"              TO  PID1-B01
+           MOVE    "ＯＫ"              TO  PID1-B12
+           EVALUATE    SPA-PIDCD
+               WHEN    "1098"
+                   MOVE    "ＮＯ"              TO  PID1-B01
+           END-EVALUATE
+      *
            EVALUATE    SPA-PIDCD
                WHEN    "0103"
                    MOVE    "B01"               TO  MCP-WIDGET

@@ -32,6 +32,7 @@
       *  02.00.00    MCC-多々納   02/07/04  インタフェース変更
       *  02.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  04.04.00    NACL-多々納  08/12/03  住所から郵便番号設定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,31 +40,11 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    パラメタデータ
-      *    SELECT  PARA-FILE       ASSIGN  FILE-NAME1
-      *                            ORGANIZATION    IS  INDEXED
-      *                            ACCESS  MODE    IS  DYNAMIC
-      *                            RECORD  KEY     IS  PAR-KEY
-      *                            FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
       *FILE                        SECTION.
       *
-      *    パラメタデータ
-      *FD  PARA-FILE.
-      *01  PARA-REC.
-      *    03  PAR-KEY.
-      *********05  PAR-TERMID          PIC X(64).
-      *        05  PAR-FILEMEI         PIC X(08).
-      *        05  PAR-EDANUM          PIC 9(04).
-      **** 03  PAR-DATA-REC            PIC X(3000).
-      *
        WORKING-STORAGE             SECTION.
-      *    パラメタファイル名
-       01  FILE-NAME1.
-           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
-           03  FILLER              PIC X(07)   VALUE   "P01PARA".
-           03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -103,8 +84,6 @@
            03  WRK-MAX             PIC 9(04).
       *
            03  WRK-MAE-POST        PIC X(07).
-      **** 03  WRK-POST            PIC X(07).
-      **** 03  WRK-ADRS            PIC X(100).
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
       *
@@ -142,7 +121,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      *****COPY    "CPORCMCP.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -285,6 +263,8 @@
                    ELSE
                        MOVE    JPAR-EDITADRS-NAME
                                            TO  SPA-GMN21-RENRAKU-ADRS
+                       MOVE    SPA-GMN21-RENRAKU-ADRS
+                                           TO  SPA-MAE-RENRAKU-ADRS
                        MOVE    9           TO  SPA-GMN21-CUR
                    END-IF
       *        勤務先　住所編集
@@ -295,6 +275,8 @@
                    ELSE
                        MOVE    JPAR-EDITADRS-NAME
                                            TO  SPA-GMN21-OFFICE-ADRS
+                       MOVE    SPA-GMN21-OFFICE-ADRS
+                                           TO  SPA-MAE-OFFICE-ADRS
                        MOVE    15          TO  SPA-GMN21-CUR
                    END-IF
       *        帰省先　住所編集
@@ -305,6 +287,8 @@
                    ELSE
                        MOVE    JPAR-EDITADRS-NAME
                                            TO  SPA-GMN21-KISEI-ADRS
+                       MOVE    SPA-GMN21-KISEI-ADRS
+                                           TO  SPA-MAE-KISEI-ADRS
                        MOVE    20          TO  SPA-GMN21-CUR
                    END-IF
            END-EVALUATE
@@ -322,37 +306,70 @@
            EVALUATE    SPA-GMN21-INKBN
       *        連絡先
                WHEN    1
-                   IF      SPA-GMN982-TOWNNAME     =   SPACE
-                       MOVE    7           TO  SPA-GMN21-CUR
+                   IF     (SPA-GMN982-POST         =   SPACE )
+                   AND    (SPA-GMN982-TOWNNAME     =   SPACE )
+                       IF      SPA-GMN982-KBN      =   2
+                           MOVE    8           TO  SPA-GMN21-CUR
+                       ELSE
+                           MOVE    7           TO  SPA-GMN21-CUR
+                       END-IF
                    ELSE
-                       MOVE    SPA-GMN982-POST
+                       IF      SPA-GMN982-POST     NOT =   SPACE
+                           MOVE    SPA-GMN982-POST
                                            TO  SPA-GMN21-RENRAKU-POST
-                       MOVE    SPA-GMN982-TOWNNAME
+                       END-IF
+                       IF      SPA-GMN982-TOWNNAME NOT =   SPACE
+                           MOVE    SPA-GMN982-TOWNNAME
                                            TO  SPA-GMN21-RENRAKU-ADRS
+                       END-IF
                        MOVE    9           TO  SPA-GMN21-CUR
                    END-IF
+                   MOVE    SPA-GMN21-RENRAKU-ADRS
+                                           TO  SPA-MAE-RENRAKU-ADRS
       *        勤務先　住所編集
                WHEN    "2"
-                   IF      SPA-GMN982-TOWNNAME     =   SPACE
-                       MOVE    13          TO  SPA-GMN21-CUR
+                   IF     (SPA-GMN982-POST         =   SPACE )
+                   AND    (SPA-GMN982-TOWNNAME     =   SPACE )
+                       IF      SPA-GMN982-KBN      =   2
+                           MOVE    14          TO  SPA-GMN21-CUR
+                       ELSE
+                           MOVE    13          TO  SPA-GMN21-CUR
+                       END-IF
                    ELSE
-                       MOVE    SPA-GMN982-POST
+                       IF      SPA-GMN982-POST     NOT =   SPACE
+                           MOVE    SPA-GMN982-POST
                                            TO  SPA-GMN21-OFFICE-POST
-                       MOVE    SPA-GMN982-TOWNNAME
+                       END-IF
+                       IF      SPA-GMN982-TOWNNAME NOT =   SPACE
+                           MOVE    SPA-GMN982-TOWNNAME
                                            TO  SPA-GMN21-OFFICE-ADRS
+                       END-IF
                        MOVE    15          TO  SPA-GMN21-CUR
                    END-IF
+                   MOVE    SPA-GMN21-OFFICE-ADRS
+                                           TO  SPA-MAE-OFFICE-ADRS
       *        帰省先　住所編集
                WHEN    "3"
-                   IF      SPA-GMN982-TOWNNAME     =   SPACE
-                       MOVE    18          TO  SPA-GMN21-CUR
+                   IF     (SPA-GMN982-POST         =   SPACE )
+                   AND    (SPA-GMN982-TOWNNAME     =   SPACE )
+                       IF      SPA-GMN982-KBN      =   2
+                           MOVE    19          TO  SPA-GMN21-CUR
+                       ELSE
+                           MOVE    18          TO  SPA-GMN21-CUR
+                       END-IF
                    ELSE
-                       MOVE    SPA-GMN982-POST
+                       IF      SPA-GMN982-POST     NOT =   SPACE
+                           MOVE    SPA-GMN982-POST
                                            TO  SPA-GMN21-KISEI-POST
-                       MOVE    SPA-GMN982-TOWNNAME
+                       END-IF
+                       IF      SPA-GMN982-TOWNNAME NOT =   SPACE
+                           MOVE    SPA-GMN982-TOWNNAME
                                            TO  SPA-GMN21-KISEI-ADRS
+                       END-IF
                        MOVE    20          TO  SPA-GMN21-CUR
                    END-IF
+                   MOVE    SPA-GMN21-KISEI-ADRS
+                                           TO  SPA-MAE-KISEI-ADRS
            END-EVALUATE
       *
            .
@@ -556,13 +573,7 @@
            PERFORM 4101-GMN-SPA-SET-SEC
       *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-FLG-END     NOT =   ZERO  )
-               GO      TO      410-INPUT-CHK-EXT
-           END-IF
-      *
            .
-      *
        410-INPUT-CHK-EXT.
            EXIT.
       *
@@ -631,80 +642,77 @@
            END-IF
       *
       *    連絡先−名前
-           PERFORM 4101-RENRAKUNAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-RENRAKUNAME-CHK-SEC
            END-IF
       *    連絡先−続柄
-           PERFORM 4101-RENZOKUGARA-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-RENZOKUGARA-CHK-SEC
            END-IF
       *
       *    郵便番号
-           PERFORM 4101-RENPOST-CHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-FLG-END     NOT =   ZERO  )
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-RENPOST-CHK-SEC
            END-IF
       *
       *    連絡先−住所
-           PERFORM 4101-RENRAKUADRS-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-RENRAKUADRS-CHK-SEC
            END-IF
       *    連絡先−番地
-           PERFORM 4101-RENBANTI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-RENBANTI-CHK-SEC
            END-IF
       *
       *    勤務先−名前
-           PERFORM 4101-OFFNAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-OFFNAME-CHK-SEC
            END-IF
       *
       *    郵便番号
-           PERFORM 4101-OFFPOST-CHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-FLG-END     NOT =   ZERO  )
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-OFFPOST-CHK-SEC
            END-IF
       *
       *    勤務先−住所
-           PERFORM 4101-OFFADRS-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-OFFADRS-CHK-SEC
            END-IF
       *    勤務先−番地
-           PERFORM 4101-OFFBANTI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-OFFBANTI-CHK-SEC
            END-IF
       *
       *    帰省先−名前
-           PERFORM 4101-KISNAME-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-KISNAME-CHK-SEC
            END-IF
       *
       *    郵便番号
-           PERFORM 4101-KISPOST-CHK-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-FLG-END     NOT =   ZERO  )
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-KISPOST-CHK-SEC
            END-IF
       *
       *    帰省先−住所
-           PERFORM 4101-KISADRS-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-KISADRS-CHK-SEC
            END-IF
       *    帰省先−番地
-           PERFORM 4101-KISBANTI-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      4102-KIHON-CHK-EXT
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-FLG-END         =   ZERO  )
+               PERFORM 4101-KISBANTI-CHK-SEC
            END-IF
            .
       *
@@ -792,6 +800,7 @@
            IF      FLG-POST            =   1
                MOVE    WRK-POST        TO  SPA-GMN21-RENRAKU-POST
                MOVE    WRK-ADRS        TO  SPA-GMN21-RENRAKU-ADRS
+               MOVE    WRK-ADRS        TO  SPA-MAE-RENRAKU-ADRS
            END-IF
            .
       *
@@ -802,19 +811,36 @@
       *****************************************************************
        4101-RENRAKUADRS-CHK-SEC          SECTION.
       *
-      *    半角空白を全角空白へ
-           MOVE    SPA-GMN21-RENRAKU-ADRS   TO  WRK-MAE-INPUT
-           MOVE    100                 TO  WRK-MAX
-           PERFORM 890-HALF-ZEN-SEC
-           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-ADRS
-           IF      FLG-ERR             =   ZERO
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-ADRS
+           IF      SPA-GMN21-RENRAKU-ADRS   =   SPACE
+               MOVE    SPA-GMN21-RENRAKU-ADRS   TO  SPA-MAE-RENRAKU-ADRS
            ELSE
-               MOVE    "2104"              TO  SPA-ERRCD
-               MOVE    8                    TO  SPA-GMN21-CUR
+      *        半角空白を全角空白へ
+               MOVE    SPA-GMN21-RENRAKU-ADRS   TO  WRK-MAE-INPUT
+               MOVE    100                 TO  WRK-MAX
+               PERFORM 890-HALF-ZEN-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-RENRAKU-ADRS
+               IF      FLG-ERR             =   ZERO
+                   MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-RENRAKU-ADRS
+      *            郵便番号自動設定
+                   IF     (SPA-GMN21-RENRAKU-ADRS
+                                           NOT =   SPA-MAE-RENRAKU-ADRS)
+                      AND (WRK-MCP-WIDGET      =   "P021_RENADRS"  )
+                       MOVE    1                   TO  SPA-GMN21-INKBN
+                       MOVE    SPA-GMN21-RENRAKU-ADRS
+                                                   TO  WRK-ADRS
+                       MOVE    SPA-GMN21-RENRAKU-POST
+                                                   TO  WRK-POST
+                       PERFORM 41012-ADRS-POST-SEC
+                   ELSE
+                       MOVE    SPA-GMN21-RENRAKU-ADRS
+                                               TO  SPA-MAE-RENRAKU-ADRS
+                   END-IF
+               ELSE
+                   MOVE    "2104"              TO  SPA-ERRCD
+                   MOVE    8                   TO  SPA-GMN21-CUR
+               END-IF
            END-IF
            .
-      *
        4101-RENRAKUADRS-CHK-EXT.
            EXIT.
       *****************************************************************
@@ -883,6 +909,7 @@
            IF      FLG-POST            =   1
                MOVE    WRK-POST        TO  SPA-GMN21-OFFICE-POST
                MOVE    WRK-ADRS        TO  SPA-GMN21-OFFICE-ADRS
+               MOVE    WRK-ADRS        TO  SPA-MAE-OFFICE-ADRS
            END-IF
            .
       *
@@ -893,16 +920,34 @@
       *****************************************************************
        4101-OFFADRS-CHK-SEC          SECTION.
       *
-      *    半角空白を全角空白へ
-           MOVE    SPA-GMN21-OFFICE-ADRS   TO  WRK-MAE-INPUT
-           MOVE    100                 TO  WRK-MAX
-           PERFORM 890-HALF-ZEN-SEC
-           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-ADRS
-           IF      FLG-ERR             =   ZERO
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-ADRS
+           IF      SPA-GMN21-OFFICE-ADRS   =   SPACE
+               MOVE    SPA-GMN21-OFFICE-ADRS   TO  SPA-MAE-OFFICE-ADRS
            ELSE
-               MOVE    "2107"              TO  SPA-ERRCD
-               MOVE    14                  TO  SPA-GMN21-CUR
+      *        半角空白を全角空白へ
+               MOVE    SPA-GMN21-OFFICE-ADRS   TO  WRK-MAE-INPUT
+               MOVE    100                     TO  WRK-MAX
+               PERFORM 890-HALF-ZEN-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-OFFICE-ADRS
+               IF      FLG-ERR             =   ZERO
+                   MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-OFFICE-ADRS
+      *            郵便番号自動設定
+                   IF     (SPA-GMN21-OFFICE-ADRS
+                                           NOT =   SPA-MAE-OFFICE-ADRS)
+                      AND (WRK-MCP-WIDGET      =   "P021_OFFADRS"  )
+                       MOVE    2                   TO  SPA-GMN21-INKBN
+                       MOVE    SPA-GMN21-OFFICE-ADRS
+                                                   TO  WRK-ADRS
+                       MOVE    SPA-GMN21-OFFICE-POST
+                                                   TO  WRK-POST
+                       PERFORM 41012-ADRS-POST-SEC
+                   ELSE
+                       MOVE    SPA-GMN21-OFFICE-ADRS
+                                               TO  SPA-MAE-OFFICE-ADRS
+                   END-IF
+               ELSE
+                   MOVE    "2107"              TO  SPA-ERRCD
+                   MOVE    14                  TO  SPA-GMN21-CUR
+               END-IF
            END-IF
            .
       *
@@ -974,6 +1019,7 @@
            IF      FLG-POST            =   1
                MOVE    WRK-POST        TO  SPA-GMN21-KISEI-POST
                MOVE    WRK-ADRS        TO  SPA-GMN21-KISEI-ADRS
+               MOVE    WRK-ADRS        TO  SPA-MAE-KISEI-ADRS
            END-IF
            .
       *
@@ -984,16 +1030,34 @@
       *****************************************************************
        4101-KISADRS-CHK-SEC          SECTION.
       *
-      *    半角空白を全角空白へ
-           MOVE    SPA-GMN21-KISEI-ADRS    TO  WRK-MAE-INPUT
-           MOVE    100                 TO  WRK-MAX
-           PERFORM 890-HALF-ZEN-SEC
-           MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-ADRS
-           IF      FLG-ERR             =   ZERO
-               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-ADRS
+           IF      SPA-GMN21-KISEI-ADRS    =   SPACE
+               MOVE    SPA-GMN21-KISEI-ADRS    TO  SPA-MAE-KISEI-ADRS
            ELSE
-               MOVE    "2110"              TO  SPA-ERRCD
-               MOVE    19                  TO  SPA-GMN21-CUR
+      *        半角空白を全角空白へ
+               MOVE    SPA-GMN21-KISEI-ADRS    TO  WRK-MAE-INPUT
+               MOVE    100                     TO  WRK-MAX
+               PERFORM 890-HALF-ZEN-SEC
+               MOVE    WRK-ATO-INPUT       TO  SPA-GMN21-KISEI-ADRS
+               IF      FLG-ERR             =   ZERO
+                   MOVE    WRK-ATO-INPUT   TO  SPA-GMN21-KISEI-ADRS
+      *            郵便番号自動設定
+                   IF     (SPA-GMN21-KISEI-ADRS
+                                           NOT =   SPA-MAE-KISEI-ADRS)
+                      AND (WRK-MCP-WIDGET      =   "P021_KISADRS"  )
+                       MOVE    3                   TO  SPA-GMN21-INKBN
+                       MOVE    SPA-GMN21-KISEI-ADRS
+                                                   TO  WRK-ADRS
+                       MOVE    SPA-GMN21-KISEI-POST
+                                                   TO  WRK-POST
+                       PERFORM 41012-ADRS-POST-SEC
+                   ELSE
+                       MOVE    SPA-GMN21-KISEI-ADRS
+                                               TO  SPA-MAE-KISEI-ADRS
+                   END-IF
+               ELSE
+                   MOVE    "2110"              TO  SPA-ERRCD
+                   MOVE    19                  TO  SPA-GMN21-CUR
+               END-IF
            END-IF
            .
       *
@@ -1158,6 +1222,76 @@
            END-IF
            .
        41011-SYUHEN-JYUSYO-EXT.
+           EXIT.
+      *****************************************************************
+      *    住所から郵便番号編集処理
+      *****************************************************************
+       41012-ADRS-POST-SEC         SECTION.
+      *
+      *    郵便番号より、住所一覧を表示する
+           INITIALIZE                  SPA-P982-AREA
+           MOVE    2                   TO  SPA-GMN982-KBN
+           MOVE    WRK-ADRS            TO  SPA-GMN982-TOWNNAME
+           MOVE    "P02"               TO  SPA-GMN982-MOTOPG
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP982"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+      *
+      *    １件の時、対象
+           IF      SPA-GMN982-MAX      =   1
+               IF      SPA-GMN982-POST     NOT =   WRK-POST
+                   PERFORM 330-ADRS-POST2-SEC
+               ELSE
+                   IF      SPA-GMN982-TOWNNAME =   WRK-ADRS
+                       CONTINUE
+                   ELSE
+                       MOVE    "1098"          TO  SPA-PIDCD
+                   END-IF
+               END-IF
+           ELSE
+               IF      SPA-GMN982-MAX      >  1
+                   PERFORM 41012-P982-SYORI-SEC
+               END-IF
+           END-IF
+      *
+           .
+       41012-ADRS-POST-EXT.
+           EXIT.
+      *****************************************************************
+      *    住所一覧遷移処理
+      *****************************************************************
+       41012-P982-SYORI-SEC         SECTION.
+      *
+      *    住所一覧画面へ
+           MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+      *
+      *    一覧へ
+           MOVE    "P982"              TO  SPA-SAKIPG
+           MOVE    "P02"               TO  SPA-MOTOPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "P982"              TO  MCP-WINDOW
+           PERFORM 900-PUT-WINDOW
+           MOVE    1                   TO  SPA-FLG-END
+      *
+           .
+       41012-P982-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

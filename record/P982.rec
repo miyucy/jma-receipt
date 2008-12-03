@@ -17,5 +17,15 @@ P982	{
 				select	bool[100];
 			};
 		};
+		NEXT	{
+			style	varchar(20);
+			value	varchar(20);
+		};
+		B10	{
+	           	state	int;
+		};
+		B12	{
+	           	state	int;
+		};
 	};
 };

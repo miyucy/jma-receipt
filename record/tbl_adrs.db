@@ -122,3 +122,16 @@ path	key7		{
 			ORDER   BY  RENNUM  DESC;
 	};
 };
+
+path	key8		{ 	
+	DBSELECT	{
+		DECLARE tbl_adrs_key8_csr CURSOR FOR
+		SELECT *
+		FROM tbl_adrs
+			WHERE (HOSPNUM      =   :HOSPNUM)
+			AND   (EDITADRS_NAME   LIKE :EDITADRS_NAME)
+			ORDER  BY  POST,
+                                   RENNUM
+;
+	};
+};

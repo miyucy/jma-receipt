@@ -84,6 +84,7 @@
       *  04.00.00    NACL-多々納  08/01/25  公費負担額に結核入所'011'追加
       *  04.02.00    NACL-多々納  08/03/XX  平成２０年４月改正対応
       *  04.03.00    NACL-多々納  08/10/03  公費負担額に北海道の'183'追加
+      *  04.04.00    NACL-多々納  08/12/03  住所から郵便番号設定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -860,24 +861,38 @@
                        MOVE    JPAR-POST   TO  SPA-GMN-POST
                        MOVE    JPAR-EDITADRS-NAME
                                            TO  SPA-GMN-EDITADRS-NAME
+                       MOVE    SPA-GMN-EDITADRS-NAME
+                                           TO  SPA-MAE-ADRS
                        MOVE    42          TO  SPA-GMN-CUR
                    ELSE
                        MOVE    SPACE       TO  SPA-GMN-POST
                        MOVE    40          TO  SPA-GMN-CUR
                    END-IF
-      *        住所検索より
-               WHEN    "P982" 
-                   IF      SPA-GMN982-TOWNNAME     NOT =   SPACE
-                       MOVE    SPA-GMN982-POST
-                                           TO  SPA-GMN-POST
-                       MOVE    SPA-GMN982-TOWNNAME
-                                           TO  SPA-GMN-EDITADRS-NAME
-                       MOVE    SPA-GMN-POST
-                                           TO  SPA-MAE-POST
-                       MOVE    42          TO  SPA-GMN-CUR
+      *        住所一覧より
+               WHEN    "P982"
+                   IF     (SPA-GMN982-POST         =   SPACE )
+                   AND    (SPA-GMN982-TOWNNAME     =   SPACE )
+      *                選択なし
+                       IF      SPA-GMN982-KBN      =   2
+                           MOVE    41              TO  SPA-GMN-CUR
+                       ELSE
+                           MOVE    40              TO  SPA-GMN-CUR
+                       END-IF
                    ELSE
-                       MOVE    40          TO  SPA-GMN-CUR
+                       IF      SPA-GMN982-POST     NOT =   SPACE
+                           MOVE    SPA-GMN982-POST
+                                                   TO  SPA-GMN-POST
+                       END-IF
+                       IF      SPA-GMN982-TOWNNAME     NOT =   SPACE
+                           MOVE    SPA-GMN982-TOWNNAME
+                                               TO  SPA-GMN-EDITADRS-NAME
+                       END-IF
+                       MOVE    SPA-GMN-POST    TO  SPA-MAE-POST
+                       MOVE    42              TO  SPA-GMN-CUR
                    END-IF
+                   MOVE    SPA-GMN-EDITADRS-NAME
+                                               TO  SPA-MAE-ADRS
+                   MOVE    ZERO                TO  SPA-GMN982-KBN
       *        二重登録確認画面処理
                WHEN    "P02A"
                    CONTINUE
@@ -2513,6 +2528,7 @@
            ELSE
                MOVE    1                   TO  FLG-IN-POST
            END-IF
+      *
            IF      P02-P02-DISCOUNTKBN(1:2)
                                            =   SPA-MAE-DISCOUNTKBN
                MOVE    ZERO                TO  FLG-IN-DISCOUNTKBN
@@ -3540,24 +3556,12 @@
            IF      SPA-GMN982-MAX      =   1
                MOVE    SPA-GMN982-POST     TO  SPA-GMN-POST
                MOVE    SPA-GMN982-TOWNNAME TO  SPA-GMN-EDITADRS-NAME
-               GO  TO  4101-POST-CHK-EXT
+               MOVE    SPA-GMN-EDITADRS-NAME
+                                           TO  SPA-MAE-ADRS
+           ELSE
+      *        住所一覧画面へ
+               PERFORM 41012-P982-SYORI-SEC
            END-IF
-      *
-      *    住所一覧画面へ
-           MOVE    "SELNUM"            TO  MCP-WIDGET
-      *
-           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
-      *
-      *    一覧へ
-           MOVE    "P982"              TO  SPA-SAKIPG
-           MOVE    "P02"               TO  SPA-MOTOPG
-      *
-           MOVE    "NEW"               TO  MCP-PUTTYPE
-           MOVE    "P982"              TO  MCP-WINDOW
-      *
-           PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                   TO  SPA-FLG-END
       *
            .
        4101-POST-CHK-EXT.
@@ -3616,6 +3620,8 @@
                    MOVE    MCPDATA-REC         TO  ADRS-REC
                    MOVE    ADRS-POST           TO  SPA-GMN-POST
                    MOVE    ADRS-EDITADRS-NAME  TO  SPA-GMN-EDITADRS-NAME
+                   MOVE    SPA-GMN-EDITADRS-NAME
+                                               TO  SPA-MAE-ADRS
                    MOVE    1                   TO  FLG-OK
                END-IF
            END-IF
@@ -3636,7 +3642,9 @@
       *****************************************************************
        4101-ADRS-CHK-SEC         SECTION.
       *
-           IF      SPA-GMN-EDITADRS-NAME   NOT =   SPACE
+           IF      SPA-GMN-EDITADRS-NAME       =   SPACE
+               MOVE    SPA-GMN-EDITADRS-NAME   TO  SPA-MAE-ADRS
+           ELSE
       *        半角空白を全角空白へ
                MOVE    SPA-GMN-EDITADRS-NAME   TO  WRK-MAE-INPUT
                MOVE    100                 TO  WRK-LEN
@@ -3645,10 +3653,93 @@
                IF      FLG-ERR             =   1
                    MOVE    "0032"              TO  SPA-ERRCD
                    MOVE    41                  TO  SPA-GMN-CUR
+               ELSE
+      *            郵便番号自動設定
+                   IF     (SPA-GMN-EDITADRS-NAME
+                                           NOT =   SPA-MAE-ADRS )
+                      AND (SPA-MCP-WIDGET      =   "P02_ADRS"   )
+                       PERFORM 41012-ADRS-POST-SEC
+                   ELSE
+                       MOVE    SPA-GMN-EDITADRS-NAME   TO  SPA-MAE-ADRS
+                   END-IF
                END-IF
            END-IF
            .
        4101-ADRS-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    住所から郵便番号編集処理
+      *****************************************************************
+       41012-ADRS-POST-SEC         SECTION.
+      *
+      *    郵便番号より、住所一覧を表示する
+           INITIALIZE                  SPA-P982-AREA
+           MOVE    2                   TO  SPA-GMN982-KBN
+           MOVE    SPA-GMN-EDITADRS-NAME
+                                       TO  SPA-GMN982-TOWNNAME
+           MOVE    "P02"               TO  SPA-GMN982-MOTOPG
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP982"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+      *
+      *    １件の時、対象
+           IF      SPA-GMN982-MAX      =   1
+               IF      SPA-GMN982-POST     NOT =   SPA-GMN-POST
+                   MOVE    SPA-GMN982-POST     TO  SPA-GMN-POST
+                   MOVE    SPA-GMN982-TOWNNAME TO  SPA-GMN-EDITADRS-NAME
+               ELSE
+                   IF      SPA-GMN982-TOWNNAME =   SPA-GMN-EDITADRS-NAME
+                       CONTINUE
+                   ELSE
+                       MOVE    "1098"          TO  SPA-PIDCD
+                   END-IF
+               END-IF
+               MOVE    SPA-GMN-POST            TO  SPA-MAE-POST
+               MOVE    SPA-GMN-EDITADRS-NAME   TO  SPA-MAE-ADRS
+           ELSE
+               IF      SPA-GMN982-MAX      >   1
+                   PERFORM 41012-P982-SYORI-SEC
+               END-IF
+           END-IF
+      *
+           .
+       41012-ADRS-POST-EXT.
+           EXIT.
+      *****************************************************************
+      *    住所一覧遷移処理
+      *****************************************************************
+       41012-P982-SYORI-SEC         SECTION.
+      *
+      *    住所一覧画面へ
+           MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+      *
+      *    一覧へ
+           MOVE    "P982"              TO  SPA-SAKIPG
+           MOVE    "P02"               TO  SPA-MOTOPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "P982"              TO  MCP-WINDOW
+           PERFORM 900-PUT-WINDOW
+           MOVE    1                   TO  SPA-FLG-END
+      *
+           .
+       41012-P982-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    番地チェック処理
