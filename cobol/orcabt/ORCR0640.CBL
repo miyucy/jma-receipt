@@ -345,6 +345,7 @@
       *  04.03.04    NACL-門脇    08/08/19  入院料未算定時のコメント対応
       *  04.03.05    NACL-門脇    08/11/26  兵庫県医師国保組合＋精神、結核対応
       *  04.03.06    NACL-門脇    08/12/01  在宅（院外分）編集修正
+      *  04.03.07    NACL-門脇    08/12/04  仮収納チェック処理追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -523,6 +524,7 @@
            03  FLG-HOUMON-COM                          PIC 9(01).
            03  FLG-ZENKOKUKOHI-NISYU                   PIC 9(01).
            03  FLG-CHI-TAISYO                          PIC 9(01).
+           03  FLG-SYUNOU-ARI                          PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -669,6 +671,12 @@
        01  WK-SYUTEN                                   PIC S9(08).
        01  WK-KIZAITEN                                 PIC S9(08).
        01  WK-YKZTEN                                   PIC S9(08).
+      *
+      *    エラーメッセージ編集領域
+       01  ERR-EDIT-AREA.
+           03  ERR-PTNUM                               PIC X(20).
+           03  ERR-ERRMSG                              PIC X(80).
+           03  ERR-HEN-ERRMSG                          PIC X(200).
       *
       *    点数テーブル検索用対象日領域
        01  WK-TAIHI-AREA.
@@ -1070,6 +1078,11 @@
            03  WRK-KOHCNT                      PIC  9(01).
       *
            03  WRK-HANTEI-TOTALTEN             PIC  9(09).
+      *
+           03  WRK-STR                         PIC  X(200).
+           03  WRK-LEN                         PIC  9(05).
+           03  WRK-SHO                         PIC  9(05).
+           03  WRK-AMARI                       PIC  9(05).
       *
       *    固定値
        01  CONST-AREA.
@@ -2068,8 +2081,9 @@
            PERFORM    RECE62-READ-SEC
       *
            PERFORM                     UNTIL   FLG-RECE62  =   1
-               PERFORM     210-HENSYU-SEC
+             PERFORM     210-HENSYU-SEC
       *
+             IF  FLG-RECE62 = ZERO
                PERFORM     RECE62-READ-SEC
                IF  CNT-IN-COMMIT   =   300
                    MOVE  ZERO          TO      CNT-IN-COMMIT
@@ -2082,6 +2096,7 @@
                    MOVE    ZERO                TO  CNT-IN-CANCEL
                    PERFORM 500-CANCEL-HENSYU-SEC
                END-IF
+             END-IF
            END-PERFORM
       *
            CLOSE   RECE62-FILE
@@ -2215,8 +2230,9 @@
            END-IF
       *
       *    福岡県地方公費の判定
-           DISPLAY   "RECE62-PREFNUM = " RECE62-PREFNUM
-           IF      RECE62-PREFNUM     =   40
+      ***  DISPLAY   "RECE62-PREFNUM = " RECE62-PREFNUM
+           IF     (RECE62-PREFNUM     =   40    )
+           AND    (RECE62-SRYYM      <=   200609)
                MOVE    ZERO               TO  KOHIDX
                PERFORM   VARYING   IDX  FROM    1   BY  1
                          UNTIL   ( IDX                >    4    )
@@ -9313,6 +9329,8 @@
            MOVE    ZERO                 TO      FLG-ZENKOKUKOHI-NISYU
            MOVE    ZERO                 TO      FLG-CHI-TAISYO
       *
+           MOVE    ZERO                 TO      FLG-SYUNOU-ARI
+      *
            MOVE    ZERO                 TO      WRK-KOHCNT
            IF      RECE62-SRYYM   >=   "200804"
               PERFORM   VARYING  IDY2    FROM    1   BY   1
@@ -9374,6 +9392,7 @@
                                                 RECE62-HKNCOMBI (IDX1)
                            IF  SYU-DENPJTIKBN    NOT =  "3"
                                PERFORM   21044-RECE62-FTN-HENSYU-SEC
+                               MOVE   1   TO   FLG-SYUNOU-ARI
                            END-IF
                            MOVE    10              TO  IDX1
                        END-IF
@@ -9403,6 +9422,14 @@
            IF   RECE62-SRYYM  >= "200604"
            AND  RECE62-SRYYM  <  "200610"
                 PERFORM    21047-SKJ-RAYKU-HENSYU-SEC
+           END-IF
+      *
+           IF   FLG-SYUNOU-ARI  =  ZERO
+              MOVE    "仮収納データがありません"  TO  ERR-ERRMSG
+              PERFORM 600-ERRMSG-EDIT-SEC
+              MOVE    ERR-HEN-ERRMSG    TO  WRK-RECEERR
+              PERFORM 500-ERR-HENSYU-SEC
+              MOVE    1                 TO  FLG-RECE62
            END-IF
       *
            .
@@ -13699,61 +13726,6 @@
                END-IF
              END-IF
       *
-      *      主＋全Ａ＋１２、主＋１２
-      ***    IF  ( RECE62-HKNNUM      NOT =  SPACE          )
-      ***    AND ( RECE62-KOHNUM(1)(1:1)  =  "0"            )
-      ***    AND ( RECE62-KOHNUM(1)   NOT =  "012" AND "025")
-      ***    AND ( RECE62-KOHNUM(2)       =  "012" OR  "025")
-      ***    AND ( RECE62-KOHNUM(3)       =  SPACE          )
-      ***    AND ( RECE62-KOHNUM(4)       =  SPACE          )
-      *
-      ***      IF  (RECE62-TOTALTEN(1)  NOT = RECE62-TOTALTEN(2))
-      ***      AND (RECE62-TOTALTEN(1)      = RECE62-TOTALTEN(3))
-      ***         MOVE      2       TO     FLG-ZENKOKUKOHI-NISYU
-      ***      END-IF
-      *
-      ***    END-IF
-      *
-      *      主＋全Ａ＋全Ｂ、主＋全Ｂ
-      ***    IF  ( RECE62-HKNNUM      NOT =  SPACE          )
-      ***    AND ( RECE62-KOHNUM(1)(1:1)  =  "0"            )
-      ***    AND ( RECE62-KOHNUM(1)   NOT =  "012" AND "025")
-      ***    AND ( RECE62-KOHNUM(2)(1:1)  =  "0"            )
-      ***    AND ( RECE62-KOHNUM(2)   NOT =  "012" AND "025")
-      ***    AND ( RECE62-KOHNUM(3)       =  SPACE          )
-      ***    AND ( RECE62-KOHNUM(4)       =  SPACE          )
-      *
-      ***      IF  (RECE62-TOTALTEN(1)  NOT = RECE62-TOTALTEN(2))
-      ***      AND (RECE62-TOTALTEN(1)      = RECE62-TOTALTEN(3))
-      ***         MOVE      3       TO     FLG-ZENKOKUKOHI-NISYU
-      ***      END-IF
-      *
-      ***    END-IF
-      *
-      *      主＋全Ａ＋長、主＋全Ｂ＋長
-      *      主＋全Ａ＋地＋長、主＋全Ｂ＋地＋長
-      **     IF  ( RECE62-HKNNUM      NOT =  SPACE          )
-      **     AND ( RECE62-KOHNUM(1)(1:1)      =  "0"        )
-      **     AND ( RECE62-KOHNUM(2)(1:1)      =  "0"        )
-      **     AND ( RECE62-KOHNUM(3)(1:1)  NOT =  "0"        )
-      **     AND ( RECE62-KOHNUM(4)(1:1)  NOT =  "0"        )
-      **     AND ((RECE62-KOHNUM(3)       =  "972" OR "974") OR
-      **          (RECE62-KOHNUM(4)       =  "972" OR "974"))
-      *
-      **       IF  (RECE62-TOTALTEN(1)  NOT = RECE62-TOTALTEN(2))
-      **       AND (RECE62-TOTALTEN(1)  NOT = RECE62-TOTALTEN(3))
-      **          IF  (RECE62-KOHNUM(3)   =  "972" OR "974"    )
-      **          AND (RECE62-TOTALTEN(1) =  RECE62-TOTALTEN(4))
-      **              MOVE      4       TO     FLG-ZENKOKUKOHI-NISYU
-      **          END-IF
-      **          IF  (RECE62-KOHNUM(4)   =  "972" OR "974"    )
-      **          AND (RECE62-TOTALTEN(1) =  RECE62-TOTALTEN(5))
-      **              MOVE      4       TO     FLG-ZENKOKUKOHI-NISYU
-      **          END-IF
-      **       END-IF
-      *
-      **     END-IF
-      *
            END-IF
       *
            .
@@ -14977,6 +14949,7 @@
                                        CNT-IN-CANCEL
       *
                    DISPLAY "RECE62 " IDZ " PTNUM=" RECE62-PTNUM     
+                                         " (PTID=" RECE62-PTID ")"
       *
                    PERFORM 910-SYSKANRI-HENSYU-SEC
       *
@@ -15354,6 +15327,50 @@
            END-IF
            .
        500-CANCEL-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーメッセージ編集処理
+      *****************************************************************
+       600-ERRMSG-EDIT-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  ERR-HEN-ERRMSG
+      *
+           MOVE    RECE62-PTNUM        TO  ERR-PTNUM
+      *
+           MOVE    ZERO                TO  WRK-SHO
+                                           WRK-AMARI
+           MOVE    1                   TO  WRK-LEN
+           MOVE    SPACE               TO  WRK-STR
+           STRING  ERR-PTNUM           DELIMITED   BY  SPACE
+           INTO    WRK-STR
+           WITH  POINTER WRK-LEN
+           END-STRING
+      *
+           COMPUTE WRK-LEN =   WRK-LEN -   1
+      *
+           DIVIDE  2   INTO    WRK-LEN GIVING  WRK-SHO
+           REMAINDER WRK-AMARI
+           END-DIVIDE
+      *
+           IF    ( WRK-AMARI   =   ZERO )
+              STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
+                      "［患者番号："      DELIMITED   BY  SIZE
+                      ERR-PTNUM           DELIMITED   BY  SPACE
+                      "］"                DELIMITED   BY  SIZE
+              INTO    ERR-HEN-ERRMSG
+              END-STRING
+           ELSE
+              STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
+                      "［患者番号:"       DELIMITED   BY  SIZE
+                      ERR-PTNUM           DELIMITED   BY  SPACE
+                      "］"                DELIMITED   BY  SIZE
+              INTO    ERR-HEN-ERRMSG
+              END-STRING
+           END-IF
+      *
+           .
+       600-ERRMSG-EDIT-EXT.
            EXIT.
       *
       *****************************************************************
