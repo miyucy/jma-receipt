@@ -261,6 +261,7 @@
            03  PARA-SRYKAKBN           PIC X(01).
            03  PARA-UTAGAIKBN          PIC X(01).
            03  PARA-NYUGAIKBN          PIC X(01).
+           03  PARA-CHARTKBN           PIC X(01).
       *
            03  WRK-PARA-NAME           PIC X(25).
            03  WRK-PARA                PIC X(50).
@@ -469,7 +470,7 @@
            MOVE    "SRYKAKBN"          TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-SRYKAKBN
-      *    疑い区分
+      *    病名疑い区分
            MOVE    "UTAGAIKBN"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-UTAGAIKBN
@@ -477,6 +478,10 @@
            MOVE    "NYUGAIKBN"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-NYUGAIKBN
+      *    カルテ病名疑い区分
+           MOVE    "CHARTKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-CHARTKBN
       *
       *    病名編集オプション設定
            IF      PARA-BYOMEIKBN      =   "0"
@@ -1106,15 +1111,11 @@
       *****************************************************************
        20021-HC01-BYOMEI-SET-SEC          SECTION.
       *
-      *    カルテ病名がある時はカルテ病名
-           IF      PTBYO-CHARTBYOMEI   =   SPACE
-               PERFORM 200211-BYOMEI-HEN-SEC
-               MOVE    WRK-BYOMEI          TO  HC01-BYOMEIG (IDX)
-           ELSE
-               MOVE    PTBYO-CHARTBYOMEI   TO  HC01-BYOMEIG (IDX)
-           END-IF
+      *    病名編集
+           PERFORM 200211-BYOMEI-HEN-SEC
+           MOVE    WRK-BYOMEI          TO  HC01-BYOMEIG (IDX)
       *
-      *    病名期間変換処理
+      *    病名期間編集処理
            PERFORM 200211-BYOMEI-SET-SEC
       *
            MOVE    WRK-STRYYW          TO  HC01-STRYMD  (IDX  1)
@@ -1136,10 +1137,20 @@
       *****************************************************************
        200211-BYOMEI-HEN-SEC          SECTION.
       *
-           IF      PARA-UTAGAIKBN      =   "1"
-               PERFORM 200211-BYOMEI-HENSYU-SEC
-           ELSE
+           IF      PTBYO-CHARTBYOMEI   =   SPACE
+      *        病名
                MOVE    PTBYO-BYOMEI        TO  WRK-BYOMEI
+               IF      PARA-UTAGAIKBN      =   "1"
+      *            疑い区分編集
+                   PERFORM 200211-BYOMEI-UTAGAI-SEC
+               END-IF
+           ELSE
+      *        カルテ病名
+               MOVE    PTBYO-CHARTBYOMEI   TO  WRK-BYOMEI
+               IF      PARA-CHARTKBN       =   "1"
+      *            疑い区分編集
+                   PERFORM 200211-BYOMEI-UTAGAI-SEC
+               END-IF
            END-IF
            .
        200211-BYOMEI-HEN-EXT.
@@ -1147,31 +1158,27 @@
       *****************************************************************
       *    病名疑い編集処理
       *****************************************************************
-       200211-BYOMEI-HENSYU-SEC          SECTION.
+       200211-BYOMEI-UTAGAI-SEC          SECTION.
       *
            INITIALIZE                  ORCSMKBYOMEIAREA
            MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
-           MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
+           MOVE    WRK-BYOMEI          TO  SMKBYO-BYOMEI
            CALL    "ORCSMKBYOMEI"      USING
                                            ORCSMKBYOMEIAREA
            MOVE    SMKBYO-BYOMEI       TO  WRK-BYOMEI
            .
-       200211-BYOMEI-HENSYU-EXT.
+       200211-BYOMEI-UTAGAI-EXT.
            EXIT.
       *****************************************************************
       *    カルテ病名編集処理
       *****************************************************************
        20022-HC011-BYOMEI-SET-SEC          SECTION.
       *
-      *    カルテ病名がある時はカルテ病名
-           IF      PTBYO-CHARTBYOMEI   =   SPACE
-               PERFORM 200211-BYOMEI-HEN-SEC
-               MOVE    WRK-BYOMEI          TO  HC011-BYOMEIG (IDX)
-           ELSE
-               MOVE    PTBYO-CHARTBYOMEI   TO  HC011-BYOMEIG (IDX)
-           END-IF
+      *    病名編集
+           PERFORM 200211-BYOMEI-HEN-SEC
+           MOVE    WRK-BYOMEI          TO  HC011-BYOMEIG (IDX)
       *
-      *    病名変換処理
+      *    病名期間編集処理
            PERFORM 200211-BYOMEI-SET-SEC
       *
            MOVE    WRK-STRYYW          TO  HC011-STRYMD  (IDX  1)
