@@ -5155,6 +5155,7 @@
            PERFORM  900-CLOSE-SEC
       *
            IF   FLG-SYUNOU-ARI  =  ZERO
+              DISPLAY "<SYUNOU NG STOP>"
               MOVE    "仮収納データがありません"  TO  ERR-ERRMSG
               PERFORM 600-ERRMSG-EDIT-SEC
               MOVE    ERR-HEN-ERRMSG    TO  WRK-RECEERR
