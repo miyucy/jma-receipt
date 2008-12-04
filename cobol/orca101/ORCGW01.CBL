@@ -90,6 +90,7 @@
       *  04.03.00    NACL-多々納  08/08/11  外来迅速検体検査設定追加
       *  04.03.00    NACL-太田    08/08/19  ＣＲＯＮ情報設定画面追加
       *  04.04.00    NACL-太田    08/12/02  公費付加情報設定画面追加
+      *  04.04.00    NACL-太田    08/12/04  公害医療機関情報設定画面追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -323,13 +324,15 @@
                "3004 県単独事業情報".
            03  FILLER              PIC X(35)   VALUE
                "4001 労災自賠医療機関情報".
+           03  FILLER              PIC X(35)   VALUE
+               "4100 公害医療機関情報".
       *
        01  TBL-KANRICD-AREAR           REDEFINES   TBL-KANRICD-AREA.
-           03  TBL-KANRICD-TBL         OCCURS   43.
+           03  TBL-KANRICD-TBL         OCCURS   44.
                05  TBL-KANRICD             PIC X(04).
                05  TBL-FILLER              PIC X(01).
                05  TBL-KANRICDMEI          PIC X(30).
-       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   43.
+       01  TBL-KANRICD-MAX                 PIC 9(04)   VALUE   44.
       *
       *外来のみ
        01  TBL-KANRICD-G-AREA.
@@ -512,6 +515,7 @@
            COPY    "W63.INC".
            COPY    "W64.INC".
            COPY    "W65.INC".
+           COPY    "W66.INC".
            COPY    "W96.INC".
            COPY    "W98.INC".
            COPY    "W981.INC".
@@ -1911,6 +1915,8 @@
                    MOVE    "W12"               TO  SPA-SAKIPG
                WHEN    "4001"
                    MOVE    "W13"               TO  SPA-SAKIPG
+               WHEN    "4100"
+                   MOVE    "W66"               TO  SPA-SAKIPG
                WHEN    "3004"
                    MOVE    "W14"               TO  SPA-SAKIPG
                WHEN    "1033"
