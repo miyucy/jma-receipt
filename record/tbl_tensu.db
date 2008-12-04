@@ -1431,3 +1431,17 @@ path	key91m	{
 	};
 };
 
+path	key94 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key94_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE HOSPNUM	 =   :HOSPNUM
+			AND   SRYCD      <>  :SRYCD
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND   YAKKAKJNCD     LIKE  :YAKKAKJNCD
+			ORDER  BY  SRYCD
+		;
+	};
+};

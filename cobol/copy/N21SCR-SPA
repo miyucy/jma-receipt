@@ -26,22 +26,26 @@
       *
       *  ÌôºÞ¾ðÊóÅÐÏ¿¡Ê£Î£²£±¡Ë
          03  SPA-N21-AREA.
-             05  SPA-GMN-CUR           PIC 9(02).
-             05  SPA-GMN-MAX           PIC 9(05).
              05  SPA-GMN-FOLDER        PIC X(128).
+             05  SPA-GMN-JYOTAIFLG     PIC 9(01).
       *
+             05  SPA-GMN-CUR           PIC 9(02).
+             05  SPA-GMN-EVENT         PIC X(01).
+      *
+      *      É½¼¨ÍÑ
              05  SPA-GMN-AREA.
                07  SPA-GMN-KENCD       PIC X(21).
                07  SPA-GMN-KENNAIYO    PIC X(27).
                07  SPA-GMN-KENNAME     PIC X(101).
                07  SPA-GMN-SELNUM      PIC 9(03).
-      *
+               07  SPA-GMN-MAX         PIC 9(05).
                07  SPA-GMN-TBL.
                  09  SPA-GMN-TBL-G     OCCURS  200.
                    11  SPA-GMN-TNO     PIC X(05).
+                   11  SPA-GMN-TSEL    PIC X(05).
                    11  SPA-GMN-TNAME   PIC X(100).
-                 09  SPA-GMN-TCD       PIC X(09)
-                                       OCCURS  200.
+                 09  SPA-GMN-TCD       PIC X(09)  OCCURS  200.
+                 09  SPA-GMN-TKJNCD    PIC X(12)  OCCURS  200.
       *
                07  SPA-GMN-ENTRY.
                  09  SPA-GMN-NAME      PIC X(100).
@@ -53,12 +57,15 @@
                  09  SPA-GMN-PHOTO     PIC X(256).
                  09  SPA-GMN-OBJECT    PIC X(08).
       *
+      *    ÆâÉôÍÑ
            05  SPA-NAI-AREA.
-               07  SPA-NAI-SRYCD       PIC X(09).
-               07  SPA-NAI-KENNAIYO    PIC X(26).
                07  SPA-NAI-KENCD       PIC X(21).
+               07  SPA-NAI-KENNAIYO    PIC X(26).
                07  SPA-NAI-SELNUM      PIC 9(03).
-               07  SPA-NAI-EVENT       PIC X(01).
+               07  SPA-NAI-SRYCD       PIC X(09).
+               07  SPA-NAI-YAKKAKJNCD  PIC X(12).
+               07  SPA-NAI-YAKUJYO     PIC 9(01).
+      *
                07  SPA-NAI-ENTRY.
                  09  SPA-NAI-NAME      PIC X(100).
                  09  SPA-NAI-EFFECT    PIC X(2000).
@@ -68,6 +75,15 @@
                  09  SPA-NAI-CAUTION   PIC X(4000).
                  09  SPA-NAI-PHOTO     PIC X(256).
                  09  SPA-NAI-OBJECT    PIC X(08).
+      *
+      *    Ê£¼ÌÍÑ
+           05  SPA-COPY-AREA.
+               07  SPA-COPY-KENCD      PIC X(21).
+               07  SPA-COPY-SELNUM     PIC 9(03).
+               07  SPA-COPY-SRYCD      PIC X(09).
+               07  SPA-COPY-YAKKAKJNCD PIC X(12).
+               07  SPA-COPY-EFFECT     PIC X(2000).
+               07  SPA-COPY-CAUTION    PIC X(4000).
       *
       *  ÌôºÞ¾ðÊóÅÐÏ¿¡Ê£Î£²£²¡Ë
            03  SPA-N22-AREA.
@@ -131,6 +147,7 @@
                  09  SPA-N22-PHOTO1    PIC X(256).
                  09  SPA-N22-PHOTO2    PIC X(256).
                  09  SPA-N22-PHOTO3    PIC X(256).
+      *
       *    °õºþ¾ò·ïÀßÄê²èÌÌ
            03  SPA-N23-AREA.
                05  SPA-N23-MAX     PIC 9(05).

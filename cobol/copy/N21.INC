@@ -17,6 +17,9 @@
       ********************************************************************
             02  N21.
               03  N21-FIXED17.
+                05  N21-B08.
+                  07  N21-B08-LABEL         PIC X(04).
+                  07  N21-B08-STATE         PIC S9(9)   BINARY.
                 05  N21-B09.
                   07  N21-B09-STATE         PIC S9(9)   BINARY.
                 05  N21-B11.
@@ -30,11 +33,14 @@
                     09  N21-ROWATTR   PIC S9(9)   BINARY.
                     09  N21-ITEM                  OCCURS  200.
                       11  N21-TNO     PIC X(5).
+                      11  N21-TSEL    PIC X(5).
                       11  N21-TNAME   PIC X(100).
                     09  N21-SELECT    PIC X       OCCURS  200.
                 05  N21-KENCD         PIC X(20).
                 05  N21-KENNAIYO      PIC X(26).
                 05  N21-KENNAME       PIC X(100).
+                05  N21-JYOTAI-STYLE  PIC X(20).
+                05  N21-JYOTAI        PIC X(04).
                 05  N21-SELNUM        PIC S9(3).
                 05  N21-SCROLLEDWINDOW2.
                   07  N21-SCR2-HPOS       PIC S9(9)   BINARY.

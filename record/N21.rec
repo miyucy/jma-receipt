@@ -1,5 +1,9 @@
 N21	{
 	fixed17	{
+		B08	{
+			label	varchar(4);
+			state   int;
+		};
 		B09	{
 			state   int;
 		};
@@ -15,7 +19,8 @@ N21	{
 				rowattr	int;
 				item	{
 					value0	varchar(5);
-					value1	varchar(100);
+					value1	varchar(5);
+					value2	varchar(100);
 				}	[200];
 				select	bool[200];
 			};
@@ -28,6 +33,10 @@ N21	{
 		};
 		KENNAME	{
 			value	varchar(100);
+		};
+		JYOTAI	{
+			style   varchar(20);
+			value	varchar(04);
 		};
 		SELNUM	{
 			value	number(3);
