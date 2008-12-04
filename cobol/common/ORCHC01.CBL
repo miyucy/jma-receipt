@@ -53,6 +53,7 @@
       *  04.01.00    NACL-多々納  08/01/25  受給者番号１２文字
       *  04.01.00    NACL-多々納  08/02/04  オンラインファイル名確認追加
       *  04.02.00    NACL-多々納  08/02/XX  記号・番号の１６文字以上対応
+      *  04.04.00    NACL-多々納  08/12/03  プログラムオプション追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -103,6 +104,8 @@
            03  FLG-ZOKUSHI         PIC 9(01).
       *---- (01.00.01) LINE ADD END   ----------------------------
            03  FLG-PTRSIINF        PIC 9(01).
+      *
+           03  FLG-INNO            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -224,6 +227,12 @@
                05  WRK-ENDDDW      PIC X(02).
       *
            03  WRK-ERRMSG          PIC X(40).
+      *    カルテ病名区分
+           03  WRK-KARUTE-BYOMEI   PIC X(01).
+      *
+           03  WRK-BYOMEI          PIC X(100).
+      *
+           03  WRK-MCP-PATHNAME    PIC X(64).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(22).
@@ -241,6 +250,20 @@
                05  WRK-TMM         PIC 99.
            03  WRK-SPA-SYSYYYY.
                05  WRK-SPA-SYSYY   PIC  9(04).
+      *
+      *明細最大行
+       01  MAX-LINE1               PIC 9(02)   VALUE   8.
+       01  MAX-LINE2               PIC 9(02)   VALUE   22.
+      *
+      *    プログラムオプションパラメタ
+       01  PARA-AREA.
+           03  PARA-BYOMEIKBN          PIC X(01).
+           03  PARA-SRYKAKBN           PIC X(01).
+           03  PARA-UTAGAIKBN          PIC X(01).
+           03  PARA-NYUGAIKBN          PIC X(01).
+      *
+           03  WRK-PARA-NAME           PIC X(25).
+           03  WRK-PARA                PIC X(50).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -271,6 +294,10 @@
       *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
+      *
+      *    保険者号マスタ
+       01  HKNJAINF-REC.
+           COPY    "CPHKNJAINF.INC".
       *
       *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
@@ -308,9 +335,11 @@
       *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    保険者号マスタ
-       01  HKNJAINF-REC.
-           COPY    "CPHKNJAINF.INC".
+      *    プログラムオプション編集パラメタ
+           COPY    "CPORCSPRGOPTION.INC".
+      *
+      *    病名編集サブ
+           COPY    "CPORCSMKBYOMEI.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -380,6 +409,9 @@
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
       *
+      *    プログラムオプション取込み
+           PERFORM 100-OPTION-SELECT-SEC
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -403,19 +435,6 @@
                MOVE    1                   TO  FLG-END
            END-IF 
       *
-      *    出力先プリンタ名割り当て情報編集
-      **** MOVE    SPACE               TO  SYS-1031-REC
-      *    INITIALIZE                  SYS-1031-REC
-      *    MOVE    "1031"              TO  SYS-1031-KANRICD
-      *    MOVE    "*"                 TO  SYS-1031-KBNCD
-      *    MOVE    SYS-1031-REC        TO  MCPDATA-REC
-      *    PERFORM 800-SYSKANRI-READ-SEC
-      *    IF      FLG-SYSKANRI        =   ZERO
-      *        MOVE    MCPDATA-REC         TO  SYS-1031-REC
-      *    ELSE
-      *        MOVE    1                   TO  FLG-END
-      *****END-IF 
-      *
       *    患者登録機能制御情報
            MOVE    SPACE               TO  SYS-1017-REC
            INITIALIZE                  SYS-1017-REC
@@ -437,6 +456,60 @@
            EXIT.
       *
       *****************************************************************
+      *    プログラムオプション取込み処理
+      *****************************************************************
+       100-OPTION-SELECT-SEC             SECTION.
+      *
+           INITIALIZE                  PARA-AREA
+      *    病名編集
+           MOVE    "BYOMEIKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-BYOMEIKBN
+      *    診療科
+           MOVE    "SRYKAKBN"          TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-SRYKAKBN
+      *    疑い区分
+           MOVE    "UTAGAIKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-UTAGAIKBN
+      *    入外区分
+           MOVE    "NYUGAIKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA(1:1)       TO  PARA-NYUGAIKBN
+      *
+      *    病名編集オプション設定
+           IF      PARA-BYOMEIKBN      =   "0"
+                                       OR  "1"
+                                       OR  "2"
+               MOVE    PARA-BYOMEIKBN          TO  WRK-KARUTE-BYOMEI
+           ELSE
+               MOVE    SYS-1017-KARUTE-BYOMEI  TO  WRK-KARUTE-BYOMEI
+           END-IF
+      *
+           .
+       100-OPTION-SELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    プログラムオプションパラメタ取得処理
+      *****************************************************************
+       1001-OPTION-CALL-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSPRGOPTIONAREA
+           MOVE    "ORCHC01"           TO  ORCSPRGOPTION-PRGID
+           MOVE    WRK-PARA-NAME       TO  ORCSPRGOPTION-IN-DATA
+           CALL    "ORCSPRGOPTION"     USING   SPA-AREA
+                                               ORCSPRGOPTIONAREA
+           MOVE    SPACE               TO  WRK-PARA
+           IF      ORCSPRGOPTION-OT-TYPE   =   1
+      *        半角で１文字目を値とする
+               MOVE    ORCSPRGOPTION-OT-PARA(1:1)  TO  WRK-PARA(1:1)
+           END-IF
+           .
+       1001-OPTION-CALL-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    カルテ印刷処理
       *****************************************************************
        200-ALL-PRT-SEC             SECTION.
@@ -444,7 +517,7 @@
       *　　印刷項目編集
            PERFORM 2001-HC01-SYORI-SEC
       *    病名を印刷する
-           IF      SYS-1017-KARUTE-BYOMEI    =   "2"
+           IF      WRK-KARUTE-BYOMEI   =   "2"
       *        病名なしの時
       *        カルテ印刷
                PERFORM 20031-HC01-PRINT-SEC
@@ -604,10 +677,7 @@
       *    患者保険情報検索
            INITIALIZE                      PTHKNINF-REC
            MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
-      *---- (01.00.03) LINE MOD START ---------------------------- 
-      **   MOVE    HC01LNK-PTID        TO  PTHKN-PTID
            MOVE    SPA-PTID            TO  PTHKN-PTID
-      *---- (01.00.03) LINE MOD END ------------------------------
       *    主保険−ＩＤ
            MOVE    COMB-HKNID          TO  PTHKN-HKNID
            PERFORM 920-PTHKNINF-READ-SEC
@@ -920,7 +990,6 @@
       *****************************************************************
        2002-BYOMEI-HEN-SEC        SECTION.
       *
-      *
       *    患者病名マスタより編集
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  WRK-PRT-CNT
@@ -929,65 +998,79 @@
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-PTID            TO  PTBYO-PTID
            MOVE    SPA-SRYKA           TO  PTBYO-SRYKA
+           IF      PARA-SRYKAKBN       =   "1"
+      *        全科
+               MOVE    "key3"              TO  WRK-MCP-PATHNAME
+           ELSE
+      *        指定科
+               MOVE    "key2"              TO  WRK-MCP-PATHNAME
+           END-IF
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 950-PTBYOMEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
            END-IF
            PERFORM 
                    UNTIL   FLG-PTBYOMEI    NOT =   ZERO
+               MOVE    ZERO                TO  FLG-INNO
       *
-      *      継続病名のみの時、転帰日のあるものを対象外とする
-             IF     (SYS-1017-KARUTE-BYOMEI    =   "1"  )  AND
-                    (PTBYO-TENKIYMD        NOT =   SPACE)
-               CONTINUE
-             ELSE
-      *
-               ADD     1               TO  IDX
-               IF      WRK-PRT-CNT     =   1
-                   IF      IDX             >   8
-      *                カルテ印刷
-                       PERFORM 20031-HC01-PRINT-SEC
-      *                続紙初期編集
-                       PERFORM 2004-HC011-HENSYU-SEC
-                       ADD     1               TO  WRK-PRT-CNT
-                       MOVE    1               TO  IDX
-                   END-IF
-               ELSE
-      *            続紙印刷
-                   IF      IDX             >   22
-      *                続紙印刷
-                       PERFORM 20032-HC011-PRINT-SEC
-      *                続紙初期編集
-                       PERFORM 2004-HC011-HENSYU-SEC
-                       ADD     1               TO  WRK-PRT-CNT
-                       MOVE    1               TO  IDX
-                   END-IF
+      *        継続病名のみの時、転帰日のあるものを対象外とする
+               IF     (WRK-KARUTE-BYOMEI   =   "1"  )  AND
+                      (PTBYO-TENKIYMD  NOT =   SPACE)
+                   MOVE    1                   TO  FLG-INNO
+               END-IF
+      *        入院分は対象外
+               IF     (PARA-NYUGAIKBN      =   "1" )  AND
+                      (PTBYO-NYUGAIKBN     =   "1" )
+                   MOVE    1                   TO  FLG-INNO
                END-IF
       *
-               IF      WRK-PRT-CNT         =   1
-      *            カルテ病名編集処理
-                   PERFORM 20021-HC01-BYOMEI-SET-SEC
-               ELSE
-      *            続紙病名編集処理
-                   PERFORM 20022-HC011-BYOMEI-SET-SEC
-               END-IF
+               IF      FLG-INNO        =   ZERO
+                   ADD     1               TO  IDX
+                   IF      WRK-PRT-CNT     =   1
+      *                カルテ
+                       IF      IDX             >   MAX-LINE1
+      *                    カルテ印刷
+                           PERFORM 20031-HC01-PRINT-SEC
+      *                    続紙初期編集
+                           PERFORM 2004-HC011-HENSYU-SEC
+                           ADD     1               TO  WRK-PRT-CNT
+                           MOVE    1               TO  IDX
+                       END-IF
+                   ELSE
+      *                続紙
+                       IF      IDX             >   MAX-LINE2
+      *                    続紙印刷
+                           PERFORM 20032-HC011-PRINT-SEC
+      *                    続紙初期編集
+                           PERFORM 2004-HC011-HENSYU-SEC
+                           ADD     1               TO  WRK-PRT-CNT
+                           MOVE    1               TO  IDX
+                       END-IF
+                   END-IF
       *
-             END-IF
+                   IF      WRK-PRT-CNT         =   1
+      *                カルテ病名編集処理
+                       PERFORM 20021-HC01-BYOMEI-SET-SEC
+                   ELSE
+      *                続紙病名編集処理
+                       PERFORM 20022-HC011-BYOMEI-SET-SEC
+                   END-IF
+               END-IF
       *
                MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 950-PTBYOMEI-READ-SEC
            END-PERFORM
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-DBCLOSE-SEC
       *
            IF      WRK-PRT-CNT     =   1
@@ -1025,12 +1108,13 @@
       *
       *    カルテ病名がある時はカルテ病名
            IF      PTBYO-CHARTBYOMEI   =   SPACE
-               MOVE    PTBYO-BYOMEI        TO  HC01-BYOMEIG (IDX)
+               PERFORM 200211-BYOMEI-HEN-SEC
+               MOVE    WRK-BYOMEI          TO  HC01-BYOMEIG (IDX)
            ELSE
                MOVE    PTBYO-CHARTBYOMEI   TO  HC01-BYOMEIG (IDX)
            END-IF
       *
-      *    病名変換処理
+      *    病名期間変換処理
            PERFORM 200211-BYOMEI-SET-SEC
       *
            MOVE    WRK-STRYYW          TO  HC01-STRYMD  (IDX  1)
@@ -1048,13 +1132,41 @@
        20021-HC01-BYOMEI-SET-EXT.
            EXIT.
       *****************************************************************
+      *    病名編集処理
+      *****************************************************************
+       200211-BYOMEI-HEN-SEC          SECTION.
+      *
+           IF      PARA-UTAGAIKBN      =   "1"
+               PERFORM 200211-BYOMEI-HENSYU-SEC
+           ELSE
+               MOVE    PTBYO-BYOMEI        TO  WRK-BYOMEI
+           END-IF
+           .
+       200211-BYOMEI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    病名疑い編集処理
+      *****************************************************************
+       200211-BYOMEI-HENSYU-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSMKBYOMEIAREA
+           MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
+           MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
+           CALL    "ORCSMKBYOMEI"      USING
+                                           ORCSMKBYOMEIAREA
+           MOVE    SMKBYO-BYOMEI       TO  WRK-BYOMEI
+           .
+       200211-BYOMEI-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
       *    カルテ病名編集処理
       *****************************************************************
        20022-HC011-BYOMEI-SET-SEC          SECTION.
       *
       *    カルテ病名がある時はカルテ病名
            IF      PTBYO-CHARTBYOMEI   =   SPACE
-               MOVE    PTBYO-BYOMEI        TO  HC011-BYOMEIG (IDX)
+               PERFORM 200211-BYOMEI-HEN-SEC
+               MOVE    WRK-BYOMEI          TO  HC011-BYOMEIG (IDX)
            ELSE
                MOVE    PTBYO-CHARTBYOMEI   TO  HC011-BYOMEIG (IDX)
            END-IF
@@ -1187,11 +1299,16 @@
       *****************************************************************
        400-BACHI-PRT-SEC        SECTION.
       *
-           MOVE    ORCHC01-BYOMEIFLG   TO  SYS-1017-KARUTE-BYOMEI
+           IF      ORCHC01-BYOMEIFLG   =   "0"
+                                       OR  "1"
+                                       OR  "2"
+               MOVE    ORCHC01-BYOMEIFLG   TO  WRK-KARUTE-BYOMEI
+           END-IF
+      *
       *    印刷項目編集
            PERFORM 2001-HC01-SYORI-SEC
       *    病名を印刷する
-           IF      SYS-1017-KARUTE-BYOMEI  =   "2"
+           IF      WRK-KARUTE-BYOMEI   =   "2"
       *        病名なしの時
       *        カルテ印刷
                PERFORM 20031-HC01-PRINT-SEC
@@ -1562,7 +1679,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
-           MOVE    "DBSELECT"      TO  MCP-FUNC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA

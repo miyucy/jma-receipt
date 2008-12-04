@@ -945,3 +945,30 @@ path	key43	{
 		;
 	};
 };
+path	key44 	{
+	DBSELECT	{
+		DECLARE tbl_jyurrk_key44_csr CURSOR FOR
+		SELECT a.*
+                FROM tbl_jyurrk a,tbl_ptnum b, tbl_ptinf c
+			WHERE   a.HOSPNUM    =   :HOSPNUM
+			AND   a.NYUGAIKBN   =   :NYUGAIKBN
+			AND   a.HKNCOMBINUM <>  '9999'
+			AND   a.SRYYMD      =
+                           (SELECT MAX(SRYYMD)
+                                   FROM tbl_jyurrk 
+                               	WHERE   HOSPNUM    =   a.HOSPNUM
+		        	AND   PTID        =   a.PTID
+         			AND   NYUGAIKBN   =   a.NYUGAIKBN
+                                AND   SRYYMD      >=  :SRYYMD )
+	        	AND   a.HOSPNUM     =  b.HOSPNUM
+	        	AND   a.PTID       =  b.PTID
+	        	AND   a.HOSPNUM     =  c.HOSPNUM
+	        	AND   a.PTID       =  c.PTID
+        		AND   c.TSTPTNUMKBN  <> '1'
+			ORDER BY b.PTNUM,
+			         a.RENNUM,
+			         a.DOUJI_RENNUM,
+			         a.EDANUM
+		;
+	};
+};

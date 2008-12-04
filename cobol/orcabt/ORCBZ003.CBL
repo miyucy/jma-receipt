@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 03.05.00     NACL-多々納  07/05/24  グループ診療対応
       * 04.03.00     NACL-太田    08/06/20  カスタマイズカルテ印刷対応
+      * 04.04.00     NACL-多々納  08/12/04  プログラムオプション対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -108,6 +109,15 @@
            03  WRK-PRTNM               PIC X(16).
            03  WRK-PGID                PIC X(20).
       *
+           03  WRK-MCP-PATHNAME        PIC X(64).
+      *    プログラムオプションパラメタ
+       01  PARA-AREA.
+           03  PARA-SRYKAKBN           PIC X(01).
+      *
+           03  WRK-PARA-NAME           PIC X(25).
+           03  WRK-PARA-DATA           PIC X(50).
+      *
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -179,6 +189,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *    プログラムオプション編集パラメタ
+           COPY    "CPORCSPRGOPTION.INC".
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -369,6 +382,9 @@
       *    プリンタ名、プログラム名取得
            PERFORM 1001-ORCSPRTNM-SEC
       *
+      *    プログラムオプション取込み
+           PERFORM 100-OPTION-SELECT-SEC
+      *
            .
        110-SYOKI-SET-EXT.
            EXIT.
@@ -445,6 +461,41 @@
            .
        1001-ORCSPRTNM-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    プログラムオプション取込み処理
+      *****************************************************************
+       100-OPTION-SELECT-SEC             SECTION.
+      *
+           INITIALIZE                  PARA-AREA
+      *    診療科
+           MOVE    "SRYKAKBN"          TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA-DATA(1:1)  TO  PARA-SRYKAKBN
+      *
+           .
+       100-OPTION-SELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    プログラムオプションパラメタ取得処理
+      *****************************************************************
+       1001-OPTION-CALL-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSPRGOPTIONAREA
+           MOVE    "ORCHC01"           TO  ORCSPRGOPTION-PRGID
+           MOVE    WRK-PARA-NAME       TO  ORCSPRGOPTION-IN-DATA
+           CALL    "ORCSPRGOPTION"     USING   SPA-AREA
+                                               ORCSPRGOPTIONAREA
+           MOVE    SPACE               TO  WRK-PARA-DATA
+           IF      ORCSPRGOPTION-OT-TYPE   =   1
+      *        半角で１文字目を値とする
+               MOVE    ORCSPRGOPTION-OT-PARA(1:1)
+                                           TO  WRK-PARA-DATA(1:1)
+           END-IF
+           .
+       1001-OPTION-CALL-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    主　　処理
       *****************************************************************
@@ -480,13 +531,21 @@
            MOVE    WRK-PARA-SRYYM      TO  JYURRK-SRYYMD(1:6)
            MOVE    "01"                TO  JYURRK-SRYYMD(7:2)
       *
+           IF     (PARA-SRYKAKBN       =   "1"  )
+             AND  (WRK-PARA-SRYKA      =   "00" )
+      *        全科指定
+               MOVE    "key44"             TO  WRK-MCP-PATHNAME
+           ELSE
+               MOVE    "key32"             TO  WRK-MCP-PATHNAME
+           END-IF
+      *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key32"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    "key32"             TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 910-JYURRK-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-JYURRK
@@ -500,11 +559,11 @@
                END-IF
       *
                MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-               MOVE    "key32"             TO  MCP-PATHNAME
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 910-JYURRK-READ-SEC
            END-PERFORM
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key32"             TO  MCP-PATHNAME
+           MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            .
