@@ -5,13 +5,9 @@
   <name>T99</name>
   <program_name>T99</program_name>
   <directory></directory>
-  <source_directory>src</source_directory>
   <pixmaps_directory>pixmaps</pixmaps_directory>
-  <language>C</language>
   <gnome_support>True</gnome_support>
   <gtkpanda_support>False</gtkpanda_support>
-  <gettext_support>True</gettext_support>
-  <output_main_file>False</output_main_file>
 </project>
 
 <widget>
@@ -31,7 +27,7 @@
     <handler>set_focus</handler>
     <last_modification_time>Fri, 05 Jan 2001 11:20:35 GMT</last_modification_time>
   </signal>
-  <signal>    
+  <signal>
     <name>delete_event</name>
     <handler>gtk_true</handler>
     <last_modification_time>Mon, 25 Nov 2002 06:01:39 GMT</last_modification_time>
@@ -71,7 +67,7 @@
       <label>F1:╠сды</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
-    
+
     <widget>
       <class>GtkButton</class>
       <name>B11</name>
@@ -117,7 +113,7 @@
       </signal>
       <editable>False</editable>
       <text_visible>True</text_visible>
-      <text_max_length>80</text_max_length>
+      <text_max_length>200</text_max_length>
       <text></text>
       <input_mode>XIM</input_mode>
       <xim_enabled>False</xim_enabled>
@@ -196,7 +192,7 @@
 	  <xpad>0</xpad>
 	  <ypad>0</ypad>
 	</widget>
-	
+
 	<widget>
 	  <class>GtkLabel</class>
 	  <child_name>CList:title</child_name>

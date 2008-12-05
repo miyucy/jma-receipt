@@ -4,7 +4,7 @@ T99	{
 			 state   int;
 		 };
 		MSG	{
-			value	varchar(80);
+			value	varchar(200);
 		};
 		scrolledwindow28	{
 			JOBKANRILST	{
