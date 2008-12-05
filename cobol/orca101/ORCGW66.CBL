@@ -321,10 +321,10 @@
       *
            INITIALIZE                  SPA-GMN-KGISKYKBNLST-G
       *
-           MOVE    "1"             TO  SPA-GMN-KGISKYKBNL   (1)
+           MOVE    "01"            TO  SPA-GMN-KGISKYKBNL   (1)
            MOVE    "Ì¾¸Å²°»Ô"      TO  SPA-GMN-KGISKYKBNMEIL(1)
       *
-           MOVE    "2"             TO  SPA-GMN-KGISKYKBNL   (2)
+           MOVE    "02"            TO  SPA-GMN-KGISKYKBNL   (2)
            MOVE    "ËÌ¶å½£»Ô"      TO  SPA-GMN-KGISKYKBNMEIL(2)
       *
            MOVE    2               TO  SPA-GMN-KGISKYKBN-MAX
