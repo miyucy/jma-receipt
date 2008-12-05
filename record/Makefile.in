@@ -379,6 +379,7 @@ RECORD_files = \
         M99.rec \
 	W65.rec \
 	W66.rec \
+	X06.rec \
 
 DEF_files = \
 	HC01.def \
