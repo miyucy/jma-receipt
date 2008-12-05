@@ -908,6 +908,19 @@
       *    形状記号チェック
            PERFORM 431-MARK-SET-SEC
       *
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  430-TEXTCHK-EXT
+           END-IF
+      *
+           EVALUATE    SPA-GMN-CUR
+               WHEN    10
+                   MOVE    99          TO  SPA-GMN-CUR
+               WHEN    99
+                   MOVE    2           TO  SPA-GMN-CUR
+               WHEN    OTHER
+                   COMPUTE SPA-GMN-CUR =   SPA-GMN-CUR +   1
+           END-EVALUATE
+      *
            .
        430-TEXTCHK-EXT.
            EXIT.
@@ -2292,10 +2305,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *****************************************************************
        530-MAPCUR-SEC              SECTION.
       *
-           IF      SPA-GMN-CUR          =   ZERO
-                PERFORM 530-CUR-SET-SEC
-           END-IF
-      *
            EVALUATE    SPA-GMN-CUR
                WHEN    2
                    MOVE  "KENCD"           TO  MCP-WIDGET
@@ -2321,38 +2330,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *
            .
        530-MAPCUR-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画面カーソルセット処理
-      *****************************************************************
-       530-CUR-SET-SEC             SECTION.
-      *
-           EVALUATE    MCP-WIDGET
-               WHEN    "KBNCD"
-                   MOVE    3           TO  SPA-GMN-CUR
-               WHEN    "SELNUM"
-                   MOVE    4           TO  SPA-GMN-CUR
-               WHEN    "NAME"
-                   MOVE    5           TO  SPA-GMN-CUR
-               WHEN    "EFFECT"
-                   MOVE    6           TO  MCP-WIDGET
-               WHEN    "COLOR"
-                   MOVE    7           TO  MCP-WIDGET
-               WHEN    "SHAPE"
-                   MOVE    8           TO  MCP-WIDGET
-               WHEN    "MARK"
-                   MOVE    9           TO  MCP-WIDGET
-               WHEN    "CAUTION"
-                   MOVE    10          TO  MCP-WIDGET
-               WHEN    "PHOTO"
-                   MOVE    99          TO  MCP-WIDGET
-               WHEN    "B12"
-                   MOVE    2           TO  MCP-WIDGET
-           END-EVALUATE
-      *
-           .
-       530-CUR-SET-EXT.
            EXIT.
       *
       *****************************************************************
