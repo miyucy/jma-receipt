@@ -1712,10 +1712,7 @@
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
       *
-      *    保険組合せの無い場合、エラーをクリアする
-           IF      SPA-HKN-ERR         =   4
-               MOVE    SPACE               TO  SPA-ERRCD
-           END-IF
+           MOVE    ZERO                TO  SPA-NAI-ROUSTR
       *
       *    画面用スパ編集処理
            PERFORM                 310-SPA-GMNSET-SEC
@@ -2450,182 +2447,6 @@
                    END-IF
                END-IF
            END-IF
-      *!!!
-      *!!!
-           GO   TO  3101-HKNCOMBI-HEN-EXT
-      *!!!
-      *
-           MOVE    ZERO                TO  FLG-CHK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   SPA-HKN-MAX )  OR
-                              (FLG-CHK     =    1   ) 
-               IF      SPA-GMN-HKNCOMBINUM   =   SPA-GMN-THKNCOMBINUM
-                                                             (IDX)
-                   MOVE    IDX               TO  IDY
-                   MOVE    1                 TO  FLG-CHK
-               END-IF
-           END-PERFORM
-           IF      FLG-CHK             =   ZERO
-               IF      SPA-GMN-HKNCOMBINUM =   SPACE
-                   MOVE   1                TO  IDX
-               ELSE
-      *            選択した保険がない場合、エラー
-                   MOVE   "1034"               TO  SPA-ERRCD
-                   MOVE    4                   TO  SPA-HKN-ERR
-                   GO     TO    3101-HKNCOMBI-HEN-EXT
-               END-IF
-           ELSE
-               MOVE   IDY              TO  IDX
-           END-IF
-      *
-      *    アフターケアの場合エラーとする
-           IF     (SPA-NAI-HKNNUM     (IDX)    =   "971" ) AND
-                  (SPA-NAI-RSI-HKNKBN (IDX)    =   "3" )
-               IF      SPA-SYORIFLG        =   1
-                   MOVE    "9029"              TO  SPA-ERRCD
-               ELSE
-      *        外来へ
-                   MOVE    "0126"              TO  SPA-KIDCD
-               END-IF
-               GO      TO      3101-HKNCOMBI-HEN-EXT
-           END-IF
-           MOVE    ZERO                TO  SPA-HKN-ERR
-      *
-           MOVE    SPA-GMN-HKN-LIST (IDX)
-                                       TO  SPA-GMN-HKNCOMBI-G
-           MOVE    SPA-GMN-TFTNRATEMEI (IDX)
-                                       TO  SPA-GMN-FTNRATEMEI
-           MOVE    SPA-NAI-TFTNRATE    (IDX)
-                                       TO  SPA-GMN-FTNRATE
-      *    共通ＳＰＡへ
-           MOVE    SPA-GMN-HKNCOMBINUM TO  SPA-HKNCOMBINUM
-           MOVE    SPA-NAI-THKNCOMBIMEI(IDX)
-                                       TO  SPA-HKNCOMBIMEI
-           MOVE    SPA-GMN-HKNCOMBIMEI TO  SPA-HKNCOMBIMEI-60
-           MOVE    SPA-NAI-TFTNRATE    (IDX)
-                                       TO  SPA-FTNRATE
-           MOVE    SPA-GMN-TFTNRATEMEI (IDX)
-                                       TO  SPA-FTNRATEMEI
-           MOVE    SPA-NAI-HKNNUM     (IDX)
-                                       TO  SPA-HKNNUM
-           MOVE    SPA-NAI-KOH1HKNNUM  (IDX)
-                                       TO  SPA-KOH1HKNNUM
-           MOVE    SPA-NAI-KOH2HKNNUM  (IDX)
-                                       TO  SPA-KOH2HKNNUM
-           MOVE    SPA-NAI-KOH3HKNNUM  (IDX)
-                                       TO  SPA-KOH3HKNNUM
-           MOVE    SPA-NAI-KOH4HKNNUM  (IDX)
-                                       TO  SPA-KOH4HKNNUM
-      *    有効期間
-           MOVE    SPA-NAI-TEKSTYMD  (IDX)
-                                       TO  SPA-COB-TEKSTYMD
-           MOVE    SPA-NAI-TEKEDYMD  (IDX)
-                                       TO  SPA-COB-TEKEDYMD
-      *
-      *    労災 四肢区分
-           MOVE    SPA-NAI-RSI-SISIKBN (IDX)
-                                       TO  SPA-RSI-SISIKBN
-      *    労災 傷病年月日
-           MOVE    SPA-NAI-RSI-SHOBYOYMD (IDX)
-                                       TO  SPA-RSI-SHOBYOYMD
-           MOVE    SPA-NAI-RSI-HKNKBN (IDX)
-                                       TO  SPA-RSI-HKNKBN
-      *    労災判定
-           IF      SPA-HKNNUM          =   "971"
-                                       OR  "973"
-               MOVE    1               TO  SPA-HKNKBN
-           ELSE
-               MOVE    ZERO            TO  SPA-HKNKBN
-          END-IF
-      *    公害判定
-           IF      SPA-HKNNUM          =   "975"
-               MOVE    2               TO  SPA-HKNKBN
-           END-IF
-      *****老人判定
-      *****PERFORM 3102-ROUJIN-SET-SEC
-      *
-      *    保険算定年齢チェック等
-           INITIALIZE                  ORCSAGECHKAREA
-           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
-           MOVE    SPA-PTID            TO  AGECHK-PTID
-           MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
-           MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
-           MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
-           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
-           CALL    "ORCSAGECHK"        USING
-                                       ORCSAGECHKAREA
-                                       SPA-AREA
-           IF      AGECHK-FTNRATE  NOT =   ZERO
-      *        負担率
-               MOVE    AGECHK-FTNRATEMEI   TO  SPA-GMN-FTNRATEMEI
-               MOVE    AGECHK-FTNRATEMEI   TO  SPA-FTNRATEMEI
-               MOVE    AGECHK-FTNRATE      TO  SPA-GMN-FTNRATE
-               MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
-           END-IF
-           MOVE    SPACE               TO  SPA-RSI-JUNKYO
-           EVALUATE    AGECHK-HKNKBN
-      *        自賠責の健保準拠判定
-               WHEN     4
-                   MOVE    "4"             TO  SPA-RSI-HKNKBN
-                   MOVE    "1"             TO  SPA-RSI-JUNKYO
-      *        公務災害の健保準拠判定
-               WHEN    5
-                   MOVE    "5"             TO  SPA-RSI-HKNKBN
-                   MOVE    "1"             TO  SPA-RSI-JUNKYO
-           END-EVALUATE
-      *
-           MOVE    ZERO                TO  SPA-RJN-ERR
-           MOVE    ZERO                TO  SPA-HKN-ERR
-           MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
-           MOVE    ZERO                TO  SPA-NAI-KOHFLG
-           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
-           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
-      *
-      *    Ｈ１５．４以降の保険期間が違う時
-           IF      AGECHK-HKNCHK       =   1
-               MOVE    "1028"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-HKN-ERR
-           END-IF
-      *    Ｈ１５．４以降の公費期間が違う時
-           IF      AGECHK-HKNCHK       =   2
-               MOVE    "1032"              TO  SPA-ERRCD
-               MOVE    2                   TO  SPA-HKN-ERR
-           END-IF
-      *    老人でＨ１４．１０の保険変更がない時
-           IF      AGECHK-RJNCHK       =   1
-               MOVE    "1027"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-RJN-ERR
-           END-IF
-      *    老人でＨ１８．１０の保険変更がない時（２割）
-           IF      AGECHK-RJNCHK       =   3
-               MOVE    "1070"              TO  SPA-ERRCD
-               MOVE    2                   TO  SPA-RJN-ERR
-           END-IF
-      *    Ｈ２０．４から後期高齢者の保険がない時
-           IF      AGECHK-RJNCHK       =   4
-               MOVE    "1076"              TO  SPA-ERRCD
-               MOVE    3                   TO  SPA-RJN-ERR
-           END-IF
-           IF      AGECHK-RJNCHK       =   2
-               MOVE    1                   TO  SPA-NAI-ROUFLG
-           ELSE
-               MOVE    ZERO                TO  SPA-NAI-ROUFLG
-           END-IF
-      *
-      *    老人判定
-           MOVE    AGECHK-ROUJIN       TO  SPA-NAI-ROUJIN
-      *
-      *    地方公費単独
-           IF      AGECHK-KOHCHK       =   1
-               MOVE    ZERO            TO  SPA-NAI-KOHFLG-ERR
-               MOVE    1               TO  SPA-NAI-KOHFLG
-           END-IF
-      *
-      *    国保 前期高齢者変更チェック
-           IF      AGECHK-KAKUNINCHK   =   1
-               MOVE    ZERO            TO  SPA-NAI-ZENKIFLG-ERR
-               MOVE    1               TO  SPA-NAI-ZENKIFLG
-           END-IF
       *
            .
        3101-HKNCOMBI-HEN-EXT.
@@ -3196,15 +3017,6 @@
       *
            MOVE    K02N-PTNUM          TO  SPA-GMN-PTNUM
       *
-      *    ’Ｇ’で外来へ移動する
-      *    IF     (SPA-GMN-PTNUM(1:1)  =   "G"  OR  "g" )  AND
-      *           (SPA-GMN-PTNUM(2:)   =   SPACE        )
-      *        INITIALIZE                  SPA-KYOTUKEY
-      *        MOVE    SPACE               TO  WRK-PUTTYPE
-      *        PERFORM 410109-K02IDOU-SEC
-      *        GO  TO                  41010-PTNUM-SYORI-EXT
-      **** END-IF
-      *
            EVALUATE    TRUE
                WHEN   (SPA-GMN-PTNUM(1:1)  =   "G" OR "g")  AND
                       (SPA-GMN-PTNUM(2:)   =   SPACE     )
@@ -3316,6 +3128,7 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
+           MOVE    ZERO                TO  SPA-NAI-ROUSTR
       *    入退院日
            MOVE    WRK-NYUINYMD        TO  SPA-K02N-NYUINYMD
            MOVE    WRK-TAIINYMD        TO  SPA-K02N-TAIINYMD
@@ -5495,8 +5308,6 @@
       *****************************************************************
        510-TBLHEN-SEC           SECTION.
       *
-      *!!!! TEST
-      *!!!! TESUT
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                  ORCSC100AREA
            MOVE    "1"                 TO  ORCSC100-KBN
@@ -5529,13 +5340,13 @@
                END-IF
            END-IF
       *    ７０歳到達の警告
-           IF      SPA-ERRCD       =   SPACE
-               IF      SPA-NAI-ROUFLG      =   1
-                   IF      SPA-NAI-ROUSTR      =   ZERO
-                       MOVE    "K008"          TO  SPA-ERRCD
-                   END-IF
-               END-IF
-           END-IF
+      *    IF      SPA-ERRCD       =   SPACE
+      *        IF      SPA-NAI-ROUFLG      =   1
+      *            IF      SPA-NAI-ROUSTR      =   ZERO
+      *                MOVE    "K008"          TO  SPA-ERRCD
+      *            END-IF
+      *        END-IF
+      ***  END-IF
       *
            .
         510-TBLHEN-EXT.
@@ -6202,6 +6013,10 @@
                                        SPA-K01KYOUTU
                                        SPA-K02
       *
+           IF      SPA-HKNCOMBINUM NOT =   SPA-OLD-HKNCOMBI
+               MOVE    1               TO  SPA-HKN-ERR2
+           END-IF
+      *
       *    パラメタファイルより表示
            MOVE    3               TO  FLG-PARASET
            PERFORM 3002-PARA-SET-SEC
@@ -6211,6 +6026,7 @@
       *
       *    スパ共通編集処理
            PERFORM                     310-SPA-SET-SEC
+           MOVE    ZERO                TO  SPA-NAI-ROUSTR
            MOVE    SPA-GMN-RRKYMD (SPA-NAI-DOSELNUM)
                                        TO  SPA-GMN-SRYYMD
       *    労災・自賠責の時、日付のみ
@@ -7839,17 +7655,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-IF
-      *    老人保険編集エラーがある時、エラーとする
            IF      SPA-ERRCD           =   SPACE
-               IF      SPA-RJN-ERR         =   1
-                   MOVE    "1027"              TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *    老人保険編集エラーがある時、エラーとする
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-RJN-ERR         =   2
-                   MOVE    "1070"              TO  SPA-ERRCD
-               END-IF
+               EVALUATE    SPA-RJN-ERR
+      *            老人保険編集エラーがある時、エラーとする
+                   WHEN    1
+                       MOVE    "1027"              TO  SPA-ERRCD
+      *            老人保険編集エラーがある時、エラーとする
+                   WHEN    2
+                       MOVE    "1070"              TO  SPA-ERRCD
+      *            後期高齢者の保険がない時
+                   WHEN    3
+                       IF      SPA-NAI-ROUSTR      =   ZERO
+                           MOVE    "1076"          TO  SPA-ERRCD
+                           MOVE    1               TO  SPA-NAI-ROUSTR
+                       END-IF
+               END-EVALUATE
            END-IF
       *    保険エラーがある時、エラーとする
            IF      SPA-ERRCD           =   SPACE
@@ -8837,6 +8657,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "1034"              TO  SPA-ERRCD
                MOVE    5                   TO  SPA-GMN-CUR
            END-IF
+      *    後期高齢者の保険がない時
+           IF      SPA-ERRCD       =   SPACE
+               IF      SPA-RJN-ERR         =   3
+                   IF      SPA-NAI-ROUSTR      =   ZERO
+                       MOVE    "1076"              TO  SPA-ERRCD
+                       MOVE    1                   TO  SPA-NAI-ROUSTR
+                   END-IF
+               END-IF
+           END-IF
+      *    ７０歳到達の警告
+           IF      SPA-ERRCD       =   SPACE
+               IF      SPA-NAI-ROUFLG      =   1
+                   IF      SPA-NAI-ROUSTR      =   ZERO
+                       MOVE    1               TO  SPA-NAI-ROUSTR
+                       MOVE    "K008"          TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
       *
       *    数量ゼロの場合、エラー表示しない
            IF      SPA-ERRCD           =   "A001"
@@ -8869,6 +8707,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "K171"              TO  SPA-ERRCD
                    MOVE    5                   TO  SPA-GMN-CUR
                    MOVE    1                   TO  SPA-NAI-ZENKIFLG-ERR
+               END-IF
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+      *        訂正時の保険自動変換
+               IF      SPA-HKN-ERR2        =   1
+                   MOVE    "K176"              TO  SPA-ERRCD
+                   MOVE    ZERO                TO  SPA-HKN-ERR2
                END-IF
            END-IF
       *
@@ -9500,9 +9346,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "K02"               TO  LNK-SC96-PG
            CALL    "ORCSC96"           USING    SPA-AREA
                                                 ORCSC96AREA
-           IF      SPA-ERRCD           =  "K008"
-               MOVE    1               TO  SPA-NAI-ROUSTR
-           END-IF
       *
            EVALUATE    SPA-ERRCD
                WHEN    "9999"

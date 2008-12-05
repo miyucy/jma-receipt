@@ -1109,6 +1109,7 @@
       *****************************************************************
        2001-WKSRY-SYORI-SEC                 SECTION.
       *
+           INITIALIZE                  TBL-KEIMSG-AREA
            MOVE    SPA-PTID            TO  SPA-GMN-PTID
            MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
            MOVE    SPA-SRYKA           TO  SPA-GMN-SRYKA
@@ -1116,12 +1117,6 @@
            IF      LNK-WKSRY-DRCD (1)  NOT =   ZERO
                MOVE    LNK-WKSRY-DRCD (1)  TO  SPA-DRCD
            END-IF
-      *TEST
-           DISPLAY "SPA-PTID:" SPA-PTID
-                  ",SPA-PTNUM:" SPA-PTNUM
-                  ",SPA-SRYKA:" SPA-SRYKA
-                  ",SPA-HKNCOMBINUM:" SPA-HKNCOMBINUM
-      *TEST
            MOVE    SPACE               TO  SPA-ERRCD
            MOVE    SPACE               TO  SPA-KIDCD
       *
@@ -1227,11 +1222,39 @@
                    MOVE    "9029"              TO  SPA-ERRCD
                END-IF
            END-IF
+      *    保険組合せエラー
+           IF      SPA-ERRCD           =   SPACE
+               EVALUATE    SPA-RJN-ERR
+      *            老人保険編集エラーがある時、エラーとする
+                   WHEN    1
+                       MOVE    "1027"              TO  SPA-ERRCD
+      *            老人保険編集エラーがある時、エラーとする
+                   WHEN    2
+                       MOVE    "1070"              TO  SPA-ERRCD
+      *            後期高齢者の保険がない時
+                   WHEN    3
+                       PERFORM 200111-RJNERR-SEC
+               END-EVALUATE
+           END-IF
+      *    保険エラーがある時、エラーとする
+           IF      SPA-ERRCD           =   SPACE
+               EVALUATE    SPA-HKN-ERR
+                   WHEN    1
+                       MOVE    "1028"              TO  SPA-ERRCD
+                   WHEN    2
+                       MOVE    "1032"              TO  SPA-ERRCD
+      *            保険未選択の場合、エラー
+                   WHEN    3
+                       MOVE    "1006"              TO  SPA-ERRCD
+                   WHEN    4
+                       MOVE    "1034"              TO  SPA-ERRCD
+               END-EVALUATE
+           END-IF
       *    地方公費単独
-           MOVE    ZERO            TO  SPA-NAI-KOHFLG-ERR
-           MOVE    ZERO            TO  SPA-NAI-KOHFLG
-           MOVE    ZERO            TO  SPA-NAI-ZENKIFLG-ERR
-           MOVE    ZERO            TO  SPA-NAI-ZENKIFLG
+           MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
+           MOVE    ZERO                TO  SPA-NAI-KOHFLG
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
+           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
       *    年齢計算
            INITIALIZE                  ORCSAGECHKAREA
            MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
@@ -1247,6 +1270,28 @@
            MOVE    AGECHK-NENREI2-DD   TO  SPA-NENREI-DD
            .
        20011-HKNCOMBI-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    後期高齢者の保険エラー処理
+      *****************************************************************
+       200111-RJNERR-SEC         SECTION.
+      *
+      *    後期高齢者の保険エラー
+           MOVE    "KXXX"              TO  SPA-ERRCD
+           MOVE    SPACE               TO  SPA-ERRMSG
+           MOVE    SPACE               TO  SPA-ERRMSG2
+           MOVE    ZERO                TO  SPA-RJN-ERR
+      *    警告エラーとする
+           MOVE    2                   TO  FLG-ERR
+           STRING  "警告！！"
+                   "後期高齢者の年齢です。"
+                   "後期高齢者の保険を登録して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG2
+           END-STRING
+           PERFORM 30010-KEIMSGSYORI-SEC
+           .
+       200111-RJNERR-EXT.
            EXIT.
       *****************************************************************
       *    パラメタ作成処理
@@ -1289,7 +1334,6 @@
            MOVE    ZERO                TO  SPA-NAI-TIMEFLG
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    SPACE               TO  SPA-ERRCD
-           INITIALIZE                  TBL-KEIMSG-AREA
       *
       *    再表示編集処理
            PERFORM 3103-SAIHEN-HEN-SEC
@@ -1313,6 +1357,8 @@
                END-EVALUATE
            END-PERFORM
       *
+      *    腫瘍マーカー一覧展開しないとする
+           MOVE    ZERO                TO  SPA-AKUSEIHYOFLG
       *    診療行為、計計算処理、編集
            MOVE    ZERO                TO  FLG-END-SYORI
            MOVE    SPACE               TO  SPA-ERRMSG2
@@ -1392,7 +1438,6 @@
            .
        310-SPA-GMNSET-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *   画面ＳＰＡ編集処理

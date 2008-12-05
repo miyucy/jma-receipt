@@ -50,6 +50,7 @@
       *  04.01.01    NACL-多々納  08/03/03  特定疾患区分改正対応
       *  04.03.01    NACL-多々納  08/08/04  施設入居対応
       *  04.03.01    NACL=多々納  08/08/07  労災初診料Ｈ２０年４月改正対応他
+      *  04.04.00    NACL=多々納  08/11/27  入院一括関連対応
       *****************************************************************
       *
       *
@@ -2994,108 +2995,6 @@
                    PERFORM 1001312-MAE-HKNCOMBICHEK-SEC
                END-IF
            END-IF
-      *!!!!
-      *!!!!
-                   GO      TO      100131-HKNCOMBI-CHK-EXT
-      *!!!!
-      *    前回の保険組合せが使用できるかのチェック
-           MOVE    ZERO                TO  FLG-HKNCOMBICHK
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   SPA-HKN-MAX
-               IF      SPA-HKNCOMBINUM     =   SPA-GMN-THKNCOMBINUM
-                                                         (IDX)
-                   MOVE    1               TO  FLG-HKNCOMBICHK
-      *
-                   MOVE    SPA-GMN-HKN-LIST (IDX)
-                                           TO  SPA-GMN-HKNCOMBI-G
-                   MOVE    SPA-NAI-TFTNRATE  (IDX)
-                                           TO  SPA-GMN-FTNRATE
-                   MOVE    SPA-GMN-TFTNRATEMEI (IDX)
-                                           TO  SPA-GMN-FTNRATEMEI
-      *
-                   MOVE    SPA-NAI-TFTNRATE  (IDX)
-                                           TO  SPA-FTNRATE
-                   MOVE    SPA-GMN-TFTNRATEMEI (IDX)
-                                           TO  SPA-FTNRATEMEI
-      *            労災判定
-                   IF      SPA-NAI-HKNNUM (IDX)    =   "971"
-                                                   OR  "973"
-                       MOVE    1                   TO  SPA-HKNKBN
-                   ELSE
-                       MOVE    ZERO                TO  SPA-HKNKBN
-                   END-IF
-      *            公害判定
-                   IF      SPA-NAI-HKNNUM (IDX)    =   "975"
-                       MOVE    2                   TO  SPA-HKNKBN
-                   END-IF
-                   MOVE    SPA-NAI-HKNID (IDX)
-                                           TO  SPA-HKNID
-                   MOVE    SPA-NAI-RSI-HKNKBN (IDX)
-                                           TO  SPA-RSI-HKNKBN
-               END-IF
-           END-PERFORM
-      *    前回の保険組合せが使用できない時、１件目
-           IF      FLG-HKNCOMBICHK     =   ZERO
-      *        Ｋ１０からの時は、そのまま
-               IF      LNK-SC95-PG         =   "K10"
-                   MOVE    SPACE               TO  SPA-GMN-HKNCOMBI-G
-                   MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
-                   MOVE    ZERO                TO  SPA-HKNKBN
-                   MOVE    ZERO                TO  SPA-HKNID
-                   MOVE    SPACE               TO  SPA-RSI-HKNKBN
-                   GO      TO      100131-HKNCOMBI-CHK-EXT
-               END-IF
-      *
-      *        省略時の保険組合せ決定
-               PERFORM 1001311-HKNCOMBI-SET-SEC
-      *        前回の保険組合せとの判定
-               IF     (WRK-MAE-HKNCOMBI    NOT =   SPACE )
-                 AND  (SPA-ZENHKNCHK-FLG       =   "1"   )
-                   PERFORM 1001312-MAE-HKNCOMBICHEK-SEC
-               END-IF
-           END-IF
-      *
-      *    保険算定年齢チェック等
-           INITIALIZE                  ORCSAGECHKAREA
-           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
-           MOVE    SPA-PTID            TO  AGECHK-PTID
-           MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
-           MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
-           MOVE    SPA-HKNCOMBINUM     TO  AGECHK-HKNCOMBINUM
-           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
-           CALL    "ORCSAGECHK"        USING
-                                       ORCSAGECHKAREA
-                                       SPA-AREA
-      *    自賠責・労務災害の健保準拠判定
-           MOVE    SPACE               TO  SPA-RSI-JUNKYO
-           IF      AGECHK-HKNKBN       =   4
-      *D       MOVE    "5"             TO  SPA-RSI-HKNKBN
-               MOVE    "4"             TO  SPA-RSI-HKNKBN
-               MOVE    "1"             TO  SPA-RSI-JUNKYO
-           END-IF
-           IF      AGECHK-HKNKBN       =   5
-               MOVE    "5"             TO  SPA-RSI-HKNKBN
-               MOVE    "1"             TO  SPA-RSI-JUNKYO
-           END-IF
-      *****IF      AGECHK-FTNRATE  NOT =   ZERO
-      *        負担率
-      *        MOVE    AGECHK-FTNRATEMEI   TO  SPA-GMN-FTNRATEMEI
-      *        MOVE    AGECHK-FTNRATEMEI   TO  SPA-FTNRATEMEI
-      *        MOVE    AGECHK-FTNRATE      TO  SPA-GMN-FTNRATE
-      *        MOVE    AGECHK-FTNRATE      TO  SPA-FTNRATE
-      *****END-IF
-           MOVE    ZERO                TO  SPA-RJN-ERR
-      *
-      *    老人でＨ１４．１０の保険変更がない時
-           IF      AGECHK-RJNCHK       =   1
-      *********MOVE    "1027"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-RJN-ERR
-           END-IF
-      *
-      *    老人でＨ１４．１０の保険変更がない時
-           IF      AGECHK-RJNCHK       =   2
-               MOVE    1                   TO  SPA-NAI-ROUFLG
-           END-IF
       *
            .
        100131-HKNCOMBI-CHK-EXT.
@@ -3156,7 +3055,6 @@
       *
            .
        1001311-HKNCOMBI-SET-EXT.
-      *
            EXIT.
       *
       *****************************************************************
@@ -3220,7 +3118,7 @@
       *
            IF      FLG-HKNCOMBICHK     =   ZERO
       *        選択した保険がない場合、エラー
-               MOVE   "1034"               TO  SPA-ERRCD
+      *******  MOVE   "1034"               TO  SPA-ERRCD
                MOVE    4                   TO  SPA-HKN-ERR
            ELSE
       *        保険情報編集・年齢
@@ -3333,27 +3231,22 @@
       *
       *    Ｈ１５．４以降の保険期間が違う時
            IF      AGECHK-HKNCHK       =   1
-               MOVE    "1028"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-HKN-ERR
            END-IF
       *    Ｈ１５．４以降の公費期間が違う時
            IF      AGECHK-HKNCHK       =   2
-               MOVE    "1032"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-HKN-ERR
            END-IF
       *    老人でＨ１４．１０の保険変更がない時
            IF      AGECHK-RJNCHK       =   1
-               MOVE    "1027"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-RJN-ERR
            END-IF
       *    老人でＨ１８．１０の保険変更がない時（２割）
            IF      AGECHK-RJNCHK       =   3
-               MOVE    "1070"              TO  SPA-ERRCD
                MOVE    2                   TO  SPA-RJN-ERR
            END-IF
       *    Ｈ２０．４から後期高齢者の保険がない時
            IF      AGECHK-RJNCHK       =   4
-               MOVE    "1076"              TO  SPA-ERRCD
                MOVE    3                   TO  SPA-RJN-ERR
            END-IF
            IF      AGECHK-RJNCHK       =   2
@@ -4502,8 +4395,6 @@
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
       *
            OPEN    OUTPUT              PARA-FILE
-      **   MOVE    SPACE               TO  PARA-REC
-      **   WRITE   PARA-REC
       *
            PERFORM 4901-PARA-OUT-SEC
       *
