@@ -578,8 +578,8 @@
                            WHEN    6
                            WHEN    3
                                MOVE   "6"  TO  WRK-CDSYUBETU
-                           WHEN    OTHER
-                               MOVE    "6" TO  WRK-CDSYUBETU
+                           WHEN    5
+                               MOVE    "5" TO  WRK-CDSYUBETU
                            END-EVALUATE
                        ELSE
                            MOVE    "A"     TO  WRK-CDSYUBETU
@@ -3118,6 +3118,9 @@
                MOVE    "%"             TO  CHK-SELNAME
            END-IF
       *
+           INSPECT CHK-SELNAME
+                   REPLACING   ALL "¡ö"    BY  "%%"
+      *
            MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "tbl_chk"           TO  MCP-TABLE
@@ -3262,6 +3265,9 @@
                MOVE    "%"             TO  CHKSND-SELNAME
            END-IF
       *
+           INSPECT CHKSND-SELNAME
+                   REPLACING   ALL "¡ö"    BY  "%%"
+      *
            MOVE    SPA-HOSPNUM         TO  CHKSND-HOSPNUM
            MOVE    CHKSND-REC          TO  MCPDATA-REC
            MOVE    "tbl_chksnd"            TO  MCP-TABLE
@@ -3403,6 +3409,9 @@
            ELSE
                MOVE    "%"             TO  CHKTRD-SELNAME
            END-IF
+      *
+           INSPECT CHKTRD-SELNAME
+                   REPLACING   ALL "¡ö"    BY  "%%"
       *
            MOVE    SPA-HOSPNUM         TO  CHKTRD-HOSPNUM
            MOVE    CHKTRD-REC          TO  MCPDATA-REC
