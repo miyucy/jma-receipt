@@ -1268,7 +1268,7 @@
       <y>556</y>
       <width>550</width>
       <height>24</height>
-      <label>追加、変更した内容はチェックマスタ登録後に保存されます。</label>
+      <label>追加、変更した内容はチェックマスタ登録時に保存されます。</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>1</xalign>
