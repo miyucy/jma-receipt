@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGXFID1.
+       PROGRAM-ID.                 ORCGXFID2.
       *****************************************************************
       *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
       *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥á¥âÅÐÏ¿ÆþÎÏ
@@ -124,11 +124,15 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        Ìá¤ë
                WHEN    "CLICKED"       ALSO    "B01"
-                   MOVE    SPACE           TO  SPA-XFID1-FLG
+                   MOVE    SPACE           TO  SPA-XFID2-FLG
+                   PERFORM 210-BACK
+      *     Á÷¿®¡¦ÅÐÏ¿
+               WHEN    "CLICKED"       ALSO    "B10"
+                   MOVE    "B10"           TO  SPA-XFID2-FLG
                    PERFORM 210-BACK
       *     ÅÐÏ¿
                WHEN    "CLICKED"       ALSO    "B12"
-                   MOVE    "OK"            TO  SPA-XFID1-FLG
+                   MOVE    "B12"           TO  SPA-XFID2-FLG
                    PERFORM 210-BACK
            END-EVALUATE
       *
@@ -141,7 +145,7 @@
        210-BACK                    SECTION.
       *
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "XFID1"             TO  SPA-MOTOPG
+           MOVE    "XFID2"             TO  SPA-MOTOPG
       *
            MOVE    "JOIN"              TO  MCP-PUTTYPE.
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW

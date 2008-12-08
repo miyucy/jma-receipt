@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.03.00    NACL-多々納  08/06/10  ＣＬＡＩＭ送信追加
+      *  04.04.00    NACL-多々納  08/12/08  確認画面追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -222,6 +223,7 @@
            COPY    "XFERR.INC".
            COPY    "XFID1.INC".
            COPY    "XF01X.INC".
+           COPY    "XFID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -316,6 +318,9 @@
                WHEN    "XFID1"
       *            確認画面より
                    PERFORM 3002-XFID1-SET-SEC
+               WHEN    "XFID2"
+      *            確認画面より
+                   PERFORM 3003-XFID2-SET-SEC
                WHEN    "XF01X"
       *            ＣＬＡＩＭ画面より
                    IF      SPA-XF01X-FLG       =   SPACE
@@ -388,6 +393,37 @@
       *
            .
        3002-XFID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面（ＸＤＩＤ２）ＯＫ処理
+      *****************************************************************
+       3003-XFID2-SET-SEC          SECTION.
+      *
+           EVALUATE    SPA-XFIDCD2
+               WHEN    "0001"
+                   EVALUATE    SPA-XFID2-FLG
+                       WHEN    "B10"
+      *                登録・送信
+                           PERFORM 2121-TOUROKU-SYORI-SEC
+                           IF      SPA-ERRCD            =   SPACE
+                               PERFORM 213-SOUSIN-SEC
+                           END-IF
+                       WHEN    "B12"
+      *                登録
+                           PERFORM 2121-TOUROKU-SYORI-SEC
+                       WHEN    OTHER
+                           MOVE    1               TO  SPA-GMN-CUR
+                   END-EVALUATE
+           END-EVALUATE
+           MOVE    SPACE               TO  SPA-XFIDCD2
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 500-GMNHEN-SEC
+               PERFORM 510-ERRSET-SEC
+           END-IF
+      *
+           .
+       3003-XFID2-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1818,7 +1854,11 @@
                    MOVE    "0010"              TO  SPA-ERRCD
                    MOVE    2                   TO  SPA-GMN-CUR
                ELSE
-                   MOVE    "0001"              TO  SPA-XFIDCD
+                   IF      SPA-CLAIM-FLG       =   1
+                       MOVE    "0001"              TO  SPA-XFIDCD2
+                   ELSE
+                       MOVE    "0001"              TO  SPA-XFIDCD
+                   END-IF
                END-IF
            END-IF
       *
@@ -2657,6 +2697,11 @@
                GO      TO      500-SET-SCREEN-EXT
            END-IF
       *
+           IF      SPA-XFIDCD2      NOT =   SPACE
+               PERFORM 530-XFID2SET-SEC
+               GO      TO      500-SET-SCREEN-EXT
+           END-IF
+      *
       *****MOVE    SPACE               TO  LINKAREA
            MOVE    SPACE               TO  LNK-KYOUTU
       *
@@ -2835,6 +2880,46 @@
       *
            .
        520-XFID1SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    警告メッセージ２表示理
+      *****************************************************************
+       530-XFID2SET-SEC              SECTION.
+      *
+           EVALUATE    SPA-XFIDCD2
+               WHEN    "0001"
+                   STRING  "表示されている内容でメモを"
+                           "登録します。"
+                           "送信押下で登録後、送信します。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-XFIDMSG
+                   END-STRING
+               WHEN    OTHER
+                   MOVE    SPA-XFIDCD2
+                                       TO  WRK-XFIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE               TO  SPA-XFID2-FLG
+      *
+           MOVE    SPACE               TO  XFID2
+           MOVE    SPA-XFIDCD2         TO  XFID2-ID2CODE
+           MOVE    WRK-XFIDMSG         TO  XFID2-ID2MSG
+      *
+           MOVE    "B12"               TO  MCP-WIDGET
+      *
+           MOVE    "XF01"              TO  SPA-MOTOPG
+           MOVE    "XFID2"             TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE.
+           MOVE    "XFID2"             TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       530-XFID2SET-EXT.
            EXIT.
       *
       *****************************************************************

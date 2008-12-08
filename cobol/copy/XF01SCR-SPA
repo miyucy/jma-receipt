@@ -91,6 +91,12 @@
       *警告画面より
                05  SPA-XFID1-AREA.
                    07  SPA-XFID1-FLG       PIC  X(02).
+           03  SPA-XFID2-AREA.
+      *警告メッセージ
+               05  SPA-XFIDCD2             PIC  X(04).
+      *警告画面より
+               05  SPA-XFID2-AREA.
+                   07  SPA-XFID2-FLG       PIC  X(03).
       *
       *    文例選択画面用
            03  SPA-XF011-AREA.

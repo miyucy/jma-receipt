@@ -9,6 +9,7 @@ bind	"XF011"		"OpenCOBOL"	"ORCGXF011";
 bind	"XFERR"		"OpenCOBOL"	"ORCGXFERR";
 bind	"XFID1"		"OpenCOBOL"	"ORCGXFID1";
 bind	"XF01X"		"OpenCOBOL"	"ORCGXF01X";
+bind	"XFID2"		"OpenCOBOL"	"ORCGXFID2";
 
 multiplex_group	orca06;
 
@@ -21,6 +22,7 @@ data	{
 		XFERR;
 		XFID1;
 		XF01X;
+		XFID2;
 	};
 };
 
