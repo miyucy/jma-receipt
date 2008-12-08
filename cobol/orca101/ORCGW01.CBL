@@ -2075,6 +2075,32 @@
                            GO  TO  4101-KAKUTEI-CHK-EXT
                        END-IF
                    END-IF
+      *        公害医療機関情報
+               WHEN    "4100"
+                   IF    ( SPA-NAI-STYUKYMD        =   ZERO )
+                   OR    ( SPA-NAI-STYUKYMD (7:2)  =   "01" )
+                       CONTINUE
+                   ELSE
+                       MOVE    3                   TO  SPA-GMN-CUR
+                       MOVE    "0023"              TO  SPA-ERRCD
+                       GO  TO  4101-KAKUTEI-CHK-EXT
+                   END-IF
+                   IF      SPA-NAI-EDYUKYMD        =   99999999
+                       CONTINUE
+                   ELSE
+                       INITIALIZE                      STS-AREA-DAY
+                       INITIALIZE                      LNK-DAY7-AREA
+                       MOVE    "71"                TO  LNK-DAY7-IRAI
+                       MOVE    SPA-NAI-EDYUKYMD (1:6)
+                                                   TO  LNK-DAY7-YM
+                       CALL    "ORCSDAY"           USING   STS-AREA-DAY
+                                                           LNK-DAY7-AREA
+                       IF      LNK-DAY7-KOYOMI NOT =   SPA-NAI-EDYUKYMD
+                           MOVE    4                   TO  SPA-GMN-CUR
+                           MOVE    "0024"              TO  SPA-ERRCD
+                           GO  TO  4101-KAKUTEI-CHK-EXT
+                       END-IF
+                   END-IF
            END-EVALUATE
       *
            PERFORM VARYING IDX FROM    1   BY  1
@@ -2374,6 +2400,10 @@
                WHEN    "0022"
                    MOVE    "有効期間の変更はできません。"
                                                    TO  SPA-ERRMSG
+               WHEN    "0023"
+                   MOVE    "１日で入力して下さい"     TO  SPA-ERRMSG
+               WHEN    "0024"
+                   MOVE    "末日で入力して下さい"     TO  SPA-ERRMSG
                WHEN    "1016" 
                    STRING  "外来迅速検体検査設定は平成２０年４月１日"
                            "以降の開始日として下さい。"

@@ -321,13 +321,16 @@
       *
            INITIALIZE                  SPA-GMN-KGISKYKBNLST-G
       *
-           MOVE    "01"            TO  SPA-GMN-KGISKYKBNL   (1)
-           MOVE    "Ì¾¸Å²°»Ô"      TO  SPA-GMN-KGISKYKBNMEIL(1)
+           MOVE    "00"            TO  SPA-GMN-KGISKYKBNL   (1)
+           MOVE    "É¸½à"          TO  SPA-GMN-KGISKYKBNMEIL(1)
       *
-           MOVE    "02"            TO  SPA-GMN-KGISKYKBNL   (2)
-           MOVE    "ËÌ¶å½£»Ô"      TO  SPA-GMN-KGISKYKBNMEIL(2)
+           MOVE    "01"            TO  SPA-GMN-KGISKYKBNL   (2)
+           MOVE    "Ì¾¸Å²°»Ô"      TO  SPA-GMN-KGISKYKBNMEIL(2)
       *
-           MOVE    2               TO  SPA-GMN-KGISKYKBN-MAX
+           MOVE    "02"            TO  SPA-GMN-KGISKYKBNL   (3)
+           MOVE    "ËÌ¶å½£»Ô"      TO  SPA-GMN-KGISKYKBNMEIL(3)
+      *
+           MOVE    3               TO  SPA-GMN-KGISKYKBN-MAX
       *
            .
        3100-COMBO-EDIT-EXT.
@@ -348,6 +351,10 @@
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-4100-REC
+      *
+           IF      SYS-4100-KGISKYKBN  =   SPACE
+               MOVE    "00"                TO  SYS-4100-KGISKYKBN
+           END-IF
       *
            .
        3101-SYS4100-SEL-EXT.
@@ -502,7 +509,8 @@
        4101-KGISKYKBN-CHK-SEC          SECTION.
       *
            IF    ( SPA-GMN-KGISKYKBN-G =   SPACE )
-               CONTINUE
+               MOVE    SPA-GMN-KGISKYKBNLST (1)
+                                           TO  SPA-GMN-KGISKYKBN-G
            ELSE
                MOVE    SPA-GMN-KGISKYKBN   TO  WRK-CMB-CD
                PERFORM 4200-KGISKYKBNLST-CHK-SEC
@@ -691,17 +699,17 @@
       *****************************************************************
        4900-KANRENCHK-SEC              SECTION.
       *
-           IF    ( SPA-GMN-KGIIRYOCD   =   SPACE )
-               MOVE    "1001"      TO  SPA-ERRCD
-               MOVE    1           TO  SPA-GMN-CUR
-           END-IF
+      **   IF    ( SPA-GMN-KGIIRYOCD   =   SPACE )
+      **       MOVE    "1001"      TO  SPA-ERRCD
+      **       MOVE    1           TO  SPA-GMN-CUR
+      **   END-IF
       *
-           IF    ( SPA-ERRCD           =   SPACE )
-               IF    ( SPA-GMN-KGISKYKBN-G =   SPACE )
-                   MOVE    "1002"  TO  SPA-ERRCD
-                   MOVE    2       TO  SPA-GMN-CUR
-               END-IF
-           END-IF
+      **   IF    ( SPA-ERRCD           =   SPACE )
+      **       IF    ( SPA-GMN-KGISKYKBN-G =   SPACE )
+      **           MOVE    "1002"  TO  SPA-ERRCD
+      **           MOVE    2       TO  SPA-GMN-CUR
+      **       END-IF
+      **   END-IF
       *
            .
       *

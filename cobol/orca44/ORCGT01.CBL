@@ -112,6 +112,8 @@
       *
       *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
       *  04.04.02    NACL-藤原    09/11/25  光ディスク等送付書作成対応
+      *  04.04.03    NACL-藤原    09/12/01  公害診療報酬請求書
+      *                                     名古屋市、北九州市対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -347,6 +349,8 @@
            COPY    "CPSK3003.INC".
       *
            COPY    "CPSK3004.INC".
+      *
+           COPY    "CPSK4100.INC".
       *
       *    印刷データ削除設定情報
            COPY    "CPSK8000.INC".
@@ -818,6 +822,27 @@ grpsys                                         SPA-AREA
                                            SPA-DATAKBN1-STATE       
                                            SPA-DATAKBN2-STATE       
                                            SPA-B21-STATE
+      *
+      *    公害医療機関情報
+           MOVE    SPACE               TO  SYS-4100-REC 
+           INITIALIZE                      SYS-4100-REC
+           MOVE    "4100"              TO  SYS-4100-KANRICD
+           MOVE    "*"                 TO  SYS-4100-KBNCD
+           MOVE    SPA-NAI-SKYYM       TO  SYS-4100-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-4100-STYUKYMD (7:2)
+           MOVE    SYS-4100-STYUKYMD   TO  SYS-4100-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-4100-HOSPNUM
+           MOVE    SYS-4100-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-4100-REC
+           ELSE
+               INITIALIZE                  SYS-4100-REC
+           END-IF
+           IF      SYS-4100-KGISKYKBN  =   SPACE
+               MOVE    "00"                TO  SYS-4100-KGISKYKBN
+           END-IF
+           MOVE    SYS-4100-KGISKYKBN  TO  SPA-NAI-4100-KGISKYKBN
       *
       *    クライアント保存可否情報取得サブ
            INITIALIZE                      ORCSCLIENTSVAREA
@@ -3756,6 +3781,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                    TO  SHELLTBL-ARG13
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG14
            MOVE    RECEERR         TO  SHELLTBL-ARG15
+           MOVE    SPA-NAI-4100-KGISKYKBN
+                                   TO  SHELLTBL-ARG16
            MOVE    SHELLTBL        TO  MCPDATA-REC
            MOVE    "SHELL"         TO  MCP-FUNC
            MOVE    "shell"         TO  MCP-TABLE

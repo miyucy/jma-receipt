@@ -18,6 +18,8 @@ RENNUM=0
 #        ${13} ¥·¥§¥ë£É£Ä
 #        ${14} HOSPNUM
 #        ${15} ¥¨¥é¡¼¥Õ¥¡¥¤¥ëÌ¾ 
+#        ${16} ¸ø³²¿ÇÎÅÊó½·ÀÁµá½ñ¶èÊ¬
+#        00:É¸½à 01:Ì¾¸Å²°»Ô 02:ËÌ¶å½£»Ô  
 #-------------------------------------------#
 #
 ##      ¥¨¥é¡¼¥Õ¥¡¥¤¥ëºï½ü
@@ -29,9 +31,17 @@ RENNUM=0
 
         LOG_FILE="/var/log/jma-receipt/${14}recept16.log"
 
-        RENNUM=$(expr $RENNUM + 1) 
-        $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM034 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15} > $LOG_FILE 2>&1
-       
+        echo "arg16  = [" ${16}  "]" > $LOG_FILE
+
+        RENNUM=$(expr $RENNUM + 1)
+        case ${16} in
+            00)    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM034 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15} >> $LOG_FILE 2>&1
+                   ;;
+            01)    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM040 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15} >> $LOG_FILE 2>&1
+                   ;;
+            02)    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM041 -parameter $1,$2,$3,$RENNUM,$5,$6,$7,$8,$9,${10},${11},${12},${13},${14},${15} >> $LOG_FILE 2>&1
+                   ;;
+        esac
         if  [ -e ${15} ]; then
             exit 
         else
