@@ -1,5 +1,8 @@
 N21	{
 	fixed17	{
+		B04	{
+			state   int;
+		};
 		B08	{
 			label	varchar(4);
 			state   int;
