@@ -289,14 +289,14 @@
       *
       *    ¸ø³²°åÎÅµ¡´Ø¾ðÊóÀßÄê
            PERFORM 3101-SYS4100-SEL-SEC
-           IF    ( FLG-SYSKANRI    =   ZERO )
+      *****IF    ( FLG-SYSKANRI    =   ZERO )
                MOVE    SYS-4100-KGIIRYOCD
                                    TO  SPA-GMN-KGIIRYOCD
                MOVE    SYS-4100-KGISKYKBN
                                    TO  WRK-CMB-CD
                PERFORM 4200-KGISKYKBNLST-CHK-SEC
                MOVE    WRK-CMB-ITM TO  SPA-GMN-KGISKYKBN-G
-           END-IF
+      *****END-IF
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
@@ -350,7 +350,11 @@
                                    TO  SYS-STYUKYMD
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
-           MOVE    SYSKANRI-REC    TO  SYS-4100-REC
+           IF      FLG-SYSKANRI    =   ZERO
+               MOVE    SYSKANRI-REC    TO  SYS-4100-REC
+           ELSE
+               INITIALIZE                  SYS-4100-REC
+           END-IF
       *
            IF      SYS-4100-KGISKYKBN  =   SPACE
                MOVE    "00"                TO  SYS-4100-KGISKYKBN
