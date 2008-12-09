@@ -94,6 +94,8 @@
       *
            03  WRK-ERRMSG              PIC X(40).
       *
+           03  WRK-P982-ROW        PIC S9(09).
+           03  FLG-GMN-INIT        PIC  9(01).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -271,6 +273,7 @@
       *****************************************************************
        310-SPA-SET-SEC             SECTION.
       *
+           MOVE    1                  TO  FLG-GMN-INIT
            IF      SPA-GMN982-KBN      =   2
       *        住所から検索
                PERFORM 3102-ADRS-HEN-SEC
@@ -529,6 +532,8 @@
                                        >   SPA-GMN982-MAX
                MOVE    "0002"              TO  SPA-ERRCD
            ELSE
+               MOVE    SPA-NAI982-SELNUM   TO  WRK-Z9
+               MOVE    WRK-Z9              TO  SPA-GMN982-SELNUM
                IF      SPA-GMN982-KBN      =   2
                    MOVE    2                   TO  SPA-GMN-CUR
                ELSE
@@ -686,14 +691,23 @@
        500-SET-SCREEN-EXT.
            EXIT.
       *
-      *
       *****************************************************************
       *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
+           IF     (FLG-GMN-INIT        =   1   )  OR
+                  (SPA-GMN982-MAX      =   ZERO )
+               MOVE    ZERO                TO  WRK-P982-ROW
+           ELSE
+               MOVE    P982-ROW            TO  WRK-P982-ROW
+           END-IF
+      *
            MOVE    SPACE               TO  P982
            INITIALIZE                      P982
+           IF      WRK-P982-ROW    NOT =   ZERO
+               MOVE    WRK-P982-ROW         TO  P982-ROW
+           END-IF
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN982-MAX
@@ -704,6 +718,11 @@
                                                TO  P982-LPUBCD (IDX)
                MOVE    SPA-GMN982-TTOWNNAME (IDX)
                                                TO  P982-TOWNNAME(IDX)
+               IF      SPA-GMN982-SEQNO (IDX)  =   SPA-NAI982-SELNUM
+                   MOVE    "T"                 TO  P982-SELECT (IDX)
+               ELSE
+                   MOVE    "F"                 TO  P982-SELECT (IDX)
+               END-IF
            END-PERFORM
            MOVE    SPA-GMN982-MAX      TO  P982-COUNT
       *
