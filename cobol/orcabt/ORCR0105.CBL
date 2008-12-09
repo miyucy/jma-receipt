@@ -1165,11 +1165,13 @@
                MOVE    2               TO  FLG-STS
            END-IF
       *
-           OPEN    INPUT               RECE02X-FILE
-           IF  STS-RECE02X         NOT =   ZERO
-               DISPLAY "*** ORCR0105 RECE02X OPEN ERR  ***"
-               MOVE    2               TO  FLG-STS
-           END-IF
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               OPEN    INPUT               RECE02X-FILE
+               IF  STS-RECE02X         NOT =   ZERO
+                   DISPLAY "*** ORCR0105 RECE02X OPEN ERR  ***"
+                   MOVE    2               TO  FLG-STS
+               END-IF
+           END-IF    
       *
            OPEN    INPUT               RECE031-FILE
            IF  STS-RECE            NOT =   ZERO
@@ -2083,6 +2085,10 @@
       *    ¸øÈñÀÁµá½ñ½ÐÎÏ½èÍý
       *****************************************************************
        2002-KOHSKY-WRITE-SEC           SECTION.
+      *
+           IF      WRK-PARA-SHELLID     =   "RECEPTX"
+               GO  TO  2002-KOHSKY-WRITE-EXT
+           END-IF
       *
            PERFORM 990-RECE02X-READ-SEC
       *
@@ -8876,8 +8882,11 @@
        300-END-SEC                 SECTION.
       *
       *    ¥Õ¥¡¥¤¥ë£Ã£Ì£Ï£Ó£Å½èÍý
+           IF      WRK-PARA-SHELLID
+                                   NOT =   "RECEPTX"
+               CLOSE                       RECE02X-FILE
+           END-IF
            CLOSE                       RECE02-FILE
-           CLOSE                       RECE02X-FILE
            CLOSE                       RECE031-FILE
            CLOSE                       RECE061-FILE
                                        RECE09-FILE
