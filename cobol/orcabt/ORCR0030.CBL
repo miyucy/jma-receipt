@@ -1681,6 +1681,10 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                                RECE09PARA-HOSPNUM
       *
                PERFORM 200-HENSYU-SEC
+      *        
+               IF      WRK-PARA-SHELLID    =   "RECEPTX"
+                   MOVE    1                   TO  FLG-END
+               END-IF
            END-PERFORM 
       *
            MOVE    1                   TO  FLG-END
