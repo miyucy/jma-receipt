@@ -314,19 +314,21 @@ path	key10 	{
 	};
 };
 
-path	key11 	{
+path	key11	{
 	DBSELECT	{
 		DECLARE tbl_wksryact_key11_csr CURSOR FOR
-		SELECT *
-		FROM tbl_wksryact
-			WHERE   HOSPNUM    =   :HOSPNUM
-			AND   NYUGAIKBN    =   :NYUGAIKBN
-			AND   SRYYMD       =   :SRYYMD
-			ORDER   BY        PTID,
-                                          SRYKA,
-                                          HKNCOMBI,
-                                          ZAINUM,
-                                          RENNUM
+		SELECT distinct a.*,b.ptnum
+		FROM tbl_wksryact a,tbl_ptnum b
+			WHERE  a.HOSPNUM      =   :HOSPNUM
+			AND    a.NYUGAIKBN    =   :NYUGAIKBN
+			AND    a.SRYYMD       =   :SRYYMD
+			AND    a.HOSPNUM      =   b.HOSPNUM
+                        AND    a.PTID         =   b.PTID
+			ORDER   BY        b.PTNUM,
+                                          a.SRYKA,
+                                          a.HKNCOMBI,
+                                          a.ZAINUM,
+                                          a.RENNUM
 		;
 	};
 };
