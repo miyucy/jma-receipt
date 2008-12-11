@@ -8,12 +8,12 @@
 
 \set ON_ERROR_STOP
 
-delete from tbl_syskanri where kanricd = '0044' and kbncd in ('1032') and styukymd = '00000000' and  edyukymd = '99999999';
+delete from tbl_syskanri where kanricd = '0043' and kbncd in ('1012') and styukymd = '00000000' and  edyukymd = '99999999';
 
 delete from tbl_syskanri where hospnum = 0;
 
 COPY tbl_syskanri FROM stdin;
-0044	1032    	00000000	99999999	Æþ±¡¿ÇÎÅ¥Ç¡¼¥¿°ì³çÅÐÏ¿                                                                                                                                          ORCBNYUALL              ¿ÇÎÅÇ¯·îÆü          YMD       ½èÍý¶èÊ¬            PSN1      ¥ê¥¹¥È¶èÊ¬          PSN1                                                                                                                                                                                                                        111			20081203	20081203	153903	0
+0043	1012    	00000000	99999999	Æþ±¡¿ÇÎÅ¥Ç¡¼¥¿°ì³çÅÐÏ¿                                                                                                                                          ORCBNYUALL              ¿ÇÎÅÇ¯·îÆü          YMD       ½èÍý¶èÊ¬            PSN1      ¥ê¥¹¥È¶èÊ¬          PSN1                                                                                                                                                                                                                        111			20081203	20081203	153903	0
 \.
 
 insert into tbl_syskanri
