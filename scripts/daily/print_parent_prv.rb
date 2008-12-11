@@ -271,8 +271,6 @@ end
 
 # LAYEROPTION 設定
 
-  word1.scan(/MonpeLayerIn(.*)MonpeLayerOut/)
-  LAYEROPTION = $1.to_s
 
 # -----------------------------------
 
@@ -294,6 +292,10 @@ li_cnt1 = 0
 # 実行処理
 	puts '[start ' + `date` + ']'
 word2.each do |d2|
+  d2.scan(/MonpeLayerIn(.*)MonpeLayerOut/)
+  LAYEROPTION = $1.to_s
+#  puts  'layer = '
+#  puts  LAYEROPTION
 # 印刷処理実行可能判定
 stop_file_1 = d2[227, 8].strip		# key情報の取得
 stop_file_2 = d2[239, 14].strip		# group情報の取得
