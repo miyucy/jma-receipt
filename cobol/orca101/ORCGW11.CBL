@@ -65,6 +65,7 @@
       * 04.02.01     NACL-森脇    08/03/06  お薬手帳追加
       * 04.02.02     NACL-森脇    08/03/26  薬剤情報提供書プログラム選択
       * 04.03.00     NACL-多々納  08/09/08  入院お薬手帳等追加対応
+      * 04.04.00     NACL-多々納  08/12/16  職員情報判定修正
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -1166,8 +1167,7 @@
                MOVE    MCPDATA-REC     TO  SYS-1010-REC
                EVALUATE    SPA-GMN-YUKOKBN
                WHEN    "1"
-                   IF          SYS-1010-STYUKYMD   <=  SPA-W01-STYUKYMD
-                       AND     SYS-1010-EDYUKYMD   >=  SPA-W01-EDYUKYMD
+                   IF         (SYS-1010-EDYUKYMD   >=  SPA-SYSYMD )
                        ADD     1               TO  IDX3
                        MOVE    IDX3            TO  SPA-GMN-UNUM(IDX3)
                        MOVE    SYS-1010-USERID
@@ -1176,8 +1176,7 @@
                        MOVE    SYS-1010-KBNCD  TO  SPA-NAI-USERCD(IDX3)
                    END-IF
                WHEN    "2"
-                   IF          SYS-1010-STYUKYMD   >   SPA-W01-STYUKYMD
-                       OR      SYS-1010-EDYUKYMD   <   SPA-W01-EDYUKYMD
+                   IF         (SYS-1010-EDYUKYMD   <   SPA-SYSYMD )
                        ADD     1               TO  IDX3
                        MOVE    IDX3            TO  SPA-GMN-UNUM(IDX3)
                        MOVE    SYS-1010-USERID
