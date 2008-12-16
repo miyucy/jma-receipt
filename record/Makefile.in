@@ -582,6 +582,8 @@ DB_files = \
 	tbl_cron.db \
 	tbl_onrece_kanri.db \
 	tbl_onrece_body.db \
+	tbl_henrei_kanri.db \
+	tbl_henrei_body.db \
 
 
 all:   

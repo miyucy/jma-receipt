@@ -1,0 +1,84 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      ************************************************************
+      *    オンライン返戻明細    COPY (CPHENREI-BODY.INC)        *
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ************************************************************
+      *01  HENREI-BODY-REC.
+           03  HENREI-B-HOSPNUM    PIC 9(2).
+           03  HENREI-B-TEISYUTUSAKI
+                                   PIC X(1).
+           03  HENREI-B-SYORIYM    PIC X(6).
+           03  HENREI-B-RECEIPT-NO PIC 9(6).
+           03  HENREI-B-PT-RENNUM  PIC 9(4).
+      *
+           03  HENREI-B-SELECT-FLG PIC 9(1).
+      *
+           03  HENREI-B-RECESYUBETU
+                                   PIC X(4).
+           03  HENREI-B-NYUGAIKBN  PIC X(1).
+           03  HENREI-B-SRYYM      PIC X(6).
+           03  HENREI-B-NAME       PIC X(40).
+           03  HENREI-B-SEX        PIC X(1).
+           03  HENREI-B-BIRTHDAY   PIC X(8).
+           03  HENREI-B-PTNUM      PIC X(20).
+           03  HENREI-B-PTID       PIC 9(10).
+           03  HENREI-B-HKNJANUM   PIC X(8).
+           03  HENREI-B-KIGO       PIC X(40).
+           03  HENREI-B-NUM        PIC X(40).
+           03  HENREI-B-KO-AREA.
+               05  HENREI-B-KO-OCC OCCURS  4.
+                   07  HENREI-B-FTNNUM PIC X(8).
+                   07  HENREI-B-JKYNUM PIC X(7).
+      *
+           03  HENREI-B-SEARCH-NO  PIC X(30).
+           03  HENREI-B-CHECK-NO   PIC X(100).
+           03  HENREI-B-HR-CODE    PIC X(5).
+           03  HENREI-B-HR-MSG     PIC X(1000).
+           03  HENREI-B-HENREI-INFO1
+                                   PIC X(20).
+           03  HENREI-B-HENREI-INFO2
+                                   PIC X(2200).
+           03  HENREI-B-ERRCD      PIC X(03).
+      *
+           03  HENREI-B-S-PTID     PIC 9(10).
+           03  HENREI-B-SEIKYU-AREA.
+               05  HENREI-B-SEIKYU-OCC OCCURS  10.
+                   07  HENREI-B-S-SYORIYMD     PIC X(8).
+                   07  HENREI-B-S-MAKE-FLG     PIC 9(01).
+                   07  HENREI-B-S-HENREIYM     PIC X(06).
+                   07  HENREI-B-S-TEISYUTUSAKI PIC X(01).
+                   07  HENREI-B-S-NYUGAIKBN    PIC X(01).
+                   07  HENREI-B-S-RECEKA       PIC X(02).
+                   07  HENREI-B-S-RECESYUBETU  PIC X(04).
+                   07  HENREI-B-S-HKNJANUM     PIC X(08).
+                   07  HENREI-B-S-HOJOKBN-KEY  PIC X(01).
+                   07  HENREI-B-S-TEKSTYMD     PIC X(08).
+      *端末ＩＤ
+           03  HENREI-B-TERMID     PIC X(64).
+      *オペーレータＩＤ
+           03  HENREI-B-OPID       PIC X(16).
+      *作成年月日
+           03  HENREI-B-CREYMD     PIC X(08).
+      *更新年月日
+           03  HENREI-B-UPYMD      PIC X(08).
+      *更新時間
+           03  HENREI-B-UPHMS      PIC X(06).
+

@@ -134,5 +134,7 @@ db	{
 	tbl_cron;
 	tbl_onrece_kanri;
 	tbl_onrece_body;
+	tbl_henrei_kanri;
+	tbl_henrei_body;
 
 };

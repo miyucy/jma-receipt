@@ -52,6 +52,7 @@ db	{
 	tbl_btpara;
 	tbl_csv_info;
 	tbl_file_info;
+	tbl_henrei_kanri;
 	tbl_hknjainf;
 	tbl_jobkanri;
         tbl_monthlynum;
