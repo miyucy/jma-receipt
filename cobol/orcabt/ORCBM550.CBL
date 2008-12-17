@@ -77,6 +77,9 @@
            03  FLG-HENREI-K            PIC 9(01).
            03  FLG-HENREI-B            PIC 9(01).
       *
+           03  FLG-SIKIBETU-HR         PIC 9(01).
+           03  FLG-SIKIBETU-RC         PIC 9(01).
+      *
            03  FLG-DATAEND             PIC 9(01).
            03  FLG-MATCH               PIC 9(01).
            03  FLG-SET                 PIC 9(01).
@@ -413,7 +416,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                INITIALIZE                      WRK-RESEDEN
                INITIALIZE                      TABLE-AREA
                                                WRK-HENREI-K-REC  
-                                               WRK-HENREI-B-REC  
+                                               WRK-HENREI-B-REC
+                                               FLG-SIKIBETU-RC
+                                               FLG-SIKIBETU-HR
       *
                MOVE    WRK-FILE-TMP        TO  ASS-PARA
                OPEN    INPUT               PARA-FILE
@@ -568,6 +573,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *                    MOVE    ZERO        TO  IDZZ
                            INITIALIZE              TABLE-AREA
                                                    WRK-HENREI-B-REC
+                                                   FLG-SIKIBETU-HR
+                                                   FLG-SIKIBETU-RC
                        END-IF
                        MOVE    1               TO  IDZZ
                        MOVE    14              TO  SPLIT-CNT
@@ -1554,6 +1561,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TBL-HENREI-B-HENREI-INFO1 (IDZZ)
                            MOVE    WRK-PARA-REC    TO
                                        TBL-HENREI-B-HENREI-INFO2 (IDZZ)
+      *
+                           MOVE    1               TO  FLG-SIKIBETU-HR
       *                処理年月
                        WHEN    2
                            INITIALIZE                      ORCSGDAYAREA
@@ -1645,17 +1654,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                    TO
                                                WRK-HENREI-B-SEARCH-NO
                            ELSE
-                               MOVE    "W06"       TO  WRK-ERRCD
+                               MOVE    "E01"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
       *                複数レセプト検索番号
-                       WHEN    10
-                           IF      WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
-                                               NUMERIC
-                               CONTINUE
-                           ELSE
-                               MOVE    "W07"       TO  WRK-ERRCD
-                               PERFORM 500-ERRCD-HENSYU-SEC
+                       WHEN    11
+                           IF      WRK-MO-CNT      >   ZERO
+                               IF      WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
+                                                   NUMERIC
+                                   CONTINUE
+                               ELSE
+                                   MOVE    "W07"       TO  WRK-ERRCD
+                                   PERFORM 500-ERRCD-HENSYU-SEC
+                               END-IF
                            END-IF
                    END-EVALUATE
                WHEN    "HG"
@@ -1898,6 +1910,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        WHEN    4
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-RECORD-SIKIBETU
+                           IF      WRK-RECORD-SIKIBETU
+                                               =   "RC"
+                               MOVE    1           TO  FLG-SIKIBETU-RC
+                           END-IF
       *
                            COMPUTE IDYY    =   WRK-MO-ST   -   1
                            MOVE    WRK-PARA-REC (1:IDYY)
@@ -1927,7 +1943,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-HENREI-B-CHECK-NO
                                ELSE
-                                   MOVE    "W22"       TO  WRK-ERRCD
+                                   MOVE    "E02"       TO  WRK-ERRCD
                                    PERFORM 500-ERRCD-HENSYU-SEC
                                END-IF
                            END-IF
@@ -2487,6 +2503,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
       *    返戻明細ファイル更新
+      *
+           IF      FLG-SIKIBETU-HR     =   ZERO
+               MOVE    "E10"               TO  TBL-HENREI-B-ERRCD(1)
+           ELSE
+               IF      FLG-SIKIBETU-RC     =   ZERO
+                   MOVE    "E11"               TO  TBL-HENREI-B-ERRCD(1)
+               END-IF
+           END-IF
+      *
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL     IDX           >   IDZZ
                MOVE    WRK-HENREI-B-REC        TO  HENREI-B-REC
