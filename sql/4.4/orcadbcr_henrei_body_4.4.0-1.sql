@@ -8,7 +8,7 @@ create	table	tbl_henrei_body	(
 	HOSPNUM			numeric(2,0),
 	TEISYUTUSAKI		char(1),
 	SYORIYM			char(6),
-	RECEIPT_NO		numeric(6,0),
+	RECEIPT_NO		char(6),
 	PT_RENNUM		numeric(4,0),
 	SELECT_FLG		numeric(1,0),
 	RECESYUBETU		char(4),

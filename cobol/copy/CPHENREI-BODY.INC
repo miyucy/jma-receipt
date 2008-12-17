@@ -26,7 +26,7 @@
            03  HENREI-B-TEISYUTUSAKI
                                    PIC X(1).
            03  HENREI-B-SYORIYM    PIC X(6).
-           03  HENREI-B-RECEIPT-NO PIC 9(6).
+           03  HENREI-B-RECEIPT-NO PIC X(6).
            03  HENREI-B-PT-RENNUM  PIC 9(4).
       *
            03  HENREI-B-SELECT-FLG PIC 9(1).

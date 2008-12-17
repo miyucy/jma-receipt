@@ -133,6 +133,9 @@
            03  WRK-HKNJANUM            PIC X(08).
            03  WRK-RECORD-SIKIBETU     PIC X(02).
       *
+           03  WRK-ERR-RECEIPT-NO-X.
+               05  WRK-ERR-RECEIPT-NO  PIC 9(05).
+      *
            03  WRK-POINT-AREA.
                05  WRK-PO-ST           PIC 9(04).
                05  WRK-PO-ED           PIC 9(04).
@@ -419,6 +422,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                WRK-HENREI-B-REC
                                                FLG-SIKIBETU-RC
                                                FLG-SIKIBETU-HR
+               MOVE    ZERO                TO  WRK-ERR-RECEIPT-NO
       *
                MOVE    WRK-FILE-TMP        TO  ASS-PARA
                OPEN    INPUT               PARA-FILE
@@ -1742,9 +1746,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            AND   ( SNUM-SYOKBN         =   SPACE )
                            AND   ( SNUM-SEISUU         <=  6     )
                            AND   ( SNUM-OUTNUM         >   ZERO  )
-                               MOVE    SNUM-OUTNUM     TO
+                               MOVE    SNUM-OUTEDT (10:6)
+                                                       TO
                                                WRK-HENREI-B-RECEIPT-NO
                            ELSE
+                               DISPLAY "RE RECEIPT-NO ERR=" 
+                                   WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+      *
+                               MOVE    "E03"           TO
+                                           WRK-HENREI-B-RECEIPT-NO(1:1)
+                               ADD     1               TO
+                                           WRK-ERR-RECEIPT-NO
+                               MOVE    WRK-ERR-RECEIPT-NO-X
+                                                       TO
+                                           WRK-HENREI-B-RECEIPT-NO(2:5)
                                MOVE    "W40"           TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
@@ -1956,7 +1971,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    WRK-PARA-REC    TO  TBL-HENREI-B-HENREI-INFO2
                                                             (IDZZ)
       *
-                   MOVE    "W30"       TO  WRK-ERRCD
+                   MOVE    "E99"       TO  WRK-ERRCD
                    PERFORM 500-ERRCD-HENSYU-SEC
            END-EVALUATE
       *

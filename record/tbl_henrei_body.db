@@ -3,7 +3,7 @@ tbl_henrei_body	{
 	TEISYUTUSAKI		char(1);
 #---->  審査側が処理した年月(HIレコードの年月)
 	SYORIYM			char(6);
-	RECEIPT_NO		number(6,0);
+	RECEIPT_NO		char(6);
 #---->  返戻レセ電は個人で複数件あるのでそのカウント
 	PT_RENNUM		number(4,0);
 #---->  返戻時に出力対象かどうかの判定用(0:不要 1:要)
