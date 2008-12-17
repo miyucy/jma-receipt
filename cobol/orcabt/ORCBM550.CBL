@@ -126,7 +126,7 @@
            03  WRK-PTNUM               PIC X(20).
            03  WRK-PTID-SRYYM          PIC 9(06).
       *     
-           03  WRK-ERRCD               PIC 9(03).
+           03  WRK-ERRCD               PIC X(03).
            03  WRK-HKNJANUM            PIC X(08).
            03  WRK-RECORD-SIKIBETU     PIC X(02).
       *
@@ -1565,7 +1565,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            IF      SGDAY-RC            =   ZERO
                                CONTINUE
                            ELSE
-                               MOVE    1               TO  WRK-ERRCD
+                               MOVE    "W01"           TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
       *                返戻区分
@@ -1575,7 +1575,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        "3"
                                CONTINUE
                            ELSE
-                               MOVE    2               TO  WRK-ERRCD
+                               MOVE    "W02"           TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF    
       *                返戻事由コード
@@ -1595,7 +1595,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                    TO
                                                    WRK-HENREI-B-HR-CODE
                            ELSE
-                               MOVE    3           TO  WRK-ERRCD
+                               MOVE    "W03"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF    
       *                返戻理由
@@ -1615,22 +1615,26 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                    TO
                                                    WRK-HENREI-B-HR-MSG
                            ELSE
-                               MOVE    4           TO  WRK-ERRCD
+                               MOVE    "W04"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF    
       *                増減点連絡書年月
                        WHEN    9
-                           INITIALIZE                      ORCSGDAYAREA
-                           MOVE    "1"                 TO  SGDAY-INTYPE
-                           MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
+                           IF      WRK-MO-CNT      >   ZERO
+                               INITIALIZE                  ORCSGDAYAREA
+                               MOVE    "1"             TO  SGDAY-INTYPE
+                               MOVE    WRK-PARA-REC
+                                               (WRK-MO-ST:WRK-MO-CNT)
                                                        TO  SGDAY-INDAY
-                           CALL    "ORCSGDAY"          USING
+                               CALL    "ORCSGDAY"      USING
                                                        ORCSGDAYAREA
-                           IF      SGDAY-RC            =   ZERO
-                               MOVE    SGDAY-SDAY (1:6)    TO  WRK-SRYYM
-                           ELSE
-                               MOVE    5           TO  WRK-ERRCD
-                               PERFORM 500-ERRCD-HENSYU-SEC
+                               IF      SGDAY-RC        =   ZERO
+                                   MOVE    SGDAY-SDAY (1:6)
+                                                       TO  WRK-SRYYM
+                               ELSE
+                                   MOVE    "W05"       TO  WRK-ERRCD
+                                   PERFORM 500-ERRCD-HENSYU-SEC
+                               END-IF
                            END-IF
       *                検索番号
                        WHEN    10
@@ -1641,7 +1645,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                    TO
                                                WRK-HENREI-B-SEARCH-NO
                            ELSE
-                               MOVE    6           TO  WRK-ERRCD
+                               MOVE    "W06"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
       *                複数レセプト検索番号
@@ -1650,7 +1654,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                NUMERIC
                                CONTINUE
                            ELSE
-                               MOVE    7           TO  WRK-ERRCD
+                               MOVE    "W07"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
                    END-EVALUATE
@@ -1677,7 +1681,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SNUM-OUTNUM TO
                                                WRK-HENREI-K-RECV-GO-CNT
                            ELSE
-                               MOVE    8           TO  WRK-ERRCD
+                               MOVE    "W08"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
       *                総合計点数
@@ -1694,14 +1698,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SNUM-OUTNUM TO
                                                WRK-HENREI-K-RECV-GO-TEN
                            ELSE
-                               MOVE    9           TO  WRK-ERRCD
+                               MOVE    "W09"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
       *                マルチボリューム識別情報
                        WHEN    4
                            IF      WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
-                                                   NOT =   "99"
-                               MOVE    10          TO  WRK-ERRCD
+                                               NOT =   "99"
+                               MOVE    "W10"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
                    END-EVALUATE
@@ -1729,7 +1733,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SNUM-OUTNUM     TO
                                                WRK-HENREI-B-RECEIPT-NO
                            ELSE
-                               MOVE    100             TO  WRK-ERRCD
+                               MOVE    "W40"           TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
       *                レセプト種別
@@ -1756,7 +1760,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  WRK-HENREI-B-SRYYM
                                                    WRK-PTID-SRYYM
                            ELSE
-                               MOVE    101     TO  WRK-ERRCD
+                               MOVE    "W41"   TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
       *                氏名
@@ -1776,7 +1780,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                MOVE    SGDAY-SDAY
                                                TO  WRK-HENREI-B-BIRTHDAY
                            ELSE
-                               MOVE    102     TO  WRK-ERRCD
+                               MOVE    "W42"   TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
                        WHEN    14
@@ -1787,7 +1791,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            IF      SPTNUM-RC   =   00
                                MOVE    SPTNUM-PTID TO  WRK-HENREI-B-PTID
                            ELSE
-                               MOVE    103         TO  WRK-ERRCD
+                               MOVE    "W43"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
                    END-EVALUATE
@@ -1871,7 +1875,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *********************AND   ( SNUM-OUTNUM     >   ZERO   )
                                CONTINUE
                            ELSE
-                               MOVE    20          TO  WRK-ERRCD
+                               MOVE    "W20"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
       *                枝番号
@@ -1887,7 +1891,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *********************AND   ( SNUM-OUTNUM     >   ZERO   )
                                CONTINUE
                            ELSE
-                               MOVE    21          TO  WRK-ERRCD
+                               MOVE    "W21"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
       *                レコード識別情報
@@ -1923,7 +1927,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-HENREI-B-CHECK-NO
                                ELSE
-                                   MOVE    22          TO  WRK-ERRCD
+                                   MOVE    "W22"       TO  WRK-ERRCD
                                    PERFORM 500-ERRCD-HENSYU-SEC
                                END-IF
                            END-IF
@@ -1936,7 +1940,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    WRK-PARA-REC    TO  TBL-HENREI-B-HENREI-INFO2
                                                             (IDZZ)
       *
-                   MOVE    30          TO  WRK-ERRCD
+                   MOVE    "W30"       TO  WRK-ERRCD
                    PERFORM 500-ERRCD-HENSYU-SEC
            END-EVALUATE
       *
@@ -2497,6 +2501,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  HENREI-B-HENREI-INFO1  
                MOVE    TBL-HENREI-B-HENREI-INFO2 (IDX)
                                                TO  HENREI-B-HENREI-INFO2  
+               MOVE    TBL-HENREI-B-ERRCD        (IDX)
+                                               TO  HENREI-B-ERRCD
                MOVE    SMCNDATE-YMD            TO  HENREI-B-CREYMD
       *
                MOVE    HENREI-B-REC            TO  MCPDATA-REC
@@ -2621,7 +2627,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
        500-ERRCD-HENSYU-SEC            SECTION.
       *
            IF      TBL-HENREI-B-ERRCD (IDZZ)
-                                       =   ZERO
+                                       =   SPACE
                MOVE    WRK-ERRCD           TO  TBL-HENREI-B-ERRCD (IDZZ)
            END-IF
            .
