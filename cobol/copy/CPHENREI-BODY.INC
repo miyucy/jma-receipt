@@ -64,6 +64,7 @@
                    07  HENREI-B-S-SYORIYMD     PIC X(8).
                    07  HENREI-B-S-MAKE-FLG     PIC 9(01).
                    07  HENREI-B-S-HENREIYM     PIC X(06).
+      *
                    07  HENREI-B-S-TEISYUTUSAKI PIC X(01).
                    07  HENREI-B-S-NYUGAIKBN    PIC X(01).
                    07  HENREI-B-S-RECEKA       PIC X(02).

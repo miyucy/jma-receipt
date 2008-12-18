@@ -1753,7 +1753,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                DISPLAY "RE RECEIPT-NO ERR=" 
                                    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
       *
-                               MOVE    "E03"           TO
+                               MOVE    "E"             TO
                                            WRK-HENREI-B-RECEIPT-NO(1:1)
                                ADD     1               TO
                                            WRK-ERR-RECEIPT-NO

@@ -159,3 +159,17 @@ primary	{
 	HOSPNUM,TEISYUTUSAKI,SYORIYM,RECEIPT_NO,PT_RENNUM;
 };
 
+path    key             {
+        DBSELECT        {
+                DECLARE tbl_henrei_body_key_csr CURSOR FOR
+                SELECT *
+                FROM tbl_henrei_body
+                WHERE   HOSPNUM         = :HOSPNUM
+                    AND NYUGAIKBN       = :NYUGAIKBN
+                    AND SRYYM           = :SRYYM
+                    AND PTID            = :PTID
+                    AND PT_RENNUM       = 1 
+                ;
+        };
+};
+

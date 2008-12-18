@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
       *  04.04.02    NACL-藤原    09/11/25  症状詳記作成区分追加
+      *  04.04.03    NACL-藤原    09/12/10  返戻対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -82,6 +83,7 @@
            03  FLG-RECEDEN             PIC 9(01).
            03  FLG-MONTHLYNUM          PIC 9(01).
            03  FLG-PTKOHINF            PIC 9(01).
+           03  FLG-HENREI-B            PIC 9(01).
       *
            03  FLG-CHK                 PIC 9(01).
            03  FLG-ERR                 PIC 9(01).
@@ -89,6 +91,7 @@
            03  FLG-BODY-ROW            PIC 9(01).
            03  FLG-TOUROKU             PIC 9(01).
            03  FLG-HIT                 PIC 9(02).
+           03  FLG-HENREI-B-SEIKYU-CHK PIC 9(01).
       *
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
@@ -104,6 +107,7 @@
            03  IDX2                PIC 9(04).
            03  IDXX                PIC 9(04).
            03  IDXY                PIC 9(04).
+           03  IDZZ                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -260,6 +264,9 @@
       *
        01  ONRECE-B-REC.
            COPY    "CPONRECE-BODY.INC".
+      *
+       01  HENREI-B-REC.
+           COPY    "CPHENREI-BODY.INC".
       *
       *    月代わり受給者番号
        01  MONTHLYNUM-REC.
@@ -744,6 +751,9 @@
                END-EVALUATE
                MOVE    ONRECE-B-PTNUM  TO  SPA-GMN-T06-B-TPTNUM  (IDXX)
                MOVE    ONRECE-B-PTID   TO  SPA-NAI-T06-B-TPTID   (IDXX)
+               MOVE    ONRECE-B-U-HENREI-FLG
+                                       TO  SPA-NAI-T06-B-THENREI-FLG
+                                                                 (IDXX)
                MOVE    ONRECE-B-NAME   TO  SPA-GMN-T06-B-TNAME   (IDXX)
                MOVE    ONRECE-B-SRYYM-B
                                        TO  SPA-NAI-T06-B-TSRYYM  (IDXX)
@@ -1560,6 +1570,8 @@
                                        TO  SPA-NAI-T06-SRYYM
            MOVE    SPA-NAI-T06-B-TNYUGAIKBN (SPA-NAI-T06-BODY-SELNUM)
                                        TO  SPA-GMN-T06-NYUGAIKBN
+           MOVE    SPA-NAI-T06-B-THENREI-FLG (SPA-NAI-T06-BODY-SELNUM)
+                                       TO  SPA-NAI-T06-HENREI-FLG
       *
       *    患者番号が存在するとき追加処理
            IF      SPA-GMN-T06-B-TPTNUM   (SPA-NAI-T06-BODY-SELNUM)
@@ -2302,6 +2314,74 @@
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMDG     TO  SPA-GMN-T09-TCREYMD (IDX)
       *
+      *    返戻データのとき該当の請求管理の返戻データへの設定チェック
+           IF      SPA-NAI-T06-HENREI-FLG
+                                   =   "1"
+               MOVE    ZERO            TO  FLG-HENREI-B-SEIKYU-CHK
+               IF      RECE10-HENREI-SIJI-FLG
+                                       =   1
+      *
+                   INITIALIZE                  HENREI-B-REC
+                   MOVE    SPA-HOSPNUM     TO  HENREI-B-HOSPNUM
+                   MOVE    RECE10-NYUGAIKBN
+                                           TO  HENREI-B-NYUGAIKBN
+                   MOVE    RECE10-SRYYM    TO  HENREI-B-SRYYM
+                   MOVE    RECE10-PTID     TO  HENREI-B-PTID
+                   MOVE    HENREI-B-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_henrei_body"
+                                           TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 900-DBSELECT-SEC
+                   IF      MCP-RC          =   ZERO
+                       MOVE    "tbl_henrei_body"
+                                               TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 900-HENREI-BODY-READ-SEC
+                   ELSE
+                       MOVE    1               TO  FLG-HENREI-B
+                   END-IF
+      *
+                   PERFORM         UNTIL   FLG-HENREI-B            =   1
+                                   OR      FLG-HENREI-B-SEIKYU-CHK =   1
+                       PERFORM VARYING IDZZ    FROM    1   BY  1
+                               UNTIL   IDZZ    >       10
+                               OR      HENREI-B-S-TEISYUTUSAKI (IDZZ)
+                                               =       SPACE
+                               OR      FLG-HENREI-B-SEIKYU-CHK
+                                               =       1
+                           IF    ( HENREI-B-S-TEISYUTUSAKI (IDZZ)
+                                               =   RECE10-TEISYUTUSAKI )
+                           AND   ( HENREI-B-S-NYUGAIKBN    (IDZZ)
+                                               =   RECE10-NYUGAIKBN    )
+                           AND   ( HENREI-B-S-RECEKA       (IDZZ)
+                                               =   RECE10-RECEKA       )
+                           AND   ( HENREI-B-S-RECESYUBETU  (IDZZ)
+                                               =   RECE10-RECESYUBETU  )
+                           AND   ( HENREI-B-S-HKNJANUM     (IDZZ)
+                                               =   RECE10-HKNJANUM     )
+                           AND   ( HENREI-B-S-HOJOKBN-KEY  (IDZZ)
+                                               =   RECE10-HOJOKBN-KEY  )
+                           AND   ( HENREI-B-S-TEKSTYMD     (IDZZ)
+                                               =   RECE10-TEKSTYMD     )
+                               MOVE    1   TO  FLG-HENREI-B-SEIKYU-CHK
+                           END-IF
+                       END-PERFORM
+      *
+                       MOVE    "tbl_henrei_body"       TO  MCP-TABLE
+                       MOVE    "key"                   TO  MCP-PATHNAME
+                       PERFORM 900-HENREI-BODY-READ-SEC
+                   END-PERFORM
+      *
+                   MOVE    "tbl_henrei_body"       TO  MCP-TABLE
+                   MOVE    "key"                   TO  MCP-PATHNAME
+                   PERFORM 900-CLOSE-SEC
+               END-IF
+      *
+               IF      FLG-HENREI-B-SEIKYU-CHK =   ZERO
+                   MOVE    "1"             TO  SPA-NAI-T09-THENREI (IDX)
+               END-IF
+           END-IF
+      *
       *    レセ電請求一覧とのチェック
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-T06-RECE-MAX
@@ -2484,6 +2564,13 @@
            IF      SPA-NAI-T09-TRECEDEN (1)
                                        =   "1"
                MOVE    "0010"              TO  SPA-ERRCD
+               GO  TO  42031-SEIKYU-CHK-EXT
+           END-IF
+      *
+      *    返戻指示設定時に返戻データに設定されているか
+           IF      SPA-NAI-T09-THENREI (1)
+                                       =   "1"
+               MOVE    "0011"              TO  SPA-ERRCD
                GO  TO  42031-SEIKYU-CHK-EXT
            END-IF
       *
@@ -4175,6 +4262,10 @@
                MOVE    WRK-ZZZ9            TO  T06-BODY-TRENNUM   (IDX)
                MOVE    SPA-GMN-T06-B-TNYUGAIKBN (IDX)
                                            TO  T06-BODY-TNYUGAIKBN(IDX)
+               IF      SPA-NAI-T06-B-THENREI-FLG(IDX)
+                                           =   "1"
+                   MOVE    "○"            TO  T06-BODY-THENREI-FLG(IDX)
+               END-IF     
                MOVE    SPA-GMN-T06-B-TPTNUM     (IDX)
                                            TO  T06-BODY-TPTNUM    (IDX)
                MOVE    SPA-GMN-T06-B-TNAME      (IDX)
@@ -4383,6 +4474,9 @@
                    MOVE    "診療年月入力エラー"        TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "対象のレセ電データがありません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE    "返戻データが設定されていません"
                                                        TO  SPA-ERRMSG
                WHEN    "0012"
                    MOVE
@@ -4675,6 +4769,23 @@
            END-IF
            .
        900-ONRECE-BODY-FETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    オンライン返戻明細読込処理
+      *****************************************************************
+       900-HENREI-BODY-READ-SEC        SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE  MCPDATA-REC           TO  HENREI-B-REC
+               MOVE  ZERO                  TO  FLG-HENREI-B
+           ELSE
+               INITIALIZE                      HENREI-B-REC
+               MOVE  1                     TO  FLG-HENREI-B
+           END-IF
+           .
+       900-HENREI-BODY-READ-EXT.
            EXIT.
       *
       *****************************************************************

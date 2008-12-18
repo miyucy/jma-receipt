@@ -24,6 +24,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤＲ出力対応
       *  04.04.02    NACL-藤原    09/11/25  症状詳記作成区分追加
+      *  04.04.03    NACL-藤原    09/12/10  返戻対応
       *****************************************************************
        01  SPA-T06.
       *    個別指示画面
@@ -121,6 +122,8 @@
                            11  SPA-NAI-T06-SRYYM   PIC 9(06).
                            11  SPA-NAI-T06-NYUGAIKBN
                                                    PIC X(01).
+                           11  SPA-NAI-T06-HENREI-FLG
+                                                   PIC X(01).
       * 
                    07  SPA-NAI-T06-KANRI-TBL.
                        09  SPA-NAI-T06-KANRI-G     OCCURS   500.
@@ -129,6 +132,8 @@
                    07  SPA-NAI-T06-BODY-TBL.
                        09  SPA-NAI-T06-BODY-G      OCCURS   1000.
                            11  SPA-NAI-T06-B-TNYUGAIKBN
+                                                       PIC X(01).
+                           11  SPA-NAI-T06-B-THENREI-FLG
                                                        PIC X(01).
                            11  SPA-NAI-T06-B-TPTID     PIC 9(10).
                            11  SPA-NAI-T06-B-TBIRTHDAY PIC 9(08).
@@ -200,6 +205,7 @@
                    07  SPA-NAI-T09-RECE10-OCC  OCCURS  20.
                        09  SPA-NAI-T09-TRECEDEN        PIC X(01).
                        09  SPA-NAI-T09-TSEIKYU         PIC X(01).
+                       09  SPA-NAI-T09-THENREI         PIC X(01).
                        09  SPA-NAI-T09-TSELECT         PIC X(01).
                        09  SPA-NAI-T09-TUKEYMD         PIC 9(08).
       *

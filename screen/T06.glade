@@ -1081,8 +1081,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Fri, 07 Sep 2001 04:48:18 GMT</last_modification_time>
 	</signal>
-	<columns>11</columns>
-	<column_widths>35,30,125,216,73,80,40,80,80,58,500</column_widths>
+	<columns>12</columns>
+	<column_widths>35,30,16,125,216,73,80,40,80,80,58,500</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -1105,6 +1105,19 @@
 	  <child_name>CList:title</child_name>
 	  <name>label523</name>
 	  <label>Æþ³°</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label623</name>
+	  <label>ÊÖ</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

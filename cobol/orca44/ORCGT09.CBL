@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.04.01    NACL-藤原    09/12/10  返戻対応
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -598,6 +599,14 @@
                GO  TO  410211-SELNUM-HENSYU-EXT
            END-IF
       *
+      *    返戻指示設定時に返戻データに設定されているか
+           IF      SPA-NAI-T09-THENREI (WRK-SELNO)
+                                       =   "1"
+               MOVE    "0011"              TO  SPA-ERRCD
+               MOVE    ZERO                TO  SPA-GMN-T09-SELNUM (IDX)
+               GO  TO  410211-SELNUM-HENSYU-EXT
+           END-IF
+      *
       *    既に請求済かどうか
            IF      SPA-NAI-T09-TSEIKYU (WRK-SELNO)
                                    =   "1"
@@ -1067,6 +1076,12 @@
                                                        TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE    "データが選択してありません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0010"
+                   MOVE    "対象のレセ電データがありません"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0011"
+                   MOVE    "返戻データが設定されていません"
                                                        TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "選択したデータを全て追加できません"

@@ -47,6 +47,7 @@
                   05  T06-BODY-LIST-ITEM          OCCURS  1000 TIMES.
                     06  T06-BODY-TRENNUM      PIC X(4).
                     06  T06-BODY-TNYUGAIKBN   PIC X(2).
+                    06  T06-BODY-THENREI-FLG  PIC X(2).
                     06  T06-BODY-TPTNUM       PIC X(20).
                     06  T06-BODY-TNAME        PIC X(40).
                     06  T06-BODY-TSRYYM       PIC X(6).
