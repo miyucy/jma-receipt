@@ -35,26 +35,26 @@
        FILE-CONTROL.
       *
       *    パラメタ退避ファイル
-           SELECT  PARA-FILE       ASSIGN  OPPARA00
+           SELECT  OPPARA-FILE     ASSIGN  OPPARA00
                                    ORGANIZATION    IS  SEQUENTIAL
-                                   FILE    STATUS  IS  STS-PARA.
+                                   FILE    STATUS  IS  STS-OPPARA.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
       *(LINE SEQUENTIAL でなく)SEQUENTIALファイルで実際のファイルより大きい
       *領域をREDORD句で定義するとREADに失敗するため、1バイトで定義する。
-       FD  PARA-FILE.
-       01  PARA-REC                PIC X(1).
+       FD  OPPARA-FILE.
+       01  OPPARA-REC              PIC X(1).
       *
        WORKING-STORAGE             SECTION.
       *
       *    フラグ領域
        01  FLG-AREA.
-           03  FLG-PARA            PIC 9(01).
+           03  FLG-OPPARA          PIC 9(01).
       *
        01  STS-AREA.
-           03  STS-PARA            PIC X(02).
+           03  STS-OPPARA          PIC X(02).
       *
            COPY    "CPCOMMONDAT5.INC"  REPLACING
                                        //TEIKI01PARA// BY //OPPARA00//.
@@ -80,6 +80,10 @@
        01  WRK-AREA.
            03  WRK-STR                 PIC X(300000).
            03  WRK-PRINT-PG            PIC X(20).
+           03  WRK-FILEMEI.
+               05  WRK-FILEMEI-YMD     PIC X(08).
+               05  WRK-FILEMEI-HMS     PIC X(06).
+               05  WRK-FILEMEI-CD      PIC X(06).
       *
        01  WRK-PARA-AREA.
       *
@@ -92,6 +96,10 @@
       *
       *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
+      *
+      *    パラメタテーブル
+       01  PARA-REC.
+           COPY    "CPPARA.INC".
       *
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
@@ -467,6 +475,24 @@
                                        SPA-AREA
                                        ORCHC03AREA
       *
+           IF    ( ORCHC03-PARAFLG     =   1 )
+      *
+               INITIALIZE                  PARA-REC
+               MOVE    SPA-HOSPNUM     TO  PARA-HOSPNUM
+               MOVE    ORCHC03-PARA-GYOUMUID
+                                       TO  PARA-GYOUMUID
+               MOVE    ORCHC03-PARA-TERMID
+                                       TO  PARA-TERMID
+               MOVE    ORCHC03-PARA-FILEMEI
+                                       TO  WRK-FILEMEI
+               MOVE    "001%"          TO  WRK-FILEMEI-CD
+               MOVE    WRK-FILEMEI     TO  PARA-FILEMEI
+               MOVE    PARA-REC        TO  MCPDATA-REC
+               MOVE    "tbl_para"      TO  MCP-TABLE
+               MOVE    "del11"         TO  MCP-PATHNAME
+               PERFORM 910-DBDELETE-SEC
+           END-IF
+      *
            .
        210-ORCHC03-EXT.
            EXIT.
@@ -729,34 +755,34 @@
            MOVE    SPACE           TO  WRK-STR
            MOVE    1               TO  IDX1
       *
-           OPEN    INPUT   PARA-FILE
-           DISPLAY "STS-PARA =" STS-PARA
+           OPEN    INPUT   OPPARA-FILE
+           DISPLAY "STS-OPPARA =" STS-OPPARA
       *
-           PERFORM 900-READ-PARA-SEC
-           DISPLAY "STS-PARA -" STS-PARA
+           PERFORM 900-READ-OPPARA-SEC
+           DISPLAY "STS-OPPARA -" STS-OPPARA
       *
-           PERFORM UNTIL ( FLG-PARA    NOT =   ZERO )
+           PERFORM UNTIL ( FLG-OPPARA  NOT =   ZERO )
       *
-               STRING  PARA-REC        DELIMITED   BY  SIZE
+               STRING  OPPARA-REC      DELIMITED   BY  SIZE
                INTO    WRK-STR
                WITH    POINTER IDX1
                END-STRING
       *
-               PERFORM 900-READ-PARA-SEC
+               PERFORM 900-READ-OPPARA-SEC
       *
            END-PERFORM
       *
-           CLOSE   PARA-FILE
+           CLOSE   OPPARA-FILE
       *
       *    以下
       *    アサイン名を変数にして同じFD句で別ファイルをREADし、
       *    さらにレコード長が前ファイル＞後ファイルの場合、後ファイルのレコードの後
       *    に前ファイル内容が残る現象の対処
       *    今回はINPUTのRECが1バイトなので本当は不要
-      *    OPEN    OUTPUT  PARA-FILE
-      *    MOVE    SPACE           TO  PARA-REC
-      *    WRITE   PARA-REC
-      *    CLOSE   PARA-FILE
+      *    OPEN    OUTPUT  OPPARA-FILE
+      *    MOVE    SPACE           TO  OPPARA-REC
+      *    WRITE   OPPARA-REC
+      *    CLOSE   OPPARA-FILE
       *
            .
        800-GET-PAPA-EXT.
@@ -798,17 +824,31 @@
       *****************************************************************
       *    パラメタ読込処理
       *****************************************************************
-       900-READ-PARA-SEC               SECTION.
+       900-READ-OPPARA-SEC             SECTION.
       *
-           MOVE    ZERO            TO  FLG-PARA
+           MOVE    ZERO            TO  FLG-OPPARA
       *
-           READ    PARA-FILE
+           READ    OPPARA-FILE
            AT  END
-               MOVE    1           TO  FLG-PARA
+               MOVE    1           TO  FLG-OPPARA
            END-READ
       *
            .
-       900-READ-PARA-EXT.
+       900-READ-OPPARA-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢＤＥＬＥＴＥ処理
+      *****************************************************************
+       910-DBDELETE-SEC                SECTION.
+      *
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ　オープン処理
