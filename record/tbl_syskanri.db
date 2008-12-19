@@ -349,3 +349,19 @@ path	key20	{
 	};
 };
 
+path	key21	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key21_csr CURSOR FOR
+		SELECT DISTINCT ON (KBNCD) *
+		FROM tbl_syskanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
+			AND   KBNCD     LIKE   :KBNCD
+			AND   STYUKYMD    <= :STYUKYMD
+			AND   EDYUKYMD    >=  :EDYUKYMD
+			ORDER	BY	KBNCD,
+                                        STYUKYMD DESC
+		;
+	};
+};
+
