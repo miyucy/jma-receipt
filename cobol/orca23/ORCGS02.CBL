@@ -1064,6 +1064,16 @@
       *
            PERFORM 320-PTINF-SET-SEC
       *
+           PERFORM 3101-COMBO-SYOKI-SET-SEC
+      *
+           MOVE    1               TO  FLG-SYULIST-ROW
+           PERFORM 300-SYUNOU-HENSYU-SEC
+           IF    ( SPA-GMN-MAX     = ZERO )
+               MOVE    3           TO  SPA-GMN-CUR
+           ELSE
+               MOVE    1           TO  SPA-GMN-CUR
+           END-IF
+      *
            .
        320-PTINF-EDIT-EXT.
            EXIT.
