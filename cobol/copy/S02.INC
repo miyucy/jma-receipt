@@ -1,5 +1,4 @@
-      *******************************************************************
-      * Project code name "ORCA"
+      ******************************************************************* * Project code name "ORCA"
       * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
@@ -22,8 +21,29 @@
                 04  S02-B04S-STATE   PIC S9(9)   BINARY.
               03  S02-B03S.
                 04  S02-B03S-STATE   PIC S9(9)   BINARY.
-              03  S02-LBLMSG-STYLE   PIC X(20).
-              03  S02-LBLMSG         PIC X(60).
+              03  S02-B06.
+                04  S02-B06-STATE      PIC S9(9)   BINARY.
+                04  S02-B06-LABEL      PIC X(10).
+              03  S02-B07.
+                04  S02-B07-STATE      PIC S9(9)   BINARY.
+                04  S02-B07-LABEL      PIC X(10).
+              03  S02-B09S.
+                04  S02-B09S-LABEL     PIC X(10).
+              03  S02-LBLMSG-G.
+                04  S02-LBLMSG-STYLE   PIC X(20).
+                04  S02-LBLMSG         PIC X(60).
+              03  S02-LBLMSG2-G.
+                04  S02-LBLMSG2-STYLE  PIC X(20).
+                04  S02-LBLMSG2        PIC X(60).
+              03  S02-LBLMSG3-G.
+                04  S02-LBLMSG3-STYLE  PIC X(20).
+                04  S02-LBLMSG3        PIC X(40).
+              03  S02-LBLMSG4-G.
+                04  S02-LBLMSG4        PIC X(100).
+              03  S02-LBLMSG5-G.
+                04  S02-LBLMSG5        PIC X(10).
+              03  S02-LBLSRYYMG        PIC X(50).
+              03  S02-LBLSRYYMN        PIC X(50).
               03  S02-PTNUM-STATE
                                 PIC S9(9)   BINARY.
               03  S02-PTNUM     PIC X(20).
@@ -40,14 +60,15 @@
               03  S02-NYU-MISYU PIC S9(9).
               03  S02-GAI-TUKISKY PIC S9(9).
               03  S02-NYU-TUKISKY PIC S9(9).
-              03  S02-SRYYM.
-                04  S02-VALUE   PIC X(7).
+              03  S02-SRYYM-G.
+                04  S02-SRYYM-STATE        PIC S9(9)   BINARY.
+                04  S02-SRYYM              PIC X(10).
               03  S02-SCROLLEDWINDOW1.
                 04  S02-SYULIST.
                   05  S02-SYULIST-COUNT    PIC S9(9)   BINARY.
                   05  S02-SYULIST-ROW      PIC S9(9)   BINARY.
                   05  S02-SYULIST-ROWATTR  PIC S9(9)   BINARY.
-                  05  S02-SYULIST-ITEM     OCCURS  200 TIMES.
+                  05  S02-SYULIST-ITEM     OCCURS  500 TIMES.
                     06  S02-TNUM        PIC X(5).
                     06  S02-TDENPNUM    PIC X(9).
                     06  S02-TSRYKA      PIC X(6).
@@ -61,7 +82,7 @@
                     06  S02-TMISYUMONEY PIC X(11).
                     06  S02-TDENPJTI    PIC X(16).
                   05  S02-SYULIST-SELECT   PIC X
-                                           OCCURS  200 TIMES.
+                                           OCCURS  500 TIMES.
               03  S02-SRYKACOMBO.
                 04  S02-SRYKA         PIC X(21).
                 04  S02-SRYKA-COUNT   PIC S9(9)   BINARY.
@@ -71,3 +92,7 @@
                   05  S02-VALUE   PIC X(8).
                 04  S02-NYUGAIKBN-COUNT   PIC S9(9)   BINARY.
                 04  S02-NYUGAIKBN-ITEM    PIC X(8)    OCCURS  3 TIMES.
+              03  S02-CMB-MODE.
+                04  S02-MODE              PIC X(22).
+                04  S02-MODE-COUNT        PIC S9(9)   BINARY.
+                04  S02-MODE-ITEM         PIC X(22)   OCCURS  5 TIMES.

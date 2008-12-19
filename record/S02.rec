@@ -9,9 +9,40 @@ S02	{
 		B03S	{
 	           	state	int;
 		};
+		B06	{
+	           	state	int;
+			label	varchar(10);
+		};
+		B07	{
+	           	state	int;
+			label	varchar(10);
+		};
+		B09S	{
+	           	label	varchar(10);
+		};
 		LBLMSG	{
 			style   varchar(20);
 			value	varchar(60);
+		};
+		LBLMSG2	{
+			style   varchar(20);
+			value	varchar(60);
+		};
+		LBLMSG3	{
+			style   varchar(20);
+			value	varchar(40);
+		};
+		LBLMSG4	{
+			value	varchar(100);
+		};
+		LBLMSG5	{
+			value	varchar(10);
+		};
+		LBLSRYYMG	{
+			value	varchar(50);
+		};
+		LBLSRYYMN	{
+			value	varchar(50);
 		};
 		PTNUM	{
 	           	state	int;
@@ -45,7 +76,8 @@ S02	{
 			value	number(09);
 		};
 		SRYYM	{
-			value	varchar(7);
+	           	state	int;
+			value	varchar(10);
 		};
 		scrolledwindow1	{
 			SYULIST	{
@@ -65,8 +97,8 @@ S02	{
 					value9	varchar(11);
 					value10	varchar(11);
 					value11	varchar(16);
-				}	[200];
-				select	bool[200];
+				}	[500];
+				select	bool[500];
 			};
 		};
 		SRYKACOMBO	{
@@ -82,6 +114,13 @@ S02	{
 			};
 			count	int;
 			item	varchar(8)[3];
+		};
+		CMB_MODE	{
+			MODE	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[5];
 		};
 	};
 };

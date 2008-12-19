@@ -55,9 +55,9 @@
       *患者生年月日（西暦編集）
            05  SPA-S01-BIRTHDAY          PIC X(08).
       *診療年月
-           05  SPA-S01-SRYYM             PIC X(06).
+           05  SPA-S01-SRYYM             PIC X(08).
       *診療年月（和暦編集済）
-           05  SPA-S01-SRYYMW            PIC X(07).
+           05  SPA-S01-SRYYMW            PIC X(09).
       *診療年月日
            05  SPA-S01-SRYYMD            PIC X(08).
       *診療科
@@ -78,6 +78,10 @@
            05  SPA-S01-NYUGAIKBN         PIC X(01).
       *入外区分（ヘッダー）
            05  SPA-S01-HNYUGAIKBN        PIC X(01).
+      *収納リスト頁
+           05  SPA-S01-PAGE              PIC 9(05).
+      *収納モード
+           05  SPA-S01-MODE              PIC 9(01).
       *収納リスト選択行
            05  SPA-S01-SYULISTSEL        PIC 9(05).
       *外来未収額
