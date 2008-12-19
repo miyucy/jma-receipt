@@ -1333,3 +1333,62 @@ path	key60 	{
 	};
 };
 
+path	key61 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key61_csr CURSOR FOR
+		SELECT  HOSPNUM,NYUGAIKBN,PTID,SUM(SKYMONEY) as SKYMONEY
+		FROM tbl_syunou
+		WHERE   HOSPNUM     =   :HOSPNUM
+		AND     NYUGAIKBN   LIKE   :NYUGAIKBN
+		AND     PTID        =   :PTID
+		AND     SRYYMD      LIKE :SRYYMD
+		AND     CREATEKBN   <>  '3'
+		GROUP BY  HOSPNUM,NYUGAIKBN,PTID
+		ORDER BY  NYUGAIKBN
+		;
+	};
+};
+
+path	key62 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key62_csr CURSOR FOR
+		SELECT  *
+		FROM tbl_syunou
+		WHERE   HOSPNUM     =   :HOSPNUM
+		AND     NYUGAIKBN   LIKE   :NYUGAIKBN
+		AND     PTID        =   :PTID
+		AND     SRYYMD      >   :SRYYMD
+		ORDER BY  SRYYMD
+                LIMIT 1
+		;
+	};
+};
+
+path	key63 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key63_csr CURSOR FOR
+		SELECT  *
+		FROM tbl_syunou
+		WHERE   HOSPNUM     =   :HOSPNUM
+		AND     NYUGAIKBN   LIKE   :NYUGAIKBN
+		AND     PTID        =   :PTID
+		AND     SRYYMD      <   :SRYYMD
+		ORDER BY  SRYYMD DESC
+                LIMIT 1
+		;
+	};
+};
+
+path	key64 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_key64_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   CREATEKBN   <>  '3'
+			ORDER   BY    substr(SRYYMD,1,6),NYUGAIKBN,DENPNUM
+		;
+	};
+};
