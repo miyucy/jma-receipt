@@ -73,3 +73,18 @@ path	all 	{
 	};
 };
 
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE view_bd003_key4_csr CURSOR FOR
+		SELECT NYUGAIKBN,SUM(SKYMONEY) AS SKYMONEY
+		FROM view_bd003
+		WHERE	HOSPNUM         = :HOSPNUM
+           	AND	NYUGAIKBN    LIKE :NYUGAIKBN
+           	AND	PTID            = :PTID
+           	AND	SRYYMD       LIKE :SRYYMD
+		GROUP BY NYUGAIKBN
+		;
+	};
+};
+
