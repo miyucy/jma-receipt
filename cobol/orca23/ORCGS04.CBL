@@ -254,7 +254,6 @@
            COPY    "S03.INC".
            COPY    "S03N.INC".
            COPY    "S04.INC".
-           COPY    "S05.INC".
            COPY    "S06.INC".
            COPY    "S99.INC".
            COPY    "SERR.INC".

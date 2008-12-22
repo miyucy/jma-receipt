@@ -798,7 +798,6 @@ COPYS = \
         XCERR.INC \
         HCM28.INC \
         CPORCSNTYMD.INC \
-        S05.INC \
         HCRCP400.INC \
         HCRCP401.INC \
         HCM38.INC \
