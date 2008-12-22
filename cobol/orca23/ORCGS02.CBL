@@ -211,6 +211,7 @@
                    07  SPA-NAI-SRYYM               PIC X(08).
                    07  SPA-NAI-HEAD.
                        09  SPA-NAI-LOCK            PIC 9(01).
+                       09  SPA-NAI-SLOCK-MSG       PIC X(32).
                        09  SPA-NAI-MODE-SRYYM      PIC X(06).
                        09  SPA-NAI-BIRTHDAY        PIC X(08).
                        09  SPA-NAI-NYUKIN-HOHO     PIC X(02).
@@ -888,7 +889,7 @@
                                         SPA-S01KYOUTU
       *
            MOVE    SPA-SYSYMDWH(1:6)    TO  SPA-GMN-SRYYM
-           MOVE    SPA-SYSYMD           TO  SPA-NAI-SRYYM
+           MOVE    SPA-SYSYMD  (1:6)    TO  SPA-NAI-SRYYM
       *
            PERFORM 3101-COMBO-EDIT-SEC
       *
@@ -1109,6 +1110,7 @@
                PERFORM 990-LOCK-IN-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
                    MOVE    1               TO  SPA-NAI-LOCK
+                   MOVE    SLOCK-MSG       TO  SPA-NAI-SLOCK-MSG
                END-IF
       *
                PERFORM 320-HKNCOMBI-EDIT-SEC
@@ -1188,6 +1190,7 @@
            MOVE    SPA-S01-SRYYM       TO  SPA-NAI-SRYYM
            MOVE    SPA-S01-NAME        TO  SPA-GMN-NAME
            MOVE    SPA-S01-LOCK        TO  SPA-NAI-LOCK
+           MOVE    SPA-S01-SLOCK-MSG   TO  SPA-NAI-SLOCK-MSG
            MOVE    SPA-S01-BIRTHDAYW   TO  SPA-GMN-BIRTHDAY
            MOVE    SPA-S01-BIRTHDAY    TO  SPA-NAI-BIRTHDAY
            MOVE    SPA-S01-NYUKIN-HOHO TO  SPA-NAI-NYUKIN-HOHO
@@ -2428,6 +2431,7 @@
                MOVE    SPACE           TO  S02-LBLSRYYMG
            END-IF
       *
+           MOVE    "black"             TO  S02-LBLMSG4-STYLE
            PERFORM 4901-SKYYM-CHK-SEC
            IF    ( WRK-SKYYM       NOT =   SPACE )
                MOVE    WRK-SKYYM       TO  WRK-SYMD
@@ -2440,7 +2444,6 @@
                INTO    S02-LBLMSG4
                END-STRING
            END-IF
-      *
       *
            MOVE    "black"                     TO  S02-LBLMSG2-STYLE
       *
@@ -2467,6 +2470,14 @@
                    MOVE    "未収金（過入金）はありません"
                                                TO  S02-LBLMSG2
                END-EVALUATE
+           END-IF
+      *
+           IF    ( SPA-NAI-LOCK        =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    "red"                   TO  S02-LBLMSG2-STYLE
+               MOVE    "他端末で使用中です。"  TO  S02-LBLMSG2
+               MOVE    SPA-NAI-SLOCK-MSG       TO  S02-LBLMSG2(21:)
            END-IF
       *
            IF    ( SPA-NAI-SRYYM   =   SPACE )
@@ -4513,6 +4524,7 @@
            MOVE    SPA-GMN-BIRTHDAY    TO  SPA-S01-BIRTHDAYW
            MOVE    SPA-NAI-NYUKIN-HOHO TO  SPA-S01-NYUKIN-HOHO
            MOVE    SPA-NAI-LOCK        TO  SPA-S01-LOCK
+           MOVE    SPA-NAI-SLOCK-MSG   TO  SPA-S01-SLOCK-MSG
            MOVE    SPA-NAI-BIRTHDAY    TO  SPA-S01-BIRTHDAY
            IF    ( SPA-GMN-SELBAN      >   ZERO )
                MOVE    SPA-NAI-TSRYKA     (SPA-GMN-SELBAN)
@@ -4941,7 +4953,7 @@
            MOVE    WRK-NAI-SRYYM       TO  WRK-SYMD
            PERFORM 801-HIZUKE-CHK-SEC
            MOVE    WRK-HENYMDG (1:6)   TO  SPA-GMN-SRYYM
-           MOVE    WRK-SYMD            TO  SPA-NAI-SRYYM
+           MOVE    WRK-SYMD    (1:6)   TO  SPA-NAI-SRYYM
       *
            MOVE    2                   TO  SPA-GMN-CUR
       *
