@@ -16,6 +16,7 @@ LOGDIR=/var/log/jma-receipt
 DBUSER="orca"
 USERCHECKSQL="SELECT usename FROM pg_user WHERE usename = '${DBUSER}';"
 DBCHECKSQL="SELECT datname FROM pg_database WHERE datname = '${DBNAME}';"
+LOCALECHECKSQL="SELECT setting FROM pg_settings WHERE name = 'lc_collate';"
 
 INSTALLLOG="$LOGDIR"/orca-db-install-@VERSION@.log
 
@@ -27,6 +28,13 @@ fi
 
 if [ ! -e "$INSTALLLOG" ]; then
   su - orca -c "touch $INSTALLLOG" 
+fi
+
+if test  X`su - postgres -c "psql template1 -t -P format=unaligned -c \"${LOCALECHECKSQL}\""` != "XC"
+then
+    echo "Error, PostgreSQL locale should be C. " | tee -a $INSTALLLOG
+    echo "Please set locale C and execute initdb or createcluster. " | tee -a $INSTALLLOG
+    exit 1
 fi
 
 if [ -z `su - postgres -c "psql template1 -t -c \"${USERCHECKSQL}\""` ]
