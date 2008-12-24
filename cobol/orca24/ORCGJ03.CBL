@@ -778,6 +778,29 @@
                END-IF
            END-PERFORM
       *
+      *    Æþ±¡´ðËÜÎÁ¤ò¿Ç»¡ÎÁ¤Î¸å
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   100  )  OR
+                              (SPA-GMN-TNAIYOU1 (1 IDX)
+                                           =   SPACE  )
+               IF      SPA-GMN-TNAIYOU1 (1 IDX)    NOT =   SPACE
+                   MOVE    IDX             TO  IDX-MAX
+               END-IF
+           END-PERFORM
+           MOVE    IDX-MAX             TO  IDX2
+           PERFORM VARYING     IDX     FROM    1    BY  1
+                   UNTIL      (IDX     >   100  )  OR
+                              (IDX2    >=  100  )  OR
+                              (SPA-GMN-TNAIYOU1 (9 IDX)
+                                           =   SPACE  )
+               IF      SPA-GMN-TNAIYOU1 (9 IDX)    NOT =   SPACE
+                   ADD     1               TO  IDX2
+                   MOVE    SPA-GMN-TBLREC1 (9 IDX)
+                                           TO  SPA-GMN-TBLREC1
+                                                       (1 IDX2)
+               END-IF
+           END-PERFORM
+      *
 047200     .
 047300 3100-GMNSET-SYORI-EXT.
 047400     EXIT.
@@ -1349,6 +1372,12 @@
       *                Æþ±¡ÎÁ
                        MOVE    "1"                 TO  WRK-TBL-NYUGAI
                                                         (IDX TBL-IDX1)
+      *                Æþ±¡´ðËÜÎÁ¤Ï»»ÄêÆü¤Î¾ÜºÙ
+                       IF      (NACCT-ZAISKBKBN        =   "1" )  AND
+                               (TNS-DATAKBN            =   "1" )
+                           MOVE    "2"             TO  WRK-TBL-NYUGAI
+                                                       (IDX TBL-IDX1)
+                       END-IF
                        MOVE    TBL-IDX1            TO  TBL-IDX2
                        MOVE    200                 TO  TBL-IDX1
                    WHEN    (NSRY-SRYCD (IDZ)   =   WRK-TBL-SRYCD
@@ -1370,7 +1399,7 @@
                            OR (SPA-ERRCD   NOT =   SPACE )
                IF      NACCT-DAY(TBL-IDX3)
                                           NOT =   ZERO
-                       ADD     1              TO  WRK-TBL-KAISU
+                   ADD     1              TO  WRK-TBL-KAISU
                                              (IDX TBL-IDX2 TBL-IDX3)
                END-IF
            END-PERFORM
