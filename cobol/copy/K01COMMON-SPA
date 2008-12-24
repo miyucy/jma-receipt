@@ -32,6 +32,7 @@
       *  04.01.00    NACL-多々納  07/12/14  病名疾患区分反映区分追加他
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０．４改正
       *  04.03.00    NACL-多々納  08/07/XX  最大RL=19280 へ変更
+      *  04.04.00    NACL-多々納  08/12/XX  入院料包括対応
       ************************************************************
       *
        01  SPA-K01KYOUTU.
@@ -149,6 +150,8 @@
                05  SPA-FTNHEN-KBN          PIC X(01).
       *包括診療行為チェック
                05  SPA-HKTSANTEI-FLG       PIC 9(01).
+      *包括診療行為チェック（入院料）
+               05  SPA-HKTNYUIN-FLG        PIC 9(01).
       *@
       *腫瘍マーカー一覧展開選択
                05  SPA-AKUSEIHYOFLG        PIC  X(01).
@@ -300,8 +303,10 @@
       *保険変更なし
                05  SPA-HKN-ERR             PIC  9(01).
                05  SPA-HKN-ERR2            PIC  9(01).
+      *入院料なし
+               05  SPA-NYU-ERR             PIC  9(01).
       *診療年月日末日
-               05  SPA-SRYLST-DD           PIC 9(02).
+               05  SPA-SRYLST-DD           PIC  9(02).
       *
       *訂正前診療科
                05  SPA-OLD-SRYKA           PIC X(02).
@@ -336,6 +341,14 @@
                05  SPA-NAI-LASTTAIIN          PIC X(08).
       *        入院中区分（アフターケアの外来）
                05  SPA-NAI-NYUIN              PIC 9(01).
+      *        入院料包括チェック
+               05  SPA-NYUHKT-AREA.
+                   07  SPA-NYUHKTCHK           PIC 9(01).
+                   07  SPA-NYUHKTCD            PIC X(03).
+                   07  SPA-NYUHKT-G.
+                       09  SPA-NYUHKT-OCCURS   OCCURS   31.
+                           11  SPA-NYUHKTFLG       PIC 9(01).
+                           11  SPA-DEKIDAFLG       PIC 9(01).
       *
       *複数診療科用
            03  SPA-FUKU-AREA.

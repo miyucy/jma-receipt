@@ -1292,6 +1292,15 @@
            MOVE    SPA-SRYKBN          TO  SPA-J04-SRYKBN
       *
            MOVE    SPA-JIHOKBN         TO  SPA-J04-JIHOKBN
+      *    Êñ³ç¿ÇÎÅÊ¬
+           MOVE    "0 ¡¡¡¡¡¡¡¡"        TO  SPA-GMN-HKTKBN-LST (1)
+           MOVE    "1 Êñ³ç¿ÇÎÅ"        TO  SPA-GMN-HKTKBN-LST (2)
+           MOVE    2                   TO  SPA-HKTKBN-MAX
+           IF      SPA-J04-JIHOKBN     =   "1"
+               MOVE    SPA-GMN-HKTKBN-LST (2)  TO  SPA-GMN-HKTKBN-G
+           ELSE
+               MOVE    SPA-GMN-HKTKBN-LST (1)  TO  SPA-GMN-HKTKBN-G
+           END-IF
       *
       *    ÊÝ¸±ÁÈ¹ç¤»
            MOVE    SPA-HKNCOMBINUM     TO  SPA-J04-HKNCOMBI
@@ -2405,6 +2414,7 @@
        2002-GMNSPA-SET-SEC               SECTION.
       *
            MOVE    J04-HKNCOMBI        TO  SPA-GMN-HKNCOMBI-G
+           MOVE    J04-HKTKBN          TO  SPA-GMN-HKTKBN-G
       *
            PERFORM 20021-INPUT-GMNSET-SEC
            .
@@ -2512,6 +2522,8 @@
            IF      SPA-NYUGAIKBN       =   1
                PERFORM 4100-HKNCOMBI-CHK-SEC
            END-IF
+      *    Êñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯
+           PERFORM 4200-HKTKBN-CHK-SEC
       *
       *    ²èÌÌ£Ó£Ð£Á¥Á¥§¥Ã¥¯½èÍý
            IF      SPA-ERRCD           =   SPACE
@@ -2521,6 +2533,30 @@
       *
            .
        220-INPUT-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Êñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-HKTKBN-CHK-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL      (IDY     >   SPA-HKTKBN-MAX )  OR
+                              (FLG-CHK     =    1   ) 
+               IF      SPA-GMN-HKTKBN      =   SPA-GMN-HKTKBN-LST
+                                                         (IDY)(1:1)
+                   MOVE    SPA-GMN-HKTKBN-LST(IDY)
+                                               TO  SPA-GMN-HKTKBN-G
+                   MOVE    1                   TO  FLG-CHK
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    "1036"              TO  SPA-ERRCD
+               MOVE    11                  TO  SPA-GMN-CUR
+           END-IF
+           .
+       4200-HKTKBN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3431,6 +3467,15 @@
            MOVE    LNK-SC97-MOJI3      TO  WRK-MOJI3
            MOVE    LNK-SC97-MOJI4      TO  WRK-MOJI4
       *
+      *    ÁáÄ«²Ã»»¶èÊ¬¤Î»ÜÀßµ¬½à¥Á¥§¥Ã¥¯
+      *    IF      LNK-SC97-JIKAN      =   8
+      *        IF     (SPA-YAKANKBN        =   1  )
+      *            CONTINUE
+      *        ELSE
+      *            MOVE    "0210"          TO  SPA-ERRCD
+      *        END-IF
+      *    END-IF
+      *
            .
        4101121-MOJI-SET-EXT.
            EXIT.
@@ -3888,6 +3933,14 @@
                     END-IF
       *@
                END-IF
+      *!!
+      *        ½ÐÍè¹â¿ÇÎÅ
+               IF      SPA-COM-INPUTCD (SPA-GMN-MAX)
+                                               =   "099999903"
+                   MOVE    SPA-GMN-HKTKBN-LST (1)
+                                               TO  SPA-GMN-HKTKBN-G
+               END-IF
+      *!!
            END-PERFORM
       *
            IF      SPA-GMN-MAX         =   ZERO
@@ -5225,6 +5278,13 @@
                END-IF
       *        ÌÀºÙ¿ô
                ADD     1                       TO  WRK-MEISAISU
+      *!!
+      *        ½ÐÍè¹â¿ÇÎÅ
+               IF      SPA-COM-INPUTCD (IDX)   =   "099999903"
+                   MOVE    SPA-GMN-HKTKBN-LST (1)
+                                               TO  SPA-GMN-HKTKBN-G
+               END-IF
+      *!!
              END-IF
       *
            END-PERFORM
@@ -5232,6 +5292,13 @@
       *    ºÞÅÀ¿ô¤¬¥¼¥í¤Î»þ¡¢¼«Èñ¤òÅÀ¿ô¤Ø
            IF      WRK-ZAITEN          =   ZERO
                MOVE   WRK-JIHIMONEY        TO  WRK-ZAITEN
+           END-IF
+      *
+      *    Êñ³ç¿ÇÎÅÊÔ½¸
+           IF      SPA-GMN-HKTKBN          =   "1"
+               MOVE   "1"                  TO  SPA-J04-JIHOKBN
+           ELSE
+               MOVE   ZERO                 TO  SPA-J04-JIHOKBN
            END-IF
       *
       *    ¿ÇÎÅ²ñ·×ºÞ¥Á¥§¥Ã¥¯¥µ¥Ö
@@ -5856,7 +5923,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        4502-SINKAI-KOU-SEC          SECTION.
       *
            INITIALIZE                      SRYACCT-REC
-           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  ACCT-PTID
            MOVE    SPA-J01-SRYKA       TO  ACCT-SRYKA
@@ -5918,6 +5985,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPACE               TO  ACCT-ZAIREQFLG
                END-IF
            END-IF
+      *    Êñ³ç¿ÇÎÅºÞ¡Ê¼«ÊÝ¶èÊ¬¡Ë
+           MOVE    SPA-J04-JIHOKBN     TO  ACCT-JIHOKBN
       *
            MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
            MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
@@ -5989,7 +6058,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÊÑ¹¹Á°¤Î¼õ¿ÇÍúÎò¤ÎºÞºï½ü
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-J01-SRYKA       TO  JYURRK-SRYKA
@@ -7560,6 +7629,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-HKN-MAX         TO  J04-HKNCOMBI-COUNT
       *
+           MOVE    SPA-GMN-HKTKBN-G  TO  J04-HKTKBN
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX     >   SPA-HKTKBN-MAX
+               MOVE    SPA-GMN-HKTKBN-LST (IDX)
+                                       TO  J04-HKTKBN-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-HKTKBN-MAX      TO  J04-HKTKBN-COUNT
+      *
            MOVE    SPA-SEL-RRKYMDG     TO  J04-RRKYMD
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
@@ -7745,6 +7822,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF      SPA-GMN-CUR         =   10
+                                       OR  11
                CONTINUE
            ELSE
                IF      WRK-IDX2            >   MAX-GMN
@@ -7766,6 +7844,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    WRK-IDX2        TO  MCP-WIDGET(4:2)
                WHEN    10
                    MOVE    "HKNCOMBI"      TO  MCP-WIDGET
+               WHEN    11
+                   MOVE    "HKTKBN"        TO  MCP-WIDGET
            END-EVALUATE
       *
            .

@@ -56,6 +56,7 @@
       * 03.04.00     NACL-多々納  06/12/19  外用薬の内服算定追加
       * 04.01.00     NACL-多々納  07/10/XX  悪性腫瘍検査自動設定対応
       * 04.03.00     NACL-多々納  08/07/01  検査加算種別対応他
+      * 04.04.00     NACL-多々納  08/12/21  出来高算定コード対応
       *****************************************************************
       *
       *
@@ -964,7 +965,6 @@
                MOVE    1               TO  FLG-SYORI
            END-IF
       *    診察の時、手技料で剤分離とする
-      *****IF     (IDX                 >   1         )  AND
            IF     (SPA-COM-SRYKBN (IDX)(1:1)    =   "1" )  AND
                   (SPA-COM-DATAKBN (IDX)   =   "1"  )
                IF      FLG-SYUGI           =   1
@@ -1023,8 +1023,6 @@
                   (SPA-GMN-INPUTCD(IDX)(1:1)   NOT =   "." )  AND
                   (SPA-COM-DATAKBN(IDX)    =   "1"  )
               AND (SPA-COM-SET (IDX)   NOT =   "1"  )
-      *           (SPA-COM-DATAKBN(IDX)    =   "1"  )  AND
-      *           (IDX                     >   1    )
                 IF      IDX                =   1
                      MOVE    1             TO  IDX-1
                 ELSE
@@ -1044,6 +1042,8 @@
                IF     (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." )  OR
                       (SPA-COM-SRYKBN (IDX-1)   NOT =  SPA-COM-SRYKBN
                                                                  (IDX))
+      *            包括出来高
+               OR     (SPA-COM-INPUTCD (IDX-1)  =   "099999903" )
                    CONTINUE
                ELSE
       *            検体検査コメントの判定
@@ -1086,18 +1086,28 @@
                    IF      SPA-COM-HOUKNSKBN(IDX)   =   ZERO
                        MOVE    2                    TO  FLG-SYORI
       *                検体検査コメントの判定
-                       IF    ( SPA-COM-KENTAICOMMENT (IDX-1) =   1)
+                       IF     (SPA-COM-KENTAICOMMENT(IDX-1) =   1)
       *                検査等実施判断グループ判定
                           AND (SPA-COM-KNSJISGRPKBN (IDX)  >=  01
                                                        AND <=  07 )
-                           MOVE    1                TO  FLG-SYORI
+                           MOVE    1               TO  FLG-SYORI
+                       END-IF
+      *                包括出来高
+                       IF      (SPA-COM-INPUTCD (IDX-1)
+                                                   =   "099999903" )
+                           MOVE    1               TO  FLG-SYORI
                        END-IF
                    ELSE
       **************** MOVE    1                    TO  FLG-KENSA-ARI
       *                包括対象検査変更時
-                       IF      SPA-COM-HOUKNSKBN(IDX)
-                                              NOT =  SPA-COM-HOUKNSKBN
-                                                             (IDX-1)
+                       IF     (SPA-COM-HOUKNSKBN(IDX)
+                                                   =  SPA-COM-HOUKNSKBN
+                                                             (IDX-1) )
+      *                包括出来高
+                          OR  (SPA-COM-INPUTCD (IDX-1)
+                                                   =   "099999903" )
+                           CONTINUE
+                       ELSE
                            MOVE    2                    TO  FLG-SYORI
                        END-IF
       *                前が検体検査コメント
@@ -1189,7 +1199,7 @@
                IF     (IDX             >   1  )  AND
                       (SPA-COM-ZAIEND(IDX - 1)   =   SPACE )
                    MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
-                                       TO  SPA-COM-SRYSYUKBN (IDX)
+                                           TO  SPA-COM-SRYSYUKBN (IDX)
                END-IF
            ELSE
       *        剤終了
@@ -1548,7 +1558,31 @@
                            ELSE
                                MOVE    "2063"        TO  SPA-ERRCD
                            END-IF
-      *
+      *                包括出来高算定（剤）
+                       WHEN    "099999903"
+                           IF     (IDX             >   ZERO )  AND
+                                  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
+                                                   =   "."  )
+                               MOVE    SPA-COM-SRYKBN(IDX - 1)
+                                                     TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                               MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
+                                                   TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+                           ELSE
+                               MOVE    "0219"        TO  SPA-ERRCD
+                           END-IF
+      *                包括出来高算定日
+                       WHEN    "099999904"
+      *                    入院料
+                           MOVE    "90"            TO  SPA-COM-SRYKBN
+                                                                  (IDX)
+                           MOVE    "900"           TO  SPA-COM-SRYSYUKBN
+                                                                  (IDX)
+      *                    １剤１明細とする
+                           MOVE    "1"             TO  SPA-COM-ZAIEND
+                                                                  (IDX)
+                           MOVE    1               TO  FLG-ZAI
                        WHEN    OTHER
       *                Ｈ１８．４からリハビリ発生日
                        IF       SPA-COM-INPUTCD (IDX)(1:6) =   "099800"
@@ -1819,6 +1853,7 @@
            IF    ((WRK-KENSA-MAX       >   1             )  AND
                   (WRK-KENSA-MAX       <=  WRK-KENSA-CNT )) OR
                   (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." ) 
+              OR  (SPA-COM-INPUTCD(IDX-1)   =   "099999903" )
       *       会計照会で最終行の判定
               OR  (IDX                  =   1     ) 
               OR  ((LNK-SC93-PG         =   "J04" ) AND

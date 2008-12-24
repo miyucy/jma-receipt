@@ -1202,12 +1202,18 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            MOVE    ZERO                TO  SPA-HKTSANTEI-FLG
+           MOVE    ZERO                TO  SPA-HKTNYUIN-FLG
            PERFORM UNTIL  (FLG-SYSKANRI    =   1  )
-                       OR (SPA-HKTSANTEI-FLG   NOT =   ZERO )
+      **************** OR (SPA-HKTSANTEI-FLG   NOT =   ZERO )
                MOVE    MCPDATA-REC         TO  SYS-1014-REC
                IF      SYS-1014-SANTEI-HOU     =   "1"
                                                OR  "2"
-                   MOVE    1               TO  SPA-HKTSANTEI-FLG
+      *            Æþ±¡ÎÁ¤ÎÊñ³ç
+                   IF      SYS-1014-KBNCD      >=  "501"
+                       MOVE    1               TO  SPA-HKTNYUIN-FLG
+                   ELSE
+                       MOVE    1               TO  SPA-HKTSANTEI-FLG
+                   END-IF
                END-IF
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME

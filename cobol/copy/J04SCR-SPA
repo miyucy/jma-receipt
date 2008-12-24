@@ -68,6 +68,8 @@
                05  SPA-CHG310FLG           PIC  X(01).
       *腫瘍マーカー一覧展開選択
                05  SPA-AKUSEIHYOFLG        PIC  X(01).
+      *夜間・早朝加算
+               05  SPA-YAKANKBN            PIC  9(01).
       *
       *        展開時の変更
                05  SPA-TENKAI-ERR          PIC 9(01).
@@ -99,6 +101,15 @@
                05  SPA-J04-RSI-JUNKYO  PIC X(01).
       *        包括診療剤
                05  SPA-J04-JIHOKBN          PIC  X(01).
+      *
+               05  SPA-GMN-HKTKBN-G.
+                   07  SPA-GMN-HKTKBN        PIC  X(01).
+                   07  SPA-GMN-HKTKBN-F1     PIC  X(01).
+                   07  SPA-GMN-HKTKBN-MEI    PIC  X(28).
+               05  SPA-GMN-HKTKBN-LST-G.
+                   07  SPA-GMN-HKTKBN-LST    PIC  X(30)
+                                             OCCURS   3.
+                   07  SPA-HKTKBN-MAX        PIC  9(02).
       *
       *        保険組合せ一覧
                05  SPA-HKNCOMBI-AREA.

@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.04.00    NACL-多々納  08/12/XX  入院料包括対応
       *****************************************************************
       *
       *
@@ -50,6 +51,8 @@
            03  FLG-HKTSRYCD            PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-SANTEI              PIC 9(01).
+           03  FLG-NYUINACT           PIC 9(01).
+           03  FLG-NYUINACCT           PIC 9(01).
       *
            03  FLG-CHK                 PIC 9(01).
            03  FLG-CHK2                PIC 9(01).
@@ -57,10 +60,13 @@
            03  FLG-HOUKATU             PIC 9(01).
            03  FLG-SONOTA              PIC 9(01).
            03  FLG-ZAIARI              PIC 9(01).
+           03  FLG-SANTEIOK            PIC 9(01).
+           03  FLG-SANTEINO            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
+           03  IDX-N                   PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDZ                     PIC 9(04).
            03  IDX-S                   PIC 9(04).
@@ -76,13 +82,19 @@
       *
            03  IDD                     PIC 9(02).
            03  IDD2                    PIC 9(02).
+           03  IDX-D                   PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
            03  WRK-TEI-CNT             PIC 9(03).
            03  WRK-DAY                 PIC S9(03).
            03  WRK-SRYCD               PIC X(09).
+           03  WRK-SRYYMD.
+               05  WRK-SRYYM           PIC X(06).
+               05  WRK-SRYDD           PIC X(02).
+           03  WRK-ERRDAY              PIC 9(02).
       *
+           03  WRK-IDX-N               PIC 9(04).
       *    包括する診療区分
            03  WRK-HKT-SRYKBN-G.
                05  WRK-HKTKBN20        PIC 9(01).
@@ -95,6 +107,21 @@
                05  WRK-HKTKBN81        PIC 9(01).
                05  WRK-HKTKBN82        PIC 9(01).
                05  WRK-HKTKBN83        PIC 9(01).
+               05  WRK-HKTKBN64        PIC 9(01).
+      *    包括
+           03  WRK-NYUHKT-AREA.
+               05  WRK-NYUHKT-OCCURS   OCCURS   31.
+                   07  WRK-NYUHKTCD        PIC X(03).
+      *    チェック用
+       01  WRK-TBL-AREA.
+           03  WRK-KANRICD             PIC  X(03).
+           03  WRK-SANTEI-HOU          PIC  X(01).
+           03  WRK-SANTEI-KBN          PIC  X(01).
+           03  WRK-NYUGAIKBN           PIC  X(01).
+           03  WRK-HKNCOMBIKBN         PIC  X(01).
+           03  WRK-SRYKBN-G.
+               07  WRK-SRYKBN-KBN      PIC X(01)
+                                           OCCURS   50.
       *
        01  TBL-AREA.
            03  TBL-DATA-G              OCCURS   100.
@@ -110,11 +137,32 @@
                    07  TBL-SRYCD           PIC X(09)
                                            OCCURS   50.
            03  TBL-MAX                 PIC 9(04).
+      *入院料
+       01  TBL-NYUAREA.
+           03  TBL-NYUDATA-G              OCCURS   100.
+               05  TBL-N-KANRICD             PIC  X(03).
+               05  TBL-N-SANTEI-HOU          PIC  X(01).
+               05  TBL-N-SANTEI-KBN          PIC  X(01).
+               05  TBL-N-NYUGAIKBN           PIC  X(01).
+               05  TBL-N-HKNCOMBIKBN         PIC  X(01).
+               05  TBL-N-SRYKBN-G.
+                   07  TBL-N-SRYKBN-KBN      PIC X(01)
+                                             OCCURS   50.
+               05  TBL-N-SRYCD-G.
+                   07  TBL-N-SRYCD           PIC X(09)
+                                           OCCURS   50.
+           03  TBL-N-MAX                 PIC 9(04).
+      *
        01  TBL-HKTSANTEI-AREA.
            03  TBL-HKTSANTEI-DATA-G        OCCURS   600.
                05  TBL-HKTSRYCD            PIC X(09).
                05  TBL-SANTEIKBN           PIC X(01).
                05  TBL-KENTAIKBN           PIC X(01).
+      *
+      *    出来高算定日
+       01  TBL-DEKIDAKA-AREA.
+           03  TBL-DEKIDAKA-G              OCCURS   31.
+               05  TBL-DEKIDAKA            PIC 9(01).
       *
       *    保存ＳＰＡ領域ワーク
        01  HZN-SCR-REC.
@@ -137,6 +185,14 @@
       *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
+      *
+      *    入院会計マスタ−
+       01  NYUINACCT-REC.
+           COPY    "CPNYUINACCT.INC".
+      *
+      *    入院行為マスタ−
+       01  NYUINACT-REC.
+           COPY    "CPNYUINACT.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -184,12 +240,14 @@
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
            IF      ORCSCHKTCHK-PG      =   "K02"
+                                       OR  "K02N"
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            ELSE
                INITIALIZE                      SPA-K01KYOUTU
            END-IF
            INITIALIZE                  ORCSCHKTCHK-OUTAREA
       *
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
            EVALUATE    ORCSCHKTCHK-SYORI
                WHEN    "1"
       *        全体チェック
@@ -206,8 +264,31 @@
                WHEN    "3"
       *        エラー削除
                    PERFORM 400-ERR-DELETE-SEC
+               WHEN    "5"
+      *        入院料算定チェック
+      *            包括対象有無
+                   PERFORM 100-INIT-SYORI-SEC
+      *            チェック処理
+                   PERFORM 500-NYUIN-CHKSYORI-SEC
+               WHEN    "6"
+      *        入院料算定期間・包括チェック
+      *            包括対象有無
+                   PERFORM 100-INIT-SYORI-SEC
+      *            入院料チェック処理
+                   IF      ORCSCHKTCHK-NYUHKTCHK   =   1
+                       PERFORM 600-NYUINDAYCHK-SEC
+                   END-IF
+                   IF      SPA-HKTSANTEI-FLG   =   1
+      *                包括チェック判定
+                       PERFORM 2001-TAISYOU-CHK-SEC
+      *                剤の編集
+                       PERFORM 2002-ZAIHENSYU-SEC
+                   END-IF
            END-EVALUATE
-      *
+           IF      ORCSCHKTCHK-PG      =   "K02"
+                                       OR  "K02N"
+               MOVE    SPA-K01KYOUTU        TO  SPA-WORK
+           END-IF
            . 
        000-PROC-EXT.
       *
@@ -223,8 +304,8 @@
            MOVE    SPACE               TO  SYS-1014-REC
            INITIALIZE                  SYS-1014-REC
            MOVE    "1014"              TO  SYS-1014-KANRICD
-           MOVE    SPA-SRYYMD          TO  SYS-1014-STYUKYMD
-           MOVE    SPA-SRYYMD          TO  SYS-1014-EDYUKYMD
+           MOVE    WRK-SRYYMD          TO  SYS-1014-STYUKYMD
+           MOVE    WRK-SRYYMD          TO  SYS-1014-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1014-HOSPNUM
            MOVE    SYS-1014-REC        TO  MCPDATA-REC
       *
@@ -239,28 +320,16 @@
                MOVE    1               TO  FLG-SYSKANRI
            END-IF
            MOVE    ZERO                TO  IDX
+           MOVE    ZERO                TO  IDX-N
            INITIALIZE                  TBL-AREA
+           INITIALIZE                  TBL-NYUAREA
            PERFORM UNTIL  (FLG-SYSKANRI    =   1  )
                        OR (IDX             >=  100 )
                MOVE    MCPDATA-REC         TO  SYS-1014-REC
                IF      SYS-1014-SANTEI-HOU     =   "1"
                                                OR  "2"
-                   ADD     1               TO  IDX
-                   MOVE    SYS-1014-KBNCD (1:3)
-                                           TO  TBL-KANRICD (IDX)
-      *            包括算定方法
-                   MOVE    SYS-1014-SANTEI-HOU
-                                           TO  TBL-SANTEI-HOU (IDX)
-                   MOVE    SYS-1014-SANTEI-KBN
-                                           TO  TBL-SANTEI-KBN (IDX)
-                   MOVE    SYS-1014-NYUGAIKBN
-                                           TO  TBL-NYUGAIKBN (IDX)
-                   MOVE    SYS-1014-HKNCOMBI-KBN
-                                           TO  TBL-HKNCOMBIKBN (IDX)
-                   MOVE    SYS-1014-SRYKBN-G
-                                           TO  TBL-SRYKBN-G (IDX)
-                   PERFORM 1001-HKTSRYCD-HEN-SEC
-                   MOVE    IDX             TO  TBL-MAX
+      *            包括算定方法あり
+                   PERFORM 1002-KBNCD-TBLHEN1-SEC
                END-IF
                MOVE    "tbl_syskanri"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -276,14 +345,59 @@
       *****************************************************************
       *    包括診療コード編集処理
       *****************************************************************
+       1002-KBNCD-TBLHEN1-SEC            SECTION.
+      *
+           IF      SYS-1014-KBNCD (1:3)    >=  "500"
+      *        入院料
+               ADD     1                   TO  IDX-N
+               MOVE    SYS-1014-KBNCD (1:3)
+                                           TO  TBL-N-KANRICD (IDX-N)
+      *        包括算定方法
+               MOVE    SYS-1014-SANTEI-HOU
+                                           TO  TBL-N-SANTEI-HOU (IDX-N)
+               MOVE    SYS-1014-SANTEI-KBN
+                                           TO  TBL-N-SANTEI-KBN (IDX-N)
+               MOVE    SYS-1014-NYUGAIKBN
+                                           TO  TBL-N-NYUGAIKBN (IDX-N)
+               MOVE    SYS-1014-HKNCOMBI-KBN
+                                           TO  TBL-N-HKNCOMBIKBN (IDX-N)
+               MOVE    SYS-1014-SRYKBN-G
+                                           TO  TBL-N-SRYKBN-G (IDX-N)
+               PERFORM 1001-HKTSRYCD-HEN-SEC
+               MOVE    IDX-N               TO  TBL-N-MAX
+           ELSE
+      *        診療コード
+               ADD     1                   TO  IDX
+               MOVE    SYS-1014-KBNCD (1:3)
+                                           TO  TBL-KANRICD (IDX)
+      *        包括算定方法
+               MOVE    SYS-1014-SANTEI-HOU
+                                           TO  TBL-SANTEI-HOU (IDX)
+               MOVE    SYS-1014-SANTEI-KBN
+                                           TO  TBL-SANTEI-KBN (IDX)
+               MOVE    SYS-1014-NYUGAIKBN
+                                           TO  TBL-NYUGAIKBN (IDX)
+               MOVE    SYS-1014-HKNCOMBI-KBN
+                                           TO  TBL-HKNCOMBIKBN (IDX)
+               MOVE    SYS-1014-SRYKBN-G
+                                           TO  TBL-SRYKBN-G (IDX)
+               PERFORM 1001-HKTSRYCD-HEN-SEC
+               MOVE    IDX                 TO  TBL-MAX
+           END-IF
+           .
+       1002-KBNCD-TBLHEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括診療コード編集処理
+      *****************************************************************
        1001-HKTSRYCD-HEN-SEC            SECTION.
       *
            MOVE    SPACE               TO  HKTSRYCD-REC
            INITIALIZE                  HKTSRYCD-REC
-           MOVE    TBL-KANRICD (IDX)   TO  HKTSRYCD-KANRICD
-           MOVE    SPA-SRYYMD          TO  HKTSRYCD-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  HKTSRYCD-YUKOEDYMD
-grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
+           MOVE    SYS-1014-KBNCD (1:3)    TO  HKTSRYCD-KANRICD
+           MOVE    WRK-SRYYMD          TO  HKTSRYCD-YUKOSTYMD
+           MOVE    WRK-SRYYMD          TO  HKTSRYCD-YUKOEDYMD
            MOVE    HKTSRYCD-REC        TO  MCPDATA-REC
       *
            MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
@@ -299,8 +413,14 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    ZERO                TO  IDY
            PERFORM UNTIL  (FLG-HKTSRYCD    =   1  )
                       OR  (IDY             >=  50 )
-               ADD     1                   TO  IDY
-               MOVE    HKTSRYCD-SRYCD      TO  TBL-SRYCD (IDX IDY)
+               IF      SYS-1014-KBNCD (1:3)    >=  "500"
+                   ADD     1                   TO  IDY
+                   MOVE    HKTSRYCD-SRYCD      TO  TBL-N-SRYCD
+                                                           (IDX-N IDY)
+               ELSE
+                   ADD     1                   TO  IDY
+                   MOVE    HKTSRYCD-SRYCD      TO  TBL-SRYCD(IDX IDY)
+               END-IF
                MOVE    "tbl_hktsrycd"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-HKTSRYCD-READ-SEC
@@ -328,6 +448,16 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
       *    包括チェック判定
            PERFORM 2001-TAISYOU-CHK-SEC
+      *    剤の編集
+           PERFORM 2002-ZAIHENSYU-SEC
+           .
+       200-MAIN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括剤編集処理
+      *****************************************************************
+       2002-ZAIHENSYU-SEC            SECTION.
       *
       *    包括コードがある剤はすべて包括とする
            MOVE    SPA-SCR-REC         TO  HZN-SCR-REC
@@ -386,7 +516,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
       *
            .
-       200-MAIN-SYORI-EXT.
+       2002-ZAIHENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -394,10 +524,15 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *****************************************************************
        2002-HOUKATU-GAI-CHK-SEC            SECTION.
       *
-           IF    (SPA-COM-INPUTCD (IDX)(1:1)   =   "6"
-                                               OR  "7" )
-               MOVE    1               TO  SPA-COM-HOUKATU-FLG2 (IDX)
-           END-IF
+           EVALUATE    WRK-KANRICD
+           WHEN    "001"
+      *        外来診療料は薬剤・器材は算定可
+               IF    (SPA-COM-INPUTCD (IDX)(1:1)   =   "6"
+                                                   OR  "7" )
+                   MOVE    1           TO  SPA-COM-HOUKATU-FLG2 (IDX)
+               END-IF
+           END-EVALUATE
+      *
            IF     (SPA-COM-INPUTCD (IDX)(1:1)  =   "1" ) AND
                   (SPA-COM-DATAKBN (IDX)       =   "1" )
                IF     (SPA-COM-SRYKBN (IDX)    =   "60"  ) AND
@@ -456,7 +591,13 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    PERFORM 2003-HKTSRYCD-RRK-SEC
                END-IF
                IF      FLG-CHK             =   1
-                   MOVE    1               TO  ORCSCHKTCHK-HKTFLG
+                   MOVE    1                   TO  ORCSCHKTCHK-HKTFLG
+                   MOVE    TBL-KANRICD (IDX)       TO  WRK-KANRICD
+                   MOVE    TBL-SANTEI-HOU (IDX)    TO  WRK-SANTEI-HOU
+                   MOVE    TBL-SANTEI-KBN (IDX)    TO  WRK-SANTEI-KBN
+                   MOVE    TBL-NYUGAIKBN (IDX)     TO  WRK-NYUGAIKBN
+                   MOVE    TBL-HKNCOMBIKBN (IDX)   TO  WRK-HKNCOMBIKBN
+                   MOVE    TBL-SRYKBN-G    (IDX)   TO  WRK-SRYKBN-G
       *            入力項目の包括チェク
                    PERFORM 2002-HKTSANTEI-CHK-SEC
                END-IF
@@ -495,7 +636,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
-           MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+           MOVE    WRK-SRYYM           TO  SANTEI-SRYYM
       *
            MOVE    SANTEI-REC          TO  MCPDATA-REC
            MOVE    "tbl_santei"        TO  MCP-TABLE
@@ -554,7 +695,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    END-IF
                END-PERFORM
            END-IF
-           MOVE    SPA-SRYYMD(7:2)     TO  IDD2
+           MOVE    WRK-SRYDD           TO  IDD2
            EVALUATE    TBL-SANTEI-KBN(IDX)
                WHEN    "2"
       *            算定日
@@ -597,9 +738,9 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            MOVE    SPACE               TO  HKTSANTEI-REC
            INITIALIZE                  HKTSANTEI-REC
-           MOVE    TBL-KANRICD (IDX)   TO  HKTSANTEI-KANRICD
-           MOVE    SPA-SRYYMD          TO  HKTSANTEI-YUKOSTYMD
-           MOVE    SPA-SRYYMD          TO  HKTSANTEI-YUKOEDYMD
+           MOVE    WRK-KANRICD         TO  HKTSANTEI-KANRICD
+           MOVE    WRK-SRYYMD          TO  HKTSANTEI-YUKOSTYMD
+           MOVE    WRK-SRYYMD          TO  HKTSANTEI-YUKOEDYMD
 grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    HKTSANTEI-REC       TO  MCPDATA-REC
       *
@@ -631,8 +772,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            INITIALIZE                  WRK-HKT-SRYKBN-G
            PERFORM VARYING     IDX-K   FROM    1   BY  1
-                   UNTIL      (IDX-K       >   9   )
-               IF      TBL-SRYKBN-KBN (IDX IDX-K)  =   "1"
+                   UNTIL      (IDX-K       >   10  )
+               IF      WRK-SRYKBN-KBN (IDX-K)  =   "1"
                    EVALUATE    IDX-K
                        WHEN    1
                            MOVE    1           TO  WRK-HKTKBN20
@@ -652,11 +793,14 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                            MOVE    1           TO  WRK-HKTKBN81
                        WHEN    9
                            MOVE    1           TO  WRK-HKTKBN82
+                       WHEN    10
+                           MOVE    1           TO  WRK-HKTKBN64
                    END-EVALUATE
                END-IF
            END-PERFORM
       *
            IF      ORCSCHKTCHK-SYORI   =   "1"
+                                       OR  "6"
       *        入力項目
                PERFORM 20021-INPUT-CHK-SEC
            ELSE
@@ -673,6 +817,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        20021-INPUT-CHK-SEC            SECTION.
       *
       *    診療区分による包括
+           MOVE    ZERO                TO  FLG-SANTEIOK
+           MOVE    ZERO                TO  FLG-SANTEINO
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-GMN-MAX  )
                IF     (SPA-COM-HKNCOMBI (IDX-Z)    =   "9999")
@@ -680,19 +826,27 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    OR (SPA-COM-HOUKATU-ERR(IDX-Z)  =   1     )
                    OR (SPA-GMN-INPUTCD (IDX-Z)(1:1)
                                                    =   "#"
-                                                   OR  "$"
-                                                   OR  "*"   )
+                                                   OR  "$"   )
                    CONTINUE
                ELSE
       *            剤点数がある剤のみ
-                   IF     (SPA-COM-ZAIEND (IDX-Z)  =   "1" )  AND
-                          (SPA-COM-TENSU  (IDX-Z)  >   ZERO)
+                   IF     (SPA-COM-ZAIEND (IDX-Z)  =   "1" )
+                     AND  (SPA-COM-TENSU  (IDX-Z)  >   ZERO)
+                     AND  (FLG-SANTEIOK            =   ZERO )
                        PERFORM 20022-SRYKBN-CHECK-SEC
                    END-IF
+               END-IF
+      *        出来高算定判定
+               IF      SPA-COM-ZAIEND (IDX-Z)  =   "1"
+                   MOVE    ZERO                TO  FLG-SANTEIOK
+               END-IF
+               IF      SPA-COM-INPUTCD (IDX-Z) =   "099999903"
+                   MOVE    1                   TO  FLG-SANTEIOK
                END-IF
            END-PERFORM
       *
       *    包括診療コードチェック
+           MOVE    ZERO                TO  FLG-SANTEIOK
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-GMN-MAX  )
                IF     (SPA-COM-HKNCOMBI (IDX-Z)    =   "9999")
@@ -700,14 +854,22 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    OR (SPA-COM-HOUKATU-ERR(IDX-Z)  =   1     )
                    OR (SPA-GMN-INPUTCD (IDX-Z)(1:1)
                                                    =   "#"
-                                                   OR  "$"
-                                                   OR  "*"   )
+                                                   OR  "$"   )
                    CONTINUE
                ELSE
-                   IF      SPA-COM-INPUTCD (IDX-Z)(1:1) =   "1"
+                   IF     (SPA-COM-INPUTCD (IDX-Z)(1:1) =   "1" )
+                   AND    (FLG-SANTEIOK        =   ZERO )
+                   AND    (FLG-SANTEINO        =   ZERO )
                        MOVE    SPA-COM-INPUTCD (IDX-Z)  TO  WRK-SRYCD
                        PERFORM 20021-SRYCD-CHECK-SEC
                    END-IF
+               END-IF
+      *        出来高算定判定
+               IF      SPA-COM-ZAIEND (IDX-Z)  =   "1"
+                   MOVE    ZERO                TO  FLG-SANTEIOK
+               END-IF
+               IF      SPA-COM-INPUTCD (IDX-Z) =   "099999903"
+                   MOVE    1                   TO  FLG-SANTEIOK
                END-IF
            END-PERFORM
            .
@@ -738,7 +900,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
       *    外来診療料で上の行が検体コード尿の場合のみ対象
            IF      FLG-CHK3            =   1
-               IF    (TBL-KANRICD (IDX)    =   "001")  AND
+               IF    (WRK-KANRICD          =   "001")  AND
                      (FLG-CHK2             =   1    )
                    IF     (IDX-Z               >   1  )  AND
                           (SPA-COM-INPUTCD (IDX-Z - 1 )
@@ -754,7 +916,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
       *    包括コード
            IF      FLG-CHK2            =   1
-               IF      TBL-SANTEI-HOU (IDX)    =   "1"
+               IF      WRK-SANTEI-HOU      =   "1"
       *            会計データ作成
                    MOVE    1           TO  SPA-COM-HOUKATU-FLG(IDX-Z)
                ELSE
@@ -785,10 +947,19 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    ZERO                TO  FLG-CHK3
            EVALUATE    SPA-COM-SRYKBN (IDX-Z)(1:1)
       *        投薬
-      ****     WHEN    "2"
-      *            IF      WRK-HKTKBN20    =   1
-      *                MOVE    1           TO  FLG-CHK3
-      ****         END-IF
+               WHEN    "2"
+                   IF     (SPA-COM-SRYSYUKBN(IDX-Z)  =   "212"
+                                                     OR  "213"
+                                                     OR  "222"
+                                                     OR  "223"
+                                                     OR  "232"
+                                                     OR  "233")
+                       CONTINUE
+                   ELSE
+                       IF      WRK-HKTKBN20    =   1
+                           MOVE    1           TO  FLG-CHK3
+                       END-IF
+                   END-IF
                WHEN    "3"
                    IF      WRK-HKTKBN30    =   1
                        MOVE    1           TO  FLG-CHK3
@@ -802,25 +973,35 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                        MOVE    1           TO  FLG-CHK3
                    END-IF
                WHEN    "6"
-                   IF      WRK-HKTKBN60    =   1
-                       MOVE    1           TO  FLG-CHK3
+                   IF      SPA-COM-SRYKBN (IDX-Z)      =   "60"
+                       IF      WRK-HKTKBN60    =   1
+                           MOVE    1           TO  FLG-CHK3
+                       END-IF
+                   END-IF
+                   IF      SPA-COM-SRYKBN (IDX-Z)      =   "64"
+                       IF      WRK-HKTKBN64    =   1
+                           MOVE    1           TO  FLG-CHK3
+                       END-IF
                    END-IF
                WHEN    "7"
                    IF      WRK-HKTKBN70    =   1
                        MOVE    1           TO  FLG-CHK3
                    END-IF
                WHEN    "8"
+      *            リハビリ（その他）
                    IF      SPA-COM-SRYSYUKBN (IDX-Z)   =   "800"
                        IF      WRK-HKTKBN80    =   1
                            MOVE    1           TO  FLG-CHK3
                        END-IF
                    END-IF
-                   IF      SPA-COM-SRYSYUKBN (IDX-Z)   =   "810"
+      *            精神科専門
+                   IF      SPA-COM-SRYSYUKBN (IDX-Z)   =   "830"
                        IF      WRK-HKTKBN81    =   1
                            MOVE    1           TO  FLG-CHK3
                        END-IF
                    END-IF
-                   IF      SPA-COM-SRYSYUKBN (IDX-Z)   =   "820"
+      *            放射線治療
+                   IF      SPA-COM-SRYSYUKBN (IDX-Z)   =   "840"
                        IF      WRK-HKTKBN82    =   1
                            MOVE    1           TO  FLG-CHK3
                        END-IF
@@ -835,14 +1016,14 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                           (SPA-COM-ZAIEND (IDX-Z2) =   "1" )
                        MOVE    1                   TO  IDX-Z2
                    ELSE
-                       IF      TBL-SANTEI-HOU (IDX)    =   "1"
+                       IF      WRK-SANTEI-HOU      =   "1"
       *                会計データ作成
                            MOVE    1           TO  SPA-COM-HOUKATU-FLG
-                                                           (IDX-Z)
+                                                           (IDX-Z2)
                        ELSE
       *                エラー
                           MOVE    1           TO  SPA-COM-HOUKATU-ERR
-                                                            (IDX-Z)
+                                                            (IDX-Z2)
                        END-IF
                    END-IF
                END-PERFORM
@@ -857,7 +1038,13 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        300-AUTO-SYORI-SEC         SECTION.
       *
       *    包括チェック判定
-           PERFORM 2001-TAISYOU-CHK-SEC
+           IF      SPA-HKTSANTEI-FLG   =   1
+               PERFORM 2001-TAISYOU-CHK-SEC
+           END-IF
+      *    入院料包括チェック判定
+           IF      ORCSCHKTCHK-NYUHKTCHK   =   1
+               PERFORM 600-NYUHKT-SYORI-SEC
+           END-IF
       *
            .
        300-AUTO-SYORI-EXT.
@@ -894,11 +1081,11 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            MOVE    ZERO                TO  FLG-CHK3
            EVALUATE    LNK-ORCSC-SRYKBN (IDX-L1 IDX-L2)(1:1)
-      *?       投薬（外来はチェックなし）
-      *        WHEN    "2"
-      *            IF      WRK-HKTKBN20    =   1
-      *                MOVE    1           TO  FLG-CHK3
-      *?           END-IF
+      *        投薬（外来はチェックなし）
+               WHEN    "2"
+                   IF      WRK-HKTKBN20    =   1
+                       MOVE    1           TO  FLG-CHK3
+                   END-IF
                WHEN    "3"
                    IF      WRK-HKTKBN30    =   1
                        MOVE    1           TO  FLG-CHK3
@@ -912,30 +1099,57 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                        MOVE    1           TO  FLG-CHK3
                    END-IF
                WHEN    "6"
-                   IF      WRK-HKTKBN60    =   1
-                       MOVE    1           TO  FLG-CHK3
+                   IF      LNK-ORCSC-SRYKBN(IDX-L1 IDX-L2) =   "60"
+                       IF      WRK-HKTKBN60    =   1
+                           MOVE    1           TO  FLG-CHK3
+                       END-IF
+                   END-IF
+                   IF      LNK-ORCSC-SRYKBN(IDX-L1 IDX-L2) =   "64"
+                       IF      WRK-HKTKBN64    =   1
+                           MOVE    1           TO  FLG-CHK3
+                       END-IF
                    END-IF
                WHEN    "7"
                    IF      WRK-HKTKBN70    =   1
                        MOVE    1           TO  FLG-CHK3
                    END-IF
                WHEN    "8"
-                   IF      SPA-COM-SRYSYUKBN (IDX-Z)   =   "800"
+                   IF      LNK-ORCSC-SRYSYUKBN(IDX-L1 IDX-L2)
+                                                   =   "800"
                        IF      WRK-HKTKBN80    =   1
                            MOVE    1           TO  FLG-CHK3
                        END-IF
                    END-IF
-                   IF      SPA-COM-SRYSYUKBN (IDX-Z)   =   "810"
+                   IF      LNK-ORCSC-SRYSYUKBN(IDX-L1 IDX-L2)
+                                                   =   "830"
                        IF      WRK-HKTKBN81    =   1
                            MOVE    1           TO  FLG-CHK3
                        END-IF
                    END-IF
-                   IF      SPA-COM-SRYSYUKBN (IDX-Z)   =   "820"
+                   IF      LNK-ORCSC-SRYSYUKBN(IDX-L1 IDX-L2)
+                                                   =   "840"
                        IF      WRK-HKTKBN82    =   1
                            MOVE    1           TO  FLG-CHK3
                        END-IF
                    END-IF
            END-EVALUATE
+      *
+      *    外来診療料は自動発生した判断料を算定
+           IF    (WRK-KANRICD          =   "001")
+               MOVE    ZERO                TO  FLG-CHK3
+           END-IF
+      *
+           IF      FLG-CHK3            =   1
+               IF      WRK-SANTEI-HOU      =   "1"
+      *                会計データ作成
+                   MOVE    1           TO  LNK-ORCSC-HKTKBN 
+                                                  (IDX-L1 IDX-L2)
+                ELSE
+      *             エラー（削除）
+                   MOVE    SPACE       TO  LNK-ORCSC-SRYCD
+                                                  (IDX-L1 IDX-L2)
+               END-IF
+           END-IF
       *
            .
        30022-SRYKBN-CHECK-EXT.
@@ -965,7 +1179,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
       *    外来診療料で上の行が検体コード尿の場合のみ対象
            IF      FLG-CHK3            =   1
-               IF    (TBL-KANRICD (IDX)    =   "001")  AND
+               IF    (WRK-KANRICD          =   "001")  AND
                      (FLG-CHK2             =   1    )
                    IF     (IDX-Z               >   1  )  AND
                           (SPA-COM-INPUTCD (IDX-Z - 1 )
@@ -991,7 +1205,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                                   (IDX-L1 IDX-L2)
                END-IF
                IF     (FLG-CHK2            =   1  )
-                   IF      TBL-SANTEI-HOU (IDX)    =   "1"
+                   IF      WRK-SANTEI-HOU      =   "1"
       *                会計データ作成
                        MOVE    1           TO  LNK-ORCSC-HKTKBN 
                                                   (IDX-L1 IDX-L2)
@@ -1005,7 +1219,6 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            .
        30021-SRYCD-CHECK-EXT.
            EXIT.
-      *
       *****************************************************************
       *    エラー削除処理
       *****************************************************************
@@ -1043,11 +1256,376 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    END-IF
                END-IF
            END-PERFORM
-      *
            .
        400-ERR-DELETE-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    入院料算定判定処理
+      *****************************************************************
+       500-NYUIN-CHKSYORI-SEC         SECTION.
+      *
+           INITIALIZE                      NYUINACCT-REC
+           MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
+           MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN
+           MOVE    SPA-PTID            TO  NACCT-PTID
+           MOVE    WRK-SRYYM           TO  NACCT-SRYYM
+      *
+           MOVE    NYUINACCT-REC       TO  MCPDATA-REC
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key39"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key39"             TO  MCP-PATHNAME
+               PERFORM 900-NYUINACCT-READ-SEC
+           ELSE
+               INITIALIZE                  NYUINACCT-REC
+               MOVE    1               TO  FLG-NYUINACCT
+           END-IF
+      *    入院料算定なし
+           IF      FLG-NYUINACCT       =   1
+               MOVE    1                   TO  ORCSCHKTCHK-NYUERR
+           ELSE
+               MOVE    ZERO                TO  ORCSCHKTCHK-NYUERR
+           END-IF
+      *
+           PERFORM UNTIL      (FLG-NYUINACCT     =   1)
+      *
+               PERFORM 5001-NYUINACT-SYORI-SEC
+      *
+               MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+               MOVE    "key39"             TO  MCP-PATHNAME
+               PERFORM 900-NYUINACCT-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_nyuinacct"     TO  MCP-TABLE
+           MOVE    "key39"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    診療日時点の入院料と同じ日のみ対象とする
+           MOVE    WRK-SRYDD           TO  IDX-D
+           MOVE    SPACE               TO  ORCSCHKTCHK-NYUHKTCD
+           IF      WRK-NYUHKTCD (IDX-D)    NOT =   "XXX"
+               MOVE    WRK-NYUHKTCD (IDX-D)    TO  ORCSCHKTCHK-NYUHKTCD
+           END-IF
+      *    包括
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   31
+               IF      WRK-NYUHKTCD (IDX)  =   WRK-NYUHKTCD (IDX-D)
+                   MOVE    1               TO  ORCSCHKTCHK-NYUHKTFLG
+                                                              (IDX)
+               ELSE
+                   MOVE    ZERO            TO  ORCSCHKTCHK-NYUHKTFLG
+                                                              (IDX)
+               END-IF
+               IF      WRK-NYUHKTCD (IDX)  =   SPACE
+                                           OR  "XXX"
+                   CONTINUE
+               ELSE
+      *            月内に包括入院料がある時
+                   MOVE    1               TO  ORCSCHKTCHK-NYUHKTCHK
+               END-IF
+           END-PERFORM
+      *
+      *    出来高算定日検索
+           PERFORM 5009-SANTEI-CHK-SEC
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   31
+               IF      TBL-DEKIDAKA (IDX)  =   1
+      *            出来高算定コード算定
+                   MOVE    1               TO  ORCSCHKTCHK-DEKIDAFLG
+                                                              (IDX)
+               END-IF
+           END-PERFORM
+      *TEST
+              DISPLAY "ORCSCHKTCHK-NYUHKTCHK:" ORCSCHKTCHK-NYUHKTCHK
+                  ",ORCSCHKTCHK-NYUHKTCD:" ORCSCHKTCHK-NYUHKTCD
+      *TEST
+           .
+       500-NYUIN-CHKSYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括入院料の判定処理
+      *****************************************************************
+       5001-NYUINACT-SYORI-SEC         SECTION.
+      *
+           INITIALIZE                      NYUINACT-REC
+           MOVE    NACCT-HOSPNUM       TO  NSRY-HOSPNUM
+           MOVE    NACCT-NYUGAIKBN     TO  NSRY-NYUGAIKBN
+           MOVE    NACCT-PTID          TO  NSRY-PTID
+           MOVE    NACCT-SRYKA         TO  NSRY-SRYKA
+           MOVE    NACCT-SRYYM         TO  NSRY-SRYYM
+           MOVE    NACCT-ZAINUM        TO  NSRY-ZAINUM
+      *
+           MOVE    NYUINACT-REC        TO  MCPDATA-REC
+           MOVE    "tbl_nyuinact"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_nyuinact"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-NYUINACT-RAED-SEC
+           ELSE
+               INITIALIZE                  NYUINACT-REC
+               MOVE    1                   TO  FLG-NYUINACT
+           END-IF
+           MOVE    ZERO                TO  FLG-CHK
+           MOVE    ZERO                TO  WRK-IDX-N
+           PERFORM UNTIL     ( FLG-NYUINACT    =   1 )
+               PERFORM VARYING     IDZ     FROM    1  BY  1
+                       UNTIL      (IDZ         >   5  )  OR
+                                  (NSRY-SRYCD (IDZ) =   SPACE)
+                   PERFORM 5001-SRYCD-CHK-SEC
+               END-PERFORM
+      *
+               MOVE    "tbl_nyuinact"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 930-NYUINACT-RAED-SEC
+           END-PERFORM
+           MOVE    "tbl_nyuinact"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               IF      NACCT-DAY (IDX-D)   NOT =   ZERO
+                   IF      WRK-IDX-N       >   ZERO
+                       MOVE    TBL-N-KANRICD (WRK-IDX-N)
+                                           TO  WRK-NYUHKTCD (IDX-D)
+                   ELSE
+                       MOVE    "XXX"       TO  WRK-NYUHKTCD (IDX-D)
+                   END-IF
+               END-IF
+           END-PERFORM
+           .
+       5001-NYUINACT-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括入院料の判定処理
+      *****************************************************************
+       5001-SRYCD-CHK-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX-N   FROM    1  BY  1
+                   UNTIL      (IDX-N       >   TBL-N-MAX )
+                           OR (FLG-CHK     =   1         )
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL      (IDY     >   50   )  OR
+                                  (TBL-N-SRYCD (IDX-N IDY) =   SPACE)
+                   IF      NSRY-SRYCD(IDZ) =   TBL-N-SRYCD (IDX-N IDY)
+                       MOVE    1                   TO  FLG-CHK
+                       MOVE    IDX-N               TO  WRK-IDX-N
+                       MOVE    50                  TO  IDY
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+           .
+       5001-SRYCD-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    出来高算定日検索チェック処理
+      *****************************************************************
+       5009-SANTEI-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  TBL-DEKIDAKA-AREA
+      *    算定履歴検索
+           MOVE    SPACE               TO  SANTEI-REC
+           INITIALIZE                  SANTEI-REC
+           MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+           MOVE    SPA-PTID            TO  SANTEI-PTID
+           MOVE    WRK-SRYYM           TO  SANTEI-SRYYM
+           MOVE    "099999904"         TO  SANTEI-SRYCD
+           MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+           MOVE    ZERO                TO  SANTEI-SRYKA
+           MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+      *
+           MOVE    SANTEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 920-SANTEI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SANTEI
+           END-IF
+           MOVE    "tbl_santei"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+      *    訂正の時、当日算定有無の判定
+           MOVE    SANTEI-SRYCD        TO  WRK-SRYCD
+           MOVE    WRK-SRYDD           TO  IDX-D
+           IF      SPA-SYORIFLG        =   1
+               PERFORM VARYING IDZ     FROM    1   BY  1
+                       UNTIL   (IDZ        >   SPA-MAX-LINE )  OR
+                               (SPA-K02-TEI-SRYCD(IDZ)
+                                           =   SPACE )
+                   IF      SPA-K02-TEI-SRYCD(IDZ)
+                                           =   WRK-SRYCD
+                       MOVE    ZERO            TO  SANTEI-DAY (IDX-D)
+                   END-IF
+               END-PERFORM
+           END-IF
+           PERFORM VARYING     IDD     FROM    1   BY  1
+                   UNTIL       IDD     >   31
+               MOVE    SANTEI-DAY (IDD)    TO  TBL-DEKIDAKA (IDD)
+           END-PERFORM
+      *
+           .
+       5009-SANTEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院期間チェック処理
+      *****************************************************************
+       600-NYUINDAYCHK-SEC         SECTION.
+      *
+      *    出来高算定日コード判定
+           INITIALIZE                  TBL-DEKIDAKA-AREA
+           PERFORM VARYING IDX-N       FROM    1   BY  1
+                   UNTIL  (IDX-N       >   31  )
+               MOVE    ORCSCHKTCHK-DEKIDAFLG (IDX-N)
+                                           TO  TBL-DEKIDAKA  (IDX-N)
+           END-PERFORM
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   SPA-GMN-MAX  )
+               IF      SPA-COM-INPUTCD  (IDX-Z)    =   "099999904"
+                   PERFORM VARYING IDX-N       FROM    1   BY  1
+                           UNTIL  (IDX-N       >   31  )
+                       IF      SPA-COM-NYUINDAY(IDX-Z IDX-N)
+                                                   >   ZERO
+                           MOVE    1           TO  TBL-DEKIDAKA  (IDX-N)
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-PERFORM
+           MOVE    WRK-SRYDD           TO  IDX-D
+           IF      ORCSCHKTCHK-NYUHKTCD    NOT =   SPACE
+      *        診療日が入院料包括で出来高算定日の時、出来高とする
+               IF     (TBL-DEKIDAKA  (IDX-D)   =   1  )
+                   MOVE    SPACE               TO  ORCSCHKTCHK-NYUHKTCD
+                   PERFORM VARYING IDX-N       FROM    1   BY  1
+                           UNTIL  (IDX-N       >   31  )
+                       IF      ORCSCHKTCHK-NYUHKTFLG (IDX-N)   =  1
+                           IF     (TBL-DEKIDAKA  (IDX-N)   =   ZERO )
+                               MOVE    ZERO    TO  ORCSCHKTCHK-NYUHKTFLG
+                                                            (IDX-N)
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-IF
+           ELSE
+      *        包括算定日から出来高算定日へ
+               PERFORM VARYING IDX-N       FROM    1   BY  1
+                       UNTIL  (IDX-N       >   31  )
+                   IF      ORCSCHKTCHK-NYUHKTFLG (IDX-N)   =  ZERO
+                       IF     (TBL-DEKIDAKA  (IDX-N)   =   1  )
+                           MOVE    1       TO  ORCSCHKTCHK-NYUHKTFLG
+                                                          (IDX-N)
+                       END-IF
+                    END-IF
+               END-PERFORM
+           END-IF
+      *
+           MOVE    ZERO                TO  WRK-ERRDAY
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   SPA-GMN-MAX  )
+                          OR  (SPA-ERRCD   NOT =   SPACE    )
+               IF     (SPA-COM-HKNCOMBI (IDX-Z)    =   "9999")
+                   OR (SPA-COM-SRYKBN   (IDX-Z)    =   "95"
+                                                   OR  "96"
+                                                   OR  "99"
+                                                   OR  "98"  )
+                   CONTINUE
+               ELSE
+                   IF      SPA-GMN-INPUTCD (IDX-Z)(1:1)  =   "*"
+                       PERFORM VARYING IDX-N       FROM    1   BY  1
+                               UNTIL  (IDX-N       >   31  )
+                                   OR (SPA-ERRCD   NOT =   SPACE )
+                          IF      SPA-COM-NYUINDAY(IDX-Z IDX-N)
+                                                   >   ZERO
+                               IF      ORCSCHKTCHK-NYUHKTFLG (IDX-N)
+                                                       =   ZERO
+                                   MOVE    IDX-N       TO  WRK-ERRDAY
+                                   MOVE    "0218"      TO  SPA-ERRCD
+                               END-IF
+                           END-IF
+                       END-PERFORM
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           MOVE    "1"         TO  SPA-COM-CUR (IDX-Z)
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF     (SPA-ERRCD       NOT =   SPACE )  AND
+                  (WRK-ERRDAY          >   ZERO  )
+               MOVE    SPACE               TO  SPA-ERRMSG2
+               STRING  WRK-ERRDAY
+                       "日"                DELIMITED  BY  SIZE
+                       INTO                SPA-ERRMSG2
+               END-STRING
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+      *        包括区分クリア
+               PERFORM 602-HOUKATU-INIT-SEC
+               IF      ORCSCHKTCHK-NYUHKTCD    NOT =   SPACE
+      *            入院料包括チェック
+                   PERFORM 600-NYUHKT-SYORI-SEC
+               END-IF
+           END-IF
+           .
+       600-NYUINDAYCHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括区分クリア処理
+      *****************************************************************
+       602-HOUKATU-INIT-SEC         SECTION.
+      *
+           PERFORM VARYING     IDX-Z   FROM    1   BY  1
+                   UNTIL      (IDX-Z       >   SPA-GMN-MAX  ) 
+               MOVE    ZERO            TO  SPA-COM-HOUKATU-FLG (IDX-Z)
+               MOVE    ZERO            TO  SPA-COM-HOUKATU-FLG2(IDX-Z)
+               MOVE    ZERO            TO  SPA-COM-HOUKATU-ZAI (IDX-Z)
+               MOVE    ZERO            TO  SPA-COM-HOUKATU-ERR (IDX-Z)
+           END-PERFORM
+           .
+       602-HOUKATU-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入院料包括チェック処理
+      *****************************************************************
+       600-NYUHKT-SYORI-SEC         SECTION.
+      *
+           MOVE    1                   TO  IDX
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL      (IDY     >   TBL-N-MAX )
+              IF       TBL-N-KANRICD (IDY) =   ORCSCHKTCHK-NYUHKTCD
+                   MOVE    IDY                 TO  IDX
+                   MOVE    TBL-N-MAX           TO  IDY
+               END-IF
+           END-PERFORM
+           MOVE    1                       TO  ORCSCHKTCHK-HKTFLG
+           MOVE    TBL-N-KANRICD (IDX)     TO  WRK-KANRICD
+           MOVE    TBL-N-SANTEI-HOU (IDX)  TO  WRK-SANTEI-HOU
+           MOVE    TBL-N-SANTEI-KBN (IDX)  TO  WRK-SANTEI-KBN
+           MOVE    TBL-N-NYUGAIKBN (IDX)   TO  WRK-NYUGAIKBN
+           MOVE    TBL-N-HKNCOMBIKBN (IDX) TO  WRK-HKNCOMBIKBN
+           MOVE    TBL-N-SRYKBN-G    (IDX) TO  WRK-SRYKBN-G
+      *    入力項目の包括チェク
+           PERFORM 2002-HKTSANTEI-CHK-SEC
+      *    剤の編集
+           PERFORM 2002-ZAIHENSYU-SEC
+           .
+       600-NYUHKT-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    システム管理読み込み
       *****************************************************************
@@ -1114,6 +1692,38 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            .
        920-SANTEI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院会計マスター次読込
+      *****************************************************************
+       900-NYUINACCT-READ-SEC       SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  NYUINACCT-REC
+               MOVE    ZERO                TO  FLG-NYUINACCT
+           ELSE
+               INITIALIZE                      NYUINACCT-REC
+               MOVE    1                   TO  FLG-NYUINACCT
+           END-IF.
+      *
+       900-NYUINACCT-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    入院行為マスター読込
+      *****************************************************************
+       930-NYUINACT-RAED-SEC       SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC         TO  NYUINACT-REC
+               MOVE    ZERO                TO  FLG-NYUINACT
+           ELSE
+               INITIALIZE                      NYUINACT-REC
+               MOVE    1                   TO  FLG-NYUINACT
+           END-IF.
+      *
+       930-NYUINACT-RAED-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理

@@ -49,7 +49,7 @@
                 04  W32-HKNCOMBIKBN-ITEM
                         PIC X(40)   OCCURS  5 TIMES.
               03  W32-SRYKBN-COMB-G.
-                04  W32-SRYKBN-COMB    OCCURS   9.
+                04  W32-SRYKBN-COMB    OCCURS   10.
                   05  W32-SRYKBN.
                     07  W32-VALUE   PIC X(20).
                   05  W32-SRYKBN-COUNT   PIC S9(9)   BINARY.

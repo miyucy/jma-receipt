@@ -76,21 +76,22 @@
                05  SPA-GMN-SRYKBN-MAE      PIC X(02).
       *
       *選択対象剤番号
-      *　診療区分
-               05  SPA-SRYKBN          PIC  X(02).
-      *　剤番号
-               05  SPA-ZAINUM          PIC  9(08).
-      *　パラメタ番号
-               05  SPA-RENNUM          PIC  9(02).
       *　老人区分
                05  SPA-ROUJIN          PIC  9(01).
+               05  SPA-ZAINUMSEL-AREA.
+      *　診療区分
+                   07  SPA-SRYKBN          PIC  X(02).
+      *　剤番号
+                   07  SPA-ZAINUM          PIC  9(08).
+      *　パラメタ番号
+                   07  SPA-RENNUM          PIC  9(02).
       *　剤点数分
-               05  SPA-ZAITEN          PIC  9(08).
+                   07  SPA-ZAITEN          PIC  9(08).
       *  包括診療剤
-               05  SPA-JIHOKBN          PIC  X(01).
+                   07  SPA-JIHOKBN          PIC  X(01).
       *  回数テーブル
-               05  SPA-SEL-DAY-G.
-                   11  SPA-SEL-DAY     PIC 9(03)
+                   07  SPA-SEL-DAY-G.
+                       11  SPA-SEL-DAY     PIC 9(03)
                                                 OCCURS   31.
       *
                05  SPA-NAI-AREA.

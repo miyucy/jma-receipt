@@ -41,6 +41,7 @@
                    07  SPA-GMN-TDAY-G.
                        09  SPA-GMN-TDAY    PIC X(03)
                                                    OCCURS  31.
+                   07  SPA-GMN-TSRYCD      PIC X(09).
       *
            03  SPA-NAI-G.
                05  SPA-NAI-TBL.

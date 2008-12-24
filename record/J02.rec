@@ -241,6 +241,10 @@ J02	{
 		        style   varchar(20);
 			value	varchar(36);
 		};
+		HKTMSG	{
+		        style   varchar(20);
+			value	varchar(100);
+		};
 		B04	{
 	           	state	int;
 		};

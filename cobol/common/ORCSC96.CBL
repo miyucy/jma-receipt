@@ -1460,6 +1460,26 @@
                                                DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *!
+      *        入院料包括
+               WHEN    "0217"
+                   STRING  "当月の入院料が算定されていません。"
+                           "入院会計照会で作成して下さい。"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0218"
+                   STRING  "当日の入院料以外が算定されている日が"
+                           "指定されました。"
+                           "算定できません。"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "0219"
+                   STRING  "出来高算定コードは剤の最初に入力して下さい"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
       *
            END-EVALUATE
            .
@@ -2193,6 +2213,13 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
+      *
+               WHEN    "1036"
+                   STRING  "包括診療区分がありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
                WHEN    "1099"
                    MOVE    "ＤＢ更新エラー。"
                                        TO  SPA-ERRMSG

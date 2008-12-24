@@ -53,4 +53,10 @@
                         PIC X(55)   OCCURS  20 TIMES.
               03  J04-SRYKA.
                 04  J04-VALUE   PIC X(20).
+              03  J04-HKTKBN-COMB.
+                04  J04-HKTKBN.
+                  05  J04-VALUE   PIC X(30).
+                04  J04-HKTKBN-COUNT   PIC S9(9)   BINARY.
+                04  J04-HKTKBN-ITEM
+                        PIC X(30)   OCCURS  3 TIMES.
 

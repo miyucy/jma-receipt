@@ -3684,8 +3684,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL      (IDX     >   IDX-KOUI  )
                            OR (SPA-ERRCD   NOT =   SPACE )
       *      Êñ³çºÞ¤ÎÀßÄê
-             IF     (LNK-WKSRY-CONTKBN (IDX)   =   "H" )  OR
-                    (LNK-WKSRY-HKNCOMBI(IDX)   =   "9999")
+      *****  IF     (LNK-WKSRY-CONTKBN (IDX)   =   "H" )  OR
+             IF     (LNK-WKSRY-HKNCOMBI(IDX)   =   "9999")
                CONTINUE
              ELSE
                PERFORM VARYING     IDY     FROM    1   BY  1

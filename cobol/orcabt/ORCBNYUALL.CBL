@@ -465,6 +465,8 @@
       *
       *    入院履歴編集サブパラメタ
            COPY    "CPORCSCNYUHEN.INC".
+      *    包括診療チェックパラメタ
+           COPY    "CPORCSCHKTCHK.INC".
       *
       *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
@@ -1124,6 +1126,15 @@
            MOVE    LNK-WKSRY-HKNCOMBI (1)  TO  SPA-GMN-HKNCOMBINUM
            PERFORM 20011-HKNCOMBI-HEN-SEC
       *
+      *     入院料包括の判定（Ｈ２０．４から）
+           INITIALIZE                  SPA-NYUHKT-AREA
+           IF     (SPA-HKTNYUIN-FLG    =   1     )  AND
+                  (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-HKNCOMBINUM NOT =   "9999")  AND
+                  (SPA-SRYYMD          >=  "20080401" )
+               PERFORM 20015-HKTCHK-INIT-SEC
+           END-IF
+      *
            IF      SPA-ERRCD           =   SPACE
       *        パラメタ作成
                PERFORM 20012-WKSRYACT-PARA-SEC
@@ -1294,6 +1305,33 @@
        200111-RJNERR-EXT.
            EXIT.
       *****************************************************************
+      *    入院料包括の判定チェック処理
+      *****************************************************************
+       20015-HKTCHK-INIT-SEC              SECTION.
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *    入院料包括の期間チェック
+           INITIALIZE                  ORCSCHKTCHKAREA
+           INITIALIZE                  ORCSC00AREA
+           MOVE    "5"                 TO  ORCSCHKTCHK-SYORI
+           MOVE    "K02N"              TO  ORCSCHKTCHK-PG
+           CALL    "ORCSCHKTCHK"       USING
+                                       ORCSCHKTCHKAREA
+                                       SPA-AREA
+                                       SPA-K02
+                                       SPA-SCR-REC
+                                       ORCSC00AREA
+           MOVE    ORCSCHKTCHK-NYUHKTCHK   TO  SPA-NYUHKTCHK
+           MOVE    ORCSCHKTCHK-NYUHKTCD    TO  SPA-NYUHKTCD
+           MOVE    ORCSCHKTCHK-NYUHKT-G    TO  SPA-NYUHKT-G
+      *    入院料算定なし
+           IF      ORCSCHKTCHK-NYUERR  =   1
+               MOVE    "0217"              TO  SPA-ERRCD
+           END-IF
+           .
+       20015-HKTCHK-INIT-EXT.
+           EXIT.
+      *****************************************************************
       *    パラメタ作成処理
       *****************************************************************
        20012-WKSRYACT-PARA-SEC         SECTION.
@@ -1357,40 +1395,18 @@
                END-EVALUATE
            END-PERFORM
       *
-      *    腫瘍マーカー一覧展開しないとする
-           MOVE    ZERO                TO  SPA-AKUSEIHYOFLG
       *    診療行為、計計算処理、編集
-           MOVE    ZERO                TO  FLG-END-SYORI
-           MOVE    SPACE               TO  SPA-ERRMSG2
-           PERFORM
-               UNTIL   (FLG-END-SYORI  =   1  )
-               OR      (SPA-ERRCD      NOT =   SPACE )
-               MOVE    SPACE               TO  SPA-ERRCD
-               MOVE    SPACE               TO  SPA-KIDCD
-               MOVE    SPACE               TO  SPA-ERRMSG2
+           PERFORM 510-TBLHEN-SYORI-SEC
       *
-               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-               INITIALIZE                  ORCSC100AREA
-               MOVE    "1"                 TO  ORCSC100-KBN
-               MOVE    SPACE               TO  ORCSC100-TOROKU
-               MOVE    ZERO                TO  ORCSC100-INIT
-               MOVE    ZERO                TO  ORCSC100-KENSADEL
-               MOVE    ZERO                TO  ORCSC100-RIHTEI
-               CALL    "ORCSC100"          USING
-                                           ORCSC100AREA
-                                           SPA-AREA
-                                           SPA-K02
-                                           SPA-SCR-REC
-               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-      *        警告は登録対象
-               IF      SPA-ERRCD(1:1)      =   "K"
-                   MOVE    ZERO                TO  FLG-ERR
-                   PERFORM 30010-KEIMSGSYORI-SEC
-                   MOVE    ZERO            TO  FLG-END-SYORI
-               ELSE
-                   MOVE    1               TO  FLG-END-SYORI
+      *    入院料包括の判定
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-KIDCD           =   SPACE )  AND
+                  (SPA-HKNCOMBINUM NOT =   "9999")
+               IF     (SPA-HKTSANTEI-FLG   =   1     )  OR
+                      (SPA-NYUHKTCHK       =   1     )
+                   PERFORM 5109-HKTSANTEI-CHK-SEC
                END-IF
-           END-PERFORM
+           END-IF
       *
            IF     (SPA-ERRCD           =   SPACE )
            AND    (SPA-KIDCD           =   SPACE )
@@ -1591,6 +1607,48 @@
        3101-NYUKIKANCHK-EXT.
            EXIT.
       *****************************************************************
+      *    診療行為、計計算処理、編集処理
+      *****************************************************************
+       510-TBLHEN-SYORI-SEC            SECTION.
+      *
+      *    腫瘍マーカー一覧展開しないとする
+           MOVE    ZERO                TO  SPA-AKUSEIHYOFLG
+      *    診療行為、計計算処理、編集
+           MOVE    ZERO                TO  FLG-END-SYORI
+           MOVE    SPACE               TO  SPA-ERRMSG2
+           PERFORM
+               UNTIL   (FLG-END-SYORI  =   1  )
+               OR      (SPA-ERRCD      NOT =   SPACE )
+               MOVE    SPACE               TO  SPA-ERRCD
+               MOVE    SPACE               TO  SPA-KIDCD
+               MOVE    SPACE               TO  SPA-ERRMSG2
+      *
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+               INITIALIZE                  ORCSC100AREA
+               MOVE    "1"                 TO  ORCSC100-KBN
+               MOVE    SPACE               TO  ORCSC100-TOROKU
+               MOVE    ZERO                TO  ORCSC100-INIT
+               MOVE    ZERO                TO  ORCSC100-KENSADEL
+               MOVE    ZERO                TO  ORCSC100-RIHTEI
+               CALL    "ORCSC100"          USING
+                                           ORCSC100AREA
+                                           SPA-AREA
+                                           SPA-K02
+                                           SPA-SCR-REC
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *        警告は登録対象
+               IF      SPA-ERRCD(1:1)      =   "K"
+                   MOVE    ZERO                TO  FLG-ERR
+                   PERFORM 30010-KEIMSGSYORI-SEC
+                   MOVE    ZERO            TO  FLG-END-SYORI
+               ELSE
+                   MOVE    1               TO  FLG-END-SYORI
+               END-IF
+           END-PERFORM
+           .
+       510-TBLHEN-SYORI-EXT.
+           EXIT.
+      *****************************************************************
       *    診療行為自動算定・算定チェック処理
       *****************************************************************
        530-TBLCHI-SYORI-SEC          SECTION.
@@ -1624,6 +1682,65 @@
       *
            .
        530-TBLCHI-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    包括診療チェック処理
+      *****************************************************************
+       5109-HKTSANTEI-CHK-SEC              SECTION.
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           INITIALIZE                  ORCSCHKTCHKAREA
+           MOVE    SPA-NYUHKTCHK       TO  ORCSCHKTCHK-NYUHKTCHK
+           MOVE    SPA-NYUHKTCD        TO  ORCSCHKTCHK-NYUHKTCD
+           MOVE    SPA-NYUHKT-G        TO  ORCSCHKTCHK-NYUHKT-G
+           MOVE    "6"                 TO  ORCSCHKTCHK-SYORI
+           MOVE    "K02N"              TO  ORCSCHKTCHK-PG
+           CALL    "ORCSCHKTCHK"       USING
+                                       ORCSCHKTCHKAREA
+                                       SPA-AREA
+                                       SPA-K02
+                                       SPA-SCR-REC
+                                       ORCSC00AREA
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+           MOVE    ORCSCHKTCHK-NYUHKTCHK   TO  SPA-NYUHKTCHK
+           MOVE    ORCSCHKTCHK-NYUHKTCD    TO  SPA-NYUHKTCD
+           MOVE    ORCSCHKTCHK-NYUHKT-G    TO  SPA-NYUHKT-G
+           IF      ORCSCHKTCHK-HKTFLG  =   1
+               MOVE    1               TO  SPA-HKTSANTEI-CHK
+           ELSE
+               MOVE    ZERO            TO  SPA-HKTSANTEI-CHK
+           END-IF
+           IF      ORCSCHKTCHK-HKTERR  =   1
+      *        包括をエラーとする削除処理
+               PERFORM 51091-HKTSANTEI-DEL-SEC
+           END-IF
+           .
+       5109-HKTSANTEI-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    包括診療エラー削除処理
+      *****************************************************************
+       51091-HKTSANTEI-DEL-SEC              SECTION.
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+           INITIALIZE                  ORCSCHKTCHKAREA
+           MOVE    SPA-NYUHKTCHK       TO  ORCSCHKTCHK-NYUHKTCHK
+           MOVE    SPA-NYUHKTCD        TO  ORCSCHKTCHK-NYUHKTCD
+           MOVE    SPA-NYUHKT-G        TO  ORCSCHKTCHK-NYUHKT-G
+           MOVE    "3"                 TO  ORCSCHKTCHK-SYORI
+           MOVE    "K02"               TO  ORCSCHKTCHK-PG
+           CALL    "ORCSCHKTCHK"       USING
+                                       ORCSCHKTCHKAREA
+                                       SPA-AREA
+                                       SPA-K02
+                                       SPA-SCR-REC
+                                       ORCSC00AREA
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
+      *    診療行為、計計算処理、編集
+           PERFORM 510-TBLHEN-SYORI-SEC
+           .
+       51091-HKTSANTEI-DEL-EXT.
            EXIT.
       *****************************************************************
       *    更新処理処理

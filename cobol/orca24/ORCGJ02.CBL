@@ -209,6 +209,7 @@
            03  FLG-RRKNUM-ARI      PIC 9(01).
       *
            03  FLG-HKN-CHK         PIC 9(01).
+           03  FLG-DEKIDAKA        PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -529,6 +530,13 @@
            03  WRK-NCNT                PIC 9(03).
            03  WRK-KOG-CNT             PIC 9(03).
            03  WRK-NCNT-G              PIC 9(03).
+      *Æþ±¡ÎÁÊñ³ç
+           03  WRK-HKTSRY-AREA.
+               05  WRK-HKTCHKMSG           PIC X(100).
+               05  WRK-HKTCHKMSG-H         PIC X(100).
+               05  WRK-ERRDAY-G.
+                   07  WRK-ERRDAY          PIC 9(02)   OCCURS   31.
+               05  IDD                     PIC 9(02).
       *
        01  TBL-GRP-AREA.
            03  TBL-GRP-OCC             OCCURS   10.
@@ -727,6 +735,9 @@
       *
       *    Æþ±¡Ä´ºÞÎÁ¹¹¿·¥µ¥Ö
            COPY    "CPORCSCHOZAI.INC".
+      *
+      *    Æþ±¡ÎÁÊñ³ç¿ÇÎÅ¥Á¥§¥¯¥Ñ¥é¥á¥¿
+           COPY    "CPORCSCHKTALL.INC".
       *
       *    ÇÓÂ¾À©¸æ¥µ¥Ö¥Ñ¥é¥á¥¿
            COPY    "CPORCSLOCK.INC".
@@ -1764,22 +1775,6 @@
                MOVE    ZERO                TO  SPA-J02-ROUJIN
            END-IF
       *
-      **** IF      SPA-NAI-SRYYM       >=  "200210"
-      *        ³ºÅö·î£±Æü¤¬£·£µºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¤È¤¹¤ë
-      *        IF      SPA-NAI-NENREI-YY   >=  75
-      *            MOVE    1                   TO  SPA-J02-ROUJIN
-      *        ELSE
-      *            MOVE    ZERO                TO  SPA-J02-ROUJIN
-      *        END-IF
-      *    ELSE
-      *        ³ºÅö·î£±Æü¤¬£·£°ºÐ°Ê¾å¤Î»þ¡¢Ï·¿Í¤È¤¹¤ë
-      *        IF      SPA-NAI-NENREI-YY   >=  70
-      *            MOVE    1                   TO  SPA-J02-ROUJIN
-      *        ELSE
-      *            MOVE    ZERO                TO  SPA-J02-ROUJIN
-      *        END-IF
-      *****END-IF
-      *
       *    ¿ÇÎÅ²ÊÁªÂò¤Î¤Ê¤¤»þ¡¢°Ê²¼Ãæ»ß
            MOVE    ZERO                TO  SPA-GMN-MAX
       *    É½¼¨¿ÇÎÅ²Ê
@@ -1820,6 +1815,10 @@
                 MOVE    06              TO  SPA-GMN-CUR
                 GO      TO      3000-PTID-INIT-EXT
            END-IF
+      *
+      *    Æþ±¡ÎÁÊñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 30091-HKTCD-CHK-SEC
+      *
       *    ¼õ¿ÇÍúÎòÊÔ½¸
            PERFORM 3103-JYURRK-HEN-SEC
            IF     (SPA-NYUGAIKBN       =  "1"   ) AND
@@ -2134,6 +2133,34 @@
            END-EVALUATE
            .
        30081-JIBAISEKI-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   Æþ±¡ÎÁÊñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       30091-HKTCD-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  SPA-NAI-HKTERR
+           MOVE    ZERO                TO  SPA-NAI-HKTKEI
+           IF      SPA-GMN-NYUGAIKBN   =   "1"
+               INITIALIZE                  ORCSCHKTALLAREA
+               MOVE    "1"                 TO  ORCSCHKTALL-KBN
+               MOVE    SPA-NAI-SRYYM       TO  ORCSCHKTALL-SRYYM
+               MOVE    "01"                TO  ORCSCHKTALL-SRYDD
+               MOVE    SPA-GMN-PTID        TO  ORCSCHKTALL-PTID
+               CALL    "ORCSCHKTALL"       USING
+                                           ORCSCHKTALLAREA
+                                           SPA-AREA
+               MOVE    ORCSCHKTALL-NYUHKTKBN   TO  SPA-NAI-NYUHKTKBN
+               IF      ORCSCHKTALL-NYUERR      =   1
+                   MOVE    1                   TO  SPA-NAI-HKTERR
+                   MOVE    ZERO                TO  SPA-NAI-HKTKEI
+               END-IF
+           ELSE
+               MOVE    ZERO                    TO  SPA-NAI-NYUHKTKBN
+           END-IF
+           .
+       30091-HKTCD-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2850,6 +2877,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
       *    ¿ÇÎÅ¥³¡¼¥É¤è¤ê¿ÇÎÅ¹Ô°ÙÌ¾¾Î¤ò¼èÆÀ
+           MOVE    SRY-SRYCD (IDZ)     TO  SPA-GMN-TSRYCD  (IDG)
            MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU       NOT =   ZERO
@@ -3201,7 +3229,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        310122-KNJCOM-SET-SEC              SECTION.
       *
            INITIALIZE                      PTCOM-REC
-           MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
+           MOVE    SRY-HOSPNUM         TO  PTCOM-HOSPNUM
            MOVE    SRY-PTID            TO  PTCOM-PTID
            MOVE    SRY-ZAINUM          TO  PTCOM-ZAINUM
            MOVE    SRY-SRYCD (IDZ)     TO  PTCOM-SRYCD
@@ -3475,6 +3503,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ÊÝ¸±ÁÈ¹ç¤»´ü´Ö
            MOVE    SPA-GMN-HKNCOMBMSG TO  J02-HKNCOMBMSG-VALUE
            MOVE    "black"            TO  J02-HKNCOMBMSG-STYLE
+      *
+      *    Æþ±¡ÎÁÊñ³ç
+           MOVE    SPA-GMN-HKTMSG     TO  J02-HKTMSG-VALUE
+           MOVE    "red"              TO  J02-HKTMSG-STYLE
       *
       *    Èó³èÀ­½èÍý
            PERFORM 510-GSRAUTH-SEC
@@ -4337,7 +4369,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅÆüÊÑ¹¹½èÍý
+      *    ¿ÇÎÅ·îÊÑ¹¹½èÍý
       *****************************************************************
        410181-SRYYM-CHANGE-SYORI-SEC             SECTION.
       *
@@ -4389,6 +4421,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    ¼õ¿ÇÍúÎòÊÔ½¸
            PERFORM 3103-JYURRK-HEN-SEC
+      *
+      *    Æþ±¡ÎÁÊñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 30091-HKTCD-CHK-SEC
       *
       *    ÊÝÂ¸ÍÑ¥Ñ¥é¥á¥¿ºîÀ®
            PERFORM 4201-SRYACCT-PARA-SEC
@@ -4478,12 +4513,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                  SPA-NAIGMN-AREA
                MOVE    ZERO                TO  SPA-J02-SYORI
       *
-      ******** MOVE    SPA-NAI-TBANGO (SPA-GMN-BANGO)
                MOVE    SPA-NAI-TBANGO (SPA-NAI-BANGO)
                                            TO  IDX
                MOVE    SPA-GMN-TMEISYO  (IDX)
                                            TO  SPA-GMN-MEISYO
-      *******  MOVE    SPA-NAI-DAY-AREA (SPA-GMN-BANGO)
                MOVE    SPA-NAI-DAY-AREA (SPA-NAI-BANGO)
                                            TO  SPA-GNAI-DAY-G
                MOVE    SPA-GNAI-DAY-TBL (01)
@@ -4534,6 +4567,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                END-PERFORM
+      *        Æþ±¡ÎÁÊñ³ç¥Á¥§¥Ã¥¯
+               MOVE    SPA-NAI-JIHOKBN  (SPA-NAI-BANGO)
+                                           TO  SPA-JIHOKBN
+               MOVE    ZERO                TO  SPA-NAI-HKTGAIFLG
+               IF     (SPA-GMN-NYUGAIKBN   =   "1"   )
+                  AND (SPA-GMN-HKNCOMBI    NOT =   "9999" )
+                   PERFORM 410112-NYUHKTKBN-HEN-SEC
+               END-IF
       *
                MOVE    1                   TO  SPA-IDXZ
       *
@@ -4565,6 +4606,131 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        410110-HKNCOMBMSG-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÎÁÊñ³ç¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       410112-NYUHKTKBN-HEN-SEC             SECTION.
+      *
+           INITIALIZE                  SPA-NAI-NYUHKT-G
+      *    Æþ±¡ÎÁÊñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯
+           INITIALIZE                  ORCSCHKTALLAREA
+           MOVE    SPA-NAI-SRYYM       TO  ORCSCHKTALL-SRYYM
+           MOVE    "01"                TO  ORCSCHKTALL-SRYDD
+           MOVE    SPA-GMN-PTID        TO  ORCSCHKTALL-PTID
+      *    È½ÄêÆâÍÆ
+           MOVE    SPA-NAI-SRYKBN  (SPA-NAI-BANGO)
+                                       TO  ORCSCHKTALL-HKTSRYKBN
+           MOVE    SPA-NAI-SRYSYU (SPA-NAI-BANGO)
+                                       TO  ORCSCHKTALL-HKTSRYSYUKBN
+      *    ÂÐ¾Ý¤Î¿ÇÎÅ¹Ô°Ù
+           MOVE    ZERO                TO  FLG-DEKIDAKA
+           MOVE    ZERO                TO  IDX-T
+           PERFORM VARYING     IDX-H   FROM    IDX   BY  1
+                   UNTIL      (IDX-H   >   SPA-GMN-MAX )
+                           OR (IDX-T   >=  10          )
+               IF      SPA-GMN-TSRYCD (IDX-H)      =   "099999903"
+                   MOVE    1                   TO  FLG-DEKIDAKA
+               END-IF
+               IF      SPA-GMN-TSRYCD (IDX-H)(1:1) =   "1"
+                   ADD     1           TO  IDX-T
+                   MOVE    SPA-GMN-TSRYCD (IDX-H)
+                                       TO  ORCSCHKTALL-HKTSRYCD
+                                                    (IDX-T)
+               END-IF
+               IF     (SPA-GMN-TMEISYO (IDX-H) =   ALL "-" )
+                  OR ((IDX             NOT =   IDX-H   )  AND
+                      (SPA-GMN-TBANGO  (IDX-H) >   ZERO   ))
+                   MOVE    SPA-GMN-MAX         TO  IDX-H
+               END-IF
+           END-PERFORM
+      *    ½ÐÍè¹â»»Äê¥³¡¼¥É»»Äê¤Ï¡¢¥Á¥§¥Ã¥¯¤Ê¤·
+           IF     (FLG-DEKIDAKA        =   1  )
+           OR     (SPA-NAI-SRYKBN(SPA-NAI-BANGO)
+                                       =   "95"
+                                       OR  "96"
+                                       OR  "99"
+                                       OR  "98" )
+               MOVE    ZERO                TO  SPA-NAI-HKTGAIFLG
+           ELSE
+               MOVE    1                   TO  SPA-NAI-HKTGAIFLG
+           END-IF
+           IF     (SPA-NAI-HKTGAIFLG   =   1    )  AND
+                  (SPA-NAI-NYUHKTKBN   =   1    )
+               CALL    "ORCSCHKTALL"       USING
+                                           ORCSCHKTALLAREA
+                                           SPA-AREA
+      *        ÆüËè¤ÎÊñ³çÀßÄê
+               PERFORM VARYING     IDX-D   FROM    1   BY  1
+                       UNTIL       IDX-D   >   31
+                   MOVE    ORCSCHKTALL-HKTCHKFLG (IDX-D)
+                                           TO  SPA-NAI-HKTCHKFLG (IDX-D)
+               END-PERFORM
+           END-IF
+      *    Æþ±¡ÎÁÊñ³çÆüÊÔ½¸½èÍý
+           IF      SPA-NAI-HKTGAIFLG   =   1
+               PERFORM 410112-NYUHKTMSG-SEC
+           END-IF
+           .
+       410112-NYUHKTKBN-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Æþ±¡ÎÁÊñ³çÆüÊÔ½¸½èÍý
+      *****************************************************************
+       410112-NYUHKTMSG-SEC             SECTION.
+      *
+           INITIALIZE                  WRK-HKTSRY-AREA
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL       IDX-D   >   31
+               IF      SPA-GMN-DAY (IDX-D) >   ZERO
+                   IF      SPA-JIHOKBN         =   1
+                       IF      SPA-NAI-HKTCHKFLG (IDX-D)   =   ZERO
+      *                    Êñ³ç¿ÇÎÅºÞ¤ÇÊñ³ç¤Ç¤Ê¤¤Æü
+                           ADD     1               TO  IDD
+                           MOVE    IDX-D           TO  WRK-ERRDAY(IDD)
+                       END-IF
+                   ELSE
+                       IF      SPA-NAI-HKTCHKFLG (IDX-D)   =   1
+      *                    Êñ³ç¿ÇÎÅ¤Ç¤Ê¤¤ºÞ¤ÇÊñ³çÆü
+                           ADD     1               TO  IDD
+                           MOVE    IDX-D           TO  WRK-ERRDAY(IDD)
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      IDD                 >   ZERO
+               IF      SPA-JIHOKBN         =   1
+                   MOVE    "½ÐÍè¹â»»ÄêÆü¡§"    TO  WRK-HKTCHKMSG
+               ELSE
+                   MOVE    "Êñ³ç»»ÄêÆü¡§"      TO  WRK-HKTCHKMSG
+               END-IF
+               PERFORM VARYING     IDX-D   FROM    1   BY  1
+                       UNTIL      (IDX-D   >   31  )
+                               OR (WRK-ERRDAY  (IDX-D) =   ZERO)
+                   MOVE    WRK-HKTCHKMSG       TO  WRK-HKTCHKMSG-H
+                   MOVE    SPACE               TO  WRK-HKTCHKMSG
+                   IF      IDX-D               =   1
+                       STRING  WRK-HKTCHKMSG-H
+                               WRK-ERRDAY  (IDX-D)
+                                               DELIMITED  BY  SPACE
+                                               INTO    WRK-HKTCHKMSG
+                       END-STRING
+                   ELSE
+                       STRING  WRK-HKTCHKMSG-H
+                               ","
+                               WRK-ERRDAY  (IDX-D)
+                                               DELIMITED  BY  SPACE
+                                               INTO    WRK-HKTCHKMSG
+                       END-STRING
+                   END-IF
+               END-PERFORM
+           END-IF
+           MOVE    WRK-HKTCHKMSG       TO  SPA-GMN-HKTMSG
+           .
+       410112-NYUHKTMSG-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4647,6 +4813,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      FLG-END             =   1
                GO      TO      41012-DAY-CHK-EXT
+           END-IF
+      *    Æþ±¡ÎÁÊñ³çÆüÊÔ½¸½èÍý
+           IF      SPA-NAI-HKTGAIFLG   =   1
+               PERFORM 410112-NYUHKTMSG-SEC
            END-IF
       *
       *    £Ï£Ë¤Î»þ¡¢¼¡¤®¤ÎÆü¤Ø
@@ -5112,6 +5282,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (FLG-END             =   ZERO )
                MOVE    SPACE               TO  SPA-GMN-IKKATU
+      *        Æþ±¡ÎÁÊñ³çÆüÊÔ½¸½èÍý
+               IF      SPA-NAI-HKTGAIFLG   =   1
+                   PERFORM 410112-NYUHKTMSG-SEC
+               END-IF
            END-IF
       *
            .
@@ -7843,6 +8017,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN-HHKNCOMBIMEI
                                                TO  SPA-J02-HKNCOMBIMEI
                END-IF
+               INITIALIZE                  SPA-ZAINUMSEL-AREA
                MOVE    ZERO                TO  SPA-ZAINUM
                MOVE    1                   TO  SPA-J04-SYORI
            ELSE
@@ -8408,6 +8583,24 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 41012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM
       *
+      *    ¿ÇÎÅ·îÊÑ¹¹½èÍý
+           PERFORM 410181-SRYYM-CHANGE-SYORI-SEC
+      *
+           IF      SPA-RRK-MAX         =   ZERO
+              AND  SPA-GMN-MAX         =   ZERO
+               IF      SPA-SRYKA-MAX       =   1
+                   MOVE    07              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    06              TO  SPA-GMN-CUR
+               END-IF
+           ELSE
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
+      *
+      *!!!
+      *!!!
+      *!!!
+           GO      TO  410181-ZENGETU-SYORI1-EXT
            MOVE    ZERO                TO  SPA-RRK-MAX
            INITIALIZE                  SPA-GMN-RRKTBL
            INITIALIZE                  SPA-NAI-RRKTBL
@@ -8661,6 +8854,25 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 41012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:6)    TO  SPA-GMN-SRYYM
       *
+      *
+      *    ¿ÇÎÅ·îÊÑ¹¹½èÍý
+           PERFORM 410181-SRYYM-CHANGE-SYORI-SEC
+      *
+           IF      SPA-RRK-MAX         =   ZERO
+              AND  SPA-GMN-MAX         =   ZERO
+               IF      SPA-SRYKA-MAX       =   1
+                   MOVE    07              TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    06              TO  SPA-GMN-CUR
+               END-IF
+           ELSE
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
+      *
+      *!!!
+      *!!!
+      *!!!
+           GO      TO  410191-JIGETU-SYORI1-EXT
       *
            MOVE    ZERO                TO  SPA-RRK-MAX
            INITIALIZE                  SPA-GMN-RRKTBL
@@ -11013,10 +11225,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      ACCT-SRYKBN         =   "95"  OR  "96"
                GO      TO      4902-SANTEI-KOUSIN-EXT
            END-IF
-      *    Êñ³ç¿ÇÎÅÂÐ¾Ý³°
-           IF      ACCT-JIHOKBN        =   "1"
-               GO      TO      4902-SANTEI-KOUSIN-EXT
-           END-IF
+      ***  Êñ³ç¿ÇÎÅÂÐ¾Ý³°
+      *    IF      ACCT-JIHOKBN        =   "1"
+      *        GO      TO      4902-SANTEI-KOUSIN-EXT
+      **** END-IF
       *
       *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
            INITIALIZE                      SRYACT-REC
@@ -12526,6 +12738,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        500-SET-SCREEN              SECTION.
       *
            PERFORM 500-GMNHEN-SEC
+      *    Æþ±¡ÎÁ»»Äê¤Ê¤·
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-JIDCD           =   SPACE )
+               IF      (SPA-NAI-HKTERR     =   1   )  AND
+                       (SPA-NAI-HKTKEI     =   ZERO)
+                   MOVE    "K077"              TO  SPA-ERRCD
+                   MOVE    1                   TO  SPA-NAI-HKTKEI
+               END-IF
+           END-IF
       *    ÆâÊ¬ÈçÉé²Ù»î¸³
            IF     (SPA-ERRCD           =   SPACE )  AND
                   (SPA-JIDCD           =   SPACE )
@@ -12808,6 +13029,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0076"
                    STRING  "Â¾Ã¼Ëö¤Ç»ÈÍÑÃæ¤Ç¤¹¡£" 
                            "¿ÇÎÅÆüÊÑ¹¹¤Ï¤Ç¤­¤Þ¤»¤ó¡£"
+                                       DELIMITED   BY  SIZE
+                                       INTO   WRK-ERRMSG
+                   END-STRING
+      *
+               WHEN    "K077"
+                   STRING  "·Ù¹ð¡ª¡ª"
+                           "Åö·î¤ÎÆþ±¡ÎÁ¤¬»»Äê¤µ¤ì¤Æ¤¤¤Þ¤»¤ó¡£"
+                           "Æþ±¡ÎÁÊñ³ç¥Á¥§¥Ã¥¯¤Ï¤Ç¤­¤Þ¤»¤ó¡£"
                                        DELIMITED   BY  SIZE
                                        INTO   WRK-ERRMSG
                    END-STRING

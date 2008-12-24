@@ -115,6 +115,12 @@
       *            ¿ÇÎÅ²Ê
                    07  SPA-NAIGMN-SRYKA          PIC X(02).
                    07  SPA-NAIGMN-SRYKBN         PIC X(02).
+      *            Æþ±¡ÎÁÊñ³çÆü
+                   07  SPA-NAI-NYUHKT-G.
+                       09  SPA-NAI-HKTCHKFLG       PIC 9(01)
+                                                   OCCURS   31.
+                   07  SPA-NAI-HKTGAIFLG           PIC 9(01).
+                   07  SPA-GMN-HKTMSG              PIC X(100).
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SRYYM.
@@ -125,6 +131,10 @@
                            11  SPA-GNAI-DAY        PIC 9(03)
                                                    OCCURS   31.
                    07  SPA-NAI-MAX                 PIC 9(04).
+      *            Æþ±¡ÎÁÊñ³ç¶èÊ¬¤¢¤ê
+                   07  SPA-NAI-NYUHKTKBN           PIC 9(01).
+                   07  SPA-NAI-HKTERR              PIC 9(01).
+                   07  SPA-NAI-HKTKEI              PIC 9(01).
       *    ¿ÇÎÅÇ¯·îËöÆü
                    07  SPA-SRYMATU         PIC 9(02).
                    07  SPA-DAY-IDX         PIC 9(02).

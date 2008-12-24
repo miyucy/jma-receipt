@@ -35,4 +35,17 @@
                05  ORCSCHKTCHK-HKTFLG     PIC 9(01).
       *        ¥¨¥é¡¼¤¢¤ê
                05  ORCSCHKTCHK-HKTERR     PIC 9(01).
+      *        Æþ±¡ÎÁ»»Äê¤Ê¤·
+               05  ORCSCHKTCHK-NYUERR     PIC 9(01).
+      *    Æþ±¡ÎÁÊñ³ç¾ðÊó
+           03  ORCSCHKTCHK-NYUINAREA.
+               05  ORCSCHKTCHK-NYUHKTCHK       PIC 9(01).
+      *        ¿ÇÎÅÆü¤ÎÊñ³ç¶èÊ¬
+               05  ORCSCHKTCHK-NYUHKTCD        PIC X(03).
+               05  ORCSCHKTCHK-NYUHKT-G.
+                   07  ORCSCHKTCHK-NYUHKT-OCC  OCCURS   31.
+      *                £°¡§°ã¤¦Êñ³ç¡¢£±¡§Æ±¤¸Êñ³ç
+                       09  ORCSCHKTCHK-NYUHKTFLG   PIC 9(01).
+      *                £±¡§½ÐÍè¹â»»ÄêÆü
+                       09  ORCSCHKTCHK-DEKIDAFLG   PIC 9(01).
       *

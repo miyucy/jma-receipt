@@ -831,9 +831,6 @@
       *****************************************************************
        51017-SANTEI-CHEK-SEC             SECTION.
       *
-      *TEST
-      *    DISPLAY " 51017-SANTEI-CHEK-SEC"
-      *TEST
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE    )   OR
                              ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
@@ -842,11 +839,6 @@
                IF      (SPA-COM-INPUTCD (IDX)(1:1) =   "1" )
                  AND   (SPA-COM-HKNCOMBI(IDX)  NOT =   "9999")
                  AND   (SPA-COM-HCHKFLG (IDX)      =   SPACE )
-      *TEST
-      *    DISPLAY "IDX:" IDX ",COM:" SPA-COM-INPUTCD (IDX)
-      *        ",SPA-COM-HCHKFLG:" SPA-COM-HCHKFLG (IDX) 
-      *        ",SPA-COM-SANTEIRRKKBN:" SPA-COM-SANTEIRRKKBN (IDX) 
-      *TEST
       *            回数チェック
                    IF      (SPA-COM-SANTEIRRKKBN(IDX)
                                                NOT =   ZERO )
@@ -1595,6 +1587,10 @@
                END-IF
       *        包括診療コードの加算も包括分とする
                IF     (WRK-COM-HOUKATU-ZAI (IDX-Z) =   1   )
+      *TEST
+      *        包括剤
+               OR     (WRK-COM-INPUTCD(IDX-Z)  =   "099999904")
+      *TEST
                    MOVE    1                   TO  FLG-HOUKATU-ZAI
                ELSE
                    IF      FLG-HOUKATU-ZAI     =   1
@@ -2238,9 +2234,6 @@
                    MOVE    1                   TO  FLG-TUIKA
                END-IF
            END-PERFORM
-      *TEST
-      *    DISPLAY "5209-HENKOUCHK-SEC FLG-TUIKA:" FLG-TUIKA
-      *TEST
            .
        5209-HENKOUCHK-EXT.
            EXIT.
@@ -2307,7 +2300,11 @@
       *    自動作成分包括診療チェック初期設定
            IF     (SPA-HKTSANTEI-CHK   =   1      )  AND
                   (SPA-HKNCOMBINUM NOT =   "9999" )
+               MOVE    SPA-K01KYOUTU       TO   SPA-WORK
                INITIALIZE                  ORCSCHKTCHKAREA
+               MOVE    SPA-NYUHKTCHK       TO  ORCSCHKTCHK-NYUHKTCHK
+               MOVE    SPA-NYUHKTCD        TO  ORCSCHKTCHK-NYUHKTCD
+               MOVE    SPA-NYUHKT-G        TO  ORCSCHKTCHK-NYUHKT-G
                MOVE    "2"                 TO  ORCSCHKTCHK-SYORI
                MOVE    "K02"               TO  ORCSCHKTCHK-PG
                CALL    "ORCSCHKTCHK"       USING
@@ -2316,6 +2313,7 @@
                                            SPA-K02
                                            SPA-SCR-REC
                                            ORCSC00AREA
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            END-IF
       *
       *    自動作成の診療行為作成処理

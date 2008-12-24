@@ -407,5 +407,12 @@ J04	{
 		SRYKA	{
 			value	varchar(20);
 		};
+		HKTKBN_COMB	{
+			HKTKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[3];
+		};
 	};
 };
