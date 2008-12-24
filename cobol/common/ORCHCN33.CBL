@@ -30,6 +30,7 @@
       *  01.00.00    NACL-多々納  06/02/02  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.01.00    NACL-多々納  07/10/23  公務災害対応
+      *  04.04.00    NACL-多々納  08/12/24  入院料包括対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -704,7 +705,8 @@
            PERFORM
                UNTIL      (FLG-SRYACCT     =   1   )
       *        包括まとめ入力対象外
-               IF      ACCT-HKNCOMBI       =   "9999"
+               IF     (ACCT-HKNCOMBI       =   "9999" )
+                  OR  (ACCT-JIHOKBN        =   "1"    )
                    CONTINUE
                ELSE
       *            保険編集

@@ -33,6 +33,7 @@
       *  03.05.00    NACL-多々納  07/05/23  グループ診療対応
       *  04.01.00    NACL-多々納  07/11/22  器材商品名コード対応
       *  04.03.00    NACL-多々納  08/08/26  院外処方対応追加
+      *  04.04.00    NACL-多々納  08/12/22  出来高算定コード対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -552,6 +553,13 @@
                                                    OR  "0"
                            MOVE    1               TO  FLG-OK
                        END-IF
+      *!!
+      *                出来高算定コード対象外
+                       IF       LNK-WKSRY-SRYCD (IDX IDY)
+                                                   =   "099999903"
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+      *!!
                        IF       FLG-OK             =   1
       *                    臨時投薬
                            IF      LNK-WKSRY-SRYSYUKBN(IDX)(1:2)
@@ -598,6 +606,13 @@
                                                    OR  "0"
                            MOVE    1               TO  FLG-OK
                        END-IF
+      *!!
+      *                出来高算定コード対象外
+                       IF       LNK-WKSRY-SRYCD (IDX IDY)
+                                                   =   "099999903"
+                           MOVE    ZERO            TO  FLG-OK
+                       END-IF
+      *!!
                        IF       FLG-OK             =   1
                            MOVE    "2"             TO  WRK-PRTKBN
                            PERFORM 10030-ORDERPRT-HEN-SEC
