@@ -1574,10 +1574,9 @@
                            END-IF
       *                Êñ³ç½ÐÍè¹â»»ÄêÆü
                        WHEN    "099999904"
-      *                    Æþ±¡ÎÁ
-                           MOVE    "90"            TO  SPA-COM-SRYKBN
+                           MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
-                           MOVE    "900"           TO  SPA-COM-SRYSYUKBN
+                           MOVE    "990"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
       *                    £±ºÞ£±ÌÀºÙ¤È¤¹¤ë
                            MOVE    "1"             TO  SPA-COM-ZAIEND
