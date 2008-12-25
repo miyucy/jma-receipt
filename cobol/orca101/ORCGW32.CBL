@@ -819,7 +819,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                        OR  2
                                        OR  3
                                        OR  5
-      *            ≈ÍÃÙ°¶√ÌºÕ°¶ΩË√÷°¶∏°∫∫§¨ Ò≥Á
+                                       OR  10
+      *            ≈ÍÃÙ°¶√ÌºÕ°¶ΩË√÷°¶∏°∫∫°¶…¬Õ˝ø«√«§¨ Ò≥Á
                    MOVE    SPA-GMN-SRYKBN-LST (2)
                                            TO  SPA-GMN-SRYKBN-G (IDX)
                ELSE
