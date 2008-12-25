@@ -36,6 +36,7 @@
       *  04.02.00    NACL-Â¿¡¹Ç¼  08/03/06  £È£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.02.00    NACL-ÂÀÅÄ    08/06/02  Ï«ºÒ¡¦¼«ÇåÀÕÆþ±¡ÂÐ±þ
       *  04.03.00    NACL-ÂÀÅÄ    08/09/17  ²þÀµÂÐ±þ
+      *  04.03.00    NACL-ÂÀÅÄ    08/12/25  Æþ±¡ÎÁÊñ³çÂÐ±þ¡ÊÂÐ¾Ý³°È½ÄêÄÉ²Ã¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -757,7 +758,14 @@
                        UNTIL       IDX     >   IDX-END
                    ADD     ACCT-DAY (1 IDX)    TO  WRK-KAISU
                END-PERFORM
-               IF      WRK-KAISU           >   ZERO
+      *
+               IF    ( WRK-KAISU           =   ZERO )
+                OR   ( ACCT-ZAITEN         =   ZERO )
+                OR   ( ACCT-SRYKBN         =   "98" OR "99" )
+                OR   ( ACCT-HKNCOMBI       =   "9999")
+                OR   ( ACCT-JIHOKBN        =   "1"   )
+                   CONTINUE
+               ELSE
                    PERFORM 20031-MEI-HENSYU-SEC
                END-IF
       *
