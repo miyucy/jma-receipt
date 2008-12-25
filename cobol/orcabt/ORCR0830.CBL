@@ -833,7 +833,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         PERFORM   2205-RECE82-TENSOU12-SEC
                    END-IF
                    IF   (ACCT-ZAITEN    =        ZERO)    AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)
+                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                        (ACCT-JIHOKBN       =   SPACE)
                         MOVE    ZERO     TO    FLG-SHOSAISIN
                                                FLG-SHOSAISIN-GEN
                                                FLG-KYUKYU

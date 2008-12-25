@@ -1145,7 +1145,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
       *
                    IF   (ACCT-ZAITEN        =    ZERO)    AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)
+                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                        (ACCT-JIHOKBN       =   SPACE)
                                MOVE    ZERO    TO      FLG-SHOSAISIN 
                                                        FLG-SHOSAISIN2   
                                                        FLG-SHOSAISIN-GEN

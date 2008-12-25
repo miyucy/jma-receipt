@@ -381,6 +381,8 @@
       *  04.03.04    NACL-ÌçÏÆ    08/11/26  Ê¼¸Ë¸©°å»Õ¹ñÊÝÁÈ¹ç¡ÜÀº¿À¡¢·ë³ËÂÐ±þ
       *  04.03.05    NACL-ÌçÏÆ    08/12/01  ºßÂð¡Ê±¡³°Ê¬¡ËÊÔ½¸½¤Àµ
       *  04.03.06    NACL-ÌçÏÆ    08/12/16  Ê¿À®£²£±Ç¯£±·î²þÀµÂÐ±þ
+      *
+      *  04.04.01    NACL-ÌçÏÆ    08/12/25  Êñ³çÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3096,6 +3098,8 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
              OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
              OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
              OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
+             OR     ( SRY-SRYCD(IDX2)       =  "099999903"
+                                            OR "099999904"  )
                   COMPUTE   RECE04-MEISAISU    =  RECE04-MEISAISU
                                                -  1
                   MOVE      SRY-SRYCD(IDX2)   TO  WRK-SRYCD
@@ -3172,6 +3176,8 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
               OR     ( SRY-SRYCD(IDX2)(1:7)  =  "0992000"    )
               OR     ( SRY-SRYCD(IDX2)       =  "099209903"  )
               OR     ( SRY-SRYCD(IDX2)(1:4)  =  "0085"       )
+              OR     ( SRY-SRYCD(IDX2)       =  "099999903"
+                                             OR "099999904"  )
       *
                CONTINUE
       *

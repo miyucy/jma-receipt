@@ -446,7 +446,8 @@
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)
+                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                        (ACCT-JIHOKBN       =   SPACE)
                         MOVE    ZERO     TO    FLG-SHOSAISIN
                                                FLG-SHOSAISIN-GEN
                         IF   ACCT-SRYKBN  =  "11"  OR
@@ -456,7 +457,8 @@
                         PERFORM   2001114-RECE200-TENSOU12-SEC
                    END-IF
                    IF   (ACCT-ZAITEN    =        ZERO)    AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)
+                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                        (ACCT-JIHOKBN       =   SPACE)
                         MOVE    ZERO     TO    FLG-SHOSAISIN
                                                FLG-SHOSAISIN-GEN
                         IF   ACCT-SRYKBN  =  "11"  OR  "99" 
@@ -465,7 +467,8 @@
                         PERFORM   2001114-RECE200-TENSOU12-SEC
                    END-IF
                    IF   (ACCT-ZAITEN    NOT =    ZERO)    AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)
+                        (ACCT-ZAIKAISU  NOT =    ZERO)    AND
+                        (ACCT-JIHOKBN       =   SPACE)
                         IF   ACCT-SRYKBN  =  "90" OR "92"
                             PERFORM   2001115-NYUINRYO-TAIHI-SEC
                         END-IF
@@ -871,6 +874,7 @@
                   (FLG-SRYACCT        =    1)
                    IF   (ACCT-ZAITEN    NOT =    ZERO)
                    AND  (ACCT-ZAIKAISU  NOT =    ZERO)
+                   AND  (ACCT-JIHOKBN       =   SPACE)
                      IF   ACCT-SRYKBN  =  "90" OR "92"
                          PERFORM 2001126-RECE200-TENSOU23-SEC
                      END-IF
@@ -1499,7 +1503,8 @@
                PERFORM  UNTIL
                   (FLG-SRYACCT        =    1)
                    IF   (ACCT-ZAITEN    NOT =    ZERO)  AND
-                        (ACCT-ZAIKAISU  NOT =    ZERO)
+                        (ACCT-ZAIKAISU  NOT =    ZERO)  AND
+                        (ACCT-JIHOKBN       =   SPACE)
                      IF   ACCT-SRYKBN  =  "90" OR "92"
                         PERFORM VARYING ACCT-IDX FROM 1 BY 1
                                  UNTIL  ACCT-IDX  >  31
