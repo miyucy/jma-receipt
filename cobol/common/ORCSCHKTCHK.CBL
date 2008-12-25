@@ -61,7 +61,7 @@
            03  FLG-SONOTA              PIC 9(01).
            03  FLG-ZAIARI              PIC 9(01).
            03  FLG-SANTEIOK            PIC 9(01).
-           03  FLG-SANTEINO            PIC 9(01).
+           03  FLG-INPUTOK             PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -818,7 +818,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
       *    ¿ÇÎÅ¶èÊ¬¤Ë¤è¤ëÊñ³ç
            MOVE    ZERO                TO  FLG-SANTEIOK
-           MOVE    ZERO                TO  FLG-SANTEINO
+           MOVE    ZERO                TO  FLG-INPUTOK
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-GMN-MAX  )
                IF     (SPA-COM-HKNCOMBI (IDX-Z)    =   "9999")
@@ -829,16 +829,23 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                                    OR  "$"   )
                    CONTINUE
                ELSE
+                   IF      SPA-COM-INPUTCD (IDX-Z)(1:1) =   "1"
+                                                        OR  "6"
+                                                        OR  "7"
+                       MOVE    1                   TO  FLG-INPUTOK
+                   END-IF
       *            ºÞÅÀ¿ô¤¬¤¢¤ëºÞ¤Î¤ß
-                   IF     (SPA-COM-ZAIEND (IDX-Z)  =   "1" )
-                     AND  (SPA-COM-TENSU  (IDX-Z)  >   ZERO)
+                   IF     (SPA-COM-ZAIEND (IDX-Z)  =   "1"  )
+      *************  AND  (SPA-COM-TENSU  (IDX-Z)  >   ZERO )
                      AND  (FLG-SANTEIOK            =   ZERO )
+                     AND  (FLG-INPUTOK             =   1    )
                        PERFORM 20022-SRYKBN-CHECK-SEC
                    END-IF
                END-IF
       *        ½ÐÍè¹â»»ÄêÈ½Äê
                IF      SPA-COM-ZAIEND (IDX-Z)  =   "1"
                    MOVE    ZERO                TO  FLG-SANTEIOK
+                   MOVE    ZERO                TO  FLG-INPUTOK
                END-IF
                IF      SPA-COM-INPUTCD (IDX-Z) =   "099999903"
                    MOVE    1                   TO  FLG-SANTEIOK
@@ -859,7 +866,6 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                ELSE
                    IF     (SPA-COM-INPUTCD (IDX-Z)(1:1) =   "1" )
                    AND    (FLG-SANTEIOK        =   ZERO )
-                   AND    (FLG-SANTEINO        =   ZERO )
                        MOVE    SPA-COM-INPUTCD (IDX-Z)  TO  WRK-SRYCD
                        PERFORM 20021-SRYCD-CHECK-SEC
                    END-IF
@@ -954,6 +960,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                                      OR  "223"
                                                      OR  "232"
                                                      OR  "233")
+                     OR   (SPA-COM-TENSU  (IDX-Z)    =   ZERO )
                        CONTINUE
                    ELSE
                        IF      WRK-HKTKBN20    =   1

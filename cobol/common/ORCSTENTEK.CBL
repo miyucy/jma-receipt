@@ -456,6 +456,11 @@
                       (ACCT-HKNCOMBI           =   "9999" )
                    MOVE    ZERO                TO  FLG-ZAIARI
                END-IF
+      *        レセプト編集に包括診療は対象外
+               IF     (ORCSTEN-KBN         =   "2"   )
+                 AND  (ACCT-JIHOKBN        =   "1"   )
+                   MOVE    ZERO                TO  FLG-ZAIARI
+               END-IF
       *
       *        回数があるもの
                IF      FLG-ZAIARI          =   1
@@ -1630,10 +1635,16 @@
                MOVE    1                   TO  FLG-SRYACCT
            END-IF
            PERFORM UNTIL       (FLG-SRYACCT         =   1       )
+      *        レセプト編集に包括診療は対象外
+               IF     (ORCSTEN-KBN         =   "2"   )
+                 AND  (ACCT-JIHOKBN        =   "1"   )
+                   MOVE    1                   TO  FLG-YUKETU
+               END-IF
       *        輸血の判定
                IF      ACCT-SYUTEN1        >   ZERO
       *        包括まとめ入力は対象外とする
                  AND  (ACCT-HKNCOMBI   NOT =   "9999" )
+                 AND  (FLG-YUKETU          =   ZERO   )
                    PERFORM 30031-SRYACT-YUKETU-SEC
                ELSE
                    MOVE    1                   TO  FLG-YUKETU
