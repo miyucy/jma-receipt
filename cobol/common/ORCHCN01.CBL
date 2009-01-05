@@ -30,6 +30,7 @@
       *  01.00.01    NACL-太田    03.05.16  病名編集をコメント化
       *  01.00.02    NACL-太田    03.07.01  出力先プリンタサブ追加
       *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
+      *  04.04.00    NACL-太田    08/12/25  プログラムオプション
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -156,6 +157,21 @@
                05  FILLER          PIC X(01)   VALUE  ":".
                05  WRK-TMM         PIC 99.
       *
+      *明細最大行
+       01  MAX-LINE1               PIC 9(02)   VALUE   10.
+       01  MAX-LINE2               PIC 9(02)   VALUE   22.
+      *
+      *    プログラムオプションパラメタ
+       01  PARA-AREA.
+           03  PARA-BYOMEIKBN          PIC X(01).
+           03  PARA-SRYKAKBN           PIC X(01).
+           03  PARA-UTAGAIKBN          PIC X(01).
+           03  PARA-NYUGAIKBN          PIC X(01).
+           03  PARA-CHARTKBN           PIC X(01).
+      *
+           03  WRK-PARA-NAME           PIC X(25).
+           03  WRK-PARA                PIC X(50).
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -226,6 +242,9 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
+      *    プログラムオプション編集パラメタ
+           COPY    "CPORCSPRGOPTION.INC".
+      *
       *    病名編集サブ
            COPY    "CPORCSMKBYOMEI.INC".
       *
@@ -285,6 +304,9 @@
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
       *
+      *    プログラムオプション取込み
+           PERFORM 100-OPTION-SELECT-SEC
+      *
            .
        100-INIT-EXT.
            EXIT.
@@ -323,6 +345,76 @@
        110-PARA-HENSYU-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    プログラムオプション取込み処理
+      *****************************************************************
+       100-OPTION-SELECT-SEC             SECTION.
+      *
+           INITIALIZE                  PARA-AREA
+           MOVE    "0"             TO  PARA-BYOMEIKBN
+           MOVE    "0"             TO  PARA-SRYKAKBN
+           MOVE    "1"             TO  PARA-NYUGAIKBN
+           MOVE    "1"             TO  PARA-UTAGAIKBN
+           MOVE    "1"             TO  PARA-CHARTKBN
+      *
+      *    病名編集
+           IF    ( SYS-1017-KARUTE-BYOMEI
+                                       =   "0" OR "1" OR "2" )
+               MOVE    SYS-1017-KARUTE-BYOMEI
+                                       TO  PARA-BYOMEIKBN
+           END-IF
+           MOVE    "BYOMEIKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           IF    ( WRK-PARA(1:1)       =   "0" OR "1" OR "2" )
+               MOVE    WRK-PARA(1:1)   TO  PARA-BYOMEIKBN
+           END-IF
+      *
+      *    診療科
+           MOVE    "SRYKAKBN"          TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           IF    ( WRK-PARA(1:1)       =   "0" OR "1" )
+               MOVE    WRK-PARA(1:1)   TO  PARA-SRYKAKBN
+           END-IF
+      *    病名疑い区分
+           MOVE    "UTAGAIKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           IF    ( WRK-PARA(1:1)       =   "0" OR "1" )
+               MOVE    WRK-PARA(1:1)   TO  PARA-UTAGAIKBN
+           END-IF
+      *    入外区分
+           MOVE    "NYUGAIKBN"         TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           IF    ( WRK-PARA(1:1)       =   "0" OR "1" )
+               MOVE    WRK-PARA(1:1)   TO  PARA-NYUGAIKBN
+           END-IF
+      *    カルテ病名疑い区分
+           MOVE    "CHARTKBN"          TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           IF    ( WRK-PARA(1:1)       =   "0" OR "1" )
+               MOVE    WRK-PARA(1:1)   TO  PARA-CHARTKBN
+           END-IF
+      *
+           .
+       100-OPTION-SELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    プログラムオプションパラメタ取得処理
+      *****************************************************************
+       1001-OPTION-CALL-SEC             SECTION.
+      *
+           INITIALIZE                  ORCSPRGOPTIONAREA
+           MOVE    "ORCHC01"           TO  ORCSPRGOPTION-PRGID
+           MOVE    WRK-PARA-NAME       TO  ORCSPRGOPTION-IN-DATA
+           CALL    "ORCSPRGOPTION"     USING   SPA-AREA
+                                               ORCSPRGOPTIONAREA
+           MOVE    SPACE               TO  WRK-PARA
+           IF      ORCSPRGOPTION-OT-TYPE   =   1
+      *        半角で１文字目を値とする
+               MOVE    ORCSPRGOPTION-OT-PARA(1:1)  TO  WRK-PARA(1:1)
+           END-IF
+           .
+       1001-OPTION-CALL-EXT.
+           EXIT.
       *****************************************************************
       *    頭書のみ印刷処理
       *****************************************************************
@@ -600,8 +692,7 @@
       *    保険項目編集
            PERFORM 3001-HCN01-ALLHENSYU-SEC
       *
-           IF   (  SPA-SRYKA                 NOT =   SPACE )
-            AND (  SYS-1017-KARUTE-BYOMEI    NOT =   "2" )
+           IF   (  PARA-BYOMEIKBN          NOT =   "2" )
       *        病名を印刷する
                PERFORM 3002-BYOMEI-PRT-SEC
            ELSE
@@ -887,22 +978,21 @@
        3002-BYOMEI-PRT-SEC        SECTION.
       *
       *    患者病名マスタより編集
-           MOVE    10                  TO  CNT-MEI
+           MOVE    MAX-LINE1           TO  CNT-MEI
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  WRK-PRT-CNT
       *
            INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-PTID            TO  PTBYO-PTID
-           MOVE    SPA-SRYKA           TO  PTBYO-SRYKA
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 950-PTBYOMEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -912,7 +1002,7 @@
       *
                ADD     1               TO  IDX
                IF      WRK-PRT-CNT     =   1
-                   IF      IDX             >   10
+                   IF      IDX             >   MAX-LINE1
       *                カルテ印刷
                        PERFORM 2003-HCN01-PRINT-SEC
       *                続紙初期編集
@@ -922,7 +1012,7 @@
                    END-IF
                ELSE
       *            続紙印刷
-                   IF      IDX             >   22
+                   IF      IDX             >   MAX-LINE2
       *                続紙印刷
                        PERFORM 2005-HCN011-PRINT-SEC
       *                続紙初期編集
@@ -941,11 +1031,11 @@
                END-IF
       *
                MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
+               MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 950-PTBYOMEI-READ-SEC
            END-PERFORM
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
            IF      WRK-PRT-CNT     =   1
@@ -968,13 +1058,19 @@
       *
            INITIALIZE                  ORCSMKBYOMEIAREA
            MOVE    PTBYO-UTAGAIFLG TO  SMKBYO-UTAGAIFLG
-      *    カルテ病名がある時はカルテ病名
-           IF    ( PTBYO-CHARTBYOMEI   =   SPACE )
-               MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
-           ELSE
-               MOVE    PTBYO-CHARTBYOMEI   TO  SMKBYO-BYOMEI
+           MOVE    PTBYO-BYOMEI            TO  SMKBYO-BYOMEI
+           IF    ( PARA-UTAGAIKBN      =   "1" )
+               CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
            END-IF
-           CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
+      *    カルテ病名がある時はカルテ病名
+           IF    ( PTBYO-CHARTBYOMEI   NOT =   SPACE )
+               INITIALIZE                      ORCSMKBYOMEIAREA
+               MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
+               MOVE    PTBYO-CHARTBYOMEI   TO  SMKBYO-BYOMEI
+               IF    ( PARA-CHARTKBN   =   "1" )
+                   CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
+               END-IF
+           END-IF
            MOVE    SMKBYO-BYOMEI       TO  HCN01-BYOMEI (IDX)
       *
       *    開始年月日（診療年月日）
@@ -1018,12 +1114,22 @@
            MOVE    CNT-MEI             TO  WRK-ZZZ9
            MOVE    WRK-ZZZ9            TO  HCN011-CD (IDX)
       *
-      *    カルテ病名がある時はカルテ病名
-           IF      PTBYO-CHARTBYOMEI   =   SPACE
-               MOVE    PTBYO-BYOMEI        TO  HCN011-BYOMEI (IDX)
-           ELSE
-               MOVE    PTBYO-CHARTBYOMEI   TO  HCN011-BYOMEI (IDX)
+           INITIALIZE                  ORCSMKBYOMEIAREA
+           MOVE    PTBYO-UTAGAIFLG TO  SMKBYO-UTAGAIFLG
+           MOVE    PTBYO-BYOMEI            TO  SMKBYO-BYOMEI
+           IF    ( PARA-UTAGAIKBN      =   "1" )
+               CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
            END-IF
+      *    カルテ病名がある時はカルテ病名
+           IF    ( PTBYO-CHARTBYOMEI   NOT =   SPACE )
+               INITIALIZE                      ORCSMKBYOMEIAREA
+               MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
+               MOVE    PTBYO-CHARTBYOMEI   TO  SMKBYO-BYOMEI
+               IF    ( PARA-CHARTKBN   =   "1" )
+                   CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
+               END-IF
+           END-IF
+           MOVE    SMKBYO-BYOMEI       TO  HCN011-BYOMEI (IDX)
       *    開始年月日（診療年月日）
            MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
@@ -1269,17 +1375,40 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    MOVE    1               TO  FLG-LOOP-END
       *
-                   IF    ( SYS-1017-KARUTE-BYOMEI    =   "1"  )
-                    AND  ( PTBYO-TENKIYMD        NOT =   SPACE)
-                       MOVE    ZERO        TO  FLG-LOOP-END
-                   END-IF
-      *
-                   IF    ( PTBYO-NYUGAIKBN =   SPACE )
-                    OR   ( PTBYO-NYUGAIKBN =   "1" )
+                   EVALUATE    PARA-BYOMEIKBN
+                   WHEN    "0"
                        CONTINUE
-                   ELSE
-                       MOVE    ZERO        TO  FLG-LOOP-END
-                   END-IF
+                   WHEN    "1"
+                       IF    ( PTBYO-TENKIYMD  =   SPACE)
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO        TO  FLG-LOOP-END
+                       END-IF
+                   WHEN    "2"
+                           MOVE    ZERO        TO  FLG-LOOP-END
+                   END-EVALUATE
+      *
+                   EVALUATE    PARA-SRYKAKBN
+                   WHEN    "0"
+                       IF    ( SPA-SRYKA   =  PTBYO-SRYKA )
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO    TO  FLG-LOOP-END
+                       END-IF
+                   WHEN    "1"
+                       CONTINUE
+                   END-EVALUATE
+      *
+                   EVALUATE    PARA-NYUGAIKBN
+                   WHEN    "0"
+                       CONTINUE
+                   WHEN    "1"
+                       IF    ( PTBYO-NYUGAIKBN =   SPACE OR "1" )
+                           CONTINUE
+                       ELSE
+                           MOVE    ZERO        TO  FLG-LOOP-END
+                       END-IF
+                   END-EVALUATE
       *
                ELSE
                    MOVE    1               TO  FLG-PTBYOMEI
