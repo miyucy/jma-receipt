@@ -64,6 +64,8 @@
                    07  HENREI-B-S-SYORIYMD     PIC X(8).
                    07  HENREI-B-S-MAKE-FLG     PIC 9(01).
                    07  HENREI-B-S-HENREIYM     PIC X(06).
+                   07  HENREI-B-S-HENREI-SIJI-FLG
+                                               PIC 9(01).
       *
                    07  HENREI-B-S-TEISYUTUSAKI PIC X(01).
                    07  HENREI-B-S-NYUGAIKBN    PIC X(01).
@@ -72,6 +74,8 @@
                    07  HENREI-B-S-HKNJANUM     PIC X(08).
                    07  HENREI-B-S-HOJOKBN-KEY  PIC X(01).
                    07  HENREI-B-S-TEKSTYMD     PIC X(08).
+      *
+                   07  HENREI-B-S-KIGO         PIC X(40).
       *Ã¼Ëö£É£Ä
            03  HENREI-B-TERMID     PIC X(64).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
@@ -82,4 +86,9 @@
            03  HENREI-B-UPYMD      PIC X(08).
       *¹¹¿·»þ´Ö
            03  HENREI-B-UPHMS      PIC X(06).
+      *¸¡º÷ÍÑ¹àÌÜ
+           03  HENREI-B-XX-AREA.
+      *¿³ºº»ÙÊ§µ¡´Ø¸¡º÷ÍÑ¹àÌÜ
+               05  HENREI-B-XXTEISYUTUSAKI
+                                   PIC X(1).
 

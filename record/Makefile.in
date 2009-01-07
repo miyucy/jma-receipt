@@ -39,6 +39,7 @@ RECORD_files = \
 	GID2.rec \
 	GFIL.rec \
 	H01.rec \
+	H02.rec \
 	H99.rec \
 	HERR.rec \
 	HID1.rec \

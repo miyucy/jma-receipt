@@ -50,6 +50,7 @@ tbl_henrei_body	{
 	S_SYORIYMD_1		char(8);
 	S_MAKE_FLG_1		number(1,0);
 	S_HENREIYM_1		char(6);
+	S_HENREI_SIJI_FLG_1     number(1,0);
 	S_TEISYUTUSAKI_1	char(1);
 	S_NYUGAIKBN_1		char(1);
 	S_RECEKA_1		char(2);
@@ -57,9 +58,11 @@ tbl_henrei_body	{
 	S_HKNJANUM_1		char(8);
 	S_HOJOKBN_KEY_1		char(1);
 	S_TEKSTYMD_1		char(8);
+	S_KIGO_1		varchar(40);
 	S_SYORIYMD_2		char(8);
 	S_MAKE_FLG_2		number(1,0);
 	S_HENREIYM_2		char(6);
+	S_HENREI_SIJI_FLG_2     number(1,0);
 	S_TEISYUTUSAKI_2	char(1);
 	S_NYUGAIKBN_2		char(1);
 	S_RECEKA_2		char(2);
@@ -67,9 +70,11 @@ tbl_henrei_body	{
 	S_HKNJANUM_2		char(8);
 	S_HOJOKBN_KEY_2		char(1);
 	S_TEKSTYMD_2		char(8);
+	S_KIGO_2		varchar(40);
 	S_SYORIYMD_3		char(8);
 	S_MAKE_FLG_3		number(1,0);
 	S_HENREIYM_3		char(6);
+	S_HENREI_SIJI_FLG_3     number(1,0);
 	S_TEISYUTUSAKI_3	char(1);
 	S_NYUGAIKBN_3		char(1);
 	S_RECEKA_3		char(2);
@@ -77,9 +82,11 @@ tbl_henrei_body	{
 	S_HKNJANUM_3		char(8);
 	S_HOJOKBN_KEY_3		char(1);
 	S_TEKSTYMD_3		char(8);
+	S_KIGO_3		varchar(40);
 	S_SYORIYMD_4		char(8);
 	S_MAKE_FLG_4		number(1,0);
 	S_HENREIYM_4		char(6);
+	S_HENREI_SIJI_FLG_4     number(1,0);
 	S_TEISYUTUSAKI_4	char(1);
 	S_NYUGAIKBN_4		char(1);
 	S_RECEKA_4		char(2);
@@ -87,9 +94,11 @@ tbl_henrei_body	{
 	S_HKNJANUM_4		char(8);
 	S_HOJOKBN_KEY_4		char(1);
 	S_TEKSTYMD_4		char(8);
+	S_KIGO_4		varchar(40);
 	S_SYORIYMD_5		char(8);
 	S_MAKE_FLG_5		number(1,0);
 	S_HENREIYM_5		char(6);
+	S_HENREI_SIJI_FLG_5     number(1,0);
 	S_TEISYUTUSAKI_5	char(1);
 	S_NYUGAIKBN_5		char(1);
 	S_RECEKA_5		char(2);
@@ -97,9 +106,11 @@ tbl_henrei_body	{
 	S_HKNJANUM_5		char(8);
 	S_HOJOKBN_KEY_5		char(1);
 	S_TEKSTYMD_5		char(8);
+	S_KIGO_5		varchar(40);
 	S_SYORIYMD_6		char(8);
 	S_MAKE_FLG_6		number(1,0);
 	S_HENREIYM_6		char(6);
+	S_HENREI_SIJI_FLG_6     number(1,0);
 	S_TEISYUTUSAKI_6	char(1);
 	S_NYUGAIKBN_6		char(1);
 	S_RECEKA_6		char(2);
@@ -107,9 +118,11 @@ tbl_henrei_body	{
 	S_HKNJANUM_6		char(8);
 	S_HOJOKBN_KEY_6		char(1);
 	S_TEKSTYMD_6		char(8);
+	S_KIGO_6		varchar(40);
 	S_SYORIYMD_7		char(8);
 	S_MAKE_FLG_7		number(1,0);
 	S_HENREIYM_7		char(6);
+	S_HENREI_SIJI_FLG_7     number(1,0);
 	S_TEISYUTUSAKI_7	char(1);
 	S_NYUGAIKBN_7		char(1);
 	S_RECEKA_7		char(2);
@@ -117,9 +130,11 @@ tbl_henrei_body	{
 	S_HKNJANUM_7		char(8);
 	S_HOJOKBN_KEY_7		char(1);
 	S_TEKSTYMD_7		char(8);
+	S_KIGO_7		varchar(40);
 	S_SYORIYMD_8		char(8);
 	S_MAKE_FLG_8		number(1,0);
 	S_HENREIYM_8		char(6);
+	S_HENREI_SIJI_FLG_8     number(1,0);
 	S_TEISYUTUSAKI_8	char(1);
 	S_NYUGAIKBN_8		char(1);
 	S_RECEKA_8		char(2);
@@ -127,9 +142,11 @@ tbl_henrei_body	{
 	S_HKNJANUM_8		char(8);
 	S_HOJOKBN_KEY_8		char(1);
 	S_TEKSTYMD_8		char(8);
+	S_KIGO_8		varchar(40);
 	S_SYORIYMD_9		char(8);
 	S_MAKE_FLG_9		number(1,0);
 	S_HENREIYM_9		char(6);
+	S_HENREI_SIJI_FLG_9     number(1,0);
 	S_TEISYUTUSAKI_9	char(1);
 	S_NYUGAIKBN_9		char(1);
 	S_RECEKA_9		char(2);
@@ -137,9 +154,11 @@ tbl_henrei_body	{
 	S_HKNJANUM_9		char(8);
 	S_HOJOKBN_KEY_9		char(1);
 	S_TEKSTYMD_9		char(8);
+	S_KIGO_9		varchar(40);
 	S_SYORIYMD_10		char(8);
 	S_MAKE_FLG_10		number(1,0);
 	S_HENREIYM_10		char(6);
+	S_HENREI_SIJI_FLG_10    number(1,0);
 	S_TEISYUTUSAKI_10	char(1);
 	S_NYUGAIKBN_10		char(1);
 	S_RECEKA_10		char(2);
@@ -147,12 +166,15 @@ tbl_henrei_body	{
 	S_HKNJANUM_10		char(8);
 	S_HOJOKBN_KEY_10	char(1);
 	S_TEKSTYMD_10		char(8);
+	S_KIGO_10		varchar(40);
 #-----> ここまで
 	TERMID			varchar(64);
 	OPID			varchar(16);
 	CREYMD			char(8);
 	UPYMD			char(8);
 	UPHMS			char(6);
+#-----> 検索用項目
+XXTEISYUTUSAKI                  char(1),virtual;
 };
 
 primary	{
@@ -169,6 +191,157 @@ path    key             {
                     AND SRYYM           = :SRYYM
                     AND PTID            = :PTID
                     AND PT_RENNUM       = 1 
+                ;
+        };
+};
+
+path    key2            {
+        DBSELECT        {
+                DECLARE tbl_henrei_body_key2_csr CURSOR FOR
+                SELECT *
+                FROM tbl_henrei_body
+                WHERE     HOSPNUM         = :HOSPNUM
+                    AND   NYUGAIKBN       = :NYUGAIKBN
+                    AND   SRYYM           = :SRYYM
+                    AND   PTID            = :PTID
+                    AND  (TEISYUTUSAKI    =  :TEISYUTUSAKI  OR
+                          TEISYUTUSAKI    =  :XXTEISYUTUSAKI)
+                    AND    PT_RENNUM       = 1 
+                    ORDER BY SYORIYM DESC
+                ;
+        };
+};
+
+path    upd1    {
+        DBUPDATE        {
+                UPDATE  tbl_henrei_body
+                        SET
+                S_SYORIYMD_1     =   :S_SYORIYMD_1,
+                S_MAKE_FLG_1     =   :S_MAKE_FLG_1,
+                S_HENREIYM_1     =   :S_HENREIYM_1,
+                S_HENREI_SIJI_FLG_1 =:S_HENREI_SIJI_FLG_1,
+                S_TEISYUTUSAKI_1 =   :S_TEISYUTUSAKI_1,
+                S_NYUGAIKBN_1    =   :S_NYUGAIKBN_1,
+                S_RECEKA_1       =   :S_RECEKA_1,
+                S_RECESYUBETU_1  =   :S_RECESYUBETU_1,
+                S_HKNJANUM_1     =   :S_HKNJANUM_1,
+                S_HOJOKBN_KEY_1  =   :S_HOJOKBN_KEY_1,
+                S_TEKSTYMD_1     =   :S_TEKSTYMD_1,
+                S_KIGO_1         =   :S_KIGO_1,
+                S_SYORIYMD_2     =   :S_SYORIYMD_2,
+                S_MAKE_FLG_2     =   :S_MAKE_FLG_2,
+                S_HENREIYM_2     =   :S_HENREIYM_2,
+                S_HENREI_SIJI_FLG_2 =:S_HENREI_SIJI_FLG_2,
+                S_TEISYUTUSAKI_2 =   :S_TEISYUTUSAKI_2,
+                S_NYUGAIKBN_2    =   :S_NYUGAIKBN_2,
+                S_RECEKA_2       =   :S_RECEKA_2,
+                S_RECESYUBETU_2  =   :S_RECESYUBETU_2,
+                S_HKNJANUM_2     =   :S_HKNJANUM_2,
+                S_HOJOKBN_KEY_2  =   :S_HOJOKBN_KEY_2,
+                S_TEKSTYMD_2     =   :S_TEKSTYMD_2,
+                S_KIGO_2         =   :S_KIGO_2,
+                S_SYORIYMD_3     =   :S_SYORIYMD_3,
+                S_MAKE_FLG_3     =   :S_MAKE_FLG_3,
+                S_HENREIYM_3     =   :S_HENREIYM_3,
+                S_HENREI_SIJI_FLG_3 =:S_HENREI_SIJI_FLG_3,
+                S_TEISYUTUSAKI_3 =   :S_TEISYUTUSAKI_3,
+                S_NYUGAIKBN_3    =   :S_NYUGAIKBN_3,
+                S_RECEKA_3       =   :S_RECEKA_3,
+                S_RECESYUBETU_3  =   :S_RECESYUBETU_3,
+                S_HKNJANUM_3     =   :S_HKNJANUM_3,
+                S_HOJOKBN_KEY_3  =   :S_HOJOKBN_KEY_3,
+                S_TEKSTYMD_3     =   :S_TEKSTYMD_3,
+                S_KIGO_3         =   :S_KIGO_3,
+                S_SYORIYMD_4     =   :S_SYORIYMD_4,
+                S_MAKE_FLG_4     =   :S_MAKE_FLG_4,
+                S_HENREIYM_4     =   :S_HENREIYM_4,
+                S_HENREI_SIJI_FLG_4 =:S_HENREI_SIJI_FLG_4,
+                S_TEISYUTUSAKI_4 =   :S_TEISYUTUSAKI_4,
+                S_NYUGAIKBN_4    =   :S_NYUGAIKBN_4,
+                S_RECEKA_4       =   :S_RECEKA_4,
+                S_RECESYUBETU_4  =   :S_RECESYUBETU_4,
+                S_HKNJANUM_4     =   :S_HKNJANUM_4,
+                S_HOJOKBN_KEY_4  =   :S_HOJOKBN_KEY_4,
+                S_TEKSTYMD_4     =   :S_TEKSTYMD_4,
+                S_KIGO_4         =   :S_KIGO_4,
+                S_SYORIYMD_5     =   :S_SYORIYMD_5,
+                S_MAKE_FLG_5     =   :S_MAKE_FLG_5,
+                S_HENREIYM_5     =   :S_HENREIYM_5,
+                S_HENREI_SIJI_FLG_5 =:S_HENREI_SIJI_FLG_5,
+                S_TEISYUTUSAKI_5 =   :S_TEISYUTUSAKI_5,
+                S_NYUGAIKBN_5    =   :S_NYUGAIKBN_5,
+                S_RECEKA_5       =   :S_RECEKA_5,
+                S_RECESYUBETU_5  =   :S_RECESYUBETU_5,
+                S_HKNJANUM_5     =   :S_HKNJANUM_5,
+                S_HOJOKBN_KEY_5  =   :S_HOJOKBN_KEY_5,
+                S_TEKSTYMD_5     =   :S_TEKSTYMD_5,
+                S_KIGO_5         =   :S_KIGO_5,
+                S_SYORIYMD_6     =   :S_SYORIYMD_6,
+                S_MAKE_FLG_6     =   :S_MAKE_FLG_6,
+                S_HENREIYM_6     =   :S_HENREIYM_6,
+                S_HENREI_SIJI_FLG_6 =:S_HENREI_SIJI_FLG_6,
+                S_TEISYUTUSAKI_6 =   :S_TEISYUTUSAKI_6,
+                S_NYUGAIKBN_6    =   :S_NYUGAIKBN_6,
+                S_RECEKA_6       =   :S_RECEKA_6,
+                S_RECESYUBETU_6  =   :S_RECESYUBETU_6,
+                S_HKNJANUM_6     =   :S_HKNJANUM_6,
+                S_HOJOKBN_KEY_6  =   :S_HOJOKBN_KEY_6,
+                S_TEKSTYMD_6     =   :S_TEKSTYMD_6,
+                S_KIGO_6         =   :S_KIGO_6,
+                S_SYORIYMD_7     =   :S_SYORIYMD_7,
+                S_MAKE_FLG_7     =   :S_MAKE_FLG_7,
+                S_HENREIYM_7     =   :S_HENREIYM_7,
+                S_HENREI_SIJI_FLG_7 =:S_HENREI_SIJI_FLG_7,
+                S_TEISYUTUSAKI_7 =   :S_TEISYUTUSAKI_7,
+                S_NYUGAIKBN_7    =   :S_NYUGAIKBN_7,
+                S_RECEKA_7       =   :S_RECEKA_7,
+                S_RECESYUBETU_7  =   :S_RECESYUBETU_7,
+                S_HKNJANUM_7     =   :S_HKNJANUM_7,
+                S_HOJOKBN_KEY_7  =   :S_HOJOKBN_KEY_7,
+                S_TEKSTYMD_7     =   :S_TEKSTYMD_7,
+                S_KIGO_7         =   :S_KIGO_7,
+                S_SYORIYMD_8     =   :S_SYORIYMD_8,
+                S_MAKE_FLG_8     =   :S_MAKE_FLG_8,
+                S_HENREIYM_8     =   :S_HENREIYM_8,
+                S_HENREI_SIJI_FLG_8 =:S_HENREI_SIJI_FLG_8,
+                S_TEISYUTUSAKI_8 =   :S_TEISYUTUSAKI_8,
+                S_NYUGAIKBN_8    =   :S_NYUGAIKBN_8,
+                S_RECEKA_8       =   :S_RECEKA_8,
+                S_RECESYUBETU_8  =   :S_RECESYUBETU_8,
+                S_HKNJANUM_8     =   :S_HKNJANUM_8,
+                S_HOJOKBN_KEY_8  =   :S_HOJOKBN_KEY_8,
+                S_TEKSTYMD_8     =   :S_TEKSTYMD_8,
+                S_KIGO_8         =   :S_KIGO_8,
+                S_SYORIYMD_9     =   :S_SYORIYMD_9,
+                S_MAKE_FLG_9     =   :S_MAKE_FLG_9,
+                S_HENREIYM_9     =   :S_HENREIYM_9,
+                S_HENREI_SIJI_FLG_9 =:S_HENREI_SIJI_FLG_9,
+                S_TEISYUTUSAKI_9 =   :S_TEISYUTUSAKI_9,
+                S_NYUGAIKBN_9    =   :S_NYUGAIKBN_9,
+                S_RECEKA_9       =   :S_RECEKA_9,
+                S_RECESYUBETU_9  =   :S_RECESYUBETU_9,
+                S_HKNJANUM_9     =   :S_HKNJANUM_9,
+                S_HOJOKBN_KEY_9  =   :S_HOJOKBN_KEY_9,
+                S_TEKSTYMD_9     =   :S_TEKSTYMD_9,
+                S_KIGO_9         =   :S_KIGO_9,
+                S_SYORIYMD_10     =  :S_SYORIYMD_10,
+                S_MAKE_FLG_10     =  :S_MAKE_FLG_10,
+                S_HENREIYM_10     =  :S_HENREIYM_10,
+                S_HENREI_SIJI_FLG_10 =:S_HENREI_SIJI_FLG_10,
+                S_TEISYUTUSAKI_10 =  :S_TEISYUTUSAKI_10,
+                S_NYUGAIKBN_10    =  :S_NYUGAIKBN_10,
+                S_RECEKA_10       =  :S_RECEKA_10,
+                S_RECESYUBETU_10  =  :S_RECESYUBETU_10,
+                S_HKNJANUM_10     =  :S_HKNJANUM_10,
+                S_HOJOKBN_KEY_10  =  :S_HOJOKBN_KEY_10,
+                S_TEKSTYMD_10     =  :S_TEKSTYMD_10,
+                S_KIGO_10         =  :S_KIGO_10,
+                UPYMD             =  :UPYMD,
+                UPHMS             =  :UPHMS
+                WHERE     HOSPNUM         = :HOSPNUM
+                    AND   TEISYUTUSAKI    = :TEISYUTUSAKI
+                    AND   SYORIYM         = :SYORIYM
+                    AND   RECEIPT_NO      = :RECEIPT_NO
                 ;
         };
 };

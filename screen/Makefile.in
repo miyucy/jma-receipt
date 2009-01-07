@@ -60,6 +60,7 @@ SCREEN_screen = \
 	I5ERR.glade \
 	I5ID1.glade \
 	H01.glade \
+	H02.glade \
 	H99.glade \
 	HID1.glade \
 	HERR.glade \

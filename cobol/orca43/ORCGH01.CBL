@@ -76,6 +76,8 @@
       *                                     一括入力対応
       *  04.03.02    NACL-藤原    08/06/06  レセプト種別名称、作成日の追加
       *  04.03.03    NACL-藤原    08/06/18  公費請求分の請求年月等の追加
+      *
+      *  04.04.01    NACL-藤原    09/12/10  返戻対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -97,6 +99,18 @@
       *    画面用ＳＰＡ
            COPY    "H01SCR-SPA".
       *
+           02  TBL-HENREI-B-REC    OCCURS  30.
+           COPY    "CPHENREI-BODY.INC"
+                                   REPLACING   //HENREI-B-//
+                                   BY          //TBL-HENREI-B-//.
+           02  TBL-HENREI-B-ERR    PIC 9(01)   OCCURS  30.
+           02  TBL-HENREI-B-MAX    PIC 9(02).
+      *
+           02  WRK-HENREI-B-REC.
+           COPY    "CPHENREI-BODY.INC"
+                                   REPLACING   //HENREI-B-//
+                                   BY          //WRK-HENREI-B-//.
+      *
            COPY    "ENUM-VALUE".
       *
       *    フラグ領域
@@ -106,8 +120,12 @@
            03  FLG-SEIKYU          PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-KOHSKY          PIC 9(01).
+           03  FLG-HENREI-B        PIC 9(01).
+           03  FLG-MONTHLYNUM      PIC 9(01).
+           03  FLG-PTKOHINF        PIC 9(01).
       *
            03  FLG-TOUROKU         PIC 9(01).
+           03  FLG-HENREI-B-CHK    pic 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -118,7 +136,9 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
+           03  IDZZ                PIC 9(04).
            03  IDX2                PIC 9(04).
+           03  IDB                 PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -148,7 +168,6 @@
                05  WRK-WDD         PIC 9(02).
       *
            03  WRK-SKYYM-OLD       PIC 9(08).
-           03  WRK-HENREIYM-OLD    PIC 9(08).
       *
       *    入力項目名
            03  WRK-MCP-WIDGET      PIC X(64).
@@ -164,13 +183,12 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
-      *
       *    スパ領域（ワーク）
-           COPY    "COMMON-SPA"
-                                   REPLACING   //SPA-//
+           COPY    "COMMON-SPA"    REPLACING   //SPA-//
                                    BY          //WRK-SPA-//.
       * 
         01  WRK-CONS-SRYYM-200610  PIC 9(06)   VALUE   200610. 
+        01  WRK-CONS-HENREI-B-MAX  PIC 9(02)   VALUE   30. 
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -183,6 +201,8 @@
       *
            COPY    "CPSK1005.INC".
       *
+           COPY    "CPSK2005.INC".
+      *
            COPY    "CPRCF010.INC".
       *
       *    患者マスタ−
@@ -191,6 +211,17 @@
       *
       *    公費請求書
            COPY    "CPKOHSKY.INC".
+      *
+       01  HENREI-B-REC.
+           COPY    "CPHENREI-BODY.INC".
+      *
+      *    月代わり受給者番号
+       01  MONTHLYNUM-REC.
+           COPY    "CPMONTHLYNUM.INC".
+      *
+      *    患者公費情報
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -228,6 +259,7 @@
       *
        01  SCRAREA.
            COPY    "H01.INC".
+           COPY    "H02.INC".
            COPY    "H99.INC".
            COPY    "HERR.INC".
            COPY    "HID1.INC".
@@ -341,6 +373,10 @@
                WHEN    "HID1"
                    PERFORM 330-HID1-SET-SEC
                    GO      TO      300-SCREEN-EXT
+      *    返戻情報設定
+               WHEN    "H02"
+                   PERFORM 340-H02-SET-SEC
+                   GO      TO      300-SCREEN-EXT
            END-EVALUATE
       *
            PERFORM 310-SPASET-SEC
@@ -363,10 +399,9 @@
            ELSE
                IF      WRK-SPA-PTNUM       NOT =   SPACE
                    MOVE    WRK-SPA-PTNUM       TO  H01-PTNUM
-                   MOVE    H01-PTNUM           TO  SPA-H01GMN-PTNUM
       *
-                   MOVE    SPACE               TO  SPA-UPDFLG
-                                                   SPA-HENFLG
+                   PERFORM 420-CLEAR-SEC
+                   MOVE    H01-PTNUM           TO  SPA-H01GMN-PTNUM
       *
                    INITIALIZE                  ORCSPTIDAREA
                    MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
@@ -440,6 +475,16 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    "未請求"            TO  SPA-H01GMN-SKYKBNMEIL (2)
            MOVE    "2"                 TO  SPA-H01GMN-SKYKBNL    (3)
            MOVE    "請求済"            TO  SPA-H01GMN-SKYKBNMEIL (3)
+      *
+      *****IF      SYS-2005-??         =   "0"
+               MOVE    WIDGET-INSENSITIVE  TO
+                                       SPA-H01GMN-HENREI-SIJI-FLG-STATE
+      *****ELSE
+      *****    MOVE    WIDGET-NORMAL       TO
+      *****                            SPA-H01GMN-HENREI-SIJI-FLG-STATE
+      *****END-IF
+           MOVE    "F"                 TO  SPA-H01GMN-HENREI-SIJI-FLG
+           MOVE    ZERO                TO  SPA-H01NAI-HENREI-MSG
       *                                 
            MOVE    1                   TO  SPA-H01GMN-CUR
            .
@@ -721,21 +766,75 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
        330-HID1-SET-SEC            SECTION.
       *
            IF      SPA-HID1-FLG    =   "OK"
-               IF      SPA-HIDCD       =    "1001"
-                   PERFORM 450-KOUSIN-SEC
-               ELSE
-                   MOVE    SPACE       TO  SPA-UPDFLG
-                   MOVE    "JOIN"      TO  MCP-PUTTYPE
-                   PERFORM 210-BACK
-               END-IF
+               EVALUATE    SPA-HIDCD
+                   WHEN    "1001"
+                   WHEN    "1002"
+                       PERFORM 450-KOUSIN-SEC
+                   WHEN    "0101"
+                       MOVE    SPACE       TO  SPA-UPDFLG
+                       MOVE    "JOIN"      TO  MCP-PUTTYPE
+                       PERFORM 210-BACK
+                   WHEN    "1003"
+                       CONTINUE 
+                   WHEN    "1004"
+                       MOVE    6           TO  SPA-H01GMN-CUR
+                   WHEN    "1005"
+                       MOVE    "F"         TO
+                                           SPA-H01GMN-HENREI-SIJI-FLG
+                       MOVE    6           TO  SPA-H01GMN-CUR
+               END-EVALUATE
            ELSE
                MOVE    "1"             TO  SPA-UPDFLG 
+               EVALUATE    SPA-HIDCD
+                   WHEN    "1003"
+                       INITIALIZE          WRK-HENREI-B-REC
+                   WHEN    "1004"
+                       MOVE    "F"     TO  SPA-H01GMN-HENREI-SIJI-FLG
+                   WHEN    "1005"
+                       MOVE    SPA-H01GMN-HENREIYM-OLD
+                                       TO  SPA-H01GMN-HENREIYM
+                       MOVE    SPA-H01NAI-HENREIYM-OLD
+                                       TO  SPA-H01NAI-HENREIYM
+                       MOVE    WIDGET-NORMAL
+                                       TO
+                                       SPA-H01GMN-HENREI-SIJI-FLG-STATE
+               END-EVALUATE 
            END-IF
       *
            MOVE    SPACE           TO  SPA-HID1-FLG
            MOVE    SPACE           TO  SPA-HIDCD      
            .
        330-HID1-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    返戻情報設定更新処理
+      *****************************************************************
+       340-H02-SET-SEC            SECTION.
+      *
+           IF      SPA-H02-FLG     =   "OK"
+               MOVE    SPA-H02NAI-TINDEX (SPA-H02NAI-SELNUM)
+                                       TO  IDZZ
+               MOVE    TBL-HENREI-B-REC (IDZZ)
+                                       TO  WRK-HENREI-B-REC
+           ELSE
+               MOVE    "F"             TO  SPA-H01GMN-HENREI-SIJI-FLG
+           END-IF
+      *
+           PERFORM VARYING IDZZ    FROM    1   BY  1
+                   UNTIL   IDZZ    >       WRK-CONS-HENREI-B-MAX    
+               INITIALIZE              TBL-HENREI-B-REC (IDZZ)
+                                       TBL-HENREI-B-ERR (IDZZ)
+           END-PERFORM
+           MOVE    ZERO            TO  TBL-HENREI-B-MAX
+      *
+           MOVE    SPACE           TO  SPA-HID1-FLG
+                                       SPA-H02-FLG
+           MOVE    SPACE           TO  SPA-HIDCD
+      *
+           MOVE    6               TO  SPA-H01GMN-CUR
+           .
+       340-H02-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -757,6 +856,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *     更新
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-KOUSIN-GIDMSG-SEC
+      *     返戻設定
+               WHEN    "CLICKED"       ALSO    "HENREI_SIJI_FLG"
+                   PERFORM 4119-HENREI-SIJI-FLG-CHK-SEC
            END-EVALUATE
       *
            .
@@ -823,6 +925,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *
       *    基本チェック後ＳＰＡ再セット
            PERFORM 4104-GMN-SPA-HENSYU-SEC
+           IF      SPA-HIDCD       NOT =   SPACE
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
       *
            IF      FLG-TOUROKU         =   1
       *        更新前
@@ -842,7 +947,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SPA-H01NAI-SKYYM
                                    TO  WRK-SKYYM-OLD
            MOVE    SPA-H01NAI-HENREIYM
-                                   TO  WRK-HENREIYM-OLD
+                                   TO  SPA-H01NAI-HENREIYM-OLD
+           MOVE    SPA-H01GMN-HENREIYM
+                                   TO  SPA-H01GMN-HENREIYM-OLD
       *
            MOVE    H01-SKYYM       TO  SPA-H01GMN-SKYYM
            MOVE    H01-SKYYM-KOHSKY
@@ -973,8 +1080,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *
            MOVE    2                   TO  SPA-H01GMN-CUR
       *
-           MOVE    SPACE               TO  SPA-UPDFLG
-                                           SPA-HENFLG
+           PERFORM 420-CLEAR-SEC
       *
            MOVE    H01-PTNUM           TO  SPA-H01GMN-PTNUM
       *
@@ -1198,7 +1304,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    RECE10-NUM          TO  SPA-H01GMN-HKIGO
                WHEN    OTHER
                    STRING  RECE10-KIGO     DELIMITED   BY  SPACE
-                           "　"            DELIMITED   BY  SIZE
+      *****                "　"            DELIMITED   BY  SIZE
                            RECE10-NUM      DELIMITED   BY  SPACE
                                            INTO    SPA-H01GMN-HKIGO
                    END-STRING
@@ -1225,6 +1331,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            MOVE    "通勤災害"  TO  SPA-H01GMN-HHOJOKBN
                    END-EVALUATE
            END-EVALUATE
+      *
+           MOVE    RECE10-CREYMD       TO  WRK-SYMD
+           PERFORM 5002-HIZUKE-HEN-SEC
+           STRING  WRK-HENYMDG         DELIMITED   BY  SIZE
+                   "作成"              DELIMITED   BY  SIZE
+                                       INTO    SPA-H01GMN-HCREYMD
+           END-STRING
       *
            MOVE    RECE10-SKYYM        TO  SPA-H01NAI-SKYYM
                                            WRK-SYMD (1:6)
@@ -1405,6 +1518,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        END-IF
                END-EVALUATE
            END-IF
+      *
+           IF      RECE10-HENREI-SIJI-FLG
+                                       =   1
+               MOVE    "T"             TO  SPA-H01GMN-HENREI-SIJI-FLG
+           ELSE
+               MOVE    "F"             TO  SPA-H01GMN-HENREI-SIJI-FLG
+           END-IF
       *             
       *    公費請求書データ存在チェック
            MOVE    SPACE           TO  KOHSKY-REC   
@@ -1429,9 +1549,41 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE
                MOVE    ZERO                TO  SPA-H01NAI-KOHSKY-FLG
            END-IF
-      * 
+      *
+      *    返戻データ存在チェック
+      *****IF      SYS-2005-??         =   "0"
+               MOVE    WIDGET-INSENSITIVE  TO
+                                       SPA-H01GMN-HENREI-SIJI-FLG-STATE
+               MOVE    ZERO                TO  SPA-H01NAI-HENREI-MSG
+      *****ELSE
+               IF    ( RECE10-RECESYUBETU  =   "6666" )
+               OR    ( RECE10-TEISYUTUSAKI =   "5"    )
+                   CONTINUE
+               ELSE
+                   INITIALIZE                      HENREI-B-REC
+                   MOVE    SPA-HOSPNUM         TO  HENREI-B-HOSPNUM
+                   MOVE    RECE10-SRYYM        TO  HENREI-B-SRYYM
+                   MOVE    RECE10-PTID         TO  HENREI-B-PTID
+                   MOVE    RECE10-NYUGAIKBN    TO  HENREI-B-NYUGAIKBN
+                   MOVE    HENREI-B-REC        TO  MCPDATA-REC
+                   PERFORM 900-HENREI-BODY-INV-SEC
+                   IF      FLG-HENREI-B        =   ZERO
+                       MOVE    1               TO  SPA-H01NAI-HENREI-MSG
+                   ELSE
+                       MOVE    ZERO            TO  SPA-H01NAI-HENREI-MSG
+                   END-IF
+      *
+                   IF    ( SPA-H01NAI-HENREIYM >   ZERO )
+                   AND   ( SPA-H01NAI-HENREI-MSG
+                                               =   1    )
+                       MOVE    WIDGET-NORMAL       TO
+                                       SPA-H01GMN-HENREI-SIJI-FLG-STATE
+                   END-IF
+               END-IF
+      *****END-IF
+      *
            MOVE    "1"                 TO  SPA-HENFLG
-      *         
+      *     
            MOVE    4                   TO  SPA-H01GMN-CUR
            .
        41021-SEIKYU-HENSYU-EXT.
@@ -1708,6 +1860,228 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    返戻再請求情報設定処理
+      *****************************************************************
+       4119-HENREI-SIJI-FLG-CHK-SEC          SECTION.
+      *
+           MOVE    H01-HENREI-SIJI-FLG TO  SPA-H01GMN-HENREI-SIJI-FLG
+      *
+      *    更新フラグセット
+           MOVE    "1"                 TO  SPA-UPDFLG
+      *
+           EVALUATE    SPA-H01GMN-HENREI-SIJI-FLG
+               WHEN    "T"
+                   PERFORM 41191-HEIREI-B-HENSYU-SEC
+               WHEN    "F"
+                   PERFORM 41192-HEIREI-B-CLEAR-SEC
+           END-EVALUATE
+           .
+       4119-HENREI-SIJI-FLG-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    返戻再請求選択処理
+      *****************************************************************
+       41191-HEIREI-B-HENSYU-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-HENREI-B-CHK
+      *
+           INITIALIZE                  WRK-HENREI-B-REC
+           PERFORM VARYING IDZZ    FROM    1   BY  1
+                   UNTIL   IDZZ    >       WRK-CONS-HENREI-B-MAX    
+               INITIALIZE              TBL-HENREI-B-REC (IDZZ)
+                                       TBL-HENREI-B-ERR (IDZZ)
+           END-PERFORM
+           MOVE    ZERO            TO  TBL-HENREI-B-MAX
+      *
+           INITIALIZE                  HENREI-B-REC
+           MOVE    SPA-HOSPNUM     TO  HENREI-B-HOSPNUM
+           MOVE    RECE10-NYUGAIKBN
+                                   TO  HENREI-B-NYUGAIKBN
+           MOVE    RECE10-SRYYM    TO  HENREI-B-SRYYM
+           EVALUATE    RECE10-TEISYUTUSAKI
+               WHEN    1
+                   MOVE    "1"     TO  HENREI-B-TEISYUTUSAKI
+                                       HENREI-B-XXTEISYUTUSAKI
+               WHEN    2
+               WHEN    6
+                   MOVE   "2"      TO  HENREI-B-TEISYUTUSAKI
+                   MOVE   "6"      TO  HENREI-B-XXTEISYUTUSAKI
+           END-EVALUATE
+           MOVE    RECE10-PTID     TO  HENREI-B-PTID
+           MOVE    HENREI-B-REC    TO  MCPDATA-REC
+           MOVE    "tbl_henrei_body"
+                                   TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_henrei_body"
+                                       TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-HENREI-BODY-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HENREI-B
+           END-IF
+      *           
+           PERFORM         UNTIL   FLG-HENREI-B    =   1
+                           OR      FLG-HENREI-B-CHK
+                                                   >   ZERO
+      *
+               ADD     1               TO  TBL-HENREI-B-MAX
+               MOVE    HENREI-B-REC    TO  TBL-HENREI-B-REC
+                                                  (TBL-HENREI-B-MAX)
+      *        最新の処理年月の返戻データをチェック
+      ***      IF      HENREI-B-SYORIYM
+      ***                              =   TBL-HENREI-B-SYORIYM (1)
+      *            該当するデータをチェック
+                   IF    ( HENREI-B-TEISYUTUSAKI
+                                           =   RECE10-TEISYUTUSAKI )
+                   AND   ( HENREI-B-RECESYUBETU
+                                           =   RECE10-RECESYUBETU  )
+                   AND   ( HENREI-B-HKNJANUM
+                                           =   RECE10-HKNJANUM     )
+                   AND   ( HENREI-B-KIGO   =   RECE10-KIGO         )
+                   AND   ( HENREI-B-NUM    =   RECE10-NUM          )
+                       MOVE    HENREI-B-REC    TO  WRK-HENREI-B-REC
+                       MOVE    1               TO  FLG-HENREI-B-CHK
+                   END-IF
+      *
+      *            既に返戻設定済か
+                   PERFORM VARYING IDZZ    FROM    1   BY  1
+                           UNTIL   IDZZ    >       10
+                           OR      HENREI-B-S-TEISYUTUSAKI(IDZZ)
+                                           =       SPACE
+                       IF    ( HENREI-B-S-TEISYUTUSAKI (IDZZ)
+                                           =   RECE10-TEISYUTUSAKI )
+                       AND   ( HENREI-B-S-NYUGAIKBN    (IDZZ)
+                                           =   RECE10-NYUGAIKBN    )
+                       AND   ( HENREI-B-S-RECEKA       (IDZZ)
+                                           =   RECE10-RECEKA       )
+                       AND   ( HENREI-B-S-RECESYUBETU  (IDZZ)
+                                           =   RECE10-RECESYUBETU  )
+                       AND   ( HENREI-B-S-HKNJANUM     (IDZZ)
+                                           =   RECE10-HKNJANUM     )
+                       AND   ( HENREI-B-S-HOJOKBN-KEY  (IDZZ)
+                                           =   RECE10-HOJOKBN-KEY  )
+                       AND   ( HENREI-B-S-TEKSTYMD     (IDZZ)
+                                           =   RECE10-TEKSTYMD     )
+                           MOVE    1       TO  TBL-HENREI-B-ERR
+                                                   (TBL-HENREI-B-MAX)
+                           IF      FLG-HENREI-B-CHK
+                                               >   ZERO
+                               MOVE    2       TO  FLG-HENREI-B-CHK
+                           END-IF
+      *                    再再請求かどうか
+                           IF    ( SPA-H01NAI-HENREIYM
+                                           >   HENREI-B-S-HENREIYM
+                                                            (IDZZ) )
+                           AND   ( HENREI-B-S-HENREIYM  (IDZZ)
+                                       NOT =   SPACE               )    
+                           AND   ( HENREI-B-S-MAKE-FLG  (IDZZ)
+                                           =   1                   )    
+                               MOVE    2       TO  TBL-HENREI-B-ERR
+                                                   (TBL-HENREI-B-MAX)
+                               IF      FLG-HENREI-B-CHK
+                                               >   ZERO
+                                   MOVE    3   TO  FLG-HENREI-B-CHK
+                               END-IF
+                           END-IF
+      *
+                           MOVE    10      TO  IDZZ
+                       END-IF  
+                   END-PERFORM
+      *
+                   MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-HENREI-BODY-READ-SEC
+      ***      ELSE
+      ***          MOVE    1                   TO  FLG-HENREI-B
+      ***      END-IF    
+           END-PERFORM
+      *
+           MOVE    "tbl_henrei_body"       TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+      *??
+           DISPLAY "FLG=" FLG-HENREI-B-CHK "#" TBL-HENREI-B-MAX "#"
+      *??
+           IF      FLG-HENREI-B-CHK    =   ZERO
+      *        返戻対象一覧
+               PERFORM 411911-H02-HENSYU-SEC
+           ELSE
+               PERFORM VARYING IDZZ    FROM    1   BY  1
+                       UNTIL   IDZZ    >       WRK-CONS-HENREI-B-MAX    
+                   INITIALIZE              TBL-HENREI-B-REC (IDZZ)
+                                           TBL-HENREI-B-ERR (IDZZ)
+               END-PERFORM
+               MOVE    ZERO            TO  TBL-HENREI-B-MAX
+      *
+               EVALUATE    FLG-HENREI-B-CHK
+                   WHEN    1
+                       MOVE    6               TO  SPA-H01GMN-CUR
+                   WHEN    2
+      *                設定済 
+                       INITIALIZE                  WRK-HENREI-B-REC
+                       MOVE    6               TO  SPA-H01GMN-CUR
+                   WHEN    3
+      *                再再請求の可能性
+                       MOVE    "1003"          TO  SPA-HIDCD 
+               END-EVALUATE
+           END-IF
+           .
+       41191-HEIREI-B-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    返戻対象一覧処理
+      *****************************************************************
+       411911-H02-HENSYU-SEC           SECTION.
+      *
+           MOVE    SPA-H01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-H01FREE         TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGH02"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-H01FREE
+           MOVE    SPA-WORK            TO  SPA-H01KYOUTU
+      *
+           MOVE    SPA-H01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    "H01"                TO  SPA-MOTOPG
+           MOVE    "H02"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "H02"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END              
+      *
+          .
+       411911-H02-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    返戻対象一覧処理
+      *****************************************************************
+       41192-HEIREI-B-CLEAR-SEC           SECTION.
+      *
+          MOVE    "1004"               TO  SPA-HIDCD
+          .
+       41192-HEIREI-B-CLEAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    基本点数チェック処理
       *****************************************************************
        4108-KHNTEN-CHK-SEC          SECTION.
@@ -1844,10 +2218,10 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
        4104-GMN-SPA-HENSYU-SEC         SECTION.
       *
       *    返戻年月が変更になったとき公費分が未入力ならセットする
-           IF    ( SPA-H01NAI-HENREIYM NOT =   WRK-HENREIYM-OLD )
+           IF    ( SPA-H01NAI-HENREIYM NOT =   SPA-H01NAI-HENREIYM-OLD )
            AND   ( SPA-H01NAI-HENREIYM-KOHSKY
-                                           =   ZERO             )
-           AND   ( SPA-H01NAI-KOHSKY-FLG   =   1                )  
+                                           =   ZERO                    )
+           AND   ( SPA-H01NAI-KOHSKY-FLG   =   1                       )  
                MOVE    SPA-H01GMN-HENREIYM TO
                                            SPA-H01GMN-HENREIYM-KOHSKY
                MOVE    SPA-H01NAI-HENREIYM TO 
@@ -1867,6 +2241,32 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            AND   ( SPA-H01NAI-KOHSKY-FLG   =   1             )  
                MOVE    SPACE               TO SPA-H01GMN-HENREIYM-KOHSKY
                MOVE    ZERO                TO SPA-H01NAI-HENREIYM-KOHSKY
+           END-IF
+      *
+      *    返戻年月入力時の返戻再請求ボタンの入力設定
+      *****IF      SYS-2005-??         =   "0"
+               MOVE    WIDGET-INSENSITIVE  TO
+                                       SPA-H01GMN-HENREI-SIJI-FLG-STATE
+      *****ELSE
+               IF    ( RECE10-RECESYUBETU  =   "6666" )
+               OR    ( RECE10-TEISYUTUSAKI =   "5"    )
+                   CONTINUE
+               ELSE
+                   IF    ( SPA-H01NAI-HENREIYM >   ZERO )
+                   AND   ( SPA-H01NAI-HENREI-MSG
+                                               =   1    )
+                       MOVE    WIDGET-NORMAL       TO
+                                       SPA-H01GMN-HENREI-SIJI-FLG-STATE
+                   END-IF
+               END-IF
+      *****END-IF
+      *
+      *    返戻設定時に返戻年月をクリアしたとき
+           IF    ( SPA-H01NAI-HENREIYM NOT =   SPA-H01NAI-HENREIYM-OLD )
+           AND   ( SPA-H01NAI-HENREIYM     =   ZERO                    )
+           AND   ( SPA-H01GMN-HENREI-SIJI-FLG
+                                           =   "T"                     )
+               MOVE    "1005"                  TO  SPA-HIDCD
            END-IF
       *
            .
@@ -1920,6 +2320,14 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                                            SPA-H01NAI-KOUMOKU1
                                            SPA-RECE10-KEY
       *
+           INITIALIZE                  WRK-HENREI-B-REC
+           PERFORM VARYING IDZZ    FROM    1   BY  1
+                   UNTIL   IDZZ    >       WRK-CONS-HENREI-B-MAX    
+               INITIALIZE              TBL-HENREI-B-REC (IDZZ)
+                                       TBL-HENREI-B-ERR (IDZZ)
+           END-PERFORM
+           MOVE    ZERO            TO  TBL-HENREI-B-MAX
+      *
            MOVE    SPACE               TO  SPA-HENFLG
                                            SPA-UPDFLG                                     
       *
@@ -1942,7 +2350,15 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            END-IF
       *         
       *    ガイドメッセージセット
-           MOVE    "1001"              TO  SPA-HIDCD
+           IF    ( SPA-H01NAI-HENREI-MSG
+                                       =   1    )
+           AND   ( SPA-H01GMN-HENREI-SIJI-FLG
+                                       =   "F"  )
+           AND   ( SPA-H01NAI-HENREIYM >   ZERO )
+               MOVE    "1002"              TO  SPA-HIDCD
+           ELSE
+               MOVE    "1001"              TO  SPA-HIDCD
+           END-IF
            .
        450-KOUSIN-GIDMSG-EXT.
            EXIT.
@@ -2029,7 +2445,14 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                            END-PERFORM 
                        END-PERFORM
                END-EVALUATE
-           END-IF     
+           END-IF
+      *
+           EVALUATE    SPA-H01GMN-HENREI-SIJI-FLG
+               WHEN    "T"
+                   MOVE    1               TO  RECE10-HENREI-SIJI-FLG
+               WHEN    "F"
+                   MOVE    ZERO            TO  RECE10-HENREI-SIJI-FLG
+           END-EVALUATE
       *     
            MOVE    SMCNDATE-YMD        TO  RECE10-UPDYMD
       *
@@ -2063,27 +2486,202 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
 grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
                    IF      MCP-RC     NOT =   ZERO
+                       CALL "coblog"   USING
+                                       "abort tbl_kohsky update"
                        MOVE    "1002"          TO  SPA-ERRCD
                        GO  TO  450-KOUSIN-EXT
                    END-IF
                END-IF
            ELSE    
+               CALL "coblog"   USING   "abort tbl_tbl_seikyu update"
                MOVE    "1001"          TO  SPA-ERRCD
                GO  TO  450-KOUSIN-EXT
            END-IF
+      *     
+      *    返戻データ更新処理 
+           EVALUATE    SPA-H01GMN-HENREI-SIJI-FLG
+               WHEN    "T"
+                   PERFORM 4501-HENREI-B-UPDATE-SEC
+               WHEN    "F"
+      *****        IF    (  SYS-2005-??        =   "0"    )
+                   IF    ( RECE10-RECESYUBETU  =   "6666" )
+                   OR    ( RECE10-TEISYUTUSAKI =   "5"    )
+                   OR    ( SPA-H01NAI-HENREI-MSG
+                                               =   ZERO   )
+                       CONTINUE
+                   ELSE
+                       PERFORM 4501-HENREI-B-UPDATE-SEC
+                   END-IF
+           END-EVALUATE
       *
-           MOVE    2               TO  SPA-H01GMN-CUR
-           INITIALIZE                  SPA-H01GMN-TABLE
-                                       SPA-H01GMN-KOUMOKU
-                                       SPA-H01GMN-KOUMOKU1
-                                       SPA-H01NAI-KOUMOKU
-                                       SPA-H01NAI-KOUMOKU1
-                                       SPA-RECE10-KEY
-      *
-      *    排他制御解除処理
-           PERFORM 990-LOCK-OUT-SEC
+      *    クリア処理
+           PERFORM 420-CLEAR-SEC
            .
        450-KOUSIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    返戻データ更新処理
+      *****************************************************************
+       4501-HENREI-B-UPDATE-SEC          SECTION.
+      *
+           EVALUATE    SPA-H01GMN-HENREI-SIJI-FLG
+             WHEN    "T"
+               PERFORM VARYING IDZZ    FROM    1   BY  1
+                       UNTIL   IDZZ    >       10
+                 IF      WRK-HENREI-B-S-TEISYUTUSAKI (IDZZ)
+                                           =   SPACE
+                   MOVE    RECE10-TEISYUTUSAKI TO
+                                       WRK-HENREI-B-S-TEISYUTUSAKI(IDZZ)
+                   MOVE    RECE10-NYUGAIKBN    TO
+                                       WRK-HENREI-B-S-NYUGAIKBN   (IDZZ)
+                   MOVE    RECE10-RECEKA       TO
+                                       WRK-HENREI-B-S-RECEKA      (IDZZ)
+                   MOVE    RECE10-RECESYUBETU  TO 
+                                       WRK-HENREI-B-S-RECESYUBETU (IDZZ)
+                   MOVE    RECE10-HKNJANUM     TO
+                                       WRK-HENREI-B-S-HKNJANUM    (IDZZ)
+                   MOVE    RECE10-HOJOKBN-KEY  TO
+                                       WRK-HENREI-B-S-HOJOKBN-KEY (IDZZ)
+                   MOVE    RECE10-TEKSTYMD     TO
+                                       WRK-HENREI-B-S-TEKSTYMD    (IDZZ)
+      *
+      *            公費単独で生保又は中国残留邦人等のとき負担者番号、
+      *            受給者番号をセット
+                   IF    ( RECE10-HKNNUM       =   SPACE              )
+                       IF    ( RECE10-KOHNUM (1)   =   "012"  OR "025" )
+                       AND   ( RECE10-KOHNUM (2)   =   SPACE           )
+                           INITIALIZE                  PTKOHINF-REC
+                           MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
+                           MOVE    RECE10-PTID     TO  PTKOH-PTID
+                           MOVE    RECE10-KOHID(1) TO  PTKOH-KOHID
+                           MOVE    PTKOHINF-REC    TO  MCPDATA-REC
+                           PERFORM 900-PTKOHINF-READ-SEC
+                           MOVE    SPA-HOSPNUM     TO
+                                                   MONTHLYNUM-HOSPNUM
+                           MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
+                           MOVE    RECE10-KOHID(1) TO  MONTHLYNUM-KOHID
+                           MOVE    RECE10-SRYYM    TO  MONTHLYNUM-SRYYM
+                           MOVE    RECE10-NYUGAIKBN
+                                                   TO
+                                                   MONTHLYNUM-NYUGAIKBN
+                           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                           PERFORM 900-MONTHLYNUM-READ-SEC
+                           IF      FLG-MONTHLYNUM  =   ZERO
+                               MOVE    MONTHLYNUM-JKYSNUM
+                                                   TO  PTKOH-JKYSNUM
+                           ELSE
+                               MOVE    SPA-HOSPNUM TO
+                                                   MONTHLYNUM-HOSPNUM
+                               MOVE    RECE10-PTID TO  MONTHLYNUM-PTID
+                               MOVE    ZERO        TO  MONTHLYNUM-KOHID
+                               MOVE    RECE10-SRYYM
+                                                   TO  MONTHLYNUM-SRYYM
+                               MOVE    RECE10-NYUGAIKBN
+                                                   TO
+                                                   MONTHLYNUM-NYUGAIKBN
+                               MOVE    MONTHLYNUM-REC
+                                                   TO  MCPDATA-REC
+                               PERFORM 900-MONTHLYNUM-READ-SEC
+                               IF      FLG-MONTHLYNUM          =   ZERO
+                                   MOVE    MONTHLYNUM-JKYSNUM
+                                                       TO  PTKOH-JKYSNUM
+                               END-IF
+                           END-IF
+                           STRING  PTKOH-FTNJANUM  DELIMITED   BY  SPACE
+      *****                        "　"            DELIMITED   BY  SIZE
+                                   PTKOH-JKYSNUM   DELIMITED   BY  SPACE
+                                           INTO
+                                           WRK-HENREI-B-S-KIGO    (IDZZ)
+                           END-STRING
+                       ELSE
+                           INITIALIZE                  PTKOHINF-REC
+                           MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
+                           MOVE    RECE10-PTID     TO  PTKOH-PTID
+                           MOVE    RECE10-KOHID(1) TO  PTKOH-KOHID
+                           MOVE    PTKOHINF-REC    TO  MCPDATA-REC
+                           PERFORM 900-PTKOHINF-READ-SEC
+                           STRING  PTKOH-FTNJANUM  DELIMITED   BY  SPACE
+      *****                        "　"            DELIMITED   BY  SIZE
+                                   PTKOH-JKYSNUM   DELIMITED   BY  SPACE
+                                           INTO
+                                           WRK-HENREI-B-S-KIGO    (IDZZ)
+                           END-STRING
+                       END-IF
+                   ELSE
+                       STRING  RECE10-KIGO     DELIMITED   BY  SPACE
+      *****                    "　"            DELIMITED   BY  SIZE
+                               RECE10-NUM      DELIMITED   BY  SPACE
+                                           INTO
+                                           WRK-HENREI-B-S-KIGO    (IDZZ)
+                       END-STRING
+                   END-IF
+                   MOVE    1                   TO
+                                      WRK-HENREI-B-S-HENREI-SIJI-FLG
+                                                                  (IDZZ)
+                   MOVE    SPA-H01NAI-HENREIYM TO
+                                      WRK-HENREI-B-S-HENREIYM     (IDZZ)
+      *
+                   MOVE    SMCNDATE-YMD        TO  WRK-HENREI-B-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  WRK-HENREI-B-UPHMS
+      *
+                   MOVE    WRK-HENREI-B-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+                   MOVE    "upd1"              TO  MCP-PATHNAME
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   PERFORM 900-ORCDBMAIN-SEC
+                   IF      MCP-RC          NOT =   ZERO
+                       CALL "coblog"   USING
+                                       "abort tbl_henrei-body update"
+                       MOVE    "1003"          TO  SPA-ERRCD
+                       GO  TO  4501-HENREI-B-UPDATE-EXT
+                   END-IF
+      *
+                   MOVE    10                  TO  IDZZ
+                 END-IF
+               END-PERFORM
+             WHEN    "F"
+               PERFORM VARYING IDZZ    FROM    1   BY  1
+                       UNTIL   IDZZ    >       10
+                       OR      WRK-HENREI-B-S-TEISYUTUSAKI (IDZZ)
+                                           =   SPACE
+                   IF      RECE10-TEISYUTUSAKI =
+                                       WRK-HENREI-B-S-TEISYUTUSAKI(IDZZ)
+                   AND     RECE10-NYUGAIKBN    =
+                                       WRK-HENREI-B-S-NYUGAIKBN   (IDZZ)
+                   AND     RECE10-RECEKA       =
+                                       WRK-HENREI-B-S-RECEKA      (IDZZ)
+                   AND     RECE10-RECESYUBETU  =
+                                       WRK-HENREI-B-S-RECESYUBETU (IDZZ)
+                   AND     RECE10-HKNJANUM     =
+                                       WRK-HENREI-B-S-HKNJANUM    (IDZZ)
+                   AND     RECE10-HOJOKBN-KEY  =
+                                       WRK-HENREI-B-S-HOJOKBN-KEY (IDZZ)
+                   AND     RECE10-TEKSTYMD     =
+                                       WRK-HENREI-B-S-TEKSTYMD    (IDZZ)
+                       INITIALIZE          WRK-HENREI-B-SEIKYU-OCC(IDZZ)  
+      *
+                       MOVE    SMCNDATE-YMD    TO  WRK-HENREI-B-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  WRK-HENREI-B-UPHMS
+      *
+                       MOVE    WRK-HENREI-B-REC    TO  MCPDATA-REC
+                       MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+                       MOVE    "upd1"              TO  MCP-PATHNAME
+                       MOVE    "DBUPDATE"          TO  MCP-FUNC
+                       PERFORM 900-ORCDBMAIN-SEC
+                       IF      MCP-RC          NOT =   ZERO
+                           CALL "coblog"   USING
+                                       "abort tbl_henrei-body update"
+                           MOVE    "1003"          TO  SPA-ERRCD
+                           GO  TO  4501-HENREI-B-UPDATE-EXT
+                       END-IF
+      *
+                       MOVE    10                  TO  IDZZ
+                   END-IF
+               END-PERFORM
+           END-EVALUATE    
+          .
+       4501-HENREI-B-UPDATE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2138,7 +2736,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
-           MOVE    "H01    "           TO  MCP-WINDOW.
+           MOVE    "H01    "           TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW.
            .
@@ -2197,7 +2795,11 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                           TO  H01-HRECESYUBETU-VALUE
            MOVE    SPA-H01GMN-HHKNJANUM   TO  H01-HHKNJANUM-VALUE
            MOVE    SPA-H01GMN-HHOJOKBN    TO  H01-HHOJOKBN-VALUE
-           MOVE    SPA-H01GMN-HKIGO       TO  H01-HKIGO-VALUE   
+           MOVE    SPA-H01GMN-HKIGO       TO  H01-HKIGO-VALUE
+           MOVE    SPA-H01GMN-HCREYMD     TO  H01-HCREYMD-VALUE
+           IF      SPA-H01NAI-HENREI-MSG  =   1
+               MOVE    "返戻データあり"       TO  H01-HENREI-MSG-VALUE
+           END-IF   
       *
            PERFORM VARYING IDX FROM    1       BY  1
                    UNTIL   IDX     >   38
@@ -2299,7 +2901,9 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                            H01-HHKNJANUM-STYLE
                                            H01-HKIGO-STYLE
                                            H01-HHOJOKBN-STYLE
+                                           H01-HCREYMD-STYLE
            MOVE    "darkgreen"         TO  H01-MSG-STYLE
+           MOVE    "red"               TO  H01-HENREI-MSG-STYLE
       *
       *    入力の設定
            IF      SPA-SYS-1001-HOSPSBT1   =   "0"
@@ -2338,6 +2942,18 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                        H01-NSHOFTN-STATE    (IDX)
                                        H01-NSHONISSU-STATE  (IDX)
            END-PERFORM
+           MOVE    SPA-H01GMN-HENREI-SIJI-FLG-STATE
+                                      TO  H01-HENREI-SIJI-FLG-STATE
+           MOVE    SPA-H01GMN-HENREI-SIJI-FLG
+                                      TO  H01-HENREI-SIJI-FLG
+           EVALUATE    SPA-H01GMN-HENREI-SIJI-FLG
+               WHEN    "F"
+                   MOVE    "返戻無"       TO  H01-HENREI-SIJI-FLG-LABEL
+                   MOVE    "blue-bar"     TO  H01-HENREI-SIJI-FLG-STYLE
+               WHEN    "T"
+                   MOVE    "返戻有"       TO  H01-HENREI-SIJI-FLG-LABEL
+                   MOVE    "red-bar"      TO  H01-HENREI-SIJI-FLG-STYLE
+           END-EVALUATE 
       *
            MOVE    SPA-H01GMN-AGE     TO  H01-AGE
            MOVE    SPA-H01GMN-KYURATE TO  H01-KYURATE     
@@ -2378,6 +2994,9 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "SKYYM_KOHSKY"  TO  MCP-WIDGET
                WHEN    301
                    MOVE    "HENREIYM_KOHSKY"
+                                           TO  MCP-WIDGET
+               WHEN    302
+                   MOVE    "HENREI_SIJI_FLG"
                                            TO  MCP-WIDGET
                WHEN    8   THRU    182
                WHEN    215 THRU    229
@@ -2497,7 +3116,13 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                WHEN    "SKYYM"
                    MOVE    5           TO  SPA-H01GMN-CUR
                WHEN    "HENREIYM"
-                   MOVE    6           TO  SPA-H01GMN-CUR
+                   IF    ( SPA-H01NAI-HENREIYM
+                                       =   ZERO )
+      *????        OR    ( SYS-2005-?? =   "0"  )
+                       MOVE    6           TO  SPA-H01GMN-CUR
+                   ELSE
+                       MOVE    302         TO  SPA-H01GMN-CUR
+                   END-IF 
                WHEN    "SKYKBN"
                    IF    ( SPA-H01NAI-KOHSKY-FLG   =   1   )
                    AND   ( SPA-H01GMN-SKYKBN   NOT =   "0" )
@@ -2855,12 +3480,19 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    "更新対象のデータを入力して下さい" 
                                                TO  SPA-ERRMSG
                WHEN    "1001"
-                   MOVE    "更新できませんでした"
-                                             TO  SPA-ERRMSG
+                   MOVE    "請求管理ＤＢが更新できませんでした"
+                                               TO  SPA-ERRMSG
+               WHEN    "1002"
+                   MOVE    "公費請求書ＤＢが更新できませんでした"
+                                               TO  SPA-ERRMSG
+               WHEN    "1003"
+                   MOVE
+                       "オンライン返戻明細ＤＢが更新できませんでした"
+                                               TO  SPA-ERRMSG
                WHEN    "1010"
                    MOVE
                        "対象の請求データが存在しないので更新できません"
-                                             TO  SPA-ERRMSG
+                                               TO  SPA-ERRMSG
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"
@@ -2897,6 +3529,18 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EVALUATE    SPA-HIDCD
                WHEN    "1001"
                    MOVE    "更新処理をします"
+                                        TO  WRK-HIDMSG
+               WHEN    "1002"
+                   MOVE
+                   "返戻設定が行なわれていませんが更新処理をしますか"
+                                        TO  WRK-HIDMSG
+               WHEN    "1003"
+                   MOVE
+                   "既に返戻分再請求が行なわれていますが選択しますか。"
+                                        TO  WRK-HIDMSG
+               WHEN    "1004"
+               WHEN    "1005"
+                   MOVE    "返戻情報を解除しますか。"
                                         TO  WRK-HIDMSG
                WHEN    "0101"
                    MOVE    "入力の途中です。終了してよろしいですか。"
@@ -3233,6 +3877,111 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *
            .
        900-KOHSKY-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    オンライン返戻明細読込処理
+      *****************************************************************
+       900-HENREI-BODY-INV-SEC         SECTION.
+      *
+           MOVE    HENREI-B-REC        TO  MCPDATA-REC
+           MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-HENREI-BODY-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-HENREI-B
+           END-IF
+      *
+           MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-HENREI-BODY-INV-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    オンライン返戻明細読込処理
+      *****************************************************************
+       900-HENREI-BODY-READ-SEC        SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE  MCPDATA-REC           TO  HENREI-B-REC
+      *********INITIALIZE                      HENREI-B-XX-AREA
+               MOVE  ZERO                  TO  FLG-HENREI-B
+           ELSE
+               INITIALIZE                      HENREI-B-REC
+               MOVE  1                     TO  FLG-HENREI-B
+           END-IF
+           .
+       900-HENREI-BODY-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者公費情報読込
+      *****************************************************************
+       900-PTKOHINF-READ-SEC           SECTION.
+      *
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+                   MOVE    ZERO            TO  FLG-PTKOHINF
+               ELSE
+                   INITIALIZE                  PTKOHINF-REC
+                   MOVE    1               TO  FLG-PTKOHINF
+               END-IF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-PTKOHINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    月代わり受給者番号マスタ読込
+      *****************************************************************
+       900-MONTHLYNUM-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC               =   ZERO
+           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-MONTHLYNUM
+                   MOVE    MCPDATA-REC         TO  MONTHLYNUM-REC
+               ELSE
+                   MOVE    1                   TO  FLG-MONTHLYNUM
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-MONTHLYNUM
+           END-IF
+      *
+           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-MONTHLYNUM-READ-EXT.
            EXIT.
       *
       *****************************************************************

@@ -98,6 +98,11 @@
                 04  H01-VALUE   PIC X(7).
               03  H01-HENREIYM.
                 04  H01-VALUE   PIC X(7).
+              03  H01-HENREI-SIJI-FLG-STATE   PIC S9(09) BINARY.
+              03  H01-HENREI-SIJI-FLG-STYLE   PIC X(20).
+              03  H01-HENREI-SIJI-FLG.
+                04  H01-VALUE   PIC X.
+              03  H01-HENREI-SIJI-FLG-LABEL   PIC X(6).
               03  H01-LABEL-KOHSKY         PIC X(16).
               03  H01-SKYYM-KOHSKY-STATE   PIC S9(9)   BINARY.
               03  H01-SKYYM-KOHSKY         PIC X(7).
@@ -133,6 +138,12 @@
               03  H01-HKIGO.
                 04  H01-HKIGO-STYLE   PIC X(20).
                 04  H01-HKIGO-VALUE   PIC X(20).
+              03  H01-HENREI-MSG.
+                04  H01-HENREI-MSG-STYLE   PIC X(20).
+                04  H01-HENREI-MSG-VALUE   PIC X(14).
+              03  H01-HCREYMD.
+                04  H01-HCREYMD-STYLE   PIC X(20).
+                04  H01-HCREYMD-VALUE   PIC X(13).
               03  H01-AGE.
                 04  H01-VALUE   PIC 9(3).
               03  H01-KYURATE.

@@ -1862,6 +1862,12 @@ H01	{
 		HENREIYM	{
 			value	varchar(7);
 		};
+		HENREI_SIJI_FLG {
+			state   int;
+			style   varchar(20);
+			value   bool;
+			label   varchar(6);
+		};
 		LABEL_KOHSKY	{
 			value	varchar(16);
 		};
@@ -1912,6 +1918,14 @@ H01	{
 		HKIGO	{
                     style   varchar(20);
 			value	varchar(20);
+		};
+		HENREI_MSG	{
+                    style   varchar(20);
+			value	varchar(14);
+		};
+		HCREYMD	{
+                    style   varchar(20);
+			value	varchar(13);
 		};
 		AGE 	{
 			value	number(3);
