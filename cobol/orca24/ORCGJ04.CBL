@@ -638,6 +638,10 @@
            COPY    "CPSRYACCT.INC"    REPLACING
                                      //ACCT-// BY //HZN-ACCT-//.
       *
+       01  HZN2-SRYACCT-REC.
+           COPY    "CPSRYACCT.INC"    REPLACING
+                                     //ACCT-// BY //HZN2-ACCT-//.
+      *
       *    チェックマスタ−
        01  CHK-REC.
            COPY    "CPCHK.INC".
@@ -5992,6 +5996,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SMCNDATE-HMS        TO  ACCT-UPHMS
            MOVE    SPA-OPID            TO  ACCT-OPID
       *
+           MOVE    SRYACCT-REC         TO  HZN2-SRYACCT-REC
       *
            MOVE    SRYACCT-REC         TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
@@ -6010,6 +6015,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-HKNCOMBINUM NOT =   SPA-J04-HKNCOMBI )
                PERFORM 45021-JYURRK-HKNUPD-SEC
            END-IF
+           MOVE    HZN2-SRYACCT-REC    TO  SRYACCT-REC
       *!!
       *    診療会計附加情報処理 
            PERFORM 45023-SRYACCTPLUS-SYORI-SEC
@@ -6146,7 +6152,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    変更前の受診履歴の剤追加
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                      JYURRK-REC
-           MOVE    SPA-HOSPNUM          TO  JYURRK-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  JYURRK-PTID
            MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
            MOVE    SPA-J01-SRYKA       TO  JYURRK-SRYKA
@@ -6171,9 +6177,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-KEY-DOUJI-RENNUM
            PERFORM
                    UNTIL      (FLG-JYURRK      =   1  )
+               MOVE    JYURRK-KEY          TO  JYURRK-UPKEY
                IF      JYURRK-EDANUM       =   1
                    MOVE    ZERO                TO  FLG-UPD2
-                   ADD     1               TO  WRK-RENNUM
+                   ADD     1                   TO  WRK-RENNUM
                    IF      WRK-RENNUM      >   1
                        ADD     1           TO  WRK-DOUJI-RENNUM
                    END-IF
@@ -6295,7 +6302,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    JYURRK-REC          TO  MCPDATA-REC
            MOVE    "DBUPDATE"          TO  MCP-FUNC
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
+           MOVE    "upd1"              TO  MCP-PATHNAME
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
