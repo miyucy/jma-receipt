@@ -532,7 +532,7 @@
            03  RECE62-DISCOUNTTENTNK      PIC  X(02).
       *戏客给锐砷么垛驰攫鼠
            03  RECE62-RJNKOHFTNINF        OCCURS  3.
-      *戏客嘲丸给锐砷么驰∈∈１∷∈２∷蝗脱∷
+      *戏客嘲丸给锐砷么驰∈∈１∷∈２∷∈３∷蝗脱∷
                05  RECE62-RJNGAIKOHFTN    PIC  9(09).
       *戏客掐薄给锐砷么驰∈踏蝗脱∷
                05  RECE62-RJNNYUKOHFTN    PIC  9(09).

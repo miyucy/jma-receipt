@@ -378,7 +378,7 @@
       *
       *戏客给锐砷么垛驰攫鼠
            03  RECE02-RJNKOHFTNINF        OCCURS  3.
-      *戏客嘲丸给锐砷么驰∈∈１∷∈２∷蝗脱∷
+      *戏客嘲丸给锐砷么驰∈∈１∷∈２∷∈３∷蝗脱∷
                05  RECE02-RJNGAIKOHFTN    PIC  9(09).
       *戏客掐薄给锐砷么驰∈踏蝗脱∷
                05  RECE02-RJNNYUKOHFTN    PIC  9(09).
