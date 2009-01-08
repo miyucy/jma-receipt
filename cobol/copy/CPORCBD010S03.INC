@@ -23,6 +23,7 @@
            03  SBD010S03-MAX              PIC 9(05).
            03  SBD010S03-OCC              OCCURS   200.
                05  SBD010S03-DENPEDANUM   PIC  9(02).
+               05  SBD010S03-JOUTAIKBN    PIC  X(01).
                05  SBD010S03-SRYKA        PIC  X(02).
                05  SBD010S03-HKNCOMBI     PIC  X(04).
                05  SBD010S03-HKNNUM       PIC  X(03).
