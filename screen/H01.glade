@@ -267,7 +267,7 @@
 	<data>CLICKED</data>
 	<last_modification_time>Tue, 26 Dec 2000 00:43:57 GMT</last_modification_time>
       </signal>
-      <label></label>
+      <label>手提澄千</label>
       <relief>GTK_RELIEF_NORMAL</relief>
     </widget>
 
@@ -13035,22 +13035,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>HENREI_MSG</name>
-      <x>898</x>
-      <y>4</y>
-      <width>110</width>
-      <height>18</height>
-      <label>手提デ〖タあり</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>LABEL1581</name>
       <x>486</x>
       <y>4</y>
@@ -13121,22 +13105,6 @@
       <width>147</width>
       <height>18</height>
       <label>１２３４５６７８９０</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>HCREYMD</name>
-      <x>917</x>
-      <y>23</y>
-      <width>97</width>
-      <height>18</height>
-      <label>H20.12.12侯喇</label>
       <justify>GTK_JUSTIFY_LEFT</justify>
       <wrap>True</wrap>
       <xalign>0.5</xalign>
@@ -13242,6 +13210,38 @@
       <label>手提痰</label>
       <active>True</active>
       <draw_indicator>True</draw_indicator>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HCREYMD</name>
+      <x>917</x>
+      <y>23</y>
+      <width>97</width>
+      <height>18</height>
+      <label>H20.12.12侯喇</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HENREI_MSG</name>
+      <x>917</x>
+      <y>4</y>
+      <width>106</width>
+      <height>18</height>
+      <label>手提デ〖タあり</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

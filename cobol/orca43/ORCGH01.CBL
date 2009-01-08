@@ -917,8 +917,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *
       *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
+      *
       *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  410-INPUT-CHK-EXT
+           END-IF
+      *
+      *    関連チェック処理
+           PERFORM 4105-KANREN-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  410-INPUT-CHK-EXT
            END-IF
@@ -1864,6 +1871,16 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4119-HENREI-SIJI-FLG-CHK-SEC          SECTION.
       *
+           EVALUATE    H01-HENREI-SIJI-FLG
+               WHEN    "T"
+                   IF      SPA-H01NAI-SKYYM    =   ZERO
+                       MOVE    "0006"          TO  SPA-ERRCD
+                       MOVE    4               TO  SPA-H01GMN-CUR
+                       GO  TO  4119-HENREI-SIJI-FLG-CHK-EXT
+                   END-IF
+           END-EVALUATE
+      *****MOVE    "F"     TO  SPA-H01GMN-HENREI-SIJI-FLG
+      *
            MOVE    H01-HENREI-SIJI-FLG TO  SPA-H01GMN-HENREI-SIJI-FLG
       *
       *    更新フラグセット
@@ -2274,6 +2291,23 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            EXIT.
       *
       *****************************************************************
+      *    関連チェック処理
+      *****************************************************************
+       4105-KANREN-CHK-SEC       SECTION.
+      *
+      *    返戻設定時の請求年月の入力
+           IF      SPA-H01GMN-HENREI-SIJI-FLG
+                                   =   "T"
+               IF      SPA-H01NAI-SKYYM    =   ZERO
+                   MOVE    "0006"          TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       4105-KANREN-CHK-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -2619,7 +2653,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    1                   TO
                                       WRK-HENREI-B-S-HENREI-SIJI-FLG
                                                                   (IDZZ)
-                   MOVE    SPA-H01NAI-HENREIYM TO
+                   MOVE    SPA-H01NAI-SKYYM    TO
                                       WRK-HENREI-B-S-HENREIYM     (IDZZ)
       *
                    MOVE    SMCNDATE-YMD        TO  WRK-HENREI-B-UPYMD
@@ -2950,9 +2984,12 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                WHEN    "F"
                    MOVE    "返戻無"       TO  H01-HENREI-SIJI-FLG-LABEL
                    MOVE    "blue-bar"     TO  H01-HENREI-SIJI-FLG-STYLE
+                   MOVE    WIDGET-INSENSITIVE
+                                          TO  H01-B10-STATE
                WHEN    "T"
                    MOVE    "返戻有"       TO  H01-HENREI-SIJI-FLG-LABEL
                    MOVE    "red-bar"      TO  H01-HENREI-SIJI-FLG-STYLE
+                   MOVE    WIDGET-NORMAL  TO  H01-B10-STATE
            END-EVALUATE 
       *
            MOVE    SPA-H01GMN-AGE     TO  H01-AGE
@@ -3472,6 +3509,12 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                                TO  SPA-ERRMSG
                WHEN    "0005"
                    MOVE    "診療年月が未入力です" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0006"
+                   MOVE    "請求年月が未入力です" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0007"
+                   MOVE    "返戻年月が未入力です" 
                                                TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "修正項目がありません" 
