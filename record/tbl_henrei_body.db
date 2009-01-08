@@ -211,6 +211,21 @@ path    key2            {
         };
 };
 
+path    key3            {
+        DBSELECT        {
+                DECLARE tbl_henrei_body_key3_csr CURSOR FOR
+                SELECT *
+                FROM tbl_henrei_body
+                WHERE     HOSPNUM         = :HOSPNUM
+                    AND   TEISYUTUSAKI    = :TEISYUTUSAKI
+                    AND   SYORIYM         = :SYORIYM
+                    AND   RECEIPT_NO      = :RECEIPT_NO
+                    AND   SELECT_FLG      = 1 
+                    ORDER BY PT_RENNUM
+                ;
+        };
+};
+
 path    upd1    {
         DBUPDATE        {
                 UPDATE  tbl_henrei_body
