@@ -43,7 +43,6 @@ tbl_henrei_body	{
 	HENREI_INFO2		varchar(2200);
 	ERRCD			char(3);
 #-----> 請求管理情報(紐付け用)  後9個設けよう
-	S_PTID			number(10,0);
 #-----> ptnum,sryym 不正時(これだけでよいか いるか)
 #-----> sryym は受付エラーになるからありえん
 #---->  レセ電データを作成したかどうかのフラグ

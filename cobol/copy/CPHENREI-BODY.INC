@@ -58,7 +58,6 @@
                                    PIC X(2200).
            03  HENREI-B-ERRCD      PIC X(03).
       *
-           03  HENREI-B-S-PTID     PIC 9(10).
            03  HENREI-B-SEIKYU-AREA.
                05  HENREI-B-SEIKYU-OCC OCCURS  10.
                    07  HENREI-B-S-SYORIYMD     PIC X(8).

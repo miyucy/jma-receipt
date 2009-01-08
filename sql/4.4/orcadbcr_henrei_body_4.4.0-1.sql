@@ -37,7 +37,6 @@ create	table	tbl_henrei_body	(
 	HENREI_INFO1		varchar(20),
 	HENREI_INFO2		varchar(2200),
 	ERRCD			char(3),
-	S_PTID			numeric(10,0),
 	S_SYORIYMD_1		char(8),
 	S_MAKE_FLG_1		numeric(1,0),
 	S_HENREIYM_1		char(6),
