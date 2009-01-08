@@ -99,6 +99,13 @@
       *    画面用ＳＰＡ
            COPY    "H01SCR-SPA".
       *
+      *    設定済返戻データ
+           02  SPA-HENREI-B-REC.
+           COPY    "CPHENREI-BODY.INC"
+                                   REPLACING   //HENREI-B-//
+                                   BY          //SPA-HENREI-B-//.
+      *
+      *    対象一覧用返戻データ　
            02  TBL-HENREI-B-REC    OCCURS  30.
            COPY    "CPHENREI-BODY.INC"
                                    REPLACING   //HENREI-B-//
@@ -106,6 +113,7 @@
            02  TBL-HENREI-B-ERR    PIC 9(01)   OCCURS  30.
            02  TBL-HENREI-B-MAX    PIC 9(02).
       *
+      *    更新対象返戻データ
            02  WRK-HENREI-B-REC.
            COPY    "CPHENREI-BODY.INC"
                                    REPLACING   //HENREI-B-//
@@ -818,7 +826,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                MOVE    TBL-HENREI-B-REC (IDZZ)
                                        TO  WRK-HENREI-B-REC
            ELSE
-               MOVE    "F"             TO  SPA-H01GMN-HENREI-SIJI-FLG
+               IF      SPA-H01-SYOKBN      =   ZERO
+                   MOVE    "F"         TO  SPA-H01GMN-HENREI-SIJI-FLG
+               END-IF
            END-IF
       *
            PERFORM VARYING IDZZ    FROM    1   BY  1
@@ -850,13 +860,16 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *        クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 420-CLEAR-SEC
-      *    氏名検索
+      *        氏名検索
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 480-KENSAKU-SEC
-      *     更新
+      *        返戻設定確認
+               WHEN    "CLICKED"       ALSO    "B10"
+                   PERFORM 490-HENREI-SEC
+      *         更新
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-KOUSIN-GIDMSG-SEC
-      *     返戻設定
+      *         返戻設定
                WHEN    "CLICKED"       ALSO    "HENREI_SIJI_FLG"
                    PERFORM 4119-HENREI-SIJI-FLG-CHK-SEC
            END-EVALUATE
@@ -1871,6 +1884,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *****************************************************************
        4119-HENREI-SIJI-FLG-CHK-SEC          SECTION.
       *
+      *    返戻設定時の請求年月のチェック
            EVALUATE    H01-HENREI-SIJI-FLG
                WHEN    "T"
                    IF      SPA-H01NAI-SKYYM    =   ZERO
@@ -1900,6 +1914,13 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *    返戻再請求選択処理
       *****************************************************************
        41191-HEIREI-B-HENSYU-SEC          SECTION.
+      *
+      *    返戻設定済のときは処理しない
+      *****IF      SPA-RECE10-HENREI-SIJI-FLG
+      *****                        =   1
+      *****    MOVE    6               TO  SPA-H01GMN-CUR
+      *****    GO  TO  41191-HEIREI-B-HENSYU-EXT
+      *****END-IF
       *
            MOVE    ZERO            TO  FLG-HENREI-B-CHK
       *
@@ -1947,9 +1968,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                ADD     1               TO  TBL-HENREI-B-MAX
                MOVE    HENREI-B-REC    TO  TBL-HENREI-B-REC
                                                   (TBL-HENREI-B-MAX)
-      *        最新の処理年月の返戻データをチェック
-      ***      IF      HENREI-B-SYORIYM
-      ***                              =   TBL-HENREI-B-SYORIYM (1)
       *            該当するデータをチェック
                    IF    ( HENREI-B-TEISYUTUSAKI
                                            =   RECE10-TEISYUTUSAKI )
@@ -2011,9 +2029,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                    MOVE    "tbl_henrei_body"   TO  MCP-TABLE
                    MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 900-HENREI-BODY-READ-SEC
-      ***      ELSE
-      ***          MOVE    1                   TO  FLG-HENREI-B
-      ***      END-IF    
            END-PERFORM
       *
            MOVE    "tbl_henrei_body"       TO  MCP-TABLE
@@ -2038,7 +2053,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                    WHEN    1
                        MOVE    6               TO  SPA-H01GMN-CUR
                    WHEN    2
-      *                設定済 
+      *                設定済
+      *****************MOVE    SPACE           TO  SPA-UPDFLG
                        INITIALIZE                  WRK-HENREI-B-REC
                        MOVE    6               TO  SPA-H01GMN-CUR
                    WHEN    3
@@ -2054,6 +2070,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *    返戻対象一覧処理
       *****************************************************************
        411911-H02-HENSYU-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  SPA-H01-SYOKBN
       *
            MOVE    SPA-H01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
@@ -2354,6 +2372,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                                            SPA-H01NAI-KOUMOKU1
                                            SPA-RECE10-KEY
       *
+           INITIALIZE                  SPA-HENREI-B-REC
            INITIALIZE                  WRK-HENREI-B-REC
            PERFORM VARYING IDZZ    FROM    1   BY  1
                    UNTIL   IDZZ    >       WRK-CONS-HENREI-B-MAX    
@@ -2751,6 +2770,97 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
+      *    返戻設定確認処理
+      *****************************************************************
+       490-HENREI-SEC           SECTION.
+      *
+      *    対象返戻データ取得
+           PERFORM VARYING IDZZ    FROM    1   BY  1
+                   UNTIL   IDZZ    >       WRK-CONS-HENREI-B-MAX    
+               INITIALIZE              TBL-HENREI-B-REC (IDZZ)
+                                       TBL-HENREI-B-ERR (IDZZ)
+           END-PERFORM
+           MOVE    ZERO            TO  TBL-HENREI-B-MAX
+      *
+           INITIALIZE                  HENREI-B-REC
+           MOVE    SPA-HOSPNUM     TO  HENREI-B-HOSPNUM
+           MOVE    RECE10-NYUGAIKBN
+                                   TO  HENREI-B-NYUGAIKBN
+           MOVE    RECE10-SRYYM    TO  HENREI-B-SRYYM
+           EVALUATE    RECE10-TEISYUTUSAKI
+               WHEN    1
+                   MOVE    "1"     TO  HENREI-B-TEISYUTUSAKI
+                                       HENREI-B-XXTEISYUTUSAKI
+               WHEN    2
+               WHEN    6
+                   MOVE   "2"      TO  HENREI-B-TEISYUTUSAKI
+                   MOVE   "6"      TO  HENREI-B-XXTEISYUTUSAKI
+           END-EVALUATE
+           MOVE    RECE10-PTID     TO  HENREI-B-PTID
+           MOVE    HENREI-B-REC    TO  MCPDATA-REC
+           MOVE    "tbl_henrei_body"
+                                   TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_henrei_body"
+                                       TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-HENREI-BODY-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HENREI-B
+           END-IF
+      *           
+           PERFORM         UNTIL   FLG-HENREI-B    =   1
+               ADD     1               TO  TBL-HENREI-B-MAX
+               MOVE    HENREI-B-REC    TO  TBL-HENREI-B-REC
+                                                  (TBL-HENREI-B-MAX)
+      *
+               MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-HENREI-BODY-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_henrei_body"       TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           MOVE    1                   TO  SPA-H01-SYOKBN
+      *
+           MOVE    SPA-H01KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-H01FREE         TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGH02"           USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-H01FREE
+           MOVE    SPA-WORK            TO  SPA-H01KYOUTU
+      *
+           MOVE    SPA-H01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    "H01"                TO  SPA-MOTOPG
+           MOVE    "H02"                TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "H02"                TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END              
+      *
+          .
+       490-HENREI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
@@ -2833,6 +2943,9 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            MOVE    SPA-H01GMN-HCREYMD     TO  H01-HCREYMD-VALUE
            IF      SPA-H01NAI-HENREI-MSG  =   1
                MOVE    "返戻データあり"       TO  H01-HENREI-MSG-VALUE
+               MOVE    WIDGET-NORMAL          TO  H01-B10-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE     TO  H01-B10-STATE
            END-IF   
       *
            PERFORM VARYING IDX FROM    1       BY  1
@@ -2984,12 +3097,9 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                WHEN    "F"
                    MOVE    "返戻無"       TO  H01-HENREI-SIJI-FLG-LABEL
                    MOVE    "blue-bar"     TO  H01-HENREI-SIJI-FLG-STYLE
-                   MOVE    WIDGET-INSENSITIVE
-                                          TO  H01-B10-STATE
                WHEN    "T"
                    MOVE    "返戻有"       TO  H01-HENREI-SIJI-FLG-LABEL
                    MOVE    "red-bar"      TO  H01-HENREI-SIJI-FLG-STYLE
-                   MOVE    WIDGET-NORMAL  TO  H01-B10-STATE
            END-EVALUATE 
       *
            MOVE    SPA-H01GMN-AGE     TO  H01-AGE

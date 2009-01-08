@@ -48,6 +48,13 @@
       *    画面用ＳＰＡ
            COPY    "H01SCR-SPA".
       *
+      *    設定済返戻データ
+           02  SPA-HENREI-B-REC.
+           COPY    "CPHENREI-BODY.INC"
+                                   REPLACING   //HENREI-B-//
+                                   BY          //SPA-HENREI-B-//.
+      *
+      *    対象一覧用返戻データ　
            02  TBL-HENREI-B-REC    OCCURS  30.
            COPY    "CPHENREI-BODY.INC"
                                    REPLACING   //HENREI-B-//
@@ -55,6 +62,7 @@
            02  TBL-HENREI-B-ERR    PIC 9(01)   OCCURS  30.
            02  TBL-HENREI-B-MAX    PIC 9(02).
       *
+      *    更新対象返戻データ
            02  WRK-HENREI-B-REC.
            COPY    "CPHENREI-BODY.INC"
                                    REPLACING   //HENREI-B-//
@@ -375,13 +383,17 @@
       *
            MOVE    IDY                 TO  SPA-H02GMN-MAX
       *
-           IF      SPA-H02GMN-MAX      =   1
-               MOVE    1                   TO  SPA-H02GMN-SELNUM
-                                               SPA-H02NAI-SELNUM
-                                               H02-HENREILIST-ROW
-               MOVE    99                  TO  SPA-H02GMN-CUR
+           IF      SPA-H01-SYOKBN      =   ZERO
+               IF      SPA-H02GMN-MAX      =   1
+                   MOVE    1                   TO  SPA-H02GMN-SELNUM
+                                                   SPA-H02NAI-SELNUM
+                                                   H02-HENREILIST-ROW
+                   MOVE    99                  TO  SPA-H02GMN-CUR
+               ELSE
+                   MOVE    1                   TO  SPA-H02GMN-CUR 
+               END-IF
            ELSE
-               MOVE    1                   TO  SPA-H02GMN-CUR 
+               MOVE    98                  TO  SPA-H02GMN-CUR 
            END-IF
       *
            .
@@ -533,7 +545,12 @@
       *    行選択処理
       *****************************************************************
        4102-HENREILIST-SEL-SEC               SECTION.
-      * 
+      *
+           IF      SPA-H01-SYOKBN      =   1
+               MOVE    98                  TO  SPA-H02GMN-CUR
+               GO  TO  4102-HENREILIST-SEL-EXT
+           END-IF
+      *
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -691,7 +708,16 @@
            END-IF
       *
            MOVE    SPA-H02GMN-SELNUM
-                                   TO  H02-SELNUM 
+                                   TO  H02-SELNUM
+      *
+           IF      SPA-H01-SYOKBN      =   1
+               MOVE    WIDGET-INSENSITIVE  TO  H02-B12-STATE
+                                               H02-SELNUM-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  H02-B12-STATE
+                                               H02-SELNUM-STATE
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -710,9 +736,11 @@
       *
          EVALUATE    SPA-H02GMN-CUR
              WHEN    1
-                    MOVE  "SELNUM"       TO  MCP-WIDGET
+                 MOVE    "SELNUM"          TO  MCP-WIDGET
+             WHEN    98
+                 MOVE    "B01"             TO  MCP-WIDGET
              WHEN    99
-                    MOVE  "B12"          TO  MCP-WIDGET   
+                 MOVE    "B12"             TO  MCP-WIDGET   
          END-EVALUATE
       *
            .

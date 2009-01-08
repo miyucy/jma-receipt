@@ -1,6 +1,10 @@
 H02	{
 	fixed32	{
+		B12     {
+			state   int;
+		};
 		SELNUM	{
+			state   int;
 			value	number(2);
 		};
 		scrolledwindow26	{

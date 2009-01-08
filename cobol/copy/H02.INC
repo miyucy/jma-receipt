@@ -1,4 +1,6 @@
             02  H02.
+              03  H02-B12-STATE      PIC S9(09) BINARY.
+              03  H02-SELNUM-STATE   PIC S9(09) BINARY.
               03  H02-SELNUM.
                 04  H02-VALUE   PIC S9(2).
               03  H02-SCROLLEDWINDOW26.
