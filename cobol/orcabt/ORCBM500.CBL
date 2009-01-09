@@ -183,7 +183,10 @@ grpsys COPY    "COMMON-SPA".
       *    診療年月（和暦）
            03  WRK-SRYYM               PIC 9(05). 
       *
-           03  WRK-MOJISU              PIC 9(02).        
+           03  WRK-MOJISU              PIC 9(02).
+      *
+           03  WRK-INFO1-INDEX         PIC 9(04).        
+           03  WRK-INFO2-INDEX         PIC 9(04).        
       *
       *    データ長
            03  WRK-DATA-LENGTH         PIC 9(07).        
@@ -968,6 +971,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
       *****************************************************************
        20081-BTPARA-UPDATE-SEC     SECTION.
       *
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            INITIALIZE                      BTPARA-REC
            MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
            MOVE    "recept4.sh"        TO  BTPARA-SCRIPTID
@@ -1106,6 +1114,8 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                MOVE    "key3"              TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
       *
+      *        返戻データ更新処理
+               PERFORM 20091-HENREI-B-UPDATE-SEC
            ELSE
                MOVE    SPACE               TO  WRK-RECEERR
                STRING "設定返戻データ存在エラー"
@@ -1124,9 +1134,33 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        20091-HENSYU-SEC              SECTION.
       *
+           MOVE    ZERO            TO  WRK-INFO1-INDEX
+                                       WRK-INFO2-INDEX
+           MOVE    ZERO            TO  IDZZ
+           PERFORM VARYING IDZZ    FROM    20  BY  -1
+                   UNTIL   IDZZ   <        1
+               IF      HENREI-B-HENREI-INFO1 (IDZZ:1)
+                                       NOT =   SPACE
+                   MOVE    IDZZ            TO  WRK-INFO1-INDEX
+                   MOVE    1               TO  IDZZ
+               END-IF
+           END-PERFORM
+      *
+           MOVE    ZERO            TO  IDZZ
+           PERFORM VARYING IDZZ    FROM    2200    BY  -1
+                   UNTIL   IDZZ   <        1
+               IF      HENREI-B-HENREI-INFO2 (IDZZ:1)
+                                       NOT =   SPACE
+                   MOVE    IDZZ            TO  WRK-INFO2-INDEX
+                   MOVE    1               TO  IDZZ
+               END-IF
+           END-PERFORM
+      *
            MOVE    SPACE               TO  WRK-REC
-           STRING  HENREI-B-HENREI-INFO1   DELIMITED   BY  SPACE
-                   HENREI-B-HENREI-INFO2   DELIMITED   BY  SPACE
+           STRING  HENREI-B-HENREI-INFO1 (1:WRK-INFO1-INDEX)
+                                           DELIMITED   BY  SIZE
+                   HENREI-B-HENREI-INFO2 (1:WRK-INFO2-INDEX)
+                                           DELIMITED   BY  SIZE
                    WRK-KAIGYO              DELIMITED   BY  SIZE
                                            INTO        WRK-REC
            END-STRING
@@ -1158,53 +1192,61 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        20091-HENREI-B-UPDATE-SEC          SECTION.
       *
-           PERFORM VARYING IDZZ    FROM    1   BY  1
-                   UNTIL   IDZZ    >       10
-                   OR      WRK-HENREI-B-S-TEISYUTUSAKI (IDZZ)
-                                   =   SPACE
-               IF      RECE10-TEISYUTUSAKI =
+      *    更新日取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           PERFORM VARYING IDZZ    FROM    10  BY  -1
+                   UNTIL   IDZZ    <       1
+               IF      WRK-HENREI-B-S-TEISYUTUSAKI(IDZZ)
+                                   =       SPACE
+                   CONTINUE
+               ELSE 
+                   IF      RECE10-TEISYUTUSAKI =
                                    WRK-HENREI-B-S-TEISYUTUSAKI(IDZZ)
-               AND     RECE10-NYUGAIKBN    =
+                   AND     RECE10-NYUGAIKBN    =
                                    WRK-HENREI-B-S-NYUGAIKBN   (IDZZ)
-               AND     RECE10-RECEKA       =
+                   AND     RECE10-RECEKA       =
                                    WRK-HENREI-B-S-RECEKA      (IDZZ)
-               AND     RECE10-RECESYUBETU  =
+                   AND     RECE10-RECESYUBETU  =
                                    WRK-HENREI-B-S-RECESYUBETU (IDZZ)
-               AND     RECE10-HKNJANUM     =
+                   AND     RECE10-HKNJANUM     =
                                    WRK-HENREI-B-S-HKNJANUM    (IDZZ)
-               AND     RECE10-HOJOKBN-KEY  =
+                   AND     RECE10-HOJOKBN-KEY  =
                                    WRK-HENREI-B-S-HOJOKBN-KEY (IDZZ)
-               AND     RECE10-TEKSTYMD     =
+                   AND     RECE10-TEKSTYMD     =
                                    WRK-HENREI-B-S-TEKSTYMD    (IDZZ)
-                   MOVE    SMCNDATE-YMD    TO  WRK-HENREI-B-S-SYORIYMD
-                                                              (IDZZ)  
-                   MOVE    1               TO  WRK-HENREI-B-S-MAKE-FLG
-                                                              (IDZZ)  
+                       MOVE    SMCNDATE-YMD    TO
+                                       WRK-HENREI-B-S-SYORIYMD (IDZZ)  
+                       MOVE    1               TO
+                                       WRK-HENREI-B-S-MAKE-FLG (IDZZ)  
       *
-                   MOVE    SMCNDATE-YMD    TO  WRK-HENREI-B-UPYMD
-                   MOVE    SMCNDATE-HMS    TO  WRK-HENREI-B-UPHMS
+                       MOVE    SMCNDATE-YMD    TO  WRK-HENREI-B-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  WRK-HENREI-B-UPHMS
       *
-                   MOVE    WRK-HENREI-B-REC    TO  MCPDATA-REC
-                   MOVE    "tbl_henrei_body"   TO  MCP-TABLE
-                   MOVE    "upd1"              TO  MCP-PATHNAME
-                   MOVE    "DBUPDATE"          TO  MCP-FUNC
-                   PERFORM 900-ORCDBMAIN-SEC
-                   IF      MCP-RC          NOT =   ZERO
-                       CALL    "coblog"
+                       MOVE    WRK-HENREI-B-REC    TO  MCPDATA-REC
+                       MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+                       MOVE    "upd1"              TO  MCP-PATHNAME
+                       MOVE    "DBUPDATE"          TO  MCP-FUNC
+                       PERFORM 900-ORCDBMAIN-SEC
+                       IF      MCP-RC          NOT =   ZERO
+                           CALL    "coblog"
                                    USING "abort update tbl_henrei_body"
       *
-                       MOVE    SPACE               TO  WRK-RECEERR
-                       MOVE    MCP-RC              TO  WRK-MCP-RC
-                       STRING  "返戻明細ＤＢ更新エラー MCP-RC="
+                           MOVE    SPACE               TO  WRK-RECEERR
+                           MOVE    MCP-RC              TO  WRK-MCP-RC
+                           STRING  "返戻明細ＤＢ更新エラー MCP-RC="
                                                    DELIMITED  BY  SIZE
                                WRK-MCP-RC          DELIMITED  BY  SIZE
                                                    INTO    WRK-RECEERR
-                       END-STRING
-                       PERFORM 500-ERR-HENSYU-SEC
-                       PERFORM 500-COBABORT-SEC
-                   END-IF
+                           END-STRING
+                           PERFORM 500-ERR-HENSYU-SEC
+                           PERFORM 500-COBABORT-SEC
+                       END-IF
       *
-                   MOVE    10                  TO  IDZZ
+                       MOVE    1                   TO  IDZZ
+                   END-IF
                END-IF
            END-PERFORM
           .
