@@ -3603,6 +3603,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    自動加算料
            MOVE    ZERO                TO  IDY
+           MOVE    ZERO                TO  WRK-HOUKATU-ZAI
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   ORCSCWKSRY-KSN-IDX
                IF      IDY             =   ZERO
@@ -3649,18 +3650,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
                ADD     ORCSCWKSRY-KSN-TENSU(IDX)      TO  WRK-TENSUKEI
                ADD     ORCSCWKSRY-KSN-TENSU(IDX)      TO  WRK-SYUTEN1
+               IF      ORCSCWKSRY-KSN-HKTKBN(IDX)  =  1
+                   MOVE    ORCSCWKSRY-KSN-HKTKBN(IDX)
+                                               TO  WRK-HOUKATU-ZAI
+               END-IF
                MOVE    1                       TO  WRK-KAISUKEI
       *        各附加情報編集処理
                PERFORM 30041-WKSRYACTPLUS-SEC
       *
                IF      ORCSCWKSRY-KSN-ZAIEND(IDX)     =   "1"
       *            診療行為パラメタ出力
-                   MOVE    ORCSCWKSRY-KSN-HKTKBN(IDX)
-                                               TO  WRK-HOUKATU-ZAI
+      ***          MOVE    ORCSCWKSRY-KSN-HKTKBN(IDX)
+      ******                                   TO  WRK-HOUKATU-ZAI
                    PERFORM 300211-WKSRYPARA-WRITE-SEC
                    ADD     1                   TO  WRK-ZAINUM
                    MOVE    ZERO                TO  IDY
                    INITIALIZE                  WRK-WKSRY-AREA
+                   MOVE    ZERO                TO  WRK-HOUKATU-ZAI
                END-IF
            END-PERFORM
            .
