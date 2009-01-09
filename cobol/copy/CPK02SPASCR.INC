@@ -362,6 +362,8 @@
       *    点数マスタ付加情報より
       *                採血区分
                        09  SPA-COM-SAIKETUKBN          PIC 9(01).
+      *                前回検査日区分
+                       09  SPA-COM-ZENKNSKBN           PIC 9(01).
       *                入力チェック区分
                        09  SPA-COM-INPCHKKBN           PIC 9(01).
       *    点数マスタ薬剤附加情報より

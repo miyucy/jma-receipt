@@ -71,6 +71,9 @@
       *    一般名記載換算値
            03  TNSP-IPN-KANZANCHI          PIC  9(05)V9(05).
       *
+      *    前回検査日コメント区分
+           03  TNSP-ZENKNSKBN              PIC  9(01).
+      *
            03  TNSP-TERMID              PIC  X(16).
            03  TNSP-OPID                PIC  X(16).
            03  TNSP-CREYMD              PIC  X(08).

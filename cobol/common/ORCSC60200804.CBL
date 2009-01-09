@@ -50,6 +50,7 @@
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０．４改正対応
       *  04.03.00    NACL-多々納  08/07/XX  病理診断加算・検査加算種別追加
       *  04.03.00    NACL-多々納  08/07/25  入院時初回加算自動算定追加
+      *  04.04.00    NACL-多々納  09/01/09  前回検査日自動算定追加
       *****************************************************************
       *
       *
@@ -113,6 +114,7 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
+           03  IDX4                PIC 9(04).
            03  IDXS                PIC 9(04).
            03  IDX-Z               PIC 9(04).
            03  IDX-Z2              PIC 9(04).
@@ -233,7 +235,9 @@
            03  WRK-TEI-CNT             PIC 9(03).
       *
            03  WRK-YMD.
-               05  WRK-YM              PIC X(06).
+               05  WRK-YM.
+                   07  WRK-YY              PIC 9(04).
+                   07  WRK-MM              PIC 9(02).
                05  WRK-DD              PIC 9(02).
       *    酸素
            03  WRK-SANSO           PIC 9(08).
@@ -655,6 +659,8 @@
       *    診療行為点数編集・基本チェック
            COPY    "CPORCSC92.INC".
       *
+           COPY    "CPORCSC94.INC".
+      *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *    表示名称編集パラメタ領域
@@ -869,6 +875,13 @@
       *            入院患者初回加算のチェック
                    IF      WRK-COM-INPUTCD (IDX-Z) =   "160161510"
                        PERFORM 100113-NYUINSYOKAI-SEC
+                   END-IF
+      *            前回検査日自動発生
+                   IF      WRK-COM-ZENKNSKBN (IDX-Z)   =   "1"
+                                                       OR  "2"
+                       IF      LNK-ORCSC-PG        =   "K02"
+                           PERFORM 100115-ZENKNSCOMMNT-SET-SEC
+                       END-IF
                    END-IF
       *            初回コンタクトレンズ検査チェック
       *Ｈ２０．４から削除
@@ -1449,31 +1462,130 @@
            EXIT.
       *
       *****************************************************************
-      *    初回コンタクトレンズ検査チェックク処理
+      *    前回検査日自動発生処理
       *****************************************************************
-       100115-CONTAKUCHEK-SEC                  SECTION.
+       100115-ZENKNSCOMMNT-SET-SEC                  SECTION.
       *
-           MOVE    WRK-COM-INPUTCD (IDX-Z)
-                                       TO  WRK-SRYCD
-           PERFORM 1001151-CONT-SANTEICHK-SEC
-           IF      SPA-ERRCD           =   SPACE
-               IF      WRK-COM-INPUTCD (IDX-Z) =   "160179210"
-      *            コンタクトレンズ検査１（既装用者）
-                   MOVE    "160179310"         TO  WRK-SRYCD
-               ELSE
-      *            コンタクトレンズ検査２（既装用者）
-                   MOVE    "160179510"         TO  WRK-SRYCD
+      *    剤内のコメント判定
+           MOVE    ZERO                TO  FLG-ARI
+           COMPUTE IDX4                =   IDX-Z       +   1
+           PERFORM VARYING     IDX1    FROM    IDX4    BY  1
+                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
+                              (FLG-ARI                 =   1    ) OR
+                             ((WRK-COM-INPUTCD (IDX1)  =   SPACE ) AND
+                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE ))
+               IF      (WRK-COM-INPUTCD (IDX1)(1:1)    =   "8"  )
+                    OR (WRK-COM-INPUTCD (IDX1)(1:3)    =   "008" )
+                    MOVE    1              TO  FLG-ARI
                END-IF
-               PERFORM 1001151-CONT-SANTEICHK-SEC
+               IF      (WRK-COM-INPUTCD (IDX1)(1:1)    =   "1" )
+                    MOVE   SPA-MAX-LINE        TO  IDX1
+               END-IF
+           END-PERFORM
+           IF      FLG-ARI             =   ZERO
+               PERFORM 1001151-ZENSANTEICHK-SEC
            END-IF
            .
-       100115-CONTAKUCHEK-EXT.
+       100115-ZENKNSCOMMNT-SET-EXT.
            EXIT.
       *
       *****************************************************************
-      *    初回コンタクトレンズ検査チェックク処理
+      *    検査前回算定チェック処理
       *****************************************************************
-       1001151-CONT-SANTEICHK-SEC                  SECTION.
+       1001151-ZENSANTEICHK-SEC                  SECTION.
+      *
+      *    前回算定日判定
+           MOVE    WRK-COM-INPUTCD (IDX-Z)
+                                           TO  WRK-SRYCD
+           PERFORM 1001151-ZENSANTEI-SET-SEC
+      *
+           IF      FLG-SYOKAI-OK       =   1
+      *        前回あり
+               MOVE    "840000087"         TO  WRK-SRYCD
+           ELSE
+      *        初回
+               IF     WRK-COM-ZENKNSKBN (IDX-Z)    =   "1"
+                   MOVE    "810000001"         TO  WRK-SRYCD
+               ELSE
+                   MOVE    "840000085"         TO  WRK-SRYCD
+                   MOVE    SPA-SRYYMD          TO  WRK-YMD
+               END-IF
+           END-IF
+           MOVE    IDX-Z               TO  IDX-S
+           MOVE    5                   TO  FLG-KASAN
+           PERFORM 2001-JIDOTUIKA-SEC
+           IF      FLG-ARI             =   1
+               MOVE    "1"             TO  WRK-COM-IN  (IDX-T)
+               MOVE    SPACE           TO  WRK-COM-AUTOKBN (IDX-T)
+      *        診療内容編集
+               IF      WRK-SRYCD           =   "810000001"
+                   MOVE    "（初回実施）"      TO  WRK-GMN-MEISYO-G
+                                                          (IDX-T)
+                   MOVE    "1"                  TO  WRK-COM-MEIFLG
+                                                          (IDX-T)
+               ELSE
+                   MOVE    WRK-MM          TO  WRK-COM-ATAI1 (IDX-T)
+                   MOVE    WRK-DD          TO  WRK-COM-ATAI2 (IDX-T)
+               END-IF
+      *        画面再編集
+               INITIALIZE                  ORCSC94AREA
+               MOVE    "1"                 TO  LNK-SC94-KBN
+               MOVE    LNK-ORCSC-PG        TO  LNK-SC94-PG
+               MOVE    IDX-T               TO  LNK-SC94-IDX
+               CALL    "ORCSC94"           USING
+                                           ORCSC94AREA
+                                           WRK-SCR-REC
+                                           SPA-AREA
+      *
+      *    診療日を編集
+               INITIALIZE                  ORCSC92AREA
+               MOVE    SPACE               TO  LNK-SC92-KBN
+               MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
+               MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
+               MOVE    IDX-T               TO  LNK-SC92-GMN-IDX
+               MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
+               MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
+               MOVE    LNK-ORCSC-15MIMAN-ARI   TO  LNK-SC92-15MIMAN-ARI
+               MOVE    LNK-ORCSC-ROUJIN    TO  LNK-SC92-ROUJIN
+               MOVE    LNK-ORCSC-LSTSRYKA  TO  LNK-SC92-LSTSRYKA
+               MOVE    LNK-ORCSC-LSTSRYKAMEI   TO  LNK-SC92-LSTSRYKAMEI
+               MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC92-TEISEI-AREA
+               CALL    "ORCSC92"           USING
+                                           MCPAREA
+                                           ORCSC92AREA
+                                           WRK-SCR-REC
+                                           SPA-AREA
+           END-IF
+           .
+       1001151-ZENSANTEICHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初回コンタクトレンズ検査チェック処理
+      *****************************************************************
+      *100115-CONTAKUCHEK-SEC                  SECTION.
+      *
+      *    MOVE    WRK-COM-INPUTCD (IDX-Z)
+      *                                TO  WRK-SRYCD
+      *    PERFORM 1001151-CONT-SANTEICHK-SEC
+      *    IF      SPA-ERRCD           =   SPACE
+      *        IF      WRK-COM-INPUTCD (IDX-Z) =   "160179210"
+      *            コンタクトレンズ検査１（既装用者）
+      *            MOVE    "160179310"         TO  WRK-SRYCD
+      *        ELSE
+      *            コンタクトレンズ検査２（既装用者）
+      *            MOVE    "160179510"         TO  WRK-SRYCD
+      *        END-IF
+      *        PERFORM 1001151-CONT-SANTEICHK-SEC
+      *    END-IF
+      *    .
+      *100115-CONTAKUCHEK-EXT.
+      *    EXIT.
+      *
+      *****************************************************************
+      *    前回算定日判定処理
+      *****************************************************************
+       1001151-ZENSANTEI-SET-SEC                  SECTION.
       *
            MOVE    ZERO               TO  WRK-TEI-CNT
            IF      LNK-ORCSC-SYORIFLG  =   1
@@ -1514,12 +1626,15 @@
                            (FLG-SYOKAI-OK  =   1   )
                MOVE    SANTEI-SRYYM        TO  WRK-YM
                MOVE    ZERO                TO  WRK-DD
-               PERFORM VARYING    IDX2     FROM    1   BY  1
-                       UNTIL     (IDX2     >   31  )  OR
+               PERFORM VARYING    IDX2     FROM    31  BY  -1
+                       UNTIL     (IDX2     <   1   )  OR
                                  (FLG-SYOKAI-OK    =   1   )
                    IF      SANTEI-DAY (IDX2)   NOT =   ZERO
-                       MOVE    1               TO  FLG-SYOKAI-OK
                        MOVE    IDX2            TO  WRK-DD
+      *                診療日以前の算定を有効とする
+                       IF     (WRK-YMD             <=  SPA-SRYYMD)
+                           MOVE    1               TO  FLG-SYOKAI-OK
+                       END-IF
       *                訂正の時当日分は算定なしとする
                        IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
                               (WRK-YMD             =   SPA-SRYYMD) AND
@@ -1537,28 +1652,40 @@
            MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           IF      FLG-SYOKAI-OK       =   1
-               IF      LNK-ORCSC-KEI-IDX   =   ZERO
-                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
-                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
-                   MOVE    "K600"          TO  WRK-ERRCD
-                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
-      *            発生日
-                   INITIALIZE                      STS-AREA-DAY
-                   INITIALIZE                      LNK-DAY2-AREA
-                   MOVE    "21"            TO  LNK-DAY2-IRAI
-                   MOVE    WRK-YMD         TO  LNK-DAY2-YMD
-                   CALL    "ORCSDAY"       USING   STS-AREA-DAY
-                                                   LNK-DAY2-AREA
-                   STRING  "算定日："          DELIMITED  BY  SIZE
-                           LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
-                          INTO                 LNK-ORCSC-ERRMSG
-                   END-STRING
-               END-IF
-           END-IF
            .
-       1001151-CONT-SANTEICHK-EXT.
+       1001151-ZENSANTEI-SET-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    初回コンタクトレンズ検査チェック処理
+      *****************************************************************
+      *1001151-CONT-SANTEICHK-SEC                  SECTION.
+      *
+      *    前回算定日判定
+      *    PERFORM 1001151-ZENSANTEI-SET-SEC
+      *
+      *    IF      FLG-SYOKAI-OK       =   1
+      *        IF      LNK-ORCSC-KEI-IDX   =   ZERO
+      *            MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+      *            MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
+      *            MOVE    "K600"          TO  WRK-ERRCD
+      *            MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+      *            発生日
+      *            INITIALIZE                      STS-AREA-DAY
+      *            INITIALIZE                      LNK-DAY2-AREA
+      *            MOVE    "21"            TO  LNK-DAY2-IRAI
+      *            MOVE    WRK-YMD         TO  LNK-DAY2-YMD
+      *            CALL    "ORCSDAY"       USING   STS-AREA-DAY
+      *                                            LNK-DAY2-AREA
+      *            STRING  "算定日："          DELIMITED  BY  SIZE
+      *                    LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+      *                   INTO                 LNK-ORCSC-ERRMSG
+      *            END-STRING
+      *        END-IF
+      *    END-IF
+      *    .
+      *1001151-CONT-SANTEICHK-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    同一検査チェック処理
@@ -3012,7 +3139,9 @@
       *****************************************************************
        2001-JIDOTUIKA-SEC     SECTION.
       *
-           PERFORM 1110-KASAN-CHK-SEC
+           IF      FLG-KASAN       NOT =   5
+               PERFORM 1110-KASAN-CHK-SEC
+           END-IF
            IF      FLG-ARI             =   1
                MOVE    IDX-T               TO  WRK-IDX
            ELSE

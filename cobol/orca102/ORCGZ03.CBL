@@ -49,6 +49,7 @@
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *  03.05.01    NACL-多々納  07/07/XX  ユーザ設定 他月情報追加
       *  04.02.00    NACL-多々納  08/03/XX  平成２０年４月改正対応
+      *  04.04.00    NACL-多々納  09/01/05  前回検査日区分追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -202,8 +203,11 @@
            03  FILLER          PIC X(32)  VALUE   "0 TSUSOKUAGE".
            03  FILLER          PIC X(32)  VALUE   "0 KGNAGE".
            03  FILLER          PIC X(32)  VALUE   "0 JGNAGE".
-      *    入力チェック区分
+      *    採血料区分
            03  FILLER          PIC X(32)  VALUE   "0 SAIKETUKBN".
+      *    前回検査日区分
+           03  FILLER          PIC X(32)  VALUE   "0 ZENKNSKBN".
+      *    入力チェック区分
            03  FILLER          PIC X(32)  VALUE   "0 INPCHKKBN".
       *    回数、年齢
            03  FILLER          PIC X(32)  VALUE   "1 JITUDAY".
@@ -307,13 +311,14 @@
       *****03  TBL-GMN-OCC                 OCCURS  107
       **** 03  TBL-GMN-OCC                 OCCURS  109
       **** 03  TBL-GMN-OCC                 OCCURS  115
-           03  TBL-GMN-OCC                 OCCURS  118
+      **** 03  TBL-GMN-OCC                 OCCURS  118
+           03  TBL-GMN-OCC                 OCCURS  119
                                            INDEXED  IDX-GMN.
                05  TBL-PAGE                PIC 9(01).
                05  TBL-YOBI1               PIC X(01).
                05  TBL-WIDGET              PIC X(30).
       *
-       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   118.
+       01  TBL-GMN-MAX                     PIC 9(04)   VALUE   119.
       *
       *    単位の項目順テーブル
            COPY    "CMTANICD.INC".
@@ -941,7 +946,6 @@
            MOVE    TNSP-SAIKETUKBN     TO  SPA-GMN-SAIKETUKBN
       *    採血料区分一覧
            MOVE    "0:　　　　"        TO  SPA-GMN-SAIKETUCOMB (01)
-      ***  MOVE    "1:抹消採血"        TO  SPA-GMN-SAIKETUCOMB (02)
            MOVE    "1:末梢採血"        TO  SPA-GMN-SAIKETUCOMB (02)
            MOVE    "2:静脈採血"        TO  SPA-GMN-SAIKETUCOMB (03)
            MOVE    "3:動脈採血"        TO  SPA-GMN-SAIKETUCOMB (04)
@@ -953,6 +957,23 @@
                    MOVE    SPA-GMN-SAIKETUCOMB (IDX)
                                            TO  SPA-GMN-SAIKETUKBN-G
                    MOVE    SPA-SAIKETUKBN-MAX  TO  IDX
+               END-IF
+           END-PERFORM
+      *    前回検査日区分
+           MOVE    TNSP-ZENKNSKBN      TO  SPA-GMN-ZENKNSKBN
+           MOVE    "0 表示しない"      TO  SPA-GMN-ZENKNSKBN-COMB(1)
+           MOVE    "1 表示する（初回コメント）"
+                                       TO  SPA-GMN-ZENKNSKBN-COMB(2)
+           MOVE    "2 表示する（初回実施日）"
+                                       TO  SPA-GMN-ZENKNSKBN-COMB(3)
+           MOVE    3                   TO  SPA-ZENKNSKBN-MAX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-ZENKNSKBN-MAX
+               IF      SPA-GMN-ZENKNSKBN   =   SPA-GMN-ZENKNSKBN-COMB
+                                                            (IDX)(1:1)
+                   MOVE    SPA-GMN-ZENKNSKBN-COMB (IDX)
+                                           TO  SPA-GMN-ZENKNSKBN-G
+                   MOVE    SPA-ZENKNSKBN-MAX  TO  IDX
                END-IF
            END-PERFORM
       *
@@ -1641,6 +1662,7 @@
            MOVE    Z03-KGNAGE          TO  SPA-GMN-KGNAGE
            MOVE    Z03-JGNAGE          TO  SPA-GMN-JGNAGE
            MOVE    Z03-SAIKETUKBN      TO  SPA-GMN-SAIKETUKBN-G
+           MOVE    Z03-ZENKNSKBN       TO  SPA-GMN-ZENKNSKBN-G
            MOVE    Z03-INPCHKKBN       TO  SPA-GMN-INPCHKKBN
       *
            MOVE    Z03-JITUDAY         TO  SPA-GMN-JITUDAY
@@ -1893,6 +1915,9 @@
       *        採血料区分
                WHEN    "SAIKETUKBN"
                    PERFORM 5030-SAIKETUKBN-CHK-SEC
+      *        前回検査日区分
+               WHEN    "ZENKNSKBN"
+                   PERFORM 5030-ZENKNSKBN-CHK-SEC
       *        入力チェック区分
                WHEN    "INPCHKKBN"
                    CONTINUE
@@ -2475,7 +2500,6 @@
                MOVE    "0006"              TO  SPA-ERRCD
            END-IF
            .
-      *
        505-HKNTEKKBN-CHK-EXT.
            EXIT.
       *
@@ -2666,7 +2690,6 @@
                MOVE    "0006"              TO  SPA-ERRCD
            END-IF
            .
-      *
        505-OSINKBN-CHK-EXT.
            EXIT.
       *****************************************************************
@@ -2975,7 +2998,7 @@
                MOVE    "0006"              TO  SPA-ERRCD
            END-IF
       *    採血料区分は、検査の時のみ入力可能
-           IF      SPA-GMN-SAIKETUKBN  NOT =   0
+           IF      SPA-GMN-SAIKETUKBN  NOT =   "0"
                IF      SPA-GMN-SRYKBN      =   "60"
                    CONTINUE
                ELSE
@@ -2985,8 +3008,39 @@
                END-IF
            END-IF
            .    
-      *
        5030-SAIKETUKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *  採血料区分  チェック
+      *****************************************************************
+       5030-ZENKNSKBN-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-ZENKNSKBN-MAX
+               IF      SPA-GMN-ZENKNSKBN   =   SPA-GMN-ZENKNSKBN-COMB
+                                                            (IDX)(1:1)
+                   MOVE    SPA-GMN-ZENKNSKBN-COMB (IDX)
+                                           TO  SPA-GMN-ZENKNSKBN-G
+                   MOVE    SPA-ZENKNSKBN-MAX   TO  IDX
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-OK              =   ZERO
+               MOVE    "0006"              TO  SPA-ERRCD
+           END-IF
+      *    採血料区分は、検査の時のみ入力可能
+           IF      SPA-GMN-ZENKNSKBN   NOT =   "0"
+               IF      SPA-GMN-SRYKBN      =   "60"
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-GMN-ZENKNSKBN-COMB (1)
+                                               TO  SPA-GMN-ZENKNSKBN-G
+               END-IF
+           END-IF
+           .
+       5030-ZENKNSKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    切替え処理
@@ -3359,11 +3413,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      TNS-TENSU-REC(1:1290)   =   WRK-TNS-TENSU-REC
                    MOVE    SPACE           TO  SPA-ERRCD
       *            入力チェック区分はエラーとする
-      *            採血料区分チェックは行う
+      *            採血料区分・前回検査日チェックは行う
                    PERFORM 5030-SAIKETUKBN-CHK-SEC
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 5030-ZENKNSKBN-CHK-SEC
+                       IF      SPA-ERRCD       NOT =   SPACE
+                           MOVE    "ZENKNSKBN"     TO  WRK-MCP-WIDGET
+                       END-IF
+                   ELSE
+                       MOVE    "SAIKETUKBN"        TO  WRK-MCP-WIDGET
+                   END-IF
                    IF      SPA-ERRCD       NOT =   SPACE
       *            エラーの次のカーソル設定
-                       MOVE    "SAIKETUKBN"        TO  WRK-MCP-WIDGET
                        SET     IDX-GMN             TO  1
                        SEARCH      TBL-GMN-OCC     VARYING   IDX-GMN
                        AT  END
@@ -3423,6 +3484,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+      *    前回検査日と算定履歴作成有無判定
+           IF      SPA-GMN-ZENKNSKBN   NOT =   ZERO
+               IF      (SPA-ERRCD          =   SPACE )
+                   AND (SPA-NAI-KEIFLG3    =   ZERO  )
+                   IF     (SPA-GMN-SANTEIRRKKBN    =   ZERO )
+                     AND  (SPA-GMN-PLUS-SANTEIRRK  =   ZERO )
+                       MOVE    "K100"              TO  SPA-ERRCD
+                       MOVE    1                   TO  SPA-NAI-KEIFLG3
+                       MOVE    "PLUS_SANTEIRRK"    TO  WRK-MCP-WIDGET
+                   END-IF
+               END-IF
+           END-IF
       *    ユーザ設定の上限回数
            IF       SPA-GMN-PLUS-SANTEIRRK NOT =   ZERO
                IF     (SPA-GMN-JGNCNT   =   ZERO )  AND
@@ -3930,6 +4003,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    採血料区分
            INITIALIZE                  TENSUPLUS-REC
            MOVE    SPA-GMN-SAIKETUKBN  TO  TNSP-SAIKETUKBN
+           MOVE    SPA-GMN-ZENKNSKBN   TO  TNSP-ZENKNSKBN
            MOVE    SPA-GMN-INPCHKKBN   TO  TNSP-INPCHKKBN
            MOVE    SPA-GMN-PLUS-SANTEIRRK
                                        TO  TNSP-SANTEIRRKKBN
@@ -4100,11 +4174,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    採血料区分
            MOVE  SPA-GMN-SAIKETUKBN-G          TO  Z03-SAIKETUKBN
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   4
+                   UNTIL       IDX     >   SPA-SAIKETUKBN-MAX
                MOVE    SPA-GMN-SAIKETUCOMB (IDX)
                                           TO  Z03-SAIKETUKBN-ITEM(IDX)
            END-PERFORM
-           MOVE    IDX                 TO  Z03-SAIKETUKBN-COUNT
+           MOVE    SPA-SAIKETUKBN-MAX  TO  Z03-SAIKETUKBN-COUNT
+      *    前回検査日区分
+           MOVE  SPA-GMN-ZENKNSKBN-G   TO  Z03-ZENKNSKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-ZENKNSKBN-MAX
+               MOVE    SPA-GMN-ZENKNSKBN-COMB (IDX)
+                                          TO  Z03-ZENKNSKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-ZENKNSKBN-MAX   TO  Z03-ZENKNSKBN-COUNT
       *    診療区分
            MOVE    ZERO                TO  IDX-1
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -4416,7 +4498,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC                            SECTION.
-           MOVE    SPACE                         TO  SPA-ERRMSG.
+      *
+           MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
@@ -4489,6 +4572,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                  INTO  SPA-ERRMSG
                    END-STRING
       *
+               WHEN    "K100"
+                   STRING   "警告！算定履歴作成の設定がありません。"
+                            "前回の判定ができません。"
+                                                   DELIMITED BY  SIZE
+                                                 INTO    SPA-ERRMSG
+                   END-STRING
+      *
       *        以下共通
                WHEN    "1010"
                    MOVE
@@ -4526,47 +4616,41 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                                  TO  SPA-ERRMSG
                WHEN    "K001"
                    STRING    "警告！厚生労働省から提供される"
-                                                   DELIMITED BY  SIZE
                              "コードの範囲です。"
-                                                   DELIMITED BY  SIZE
                              "新規登録はしないで下さい。"
                                                    DELIMITED BY  SIZE
                                                  INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K002"
                    STRING    "警告！ユーザ登録できる範囲のコード"
-                                                   DELIMITED BY  SIZE
                              "ではありません。"
-                                                   DELIMITED BY  SIZE
                              "新規登録はしないで下さい。"
                                                    DELIMITED BY  SIZE
                                                  INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K003"
                    STRING   "警告！厚生労働省から提供されたデータです。"
-                                                   DELIMITED BY  SIZE
                             "削除しないで下さい。"
                                                    DELIMITED BY  SIZE
                                                  INTO    SPA-ERRMSG
                    END-STRING
            END-EVALUATE.
       *
-           MOVE    SPACE                         TO  ZERR
-           MOVE    SPA-ERRCD                     TO  ZERR-ERRCODE
-           MOVE    SPA-ERRMSG                TO  ZERR-ERRMSG
+           MOVE    SPACE               TO  ZERR
+           MOVE    SPA-ERRCD           TO  ZERR-ERRCODE
+           MOVE    SPA-ERRMSG          TO  ZERR-ERRMSG
       *
-           MOVE    "Z03"                         TO  SPA-MOTOPG
-           MOVE    "ZERR"                        TO  SPA-SAKIPG
+           MOVE    "Z03"               TO  SPA-MOTOPG
+           MOVE    "ZERR"              TO  SPA-SAKIPG
       *
-           MOVE    "NEW"                         TO  MCP-PUTTYPE
-           MOVE    "ZERR"                        TO  MCP-WINDOW
-           MOVE    "B01"                         TO  MCP-WIDGET
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "ZERR"              TO  MCP-WINDOW
+           MOVE    "B01"               TO  MCP-WIDGET
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                             TO  FLG-END
-           .    
-      *
+           MOVE    1                   TO  FLG-END
+           .
        510-ERRSET-EXT.
            EXIT.
       *

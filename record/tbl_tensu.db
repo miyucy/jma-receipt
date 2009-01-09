@@ -1226,6 +1226,7 @@ path	key90	{
 			AND   CDKBN_KBN     =  :CDKBN_KBN
 			ORDER   BY          CDKBN_KBNNUM,
 					    CDKBN_KBNNUM_EDA,
+					    CDKBN_KOUBAN,
 					    SRYCD
 			;
 	};
@@ -1243,6 +1244,7 @@ path	key91	{
 			AND   CDKBN_KBNNUM  =  :CDKBN_KBNNUM
 			ORDER   BY          CDKBN_KBNNUM,
 					    CDKBN_KBNNUM_EDA,
+					    CDKBN_KOUBAN,
 					    SRYCD
 			;
 	};
@@ -1426,6 +1428,7 @@ path	key91m	{
 			AND   a.SRYCD    =   b.SRYCD
 			ORDER   BY          CDKBN_KBNNUM,
 					    CDKBN_KBNNUM_EDA,
+					    CDKBN_KOUBAN,
 					    a.SRYCD
 			;
 	};

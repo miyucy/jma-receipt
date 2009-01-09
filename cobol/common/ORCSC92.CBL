@@ -3881,6 +3881,8 @@
       *
       *    採血料区分
            MOVE    TNSP-SAIKETUKBN     TO  SPA-COM-SAIKETUKBN (IDX-T)
+      *    前回検査日コメント
+           MOVE    TNSP-ZENKNSKBN      TO  SPA-COM-ZENKNSKBN (IDX-T)
       *    入力チェック区分
            MOVE    TNSP-INPCHKKBN      TO  SPA-COM-INPCHKKBN  (IDX-T)
       *

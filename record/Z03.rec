@@ -172,6 +172,13 @@ Z03	{
 					count	int;
 					item	varchar(20)[9];
 				};
+				ZENKNSKBN_COMB	{
+					ZENKNSKBN	{
+						value	varchar(30);
+					};
+					count	int;
+					item	varchar(30)[5];
+				};
 			};
 			fixed10	{
 				JITUDAY	{

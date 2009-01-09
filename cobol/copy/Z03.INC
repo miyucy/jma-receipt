@@ -140,6 +140,12 @@
                     06  Z03-IRYOKAN-COUNT   PIC S9(9)   BINARY.
                     06  Z03-IRYOKAN-ITEM
                             PIC X(20)   OCCURS  9 TIMES.
+                  05  Z03-ZENKNSKBN-COMB.
+                    06  Z03-ZENKNSKBN.
+                      07  Z03-VALUE   PIC X(30).
+                    06  Z03-ZENKNSKBN-COUNT   PIC S9(9)   BINARY.
+                    06  Z03-ZENKNSKBN-ITEM
+                            PIC X(30)   OCCURS  5 TIMES.
                 04  Z03-FIXED10.
                   05  Z03-JITUDAY.
                     06  Z03-VALUE   PIC S9(1).

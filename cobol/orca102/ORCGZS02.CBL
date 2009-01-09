@@ -30,6 +30,7 @@
       *  01.00.01    NACL-多々納  05/12/09  MONFUNC対応
       *  03.04.00    NACL-多々納  06/12/05  上限回数追加、パラメタ変更他
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.04.00    NACL-多々納  09/01/05  前回検査日区分追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -324,6 +325,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *    チェック
            IF    ( LNK-TNSP-SHONAME         =   SPACE  ) AND
                  ( LNK-TNSP-SAIKETUKBN      =   ZERO  ) AND
+                 ( LNK-TNSP-ZENKNSKBN       =   ZERO  ) AND
                  ( LNK-TNSP-INPCHKKBN       =   ZERO  ) AND
                  ( LNK-TNSP-TENPUYAKKBN     =   SPACE ) AND
                  ( LNK-TNSP-ALLSURYOKBN     =   SPACE ) AND
@@ -449,6 +451,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    LNK-TNSP-INPCHKKBN      TO  TNSP-INPCHKKBN
       *    採血料区分
            MOVE    LNK-TNSP-SAIKETUKBN     TO  TNSP-SAIKETUKBN
+      *    前回検査日区分
+           MOVE    LNK-TNSP-ZENKNSKBN      TO  TNSP-ZENKNSKBN
       *    処方名称
            MOVE    LNK-TNSP-SHONAME        TO  TNSP-SHONAME
            MOVE    LNK-TNSP-SHOYUKOKETA    TO  TNSP-SHOYUKOKETA
