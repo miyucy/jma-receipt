@@ -171,6 +171,8 @@ grpsys COPY    "COMMON-SPA".
            05  WRK-PARA-PRTKBN         PIC X(01).
       *
            03  WRK-RECEERR             PIC X(200). 
+           03  WRK-MCP-RC              PIC 9(9).
+      *
            03  WRK-ERRMSG              PIC X(300).
       *    マルチボリューム識別情報     
            03  WRK-VOLNUM              PIC 9(02).
@@ -552,7 +554,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
       *???
                DISPLAY "PTNUM=" RECE10-PTNUM
                        " TEISYUTUSAKI=" RECE10-TEISYUTUSAKI 
+                       " SRYYM="        RECE10-SRYYM 
                        " RECESYUBETU="  RECE10-RECESYUBETU 
+                       " HENREIYM="     RECE10-HENREIYM
                        " HENREI-SIJI-FLG="  RECE10-HENREI-SIJI-FLG
       *???
                PERFORM 900-RECEDEN-SELECT-SEC
@@ -567,7 +571,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
       *
       *        返戻再請求時の履歴管理情報
                IF      RECE10-HENREI-SIJI-FLG      =   1
-                   PERFORM 900-HENREI-BODY-SELECT-SEC
+                   PERFORM 2009-HENREI-BODY-HENSYU-SEC
                END-IF
       *
                MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
@@ -626,6 +630,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            IF      STS-RECE30          =   "00"
                CONTINUE
            ELSE
+               CALL "coblog" USING   "file open err " RECE30PARA
                MOVE    SPACE               TO  WRK-RECEERR
                STRING "ファイル オープンエラー STS="
                                                DELIMITED  BY  SIZE
@@ -875,40 +880,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            EXIT. 
       * 
       *****************************************************************
-      *    レセプト共通レコード編集処理（履歴管理情報）
-      *****************************************************************
-       2004-HENSYU-SEC              SECTION.
-      *
-           MOVE    SPACE               TO  WRK-REC
-           STRING  HENREI-B-HENREI-INFO1   DELIMITED   BY  SPACE
-                   HENREI-B-HENREI-INFO2   DELIMITED   BY  SPACE
-                   WRK-KAIGYO              DELIMITED   BY  SIZE
-                                           INTO        WRK-REC
-           END-STRING
-      *
-           ADD     1                   TO  TABLE-MAX
-           MOVE    WRK-REC             TO  TBL-RECEDATA (TABLE-MAX)
-      *
-           MOVE    ZERO                TO  WRK-REC-LENGTH
-           PERFORM VARYING IDX FROM    2500 BY  -1
-                   UNTIL   IDX <       1
-               IF      WRK-REC (IDX:1) =   WRK-KAIGYO
-                   MOVE    IDX             TO  WRK-REC-LENGTH
-                   MOVE    1               TO  IDX
-               END-IF
-           END-PERFORM
-           COMPUTE WRK-PTNUM-LENGTH    =   WRK-PTNUM-LENGTH
-                                       +   WRK-REC-LENGTH
-                                       +   1
-      *
-           MOVE    "tbl_henrei_body"   TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 900-HENREI-BODY-READ-SEC
-           .
-       2004-HENSYU-EXT.
-           EXIT. 
-      * 
-      *****************************************************************
       *    データ出力処理
       *****************************************************************
        2003-TABLE-WRITE-SEC         SECTION.
@@ -921,6 +892,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                IF      STS-RECE30          =   "00"
                    CONTINUE
                ELSE
+                   CALL "coblog" USING   "file write err " RECE30PARA
                    MOVE    SPACE               TO  WRK-RECEERR
                    STRING "ファイル 書き込みエラー STS="
                                                    DELIMITED  BY  SIZE
@@ -1035,6 +1007,209 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            .
        20081-BTPARA-UPDATE-EXT.
            EXIT. 
+      *
+      *****************************************************************
+      *    返戻再請求時の履歴管理情報編集処理
+      *****************************************************************
+       2009-HENREI-BODY-HENSYU-SEC             SECTION.
+      *    
+           INITIALIZE                  WRK-HENREI-B-REC
+      *    
+           INITIALIZE                  HENREI-B-REC
+           MOVE    SPA-HOSPNUM     TO  HENREI-B-HOSPNUM
+           MOVE    RECE10-NYUGAIKBN
+                                   TO  HENREI-B-NYUGAIKBN
+           MOVE    RECE10-SRYYM    TO  HENREI-B-SRYYM
+           EVALUATE    RECE10-TEISYUTUSAKI
+               WHEN    1
+                   MOVE    "1"     TO  HENREI-B-TEISYUTUSAKI
+                                       HENREI-B-XXTEISYUTUSAKI
+               WHEN    2
+               WHEN    6
+                   MOVE   "2"      TO  HENREI-B-TEISYUTUSAKI
+                   MOVE   "6"      TO  HENREI-B-XXTEISYUTUSAKI
+           END-EVALUATE
+           MOVE    RECE10-PTID     TO  HENREI-B-PTID
+           MOVE    HENREI-B-REC    TO  MCPDATA-REC
+           MOVE    "tbl_henrei_body"
+                                   TO  MCP-TABLE
+           MOVE    "key2"          TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_henrei_body"
+                                       TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-HENREI-BODY-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-HENREI-B
+           END-IF
+      *           
+           PERFORM         UNTIL   FLG-HENREI-B    =   1
+               PERFORM VARYING IDZZ    FROM    10  BY  -1
+                       UNTIL   IDZZ    <       1
+                   IF      HENREI-B-S-TEISYUTUSAKI(IDZZ)
+                                       =       SPACE
+                       CONTINUE
+                   ELSE 
+                       IF    ( HENREI-B-S-TEISYUTUSAKI (IDZZ)
+                                           =   RECE10-TEISYUTUSAKI )
+                       AND   ( HENREI-B-S-NYUGAIKBN    (IDZZ)
+                                           =   RECE10-NYUGAIKBN    )
+                       AND   ( HENREI-B-S-RECEKA       (IDZZ)
+                                           =   RECE10-RECEKA       )
+                       AND   ( HENREI-B-S-RECESYUBETU  (IDZZ)
+                                           =   RECE10-RECESYUBETU  )
+                       AND   ( HENREI-B-S-HKNJANUM     (IDZZ)
+                                           =   RECE10-HKNJANUM     )
+                       AND   ( HENREI-B-S-HOJOKBN-KEY  (IDZZ)
+                                           =   RECE10-HOJOKBN-KEY  )
+                       AND   ( HENREI-B-S-TEKSTYMD     (IDZZ)
+                                           =   RECE10-TEKSTYMD     )
+                           MOVE    HENREI-B-REC    TO  WRK-HENREI-B-REC
+                           MOVE    1               TO  IDZZ
+                           MOVE    1               TO  FLG-HENREI-B
+                       END-IF  
+                   END-IF  
+               END-PERFORM
+      *
+               MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-HENREI-BODY-READ-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_henrei_body"       TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           IF      WRK-HENREI-B-HOSPNUM    >   ZERO
+               MOVE    ZERO                TO  FLG-HENREI-B
+      *     
+               INITIALIZE                      HENREI-B-REC
+               MOVE    WRK-HENREI-B-REC    TO  HENREI-B-REC
+               MOVE    HENREI-B-REC        TO  MCPDATA-REC
+               MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+                   MOVE    "key3"              TO  MCP-PATHNAME
+                   PERFORM 900-HENREI-BODY-READ-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-HENREI-B
+               END-IF
+      *
+               PERFORM     UNTIL   FLG-HENREI-B    =   1
+                   PERFORM 20091-HENSYU-SEC
+               END-PERFORM
+      *
+               MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+               MOVE    "key3"              TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+      *
+           ELSE
+               MOVE    SPACE               TO  WRK-RECEERR
+               STRING "設定返戻データ存在エラー"
+                                               DELIMITED  BY  SIZE
+                                       INTO    WRK-RECEERR
+               END-STRING
+               PERFORM 500-ERR-HENSYU-SEC
+               PERFORM 500-COBABORT-SEC
+           END-IF
+          .
+       2009-HENREI-BODY-HENSYU-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    レセプト共通レコード編集処理（履歴管理情報）
+      *****************************************************************
+       20091-HENSYU-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-REC
+           STRING  HENREI-B-HENREI-INFO1   DELIMITED   BY  SPACE
+                   HENREI-B-HENREI-INFO2   DELIMITED   BY  SPACE
+                   WRK-KAIGYO              DELIMITED   BY  SIZE
+                                           INTO        WRK-REC
+           END-STRING
+      *
+           ADD     1                   TO  TABLE-MAX
+           MOVE    WRK-REC             TO  TBL-RECEDATA (TABLE-MAX)
+      *
+           MOVE    ZERO                TO  WRK-REC-LENGTH
+           PERFORM VARYING IDX FROM    2500 BY  -1
+                   UNTIL   IDX <       1
+               IF      WRK-REC (IDX:1) =   WRK-KAIGYO
+                   MOVE    IDX             TO  WRK-REC-LENGTH
+                   MOVE    1               TO  IDX
+               END-IF
+           END-PERFORM
+           COMPUTE WRK-PTNUM-LENGTH    =   WRK-PTNUM-LENGTH
+                                       +   WRK-REC-LENGTH
+                                       +   1
+      *
+           MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+           MOVE    "key3"              TO  MCP-PATHNAME
+           PERFORM 900-HENREI-BODY-READ-SEC
+           .
+       20091-HENSYU-EXT.
+           EXIT. 
+      *
+      *****************************************************************
+      *    返戻データ更新処理
+      *****************************************************************
+       20091-HENREI-B-UPDATE-SEC          SECTION.
+      *
+           PERFORM VARYING IDZZ    FROM    1   BY  1
+                   UNTIL   IDZZ    >       10
+                   OR      WRK-HENREI-B-S-TEISYUTUSAKI (IDZZ)
+                                   =   SPACE
+               IF      RECE10-TEISYUTUSAKI =
+                                   WRK-HENREI-B-S-TEISYUTUSAKI(IDZZ)
+               AND     RECE10-NYUGAIKBN    =
+                                   WRK-HENREI-B-S-NYUGAIKBN   (IDZZ)
+               AND     RECE10-RECEKA       =
+                                   WRK-HENREI-B-S-RECEKA      (IDZZ)
+               AND     RECE10-RECESYUBETU  =
+                                   WRK-HENREI-B-S-RECESYUBETU (IDZZ)
+               AND     RECE10-HKNJANUM     =
+                                   WRK-HENREI-B-S-HKNJANUM    (IDZZ)
+               AND     RECE10-HOJOKBN-KEY  =
+                                   WRK-HENREI-B-S-HOJOKBN-KEY (IDZZ)
+               AND     RECE10-TEKSTYMD     =
+                                   WRK-HENREI-B-S-TEKSTYMD    (IDZZ)
+                   MOVE    SMCNDATE-YMD    TO  WRK-HENREI-B-S-SYORIYMD
+                                                              (IDZZ)  
+                   MOVE    1               TO  WRK-HENREI-B-S-MAKE-FLG
+                                                              (IDZZ)  
+      *
+                   MOVE    SMCNDATE-YMD    TO  WRK-HENREI-B-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  WRK-HENREI-B-UPHMS
+      *
+                   MOVE    WRK-HENREI-B-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+                   MOVE    "upd1"              TO  MCP-PATHNAME
+                   MOVE    "DBUPDATE"          TO  MCP-FUNC
+                   PERFORM 900-ORCDBMAIN-SEC
+                   IF      MCP-RC          NOT =   ZERO
+                       CALL    "coblog"
+                                   USING "abort update tbl_henrei_body"
+      *
+                       MOVE    SPACE               TO  WRK-RECEERR
+                       MOVE    MCP-RC              TO  WRK-MCP-RC
+                       STRING  "返戻明細ＤＢ更新エラー MCP-RC="
+                                                   DELIMITED  BY  SIZE
+                               WRK-MCP-RC          DELIMITED  BY  SIZE
+                                                   INTO    WRK-RECEERR
+                       END-STRING
+                       PERFORM 500-ERR-HENSYU-SEC
+                       PERFORM 500-COBABORT-SEC
+                   END-IF
+      *
+                   MOVE    10                  TO  IDZZ
+               END-IF
+           END-PERFORM
+          .
+       20091-HENREI-B-UPDATE-EXT.
+           EXIT.
       *
       *****************************************************************
       *    終了処理
@@ -1584,116 +1759,6 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-BTPARA-READ-N-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    オンライン返戻明細読込
-      *****************************************************************
-       900-HENREI-BODY-SELECT-SEC             SECTION.
-      *    
-           INITIALIZE                  WRK-HENREI-B-REC
-      *    
-           INITIALIZE                  HENREI-B-REC
-           MOVE    SPA-HOSPNUM     TO  HENREI-B-HOSPNUM
-           MOVE    RECE10-NYUGAIKBN
-                                   TO  HENREI-B-NYUGAIKBN
-           MOVE    RECE10-SRYYM    TO  HENREI-B-SRYYM
-           EVALUATE    RECE10-TEISYUTUSAKI
-               WHEN    1
-                   MOVE    "1"     TO  HENREI-B-TEISYUTUSAKI
-                                       HENREI-B-XXTEISYUTUSAKI
-               WHEN    2
-               WHEN    6
-                   MOVE   "2"      TO  HENREI-B-TEISYUTUSAKI
-                   MOVE   "6"      TO  HENREI-B-XXTEISYUTUSAKI
-           END-EVALUATE
-           MOVE    RECE10-PTID     TO  HENREI-B-PTID
-           MOVE    HENREI-B-REC    TO  MCPDATA-REC
-           MOVE    "tbl_henrei_body"
-                                   TO  MCP-TABLE
-           MOVE    "key2"          TO  MCP-PATHNAME
-           PERFORM 900-DBSELECT-SEC
-           IF      MCP-RC          =   ZERO
-               MOVE    "tbl_henrei_body"
-                                       TO  MCP-TABLE
-               MOVE    "key2"          TO  MCP-PATHNAME
-               PERFORM 900-HENREI-BODY-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-HENREI-B
-           END-IF
-      *           
-           PERFORM         UNTIL   FLG-HENREI-B    =   1
-               PERFORM VARYING IDZZ    FROM    10  BY  -1
-                       UNTIL   IDZZ    <       1
-                   IF      HENREI-B-S-TEISYUTUSAKI(IDZZ)
-                                       =       SPACE
-                       CONTINUE
-                   ELSE 
-                       IF    ( HENREI-B-S-TEISYUTUSAKI (IDZZ)
-                                           =   RECE10-TEISYUTUSAKI )
-                       AND   ( HENREI-B-S-NYUGAIKBN    (IDZZ)
-                                           =   RECE10-NYUGAIKBN    )
-                       AND   ( HENREI-B-S-RECEKA       (IDZZ)
-                                           =   RECE10-RECEKA       )
-                       AND   ( HENREI-B-S-RECESYUBETU  (IDZZ)
-                                           =   RECE10-RECESYUBETU  )
-                       AND   ( HENREI-B-S-HKNJANUM     (IDZZ)
-                                           =   RECE10-HKNJANUM     )
-                       AND   ( HENREI-B-S-HOJOKBN-KEY  (IDZZ)
-                                           =   RECE10-HOJOKBN-KEY  )
-                       AND   ( HENREI-B-S-TEKSTYMD     (IDZZ)
-                                           =   RECE10-TEKSTYMD     )
-                           MOVE    HENREI-B-REC    TO  WRK-HENREI-B-REC
-                           MOVE    1               TO  IDZZ
-                           MOVE    1               TO  FLG-HENREI-B
-                       END-IF  
-                   END-IF  
-               END-PERFORM
-      *
-               MOVE    "tbl_henrei_body"   TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-HENREI-BODY-READ-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_henrei_body"       TO  MCP-TABLE
-           MOVE    "key2"                  TO  MCP-PATHNAME
-           PERFORM 900-CLOSE-SEC
-      *
-           IF      WRK-HENREI-B-HOSPNUM    >   ZERO
-               MOVE    ZERO                TO  FLG-HENREI-B
-      *     
-               INITIALIZE                      HENREI-B-REC
-               MOVE    WRK-HENREI-B-REC    TO  HENREI-B-REC
-               MOVE    HENREI-B-REC        TO  MCPDATA-REC
-               MOVE    "tbl_henrei_body"   TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 900-DBSELECT-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_henrei_body"   TO  MCP-TABLE
-                   MOVE    "key3"              TO  MCP-PATHNAME
-                   PERFORM 900-HENREI-BODY-READ-SEC
-               ELSE
-                   MOVE    1                   TO  FLG-HENREI-B
-               END-IF
-      *
-               PERFORM     UNTIL   FLG-HENREI-B    =   1
-                   PERFORM 2004-HENSYU-SEC
-               END-PERFORM
-      *
-               MOVE    "tbl_henrei_body"   TO  MCP-TABLE
-               MOVE    "key3"              TO  MCP-PATHNAME
-               PERFORM 900-CLOSE-SEC
-           ELSE
-               MOVE    SPACE               TO  WRK-RECEERR
-               STRING "設定返戻データ存在エラー"
-                                               DELIMITED  BY  SIZE
-                                       INTO    WRK-RECEERR
-               END-STRING
-               PERFORM 500-ERR-HENSYU-SEC
-               PERFORM 500-COBABORT-SEC
-           END-IF
-          .
-       900-HENREI-BODY-SELECT-EXT.
            EXIT.
       *
       *****************************************************************

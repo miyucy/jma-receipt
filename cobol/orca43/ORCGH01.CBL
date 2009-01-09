@@ -105,7 +105,7 @@
                                    REPLACING   //HENREI-B-//
                                    BY          //SPA-HENREI-B-//.
       *
-      *    対象一覧用返戻データ　
+      *    対象一覧用返戻データ
            02  TBL-HENREI-B-REC    OCCURS  30.
            COPY    "CPHENREI-BODY.INC"
                                    REPLACING   //HENREI-B-//
@@ -1278,7 +1278,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        41021-SEIKYU-HENSYU-SEC         SECTION.
       *
-           MOVE    RECE10-KEY         TO  SPA-RECE10-KEY
+           MOVE    RECE10-KEY          TO  SPA-RECE10-KEY
+           MOVE    RECE10-KIGO         TO  SPA-RECE10-KIGO
+           MOVE    RECE10-NUM          TO  SPA-RECE10-NUM
       *
       *    見出し編集
            PERFORM 3101-MIDASI-HENSYU-SEC
@@ -1934,10 +1936,11 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *
            INITIALIZE                  HENREI-B-REC
            MOVE    SPA-HOSPNUM     TO  HENREI-B-HOSPNUM
-           MOVE    RECE10-NYUGAIKBN
+           MOVE    SPA-RECE10-NYUGAIKBN
                                    TO  HENREI-B-NYUGAIKBN
-           MOVE    RECE10-SRYYM    TO  HENREI-B-SRYYM
-           EVALUATE    RECE10-TEISYUTUSAKI
+           MOVE    SPA-RECE10-SRYYM
+                                   TO  HENREI-B-SRYYM
+           EVALUATE    SPA-RECE10-TEISYUTUSAKI
                WHEN    1
                    MOVE    "1"     TO  HENREI-B-TEISYUTUSAKI
                                        HENREI-B-XXTEISYUTUSAKI
@@ -1946,7 +1949,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                    MOVE   "2"      TO  HENREI-B-TEISYUTUSAKI
                    MOVE   "6"      TO  HENREI-B-XXTEISYUTUSAKI
            END-EVALUATE
-           MOVE    RECE10-PTID     TO  HENREI-B-PTID
+           MOVE    SPA-RECE10-PTID     TO  HENREI-B-PTID
            MOVE    HENREI-B-REC    TO  MCPDATA-REC
            MOVE    "tbl_henrei_body"
                                    TO  MCP-TABLE
@@ -1969,16 +1972,29 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                MOVE    HENREI-B-REC    TO  TBL-HENREI-B-REC
                                                   (TBL-HENREI-B-MAX)
       *            該当するデータをチェック
-                   IF    ( HENREI-B-TEISYUTUSAKI
-                                           =   RECE10-TEISYUTUSAKI )
-                   AND   ( HENREI-B-RECESYUBETU
-                                           =   RECE10-RECESYUBETU  )
+                   IF    ( HENREI-B-RECESYUBETU
+                                           =   SPA-RECE10-RECESYUBETU  )
                    AND   ( HENREI-B-HKNJANUM
-                                           =   RECE10-HKNJANUM     )
-                   AND   ( HENREI-B-KIGO   =   RECE10-KIGO         )
-                   AND   ( HENREI-B-NUM    =   RECE10-NUM          )
-                       MOVE    HENREI-B-REC    TO  WRK-HENREI-B-REC
-                       MOVE    1               TO  FLG-HENREI-B-CHK
+                                           =   SPA-RECE10-HKNJANUM     )
+                   AND   ( HENREI-B-KIGO   =   SPA-RECE10-KIGO         )
+                   AND   ( HENREI-B-NUM    =   SPA-RECE10-NUM          )
+                       EVALUATE    SPA-RECE10-TEISYUTUSAKI
+                           WHEN    1
+                               IF      HENREI-B-TEISYUTUSAKI
+                                               =   1
+                                   MOVE    HENREI-B-REC
+                                                   TO  WRK-HENREI-B-REC
+                                   MOVE    1       TO  FLG-HENREI-B-CHK
+                               END-IF
+                           WHEN    2
+                           WHEN    6
+                               IF      HENREI-B-TEISYUTUSAKI
+                                               =   2
+                                   MOVE    HENREI-B-REC
+                                                   TO  WRK-HENREI-B-REC
+                                   MOVE    1       TO  FLG-HENREI-B-CHK
+                               END-IF
+                       END-EVALUATE
                    END-IF
       *
       *            既に返戻設定済か
@@ -1987,19 +2003,19 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                            OR      HENREI-B-S-TEISYUTUSAKI(IDZZ)
                                            =       SPACE
                        IF    ( HENREI-B-S-TEISYUTUSAKI (IDZZ)
-                                           =   RECE10-TEISYUTUSAKI )
+                                           =   SPA-RECE10-TEISYUTUSAKI )
                        AND   ( HENREI-B-S-NYUGAIKBN    (IDZZ)
-                                           =   RECE10-NYUGAIKBN    )
+                                           =   SPA-RECE10-NYUGAIKBN    )
                        AND   ( HENREI-B-S-RECEKA       (IDZZ)
-                                           =   RECE10-RECEKA       )
+                                           =   SPA-RECE10-RECEKA       )
                        AND   ( HENREI-B-S-RECESYUBETU  (IDZZ)
-                                           =   RECE10-RECESYUBETU  )
+                                           =   SPA-RECE10-RECESYUBETU  )
                        AND   ( HENREI-B-S-HKNJANUM     (IDZZ)
-                                           =   RECE10-HKNJANUM     )
+                                           =   SPA-RECE10-HKNJANUM     )
                        AND   ( HENREI-B-S-HOJOKBN-KEY  (IDZZ)
-                                           =   RECE10-HOJOKBN-KEY  )
+                                           =   SPA-RECE10-HOJOKBN      )
                        AND   ( HENREI-B-S-TEKSTYMD     (IDZZ)
-                                           =   RECE10-TEKSTYMD     )
+                                           =   SPA-RECE10-TEKSTYMD     )
                            MOVE    1       TO  TBL-HENREI-B-ERR
                                                    (TBL-HENREI-B-MAX)
                            IF      FLG-HENREI-B-CHK
@@ -2370,8 +2386,8 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                                            SPA-H01GMN-KOUMOKU1
                                            SPA-H01NAI-KOUMOKU
                                            SPA-H01NAI-KOUMOKU1
-                                           SPA-RECE10-KEY
       *
+           INITIALIZE                  SPA-RECE10-AREA
            INITIALIZE                  SPA-HENREI-B-REC
            INITIALIZE                  WRK-HENREI-B-REC
            PERFORM VARYING IDZZ    FROM    1   BY  1

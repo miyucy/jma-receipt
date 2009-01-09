@@ -959,7 +959,9 @@ path	key23	{
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )) )
-                  AND (      HENREIYM    =   '000000'    )
+                  AND (   (  HENREIYM    =   '000000'  )
+                       OR (( HENREIYM    <>  '000000' )
+                       AND ( HENREI_SIJI_FLG =  1     )) )
                 ORDER  BY  RECEKA,PTNUM,SRYYM
 		;
 	};
@@ -979,7 +981,9 @@ path	key24	{
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )) )
-                  AND (      HENREIYM    =   '000000'    )
+                  AND (   (  HENREIYM    =   '000000'  )
+                       OR (( HENREIYM    <>  '000000' )
+                       AND ( HENREI_SIJI_FLG =  1     )) )
                 ORDER  BY  RECEKA,PTNUM,SRYYM
 		;
 	};
@@ -1124,7 +1128,9 @@ path	key25	{
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )))
-                  AND (      HENREIYM    =   '000000'    )
+                  AND (   (  HENREIYM    =   '000000'  )
+                       OR (( HENREIYM    <>  '000000' )
+                       AND ( HENREI_SIJI_FLG =  1     )) )
                 ORDER  BY  RECEKA,PTNUM,SRYYM
 		;
 	};
@@ -1145,7 +1151,9 @@ path	key26	{
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )) )
-                  AND (      HENREIYM    =   '000000'    )
+                  AND (   (  HENREIYM    =   '000000'  )
+                       OR (( HENREIYM    <>  '000000' )
+                       AND ( HENREI_SIJI_FLG =  1     )) )
                 ORDER  BY  RECEKA,PTNUM,SRYYM
 		;
 	};
@@ -2301,7 +2309,9 @@ path	key67	{
                        AND (( SKYYM       =  '000000' ) OR ( SKYYM = :SKYYM )))
                        OR (( SKYYM       =   :SKYYM   )
                        AND ( SKYKBN      <>  '0'      )) )
-                  AND (      HENREIYM    =   '000000'    )
+                  AND (   (  HENREIYM    =   '000000'  )
+                       OR (( HENREIYM    <>  '000000' )
+                       AND ( HENREI_SIJI_FLG =  1     )) )
                 ORDER  BY  RECEKA,PTNUM,SRYYM
 		;
 	};

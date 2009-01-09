@@ -378,6 +378,8 @@
                                    TO  SPA-H02NAI-TS-HOJOKBN-KEY  (IDY)
                    MOVE    TBL-HENREI-B-S-TEKSTYMD         (IDZZ IDX)
                                    TO  SPA-H02NAI-TS-TEKSTYMD     (IDY)
+                   MOVE    TBL-HENREI-B-S-KIGO             (IDZZ IDX)
+                                   TO  SPA-H02GMN-TS-KIGO         (IDY)
                END-PERFORM
            END-PERFORM
       *
