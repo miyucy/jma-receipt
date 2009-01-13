@@ -154,9 +154,11 @@ W65	{
 		CMB_HEIYOJIKBN	{
 			HEIYOJIKBN	{
 				value	varchar(60);
+				state	int;
 			};
 			count	int;
 			item	varchar(60)[10];
+			state	int;
 		};
 		CMB_HEIYOJITAIKBN	{
 			HEIYOJITAIKBN	{

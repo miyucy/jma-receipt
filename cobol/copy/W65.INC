@@ -116,8 +116,11 @@
                                            PIC S9(9)   BINARY.
               03  W65-CMB-HEIYOJIKBN.
                 04  W65-HEIYOJIKBN         PIC X(60).
+                04  W65-HEIYOJIKBN-STATE   PIC S9(9)   BINARY.
                 04  W65-HEIYOJIKBN-COUNT   PIC S9(9)   BINARY.
                 04  W65-HEIYOJIKBN-ITEM    PIC X(60)   OCCURS  10 TIMES.
+                04  W65-HEIYOJIKBN-ITEM-STATE
+                                           PIC S9(9)   BINARY.
               03  W65-CMB-HEIYOJITAIKBN.
                 04  W65-HEIYOJITAIKBN      PIC X(30).
                 04  W65-HEIYOJITAIKBN-STATE

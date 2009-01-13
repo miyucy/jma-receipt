@@ -58,16 +58,12 @@
       *ＯＣＲ実日数請求点省略記載
            03  SYS-2010-OCRKBN              PIC  X(01).
            03  SYS-2010-OCR-TAIKBN          PIC  X(01).
-      *
-      *全国公費併用時記載（記録）対応
-           03  SYS-2010-HEIYOJIKBN          PIC  X(01).
-           03  SYS-2010-HEIYOJI-TAIKBN      PIC  X(01).
       *月途中受給者証変更時負担計算
            03  SYS-2010-JYUHENKBN           PIC  X(01).
            03  SYS-2010-JYUHEN-TAIKBN       PIC  X(01).
       *
       *予備
-           03  FILLER                       PIC  X(480).
+           03  FILLER                       PIC  X(482).
       *端末ＩＤ
            03  SYS-2010-TERMID              PIC  X(16).
       *オペレータＩＤ

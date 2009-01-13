@@ -1384,8 +1384,8 @@
            MOVE    SPA-GMN-SKJTAIKBN       TO SYS-2010-SKJ-TAIKBN
            MOVE    SPA-GMN-OCRKBN          TO SYS-2010-OCRKBN
            MOVE    SPA-GMN-OCRTAIKBN       TO SYS-2010-OCR-TAIKBN
-           MOVE    SPA-GMN-HEIYOJIKBN      TO SYS-2010-HEIYOJIKBN
-           MOVE    SPA-GMN-HEIYOJITAIKBN   TO SYS-2010-HEIYOJI-TAIKBN
+      *+   MOVE    SPA-GMN-HEIYOJIKBN      TO SYS-2010-HEIYOJIKBN
+      *+   MOVE    SPA-GMN-HEIYOJITAIKBN   TO SYS-2010-HEIYOJI-TAIKBN
            MOVE    SPA-GMN-JYUHENKBN       TO SYS-2010-JYUHENKBN
            MOVE    SPA-GMN-JYUHENTAIKBN    TO SYS-2010-JYUHEN-TAIKBN
       *
@@ -1969,14 +1969,14 @@
            PERFORM 4200-COMMONTAIKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-OCRTAIKBN-G
       *
-           MOVE    SYS-2010-HEIYOJIKBN TO  WRK-CMB-CD
-           PERFORM 4200-HEIYOJIKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-HEIYOJIKBN-G
+      *    MOVE    SYS-2010-HEIYOJIKBN TO  WRK-CMB-CD
+      *    PERFORM 4200-HEIYOJIKBNLST-CHK-SEC
+      *    MOVE    WRK-CMB-ITM         TO  SPA-GMN-HEIYOJIKBN-G
       *
-           MOVE    SYS-2010-HEIYOJI-TAIKBN
-                                       TO  WRK-CMB-CD
-           PERFORM 4200-HEIYOJITAIKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-HEIYOJITAIKBN-G
+      *    MOVE    SYS-2010-HEIYOJI-TAIKBN
+      *                                TO  WRK-CMB-CD
+      *    PERFORM 4200-HEIYOJITAIKBNLST-CHK-SEC
+      *    MOVE    WRK-CMB-ITM         TO  SPA-GMN-HEIYOJITAIKBN-G
       *
            MOVE    SYS-2010-JYUHENKBN  TO  WRK-CMB-CD
            PERFORM 4200-JYUHENKBNLST-CHK-SEC
@@ -2772,8 +2772,8 @@
            MOVE    SPA-GMN-SKJTAIKBN-G         TO  W65-SKJTAIKBN
            MOVE    SPA-GMN-OCRKBN-G            TO  W65-OCRKBN
            MOVE    SPA-GMN-OCRTAIKBN-G         TO  W65-OCRTAIKBN
-           MOVE    SPA-GMN-HEIYOJIKBN-G        TO  W65-HEIYOJIKBN
-           MOVE    SPA-GMN-HEIYOJITAIKBN-G     TO  W65-HEIYOJITAIKBN
+      *    MOVE    SPA-GMN-HEIYOJIKBN-G        TO  W65-HEIYOJIKBN
+      *    MOVE    SPA-GMN-HEIYOJITAIKBN-G     TO  W65-HEIYOJITAIKBN
            MOVE    SPA-GMN-JYUHENKBN-G         TO  W65-JYUHENKBN
            MOVE    SPA-GMN-JYUHENTAIKBN-G      TO  W65-JYUHENTAIKBN
       *
@@ -2823,13 +2823,13 @@
                                    TO  W65-OCRKBN-ITEM (IDX-CMB)
            END-PERFORM
       *
-           MOVE    SPA-GMN-HEIYOJIKBN-MAX      TO  W65-HEIYOJIKBN-COUNT
-           PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-HEIYOJIKBN-MAX )
-                   MOVE    SPA-GMN-HEIYOJIKBNLST (IDX-CMB)
-                                   TO  W65-HEIYOJIKBN-ITEM (IDX-CMB)
-           END-PERFORM
-      *
+      *+   MOVE    SPA-GMN-HEIYOJIKBN-MAX      TO  W65-HEIYOJIKBN-COUNT
+      *+   PERFORM VARYING IDX-CMB FROM    1   BY  1
+      *+           UNTIL ( IDX-CMB >   SPA-GMN-HEIYOJIKBN-MAX )
+      *+           MOVE    SPA-GMN-HEIYOJIKBNLST (IDX-CMB)
+      *+                           TO  W65-HEIYOJIKBN-ITEM (IDX-CMB)
+      *+   END-PERFORM
+      * 
            MOVE    SPA-GMN-JYUHENKBN-MAX       TO  W65-JYUHENKBN-COUNT
            PERFORM VARYING IDX-CMB FROM    1   BY  1
                    UNTIL ( IDX-CMB >   SPA-GMN-JYUHENKBN-MAX )
@@ -3040,11 +3040,14 @@
                                    TO  W65-OCRTAIKBN-STATE
                                        W65-OCRTAIKBN-ITEM-STATE
            END-IF
-           IF    ( SPA-GMN-HEIYOJIKBN    =   "0" )
+           MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-HEIYOJIKBN-STATE
+                                       W65-HEIYOJIKBN-ITEM-STATE
+      *+   IF    ( SPA-GMN-HEIYOJIKBN    =   "0" )
                MOVE    WIDGET-INSENSITIVE
                                    TO  W65-HEIYOJITAIKBN-STATE
                                        W65-HEIYOJITAIKBN-ITEM-STATE
-           END-IF
+      *+   END-IF
            IF    ( SPA-GMN-JYUHENKBN    =   "0" )
                MOVE    WIDGET-INSENSITIVE
                                    TO  W65-JYUHENTAIKBN-STATE
@@ -3281,7 +3284,11 @@
                    MOVE    19          TO  SPA-GMN-CUR
                END-IF
            END-IF
-      *
+      ************
+           IF    ( SPA-GMN-CUR         =   19 OR 20 )
+               MOVE    21              TO  SPA-GMN-CUR
+           END-IF
+      ************
            IF    ( SPA-GMN-CUR         =   20 )
                IF    ( W65-HEIYOJITAIKBN-STATE
                                        =   WIDGET-INSENSITIVE )
@@ -3292,7 +3299,7 @@
            IF    ( SPA-GMN-CUR         =   22 )
                IF    ( W65-JYUHENTAIKBN-STATE
                                        =   WIDGET-INSENSITIVE )
-                   MOVE    23          TO  SPA-GMN-CUR
+                   MOVE    51          TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
