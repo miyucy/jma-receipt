@@ -1516,13 +1516,14 @@
            PERFORM 2001-JIDOTUIKA-SEC
            IF      FLG-ARI             =   1
                MOVE    "1"             TO  WRK-COM-IN  (IDX-T)
-               MOVE    SPACE           TO  WRK-COM-AUTOKBN (IDX-T)
+               MOVE    "2"             TO  WRK-COM-AUTOKBN (IDX-T)
       *        ø«Œ≈∆‚Õ∆ ‘Ω∏
                IF      WRK-SRYCD           =   "810000001"
                    MOVE    "° ΩÈ≤Ûº¬ª‹°À"      TO  WRK-GMN-MEISYO-G
                                                           (IDX-T)
-                   MOVE    "1"                  TO  WRK-COM-MEIFLG
+                   MOVE    "1"                 TO  WRK-COM-MEIFLG
                                                           (IDX-T)
+                   MOVE    SPACE           TO  WRK-COM-IN  (IDX-T)
                ELSE
                    MOVE    WRK-MM          TO  WRK-COM-ATAI1 (IDX-T)
                    MOVE    WRK-DD          TO  WRK-COM-ATAI2 (IDX-T)
@@ -1537,7 +1538,7 @@
                                            WRK-SCR-REC
                                            SPA-AREA
       *
-      *    ø«Œ≈∆¸§Ú ‘Ω∏
+      *        ø«Œ≈∆¸§Ú ‘Ω∏
                INITIALIZE                  ORCSC92AREA
                MOVE    SPACE               TO  LNK-SC92-KBN
                MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
