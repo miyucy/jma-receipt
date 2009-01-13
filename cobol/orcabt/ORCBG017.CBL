@@ -191,6 +191,11 @@
            03  WRK-SIKIBETU        PIC X(02).
            03  WRK-TEN             PIC S9(09).
            03  WRK-TENX            PIC X(11).
+           03  WRK-IN-TEN          PIC 9(09)V99.
+           03  WRK-OT-TEN          PIC X(18).
+           03  WRK-KIZAMI          PIC 9(09)V999.
+           03  WRK-SHO             PIC 9(09).
+           03  WRK-AMARI           PIC 9(09).
       *
        01  TSRYKBN-AREA.
            03  TSRYKBN-MAX         PIC 9(03).
@@ -219,7 +224,7 @@
            03  CONST-LINE-MAX              PIC 9(05)   VALUE 80.
            03  CONST-TPTINF-MAX            PIC 9(05)   VALUE 1000.
            03  CONST-TSRYKBN-MAX           PIC 9(05)   VALUE 14.
-           03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 7.
+           03  CONST-SRYCD-MAX             PIC 9(05)   VALUE 5.
            03  CONST-NSRYACT-MAX           PIC 9(05)   VALUE 20.
            03  CONST-PARA-SRYKBN-MAX       PIC 9(05)   VALUE 7.
            03  CONST-SRYKBN-G.
@@ -1100,7 +1105,9 @@ grpsys     END-UNSTRING
            MOVE    IN01-KEY-SRYCD      TO  HCG017-SRYCD (CNT-LINE)
            MOVE    IN01-NAME           TO  HCG017-NAME  (CNT-LINE)
       *
+           MOVE    IN01-TEN            TO  WRK-IN-TEN
            PERFORM 200111-TEN-EDIT-SEC
+           MOVE    WRK-OT-TEN          TO  HCG017-TEN (CNT-LINE)
       *
            IF    ( IN01-TANI       NOT =   SPACE )
                MOVE    IN01-KEY-SURYO      TO  WRK-ZZZZ9
@@ -1125,16 +1132,53 @@ grpsys     END-UNSTRING
            MOVE    IN01-KAISU          TO  WRK-ZZZZZ9
            MOVE    WRK-ZZZZZ9          TO  HCG017-KENSU (CNT-LINE)
       *
+           MOVE    IN01-KEY-SRYCD      TO  WRK-SRYCD
+           MOVE    ZERO                TO  WRK-IN-TEN
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( TNS-KZMCOMPSIKIBETU     =   1 )
+               MOVE    IN01-KEY-SURYO  TO  WRK-KIZAMI
+               IF    ( IN01-KEY-SURYO  <   TNS-KZMKGN )
+                   MOVE    TNS-KZMKGN  TO  WRK-KIZAMI
+               END-IF
+      *
+               COMPUTE WRK-IN-TEN
+                   =   WRK-KIZAMI
+                   -   TNS-KZMKGN
+      *
+               DIVIDE  TNS-KZM INTO WRK-IN-TEN GIVING    WRK-SHO
+                                               REMAINDER WRK-AMARI
+      *
+               IF    ( WRK-AMARI > 0 )
+                   COMPUTE WRK-SHO =   WRK-SHO +   1
+               END-IF
+      *
+               COMPUTE WRK-IN-TEN
+                   = ( WRK-SHO * TNS-KZMTEN + TNS-TEN )
+                   *   IN01-KAISU
+      *
+           ELSE
+               COMPUTE WRK-IN-TEN
+                   =   IN01-TEN
+                   *   IN01-KEY-SURYO
+                   *   IN01-KAISU
+           END-IF
+           PERFORM 200111-TEN-EDIT-SEC
+           IF    ( WRK-SIKIBETU        =   "円" OR "点" )
+               MOVE    WRK-OT-TEN      TO  HCG017-KEI (CNT-LINE)
+           END-IF
+      *
            .
        20011-BODY-NAIYO-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    点数編集処理
+      *    点数計編集処理
       *****************************************************************
        200111-TEN-EDIT-SEC             SECTION.
       *
+           MOVE    SPACE               TO  WRK-OT-TEN
+      *
            MOVE    "　"                TO  WRK-SIKIBETU
-           MOVE    IN01-TEN            TO  WRK-TEN
+           MOVE    WRK-IN-TEN          TO  WRK-TEN
            EVALUATE    IN01-TENSIKIBETU
            WHEN    "1"
                MOVE    "円"            TO  WRK-SIKIBETU
@@ -1163,23 +1207,26 @@ grpsys     END-UNSTRING
                INSPECT WRK-TENX    REPLACING   FIRST   "  "    BY  "　"
            END-IF
       *
-           MOVE    IN01-TEN            TO  WRK-SMLNUMIN
+           MOVE    WRK-IN-TEN          TO  WRK-SMLNUMIN
            PERFORM 200111-SMLNUM-EDIT-SEC
       *
+           DISPLAY "WRK-SMLNUMOT =" WRK-SMLNUMOT
+           DISPLAY "WRK-TENX =" WRK-TENX
            IF    ( WRK-SMLNUMOT        =   "." )
                STRING  "　"                DELIMITED BY SIZE
                        WRK-TENX            DELIMITED BY SIZE
                        WRK-SIKIBETU        DELIMITED BY SPACE
-               INTO    HCG017-TEN (CNT-LINE)
+               INTO    WRK-OT-TEN
                END-STRING
            ELSE
                STRING  "　"                DELIMITED BY SIZE
                        WRK-TENX            DELIMITED BY SIZE
                        WRK-SMLNUMOT        DELIMITED BY SPACE
                        WRK-SIKIBETU        DELIMITED BY SPACE
-               INTO    HCG017-TEN (CNT-LINE)
+               INTO    WRK-OT-TEN
                END-STRING
            END-IF
+           DISPLAY "WRK-OT-TEN =" WRK-OT-TEN
       *
            .
        200111-TEN-EDIT-EXT.

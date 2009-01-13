@@ -12,3 +12,5 @@
               03  HCG017-TEN  PIC X(18).
               03  HCG017-SURYO    PIC X(21).
               03  HCG017-KENSU    PIC X(6).
+            02  HCG017-SRYAREA2         OCCURS  80 TIMES.
+              03  HCG017-KEI  PIC X(18).
