@@ -58,3 +58,5 @@
             02  HCM03B-RSIMIDASI    PIC X(16).
             02  HCM03B-RSIBUN   PIC X(18).
             02  HCM03B-RSIEN    PIC X(2).
+            02  HCM03B-MEMO
+                    PIC X(80)   OCCURS  10 TIMES.
