@@ -281,8 +281,25 @@
                                        WRK-SYMD  (1:6)
                MOVE    "01"        TO  WRK-SYMD  (7:2) 
                PERFORM 5002-HIZUKE-HEN-SEC
-               MOVE    WRK-HENYMDG(1:6) 
-                                   TO  SPA-H02GMN-TSYORIYM(IDY)
+      *
+               IF    ( WRK-HENREI-B-HOSPNUM
+                                   =   TBL-HENREI-B-HOSPNUM     (IDZZ) )
+               AND   ( WRK-HENREI-B-SYORIYM
+                                   =   TBL-HENREI-B-SYORIYM     (IDZZ) )
+               AND   ( WRK-HENREI-B-TEISYUTUSAKI
+                                   =   TBL-HENREI-B-TEISYUTUSAKI(IDZZ) )
+               AND   ( WRK-HENREI-B-RECEIPT-NO
+                                   =   TBL-HENREI-B-RECEIPT-NO  (IDZZ) )
+                   MOVE    "*"             TO
+                                       SPA-H02GMN-TSYORIYM(IDY) (1:1)
+                   MOVE    WRK-HENYMDG(1:6) 
+                                           TO
+                                       SPA-H02GMN-TSYORIYM(IDY) (2:)
+               ELSE
+                   MOVE    WRK-HENYMDG(1:6) 
+                                           TO  SPA-H02GMN-TSYORIYM(IDY)
+               END-IF
+      *
                MOVE    TBL-HENREI-B-NYUGAIKBN (IDZZ)
                                    TO  SPA-H02NAI-TNYUGAIKBN
                                                           (IDY)
@@ -384,6 +401,51 @@
            END-PERFORM
       *
            MOVE    IDY                 TO  SPA-H02GMN-MAX
+      *
+      *    設定予定欄の設定
+           IF    ( SPA-H01-SYOKBN      =   3    )
+           AND   ( WRK-HENREI-B-HOSPNUM
+                                       >   ZERO )
+               MOVE    "設定予定："    TO  SPA-H02GMN-LABEL
+               MOVE    WRK-HENREI-B-SYORIYM
+                                       TO  WRK-SYMD  (1:6)
+               MOVE    "01"            TO  WRK-SYMD  (7:2) 
+               PERFORM 5002-HIZUKE-HEN-SEC
+               MOVE    WRK-HENYMDG(1:6) 
+                                       TO  SPA-H02GMN-SYORIYM
+               EVALUATE    WRK-HENREI-B-NYUGAIKBN
+                   WHEN    "1"
+                       MOVE    "入院"      TO  SPA-H02GMN-NYUGAIKBN
+                   WHEN    "2"
+                       MOVE    "入院外"    TO  SPA-H02GMN-NYUGAIKBN
+               END-EVALUATE
+               MOVE    WRK-HENREI-B-RECESYUBETU
+                                       TO  SPA-H02GMN-RECESYUBETU
+               MOVE    WRK-HENREI-B-HKNJANUM
+                                       TO  SPA-H02GMN-HKNJANUM
+      *
+      *        公費単独で生保又は中国残留邦人等のとき負担者番号、
+      *        受給者番号をセット
+               IF      WRK-HENREI-B-RECESYUBETU
+                                       =   "1211" OR "1212"
+                   IF    ( WRK-HENREI-B-FTNNUM (1) (1:2)
+                                           =   "12" OR  "25" )
+                       STRING  WRK-HENREI-B-FTNNUM (1)
+                                               DELIMITED   BY  SPACE
+                               WRK-HENREI-B-JKYNUM (1)
+                                               DELIMITED   BY  SPACE
+                                       INTO    SPA-H02GMN-KIGO
+                       END-STRING
+                   END-IF
+               ELSE
+                   STRING  WRK-HENREI-B-KIGO   DELIMITED   BY  SPACE
+                           WRK-HENREI-B-NUM    DELIMITED   BY  SPACE
+                                               INTO    SPA-H02GMN-KIGO
+                   END-STRING
+               END-IF
+               MOVE    WRK-HENREI-B-HR-MSG
+                                       TO  SPA-H02GMN-ERR
+           END-IF
       *
            IF      SPA-H01-SYOKBN      =   ZERO
                IF      SPA-H02GMN-MAX      =   1
@@ -711,6 +773,26 @@
       *
            MOVE    SPA-H02GMN-SELNUM
                                    TO  H02-SELNUM
+      *
+           MOVE    "darkgreen"     TO  H02-LABEL-STYLE
+                                       H02-SYORIYM-STYLE
+                                       H02-NYUGAIKBN-STYLE
+                                       H02-RECESYUBETU-STYLE
+                                       H02-HKNJANUM-STYLE
+                                       H02-KIGO-STYLE
+                                       H02-ERR-STYLE
+           MOVE    SPA-H02GMN-LABEL
+                                   TO  H02-LABEL
+           MOVE    SPA-H02GMN-SYORIYM
+                                   TO  H02-SYORIYM
+           MOVE    SPA-H02GMN-NYUGAIKBN
+                                   TO  H02-NYUGAIKBN
+           MOVE    SPA-H02GMN-RECESYUBETU
+                                   TO  H02-RECESYUBETU
+           MOVE    SPA-H02GMN-HKNJANUM
+                                   TO  H02-HKNJANUM
+           MOVE    SPA-H02GMN-KIGO TO  H02-KIGO
+           MOVE    SPA-H02GMN-ERR  TO  H02-ERR
       *
            IF      SPA-H01-SYOKBN      =   1
                MOVE    WIDGET-INSENSITIVE  TO  H02-B12-STATE

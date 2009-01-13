@@ -117,8 +117,8 @@
       <class>GtkLabel</class>
       <name>NAME</name>
       <x>48</x>
-      <y>8</y>
-      <width>300</width>
+      <y>4</y>
+      <width>106</width>
       <height>24</height>
       <label>返　戻　情　報</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
@@ -133,9 +133,9 @@
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow26</name>
       <x>5</x>
-      <y>40</y>
+      <y>27</y>
       <width>1000</width>
-      <height>240</height>
+      <height>233</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
       <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
@@ -363,15 +363,111 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label457</name>
-      <x>8</x>
-      <y>292</y>
-      <width>64</width>
+      <name>SYORIYM</name>
+      <x>232</x>
+      <y>270</y>
+      <width>59</width>
       <height>24</height>
-      <label>選択番号</label>
+      <label>H10.10</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>RECESYUBETU</name>
+      <x>341</x>
+      <y>270</y>
+      <width>40</width>
+      <height>24</height>
+      <label>1124</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>NYUGAIKBN</name>
+      <x>291</x>
+      <y>270</y>
+      <width>47</width>
+      <height>24</height>
+      <label>入院外</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HKNJANUM</name>
+      <x>387</x>
+      <y>270</y>
+      <width>71</width>
+      <height>24</height>
+      <label>12345678</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LABEL</name>
+      <x>152</x>
+      <y>270</y>
+      <width>64</width>
+      <height>24</height>
+      <label>設定予定：</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>KIGO</name>
+      <x>468</x>
+      <y>270</y>
+      <width>132</width>
+      <height>24</height>
+      <label>まつ１２３４５６７</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>ERR</name>
+      <x>609</x>
+      <y>270</y>
+      <width>221</width>
+      <height>24</height>
+      <label>エラー情報あり</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>

@@ -176,10 +176,18 @@
       *
                05  SPA-H02GMN-SELNUM          PIC 9(02).
       *
+               05  SPA-H02GMN-LABEL           PIC X(10).
+               05  SPA-H02GMN-SYORIYM         PIC X(06).
+               05  SPA-H02GMN-NYUGAIKBN       PIC X(06).
+               05  SPA-H02GMN-RECESYUBETU     PIC X(04).
+               05  SPA-H02GMN-HKNJANUM        PIC X(08).
+               05  SPA-H02GMN-KIGO            PIC X(20).
+               05  SPA-H02GMN-ERR             PIC X(100).
+      *
                05  SPA-H02GMN-TBL.
                    07  SPA-H02GMN-G           OCCURS  30.
                        09  SPA-H02GMN-TRENNUM      PIC 9(2).
-                       09  SPA-H02GMN-TSYORIYM     PIC X(6).
+                       09  SPA-H02GMN-TSYORIYM     PIC X(7).
                        09  SPA-H02GMN-TNYUGAIKBN   PIC X(2).
                        09  SPA-H02GMN-TRECESYUBETU PIC X(4).
                        09  SPA-H02GMN-THKNJANUM    PIC X(8).

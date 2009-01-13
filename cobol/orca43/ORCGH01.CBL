@@ -860,6 +860,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
       *        クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 420-CLEAR-SEC
+      *        前回の患者番号
+               WHEN    "CLICKED"       ALSO    "B03"
+                   PERFORM 430-MAEKPTNUM-SEC
       *        氏名検索
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 480-KENSAKU-SEC
@@ -1154,6 +1157,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                        GO      TO     4101-PTNUM-CHK-EXT
                    ELSE
                        MOVE    PTINF-NAME  TO  SPA-H01GMN-NAME
+                       MOVE    SPA-H01NAI-PTID
+                                           TO  SPA-LAST-PTID
+                       MOVE    SPA-H01GMN-PTNUM
+                                           TO  SPA-LAST-PTNUM
                    END-IF
                END-IF
            END-IF
@@ -2404,6 +2411,22 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            PERFORM 990-LOCK-OUT-SEC
            .
        420-CLEAR-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    前回患者番号編集処理
+      *****************************************************************
+       430-MAEKPTNUM-SEC             SECTION.
+      *
+           IF      SPA-LAST-PTNUM      =   SPACE
+               GO  TO  430-MAEKPTNUM-EXT
+           END-IF
+      *
+           MOVE    SPA-LAST-PTNUM      TO  H01-PTNUM
+           PERFORM 4101-PTNUM-CHK-SEC
+      *
+           .
+       430-MAEKPTNUM-EXT.
            EXIT.
       *
       *****************************************************************
