@@ -46,5 +46,6 @@
             02  HCN03V02B-RSIEN PIC X(2).
             02  HCN03V02B-SKJRYO    PIC X(24).
             02  HCN03V02B-LIFERYO   PIC X(24).
+            02  HCN03V02B-LAYER-OPTION  PIC X(100).
             02  HCN03V02B-MEMO
                     PIC X(80)   OCCURS  10 TIMES.
