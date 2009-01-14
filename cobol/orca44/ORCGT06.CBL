@@ -1674,18 +1674,37 @@
                    MOVE    MCPDATA-REC         TO  RECE10-REC
       *            ·îÃÙ¤ìÊ¬¡¢ÀÁµá¤·¤Ê¤¤¤ÏÂÐ¾Ý³°
                    IF    ( RECE10-SKYKBN   NOT =   "0"             )
-                   AND   ( RECE10-SKYYM    =   "000000"
+                   AND   ( RECE10-SKYYM        =   "000000"
                                            OR  SPA-NAI-T06-SRYYM-H )
-      *                ÊÖÌáÊ¬¤ÏÂÐ¾Ý³°
-                       IF      RECE10-HENREIYM =   "000000"
-                           ADD     1               TO  IDX
-                           PERFORM 42031-T09-HENSYU-SEC
-                           IF      IDX             =   1    
-                               MOVE    RECE10-REC  TO  WRK-RECE10-REC
-                           END-IF
-                       ELSE
-                           ADD     1               TO  IDY
-                       END-IF
+                       EVALUATE    SPA-NAI-T06-B-THENREI-FLG
+                                           (SPA-NAI-T06-BODY-SELNUM)
+                           WHEN    SPACE
+      *                        ÊÖÌáÊ¬¤ÏÂÐ¾Ý³°
+                               IF      RECE10-HENREIYM =   "000000"
+                                   ADD     1               TO  IDX
+                                   PERFORM 42031-T09-HENSYU-SEC
+                                   IF      IDX             =   1    
+                                       MOVE    RECE10-REC  TO
+                                                       WRK-RECE10-REC
+                                   END-IF
+                               ELSE
+                                   ADD     1               TO  IDY
+                               END-IF
+                           WHEN    "1"
+      *                        ÊÖÌáÊ¬ÀßÄêºÑ¤Î¤ßÂÐ¾Ý
+                               IF    ( RECE10-HENREIYM NOT =  "000000" )
+                               AND   ( RECE10-HENREI-SIJI-FLG
+                                                           =  1        )
+                                   ADD     1               TO  IDX
+                                   PERFORM 42031-T09-HENSYU-SEC
+                                   IF      IDX             =   1    
+                                       MOVE    RECE10-REC  TO
+                                                       WRK-RECE10-REC
+                                   END-IF
+                               ELSE
+                                   ADD     1               TO  IDY
+                               END-IF
+                       END-EVALUATE
                    ELSE
                        ADD     1               TO  IDZ
                    END-IF
@@ -2113,7 +2132,7 @@
                MOVE    MCPDATA-REC         TO  RECE10-REC
       *        ·îÃÙ¤ìÊ¬¡¢ÀÁµá¤·¤Ê¤¤¤ÏÂÐ¾Ý³°
                IF    ( RECE10-SKYKBN   NOT =   "0"             )
-               AND   ( RECE10-SKYYM    =   "000000"
+               AND   ( RECE10-SKYYM        =   "000000"
                                        OR  SPA-NAI-T06-SRYYM-H )
       *            ÊÖÌáÊ¬¤ÏÂÐ¾Ý³°
                    IF      RECE10-HENREIYM =   "000000"
@@ -2123,7 +2142,18 @@
                            MOVE    RECE10-REC  TO  WRK-RECE10-REC
                        END-IF
                    ELSE
-                       ADD     1               TO  IDY
+      *                ÊÖÌáÊ¬ÀßÄêºÑ¤Î¤ßÂÐ¾Ý
+                       IF    ( RECE10-HENREIYM NOT =  "000000" )
+                       AND   ( RECE10-HENREI-SIJI-FLG
+                                                   =  1        )
+                           ADD     1               TO  IDX
+                           PERFORM 42031-T09-HENSYU-SEC
+                           IF      IDX             =   1    
+                               MOVE    RECE10-REC  TO  WRK-RECE10-REC
+                           END-IF
+                       ELSE
+                           ADD     1               TO  IDY
+                       END-IF
                    END-IF
                ELSE
                    ADD     1               TO  IDZ
@@ -2677,6 +2707,10 @@
       *
            MOVE    RECE10-HKNNUM   TO  SPA-NAI-T06-R-THKNNUM (IDX)
       *
+           MOVE    RECE10-HENREI-SIJI-FLG
+                                   TO  SPA-NAI-T06-R-THENREI-SIJI-FLG
+                                                             (IDX)
+      *
            .
        410411-TUIKA-HENSYU-EXT.
            EXIT.
@@ -3155,6 +3189,11 @@
                MOVE    WRK-HENYMDG     TO  SPA-GMN-T06-R-TCREYMD (IDX)
       *
                MOVE    RECE10-HKNNUM   TO  SPA-NAI-T06-R-THKNNUM (IDX)
+      *
+               MOVE    RECE10-HENREI-SIJI-FLG
+                                       TO
+                                       SPA-NAI-T06-R-THENREI-SIJI-FLG
+                                                                 (IDX)
       * 
                MOVE    "tbl_onrece_body"
                                        TO  MCP-TABLE
@@ -3469,6 +3508,10 @@
                                            TO  ONRECE-B-KIGO
                MOVE    SPA-NAI-T06-R-THKNNUM      (IDX)
                                            TO  ONRECE-B-HKNNUM
+               IF      SPA-NAI-T06-R-THENREI-SIJI-FLG (IDX)
+                                           =   1
+                   MOVE    "1"                 TO  ONRECE-B-U-HENREI-FLG
+               END-IF
                MOVE    SMCNDATE-YMD        TO  ONRECE-B-CREYMD
                MOVE    SPA-TERMID          TO  ONRECE-B-TERMID
                MOVE    SPA-OPID            TO  ONRECE-B-OPID

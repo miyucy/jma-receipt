@@ -144,6 +144,8 @@
                    07  SPA-NAI-T06-RECE-TBL.
                        09  SPA-NAI-T06-RECE-G      OCCURS   1000.
                            11  SPA-NAI-T06-R-THKNNUM   PIC X(03).
+                           11  SPA-NAI-T06-R-THENREI-SIJI-FLG
+                                                       PIC 9(01).
                            11  SPA-NAI-T06-RECE10-KEY.
                                13  SPA-NAI-T06-RECE10-HOSPNUM
                                                        PIC 9(02).

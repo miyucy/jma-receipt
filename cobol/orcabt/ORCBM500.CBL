@@ -1457,6 +1457,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            IF      STS-RECE30          =   "00"
                CONTINUE
            ELSE
+               CALL "coblog" USING   "file write err " RECE30PARA
                MOVE    SPACE               TO  WRK-RECEERR
                STRING "ファイル 書き込みエラー STS="
                                                DELIMITED  BY  SIZE
