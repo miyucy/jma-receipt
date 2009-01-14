@@ -241,7 +241,7 @@
       </composite>
     </attribute>
   </diagramdata>
-  <layer name="LAYER2" visible="true">
+  <layer name="L2" visible="true">
     <object type="Standard - Box" version="0" id="O0">
       <attribute name="obj_pos">
         <point val="11,14.65"/>
@@ -342,7 +342,7 @@
       </attribute>
     </object>
   </layer>
-  <layer name="LAYER1" visible="true">
+  <layer name="L1" visible="true">
     <object type="Standard - Box" version="0" id="O5">
       <attribute name="obj_pos">
         <point val="11,14.65"/>
