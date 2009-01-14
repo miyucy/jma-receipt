@@ -1175,6 +1175,9 @@
                                                TO  RECE10-NUM 
                        MOVE    SPA-NAI-T09-RECE10-THKNNUM  (IDY)
                                                TO  RECE10-HKNNUM
+                       MOVE    SPA-NAI-T09-RECE10-THENREI-SIJI-FLG(IDY)
+                                               TO
+                                               RECE10-HENREI-SIJI-FLG
                        MOVE    SPA-NAI-T09-TCREYMD  (IDY)
                                                TO  RECE10-CREYMD
                        MOVE    SPA-GMN-T09-TPTNUM  (IDY)
@@ -2217,6 +2220,10 @@
       *
            MOVE    RECE10-KEY      TO  SPA-NAI-T09-RECE10-KEY     (IDX)
            MOVE    RECE10-HKNNUM   TO  SPA-NAI-T09-RECE10-THKNNUM (IDX)
+           MOVE    RECE10-HENREI-SIJI-FLG
+                                   TO
+                                   SPA-NAI-T09-RECE10-THENREI-SIJI-FLG
+                                                                  (IDX)
       *
            MOVE    IDX             TO  SPA-GMN-T09-TRENNUM        (IDX)
            MOVE    RECE10-PTNUM    TO  SPA-GMN-T09-TPTNUM         (IDX)
