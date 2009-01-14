@@ -403,7 +403,7 @@
        1001-OPTION-CALL-SEC             SECTION.
       *
            INITIALIZE                  ORCSPRGOPTIONAREA
-           MOVE    "ORCHC01"           TO  ORCSPRGOPTION-PRGID
+           MOVE    "ORCHCN01"          TO  ORCSPRGOPTION-PRGID
            MOVE    WRK-PARA-NAME       TO  ORCSPRGOPTION-IN-DATA
            CALL    "ORCSPRGOPTION"     USING   SPA-AREA
                                                ORCSPRGOPTIONAREA
