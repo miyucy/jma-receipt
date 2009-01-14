@@ -55,6 +55,8 @@
       *
       *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
       *  04.03.02    NACL-藤原    08/06/06  レセプト種別名称、作成日の追加
+      *
+      *  04.04.01    NACL-藤原    09/12/10  返戻対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,6 +77,26 @@
       *
       *    画面用ＳＰＡ
            COPY    "H01SCR-SPA".
+      *
+      *    設定済返戻データ
+           02  SPA-HENREI-B-REC.
+           COPY    "CPHENREI-BODY.INC"
+                                   REPLACING   //HENREI-B-//
+                                   BY          //SPA-HENREI-B-//.
+      *
+      *    対象一覧用返戻データ
+           02  TBL-HENREI-B-REC    OCCURS  30.
+           COPY    "CPHENREI-BODY.INC"
+                                   REPLACING   //HENREI-B-//
+                                   BY          //TBL-HENREI-B-//.
+           02  TBL-HENREI-B-ERR    PIC 9(01)   OCCURS  30.
+           02  TBL-HENREI-B-MAX    PIC 9(02).
+      *
+      *    更新対象返戻データ
+           02  WRK-HENREI-B-REC.
+           COPY    "CPHENREI-BODY.INC"
+                                   REPLACING   //HENREI-B-//
+                                   BY          //WRK-HENREI-B-//.
       *
            COPY    "ENUM-VALUE".
       *
