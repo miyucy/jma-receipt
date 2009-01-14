@@ -32,9 +32,9 @@
       *返却
            03  ORCSPRGOPTION-OUT-G.
       *        パラメタ値
-               05  ORCSPRGOPTION-OT-PARA    PIC X(50).
+               05  ORCSPRGOPTION-OT-PARA    PIC X(100).
       *        最大桁数
-               05  ORCSPRGOPTION-OT-SIZE    PIC 9(02).
+               05  ORCSPRGOPTION-OT-SIZE    PIC 9(03).
       *        文字タイプ（１：半角、２：全角、３：混在）
                05  ORCSPRGOPTION-OT-TYPE    PIC 9(01).
       *    復帰コード

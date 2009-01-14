@@ -58,7 +58,7 @@
       *    °ì»þÎÎ°è
        01  WRK-AREA.
            03  WRK-MAX             PIC 9(04).
-           03  WRK-PARA            PIC X(50).
+           03  WRK-PARA            PIC X(100).
            03  WRK-OPTION          PIC X(5000).
       *
       *****************************************************************
@@ -216,7 +216,7 @@
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
                MOVE    WRK-PARA            TO  KANACHK-MAE-INPUT
-               MOVE    50                  TO  KANACHK-MAX-CNT
+               MOVE    100                 TO  KANACHK-MAX-CNT
                CALL    "ORCSKANACHK"       USING
                                            ORCSKANACHKAREA
                MOVE    KANACHK-MAE-INPUT   TO  WRK-PARA
@@ -247,7 +247,7 @@
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX3    FROM   IDX2   BY  1
                    UNTIL      (IDX3        >   5000 )
-                          OR  (IDY         >=  50     )
+                          OR  (IDY         >=  100  )
                           OR  (FLG-OK  NOT =   ZERO   )
                IF      WRK-OPTION(IDX3:1)  =   X"0A"
                                            OR  "#"
