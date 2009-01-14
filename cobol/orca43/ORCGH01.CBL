@@ -797,7 +797,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                    WHEN    "1003"
                        INITIALIZE          WRK-HENREI-B-REC
                    WHEN    "1004"
-                       MOVE    "F"     TO  SPA-H01GMN-HENREI-SIJI-FLG
+                       MOVE    "T"     TO  SPA-H01GMN-HENREI-SIJI-FLG
                    WHEN    "1005"
                        MOVE    SPA-H01GMN-HENREIYM-OLD
                                        TO  SPA-H01GMN-HENREIYM
@@ -2058,9 +2058,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    "key2"                  TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *??
-           DISPLAY "FLG=" FLG-HENREI-B-CHK "#" TBL-HENREI-B-MAX "#"
-      *??
            IF      FLG-HENREI-B-CHK    =   ZERO
       *        手提滦据办枉
                PERFORM 411911-H02-HENSYU-SEC
