@@ -1711,7 +1711,6 @@
                    ELSE
                        ADD     1               TO  IDZ
                    END-IF
-                   
       *
                    MOVE    "tbl_seikyu"        TO  MCP-TABLE
                    MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -1736,15 +1735,21 @@
                    IF    ( IDY             =   0 )
                    AND   ( IDZ             =   0 )
                        MOVE    "0007"          TO  SPA-ERRCD
-                   ELSE 
-                       IF    ( IDY             >   0 )
-                       AND   ( IDZ             >   0 )
-                           MOVE    "0015"          TO  SPA-ERRCD
+                   ELSE
+                       IF      SPA-NAI-T06-B-THENREI-FLG
+                                           (SPA-NAI-T06-BODY-SELNUM)
+                                       =   1
+                           MOVE    "0017"          TO  SPA-ERRCD
                        ELSE
                            IF    ( IDY             >   0 )
-                               MOVE    "0014"          TO  SPA-ERRCD
+                           AND   ( IDZ             >   0 )
+                               MOVE    "0015"          TO  SPA-ERRCD
                            ELSE
-                               MOVE    "0016"          TO  SPA-ERRCD
+                               IF    ( IDY             >   0 )
+                                   MOVE    "0014"          TO  SPA-ERRCD
+                               ELSE
+                                   MOVE    "0016"          TO  SPA-ERRCD
+                               END-IF 
                            END-IF 
                        END-IF 
                    END-IF 
@@ -4548,6 +4553,10 @@
                WHEN    "0016"
                    MOVE
                    "対象の請求データは月遅れ等の設定が行なわれています"
+                                                       TO  SPA-ERRMSG
+               WHEN    "0017"
+                   MOVE
+                   "対象の請求データに返戻の設定が行なわれていません"
                                                        TO  SPA-ERRMSG
                WHEN    "0022"
                    MOVE    "患者情報を入力中です"      TO  SPA-ERRMSG
