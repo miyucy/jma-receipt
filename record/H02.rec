@@ -48,12 +48,13 @@ H02	{
 					value5	varchar(20);
 					value6	varchar(100);
 					value7	varchar(2);
-					value8	varchar(2);
-					value9	varchar(4);
-					value10	varchar(8);
-					value11	varchar(20);
-					value12	varchar(2);
+					value8	varchar(6);
+					value9	varchar(2);
+					value10	varchar(4);
+					value11	varchar(8);
+					value12	varchar(20);
 					value13	varchar(2);
+					value14	varchar(2);
 				}	[30];
 				select	bool[30];
 			};

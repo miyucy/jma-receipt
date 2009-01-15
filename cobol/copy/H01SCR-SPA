@@ -195,6 +195,7 @@
                        09  SPA-H02GMN-TERR         PIC X(100).
       *
                        09  SPA-H02GMN-TS-MAKE-FLG  PIC X(2).
+                       09  SPA-H02GMN-TS-SKYYM     PIC X(6).
                        09  SPA-H02GMN-TS-NYUGAIKBN PIC X(2).
                        09  SPA-H02GMN-TS-KIGO      PIC X(20).
                        09  SPA-H02GMN-TS-HOJOKBN-KEY

@@ -30,6 +30,7 @@
                     06  H02-TKIGO              PIC X(20).
                     06  H02-TERR               PIC X(100).
                     06  H02-TS-MAKE-FLG        PIC X(2).
+                    06  H02-TS-SKYYM           PIC X(6).
                     06  H02-TS-NYUGAIKBN       PIC X(2).
                     06  H02-TS-RECESYUBETU     PIC X(4).
                     06  H02-TS-HKNJANUM        PIC X(8).

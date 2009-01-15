@@ -2095,6 +2095,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *
            MOVE    ZERO                TO  SPA-H01-SYOKBN
       *
+           MOVE    SPACE               TO  SPA-MOTOPG
            MOVE    SPA-H01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
            MOVE    SPA-H01FREE         TO  SPA-FREE
@@ -2822,10 +2823,11 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
            INITIALIZE                  HENREI-B-REC
            MOVE    SPA-HOSPNUM     TO  HENREI-B-HOSPNUM
-           MOVE    RECE10-NYUGAIKBN
+           MOVE    SPA-RECE10-NYUGAIKBN
                                    TO  HENREI-B-NYUGAIKBN
-           MOVE    RECE10-SRYYM    TO  HENREI-B-SRYYM
-           EVALUATE    RECE10-TEISYUTUSAKI
+           MOVE    SPA-RECE10-SRYYM
+                                   TO  HENREI-B-SRYYM
+           EVALUATE    SPA-RECE10-TEISYUTUSAKI
                WHEN    1
                    MOVE    "1"     TO  HENREI-B-TEISYUTUSAKI
                                        HENREI-B-XXTEISYUTUSAKI
@@ -2834,7 +2836,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE   "2"      TO  HENREI-B-TEISYUTUSAKI
                    MOVE   "6"      TO  HENREI-B-XXTEISYUTUSAKI
            END-EVALUATE
-           MOVE    RECE10-PTID     TO  HENREI-B-PTID
+           MOVE    SPA-RECE10-PTID TO  HENREI-B-PTID
            MOVE    HENREI-B-REC    TO  MCPDATA-REC
            MOVE    "tbl_henrei_body"
                                    TO  MCP-TABLE
@@ -2865,6 +2867,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    1                   TO  SPA-H01-SYOKBN
       *
+           MOVE    SPACE               TO  SPA-MOTOPG
            MOVE    SPA-H01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
            MOVE    SPA-H01FREE         TO  SPA-FREE

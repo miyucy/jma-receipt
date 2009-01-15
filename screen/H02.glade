@@ -134,7 +134,7 @@
       <name>scrolledwindow26</name>
       <x>5</x>
       <y>27</y>
-      <width>1000</width>
+      <width>1007</width>
       <height>233</height>
       <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
       <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
@@ -171,8 +171,8 @@
 	  <data>SELECT</data>
 	  <last_modification_time>Thu, 07 Feb 2002 06:04:20 GMT</last_modification_time>
 	</signal>
-	<columns>14</columns>
-	<column_widths>25,74,26,45,84,114,164,22,26,62,87,111,21,21</column_widths>
+	<columns>15</columns>
+	<column_widths>29,58,30,39,84,114,164,15,57,30,36,74,111,21,15</column_widths>
 	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	<show_titles>True</show_titles>
 	<shadow_type>GTK_SHADOW_IN</shadow_type>
@@ -273,6 +273,19 @@
 	  <child_name>CList:title</child_name>
 	  <name>label471</name>
 	  <label>∫—</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label484</name>
+	  <label>¿¡µ·«Ø∑Ó</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0.5</xalign>

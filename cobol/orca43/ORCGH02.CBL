@@ -364,6 +364,7 @@
                                    =   1
                        MOVE    "¡û"    TO  SPA-H02GMN-TS-MAKE-FLG(IDY)
                    END-IF
+      *
                    MOVE    TBL-HENREI-B-S-HENREI-SIJI-FLG  (IDZZ IDX)
                                    TO  SPA-H02NAI-TS-HENREI-SIJI-FLG
                                                                  (IDY)
@@ -373,6 +374,12 @@
                                                                  (IDY)
                    END-IF
       *
+                   MOVE    TBL-HENREI-B-S-HENREIYM (IDZZ IDX)
+                                       TO  WRK-SYMD  (1:6)
+                   MOVE    "01"        TO  WRK-SYMD  (7:2) 
+                   PERFORM 5002-HIZUKE-HEN-SEC
+                   MOVE    WRK-HENYMDG(1:6) 
+                                       TO  SPA-H02GMN-TS-SKYYM (IDY)
                    MOVE    TBL-HENREI-B-S-TEISYUTUSAKI     (IDZZ IDX)
                                    TO  SPA-H02NAI-TS-TEISYUTUSAKI  (IDY)
                    MOVE    TBL-HENREI-B-S-NYUGAIKBN        (IDZZ IDX)
@@ -746,6 +753,8 @@
                                        TO  H02-TERR         (IDX)
                MOVE    SPA-H02GMN-TS-MAKE-FLG  (IDX)
                                        TO  H02-TS-MAKE-FLG  (IDX)
+               MOVE    SPA-H02GMN-TS-SKYYM     (IDX)
+                                       TO  H02-TS-SKYYM     (IDX)
                MOVE    SPA-H02GMN-TS-NYUGAIKBN (IDX)
                                        TO  H02-TS-NYUGAIKBN (IDX)
                MOVE    SPA-H02NAI-TS-RECESYUBETU (IDX)
