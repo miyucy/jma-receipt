@@ -796,6 +796,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                EVALUATE    SPA-HIDCD
                    WHEN    "1003"
                        INITIALIZE          WRK-HENREI-B-REC
+                       MOVE    "F"         TO
+                                           SPA-H01GMN-HENREI-SIJI-FLG
                    WHEN    "1004"
                        MOVE    "T"     TO  SPA-H01GMN-HENREI-SIJI-FLG
                    WHEN    "1005"
@@ -2030,7 +2032,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                                MOVE    2       TO  FLG-HENREI-B-CHK
                            END-IF
       *                    再再請求かどうか
-                           IF    ( SPA-H01NAI-HENREIYM
+                           IF    ( SPA-H01NAI-SKYYM
                                            >   HENREI-B-S-HENREIYM
                                                             (IDZZ) )
                            AND   ( HENREI-B-S-HENREIYM  (IDZZ)
