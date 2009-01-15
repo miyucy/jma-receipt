@@ -1738,7 +1738,7 @@
                    ELSE
                        IF      SPA-NAI-T06-B-THENREI-FLG
                                            (SPA-NAI-T06-BODY-SELNUM)
-                                       =   1
+                                       =   "1"
                            MOVE    "0017"          TO  SPA-ERRCD
                        ELSE
                            IF    ( IDY             >   0 )
