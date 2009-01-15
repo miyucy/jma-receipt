@@ -37,6 +37,7 @@
       *  04.01.00    NACL-太田    07/10/22  公務災害対応
       *  04.02.00    NACL-太田    08/03/07  改正対応
       *  04.03.00    NACL-太田    08/09/17  改正対応
+      *  04.04.00    NACL-森脇    09/01/14  プログラムオプション対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -88,6 +89,7 @@
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-PTHKNINF        PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
+           03  FLG-HIZUKECHK       PIC 9(01).
       *
            03  FLG-SP              PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -97,6 +99,7 @@
            03  IDX1                 PIC 9(04).
            03  IDX-M                PIC 9(04).
            03  IDX-JIHI             PIC 9(04).
+           03  IDX-MEMO             PIC 9(04).
       *
       *    システム領域
        01  SYS-AREA.
@@ -105,6 +108,7 @@
       *    一時領域
        01  WRK-AREA.
       *
+           03  WRK-YMD             PIC X(10).
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -177,6 +181,13 @@
       *----(03.04.01)--ADD-END-----
            03  WRK-FORMID              PIC X(30).
       *
+           03  WRK-MEMOID-G.
+               05  WRK-MEMOID          PIC X(04).
+               05  WRK-MEMOIDNO        PIC 9(02).
+      *
+           03  WRK-PARA-NAME           PIC X(25).
+           03  WRK-PARA                PIC X(100).
+      *
       *   日本語数字
        01  TBL-SUJI-AREA.
            03  FILLER          PIC X(20)   VALUE
@@ -197,6 +208,13 @@
            03  CONST-H190401       PIC X(08)   VALUE   "20070401".
            03  CONST-H200401       PIC X(08)   VALUE   "20080401".
            03  CONST-H201001       PIC X(08)   VALUE   "20081001".
+           03  CONST-MEMO-MAX      PIC 9(05)   VALUE   10.
+      *
+      *    プログラムオプションパラメタ
+       01  TPARA-AREA.
+           03  TPARA-YUKOSTYMD          PIC X(08).
+           03  TPARA-YUKOEDYMD          PIC X(08).
+           03  TPARA-MEMO               PIC X(80) OCCURS 10.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -281,11 +299,15 @@
       *****************************************************************
       *
       *   日付変換サブ
+           COPY    "CPORCSGDAY.INC".
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
+      *
+      *    プログラムオプション編集パラメタ
+           COPY    "CPORCSPRGOPTION.INC".
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -296,6 +318,9 @@
       *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
+      *
+      *    マシン日付取得サブ
+           COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
       *    連絡　領域
@@ -419,6 +444,10 @@
            PERFORM 900-1900-READ-SEC
       *----(03.04.01)--ADD-END-----
       *
+           PERFORM 100-OPTION-SELECT-SEC
+      *
+           PERFORM 800-MCNDATE-SEC
+      *
       *    ファイルＯＰＥＮ
            MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HCN3"              TO  HC01PARA-FORM-ID
@@ -429,6 +458,91 @@
       *
            .
        100-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プログラムオプション取込み処理
+      *****************************************************************
+       100-OPTION-SELECT-SEC             SECTION.
+      *
+           INITIALIZE                  TPARA-AREA
+           MOVE    "00000000"      TO  TPARA-YUKOSTYMD
+           MOVE    "99999999"      TO  TPARA-YUKOEDYMD
+      *
+      *    有効開始日
+           MOVE    "YUKOSTYMD"     TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA        TO  WRK-YMD
+           PERFORM 800-HIZUKE-CHK-SEC
+           IF    ( FLG-HIZUKECHK   =   ZERO )
+               MOVE    WRK-SYMD    TO  TPARA-YUKOSTYMD
+           END-IF
+      *
+      *    有効終了日
+           MOVE    "YUKOEDYMD"     TO  WRK-PARA-NAME
+           PERFORM 1001-OPTION-CALL-SEC
+           MOVE    WRK-PARA        TO  WRK-YMD
+           PERFORM 800-HIZUKE-CHK-SEC
+           IF    ( FLG-HIZUKECHK   =   ZERO )
+               MOVE    WRK-SYMD    TO  TPARA-YUKOEDYMD
+           END-IF
+      *
+           PERFORM VARYING IDX-MEMO    FROM    1   BY  1
+                   UNTIL ( IDX-MEMO    >   CONST-MEMO-MAX )
+      *
+      *        メモ欄
+               MOVE    "MEMO"          TO  WRK-MEMOID
+               MOVE    IDX-MEMO        TO  WRK-MEMOIDNO
+               MOVE    WRK-MEMOID-G    TO  WRK-PARA-NAME
+               PERFORM 1001-OPTION-CALL-SEC
+               MOVE    WRK-PARA        TO  TPARA-MEMO (IDX-MEMO)
+      *
+           END-PERFORM
+      *
+           .
+       100-OPTION-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    プログラムオプションパラメタ取得処理
+      *****************************************************************
+       1001-OPTION-CALL-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-PARA
+      *
+           INITIALIZE                  ORCSPRGOPTIONAREA
+           MOVE    "ORCHCN03V02"       TO  ORCSPRGOPTION-PRGID
+           MOVE    WRK-PARA-NAME       TO  ORCSPRGOPTION-IN-DATA
+           CALL    "ORCSPRGOPTION"     USING   SPA-AREA
+                                               ORCSPRGOPTIONAREA
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"             TO  KANACHK-SYORI
+      *
+           EVALUATE    WRK-PARA-NAME
+           WHEN    "MEMO01"
+           WHEN    "MEMO02"
+           WHEN    "MEMO03"
+           WHEN    "MEMO04"
+           WHEN    "MEMO05"
+           WHEN    "MEMO06"
+           WHEN    "MEMO07"
+           WHEN    "MEMO08"
+           WHEN    "MEMO09"
+           WHEN    "MEMO10"
+               MOVE    ORCSPRGOPTION-OT-PARA (1:80)
+                                       TO  KANACHK-MAE-INPUT
+           WHEN    "YUKOSTYMD"
+           WHEN    "YUKOEDYMD"
+               MOVE    ORCSPRGOPTION-OT-PARA(1:10)
+                                       TO  KANACHK-MAE-INPUT
+           END-EVALUATE
+      *
+           CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  WRK-PARA
+      *
+           .
+       1001-OPTION-CALL-EXT.
            EXIT.
       *
       *****************************************************************
@@ -821,10 +935,25 @@
            PERFORM 800-HENKAN-SEC
            MOVE    WRK-ZHENSYU24       TO  HCN03-KONNYUKIN
       *
+           MOVE    SPACE               TO  HCN03-LAYER-OPTION
+           STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
+                   " -L L2 "           DELIMITED  BY  SIZE
+                   "MonpeLayerOut"     DELIMITED  BY  SIZE
+           INTO    HCN03-LAYER-OPTION
+           END-STRING
+      *
            IF    ( WRK-SKYMISYUPRTKBN  =   "1" )
+      *
+               MOVE    SPACE               TO  HCN03-LAYER-OPTION
+               STRING  "MonpeLayerIn"      DELIMITED  BY  SIZE
+                       " -L L1 "           DELIMITED  BY  SIZE
+                       "MonpeLayerOut"     DELIMITED  BY  SIZE
+               INTO    HCN03-LAYER-OPTION
+               END-STRING
+      *
       *        未収額編集処理
                PERFORM 3102-MISYU-EDIT-SEC
-               MOVE    "外　来　未　収　額"
+               MOVE    "外 来 未 収 額"
                                        TO  HCN03-LBL-G-MISYU
                MOVE    "円"            TO  HCN03-LBL-G-MISYU-EN
                MOVE    WRK-GAI-MISYU   TO  WRK-KINGAKU-9
@@ -832,7 +961,7 @@
                PERFORM 800-HENKAN-SEC
                MOVE    WRK-ZHENSYU24   TO  HCN03-GAI-MISYUKIN
       *
-               MOVE    "入　院　未　収　額"
+               MOVE    "入 院 未 収 額"
                                        TO  HCN03-LBL-N-MISYU
                MOVE    "円"            TO  HCN03-LBL-N-MISYU-EN
                MOVE    WRK-NYU-MISYU   TO  WRK-KINGAKU-9
@@ -852,9 +981,21 @@
       *    見出し
            PERFORM 20011-MEISAI-HEN-SEC
       *
+           IF    ( SMCNDATE-YMD        >=  TPARA-YUKOSTYMD )
+            AND  ( SMCNDATE-YMD        <=  TPARA-YUKOEDYMD )
+               PERFORM VARYING IDX-MEMO    FROM    1   BY  1
+                       UNTIL ( IDX-MEMO    >   CONST-MEMO-MAX )
+      *
+                   MOVE    TPARA-MEMO (IDX-MEMO)
+                                           TO  HCN03-MEMO (IDX-MEMO)
+      *
+               END-PERFORM
+           END-IF
+      *
            IF    ( SYU-SRYYMD          >=  CONST-H200401 )
                MOVE    "HCN03V02BN.red"    TO  WRK-FORMID
            ELSE
+               MOVE    SPACE               TO  HCN03-LAYER-OPTION
                MOVE    "HCN03V02BO.red"    TO  WRK-FORMID
            END-IF
       *
@@ -1306,6 +1447,46 @@
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
            .
        31012-SEIWA-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    日付チェック・編集処理
+      *****************************************************************
+       800-HIZUKE-CHK-SEC             SECTION.
+      *
+           MOVE    ZERO            TO  FLG-HIZUKECHK
+      *
+           IF    ( WRK-YMD         =   "00000000" 
+                                   OR  "99999999" )
+               MOVE    WRK-YMD     TO  WRK-HENYMDG
+                                       WRK-SYMD
+           ELSE
+               INITIALIZE                  ORCSGDAYAREA
+               MOVE    WRK-YMD         TO  SGDAY-INDAY
+               CALL    "ORCSGDAY"          USING
+                                       ORCSGDAYAREA
+               IF  ( SGDAY-RC          =   ZERO )
+                   MOVE    SGDAY-OTDAY TO  WRK-HENYMDG
+                   MOVE    SGDAY-SDAY  TO  WRK-SYMD
+               ELSE
+                   MOVE    1           TO  FLG-HIZUKECHK
+               END-IF
+           END-IF
+      *
+           .
+       800-HIZUKE-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    マシン日付取得サブ
+      *****************************************************************
+       800-MCNDATE-SEC         SECTION.
+      *
+           CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
+      *
+           .
+      *
+       800-MCNDATE-EXT.
            EXIT.
       *
       *----(03.04.01)--ADD-START---
