@@ -2138,34 +2138,70 @@
            PERFORM         UNTIL       FLG-SEIKYU     =   1
                            OR          IDX            >=  20
                MOVE    MCPDATA-REC         TO  RECE10-REC
-      *        ·îÃÙ¤ìÊ¬¡¢ÀÁµá¤·¤Ê¤¤¤ÏÂÐ¾Ý³°
-               IF    ( RECE10-SKYKBN   NOT =   "0"             )
-               AND   ( RECE10-SKYYM        =   "000000"
-                                       OR  SPA-NAI-T06-SRYYM-H )
-      *            ÊÖÌáÊ¬¤ÏÂÐ¾Ý³°
-                   IF      RECE10-HENREIYM =   "000000"
-                       ADD     1               TO  IDX
-                       PERFORM 42031-T09-HENSYU-SEC
-                       IF      IDX             =   1    
-                           MOVE    RECE10-REC  TO  WRK-RECE10-REC
+      *            ·îÃÙ¤ìÊ¬¡¢ÀÁµá¤·¤Ê¤¤¤ÏÂÐ¾Ý³°
+                   IF    ( RECE10-SKYKBN   NOT =   "0"             )
+                   AND   ( RECE10-SKYYM        =   "000000"
+                                           OR  SPA-NAI-T06-SRYYM-H )
+                       IF      SPA-NAI-T06-BODY-SELNUM
+                                           >   ZERO
+                           EVALUATE    SPA-NAI-T06-B-THENREI-FLG
+                                           (SPA-NAI-T06-BODY-SELNUM)
+                               WHEN    SPACE
+      *                            ÊÖÌáÊ¬¤ÏÂÐ¾Ý³°
+                                   IF      RECE10-HENREIYM =   "000000"
+                                       ADD     1               TO  IDX
+                                       PERFORM 42031-T09-HENSYU-SEC
+                                       IF      IDX             =   1    
+                                           MOVE    RECE10-REC  TO
+                                                       WRK-RECE10-REC
+                                       END-IF
+                                   ELSE
+                                       ADD     1               TO  IDY
+                                   END-IF
+                               WHEN    "1"
+      *                            ÊÖÌáÊ¬ÀßÄêºÑ¤Î¤ßÂÐ¾Ý
+                                   IF    ( RECE10-HENREIYM
+                                                       NOT =  "000000" )
+                                   AND   ( RECE10-HENREI-SIJI-FLG
+                                                           =  1        )
+                                       ADD     1               TO  IDX
+                                       PERFORM 42031-T09-HENSYU-SEC
+                                       IF      IDX             =   1    
+                                           MOVE    RECE10-REC  TO
+                                                       WRK-RECE10-REC
+                                       END-IF
+                                   ELSE
+                                       ADD     1               TO  IDY
+                                   END-IF
+                           END-EVALUATE
+                       ELSE
+      *                    ÊÖÌáÊ¬¤ÏÂÐ¾Ý³°
+                           IF      RECE10-HENREIYM =   "000000"
+                               ADD     1               TO  IDX
+                               PERFORM 42031-T09-HENSYU-SEC
+                               IF      IDX             =   1
+                                   MOVE    RECE10-REC
+                                                   TO  WRK-RECE10-REC
+                               END-IF
+                           ELSE
+      *                        ÊÖÌáÊ¬ÀßÄêºÑ¤Î¤ßÂÐ¾Ý
+                               IF    ( RECE10-HENREIYM NOT =  "000000" )
+                               AND   ( RECE10-HENREI-SIJI-FLG
+                                                           =  1        )
+                                   ADD     1               TO  IDX
+                                   PERFORM 42031-T09-HENSYU-SEC
+                                   IF      IDX             =   1
+                                       MOVE    RECE10-REC  TO
+                                                       WRK-RECE10-REC
+                                   END-IF
+                               ELSE
+                                   ADD     1               TO  IDY
+                               END-IF
+                           END-IF
                        END-IF
                    ELSE
-      *                ÊÖÌáÊ¬ÀßÄêºÑ¤Î¤ßÂÐ¾Ý
-                       IF    ( RECE10-HENREIYM NOT =  "000000" )
-                       AND   ( RECE10-HENREI-SIJI-FLG
-                                                   =  1        )
-                           ADD     1               TO  IDX
-                           PERFORM 42031-T09-HENSYU-SEC
-                           IF      IDX             =   1    
-                               MOVE    RECE10-REC  TO  WRK-RECE10-REC
-                           END-IF
-                       ELSE
-                           ADD     1               TO  IDY
-                       END-IF
+                       ADD     1               TO  IDZ
                    END-IF
-               ELSE
-                   ADD     1               TO  IDZ
-               END-IF
       *
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
@@ -2181,15 +2217,23 @@
                    IF    ( IDY             =   0 )
                    AND   ( IDZ             =   0 )
                        MOVE    "0007"          TO  SPA-ERRCD
-                   ELSE 
-                       IF    ( IDY             >   0 )
-                       AND   ( IDZ             >   0 )
-                           MOVE    "0015"          TO  SPA-ERRCD
+                   ELSE
+                       IF    ( SPA-NAI-T06-BODY-SELNUM
+                                       >   ZERO                      )
+                       AND   ( SPA-NAI-T06-B-THENREI-FLG
+                                           (SPA-NAI-T06-BODY-SELNUM) )
+                                       =   "1"
+                           MOVE    "0017"          TO  SPA-ERRCD
                        ELSE
                            IF    ( IDY             >   0 )
-                               MOVE    "0014"          TO  SPA-ERRCD
+                           AND   ( IDZ             >   0 )
+                               MOVE    "0015"          TO  SPA-ERRCD
                            ELSE
-                               MOVE    "0016"          TO  SPA-ERRCD
+                               IF    ( IDY             >   0 )
+                                   MOVE    "0014"          TO  SPA-ERRCD
+                               ELSE
+                                   MOVE    "0016"          TO  SPA-ERRCD
+                               END-IF 
                            END-IF 
                        END-IF 
                    END-IF 
