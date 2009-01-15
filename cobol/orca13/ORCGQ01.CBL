@@ -7042,7 +7042,7 @@
       *
       *    ø«Œ≈ºÔ Ã
       *    IF    ( SPA-GMN-Q01-SRYKBN  =   "20" OR "30" OR "90" )
-      *        MOVE    "ø«Œ≈ºÔ Ã"          TO  Q01-LBLSRYSYUKBN
+               MOVE    "ø«Œ≈ºÔ Ã"          TO  Q01-LBLSRYSYUKBN
       *    END-IF
            MOVE    SPA-GMN-Q01-SRYSYUKBN-G TO  Q01-SRYSYUKBN
       *
