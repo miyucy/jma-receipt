@@ -27,15 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       *  Maj/Min/Rev  修正者       日付      内容
-      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
-      *                                     キーにkohid 追加
-      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
-      *                                     ０８（老健）のレセプト対応
-      *                                     receipt_kbn 追加 
-      *
-      *  04.07.01    NACL-藤原    14/12/03  平成２６年１１月改正対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -55,8 +46,6 @@
        01  RECEERR-REC                 PIC X(200).
       *
        WORKING-STORAGE             SECTION.
-      *
-           COPY    "CPRECEERR.INC".
       *
            COPY    "HCM37V01.INC"  REPLACING  //HCM37V01//
                                    BY         //HCM37//.
@@ -100,6 +89,7 @@
            05  WRK-PARA-JOBID          PIC 9(07).
            05  WRK-PARA-SHELLID        PIC X(08).
            05  WRK-PARA-HOSPNUM        PIC 9(02).
+           05  RECEERR                 PIC X(100).
       *
       *    一時領域
        01  WRK-AREA.
@@ -161,12 +151,6 @@
            03  WRK-MOJI11.
                05  FILLER111           PIC X(50)   VALUE
                    "【廃用症候群に係る評価表】".
-           03  WRK-MOJI12.
-               05  FILLER121           PIC X(50)   VALUE
-                   "【上記以外の診療報酬明細書】".
-           03  WRK-MOJI13.
-               05  FILLER              PIC X(50)   VALUE
-               "【医薬品医療機器等法に規定する治験に係る治験概要】".
       *
        01  CONST-AREA.
            03  CONST-H2004             PIC X(06)   VALUE    "200804".
@@ -243,8 +227,6 @@
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    共通パラメタ
            COPY    "MCPAREA".
       *
@@ -317,13 +299,6 @@
                                                RECEERR
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
-      *
-           INITIALIZE                  SGETTEMP-AREA
-           MOVE    RECEERR         TO  SGETTEMP-BASENAME
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-           MOVE    SPACE           TO  RECEERR
-           MOVE    SGETTEMP-FULLNAME
-                                   TO  RECEERR
       *
       *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
@@ -435,21 +410,13 @@
                                MOVE    WRK-MOJI7
                                        TO  HCM37-NAIYO(CNT-LINE)
                            WHEN    "50"
-                               IF      RECE10-SRYYM    <   201412
-                                   MOVE    WRK-MOJI9
-                                           TO  HCM37-NAIYO(CNT-LINE)
-                               ELSE
-                                   MOVE    WRK-MOJI13
-                                           TO  HCM37-NAIYO(CNT-LINE)
-                               END-IF
+                               MOVE    WRK-MOJI9
+                                       TO  HCM37-NAIYO(CNT-LINE)
                            WHEN    "51"
                                MOVE    WRK-MOJI10
                                        TO  HCM37-NAIYO(CNT-LINE)
                            WHEN    "52"
                                MOVE    WRK-MOJI11
-                                       TO  HCM37-NAIYO(CNT-LINE)
-                           WHEN    "90"
-                               MOVE    WRK-MOJI12
                                        TO  HCM37-NAIYO(CNT-LINE)
                            WHEN    "99"
                                MOVE    WRK-MOJI8
@@ -1056,10 +1023,7 @@
                                        TO  RECEDEN-RECESYUBETU
            MOVE    ONRECE-B-HKNJANUM   TO  RECEDEN-HKNJANUM 
            MOVE    ONRECE-B-HOJOKBN    TO  RECEDEN-HOJOKBN-KEY
-           MOVE    ONRECE-B-KOHID      TO  RECEDEN-KOHID-KEY
            MOVE    ONRECE-B-TEKSTYMD   TO  RECEDEN-TEKSTYMD
-           MOVE    ONRECE-B-RECEIPT-KBN
-                                       TO  RECEDEN-RECEIPT-KBN
            MOVE    "2"                 TO  RECEDEN-RECKBN
            MOVE    RECEDEN-REC         TO  MCPDATA-REC
            MOVE    "tbl_receden"       TO  MCP-TABLE
@@ -1098,7 +1062,6 @@
                                            OR  "50"
                                            OR  "51"
                                            OR  "52"
-                                           OR  "90"
                                            OR  "99"
                        ADD     1               TO  CNT-RECEDEN
                        MOVE    1               TO  FLG-RECEDENOK
@@ -1134,10 +1097,7 @@
                                        TO  RECE10-RECESYUBETU
            MOVE    ONRECE-B-HKNJANUM   TO  RECE10-HKNJANUM 
            MOVE    ONRECE-B-HOJOKBN    TO  RECE10-HOJOKBN-KEY
-           MOVE    ONRECE-B-KOHID      TO  RECE10-KOHID-KEY
            MOVE    ONRECE-B-TEKSTYMD   TO  RECE10-TEKSTYMD
-           MOVE    ONRECE-B-RECEIPT-KBN
-                                       TO  RECE10-RECEIPT-KBN
            MOVE    RECE10-REC          TO  MCPDATA-REC
            MOVE    "tbl_seikyu"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -1213,6 +1173,7 @@
            MOVE    RECE10-TEKSTYMD TO  PTKOH-TEKSTYMD
            MOVE    RECE10-TEKSTYMD TO  PTKOH-TEKEDYMD
            MOVE    PTKOH-REC       TO  MCPDATA-REC
+      *     MOVE    RECE10-TEKSTYMD     TO  ORC-DBYMD
            MOVE    "DBSELECT"      TO  MCP-FUNC
            MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
            MOVE    "key6"          TO  MCP-PATHNAME
