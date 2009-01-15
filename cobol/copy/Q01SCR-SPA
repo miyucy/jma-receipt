@@ -327,6 +327,16 @@
                                13  SPA-GMN-Q01-SRYCD
                                                        PIC X(20)
                                                        OCCURS  5. 
+      *                    ø«Œ≈∂Ë ¨
+                           11  SPA-GMN-Q01-SRYKBN-G.
+                               13  SPA-GMN-Q01-SRYKBN      PIC X(02).
+                               13  SPA-GMN-Q01-SRYKBNFL    PIC X(01).
+                               13  SPA-GMN-Q01-SRYKBNMEI   PIC X(20).
+      *                    ø«Œ≈ºÔ Ã∂Ë ¨
+                           11  SPA-GMN-Q01-SRYSYUKBN-G.
+                               13  SPA-GMN-Q01-SRYSYUKBN      PIC X(02).
+                               13  SPA-GMN-Q01-SRYSYUKBNFL    PIC X(01).
+                               13  SPA-GMN-Q01-SRYSYUKBNMEI   PIC X(20).
       *                    ø«Œ≈π‘∞Ÿ
                            11  SPA-GMN-Q01-SRYACTNMTBL.
                                13  SPA-GMN-Q01-SRYACT
@@ -537,6 +547,18 @@
                                13  SPA-GMN-Q01-STTSYSKBTL     PIC X(01).
                                13  SPA-GMN-Q01-STTSYSKBTFLL   PIC X(01).
                                13  SPA-GMN-Q01-STTSYSKBTMEIL  PIC X(08).
+                       09  SPA-GMN-Q01-SRYKBNLST-G.
+                           11  SPA-GMN-Q01-SRYKBNLST-MAX   PIC 9(05).
+                           11  SPA-GMN-Q01-SRYKBNLST       OCCURS 30.
+                               13  SPA-GMN-Q01-SRYKBNL     PIC X(02).
+                               13  SPA-GMN-Q01-SRYKBNFLL   PIC X(01).
+                               13  SPA-GMN-Q01-SRYKBNMEIL  PIC X(20).
+                       09  SPA-GMN-Q01-SRYSYUKBNLST-G.
+                           11  SPA-GMN-Q01-SRYSYUKBNLST-MAX   PIC 9(05).
+                           11  SPA-GMN-Q01-SRYSYUKBNLST       OCCURS 10.
+                               13  SPA-GMN-Q01-SRYSYUKBNL     PIC X(02).
+                               13  SPA-GMN-Q01-SRYSYUKBNFLL   PIC X(01).
+                               13  SPA-GMN-Q01-SRYSYUKBNMEIL  PIC X(20).
       *            •≥•Û•‹•‹•√•Ø•πæ ÛŒŒ∞Ë° ∆‚…Ù°À
                    07  SPA-NAI-Q01-COMMBO-AREA.
                        09  SPA-NAI-Q01-SELPATTERNLST-G.
@@ -936,6 +958,8 @@
                            11  SPA-Q01-BYOMEI          PIC X(80)
                                                        OCCURS  5.
       *
+                       09  SPA-Q01-SRYKBN              PIC X(02).
+                       09  SPA-Q01-SRYSYUKBN           PIC X(02).
       *
                        09  SPA-Q01-SRYACT-JKN          PIC X(01).
       *

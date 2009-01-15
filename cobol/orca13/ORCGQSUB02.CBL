@@ -711,7 +711,7 @@
                END-IF
            END-IF
       *
-      *    ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *    ¿ÇÎÅ¶èÊ¬¡¦¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
            IF   ( SPA-Q01-GTBL (9)  =   "1" )
                IF    ( SPA-Q01-SRYACT-JKN  =   "1" )
                 AND  ( SPA-Q01-SRYCD-G NOT =   SPACE )
@@ -2026,6 +2026,10 @@
                PERFORM 10011-SRYKA-SQL-EDIT-SEC
            END-IF
       *
+           IF    ( SPA-Q01-SRYKBN  NOT =   SPACE )
+               PERFORM 10011-SRYKBN-SQL-EDIT-SEC
+           END-IF
+      *
            MOVE    ZERO    TO      CNT-JYOKEN
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL   (   IDX1    >   5 )
@@ -2105,6 +2109,10 @@
       *
                    IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
                        PERFORM 10011-SRYKA-SQL-EDIT-SEC
+                   END-IF
+      *
+                   IF    ( SPA-Q01-SRYKBN  NOT =   SPACE )
+                       PERFORM 10011-SRYKBN-SQL-EDIT-SEC
                    END-IF
       *
                    MOVE    1               TO      CNT-JYOKEN
@@ -2723,6 +2731,92 @@
       *
            .
        10011-SRYKA-SQL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¿ÇÎÅ¶èÊ¬ÊÔ½¸½èÍý
+      *****************************************************************
+       10011-SRYKBN-SQL-EDIT-SEC           SECTION.
+      *
+           MOVE    1                   TO  CNT-JYOKEN
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+           EVALUATE    SPA-Q01-SRYKBN
+           WHEN    "20"
+           WHEN    "30"
+               IF   ( SPA-Q01-SRYSYUKBN    NOT =   SPACE )
+                   STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                           ".SRYKBN ='"        DELIMITED BY SIZE
+                           SPA-Q01-SRYSYUKBN   DELIMITED BY SIZE
+                           "'"                 DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               ELSE
+                   STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                           ".SRYKBN LIKE'"     DELIMITED BY SIZE
+                           SPA-Q01-SRYKBN(1:1) DELIMITED BY SIZE
+                           "%'"                DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               END-IF
+           WHEN    "90"
+               IF   ( SPA-Q01-SRYSYUKBN    NOT =   SPACE )
+                   STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                           ".SRYKBN ='"        DELIMITED BY SIZE
+                           SPA-Q01-SRYSYUKBN   DELIMITED BY SIZE
+                           "'"                 DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               ELSE
+                   STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                           ".SRYKBN in ('90','92')"
+                                               DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               END-IF
+           WHEN    "80"
+                   STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                           ".SRYKBN='80' AND " DELIMITED BY SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                           ".SRYSYUKBN NOT IN ('830','840')"
+                                               DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+           WHEN    "83"
+                   STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                           ".SRYKBN='80' AND " DELIMITED BY SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                           ".SRYSYUKBN='830'"  DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+           WHEN    "84"
+                   STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                           ".SRYKBN='80' AND " DELIMITED BY SIZE
+                           WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                           ".SRYSYUKBN='840'"  DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+           WHEN    OTHER
+                   STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                           ".SRYKBN ='"        DELIMITED BY SIZE
+                           SPA-Q01-SRYKBN      DELIMITED BY SIZE
+                           "'"                 DELIMITED BY SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+           END-EVALUATE
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           .
+       10011-SRYKBN-SQL-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    Æþ³°¶èÊ¬ÊÔ½¸½èÍý

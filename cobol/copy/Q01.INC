@@ -184,6 +184,17 @@
                         09  Q01-BYOLST-BYOMEI  PIC X(80).
                       08  Q01-BYOLST-SELECT-TBL.
                         09  Q01-BYOLST-SELECT  PIC X   OCCURS  200.
+                  06  Q01-CMB-SRYKBN.
+                    07  Q01-SRYKBN             PIC X(23).
+                    07  Q01-CMB-SRYKBN-COUNT   PIC S9(9)   BINARY.
+                    07  Q01-CMB-SRYKBN-ITEM    PIC X(23)   OCCURS  30.
+                  06  Q01-LBLSRYSYUKBN         PIC X(20).
+                  06  Q01-CMB-SRYSYUKBN.
+                    07  Q01-SRYSYUKBN             PIC X(23).
+                    07  Q01-SRYSYUKBN-STATE       PIC S9(9)   BINARY.
+                    07  Q01-CMB-SRYSYUKBN-COUNT   PIC S9(9)   BINARY.
+                    07  Q01-CMB-SRYSYUKBN-ITEM    PIC X(23)  OCCURS  10.
+                    07  Q01-CMB-SRYSYUKBN-STATE   PIC S9(9)   BINARY.
                   06  Q01-SRYACTSEL            PIC X(80).
                   06  Q01-SRYCD-TBL.
                     07  Q01-SRYCD-OCC   OCCURS   5.

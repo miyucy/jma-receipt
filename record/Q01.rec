@@ -513,6 +513,25 @@ Q01	{
 						select	bool[200];
 					};
 				};
+				CMB_SRYKBN	{
+					SRYKBN	{
+						value	varchar(23);
+					};
+					count	int;
+					item	varchar(23)[30];
+				};
+				LBLSRYSYUKBN	{
+					value   varchar(20);
+				};
+				CMB_SRYSYUKBN	{
+					SRYSYUKBN	{
+						value	varchar(23);
+						state	int;
+					};
+					count	int;
+					item	varchar(23)[10];
+					state	int;
+				};
 				SRYACTSEL	{
 					value	varchar(80);
 				};
