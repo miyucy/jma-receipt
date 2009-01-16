@@ -1907,7 +1907,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                    ELSE
                        IF      SPA-H01NAI-HENREIYM
                                                >   SPA-H01NAI-SKYYM
-                           MOVE    "0002"          TO  SPA-ERRCD
+                           MOVE    "0008"          TO  SPA-ERRCD
                            MOVE    5               TO  SPA-H01GMN-CUR
                            GO  TO  4119-HENREI-SIJI-FLG-CHK-EXT
                        END-IF
@@ -2374,7 +2374,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                ELSE
                    IF      SPA-H01NAI-HENREIYM
                                            >   SPA-H01NAI-SKYYM
-                       MOVE    "0002"          TO  SPA-ERRCD
+                       MOVE    "0008"          TO  SPA-ERRCD
                        MOVE    5               TO  SPA-H01GMN-CUR
                        GO  TO  4105-KANREN-CHK-EXT
                    END-IF
@@ -3703,6 +3703,9 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                                TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "返戻年月が未入力です" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0008"
+                   MOVE    "請求年月＞＝返戻年月で入力して下さい" 
                                                TO  SPA-ERRMSG
                WHEN    "0010"
                    MOVE    "修正項目がありません" 
