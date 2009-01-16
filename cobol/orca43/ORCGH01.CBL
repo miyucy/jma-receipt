@@ -2357,22 +2357,18 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                END-IF
            END-IF
       *
-      *    請求年月と返戻年月のチェック
-           IF      SPA-H01NAI-SKYYM
-                                   >   ZERO
-               IF      SPA-H01NAI-HENREIYM
-                                       >   SPA-H01NAI-SKYYM
-                   MOVE    "0002"          TO  SPA-ERRCD
-                   MOVE    5               TO  SPA-H01GMN-CUR
-                   GO  TO  4105-KANREN-CHK-EXT
-               END-IF
-           END-IF
-      *
       *    返戻設定時の請求年月の入力
            IF      SPA-H01GMN-HENREI-SIJI-FLG
                                    =   "T"
                IF      SPA-H01NAI-SKYYM    =   ZERO
                    MOVE    "0006"          TO  SPA-ERRCD
+               ELSE
+                   IF      SPA-H01NAI-HENREIYM
+                                           >   SPA-H01NAI-SKYYM
+                       MOVE    "0002"          TO  SPA-ERRCD
+                       MOVE    5               TO  SPA-H01GMN-CUR
+                       GO  TO  4105-KANREN-CHK-EXT
+                   END-IF
                END-IF
            END-IF
            .
