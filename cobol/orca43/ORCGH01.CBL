@@ -1550,6 +1550,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-EVALUATE
            END-IF
       *
+      ***     MOVE    RECE10-HENREI-SIJI-FLG
+      ***                                 TO  SPA-H01NAI-HENREI-SIJI-FLG
            IF      RECE10-HENREI-SIJI-FLG
                                        =   1
                MOVE    "T"             TO  SPA-H01GMN-HENREI-SIJI-FLG
@@ -1902,6 +1904,13 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                        MOVE    "0006"          TO  SPA-ERRCD
                        MOVE    4               TO  SPA-H01GMN-CUR
                        GO  TO  4119-HENREI-SIJI-FLG-CHK-EXT
+                   ELSE
+                       IF      SPA-H01NAI-HENREIYM
+                                               >   SPA-H01NAI-SKYYM
+                           MOVE    "0002"          TO  SPA-ERRCD
+                           MOVE    5               TO  SPA-H01GMN-CUR
+                           GO  TO  4119-HENREI-SIJI-FLG-CHK-EXT
+                       END-IF
                    END-IF
            END-EVALUATE
       *****MOVE    "F"     TO  SPA-H01GMN-HENREI-SIJI-FLG
