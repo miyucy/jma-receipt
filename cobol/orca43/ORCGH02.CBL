@@ -601,8 +601,9 @@
                WHEN    ZERO
                    MOVE    99                  TO  SPA-H02GMN-CUR 
                WHEN    1
-      *           贷に手提肋年貉
-                   MOVE    "0002"              TO  SPA-ERRCD
+      *            贷に手提肋年貉
+      *****        MOVE    "0002"              TO  SPA-ERRCD
+                   CONTINUE
                WHEN    2
       *            浩浩懒滇
                    MOVE    "1003"              TO  SPA-HIDCD
