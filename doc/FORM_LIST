@@ -381,6 +381,7 @@ HC28.dia                患者一覧
 HCM28.red           ＊  患者一覧
 HC14.red            ＊  予約一覧
 HCM15.red           ＊  予約患者一覧
+HCM67.red           ＊  予約票                                                      VER4.4.0
 HCM16.red           ＊  受付一覧表
 HCM40.red           ＊  入院患者検索結果一覧表
 HCPOM.red           ＊  セット一覧表　等
@@ -431,6 +432,7 @@ HCM46.red           ＊  一部負担金給与控除一覧
 HCG016.red          ＊  指定診療行為件数調
 HCG017.red          ＊  診療行為別集計表
 HCM63.red           ＊  診療行為未入力患者一覧表                                    VER4.3.0
+HCM64.red           ＊  光ディスク送付書                                            VER4.4.0
 
 HCM51.red               収納日報（明細）
 HCM51V01.red            収納日報（明細）                                            VER4.3.0
@@ -442,6 +444,9 @@ HCM52V03.red        ＊  収納日報（合計）                                        
 
 HCMSL55.red         ＊  フリー帳票（横）
 HCMSL80.red         ＊  フリー帳票（縦）
+
+HCM65.red           ＊  公害診療報酬等請求書（名古屋市）                            VER4.4.0
+HCM66.red           ＊  公害診療（調剤）報酬請求書（北九州市）                      VER4.4.0
 
 HCRCP060.red            診療報酬明細書（医科入院外）　山形
 HCRCP060V01.red         診療報酬明細書（医科入院外）　山形
