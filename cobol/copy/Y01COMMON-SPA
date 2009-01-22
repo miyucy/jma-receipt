@@ -50,6 +50,9 @@
                05  SPA-Y01-BIRTHDAYH             PIC X(09).
       *    ·Ù¹ð¥Õ¥é¥°
            03  SPA-Y01-KEIKOKU               PIC 9(01).
+      *    ³ÎÇ§¥á¥Ã¥»¡¼¥¸
+           03  SPA-YID1CD                    PIC X(04).
+           03  SPA-YID1-FLG                  PIC X(02).
       *    Í½Ìó°õºþÍÑ
            03  SPA-Y03-SET.
                05  SPA-Y03-SRYNAIYO          PIC X(02).

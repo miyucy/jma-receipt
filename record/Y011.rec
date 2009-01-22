@@ -1,0 +1,49 @@
+Y011	{
+	fixed1	{
+		SELNUM	{
+			value	number(2);
+		};
+		BUNNUM	{
+			value	number(3);
+		};
+		NUM1	{
+			value	number(2);
+		};
+		COMMENT01	{
+			value	varchar(80);
+		};
+		NUM2	{
+			value	number(2);
+		};
+		NUM3	{
+			value	number(2);
+		};
+		NUM4	{
+			value	number(2);
+		};
+		NUM5	{
+			value	number(2);
+		};
+		NUM6	{
+			value	number(2);
+		};
+		MIDASI	{
+			value	varchar(17);
+		};
+		COMMENT02	{
+			value	varchar(80);
+		};
+		COMMENT03	{
+			value	varchar(80);
+		};
+		COMMENT04	{
+			value	varchar(80);
+		};
+		COMMENT05	{
+			value	varchar(80);
+		};
+		COMMENT06	{
+			value	varchar(80);
+		};
+	};
+};

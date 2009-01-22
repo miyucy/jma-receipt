@@ -285,11 +285,13 @@
       *
        01  SCRAREA.
            COPY    "Y01.INC".
-      *****COPY    "Y02.INC".
+           COPY    "Y011.INC".
+           COPY    "Y012.INC".
            COPY    "Y03.INC".
            COPY    "Y04.INC".
            COPY    "Y05.INC".
            COPY    "YERR.INC".
+           COPY    "YID1.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA

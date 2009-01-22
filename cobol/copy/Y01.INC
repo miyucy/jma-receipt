@@ -397,3 +397,12 @@
                   05  Y01-VALUE   PIC X(33).
                 04  Y01-YYKKBN-COUNT   PIC S9(9)   BINARY.
                 04  Y01-YYKKBN-LST    PIC X(33)   OCCURS  100 TIMES.
+              03  Y01-COMMENT1.
+                04  Y01-VALUE   PIC X(80).
+              03  Y01-YYKHYO-COMB.
+                04  Y01-YYKHYO.
+                  05  Y01-VALUE   PIC X(24).
+                04  Y01-YYKHYO-COUNT   PIC S9(9)   BINARY.
+                04  Y01-YYKHYO-ITEM
+                        PIC X(24)   OCCURS  5 TIMES.
+

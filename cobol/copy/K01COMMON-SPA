@@ -60,6 +60,8 @@
                05  SPA-YAKJYOPRTFLG        PIC  9(01).
       *お薬手帳発行フラグ
                05  SPA-OKUSURIPRTFLG       PIC  9(01).
+      *予約票発行フラグ
+               05  SPA-YYKHYOPRTFLG       PIC  9(01).
       *小児科外来診療科
                05  SPA-SYONIKA             PIC  9(01).
       *老人慢性疾患外来総合診療科

@@ -16,14 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
        IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGYERR.
+       PROGRAM-ID.                 ORCGYID1.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 予約登録
-      *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
+      *  サブシステム名    : 予約入力
+      *  コンポーネント名  : 確認画面１（ＹＩＤ１）
       *  管理者            : 
       *  作成日付    作業者        記述
-      *  01.00.01    NACL-多々納  06/05/12  MONFUNC 対応
+      *  09/01/16    NACL−多々納  新規作成
+      *****************************************************************
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -40,6 +43,9 @@
       *    スパ領域
            COPY    "COMMON-SPA".
       *
+      *    診療行為用共通パラメタ
+           COPY    "Y01COMMON-SPA".
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -50,7 +56,6 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
-      **** COPY    "CPORCMCP.INC".
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -87,15 +92,17 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-Y01KYOUTU
       * 
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN      OTHER
-                   PERFORM 210-BACK
+               WHEN     "PUTG"           ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
            END-EVALUATE.
       *
+           MOVE    SPA-Y01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
            .
@@ -109,16 +116,35 @@
            .
        100-INIT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                   SECTION.
+      *
+           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+      *        戻る
+               WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    SPACE           TO  SPA-YID1-FLG
+                   PERFORM 210-BACK
+      *     登録
+               WHEN    "CLICKED"       ALSO    "B12"
+                   MOVE    "OK"            TO  SPA-YID1-FLG
+                   PERFORM 210-BACK
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
            MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "YERR"              TO  SPA-MOTOPG
+           MOVE    "YID1"              TO  SPA-MOTOPG
       *
-      *****MOVE    "BACK"              TO  MCP-PUTTYPE
-           MOVE    "JOIN"              TO  MCP-PUTTYPE
+           MOVE    "JOIN"              TO  MCP-PUTTYPE.
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
@@ -135,10 +161,9 @@
        900-PUT-WINDOW              SECTION.
       *
            MOVE   "PUTWINDOW"       TO  MCP-FUNC.
-           CALL   "ORCDBMAIN"       USING
-                                        MCPAREA
-                                        MCPDATA-REC
-                                        SPA-AREA
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
       *
            .
        900-PUT-WINDOW-EXT.

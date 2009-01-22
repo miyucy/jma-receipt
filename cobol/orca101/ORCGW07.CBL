@@ -1732,8 +1732,8 @@
            MOVE    2                   TO  SPA-GMN-YYKINIT-MAX
       *    Í½ÌóÉ¼È¯¹Ô
            MOVE    "0 È¯¹Ô¤·¤Ê¤¤"      TO  SPA-GMN-YYKHYO-LIST(1)
-      **** MOVE    "1 È¯¹Ô¤¹¤ë"        TO  SPA-GMN-YYKHYO-LIST(2)
-           MOVE    1                   TO  SPA-GMN-YYKHYO-MAX
+           MOVE    "1 È¯¹Ô¤¹¤ë"        TO  SPA-GMN-YYKHYO-LIST(2)
+           MOVE    2                   TO  SPA-GMN-YYKHYO-MAX
       *
            EVALUATE    SPA-W01-KANRICD
       *        ¿ÇÎÅ¹Ô°Ù¾ðÊó
@@ -3611,8 +3611,8 @@
                MOVE    12              TO  SPA-GMN-YYKMAXCNT
            END-IF
       *    Í½ÌóÉ¼È¯¹Ô¶èÊ¬
-      *    MOVE    SYS-1045-YYKHYO-KBN
-      *                                TO  SPA-GMN-YYKHYO-KBN
+           MOVE    SYS-1045-YYKHYO-KBN
+                                       TO  SPA-GMN-YYKHYO-KBN
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY         FROM    1   BY  1
@@ -3899,7 +3899,7 @@
            MOVE    W07-INIT-DRCD       TO  SPA-GMN-INIT-DRCD-G
            MOVE    W07-YYKINIT-FLG     TO  SPA-GMN-YYKINIT-FLG-G
            MOVE    W07-YYKMAXCNT       TO  SPA-GMN-YYKMAXCNT
-      **** MOVE    W07-YYKHYO-KBN      TO  SPA-GMN-YYKHYO-KBN-G
+           MOVE    W07-YYKHYO-KBN      TO  SPA-GMN-YYKHYO-KBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -7573,7 +7573,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "1"                     TO  SYS-1045-INIT-DRCD(1:1)
            MOVE    SPA-GMN-INIT-DRCD       TO  SYS-1045-INIT-DRCD(2:4)
            MOVE    SPA-GMN-YYKINIT-FLG     TO  SYS-1045-YYKINIT-FLG
-      **** MOVE    SPA-GMN-YYKHYO-KBN      TO  SYS-1045-YYKHYO-KBN
+           MOVE    SPA-GMN-YYKHYO-KBN      TO  SYS-1045-YYKHYO-KBN
            MOVE    SPA-GMN-YYKMAXCNT       TO  SYS-1045-YYKMAXCNT
       *
            MOVE    SYS-1045-REC            TO  SYSKANRI-REC
@@ -8557,13 +8557,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    Í½ÌóÏÈºÇÂç·ï¿ô
            MOVE    SPA-GMN-YYKMAXCNT   TO  W07-YYKMAXCNT
       *    Í½ÌóÉ¼È¯¹Ô¶èÊ¬
-      *    MOVE    SPA-GMN-YYKHYO-KBN-G   TO  W07-YYKHYO-KBN
-      *    PERFORM VARYING     IDX     FROM    1   BY  1
-      *            UNTIL       IDX     >   SPA-GMN-YYKHYO-MAX
-      *        MOVE    SPA-GMN-YYKHYO-LIST (IDX)
-      *                                TO  W07-YYKHYO-KBN-ITEM(IDX)
-      *    END-PERFORM
-      **** MOVE    SPA-GMN-YYKHYO-MAX  TO  W07-YYKHYO-KBN-COUNT
+           MOVE    SPA-GMN-YYKHYO-KBN-G   TO  W07-YYKHYO-KBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-YYKHYO-MAX
+               MOVE    SPA-GMN-YYKHYO-LIST (IDX)
+                                       TO  W07-YYKHYO-KBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-YYKHYO-MAX  TO  W07-YYKHYO-KBN-COUNT
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -9299,8 +9299,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "YYKINIT_FLG"     TO   MCP-WIDGET
                WHEN    702
                    MOVE  "YYKMAXCNT"       TO   MCP-WIDGET
-      ***      WHEN    703
-      ***          MOVE  "YYKHYO_KBN"      TO   MCP-WIDGET
+               WHEN    703
+                   MOVE  "YYKHYO_KBN"      TO   MCP-WIDGET
       *
                WHEN    999
                    MOVE  "B12"             TO   MCP-WIDGET
@@ -9631,8 +9631,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "YYKINIT_FLG"
                    MOVE    702             TO  SPA-GMN-CUR
                WHEN    "YYKMAXCNT"
-      *****        MOVE    703             TO  SPA-GMN-CUR
-      *****    WHEN    "YYKHYO_KBN"
+                   MOVE    703             TO  SPA-GMN-CUR
+               WHEN    "YYKHYO_KBN"
                    MOVE    999             TO  SPA-GMN-CUR
            END-EVALUATE
       *

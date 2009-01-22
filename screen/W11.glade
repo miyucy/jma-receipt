@@ -1924,31 +1924,6 @@
 
 	    <widget>
 	      <class>GtkRadioButton</class>
-	      <name>ORCAORGCHK01</name>
-	      <x>540</x>
-	      <y>44</y>
-	      <width>20</width>
-	      <height>20</height>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>button_toggled</handler>
-		<last_modification_time>Mon, 11 Mar 2002 05:00:24 GMT</last_modification_time>
-	      </signal>
-	      <signal>
-		<name>clicked</name>
-		<handler>send_event</handler>
-		<data>CLICKED</data>
-		<last_modification_time>Fri, 14 Mar 2003 06:19:49 GMT</last_modification_time>
-	      </signal>
-	      <label></label>
-	      <active>True</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>CARUTE</group>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
 	      <name>ORCAORGCHK02</name>
 	      <x>540</x>
 	      <y>64</y>
@@ -1995,156 +1970,6 @@
 	      <active>True</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>RYOSYU</group>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>ORCAORGCHK04</name>
-	      <x>540</x>
-	      <y>184</y>
-	      <width>20</width>
-	      <height>20</height>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>button_toggled</handler>
-		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
-	      </signal>
-	      <signal>
-		<name>clicked</name>
-		<handler>send_event</handler>
-		<data>CLICKED</data>
-		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
-	      </signal>
-	      <label></label>
-	      <active>True</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>YAKUJYO</group>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>ORCAORGCHK06</name>
-	      <x>540</x>
-	      <y>204</y>
-	      <width>20</width>
-	      <height>20</height>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>button_toggled</handler>
-		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
-	      </signal>
-	      <signal>
-		<name>clicked</name>
-		<handler>send_event</handler>
-		<data>CLICKED</data>
-		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
-	      </signal>
-	      <label></label>
-	      <active>True</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>SIHARAI1</group>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>ORCAORGCHK05</name>
-	      <x>540</x>
-	      <y>224</y>
-	      <width>20</width>
-	      <height>20</height>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>button_toggled</handler>
-		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
-	      </signal>
-	      <signal>
-		<name>clicked</name>
-		<handler>send_event</handler>
-		<data>CLICKED</data>
-		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
-	      </signal>
-	      <label></label>
-	      <active>True</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>SRYROKU</group>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>ORCAORGCHK07</name>
-	      <x>540</x>
-	      <y>264</y>
-	      <width>20</width>
-	      <height>20</height>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>button_toggled</handler>
-		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
-	      </signal>
-	      <signal>
-		<name>clicked</name>
-		<handler>send_event</handler>
-		<data>CLICKED</data>
-		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
-	      </signal>
-	      <label></label>
-	      <active>True</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>SIHARAI2</group>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>ORCAORGCHK08</name>
-	      <x>540</x>
-	      <y>304</y>
-	      <width>20</width>
-	      <height>20</height>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>button_toggled</handler>
-		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
-	      </signal>
-	      <signal>
-		<name>clicked</name>
-		<handler>send_event</handler>
-		<data>CLICKED</data>
-		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
-	      </signal>
-	      <label></label>
-	      <active>True</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>MEISAI</group>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
-	      <name>ORCAORGCHK09</name>
-	      <x>540</x>
-	      <y>344</y>
-	      <width>20</width>
-	      <height>20</height>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>button_toggled</handler>
-		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
-	      </signal>
-	      <signal>
-		<name>clicked</name>
-		<handler>send_event</handler>
-		<data>CLICKED</data>
-		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
-	      </signal>
-	      <label></label>
-	      <active>False</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>TECHO</group>
 	    </widget>
 
 	    <widget>
@@ -2401,31 +2226,6 @@
 
 	    <widget>
 	      <class>GtkRadioButton</class>
-	      <name>ORCACSTCHK01</name>
-	      <x>728</x>
-	      <y>44</y>
-	      <width>20</width>
-	      <height>20</height>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>button_toggled</handler>
-		<last_modification_time>Mon, 11 Mar 2002 05:04:10 GMT</last_modification_time>
-	      </signal>
-	      <signal>
-		<name>clicked</name>
-		<handler>send_event</handler>
-		<data>CLICKED</data>
-		<last_modification_time>Fri, 14 Mar 2003 06:20:56 GMT</last_modification_time>
-	      </signal>
-	      <label></label>
-	      <active>False</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>CARUTE</group>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
 	      <name>ORCACSTCHK02</name>
 	      <x>728</x>
 	      <y>64</y>
@@ -2575,6 +2375,87 @@
 	    </widget>
 
 	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCAORGNM10</name>
+	      <x>376</x>
+	      <y>364</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>False</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkPandaEntry</class>
+	      <name>ORCACSTNM10</name>
+	      <x>564</x>
+	      <y>364</y>
+	      <width>160</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>activate</name>
+		<handler>send_event</handler>
+		<data>ACTIVATE</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>changed</name>
+		<handler>entry_changed</handler>
+		<data>CHANGED</data>
+		<last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
+	      </signal>
+	      <editable>True</editable>
+	      <text_visible>True</text_visible>
+	      <text_max_length>20</text_max_length>
+	      <text></text>
+	      <input_mode>XIM</input_mode>
+	      <xim_enabled>False</xim_enabled>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCACSTCHK09</name>
+	      <x>728</x>
+	      <y>344</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:58 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 04 Jul 2003 06:16:25 GMT</last_modification_time>
+	      </signal>
+	      <label></label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>TECHO</group>
+	    </widget>
+
+	    <widget>
 	      <class>GtkRadioButton</class>
 	      <name>ORCACSTCHK08</name>
 	      <x>728</x>
@@ -2601,9 +2482,234 @@
 
 	    <widget>
 	      <class>GtkRadioButton</class>
-	      <name>ORCACSTCHK09</name>
+	      <name>ORCACSTCHK01</name>
 	      <x>728</x>
+	      <y>44</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 05:04:10 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:20:56 GMT</last_modification_time>
+	      </signal>
+	      <label></label>
+	      <active>False</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>CARUTE</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK01</name>
+	      <x>540</x>
+	      <y>44</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 05:00:24 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:19:49 GMT</last_modification_time>
+	      </signal>
+	      <label></label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>CARUTE</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK04</name>
+	      <x>540</x>
+	      <y>184</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
+	      </signal>
+	      <label></label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>YAKUJYO</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK06</name>
+	      <x>540</x>
+	      <y>204</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
+	      </signal>
+	      <label></label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>SIHARAI1</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK05</name>
+	      <x>540</x>
+	      <y>224</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
+	      </signal>
+	      <label></label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>SRYROKU</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK07</name>
+	      <x>540</x>
+	      <y>264</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
+	      </signal>
+	      <label></label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>SIHARAI2</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK08</name>
+	      <x>540</x>
+	      <y>304</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
+	      </signal>
+	      <label></label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>MEISAI</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK09</name>
+	      <x>540</x>
 	      <y>344</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
+	      </signal>
+	      <label></label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>TECHO</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK10</name>
+	      <x>540</x>
+	      <y>364</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:01 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 04 Jul 2003 06:15:34 GMT</last_modification_time>
+	      </signal>
+	      <label></label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>GAI10</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCACSTCHK10</name>
+	      <x>728</x>
+	      <y>364</y>
 	      <width>20</width>
 	      <height>20</height>
 	      <can_focus>True</can_focus>
@@ -2621,7 +2727,7 @@
 	      <label></label>
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
-	      <group>TECHO</group>
+	      <group>GAI10</group>
 	    </widget>
 	  </widget>
 
@@ -4557,27 +4663,27 @@
 	      <widget>
 		<class>GtkPandaEntry</class>
 		<child_name>GtkPandaCombo:entry</child_name>
-	        <name>ORCAORGNM09N</name>
-	        <height>20</height>
-	        <can_focus>True</can_focus>
-	        <signal>
+		<name>ORCAORGNM09N</name>
+		<height>20</height>
+		<can_focus>True</can_focus>
+		<signal>
 		  <name>activate</name>
 		  <handler>send_event</handler>
 		  <data>ACTIVATE</data>
 		  <last_modification_time>Thu, 08 Mar 2001 02:57:18 GMT</last_modification_time>
-	        </signal>
-	        <signal>
+		</signal>
+		<signal>
 		  <name>changed</name>
 		  <handler>entry_changed</handler>
 		  <data>CHANGED</data>
 		  <last_modification_time>Thu, 08 Mar 2001 02:57:36 GMT</last_modification_time>
-	        </signal>
-	        <editable>False</editable>
-	        <text_visible>True</text_visible>
-	        <text_max_length>20</text_max_length>
-	        <text></text>
-	        <input_mode>XIM</input_mode>
-	        <xim_enabled>False</xim_enabled>
+		</signal>
+		<editable>False</editable>
+		<text_visible>True</text_visible>
+		<text_max_length>20</text_max_length>
+		<text></text>
+		<input_mode>XIM</input_mode>
+		<xim_enabled>False</xim_enabled>
 	      </widget>
 	    </widget>
 
@@ -4842,31 +4948,6 @@
 
 	    <widget>
 	      <class>GtkRadioButton</class>
-	      <name>ORCAORGCHK10N</name>
-	      <x>540</x>
-	      <y>244</y>
-	      <width>20</width>
-	      <height>20</height>
-	      <can_focus>True</can_focus>
-	      <signal>
-		<name>toggled</name>
-		<handler>button_toggled</handler>
-		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
-	      </signal>
-	      <signal>
-		<name>clicked</name>
-		<handler>send_event</handler>
-		<data>CLICKED</data>
-		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
-	      </signal>
-	      <label></label>
-	      <active>True</active>
-	      <draw_indicator>True</draw_indicator>
-	      <group>NYU10</group>
-	    </widget>
-
-	    <widget>
-	      <class>GtkRadioButton</class>
 	      <name>ORCAORGCHK06N</name>
 	      <x>540</x>
 	      <y>164</y>
@@ -4913,6 +4994,31 @@
 	      <active>False</active>
 	      <draw_indicator>True</draw_indicator>
 	      <group>NYU06</group>
+	    </widget>
+
+	    <widget>
+	      <class>GtkRadioButton</class>
+	      <name>ORCAORGCHK10N</name>
+	      <x>540</x>
+	      <y>244</y>
+	      <width>20</width>
+	      <height>20</height>
+	      <can_focus>True</can_focus>
+	      <signal>
+		<name>toggled</name>
+		<handler>button_toggled</handler>
+		<last_modification_time>Mon, 11 Mar 2002 04:59:12 GMT</last_modification_time>
+	      </signal>
+	      <signal>
+		<name>clicked</name>
+		<handler>send_event</handler>
+		<data>CLICKED</data>
+		<last_modification_time>Fri, 14 Mar 2003 06:22:20 GMT</last_modification_time>
+	      </signal>
+	      <label></label>
+	      <active>True</active>
+	      <draw_indicator>True</draw_indicator>
+	      <group>NYU10</group>
 	    </widget>
 	  </widget>
 

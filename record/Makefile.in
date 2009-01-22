@@ -380,6 +380,9 @@ RECORD_files = \
 	W65.rec \
 	W66.rec \
 	X06.rec \
+	Y011.rec \
+	Y012.rec \
+	YID1.rec \
 
 DEF_files = \
 	HC01.def \
@@ -584,6 +587,8 @@ DB_files = \
 	tbl_onrece_body.db \
 	tbl_henrei_kanri.db \
 	tbl_henrei_body.db \
+	tbl_yykcom.db \
+	tbl_yykexample.db \
 
 
 all:   

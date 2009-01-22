@@ -64,6 +64,7 @@
       *  03.05.00    NACL-多々納  07/05/22  再印刷処理追加
       *  03.05.01    NACL-多々納  07/08/06  訂正請求書合計印刷対応
       *  04.02.00    NACL-多々納  08/03/05  お薬手帳発行区分追加
+      *  04.04.00    NACL-多々納  09/01/23  予約票発行区分追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -303,6 +304,8 @@
            03  WRK-SEIKYU-PG           PIC X(20).
       *    診療費明細書ＰＧ名
            03  WRK-MEISAI-PG           PIC X(20).
+      *    予約票ＰＧ名
+           03  WRK-YYKHYO-PG           PIC X(20).
       *    入力項目名
            03  WRK-MCP-WIDGET          PIC X(64).
       *
@@ -539,6 +542,11 @@
       *
       *    ユーザプログラム起動サブパラメタ
            COPY    "CPORCSUSERCHK.INC".
+      *
+      *    予約票パラメタ
+           COPY    "CPORCHC67.INC".
+      *    オンライン帳票共通パラメタ
+           COPY    "CPONPRTDATA.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -1000,6 +1008,26 @@
                                                           (IDX) (1:1)
                    MOVE    SPA-GMN-OKUSURILST(IDX)
                                            TO  SPA-GMN-OKUSURIFLG-G
+               END-IF
+           END-PERFORM
+      *
+      *    予約票発行行フラグ
+           MOVE    "0 発行なし"        TO  SPA-GMN-YYKHYOFLG-LST (01)
+           MOVE    "1 発行あり"        TO  SPA-GMN-YYKHYOFLG-LST (02)
+           MOVE    2                   TO  SPA-YYKHYOFLG-MAX
+      *    訂正は 発行なしとする
+           IF      SPA-SYORIFLG        =   ZERO
+               MOVE    SPA-YYKHYOPRTFLG    TO  SPA-GMN-YYKHYOFLG
+           ELSE
+               MOVE    SPA-GMN-YYKHYOFLG-LST (01)(1:1)
+                                           TO  SPA-GMN-YYKHYOFLG
+           END-IF
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-YYKHYOFLG-MAX
+               IF      SPA-GMN-YYKHYOFLG       =   SPA-GMN-YYKHYOFLG-LST
+                                                          (IDX) (1:1)
+                   MOVE    SPA-GMN-YYKHYOFLG-LST(IDX)
+                                           TO  SPA-GMN-YYKHYOFLG-G
                END-IF
            END-PERFORM
       *
@@ -2858,6 +2886,14 @@
                                            TO  K03-OKUSURIFLG-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-OKUSURIFLG-MAX   TO  K03-OKUSURIFLG-COUNT
+      *    予約票発行
+           MOVE    SPA-GMN-YYKHYOFLG-G     TO  K03-YYKHYOFLG
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-YYKHYOFLG-MAX
+               MOVE    SPA-GMN-YYKHYOFLG-LST (IDX)
+                                           TO  K03-YYKHYOFLG-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-YYKHYOFLG-MAX   TO  K03-YYKHYOFLG-COUNT
       *    Ｕ・Ｐ
            MOVE    SPA-GMN-USERPG-G    TO  K03-USERPG
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3181,6 +3217,8 @@
                    MOVE    "MEIPRTFLG"       TO  MCP-WIDGET
                WHEN    17
                    MOVE    "OKUSURIFLG"      TO  MCP-WIDGET
+               WHEN    18
+                   MOVE    "YYKHYOFLG"       TO  MCP-WIDGET
                WHEN    90
                    MOVE    "B12"             TO  MCP-WIDGET
       *!       WHEN    08
@@ -3255,6 +3293,15 @@
                    MOVE    17          TO  SPA-GMN-CUR
       *        お薬手帳報発行フラグ
                WHEN    "OKUSURIFLG"
+      *************IF      (SPA-GMN-SYOHOPRTFLG    =   ZERO )  OR
+      *                    (SPA-DRCD-MAX           =   ZERO )
+      *                MOVE    90                TO  SPA-GMN-CUR
+      *            ELSE
+      *                MOVE    5                 TO  SPA-GMN-CUR
+      ************ END-IF
+                   MOVE    18          TO  SPA-GMN-CUR
+      *        予約票報発行フラグ
+               WHEN    "YYKHYOFLG"
                    IF      (SPA-GMN-SYOHOPRTFLG    =   ZERO )  OR
                            (SPA-DRCD-MAX           =   ZERO )
                        MOVE    90                TO  SPA-GMN-CUR
@@ -3474,6 +3521,7 @@
            MOVE    K03-YAKJYOFLG       TO  SPA-GMN-YAKJYOFLG-G
            MOVE    K03-OKUSURIFLG      TO  SPA-GMN-OKUSURIFLG-G
            MOVE    K03-MEIPRTFLG       TO  SPA-GMN-MEIPRTFLG-G
+           MOVE    K03-YYKHYOFLG       TO  SPA-GMN-YYKHYOFLG-G
            MOVE    K03-DRCD            TO  SPA-GMN-DRCD-G
            MOVE    K03-USERPG          TO  SPA-GMN-USERPG-G
            .
@@ -3541,6 +3589,10 @@
       *    お薬手帳発行フラグ
            IF      SPA-ERRCD           =   SPACE
                PERFORM 430-OKUSURIFLG-CHK-SEC
+           END-IF
+      *    予約票発行フラグ
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 430-YYKHYOFLG-CHK-SEC
            END-IF
       *    ドクター
            IF      SPA-ERRCD           =   SPACE
@@ -4626,6 +4678,35 @@
       *
            .
        430-OKUSURIFLG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *   予約票発行フラグ入力　処理
+      *****************************************************************
+       430-YYKHYOFLG-CHK-SEC              SECTION.
+      *
+           IF      SPA-GMN-YYKHYOFLG   =   SPACE
+               MOVE    ZERO                TO  SPA-GMN-YYKHYOFLG
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-YYKHYOFLG-MAX)  OR
+                              (FLG-CHK NOT =   ZERO )
+               IF      SPA-GMN-YYKHYOFLG   =   SPA-GMN-YYKHYOFLG-LST
+                                                         (IDX)(1:1)
+                   MOVE    SPA-GMN-YYKHYOFLG-LST (IDX)
+                                           TO  SPA-GMN-YYKHYOFLG-G
+                   MOVE    1               TO  FLG-CHK
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-CHK               =   ZERO
+               MOVE    "0018"            TO  SPA-ERRCD
+               MOVE    18                TO  SPA-GMN-CUR
+           END-IF
+      *
+           .
+       430-YYKHYOFLG-CHK-EXT.
            EXIT.
       *****************************************************************
       *    Ｕ・Ｐ入力　処理
@@ -5811,6 +5892,22 @@
                CALL    "ORCSCH62"          USING   SPA-AREA
                                                    ORCSCH62AREA
            END-IF
+      *
+      *    予約票発行
+           IF     (SPA-GMN-YYKHYOFLG   =   "0"    )
+           OR     (WRK-YYKHYO-PG       =   SPACE  )
+               CONTINUE
+           ELSE
+               INITIALIZE                  ORCHC67AREA
+               MOVE    SPA-SRYYMD          TO  ORCHC67-SRYYMD
+               MOVE    "06"                TO  SPA-PRT-FLG
+               MOVE    WRK-YYKHYO-PG       TO  ONPRTDATA-PGID
+               MOVE    ORCHC67AREA         TO  ONPRTDATA-DATA
+               CALL    "ORCHCOMMON"        USING
+                                           SPA-AREA
+                                           ONPRTDATA
+           END-IF
+      *
            MOVE    SPACE               TO  SPA-PRT-FLG
            .
        45009-PRINT-EXT.
@@ -5865,6 +5962,21 @@
                GO      TO      4901-PRINT-PG-EXT
            END-IF
            MOVE    ORCSPRTNM-PRTPG     TO  WRK-MEISAI-PG
+      *
+      *    予約票
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000010"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SRYYMD          TO  ORCSPRTNM-SRYYMD
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1032-REC
+           IF      ORCSPRTNM-RC    NOT =   ZERO
+               MOVE    "1030"              TO  SPA-ERRCD
+               GO      TO      4901-PRINT-PG-EXT
+           END-IF
+           MOVE    ORCSPRTNM-PRTPG     TO  WRK-YYKHYO-PG
       *
            .
       *

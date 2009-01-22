@@ -646,6 +646,11 @@
                IF      SYS-1001-OKUSURIPRTFLG  =   SPACE
                    MOVE    ZERO                TO  SPA-OKUSURIPRTFLG
                END-IF
+      *        Í½ÌóÉ¼Ä¢È¯¹Ô¥Õ¥é¥°
+               MOVE    SYS-1001-YYKHYOPRTFLG   TO  SPA-YYKHYOPRTFLG
+               IF      SYS-1001-YYKHYOPRTFLG   =   SPACE
+                   MOVE    ZERO                TO  SPA-YYKHYOPRTFLG
+               END-IF
       *        ¾ÃÈñÀÇÃ¼¿ôÀßÄê
                MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN
            END-IF
@@ -1354,6 +1359,11 @@
                MOVE    SYS-1001-OKUSURIPRTFLG  TO  SPA-OKUSURIPRTFLG
                IF      SYS-1001-OKUSURIPRTFLG  =   SPACE
                    MOVE    ZERO                TO  SPA-OKUSURIPRTFLG
+               END-IF
+      *        Í½ÌóÉ¼Ä¢È¯¹Ô¥Õ¥é¥°
+               MOVE    SYS-1001-YYKHYOPRTFLG   TO  SPA-YYKHYOPRTFLG
+               IF      SYS-1001-YYKHYOPRTFLG   =   SPACE
+                   MOVE    ZERO                TO  SPA-YYKHYOPRTFLG
                END-IF
       *        ¾ÃÈñÀÇÃ¼¿ôÀßÄê
                MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN

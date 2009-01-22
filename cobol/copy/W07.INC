@@ -545,5 +545,11 @@
                     06  W07-INIT-DRCD-COUNT   PIC S9(9)   BINARY.
                     06  W07-INIT-DRCD-ITEM
                             PIC X(30)   OCCURS  99 TIMES.
+                  05  W07-YYKHYO-KBN-COMB.
+                    06  W07-YYKHYO-KBN.
+                      07  W07-VALUE   PIC X(20).
+                    06  W07-YYKHYO-KBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-YYKHYO-KBN-ITEM
+                            PIC X(20)   OCCURS  5 TIMES.
                 04  W07-TAGNAME7.
                   05  W07-TAGNAME7-STATE   PIC S9(9)   BINARY.

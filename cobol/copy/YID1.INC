@@ -1,0 +1,6 @@
+        02  YID1.
+      ***** 02  YID1-FIXED1.
+              03  YID1-ID1CODE.
+                04  YID1-VALUE  PIC X(10).
+              03  YID1-ID1MSG.
+                04  YID1-VALUE  PIC X(80).

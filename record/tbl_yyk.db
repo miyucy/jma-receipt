@@ -143,3 +143,20 @@ path	key8 	{
 		;
 	};
 };
+
+path	key9 	{
+	DBSELECT	{
+		DECLARE tbl_yyk_key9_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yyk
+			WHERE   HOSPNUM      =   :HOSPNUM
+			AND     PTID         =   :PTID
+			AND     YYKYMD       >=  :YYKYMD
+			AND     YYKID        <>  0
+			ORDER   BY        YYKYMD,
+                                          KEYYYKTIME,
+                                          YYKTIME,
+                                          SRYKA
+		;
+	};
+};

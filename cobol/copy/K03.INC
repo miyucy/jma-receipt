@@ -291,4 +291,10 @@
               03  K03-GENMENMEI.
                 04  K03-GENMENMEI-STYLE   PIC X(20).
                 04  K03-GENMENMEI-VALUE   PIC X(34).
+              03  K03-YYKHYOFLG-COMB.
+                04  K03-YYKHYOFLG.
+                  05  K03-VALUE   PIC X(18).
+                04  K03-YYKHYOFLG-COUNT   PIC S9(9)   BINARY.
+                04  K03-YYKHYOFLG-ITEM
+                        PIC X(18)   OCCURS  5 TIMES.
 

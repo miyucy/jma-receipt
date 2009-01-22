@@ -66,6 +66,7 @@
       * 04.02.02     NACL-¿¹ÏÆ    08/03/26  ÌôºÞ¾ðÊóÄó¶¡½ñ¥×¥í¥°¥é¥àÁªÂò
       * 04.03.00     NACL-Â¿¡¹Ç¼  08/09/08  Æþ±¡¤ªÌô¼êÄ¢ÅùÄÉ²ÃÂÐ±þ
       * 04.04.00     NACL-Â¿¡¹Ç¼  08/12/16  ¿¦°÷¾ðÊóÈ½Äê½¤Àµ
+      * 04.04.00     NACL-Â¿¡¹Ç¼  09/01/21  Í½ÌóÉ¼ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -736,9 +737,10 @@
                                        TO  SPA-GMN-TNAME (14)
            MOVE    "¼«ÈñÆâÌõÌÀºÙ½ñ"
                                        TO  SPA-GMN-TNAME (15)
-      *----(04.02.01)--ADD-START---
+      *
            MOVE    "¤ªÌô¼êÄ¢"          TO  SPA-GMN-TNAME (16)
-      *----(04.02.01)--ADD-END-----
+      *
+           MOVE    "Í½ÌóÉ¼"            TO  SPA-GMN-TNAME (17)
       *
       *    ¥«¥ë¥Æ£±¹æ»æ
            MOVE    "ORCHC01"       TO  SPA-GMN-TORGPGNM (1)
@@ -778,10 +780,14 @@
            MOVE    "ORCHC62"       TO  SPA-GMN-TORGPGNM (9)
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(9)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(9)
+      *    Í½ÌóÉ¼
+           MOVE    "ORCHC67"       TO  SPA-GMN-TORGPGNM (10)
+           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(10)
+           MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(10)
       *----(04.02.01)--ADD-END-----
       *----(04.02.01)--UPD-START---
       *    ¥«¥¹¥¿¥Þ¥¤¥ºÄ¢É¼ºÇÂç
-           MOVE    9                   TO  SPA-GPGNM-MAX
+           MOVE    10                   TO  SPA-GPGNM-MAX
       *----(04.02.01)--UPD-END-----
       *
            .
@@ -1303,7 +1309,7 @@
       *----(02.00.08)--ADD-START---
       *----(04.02.01)--ADD-START---
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK09"
-      *----(04.02.01)--ADD-END-----
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK10"
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-ORCAORGCHK-CHK-SEC
       *    ¥«¥¹¥¿¥Þ¥¤¥º¥×¥í¥°¥é¥àÁªÂò»þ
@@ -1320,6 +1326,7 @@
       *----(04.02.01)--ADD-START---
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK09"
       *----(04.02.01)--ADD-END-----
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK10"
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-ORCACSTCHK-CHK-SEC
       *    É¸½à¥×¥í¥°¥é¥àÁªÂò»þ ¡á Æþ±¡ ¡á
@@ -2021,7 +2028,6 @@
                MOVE    W11-ORCAORGCHK(IDX1)
                                    TO  SPA-GMN-TORGPGCHK (IDX1)
            END-IF
-      *
       *
            .
        4101-ORCAORGCHK-CHK-EXT.
@@ -3256,7 +3262,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(04.02.01)--ADD-START---
            MOVE    SPA-GMN-TORGPGNM  (9)
                                         TO  W11-ORCAORGNM09
-      *----(04.02.01)--ADD-END-----
+      *    Í½ÌóÉ¼
+           MOVE    SPA-GMN-TORGPGNM  (10)
+                                        TO  W11-ORCAORGNM10
       *    ½èÊý¤»¤ó
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-ORGPGNM02-MAX
@@ -3601,8 +3609,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(04.02.01)--ADD-START---
                    MOVE    29          TO  SPA-GMN-CUR
                WHEN    "ORCACSTNM09"
-      *----(04.02.01)--ADD-END-----
-      *----(02.00.08)--ADD-END-----
+      *****        ³°ÍèºÇ½ª
+      *            IF    ( SPA-BEDSU       >   ZERO )
+      *                MOVE    51          TO  SPA-GMN-CUR
+      *                MOVE    2           TO  SPA-GMN-PAGENO
+      *             ELSE
+      *                MOVE    999         TO  SPA-GMN-CUR
+      *****        END-IF
+                   MOVE    30          TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM10"
+      *        Í½ÌóÉ¼
       *            ³°ÍèºÇ½ª
                    IF    ( SPA-BEDSU       >   ZERO )
                        MOVE    51          TO  SPA-GMN-CUR
@@ -3610,7 +3626,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     ELSE
                        MOVE    999         TO  SPA-GMN-CUR
                    END-IF
-      *----(02.00.03)--ADD-END-----
       *
                WHEN    "PRTNM01N"
                    MOVE    52           TO  SPA-GMN-CUR

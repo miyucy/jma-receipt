@@ -140,6 +140,15 @@
                        09  SPA-GMN-OKUSURILST       PIC X(18)
                                                     OCCURS   3.
                    07  SPA-OKUSURIFLG-MAX           PIC 9(02).
+      *            ÕΩÃÛ…º»Øπ‘
+                   07  SPA-GMN-YYKHYOFLG-G.
+                       09  SPA-GMN-YYKHYOFLG        PIC X(01).
+                       09  SPA-GMN-YYKHYOHH         PIC X(01).
+                       09  SPA-GMN-YYKHYOFLG-MSG    PIC X(16).
+                   07  SPA-GMN-YYKHYOFLG-LISTG.
+                       09  SPA-GMN-YYKHYOFLG-LST    PIC X(18)
+                                                    OCCURS   3.
+                   07  SPA-YYKHYOFLG-MAX            PIC 9(02).
       *
                    07  SPA-GMN-JIHIMSG           PIC X(20)
                                                  OCCURS   10.

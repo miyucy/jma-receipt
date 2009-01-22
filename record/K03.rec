@@ -408,5 +408,12 @@ K03	{
 		    style   varchar(20);
 			value	varchar(34);
 		};
+		YYKHYOFLG_COMB	{
+			YYKHYOFLG	{
+				value	varchar(18);
+			};
+			count	int;
+			item	varchar(18)[5];
+		};
 	};
 };

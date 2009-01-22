@@ -511,5 +511,15 @@ Y01	{
 			count	int;
 			item	varchar(33)[100];
 		};
+		COMMENT1	{
+			value	varchar(80);
+		};
+		YYKHYO_COMB	{
+			YYKHYO	{
+				value	varchar(24);
+			};
+			count	int;
+			item	varchar(24)[5];
+		};
 	};
 };
