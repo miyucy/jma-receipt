@@ -45,6 +45,20 @@ Z07	{
 		INPUTCD10	{
 			value	varchar(20);
 		};
+		CMB_CHKCHG	{
+			CHKCHG{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[3];
+		};
+		CMB_YKJCHG	{
+			YKJCHG{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[3];
+		};
 		SELNUM	{
 			value	number(3);
 		};
