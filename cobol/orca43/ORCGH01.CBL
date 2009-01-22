@@ -845,7 +845,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                            OR      TBL-HENREI-B-S-TEISYUTUSAKI
                                                        (IDXX IDZZ)
                                            =   SPACE
-                       IF    ( SPA-RECE10-TEISYUTUSAKI =
+                       IF    ( SPA-RECE10-SKYYM        =
+                                           TBL-HENREI-B-S-HENREIYM
+                                                           (IDXX IDZZ) )
+                       AND   ( SPA-RECE10-TEISYUTUSAKI =
                                            TBL-HENREI-B-S-TEISYUTUSAKI
                                                            (IDXX IDZZ) )
                        AND   ( SPA-RECE10-NYUGAIKBN    =
@@ -1372,6 +1375,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    RECE10-KEY          TO  SPA-RECE10-KEY
            MOVE    RECE10-KIGO         TO  SPA-RECE10-KIGO
            MOVE    RECE10-NUM          TO  SPA-RECE10-NUM
+           MOVE    RECE10-SKYYM        TO  SPA-RECE10-SKYYM
       *
       *    見出し編集
            PERFORM 3101-MIDASI-HENSYU-SEC
@@ -1766,9 +1770,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          UNTIL   IDZZ    >       10
                          OR      HENREI-B-S-TEISYUTUSAKI(IDZZ)
                                          =       SPACE
-                   IF    ( HENREI-B-SRYYM  =   SPA-RECE10-SRYYM        )
-                   AND   ( HENREI-B-S-HENREIYM     (IDZZ)
-                                           =   RECE10-SKYYM            )
+                   IF    ( HENREI-B-S-HENREIYM     (IDZZ)
+                                           =   SPA-RECE10-SKYYM        )
                    AND   ( HENREI-B-S-TEISYUTUSAKI (IDZZ)
                                            =   SPA-RECE10-TEISYUTUSAKI )
                    AND   ( HENREI-B-S-NYUGAIKBN    (IDZZ)
