@@ -1768,7 +1768,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                          =       SPACE
                    IF    ( HENREI-B-SRYYM  =   SPA-RECE10-SRYYM        )
                    AND   ( HENREI-B-S-HENREIYM     (IDZZ)
-                                           =   RECE10-HENREIYM         )
+                                           =   RECE10-SKYYM            )
                    AND   ( HENREI-B-S-TEISYUTUSAKI (IDZZ)
                                            =   SPA-RECE10-TEISYUTUSAKI )
                    AND   ( HENREI-B-S-NYUGAIKBN    (IDZZ)
