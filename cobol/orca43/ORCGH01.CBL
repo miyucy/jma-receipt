@@ -1760,11 +1760,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    HENREI-B-REC    TO  TBL-HENREI-B-REC
                                                   (TBL-HENREI-B-MAX)
       *        返戻設定済のデータを取得
-               PERFORM VARYING IDZZ    FROM    1   BY  1
-                       UNTIL   IDZZ    >       10
-                       OR      HENREI-B-S-TEISYUTUSAKI(IDZZ)
-                                           =       SPACE
-                   IF    ( HENREI-B-S-TEISYUTUSAKI (IDZZ)
+               IF      RECE10-HENREI-SIJI-FLG
+                                           =   1
+                 PERFORM VARYING IDZZ    FROM    1   BY  1
+                         UNTIL   IDZZ    >       10
+                         OR      HENREI-B-S-TEISYUTUSAKI(IDZZ)
+                                         =       SPACE
+                   IF    ( HENREI-B-SRYYM  =   SPA-RECE10-SRYYM        )
+                   AND   ( HENREI-B-S-TEISYUTUSAKI (IDZZ)
                                            =   SPA-RECE10-TEISYUTUSAKI )
                    AND   ( HENREI-B-S-NYUGAIKBN    (IDZZ)
                                            =   SPA-RECE10-NYUGAIKBN    )
@@ -1784,7 +1787,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       ***                                          (TBL-HENREI-B-MAX)
                        MOVE    10              TO  IDZZ
                    END-IF  
-               END-PERFORM
+                 END-PERFORM
+               END-IF
       *
                MOVE    "tbl_henrei_body"   TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
