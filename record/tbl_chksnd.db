@@ -446,3 +446,60 @@ path	key18	{
 		;
 	};
 };
+
+
+path	key19	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key19_csr CURSOR FOR
+		SELECT DISTINCT ON (CHKKBN,SRYCD) * FROM TBL_CHKSND
+		WHERE  HOSPNUM = :HOSPNUM
+		AND    SRYCD   = :SRYCD
+		ORDER BY CHKKBN,SRYCD,CDKBN,RENNUM,YUKOEDYMD DESC
+		;
+	};
+};
+
+
+path	key20	{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key20_csr CURSOR FOR
+		SELECT *
+		FROM TBL_CHKSND
+		WHERE  HOSPNUM = :HOSPNUM
+		AND    CD      = :CD
+		ORDER BY HOSPNUM,CHKKBN,SRYCD,YUKOSTYMD,YUKOEDYMD,CDKBN,RENNUM
+		;
+	};
+};
+
+path	key21		{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key21_csr CURSOR FOR
+		SELECT *
+		FROM TBL_CHKSND
+			WHERE HOSPNUM	  =   :HOSPNUM
+			AND   CHKKBN      =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   CDKBN       =   :CDKBN
+			AND   YUKOSTYMD   =   :YUKOSTYMD
+			AND   YUKOEDYMD   =   :YUKOEDYMD
+		ORDER   BY    RENNUM DESC
+		;
+	};
+};
+
+path	key22		{ 	
+	DBSELECT	{
+		DECLARE tbl_chksnd_key22_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chksnd
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND CHKKBN        =   :CHKKBN
+			AND   SRYCD       =   :SRYCD
+			AND   YUKOSTYMD   =   :YUKOSTYMD
+			AND   YUKOEDYMD   =   :YUKOEDYMD
+			AND   CDKBN       =   :CDKBN
+			AND   CD          =   :CD
+		;
+	};
+};
