@@ -1376,6 +1376,51 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    RECE10-KIGO         TO  SPA-RECE10-KIGO
            MOVE    RECE10-NUM          TO  SPA-RECE10-NUM
            MOVE    RECE10-SKYYM        TO  SPA-RECE10-SKYYM
+           MOVE    RECE10-HKNNUM       TO  SPA-RECE10-HKNNUM
+      *
+      *    公費単独で生保又は中国残留邦人等のとき負担者番号、
+      *    受給者番号をセット
+           IF    ( RECE10-HKNNUM       =   SPACE              )
+               IF    ( RECE10-KOHNUM (1)   =   "012"  OR "025" )
+               AND   ( RECE10-KOHNUM (2)   =   SPACE           )
+                   INITIALIZE                  PTKOHINF-REC
+                   MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
+                   MOVE    RECE10-PTID     TO  PTKOH-PTID
+                   MOVE    RECE10-KOHID(1) TO  PTKOH-KOHID
+                   MOVE    PTKOHINF-REC    TO  MCPDATA-REC
+                   PERFORM 900-PTKOHINF-READ-SEC
+                   MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
+                   MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
+                   MOVE    RECE10-KOHID(1) TO  MONTHLYNUM-KOHID
+                   MOVE    RECE10-SRYYM    TO  MONTHLYNUM-SRYYM
+                   MOVE    RECE10-NYUGAIKBN
+                                           TO  MONTHLYNUM-NYUGAIKBN
+                   MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                   PERFORM 900-MONTHLYNUM-READ-SEC
+                   IF      FLG-MONTHLYNUM  =   ZERO
+                       MOVE    MONTHLYNUM-JKYSNUM
+                                               TO  PTKOH-JKYSNUM
+                   ELSE
+                       MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
+                       MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
+                       MOVE    ZERO            TO  MONTHLYNUM-KOHID
+                       MOVE    RECE10-SRYYM    TO  MONTHLYNUM-SRYYM
+                       MOVE    RECE10-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
+                       MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                       PERFORM 900-MONTHLYNUM-READ-SEC
+                       IF      FLG-MONTHLYNUM   =   ZERO
+                           MOVE    MONTHLYNUM-JKYSNUM
+                                                    TO  PTKOH-JKYSNUM
+                       END-IF
+                   END-IF
+                   MOVE    PTKOH-FTNJANUM  TO  SPA-RECE10-FTNJANUM
+                   MOVE    PTKOH-JKYSNUM   TO  SPA-RECE10-JKYSNUM
+      ***      ELSE
+      ***          MOVE    PTKOH-FTNJANUM  TO  SPA-RECE10-FTNJANUM
+      ***          MOVE    PTKOH-JKYSNUM   TO  SPA-RECE10-JKYSNUM
+               END-IF
+           END-IF
       *
       *    見出し編集
            PERFORM 3101-MIDASI-HENSYU-SEC
