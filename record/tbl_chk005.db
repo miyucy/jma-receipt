@@ -137,3 +137,39 @@ path	key7	{
 		;
 	};
 };
+
+path	key8	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk005_key8_csr CURSOR FOR
+		SELECT DISTINCT ON (CHKKBN,ID) * FROM TBL_CHK005
+		WHERE  HOSPNUM = :HOSPNUM
+		AND    SRYCD   = :SRYCD
+		ORDER BY CHKKBN,ID
+		;
+	};
+};
+
+path	key9	{ 	
+	DBSELECT	{
+		DECLARE tbl_chk005_key9_csr CURSOR FOR
+		SELECT * FROM TBL_CHK005
+		WHERE	HOSPNUM = :HOSPNUM
+		AND	CHKKBN	= :CHKKBN
+		AND	ID	= :ID
+		AND	SRYCD   = :SRYCD
+		;
+	};
+};
+
+path	key10		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk005_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk005
+			WHERE	HOSPNUM	=	:HOSPNUM
+			AND	CHKKBN	=	:CHKKBN
+			AND	ID	=	:ID
+			ORDER BY RENNUM DESC
+		;
+	};
+};
