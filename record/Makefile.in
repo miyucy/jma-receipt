@@ -589,6 +589,7 @@ DB_files = \
 	tbl_henrei_body.db \
 	tbl_yykcom.db \
 	tbl_yykexample.db \
+	tbl_ptsame.db \
 
 
 all:   

@@ -136,5 +136,6 @@ db	{
 	tbl_onrece_body;
 	tbl_henrei_kanri;
 	tbl_henrei_body;
+	tbl_ptsame;
 
 };
