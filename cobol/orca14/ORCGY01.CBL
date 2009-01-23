@@ -3609,6 +3609,7 @@
            END-IF
       *
            INITIALIZE                  ORCHC67AREA
+           MOVE    "1"                 TO  ORCHC67-KBN
       *    Í½ÌóÆü
            MOVE    SPA-NAI-YYKYMD      TO  ORCHC67-SRYYMD
       *

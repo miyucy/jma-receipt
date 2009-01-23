@@ -5900,6 +5900,7 @@
            ELSE
                INITIALIZE                  ORCHC67AREA
                MOVE    SPA-SRYYMD          TO  ORCHC67-SRYYMD
+               MOVE    "2"                 TO  ORCHC67-KBN
                MOVE    "06"                TO  SPA-PRT-FLG
                MOVE    WRK-YYKHYO-PG       TO  ONPRTDATA-PGID
                MOVE    ORCHC67AREA         TO  ONPRTDATA-DATA
