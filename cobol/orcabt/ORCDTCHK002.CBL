@@ -2873,6 +2873,13 @@
                END-IF
            END-IF
       *
+           IF    ( DCACCT-NYUGAIKBN    =   "1" )
+               IF    ( DCACCT-ZAITEN   NOT =   ZERO )
+                 AND ( DCACCT-ZAIKAISU NOT =   ZERO )
+                   MOVE    1           TO  FLG-SHOSAISIN
+               END-IF
+           END-IF
+      *
            IF    ( FLG-STS-NYUKHN      =   1 )
             OR   ( FLG-STS-GAIHAKU     =   1 )
                MOVE    1               TO  FLG-SHOSAISIN
