@@ -2401,6 +2401,8 @@
            INITIALIZE                      CHK-REC
            MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    SPA-GMN-OLD-SRYCD   TO  CHK-SRYCD
+           MOVE    SPA-NAI-YUKOYMD     TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key18"             TO  MCP-PATHNAME
@@ -2479,6 +2481,8 @@
       *
            INITIALIZE                      CHK-REC
            MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
+           MOVE    SPA-NAI-YUKOYMD     TO  CHK-YUKOSTYMD
+                                           CHK-YUKOEDYMD
            MOVE    SPA-GMN-OLD-SRYCD   TO  CHK-CD
            MOVE    CHK-REC             TO  MCPDATA-REC
            MOVE    "tbl_chk"           TO  MCP-TABLE
@@ -2607,8 +2611,8 @@
            INITIALIZE                      CHKSND-REC
            MOVE    SPA-HOSPNUM         TO  CHKSND-HOSPNUM
            MOVE    SPA-GMN-OLD-SRYCD   TO  CHKSND-SRYCD
-           DISPLAY "CHKSND-HOSPNUM =" CHKSND-HOSPNUM
-           DISPLAY "CHKSND-SRYCD   =" CHKSND-SRYCD
+           MOVE    SPA-NAI-YUKOYMD     TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
            MOVE    CHKSND-REC          TO  MCPDATA-REC
            MOVE    "tbl_chksnd"        TO  MCP-TABLE
            MOVE    "key19"             TO  MCP-PATHNAME
@@ -2687,6 +2691,8 @@
       *
            INITIALIZE                      CHKSND-REC
            MOVE    SPA-HOSPNUM         TO  CHKSND-HOSPNUM
+           MOVE    SPA-NAI-YUKOYMD     TO  CHKSND-YUKOSTYMD
+                                           CHKSND-YUKOEDYMD
            MOVE    SPA-GMN-OLD-SRYCD   TO  CHKSND-CD
            MOVE    CHKSND-REC          TO  MCPDATA-REC
            MOVE    "tbl_chksnd"        TO  MCP-TABLE
@@ -2815,8 +2821,8 @@
            INITIALIZE                      CHKTRD-REC
            MOVE    SPA-HOSPNUM         TO  CHKTRD-HOSPNUM
            MOVE    SPA-GMN-OLD-SRYCD   TO  CHKTRD-SRYCD
-           DISPLAY "CHKTRD-HOSPNUM =" CHKTRD-HOSPNUM
-           DISPLAY "CHKTRD-SRYCD   =" CHKTRD-SRYCD
+           MOVE    SPA-NAI-YUKOYMD     TO  CHKTRD-YUKOSTYMD
+                                           CHKTRD-YUKOEDYMD
            MOVE    CHKTRD-REC          TO  MCPDATA-REC
            MOVE    "tbl_chktrd"        TO  MCP-TABLE
            MOVE    "key19"             TO  MCP-PATHNAME
@@ -2895,6 +2901,8 @@
       *
            INITIALIZE                      CHKTRD-REC
            MOVE    SPA-HOSPNUM         TO  CHKTRD-HOSPNUM
+           MOVE    SPA-NAI-YUKOYMD     TO  CHKTRD-YUKOSTYMD
+                                           CHKTRD-YUKOEDYMD
            MOVE    SPA-GMN-OLD-SRYCD   TO  CHKTRD-CD
            MOVE    CHKTRD-REC          TO  MCPDATA-REC
            MOVE    "tbl_chktrd"        TO  MCP-TABLE
@@ -3023,6 +3031,8 @@
            INITIALIZE                      CHK005-REC
            MOVE    SPA-HOSPNUM         TO  CHK005-HOSPNUM
            MOVE    SPA-GMN-OLD-SRYCD   TO  CHK005-SRYCD
+           MOVE    SPA-NAI-YUKOYMD     TO  CHK005-YUKOSTYMD
+                                           CHK005-YUKOEDYMD
            MOVE    CHK005-REC          TO  MCPDATA-REC
            MOVE    "tbl_chk005"        TO  MCP-TABLE
            MOVE    "key8"             TO  MCP-PATHNAME
