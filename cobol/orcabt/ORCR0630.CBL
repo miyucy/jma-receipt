@@ -79,6 +79,8 @@
       *  04.02.01    NACL-ÌçÏÆ    08/05/08  ÅÀÅ©£³£³£²¤Î¼êµ»ÎÁÊÔ½¸
       *  04.02.02    NACL-ÌçÏÆ    08/06/17  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
       *  04.02.03    NACL-ÌçÏÆ    08/09/24  Æþ±¡Î¬¾ÎÊÔ½¸ÄÉ²Ã
+      *
+      *  04.04.01    NACL-ÌçÏÆ    09/01/23  Æþ±¡ÎÁ»»ÄêÊÝ¸±°Ê³°¤Î¿ÇÎÅÊ¬¼ÂÆü¿ô»»ÄêÂÐ±þ
       *****************************************************************
       *
       *
@@ -1050,10 +1052,11 @@
                                 (ACCT-ZAIKAISU  NOT =    ZERO)
                                 MOVE    ZERO     TO    FLG-SHOSAISIN
                                                        FLG-SHOSAISIN-GEN
-                                IF   ACCT-SRYKBN  =  "11"  OR
-                                                     "13"  OR  "14"
-                                    PERFORM 2001113-SHOSAISIN-HANTEI-SEC
-                                END-IF
+      ***                       IF   ACCT-SRYKBN  =  "11"  OR
+      ***                                            "13"  OR  "14"
+      ***                           PERFORM 2001113-SHOSAISIN-HANTEI-SEC
+      ***                       END-IF
+                                MOVE     1       TO    FLG-SHOSAISIN
                                 PERFORM   2001114-RECE62-TENSOU12-SEC
                            END-IF
                            IF   (ACCT-ZAITEN    =        ZERO)    AND
@@ -1243,26 +1246,35 @@
                                                          =   SPACE)
       ****                                               =   SPACE)  OR
       ****                            (FLG-SHOSAISIN     =    1)
-                       MOVE    SPACE         TO   TNS-TENSU-REC
-                       INITIALIZE                 TNS-TENSU-REC
-                       MOVE    SRY-SRYCD(SRYACT-IDX) TO   TNS-SRYCD
-                       MOVE    ACCT-SRYYM         TO  TNS-YUKOSTYMD(1:6)
-                       MOVE    "01"               TO  TNS-YUKOSTYMD(7:2)
-                       MOVE    TNS-YUKOSTYMD      TO  TNS-YUKOEDYMD
-                       PERFORM  900-TENSU-READ-SEC
-                       IF       FLG-TENSU      =    ZERO
-                         IF ( (TNS-JITUDAY    =     2)    AND
-                              (TNS-DAYCNT     =     1   OR   2) ) OR
-                            (  SRY-SRYCD(SRYACT-IDX) =  "099409901" OR
-                                                        "099999902" OR
-                                                        "099110001" OR
-                                                        "099120001" OR
-                                                        "111011810")
-                             MOVE    1      TO    FLG-SHOSAISIN
-                         END-IF
-                         IF    SRY-SRYCD(SRYACT-IDX) =  "099409903"
-                             MOVE    1      TO    FLG-SHOSAISIN-GEN
-                         END-IF
+      **               MOVE    SPACE         TO   TNS-TENSU-REC
+      **               INITIALIZE                 TNS-TENSU-REC
+      **               MOVE    SRY-SRYCD(SRYACT-IDX) TO   TNS-SRYCD
+      **               MOVE    ACCT-SRYYM         TO  TNS-YUKOSTYMD(1:6)
+      **               MOVE    "01"               TO  TNS-YUKOSTYMD(7:2)
+      **               MOVE    TNS-YUKOSTYMD      TO  TNS-YUKOEDYMD
+      **               PERFORM  900-TENSU-READ-SEC
+      **               IF       FLG-TENSU      =    ZERO
+      **                 IF ( (TNS-JITUDAY    =     2)    AND
+      **                      (TNS-DAYCNT     =     1   OR   2) ) OR
+      **                    (  SRY-SRYCD(SRYACT-IDX) =  "099409901" OR
+      **                                                "099999902" OR
+      **                                                "099110001" OR
+      **                                                "099120001" OR
+      **                                                "111011810")
+      **                     MOVE    1      TO    FLG-SHOSAISIN
+      **                 END-IF
+      **                 IF    SRY-SRYCD(SRYACT-IDX) =  "099409903"
+      **                     MOVE    1      TO    FLG-SHOSAISIN-GEN
+      **                 END-IF
+      **               END-IF
+                       IF  SRY-SRYCD(SRYACT-IDX) =  "099409901" OR
+                                                    "099999902" OR
+                                                    "099110001" OR
+                                                    "099120001"
+                             MOVE    1       TO   FLG-SHOSAISIN
+                       END-IF
+                       IF  SRY-SRYCD(SRYACT-IDX) =  "099409903"
+                             MOVE    1       TO   FLG-SHOSAISIN-GEN
                        END-IF
                    END-PERFORM
                    MOVE    "tbl_sryact"      TO   MCP-TABLE

@@ -56,6 +56,8 @@
       *                                     ¡ÊºÆ½¢Ï«¡§±ßÊÑ¹¹ÂÐ±þ¡Ë
       *  04.02.02    NACL-ÌçÏÆ    08/05/08  ÅÀÅ©£³£³£²¤Î¼êµ»ÎÁÊÔ½¸
       *  04.02.03    NACL-ÌçÏÆ    08/06/17  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
+      *
+      *  04.04.01    NACL-ÌçÏÆ    09/01/23  Æþ±¡ÎÁ»»ÄêÊÝ¸±°Ê³°¤Î¿ÇÎÅÊ¬¼ÂÆü¿ô»»ÄêÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -823,10 +825,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         MOVE    ZERO     TO    FLG-SHOSAISIN
                                                FLG-SHOSAISIN-GEN
                                                FLG-KYUKYU
-                        IF   ACCT-SRYKBN  =  "11"  OR
-                                             "13"  OR  "14"
-                            PERFORM   2203-SHOSAISIN-HANTEI-SEC
-                        END-IF
+      ***               IF   ACCT-SRYKBN  =  "11"  OR
+      ***                                    "13"  OR  "14"
+      ***                   PERFORM   2203-SHOSAISIN-HANTEI-SEC
+      ***               END-IF
+                        MOVE     1       TO    FLG-SHOSAISIN
                         IF   ACCT-SRYKBN  =  "11"   
                             PERFORM   2204-KYUKYU-HANTEI-SEC
                         END-IF
@@ -939,21 +942,30 @@ grpsys     PERFORM 900-DBSELECT-SEC
       ****                                               =   SPACE)  OR
       ****                            (FLG-SHOSAISIN     =    1)
       *
-                       PERFORM  900-TENSU-READ-SEC
+      **               PERFORM  900-TENSU-READ-SEC
       *
-                       IF       FLG-TENSU      =    ZERO
-                         IF ( (TNS-JITUDAY    =     2)    AND
-                              (TNS-DAYCNT     =     1   OR   2) ) OR
-                            (  SRY-SRYCD(SRYACT-IDX) =  "099409901" OR
-                                                        "099999902" OR
-                                                        "099110001" OR
-                                                        "099120001" OR
-                                                         CONS-ROUSAI21 )
-                             MOVE    1       TO   FLG-SHOSAISIN
-                         END-IF
-                         IF    SRY-SRYCD(SRYACT-IDX) =  "099409903"
-                             MOVE    1       TO   FLG-SHOSAISIN-GEN
-                         END-IF
+      **               IF       FLG-TENSU      =    ZERO
+      **                 IF ( (TNS-JITUDAY    =     2)    AND
+      **                      (TNS-DAYCNT     =     1   OR   2) ) OR
+      **                    (  SRY-SRYCD(SRYACT-IDX) =  "099409901" OR
+      **                                                "099999902" OR
+      **                                                "099110001" OR
+      **                                                "099120001" OR
+      **                                                 CONS-ROUSAI21 )
+      **                     MOVE    1       TO   FLG-SHOSAISIN
+      **                 END-IF
+      **                 IF    SRY-SRYCD(SRYACT-IDX) =  "099409903"
+      **                     MOVE    1       TO   FLG-SHOSAISIN-GEN
+      **                 END-IF
+      **               END-IF
+                       IF  SRY-SRYCD(SRYACT-IDX) =  "099409901" OR
+                                                    "099999902" OR
+                                                    "099110001" OR
+                                                    "099120001"
+                           MOVE      1       TO   FLG-SHOSAISIN
+                       END-IF
+                       IF  SRY-SRYCD(SRYACT-IDX) =  "099409903"
+                           MOVE      1       TO   FLG-SHOSAISIN-GEN
                        END-IF
       *
                    END-PERFORM
