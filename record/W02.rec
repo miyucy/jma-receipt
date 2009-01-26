@@ -15,6 +15,9 @@ W02	{
 				HOSPNAME	{
 					value	varchar(60);
 				};
+				TANHOSPNAME	{
+					value	varchar(10);
+				};
 				KAISETUNAME	{
 					value	varchar(60);
 				};

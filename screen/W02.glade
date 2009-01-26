@@ -802,22 +802,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label565</name>
-	  <x>56</x>
-	  <y>164</y>
-	  <width>156</width>
-	  <height>24</height>
-	  <label>°åÎÅµ¡´ØÌ¾¾Î          </label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>True</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label566</name>
 	  <x>56</x>
 	  <y>192</y>
@@ -1958,6 +1942,66 @@
 	    <input_mode>XIM</input_mode>
 	    <xim_enabled>False</xim_enabled>
 	  </widget>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>TANHOSPNAME</name>
+	  <x>817</x>
+	  <y>164</y>
+	  <width>90</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Tue, 27 Feb 2001 06:02:36 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Tue, 27 Feb 2001 06:06:56 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text></text>
+	  <input_mode>XIM</input_mode>
+	  <xim_enabled>True</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label565</name>
+	  <x>56</x>
+	  <y>164</y>
+	  <width>156</width>
+	  <height>24</height>
+	  <label>°åÎÅµ¡´ØÌ¾¾Î          </label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label1667</name>
+	  <x>690</x>
+	  <y>164</y>
+	  <width>119</width>
+	  <height>24</height>
+	  <label>Ã»½Ì°åÎÅµ¡´ØÌ¾¾Î</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
 	</widget>
       </widget>
 

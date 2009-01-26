@@ -65,6 +65,8 @@
       *  04.01.00    NACL-Â¿¡¹Ç¼  08/01/29  Í½ÌóÆâÍÆ¾ðÊóÄÉ²Ã
       *  04.02.00    NACL-Â¿¡¹Ç¼  08/03/XX  ¤ªÌô¼êÄ¢È¯¹ÔÄÉ²Ã
       *  04.04.00    NACL-Â¿¡¹Ç¼  09/01/23  Í½ÌóÉ¼È¯¹ÔÄÉ²Ã
+      *  04.04.00    NACL-¾®Æ¦Âô  09.01.26  ËÜ±¡Ê¬±¡ÂÐ±þ
+      *                                     Ã»½Ì°åÎÅµ¡´ØÌ¾¾Î¡¡ÄÉ²Ã       
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -230,6 +232,7 @@
                                13  SPA-GMN-HOSPSBTMEI PIC X(08).
                            11  SPA-GMN-HOSPID         PIC X(24).
                            11  SPA-GMN-HOSPNAME       PIC X(120).
+                           11  SPA-GMN-TANHOSPNAME    PIC X(20).
                            11  SPA-GMN-KAISETUNAME    PIC X(120).
                            11  SPA-GMN-KANRINAME      PIC X(80).
                            11  SPA-GMN-BEDSU          PIC 9(04).
@@ -1490,6 +1493,7 @@
            END-PERFORM
            MOVE    SYS-1001-HOSPID     TO  SPA-GMN-HOSPID
            MOVE    SYS-1001-HOSPNAME   TO  SPA-GMN-HOSPNAME
+           MOVE    SYS-1001-TANHOSPNAME TO SPA-GMN-TANHOSPNAME
            MOVE    SYS-1001-KAISETUNAME
                                        TO  SPA-GMN-KAISETUNAME
            MOVE    SYS-1001-KANRINAME  TO  SPA-GMN-KANRINAME
@@ -1931,6 +1935,7 @@
            MOVE    W02-HOSPSBT         TO  SPA-GMN-HOSPSBT-G
            MOVE    W02-HOSPID          TO  SPA-GMN-HOSPID
            MOVE    W02-HOSPNAME        TO  SPA-GMN-HOSPNAME
+           MOVE    W02-TANHOSPNAME     TO  SPA-GMN-TANHOSPNAME
            MOVE    W02-KAISETUNAME     TO  SPA-GMN-KAISETUNAME
            MOVE    W02-KANRINAME       TO  SPA-GMN-KANRINAME
            MOVE    W02-BEDSU           TO  SPA-GMN-BEDSU
@@ -2072,6 +2077,10 @@
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4105-HOSPNAME-CHK-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41051-TANHOSPNAME-CHK-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
@@ -2504,6 +2513,30 @@
            END-IF
            .
        4105-HOSPNAME-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    Ã»½Ì°åÎÅµ¡´ØÌ¾¾Î¥Á¥§¥Ã¥¯
+      *****************************************************************
+       41051-TANHOSPNAME-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-TANHOSPNAME TO  KANACHK-MAE-INPUT
+           MOVE    20                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-TANHOSPNAME
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU     =   1     )
+               MOVE    "0012"          TO  SPA-ERRCD
+               MOVE    13              TO  SPA-GMN-CUR
+           ELSE
+               MOVE    KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-TANHOSPNAME
+           END-IF
+           .
+       41051-TANHOSPNAME-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3510,6 +3543,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-GMN-HOSPSBT     TO  SYS-1001-HOSPSBT 
                    MOVE    SPA-GMN-HOSPID      TO  SYS-1001-HOSPID 
                    MOVE    SPA-GMN-HOSPNAME    TO  SYS-1001-HOSPNAME 
+                   MOVE    SPA-GMN-TANHOSPNAME TO  SYS-1001-TANHOSPNAME 
                    MOVE    SPA-GMN-KAISETUNAME TO  SYS-1001-KAISETUNAME
                    MOVE    SPA-GMN-KANRINAME   TO  SYS-1001-KANRINAME 
                    MOVE    SPA-GMN-BEDSU       TO  SYS-1001-BEDSU 
@@ -3955,6 +3989,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-HOSPSBT-G   TO  W02-HOSPSBT
            MOVE    SPA-GMN-HOSPID      TO  W02-HOSPID
            MOVE    SPA-GMN-HOSPNAME    TO  W02-HOSPNAME
+           MOVE    SPA-GMN-TANHOSPNAME TO  W02-TANHOSPNAME
            MOVE    SPA-GMN-KAISETUNAME TO  W02-KAISETUNAME
            MOVE    SPA-GMN-KANRINAME   TO  W02-KANRINAME
            MOVE    SPA-GMN-BEDSU       TO  W02-BEDSU  
@@ -4512,6 +4547,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "HOSPID"         TO   MCP-WIDGET
                 WHEN    06
                     MOVE  "HOSPNAME"       TO   MCP-WIDGET
+                WHEN    13
+                    MOVE  "TANHOSPNAME"    TO   MCP-WIDGET
                 WHEN    07
                     MOVE  "KAISETUNAME"    TO   MCP-WIDGET
                 WHEN    08
@@ -4682,6 +4719,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               WHEN    "HOSPSBT"
                   MOVE    6                TO  SPA-GMN-CUR
               WHEN    "HOSPNAME"
+                  MOVE    13               TO  SPA-GMN-CUR
+              WHEN    "TANHOSPNAME"
                   MOVE    7                TO  SPA-GMN-CUR
               WHEN    "KAISETUNAME"
                   MOVE    8                TO  SPA-GMN-CUR

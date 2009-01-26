@@ -27,6 +27,8 @@
                 04  W02-FIXED23.
                   05  W02-HOSPNAME.
                     06  W02-VALUE   PIC X(60).
+                  05  W02-TANHOSPNAME.
+                    06  W02-VALUE   PIC X(10).
                   05  W02-KAISETUNAME.
                     06  W02-VALUE   PIC X(60).
                   05  W02-KANRINAME.
