@@ -38,15 +38,6 @@
       *  03.05.03    NACL-門脇    07/06/26  不要項目削除
       *  04.01.01    NACL-門脇    07/11/26  特定器材商品名記載対応
       *  04.03.01    NACL-門脇    09/01/23  円摘要欄編集修正
-      *
-      *  04.05.01    NACL-門脇    09/06/18  円摘要欄コメント編集対応
-      *  04.05.02    NACL-藤原    09/07/14  小数点以下５桁対応
-      *  04.05.03    NACL-門脇    13/02/07  金額項目７桁対応
-      *
-      *  04.07.01    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
-      *                                     追加対応
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -139,7 +130,6 @@
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
-           03  FLG-HENSYU2         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -178,9 +168,6 @@
       *    剤印字行数
            03  WRK-TBLMAX          PIC 9(03).
       *
-           03  WRK-ZAINUM          PIC 9(08).
-           03  WRK-KINGAKU         PIC 9(09)V9(02).
-      *
       *    数字半角全角変換用     
            03  WRK-NUM                         PIC 9(01).
            03  WRK-CHAR-IDX                    PIC 9(02).
@@ -213,7 +200,7 @@
                05  WRK-TNSKAI-LEN              PIC 9(02).
       *
                05  WRK-TNSKAI.
-                   07  WRK-ZAITEN              PIC X(14).
+                   07  WRK-ZAITEN              PIC X(12).
                    07  WRK-X                   PIC X(02).
                    07  WRK-ZAIKAISU            PIC X(06).
       *             
@@ -251,7 +238,7 @@
                05  TBL-ZAIW-SRYACTINF.
       *            診療コード/数量/回数
                    07  TBL-ZAIW-SRYCD           PIC  X(09).
-                   07  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(05).
+                   07  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(03).
                    07  TBL-ZAIW-SRYKAISU        PIC  9(03).
       *            単位コード/単位名称有効桁数/単位名称
                    07  TBL-ZAIW-TANICD          PIC  9(03).
@@ -307,8 +294,6 @@
       *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
@@ -349,7 +334,6 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
-           INITIALIZE                  RECEERR
       *
       *    ファイルＯＰＥＮ処理
       *
@@ -390,38 +374,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE01PARA
-           INITIALIZE                      RECE01PARA
            MOVE    "RECE820"           TO  RECE01PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE86PARA
-           INITIALIZE                      RECE86PARA
            MOVE    "RECE861"           TO  RECE86PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE86PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE87PARA
-           INITIALIZE                      RECE87PARA
            MOVE    "RECE871"           TO  RECE87PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE87PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE01PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE86PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           MOVE    RECE87PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE01PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE86PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE87PARA
       *
            OPEN    INPUT               RECE82-FILE
       *
@@ -446,10 +409,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
            MOVE    ZERO                TO  WRK-TBLMAX
       *
            INITIALIZE                      TBL-ZAIW-AREA
-      *
-           MOVE        ZERO            TO  WRK-ZAINUM
-                                           WRK-KINGAKU
-           MOVE        ZERO            TO  FLG-HENSYU2
       *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE86-REC
@@ -478,16 +437,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
                OR     ( RECE82-RECEKA    NOT =   RECE86-RECEKA    )
                OR     ( RECE82-HKNID     NOT =   RECE86-HKNID     )
                OR     ( RECE82-TEKSTYMD  NOT =   RECE86-TEKSTYMD  )
-      *
-                   IF      RECE86-ZAINUM   NOT =   WRK-ZAINUM
-                      MOVE    RECE86-ZAINUM  TO    WRK-ZAINUM
-                      MOVE    ZERO           TO    WRK-KINGAKU
-                      MOVE    ZERO           TO    FLG-HENSYU2
-                   END-IF
-      *
-                   ADD     RECE86-TEN        TO    WRK-KINGAKU
-                   MOVE    WRK-KINGAKU       TO    WRK-ZAITENX
-                   MOVE    RECE86-ZAIKAISU   TO    WRK-ZAIKAISUX
       *
                    PERFORM 2001-RECE44-ZAIHEN-MAE-SEC
       *            
@@ -541,8 +490,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
        2003-TEKIYOU-HENSYU-SEC    SECTION.
       *
       *    金額・回数編集
-      ***> MOVE    TBL-ZAIW-TEN        TO  WRK-ZAITENX
-      ***> MOVE    RECE86-ZAIKAISU     TO  WRK-ZAIKAISUX
+           MOVE    TBL-ZAIW-TEN        TO  WRK-ZAITENX
+           MOVE    RECE86-ZAIKAISU     TO  WRK-ZAIKAISUX
       *     
            PERFORM 4304-TENSUKAI-HEN-SEC 
       *
@@ -561,6 +510,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
       *****************************************************************
        4302-MEISAI-KETA-HEN1-SEC    SECTION.
       *
+      *    名称の長さ
+           COMPUTE   WRK-NAMEKETA  =
+                         TBL-ZAIW-YUKOKETA 
+                         *   2
            MOVE    1                   TO  WRK-ST              
       *
            MOVE    ZERO                TO  FLG-HENSYU
@@ -568,12 +521,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
            PERFORM UNTIL   FLG-HENSYU  =   1  
                IF      WRK-TBLMAX         <   CONS-TEKIYOU1-LINE-MAX 
                    MOVE    SPACE               TO  WRK-ZAI1
-                   IF  FLG-HENSYU2  =  ZERO
-                       MOVE   "＊"  TO   WRK-ZAI1-NAME(1:2)
-                       MOVE    1    TO   FLG-HENSYU2
-                   END-IF
                    MOVE    TBL-ZAIW-NAME (WRK-ST:)
-                                               TO  WRK-ZAI1-NAME(3:)
+                                               TO  WRK-ZAI1-NAME
                    IF      WRK-TNSKAI      NOT =   SPACE                            
                        IF      WRK-ZAI1-NAME (WRK-TNSKAI-ST1:)
                                                =   SPACE
@@ -585,16 +534,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
                    END-IF                                                  
       *            剤・診療行為テーブル編集処理
                    PERFORM 450-RECE87-OUT-SEC
-                   COMPUTE WRK-ST  =
-                           WRK-ST  + CONS-TEKIYOU1-LEN - 2
+                   COMPUTE WRK-ST          =   WRK-ST         +
+                                               CONS-TEKIYOU1-LEN
                ELSE
                    MOVE    SPACE               TO  WRK-ZAI
-                   IF  FLG-HENSYU2  =  ZERO
-                       MOVE   "＊"  TO   WRK-ZAI-NAME(1:2)
-                       MOVE    1    TO   FLG-HENSYU2
-                   END-IF
                    MOVE    TBL-ZAIW-NAME (WRK-ST:)
-                                               TO  WRK-ZAI-NAME(3:)
+                                               TO  WRK-ZAI-NAME
                    IF      WRK-TNSKAI      NOT =   SPACE                            
                        IF      WRK-ZAI-NAME (WRK-TNSKAI-ST:)
                                                =   SPACE
@@ -606,8 +551,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
                    END-IF                                                  
       *            剤・診療行為テーブル編集処理
                    PERFORM 450-RECE87-OUT-SEC
-                   COMPUTE WRK-ST  =
-                           WRK-ST  + CONS-TEKIYOU2-LEN - 2
+                   COMPUTE WRK-ST          =   WRK-ST         +
+                                               CONS-TEKIYOU2-LEN
                END-IF
       *
       *　　　　金額の編集がないときまだ印刷する文字があるか         
@@ -629,20 +574,18 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
       *
            INITIALIZE              WRK-TNSKAI-AREA
       *
-      ***> IF    ( TBL-ZAIW-SRYCD (1:1)  =   "8"   )
-      ***> OR    ( TBL-ZAIW-SRYCD (1:3)  =   "008" )
-           IF    ( RECE86-ZAILAST   =   ZERO )
-           OR    ( WRK-KINGAKU      =   ZERO )
+           IF    ( TBL-ZAIW-SRYCD (1:1)  =   "8"   )
+           OR    ( TBL-ZAIW-SRYCD (1:3)  =   "008" )
                GO  TO  4304-TENSUKAI-HEN-EXT
            END-IF
       *                                           
            INITIALIZE              ORCSKANACHKAREA
            MOVE    "2"             TO  KANACHK-SYORI 
-           MOVE    WRK-ZAITENX(3:7)
-                                   TO  KANACHK-MAE-INPUT (1:7)
-           MOVE    "X"             TO  KANACHK-MAE-INPUT (8:1)
+           MOVE    WRK-ZAITENX(4:6)
+                                   TO  KANACHK-MAE-INPUT (1:6)
+           MOVE    "X"             TO  KANACHK-MAE-INPUT (7:1)
            MOVE    WRK-ZAIKAISUX (2:3)
-                                   TO  KANACHK-MAE-INPUT (9:3)
+                                   TO  KANACHK-MAE-INPUT (8:3)
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
            IF      KANACHK-RC      =   ZERO
            AND     KANACHK-MAX     >   ZERO
@@ -654,17 +597,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
       *    必要有効桁数（点数ZZZZZ X 数量ZZZ の全角の桁数）
            MOVE    ZERO                TO  WRK-TNSKAI-KETA
            PERFORM VARYING   IDZ     FROM    1   BY  2
-                   UNTIL     IDZ     >       22
-      ***>     IF      WRK-TNSKAI (IDZ:2)      NOT =   SPACE
-               IF      WRK-TNSKAI (IDZ:2)      NOT =   "　"
-                   IF   IDZ = 1
-                      COMPUTE WRK-TNSKAI-KETA = 22 - IDZ + 1
-                      MOVE    IDZ   TO   WRK-TNSKAI-LEN
-                   ELSE
-                      COMPUTE WRK-TNSKAI-KETA = 22 - IDZ + 1 + 2
-                      COMPUTE WRK-TNSKAI-LEN  = IDZ  -  2
-                   END-IF
-                   MOVE    22                  TO  IDZ
+                   UNTIL     IDZ     >       20
+               IF      WRK-TNSKAI (IDZ:2)      NOT =   SPACE
+                   COMPUTE WRK-TNSKAI-KETA   =   20  -  IDZ     +   1
+                   MOVE    IDZ                 TO  WRK-TNSKAI-LEN 
+                   MOVE    20                  TO  IDZ
                END-IF 
            END-PERFORM
       *     
@@ -842,11 +779,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE    ZERO        TO  FLG-END
       *
                    DISPLAY "RECE82  PTNUM=" RECE82-PTNUM
-      *
-                   IF    (WRK-PARA-RECEKBN       =  "4")
-                   AND   (WRK-PARA-JIBAIPRTKBN   =  "2")
-                       GO  TO  990-RECE82-READ-SEC
-                   END-IF
       *
            END-READ
       *

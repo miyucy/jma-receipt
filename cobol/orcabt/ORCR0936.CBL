@@ -34,15 +34,6 @@
       *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
       *  04.01.01    NACL-ÌçÏÆ    07/11/01  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.03.01    NACL-ÌçÏÆ    09/01/23  ±ßÅ¦Í×ÍóÊÔ½¸½¤Àµ
-      *
-      *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
-      *  04.05.02    NACL-ÌçÏÆ    09/06/18  ±ßÅ¦Í×Íó¥³¥á¥ó¥ÈÊÔ½¸ÂÐ±þ
-      *  04.05.03    NACL-ÌçÏÆ    13/02/07  ¶â³Û¹àÌÜ£··åÂÐ±þ
-      *
-      *  04.07.01    NACL-ÌçÏÆ    13/10/02  ¼«ÇåÀÕ¡ÊÂè»°¼Ô¹Ô°Ù¡ËÂÐ±þ
-      *
-      *  04.08.01    NACL-ÌçÏÆ    13/01/25  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
-      *  04.08.02    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -162,7 +153,7 @@
                05  WRK-TNSKAI-LEN              PIC 9(02).
       *
                05  WRK-TNSKAI.
-                   07  WRK-ZAITEN              PIC X(14).
+                   07  WRK-ZAITEN              PIC X(12).
                    07  WRK-X                   PIC X(02).
                    07  WRK-ZAIKAISU            PIC X(06).
       *
@@ -204,8 +195,6 @@
       *    È¾³Ñ¥Á¥§¥Ã¥¯¥µ¥Ö
            COPY    "CPORCSKANACHK.INC".
       *
-           COPY    "CPORCSGETTEMP.INC".
-      *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
       *
@@ -246,7 +235,6 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  CNT-AREA
            INITIALIZE                  SPA-AREA
-           INITIALIZE                  RECEERR
       *
       *    ¥Õ¥¡¥¤¥ë£Ï£Ð£Å£Î½èÍý
       *
@@ -285,38 +273,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE01PARA
-           INITIALIZE                      RECE01PARA
            MOVE    "RECE820"           TO  RECE01PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE01PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE86PARA
-           INITIALIZE                      RECE86PARA
            MOVE    "RECE861"           TO  RECE86PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE86PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE87PARA
-           INITIALIZE                      RECE87PARA
            MOVE    "RECE870"           TO  RECE87PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE87PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
-      *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE01PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE86PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           MOVE    RECE87PARA-BASENAME TO  SGETTEMP-BASENAMES  (4)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE01PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE86PARA
-           MOVE    SGETTEMP-FULLNAMES (4)
-                                       TO  RECE87PARA
       *
            OPEN    INPUT               RECE82-FILE
       *
@@ -432,11 +399,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
       *
            INITIALIZE              ORCSKANACHKAREA
            MOVE    "2"             TO  KANACHK-SYORI
-           MOVE    WRK-ZAITENX(3:7)
-                                   TO  KANACHK-MAE-INPUT (1:7)
-           MOVE    "X"             TO  KANACHK-MAE-INPUT (8:1)
+           MOVE    WRK-ZAITENX(4:6)
+                                   TO  KANACHK-MAE-INPUT (1:6)
+           MOVE    "X"             TO  KANACHK-MAE-INPUT (7:1)
            MOVE    WRK-ZAIKAISUX (2:3)
-                                   TO  KANACHK-MAE-INPUT (9:3)
+                                   TO  KANACHK-MAE-INPUT (8:3)
            CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
            IF      KANACHK-RC      =   ZERO
            AND     KANACHK-MAX     >   ZERO
@@ -448,17 +415,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
       *    É¬Í×Í­¸ú·å¿ô¡ÊÅÀ¿ôZZZZZ X ¿ôÎÌZZZ ¤ÎÁ´³Ñ¤Î·å¿ô¡Ë
            MOVE    ZERO                TO  WRK-TNSKAI-KETA
            PERFORM VARYING   IDZ     FROM    1   BY  2
-                   UNTIL     IDZ     >       22
-      ***>     IF      WRK-TNSKAI (IDZ:2)      NOT =   SPACE
-               IF      WRK-TNSKAI (IDZ:2)      NOT =   "¡¡"
-                   IF   IDZ = 1
-                      COMPUTE WRK-TNSKAI-KETA = 22 - IDZ + 1
-                      MOVE    IDZ   TO   WRK-TNSKAI-LEN
-                   ELSE
-                      COMPUTE WRK-TNSKAI-KETA = 22 - IDZ + 1 + 2
-                      COMPUTE WRK-TNSKAI-LEN  = IDZ  -  2
-                   END-IF
-                   MOVE    22                  TO  IDZ
+                   UNTIL     IDZ     >       20
+               IF      WRK-TNSKAI (IDZ:2)      NOT =   SPACE
+                   COMPUTE WRK-TNSKAI-KETA   =   20  -  IDZ     +   1
+                   MOVE    IDZ                 TO  WRK-TNSKAI-LEN 
+                   MOVE    20                  TO  IDZ
                END-IF
            END-PERFORM
       *
@@ -495,8 +456,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
              IF   RECE82-HKNKBN  =  "5"
                MOVE  "10"                  TO  RECE87-SRYKBN
              ELSE
-      ***      MOVE  "99"                  TO  RECE87-SRYKBN
-               MOVE  "98"                  TO  RECE87-SRYKBN
+               MOVE  "99"                  TO  RECE87-SRYKBN
              END-IF
              MOVE    SPACE                 TO  RECE87-ZAISKBKBN
              MOVE    ZERO                  TO  RECE87-ZAISKBBAN
@@ -523,8 +483,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
              MOVE    WRK-RECE86-PTNUM      TO  RECE87-PTNUM
              MOVE    WRK-RECE86-SRYKA      TO  RECE87-SRYKA
              MOVE    TBL-ZAI-NAME(IDX)     TO  RECE87-TEKIYO-INF
-      *
-             MOVE    SPACE                 TO  RECE87-JIHOKBN
       *
              READ    RECE87-FILE
                INVALID
@@ -713,7 +671,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
                    IF     (WRK-PARA-RECEKBN       =  "5")
                    OR     (RECE82-HKNKBN          =  "5")
-                   OR     (RECE82-HKNKBN          =  "6")
                        CONTINUE
                    ELSE
                        GO  TO  990-RECE82-READ-SEC
