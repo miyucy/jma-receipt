@@ -888,12 +888,6 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                                                        (IDXX IDWW)
                                END-IF
                            END-PERFORM
-      *??
-          DISPLAY "TBL-HENREI-B-REC="  IDXX  " IDZZ=" IDZZ  " (1)="
-                   TBL-HENREI-B-SEIKYU-OCC (IDXX 1)
-                   " (2)=" TBL-HENREI-B-SEIKYU-OCC (IDXX 2)
-                   " (3)=" TBL-HENREI-B-SEIKYU-OCC (IDXX 3) "#"
-      *??
                            MOVE    10              TO  IDZZ
                        END-IF
                    END-PERFORM
@@ -924,12 +918,16 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                END-IF
            END-IF
       *
+           IF    ( SPA-H02-FLG     =   "OK" )
+           AND   ( SPA-H01-CUR     =   302  )
+               MOVE    6               TO  SPA-H01GMN-CUR
+           ELSE
+               MOVE    SPA-H01-CUR     TO  SPA-H01GMN-CUR
+           END-IF
       *
            MOVE    SPACE           TO  SPA-HID1-FLG
                                        SPA-H02-FLG
            MOVE    SPACE           TO  SPA-HIDCD
-      *
-           MOVE    6               TO  SPA-H01GMN-CUR
            .
        340-H02-SET-EXT.
            EXIT.
@@ -3508,6 +3506,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE  "B12"             TO  MCP-WIDGET   
            END-EVALUATE
       *
+           MOVE    SPA-H01GMN-CUR      TO  SPA-H01-CUR
            .
        5001-MAPCUR-EXT.
            EXIT.

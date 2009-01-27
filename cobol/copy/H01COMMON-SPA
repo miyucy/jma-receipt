@@ -35,6 +35,9 @@
       *警告画面より
            05  SPA-HID1-FLG                PIC  X(02).
            05  SPA-H02-FLG                 PIC  X(02).
+      *
+      *入力位置
+           05  SPA-H01-CUR                 PIC 9(03).
       *Ｈ９９画面より
            05  SPA-H99-AREA.
                07  SPA-H99-KEY. 
