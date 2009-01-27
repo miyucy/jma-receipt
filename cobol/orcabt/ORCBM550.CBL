@@ -2326,6 +2326,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TO  ONRECE-B-U-TEN-NG
                    MOVE    WRK-ONRECE-B-U-TEN-OK
                                        TO  ONRECE-B-U-TEN-OK
+                   MOVE    WRK-ONRECE-B-U-HENREI-FLG
+                                       TO  ONRECE-B-U-HENREI-FLG
                    MOVE    TBL-K-UCNT(HIT-K)   
                                        TO  ONRECE-B-UCNT-V
                    MOVE    TBL-K-SCNT(HIT-K)   
