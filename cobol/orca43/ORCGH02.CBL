@@ -247,9 +247,10 @@
        310-HID1-SET-SEC            SECTION.
       *
            IF      SPA-HID1-FLG    =   "OK"
-               MOVE    "OK"                TO  SPA-H02-FLG
-               PERFORM 210-BACK
+              MOVE    99               TO  SPA-H02GMN-CUR
            ELSE
+              INITIALIZE                   SPA-H02GMN-SELNUM
+                                           SPA-H02NAI-SELNUM
               INITIALIZE                   WRK-HENREI-B-REC
               MOVE    1                TO  SPA-H02GMN-CUR
            END-IF
@@ -697,23 +698,21 @@
                            MOVE    "0004"          TO  SPA-ERRCD
                            GO  TO  410111-HENREILST-SEL-CHK-EXT
                        ELSE
-                           IF      SPA-RECE10-TEISYUTUSAKI
-                                                   =   2
-                               IF      TBL-HENREI-B-RECESYUBETU
-                                                           (IDZZ)(2:1)
-                                                       =   "3"
-                                   MOVE    "1006"      TO  SPA-HIDCD
-                                   GO  TO  410111-HENREILST-SEL-CHK-EXT
-                               END-IF
+                           IF    ( SPA-RECE10-TEISYUTUSAKI
+                                                   =   2   )
+                           AND   ( TBL-HENREI-B-RECESYUBETU
+                                                       (IDZZ)(2:1)
+                                               NOT =   "3" )
+                               MOVE    "1006"      TO  SPA-HIDCD
+                               GO  TO  410111-HENREILST-SEL-CHK-EXT
                            END-IF
-                           IF      SPA-RECE10-TEISYUTUSAKI
-                                                   =   6
-                               IF      TBL-HENREI-B-RECESYUBETU
-                                                           (IDZZ)(2:1)
-                                                   NOT =   "3"
-                                   MOVE    "1006"      TO  SPA-HIDCD
-                                   GO  TO  410111-HENREILST-SEL-CHK-EXT
-                               END-IF
+                           IF    ( SPA-RECE10-TEISYUTUSAKI
+                                                   =   6   )
+                           AND   ( TBL-HENREI-B-RECESYUBETU
+                                                       (IDZZ)(2:1)
+                                                   =   "3" )
+                               MOVE    "1006"      TO  SPA-HIDCD
+                               GO  TO  410111-HENREILST-SEL-CHK-EXT
                            END-IF
                            IF      TBL-HENREI-B-HKNJANUM    (IDZZ)
                                                =   SPA-RECE10-HKNJANUM
