@@ -632,7 +632,7 @@
                    GO  TO  410111-HENREILST-SEL-CHK-EXT
                END-IF
       *
-      *        選択した処理年月より新しい処理年月のデータがあるとき
+      *        選択した処理年月より新しい処理年月にデータがあるとき
                IF      TBL-HENREI-B-SYORIYM (IDZZ)
                                        >   TBL-HENREI-B-SYORIYM (IDX)
                    IF      SPA-RECE10-HKNNUM
@@ -697,6 +697,24 @@
                            MOVE    "0004"          TO  SPA-ERRCD
                            GO  TO  410111-HENREILST-SEL-CHK-EXT
                        ELSE
+                           IF      SPA-RECE10-TEISYUTUSAKI
+                                                   =   2
+                               IF      TBL-HENREI-B-RECESYUBETU
+                                                           (IDZZ)(2:1)
+                                                       =   "3"
+                                   MOVE    "1006"      TO  SPA-HIDCD
+                                   GO  TO  410111-HENREILST-SEL-CHK-EXT
+                               END-IF
+                           END-IF
+                           IF      SPA-RECE10-TEISYUTUSAKI
+                                                   =   6
+                               IF      TBL-HENREI-B-RECESYUBETU
+                                                           (IDZZ)(2:1)
+                                                   NOT =   "3"
+                                   MOVE    "1006"      TO  SPA-HIDCD
+                                   GO  TO  410111-HENREILST-SEL-CHK-EXT
+                               END-IF
+                           END-IF
                            IF      TBL-HENREI-B-HKNJANUM    (IDZZ)
                                                =   SPA-RECE10-HKNJANUM
                                MOVE    "1001"      TO  SPA-HIDCD
@@ -1044,6 +1062,13 @@
                    END-STRING
                WHEN    "1005"
                    STRING  "記号、番号が一致する別の"
+                                        DELIMITED  BY  SIZE 
+                           "返戻データがありますがよろしいですか。"
+                                        DELIMITED  BY  SIZE 
+                                        INTO  HID1-ID1MSG
+                   END-STRING
+               WHEN    "1006"
+                   STRING  "提出先が一致する別の"
                                         DELIMITED  BY  SIZE 
                            "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
