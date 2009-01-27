@@ -81,11 +81,12 @@
       *クライアント保存可否フラグ
                05  SYS-1010-CLIENT-SAVE    PIC  X(01).
       *グループ医療機関ログイン情報
-               05  SYS-1010-GRPHOSPINF     OCCURS  9.
-                   07  SYS-1010-GRPHOSPNUMX   PIC  X(02).
-                   07  SYS-1010-GRPHOSPNUM    REDEFINES
-                       SYS-1010-GRPHOSPNUMX   PIC  9(02).
-                   07  SYS-1010-GRPHOSPUSERID PIC  X(16).
+               05  SYS-1010-GRPHOSPINF-G.
+                   07  SYS-1010-GRPHOSPINF     OCCURS  9.
+                       09  SYS-1010-GRPHOSPNUMX   PIC  X(02).
+                       09  SYS-1010-GRPHOSPNUM    REDEFINES
+                           SYS-1010-GRPHOSPNUMX   PIC  9(02).
+                       09  SYS-1010-GRPHOSPUSERID PIC  X(16).
       *予備
       **** 03                           PIC  X(175).
       *****03                           PIC  X(174).
