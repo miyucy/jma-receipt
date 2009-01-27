@@ -249,8 +249,10 @@
            IF      SPA-HID1-FLG    =   "OK"
               MOVE    99               TO  SPA-H02GMN-CUR
            ELSE
-              INITIALIZE                   SPA-H02GMN-SELNUM
-                                           SPA-H02NAI-SELNUM
+              MOVE    SPA-H02GMN-SELNUM-OLD
+                                       TO  SPA-H02GMN-SELNUM
+              MOVE    SPA-H02NAI-SELNUM-OLD
+                                       TO  SPA-H02NAI-SELNUM
               INITIALIZE                   WRK-HENREI-B-REC
               MOVE    1                TO  SPA-H02GMN-CUR
            END-IF
@@ -267,7 +269,7 @@
       *****************************************************************
        320-SPASET-SEC              SECTION.
       *
-           INITIALIZE                      SPA-H02GMN-AREA
+           INITIALIZE                      SPA-H02-AREA
            MOVE    ZERO                TO  IDY
       *
            PERFORM VARYING IDZZ    FROM    1   BY  1
@@ -548,6 +550,11 @@
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
+          MOVE    SPA-H02GMN-SELNUM
+                                   TO  SPA-H02GMN-SELNUM-OLD
+          MOVE    SPA-H02NAI-SELNUM
+                                   TO  SPA-H02NAI-SELNUM-OLD
+      *
            MOVE    H02-SELNUM      TO  SPA-H02GMN-SELNUM
            .
        4101-GMN-SPA-SET-EXT.
@@ -601,9 +608,9 @@
            EVALUATE    TBL-HENREI-B-ERR (IDX)
                WHEN    ZERO
                    PERFORM 410111-HENREILST-SEL-CHK-SEC
-                   IF    ( SPA-HIDCD           =   SPACE )
-                   AND   (  SPA-ERRCD           =   SPACE )
-                       MOVE    99                  TO  SPA-H02GMN-CUR
+                   IF    ( SPA-HIDCD       =   SPACE )
+                   AND   ( SPA-ERRCD       =   SPACE )
+                       MOVE    99              TO  SPA-H02GMN-CUR
                    END-IF 
                WHEN    1
       *            ´û¤ËÊÖÌáÀßÄêºÑ
@@ -766,6 +773,9 @@
            END-PERFORM
       *
            IF      WRK-SELNO           >   ZERO
+      *
+               MOVE    SPA-H02GMN-SELNUM   TO  SPA-H02GMN-SELNUM-OLD
+               MOVE    SPA-H02NAI-SELNUM   TO  SPA-H02NAI-SELNUM-OLD
                MOVE    WRK-SELNO           TO  SPA-H02GMN-SELNUM
                                                SPA-H02NAI-SELNUM
                                                H02-HENREILIST-ROW

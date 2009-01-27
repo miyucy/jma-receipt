@@ -174,11 +174,13 @@
                05  SPA-SYS-1001-HOSPSBT1       PIC 9(01).
       *
       *£È£°£²²èÌÌ
-           03  SPA-H02GMN-AREA.
+           03  SPA-H02-AREA.
                05  SPA-H02GMN-MAX             PIC 9(04).
                05  SPA-H02GMN-CUR             PIC 9(03).
       *
-               05  SPA-H02GMN-SELNUM          PIC 9(02).
+               05  SPA-H02GMN-AREA.
+                   07  SPA-H02GMN-SELNUM      PIC 9(02).
+                   07  SPA-H02GMN-SELNUM-OLD  PIC 9(02).
       *
                05  SPA-H02GMN-LABEL           PIC X(10).
                05  SPA-H02GMN-SYORIYM         PIC X(06).
@@ -209,6 +211,7 @@
       *
                05  SPA-H02NAI-AREA.
                    07  SPA-H02NAI-SELNUM           PIC 9(02).
+                   07  SPA-H02NAI-SELNUM-OLD       PIC 9(02).
       *
                05  SPA-H02NAI-TBL.
                    07  SPA-H02NAI-G           OCCURS  30.
