@@ -130,6 +130,118 @@
     </widget>
 
     <widget>
+      <class>GtkLabel</class>
+      <name>SYORIYM</name>
+      <x>232</x>
+      <y>270</y>
+      <width>59</width>
+      <height>24</height>
+      <label>H10.10</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>RECESYUBETU</name>
+      <x>341</x>
+      <y>270</y>
+      <width>40</width>
+      <height>24</height>
+      <label>1124</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>NYUGAIKBN</name>
+      <x>291</x>
+      <y>270</y>
+      <width>47</width>
+      <height>24</height>
+      <label>Æþ±¡³°</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>HKNJANUM</name>
+      <x>387</x>
+      <y>270</y>
+      <width>71</width>
+      <height>24</height>
+      <label>12345678</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>LABEL</name>
+      <x>152</x>
+      <y>270</y>
+      <width>64</width>
+      <height>24</height>
+      <label>ÀßÄêÍ½Äê¡§</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>KIGO</name>
+      <x>468</x>
+      <y>270</y>
+      <width>132</width>
+      <height>24</height>
+      <label>¤Þ¤Ä£±£²£³£´£µ£¶£·</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>ERR</name>
+      <x>609</x>
+      <y>270</y>
+      <width>221</width>
+      <height>24</height>
+      <label>¥¨¥é¡¼¾ðÊó¤¢¤ê</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
       <class>GtkScrolledWindow</class>
       <name>scrolledwindow26</name>
       <x>5</x>
@@ -153,23 +265,10 @@
 	  <last_modification_time>Thu, 07 Feb 2002 06:03:32 GMT</last_modification_time>
 	</signal>
 	<signal>
-	  <name>unselect_row</name>
-	  <handler>clist_send_event</handler>
-	  <after>True</after>
-	  <data>SELECT</data>
-	  <last_modification_time>Thu, 07 Feb 2002 06:03:41 GMT</last_modification_time>
-	</signal>
-	<signal>
 	  <name>select_row</name>
 	  <handler>selection_changed</handler>
 	  <data>SELECT</data>
 	  <last_modification_time>Thu, 07 Feb 2002 06:04:12 GMT</last_modification_time>
-	</signal>
-	<signal>
-	  <name>unselect_row</name>
-	  <handler>selection_changed</handler>
-	  <data>SELECT</data>
-	  <last_modification_time>Thu, 07 Feb 2002 06:04:20 GMT</last_modification_time>
 	</signal>
 	<columns>15</columns>
 	<column_widths>29,58,30,39,84,114,164,15,57,30,36,74,111,21,15</column_widths>
@@ -372,118 +471,6 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>SYORIYM</name>
-      <x>232</x>
-      <y>270</y>
-      <width>59</width>
-      <height>24</height>
-      <label>H10.10</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>RECESYUBETU</name>
-      <x>341</x>
-      <y>270</y>
-      <width>40</width>
-      <height>24</height>
-      <label>1124</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>NYUGAIKBN</name>
-      <x>291</x>
-      <y>270</y>
-      <width>47</width>
-      <height>24</height>
-      <label>Æþ±¡³°</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>HKNJANUM</name>
-      <x>387</x>
-      <y>270</y>
-      <width>71</width>
-      <height>24</height>
-      <label>12345678</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>LABEL</name>
-      <x>152</x>
-      <y>270</y>
-      <width>64</width>
-      <height>24</height>
-      <label>ÀßÄêÍ½Äê¡§</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>KIGO</name>
-      <x>468</x>
-      <y>270</y>
-      <width>132</width>
-      <height>24</height>
-      <label>¤Þ¤Ä£±£²£³£´£µ£¶£·</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>ERR</name>
-      <x>609</x>
-      <y>270</y>
-      <width>221</width>
-      <height>24</height>
-      <label>¥¨¥é¡¼¾ðÊó¤¢¤ê</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>
