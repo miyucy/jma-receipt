@@ -1305,8 +1305,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            TO  MCP-PATHNAME
                    PERFORM 900-ONRECE-KANRI-READ-SEC
                    IF      FLG-ONRECE-K    =   ZERO
-                       MOVE    4               TO  WRK-ERRMSG1
-                       GO  TO  7002-FILE-CHECK-EXT
+                       EVALUATE    WRK-FILENM(1:6)
+                           WHEN    "RIhasp"
+                           WHEN    "RIuasp"
+                               IF      ONRECE-K-RECV-FLG
+                                                       =   1
+                                   MOVE    4           TO  WRK-ERRMSG1
+                                   GO  TO  7002-FILE-CHECK-EXT
+                               END-IF
+                           WHEN    "RIfixf"
+                               MOVE    4               TO  WRK-ERRMSG1
+                               GO  TO  7002-FILE-CHECK-EXT
+                       END-EVALUATE
                    END-IF
                WHEN    "RECEIP"
                    INITIALIZE                  HENREI-K-REC
