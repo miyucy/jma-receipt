@@ -240,6 +240,8 @@
                            PERFORM 530-TID2SET-SEC
                            GO  TO  100-INIT-EXT
                        WHEN    "1006"
+                       WHEN    "1011"
+                       WHEN    "1012"
                            PERFORM 520-TIDSET-SEC
                            GO  TO  100-INIT-EXT
                    END-EVALUATE
@@ -295,7 +297,26 @@
        330-TID1-SET-SEC            SECTION.
       *
            IF      SPA-TID1-FLG    =   "OK"
-               CONTINUE
+               EVALUATE    SPA-TIDCD
+                   WHEN    "1006"
+      *                返戻年月未入力のときの返戻データ存在チェック
+                       IF      SPA-NAI-T09-THENREIYM
+                                               (SPA-NAI-T09-SELNUM)
+                                           =   "1" OR  "2"
+                           EVALUATE    SPA-NAI-T09-THENREIYM
+                                               (SPA-NAI-T09-SELNUM)
+                               WHEN    "1"
+                                   MOVE    "1011"      TO  SPA-TIDCD
+                               WHEN    "2"
+                                   MOVE    "1012"      TO  SPA-TIDCD
+                           END-EVALUATE
+                           MOVE    SPACE           TO  SPA-TID1-FLG
+                           GO  TO  330-TID1-SET-EXT
+                       END-IF          
+                   WHEN    "1011"
+                   WHEN    "1012"
+                       CONTINUE
+               END-EVALUATE 
            ELSE
                MOVE    ZERO    TO  SPA-GMN-T09-SELNUM
                                                (SPA-NAI-T09-SELNUM)
@@ -324,10 +345,25 @@
                            MOVE    "1006"             TO  SPA-TIDCD
                            MOVE    SPACE              TO  SPA-TID1-FLG
                            GO  TO  340-TID2-SET-EXT
-                       ELSE 
-      *                    追加処理
-                           MOVE    ZERO    TO  SPA-NAI-T09-SELNUM
-                       END-IF      
+                       ELSE    
+      *                    返戻年月未入力のときの返戻データ存在チェック
+                           IF      SPA-NAI-T09-THENREIYM
+                                                   (SPA-NAI-T09-SELNUM)
+                                               =   "1" OR  "2"
+                               EVALUATE    SPA-NAI-T09-THENREIYM
+                                                   (SPA-NAI-T09-SELNUM)
+                                   WHEN    "1"
+                                       MOVE    "1011"      TO  SPA-TIDCD
+                                   WHEN    "2"
+                                       MOVE    "1012"      TO  SPA-TIDCD
+                               END-EVALUATE
+                               MOVE    SPACE           TO  SPA-TID1-FLG
+                               GO  TO  340-TID2-SET-EXT
+                           ELSE 
+      *                        追加処理
+                               MOVE    ZERO    TO  SPA-NAI-T09-SELNUM
+                           END-IF
+                       END-IF          
                END-EVALUATE 
            ELSE
                IF      SPA-TID1-FLG    =   "NO"
@@ -622,6 +658,20 @@
                MOVE    IDX             TO  SPA-NAI-T09-SELNUM
                GO  TO  410211-SELNUM-HENSYU-EXT
          END-IF 
+      *
+      *    返戻年月未入力のときの返戻データ存在チェック
+           IF      SPA-NAI-T09-THENREIYM (WRK-SELNO)
+                                       =   "1"
+               MOVE    "1011"              TO  SPA-TIDCD
+               MOVE    IDX             TO  SPA-NAI-T09-SELNUM
+               GO  TO  410211-SELNUM-HENSYU-EXT
+           END-IF
+           IF      SPA-NAI-T09-THENREIYM (WRK-SELNO)
+                                       =   "2"
+               MOVE    "1012"              TO  SPA-TIDCD
+               MOVE    IDX             TO  SPA-NAI-T09-SELNUM
+               GO  TO  410211-SELNUM-HENSYU-EXT
+           END-IF
       *
           .
         410211-SELNUM-HENSYU-EXT.
@@ -1129,6 +1179,22 @@
                             SPA-GMN-T09-TCREYMD (SPA-NAI-T09-SELNUM)
                                        DELIMITED  BY  SIZE
                             "）"       DELIMITED  BY  SIZE
+                                       INTO    TID1-ID1MSG
+                   END-STRING
+               WHEN    "1011"
+                   STRING   "返戻データが存在しますが返戻の設定が行なわ"
+                                       DELIMITED  BY  SIZE
+                            "れていません。個別指示の対象としますか"
+                                       DELIMITED  BY  SIZE
+                                       INTO    TID1-ID1MSG
+                   END-STRING
+               WHEN    "1012"
+                   STRING   "保険情報が一致する返戻データが存在しますが"
+                                       DELIMITED  BY  SIZE
+                            "返戻の設定が行なわれていません。"
+                                       DELIMITED  BY  SIZE
+                            "個別指示の対象としますか"
+                                       DELIMITED  BY  SIZE
                                        INTO    TID1-ID1MSG
                    END-STRING
            END-EVALUATE

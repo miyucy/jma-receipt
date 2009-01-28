@@ -208,6 +208,7 @@
                        09  SPA-NAI-T09-TRECEDEN        PIC X(01).
                        09  SPA-NAI-T09-TSEIKYU         PIC X(01).
                        09  SPA-NAI-T09-THENREI         PIC X(01).
+                       09  SPA-NAI-T09-THENREIYM       PIC X(01).
                        09  SPA-NAI-T09-TSELECT         PIC X(01).
                        09  SPA-NAI-T09-TUKEYMD         PIC 9(08).
       *

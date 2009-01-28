@@ -1679,8 +1679,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-EVALUATE
            END-IF
       *
-      *??  MOVE    RECE10-HENREI-SIJI-FLG
-      ***                                 TO  SPA-H01NAI-HENREI-SIJI-FLG
            IF      RECE10-HENREI-SIJI-FLG
                                        =   1
                MOVE    "T"             TO  SPA-H01GMN-HENREI-SIJI-FLG
@@ -2858,9 +2856,6 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        45011-HENREI-B-UPDATE1-SEC      SECTION.
       *
-      *??
-          DISPLAY "45011-HENREI-B-UPDATE1-SEC"  
-      *??
            PERFORM VARYING IDZZ    FROM    1   BY  1
                    UNTIL   IDZZ    >       10
                IF      WRK-HENREI-B-S-TEISYUTUSAKI (IDZZ)
@@ -2959,12 +2954,6 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    SMCNDATE-YMD        TO  WRK-HENREI-B-UPYMD
                    MOVE    SMCNDATE-HMS        TO  WRK-HENREI-B-UPHMS
       *
-      *??
-          DISPLAY "WRK-HENREI-B-REC="  WRK-HENREI-B-PTNUM " (1)="
-                   WRK-HENREI-B-SEIKYU-OCC (1)
-                   " (2)=" WRK-HENREI-B-SEIKYU-OCC (2)
-                   " (3)=" WRK-HENREI-B-SEIKYU-OCC (3) "#"
-      *??
                    MOVE    WRK-HENREI-B-REC    TO  MCPDATA-REC
                    MOVE    "tbl_henrei_body"   TO  MCP-TABLE
                    MOVE    "upd1"              TO  MCP-PATHNAME
@@ -2988,9 +2977,6 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *    返戻データ請求管理情報クリア処理
       *****************************************************************
        45012-HENREI-B-UPDATE2-SEC      SECTION.
-      *??
-          DISPLAY "45012-HENREI-B-UPDATE2-SEC"  
-      *??
       *
            PERFORM VARYING IDZZ    FROM    1   BY  1
                    UNTIL   IDZZ    >       10
@@ -3028,12 +3014,6 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    MOVE    SMCNDATE-YMD        TO  SPA-HENREI-B-UPYMD
                    MOVE    SMCNDATE-HMS        TO  SPA-HENREI-B-UPHMS
       *
-      *??
-          DISPLAY "SPA-HENREI-B-REC="  SPA-HENREI-B-PTNUM " (1)="
-                   SPA-HENREI-B-SEIKYU-OCC (1)
-                   " (2)=" SPA-HENREI-B-SEIKYU-OCC (2)
-                   " (3)=" SPA-HENREI-B-SEIKYU-OCC (3) "#"
-      *??
                    MOVE    SPA-HENREI-B-REC    TO  MCPDATA-REC
                    MOVE    "tbl_henrei_body"   TO  MCP-TABLE
                    MOVE    "upd1"              TO  MCP-PATHNAME

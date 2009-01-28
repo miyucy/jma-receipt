@@ -416,6 +416,8 @@
                            PERFORM 530-TID2SET-SEC
                            GO  TO  100-INIT-EXT
                        WHEN    "1006"
+                       WHEN    "1011"
+                       WHEN    "1012"
                        WHEN    "2001"
                        WHEN    "2003"
                        WHEN    "2007"
@@ -1009,6 +1011,36 @@
                    WHEN    "1003"
                        PERFORM 460-CLEAR-SEC
                    WHEN    "1006"
+      *                返戻年月未入力のときの返戻データ存在チェック
+                       IF      SPA-NAI-T09-THENREIYM (1)
+                                           =   "1" OR  "2"
+                           EVALUATE    SPA-NAI-T09-THENREIYM (1)
+                               WHEN    "1"
+                                   MOVE    "1011"      TO  SPA-TIDCD
+                               WHEN    "2"
+                                   MOVE    "1012"      TO  SPA-TIDCD
+                           END-EVALUATE
+                           MOVE    SPACE           TO  SPA-TID1-FLG
+                           GO  TO  330-TID1-SET-EXT
+                       ELSE 
+      *                    追加処理
+                           PERFORM 410411-TUIKA-HENSYU-SEC
+      *
+                           IF      SPA-GMN-T06-SELNUM  =   ZERO
+                               MOVE    SPA-GMN-T06-RECE-MAX
+                                               TO  T06-RECE-LIST-ROW
+                           ELSE
+                               MOVE    SPA-GMN-T06-SELNUM
+                                               TO  T06-RECE-LIST-ROW
+                           END-IF
+                           INITIALIZE          SPA-GMN-T06-RECE-KOUMOKU
+                                               SPA-NAI-T06-RECE-KOUMOKU
+                                               SPA-NAI-T06-BODY-SELNUM
+                           INITIALIZE          SPA-T09-AREA
+                           MOVE    4           TO  SPA-GMN-T06-CUR
+                       END-IF
+                   WHEN    "1011"
+                   WHEN    "1012"
       *                追加処理
                        PERFORM 410411-TUIKA-HENSYU-SEC
       *
@@ -1023,9 +1055,9 @@
                                                SPA-NAI-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-BODY-SELNUM
                        INITIALIZE              SPA-T09-AREA
-                       MOVE    4                TO  SPA-GMN-T06-CUR  
+                       MOVE    4               TO  SPA-GMN-T06-CUR  
                    WHEN    "1007"
-      *                追加処理
+      *                削除処理
                        PERFORM 440-SAKUJYO-SEC
                    WHEN    "1009"
                        EVALUATE    SPA-T01-WIDGET
@@ -1074,6 +1106,8 @@
                                                TO  SPA-GMN-T06-SRYYM-H
                        END-EVALUATE
                    WHEN    "1006"
+                   WHEN    "1011"
+                   WHEN    "1012"
                        IF      SPA-NAI-T06-BODY-SELNUM  >   ZERO
                            INITIALIZE          SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
@@ -1105,26 +1139,39 @@
       *                作成日のチェック
                        IF      SPA-NAI-T09-TCREYMD (1)
                                            <   SPA-NAI-T09-TUKEYMD (1)      
-                           MOVE    "1006"             TO  SPA-TIDCD
-                           MOVE    SPACE              TO  SPA-TID1-FLG
+                           MOVE    "1006"              TO  SPA-TIDCD
+                           MOVE    SPACE               TO  SPA-TID1-FLG
                            GO  TO  340-TID2-SET-EXT
-                       ELSE 
-      *                    追加処理
-                           PERFORM 410411-TUIKA-HENSYU-SEC
+                       ELSE
+      *                   返戻年月未入力のときの返戻データ存在チェック
+                          IF      SPA-NAI-T09-THENREIYM (1)
+                                               =   "1" OR  "2"
+                               EVALUATE    SPA-NAI-T09-THENREIYM (1)
+                                   WHEN    "1"
+                                       MOVE    "1011"      TO  SPA-TIDCD
+                                   WHEN    "2"
+                                       MOVE    "1012"      TO  SPA-TIDCD
+                               END-EVALUATE
+                               MOVE    SPACE           TO  SPA-TID1-FLG
+                               GO  TO  340-TID2-SET-EXT
+                           ELSE 
+      *                        追加処理
+                               PERFORM 410411-TUIKA-HENSYU-SEC
       *
-                           IF      SPA-GMN-T06-SELNUM  =   ZERO
-                               MOVE    SPA-GMN-T06-RECE-MAX
+                               IF      SPA-GMN-T06-SELNUM  =   ZERO
+                                   MOVE    SPA-GMN-T06-RECE-MAX
                                                    TO  T06-RECE-LIST-ROW
-                           ELSE
-                               MOVE    SPA-GMN-T06-SELNUM
+                               ELSE
+                                   MOVE    SPA-GMN-T06-SELNUM
                                                    TO  T06-RECE-LIST-ROW
-                           END-IF
-                           INITIALIZE          SPA-GMN-T06-RECE-KOUMOKU
+                               END-IF
+                               INITIALIZE      SPA-GMN-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-RECE-KOUMOKU
                                                SPA-NAI-T06-BODY-SELNUM
-                           INITIALIZE              SPA-T09-AREA
-                           MOVE    4            TO  SPA-GMN-T06-CUR
-                       END-IF      
+                               INITIALIZE              SPA-T09-AREA
+                               MOVE    4            TO  SPA-GMN-T06-CUR
+                           END-IF
+                       END-IF            
                END-EVALUATE 
            ELSE
                IF      SPA-TID1-FLG    =   "NO"
@@ -1906,9 +1953,9 @@
            AND   ( SPA-NAI-T06-PTID    >   ZERO  )
       *****AND   ( SPA-GMN-T06-NYUGAIKBN
       *****                        NOT =   SPACE )
-      *??      IF      SPA-GMN-T06-SELNUM  =   ZERO
+      *****    IF      SPA-GMN-T06-SELNUM  =   ZERO
                    PERFORM 41041-TUIKA-SEC
-      *??      END-IF
+      *****    END-IF
            END-IF
       *
            .
@@ -2468,6 +2515,76 @@
                END-IF
            END-IF
       *
+      *    返戻年月入力なしのとき返戻データの存在チェック
+           IF    ( SPA-NAI-T06-BODY-SELNUM
+                                   =   ZERO                )
+           AND   ( RECE10-SKYYM    =   SPA-NAI-T06-SRYYM-H )
+           AND   ( RECE10-SRYYM    <=  SPA-NAI-T06-SRYYM-H )
+           AND   ( RECE10-HENREIYM =   "000000"            )
+               INITIALIZE                  HENREI-B-REC
+               MOVE    SPA-HOSPNUM     TO  HENREI-B-HOSPNUM
+               MOVE    RECE10-NYUGAIKBN
+                                       TO  HENREI-B-NYUGAIKBN
+               MOVE    RECE10-SRYYM    TO  HENREI-B-SRYYM
+               EVALUATE    RECE10-TEISYUTUSAKI
+                   WHEN    1
+                       MOVE    "1"     TO  HENREI-B-TEISYUTUSAKI
+                                           HENREI-B-XXTEISYUTUSAKI
+                   WHEN    2
+                   WHEN    6
+                       MOVE   "2"      TO  HENREI-B-TEISYUTUSAKI
+                                           HENREI-B-XXTEISYUTUSAKI
+               END-EVALUATE
+               MOVE    RECE10-PTID     TO  HENREI-B-PTID
+               MOVE    HENREI-B-REC    TO  MCPDATA-REC
+               MOVE    "tbl_henrei_body"
+                                       TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC          =   ZERO
+                   MOVE    "tbl_henrei_body"
+                                           TO  MCP-TABLE
+                   MOVE    "key2"          TO  MCP-PATHNAME
+                   PERFORM 900-HENREI-BODY-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-HENREI-B
+               END-IF
+      *           
+               PERFORM         UNTIL   FLG-HENREI-B    =   1
+                               OR      SPA-NAI-T09-THENREIYM (IDX)
+                                                   NOT =   SPACE
+                   IF    ( HENREI-B-RECESYUBETU
+                                       =   RECE10-RECESYUBETU )
+                   AND   ( HENREI-B-HKNJANUM
+                                       =   RECE10-HKNJANUM    )
+                       MOVE    "1"     TO  SPA-NAI-T09-THENREIYM (IDX)
+                       IF      RECE10-HKNNUM   NOT =   SPACE
+                           IF    ( RECE10-KIGO =   HENREI-B-KIGO )
+                           AND   ( RECE10-NUM  =   HENREI-B-NUM  )
+                               MOVE    "2" TO  SPA-NAI-T09-THENREIYM
+                                                                   (IDX)
+                           END-IF
+                       ELSE
+                           IF    ( SPA-NAI-T09-RECE10-TKIGO(IDX)
+                                               =   HENREI-B-FTNNUM (1) )
+                           AND   ( SPA-NAI-T09-RECE10-TNUM (IDX)
+                                               =   HENREI-B-JKYNUM (1) )
+                               MOVE    "2" TO  SPA-NAI-T09-THENREIYM
+                                                                   (IDX)
+                           END-IF
+                       END-IF
+                   END-IF
+      *
+                   MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-HENREI-BODY-READ-SEC
+               END-PERFORM
+      *
+               MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+           END-IF
+      *
       *    レセ電請求一覧とのチェック
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       SPA-GMN-T06-RECE-MAX
@@ -2673,6 +2790,18 @@
                 MOVE    "1006"             TO  SPA-TIDCD
                GO  TO  42031-SEIKYU-CHK-EXT
          END-IF 
+      *
+      *    返戻年月未入力のときの返戻データ存在チェック
+           IF      SPA-NAI-T09-THENREIYM (1)
+                                       =   "1"
+               MOVE    "1011"              TO  SPA-TIDCD
+               GO  TO  42031-SEIKYU-CHK-EXT
+           END-IF
+           IF      SPA-NAI-T09-THENREIYM (1)
+                                       =   "2"
+               MOVE    "1012"              TO  SPA-TIDCD
+               GO  TO  42031-SEIKYU-CHK-EXT
+           END-IF
       *
       *    追加処理
            PERFORM 410411-TUIKA-HENSYU-SEC
@@ -4705,6 +4834,22 @@
                    MOVE
                  "未処理データがありますが前回個別作成分を表示しますか"
                                        TO  WRK-TIDMSG
+               WHEN    "1011"
+                   STRING   "返戻データが存在しますが返戻の設定が行なわ"
+                                       DELIMITED  BY  SIZE
+                            "れていません。個別指示の対象としますか"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-TIDMSG
+                   END-STRING
+               WHEN    "1012"
+                   STRING   "保険情報が一致する返戻データが存在しますが"
+                                       DELIMITED  BY  SIZE
+                            "返戻の設定が行なわれていません。"
+                                       DELIMITED  BY  SIZE
+                            "個別指示の対象としますか"
+                                       DELIMITED  BY  SIZE
+                                       INTO    WRK-TIDMSG
+                   END-STRING
                WHEN    "2001"
                    MOVE    "媒体をドライブにセットして下さい"
                                        TO  WRK-TIDMSG
@@ -4737,6 +4882,8 @@
       *
            EVALUATE    SPA-TIDCD
                WHEN    "1006"
+               WHEN    "1011"
+               WHEN    "1012"
                    MOVE    "いいえ"         TO  TID1-B01-LABEL
                    MOVE    "は  い"         TO  TID1-B12-LABEL
                    MOVE    "B12"            TO  MCP-WIDGET
