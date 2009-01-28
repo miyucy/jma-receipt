@@ -1182,18 +1182,16 @@
                                        INTO    TID1-ID1MSG
                    END-STRING
                WHEN    "1011"
-                   STRING   "返戻データが存在しますが返戻の設定が行なわ"
+                   STRING   "返戻データが存在します（返戻設定無し）。"
                                        DELIMITED  BY  SIZE
-                            "れていません。個別指示の対象としますか"
+                            "個別指示の対象としますか"
                                        DELIMITED  BY  SIZE
                                        INTO    TID1-ID1MSG
                    END-STRING
                WHEN    "1012"
-                   STRING   "保険情報が一致する返戻データが存在しますが"
+                   STRING   "保険情報が一致する返戻データが存在します"
                                        DELIMITED  BY  SIZE
-                            "返戻の設定が行なわれていません。"
-                                       DELIMITED  BY  SIZE
-                            "個別指示の対象としますか"
+                            "（返戻設定無し）。個別指示の対象としますか"
                                        DELIMITED  BY  SIZE
                                        INTO    TID1-ID1MSG
                    END-STRING
