@@ -260,6 +260,7 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-USERID-UPD      PIC 9(01).
+           03  FLG-USERMATCH       PIC 9(01).
       *
       *    カウント領域
       *
@@ -2501,6 +2502,38 @@
                    MOVE    WRK-ERRCUR      TO  SPA-GMN-CUR
                END-IF
       *
+      *            他院職員情報存在チェック
+               IF    ( SPA-ERRCD       =   SPACE )
+      *
+                   MOVE    ZERO                TO  FLG-USERMATCH
+                   MOVE    SPACE               TO  SYS-1010-REC
+                   INITIALIZE                      SYS-1010-REC
+                   MOVE    SPA-GRPHOSPNUM (IDX-GRP)
+                                               TO  SYS-1010-HOSPNUM
+                   MOVE    "1010"              TO  SYS-1010-KANRICD
+                   MOVE    SPA-MAE-STYUKYMD    TO  SYS-1010-STYUKYMD
+                   MOVE    SPA-MAE-STYUKYMD    TO  SYS-1010-EDYUKYMD
+      *
+                   MOVE    SYS-1010-REC        TO  MCPDATA-REC
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM   910-DBSELECT-SEC
+                   PERFORM   920-DBFETCH-SEC
+                   PERFORM   UNTIL     (FLG-USERMATCH  =  1)  OR
+                                       (MCP-RC      NOT = 0)
+                       MOVE    MCPDATA-REC     TO  SYS-1010-REC
+                       IF    SPA-GMN-GRPUSERID (IDX-GRP)
+                                            =   SYS-1010-USERID
+                           MOVE   1     TO   FLG-USERMATCH
+                       END-IF
+                       PERFORM    920-DBFETCH-SEC
+                   END-PERFORM
+                   IF         FLG-USERMATCH    =   ZERO
+                       MOVE    "0028"          TO  SPA-ERRCD
+                       MOVE    WRK-ERRCUR      TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+      *
                IF    ( SPA-ERRCD       =   SPACE )
                    IF    ( SPA-GMN-GRPUSERID (IDX-GRP)
                                        =   SPA-GMN-USERID )
@@ -3691,6 +3724,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0027"
                    MOVE    "他院のオペレータＩＤが重複しています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0028"
+                   MOVE    "職員情報が未登録です"
                                                TO  SPA-ERRMSG
                WHEN    "0100"
                    MOVE
