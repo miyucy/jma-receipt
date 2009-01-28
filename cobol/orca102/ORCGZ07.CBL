@@ -158,6 +158,8 @@
                05  WRK-SYY             PIC 9(04).
                05  WRK-SMM             PIC 9(02).
                05  WRK-SDD             PIC 9(02).
+           03  WRK-ZOGENPTN            PIC X(01).
+           03  WRK-ZOGEN               PIC S9(05).
       *
            03  WRK-ZZZ                 PIC ZZZ.
       *
@@ -175,6 +177,7 @@
       *
            03  WRK-TNS-YUKOSTYMD       PIC X(08).
            03  WRK-SRYCD               PIC X(09).
+           03  WRK-NEXTDAY             PIC X(08).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1645,6 +1648,12 @@
       *****************************************************************
        4122-CHKMST-KOUSIN-SYORI-SEC    SECTION.
       *
+           MOVE    "1"             TO  WRK-ZOGENPTN
+           MOVE    1               TO  WRK-ZOGEN
+           MOVE    SPA-NAI-YUKOYMD TO  WRK-SYMD
+           PERFORM 800-CALENDAR-SEC
+           MOVE    WRK-SYMD        TO  WRK-NEXTDAY
+      *
            PERFORM 41221-CHKMST-SRYCD-KOUSIN-SEC
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -1728,24 +1737,29 @@
            PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
-               PERFORM 900-CHKMST-KEY-SEL-SEC
-               IF    ( FLG-TCHKMST     =   ZERO )
-                   CONTINUE
-               ELSE
-                   PERFORM 900-CHKMST-KEY20-SEL-SEC
-                   MOVE    SMCNDATE-YMD    TO  CHK-CREYMD
-                                               CHK-UPYMD
-                   MOVE    SMCNDATE-HMS    TO  CHK-UPHMS
-                   MOVE    SPA-GMN-SRYCD   TO  CHK-CD
-                   COMPUTE CHK-RENNUM      =   TCHK-RENNUM +   1
-                   MOVE    CHK-REC         TO  MCPDATA-REC
-                   MOVE    "tbl_chk"       TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM 910-DBINSERT-SEC
-                   IF    ( MCP-RC          NOT =   ZERO )
-                       MOVE    "0201"      TO  SPA-ERRCD
+               MOVE    WRK-NEXTDAY     TO  WRK-SYMD
+               MOVE    CHK-SRYCD       TO  WRK-SRYCD
+               PERFORM 901-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       =   ZERO )
+      *
+                   PERFORM 900-CHKMST-KEY-SEL-SEC
+                   IF    ( FLG-TCHKMST     =   ZERO )
+                       CONTINUE
+                   ELSE
+                       PERFORM 900-CHKMST-KEY20-SEL-SEC
+                       MOVE    SMCNDATE-YMD    TO  CHK-CREYMD
+                                                   CHK-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  CHK-UPHMS
+                       MOVE    SPA-GMN-SRYCD   TO  CHK-CD
+                       COMPUTE CHK-RENNUM      =   TCHK-RENNUM +   1
+                       MOVE    CHK-REC         TO  MCPDATA-REC
+                       MOVE    "tbl_chk"       TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBINSERT-SEC
+                       IF    ( MCP-RC          NOT =   ZERO )
+                           MOVE    "0201"      TO  SPA-ERRCD
+                       END-IF
                    END-IF
-                   
                END-IF
       *
                PERFORM 900-CHKMST-KEY19-FET-SEC
@@ -1814,22 +1828,28 @@
            PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
-               PERFORM 900-CHKSND-KEY22-SEL-SEC
-               IF    ( FLG-TCHKSND     =   ZERO )
-                   CONTINUE
-               ELSE
-                   PERFORM 900-CHKSND-KEY21-SEL-SEC
-                   MOVE    SMCNDATE-YMD    TO  CHKSND-CREYMD
-                                               CHKSND-UPYMD
-                   MOVE    SMCNDATE-HMS    TO  CHKSND-UPHMS
-                   MOVE    SPA-GMN-SRYCD   TO  CHKSND-CD
-                   COMPUTE CHKSND-RENNUM   =   TCHKSND-RENNUM +   1
-                   MOVE    CHKSND-REC      TO  MCPDATA-REC
-                   MOVE    "tbl_chksnd"    TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM 910-DBINSERT-SEC
-                   IF    ( MCP-RC          NOT =   ZERO )
-                       MOVE    "0203"      TO  SPA-ERRCD
+               MOVE    WRK-NEXTDAY     TO  WRK-SYMD
+               MOVE    CHKSND-SRYCD    TO  WRK-SRYCD
+               PERFORM 901-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       =   ZERO )
+      *
+                   PERFORM 900-CHKSND-KEY22-SEL-SEC
+                   IF    ( FLG-TCHKSND     =   ZERO )
+                       CONTINUE
+                   ELSE
+                       PERFORM 900-CHKSND-KEY21-SEL-SEC
+                       MOVE    SMCNDATE-YMD    TO  CHKSND-CREYMD
+                                                   CHKSND-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  CHKSND-UPHMS
+                       MOVE    SPA-GMN-SRYCD   TO  CHKSND-CD
+                       COMPUTE CHKSND-RENNUM   =   TCHKSND-RENNUM +   1
+                       MOVE    CHKSND-REC      TO  MCPDATA-REC
+                       MOVE    "tbl_chksnd"    TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBINSERT-SEC
+                       IF    ( MCP-RC          NOT =   ZERO )
+                           MOVE    "0203"      TO  SPA-ERRCD
+                       END-IF
                    END-IF
                END-IF
       *
@@ -1899,22 +1919,28 @@
            PERFORM UNTIL ( FLG-CHKTRD  NOT =   ZERO )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
-               PERFORM 900-CHKTRD-KEY22-SEL-SEC
-               IF    ( FLG-TCHKTRD     =   ZERO )
-                   CONTINUE
-               ELSE
-                   PERFORM 900-CHKTRD-KEY21-SEL-SEC
-                   MOVE    SMCNDATE-YMD    TO  CHKTRD-CREYMD
-                                               CHKTRD-UPYMD
-                   MOVE    SMCNDATE-HMS    TO  CHKTRD-UPHMS
-                   MOVE    SPA-GMN-SRYCD   TO  CHKTRD-CD
-                   COMPUTE CHKTRD-RENNUM   =   TCHKTRD-RENNUM +   1
-                   MOVE    CHKTRD-REC      TO  MCPDATA-REC
-                   MOVE    "tbl_chktrd"    TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM 910-DBINSERT-SEC
-                   IF    ( MCP-RC          NOT =   ZERO )
-                       MOVE    "0205"      TO  SPA-ERRCD
+               MOVE    WRK-NEXTDAY     TO  WRK-SYMD
+               MOVE    CHKTRD-SRYCD    TO  WRK-SRYCD
+               PERFORM 901-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       =   ZERO )
+      *
+                   PERFORM 900-CHKTRD-KEY22-SEL-SEC
+                   IF    ( FLG-TCHKTRD     =   ZERO )
+                       CONTINUE
+                   ELSE
+                       PERFORM 900-CHKTRD-KEY21-SEL-SEC
+                       MOVE    SMCNDATE-YMD    TO  CHKTRD-CREYMD
+                                                   CHKTRD-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  CHKTRD-UPHMS
+                       MOVE    SPA-GMN-SRYCD   TO  CHKTRD-CD
+                       COMPUTE CHKTRD-RENNUM   =   TCHKTRD-RENNUM +   1
+                       MOVE    CHKTRD-REC      TO  MCPDATA-REC
+                       MOVE    "tbl_chktrd"    TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBINSERT-SEC
+                       IF    ( MCP-RC          NOT =   ZERO )
+                           MOVE    "0205"      TO  SPA-ERRCD
+                       END-IF
                    END-IF
                END-IF
       *
@@ -1930,7 +1956,7 @@
        41226-CHKTRD-TEKCD-KOUSIN-EXT.
            EXIT.
       *****************************************************************
-      *    チェックマスタ３更新処理（適用コード）
+      *    チェックマスタ５更新処理（適用コード）
       *****************************************************************
        41227-CHK005-TEKCD-KOUSIN-SEC   SECTION.
       *
@@ -2340,6 +2366,24 @@
        520-SEIWA-HEN-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    カレンダー処理
+      *****************************************************************
+       800-CALENDAR-SEC               SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-SYMD            TO  LNK-DAY6-KIJUN
+           MOVE    WRK-ZOGENPTN        TO  LNK-DAY6-ZOGENPTN
+           MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-SYMD
+      *
+           .
+       800-CALENDAR-EXT.
+           EXIT.
       *****************************************************************
       *    入力コードマスター読込
       *****************************************************************
@@ -3219,6 +3263,43 @@
       *
            .
        901-YAKUJYO-KEY-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    点数マスタ検索処理(存在チェックのみで値を返却しない）
+      *****************************************************************
+       901-TENSU-KEY-SEL-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  FLG-TENSU
+      *
+           INITIALIZE                      TNS-TENSU-REC
+           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    WRK-SRYCD           TO  TNS-SRYCD
+           MOVE    WRK-NEXTDAY         TO  TNS-YUKOSTYMD
+                                           TNS-YUKOEDYMD
+           MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    "tbl_tensu"     TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   CONTINUE
+               ELSE
+                   MOVE    1           TO  FLG-TENSU
+               END-IF
+           ELSE
+               MOVE    1               TO  FLG-TENSU
+           END-IF
+      *
+           MOVE    "tbl_tensu"         TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+      *
+       901-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
