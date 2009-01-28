@@ -2553,11 +2553,11 @@
                PERFORM         UNTIL   FLG-HENREI-B    =   1
                                OR      SPA-NAI-T09-THENREIYM (IDX)
                                                    NOT =   SPACE
+                   MOVE    "1"     TO  SPA-NAI-T09-THENREIYM (IDX)
                    IF    ( HENREI-B-RECESYUBETU
                                        =   RECE10-RECESYUBETU )
                    AND   ( HENREI-B-HKNJANUM
                                        =   RECE10-HKNJANUM    )
-                       MOVE    "1"     TO  SPA-NAI-T09-THENREIYM (IDX)
                        IF      RECE10-HKNNUM   NOT =   SPACE
                            IF    ( RECE10-KIGO =   HENREI-B-KIGO )
                            AND   ( RECE10-NUM  =   HENREI-B-NUM  )
