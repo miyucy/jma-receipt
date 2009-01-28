@@ -1728,6 +1728,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "RE"
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
+                           MOVE ZERO               TO  KO-B-CNT
+      *
                            MOVE    0               TO  
                                        TBL-HENREI-B-SELECT-FLG   (IDZZ)
                            MOVE    SPACE           TO
