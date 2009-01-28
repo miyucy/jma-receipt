@@ -454,26 +454,26 @@
       *
            IF    ( SPA-GMN-OLD-SRYCD (1:1) =   "6" OR SPACE )
                MOVE    "0"                     TO  SPA-GMN-CHKCHGL (1)
-               MOVE    "更新しない"            TO  SPA-GMN-CHKCHGMEIL(1)
+               MOVE    "複写しない"            TO  SPA-GMN-CHKCHGMEIL(1)
                MOVE    "1"                     TO  SPA-GMN-CHKCHGL (2)
-               MOVE    "更新する"              TO  SPA-GMN-CHKCHGMEIL(2)
+               MOVE    "複写する"              TO  SPA-GMN-CHKCHGMEIL(2)
                MOVE    2                       TO  SPA-GMN-CHKCHG-MAX
       *
                MOVE    "0"                     TO  SPA-GMN-YKJCHGL (1)
-               MOVE    "更新しない"            TO  SPA-GMN-YKJCHGMEIL(1)
+               MOVE    "複写しない"            TO  SPA-GMN-YKJCHGMEIL(1)
                MOVE    "1"                     TO  SPA-GMN-YKJCHGL (2)
-               MOVE    "更新する"              TO  SPA-GMN-YKJCHGMEIL(2)
+               MOVE    "複写する"              TO  SPA-GMN-YKJCHGMEIL(2)
                MOVE    2                       TO  SPA-GMN-YKJCHG-MAX
       *
                MOVE    SPA-GMN-CHKCHGLST(2)    TO  SPA-GMN-CHKCHG-G
                MOVE    SPA-GMN-YKJCHGLST(2)    TO  SPA-GMN-YKJCHG-G
            ELSE
                MOVE    "0"                     TO  SPA-GMN-CHKCHGL (1)
-               MOVE    "更新しない"            TO  SPA-GMN-CHKCHGMEIL(1)
+               MOVE    "複写しない"            TO  SPA-GMN-CHKCHGMEIL(1)
                MOVE    1                       TO  SPA-GMN-CHKCHG-MAX
       *
                MOVE    "0"                     TO  SPA-GMN-YKJCHGL (1)
-               MOVE    "更新しない"            TO  SPA-GMN-YKJCHGMEIL(1)
+               MOVE    "複写しない"            TO  SPA-GMN-YKJCHGMEIL(1)
                MOVE    1                       TO  SPA-GMN-YKJCHG-MAX
       *
                MOVE    SPA-GMN-CHKCHGLST(1)    TO  SPA-GMN-CHKCHG-G
