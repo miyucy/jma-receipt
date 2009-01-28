@@ -216,6 +216,92 @@ W06	{
 					item	varchar(40)[2];
 				};
 			};
+              		TGN3	{
+				state   int;
+			};
+			TG3	{
+				GRPHOSPNUM01	{
+					value	varchar(2);
+				};
+				GRPHOSPNUM02	{
+					value	varchar(2);
+				};
+				GRPHOSPNUM03	{
+					value	varchar(2);
+				};
+				GRPHOSPNUM04	{
+					value	varchar(2);
+				};
+				GRPHOSPNUM05	{
+					value	varchar(2);
+				};
+				GRPHOSPNUM06	{
+					value	varchar(2);
+				};
+				GRPHOSPNUM07	{
+					value	varchar(2);
+				};
+				GRPHOSPNUM08	{
+					value	varchar(2);
+				};
+				GRPHOSPNUM09	{
+					value	varchar(2);
+				};
+				GRPHOSPNAME01	{
+					value	varchar(10);
+				};
+				GRPHOSPNAME02	{
+					value	varchar(10);
+				};
+				GRPHOSPNAME03	{
+					value	varchar(10);
+				};
+				GRPHOSPNAME04	{
+					value	varchar(10);
+				};
+				GRPHOSPNAME05	{
+					value	varchar(10);
+				};
+				GRPHOSPNAME06	{
+					value	varchar(10);
+				};
+				GRPHOSPNAME07	{
+					value	varchar(10);
+				};
+				GRPHOSPNAME08	{
+					value	varchar(10);
+				};
+				GRPHOSPNAME09	{
+					value	varchar(10);
+				};
+				GRPUSERID01	{
+					value	varchar(16);
+				};
+				GRPUSERID02	{
+					value	varchar(16);
+				};
+				GRPUSERID03	{
+					value	varchar(16);
+				};
+				GRPUSERID04	{
+					value	varchar(16);
+				};
+				GRPUSERID05	{
+					value	varchar(16);
+				};
+				GRPUSERID06	{
+					value	varchar(16);
+				};
+				GRPUSERID07	{
+					value	varchar(16);
+				};
+				GRPUSERID08	{
+					value	varchar(16);
+				};
+				GRPUSERID09	{
+					value	varchar(16);
+				};
+			};
 		};
 		STYUKYMD	{
 			value	varchar(10);

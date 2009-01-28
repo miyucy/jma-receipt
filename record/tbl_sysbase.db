@@ -32,3 +32,14 @@ path	all 	{
 		;
 	};
 };
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_sysbase_key2_csr CURSOR FOR
+		SELECT	*
+		FROM	tbl_sysbase
+		WHERE	HONBUNGRP	=	:HONBUNGRP
+			ORDER   BY        HOSPNUM
+		;
+	};
+};

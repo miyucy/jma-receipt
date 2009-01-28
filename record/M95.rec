@@ -54,6 +54,21 @@ M95	{
 					};
 				};
 			};
+			fixed4	{
+				TAINLIST	{
+					count	int;
+					row	int;
+					rowattr	int;
+					item	{
+						value0	varchar(1);
+						value1	varchar(10);
+					}	[9];
+					select	bool[9];
+				};
+				TAINNUM	{
+					value	varchar(1);
+				};
+			};
 		};
 	};
 };

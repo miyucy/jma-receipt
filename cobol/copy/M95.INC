@@ -43,3 +43,15 @@
                         08  M95-TDRCDMEI  PIC X(50).
                       07  M95-SYSLIST-SELECT
                               PIC X       OCCURS  100 TIMES.
+                04  M95-FIXED4.
+                  05  M95-TAINLIST.
+                    06  M95-TAINLIST-COUNT   PIC S9(9)   BINARY.
+                    06  M95-TAINLIST-ROW PIC S9(9)   BINARY.
+                    06  M95-TAINLIST-ROWATTR PIC S9(9)   BINARY.
+                    06  M95-TAINITEM    OCCURS  9 TIMES.
+                      07  M95-TAINNO   PIC X(1).
+                      07  M95-TAINNAME PIC X(10).
+                    06  M95-TAINLIST-SELECT
+                            PIC X       OCCURS  9 TIMES.
+                  05  M95-TAINNUM.
+                    06  M95-VALUE   PIC X(1).

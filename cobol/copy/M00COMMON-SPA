@@ -53,4 +53,5 @@
                05  SPA-M95-PAGE        PIC 9(01).
                05  SPA-M95-SYORI       PIC 9(01).
                05  SPA-M95-INIT        PIC 9(01).
+               05  SPA-M95-INIT-P3     PIC 9(01).
       *

@@ -50,6 +50,7 @@
       * 03.05.00     NACL-多々納  07/05/02  グループ診療対応
       * 03.05.01     NACL-藤原    07/09/14  クライアント保存可否フラグ追加
       * 04.00.00     NACL-多々納  07/10/05  SYSUSER登録対応
+      * 04.04.00     NACL-太田    08/01/27  他院設定追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -231,6 +232,13 @@
                        09  SPA-GMN-CLIENT-SAVE-F1   PIC X(01).
                        09  SPA-GMN-CLIENT-SAVE-MEI  PIC X(24).
       *
+               05  SPA-PAGE3-G.
+      *            他院医療機関情報
+                   07  SPA-GMN-GRPHOSP-G.
+                       09  SPA-GMN-GRPHOSP-MAX      PIC 9(02).
+                       09  SPA-GMN-GRPHOSP-OCC      OCCURS 9.
+                           11  SPA-GMN-GRPUSERID    PIC X(16).
+      *
                05  SPA-NAIB-AREA.
                    07  SPA-NAI-STYUKYMD       PIC X(08).
                    07  SPA-NAI-EDYUKYMD       PIC X(08).
@@ -264,6 +272,7 @@
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDK                 PIC 9(04).
+           03  IDX-GRP             PIC 9(04).
       *
            03  IDX2                PIC 9(02).
       *
@@ -295,6 +304,10 @@
            03  WRK-MCP-WIDGET      PIC X(64).
       *
            03  WRK-MAE-USERID      PIC X(16).
+           03  WRK-GRPUSERID-WIDGET.
+               05  WRK-GRPUSERIDFL         PIC X(09).
+               05  WRK-GRPUSERIDNUM        PIC 9(02).
+           03  WRK-ERRCUR          PIC 9(03).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -305,6 +318,9 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+      *
+       01  CONST-AREA.
+           03  CONST-GRPHOSP-MAX   PIC 9(02)   VALUE   9.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -665,6 +681,7 @@
            ELSE
                MOVE    SPACE               TO  SPA-GMN-SYOKUCOD-G
            END-IF
+      *
            MOVE    1                   TO  SPA-GMN-CUR
       *
            MOVE    1                   TO  SPA-GMN-PAGENO
@@ -680,6 +697,7 @@
            INITIALIZE                      SPA-GMN-SYORI
            INITIALIZE                      SPA-GMN-AREA2
            INITIALIZE                      SPA-NAIB-AREA
+           INITIALIZE                      SPA-PAGE3-G
       *
            PERFORM 320-SYOKUCOD-HENSYU-SEC
            MOVE    ZERO                TO  FLG-OK
@@ -973,6 +991,7 @@
       *    タグ切替え
            WHEN    "CLICKED"       ALSO    "TGN1"
            WHEN    "CLICKED"       ALSO    "TGN2"
+           WHEN    "CLICKED"       ALSO    "TGN3"
                PERFORM 460-TAGUCHG-SEC
            END-EVALUATE
       *
@@ -1356,6 +1375,27 @@
                MOVE    SYS-1010-FORMALFLG      TO  SPA-GMN-FORMALFLG
                MOVE    SYS-1010-CLIENT-SAVE    TO  SPA-GMN-CLIENT-SAVE
                PERFORM 20091-PRTFLG-HEN-SEC
+      *
+               PERFORM VARYING IDX FROM    1   BY  1
+                       UNTIL ( IDX >   CONST-GRPHOSP-MAX )
+                        OR   ( SPA-GRPHOSPNUM (IDX)    =   ZERO )
+      *
+                   MOVE    IDX             TO  SPA-GMN-GRPHOSP-MAX
+      *
+                   PERFORM VARYING IDY FROM    1   BY  1
+                           UNTIL ( IDY    >   CONST-GRPHOSP-MAX )
+                            OR   ( SPA-GMN-GRPUSERID (IDX)
+                                          NOT =   SPACE )
+                       IF    ( SYS-1010-GRPHOSPNUM (IDY) IS  NUMERIC )
+                           IF    ( SYS-1010-GRPHOSPNUM (IDY)
+                                       =   SPA-GRPHOSPNUM (IDX) )
+                               MOVE    SYS-1010-GRPHOSPUSERID (IDY)
+                                           TO  SPA-GMN-GRPUSERID (IDX)
+                           END-IF
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
+      *
            END-IF
       *
            . 
@@ -1710,6 +1750,12 @@
            MOVE    W06-FORMALFLG       TO  SPA-GMN-FORMALFLG-G
            MOVE    W06-CLIENT-SAVE     TO  SPA-GMN-CLIENT-SAVE-G
       *
+      *    他院情報設定画面
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   CONST-GRPHOSP-MAX
+               MOVE    W06-GRPUSERID(IDX)  TO  SPA-GMN-GRPUSERID(IDX)
+           END-PERFORM
+      *
            .
        4101-GMN-SPA-SET-EXT.
            EXIT.
@@ -1797,6 +1843,13 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4121-CLIENT-SAVE-CHK-SEC
            END-IF
+      *
+           PERFORM VARYING IDX-GRP FROM    1   BY  1
+                   UNTIL ( IDX-GRP >   SPA-GMN-GRPHOSP-MAX )
+                    OR   ( SPA-ERRCD           NOT =   SPACE )
+               PERFORM 4122-GRPUSERID-CHK-SEC
+           END-PERFORM
+      *
            .
        4102-KIHON-CHK-EXT.
            EXIT.
@@ -2425,6 +2478,60 @@
        4121-CLIENT-SAVE-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    他院オペレータＩＤチェック処理
+      *****************************************************************
+       4122-GRPUSERID-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-GRPUSERID (IDX-GRP)     =   SPACE )
+               CONTINUE
+           ELSE
+      *
+               COMPUTE WRK-ERRCUR  =   IDX-GRP    +   200
+      *
+               INITIALIZE              ORCSKANACHKAREA
+               MOVE    "1"             TO  KANACHK-SYORI
+               MOVE    SPA-GMN-GRPUSERID (IDX-GRP)
+                                       TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"   USING 
+                                       ORCSKANACHKAREA
+      *
+               IF      (KANACHK-SYUBETU    NOT =  1)
+                   OR  (KANACHK-RC         NOT =  0)
+                   MOVE    "0024"          TO  SPA-ERRCD
+                   MOVE    WRK-ERRCUR      TO  SPA-GMN-CUR
+               END-IF
+      *
+               IF    ( SPA-ERRCD       =   SPACE )
+                   IF    ( SPA-GMN-GRPUSERID (IDX-GRP)
+                                       =   SPA-GMN-USERID )
+                       MOVE    "0026"      TO  SPA-ERRCD
+                       MOVE    WRK-ERRCUR  TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+      *
+               PERFORM VARYING IDX FROM    IDX-GRP BY  1
+                    UNTIL( IDX         >   SPA-GMN-GRPHOSP-MAX )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+                   IF    ( IDX     =   IDX-GRP )
+                       CONTINUE
+                   ELSE
+                       IF    ( SPA-ERRCD   =   SPACE )
+                           IF    ( SPA-GMN-GRPUSERID (IDX-GRP)
+                                           =   SPA-GMN-GRPUSERID (IDX))
+                               MOVE    "0027"      TO  SPA-ERRCD
+                               COMPUTE SPA-GMN-CUR =   IDX +   200
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *
+           END-IF
+      *
+           .
+       4122-GRPUSERID-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    タグ切替え処理
       *****************************************************************
        460-TAGUCHG-SEC           SECTION.
@@ -2450,6 +2557,10 @@
       *                個別設定
                        MOVE    21                  TO  SPA-GMN-CUR
                        MOVE    2                   TO  SPA-GMN-PAGENO
+                   WHEN    "TGN3"
+      *                他院設定
+                       MOVE    201                 TO  SPA-GMN-CUR
+                       MOVE    3                   TO  SPA-GMN-PAGENO
                END-EVALUATE
            END-IF
       *
@@ -2616,10 +2727,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 4102-KIHON-CHK-SEC
       *
            IF      SPA-ERRCD           =   SPACE
-               IF      SPA-GMN-PAGENO      =   1
+               EVALUATE    TRUE
+               WHEN  ( SPA-GMN-PAGENO      =   1 )
                    MOVE    2                   TO  SPA-GMN-PAGENO
                    MOVE    21                  TO  SPA-GMN-CUR
-               ELSE
+               WHEN  ( SPA-GMN-PAGENO      =   2 )
+                  AND( SPA-GRPHOSPKBN      =   1 )
+                   MOVE    3                   TO  SPA-GMN-PAGENO
+                   MOVE    201                 TO  SPA-GMN-CUR
+               WHEN    OTHER
                    MOVE    1                   TO  SPA-GMN-PAGENO
       *            基本画面
                    IF      SPA-GMN-SYOKUKBN    =   "1"
@@ -2627,7 +2743,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    ELSE
                        MOVE    31              TO  SPA-GMN-CUR
                    END-IF
-               END-IF
+               END-EVALUATE
            END-IF
            .
        480-BETUGAMEN-EXT.
@@ -2855,6 +2971,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-MEIPRTFLG       TO  SYS-1010-MEIPRTFLG
            MOVE    SPA-GMN-FORMALFLG       TO  SYS-1010-FORMALFLG
            MOVE    SPA-GMN-CLIENT-SAVE     TO  SYS-1010-CLIENT-SAVE
+      *
+           INITIALIZE                          SYS-1010-GRPHOSPINF-G
+           MOVE    ZERO                    TO  IDX-GRP
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX >   SPA-GMN-GRPHOSP-MAX )
+      *
+               IF    ( SPA-GMN-GRPUSERID (IDX) NOT =   SPACE )
+                   COMPUTE IDX-GRP =   IDX-GRP +   1
+                   MOVE    SPA-GRPHOSPNUM (IDX)
+                                   TO  SYS-1010-GRPHOSPNUM    (IDX-GRP)
+                   MOVE    SPA-GMN-GRPUSERID (IDX)
+                                   TO  SYS-1010-GRPHOSPUSERID (IDX-GRP)
+               END-IF
+      *
+           END-PERFORM
       *
            IF     (FLG-SYSKANRI        =   ZERO ) AND
                   (SPA-GMN-SYORI       =   2    )
@@ -3410,11 +3541,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE  SPA-CLIENT-SAVE-MAX   TO  W06-CLIENT-SAVE-COUNT
            MOVE  SPA-GMN-CLIENT-SAVE-G TO  W06-CLIENT-SAVE
       *
+      *    他院情報設定画面
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL (     IDX     >   SPA-GMN-GRPHOSP-MAX )
+               MOVE    SPA-GRPHOSPNUM (IDX)
+                                       TO  W06-GRPHOSPNUM(IDX)
+               MOVE    SPA-GRPHOSPNAME(IDX)
+                                       TO  W06-GRPHOSPNAME(IDX)
+               MOVE    SPA-GMN-GRPUSERID(IDX)
+                                       TO  W06-GRPUSERID(IDX)
+           END-PERFORM
+      *
+           MOVE    WIDGET-INSENSITIVE  TO  W06-TGN3-STATE
+           IF    ( SPA-GRPHOSPKBN      =   1 )
+               MOVE    WIDGET-NORMAL   TO  W06-TGN3-STATE
+           END-IF
+      *
            EVALUATE    SPA-GMN-PAGENO
                WHEN    1
                    MOVE    0           TO  W06-PAGENO
                WHEN    2
                    MOVE    1           TO  W06-PAGENO
+               WHEN    3
+                   MOVE    2           TO  W06-PAGENO
            END-EVALUATE
       *
            PERFORM 5001-MAPCUR-SEC
@@ -3478,8 +3627,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "選択番号がありません。"
                                                TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "オペレータＩＤが重複します"
-                                               TO  SPA-ERRMSG
                WHEN    "0008"
                    MOVE    "オペレータＩＤを入力して下さい"
                                                TO  SPA-ERRMSG
@@ -3535,6 +3682,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0023"
                    MOVE    "クライアント保存可否入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0024"
+                   MOVE    "他院オペレータＩＤは半角で入力して下さい"
+                                               TO  SPA-ERRMSG
+               WHEN    "0026"
+                   MOVE    "自院と他院のオペレータＩＤが重複しています"
+                                               TO  SPA-ERRMSG
+               WHEN    "0027"
+                   MOVE    "他院のオペレータＩＤが重複しています"
                                                TO  SPA-ERRMSG
                WHEN    "0100"
                    MOVE
@@ -3680,6 +3836,25 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                 WHEN    99
                     MOVE  "B12"            TO   MCP-WIDGET
+      *    他院設定画面
+                WHEN    201
+                    MOVE  "GRPUSERID01"    TO   MCP-WIDGET
+                WHEN    202
+                    MOVE  "GRPUSERID02"    TO   MCP-WIDGET
+                WHEN    203
+                    MOVE  "GRPUSERID03"    TO   MCP-WIDGET
+                WHEN    204
+                    MOVE  "GRPUSERID04"    TO   MCP-WIDGET
+                WHEN    205
+                    MOVE  "GRPUSERID05"    TO   MCP-WIDGET
+                WHEN    206
+                    MOVE  "GRPUSERID06"    TO   MCP-WIDGET
+                WHEN    207
+                    MOVE  "GRPUSERID07"    TO   MCP-WIDGET
+                WHEN    208
+                    MOVE  "GRPUSERID08"    TO   MCP-WIDGET
+                WHEN    209
+                    MOVE  "GRPUSERID09"    TO   MCP-WIDGET
             END-EVALUATE
       *
            .
@@ -3746,6 +3921,19 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN     "FORMALFLG"
                    MOVE    26              TO  SPA-GMN-CUR
                WHEN     "CLIENT_SAVE"
+                   MOVE    99              TO  SPA-GMN-CUR
+      *    他院設定画面
+               WHEN     "GRPUSERID01"  THRU    "GRPUSERID08"
+                   MOVE    WRK-MCP-WIDGET  TO  WRK-GRPUSERID-WIDGET
+                   IF    ( SPA-GRPHOSPNUM (WRK-GRPUSERIDNUM + 1)
+                                           =   ZERO )
+                       MOVE    99          TO  SPA-GMN-CUR
+                   ELSE
+                       COMPUTE SPA-GMN-CUR
+                           =   WRK-GRPUSERIDNUM
+                           +   201
+                   END-IF
+               WHEN     "GRPUSERID09"
                    MOVE    99              TO  SPA-GMN-CUR
       *
                WHEN     OTHER

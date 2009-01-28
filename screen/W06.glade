@@ -1991,6 +1991,564 @@
 	<label>個別設定</label>
 	<relief>GTK_RELIEF_NORMAL</relief>
       </widget>
+
+      <widget>
+	<class>GtkFixed</class>
+	<name>TG3</name>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNUM01</name>
+	  <x>64</x>
+	  <y>60</y>
+	  <width>32</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>01</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNAME01</name>
+	  <x>96</x>
+	  <y>60</y>
+	  <width>90</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>あいうえお</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPUSERID01</name>
+	  <x>192</x>
+	  <y>60</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text></text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPUSERID02</name>
+	  <x>192</x>
+	  <y>92</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text></text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPUSERID03</name>
+	  <x>192</x>
+	  <y>124</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text></text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPUSERID04</name>
+	  <x>192</x>
+	  <y>156</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text></text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPUSERID05</name>
+	  <x>192</x>
+	  <y>188</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text></text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPUSERID06</name>
+	  <x>192</x>
+	  <y>220</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text></text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPUSERID07</name>
+	  <x>192</x>
+	  <y>252</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text></text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPUSERID08</name>
+	  <x>192</x>
+	  <y>284</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text></text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPUSERID09</name>
+	  <x>192</x>
+	  <y>316</y>
+	  <width>140</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>activate</name>
+	    <handler>send_event</handler>
+	    <data>ACTIVATE</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:07 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>changed</name>
+	    <handler>entry_changed</handler>
+	    <data>CHANGED</data>
+	    <last_modification_time>Thu, 08 Feb 2001 12:37:56 GMT</last_modification_time>
+	  </signal>
+	  <editable>True</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>16</text_max_length>
+	  <text></text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label262</name>
+	  <x>64</x>
+	  <y>32</y>
+	  <width>168</width>
+	  <height>24</height>
+	  <label>他院オペレータＩＤ</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>True</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNAME09</name>
+	  <x>96</x>
+	  <y>316</y>
+	  <width>90</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>あいうえお</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNAME08</name>
+	  <x>96</x>
+	  <y>284</y>
+	  <width>90</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>あいうえお</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNAME07</name>
+	  <x>96</x>
+	  <y>252</y>
+	  <width>90</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>あいうえお</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNAME06</name>
+	  <x>96</x>
+	  <y>220</y>
+	  <width>90</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>あいうえお</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNAME05</name>
+	  <x>96</x>
+	  <y>188</y>
+	  <width>90</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>あいうえお</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNAME04</name>
+	  <x>96</x>
+	  <y>156</y>
+	  <width>90</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>あいうえお</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNAME03</name>
+	  <x>96</x>
+	  <y>124</y>
+	  <width>90</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>あいうえお</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNAME02</name>
+	  <x>96</x>
+	  <y>92</y>
+	  <width>90</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>あいうえお</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNUM09</name>
+	  <x>64</x>
+	  <y>316</y>
+	  <width>32</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>01</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNUM08</name>
+	  <x>64</x>
+	  <y>284</y>
+	  <width>32</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>01</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNUM07</name>
+	  <x>64</x>
+	  <y>252</y>
+	  <width>32</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>01</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNUM06</name>
+	  <x>64</x>
+	  <y>220</y>
+	  <width>32</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>01</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNUM05</name>
+	  <x>64</x>
+	  <y>188</y>
+	  <width>32</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>01</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNUM04</name>
+	  <x>64</x>
+	  <y>156</y>
+	  <width>32</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>01</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNUM03</name>
+	  <x>64</x>
+	  <y>124</y>
+	  <width>32</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>01</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+
+	<widget>
+	  <class>GtkPandaEntry</class>
+	  <name>GRPHOSPNUM02</name>
+	  <x>64</x>
+	  <y>92</y>
+	  <width>32</width>
+	  <height>24</height>
+	  <editable>False</editable>
+	  <text_visible>True</text_visible>
+	  <text_max_length>10</text_max_length>
+	  <text>01</text>
+	  <input_mode>ASCII</input_mode>
+	  <xim_enabled>False</xim_enabled>
+	</widget>
+      </widget>
+
+      <widget>
+	<class>GtkButton</class>
+	<child_name>Notebook:tab</child_name>
+	<name>TGN3</name>
+	<can_focus>True</can_focus>
+	<signal>
+	  <name>clicked</name>
+	  <handler>send_event</handler>
+	  <data>CLICKED</data>
+	  <last_modification_time>Fri, 02 Dec 2005 02:05:48 GMT</last_modification_time>
+	</signal>
+	<label>他院設定</label>
+	<relief>GTK_RELIEF_NORMAL</relief>
+      </widget>
     </widget>
 
     <widget>
@@ -2411,22 +2969,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label210</name>
-      <x>80</x>
-      <y>64</y>
-      <width>128</width>
-      <height>24</height>
-      <label>オペレータＩＤ</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label7</name>
       <x>80</x>
       <y>92</y>
@@ -2666,6 +3208,22 @@
 	  <ypad>0</ypad>
 	</widget>
       </widget>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label210</name>
+      <x>80</x>
+      <y>64</y>
+      <width>128</width>
+      <height>24</height>
+      <label>オペレータＩＤ</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
     </widget>
   </widget>
 </widget>

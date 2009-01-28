@@ -52,6 +52,7 @@
       *  03.04.00    NACL-多々納  06/11/13  検査正式名称表示フラグ追加
       *  03.05.00    NACL-多々納  07/05/25  グループ診療対応
       *  04.04.00    NACL-森脇    08/11/20  印刷削除ボタン追加
+      *  04.04.00    NACL-森脇    09/01/27  排他ＳＰＡ共通対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -167,6 +168,9 @@
            COPY    "CPORCSLNK.INC".
       *
            COPY    "CPORCSCOLCHK.INC".
+      *
+      *    COMMON-SPA 初期編集
+           COPY    "CPORCSCOMMON.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -479,61 +483,72 @@
       *****************************************************************
        320-SYS-1010-SPASET-SEC              SECTION.
       *
-      *    職員情報
-           MOVE    SPACE               TO  SYS-1010-REC
+      *!!
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
-           MOVE    "1010"              TO  SYS-1010-KANRICD
-           STRING  SPA-OPID            DELIMITED  BY  SPACE
-                   "%"                 DELIMITED  BY  SIZE
-                                       INTO    SYS-1010-TBL
-           END-STRING
-           MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
-           MOVE    SYS-1010-REC        TO  MCPDATA-REC
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"  TO  MCP-TABLE
-               MOVE    "key3"          TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-               IF      FLG-SYSKANRI    =   ZERO
-                   MOVE    MCPDATA-REC     TO  SYS-1010-REC
-               ELSE
-                   INITIALIZE              SYS-1010-REC
-               END-IF
-           ELSE
-               INITIALIZE                  SYS-1010-REC
-               MOVE    1                   TO  FLG-SYSKANRI
-           END-IF
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM UNTIL       FLG-SYSKANRI    =   1
-               MOVE    MCPDATA-REC     TO  SYS-1010-REC
-               IF      SPA-OPID            =   SYS-1010-USERID
-                   MOVE    1                   TO  FLG-OK
-                   MOVE    1                   TO  FLG-SYSKANRI
-               ELSE
-                   MOVE    "tbl_syskanri"  TO  MCP-TABLE
-                   MOVE    "key3"          TO  MCP-PATHNAME
-                   PERFORM 900-SYSKANRI-READ-SEC
-               END-IF
-           END-PERFORM
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key3"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
+           INITIALIZE                  ORCSCOMMONAREA
+           MOVE    "M01"               TO  ORCSCOMMON-PG
+           CALL    "ORCSCOMMON"        USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSCOMMONAREA
+                                       SYS-1010-REC
+      *!!
+      *    職員情報
+      *    MOVE    SPACE               TO  SYS-1010-REC
+      *    INITIALIZE                  SYS-1010-REC
+      *    MOVE    "1010"              TO  SYS-1010-KANRICD
+      *    STRING  SPA-OPID            DELIMITED  BY  SPACE
+      *            "%"                 DELIMITED  BY  SIZE
+      *                                INTO    SYS-1010-TBL
+      *    END-STRING
+      *    MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
+      *    MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
+      *    MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+      *    MOVE    SYS-1010-REC        TO  MCPDATA-REC
+      *    MOVE    "tbl_syskanri"      TO  MCP-TABLE
+      *    MOVE    "key3"              TO  MCP-PATHNAME
+      *    PERFORM 910-DBSELECT-SEC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "tbl_syskanri"  TO  MCP-TABLE
+      *        MOVE    "key3"          TO  MCP-PATHNAME
+      *        PERFORM 900-SYSKANRI-READ-SEC
+      *        IF      FLG-SYSKANRI    =   ZERO
+      *            MOVE    MCPDATA-REC     TO  SYS-1010-REC
+      *        ELSE
+      *            INITIALIZE              SYS-1010-REC
+      *        END-IF
+      *    ELSE
+      *        INITIALIZE                  SYS-1010-REC
+      *        MOVE    1                   TO  FLG-SYSKANRI
+      *    END-IF
+      *    MOVE    ZERO                TO  FLG-OK
+      *    PERFORM UNTIL       FLG-SYSKANRI    =   1
+      *        MOVE    MCPDATA-REC     TO  SYS-1010-REC
+      *        IF      SPA-OPID            =   SYS-1010-USERID
+      *            MOVE    1                   TO  FLG-OK
+      *            MOVE    1                   TO  FLG-SYSKANRI
+      *        ELSE
+      *            MOVE    "tbl_syskanri"  TO  MCP-TABLE
+      *            MOVE    "key3"          TO  MCP-PATHNAME
+      *            PERFORM 900-SYSKANRI-READ-SEC
+      *        END-IF
+      *    END-PERFORM
+      *    MOVE    "tbl_syskanri"      TO  MCP-TABLE
+      *    MOVE    "key3"              TO  MCP-PATHNAME
+      *    PERFORM 990-DBCLOSE-SEC
       *    職員情報なし
-           IF     FLG-OK               =   ZERO
-               INITIALIZE                  SYS-1010-REC
-           END-IF
+      *    IF     FLG-OK               =   ZERO
+      *        INITIALIZE                  SYS-1010-REC
+      *    END-IF
       *
       *2001.9.27 強制プロテクト（ＰＧ未作成）
-           MOVE    "0"                 TO  SYS-1010-GSRAUTH(3:1)
-                                           SYS-1010-GSRAUTH(4:1)
+      *    MOVE    "0"                 TO  SYS-1010-GSRAUTH(3:1)
+      *                                    SYS-1010-GSRAUTH(4:1)
       *************************************SYS-1010-GSRAUTH(18:1)
       *************************************SYS-1010-GSRAUTH(32:1)
       *************************************SYS-1010-GSRAUTH(41:1)
-                                           SYS-1010-GSRAUTH(46:1)
+      *                                    SYS-1010-GSRAUTH(46:1)
       ************************************ SYS-1010-GSRAUTH(47:1)
       *2001.9.27 強制プロテクト（ＰＧ未作成）END
       *
@@ -541,32 +556,32 @@
       *
       *業務処理権限設定
       *    受付
-           MOVE    SYS-1010-GSRAUTH(16:1)  TO  SPA-GSRAUTH-11
+      *    MOVE    SYS-1010-GSRAUTH(16:1)  TO  SPA-GSRAUTH-11
       *    患者登録
-           MOVE    SYS-1010-GSRAUTH(17:1)  TO  SPA-GSRAUTH-12
+      *    MOVE    SYS-1010-GSRAUTH(17:1)  TO  SPA-GSRAUTH-12
       *    予約登録
-           MOVE    SYS-1010-GSRAUTH(19:1)  TO  SPA-GSRAUTH-14
+      *    MOVE    SYS-1010-GSRAUTH(19:1)  TO  SPA-GSRAUTH-14
       *    診療行為
-           MOVE    SYS-1010-GSRAUTH(21:1)  TO  SPA-GSRAUTH-21
+      *    MOVE    SYS-1010-GSRAUTH(21:1)  TO  SPA-GSRAUTH-21
       *    病名登録
-           MOVE    SYS-1010-GSRAUTH(22:1)  TO  SPA-GSRAUTH-22
+      *    MOVE    SYS-1010-GSRAUTH(22:1)  TO  SPA-GSRAUTH-22
       *    収納登録
-           MOVE    SYS-1010-GSRAUTH(23:1)  TO  SPA-GSRAUTH-23
+      *    MOVE    SYS-1010-GSRAUTH(23:1)  TO  SPA-GSRAUTH-23
       *    会計照会
-           MOVE    SYS-1010-GSRAUTH(24:1)  TO  SPA-GSRAUTH-24
+      *    MOVE    SYS-1010-GSRAUTH(24:1)  TO  SPA-GSRAUTH-24
       *    入退院登録
-           MOVE    SYS-1010-GSRAUTH(36:1)  TO  SPA-GSRAUTH-31
+      *    MOVE    SYS-1010-GSRAUTH(36:1)  TO  SPA-GSRAUTH-31
       *    入院会計照会
-           MOVE    SYS-1010-GSRAUTH(37:1)  TO  SPA-GSRAUTH-32
+      *    MOVE    SYS-1010-GSRAUTH(37:1)  TO  SPA-GSRAUTH-32
       *
       *    検査正式名称表示
-           MOVE    SYS-1010-FORMALFLG  TO  SPA-FORMALFLG
-           IF      SYS-1010-FORMALFLG  =   SPACE
-               PERFORM 3201-SYS-1038-SET-SEC
-           END-IF
-           IF      SPA-FORMALFLG       =   SPACE
-               MOVE    "0"             TO  SPA-FORMALFLG
-           END-IF
+      *    MOVE    SYS-1010-FORMALFLG  TO  SPA-FORMALFLG
+      *    IF      SYS-1010-FORMALFLG  =   SPACE
+      *        PERFORM 3201-SYS-1038-SET-SEC
+      *    END-IF
+      *    IF      SPA-FORMALFLG       =   SPACE
+      *        MOVE    "0"             TO  SPA-FORMALFLG
+      **** END-IF
       *
       *    プログラム更新日レセ再起動要求メッセージ
            MOVE    SPACE               TO  STS-RESTARTMSG
@@ -583,40 +598,40 @@
       *****************************************************************
       *    検査正式名称表示処理
       *****************************************************************
-       3201-SYS-1038-SET-SEC          SECTION.
+      *3201-SYS-1038-SET-SEC          SECTION.
       *
-           MOVE    SPACE               TO  SYS-1038-REC
-           INITIALIZE                  SYS-1038-REC
-           MOVE    "1038"              TO  SYS-1038-KANRICD
-           MOVE    "*"                 TO  SYS-1038-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-1038-STYUKYMD
-           MOVE    SPA-SYSYMD          TO  SYS-1038-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
-           MOVE    SYS-1038-REC        TO  MCPDATA-REC
+      *    MOVE    SPACE               TO  SYS-1038-REC
+      *    INITIALIZE                  SYS-1038-REC
+      *    MOVE    "1038"              TO  SYS-1038-KANRICD
+      *    MOVE    "*"                 TO  SYS-1038-KBNCD
+      *    MOVE    SPA-SYSYMD          TO  SYS-1038-STYUKYMD
+      *    MOVE    SPA-SYSYMD          TO  SYS-1038-EDYUKYMD
+      *    MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
+      *    MOVE    SYS-1038-REC        TO  MCPDATA-REC
       *
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_syskanri"      TO  MCP-TABLE
-               MOVE    "key10"             TO  MCP-PATHNAME
-               PERFORM 900-SYSKANRI-READ-SEC
-           ELSE
-               MOVE    SPACE               TO  SYS-1038-REC
-               INITIALIZE                  SYS-1038-REC
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-           MOVE    "tbl_syskanri"      TO  MCP-TABLE
-           MOVE    "key10"             TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-1038-REC
+      *    MOVE    "tbl_syskanri"      TO  MCP-TABLE
+      *    MOVE    "key10"             TO  MCP-PATHNAME
+      *    PERFORM 910-DBSELECT-SEC
+      *    IF      MCP-RC              =   ZERO
+      *        MOVE    "tbl_syskanri"      TO  MCP-TABLE
+      *        MOVE    "key10"             TO  MCP-PATHNAME
+      *        PERFORM 900-SYSKANRI-READ-SEC
+      *    ELSE
+      *        MOVE    SPACE               TO  SYS-1038-REC
+      *        INITIALIZE                  SYS-1038-REC
+      *        MOVE    1               TO  FLG-SYSKANRI
+      *    END-IF
+      *    MOVE    "tbl_syskanri"      TO  MCP-TABLE
+      *    MOVE    "key10"             TO  MCP-PATHNAME
+      *    PERFORM 990-DBCLOSE-SEC
+      *    IF      FLG-SYSKANRI        =   ZERO
+      *        MOVE    MCPDATA-REC         TO  SYS-1038-REC
       *        検査正式名称表示
-               MOVE    SYS-1038-FORMALFLG  TO  SPA-FORMALFLG
-           END-IF
-           .
-       3201-SYS-1038-SET-EXT.
-           EXIT.
+      *        MOVE    SYS-1038-FORMALFLG  TO  SPA-FORMALFLG
+      *    END-IF
+      *    .
+      *3201-SYS-1038-SET-EXT.
+      **   EXIT.
       *
       *****************************************************************
       *    画面遷移処理

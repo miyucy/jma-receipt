@@ -110,7 +110,7 @@
            MOVE    "1"                 TO  SPA-NOCHK-HOSPNUM
       *
            INITIALIZE                      SYSUSER-REC
-           MOVE    MCP-USER            TO  SYSUSER-USERID
+           MOVE    SPA-OPID            TO  SYSUSER-USERID
            MOVE    SYSUSER-REC         TO  MCPDATA-REC
            MOVE    "tbl_sysuser"       TO  MCP-TABLE 
            MOVE    "key"               TO  MCP-PATHNAME 

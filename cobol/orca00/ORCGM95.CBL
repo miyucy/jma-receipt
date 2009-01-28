@@ -53,7 +53,7 @@
       *
       *    Ｍ００スパ領域
       **** COPY    "M95SCR-SPA".
-      *        担当医設定画面
+      *        担当医設定画面、他院切替画面
        01  SPA-M95.
            03  SPA-M95PAGE2-AREA.
                05  SPA-M95GMN2-AREA.
@@ -98,6 +98,13 @@
                        09  SPA-NAI-SRYKA      PIC X(02).
                        09  SPA-NAI-SRYKAMEI   PIC X(20).
                    07  SPA-SRYKA-MAX          PIC 9(03).
+           03  SPA-M95PAGE3-AREA.
+               05  SPA-M95GMN-TAINLIST-G.
+                   07  SPA-M95GMN-TAINLIST    OCCURS   9.
+                       09  SPA-M95GMN-TAINNO    PIC X(01).
+                       09  SPA-M95GMN-TAINNAME  PIC X(10).
+                   07  SPA-M95GMN-TAIN-MAX      PIC 9(01).
+               05  SPA-M95GMN-TAINNUM         PIC X(01).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -143,6 +150,8 @@
                05  WRK-SMM             PIC 9(02).
                05  WRK-SDD             PIC 9(02).
       *
+           03  WRK-NUM-1-X.
+               05  WRK-NUM-1           PIC 9(01).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-SRYKAMEI            PIC X(20).
            03  WRK-RENNUM              PIC X(04).
@@ -216,6 +225,8 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
+      *    COMMON-SPA 初期編集
+           COPY    "CPORCSCOMMON.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -364,6 +375,8 @@
       *
       *    担当医設定画面
            INITIALIZE                  SPA-M95PAGE2-AREA
+      *    他院切替画面
+           INITIALIZE                  SPA-M95PAGE3-AREA
            .
        310-SPASET-EXT.
            EXIT.
@@ -513,6 +526,7 @@
       *        タグ切り替え
                WHEN    "CLICKED"       ALSO    "N01"
                WHEN    "CLICKED"       ALSO    "N02"
+               WHEN    "CLICKED"       ALSO    "N03"
                    PERFORM 430-TAGUCHG-SEC
       *        カレンダー選択
                WHEN    "CLICKED"       ALSO    "C01"
@@ -540,6 +554,8 @@
                    PERFORM 4120-DRCD-CHK-SEC
                WHEN    "ACTIVATE"      ALSO    "RENNUM"
                    PERFORM 4120-RENNUM-CHK-SEC
+               WHEN    "ACTIVATE"      ALSO    "TAINNUM"
+                   PERFORM 4210-TAINNUM-CHK-SEC
                WHEN    ANY             ALSO    "SYSLIST"
                    PERFORM 4130-SYSLIST-SEC
           END-EVALUATE
@@ -780,6 +796,65 @@
        4120-DRCD-CHK-EXT.
            EXIT.
       *****************************************************************
+      *     他院切替番号入力チェック処理
+      *****************************************************************
+       4210-TAINNUM-CHK-SEC          SECTION.
+      *
+           MOVE    M95-TAINNUM         TO  SPA-M95GMN-TAINNUM
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-M95GMN-TAIN-MAX
+               IF      SPA-M95GMN-TAINNUM  =   SPA-M95GMN-TAINNO (IDX)
+                   MOVE    1               TO  FLG-CHK
+                   MOVE    SPA-M95GMN-TAIN-MAX  TO  IDX
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0001"          TO  SPA-ERRCD
+               MOVE    31              TO  SPA-M95-CUR
+           ELSE
+               MOVE    M95-TAINNUM         TO  WRK-NUM-1-X
+      *    医療機関識別番号セット SPA-HOSPNUM
+               IF      SPA-GRPHOSPUSERID(WRK-NUM-1)  =  SPACE
+                       DISPLAY "GRPHOSPUSERID IS EMPTYi!!"
+      *****            MOVE    "????"      TO  SPA-ERRCD
+                       GO  TO  4210-TAINNUM-CHK-EXT
+               END-IF
+               MOVE    SPA-GRPHOSPUSERID(WRK-NUM-1)
+                                           TO  SPA-OPID
+               CALL    "ORCSHOSPNUM"       USING
+                                           MCPAREA
+                                           SPA-AREA
+               IF      SPA-ERRCD       NOT =   SPACE
+                   GO  TO  4210-TAINNUM-CHK-EXT
+               END-IF
+      *!!
+      *    ＳＰＡ共通設定
+               INITIALIZE                  SYS-1010-REC
+               INITIALIZE                  ORCSCOMMONAREA
+               MOVE    "M00"               TO  ORCSCOMMON-PG
+               CALL    "ORCSCOMMON"        USING
+                                           MCPAREA
+                                           SPA-AREA
+                                           ORCSCOMMONAREA
+                                           SYS-1010-REC
+               IF      SPA-MOTOPG          =  "M01"  OR  "M01N"
+                   INITIALIZE                  SYS-1010-REC
+                   INITIALIZE                  ORCSCOMMONAREA
+                   MOVE    "M01"               TO  ORCSCOMMON-PG
+                   CALL    "ORCSCOMMON"        USING
+                                               MCPAREA
+                                               SPA-AREA
+                                               ORCSCOMMONAREA
+                                               SYS-1010-REC
+               END-IF
+               PERFORM 210-BACK
+           END-IF
+           .
+       4210-TAINNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *     クリア処理
       *****************************************************************
        202-CLREA-SEC                 SECTION.
@@ -874,6 +949,14 @@
                        PERFORM 4201-DRCDGMN-CHK-SEC
                    END-IF
                    IF      SPA-ERRCD       =   SPACE
+                       MOVE    3               TO  SPA-M95-PAGE
+                       IF      SPA-M95-INIT-P3 =   ZERO
+                           PERFORM 4300-TAIN-SET-SEC
+                       END-IF
+                       MOVE    31              TO  SPA-M95-CUR
+                   END-IF
+               WHEN    3
+                   IF      SPA-ERRCD       =   SPACE
                        MOVE    1               TO  SPA-M95-PAGE
                        MOVE    2               TO  SPA-M95-CUR
                    END-IF
@@ -897,17 +980,27 @@
                           (SPA-M95-KOUSIN      =   1 )
                        PERFORM 4201-DRCDGMN-CHK-SEC
                    END-IF
+               WHEN    3
+                   CONTINUE
            END-EVALUATE
            IF      SPA-ERRCD           =   SPACE
                IF      WRK-MCP-WIDGET      =   "N01"
                    MOVE    1               TO  SPA-M95-PAGE
                    MOVE    1               TO  SPA-M95-CUR
                ELSE
+                 IF    WRK-MCP-WIDGET      =   "N02"
                    MOVE    2               TO  SPA-M95-PAGE
                    IF      SPA-M95-INIT    =   ZERO
                        PERFORM 4200-DRCDMGN-INIT-SEC
                    END-IF
                    MOVE    10              TO  SPA-M95-CUR
+                 ELSE
+                   MOVE    3               TO  SPA-M95-PAGE
+                   IF      SPA-M95-INIT-P3 =   ZERO
+                       PERFORM 4300-TAIN-SET-SEC
+                   END-IF
+                   MOVE    31              TO  SPA-M95-CUR
+                 END-IF
                END-IF
            END-IF
            .
@@ -1347,6 +1440,28 @@
            EXIT.
       *
       *****************************************************************
+      *     他院切替画面初期設定処理
+      *****************************************************************
+       4300-TAIN-SET-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  SPA-M95GMN-TAIN-MAX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       (IDX            >   9    )
+               IF      SPA-GRPHOSPNUM (IDX)  NOT =   ZERO
+                   COMPUTE SPA-M95GMN-TAIN-MAX   =
+                           SPA-M95GMN-TAIN-MAX   +   1
+                   MOVE    IDX                 TO  WRK-NUM-1
+                   MOVE    WRK-NUM-1-X         TO
+                                             SPA-M95GMN-TAINNO (IDX)
+                   MOVE    SPA-GRPHOSPNAME (IDX)  TO
+                                             SPA-M95GMN-TAINNAME (IDX)
+               END-IF
+           END-PERFORM
+           MOVE    1                   TO  SPA-M95-INIT-P3
+           .
+       4300-TAIN-SET-EXT.
+           EXIT.
+      *****************************************************************
       *     担当医削除処理
       *****************************************************************
        2021-DELETE-SYORI-SEC                 SECTION.
@@ -1681,7 +1796,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-JIKANKBN-MAX    TO  M95-JIKANKBN-COUNT
       *
            IF     (SPA-M95-INIT    =   ZERO ) AND
-                  (SPA-M95-PAGE    =   1    )
+                 ((SPA-M95-PAGE    =   1    ) OR
+                  (SPA-M95-PAGE    =   3    ))
                INITIALIZE                  SPA-M95GMN-DRCD-MAX
                INITIALIZE                  SPA-M95GMN-MAX
            END-IF
@@ -1717,6 +1833,23 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                END-IF
            END-PERFORM
            MOVE    SPA-M95GMN-MAX      TO  M95-SYSLIST-COUNT
+      *
+           IF     (SPA-M95-INIT-P3 =   ZERO ) AND
+                 ((SPA-M95-PAGE    =   1    ) OR
+                  (SPA-M95-PAGE    =   2    ))
+               MOVE    ZERO            TO  SPA-M95GMN-TAIN-MAX
+           END-IF
+      *
+           MOVE    SPA-M95GMN-TAINNUM      TO  M95-TAINNUM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-M95GMN-TAIN-MAX
+               MOVE    SPA-M95GMN-TAINNO (IDX)
+                                           TO  M95-TAINNO (IDX)
+               MOVE    SPA-M95GMN-TAINNAME (IDX)
+                                           TO  M95-TAINNAME (IDX)
+               MOVE    "F"                 TO  M95-TAINLIST-SELECT(IDX)
+           END-PERFORM
+           MOVE    SPA-M95GMN-TAIN-MAX     TO  M95-TAINLIST-COUNT
       *    処理
            IF      SPA-M95-PAGE        =   2
                IF      SPA-M95-SYORI       =   1
@@ -1733,11 +1866,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                END-IF
            END-IF
       *
-           IF      SPA-M95-PAGE        =   2
-               MOVE   1                TO  M95-PAGENO
-           ELSE
-               MOVE   0                TO  M95-PAGENO
-           END-IF
+           COMPUTE M95-PAGENO          =   SPA-M95-PAGE  -  1
       *
            PERFORM 5001-MAPCUR-SEC
       *
@@ -1767,6 +1896,9 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE  "DRCD"      TO  MCP-WIDGET
                WHEN    20
                    MOVE  "B10"       TO  MCP-WIDGET
+      *        他院切替
+               WHEN    31
+                   MOVE  "TAINNUM"   TO  MCP-WIDGET
            END-EVALUATE
       *
            .

@@ -156,6 +156,11 @@
                     06  W06-CLIENT-SAVE-COUNT   PIC S9(9)   BINARY.
                     06  W06-CLIENT-SAVE-ITEM
                             PIC X(40)   OCCURS  2 TIMES.
+                04  W06-TGN3-STATE       PIC S9(9)   BINARY.
+                04  W06-TG3.
+                  05   W06-GRPHOSPNUM  PIC X(02)   OCCURS  9 TIMES.
+                  05   W06-GRPHOSPNAME PIC X(10)   OCCURS  9 TIMES.
+                  05   W06-GRPUSERID   PIC X(16)   OCCURS  9 TIMES.
               03  W06-STYUKYMD.
                 04  W06-VALUE   PIC X(10).
               03  W06-EDYUKYMD.

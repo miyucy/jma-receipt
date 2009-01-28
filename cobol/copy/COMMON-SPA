@@ -65,6 +65,7 @@
       * 04.01.00     NACL-多々納  07/10/22  健保準拠区分追加
       * 04.01.00     NACL-太田    07/10/26  処理フラグ（Ｕ・Ｐ起動）桁数変更
       * 04.03.01     NACL-藤原    08/07/02  12400 から 20000 に変更
+      * 04.04.00     NACL-多々納  09/01/26  本院・分院対応追加
       *****************************************************************
       *
       *     共通ＳＰＡ     (RL=20000)
@@ -110,6 +111,15 @@
              03  SPA-DBUPDKBN          PIC 9(01).
       *スーパーバイザー
              03  SPA-SUPERVISOR        PIC  X(01).
+      *
+      *本院・分院識別区分
+             03  SPA-GRPHOSPKBN        PIC 9(01).
+      *他院医療機関識別番号
+             03  SPA-GRPHOSPNUM-G.
+                 05  SPA-GRPHOSPNUM-TBL    OCCURS   9.
+                     07  SPA-GRPHOSPNUM        PIC 9(02).
+                     07  SPA-GRPHOSPNAME       PIC X(10).
+                     07  SPA-GRPHOSPUSERID     PIC X(16).
       *
       *業務処理権限
              03  SPA-GSRAUTH-G.
@@ -283,6 +293,7 @@
       ****** 03  SPA-WORK                  PIC X(11739).
       *****  03  SPA-WORK                  PIC X(11685).
       *****  03  SPA-WORK                  PIC X(11680).
-             03  SPA-WORK                  PIC X(19280).
+      *****  03  SPA-WORK                  PIC X(19280).
+             03  SPA-WORK                  PIC X(19027).
       *----(01.00.02) LINE UPD END   ----------------------------------
       *
