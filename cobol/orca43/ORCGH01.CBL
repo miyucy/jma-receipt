@@ -2168,31 +2168,59 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                    OR      FLG-HENREI-B-CHK
                                    >       ZERO
       *        該当するデータをチェック
-               IF    ( TBL-HENREI-B-RECESYUBETU (IDXX)
-                                       =   SPA-RECE10-RECESYUBETU  )
-               AND   ( TBL-HENREI-B-HKNJANUM    (IDXX)
-                                       =   SPA-RECE10-HKNJANUM     )
-               AND   ( TBL-HENREI-B-KIGO        (IDXX)
-                                       =   SPA-RECE10-KIGO         )
-               AND   ( TBL-HENREI-B-NUM         (IDXX) 
-                                       =   SPA-RECE10-NUM          )
-                   EVALUATE    SPA-RECE10-TEISYUTUSAKI
-                       WHEN    1
-                           IF      TBL-HENREI-B-TEISYUTUSAKI (IDXX)
+               IF      SPA-RECE10-HKNNUM
+                                       =   SPACE
+                   IF    ( TBL-HENREI-B-RECESYUBETU (IDXX)
+                                           =   SPA-RECE10-RECESYUBETU )
+                   AND   ( TBL-HENREI-B-FTNNUM      (IDXX 1)
+                                           =   SPA-RECE10-FTNJANUM    )
+                   AND   ( TBL-HENREI-B-JKYNUM      (IDXX 1) 
+                                           =   SPA-RECE10-JKYSNUM     )
+                       EVALUATE    SPA-RECE10-TEISYUTUSAKI
+                           WHEN    1
+                               IF      TBL-HENREI-B-TEISYUTUSAKI (IDXX)
                                                =   1
-                               MOVE    TBL-HENREI-B-REC (IDXX)
-                                               TO  WRK-HENREI-B-REC
-                               MOVE    1       TO  FLG-HENREI-B-CHK
-                           END-IF
-                       WHEN    2
-                       WHEN    6
-                           IF      TBL-HENREI-B-TEISYUTUSAKI (IDXX)
-                                           =   2
-                               MOVE    TBL-HENREI-B-REC (IDXX)
-                                               TO  WRK-HENREI-B-REC
-                               MOVE    1       TO  FLG-HENREI-B-CHK
-                           END-IF
-                   END-EVALUATE
+                                   MOVE    TBL-HENREI-B-REC (IDXX)
+                                                   TO  WRK-HENREI-B-REC
+                                   MOVE    1       TO  FLG-HENREI-B-CHK
+                               END-IF
+                           WHEN    2
+                           WHEN    6
+                               IF      TBL-HENREI-B-TEISYUTUSAKI (IDXX)
+                                               =   2
+                                   MOVE    TBL-HENREI-B-REC (IDXX)
+                                                   TO  WRK-HENREI-B-REC
+                                   MOVE    1       TO  FLG-HENREI-B-CHK
+                               END-IF
+                       END-EVALUATE
+                   END-IF
+               ELSE
+                   IF    ( TBL-HENREI-B-RECESYUBETU (IDXX)
+                                           =   SPA-RECE10-RECESYUBETU )
+                   AND   ( TBL-HENREI-B-HKNJANUM    (IDXX)
+                                           =   SPA-RECE10-HKNJANUM    )
+                   AND   ( TBL-HENREI-B-KIGO        (IDXX)
+                                           =   SPA-RECE10-KIGO        )
+                   AND   ( TBL-HENREI-B-NUM         (IDXX) 
+                                           =   SPA-RECE10-NUM         )
+                       EVALUATE    SPA-RECE10-TEISYUTUSAKI
+                           WHEN    1
+                               IF      TBL-HENREI-B-TEISYUTUSAKI (IDXX)
+                                               =   1
+                                   MOVE    TBL-HENREI-B-REC (IDXX)
+                                                   TO  WRK-HENREI-B-REC
+                                   MOVE    1       TO  FLG-HENREI-B-CHK
+                               END-IF
+                           WHEN    2
+                           WHEN    6
+                               IF      TBL-HENREI-B-TEISYUTUSAKI (IDXX)
+                                               =   2
+                                   MOVE    TBL-HENREI-B-REC (IDXX)
+                                                   TO  WRK-HENREI-B-REC
+                                   MOVE    1       TO  FLG-HENREI-B-CHK
+                               END-IF
+                       END-EVALUATE
+                   END-IF
                END-IF
       *
       *        既に返戻設定済か
