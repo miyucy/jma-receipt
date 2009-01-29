@@ -630,6 +630,23 @@
       *****************************************************************
        410111-HENREILST-SEL-CHK-SEC               SECTION.
       *
+      *    選択データのチェック
+           IF      SPA-RECE10-HKNNUM   =   SPACE
+               IF    ( TBL-HENREI-B-RECESYUBETU (IDX)
+                                       =   SPA-RECE10-RECESYUBETU )
+               AND   ( TBL-HENREI-B-FTNNUM      (IDX 1)
+                                       =   SPA-RECE10-FTNJANUM    )
+                   GO  TO  410111-HENREILST-SEL-CHK-EXT
+               END-IF
+           ELSE
+               IF    ( TBL-HENREI-B-RECESYUBETU (IDX)
+                                       =   SPA-RECE10-RECESYUBETU )
+               AND   ( TBL-HENREI-B-HKNJANUM    (IDX)
+                                       =   SPA-RECE10-HKNJANUM    )
+                   GO  TO  410111-HENREILST-SEL-CHK-EXT
+               END-IF
+           END-IF
+      *
            PERFORM VARYING IDZZ    FROM    1   BY  1
                    UNTIL   IDZZ    >       TBL-HENREI-B-MAX
              IF      IDZZ            =   IDX
@@ -670,73 +687,90 @@
                ELSE     
       *            選択した処理年月と同一の処理年月のデータがあるとき
                    IF      SPA-RECE10-HKNNUM
-                                           =   SPACE
-                       IF    ( TBL-HENREI-B-RECESYUBETU (IDZZ)
-                                           =   SPA-RECE10-RECESYUBETU )
-                       AND   ( TBL-HENREI-B-FTNNUM      (IDZZ 1)
-                                           =   SPA-RECE10-FTNJANUM    )
-                       AND   ( TBL-HENREI-B-JKYNUM      (IDZZ 1) 
-                                           =   SPA-RECE10-JKYSNUM     )
-                           MOVE    "0004"          TO  SPA-ERRCD
-                           GO  TO  410111-HENREILST-SEL-CHK-EXT
+                                       =   SPACE
+                       IF    ( TBL-HENREI-B-RECESYUBETU (IDX)
+                                       =   SPA-RECE10-RECESYUBETU )
+                           IF    ( TBL-HENREI-B-RECESYUBETU (IDZZ)
+                                           =   SPA-RECE10-RECESYUBETU  )
+                               IF    ( TBL-HENREI-B-FTNNUM      (IDZZ 1)
+                                               =   SPA-RECE10-FTNJANUM )
+                                   MOVE    "1004"          TO  SPA-HIDCD
+                                   GO  TO  410111-HENREILST-SEL-CHK-EXT
+      *************************ELSE
+      *****************************MOVE    "1002"      TO  SPA-HIDCD
+      *****************************GO  TO  410111-HENREILST-SEL-CHK-EXT
+                               END-IF
+                           END-IF
                        ELSE
                            IF    ( TBL-HENREI-B-RECESYUBETU (IDZZ)
                                            =   SPA-RECE10-RECESYUBETU  )
-                               MOVE    "1002"      TO  SPA-HIDCD
-                               GO  TO  410111-HENREILST-SEL-CHK-EXT
-                           END-IF
-                           IF    ( TBL-HENREI-B-FTNNUM      (IDZZ 1)
-                                           =   SPA-RECE10-FTNJANUM )
-                           AND   ( TBL-HENREI-B-JKYNUM      (IDZZ 1) 
-                                           =   SPA-RECE10-JKYSNUM  )
-                               MOVE    "1004"          TO  SPA-HIDCD
+                               MOVE    "1002"          TO  SPA-HIDCD
                                GO  TO  410111-HENREILST-SEL-CHK-EXT
                            END-IF
                        END-IF
                    ELSE
-                       IF    ( TBL-HENREI-B-RECESYUBETU (IDZZ)
-                                           =   SPA-RECE10-RECESYUBETU )
-                       AND   ( TBL-HENREI-B-HKNJANUM    (IDZZ)
-                                           =   SPA-RECE10-HKNJANUM    )
-                       AND   ( TBL-HENREI-B-KIGO        (IDZZ)
-                                           =   SPA-RECE10-KIGO        )
-                       AND   ( TBL-HENREI-B-NUM         (IDZZ) 
-                                           =   SPA-RECE10-NUM         )
-                           MOVE    "0004"          TO  SPA-ERRCD
-                           GO  TO  410111-HENREILST-SEL-CHK-EXT
-                       ELSE
-                           IF      TBL-HENREI-B-HKNJANUM    (IDZZ)
+                       IF    ( TBL-HENREI-B-RECESYUBETU (IDX)
+                                       =   SPA-RECE10-RECESYUBETU )
+                           IF    ( TBL-HENREI-B-RECESYUBETU (IDZZ)
+                                           =   SPA-RECE10-RECESYUBETU  )
+                               IF      TBL-HENREI-B-HKNJANUM    (IDZZ)
                                                =   SPA-RECE10-HKNJANUM
-                               MOVE    "1001"      TO  SPA-HIDCD
-                               GO  TO  410111-HENREILST-SEL-CHK-EXT
+                                   MOVE    "1001"      TO  SPA-HIDCD
+                                   GO  TO  410111-HENREILST-SEL-CHK-EXT
+      *************************ELSE
+      *****************************MOVE    "1002"      TO  SPA-HIDCD
+      *****************************GO  TO  410111-HENREILST-SEL-CHK-EXT
+                               END-IF
                            END-IF
-                           IF      TBL-HENREI-B-RECESYUBETU (IDZZ)
+                       ELSE
+                           IF  ( ( SPA-RECE10-TEISYUTUSAKI
+                                                   =   2   ) AND
+                                 ( TBL-HENREI-B-RECESYUBETU
+                                                       (IDX)(2:1)
+                                                   =   "3" ) )
+                           OR  ( ( SPA-RECE10-TEISYUTUSAKI
+                                                   =   6   ) AND
+                                 ( TBL-HENREI-B-RECESYUBETU
+                                                       (IDZZ)(2:1)
+                                               NOT =   "3" ) )
+                               IF   (( SPA-RECE10-TEISYUTUSAKI
+                                                       =   2   ) AND
+                                     ( TBL-HENREI-B-RECESYUBETU
+                                                           (IDZZ)(2:1)
+                                                   NOT =   "3" ) )
+                               OR  ( ( SPA-RECE10-TEISYUTUSAKI
+                                                       =   6   ) AND
+                                     ( TBL-HENREI-B-RECESYUBETU
+                                                           (IDZZ)(2:1)
+                                                       =   "3" ) )
+                                   IF      TBL-HENREI-B-RECESYUBETU
+                                                               (IDZZ)
                                            =   SPA-RECE10-RECESYUBETU
-                               MOVE    "1002"      TO  SPA-HIDCD
-                               GO  TO  410111-HENREILST-SEL-CHK-EXT
-                           END-IF
-                           IF    ( TBL-HENREI-B-KIGO        (IDZZ)
-                                               =   SPA-RECE10-KIGO )
-                           AND   ( TBL-HENREI-B-NUM         (IDZZ) 
-                                               =   SPA-RECE10-NUM  )
-                               MOVE    "1005"          TO  SPA-HIDCD
-                               GO  TO  410111-HENREILST-SEL-CHK-EXT
-                           END-IF
-                           IF    ( SPA-RECE10-TEISYUTUSAKI
-                                                   =   2   )
-                           AND   ( TBL-HENREI-B-RECESYUBETU
-                                                       (IDZZ)(2:1)
-                                               NOT =   "3" )
-                               MOVE    "1006"      TO  SPA-HIDCD
-                               GO  TO  410111-HENREILST-SEL-CHK-EXT
-                           END-IF
-                           IF    ( SPA-RECE10-TEISYUTUSAKI
-                                                   =   6   )
-                           AND   ( TBL-HENREI-B-RECESYUBETU
-                                                       (IDZZ)(2:1)
-                                                   =   "3" )
-                               MOVE    "1006"      TO  SPA-HIDCD
-                               GO  TO  410111-HENREILST-SEL-CHK-EXT
+                                       IF      TBL-HENREI-B-HKNJANUM
+                                                               (IDZZ)
+                                               =   SPA-RECE10-HKNJANUM
+                                           MOVE    "1001"  TO  SPA-HIDCD
+                                           GO  TO
+                                            410111-HENREILST-SEL-CHK-EXT
+                                       ELSE
+                                           MOVE    "1002"  TO  SPA-HIDCD
+                                       END-IF
+                                   ELSE
+                                       MOVE    "1006"      TO  SPA-HIDCD
+                                   END-IF
+                               END-IF
+                           ELSE
+                               IF      TBL-HENREI-B-RECESYUBETU (IDZZ)
+                                           =   SPA-RECE10-RECESYUBETU
+                                   IF      TBL-HENREI-B-HKNJANUM (IDZZ)
+                                               =   SPA-RECE10-HKNJANUM
+                                       MOVE    "1001"  TO  SPA-HIDCD
+                                       GO  TO
+                                            410111-HENREILST-SEL-CHK-EXT
+                                   ELSE
+                                       MOVE    "1002"  TO  SPA-HIDCD
+                                   END-IF
+                               END-IF
                            END-IF
                        END-IF
                    END-IF
@@ -1063,14 +1097,14 @@
                    "既に返戻分再請求が行なわれていますが選択しますか。"
                                         TO  HID1-ID1MSG
                WHEN    "1004"
-                   STRING  "負担者番号、受給者番号が一致する別の"
+                   STRING  "負担者番号が一致する別の"
                                         DELIMITED  BY  SIZE 
                            "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
                                         INTO  HID1-ID1MSG
                    END-STRING
                WHEN    "1005"
-                   STRING  "記号、番号が一致する別の"
+                   STRING  "記号が一致する別の"
                                         DELIMITED  BY  SIZE 
                            "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 
