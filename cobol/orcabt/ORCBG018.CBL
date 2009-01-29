@@ -1122,16 +1122,6 @@
                INTO    HCMSL55-MOJI (1)
            END-STRING
       *
-           IF    ( WRK-MSTMSG  =   "1" )
-               STRING
-                   "※注意：薬剤と病名の区分のみを対象としています。"
-                                                   DELIMITED   BY  SIZE
-                   "他の区分については対応していません。"
-                                                   DELIMITED   BY  SIZE
-               INTO    HCMSL55-MOJI (2)
-               END-STRING
-           END-IF
-      *
            IF    ( IN01-PROCKBN    =   ZERO )
                STRING
                    "経過措置薬剤より"              DELIMITED   BY  SIZE
