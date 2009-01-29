@@ -45,8 +45,6 @@
       *    スパ領域
            COPY    "COMMON-SPA".
       *
-           COPY    "ENUM-VALUE".
-      *
       *    点数マスタ設定用共通パラメタ
            COPY    "Z01COMMON-SPA".
       *
@@ -95,8 +93,6 @@
                        09  SPA-GMN-YKJCHG      PIC X(01).
                        09  SPA-GMN-YKJCHGFIL   PIC X(01).
                        09  SPA-GMN-YKJCHGMEI   PIC X(18).
-                   07  SPA-NAI-CHKOLD-ARI      PIC 9(01).
-                   07  SPA-NAI-YKJOLD-ARI      PIC 9(01).
       *
                05  SPA-GMN-INPUTCD-G.
                    07  SPA-GMN-INPUTCD-OCC     OCCURS  10.
@@ -147,7 +143,6 @@
            03  FLG-TCHK005                     PIC 9(01).
            03  FLG-TYAKUJYO                    PIC 9(01).
            03  FLG-LOOPEND                     PIC 9(01).
-           03  FLG-CHKORUPD                    PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -457,35 +452,32 @@
       *
            INITIALIZE                          SPA-GMN-COMBO-AREA
       *
-           MOVE    ZERO    TO  FLG-CHKORUPD
-                               SPA-NAI-CHKOLD-ARI
-                               SPA-NAI-YKJOLD-ARI
-      *
-           PERFORM 4122-CHKMST-KOUSIN-SYORI-SEC
-           PERFORM 4123-YKJMST-KOUSIN-SYORI-SEC
-      *
-           IF    ( SPA-GMN-OLD-SRYCD (1:1) =   "6" )
-            AND  ( SPA-NAI-CHKOLD-ARI      =   1   )
+           IF    ( SPA-GMN-OLD-SRYCD (1:1) =   "6" OR SPACE )
                MOVE    "0"                     TO  SPA-GMN-CHKCHGL (1)
                MOVE    "複写しない"            TO  SPA-GMN-CHKCHGMEIL(1)
                MOVE    "1"                     TO  SPA-GMN-CHKCHGL (2)
                MOVE    "複写する"              TO  SPA-GMN-CHKCHGMEIL(2)
                MOVE    2                       TO  SPA-GMN-CHKCHG-MAX
-               MOVE    SPA-GMN-CHKCHGLST(2)    TO  SPA-GMN-CHKCHG-G
-           ELSE
-               MOVE    SPACE                   TO  SPA-GMN-CHKCHG-G
-           END-IF
       *
-           IF    ( SPA-GMN-OLD-SRYCD (1:1) =   "6" )
-            AND  ( SPA-NAI-YKJOLD-ARI      =   1   )
                MOVE    "0"                     TO  SPA-GMN-YKJCHGL (1)
                MOVE    "複写しない"            TO  SPA-GMN-YKJCHGMEIL(1)
                MOVE    "1"                     TO  SPA-GMN-YKJCHGL (2)
                MOVE    "複写する"              TO  SPA-GMN-YKJCHGMEIL(2)
                MOVE    2                       TO  SPA-GMN-YKJCHG-MAX
+      *
+               MOVE    SPA-GMN-CHKCHGLST(2)    TO  SPA-GMN-CHKCHG-G
                MOVE    SPA-GMN-YKJCHGLST(2)    TO  SPA-GMN-YKJCHG-G
            ELSE
-               MOVE    SPACE                   TO  SPA-GMN-YKJCHG-G
+               MOVE    "0"                     TO  SPA-GMN-CHKCHGL (1)
+               MOVE    "複写しない"            TO  SPA-GMN-CHKCHGMEIL(1)
+               MOVE    1                       TO  SPA-GMN-CHKCHG-MAX
+      *
+               MOVE    "0"                     TO  SPA-GMN-YKJCHGL (1)
+               MOVE    "複写しない"            TO  SPA-GMN-YKJCHGMEIL(1)
+               MOVE    1                       TO  SPA-GMN-YKJCHG-MAX
+      *
+               MOVE    SPA-GMN-CHKCHGLST(1)    TO  SPA-GMN-CHKCHG-G
+               MOVE    SPA-GMN-YKJCHGLST(1)    TO  SPA-GMN-YKJCHG-G
            END-IF
       *
            .
@@ -1244,24 +1236,21 @@
       *****************************************************************
        4102-CHKCHG-CHK-SEC          SECTION.
       *
-           IF    ( SPA-GMN-CHKCHG-MAX      >   ZERO )
-      *
-               MOVE    ZERO        TO  IDX-CMB
-               PERFORM VARYING IDZ     FROM    1   BY  1
-                       UNTIL ( IDZ     >   SPA-GMN-CHKCHG-MAX )
-                        OR   ( IDX-CMB >   ZERO )
-                   IF    ( SPA-GMN-CHKCHGL (IDZ)
+           MOVE    ZERO        TO  IDX-CMB
+           PERFORM VARYING IDZ     FROM    1   BY  1
+                   UNTIL ( IDZ     >   SPA-GMN-CHKCHG-MAX )
+                    OR   ( IDX-CMB >   ZERO )
+               IF    ( SPA-GMN-CHKCHGL (IDZ)
                                    =   SPA-GMN-CHKCHG )
-                       MOVE    IDZ     TO  IDX-CMB
-                   END-IF
-               END-PERFORM
-      *
-               IF    ( IDX-CMB     >   ZERO )
-                   MOVE    SPA-GMN-CHKCHGLST (IDX-CMB)
-                                       TO  SPA-GMN-CHKCHG-G
-               ELSE
-                   MOVE    "0015"      TO  SPA-ERRCD
+                   MOVE    IDZ     TO  IDX-CMB
                END-IF
+           END-PERFORM
+      *
+           IF    ( IDX-CMB     >   ZERO )
+               MOVE    SPA-GMN-CHKCHGLST (IDX-CMB)
+                                   TO  SPA-GMN-CHKCHG-G
+           ELSE
+               MOVE    "0015"      TO  SPA-ERRCD
            END-IF
       *
            .
@@ -1272,24 +1261,21 @@
       *****************************************************************
        4102-YKJCHG-CHK-SEC          SECTION.
       *
-           IF    ( SPA-GMN-YKJCHG-MAX      >   ZERO )
-      *
-               MOVE    ZERO        TO  IDX-CMB
-               PERFORM VARYING IDZ     FROM    1   BY  1
-                       UNTIL ( IDZ     >   SPA-GMN-YKJCHG-MAX )
-                        OR   ( IDX-CMB >   ZERO )
-                   IF    ( SPA-GMN-YKJCHGL (IDZ)
-                                       =   SPA-GMN-YKJCHG )
-                       MOVE    IDZ     TO  IDX-CMB
-                   END-IF
-               END-PERFORM
-      *
-               IF    ( IDX-CMB     >   ZERO )
-                   MOVE    SPA-GMN-YKJCHGLST (IDX-CMB)
-                                   TO  SPA-GMN-YKJCHG-G
-               ELSE
-                   MOVE    "0016"      TO  SPA-ERRCD
+           MOVE    ZERO        TO  IDX-CMB
+           PERFORM VARYING IDZ     FROM    1   BY  1
+                   UNTIL ( IDZ     >   SPA-GMN-YKJCHG-MAX )
+                    OR   ( IDX-CMB >   ZERO )
+               IF    ( SPA-GMN-YKJCHGL (IDZ)
+                                   =   SPA-GMN-YKJCHG )
+                   MOVE    IDZ     TO  IDX-CMB
                END-IF
+           END-PERFORM
+      *
+           IF    ( IDX-CMB     >   ZERO )
+               MOVE    SPA-GMN-YKJCHGLST (IDX-CMB)
+                                   TO  SPA-GMN-YKJCHG-G
+           ELSE
+               MOVE    "0016"      TO  SPA-ERRCD
            END-IF
       *
            .
@@ -1529,17 +1515,13 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-GMN-CHKCHG          =   "1" )
-                AND  ( SPA-GMN-OLD-SRYCD (1:1) =   "6" )
-                   MOVE    1       TO  FLG-CHKORUPD
+               IF    ( SPA-GMN-CHKCHG      =   "1" )
                    PERFORM 4122-CHKMST-KOUSIN-SYORI-SEC
                END-IF
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-GMN-YKJCHG          =   "1" )
-                AND  ( SPA-GMN-OLD-SRYCD (1:1) =   "6" )
-                   MOVE    1       TO  FLG-CHKORUPD
+               IF    ( SPA-GMN-YKJCHG      =   "1" )
                    PERFORM 4123-YKJMST-KOUSIN-SYORI-SEC
                END-IF
            END-IF
@@ -1698,10 +1680,6 @@
                PERFORM 41227-CHK005-TEKCD-KOUSIN-SEC
            END-IF
       *
-           IF    ( FLG-CHKORUPD    =   ZERO )
-               MOVE    SPACE       TO  SPA-ERRCD
-           END-IF
-      *
            .
        4122-CHKMST-KOUSIN-SYORI-EXT.
            EXIT.
@@ -1715,31 +1693,26 @@
            PERFORM UNTIL ( FLG-CHKMST  NOT =   ZERO )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
-               IF    ( FLG-CHKORUPD        =   ZERO )
-                   MOVE    1       TO  SPA-NAI-CHKOLD-ARI
-                   MOVE    "SKIP"  TO  SPA-ERRCD
+               PERFORM 900-CHKMST-KEY6-SEL-SEC
+               IF    ( FLG-TCHKMST     =   ZERO )
+                   CONTINUE
                ELSE
       *
-                   PERFORM 900-CHKMST-KEY6-SEL-SEC
-                   IF    ( FLG-TCHKMST     =   ZERO )
-                       CONTINUE
-                   ELSE
-                       MOVE    SMCNDATE-YMD    TO  CHK-CREYMD
-                                                   CHK-UPYMD
-                       MOVE    SMCNDATE-HMS    TO  CHK-UPHMS
-                       MOVE    CHK-SRYCD       TO  CHK-UPSRYCD
-                       MOVE    CHK-YUKOSTYMD   TO  CHK-UPYUKOSTYMD
-                       MOVE    CHK-YUKOEDYMD   TO  CHK-UPYUKOEDYMD
-                       MOVE    SPA-GMN-SRYCD   TO  CHK-SRYCD
-                       MOVE    "00000000"      TO  CHK-YUKOSTYMD
-                       MOVE    "99999999"      TO  CHK-YUKOEDYMD
-                       MOVE    CHK-REC         TO  MCPDATA-REC
-                       MOVE    "tbl_chk"       TO  MCP-TABLE
-                       MOVE    "ins1"          TO  MCP-PATHNAME
-                       PERFORM 910-DBINSERT-SEC
-                       IF    ( MCP-RC          NOT =   ZERO )
-                           MOVE    "0200"      TO  SPA-ERRCD
-                       END-IF
+                   MOVE    SMCNDATE-YMD    TO  CHK-CREYMD
+                                               CHK-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  CHK-UPHMS
+                   MOVE    CHK-SRYCD       TO  CHK-UPSRYCD
+                   MOVE    CHK-YUKOSTYMD   TO  CHK-UPYUKOSTYMD
+                   MOVE    CHK-YUKOEDYMD   TO  CHK-UPYUKOEDYMD
+                   MOVE    SPA-GMN-SRYCD   TO  CHK-SRYCD
+                   MOVE    "00000000"      TO  CHK-YUKOSTYMD
+                   MOVE    "99999999"      TO  CHK-YUKOEDYMD
+                   MOVE    CHK-REC         TO  MCPDATA-REC
+                   MOVE    "tbl_chk"       TO  MCP-TABLE
+                   MOVE    "ins1"          TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    "0200"      TO  SPA-ERRCD
                    END-IF
                END-IF
       *
@@ -1769,28 +1742,23 @@
                PERFORM 901-TENSU-KEY-SEL-SEC
                IF    ( FLG-TENSU       =   ZERO )
       *
-                   IF    ( FLG-CHKORUPD        =   ZERO )
-                       MOVE    1       TO  SPA-NAI-CHKOLD-ARI
-                       MOVE    "SKIP"  TO  SPA-ERRCD
+                   PERFORM 900-CHKMST-KEY-SEL-SEC
+                   IF    ( FLG-TCHKMST     =   ZERO )
+                       CONTINUE
                    ELSE
-                       PERFORM 900-CHKMST-KEY-SEL-SEC
-                       IF    ( FLG-TCHKMST     =   ZERO )
-                           CONTINUE
-                       ELSE
-                           PERFORM 900-CHKMST-KEY20-SEL-SEC
-                           MOVE    SMCNDATE-YMD    TO  CHK-CREYMD
-                                                       CHK-UPYMD
-                           MOVE    SMCNDATE-HMS    TO  CHK-UPHMS
-                           MOVE    SPA-GMN-SRYCD   TO  CHK-CD
-                           COMPUTE CHK-RENNUM      =   TCHK-RENNUM +   1
-                           MOVE    CHK-REC         TO  MCPDATA-REC
-                           MOVE    "tbl_chk"       TO  MCP-TABLE
-                           MOVE    "key"           TO  MCP-PATHNAME
-                           PERFORM 910-DBINSERT-SEC
-                           IF    ( MCP-RC          NOT =   ZERO )
-                               MOVE    "0201"      TO  SPA-ERRCD
-                           END-IF
-                      END-IF
+                       PERFORM 900-CHKMST-KEY20-SEL-SEC
+                       MOVE    SMCNDATE-YMD    TO  CHK-CREYMD
+                                                   CHK-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  CHK-UPHMS
+                       MOVE    SPA-GMN-SRYCD   TO  CHK-CD
+                       COMPUTE CHK-RENNUM      =   TCHK-RENNUM +   1
+                       MOVE    CHK-REC         TO  MCPDATA-REC
+                       MOVE    "tbl_chk"       TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBINSERT-SEC
+                       IF    ( MCP-RC          NOT =   ZERO )
+                           MOVE    "0201"      TO  SPA-ERRCD
+                       END-IF
                    END-IF
                END-IF
       *
@@ -1815,31 +1783,27 @@
            PERFORM UNTIL ( FLG-CHKSND  NOT =   ZERO )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
-               IF    ( FLG-CHKORUPD        =   ZERO )
-                   MOVE    1       TO  SPA-NAI-CHKOLD-ARI
-                   MOVE    "SKIP"  TO  SPA-ERRCD
+               PERFORM 900-CHKSND-KEY6-SEL-SEC
+               IF    ( FLG-TCHKSND     =   ZERO )
+                   CONTINUE
                ELSE
-                   PERFORM 900-CHKSND-KEY6-SEL-SEC
-                   IF    ( FLG-TCHKSND     =   ZERO )
-                       CONTINUE
-                   ELSE
-                       MOVE    SMCNDATE-YMD     TO CHKSND-CREYMD
+      *
+                   MOVE    SMCNDATE-YMD        TO  CHKSND-CREYMD
                                                    CHKSND-UPYMD
-                       MOVE    SMCNDATE-HMS     TO CHKSND-UPHMS
-                       MOVE    CHKSND-CHKKBN    TO CHKSND-UPCHKSNDKBN
-                       MOVE    CHKSND-SRYCD     TO CHKSND-UPSRYCD
-                       MOVE    CHKSND-YUKOSTYMD TO CHKSND-UPYUKOSTYMD
-                       MOVE    CHKSND-YUKOEDYMD TO CHKSND-UPYUKOEDYMD
-                       MOVE    SPA-GMN-SRYCD    TO CHKSND-SRYCD
-                       MOVE    "00000000"       TO CHKSND-YUKOSTYMD
-                       MOVE    "99999999"       TO CHKSND-YUKOEDYMD
-                       MOVE    CHKSND-REC       TO MCPDATA-REC
-                       MOVE    "tbl_chksnd"     TO MCP-TABLE
-                       MOVE    "ins1"           TO MCP-PATHNAME
-                       PERFORM 910-DBINSERT-SEC
-                       IF    ( MCP-RC          NOT =   ZERO )
-                           MOVE    "0202"          TO  SPA-ERRCD
-                       END-IF
+                   MOVE    SMCNDATE-HMS        TO  CHKSND-UPHMS
+                   MOVE    CHKSND-CHKKBN       TO  CHKSND-UPCHKSNDKBN
+                   MOVE    CHKSND-SRYCD        TO  CHKSND-UPSRYCD
+                   MOVE    CHKSND-YUKOSTYMD    TO  CHKSND-UPYUKOSTYMD
+                   MOVE    CHKSND-YUKOEDYMD    TO  CHKSND-UPYUKOEDYMD
+                   MOVE    SPA-GMN-SRYCD       TO  CHKSND-SRYCD
+                   MOVE    "00000000"          TO  CHKSND-YUKOSTYMD
+                   MOVE    "99999999"          TO  CHKSND-YUKOEDYMD
+                   MOVE    CHKSND-REC          TO  MCPDATA-REC
+                   MOVE    "tbl_chksnd"        TO  MCP-TABLE
+                   MOVE    "ins1"              TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    "0202"          TO  SPA-ERRCD
                    END-IF
                END-IF
       *
@@ -1869,29 +1833,22 @@
                PERFORM 901-TENSU-KEY-SEL-SEC
                IF    ( FLG-TENSU       =   ZERO )
       *
-                   IF    ( FLG-CHKORUPD        =   ZERO )
-                       MOVE    1       TO  SPA-NAI-CHKOLD-ARI
-                       MOVE    "SKIP"  TO  SPA-ERRCD
+                   PERFORM 900-CHKSND-KEY22-SEL-SEC
+                   IF    ( FLG-TCHKSND     =   ZERO )
+                       CONTINUE
                    ELSE
-      *
-                       PERFORM 900-CHKSND-KEY22-SEL-SEC
-                       IF    ( FLG-TCHKSND     =   ZERO )
-                           CONTINUE
-                       ELSE
-                           PERFORM 900-CHKSND-KEY21-SEL-SEC
-                           MOVE    SMCNDATE-YMD    TO  CHKSND-CREYMD
-                                                       CHKSND-UPYMD
-                           MOVE    SMCNDATE-HMS    TO  CHKSND-UPHMS
-                           MOVE    SPA-GMN-SRYCD   TO  CHKSND-CD
-                           COMPUTE CHKSND-RENNUM
-                               =   TCHKSND-RENNUM +   1
-                           MOVE    CHKSND-REC      TO  MCPDATA-REC
-                           MOVE    "tbl_chksnd"    TO  MCP-TABLE
-                           MOVE    "key"           TO  MCP-PATHNAME
-                           PERFORM 910-DBINSERT-SEC
-                           IF    ( MCP-RC          NOT =   ZERO )
-                               MOVE    "0203"      TO  SPA-ERRCD
-                           END-IF
+                       PERFORM 900-CHKSND-KEY21-SEL-SEC
+                       MOVE    SMCNDATE-YMD    TO  CHKSND-CREYMD
+                                                   CHKSND-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  CHKSND-UPHMS
+                       MOVE    SPA-GMN-SRYCD   TO  CHKSND-CD
+                       COMPUTE CHKSND-RENNUM   =   TCHKSND-RENNUM +   1
+                       MOVE    CHKSND-REC      TO  MCPDATA-REC
+                       MOVE    "tbl_chksnd"    TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBINSERT-SEC
+                       IF    ( MCP-RC          NOT =   ZERO )
+                           MOVE    "0203"      TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF
@@ -1917,33 +1874,27 @@
            PERFORM UNTIL ( FLG-CHKTRD  NOT =   ZERO )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
-               IF    ( FLG-CHKORUPD        =   ZERO )
-                   MOVE    1       TO  SPA-NAI-CHKOLD-ARI
-                   MOVE    "SKIP"  TO  SPA-ERRCD
+               PERFORM 900-CHKTRD-KEY6-SEL-SEC
+               IF    ( FLG-TCHKTRD     =   ZERO )
+                   CONTINUE
                ELSE
       *
-                   PERFORM 900-CHKTRD-KEY6-SEL-SEC
-                   IF    ( FLG-TCHKTRD     =   ZERO )
-                       CONTINUE
-                   ELSE
-      *
-                       MOVE    SMCNDATE-YMD       TO  CHKTRD-CREYMD
-                                                      CHKTRD-UPYMD
-                       MOVE    SMCNDATE-HMS       TO  CHKTRD-UPHMS
-                       MOVE    CHKTRD-CHKKBN      TO  CHKTRD-UPCHKTRDKBN
-                       MOVE    CHKTRD-SRYCD       TO  CHKTRD-UPSRYCD
-                       MOVE    CHKTRD-YUKOSTYMD   TO  CHKTRD-UPYUKOSTYMD
-                       MOVE    CHKTRD-YUKOEDYMD   TO  CHKTRD-UPYUKOEDYMD
-                       MOVE    SPA-GMN-SRYCD      TO  CHKTRD-SRYCD
-                       MOVE    "00000000"         TO  CHKTRD-YUKOSTYMD
-                       MOVE    "99999999"         TO  CHKTRD-YUKOEDYMD
-                       MOVE    CHKTRD-REC         TO  MCPDATA-REC
-                       MOVE    "tbl_chktrd"       TO  MCP-TABLE
-                       MOVE    "ins1"             TO  MCP-PATHNAME
-                       PERFORM 910-DBINSERT-SEC
-                       IF    ( MCP-RC          NOT =   ZERO )
-                           MOVE    "0204"          TO  SPA-ERRCD
-                       END-IF
+                   MOVE    SMCNDATE-YMD        TO  CHKTRD-CREYMD
+                                                   CHKTRD-UPYMD
+                   MOVE    SMCNDATE-HMS        TO  CHKTRD-UPHMS
+                   MOVE    CHKTRD-CHKKBN       TO  CHKTRD-UPCHKTRDKBN
+                   MOVE    CHKTRD-SRYCD        TO  CHKTRD-UPSRYCD
+                   MOVE    CHKTRD-YUKOSTYMD    TO  CHKTRD-UPYUKOSTYMD
+                   MOVE    CHKTRD-YUKOEDYMD    TO  CHKTRD-UPYUKOEDYMD
+                   MOVE    SPA-GMN-SRYCD       TO  CHKTRD-SRYCD
+                   MOVE    "00000000"          TO  CHKTRD-YUKOSTYMD
+                   MOVE    "99999999"          TO  CHKTRD-YUKOEDYMD
+                   MOVE    CHKTRD-REC          TO  MCPDATA-REC
+                   MOVE    "tbl_chktrd"        TO  MCP-TABLE
+                   MOVE    "ins1"              TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    "0204"          TO  SPA-ERRCD
                    END-IF
                END-IF
       *
@@ -1973,29 +1924,22 @@
                PERFORM 901-TENSU-KEY-SEL-SEC
                IF    ( FLG-TENSU       =   ZERO )
       *
-                   IF    ( FLG-CHKORUPD        =   ZERO )
-                       MOVE    1       TO  SPA-NAI-CHKOLD-ARI
-                       MOVE    "SKIP"  TO  SPA-ERRCD
+                   PERFORM 900-CHKTRD-KEY22-SEL-SEC
+                   IF    ( FLG-TCHKTRD     =   ZERO )
+                       CONTINUE
                    ELSE
-      *
-                       PERFORM 900-CHKTRD-KEY22-SEL-SEC
-                       IF    ( FLG-TCHKTRD     =   ZERO )
-                           CONTINUE
-                       ELSE
-                           PERFORM 900-CHKTRD-KEY21-SEL-SEC
-                           MOVE    SMCNDATE-YMD    TO  CHKTRD-CREYMD
-                                                       CHKTRD-UPYMD
-                           MOVE    SMCNDATE-HMS    TO  CHKTRD-UPHMS
-                           MOVE    SPA-GMN-SRYCD   TO  CHKTRD-CD
-                           COMPUTE CHKTRD-RENNUM
-                               =   TCHKTRD-RENNUM  +   1
-                           MOVE    CHKTRD-REC      TO  MCPDATA-REC
-                           MOVE    "tbl_chktrd"    TO  MCP-TABLE
-                           MOVE    "key"           TO  MCP-PATHNAME
-                           PERFORM 910-DBINSERT-SEC
-                           IF    ( MCP-RC          NOT =   ZERO )
-                               MOVE    "0205"      TO  SPA-ERRCD
-                           END-IF
+                       PERFORM 900-CHKTRD-KEY21-SEL-SEC
+                       MOVE    SMCNDATE-YMD    TO  CHKTRD-CREYMD
+                                                   CHKTRD-UPYMD
+                       MOVE    SMCNDATE-HMS    TO  CHKTRD-UPHMS
+                       MOVE    SPA-GMN-SRYCD   TO  CHKTRD-CD
+                       COMPUTE CHKTRD-RENNUM   =   TCHKTRD-RENNUM +   1
+                       MOVE    CHKTRD-REC      TO  MCPDATA-REC
+                       MOVE    "tbl_chktrd"    TO  MCP-TABLE
+                       MOVE    "key"           TO  MCP-PATHNAME
+                       PERFORM 910-DBINSERT-SEC
+                       IF    ( MCP-RC          NOT =   ZERO )
+                           MOVE    "0205"      TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF
@@ -2021,28 +1965,22 @@
            PERFORM UNTIL ( FLG-CHK005  NOT =   ZERO )
                     OR   ( SPA-ERRCD   NOT =   SPACE )
       *
-               IF    ( FLG-CHKORUPD        =   ZERO )
-                   MOVE    1       TO  SPA-NAI-CHKOLD-ARI
-                   MOVE    "SKIP"  TO  SPA-ERRCD
+               PERFORM 900-CHK005-KEY9-SEL-SEC
+               IF    ( FLG-TCHK005     =   ZERO )
+                   CONTINUE
                ELSE
-      *
-                   PERFORM 900-CHK005-KEY9-SEL-SEC
-                   IF    ( FLG-TCHK005     =   ZERO )
-                       CONTINUE
-                   ELSE
-                       PERFORM 900-CHK005-KEY10-SEL-SEC
-                       MOVE    SMCNDATE-YMD    TO  CHK005-CREYMD
-                                                   CHK005-UPYMD
-                       MOVE    SMCNDATE-HMS    TO  CHK005-UPHMS
-                       MOVE    SPA-GMN-SRYCD   TO  CHK005-SRYCD
-                       COMPUTE CHK005-RENNUM   =   TCHK005-RENNUM +   1
-                       MOVE    CHK005-REC      TO  MCPDATA-REC
-                       MOVE    "tbl_chk005"    TO  MCP-TABLE
-                       MOVE    "key"           TO  MCP-PATHNAME
-                       PERFORM 910-DBINSERT-SEC
-                       IF    ( MCP-RC          NOT =   ZERO )
-                           MOVE    "0206"      TO  SPA-ERRCD
-                       END-IF
+                   PERFORM 900-CHK005-KEY10-SEL-SEC
+                   MOVE    SMCNDATE-YMD    TO  CHK005-CREYMD
+                                               CHK005-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  CHK005-UPHMS
+                   MOVE    SPA-GMN-SRYCD   TO  CHK005-SRYCD
+                   COMPUTE CHK005-RENNUM   =   TCHK005-RENNUM +   1
+                   MOVE    CHK005-REC      TO  MCPDATA-REC
+                   MOVE    "tbl_chk005"    TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    "0206"      TO  SPA-ERRCD
                    END-IF
                END-IF
       *
@@ -2063,29 +2001,24 @@
        4123-YKJMST-KOUSIN-SYORI-SEC    SECTION.
       *
            PERFORM 900-YAKUJYO-KEY-SEL-SEC
-           DISPLAY "FLG-YAKUJYO" FLG-YAKUJYO " " SPA-GMN-OLD-SRYCD
            IF    ( FLG-YAKUJYO     =   ZERO )
-               IF    ( FLG-CHKORUPD    =   ZERO )
-                   MOVE    1       TO  SPA-NAI-YKJOLD-ARI
+               PERFORM 901-YAKUJYO-KEY-SEL-SEC
+               IF    ( FLG-TYAKUJYO    =   ZERO )
+                   CONTINUE
                ELSE
-                   PERFORM 901-YAKUJYO-KEY-SEL-SEC
-                   IF    ( FLG-TYAKUJYO    =   ZERO )
-                       CONTINUE
-                   ELSE
-                       MOVE    SPA-GMN-SRYCD   TO  YAKUJYO-SRYCD
-                       MOVE    SPACE           TO  YAKUJYO-NAME
-                                                   YAKUJYO-TERMID
-                                                   YAKUJYO-OPID
-                       MOVE    SMCNDATE-YMD    TO  YAKUJYO-CREYMD
-                                                   YAKUJYO-UPYMD
-                       MOVE    SMCNDATE-HMS    TO  YAKUJYO-UPHMS
-                       MOVE    YAKUJYO-REC     TO  MCPDATA-REC
-                       MOVE    "tbl_yakujyo"   TO  MCP-TABLE
-                       MOVE    "key"           TO  MCP-PATHNAME
-                       PERFORM 910-DBINSERT-SEC
-                       IF    ( MCP-RC          NOT =   ZERO )
-                           MOVE    "0300"      TO  SPA-ERRCD
-                       END-IF
+                   MOVE    SPA-GMN-SRYCD   TO  YAKUJYO-SRYCD
+                   MOVE    SPACE           TO  YAKUJYO-NAME
+                                               YAKUJYO-TERMID
+                                               YAKUJYO-OPID
+                   MOVE    SMCNDATE-YMD    TO  YAKUJYO-CREYMD
+                                               YAKUJYO-UPYMD
+                   MOVE    SMCNDATE-HMS    TO  YAKUJYO-UPHMS
+                   MOVE    YAKUJYO-REC     TO  MCPDATA-REC
+                   MOVE    "tbl_yakujyo"   TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF    ( MCP-RC          NOT =   ZERO )
+                       MOVE    "0300"      TO  SPA-ERRCD
                    END-IF
                END-IF
            END-IF
@@ -2245,21 +2178,6 @@
                MOVE    SPACE               TO  Z07-NEXT-MSG-STYLE
            END-IF
       *
-           MOVE    WIDGET-NORMAL           TO  Z07-CHKCHG-STATE
-                                               Z07-CHKCHG-ITEM-STATE
-                                               Z07-YKJCHG-STATE
-                                               Z07-YKJCHG-ITEM-STATE
-      *
-           IF    ( SPA-GMN-CHKCHG-MAX  =   ZERO )
-               MOVE    WIDGET-INSENSITIVE  TO  Z07-CHKCHG-STATE
-                                               Z07-CHKCHG-ITEM-STATE
-           END-IF
-      *
-           IF    ( SPA-GMN-YKJCHG-MAX  =   ZERO )
-               MOVE    WIDGET-INSENSITIVE  TO  Z07-YKJCHG-STATE
-                                               Z07-YKJCHG-ITEM-STATE
-           END-IF
-      *
       *    カーソルセット
            PERFORM 5001-MAPCUR-SEC
            .
@@ -2274,7 +2192,6 @@
       *
            IF      SPA-GMN-CUR         =   ZERO
                PERFORM 50011-CUR-SET-SEC
-               PERFORM 50012-CUR-SKIP-SEC
            END-IF
       *
            EVALUATE    SPA-GMN-CUR
@@ -2333,26 +2250,6 @@
        50011-CUR-SET-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    画面カーソルSKIP処理
-      *****************************************************************
-       50012-CUR-SKIP-SEC          SECTION.
-      *
-           IF    ( SPA-GMN-CUR     =   5 )
-               IF    ( Z07-CHKCHG-STATE    =   WIDGET-INSENSITIVE )
-                   MOVE    6           TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-GMN-CUR     =   6 )
-               IF    ( Z07-YKJCHG-STATE    =   WIDGET-INSENSITIVE )
-                   MOVE    12          TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      *
-           .
-       50012-CUR-SKIP-EXT.
-           EXIT.
       *****************************************************************
       *    エラーメッセージ表示理
       *****************************************************************

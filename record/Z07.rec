@@ -48,20 +48,16 @@ Z07	{
 		CMB_CHKCHG	{
 			CHKCHG{
 				value	varchar(20);
-				state	int;
 			};
 			count	int;
 			item	varchar(20)[3];
-			state	int;
 		};
 		CMB_YKJCHG	{
 			YKJCHG{
 				value	varchar(20);
-				state	int;
 			};
 			count	int;
 			item	varchar(20)[3];
-			state	int;
 		};
 		SELNUM	{
 			value	number(3);

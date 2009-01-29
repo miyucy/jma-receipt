@@ -50,19 +50,15 @@
               03  Z07-CMB-CHKCHG.
                 04  Z07-CHKCHG.
                   05  Z07-VALUE   PIC X(20).
-                04  Z07-CHKCHG-STATE   PIC S9(9)   BINARY.
                 04  Z07-CHKCHG-COUNT   PIC S9(9)   BINARY.
                 04  Z07-CHKCHG-ITEM
                         PIC X(20)   OCCURS  3 TIMES.
-                04  Z07-CHKCHG-ITEM-STATE   PIC S9(9)   BINARY.
               03  Z07-CMB-YKJCHG.
                 04  Z07-YKJCHG.
                   05  Z07-VALUE   PIC X(20).
-                04  Z07-YKJCHG-STATE   PIC S9(9)   BINARY.
                 04  Z07-YKJCHG-COUNT   PIC S9(9)   BINARY.
                 04  Z07-YKJCHG-ITEM
                         PIC X(20)   OCCURS  3 TIMES.
-                04  Z07-YKJCHG-ITEM-STATE   PIC S9(9)   BINARY.
               03  Z07-SELNUM.
                 04  Z07-VALUE   PIC S9(3).
               03  Z07-SCROLLEDWINDOW1.
