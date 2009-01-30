@@ -37,6 +37,7 @@
       *  02.00.10    NACL-Â¿¡¹Ç¼  06/02/27  ¼ç²ÊÂÐ±þÄÉ²Ã
       *  03.04.00    NACL-Â¿¡¹Ç¼  07/02/16  £Ñ£Ò¼õÉÕÂÐ±þ
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/12/03  ´µ¼Ô¶Ø´÷ÌôºÞÂÐ±þ
+      *  04.04.00    NACL-Â¿¡¹Ç¼  09/01/27  ËÜ±¡Ê¬±¡ÂÐ±þ
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -428,6 +429,11 @@
       *            Äã½êÆÀÍ­Ìµ
                    07  SPA-NAI-TSYRRK          PIC 9(01).
                    07  SPA-NAI-TNKRRK          PIC 9(01).
+      *            É³ÉÕ¤±´µ¼Ô¾ðÊó
+                   07  SPA-NAI-GRPAREA-G.
+                       09  SPA-NAI-GRPHOSPNUM      PIC 9(02).
+                       09  SPA-NAI-GRPPTID         PIC 9(10).
+      *
       *        ÆþÎÏÁ°ÎÎ°è
                05  SPA-P02-MAE-AREA.
                    07  SPA-MAE-KANANAME        PIC X(50).
@@ -1285,7 +1291,9 @@
       *
       *    ´µ¼ÔÊ£¼Ì²èÌÌ¡Ê£Ð£°£²£Å¡Ë
            03  SPA-GMN2E-AREA.
+               05  SPA-GMN2E-SYORI         PIC 9(01).
                05  SPA-GMN2E-CUR           PIC 9(02).
+               05  SPA-GMN2E-MIDASI        PIC X(20).
                05  SPA-GMN2E-PTNUM         PIC X(20).
                05  SPA-GMN2E-PTID          PIC 9(10).
                05  SPA-GMN2E-OUTAREA.
@@ -1295,6 +1303,16 @@
                    07  SPA-GMN2E-BIRTHDAY      PIC X(09).
                    07  SPA-GMN2E-NENREI        PIC X(09).
                    07  SPA-GMN2E-SEX           PIC X(04).
+      *
+               05  SPA-GMN2E-GRPHOSPNUM-G.
+                   07  SPA-GMN2E-GRPHOSPNUM     PIC X(02).
+                   07  SPA-GMN2E-GRPHOSPF       PIC X(01).
+                   07  SPA-GMN2E-GRPHOSPNUMMEI  PIC X(20).
+      *        ËÜ±¡Ê¬±¡¥ê¥¹¥È
+               05  SPA-GMN2E-GRPHOSPNUM-LST-G.
+                   07  SPA-GMN2E-GRPHOSPNUM-LST PIC X(23)
+                                                OCCURS   9.
+                   07  SPA-GMN2E-GRPMAX         PIC 9(01).
       *
       *    ´µ¼ÔÊ£¼Ì¸µ°ìÍ÷²èÌÌ¡Ê£Ð£°£²£Æ¡Ë
            03  SPA-GMN2F-AREA.
@@ -1309,6 +1327,8 @@
                        09  SPA-GMN2F-PTNUM         PIC X(20).
                        09  SPA-GMN2F-PTID          PIC 9(10).
                    07  SPA-GMN2F-MAX           PIC 9(04).
+      *
+               05  SPA-GMN2F-MIDASI        PIC X(24).
       *
       *    P02S (¼ç²ÊÀßÄê²èÌÌ¡Ë
            03  SPA-P02S-AREA.
@@ -1426,6 +1446,63 @@
                    07  SPA-P02Y1-JIINMEI            PIC X(18).
                05  SPA-P02Y1-JIIN-COB               OCCURS  10.
                    07  SPA-P02Y1-JIINLST            PIC X(20).
+      *
+      *    ¥°¥ë¡¼¥×°åÎÅµ¡´ØÆ±°ì´µ¼ÔÌ¾°ìÍ÷¡Ê£Ð£°£²£Ç¡Ë
+           03  SPA-P02G-AREA.
+               05  SPA-P02G-SYORI          PIC 9(01).
+               05  SPA-P02G-CUR            PIC 9(02).
+               05  SPA-P02G-LIST-AREA.
+                   07  SPA-P02G-LIST-G     OCCURS   30.
+                       09  SPA-P02G-LNUM       PIC 9(03).
+                       09  SPA-P02G-LPTNUM     PIC X(20).
+                       09  SPA-P02G-LNAME      PIC X(50).
+                       09  SPA-P02G-LBIRTHDAY  PIC X(09).
+                       09  SPA-P02G-LADRS      PIC X(50).
+                       09  SPA-P02G-LTEL       PIC X(15).
+                       09  SPA-P02G-LHOSPNAME  PIC X(20).
+      *
+                       09  SPA-P02G-LPTID      PIC 9(10).
+                       09  SPA-P02G-LHOSPNUM   PIC 9(02).
+                   07  SPA-P02G-MAX            PIC 9(02).
+               05  SPA-P02G-SELNUM         PIC 9(03).
+      *
+      *    ¥°¥ë¡¼¥×°åÎÅµ¡´Ø´µ¼ÔÉ³ÉÕ²èÌÌ¡Ê£Ð£°£²£Ç£²¡Ë
+           03  SPA-P02G2-AREA.
+               05  SPA-P02G2-SYORI          PIC 9(01).
+               05  SPA-P02G2-CUR            PIC 9(02).
+               05  SPA-P02G2-LIST-AREA.
+                   07  SPA-P02G2-LIST-G     OCCURS   9.
+                       09  SPA-P02G2-LNUM       PIC 9(02).
+                       09  SPA-P02G2-LHOSPNAME  PIC X(20).
+                       09  SPA-P02G2-LPTNUM     PIC X(20).
+                       09  SPA-P02G2-LNAME      PIC X(50).
+      *
+                       09  SPA-P02G2-LPTID      PIC 9(10).
+                       09  SPA-P02G2-LHOSPNUM   PIC 9(02).
+                   07  SPA-P02G2-MAX            PIC 9(02).
+               05  SPA-P02G2-SELNUM             PIC 9(02).
+               05  SPA-P02G2-GRPHOSPNUM-LST-G.
+                   09  SPA-P02G2-GRPHOSPNUM-LST PIC X(23)
+                                                OCCURS   9.
+                   09  SPA-P02G2-GRPMAX         PIC 9(01).
+               05  SPA-P02G2-INAREA.
+                   07  SPA-P02G2-PTNUM          PIC X(20).
+                   07  SPA-P02G2-GRPHOSPNUM-G.
+                       09  SPA-P02G2-GRPHOSPNUM     PIC X(02).
+                       09  SPA-P02G2-GRPHOSPF       PIC X(01).
+                       09  SPA-P02G2-GRPHOSPNUMMEI  PIC X(20).
+                   07  SPA-P02G2-OTAREA.
+                       09  SPA-P02G2-PTNAME         PIC X(50).
+                       09  SPA-P02G2-ADRS1          PIC X(50).
+                       09  SPA-P02G2-ADRS2          PIC X(50).
+                       09  SPA-P02G2-BIRTHDAY       PIC X(09).
+                       09  SPA-P02G2-SEX            PIC X(02).
+                       09  SPA-P02G2-PTID           PIC 9(10).
+                   07  SPA-P02G2-MAEHOSPNUM         PIC X(02).
+                   07  SPA-P02G2-MAEPTNUM           PIC X(20).
+      *
+               05  SPA-P02G2-NAI-HOSPNUM        PIC X(02).
+               05  SPA-P02G2-NAI-PTID           PIC 9(10).
       *
       *@@
       *    £Ñ£Ò²èÌÌ¡Ê£Ð£°£²£Ñ¡Ë

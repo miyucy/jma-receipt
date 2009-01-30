@@ -1,4 +1,4 @@
-P02E	{
+P02G2	{
 	fixed10	{
 		PTNUM	{
 			value	varchar(20);
@@ -15,26 +15,30 @@ P02E	{
 		BIRTHDAY	{
 			value	varchar(9);
 		};
-		NENREI	{
-			value	varchar(8);
-		};
 		SEX	{
 			value	varchar(4);
 		};
+		scrolledwindow1	{
+			hpos	int;
+			vpos	int;
+			GRPLIST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(2);
+					value1	varchar(10);
+					value2	varchar(20);
+					value3	varchar(50);
+				}	[10];
+				select	bool[10];
+			};
+		};
 		GRPHOSPNUM_COMB	{
 			GRPHOSPNUM	{
-				value	varchar(23);
+				value	varchar(20);
 			};
 			count	int;
-			item	varchar(23)[9];
-		};
-		MIDASI	{
-			style	varchar(20);
-			value	varchar(20);
-		};
-		B03	{
-	           	state	int;
-			label	varchar(20);
+			item	varchar(20)[9];
 		};
 	};
 };

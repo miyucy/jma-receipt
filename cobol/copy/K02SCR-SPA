@@ -244,12 +244,13 @@
       *            訂正合計点数
                    07  SPA-NAI-FUKATEN-DEL         PIC 9(08).
       *!!
+      *        グループ医療機関紐付け患者番号
+               05  SPA-NAI-GRPHOSPNUM-AREA.
+                   07  SPA-NAI-GRPKBN          PIC 9(01).
+                   07  SPA-NAI-GRPHOSP-G       OCCURS   9.
+                       09  SPA-NAI-GRPHOSPNUM      PIC 9(02).
+                       09  SPA-NAI-GRPPTID         PIC 9(10).
       *!!
-      *        同日初診算定科
-      *        05  SPA-DOUSYOSIN-AREA.
-      *            07  SPA-DOUSYOSIN-OCC           OCCURS   10.
-      *                09  SPA-DOU-SRYKA           PIC X(02).
-      *DDDDDDDDDD      09  SPA-DOU-SRYYMD          PIC X(08).
       *
       *    入院用（Ｋ０２Ｎ）
            03  SPA-K02N-AREA.
@@ -448,6 +449,21 @@
       *
                05  SPA-K09-SELNUM                 PIC 9(04).
                05  SPA-K09-DOSELNUM               PIC 9(04).
+      *
+      *!!      グループ医療機関
+               05  SPA-K09-GRPHOSPNUM-AREA.
+                   07  SPA-K09-GRPHOSPNUM-G.
+                       09  SPA-K09-GRPHOSPNUM      PIC X(02).
+                       09  SPA-K09-GRPHOSPF        PIC X(01).
+                       09  SPA-K09-GRPHOSPNUM-MEI  PIC X(20).
+                   07  SPA-K09-GRPHOSPNUM-LST-G.
+                       09  SPA-K09-GRPHOSPNUM-LST  PIC X(23)
+                                               OCCURS   9.
+                       09  SPA-K09-GRPMAX          PIC 9(01).
+               05  SPA-K07-GRPKBN              PIC 9(01).
+      *
+               05  SPA-K09-HOSPNUM         PIC 9(02).
+               05  SPA-K09-PTID            PIC 9(10).
       *
                05  SPA-K07-NYUGAIKBN       PIC X(01).
       *

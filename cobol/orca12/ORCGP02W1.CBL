@@ -766,6 +766,8 @@
            COPY    "P02Q1.INC".
            COPY    "P02Y.INC".
            COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -895,6 +897,10 @@
                    MOVE    ZERO                TO  SPA-GMN982-KBN
       *        二重登録確認画面処理
                WHEN    "P02A"
+      *             新規でリスト表示時のみ
+                   IF      (SPA-P02G-FLG       =   2 )
+                       PERFORM 41013-GRPPTNAME-CHK-SEC
+                   END-IF
                    CONTINUE
       *        労災保険更新画面処理
                WHEN    "P02D"
@@ -904,6 +910,12 @@
                    PERFORM 3010-P100-HEN-SEC
       *        患者複写
                WHEN    "P02E"
+      *            保険組合せ作成
+                   PERFORM 4503-HKNCOMBI-SYORI-SEC
+                   PERFORM 310-SPASET-SEC
+                   MOVE    1                  TO  SPA-GMN-CUR
+      *        患者複写
+               WHEN    "P02G"
       *            保険組合せ作成
                    PERFORM 4503-HKNCOMBI-SYORI-SEC
                    PERFORM 310-SPASET-SEC
@@ -2475,6 +2487,7 @@
       *
            MOVE    1                   TO  SPA-P02A-FLG1
            MOVE    1                   TO  SPA-P02A-FLG2
+           MOVE    1                   TO  SPA-P02G-FLG
       *
       *    かな氏名
            IF      P02-P02-KANANAME    =   SPA-MAE-KANANAME
@@ -2484,6 +2497,7 @@
                MOVE    ZERO                TO  SPA-NAI-KANAFLG
                MOVE    ZERO                TO  SPA-P02A-FLG1
                MOVE    ZERO                TO  SPA-P02A-FLG2
+               MOVE    ZERO                TO  SPA-P02G-FLG
            END-IF
            MOVE    P02-P02-KANANAME    TO  SPA-GMN-KANANAME
       *    漢字氏名
@@ -2493,6 +2507,7 @@
                MOVE    1                   TO  FLG-IN-NAME
                MOVE    ZERO                TO  SPA-P02A-FLG1
                MOVE    ZERO                TO  SPA-P02A-FLG2
+               MOVE    ZERO                TO  SPA-P02G-FLG
            END-IF
            MOVE    P02-P02-NAME        TO  SPA-GMN-NAME
       *    氏名変更
@@ -2507,6 +2522,7 @@
            ELSE
                MOVE    1                   TO  FLG-IN-SEX
                MOVE    ZERO                TO  SPA-P02A-FLG2
+               MOVE    ZERO                TO  SPA-P02G-FLG
            END-IF
            MOVE    P02-P02-SEX         TO  SPA-GMN-SEX-G
       *
@@ -2515,6 +2531,7 @@
            ELSE
                MOVE    1                   TO  FLG-IN-BIRTHDAY
                MOVE    ZERO                TO  SPA-P02A-FLG2
+               MOVE    ZERO                TO  SPA-P02G-FLG
            END-IF
            MOVE    P02-P02-BIRTHDAY    TO  SPA-GMN-BIRTHDAYW
       *
@@ -3333,6 +3350,20 @@
                PERFORM 41012-NIJYU-TRKGMN-SEC
              END-IF
            END-IF
+      *
+      *!!
+      *    グループ医療機関の同姓同名リスト
+           IF     (SPA-P02-SYORI       =   1    )  AND
+                  (SPA-NAI-GRPPTLST-FLG    NOT =   "0" )  AND
+                  (SPA-P02G-FLG        =   ZERO   )
+      *        新規でリスト表示時のみ
+               IF     (SPA-FLG-END         =   ZERO )
+                   PERFORM 41013-GRPPTNAME-CHK-SEC
+               ELSE
+                   MOVE    2               TO  SPA-P02G-FLG
+               END-IF
+           END-IF
+      *!!
            .
        4101-BIRTHDAY-CHK-EXT.
            EXIT.
@@ -5660,6 +5691,65 @@
       *
            .
        41013-NIJYU-GMN-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    グループ医療機関の同姓同名リスト処理
+      *****************************************************************
+       41013-GRPPTNAME-CHK-SEC          SECTION.
+      *
+           IF     (SPA-GMN-KANANAME    =   SPACE )  OR
+                  (SPA-NAI-BIRTHDAY    =   SPACE )  OR
+                  (SPA-GMN-SEX         =   SPACE )
+               CONTINUE
+           ELSE
+               MOVE    1               TO  SPA-P02G-FLG
+               PERFORM 410131-P02G-SYORI-SEC
+           END-IF
+           .
+       41013-GRPPTNAME-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    グループ医療機関の同姓同名リスト処理
+      *****************************************************************
+       410131-P02G-SYORI-SEC          SECTION.
+      *
+           INITIALIZE                  SPA-P02G-AREA
+      *
+           MOVE    SPACE               TO  SPA-MOTOPG
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02G"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK        TO  SPA-P02KYOUTU
+      *
+           IF      SPA-P02G-MAX    >   ZERO
+      *        グループ医療機関同一患者一覧へ
+               MOVE    "P02"               TO  SPA-MOTOPG
+               MOVE    "P02G"              TO  SPA-SAKIPG
+      *
+               MOVE    "NEW"               TO  MCP-PUTTYPE
+               MOVE    "P02G"              TO  MCP-WINDOW
+               MOVE    "SELNUM"            TO  MCP-WIDGET
+      *
+               PERFORM 900-PUT-WINDOW
+               MOVE    1                   TO  SPA-FLG-END
+           END-IF
+           .
+       410131-P02G-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

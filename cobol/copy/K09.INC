@@ -53,3 +53,12 @@
                 04  K09-SRYKBN-COUNT   PIC S9(9)   BINARY.
                 04  K09-SRYKBN-ITEM
                         PIC X(23)   OCCURS  20 TIMES.
+              03  K09-GRPHOSPNUM-COMB.
+                04  K09-GRPHOSPNUM.
+                  05  K09-VALUE   PIC X(23).
+                04  K09-GRPHOSPNUM-COUNT   PIC S9(9)   BINARY.
+                04  K09-GRPHOSPNUM-ITEM
+                        PIC X(23)   OCCURS  9 TIMES.
+              03  K09-B03.
+                04  K09-B03-STATE   PIC S9(9)   BINARY.
+                04  K09-B03-LABEL   PIC X(20).

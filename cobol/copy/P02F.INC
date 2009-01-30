@@ -36,3 +36,6 @@
                     06  P02F-NAME     PIC X(50).
                     06  P02F-BIRTHDAY PIC X(10).
                   05  P02F-SELECT PIC X       OCCURS  100 TIMES.
+              03  P02F-MIDASI.
+                04  P02F-MIDASI-STYLE  PIC X(20).
+                04  P02F-MIDASI-VALUE  PIC X(24).

@@ -1,4 +1,5 @@
 K02	{
+	title  varchar(120);
 	fixed2	{
 		PTNUM	{
 			value	varchar(20);
@@ -441,6 +442,10 @@ K02	{
 		KOHMSG	{
 			style	varchar(20);
 			value	varchar(50);
+		};
+		GRPMEI	{
+			style	varchar(20);
+			value	varchar(10);
 		};
 		B12	{
 	           	state	int;

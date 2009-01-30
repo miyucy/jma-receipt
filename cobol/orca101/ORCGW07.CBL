@@ -100,6 +100,7 @@
       *  04.03.00    NACL-多々納  08/07/24  入院時初回加算自動発生追加
       *  04.03.00    NACL-太田    08/09/09  支払証明書印刷初期設定追加の追加
       *  04.03.00    NACL-多々納  08/10/30  世帯主名自動記載区分追加
+      *  04.04.00    NACL-多々納  09/01/27  グループ医療機関氏名リスト追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -412,6 +413,15 @@
                            11  SPA-GMN-SETAIKBN-FLG-LIST     PIC X(28)
                                                              OCCURS  5.
                        09  SPA-GMN-SETAIKBN-MAX              PIC 9(02).
+      *                グループ医療機関患者リスト区分
+                       09  SPA-GMN-GRPPTLST-FLG-G.
+                           11  SPA-GMN-GRPPTLST-FLG          PIC X(01).
+                           11  SPA-GMN-GRPPTLST-F1           PIC X(01).
+                           11  SPA-GMN-GRPPTLST-MEI          PIC X(26).
+                       09  SPA-GMN-GRPPTLST-FLG-COMB.
+                           11  SPA-GMN-GRPPTLST-FLG-LIST     PIC X(28)
+                                                             OCCURS  5.
+                       09  SPA-GMN-GRPPTLST-MAX              PIC 9(02).
                    07  SPA-GMN-PAGE3-AREA.
       *                入金管理情報（診療行為機能情報）
                        09  SPA-GMN-SRYNYKNKNRKBN-G.
@@ -1492,6 +1502,12 @@
            MOVE    "1 自動記載する"
                                    TO  SPA-GMN-SETAIKBN-FLG-LIST (2)
            MOVE    2               TO  SPA-GMN-SETAIKBN-MAX 
+      *    グループ医療機関患者リスト
+           MOVE    "0 表示しない" 
+                                   TO  SPA-GMN-GRPPTLST-FLG-LIST (1)
+           MOVE    "1 表示する"
+                                   TO  SPA-GMN-GRPPTLST-FLG-LIST (2)
+           MOVE    2               TO  SPA-GMN-GRPPTLST-MAX 
       *
            MOVE    "1 今回請求分のみ入金"
                                        TO  SPA-GMN-SRYNYKNKNRKBNLST(1)
@@ -2388,6 +2404,9 @@
       *        世帯主名自動記載区分
                MOVE    SYS-1017-SETAIKBN-FLG
                                        TO  SPA-GMN-SETAIKBN-FLG
+      *        グループ医療機関患者リスト
+               MOVE    SYS-1017-GRPPTLST-FLG
+                                       TO  SPA-GMN-GRPPTLST-FLG
            END-IF
       *
       *    初期設定
@@ -2530,6 +2549,26 @@
            IF      FLG-OK              =   ZERO
                MOVE    SPA-GMN-SETAIKBN-FLG-LIST(2)
                                            TO  SPA-GMN-SETAIKBN-FLG-G
+           END-IF
+      *    グループ医療機関患者リスト
+           IF      SPA-GMN-GRPPTLST-FLG    =   SPACE
+               MOVE    "0"                 TO  SPA-GMN-GRPPTLST-FLG
+           END-IF
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-GRPPTLST-MAX
+               IF      SPA-GMN-GRPPTLST-FLG
+                                       =   SPA-GMN-GRPPTLST-FLG-LIST
+                                                         (IDX)(1:1)
+                   MOVE    SPA-GMN-GRPPTLST-FLG-LIST(IDX)
+                                           TO  SPA-GMN-GRPPTLST-FLG-G
+                   MOVE    1               TO  FLG-OK
+                   MOVE    SPA-GMN-GRPPTLST-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-GRPPTLST-FLG-LIST(1)
+                                           TO  SPA-GMN-GRPPTLST-FLG-G
            END-IF
       *
            MOVE    201                 TO  SPA-GMN-CUR
@@ -3827,6 +3866,7 @@
            MOVE    W07-KZKNEN          TO  SPA-GMN-KZKNEN
            MOVE    W07-HIHKNJAKBN      TO  SPA-GMN-HIHKNJAKBN-FLG-G
            MOVE    W07-SETAIKBN        TO  SPA-GMN-SETAIKBN-FLG-G
+           MOVE    W07-GRPPTLST        TO  SPA-GMN-GRPPTLST-FLG-G
       *
       *    診療行為機能情報
            MOVE    W07-SRYNYKNKNRKBN   TO  SPA-GMN-SRYNYKNKNRKBN-G
@@ -4060,6 +4100,10 @@
       *            世帯主名自動記載区分
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4107-SETAIKBN-FLG-SEC
+                   END-IF
+      *            グループ医療機関患者リスト
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4107-GRPPTLST-FLG-SEC
                    END-IF
                WHEN    "1038"
       *            ＤＯ初期表示
@@ -5482,6 +5526,31 @@
       *
           .
        4107-SETAIKBN-FLG-EXT.
+           EXIT.
+      *****************************************************************
+      *    グループ医療機関患者リストチェック処理
+      *****************************************************************
+       4107-GRPPTLST-FLG-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN-GRPPTLST-MAX) OR
+                              (FLG-OK  =   1    )
+               IF      SPA-GMN-GRPPTLST-FLG
+                                       =   SPA-GMN-GRPPTLST-FLG-LIST
+                                                          (IDX)(1:1)
+                   MOVE    SPA-GMN-GRPPTLST-FLG-LIST(IDX)
+                                          TO  SPA-GMN-GRPPTLST-FLG-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    213             TO  SPA-GMN-CUR
+               MOVE    "1013"          TO  SPA-ERRCD
+           END-IF
+      *
+          .
+       4107-GRPPTLST-FLG-EXT.
            EXIT.
       *****************************************************************
       *    入金管理区分チェック処理（診療行為機能情報）
@@ -7307,6 +7376,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-KZKNEN          TO  SYS-1017-KZKNEN
            MOVE    SPA-GMN-HIHKNJAKBN-FLG  TO  SYS-1017-HIHKNJAKBN-FLG
            MOVE    SPA-GMN-SETAIKBN-FLG    TO  SYS-1017-SETAIKBN-FLG
+           MOVE    SPA-GMN-GRPPTLST-FLG    TO  SYS-1017-GRPPTLST-FLG
       *
            MOVE    SYS-1017-REC            TO  SYSKANRI-REC
       *
@@ -8093,6 +8163,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W07-SETAIKBN-ITEM(IDX)
            END-PERFORM
            MOVE    SPA-GMN-SETAIKBN-MAX    TO  W07-SETAIKBN-COUNT
+      *    グループ医療機関患者リスト
+           MOVE    SPA-GMN-GRPPTLST-FLG-G  TO  W07-GRPPTLST
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-GRPPTLST-MAX
+               MOVE    SPA-GMN-GRPPTLST-FLG-LIST (IDX)
+                                       TO  W07-GRPPTLST-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-GRPPTLST-MAX    TO  W07-GRPPTLST-COUNT
       *
       *    入金管理区分（診療行為機能情報）
            MOVE    SPA-GMN-SRYNYKNKNRKBN-G TO  W07-SRYNYKNKNRKBN
@@ -8818,6 +8896,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1012"
                    MOVE    "世帯主名自動記載区分がありません。"
                                                        TO  SPA-ERRMSG
+               WHEN    "1013"
+                   STRING  "グループ医療機関内同一患者リスト区分が"
+                           "ありません"
+                                                   DELIMITED BY  SIZE
+                                                       INTO  SPA-ERRMSG
+                   END-STRING
       *    診療行為機能情報
                WHEN    "2001"
                    MOVE    "入金管理区分がありません。"
@@ -9164,6 +9248,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "HIHKNJAKBN"      TO   MCP-WIDGET
                WHEN    212
                    MOVE  "SETAIKBN"        TO   MCP-WIDGET
+               WHEN    213
+                   MOVE  "GRPPTLST"        TO   MCP-WIDGET
       *診療行為情報
                WHEN    301
                    MOVE  "DOSRYKBN_FLG"    TO   MCP-WIDGET
@@ -9482,6 +9568,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "HIHKNJAKBN"
                    MOVE    212              TO  SPA-GMN-CUR
                WHEN    "SETAIKBN"
+                   MOVE    213              TO  SPA-GMN-CUR
+               WHEN    "GRPPTLST"
                    MOVE    999              TO  SPA-GMN-CUR
       *    診療行為情報
                WHEN    "DOSRYKBN_FLG"

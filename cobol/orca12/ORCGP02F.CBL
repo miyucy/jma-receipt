@@ -42,6 +42,9 @@
       *
        WORKING-STORAGE             SECTION.
       *
+      *    画面非表示
+           COPY    "ENUM-VALUE".
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *
@@ -55,6 +58,8 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
+           03  FLG-PTSAME          PIC 9(01).
+           03  FLG-OK              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -115,6 +120,9 @@
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
+      *    同一患者識別テーブル
+       01  PTSAME-REC.
+           COPY    "CPPTSAME.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -164,6 +172,8 @@
            COPY    "P02Q1.INC".
            COPY    "P02Y.INC".
            COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -250,6 +260,12 @@
       *****************************************************************
        300-SCREEN-SEC             SECTION.
       *
+           IF      SPA-GMN2E-SYORI     =   ZERO
+               MOVE    "＜患者複写＞"          TO  SPA-GMN2F-MIDASI
+           ELSE
+               MOVE    "＜患者紐付け複写＞"    TO  SPA-GMN2F-MIDASI
+           END-IF
+      *
            MOVE    ZERO                TO  SPA-GMN2F-SELNUM
            MOVE    ZERO                TO  SPA-GMN2F-MAX
            IF      SPA-GMN2F-KNJKEY    =   SPACE
@@ -300,7 +316,11 @@
       *
       *    漢字検索
            INITIALIZE                  PTINF-REC
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           IF      SPA-GMN2E-GRPHOSPNUM    =   SPACE
+               MOVE    SPA-HOSPNUM             TO  PTINF-HOSPNUM
+           ELSE
+               MOVE    SPA-GMN2E-GRPHOSPNUM    TO  PTINF-HOSPNUM
+           END-IF
            MOVE    SPACE               TO  PTINF-NAME
            MOVE    SPA-GMN2F-KNJKEY(1:WRK-MOJISU)
                                        TO  PTINF-NAME(1:WRK-MOJISU)
@@ -327,7 +347,20 @@
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL      (IDX             >=  100       ) OR
                               (FLG-PTINF       =   1          )
-               PERFORM 2012-PTINF-HENSYU-SEC
+               MOVE    ZERO            TO  FLG-OK
+      *        患者紐付け判定
+               IF      SPA-GMN2E-GRPHOSPNUM    =   SPACE
+                   MOVE    1                   TO  FLG-OK
+               ELSE
+                   PERFORM 410111-PTSAME-CHK-SEC
+               END-IF
+      *
+               IF      FLG-OK              =   1
+                   ADD     1                   TO  IDX
+                   IF      IDX                 <=  100
+                       PERFORM 2012-PTINF-HENSYU-SEC
+                   END-IF
+               END-IF
       *
                MOVE    "tbl_ptinf"         TO  MCP-TABLE
                MOVE    "key5"              TO  MCP-PATHNAME
@@ -352,18 +385,19 @@
       *****************************************************************
        2012-PTINF-HENSYU-SEC          SECTION.
       *
-           ADD     1                   TO  IDX
-      *
-           IF      IDX                 >   100
-               GO      TO    2012-PTINF-HENSYU-EXT
-           END-IF
            MOVE    IDX                 TO  SPA-GMN2F-SEQNUM (IDX)
       *
       *    患者番号変換より、患者IDより患者NOを取得する
            MOVE    PTINF-PTID          TO  SPA-GMN2F-PTID  (IDX)
       *
            INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
+           IF      SPA-GMN2E-GRPHOSPNUM    =   SPACE
+               MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
+           ELSE
+               MOVE    SPA-GMN2E-GRPHOSPNUM
+                                           TO  SPTID-HOSPNUM
+               MOVE    1                   TO  SPTID-SYS1009-KBN
+           END-IF
            MOVE    PTINF-PTID          TO  SPTID-PTID
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                SPA-AREA
@@ -383,6 +417,36 @@
        2012-PTINF-HENSYU-EXT.
            EXIT.
            .
+      *
+      *****************************************************************
+      *    患者紐付け判定処理
+      *****************************************************************
+       410111-PTSAME-CHK-SEC           SECTION.
+      *
+           INITIALIZE                      PTSAME-REC
+           MOVE    PTINF-HOSPNUM       TO  PTSAME-HOSPNUM
+           MOVE    PTINF-PTID          TO  PTSAME-PTID
+           MOVE    PTSAME-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-PTSAME-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTSAME
+           END-IF
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    データがない時、対象
+           IF      FLG-PTSAME          =   1
+               MOVE    1                   TO  FLG-OK
+           END-IF
+           .
+       410111-PTSAME-CHK-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    画面遷移処理
@@ -568,6 +632,13 @@
       *
            MOVE    SPA-GMN2F-SELNUM    TO  P02F-SELNUM
       *
+           MOVE    SPA-GMN2F-MIDASI    TO  P02F-MIDASI-VALUE
+           IF      SPA-GMN2E-SYORI     =   ZERO
+               MOVE    "black"             TO  P02F-MIDASI-STYLE
+           ELSE
+               MOVE    "red"               TO  P02F-MIDASI-STYLE
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -658,10 +729,7 @@
       *****************************************************************
        810-PTINF-READ-SEC         SECTION.
       *
-           MOVE    "DBFETCH"           TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
-                                               MCPDATA-REC
-                                               SPA-AREA
+           PERFORM 920-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    MCPDATA-REC     TO  PTINF-REC
                MOVE    ZERO            TO  FLG-PTINF
@@ -672,6 +740,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        810-PTINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    同一患者識別マスター読込処理
+      *****************************************************************
+       900-PTSAME-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-PTSAME
+               MOVE    MCPDATA-REC         TO  PTSAME-REC
+           ELSE
+               MOVE    1                   TO  FLG-PTSAME
+           END-IF
+      *
+           .
+       900-PTSAME-READ-EXT.
            EXIT.
       *
       *****************************************************************
@@ -693,7 +777,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
@@ -708,7 +792,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *

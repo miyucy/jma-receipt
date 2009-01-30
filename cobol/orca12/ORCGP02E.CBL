@@ -32,6 +32,7 @@
       *  02.00.03    NACL-多々納  05/11/11  MONFUNC 対応 他
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  03.05.01    NACL-多々納  07/08/28  公費期限切れ区分追加
+      *  04.04.00    NACL-多々納  09/01/28  本院分院対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -70,6 +71,9 @@
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
+      *    画面非表示
+           COPY    "ENUM-VALUE".
+      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *    患者登録スパ領域
@@ -91,6 +95,7 @@
            03  FLG-PTGETNUM        PIC 9(01).
            03  FLG-TSYRRK          PIC 9(01).
            03  FLG-TNKRRK          PIC 9(01).
+           03  FLG-PTSAME          PIC 9(01).
       *
            03  FLG-HKNNUM          PIC 9(01).
       *
@@ -139,6 +144,8 @@
            03  WRK-TANSEIDONAME        PIC X(20).
            03  WRK-TEKSTYMD            PIC X(08).
            03  WRK-TEKEDYMD            PIC X(08).
+      *
+           03  WRK-MCP-WIDGET          PIC X(64).
       *
       *   年齢表示
        01  WRK-NENREI-AREA.
@@ -217,6 +224,10 @@
        01  UKETUKE-REC.
            COPY    "CPUKETUKE.INC".
       *
+      *    同一患者識別テーブル
+       01  PTSAME-REC.
+           COPY    "CPPTSAME.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -240,6 +251,9 @@
            COPY    "CPORCSP01.INC".
       *   画面編集サブ
            COPY    "CPORCSP02.INC".
+      *
+      *    患者複写パラメタ
+           COPY    "CPORCSP04.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -277,6 +291,8 @@
            COPY    "P02Q1.INC".
            COPY    "P02Y.INC".
            COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -377,10 +393,52 @@
       *                画面編集
                        PERFORM 41011-PTNUM-SYORI-SEC
                    END-IF
+               WHEN    OTHER
+                   PERFORM 3000-SCREEN-INIT-SEC
            END-EVALUATE
       *
            .
        300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期編集処理
+      *****************************************************************
+       3000-SCREEN-INIT-SEC            SECTION.
+      *
+      *    ＳＰＡ編集
+           INITIALIZE                      SPA-GMN2E-AREA
+      *
+           PERFORM 300-SPA-INIT-SEC
+      *
+           MOVE    1                  TO  SPA-GMN2E-CUR
+           .
+       3000-SCREEN-INIT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    初期編集処理
+      *****************************************************************
+       300-SPA-INIT-SEC                SECTION.
+      *
+           IF      SPA-GMN2E-SYORI     =   1
+      *        グループ医療機関情報
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   9   )   OR
+                                  (SPA-GRPHOSPNUM (IDX)    =   ZERO )
+                   MOVE    SPA-GRPHOSPNUM (IDX)
+                                      TO  SPA-GMN2E-GRPHOSPNUM-LST
+                                                     (IDX)(1:2)
+                   MOVE    SPA-GRPHOSPNAME (IDX)
+                                      TO  SPA-GMN2E-GRPHOSPNUM-LST
+                                                     (IDX)(4:)
+                   MOVE    IDX            TO  SPA-GMN2E-GRPMAX
+               END-PERFORM
+               MOVE    SPA-GMN2E-GRPHOSPNUM-LST(1)
+                                           TO  SPA-GMN2E-GRPHOSPNUM-G
+           END-IF
+           .
+       3000-SCREEN-INIT-EXT.
            EXIT.
       *
       *****************************************************************
@@ -400,6 +458,33 @@
            MOVE    SPA-GMN2E-NENREI    TO  P02E-NENREI
            MOVE    SPA-GMN2E-SEX       TO  P02E-SEX
       *
+           MOVE    SPA-GMN2E-GRPHOSPNUM-G  TO  P02E-GRPHOSPNUM
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   SPA-GMN2E-GRPMAX )
+               MOVE    SPA-GMN2E-GRPHOSPNUM-LST(IDX)
+                                       TO  P02E-GRPHOSPNUM-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-GMN2E-GRPMAX    TO  P02E-GRPHOSPNUM-COUNT
+      *
+      *    患者紐付け
+           IF      SPA-GRPHOSPKBN      =   ZERO
+               MOVE    WIDGET-INSENSITIVE  TO  P02E-B03-STATE
+               MOVE    SPACE               TO  P02E-B03-LABEL
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  P02E-B03-STATE
+               IF      SPA-GMN2E-SYORI     =   ZERO
+                   MOVE    "F3 患者紐付複写"   TO  P02E-B03-LABEL
+               ELSE
+                   MOVE    "F3 患者複写"       TO  P02E-B03-LABEL
+               END-IF
+           END-IF
+           MOVE    SPA-GMN2E-MIDASI    TO  P02E-MIDASI-VALUE
+           IF      SPA-GMN2E-SYORI     =   ZERO
+               MOVE    "black"             TO  P02E-MIDASI-STYLE
+           ELSE
+               MOVE    "red"               TO  P02E-MIDASI-STYLE
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -414,6 +499,8 @@
            EVALUATE    SPA-GMN2E-CUR
                WHEN    01
                    MOVE    "PTNUM"            TO  MCP-WIDGET
+               WHEN    03
+                   MOVE    "GRPHOSPNUM"       TO  MCP-WIDGET
                WHEN    02
                    MOVE    "B12"              TO  MCP-WIDGET
            END-EVALUATE
@@ -431,6 +518,9 @@
       *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 420-MODORU-SEC
+      *    患者紐付け
+               WHEN    "CLICKED"       ALSO    "B03"
+                   PERFORM 430-GRPSYORI-SEC
       *    患者一覧
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 430-ICHIRAN-SYORI-SEC
@@ -447,27 +537,101 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-GMN2E-CUR
       *
-               WHEN    "ACTIVATE"      ALSO    "PTNUM"
-                   PERFORM 4101-PTNUM-CHK-SEC
-           END-EVALUATE
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
       *
            .
        200-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
-      *    患者番号チェック処理
+      *    入力チェック処理
       *****************************************************************
-       4101-PTNUM-CHK-SEC         SECTION.
+       410-INPUT-CHK-SEC          SECTION.
       *
-           MOVE    1                   TO  SPA-GMN2E-CUR
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェックと別画面処理
+           PERFORM 4102-KIHON-CHK-SEC
+           .
+      *
+       410-INPUT-CHK-EXT.
+      *
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC          SECTION.
       *
            MOVE    P02E-PTNUM          TO  SPA-GMN2E-PTNUM
+           MOVE    P02E-GRPHOSPNUM     TO  SPA-GMN2E-GRPHOSPNUM-G
+           .
+      *
+       4101-GMN-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    基本チェックと別画面処理
+      *****************************************************************
+       4102-KIHON-CHK-SEC          SECTION.
+      *
+      *    医療機関番号
+           PERFORM 41021-GRPHOSPNUM-CHK-SEC
+      *    患者番号
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-GMN2E-PTNUM     NOT =   SPACE
+                   PERFORM 41022-PTNUM-CHK-SEC
+               END-IF
+           END-IF
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (FLG-END             =   ZERO  )
+      *        画面編集
+               IF     (SPA-GMN2E-PTNUM     NOT =   SPACE )
+                   PERFORM 41011-PTNUM-SYORI-SEC
+               END-IF
+           END-IF
+           .
+       4102-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    医療機関番号処理
+      *****************************************************************
+       41021-GRPHOSPNUM-CHK-SEC                 SECTION.
+      *
+           IF      SPA-GMN2E-GRPMAX    =   ZERO
+               MOVE    SPACE               TO  SPA-GMN2E-GRPHOSPNUM-G
+           END-IF
+           IF      SPA-GMN2E-GRPHOSPNUM    NOT =   SPACE
+               MOVE    ZERO                TO  FLG-OK
+               PERFORM VARYING    IDX      FROM    1   BY  1
+                   UNTIL      IDX      >   SPA-GMN2E-GRPMAX
+                   IF      SPA-GMN2E-GRPHOSPNUM-LST (IDX)(1:2)
+                                           =   SPA-GMN2E-GRPHOSPNUM
+                       MOVE    SPA-GMN2E-GRPHOSPNUM-LST (IDX)
+                                           TO  SPA-GMN2E-GRPHOSPNUM-G
+                       MOVE    1               TO  FLG-OK
+                   END-IF
+               END-PERFORM
+               IF      FLG-OK              =   ZERO
+                   MOVE    "0003"              TO  SPA-ERRCD
+                   MOVE    3                   TO  SPA-GMN2E-CUR
+               END-IF
+           END-IF
+           .
+       41021-GRPHOSPNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者番号チェック処理
+      *****************************************************************
+       41022-PTNUM-CHK-SEC         SECTION.
       *
            INITIALIZE                      ORCSPTNUMAREA
            MOVE    SPA-GMN2E-PTNUM     TO  SPTNUM-PTNUM
+           MOVE    SPA-GMN2E-GRPHOSPNUM
+                                      TO  SPTNUM-GRPHOSPNUM
            CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                SPA-AREA
            EVALUATE    SPTNUM-RC
@@ -476,22 +640,20 @@
                    MOVE    SPTNUM-PTID         TO  SPA-GMN2E-PTID
                    MOVE    SPTNUM-PTNUM        TO  SPA-GMN2E-PTNUM
       *            画面編集
-                   PERFORM 41011-PTNUM-SYORI-SEC
+      ********     PERFORM 41011-PTNUM-SYORI-SEC
                WHEN    20
       *            患者一覧へ
                    INITIALIZE                      SPA-GMN2F-AREA
                    MOVE    SPA-GMN2E-PTNUM     TO  SPA-GMN2F-KNJKEY
                    PERFORM 41012-P02F-SYORI-SEC
-                   GO      TO     4101-PTNUM-CHK-EXT
                WHEN    OTHER
       *            エラー
                    INITIALIZE                  SPA-GMN2E-OUTAREA
                    MOVE    "0001"              TO  SPA-ERRCD
-                   GO      TO     4101-PTNUM-CHK-EXT
+                   MOVE    1                   TO  SPA-GMN2E-CUR
            END-EVALUATE
-      *
-          .
-       4101-PTNUM-CHK-EXT.
+           .
+       41022-PTNUM-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -500,12 +662,17 @@
        41011-PTNUM-SYORI-SEC           SECTION.
       *
       *    患者マスター存在チェック
-           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           IF      SPA-GMN2E-GRPHOSPNUM    =   SPACE
+               MOVE    SPA-HOSPNUM             TO  PTINF-HOSPNUM
+           ELSE
+               MOVE    SPA-GMN2E-GRPHOSPNUM    TO  PTINF-HOSPNUM
+           END-IF
            MOVE    SPA-GMN2E-PTID      TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF      NOT =   ZERO
                INITIALIZE                  SPA-GMN2E-OUTAREA
                MOVE    "0001"              TO  SPA-ERRCD
+               MOVE    1                   TO  SPA-GMN2E-CUR
                GO      TO      41011-PTNUM-SYORI-EXT
            END-IF
       *
@@ -525,9 +692,47 @@
       *    年齢
            PERFORM 41012-NENREI-SET-SEC
       *
-           MOVE    2                   TO  SPA-GMN2E-CUR
-          .
+      *    患者紐付け判定
+           IF      SPA-GMN2E-GRPHOSPNUM    NOT =   SPACE
+               PERFORM 410111-PTSAME-CHK-SEC
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               MOVE    2                   TO  SPA-GMN2E-CUR
+           ELSE
+               MOVE    1                   TO  SPA-GMN2E-CUR
+           END-IF
+           .
        41011-PTNUM-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    患者紐付け判定処理
+      *****************************************************************
+       410111-PTSAME-CHK-SEC           SECTION.
+      *
+           INITIALIZE                      PTSAME-REC
+           MOVE    PTINF-HOSPNUM       TO  PTSAME-HOSPNUM
+           MOVE    PTINF-PTID          TO  PTSAME-PTID
+           MOVE    PTSAME-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-PTSAME-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTSAME
+           END-IF
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    データがある時、エラー
+           IF      FLG-PTSAME          =   ZERO
+               MOVE    "0004"              TO  SPA-ERRCD
+           END-IF
+           .
+       410111-PTSAME-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -538,8 +743,22 @@
            INITIALIZE                      SPA-GMN2F-AREA
            MOVE    SPACE               TO  SPA-GMN2F-KNJKEY
       *
-           MOVE    SPACE               TO  P02F
-           INITIALIZE                      P02F
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02F"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-FREE        TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK        TO  SPA-P02KYOUTU
       *
            MOVE    "KNJKEY"            TO  MCP-WIDGET
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
@@ -624,35 +843,83 @@
            EXIT.
       *
       *****************************************************************
+      *    患者紐付処理
+      *****************************************************************
+       430-GRPSYORI-SEC             SECTION.
+      *
+           IF      SPA-GMN2E-SYORI     =   ZERO
+               INITIALIZE                  SPA-GMN2E-AREA
+               MOVE    1               TO  SPA-GMN2E-SYORI
+               MOVE    "＜患者紐付け複写＞"
+                                       TO  SPA-GMN2E-MIDASI
+           ELSE
+               INITIALIZE                  SPA-GMN2E-AREA
+               MOVE    ZERO            TO  SPA-GMN2E-SYORI
+           END-IF
+      *
+           PERFORM 300-SPA-INIT-SEC
+           MOVE    1                   TO  SPA-GMN2E-CUR
+           .
+       430-GRPSYORI-EXT.
+           EXIT.
+      *****************************************************************
       *    登録処理
       *****************************************************************
        490-TOROKU-SEC             SECTION.
       *
       *    必須入力等のチェック
-           PERFORM 4101-PTNUM-CHK-SEC
+           PERFORM 410-INPUT-CHK-SEC 
            IF     (SPA-ERRCD       NOT =   SPACE )  OR
                   (FLG-END         NOT =   ZERO  )
                GO  TO                  490-TOROKU-EXT
            END-IF
       *
-      *    パラメタ削除
-           PERFORM 4903-PARA-DEL-SEC
-      *
-      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
-      *    OPEN    I-O                 PARA-FILE
-      *
-      *    患者情報複写
-           PERFORM 4901-PTINF-SET-SEC
-      *
-      *    他の情報複写
-           PERFORM 4902-PARA-SET-SEC
-      *
-      *****CLOSE                       PARA-FILE
+           IF      SPA-GMN2E-GRPHOSPNUM    =   SPACE
+      *        自院複写
+               PERFORM 4901-COPY-SYORI-SEC
+           ELSE
+      *        他院複写
+               PERFORM 4902-GRPCOPY-SYORI-SEC
+           END-IF
       *
       *    終了へ
            PERFORM 210-BACK
            .
        490-TOROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     自院複写処理
+      *****************************************************************
+       4901-COPY-SYORI-SEC         SECTION.
+      *
+      *    パラメタ削除
+           PERFORM 4903-PARA-DEL-SEC
+      *    患者情報複写
+           PERFORM 4901-PTINF-SET-SEC
+      *    他の情報複写
+           PERFORM 4902-PARA-SET-SEC
+           .
+       4901-COPY-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *     他院複写処理
+      *****************************************************************
+       4902-GRPCOPY-SYORI-SEC         SECTION.
+      *
+           INITIALIZE                      ORCSP04AREA
+           MOVE    SPA-GMN2E-GRPHOSPNUM
+                                       TO  ORCSP04-HOSPNUM
+           MOVE    SPA-GMN2E-PTID      TO  ORCSP04-PTID
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           CALL    "ORCSP04"           USING
+                                       SPA-AREA
+                                       ORCSP04AREA
+                                       SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+           .
+       4902-GRPCOPY-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1444,9 +1711,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0001"
                    MOVE    "該当の患者は存在しません"
                                                TO  SPA-ERRMSG
-               WHEN    "0002"
-                   MOVE    "被保険者名入力エラー"
+               WHEN    "0003"
+                   MOVE    "医療機関番号がありません"
                                                TO  SPA-ERRMSG
+               WHEN    "0004"
+                   STRING    "既に紐付けされている患者です。"
+                             "紐付けできません。"
+                                               INTO  SPA-ERRMSG
+                   END-STRING
            END-EVALUATE
       *
            MOVE    SPACE               TO  PERR
@@ -1535,6 +1807,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-PTINF-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    同一患者識別マスター読込処理
+      *****************************************************************
+       900-PTSAME-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-PTSAME
+               MOVE    MCPDATA-REC         TO  PTSAME-REC
+           ELSE
+               MOVE    1                   TO  FLG-PTSAME
+           END-IF
+      *
+           .
+       900-PTSAME-READ-EXT.
            EXIT.
       *****************************************************************
       *    保険マスター読み込み

@@ -51,6 +51,7 @@
       *  04.03.01    NACL-多々納  08/08/04  施設入居対応
       *  04.03.01    NACL=多々納  08/08/07  労災初診料Ｈ２０年４月改正対応他
       *  04.04.00    NACL=多々納  08/11/27  入院一括関連対応
+      *  04.04.00    NACL=多々納  09/01/30  本院分院対応
       *****************************************************************
       *
       *
@@ -112,6 +113,7 @@
            03  FLG-SANTEI          PIC 9(01).
            03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-PTTOKKI         PIC 9(01).
+           03  FLG-PTSAME          PIC 9(01).
       *
            03  FLG-SYSKANRIOK      PIC 9(01).
            03  FLG-HKNCOMBICHK     PIC 9(01).
@@ -437,6 +439,10 @@
       *    患者特記事項
        01  PTTOKKI-REC.
            COPY    "CPPTTOKKI.INC".
+      *
+      *    同一患者識別テーブル
+       01  PTSAME-REC.
+           COPY    "CPPTSAME.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -3377,8 +3383,79 @@
            ELSE
                MOVE    PTINF-SKYPRTFLG     TO  SPA-SKYPRTFLG
            END-IF
+      *!!
+      *    同一患者識別編集
+           MOVE    ZERO                TO  SPA-NAI-GRPKBN
+           IF      SPA-GRPHOSPKBN  NOT =   ZERO
+               PERFORM 10015-PTSAME-SET-SEC
+           END-IF
+      *
            .
        1101-PTINF-HENSYU-EXT.
+           EXIT.
+      *****************************************************************
+      *    同一患者識別編集処理
+      *****************************************************************
+       10015-PTSAME-SET-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  IDX
+      *
+           INITIALIZE                      PTSAME-REC
+           MOVE    SPA-HOSPNUM         TO  PTSAME-HOSPNUM
+           MOVE    SPA-PTID            TO  PTSAME-PTID
+           MOVE    PTSAME-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-PTSAME-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTSAME
+           END-IF
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-PTSAME          =   ZERO
+      *        同一患者情報
+               MOVE    PTSAME-REC          TO  MCPDATA-REC
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-PTSAME
+               END-IF
+               PERFORM UNTIL    FLG-PTSAME     =   1
+                   IF     (PTSAME-HOSPNUM      =   SPA-HOSPNUM   )
+                     AND  (PTSAME-PTID         =   SPA-PTID      )
+                       CONTINUE
+                   ELSE
+                       ADD     1               TO  IDX
+                       MOVE    PTSAME-HOSPNUM  TO  SPA-NAI-GRPHOSPNUM
+                                                                (IDX)
+                       MOVE    PTSAME-PTID     TO  SPA-NAI-GRPPTID
+                                                                (IDX)
+                   END-IF
+      *
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               END-PERFORM
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+           END-IF
+           IF      IDX                 >   ZERO
+               MOVE    1                   TO  SPA-NAI-GRPKBN
+           ELSE
+               MOVE    ZERO                TO  SPA-NAI-GRPKBN
+           END-IF
+           .
+       10015-PTSAME-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6686,6 +6763,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-PTTOKKI-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    同一患者識別マスター読込処理
+      *****************************************************************
+       900-PTSAME-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-PTSAME
+               MOVE    MCPDATA-REC         TO  PTSAME-REC
+           ELSE
+               MOVE    1                   TO  FLG-PTSAME
+           END-IF
+      *
+           .
+       900-PTSAME-READ-EXT.
            EXIT.
       *****************************************************************
       *    パラメタデータ順読み

@@ -596,7 +596,11 @@
       *    P97検索名
            03  WRK-P97-NAME            PIC X(22).
            03  WRK-GMN-PTID            PIC 9(10).
-      *@
+      *!
+           03  WRK-HOSPNUM             PIC 9(02).
+           03  WRK-GRPHOSPUSERID       PIC X(64).
+           03  WRK-MACHIPG             PIC X(08).
+      *!
       *    今回リハビリ発生日
            03  WRK-KYUSEI-INP-G.
                05  WRK-KYUSEI-IN-G         OCCURS   7.
@@ -936,6 +940,8 @@
       *
       *    診療行為内容編集・計算
            COPY    "CPORCSC100.INC".
+      *
+           COPY    "CPORCSCOMMON.INC".
       *
       *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
@@ -4590,6 +4596,14 @@
       *       ＊のとき、患者新規登録へ
                    MOVE    "*"                 TO  SPA-PTNUM
                    PERFORM 440-KNJADD-SEC
+      *!!
+               WHEN   (SPA-GMN-PTNUM(1:1)  =   "@"   )  AND
+                      (SPA-GMN-PTNUM(2:2)  NUMERIC   )  AND
+                      (SPA-GMN-PTNUM(4:)   =   SPACE )  AND
+                      (SPA-GRPHOSPKBN      =   1     )
+      *        @のとき、本院分院切替へ
+                   PERFORM 409-GRPCHK-SEC
+      *!!
                WHEN   (SPA-GMN-PTNUM           =   SPACE)
                    MOVE    WRK-GMN-PTID        TO  SPA-GMN-PTID
       *        空白は患者取消と同様
@@ -9431,6 +9445,62 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        450-K02N-SYORI-EXT.
            EXIT.
+      *!!
+      *
+      *****************************************************************
+      *    本院分院切替へ
+      *****************************************************************
+       409-GRPCHK-SEC             SECTION.
+      *
+           MOVE    SPA-GMN-PTNUM(2:2)  TO  WRK-HOSPNUM
+           MOVE    ZERO                TO  FLG-OK
+           MOVE    SPACE               TO  WRK-GRPHOSPUSERID
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   9   )
+                          OR  (FLG-OK  =   1 )
+                          OR  (SPA-GRPHOSPNUM (IDX)    =   ZERO )
+               IF      WRK-HOSPNUM     =   SPA-GRPHOSPNUM (IDX)
+                   MOVE    SPA-GRPHOSPUSERID (IDX)
+                                               TO  WRK-GRPHOSPUSERID
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      WRK-GRPHOSPUSERID   =   SPACE
+               MOVE    "9210"              TO  SPA-ERRCD
+           ELSE
+               MOVE    SPA-MACHIPG         TO  WRK-MACHIPG
+               INITIALIZE                      SPA-AREA
+               MOVE    WRK-GRPHOSPUSERID   TO  SPA-OPID
+               INITIALIZE                  ORCSCOMMONAREA
+               INITIALIZE                  SYS-1010-REC
+               MOVE    "K02"               TO  ORCSCOMMON-PG
+               MOVE    WRK-HOSPNUM         TO  ORCSCOMMON-HOSPNUM
+               CALL    "ORCSCOMMON"        USING
+                                           MCPAREA
+                                           SPA-AREA
+                                           ORCSCOMMONAREA
+                                           SYS-1010-REC
+               IF      SPA-BEDFLG          =   ZERO
+                   MOVE    "M01"               TO  SPA-MACHIPG
+               ELSE
+                   MOVE    "M01N"              TO  SPA-MACHIPG
+               END-IF
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+      *        入院機能の判定
+      *        IF      (SPA-BEDFLG         >   ZERO )
+      *            PERFORM 3009-NYUINCHK-SEC
+      *        END-IF
+      *        業務選択画面より
+      *        IF      FLG-END             =   ZERO
+                   PERFORM 30010-INIT-GMN-SEC
+      *        END-IF
+           END-IF
+      *
+           .
+       409-GRPCHK-EXT.
+           EXIT.
+      *!!
       *
       *****************************************************************
       *    会計カードへ
@@ -10522,8 +10592,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      41002-KOUSIN-SYORI-EXT
            END-IF
       *
-      *!!!! TEST
-      *!!!! TEST
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                  ORCSC100AREA
            MOVE    "2"                 TO  ORCSC100-KBN
@@ -11597,6 +11665,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "black"             TO  K02-BC10-STYLE
            END-IF
            MOVE    "メモ"              TO  K02-BC10-LABEL
+      *
+      *    他院紐付けあり
+           IF      SPA-NAI-GRPKBN      =   1
+               MOVE    "darkgreen"         TO  K02-GRPMEI-STYLE
+               MOVE    "【他】"            TO  K02-GRPMEI-VALUE
+           ELSE
+               MOVE    "black"             TO  K02-GRPMEI-STYLE
+               MOVE    SPACE               TO  K02-GRPMEI-VALUE
+           END-IF
+      *
+      *    医院名称
+           MOVE    SPA-HOSPNAME        TO  K02-TITLE
       *
       *    非活性処理
            PERFORM 510-GSRAUTH-SEC

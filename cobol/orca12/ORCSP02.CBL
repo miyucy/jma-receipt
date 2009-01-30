@@ -47,6 +47,7 @@
       * 03.05.00     NACL-多々納  07/06/08  前回来院日追加
       * 03.05.01     NACL-多々納  07/08/28  公費期限切れ区分追加
       * 04.03.00     NACL-多々納  08/07/22  特記事項追加
+      * 04.04.00     NACL-多々納  09/01/27  本院分院対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -117,6 +118,7 @@
            03  FLG-TSYRRK          PIC 9(01).
            03  FLG-TNKRRK          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
+           03  FLG-PTSAME          PIC 9(01).
       *
            03  FLG-PTRSIINF        PIC 9(01).
            03  FLG-HKNNUM          PIC 9(01).
@@ -366,6 +368,10 @@
       *    患者特記事項マスタ
        01  PTTOKKI-REC.
            COPY    "CPPTTOKKI.INC".
+      *
+      *    同一患者識別テーブル
+       01  PTSAME-REC.
+           COPY    "CPPTSAME.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -882,6 +888,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *        世帯主名自動記載区分
                MOVE    SYS-1017-SETAIKBN-FLG
                                            TO  SPA-NAI-SETAIKBN-FLG
+      *        グループ医療機関患者リスト
+               MOVE    SYS-1017-GRPPTLST-FLG
+                                           TO  SPA-NAI-GRPPTLST-FLG
            ELSE
       *        未登録の時、ゼロとする
                MOVE    ZERO                    TO  SPA-NAI-JINMEI-USE
@@ -894,6 +903,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO                TO  SPA-NAI-HIHKNJAKBN-FLG
       *        世帯主名自動記載区分
                MOVE    "1"                 TO  SPA-NAI-SETAIKBN-FLG
+      *        グループ医療機関患者リスト
+               MOVE    "0"                 TO  SPA-NAI-GRPPTLST-FLG
            END-IF
            IF      SPA-NAI-DOUMEI-CHKFLG   =   SPACE
                MOVE    ZERO                TO  SPA-NAI-DOUMEI-CHKFLG
@@ -918,6 +929,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-NAI-SETAIKBN-FLG    =   SPACE
                MOVE    "1"                 TO  SPA-NAI-SETAIKBN-FLG
+           END-IF
+      *    グループ医療機関患者リスト
+           IF     (SPA-NAI-GRPPTLST-FLG    =   SPACE )
+           OR     (SPA-GRPHOSPKBN          =   ZERO  )
+      *            本院分院のない時、表示なし
+               MOVE    "0"                 TO  SPA-NAI-GRPPTLST-FLG
            END-IF
       *
            .
@@ -1542,6 +1559,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 10022-PARA-SET-SEC
       *    患者労災情報編集
            PERFORM 10023-RSIPARA-SET-SEC
+      *
+      *    同一患者識別編集
+           PERFORM 10025-PTSAME-SET-SEC
       *
       *    前回来院日編集
            PERFORM 10024-LASTYMD-SET-SEC
@@ -2673,6 +2693,36 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        10023-RSIPARA-SET-EXT.
            EXIT.
       *****************************************************************
+      *    同一患者識別編集処理
+      *****************************************************************
+       10025-PTSAME-SET-SEC            SECTION.
+      *
+           INITIALIZE                      PTSAME-REC
+           MOVE    SPA-HOSPNUM         TO  PTSAME-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTSAME-PTID
+           MOVE    PTSAME-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-PTSAME-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTSAME
+           END-IF
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-PTSAME          =   ZERO 
+      *        同一患者−医療機関ＩＤ
+               MOVE    PTSAME-SAME-HOSPNUM   TO  SPA-NAI-GRPHOSPNUM
+      *        同一患者−患者ＩＤ
+               MOVE    PTSAME-SAME-PTID      TO  SPA-NAI-GRPPTID
+           END-IF
+           .
+       10025-PTSAME-SET-EXT.
+           EXIT.
+      *****************************************************************
       *    前回来院日編集処理
       *****************************************************************
        10024-LASTYMD-SET-SEC           SECTION.
@@ -2824,6 +2874,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    ELSE
                MOVE    WIDGET-NORMAL       TO  P02-B12S-STATE
       *DD  END-IF
+      *    患者紐付け
+           IF      SPA-GRPHOSPKBN      =   ZERO
+               MOVE    WIDGET-INSENSITIVE  TO  P02-B03S-STATE
+           ELSE
+               MOVE    WIDGET-NORMAL       TO  P02-B03S-STATE
+           END-IF
       *    排他中更新不可
            IF      SPA-LOCK            =   ZERO
                MOVE    WIDGET-NORMAL       TO  P02-B12-STATE
@@ -2835,6 +2891,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-INSENSITIVE  TO  P02-B12-STATE
                MOVE    WIDGET-INSENSITIVE  TO  P02-B05S-STATE
                MOVE    WIDGET-INSENSITIVE  TO  P02-B04-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  P02-B03S-STATE
            END-IF
            .
        200-P02-SET-EXT.
@@ -3047,6 +3104,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            MOVE    WRK-TEIMSG          TO  P02-TEIMSG-VALUE
            MOVE    "blue"              TO  P02-TEIMSG-STYLE
+      *
+           IF      SPA-NAI-GRPHOSPNUM  =   ZERO
+               MOVE    SPACE               TO  P02-TEIMSG2-VALUE
+               MOVE    "black"             TO  P02-TEIMSG2-STYLE
+           ELSE
+               MOVE    "【他】"            TO  P02-TEIMSG2-VALUE
+               MOVE    "darkgreen"         TO  P02-TEIMSG2-STYLE
+           END-IF
       *
            MOVE    SPA-GMN-TABOO-1         TO  P02-P02-TABOO1
            MOVE    SPA-GMN-TABOO-2         TO  P02-P02-TABOO2
@@ -4314,6 +4379,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            .
        921-HKNMST-NEXT-EXT.
+           EXIT.
+      *****************************************************************
+      *    同一患者識別マスター読込処理
+      *****************************************************************
+       900-PTSAME-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-PTSAME
+               MOVE    MCPDATA-REC         TO  PTSAME-REC
+           ELSE
+               MOVE    1                   TO  FLG-PTSAME
+           END-IF
+      *
+           .
+       900-PTSAME-READ-EXT.
            EXIT.
       *
       *****************************************************************

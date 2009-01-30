@@ -35,6 +35,7 @@
       * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
       * 03.05.00     NACL-多々納  07/06/14  投薬・注射追加
       * 04.01.00     NACL-多々納  07/10/XX  テーブル４００対応
+      * 04.04.00     NACL=多々納  09/01/30  本院分院対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -88,6 +89,9 @@
        01  WRK-DATA-REC.
            03  WRK-DATA            PIC X(60000)
                                    OCCURS  10.
+      *
+      *    画面非表示
+           COPY    "ENUM-VALUE".
       *
       *    スパ領域
            COPY    "COMMON-SPA".
@@ -195,6 +199,7 @@
            03  FLG-DOALL           PIC 9(01).
            03  FLG-WRITE           PIC 9(01).
            03  FLG-HEN             PIC 9(01).
+           03  FLG-HENSYU          PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -256,6 +261,7 @@
            03  WRK-DOSELNUM            PIC 9(04).
            03  WRK-IDXNUM              PIC 9(04).
            03  WRK-MAE-NYUGAIKBN       PIC X(01).
+           03  WRK-MAE-GRPHOSPNUM      PIC X(02).
       *
            03  WRK-SELNUM-CHK-G.
                05  WRK-SELNUM-CHK  PIC 9(03)   OCCURS  135.
@@ -724,6 +730,9 @@
       *****************************************************************
        310-SPA-SET-SEC                  SECTION.
       *
+      *    医療機関設定
+           MOVE    SPA-HOSPNUM         TO  SPA-K09-HOSPNUM
+           MOVE    SPA-PTID            TO  SPA-K09-PTID
       *    入外区分設定
            MOVE    SPA-NYUGAIKBN       TO  SPA-K09-NYUGAIKBN
            IF      SPA-K02N-TAIINYMD   =   SPACE
@@ -783,8 +792,40 @@
            ELSE
                PERFORM 3101-JYURRK-DBHEN-SEC
            END-IF
+      *    紐付け患者の医療機関
+           INITIALIZE                  SPA-K09-GRPHOSPNUM-AREA
+           IF      SPA-NAI-GRPKBN      =   1
+               PERFORM 3103-GRPHOSPNUM-HEN-SEC
+           END-IF
            .
        310-SPA-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    紐付け患者編集処理
+      *****************************************************************
+       3103-GRPHOSPNUM-HEN-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   9   )   OR
+                              (SPA-NAI-GRPHOSPNUM (IDX)    =   ZERO )
+               MOVE    SPA-NAI-GRPHOSPNUM (IDX)
+                                           TO  SPA-K09-GRPHOSPNUM-LST
+                                                        (IDX)(1:2)
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL      (IDY     >   9   )   OR
+                                  (SPA-GRPHOSPNUM (IDY)
+                                              =   ZERO )
+                   IF      SPA-NAI-GRPHOSPNUM (IDX)
+                                               =   SPA-GRPHOSPNUM (IDY)
+                       MOVE    SPA-GRPHOSPNAME (IDY)
+                                           TO  SPA-K09-GRPHOSPNUM-LST
+                                                         (IDX)(4:)
+                   END-IF
+               END-PERFORM
+               MOVE    IDX            TO  SPA-K09-GRPMAX
+           END-PERFORM
+           .
+       3103-GRPHOSPNUM-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ＳＰＡから編集処理
@@ -823,8 +864,9 @@
            INITIALIZE                  HZN-JYURRK-REC
       *    受診歴を検索する  医療機関、患者ＩＤ
            INITIALIZE                  JYURRK-REC
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
-           MOVE    SPA-PTID            TO  JYURRK-PTID
+      *****MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+           MOVE    SPA-K09-HOSPNUM     TO  JYURRK-HOSPNUM
+           MOVE    SPA-K09-PTID        TO  JYURRK-PTID
            MOVE    SPA-K09-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *
            MOVE    JYURRK-REC          TO  MCPDATA-REC
@@ -1069,6 +1111,9 @@
       *        診療区分変更
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 470-SRYKBN-HEN-SEC
+      *        医療機関番号変更
+               WHEN    "CLICKED"       ALSO    "B03"
+                   PERFORM 430-GRPHOSPNUM-HEN-SEC
       *        登録
                WHEN    "CLICKED"       ALSO    "B12"
                     PERFORM 450-TOROKU-SEC
@@ -1108,6 +1153,9 @@
       *        診療区分
                WHEN    "ACTIVATE"      ALSO    "SRYKBN"
                    PERFORM 460-SRYKBNN-CHK-SEC
+      *        医療機関番号
+               WHEN    "ACTIVATE"      ALSO    "GRPHOSPNUM"
+                   PERFORM 460-GRPHOSPNUM-CHK-SEC
            END-EVALUATE
            .
        200-ENTRY-EXT.
@@ -1645,6 +1693,70 @@
            EXIT.
       *
       *****************************************************************
+      *     診療区分処理
+      *****************************************************************
+       460-GRPHOSPNUM-CHK-SEC              SECTION.
+      *
+           MOVE    SPA-K09-GRPHOSPNUM  TO  WRK-MAE-GRPHOSPNUM
+      *
+           MOVE    K09-GRPHOSPNUM      TO  SPA-K09-GRPHOSPNUM-G
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-K09-SRYKBN-MAX
+               IF      SPA-K09-GRPHOSPNUM  =   SPA-K09-GRPHOSPNUM-LST
+                                                           (IDX)(1:2)
+                   MOVE    SPA-K09-GRPHOSPNUM-LST (IDX)
+                                           TO  SPA-K09-GRPHOSPNUM-G
+                   MOVE    SPA-NAI-GRPPTID (IDX)
+                                           TO  SPA-K09-PTID
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      SPA-K09-GRPHOSPNUM  =   SPACE
+               MOVE    ZERO                TO  FLG-OK
+           END-IF
+           MOVE    ZERO                TO  FLG-HENSYU
+           IF      FLG-OK              =   ZERO
+               MOVE    "0006"              TO  SPA-ERRCD
+               MOVE    11                  TO  SPA-K09GMN-CUR
+           ELSE
+               IF      SPA-K09-GRPHOSPNUM  =   WRK-MAE-GRPHOSPNUM
+                   CONTINUE
+               ELSE
+                   MOVE    1               TO  FLG-HENSYU
+               END-IF
+           END-IF
+           IF      FLG-HENSYU          =   1
+               IF      SPA-K09-GRPHOSPNUM  =   SPACE
+                   MOVE    SPA-HOSPNUM         TO  SPA-K09-HOSPNUM
+                   MOVE    SPA-PTID            TO  SPA-K09-PTID
+               ELSE
+                   MOVE    SPA-K09-GRPHOSPNUM  TO  SPA-K09-HOSPNUM
+               END-IF
+      *        入外区分変更次は、１頁から表示
+               MOVE    1                   TO  SPA-K09-RRK-PAGE
+               MOVE    ZERO                TO  SPA-K09-RRK-NEXT
+      *        受診履歴編集
+               PERFORM 3101-JYURRK-DBHEN-SEC
+               INITIALIZE                  SPA-GMN-TBL
+               INITIALIZE                  SPA-NAI-TBL
+               MOVE    ZERO                TO  SPA-GMN-MAX2
+               MOVE    ZERO                TO  SPA-NAI-MAX2
+               IF      SPA-K09GMN-MAX1     >   ZERO
+                   MOVE    1                   TO  SPA-K09-DOSELNUM
+                   MOVE    SPA-K09GMN-NO(1)    TO  SPA-K09-SELNUM
+      *            診察内容編集
+                   PERFORM 4101-JYURRK-HEN-SEC
+               ELSE
+                   MOVE    10              TO  SPA-K09GMN-CUR
+               END-IF
+           END-IF
+           .
+       460-GRPHOSPNUM-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *     診察内容編集処理
       *****************************************************************
        4101-JYURRK-HEN-SEC              SECTION.
@@ -1665,8 +1777,8 @@
       *
       *    受診歴を検索する
            INITIALIZE                  JYURRK-KEY
-           MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
-           MOVE    SPA-PTID            TO  JYURRK-PTID
+           MOVE    SPA-K09-HOSPNUM     TO  JYURRK-HOSPNUM
+           MOVE    SPA-K09-PTID        TO  JYURRK-PTID
            MOVE    SPA-K09-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *****MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
            MOVE    SPA-K09NAI-RRK-SRYKA(SPA-K09-DOSELNUM)
@@ -1797,6 +1909,7 @@
       *    診療行為検索処理
       *****************************************************************
        41011-ZAISET-HEN-SEC           SECTION.
+      *
       *    ワーク診療行為のレイアウトへ編集後、画面用編集へ
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
            MOVE    ZERO                TO  IDX-KOUI
@@ -1807,9 +1920,9 @@
            MOVE    JYURRK-RENNUM       TO  SPA-SEL-RENNUM
       *
            INITIALIZE                  SRYACT-REC
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
+           MOVE    JYURRK-HOSPNUM      TO  SRY-HOSPNUM
            MOVE    JYURRK-NYUGAIKBN    TO  SRY-NYUGAIKBN
-           MOVE    SPA-PTID            TO  SRY-PTID
+           MOVE    SPA-K09-PTID        TO  SRY-PTID
            MOVE    JYURRK-SRYKA        TO  SRY-SRYKA
            MOVE    JYURRK-SRYYMD(1:6)  TO  SRY-SRYYM
            MOVE    JYURRK-ZAINUM(IDX-R)
@@ -2211,6 +2324,10 @@
            MOVE    "2"                 TO  ORCSMEIHEN-KBN
            MOVE    WRK-HOUKNS-CNT      TO  ORCSMEIHEN-SURYO
            MOVE    WRK-HOUKNS-NAME     TO  ORCSMEIHEN-TNS-NAME
+      *    医療機関番号
+           IF      SPA-K09-HOSPNUM NOT =   SPA-HOSPNUM
+               MOVE    SPA-K09-HOSPNUM     TO  ORCSMEIHEN-GRPHOSPNUM
+           END-IF
            CALL    "ORCSMEIHEN"        USING
                                        SPA-AREA
                                        ORCSMEIHENAREA
@@ -2546,7 +2663,7 @@
        310120-YAKUSOKU-SET-SEC        SECTION.
       *
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+           MOVE    SPA-K09-HOSPNUM     TO  ICD-HOSPNUM
       *    セットの桁数は６とする
            MOVE    "6"                 TO  ICD-CDSYU
            MOVE    LNK-WKSRY-SRYCD (IDX IDZ)(1:6)
@@ -2866,9 +2983,9 @@
            MOVE    SPA-SEL-IDX         TO  IDX-STR
       *
            INITIALIZE                  SRYACT-REC
-           MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
+           MOVE    SPA-K09-HOSPNUM     TO  SRY-HOSPNUM
            MOVE    SPA-K09-NYUGAIKBN   TO  SRY-NYUGAIKBN
-           MOVE    SPA-PTID            TO  SRY-PTID
+           MOVE    SPA-K09-PTID        TO  SRY-PTID
       *****MOVE    SPA-SRYKA           TO  SRY-SRYKA
            MOVE    SPA-K09NAI-RRK-SRYKA(SPA-K09-DOSELNUM)
                                        TO  SRY-SRYKA
@@ -3116,6 +3233,60 @@
        4701-SRYKBN-HENKOU-EXT.
            EXIT.
       *****************************************************************
+      *    医療機関変更処理
+      *****************************************************************
+       430-GRPHOSPNUM-HEN-SEC             SECTION.
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-K09-GRPMAX
+               IF      SPA-K09-GRPHOSPNUM  =   SPACE
+                   MOVE    SPA-K09-GRPHOSPNUM-LST (IDX)
+                                               TO  SPA-K09-GRPHOSPNUM-G
+                   MOVE    SPA-NAI-GRPPTID (IDX)
+                                               TO  SPA-K09-PTID
+                   MOVE    SPA-K09-GRPMAX      TO  IDX
+               ELSE
+                   IF      SPA-K09-GRPHOSPNUM
+                                           =   SPA-K09-GRPHOSPNUM-LST
+                                                           (IDX)(1:2)
+                       IF      IDX             =   SPA-K09-GRPMAX
+                           MOVE    SPACE       TO  SPA-K09-GRPHOSPNUM-G
+                       ELSE
+                           MOVE    SPA-K09-GRPHOSPNUM-LST (IDX + 1)
+                                               TO  SPA-K09-GRPHOSPNUM-G
+                           MOVE    SPA-NAI-GRPPTID (IDX)
+                                               TO  SPA-K09-PTID
+                       END-IF
+                       MOVE    SPA-K09-GRPMAX  TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF       SPA-K09-GRPHOSPNUM =   SPACE
+               MOVE    SPA-HOSPNUM         TO  SPA-K09-HOSPNUM
+               MOVE    SPA-PTID            TO  SPA-K09-PTID
+           ELSE
+               MOVE    SPA-K09-GRPHOSPNUM  TO  SPA-K09-HOSPNUM
+           END-IF
+      *    １頁から表示
+           MOVE    1                   TO  SPA-K09-RRK-PAGE
+           MOVE    ZERO                TO  SPA-K09-RRK-NEXT
+           PERFORM 3101-JYURRK-DBHEN-SEC
+      *
+           IF      SPA-K09GMN-MAX1     >   ZERO
+               MOVE    1                   TO  SPA-K09-DOSELNUM
+               MOVE    SPA-K09GMN-NO(1)    TO  SPA-K09-SELNUM
+      *        診察内容編集
+               PERFORM 4101-JYURRK-HEN-SEC
+           ELSE
+               INITIALIZE                  SPA-GMN-TBL
+               INITIALIZE                  SPA-NAI-TBL
+               MOVE    ZERO                TO  SPA-GMN-MAX2
+               MOVE    ZERO                TO  SPA-NAI-MAX2
+           END-IF
+           .
+       430-GRPHOSPNUM-HEN-EXT.
+           EXIT.
+      *****************************************************************
       *    確定　処理
       *****************************************************************
        450-TOROKU-SEC             SECTION.
@@ -3264,6 +3435,7 @@
            END-IF
       *
            MOVE    SPACE               TO  K09
+           INITIALIZE                      K09
       *
       *    コラムリストの位置指定
            MOVE    ZERO                TO  K09-RRKLIST-ROW
@@ -3292,6 +3464,14 @@
            END-PERFORM
            MOVE    SPA-K09-SRYKBN-MAX  TO  K09-SRYKBN-COUNT
            MOVE    SPA-K09-SRYKBN-G    TO  K09-SRYKBN
+      *
+           PERFORM   VARYING   IDX     FROM    1   BY  1
+                     UNTIL     IDX         >   SPA-K09-GRPMAX
+               MOVE    SPA-K09-GRPHOSPNUM-LST (IDX)
+                                           TO  K09-GRPHOSPNUM-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-K09-GRPMAX      TO  K09-GRPHOSPNUM-COUNT
+           MOVE    SPA-K09-GRPHOSPNUM-G    TO  K09-GRPHOSPNUM
       *
            PERFORM   VARYING   IDX     FROM    1   BY  1
                      UNTIL     IDX         >   SPA-K09GMN-MAX1
@@ -3344,6 +3524,14 @@
            MOVE    SPA-K09-SELNUM      TO  K09-SELNUM
       *
            MOVE    SPA-GMN-DOSEL       TO  K09-DOSEL
+      *    患者紐付け
+           IF      SPA-K09-GRPMAX      >   ZERO
+               MOVE    WIDGET-NORMAL       TO  K09-B03-STATE
+               MOVE    "F3 他院情報"       TO  K09-B03-LABEL
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  K09-B03-STATE
+               MOVE    SPACE               TO  K09-B03-LABEL
+           END-IF
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -3364,6 +3552,8 @@
                    MOVE    "NYUGAIKBN"       TO  MCP-WIDGET
                WHEN    11
                    MOVE    "SRYKBN"          TO  MCP-WIDGET
+               WHEN    12
+                   MOVE    "GRPHOSPNUM"      TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -3396,6 +3586,9 @@
                                        TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE    "診療区分がありません。"
+                                       TO  SPA-ERRMSG
+               WHEN    "0009"
+                   MOVE    "医療機関番号がありません。"
                                        TO  SPA-ERRMSG
                WHEN    "0007"
                    MOVE    "選択は１００行までです。"
@@ -3435,7 +3628,7 @@
            MOVE    SPA-K09NAI-RRKYMD(SPA-K09-DOSELNUM)
                                        TO  TNS-YUKOEDYMD
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    SPA-K09-HOSPNUM     TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME

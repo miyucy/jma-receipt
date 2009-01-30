@@ -119,6 +119,7 @@
            03  FLG-PTTOKKI         PIC 9(01).
            03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-QRCDHKN         PIC 9(01).
+           03  FLG-PTSAME          PIC 9(01).
       *
            03  FLG-SYORI           PIC X(01).
            03  FLG-SYORI2          PIC X(01).
@@ -178,6 +179,8 @@
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
            03  WRK-CREYMD              PIC X(08).
+      *
+           03  WRK-PTSAME-CNT          PIC 9(02).
       *
       *    カルテＰＧ名
            03  WRK-KARUTE-PG           PIC X(20).
@@ -306,6 +309,15 @@
       *    患者病名
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
+      *
+      *    同一患者識別テーブル
+       01  PTSAME-REC.
+           COPY    "CPPTSAME.INC".
+      *
+      *    同一患者識別テーブル
+       01  HZN-PTSAME-REC.
+           COPY    "CPPTSAME.INC"      REPLACING
+                                       //PTSAME-// BY //HZN-PTSAME-//.
       *
       *
       *****************************************************************
@@ -555,12 +567,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-NAI-SYUKAYM NOT =   SPACE )
                PERFORM 2110-SYUKA-INSERT-SEC
            END-IF
-      *
-      *    ＱＲ情報更新
+      *    患者紐付（同一患者識別）設定
            IF     (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-QR-SYORI    NOT =   SPACE )
-               PERFORM 2120-QRCDHKN-UPD-SEC
+                  (SPA-GRPHOSPKBN      =   1     )
+               PERFORM 2110-PTSAME-SYORI-SEC
            END-IF
+      *
+      ***  ＱＲ情報更新
+      *    IF     (SPA-ERRCD           =   SPACE )  AND
+      *           (SPA-QR-SYORI    NOT =   SPACE )
+      *        PERFORM 2120-QRCDHKN-UPD-SEC
+      **** END-IF
       *
       *    カルテ／処方箋発行処理
            PERFORM 2100-HC01-SYORI-SEC
@@ -1986,6 +2003,176 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
+      *    患者紐付（同一患者識別）更新処理
+      *****************************************************************
+       2110-PTSAME-SYORI-SEC         SECTION.
+      *
+           INITIALIZE                      PTSAME-REC
+           MOVE    SPA-HOSPNUM         TO  PTSAME-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTSAME-PTID
+           MOVE    PTSAME-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-PTSAME-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTSAME
+           END-IF
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PTSAME          =   1
+               IF      SPA-NAI-GRPHOSPNUM  NOT =   ZERO
+      *            同一患者識別追加
+                   PERFORM 21101-PTSAME-ADD-SEC
+               END-IF
+           ELSE
+               IF      SPA-NAI-GRPHOSPNUM      =   ZERO
+      *            同一識別削除
+                   PERFORM 21102-PTSAME-DELETE-SEC
+               ELSE
+                   IF     (SPA-NAI-GRPHOSPNUM  =   PTSAME-SAME-HOSPNUM)
+                      AND (SPA-NAI-GRPPTID     =   PTSAME-SAME-PTID   )
+                       CONTINUE
+                   ELSE
+      *            紐付け変更
+      *                同一識別削除
+                       PERFORM 21102-PTSAME-DELETE-SEC
+      *                同一患者識別追加
+                       PERFORM 21101-PTSAME-ADD-SEC
+                   END-IF
+               END-IF
+           END-IF
+      *
+           .
+       2110-PTSAME-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同一患者識別追加処理
+      *****************************************************************
+       21101-PTSAME-ADD-SEC         SECTION.
+      *
+           INITIALIZE                      PTSAME-REC
+           MOVE    SPA-NAI-GRPHOSPNUM  TO  PTSAME-HOSPNUM
+           MOVE    SPA-NAI-GRPPTID     TO  PTSAME-PTID
+           MOVE    PTSAME-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-PTSAME-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTSAME
+           END-IF
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-PTSAME           =   ZERO
+      *        既に同一患者識別が登録済み
+               MOVE    SPA-HOSPNUM         TO  PTSAME-HOSPNUM
+               MOVE    SPA-GMN-PTID        TO  PTSAME-PTID
+               PERFORM 211011-PTSAME-INS-SEC
+           ELSE
+      *        同一患者識別なし
+               INITIALIZE                      PTSAME-REC
+               MOVE    SPA-NAI-GRPHOSPNUM  TO  PTSAME-HOSPNUM
+               MOVE    SPA-NAI-GRPPTID     TO  PTSAME-PTID
+               MOVE    SPA-NAI-GRPHOSPNUM  TO  PTSAME-SAME-HOSPNUM
+               MOVE    SPA-NAI-GRPPTID     TO  PTSAME-SAME-PTID
+               PERFORM 211011-PTSAME-INS-SEC
+      *
+               INITIALIZE                      PTSAME-REC
+               MOVE    SPA-HOSPNUM         TO  PTSAME-HOSPNUM
+               MOVE    SPA-GMN-PTID        TO  PTSAME-PTID
+               MOVE    SPA-NAI-GRPHOSPNUM  TO  PTSAME-SAME-HOSPNUM
+               MOVE    SPA-NAI-GRPPTID     TO  PTSAME-SAME-PTID
+               PERFORM 211011-PTSAME-INS-SEC
+           END-IF
+           .
+       21101-PTSAME-ADD-EXT.
+           EXIT.
+      *****************************************************************
+      *    同一患者識別追加処理
+      *****************************************************************
+       211011-PTSAME-INS-SEC         SECTION.
+      *
+           MOVE    SMCNDATE-YMD        TO  PTSAME-CREYMD
+           MOVE    SMCNDATE-YMD        TO  PTSAME-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTSAME-UPHMS
+      *
+           MOVE    SPA-OPID            TO  PTSAME-OPID
+      *
+           MOVE    PTSAME-REC          TO  MCPDATA-REC
+           MOVE    "DBINSERT"          TO  MCP-FUNC
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC          NOT =   ZERO
+               DISPLAY "P029 PTSAME INS ERR:" MCP-RC
+                          ",KEY:" PTSAME-KEY
+               MOVE    "9000"          TO  SPA-ERRCD
+           END-IF
+           .
+       211011-PTSAME-INS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   同一識別削除加処理
+      *****************************************************************
+       21102-PTSAME-DELETE-SEC         SECTION.
+      *
+           MOVE    PTSAME-REC          TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_ptsame "       TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *    同一患者がなくなった場合
+           MOVE    PTSAME-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-PTSAME-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTSAME
+           END-IF
+           MOVE    ZERO                TO  WRK-PTSAME-CNT
+           PERFORM UNTIL    FLG-PTSAME     =   1
+               ADD     1                   TO  WRK-PTSAME-CNT
+               MOVE    PTSAME-REC          TO  HZN-PTSAME-REC
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-PTSAME-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      WRK-PTSAME-CNT      =   1
+               MOVE    HZN-PTSAME-REC      TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_ptsame "       TO  MCP-TABLE
+               MOVE    "del1"              TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+           END-IF
+      *
+           .
+       21102-PTSAME-DELETE-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    ＱＲ情報更新処理
       *****************************************************************
        2120-QRCDHKN-UPD-SEC         SECTION.
@@ -2502,6 +2689,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
        960-SYSKANRI-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    同一患者識別マスター読込処理
+      *****************************************************************
+       900-PTSAME-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-PTSAME
+               MOVE    MCPDATA-REC         TO  PTSAME-REC
+           ELSE
+               MOVE    1                   TO  FLG-PTSAME
+           END-IF
+      *
+           .
+       900-PTSAME-READ-EXT.
+           EXIT.
+      *
       *****************************************************************
       *    QRコード(被保険者証)読込
       *****************************************************************

@@ -384,6 +384,8 @@ RECORD_files = \
 	Y012.rec \
 	YID1.rec \
 	MID2.rec \
+	P02G.rec \
+	P02G2.rec \
 
 DEF_files = \
 	HC01.def \

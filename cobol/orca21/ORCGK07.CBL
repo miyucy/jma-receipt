@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/17  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
+      *  04.04.00    NACL=多々納  09/01/30  本院分院対応
       *****************************************************************
       *
       *
@@ -297,8 +298,8 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-K09GMN-MAX1
                INITIALIZE                  JYURRK-REC
-               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
-               MOVE    SPA-PTID            TO  JYURRK-PTID
+               MOVE    SPA-K09-HOSPNUM     TO  JYURRK-HOSPNUM
+               MOVE    SPA-K09-PTID        TO  JYURRK-PTID
                MOVE    SPA-K07-NYUGAIKBN   TO  JYURRK-NYUGAIKBN
       *        入院
                IF      SPA-K07-NYUGAIKBN    =   "1"

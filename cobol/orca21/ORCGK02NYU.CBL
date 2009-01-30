@@ -511,6 +511,11 @@
                    07  WRK-KYUSEI-ST       PIC X(01).
                    07  WRK-KYUSEI-ED       PIC X(01).
                05  WRK-TEIGEN-IN           PIC X(01).
+      *!
+           03  WRK-HOSPNUM             PIC 9(02).
+           03  WRK-GRPHOSPUSERID       PIC X(64).
+           03  WRK-MACHIPG             PIC X(08).
+      *!
       *
       *   Ç¯ÎðÉ½¼¨
        01  WRK-NENREI-G.
@@ -645,7 +650,7 @@
       *
       *    COPY    "CPSK1006.INC".
       *
-      *    COPY    "CPSK1010.INC".
+           COPY    "CPSK1010.INC".
       *    Ä¢É¼£Ð£Ç
            COPY    "CPSK1032.INC".
       *    Ä¢É¼£Ð£Ç
@@ -834,6 +839,9 @@
            COPY    "CPORCSC100.INC".
       *    Êñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
            COPY    "CPORCSCHKTCHK.INC".
+      *
+      *    COMMONSPA½é´üÊÔ½¸
+           COPY    "CPORCSCOMMON.INC".
       *
       *    £Ä£Â¸¡º÷
       *01  MCPDATA-REC                 PIC X(5000).
@@ -2428,12 +2436,6 @@
            MOVE    ORCSCHKTCHK-NYUHKT-G    TO  SPA-NYUHKT-G
       *    Æþ±¡ÎÁ»»Äê¤Ê¤·
            MOVE    ORCSCHKTCHK-NYUERR  TO  SPA-NYU-ERR
-      *TEST
-              DISPLAY "3101-HKTCHK-INIT-EXT"
-                 ",SPA-NYUHKTCHK:" SPA-NYUHKTCHK
-                  ",SPA-NYUHKTCD:" SPA-NYUHKTCD
-                  ",SPA-NYU-ERR:" SPA-NYU-ERR
-      *TEST
            .
        3101-HKTCHK-INIT-EXT.
            EXIT.
@@ -3046,6 +3048,14 @@
                    INITIALIZE                  SPA-KYOTUKEY
                    MOVE    SPACE               TO  WRK-PUTTYPE
                    PERFORM 410109-K02IDOU-SEC
+      *!!
+               WHEN   (SPA-GMN-PTNUM(1:1)  =   "@"   )  AND
+                      (SPA-GMN-PTNUM(2:2)  NUMERIC   )  AND
+                      (SPA-GMN-PTNUM(4:)   =   SPACE )  AND
+                      (SPA-GRPHOSPKBN      =   1     )
+      *        @¤Î¤È¤­¡¢ËÜ±¡Ê¬±¡ÀÚÂØ¤Ø
+                   PERFORM 409-GRPCHK-SEC
+      *!!
                WHEN   (SPA-GMN-PTNUM           =   SPACE)
                    MOVE    WRK-GMN-PTID        TO  SPA-GMN-PTID
       *        ¶õÇò¤Ï´µ¼Ô¼è¾Ã¤ÈÆ±ÍÍ
@@ -3377,6 +3387,64 @@
            .
        410109-K02IDOU-EXT.
            EXIT.
+      *!!
+      *
+      *****************************************************************
+      *    ËÜ±¡Ê¬±¡ÀÚÂØ¤Ø
+      *****************************************************************
+       409-GRPCHK-SEC             SECTION.
+      *
+           MOVE    SPA-GMN-PTNUM(2:2)  TO  WRK-HOSPNUM
+           MOVE    ZERO                TO  FLG-OK
+           MOVE    SPACE               TO  WRK-GRPHOSPUSERID
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   9   )
+                          OR  (FLG-OK  =   1 )
+                          OR  (SPA-GRPHOSPNUM (IDX)    =   ZERO )
+               IF      WRK-HOSPNUM     =   SPA-GRPHOSPNUM (IDX)
+                   MOVE    SPA-GRPHOSPUSERID (IDX)
+                                               TO  WRK-GRPHOSPUSERID
+                   MOVE    1                   TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      WRK-GRPHOSPUSERID   =   SPACE
+               MOVE    "9210"              TO  SPA-ERRCD
+           ELSE
+               MOVE    SPA-MACHIPG         TO  WRK-MACHIPG
+               INITIALIZE                      SPA-AREA
+               MOVE    WRK-GRPHOSPUSERID   TO  SPA-OPID
+               INITIALIZE                  ORCSCOMMONAREA
+               INITIALIZE                  SYS-1010-REC
+               MOVE    "K02"               TO  ORCSCOMMON-PG
+               MOVE    WRK-HOSPNUM         TO  ORCSCOMMON-HOSPNUM
+               CALL    "ORCSCOMMON"        USING
+                                           MCPAREA
+                                           SPA-AREA
+                                           ORCSCOMMONAREA
+                                           SYS-1010-REC
+               IF      SPA-BEDFLG          =   ZERO
+                   MOVE    "M01"               TO  SPA-MACHIPG
+               ELSE
+                   MOVE    "M01N"              TO  SPA-MACHIPG
+               END-IF
+           END-IF
+           IF      SPA-ERRCD           =   SPACE
+      *        ³°Íè²èÌÌ¤Ø
+               IF      (SPA-BEDFLG         =   ZERO )
+                   INITIALIZE                  SPA-KYOTUKEY
+                   MOVE    SPACE               TO  WRK-PUTTYPE
+                   PERFORM 410109-K02IDOU-SEC
+               END-IF
+      *        ¶ÈÌ³ÁªÂò²èÌÌ¤è¤ê
+               IF      FLG-END             =   ZERO
+                   PERFORM 30010-INIT-GMN-SEC
+               END-IF
+           END-IF
+      *
+           .
+       409-GRPCHK-EXT.
+           EXIT.
+      *!!
       *
       *****************************************************************
       *    ¿ÇÎÅÆüÆþÎÏ½èÍý
@@ -9247,6 +9315,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       **** MOVE    SPA-TABOO-MAX       TO  K02N-TABOO-COUNT
            MOVE    IDY                 TO  K02N-TABOO-COUNT
+      *
+      *    Â¾±¡É³ÉÕ¤±¤¢¤ê
+           IF      SPA-NAI-GRPKBN      =   1
+               MOVE    "darkgreen"         TO  K02N-GRPMEI-STYLE
+               MOVE    "¡ÚÂ¾¡Û"            TO  K02N-GRPMEI-VALUE
+           ELSE
+               MOVE    "black"             TO  K02N-GRPMEI-STYLE
+               MOVE    SPACE               TO  K02N-GRPMEI-VALUE
+           END-IF
+      *    °å±¡Ì¾¾Î
+           MOVE    SPA-HOSPNAME        TO  K02N-TITLE
       *
       *    Èó³èÀ­½èÍý
            PERFORM 510-GSRAUTH-SEC

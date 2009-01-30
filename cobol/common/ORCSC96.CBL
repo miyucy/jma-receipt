@@ -1481,6 +1481,12 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
       *
+               WHEN    "9210"
+                   STRING  "切替できる医療機関番号ではありません。"
+                                       DELIMITED  BY  SPACE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
            END-EVALUATE
            .
        100-KYOUTU-ERRMSG-EXT.

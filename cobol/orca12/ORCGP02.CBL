@@ -64,6 +64,7 @@
       *  04.01.00    NACL-多々納  07/12/XX  患者禁忌薬剤マスタ追加
       *  04.02.00    NACL-多々納  08/03/XX  平成２０年４月改正対応
       *  04.03.00    NACL-多々納  08/07/22  特記事項追加
+      *  04.04.00    NACL-多々納  09/01/27  本院分院対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -115,8 +116,9 @@
            03  FLG-PTTAINFUKA      PIC 9(01).
            03  FLG-NYUINACT        PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
+           03  FLG-PTSAME          PIC 9(01).
       *
-           03  FLG-SYSKANRI       PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-HAKKOU          PIC 9(01).
       *
@@ -186,6 +188,9 @@
            03  WRK-GMN-SELNUM          PIC 9(02). 
       *
            03  WRK-RENNUM              PIC 9(02).
+      *
+           03  WRK-PTSAME-CNT          PIC 9(02).
+      *
       *    ＣＬＡＩＭファイル名
        01  CLAIM-FILE.
            03  FILLER              PIC X(30)   VALUE
@@ -424,6 +429,15 @@
        01  NRRKSRH-REC.
            COPY    "CPNRRKSRH.INC".
       *
+      *    同一患者識別テーブル
+       01  PTSAME-REC.
+           COPY    "CPPTSAME.INC".
+      *
+      *    同一患者識別テーブル
+       01  HZN-PTSAME-REC.
+           COPY    "CPPTSAME.INC"      REPLACING
+                                       //PTSAME-// BY //HZN-PTSAME-//.
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -498,6 +512,8 @@
            COPY    "P02Q1.INC".
            COPY    "P02Y.INC".
            COPY    "P02Y1.INC".
+           COPY    "P02G.INC".
+           COPY    "P02G2.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
       *
@@ -745,6 +761,25 @@
                        MOVE    "LINK"              TO  MCP-STATUS
                        PERFORM 3002-GMNSET-SEC
                    END-IF
+      *        他医院患者複写
+               WHEN    "P02G"
+                   MOVE    "P02"               TO  SPA-P02-GAMEN
+                   IF      SPA-P02G-SYORI      =   ZERO
+                       MOVE    1                   TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    "1"                 TO  SPA-UPDFLG
+      *                複写あり（各画面の初期編集）
+                       MOVE    "LINK"              TO  MCP-STATUS
+                       MOVE    "P02G"              TO  SPA-MOTOPG
+                       PERFORM 49012-GMNSPA-SET-SEC
+                       MOVE    1                   TO  SPA-GMN-CUR
+                   END-IF
+      *        患者紐付け画面
+               WHEN    "P02G2"
+                   MOVE    "P02"               TO  SPA-P02-GAMEN
+                   MOVE    1                   TO  SPA-GMN-CUR
+                   MOVE    SPACE               TO  SPA-P02-WIDGET
+                   MOVE    1                   TO  P02-PAGENO
       *        主科設定画面
                WHEN    "P02S"
                    MOVE    "P02"               TO  SPA-P02-GAMEN
@@ -1403,6 +1438,9 @@
       *    患者薬剤登録へ
                WHEN    "CLICKED"       ALSO    "B12S"
                    PERFORM 4902-P02YSYORI-SEC
+      *    患者紐付け
+               WHEN    "CLICKED"       ALSO    "B03S"
+                   PERFORM 4032-GRPPTNUM-SEC
       *    タグ切り替え
                WHEN    "CLICKED"       ALSO    "N01"
                WHEN    "CLICKED"       ALSO    "N02"
@@ -2117,6 +2155,65 @@
       *
            .
        4981-P02S-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者紐付け処理
+      *****************************************************************
+       4032-GRPPTNUM-SEC           SECTION.
+      *
+           IF      SPA-GMN-PTNUM       =   SPACE
+               MOVE    "1021"              TO  SPA-ERRCD
+           ELSE
+      *        患者紐付け設定画面へ
+               PERFORM 40321-P02G2-SYORI-SEC
+           END-IF
+      *
+           .
+       4032-GRPPTNUM-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者紐付け設定画面処理
+      *****************************************************************
+       40321-P02G2-SYORI-SEC            SECTION.
+      *
+           INITIALIZE                  SPA-P02S-AREA
+      *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02G2"         USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA.
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+      *
+      *    カーソル移動
+           IF      SPA-P02G2-MAX       >   ZERO
+               MOVE    "B01"               TO  MCP-WIDGET
+           ELSE
+               MOVE    "PTNUM"             TO  MCP-WIDGET
+           END-IF
+      *
+           MOVE    "P02"               TO  SPA-MOTOPG
+           MOVE    "P02G2"             TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"               TO  MCP-PUTTYPE
+           MOVE    "P02G2"             TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       40321-P02G2-SYORI-EXT.
            EXIT.
       *****************************************************************
       *    ＱＲ一覧へ処理
@@ -3221,6 +3318,66 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
+      *    同一患者識別テーブル
+           INITIALIZE                      PTSAME-REC
+           MOVE    SPA-HOSPNUM         TO  PTSAME-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTSAME-PTID
+           MOVE    PTSAME-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-PTSAME-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTSAME
+           END-IF
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PTSAME          =   ZERO
+               MOVE    PTSAME-REC          TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_ptsame "       TO  MCP-TABLE
+               MOVE    "del1"              TO  MCP-PATHNAME
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+      *        同一患者がなくなった場合
+               MOVE    PTSAME-REC          TO  MCPDATA-REC
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-PTSAME
+               END-IF
+               MOVE    ZERO                TO  WRK-PTSAME-CNT
+               PERFORM UNTIL    FLG-PTSAME     =   1
+                   ADD     1                   TO  WRK-PTSAME-CNT
+                   MOVE    PTSAME-REC          TO  HZN-PTSAME-REC
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               END-PERFORM
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+               IF      WRK-PTSAME-CNT      =   1
+                   MOVE    HZN-PTSAME-REC      TO  MCPDATA-REC
+                   MOVE    "DBDELETE"          TO  MCP-FUNC
+                   MOVE    "tbl_ptsame "       TO  MCP-TABLE
+                   MOVE    "del1"              TO  MCP-PATHNAME
+                   CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                       MCPDATA-REC
+                                                       SPA-AREA
+               END-IF
+           END-IF
+      *
            .
        49911-DB-DELETE-EXT.
            EXIT.
@@ -3647,13 +3804,25 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      499-COPY-EXT
            END-IF
       *
+           MOVE    SPA-P02KYOUTU       TO  SPA-WORK
+           MOVE    SPA-AREA            TO  SPA-COMMON
+           MOVE    SPA-P02SCRAREA      TO  SPA-FREE
+      *
+           MOVE    "LINK"              TO  MCP-STATUS
+           MOVE    SPACE               TO  MCP-EVENT
+      *
+           CALL    "ORCGP02E"          USING
+                                       MCPAREA
+                                       SPAAREA
+                                       LINKAREA
+                                       SCRAREA
+      *
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+      *
            MOVE    "P02"               TO  SPA-MOTOPG
            MOVE    "P02E"              TO  SPA-SAKIPG
-      *
-           MOVE    SPACE               TO  P02E
-           INITIALIZE                      P02E
-           INITIALIZE                      SPA-GMN2E-AREA
-           MOVE    1                   TO  SPA-GMN2E-CUR
       *    カーソル移動
            MOVE    "PTNUM"             TO  MCP-WIDGET
       *
@@ -3663,11 +3832,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
-      *
            .
        499-COPY-EXT.
            EXIT.
-      *
       *
       *****************************************************************
       *    ＣＬＡＩＭ接続情報取得処理
@@ -5337,6 +5504,23 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-YOYAKU-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    同一患者識別マスター読込処理
+      *****************************************************************
+       900-PTSAME-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-PTSAME
+               MOVE    MCPDATA-REC         TO  PTSAME-REC
+           ELSE
+               MOVE    1                   TO  FLG-PTSAME
+           END-IF
+      *
+           .
+       900-PTSAME-READ-EXT.
            EXIT.
       *
       *****************************************************************

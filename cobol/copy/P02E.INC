@@ -35,3 +35,15 @@
                 04  P02E-VALUE  PIC X(8).
               03  P02E-SEX.
                 04  P02E-VALUE  PIC X(4).
+              03  P02E-GRPHOSPNUM-COMB.
+                04  P02E-GRPHOSPNUM.
+                  05  P02E-VALUE  PIC X(23).
+                04  P02E-GRPHOSPNUM-COUNT  PIC S9(9)   BINARY.
+                04  P02E-GRPHOSPNUM-ITEM
+                        PIC X(23)   OCCURS  9 TIMES.
+              03  P02E-MIDASI.
+                04  P02E-MIDASI-STYLE  PIC X(20).
+                04  P02E-MIDASI-VALUE  PIC X(20).
+              03  P02E-B03.
+                04  P02E-B03-STATE  PIC S9(9)   BINARY.
+                04  P02E-B03-LABEL  PIC X(20).

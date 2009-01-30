@@ -52,6 +52,8 @@
                 04  P02-B05S-STATE   PIC S9(9)   BINARY.
               03  P02-B12S.
                 04  P02-B12S-STATE   PIC S9(9)   BINARY.
+              03  P02-B03S.
+                04  P02-B03S-STATE   PIC S9(9)   BINARY.
               03  P02-NB2.
                 04  P02-PAGENO  PIC S9(9)   BINARY.
                 04  P02-FIXPAGE1.
@@ -349,6 +351,9 @@
                   05  P02-TEIMSG.
                     06  P02-TEIMSG-STYLE   PIC X(20).
                     06  P02-TEIMSG-VALUE   PIC X(20).
+                  05  P02-TEIMSG2.
+                    06  P02-TEIMSG2-STYLE   PIC X(20).
+                    06  P02-TEIMSG2-VALUE   PIC X(10).
                 04 P02-FP3.
                   05  P02-P027-SELNUM.
                     06  P02-VALUE   PIC X(4).

@@ -34,6 +34,7 @@
       *  02.07.00    NACL-太田     05/10/24  MONFUNC 対応
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  04.04.00    NACL-多々納  09/01/29  本院分院対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -51,6 +52,7 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-PTNUM           PIC 9(01).
+           03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
       *    添字領域
@@ -68,18 +70,26 @@
       *----(01.00.01) LINE ADD END   --------------------------------
            03  WRK-SADDSIGN-STR    PIC X(1000).
       *
-      *    一時領域
+      *    保存スパ領域
+           COPY    "COMMON-SPA"      REPLACING
+                                     //SPA-// BY //WRK-SPA-//.
+      *
+      *****************************************************************
+      *    ファイルレイアウト
+      *****************************************************************
+      *
+      *    システム管理マスタ
+           COPY    "CPSYSKANRI.INC".
+      *    患者番号構成管理情報
+           COPY  "CPSK1009.INC".
+      *
       *    患者番号変換マスタ
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *****COPY    "MCPAREA.INC".
            COPY    "MCPAREA".
       *
-      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-      *     
-      *    COPY    "CPORCMCP.INC".  
       *
            COPY    "CPORCSADDSIGN.INC".
       *
@@ -90,16 +100,12 @@
       *
            COPY    "CPORCSPTID.INC".
       *
-grpsys*
-          COPY    "COMMON-SPA".
+          COPY     "COMMON-SPA".
       *
        PROCEDURE                    DIVISION    USING
-      *----(01.00.01) LINE MOD START -------------------------------
-      *     ORCSPTIDAREA.
            ORCSPTIDAREA
            SPA-AREA
            .
-      *----(01.00.01) LINE MOD END   -------------------------------
       *
       *****************************************************************
       *    主　　処理
@@ -107,8 +113,10 @@ grpsys*
        000-PROC-SEC                 SECTION.
       *
            MOVE    ZERO                TO  SPTID-RC
-           IF      SPTID-HOSPNUM        =   ZERO
-      *******  MOVE    1               TO  SPTID-HOSPNUM
+      *    スパ領域
+           MOVE    SPA-AREA            TO  WRK-SPA-AREA
+      *
+           IF      SPTID-HOSPNUM       =   ZERO
                MOVE    1                   TO  SPTID-RC
            END-IF
       *
@@ -131,6 +139,9 @@ grpsys*
       *****************************************************************
        100-PTID-SET-SEC                SECTION.
       *
+      *    患者番号構成編集
+           PERFORM 120-SYS1009HEN-SEC
+      *
       *----(01.00.01) LINE ADD START --------------------------------
            PERFORM 120-KETA-CNT-SEC
            IF  SPTID-RC            NOT =   ZERO
@@ -139,20 +150,16 @@ grpsys*
       *----(01.00.01) LINE ADD END   --------------------------------
       *
            MOVE    ZERO                TO  FLG-OK
-           MOVE    SPTID-HOSPNUM        TO  PTNUM-HOSPNUM
+           MOVE    SPTID-HOSPNUM       TO  PTNUM-HOSPNUM
       *
            MOVE    SPTID-PTNUM         TO  WRK-SADDSIGN-STR
            PERFORM 800-ORCSADDSIGN-SEC
            MOVE    WRK-SADDSIGN-STR    TO  PTNUM-PTNUM
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-PTNUM
            ELSE
@@ -162,12 +169,9 @@ grpsys                            SPA-AREA
            PERFORM
                UNTIL      (FLG-PTNUM   NOT =   ZERO )  OR
                           (FLG-OK          =   1    )
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_ptnum"         TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTNUM-REC
                    MOVE    ZERO                TO  FLG-PTNUM
@@ -181,20 +185,14 @@ grpsys                                SPA-AREA
                END-IF
            END-PERFORM
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-OK              =   1
                MOVE    PTNUM-PTID      TO  SPTID-PTID
            ELSE
                MOVE    FLG-PTNUM       TO  SPTID-RC
-      *----(01.00.01) LINE ADD START --------------------------------
-      ****     MOVE    WRK-PTNUM       TO  SPTID-PTNUM
-      *----(01.00.01) LINE ADD END   --------------------------------
            END-IF
       *
            .
@@ -202,28 +200,84 @@ grpsys                            SPA-AREA
            EXIT.
       *
       *****************************************************************
+      *    患者番号構成管理情報編集処理
+      *****************************************************************
+       120-SYS1009HEN-SEC                SECTION.
+      *
+      *    医療機関番号がＳＰＡと違う
+           IF     (SPTID-HOSPNUM    NOT =   ZERO  )
+           AND    (SPTID-SYS1009-KBN    =   1     )
+      *        患者番号構成管理情報編集
+               MOVE    SPTID-HOSPNUM       TO  WRK-SPA-HOSPNUM
+               PERFORM 1201-SYS1009-SPA-SEC
+           END-IF
+           .
+       120-SYS1009HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者番号構成管理情報編集処理
+      *****************************************************************
+       1201-SYS1009-SPA-SEC                SECTION.
+      *
+           INITIALIZE                       WRK-SPA-1009-TBL
+      *
+           MOVE    SPACE               TO  SYS-1009-REC
+           INITIALIZE                  SYS-1009-REC
+           MOVE    "1009"              TO  SYS-1009-KANRICD
+           MOVE    "*"                 TO  SYS-1009-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1009-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1009-EDYUKYMD
+           MOVE    SPTID-HOSPNUM       TO  SYS-1009-HOSPNUM
+           MOVE    SYS-1009-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    SYSKANRI-REC        TO  SYS-1009-REC
+               MOVE    SYS-1009-PTNUMKSIKBN
+                                       TO  WRK-SPA-1009-PTNUMKSIKBN
+               MOVE    SYS-1009-JIYKSIKBN
+                                       TO  WRK-SPA-1009-JIYKSIKBN
+               MOVE    SYS-1009-JIYKSIKETA
+                                       TO  WRK-SPA-1009-JIYKSIKETA
+               MOVE    SYS-1009-HJNKSIKBN
+                                       TO  WRK-SPA-1009-HJNKSIKBN
+               MOVE    SYS-1009-HJNKSINENKBN
+                                       TO  WRK-SPA-1009-HJNKSINENKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKBN
+                                       TO  WRK-SPA-1009-HJNKSIRENNUMKBN
+               MOVE    SYS-1009-HJNKSIRENNUMKETA
+                                       TO  WRK-SPA-1009-HJNKSIRENNUMKETA
+      *拡張構成区分
+               MOVE    SYS-1009-KKCKSIKBN
+                                       TO  WRK-SPA-1009-KKCKSIKBN
+               MOVE    SYS-1009-KKCKSIMAEKETA
+                                       TO  WRK-SPA-1009-KKCKSIMAEKETA
+               MOVE    SYS-1009-KKCKSIRENNUMKETA
+                                       TO  WRK-SPA-1009-KKCKSIRENNUMKETA
+               MOVE    SYS-1009-KKCKSIATOKETA
+                                       TO  WRK-SPA-1009-KKCKSIATOKETA
+           ELSE
+               MOVE    1               TO  SPTID-RC
+           END-IF
+           .
+       1201-SYS1009-SPA-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    患者番号検索処理
       *****************************************************************
        110-PTNUM-SET-SEC                SECTION.
       *
-           MOVE    SPTID-HOSPNUM         TO  PTNUM-HOSPNUM
-           MOVE    SPTID-PTID           TO  PTNUM-PTID
+           MOVE    SPTID-HOSPNUM       TO  PTNUM-HOSPNUM
+           MOVE    SPTID-PTID          TO  PTNUM-PTID
       *
-grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    PTNUM-REC           TO  MCPDATA-REC
-           MOVE    "DBSELECT"          TO  MCP-FUNC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "DBFETCH"           TO  MCP-FUNC
                MOVE    "tbl_ptnum"         TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
-grpsys         CALL "ORCDBMAIN" USING MCPAREA
-                                      MCPDATA-REC
-grpsys                                SPA-AREA
+               PERFORM 920-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  PTNUM-REC
                    MOVE    ZERO                TO  FLG-PTNUM
@@ -236,12 +290,9 @@ grpsys                                SPA-AREA
                INITIALIZE                  PTNUM-REC
            END-IF
       *
-           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
            MOVE    "tbl_ptnum"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-grpsys     CALL "ORCDBMAIN" USING MCPAREA
-                                  MCPDATA-REC
-grpsys                            SPA-AREA
+           PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-PTNUM           =   ZERO
                MOVE    PTNUM-PTNUM     TO  SPTID-PTNUM
@@ -263,13 +314,13 @@ grpsys                            SPA-AREA
            MOVE    SPTID-PTNUM         TO  WRK-PTNUM
       *
       *    標準構成時のみ変換
-      *****IF  SPA-1009-PTNUMKSIKBN    =   "1"  OR  "3"
-           IF  SPA-1009-PTNUMKSIKBN    =   "3"
+      *****IF  WRK-SPA-1009-PTNUMKSIKBN    =   "1"  OR  "3"
+           IF  WRK-SPA-1009-PTNUMKSIKBN    =   "3"
                GO  TO                  120-KETA-CNT-EXT
            END-IF
       *    自由構成で数字型の時変換
-           IF  (SPA-1009-PTNUMKSIKBN   =   "1"  )  AND
-               (SPA-1009-JIYKSIKBN NOT =   "2"  )
+           IF  (WRK-SPA-1009-PTNUMKSIKBN   =   "1"  )  AND
+               (WRK-SPA-1009-JIYKSIKBN NOT =   "2"  )
                GO  TO                  120-KETA-CNT-EXT
            END-IF
       *
@@ -281,21 +332,21 @@ grpsys                            SPA-AREA
            END-PERFORM
       *
       *    自由構成の桁数編集
-           IF  SPA-1009-PTNUMKSIKBN    =   "1"
-               MOVE    SPA-1009-JIYKSIKETA     TO  WRK-RENKETA
+           IF  WRK-SPA-1009-PTNUMKSIKBN    =   "1"
+               MOVE    WRK-SPA-1009-JIYKSIKETA     TO  WRK-RENKETA
            ELSE
       *    標準構成の桁数
       *    システム管理マスタで設定された桁数をカウント
-               MOVE    SPA-1009-HJNKSIRENNUMKETA   TO  WRK-RENKETA
-               IF  SPA-1009-HJNKSIKBN      =   "1"  OR  "2"
-                   EVALUATE    SPA-1009-HJNKSINENKBN
+               MOVE    WRK-SPA-1009-HJNKSIRENNUMKETA   TO  WRK-RENKETA
+               IF  WRK-SPA-1009-HJNKSIKBN      =   "1"  OR  "2"
+                   EVALUATE    WRK-SPA-1009-HJNKSINENKBN
                    WHEN    "1"
                        ADD     3           TO  WRK-RENKETA
                    WHEN    "2"
                        ADD     4           TO  WRK-RENKETA
                    END-EVALUATE
                END-IF
-               IF  SPA-1009-HJNKSIKBN      =   "1"  OR  "3"
+               IF  WRK-SPA-1009-HJNKSIKBN      =   "1"  OR  "3"
                    ADD     1               TO  WRK-RENKETA
                END-IF
            END-IF
@@ -338,3 +389,75 @@ grpsys                            SPA-AREA
            .
        800-ORCSADDSIGN-EXT.
            EXIT.
+      *****************************************************************
+      *    システム基本チェック処理
+      *****************************************************************
+       900-SYSKANRI-KEY10-SEC     SECTION.
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key10"         TO  MCP-PATHNAME
+               PERFORM 920-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  SYSKANRI-REC
+                   MOVE    ZERO            TO  FLG-SYSKANRI
+               ELSE
+                   INITIALIZE                  SYSKANRI-REC
+                   MOVE    1               TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+               INITIALIZE                  SYSKANRI-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       900-SYSKANRI-KEY10-EXT.
+           EXIT.
+      *****************************************************************
+      *    テーブル検索処理
+      *****************************************************************
+       910-DBSELECT-SEC                SECTION.
+      *
+           MOVE    "DBSELECT"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+       910-DBSELECT-EXT.
+           EXIT.
+      *****************************************************************
+      *    ＤＢ読み込み処理
+      *****************************************************************
+       920-DBFETCH-SEC                 SECTION.
+      *
+           MOVE    "DBFETCH"       TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+           .
+      *
+       920-DBFETCH-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ＤＢクローズ処理
+      *****************************************************************
+       990-DBCLOSE-SEC         SECTION.
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               WRK-SPA-AREA
+      *
+           .
+       990-DBCLOSE-EXT.
+           EXIT.
+      *

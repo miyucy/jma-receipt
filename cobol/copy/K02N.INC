@@ -17,6 +17,7 @@
       ********************************************************************
         02  K02N.
       ****  02  K02N-FIXED2.
+            03  K02N-TITLE          PIC X(120).
               03  K02N-PTNUM.
                 04  K02N-VALUE  PIC X(20).
               03  K02N-KANANAME-G.
@@ -94,6 +95,9 @@
                   05  K02N-VALUE  PIC X(22).
                 04  K02N-JIKANKBN-COUNT  PIC S9(9)   BINARY.
                 04  K02N-JIKANKBN-ITEM   PIC X(22)   OCCURS  5 TIMES.
+              03  K02N-GRPMEI.
+                04  K02N-GRPMEI-STYLE   PIC X(20).
+                04  K02N-GRPMEI-VALUE   PIC X(10).
               03  K02N-B04S.
                 04  K02N-B04S-STATE   PIC S9(9)   BINARY.
               03  K02N-B05S.

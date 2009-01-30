@@ -17,6 +17,7 @@
       ********************************************************************
         02  K02.
       ****  02  K02-FIXED2.
+            03  K02-TITLE          PIC X(120).
               03  K02-PTNUM.
                 04  K02-VALUE   PIC X(20).
               03  K02-KANANAME-G.
@@ -130,6 +131,9 @@
               03  K02-KOHMSG.
                 04  K02-KOHMSG-STYLE   PIC X(20).
                 04  K02-KOHMSG-VALUE   PIC X(50).
+              03  K02-GRPMEI.
+                04  K02-GRPMEI-STYLE   PIC X(20).
+                04  K02-GRPMEI-VALUE   PIC X(10).
               03  K02-B12.
                 04  K02-B12-STATE   PIC S9(9)   BINARY.
               03  K02-B12S.

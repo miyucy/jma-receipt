@@ -74,6 +74,8 @@
            03  WRK-SURYO-2X            PIC X(02).
            03  WRK-SURYO-2             PIC Z9.
       *
+           03  WRK-HOSPNUM             PIC 9(02).
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -125,6 +127,11 @@
            INITIALIZE                  WRK-AREA
       *
            INITIALIZE                  ORCSMEIHEN-OUT-AREA
+           IF      ORCSMEIHEN-GRPHOSPNUM   =   ZERO
+               MOVE    SPA-HOSPNUM         TO  WRK-HOSPNUM
+           ELSE
+               MOVE    ORCSMEIHEN-GRPHOSPNUM   TO  WRK-HOSPNUM
+           END-IF
       *
            IF      ORCSMEIHEN-TNS-NAME  =   SPACE
                PERFORM 100-TNS-NAME-HEN-SEC
@@ -161,7 +168,7 @@
                MOVE    SPA-SRYYMD          TO  TNS-YUKOEDYMD
            END-IF
       *
-           MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
+           MOVE    WRK-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME

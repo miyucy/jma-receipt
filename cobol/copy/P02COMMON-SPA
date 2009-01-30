@@ -81,6 +81,8 @@
            03  SPA-NAI-HIHKNJAKBN-FLG      PIC X(01).
       *    世帯主名自動記載区分
            03  SPA-NAI-SETAIKBN-FLG       PIC X(01).
+      *    グループ医療機関患者リスト
+           03  SPA-NAI-GRPPTLST-FLG       PIC X(01).
       *
       *    更新時警告あり
            03  SPA-KEI2-FLG               PIC 9(01).
@@ -114,6 +116,8 @@
       *        二重登録表示有無
                05  SPA-P02A-FLG1              PIC 9(01).
                05  SPA-P02A-FLG2              PIC 9(01).
+      *        グループ医療機関
+               05  SPA-P02G-FLG               PIC 9(01).
       *
       * 組合せ表示　総件数（既削除データ除く）
                05  SPA-P02-COMBMAX            PIC 9(04).

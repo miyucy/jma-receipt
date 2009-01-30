@@ -28,6 +28,8 @@
            03  ORCSMEIHEN-IN-AREA.
       *処理区分（１：用量、２：検査包括数）
                05  ORCSMEIHEN-KBN                 PIC  X(01).
+      *医療機関番号
+               05  ORCSMEIHEN-GRPHOSPNUM          PIC  9(02).
       *診療コード
                05  ORCSMEIHEN-SRYCD               PIC  X(09).
       *名称
