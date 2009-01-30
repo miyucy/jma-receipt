@@ -112,6 +112,8 @@
       *スーパーバイザー
              03  SPA-SUPERVISOR        PIC  X(01).
       *
+      *医療機関名称
+             03  SPA-HOSPNAME          PIC X(60).
       *本院・分院識別区分
              03  SPA-GRPHOSPKBN        PIC 9(01).
       *他院医療機関識別番号
@@ -294,6 +296,7 @@
       *****  03  SPA-WORK                  PIC X(11685).
       *****  03  SPA-WORK                  PIC X(11680).
       *****  03  SPA-WORK                  PIC X(19280).
-             03  SPA-WORK                  PIC X(19027).
+      *****  03  SPA-WORK                  PIC X(19027).
+             03  SPA-WORK                  PIC X(18967).
       *----(01.00.02) LINE UPD END   ----------------------------------
       *

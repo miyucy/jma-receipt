@@ -270,6 +270,7 @@
                MOVE    1                   TO  SPA-BEDKBN
       *        医療機関名称
                MOVE    SYS-1001-HOSPNAME   TO  ORCSCOMMON-HOSPNAME
+               MOVE    SYS-1001-HOSPNAME   TO  SPA-HOSPNAME
       *
 *    
 *******  @CLINIC_BED_SET_TO_ZERO@
@@ -723,7 +724,7 @@
       *!!  ORCSCOMMON-HOSPNUM と SPA-STAFFCD から 
       *!!  ORCSCOMMON-HOSPNUM の MCP-USER を 決定する
       *
-           INITIALIZE                      SPA-AREA
+      *****INITIALIZE                      SPA-AREA
       *    システム日付取得
            PERFORM 3001-SYSYMD-SET-SEC
            MOVE    ORCSCOMMON-HOSPNUM  TO  SPA-HOSPNUM
