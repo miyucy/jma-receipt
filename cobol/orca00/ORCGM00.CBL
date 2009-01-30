@@ -247,7 +247,6 @@
            COPY    "M98.INC".
            COPY    "MUID.INC".
            COPY    "M99.INC".
-           COPY    "MID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1341,7 +1340,7 @@
            INITIALIZE                  M00
       *
       **** MOVE    SYS-1001-HOSPNAME   TO  M00-TITLE
-           MOVE    SPA-HOSPNAME        TO  M00-TITLE
+           MOVE    ORCSCOMMON-HOSPNAME TO  M00-TITLE
            MOVE    SPA-GMN-GSEL        TO  M00-SELNUM
            MOVE    SPA-GMN-LBLMSG      TO  M00-LBLMSG
            MOVE    SPA-GMN-LBLMSG2     TO  M00-LBLMSG2
