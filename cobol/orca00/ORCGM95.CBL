@@ -2067,7 +2067,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                                        INTO  MID1-ID1MSG
                    END-STRING
                WHEN    "0105"
-                   STRING  SPA-M95GMN-TAINNAME(SPA-M95GMN-TAINNUM)
+                   MOVE    SPA-M95GMN-TAINNUM  TO  WRK-NUM-1-X
+                   STRING  SPA-M95GMN-TAINNAME(WRK-NUM-1)
                                                DELIMITED   BY  SPACE
                            "へ切り替えを行います。よろしいですか？"
                                                DELIMITED   BY  SIZE
@@ -2103,7 +2104,8 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPACE               TO  MID2
            EVALUATE    SPA-MIDCD
                WHEN    "0106"
-                   STRING  SPA-M95GMN-TAINNAME(SPA-M95GMN-TAINNUM)
+                   MOVE    SPA-M95GMN-TAINNUM  TO  WRK-NUM-1-X
+                   STRING  SPA-M95GMN-TAINNAME(WRK-NUM-1)
                                                DELIMITED   BY  SPACE
                            "へログインするためのユーザーが"
                                                DELIMITED   BY  SIZE
