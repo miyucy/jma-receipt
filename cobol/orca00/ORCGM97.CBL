@@ -171,6 +171,7 @@
            COPY    "M98.INC".
            COPY    "MUID.INC".
            COPY    "M99.INC".
+           COPY    "MID2.INC".
       *
       *
        PROCEDURE                   DIVISION    USING

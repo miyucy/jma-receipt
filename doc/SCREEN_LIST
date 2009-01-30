@@ -9,6 +9,7 @@ M98.glade	orca00	(M98)データ収集閲覧画面
 M99.glade	orca00	(M99)処理結果
 MERR.glade	orca00	(MERR)エラー情報
 MID1.glade	orca00	(MID1)確認画面
+MID2.glade	orca00	(MID2)確認画面
 MVER.glade	orca00	(MVER)情報
 MUID.glade	orca00	(MUID)収集データアップロードユーザ設定
 
@@ -76,10 +77,13 @@ QID1.glade	orca13	(QID1)確認画面
 QFIL.glade	orca13	(QFIL)クライアント保存画面
 
 Y01.glade	orca14	(Y01)予約登録−予約状況
+Y011.glade	orca14	(Y011)予約−予約メモ入力
+Y012.glade	orca14	(Y012)予約−予約メモ文例入力
 Y03.glade	orca14	(Y03)予約登録-予約一覧
 Y04.glade	orca14	(Y04)予約登録-予約患者一覧
 Y05.glade	orca14	(Y05)予約登録−患者予約状況一覧
 YERR.glade	orca14	(YERR)エラー情報
+YID1.glade	orca14	(YID1)確認画面
 
 U01.glade	orca18	(U01)受付一覧
 U012.glade	orca18	(U012)受付一覧ー選択一覧
@@ -323,6 +327,8 @@ W61.glade	orca101	(W61)システム管理情報−レセプト特記事項編集情報設定
 W62.glade	orca101	(W62)印刷設定確認画面
 W63.glade	orca101	(W63)システム管理情報−データチェック機能情報３
 W64.glade	orca101	(W64)システム管理情報−公費番号まとめ情報設定
+W65.glade	orca101	(W65)システム管理情報−公費付加情報設定
+W66.glade	orca101	(W66)システム管理情報−公害医療機関情報設定
 W96.glade	orca101	(W96)システム管理情報−CRON設定情報
 W98.glade	orca101	(W98)システム管理情報−排他情報設定
 W981.glade	orca101	(W981)システム管理情報−排他制御状態
@@ -357,6 +363,7 @@ X02.glade	orca103	(X02)チェックマスタ設定−適用コード設定
 X03.glade	orca103	(X03)チェック項目複写
 X04.glade	orca103	(X04)チェックマスタ設定−適用コード設定（病名）
 X05.glade	orca103	(X05)チェックマスタ設定−適用コード設定
+X06.glade	orca103	(X06)例外コード登録
 X91.glade	orca103	(X91)チェックマスター帳票出力設定
 X97.glade	orca103	(X97)処理結果
 X98.glade	orca103	(X98)診療行為一覧選択サブ

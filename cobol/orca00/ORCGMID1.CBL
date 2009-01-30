@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 業務選択
-      *  コンポーネント名  : 確認画面１（ＫＩＤ１）
+      *  コンポーネント名  : 確認画面１（ＭＩＤ１）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    MCC−多々納   新規作成
@@ -86,6 +86,7 @@
            COPY    "M98.INC".
            COPY    "MUID.INC".
            COPY    "M99.INC".
+           COPY    "MID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -134,7 +135,7 @@
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    SPACE           TO  SPA-MID1-FLG
                    PERFORM 210-BACK
-      *     登録
+      *        登録
                WHEN    "CLICKED"       ALSO    "B12"
                    MOVE    "OK"            TO  SPA-MID1-FLG
                    PERFORM 210-BACK

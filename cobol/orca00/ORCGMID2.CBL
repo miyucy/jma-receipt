@@ -15,31 +15,26 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-       IDENTIFICATION              DIVISION.
-       PROGRAM-ID.                 ORCGMERR.
+       IDENTIFICATION          DIVISION.
+       PROGRAM-ID.             ORCGMID2.
       *****************************************************************
       *  システム名        : ＯＲＣＡ
-      *  サブシステム名    : 病名
-      *  コンポーネント名  : エラーメッセージ（ＥＲＲ）
-      *  管理者            : 
-      *  00/12/01    MCC−藤原　   新規作成
+      *  サブシステム名    : 業務選択
+      *  コンポーネント名  : 確認画面２（ＭＩＤ２）
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  09/01/28    NACL−森脇    新規作成
       *****************************************************************
       *  プログラム修正履歴
-      * Maj/Min/Rev  修正者       日付      内容
-      *  01.01.01    MCC-多々納   01/09/20  JOINの修正      
-      *  01.01.02    MCC-藤原     01/09/27  MVERの追加  
-      *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
-      *  01.02.02    MCC-多々納   02/02/22  MID1の追加
-      *  01.02.03    NACL-伊藤    04/02/05  M97の追加
-      *  01.02.04    NACL-伊藤    06/02/22  MONFUNC 対応
+      * Maj/Min/Rev  修正者        日付      内容
       *****************************************************************
       *
-       ENVIRONMENT                 DIVISION.
+       ENVIRONMENT             DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-       DATA                        DIVISION.
+       DATA                    DIVISION.
       *FILE                        SECTION.
       *
       *
@@ -47,6 +42,8 @@
       *
       *    スパ領域
            COPY    "COMMON-SPA".
+      *    スパ領域
+           COPY    "M00COMMON-SPA".
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -62,13 +59,15 @@
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
+      *     
+      **** COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
-        LINKAGE                     SECTION.
+        LINKAGE                    SECTION.
       *
-           COPY    MCPAREA.
+           COPY    "MCPAREA".
            COPY    "ORCA-SPA".
       *
            COPY    "LINKAREA".
@@ -89,11 +88,11 @@
            COPY    "M99.INC".
            COPY    "MID2.INC".
       *
-       PROCEDURE                   DIVISION    USING
-           MCPAREA
-           SPAAREA
-           LINKAREA
-           SCRAREA.
+       PROCEDURE               DIVISION    USING
+                                           MCPAREA
+                                           SPAAREA
+                                           LINKAREA
+                                           SCRAREA.
       *
       *****************************************************************
       *    主　　処理
@@ -101,20 +100,20 @@
        000-PROC-SEC                SECTION.
       *
            MOVE    SPA-COMMON      TO  SPA-AREA
+           MOVE    SPA-WORK        TO  SPA-M00KYOUTU
       * 
-           EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
-               WHEN    "LINK"          ALSO    ANY
+           EVALUATE    MCP-STATUS  ALSO    MCP-EVENT
+               WHEN    "LINK"      ALSO    ANY
                    PERFORM 100-INIT-SEC
       *    画面遷移
-               WHEN      OTHER
-                   PERFORM 210-BACK
+               WHEN     "PUTG"     ALSO   "CLICKED"
+                   PERFORM 200-GMNSENI
            END-EVALUATE.
       *
+           MOVE    SPA-M00KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
       *
-           .
-           EXIT    PROGRAM
-           .
+           EXIT    PROGRAM.
       *****************************************************************
       *    初期　処理
       *****************************************************************
@@ -123,23 +122,38 @@
            .
        100-INIT-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    画面遷移処理
+      *****************************************************************
+       200-GMNSENI                 SECTION.
+      *
+           EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
+      *     確認
+               WHEN    "CLICKED"   ALSO    "B12"
+                   PERFORM 210-BACK
+           END-EVALUATE
+      *
+           .
+       200-GMNSENI-EXT.
+           EXIT.
       *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    SPA-MOTOPG          TO  SPA-SAKIPG
-           MOVE    "MERR"              TO  SPA-MOTOPG
-     *
-     ***** MOVE    "BACK"              TO  MCP-PUTTYPE
-           MOVE    "JOIN"              TO  MCP-PUTTYPE
-           MOVE    SPA-SAKIPG          TO  MCP-WINDOW
+           MOVE    SPA-MOTOPG      TO  SPA-SAKIPG
+           MOVE    "MID2"          TO  SPA-MOTOPG
+      *
+     ***   MOVE    "BACK"          TO  MCP-PUTTYPE
+           MOVE   "JOIN"           TO  MCP-PUTTYPE
+           MOVE    SPA-SAKIPG      TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
-      *
+           MOVE    1               TO  FLG-END
            .
+      *
        210-BACK-EXT.
            EXIT.
       *
@@ -148,13 +162,13 @@
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
-           MOVE    "PUTWINDOW"         TO  MCP-FUNC.
-           CALL    "ORCDBMAIN"         USING
-                                           MCPAREA
-                                           MCPDATA-REC
-                                           SPA-AREA
-      *
+           MOVE   "PUTWINDOW"      TO  MCP-FUNC.
+           CALL   "ORCDBMAIN"          USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
            .
+      *
        900-PUT-WINDOW-EXT.
            EXIT.
       *

@@ -55,3 +55,5 @@
                             PIC X       OCCURS  9 TIMES.
                   05  M95-TAINNUM.
                     06  M95-VALUE   PIC X(1).
+                04  M95-N03-STATE     PIC S9(9)   BINARY.
+

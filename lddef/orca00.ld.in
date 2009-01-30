@@ -17,6 +17,7 @@ bind	"MVER"		"OpenCOBOL"	"ORCGMVER";
 bind	"M98"		"OpenCOBOL"	"ORCGM98";
 bind	"MUID"		"OpenCOBOL"	"ORCGMUID";
 bind	"M99"		"OpenCOBOL"	"ORCGM99";
+bind	"MID2"		"OpenCOBOL"	"ORCGMID2";
 
 multiplex_group	orca00;
 
@@ -37,6 +38,7 @@ data	{
 		M98;
 		MUID;
 		M99;
+		MID2;
 	};
 };
 

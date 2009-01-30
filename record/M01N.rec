@@ -1,4 +1,5 @@
 M01N	{
+	title  varchar(120);
 	fixed1	{
 		                 G11	{
 		                	state	int;

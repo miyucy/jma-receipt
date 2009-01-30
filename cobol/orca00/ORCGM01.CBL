@@ -51,6 +51,7 @@
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/25  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.04.00    NACL-¿¹ÏÆ    08/11/20  °õºþºï½ü¥Ü¥¿¥óÄÉ²Ã
       *  04.04.00    NACL-¿¹ÏÆ    09/01/27  ÇÓÂ¾£Ó£Ð£Á¶¦ÄÌÂÐ±þ
+      *  04.04.00    NACL-¿¹ÏÆ    09/01/30  Â¾±¡ÀÚÂØÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -206,6 +207,7 @@
            COPY    "M98.INC".
            COPY    "MUID.INC".
            COPY    "M99.INC".
+           COPY    "MID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -312,7 +314,7 @@
            EVALUATE    SPA-MOTOPG
                WHEN    "MID1"
                    PERFORM 3001-MID1-SYORI-SEC
-                   GO      TO      3OO-SCREEN-EXT
+                   GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
       *----(01.02.07)--ADD-START---
@@ -321,14 +323,14 @@
                     ",SPA-BEDFLG:" SPA-BEDFLG
            IF        SPA-BEDFLG     >   ZERO
                PERFORM 450-M01N-SYORI-SEC
-               GO  TO  3OO-SCREEN-EXT
+               GO  TO  300-SCREEN-EXT
            END-IF
       *----(01.02.07)--ADD-END-----
       *
            PERFORM 320-SYS-1010-SPASET-SEC
            PERFORM 310-SPASET-SEC
            .
-       3OO-SCREEN-EXT.
+       300-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1028,21 +1030,26 @@
       *****************************************************************
       *    £Í£°£±£Î½èÍý¤Ø
       *****************************************************************
-       450-M01N-SYORI-SEC                   SECTION.
+       450-M01N-SYORI-SEC          SECTION.
       *
-           MOVE    "M01N"              TO  SPA-SAKIPG
-           MOVE    "M01"               TO  SPA-MOTOPG
+           MOVE    SPA-M00KYOUTU   TO  SPA-WORK
       *
-           MOVE    SPA-M00KYOUTU       TO  SPA-WORK
+           MOVE    SPACE           TO  LINKAREA
       *
-           MOVE    SPACE               TO  LINKAREA
+           IF      SPA-MOTOPG      =   "M95"
+               MOVE    "JOIN"          TO  MCP-PUTTYPE
+           ELSE
+               MOVE    "CHANGE"        TO  MCP-PUTTYPE
+           END-IF
       *
-           MOVE    "CHANGE"            TO  MCP-PUTTYPE
-           MOVE    "M01N"              TO  MCP-WINDOW
+           MOVE    "M01N"          TO  MCP-WINDOW
+      *
+           MOVE    "M01N"          TO  SPA-SAKIPG
+           MOVE    "M01"           TO  SPA-MOTOPG
       *
            PERFORM 900-PUT-WINDOW
       *
-           MOVE    1                   TO  FLG-END
+           MOVE    1               TO  FLG-END
       *
            .
        450-M01N-SYORI-EXT.
@@ -1224,6 +1231,7 @@
       *
            INITIALIZE                  M01
       *
+           MOVE    SPA-HOSPNAME        TO  M01-TITLE
            MOVE    SPA-GMN-GSEL        TO  M01-SELNUM
       *
       *----(01.00.04) LINE DEL START ----------------------------------

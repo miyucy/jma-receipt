@@ -208,6 +208,7 @@
            COPY    "M98.INC".
            COPY    "MUID.INC".
            COPY    "M99.INC".
+           COPY    "MID2.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
@@ -1235,6 +1236,7 @@
       *
            INITIALIZE                  M01N
       *
+           MOVE    SPA-HOSPNAME        TO  M01N-TITLE
            MOVE    SPA-GMN-GSEL        TO  M01N-SELNUM
       *
       *----(01.00.04) LINE DEL START ----------------------------------
