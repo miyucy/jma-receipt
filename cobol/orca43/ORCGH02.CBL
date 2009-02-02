@@ -621,6 +621,12 @@
                    MOVE    "1003"              TO  SPA-HIDCD
            END-EVALUATE
       *
+           IF      SPA-ERRCD       NOT =   SPACE    
+              MOVE    SPA-H02GMN-SELNUM-OLD
+                                       TO  SPA-H02GMN-SELNUM
+              MOVE    SPA-H02NAI-SELNUM-OLD
+                                       TO  SPA-H02NAI-SELNUM
+           END-IF 
            .
        41011-HENREILIST-SEL-EXT.
            EXIT.
