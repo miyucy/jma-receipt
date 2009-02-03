@@ -38,5 +38,29 @@ P02Y	{
 		INPUTCDMSG	{
 			value	varchar(21);
 		};
+		GRPHOSPNUM_COMB	{
+			GRPHOSPNUM	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(23)[9];
+		};
+		B03	{
+	           	state	int;
+		};
+		B08	{
+	           	state	int;
+		};
+		B12	{
+	           	state	int;
+		};
+		B09	{
+	           	state	int;
+			label	varchar(20);
+		};
+		B10	{
+	           	state	int;
+			label	varchar(20);
+		};
 	};
 };
