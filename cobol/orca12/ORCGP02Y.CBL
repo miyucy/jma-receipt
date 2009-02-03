@@ -46,6 +46,9 @@
       *    患者画面スパ領域
            COPY    "P02SCR-SPA".
       *
+      *    画面非表示
+           COPY    "ENUM-VALUE".
+      *
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
@@ -53,6 +56,7 @@
            03  FLG-INPUTCD         PIC 9(01).
            03  FLG-PTKINKI         PIC 9(01).
            03  FLG-SRYCDCHG        PIC 9(01).
+           03  FLG-PTSAME          PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
            03  FLG-INPUT           PIC 9(01).
@@ -143,6 +147,10 @@
       *    老人一般コード変換
        01  SRYCDCHG-REC.
            COPY    "CPSRYCDCHG.INC".
+      *
+      *    同一患者識別テーブル
+       01  PTSAME-REC.
+           COPY    "CPPTSAME.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -332,6 +340,9 @@
       *
            INITIALIZE                      SPA-P02Y-AREA
       *
+           MOVE    SPA-HOSPNUM         TO  SPA-P02Y-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  SPA-P02Y-PTID
+      *
       *    禁忌薬剤編集
            MOVE    1                   TO  SPA-P02Y-PAGE
            PERFORM 3001-PTKINKI-HENSYU-SEC
@@ -339,6 +350,14 @@
                MOVE    2                   TO  SPA-P02Y-CUR
            ELSE
                MOVE    1                   TO  SPA-P02Y-CUR
+           END-IF
+      *
+      *    同一患者識別テーブル
+           IF     (SPA-NAI-GRPHOSPNUM  =   ZERO )
+           AND    (SPA-NAI-GRPPTID     =   ZERO )
+               CONTINUE
+           ELSE
+               PERFORM 30001-PTSAME-HEN-SEC
            END-IF
            .
        3000-SCREEN-INIT-EXT.
@@ -355,8 +374,8 @@
            INITIALIZE                      SPA-P02Y-KINKILIST
       *
            INITIALIZE                      PTKINKI-REC
-           MOVE    SPA-HOSPNUM         TO  PTKINKI-HOSPNUM
-           MOVE    SPA-GMN-PTID        TO  PTKINKI-PTID
+           MOVE    SPA-P02Y-HOSPNUM    TO  PTKINKI-HOSPNUM
+           MOVE    SPA-P02Y-PTID       TO  PTKINKI-PTID
            MOVE    PTKINKI-REC         TO  MCPDATA-REC
            MOVE    "tbl_ptkinki"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -436,7 +455,7 @@
       *
            INITIALIZE                  SRYCDCHG-REC 
            MOVE    WRK-SRYCD           TO  CHG-IPNSRYCD
-           MOVE    SPA-HOSPNUM         TO  CHG-HOSPNUM
+           MOVE    SPA-P02Y-HOSPNUM    TO  CHG-HOSPNUM
       *
            MOVE    SRYCDCHG-REC        TO  MCPDATA-REC
            MOVE    "tbl_srycdchg"      TO  MCP-TABLE
@@ -460,8 +479,8 @@
                MOVE    CHG-RJNSRYCD        TO  WRK-CHNGCD
       *        登録の有無判定
                INITIALIZE                      PTKINKI-REC
-               MOVE    SPA-HOSPNUM         TO  PTKINKI-HOSPNUM
-               MOVE    SPA-GMN-PTID        TO  PTKINKI-PTID
+               MOVE    SPA-P02Y-HOSPNUM    TO  PTKINKI-HOSPNUM
+               MOVE    SPA-P02Y-PTID       TO  PTKINKI-PTID
                MOVE    CHG-RJNSRYCD        TO  PTKINKI-SRYCD
                MOVE    PTKINKI-REC         TO  MCPDATA-REC
                MOVE    "tbl_ptkinki"       TO  MCP-TABLE
@@ -494,7 +513,7 @@
       *
            INITIALIZE                  INPUTCD-REC
            MOVE    SPACE               TO  INPUTCD-REC
-           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+           MOVE    SPA-P02Y-HOSPNUM    TO  ICD-HOSPNUM
            MOVE    WRK-SRYCD           TO  ICD-SRYCD
       *
            MOVE    INPUTCD-REC         TO  MCPDATA-REC
@@ -517,6 +536,92 @@
            EXIT.
       *
       *****************************************************************
+      *    同一患者識別編集処理
+      *****************************************************************
+       30001-PTSAME-HEN-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  IDX
+      *
+           INITIALIZE                      PTSAME-REC
+           MOVE    SPA-NAI-GRPHOSPNUM  TO  PTSAME-HOSPNUM
+           MOVE    SPA-NAI-GRPPTID     TO  PTSAME-PTID
+           MOVE    PTSAME-REC          TO  MCPDATA-REC
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-PTSAME-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-PTSAME
+           END-IF
+           MOVE    "tbl_ptsame"        TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           MOVE    ZERO                TO  FLG-OK
+           MOVE    ZERO                TO  IDX
+           IF      FLG-PTSAME          =   ZERO
+      *        同一患者情報
+               MOVE    PTSAME-REC          TO  MCPDATA-REC
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-PTSAME
+               END-IF
+               PERFORM UNTIL    FLG-PTSAME     =   1
+                   IF     (PTSAME-HOSPNUM      =   SPA-HOSPNUM   )
+                     AND  (PTSAME-PTID         =   SPA-GMN-PTID  )
+                       CONTINUE
+                   ELSE
+                       ADD     1               TO  IDX
+                       MOVE    PTSAME-HOSPNUM  TO  SPA-P02Y-LGRPHOSPNUM
+                                                                (IDX)
+                       MOVE    PTSAME-PTID     TO  SPA-P02Y-GRPPTID
+                                                                (IDX)
+                   END-IF
+      *
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               END-PERFORM
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+      *
+           ELSE
+               ADD     1                   TO  IDX
+               MOVE    SPA-NAI-GRPHOSPNUM  TO  SPA-P02Y-LGRPHOSPNUM
+                                                             (IDX)
+               MOVE    SPA-NAI-GRPPTID     TO  SPA-P02Y-GRPPTID
+                                                             (IDX)
+           END-IF
+           MOVE    IDX                 TO  SPA-P02Y-GRPMAX
+      *
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       IDX     >    SPA-P02Y-GRPMAX
+      *        医療機関名称
+               PERFORM VARYING     IDY     FROM    1  BY  1
+                       UNTIL      (IDY     >    9  )
+                               OR (SPA-GRPHOSPNUM (IDY)   =   SPACE )
+                   IF      SPA-GRPHOSPNUM (IDY)
+                                           =   SPA-P02Y-LGRPHOSPNUM(IDX)
+                       MOVE    SPA-GRPHOSPNAME(IDY)
+                                           TO  SPA-P02Y-LGRPHOSPNAME
+                                                                (IDX)
+                       MOVE    9           TO  IDY
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+           .
+       30001-PTSAME-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    確認画面より処理
       *****************************************************************
        3001-PID1-SYORI-SEC              SECTION.
@@ -527,9 +632,17 @@
                    IF      SPA-PID1-FLG        =   "OK"
                        PERFORM 4031-DELETE-SEC
                    END-IF
+               WHEN    "0102"
+      *            他院複写
+                   IF      SPA-PID1-FLG        =   "OK"
+                       PERFORM 4101-GRPCOPY-SEC
+                   END-IF
            END-EVALUATE
       *
            MOVE    SPACE               TO  SPA-PIDCD
+           IF      SPA-ERRCD       NOT =   SPACE
+               PERFORM 510-ERRSET-SEC
+           END-IF
       *
            .
        3001-PID1-SYORI-EXT.
@@ -586,6 +699,42 @@
            MOVE    SPA-P02Y-KEIKAMSG   TO  P02Y-KEIKAMSG
            MOVE    SPA-P02Y-INPUTCD    TO  P02Y-INPUTCDMSG
       *
+           MOVE    SPA-P02Y-GRPHOSPNUM-G   TO  P02Y-GRPHOSPNUM
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >    SPA-P02Y-GRPMAX
+               MOVE    SPA-P02Y-GRPHOSPNUM-LST (IDX)
+                                       TO  P02Y-GRPHOSPNUM-ITEM (IDX)
+           END-PERFORM
+           MOVE    SPA-P02Y-GRPMAX     TO  P02Y-GRPHOSPNUM-COUNT
+      *
+           IF      SPA-P02Y-GRPMAX     =   ZERO
+               MOVE    SPACE               TO  P02Y-B09-LABEL
+               MOVE    SPACE               TO  P02Y-B10-LABEL
+               MOVE    WIDGET-INSENSITIVE  TO  P02Y-B09-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  P02Y-B10-STATE
+           ELSE
+               MOVE    "F9 他院患者"       TO  P02Y-B09-LABEL
+               MOVE    WIDGET-NORMAL       TO  P02Y-B09-STATE
+               MOVE    WIDGET-NORMAL       TO  P02Y-B10-STATE
+               IF      SPA-P02Y-GRPHOSPNUM     =   SPACE
+                   MOVE    SPACE               TO  P02Y-B10-LABEL
+                   MOVE    WIDGET-INSENSITIVE  TO  P02Y-B10-STATE
+               ELSE
+                   MOVE    "F10 他院複写"      TO  P02Y-B10-LABEL
+               END-IF
+           END-IF
+      *
+           IF      SPA-P02Y-GRPHOSPNUM     =   SPACE
+               MOVE    WIDGET-NORMAL       TO  P02Y-B03-STATE
+               MOVE    WIDGET-NORMAL       TO  P02Y-B08-STATE
+               MOVE    WIDGET-NORMAL       TO  P02Y-B12-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  P02Y-B03-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  P02Y-B08-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  P02Y-B12-STATE
+           END-IF
+      *
            PERFORM 5001-MAPCUR-SEC
       *
            .
@@ -613,8 +762,12 @@
                    MOVE    "SELNUM"    TO  MCP-WIDGET
                WHEN    02
                    MOVE    "SRYCD"     TO  MCP-WIDGET
+               WHEN    03
+                   MOVE    "GRPHOSPNUM"    TO  MCP-WIDGET
                WHEN    93
                    MOVE    "B03"       TO  MCP-WIDGET
+               WHEN    98
+                   MOVE    "B10"       TO  MCP-WIDGET
                WHEN    99
                    MOVE    "B12"       TO  MCP-WIDGET
            END-EVALUATE
@@ -647,6 +800,12 @@
       *    検索
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 408-P02Y1-SYORI-SEC
+      *    紐付患者
+               WHEN    "CLICKED"       ALSO    "B09"
+                   PERFORM 409-GRPHOSPNUM-SEC
+      *    複写
+               WHEN    "CLICKED"       ALSO    "B10"
+                   PERFORM 410-GRPCOPY-SYORI-SEC
       *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 412-TOUROKU-SYORI-SEC
@@ -667,6 +826,9 @@
       *        選択番号
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 4001-SELNUM-CHK-SEC
+      *        医療機関番号
+               WHEN    "ACTIVATE"      ALSO    "GRPHOSPNUM"
+                   PERFORM 4001-GRPHOSPNUM-CHK-SEC
       *        リスト選択
                WHEN    ANY             ALSO    "PTKINKILST"
                    PERFORM 4001-KINKLIST-SEL-SEC
@@ -769,6 +931,9 @@
            IF     (SPA-P02Y-SRYCD      =   SPA-P02Y-MAE-SRYCD)
              OR   (SPA-P02Y-SRYCD      =   SPACE             )
                MOVE    SPA-P02Y-SRYCD      TO  SPA-P02Y-MAE-SRYCD
+               IF     (SPA-P02Y-GRPHOSPNUM NOT =   SPACE    )
+                   MOVE    98                  TO  SPA-P02Y-CUR
+               END-IF
                GO      TO      4002-SRYCD-CHK-EXT
            END-IF
       *
@@ -782,6 +947,14 @@
       *
            IF     (SPA-P02Y-SRYCD      =   SPACE             )
                MOVE    SPA-P02Y-SRYCD      TO  SPA-P02Y-MAE-SRYCD
+               GO      TO      4002-SRYCD-CHK-EXT
+           END-IF
+           IF     (SPA-P02Y-GRPHOSPNUM NOT =   SPACE    )
+               MOVE    "0013"              TO  SPA-ERRCD
+               MOVE    SPACE               TO  SPA-P02Y-SRYCD
+               MOVE    SPACE               TO  SPA-P02Y-MAE-SRYCD
+               MOVE    ZERO                TO  SPA-P02Y-SELNUM
+               MOVE    98                  TO  SPA-P02Y-CUR
                GO      TO      4002-SRYCD-CHK-EXT
            END-IF
       *
@@ -1011,8 +1184,12 @@
            MOVE    ZERO                TO  SPA-P02Y-IDX
            INITIALIZE                      SPA-P02Y-INPUT-G
            MOVE    1                   TO  SPA-P02Y-CUR
-           .
       *
+           MOVE    SPA-HOSPNUM         TO  SPA-P02Y-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  SPA-P02Y-PTID
+           MOVE    SPACE               TO  SPA-P02Y-GRPHOSPNUM-G
+      *
+           .
        402-CLEAR-EXT.
            EXIT.
       *
@@ -1073,6 +1250,7 @@
        410-INIT-SYORI-SEC             SECTION.
       *
            PERFORM  402-CLEAR-SEC
+      *
       *    禁忌薬剤編集
            MOVE    1                   TO  SPA-P02Y-PAGE
            PERFORM 3001-PTKINKI-HENSYU-SEC
@@ -1201,6 +1379,140 @@
            MOVE    SPA-WORK            TO  SPA-P02KYOUTU
            .
        41011-P02Y1-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    紐付患者処理
+      *****************************************************************
+       409-GRPHOSPNUM-SEC            SECTION.
+      *
+           IF      SPA-P02Y-GRPHOSPNUM     =   SPACE
+               MOVE    SPA-P02Y-GRPHOSPNUM-LST (1)
+                                           TO  P02Y-GRPHOSPNUM
+           ELSE
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL       IDX     >   SPA-P02Y-GRPMAX
+                   IF      SPA-P02Y-GRPHOSPNUM
+                                       =   SPA-P02Y-LGRPHOSPNUM (IDX)
+                       IF      IDX         =   SPA-P02Y-GRPMAX
+                           MOVE    SPACE           TO  P02Y-GRPHOSPNUM
+                       ELSE
+                           MOVE    SPA-P02Y-GRPHOSPNUM-LST (IDX + 1)
+                                                   TO  P02Y-GRPHOSPNUM
+                       END-IF
+                       MOVE    SPA-P02Y-GRPMAX     TO  IDX
+                   END-IF
+               END-PERFORM
+           END-IF
+           PERFORM 4001-GRPHOSPNUM-CHK-SEC
+           .
+       409-GRPHOSPNUM-SEC-EXT.
+           EXIT.
+      *****************************************************************
+      *    紐付患者処理
+      *****************************************************************
+       4001-GRPHOSPNUM-CHK-SEC            SECTION.
+      *
+           MOVE    P02Y-GRPHOSPNUM     TO  SPA-P02Y-GRPHOSPNUM-G
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-P02Y-GRPMAX
+               IF      SPA-P02Y-GRPHOSPNUM
+                                       =   SPA-P02Y-LGRPHOSPNUM (IDX)
+                   MOVE    SPA-P02Y-GRPHOSPNUM-LST (IDX)
+                                           TO  SPA-P02Y-GRPHOSPNUM-G
+                   MOVE    SPA-P02Y-LGRPHOSPNUM (IDX)
+                                           TO  SPA-P02Y-HOSPNUM
+                   MOVE    SPA-P02Y-GRPPTID (IDX)
+                                           TO  SPA-P02Y-PTID
+                   MOVE    1               TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF     SPA-P02Y-GRPHOSPNUM  =   SPACE
+               MOVE    1               TO  FLG-OK
+           END-IF
+           IF      FLG-OK              =   ZERO
+               MOVE    "0014"              TO  SPA-ERRCD
+               MOVE    3                   TO  SPA-P02Y-CUR
+           ELSE
+               IF     SPA-P02Y-GRPHOSPNUM  =   SPACE
+                   MOVE    SPA-HOSPNUM         TO  SPA-P02Y-HOSPNUM
+                   MOVE    SPA-GMN-PTID        TO  SPA-P02Y-PTID
+               END-IF
+               MOVE    1                   TO  SPA-P02Y-PAGE
+               PERFORM 3001-PTKINKI-HENSYU-SEC
+               IF     SPA-P02Y-GRPHOSPNUM  =   SPACE
+                   MOVE    1                   TO  SPA-P02Y-CUR
+               ELSE
+                   IF      SPA-P02Y-MAX        =   ZERO
+                       MOVE    3                   TO  SPA-P02Y-CUR
+                   ELSE
+                       MOVE    98                  TO  SPA-P02Y-CUR
+                   END-IF
+               END-IF
+           END-IF
+           .
+       4001-GRPHOSPNUM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    紐付患者処理
+      *****************************************************************
+       410-GRPCOPY-SYORI-SEC            SECTION.
+      *
+           IF     (SPA-P02Y-GRPHOSPNUM  =   SPACE ) OR
+                  (SPA-P02Y-MAX         =   ZERO  )
+               MOVE    "0015"               TO  SPA-ERRCD
+               MOVE    3                    TO  SPA-P02Y-CUR
+           ELSE
+               MOVE    "0102"               TO  SPA-PIDCD
+           END-IF
+           .
+       410-GRPCOPY-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    他院複写処理
+      *****************************************************************
+       4101-GRPCOPY-SEC            SECTION.
+      *
+           INITIALIZE                      PTKINKI-REC
+           MOVE    SPA-P02Y-HOSPNUM    TO  PTKINKI-HOSPNUM
+           MOVE    SPA-P02Y-PTID       TO  PTKINKI-PTID
+           MOVE    PTKINKI-REC         TO  MCPDATA-REC
+           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-PTKINKI-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-PTKINKI
+               INITIALIZE                      PTKINKI-REC
+           END-IF
+           PERFORM UNTIL  ( FLG-PTKINKI    =   1  )
+                      OR  ( SPA-ERRCD  NOT =   SPACE )
+      *
+               MOVE    PTKINKI-SRYCD       TO  WRK-SRYCD
+               PERFORM 4121-PTKINKI-INS-SEC
+      *        登録済みのコードは登録しない
+               IF      SPA-ERRCD           =   "1002" 
+                   MOVE    SPACE               TO  SPA-ERRCD
+               END-IF
+               MOVE    ZERO                TO  FLG-PTKINKI
+      *
+               MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-PTKINKI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF     (SPA-ERRCD           =   SPACE )
+               PERFORM 410-INIT-SYORI-SEC
+           END-IF
+      *
+           .
+       4101-GRPCOPY-EXT.
            EXIT.
       *****************************************************************
       *    登録処理
@@ -1388,6 +1700,21 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "0013"
+                   STRING  "他院の表示中です。入力はできません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0014"
+                   STRING  "医療機関選択エラー"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0015"
+                   STRING  "複写情報がありません。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
                WHEN    "1001"
                    MOVE    "患者禁忌薬剤データ更新ができませんでした。"
                                                    TO  SPA-ERRMSG
@@ -1429,6 +1756,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            "よろしいですか？"  DELIMITED  BY  SIZE
                                                INTO  WRK-PIDMSG
                    END-STRING
+               WHEN    "0102"
+                   STRING  "他医院の禁忌薬剤をすべて複写します。"
+                           "よろしいですか？"  DELIMITED  BY  SIZE
+                                               INTO  WRK-PIDMSG
+                   END-STRING
                WHEN    OTHER
                    MOVE    SPA-PIDCD
                                        TO  WRK-PIDMSG
@@ -1439,6 +1771,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
+           MOVE    "戻る"              TO  PID1-B01
+           MOVE    "ＯＫ"              TO  PID1-B12
       *
            MOVE    "B12"               TO  MCP-WIDGET
       *
@@ -1613,6 +1947,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        930-INPUTCD-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    同一患者識別マスター読込処理
+      *****************************************************************
+       900-PTSAME-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO                TO  FLG-PTSAME
+               MOVE    MCPDATA-REC         TO  PTSAME-REC
+           ELSE
+               MOVE    1                   TO  FLG-PTSAME
+           END-IF
+      *
+           .
+       900-PTSAME-READ-EXT.
            EXIT.
       *
       *****************************************************************

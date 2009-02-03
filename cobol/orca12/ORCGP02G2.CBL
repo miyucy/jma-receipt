@@ -760,7 +760,31 @@
            PERFORM 990-DBCLOSE-SEC
       *    データがある時、エラー
            IF      FLG-PTSAME          =   ZERO
-               MOVE    "0006"              TO  SPA-ERRCD
+      *        同一患者情報
+               MOVE    PTSAME-REC          TO  MCPDATA-REC
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-PTSAME
+               END-IF
+               PERFORM UNTIL   (FLG-PTSAME     =   1 )
+                          OR   (SPA-ERRCD  NOT =   SPACE )
+                   IF     (PTSAME-HOSPNUM      =   SPA-HOSPNUM   )
+                       MOVE    "0006"              TO  SPA-ERRCD
+                   END-IF
+      *
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               END-PERFORM
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
            END-IF
            .
        410221-PTSAME-CHK-EXT.
@@ -970,6 +994,8 @@
            MOVE    SPACE               TO  PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
+           MOVE    "戻る"              TO  PID1-B01
+           MOVE    "ＯＫ"              TO  PID1-B12
       *
            MOVE    "B12"               TO  MCP-WIDGET
       *

@@ -439,9 +439,35 @@
            MOVE    "tbl_ptsame"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    データがない時、対象
+      *
            IF      FLG-PTSAME          =   1
                MOVE    1                   TO  FLG-OK
+           ELSE
+      *        同一医療機関で登録済み
+               MOVE    PTSAME-REC          TO  MCPDATA-REC
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-PTSAME
+               END-IF
+               MOVE    1                   TO  FLG-OK
+               PERFORM UNTIL   (FLG-PTSAME     =   1 )
+                   IF     (PTSAME-HOSPNUM      =   SPA-HOSPNUM   )
+                       MOVE    ZERO                TO  FLG-OK
+                   END-IF
+      *
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               END-PERFORM
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
            END-IF
            .
        410111-PTSAME-CHK-EXT.

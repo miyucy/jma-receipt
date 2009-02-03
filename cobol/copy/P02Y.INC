@@ -29,3 +29,21 @@
                 04  P02Y-VALUE  PIC X(56).
               03  P02Y-INPUTCDMSG.
                 04  P02Y-VALUE  PIC X(21).
+              03  P02Y-GRPHOSPNUM-COMB.
+                04  P02Y-GRPHOSPNUM.
+                  05  P02Y-VALUE  PIC X(23).
+                04  P02Y-GRPHOSPNUM-COUNT  PIC S9(9)   BINARY.
+                04  P02Y-GRPHOSPNUM-ITEM
+                        PIC X(23)   OCCURS  9 TIMES.
+              03  P02Y-B03.
+                04  P02Y-B03-STATE  PIC S9(9)   BINARY.
+              03  P02Y-B08.
+                04  P02Y-B08-STATE  PIC S9(9)   BINARY.
+              03  P02Y-B12.
+                04  P02Y-B12-STATE  PIC S9(9)   BINARY.
+              03  P02Y-B09.
+                04  P02Y-B09-STATE  PIC S9(9)   BINARY.
+                04  P02Y-B09-LABEL  PIC X(20).
+              03  P02Y-B10.
+                04  P02Y-B10-STATE  PIC S9(9)   BINARY.
+                04  P02Y-B10-LABEL  PIC X(20).

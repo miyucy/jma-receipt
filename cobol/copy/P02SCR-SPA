@@ -1392,6 +1392,21 @@
                    07  SPA-P02Y-KEIKAMSG           PIC X(56).
                    07  SPA-P02Y-MAE-SRYCD          PIC X(09).
                    07  SPA-P02Y-INPUTCD            PIC X(22).
+      *        ËÜ±¡Ê¬±¡
+               05  SPA-P02Y-HOSPNUM                PIC 9(02).
+               05  SPA-P02Y-PTID                   PIC 9(10).
+               05  SPA-P02Y-GRPHOSPNUM-G.
+                   07  SPA-P02Y-GRPHOSPNUM         PIC X(02).
+                   07  SPA-P02Y-GRPHOSPF           PIC X(01).
+                   07  SPA-P02Y-GRPHOSPNUMMEI      PIC X(20).
+               05  SPA-P02Y-GRPHOSPNUM-LST-G.
+                   07  SPA-P02Y-GRPHOSPNUM-LSTO   OCCURS   9.
+                       09  SPA-P02Y-GRPHOSPNUM-LST.
+                           11  SPA-P02Y-LGRPHOSPNUM    PIC X(02).
+                           11  SPA-P02Y-LGRPHOSPNUMF   PIC X(01).
+                           11  SPA-P02Y-LGRPHOSPNAME   PIC X(20).
+                       09  SPA-P02Y-GRPPTID           PIC 9(10).
+                   07  SPA-P02Y-GRPMAX                PIC 9(01).
       *
       *    ÌôºÞ°ìÍ÷¡Ê£Ð£°£²£Ù£±¡Ë
            03  SPA-P02Y1-AREA.

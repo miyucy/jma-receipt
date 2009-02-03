@@ -687,6 +687,8 @@
            MOVE    SPACE               TO  PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
+           MOVE    "Ã·§Î"              TO  PID1-B01
+           MOVE    "£œ£À"              TO  PID1-B12
       *
            MOVE    "B12"               TO  MCP-WIDGET
       *

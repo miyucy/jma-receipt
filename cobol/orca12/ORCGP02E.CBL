@@ -475,7 +475,7 @@
                IF      SPA-GMN2E-SYORI     =   ZERO
                    MOVE    "F3 ¥µº‘…≥…’ £ºÃ"   TO  P02E-B03-LABEL
                ELSE
-                   MOVE    "F3 ¥µº‘ £ºÃ"       TO  P02E-B03-LABEL
+                   MOVE    "F3 ¥µº‘ £ºÃ  "     TO  P02E-B03-LABEL
                END-IF
            END-IF
            MOVE    SPA-GMN2E-MIDASI    TO  P02E-MIDASI-VALUE
@@ -727,9 +727,33 @@
            MOVE    "tbl_ptsame"        TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    •«°º•ø§¨§¢§Îª˛°¢•®•È°º
+      *
            IF      FLG-PTSAME          =   ZERO
-               MOVE    "0004"              TO  SPA-ERRCD
+      *        ∆±∞Ï∞ÂŒ≈µ°¥ÿ§«≈–œø∫—§ﬂ
+               MOVE    PTSAME-REC          TO  MCPDATA-REC
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               ELSE
+                   MOVE    1               TO  FLG-PTSAME
+               END-IF
+               PERFORM UNTIL   (FLG-PTSAME     =   1 )
+                          OR   (SPA-ERRCD  NOT =   SPACE )
+                   IF     (PTSAME-HOSPNUM      =   SPA-HOSPNUM   )
+                       MOVE    "0004"              TO  SPA-ERRCD
+                   END-IF
+      *
+                   MOVE    "tbl_ptsame"        TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-PTSAME-READ-SEC
+               END-PERFORM
+               MOVE    "tbl_ptsame"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
            END-IF
            .
        410111-PTSAME-CHK-EXT.
@@ -1755,6 +1779,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  PID1
            MOVE    SPA-PIDCD           TO  PID1-ID1CODE
            MOVE    WRK-PIDMSG          TO  PID1-ID1MSG
+           MOVE    "Ã·§Î"              TO  PID1-B01
+           MOVE    "£œ£À"              TO  PID1-B12
            EVALUATE    SPA-PIDCD
                WHEN    "0103"
                    MOVE    "B01"               TO  MCP-WIDGET
