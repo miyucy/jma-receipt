@@ -1460,3 +1460,28 @@ path	key26 	{
 		;
 	};
 };
+
+path	key27 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key27_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+			AND ((SRYCD  >=   '001000987')  AND
+                        (SRYCD  <=   '001999999')
+                   OR   (SRYCD  >=   '002000006')  AND
+                        (SRYCD  <=   '002999999')
+                   OR   (SRYCD  LIKE '0082%')
+                   OR   (SRYCD  LIKE '0083%')
+                   OR   (SRYCD  LIKE '0084%')
+                   OR   (SRYCD  LIKE '0085%')
+                   OR   (SRYCD  LIKE '058%')
+                   OR   (SRYCD  LIKE '059%')
+                   OR   (SRYCD  LIKE '095%')
+                   OR   (SRYCD  LIKE '096%'))
+			ORDER   BY       SRYCD
+		;
+	};
+};
