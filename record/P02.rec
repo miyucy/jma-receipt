@@ -45,6 +45,7 @@ P02	{
 		};
 		B03S	{
 	           	state	int;
+			label	varchar(20);
 		};
 		nb2	{
 			pageno	int;
