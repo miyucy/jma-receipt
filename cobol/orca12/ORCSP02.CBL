@@ -2877,8 +2877,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    患者紐付け
            IF      SPA-GRPHOSPKBN      =   ZERO
                MOVE    WIDGET-INSENSITIVE  TO  P02-B03S-STATE
+               MOVE    SPACE               TO  P02-B03S-LABEL
            ELSE
                MOVE    WIDGET-NORMAL       TO  P02-B03S-STATE
+               MOVE    "患者紐付け"        TO  P02-B03S-LABEL
            END-IF
       *    排他中更新不可
            IF      SPA-LOCK            =   ZERO
