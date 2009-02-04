@@ -68,10 +68,10 @@
            03  FLG-SRYCDCHG                PIC 9(01).
            03  FLG-INPUTCD                 PIC 9(01).
            03  FLG-INPUTSET                PIC 9(01).
-           03  FLG-DBRC                    PIC 9(01).
            03  FLG-INIT-CHK                PIC 9(01).
            03  FLG-TENSU-ARI               PIC 9(01).
            03  FLG-INPUTCD-ARI             PIC 9(01).
+           03  FLG-INPUTSET-ARI            PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -115,6 +115,7 @@
            03  WRK-MOTOGRP                         PIC 9(02).
            03  WRK-SAKIGRP                         PIC 9(02).
            03  WRK-NAIYO                           PIC X(100).
+           03  WRK-INPUTCD                         PIC X(20).
       *
            03  WRK-TAIHI-AREA                      PIC X(2000).
       *
@@ -297,6 +298,9 @@
                   WHEN    "2"
                       MOVE    "マスタ複写（入力コード）"
                                        TO  JOB-SHELLMSG
+                  WHEN    "3"
+                      MOVE    "マスタ複写（入力セット）"
+                                       TO  JOB-SHELLMSG
                   WHEN    OTHER
                       MOVE    "処理区分が誤りです"
                                        TO  WRK-RECEERR
@@ -345,6 +349,17 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
+           IF    FLG-INIT-CHK   NOT =    ZERO
+               GO    TO   100-INIT-EXT
+           END-IF
+      *
+           IF    SPA-HOSPNUM    =   WRK-PARA-COPYHOSPNUM
+               MOVE    "複写元は他院を指定してください"
+                                       TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
+               MOVE    1               TO  FLG-INIT-CHK
+           END-IF
       *
            IF    FLG-INIT-CHK   NOT =    ZERO
                GO    TO   100-INIT-EXT
@@ -488,6 +503,8 @@
                    PERFORM   2001-TENSU-SEC
                WHEN   "2"
                    PERFORM   2001-INPUTCD-SEC
+               WHEN   "3"
+                   PERFORM   2001-INPUTSET-SEC
            END-EVALUATE
       *
            .
@@ -623,9 +640,9 @@
                      PERFORM     2001-INPUTCD-INS-SEC
                   END-IF
       *
-                     MOVE    "tbl_inputcd"  TO  MCP-TABLE
-                     MOVE    "all"          TO  MCP-PATHNAME
-                     PERFORM  910-INPUTCD-READ-SEC
+                  MOVE    "tbl_inputcd"  TO  MCP-TABLE
+                  MOVE    "all"          TO  MCP-PATHNAME
+                  PERFORM  910-INPUTCD-READ-SEC
                END-PERFORM
            END-IF
       *
@@ -648,7 +665,7 @@
       *
            MOVE   INPUTCD-REC          TO  WRK-TAIHI-AREA
       *
-      *       自院の点数マスタ存在チェック
+      *       自院の入力コード存在チェック
            PERFORM    2001-INPUTCD-CHK-SEC
       *
            IF         FLG-INPUTCD-ARI  =    ZERO
@@ -698,6 +715,143 @@
            EXIT.
       *
       *****************************************************************
+      *    入力セット複写処理
+      *    （処理対象セットの検索は入力コードテーブルより行う）
+      *****************************************************************
+       2001-INPUTSET-SEC                SECTION.
+      *
+      *    帳票初期処理
+           PERFORM 2001-HCMSL55-INIT-SEC
+      *
+      *    複写対象検索
+           MOVE    SPACE                TO  INPUTCD-REC
+           INITIALIZE                       INPUTCD-REC
+           MOVE    WRK-PARA-COPYHOSPNUM TO  ICD-HOSPNUM
+           MOVE    "tbl_inputcd"        TO  MCP-TABLE
+           MOVE    "all"                TO  MCP-PATHNAME
+           PERFORM   910-INPUTCD-SELECT-SEC
+           IF      FLG-INPUTCD            =   ZERO
+               MOVE    "tbl_inputcd"    TO  MCP-TABLE
+               MOVE    "all"            TO  MCP-PATHNAME
+               PERFORM  910-INPUTCD-READ-SEC
+               PERFORM  UNTIL  FLG-INPUTCD  =    1
+                  IF   (ICD-INPUTCD(1:1) = "P")       OR
+                       (ICD-INPUTCD(1:1) = "S")
+      *                   入力セット作成処理
+                     PERFORM     2001-INPUTSET-INS-SEC
+                  END-IF
+      *
+                  MOVE    "tbl_inputcd"  TO  MCP-TABLE
+                  MOVE    "all"          TO  MCP-PATHNAME
+                  PERFORM  910-INPUTCD-READ-SEC
+               END-PERFORM
+           END-IF
+      *
+           MOVE    "tbl_inputcd"        TO  MCP-TABLE
+           MOVE    "all"                TO  MCP-PATHNAME
+           PERFORM   900-CLOSE-SEC
+      *
+           IF    ( CNT-LINE            >   ZERO )
+               PERFORM 2002-HCMSL55-PRT-SEC
+           END-IF
+      *
+           .
+       2001-INPUTSET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力セット作成処理
+      *****************************************************************
+       2001-INPUTSET-INS-SEC          SECTION.
+      *
+           MOVE   INPUTCD-REC          TO  WRK-TAIHI-AREA
+      *
+      *       自院の入力セット存在チェック
+           PERFORM    2001-INPUTSET-CHK-SEC
+      *
+           IF         FLG-INPUTSET-ARI =   ZERO
+               MOVE    WRK-TAIHI-AREA  TO  INPUTCD-REC
+               MOVE    ICD-INPUTCD     TO  WRK-INPUTCD
+               MOVE    SPA-HOSPNUM     TO  ICD-HOSPNUM
+               MOVE    "tbl_inputcd"   TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               MOVE    "DBINSERT"      TO  MCP-FUNC
+               PERFORM     900-ORCDBMAIN-SEC
+      *            入力セットテーブルの複写
+               MOVE    SPACE               TO  INPUTSET-REC
+               INITIALIZE                      INPUTSET-REC
+               MOVE    WRK-PARA-COPYHOSPNUM TO ISET-HOSPNUM
+               MOVE    WRK-INPUTCD         TO  ISET-SETCD
+               MOVE    "tbl_inputset"      TO  MCP-TABLE
+               MOVE    "key6"              TO  MCP-PATHNAME
+               PERFORM   910-INPUTSET-SELECT-SEC
+               IF      FLG-INPUTSET        =   ZERO
+                   MOVE    "tbl_inputset"     TO  MCP-TABLE
+                   MOVE    "key6"             TO  MCP-PATHNAME
+                   PERFORM  910-INPUTSET-READ-SEC
+                   PERFORM  UNTIL  FLG-INPUTSET  =    1
+      *                     入力セット作成処理
+                       MOVE   INPUTSET-REC    TO  WRK-TAIHI-AREA
+                       MOVE    SPACE          TO  INPUTSET-REC
+                       INITIALIZE                 INPUTSET-REC
+                       MOVE   WRK-TAIHI-AREA  TO  INPUTSET-REC
+                       MOVE   SPA-HOSPNUM     TO  ISET-HOSPNUM
+                       MOVE   INPUTSET-REC    TO  MCPDATA-REC
+                       MOVE   "tbl_inputset"  TO  MCP-TABLE
+                       MOVE   "key"           TO  MCP-PATHNAME
+                       MOVE   "DBINSERT"      TO  MCP-FUNC
+                       PERFORM     900-ORCDBMAIN-SEC
+      *
+                       MOVE   "tbl_inputset"  TO  MCP-TABLE
+                       MOVE   "key6"          TO  MCP-PATHNAME
+                       PERFORM  910-INPUTSET-READ-SEC
+                   END-PERFORM
+               END-IF
+      *
+               MOVE    "tbl_inputset"       TO  MCP-TABLE
+               MOVE    "key6"                TO  MCP-PATHNAME
+               PERFORM   900-CLOSE-SEC
+      *
+           END-IF
+      *
+           PERFORM     2002-HCMSL55-HEN-SEC
+      *
+           .
+       2001-INPUTSET-INS-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力セット自院存在チェック
+      *****************************************************************
+       2001-INPUTSET-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  FLG-INPUTSET-ARI
+      *
+           MOVE    SPACE               TO  INPUTCD-REC
+           INITIALIZE                      INPUTCD-REC
+           MOVE    WRK-TAIHI-AREA      TO  INPUTCD-REC
+           MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-INPUTCD-SELECT-SEC
+           IF      FLG-INPUTCD         =   ZERO
+               MOVE    "tbl_inputcd"   TO  MCP-TABLE
+               MOVE    "key2"          TO  MCP-PATHNAME
+               PERFORM 910-INPUTCD-READ-SEC
+               IF  FLG-INPUTCD         =   ZERO
+                   MOVE    1           TO  FLG-INPUTSET-ARI
+               END-IF
+           END-IF
+      *
+           MOVE    "tbl_inputcd"       TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       2001-INPUTSET-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    帳票初期処理
       *****************************************************************
        2001-HCMSL55-INIT-SEC           SECTION.
@@ -738,7 +892,7 @@
                    MOVE    "tbl_tensu" TO  MCP-TABLE
                    MOVE    "key"       TO  MCP-PATHNAME
                    PERFORM   910-TENSU-SELECT-SEC
-                   IF      FLG-TENSU            =   ZERO
+                   IF      FLG-TENSU   =   ZERO
                        MOVE    "tbl_tensu"    TO  MCP-TABLE
                        MOVE    "key"          TO  MCP-PATHNAME
                        PERFORM  910-TENSU-READ-SEC
@@ -751,6 +905,9 @@
                    MOVE    "tbl_tensu"    TO  MCP-TABLE
                    MOVE    "key"          TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC
+               WHEN   "3"
+                   MOVE    ICD-INPUTCD TO  LST-CD (CNT-LINE)
+                   MOVE    ICD-DSPNAME TO  LST-NAME1 (CNT-LINE)
            END-EVALUATE
       *
            IF      FLG-TENSU-ARI       =   1
@@ -759,6 +916,10 @@
       *
            IF      FLG-INPUTCD-ARI     =   1
                MOVE  "2002"            TO  WRK-ERRCD
+           END-IF
+      *
+           IF      FLG-INPUTSET-ARI     =   1
+               MOVE  "2003"            TO  WRK-ERRCD
            END-IF
       *
            EVALUATE    WRK-ERRCD
@@ -770,12 +931,18 @@
                       WHEN   "2"
                           MOVE  "入力コードを複写しました"
                                        TO  WRK-NAIYO
+                      WHEN   "3"
+                          MOVE  "入力セットを複写しました"
+                                       TO  WRK-NAIYO
                   END-EVALUATE
                WHEN    "2001"
                    MOVE  "点数マスタが存在しています"
                                        TO  WRK-NAIYO
                WHEN    "2002"
                    MOVE  "入力コードが存在しています"
+                                       TO  WRK-NAIYO
+               WHEN    "2003"
+                   MOVE  "入力セットが存在しています"
                                        TO  WRK-NAIYO
            END-EVALUATE
            MOVE    WRK-NAIYO           TO  LST-NAIYO (CNT-LINE)
@@ -1039,6 +1206,41 @@
       *
            .
        910-INPUTCD-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力セット検索
+      *****************************************************************
+       910-INPUTSET-SELECT-SEC        SECTION.
+      *
+           MOVE    INPUTSET-REC        TO  MCPDATA-REC
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    ZERO            TO  FLG-INPUTSET
+           ELSE
+               MOVE    1               TO  FLG-INPUTSET
+           END-IF
+      *
+           .
+       910-INPUTSET-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    入力セット読込
+      *****************************************************************
+       910-INPUTSET-READ-SEC        SECTION.
+      *
+           PERFORM 900-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  INPUTSET-REC
+               MOVE    ZERO            TO  FLG-INPUTSET
+           ELSE
+               INITIALIZE                  INPUTSET-REC
+               MOVE    1               TO  FLG-INPUTSET
+           END-IF
+      *
+           .
+       910-INPUTSET-READ-EXT.
            EXIT.
       *
       *****************************************************************
