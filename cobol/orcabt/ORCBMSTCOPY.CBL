@@ -146,11 +146,11 @@
            03  LST-MEISAI-G.
                05  LST-MEISAI-OCC      OCCURS      50.
                    07  LST-NO          PIC Z(04).
-                   07  LST-FIL1        PIC X(02).
+                   07  LST-FIL1        PIC X(02)   VALUE SPACE.
                    07  LST-CD          PIC X(20).
-                   07  LST-FIL2        PIC X(01).
+                   07  LST-FIL2        PIC X(01)   VALUE SPACE.
                    07  LST-NAME1       PIC X(30).
-                   07  LST-FIL3        PIC X(06).
+                   07  LST-FIL3        PIC X(06)   VALUE SPACE.
                    07  LST-NAIYO       PIC X(52).
       *
        01  CONST-AREA.
@@ -882,6 +882,7 @@
            EVALUATE   WRK-PARA-SYORIKBN
                WHEN   "1"
                    MOVE    TNS-SRYCD   TO  LST-CD (CNT-LINE)
+                   INSPECT TNS-NAME REPLACING  ALL "  "  BY  "　"
                    MOVE    TNS-NAME    TO  LST-NAME1 (CNT-LINE)
                WHEN   "2"
                    MOVE    ICD-INPUTCD TO  LST-CD (CNT-LINE)
@@ -901,8 +902,20 @@
                        MOVE    "key"          TO  MCP-PATHNAME
                        PERFORM  910-TENSU-READ-SEC
                        IF    FLG-TENSU    =    ZERO
-                           MOVE    TNS-NAME
+                          INSPECT TNS-NAME REPLACING
+                                           ALL "  "  BY  "　"
+                          MOVE    TNS-NAME  TO  LST-NAME1 (CNT-LINE)
+                       ELSE
+                          MOVE  "現在有効な点数マスタ無し　　　"
                                        TO  LST-NAME1 (CNT-LINE)
+                          IF ICD-SRYCD(1:1)  = "P" 
+                             MOVE "入力セット　　　　　　　　　　"
+                                       TO  LST-NAME1 (CNT-LINE)
+                          END-IF
+                          IF ICD-SRYCD(1:1)  = "S" 
+                             MOVE "約束セット　　　　　　　　　　"
+                                       TO  LST-NAME1 (CNT-LINE)
+                          END-IF
                        END-IF
                    END-IF
       *
