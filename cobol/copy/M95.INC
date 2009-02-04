@@ -50,7 +50,7 @@
                     06  M95-TAINLIST-ROWATTR PIC S9(9)   BINARY.
                     06  M95-TAINITEM    OCCURS  9 TIMES.
                       07  M95-TAINNO   PIC X(1).
-                      07  M95-TAINNAME PIC X(10).
+                      07  M95-TAINNAME PIC X(13).
                     06  M95-TAINLIST-SELECT
                             PIC X       OCCURS  9 TIMES.
                   05  M95-TAINNUM.

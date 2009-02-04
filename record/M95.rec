@@ -61,7 +61,7 @@ M95	{
 					rowattr	int;
 					item	{
 						value0	varchar(1);
-						value1	varchar(10);
+						value1	varchar(13);
 					}	[9];
 					select	bool[9];
 				};

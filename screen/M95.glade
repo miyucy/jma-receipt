@@ -707,7 +707,7 @@
 	    <last_modification_time>Mon, 26 Jan 2009 07:04:03 GMT</last_modification_time>
 	  </signal>
 	  <columns>2</columns>
-	  <column_widths>80,80</column_widths>
+	  <column_widths>43,225</column_widths>
 	  <selection_mode>GTK_SELECTION_SINGLE</selection_mode>
 	  <show_titles>True</show_titles>
 	  <shadow_type>GTK_SHADOW_IN</shadow_type>

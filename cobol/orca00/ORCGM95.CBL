@@ -106,7 +106,10 @@
                05  SPA-M95GMN-TAINLIST-G.
                    07  SPA-M95GMN-TAINLIST    OCCURS   9.
                        09  SPA-M95GMN-TAINNO    PIC X(01).
-                       09  SPA-M95GMN-TAINNAME  PIC X(10).
+                       09  SPA-M95GMN-TAINNAME-G.
+                           11  SPA-M95GMN-TAINCD   PIC 9(2).
+                           11  SPA-M95GMN-TAINF1   PIC X(01).
+                           11  SPA-M95GMN-TAINNAME PIC X(10).
                    07  SPA-M95GMN-TAIN-MAX      PIC 9(01).
                05  SPA-M95GMN-TAINNUM         PIC X(01).
       *
@@ -1476,9 +1479,11 @@
                            SPA-M95GMN-TAIN-MAX   +   1
                    MOVE    IDX                 TO  WRK-NUM-1
                    MOVE    WRK-NUM-1-X         TO
-                                             SPA-M95GMN-TAINNO (IDX)
-                   MOVE    SPA-GRPHOSPNAME (IDX)  TO
-                                             SPA-M95GMN-TAINNAME (IDX)
+                                               SPA-M95GMN-TAINNO (IDX)
+                   MOVE    SPA-GRPHOSPNUM (IDX)    TO
+                                               SPA-M95GMN-TAINCD (IDX)
+                   MOVE    SPA-GRPHOSPNAME (IDX)   TO
+                                               SPA-M95GMN-TAINNAME (IDX)
                END-IF
            END-PERFORM
            MOVE    1                   TO  SPA-M95-INIT-P3
@@ -1922,7 +1927,7 @@ grpsys*        MOVE SPA-HOSPNUM TO -HOSPNUM
                    UNTIL       IDX     >   SPA-M95GMN-TAIN-MAX
                MOVE    SPA-M95GMN-TAINNO (IDX)
                                            TO  M95-TAINNO (IDX)
-               MOVE    SPA-M95GMN-TAINNAME (IDX)
+               MOVE    SPA-M95GMN-TAINNAME-G (IDX)
                                            TO  M95-TAINNAME (IDX)
                MOVE    "F"                 TO  M95-TAINLIST-SELECT(IDX)
            END-PERFORM
