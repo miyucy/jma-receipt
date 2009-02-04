@@ -212,6 +212,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *   全角チェックパラメタ
+           COPY    "CPORCSKANACHK.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
@@ -773,6 +776,7 @@
                MOVE    WRK-TAIHI-AREA  TO  INPUTCD-REC
                MOVE    ICD-INPUTCD     TO  WRK-INPUTCD
                MOVE    SPA-HOSPNUM     TO  ICD-HOSPNUM
+               DISPLAY "INPUTCD-REC = " INPUTCD-REC
                MOVE    "tbl_inputcd"   TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                MOVE    "DBINSERT"      TO  MCP-FUNC
@@ -796,6 +800,7 @@
                        INITIALIZE                 INPUTSET-REC
                        MOVE   WRK-TAIHI-AREA  TO  INPUTSET-REC
                        MOVE   SPA-HOSPNUM     TO  ISET-HOSPNUM
+                       DISPLAY "INPUTSET-REC = " INPUTSET-REC
                        MOVE   INPUTSET-REC    TO  MCPDATA-REC
                        MOVE   "tbl_inputset"  TO  MCP-TABLE
                        MOVE   "key"           TO  MCP-PATHNAME
@@ -880,7 +885,6 @@
                    MOVE    TNS-NAME    TO  LST-NAME1 (CNT-LINE)
                WHEN   "2"
                    MOVE    ICD-INPUTCD TO  LST-CD (CNT-LINE)
-
                    MOVE    SPACE       TO  TNS-TENSU-REC
                    INITIALIZE          TNS-TENSU-REC
                    MOVE    WRK-PARA-HOSPNUM
@@ -907,7 +911,15 @@
                    PERFORM   900-CLOSE-SEC
                WHEN   "3"
                    MOVE    ICD-INPUTCD TO  LST-CD (CNT-LINE)
-                   MOVE    ICD-DSPNAME TO  LST-NAME1 (CNT-LINE)
+      *                 全角チェック
+                   INITIALIZE             ORCSKANACHKAREA
+                   MOVE    "1"            TO  KANACHK-SYORI
+                   MOVE    ICD-DSPNAME    TO  KANACHK-MAE-INPUT
+                   CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+                   IF      KANACHK-RC     =   ZERO
+                       MOVE   ICD-DSPNAME TO  LST-NAME1 (CNT-LINE)
+                   END-IF
            END-EVALUATE
       *
            IF      FLG-TENSU-ARI       =   1
