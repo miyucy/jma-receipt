@@ -50,8 +50,6 @@
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０．４改正対応
       *  04.03.00    NACL-多々納  08/07/XX  病理診断加算・検査加算種別追加
       *  04.03.00    NACL-多々納  08/07/25  入院時初回加算自動算定追加
-      *  04.04.00    NACL-多々納  09/01/09  前回検査日自動算定追加
-      *  04.05.00    NACL-多々納  09/08/20  蛋白分画、総蛋白、アルブミンの算定チェック追加
       *****************************************************************
       *
       *
@@ -115,7 +113,6 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
-           03  IDX4                PIC 9(04).
            03  IDXS                PIC 9(04).
            03  IDX-Z               PIC 9(04).
            03  IDX-Z2              PIC 9(04).
@@ -153,9 +150,6 @@
            03  IDX-G               PIC 9(04).
       *
            03  IDX-N2              PIC 9(02).
-      *
-           03  IDX-SN              PIC 9(04).
-           03  IDD                 PIC 9(02).
       *    一時領域
        01  WRK-AREA.
       *
@@ -164,7 +158,6 @@
            03  WRK-SRYCD           PIC X(09). 
            03  WRK-SRYKA           PIC X(02). 
            03  WRK-HKNCOMBI        PIC X(04). 
-           03  WRK-CHIKENKBN       PIC X(01). 
       *
            03  WRK-IDX             PIC 9(04).
       *    乳幼児の自動加算コード
@@ -201,6 +194,15 @@
                05  WRK-TENSUKEI-TNEN   PIC 9(08).
                05  WRK-TENSUKEI-NNEN   PIC 9(08).
       *
+           03  WRK-TENSU-X.
+               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
+           03  WRK-KAISU-X.
+               05  WRK-KAISU-Z     PIC ZZZZ.
+      *    フィルム点数計
+           03  WRK-FIRTEN-KEI      PIC 9(08).
+           03  WRK-FIRTEN-ADD      PIC 9(08).
+           03  WRK-KIZKEI-ADD      PIC 9(08).
+           03  WRK-TENSUKEIS       PIC 9(08)V99.
       *    年齢判定用
            03  WRK-KGNAGE          PIC 9(03).
            03  WRK-JGNAGE          PIC 9(03).
@@ -224,7 +226,6 @@
            03  FLG-KENTAI2             PIC 9(01).
            03  WRK-KENTAI-SRYKA        PIC X(02). 
            03  WRK-KENTAI-HKNCOMBI     PIC X(04). 
-           03  WRK-KENTAI-CHIKENKBN    PIC X(01). 
            03  WRK-KENTAI2-CNT         PIC 9(03). 
            03  FLG-KENTAI-NO            PIC 9(01).
            03  FLG-KENTAI-CHK2          PIC 9(01).
@@ -232,24 +233,24 @@
            03  WRK-TEI-CNT             PIC 9(03).
       *
            03  WRK-YMD.
-               05  WRK-YM.
-                   07  WRK-YY              PIC 9(04).
-                   07  WRK-MM              PIC 9(02).
+               05  WRK-YM              PIC X(06).
                05  WRK-DD              PIC 9(02).
+      *    酸素
+           03  WRK-SANSO           PIC 9(08).
+           03  WRK-SANSOKIN        PIC 9(08)V99.
+           03  WRK-SANKEI          PIC 9(08).
+           03  WRK-SANTEN          PIC 9(08).
+           03  WRK-SANSOKIN-SUM    PIC 9(08)V99.
       *
            03  WRK-TNS-JGNAGE      PIC 9(02).
       *
            03  WRK-AUTOKBN         PIC X(01).
-      *
-           03  WRK-ERRMSG-1        PIC X(80).
-           03  WRK-ERRMSG-2        PIC X(80).
       *
       *    検査　判断グループ
        01  WRK-KENSA-AREA.
            03  WRK-KENSA-TBL                       OCCURS   20.
                05  WRK-KEN-SRYKA       PIC X(02).
                05  WRK-KEN-HKNCOMBI    PIC X(04).
-               05  WRK-KEN-CHIKENKBN   PIC X(01).
                05  WRK-KENSAGRP        PIC 9(02).
                05  WRK-KEN-KBN         PIC 9(01).
                05  WRK-KEN-SRYCD       PIC X(09).
@@ -447,7 +448,7 @@
            03  FILLER          PIC X(12)  VALUE    "12 160072450".
       * 13
       *    超音波（ＵＣＧ以外）（断層撮影法とＭモード法）
-      **** 03  FILLER          PIC X(12)  VALUE    "13 160072450".
+      *****03  FILLER          PIC X(12)  VALUE    "13 160072450".
       *    超音波（ＵＣＧ）（断層撮影法とＭモード法）
            03  FILLER          PIC X(12)  VALUE    "13 160072510".
       *    超音波（ＵＣＧ）（Ｍモード法）
@@ -511,27 +512,20 @@
            03  FILLER          PIC X(14)  VALUE    "05 1 160168550".
       *    サーファクタントロプロテインＤ
            03  FILLER          PIC X(14)  VALUE    "05 1 160168450".
-      *どれか２つ
-      *    蛋白分画測定
-           03  FILLER          PIC X(14)  VALUE    "06 2 160022810".
-      *    総蛋白（ＴＰ）
-           03  FILLER          PIC X(14)  VALUE    "06 2 160017410".
-      *    アルブミン（Ａｌｂ）
-           03  FILLER          PIC X(14)  VALUE    "06 2 160018910".
       *
        01  TBL-KENSA-JYU-AREA-R    REDEFINES   TBL-KENSA-JYU-AREA.
-           03  TBL-KENSA-JYU-OCC       OCCURS  11  INDEXED  JYU-IDX.
+           03  TBL-KENSA-JYU-OCC       OCCURS  8   INDEXED  JYU-IDX.
                05  TBL-JYU-KBN         PIC X(02).
                05  TBL-FILLER1         PIC X(01).
                05  TBL-JYU-KEN         PIC X(01).
                05  TBL-FILLER2         PIC X(01).
                05  TBL-JYU-SRYCD       PIC X(09).
       *01  KEN-JYU-MAX                 PIC 9(04)   VALUE   11.
-       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   11.
+       01  KEN-JYU-MAX                 PIC 9(04)   VALUE   8.
       *
       *    重複算定不可テーブル（２）
        01  TBL-KENSA-JYU2-AREA.
-      *どれか２つ（Ｈ１８．４から廃止）
+      *どれか２つ
       *    ＴＰ
            03  FILLER          PIC X(14)  VALUE    "01 2 160017410".
       *    Ａ／Ｇ
@@ -662,8 +656,6 @@
       *
       *    診療行為点数編集・基本チェック
            COPY    "CPORCSC92.INC".
-      *
-           COPY    "CPORCSC94.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -807,8 +799,7 @@
       *
       *    逓減加算算定チェック（診療行為入力時のみ）
            IF     (IDX-TEIGEN          >   ZERO )  AND
-                  (LNK-ORCSC-PG        =   "K02"
-                                       OR  "KT01" )
+                  (LNK-ORCSC-PG        =   "K02" )
                PERFORM 1008-TEIGEN-SYORI-SEC
            END-IF
       *
@@ -880,14 +871,6 @@
       *            入院患者初回加算のチェック
                    IF      WRK-COM-INPUTCD (IDX-Z) =   "160161510"
                        PERFORM 100113-NYUINSYOKAI-SEC
-                   END-IF
-      *            前回検査日自動発生
-                   IF      WRK-COM-ZENKNSKBN (IDX-Z)   =   "1"
-                                                       OR  "2"
-                       IF      LNK-ORCSC-PG        =   "K02"
-                                                   OR  "KT01"
-                           PERFORM 100115-ZENKNSCOMMNT-SET-SEC
-                       END-IF
                    END-IF
       *            初回コンタクトレンズ検査チェック
       *Ｈ２０．４から削除
@@ -1284,8 +1267,7 @@
                GO      TO      100812-TEIGEN-CHK-EXT
            END-IF
       *    今回入力分
-           IF     (SPA-NYUGAIKBN       =   "1" )
-              OR  (LNK-ORCSC-PG        =   "KT01" )
+           IF      SPA-NYUGAIKBN       =   "1"
               ADD      WRK-COM-NYU-KAI(IDX-TEIGEN)
                                            TO  LNK-ORCSC-TEIGEN-CNT
                                                               (IDX-TEI)
@@ -1327,11 +1309,6 @@
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU           =   1
-               GO      TO      108121-SANTEI-CHK-EXT
-           END-IF
-      *    外来まとめはＳＰＡに編集
-           IF      LNK-ORCSC-KT01FLG    =   "1"
-               PERFORM 2005121-KT01-SANTEI-SEC
                GO      TO      108121-SANTEI-CHK-EXT
            END-IF
       *
@@ -1416,30 +1393,7 @@
        108121-SANTEI-CHK-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    外来まとめ処理
-      *****************************************************************
-       2005121-KT01-SANTEI-SEC      SECTION.
       *
-           PERFORM VARYING     IDX-SN      FROM    1   BY  1
-                   UNTIL      (IDX-SN      >   100 )   OR
-                              (LNK-ORCSC-KT01-SRYCD  (IDX-SN) =   SPACE)
-               IF      WRK-SRYCD       =   LNK-ORCSC-KT01-SRYCD(IDX-SN)
-                   INITIALIZE                  SANTEI-REC
-                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
-      *            当日まで対象とする
-                   PERFORM VARYING     IDD         FROM    1   BY  1
-                           UNTIL      (IDD         >   IDX-Y2 )
-                       MOVE    LNK-ORCSC-KT01-DAY (IDX-SN IDD)
-                                                   TO  SANTEI-DAY (IDD)
-                       ADD     SANTEI-DAY (IDD)    TO  SANTEI-MSANTEICNT
-                   END-PERFORM
-                   MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNT
-               END-IF
-           END-PERFORM
-           .
-       2005121-KT01-SANTEI-EXT.
-           EXIT.
       *****************************************************************
       *    神経磁気診断のコメント自動発生処理
       *****************************************************************
@@ -1471,7 +1425,6 @@
            INITIALIZE                      ORCSC91AREA
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
            MOVE    "9"                 TO  LNK-SC91-KBN
-           MOVE    1                   TO  LNK-SC91-NYUCNT
            MOVE    WRK-COM-INPUTCD (IDX-Z)
                                        TO  LNK-SC91-SRYCD
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
@@ -1498,131 +1451,31 @@
            EXIT.
       *
       *****************************************************************
-      *    前回検査日自動発生処理
+      *    初回コンタクトレンズ検査チェックク処理
       *****************************************************************
-       100115-ZENKNSCOMMNT-SET-SEC                  SECTION.
+       100115-CONTAKUCHEK-SEC                  SECTION.
       *
-      *    剤内のコメント判定
-           MOVE    ZERO                TO  FLG-ARI
-           COMPUTE IDX4                =   IDX-Z       +   1
-           PERFORM VARYING     IDX1    FROM    IDX4    BY  1
-                   UNTIL      (IDX1        >   SPA-MAX-LINE     ) OR
-                              (FLG-ARI                 =   1    ) OR
-                             ((WRK-COM-INPUTCD (IDX1)  =   SPACE ) AND
-                              (WRK-GMN-INPUTCD (IDX1)  =   SPACE ))
-               IF      (WRK-COM-INPUTCD (IDX1)(1:1)    =   "8"  )
-                    OR (WRK-COM-INPUTCD (IDX1)(1:3)    =   "008" )
-                    MOVE    1              TO  FLG-ARI
-               END-IF
-               IF      (WRK-COM-INPUTCD (IDX1)(1:1)    =   "1" )
-                    MOVE   SPA-MAX-LINE        TO  IDX1
-               END-IF
-           END-PERFORM
-           IF      FLG-ARI             =   ZERO
-               PERFORM 1001151-ZENSANTEICHK-SEC
-           END-IF
-           .
-       100115-ZENKNSCOMMNT-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    検査前回算定チェック処理
-      *****************************************************************
-       1001151-ZENSANTEICHK-SEC                  SECTION.
-      *
-      *    前回算定日判定
            MOVE    WRK-COM-INPUTCD (IDX-Z)
-                                           TO  WRK-SRYCD
-           PERFORM 1001151-ZENSANTEI-SET-SEC
-      *
-           IF      FLG-SYOKAI-OK       =   1
-      *        前回あり
-               MOVE    "840000087"         TO  WRK-SRYCD
-           ELSE
-      *        初回
-               IF     WRK-COM-ZENKNSKBN (IDX-Z)    =   "1"
-                   MOVE    "810000001"         TO  WRK-SRYCD
+                                       TO  WRK-SRYCD
+           PERFORM 1001151-CONT-SANTEICHK-SEC
+           IF      SPA-ERRCD           =   SPACE
+               IF      WRK-COM-INPUTCD (IDX-Z) =   "160179210"
+      *            コンタクトレンズ検査１（既装用者）
+                   MOVE    "160179310"         TO  WRK-SRYCD
                ELSE
-                   MOVE    "840000085"         TO  WRK-SRYCD
-                   MOVE    SPA-SRYYMD          TO  WRK-YMD
+      *            コンタクトレンズ検査２（既装用者）
+                   MOVE    "160179510"         TO  WRK-SRYCD
                END-IF
-           END-IF
-           MOVE    IDX-Z               TO  IDX-S
-           MOVE    5                   TO  FLG-KASAN
-           PERFORM 2001-JIDOTUIKA-SEC
-           IF      FLG-ARI             =   1
-               MOVE    "1"             TO  WRK-COM-IN  (IDX-T)
-               MOVE    "2"             TO  WRK-COM-AUTOKBN (IDX-T)
-      *        診療内容編集
-               IF      WRK-SRYCD           =   "810000001"
-                   MOVE    "（初回実施）"      TO  WRK-GMN-MEISYO-G
-                                                          (IDX-T)
-                   MOVE    "1"                 TO  WRK-COM-MEIFLG
-                                                          (IDX-T)
-                   MOVE    SPACE           TO  WRK-COM-IN  (IDX-T)
-               ELSE
-                   MOVE    WRK-MM          TO  WRK-COM-ATAI1 (IDX-T)
-                   MOVE    WRK-DD          TO  WRK-COM-ATAI2 (IDX-T)
-               END-IF
-      *        画面再編集
-               INITIALIZE                  ORCSC94AREA
-               MOVE    "1"                 TO  LNK-SC94-KBN
-               MOVE    LNK-ORCSC-PG        TO  LNK-SC94-PG
-               MOVE    IDX-T               TO  LNK-SC94-IDX
-               CALL    "ORCSC94"           USING
-                                           ORCSC94AREA
-                                           WRK-SCR-REC
-                                           SPA-AREA
-      *
-      *        診療日を編集
-               INITIALIZE                  ORCSC92AREA
-               MOVE    SPACE               TO  LNK-SC92-KBN
-               MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC92-SYORIFLG
-               MOVE    LNK-ORCSC-PG        TO  LNK-SC92-PG
-               MOVE    IDX-T               TO  LNK-SC92-GMN-IDX
-               MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
-               MOVE    LNK-ORCSC-NENREI    TO  LNK-SC92-NENREI
-               MOVE    LNK-ORCSC-15MIMAN-ARI   TO  LNK-SC92-15MIMAN-ARI
-               MOVE    LNK-ORCSC-ROUJIN    TO  LNK-SC92-ROUJIN
-               MOVE    LNK-ORCSC-LSTSRYKA  TO  LNK-SC92-LSTSRYKA
-               MOVE    LNK-ORCSC-LSTSRYKAMEI   TO  LNK-SC92-LSTSRYKAMEI
-               MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC92-TEISEI-AREA
-               CALL    "ORCSC92"           USING
-                                           MCPAREA
-                                           ORCSC92AREA
-                                           WRK-SCR-REC
-                                           SPA-AREA
+               PERFORM 1001151-CONT-SANTEICHK-SEC
            END-IF
            .
-       1001151-ZENSANTEICHK-EXT.
+       100115-CONTAKUCHEK-EXT.
            EXIT.
       *
       *****************************************************************
-      *    初回コンタクトレンズ検査チェック処理
+      *    初回コンタクトレンズ検査チェックク処理
       *****************************************************************
-      *100115-CONTAKUCHEK-SEC                  SECTION.
-      *
-      *    MOVE    WRK-COM-INPUTCD (IDX-Z)
-      *                                TO  WRK-SRYCD
-      *    PERFORM 1001151-CONT-SANTEICHK-SEC
-      *    IF      SPA-ERRCD           =   SPACE
-      *        IF      WRK-COM-INPUTCD (IDX-Z) =   "160179210"
-      *            コンタクトレンズ検査１（既装用者）
-      *            MOVE    "160179310"         TO  WRK-SRYCD
-      *        ELSE
-      *            コンタクトレンズ検査２（既装用者）
-      *            MOVE    "160179510"         TO  WRK-SRYCD
-      *        END-IF
-      *        PERFORM 1001151-CONT-SANTEICHK-SEC
-      *    END-IF
-      *    .
-      *100115-CONTAKUCHEK-EXT.
-      *    EXIT.
-      *
-      *****************************************************************
-      *    前回算定日判定処理
-      *****************************************************************
-       1001151-ZENSANTEI-SET-SEC                  SECTION.
+       1001151-CONT-SANTEICHK-SEC                  SECTION.
       *
            MOVE    ZERO               TO  WRK-TEI-CNT
            IF      LNK-ORCSC-SYORIFLG  =   1
@@ -1663,15 +1516,12 @@
                            (FLG-SYOKAI-OK  =   1   )
                MOVE    SANTEI-SRYYM        TO  WRK-YM
                MOVE    ZERO                TO  WRK-DD
-               PERFORM VARYING    IDX2     FROM    31  BY  -1
-                       UNTIL     (IDX2     <   1   )  OR
+               PERFORM VARYING    IDX2     FROM    1   BY  1
+                       UNTIL     (IDX2     >   31  )  OR
                                  (FLG-SYOKAI-OK    =   1   )
                    IF      SANTEI-DAY (IDX2)   NOT =   ZERO
+                       MOVE    1               TO  FLG-SYOKAI-OK
                        MOVE    IDX2            TO  WRK-DD
-      *                診療日以前の算定を有効とする
-                       IF     (WRK-YMD             <=  SPA-SRYYMD)
-                           MOVE    1               TO  FLG-SYOKAI-OK
-                       END-IF
       *                訂正の時当日分は算定なしとする
                        IF     (LNK-ORCSC-SYORIFLG  =   1  )  AND
                               (WRK-YMD             =   SPA-SRYYMD) AND
@@ -1689,40 +1539,28 @@
            MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-           .
-       1001151-ZENSANTEI-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    初回コンタクトレンズ検査チェック処理
-      *****************************************************************
-      *1001151-CONT-SANTEICHK-SEC                  SECTION.
-      *
-      *    前回算定日判定
-      *    PERFORM 1001151-ZENSANTEI-SET-SEC
-      *
-      *    IF      FLG-SYOKAI-OK       =   1
-      *        IF      LNK-ORCSC-KEI-IDX   =   ZERO
-      *            MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
-      *            MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
-      *            MOVE    "K600"          TO  WRK-ERRCD
-      *            MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
+           IF      FLG-SYOKAI-OK       =   1
+               IF      LNK-ORCSC-KEI-IDX   =   ZERO
+                   MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                   MOVE    "1"             TO  WRK-COM-KZMFLG (IDX-Z)
+                   MOVE    "K600"          TO  WRK-ERRCD
+                   MOVE    "1"             TO  WRK-COM-CUR (IDX-Z)
       *            発生日
-      *            INITIALIZE                      STS-AREA-DAY
-      *            INITIALIZE                      LNK-DAY2-AREA
-      *            MOVE    "21"            TO  LNK-DAY2-IRAI
-      *            MOVE    WRK-YMD         TO  LNK-DAY2-YMD
-      *            CALL    "ORCSDAY"       USING   STS-AREA-DAY
-      *                                            LNK-DAY2-AREA
-      *            STRING  "算定日："          DELIMITED  BY  SIZE
-      *                    LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
-      *                   INTO                 LNK-ORCSC-ERRMSG
-      *            END-STRING
-      *        END-IF
-      *    END-IF
-      *    .
-      *1001151-CONT-SANTEICHK-EXT.
-      *    EXIT.
+                   INITIALIZE                      STS-AREA-DAY
+                   INITIALIZE                      LNK-DAY2-AREA
+                   MOVE    "21"            TO  LNK-DAY2-IRAI
+                   MOVE    WRK-YMD         TO  LNK-DAY2-YMD
+                   CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                                   LNK-DAY2-AREA
+                   STRING  "算定日："          DELIMITED  BY  SIZE
+                           LNK-DAY2-EDTYMD3    DELIMITED  BY  SIZE
+                          INTO                 LNK-ORCSC-ERRMSG
+                   END-STRING
+               END-IF
+           END-IF
+           .
+       1001151-CONT-SANTEICHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    同一検査チェック処理
@@ -2397,9 +2235,7 @@
       *        包括同一検査チェック
                IF     (SPA-NYUGAIKBN       =   "2" )  OR
                       (LNK-ORCSC-KENSAFLG  =   1   )
-                   IF      LNK-ORCSC-PG    NOT =   "KT01"
-                       PERFORM 2001-DOUCHK-SEC
-                   END-IF
+                   PERFORM 2001-DOUCHK-SEC
                END-IF
                IF      SPA-ERRCD           =   SPACE
                    IF      SPA-NYUGAIKBN       =   "1"
@@ -2756,13 +2592,6 @@
                    END-IF
                END-PERFORM
            END-IF
-      *!!!
-      *    外来まとめのチェックなし
-           IF     (LNK-ORCSC-PG        =   "KT01" )
-             OR   (LNK-ORCSC-KT01FLG   =   "1"    )
-               MOVE    1                   TO  FLG-OK
-           END-IF
-      *!!
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0026"          TO  SPA-ERRCD
@@ -2775,8 +2604,6 @@
            MOVE    "2"                 TO  LNK-SC91-KBN
            MOVE    "160062310"         TO  LNK-SC91-SRYCD
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
-           MOVE    LNK-ORCSC-KT01-AREA
-                                       TO  LNK-SC91-KT01-AREA
            CALL    "ORCSC91"           USING
                                        MCPAREA
                                        ORCSC91AREA
@@ -2804,8 +2631,6 @@
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
            MOVE    "160155110"         TO  LNK-SC91-SRYCD
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
-           MOVE    LNK-ORCSC-KT01-AREA
-                                       TO  LNK-SC91-KT01-AREA
            CALL    "ORCSC91"           USING
                                        MCPAREA
                                        ORCSC91AREA
@@ -2984,8 +2809,6 @@
            END-IF
       *
            MOVE    ZERO                TO  WRK-JYU-CNT
-           MOVE    WRK-COM-NAME (IDX-Z)    TO  WRK-ERRMSG-1
-           MOVE    SPACE               TO  WRK-ERRMSG-2
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   KEN-JYU-MAX)  OR
                               (SPA-ERRCD   NOT =   SPACE  )
@@ -3015,7 +2838,6 @@
                            ELSE
                                ADD     1               TO  WRK-JYU-CNT
                                MOVE    IDX2            TO  WRK-JYU-IDX
-                               PERFORM 200111-ERRMSG-HEN-SEC
                            END-IF
                        END-IF
       *                包括・入院の時は剤内
@@ -3028,12 +2850,8 @@
                END-IF
            END-PERFORM
            IF      WRK-JYU-KEN         <=  WRK-JYU-CNT
-               MOVE    "0601"              TO  SPA-ERRCD
-               IF      WRK-JYU-KEN         =   2
-                   MOVE    "0602"              TO  SPA-ERRCD
-               END-IF 
+               MOVE    "0060"              TO  SPA-ERRCD
                MOVE    "1"                 TO  WRK-COM-CUR (WRK-JYU-IDX)
-               MOVE    WRK-ERRMSG-1        TO  LNK-ORCSC-ERRMSG
            END-IF
       *
       **** IF      WRK-JYU-FLG     NOT =   SPACE
@@ -3043,28 +2861,6 @@
            .
       *
        20011-JYUFUKU-CHK-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    重複エラーメッセージ編集処理
-      *****************************************************************
-       200111-ERRMSG-HEN-SEC           SECTION.
-      *
-           MOVE    WRK-ERRMSG-1        TO  WRK-ERRMSG-2
-           MOVE    SPACE               TO  WRK-ERRMSG-1
-           IF      WRK-ERRMSG-2        =   SPACE
-               MOVE    WRK-COM-NAME (IDX2) TO  WRK-ERRMSG-1
-           ELSE
-               STRING  WRK-ERRMSG-2        DELIMITED  BY  SPACE
-                       "，"                DELIMITED  BY  SIZE
-                       WRK-COM-NAME (IDX2)
-                                           DELIMITED  BY  SPACE
-                                       INTO  WRK-ERRMSG-1
-               END-STRING
-           END-IF
-           .
-      *
-       200111-ERRMSG-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3120,7 +2916,6 @@
            IF      FLG-NYUDAY          =   1
                ADD     1               TO  WRK-JYU-CNT
                MOVE    IDX2            TO  WRK-JYU-IDX
-               PERFORM 200111-ERRMSG-HEN-SEC
            END-IF
            .
        200111-JYUFUKU-NYU-EXT.
@@ -3219,9 +3014,7 @@
       *****************************************************************
        2001-JIDOTUIKA-SEC     SECTION.
       *
-           IF      FLG-KASAN       NOT =   5
-               PERFORM 1110-KASAN-CHK-SEC
-           END-IF
+           PERFORM 1110-KASAN-CHK-SEC
            IF      FLG-ARI             =   1
                MOVE    IDX-T               TO  WRK-IDX
            ELSE
@@ -3589,15 +3382,9 @@
                                MOVE    SPA-HKNCOMBINUM
                                                    TO  WRK-KEN-HKNCOMBI
                                                            (WRK-KENIDX)
-                               MOVE    SPA-CHIKENKBN
-                                                   TO  WRK-KEN-CHIKENKBN
-                                                           (WRK-KENIDX)
                            ELSE
                                MOVE    WRK-COM-HKNCOMBI (IDX)
                                                    TO  WRK-KEN-HKNCOMBI
-                                                           (WRK-KENIDX)
-                               MOVE    WRK-COM-CHIKENKBN (IDX)
-                                                   TO  WRK-KEN-CHIKENKBN
                                                            (WRK-KENIDX)
                            END-IF
                        END-IF
@@ -3786,9 +3573,6 @@
                        MOVE    WRK-KEN-HKNCOMBI (IDX)
                                                TO  LNK-ORCSC-HKNCOMBI
                                                    (07 IDXS)
-                       MOVE    WRK-KEN-CHIKENKBN(IDX)
-                                               TO  LNK-ORCSC-CHIKENKBN
-                                                   (07 IDXS)
                        MOVE    WRK-KEN-SRYCD (IDX)
                                                TO  LNK-ORCSC-SRYCD
                                                    (07 IDXS)
@@ -3827,12 +3611,6 @@
                                END-IF
                            END-IF
                        END-IF
-      *                算定履歴
-                       IF      WRK-SRYCD (1:1)     =   "1"
-                           MOVE    TNS-SANTEIRRKKBN
-                                           TO  LNK-ORCSC-SANTEIRRKKBN
-                                                          (07 IDXS)
-                       END-IF
       *
       *                乳幼児加算セット
                        PERFORM 30051-NENREI-SET-SEC
@@ -3852,8 +3630,6 @@
                                            TO  WRK-SRYKA
                MOVE    LNK-ORCSC-HKNCOMBI(07 IDXS-KENTAI)
                                            TO  WRK-HKNCOMBI
-               MOVE    LNK-ORCSC-CHIKENKBN (07 IDXS-KENTAI)
-                                           TO  WRK-CHIKENKBN
       *        検体検査管理加算
                IF      SPA-NYUGAIKBN       =   1
       *            検体検査管理加算３
@@ -3914,8 +3690,6 @@
                                            TO  WRK-SRYKA
                MOVE    WRK-COM-HKNCOMBI(IDX-BA)
                                            TO  WRK-HKNCOMBI
-               MOVE    WRK-COM-CHIKENKBN (IDX-BA)
-                                           TO  WRK-CHIKENKBN
       *        動脈血採血
                MOVE    "160101210"         TO  WRK-SRYCD
                IF      SPA-NYUGAIKBN       =   "1"
@@ -3933,8 +3707,6 @@
                                            TO  WRK-SRYKA
                MOVE    WRK-COM-HKNCOMBI(IDX-BV)
                                            TO  WRK-HKNCOMBI
-               MOVE    WRK-COM-CHIKENKBN(IDX-BV)
-                                           TO  WRK-CHIKENKBN
       *        静脈血採血
                MOVE    "160095710"         TO  WRK-SRYCD
                MOVE    WRK-BV-DAY          TO  WRK-SAI-DAY
@@ -3948,8 +3720,6 @@
                                            TO  WRK-SRYKA
                MOVE    WRK-COM-HKNCOMBI(IDX-BC)
                                            TO  WRK-HKNCOMBI
-               MOVE    WRK-COM-CHIKENKBN(IDX-BC)
-                                           TO  WRK-CHIKENKBN
       *        抹消採血
                MOVE    "160095810"         TO  WRK-SRYCD
                MOVE    WRK-BC-DAY          TO  WRK-SAI-DAY
@@ -4031,12 +3801,9 @@
                    END-IF
                    IF      WRK-COM-HKNCOMBI (IDX)     =   SPACE
                        MOVE    SPA-HKNCOMBINUM TO  WRK-KENTAI-HKNCOMBI
-                       MOVE    SPA-CHIKENKBN   TO  WRK-KENTAI-CHIKENKBN
                    ELSE
                         MOVE    WRK-COM-HKNCOMBI (IDX)
                                                TO  WRK-KENTAI-HKNCOMBI
-                        MOVE    WRK-COM-CHIKENKBN (IDX)
-                                               TO  WRK-KENTAI-CHIKENKBN
                    END-IF
                END-IF
       *
@@ -4222,7 +3989,6 @@
            MOVE    SPACE               TO  LNK-SC92-LSTSRYKA
            MOVE    SPACE               TO  LNK-SC92-LSTSRYKAMEI
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC92-TEISEI-AREA
-           MOVE    LNK-ORCSC-KT01-AREA     TO  LNK-SC92-KT01-AREA
            CALL    "ORCSC92"           USING
                                        MCPAREA
                                        ORCSC92AREA
@@ -4264,8 +4030,6 @@
                                                    (07 IDXS)
                MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
                                                    (07 IDXS)
-               MOVE    WRK-CHIKENKBN   TO  LNK-ORCSC-CHIKENKBN
-                                                   (07 IDXS)
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                    (07 IDXS)
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
@@ -4287,12 +4051,6 @@
                                                     (07 IDXS 01)
                     MOVE    WRK-SAI-DAY    TO  LNK-ORCSC-INPUTCD
                                                     (07 IDXS 01)(3:2)
-               END-IF
-      *        算定履歴
-               IF      WRK-SRYCD (1:1)     =   "1"
-                   MOVE    TNS-SANTEIRRKKBN
-                                           TO  LNK-ORCSC-SANTEIRRKKBN
-                                                          (07 IDXS)
                END-IF
       *        併用チェック用
                ADD     1               TO  WRK-GMN-MAX
@@ -4453,8 +4211,6 @@
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
            MOVE    WRK-SRYCD           TO  LNK-SC91-SRYCD
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
-           MOVE    LNK-ORCSC-KT01-AREA
-                                       TO  LNK-SC91-KT01-AREA
            CALL    "ORCSC91"           USING
                                        MCPAREA
                                        ORCSC91AREA
@@ -4499,8 +4255,6 @@
                MOVE    SPACE               TO  LNK-SC92-LSTSRYKA
                MOVE    SPACE               TO  LNK-SC92-LSTSRYKAMEI
                MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC92-TEISEI-AREA
-               MOVE    LNK-ORCSC-KT01-AREA
-                                           TO  LNK-SC92-KT01-AREA
                CALL    "ORCSC92"           USING
                                            MCPAREA
                                            ORCSC92AREA
@@ -4519,9 +4273,6 @@
                                                    (07 IDXS)
                    MOVE    WRK-KENTAI-HKNCOMBI TO  LNK-ORCSC-HKNCOMBI
                                                    (07 IDXS)
-                   MOVE    WRK-KENTAI-CHIKENKBN
-                                           TO  LNK-ORCSC-CHIKENKBN
-                                                   (07 IDXS)
                    MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                    (07 IDXS)
                    MOVE    WRK-COM-KISOTEN (WRK-GMN-MAX)
@@ -4537,12 +4288,6 @@
       *
                    MOVE    "4"             TO  LNK-ORCSC-AUTOKBN
                                                    (07 IDXS)
-      *            算定履歴
-                   IF      WRK-SRYCD (1:1)     =   "1"
-                       MOVE    TNS-SANTEIRRKKBN
-                                           TO  LNK-ORCSC-SANTEIRRKKBN
-                                                          (07 IDXS)
-                   END-IF
                END-IF
                MOVE    HZN-SCR-REC         TO  WRK-SCR-REC 
            END-IF
@@ -4571,8 +4316,6 @@
                                                    (07 IDXS)
                MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
                                                    (07 IDXS)
-               MOVE    WRK-CHIKENKBN   TO  LNK-ORCSC-CHIKENKBN
-                                                   (07 IDXS)
                MOVE    WRK-SRYCD       TO  LNK-ORCSC-SRYCD
                                                    (07 IDXS)
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
@@ -4584,12 +4327,6 @@
       *
                MOVE    "4"             TO  LNK-ORCSC-AUTOKBN
                                                    (07 IDXS)
-      *        算定履歴
-               IF      WRK-SRYCD (1:1)     =   "1"
-                   MOVE    TNS-SANTEIRRKKBN
-                                           TO  LNK-ORCSC-SANTEIRRKKBN
-                                                          (07 IDXS)
-               END-IF
       *        入院回数
                IF      TBL-NYUINDAY-AREA   NOT =   ZERO
                     PERFORM 30071-BA-DAY-HENSYU-SEC
