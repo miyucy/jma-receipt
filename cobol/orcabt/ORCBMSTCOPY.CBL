@@ -138,8 +138,8 @@
                05                      PIC X(03)   VALUE   "   ".
                05                      PIC X(20)   VALUE   "複写コード".
                05                      PIC X(03)   VALUE   "   ".
-               05                      PIC X(16)   VALUE   "名称".
-               05                      PIC X(05)   VALUE   "     ".
+               05                      PIC X(26)   VALUE   "名称".
+               05                      PIC X(07)   VALUE   "     ".
                05                      PIC X(30)   VALUE   "処理結果".
       *
            03  LST-MEISAI-G.
@@ -148,8 +148,8 @@
                    07  LST-FIL1        PIC X(02).
                    07  LST-CD          PIC X(20).
                    07  LST-FIL2        PIC X(01).
-                   07  LST-NAME1       PIC X(20).
-                   07  LST-FIL3        PIC X(01).
+                   07  LST-NAME1       PIC X(30).
+                   07  LST-FIL3        PIC X(06).
                    07  LST-NAIYO       PIC X(52).
       *
        01  CONST-AREA.
@@ -613,8 +613,10 @@
                MOVE    "all"            TO  MCP-PATHNAME
                PERFORM  910-INPUTCD-READ-SEC
                PERFORM  UNTIL  FLG-INPUTCD  =    1
-                  IF   (ICD-CREYMD      =  SPACE)  OR
-                       (ICD-CREYMD      = "00000000")
+                  IF   (ICD-CREYMD      =  SPACE)     OR
+                       (ICD-CREYMD      = "00000000") OR
+                       (ICD-INPUTCD(1:1) = "P")       OR
+                       (ICD-INPUTCD(1:1) = "S")
                      CONTINUE
                   ELSE
       *                   入力コード作成処理
@@ -724,6 +726,31 @@
                    MOVE    TNS-NAME    TO  LST-NAME1 (CNT-LINE)
                WHEN   "2"
                    MOVE    ICD-INPUTCD TO  LST-CD (CNT-LINE)
+
+                   MOVE    SPACE       TO  TNS-TENSU-REC
+                   INITIALIZE          TNS-TENSU-REC
+                   MOVE    WRK-PARA-HOSPNUM
+                                       TO  TNS-HOSPNUM
+                   MOVE    ICD-SRYCD   TO  TNS-SRYCD
+                   MOVE    SMCNDATE-YMD
+                                       TO  TNS-YUKOSTYMD
+                                           TNS-YUKOEDYMD
+                   MOVE    "tbl_tensu" TO  MCP-TABLE
+                   MOVE    "key"       TO  MCP-PATHNAME
+                   PERFORM   910-TENSU-SELECT-SEC
+                   IF      FLG-TENSU            =   ZERO
+                       MOVE    "tbl_tensu"    TO  MCP-TABLE
+                       MOVE    "key"          TO  MCP-PATHNAME
+                       PERFORM  910-TENSU-READ-SEC
+                       IF    FLG-TENSU    =    ZERO
+                           MOVE    TNS-NAME
+                                       TO  LST-NAME1 (CNT-LINE)
+                       END-IF
+                   END-IF
+      *
+                   MOVE    "tbl_tensu"    TO  MCP-TABLE
+                   MOVE    "key"          TO  MCP-PATHNAME
+                   PERFORM   900-CLOSE-SEC
            END-EVALUATE
       *
            IF      FLG-TENSU-ARI       =   1
