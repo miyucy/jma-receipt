@@ -5030,7 +5030,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "2422"
-                   STRING  "標準負担額減額開始日は低所得２の"
+                   STRING  "標準負担額減額開始日は低所得１の"
                            "範囲内で入力して下さい"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
