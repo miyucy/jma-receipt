@@ -114,3 +114,15 @@ path	key5	{
 		;
 	};
 };
+path	key6	{
+	DBSELECT	{
+		DECLARE tbl_inputset_key6_csr CURSOR FOR
+		SELECT *
+		FROM tbl_inputset
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   SETCD       =   :SETCD
+			ORDER   BY        YUKOSTYMD,
+			                  SETSEQ
+		;
+	};
+};
