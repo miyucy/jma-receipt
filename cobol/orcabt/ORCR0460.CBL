@@ -114,6 +114,8 @@
       *  04.03.03    NACL-ÌçÏÆ    08/12/01  ºßÂð¡Ê±¡³°Ê¬¡ËÊÔ½¸½¤Àµ
       *  04.03.04    NACL-ÌçÏÆ    09/01/15  ½èÊý¡ÊÆýÍÄ»ù¡Ë²Ã»»ÊÔ½¸ÂÐ±þ
       *                                     ½èÊý¤»¤ó¡ÊÆýÍÄ»ù¡Ë²Ã»»ÊÔ½¸ÂÐ±þ
+      *
+      *  04.04.01    NACL-ÌçÏÆ    09/02/04  ¸¡ºº¤Î¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -464,6 +466,8 @@
       *            ´Á»úÍ­¸ú·å¿ô/´Á»úÌ¾¾Î
                    07  TBL-YUKOKETA        PIC  9(03).
                    07  TBL-NAME            PIC  X(200).
+      *        ¥Ç¡¼¥¿¶èÊ¬¾ðÊó
+               05  TBL-DATAKBN             PIC  9(01).
       *        Êñ³çÂÐ¾Ý¸¡ºº¾ðÊó
                05  TBL-HOUKNSKBN           PIC  9(02).
       *
@@ -559,6 +563,9 @@
       *                ´Á»úÍ­¸ú·å¿ô/´Á»úÌ¾¾Î
                        09  TBL-ZAIW-YUKOKETA        PIC  9(03).
                        09  TBL-ZAIW-NAME            PIC  X(200).
+      *                ¥Ç¡¼¥¿¶èÊ¬¾ðÊó
+                   07  TBL-ZAIW-DATAKBNINF.
+                       09  TBL-ZAIW-DATAKBN         PIC  9(01).
       *                Êñ³çÂÐ¾Ý¸¡ºº¾ðÊó
                    07  TBL-ZAIW-HOUKNSKBNINF.
                        09  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
@@ -1166,7 +1173,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                  AND     RECE45-RECEPTFLG(IDX)       =   SPACE
       *
                    IF      RECE45-SRYCD (IDX) (1:1)  =   "1"
-                       CONTINUE
+                       IF      RECE45-DATAKBN(IDX)         =   "2"
+                           MOVE    1                 TO  FLG-SRYCD1
+                       END-IF
                    ELSE
                        MOVE    1                     TO  FLG-SRYCD1
                    END-IF
@@ -1342,6 +1351,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                      TO  TBL-ZAIW-NAMEINF   (IDY IDZ)
                        MOVE    RECE45-RECEHENFLG(IDX)
                                      TO  TBL-ZAIW-RECEHENFLG(IDY IDZ)
+                       MOVE    RECE45-DATAKBNINF(IDX)
+                                     TO  TBL-ZAIW-DATAKBNINF(IDY IDZ)
                        MOVE    RECE45-HOUKNSKBNINF(IDX)
                                      TO  TBL-ZAIW-HOUKNSKBNINF(IDY IDZ)
                        MOVE    RECE45-SRYSYUKBN  TO
@@ -1796,6 +1807,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                              TO  TBL-TANIMOJISU(IDX)
                MOVE    TBL-ZAIW-TANINAME(3 IDX)  TO  TBL-TANINAME(IDX)
                MOVE    TBL-ZAIW-SRYCD   (3 IDX)  TO  TBL-SRYCD   (IDX)
+               MOVE    TBL-ZAIW-DATAKBN (3 IDX)  TO  TBL-DATAKBN (IDX)
                MOVE    TBL-ZAIW-HOUKNSKBN(3 IDX) TO  TBL-HOUKNSKBN(IDX)
                IF      TBL-YUKOKETA (IDX)      =   ZERO
                    PERFORM VARYING IDZ FROM   200 BY  -1
@@ -1820,6 +1832,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                
            PERFORM UNTIL   IDX     >       WRK-KENSA-MAX
                IF      TBL-HOUKNSKBN(IDX)   =   ZERO
+               OR      FLG-SRYCD1           =    1
+                   IF     (TBL-HOUKNSKBN(IDX)  NOT =  ZERO)
+                   AND    (FLG-SRYCD1              =   1  )
+                     IF    IDX  =   1
+                       MOVE  TBL-HOUKNSKBN(IDX)  TO  WRK-TNS-HOUKNSKBN
+                     END-IF
+                     IF  TBL-DATAKBN (IDX)   NOT =   "2"
+                       ADD     1                 TO  WRK-KOUMOKUSU
+                     END-IF
+                   END-IF
                    ADD     1                        TO  WRK-ZAIWMAX (3)
                    MOVE    WRK-ZAIWMAX (3)          TO  IDZ
                    MOVE    TBL-NAMEINF (IDX)   TO
@@ -1834,6 +1856,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                     TBL-ZAIW-TANINAME(3 IDZ)
                    MOVE    TBL-SRYCD   (IDX)   TO
                                     TBL-ZAIW-SRYCD   (3 IDZ)
+                   MOVE    TBL-DATAKBN (IDX)   TO
+                                    TBL-ZAIW-DATAKBN (3 IDZ)
                    MOVE    TBL-HOUKNSKBN(IDX)  TO
                                     TBL-ZAIW-HOUKNSKBN(3 IDZ)
                    IF      (FLG-GAIJINKEN  =   1) 
@@ -1899,8 +1923,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                                        TBL-YUKOKETA (IDX)  *   2
                        END-IF
       *                 
+                       IF  TBL-DATAKBN (IDX)   NOT =   "2"
+                          ADD  1           TO  WRK-KOUMOKUSU
+                       END-IF
                        ADD     1           TO  IDX
-                       ADD     1           TO  WRK-KOUMOKUSU 
                    END-PERFORM                            
                    ADD     1               TO  WRK-ZAIWMAX (3)
                    MOVE    WRK-ZAIWMAX (3) TO  IDZ

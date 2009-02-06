@@ -354,6 +354,7 @@
       *  04.03.13    NACL-ÌçÏÆ    09/01/28  »³Íü¸©£´£±Ï·¿ÍÂÐ±þ
       *
       *  04.04.01    NACL-ÌçÏÆ    08/12/25  Êñ³çÂÐ±þ
+      *  04.04.02    NACL-ÌçÏÆ    09/02/04  ¸¡ºº¤Î¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -500,6 +501,7 @@
            03  FLG-SYOBYO-COM                          PIC 9(01).
            03  FLG-RYOYO-COM                           PIC 9(01).
            03  FLG-SYODOU-COM                          PIC 9(01).
+           03  FLG-KENSA-COM                           PIC 9(01).
            03  FLG-RECESKYKBN                          PIC 9(01).
       *****03  FLG-HKNNUM                              PIC 9(01).
            03  FLG-RECE69                              PIC 9(01).
@@ -601,6 +603,7 @@
            03  GENSAN-IDX                              PIC 9(03).
            03  GENSAN-IDX2                             PIC 9(03).
            03  IDV                                     PIC 9(02).
+           03  IDV2                                    PIC 9(03).
            03  IDU                                     PIC 9(03).
            03  NYUINACT-IDX                            PIC 9(03).
            03  KOHFTN-IDX                              PIC 9(03).
@@ -1329,6 +1332,13 @@
            03  CONS-OSIN2-COMMENT    PIC X(09)  VALUE  "114001610".
       *    ±ý¿ÇÆü¥³¥á¥ó¥È
            03  CONS-OSIN3-COMMENT    PIC X(09)  VALUE  "840000039".
+      *
+      *    £Â£Î£ÐÀºÌ©
+           03  CONS-KENSA1-COMMENT   PIC X(09)  VALUE  "160162350".
+      *    £Î£Ô¡Ý£ð£ò£ï£Â£Î£ÐÀºÌ©
+           03  CONS-KENSA2-COMMENT   PIC X(09)  VALUE  "160181250".
+      *    £È£Á£Î£ÐÀºÌ©
+           03  CONS-KENSA3-COMMENT   PIC X(09)  VALUE  "160116310".
       *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
@@ -2573,6 +2583,7 @@
                                                   FLG-HOUSEI-COM
                                                   FLG-HOUMON-COM
                                                   FLG-TAHOKEN
+                                                  FLG-KENSA-COM
       *
                                MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -2630,6 +2641,7 @@
                                                          FLG-HOUSEI-COM
                                                          FLG-HOUMON-COM
                                                          FLG-TAHOKEN
+                                                         FLG-KENSA-COM
       *
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -2659,6 +2671,7 @@
                                                          FLG-HOUSEI-COM
                                                          FLG-HOUMON-COM
                                                          FLG-TAHOKEN
+                                                         FLG-KENSA-COM
       *
                                       MOVE   ZERO   TO   WRK-FILMTEN
       *
@@ -3365,6 +3378,24 @@
                         MOVE     "1"       TO    RECE64-COMCDFLG
                END-IF
       *
+               IF  ( SRY-SRYKBN     =  "60" OR "64" )
+               AND ((SRY-SRYCD(IDX2)(1:1)  =  "8"  ) OR
+                    (SRY-SRYCD(IDX2)(1:3)  =  "008"))
+               AND ( FLG-KENSA-COM  =   ZERO        )
+                 IF  SRY-SRYCD(IDX2) = "840000085" OR "840000087"
+                    CONTINUE
+                 ELSE
+                    PERFORM  VARYING  IDV2  FROM  1  BY  2
+                              UNTIL  (IDV2           >   200)
+                               OR    (FLG-KENSA-COM  =    1 )
+                      IF  RECE65-NAME(IDX4)(IDV2:2)   =  "Æü"
+                        MOVE   SPACE  TO  RECE64-FLG-KENSA-COMMENT
+                        MOVE     1    TO  FLG-KENSA-COM
+                      END-IF
+                    END-PERFORM
+                 END-IF
+               END-IF
+      *
                IF  SRY-SRYCD(IDX2)(1:3)     =   "058"
                  MOVE  TNS-FORMALYUKOKETA TO  RECE65-YUKOKETA(IDX4)
                  MOVE  TNS-FORMALNAME     TO  RECE65-NAME(IDX4)
@@ -3788,6 +3819,15 @@
            IF      RECE64-SRYKBN      =     "90"  OR  "92"
               IF   SRY-SRYCD(IDX2)    =     CONS-KAKURI-COMMENT
                    MOVE   "1"   TO    RECE64-FLG-KAKURI-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE64-SRYKBN      =     "60" OR "64"
+              IF   (SRY-SRYCD(IDX2)   =     CONS-KENSA1-COMMENT
+                                      OR    CONS-KENSA2-COMMENT
+                                      OR    CONS-KENSA3-COMMENT)
+              AND  (FLG-KENSA-COM     =     ZERO               )
+                   MOVE   "1"   TO    RECE64-FLG-KENSA-COMMENT
               END-IF
            END-IF
       *

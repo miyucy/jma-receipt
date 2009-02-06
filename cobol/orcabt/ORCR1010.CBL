@@ -52,6 +52,7 @@
       *  04.03.05    NACL-ÌçÏÆ    09/01/16  ½èÊýÍó¶â³ÛÊÔ½¸½¤Àµ
       *
       *  04.04.01    NACL-ÌçÏÆ    08/12/25  Êñ³çÂÐ±þ
+      *  04.04.02    NACL-ÌçÏÆ    09/02/04  ¸¡ºº¤Î¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -151,6 +152,7 @@
            03  FLG-SYODOU-COM                          PIC 9(01).
            03  FLG-NIKOCHIN-COM                        PIC 9(01).
            03  FLG-ZENSOKU-COM                         PIC 9(01).
+           03  FLG-KENSA-COM                           PIC 9(01).
            03  FLG-RINYAK                              PIC 9(01).
            03  FLG-WRITE05                             PIC 9(01).
            03  FLG-WRITE05X                            PIC 9(01).
@@ -604,6 +606,13 @@
       *    ¾®»ùÆÃÄêÂè£±²óÌÜ¥«¥¦¥ó¥»¥ê¥ó¥°¥³¥á¥ó¥È
            03  CONS-SYOUNI3-COMMENT  PIC X(09)  VALUE  "840000104".
       *
+      *    £Â£Î£ÐÀºÌ©
+           03  CONS-KENSA1-COMMENT   PIC X(09)  VALUE  "160162350".
+      *    £Î£Ô¡Ý£ð£ò£ï£Â£Î£ÐÀºÌ©
+           03  CONS-KENSA2-COMMENT   PIC X(09)  VALUE  "160181250".
+      *    £È£Á£Î£ÐÀºÌ©
+           03  CONS-KENSA3-COMMENT   PIC X(09)  VALUE  "160116310".
+      *
       *    ³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»
            03  CONS-GAIJINKEN        PIC X(09)  VALUE  "160177770".
       *
@@ -978,6 +987,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                 FLG-ZAIHOU-COM
                                                 FLG-TAHOKEN
                                                 FLG-SYOUNI-COM
+                                                FLG-KENSA-COM
       *
                                MOVE  ZERO  TO   WRK-FILMTEN
                                MOVE  ZERO  TO   FLG-NEBU
@@ -1040,6 +1050,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                        FLG-ZAIHOU-COM
                                                        FLG-TAHOKEN
                                                        FLG-SYOUNI-COM
+                                                       FLG-KENSA-COM
       *
                                       MOVE  ZERO  TO   WRK-FILMTEN
                                       MOVE  ZERO  TO   FLG-NEBU
@@ -1073,6 +1084,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                      FLG-ZAIHOU-COM
                                                      FLG-TAHOKEN
                                                      FLG-SYOUNI-COM
+                                                     FLG-KENSA-COM
       *
                                     MOVE  ZERO  TO   WRK-FILMTEN
                                     MOVE  ZERO  TO   FLG-NEBU
@@ -1741,6 +1753,24 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                     END-PERFORM
                END-IF
       *
+               IF  ( SRY-SRYKBN     =  "60" OR "64" )
+               AND ((SRY-SRYCD(IDX2)(1:1)  =  "8"  ) OR
+                    (SRY-SRYCD(IDX2)(1:3)  =  "008"))
+               AND ( FLG-KENSA-COM  =   ZERO        )
+                 IF  SRY-SRYCD(IDX2) = "840000085" OR "840000087"
+                    CONTINUE
+                 ELSE
+                    PERFORM  VARYING  IDV  FROM  1  BY  2
+                              UNTIL  (IDV            >   200)
+                               OR    (FLG-KENSA-COM  =    1 )
+                      IF  RECE130-NAME(IDX4)(IDV:2)   =  "Æü"
+                        MOVE   SPACE  TO  RECE120-FLG-KENSA-COMMENT
+                        MOVE     1    TO  FLG-KENSA-COM
+                      END-IF
+                    END-PERFORM
+                 END-IF
+               END-IF
+      *
                IF  SRY-SRYCD(IDX2)(1:3)     =   "058"
                  MOVE  TNS-FORMALYUKOKETA TO  RECE130-YUKOKETA(IDX4)
                  MOVE  TNS-FORMALNAME     TO  RECE130-NAME(IDX4)
@@ -2327,6 +2357,15 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
                                             CONS-CTMRI-COMMENT16 OR
                                             CONS-CTMRI-COMMENT17
                    MOVE   "1"   TO    RECE120-FLG-CTMRI-COMMENT
+              END-IF
+           END-IF
+      *
+           IF      RECE120-SRYKBN      =     "60" OR "64"
+              IF   (SRY-SRYCD(IDX2)   =     CONS-KENSA1-COMMENT
+                                      OR    CONS-KENSA2-COMMENT
+                                      OR    CONS-KENSA3-COMMENT)
+              AND  (FLG-KENSA-COM     =     ZERO               )
+                   MOVE   "1"   TO    RECE120-FLG-KENSA-COMMENT
               END-IF
            END-IF
       *

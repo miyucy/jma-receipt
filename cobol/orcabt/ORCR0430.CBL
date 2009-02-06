@@ -97,6 +97,8 @@
       *
       *  04.03.01    NACL-門脇    08/11/04  リハビリ発症日年月日対応
       *  04.03.02    NACL-門脇    08/12/22  内服薬剤逓減編集修正
+      *
+      *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1288,8 +1290,18 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
                    WHEN      "60"
                    WHEN      "64"
+                      MOVE   ZERO   TO  FLG-COMMENT
       *            （（検選）日のセット）
-                      PERFORM    2001-KENSEN-HANTEI-SEC
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-KENSEN-HANTEI-SEC
+                      END-IF
+      *            （実施日のセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-KENSA-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE44-TENSOU-SEC
+                      END-IF
                    WHEN      "70"
       *            （ＣＴ・ＭＲＩ実施日のセット）
                       PERFORM    2001-CTMRI-HANTEI-SEC
@@ -1396,8 +1408,18 @@ grpsys       PERFORM 900-DBSELECT-SEC
                       PERFORM    2001-SHUJUTSU-HANTEI-SEC
                    WHEN      "60"
                    WHEN      "64"
+                      MOVE   ZERO   TO  FLG-COMMENT
       *            （（検選）日のセット）
-                      PERFORM    2001-KENSEN-HANTEI-SEC
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-KENSEN-HANTEI-SEC
+                      END-IF
+      *            （実施日のセット）
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2001-KENSA-HANTEI-SEC
+                      END-IF
+                      IF   FLG-COMMENT  =  ZERO
+                        PERFORM    2099-RECE44-TENSOU-SEC
+                      END-IF
                    WHEN      "70"
       *            （ＣＴ・ＭＲＩ実施日のセット）
                       PERFORM    2001-CTMRI-HANTEI-SEC
@@ -3818,9 +3840,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
        2001-KENSEN-HANTEI-SEC          SECTION.
       *
            IF     RECE44-SAFLG   =    "2"
+               MOVE       99      TO     FLG-COMMENT
                PERFORM    20011-KENSENTOU-COMMENT-SEC
-           ELSE
-               PERFORM    2099-RECE44-TENSOU-SEC
            END-IF
       *
            .
@@ -3937,6 +3958,20 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            .
        20011-KENSENTOU-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    検査（ＢＮＰ、ＮＴ−ｐｒｏＢＮＰ、ＨＡＮＰ）があるか判定
+      *****************************************************************
+       2001-KENSA-HANTEI-SEC          SECTION.
+      *
+           IF     RECE44-FLG-KENSA-COMMENT    =    "1"
+               MOVE       7       TO     FLG-COMMENT
+               PERFORM    20011-SHUJUTSU-ETC2-COMMENT-SEC
+           END-IF
+      *
+           .
+       2001-KENSA-HANTEI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -4124,6 +4159,13 @@ grpsys       PERFORM 900-DBSELECT-SEC
                                            WRK-KETA-TAIHI
                  MOVE     0          TO    WRK-KETA2
                  MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
+              WHEN    7
+                 MOVE     8          TO    WRK-KETA
+                                           WRK-KETA-TAIHI
+                 MOVE     4          TO    WRK-KETA2
+                 MOVE    WRK-KETA2   TO    WK-FREE-YUKOKETA2(IDZ)
+                 MOVE    "検査実施"
+                             TO    WK-FREE-NAME2(IDZ)(1:WRK-KETA)
            END-EVALUATE
       *
            MOVE      ZERO          TO  FLG-FIRST

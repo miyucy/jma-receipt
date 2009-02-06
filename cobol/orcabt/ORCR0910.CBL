@@ -91,6 +91,8 @@
       *  04.03.01    NACL-ÌçÏÆ    08/07/09  ÅêÌô¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
       *  04.03.02    NACL-ÌçÏÆ    08/07/14  ÅêÌôºÞÅÀ£°¡Ê±¡³°Åù¡Ëµ­ºÜÂÐ±þ
       *  04.03.03    NACL-ÌçÏÆ    08/12/01  ºßÂð¡Ê±¡³°Ê¬¡ËÊÔ½¸½¤Àµ
+      *
+      *  04.04.01    NACL-ÌçÏÆ    09/02/04  ¸¡ºº¤Î¥³¥á¥ó¥È¼«Æ°µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1079,7 +1081,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                  AND     RECE85-RECEPTFLG(IDX)       =   SPACE
       *
                    IF      RECE85-SRYCD (IDX) (1:1)  =   "1"
-                       IF      TBL-DATAKBN (IDX)         =   "2"
+                       IF      RECE85-DATAKBN(IDX)         =   "2"
                            MOVE    1                 TO  FLG-SRYCD1
                        END-IF
                    ELSE
@@ -1592,6 +1594,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                
            PERFORM UNTIL   IDX     >       WRK-KENSA-MAX
                IF      TBL-HOUKNSKBN(IDX)   =   ZERO
+               OR      FLG-SRYCD1           =    1
+                   IF     (TBL-HOUKNSKBN(IDX)  NOT =  ZERO)
+                   AND    (FLG-SRYCD1              =   1  )
+                     IF    IDX  =   1
+                       MOVE  TBL-HOUKNSKBN(IDX)  TO  WRK-TNS-HOUKNSKBN
+                     END-IF
+                     IF  TBL-DATAKBN (IDX)   NOT =   "2"
+                       ADD     1                 TO  WRK-KOUMOKUSU
+                     END-IF
+                   END-IF
                    ADD     1                        TO  WRK-ZAIWMAX (3)
                    MOVE    WRK-ZAIWMAX (3)          TO  IDZ
                    MOVE    TBL-NAMEINF (IDX)   TO

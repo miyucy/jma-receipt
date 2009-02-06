@@ -126,6 +126,8 @@
       *  04.03.01    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
       *  04.03.02    NACL-門脇    08/07/14  仮レセ作成（院外処方含む）対応
       *                                     投薬剤点０（院外等）記載
+      *
+      *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1365,8 +1367,8 @@
                  IF        RECE65-RECEPTFLG(IDX)     =   SPACE
       *
                    IF      RECE65-SRYCD (IDX) (1:1)  =   "1"
-                       IF      TBL-DATAKBN (IDX)         =   "2"
-                           MOVE    1                     TO  FLG-SRYCD1
+                       IF      RECE65-DATAKBN(IDX)         =   "2"
+                           MOVE    1                 TO  FLG-SRYCD1
                        END-IF
                    ELSE
                        MOVE    1                     TO  FLG-SRYCD1
@@ -1852,6 +1854,16 @@
       ****     PERFORM 900-TENSU-INV-SEC
       ****     IF      TNS-HOUKNSKBN        =   ZERO
                IF      TBL-HOUKNSKBN(IDX)   =   ZERO
+               OR      FLG-SRYCD1           =    1
+                   IF     (TBL-HOUKNSKBN(IDX)  NOT =  ZERO)
+                   AND    (FLG-SRYCD1              =   1  )
+                     IF    IDX  =   1
+                       MOVE  TBL-HOUKNSKBN(IDX)  TO  WRK-TNS-HOUKNSKBN
+                     END-IF
+                     IF  TBL-DATAKBN (IDX)   NOT =   "2"
+                       ADD     1                 TO  WRK-KOUMOKUSU
+                     END-IF
+                   END-IF
                    ADD     1                        TO  WRK-ZAIWMAX (3)
                    MOVE    WRK-ZAIWMAX (3)          TO  IDZ
                    MOVE    TBL-NAMEINF (IDX)   TO
