@@ -212,9 +212,6 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *   全角チェックパラメタ
-           COPY    "CPORCSKANACHK.INC".
-      *
       *    ＤＢ検索
            COPY    "MCPAREA".
       *
