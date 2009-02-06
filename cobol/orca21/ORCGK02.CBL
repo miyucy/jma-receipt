@@ -11669,6 +11669,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    Â¾±¡É³ÉÕ¤±¤¢¤ê
            IF      SPA-NAI-GRPKBN      =   1
                MOVE    "darkgreen"         TO  K02-GRPMEI-STYLE
+               IF      SPA-NAI-GRPKBN2     =   1
+                   MOVE    "red"           TO  K02-GRPMEI-STYLE
+               END-IF
                MOVE    "¡ÚÂ¾¡Û"            TO  K02-GRPMEI-VALUE
            ELSE
                MOVE    "black"             TO  K02-GRPMEI-STYLE

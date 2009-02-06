@@ -2235,6 +2235,14 @@
       *    ÊÝ¸±ÁÈ¹ç¤»Ì¾¾ÎÊÔ½¸
            PERFORM 10013-HKNCOMBI-SEC
       *
+      *    ¿ÇÎÅÆü¤Î¼õ¿ÇÍ­Ìµ
+           MOVE    ZERO                TO  SPA-NAI-GRPKBN2
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   9   )
+                           OR (SPA-NAI-GRPHOSPNUM (IDX)    =   ZERO)
+               PERFORM 100151-PTSAME-JYURRK-SEC
+           END-PERFORM
+      *
            .
        1001-SPA-JYUSIN-EXT.
            EXIT.
@@ -3398,6 +3406,8 @@
       *****************************************************************
        10015-PTSAME-SET-SEC            SECTION.
       *
+           MOVE    ZERO                TO  SPA-NAI-GRPKBN
+           MOVE    ZERO                TO  SPA-NAI-GRPKBN2
            MOVE    ZERO                TO  IDX
       *
            INITIALIZE                      PTSAME-REC
@@ -3454,8 +3464,47 @@
            ELSE
                MOVE    ZERO                TO  SPA-NAI-GRPKBN
            END-IF
+      *    ¿ÇÎÅÆü¤Î¼õ¿ÇÍ­Ìµ
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   9   )
+                           OR (SPA-NAI-GRPHOSPNUM (IDX)    =   ZERO)
+               PERFORM 100151-PTSAME-JYURRK-SEC
+           END-PERFORM
            .
        10015-PTSAME-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿ÇÎÅÆü¤Î¼õ¿ÇÍ­ÌµÀßÄê½èÍý
+      *****************************************************************
+       100151-PTSAME-JYURRK-SEC         SECTION.
+      *
+           INITIALIZE                  JYURRK-REC
+           MOVE    SPA-NAI-GRPHOSPNUM(IDX)  TO  JYURRK-HOSPNUM
+           MOVE    SPA-NAI-GRPPTID   (IDX)  TO  JYURRK-PTID
+           MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+           MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
+           MOVE    SPA-SRYYMD          TO  JYURRK-UPSRYYMD
+      *
+           MOVE    JYURRK-REC          TO  MCPDATA-REC
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key13"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key13"             TO  MCP-PATHNAME
+               PERFORM 970-JYURRK-READ-SEC
+           ELSE
+               INITIALIZE                  JYURRK-REC
+               MOVE    1               TO  FLG-JYURRK
+           END-IF
+           MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+           MOVE    "key13"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           IF      FLG-JYURRK          =   ZERO
+               MOVE    1                   TO  SPA-NAI-GRPKBN2
+           END-IF
+           .
+       100151-PTSAME-JYURRK-EXT.
            EXIT.
       *
       *****************************************************************

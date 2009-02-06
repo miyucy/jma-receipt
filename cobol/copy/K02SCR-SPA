@@ -247,6 +247,7 @@
       *        グループ医療機関紐付け患者番号
                05  SPA-NAI-GRPHOSPNUM-AREA.
                    07  SPA-NAI-GRPKBN          PIC 9(01).
+                   07  SPA-NAI-GRPKBN2         PIC 9(01).
                    07  SPA-NAI-GRPHOSP-G       OCCURS   9.
                        09  SPA-NAI-GRPHOSPNUM      PIC 9(02).
                        09  SPA-NAI-GRPPTID         PIC 9(10).
