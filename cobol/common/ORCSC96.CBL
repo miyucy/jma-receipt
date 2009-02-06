@@ -1645,6 +1645,18 @@
                                                 DELIMITED  BY  SIZE
                                        INTO   SPA-ERRMSG
                    END-STRING
+               WHEN    "1044"
+                   STRING  "初診料を複数科・保険組合せで"
+                           "算定しないで下さい。"
+                                                DELIMITED  BY  SIZE
+                                       INTO   SPA-ERRMSG
+                   END-STRING
+               WHEN    "K144"
+                   STRING  "警告！！診察料を複数科・保険組合せで"
+                           "算定しないで下さい。"
+                                                DELIMITED  BY  SIZE
+                                       INTO   SPA-ERRMSG
+                   END-STRING
                WHEN    "1021"
                    MOVE    "処方料・処方せん料は１つのみの算定です。"
                                        TO  SPA-ERRMSG

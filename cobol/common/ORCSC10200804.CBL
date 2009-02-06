@@ -142,6 +142,7 @@
            03  FLG-MAYAKU          PIC 9(01).
       *
            03  FLG-SANTEI-ARI      PIC 9(01).
+           03  FLG-FUKUSU          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -3944,6 +3945,8 @@
            MOVE    ZERO                TO  FLG-TAKA-2
            MOVE    ZERO                TO  FLG-DOUJITU
            MOVE    ZERO                TO  IDX-SINSATU2
+      *    Ê£¿ô²Ê¡¦ÊÝ¸±
+           MOVE    ZERO                TO  FLG-FUKUSU
       *    ¿Ç»¡ÎÁ¥Á¥§¥Ã¥¯
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-MAX-LINE      )  OR
@@ -3955,14 +3958,38 @@
       *        ¿Ç»¡ÎÁ¤ÎÈ½Äê
                IF      IDX-SINSATU         =   ZERO
                    PERFORM 2001-SINSATU-CHK-SEC
-                   MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
-                   MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
-                   MOVE    WRK-KBN2        TO  WRK-SINSATU-KBN2
-                   MOVE    IDX-Z           TO  IDX-SINSATU
+                   IF     (FLG-TBL             =   1   )
+                       MOVE    WRK-KBN         TO  WRK-SINSATU-KBN
+                       MOVE    WRK-KAISU       TO  WRK-SINSATU-KAISU
+                       MOVE    WRK-KBN2        TO  WRK-SINSATU-KBN2
+                       MOVE    IDX-Z           TO  IDX-SINSATU
+                   END-IF
                    IF     (WRK-KBN             =   "F" )  AND
                           (WRK-KBN2            =   "D" )
                        MOVE    1               TO  FLG-DOUJITU
                        MOVE    IDX-Z           TO  IDX-SINSATU2
+                   END-IF
+      *            ºÇ½é¤Î¿Ç»¡ÎÁ¤¬Ê£¿ô²Ê¡¦ÊÝ¸±¤Î»þ
+                   IF     (FLG-TBL             =   1   )
+                   AND    (FLG-FUKUSU          =   1   )
+                       IF     (WRK-KBN             =   "F" )  AND
+                              (WRK-KBN2        NOT =   "D" )
+                           MOVE    "1044"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-Z)
+                       ELSE
+      *                    ½é¿ÇÎÁ°Ê³°¤Ï·Ù¹ð
+                           IF     (WRK-COM-KZMFLG (IDX-Z)
+                                                       =   SPACE ) AND
+                                  (LNK-ORCSC-KEI-IDX   =   ZERO )
+                           MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+                           MOVE    "K144"          TO  SPA-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                             (IDX-Z)
+                           MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                             (IDX-Z)
+                           END-IF
+                       END-IF
                    END-IF
       *            Ï«ºÒ¤Î»þ¡¢Ï«ºÒ¥³¡¼¥É¤ÇÈ½Äê¤¹¤ë
                    IF      SPA-HKNKBN      =   1
@@ -4168,6 +4195,12 @@
                END-IF
       *
              END-IF
+      *        Ê£¿ô²Ê¡¦ÊÝ¸±
+               IF      WRK-GMN-INPUTCD(IDX-Z)(1:1) =   "#"
+                                                   OR  "$"
+                    MOVE    1              TO  FLG-FUKUSU
+               END-IF
+      *
            END-PERFORM
       *
       *    ¿Ç»¡ÎÁ°Ê³°¥Á¥§¥Ã¥¯
