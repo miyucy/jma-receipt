@@ -549,7 +549,13 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE    "Ё╟мХ©гнена" 
                                             TO  SPA-GMN-TKBNCD-MEI(IDX)
                WHEN    "501"
-                   MOVE    "немэибеОфЧ╠║на" 
+                   MOVE    "немэибеОфЧ╠║╢Пкэна" 
+                                            TO  SPA-GMN-TKBNCD-MEI(IDX)
+               WHEN    "502"
+                   MOVE    "╦Е╢Э╧БнП╪тфцдЙфЧ╠║╢Пкэна" 
+                                            TO  SPA-GMN-TKBNCD-MEI(IDX)
+               WHEN    "503"
+                   MOVE    "м╜╬╡©гне╫ЙнемэибеОфЧ╠║╢Пкэна" 
                                             TO  SPA-GMN-TKBNCD-MEI(IDX)
            END-EVALUATE
            . 
