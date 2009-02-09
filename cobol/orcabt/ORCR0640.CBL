@@ -352,6 +352,7 @@
       *  04.03.11    NACL-門脇    09/01/21  マル長併用時編集修正
       *  04.03.12    NACL-門脇    09/01/28  一部負担金編集修正
       *  04.03.13    NACL-門脇    09/01/28  山梨県４１老人対応
+      *  04.03.14    NACL-門脇    09/02/09  公費分点数編集修正
       *
       *  04.04.01    NACL-門脇    08/12/25  包括対応
       *  04.04.02    NACL-門脇    09/02/04  検査のコメント自動記載対応
@@ -3936,8 +3937,10 @@
            IF  RECE62-HENTOTALTEN(2)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-HENTOTALTEN(2)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(2))
+             IF ( RECE62-SRYYM    >=    "200804"                    )
+             OR ((RECE62-SRYYM    <     "200804"                   ) AND
+                 (RECE62-HENTOTALTEN(2) NOT = ZERO                 ) AND
+                 (RECE62-HENTOTALTEN(1) NOT = RECE62-HENTOTALTEN(2)))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)
@@ -3952,15 +3955,17 @@
                       END-IF
                     END-IF
                    END-PERFORM
-               END-IF
+             END-IF
            END-IF
       *    インデックス３
            MOVE          ZERO       TO     BUN-IDX3
            IF  RECE62-HENTOTALTEN(3)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-HENTOTALTEN(3)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(3))
+             IF ( RECE62-SRYYM    >=    "200804"                    )
+             OR ((RECE62-SRYYM    <     "200804"                   ) AND
+                 (RECE62-HENTOTALTEN(3) NOT = ZERO                 ) AND
+                 (RECE62-HENTOTALTEN(1) NOT = RECE62-HENTOTALTEN(3)))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)
@@ -3975,15 +3980,17 @@
                       END-IF
                     END-IF
                    END-PERFORM
-               END-IF
+             END-IF
            END-IF
       *    インデックス４
            MOVE          ZERO       TO     BUN-IDX4
            IF  RECE62-HENTOTALTEN(4)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-HENTOTALTEN(4)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(4))
+             IF ( RECE62-SRYYM    >=    "200804"                    )
+             OR ((RECE62-SRYYM    <     "200804"                   ) AND
+                 (RECE62-HENTOTALTEN(4) NOT = ZERO                 ) AND
+                 (RECE62-HENTOTALTEN(1) NOT = RECE62-HENTOTALTEN(4)))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)
@@ -3998,7 +4005,7 @@
                       END-IF
                     END-IF
                    END-PERFORM
-               END-IF
+             END-IF
            END-IF
       *
            PERFORM   VARYING  IDX3   FROM   1   BY   1
@@ -6672,8 +6679,10 @@
            IF  RECE62-HENTOTALTEN(2)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-HENTOTALTEN(2)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(2))
+             IF ( RECE62-SRYYM    >=    "200804"                    )
+             OR ((RECE62-SRYYM    <     "200804"                   ) AND
+                 (RECE62-HENTOTALTEN(2) NOT = ZERO                 ) AND
+                 (RECE62-HENTOTALTEN(1) NOT = RECE62-HENTOTALTEN(2)))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)
@@ -6688,15 +6697,17 @@
                       END-IF
                     END-IF
                    END-PERFORM
-               END-IF
+             END-IF
            END-IF
       *    インデックス３
            MOVE          ZERO       TO     BUN-IDX3
            IF  RECE62-HENTOTALTEN(3)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-HENTOTALTEN(3)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(3))
+             IF ( RECE62-SRYYM    >=    "200804"                    )
+             OR ((RECE62-SRYYM    <     "200804"                   ) AND
+                 (RECE62-HENTOTALTEN(3) NOT = ZERO                 ) AND
+                 (RECE62-HENTOTALTEN(1) NOT = RECE62-HENTOTALTEN(3)))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)
@@ -6711,15 +6722,17 @@
                       END-IF
                     END-IF
                    END-PERFORM
-               END-IF
+             END-IF
            END-IF
       *    インデックス４
            MOVE          ZERO       TO     BUN-IDX4
            IF  RECE62-HENTOTALTEN(4)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-HENTOTALTEN(4)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(4))
+             IF ( RECE62-SRYYM    >=    "200804"                    )
+             OR ((RECE62-SRYYM    <     "200804"                   ) AND
+                 (RECE62-HENTOTALTEN(4) NOT = ZERO                 ) AND
+                 (RECE62-HENTOTALTEN(1) NOT = RECE62-HENTOTALTEN(4)))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)
@@ -6734,7 +6747,7 @@
                       END-IF
                     END-IF
                    END-PERFORM
-               END-IF
+             END-IF
            END-IF
       *
       *    その他のレセ点数欄の編集
@@ -8809,8 +8822,10 @@
            IF  RECE62-HENTOTALTEN(2)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-HENTOTALTEN(2)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(2))
+             IF ( RECE62-SRYYM    >=    "200804"                    )
+             OR ((RECE62-SRYYM    <     "200804"                   ) AND
+                 (RECE62-HENTOTALTEN(2) NOT = ZERO                 ) AND
+                 (RECE62-HENTOTALTEN(1) NOT = RECE62-HENTOTALTEN(2)))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)
@@ -8823,15 +8838,17 @@
                       END-IF
                     END-IF
                    END-PERFORM
-               END-IF
+             END-IF
            END-IF
       *    インデックス３
            MOVE          ZERO       TO     BUN-IDX3
            IF  RECE62-HENTOTALTEN(3)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-HENTOTALTEN(3)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(3))
+             IF ( RECE62-SRYYM    >=    "200804"                    )
+             OR ((RECE62-SRYYM    <     "200804"                   ) AND
+                 (RECE62-HENTOTALTEN(3) NOT = ZERO                 ) AND
+                 (RECE62-HENTOTALTEN(1) NOT = RECE62-HENTOTALTEN(3)))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)
@@ -8844,15 +8861,17 @@
                       END-IF
                     END-IF
                    END-PERFORM
-               END-IF
+             END-IF
            END-IF
       *    インデックス４
            MOVE          ZERO       TO     BUN-IDX4
            IF  RECE62-HENTOTALTEN(4)       =      ZERO
                CONTINUE
            ELSE
-               IF (RECE62-HENTOTALTEN(4)   NOT =  ZERO)              AND
-                  (RECE62-HENTOTALTEN(1)   NOT =  RECE62-HENTOTALTEN(4))
+             IF ( RECE62-SRYYM    >=    "200804"                    )
+             OR ((RECE62-SRYYM    <     "200804"                   ) AND
+                 (RECE62-HENTOTALTEN(4) NOT = ZERO                 ) AND
+                 (RECE62-HENTOTALTEN(1) NOT = RECE62-HENTOTALTEN(4)))
                    MOVE       IDX1              TO   HC-IDX
                    PERFORM    VARYING   IDX2    FROM   1   BY   1
                       UNTIL   (IDX2      >       4)
@@ -8865,7 +8884,7 @@
                       END-IF
                     END-IF
                    END-PERFORM
-               END-IF
+             END-IF
            END-IF
       *
            .                                           
