@@ -774,6 +774,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *            ≥∞ÕËø«Œ≈Œ¡
                    PERFORM 200211-KBNCD-001-SEC
                WHEN    "501"
+               WHEN    "502"
+               WHEN    "503"
       *            Œ≈Õ‹…¬≈Ô∆˛±°Œ¡
                    PERFORM 200211-KBNCD-501-SEC
            END-EVALUATE
@@ -1162,6 +1164,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE    SPA-GMN-SANTEIKBN-LST (1)
                                                TO  SPA-GMN-SANTEIKBN-G
                WHEN    "501"
+               WHEN    "502"
+               WHEN    "503"
       *            Œ≈Õ‹…¬≈Ô∆˛±°Œ¡ ªªƒÍ∆¸§« Ò≥Á
                    MOVE    SPA-GMN-SANTEIKBN-LST (2)
                                                TO  SPA-GMN-SANTEIKBN-G
@@ -1193,6 +1197,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "001"
       *            ≥∞ÕËø«Œ≈Œ¡
                WHEN    "501"
+               WHEN    "502"
+               WHEN    "503"
       *            Œ≈Õ‹…¬≈Ô∆˛±°Œ¡
                    MOVE    SPA-GMN-NYUGAIKBN-LST (1)
                                                TO  SPA-GMN-NYUGAIKBN-G
@@ -1224,6 +1230,8 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                WHEN    "001"
       *            ≥∞ÕËø«Œ≈Œ¡
                WHEN    "501"
+               WHEN    "502"
+               WHEN    "503"
       *            Œ≈Õ‹…¬≈Ô∆˛±°Œ¡
                    MOVE    SPA-GMN-HKNCOMBIKBN-LST (1)
                                                TO  SPA-GMN-HKNCOMBIKBN-G
