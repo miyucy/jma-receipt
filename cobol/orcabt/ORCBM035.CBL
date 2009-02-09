@@ -30,6 +30,8 @@
       *  04.02.01    NACL-藤原    08/04/21  広域連合診療報酬請求書区分
       *                                     による作成
       *  04.02.02    NACL-藤原    08/05/15  公費番号まとめの編集方法訂正
+      *
+      *  04.04.01    NACL-藤原    09/12/10  オンライン返戻対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1534,6 +1536,13 @@
                MOVE    ZERO            TO  FLG-RECE10
                MOVE    MCPDATA-REC         TO  RECE10-REC
       *
+      *        返戻分でオンライン請求分は読み飛ばす
+               IF    ( WRK-SYOKBN      =   "2" )
+               AND   ( RECE10-HENREI-SIJI-FLG
+                                       =   1   )
+                   GO  TO  900-SEIKYU-READ-SEC
+               END-IF
+      *
       *        テスト患者のときは読み飛ばす
                MOVE    SPACE               TO  PTINF-REC
                INITIALIZE                      PTINF-REC
@@ -1562,6 +1571,10 @@
                ADD     1                   TO  CNT-RECE10   
       *         
                DISPLAY "PTNUM=" RECE10-PTNUM
+                       " SRYYM="     RECE10-SRYYM
+                       " SKYYM="     RECE10-SKYYM
+                       " HENREIYM="  RECE10-HENREIYM
+                       " HENREI-SIJI-FLG=" RECE10-HENREI-SIJI-FLG
            ELSE
                MOVE    HIGH-VALUE      TO  KEY-NEW
                MOVE    1               TO  FLG-RECE10

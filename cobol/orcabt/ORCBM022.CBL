@@ -75,6 +75,8 @@
       *
       *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
       *  04.02.02    NACL-藤原    08/09/24  平成２０年１０月改正対応
+      *
+      *  04.04.01    NACL-藤原    09/12/10  オンライン返戻対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1766,6 +1768,13 @@ grpsys     PERFORM 900-DBFETCH-SEC
                    GO  TO  900-SEIKYU-READ-SEC
                END-IF
       *
+      *        返戻分でオンライン請求分は読み飛ばす
+               IF    ( WRK-SYOKBN      =   "2" )
+               AND   ( RECE10-HENREI-SIJI-FLG
+                                       =   1   )
+                   GO  TO  900-SEIKYU-READ-SEC
+               END-IF
+      *
       *        新潟県中越沖地震対応
                EVALUATE    WRK-PARA-GENMENKBN
                    WHEN    ZERO
@@ -1792,7 +1801,12 @@ grpsys         MOVE    RECE10-HOSPNUM      TO  PTINF-HOSPNUM
       *         
                ADD     1                   TO  CNT-RECE10
       *         
-               DISPLAY "PTNUM=" RECE10-PTNUM " " RECE10-ETC-YKZFTN (1)
+               DISPLAY "PTNUM="      RECE10-PTNUM
+                       " GENMENKBN=" RECE10-ETC-YKZFTN (1)
+                       " SRYYM="     RECE10-SRYYM
+                       " SKYYM="     RECE10-SKYYM
+                       " HENREIYM="  RECE10-HENREIYM
+                       " HENREI-SIJI-FLG=" RECE10-HENREI-SIJI-FLG
       *         
            ELSE
                MOVE    1                   TO  FLG-RECE10
