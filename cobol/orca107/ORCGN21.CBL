@@ -2344,7 +2344,8 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *    点数マスタ読み込み
            INITIALIZE                  TNS-TENSU-REC
            INITIALIZE                  ORCSADDSIGNAREA
-           MOVE    SPA-COPY-YAKKAKJNCD(1:9)
+      *     MOVE    SPA-COPY-YAKKAKJNCD(1:9)
+           MOVE    SPA-COPY-YAKKAKJNCD(1:8)
                                    TO  SADDSIGN-STR
            CALL    "ORCSADDSIGN"       USING
                                        ORCSADDSIGNAREA
