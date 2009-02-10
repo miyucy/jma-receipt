@@ -39,6 +39,10 @@ S02	{
 		LBLMSG5	{
 			value	varchar(10);
 		};
+		LBLMSG6	{
+			style   varchar(20);
+			value	varchar(28);
+		};
 		LBLSRYYMG	{
 			value	varchar(50);
 		};

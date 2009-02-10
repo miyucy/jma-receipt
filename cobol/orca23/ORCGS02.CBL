@@ -371,6 +371,7 @@
            03  WRK-PATHNAME        PIC X(64).
            03  WRK-ORG-NYUGAIKBN   PIC X(01).
            03  WRK-ORG-DENPNUM     PIC 9(07).
+           03  WRK-MSG             PIC X(80).
       *
        01  WRK-ROW.
            05  WRK-SYULIST-ROW     PIC S9(9)   BINARY.
@@ -1066,8 +1067,8 @@
       *
            PERFORM 3101-COMBO-SYOKI-SET-SEC
       *
-           MOVE    1               TO  FLG-SYULIST-ROW
-           PERFORM 300-SYUNOU-HENSYU-SEC
+           MOVE    SPA-NAI-SRYYM   TO  S02-SRYYM
+           PERFORM 4104-SRYYM-CHK-SEC
            IF    ( SPA-GMN-MAX     = ZERO )
                MOVE    3           TO  SPA-GMN-CUR
            ELSE
@@ -2447,29 +2448,64 @@
            MOVE    "black"                     TO  S02-LBLMSG2-STYLE
       *
            IF    ( SPA-GMN-PTID    NOT =   ZERO )
-            AND  ( SPA-GMN-REL-MAX     =   ZERO )
+      *
+               MOVE    SPACE                   TO  WRK-MSG
+               MOVE    "blue"                  TO  S02-LBLMSG2-STYLE
                EVALUATE    SPA-GMN-MODE
                WHEN    CONST-MODE-NORMON
                WHEN    CONST-MODE-NORYEAR
                WHEN    CONST-MODE-NORALL
-                   MOVE    "blue"              TO  S02-LBLMSG2-STYLE
-                   EVALUATE    TRUE
-                   WHEN  ( SPA-NAI-SRYYM       =   SPACE )
-                       MOVE    "該当患者に収納の登録はありません。"
-                                               TO  S02-LBLMSG2
-                   WHEN  ( SPA-NAI-SRYYM (5:)  =   SPACE )
-                       MOVE    "診療年に収納の登録はありません。"
-                                               TO  S02-LBLMSG2
-                   WHEN  OTHER
-                       MOVE    "診療年月に収納の登録はありません。"
-                                               TO  S02-LBLMSG2
-                   END-EVALUATE
+                   MOVE    "【収納一覧】"      TO  S02-LBLMSG2
+                                                   WRK-MSG
                WHEN    CONST-MODE-MISYU
-                   MOVE    "blue"              TO  S02-LBLMSG2-STYLE
-                   MOVE    "未収金（過入金）はありません"
+                   MOVE    "【未収一覧】"      TO  S02-LBLMSG2
+                                                   WRK-MSG
+               WHEN    CONST-MODE-NYUHEN
+                   MOVE    "【入返金のあった収納の一覧】"
                                                TO  S02-LBLMSG2
+                                                   WRK-MSG
                END-EVALUATE
+      *
+               IF    ( SPA-GMN-REL-MAX     =   ZERO )
+                   EVALUATE    SPA-GMN-MODE
+                   WHEN    CONST-MODE-NORMON
+                   WHEN    CONST-MODE-NORYEAR
+                   WHEN    CONST-MODE-NORALL
+                       EVALUATE    TRUE
+                       WHEN  ( SPA-NAI-SRYYM       =   SPACE )
+                           MOVE    SPACE           TO  S02-LBLMSG2
+                           STRING  WRK-MSG         DELIMITED   BY  SPACE
+                                   "該当患者に収納の登録はありません。"
+                                                   DELIMITED   BY  SIZE
+                           INTO  S02-LBLMSG2
+                           END-STRING
+                       WHEN  ( SPA-NAI-SRYYM (5:)  =   SPACE )
+                           MOVE    SPACE           TO  S02-LBLMSG2
+                           STRING  WRK-MSG         DELIMITED   BY  SPACE
+                                   "診療年に収納の登録はありません。"
+                                                   DELIMITED   BY  SIZE
+                           INTO  S02-LBLMSG2
+                           END-STRING
+                       WHEN  OTHER
+                           MOVE    SPACE           TO  S02-LBLMSG2
+                           STRING  WRK-MSG         DELIMITED   BY  SPACE
+                                   "診療年月に収納の登録はありません。"
+                                                   DELIMITED   BY  SIZE
+                           INTO  S02-LBLMSG2
+                           END-STRING
+                       END-EVALUATE
+                   WHEN    CONST-MODE-MISYU
+                           MOVE    SPACE           TO  S02-LBLMSG2
+                           STRING  WRK-MSG         DELIMITED   BY  SPACE
+                                   "未収金（過入金）はありません"
+                                                   DELIMITED   BY  SIZE
+                           INTO  S02-LBLMSG2
+                           END-STRING
+                   END-EVALUATE
+               END-IF
            END-IF
+      *
+           MOVE    "black"                         TO  S02-LBLMSG6-STYLE
       *
            IF    ( SPA-NAI-LOCK        =   ZERO )
                CONTINUE
@@ -2751,9 +2787,8 @@
       *
                PERFORM 3101-COMBO-SYOKI-SET-SEC
       *
-      *
-               MOVE    1               TO  FLG-SYULIST-ROW
-               PERFORM 300-SYUNOU-HENSYU-SEC
+               MOVE    SPA-NAI-SRYYM   TO  S02-SRYYM
+               PERFORM 4104-SRYYM-CHK-SEC
                IF    ( SPA-GMN-MAX     = ZERO )
                    MOVE    3           TO  SPA-GMN-CUR
                ELSE

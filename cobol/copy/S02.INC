@@ -43,6 +43,9 @@
                 04  S02-LBLMSG4        PIC X(100).
               03  S02-LBLMSG5-G.
                 04  S02-LBLMSG5        PIC X(10).
+              03  S02-LBLMSG6-G.
+                04  S02-LBLMSG6-STYLE  PIC X(20).
+                04  S02-LBLMSG6        PIC X(28).
               03  S02-LBLSRYYMG        PIC X(50).
               03  S02-LBLSRYYMN        PIC X(50).
               03  S02-PTNUM-STATE
