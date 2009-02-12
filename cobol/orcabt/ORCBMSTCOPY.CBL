@@ -773,7 +773,6 @@
                MOVE    WRK-TAIHI-AREA  TO  INPUTCD-REC
                MOVE    ICD-INPUTCD     TO  WRK-INPUTCD
                MOVE    SPA-HOSPNUM     TO  ICD-HOSPNUM
-               DISPLAY "INPUTCD-REC = " INPUTCD-REC
                MOVE    "tbl_inputcd"   TO  MCP-TABLE
                MOVE    "key"           TO  MCP-PATHNAME
                MOVE    "DBINSERT"      TO  MCP-FUNC
@@ -797,7 +796,6 @@
                        INITIALIZE                 INPUTSET-REC
                        MOVE   WRK-TAIHI-AREA  TO  INPUTSET-REC
                        MOVE   SPA-HOSPNUM     TO  ISET-HOSPNUM
-                       DISPLAY "INPUTSET-REC = " INPUTSET-REC
                        MOVE   INPUTSET-REC    TO  MCPDATA-REC
                        MOVE   "tbl_inputset"  TO  MCP-TABLE
                        MOVE   "key"           TO  MCP-PATHNAME
@@ -931,6 +929,8 @@
                        MOVE   ICD-DSPNAME TO  LST-NAME1 (CNT-LINE)
                    END-IF
            END-EVALUATE
+      *
+           MOVE    SPACE               TO  WRK-ERRCD
       *
            IF      FLG-TENSU-ARI       =   1
                MOVE  "2001"            TO  WRK-ERRCD
