@@ -148,7 +148,7 @@ insert into tbl_sryacct_main (
     drcd ,
     zaireqflg ,
     teigenrate ,
-    smallint '1' ,
+    0 ,
     day_1  ,
     day_2  ,
     day_3  ,
