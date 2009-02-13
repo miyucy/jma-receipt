@@ -62,11 +62,6 @@ CREATE TABLE tbl_sryacct_main (
 );
 
 
-ALTER TABLE ONLY tbl_sryacct_main
-    ADD CONSTRAINT tbl_sryacct_main_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryym, srykbn, zainum);
-
-CREATE INDEX idx_sryacct_main_ptid_sryym ON tbl_sryacct_main USING btree (hospnum, nyugaikbn, ptid, sryym);
-
 insert into tbl_sryacct_main (
     hospnum ,
     nyugaikbn,
@@ -186,6 +181,11 @@ insert into tbl_sryacct_main (
     upymd ,
     uphms 
 from tbl_sryacct ;
+
+ALTER TABLE ONLY tbl_sryacct_main
+    ADD CONSTRAINT tbl_sryacct_main_primary_key PRIMARY KEY (hospnum, nyugaikbn, ptid, sryka, sryym, srykbn, zainum);
+
+CREATE INDEX idx_sryacct_main_ptid_sryym ON tbl_sryacct_main USING btree (hospnum, nyugaikbn, ptid, sryym);
 
 update tbl_sryacct_main set rennummax=2
 from  tbl_sryacct_sub as a
