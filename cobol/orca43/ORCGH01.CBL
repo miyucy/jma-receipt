@@ -2886,21 +2886,40 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM VARYING IDZZ    FROM    1   BY  1
                    UNTIL   IDZZ    >       10
+               IF    ( WRK-HENREI-B-S-TEISYUTUSAKI (IDZZ)
+                                       =   SPA-RECE10-TEISYUTUSAKI )
+               AND   ( WRK-HENREI-B-S-NYUGAIKBN    (IDZZ)
+                                       =   SPA-RECE10-NYUGAIKBN    )
+               AND   ( WRK-HENREI-B-S-RECEKA       (IDZZ)
+                                       =   SPA-RECE10-RECEKA       )
+               AND   ( WRK-HENREI-B-S-RECESYUBETU  (IDZZ)
+                                       =   SPA-RECE10-RECESYUBETU  )
+               AND   ( WRK-HENREI-B-S-HKNJANUM     (IDZZ)
+                                       =   SPA-RECE10-HKNJANUM     )
+               AND   ( WRK-HENREI-B-S-HOJOKBN-KEY  (IDZZ)
+                                       =   SPA-RECE10-HOJOKBN      )
+               AND   ( WRK-HENREI-B-S-TEKSTYMD     (IDZZ)
+                                       =   SPA-RECE10-TEKSTYMD     )
+               AND   ( WRK-HENREI-B-S-HENREIYM     (IDZZ)
+                                       =   SPA-H01NAI-SKYYM    )
+                   GO  TO  45011-HENREI-B-UPDATE1-EXT
+               END-IF
+      *                                
                IF      WRK-HENREI-B-S-TEISYUTUSAKI (IDZZ)
                                            =   SPACE
-                   MOVE    RECE10-TEISYUTUSAKI TO
+                   MOVE    SPA-RECE10-TEISYUTUSAKI TO
                                        WRK-HENREI-B-S-TEISYUTUSAKI(IDZZ)
-                   MOVE    RECE10-NYUGAIKBN    TO
+                   MOVE    SPA-RECE10-NYUGAIKBN    TO
                                        WRK-HENREI-B-S-NYUGAIKBN   (IDZZ)
-                   MOVE    RECE10-RECEKA       TO
+                   MOVE    SPA-RECE10-RECEKA       TO
                                        WRK-HENREI-B-S-RECEKA      (IDZZ)
-                   MOVE    RECE10-RECESYUBETU  TO 
+                   MOVE    SPA-RECE10-RECESYUBETU  TO 
                                        WRK-HENREI-B-S-RECESYUBETU (IDZZ)
-                   MOVE    RECE10-HKNJANUM     TO
+                   MOVE    SPA-RECE10-HKNJANUM     TO
                                        WRK-HENREI-B-S-HKNJANUM    (IDZZ)
-                   MOVE    RECE10-HOJOKBN-KEY  TO
+                   MOVE    SPA-RECE10-HOJOKBN      TO
                                        WRK-HENREI-B-S-HOJOKBN-KEY (IDZZ)
-                   MOVE    RECE10-TEKSTYMD     TO
+                   MOVE    SPA-RECE10-TEKSTYMD     TO
                                        WRK-HENREI-B-S-TEKSTYMD    (IDZZ)
       *
       *            公費単独で生保又は中国残留邦人等のとき負担者番号、
@@ -2908,62 +2927,27 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    IF    ( RECE10-HKNNUM       =   SPACE              )
                        IF    ( RECE10-KOHNUM (1)   =   "012"  OR "025" )
                        AND   ( RECE10-KOHNUM (2)   =   SPACE           )
-                           INITIALIZE                  PTKOHINF-REC
-                           MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
-                           MOVE    RECE10-PTID     TO  PTKOH-PTID
-                           MOVE    RECE10-KOHID(1) TO  PTKOH-KOHID
-                           MOVE    PTKOHINF-REC    TO  MCPDATA-REC
-                           PERFORM 900-PTKOHINF-READ-SEC
-                           MOVE    SPA-HOSPNUM     TO
-                                                   MONTHLYNUM-HOSPNUM
-                           MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
-                           MOVE    RECE10-KOHID(1) TO  MONTHLYNUM-KOHID
-                           MOVE    RECE10-SRYYM    TO  MONTHLYNUM-SRYYM
-                           MOVE    RECE10-NYUGAIKBN
-                                                   TO
-                                                   MONTHLYNUM-NYUGAIKBN
-                           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
-                           PERFORM 900-MONTHLYNUM-READ-SEC
-                           IF      FLG-MONTHLYNUM  =   ZERO
-                               MOVE    MONTHLYNUM-JKYSNUM
-                                                   TO  PTKOH-JKYSNUM
-                           ELSE
-                               MOVE    SPA-HOSPNUM TO
-                                                   MONTHLYNUM-HOSPNUM
-                               MOVE    RECE10-PTID TO  MONTHLYNUM-PTID
-                               MOVE    ZERO        TO  MONTHLYNUM-KOHID
-                               MOVE    RECE10-SRYYM
-                                                   TO  MONTHLYNUM-SRYYM
-                               MOVE    RECE10-NYUGAIKBN
-                                                   TO
-                                                   MONTHLYNUM-NYUGAIKBN
-                               MOVE    MONTHLYNUM-REC
-                                                   TO  MCPDATA-REC
-                               PERFORM 900-MONTHLYNUM-READ-SEC
-                               IF      FLG-MONTHLYNUM          =   ZERO
-                                   MOVE    MONTHLYNUM-JKYSNUM
-                                                       TO  PTKOH-JKYSNUM
-                               END-IF
-                           END-IF
-                           STRING  PTKOH-FTNJANUM  DELIMITED   BY  SPACE
+                           STRING  SPA-RECE10-FTNJANUM
+                                                   DELIMITED   BY  SPACE
       *****                        "　"            DELIMITED   BY  SIZE
-                                   PTKOH-JKYSNUM   DELIMITED   BY  SPACE
+                                   SPA-RECE10-JKYSNUM
+                                                   DELIMITED   BY  SPACE
                                            INTO
                                            WRK-HENREI-B-S-KIGO    (IDZZ)
                            END-STRING
-                       ELSE
-                           INITIALIZE                  PTKOHINF-REC
-                           MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
-                           MOVE    RECE10-PTID     TO  PTKOH-PTID
-                           MOVE    RECE10-KOHID(1) TO  PTKOH-KOHID
-                           MOVE    PTKOHINF-REC    TO  MCPDATA-REC
-                           PERFORM 900-PTKOHINF-READ-SEC
-                           STRING  PTKOH-FTNJANUM  DELIMITED   BY  SPACE
-      *****                        "　"            DELIMITED   BY  SIZE
-                                   PTKOH-JKYSNUM   DELIMITED   BY  SPACE
-                                           INTO
-                                           WRK-HENREI-B-S-KIGO    (IDZZ)
-                           END-STRING
+      *****            ELSE
+      *****                INITIALIZE                  PTKOHINF-REC
+      *****                MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
+      *****                MOVE    RECE10-PTID     TO  PTKOH-PTID
+      *****                MOVE    RECE10-KOHID(1) TO  PTKOH-KOHID
+      *****                MOVE    PTKOHINF-REC    TO  MCPDATA-REC
+      *****                PERFORM 900-PTKOHINF-READ-SEC
+      *****                STRING  PTKOH-FTNJANUM  DELIMITED   BY  SPACE
+      *****************************"　"            DELIMITED   BY  SIZE
+      *****                        PTKOH-JKYSNUM   DELIMITED   BY  SPACE
+      *****                                INTO
+      *****                                WRK-HENREI-B-S-KIGO    (IDZZ)
+      *****                END-STRING
                        END-IF
                    ELSE
                        STRING  RECE10-KIGO     DELIMITED   BY  SPACE
@@ -3010,19 +2994,19 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                    UNTIL   IDZZ    >       10
                    OR      SPA-HENREI-B-S-TEISYUTUSAKI (IDZZ)
                                    =   SPACE
-               IF      RECE10-TEISYUTUSAKI =
+               IF      SPA-RECE10-TEISYUTUSAKI =
                                        SPA-HENREI-B-S-TEISYUTUSAKI(IDZZ)
-               AND     RECE10-NYUGAIKBN    =
+               AND     SPA-RECE10-NYUGAIKBN    =
                                        SPA-HENREI-B-S-NYUGAIKBN   (IDZZ)
-               AND     RECE10-RECEKA       =
+               AND     SPA-RECE10-RECEKA       =
                                        SPA-HENREI-B-S-RECEKA      (IDZZ)
-               AND     RECE10-RECESYUBETU  =
+               AND     SPA-RECE10-RECESYUBETU  =
                                        SPA-HENREI-B-S-RECESYUBETU (IDZZ)
-               AND     RECE10-HKNJANUM     =
+               AND     SPA-RECE10-HKNJANUM     =
                                        SPA-HENREI-B-S-HKNJANUM    (IDZZ)
-               AND     RECE10-HOJOKBN-KEY  =
+               AND     SPA-RECE10-HOJOKBN      =
                                        SPA-HENREI-B-S-HOJOKBN-KEY (IDZZ)
-               AND     RECE10-TEKSTYMD     =
+               AND     SPA-RECE10-TEKSTYMD     =
                                        SPA-HENREI-B-S-TEKSTYMD    (IDZZ)
                    INITIALIZE                  SPA-HENREI-B-SEIKYU-OCC
                                                                   (IDZZ)
