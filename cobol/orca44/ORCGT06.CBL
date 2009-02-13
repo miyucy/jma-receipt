@@ -3289,10 +3289,13 @@
                IF      FLG-SEIKYU      =   1
                    MOVE    "1"             TO  SPA-GMN-T06-R-TERR  (IDX)
                ELSE
-                   IF    ( RECE10-SKYKBN   NOT =   "0"         )
+                   IF    ( RECE10-SKYKBN   NOT =   "0"                 )
                    AND   ( RECE10-SKYYM    =   "000000"
-                                       OR  SPA-NAI-T06-SRYYM-H )
-                   AND   ( RECE10-HENREIYM =   "000000"        )
+                                       OR  SPA-NAI-T06-SRYYM-H         )
+                   AND   (   ( RECE10-HENREIYM     =   "000000"      )
+                          OR ( RECE10-HENREIYM NOT =   "000000"  AND
+                               RECE10-HENREI-SIJI-FLG
+                                                   =   1             ) )
       *                レセ電データ存在チェック
                        MOVE    SPACE               TO  RECEDEN-REC
                        INITIALIZE                      RECEDEN-REC
