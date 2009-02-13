@@ -386,6 +386,7 @@ RECORD_files = \
 	MID2.rec \
 	P02G.rec \
 	P02G2.rec \
+	XFID2.rec \
 
 DEF_files = \
 	HC01.def \
