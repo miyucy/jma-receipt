@@ -61,6 +61,7 @@
       *  04.03.13    NACL-ÌçÏÆ    09/01/15  Ê¿À®£²£±Ç¯£±·î²þÀµÂÐ±þ
       *  04.03.14    NACL-Æ£¸¶    09/01/16  ¾É¾õ¾Üµ­¶èÊ¬¤ÎÉ½Âê¤ÎÊÑ¹¹
       *  04.03.15    NACL-ÌçÏÆ    09/02/09  ¸øÈñÊ¬ÅÀ¿ôÊÔ½¸½¤Àµ
+      *  04.04.01    NACL-ÌçÏÆ    09/02/16  ÃÏÊý¸øÈñ¤Î¥ì¥»µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3708,45 +3709,21 @@
                                       NOT  =   RECE62-JNISSU (IDX2))
                   OR  (RECE62-TOTALTEN (IDX1)     =   ZERO)
                   OR  (RECE62-JSKISAIFLG          =   "1" )
-                      MOVE    RECE62-JNISSU (IDX2)
-                                              TO  WRK-JINISSU2Z
-                      MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
-                  END-IF
-                  IF  (RECE62-SRYYM          >=  "200610"  )
-                  AND (SYS-1001-PREFNUM       =    33      )
-                  AND (RECE62-KOHNUM(1)(1:1)
-                                        >=  "1" AND <=  "8")
+                  OR  (RECE62-EKF-JNISSUFLG(IDX2) =   "1" )
                       MOVE    RECE62-JNISSU (IDX2)
                                               TO  WRK-JINISSU2Z
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU1
                   END-IF
                END-IF
-               IF  RECE62-FUKUSHIFLG  =  "1"
-                   IF (RECE62-JNISSU (IDX2)
-                                  NOT =   RECE62-JNISSU (IDX3))
-                   OR (RECE62-JSKISAIFLG    =   "1"           )
-                       MOVE    RECE62-JNISSU (IDX3)
-                                               TO  WRK-JINISSU2Z
-                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
-                   END-IF
-               ELSE
-                   IF      RECE62-TOTALTEN (IDX3)     >   ZERO
-                      IF (RECE62-JNISSU (IDX2)
-                                     NOT =   RECE62-JNISSU (IDX3))
-                      OR (RECE62-JSKISAIFLG    =   "1"           )
-                          MOVE    RECE62-JNISSU (IDX3)
-                                                  TO  WRK-JINISSU2Z
-                          MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
-                      END-IF
-                      IF  (RECE62-SRYYM          >=  "200610"  )
-                      AND (SYS-1001-PREFNUM       =    33      )
-                      AND (RECE62-KOHNUM(2)(1:1)
-                                            >=  "1" AND <=  "8")
-                          MOVE    RECE62-JNISSU (IDX3)
-                                                  TO  WRK-JINISSU2Z
-                          MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
-                      END-IF
-                   END-IF
+               IF (( RECE62-TOTALTEN(IDX3)   > ZERO                ) AND
+                   ((RECE62-JNISSU(IDX2) NOT = RECE62-JNISSU(IDX3)) OR
+                    (RECE62-JSKISAIFLG          =   "1"           ) OR
+                    (RECE62-EKF-JNISSUFLG(IDX3) =   "1"           )))
+               OR (( RECE62-FUKUSHIFLG          =   "1"            ) AND
+                   ( RECE62-TOTALTEN(IDX3)      =   ZERO           ))
+                      MOVE    RECE62-JNISSU (IDX3)
+                                              TO  WRK-JINISSU2Z
+                      MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
                END-IF
       *        ¸©Ã±ÍÑ¹àÌÜ
                IF      FLG-RECE67           =   ZERO
@@ -5556,33 +5533,12 @@
            IF    ( RECE62-TOTALTEN (IDX2) >   ZERO            )
            AND   ((RECE62-TOTALTEN (IDX2)
                                NOT =   RECE62-TOTALTEN (IDX1)) OR
-                  (RECE62-JSKISAIFLG      =   "1"            ))
+                  (RECE62-JSKISAIFLG             =  "1"      ) OR
+                  (RECE62-EKF-TOTALTENFLG(IDX2)  =  "1"      ))
                MOVE    RECE62-TOTALTEN (IDX2) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  WRK-KOH-TOTALTEN(1)
            END-IF
-           IF    ((RECE62-SRYYM          >=  "200610"  ) AND
-                  (SYS-1001-PREFNUM       =    33      ) AND
-                  (RECE62-KOHNUM(1)(1:1)
-                                    >=  "1" AND <=  "8") AND
-                  (RECE62-TOTALTEN (IDX2) >   ZERO     ))
-           OR    ((RECE62-SRYYM          >=  "200510"  ) AND
-                  (RECE62-SRYYM          <   "200810"  ) AND
-                  (SYS-1001-PREFNUM       =    01      ) AND
-                  (RECE62-KOHNUM(1)       =  "051"     ) AND
-                  ((RECE62-KOHJKYSNUM(1)(1:2) >= "91"
-                                          AND <= "95" ) OR
-                   (RECE62-KOHJKYSNUM(1)(1:2) >= "71"
-                                          AND <= "88" )) AND
-                  (RECE62-TOTALTEN (IDX2) >   ZERO     ))
-           OR    ((RECE62-SRYYM          >=  "200810"  ) AND
-                  (SYS-1001-PREFNUM       =    01      ) AND
-                  (RECE62-KOHNUM(1)       =  "183"     ) AND
-                  (RECE62-TOTALTEN (IDX2) >   ZERO     ))
-               MOVE    RECE62-TOTALTEN (IDX2) TO  WRK-KGK10
-               MOVE    WRK-KGK10              TO  WRK-KOH-TOTALTEN(1)
-           END-IF
-      *         
-      *    IF    ( RECE62-SHOKUJINISSU (IDX2) >   ZERO                 )
+      *
            IF    ( RECE62-SHOKUJIRYOYOHI(IDX2) >   ZERO                )
            AND   ((RECE62-SHOKUJINISSU (IDX2)     NOT =
                                       RECE62-SHOKUJINISSU   (IDX1)) OR
@@ -5590,7 +5546,8 @@
                                       RECE62-SHOKUJIRYOYOHI (IDX1)) OR
                   (RECE62-SHOKUJIFTN (IDX2)       NOT =
                                       RECE62-SHOKUJIFTN     (IDX1)) OR
-                  (RECE62-JSKISAIFLG  =   "1"                     )    )
+                  (RECE62-JSKISAIFLG        =  "1"                ) OR
+                  (RECE62-EKF-SKJFLG(IDX2)  =  "1"                )    )
                IF      RECE62-SHOKUJINISSU (IDX2)  >  ZERO
                    MOVE    RECE62-SHOKUJINISSU (IDX2)
                                            TO  WRK-KGK2 
@@ -5673,7 +5630,8 @@
            IF    ( RECE62-TOTALTEN (IDX3) >   ZERO            )
            AND   ((RECE62-TOTALTEN (IDX3)
                                NOT =   RECE62-TOTALTEN (IDX2)) OR
-                  (RECE62-JSKISAIFLG      =   "1"            ))
+                  (RECE62-JSKISAIFLG             =  "1"      ) OR
+                  (RECE62-EKF-TOTALTENFLG(IDX3)  =  "1"      ))
                MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK10
                MOVE    WRK-KGK10              TO  WRK-KOH-TOTALTEN(2)
            ELSE
@@ -5686,29 +5644,7 @@
                                                   WRK-KOH-TOTALTEN(2)
                END-IF
            END-IF
-           IF    ((RECE62-SRYYM          >=  "200610"  ) AND
-                  (SYS-1001-PREFNUM       =    33      ) AND
-                  (RECE62-KOHNUM(2)(1:1)
-                                    >=  "1" AND <=  "8") AND
-                  (RECE62-TOTALTEN (IDX3) >   ZERO     ))
-           OR    ((RECE62-SRYYM          >=  "200510"  ) AND
-                  (RECE62-SRYYM          <   "200810"  ) AND
-                  (SYS-1001-PREFNUM       =    01      ) AND
-                  (RECE62-KOHNUM(2)       =  "051"     ) AND
-                  ((RECE62-KOHJKYSNUM(2)(1:2) >= "91"
-                                          AND <= "95" ) OR
-                   (RECE62-KOHJKYSNUM(2)(1:2) >= "71"
-                                          AND <= "88" )) AND
-                  (RECE62-TOTALTEN (IDX3) >   ZERO     ))
-           OR    ((RECE62-SRYYM          >=  "200810"  ) AND
-                  (SYS-1001-PREFNUM       =    01      ) AND
-                  (RECE62-KOHNUM(2)       =  "183"     ) AND
-                  (RECE62-TOTALTEN (IDX3) >   ZERO     ))
-               MOVE    RECE62-TOTALTEN (IDX3) TO  WRK-KGK10
-               MOVE    WRK-KGK10              TO  WRK-KOH-TOTALTEN(2)
-           END-IF
-      *         
-      *    IF    ( RECE62-SHOKUJINISSU (IDX3) >   ZERO                 )
+      *
            IF    ( RECE62-SHOKUJIRYOYOHI(IDX3) >   ZERO                )
            AND   ((RECE62-SHOKUJINISSU (IDX3)     NOT =
                                       RECE62-SHOKUJINISSU   (IDX2)) OR
@@ -5716,7 +5652,8 @@
                                       RECE62-SHOKUJIRYOYOHI (IDX2)) OR
                   (RECE62-SHOKUJIFTN (IDX3)       NOT =
                                       RECE62-SHOKUJIFTN     (IDX2)) OR
-                  (RECE62-JSKISAIFLG  =   "1"                     )    )
+                  (RECE62-JSKISAIFLG        =  "1"                ) OR
+                  (RECE62-EKF-SKJFLG(IDX3)  =  "1"                )    )
                IF      RECE62-SHOKUJINISSU (IDX3)  >  ZERO
                    MOVE    RECE62-SHOKUJINISSU (IDX3)
                                            TO  WRK-KGK2
@@ -5804,7 +5741,8 @@
                IF    ( RECE62-TOTALTEN (IDX4) >   ZERO            )
                AND   ((RECE62-TOTALTEN (IDX4)
                                    NOT =   RECE62-TOTALTEN (IDX3)) OR
-                      (RECE62-JSKISAIFLG      =   "1"            ))
+                      (RECE62-JSKISAIFLG             =  "1"      ) OR
+                      (RECE62-EKF-TOTALTENFLG(IDX4)  =  "1"      ))
                    MOVE    RECE62-TOTALTEN (IDX4)  TO  WRK-KGK10
                    MOVE    WRK-KGK10               TO
                                                    WRK-KOH-TOTALTEN(3)
@@ -5818,30 +5756,7 @@
                                                    WRK-KOH-TOTALTEN(3)
                    END-IF
                END-IF
-               IF  ((  RECE62-SRYYM            >=  "200610"       ) AND
-                    (  SYS-1001-PREFNUM        =   33             ) AND
-                    (  RECE62-KOHNUM(3)(1:1)   >=  "1" AND <=  "8") AND
-                    (  RECE62-TOTALTEN (IDX4)  >   ZERO           )    )
-               OR  ((  RECE62-SRYYM            >=  "200510"  ) AND
-                    (  RECE62-SRYYM            <   "200810"  ) AND
-                    (  SYS-1001-PREFNUM        =   01        ) AND
-                    (  RECE62-KOHNUM(3)        =   "051"     ) AND
-                    (( RECE62-KOHJKYSNUM(3)(1:2)
-                                               >=  "91"
-                                                   AND <=  "95" ) OR
-                     ( RECE62-KOHJKYSNUM(3)(1:2)
-                                               >=  "71"
-                                                   AND <=  "88" )) AND
-                     ( RECE62-TOTALTEN (IDX4)  >   ZERO          )     )
-               OR  ((  RECE62-SRYYM            >=  "200810"  ) AND
-                    (  SYS-1001-PREFNUM        =   01        ) AND
-                    (  RECE62-KOHNUM(3)        =   "183"     ) AND
-                    (  RECE62-TOTALTEN (IDX4)  >   ZERO      ))
-                   MOVE    RECE62-TOTALTEN (IDX4)  TO  WRK-KGK10
-                   MOVE    WRK-KGK10               TO
-                                                   WRK-KOH-TOTALTEN(3)
-               END-IF
-      *         
+      *
                IF    ( RECE62-SHOKUJIRYOYOHI(IDX4) >   ZERO            )
                AND   ((RECE62-SHOKUJINISSU (IDX4)     NOT =
                                       RECE62-SHOKUJINISSU   (IDX3)) OR
@@ -5849,7 +5764,8 @@
                                       RECE62-SHOKUJIRYOYOHI (IDX3)) OR
                       (RECE62-SHOKUJIFTN (IDX4)       NOT =
                                       RECE62-SHOKUJIFTN     (IDX3)) OR
-                      (RECE62-JSKISAIFLG  =   "1"                 )    )
+                      (RECE62-JSKISAIFLG        =  "1"            ) OR
+                      (RECE62-EKF-SKJFLG(IDX4)  =  "1"            )    )
                    IF      RECE62-SHOKUJINISSU (IDX4)  >  ZERO
                        MOVE    RECE62-SHOKUJINISSU (IDX4)
                                                TO  WRK-KGK2
@@ -5945,7 +5861,8 @@
                IF    ( RECE62-TOTALTEN (IDX5) >   ZERO            )
                AND   ((RECE62-TOTALTEN (IDX5)
                                    NOT =   RECE62-TOTALTEN (IDX4)) OR
-                      (RECE62-JSKISAIFLG      =   "1"            ))
+                      (RECE62-JSKISAIFLG             =  "1"      ) OR
+                      (RECE62-EKF-TOTALTENFLG(IDX5)  =  "1"      ))
                    MOVE    RECE62-TOTALTEN (IDX5)  TO  WRK-KGK10
                    MOVE    WRK-KGK10               TO
                                                    WRK-KOH-TOTALTEN(4)
@@ -5959,30 +5876,7 @@
                                                    WRK-KOH-TOTALTEN(4)
                    END-IF
                END-IF
-               IF  ((  RECE62-SRYYM            >=  "200610"       ) AND
-                    (  SYS-1001-PREFNUM        =   33             ) AND
-                    (  RECE62-KOHNUM(4)(1:1)   >=  "1" AND <=  "8") AND
-                    (  RECE62-TOTALTEN (IDX5)  >   ZERO           )    )
-               OR  ((  RECE62-SRYYM            >=  "200510"  ) AND
-                    (  RECE62-SRYYM            <   "200810"  ) AND
-                    (  SYS-1001-PREFNUM        =   01        ) AND
-                    (  RECE62-KOHNUM(4)        =   "051"     ) AND
-                    (( RECE62-KOHJKYSNUM(4)(1:2)
-                                               >=  "91"
-                                                   AND <=  "95" ) OR
-                     ( RECE62-KOHJKYSNUM(4)(1:2)
-                                               >=  "71"
-                                                   AND <=  "88" )) AND
-                     ( RECE62-TOTALTEN (IDX5)  >   ZERO          )     )
-               OR  ((  RECE62-SRYYM            >=  "200810"  ) AND
-                    (  SYS-1001-PREFNUM        =   01        ) AND
-                    (  RECE62-KOHNUM(4)        =   "183"     ) AND
-                    (  RECE62-TOTALTEN (IDX5)  >   ZERO      ))
-                   MOVE    RECE62-TOTALTEN (IDX5)  TO  WRK-KGK10
-                   MOVE    WRK-KGK10               TO
-                                                   WRK-KOH-TOTALTEN(4)
-               END-IF
-      *         
+      *
                IF    ( RECE62-SHOKUJIRYOYOHI(IDX5) >   ZERO            )
                AND   ((RECE62-SHOKUJINISSU (IDX5)     NOT =
                                       RECE62-SHOKUJINISSU   (IDX4)) OR
@@ -5990,7 +5884,8 @@
                                       RECE62-SHOKUJIRYOYOHI (IDX4)) OR
                       (RECE62-SHOKUJIFTN (IDX5)       NOT =
                                       RECE62-SHOKUJIFTN     (IDX4)) OR
-                      (RECE62-JSKISAIFLG  =   "1"                 )    )
+                      (RECE62-JSKISAIFLG        =  "1"            ) OR
+                      (RECE62-EKF-SKJFLG(IDX5)  =  "1"            )    )
                    IF      RECE62-SHOKUJINISSU (IDX5)  >  ZERO
                        MOVE    RECE62-SHOKUJINISSU (IDX5)
                                                TO  WRK-KGK2

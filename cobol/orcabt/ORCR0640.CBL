@@ -356,6 +356,7 @@
       *
       *  04.04.01    NACL-門脇    08/12/25  包括対応
       *  04.04.02    NACL-門脇    09/02/04  検査のコメント自動記載対応
+      *  04.04.03    NACL-門脇    09/02/16  地方公費のレセ記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1467,6 +1468,8 @@
            COPY    "CPSK200501.INC".
       *
            COPY    "CPSK5000.INC".
+      *
+           COPY    "CPSK2010.INC".
       *    
       *
       *    患者コメント
@@ -12055,186 +12058,224 @@
            PERFORM    VARYING   KOHFTN-IDX   FROM   1   BY   1
                        UNTIL    KOHFTN-IDX     >    4
       *
-             IF    RECE62-SRYYM        >=  "200404"
-               IF ( RECE62-KOHNUM(KOHFTN-IDX) =  "012" OR "015"
-                                              OR "016" OR "051" )
-               OR ((WRK-PREFNUM      =   13           ) AND
-                   (RECE62-KOHNUM(KOHFTN-IDX) =  "151" OR "451"))
-               OR ((WRK-PREFNUM      =   28           ) AND
-                   (RECE62-KOHNUM(KOHFTN-IDX) =  "186"         ))
-               OR ((WRK-PREFNUM      =   01           ) AND
-                   (RECE62-KOHNUM(KOHFTN-IDX) =  "183") AND
-                   (RECE62-KOHFTNJANUM(KOHFTN-IDX)(5:3)
-                                              =  "602") AND
-                   (RECE62-SRYYM          >=  "200810"))
-                     MOVE  "1"   TO
-                             RECE62-KISAIFLG(KOHFTN-IDX + 1)
-               END-IF
-               IF ( RECE62-KOHNUM(KOHFTN-IDX) =  "015" OR "016"
-                                                       OR "051" )
-               OR ((WRK-PREFNUM      =   13           ) AND
-                   (RECE62-KOHNUM(KOHFTN-IDX) =  "151" OR "451"))
-               OR ((WRK-PREFNUM      =   01           ) AND
-                   (RECE62-KOHNUM(KOHFTN-IDX) =  "183") AND
-                   (RECE62-KOHFTNJANUM(KOHFTN-IDX)(5:3)
-                                              =  "602") AND
-                   (RECE62-SRYYM          >=  "200810"))
-               OR ((RECE62-KOHNUM(KOHFTN-IDX) =  "010" OR "021") AND
-                   (RECE62-HKNJANUM(1:6)
-                                     =  "133033" OR "133280" OR
-                                        "133041" OR "133066" OR
-                                        "133074" OR "133090" OR
-                                        "133116" OR "133132" OR
-                                        "133140" OR "133157" OR
-                                        "133165" OR "133173" OR
-                                        "133181" OR "133199" OR
-                                        "133207" OR "133223" OR
-                                        "133249" OR "133256" OR
-                                        "133272" OR "233064" OR
-                                        "283077"               ))
-                     MOVE  "1"   TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-               ELSE
-                 IF ( RECE62-KOHNUM(KOHFTN-IDX) =  "012"  )
-                 OR ((WRK-PREFNUM               =   28   ) AND
-                     (RECE62-KOHNUM(KOHFTN-IDX) =  "186" ))
-                   CONTINUE
-                 ELSE
-                     IF    ( RECE62-HON-NYUDJGNGAK (KOHFTN-IDX)
-                                           NOT = ZERO )
-                     OR    ( RECE62-HON-NYUMJGNGAK (KOHFTN-IDX)
-                                           NOT = ZERO )
-                     OR    ( RECE62-HON-NYUMJGNCNT (KOHFTN-IDX)
-                                           NOT = ZERO )
-                         MOVE    "1"             TO
-                                RECE62-ZEROKISAIFLG (KOHFTN-IDX + 1)
-      *                  茨城県地方公費
-                         IF  (WRK-PREFNUM     =   08            )
-                         AND (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
-                                             >=  "1" AND <=  "8")
-                           MOVE  "1"  TO
-                                RECE62-KISAIFLG(KOHFTN-IDX + 1)
-                         END-IF
-                     END-IF
-                 END-IF
-               END-IF
-               IF ((WRK-PREFNUM               =   05  ) AND
-                   (RECE62-KOHNUM(KOHFTN-IDX) =  "174"))
-               OR ((WRK-PREFNUM               =   12  ) AND
-                   (RECE62-KOHNUM(KOHFTN-IDX) =  "183"))
-               OR ((WRK-PREFNUM               =   34  ) AND
-                   (RECE62-KOHNUM(KOHFTN-IDX) =  "391"
-                                              OR "392"))
-                     MOVE  "1"  TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-               END-IF
-             END-IF
+              IF   RECE62-KOHNUM(KOHFTN-IDX)(1:1) >=  "1" AND <=  "8"
       *
-             IF    RECE62-SRYYM        >=  "200504"
-               IF   RECE62-KOHNUM(KOHFTN-IDX) =  "052"
-                     MOVE  "1"   TO
-                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
-                     MOVE  "1"   TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-               END-IF
-             END-IF
+                IF  (RECE62-HON-NYUDJGNGAK(KOHFTN-IDX)    NOT = ZERO)
+                OR  (RECE62-HON-NYUMJGNGAK(KOHFTN-IDX)    NOT = ZERO)
+                OR  (RECE62-HON-NYUMJGNCNT(KOHFTN-IDX)    NOT = ZERO)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                END-IF
       *
-             IF    RECE62-SRYYM        >=  "200604"
-               IF   RECE62-KOHNUM(KOHFTN-IDX) =  "021"
-                     MOVE  "1"   TO
-                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
-                     MOVE  "1"   TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-               END-IF
-               IF   RECE62-KOHNUM(KOHFTN-IDX) =  "012"
-                     MOVE  "1"   TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-                     IF   ( KOHFTN-IDX        =     1   )
-                     AND  ( RECE62-HKNNUM     =   SPACE )
-                     AND  ( RECE62-KOHNUM(2)  =   SPACE )
-                     AND  ( RECE62-KOHNUM(3)  =   SPACE )
-                     AND  ( RECE62-KOHNUM(4)  =   SPACE )
-                         MOVE   SPACE  TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-                     END-IF
-               END-IF
-             END-IF
+                IF    RECE62-SRYYM        >=  "200404"
+                  IF  (WRK-PREFNUM                =   13           )
+                  AND (RECE62-KOHNUM(KOHFTN-IDX)  =  "151" OR "451")
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                  IF  (WRK-PREFNUM                =   28           )
+                  AND (RECE62-KOHNUM(KOHFTN-IDX)  =  "186"         )
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE SPACE  TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                  IF ((WRK-PREFNUM               =   05           ) AND
+                      (RECE62-KOHNUM(KOHFTN-IDX) =  "174"         ))
+                  OR ((WRK-PREFNUM               =   12           ) AND
+                      (RECE62-KOHNUM(KOHFTN-IDX) =  "183"         ))
+                  OR ((WRK-PREFNUM               =   34           ) AND
+                      (RECE62-KOHNUM(KOHFTN-IDX) =  "391" OR "392"))
+      *             MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                  IF  (WRK-PREFNUM               =   08            )
+                  AND (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
+                                                >=  "1" AND <=  "8")
+                  AND (RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)   =  "1")
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                END-IF
       *
-             IF    RECE62-SRYYM        >=  "200610"
-               IF   RECE62-KOHNUM(KOHFTN-IDX) =  "024" OR "079"
-                     MOVE  "1"   TO
-                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
-                     MOVE  "1"   TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-               END-IF
-               IF  (WRK-PREFNUM      =   33 OR 25     ) AND
-                   (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
-                                   >=  "1" AND <=  "8")
-                     MOVE  "1"  TO
-                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
-                     MOVE  "1"  TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-               END-IF
-             END-IF
+                IF    RECE62-SRYYM        >=  "200610"
+                  IF  (WRK-PREFNUM               =   25      )
+                  AND (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
+                                          >=  "1" AND <=  "8")
+                    MOVE  "1" TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1" TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                  IF  (WRK-PREFNUM               =   33      )
+                  AND (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
+                                          >=  "1" AND <=  "8")
+                    MOVE  "1" TO  RECE62-EKF-JNISSUFLG(KOHFTN-IDX + 1)
+                    MOVE  "1" TO  RECE62-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
+                    MOVE  "1" TO  RECE62-EKF-OCRFLG(KOHFTN-IDX + 1)
+                    MOVE  "1" TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1" TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                END-IF
       *
-             IF    RECE62-SRYYM        >=  "200702"
-               IF  (WRK-PREFNUM      =   07           ) AND
-                   (RECE62-KOHNUM(KOHFTN-IDX) =  "281")
-                     MOVE  "1"  TO
-                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
-                     MOVE  "1"  TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-               END-IF
-             END-IF
+                IF    RECE62-SRYYM        >=  "200702"
+                  IF  (WRK-PREFNUM               =   07  )
+                  AND (RECE62-KOHNUM(KOHFTN-IDX) =  "281")
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                END-IF
       *
-             IF    RECE62-SRYYM        >=  "200704"
-               IF    RECE62-KOUREI              =  "1" OR "2"
-                 IF   RECE62-KOHNUM(KOHFTN-IDX) =  "010"
-                     MOVE  "1"  TO
-                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
-                     MOVE  "1"  TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-                 END-IF
-               END-IF
-             END-IF
+                IF   (RECE62-SRYYM        >=  "200704")
+                AND  (RECE62-SRYYM        <=  "200803")
+                  IF  (WRK-PREFNUM               =   01            )
+                  AND (RECE62-HKNNUM         NOT =  "060" AND "067")
+                  AND (KOHFTN-IDX                =    1            )
+                  AND (RECE62-KOHNUM(KOHFTN-IDX) =  "141" OR  "241")
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                END-IF
       *
-             IF    RECE62-SRYYM     >=  "200704"
-               IF  (WRK-PREFNUM       =  "01"          )
-               AND (RECE62-HKNNUM NOT = "060" AND "067")
-               AND (KOHFTN-IDX        =   1            )
-               AND (RECE62-KOHNUM(KOHFTN-IDX)
-                                      =  "141" OR "241")
-               AND (RECE62-SRYYM     <=  "200803"      )
-                     MOVE  "1"  TO
-                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
-               END-IF
-             END-IF
+                IF    RECE62-SRYYM        >=  "200810"
+                  IF  (WRK-PREFNUM               =   01  )
+                  AND (RECE62-KOHNUM(KOHFTN-IDX) =  "183")
+                    MOVE  "1" TO  RECE62-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
+                  END-IF
+                END-IF
       *
-             IF    RECE62-SRYYM     >=  "200704"
-               IF   RECE62-KOHNUM(KOHFTN-IDX) =  "011"
-                     MOVE  "1"   TO
-                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
-               END-IF
-             END-IF
+      *         その他記載フラグ編集
+                IF    RECE62-SRYYM        >=  "200804"
+                  INITIALIZE                   SYSKANRI-REC
+                  MOVE    "2010"           TO  SYS-KANRICD
+                  MOVE    RECE62-KOHNUM(KOHFTN-IDX)
+                                           TO  SYS-KBNCD
+                  MOVE    RECE62-SRYYM     TO  SYS-STYUKYMD (1:6)
+                  MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+                  MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+                  MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
+                  MOVE    SYSKANRI-REC     TO  MCPDATA-REC
+                  MOVE    "tbl_syskanri"   TO  MCP-TABLE
+                  MOVE    "key10"          TO  MCP-PATHNAME
+                  PERFORM   900-DBSELECT-SEC
+                  IF      MCP-RC           =   ZERO
+                    MOVE  "tbl_syskanri"   TO  MCP-TABLE
+                    MOVE  "key10"          TO  MCP-PATHNAME
+                    PERFORM 960-KANRIMST-READ-SEC
+                    IF      FLG-SYSKANRI     =   ZERO
+                      MOVE   MCPDATA-REC   TO  SYS-2010-REC
+                      PERFORM   210454-ETCKISAIFLGINF-HENSYU-SEC
+                    END-IF
+                  END-IF
+                  MOVE    "tbl_syskanri"   TO  MCP-TABLE
+                  MOVE    "key10"          TO  MCP-PATHNAME
+                  PERFORM   900-CLOSE-SEC
+                END-IF
       *
-             IF    RECE62-SRYYM     >=  "200804"
-               IF   RECE62-KOHNUM(KOHFTN-IDX) =  "038" OR "025"
-                     MOVE  "1"  TO
-                                 RECE62-KISAIFLG(KOHFTN-IDX + 1)
-                     MOVE  "1"  TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-               END-IF
-               IF   RECE62-KOHNUM(KOHFTN-IDX) =  "025"
-                     IF   ( KOHFTN-IDX        =     1   )
-                     AND  ( RECE62-HKNNUM     =   SPACE )
-                     AND  ( RECE62-KOHNUM(2)  =   SPACE )
-                     AND  ( RECE62-KOHNUM(3)  =   SPACE )
-                     AND  ( RECE62-KOHNUM(4)  =   SPACE )
-                         MOVE   SPACE  TO
-                             RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
-                     END-IF
-               END-IF
-             END-IF
+                IF    RECE62-SRYYM        >=  "200810"
+                  IF  (WRK-PREFNUM               =   01  )
+                  AND (RECE62-KOHNUM(KOHFTN-IDX) =  "183")
+                    IF  RECE62-KOHFTNJANUM(KOHFTN-IDX)(5:3)  = "602"
+                     MOVE  "1"  TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                     MOVE  "1"  TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                    ELSE
+                     MOVE SPACE TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                     MOVE SPACE TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                    END-IF
+                  END-IF
+                END-IF
+      *
+              ELSE
+      *
+                IF    RECE62-SRYYM        >=  "200404"
+                  IF   RECE62-KOHNUM(KOHFTN-IDX) =  "015" OR "016"
+                                                          OR "051"
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                  IF   RECE62-KOHNUM(KOHFTN-IDX) =  "012"
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE SPACE  TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                  IF  (RECE62-KOHNUM(KOHFTN-IDX) =  "010" OR "021"   )
+                  AND (RECE62-HKNJANUM(1:6) =
+                         "133033" OR "133280" OR "133041" OR "133066" OR
+                         "133074" OR "133090" OR "133116" OR "133132" OR
+                         "133140" OR "133157" OR "133165" OR "133173" OR
+                         "133181" OR "133199" OR "133207" OR "133223" OR
+                         "133249" OR "133256" OR "133272" OR "233064" OR
+                         "283077"                                    )
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                END-IF
+      *
+                IF    RECE62-SRYYM        >=  "200504"
+                  IF   RECE62-KOHNUM(KOHFTN-IDX) =  "052"
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                END-IF
+      *
+                IF   (RECE62-SRYYM        >=  "200510")
+                AND  (RECE62-SRYYM        <=  "200809")
+                  IF  ( WRK-PREFNUM               =   01   )
+                  AND ( RECE62-KOHNUM(KOHFTN-IDX) =  "051" )
+                  AND ((RECE62-KOHJKYSNUM(KOHFTN-IDX)(1:2)
+                                      >= "91" AND <= "95" ) OR
+                       (RECE62-KOHJKYSNUM(KOHFTN-IDX)(1:2)
+                                      >= "71" AND <= "88" ))
+                    MOVE  "1" TO  RECE62-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
+                  END-IF
+                END-IF
+      *
+                IF    RECE62-SRYYM        >=  "200604"
+                  IF   RECE62-KOHNUM(KOHFTN-IDX) =  "021"
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                  IF   RECE62-KOHNUM(KOHFTN-IDX) =  "012"
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                    IF   ( KOHFTN-IDX        =     1   )
+                    AND  ( RECE62-HKNNUM     =   SPACE )
+                    AND  ( RECE62-KOHNUM(2)  =   SPACE )
+                    AND  ( RECE62-KOHNUM(3)  =   SPACE )
+                    AND  ( RECE62-KOHNUM(4)  =   SPACE )
+                     MOVE SPACE TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                    END-IF
+                  END-IF
+                END-IF
+      *
+                IF    RECE62-SRYYM        >=  "200610"
+                  IF   RECE62-KOHNUM(KOHFTN-IDX) =  "024" OR "079"
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                END-IF
+      *
+                IF    RECE62-SRYYM        >=  "200704"
+                  IF  (RECE62-KOUREI             =  "1" OR "2")
+                  AND (RECE62-KOHNUM(KOHFTN-IDX) =  "010"     )
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                  IF   RECE62-KOHNUM(KOHFTN-IDX) =  "011"
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE SPACE  TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                END-IF
+      *
+                IF    RECE62-SRYYM        >=  "200804"
+                  IF   RECE62-KOHNUM(KOHFTN-IDX) =  "038" OR "025"
+                    MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                    MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                  IF   RECE62-KOHNUM(KOHFTN-IDX) =  "025"
+                    IF   ( KOHFTN-IDX        =     1   )
+                    AND  ( RECE62-HKNNUM     =   SPACE )
+                    AND  ( RECE62-KOHNUM(2)  =   SPACE )
+                    AND  ( RECE62-KOHNUM(3)  =   SPACE )
+                    AND  ( RECE62-KOHNUM(4)  =   SPACE )
+                     MOVE SPACE TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                    END-IF
+                  END-IF
+                END-IF
+      *
+              END-IF
       *
            END-PERFORM
       *
@@ -12563,6 +12604,171 @@
       *
            .
        210453-SEIKYUGAK-SKJ-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    その他記載フラグ編集
+      *****************************************************************
+       210454-ETCKISAIFLGINF-HENSYU-SEC               SECTION.
+      *
+           EVALUATE  SYS-2010-JNISSUKBN
+             WHEN      "0"
+                    MOVE SPACE TO RECE62-EKF-JNISSUFLG(KOHFTN-IDX + 1)
+             WHEN      "1"
+               EVALUATE  SYS-2010-JNISSU-TAIKBN
+                 WHEN        "0"
+                    MOVE  "1"  TO RECE62-EKF-JNISSUFLG(KOHFTN-IDX + 1)
+                 WHEN        "1"
+                  IF   RECE62-TEISYUTUSAKI  =  2 OR 6
+                    MOVE  "1"  TO RECE62-EKF-JNISSUFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "2"
+                  IF   RECE62-TEISYUTUSAKI  =  1
+                    MOVE  "1"  TO RECE62-EKF-JNISSUFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "3"
+                  IF   RECE62-TEISYUTUSAKI  =  2
+                    MOVE  "1"  TO RECE62-EKF-JNISSUFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "4"
+                  IF   RECE62-TEISYUTUSAKI  =  6
+                    MOVE  "1"  TO RECE62-EKF-JNISSUFLG(KOHFTN-IDX + 1)
+                  END-IF
+               END-EVALUATE
+           END-EVALUATE
+      *
+           EVALUATE  SYS-2010-TOTALTENKBN
+             WHEN      "0"
+                    MOVE SPACE TO RECE62-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
+             WHEN      "1"
+               EVALUATE  SYS-2010-TOTALTEN-TAIKBN
+                 WHEN        "0"
+                    MOVE  "1"  TO RECE62-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
+                 WHEN        "1"
+                  IF   RECE62-TEISYUTUSAKI  =  2 OR 6
+                    MOVE  "1"  TO RECE62-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "2"
+                  IF   RECE62-TEISYUTUSAKI  =  1
+                    MOVE  "1"  TO RECE62-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "3"
+                  IF   RECE62-TEISYUTUSAKI  =  2
+                    MOVE  "1"  TO RECE62-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "4"
+                  IF   RECE62-TEISYUTUSAKI  =  6
+                    MOVE  "1"  TO RECE62-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
+                  END-IF
+               END-EVALUATE
+           END-EVALUATE
+      *
+           EVALUATE  SYS-2010-FTNMONEYKBN-N
+             WHEN      "0"
+                    MOVE SPACE TO RECE62-KISAIFLG(KOHFTN-IDX + 1)
+             WHEN      "1"
+               EVALUATE  SYS-2010-FTNMONEY-TAIKBN-N
+                 WHEN        "0"
+                    MOVE  "1"  TO RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                 WHEN        "1"
+                  IF   RECE62-TEISYUTUSAKI  =  2 OR 6
+                    MOVE  "1"  TO RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "2"
+                  IF   RECE62-TEISYUTUSAKI  =  1
+                    MOVE  "1"  TO RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "3"
+                  IF   RECE62-TEISYUTUSAKI  =  2
+                    MOVE  "1"  TO RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "4"
+                  IF   RECE62-TEISYUTUSAKI  =  6
+                    MOVE  "1"  TO RECE62-KISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+               END-EVALUATE
+           END-EVALUATE
+      *
+           EVALUATE  SYS-2010-FTNZEROKBN-N
+             WHEN      "0"
+                    MOVE SPACE TO RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+             WHEN      "1"
+               EVALUATE  SYS-2010-FTNZERO-TAIKBN-N
+                 WHEN        "0"
+                    MOVE  "1"  TO RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                 WHEN        "1"
+                  IF   RECE62-TEISYUTUSAKI  =  2 OR 6
+                    MOVE  "1"  TO RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "2"
+                  IF   RECE62-TEISYUTUSAKI  =  1
+                    MOVE  "1"  TO RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "3"
+                  IF   RECE62-TEISYUTUSAKI  =  2
+                    MOVE  "1"  TO RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "4"
+                  IF   RECE62-TEISYUTUSAKI  =  6
+                    MOVE  "1"  TO RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
+                  END-IF
+               END-EVALUATE
+           END-EVALUATE
+      *
+           EVALUATE  SYS-2010-SKJKBN
+             WHEN      "0"
+                    MOVE SPACE TO RECE62-EKF-SKJFLG(KOHFTN-IDX + 1)
+             WHEN      "1"
+               EVALUATE  SYS-2010-SKJ-TAIKBN
+                 WHEN        "0"
+                    MOVE  "1"  TO RECE62-EKF-SKJFLG(KOHFTN-IDX + 1)
+                 WHEN        "1"
+                  IF   RECE62-TEISYUTUSAKI  =  2 OR 6
+                    MOVE  "1"  TO RECE62-EKF-SKJFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "2"
+                  IF   RECE62-TEISYUTUSAKI  =  1
+                    MOVE  "1"  TO RECE62-EKF-SKJFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "3"
+                  IF   RECE62-TEISYUTUSAKI  =  2
+                    MOVE  "1"  TO RECE62-EKF-SKJFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "4"
+                  IF   RECE62-TEISYUTUSAKI  =  6
+                    MOVE  "1"  TO RECE62-EKF-SKJFLG(KOHFTN-IDX + 1)
+                  END-IF
+               END-EVALUATE
+           END-EVALUATE
+      *
+           EVALUATE  SYS-2010-OCRKBN
+             WHEN      "0"
+                    MOVE SPACE TO RECE62-EKF-OCRFLG(KOHFTN-IDX + 1)
+             WHEN      "1"
+               EVALUATE  SYS-2010-OCR-TAIKBN
+                 WHEN        "0"
+                    MOVE  "1"  TO RECE62-EKF-OCRFLG(KOHFTN-IDX + 1)
+                 WHEN        "1"
+                  IF   RECE62-TEISYUTUSAKI  =  2 OR 6
+                    MOVE  "1"  TO RECE62-EKF-OCRFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "2"
+                  IF   RECE62-TEISYUTUSAKI  =  1
+                    MOVE  "1"  TO RECE62-EKF-OCRFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "3"
+                  IF   RECE62-TEISYUTUSAKI  =  2
+                    MOVE  "1"  TO RECE62-EKF-OCRFLG(KOHFTN-IDX + 1)
+                  END-IF
+                 WHEN        "4"
+                  IF   RECE62-TEISYUTUSAKI  =  6
+                    MOVE  "1"  TO RECE62-EKF-OCRFLG(KOHFTN-IDX + 1)
+                  END-IF
+               END-EVALUATE
+           END-EVALUATE
+      *
+           .
+       210454-ETCKISAIFLGINF-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
@@ -14886,6 +15092,7 @@
                                       RECE62-NYUTOKINF2
                                       RECE62-KISAIFLGINF-AREA
                                       RECE62-ZEROKISAIFLGINF-AREA
+                                      RECE62-ETCKISAIFLGINF-AREA
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       30
                INITIALIZE              RECE62-TENSUINF-AREA (IDX)
@@ -14919,6 +15126,14 @@
                                        TO  RECE62-KISAIFLG      (1)
            MOVE    WRK-RECE62-ZEROKISAIFLG  (1)
                                        TO  RECE62-ZEROKISAIFLG  (1)
+           MOVE    WRK-RECE62-EKF-JNISSUFLG(1)
+                                       TO  RECE62-EKF-JNISSUFLG(1)
+           MOVE    WRK-RECE62-EKF-TOTALTENFLG(1)
+                                       TO  RECE62-EKF-TOTALTENFLG(1)
+           MOVE    WRK-RECE62-EKF-SKJFLG(1)
+                                       TO  RECE62-EKF-SKJFLG(1)
+           MOVE    WRK-RECE62-EKF-OCRFLG(1)
+                                       TO  RECE62-EKF-OCRFLG(1)
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       30
                MOVE    WRK-RECE62-TENSU (IDX 1)
@@ -14995,6 +15210,14 @@
                                            TO  RECE62-KISAIFLG (IDYX)
                            MOVE    WRK-RECE62-ZEROKISAIFLG (IDXX)
                                            TO  RECE62-ZEROKISAIFLG(IDYX)
+                           MOVE    WRK-RECE62-EKF-JNISSUFLG(IDXX)
+                                        TO  RECE62-EKF-JNISSUFLG(IDYX)
+                           MOVE    WRK-RECE62-EKF-TOTALTENFLG(IDXX)
+                                        TO  RECE62-EKF-TOTALTENFLG(IDYX)
+                           MOVE    WRK-RECE62-EKF-SKJFLG(IDXX)
+                                        TO  RECE62-EKF-SKJFLG(IDYX)
+                           MOVE    WRK-RECE62-EKF-OCRFLG(IDXX)
+                                        TO  RECE62-EKF-OCRFLG(IDYX)
                        WHEN    "4"
                            ADD     1       TO  IDZX
                            MOVE    WRK-RECE62-KOHNUM (IDX)
@@ -15368,16 +15591,10 @@
            IF      RECE62-JNISSU   (IDX5)  =   RECE62-JNISSU   (IDX6)
            AND     RECE62-TOTALTEN (IDX5)  =   RECE62-TOTALTEN (IDX6)
            AND     RECE62-JSKISAIFLG       =   SPACE
+           AND     RECE62-EKF-OCRFLG(IDX6) =   SPACE
                MOVE    ZERO                 TO  OCR2-JNISSU
                                                 OCR2-TENSU   
            ELSE    
-               MOVE    RECE62-JNISSU  (IDX6)   TO  OCR2-JNISSU
-               MOVE    RECE62-TOTALTEN(IDX6)   TO  OCR2-TENSU
-           END-IF
-           IF   (RECE62-SRYYM      >=  "200610"       )
-           AND  (SYS-1001-PREFNUM   =   33            )
-           AND  (RECE62-KOHNUM(IDA)(1:1)
-                                   >=  "1" AND <=  "8")
                MOVE    RECE62-JNISSU  (IDX6)   TO  OCR2-JNISSU
                MOVE    RECE62-TOTALTEN(IDX6)   TO  OCR2-TENSU
            END-IF
@@ -15489,16 +15706,10 @@
            IF      RECE62-JNISSU   (IDX6)  =   RECE62-JNISSU   (IDX7)
            AND     RECE62-TOTALTEN (IDX6)  =   RECE62-TOTALTEN (IDX7)
            AND     RECE62-JSKISAIFLG       =   SPACE
+           AND     RECE62-EKF-OCRFLG(IDX7) =   SPACE
                MOVE    ZERO                 TO  OCR3-JNISSU
                                                 OCR3-TENSU   
            ELSE    
-               MOVE    RECE62-JNISSU  (IDX7)   TO  OCR3-JNISSU
-               MOVE    RECE62-TOTALTEN(IDX7)   TO  OCR3-TENSU
-           END-IF
-           IF   (RECE62-SRYYM      >=  "200610"       )
-           AND  (SYS-1001-PREFNUM   =   33            )
-           AND  (RECE62-KOHNUM(IDB)(1:1)
-                                   >=  "1" AND <=  "8")
                MOVE    RECE62-JNISSU  (IDX7)   TO  OCR3-JNISSU
                MOVE    RECE62-TOTALTEN(IDX7)   TO  OCR3-TENSU
            END-IF
