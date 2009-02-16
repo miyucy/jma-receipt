@@ -669,18 +669,14 @@
            INITIALIZE                  SPA-GMN-FTNZEROKBNLST-G
       *
            MOVE    "0"             TO  SPA-GMN-FTNZEROKBNL    (1)
-           MOVE    "０円の場合、省略する（上限設定時を除く）"
+           MOVE    "０円の場合、省略する"
                                    TO  SPA-GMN-FTNZEROKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-FTNZEROKBNL    (2)
-           MOVE    "０円の場合、省略する（上限設定時を含む）"
+           MOVE    "０円の場合、省略しない"
                                    TO  SPA-GMN-FTNZEROKBNMEIL (2)
       *
-           MOVE    "2"             TO  SPA-GMN-FTNZEROKBNL    (3)
-           MOVE    "０円の場合、省略しない"
-                                   TO  SPA-GMN-FTNZEROKBNMEIL (3)
-      *
-           MOVE    3               TO  SPA-GMN-FTNZEROKBN-MAX
+           MOVE    2               TO  SPA-GMN-FTNZEROKBN-MAX
       *
            .
        3110-FTNZEROKBNLST-EXT.
