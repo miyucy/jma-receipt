@@ -231,6 +231,8 @@
       *
       *  04.03.01    NACL-藤原    08/06/11  前回来院日の表示
       *                                     慢性と急性のチェック
+      *
+      *  04.04.01    NACL-藤原    09/02/16  データチェック後の病名修正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -737,7 +739,8 @@
                END-IF
       *
                IF      WRK-MOTOPG          =   "M01"  OR  "U02"  OR
-                                               "K02"  OR  "K02N"
+                                               "K02"  OR  "K02N" OR
+                                               "D04"
                    MOVE    SPA-MOTOPG          TO  SPA-C02-MOTOPG
                END-IF
       *                      
@@ -1013,7 +1016,8 @@ grpsys                     MOVE    SPA-HOSPNUM TO  PTBYO-HOSPNUM
       *      
       *    システム日付
            IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
-                                                   OR  "K02N")
+                                                   OR  "K02N"
+                                                   OR  "D04" )
                MOVE    SPA-SRYYMDW     TO  SPA-GMN-C02-SYSYMD
                MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
            ELSE    
@@ -1221,7 +1225,8 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
       *
       *    患者情報（診療行為等で患者番号を入力したとき） 
            IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
-                                                   OR  "K02N")
+                                                   OR  "K02N"
+                                                   OR  "D04" )
            AND   ( SPA-PTNUM       NOT =   SPACE             )
                MOVE    SPA-PTNUM       TO  C02-PTNUM
                PERFORM 41015-PTNUM-CHK-SEC
@@ -6165,7 +6170,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *
            MOVE    SPA-C02-MOTOPG     TO  SPA-SAKIPG
            IF      SPA-C02-MOTOPG NOT =   "K02"  AND  "U02"   AND
-                                          "K02N"
+                                          "K02N" AND  "D04" 
       ********* 患者番号入力へ
       *********MOVE   "C01"            TO  SPA-SAKIPG
                MOVE   "M01"            TO  SPA-SAKIPG
@@ -6176,7 +6181,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *
            MOVE    SPACE               TO  SPA-WORK 
            IF      SPA-C02-MOTOPG  NOT =   "K02"  AND  "U02"  AND 
-                                           "K02N"
+                                           "K02N" AND  "D04"
                INITIALIZE                  SPA-KYOTUKEY
                                            SPA-KYOTU-SET
            END-IF 
