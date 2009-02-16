@@ -104,6 +104,7 @@
            03  IDY2                    PIC 9(05).
            03  IDY3                    PIC 9(05).
            03  IDXX                    PIC 9(05).
+           03  IDYY                    PIC 9(05).
            03  IDZZ                    PIC 9(05).
       *
        01  SUM-AREA                                VALUE   ZERO.
@@ -161,6 +162,7 @@
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-COM-SRYKBN          PIC X(02).
            03  WRK-REC                 PIC X(2500).
+           03  WRK-REC1                PIC X(2500).
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-FILE-RENNUM         PIC 9(02).
            03  WRK-HENSYU-AREA.
@@ -207,6 +209,7 @@
        01  TABLE-AREA.
            03  TABLE-OCC               OCCURS  10000.
                05  TBL-RECEDATA        PIC X(2500).
+               05  TBL-LENGTH          PIC 9(04).
            03  TABLE-MAX               PIC 9(05).
       *  
        01  WRK-CONS-AREA.
@@ -780,6 +783,9 @@
                    MOVE    1               TO  IDX
                END-IF
            END-PERFORM
+           COMPUTE TBL-LENGTH (TABLE-MAX)
+                                       =   WRK-REC-LENGTH  +   1
+      *
            COMPUTE WRK-PTNUM-LENGTH    =   WRK-PTNUM-LENGTH
                                        +   WRK-REC-LENGTH
                                        +   1
@@ -1025,6 +1031,9 @@
       *
       *        返戻データ更新処理
                PERFORM 20091-HENREI-B-UPDATE-SEC
+      *
+      *        レセプト共通レコードへ検索番号をセット
+               PERFORM 20092-RE-HENREI-B-SET-SEC
            ELSE
                MOVE    SPACE               TO  WRK-RECEERR
                STRING "設定返戻データ存在エラー"
@@ -1160,6 +1169,53 @@
            END-PERFORM
           .
        20091-HENREI-B-UPDATE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    レセプト共通レコードへ返戻情報編集処理
+      *****************************************************************
+       20092-RE-HENREI-B-SET-SEC         SECTION.
+      *
+           MOVE    TBL-RECEDATA (1)    TO  WRK-REC
+           MOVE    SPACE               TO  WRK-REC1
+      *
+           MOVE    ZERO                TO  IDZZ
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       2500
+               IF      WRK-REC (IDX:1) =   ","
+                   ADD     1               TO  IDZZ
+                   IF      IDZZ            =   18
+                       COMPUTE IDY     =   IDX +   1
+                       STRING   WRK-REC (1:IDX)    DELIMITED  BY  SIZE
+                                WRK-HENREI-B-SEARCH-NO
+                                                   DELIMITED  BY  SPACE
+                                WRK-REC (IDY:)     DELIMITED  BY  SIZE
+                                           INTO    WRK-REC1
+                       END-STRING
+                       MOVE    2400        TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           MOVE    WRK-REC1            TO  TBL-RECEDATA (1)
+      *
+           MOVE    ZERO                TO  WRK-REC-LENGTH
+           PERFORM VARYING IDX FROM    2500 BY  -1
+                   UNTIL   IDX <       1
+               IF      WRK-REC1(IDX:1) =   WRK-KAIGYO
+                   MOVE    IDX             TO  WRK-REC-LENGTH
+                   MOVE    1               TO  IDX
+               END-IF
+           END-PERFORM
+           COMPUTE WRK-PTNUM-LENGTH    =   WRK-PTNUM-LENGTH
+                                       -   TBL-LENGTH (1)
+                                       +   WRK-REC-LENGTH
+                                       +   1
+      *
+          COMPUTE TBL-LENGTH (1)   =   WRK-REC-LENGTH
+                                       +   1
+          .
+       20092-RE-HENREI-B-SET-EXT.
            EXIT.
       *
       *****************************************************************
