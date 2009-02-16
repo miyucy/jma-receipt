@@ -12060,6 +12060,34 @@
       *
               IF   RECE62-KOHNUM(KOHFTN-IDX)(1:1) >=  "1" AND <=  "8"
       *
+      *         その他記載フラグ編集
+                IF    RECE62-SRYYM        >=  "200804"
+                  INITIALIZE                   SYSKANRI-REC
+                  MOVE    "2010"           TO  SYS-KANRICD
+                  MOVE    RECE62-KOHNUM(KOHFTN-IDX)
+                                           TO  SYS-KBNCD
+                  MOVE    RECE62-SRYYM     TO  SYS-STYUKYMD (1:6)
+                  MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+                  MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+                  MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
+                  MOVE    SYSKANRI-REC     TO  MCPDATA-REC
+                  MOVE    "tbl_syskanri"   TO  MCP-TABLE
+                  MOVE    "key10"          TO  MCP-PATHNAME
+                  PERFORM   900-DBSELECT-SEC
+                  IF      MCP-RC           =   ZERO
+                    MOVE  "tbl_syskanri"   TO  MCP-TABLE
+                    MOVE  "key10"          TO  MCP-PATHNAME
+                    PERFORM 960-KANRIMST-READ-SEC
+                    IF      FLG-SYSKANRI     =   ZERO
+                      MOVE   MCPDATA-REC   TO  SYS-2010-REC
+                      PERFORM   210454-ETCKISAIFLGINF-HENSYU-SEC
+                    END-IF
+                  END-IF
+                  MOVE    "tbl_syskanri"   TO  MCP-TABLE
+                  MOVE    "key10"          TO  MCP-PATHNAME
+                  PERFORM   900-CLOSE-SEC
+                END-IF
+      *
                 IF  (RECE62-HON-NYUDJGNGAK(KOHFTN-IDX)    NOT = ZERO)
                 OR  (RECE62-HON-NYUMJGNGAK(KOHFTN-IDX)    NOT = ZERO)
                 OR  (RECE62-HON-NYUMJGNCNT(KOHFTN-IDX)    NOT = ZERO)
@@ -12083,7 +12111,6 @@
                       (RECE62-KOHNUM(KOHFTN-IDX) =  "183"         ))
                   OR ((WRK-PREFNUM               =   34           ) AND
                       (RECE62-KOHNUM(KOHFTN-IDX) =  "391" OR "392"))
-      *             MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
                     MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                   END-IF
                   IF  (WRK-PREFNUM               =   08            )
@@ -12134,41 +12161,7 @@
                 IF    RECE62-SRYYM        >=  "200810"
                   IF  (WRK-PREFNUM               =   01  )
                   AND (RECE62-KOHNUM(KOHFTN-IDX) =  "183")
-                    MOVE  "1" TO  RECE62-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
-                  END-IF
-                END-IF
-      *
-      *         その他記載フラグ編集
-                IF    RECE62-SRYYM        >=  "200804"
-                  INITIALIZE                   SYSKANRI-REC
-                  MOVE    "2010"           TO  SYS-KANRICD
-                  MOVE    RECE62-KOHNUM(KOHFTN-IDX)
-                                           TO  SYS-KBNCD
-                  MOVE    RECE62-SRYYM     TO  SYS-STYUKYMD (1:6)
-                  MOVE    "01"             TO  SYS-STYUKYMD (7:2)
-                  MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
-                  MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
-                  MOVE    SYSKANRI-REC     TO  MCPDATA-REC
-                  MOVE    "tbl_syskanri"   TO  MCP-TABLE
-                  MOVE    "key10"          TO  MCP-PATHNAME
-                  PERFORM   900-DBSELECT-SEC
-                  IF      MCP-RC           =   ZERO
-                    MOVE  "tbl_syskanri"   TO  MCP-TABLE
-                    MOVE  "key10"          TO  MCP-PATHNAME
-                    PERFORM 960-KANRIMST-READ-SEC
-                    IF      FLG-SYSKANRI     =   ZERO
-                      MOVE   MCPDATA-REC   TO  SYS-2010-REC
-                      PERFORM   210454-ETCKISAIFLGINF-HENSYU-SEC
-                    END-IF
-                  END-IF
-                  MOVE    "tbl_syskanri"   TO  MCP-TABLE
-                  MOVE    "key10"          TO  MCP-PATHNAME
-                  PERFORM   900-CLOSE-SEC
-                END-IF
-      *
-                IF    RECE62-SRYYM        >=  "200810"
-                  IF  (WRK-PREFNUM               =   01  )
-                  AND (RECE62-KOHNUM(KOHFTN-IDX) =  "183")
+                    MOVE "1" TO  RECE62-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
                     IF  RECE62-KOHFTNJANUM(KOHFTN-IDX)(5:3)  = "602"
                      MOVE  "1"  TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
                      MOVE  "1"  TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)

@@ -9997,6 +9997,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
               IF   RECE02-KOHNUM(KOHFTN-IDX)(1:1) >=  "1" AND <=  "8"
       *
+      *         その他記載フラグ編集
+                IF    RECE02-SRYYM        >=  "200804"
+                  INITIALIZE                   SYSKANRI-REC
+                  MOVE    "2010"           TO  SYS-KANRICD
+                  MOVE    RECE02-KOHNUM(KOHFTN-IDX)
+                                           TO  SYS-KBNCD
+                  MOVE    RECE02-SRYYM     TO  SYS-STYUKYMD (1:6)
+                  MOVE    "01"             TO  SYS-STYUKYMD (7:2)
+                  MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
+                  MOVE    "tbl_syskanri"   TO  WRK-MCP-TABLE
+                  MOVE    "key10"          TO  WRK-MCP-PATHNAME
+                  PERFORM 960-KANRIMST-READ-SEC
+                  IF      FLG-SYSKANRI     =   ZERO
+                     MOVE    MCPDATA-REC   TO  SYS-2010-REC
+                     PERFORM   21113-ETCKISAIFLGINF-HENSYU-SEC
+                  END-IF
+                END-IF
+      *
                 IF  (RECE02-HON-GAIDJGNGAK(KOHFTN-IDX)    NOT = ZERO)
                 OR  (RECE02-HON-GAIDJGNCNT(KOHFTN-IDX)    NOT = ZERO)
                 OR  (RECE02-HON-GAIMNAIJGNGAK(KOHFTN-IDX) NOT = ZERO)
@@ -10023,7 +10041,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       (RECE02-KOHNUM(KOHFTN-IDX) =  "183"         ))
                   OR ((SYS-1001-PREFNUM          =   34           ) AND
                       (RECE02-KOHNUM(KOHFTN-IDX) =  "391" OR "392"))
-      *             MOVE  "1"   TO  RECE02-KISAIFLG(KOHFTN-IDX + 1)
                     MOVE  "1"   TO  RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
                   END-IF
                   IF  (SYS-1001-PREFNUM          =   08            )
@@ -10063,31 +10080,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                 IF    RECE02-SRYYM        >=  "200810"
                   IF  (SYS-1001-PREFNUM          =   01  )
                   AND (RECE02-KOHNUM(KOHFTN-IDX) =  "183")
-                    MOVE  "1" TO  RECE02-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
-                  END-IF
-                END-IF
-      *
-      *         その他記載フラグ編集
-                IF    RECE02-SRYYM        >=  "200804"
-                  INITIALIZE                   SYSKANRI-REC
-                  MOVE    "2010"           TO  SYS-KANRICD
-                  MOVE    RECE02-KOHNUM(KOHFTN-IDX)
-                                           TO  SYS-KBNCD
-                  MOVE    RECE02-SRYYM     TO  SYS-STYUKYMD (1:6)
-                  MOVE    "01"             TO  SYS-STYUKYMD (7:2)
-                  MOVE    SYS-STYUKYMD     TO  SYS-EDYUKYMD
-                  MOVE    "tbl_syskanri"   TO  WRK-MCP-TABLE
-                  MOVE    "key10"          TO  WRK-MCP-PATHNAME
-                  PERFORM 960-KANRIMST-READ-SEC
-                  IF      FLG-SYSKANRI     =   ZERO
-                     MOVE    MCPDATA-REC   TO  SYS-2010-REC
-                     PERFORM   21113-ETCKISAIFLGINF-HENSYU-SEC
-                  END-IF
-                END-IF
-      *
-                IF    RECE02-SRYYM        >=  "200810"
-                  IF  (SYS-1001-PREFNUM          =   01  )
-                  AND (RECE02-KOHNUM(KOHFTN-IDX) =  "183")
+                    MOVE "1" TO  RECE02-EKF-TOTALTENFLG(KOHFTN-IDX + 1)
                     IF  RECE02-KOHFTNJANUM(KOHFTN-IDX)(5:3)  = "602"
                      MOVE  "1"  TO  RECE02-KISAIFLG(KOHFTN-IDX + 1)
                      MOVE  "1"  TO  RECE02-ZEROKISAIFLG(KOHFTN-IDX + 1)
