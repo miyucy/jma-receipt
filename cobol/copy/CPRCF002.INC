@@ -103,6 +103,8 @@
       *  04.03.04    NACL-門脇    08/09/05  レセ電用負担区分編集フラグ追加
       *                                     予備追加
       *  04.03.05    NACL-門脇    08/10/16  公費−低２・低１項目追加
+      *
+      *  04.04.01    NACL-門脇    09/02/16  地方公費のレセ記載対応
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -502,7 +504,8 @@
                    09  RECE02-HENTOTALTEN PIC  9(08).
       *印刷順
            03  RECE02-PRTSEQ              PIC  9(03).
-      *公費一部負担金レセ記載フラグ（所得者情報で限度額を入力する公費を対象）
+      *
+      *公費一部負担金レセ記載フラグ
            03  RECE02-KISAIFLGINF-AREA.
                05  RECE02-KISAIFLGINF     OCCURS  5.
                    09  RECE02-KISAIFLG    PIC  X(01).
@@ -511,6 +514,13 @@
                05  RECE02-ZEROKISAIFLGINF OCCURS  5.
                    09  RECE02-ZEROKISAIFLG
                                           PIC  X(01).
+      *その他記載フラグ
+           03  RECE02-ETCKISAIFLGINF-AREA.
+               05  RECE02-ETCKISAIFLGINF  OCCURS  5.
+                   09  RECE02-EKF-JNISSUFLG    PIC  X(01).
+                   09  RECE02-EKF-TOTALTENFLG  PIC  X(01).
+                   09  RECE02-EKF-OCRFLG       PIC  X(01).
+      *
       *実日数・請求点記載フラグ
            03  RECE02-JSKISAIFLG          PIC  X(01).
       *未請求フラグ
