@@ -942,8 +942,11 @@
                                        TO  H02-TS-NYUGAIKBN (IDX)
                MOVE    SPA-H02NAI-TS-RECESYUBETU (IDX)
                                        TO  H02-TS-RECESYUBETU(IDX)
-               MOVE    SPA-H02NAI-TS-HKNJANUM   (IDX)
-                                       TO  H02-TS-HKNJANUM  (IDX)
+               IF      SPA-H02NAI-TS-HKNJANUM   (IDX)
+                                       NOT =   "00000000"
+                   MOVE    SPA-H02NAI-TS-HKNJANUM   (IDX)
+                                           TO  H02-TS-HKNJANUM  (IDX)
+               END-IF
                MOVE    SPA-H02GMN-TS-KIGO       (IDX)
                                        TO  H02-TS-KIGO      (IDX)
                MOVE    SPA-H02GMN-TS-HOJOKBN-KEY(IDX)

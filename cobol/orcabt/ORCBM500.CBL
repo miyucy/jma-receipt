@@ -1086,9 +1086,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    END-IF  
                END-PERFORM
       *
-               MOVE    "tbl_henrei_body"   TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 900-HENREI-BODY-READ-SEC
+               IF      FLG-HENREI-B        =   ZERO
+                   MOVE    "tbl_henrei_body"   TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 900-HENREI-BODY-READ-SEC
+               END-IF
            END-PERFORM
       *
            MOVE    "tbl_henrei_body"       TO  MCP-TABLE

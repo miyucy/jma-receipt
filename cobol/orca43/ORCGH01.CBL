@@ -1827,8 +1827,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            =   SPA-RECE10-HOJOKBN      )
                    AND   ( HENREI-B-S-TEKSTYMD     (IDZZ)
                                            =   SPA-RECE10-TEKSTYMD     )
-                       MOVE    HENREI-B-REC    TO  SPA-HENREI-B-REC
-                                                   WRK-HENREI-B-REC
+                       IF      SPA-HENREI-B-HOSPNUM    =   ZERO
+                           MOVE    HENREI-B-REC    TO  SPA-HENREI-B-REC
+                                                       WRK-HENREI-B-REC
+                       END-IF
       ***              MOVE    1               TO  TBL-HENREI-B-ERR
       ***                                          (TBL-HENREI-B-MAX)
                        MOVE    10              TO  IDZZ
