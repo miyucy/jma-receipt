@@ -78,10 +78,6 @@ echo
 echo "システム管理テーブルの医療機関ＩＤをセットします"
 echo "update tbl_syskanri set kanritbl = substr(kanritbl,1,11) || '$LASTHOSPID' || '         ' || substr(kanritbl,36,465) where kanricd = '1001' and hospnum = $HOSPNUM;" | psql ${DBNAME}
 
-echo
-echo "vacuum 処理を行います"
-echo "vacuum analyze;" | psql ${DBNAME}
-
 #
 # 処理終了
 #
