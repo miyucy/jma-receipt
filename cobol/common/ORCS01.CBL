@@ -12041,7 +12041,8 @@
       *
              ELSE
       *
-                IF  SYU-KOH-HKNNUM(KOHFUKA-IDX)(1:1) >= "1" AND <= "8"
+                IF  (SYU-KOH-HKNNUM(KOHFUKA-IDX)(1:1) >= "1" AND <= "8")
+                AND (LNK-SYU-SRYYMD(1:6)              >= "200804"      )
                    INITIALIZE                   SYS-2010-REC
                    MOVE    "2010"           TO  SYS-2010-KANRICD
                    MOVE    SYU-KOH-HKNNUM(KOHFUKA-IDX)
