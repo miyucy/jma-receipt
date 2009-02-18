@@ -573,6 +573,9 @@
                                                                   (IDX)
                            MOVE    9               TO  IDY
                          END-IF
+                       ELSE
+                           MOVE    SPACE           TO  SPA-GRPHOSPUSERID
+                                                                  (IDX)
                        END-IF
                      END-PERFORM
                    END-IF
