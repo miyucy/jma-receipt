@@ -217,7 +217,7 @@ dnl Checks for library functions.
 AC_CONFIG_FILES([
 cobol/Makefile
 cobol/Makefile.global
-cobol/orca00/ORCGM00.CBL
+cobol/common/ORCSCOMMON.CBL
 cobol/copy/Makefile
 bin/Makefile
 lddef/Makefile
