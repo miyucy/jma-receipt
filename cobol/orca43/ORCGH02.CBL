@@ -211,6 +211,10 @@
                PERFORM 300-SCREEN-SEC
       *        画面編集
                PERFORM 500-GMNHEN-SEC
+               IF      SPA-HIDCD       NOT =   SPACE
+                   PERFORM 520-HIDSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -247,7 +251,30 @@
        310-HID1-SET-SEC            SECTION.
       *
            IF      SPA-HID1-FLG    =   "OK"
-              MOVE    99               TO  SPA-H02GMN-CUR
+               EVALUATE    SPA-HIDCD
+                   WHEN    "1003"
+                      MOVE    99               TO  SPA-H02GMN-CUR
+                   WHEN    OTHER
+                       MOVE    SPA-H02NAI-TINDEX (SPA-H02NAI-SELNUM)
+                                               TO  IDX
+      *??
+                  DISPLAY "TBL-HENREI-B-ERR (IDX)=" IDX "#"
+                             TBL-HENREI-B-ERR (IDX) "#"
+      *??
+                       EVALUATE    TBL-HENREI-B-ERR (IDX)
+                           WHEN    ZERO
+                               MOVE    99          TO  SPA-H02GMN-CUR
+                           WHEN    1
+      *                        既に返戻設定済
+      *****                    MOVE    "0002"      TO  SPA-ERRCD
+                              MOVE    99           TO  SPA-H02GMN-CUR
+                           WHEN    2
+      *                        再再請求
+                               MOVE    SPACE       TO  SPA-HID1-FLG
+                               MOVE    "1003"      TO  SPA-HIDCD
+                               GO  TO  310-HID1-SET-EXT
+                       END-EVALUATE
+               END-EVALUATE
            ELSE
               MOVE    SPA-H02GMN-SELNUM-OLD
                                        TO  SPA-H02GMN-SELNUM
@@ -605,21 +632,22 @@
       * 
            MOVE    SPA-H02NAI-TINDEX (SPA-H02NAI-SELNUM)
                                    TO  IDX
-           EVALUATE    TBL-HENREI-B-ERR (IDX)
-               WHEN    ZERO
-                   PERFORM 410111-HENREILST-SEL-CHK-SEC
-                   IF    ( SPA-HIDCD       =   SPACE )
-                   AND   ( SPA-ERRCD       =   SPACE )
+      *
+           PERFORM 410111-HENREILST-SEL-CHK-SEC
+           IF    ( SPA-HIDCD       =   SPACE )
+           AND   ( SPA-ERRCD       =   SPACE )
+               EVALUATE    TBL-HENREI-B-ERR (IDX)
+                   WHEN    ZERO
                        MOVE    99              TO  SPA-H02GMN-CUR
-                   END-IF 
-               WHEN    1
-      *            既に返戻設定済
-      *****        MOVE    "0002"              TO  SPA-ERRCD
-                   CONTINUE
-               WHEN    2
-      *            再再請求
-                   MOVE    "1003"              TO  SPA-HIDCD
-           END-EVALUATE
+                   WHEN    1
+      *                既に返戻設定済
+      *****            MOVE    "0002"              TO  SPA-ERRCD
+                       CONTINUE
+                   WHEN    2
+      *                再再請求
+                       MOVE    "1003"              TO  SPA-HIDCD
+               END-EVALUATE
+           END-IF 
       *
            IF      SPA-ERRCD       NOT =   SPACE    
               MOVE    SPA-H02GMN-SELNUM-OLD
@@ -635,6 +663,110 @@
       *    対象データチェック処理
       *****************************************************************
        410111-HENREILST-SEL-CHK-SEC               SECTION.
+      *
+      *    選択した処理年月より新しい処理年月にデータがあるとき
+           IF    ( IDX                 >   1                          )
+           AND   ( TBL-HENREI-B-SYORIYM (1)
+                                       >   TBL-HENREI-B-SYORIYM (IDX) )
+           AND   (  SPA-RECE10-TEISYUTUSAKI
+                                       =   1                          ) 
+      *        社保のときは無条件にダイアログ表示
+               MOVE    "1007"          TO  SPA-HIDCD
+               GO  TO  410111-HENREILST-SEL-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDZZ    FROM    1   BY  1
+                   UNTIL   IDZZ    >       TBL-HENREI-B-MAX
+                   OR      TBL-HENREI-B-SYORIYM (IDZZ)
+                                   <=      TBL-HENREI-B-SYORIYM (IDX)
+               IF    ( TBL-HENREI-B-RECESYUBETU (IDZZ)
+                                          =   SPA-RECE10-RECESYUBETU )
+               AND   ( TBL-HENREI-B-HKNJANUM    (IDZZ)
+                                          =   SPA-RECE10-HKNJANUM    )
+               AND   ( TBL-HENREI-B-KIGO        (IDZZ)
+                                           =   SPA-RECE10-KIGO        )
+                   IF      TBL-HENREI-B-NUM         (IDZZ) 
+                                               =   SPA-RECE10-NUM
+                       MOVE    "0003"          TO  SPA-ERRCD
+                   ELSE
+                       MOVE    "1007"          TO  SPA-HIDCD
+                   END-IF
+                   GO  TO  410111-HENREILST-SEL-CHK-EXT
+               END-IF
+           END-PERFORM         
+      *
+      *    選択した処理年月より新しい処理年月に条件の一致するデータがあるか
+           PERFORM VARYING IDZZ    FROM    1   BY  1
+                   UNTIL   IDZZ    >       TBL-HENREI-B-MAX
+                   OR      TBL-HENREI-B-SYORIYM (IDZZ)
+                                   <=      TBL-HENREI-B-SYORIYM (IDX)
+               IF      SPA-RECE10-HKNNUM   =   SPACE
+                   IF    ( TBL-HENREI-B-RECESYUBETU (IDX)
+                                       =   SPA-RECE10-RECESYUBETU )
+                       IF    ( TBL-HENREI-B-RECESYUBETU (IDZZ)
+                                           =   SPA-RECE10-RECESYUBETU  )
+                           IF    ( TBL-HENREI-B-FTNNUM      (IDZZ 1)
+                                               =   SPA-RECE10-FTNJANUM )
+                               MOVE    "2004"          TO  SPA-HIDCD
+                               GO  TO  410111-HENREILST-SEL-CHK-EXT
+                           END-IF
+                       END-IF
+                   ELSE
+                       IF    ( TBL-HENREI-B-RECESYUBETU (IDZZ)
+                                           =   SPA-RECE10-RECESYUBETU  )
+                           MOVE    "2002"          TO  SPA-HIDCD
+                       END-IF
+                   END-IF
+               ELSE
+      *            違う提出先を選択したとき
+                   IF  ( ( SPA-RECE10-TEISYUTUSAKI
+                                             =   2   ) AND
+                         ( TBL-HENREI-B-RECESYUBETU (IDX)(2:1)
+                                             =   "3" ) )
+                   OR  ( ( SPA-RECE10-TEISYUTUSAKI
+                                             =   6   ) AND
+                         ( TBL-HENREI-B-RECESYUBETU (IDX)(2:1)
+                                         NOT =   "3" ) )
+                       IF   (( SPA-RECE10-TEISYUTUSAKI
+                                                   =   2   ) AND
+                             ( TBL-HENREI-B-RECESYUBETU (IDZZ)(2:1)
+                                               NOT =   "3" ) )
+                       OR  ( ( SPA-RECE10-TEISYUTUSAKI
+                                                   =   6   ) AND
+                             ( TBL-HENREI-B-RECESYUBETU (IDZZ)(2:1)
+                                                   =   "3" ) )
+                           MOVE    "2006"      TO  SPA-HIDCD
+                           GO  TO  410111-HENREILST-SEL-CHK-EXT
+                       END-IF
+                   ELSE
+      *                同じ保険者を選択したとき
+                       IF    ( TBL-HENREI-B-HKNJANUM    (IDX)
+                                           =   SPA-RECE10-HKNJANUM )
+                           IF      TBL-HENREI-B-HKNJANUM    (IDZZ)
+                                               =   SPA-RECE10-HKNJANUM
+                               IF      TBL-HENREI-B-RECESYUBETU (IDZZ)
+                                           =   SPA-RECE10-RECESYUBETU
+                                   MOVE    "2002"  TO  SPA-HIDCD
+                                   GO  TO  410111-HENREILST-SEL-CHK-EXT
+                               END-IF
+                           END-IF
+                       ELSE
+                           IF      TBL-HENREI-B-HKNJANUM    (IDZZ)
+                                               =   SPA-RECE10-HKNJANUM
+                               MOVE    "2001"      TO  SPA-HIDCD
+                           ELSE
+                               IF    ( TBL-HENREI-B-RECESYUBETU
+                                                              (IDZZ)
+                                           =   SPA-RECE10-RECESYUBETU )
+                               AND   ( SPA-HIDCD
+                                           =   SPACE                  )
+                                   MOVE    "2002"      TO  SPA-HIDCD
+                               END-IF
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+           END-PERFORM         
       *
       *    選択データのチェック
            IF      SPA-RECE10-HKNNUM   =   SPACE
@@ -663,31 +795,7 @@
                ELSE
                    IF      TBL-HENREI-B-SYORIYM (IDZZ)
                                        >   TBL-HENREI-B-SYORIYM (IDX)
-      *                選択した処理年月より新しい処理年月にデータがあるとき
-                       IF      SPA-RECE10-HKNNUM
-                                           =   SPACE
-                           IF    ( TBL-HENREI-B-RECESYUBETU (IDZZ)
-                                           =   SPA-RECE10-RECESYUBETU )
-                           AND   ( TBL-HENREI-B-FTNNUM      (IDZZ 1)
-                                           =   SPA-RECE10-FTNJANUM    )
-                           AND   ( TBL-HENREI-B-JKYNUM      (IDZZ 1) 
-                                           =   SPA-RECE10-JKYSNUM     )
-                               MOVE    "0003"          TO  SPA-ERRCD
-                               GO  TO  410111-HENREILST-SEL-CHK-EXT
-                           END-IF
-                       ELSE
-                           IF    ( TBL-HENREI-B-RECESYUBETU (IDZZ)
-                                           =   SPA-RECE10-RECESYUBETU )
-                           AND   ( TBL-HENREI-B-HKNJANUM    (IDZZ)
-                                           =   SPA-RECE10-HKNJANUM    )
-                           AND   ( TBL-HENREI-B-KIGO        (IDZZ)
-                                           =   SPA-RECE10-KIGO        )
-                           AND   ( TBL-HENREI-B-NUM         (IDZZ) 
-                                           =   SPA-RECE10-NUM         )
-                               MOVE    "0003"          TO  SPA-ERRCD
-                               GO  TO  410111-HENREILST-SEL-CHK-EXT
-                           END-IF
-                       END-IF
+                       CONTINUE
                    ELSE
       *                選択した処理年月と同じ処理年月にデータがあるとき
                        IF      SPA-RECE10-HKNNUM
@@ -1126,6 +1234,49 @@
                    END-STRING
                WHEN    "1006"
                    STRING  "提出先が一致する別の"
+                                        DELIMITED  BY  SIZE 
+                           "返戻データがありますがよろしいですか。"
+                                        DELIMITED  BY  SIZE 
+                                        INTO  HID1-ID1MSG
+                   END-STRING
+               WHEN    "1007"
+                   STRING  "選択されたデータより後の日付の返戻データが"
+                                        DELIMITED  BY  SIZE 
+                           "存在しますがよろしいですか。"
+                                        DELIMITED  BY  SIZE 
+                                        INTO  HID1-ID1MSG
+                   END-STRING
+               WHEN    "2001"
+                   STRING  "選択されたデータより後の日付の返戻データに"
+                                        DELIMITED  BY  SIZE 
+                           "保険者番号が一致する別の返戻データがありま"
+                                        DELIMITED  BY  SIZE 
+                           "すがよろしいですか。"
+                                        DELIMITED  BY  SIZE 
+                                        INTO  HID1-ID1MSG
+                   END-STRING
+               WHEN    "2002"
+                   STRING  "選択されたデータより後の日付の返戻データに"
+                                        DELIMITED  BY  SIZE 
+                           "レセプト種別が一致する別の"
+                                        DELIMITED  BY  SIZE 
+                           "返戻データがありますがよろしいですか。"
+                                        DELIMITED  BY  SIZE 
+                                        INTO  HID1-ID1MSG
+                   END-STRING
+               WHEN    "2004"
+                   STRING  "選択されたデータより後の日付の返戻データに"
+                                        DELIMITED  BY  SIZE 
+                           "負担者番号が一致する別の"
+                                        DELIMITED  BY  SIZE 
+                           "返戻データがありますがよろしいですか。"
+                                        DELIMITED  BY  SIZE 
+                                        INTO  HID1-ID1MSG
+                   END-STRING
+               WHEN    "2006"
+                   STRING  "選択されたデータより後の日付の返戻データに"
+                                        DELIMITED  BY  SIZE 
+                           "提出先が一致する別の"
                                         DELIMITED  BY  SIZE 
                            "返戻データがありますがよろしいですか。"
                                         DELIMITED  BY  SIZE 

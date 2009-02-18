@@ -1463,11 +1463,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "6"
                    MOVE    RECE10-NUM          TO  SPA-H01GMN-HKIGO
                WHEN    OTHER
-                   STRING  RECE10-KIGO     DELIMITED   BY  SPACE
-      *****                "¡¡"            DELIMITED   BY  SIZE
-                           RECE10-NUM      DELIMITED   BY  SPACE
-                                           INTO    SPA-H01GMN-HKIGO
-                   END-STRING
+                   IF    ( RECE10-HKNNUM       =   SPACE              )
+                       IF    ( RECE10-KOHNUM (1)   =   "012"  OR "025" )
+                       AND   ( RECE10-KOHNUM (2)   =   SPACE           )
+                           STRING  SPA-RECE10-FTNJANUM
+                                                   DELIMITED   BY  SPACE
+      *****                        "¡¡"            DELIMITED   BY  SIZE
+                                   SPA-RECE10-JKYSNUM
+                                                   DELIMITED   BY  SPACE
+                                               INTO    SPA-H01GMN-HKIGO
+                           END-STRING
+                       END-IF
+                   ELSE    
+                       STRING  RECE10-KIGO     DELIMITED   BY  SPACE
+      *****                    "¡¡"            DELIMITED   BY  SIZE
+                               RECE10-NUM      DELIMITED   BY  SPACE
+                                               INTO    SPA-H01GMN-HKIGO
+                       END-STRING
+                   END-IF
            END-EVALUATE        
       *
            EVALUATE    RECE10-HKNNUM
