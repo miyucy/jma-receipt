@@ -2518,6 +2518,8 @@
                    MOVE    "tbl_syskanri"      TO  MCP-TABLE
                    MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM   910-DBSELECT-SEC
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM   920-DBFETCH-SEC
                    PERFORM   UNTIL     (FLG-USERMATCH  =  1)  OR
                                        (MCP-RC      NOT = 0)
@@ -2526,8 +2528,14 @@
                                             =   SYS-1010-USERID
                            MOVE   1     TO   FLG-USERMATCH
                        END-IF
+                       MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                       MOVE    "key2"              TO  MCP-PATHNAME
                        PERFORM    920-DBFETCH-SEC
                    END-PERFORM
+      *
+                   MOVE    "tbl_syskanri"      TO  MCP-TABLE
+                   MOVE    "key2"              TO  MCP-PATHNAME
+                   PERFORM 990-DBCLOSE-SEC
                    IF         FLG-USERMATCH    =   ZERO
                        MOVE    "0028"          TO  SPA-ERRCD
                        MOVE    WRK-ERRCUR      TO  SPA-GMN-CUR
