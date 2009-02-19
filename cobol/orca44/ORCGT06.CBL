@@ -3307,7 +3307,7 @@
                            MOVE    "2"     TO  SPA-GMN-T06-R-TERR  (IDX)
                        END-IF
                    ELSE
-                       MOVE    "1"     TO  SPA-GMN-T06-R-TERR  (IDX)
+                       MOVE    "3"     TO  SPA-GMN-T06-R-TERR  (IDX)
                    END-IF
                END-IF
       *   
@@ -3327,7 +3327,7 @@
                IF      FLG-PTINF       =   ZERO
                    MOVE    PTINF-NAME      TO  SPA-GMN-T06-R-TNAME (IDX)
                ELSE
-                   MOVE    "1"             TO  SPA-GMN-T06-R-TERR  (IDX)
+                   MOVE    "4"             TO  SPA-GMN-T06-R-TERR  (IDX)
                END-IF
       *
                MOVE    ONRECE-B-SRYYM-B
@@ -4537,10 +4537,16 @@
                MOVE    WRK-ZZZ9            TO  T06-RECE-TRENNUM   (IDX)
                MOVE    SPA-GMN-T06-R-TNYUGAIKBN (IDX)
                                            TO  T06-RECE-TNYUGAIKBN(IDX)
-               IF      SPA-GMN-T06-R-TERR  (IDX)
-                                           =   "1"
-                   MOVE    "¡û"            TO  T06-RECE-TERR      (IDX)
-               END-IF     
+               EVALUATE    SPA-GMN-T06-R-TERR  (IDX)
+                   WHEN    "1"
+                       MOVE    "¡û"        TO  T06-RECE-TERR      (IDX)
+      *************WHEN    "2"
+      *************    MOVE    "¢¤"        TO  T06-RECE-TERR      (IDX)
+                   WHEN    "3"
+                       MOVE    "¡ü"        TO  T06-RECE-TERR      (IDX)
+                   WHEN    "4"
+                       MOVE    "¡ý"        TO  T06-RECE-TERR      (IDX)
+               END-EVALUATE
                MOVE    SPA-GMN-T06-R-TPTNUM     (IDX)
                                            TO  T06-RECE-TPTNUM    (IDX)
                MOVE    SPA-GMN-T06-R-TNAME      (IDX)
