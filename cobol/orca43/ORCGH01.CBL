@@ -2292,7 +2292,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                        MOVE    6               TO  SPA-H01GMN-CUR
                    WHEN    2
       *                設定済
-                       INITIALIZE                  WRK-HENREI-B-REC
+      *****************INITIALIZE                  WRK-HENREI-B-REC
                        MOVE    6               TO  SPA-H01GMN-CUR
                    WHEN    3
       *                再再請求の可能性
