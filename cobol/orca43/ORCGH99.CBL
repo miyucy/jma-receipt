@@ -105,6 +105,8 @@
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-SEIKYU          PIC 9(01).
+           03  FLG-MONTHLYNUM      PIC 9(01).
+           03  FLG-PTKOHINF        PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -156,6 +158,14 @@
            COPY    "CPSK2003.INC".
       *
            COPY    "CPRCF010.INC".
+      *
+      *    月代わり受給者番号
+       01  MONTHLYNUM-REC.
+           COPY    "CPMONTHLYNUM.INC".
+      *
+      *    患者公費情報
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -439,6 +449,52 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                MOVE    RECE10-CREYMD       TO  WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
                MOVE    WRK-HENYMDG         TO  SPA-H99GMN-TCREYMD (IDX)
+      *
+      *       公費単独で生保又は中国残留邦人等のとき負担者番号、
+      *       受給者番号をセット
+               IF    ( RECE10-HKNNUM       =   SPACE              )
+                   IF    ( RECE10-KOHNUM (1)   =   "012"  OR "025" )
+                   AND   ( RECE10-KOHNUM (2)   =   SPACE           )
+                       INITIALIZE                  PTKOHINF-REC
+                       MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
+                       MOVE    RECE10-PTID     TO  PTKOH-PTID
+                       MOVE    RECE10-KOHID(1) TO  PTKOH-KOHID
+                       MOVE    PTKOHINF-REC    TO  MCPDATA-REC
+                       PERFORM 900-PTKOHINF-READ-SEC
+                       MOVE    SPA-HOSPNUM     TO  MONTHLYNUM-HOSPNUM
+                       MOVE    RECE10-PTID     TO  MONTHLYNUM-PTID
+                       MOVE    RECE10-KOHID(1) TO  MONTHLYNUM-KOHID
+                       MOVE    RECE10-SRYYM    TO  MONTHLYNUM-SRYYM
+                       MOVE    RECE10-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
+                       MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+                       PERFORM 900-MONTHLYNUM-READ-SEC
+                       IF      FLG-MONTHLYNUM  =   ZERO
+                           MOVE    MONTHLYNUM-JKYSNUM
+                                               TO  PTKOH-JKYSNUM
+                       ELSE
+                           MOVE    SPA-HOSPNUM TO  MONTHLYNUM-HOSPNUM
+                           MOVE    RECE10-PTID TO  MONTHLYNUM-PTID
+                           MOVE    ZERO        TO  MONTHLYNUM-KOHID
+                           MOVE    RECE10-SRYYM
+                                               TO  MONTHLYNUM-SRYYM
+                           MOVE    RECE10-NYUGAIKBN
+                                               TO  MONTHLYNUM-NYUGAIKBN
+                           MOVE    MONTHLYNUM-REC
+                                               TO  MCPDATA-REC
+                           PERFORM 900-MONTHLYNUM-READ-SEC
+                           IF      FLG-MONTHLYNUM   =   ZERO
+                               MOVE    MONTHLYNUM-JKYSNUM
+                                                    TO  PTKOH-JKYSNUM
+                           END-IF
+                       END-IF
+                       STRING  PTKOH-FTNJANUM  DELIMITED   BY  SPACE
+                               "　"            DELIMITED   BY  SIZE
+                               PTKOH-JKYSNUM   DELIMITED   BY  SPACE
+                                       INTO    SPA-H99GMN-TKIGO(IDX)
+                       END-STRING
+                   END-IF
+               END-IF
       *
                MOVE    "tbl_seikyu"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -961,6 +1017,69 @@ grpsys     PERFORM 900-DBFETCH-SEC
            .
        900-SYSKANRI-READ-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    患者公費情報読込
+      *****************************************************************
+       900-PTKOHINF-READ-SEC           SECTION.
+      *
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC     TO  PTKOHINF-REC
+                   MOVE    ZERO            TO  FLG-PTKOHINF
+               ELSE
+                   INITIALIZE                  PTKOHINF-REC
+                   MOVE    1               TO  FLG-PTKOHINF
+               END-IF
+           ELSE
+               INITIALIZE                  PTKOHINF-REC
+               MOVE    1               TO  FLG-PTKOHINF
+           END-IF
+      *
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-PTKOHINF-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    月代わり受給者番号マスタ読込
+      *****************************************************************
+       900-MONTHLYNUM-READ-SEC         SECTION.
+      *
+           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC               =   ZERO
+           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    ZERO                TO  FLG-MONTHLYNUM
+                   MOVE    MCPDATA-REC         TO  MONTHLYNUM-REC
+               ELSE
+                   MOVE    1                   TO  FLG-MONTHLYNUM
+               END-IF
+           ELSE
+               MOVE    1                   TO  FLG-MONTHLYNUM
+           END-IF
+      *
+           MOVE    "tbl_monthlynum"    TO  MCP-TABLE
+           MOVE    "key4"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-MONTHLYNUM-READ-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    排他制御処理
