@@ -4540,8 +4540,8 @@
                EVALUATE    SPA-GMN-T06-R-TERR  (IDX)
                    WHEN    "1"
                        MOVE    "б√"        TO  T06-RECE-TERR      (IDX)
-      *************WHEN    "2"
-      *************    MOVE    "вд"        TO  T06-RECE-TERR      (IDX)
+                   WHEN    "2"
+                       MOVE    "вд"        TO  T06-RECE-TERR      (IDX)
                    WHEN    "3"
                        MOVE    "б№"        TO  T06-RECE-TERR      (IDX)
                    WHEN    "4"
