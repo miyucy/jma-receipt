@@ -2287,17 +2287,23 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *        ÊÖÌáÂÐ¾Ý°ìÍ÷
                PERFORM 411911-H02-HENSYU-SEC
            ELSE
-               EVALUATE    FLG-HENREI-B-CHK
-                   WHEN    1
-                       MOVE    6               TO  SPA-H01GMN-CUR
-                   WHEN    2
-      *                ÀßÄêºÑ
-      *****************INITIALIZE                  WRK-HENREI-B-REC
-                       MOVE    6               TO  SPA-H01GMN-CUR
-                   WHEN    3
-      *                ºÆºÆÀÁµá¤Î²ÄÇ½À­
-                       MOVE    "1003"          TO  SPA-HIDCD 
-               END-EVALUATE
+               IF      TBL-HENREI-B-SYORIYM (1)
+                                       >   WRK-HENREI-B-SYORIYM
+      *            ÊÖÌáÂÐ¾Ý°ìÍ÷
+                   PERFORM 411911-H02-HENSYU-SEC
+               ELSE
+                   EVALUATE    FLG-HENREI-B-CHK
+                       WHEN    1
+                           MOVE    6               TO  SPA-H01GMN-CUR
+                       WHEN    2
+      *                    ÀßÄêºÑ
+      *********************INITIALIZE                  WRK-HENREI-B-REC
+                           MOVE    6               TO  SPA-H01GMN-CUR
+                       WHEN    3
+      *                    ºÆºÆÀÁµá¤Î²ÄÇ½À­
+                           MOVE    "1003"          TO  SPA-HIDCD 
+                   END-EVALUATE
+               END-IF
            END-IF
            .
        41191-HEIREI-B-HENSYU-EXT.
