@@ -170,6 +170,10 @@
            03  WRK-MCP-WIDGET          PIC X(10).
            03  WRK-YAKANKBN            PIC 9(01).
       *
+           03  WRK-HOSPNUM             PIC 9(02).
+           03  WRK-GRPHOSPUSERID       PIC X(64).
+           03  WRK-MOTOPG              PIC X(08).
+      *
            03  TBL-DRCD-AREA.
                05  TBL-DRCD-OCC        OCCURS   300.
                     07  TBL-DRCD           PIC X(05).
@@ -1495,44 +1499,45 @@
       *****************************************************************
        4310-TAIN-SYORI-SEC         SECTION.
       *
+           MOVE    SPACE               TO  WRK-GRPHOSPUSERID
+           MOVE    ZERO                TO  WRK-HOSPNUM
            MOVE    SPA-M95GMN-TAINNUM  TO  WRK-NUM-1-X
       *
       *    医療機関識別番号セット SPA-HOSPNUM
            IF      SPA-GRPHOSPUSERID(WRK-NUM-1)  =  SPACE
-               DISPLAY "GRPHOSPUSERID IS EMPTYi!!"
+               DISPLAY "GRPHOSPUSERID IS EMPTY!!"
                MOVE    "0106"          TO  SPA-MIDCD
                GO  TO  4310-TAIN-SYORI-EXT
            END-IF
-           MOVE    SPA-GRPHOSPUSERID(WRK-NUM-1)
-                                       TO  SPA-OPID
-           CALL    "ORCSHOSPNUM"       USING
-                                       MCPAREA
-                                       SPA-AREA
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO  TO  4310-TAIN-SYORI-EXT
-           END-IF
+           MOVE    SPA-GRPHOSPNUM (WRK-NUM-1)
+                                       TO  WRK-HOSPNUM
+           MOVE    SPA-GRPHOSPUSERID (WRK-NUM-1)
+                                       TO  WRK-GRPHOSPUSERID
       *!!
       *    ＳＰＡ共通設定
+           MOVE    SPA-M95-MOTOPG      TO  WRK-MOTOPG
+           INITIALIZE                  SPA-AREA
+           MOVE    WRK-GRPHOSPUSERID   TO  SPA-OPID
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
-           MOVE    "M00"               TO  ORCSCOMMON-PG
+           MOVE    "M95"               TO  ORCSCOMMON-PG
+           MOVE    WRK-HOSPNUM         TO  ORCSCOMMON-HOSPNUM
            CALL    "ORCSCOMMON"        USING
                                        MCPAREA
                                        SPA-AREA
                                        ORCSCOMMONAREA
                                        SYS-1010-REC
       *
-           IF      SPA-M95-MOTOPG      =  "M01" OR   "M01N"
-               INITIALIZE                  SYS-1010-REC
-               INITIALIZE                  ORCSCOMMONAREA
-               MOVE    "M01"               TO  ORCSCOMMON-PG
-               CALL    "ORCSCOMMON"        USING
-                                           MCPAREA
-                                           SPA-AREA
-                                           ORCSCOMMONAREA
-                                           SYS-1010-REC
-               MOVE    "M01"           TO  SPA-M95-MOTOPG
+           IF      WRK-MOTOPG          =   "M00"
+               MOVE    "M00"           TO  SPA-M95-MOTOPG
+           ELSE
+               IF      SPA-BEDFLG          =   ZERO
+                   MOVE    "M01"           TO  SPA-M95-MOTOPG
+               ELSE
+                   MOVE    "M01N"          TO  SPA-M95-MOTOPG
+               END-IF
            END-IF
+      *
            PERFORM 210-BACK
            .
        4310-TAIN-SYORI-EXT.
