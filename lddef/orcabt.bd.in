@@ -3,15 +3,15 @@ name	orcabt;
 arraysize	20;
 textsize	400;
 
-handler "Ruby" {
-        class  "Exec";
-        serialize   "CGI";
-        start       "/usr/bin/ruby -Ke %p%m.rb";
-        loadpath    "=/scripts/daily/";
-        locale      "euc-jp";
+handler "RubyExec" {
+        class "Exec";
+        serialize "CGI";
+        start "/usr/bin/ruby -Ke %p/%m.rb %a";
+        locale "euc-jp";
 };
 
-bind    "OrcSioriPull"  "Ruby";
+bind	"OrcSioriPull"		"RubyExec";
+bind	"Sysbase"		"RubyExec";
 
 bind    "ORCVTPTINF"    	"OpenCOBOL";
 bind    "ORCVTPTHKNINF" 	"OpenCOBOL";

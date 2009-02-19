@@ -11,7 +11,8 @@ BIN_sources = \
 	jma-receipt-hospid-set.sh.in \
 	jma-receipt-program-upgrade.sh.in \
 	jma-receipt-program-upgrade-check.sh.in \
-	orcvt_exec.sh.in
+	orcvt_exec.sh.in \
+	jma-receipt-sysbase-setup.sh.in
 
 BIN_bin = \
 	orcvt_euc.rb \

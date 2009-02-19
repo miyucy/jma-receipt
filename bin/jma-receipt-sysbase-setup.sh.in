@@ -1,0 +1,127 @@
+#!/bin/bash
+
+if test -z "$JMARECEIPT_ENV" ; then
+    JMARECEIPT_ENV="@jma-receipt-env@"
+fi
+if ! test -f "$JMARECEIPT_ENV"; then
+    exit 0
+fi
+
+. $JMARECEIPT_ENV
+
+FLAG=`id -u`
+
+if [ "${LANG}" != "ja_JP.UTF-8" ] ; then
+  echo "ERROR: change charactor-code ja_JP.UTF-8"
+  exit 1
+fi
+
+if [ ${FLAG} -ne 0 ] ; then
+  echo "ERROR: root権限で実行してください。"
+  exit 1
+fi
+
+if [ $# -eq 0 ] ; then
+  echo "ERROR: オプションを指定してください。"
+  exit 1
+fi
+
+APS_EXEC_PATH="$SCRIPTSDIR"/allways
+export APS_EXEC_PATH
+
+CMDNAME=`basename $0`
+
+usage() {
+echo "usage: sudo sh ${CMDNAME} [-admlh]"
+echo "               [-g グループ番号]"
+echo "               [-n 医療機関識別番号]"
+echo "               [-k 期限]"
+echo "               [-H 本院分院番号]"
+echo "               [-b 本院分院区分]"
+echo "               [-N 医療機関名]"
+echo "               [-r (レコード指定)]"
+echo ""
+echo "       -a : レコード追加"
+echo "       -d : レコード削除"
+echo "       -m : レコード更新"
+echo "       -l : レコード一覧"
+echo ""
+echo "       -h : ヘルプ表示"
+echo ""
+echo "(レコード指定)"
+echo " ( グループ番号,医療機関識別番号,期限,本院分院番号,本院分院区分,医療機関名 )"
+echo ""
+}
+
+GRPNUM=
+HOSPNUM=
+KIGEN=
+HBGRP=
+HBKBN=
+HOSPNAME=
+RECORD=
+
+PARAM=
+
+while getopts 'admlh:g:H:n:k:b:N:r' OPTION
+do
+  case "${OPTION}" in
+   a | d | m | l )
+      if [ -z ${PARAM} ]; then
+        case "${OPTION}" in
+	 a )
+	    PARAM=add
+	 ;;
+	 d )
+	    PARAM=del
+	 ;;
+	 m )
+	    PARAM=mod
+	 ;;
+	 l )
+	    PARAM=lst
+	 ;;
+	esac
+      else
+        usage
+	exit 0
+      fi
+      ;;
+   g )
+      GRPNUM=${OPTARG}
+      ;;
+   H )
+      HBGRP=${OPTARG}
+      ;;
+   n )
+      HOSPNUM=${OPTARG}
+      ;;
+   k )
+      KIGEN=${OPTARG}
+      ;;
+   b )
+      HBKBN=${OPTARG}
+      ;;
+   N )
+      HOSPNAME=${OPTARG}
+      ;;
+   r )
+      RECORD=${OPTARG}
+      ;;
+   h | ? )
+      usage
+      exit 0
+      ;;
+  esac
+done
+
+if [ -z ${RECORD} ]; then
+  PARAM="${PARAM},${GRPNUM},${HOSPNUM},${KIGEN},${HBGRP},${HBKBN},${HOSPNAME}"
+else
+  PARAM="${PARAM},${RECORD}"
+fi
+
+su orca -c "$DBSTUB -dir $LDDIRECTORY -bd orcabt Sysbase -parameter $PARAM"
+
+exit 0
+

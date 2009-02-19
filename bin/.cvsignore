@@ -5,3 +5,4 @@ jma-receipt-hospid-set.sh
 jma-receipt-program-upgrade-check.sh
 jma-receipt-program-upgrade.sh
 orcvt_exec.sh
+jma-receipt-sysbase-setup.sh

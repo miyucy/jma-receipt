@@ -39,6 +39,8 @@ if ! [ -d $MEDPHOTOTEMP ]; then
 fi
 
 # センターサーバより雛型を取り込む
+APS_EXEC_PATH=`dirname $0`
+export APS_EXEC_PATH
 
 MEDSIORIPARAM="$1,$2,$MEDSIORISITE,$MEDPHOTOPATH,$MEDPHOTOTEMP,$8"
 export MEDSIORIPARAM
