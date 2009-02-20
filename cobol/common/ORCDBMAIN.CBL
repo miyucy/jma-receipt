@@ -43,6 +43,7 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-ERR             PIC 9(01).
+       
       *    添字領域
        01  IDX-AREA.
            03  IDX1                PIC 9(05).
@@ -55,6 +56,9 @@
            03  WRK-MCP-RC              PIC ---9.
            03  WRK-STR                 PIC X(500).
            03  WRK-ERRMSG              PIC X(500).
+           03  WRK-PATHNAME            PIC X(64).
+           03  WRK-FUNC                PIC X(64).
+           03  WRK-TABLE               PIC X(64).
       *
        01  ORCXKANACONVAREA.
       *   IN/OUTの長さをMCPDARA-RECに合せるため独自に引数領域を編集
@@ -91,13 +95,18 @@
       *
            COPY    "MCPDATA.INC"       REPLACING   //MCPDATA-//
                                        BY          //WKMCPDATA-//.
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
+      *
+      *
+      *****************************************************************
+      *    サブプロ用　領域
+      *****************************************************************
+      *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
-     *
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -122,6 +131,10 @@
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
+      *
+           MOVE    MCP-TABLE           TO  WRK-TABLE
+           MOVE    MCP-PATHNAME        TO  WRK-PATHNAME
+           MOVE    MCP-FUNC            TO  WRK-FUNC
       *
            PERFORM 100-INIT-SEC
       *
@@ -153,9 +166,18 @@
            END-IF
       *
            IF    ( FLG-ERR         =   ZERO )
-               CALL    "MONFUNC"           USING
-                                           MCPAREA
-                                           MCPDATA-REC
+      *
+               IF    ( MCP-TABLE   =   "tbl_sryacct" )
+                   CALL    "ORCDBACCT" USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+               ELSE
+      *
+                   CALL    "MONFUNC"   USING
+                                       MCPAREA
+                                       MCPDATA-REC
+               END-IF
       *
                IF    ( MCP-RC      =   ZERO OR 1)
                    CONTINUE
@@ -167,6 +189,10 @@
                MOVE    51          TO  MCP-RC
                PERFORM 800-EDIT-ERRMSG-SEC
            END-IF
+      *
+           MOVE    WRK-TABLE           TO  MCP-TABLE
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
+           MOVE    WRK-FUNC            TO  MCP-FUNC
       *
            .
       *

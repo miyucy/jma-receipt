@@ -74,6 +74,8 @@ db	{
 	tbl_tnkrrk;
 	tbl_tsyrrk;
 	query_receprt;
+	tbl_sryacct_main;
+	tbl_sryacct_sub;
 };
 
 /* #include "orcadb.inc" */

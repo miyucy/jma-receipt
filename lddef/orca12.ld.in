@@ -110,6 +110,8 @@ db	{
         tbl_toukeimemo;
 	tbl_receupd;
 	tbl_sryacctplus;
+	tbl_sryacct_main;
+	tbl_sryacct_sub;
 };
 */
 

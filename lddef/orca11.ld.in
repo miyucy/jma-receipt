@@ -46,6 +46,8 @@ db	{
 	tbl_ldmap;
 	tbl_lock;
         tbl_ptkohftn;
+	tbl_sryacct_main;
+	tbl_sryacct_sub;
 };
 */
 

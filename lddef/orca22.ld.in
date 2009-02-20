@@ -70,6 +70,8 @@ db	{
 	tbl_syskanri;
 	tbl_tensu;
 	tbl_userbyomei;
+	tbl_sryacct_main;
+	tbl_sryacct_sub;
 };
 
 /* #include "orcadb.inc" */

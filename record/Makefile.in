@@ -594,6 +594,8 @@ DB_files = \
 	tbl_yykcom.db \
 	tbl_yykexample.db \
 	tbl_ptsame.db \
+	tbl_sryacct_main.db \
+	tbl_sryacct_sub.db \
 
 
 all:   

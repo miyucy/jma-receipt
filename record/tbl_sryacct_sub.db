@@ -1,0 +1,92 @@
+tbl_sryacct_sub {
+	HOSPNUM				number(2,0);
+	PTID				number(10,0);
+	ZAINUM				number(8,0);
+	RENNUM				number(3,0);
+	DATE				number(2,0);
+	DAY				number(3,0);
+#-----> ¸¡º÷ÍÑ¹àÌÜ
+	VNYUGAIKBN 			char(1),virtual;
+	VSRYYM 				char(6),virtual;
+};
+
+primary	{
+	HOSPNUM,PTID,ZAINUM,RENNUM,DATE;
+};
+
+path	key 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_sub_key_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct_sub
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   ZAINUM      =   :ZAINUM
+			AND   RENNUM      =   :RENNUM
+			AND   DATE        =   :DATE
+		;
+	};
+};
+
+path	key2 	{
+	DBSELECT	{
+		DECLARE tbl_sryacct_sub_key2_csr CURSOR FOR
+		SELECT *
+		FROM tbl_sryacct_sub
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   ZAINUM      =   :ZAINUM
+		;
+	};
+};
+
+path    del    {
+        DBDELETE        {
+                DELETE
+		FROM tbl_sryacct_sub
+		WHERE HOSPNUM =   :HOSPNUM
+		AND   PTID    =   :PTID
+		AND   ZAINUM  =   :ZAINUM
+		;
+        };
+};
+
+path	del1 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_sryacct_sub
+		WHERE   HOSPNUM    =   :HOSPNUM
+		AND     PTID       =   :PTID
+		;
+	};
+};
+
+path	del2 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_sryacct_sub
+		WHERE (HOSPNUM,PTID,ZAINUM) in (
+		SELECT HOSPNUM,PTID,ZAINUM
+		FROM tbl_sryacct_main
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =    :VNYUGAIKBN
+			AND   PTID        =    :PTID
+		);
+	};
+};
+
+path    del3    {
+        DBDELETE        {
+                DELETE
+		FROM tbl_sryacct_sub
+		WHERE (HOSPNUM,PTID,ZAINUM) in (
+		SELECT HOSPNUM,PTID,ZAINUM
+                FROM tbl_sryacct_main
+                        WHERE   HOSPNUM    =   :HOSPNUM
+                        AND   NYUGAIKBN   =   :VNYUGAIKBN
+                        AND   PTID        =   :PTID
+                        AND   SRYYM       =   :VSRYYM
+		);
+        };
+};
+

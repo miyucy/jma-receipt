@@ -139,5 +139,7 @@ db	{
 	tbl_yykcom;
 	tbl_yykexample;
 	tbl_ptsame;
+	tbl_sryacct_main;
+	tbl_sryacct_sub;
 
 };

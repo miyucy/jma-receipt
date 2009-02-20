@@ -53,6 +53,8 @@ db	{
 	tbl_prgoption;
         tbl_ptnyuinrrk;
         tbl_ptkohftn;
+	tbl_sryacct_main;
+	tbl_sryacct_sub;
 };
 
 /* #include "orcadb.inc" */
