@@ -350,7 +350,7 @@
                                            =   "12" OR  "25" OR  "20" )
                        STRING  TBL-HENREI-B-FTNNUM (IDZZ 1)
                                                DELIMITED   BY  SPACE
-      ****                     "　"            DELIMITED   BY  SIZE
+                               "　"            DELIMITED   BY  SIZE
                                TBL-HENREI-B-JKYNUM  (IDZZ 1)
                                                DELIMITED   BY  SPACE
                                        INTO    SPA-H02GMN-TKIGO   (IDY)
@@ -359,7 +359,7 @@
                ELSE
                    STRING  TBL-HENREI-B-KIGO (IDZZ)
                                                DELIMITED   BY  SPACE
-      ***                  "　"            DELIMITED   BY  SIZE
+                           "　"            DELIMITED   BY  SIZE
                            TBL-HENREI-B-NUM  (IDZZ)
                                            DELIMITED   BY  SPACE
                                            INTO    SPA-H02GMN-TKIGO(IDY)
@@ -465,6 +465,7 @@
                                            =   "12" OR  "25" OR  "20" )
                        STRING  WRK-HENREI-B-FTNNUM (1)
                                                DELIMITED   BY  SPACE
+                               "　"            DELIMITED   BY  SIZE
                                WRK-HENREI-B-JKYNUM (1)
                                                DELIMITED   BY  SPACE
                                        INTO    SPA-H02GMN-KIGO
@@ -472,6 +473,7 @@
                    END-IF
                ELSE
                    STRING  WRK-HENREI-B-KIGO   DELIMITED   BY  SPACE
+                           "　"                DELIMITED   BY  SIZE
                            WRK-HENREI-B-NUM    DELIMITED   BY  SPACE
                                                INTO    SPA-H02GMN-KIGO
                    END-STRING
