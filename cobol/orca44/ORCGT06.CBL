@@ -2372,9 +2372,10 @@
       *
       *    公費単独で生保又は中国残留邦人等のとき負担者番号、
       *    受給者番号をセット
-           IF    ( RECE10-HKNNUM       =   SPACE              )
-             IF    ( RECE10-KOHNUM (1)   =   "012"   OR  "025"  )
-             AND   ( RECE10-KOHNUM (2)   =   SPACE              )
+           IF    ( RECE10-HKNNUM       =   SPACE               )
+             IF    ( RECE10-KOHNUM (1)   =   "012"   OR  "025"
+                                                      OR "020" )
+             AND   ( RECE10-KOHNUM (2)   =   SPACE             )
                INITIALIZE                  PTKOHINF-REC
                MOVE    SPA-HOSPNUM     TO  PTKOH-HOSPNUM
                MOVE    RECE10-PTID     TO  PTKOH-PTID
