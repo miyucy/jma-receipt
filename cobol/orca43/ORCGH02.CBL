@@ -257,10 +257,6 @@
                    WHEN    OTHER
                        MOVE    SPA-H02NAI-TINDEX (SPA-H02NAI-SELNUM)
                                                TO  IDX
-      *??
-                  DISPLAY "TBL-HENREI-B-ERR (IDX)=" IDX "#"
-                             TBL-HENREI-B-ERR (IDX) "#"
-      *??
                        EVALUATE    TBL-HENREI-B-ERR (IDX)
                            WHEN    ZERO
                                MOVE    99          TO  SPA-H02GMN-CUR
@@ -351,7 +347,7 @@
                IF      TBL-HENREI-B-RECESYUBETU(IDZZ)
                                        =   "1211" OR "1212"
                    IF    ( TBL-HENREI-B-FTNNUM (IDZZ 1) (1:2)
-                                           =   "12" OR  "25" )
+                                           =   "12" OR  "25" OR  "20" )
                        STRING  TBL-HENREI-B-FTNNUM (IDZZ 1)
                                                DELIMITED   BY  SPACE
       ****                     "¡¡"            DELIMITED   BY  SIZE
@@ -466,7 +462,7 @@
                IF      WRK-HENREI-B-RECESYUBETU
                                        =   "1211" OR "1212"
                    IF    ( WRK-HENREI-B-FTNNUM (1) (1:2)
-                                           =   "12" OR  "25" )
+                                           =   "12" OR  "25" OR  "20" )
                        STRING  WRK-HENREI-B-FTNNUM (1)
                                                DELIMITED   BY  SPACE
                                WRK-HENREI-B-JKYNUM (1)
