@@ -32,18 +32,18 @@ export APS_EXEC_PATH
 CMDNAME=`basename $0`
 
 usage() {
-echo "usage: sudo sh ${CMDNAME} [-admlh]"
-echo "               [-g グループ番号]"
-echo "               [-n 医療機関識別番号]"
-echo "               [-k 期限]"
-echo "               [-H 本院分院番号]"
-echo "               [-b 本院分院区分]"
-echo "               [-N 医療機関名]"
+echo "usage: sudo sh ${CMDNAME} [-mlh]"
 echo ""
 echo "       -m : レコード更新"
 echo "       -l : レコード一覧"
-echo ""
 echo "       -h : ヘルプ表示"
+echo ""
+echo "      [-g グループ番号]"
+echo "      [-n 医療機関識別番号]"
+echo "      [-k 期限]"
+echo "      [-H 本院分院番号]"
+echo "      [-b 本院分院区分]"
+echo "      [-N 医療機関名]"
 echo ""
 }
 
