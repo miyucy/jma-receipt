@@ -16,7 +16,6 @@ db	{
 	tbl_ptkohinf;
 	tbl_ptinf;
 	tbl_kyuseirrk;
-	tbl_sryacct;
 	tbl_sryact;
 	tbl_syumei;
 	tbl_syunou;

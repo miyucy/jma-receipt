@@ -64,7 +64,6 @@ db	{
 	tbl_ptkohinf;
 	tbl_rececom;
 	tbl_receupd;
-	tbl_sryacct;
 	tbl_sryact;
 	tbl_srykarrk;
 	tbl_syskanri;

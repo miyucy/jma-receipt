@@ -36,7 +36,6 @@ db	{
 	tbl_pthkninf;
 	tbl_ptkohinf;
 	tbl_ptinf;
-	tbl_sryacct;
 	tbl_sryact;
 	tbl_tensu;
         tbl_tensuplus;

@@ -65,7 +65,6 @@ db	{
 	tbl_receprt;
 	tbl_seikyu;
 	tbl_senteicdchg;
-	tbl_sryacct;
 	tbl_sryact;
 	tbl_syskanri;
 	tbl_syuka;
