@@ -2953,7 +2953,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                        AND   ( RECE10-KOHNUM (2)   =   SPACE           )
                            STRING  SPA-RECE10-FTNJANUM
                                                    DELIMITED   BY  SPACE
-      *****                        "　"            DELIMITED   BY  SIZE
+                                   "　"            DELIMITED   BY  SIZE
                                    SPA-RECE10-JKYSNUM
                                                    DELIMITED   BY  SPACE
                                            INTO
@@ -2975,7 +2975,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                        END-IF
                    ELSE
                        STRING  RECE10-KIGO     DELIMITED   BY  SPACE
-      *****                    "　"            DELIMITED   BY  SIZE
+                               "　"            DELIMITED   BY  SIZE
                                RECE10-NUM      DELIMITED   BY  SPACE
                                            INTO
                                            WRK-HENREI-B-S-KIGO    (IDZZ)
