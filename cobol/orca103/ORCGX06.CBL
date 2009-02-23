@@ -811,6 +811,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD               =   SPACE )
+            AND  ( FLG-END                 =   ZERO )
                IF    ( TNS-SRYCD(1:1)      =   "1")
                 AND  ( TNS-ROUTEKKBN       =   2  )
                    MOVE    SPACE       TO  WRK-NAME
@@ -837,6 +838,7 @@
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
+            AND  ( FLG-END             =   ZERO )
                MOVE    SPA-GMN-X06-TEKCD (IDX-SPA)
                                        TO  SPA-GMN-X06-TEKCDBF (IDX-SPA)
            END-IF
