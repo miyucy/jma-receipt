@@ -159,7 +159,7 @@
                        09  SPA-GMN-REL-MAX         PIC 9(05).
                        09  SPA-GMN-MAX             PIC 9(05).
                        09  SPA-GMN-NEXT            PIC 9(01).
-                       09  SPA-GMN-TBLREC  OCCURS  200.
+                       09  SPA-GMN-TBLREC  OCCURS  500.
                            11  SPA-GMN-TBANGO      PIC 9(03).
                            11  SPA-GMN-TDENPNUM    PIC 9(07).
                            11  SPA-GMN-DENPGRP     PIC X(01).
@@ -224,7 +224,7 @@
                                13  SPA-NAI-RSI-HKNKBNL     PIC X(01).
                    07  SPA-NAI-TBL.
                        09  SPA-NAI-THSRYYM         PIC  X(06).
-                       09  SPA-NAI-TBLREC  OCCURS  200.
+                       09  SPA-NAI-TBLREC  OCCURS  500.
                            11  SPA-NAI-TSRYKA      PIC  X(02).
                            11  SPA-NAI-TSRYKAMEI   PIC  X(16).
                            11  SPA-NAI-TSRYYMD     PIC  X(08).
@@ -1915,6 +1915,7 @@
            MOVE    SYU-SRYYMD           TO SYS-STYUKYMD
                                            SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+      *
            MOVE    SYSKANRI-REC         TO SYS-1005-REC
            MOVE    SYS-1005-SRYKANAME2  TO SPA-GMN-TSRYKA (IDX-LST)
            MOVE    SYU-SRYKA            TO SPA-NAI-TSRYKA (IDX-LST)
