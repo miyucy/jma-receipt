@@ -161,6 +161,9 @@
       *
       *  04.03.01    NACL-ÌçÏÆ    08/09/02  ÀÁµáÅÀÈ½ÄêÄÉ²Ã
       *  04.03.02    NACL-ÌçÏÆ    08/12/17  Ê¿À®£²£±Ç¯£±·î²þÀµÂÐ±þ
+      *
+      *  04.04.01    NACL-Æ£¸¶    09/01/14  ·îÅÓÃæ¤ÎÀ¸ÊÝÊÑ¹¹»þ¤ÎÊÝ¸±ÍúÎò
+      *                                     µ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -261,6 +264,7 @@
            03  FLG-KYUSEIRRK                           PIC 9(01).
            03  FLG-BTPARA                              PIC 9(01).
            03  FLG-SYUKA                               PIC 9(01).
+           03  FLG-PTKOHINF                            PIC 9(01).
       * 
            03  FLG-KOH                                 PIC 9(01).
            03  FLG-CONTKBN                             PIC 9(01).
@@ -588,6 +592,10 @@
       *    ¼ç²Ê
        01  SYUKA-REC.
            COPY    "CPSYUKA.INC".
+      *
+      *    ´µ¼Ô¸øÈñ¾ðÊó
+       01  PTKOHINF-REC.
+           COPY    "CPPTKOHINF.INC".
       *
       *****************************************************************
       *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
@@ -1979,7 +1987,15 @@ grpsys     MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
            INITIALIZE                      WRK-RECE01-REC
            MOVE    WRK-SEIHO-RECE01-KEY
                                        TO  WRK-RECE01-KEY
-           MOVE    COMB-TEKSTYMD       TO  WRK-RECE01-TEKSTYMD
+      *
+      *****MOVE    COMB-TEKSTYMD       TO  WRK-RECE01-TEKSTYMD
+           INITIALIZE                      PTKOHINF-REC
+           MOVE    WRK-RECE01-HOSPNUM  TO  PTKOH-HOSPNUM
+           MOVE    WRK-RECE01-PTID     TO  PTKOH-PTID
+           MOVE    COMB-KOHID (1)      TO  PTKOH-KOHID
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           PERFORM 900-PTKOHINF-READ-SEC
+           MOVE    PTKOH-TEKSTYMD      TO  WRK-RECE01-TEKSTYMD
       *
            MOVE    WRK-RECE01-KEY      TO  RECE01-KEY 
            PERFORM 900-RECE01-READ-SEC
@@ -1987,8 +2003,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
                MOVE    RECE01-REC          TO  WRK-RECE01-REC 
                PERFORM 20011-RECE01-REWRITE-SEC
            ELSE
-               MOVE    COMB-TEKSTYMD       TO  PTHKN-TEKSTYMD 
-               MOVE    COMB-TEKEDYMD       TO  PTHKN-TEKEDYMD
+      *********MOVE    COMB-TEKSTYMD       TO  PTHKN-TEKSTYMD 
+      *********MOVE    COMB-TEKEDYMD       TO  PTHKN-TEKEDYMD
+               MOVE    PTKOH-TEKSTYMD      TO  PTHKN-TEKSTYMD
+               MOVE    PTKOH-TEKEDYMD      TO  PTHKN-TEKEDYMD
       *  
                PERFORM 20011-RECE01-WRITE-SEC
            END-IF
@@ -3122,6 +3140,38 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            .
        900-KYUSEIRRK-READ-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ´µ¼Ô¸øÈñ¾ðÊóÆÉ¹þ
+      *****************************************************************
+       900-PTKOHINF-READ-SEC           SECTION.
+      *
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 900-DBFETCH-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    MCPDATA-REC         TO  PTKOHINF-REC
+                   MOVE    ZERO                TO  FLG-PTKOHINF
+               ELSE
+                   INITIALIZE                      PTKOHINF-REC
+                   MOVE    1                   TO  FLG-PTKOHINF
+               END-IF
+           ELSE
+               INITIALIZE                      PTKOHINF-REC
+               MOVE    1                   TO  FLG-PTKOHINF  
+           END-IF
+      *
+           MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           .
+       900-PTKOHINF-READ-EXT.
            EXIT.
       *
       *****************************************************************
