@@ -7,12 +7,36 @@ require	"kconv"
 
 def sysbase_list_print_title
   $stderr.printf("\n グループ|医療機関| 期  限 |本分院|本分院|医療機関名\n") 
-  $stderr.printf(  " 番    号|識別番号|        |番  号|区  分|\n") 
-  $stderr.printf(  " --------+--------+--------+------+------+---------------------------\n") 
+  $stderr.printf(  " 番    号|識別番号|        |番  号|区  分|(下段：システム管理)\n") 
+  $stderr.printf(  " --------+--------+--------+------+------+----------------------------------------\n") 
 end
 
 def sysbase_list_print_body
     $stderr.printf("    %-9s%-6s%-11s%-7s%-5s%-s\n",@item[0],@item[1],@item[2],@item[3],@item[4],@item[5])
+    $stderr.printf("                                          %s\n",@item[6])
+end
+
+def syskanri_hospname
+  syskanri = PandaTable.new(@db,"tbl_syskanri")
+
+  t = Time.new
+  today = t.strftime("%Y%m%d")
+
+  syskanri["tbl_syskanri.HOSPNUM"] = @item[1]
+  syskanri["tbl_syskanri.KANRICD"] = "1001"
+  syskanri["tbl_syskanri.KBNCD"] = "*"
+  syskanri["tbl_syskanri.STYUKYMD"] = today
+  syskanri["tbl_syskanri.EDYUKYMD"] = today
+
+  syskanri.execFunction("DBSELECT","key10")
+
+  if syskanri.execFunction("DBFETCH","key10") == 0
+    @item[6] = syskanri["tbl_syskanri.KANRITBL"][35,100].strip
+    if @item[6] != nil
+      @item[6] = Kconv.kconv(@item[6],Kconv::UTF8)
+    end
+  end
+  syskanri.execFunction("DBCLOSECURSOR","key10")
 end
 
 def sysbase_list
@@ -41,6 +65,7 @@ def sysbase_list
     if @item[5] != nil
       @item[5] = Kconv.kconv(@item[5],Kconv::UTF8)
     end
+    syskanri_hospname
     sysbase_list_print_body
   end
   sysbase.execFunction("DBCLOSECURSOR",key)
@@ -138,7 +163,7 @@ parameter = ARGV[0]
 param = Array.new(8,nil)
 param = parameter.split(",")
 
-@item = Array.new(6)
+@item = Array.new(7)
 
 command = param[0]
 @groupnum = param[1]
