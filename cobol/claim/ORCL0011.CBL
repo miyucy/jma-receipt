@@ -48,6 +48,7 @@
       * 03.05.00     NACL-多々納  07/05/25  UIDテーブル対応
       * 03.05.01     NACL-多々納  07/08/10  受付メモ追加対応
       * 04.03.00     NACL-多々納  08/06/11  メモ登録の送信対応
+      * 04.04.00     NACL-竹田　  09/02/25  公害対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1536,6 +1537,11 @@
                    MOVE    "R3"    TO  WRK-LF01-HKNSBTCODE (IDX)
                    MOVE    "9999"  TO  WRK-LF01-HKNJANUM (IDX)
                    MOVE    "自賠責"    TO  WRK-LF01-HKNSBT  (IDX)
+               WHEN    "975"
+      *            公害
+                   MOVE    "K5"    TO  WRK-LF01-HKNSBTCODE (IDX)
+                   MOVE    "9999"  TO  WRK-LF01-HKNJANUM (IDX)
+                   MOVE    "公害"  TO  WRK-LF01-HKNSBT  (IDX)
                WHEN    OTHER
                    IF      PTHKN-HKNNUM(1:2)   =   "98"
       *                自費
