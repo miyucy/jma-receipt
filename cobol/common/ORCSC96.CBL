@@ -1500,6 +1500,8 @@
            EVALUATE    LNK-SC96-PG
                WHEN    "K02"
                    PERFORM 2001-K02-ERRMSG-SEC
+               WHEN    "KT01"
+                   PERFORM 2001-K02-ERRMSG-SEC
                WHEN    "K05"
                    PERFORM 2002-K05-ERRMSG-SEC
                WHEN    "J04"
@@ -1763,6 +1765,12 @@
       *        Ｈ２０．４改正から
                WHEN    "1076"
                    STRING  "後期高齢者の年齢です。"
+                           "後期高齢者の保険を登録して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K076"
+                   STRING  "警告！！後期高齢者の年齢です。"
                            "後期高齢者の保険を登録して下さい。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG

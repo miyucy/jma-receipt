@@ -4880,6 +4880,7 @@
                    MOVE    ZERO                TO  SPA-NAI-KOHFLG
                    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
                    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
+                   MOVE    ZERO                TO  SPA-NAI-ROUSTR
                END-IF
            END-IF
            IF    (SPA-ERRCD            =   SPACE )  AND
@@ -8289,15 +8290,17 @@
       *****************************************************************
        5109-HKTSANTEI-CHK-SEC              SECTION.
       *
+           MOVE    SPA-K01KYOUTU       TO   SPA-WORK
            INITIALIZE                  ORCSCHKTCHKAREA
            MOVE    "1"                 TO  ORCSCHKTCHK-SYORI
            MOVE    "K02"               TO  ORCSCHKTCHK-PG
+           MOVE    SPA-K02-TEISEI-AREA TO   LNK-ORCSC-TEISEI-AREA
            CALL    "ORCSCHKTCHK"       USING
                                        ORCSCHKTCHKAREA
                                        SPA-AREA
-                                       SPA-K02
                                        SPA-SCR-REC
                                        ORCSC00AREA
+           MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            IF      ORCSCHKTCHK-HKTFLG  =   1
                MOVE    1               TO  SPA-HKTSANTEI-CHK
            ELSE
@@ -8318,10 +8321,10 @@
            INITIALIZE                  ORCSCHKTCHKAREA
            MOVE    "3"                 TO  ORCSCHKTCHK-SYORI
            MOVE    "K02"               TO  ORCSCHKTCHK-PG
+           MOVE    SPA-K02-TEISEI-AREA TO   LNK-ORCSC-TEISEI-AREA
            CALL    "ORCSCHKTCHK"       USING
                                        ORCSCHKTCHKAREA
                                        SPA-AREA
-                                       SPA-K02
                                        SPA-SCR-REC
                                        ORCSC00AREA
       *    診療行為、計計算処理、編集
@@ -8617,6 +8620,7 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
+           MOVE    ZERO                TO  SPA-NAI-ROUSTR
            MOVE    ZERO                TO  SPA-RJN-ERR
            MOVE    ZERO                TO  SPA-HKN-ERR
            MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
@@ -10292,7 +10296,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "1070"              TO  SPA-ERRCD
       *            後期高齢者の保険がない時
                    WHEN    3
-                       MOVE    "1076"              TO  SPA-ERRCD
+      ******           MOVE    "1076"              TO  SPA-ERRCD
+                       IF      SPA-NAI-ROUSTR      =   ZERO
+                           MOVE    "K076"          TO  SPA-ERRCD
+                           MOVE    1               TO  SPA-NAI-ROUSTR
+                       END-IF
                END-EVALUATE
            END-IF
            IF      SPA-ERRCD           =   SPACE
@@ -11048,10 +11056,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-RJN-ERR         =   2
                MOVE    "1070"              TO  SPA-ERRCD
            END-IF
-      *    後期高齢者の保険がない時
-           IF      SPA-RJN-ERR         =   3
-               MOVE    "1076"              TO  SPA-ERRCD
-           END-IF
+      **** 後期高齢者の保険がない時
+      *    IF      SPA-RJN-ERR         =   3
+      *        MOVE    "1076"              TO  SPA-ERRCD
+      **** END-IF
       *    保険エラーがある時、エラーとする
            IF      SPA-HKN-ERR         =   1
                MOVE    "1028"              TO  SPA-ERRCD
@@ -11083,6 +11091,18 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1                   TO  SPA-GMN-CUR
                END-IF
            END-IF
+      *
+      *!!!!
+      *    後期高齢者の保険がない時
+      *!!! ７５歳到達を警告へ
+           IF     (SPA-RJN-ERR         =   3   )  AND
+                  (SPA-ERRCD           =   SPACE )
+               IF      SPA-NAI-ROUSTR      =   ZERO
+                   MOVE    "K076"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-NAI-ROUSTR
+               END-IF
+           END-IF
+      *!!!!
       *    地方公費のみの場合、警告
            IF     (SPA-NAI-KOHFLG      =   1   )  AND
                   (SPA-ERRCD           =   SPACE

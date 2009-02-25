@@ -2425,10 +2425,10 @@
            INITIALIZE                  ORCSC00AREA
            MOVE    "5"                 TO  ORCSCHKTCHK-SYORI
            MOVE    "K02N"              TO  ORCSCHKTCHK-PG
+           MOVE    SPA-K02-TEISEI-AREA TO   LNK-ORCSC-TEISEI-AREA
            CALL    "ORCSCHKTCHK"       USING
                                        ORCSCHKTCHKAREA
                                        SPA-AREA
-                                       SPA-K02
                                        SPA-SCR-REC
                                        ORCSC00AREA
            MOVE    ORCSCHKTCHK-NYUHKTCHK   TO  SPA-NYUHKTCHK
@@ -5459,15 +5459,16 @@
       *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                  ORCSCHKTCHKAREA
+           INITIALIZE                  ORCSC00AREA
            MOVE    SPA-NYUHKTCHK       TO  ORCSCHKTCHK-NYUHKTCHK
            MOVE    SPA-NYUHKTCD        TO  ORCSCHKTCHK-NYUHKTCD
            MOVE    SPA-NYUHKT-G        TO  ORCSCHKTCHK-NYUHKT-G
            MOVE    "6"                 TO  ORCSCHKTCHK-SYORI
            MOVE    "K02N"              TO  ORCSCHKTCHK-PG
+           MOVE    SPA-K02-TEISEI-AREA TO   LNK-ORCSC-TEISEI-AREA
            CALL    "ORCSCHKTCHK"       USING
                                        ORCSCHKTCHKAREA
                                        SPA-AREA
-                                       SPA-K02
                                        SPA-SCR-REC
                                        ORCSC00AREA
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
@@ -5494,11 +5495,11 @@
            MOVE    SPA-NYUHKTCD        TO  ORCSCHKTCHK-NYUHKTCD
            MOVE    SPA-NYUHKT-G        TO  ORCSCHKTCHK-NYUHKT-G
            MOVE    "3"                 TO  ORCSCHKTCHK-SYORI
-           MOVE    "K02"               TO  ORCSCHKTCHK-PG
+           MOVE    "K02N"              TO  ORCSCHKTCHK-PG
+           MOVE    SPA-K02-TEISEI-AREA TO   LNK-ORCSC-TEISEI-AREA
            CALL    "ORCSCHKTCHK"       USING
                                        ORCSCHKTCHKAREA
                                        SPA-AREA
-                                       SPA-K02
                                        SPA-SCR-REC
                                        ORCSC00AREA
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
@@ -7824,7 +7825,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            ¸å´ü¹âÎð¼Ô¤ÎÊÝ¸±¤¬¤Ê¤¤»þ
                    WHEN    3
                        IF      SPA-NAI-ROUSTR      =   ZERO
-                           MOVE    "1076"          TO  SPA-ERRCD
+                           MOVE    "K076"          TO  SPA-ERRCD
                            MOVE    1               TO  SPA-NAI-ROUSTR
                        END-IF
                END-EVALUATE
@@ -8832,16 +8833,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-IF
            END-IF
-      *
+      *!!!!
       *    ¸å´ü¹âÎð¼Ô¤ÎÊÝ¸±¤¬¤Ê¤¤»þ
-           IF      SPA-ERRCD       =   SPACE
-               IF      SPA-RJN-ERR         =   3
-                   IF      SPA-NAI-ROUSTR      =   ZERO
-                       MOVE    "1076"              TO  SPA-ERRCD
-                       MOVE    1                   TO  SPA-NAI-ROUSTR
-                   END-IF
+      *!!! £·£µºÐÅþÃ£¤ò·Ù¹ð¤Ø
+           IF     (SPA-RJN-ERR         =   3   )  AND
+                  (SPA-ERRCD           =   SPACE )
+               IF      SPA-NAI-ROUSTR      =   ZERO
+                   MOVE    "K076"          TO  SPA-ERRCD
+                   MOVE    1               TO  SPA-NAI-ROUSTR
                END-IF
            END-IF
+      *!!!!
       *    £·£°ºÐÅþÃ£¤Î·Ù¹ð
            IF      SPA-ERRCD       =   SPACE
                IF      SPA-NAI-ROUFLG      =   1

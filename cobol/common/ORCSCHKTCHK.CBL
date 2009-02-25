@@ -215,7 +215,7 @@
            COPY    "CPORCSCHKTCHK.INC".
       *
       *    画面スパ領域
-           COPY    "K02SCR-SPA".
+      *    COPY    "K02SCR-SPA".
       *    ＳＰＡパラメタ
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
@@ -226,7 +226,7 @@
        PROCEDURE                   DIVISION    USING
            ORCSCHKTCHKAREA
            SPA-AREA
-           SPA-K02
+     ****  SPA-K02
            SPA-SCR-REC
            ORCSC00AREA
            .
@@ -241,6 +241,7 @@
            INITIALIZE                      IDX-AREA
            IF      ORCSCHKTCHK-PG      =   "K02"
                                        OR  "K02N"
+                                       OR  "KT01"
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            ELSE
                INITIALIZE                      SPA-K01KYOUTU
@@ -287,6 +288,7 @@
            END-EVALUATE
            IF      ORCSCHKTCHK-PG      =   "K02"
                                        OR  "K02N"
+                                       OR  "KT01"
                MOVE    SPA-K01KYOUTU        TO  SPA-WORK
            END-IF
            . 
@@ -686,11 +688,11 @@
            IF      SPA-SYORIFLG        =   1
                PERFORM VARYING IDZ     FROM    1   BY  1
                        UNTIL   (IDZ        >   SPA-MAX-LINE )  OR
-                               (SPA-K02-TEI-SRYCD(IDZ)
+                               (LNK-ORCSC-TEI-SRYCD(IDZ)
                                            =   SPACE )
-                   IF      SPA-K02-TEI-SRYCD(IDZ)
+                   IF      LNK-ORCSC-TEI-SRYCD(IDZ)
                                            =   WRK-SRYCD
-                       ADD     SPA-K02-TEI-KAISU(IDZ)
+                       ADD     LNK-ORCSC-TEI-KAISU(IDZ)
                                                TO  WRK-TEI-CNT
                    END-IF
                END-PERFORM
@@ -1078,7 +1080,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-PERFORM
            END-PERFORM
            .
-       3002-AUTO-HKTSANTEI-CHK-EXT.
+       30021-AUTO-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1149,7 +1151,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            IF      FLG-CHK3            =   1
                IF      WRK-SANTEI-HOU      =   "1"
       *                会計データ作成
-                   MOVE    1           TO  LNK-ORCSC-HKTKBN 
+                   MOVE    1           TO  LNK-ORCSC-HKTKBN
                                                   (IDX-L1 IDX-L2)
                 ELSE
       *             エラー（削除）
@@ -1345,10 +1347,6 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                                               (IDX)
                END-IF
            END-PERFORM
-      *TEST
-              DISPLAY "ORCSCHKTCHK-NYUHKTCHK:" ORCSCHKTCHK-NYUHKTCHK
-                  ",ORCSCHKTCHK-NYUHKTCD:" ORCSCHKTCHK-NYUHKTCD
-      *TEST
            .
        500-NYUIN-CHKSYORI-EXT.
            EXIT.
@@ -1469,9 +1467,9 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            IF      SPA-SYORIFLG        =   1
                PERFORM VARYING IDZ     FROM    1   BY  1
                        UNTIL   (IDZ        >   SPA-MAX-LINE )  OR
-                               (SPA-K02-TEI-SRYCD(IDZ)
+                               (LNK-ORCSC-TEI-SRYCD(IDZ)
                                            =   SPACE )
-                   IF      SPA-K02-TEI-SRYCD(IDZ)
+                   IF      LNK-ORCSC-TEI-SRYCD(IDZ)
                                            =   WRK-SRYCD
                        MOVE    ZERO            TO  SANTEI-DAY (IDX-D)
                    END-IF

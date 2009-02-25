@@ -220,8 +220,8 @@
                05  SPA-CHK-IDX                 PIC 9(04).
       *@
       *        包括診療チェックあり
-               05  SPA-HKTSANTEI-CHK           PIC 9(01).
-               05  SPA-HKTKEI-FLG              PIC 9(01).
+      *        05  SPA-HKTSANTEI-CHK           PIC 9(01).
+      *        05  SPA-HKTKEI-FLG              PIC 9(01).
       *!!
       *        訂正時点数変更チェック
                05  SPA-TEISEI-CHK              PIC 9(01).
