@@ -13,7 +13,7 @@ delete from tbl_syskanri where kanricd = '0044' and kbncd in ('1033') and styuky
 delete from tbl_syskanri where hospnum = 0;
 
 COPY tbl_syskanri FROM stdin;
-0044	1033    	00000000	99999999	本院分院マスター複写                                                                                                                                            ORCBMSTCOPY             処理区分            KBN       複写元医療機関      HOSPNUM                                                                                                                                                                                                                                                   11			20090225	20090225	100000	1
+0044	1033    	00000000	99999999	本院分院マスター複写                                                                                                                                            ORCBMSTCOPY             処理区分            KBN       複写元医療機関      HOSPNUM                                                                                                                                                                                                                                                   11			20090225	20090225	100000	0
 \.
 
 insert into tbl_syskanri
