@@ -1405,6 +1405,8 @@
            IF      SPA-PTHKN-SINKIKBN (IDX)    =   SPACE
                MOVE    1                   TO  SPA-ROU-KEIFLG
            END-IF
+      *!!
+           MOVE    SPA-PTHKN-KEIFLG(IDX) TO  SPA-HKNJA-KEIFLG
       *
       *    保険者番号　検索チェック
            INITIALIZE                    HKNJAINF-REC
@@ -1435,8 +1437,8 @@
                MOVE    HKNJA-TEL           TO  SPA-HKNJA-TEL
       *
                MOVE    HKNJA-IDOYMD        TO  SPA-HKNJA-IDOYMD
-               MOVE    SPA-PTHKN-KEIFLG(IDX)
-                                           TO  SPA-HKNJA-KEIFLG
+      *!       MOVE    SPA-PTHKN-KEIFLG(IDX)
+      *!                                   TO  SPA-HKNJA-KEIFLG
            ELSE
                MOVE    SPACE               TO  SPA-HKNJA-HKNJANAME
                MOVE    SPACE               TO  SPA-HKNJA-ADRS
@@ -1444,7 +1446,7 @@
                MOVE    SPACE               TO  SPA-HKNJA-TEL
       *
                MOVE    SPACE               TO  SPA-HKNJA-IDOYMD
-               MOVE    SPACE               TO  SPA-HKNJA-KEIFLG
+      *!!      MOVE    SPACE               TO  SPA-HKNJA-KEIFLG
            END-IF
       *
       *    保険情報
@@ -4727,8 +4729,22 @@
                            MOVE    10                  TO  SPA-GMN-CUR
                        END-IF
                    END-IF
+      *!!!
+      *H21/2/25 後期高齢は警告へ
+                   IF      SPA-ERRCD           =   "0121"
+                                               OR  "0120"
+      *                保険者情報異動区分を使用
+                       IF      SPA-HKNJA-KEIFLG    =   SPACE
+                           MOVE    "1"             TO  SPA-HKNJA-KEIFLG
+                           MOVE    "K121"          TO  SPA-ERRCD
+                       ELSE
+                           MOVE    SPACE           TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+      *!!!
       *            終了する保険を再表示
-                   IF     (SPA-ERRCD           =   "0121" )
+      *!!          IF     (SPA-ERRCD           =   "0121" )
+                   IF     (SPA-ERRCD           =   "K121" )
                       AND (SPA-HKN-IDX1    NOT =   ZERO   )
                       AND (SPA-NAI-HKNSTR  NOT =   SPA-HKN-IDX1)
                        INITIALIZE                  SPA-GMN-HKN-AREA
