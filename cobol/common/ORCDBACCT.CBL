@@ -101,9 +101,15 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
       *
+           MOVE    MCP-TABLE           TO  WRK-TABLE
+           MOVE    MCP-PATHNAME        TO  WRK-PATHNAME
+      *
            PERFORM 100-INIT-SEC
       *
            PERFORM 200-EDIT-SRYACCT-SEC
+      *
+           MOVE    WRK-TABLE           TO  MCP-TABLE
+           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
       *
            .
       *
@@ -249,7 +255,6 @@
            IF    ( ACCTM-RENNUMMAX     >   0 )
       *
                PERFORM 900-SRYACCTS-KEY2-SEL-SEC
-               DISPLAY "FLG-SRYACCTS =" FLG-SRYACCTS
       *
                PERFORM UNTIL ( FLG-SRYACCTS    NOT =   ZERO )
       *
