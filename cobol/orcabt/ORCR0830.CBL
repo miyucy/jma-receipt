@@ -829,7 +829,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
       ***                                    "13"  OR  "14"
       ***                   PERFORM   2203-SHOSAISIN-HANTEI-SEC
       ***               END-IF
-                        MOVE     1       TO    FLG-SHOSAISIN
+                        IF   ACCT-SRYKBN  =  "95"  OR  "96"
+                            CONTINUE
+                        ELSE
+                            IF   ACCT-SRYKBN  =  "13"  OR  "80"
+                               PERFORM   2206-SHOSAISIN-HANTEI2-SEC
+                            ELSE
+                               MOVE    1    TO    FLG-SHOSAISIN
+                            END-IF
+                        END-IF
                         IF   ACCT-SRYKBN  =  "11"   
                             PERFORM   2204-KYUKYU-HANTEI-SEC
                         END-IF
@@ -982,6 +990,41 @@ grpsys     PERFORM 900-DBSELECT-SEC
            .
       *
        2203-SHOSAISIN-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療会計テーブルの内容から診療行為テーブルを読み込み、
+      *    診療実日数のカウントを行える剤であるかの判定
+      *****************************************************************
+       2206-SHOSAISIN-HANTEI2-SEC                 SECTION.
+      *
+           PERFORM 800-ACCT-SETACT9-SEC
+      *
+           IF      MCP-RC               =       ZERO
+               MOVE    "tbl_sryact"     TO      MCP-TABLE
+               MOVE    "key9"           TO      MCP-PATHNAME
+               PERFORM  900-SRYACT-READ-SEC
+               IF   FLG-SRYACT = ZERO
+                 IF (SRY-SRYCD(1) =
+                       "101130020" OR "101130030" OR "101130040" OR
+                       "101130050" OR "101130060" OR "101130070" OR
+                       "101130080" OR "101130090" OR "101130100")
+                 OR (SRY-SRYCD(1)(1:5) =
+                       "09591" OR "09592" OR "09593"            )
+                      CONTINUE
+                 ELSE
+                      MOVE    1      TO   FLG-SHOSAISIN
+                 END-IF
+               END-IF
+           END-IF
+      *
+           MOVE    "tbl_sryact"      TO   MCP-TABLE
+           MOVE    "key9"            TO   MCP-PATHNAME
+           PERFORM  900-CLOSE-SEC
+      *
+           .
+      *
+       2206-SHOSAISIN-HANTEI2-EXT.
            EXIT.
       *
       *****************************************************************

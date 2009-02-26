@@ -1057,7 +1057,11 @@
       ***                                            "13"  OR  "14"
       ***                           PERFORM 2001113-SHOSAISIN-HANTEI-SEC
       ***                       END-IF
-                                MOVE     1       TO    FLG-SHOSAISIN
+                                IF   ACCT-SRYKBN  =  "95"  OR  "96"
+                                    CONTINUE
+                                ELSE
+                                    MOVE    1    TO    FLG-SHOSAISIN
+                                END-IF
                                 PERFORM   2001114-RECE62-TENSOU12-SEC
                            END-IF
                            IF   (ACCT-ZAITEN    =        ZERO)    AND
