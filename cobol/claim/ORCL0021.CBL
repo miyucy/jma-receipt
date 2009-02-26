@@ -808,6 +808,10 @@
       *            极清勒
                    MOVE    "R3"        TO  WRK-LF02-HKNSBTCODE
                    MOVE    "极清勒"    TO  WRK-LF02-HKNSBT
+               WHEN    "975"
+      *            给巢
+                   MOVE    "K5"        TO  WRK-LF02-HKNSBTCODE
+                   MOVE    "给巢"      TO  WRK-LF02-HKNSBT
                WHEN    OTHER
                    IF      COMB-HKNNUM(1:2)   =   "98"
       *                极锐
