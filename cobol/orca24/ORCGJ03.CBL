@@ -34,7 +34,6 @@
       *  01.00.04    NACL-多々納  05/11/30  MONFUNC 対応
       *  01.00.05    NACL-多々納  06/05/01  処置・検査改正対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
-      *  04.06.00    NACL-多々納  10/09/29  保険組合せ非表示対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -139,7 +138,7 @@
       *  保険組合せ一覧
                05  SPA-HKNCOMI-AREA.
                    07  SPA-GMN-HKNCOMBI-LISTG.
-                       09  SPA-GMN-HKN-LIST    OCCURS  40.
+                       09  SPA-GMN-HKN-LIST    OCCURS  20.
                            11  SPA-GMN-THKNCOMBINUM-G.
                                13  SPA-GMN-THKNCOMBINUM    PIC X(04).
                                13  SPA-GMN-THKNCOMBY1      PIC X(01).
@@ -153,36 +152,36 @@
                            11  SPA-NAI-TKOH4HKNNUM  PIC  X(03).
                        09  SPA-HKN-MAX             PIC  9(04).
       *
+      *
       *    画面作成時にのみ使用
       *01  WRK-SPA-AREA.
-               05  SPA-J03NAI-AREA.
-                   07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBLOCC      OCCURS  9.
-                           11  SPA-NAI-TBLREC1     OCCURS  200.
-                               13  SPA-NAI-SRYYMD     PIC X(08).
-                               13  SPA-NAI-SRYCD1     PIC X(09).
-                       09  SPA-NAI-TBLOCC2     OCCURS  9.
-                           11  SPA-NAI-TBLREC2     OCCURS  200.
-                               13  SPA-NAI-SRYYYMM    PIC X(06).
-                               13  SPA-NAI-SRYCD2     PIC X(09).
-      *
+007900         05  SPA-J03NAI-AREA.
+008000             07  SPA-NAI-TBL.
+008100                 09  SPA-NAI-TBLOCC      OCCURS  9.
+008200                     11  SPA-NAI-TBLREC1     OCCURS  200.
+008300                         13  SPA-NAI-SRYYMD     PIC X(08).
+008400                         13  SPA-NAI-SRYCD1     PIC X(09).
+008100                 09  SPA-NAI-TBLOCC2     OCCURS  9.
+008500                     11  SPA-NAI-TBLREC2     OCCURS  200.
+008600                         13  SPA-NAI-SRYYYMM    PIC X(06).
+008700                         13  SPA-NAI-SRYCD2     PIC X(09).
+008800*
       *    フラグ領域
        01  STS-AREA.
            03  STS-TENSUKBN        PIC X(02).
       *
-      *    フラグ領域
-       01  FLG-AREA.
-           03  FLG-END             PIC 9(01).
-           03  FLG-SRYACT          PIC 9(01).
-           03  FLG-HKNMST          PIC 9(01).
-           03  FLG-HKNKUMI         PIC 9(01).
-           03  FLG-SRYACCT         PIC 9(01).
-           03  FLG-TENSU           PIC 9(01).
-           03  FLG-TENSUKBN        PIC 9(01).
+010900*    フラグ領域
+011000 01  FLG-AREA.
+011100     03  FLG-END             PIC 9(01).
+011200     03  FLG-SRYACT          PIC 9(01).
+011300     03  FLG-HKNMST          PIC 9(01).
+011400     03  FLG-HKNKUMI         PIC 9(01).
+011500     03  FLG-SRYACCT         PIC 9(01).
+011600     03  FLG-TENSU           PIC 9(01).
+011700     03  FLG-TENSUKBN        PIC 9(01).
            03  FLG-NYUINACT        PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
-           03  FLG-SRYACCTPLUS     PIC 9(01).
       *
            03  FLG-CHK             PIC 9(01).
       *
@@ -191,18 +190,18 @@
       *
            03  FLG-GENZAN          PIC 9(01).
            03  FLG-ERR02           PIC 9(01).
-      *
+012400*
 012500*    カウント領域
 012600 01  CNT-AREA.
 012700     03  CNT-ERR             PIC 9(06).
-      *
+012900*
 013000*    システム領域
 013100 01  SYS-AREA.
 013200     03  SYS-YMD.
 013300         05  SYS-YY          PIC 9(02).
 013400         05  SYS-MM          PIC 9(02).
 013500         05  SYS-DD          PIC 9(02).
-      *
+013600*
 013700*    添字領域
 013800 01  IDX-AREA.
 013900     03  IDX                 PIC 9(04).
@@ -216,7 +215,7 @@
            03  IDH                 PIC 9(04).
            03  IDX-N               PIC 9(04).
            03  IDX-N2              PIC 9(04).
-      *
+014500*
 014600*    一時領域
 014700 01  WRK-AREA.
 014800     03  WRK-SYSYMD.
@@ -254,8 +253,6 @@
       *
            03  WRK-HKNCOMBI        PIC 9(04).
       *
-           03  WRK-RSI-TENSU        PIC 9(08).
-      *
       *    保険テーブル
        01  TBL-HKNCOMBI-AREA.
            03  TBL-HKNCOMBI-OCC        OCCURS   20.
@@ -271,7 +268,6 @@
                        09  TBL-DAY         PIC 9(03)
                                                OCCURS   31.
       *    外泊
-           03  TBL-GAIHAKU-SRYYM           PIC X(06).
            03  TBL-GAIHAKU-G.
                05  TBL-GAIHAKU             PIC 9(03)
                                            OCCURS   31.
@@ -399,9 +395,6 @@
       *    入院行為マスタ−
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
-      *    診療会計附加情報マスタ−
-       01  SRYACCTPLUS-REC.
-           COPY    "CPSRYACCTPLUS.INC".
       *
       *****************************************************************
       *    サブプロ用連絡領域
@@ -439,7 +432,21 @@
 028600     COPY    "LINKAREA".
 028700*
        01  SCRAREA.
-           COPY    "ORCA24SCRAREA.INC".
+           COPY    "J02.INC".
+           COPY    "J021.INC".
+           COPY    "J022.INC".
+           COPY    "J025.INC".
+           COPY    "J026.INC".
+           COPY    "J03.INC".
+           COPY    "J04.INC".
+           COPY    "J041.INC".
+           COPY    "J042.INC".
+           COPY    "J98.INC".
+           COPY    "J99.INC".
+           COPY    "JERR.INC".
+           COPY    "JERR2.INC".
+           COPY    "JID1.INC".
+           COPY    "JID2.INC".
 029400*
 029500 PROCEDURE                   DIVISION    USING
 029600     MCPAREA
@@ -653,7 +660,6 @@
            MOVE    SPA-NAI-SRYYM       TO  SPA-SRYYMD(1:6)
            MOVE    "00"                TO  SPA-SRYYMD(7:2)
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
-           MOVE    SPA-GMN-NYUGAIKBN   TO  SPA-NYUGAIKBN 
       *
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "1"                 TO  ORCSHKN-KBN
@@ -675,7 +681,6 @@
            MOVE    1                   TO  IDH
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >   ORCSHKN-HKN-MAX
-                           OR (IDH     >=  40      )
                ADD     1                   TO  IDH
                MOVE    ORCSHKN-GMN-HKNCOMBINUM (IDX)
                                        TO  SPA-GMN-THKNCOMBINUM (IDH)
@@ -773,29 +778,6 @@
                END-IF
            END-PERFORM
       *
-      *    入院基本料を診察料の後
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   200  )  OR
-                              (SPA-GMN-TNAIYOU1 (1 IDX)
-                                           =   SPACE  )
-               IF      SPA-GMN-TNAIYOU1 (1 IDX)    NOT =   SPACE
-                   MOVE    IDX             TO  IDX-MAX
-               END-IF
-           END-PERFORM
-           MOVE    IDX-MAX             TO  IDX2
-           PERFORM VARYING     IDX     FROM    1    BY  1
-                   UNTIL      (IDX     >   200  )  OR
-                              (IDX2    >=  200  )  OR
-                              (SPA-GMN-TNAIYOU1 (9 IDX)
-                                           =   SPACE  )
-               IF      SPA-GMN-TNAIYOU1 (9 IDX)    NOT =   SPACE
-                   ADD     1               TO  IDX2
-                   MOVE    SPA-GMN-TBLREC1 (9 IDX)
-                                           TO  SPA-GMN-TBLREC1
-                                                       (1 IDX2)
-               END-IF
-           END-PERFORM
-      *
 047200     .
 047300 3100-GMNSET-SYORI-EXT.
 047400     EXIT.
@@ -888,10 +870,6 @@
                            MOVE    ZERO            TO  IDX
                        END-IF
                    END-IF
-               END-IF
-      *        薬評剤対象外
-               IF      ACCT-ZAIKBN         =   1
-                   MOVE    ZERO            TO  IDX
                END-IF
       *
                IF      IDX             NOT =   ZERO
@@ -1258,7 +1236,6 @@
                EVALUATE    NACCT-ZAISKBKBN
                    WHEN    "2"
       *            外泊
-                       MOVE    NACCT-SRYYM     TO  TBL-GAIHAKU-SRYYM
                        MOVE    NACCT-DAY-AREA  TO  TBL-GAIHAKU-G
                END-EVALUATE
       *
@@ -1372,12 +1349,6 @@
       *                入院料
                        MOVE    "1"                 TO  WRK-TBL-NYUGAI
                                                         (IDX TBL-IDX1)
-      *                入院基本料は算定日の詳細
-                       IF      (NACCT-ZAISKBKBN        =   "1" )  AND
-                               (TNS-DATAKBN            =   "1" )
-                           MOVE    "2"             TO  WRK-TBL-NYUGAI
-                                                       (IDX TBL-IDX1)
-                       END-IF
                        MOVE    TBL-IDX1            TO  TBL-IDX2
                        MOVE    200                 TO  TBL-IDX1
                    WHEN    (NSRY-SRYCD (IDZ)   =   WRK-TBL-SRYCD
@@ -1399,7 +1370,7 @@
                            OR (SPA-ERRCD   NOT =   SPACE )
                IF      NACCT-DAY(TBL-IDX3)
                                           NOT =   ZERO
-                   ADD     1              TO  WRK-TBL-KAISU
+                       ADD     1              TO  WRK-TBL-KAISU
                                              (IDX TBL-IDX2 TBL-IDX3)
                END-IF
            END-PERFORM
@@ -1424,15 +1395,12 @@
       *            外泊日の加算を表示しない
                    PERFORM VARYING     TBL-IDX3    FROM    1   BY  1
                            UNTIL       TBL-IDX3    >   31
-                     IF    WRK-TBL-SRYYYMM(9 TBL-IDX1)
-                                               =   TBL-GAIHAKU-SRYYM
                        IF      TBL-GAIHAKU (TBL-IDX3)  =   1
                                                        OR  2
                                                        OR  3
                            MOVE    ZERO            TO  WRK-TBL-KAISU
                                                    (9 TBL-IDX1 TBL-IDX3)
                        END-IF
-                     END-IF
                    END-PERFORM
                END-IF
            END-PERFORM
@@ -1781,10 +1749,6 @@
                        END-IF
                    END-IF
                END-IF
-      *        薬評剤対象外
-               IF      ACCT-ZAIKBN         =   1
-                   MOVE    ZERO                TO  FLG-OK
-               END-IF
                IF     (FLG-OK              =   1   )  AND
                       (ACCT-ZAIKAISU       >   ZERO)
       *            保険チェック
@@ -1794,32 +1758,16 @@
                          ((FLG-HKNKBN          =   1         )  AND
                           (ACCT-SRYKBN         =   "11"  OR   "12"
                                                OR  "13"  OR   "80" ))
-                       IF      ACCT-ZAIREQFLG      =   "1"
-      *                    付加情報の労災金額判定
-                           PERFORM 950-SRYACCTPLUS-READ-SEC
-                           IF      ACCTP-RSIKINGAKU    >   ZERO
-                               PERFORM 310921-RSIKINGAKU-HEN-SEC
-                           ELSE
-                               PERFORM 31092-SRYACCT-HEN-SEC
-                           END-IF
-                       ELSE
-                           PERFORM 31092-SRYACCT-HEN-SEC
-                       END-IF
+                       PERFORM 31092-SRYACCT-HEN-SEC
                    ELSE
                        MOVE    ZERO                TO  FLG-GENZAN
-      *                減額判定
-                       IF      ACCT-ZAIREQFLG      =   "1"
-                           PERFORM 950-SRYACCTPLUS-READ-SEC
-                           IF      ACCTP-PLUSKBN       =   1
-                               MOVE    1               TO  FLG-GENZAN
-                           END-IF
-                       ELSE
-      *                     内服の逓減かどうかを判定する
-                           IF     (ACCT-SRYKBN         =   "21" )  AND
-                                  (ACCT-ZAITEN         >   ZERO )  AND
-                                  (ACCT-YKZTEN         =   ZERO )
-                               PERFORM 31092-SRYACCT-HEN-SEC
-                           END-IF
+      *!診療会計に減額フラグを追加するまで
+      *                内服の逓減かどうかを判定する
+                       IF      ACCT-SRYKBN         =   "21"
+                                                   OR  "90"
+                                                   OR  "92"
+                                                   OR  "97"
+                           PERFORM 31092-SRYACCT-HEN-SEC
                        END-IF
                        COMPUTE WRK-TENSU       =   ACCT-ZAITEN
                                                *   ACCT-ZAIKAISU
@@ -1908,11 +1856,7 @@
                        MOVE    NACCT-DAY-AREA  TO  TBL-DAY-G  (IDX-N)
                    WHEN    "2"
       *            外泊
-                       MOVE    NACCT-SRYYM     TO  TBL-GAIHAKU-SRYYM
                        MOVE    NACCT-DAY-AREA  TO  TBL-GAIHAKU-G
-      *            食事関係
-                   WHEN    "4"
-                       CONTINUE
                    WHEN    "5"
       *            保険
                        MOVE    NACCT-DAY-AREA  TO  TBL-HKNCOMBI-NYU-G
@@ -2011,10 +1955,6 @@
            ELSE
                MOVE    ZERO            TO  TBL-HKNKBN (IDX)
            END-IF
-      *    第三者行為は、自賠責とする
-           IF      COMB-KOH1HKNNUM     =   "970"
-               MOVE    1               TO  TBL-HKNKBN (IDX)
-           END-IF
            .
        310911-HKNCOMBI-HEN-EXT.
            EXIT.
@@ -2107,11 +2047,6 @@
                                                            "09592" OR
                                                            "09593" OR
                                                            "09594" )
-      *                        自賠責金額入力
-                               IF      SRY-SRYSYUKBN       =   "809"
-                                   MOVE    SRY-JIHIMONEY (IDZ)
-                                                           TO  TNS-TEN
-                               END-IF
                                COMPUTE WRK-SUM-TEN     =   WRK-SUM-TEN
                                                        +  (TNS-TEN
                                                        /   10  )
@@ -2154,30 +2089,6 @@
            .
        31092-SRYACCT-HEN-EXT.
            EXIT.
-      *
-      *
-      *****************************************************************
-      *   診療会計付加マスター労災金額編集処理
-      *****************************************************************
-       310921-RSIKINGAKU-HEN-SEC             SECTION.
-      *
-      *    労災金額集計
-           COMPUTE WRK-GOK-RSITENSU    =   WRK-GOK-RSITENSU
-                                       +  (ACCTP-RSIKINGAKU
-                                       *   ACCT-ZAIKAISU )
-      *    点数混在の時
-           COMPUTE WRK-RSI-TENSU       =   ACCTP-RSIKINGAKU
-                                       /   10
-           IF      WRK-RSI-TENSU       <   ACCT-ZAITEN
-               COMPUTE WRK-TENSU       =  (ACCT-ZAITEN
-                                       -   WRK-RSI-TENSU )
-                                       *   ACCT-ZAIKAISU
-               COMPUTE WRK-GOK-TENSU   =   WRK-GOK-TENSU
-                                       +   WRK-TENSU
-           END-IF
-           .
-       310921-RSIKINGAKU-HEN-EXT.
-           EXIT.
 088600*****************************************************************
 088700*    西暦和暦編集処理
 088800*****************************************************************
@@ -2209,7 +2120,6 @@
       *
 091400     MOVE    SPACE               TO  J03
 091500*
-091400     INITIALIZE                      J03
 091600     MOVE    SPA-GMN-PTNUM       TO  J03-PTNUM
 091700     MOVE    SPA-GMN-KANANAME    TO  J03-KANANAME
 091800     MOVE    SPA-GMN-NAME        TO  J03-NAME
@@ -2291,7 +2201,7 @@
 092300     MOVE    SPA-GMN-SYORI       TO  IDX
            MOVE    ZERO                TO  J03-SRYACTYMD-COUNT
 092400     PERFORM   VARYING   IDY     FROM    1   BY  1
-092500               UNTIL     IDY         >   200
+092500               UNTIL     IDY         >   100
 092600         IF     (IDY             =   1   )   OR
 092700                (SPA-GMN-TSRYYMD (IDX IDY)
 092800                      NOT =   SPA-GMN-TSRYYMD (IDX IDY - 1) )
@@ -2307,7 +2217,7 @@
       *
            MOVE    ZERO                TO  J03-SRYACTCNT-COUNT
            PERFORM   VARYING   IDY     FROM    1   BY  1
-                     UNTIL     IDY         >   200
+                     UNTIL     IDY         >   100
                IF     (IDY             =   1   )   OR
                       (SPA-GMN-TSRYYYMM (IDX IDY)
                                    NOT =   SPA-GMN-TSRYYYMM
@@ -2470,9 +2380,6 @@
                MOVE    "0002"              TO  SPA-ERRCD
            ELSE
       *
-      *         保険一覧編集
-                PERFORM 3008-HKNCOMBI-HEN-SEC
-      *
       *        画面編集用内容編集処理
                PERFORM 3100-GMNSET-SYORI-SEC
       *
@@ -2534,11 +2441,12 @@
            MOVE    SPA-SAKIPG          TO  MCP-WINDOW
       *
            PERFORM 900-PUT-WINDOW
-           MOVE    1                   TO  FLG-END
-      *
-           .
-       210-BACK-EXT.
-           EXIT.
+100200*
+100300     MOVE    1                   TO  FLG-END
+100400*
+100500     .
+100600 210-BACK-EXT.
+100700     EXIT.
 100800*****************************************************************
 100900*    診察　処理
 101000*****************************************************************
@@ -2698,25 +2606,25 @@
            .
        470-ATO-SYORI-EXT.
            EXIT.
-      *****************************************************************
-      *    自画面編集処理
-      *****************************************************************
-       500-SET-SCREEN              SECTION.
-      *
-           PERFORM 500-GMNHEN-SEC
+111600*****************************************************************
+111700*    自画面編集処理
+111800*****************************************************************
+111900 500-SET-SCREEN              SECTION.
+112000*
+112100     PERFORM 500-GMNHEN-SEC
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
                GO      TO      500-SET-SCREEN-EXT
            END-IF
-      *
-           MOVE    "CURRENT"           TO  MCP-PUTTYPE.
-           MOVE    "J03    "           TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-           .
-       500-SET-SCREEN-EXT.
-           EXIT.
+112400*
+112500     MOVE    "CURRENT"           TO  MCP-PUTTYPE.
+112600     MOVE    "J03    "           TO  MCP-WINDOW.
+112700*
+112800     PERFORM 900-PUT-WINDOW.
+112900     .
+113000 500-SET-SCREEN-EXT.
+113100     EXIT.
       *
       *****************************************************************
       *    エラーメッセージ表示理
@@ -2759,11 +2667,11 @@
        510-ERRSET-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    点数マスター読込
-      *****************************************************************
-       910-TENSU-READ-SEC         SECTION.
-      *
+114900*****************************************************************
+115000*    点数マスター読込
+115100*****************************************************************
+115200 910-TENSU-READ-SEC         SECTION.
+115300*
            MOVE    WRK-SYSYMD          TO  TNS-YUKOSTYMD
            MOVE    WRK-SYSYMD          TO  TNS-YUKOEDYMD
       *
@@ -2884,48 +2792,7 @@
        910-HKNCOMBI-READ-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    診療会計マスター読込（主キー）
-      *****************************************************************
-       950-SRYACCTPLUS-READ-SEC           SECTION.
       *
-           MOVE    SPACE               TO  SRYACCTPLUS-REC
-           INITIALIZE                  SRYACCTPLUS-REC
-           MOVE    ACCT-HOSPNUM        TO  ACCTP-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN      TO  ACCTP-NYUGAIKBN
-           MOVE    ACCT-PTID           TO  ACCTP-PTID
-           MOVE    ACCT-SRYKA          TO  ACCTP-SRYKA
-           MOVE    ACCT-SRYYM          TO  ACCTP-SRYYM
-           MOVE    ACCT-ZAINUM         TO  ACCTP-ZAINUM
-           MOVE    1                   TO  ACCTP-RENNUM
-      *
-           MOVE    SRYACCTPLUS-REC     TO  MCPDATA-REC
-           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryacctplus"       TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 920-DBFETCH-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    MCPDATA-REC         TO  SRYACCTPLUS-REC
-                   MOVE    ZERO                TO  FLG-SRYACCTPLUS
-               ELSE
-                   MOVE    1                   TO  FLG-SRYACCTPLUS
-                   INITIALIZE                  SRYACCTPLUS-REC
-               END-IF
-           ELSE
-               MOVE    1                   TO  FLG-SRYACCTPLUS
-               INITIALIZE                  SRYACCTPLUS-REC
-           END-IF
-      *
-           MOVE    "tbl_sryacctplus"   TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       950-SRYACCTPLUS-READ-EXT.
-           EXIT.
       *****************************************************************
       *    テーブル検索処理
       *****************************************************************
