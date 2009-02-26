@@ -35,6 +35,9 @@
       *
       *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
+      *
+      *  04.04.02    NACL-藤原    09/01/14  月途中に医保と生保の併用から
+      *                                     生保単独になったときのまとめ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -85,6 +88,9 @@
        FD  TOUKEI01-FILE.
        01  TOUKEI01-REC. 
            COPY    "CPTCF001.INC".
+           03  TOUKEI01-SEIHO-OCC.
+               05  TOUKEI01-SEIHO-KEY
+                                   PIC X(50)   OCCURS  10.
       *
       *    月次統計データ（診療情報）
        FD  TOUKEI02-FILE.
@@ -168,6 +174,7 @@
            03  IDX1                            PIC 9(03). 
            03  IDX2                            PIC 9(03). 
            03  IDX3                            PIC 9(03). 
+           03  IDXX                            PIC 9(03). 
       *
       *    一時領域
       *
@@ -408,6 +415,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                INITIALIZE                      TOUKEI02-REC
                MOVE    TOUKEI01-KEY        TO  TOUKEI02-KEY1
       *
+      *??
+               DISPLAY "TOUKEI01-KEY=" TOUKEI01-KEY "#"
+      *??
                START   TOUKEI02-FILE
                        KEY IS    >=   TOUKEI02-KEY
                    INVALID
@@ -420,6 +430,36 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                        OR      TOUKEI01-KEY    NOT =   TOUKEI02-KEY1
                    PERFORM 2001-FILE-HENSYU-SEC
                    PERFORM 900-TOUKEI02-READ-SEC
+               END-PERFORM
+      *
+      *        生保まとめの生保単独分の診療情報
+      *
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       10
+                       OR      TOUKEI01-SEIHO-KEY (IDXX)
+                                       =       SPACE
+                   INITIALIZE                      TOUKEI02-REC
+                   MOVE    TOUKEI01-SEIHO-KEY (IDXX)
+                                               TO  TOUKEI02-KEY1
+      *??
+               DISPLAY "TOUKEI01-SEIHO-KEY=" IDXX "#" 
+                               TOUKEI01-SEIHO-KEY (IDXX) "#"
+      *??
+      *
+                   START   TOUKEI02-FILE
+                           KEY IS    >=   TOUKEI02-KEY
+                       INVALID
+                           MOVE    1           TO  FLG-TOUKEI02
+                       NOT INVALID
+                           PERFORM 900-TOUKEI02-READ-SEC
+                   END-START
+      *     
+                   PERFORM UNTIL   FLG-TOUKEI02        =   1
+                           OR      TOUKEI01-SEIHO-KEY (IDXX)
+                                                   NOT =   TOUKEI02-KEY1
+                       PERFORM 2001-FILE-HENSYU-SEC
+                       PERFORM 900-TOUKEI02-READ-SEC
+                   END-PERFORM
                END-PERFORM
            END-IF       
       *    

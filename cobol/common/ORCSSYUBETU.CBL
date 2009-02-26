@@ -75,6 +75,8 @@
       *
       *  04.04.01    NACL-藤原    08/12/02  自費、不明分のレセプト種別
       *                                     （紙レセプト）への設定追加
+      *  04.04.02    NACL-藤原    09/01/14  月途中に医保と生保の併用から
+      *                                     生保単独になったときのまとめ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -106,6 +108,8 @@
       *
       *    添字領域
        01  IDX-AREA.
+           03  IDA                     PIC 9(04).
+           03  IDB                     PIC 9(04).
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDZ                     PIC 9(04).
@@ -314,6 +318,14 @@
            03  WRK-SEIHO-RECE61-KOH-AREA     OCCURS  4. 
       *       公費−法別番号
                05  WRK-SEIHO-RECE61-KOHHBTNUM    PIC X(02).
+      *
+      *    ワーク生保まとめ
+       01  TBL-SEIHO-RECE61-AREA.
+           02  TBL-SEIHO-RECE61-REC    OCCURS  5. 
+           COPY    "CPRCF061.INC"      REPLACING  //RECE61-//
+                                       BY         //TBL-SEIHO-RECE61-//.
+           02  TBL-SEIHO-RECE61-PRTFLG PIC 9(01)  OCCURS  5.
+           02  TBL-SEIHO-RECE61-MAX    PIC 9(02).
       *
        01  WRK-CONS-AREA.
       *    労災保険番号 
@@ -1769,10 +1781,19 @@ grpsys                 MOVE   LNK-SYUBETU-HOSPNUM
            INITIALIZE                      WRK-RECE61-REC
            MOVE    WRK-SEIHO-RECE61-KEY
                                        TO  WRK-RECE61-KEY
-           MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
+      *****MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
+           INITIALIZE                      PTKOHINF-REC
+           MOVE    WRK-RECE61-HOSPNUM  TO  PTKOH-HOSPNUM
+           MOVE    WRK-RECE61-PTID     TO  PTKOH-PTID
+           MOVE    COMB-KOHID (1)      TO  PTKOH-KOHID
+           MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+           PERFORM 900-PTKOHINF-READ-SEC
+           MOVE    PTKOH-TEKSTYMD      TO  WRK-RECE61-TEKSTYMD
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       100
 grpsys         IF      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
+                   MOVE    PTKOH-TEKSTYMD      TO  PTHKN-TEKSTYMD
+                   MOVE    PTKOH-TEKEDYMD      TO  PTHKN-TEKEDYMD
                    PERFORM 200192-RECE61-WRITE-SEC
                    MOVE    100             TO  IDXX
                ELSE
@@ -1799,7 +1820,7 @@ grpsys         IF      TBL-RECE61-HOSPNUM (1)  =   ZERO
       *********    MOVE    4               TO  LNK-SYUBETU-RC
                    CONTINUE 
                ELSE
-      *            レセプト種別編集処理
+      *            出力処理
                    PERFORM   3001-RECESYUBETU-HENSYU-SEC
                END-IF
            END-IF
@@ -1809,12 +1830,57 @@ grpsys         IF      TBL-RECE61-HOSPNUM (1)  =   ZERO
            EXIT. 
       *
       *****************************************************************
-      *    基本ファイル出力処理
+      *    出力処理
       *****************************************************************
        3001-RECESYUBETU-HENSYU-SEC     SECTION.
       *
            MOVE    ZERO                TO  FLG-SEIHO
                                            IDZZ
+           INITIALIZE                      TBL-SEIHO-RECE61-AREA
+      *
+      *    生保単独の退避と生保以外の公費単独のチェック（精神入院は除く）    
+           PERFORM VARYING IDXX    FROM    1   BY  1
+                   UNTIL   IDXX    >       100
+grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
+               MOVE    TBL-RECE61-OCC (IDXX)   TO  WRK-RECE61-REC
+      *
+      *        公費単独の場合（精神入院以外）
+               IF      WRK-RECE61-HKNNUM        =   SPACE
+                   IF      WRK-RECE61-KOHHKNNUM-O (1)  = "020"
+                       CONTINUE
+                   ELSE 
+                       IF      WRK-RECE61-TEKSTYMD  =   ZERO
+                           IF    ( WRK-RECE61-KOHHKNNUM-O (1)
+                                                    = "012" OR  "025"
+                                                            OR SPACE )
+                           AND   ( WRK-RECE61-KOHHKNNUM-O (2) 
+                                                    = "012" OR  "025"
+                                                            OR SPACE )
+                           AND   ( WRK-RECE61-KOHHKNNUM-O (3) 
+                                                    = "012" OR  "025"
+                                                            OR SPACE )
+                           AND   ( WRK-RECE61-KOHHKNNUM-O (4) 
+                                                    = "012" OR  "025"
+                                                            OR SPACE )
+                               CONTINUE
+                           ELSE
+                               MOVE    1           TO  FLG-SEIHO
+                           END-IF
+                       ELSE
+      *                    生保単独の場合退避
+                           ADD     1        TO  TBL-SEIHO-RECE61-MAX
+                           MOVE    WRK-RECE61-REC
+                                            TO  TBL-SEIHO-RECE61-REC
+                                                  (TBL-SEIHO-RECE61-MAX)
+                       END-IF
+                  END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-SEIHO           =   1
+               INITIALIZE                  TBL-SEIHO-RECE61-AREA
+           END-IF    
+      *
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       100
@@ -1842,64 +1908,142 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                                                     = "012" OR  "025"
                                                             OR SPACE )
                                MOVE    1                TO  FLG-WRITE 
-                           ELSE
-                               MOVE    1                TO  FLG-SEIHO
                            END-IF
                        ELSE
-                           IF      FLG-SEIHO            =   1
-                               MOVE    1                TO  FLG-WRITE 
-                           END-IF
+                           MOVE    1        TO  FLG-WRITE 
                        END-IF
                   END-IF
                END-IF
-      *     
+      *
+      *        社保で生保併用の場合
+               IF    ( WRK-RECE61-HKNNUM
+                                       NOT =   SPACE             )
+               AND   ( WRK-RECE61-KOHHKNNUM-O (1)
+                                           =   "012"   OR  "025"   OR 
+                       WRK-RECE61-KOHHKNNUM-O (2)
+                                           =   "012"   OR  "025"   OR 
+                       WRK-RECE61-KOHHKNNUM-O (3)
+                                           =   "012"   OR  "025"   OR 
+                       WRK-RECE61-KOHHKNNUM-O (4)
+                                           =   "012"   OR  "025" )
+                   IF      WRK-RECE61-HKNNUM   =
+                                               "060"   OR  "067"   OR
+                                               "068"   OR  "069"   OR
+                                               "039"   OR  "040"
+                       CONTINUE
+                   ELSE
+                       PERFORM VARYING IDA FROM    1   BY  1
+                               UNTIL   IDA >       TBL-SEIHO-RECE61-MAX
+                           PERFORM VARYING IDYY    FROM    1   BY  1
+                                   UNTIL   IDYY    >       4
+                                   OR      WRK-RECE61-KOHID-O (IDYY)
+                                                   =       ZERO
+                               IF      TBL-SEIHO-RECE61-KOHID-O (IDA 1)
+                                           =   WRK-RECE61-KOHID-O (IDYY)
+                                   MOVE    1           TO
+                                           TBL-SEIHO-RECE61-PRTFLG(IDA)
+                                   PERFORM VARYING IDB FROM    1   BY  1
+                                           UNTIL   IDB >       10
+                                       IF      WRK-RECE61-HKNCOMBI-O
+                                                               (IDB)
+                                                           =   ZERO
+                                           MOVE
+                                             TBL-SEIHO-RECE61-HKNCOMBI-O
+                                                              (IDA 1)
+                                                           TO
+                                               WRK-RECE61-HKNCOMBI-O
+                                                               (IDB)
+                                       END-IF
+                                       IF      WRK-RECE61-HKNCOMBI-O
+                                                               (IDB)
+                                                   =
+                                             TBL-SEIHO-RECE61-HKNCOMBI-O
+                                                              (IDA 1)
+                                           MOVE    10          TO  IDB
+                                       END-IF
+                                   END-PERFORM    
+                                   MOVE    4               TO  IDYY
+                                   MOVE    TBL-SEIHO-RECE61-MAX
+                                                           TO  IDA
+                               END-IF
+                           END-PERFORM      
+                       END-PERFORM
+                   END-IF                     
+               END-IF
       *
       *        対象外フラグ
                IF      FLG-WRITE            =   ZERO
-                   ADD     1                    TO  IDZZ 
-      *            審査支払機関
-                   EVALUATE    WRK-RECE61-HKNNUM
-                       WHEN    WRK-CONS-ROUSAI-HKNNUM
-                         MOVE    3   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
-                       WHEN    WRK-CONS-JIBAI-HKNNUM
-                         MOVE    4   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
-                       WHEN    WRK-CONS-KOUGAI-HKNNUM
-                         MOVE    5   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
-                       WHEN    "060"
-                       WHEN    "067"
-                       WHEN    "068"
-                       WHEN    "069"
-                         MOVE    2   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
-                       WHEN    "040" 
-                       WHEN    "039" 
-                         MOVE    6   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
-                       WHEN    OTHER
-                         MOVE    1   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
-                   END-EVALUATE
-      *            保険者番号
-                   MOVE    WRK-RECE61-HKNJANUM 
-                                   TO  LNK-SYUBETU-HKNJANUM (IDZZ)
-      *            補助区分
-                   MOVE    WRK-RECE61-HOJOKBN
-                                   TO  LNK-SYUBETU-HOJOKBN  (IDZZ)
-      *            適用開始年月日
-                   MOVE    WRK-RECE61-TEKSTYMD
-                                   TO  LNK-SYUBETU-TEKSTYMD (IDZZ)
-      *           保険番号（主保険）
-                   MOVE    WRK-RECE61-HKNNUM
-                                   TO  LNK-SYUBETU-HKNNUM   (IDZZ)
-      *            保険組合せ
-                   PERFORM VARYING IDX     FROM    1   BY  1
-                           UNTIL   IDX     >       10
-                       MOVE    WRK-RECE61-HKNCOMBI-O (IDX)
-                                   TO  LNK-SYUBETU-HKNCOMBI (IDZZ IDX)
-                   END-PERFORM
-      *            レセプト種別
-                   PERFORM 30011-RECESYUBETU-SET-SEC
+      *            レセプト情報設定処理
+                   PERFORM 30011-SYUBETUGET-CALL-SEC
                END-IF
            END-PERFORM
+      *
+      *    生保単独レセの出力処理
+           IF      TBL-SEIHO-RECE61-MAX    >   ZERO
+               PERFORM VARYING IDXX    FROM    1   BY  1
+                       UNTIL   IDXX    >       TBL-SEIHO-RECE61-MAX
+                   IF      TBL-SEIHO-RECE61-PRTFLG (IDXX)
+                                           =   1
+                       CONTINUE
+                   ELSE
+                       MOVE    TBL-SEIHO-RECE61-REC (IDXX)
+                                               TO  WRK-RECE61-REC
+      *                レセプト情報設定処理
+                       PERFORM 30011-SYUBETUGET-CALL-SEC
+                   END-IF
+               END-PERFORM
+           END-IF
            .
        3001-RECESYUBETU-HENSYU-EXT.
+           EXIT. 
+      *
+      *****************************************************************
+      *    レセプト情報設定処理
+      *****************************************************************
+       30011-SYUBETUGET-CALL-SEC              SECTION.
+      *
+           ADD     1                    TO  IDZZ 
+      *    審査支払機関
+           EVALUATE    WRK-RECE61-HKNNUM
+               WHEN    WRK-CONS-ROUSAI-HKNNUM
+                   MOVE    3   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
+               WHEN    WRK-CONS-JIBAI-HKNNUM
+                   MOVE    4   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
+               WHEN    WRK-CONS-KOUGAI-HKNNUM
+                   MOVE    5   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
+               WHEN    "060"
+               WHEN    "067"
+               WHEN    "068"
+               WHEN    "069"
+                   MOVE    2   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
+               WHEN    "040" 
+               WHEN    "039" 
+                   MOVE    6   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
+               WHEN    OTHER
+                   MOVE    1   TO  LNK-SYUBETU-TEISYUTUSAKI (IDZZ)
+           END-EVALUATE
+      *    保険者番号
+           MOVE    WRK-RECE61-HKNJANUM 
+                                   TO  LNK-SYUBETU-HKNJANUM (IDZZ)
+      *    補助区分
+           MOVE    WRK-RECE61-HOJOKBN
+                                   TO  LNK-SYUBETU-HOJOKBN  (IDZZ)
+      *    適用開始年月日
+           MOVE    WRK-RECE61-TEKSTYMD
+                                   TO  LNK-SYUBETU-TEKSTYMD (IDZZ)
+      *    保険番号（主保険）
+           MOVE    WRK-RECE61-HKNNUM
+                                   TO  LNK-SYUBETU-HKNNUM   (IDZZ)
+      *    保険組合せ
+           PERFORM VARYING IDX     FROM    1   BY  1
+                   UNTIL   IDX     >       10
+               MOVE    WRK-RECE61-HKNCOMBI-O (IDX)
+                                   TO  LNK-SYUBETU-HKNCOMBI (IDZZ IDX)
+           END-PERFORM
+      *    レセプト種別
+           PERFORM 30011-RECESYUBETU-SET-SEC
+           .
+       30011-SYUBETUGET-CALL-EXT.
            EXIT. 
       *
       *****************************************************************
