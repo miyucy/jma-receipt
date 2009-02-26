@@ -262,7 +262,7 @@
            INITIALIZE                  SPA-Y012-BUNLIST-G
            COMPUTE IDX-STR             =   (SPA-Y012-PAGE   -  1 )
                                        *   100
-                                       -   1
+                                       +   1
       *
            INITIALIZE                  YYKEXAMPLE-REC
            MOVE    SPA-HOSPNUM         TO  YYKEXAMPLE-HOSPNUM
