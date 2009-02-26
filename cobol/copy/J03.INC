@@ -32,20 +32,20 @@
                   05  J03-SRYACTCNT-COUNT   PIC S9(9)   BINARY.
                   05  J03-SRYACTCNT-ROW       PIC S9(9)   BINARY.
                   05  J03-SRYACTCNT-ROWATTR   PIC S9(9)   BINARY.
-                  05  J03-SRYACTCNT-ITEM        OCCURS  100 TIMES.
+                  05  J03-SRYACTCNT-ITEM        OCCURS  200 TIMES.
                     06  J03-SRYACTCNT-YM    PIC X(7).
                     06  J03-SRYACTCNT-NAME  PIC X(40).
                     06  J03-SRYACTCNT-CNT    PIC X(5).
-                  05  J03-SRYACTCNT-SELECT  PIC X    OCCURS  100 TIMES.
+                  05  J03-SRYACTCNT-SELECT  PIC X    OCCURS  200 TIMES.
               03  J03-SCROLLEDWINDOW1.
                 04  J03-SRYACTYMD.
                   05  J03-SRYACTYMD-COUNT   PIC S9(9)   BINARY.
                   05  J03-SRYACTYMD-ROW       PIC S9(9)   BINARY.
                   05  J03-SRYACTYMD-ROWATTR   PIC S9(9)   BINARY.
-                  05  J03-SRYACTYMD-ITEM        OCCURS  100 TIMES.
+                  05  J03-SRYACTYMD-ITEM        OCCURS  200 TIMES.
                     06  J03-SRYACTYMD-YMD  PIC X(10).
                     06  J03-SRYACTYMD-NAME  PIC X(40).
-                  05  J03-SRYACTYMD-SELECT  PIC X   OCCURS  100 TIMES.
+                  05  J03-SRYACTYMD-SELECT  PIC X   OCCURS  200 TIMES.
               03  J03-NYUGAIKBN-COMB.
                 04  J03-NYUGAIKBN.
                   05  J03-VALUE   PIC X(10).
