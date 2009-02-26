@@ -24,8 +24,8 @@ J03	{
 					value0	varchar(7);
 					value1	varchar(40);
 					value2	varchar(5);
-				}	[100];
-				select	bool[100];
+				}	[200];
+				select	bool[200];
 			};
 		};
 		scrolledwindow1	{
@@ -36,8 +36,8 @@ J03	{
 				item	{
 					value0	varchar(10);
 					value1	varchar(40);
-				}	[100];
-				select	bool[100];
+				}	[200];
+				select	bool[200];
 			};
 		};
 		NYUGAIKBN_COMB	{
