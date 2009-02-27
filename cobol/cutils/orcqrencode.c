@@ -12,45 +12,45 @@
 
 /*
  *	struct qrencode_ctx;
- *		char infile[256];
- *		char qrfile[256];
- *		char opt_l;
- *		char opt_s;
- *		char opt_m;
- *		char opt_v[2];
- *		char opt_k;
- *		char opt_C;
- *		char ver[2];
- *		char num[2];
- *		char ret[1];
+ *		char infile[256];		INPUT FILENAME 
+ *		char qrfile[256];		OUTPUT FILENAME
+ *		char opt_level;			ERROR CORRECTION LEVEL
+ *		char opt_pixel;			PIXEL per dot
+ *		char opt_margin;		SYMBOL MARGIN
+ *		char opt_version[2];	SYMBOL VERSION
+ *		char opt_hint;			QRENCODE HINT(kanji or 8bit)
+ *		char opt_structured;	STRUCTURED FLAG(0:signle 1:structured)
+ *		char out_version[2];	OUTPUT SYMBOL VERSION
+ *		char number[2];			OUTPUT SYMBOL NUMBERS
+ *		char rc[1];				RETURN CODE
  *	};
  */
 
 #define	MAX_DATA_SIZE	7090 * 16
 
-#define	SIZE_INFILE		256
-#define SIZE_QRFILE		256
-#define SIZE_SL			1
-#define SIZE_SS			1
-#define SIZE_SM			1
-#define SIZE_SV			2
-#define SIZE_SK			1
-#define SIZE_LC			1
-#define SIZE_VER		2
-#define SIZE_NUM		2
-#define SIZE_RET		1
+#define	SIZE_INFILE			256
+#define SIZE_QRFILE			256
+#define SIZE_LEVEL			1
+#define SIZE_PIXEL			1
+#define SIZE_MARGIN			1
+#define SIZE_VERSION		2
+#define SIZE_HINT			1
+#define SIZE_STRUCTURED		1
+#define SIZE_RET_VERSION	2
+#define SIZE_RET_SYMBOLS	2
+#define SIZE_RET_CODE		1
 
-#define OFFSET_INFILE	(0)
-#define OFFSET_QRFILE	(OFFSET_INFILE + SIZE_INFILE)
-#define OFFSET_SL		(OFFSET_QRFILE + SIZE_QRFILE)
-#define OFFSET_SS		(OFFSET_SL     + SIZE_SL)
-#define OFFSET_SM		(OFFSET_SS     + SIZE_SS)
-#define OFFSET_SV		(OFFSET_SM     + SIZE_SM)
-#define OFFSET_SK		(OFFSET_SV     + SIZE_SV)
-#define OFFSET_LC		(OFFSET_SK     + SIZE_SK)
-#define OFFSET_VER		(OFFSET_LC     + SIZE_LC)
-#define OFFSET_NUM		(OFFSET_VER    + SIZE_VER)
-#define OFFSET_RET		(OFFSET_NUM    + SIZE_NUM)
+#define OFFSET_INFILE		(0)
+#define OFFSET_QRFILE		(OFFSET_INFILE 		+ SIZE_INFILE)
+#define OFFSET_LEVEL		(OFFSET_QRFILE 		+ SIZE_QRFILE)
+#define OFFSET_PIXEL		(OFFSET_LEVEL  		+ SIZE_LEVEL)
+#define OFFSET_MARGIN		(OFFSET_PIXEL  		+ SIZE_PIXEL)
+#define OFFSET_VERSION		(OFFSET_MARGIN 		+ SIZE_MARGIN)
+#define OFFSET_HINT			(OFFSET_VERSION		+ SIZE_VERSION)
+#define OFFSET_STRUCTURED	(OFFSET_HINT   		+ SIZE_HINT)
+#define OFFSET_RET_VERSION	(OFFSET_STRUCTURED	+ SIZE_STRUCTURED)
+#define OFFSET_RET_SYMBOLS	(OFFSET_RET_VERSION	+ SIZE_RET_VERSION)
+#define OFFSET_RET_CODE		(OFFSET_RET_SYMBOLS + SIZE_RET_SYMBOLS)
 
 #define QRENCODE_OK		'0'
 #define QRENCODE_ERROR	'1'
@@ -196,18 +196,22 @@ power(int base,
 	}
 }
 
+/* convert string to integer ; "0987" => (int)987 */
 static int
-ctx_int(char *p, int offset, int size)
+ctx_string2int(char *p, int offset, int size)
 {
 	int ret = 0;
 	int i;
 	for(i = 0; i < size; i++) {
-		ret	+= ((*CTX(p, offset + i) - 0x30) % 10) * power(10, size - i - 1);
+		if(	*CTX(p, offset + i) >= 0x30 &&
+			*CTX(p, offset + i) <= 0x39 ) {
+			ret	+= ((*CTX(p, offset + i) - 0x30) % 10) * power(10, size - i - 1);
+		}
 	}
 	return ret;
 }
 
-/* Shift-JIS hankaku-kan zenkaku-kana mapping table */
+/* Shift-JIS hankaku-kana zenkaku-kana mapping table */
 static unsigned char
 z2h_map[][2][2] = {
 	{{0x81,0x41},{0x00,0xA4}}, {{0x81,0x42},{0x00,0xA1}},
@@ -310,6 +314,9 @@ z2h(unsigned char *in,
 #define MAX_COLUMN_NUM 32
 #define MAX_COLUMN_SIZE 256
 
+
+/* parse csv, and convert patient name zenkaku kana to hankaku kana */
+/* csv line was terminated 0x0d,0x0a  */
 static int
 parse_csv(char *in, 
 	char *out)
@@ -338,12 +345,11 @@ parse_csv(char *in,
 				case ',':
 					column[i][j] = 0x00;
 					i++;
-					if(i >= MAX_COLUMN_SIZE) return(-1);
+					if(i >= MAX_COLUMN_NUM) return(-1);
 					j = 0;
 					break;
 				case 0x00:
 					column[i][j] = 0x00;
-					i++;
 					loop = 0;
 					j = 0;
 					break;
@@ -358,7 +364,7 @@ parse_csv(char *in,
 
 		/* Patient name record  */
 		if(strcmp(column[0], "11") == 0){
-			for(j = 0; j < i; j++){
+			for(j = 0; j <= i; j++){
 				if(j == 3){
 					z2h(column[j], buf);
 					strcat(out, buf);
@@ -366,7 +372,7 @@ parse_csv(char *in,
 				else{
 					strcat(out, column[j]);
 				}
-				if(j < i - 1) strcat(out, ",");
+				if(j < i) strcat(out, ",");
 			}
 		}
 		else{
@@ -377,6 +383,26 @@ parse_csv(char *in,
 	return(0);
 }
 
+static
+void print_ctx(char *ctx)
+{
+	printf("==== orcqrencode ctx\n");
+	printf("infile:%s\n", CTX(ctx, OFFSET_INFILE));
+	printf("qrfile:%s\n", CTX(ctx, OFFSET_QRFILE));
+	printf("level:%02x\n", *CTX(ctx, OFFSET_LEVEL));
+	printf("pixel:%02x\n", *CTX(ctx, OFFSET_PIXEL));
+	printf("margin:%02x\n", *CTX(ctx, OFFSET_MARGIN));
+	printf("version:%02x%02x\n", 
+		*CTX(ctx, OFFSET_VERSION), *CTX(ctx, OFFSET_VERSION+1));
+	printf("hint:%02x\n", *CTX(ctx, OFFSET_HINT));
+	printf("structured:%02x\n", *CTX(ctx, OFFSET_STRUCTURED));
+	printf("ret_version:%02x%02x\n", 
+		*CTX(ctx, OFFSET_RET_VERSION), *CTX(ctx, OFFSET_RET_VERSION+1));
+	printf("ret_symbols:%02x%02x\n", 
+		*CTX(ctx, OFFSET_RET_SYMBOLS), *CTX(ctx, OFFSET_RET_SYMBOLS+1));
+	printf("ret_code:%02x\n", *CTX(ctx, OFFSET_RET_CODE));
+}
+
 void
 orcqrencode(char *ctx)
 {
@@ -385,7 +411,7 @@ orcqrencode(char *ctx)
 	int hint;
 	int size;
 	int margin;
-	int comb;
+	int structured;
 	int i;
 	char buf[MAX_DATA_SIZE];
 	char buf2[MAX_DATA_SIZE];
@@ -393,44 +419,30 @@ orcqrencode(char *ctx)
 	char qrfile_suffix[SIZE_QRFILE + 10];
 	char *p;
 	QRcode *code;
-	QRcode_List *head, *tail;
+	QRcode_List *head, *entry;
 
 	if((p = strchr(CTX(ctx, OFFSET_INFILE), ' ')) != NULL) *p = '\0';
 	if((p = strchr(CTX(ctx, OFFSET_QRFILE), ' ')) != NULL) *p = '\0';
 
-#if 0
-	printf("infile:%s\n", CTX(ctx, OFFSET_INFILE));
-	printf("qrfile:%s\n", CTX(ctx, OFFSET_QRFILE));
-	printf("l:%02x\n", *CTX(ctx, OFFSET_SL));
-	printf("s:%02x\n", *CTX(ctx, OFFSET_SS));
-	printf("m:%02x\n", *CTX(ctx, OFFSET_SM));
-	printf("v:%02x%02x\n", *CTX(ctx, OFFSET_SV), *CTX(ctx, OFFSET_SV+1));
-	printf("k:%02x\n", *CTX(ctx, OFFSET_SK));
-	printf("C:%02x\n", *CTX(ctx, OFFSET_LC));
-	printf("ver:%02x%02x\n", *CTX(ctx, OFFSET_VER), *CTX(ctx, OFFSET_VER+1));
-	printf("num:%02x%02x\n", *CTX(ctx, OFFSET_NUM), *CTX(ctx, OFFSET_NUM+1));
-	printf("ret:%02x\n", *CTX(ctx, OFFSET_RET));
-#endif
-
-	memset(CTX(ctx, OFFSET_RET), QRENCODE_OK, SIZE_RET);
+	memset(CTX(ctx, OFFSET_RET_CODE), QRENCODE_OK, SIZE_RET_CODE);
 
 	if(euc2sjis(CTX(ctx, OFFSET_INFILE), buf) != 0){
-		memset(CTX(ctx, OFFSET_RET), CHAR_CONV_ERROR, SIZE_RET);
+		memset(CTX(ctx, OFFSET_RET_CODE), CHAR_CONV_ERROR, SIZE_RET_CODE);
 		return;
 	}
 
 	if(parse_csv(buf, buf2) !=0){
-		memset(CTX(ctx, OFFSET_RET), KANA_CONV_ERROR, SIZE_RET);
+		memset(CTX(ctx, OFFSET_RET_CODE), KANA_CONV_ERROR, SIZE_RET_CODE);
 		return;
 	}
 
 	snprintf(qrfile, SIZE_QRFILE, "%s", CTX(ctx, OFFSET_QRFILE));
-	version = ctx_int(ctx, OFFSET_SV, SIZE_SV);
+	version = ctx_string2int(ctx, OFFSET_VERSION, SIZE_VERSION);
 	if(version <= 0 || version > 40){
-		memset(CTX(ctx, OFFSET_RET), PARAM_ERROR, SIZE_RET);
+		memset(CTX(ctx, OFFSET_RET_CODE), PARAM_ERROR, SIZE_RET_CODE);
 		return;	
 	}
-	switch(*CTX(ctx, OFFSET_SL)){
+	switch(*CTX(ctx, OFFSET_LEVEL)){
 		case 'L':
 			level = QR_ECLEVEL_L;
 			break;
@@ -446,90 +458,73 @@ orcqrencode(char *ctx)
 		default:
 			level = QR_ECLEVEL_L;
 	}
-	hint = ctx_int(ctx, OFFSET_SK, SIZE_SK) == 0 ? QR_MODE_KANJI : QR_MODE_8;
-	size = ctx_int(ctx, OFFSET_SS, SIZE_SS);
-	margin = ctx_int(ctx, OFFSET_SM, SIZE_SM);
-	comb = ctx_int(ctx, OFFSET_LC, SIZE_LC);
+	hint = ctx_string2int(ctx, OFFSET_HINT, SIZE_HINT) == 0 ? QR_MODE_KANJI : QR_MODE_8;
+	size = ctx_string2int(ctx, OFFSET_PIXEL, SIZE_PIXEL);
+	margin = ctx_string2int(ctx, OFFSET_MARGIN, SIZE_MARGIN);
+	structured = ctx_string2int(ctx, OFFSET_STRUCTURED, SIZE_STRUCTURED);
 
-#if 0
-	printf("version:%d\n", version);
-	printf("level:%d\n", level);
-	printf("hint:%d\n", hint);
-	printf("size:%d\n", size);
-	printf("margin:%d\n", margin);
-	printf("comb:%d\n", comb);
-#endif
-
-	if(comb == 0){
-		code = QRcode_encodeString(buf2, version, level, hint);
+	if(structured == 0){
+		code = QRcode_encodeString(buf2, version, level, hint, 1);
 		if(code == NULL){
-			memset(CTX(ctx, OFFSET_RET), QRENCODE_ERROR, SIZE_RET);
+			memset(CTX(ctx, OFFSET_RET_CODE), QRENCODE_ERROR, SIZE_RET_CODE);
 		 	return;
 		}
 		if(writePNG(code, qrfile, size, margin) != 0){
-			memset(CTX(ctx, OFFSET_RET), WRITE_PNG_ERROR, SIZE_RET);
+			memset(CTX(ctx, OFFSET_RET_CODE), WRITE_PNG_ERROR, SIZE_RET_CODE);
 			return;
 		}
 		sprintf(buf, "%02d" , code->version);
-		memcpy(CTX(ctx, OFFSET_VER), buf, SIZE_VER);
+		memcpy(CTX(ctx, OFFSET_RET_VERSION), buf, SIZE_RET_VERSION);
 		sprintf(buf, "%02d" , 1);
-		memcpy(CTX(ctx, OFFSET_NUM), "01", SIZE_NUM);
+		memcpy(CTX(ctx, OFFSET_RET_SYMBOLS), "01", SIZE_RET_SYMBOLS);
 		QRcode_free(code);
 	}
 	else{
-		head = tail = QRcode_encodeStringStruct(buf2, 
-			strlen(buf2), 
-			version,
-			level,
-			hint);
-	
-		if(head == NULL){
-			memset(CTX(ctx, OFFSET_RET), QRENCODE_ERROR, SIZE_RET);
-			return;
-		}
-		
 		p = strrchr(qrfile, '.');
 		if(p != NULL)*p = '\0';
-		
-		i = 1;
-		while(tail != NULL){
-			snprintf(qrfile_suffix, 
-				sizeof(qrfile_suffix), "%s_%02d.png", qrfile, i);
-			if(tail->code == NULL) {
-				memset(CTX(ctx, OFFSET_RET), QRENCODE_ERROR, SIZE_RET);
-				QRcode_List_free(head);
-				return;
-
+		head = QRcode_encodeStringStructured(buf2, version, level, hint ,1);
+		if(head) {
+			i = 0;
+			entry = head;
+			while(entry != NULL) {
+				code = entry->code;
+				snprintf(qrfile_suffix, 
+					sizeof(qrfile_suffix), "%s_%02d.png", qrfile, i + 1);
+				if(writePNG(code, qrfile_suffix, size, margin) != 0){
+					memset(CTX(ctx, OFFSET_RET_CODE), WRITE_PNG_ERROR, SIZE_RET_CODE);
+					break;
+				}
+				entry = entry->next;	
+				i++;
 			}
-			if(writePNG(tail->code, qrfile_suffix, size, margin) != 0){
-				memset(CTX(ctx, OFFSET_RET), WRITE_PNG_ERROR, SIZE_RET);
-				QRcode_List_free(head);
-				return;
-			}
-			tail = tail->next;
-			i++;
+			QRcode_List_free(entry);
 		}
-		i--;
-
+		else {
+			memset(CTX(ctx, OFFSET_RET_CODE), QRENCODE_ERROR, SIZE_RET_CODE);
+		 	return;
+		}
 		sprintf(buf, "%02d" , head->code->version);
-		memcpy(CTX(ctx, OFFSET_VER), buf, SIZE_VER);
+		memcpy(CTX(ctx, OFFSET_RET_VERSION), buf, SIZE_RET_VERSION);
 		sprintf(buf, "%02d" , i);
-		memcpy(CTX(ctx, OFFSET_NUM), buf, SIZE_NUM);
+		memcpy(CTX(ctx, OFFSET_RET_SYMBOLS), buf, SIZE_RET_SYMBOLS);
 		QRcode_List_free(head);
 	}
+#if 0
+	print_ctx(ctx);
+#endif
 	return;
 }
 
-#if 0
+#if 1
 int
 main(int argc, 
 	char *argv[])
 {
-	char buf[OFFSET_RET + SIZE_RET];
+	char buf[OFFSET_RET_CODE + SIZE_RET_CODE];
 	int len;
 
 	if(argc < 7){
-		printf("\nusage:orcqrencode <infile> <outfile> <version> <level> <kanji> <comb>\n");
+		printf("\nusage:orcqrencode <infile> <outfile> <version> <level> <hint> <structured>\n");
 		exit(0);
 	}
 
@@ -544,29 +539,15 @@ main(int argc,
 	CTX(buf, OFFSET_INFILE)[SIZE_INFILE-1] = 0;
 	CTX(buf, OFFSET_QRFILE)[SIZE_QRFILE-1] = 0;
 
-	memcpy(CTX(buf, OFFSET_SL), argv[4], SIZE_SL);
-	memcpy(CTX(buf, OFFSET_SS), "3", SIZE_SS);
-	memcpy(CTX(buf, OFFSET_SM), "1", SIZE_SM);
-	memcpy(CTX(buf, OFFSET_SV), argv[3], SIZE_SV);
-	memcpy(CTX(buf, OFFSET_SK), argv[5], SIZE_SK);
-	memcpy(CTX(buf, OFFSET_LC), argv[6], SIZE_LC);
-
-	printf("infile:%s\n", CTX(buf, OFFSET_INFILE));
-	printf("qrfile:%s\n", CTX(buf, OFFSET_QRFILE));
+	memcpy(CTX(buf, OFFSET_LEVEL), argv[4], SIZE_LEVEL);
+	memcpy(CTX(buf, OFFSET_PIXEL), "3", SIZE_PIXEL);
+	memcpy(CTX(buf, OFFSET_MARGIN), "1", SIZE_MARGIN);
+	memcpy(CTX(buf, OFFSET_VERSION), argv[3], SIZE_VERSION);
+	memcpy(CTX(buf, OFFSET_HINT), argv[5], SIZE_HINT);
+	memcpy(CTX(buf, OFFSET_STRUCTURED), argv[6], SIZE_STRUCTURED);
 
 	orcqrencode(buf);
-
-	printf("infile:%s\n", CTX(buf, OFFSET_INFILE));
-	printf("qrfile:%s\n", CTX(buf, OFFSET_QRFILE));
-	printf("l:%02x\n", *CTX(buf, OFFSET_SL));
-	printf("s:%02x\n", *CTX(buf, OFFSET_SS));
-	printf("m:%02x\n", *CTX(buf, OFFSET_SM));
-	printf("v:%02x%02x\n", *CTX(buf, OFFSET_SV), *CTX(buf, OFFSET_SV+1));
-	printf("k:%02x\n", *CTX(buf, OFFSET_SK));
-	printf("C:%02x\n", *CTX(buf, OFFSET_LC));
-	printf("ver:%02x%02x\n", *CTX(buf, OFFSET_VER), *CTX(buf, OFFSET_VER+1));
-	printf("num:%02x%02x\n", *CTX(buf, OFFSET_NUM), *CTX(buf, OFFSET_NUM+1));
-	printf("ret:%02x\n", *CTX(buf, OFFSET_RET));
+	print_ctx(buf);
 
 	return 0;
 }
