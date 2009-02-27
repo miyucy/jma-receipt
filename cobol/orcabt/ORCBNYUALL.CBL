@@ -1318,7 +1318,6 @@
            CALL    "ORCSCHKTCHK"       USING
                                        ORCSCHKTCHKAREA
                                        SPA-AREA
-                                       SPA-K02
                                        SPA-SCR-REC
                                        ORCSC00AREA
            MOVE    ORCSCHKTCHK-NYUHKTCHK   TO  SPA-NYUHKTCHK
@@ -1698,13 +1697,9 @@
            CALL    "ORCSCHKTCHK"       USING
                                        ORCSCHKTCHKAREA
                                        SPA-AREA
-                                       SPA-K02
                                        SPA-SCR-REC
                                        ORCSC00AREA
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-           MOVE    ORCSCHKTCHK-NYUHKTCHK   TO  SPA-NYUHKTCHK
-           MOVE    ORCSCHKTCHK-NYUHKTCD    TO  SPA-NYUHKTCD
-           MOVE    ORCSCHKTCHK-NYUHKT-G    TO  SPA-NYUHKT-G
            IF      ORCSCHKTCHK-HKTFLG  =   1
                MOVE    1               TO  SPA-HKTSANTEI-CHK
            ELSE
@@ -1733,7 +1728,6 @@
            CALL    "ORCSCHKTCHK"       USING
                                        ORCSCHKTCHKAREA
                                        SPA-AREA
-                                       SPA-K02
                                        SPA-SCR-REC
                                        ORCSC00AREA
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
