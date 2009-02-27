@@ -389,6 +389,7 @@
       *  04.03.12    NACL-門脇    09/01/28  山梨県４１老人対応
       *  04.03.13    NACL-門脇    09/02/09  公費分点数編集修正
       *  04.03.14    NACL-門脇    09/02/26  長崎県地方公費対応
+      *  04.03.15    NACL-門脇    09/02/26  ７５歳以上の前期高齢者対応
       *
       *  04.04.01    NACL-門脇    08/12/25  包括対応
       *  04.04.02    NACL-門脇    09/02/04  検査のコメント自動記載対応
@@ -1865,7 +1866,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
              OR  (RECE02-HKNNUM(1:2)  =   "98"                       )
              OR  (RECE02-HKNNUM  =   "068" OR "069" OR "040" OR "039")
              OR  (RECE02-AGE          <    70                        )
-             OR  (RECE02-AGE          >    74                        )
+      ***    OR  (RECE02-AGE          >    74                        )
                CONTINUE
              ELSE
                IF  RECE02-HOJOKBN     =   "1"  OR  "9"
