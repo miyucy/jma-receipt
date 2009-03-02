@@ -1127,7 +1127,12 @@
            MOVE    SPACE                TO  YID1
            MOVE    SPA-YID1CD           TO  YID1-ID1CODE
            MOVE    WRK-YID1MSG          TO  YID1-ID1MSG
-           MOVE    "B01"                TO  MCP-WIDGET
+           EVALUATE    SPA-YID1CD
+               WHEN    "1003"
+                   MOVE    "B01"                TO  MCP-WIDGET
+               WHEN    OTHER
+                   MOVE    "B12"                TO  MCP-WIDGET
+           END-EVALUATE
       *
            MOVE    "Y012"               TO  SPA-MOTOPG
            MOVE    "YID1"               TO  SPA-SAKIPG
