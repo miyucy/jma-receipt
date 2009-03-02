@@ -47,7 +47,7 @@
       *診療コード計
            03  ACCTM-SRYCDTOTAL          PIC  9(14).
       *数量計
-           03  ACCTM-SURYOUTOTAL         PIC  9(07)V9(03).
+           03  ACCTM-SURYOUTOTAL         PIC  9(07)V9(05).
       *明細数
            03  ACCTM-MEISAISU            PIC  9(07).
       *剤回数

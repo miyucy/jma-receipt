@@ -200,7 +200,7 @@ or day3_31       > 0
 
 create table tbl_sryacct_sub(
 hospnum      integer         ,
-ptid         numeric(10,0)   ,
+ptid         bigint   ,
 zainum      integer          ,
 rennum      smallint         ,
 date        smallint         ,

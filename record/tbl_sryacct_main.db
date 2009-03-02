@@ -10,7 +10,7 @@ tbl_sryacct_main {
 	JIHOKBN                 char(1);
 	ZAITEN				number(8,0);
 	SRYCDTOTAL			number(14,0);
-	SURYOUTOTAL			number(10,3);
+	SURYOUTOTAL			number(12,5);
 	MEISAISU			number(7,0);
 	ZAIKAISU			number(7,0);
 	SYUTEN1				number(7,0);
