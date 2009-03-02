@@ -208,18 +208,35 @@
            MOVE    WRK-PARA-DENPPRTYMD
                                    TO  WRK-SYSYMD
       *
-      *    対象月が現在月以降であればエラー
-           IF      WRK-SYSMM   >=  WRK-SMM
-      *        対象年が現在年以前であればエラー
-               IF      WRK-SYSYY   >=   WRK-SYY
-                   MOVE    "指定日エラー"  TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
-               END-IF
+      *    対象年が現在年より大きい場合エラー
+           IF      WRK-SYSYY   >   WRK-SYY
+               MOVE    "指定日エラー"  TO  WRK-RECEERR
+               PERFORM 500-ERR-HENSYU-SEC
            ELSE
-               COMPUTE WRK-TUKI    =   WRK-SMM   -   WRK-SYSMM
-               IF      WRK-TUKI    <=  2
-                   MOVE    "指定日エラー"  TO  WRK-RECEERR
-                   PERFORM 500-ERR-HENSYU-SEC
+      *        対象年が現在年と同じ場合
+               IF      WRK-SYSYY   =   WRK-SYY
+      *            対象月が現在月より小さい場合
+                   IF      WRK-SYSMM   <   WRK-SMM
+                       COMPUTE WRK-TUKI    =   WRK-SMM -    WRK-SYSMM
+      *                対象月が２ヶ月以内であればエラー
+                       IF      WRK-TUKI    <=  2
+                           MOVE    "指定日エラー"  TO  WRK-RECEERR
+                           PERFORM 500-ERR-HENSYU-SEC
+                       END-IF
+                   ELSE
+                       MOVE    "指定日エラー"  TO  WRK-RECEERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                   END-IF
+               ELSE
+      *            対象月が現在月より大きい場合
+                   IF      WRK-SYSMM   >=  WRK-SMM
+                       COMPUTE WRK-TUKI    =   WRK-SYSMM   -   WRK-SMM
+      *                対象月が２ヶ月以内であればエラー
+                       IF      WRK-TUKI    >=  10
+                           MOVE    "指定日エラー"  TO  WRK-RECEERR
+                           PERFORM 500-ERR-HENSYU-SEC
+                       END-IF
+                   END-IF
                END-IF
            END-IF
       *
