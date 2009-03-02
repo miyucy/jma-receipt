@@ -160,3 +160,30 @@ path	key9 	{
 		;
 	};
 };
+
+
+path	key10 	{
+	DBSELECT	{
+		DECLARE tbl_yyk_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_yyk
+			WHERE   HOSPNUM        =   :HOSPNUM
+			AND	YYKYMD        <=   :YYKYMD
+			ORDER   BY        KEYYYKTIME,YYKID
+		;
+	};
+};
+
+path	del 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_yyk
+			WHERE   HOSPNUM        =   :HOSPNUM
+			AND		SRYNAIYO      =   :SRYNAIYO
+			AND		DRCD          =   :DRCD
+			AND		YYKYMD        =   :YYKYMD
+			AND		KEYYYKTIME    =   :KEYYYKTIME
+			AND		YYKID         =   :YYKID
+		;
+	};
+};

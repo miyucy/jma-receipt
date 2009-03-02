@@ -180,3 +180,24 @@ path	key9	{
 	};
 };
 
+path	key10 	{
+	DBSELECT	{
+		DECLARE tbl_uketuke_key10_csr CURSOR FOR
+		SELECT *
+		FROM tbl_uketuke
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   UKEYMD      <=   :UKEYMD
+			ORDER   BY  UKEID
+		;
+	};
+};
+path	del10 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_uketuke
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   UKEYMD       =   :UKEYMD
+			AND   UKEID        =   :UKEID
+		;
+	};
+};
