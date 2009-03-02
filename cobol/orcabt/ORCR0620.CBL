@@ -153,6 +153,11 @@
       *  04.03.02    NACL-藤原    08/06/19  医師別出力対応
       *  04.03.03    NACL-藤原    08/08/05  患者登録特記事項入力対応
       *  04.03.04    NACL-門脇    08/10/16  公費−低２・低１項目編集
+      *
+      *  04.04.01    NACL-藤原    09/01/14  月途中の生保変更時の保険履歴
+      *                                     記載対応
+      *                                     月途中に医保と生保の併用から
+      *                                     生保単独になったときのまとめ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -322,8 +327,10 @@
       *
        01  KEY-AREA1                           VALUE   LOW-VALUE.
            03  KEY-NEW1.
+               05  KEY-N-SRYYM                         PIC 9(06).
                05  KEY-N-PTID                          PIC 9(10).
            03  KEY-OLD1.
+               05  KEY-O-SRYYM                         PIC 9(06).
                05  KEY-O-PTID                          PIC 9(10).
       *
       *    添字領域
@@ -335,7 +342,10 @@
            03  IDX3                                    PIC 9(02).
            03  IDX4                                    PIC 9(02).
            03  IDX5                                    PIC 9(02).
+           03  IDWW                                    PIC 9(02).
            03  IDXX                                    PIC 9(02).
+           03  IDYY                                    PIC 9(03).
+           03  IDZZ                                    PIC 9(03).
            03  IDY1                                    PIC 9(03).
            03  IDY2                                    PIC 9(03).
            03  IDZ                                     PIC 9(02).
@@ -431,6 +441,25 @@
        01  WRK-PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //WRK-PTNYUINRRK-//.
+      *
+      *    ワーク入力ファイル退避
+       01  WRK-RECE61-REC.
+           COPY    "CPRCF061.INC"      REPLACING  //RECE61-//
+                                       BY         //WRK-RECE61-//.
+      *
+      *    ワーク生保まとめ
+       01  WRK-SEIHO-RECE61-AREA.
+           02  WRK-SEIHO-RECE61-REC    OCCURS  5. 
+           COPY    "CPRCF061.INC"      REPLACING  //RECE61-//
+                                       BY         //WRK-SEIHO-RECE61-//.
+           02  WRK-SEIHO-RECE61-PRTFLG PIC 9(01)  OCCURS  5.
+           02  WRK-SEIHO-RECE61-MAX    PIC 9(02).
+      *
+      *    ワーク保険履歴
+       01  TABLE-RECE69-AREA.
+           02  TBL-RECE69-OCC          OCCURS  100.
+           COPY    "CPRCF069.INC"      REPLACING  //RECE69//
+                                       BY         //TBL-RECE69//.
       * 
       *    保険番号マスタ退避ワーク
        01  WRK-HKNNUM-AREA.
@@ -869,11 +898,13 @@
                                        OR      FLG-END     =   1
       *
                MOVE    ZERO            TO  FLG-SEIHO 
+               INITIALIZE                  WRK-SEIHO-RECE61-AREA
+                                           TABLE-RECE69-AREA
       *
-               MOVE    KEY-N-PTID      TO  KEY-O-PTID
+               MOVE    KEY-NEW1        TO  KEY-OLD1
                PERFORM         UNTIL   FLG-RECE61      =   1
                                OR      FLG-END         =   1 
-                               OR      KEY-N-PTID  NOT =   KEY-O-PTID
+                               OR      KEY-NEW1    NOT =   KEY-OLD1
       *            保険履歴情報編集処理
                    IF      IDZ             =   1               
                        PERFORM 230-RECE69-HENSYU-SEC
@@ -916,6 +947,29 @@
                        PERFORM 500-CANCEL-HENSYU-SEC
                    END-IF
                END-PERFORM
+      *
+               IF      IDZ             =   1               
+      *            生保単独レセの出力処理
+                   IF    ( WRK-SEIHO-RECE61-MAX    >   ZERO )
+                   AND   ( FLG-END                 =   ZERO )
+                       IF      FLG-RECE61          =   ZERO
+                           MOVE    RECE61-REC      TO  WRK-RECE61-REC
+                       END-IF
+                       PERFORM 250-SEIHO-RECE61-WRITE-SEC
+                       IF      FLG-RECE61          =   ZERO
+                           MOVE    WRK-RECE61-REC      TO  RECE61-REC
+                       END-IF
+                   END-IF
+      *
+      *            保険履歴情報編集処理
+                   PERFORM VARYING IDWW    FROM    1   BY  1
+                           UNTIL   IDWW    >       100
+                           OR      TBL-RECE69-HOSPNUM (IDWW)  =   ZERO
+                       MOVE    TBL-RECE69-OCC (IDWW)   TO  RECE69-REC
+                       WRITE   RECE69-REC
+                       ADD     1                       TO  CNT-RECE69
+                   END-PERFORM
+               END-IF
            END-PERFORM
       *
            CLOSE   RECE61-FILE
@@ -955,10 +1009,78 @@
                    ELSE
                        IF      FLG-SEIHO            =   1
                            GO  TO  210-HENSYU-EXT
+                       ELSE
+      *                    生保単独の場合退避
+                           ADD     1            TO  WRK-SEIHO-RECE61-MAX
+                           MOVE    RECE61-REC   TO  WRK-SEIHO-RECE61-REC
+                                                  (WRK-SEIHO-RECE61-MAX)
+                           GO  TO  210-HENSYU-EXT
                        END-IF
                    END-IF
               END-IF
            END-IF
+      *
+      *    社保で生保併用の場合
+           IF    ( RECE61-HKNNUM   NOT =   SPACE )
+           AND   ( RECE61-KOHHKNNUM-O (1)
+                                       =   "012"   OR  "025"   OR 
+                   RECE61-KOHHKNNUM-O (2)
+                                       =   "012"   OR  "025"   OR 
+                   RECE61-KOHHKNNUM-O (3)
+                                       =   "012"   OR  "025"   OR 
+                   RECE61-KOHHKNNUM-O (4)
+                                       =   "012"   OR  "025" )
+               IF      RECE61-HKNNUM       =   "060"   OR  "067"   OR
+                                               "068"   OR  "069"   OR
+                                               "039"   OR  "040"
+                   CONTINUE
+               ELSE
+                   PERFORM VARYING IDXX    FROM    1   BY  1
+                           UNTIL   IDXX    >       WRK-SEIHO-RECE61-MAX
+                       PERFORM VARYING IDYY    FROM    1   BY  1
+                               UNTIL   IDYY    >       4
+                               OR      RECE61-KOHID-O (IDYY)
+                                               =       ZERO
+                           IF      WRK-SEIHO-RECE61-KOHID-O (IDXX 1)
+                                       =   RECE61-KOHID-O (IDYY)
+                               MOVE    1           TO
+                                           WRK-SEIHO-RECE61-PRTFLG(IDXX)
+                               PERFORM VARYING IDZZ    FROM    1   BY  1
+                                       UNTIL   IDZZ    >       10
+                                   IF      RECE61-HKNCOMBI-O (IDZZ)
+                                               =   ZERO
+                                       MOVE
+                                           WRK-SEIHO-RECE61-HKNCOMBI-O
+                                                              (IDXX 1)
+                                                           TO
+                                               RECE61-HKNCOMBI-O (IDZZ)
+                                   END-IF
+                                   IF      RECE61-HKNCOMBI-O (IDZZ)
+                                               =
+                                             WRK-SEIHO-RECE61-HKNCOMBI-O
+                                                              (IDXX 1)
+                                       MOVE    10          TO  IDZZ
+                                   END-IF
+                               END-PERFORM    
+                               MOVE    4           TO  IDYY
+                               MOVE    WRK-SEIHO-RECE61-MAX
+                                                   TO  IDXX
+                           END-IF
+                       END-PERFORM      
+                   END-PERFORM
+               END-IF                     
+           END-IF
+      *
+      *    ファイル編集処理
+           PERFORM 2101-RECE62-HENSYU-SEC
+           .
+       210-HENSYU-EXT.
+           EXIT.
+      * 
+      *****************************************************************
+      *    ファイル編集処理
+      *****************************************************************
+       2101-RECE62-HENSYU-SEC           SECTION.
       *
            MOVE    SPACE                TO  WK-RECESYUBETU-AREA
            INITIALIZE                       WK-RECESYUBETU-AREA
@@ -1560,7 +1682,7 @@
            PERFORM     220-DATA-WRITE-SEC
       *
            .
-       210-HENSYU-EXT.
+       2101-RECE62-HENSYU-EXT.
            EXIT.
       * 
       *****************************************************************
@@ -2647,130 +2769,252 @@
       *
            MOVE    ZERO                TO  FLG-RIREKI-HEN
       *
-           IF      RECE61-HKNID             NOT =   ZERO
-           AND     RECE61-HKNNUM(1:2)       NOT =   "98"
-           AND     RECE61-TEISEIKBN             =   SPACE
+           IF      RECE61-TEISEIKBN             =   SPACE
+             IF  (     ( RECE61-HKNID           NOT =   ZERO  )
+                   AND ( RECE61-HKNNUM(1:2)     NOT =   "98"  ) )
+             OR  (     ( RECE61-HKNID               =   ZERO  )
+                   AND ( RECE61-KOHHKNNUM-O (1)     =   "012" 
+                                                    OR  "025" )
+                   AND ( RECE61-KOHHKNNUM-O (2)     =   SPACE ) )
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       10
                        OR      RECE61-TEKSTYMDX (IDX)  =   SPACE
-                   MOVE    SPACE                TO  RECE69-REC
-                   INITIALIZE                       RECE69-REC
-                   MOVE    RECE61-HOSPNUM       TO  RECE69-HOSPNUM
-                   MOVE    RECE61-SRYYM         TO  RECE69-SRYYM
-                   MOVE    RECE61-NYUGAIKBN     TO  RECE69-NYUGAIKBN
-                   MOVE    RECE61-PTID          TO  RECE69-PTID
-                   MOVE    RECE61-RECEKA        TO  RECE69-RECEKA
-                   MOVE    RECE61-TEKSTYMDX (IDX)
-                                                TO  RECE69-TEKSTYMD
+                 MOVE    SPACE                TO  RECE69-REC
+                 INITIALIZE                       RECE69-REC
+                 MOVE    RECE61-HOSPNUM       TO  RECE69-HOSPNUM
+                 MOVE    RECE61-SRYYM         TO  RECE69-SRYYM
+                 MOVE    RECE61-NYUGAIKBN     TO  RECE69-NYUGAIKBN
+                 MOVE    RECE61-PTID          TO  RECE69-PTID
+                 MOVE    RECE61-RECEKA        TO  RECE69-RECEKA
+                 MOVE    RECE61-TEKSTYMDX (IDX)
+                                              TO  RECE69-TEKSTYMD
+                 PERFORM VARYING IDYY    FROM    1   BY  1
+                         UNTIL   IDYY    >       100
+      *            公費単独と主保険の摘要年月日が重複するとき
+grpsys             IF    ( TBL-RECE69-HOSPNUM (IDYY)
+                                             >   ZERO  )
+                   AND   ( RECE61-HKNNUM NOT =   SPACE )
+                   AND   ( TBL-RECE69-HKNNUM  (IDYY)
+                                             =   SPACE )
+grpsys                 IF      RECE61-TEKSTYMDX (IDX)
+                                         >   TBL-RECE69-TEKEDYMDX (IDYY)
+                       OR      RECE61-TEKEDYMDX (IDX)
+                                         <   TBL-RECE69-TEKSTYMDX (IDYY)
+                           CONTINUE
+                       ELSE
+                           INITIALIZE            TBL-RECE69-OCC   (IDYY)
+                       END-IF
+                   END-IF
       *
-                   MOVE    RECE61-TEKSTYMDX (IDX)
+grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
+                     MOVE    RECE61-TEKSTYMDX (IDX)
                                                 TO  RECE69-TEKSTYMDX
-                   MOVE    RECE61-TEKEDYMDX (IDX)
+                     MOVE    RECE61-TEKEDYMDX (IDX)
                                                 TO  RECE69-TEKEDYMDX
       * 
-                   IF      RECE61-HKNNUM       =   "060"   OR  "067"
-                                               OR  "068"   OR  "069"
+                     IF      RECE61-HKNNUM       =   "060"   OR  "067"
+                                                 OR  "068"   OR  "069"
                        MOVE    2               TO  RECE69-TEISYUTUSAKI
-                   ELSE
+                     ELSE
                        IF      RECE61-HKNNUM   =   "040"   OR  "039"
                            MOVE    6           TO  RECE69-TEISYUTUSAKI
                        ELSE
                            MOVE    1           TO  RECE69-TEISYUTUSAKI
                        END-IF
-                   END-IF
+                     END-IF
       *                                          
-                   INITIALIZE                       PTHKNINF-REC
-                   MOVE    RECE61-HOSPNUM       TO  PTHKN-HOSPNUM
-                   MOVE    RECE61-PTID          TO  PTHKN-PTID
-                   MOVE    RECE61-HKNNUM        TO  PTHKN-HKNNUM
-                   MOVE    RECE61-TEKSTYMDX(IDX)
-                                                TO  PTHKN-TEKSTYMD
-                   MOVE    RECE61-TEKEDYMDX(IDX)
-                                                TO  PTHKN-TEKEDYMD
-                   MOVE    PTHKNINF-REC         TO  MCPDATA-REC
-                   MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                   MOVE    "key4"               TO  MCP-PATHNAME
-                   PERFORM   900-DBSELECT-SEC
-                   IF      MCP-RC               =   ZERO
-                       MOVE    "tbl_pthkninf"   TO  MCP-TABLE
-                       MOVE    "key4"           TO  MCP-PATHNAME
-                       PERFORM PTHKNINF-READ-SEC
-                   ELSE
-                       MOVE    1                TO  FLG-PTHKNINF  
-                   END-IF
-                   PERFORM              UNTIL   FLG-PTHKNINF     =   1
-                                        OR      FLG-RIREKI-HEN   =   1
-                       IF      PTHKN-SAKJOKBN   =   SPACE
-      *                  後期高齢者で船員保険の履歴は対象外とする
-                         IF  (   PTHKN-HKNNUM     =   "002"         )
-                         AND (   PTHKN-HOJOKBN    =   "A" OR "B" OR
-                                                      "C" OR "G" OR 
-                                                      "H" OR "I"    )
-                             IF    ( RECE61-AGE  >=  75    )
-                             OR    ( RECE61-AGE  =   74          AND
-                                     RECE61-BIRTHDAY (5:2)
-                                             =
-                                               RECE61-SRYYM(5:2) AND 
-                                     RECE61-BIRTHDAY (7:2)
-                                         NOT =   "01"  ) 
-                                 MOVE    1   TO  FLG-RIREKI-HEN
-                             END-IF  
+                     IF      RECE61-HKNNUM   NOT =   SPACE                                               
+                         INITIALIZE                       PTHKNINF-REC
+                         MOVE    RECE61-HOSPNUM       TO  PTHKN-HOSPNUM
+                         MOVE    RECE61-PTID          TO  PTHKN-PTID
+                         MOVE    RECE61-HKNNUM        TO  PTHKN-HKNNUM
+                         MOVE    RECE61-TEKSTYMDX(IDX)
+                                                      TO  PTHKN-TEKSTYMD
+                         MOVE    RECE61-TEKEDYMDX(IDX)
+                                                      TO  PTHKN-TEKEDYMD
+                         MOVE    PTHKNINF-REC         TO  MCPDATA-REC
+                         MOVE    "tbl_pthkninf"       TO  MCP-TABLE
+                         MOVE    "key4"               TO  MCP-PATHNAME
+                         PERFORM   900-DBSELECT-SEC
+                         IF      MCP-RC               =   ZERO
+                             MOVE    "tbl_pthkninf"   TO  MCP-TABLE
+                             MOVE    "key4"           TO  MCP-PATHNAME
+                             PERFORM PTHKNINF-READ-SEC
+                         ELSE
+                             MOVE    1                TO  FLG-PTHKNINF  
                          END-IF
-                         IF      FLG-RIREKI-HEN = ZERO
-                           MOVE   PTHKN-HKNID      TO  RECE69-HKNID
-                           MOVE   PTHKN-HKNNUM     TO  RECE69-HKNNUM
-                           MOVE   PTHKN-HKNJANUM   TO  RECE69-HKNJANUM
-                           MOVE   PTHKN-HONKZKKBN  TO  RECE69-HONKZKKBN
-                           MOVE   PTHKN-HOJOKBN    TO  RECE69-HOJOKBN
-                           MOVE   PTHKN-CONTKBN    TO  RECE69-CONTKBN
-                           IF     PTHKN-HKNNUM NOT =   "039"     
-                               MOVE   PTHKN-KIGO       TO  RECE69-KIGO
-                           END-IF
-                           MOVE   PTHKN-NUM        TO  RECE69-NUM
-                           MOVE   SPACE            TO  RECE69-CERTNUM
-      *         
-                           INITIALIZE                  HKNNUM-REC
-                           MOVE   RECE61-HOSPNUM   TO  HKN-HOSPNUM
-                           MOVE   PTHKN-HKNNUM     TO  HKN-HKNNUM
-                           MOVE   RECE61-TEKSTYMDX (IDX)
-                                                   TO  HKN-TEKSTYMD
-                           MOVE   RECE61-TEKEDYMDX (IDX)
-                                                   TO  HKN-TEKEDYMD
-                           MOVE   HKNNUM-REC       TO  MCPDATA-REC
-                           MOVE   "tbl_hknnum"     TO  MCP-TABLE
-                           MOVE   "key5"           TO  MCP-PATHNAME
-                           PERFORM   900-DBSELECT-SEC
-                           IF     MCP-RC           =   ZERO
-                               MOVE    "tbl_hknnum"    TO  MCP-TABLE
-                               MOVE    "key5"          TO  MCP-PATHNAME
-                               PERFORM HKNNUM-READ-SEC
-                               IF      FLG-HKNNUM      =   ZERO
-                                   MOVE   HKN-TANSEIDONAME
-                                               TO  RECE69-TANSEIDONAME
-                                   MOVE   HKN-HBTNUM
-                                               TO RECE69-HKNHBTNUM
+                         PERFORM          UNTIL   FLG-PTHKNINF     =   1
+                                          OR      FLG-RIREKI-HEN   =   1
+                           IF      PTHKN-SAKJOKBN   =   SPACE
+      *                      後期高齢者で船員保険の履歴は対象外とする
+                             IF  (   PTHKN-HKNNUM     =   "002"        )
+                             AND (   PTHKN-HOJOKBN    =   "A" OR "B" OR
+                                                          "C" OR "G" OR 
+                                                          "H" OR "I"   )
+                                 IF    ( RECE61-AGE  >=  75    )
+                                 OR    ( RECE61-AGE  =   74          AND
+                                         RECE61-BIRTHDAY (5:2)
+                                                     =
+                                                   RECE61-SRYYM(5:2) AND 
+                                         RECE61-BIRTHDAY (7:2)
+                                                 NOT =   "01"  ) 
+                                     MOVE    1   TO  FLG-RIREKI-HEN
+                                 END-IF  
+                             END-IF
+                             IF      FLG-RIREKI-HEN  =   ZERO
+                               MOVE   PTHKN-HKNID    TO  RECE69-HKNID
+                               MOVE   PTHKN-HKNNUM   TO  RECE69-HKNNUM
+                               MOVE   PTHKN-HKNJANUM TO  RECE69-HKNJANUM
+                               MOVE   PTHKN-HONKZKKBN
+                                                     TO RECE69-HONKZKKBN
+                               MOVE   PTHKN-HOJOKBN  TO  RECE69-HOJOKBN
+                               MOVE   PTHKN-CONTKBN  TO  RECE69-CONTKBN
+                               IF     PTHKN-HKNNUM   NOT =   "039"     
+                                 MOVE   PTHKN-KIGO       TO  RECE69-KIGO
                                END-IF
+                               MOVE   PTHKN-NUM      TO  RECE69-NUM
+                               MOVE   SPACE          TO  RECE69-CERTNUM
+      *         
+                               INITIALIZE                HKNNUM-REC
+                               MOVE   RECE61-HOSPNUM TO  HKN-HOSPNUM
+                               MOVE   PTHKN-HKNNUM   TO  HKN-HKNNUM
+                               MOVE   RECE61-TEKSTYMDX (IDX)
+                                                     TO  HKN-TEKSTYMD
+                               MOVE   RECE61-TEKEDYMDX (IDX)
+                                                     TO  HKN-TEKEDYMD
+                               MOVE   HKNNUM-REC     TO  MCPDATA-REC
+                               MOVE   "tbl_hknnum"   TO  MCP-TABLE
+                               MOVE   "key5"         TO  MCP-PATHNAME
+                               PERFORM   900-DBSELECT-SEC
+                               IF     MCP-RC         =   ZERO
+                                 MOVE    "tbl_hknnum"    TO MCP-TABLE
+                                 MOVE    "key5"          TO MCP-PATHNAME
+                                 PERFORM HKNNUM-READ-SEC
+                                 IF      FLG-HKNNUM      =   ZERO
+                                     MOVE   HKN-TANSEIDONAME
+                                                 TO  RECE69-TANSEIDONAME
+                                     MOVE   HKN-HBTNUM
+                                                 TO RECE69-HKNHBTNUM
+                                 END-IF
+                               END-IF
+                               MOVE    "tbl_hknnum"  TO  MCP-TABLE
+                               MOVE    "key5"        TO  MCP-PATHNAME
+                               PERFORM 900-CLOSE-SEC
+                               MOVE    1             TO  FLG-PTHKNINF
+                             END-IF
                            END-IF
-                           MOVE    "tbl_hknnum"       TO  MCP-TABLE
-                           MOVE    "key5"             TO  MCP-PATHNAME
-                           PERFORM 900-CLOSE-SEC
-                           MOVE    1                TO  FLG-PTHKNINF
-                         END-IF
-                       END-IF
       * 
-                       MOVE    "tbl_pthkninf"   TO  MCP-TABLE
-                       MOVE    "key4"           TO  MCP-PATHNAME
-                       PERFORM PTHKNINF-READ-SEC
-                   END-PERFORM
-                   MOVE    "tbl_pthkninf"       TO  MCP-TABLE
-                   MOVE    "key4"               TO  MCP-PATHNAME
-                   PERFORM 900-CLOSE-SEC
+                           MOVE    "tbl_pthkninf"    TO  MCP-TABLE
+                           MOVE    "key4"            TO  MCP-PATHNAME
+                           PERFORM PTHKNINF-READ-SEC
+                         END-PERFORM
+                         MOVE    "tbl_pthkninf"      TO  MCP-TABLE
+                         MOVE    "key4"              TO  MCP-PATHNAME
+                         PERFORM 900-CLOSE-SEC
       *
-                   IF      FLG-RIREKI-HEN     =   ZERO
-                       WRITE   RECE69-REC
-                       ADD     1                  TO  CNT-RECE69
-                   END-IF
+                         IF      FLG-RIREKI-HEN      =   ZERO
+                           MOVE    RECE69-REC        TO
+                                                 TBL-RECE69-OCC (IDYY)
+                           MOVE    100               TO  IDYY
+                         END-IF
+                     ELSE                                            
+                         INITIALIZE                      PTKOHINF-REC
+                         MOVE    RECE61-HOSPNUM      TO  PTKOH-HOSPNUM
+                         MOVE    RECE61-PTID         TO  PTKOH-PTID
+                         MOVE    RECE61-KOHID-O (1)  TO  PTKOH-KOHID
+                         MOVE    PTKOHINF-REC        TO  MCPDATA-REC
+                         MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                         MOVE    "key"               TO  MCP-PATHNAME
+                         PERFORM 900-DBSELECT-SEC
+                         IF      MCP-RC              =   ZERO
+                             MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
+                             MOVE    "key"           TO  MCP-PATHNAME
+                             PERFORM  PTKOHINF-READ-SEC
+                         ELSE
+                             MOVE    1                TO  FLG-PTKOHINF  
+                         END-IF
+                         MOVE    "tbl_ptkohinf"      TO  MCP-TABLE
+                         MOVE    "key"               TO  MCP-PATHNAME
+                         PERFORM 900-CLOSE-SEC
+      *
+                         IF      FLG-PTKOHINF    =   ZERO
+                             MOVE    PTKOH-FTNJANUM  TO  RECE69-KIGO
+      *
+                             MOVE    RECE61-HOSPNUM  TO
+                                                   MONTHLYNUM-HOSPNUM
+                             MOVE    RECE61-PTID     TO MONTHLYNUM-PTID
+                             MOVE    PTKOH-KOHID     TO MONTHLYNUM-KOHID
+                             MOVE    RECE61-SRYYM    TO MONTHLYNUM-SRYYM
+                             MOVE    RECE61-NYUGAIKBN
+                                                     TO
+                                                   MONTHLYNUM-NYUGAIKBN
+                             MOVE    MONTHLYNUM-REC  TO MCPDATA-REC
+                             MOVE    "tbl_monthlynum"
+                                                     TO WRK-MCP-TABLE
+                             MOVE    "key4"          TO WRK-MCP-PATHNAME
+                             PERFORM 910-MONTHLYNUM-READ-SEC
+                             IF      FLG-MONTHLYNUM  =   ZERO
+                                 MOVE    MONTHLYNUM-JKYSNUM 
+                                                     TO  RECE69-NUM
+                             ELSE                       
+                                 MOVE    RECE61-HOSPNUM
+                                                     TO
+                                                   MONTHLYNUM-HOSPNUM
+                                 MOVE    RECE61-PTID TO MONTHLYNUM-PTID
+                                 MOVE    ZERO        TO MONTHLYNUM-KOHID
+                                 MOVE    RECE61-SRYYM
+                                                     TO MONTHLYNUM-SRYYM
+                                 MOVE    RECE61-NYUGAIKBN
+                                                     TO
+                                                   MONTHLYNUM-NYUGAIKBN
+                                 MOVE    MONTHLYNUM-REC
+                                                     TO MCPDATA-REC
+                                 MOVE    "tbl_monthlynum"
+                                                     TO WRK-MCP-TABLE
+                                 MOVE    "key4"      TO WRK-MCP-PATHNAME
+                                 PERFORM 910-MONTHLYNUM-READ-SEC
+                                 IF      FLG-MONTHLYNUM  =   ZERO
+                                     MOVE    MONTHLYNUM-JKYSNUM 
+                                                         TO  RECE69-NUM
+                                 ELSE                       
+                                     MOVE   PTKOH-JKYSNUM
+                                                         TO  RECE69-NUM
+                                 END-IF
+                             END-IF    
+      *         
+                             INITIALIZE                  HKNNUM-REC
+                             MOVE   RECE61-HOSPNUM   TO  HKN-HOSPNUM
+                             MOVE   PTKOH-KOHNUM     TO  HKN-HKNNUM
+                             MOVE   RECE61-TEKSTYMDX (IDX)
+                                                     TO  HKN-TEKSTYMD
+                             MOVE   RECE61-TEKEDYMDX (IDX)
+                                                     TO  HKN-TEKEDYMD
+                             MOVE   HKNNUM-REC       TO  MCPDATA-REC
+                             MOVE   "tbl_hknnum"     TO  MCP-TABLE
+                             MOVE   "key5"           TO  MCP-PATHNAME
+                             PERFORM 900-DBSELECT-SEC
+                             IF     MCP-RC           =   ZERO
+                                 MOVE   "tbl_hknnum" TO  MCP-TABLE
+                                 MOVE   "key5"       TO  MCP-PATHNAME
+                                 PERFORM HKNNUM-READ-SEC
+                                 IF      FLG-HKNNUM  =   ZERO
+                                     MOVE   HKN-TANSEIDONAME
+                                                 TO  RECE69-TANSEIDONAME
+                                 END-IF
+                             END-IF
+                             MOVE   "tbl_hknnum"     TO  MCP-TABLE
+                             MOVE   "key5"           TO  MCP-PATHNAME
+                             PERFORM 900-CLOSE-SEC
+      *
+                             MOVE    RECE69-REC        TO
+                                                   TBL-RECE69-OCC (IDYY)
+                             MOVE    100               TO  IDYY
+                         END-IF
+                     END-IF
+                   END-IF  
+                 END-PERFORM
                END-PERFORM
+             END-IF           
            END-IF           
       *
            .
@@ -3154,6 +3398,27 @@
            END-IF    
            .
        24012-RECE68-WRITE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    生保単独レセの出力処理
+      *****************************************************************
+       250-SEIHO-RECE61-WRITE-SEC      SECTION.
+      *
+           PERFORM VARYING IDWW    FROM    1   BY  1
+                   UNTIL   IDWW    >       WRK-SEIHO-RECE61-MAX
+               IF      WRK-SEIHO-RECE61-PRTFLG (IDWW)
+                                       =   1
+                   CONTINUE
+               ELSE
+                   MOVE    WRK-SEIHO-RECE61-REC (IDWW)
+                                           TO  RECE61-REC
+      *            ファイル編集処理
+                   PERFORM 2101-RECE62-HENSYU-SEC
+               END-IF
+           END-PERFORM
+           .
+       250-SEIHO-RECE61-WRITE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3562,8 +3827,10 @@ grpsys         PERFORM 900-DBFETCH-SEC
                                        CNT-IN-CANCEL
                    MOVE    RECE61-PTID
                                  TO    KEY-N-PTID
-      *
-                   DISPLAY "RECE61 " IDZ " PTID=" RECE61-PTID
+                   MOVE    RECE61-SRYYM
+                                 TO    KEY-N-SRYYM
+     *
+                   DISPLAY "RECE61 " IDZ " PTID=" RECE61-PTID 
       *
                    IF      WRK-PARA-SRYYM  =  ZERO
       *                医療機関ＩＤ編集
