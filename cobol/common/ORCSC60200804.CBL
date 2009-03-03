@@ -152,6 +152,9 @@
            03  IDX-G               PIC 9(04).
       *
            03  IDX-N2              PIC 9(02).
+      *
+           03  IDX-SN              PIC 9(04).
+           03  IDD                 PIC 9(02).
       *    一時領域
        01  WRK-AREA.
       *
@@ -805,7 +808,8 @@
       *
       *    逓減加算算定チェック（診療行為入力時のみ）
            IF     (IDX-TEIGEN          >   ZERO )  AND
-                  (LNK-ORCSC-PG        =   "K02" )
+                  (LNK-ORCSC-PG        =   "K02"
+                                       OR  "KT01" )
                PERFORM 1008-TEIGEN-SYORI-SEC
            END-IF
       *
@@ -882,6 +886,7 @@
                    IF      WRK-COM-ZENKNSKBN (IDX-Z)   =   "1"
                                                        OR  "2"
                        IF      LNK-ORCSC-PG        =   "K02"
+                                                   OR  "KT01"
                            PERFORM 100115-ZENKNSCOMMNT-SET-SEC
                        END-IF
                    END-IF
@@ -1280,7 +1285,8 @@
                GO      TO      100812-TEIGEN-CHK-EXT
            END-IF
       *    今回入力分
-           IF      SPA-NYUGAIKBN       =   "1"
+           IF     (SPA-NYUGAIKBN       =   "1" )
+              OR  (LNK-ORCSC-PG        =   "KT01" )
               ADD      WRK-COM-NYU-KAI(IDX-TEIGEN)
                                            TO  LNK-ORCSC-TEIGEN-CNT
                                                               (IDX-TEI)
@@ -1322,6 +1328,11 @@
            MOVE    WRK-SRYCD           TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
            IF      FLG-TENSU           =   1
+               GO      TO      108121-SANTEI-CHK-EXT
+           END-IF
+      *    外来まとめはＳＰＡに編集
+           IF      LNK-ORCSC-KT01FLG    =   "1"
+               PERFORM 2005121-KT01-SANTEI-SEC
                GO      TO      108121-SANTEI-CHK-EXT
            END-IF
       *
@@ -1406,7 +1417,30 @@
        108121-SANTEI-CHK-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    外来まとめ処理
+      *****************************************************************
+       2005121-KT01-SANTEI-SEC      SECTION.
       *
+           PERFORM VARYING     IDX-SN      FROM    1   BY  1
+                   UNTIL      (IDX-SN      >   100 )   OR
+                              (LNK-ORCSC-KT01-SRYCD  (IDX-SN) =   SPACE)
+               IF      WRK-SRYCD       =   LNK-ORCSC-KT01-SRYCD(IDX-SN)
+                   INITIALIZE                  SANTEI-REC
+                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+      *            当日まで対象とする
+                   PERFORM VARYING     IDD         FROM    1   BY  1
+                           UNTIL      (IDD         >   IDX-Y2 )
+                       MOVE    LNK-ORCSC-KT01-DAY (IDX-SN IDD)
+                                                   TO  SANTEI-DAY (IDD)
+                       ADD     SANTEI-DAY (IDD)    TO  SANTEI-MSANTEICNT
+                   END-PERFORM
+                   MOVE    SANTEI-MSANTEICNT   TO  WRK-SANTEI-CNT
+               END-IF
+           END-PERFORM
+           .
+       2005121-KT01-SANTEI-EXT.
+           EXIT.
       *****************************************************************
       *    神経磁気診断のコメント自動発生処理
       *****************************************************************
@@ -2363,7 +2397,9 @@
       *        包括同一検査チェック
                IF     (SPA-NYUGAIKBN       =   "2" )  OR
                       (LNK-ORCSC-KENSAFLG  =   1   )
-                   PERFORM 2001-DOUCHK-SEC
+                   IF      LNK-ORCSC-PG    NOT =   "KT01"
+                       PERFORM 2001-DOUCHK-SEC
+                   END-IF
                END-IF
                IF      SPA-ERRCD           =   SPACE
                    IF      SPA-NYUGAIKBN       =   "1"
@@ -2732,6 +2768,8 @@
            MOVE    "2"                 TO  LNK-SC91-KBN
            MOVE    "160062310"         TO  LNK-SC91-SRYCD
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
+           MOVE    LNK-ORCSC-KT01-AREA
+                                       TO  LNK-SC91-KT01-AREA
            CALL    "ORCSC91"           USING
                                        MCPAREA
                                        ORCSC91AREA
@@ -2759,6 +2797,8 @@
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
            MOVE    "160155110"         TO  LNK-SC91-SRYCD
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
+           MOVE    LNK-ORCSC-KT01-AREA
+                                       TO  LNK-SC91-KT01-AREA
            CALL    "ORCSC91"           USING
                                        MCPAREA
                                        ORCSC91AREA
@@ -3741,6 +3781,12 @@
                                END-IF
                            END-IF
                        END-IF
+      *                算定履歴
+                       IF      WRK-SRYCD (1:1)     =   "1"
+                           MOVE    TNS-SANTEIRRKKBN
+                                           TO  LNK-ORCSC-SANTEIRRKKBN
+                                                          (07 IDXS)
+                       END-IF
       *
       *                乳幼児加算セット
                        PERFORM 30051-NENREI-SET-SEC
@@ -4119,6 +4165,7 @@
            MOVE    SPACE               TO  LNK-SC92-LSTSRYKA
            MOVE    SPACE               TO  LNK-SC92-LSTSRYKAMEI
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC92-TEISEI-AREA
+           MOVE    LNK-ORCSC-KT01-AREA     TO  LNK-SC92-KT01-AREA
            CALL    "ORCSC92"           USING
                                        MCPAREA
                                        ORCSC92AREA
@@ -4181,6 +4228,12 @@
                                                     (07 IDXS 01)
                     MOVE    WRK-SAI-DAY    TO  LNK-ORCSC-INPUTCD
                                                     (07 IDXS 01)(3:2)
+               END-IF
+      *        算定履歴
+               IF      WRK-SRYCD (1:1)     =   "1"
+                   MOVE    TNS-SANTEIRRKKBN
+                                           TO  LNK-ORCSC-SANTEIRRKKBN
+                                                          (07 IDXS)
                END-IF
       *        併用チェック用
                ADD     1               TO  WRK-GMN-MAX
@@ -4341,6 +4394,8 @@
            MOVE    LNK-ORCSC-SYORIFLG  TO  LNK-SC91-SYORIFLG
            MOVE    WRK-SRYCD           TO  LNK-SC91-SRYCD
            MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC91-TEISEI-AREA
+           MOVE    LNK-ORCSC-KT01-AREA
+                                       TO  LNK-SC91-KT01-AREA
            CALL    "ORCSC91"           USING
                                        MCPAREA
                                        ORCSC91AREA
@@ -4418,6 +4473,12 @@
       *
                    MOVE    "4"             TO  LNK-ORCSC-AUTOKBN
                                                    (07 IDXS)
+      *            算定履歴
+                   IF      WRK-SRYCD (1:1)     =   "1"
+                       MOVE    TNS-SANTEIRRKKBN
+                                           TO  LNK-ORCSC-SANTEIRRKKBN
+                                                          (07 IDXS)
+                   END-IF
                END-IF
                MOVE    HZN-SCR-REC         TO  WRK-SCR-REC 
            END-IF
@@ -4457,6 +4518,12 @@
       *
                MOVE    "4"             TO  LNK-ORCSC-AUTOKBN
                                                    (07 IDXS)
+      *        算定履歴
+               IF      WRK-SRYCD (1:1)     =   "1"
+                   MOVE    TNS-SANTEIRRKKBN
+                                           TO  LNK-ORCSC-SANTEIRRKKBN
+                                                          (07 IDXS)
+               END-IF
       *        入院回数
                IF      TBL-NYUINDAY-AREA   NOT =   ZERO
                     PERFORM 30071-BA-DAY-HENSYU-SEC

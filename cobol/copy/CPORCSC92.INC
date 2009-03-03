@@ -44,7 +44,7 @@
       *    対象・追加ＩＤＸ
            03  LNK-SC92-GMN-IDX        PIC 9(04).
       *    処理ＰＧ名
-           03  LNK-SC92-PG             PIC X(03).
+           03  LNK-SC92-PG             PIC X(04).
       *
            03  LNK-SC92-AREA.
       *        年齢 
@@ -102,4 +102,13 @@
       *    入力値（ORCSC97）（診療行為画面入力時のみ）
            03  LNK-SC92-INPUT-G        PIC X(100).
            03  LNK-SC92-TIMEFLG        PIC X(01).
+      *
+      *外来まとめ算定履歴領域
+           03  LNK-SC92-KT01-AREA.
+               05  LNK-SC92-KT01FLG         PIC X(01).
+               05  LNK-SC92-KT01-OCC        OCCURS   100.
+                   07  LNK-SC92-KT01-SRYCD  PIC X(09).
+                   07  LNK-SC92-KT01-DAY-G.
+                       09  LNK-SC92-KT01-DAY     PIC 9(03)
+                                                  OCCURS   31.
       *

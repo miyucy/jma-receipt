@@ -58,6 +58,7 @@
       * 04.03.00     NACL-多々納  08/07/01  検査加算種別対応他
       * 04.04.00     NACL-多々納  08/12/21  出来高算定コード対応
       * 04.04.00     NACL-多々納  09/01/09  包括検査コメント編集追加
+      * 04.04.00     NACL-多々納  09/02/12  外来まとめ対応
       *****************************************************************
       *
       *
@@ -291,8 +292,9 @@
              AND  (LNK-SC93-ERRCD          =   ZERO)
       *    検査の包括があった時、まとめる
       *    入院で診療行為入力はしない
-               IF     (SPA-NYUGAIKBN       =   "1" )  AND
-                      (LNK-SC93-PG         =   "K02N")
+               IF    ((SPA-NYUGAIKBN       =   "1" )  AND
+                      (LNK-SC93-PG         =   "K02N") )
+               OR     (LNK-SC93-PG         =   "KT01")
                   IF      FLG-KENSA-ARI       =   1
                        IF      LNK-SC93-KENSAARIFLG    =   1
                            PERFORM 200-KENSA-SORT-SEC
@@ -409,6 +411,12 @@
                MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
                MOVE    SPA-SRYKA           TO  WRK-SRYKA
            END-IF
+      *    外来まとめ
+           IF     (LNK-SC93-PG         =   "KT01")
+               MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
+               MOVE    SPA-SRYKA           TO  WRK-SRYKA
+               MOVE    SPA-DRCD(2:4)       TO  WRK-DRCD
+           END-IF
       *!
       *    診療種別区分編集
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -420,6 +428,7 @@
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "*"
       *            入院以外エラー
                    IF      LNK-SC93-PG         =   "K02N"
+                                               OR  "KT01"
                        IF     (IDX             =   1  )  OR
                               (SPA-GMN-INPUTCD(IDX - 1)  =   ".")
                            MOVE    "9005"          TO  SPA-ERRCD
@@ -1893,8 +1902,8 @@
                    END-IF
                END-IF
       *        入院の日付指定がある場合、対象外
-               IF     (SPA-NYUGAIKBN       =   "1" )  AND
-                      (IDX                 <   SPA-MAX-LINE )  AND
+      ******** IF     (SPA-NYUGAIKBN       =   "1" )  AND
+               IF     (IDX                 <   SPA-MAX-LINE )  AND
                       (SPA-GMN-INPUTCD (IDX + 1)(1:1) =   "*" )
                    MOVE    9               TO  TBL-HOUKNARI (ID2)
       *            警告
@@ -2098,6 +2107,9 @@
       *****************************************************************
        200-KENSA-SORT-SEC              SECTION.
       *
+      *TEST
+           DISPLAY "C93 200-KENSA-SORT-SEC" 
+      *TEST
       *    画面ＳＰＡ領域ワーク
            INITIALIZE                  WRK-GMN-REC
            INITIALIZE                  HZN-GMN-REC
@@ -2145,6 +2157,9 @@
            IF      SPA-GMN-MAX     NOT =   IDX-TBL
                MOVE    IDX-TBL         TO  SPA-GMN-MAX
            END-IF
+      *TEST
+           DISPLAY "C93 200-KENSA-SORT-EXT SPA-GMN-MAX:" SPA-GMN-MAX
+      *TEST
       *
            .
        200-KENSA-SORT-EXT.

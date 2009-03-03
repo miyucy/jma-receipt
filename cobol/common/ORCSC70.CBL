@@ -97,8 +97,16 @@
                                                SPA-AREA
       *
                WHEN   (SPA-SRYYMD          >=  "20060401" )  AND
-                      (SPA-SRYYMD          <   "99999999" )
+                      (SPA-SRYYMD          <   "20080401" )
                    CALL    "ORCSC70200604"     USING
+                                               MCPAREA
+                                               ORCSC00AREA
+                                               WRK-SCR-REC
+                                               SPA-AREA
+      *
+               WHEN   (SPA-SRYYMD          >=  "20080401" )  AND
+                      (SPA-SRYYMD          <   "99999999" )
+                   CALL    "ORCSC70200804"     USING
                                                MCPAREA
                                                ORCSC00AREA
                                                WRK-SCR-REC

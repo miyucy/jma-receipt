@@ -47,6 +47,7 @@
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       *  04.03.00    NACL-多々納  08/08/18  特定疾患処方管理加算単独対応
+      *  04.04.00    NACL-多々納  09/02/XX  外来まとめ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -376,6 +377,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
            IF      LNK-ORCSC-PG        =   "K02"
+                                       OR  "KT02"
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            ELSE
                INITIALIZE                      SPA-K01KYOUTU
@@ -1020,6 +1022,7 @@
            END-IF
       *
            IF      LNK-ORCSC-PG        =   "K02"
+                                       OR  "KT02"
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *        他保険で算定済み
                INITIALIZE                  SPA-SYOHOU-ZUMI
@@ -1316,6 +1319,7 @@
            END-IF
       *
            IF      LNK-ORCSC-PG        =   "K02"
+                                       OR  "KT02"
                MOVE    WRK-HENSYU-MEISYO   TO  SPA-SYOHO-MEI
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            END-IF
@@ -1524,6 +1528,7 @@
            END-IF
       *
            IF      LNK-ORCSC-PG        =   "K02"
+                                       OR  "KT02"
                MOVE    WRK-HENSYU-MEISYO   TO  SPA-SYOHO-MEI
                MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            END-IF
@@ -3221,7 +3226,7 @@
                GO      TO      300211-NYUKASAN-SYORI-EXT
            END-IF
       *
-      *        算定履歴チェック処理
+      *    算定履歴チェック処理
            IF      TNS-SANTEIRRKKBN    NOT =   ZERO
                PERFORM 3001-SANTEI-CHK-SEC
            END-IF
@@ -3231,6 +3236,11 @@
                                                    (02 IDXS)
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
                                                    (02 IDXS)
+               IF      WRK-SRYCD (1:1)     =   "1"
+                   MOVE    TNS-SANTEIRRKKBN
+                                           TO  LNK-ORCSC-SANTEIRRKKBN
+                                                          (02 IDXS)
+               END-IF
       *        年齢加算処理
                PERFORM 3002-NENREI-KASAN-SEC
            END-IF
@@ -3348,9 +3358,6 @@
                MOVE    TNS-TEN         TO  LNK-ORCSC-TENSU
                                                    (02 IDXS)
                IF      WRK-SRYCD       =   "630010002"
-      *********    COMPUTE LNK-ORCSC-TENSU (02 IDXS)
-      *                                    =   WRK-KEIKEI
-      *********                            -   WRK-SANTEN
                    MOVE    WRK-SANTENSU    TO  LNK-ORCSC-TENSU
                                                    (02 IDXS)
                END-IF
@@ -3358,6 +3365,11 @@
                                                          (02 IDXS)
                MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
                                                          (02 IDXS)
+               IF      WRK-SRYCD (1:1)     =   "1"
+                   MOVE    TNS-SANTEIRRKKBN
+                                           TO  LNK-ORCSC-SANTEIRRKKBN
+                                                          (02 IDXS)
+               END-IF
       *        年齢加算処理
                PERFORM 3002-NENREI-KASAN-SEC
            END-IF
@@ -3567,6 +3579,11 @@
                                                          (02 IDXS)
                MOVE    WRK-HKNCOMBI    TO  LNK-ORCSC-HKNCOMBI
                                                          (02 IDXS)
+               IF      WRK-SRYCD (1:1)     =   "1"
+                   MOVE    TNS-SANTEIRRKKBN
+                                           TO  LNK-ORCSC-SANTEIRRKKBN
+                                                          (02 IDXS)
+               END-IF
       *        年齢加算処理
                PERFORM 3002-NENREI-KASAN-SEC
            END-IF
@@ -3721,6 +3738,8 @@
            MOVE    WRK-SRYCD           TO  LNK-SC91-SRYCD
            MOVE    LNK-ORCSC-TEISEI-AREA
                                        TO  LNK-SC91-TEISEI-AREA
+           MOVE    LNK-ORCSC-KT01-AREA
+                                       TO  LNK-SC91-KT01-AREA
            CALL    "ORCSC91"           USING
                                        MCPAREA
                                        ORCSC91AREA

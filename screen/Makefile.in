@@ -385,6 +385,17 @@ SCREEN_screen = \
 	P02G.glade \
 	P02G2.glade \
 	XFID2.glade \
+	KT01.glade \
+	KT011.glade \
+	KT012.glade \
+	KT013.glade \
+	KT02.glade \
+	KT03.glade \
+	KT98.glade \
+	KTERR.glade \
+	KTERR2.glade \
+	KTID1.glade \
+	KTID2.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
 

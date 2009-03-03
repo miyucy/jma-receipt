@@ -1,0 +1,65 @@
+KT012	{
+	fixed1	{
+		DOSEL	{
+			value	varchar(40);
+		};
+		scrolledwindow2	{
+			hpos	int;
+			vpos	int;
+			RRKLIST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(4);
+					value1	varchar(16);
+					value2	varchar(2);
+					value3	varchar(4);
+				}	[150];
+				select	bool[150];
+			};
+		};
+		scrolledwindow3	{
+			hpos	int;
+			vpos	int;
+			MEILIST	{
+				count	int;
+				row	int;
+				rowattr	int;
+				item	{
+					value0	varchar(3);
+					value1	varchar(90);
+				}	[800];
+				select	bool[800];
+			};
+		};
+		SELNUM	{
+			value	number(4);
+		};
+		SRYKBN_COMB	{
+			SRYKBN	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(23)[20];
+		};
+		NYUGAIKBN_COMB	{
+			NYUGAIKBN	{
+				value	varchar(10);
+			};
+			count	int;
+			item	varchar(10)[2];
+		};
+		GRPHOSPNUM_COMB	{
+			GRPHOSPNUM	{
+				value	varchar(23);
+			};
+			count	int;
+			item	varchar(23)[9];
+		};
+		B03	{
+	           	state	int;
+			label	varchar(20);
+		};
+	};
+};

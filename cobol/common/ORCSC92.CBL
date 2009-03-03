@@ -146,6 +146,8 @@
            03  IDX-T2              PIC 9(04).
            03  IDX-T3              PIC 9(04).
            03  IDX-N2              PIC 9(02).
+           03  IDX-SN              PIC 9(04).
+           03  IDD                 PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -956,6 +958,7 @@
       *    数量ゼロはエラーとする
            IF      LNK-SC92-PG         =   "K02"
                                        OR  "J04"
+                                       OR  "KT01"
              IF     (LNK-SC97-SURYOCNT   >   ZERO  )  AND
                     (LNK-SC97-SURYO      =   ZERO  )
                IF     (SPA-COM-INPUTCD(IDX-T)(1:1)
@@ -1307,6 +1310,8 @@
                                        TO  LNK-SC91-SURYO
            MOVE    LNK-SC92-TEISEI-AREA
                                        TO  LNK-SC91-TEISEI-AREA
+           MOVE    LNK-SC92-KT01-AREA
+                                       TO  LNK-SC91-KT01-AREA
       *
            CALL    "ORCSC91"           USING    MCPAREA
                                                 ORCSC91AREA
@@ -1531,6 +1536,10 @@
                GO      TO      2005-HEIYOU-CHK-EXT
            END-IF
       *
+      *TEST
+           DISPLAY "LNK-SC92-SRYCD:" LNK-SC92-SRYCD
+                ",SPA-SRYYMD :" SPA-SRYYMD 
+      *TEST
       *    チェックテーブル検索
            INITIALIZE                  CHK-REC
            MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
@@ -1591,7 +1600,8 @@
                        MOVE    1               TO  SPA-COM-DAYCHK-FLG
                                                               (IDX-T)
       *                入院
-                       IF     (SPA-NYUGAIKBN       =   "1" )
+                       IF    ((SPA-NYUGAIKBN       =   "1" )
+                           OR (LNK-SC92-PG         =   "KT01"))
                           AND (LNK-SC92-KBN        =   "4" )
       *                    同一画面でのチェック
                            PERFORM 200521-CHKNYU-INPUT-SEC
@@ -1816,6 +1826,12 @@
                       END-IF
                   END-IF
               END-IF
+      *TEST
+           DISPLAY "WRK-ERR-SRYCD:" WRK-ERR-SRYCD
+                 ",WRK-ERR-YMD:" WRK-ERR-YMD
+                 ",SANTEI-SRYYM:" SANTEI-SRYYM
+                 ",SANTEI-MSANTEID:" SANTEI-MSANTEID
+      *TEST
            END-IF
       *    リハビリテーション管理料チェック
            IF    ((FLG-CHKERR          =   1          )
@@ -2021,6 +2037,12 @@
       *****************************************************************
        200512-SANTEI-SELECT-SEC            SECTION.
       *
+      *    外来まとめはＳＰＡに編集
+           IF      LNK-SC92-KT01FLG    =   "1"
+               PERFORM 2005121-KT01-SANTEI-SEC
+               GO      TO   200512-SANTEI-SELECT-EXT
+           END-IF
+      *
            INITIALIZE                  TBLW-SANTEI-AREA
            MOVE    ZERO                TO  IDX-TBL
       *    算定履歴検索
@@ -2061,6 +2083,45 @@
       *
            .
        200512-SANTEI-SELECT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来まとめ処理
+      *****************************************************************
+       2005121-KT01-SANTEI-SEC      SECTION.
+      *
+           INITIALIZE                  TBLW-SANTEI-AREA
+           MOVE    ZERO                TO  IDX-TBL
+           PERFORM VARYING     IDX-SN      FROM    1   BY  1
+                   UNTIL      (IDX-SN      >   100 )   OR
+                              (LNK-SC92-KT01-SRYCD  (IDX-SN) =   SPACE)
+               INITIALIZE                  SANTEI-REC
+               MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+               MOVE    SPA-PTID            TO  SANTEI-PTID
+               MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+               MOVE    LNK-SC92-KT01-SRYCD (IDX-SN)
+                                           TO  SANTEI-SRYCD
+               MOVE    ZERO                TO  SANTEI-SRYKA
+               MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+               MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+               PERFORM VARYING     IDD         FROM    1   BY  1
+                       UNTIL      (IDD         >   IDX-Y2 )
+                   MOVE    LNK-SC92-KT01-DAY (IDX-SN IDD)
+                                           TO  SANTEI-DAY (IDD)
+                   ADD     SANTEI-DAY (IDD)    TO  SANTEI-MSANTEICNT
+                   IF      SANTEI-DAY (IDD)    >   ZERO
+                       IF      SANTEI-MSANTEID     =   SPACE
+                           MOVE    IDD             TO  SANTEI-MSANTEID
+                       END-IF
+                   END-IF
+               END-PERFORM
+               ADD     1                   TO  IDX-TBL
+               MOVE    SANTEI-REC          TO  TBLW-SANTEI-REC
+                                                         (IDX-TBL)
+           END-PERFORM
+           .
+       2005121-KT01-SANTEI-EXT.
            EXIT.
       *
       *****************************************************************

@@ -47,6 +47,15 @@
                    07  LNK-SC91-TEI-KAISU   PIC 9(03).
       *    労災のリハビリ（０：チェックあり、１：３月以内なし）
            03  LNK-SC91-CHKFLG         PIC 9(01).
+      *外来まとめ算定履歴領域
+           03  LNK-SC91-KT01-AREA.
+               05  LNK-SC91-KT01FLG         PIC X(01).
+               05  LNK-SC91-KT01-OCC        OCCURS   100.
+                   07  LNK-SC91-KT01-SRYCD  PIC X(09).
+                   07  LNK-SC91-KT01-DAY-G.
+                       09  LNK-SC91-KT01-DAY     PIC 9(03)
+                                                  OCCURS   31.
+      *
       *出力
       *    最大件数
            03  LNK-SC91-MAXCNT         PIC 9(04).

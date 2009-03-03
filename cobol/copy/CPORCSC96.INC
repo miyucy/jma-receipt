@@ -27,5 +27,5 @@
       *
        01  ORCSC96AREA.
       *    ½èÍý£Ð£ÇÌ¾
-           03  LNK-SC96-PG             PIC X(03).
+           03  LNK-SC96-PG             PIC X(05).
       *

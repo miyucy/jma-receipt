@@ -84,6 +84,9 @@
       *
            03  ID2                 PIC 9(02).
       *
+           03  IDX-SN              PIC 9(04).
+           03  IDD                 PIC 9(02).
+      *
       *    一時領域
        01  WRK-AREA.
       *
@@ -524,10 +527,28 @@
       *    上限他月数
            IF      TNS-JGNCNTETCM     >   ZERO
                PERFORM 1002-SANTEI-ETC-SEC
+               IF      LNK-SC91-KT01FLG    =   "1"
+      *            外来まとめ月数
+                   PERFORM 10029-KT01SANTEI-ETC-SEC
+               END-IF
            ELSE
-               PERFORM 1001-SANTEI-YMD-SEC
+               IF      LNK-SC91-KT01FLG    =   "1"
+      *            外来まとめ月数
+                   PERFORM 1009-KT01SANTEI-SEC
+               ELSE
+                   PERFORM 1001-SANTEI-YMD-SEC
+               END-IF
                MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
            END-IF
+      *TEST
+           DISPLAY "C91 LNK-SC91-SRYCD:" LNK-SC91-SRYCD
+                ",TNS-JGNCNT :" TNS-JGNCNT
+                ",TNS-JGNCNT1D :" TNS-JGNCNT1D
+                ",LNK-SC91-CNT:" LNK-SC91-CNT
+                ",LNK-SC91-DAYCNT:" LNK-SC91-DAYCNT
+                ",WRK-DOCNT:" WRK-DOCNT
+                ",LNK-SC91-KT01FLG:" LNK-SC91-KT01FLG
+      *TEST
            MOVE    TNS-JGNCNT1D        TO  LNK-SC91-DAYMAXCNT
       *D   MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
       *
@@ -612,6 +633,11 @@
                END-IF
            END-IF
       *
+      *
+      *TEST
+           DISPLAY "C91 LNK-SC91-ERRCD:" LNK-SC91-ERRCD
+                ",WRK-RSI-KBN  :" WRK-RSI-KBN 
+      *TEST
       *    労災毎の算定時
            IF     (LNK-SC91-ERRCD  NOT =   SPACE  )  AND
                   (WRK-RSI-KBN     NOT =   SPACE  )
@@ -765,6 +791,66 @@
            EXIT.
       *
       *****************************************************************
+      *    外来まとめ月数処理
+      *****************************************************************
+       1009-KT01SANTEI-SEC      SECTION.
+      *
+      *    保険毎のコードクリア
+           MOVE    SPACE           TO  WRK-RSI-KBN
+      *TEST
+          DISPLAY "1009-KT01SANTEI-SEC"
+              ",WRK-SRYCD:"  WRK-SRYCD
+              ",TBL1:"  LNK-SC91-KT01-SRYCD (1)
+              ",TBL2:"  LNK-SC91-KT01-SRYCD (2)
+      *TEST
+      *
+           INITIALIZE                  SANTEI-REC
+           PERFORM VARYING     IDX-SN      FROM    1   BY  1
+                   UNTIL      (IDX-SN      >   100 )   OR
+                              (LNK-SC91-KT01-SRYCD  (IDX-SN) =   SPACE)
+               IF      WRK-SRYCD       =   LNK-SC91-KT01-SRYCD (IDX-SN)
+                   INITIALIZE                  SANTEI-REC
+                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+      *TEST
+          DISPLAY "IDX-Y2:" IDX-Y2
+              ",DAY1:"  LNK-SC91-KT01-DAY (IDX-SN 1)
+              ",DAY2:"  LNK-SC91-KT01-DAY (IDX-SN 2)
+              ",DAY3:"  LNK-SC91-KT01-DAY (IDX-SN 3)
+      *TEST
+                   PERFORM VARYING     IDD         FROM    1   BY  1
+                           UNTIL      (IDD         >   IDX-Y2 )
+                       MOVE    LNK-SC91-KT01-DAY (IDX-SN IDD)
+                                                   TO  SANTEI-DAY (IDD)
+                       ADD     SANTEI-DAY (IDD)    TO  SANTEI-MSANTEICNT
+                       IF      SANTEI-DAY (IDD)    >   ZERO
+                           IF      SANTEI-MSANTEID     =   ZERO
+                               MOVE    IDD         TO  SANTEI-MSANTEID
+                           END-IF
+                       END-IF
+                   END-PERFORM
+                   MOVE    100             TO  IDX-SN
+               END-IF
+           END-PERFORM
+      *
+      *TEST
+          DISPLAY "SANTEI-MSANTEICNT:" SANTEI-MSANTEICNT
+      *TEST
+      *    算定歴の回数をチェックする
+           IF      TNS-JGNCNT          >   ZERO
+               MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
+               MOVE    SANTEI-MSANTEICNT   TO  LNK-SC91-CNT
+           ELSE
+               MOVE    SANTEI-MSANTEICNT   TO  LNK-SC91-CNT
+           END-IF
+      *    上限１日
+           MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+           MOVE    TNS-JGNCNT1D        TO  LNK-SC91-DAYMAXCNT
+           MOVE    SANTEI-DAY (IDX-Y2) TO  LNK-SC91-DAYCNT
+           .
+       1009-KT01SANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    労災でリハビリの時３月以降の件数カウント処理（月数回数）
       *****************************************************************
        10012-RSI-MCNT-SEC      SECTION.
@@ -837,6 +923,13 @@
                IF      SANTEI-SRYYM    <   WRK-STRYM
                    MOVE    1               TO  FLG-SANTEI
                ELSE
+      *!!!
+      *        外来まとめは当月分をふくめない
+               IF     (LNK-SC91-KT01FLG    =   "1"   )
+               AND    (SANTEI-SRYYM        =   SPA-SRYYMD(1:6))
+                   CONTINUE
+               ELSE
+      *!!!
                    IF      WRK-CHK-SRYYMD  =   SPACE
                        MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYMD
                                                                (1:6)
@@ -874,6 +967,9 @@
                        END-PERFORM
                    END-IF
                END-IF
+      *!!!
+           END-IF
+      *!!!
       *
                IF      FLG-SANTEI          =   ZERO
                    MOVE    "tbl_santei"        TO  MCP-TABLE
@@ -901,6 +997,31 @@
       *
            .
        1002-SANTEI-ETC-EXT.
+           EXIT.
+      *****************************************************************
+      *    外来まとめ月数処理
+      *****************************************************************
+       10029-KT01SANTEI-ETC-SEC         SECTION.
+      *
+           INITIALIZE                  SANTEI-REC
+           PERFORM VARYING     IDX-SN      FROM    1   BY  1
+                   UNTIL      (IDX-SN      >   100 )   OR
+                              (LNK-SC91-KT01-SRYCD  (IDX-SN) =   SPACE)
+               IF      WRK-SRYCD       =   LNK-SC91-KT01-SRYCD (IDX-SN)
+                   INITIALIZE                  SANTEI-REC
+                   PERFORM VARYING     IDD         FROM    1   BY  1
+                           UNTIL      (IDD         >   31 )
+                       MOVE    LNK-SC91-KT01-DAY (IDX-SN IDD)
+                                                   TO  SANTEI-DAY (IDD)
+                       ADD     SANTEI-DAY (IDD)    TO  SANTEI-MSANTEICNT
+                   END-PERFORM
+                   MOVE    100             TO  IDX-SN
+               END-IF
+           END-PERFORM
+           ADD     SANTEI-MSANTEICNT   TO  LNK-SC91-CNT
+      *
+           .
+       10029-KT01SANTEI-ETC-EXT.
            EXIT.
       *****************************************************************
       *    今回診療行為チェック処理

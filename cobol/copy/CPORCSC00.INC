@@ -39,7 +39,7 @@
       *    ３：終了時の自動加算算定
            03  LNK-ORCSC-KBN           PIC X(01).
       *    メインＰＧ
-           03  LNK-ORCSC-PG            PIC X(03).
+           03  LNK-ORCSC-PG            PIC X(04).
       *    剤ごとの回数
            03  LNK-ORCSC-KAISU         PIC 9(03).
       *    訂正フラグ
@@ -252,6 +252,8 @@
                        09  LNK-ORCSC-AUTOKBN       PIC X(01).
       *                包括剤
                        09  LNK-ORCSC-HKTKBN        PIC 9(01).
+      *                算定履歴区分
+                       09  LNK-ORCSC-SANTEIRRKKBN  PIC X(01).
       *    確認メッセージ
            03  LNK-ORCSC-KIDCD              PIC  X(04).
       *
@@ -279,4 +281,13 @@
                    07  LNK-ORCSC-TEIGEN-HOU       PIC X(02).
                    07  LNK-ORCSC-TEIGEN-CNT       PIC 9(03).
                    07  LNK-ORCSC-TEIGEN-SANTEI    PIC 9(03).
+      *
+      *外来まとめ算定履歴領域
+           03  LNK-ORCSC-KT01-AREA.
+               05  LNK-ORCSC-KT01FLG         PIC X(01).
+               05  LNK-ORCSC-KT01-OCC        OCCURS   100.
+                   07  LNK-ORCSC-KT01-SRYCD  PIC X(09).
+                   07  LNK-ORCSC-KT01-DAY-G.
+                       09  LNK-ORCSC-KT01-DAY     PIC 9(03)
+                                                  OCCURS   31.
       *

@@ -30,6 +30,7 @@ SUBDIRS = \
 	orca44 \
 	orca51 \
 	orca52 \
+	orca61 \
 	orca71 \
 	orca82 \
 	orca101 \

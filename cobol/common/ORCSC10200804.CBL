@@ -1065,6 +1065,7 @@
            END-IF
       *
            IF      SPA-NYUGAIKBN       =   "2"
+           AND     LNK-ORCSC-PG        =   "K02"
       *    外来管理加算、継続管理加算の判定
                PERFORM 100111-KEIZOKU-CHK-SEC
                IF      FLG-GAIRAI          =   1
@@ -3893,9 +3894,13 @@
        200-ALL-SYORI-SEC               SECTION.
       *
       *    重複チェック
+           IF      LNK-ORCSC-PG        =   "K02"
+      *
            PERFORM 2000-JYUFUKU-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      200-ALL-SYORI-EXT
+           END-IF
+      *
            END-IF
       *
       *    包括まとめ入力は対象外
@@ -3952,6 +3957,10 @@
                    UNTIL      (IDX-Z       >   SPA-MAX-LINE      )  OR
                               (SPA-ERRCD           NOT =   SPACE )  OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
+      *!!!
+      *              来まとめは診察料チェックなし
+                   OR        (LNK-ORCSC-PG        =   "KT01" )
+      *!!!
              IF   (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
                CONTINUE
              ELSE
@@ -4006,7 +4015,6 @@
                    END-IF
       *            労災の時、労災コードで判定する
                    IF      SPA-HKNKBN      =   1
-      **********     AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                      AND  (SPA-RSI-JUNKYO  NOT =   "1" )
                        PERFORM 20012-RSISINSATU-CHK-SEC
                    END-IF
@@ -4017,8 +4025,7 @@
       *        労災コードの判定
                PERFORM 200112-RSI-KEI-CHK-SEC
       *
-      *********IF    ( WRK-COM-ZAIEND(IDX-Z)   NOT =    "1"   )  OR
-      *              外来管理加算、継続加算以外のチェック
+      *        外来管理加算、継続加算以外のチェック
                IF    ( FLG-GAIRAI              =    1   OR
                        FLG-KEIZOK              =    1   OR
       *                労災分以外
@@ -4089,6 +4096,9 @@
                            (WRK-SINSATU-KBN    =   "D"   OR
                                                    "S" )
                       OR   (FLG-DOUJITU        =   1  )
+      *!!!
+                      OR   (LNK-ORCSC-PG       =   "KT01"  )
+      *!!!
                        CONTINUE
                    ELSE
                        IF      LNK-ORCSC-CHK-IDX   >   ZERO
@@ -4296,6 +4306,12 @@
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      200-ALL-SYORI-EXT
            END-IF
+      *!!!
+      *    以下外来まとめはチェックなし
+           IF     (LNK-ORCSC-PG        =   "KT01" )
+                GO      TO      200-ALL-SYORI-EXT
+           END-IF
+      *!!!
       *
       *    各検診からのダミーがある時、診察料を削除する
            IF    ((FLG-KENSIN          =   1  )  OR
@@ -4337,11 +4353,19 @@
            END-IF
       *    同日初診チェック
            IF     (FLG-DOUJITU         =   1   )
+      *!!!
+      *    外来まとめはチェックなし
+           AND    (LNK-ORCSC-KT01FLG   =   SPACE  )
+      *!!!
                PERFORM 20015-DOUJIT-CHK-SEC
            END-IF
       *    新規患者入力の時、必ず初診料であること
            IF     (LNK-ORCSC-PG        =   "K02"  )  AND
                   (LNK-ORCSC-SYOSIN    =   1      )
+      *!!!
+      *    外来まとめはチェックなし
+           AND    (LNK-ORCSC-KT01FLG   =   SPACE  )
+      *!!!
                IF     (IDX-ZAI1            =   ZERO) AND
                       (IDX-ZAI2            =   1   )  AND
                       (IDX-SYU2            >   ZERO )
@@ -4372,6 +4396,7 @@
       *    訂正・入院の時、チェックなし
            IF     (LNK-ORCSC-SYORIFLG  =   ZERO )  AND
                   (SPA-NYUGAIKBN       =   "2"  )
+            AND   (LNK-ORCSC-PG        =   "K02" )
                IF     (LNK-ORCSC-CHK-IDX   >   ZERO       )  AND
       *???????????    (LNK-ORCSC-LSTYMD    =   SPA-SRYYMD )  AND
       *               同日再診有無
@@ -4412,6 +4437,7 @@
            END-IF
       *    以下外来のみとする
            IF      SPA-NYUGAIKBN       =   "1"
+            OR    (LNK-ORCSC-PG    NOT =   "K02" )
                 GO      TO      200-ALL-SYORI-EXT
            END-IF
       *
@@ -5043,9 +5069,9 @@
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
       *TEST
-      *        DISPLAY "C10 WRK-SYOYMD:" WRK-SYOYMD
-      *          ",LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
-      *          ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
+               DISPLAY "C10 WRK-SYOYMD:" WRK-SYOYMD
+                 ",LNK-DAY6-KEISAN:" LNK-DAY6-KEISAN
+                 ",LNK-DAY6-KEISANZEN:" LNK-DAY6-KEISANZEN
       *TEST
                MOVE    LNK-DAY6-KEISAN     TO  WRK-KEIYMD
                MOVE    LNK-DAY6-KEISANZEN  TO  WRK-KEIYMDZEN

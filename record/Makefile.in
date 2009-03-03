@@ -387,6 +387,17 @@ RECORD_files = \
 	P02G.rec \
 	P02G2.rec \
 	XFID2.rec \
+	KT01.rec \
+	KT011.rec \
+	KT012.rec \
+	KT013.rec \
+	KT02.rec \
+	KT03.rec \
+	KT98.rec \
+	KTERR.rec \
+	KTERR2.rec \
+	KTID1.rec \
+	KTID2.rec \
 
 DEF_files = \
 	HC01.def \

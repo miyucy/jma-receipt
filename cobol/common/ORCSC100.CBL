@@ -2307,10 +2307,10 @@
                MOVE    SPA-NYUHKT-G        TO  ORCSCHKTCHK-NYUHKT-G
                MOVE    "2"                 TO  ORCSCHKTCHK-SYORI
                MOVE    "K02"               TO  ORCSCHKTCHK-PG
+               MOVE    SPA-K02-TEISEI-AREA TO   LNK-ORCSC-TEISEI-AREA
                CALL    "ORCSCHKTCHK"       USING
                                            ORCSCHKTCHKAREA
                                            SPA-AREA
-                                           SPA-K02
                                            SPA-SCR-REC
                                            ORCSC00AREA
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
