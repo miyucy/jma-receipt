@@ -280,6 +280,8 @@
       *  04.03.04    NACL-Æ£¸¶    08/07/23  µÜ¾ë¸©¡¢´ä¼ê¸©ÃÏ¿ÌÂÐ±þ
       *                                     £²£°£°£¸Ç¯£¶·î¡ÁÂÐ¾Ý 
       *  04.03.05    NACL-ÌçÏÆ    08/12/01  ºßÂð¡Ê±¡³°Ê¬¡ËÊÔ½¸½¤Àµ
+      *
+      *  04.04.01    NACL-ÌçÏÆ    09/03/03  ÃÏÊý¸øÈñ¤Î¥ì¥»µ­ºÜÂÐ±þ¡Ê¥ì¥»ÅÅ´Þ¤à¡Ë
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2596,9 +2598,16 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2009-HOSPNUM
                    MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
                    MOVE    8                      TO  WRK-NAGASA
                ELSE
-                   IF    ( RECE02-TOTALTEN (IDX)      >   ZERO )
-                   AND   ( RECE02-FTNMONEY (IDX)      =   ZERO )
-                   AND   ( RECE02-ZEROKISAIFLG (IDX)  =   "1"  )
+                   IF   (( RECE02-TOTALTEN (IDX)      >   ZERO ) AND
+                         ( RECE02-FTNMONEY (IDX)      =   ZERO ) AND
+                         ( RECE02-ZEROKISAIFLG (IDX)  =   "1"  ))
+                   OR   (( RECE02-FUKUSHIFLG          =   "1"  ) AND
+                         ( RECE02-TOTALTEN (IDX)      =   ZERO ) AND
+                         ( RECE02-FTNMONEY (IDX)      =   ZERO ) AND
+                         ( RECE02-ZEROKISAIFLG (IDX)  =   "1"  ))
+                   OR   (( RECE02-FUKUSHIFLG          =   "1"  ) AND
+                         ( RECE02-TOTALTEN (IDX)      =   ZERO ) AND
+                         ( RECE02-FTNMONEY (IDX)      >   ZERO ))
                        MOVE    RECE02-FTNMONEY(IDX)   TO  WRK-NUM
                        MOVE    8                      TO  WRK-NAGASA
                    END-IF

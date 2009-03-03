@@ -224,6 +224,8 @@
       *  04.03.05    NACL-藤原    08/09/16  後期高齢者のＮＩレコードの作
       *                                     成の修正
       *  04.03.06    NACL-門脇    08/12/01  在宅（院外分）編集修正
+      *
+      *  04.04.01    NACL-門脇    09/03/03  地方公費のレセ記載対応（レセ電含む）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2914,6 +2916,13 @@
                          ( RECE62-TOTALTEN (IDX)      =   ZERO ) AND
                          ( RECE62-FTNMONEY (IDX)      =   ZERO ) AND
                          ( RECE62-ZEROKISAIFLG (IDX)  =   "1"  ))
+                   OR   (( RECE62-FUKUSHIFLG          =   "1"  ) AND
+                         ( RECE62-TOTALTEN (IDX)      =   ZERO ) AND
+                         ( RECE62-FTNMONEY (IDX)      =   ZERO ) AND
+                         ( RECE62-ZEROKISAIFLG (IDX)  =   "1"  ))
+                   OR   (( RECE62-FUKUSHIFLG          =   "1"  ) AND
+                         ( RECE62-TOTALTEN (IDX)      =   ZERO ) AND
+                         ( RECE62-FTNMONEY (IDX)      >   ZERO ))
                        MOVE    RECE62-FTNMONEY(IDX)   TO  WRK-NUM
                        MOVE    8                      TO  WRK-NAGASA
                    END-IF

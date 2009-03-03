@@ -4639,9 +4639,16 @@
                    MOVE    WRK-KGK7           TO  WRK-KOH-FTNMONEY(2)
                  END-IF
            END-IF
-           IF    ( RECE02-TOTALTEN (IDX3)     >   ZERO )
-           AND   ( RECE02-FTNMONEY (IDX3)     =   ZERO )
-           AND   ( RECE02-ZEROKISAIFLG (IDX3) =   "1"  )
+           IF   (( RECE02-TOTALTEN (IDX3)     >   ZERO ) AND
+                 ( RECE02-FTNMONEY (IDX3)     =   ZERO ) AND
+                 ( RECE02-ZEROKISAIFLG (IDX3) =   "1"  ))
+           OR   (( RECE02-FUKUSHIFLG          =   "1"  ) AND
+                 ( RECE02-TOTALTEN (IDX3)     =   ZERO ) AND
+                 ( RECE02-FTNMONEY (IDX3)     =   ZERO ) AND
+                 ( RECE02-ZEROKISAIFLG (IDX3) =   "1"  ))
+           OR   (( RECE02-FUKUSHIFLG          =   "1"  ) AND
+                 ( RECE02-TOTALTEN (IDX3)     =   ZERO ) AND
+                 ( RECE02-FTNMONEY (IDX3)     >   ZERO ))
                    MOVE    RECE02-FTNMONEY (IDX3)
                                               TO  WRK-KGK7
                    MOVE    WRK-KGK7           TO  WRK-KOH-FTNMONEY(2)
@@ -4697,9 +4704,16 @@
                        MOVE    WRK-KGK7        TO  WRK-KOH-FTNMONEY(3)
                    END-IF
                END-IF
-               IF    ( RECE02-TOTALTEN (IDX4)     >   ZERO )
-               AND   ( RECE02-FTNMONEY (IDX4)     =   ZERO )
-               AND   ( RECE02-ZEROKISAIFLG (IDX4) =   "1"  )
+               IF   (( RECE02-TOTALTEN (IDX4)      >   ZERO ) AND
+                     ( RECE02-FTNMONEY (IDX4)      =   ZERO ) AND
+                     ( RECE02-ZEROKISAIFLG (IDX4)  =   "1"  ))
+               OR   (( RECE02-FUKUSHIFLG           =   "1"  ) AND
+                     ( RECE02-TOTALTEN (IDX4)      =   ZERO ) AND
+                     ( RECE02-FTNMONEY (IDX4)      =   ZERO ) AND
+                     ( RECE02-ZEROKISAIFLG (IDX4)  =   "1"  ))
+               OR   (( RECE02-FUKUSHIFLG           =   "1"  ) AND
+                     ( RECE02-TOTALTEN (IDX4)      =   ZERO ) AND
+                     ( RECE02-FTNMONEY (IDX4)      >   ZERO ))
                    MOVE    RECE02-FTNMONEY (IDX4)
                                                TO  WRK-KGK7
                    MOVE    WRK-KGK7            TO  WRK-KOH-FTNMONEY(3)
@@ -4761,9 +4775,16 @@
                        MOVE    WRK-KGK7        TO  WRK-KOH-FTNMONEY(4)
                      END-IF
                END-IF
-               IF    ( RECE02-TOTALTEN (IDX5)     >   ZERO )
-               AND   ( RECE02-FTNMONEY (IDX5)     =   ZERO )
-               AND   ( RECE02-ZEROKISAIFLG (IDX5) =   "1"  )
+               IF   (( RECE02-TOTALTEN (IDX5)      >   ZERO ) AND
+                     ( RECE02-FTNMONEY (IDX5)      =   ZERO ) AND
+                     ( RECE02-ZEROKISAIFLG (IDX5)  =   "1"  ))
+               OR   (( RECE02-FUKUSHIFLG           =   "1"  ) AND
+                     ( RECE02-TOTALTEN (IDX5)      =   ZERO ) AND
+                     ( RECE02-FTNMONEY (IDX5)      =   ZERO ) AND
+                     ( RECE02-ZEROKISAIFLG (IDX5)  =   "1"  ))
+               OR   (( RECE02-FUKUSHIFLG           =   "1"  ) AND
+                     ( RECE02-TOTALTEN (IDX5)      =   ZERO ) AND
+                     ( RECE02-FTNMONEY (IDX5)      >   ZERO ))
                    MOVE    RECE02-FTNMONEY (IDX5)
                                                TO  WRK-KGK7
                    MOVE    WRK-KGK7            TO  WRK-KOH-FTNMONEY(4)
