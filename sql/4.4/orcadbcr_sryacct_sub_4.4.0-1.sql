@@ -206,7 +206,6 @@ rennum      smallint         ,
 date        smallint         ,
 day         smallint         
 );
-ALTER TABLE ONLY tbl_sryacct_sub ADD CONSTRAINT tbl_sryacct_sub_primary_key PRIMARY KEY (hospnum,ptid,zainum,rennum,date);
 
 insert into tbl_sryacct_sub(hospnum,ptid,zainum,rennum,date,day) select hospnum,ptid,zainum,2,1 ,day2_1 from tbl_sryacct_sub_temp where day2_1 > 0;
 insert into tbl_sryacct_sub(hospnum,ptid,zainum,rennum,date,day) select hospnum,ptid,zainum,2,2 ,day2_2 from tbl_sryacct_sub_temp where day2_2 > 0;
@@ -270,4 +269,4 @@ insert into tbl_sryacct_sub(hospnum,ptid,zainum,rennum,date,day) select hospnum,
 insert into tbl_sryacct_sub(hospnum,ptid,zainum,rennum,date,day) select hospnum,ptid,zainum,3,29,day3_29 from tbl_sryacct_sub_temp where day3_29 > 0;
 insert into tbl_sryacct_sub(hospnum,ptid,zainum,rennum,date,day) select hospnum,ptid,zainum,3,30,day3_30 from tbl_sryacct_sub_temp where day3_30 > 0;
 insert into tbl_sryacct_sub(hospnum,ptid,zainum,rennum,date,day) select hospnum,ptid,zainum,3,31,day3_31 from tbl_sryacct_sub_temp where day3_31 > 0;
-;
+ALTER TABLE ONLY tbl_sryacct_sub ADD CONSTRAINT tbl_sryacct_sub_primary_key PRIMARY KEY (hospnum,ptid,zainum,rennum,date);
