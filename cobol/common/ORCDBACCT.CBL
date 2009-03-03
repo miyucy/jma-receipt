@@ -135,6 +135,7 @@
            EVALUATE    MCP-FUNC
            WHEN    "DBSELECT"
                PERFORM 2001-EDIT-SRYACCTM-SEC
+               MOVE    SRYACCTM-REC    TO  MCPDATA-REC
                CALL    "MONFUNC"   USING
                                    MCPAREA
                                    MCPDATA-REC
