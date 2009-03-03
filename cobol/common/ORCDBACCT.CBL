@@ -108,9 +108,6 @@
       *
            PERFORM 200-EDIT-SRYACCT-SEC
       *
-           MOVE    WRK-TABLE           TO  MCP-TABLE
-           MOVE    WRK-PATHNAME        TO  MCP-PATHNAME
-      *
            .
       *
            EXIT PROGRAM
