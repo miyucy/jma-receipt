@@ -80,6 +80,7 @@
       *  04.02.02    NACL-ÌçÏÆ    08/06/17  Æþ±¡ÎÁÌ¤»»ÄêÆüÂÐ±þ
       *  04.02.03    NACL-ÌçÏÆ    08/09/24  Æþ±¡Î¬¾ÎÊÔ½¸ÄÉ²Ã
       *  04.03.01    NACL-ÌçÏÆ    09/02/09  ¸øÈñÊ¬ÅÀ¿ôÊÔ½¸½¤Àµ
+      *  04.03.02    NACL-ÌçÏÆ    09/03/03  °¦É²¸©ÃÏÊý¸øÈñÂÐ±þ
       *
       *  04.04.01    NACL-ÌçÏÆ    09/01/23  Æþ±¡ÎÁ»»ÄêÊÝ¸±°Ê³°¤Î¿ÇÎÅÊ¬¼ÂÆü¿ô»»ÄêÂÐ±þ
       *****************************************************************
@@ -147,7 +148,6 @@
            03  FLG-MIJISI-JYOKU                        PIC 9(01).       
            03  FLG-SENTEICDCHG                         PIC 9(01).
            03  FLG-SET                                 PIC 9(01).
-           03  FLG-FUKUSHI                             PIC 9(01).
            03  FLG-NYURYAKUWRK                         PIC 9(01).
            03  FLG-NISSUSET                            PIC 9(01).
       *
@@ -215,6 +215,10 @@
        01  TBL-TOTALTEN2.
            03  TBL-TOTALTEN2-HKN    OCCURS   5.
                05  TBL-TOTALTEN2-ACCT                  PIC S9(08).
+      *
+       01  TBL-FUKUSHI.
+           03  TBL-FUKUSHI-OCC                         OCCURS  4.
+               05  TBL-FUKUSHIFLG                      PIC 9(01).
       *
        01  WRK-DAY-TABLE.
            03  WRK-DAY-T                               OCCURS   31.
@@ -922,7 +926,7 @@
       *
            MOVE       ZERO              TO     FLG-MIJISI-GENSAN        
       *
-           MOVE       ZERO              TO     FLG-FUKUSHI
+           INITIALIZE                          TBL-FUKUSHI
       *
            MOVE       SPACE             TO     WRK-NYUINDAY-TANKI2-TBL
            INITIALIZE                          WRK-NYUINDAY-TANKI2-TBL
@@ -1208,9 +1212,8 @@
       *
                  IF   KH-IDX             NOT =    ZERO
                    IF   FLG-SHOSAISIN      =    1
-                      IF     FLG-FUKUSHI  =   1
-                      AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                             >=  "1" AND <=  "8"
+                      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                      AND    RECE62-SRYYM    <=  "200803"
                          CONTINUE
                       ELSE
                          MOVE    "1"   TO   TBL-JNISSU-DAY(KH-IDX IDY)
@@ -1354,9 +1357,8 @@
                       PERFORM    VARYING  ACCT-IDX   FROM   1   BY   1
                                  UNTIL    ACCT-IDX   >      31
                              IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
-                               IF     FLG-FUKUSHI  =   1
-                               AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                                   >=  "1" AND <=  "8"
+                               IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                               AND    RECE62-SRYYM <=  "200803"
                                  CONTINUE
                                ELSE
                                  MOVE    "1"       TO
@@ -1369,9 +1371,8 @@
                       PERFORM    VARYING  ACCT-IDX   FROM   1   BY   1
                                  UNTIL    ACCT-IDX   >      31
                              IF  ACCT-DAY(1 ACCT-IDX)   NOT =    ZERO
-                               IF     FLG-FUKUSHI  =   1
-                               AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                                   >=  "1" AND <=  "8"
+                               IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                               AND    RECE62-SRYYM <=  "200803"
                                  CONTINUE
                                ELSE
                                  MOVE    "1"       TO
@@ -1769,9 +1770,8 @@
                   END-IF
                   EVALUATE   WRK-DAY2(IDY)
                      WHEN   ZERO
-                         IF     FLG-FUKUSHI =   1
-                         AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                                >=  "1" AND <=  "8"
+                         IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                         AND    KH-IDX                >   1
                             CONTINUE
                          ELSE
                             COMPUTE  WRK-NYUTOKKEI2(KH-IDX)  =
@@ -1797,9 +1797,8 @@
                               ADD   1   TO   RECE62-NYUKHNNISSU(ID1)
                               MOVE  1   TO   FLG-NISSUSET
                             END-IF
-                            IF     FLG-FUKUSHI =   1
-                            AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                                   >=  "1" AND <=  "8"
+                            IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                            AND    KH-IDX                >   1
                                CONTINUE
                             ELSE
                                ADD   WRK-NYUKHNRYO
@@ -1814,9 +1813,8 @@
                       ADD        1           TO  RECE62-NYUKHNNISSU(ID1)
                       MOVE       1           TO  FLG-NISSUSET
                       MOVE   WRK-NYUKHNRYO   TO  RECE62-NYUKHNRYO(ID1)
-                      IF     FLG-FUKUSHI =   1
-                      AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                             >=  "1" AND <=  "8"
+                      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                      AND    KH-IDX                >   1
                          CONTINUE
                       ELSE
                          ADD    WRK-NYUKHNRYO   
@@ -1881,9 +1879,8 @@
                   END-IF
                   EVALUATE   WRK-DAY2(IDY)
                      WHEN   ZERO
-                         IF     FLG-FUKUSHI =   1
-                         AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                                >=  "1" AND <=  "8"
+                         IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                         AND    KH-IDX                >   1
                             CONTINUE
                          ELSE
                             COMPUTE  WRK-NYUTOKKEI2(KH-IDX)  =
@@ -1919,9 +1916,8 @@
                               ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
                               MOVE  1   TO   FLG-NISSUSET
                             END-IF
-                            IF     FLG-FUKUSHI =   1
-                            AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                                   >=  "1" AND <=  "8"
+                            IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                            AND    KH-IDX                >   1
                                CONTINUE
                             ELSE
                                ADD   WRK-NYUTOKRYO
@@ -1940,9 +1936,8 @@
       ***             Î¬¾Î¤¬¶õÇò¤Î¾ì¹ç¤Î°Ù¤Î½èÃÖ
                       MOVE   999999999       TO  RECE62-NYUTOKRYO(ID1)
       *
-                      IF     FLG-FUKUSHI =   1
-                      AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                             >=  "1" AND <=  "8"
+                      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                      AND    KH-IDX                >   1
                          CONTINUE
                       ELSE
                          ADD    WRK-NYUTOKRYO   
@@ -1964,9 +1959,8 @@
                               ADD   1   TO   RECE62-NYUTOKNISSU(ID1)
                               MOVE  1   TO   FLG-NISSUSET
                             END-IF
-                            IF     FLG-FUKUSHI =   1
-                            AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                                   >=  "1" AND <=  "8"
+                            IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                            AND    KH-IDX                >   1
                                CONTINUE
                             ELSE
                                ADD   WRK-NYUTOKRYO
@@ -1986,9 +1980,8 @@
                                                                    (ID1)
       *
                       MOVE   WRK-NYUTOKRYO   TO  RECE62-NYUTOKRYO(ID1)
-                      IF     FLG-FUKUSHI =   1
-                      AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                             >=  "1" AND <=  "8"
+                      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                      AND    KH-IDX                >   1
                          CONTINUE
                       ELSE
                          ADD    WRK-NYUTOKRYO   
@@ -2069,9 +2062,8 @@
       *
               EVALUATE   WRK-DAY1-NYUTENTTLKBN(IDY)
                  WHEN   903
-                    IF     FLG-FUKUSHI =   1
-                    AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                           >=  "1" AND <=  "8"
+                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                    AND    KH-IDX                >   1
                        CONTINUE
                     ELSE
                        COMPUTE  WRK-NYUKHNKEI2(KH-IDX)  =
@@ -2085,9 +2077,8 @@
       *
            IF RECE62-NYUINDAY-KBN(IDY) = "1"
       ***      IF  WRK-NYUINDAY-TANKI2-KBN(IDY) NOT = SPACE
-                 IF     FLG-FUKUSHI =   1
-                 AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                        >=  "1" AND <=  "8"
+                 IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                 AND    KH-IDX                >   1
                     CONTINUE
                  ELSE
                     COMPUTE  WRK-NYUTOKKEI2(KH-IDX)  =
@@ -2096,9 +2087,8 @@
                  COMPUTE  RECE62-NYUTOKKEI2(KH-IDX)  =
                           RECE62-NYUTOKKEI2(KH-IDX)  +  NACCT-ZAITEN
       ***      ELSE
-      ***        IF     FLG-FUKUSHI =   1
-      ***        AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-      ***                               >=  "1" AND <=  "8"
+      ***        IF     TBL-FUKUSHIFLG(IDX2)  =   1
+      ***        AND    KH-IDX                >   1
       ***           CONTINUE
       ***        ELSE
       ***           COMPUTE  WRK-NYUKHNKEI2(KH-IDX)  =
@@ -2544,9 +2534,8 @@
                                               OR   190809090
                                               OR   190111790
                                               OR   190809190
-                    IF     FLG-FUKUSHI =   1
-                    AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                           >=  "1" AND <=  "8"
+                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                    AND    KH-IDX                >   1
                        CONTINUE
                     ELSE
                        COMPUTE  WRK-NYUTOKKEI2(KH-IDX)  =
@@ -2557,9 +2546,8 @@
                              RECE62-NYUTOKKEI2(KH-IDX)  -
                              (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
                  ELSE
-                    IF     FLG-FUKUSHI =   1
-                    AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                           >=  "1" AND <=  "8"
+                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                    AND    KH-IDX                >   1
                        CONTINUE
                     ELSE
                        COMPUTE  WRK-NYUKHNKEI2(KH-IDX)  =
@@ -2579,9 +2567,8 @@
                                               OR   190809090
                                               OR   190111790
                                               OR   190809190
-                    IF     FLG-FUKUSHI =   1
-                    AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                           >=  "1" AND <=  "8"
+                    IF     TBL-FUKUSHIFLG(IDX2)  =   1
+                    AND    KH-IDX                >   1
                        CONTINUE
                     ELSE
                        COMPUTE  WRK-NYUTOKKEI2(KH-IDX)  =
@@ -2596,9 +2583,8 @@
       *
            IF    RECE62-NYUINDAY-KBN(ACCT-IDX) = "1"
       ***    IF  WRK-NYUINDAY-TANKI2-KBN(ACCT-IDX) NOT = SPACE
-               IF     FLG-FUKUSHI =   1
-               AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                      >=  "1" AND <=  "8"
+               IF     TBL-FUKUSHIFLG(IDX2)  =   1
+               AND    KH-IDX                >   1
                   CONTINUE
                ELSE
                   COMPUTE  WRK-NYUTOKKEI2(KH-IDX)  =
@@ -2609,9 +2595,8 @@
                         RECE62-NYUTOKKEI2(KH-IDX)  +
                            (ACCT-ZAITEN * ACCT-DAY(1 ACCT-IDX))
       ***    ELSE
-      ***      IF     FLG-FUKUSHI =   1
-      ***      AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-      ***                             >=  "1" AND <=  "8"
+      ***      IF     TBL-FUKUSHIFLG(IDX2)  =   1
+      ***      AND    KH-IDX                >   1
       ***         CONTINUE
       ***      ELSE
       ***         COMPUTE  WRK-NYUKHNKEI2(KH-IDX)  =
@@ -3237,9 +3222,7 @@
       *                                           OR   190809090
       *                                           OR   190111790
       *                                           OR   190809190
-                       IF     FLG-FUKUSHI =   1
-                       AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                                   >=  "1" AND <=  "8"
+                       IF     TBL-FUKUSHIFLG(IDX2)  =   1
                           CONTINUE
                        ELSE
                           COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
@@ -3254,9 +3237,7 @@
                      ELSE
                        IF        WRK-TENTEK-FLG(TENTEK-IDX KH-IDX)
                                                              =   ZERO
-                           IF     FLG-FUKUSHI =   1
-                           AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                                   >=  "1" AND <=  "8"
+                           IF     TBL-FUKUSHIFLG(IDX2)  =   1
                               CONTINUE
                            ELSE
                               COMPUTE   TBL-TOTALTEN-ACCT(KH-IDX) =  
@@ -3273,9 +3254,7 @@
                        END-IF
                        IF        ACCT-SRYKBN     =    "33"
                            PERFORM   20011521-TENTEK-SYUTEN-SEC
-                           IF     FLG-FUKUSHI =   1
-                           AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                                   >=  "1" AND <=  "8"
+                           IF     TBL-FUKUSHIFLG(IDX2)  =   1
                               CONTINUE
                            ELSE
                               COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
@@ -3286,9 +3265,7 @@
                                     TBL-TOTALTEN2-ACCT(KH-IDX) +
                                     WRK-TENTEK-SYUTEN
                        ELSE
-                           IF     FLG-FUKUSHI =   1
-                           AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                                   >=  "1" AND <=  "8"
+                           IF     TBL-FUKUSHIFLG(IDX2)  =   1
                               CONTINUE
                            ELSE
                               COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
@@ -3456,9 +3433,7 @@
                  END-IF
       *
                  IF   KH-IDX             NOT =    ZERO
-                     IF     FLG-FUKUSHI =   1
-                     AND    RECE62-KOHNUM(KH-IDX - 1)(1:1)
-                                             >=  "1" AND <=  "8"
+                     IF     TBL-FUKUSHIFLG(IDX2)  =   1
                         CONTINUE
                      ELSE
                         COMPUTE  TBL-TOTALTEN-ACCT(KH-IDX) =
@@ -3722,7 +3697,7 @@
       *****************************************************************
        500-KUMIAWASE-HANBETU-SEC               SECTION.
       *
-           MOVE     ZERO      TO      FLG-FUKUSHI
+           INITIALIZE                 TBL-FUKUSHI
       *
            IF      IDZ             =   1 
              EVALUATE   WRK-PREFNUM
@@ -3733,7 +3708,7 @@
                     ( RECE62-KOHNUMHC(IDX1 2)(1:1)
                                              >=  "1" AND <=  "8")
       *
-                      MOVE     1       TO      FLG-FUKUSHI
+                      MOVE     1       TO      TBL-FUKUSHIFLG(2)
       *
                       MOVE    "1"      TO      RECE62-FUKUSHIFLG
       *
