@@ -1081,6 +1081,13 @@
       *        JOBLOG画面
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 480-M98-SEC
+      *!!!!!!!
+      *外来まとめテスト
+      *        外来まとめテスト
+               WHEN    "CLICKED"       ALSO    "B09"
+                   PERFORM 490-KT01-SEC
+      *!!!!!!!
+      *!!!!!!!
       *    各業務移動へ
                WHEN    "CLICKED"       ALSO    ANY
                    PERFORM 400-GYOMU-SEL-SEC
@@ -1280,6 +1287,39 @@
            .
        480-M98-EXT.
            EXIT.
+      *!!!!!!!
+      *****************************************************************
+      *    外来まとめテスト　処理
+      *****************************************************************
+       490-KT01-SEC                   SECTION.
+      *
+      *!!
+      *    ＳＰＡ共通設定
+           INITIALIZE                  SYS-1010-REC
+           INITIALIZE                  ORCSCOMMONAREA
+           MOVE    "M01"               TO  ORCSCOMMON-PG
+           CALL    "ORCSCOMMON"        USING
+                                       MCPAREA
+                                       SPA-AREA
+                                       ORCSCOMMONAREA
+                                       SYS-1010-REC
+      *!!
+           MOVE    "KT01"              TO  SPA-SAKIPG
+           MOVE    "M00"               TO  SPA-MOTOPG
+           INITIALIZE                  LINKAREA
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
+      *
+           MOVE     "CHANGE"           TO  MCP-PUTTYPE
+           MOVE     SPA-SAKIPG         TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                   TO  FLG-END
+           .
+       490-KT01-EXT.
+           EXIT.
+      *!!!!!!!
+      *
       *
       *****************************************************************
       *    終了　処理
