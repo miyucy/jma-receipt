@@ -278,7 +278,8 @@
        1001-SYORI-KBN1-SEC            SECTION.
       * 
       *    数量ゼロの判定
-           IF      (LNK-SC97-PG        =   "K02N" )  AND
+           IF      (LNK-SC97-PG        =   "K02N"
+                                       OR  "KT01" )  AND
                    (LNK-SC97-INPUTCD(1:1)  =   "*" )
                CONTINUE
            ELSE
@@ -295,7 +296,8 @@
        1002-SYORI-KBN2-SEC            SECTION.
       *
       *    入院の回数
-           IF      (LNK-SC97-PG        =   "K02N" )  AND
+           IF      (LNK-SC97-PG        =   "K02N"
+                                       OR  "KT01" )  AND
                    (LNK-SC97-INPUTCD(1:1)  =   "*"    )
                PERFORM 1002-NYUINKAISU-SEC
            ELSE
