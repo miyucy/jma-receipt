@@ -1927,10 +1927,10 @@
            MOVE    Q01-EDTENKIYMD      TO  SPA-GMN-Q01-EDTENKIYMD
       *
       *    ¿ÇÎÅ¶èÊ¬
-           MOVE    Q01-SRYKBN          TO  SPA-GMN-Q01-SRYKBN
+           MOVE    Q01-SRYKBN          TO  SPA-GMN-Q01-SRYKBN-G
       *
       *    ¿ÇÎÅ¼ïÊÌ¶èÊ¬
-           MOVE    Q01-SRYSYUKBN       TO  SPA-GMN-Q01-SRYSYUKBN
+           MOVE    Q01-SRYSYUKBN       TO  SPA-GMN-Q01-SRYSYUKBN-G
       *
            PERFORM VARYING IDXB    FROM    1   BY  1
                    UNTIL   IDXB    >       5
