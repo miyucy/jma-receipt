@@ -3628,7 +3628,9 @@
                     (RECE02-JSKISAIFLG          =   "1"           ) OR
                     (RECE02-EKF-JNISSUFLG(IDX3) =   "1"           )))
                OR (( RECE02-FUKUSHIFLG          =   "1"            ) AND
-                   ( RECE02-TOTALTEN(IDX3)      =   ZERO           ))
+                   ((RECE02-JNISSU(IDX2) NOT = RECE02-JNISSU(IDX3)) OR
+                    (RECE02-JSKISAIFLG          =   "1"           ) OR
+                    (RECE02-EKF-JNISSUFLG(IDX3) =   "1"           )))
                       MOVE    RECE02-JNISSU (IDX3)
                                               TO  WRK-JINISSU2Z
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
