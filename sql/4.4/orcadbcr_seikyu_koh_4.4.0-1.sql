@@ -4,7 +4,7 @@ CREATE TABLE tbl_seikyu_koh (
     hospnum smallint NOT NULL,
     sryym integer DEFAULT 0 NOT NULL,
     nyugaikbn character(1) NOT NULL,
-    ptid numeric(10,0) DEFAULT 0 NOT NULL,
+    ptid bigint DEFAULT 0 NOT NULL,
     receka character(2) NOT NULL,
     teisyutusaki smallint DEFAULT 0 NOT NULL,
     recesyubetu character(4) NOT NULL,
