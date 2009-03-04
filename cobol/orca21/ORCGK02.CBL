@@ -600,6 +600,9 @@
            03  WRK-HOSPNUM             PIC 9(02).
            03  WRK-GRPHOSPUSERID       PIC X(64).
            03  WRK-MACHIPG             PIC X(08).
+      *
+      *    同日連番保存
+           03  WRK-SC95-LAST-RENNUM    PIC 9(01). 
       *!
       *    今回リハビリ発生日
            03  WRK-KYUSEI-INP-G.
@@ -4701,6 +4704,7 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
+           MOVE    LNK-SC95-LAST-RENNUM    TO  WRK-SC95-LAST-RENNUM
            IF      SPA-ERRCD           =   SPACE
       *        患者決定共編集処理
                MOVE    1               TO  FLG-CHKSET
@@ -4768,7 +4772,7 @@
            IF     (SPA-ERRCD           =   SPACE )
               AND (SPA-KIDCD           =   SPACE )
                IF     (SPA-RRK-LSTYMD       =   SPA-SRYYMD )  AND
-                      (LNK-SC95-LAST-RENNUM    >=  3      )
+                      (WRK-SC95-LAST-RENNUM    >=  3      )
                    MOVE    "0106"          TO  SPA-KIDCD
                END-IF
            END-IF
@@ -4929,6 +4933,7 @@
                                        SPA-K01KYOUTU
                                        SPA-K02
       *
+           MOVE    LNK-SC95-LAST-RENNUM    TO  WRK-SC95-LAST-RENNUM
       *    患者決定共編集処理
            MOVE    1               TO  FLG-CHKSET
            PERFORM 4102-PTNUM-HENSYU-SEC
@@ -5289,6 +5294,7 @@
            PERFORM 4900-WKSRYACT-CLEAR-SEC
       *
       *    患者決定共編集処理（チェック用月内診療行為セットなし）
+           MOVE    ZERO                TO  WRK-SC95-LAST-RENNUM
            MOVE    ZERO                TO  FLG-CHKSET
            PERFORM 4102-PTNUM-HENSYU-SEC
       *
