@@ -1265,6 +1265,7 @@
                PERFORM 980-WKSRY-READ-SEC
            END-PERFORM
            MOVE    IDX                 TO  WRK-MAX
+           MOVE    IDX                 TO  LNK-WKSRYACT-MAX
            CLOSE                       WKSRY-FILE
       *
       *    ¼ýÇ¼
@@ -4927,39 +4928,13 @@
       *    ¿ÇÎÅ¹Ô°Ù¹¹¿·
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
-      **       MOVE    ZERO                TO  FLG-DEL
-      *        Êñ³çÊ¬¤ÏÂÐ¾Ý³°
-      *        IF     (LNK-WKSRY-HKNCOMBI (IDX)    =   "9999")
-      *            OR (LNK-WKSRY-CONTKBN  (IDX)    =   "H"   )
-      *            MOVE    1               TO  FLG-DEL
-      *        END-IF
-      *        PERFORM VARYING     IDY     FROM    1   BY  1
-      *                UNTIL      (IDY     >   MAX-GMN )
-      *                        OR (FLG-DEL =   1       )
-      *            IF      LNK-WKSRY-ZAINUM (IDX)  =   SPA-NAI-ZAINUM
-      *                                                          (IDY)
-      *                IF      SPA-NAI-DELFLG (IDY)    =   1
-      *                    MOVE    1               TO  FLG-DEL
-      *                END-IF
-      *                MOVE    MAX-GMN             TO  IDY
-      *            END-IF
-      *        END-PERFORM
-      *        IF      FLG-DEL             =   ZERO
-      *            ½é¿ÇÎÁ»»ÄêÈ½Äê
-      *            PERFORM 450112-SYOSIN-CHK-SEC
-      *            ºÞ¿ô¥Á¥§¥Ã¥¯
-      ****         PERFORM 450114-ZAICONUNT-SEC
       *
-                   ADD     1                   TO  IDX2
-                   MOVE    "WKSRYACT"          TO  PARA-FILEMEIPRV
-                   MOVE    IDX2                TO  PARA-EDANUMPRV
-                   MOVE    LNK-WKSRYACT-REC (IDX)
-                                               TO  PARA-DATA-RECPRV
-                   WRITE                       PARA-RECPRV
-      ****     ELSE
-      *            MOVE    SPACE               TO  LNK-WKSRYACT-REC(IDX)
-      *            INITIALIZE                      LNK-WKSRYACT-REC(IDX)
-      *******  END-IF
+               ADD     1                   TO  IDX2
+               MOVE    "WKSRYACT"          TO  PARA-FILEMEIPRV
+               MOVE    IDX2                TO  PARA-EDANUMPRV
+               MOVE    LNK-WKSRYACT-REC (IDX)
+                                           TO  PARA-DATA-RECPRV
+               WRITE                       PARA-RECPRV
            END-PERFORM
       *
            .
