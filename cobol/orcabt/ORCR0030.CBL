@@ -3294,7 +3294,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        21042-RECE02-TOTALTEN-HENSYU-SEC                SECTION.               
       *
-           IF    (RECE02-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE02-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE02-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE02-RJNHKNNUM       NOT =   SPACE)
                IF        ACCT-SRYKBN        =    "95"   OR  "96"
                    CONTINUE
@@ -4885,7 +4886,8 @@ grpsys             MOVE    SRY-HOSPNUM          TO  PTCOM-HOSPNUM
       *
       *    公費の分離表示用インデックスの確定
            MOVE          ZERO       TO     BUN-IDX
-           IF    (RECE02-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE02-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE02-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE02-RJNHKNNUM       NOT =   SPACE)
                MOVE      1          TO     BUN-IDX
                IF   FLG-SHOSAISIN        =       1                      

@@ -3933,7 +3933,8 @@
       *
       *    公費の分離表示用インデックスの確定
            MOVE          ZERO       TO     BUN-IDX
-           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE62-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
            MOVE          1          TO     BUN-IDX
            END-IF
@@ -6675,7 +6676,8 @@
       *
       *    公費の分離表示用インデックスの確定
            MOVE          ZERO       TO     BUN-IDX
-           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE62-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
            MOVE          1          TO     BUN-IDX
            END-IF
@@ -8818,7 +8820,8 @@
       *
       *    公費の分離表示用インデックスの確定
            MOVE          ZERO       TO     BUN-IDX
-           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE62-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
            MOVE          1          TO     BUN-IDX
            END-IF

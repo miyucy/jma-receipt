@@ -1178,7 +1178,8 @@
       *****************************************************************
        2001112-RECE62-TENSOU11-SEC                 SECTION.
       *
-           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE62-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
                IF   FLG-SHOSAISIN        =       1
                        MOVE    "1"   TO   TBL-JNISSU-DAY(1 IDY)
@@ -1305,7 +1306,8 @@
       *****************************************************************
        2001114-RECE62-TENSOU12-SEC                 SECTION.
       *
-           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE62-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
                IF   FLG-SHOSAISIN        =       1
                     PERFORM    VARYING   ACCT-IDX   FROM   1    BY   1
@@ -1674,7 +1676,8 @@
        2001124-RECE62-TENSOU21-SEC                 SECTION.
       *
       *    Æþ±¡´ðËÜÎÁ¤È²Ã¸º»»ÅÀ¿ô¤Î·×»»
-           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE62-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
                       MOVE    1          TO        KH-IDX
                       PERFORM      20011241-NYUINACCT-GET-SEC
@@ -2004,7 +2007,8 @@
        2001125-RECE62-TENSOU22-SEC                 SECTION.
       *
       *    Æþ±¡´ðËÜÎÁ²Ã¸º»»ÅÀ¿ô¤Î·×»»
-           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE62-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
                       MOVE    1          TO        KH-IDX
                       PERFORM      20011251-NYUINACCT-GET2-SEC
@@ -2460,7 +2464,8 @@
       *****************************************************************
        2001126-RECE62-TENSOU23-SEC                 SECTION.
       *
-           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE62-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
                  MOVE    1          TO        KH-IDX
                  PERFORM    VARYING   ACCT-IDX   FROM   1    BY   1
@@ -3127,7 +3132,8 @@
       *****************************************************************
        2001152-RECE62-TENSOU9-SEC                 SECTION.
       *
-           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE62-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
                IF        ACCT-SRYKBN   =    "90" OR "92" OR "95"  
                                                  OR "96" OR "97"
@@ -3395,7 +3401,8 @@
       *****************************************************************
        2001153-RECE62-TENSOU9-RYOYO-SEC               SECTION.
       *
-           IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+      ***  IF    (RECE62-HKNNUM          NOT =   SPACE)   OR
+           IF    (RECE62-HKNNUMHC(IDX1)  NOT =   SPACE)   OR
                  (RECE62-RJNHKNNUM       NOT =   SPACE)
       *
                  COMPUTE  TBL-TOTALTEN-ACCT(1) =
