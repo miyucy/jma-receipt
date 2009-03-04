@@ -4899,6 +4899,12 @@
                MOVE    "1"                 TO  ORCSCGAIRAI-KBN
       *        収納情報
                MOVE    1                   TO  ORCSCGAIRAI-SYUNOU-MAX
+      *        １回目（発行方法で判定）
+               IF      IDD                 =   1
+                   MOVE    1               TO  ORCSCGAIRAI-HAKHOUFLG
+               ELSE
+                   MOVE    9               TO  ORCSCGAIRAI-HAKHOUFLG
+               END-IF
       *
                MOVE    LNK-SYUNOU2-REC (1)
                                           TO  ORCSCGAIRAI-SYUNOU-REC
