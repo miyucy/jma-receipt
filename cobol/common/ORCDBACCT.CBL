@@ -250,6 +250,10 @@
       *
            END-PERFORM
       *
+           IF    ( ACCTM-RENNUMMAX     IS  NOT NUMERIC )
+               MOVE    ZERO            TO  ACCTM-RENNUMMAX
+           END-IF
+      *
            IF    ( ACCTM-RENNUMMAX     >   0 )
       *
                PERFORM 900-SRYACCTS-KEY2-SEL-SEC
