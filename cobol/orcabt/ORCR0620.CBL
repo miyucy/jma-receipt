@@ -1050,10 +1050,10 @@
                                    IF      RECE61-HKNCOMBI-O (IDZZ)
                                                =   ZERO
                                        MOVE
-                                           WRK-SEIHO-RECE61-HKNCOMBI-O
+                                           WRK-SEIHO-RECE61-HKNCOMBI-TBL
                                                               (IDXX 1)
                                                            TO
-                                               RECE61-HKNCOMBI-O (IDZZ)
+                                               RECE61-HKNCOMBI-TBL(IDZZ)
                                    END-IF
                                    IF      RECE61-HKNCOMBI-O (IDZZ)
                                                =

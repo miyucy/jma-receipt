@@ -396,6 +396,7 @@
            03  IDY1                                    PIC 9(03).
            03  IDY2                                    PIC 9(03).
            03  IDZ                                     PIC 9(02).
+           03  IDWW                                    PIC 9(03).
            03  IDXX                                    PIC 9(03).
            03  IDYY                                    PIC 9(03).
            03  IDZZ                                    PIC 9(03).
@@ -1138,10 +1139,10 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                    IF      RECE01-HKNCOMBI-O (IDZZ)
                                                =   ZERO
                                        MOVE
-                                           WRK-SEIHO-RECE01-HKNCOMBI-O
+                                           WRK-SEIHO-RECE01-HKNCOMBI-TBL
                                                               (IDXX 1)
                                                            TO
-                                               RECE01-HKNCOMBI-O (IDZZ)
+                                               RECE01-HKNCOMBI-TBL(IDZZ)
                                    END-IF
                                    IF      RECE01-HKNCOMBI-O (IDZZ)
                                                =
