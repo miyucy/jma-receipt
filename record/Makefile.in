@@ -499,7 +499,6 @@ DB_files = \
 	tbl_receprt.db \
 	tbl_santei.db \
 	tbl_seikyu.db \
-	tbl_sryacct.db \
 	tbl_sryact.db \
 	tbl_srycdchg.db \
 	tbl_srykarrk.db \
