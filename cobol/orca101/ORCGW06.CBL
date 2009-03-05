@@ -1377,6 +1377,7 @@
                MOVE    SYS-1010-CLIENT-SAVE    TO  SPA-GMN-CLIENT-SAVE
                PERFORM 20091-PRTFLG-HEN-SEC
       *
+               INITIALIZE                     SPA-PAGE3-G
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL ( IDX >   CONST-GRPHOSP-MAX )
                         OR   ( SPA-GRPHOSPNUM (IDX)    =   ZERO )
