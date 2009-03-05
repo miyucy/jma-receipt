@@ -95,6 +95,10 @@
        01  YYK-REC.
            COPY    "CPYYK.INC".
       *
+      *    予約コメントマスタ
+       01  YYKCOM-REC.
+           COPY    "CPYYKCOM.INC".
+      *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
@@ -253,6 +257,7 @@
       *
            PERFORM UNTIL   FLG-YYK     =   1
                PERFORM 900-YYK-DBDELETE-SEC
+               PERFORM 900-YYKCOM-DBDELETE-SEC
                PERFORM 900-YYK-DBFETCH-SEC
            END-PERFORM
       *
@@ -428,6 +433,32 @@
       *
            .
        900-YYK-DBDELETE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    予約コメント削除処理
+      *****************************************************************
+       900-YYKCOM-DBDELETE-SEC     SECTION.
+      *
+           INITIALIZE                  YYKCOM-REC
+           MOVE    YYK-HOSPNUM     TO  YYKCOM-HOSPNUM
+           MOVE    YYK-SRYNAIYO    TO  YYKCOM-SRYNAIYO
+           MOVE    YYK-DRCD        TO  YYKCOM-DRCD
+           MOVE    YYK-YYKYMD      TO  YYKCOM-YYKYMD
+           MOVE    YYK-KEYYYKTIME  TO  YYKCOM-KEYYYKTIME
+           MOVE    YYK-YYKID       TO  YYKCOM-YYKID
+           MOVE    YYKCOM-REC      TO  MCPDATA-REC
+      *
+           MOVE    "tbl_yykcom"    TO  MCP-TABLE
+           MOVE    "del1"          TO  MCP-PATHNAME
+           MOVE    "DBDELETE"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+      *
+           .
+       900-YYKCOM-DBDELETE-EXT.
            EXIT.
       *
       *****************************************************************
