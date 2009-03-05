@@ -699,6 +699,7 @@
            EVALUATE    SPA-MOTOPG
            WHEN    "K02"
            WHEN    "K02N"
+           WHEN    "KT01"
            WHEN    "U02"
            WHEN    "I01"
                PERFORM 320-SENIJI-SYOGMN-EDIT-SEC
@@ -1224,7 +1225,7 @@
       *
            END-PERFORM
       *
-           IF    ( SPA-MOTOPG2         =   "K02" OR "K02N" )
+           IF    ( SPA-MOTOPG2         =   "K02" OR "K02N" OR "KT01" )
            AND   ( SPA-PTNUM       NOT =   SPACE )
                MOVE    2                   TO  SPA-GMN-CUR
            ELSE
@@ -3001,7 +3002,7 @@
       *
       *    ¿ÇÎÅ¹Ô°Ù¤è¤êÁ«°Ü»þ¡¢¿ÇÎÅ¹Ô°Ù¤Ø
            MOVE    SPACE               TO  LINKAREA
-           IF    ( SPA-MOTOPG2         =   "K02" OR "K02N"
+           IF    ( SPA-MOTOPG2         =   "K02" OR "K02N" OR "KT01"
                                        OR  "U02" OR "I01" )
                MOVE    SPA-MOTOPG2     TO  SPA-SAKIPG
                MOVE    "S02"           TO  SPA-MOTOPG
