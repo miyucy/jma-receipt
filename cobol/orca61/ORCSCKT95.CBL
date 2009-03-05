@@ -1622,6 +1622,7 @@
       *****************************************************************
        1001-SPA-JYUSIN-SEC              SECTION.
       *
+      *
       *    受診履歴より、診療科等を確定する
            PERFORM 10011-JYURRK-SEC
       *
@@ -1869,7 +1870,7 @@
            MOVE    SPACE               TO  SPA-SRYKAMEI
       *    診療科
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX             >   SPA-SRYKA-MAX
+                   UNTIL       IDX     >   SPA-SRYKA-MAX
                IF      SPA-SRYKA       =   SPA-GMN-SRYKAL   (IDX)
                    MOVE    SPA-GMN-SRYKAMEIL(IDX)  TO  SPA-SRYKAMEI
                    MOVE    SPA-SRYKA-MAX           TO  IDX
@@ -1883,18 +1884,26 @@
       *
       *    ドクター初期表示
            INITIALIZE                  ORCSDRSETAREA
-           MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
            MOVE    "1"                 TO  ORCSDR-KBN
+           MOVE    "1"                 TO  ORCSDR-KBN2
+           MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
+           MOVE    "00"                TO  ORCSDR-SYSYMD(7:2)
            MOVE    SPA-SRYKA           TO  ORCSDR-SRYKA
-           IF      SPA-DRCD        NOT =   ZERO
-               MOVE    SPA-DRCD(2:4)       TO  ORCSDR-IN-DRCD
-           END-IF
+           MOVE    SPA-DRCD(2:4)       TO  ORCSDR-IN-DRCD
            CALL    "ORCSDRSET"         USING
                                        SPA-AREA
                                        ORCSDRSETAREA
            MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-GMN-DRCDLST-G
            MOVE    ORCSDR-DRCD-MAX     TO  SPA-DRCD-MAX
            MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-DRCD-G
+      *
+      *    ドクター
+           IF      SPA-DRCD            =   SPACE
+      *        １件目を初期編集
+               MOVE    SPA-GMN-DRCDLST (1) TO  SPA-GMN-DRCD-G
+               MOVE    "1"                 TO  SPA-DRCD(1:1)
+               MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
+           END-IF
       *
            .
        10012-SYSKAN-EXT.

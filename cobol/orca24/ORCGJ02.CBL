@@ -1106,6 +1106,8 @@
            EVALUATE    SPA-MOTOPG
       *         業務選択より
                WHEN    "M01"
+      *        外来まとめより
+               WHEN    "KT01"
                    INITIALIZE                  SPA-J01KYOUTU
                    MOVE    SPA-MOTOPG          TO  SPA-J02-MOTOPG
                    MOVE    "0"                 TO  SPA-J02-MOTOFLG

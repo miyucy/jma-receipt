@@ -2909,10 +2909,6 @@
                MOVE    ORCSCNYUHEN-MAE-TAIINYMD
                                            TO  SPA-K02N-TAIINYMD
            END-IF
-      *TEST
-           DISPLAY "SPA-K02N-NYUINYMD:" SPA-K02N-NYUINYMD
-              ",TAIINYMD:" SPA-K02N-TAIINYMD
-      *TEST
       *    入院中の時、エラーとする
            MOVE    ZERO                TO  SPA-NAI-NYUIN
            IF      FLG-NYUIN           =   1
@@ -3237,6 +3233,9 @@
       *        収納登録（Ｓ０２）
                WHEN    "CLICKED"       ALSO    "B08S"
                    PERFORM 460-SYUNOU-SEC
+      *        会計カード（Ｊ０２）
+               WHEN    "CLICKED"       ALSO    "B09S"
+                   PERFORM 450-KAIKEI-SEC
       *        前頁
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 450-MAEGMN-SEC
@@ -3500,11 +3499,9 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-KT01
-           IF      SPA-ERRCD           =   SPACE
-      *        患者決定共編集処理
-               MOVE    1               TO  FLG-CHKSET
-               PERFORM 4102-PTNUM-HENSYU-SEC
-           END-IF
+      *    患者決定共編集処理
+           MOVE    1               TO  FLG-CHKSET
+           PERFORM 4102-PTNUM-HENSYU-SEC
       *
            IF     (SPA-ERRCD           =   SPACE )
               AND (SPA-KIDCD           =   SPACE )
@@ -4193,39 +4190,39 @@
            MOVE    1               TO  SPA-GMN-CUR
            MOVE    1               TO  SPA-MAP-IDX
       *    訂正の時、以下の処理なし
-           IF      SPA-SYORIFLG        =   1
-               GO      TO      41013-SRYKA-CHANGE-EXT
-           END-IF
+      **   IF      SPA-SYORIFLG        =   1
+      *        GO      TO      41013-SRYKA-CHANGE-EXT
+      *    END-IF
       *
       *    再表示編集処理
-           IF      LNK-SC95-WKSRYACT   =   1
-               MOVE    "0122"          TO  SPA-KIDCD
-               GO      TO      41013-SRYKA-CHANGE-EXT
-           END-IF
-           IF      LNK-SC95-WKSRYACT   =   2
-               MOVE    "0124"          TO  SPA-KIDCD
-               GO      TO      41013-SRYKA-CHANGE-EXT
-           END-IF
+      *    IF      LNK-SC95-WKSRYACT   =   1
+      *        MOVE    "0122"          TO  SPA-KIDCD
+      *        GO      TO      41013-SRYKA-CHANGE-EXT
+      *    END-IF
+      *    IF      LNK-SC95-WKSRYACT   =   2
+      *        MOVE    "0124"          TO  SPA-KIDCD
+      *        GO      TO      41013-SRYKA-CHANGE-EXT
+      **** END-IF
       *
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-SRYKAMEI    TO  SPA-SRYKAMEI
       *
-           IF      LNK-SC95-DOUJI-RENNUM   NOT =   ZERO
-               MOVE    "0103"          TO  SPA-KIDCD
-               GO      TO      41013-SRYKA-CHANGE-EXT
-           END-IF
+      *****IF      LNK-SC95-DOUJI-RENNUM   NOT =   ZERO
+      *        MOVE    "0103"          TO  SPA-KIDCD
+      *        GO      TO      41013-SRYKA-CHANGE-EXT
+      **** END-IF
       *    保険番号が未確定の時、エラー
            IF      SPA-HKNCOMBINUM     =   SPACE
                MOVE    "1006"          TO  SPA-ERRCD
                MOVE    3               TO  SPA-HKN-ERR
                GO      TO      41013-SRYKA-CHANGE-EXT
            END-IF
-      *    受診履歴が３で、通常の時、警告
-           IF     (SPA-RRK-LSTYMD          =   SPA-SRYYMD )  AND
-                  (LNK-SC95-LAST-RENNUM    >=  3      )
-               MOVE    "0106"          TO  SPA-KIDCD
-               GO      TO      41013-SRYKA-CHANGE-EXT
-           END-IF
+      **** 受診履歴が３で、通常の時、警告
+      *    IF     (SPA-RRK-LSTYMD          =   SPA-SRYYMD )  AND
+      *           (LNK-SC95-LAST-RENNUM    >=  3      )
+      *        MOVE    "0106"          TO  SPA-KIDCD
+      *        GO      TO      41013-SRYKA-CHANGE-EXT
+      **** END-IF
       *    保険組合編集
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
            PERFORM 3101-HKNCOMBI-HEN-SEC
@@ -4299,6 +4296,8 @@
                PERFORM 22041-DRCD-CHK-SEC
            END-IF
            IF      SPA-ERRCD           =   SPACE
+               MOVE    "1"                 TO  SPA-DRCD(1:1)
+               MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
                MOVE    1               TO  SPA-GMN-CUR
            ELSE
                MOVE    9               TO  SPA-GMN-CUR
@@ -4314,6 +4313,7 @@
       *    ドクター編集
            INITIALIZE                  ORCSDRSETAREA
            MOVE    "2"                 TO  ORCSDR-KBN
+           MOVE    "1"                 TO  ORCSDR-KBN2
            MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
            MOVE    SPA-SRYKA           TO  ORCSDR-SRYKA
            MOVE    SPA-GMN-DRCD        TO  ORCSDR-IN-DRCD
@@ -5874,10 +5874,6 @@
            END-IF
            MOVE    SPA-COM-KAISU(SPA-GMN-IDX)
                                        TO  SPA-COM-KAISU2(SPA-GMN-IDX)
-      *TEST
-           DISPLAY "SPA-GMN-IDX:" SPA-GMN-IDX
-             ".GMN:" SPA-GMN-INPUTCD(SPA-GMN-IDX)
-             ".KAISU:" SPA-COM-KAISU(SPA-GMN-IDX)
       *
       *    入院回数・日数
            INITIALIZE                  SPA-COM-NYUIN-AREA (SPA-GMN-IDX)
@@ -7412,6 +7408,37 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        409-GRPCHK-EXT.
            EXIT.
+      *****************************************************************
+      *    会計カードへ
+      *****************************************************************
+       450-KAIKEI-SEC             SECTION.
+      *
+           IF      SPA-GMN-PTID    NOT =   ZERO
+               MOVE    "6008"          TO  SPA-ERRCD
+               GO      TO      450-KAIKEI-EXT
+           END-IF
+      *
+           MOVE    "KT01"              TO  SPA-MOTOPG
+           MOVE    "KT01"              TO  SPA-MOTOPG2
+           MOVE    "J02"               TO  SPA-SAKIPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+      *
+           INITIALIZE                      SPA-WORK
+           MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
+           MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
+           MOVE    SPA-AREA            TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "J02"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+          .
+       450-KAIKEI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    収納登録へ
@@ -7419,21 +7446,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        460-SYUNOU-SEC             SECTION.
       *
            IF      SPA-GMN-PTID    NOT =   ZERO
-      *        更新前の基本チェック
-               MOVE    1                   TO  FLG-HENKOU
-               PERFORM 41011-KOUI-ALLHEN-SEC
-               IF     (SPA-ERRCD       NOT =   SPACE  )  OR
-                      (SPA-KIDCD           =   "0180" )  OR
-                      (FLG-END             =   1      )
-                   GO      TO      460-SYUNOU-EXT
-               END-IF
+               MOVE    "6009"          TO  SPA-ERRCD
+               GO      TO      460-SYUNOU-EXT
            END-IF
       *
-      *    保存パラメタを作成
-           PERFORM 4410-WSINPARA-SEC
-      *
-           MOVE    "KT01"               TO  SPA-MOTOPG
-           MOVE    "KT01"               TO  SPA-MOTOPG2
+           MOVE    "KT01"              TO  SPA-MOTOPG
+           MOVE    "KT01"              TO  SPA-MOTOPG2
            MOVE    "S02"               TO  SPA-SAKIPG
       *
            MOVE    SPACE               TO  LINKAREA
@@ -8075,11 +8093,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    確定　処理
       *****************************************************************
        41002-KOUSIN-SYORI-SEC          SECTION.
-      *TEST
-           DISPLAY "41002-KOUSIN-SYORI-SEC "
-                ",FLG-KAKUNIN:" FLG-KAKUNIN
-                 ",SPA-NAI-SRYDD:" SPA-NAI-SRYDD
-                ",SPA-KIDCD:" SPA-KIDCD
       *
            IF      FLG-KAKUNIN         =   1
       *        確認ＯＫ処理
@@ -8397,10 +8410,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    算定履歴テーブル編集処理
       *****************************************************************
        6003-SANTEI-DEL-SEC           SECTION.
-      *TEST
-           DISPLAY "6003-SANTEI-DEL-SEC WRK-DAY:" WRK-DAY
-               ",SPA-SANTEI-MAX:" SPA-SANTEI-MAX
-      *TEST
       *
            MOVE    WRK-DAY             TO  IDD2
            PERFORM VARYING     IDX2    FROM    1   BY  1
@@ -9400,6 +9409,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-STRING
                WHEN    "6005"
                    STRING  "ドクターコードがありません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "6008"
+                   STRING  "患者情報登録中です。"
+                           "会計照会への遷移はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "6009"
+                   STRING  "患者情報登録中です。"
+                           "収納登録への遷移はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING

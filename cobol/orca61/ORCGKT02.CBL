@@ -507,10 +507,8 @@
            03  WRK-SKYMONEY            PIC S9(07).
       *差額の絶対値
            03  WRK-GRP-SGKMONEY        PIC  9(07).
-      *    処方せんＰＧ名
-           03  WRK-SYOHOU-PG           PIC X(20).
-           03  WRK-CHUSYA-PG           PIC X(20).
-           03  WRK-SIJISEN-PG          PIC X(20).
+      *    入金情報
+           03  WRK-NYUKIN-JYOTAI       PIC X(01).
       *
            03  WRK-EDANUM            PIC 9(03).
            03  FLG-FUKU              PIC 9(01).
@@ -572,6 +570,8 @@
            COPY    "CPSYSKANRI.INC".
       *    職員情報
            COPY    "CPSK1010.INC".
+      * 
+           COPY  "CPSK1041.INC".
       *
       *    労災医療機関情報
            COPY    "CPSK4001.INC".
@@ -579,11 +579,6 @@
            COPY    "CPSK1008.INC".
       *    診療行為機能制御情報 
            COPY    "CPSK1038.INC".
-      *
-      *    入院指示せん設定情報
-           COPY  "CPSK5007.INC".
-      *    帳票ＰＧ
-           COPY    "CPSK1034.INC".
       *
       *    ワーク診療行為マスタ−
        01  WKSRYACT-REC.
@@ -703,9 +698,6 @@
       *    診療行為入力項目変換パラメタ
            COPY    "CPORCSC97.INC".
       *
-      *    診療行為入院更新パラメタ領域
-           COPY    "CPORCSCNYUIN.INC".
-      *
       *    診療行為外来更新パラメタ領域
            COPY    "CPORCSCGAIRAI.INC".
       *
@@ -719,17 +711,6 @@
       *    給付対象外点数編集サブパラメタ
            COPY    "CPORCSSYU40.INC".
       *
-      *    オンライン帳票名・出力先プリンタ名取得パラ
-           COPY    "CPORCSPRTNM.INC".
-      *
-      *    入院指示せんオーダ作成サブ
-           COPY    "CPORCSORDERPRT.INC".
-      *    入院処方箋発行サブ
-           COPY    "CPORCHC501.INC".
-      *    注射処方箋発行サブ
-           COPY    "CPORCHC502.INC".
-      *    入院指示箋発行サブ
-           COPY    "CPORCHC503.INC".
       *    表示名称編集パラメタ領域
            COPY    "CPORCSMEIHEN.INC".
       *
@@ -3529,6 +3510,14 @@
        4503-KOUSIN-SYORI-SEC             SECTION.
       *
       *    診療月・科・保険の受診履歴を削除する
+      *!!!!
+      *
+      *    入金方法設定
+           IF      SPA-NYUKIN-HOHO     =   SPACE
+               MOVE    "01"            TO  SPA-NYUKIN-HOHO
+           END-IF
+      *    入金状態編集
+           PERFORM 45031-JYOTAI-SET-SEC
       *
       *    受診日毎に更新する
            PERFORM VARYING     IDD     FROM    1   BY  1
@@ -3552,11 +3541,20 @@
                INITIALIZE                  ORCSCGAIRAIAREA
       *        新規、更新
                MOVE    "1"                 TO  ORCSCGAIRAI-KBN
+      *        入金方法
+               MOVE    SPA-NYUKIN-HOHO     TO  ORCSCGAIRAI-NYUKIN-HOHO
+      *        入金額
+               MOVE    LNK-SYUNOU2-REC (1) TO  SYUNOU-REC
+               IF      WRK-NYUKIN-JYOTAI   =   "2"
+      *            入金状態が未入金の時、ゼロ
+                   MOVE    ZERO                TO  SYU-NYUKIN-TOTAL
+               ELSE
+                   MOVE    SYU-SKYMONEY        TO  SYU-NYUKIN-TOTAL
+               END-IF
+      *
       *        収納情報
                MOVE    1                   TO  ORCSCGAIRAI-SYUNOU-MAX
-      *
-               MOVE    LNK-SYUNOU2-REC (1)
-                                          TO  ORCSCGAIRAI-SYUNOU-REC
+               MOVE    SYUNOU-REC          TO  ORCSCGAIRAI-SYUNOU-REC
                                                                (1)
                CALL    "ORCSCGAIRAI"       USING
                                            SPA-AREA
@@ -3566,6 +3564,44 @@
       *
            .
        4503-KOUSIN-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金状態編集処理
+      *****************************************************************
+       45031-JYOTAI-SET-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  SYS-1041-REC
+           MOVE    "1041"              TO  SYS-1041-KANRICD
+           MOVE    SPA-NYUKIN-HOHO     TO  SYS-1041-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1041-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-1041-EDYUKYMD
+      *    システム管理検索
+           MOVE    SPA-HOSPNUM         TO  SYS-1041-HOSPNUM
+           MOVE    SYS-1041-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 960-SYSKANRI-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-1041-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1041-REC
+               MOVE    SYS-1041-NYKN-JYOTAI
+                                           TO  WRK-NYUKIN-JYOTAI
+           ELSE
+               MOVE    "1"                 TO  WRK-NYUKIN-JYOTAI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       410109-JYOTAI-SET-EXT.
            EXIT.
       *
       *****************************************************************

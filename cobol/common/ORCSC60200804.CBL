@@ -4440,6 +4440,8 @@
                MOVE    SPACE               TO  LNK-SC92-LSTSRYKA
                MOVE    SPACE               TO  LNK-SC92-LSTSRYKAMEI
                MOVE    LNK-ORCSC-TEISEI-AREA   TO  LNK-SC92-TEISEI-AREA
+               MOVE    LNK-ORCSC-KT01-AREA
+                                           TO  LNK-SC92-KT01-AREA
                CALL    "ORCSC92"           USING
                                            MCPAREA
                                            ORCSC92AREA

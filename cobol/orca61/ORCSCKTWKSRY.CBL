@@ -409,9 +409,6 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
            INITIALIZE                  STS-AREA
-      *TEST
-           DISPLAY "ORCSCWKSRY-KBN:"  ORCSCWKSRY-KBN
-      *TEST
       *
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
@@ -571,14 +568,6 @@
                    IF      LNK-WKSRY-AUTOKBN(IDX IDY)    =   "3"
                        MOVE    1               TO  FLG-HEN-CHK
                    END-IF
-      ***********: 前回処方展開
-      *            IF     (ORCSCWKSRY-SYORIFLG =   1 ) AND
-      *                   (LNK-WKSRY-AUTOKBN(IDX IDY)  =   "3"
-      *                                                OR  "4"
-      *                                                OR  "5"
-      *                                                OR  "6" )
-      *                MOVE    1               TO  FLG-HEN-CHK
-      ************ END-IF
                    IF     (FLG-SYORIFLG                  =   1  ) AND
                           (LNK-WKSRY-AUTOKBN(IDX IDY)    =  "3"
                                                          OR "6" )
@@ -1354,11 +1343,6 @@
                IF     (FLG-SYORIFLG            =   1    )  OR
                       (LNK-WKSRY-TERMID (IDX)  =   "WKSRYACT")
                    MOVE    1                   TO  FLG-INGAIKBN-ARI
-      *test
-               DISPLAY "SRYKBN:" LNK-WKSRY-SRYKBN(IDX)
-                  ",SRYCD;" LNK-WKSRY-SRYCD (IDX IDY)
-                  ",ZAITENKEI;" LNK-WKSRY-ZAITENKEI (IDX)
-      *test
                    IF      LNK-WKSRY-ZAITENKEI (IDX)   =   ZERO
       *                剤点数＝ゼロ　院外
       *                剤内に薬剤がある時のみ
@@ -1847,11 +1831,6 @@
                    MOVE    "1"             TO  SPA-COM-ZAIEND (IDXW)
                END-IF
                IF      SPA-COM-ZAIEND (IDXW)   =   "1"
-      *TEST
-           DISPLAY "IDXW:" IDXW
-              "," SPA-GMN-INPUTCD (IDXW)
-                 ",TENSU:" SPA-COM-TENSU (IDXW)
-      *TEST
                    IF      IDX-STR             =   ZERO
                        MOVE    IDXW            TO  IDX-STR
                    END-IF
@@ -1925,12 +1904,6 @@
                    PERFORM 1001-KAISUU-SYORI-SEC
                END-IF
       *        点数再編集
-      *TEST
-             DISPLAY "IDX-K:" IDX-K 
-              ",COM:" SPA-GMN-INPUTCD(IDX-K)
-              ",TENSU:" SPA-COM-TENSU (IDX-K)
-              ",WRK-TENSUKEI:" WRK-TENSUKEI
-      *TEST
                IF      SPA-COM-TENSU  (IDX-K)  NOT =   ZERO
                    MOVE    SPA-COM-TENSU  (IDX-K)  TO  WRK-TENSUKEI
                END-IF
@@ -2087,11 +2060,6 @@
       *
            ADD     1                   TO  IDXL
            MOVE    WKSRYACT-REC        TO  LNK-WKSRYACT-REC (IDXL)
-      *TEST
-           DISPLAY "WKSRY-INPUTCD:" WKSRY-INPUTCD (1)
-              "," WKSRY-INPUTCD (2) ",IDXL:" IDXL
-           DISPLAY   "WRK-TENSUKEI:" WRK-TENSUKEI
-              ",WRK-KAISUKEI:" WRK-KAISUKEI
       *
            MOVE    ZERO                TO  IDY
            MOVE    SPACE               TO  WKSRYACT-REC
@@ -2380,7 +2348,7 @@
            END-PERFORM
       *
            IF      IDY                 >   ZERO
-               MOVE    IDX-END             TO  IDX
+               MOVE    IDX-STR             TO  IDX
                IF      FLG-SYORI           =   1
                    PERFORM 20021-WKSRYACT-TBL-SEC
                ELSE
@@ -2912,12 +2880,6 @@
                PERFORM 45011-RSI-SYUNOU-SEC
                GO      TO      4501-SEIKYU-KEI-EXT
            END-IF
-      *TEST
-           DISPLAY "IDX:" IDX 
-                 ",GMN:" SPA-GMN-INPUTCD (IDX)
-                  ",ZAIEND:"  SPA-COM-ZAIEND (IDX)
-                  ",KEI:"  SPA-GMN-KEI (IDX)
-      *TEST
       *
       *    保険適用分は剤の最後の計を集計
            IF      SPA-COM-ZAIEND (IDX)    NOT =   "1"

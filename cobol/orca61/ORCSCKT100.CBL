@@ -312,9 +312,6 @@
       *****************************************************************
        100-GMN-SYORI-SEC               SECTION.
       *
-      *TEST
-           DISPLAY "KT100 SPA-INGAIKBN :" SPA-INGAIKBN
-      *TEST
       *    空白行をなくす
            PERFORM 420-SYOKYO-SEC
       *
@@ -397,7 +394,8 @@
       *
       *    特定の診療行為の有無
            IF      SPA-HKNCOMBINUM NOT =   "9999"
-               IF      ORCSC100-KBN        =   "3"
+               IF     (ORCSC100-KBN        =   "3" )
+                OR    (FLG-IKKATU          =   ZERO )
                    PERFORM 6200-TOKUTEIHANTEI-SEC
                END-IF
            END-IF
@@ -450,6 +448,7 @@
       *
       *    算定回数・併用算定チェック
            IF      ORCSC100-KBN        =   "3"
+            OR    (FLG-IKKATU          =   ZERO )
                PERFORM 51017-SANTEI-CHEK-SEC
                IF     (SPA-ERRCD       NOT =   SPACE)
                   AND (ORCSC100-INIT       =   ZERO )
@@ -813,10 +812,6 @@
       *    算定回数・併用算定チェック処理
       *****************************************************************
        51017-SANTEI-CHEK-SEC             SECTION.
-      *TEST
-           DISPLAY "51017-SANTEI-CHEK-SEC"
-                ",SPA-SRYYMD:" SPA-SRYYMD
-      *TEST
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE    )   OR
@@ -871,7 +866,7 @@
                INITIALIZE                  ORCSC92AREA
                MOVE    "4"                 TO  LNK-SC92-KBN
                MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
-               MOVE    "KT01"               TO  LNK-SC92-PG
+               MOVE    "KT01"              TO  LNK-SC92-PG
       *        警告チェックあり
                MOVE    "1"                 TO  LNK-SC92-KEIFLG
                MOVE    IDX                 TO  LNK-SC92-GMN-IDX
@@ -1297,10 +1292,6 @@
       *    剤別のチェック処理
       *****************************************************************
        51021-ZAIBETU-CHK-SEC          SECTION.
-      *
-      *TEST
-           DISPLAY "51021-ZAIBETU-CHK-SEC"
-              ",LNK-ORCSC-KT01FLG:" LNK-ORCSC-KT01FLG
       *
            EVALUATE    WRK-COM-SRYKBN (01)
       *            診療
@@ -2235,9 +2226,6 @@
            END-IF
       *            画像診断
            IF      SPA-SRYKBN-CNT (08) >   ZERO
-      *TEST
-            DISPLAY "ORCSC70: LNK-ORCSC-KT01FLG :" LNK-ORCSC-KT01FLG
-      *TEST
                CALL    "ORCSC70"       USING
                                        MCPAREA
                                        ORCSC00AREA

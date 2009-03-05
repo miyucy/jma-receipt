@@ -550,6 +550,9 @@
       *****************************************************************
        100-SYOSIN-AUTO-SEC                  SECTION.
       *
+      *    ºÇ½ª¹Ô¤ËÄÉ²Ã
+           MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
+      *
            MOVE    ZERO                TO  FLG-SYONIKA-ARI
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤ÎÈ½Äê
            IF     (SPA-SYONIKA         =   1   ) 
@@ -642,10 +645,8 @@
            MOVE    ZERO                TO  FLG-ADD
       *
            IF      WRK-IDX-IN          =   ZERO
-               ADD     1                   TO  IDX2
                ADD     1                   TO  SPA-GMN-IDX
            ELSE
-               MOVE    WRK-IDX-IN          TO  IDX2
                MOVE    WRK-IDX-IN          TO  SPA-GMN-IDX
            END-IF
       *
@@ -701,7 +702,6 @@
       *        MOVE    SPACE               TO  SPA-ERRCD
       *        MOVE    WRK-SCR-REC         TO  SPA-SCR-REC
       *        MOVE    ZERO                TO  SPA-GMN-IDX
-      *        MOVE    ZERO                TO  IDX2
       *        MOVE    1                   TO  FLG-SYONIKA
       *        MOVE    2                   TO  SPA-SYONIKA-ARI
       *        MOVE    1                   TO  SPA-SYONIKA-ARI2
@@ -714,7 +714,6 @@
       *        MOVE    SPACE           TO  SPA-ERRCD
       *        MOVE    WRK-SCR-REC     TO  SPA-SCR-REC
       *        MOVE    ZERO            TO  SPA-GMN-IDX
-      *        MOVE    ZERO            TO  IDX2
       *        GO      TO      3303-SYONIKA-SET-EXT
       *    END-IF
       *
@@ -800,6 +799,9 @@
       *    ºÆ¿ÇÎÁ¼«Æ°È¯À¸½èÍý
       *****************************************************************
        200-SAISIN-AUTO-SEC                  SECTION.
+      *    ºÇ½ª¹Ô¤ËÄÉ²Ã
+           MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
+      *
       *
            MOVE    ZERO                TO  FLG-SYONIKA-ARI
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤ÎÈ½Äê
@@ -914,7 +916,6 @@
       *
            IF     (WRK-SRYCD(1:2)      =   "83"  )   AND
                   (SPA-GMN-IDX         =   ZERO  )
-               ADD     1                   TO  IDX2
                ADD     1                   TO  SPA-GMN-IDX
       *        ¿ÇÎÅ¶èÊ¬ÊÔ½¸
                IF      WRK-SRYCD           =   "830000020"
@@ -1289,10 +1290,8 @@
            MOVE    ZERO                TO  FLG-ADD
       *
            IF      WRK-IDX-IN          =   ZERO
-               ADD     1                   TO  IDX2
                ADD     1                   TO  SPA-GMN-IDX
            ELSE
-               MOVE    WRK-IDX-IN          TO  IDX2
                MOVE    WRK-IDX-IN          TO  SPA-GMN-IDX
            END-IF
            MOVE    ZERO                TO  WRK-IN-KAISU
@@ -1322,7 +1321,6 @@
                INITIALIZE              SPA-GMN-TBLREC (SPA-GMN-IDX)
                INITIALIZE              SPA-COM-TBLREC (SPA-GMN-IDX)
                COMPUTE SPA-GMN-IDX     =   SPA-GMN-IDX     -   1
-               COMPUTE IDX2            =   IDX2            -   1
            ELSE
       *        ²ó¿ô¤ÎºÆÊÔ½¸
                IF      WRK-IN-KAISU        >   ZERO
@@ -1515,7 +1513,6 @@
                MOVE    SPA-GMN-IDX         TO  IDX
                PERFORM 3101-INPUTCD-HEN-SEC
            END-IF
-           MOVE    SPA-GMN-IDX         TO  IDX2
       *
            .
        33012113-SIDOU-INS-EXT.
@@ -1776,7 +1773,6 @@
                MOVE    SPA-GMN-IDX         TO  IDX
                PERFORM 3101-INPUTCD-HEN-SEC
            END-IF
-           MOVE    SPA-GMN-IDX         TO  IDX2
       *
            .
        330123-RYOYOU-TEATE-EXT.

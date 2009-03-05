@@ -31,6 +31,7 @@
       *  01.00.02    NACL−多々納 06/08/16  当日担当医設定追加
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.03.00    NACL-多々納  08/06/XX  最大９９件対応
+      *  04.04.00    NACL-多々納  09/03/05  当日担当医対応なし追加
       *****************************************************************
       *
       *
@@ -134,6 +135,7 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  ORCSDR-ERRCD
       *
+      *
            EVALUATE    ORCSDR-KBN
       *        ドクターテーブル編集
                WHEN    "1"
@@ -177,9 +179,14 @@
            MOVE    ZERO                TO  IDX3
            MOVE    ZERO                TO  FLG-TANTOU
       *    当日担当医
-           IF      ORCSDR-SRYKA    NOT =   SPACE
-               PERFORM 1000-SYS1011-CHK-SEC
+           IF      ORCSDR-KBN2         =   "1"
+               CONTINUE
+           ELSE
+               IF      ORCSDR-SRYKA    NOT =   SPACE
+                   PERFORM 1000-SYS1011-CHK-SEC
+               END-IF
            END-IF
+      *
            IF      FLG-TANTOU          =   ZERO
                PERFORM 1001-SYS1010-HEN-SEC
            ELSE
