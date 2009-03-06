@@ -799,6 +799,10 @@
       *    再診料自動発生処理
       *****************************************************************
        200-SAISIN-AUTO-SEC                  SECTION.
+      *TEST
+           DISPLAY "CKT10S SPA-GMN-IDX:" SPA-GMN-IDX
+                  ",SPA-GMN-MAX:" SPA-GMN-MAX
+      *TEST
       *    最終行に追加
            MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
       *
@@ -2262,8 +2266,11 @@
       *        糖尿病
                WHEN    "113005910"
                WHEN    "113006110"
+      *            老人の時、生活習慣病の算定判定をしない
+                   IF      SPA-NAI-ROUJIN      =   ZERO
                        MOVE    1                   TO  SPA-SEIKATU-ARI
                        MOVE    1                   TO  SPA-SEIKATU-ARI2
+                   END-IF
       *        痴呆患者在宅指導管理料
                WHEN    "113700310"
                        MOVE    1               TO  SPA-GAIRAI-NASI
