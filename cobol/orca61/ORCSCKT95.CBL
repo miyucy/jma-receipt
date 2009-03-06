@@ -1887,7 +1887,7 @@
            MOVE    "1"                 TO  ORCSDR-KBN
            MOVE    "1"                 TO  ORCSDR-KBN2
            MOVE    SPA-SRYYMD          TO  ORCSDR-SYSYMD
-           MOVE    "00"                TO  ORCSDR-SYSYMD(7:2)
+           MOVE    "01"                TO  ORCSDR-SYSYMD(7:2)
            MOVE    SPA-SRYKA           TO  ORCSDR-SRYKA
            MOVE    SPA-DRCD(2:4)       TO  ORCSDR-IN-DRCD
            CALL    "ORCSDRSET"         USING

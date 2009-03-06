@@ -5877,17 +5877,6 @@
       *
       *    入院回数・日数
            INITIALIZE                  SPA-COM-NYUIN-AREA (SPA-GMN-IDX)
-      *    日付チェック
-      *    IF      SPA-K02N-NYUINYMD(1:6)  =   SPA-SRYYMD(1:6)
-      *        MOVE    SPA-K02N-NYUINYMD(7:2)  TO  WRK-STDD
-      *    ELSE
-      *        MOVE    01                      TO  WRK-STDD
-      *    END-IF
-      *    IF      SPA-K02N-TAIINYMD(1:6)  =   SPA-SRYYMD(1:6)
-      *        MOVE    SPA-K02N-TAIINYMD(7:2)  TO  WRK-EDDD
-      *    ELSE
-      *        MOVE    SPA-SRYLST-DD           TO  WRK-EDDD
-      ***  END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   31
               IF      LNK-SC97-NYU-DAY (IDX)   NOT =   ZERO
@@ -9413,13 +9402,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "6008"
-                   STRING  "患者情報登録中です。"
+                   STRING  "診療行為入力中です。"
                            "会計照会への遷移はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "6009"
-                   STRING  "患者情報登録中です。"
+                   STRING  "診療行為入力中です。"
                            "収納登録への遷移はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG

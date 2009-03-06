@@ -525,6 +525,9 @@
       *
            03  CNT-ZAI                 PIC 9(04).
       *
+           03  WRK-DAY-HENSYU     PIC X(100).
+           03  WRK-HENSYU         PIC X(100).
+      *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
            03  WRK-IDX-Y               PIC 9(04).
@@ -1008,6 +1011,16 @@
            MOVE    1                   TO  SPA-RRK-IDX
       *    画面編集処理
            PERFORM 3100-GMNHENSYU-SEC
+      *!!!
+      *    算定日表示
+           MOVE    SPACE               TO  SPA-GMN-MSGDATA
+           MOVE    SPA-KT01-RRKMAX     TO  WRK-ZZ
+           STRING  "【 "
+                   WRK-ZZ
+                   "日分 算定】"
+                                      DELIMITED  BY  SIZE
+                                      INTO   SPA-GMN-MSGDATA
+           END-STRING
       *
       **** IF      SPA-NYUGAIKBN       =   "1"
       *        ユーザプログラム起動初期
@@ -5262,11 +5275,12 @@
       *
       *    メッセージ
            MOVE    SPA-GMN-MSGDATA     TO  KT02-MSGDATA-VALUE
-           IF      SPA-GMN-MSGDATA     =   SPACE
-               MOVE    "black"             TO  KT02-MSGDATA-STYLE
-           ELSE
-               MOVE    "red"               TO  KT02-MSGDATA-STYLE
-           END-IF
+           MOVE    "black"             TO  KT02-MSGDATA-STYLE
+      *    IF      SPA-GMN-MSGDATA     =   SPACE
+      *        MOVE    "black"             TO  KT02-MSGDATA-STYLE
+      *    ELSE
+      *        MOVE    "red"               TO  KT02-MSGDATA-STYLE
+      *    END-IF
       *
       *    Ｕ・Ｐ
       *    MOVE    SPA-GMN-USERPG-G    TO  KT02-USERPG
