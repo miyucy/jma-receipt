@@ -291,6 +291,8 @@
            03  FLG-RRK-ARI             PIC 9(01).
            03  FLG-SANTEI-SYORI        PIC 9(01).
       *
+           03  FLG-HKNCOMBICHK         PIC 9(01).
+      *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -448,6 +450,7 @@
            03  WRK-PARAEDABAN      PIC 9(04).
       *
            03  WRK-SRYDD           PIC 9(02).
+           03  WRK-MAE-SRYDD       PIC 9(02).
       *
       *    退院日
            03  WRK-TAIINYMD        PIC X(08).
@@ -3491,7 +3494,6 @@
            END-IF
       *
            MOVE    "2"                 TO  LNK-SC95-KBN
-           MOVE    "KT1"              TO  LNK-SC95-PG
            INITIALIZE                  SPA-SRYKA
            CALL    "ORCSCKT95"         USING
                                        MCPAREA
@@ -3644,6 +3646,8 @@
       *
            MOVE    8                   TO  SPA-GMN-CUR
       *
+           MOVE    SPA-NAI-SRYDD       TO  WRK-MAE-SRYDD
+      *
            MOVE    KT01-SRYDD          TO  SPA-GMN-SRYDD
       *
            INITIALIZE                      ORCSNUMAREA
@@ -3730,11 +3734,50 @@
                       MOVE    1                TO  SPA-NAI-NYUIN-ERR
                    END-IF
                END-IF
+               IF      SPA-GMN-MAX         =   ZERO
+                   PERFORM 4101712-HKNCOMBI-CHK-SEC
+               END-IF
            ELSE
                PERFORM 410171-SRYYMD-INIT-SEC
            END-IF
            .
        410171-SRYYMD-OK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療日と保険組合せチェック処理
+      *****************************************************************
+       4101712-HKNCOMBI-CHK-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HKNCOMBICHK
+           PERFORM VARYING     IDY     FROM    1   BY  1
+                   UNTIL       IDY     >   SPA-HKN-MAX
+               IF      SPA-GMN-HKNCOMBINUM =   SPA-GMN-THKNCOMBINUM
+                                                         (IDY)
+                   IF     (SPA-NAI-TEKSTYMD (IDY)  <=   SPA-NAI-SRYYMD)
+                   AND    (SPA-NAI-TEKEDYMD (IDY)  >=   SPA-NAI-SRYYMD)
+                       CONTINUE
+                   ELSE
+                       MOVE    1               TO  FLG-HKNCOMBICHK
+                       MOVE    SPA-HKN-MAX     TO  IDY
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      FLG-HKNCOMBICHK     =   1
+               IF      SPA-NAI-RRKDAY-G    =   ZERO
+      *            受診内容がない時、再編集
+                   PERFORM 410171-SRYYMD-INIT-SEC
+               ELSE
+                   MOVE    WRK-MAE-SRYDD       TO  SPA-NAI-SRYDD
+                   MOVE    WRK-MAE-SRYDD       TO  SPA-GMN-SRYDD
+                   MOVE    SPA-NAI-SRYDD       TO  WRK-DAY
+                   PERFORM 6001-DAYCHEK-SEC
+                   MOVE    1                  TO  SPA-GMN-CUR
+                   MOVE    "6010"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       4101712-HKNCOMBI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3922,8 +3965,10 @@
       *
       *    訂正でなく、包括保険に変更した場合、メッセージ表示
            IF      SPA-GMN-HKNCOMBINUM     =   "9999"
-               MOVE    "0190"              TO  SPA-KIDCD
-               GO      TO      410121-HKNCOMBI-SAI-EXT
+               IF     (SPA-GMN-MAX         >   ZERO )
+                   MOVE    "0190"              TO  SPA-KIDCD
+                   GO      TO      410121-HKNCOMBI-SAI-EXT
+               END-IF
            END-IF
       *
       *    保険区分が変更された時、再編集を行う
@@ -7637,6 +7682,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4104-BDAY-SYORI-SEC            SECTION.
       *
+           MOVE    SPA-NAI-SRYDD       TO  WRK-MAE-SRYDD
       *
            MOVE    ZERO                TO  WRK-BDAY
            IF     (MCP-WIDGET(1:2)     =   "BD" ) AND
@@ -7654,6 +7700,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    1                  TO  SPA-GMN-CUR
       *            入院判定
                    PERFORM 3109-NYUIN-CHK-SEC
+                   IF      SPA-GMN-MAX         =   ZERO
+                       PERFORM 4101712-HKNCOMBI-CHK-SEC
+                   END-IF
                END-IF
            END-IF
            .
@@ -9410,6 +9459,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "6009"
                    STRING  "診療行為入力中です。"
                            "収納登録への遷移はできません。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "6010"
+                   STRING  "保険組合せの期間外の日です。"
+                           "診療日の変更はできません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
