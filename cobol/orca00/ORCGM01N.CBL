@@ -1362,8 +1362,18 @@
       ****     IF      SYS-1010-GSRAUTH(46:1)   =  "1"
       *            MOVE    WIDGET-NORMAL      TO  M01N-G81-STATE
       *****    END-IF
-               IF      SYS-1010-GSRAUTH(47:1)   =  "1"
-                   MOVE    WIDGET-NORMAL      TO  M01N-G82-STATE
+      *        グループ診療の場合
+               IF      SPA-GRPHOSPNUM(2)   NOT =   SPACE
+      *            スーパーバイザーであれば活性
+                   IF      SPA-SUPERVISOR      =   "T"
+                       IF      SYS-1010-GSRAUTH(47:1)   =  "1"
+                           MOVE    WIDGET-NORMAL      TO  M01N-G82-STATE
+                       END-IF
+                   END-IF
+               ELSE
+                   IF      SYS-1010-GSRAUTH(47:1)   =  "1"
+                       MOVE    WIDGET-NORMAL      TO  M01N-G82-STATE
+                   END-IF
                END-IF
       *
                IF      SYS-1010-GSRAUTH(51:1)   =  "1"

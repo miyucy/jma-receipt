@@ -4717,6 +4717,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               WHEN    "HOSPCD"
                   MOVE    4                TO  SPA-GMN-CUR
               WHEN    "HOSPSBT"
+                  MOVE    5                TO  SPA-GMN-CUR
+              WHEN    "HOSPID"
                   MOVE    6                TO  SPA-GMN-CUR
               WHEN    "HOSPNAME"
                   MOVE    13               TO  SPA-GMN-CUR
