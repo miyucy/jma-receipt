@@ -1228,9 +1228,6 @@
            MOVE    ZERO                TO  IDX-S1
            MOVE    ZERO                TO  IDX-S2
            MOVE    ZERO                TO  SPA-RRK-NEXT
-      *TEST
-           DISPLAY "KT95 FLG-JYURRK:" FLG-JYURRK
-      *
            PERFORM
                UNTIL   (FLG-JYURRK         =   1   )
                   OR   (SPA-RRK-NEXT       =   1   )
@@ -1295,9 +1292,6 @@
            MOVE    "tbl_jyurrk"        TO  MCP-TABLE
            MOVE    "key13"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *TEST
-           DISPLAY "C95 SPA-GMN-MAX1:" SPA-GMN-MAX1
-      *TEST
       *
       *    診察日の再編集
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1412,9 +1406,9 @@
            MOVE    IDX                 TO  SPA-GMN-MAX1
       *
       *    複数診療分はエラー
-           IF      JYURRK-GRP-DENPNUM  NOT =   ZERO
-               MOVE    "6003"          TO  SPA-ERRCD
-           END-IF
+      *    IF      JYURRK-GRP-DENPNUM  NOT =   ZERO
+      *        MOVE    "6003"          TO  SPA-ERRCD
+      *    END-IF
       *****外来で診療日の時のみ
       *    IF     (SPA-NYUGAIKBN       =   "2" )
       *      AND  (SPA-SRYYMD          =   JYURRK-SRYYMD)
