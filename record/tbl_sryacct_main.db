@@ -63,7 +63,7 @@ tbl_sryacct_main {
 };
 
 primary	{
-	HOSPNUM,NYUGAIKBN,PTID,SRYKA,SRYYM,SRYKBN,ZAINUM;
+	HOSPNUM,PTID,ZAINUM;
 };
 
 path	key 	{
