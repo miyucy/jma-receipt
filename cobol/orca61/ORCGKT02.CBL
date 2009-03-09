@@ -3569,6 +3569,7 @@
                MOVE    1                   TO  ORCSCGAIRAI-SYUNOU-MAX
                MOVE    SYUNOU-REC          TO  ORCSCGAIRAI-SYUNOU-REC
                                                                (1)
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
                CALL    "ORCSCGAIRAI"       USING
                                            SPA-AREA
                                            ORCSCGAIRAIAREA

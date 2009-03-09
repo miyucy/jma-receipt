@@ -96,6 +96,8 @@
                 04  KT01-GRPMEI-VALUE  PIC X(10).
               03  KT01-B12.
                 04  KT01-B12-STATE  PIC S9(9)   BINARY.
+              03  KT01-B01S.
+                04  KT01-B01S-STATE  PIC S9(9)   BINARY.
               03  KT01-BDAY-G   OCCURS  31.
               04  KT01-BDAY.
                 05  KT01-BDAY-STYLE  PIC X(20).
