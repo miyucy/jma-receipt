@@ -39,6 +39,7 @@
       *  04.01.01    NACL-森脇     07/12/26  公害対応
       *  04.02.01    NACL-森脇     08/04/15  平成２０年４月改正
       *  04.03.00    NACL-森脇     08/10/02  協会けんぽ対応
+      *  04.04.00    NACL-森脇     09/03/10  オンライン返戻対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -68,7 +69,7 @@
       *        SKYKBN      請求区分    1:請求済、未請求、2:請求しない、3:未請求患者分
       *        TEISYUTU    提出先区分  1:社保、2:国保、3:特別療養費、4:未請求設定、5:未請求解除、9:公害
       *        HKNJANUM    保険者番号  国保の時だけ使用、社保＆請求しない場合はオールゼロ
-      *        SYOKBN      処理区分    1:通常分、2:返戻分、3:月遅れ分
+      *        SYOKBN      処理区分    1:通常分、2:返戻分、3:オンライン返戻分、4:月遅れ分
       *        HKNJANUM2   保険者番号  広域の時だけ使用、それ以外はオールゼロ
       *        NYUGAIKBN   入外区分    1:外来分、2:入院分
       *        ZAIKBN      在総診区分  1:その他のレセ、2:在総診または在医総を算定したレセ
@@ -92,7 +93,7 @@
       *        SKYKBN      請求区分    1:請求済、未請求、2:請求しない、3:未請求患者分
       *        TEISYUTU    提出先区分  1:社保、2:国保、3:特別療養費、4:未請求設定、5:未請求解除、6:広域連合、9:公害
       *        HKNJANUM    保険者番号  国保と広域連合の時だけ使用、社保＆請求しない場合はオールゼロ
-      *        SYOKBN      処理区分    1:通常分、2:返戻分、3:月遅れ分
+      *        SYOKBN      処理区分    1:通常分、2:返戻分、3:オンライン返戻分、4:月遅れ分
       *        HKNJANUM2   保険者番号  広域の時だけ使用、それ以外はオールゼロ
       *        NYUGAIKBN   入外区分    1:外来分、2:入院分
       *        ZAIKBN      在総診区分  1:その他のレセ、2:在総診または在医総を算定したレセ
@@ -345,11 +346,11 @@
       *    帳票タイトル
            03  WRK-PRT1-AREA.
                05  WRK-PRT1-HOSPNAME   PIC X(50).
-               05  WRK-PRT1-FILLER1    PIC X(10).
+               05  WRK-PRT1-FILLER1    PIC X(06).
                05  WRK-PRT1-DENPPRTYM  PIC X(16).
-               05  WRK-PRT1-TITLE      PIC X(30).
-               05  WRK-PRT1-BUNRUI     PIC X(16).
-               05  WRK-PRT1-FILLER2    PIC X(02).
+               05  WRK-PRT1-TITLE      PIC X(28).
+               05  WRK-PRT1-BUNRUI     PIC X(24).
+      *         05  WRK-PRT1-FILLER2    PIC X(02).
                05  WRK-PRT1-PRTYMD     PIC X(09).
                05  WRK-PRT1-FILLER3    PIC X(02).
                05  WRK-PRT1-PRTTIME    PIC X(08).
@@ -1821,33 +1822,65 @@
       *    分類セット
            EVALUATE    WRK-TEISYUTU    ALSO    WRK-SYOKBN
                WHEN    "1"     ALSO    "1"
-                   MOVE    "（社保分）　　　"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（社保分）　　　　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "1"     ALSO    "2"
-                   MOVE    "（社保返戻分）　"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（社保返戻分）　　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "1"     ALSO    "3"
-                   MOVE    "（社保月遅れ分）"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（社保オンライン返戻分）"
+                                               TO  WRK-PRT1-BUNRUI
+               WHEN    "1"     ALSO    "4"
+                   MOVE    "（社保月遅れ分）　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "2"     ALSO    "1"
-                   MOVE    "（国保分）　　　"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（国保分）　　　　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "2"     ALSO    "2"
-                   MOVE    "（国保返戻分）　"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（国保返戻分）　　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "2"     ALSO    "3"
-                   MOVE    "（国保月遅れ分）"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（国保オンライン返戻分）"
+                                               TO  WRK-PRT1-BUNRUI
+               WHEN    "2"     ALSO    "4"
+                   MOVE    "（国保月遅れ分）　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "3"     ALSO    "1"
-                   MOVE    "（特別療養費分）"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（特別療養費分）　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "3"     ALSO    "2"
-                   MOVE    "（特別返戻分）　"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（特別返戻分）　　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "3"     ALSO    "3"
-                   MOVE    "（特別月遅れ分）"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（特別オンライン返戻分）"
+                                               TO  WRK-PRT1-BUNRUI
+               WHEN    "3"     ALSO    "4"
+                   MOVE    "（特別月遅れ分）　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "9"     ALSO    "1"
-                   MOVE    "（公害分）"        TO  WRK-PRT1-BUNRUI
+                   MOVE    "（公害分）　　　　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "9"     ALSO    "2"
-                   MOVE    "（公害返戻分）　"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（公害返戻分）　　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "9"     ALSO    "3"
-                   MOVE    "（公害月遅れ分）"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（公害オンライン返戻分）"
+                                               TO  WRK-PRT1-BUNRUI
+               WHEN    "9"     ALSO    "4"
+                   MOVE    "（公害月遅れ分）　　　　"
+                                               TO  WRK-PRT1-BUNRUI
            END-EVALUATE
       *
            MOVE    WRK-TEISYUTU    TO  CSV-TEISYUTU
-           MOVE    WRK-SYOKBN      TO  CSV-SYOKBN
+           EVALUATE    WRK-SYOKBN
+               WHEN    "1"
+                   MOVE    "1"         TO  CSV-SYOKBN
+               WHEN    "2"
+               WHEN    "3"
+                   MOVE    "2"         TO  CSV-SYOKBN
+               WHEN    "4"
+                   MOVE    "3"         TO  CSV-SYOKBN
+           END-EVALUATE
       *
       *    国保分、特別療養費分の場合は保険者名セット
            IF        ( WRK-TEISYUTU    =   "2" )
@@ -1900,7 +1933,8 @@
            PERFORM 310-HEAD-KEY-SET-SEC
       *
       *    分類セット
-           MOVE    "（請求しない分）"  TO  WRK-PRT1-BUNRUI
+           MOVE    "（請求しない分）　　　　"
+                                       TO  WRK-PRT1-BUNRUI
       *
            MOVE    "4"                 TO  CSV-SYOKBN
       *
@@ -1923,7 +1957,8 @@
            PERFORM 310-HEAD-KEY-SET-SEC
       *
       *    分類セット
-           MOVE    "（未請求患者分）"  TO  WRK-PRT1-BUNRUI
+           MOVE    "（未請求患者分）　　　　"
+                                       TO  WRK-PRT1-BUNRUI
       *
            MOVE    SPACE               TO  WRK-TEISYUTU
            MOVE    WRK-TEISYUTU        TO  CSV-TEISYUTU
@@ -1950,15 +1985,29 @@
       *    分類セット
            EVALUATE    WRK-TEISYUTU    ALSO    WRK-SYOKBN
                WHEN    "6"     ALSO    "1"
-                   MOVE    "（広域分）"        TO  WRK-PRT1-BUNRUI
+                   MOVE    "（広域分）　　　　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "6"     ALSO    "2"
-                   MOVE    "（広域返戻分）　"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（広域返戻分）　　　　　"
+                                               TO  WRK-PRT1-BUNRUI
                WHEN    "6"     ALSO    "3"
-                   MOVE    "（広域月遅れ分）"  TO  WRK-PRT1-BUNRUI
+                   MOVE    "（広域オンライン返戻分）"
+                                               TO  WRK-PRT1-BUNRUI
+               WHEN    "6"     ALSO    "4"
+                   MOVE    "（広域月遅れ分）　　　　"
+                                               TO  WRK-PRT1-BUNRUI
            END-EVALUATE
       *
            MOVE    WRK-TEISYUTU    TO  CSV-TEISYUTU
-           MOVE    WRK-SYOKBN      TO  CSV-SYOKBN
+           EVALUATE    WRK-SYOKBN
+               WHEN    "1"
+                   MOVE    "1"         TO  CSV-SYOKBN
+               WHEN    "2"
+               WHEN    "3"
+                   MOVE    "2"         TO  CSV-SYOKBN
+               WHEN    "4"
+                   MOVE    "3"         TO  CSV-SYOKBN
+           END-EVALUATE
       *
       *    広域連合名セット
            IF      WRK-HKNJANUM    =   "00000000"
@@ -2015,12 +2064,13 @@
            MOVE    SPACE               TO  WRK-PRT1-AREA
            MOVE    "　　　　　　　　　　　　　　　　　　　　　　　　　"
                                        TO  WRK-PRT1-HOSPNAME
-           MOVE    "　　＜＜　"        TO  WRK-PRT1-FILLER1
+           MOVE    "＜＜　"        TO  WRK-PRT1-FILLER1
            MOVE    WRK-DENPYMD         TO  WRK-PRT1-DENPPRTYM
-           MOVE    "分　保険請求確認リスト　＞＞　"
+           MOVE    "分　保険請求確認リスト　＞＞"
                                        TO  WRK-PRT1-TITLE
-           MOVE    "　　　　　　　　"  TO  WRK-PRT1-BUNRUI
-           MOVE    "　"                TO  WRK-PRT1-FILLER2
+           MOVE    "　　　　　　　　　　　　"
+                                       TO  WRK-PRT1-BUNRUI
+      *     MOVE    "　"                TO  WRK-PRT1-FILLER2
            MOVE    WRK-PRTYMD          TO  WRK-PRT1-PRTYMD
            MOVE    "　"                TO  WRK-PRT1-FILLER3
            MOVE    WRK-PRTTIME         TO  WRK-PRT1-PRTTIME
@@ -3792,7 +3842,7 @@
            MOVE    "3"             TO  WRK-SKYKBN
            MOVE    "00000000"      TO  WRK-HKNJANUM
            MOVE    "00000000"      TO  WRK-HKNJANUM2
-           MOVE    "3"             TO  WRK-SYOKBN
+           MOVE    "4"             TO  WRK-SYOKBN
            MOVE    "1"             TO  WRK-ZAIKBN
            MOVE    SPACE           TO  WRK-HKNKBN
            MOVE    SPACE           TO  WRK-SYUBETUKBN
@@ -4055,7 +4105,7 @@
                MOVE    "2"             TO  WRK-SKYKBN
                MOVE    "00000000"      TO  WRK-HKNJANUM
                MOVE    "00000000"      TO  WRK-HKNJANUM
-               MOVE    "3"             TO  WRK-SYOKBN
+               MOVE    "4"             TO  WRK-SYOKBN
                MOVE    "1"             TO  WRK-ZAIKBN
            ELSE
       *        請求区分チェック（請求分）
@@ -4080,17 +4130,27 @@
                    IF      WRK-SRYYM       =   WRK-PARA-DENPPRTYM
                        MOVE    "1"             TO  WRK-SYOKBN
                    ELSE
-                       MOVE    "3"             TO  WRK-SYOKBN
+                       MOVE    "4"             TO  WRK-SYOKBN
                    END-IF
                ELSE
-                   MOVE    "2"             TO  WRK-SYOKBN
-               END-IF
-               IF        ( WRK-PARA-SYOKBN     =   "1" )
-                   OR    ( WRK-PARA-SYOKBN     =   "2" )
-                   OR    ( WRK-PARA-SYOKBN     =   "3" )
-                   IF      WRK-SYOKBN      NOT =   WRK-PARA-SYOKBN
-                       GO  TO  900-SEIKYU-CHEK-EXT
+                   IF      RECE10-HENREI-SIJI-FLG  =   "1"
+                       MOVE    "3"             TO  WRK-SYOKBN
+                   ELSE
+                       MOVE    "2"             TO  WRK-SYOKBN
                    END-IF
+               END-IF
+               IF    ( WRK-PARA-SYOKBN =   "1" ) AND
+                     ( WRK-SYOKBN  NOT =   "1" )
+                   GO  TO  900-SEIKYU-CHEK-EXT
+               END-IF
+               IF    ( WRK-PARA-SYOKBN =   "2" ) AND
+                     ( WRK-SYOKBN  NOT =   "2" ) AND
+                     ( WRK-SYOKBN  NOT =   "3" )
+                   GO  TO  900-SEIKYU-CHEK-EXT
+               END-IF
+               IF    ( WRK-PARA-SYOKBN =   "3" ) AND
+                     ( WRK-SYOKBN  NOT =   "4" )
+                   GO  TO  900-SEIKYU-CHEK-EXT
                END-IF
            END-IF
       *
