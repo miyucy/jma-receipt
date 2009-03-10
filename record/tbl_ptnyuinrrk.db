@@ -908,3 +908,17 @@ path	key50		{
 		;
 	};
 };
+
+path	key51		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key51_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE	    HOSPNUM      =   :HOSPNUM 
+			AND	    PTID        =   :PTID
+			AND	    NYUINYMD   <=   :NYUINYMD
+			AND	    SHONUM      =   :SHONUM
+			ORDER BY NYUINYMD,TAIINYMD,RRKNUM,RRKEDANUM
+		;
+	};
+};

@@ -158,6 +158,9 @@
       *                                     記載対応
       *                                     月途中に医保と生保の併用から
       *                                     生保単独になったときのまとめ
+      *  04.04.02    NACL-藤原    09/03/10  特別な関係にある他院歴を初回
+      *                                     入院日として起算しレセプト記
+      *                                     載を行なう対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3244,7 +3247,7 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                MOVE    "31"            TO  PTNYUINRRK-NYUINYMD (7:2)
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key22"             TO  MCP-PATHNAME
+               MOVE    "key51"             TO  MCP-PATHNAME
                PERFORM   900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
                    PERFORM 900-PTNYUINRRK-KEY22-READ-SEC
@@ -3264,7 +3267,7 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                END-PERFORM
       *                 
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key22"             TO  MCP-PATHNAME
+               MOVE    "key51"             TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
            END-IF
            .
@@ -3395,6 +3398,11 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                                            TO  RECE68-NYUINCHUKBN
                WRITE   RECE68-REC
                ADD     1                   TO  CNT-RECE68
+      *
+               IF    ( PTNYUINRRK-JTIKBN        =   "5" )
+               AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
+                   MOVE    "1"                  TO  RECE62-TAINFLG
+               END-IF
            END-IF    
            .
        24012-RECE68-WRITE-EXT.
@@ -3736,11 +3744,18 @@ grpsys         PERFORM 900-DBFETCH-SEC
        900-PTNYUINRRK-KEY22-READ-SEC    SECTION.
       *    
            MOVE    "tbl_ptnyuinrrk"     TO  MCP-TABLE
-           MOVE    "key22"              TO  MCP-PATHNAME
+           MOVE    "key51"              TO  MCP-PATHNAME
            PERFORM   900-DBFETCH-SEC
            IF      MCP-RC               =   ZERO
                MOVE    ZERO                 TO  FLG-PTNYUINRRK22
                MOVE    MCPDATA-REC          TO  PTNYUINRRK-REC
+               IF      PTNYUINRRK-JTIKBN    =   "5"
+                   IF      PTNYUINRRK-TAINRELKBN    =   "1"
+                       CONTINUE
+                   ELSE
+                       GO  TO  900-PTNYUINRRK-KEY22-READ-SEC
+                   END-IF
+               END-IF
            ELSE
                MOVE    1                    TO  FLG-PTNYUINRRK22
            END-IF

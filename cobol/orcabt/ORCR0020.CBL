@@ -199,6 +199,8 @@
       *                                     記載対応
       *                                     月途中に医保と生保の併用から
       *                                     生保単独になったときのまとめ
+      *  04.04.02    NACL-藤原    09/03/10  特別な関係にある他院歴の入退
+      *                                     院履歴記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3706,7 +3708,7 @@ grpsys         MOVE    RECE01-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
                MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
                MOVE    "tbl_ptnyuinrrk"
                                        TO  MCP-TABLE
-               MOVE    "key22"         TO  MCP-PATHNAME
+               MOVE    "key51"         TO  MCP-PATHNAME
 grpsys         PERFORM 900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
                    PERFORM 900-PTNYUINRRK-KEY22-READ-SEC
@@ -3721,7 +3723,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *                 
                MOVE    "tbl_ptnyuinrrk"
                                        TO  MCP-TABLE
-               MOVE    "key22"         TO  MCP-PATHNAME
+               MOVE    "key51"         TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
            END-IF
            .
@@ -4200,11 +4202,18 @@ grpsys         PERFORM 900-DBFETCH-SEC
        900-PTNYUINRRK-KEY22-READ-SEC    SECTION.
       *    
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key22"             TO  MCP-PATHNAME
+           MOVE    "key51"             TO  MCP-PATHNAME
 grpsys     PERFORM 900-DBFETCH-SEC
            IF      MCP-RC               =   ZERO
                MOVE    ZERO                 TO  FLG-PTNYUINRRK22
                MOVE    MCPDATA-REC          TO  PTNYUINRRK-REC
+               IF      PTNYUINRRK-JTIKBN    =   "5"
+                   IF      PTNYUINRRK-TAINRELKBN    =   "1"
+                       CONTINUE
+                   ELSE
+                       GO  TO  900-PTNYUINRRK-KEY22-READ-SEC
+                   END-IF
+               END-IF
            ELSE
                MOVE    1                    TO  FLG-PTNYUINRRK22
            END-IF
