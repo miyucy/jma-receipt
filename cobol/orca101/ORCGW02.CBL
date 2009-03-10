@@ -2487,6 +2487,28 @@
       *    医療機関ＩＤチェック
       *****************************************************************
        4104-HOSPID-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "1"                 TO  KANACHK-SYORI
+           MOVE    SPA-GMN-HOSPID      TO  KANACHK-MAE-INPUT
+           MOVE    24                  TO  KANACHK-MAX-CNT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF     (KANACHK-RC      NOT =   ZERO  )  OR
+                  (KANACHK-SYUBETU NOT =   1     )
+               MOVE    "0032"          TO  SPA-ERRCD
+               MOVE    5               TO  SPA-GMN-CUR
+           ELSE
+               IF    ( SPA-GMN-HOSPID(1:3)     =   "JPN"   )   AND
+                     ( SPA-GMN-HOSPID(4:12)    IS  NUMERIC )   AND
+                     ( SPA-GMN-HOSPID(16:)     =   SPACE   )
+                   CONTINUE
+               ELSE
+                   MOVE    "0033"          TO  SPA-ERRCD
+                   MOVE    5               TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
            .
        4104-HOSPID-CHK-EXT.
            EXIT.
@@ -4459,6 +4481,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "旧総合病院であるとき主科設定はできません。"
                                                TO  SPA-ERRMSG
       *----(01.00.09) LINE ADD END   ----------------------------------
+               WHEN    "0032"
+                   MOVE    "半角で入力して下さい。"
+                                               TO  SPA-ERRMSG
+               WHEN    "0033"
+                   MOVE    "医療機関ＩＤ入力エラー"
+                                               TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
