@@ -922,3 +922,22 @@ path	key51		{
 		;
 	};
 };
+
+path	key52		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptnyuinrrk_key52_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptnyuinrrk
+			WHERE   HOSPNUM      =   :HOSPNUM 
+			AND	PTID          =   :PTID
+			AND	RRKEDANUM     =   1
+			AND	NYUINYMD	<=	:NYUINYMD
+			AND SHONUM        = :SHONUM
+			AND   (  JTIKBN		<>	'5' 
+			   OR (	JTIKBN		=	'5'
+			    AND TAINRELKBN	=	'1' ))
+			ORDER BY NYUINYMD ,TAIINYMD ,RRKNUM
+		;
+	};
+};
+
