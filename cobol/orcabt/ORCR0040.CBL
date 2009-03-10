@@ -106,6 +106,7 @@
       *  04.03.01    NACL-門脇    08/11/04  リハビリ発症日年月日対応
       *  04.03.02    NACL-門脇    08/12/22  内服薬剤逓減編集修正
       *  04.03.03    NACL-門脇    09/01/05  平成２１年１月改正対応
+      *  04.03.04    NACL-門脇    09/03/10  障害のコメント記載修正
       *
       *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
       *****************************************************************
@@ -2169,10 +2170,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    コメントの挿入
            MOVE    SPACE               TO  WRK-RECE05XX-REC
            INITIALIZE                      WRK-RECE05XX-REC
-           MOVE    "810000001"         TO  WRK-RECE05XX-SRYCD(1 1)
+           MOVE    "820000143"         TO  WRK-RECE05XX-SRYCD(1 1)
            MOVE     ZERO               TO  WRK-RECE05XX-SRYSURYO(1 1)
-           MOVE     2                  TO  WRK-RECE05XX-YUKOKETA(1 1)
-           MOVE    "障害"              TO  WRK-RECE05XX-NAME(1 1)
+           MOVE     4                  TO  WRK-RECE05XX-YUKOKETA(1 1)
+           MOVE    "（障害）"          TO  WRK-RECE05XX-NAME(1 1)
       *
            MOVE    WRK-RECE05XX-SRYACT-TBL(1 1)
                                         TO  RECE059-SRYACT-TBL(1)
