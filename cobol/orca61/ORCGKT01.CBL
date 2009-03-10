@@ -6947,10 +6947,10 @@
       *****************************************************************
        210-BACK-SYORI-SEC               SECTION.
       *
-           IF      SPA-GMN-PTID    NOT =   ZERO
+      *    IF      SPA-GMN-PTID    NOT =   ZERO
       *        排他制御解除処理
-               PERFORM 990-LOCK-OUT-SEC
-           END-IF
+      *        PERFORM 990-LOCK-OUT-SEC
+      ***  END-IF
       *    排他削除
            MOVE    3                   TO  SLOCK-MODE
            MOVE    ZERO                TO  SLOCK-PTID
@@ -7034,7 +7034,14 @@
            PERFORM 210-PARA-DEL-SEC
       *
       *    排他制御解除処理
-           PERFORM 990-LOCK-OUT-SEC
+      **   PERFORM 990-LOCK-OUT-SEC
+      *
+      *    排他削除
+           MOVE    3                   TO  SLOCK-MODE
+           MOVE    ZERO                TO  SLOCK-PTID
+           CALL    "ORCSLOCK"          USING   MCPAREA
+                                       SPA-AREA
+                                       ORCSLOCKAREA
       *
            MOVE    SPACE               TO  LINKAREA
            INITIALIZE                  SPA-KYOTUKEY
