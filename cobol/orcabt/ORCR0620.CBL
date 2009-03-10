@@ -3259,6 +3259,11 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                IF    ( PTNYUINRRK-NYUINYMD <    RECE62-NYUINYMD )
                AND   ( PTNYUINRRK-SHONUM   =    WRK-SHONUM      )
                    MOVE    PTNYUINRRK-NYUINYMD  TO  RECE62-NYUINYMD
+      *
+                   IF    ( PTNYUINRRK-JTIKBN        =   "5" )
+                   AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
+                       MOVE    "1"                  TO  RECE62-TAINFLG
+                   END-IF
                END-IF
       *
                PERFORM             UNTIL   FLG-PTNYUINRRK22 =  1
@@ -3378,6 +3383,12 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
       *****************************************************************
        24012-RECE68-WRITE-SEC         SECTION.
       *
+      *    Â¾±¡Îò¤ÎÍúÎò¤Ïµ­ºÜ¤·¤Ê¤¤
+           IF    ( PTNYUINRRK-JTIKBN        =   "5" )
+           AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
+               GO  TO  24012-RECE68-WRITE-EXT
+           END-IF
+      *
            MOVE    RECE62-HOSPNUM      TO  RECE68-HOSPNUM
            MOVE    RECE62-SRYYM        TO  RECE68-SRYYM
            MOVE    RECE62-NYUGAIKBN    TO  RECE68-NYUGAIKBN
@@ -3398,11 +3409,6 @@ grpsys             IF      TBL-RECE69-HOSPNUM (IDYY)  =   ZERO
                                            TO  RECE68-NYUINCHUKBN
                WRITE   RECE68-REC
                ADD     1                   TO  CNT-RECE68
-      *
-               IF    ( PTNYUINRRK-JTIKBN        =   "5" )
-               AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
-                   MOVE    "1"                  TO  RECE62-TAINFLG
-               END-IF
            END-IF    
            .
        24012-RECE68-WRITE-EXT.
