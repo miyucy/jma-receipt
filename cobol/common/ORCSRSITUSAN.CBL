@@ -503,7 +503,7 @@
       *
            MOVE    PTNYUINRRK-REC  TO  MCPDATA-REC
            MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-           MOVE    "key47"         TO  MCP-PATHNAME
+           MOVE    "key52"         TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF    ( MCP-RC      NOT =   ZERO )
                MOVE    1           TO  FLG-PTNYUINRRK
@@ -515,6 +515,8 @@
       *
                IF    ( PTNYUINRRK-RRKEDANUM    =   1 )
                    IF    ( PTNYUINRRK-JTIKBN   =   "6" )
+                    OR   ( PTNYUINRRK-JTIKBN   =   "5" 
+                      AND  PTNYUINRRK-TAINRELKBN   =   "1" )
                        IF    ( PTNYUINRRK-SHONUM   =   WRK-SHONUM )
                            PERFORM 2110-JIINRRK-NISSU-HEN-SEC
                        END-IF
@@ -524,7 +526,7 @@
                END-IF
       *
                MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-               MOVE    "key47"          TO  MCP-PATHNAME
+               MOVE    "key52"          TO  MCP-PATHNAME
                PERFORM 910-DBFETCH-SEC
                IF    ( MCP-RC      NOT =   ZERO )
                    MOVE    1           TO  FLG-PTNYUINRRK
@@ -535,7 +537,7 @@
            END-PERFORM
       *
            MOVE    "tbl_ptnyuinrrk" TO MCP-TABLE
-           MOVE    "key47"          TO  MCP-PATHNAME
+           MOVE    "key52"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSE-SEC
       *
            .
