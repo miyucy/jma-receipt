@@ -3,7 +3,8 @@ CSRCS = \
 	orcfileio.c \
 	cobabort.c \
 	coblog.c \
-	kanaconv.c
+	cobsleep.c \
+	kanaconv.c 
 
 CJSRCS = orcsjistoeuc.c
 
