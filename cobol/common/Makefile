@@ -287,6 +287,8 @@ SRCS = ORCHC01.CBL \
        ORCHC67.CBL \
        ORCSCOMMON.CBL \
        ORCDBACCT.CBL \
+       ORCDBSEIKYU.CBL \
+       ORCDBSYUNOU.CBL \
        ORCSC70200804.CBL \
 
 top_builddir = ../..

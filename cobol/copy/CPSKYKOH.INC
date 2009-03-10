@@ -1,0 +1,95 @@
+      *******************************************************************
+      * Project code name "ORCA"
+      * 日医標準レセプトソフト（JMA standard receipt software）
+      * Copyright(C) 2002 JMA (Japan Medical Association)
+      *
+      * This program is part of "JMA standard receipt software".
+      *
+      *     This program is distributed in the hope that it will be useful
+      * for further advancement in medical care, according to JMA Open
+      * Source License, but WITHOUT ANY WARRANTY.
+      *     Everyone is granted permission to use, copy, modify and
+      * redistribute this program, but only under the conditions described
+      * in the JMA Open Source License. You should have received a copy of
+      * this license along with this program. If not, stop using this
+      * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
+      * 113-8621, Japan.
+      ********************************************************************
+      ************************************************************
+      *    請求管理(公費情報)   COPY (CPSKYKOH.INC)              *
+      ************************************************************
+      ************************************************************
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      ************************************************************
+       01  SKYKOH-REC.
+      *ＫＥＹ
+           03  SKYKOH-KEY.
+      *医療機関ＩＤ
+               05  SKYKOH-HOSPNUM          PIC 9(2).
+      *診療年月
+               05  SKYKOH-SRYYM            PIC  9(06).
+      *入外区分
+               05  SKYKOH-NYUGAIKBN        PIC  X(01).
+      *患者ＩＤ
+               05  SKYKOH-PTID             PIC  9(10).
+      *レセプト科（空白の時ゼロをセット）
+               05  SKYKOH-RECEKA           PIC  X(02).
+      *審査支払機関
+               05  SKYKOH-TEISYUTUSAKI     PIC  9(01).
+      *レセプト種別
+               05  SKYKOH-RECESYUBETU      PIC  X(04).
+      *保険者番号
+               05  SKYKOH-HKNJANUM         PIC  X(08).
+      *補助区分（船員保険のときのみ）
+               05  SKYKOH-HOJOKBN-KEY      PIC  X(01).
+      *適用開始年月日
+               05  SKYKOH-TEKSTYMD         PIC  X(08).
+      *連番号(1〜4)
+               05  SKYKOH-RENNUM           PIC  9(02).
+      *公費情報
+           03  SKYKOH-KOHINF.
+      *公費−保険番号
+               05  SKYKOH-KOHNUM           PIC  X(03).
+      *公費情報
+           03  SKYKOH-KOHIDINF.
+      *公費−公費ＩＤ
+               05  SKYKOH-KOHID            PIC  9(10).
+      *実日数情報
+           03  SKYKOH-JNISSUINF.
+      *実日数
+               05  SKYKOH-JNISSU           PIC  9(02).
+      *診療区分別点数情報
+           03  SKYKOH-SRYKBNINF           OCCURS  45.
+      *明細点数情報
+               05  SKYKOH-TENSUINF.
+      *明細点数
+                   07  SKYKOH-TENSU       PIC  S9(08).
+      *合計点数情報
+           03  SKYKOH-TOTALTENINF.
+      *合計点数
+               05  SKYKOH-TOTALTEN        PIC  9(08).
+      *負担金額情報
+           03  SKYKOH-FTNMONEYINF.
+      *負担金額
+               05  SKYKOH-FTNMONEY        PIC  9(09).
+      *負担金額（一部負担額）
+               05  SKYKOH-FTNMONEY-FTN    PIC  9(09).
+      *負担金額（控除額）
+               05  SKYKOH-FTNMONEY-KOJ    PIC  9(09).
+      *
+      *食事療養費情報
+           03  SKYKOH-SHOKUJIINF.
+      *食事日数
+               05  SKYKOH-SHOKUJINISSU    PIC  9(02).
+      *食事療養費
+               05  SKYKOH-SHOKUJIRYOYOHI  PIC  9(09).
+      *標準負担額
+               05  SKYKOH-SHOKUJIFTN      PIC  9(09).
+      *
+      *薬剤一部負担金情報
+           03  SKYKOH-YKZFTNINF.
+      *薬剤一部負担金
+               05  SKYKOH-YKZFTN          PIC  9(05).
+      *審査支払機関検索用項目
+           03  SKYKOH-XXTEISYUTUSAKI      PIC 9(01).

@@ -167,17 +167,30 @@
       *
            IF    ( FLG-ERR         =   ZERO )
       *
-               IF    ( MCP-TABLE   =   "tbl_sryacct" )
+               MOVE    1           TO  MCP-VERSION
+      *
+               EVALUATE    MCP-TABLE
+               WHEN    "tbl_sryacct"
                    CALL    "ORCDBACCT" USING
                                        MCPAREA
                                        MCPDATA-REC
                                        SPA-AREA
-               ELSE
+               WHEN    "tbl_seikyu"
+                   CALL    "ORCDBSEIKYU" USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+               WHEN    "tbl_syunou"
+                   CALL    "ORCDBSYUNOU" USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+               WHEN    OTHER
       *
                    CALL    "MONFUNC"   USING
                                        MCPAREA
                                        MCPDATA-REC
-               END-IF
+               END-EVALUATE
       *
                IF    ( MCP-RC      =   ZERO OR 1)
                    CONTINUE

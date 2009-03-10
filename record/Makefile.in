@@ -498,7 +498,6 @@ DB_files = \
 	tbl_recekanri.db \
 	tbl_receprt.db \
 	tbl_santei.db \
-	tbl_seikyu.db \
 	tbl_sryact.db \
 	tbl_srycdchg.db \
 	tbl_srykarrk.db \
@@ -506,7 +505,6 @@ DB_files = \
 	tbl_sykrrk.db \
 	tbl_syskanri.db \
 	tbl_syumei.db \
-	tbl_syunou.db \
 	tbl_teikirrk.db \
 	tbl_ptteikirrk.db \
 	tbl_teikikanri.db \
@@ -606,6 +604,10 @@ DB_files = \
 	tbl_ptsame.db \
 	tbl_sryacct_main.db \
 	tbl_sryacct_sub.db \
+	tbl_seikyu_etc.db \
+	tbl_seikyu_koh.db \
+	tbl_seikyu_main.db \
+	tbl_syunou_nyuin.db \
 
 
 all:   

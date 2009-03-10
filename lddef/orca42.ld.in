@@ -63,12 +63,15 @@ db	{
 	tbl_receden;
 	tbl_recekanri;
 	tbl_receprt;
-	tbl_seikyu;
+	tbl_seikyu_main;
+	tbl_seikyu_koh;
+	tbl_seikyu_etc;
 	tbl_senteicdchg;
 	tbl_sryact;
 	tbl_syskanri;
 	tbl_syuka;
-	tbl_syunou;
+	tbl_syunou_main;
+	tbl_syunou_nyuin;
 	tbl_tensu;
 	tbl_tnkrrk;
 	tbl_tsyrrk;

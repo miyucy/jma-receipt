@@ -18,7 +18,8 @@ db	{
 	tbl_kyuseirrk;
 	tbl_sryact;
 	tbl_syumei;
-	tbl_syunou;
+	tbl_syunou_main;
+	tbl_syunou_nyuin;
 	tbl_tsyrrk;
 	tbl_tensu;
 	tbl_uketuke;
@@ -32,7 +33,9 @@ db	{
         tbl_srycdchg; 
         tbl_tensuplus;
 	tbl_hknjainf;
-	tbl_seikyu;
+	tbl_seikyu_main;
+	tbl_seikyu_koh;
+	tbl_seikyu_etc;
 	view_bd001;
 	view_bd002;
 	tbl_userbyomei;

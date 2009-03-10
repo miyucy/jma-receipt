@@ -30,7 +30,9 @@ db	{
 	tbl_lock;
 	tbl_ldmap;
 	tbl_monthlynum;
-	tbl_seikyu;
+	tbl_seikyu_main;
+	tbl_seikyu_koh;
+	tbl_seikyu_etc;
 	tbl_kohsky;
 	tbl_ptinf;
 	tbl_ptkohinf;

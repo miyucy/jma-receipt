@@ -76,7 +76,8 @@ db	{
 	tbl_kyuseirrk;
 	tbl_sryact;
 	tbl_syumei;
-	tbl_syunou;
+	tbl_syunou_main;
+	tbl_syunou_nyuin;
 	tbl_tsyrrk;
 	tbl_tensu;
 	tbl_uketuke;
@@ -88,7 +89,9 @@ db	{
 	tbl_para;
         tbl_tensuplus;
 	tbl_hknjainf;
-	tbl_seikyu;
+	tbl_seikyu_main;
+	tbl_seikyu_koh;
+	tbl_seikyu_etc;
 	tbl_rececom;
 	tbl_ptrsiinf;
 	tbl_jinmei;
