@@ -1303,8 +1303,47 @@
            INITIALIZE                  ORCSC92AREA
            MOVE    SPA-SYORIFLG        TO  LNK-SC92-SYORIFLG
            MOVE    "KT01"              TO  LNK-SC92-PG
-           MOVE    "1"                 TO  LNK-SC92-KBN
-           MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
+           IF      WRK-IDX-IN          =   ZERO
+               MOVE    "1"                 TO  LNK-SC92-KBN
+               MOVE    SPA-GMN-IDX         TO  LNK-SC92-GMN-IDX
+           ELSE
+               MOVE    SPACE               TO  LNK-SC92-KBN
+               MOVE    WRK-IDX-IN          TO  LNK-SC92-GMN-IDX
+      *        回数１以上
+               IF      (SPA-COM-KAIFLG (WRK-IDX-IN)    =   "1")  AND
+                       (SPA-COM-KAISU  (WRK-IDX-IN)    >   1  )
+                   MOVE    SPA-COM-KAISU  (WRK-IDX-IN)
+                                               TO  WRK-IN-KAISU
+               ELSE
+                   MOVE    ZERO                TO  WRK-IN-KAISU
+               END-IF
+               MOVE    SPA-COM-TIMEFLG(WRK-IDX-IN)
+                                           TO  FLG-JIKAN
+      *        回数１以上
+               IF      (SPA-COM-KAIFLG (WRK-IDX-IN)    =   "1")  AND
+                       (SPA-COM-KAISU  (WRK-IDX-IN)    >   1  )
+                   MOVE    SPA-COM-KAISU  (WRK-IDX-IN)
+                                               TO  WRK-IN-KAISU
+               ELSE
+                   MOVE    ZERO                TO  WRK-IN-KAISU
+               END-IF
+      *
+               INITIALIZE                      SPA-COM-TBLREC
+                                                        (WRK-IDX-IN)
+               MOVE    WRK-SRYCD           TO  SPA-COM-INPUTCD
+                                                        (WRK-IDX-IN)
+               IF      FLG-JIKAN           >   ZERO
+                   MOVE    FLG-JIKAN           TO  SPA-GMN-INPUTCD
+                                                    (WRK-IDX-IN)(1:1)
+                   MOVE    WRK-SRYCD           TO  SPA-GMN-INPUTCD
+                                                    (WRK-IDX-IN)(3:)
+               ELSE
+                   MOVE    WRK-SRYCD           TO  SPA-GMN-INPUTCD
+                                                        (WRK-IDX-IN)
+               END-IF
+               MOVE    FLG-JIKAN           TO  SPA-COM-TIMEFLG
+                                                        (WRK-IDX-IN)
+           END-IF
            MOVE    WRK-SRYCD           TO  LNK-SC92-SRYCD
            MOVE    SPA-NENREI          TO  LNK-SC92-NENREI
            MOVE    SPA-15MIMAN-ARI     TO  LNK-SC92-15MIMAN-ARI
