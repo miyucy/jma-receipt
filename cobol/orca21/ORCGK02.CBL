@@ -1487,8 +1487,8 @@
                    MOVE    ZERO            TO  SPA-SYOHOU-CHK
                    MOVE    SPACE           TO  SPA-TOKUTEI-SRYKA 
                    MOVE    ZERO            TO  SPA-HKTKEI-FLG
-      *            生活習慣病の警告は登録時
-                   MOVE    1               TO  SPA-SEIKATU-FLG
+      *            生活習慣病の警告
+                   MOVE    ZERO            TO  SPA-SEIKATU-FLG
       *            診療行為、計計算処理、編集
                    MOVE    SPACE           TO  FLG-TOROKU
                    PERFORM 510-TBLHEN-SEC
@@ -10589,9 +10589,9 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    後期高齢者で当月生活習慣病管理料算定中
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-SEIKATU-CHK     =   1
-                   IF      SPA-SEIKATU-FLG NOT =   2
+                   IF      SPA-SEIKATU-FLG     =   ZERO
                        MOVE    "K177"          TO  SPA-ERRCD
-                       MOVE    2               TO  SPA-SEIKATU-FLG
+                       MOVE    1               TO  SPA-SEIKATU-FLG
                    END-IF
                END-IF
            END-IF
@@ -11106,17 +11106,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *!!!!
-      *    後期高齢者の保険がない時
-      *!!! ７５歳到達を警告へ
-      *    IF     (SPA-RJN-ERR         =   3   )  AND
-      *           (SPA-ERRCD           =   SPACE )
-      *        IF      SPA-NAI-ROUSTR      =   ZERO
-      *            MOVE    "K076"          TO  SPA-ERRCD
-      *            MOVE    1               TO  SPA-NAI-ROUSTR
-      *        END-IF
-      *    END-IF
-      *!!!!
       *    地方公費のみの場合、警告
            IF     (SPA-NAI-KOHFLG      =   1   )  AND
                   (SPA-ERRCD           =   SPACE
@@ -11171,16 +11160,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-SYOSIN-KEIFLG   =   ZERO   )
                MOVE    "K175"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-SYOSIN-KEIFLG
-           END-IF
-      *
-      *    後期高齢者で当月生活習慣病管理料算定中
-           IF      SPA-ERRCD           =   SPACE
-               IF      SPA-SEIKATU-CHK     =   1
-                   IF      SPA-SEIKATU-FLG     =   ZERO
-                       MOVE    "K177"          TO  SPA-ERRCD
-                       MOVE    1               TO  SPA-SEIKATU-FLG
-                   END-IF
-               END-IF
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
