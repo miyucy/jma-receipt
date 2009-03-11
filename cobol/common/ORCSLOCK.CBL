@@ -455,7 +455,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
               INITIALIZE   TBL-LOCK
       *        MOVE  MCP-TERM(5:)          TO  LOCK-TERMID
                MOVE  MCP-TERM              TO  LOCK-TERMID
+             IF  SPA-OPID              NOT =   SPACE
+               MOVE  SPA-OPID          TO  LOCK-OPID
+             ELSE
                MOVE  MCP-USER          TO  LOCK-OPID
+             END-IF
                MOVE  WRK-LD            TO  LOCK-LDNAME(01)
                MOVE  SLOCK-PTID        TO  LOCK-PTID(01)
                MOVE  "1"               TO  LOCK-FLG(01)
@@ -486,7 +490,11 @@ grpsys         MOVE  SPA-HOSPNUM       TO  LOCK-HOSPNUM
                END-PERFORM
                MOVE  1                      TO    WRK-LOCK-MATCH-FLG
                MOVE  WRK-LD                 TO    LOCK-LDNAME(IDZ)
-               MOVE  MCP-USER               TO  LOCK-OPID
+             IF  SPA-OPID              NOT =   SPACE
+               MOVE  SPA-OPID          TO  LOCK-OPID
+             ELSE
+               MOVE  MCP-USER          TO  LOCK-OPID
+             END-IF
                MOVE  SLOCK-PTID             TO    LOCK-PTID(IDZ)
                ACCEPT LOCK-STARTDATE(IDZ)   FROM  DATE
                ACCEPT LOCK-STARTTIME(IDZ)   FROM  TIME
