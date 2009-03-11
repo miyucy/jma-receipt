@@ -83,6 +83,9 @@
       *  04.03.02    NACL-門脇    08/11/04  リハビリ発症日年月日対応
       *
       *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
+      *  04.04.02    NACL-門脇    09/03/11  特別な関係にある他院歴を初回
+      *                                     入院日として起算しレセプト記
+      *                                     載を行なう対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -975,6 +978,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE859PARA-HOSPNUM
       *    在支援コメント
            IF     TBL-ZAISIEN-COMMENT   NOT =  ZERO
                 PERFORM    2001-ZAISIEN-COMMENT-SEC
+           END-IF
+      *
+      *    特別のコメント（特別な関係にある他院）
+      *
+           IF     RECE82-TAINFLG            =  "1"
+                PERFORM    2001-TAIN-TOKUBETU-COMMENT-SEC
            END-IF
       *
            PERFORM 800-RECE82-SET84-SEC
@@ -2516,6 +2525,40 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        2001-ZAISIEN-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    特別のコメント（特別な関係にある他院）
+      *****************************************************************
+       2001-TAIN-TOKUBETU-COMMENT-SEC          SECTION.
+      *
+           PERFORM 800-RECE82-SET849-SEC
+           MOVE    99999990            TO  RECE849-ZAINUM
+           MOVE    "99"                TO  RECE849-SRYKBN
+           MOVE    1                   TO  RECE849-MEISAISU
+      *
+           WRITE   RECE849-REC
+           ADD     1                   TO  CNT-RECE849
+      *
+           PERFORM 800-RECE82-SET859-SEC
+           MOVE    99999990            TO  RECE859-ZAINUM
+           MOVE    "99"                TO  RECE859-SRYKBN
+      *
+           MOVE    SPACE               TO  WRK-RECE85XX-REC
+           INITIALIZE                      WRK-RECE85XX-REC
+           MOVE   "810000001"          TO  WRK-RECE85XX-SRYCD(1 1)
+           MOVE    ZERO                TO  WRK-RECE85XX-SRYSURYO(1 1)
+           MOVE    4                   TO  WRK-RECE85XX-YUKOKETA(1 1)
+           MOVE   "（特別）"           TO  WRK-RECE85XX-NAME(1 1)
+      *
+           MOVE     "1"                TO  WRK-RECE85XX-SIKFLG(1 1)
+           MOVE    WRK-RECE85XX-SRYACT-TBL(1 1)
+                                       TO  RECE859-SRYACT-TBL(1)
+           WRITE   RECE859-REC
+           ADD     1                   TO  CNT-RECE859
+      *
+           .
+       2001-TAIN-TOKUBETU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************

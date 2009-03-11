@@ -100,6 +100,9 @@
       *  04.03.04    NACL-門脇    09/03/10  障害のコメント記載修正
       *
       *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
+      *  04.04.02    NACL-門脇    09/03/11  特別な関係にある他院歴を初回
+      *                                     入院日として起算しレセプト記
+      *                                     載を行なう対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1236,6 +1239,12 @@
               PERFORM   2001-KOUREI-TOKUREI-COMMENT-SEC
            END-IF
       *
+      *    特別のコメント（特別な関係にある他院）
+      *
+           IF   RECE62-TAINFLG          =  "1"
+              PERFORM   2001-TAIN-TOKUBETU-COMMENT-SEC
+           END-IF
+      *
       *    療養レセコメント取得
       *
            MOVE      ZERO     TO      FLG-RYOCOM
@@ -1506,6 +1515,63 @@
       *
            .
        2001-KOUREI-TOKUREI-COMMENT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    特別のコメント（特別な関係にある他院）
+      *****************************************************************
+       2001-TAIN-TOKUBETU-COMMENT-SEC          SECTION.
+      *
+           INITIALIZE                      RECE649-REC
+           MOVE    RECE62-HOSPNUM      TO  RECE649-HOSPNUM
+           MOVE    RECE62-SRYYM        TO  RECE649-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE649-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE649-PTID
+           MOVE    RECE62-RECEKA       TO  RECE649-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE649-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE649-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE649-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE649-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE649-TEKSTYMD
+           MOVE    99999990            TO  RECE649-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE649-KOHBUNRI
+           MOVE    "99"                TO  RECE649-SRYKBN
+           MOVE    WRK-HKNCOMBI-JIDO   TO  RECE649-HKNCOMBI
+      *
+           MOVE    1                   TO  RECE649-MEISAISU
+      *
+           WRITE   RECE649-REC
+           ADD     1                   TO  CNT-RECE649
+      *
+           INITIALIZE                      RECE659-REC
+           MOVE    RECE62-HOSPNUM      TO  RECE659-HOSPNUM
+           MOVE    RECE62-SRYYM        TO  RECE659-SRYYM
+           MOVE    RECE62-NYUGAIKBN    TO  RECE659-NYUGAIKBN
+           MOVE    RECE62-PTID         TO  RECE659-PTID
+           MOVE    RECE62-RECEKA       TO  RECE659-RECEKA
+           MOVE    RECE62-TEISYUTUSAKI TO  RECE659-TEISYUTUSAKI
+           MOVE    RECE62-RECESYUBETU  TO  RECE659-RECESYUBETU
+           MOVE    RECE62-HKNJANUM-KEY TO  RECE659-HKNJANUM
+           MOVE    RECE62-HOJOKBN-KEY  TO  RECE659-HOJOKBN
+           MOVE    RECE62-TEKSTYMD     TO  RECE659-TEKSTYMD
+           MOVE    99999990            TO  RECE659-ZAINUM
+           MOVE    WRK-KOHBUNRI-JIDO   TO  RECE659-KOHBUNRI
+           MOVE    "99"                TO  RECE659-SRYKBN
+      *    コメントの挿入
+           MOVE    SPACE               TO  WRK-RECE65XX-REC
+           INITIALIZE                      WRK-RECE65XX-REC
+           MOVE    "810000001"         TO  WRK-RECE65XX-SRYCD(1 1)
+           MOVE     ZERO               TO  WRK-RECE65XX-SRYSURYO(1 1)
+           MOVE     4                  TO  WRK-RECE65XX-YUKOKETA(1 1)
+           MOVE    "（特別）"          TO  WRK-RECE65XX-NAME(1 1)
+      *
+           MOVE    WRK-RECE65XX-SRYACT-TBL(1 1)
+                                       TO  RECE659-SRYACT-TBL(1)
+           WRITE   RECE659-REC
+           ADD     1                   TO  CNT-RECE659
+      *
+           .
+       2001-TAIN-TOKUBETU-COMMENT-EXT.
            EXIT.
       *
       *****************************************************************
