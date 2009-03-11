@@ -10,11 +10,12 @@
       *  01.00.04    NACL-太田    05.08.24  収納ＤＢの変更により修正
       *  01.00.05    NACL-小豆沢  06.07.06  収納ＤＢの変更により修正
       *  01.00.06    NACL-太田    06.09.21  収納ＤＢの変更により修正
+      *  04.04.00    NACL-太田    09.03.03  収納ＤＢの変更により修正
       ************************************************************
       *01  BD002-REC.
            03  BD002-KEY.
-      *医療機関番号
-               05  BD002-HOSPNUM         PIC  9(02).
+      *医療機関ＩＤ
+               05  BD002-HOSPNUM          PIC 9(2).
       *入外区分
                05  BD002-NYUGAIKBN       PIC  X(01).
       *患者ＩＤ
@@ -147,7 +148,7 @@
            03  BD002-SKYGK               PIC  9(07).
       *請求内容
            03  BD002-SKY-NAIYOU.
-               05  BD002-SKY-TBL             OCCURS   16.
+               05  BD002-SKY-TBL             OCCURS   17.
       *    保険点数
                    09  BD002-HKNTEN          PIC  9(07).
       *    金額
@@ -236,19 +237,25 @@
                   09  BD002-HOU-MONEY           PIC  9(07).
                   09  BD002-HOU-TGMONEY         PIC  9(07).
                   09  BD002-HOU-TGMONEY-TAX     PIC  9(07).
-      *入院料(14)
+      *病理診断(14)
+              05  BD002-BYR.
+                  09  BD002-BYR-HKNTEN          PIC  9(07).
+                  09  BD002-BYR-MONEY           PIC  9(07).
+                  09  BD002-BYR-TGMONEY         PIC  9(07).
+                  09  BD002-BYR-TGMONEY-TAX     PIC  9(07).
+      *入院料(15)
               05  BD002-NYN.
                   09  BD002-NYN-HKNTEN          PIC  9(07).
                   09  BD002-NYN-MONEY           PIC  9(07).
                   09  BD002-NYN-TGMONEY         PIC  9(07).
                   09  BD002-NYN-TGMONEY-TAX     PIC  9(07).
-      *療養担当手当(15)
+      *療養担当手当(16)
               05  BD002-RYO.
                   09  BD002-RYO-HKNTEN          PIC  9(07).
                   09  BD002-RYO-MONEY           PIC  9(07).
                   09  BD002-RYO-TGMONEY         PIC  9(07).
                   09  BD002-RYO-TGMONEY-TAX     PIC  9(07).
-      *合計  (16)
+      *合計  (17)
               05  BD002-TOTAL.
                   09  BD002-TOTAL-HKNTEN        PIC  9(07).
                   09  BD002-TOTAL-MONEY         PIC  9(07).
@@ -280,7 +287,7 @@
                05  BD002-JIHI-9-TAX          PIC  9(07). 
                05  BD002-JIHI-10             PIC  9(07). 
                05  BD002-JIHI-10-TAX         PIC  9(07). 
-           03  BD002-JIHI-NAIYOU-R     REDEFINES  BD002-JIHI-NAIYOU.
+           03  BD002-JIHI-NAIYOU-R   REDEFINES  BD002-JIHI-NAIYOU.
                05  BD002-JIHI-TBL            OCCURS   10.
                  07  BD002-JIHI-TAXNASI        PIC  9(07).
                  07  BD002-JIHI-TAXARI         PIC  9(07).
@@ -386,7 +393,8 @@
                05  BD002-SHOKUJI9        PIC  9(07).
                05  BD002-SHOKUJI10-NISSU PIC  9(02).
                05  BD002-SHOKUJI10       PIC  9(07).
-           03  BD002-SYOKUJI-NAIYOUR REDEFINES   BD002-SHOKUJI-NAIYOU.
+           03  BD002-SYOKUJI-NAIYOUR     
+                     REDEFINES   BD002-SHOKUJI-NAIYOU.
                05  BD002-SYOKUJI-TBL     OCCURS   10.
                  07  BD002-SHOKUJI-NISSU   PIC  9(02).
                  07  BD002-SHOKUJI         PIC  9(07).
@@ -509,7 +517,7 @@
                05  BD002-DAY-29          PIC  X(01).
                05  BD002-DAY-30          PIC  X(01).
                05  BD002-DAY-31          PIC  X(01).
-           03  BD002-DAY-AREA-R          REDEFINES   BD002-DAY-AREA.
+           03  BD002-DAY-AREA-R  REDEFINES   BD002-DAY-AREA.
       *        診療回数テーブル
                05  BD002-DAY-TBL2.
                    07  BD002-DAY         PIC  X(01)
@@ -526,7 +534,7 @@
       *    給付対象外点数
                    09  BD002-KYUFUGAI-TEN      PIC  9(07).
       *診療区分別給付外点数再定義
-           03  BD002-KYUFUGAI-R      REDEFINES   BD002-KYUFUGAI.
+           03  BD002-KYUFUGAI-R  REDEFINES   BD002-KYUFUGAI.
       *給付対象外点数（初診）
               05  BD002-KYUFUGAI-SHOSHIN-TEN    PIC  9(07).
       *給付対象外点数（指導）
