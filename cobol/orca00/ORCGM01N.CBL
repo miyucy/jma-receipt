@@ -908,7 +908,17 @@
                    IF      SYS-1010-GSRAUTH(47:1)    =  "0"
                        MOVE    "0002"          TO  SPA-ERRCD
                    ELSE
-                       MOVE    "F01"           TO  SPA-SAKIPG
+      *                グループ診療の場合
+                       IF      SPA-GRPHOSPNUM(2)   NOT =   SPACE
+      *                    スーパーバイザーであれば活性
+                           IF      SPA-SUPERVISOR      =   "T"
+                               MOVE    "F01"           TO  SPA-SAKIPG
+                           ELSE
+                               MOVE    "0002"          TO  SPA-ERRCD
+                           END-IF
+                       ELSE
+                           MOVE    "F01"           TO  SPA-SAKIPG
+                       END-IF
                    END-IF
       * マスタ登録処理
                WHEN    "91"
