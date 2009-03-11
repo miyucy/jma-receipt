@@ -1655,13 +1655,15 @@
                                                        <=  "I"   )
                            CONTINUE
                        ELSE
+      *!!!
+      ***                   MOVE    "0122"         TO  SPA-ERRCD
+      *                ÊÝ¸±³«»ÏÆü¤¬£·£µºÐ°Ê¾å¤Ï·Ù¹ð¡ÊÈó³ºÅöÂÐ±þ¡Ë
                            IF      SPA-ROU-KEIFLG      =   ZERO
-      *                        ·Ù¹ð¤Ø
-      *****************        MOVE    "0122"          TO  SPA-ERRCD
-                               MOVE    "K122"          TO  SPA-ERRCD
-                               MOVE    16              TO  SPA-GMN-CUR
+                               MOVE    "K122"      TO  SPA-ERRCD
+                               MOVE    16          TO  SPA-GMN-CUR
                                MOVE    1           TO  SPA-ROU-KEIFLG
                            END-IF
+      *!!!
                        END-IF
                    END-IF
                END-IF
