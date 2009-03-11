@@ -5,13 +5,13 @@
 -- Create Date : 2009/01/16         --
 --
 create	table	tbl_yykcom	(
-	HOSPNUM		numeric(2,0) NOT NULL,
+	HOSPNUM		smallint NOT NULL,
 	SRYNAIYO	char(2)  NOT NULL,
 	DRCD    	char(5)  NOT NULL,
 	YYKYMD  	char(8)  NOT NULL,
-	KEYYYKTIME  	numeric(4,0)  NOT NULL,
-	YYKID   	numeric(2,0)  NOT NULL,
-	RENNUM        	numeric(1,0)  NOT NULL,
+	KEYYYKTIME  	smallint  NOT NULL,
+	YYKID   	smallint  NOT NULL,
+	RENNUM        	smallint  NOT NULL,
 	COMMENT  	varchar(100),
 	TERMID  	varchar(16),
 	OPID    	varchar(16),

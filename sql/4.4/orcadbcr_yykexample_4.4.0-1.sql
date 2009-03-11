@@ -5,9 +5,9 @@
 -- Create Date : 2009/01/16         --
 --
 create	table	tbl_yykexample	(
-	HOSPNUM		numeric(2,0) NOT NULL,
-	RENNUM        	numeric(3,0)  NOT NULL,
-	HYOKBN        	numeric(1,0)  NOT NULL,
+	HOSPNUM		smallint NOT NULL,
+	RENNUM        	smallint  NOT NULL,
+	HYOKBN        	smallint  NOT NULL,
 	COMMENT  	varchar(100),
 	TERMID  	varchar(16),
 	OPID    	varchar(16),

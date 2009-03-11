@@ -5,13 +5,13 @@
 -- Create Date : 2008/12/12         --
 --
 create	table	tbl_henrei_kanri	(
-	HOSPNUM	numeric(2,0),
+	HOSPNUM	smallint,
 	TEISYUTUSAKI	char(1),
 	SYORIYM	char(6),
-	RECV_TOTAL_CNT	numeric(5,0),
-	RECV_PATIENT_CNT	numeric(5,0),
-	RECV_GO_CNT	numeric(5,0),
-	RECV_GO_TEN	numeric(10,0),
+	RECV_TOTAL_CNT	integer,
+	RECV_PATIENT_CNT	integer,
+	RECV_GO_CNT	integer,
+	RECV_GO_TEN	bigint,
 	TERMID	varchar(64),
 	OPID	varchar(16),
 	CREYMD	char(8),

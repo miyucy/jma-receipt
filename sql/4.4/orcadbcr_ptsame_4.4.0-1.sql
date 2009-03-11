@@ -5,10 +5,10 @@
 -- Create Date : 2009/01/23         --
 --
 create	table	tbl_ptsame	(
-	HOSPNUM	numeric(2,0) NOT NULL,
-	PTID		numeric(10,0)  NOT NULL,
-	SAME_HOSPNUM	numeric(2,0)  NOT NULL,
-	SAME_PTID	numeric(10,0)  NOT NULL,
+	HOSPNUM	smallint NOT NULL,
+	PTID		bigint  NOT NULL,
+	SAME_HOSPNUM	smallint  NOT NULL,
+	SAME_PTID	bigint  NOT NULL,
 	TERMID	varchar(16),
 	OPID		varchar(16),
 	CREYMD	char(8),
