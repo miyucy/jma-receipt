@@ -39,6 +39,10 @@
       *  03.05.01    NACL-門脇    07/06/01  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  04.01.01    NACL-門脇    07/11/01  公務災害対応
+      *
+      *  04.04.01    NACL-藤原    09/03/10  特別な関係にある他院歴を初回
+      *                                     入院日として起算しレセプト記
+      *                                     載を行なう対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -521,7 +525,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "31"              TO  PTNYUINRRK-NYUINYMD (7:2)
                MOVE    PTNYUINRRK-REC    TO  MCPDATA-REC
                MOVE    "tbl_ptnyuinrrk"  TO  MCP-TABLE
-               MOVE    "key22"           TO  MCP-PATHNAME
+               MOVE    "key51"           TO  MCP-PATHNAME
                PERFORM    900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
                    PERFORM 900-PTNYUINRRK-KEY22-READ-SEC
@@ -533,6 +537,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF    ( PTNYUINRRK-NYUINYMD <    RECE82-NYUINYMD )
                AND   ( PTNYUINRRK-SHONUM   =    WRK-SHONUM      )
                    MOVE    PTNYUINRRK-NYUINYMD  TO  RECE82-NYUINYMD
+      *
+                   IF    ( PTNYUINRRK-JTIKBN        =   "5" )
+                   AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
+                       MOVE    "1"                  TO  RECE82-TAINFLG
+                   END-IF
                END-IF
       *
                PERFORM             UNTIL   FLG-PTNYUINRRK22 =  1
@@ -541,7 +550,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                END-PERFORM
       *                 
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key22"             TO  MCP-PATHNAME
+               MOVE    "key51"             TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
            END-IF
            .
@@ -552,6 +561,12 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *    入退院履歴出力処理
       *****************************************************************
        210111-RECE88-WRITE-SEC         SECTION.
+      *
+      *    他院歴の履歴は記載しない
+           IF    ( PTNYUINRRK-JTIKBN        =   "5" )
+           AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
+               GO  TO  210111-RECE88-WRITE-EXT
+           END-IF
       *
            MOVE    RECE82-HOSPNUM      TO  RECE88-HOSPNUM
            MOVE    RECE82-SRYYM        TO  RECE88-SRYYM
@@ -821,11 +836,18 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
        900-PTNYUINRRK-KEY22-READ-SEC    SECTION.
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key22"             TO  MCP-PATHNAME
+           MOVE    "key51"             TO  MCP-PATHNAME
            PERFORM    900-DBFETCH-SEC
            IF      MCP-RC          =   ZERO
                MOVE    ZERO        TO  FLG-PTNYUINRRK22
                MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
+               IF      PTNYUINRRK-JTIKBN    =   "5"
+                   IF      PTNYUINRRK-TAINRELKBN    =   "1"
+                       CONTINUE
+                   ELSE
+                       GO  TO  900-PTNYUINRRK-KEY22-READ-SEC
+                   END-IF
+               END-IF
            ELSE
                MOVE    1           TO  FLG-PTNYUINRRK22
            END-IF
