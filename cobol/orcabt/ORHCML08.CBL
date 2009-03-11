@@ -439,7 +439,7 @@
                    ADD     1                 TO  SUM-KENSU
                    INITIALIZE                    TENSUCSV-REC
                    MOVE    TNS-HOSPNUM       TO  CSV-HOSPNUM
-                   MOVE    TNS-TEN           TO  CSV-HOSPNUM
+                   MOVE    TNS-TEN           TO  CSV-TEN
                    MOVE    ICD-INPUTCD       TO  CSV-SRYCD
                    MOVE    TNS-NAME          TO  CSV-NAME
                    MOVE    ","               TO  CSV-FILLER1
