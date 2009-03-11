@@ -75,7 +75,7 @@
            03  CSV-FILLER5         PIC X(01).
            03  CSV-NAME            PIC X(100).
            03  CSV-FILLER6         PIC X(01).
-           03  CSV-TEN             PIC 9(09)V99.
+           03  CSV-TEN             PIC 9(09).99.
            03  CSV-FILLER7         PIC X(01).
            03  CSV-TANINAME        PIC X(24).
            03  CSV-FILLER8         PIC X(01).
