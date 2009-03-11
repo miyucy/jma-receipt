@@ -1377,6 +1377,8 @@
                    IF      SPA-NAI-ROUJIN      =   1
                        MOVE    ZERO                TO  SPA-SEIKATU-ARI
                        MOVE    ZERO                TO  SPA-SEIKATU-ARI2
+                       MOVE    ZERO                TO  SPA-SEIKATU-FLG
+                       MOVE    1                   TO  SPA-SEIKATU-CHK
                    END-IF
       *        √‘ Ú¥µº‘∫ﬂ¬ªÿ∆≥¥…Õ˝Œ¡
                WHEN    "113700310"

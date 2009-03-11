@@ -1487,6 +1487,8 @@
                    MOVE    ZERO            TO  SPA-SYOHOU-CHK
                    MOVE    SPACE           TO  SPA-TOKUTEI-SRYKA 
                    MOVE    ZERO            TO  SPA-HKTKEI-FLG
+      *            生活習慣病の警告は登録時
+                   MOVE    1               TO  SPA-SEIKATU-FLG
       *            診療行為、計計算処理、編集
                    MOVE    SPACE           TO  FLG-TOROKU
                    PERFORM 510-TBLHEN-SEC
@@ -10588,6 +10590,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
+      *    後期高齢者で当月生活習慣病管理料算定中
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-SEIKATU-CHK     =   1
+                   IF      SPA-SEIKATU-FLG NOT =   2
+                       MOVE    "K177"          TO  SPA-ERRCD
+                       MOVE    2               TO  SPA-SEIKATU-FLG
+                   END-IF
+               END-IF
+           END-IF
+      *
       *    更新処理
       *****MOVE    SPACE           TO  WRK-PUTTYPE
            PERFORM 41002-KOUSIN-SYORI-SEC
@@ -11163,6 +11175,16 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                   (SPA-SYOSIN-KEIFLG   =   ZERO   )
                MOVE    "K175"              TO  SPA-ERRCD
                MOVE    1                   TO  SPA-SYOSIN-KEIFLG
+           END-IF
+      *
+      *    後期高齢者で当月生活習慣病管理料算定中
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-SEIKATU-CHK     =   1
+                   IF      SPA-SEIKATU-FLG     =   ZERO
+                       MOVE    "K177"          TO  SPA-ERRCD
+                       MOVE    1               TO  SPA-SEIKATU-FLG
+                   END-IF
+               END-IF
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE

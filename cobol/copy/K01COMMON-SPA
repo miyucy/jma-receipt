@@ -389,6 +389,8 @@
       *生活習慣病指導管理料あり
                07  SPA-SEIKATU-ARI         PIC  9(01).
                07  SPA-SEIKATU-ARI2        PIC  9(01).
+               07  SPA-SEIKATU-CHK         PIC  9(01).
+               07  SPA-SEIKATU-FLG         PIC  9(01).
       *
       *開放型病院共同指導料算定あり
                07  SPA-KAIHOU1-ARI         PIC  9(01).
