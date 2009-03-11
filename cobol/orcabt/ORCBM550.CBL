@@ -1729,6 +1729,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    1
                            MOVE ZERO               TO  KO-B-CNT
+                           ADD  1                  TO  PATIENT-CNT
       *
                            MOVE    0               TO  
                                        TBL-HENREI-B-SELECT-FLG   (IDZZ)
@@ -2498,6 +2499,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    返戻管理ファイル更新
            IF      FLG-PARA            =   1
                MOVE    WRK-HENREI-K-REC    TO  HENREI-K-REC
+               MOVE    IDZZ                TO  HENREI-K-RECV-TOTAL-CNT
+               MOVE    PATIENT-CNT         TO  HENREI-K-RECV-PATIENT-CNT
                MOVE    WRK-PARA-HOSPNUM    TO  HENREI-K-HOSPNUM
                MOVE    SMCNDATE-YMD        TO  HENREI-K-CREYMD
                MOVE    HENREI-K-REC        TO  MCPDATA-REC
