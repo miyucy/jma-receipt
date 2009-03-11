@@ -315,7 +315,7 @@
            03  FILLER              PIC X(35)   VALUE
                "2007 公費番号まとめ記載情報".
            03  FILLER              PIC X(35)   VALUE
-               "2010 公費付加情報".
+               "2010 地方公費保険番号付加情報".
            03  FILLER              PIC X(35)   VALUE
                "3001 統計帳票出力情報（日次）".
            03  FILLER              PIC X(35)   VALUE
