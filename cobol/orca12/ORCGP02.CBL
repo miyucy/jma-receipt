@@ -65,6 +65,7 @@
       *  04.02.00    NACL-多々納  08/03/XX  平成２０年４月改正対応
       *  04.03.00    NACL-多々納  08/07/22  特記事項追加
       *  04.04.00    NACL-多々納  09/01/27  本院分院対応
+      *  04.04.00    NACL-多々納  09/03/12  テーブル削除追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -437,6 +438,9 @@
        01  HZN-PTSAME-REC.
            COPY    "CPPTSAME.INC"      REPLACING
                                        //PTSAME-// BY //HZN-PTSAME-//.
+      *
+      *    チェック例外テーブル
+           COPY    "CPCHKREIGAI.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -3314,6 +3318,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_nsrysrh"       TO  MCP-TABLE
            MOVE    "del2"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *    チェック例外マスタテーブル
+           INITIALIZE                      CHKREIGAI-REC
+           MOVE    SPA-HOSPNUM         TO  CHKREIGAI-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  CHKREIGAI-PTID
+           MOVE    CHKREIGAI-REC       TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_chkreigai"     TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
