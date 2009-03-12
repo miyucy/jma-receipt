@@ -1352,38 +1352,6 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label17</name>
-      <x>852</x>
-      <y>308</y>
-      <width>60</width>
-      <height>20</height>
-      <label>ø«ª°Œ¡</label>
-      <justify>GTK_JUSTIFY_RIGHT</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label18</name>
-      <x>848</x>
-      <y>332</y>
-      <width>60</width>
-      <height>20</height>
-      <label>¥…Õ˝Œ¡</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
       <name>label35</name>
       <x>848</x>
       <y>476</y>
@@ -1519,6 +1487,38 @@
       <height>20</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label18</name>
+      <x>848</x>
+      <y>332</y>
+      <width>60</width>
+      <height>20</height>
+      <label>¥…Õ˝Œ¡</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label17</name>
+      <x>848</x>
+      <y>308</y>
+      <width>60</width>
+      <height>20</height>
+      <label>ø«ª°Œ¡</label>
+      <justify>GTK_JUSTIFY_RIGHT</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>
       <yalign>0.5</yalign>
