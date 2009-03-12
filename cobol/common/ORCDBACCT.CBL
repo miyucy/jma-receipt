@@ -260,12 +260,12 @@
       *
                PERFORM UNTIL ( FLG-SRYACCTS    NOT =   ZERO )
       *
-                   COMPUTE ACCT-DAY (ACCTS-RENNUM + 1 ACCTS-DATE)
-                       =   ACCTS-DAY
+                   COMPUTE ACCT-DAY (ACCTS-RENNUM + 1 ACCTS-DATE-HI)
+                       =   ACCTS-DAY-CNT
       *
-                   COMPUTE ACCT-DAY (2 ACCTS-DATE)
-                       =   ACCT-DAY (2 ACCTS-DATE)
-                       -   ACCTS-DAY
+                   COMPUTE ACCT-DAY (2 ACCTS-DATE-HI)
+                       =   ACCT-DAY (2 ACCTS-DATE-HI)
+                       -   ACCTS-DAY-CNT
       *
                    PERFORM 900-SRYACCTS-KEY2-FET-SEC
       *
@@ -389,9 +389,9 @@
                     OR   ( MCP-RC  NOT  =   ZERO )
       *
                     IF    ( ACCT-DAY (IDX1 IDX-DAY)    >   ZERO )
-                        COMPUTE ACCTS-RENNUM   =   IDX1    -   1
-                        COMPUTE ACCTS-DATE =   IDX-DAY
-                        COMPUTE ACCTS-DAY  =   ACCT-DAY (IDX1 IDX-DAY)
+                        COMPUTE ACCTS-RENNUM   = IDX1    -   1
+                        COMPUTE ACCTS-DATE-HI  = IDX-DAY
+                        COMPUTE ACCTS-DAY-CNT  = ACCT-DAY (IDX1 IDX-DAY)
                         MOVE    SRYACCTS-REC        TO  MCPDATA-REC
                         MOVE    "tbl_sryacct_sub"   TO  MCP-TABLE
                         MOVE    "key"               TO  MCP-PATHNAME

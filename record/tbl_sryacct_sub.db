@@ -3,15 +3,15 @@ tbl_sryacct_sub {
 	PTID				number(10,0);
 	ZAINUM				number(8,0);
 	RENNUM				number(3,0);
-	DATE				number(2,0);
-	DAY				number(3,0);
+	DATE_HI				number(2,0);
+	DAY_CNT				number(3,0);
 #-----> ¸¡º÷ÍÑ¹àÌÜ
 	VNYUGAIKBN 			char(1),virtual;
 	VSRYYM 				char(6),virtual;
 };
 
 primary	{
-	HOSPNUM,PTID,ZAINUM,RENNUM,DATE;
+	HOSPNUM,PTID,ZAINUM,RENNUM,DATE_HI;
 };
 
 path	key 	{
@@ -23,7 +23,7 @@ path	key 	{
 			AND   PTID        =   :PTID
 			AND   ZAINUM      =   :ZAINUM
 			AND   RENNUM      =   :RENNUM
-			AND   DATE        =   :DATE
+			AND   DATE_HI        =   :DATE_HI
 		;
 	};
 };

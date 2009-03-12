@@ -33,9 +33,9 @@
       *連番
                05  ACCTS-RENNUM            PIC  9(03).
       *日付
-               05  ACCTS-DATE              PIC  9(02).
+               05  ACCTS-DATE-HI           PIC  9(02).
       *回数
-           03  ACCTS-DAY                   PIC  9(03).
+           03  ACCTS-DAY-CNT               PIC  9(03).
       *----    以下検索用項目
       *入外区分
            03  ACCTS-VNYUGAIKBN            PIC  X(01).
