@@ -1717,12 +1717,13 @@
                IF      SPA-K09GMN-MAX1     >   ZERO
                    MOVE    1                   TO  SPA-K09-DOSELNUM
                    MOVE    SPA-K09GMN-NO(1)    TO  SPA-K09-SELNUM
+      *            ø«ª°∆‚Õ∆ ‘Ω∏
+                   PERFORM 4101-JYURRK-HEN-SEC
                ELSE
-                   MOVE    ZERO                TO  SPA-K09-DOSELNUM
-                   MOVE    ZERO                TO  SPA-K09-SELNUM
+      *            ºıø«∆‚Õ∆§ §∑
+                   PERFORM 41012-JYURRK-NASI-SEC
+                   MOVE    12                  TO  SPA-K09GMN-CUR
                END-IF
-      *        ø«ª°∆‚Õ∆ ‘Ω∏
-               PERFORM 4101-JYURRK-HEN-SEC
            END-IF
            .
        460-GRPHOSPNUM-CHK-EXT.
@@ -1746,23 +1747,6 @@
            INITIALIZE                  SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX2
            MOVE    ZERO                TO  SPA-NAI-MAX2
-      *
-           IF     (SPA-K09GMN-MAX1     >   ZERO ) AND
-                  (SPA-K09-DOSELNUM    >   ZERO )
-      *        ºıø«∆‚Õ∆ ‘Ω∏
-               PERFORM 41011-JYURRK-SPAHEN-SEC
-           ELSE
-      *        ºıø«∆‚Õ∆§ §∑
-               PERFORM 41012-JYURRK-NASI-SEC
-           END-IF
-      *
-           .
-       4101-JYURRK-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *     ø«ª°∆‚Õ∆ ‘Ω∏ΩËÕ˝
-      *****************************************************************
-       41011-JYURRK-SPAHEN-SEC           SECTION.
       *
       *    ºıø«ŒÚ§Ú∏°∫˜§π§Î
            INITIALIZE                  JYURRK-KEY
@@ -1819,21 +1803,29 @@
            IF      SPA-GMN-MAX2        >   ZERO
                MOVE    2                   TO  SPA-K09GMN-CUR
            ELSE
+      *        ºıø«∆‚Õ∆§ §∑
                PERFORM 41012-JYURRK-NASI-SEC
+               MOVE    1                   TO  SPA-K09GMN-CUR
            END-IF
-      *
            .
-       41011-JYURRK-SPAHEN-EXT.
+       4101-JYURRK-HEN-EXT.
            EXIT.
       *****************************************************************
       *     ø«ª°∆‚Õ∆§ §∑ ‘Ω∏ΩËÕ˝
       *****************************************************************
        41012-JYURRK-NASI-SEC           SECTION.
       *
+           INITIALIZE                  SPA-GMN-DOSEL
+           INITIALIZE                  SPA-NAI-DOSEL-G
+           MOVE    SPACE               TO  SPA-GMN-TBL
+           INITIALIZE                  SPA-GMN-TBL
+           INITIALIZE                  SPA-NAI-TBL
+           MOVE    ZERO                TO  SPA-GMN-MAX2
+           MOVE    ZERO                TO  SPA-NAI-MAX2
+      *
            MOVE    "°·°·°·°·°·°·°·°·°°…Ωº®∆‚Õ∆§ §∑°°°·°·°·°·°·°·°·°·"
                                        TO  SPA-GMN-TMEISYO (01)
            MOVE    1                   TO  SPA-GMN-MAX2
-           MOVE    1                   TO  SPA-K09GMN-CUR
            .
        41012-JYURRK-NASI-EXT.
            EXIT.
@@ -3162,12 +3154,13 @@
                IF      SPA-K09GMN-MAX1     >   ZERO
                    MOVE    1                   TO  SPA-K09-DOSELNUM
                    MOVE    SPA-K09GMN-NO(1)    TO  SPA-K09-SELNUM
+      *            ø«ª°∆‚Õ∆ ‘Ω∏
+                   PERFORM 4101-JYURRK-HEN-SEC
                ELSE
-                   INITIALIZE                  SPA-K09-DOSELNUM
-                   INITIALIZE                  SPA-K09-SELNUM
+      *            ºıø«∆‚Õ∆§ §∑
+                   PERFORM 41012-JYURRK-NASI-SEC
+                   MOVE    10                  TO  SPA-K09GMN-CUR
                END-IF
-      *        ø«ª°∆‚Õ∆ ‘Ω∏
-               PERFORM 4101-JYURRK-HEN-SEC
            END-IF
            .
        460-NYUGAIKBN-HEN-EXT.
@@ -3258,12 +3251,13 @@
            IF      SPA-K09GMN-MAX1     >   ZERO
                MOVE    1                   TO  SPA-K09-DOSELNUM
                MOVE    SPA-K09GMN-NO(1)    TO  SPA-K09-SELNUM
+      *        ø«ª°∆‚Õ∆ ‘Ω∏
+               PERFORM 4101-JYURRK-HEN-SEC
            ELSE
-               INITIALIZE                  SPA-K09-DOSELNUM
-               INITIALIZE                  SPA-K09-SELNUM
+      *        ºıø«∆‚Õ∆§ §∑
+               PERFORM 41012-JYURRK-NASI-SEC
+               MOVE    12                  TO  SPA-K09GMN-CUR
            END-IF
-      *    ø«ª°∆‚Õ∆ ‘Ω∏
-           PERFORM 4101-JYURRK-HEN-SEC
            .
        430-GRPHOSPNUM-HEN-EXT.
            EXIT.
