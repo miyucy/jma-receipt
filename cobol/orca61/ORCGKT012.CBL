@@ -602,8 +602,6 @@
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    DISPLAY "*** ORCSNPL    START  ***"
-      *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
@@ -824,33 +822,6 @@
            PERFORM
                UNTIL   (FLG-JYURRK         =   1   )  OR
                        (SPA-KT012-RRK-NEXT   =   1   )
-      *DDD             (SPA-KT012GMN-MAX1    >=  150 )
-      *TEST
-      *        ø«Œ≈∆¸°¢œ¢»÷§«£±π‘§»§π§Î
-      *        MOVE    ZERO            TO  IDX-S
-      *        PERFORM VARYING     IDX2    FROM    1   BY  1
-      *                UNTIL       IDX2    >   SPA-KT012GMN-MAX1
-      *            IF     (JYURRK-RENNUM       =   SPA-KT012NAI-RENNUM
-      *                                                (IDX2))  AND
-      *                   (JYURRK-DOUJI-RENNUM =
-      *                                        SPA-KT012NAI-DOUJI-RENNUM
-      *                                                (IDX2))  AND
-      *                   (JYURRK-SRYYMD       =   SPA-KT012NAI-RRKYMD
-      *                                                (IDX2))
-      *              AND  (JYURRK-SRYKA        =   SPA-KT012NAI-RRK-SRYKA
-      *                                                (IDX2))
-      *                MOVE    IDX2            TO  IDX-S
-      *                MOVE    SPA-KT012GMN-MAX1 TO  IDX2
-      *            END-IF
-      *        END-PERFORM
-      *
-      *        IF      IDX-S           =   ZERO
-      *            ADD     1               TO  SPA-KT012GMN-MAX1
-      *            MOVE    SPA-KT012GMN-MAX1 TO  IDX
-      *        ELSE
-      *            MOVE    IDX-S           TO  IDX
-      ******** END-IF
-      *TEST
                MOVE    ZERO                TO  IDX-S
                IF      JYURRK-EDANUM       =   1
                    ADD     1                   TO  IDX-S2
@@ -1642,12 +1613,12 @@
                END-IF
            END-PERFORM
            IF      SPA-KT012-GRPHOSPNUM  =   SPACE
-               MOVE    ZERO                TO  FLG-OK
+               MOVE    1                   TO  FLG-OK
            END-IF
            MOVE    ZERO                TO  FLG-HENSYU
            IF      FLG-OK              =   ZERO
-               MOVE    "0006"              TO  SPA-ERRCD
-               MOVE    11                  TO  SPA-KT012GMN-CUR
+               MOVE    "0009"              TO  SPA-ERRCD
+               MOVE    12                  TO  SPA-KT012GMN-CUR
            ELSE
                IF      SPA-KT012-GRPHOSPNUM  =   WRK-MAE-GRPHOSPNUM
                    CONTINUE
@@ -1672,12 +1643,13 @@
                MOVE    ZERO                TO  SPA-GMN-MAX2
                MOVE    ZERO                TO  SPA-NAI-MAX2
                IF      SPA-KT012GMN-MAX1     >   ZERO
-                   MOVE    1                   TO  SPA-KT012-DOSELNUM
+                   MOVE    1                     TO  SPA-KT012-DOSELNUM
                    MOVE    SPA-KT012GMN-NO(1)    TO  SPA-KT012-SELNUM
       *            ø«ª°∆‚Õ∆ ‘Ω∏
                    PERFORM 4101-JYURRK-HEN-SEC
                ELSE
-                   MOVE    10              TO  SPA-KT012GMN-CUR
+                   PERFORM 41012-JYURRK-NASI-SEC
+                   MOVE    12                  TO  SPA-KT012GMN-CUR
                END-IF
            END-IF
            .
@@ -1759,15 +1731,31 @@
            IF      SPA-GMN-MAX2        >   ZERO
                MOVE    2                   TO  SPA-KT012GMN-CUR
            ELSE
-               MOVE
-                   "°·°·°·°·°·°·°·°·°°…Ωº®∆‚Õ∆§ §∑°°°·°·°·°·°·°·°·°·"
-                                           TO  SPA-GMN-TMEISYO (01)
-               MOVE    1                   TO  SPA-GMN-MAX2
+               PERFORM 41012-JYURRK-NASI-SEC
                MOVE    1                   TO  SPA-KT012GMN-CUR
            END-IF
       *
            .
        4101-JYURRK-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *     ø«ª°∆‚Õ∆§ §∑ ‘Ω∏ΩËÕ˝
+      *****************************************************************
+       41012-JYURRK-NASI-SEC           SECTION.
+      *
+           INITIALIZE                  SPA-GMN-DOSEL
+           INITIALIZE                  SPA-NAI-DOSEL-G
+           MOVE    SPACE               TO  SPA-GMN-TBL
+           INITIALIZE                  SPA-GMN-TBL
+           INITIALIZE                  SPA-NAI-TBL
+           MOVE    ZERO                TO  SPA-GMN-MAX2
+           MOVE    ZERO                TO  SPA-NAI-MAX2
+      *
+           MOVE    "°·°·°·°·°·°·°·°·°°…Ωº®∆‚Õ∆§ §∑°°°·°·°·°·°·°·°·°·"
+                                       TO  SPA-GMN-TMEISYO (01)
+           MOVE    1                   TO  SPA-GMN-MAX2
+           .
+       41012-JYURRK-NASI-EXT.
            EXIT.
       *****************************************************************
       *    ø«Œ≈∂Ë ¨§Œ»ΩƒÍΩËÕ˝
@@ -3087,10 +3075,8 @@
       *            ø«ª°∆‚Õ∆ ‘Ω∏
                    PERFORM 4101-JYURRK-HEN-SEC
                ELSE
-                   INITIALIZE                  SPA-GMN-TBL
-                   INITIALIZE                  SPA-NAI-TBL
-                   MOVE    ZERO                TO  SPA-GMN-MAX2
-                   MOVE    ZERO                TO  SPA-NAI-MAX2
+                   PERFORM 41012-JYURRK-NASI-SEC
+                   MOVE    2                   TO  SPA-KT012GMN-CUR
                END-IF
            END-IF
            .
@@ -3185,10 +3171,8 @@
       *        ø«ª°∆‚Õ∆ ‘Ω∏
                PERFORM 4101-JYURRK-HEN-SEC
            ELSE
-               INITIALIZE                  SPA-GMN-TBL
-               INITIALIZE                  SPA-NAI-TBL
-               MOVE    ZERO                TO  SPA-GMN-MAX2
-               MOVE    ZERO                TO  SPA-NAI-MAX2
+               PERFORM 41012-JYURRK-NASI-SEC
+               MOVE    12                  TO  SPA-KT012GMN-CUR
            END-IF
            .
        430-GRPHOSPNUM-HEN-EXT.
