@@ -199,7 +199,7 @@ or day3_31       > 0
 ;
 
 create table tbl_sryacct_sub(
-hospnum      integer         ,
+hospnum      smallint         ,
 ptid         bigint   ,
 zainum      integer          ,
 rennum      smallint         ,
