@@ -1305,6 +1305,7 @@
                    MOVE    ZERO            TO  SPA-SYOHOU-CHK
                    MOVE    SPACE           TO  SPA-TOKUTEI-SRYKA 
                    MOVE    ZERO            TO  SPA-HKTKEI-FLG
+                   MOVE    ZERO            TO  SPA-NAI-SEIKATUCHK
       *            最後の日を診療日とする
                    MOVE    SPA-NAI-SRYDD       TO  SPA-GMN-SRYDD
                    MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
@@ -3585,6 +3586,19 @@
                    MOVE    "6002"              TO  SPA-ERRCD
                END-IF
                MOVE    1                   TO  SPA-NAI-RRK-ERR
+           END-IF
+      *
+           IF     SPA-ERRCD            =   SPACE
+      *        当月算定履歴から包括判定
+               MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+               INITIALIZE                      ORCSCKT10SAREA
+               MOVE    "5"                 TO  ORCSCKT10S-SYORI
+               CALL    "ORCSCKT10S"        USING
+                                           ORCSCKT10SAREA
+                                           SPA-AREA
+                                           SPA-SCR-REC
+                                           SPA-KT01
+               MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            END-IF
       *
            .
@@ -6129,14 +6143,14 @@
       *           (SPA-HKNCOMBINUM NOT =   "9999")
       *        PERFORM 5109-HKTSANTEI-CHK-SEC
       ***  END-IF
-      *    ７０歳到達の警告
-           IF      SPA-ERRCD       =   SPACE
-               IF      SPA-NAI-ROUFLG      =   1
-                   IF      SPA-NAI-ROUSTR      =   ZERO
-                       MOVE    "K008"          TO  SPA-ERRCD
-                   END-IF
-               END-IF
-           END-IF
+      *    ７０歳到達の警告（老人公費は廃止）
+      *    IF      SPA-ERRCD       =   SPACE
+      *        IF      SPA-NAI-ROUFLG      =   1
+      *            IF      SPA-NAI-ROUSTR      =   ZERO
+      *                MOVE    "K008"          TO  SPA-ERRCD
+      *            END-IF
+      *        END-IF
+      *****END-IF
            .
         510-TBLHEN-EXT.
            EXIT.
@@ -7702,20 +7716,29 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (MCP-WIDGET(1:2)     =   "BD" ) AND
                   (MCP-WIDGET(3:2)     NUMERIC  )
                MOVE    MCP-WIDGET(3:2)     TO  WRK-BDAY
-      *        確定　処理
-               PERFORM 4110-KAKUTEI-SEC
-               IF     (SPA-ERRCD           =   SPACE )  AND
-                      (SPA-KIDCD           =   SPACE )
+               IF     (SPA-GMN-MAX         =   ZERO )  AND
+                      (SPA-NAI-RRKDAY-G    =   ZERO )
                    MOVE    WRK-BDAY            TO  WRK-DAY
                    MOVE    WRK-DAY             TO  SPA-NAI-SRYDD
                    MOVE    WRK-DAY             TO  SPA-GMN-SRYDD
-                   MOVE    "3"                 TO  WRK-SYORI-KBN
-                   PERFORM 6001-DAYCHEK-SEC
-                   MOVE    1                  TO  SPA-GMN-CUR
-      *            入院判定
-                   PERFORM 3109-NYUIN-CHK-SEC
-                   IF      SPA-GMN-MAX         =   ZERO
-                       PERFORM 4101712-HKNCOMBI-CHK-SEC
+      *            受診内容がない時、再編集
+                   PERFORM 410171-SRYYMD-INIT-SEC
+               ELSE
+      *            確定　処理
+                   PERFORM 4110-KAKUTEI-SEC
+                   IF     (SPA-ERRCD           =   SPACE )  AND
+                          (SPA-KIDCD           =   SPACE )
+                       MOVE    WRK-BDAY            TO  WRK-DAY
+                       MOVE    WRK-DAY             TO  SPA-NAI-SRYDD
+                       MOVE    WRK-DAY             TO  SPA-GMN-SRYDD
+                       MOVE    "3"                 TO  WRK-SYORI-KBN
+                       PERFORM 6001-DAYCHEK-SEC
+                       MOVE    1                  TO  SPA-GMN-CUR
+      *                入院判定
+                       PERFORM 3109-NYUIN-CHK-SEC
+                       IF      SPA-GMN-MAX         =   ZERO
+                           PERFORM 4101712-HKNCOMBI-CHK-SEC
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -7948,10 +7971,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "1070"              TO  SPA-ERRCD
       *            後期高齢者の保険がない時
                    WHEN    3
-                       IF      SPA-NAI-ROUSTR      =   ZERO
-                           MOVE    "K076"          TO  SPA-ERRCD
-                           MOVE    1               TO  SPA-NAI-ROUSTR
-                       END-IF
+                       MOVE    "1076"              TO  SPA-ERRCD
                END-EVALUATE
            END-IF
            IF      SPA-ERRCD           =   SPACE
@@ -7961,7 +7981,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "1028"              TO  SPA-ERRCD
                    WHEN    2
                        MOVE    "1032"              TO  SPA-ERRCD
-      *           保険未選択の場合、エラー
+      *            保険未選択の場合、エラー
                    WHEN    3
                        MOVE    "1006"              TO  SPA-ERRCD
       *            保険未選択の場合、エラー
@@ -8228,6 +8248,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (FLG-KINKI           =   1   )  AND
                   (FLG-END             =   1   )
                GO      TO      4100-TOROKU-EXT
+           END-IF
+      *
+      *    後期高齢者で当月生活習慣病管理料算定中
+           IF      SPA-ERRCD           =   SPACE
+               IF      SPA-NAI-SEIKATU     =   1
+                   IF      SPA-NAI-SEIKATUCHK  =   ZERO
+                       MOVE    "K177"          TO  SPA-ERRCD
+                       MOVE    1               TO  SPA-NAI-SEIKATUCHK
+                   END-IF
+               END-IF
            END-IF
       *
            MOVE    ZERO                TO  SPA-NAI-DAYFLG-G
@@ -8736,6 +8766,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-RJN-ERR         =   2
                MOVE    "1070"              TO  SPA-ERRCD
            END-IF
+      *    後期高齢者の保険がない時、エラーとする
+           IF      SPA-RJN-ERR         =   3
+               MOVE    "1076"              TO  SPA-ERRCD
+           END-IF
       *    保険エラーがある時、エラーとする
            IF      SPA-HKN-ERR         =   1
                MOVE    "1028"              TO  SPA-ERRCD
@@ -8756,15 +8790,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    数量ゼロの場合、エラー表示しない
            IF      SPA-ERRCD           =   "A001"
                MOVE    SPACE               TO  SPA-ERRCD
-           END-IF
-      *
-      *    後期高齢者の保険がない時、警告
-           IF     (SPA-RJN-ERR         =   3     )
-              AND (SPA-ERRCD           =   SPACE )
-               IF      SPA-NAI-ROUSTR      =   ZERO
-                   MOVE    "K076"          TO  SPA-ERRCD
-                   MOVE    1               TO  SPA-NAI-ROUSTR
-               END-IF
            END-IF
       *
       *    訂正時の登録エラー
@@ -9613,9 +9638,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "KT01"              TO  LNK-SC96-PG
                    CALL    "ORCSC96"           USING    SPA-AREA
                                                         ORCSC96AREA
-                   IF      SPA-ERRCD           =  "K008"
-                       MOVE    1               TO  SPA-NAI-ROUSTR
-                   END-IF
            END-EVALUATE
       *
            EVALUATE    SPA-ERRCD

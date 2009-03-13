@@ -530,6 +530,9 @@
       *        院内院外変更
                WHEN    "4"
                    PERFORM 400-INGAI-HEN-SEC
+      *        算定済みの特定算定回数チェック
+               WHEN    "5"
+                   PERFORM 500-SANTEI-CHKTUKI-SEC
       *        剤分離前の特定算定回数チェック
                WHEN    "6"
                    PERFORM 600-SANTEI-CNT-SEC
@@ -2085,6 +2088,31 @@
       *****************************************************************
       *     剤分離前の特定算定回数チェック処理
       *****************************************************************
+       500-SANTEI-CHKTUKI-SEC            SECTION.
+      *
+           INITIALIZE                  SPA-K02FLGSET-AREA
+      *    算定履歴から判定
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   100  )
+                           OR (SPA-SAN-SRYCD (IDX2)    =   SPACE )
+               MOVE    ZERO            TO  WRK-SANTEICNT
+               PERFORM VARYING     IDX-N2  FROM    1   BY  1
+                       UNTIL       IDX-N2  >   31
+                   ADD     SPA-SANE-DAY (IDX2 IDX-N2)
+                                               TO  WRK-SANTEICNT
+               END-PERFORM
+               IF      WRK-SANTEICNT   NOT =   ZERO
+                   MOVE    SPA-SAN-SRYCD (IDX2)    TO  WRK-SRYCD
+                   MOVE    3                   TO  FLG-SANTEI-KBN
+                   PERFORM 61001-SANTEICHK-SEC
+               END-IF
+           END-PERFORM
+           .
+       500-SANTEI-CHKTUKI-SEC-EXT.
+           EXIT.
+      *****************************************************************
+      *     剤分離前の特定算定回数チェック処理
+      *****************************************************************
        600-SANTEI-CNT-SEC              SECTION.
       *
       *    特定の診療行為の有無
@@ -2237,7 +2265,7 @@
                END-IF
              END-IF
            END-PERFORM
-     *
+      *
       *    算定履歴から判定
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   100  )
@@ -2307,8 +2335,14 @@
                WHEN    "113006110"
       *            老人の時、生活習慣病の算定判定をしない
                    IF      SPA-NAI-ROUJIN      =   ZERO
-                       MOVE    1                   TO  SPA-SEIKATU-ARI
-                       MOVE    1                   TO  SPA-SEIKATU-ARI2
+                       MOVE    1               TO  SPA-SEIKATU-ARI2
+                   ELSE
+                       MOVE    ZERO            TO  SPA-SEIKATU-ARI2
+                       IF      FLG-SANTEI-KBN  =   3
+                           MOVE    1               TO  SPA-NAI-SEIKATU
+                           MOVE    ZERO            TO
+                                                   SPA-NAI-SEIKATUCHK
+                       END-IF
                    END-IF
       *        痴呆患者在宅指導管理料
                WHEN    "113700310"
@@ -2381,41 +2415,45 @@
       *
       *    小児科外来診療チェック
            PERFORM 5019-SYONIKA-CHK-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      700-SANTEI-CHK-EXT
-           END-IF
       *
       *    生活習慣病指導管理科チェック
            IF     (SPA-SEIKATU-ARI     NOT =   ZERO )  OR
                   (SPA-SEIKATU-ARI2    NOT =   ZERO )
-               PERFORM 5022-SEIKATU-CHK-SEC
-               IF      SPA-ERRCD       NOT =   SPACE
-                   GO      TO      700-SANTEI-CHK-EXT
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 5022-SEIKATU-CHK-SEC
                END-IF
            END-IF
       *
       *    在宅末期医療総合診察料チェック
            IF     (SPA-ZAIMATU-ARI     NOT =   ZERO )  OR
                   (SPA-ZAIMATU-ARI2    NOT =   ZERO )
-               PERFORM 5022-ZAIMATU-CHK-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 5022-ZAIMATU-CHK-SEC
+               END-IF
            END-IF
       *
       *    在宅時医学総合管理料チェック
            IF     (SPA-ZAIKANRI-ARI    NOT =   ZERO )
              OR   (SPA-ZAIKANRI-ARI2   NOT =   ZERO )
-               PERFORM 5022-ZAIKANRI-CHK-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 5022-ZAIKANRI-CHK-SEC
+               END-IF
            END-IF
       *
       *    後期高齢者診療料チェック
            IF     (SPA-KOURESRY-ARI    NOT =   ZERO )
              OR   (SPA-KOURESRY-ARI2   NOT =   ZERO )
-               PERFORM 5022-KOURESRY-CHK-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 5022-KOURESRY-CHK-SEC
+               END-IF
            END-IF
       *
       *    特定施設入居時等医学管理料
            IF     (SPA-IGAKUKAN-ARI    NOT =   ZERO )
              OR   (SPA-IGAKUKAN-ARI2   NOT =   ZERO )
-               PERFORM 5022-IGAKUKAN-CHK-SEC
+               IF      SPA-ERRCD           =   SPACE
+                   PERFORM 5022-IGAKUKAN-CHK-SEC
+               END-IF
            END-IF
       *
            .
