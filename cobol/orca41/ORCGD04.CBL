@@ -2040,7 +2040,7 @@
                MOVE    "病名選択番号入力エラー"
                                        TO  SPA-ERRMSG
            WHEN    "0007"
-               MOVE    "チェック内容を選択してください"
+               MOVE    "エラー内容を選択してください"
                                        TO  SPA-ERRMSG
            WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"
