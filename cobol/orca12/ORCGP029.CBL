@@ -933,44 +933,44 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                ELSE
-                   MOVE    SPACE               TO  MONTHLYNUM-REC
-                   INITIALIZE                      MONTHLYNUM-REC
-                   MOVE    PTKOH-HOSPNUM       TO  MONTHLYNUM-HOSPNUM
-                   MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
-                   MOVE    PTKOH-KOHNUM        TO  MONTHLYNUM-KOHNUM
-                   MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
+      **           MOVE    SPACE               TO  MONTHLYNUM-REC
+      *            INITIALIZE                      MONTHLYNUM-REC
+      *            MOVE    PTKOH-HOSPNUM       TO  MONTHLYNUM-HOSPNUM
+      *            MOVE    PTKOH-PTID          TO  MONTHLYNUM-PTID
+      *            MOVE    PTKOH-KOHNUM        TO  MONTHLYNUM-KOHNUM
+      *            MOVE    "2"                 TO  MONTHLYNUM-NYUGAIKBN
       *            適用開始年月日
-                   MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
-                   MOVE    "tbl_monthlynum"    TO  WRK-MCP-TABLE
-                   MOVE    "key"               TO  WRK-MCP-PATHNAME
-                   PERFORM 925-MONTHLYNUM-READ-SEC
-                   IF      FLG-MONTHLYNUM      =   ZERO
+      *            MOVE    PTKOH-TEKSTYMD(1:6) TO  MONTHLYNUM-SRYYM
+      *            MOVE    "tbl_monthlynum"    TO  WRK-MCP-TABLE
+      *            MOVE    "key"               TO  WRK-MCP-PATHNAME
+      *            PERFORM 925-MONTHLYNUM-READ-SEC
+      *            IF      FLG-MONTHLYNUM      =   ZERO
       *                修正分
-                       IF     (PTKOH-JKYSNUM   NOT =   SPACE )  AND
-                              (PTKOH-JKYSNUM   NOT =
-                                                   MONTHLYNUM-JKYSNUM)
-                           MOVE    PTKOH-JKYSNUM   TO MONTHLYNUM-JKYSNUM
+      *                IF     (PTKOH-JKYSNUM   NOT =   SPACE )  AND
+      *                       (PTKOH-JKYSNUM   NOT =
+      *                                            MONTHLYNUM-JKYSNUM)
+      *                    MOVE    PTKOH-JKYSNUM   TO MONTHLYNUM-JKYSNUM
       *                    更新情報
-                           MOVE    SMCNDATE-YMD    TO  MONTHLYNUM-UPYMD
-                           MOVE    SMCNDATE-HMS    TO  MONTHLYNUM-UPHMS
+      *                    MOVE    SMCNDATE-YMD    TO  MONTHLYNUM-UPYMD
+      *                    MOVE    SMCNDATE-HMS    TO  MONTHLYNUM-UPHMS
       *
-                           MOVE    SPA-OPID        TO  MONTHLYNUM-OPID
+      *                    MOVE    SPA-OPID        TO  MONTHLYNUM-OPID
       *
-                           MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
-                           MOVE    "DBUPDATE"      TO  MCP-FUNC
-                           MOVE    "tbl_monthlynum"
-                                                   TO  MCP-TABLE
-                           MOVE    "key"           TO  MCP-PATHNAME
-grpsys                     CALL    "ORCDBMAIN"     USING   MCPAREA
-                                                           MCPDATA-REC
-                                                           SPA-AREA
-                           IF      MCP-RC          NOT =   ZERO
-                              DISPLAY "P029 MONTHLYNUM UPD ERR:" MCP-RC
-                                     ",KEY:" MONTHLYNUM-KEY
-                             MOVE    "9000"          TO  SPA-ERRCD
-                           END-IF
-                       END-IF
-                   ELSE
+      *                    MOVE    MONTHLYNUM-REC  TO  MCPDATA-REC
+      *                    MOVE    "DBUPDATE"      TO  MCP-FUNC
+      *                    MOVE    "tbl_monthlynum"
+      *                                            TO  MCP-TABLE
+      *                    MOVE    "key"           TO  MCP-PATHNAME
+grpsys*                    CALL    "ORCDBMAIN"     USING   MCPAREA
+      *                                                    MCPDATA-REC
+      *                                                    SPA-AREA
+      *                    IF      MCP-RC          NOT =   ZERO
+      *                       DISPLAY "P029 MONTHLYNUM UPD ERR:" MCP-RC
+      *                              ",KEY:" MONTHLYNUM-KEY
+      *                      MOVE    "9000"          TO  SPA-ERRCD
+      *                    END-IF
+      *                END-IF
+      *********    ELSE
                        IF      PTKOH-JKYSNUM       =   SPACE
                            GO      TO      2301-MONTHLYNUM-SYORI-EXT
                        END-IF
@@ -1006,7 +1006,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                            MOVE    "9000"          TO  SPA-ERRCD
                        END-IF
                    END-IF
-               END-IF    
+      ******** END-IF    
            END-IF
       *
       *
@@ -2001,7 +2001,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        2110-SYUKA-INSERT-EXT.
            EXIT.
-      *
       *****************************************************************
       *    患者紐付（同一患者識別）更新処理
       *****************************************************************
