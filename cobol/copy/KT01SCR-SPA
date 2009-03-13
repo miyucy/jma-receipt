@@ -220,9 +220,13 @@
       *        前期高齢者変更チェック
                05  SPA-NAI-ZENKIFLG            PIC 9(01).
                05  SPA-NAI-ZENKIFLG-ERR        PIC 9(01).
-      *!!入院中
+      *!!
+      *        入院中
                05  SPA-NAI-NYUIN-ERR           PIC 9(01).
-               05  SPA-NAI-RRK-ERR           PIC 9(01).
+               05  SPA-NAI-RRK-ERR             PIC 9(01).
+      *        生活習慣病と後期高齢者
+               05  SPA-NAI-SEIKATU             PIC 9(01).
+               05  SPA-NAI-SEIKATUCHK          PIC 9(01).
       *!!
       *        内分泌負荷試験検査情報
                05  SPA-NAI-FUKATEN-AREA.
