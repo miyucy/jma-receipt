@@ -1293,6 +1293,10 @@
       *****************************************************************
        490-KT01-SEC                   SECTION.
       *
+           IF      SYS-1010-GSRAUTH(5:1)    NOT =  "1"
+               MOVE    "0002"          TO  SPA-ERRCD
+               GO  TO  490-KT01-EXT
+           END-IF
       *!!
       *    £Ó£Ð£Á¶¦ÄÌÀßÄê
            INITIALIZE                  SYS-1010-REC
