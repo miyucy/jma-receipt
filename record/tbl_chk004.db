@@ -222,3 +222,16 @@ path	upd2	{
 	};
 };
 
+path	del2		{ 	
+	DBDELETE	{
+		DELETE	FROM	tbl_chk004
+		WHERE   HOSPNUM      =   :HOSPNUM 
+			AND	KANRICD      >=  :KANRICD
+			AND     KANRICD      <=  :UPKANRICD
+			AND	KBNCD     LIKE   :KBNCD
+			AND	STYUKYMD     <=  :STYUKYMD
+			AND	EDYUKYMD     >=  :EDYUKYMD
+		;
+	};
+};
+
