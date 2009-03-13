@@ -51,6 +51,7 @@
       * 03.05.01     NACL-藤原    07/09/14  クライアント保存可否フラグ追加
       * 04.00.00     NACL-多々納  07/10/05  SYSUSER登録対応
       * 04.04.00     NACL-太田    08/01/27  他院設定追加
+      * 04.04.01     NACL-森脇    09/03/13  外部まとめ追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -123,7 +124,7 @@
                        09  SPA-GMN-HKNDRNUMK      PIC X(12).
       *                業務権限
                        09  SPA-GMN-CHK-G.
-                           11  SPA-GMN-CHK        PIC X     OCCURS  35.
+                           11  SPA-GMN-CHK        PIC X     OCCURS  36.
       *            専門科
                    07  SPA-GMN-SEMONKACD-G    OCCURS  5.
                        09  SPA-GMN-SEMONKACD       PIC X(02).
@@ -988,6 +989,7 @@
       *----(02.00.03)--ADD-START---
                WHEN    "CLICKED"      ALSO    "CHK35"
       *----(02.00.03)--ADD-END-----
+               WHEN    "CLICKED"      ALSO    "CHK36"
                    PERFORM 4119-GSRAUTH-CHK-SEC
       *    タグ切替え
            WHEN    "CLICKED"       ALSO    "TGN1"
@@ -1697,6 +1699,12 @@
                MOVE  "F"  TO  SPA-GMN-CHK(35)
            END-IF
       *----(02.00.031)--ADD-END-----
+      *    外来まとめ
+           IF      SYS-1010-GSRAUTH(5:1)    =  "1"
+               MOVE  "T"  TO  SPA-GMN-CHK(36)
+           ELSE
+               MOVE  "F"  TO  SPA-GMN-CHK(36)
+           END-IF
            . 
        320-SPASET-GSRAUTH-EXT.
            EXIT.
@@ -3311,6 +3319,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE     "0"    TO  SYS-1010-GSRAUTH(69:1)
            END-IF
       *----(02.00.03)--ADD-END-----
+      *外来まとめ
+           IF  SPA-GMN-CHK(36)  =  "T"
+               MOVE     "1"    TO  SYS-1010-GSRAUTH(5:1)
+           ELSE
+               MOVE     "0"    TO  SYS-1010-GSRAUTH(5:1)
+           END-IF
           .
        4900-KOUSHIN-GSRAUTH-EXT.
            EXIT.
@@ -3504,6 +3518,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(02.00.03)--ADD-START---
            MOVE  SPA-GMN-CHK(35)           TO  W06-CHK35
       *----(02.00.03)--ADD-END-----
+           MOVE  SPA-GMN-CHK(36)           TO  W06-CHK36
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   5
@@ -3992,8 +4007,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                            COMPUTE SPA-GMN-CUR     =   33
                                                    +   30
                        END-IF
-      *                プログラム更新の後、受付へ
+      *                プログラム更新の後、外来まとめへ
                        IF      IDX2            =   33
+                           MOVE    66          TO  SPA-GMN-CUR
+                       END-IF
+      *                外来まとめの後、受付へ
+                       IF      IDX2            =   36
                            MOVE    32          TO  SPA-GMN-CUR
                        END-IF
       *                会計照会の後、入院へ

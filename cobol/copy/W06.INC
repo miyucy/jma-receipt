@@ -38,6 +38,8 @@
                   05  W06-CHK33.
                     06  W06-CHK33-VALUE   PIC X.
                     06  W06-CHK33-STATE   PIC S9(9)   BINARY.
+                  05  W06-CHK36.
+                    06  W06-VALUE   PIC X.
                   05  W06-CHK11.
                     06  W06-VALUE   PIC X.
                   05  W06-CHK01.

@@ -726,6 +726,30 @@
 
 	<widget>
 	  <class>GtkCheckButton</class>
+	  <name>CHK36</name>
+	  <x>528</x>
+	  <y>224</y>
+	  <width>128</width>
+	  <height>24</height>
+	  <can_focus>True</can_focus>
+	  <signal>
+	    <name>toggled</name>
+	    <handler>button_toggled</handler>
+	    <last_modification_time>Tue, 07 May 2002 10:22:51 GMT</last_modification_time>
+	  </signal>
+	  <signal>
+	    <name>clicked</name>
+	    <handler>send_event</handler>
+	    <data>CLICKED</data>
+	    <last_modification_time>Tue, 07 May 2002 10:23:22 GMT</last_modification_time>
+	  </signal>
+	  <label>外来まとめ</label>
+	  <active>False</active>
+	  <draw_indicator>True</draw_indicator>
+	</widget>
+
+	<widget>
+	  <class>GtkCheckButton</class>
 	  <name>CHK01</name>
 	  <x>252</x>
 	  <y>224</y>

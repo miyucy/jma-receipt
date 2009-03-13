@@ -54,6 +54,9 @@ W06	{
 					value	bool;
 		                        state   int;
 				};
+				CHK36	{
+					value	bool;
+				};
 				CHK11	{
 					value	bool;
 				};
