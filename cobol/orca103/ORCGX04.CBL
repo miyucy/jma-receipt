@@ -622,7 +622,14 @@
                PERFORM 910-DBCLOSECURSOR-SEC
            END-IF
       *
-           MOVE    1                   TO  SPA-GMN-CUR
+           IF    ( SPA-X01-BYOMEI      =   SPACE )
+               MOVE    1                   TO  SPA-GMN-CUR
+           ELSE
+               MOVE    SPA-X01-BYOMEI      TO  X04-BYOMEI
+               PERFORM 4100-BYOMEI-CHK-SEC
+               MOVE    8                   TO  SPA-GMN-CUR
+           END-IF
+      *
       *
            .
        310-SPASET-EXT.
@@ -3171,7 +3178,11 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
            IF    ( SPA-ERRCD           =   SPACE )
                IF    ( SPA-GMN-BYOMEI  NOT =   SPACE )
-                   MOVE    "0107"      TO  SPA-ERRCD
+                   IF    ( SPA-X01-MOTOPG  =   SPACE )
+                       MOVE    "0107"      TO  SPA-ERRCD
+                   ELSE
+                       PERFORM 4101-BYOTRK-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -3188,7 +3199,11 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
       *
            IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-X01-MOTOPG  =   SPACE )
                    MOVE    "1001"      TO  SPA-XIDCD
+               ELSE
+                   PERFORM 490-KOUSHIN-SEC
+               END-IF
            END-IF
       *
            .
@@ -3285,8 +3300,13 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            END-IF
       *
            IF    ( SPA-ERRCD           =    SPACE )
-               MOVE   "JOIN"               TO   MCP-PUTTYPE
-               PERFORM 210-BACK
+               IF    ( SPA-X01-MOTOPG  =   SPACE )
+                   MOVE   "JOIN"               TO   MCP-PUTTYPE
+                   PERFORM 210-BACK
+               ELSE
+                   MOVE   "CHANGE"             TO   MCP-PUTTYPE
+                   PERFORM 210-BACK
+               END-IF
            END-IF
       *
            .
@@ -3358,6 +3378,7 @@ grpsys*                    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
+      *
       *
            PERFORM 500-GMNHEN-SEC
       *

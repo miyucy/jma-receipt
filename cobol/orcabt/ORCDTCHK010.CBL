@@ -94,6 +94,9 @@
            03  WRK-KBNCD-G.
                05  WRK-KBNCD-KBN                       PIC X(01).
                05  WRK-KBNCD-SEQ                       PIC 9(07).
+           03  WRK-KBNCD1200-G.
+               05  WRK-KBNCD1200-SEQ                   PIC 9(06).
+               05  WRK-KBNCD1200-CD                    PIC X(02).
       *
        01  KEY-AREA.
            03  KEY-PTID                                PIC 9(10).
@@ -124,6 +127,11 @@
       *    個別処理患者情報
            COPY    "CPCK2001.INC".
       *
+      *    前回エラー情報 
+           COPY    "CPCK1200.INC".
+      *
+      *    エラー情報詳細
+           COPY    "CPCK1201.INC".
       *
       *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
@@ -257,6 +265,25 @@
                END-IF
            END-IF
       *
+           IF    ( FLG-END             =   ZERO )
+               INITIALIZE                  CHK004-REC
+               MOVE    "1200"              TO  CHK004-KANRICD
+               MOVE    "1201"              TO  CHK004-UPKANRICD
+               MOVE    "%"                 TO  CHK004-KBNCD
+               MOVE    WRK-SYMD            TO  CHK004-STYUKYMD
+                                               CHK004-EDYUKYMD
+               MOVE    WRK-PARA-HOSPNUM    TO  CHK004-HOSPNUM
+               MOVE    CHK004-REC          TO  MCPDATA-REC
+               MOVE    "tbl_chk004"        TO  MCP-TABLE
+               MOVE    "del2"              TO  MCP-PATHNAME
+               PERFORM 910-DBDELETE-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    "前回エラー情報の削除に失敗しました"
+                                       TO  WRK-DTCHKERR
+                   PERFORM 500-ERR-HENSYU-SEC
+               END-IF
+           END-IF
+      *
            PERFORM 900-DBCOMMIT-SEC
       *
            PERFORM 900-DBSTART-SEC
@@ -272,6 +299,8 @@
            MOVE    ORCBSD01-SRYYM      TO  WRK-SYMD
            MOVE    "01"                TO  WRK-SYMD(7:2)
       *
+           PERFORM 800-MCNDATE-SEC
+      *
            .
        1001-INIT-VAL-SET-EXT.
            EXIT.
@@ -286,7 +315,6 @@
            MOVE    "00000000"      TO  CK4-2000-STYUKYMD
            MOVE    "99999999"      TO  CK4-2000-EDYUKYMD
            MOVE    ORCBSD01PARA    TO  CK4-2000-TBL
-           PERFORM 800-MCNDATE-SEC
            MOVE    SMCNDATE-YMD    TO  CK4-2000-CREYMD
                                        CK4-2000-UPYMD
            MOVE    SMCNDATE-YMD    TO  CK4-2000-UPHMS
@@ -323,6 +351,7 @@
            PERFORM 900-DTCHK004-READ-SEC
       *
            PERFORM UNTIL ( FLG-DTCHK004    NOT =   ZERO )
+                    OR   ( FLG-END         NOT =   ZERO )
       *
                COMPUTE WRK-KBNCD-SEQ   =   WRK-KBNCD-SEQ   +   1
       *
@@ -338,8 +367,10 @@
                MOVE    DTCHK004-PTID       TO  KEY-PTID
       *
                PERFORM UNTIL ( FLG-DTCHK004    NOT =   ZERO )
+                        OR   ( FLG-END         NOT =   ZERO )
                         OR   ( KEY-PTID        NOT =   DTCHK004-PTID )
       *
+                   PERFORM 20011-ERRINF-EDIT-SEC
       *
                    EVALUATE    DTCHK004-HKNKBN
                    WHEN    "1"
@@ -362,19 +393,21 @@
       *
                END-PERFORM
       *
-               PERFORM 800-MCNDATE-SEC
-               MOVE    SMCNDATE-YMD    TO  CK4-2001-CREYMD
-                                           CK4-2001-UPYMD
-               MOVE    SMCNDATE-YMD    TO  CK4-2001-UPHMS
-               MOVE    CK4-2001-REC    TO  MCPDATA-REC
-               MOVE    "tbl_chk004"    TO  MCP-TABLE
-               MOVE    "key"           TO  MCP-PATHNAME
-               PERFORM 910-DBINSERT-SEC
-               IF    ( MCP-RC      NOT =   ZERO )
-                   MOVE    "エラー患者情報の登録に失敗しました"
-                                       TO  WRK-DTCHKERR
-                   PERFORM 500-ERR-HENSYU-SEC
-                   MOVE    1           TO  FLG-DTCHK004
+               IF    ( FLG-END             =   ZERO )
+      *
+                   MOVE    SMCNDATE-YMD    TO  CK4-2001-CREYMD
+                                               CK4-2001-UPYMD
+                   MOVE    SMCNDATE-YMD    TO  CK4-2001-UPHMS
+                   MOVE    CK4-2001-REC    TO  MCPDATA-REC
+                   MOVE    "tbl_chk004"    TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+                   PERFORM 910-DBINSERT-SEC
+                   IF    ( MCP-RC      NOT =   ZERO )
+                       MOVE    "エラー患者情報の登録に失敗しました"
+                                           TO  WRK-DTCHKERR
+                       PERFORM 500-ERR-HENSYU-SEC
+                       MOVE    1           TO  FLG-DTCHK004
+                   END-IF
                END-IF
       *
            END-PERFORM
@@ -383,6 +416,95 @@
       *
            .
        2001-PTID-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    エラー情報編集処理
+      *****************************************************************
+       20011-ERRINF-EDIT-SEC           SECTION.
+      *
+           COMPUTE WRK-KBNCD1200-SEQ
+               =   WRK-KBNCD1200-SEQ   +   1
+           MOVE    DTCHK004-ERRCD (1:2)
+                                   TO  WRK-KBNCD1200-CD
+      *
+           INITIALIZE                  CK4-1200-REC
+           MOVE    SPA-HOSPNUM     TO  CK4-1200-HOSPNUM
+           MOVE    "1200"          TO  CK4-1200-KANRICD
+           MOVE    WRK-KBNCD1200-G TO  CK4-1200-KBNCD
+           MOVE    "00000000"      TO  CK4-1200-STYUKYMD
+           MOVE    "99999999"      TO  CK4-1200-EDYUKYMD
+           MOVE    DTCHK004-PTID   TO  CK4-1200-PTID
+           MOVE    DTCHK004-HKNKBN TO  CK4-1200-HKNKBN
+           MOVE    DTCHK004-ERRCD  TO  CK4-1200-ERRCD
+           MOVE    DTCHK004-ERRMSG TO  CK4-1200-ERRMSG
+           MOVE    SMCNDATE-YMD    TO  CK4-1200-CREYMD
+                                       CK4-1200-UPYMD
+           MOVE    SMCNDATE-YMD    TO  CK4-1200-UPHMS
+           MOVE    CK4-1200-REC    TO  MCPDATA-REC
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    "エラー情報の登録に失敗しました"
+                                   TO  WRK-DTCHKERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           INITIALIZE                  CK4-1201-REC
+           MOVE    SPA-HOSPNUM     TO  CK4-1201-HOSPNUM
+           MOVE    "1201"          TO  CK4-1201-KANRICD
+           MOVE    WRK-KBNCD1200-G TO  CK4-1201-KBNCD
+           MOVE    "00000000"      TO  CK4-1201-STYUKYMD
+           MOVE    "99999999"      TO  CK4-1201-EDYUKYMD
+           MOVE    DTCHK004-PTID   TO  CK4-1201-PTID
+      *
+           EVALUATE    WRK-KBNCD1200-CD
+           WHEN    "08"
+               PERFORM 200111-ERRINF08-EDIT-SEC
+           WHEN    "09"
+               PERFORM 200111-ERRINF09-EDIT-SEC
+           END-EVALUATE
+      *
+           MOVE    SMCNDATE-YMD    TO  CK4-1201-CREYMD
+                                       CK4-1201-UPYMD
+           MOVE    SMCNDATE-YMD    TO  CK4-1201-UPHMS
+           MOVE    CK4-1201-REC    TO  MCPDATA-REC
+           MOVE    "tbl_chk004"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBINSERT-SEC
+           IF    ( MCP-RC      NOT =   ZERO )
+               MOVE    "エラー情報詳細登録に失敗しました"
+                                   TO  WRK-DTCHKERR
+               PERFORM 500-ERR-HENSYU-SEC
+           END-IF
+      *
+           .
+       20011-ERRINF-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    エラー情報編集処理（薬剤と病名）
+      *****************************************************************
+       200111-ERRINF08-EDIT-SEC        SECTION.
+      *
+           MOVE    DTCHK004-DAY-G  TO  CK4-1201-DAY-G
+           MOVE    DTCHK004-LASTYMD TO CK4-1201-LASTYMD
+           MOVE    DTCHK004-SRYCD  TO  CK4-1201-SRYCD
+           MOVE    DTCHK004-SRYKA  TO  CK4-1201-SRYKA
+      *
+           .
+       200111-ERRINF08-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    エラー情報編集処理（診療行為と病名）
+      *****************************************************************
+       200111-ERRINF09-EDIT-SEC        SECTION.
+      *
+           MOVE    DTCHK004-DAY-G  TO  CK4-1201-DAY-G
+           MOVE    DTCHK004-LASTYMD TO CK4-1201-LASTYMD
+           MOVE    DTCHK004-SRYCD  TO  CK4-1201-SRYCD
+      *
+           .
+       200111-ERRINF09-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    エラー出力処理

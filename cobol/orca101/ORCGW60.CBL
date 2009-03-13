@@ -84,6 +84,10 @@
                    07  SPA-GMN-SRYHEIWRNKBN    PIC X(01).
                    07                          PIC X(01).
                    07  SPA-GMN-SRYHEIWRNKBNMEI PIC X(30).
+               05  SPA-GMN-REIGAICHKKBN-G.
+                   07  SPA-GMN-REIGAICHKKBN    PIC X(01).
+                   07                          PIC X(01).
+                   07  SPA-GMN-REIGAICHKKBNMEI PIC X(18).
                05  SPA-GMN-PRTSRTKBN-G.
                    07  SPA-GMN-PRTSRTKBN       PIC X(01).
                    07                          PIC X(01).
@@ -135,6 +139,12 @@
                        09  SPA-GMN-SRYHEIWRNKBNL   PIC X(01).
                        09                          PIC X(01).
                        09  SPA-GMN-SRYHEIWRNKBNMEIL PIC X(30).
+               05  SPA-GMN-REIGAICHKKBNLST-G.
+                   07  SPA-GMN-REIGAICHKKBN-MAX    PIC 9(03).
+                   07  SPA-GMN-REIGAICHKKBNLST     OCCURS   2.
+                       09  SPA-GMN-REIGAICHKKBNL   PIC X(01).
+                       09                          PIC X(01).
+                       09  SPA-GMN-REIGAICHKKBNMEIL PIC X(18).
                05  SPA-GMN-PRTSRTKBNLST-G.
                    07  SPA-GMN-PRTSRTKBN-MAX       PIC 9(03).
                    07  SPA-GMN-PRTSRTKBNLST        OCCURS   4.
@@ -446,6 +456,9 @@
                MOVE    SYS-1101-SRYHEIWRNKBN
                                        TO  SPA-GMN-SRYHEIWRNKBN
       *
+               MOVE    SYS-1101-REIGAICHKKBN
+                                       TO  SPA-GMN-REIGAICHKKBN
+      *
                MOVE    SYS-1101-YBKENSAYAKUKBN
                                        TO  SPA-GMN-YBKENSAYAKUKBN
                MOVE    SYS-1101-TENKITEKBYOKBN
@@ -520,6 +533,15 @@
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-SRYHEIWRNKBN-G
            END-IF
       *
+           MOVE    SPA-GMN-REIGAICHKKBN TO  WRK-CMB-CD
+           PERFORM 4200-REIGAICHKKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-REIGAICHKKBNLST (1)
+                                       TO  SPA-GMN-REIGAICHKKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-REIGAICHKKBN-G
+           END-IF
+      *
            MOVE    SPA-GMN-PRTSRTKBN   TO  WRK-CMB-CD
            PERFORM 4200-PRTSRTKBNLST-CHK-SEC
            IF    ( WRK-CMB-ITM     =   SPACE )
@@ -569,6 +591,9 @@
       *
       *    併用算定警告エラーコンボ設定処理
            PERFORM 3101-SRYHEIWRNKBNLST-SEC
+      *
+      *    患者毎の例外設定使用コンボ設定処理
+           PERFORM 3101-REIGAICHKKBNLST-SEC
       *
       *    帳票出力順コンボ設定処理
            PERFORM 3101-PRTSRTKBNLST-SEC
@@ -742,6 +767,27 @@
       *
            . 
        3101-SRYHEIWRNKBNLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者毎の例外設定使用コンボ設定処理
+      *****************************************************************
+       3101-REIGAICHKKBNLST-SEC           SECTION.
+      *
+           INITIALIZE                  SPA-GMN-REIGAICHKKBNLST-G
+      *
+           MOVE    2               TO  SPA-GMN-REIGAICHKKBN-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-REIGAICHKKBNL    (1)
+           MOVE    "使用しない"    TO  SPA-GMN-REIGAICHKKBNMEIL (1)
+      *
+           MOVE    "1"             TO  SPA-GMN-REIGAICHKKBNL    (2)
+           MOVE    "使用する"      TO  SPA-GMN-REIGAICHKKBNMEIL (2)
+      *
+           MOVE    SPA-GMN-REIGAICHKKBNLST  (1)
+                                   TO  SPA-GMN-REIGAICHKKBN-G
+      *
+           . 
+       3101-REIGAICHKKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    帳票出力順コンボ設定処理
@@ -943,6 +989,7 @@
            MOVE    W60-YBKENSAYAKUKBN  TO  SPA-GMN-YBKENSAYAKUKBN-G
            MOVE    W60-YBUTAGAIKBN     TO  SPA-GMN-YBUTAGAIKBN-G
            MOVE    W60-SRYHEIWRNKBN    TO  SPA-GMN-SRYHEIWRNKBN-G
+           MOVE    W60-REIGAICHKKBN    TO  SPA-GMN-REIGAICHKKBN-G
            MOVE    W60-PRTSRTKBN       TO  SPA-GMN-PRTSRTKBN-G
            MOVE    W60-PRTPTLSTKBN     TO  SPA-GMN-PRTPTLSTKBN-G
       *
@@ -992,6 +1039,11 @@
            END-IF
       *
            PERFORM 4101-SRYHEIWRNKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+           PERFORM 4101-REIGAICHKKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -1152,6 +1204,24 @@
            .
       *
        4101-SRYHEIWRNKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者毎の例外設定チェック処理
+      *****************************************************************
+       4101-REIGAICHKKBN-CHK-SEC        SECTION.
+      *
+           MOVE    SPA-GMN-REIGAICHKKBN TO  WRK-CMB-CD
+           PERFORM 4200-REIGAICHKKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-REIGAICHKKBNLST (1)
+                                   TO  SPA-GMN-REIGAICHKKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-REIGAICHKKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-REIGAICHKKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    帳票出力順区分チェック処理
@@ -1356,6 +1426,30 @@
       *
            .
        4200-SRYHEIWRNKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    患者毎の例外設定コンボチェック処理
+      *****************************************************************
+       4200-REIGAICHKKBNLST-CHK-SEC    SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB         >   SPA-GMN-REIGAICHKKBN-MAX)
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-REIGAICHKKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-REIGAICHKKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+       4200-REIGAICHKKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    帳票出力順区分コンボチェック処理
@@ -1564,6 +1658,8 @@
       *
            MOVE    SPA-GMN-SRYHEIWRNKBN TO   SYS-1101-SRYHEIWRNKBN
       *
+           MOVE    SPA-GMN-REIGAICHKKBN TO   SYS-1101-REIGAICHKKBN
+      *
            MOVE    SPA-GMN-PRTSRTKBN   TO   SYS-1101-PRTSRTKBN
       *
            MOVE    SPA-GMN-PRTPTLSTKBN TO   SYS-1101-PRTPTLSTKBN
@@ -1764,6 +1860,18 @@
       *
            END-PERFORM
       *
+           MOVE    SPA-GMN-REIGAICHKKBN-G   TO  W60-REIGAICHKKBN
+      *
+           MOVE    SPA-GMN-REIGAICHKKBN-MAX
+                                       TO  W60-REIGAICHKKBN-COUNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   SPA-GMN-REIGAICHKKBN-MAX )
+      *
+               MOVE    SPA-GMN-REIGAICHKKBNLST (IDX0)
+                                       TO  W60-REIGAICHKKBN-ITEM (IDX0)
+      *
+           END-PERFORM
+      *
            MOVE    SPA-GMN-PRTSRTKBN-G     TO  W60-PRTSRTKBN
       *
            MOVE    SPA-GMN-PRTSRTKBN-MAX
@@ -1860,6 +1968,8 @@
                MOVE    "SRYHEIWRNKBN"   TO  MCP-WIDGET
            WHEN    015
                MOVE    "KYUSEIKKNKBN"  TO  MCP-WIDGET
+           WHEN    016
+               MOVE    "REIGAICHKKBN"   TO  MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -1899,6 +2009,8 @@
            WHEN    "YBUTAGAIKBN"
                MOVE    14              TO  SPA-GMN-CUR
            WHEN    "SRYHEIWRNKBN"
+               MOVE    16              TO  SPA-GMN-CUR
+           WHEN    "REIGAICHKKBN"
                MOVE    08              TO  SPA-GMN-CUR
            WHEN    "PRTSRTKBN"
                MOVE    09              TO  SPA-GMN-CUR

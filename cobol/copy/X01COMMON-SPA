@@ -26,6 +26,7 @@
       *****************************************************************
       *
        01  SPA-X01KYOUTU.
+           05  SPA-X01-MOTOPG              PIC X(20).
       *有効期間
            05  SPA-X01-STYUKYMD            PIC 9(08).
            05  SPA-X01-EDYUKYMD            PIC 9(08).
@@ -60,6 +61,7 @@
                07  SPA-X01-MAE-CHKKBN      PIC X(01).
                07  SPA-X01-MAE-SRYCD       PIC X(09).
                07  SPA-X01-MAE-NAME        PIC X(100).
+           05  SPA-X01-BYOMEI              PIC X(100).
       *
       *----(01.00.02)--ADD-START---
            05  SPA-X91-TBL-GROUP           PIC  X(14).

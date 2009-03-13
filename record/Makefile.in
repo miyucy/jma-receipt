@@ -398,6 +398,8 @@ RECORD_files = \
 	KTERR2.rec \
 	KTID1.rec \
 	KTID2.rec \
+	D04.rec \
+	D05.rec \
 
 DEF_files = \
 	HC01.def \

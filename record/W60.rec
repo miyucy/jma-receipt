@@ -90,6 +90,13 @@ W60	{ fixed1	{
 			count	int;
 			item	varchar(32)[5];
 		};
+		CMB_REIGAICHKKBN	{
+			REIGAICHKKBN	{
+				value	varchar(20);
+			};
+			count	int;
+			item	varchar(20)[5];
+		};
 		CMB_PRTSRTKBN	{
 			PRTSRTKBN	{
 				value	varchar(22);

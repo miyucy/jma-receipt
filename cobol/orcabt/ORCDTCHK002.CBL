@@ -94,6 +94,14 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK010-KEY
                                    FILE    STATUS  IS  STS-DTCHK010.
+      *
+      *    データチェック中間ファイル（チェック例外マスタ）
+           SELECT  DTCHK011-FILE   ASSIGN  DTCHK010PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  DYNAMIC
+                                   RECORD  KEY     IS  DTCHK011-KEY
+                                   FILE    STATUS  IS  STS-DTCHK011.
+      *
       *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
@@ -141,6 +149,11 @@
            COPY    "CPCHKSND.INC"  REPLACING  //CHKSND//
                                    BY         //DTCHK010//.
       *
+      *    データチェック中間ファイル（チェック例外マスタ）
+       FD  DTCHK011-FILE.
+           COPY    "CPCHKREIGAI.INC"  REPLACING  //CHKREIGAI//
+                                      BY         //DTCHK011//.
+      *
       *    エラーファイル
        FD  DTCHKERR-FILE.
        01  DTCHKERR-REC                PIC X(200). 
@@ -178,6 +191,9 @@
                                    BY         //DTCHK010PARA//.
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
+                                   BY         //DTCHK011PARA//.
+           COPY    "CPCOMMONDAT3.INC"
+                                   REPLACING  //TMPFLPARA//
                                    BY         //DTCHKSRYPARA//.
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
@@ -193,6 +209,7 @@
            03  STS-DTCHK008                            PIC X(02).
            03  STS-DTCHK009                            PIC X(02).
            03  STS-DTCHK010                            PIC X(02).
+           03  STS-DTCHK011                            PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
            03  STS-DCACCT                              PIC X(02).
            03  STS-DCSRY                               PIC X(02).
@@ -212,6 +229,7 @@
            03  FLG-PTNUM                               PIC 9(01).
            03  FLG-CHKMST                              PIC 9(01).
            03  FLG-CHKSND                              PIC 9(01).
+           03  FLG-CHKREIGAI                           PIC 9(01).
            03  FLG-TENSU                               PIC 9(01).
            03  FLG-PTBYOMEI                            PIC 9(01).
            03  FLG-NYUINACCT                           PIC 9(01).
@@ -219,6 +237,7 @@
            03  FLG-DTCHK008                            PIC 9(01).
            03  FLG-DTCHK009                            PIC 9(01).
            03  FLG-DTCHK010                            PIC 9(01).
+           03  FLG-DTCHK011                            PIC 9(01).
            03  FLG-YKZBYO                              PIC 9(01).
            03  FLG-SRYBYO                              PIC 9(01).
            03  FLG-YKZHEI                              PIC 9(01).
@@ -318,6 +337,7 @@
                                                        OCCURS  31.
            03  FLG-DATACHECK                           PIC 9(01).
            03  FLG-KIKANCHKCD                          PIC 9(01).
+           03  FLG-REIGAI                              PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -505,6 +525,7 @@
                        09                              PIC X(01).
                05  WRK-NISSU-MES                       PIC X(200).
                05  WRK-NISSU-PTR                       PIC 9(03).
+               05  WRK-NISSU-LASTYMD                   PIC X(08).
            03  WRK-SYOSIN-CHK-YMD.
                05  WRK-SYOSIN-CHK-YY                   PIC 9(04).
                05  WRK-SYOSIN-CHK-MM                   PIC 9(02).
@@ -551,6 +572,19 @@
            03  WRK-CHKDAY-G.
                05  WRK-CHKDAY                          PIC 9(01)
                                                        OCCURS  31.
+           03  WRK-DAY-G.
+               05  WRK-DAY                             PIC 9(02).
+           03  WRK-CHKNUM                              PIC 9(02).
+           03  WRK-ERRKBN                              PIC X(04).
+           03  WRK-REIGAICD                            PIC X(09).
+      *
+       01  TERRINF-AREA.
+           03  TERRINF-SRYCD                           PIC X(09).
+           03  TERRINF-SRYKA                           PIC X(02).
+           03  TERRINF-DAY-G.
+               05  TERRINF-DAY                         PIC 9(01)
+                                                       OCCURS  31.
+           03  TERRINF-LASTYMD                         PIC X(08).
       *
        01  TKANRIRYO-AREA.
            03  TKANRIRYO-OCC                           OCCURS  9.
@@ -758,6 +792,9 @@
            COPY    "CPCHKSND.INC"  REPLACING  //CHKSND//
                                    BY         //KEYCHKSND//.
       *
+           COPY    "CPCHKREIGAI.INC"  REPLACING  //CHKREIGAI//
+                                      BY         //KEYREIGAI//.
+      *
        01  TCHKSND-REC.
            COPY    "CPCHKSND.INC"  REPLACING  //CHKSND//
                                    BY         //TCHKSND-//.
@@ -816,6 +853,9 @@
       *    チェックマスタ５
        01  CHK005-REC.
            COPY    "CPCHK005.INC".
+      *
+      *    チェック例外マスタ
+           COPY    "CPCHKREIGAI.INC".
       *
       *    保険番号
        01  HKNNUM-REC.
@@ -1006,6 +1046,10 @@
            MOVE    "DTCHK010"          TO  DTCHK010PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK010PARA-TERMID
       *
+           MOVE    WRK-PARA-HOSPNUM    TO  DTCHK011PARA-HOSPNUM
+           MOVE    "DTCHK011"          TO  DTCHK011PARA-FILE-ID
+           MOVE    LNK-PRTKANRI-TERMID TO  DTCHK011PARA-TERMID
+      *
       *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
       *
@@ -1046,6 +1090,22 @@
            OPEN    OUTPUT              DTCHK010-FILE
            CLOSE   DTCHK010-FILE
            OPEN    I-O                 DTCHK010-FILE
+      *
+           OPEN    OUTPUT              DTCHK011-FILE
+      *
+           IF    ( SYS-1101-REIGAICHKKBN  =   "1" )
+               PERFORM 900-CHKREIGAI-KEY2-SEL-SEC
+               PERFORM UNTIL ( FLG-CHKREIGAI   NOT =   ZERO )
+                   MOVE    CHKREIGAI-REC   TO  DTCHK011-REC
+                   WRITE   DTCHK011-REC
+                   PERFORM 900-CHKREIGAI-KEY2-FET-SEC
+               END-PERFORM
+               MOVE    "tbl_chkreigai"     TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBCLOSECURSOR-SEC
+           END-IF
+           CLOSE   DTCHK011-FILE
+           OPEN    I-O                 DTCHK011-FILE
       *
            .
        100-INIT-EXT.
@@ -1672,6 +1732,7 @@
            PERFORM 900-DTCHK003-READ-SEC
       *
            PERFORM UNTIL ( FLG-DTCHK003    NOT =   ZERO )
+                    OR   ( FLG-END         NOT =   ZERO )
       *
                MOVE    ZERO        TO  FLG-DATACHECK
       *
@@ -2393,6 +2454,10 @@
                WHEN    "2"
                    IF   (  DCACCT-SRYKBN(1:1)    =   "2"   )
                     AND (  DCACCT-ZAITEN     NOT =   ZERO  )
+                       MOVE    ZERO    TO  FLG-TAISYO-SRY
+                   END-IF
+                   IF    ( DCACCT-SRYKBN         =   "14"   )
+                    AND  ( DCSRY-SRYSYUKBN   NOT =   "148" )
                        MOVE    ZERO    TO  FLG-TAISYO-SRY
                    END-IF
                    IF    ( DCACCT-SRYKBN         =   "14"   )
@@ -3402,6 +3467,7 @@
       *
            IF    ( FLG-PTINF       NOT =   ZERO )
                MOVE    "000001"    TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 210-ERRMES-HEN-SEC
                MOVE    ALL "1"     TO  FLG-CHKEND-G
            END-IF
@@ -3462,6 +3528,7 @@
       *
                    MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                    MOVE    "010001"        TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 211-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (1) =   "1" )
@@ -3495,6 +3562,7 @@
              AND ( WRK-PTHKN-KIGO      =   SPACE )
                MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                MOVE    "020001"        TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 211-ERRMES-HEN-SEC
                IF    ( ORCBSD01-CHKKBN (2) =   "1" )
                    MOVE    1           TO  FLG-CHKEND (2)
@@ -3504,6 +3572,7 @@
             AND  ( WRK-PTHKN-KIGO  NOT =   SPACE )
                MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                MOVE    "020012"        TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 211-ERRMES-HEN-SEC
                IF    ( ORCBSD01-CHKKBN (2) =   "1" )
                    MOVE    1           TO  FLG-CHKEND (2)
@@ -3515,6 +3584,7 @@
       *
                MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                MOVE    "020005"        TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 211-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (2) =   "1" )
@@ -3535,6 +3605,7 @@
                    ELSE
                        MOVE    "020002"    TO  WRK-ERRCD
                    END-IF
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 211-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (2) =   "1" )
@@ -3563,6 +3634,7 @@
                        MOVE    "020003"    TO  WRK-ERRCD
                    END-IF
       *
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 211-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (2) =   "1" )
@@ -3585,6 +3657,7 @@
                IF    ( WRK-PTHKN-KIGO      NOT =   WRK-STR )
                    MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                    MOVE    "020008"        TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 211-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (2) =   "1" )
@@ -3602,6 +3675,7 @@
                IF    ( WRK-KIGONUM-STR (39:)   NOT =   SPACE )
                    MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
                    MOVE    "020004"        TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 211-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (2) =   "1" )
@@ -3683,6 +3757,7 @@
        2001111-HKN-KIGO-ERR-SET-SEC    SECTION.
       *
            MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
+           INITIALIZE              TERRINF-AREA
            PERFORM 211-ERRMES-HEN-SEC
            IF    ( ORCBSD01-CHKKBN (2) =   "1" )
                MOVE    1       TO  FLG-CHKEND (2)
@@ -3824,6 +3899,7 @@
        2001111-HKN-NUM-ERR-SET-SEC     SECTION.
       *
            MOVE    PTHKN-HKNNUM    TO  SRH-HKNNUM
+           INITIALIZE              TERRINF-AREA
            PERFORM 211-ERRMES-HEN-SEC
            IF    ( ORCBSD01-CHKKBN (2) =   "1" )
                MOVE    1       TO  FLG-CHKEND (2)
@@ -3892,6 +3968,7 @@
                    MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
                    MOVE    "030001"        TO  WRK-ERRCD
                    MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 212-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -3912,6 +3989,7 @@
                    MOVE    PTKOH-PAYKBN    TO  SRH-PAYKBN
                    MOVE    "030002"        TO  WRK-ERRCD
                    MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 212-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -3936,6 +4014,7 @@
                            MOVE    "030003"    TO  WRK-ERRCD
                        END-IF
                        MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                       INITIALIZE              TERRINF-AREA
                        PERFORM 212-ERRMES-HEN-SEC
       *
                        IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -3963,6 +4042,7 @@
                            MOVE    "030004"    TO  WRK-ERRCD
                        END-IF
                        MOVE    SPACE           TO  WRK-ERRMES-PLUS
+                       INITIALIZE              TERRINF-AREA
                        PERFORM 212-ERRMES-HEN-SEC
       *
                        IF    ( ORCBSD01-CHKKBN (3) =   "1" )
@@ -4065,6 +4145,7 @@
                                            =   "027" OR "968" )
                     MOVE   1           TO  FLG-RJN
                 END-IF
+      *
            END-PERFORM
       *
            IF    ( COMB-HKNNUM     =   "039" OR "040" )
@@ -4075,7 +4156,9 @@
             AND  ( COMB-HONKZKKBN     =   "1" )
                MOVE    COMB-HKNNUM     TO  SRH-HKNNUM
                MOVE    "040001"        TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 200112-HKNAGE-ERRMES-HEN-SEC
+               INITIALIZE              TERRINF-AREA
                PERFORM 215-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (4) =   "1" )
@@ -4089,6 +4172,7 @@
                    MOVE    COMB-HKNNUM     TO  SRH-HKNNUM
                    MOVE    "040002"        TO  WRK-ERRCD
                    PERFORM 200112-HKNAGE-ERRMES-HEN-SEC
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 215-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (4) =   "1" )
@@ -4101,6 +4185,7 @@
                    MOVE    COMB-HKNNUM     TO  SRH-HKNNUM
                    MOVE    "040004"        TO  WRK-ERRCD
                    PERFORM 200112-HKNAGE-ERRMES-HEN-SEC
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 215-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (4) =   "1" )
@@ -4118,6 +4203,7 @@
                    MOVE    COMB-HKNNUM     TO  SRH-HKNNUM
                    MOVE    "040003"        TO  WRK-ERRCD
                    PERFORM 200112-HKNAGE-ERRMES-HEN-SEC
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 215-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (4) =   "1" )
@@ -4133,6 +4219,7 @@
                     AND  ( AGECHK-NENREI    >=  65 )
                        MOVE    COMB-HKNNUM     TO  SRH-HKNNUM
                        MOVE    "040005"        TO  WRK-ERRCD
+                       INITIALIZE              TERRINF-AREA
                        PERFORM 211-ERRMES-HEN-SEC
       *
                        IF    ( ORCBSD01-CHKKBN (4) =   "1" )
@@ -4607,6 +4694,7 @@
                MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "050004"            TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (5) =   "1" )
@@ -4619,6 +4707,7 @@
                MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "050005"            TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (5) =   "1" )
@@ -4631,6 +4720,7 @@
                MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "050006"            TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (5) =   "1" )
@@ -4644,6 +4734,7 @@
                MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "050007"            TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (5) =   "1" )
@@ -4659,6 +4750,7 @@
                MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "050008"            TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (5) =   "1" )
@@ -4674,6 +4766,7 @@
                    MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                    MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                    MOVE    "050009"            TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 213-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (5) =   "1" )
@@ -4723,6 +4816,7 @@
                    MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                    MOVE    WRK-HEN-PTBYOMEI    TO  WRK-ERRMES-PLUS
                    MOVE    "050012"            TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 213-ERRMES-HEN-SEC
                ELSE
                    MOVE    WRK-DTCHK009-SRYKA  TO  DTCHK009-SRYKA
@@ -4811,6 +4905,7 @@
                    MOVE    "050011"        TO  WRK-ERRCD
                END-IF
       *
+               INITIALIZE              TERRINF-AREA
                PERFORM 213-ERRMES-HEN-SEC
       *
            END-IF
@@ -4925,6 +5020,7 @@
                WHEN    2
                    MOVE    "060004"        TO  WRK-ERRCD
                END-EVALUATE
+               INITIALIZE              TERRINF-AREA
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (6) =   "1" )
@@ -4947,6 +5043,7 @@
                MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                MOVE    "070001"            TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (7) =   "1" )
@@ -4971,6 +5068,7 @@
                    MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
                    MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
                    MOVE    "070002"            TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 213-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (7) =   "1" )
@@ -5069,6 +5167,7 @@
            IF    ( CNT-PTBYOMEI1   =   ZERO )
                MOVE    WRK-SRYKA   TO  SRH-1005-SRYKA
                MOVE    "050001"    TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 214-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (5) =   "1" )
@@ -5083,6 +5182,7 @@
                    ELSE
                        MOVE    "050003"    TO  WRK-ERRCD
                    END-IF
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 214-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (5) =   "1" )
@@ -5099,6 +5199,7 @@
                 AND  ( CNT-PTSYUBYO   =   ZERO )
                    MOVE    WRK-SRYKA       TO  SRH-1005-SRYKA
                    MOVE    "050013"        TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 214-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (5) =   "1" )
@@ -5197,6 +5298,7 @@
                        MOVE    WRK-PTBYOMES-PLUS
                                            TO  WRK-ERRMES-PLUS
                        MOVE    "060001"    TO  WRK-ERRCD
+                       INITIALIZE              TERRINF-AREA
                        PERFORM 213-ERRMES-HEN-SEC
       *
                        IF    ( ORCBSD01-CHKKBN (6) =   "1" )
@@ -5251,6 +5353,7 @@
                                    TO  WRK-ERRMES-PLUS
                MOVE    WRK-SAISHIN-ERRCD
                                    TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (6) =   "1" )
@@ -5361,13 +5464,20 @@
                          OR  ( FLG-CHKEND (8)  =   1 )
       *
                    IF    ( TSRYKA-SRYCD (IDX6 IDX7)(1:1)   =   "6" )
-                       MOVE    "1"     TO  WRK-CHK-CHKKBN
-                       MOVE    "1"     TO  WRK-CHK-CDKBN
+                       MOVE    8       TO  WRK-CHKNUM
+                       MOVE    "0801"  TO  WRK-ERRKBN
                        MOVE    TSRYKA-SRYCD (IDX6 IDX7)
-                                       TO  WRK-CHK-SRYCD
-                       PERFORM 900-DTCHK008-READ-SEC
-                       IF    ( FLG-DTCHK008    =   1 )
-                           PERFORM 200112-CHKMST-YKZ-BYO-CHK-SEC
+                                       TO  WRK-REIGAICD
+                       PERFORM 800-REIGAI-CHK-SEC
+                       IF    ( FLG-REIGAI  =   ZERO )
+                           MOVE    "1"     TO  WRK-CHK-CHKKBN
+                           MOVE    "1"     TO  WRK-CHK-CDKBN
+                           MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                           TO  WRK-CHK-SRYCD
+                           PERFORM 900-DTCHK008-READ-SEC
+                           IF    ( FLG-DTCHK008    =   1 )
+                               PERFORM 200112-CHKMST-YKZ-BYO-CHK-SEC
+                           END-IF
                        END-IF
                    END-IF
       *
@@ -5449,6 +5559,7 @@
                    IF    ( SDTCHK01-O-OK   =   ZERO )
                        MOVE    TSRYKA-SRYKA (IDX6)
                                            TO  WRK-SRYKA
+                       INITIALIZE              TERRINF-AREA
                        PERFORM 200112-YKZ-BYO-ERRMES-HEN-SEC
                   END-IF
                END-IF
@@ -5595,6 +5706,11 @@
                END-STRING
       *
                MOVE    WRK-SRYKA           TO  SRH-1005-SRYKA
+               INITIALIZE                      TERRINF-AREA
+               MOVE    CHKSND-SRYCD        TO  TERRINF-SRYCD
+               MOVE    WRK-SRYKA           TO  TERRINF-SRYKA
+               MOVE    WRK-NISSU-DAY-G     TO  TERRINF-DAY-G
+               MOVE    WRK-NISSU-LASTYMD   TO  TERRINF-LASTYMD
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (8) =   "1" )
@@ -5625,6 +5741,11 @@
                    END-IF
       *
                    MOVE    WRK-SRYKA       TO  SRH-1005-SRYKA
+                   INITIALIZE                      TERRINF-AREA
+                   MOVE    CHKSND-SRYCD        TO  TERRINF-SRYCD
+                   MOVE    WRK-SRYKA           TO  TERRINF-SRYKA
+                   MOVE    WRK-NISSU-DAY-G     TO  TERRINF-DAY-G
+                   MOVE    WRK-NISSU-LASTYMD   TO  TERRINF-LASTYMD
                    PERFORM 213-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (8) =   "1" )
@@ -5652,13 +5773,21 @@
       *
                    IF    ( TSRYKA-SRYCD (IDX6 IDX7)(1:1)   NOT =   "6" )
                     AND  ( TSRYKA-SRYCD (IDX6 IDX7)(1:1)   NOT =   "7" )
-                       MOVE    "2"         TO  WRK-CHK-CHKKBN
-                       MOVE    "1"         TO  WRK-CHK-CDKBN
+
+                       MOVE    9       TO  WRK-CHKNUM
+                       MOVE    "0901"  TO  WRK-ERRKBN
                        MOVE    TSRYKA-SRYCD (IDX6 IDX7)
-                                       TO  WRK-CHK-SRYCD
-                       PERFORM 900-DTCHK008-READ-SEC
-                       IF    ( FLG-DTCHK008    =   1 )
-                           PERFORM 200112-CHKMST-SRY-BYO-CHK-SEC
+                                       TO  WRK-REIGAICD
+                       PERFORM 800-REIGAI-CHK-SEC
+                       IF    ( FLG-REIGAI  =   ZERO )
+                           MOVE    "2"         TO  WRK-CHK-CHKKBN
+                           MOVE    "1"         TO  WRK-CHK-CDKBN
+                           MOVE    TSRYKA-SRYCD (IDX6 IDX7)
+                                           TO  WRK-CHK-SRYCD
+                           PERFORM 900-DTCHK008-READ-SEC
+                           IF    ( FLG-DTCHK008    =   1 )
+                               PERFORM 200112-CHKMST-SRY-BYO-CHK-SEC
+                           END-IF
                        END-IF
                    END-IF
       *
@@ -5725,6 +5854,7 @@
                IF    ( SDTCHK01-O-OK   =   ZERO )
                    MOVE    TSRYKA-SRYKA (IDX6)
                                        TO  WRK-SRYKA
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 200112-SRY-BYO-ERRMES-HEN-SEC
                END-IF
            ELSE
@@ -5770,6 +5900,11 @@
                END-STRING
       *
                MOVE    WRK-SRYKA           TO  SRH-1005-SRYKA
+               INITIALIZE                      TERRINF-AREA
+               MOVE    CHKSND-SRYCD        TO  TERRINF-SRYCD
+               MOVE    WRK-SRYKA           TO  TERRINF-SRYKA
+               MOVE    WRK-NISSU-DAY-G     TO  TERRINF-DAY-G
+               MOVE    WRK-NISSU-LASTYMD   TO  TERRINF-LASTYMD
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (9) =   "1" )
@@ -5800,6 +5935,11 @@
                    END-IF
       *
                    MOVE    WRK-SRYKA       TO  SRH-1005-SRYKA
+                   INITIALIZE                      TERRINF-AREA
+                   MOVE    CHKSND-SRYCD        TO  TERRINF-SRYCD
+                   MOVE    WRK-SRYKA           TO  TERRINF-SRYKA
+                   MOVE    WRK-NISSU-DAY-G     TO  TERRINF-DAY-G
+                   MOVE    WRK-NISSU-LASTYMD   TO  TERRINF-LASTYMD
                    PERFORM 213-ERRMES-HEN-SEC
       *
                    IF    ( ORCBSD01-CHKKBN (9) =   "1" )
@@ -6400,6 +6540,7 @@
                END-STRING
       *
                MOVE    "100001"    TO   WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 215-ERRMES-HEN-SEC
       *
            END-PERFORM
@@ -6490,6 +6631,7 @@
                IF    ( SDTCHK01-O-OK   =   ZERO )
                    MOVE    TSRYKA-SRYKA (IDX6)
                                        TO  WRK-SRYKA
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 200112-KNKBYO-ERRMES-HEN-SEC
                END-IF
            ELSE
@@ -6569,6 +6711,7 @@
                MOVE    "150001"        TO  WRK-ERRCD
       *
                MOVE    WRK-SRYKA       TO  SRH-1005-SRYKA
+               INITIALIZE              TERRINF-AREA
                PERFORM 213-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (15) =   "1" )
@@ -6629,6 +6772,7 @@
       *
       *    エラーメッセージ編集処理
            IF    ( THEIYOU-MAX         >   ZERO )
+               INITIALIZE              TERRINF-AREA
                PERFORM 200112-HEI-SRY-ERRMES-HEN-SEC
            END-IF
       *
@@ -6888,6 +7032,7 @@
                    END-STRING
       *
                    MOVE    "110001"    TO   WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 215-ERRMES-HEN-SEC
                ELSE
       *
@@ -6929,6 +7074,7 @@
                    END-STRING
       *
                    MOVE    "110002"    TO   WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 215-ERRMES-HEN-SEC
                END-IF
       *
@@ -7163,6 +7309,7 @@
            INTO   WRK-ERRMES-PLUS
            END-STRING
       *
+           INITIALIZE              TERRINF-AREA
            PERFORM 215-ERRMES-HEN-SEC
            IF    ( ORCBSD01-CHKKBN (16)    =   "1" )
                MOVE    1       TO  FLG-CHKEND (16)
@@ -7315,6 +7462,7 @@
                    ELSE
                        MOVE    "180001"        TO  WRK-ERRCD
                    END-IF
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 213-ERRMES-HEN-SEC
                    IF    ( ORCBSD01-CHKKBN (IDX-CHK) =   "1" )
                        MOVE    1               TO  FLG-CHKEND (IDX-CHK)
@@ -7450,6 +7598,7 @@
                            MOVE    TKAISU-SRYCD (IDX12 IDX19)
                                            TO  WRK-TKAISU-SRYCD
       *
+                           INITIALIZE              TERRINF-AREA
                            PERFORM 200112-JNISSU-ERRMES-HEN-SEC
                        END-IF
       *
@@ -7465,6 +7614,7 @@
                    MOVE    TJNISSU-HKNNUM (IDX13)
                                            TO  SRH-HKNNUM
                    MOVE    "120004"        TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 211-ERRMES-HEN-SEC
                END-IF
            END-PERFORM
@@ -7488,6 +7638,7 @@
                    MOVE    TKAISU-SRYCD (IDX12 IDX14)
                                        TO  WRK-TKAISU-SRYCD
       *
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 200112-JNISSU-ERRMES-HEN-SEC
       *
                END-IF
@@ -7514,6 +7665,7 @@
       *
            MOVE    TNS-NAME    TO  WRK-ERRMES-PLUS
            MOVE    "120001"    TO  WRK-ERRCD
+           INITIALIZE              TERRINF-AREA
            PERFORM 216-ERRMES-HEN-SEC
       *
            IF    ( ORCBSD01-CHKKBN (12)    =   "1" )
@@ -7546,6 +7698,7 @@
                MOVE    WRK-NISSU-MES   TO   WRK-ERRMES-PLUS
                MOVE    "120002"    TO  WRK-ERRCD
       *
+               INITIALIZE              TERRINF-AREA
                PERFORM 215-ERRMES-HEN-SEC
                MOVE    1           TO  FLG-CHKEND (12)
            END-IF
@@ -7581,6 +7734,7 @@
                MOVE    WRK-NISSU-MES   TO  WRK-ERRMES-PLUS
                MOVE    "120003"        TO  WRK-ERRCD
       *
+               INITIALIZE              TERRINF-AREA
                PERFORM 215-ERRMES-HEN-SEC
                MOVE    1               TO  FLG-CHKEND (12)
            END-IF
@@ -7626,6 +7780,7 @@
            IF    ( WRK-PTINF-NAME      =   SPACE )
       *
                MOVE    "130003"        TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 210-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (13) =   "1" )
@@ -7645,6 +7800,7 @@
                    ELSE
                        MOVE    "130001"    TO  WRK-ERRCD
                    END-IF
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 210-ERRMES-HEN-SEC
                END-IF
       *
@@ -7669,6 +7825,7 @@
            IF    ( WRK-PTINF-KANANAME  =   SPACE )
       *
                MOVE    "130004"        TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 210-ERRMES-HEN-SEC
       *
                IF    ( ORCBSD01-CHKKBN (13) =   "1" )
@@ -7683,6 +7840,7 @@
                PERFORM 800-KATAKANA-CHK-SEC
                IF  ( FLG-KANACHK   NOT =   ZERO )
                    MOVE    "130002"        TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 210-ERRMES-HEN-SEC
                END-IF
       *
@@ -7758,6 +7916,7 @@
                    END-STRING
       *
                    MOVE    "140001"    TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 215-ERRMES-HEN-SEC
                    IF    ( ORCBSD01-CHKKBN (14)    =   "1" )
                        MOVE    1       TO  FLG-CHKEND (14)
@@ -7812,6 +7971,7 @@
                        END-STRING
       *
                        MOVE    "140002"    TO  WRK-ERRCD
+                       INITIALIZE              TERRINF-AREA
                        PERFORM 215-ERRMES-HEN-SEC
                        IF    ( ORCBSD01-CHKKBN (14)    =   "1" )
                            MOVE    1       TO  FLG-CHKEND (14)
@@ -7888,6 +8048,7 @@
                END-STRING
       *
                MOVE    "140003"    TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 215-ERRMES-HEN-SEC
                IF    ( ORCBSD01-CHKKBN (14)    =   "1" )
                    MOVE    1       TO  FLG-CHKEND (14)
@@ -7973,6 +8134,7 @@
                    END-STRING
       *
                    MOVE    "990001"    TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 215-ERRMES-HEN-SEC
       *
                END-IF
@@ -8092,6 +8254,7 @@
                            MOVE    "990002"    TO  WRK-ERRCD
                        END-EVALUATE
       *
+                       INITIALIZE              TERRINF-AREA
                        PERFORM 215-ERRMES-HEN-SEC
                    END-IF
       *
@@ -8137,6 +8300,7 @@
       *
                            MOVE    "990006"    TO  WRK-ERRCD
       *
+                           INITIALIZE              TERRINF-AREA
                            PERFORM 215-ERRMES-HEN-SEC
                        END-IF
       *
@@ -8210,6 +8374,7 @@
                INTO    WRK-ERRMES-PLUS
                END-STRING
                MOVE    "990005"    TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
                PERFORM 215-ERRMES-HEN-SEC
            END-IF
       *
@@ -8274,6 +8439,7 @@
                    END-STRING
       *
                    MOVE    "990003"    TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 215-ERRMES-HEN-SEC
       *
                END-IF
@@ -8290,6 +8456,7 @@
                    END-STRING
       *
                    MOVE    "990004"    TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
                    PERFORM 215-ERRMES-HEN-SEC
       *
                END-IF
@@ -8307,11 +8474,18 @@
            MOVE    1                   TO  WRK-NISSU-ST
            MOVE    SPACE               TO  WRK-NISSU-MES
            MOVE    ZERO                TO  WRK-NISSU-KUGIRI-FLG
+           MOVE    SPACE               TO  WRK-NISSU-LASTYMD
       *
            PERFORM UNTIL ( WRK-NISSU-ST    >   31 )
       *
                IF    ( WRK-NISSU-DAY (WRK-NISSU-ST )
                                        NOT =   ZERO )
+      *
+                   MOVE    WRK-NISSU-ST
+                                       TO  WRK-DAY
+                   MOVE    ORCBSD01-SRYYM
+                                       TO  WRK-NISSU-LASTYMD(1:6)
+                   MOVE    WRK-DAY-G   TO  WRK-NISSU-LASTYMD(7:2)
       *
                    MOVE    ZERO        TO  WRK-NISSU-RENZOKU-CNT
                    COMPUTE WRK-NISSU-ED    =   WRK-NISSU-ST    +   1
@@ -8841,6 +9015,10 @@
            MOVE    DTCHK003-MULHKNKBN  TO  DTCHK004-MULHKNKBN
            MOVE    DTCHK003-HKNKBN     TO  DTCHK004-HKNKBN
            MOVE    ERRPTINF-BIRTHDAY   TO  DTCHK004-BIRTHDAY
+           MOVE    TERRINF-SRYCD       TO  DTCHK004-SRYCD
+           MOVE    TERRINF-SRYKA       TO  DTCHK004-SRYKA
+           MOVE    TERRINF-DAY-G       TO  DTCHK004-DAY-G
+           MOVE    TERRINF-LASTYMD     TO  DTCHK004-LASTYMD
       *
            MOVE    "9"                 TO  WRK-SRTKBN
            EVALUATE    DTCHK003-HKNKBN
@@ -9665,6 +9843,8 @@
                                        DTCHK003-FILE
                                        DTCHK004-FILE
                                        DTCHK008-FILE
+                                       DTCHK010-FILE
+                                       DTCHK011-FILE
       *
       *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
@@ -9685,6 +9865,39 @@
        300-END-EXT.
            EXIT.
       *
+      *****************************************************************
+      *    例外設定チェック処理
+      *****************************************************************
+       800-REIGAI-CHK-SEC              SECTION.
+      *
+           MOVE    ZERO            TO  FLG-REIGAI
+      *
+           INITIALIZE                  CHKREIGAI-REC
+           MOVE    SPA-HOSPNUM    TO   CHKREIGAI-HOSPNUM
+           MOVE    DTCHK003-PTID  TO   CHKREIGAI-PTID
+           PERFORM 900-DTCHK011-START-SEC
+      *
+           PERFORM UNTIL ( FLG-DTCHK011    NOT =   ZERO )
+                    OR   ( FLG-REIGAI      NOT =   ZERO )
+      *
+               IF    ( DTCHK011-HOSPNUM    =   SPA-HOSPNUM )
+                AND  ( DTCHK011-PTID       =   DTCHK003-PTID )
+                AND  ( DTCHK011-NYUGAIKBN  =   ORCBSD01-NYUGAIKBN )
+                AND  ( DTCHK011-CHKNUM     =   WRK-CHKNUM )
+                AND  ( DTCHK011-ERRKBN     =   WRK-ERRKBN )
+                AND  ( DTCHK011-SRYCD      =   WRK-REIGAICD )
+      *
+                   MOVE    1       TO  FLG-REIGAI
+      *
+               END-IF
+      *
+               PERFORM 900-DTCHK011-READ-SEC
+      *
+           END-PERFORM
+      *
+           .
+       800-REIGAI-CHK-EXT.
+           EXIT.
       *****************************************************************
       *    文字列左詰処理
       *****************************************************************
@@ -10457,6 +10670,48 @@
        900-DTCHK010-READ-EXT.
            EXIT.
       *****************************************************************
+      *    チェック例外マスタSTART処理
+      *****************************************************************
+       900-DTCHK011-START-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DTCHK011
+      *
+           MOVE    CHKREIGAI-REC   TO  DTCHK011-REC
+                                       KEYREIGAI-REC
+      *
+           START   DTCHK011-FILE
+               KEY IS  >=   DTCHK011-KEY
+           INVALID
+               MOVE    1           TO  FLG-DTCHK011
+           NOT INVALID
+               PERFORM 900-DTCHK011-READ-SEC
+           END-START
+      *
+           .
+       900-DTCHK011-START-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェック例外マスタ読込処理
+      *****************************************************************
+       900-DTCHK011-READ-SEC              SECTION.
+      *
+           MOVE    ZERO            TO  FLG-DTCHK011
+      *
+           READ    DTCHK011-FILE   NEXT
+           AT  END
+                   MOVE    1       TO  FLG-DTCHK011
+           NOT AT  END
+      *
+               IF    ( KEYREIGAI-HOSPNUM   NOT =   DTCHK011-HOSPNUM )
+                OR   ( KEYREIGAI-PTID      NOT =   DTCHK011-PTID )
+                   MOVE    1       TO  FLG-DTCHK011
+               END-IF
+           END-READ
+      *
+           .
+       900-DTCHK011-READ-EXT.
+           EXIT.
+      *****************************************************************
       *    患者病名読込処理
       *****************************************************************
        900-PTBYOMEI-SELECT-SEC         SECTION.
@@ -10638,23 +10893,31 @@
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
+           PERFORM 911-DBSELECT-SEC
            IF    ( MCP-RC          =   ZERO )
-               MOVE    MCPDATA-REC     TO  PTINF-REC
+               PERFORM 910-DBFETCH-SEC
+               IF    ( MCP-RC          =   ZERO )
+                   MOVE    MCPDATA-REC     TO  PTINF-REC
+               ELSE
+                   MOVE    1               TO  FLG-PTINF
+                   INITIALIZE                  PTINF-REC
+               END-IF
+      *
+               MOVE    PTINF-REC           TO  ERRPTINF-REC
+      *
+               MOVE    ERRPTINF-KANANAME   TO  WRK-KANACHK-MAE-INPUT
+               PERFORM 800-KANA-CHK-SEC
+               MOVE    KANACONV-OUTDATA    TO  ERRPTINF-KANANAME
+      *
+               MOVE    ERRPTINF-NAME       TO  WRK-KANACHK-MAE-INPUT
+               PERFORM 800-KANA-CHK-SEC
+               MOVE    KANACONV-OUTDATA    TO  ERRPTINF-NAME
+      *
            ELSE
-               MOVE    1               TO  FLG-PTINF
-               INITIALIZE                  PTINF-REC
+               MOVE    "患者情報の検索に失敗しました"
+                                       TO  WRK-DTCHKERR
+               PERFORM 500-ERR-HENSYU-SEC
            END-IF
-      *
-           MOVE    PTINF-REC           TO  ERRPTINF-REC
-      *
-           MOVE    ERRPTINF-KANANAME   TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 800-KANA-CHK-SEC
-           MOVE    KANACONV-OUTDATA    TO  ERRPTINF-KANANAME
-      *
-           MOVE    ERRPTINF-NAME       TO  WRK-KANACHK-MAE-INPUT
-           PERFORM 800-KANA-CHK-SEC
-           MOVE    KANACONV-OUTDATA    TO  ERRPTINF-NAME
       *
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -10836,6 +11099,51 @@
       *
            .
        900-NYUINACCT-KEY17-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェック例外マスタ検索処理
+      *****************************************************************
+       900-CHKREIGAI-KEY2-SEL-SEC      SECTION.
+      *
+           MOVE    ZERO                    TO  FLG-CHKREIGAI
+      *
+           INITIALIZE                          CHKREIGAI-REC
+           MOVE    SPA-HOSPNUM             TO  CHKREIGAI-HOSPNUM
+           MOVE    ORCBSD01-NYUGAIKBN      TO  CHKREIGAI-NYUGAIKBN
+           MOVE    ORCBSD01-SRYYM          TO  CHKREIGAI-STYUKYMD
+           MOVE    "01"                    TO  CHKREIGAI-STYUKYMD(7:2)
+           MOVE    CHKREIGAI-STYUKYMD      TO  CHKREIGAI-EDYUKYMD
+           MOVE    CHKREIGAI-REC           TO  MCPDATA-REC
+           MOVE    "tbl_chkreigai"         TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  CHKREIGAI-REC
+           ELSE
+               INITIALIZE              CHKREIGAI-REC
+               MOVE    1           TO  FLG-CHKREIGAI
+           END-IF
+      *
+           .
+       900-CHKREIGAI-KEY2-SEL-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェック例外マスタFETCH処理
+      *****************************************************************
+       900-CHKREIGAI-KEY2-FET-SEC      SECTION.
+      *
+           MOVE    "tbl_chkreigai"         TO  MCP-TABLE
+           MOVE    "key2"                  TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  CHKREIGAI-REC
+           ELSE
+               INITIALIZE              CHKREIGAI-REC
+               MOVE    1           TO  FLG-CHKREIGAI
+           END-IF
+      *
+           .
+       900-CHKREIGAI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)

@@ -396,6 +396,8 @@ SCREEN_screen = \
 	KTERR2.glade \
 	KTID1.glade \
 	KTID2.glade \
+	D04.glade \
+	D05.glade \
 
 SCREEN_objs = $(SCREEN_sources:.glade.in=.glade)
 

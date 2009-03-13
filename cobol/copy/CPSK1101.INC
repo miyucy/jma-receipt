@@ -56,7 +56,8 @@
                05  SYS-1101-YBKENSAYAKUKBN PIC  X(1).
                05  SYS-1101-TENKITEKBYOKBN PIC  X(1).
                05  SYS-1101-SRYHEIWRNKBN   PIC  X(1).
-               05                       PIC  X(481).
+               05  SYS-1101-REIGAICHKKBN   PIC  X(1).
+               05                       PIC  X(480).
       *Ã¼Ëö£É£Ä
            03  SYS-1101-TERMID          PIC  X(16).
       *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä

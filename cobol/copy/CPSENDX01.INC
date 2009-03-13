@@ -16,32 +16,18 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------------*
-      *    データチェック一括処理固有パラメータ
-      *                         COPY (CPORCBSD01PARA.INC)              *
-      *    ※注意事項※
-      *    CHK004(2000)でORCBSD01PARAの内容をそのまま記録している為、
-      *    項目追加は必ず既存項目の最後尾から行うこと。
+      *    チェックマスタ登録業務遷移情報   COPY (CPSENDX01.INC)      *
       *----------------------------------------------------------------*
       *****************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
-       01  ORCBSD01PARA.
-           03  ORCBSD01-IKTKBT         PIC  X(01).
-           03  ORCBSD01-SRYYM          PIC  X(06).
-           03  ORCBSD01-NYUGAIKBN      PIC  X(01).
-           03  ORCBSD01-CHKKBN-G.
-               05  ORCBSD01-CHKKBN     PIC  X(01)  OCCURS 50.
-           03  ORCBSD01-SYAHOPROCKBN   PIC  X(01).
-           03  ORCBSD01-KOKUHOPROCKBN  PIC  X(01).
-           03  ORCBSD01-RSIPROCKBN     PIC  X(01).
-           03  ORCBSD01-JBIPROCKBN     PIC  X(01).
-           03  ORCBSD01-JIHIPROCKBN    PIC  X(01).
-           03  ORCBSD01-INGAIPROCKBN   PIC  X(01).
-           03  ORCBSD01-PRTSRTKBN      PIC  X(01).
-           03  ORCBSD01-PRTPTLSTKBN    PIC  X(01).
-           03  ORCBSD01-SRYYMDKBN      PIC  X(01).
-           03  ORCBSD01-STSRYYMD       PIC  9(02).
-           03  ORCBSD01-EDSRYYMD       PIC  9(02).
-           03  ORCBSD01-KGIPROCKBN     PIC  X(01).
-           03  ORCBSD01-KOUKIPROCKBN   PIC  X(01).
+      *
+       01  SENDX01-AREA.
+           03  SENDX01-MOTOPG              PIC X(10).
+           03  SENDX01-CHKKBN              PIC X(01).
+           03  SENDX01-SRYCD               PIC X(09).
+           03  SENDX01-SRYYMD              PIC X(08).
+           03  SENDX01-BYOMEI              PIC X(100).
+      *
+      *

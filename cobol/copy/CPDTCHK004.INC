@@ -77,10 +77,22 @@
            03  DTCHK004-BIRTHDAY      PIC  X(08).
       *
       *エラーコード
-           03  DTCHK004-ERRCD         PIC X(06).
+           03  DTCHK004-ERRCD         PIC  X(06).
       *
       *同一エラーコード内連番
            03  DTCHK004-ERRCD-SEQ     PIC 9(05).
+      *
+      *診療コード
+           03  DTCHK004-SRYCD         PIC X(09).
+      *
+      *診療科
+           03  DTCHK004-SRYKA         PIC X(02).
+      *日付
+           03  DTCHK004-DAY-G.
+               05  DTCHK004-DAY       PIC 9(01)
+                                      OCCURS   31.
+      *チェック最終日
+           03  DTCHK004-LASTYMD       PIC X(08).
       *
       *エラーメッセージ
            03  DTCHK004-ERRMSG        PIC X(500).

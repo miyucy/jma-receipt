@@ -327,6 +327,8 @@
            COPY    "D01.INC".
            COPY    "D02.INC".
            COPY    "D03.INC".
+           COPY    "D04.INC".
+           COPY    "D05.INC".
            COPY    "D99.INC".
            COPY    "DERR.INC".
            COPY    "DID1.INC".
@@ -455,6 +457,10 @@
       *    確認項目保存画面
            WHEN    "D03"
                PERFORM 340-D03-SET-SEC
+               GO  TO  300-SCREEN-EXT
+      *    チェック内容確認画面
+           WHEN    "D04"
+               PERFORM 340-D04-SET-SEC
                GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
@@ -853,6 +859,24 @@
       *
            .
        340-D03-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェック内容確認画面戻り処理
+      *****************************************************************
+       340-D04-SET-SEC             SECTION.
+      *
+           MOVE    SPACE           TO  SPA-DID1-FLG
+      *
+           PERFORM 311-SPASET-SEC
+      *
+           PERFORM 312-SPASET-SEC
+      *
+           MOVE    SPA-D01-CUR     TO  SPA-GMN-D01-CUR
+      *
+           PERFORM 4102-KIHON-CHK-SEC
+      *
+           .
+       340-D04-SET-EXT.
            EXIT.
       *****************************************************************
       *    プレビュー処理
@@ -1542,6 +1566,9 @@
            WHEN    "CLICKED"       ALSO    "B06"
       *        患者選択
                PERFORM 460-D02-SENI-SEC
+           WHEN    "CLICKED"       ALSO    "B09"
+      *        チェック内容確認画面
+               PERFORM 490-D04-SENI-SEC
            WHEN    "CLICKED"       ALSO    "B08"
       *        一括・個別切替
                IF    ( SPA-NAI-D01-KBTUSER =   1 )
@@ -2351,6 +2378,29 @@
            .
       *
        460-D02-SENI-EXT.
+           EXIT.
+      *****************************************************************
+      *    チェック内容確認画面遷移処理
+      *****************************************************************
+       490-D04-SENI-SEC                SECTION.
+      *
+           PERFORM 4901-SET-ORCBSD01PARA-SEC
+      *
+           PERFORM 4901-SET-D01-INF-SEC
+      *
+           MOVE    "D01"               TO  SPA-MOTOPG
+           MOVE    "D04"               TO  SPA-SAKIPG
+      *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
+           MOVE   "D04"                TO  MCP-WINDOW.
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+      *
+       490-D04-SENI-EXT.
            EXIT.
       *****************************************************************
       *    一括・個別切替処理

@@ -75,6 +75,8 @@
            COPY    "D01.INC".
            COPY    "D02.INC".
            COPY    "D03.INC".
+           COPY    "D04.INC".
+           COPY    "D05.INC".
            COPY    "D99.INC".
            COPY    "DERR.INC".
            COPY    "DID1.INC".

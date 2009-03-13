@@ -112,6 +112,8 @@
                            11  SPA-NAI-NAME       PIC X(100).
                            11  SPA-NAI-TID        PIC 9(09).
                    07  SPA-MAE-SRYCD              PIC X(09). 
+                   07  SPA-NAI-BYOMEI             PIC X(100).
+                   07  SPA-NAI-MOTOPG             PIC X(10). 
       *
               05  SPA-NAI-SELNO                   PIC 9(03).
       *
@@ -154,6 +156,8 @@
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
+           03  WRK-ZOGENPTN                PIC X(01).
+           03  WRK-ZOGEN                   PIC S9(05).
            03  WRK-WYMD.
                05  WRK-WGO         PIC X(01).
                05  WRK-WYY         PIC 9(02).
@@ -199,6 +203,9 @@
       *
       *    病名システム予約コードテーブル
            COPY    "CMBYOMEICD.INC".
+      *
+      *    他業務からの引継ぎ情報
+           COPY    "CPSENDX01.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -339,8 +346,17 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
+               DISPLAY "X01 FLG-END =" FLG-END
+               IF    ( FLG-END         =   1 )
+                   GO  TO  100-INIT-EXT
+               END-IF
       *        画面編集
                PERFORM 500-GMNHEN-SEC
+               DISPLAY "SPA-ERRCD =" SPA-ERRCD
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   PERFORM 510-ERRSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -363,13 +379,24 @@
       *
       *    他のＬＤより
            IF    ( LINKAREA        NOT =   SPACE )
+               DISPLAY "X01 CCC"
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
+               MOVE    SPA-WORK            TO  SENDX01-AREA
+               MOVE    SPACE               TO  LINKAREA
+               IF    ( SENDX01-MOTOPG      =   "D04" )
+                   PERFORM 310-LNKX01-SEC
+                   GO  TO  300-SCREEN-EXT
+               END-IF
            END-IF
       *
            EVALUATE    SPA-MOTOPG
            WHEN    "X02"
            WHEN    "X04"
            WHEN    "X05"
+               IF    ( SPA-X01-MOTOPG  NOT =   SPACE )
+                   PERFORM 210-BACK
+                   GO  TO      300-SCREEN-EXT
+               END-IF
                MOVE    SPA-X01-CHKKBN  TO  WRK-CHKKBN
                MOVE    SPA-X01-MAE-G   TO  WRK-X01-MAE-G
                PERFORM 310-SPASET-SEC
@@ -442,6 +469,82 @@
       *
            .
        310-SPASET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    他業務より遷移時の処理
+      *****************************************************************
+       310-LNKX01-SEC           SECTION.
+      *
+           PERFORM 310-SPASET-SEC
+      *
+           MOVE    SENDX01-CHKKBN          TO  SPA-GMN-CHKKBN
+           PERFORM 4105-CHKKBN-CHK-SEC
+           MOVE    SENDX01-SRYCD           TO  SPA-GMN-SRYCD
+           PERFORM 41041-SRYCD-CHKSND-SEC
+      *
+           MOVE    SPA-GMN-SRYCD       TO  WRK-TNS-SRYCD
+           MOVE    SENDX01-SRYYMD      TO  WRK-TNS-YUKOSTYMD
+           PERFORM 41041-SRYNAME-HEN-SEC
+           MOVE    WRK-TNS-NAME        TO  SPA-GMN-NAME
+      *
+           MOVE    "00000000"              TO  SPA-NAI-STYUKYMD
+                                               SPA-GMN-STYUKYMD
+           MOVE    "99999999"              TO  SPA-NAI-EDYUKYMD
+                                               SPA-GMN-EDYUKYMD
+      *
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL ( IDX         >   SPA-GMN-MAX )
+                    OR   ( SPA-X01-SELNUM  NOT =   ZERO )
+      *
+               IF    ( SENDX01-SRYYMD  >=  SPA-NAI-TSTYUKYMD (IDX))
+                AND  ( SENDX01-SRYYMD  <=  SPA-NAI-TEDYUKYMD (IDX))
+                   MOVE    IDX                     TO  SPA-NAI-SELNUM
+                   MOVE    SPA-NAI-SELNUM          TO  SPA-GMN-SELNUM
+                   MOVE    SPA-NAI-TSTYUKYMD (IDX) TO  SPA-NAI-STYUKYMD
+                   MOVE    SPA-NAI-TEDYUKYMD (IDX) TO  SPA-NAI-EDYUKYMD
+                   MOVE    SPA-GMN-TSTYUKYMD (IDX) TO  SPA-GMN-STYUKYMD
+                   MOVE    SPA-GMN-TEDYUKYMD (IDX) TO  SPA-GMN-EDYUKYMD
+               ELSE
+                   IF    ( SENDX01-SRYYMD  >   SPA-NAI-TEDYUKYMD (IDX))
+                       MOVE    SPA-NAI-TEDYUKYMD (IDX)
+                                                   TO  WRK-SYMD
+                       MOVE    "1"                 TO  WRK-ZOGENPTN
+                       MOVE    1                   TO  WRK-ZOGEN
+                       PERFORM 800-CALENDAR-SEC
+                       MOVE    WRK-SYMD            TO  WRK-YMD
+                       PERFORM 5002-HIZUKE-CHK-SEC
+                       MOVE    WRK-SYMD            TO  SPA-NAI-STYUKYMD
+                       MOVE    WRK-HENYMDG         TO  SPA-GMN-STYUKYMD
+                   END-IF
+      *
+                   IF    ( SENDX01-SRYYMD  <   SPA-NAI-TEDYUKYMD (IDX))
+                       MOVE    SPA-NAI-TEDYUKYMD (IDX)
+                                                   TO  WRK-SYMD
+                       MOVE    "1"                 TO  WRK-ZOGENPTN
+                       MOVE    -1                  TO  WRK-ZOGEN
+                       PERFORM 800-CALENDAR-SEC
+                       MOVE    WRK-SYMD            TO  WRK-YMD
+                       PERFORM 5002-HIZUKE-CHK-SEC
+                       MOVE    WRK-SYMD            TO  SPA-NAI-EDYUKYMD
+                       MOVE    WRK-HENYMDG         TO  SPA-GMN-EDYUKYMD
+                   END-IF
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    SENDX01-MOTOPG      TO  SPA-NAI-MOTOPG
+           MOVE    SENDX01-BYOMEI      TO  SPA-NAI-BYOMEI
+      *
+           MOVE    1                   TO  FLG-TOUROKU
+           PERFORM 4102-KIHON-CHK-SEC
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-KAKUTEI-SEC
+           END-IF
+      *
+           .
+       310-LNKX01-EXT.
            EXIT.
       *
       *****************************************************************
@@ -568,7 +671,11 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    "M02"               TO  SPA-SAKIPG
+           IF    ( SPA-X01-MOTOPG      =   SPACE )
+               MOVE    "M02"           TO  SPA-SAKIPG
+           ELSE
+               MOVE    SPA-X01-MOTOPG  TO  SPA-SAKIPG
+           END-IF
            MOVE    "X01"               TO  SPA-MOTOPG
       *
            MOVE    SPACE               TO  LINKAREA
@@ -842,7 +949,6 @@
            IF      SPA-GMN-CHKKBN      =   SPA-NAI-CHKKBN
                GO      TO      4105-CHKKBN-CHK-EXT
            END-IF
-      *
       *
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1916,11 +2022,22 @@
        410-KAKUTEI-SEC           SECTION.
       *
            MOVE    1                   TO  FLG-TOUROKU
+      *
       *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  410-KAKUTEI-EXT
            END-IF
+      *
+           PERFORM 4101-KAKUTEI-SEC
+           .
+       410-KAKUTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確定
+      *****************************************************************
+       4101-KAKUTEI-SEC                SECTION.
       *
            IF    ( SPA-NAI-STYUKYMD    =   ZERO )
                IF    ( SPA-GMN-STYUKYMD(1:8)   =   ALL "0" )
@@ -2035,6 +2152,9 @@
       *
            END-PERFORM
       *
+           MOVE    SPA-NAI-MOTOPG      TO  SPA-X01-MOTOPG
+           MOVE    SPA-NAI-BYOMEI      TO  SPA-X01-BYOMEI
+      *
            MOVE    SPA-X01-CHKKBN      TO  SPA-X01-MAE-CHKKBN
            MOVE    SPA-X01-SRYCD       TO  SPA-X01-MAE-SRYCD
            MOVE    SPA-X01-NAME        TO  SPA-X01-MAE-NAME
@@ -2062,10 +2182,10 @@
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
-           .
-       410-KAKUTEI-EXT.
-           EXIT.
       *
+           .
+       4101-KAKUTEI-EXT.
+           EXIT.
       *****************************************************************
       *    前回ＣＤ処理
       *****************************************************************
@@ -2425,6 +2545,24 @@
       *
            .
        800-KANA-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    カレンダー処理
+      *****************************************************************
+       800-CALENDAR-SEC               SECTION.
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"                TO  LNK-DAY6-IRAI
+           MOVE    WRK-SYMD            TO  LNK-DAY6-KIJUN
+           MOVE    WRK-ZOGENPTN        TO  LNK-DAY6-ZOGENPTN
+           MOVE    WRK-ZOGEN           TO  LNK-DAY6-ZOGEN
+           CALL  "ORCSDAY"             USING   STS-AREA-DAY
+                                               LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN     TO  WRK-SYMD
+      *
+           .
+       800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
       *    点数マスター検索（KEY4）
