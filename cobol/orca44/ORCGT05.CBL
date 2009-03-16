@@ -158,6 +158,12 @@
                05  FLG-DELI2           PIC 9(01).
                05  FLG-NODATA          PIC 9(01).
            03  FLG-HG-CHK              PIC 9(01).
+           03  FLG-DB-INSERT           PIC 9(01).
+      *
+       01  TABLE-SAVE-AREA.
+           03  TBL-SAVE-MAX            PIC 9(02).
+           03  TBL-SAVE-NAME-OCC       OCCURS  50.
+               05  TBL-SAVE-NAME       PIC X(200).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -1843,9 +1849,25 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    T05-ENTRY1          TO  SPA-GMN-T05-ENTRY1
            MOVE    ZERO                TO  WRK-ERRMSG1
                                            WRK-ERRMSG2
+           MOVE    SPACE               TO  SPA-TIDCD 
       *
            IF      SPA-GMN-T05-DATALST-MAX =   ZERO
                MOVE    "0002"              TO  SPA-ERRCD
+               GO  TO  210-TOUROKU-GID-EXT
+           END-IF
+      *
+      *    ＤＢ未登録ファイルがあるか
+           MOVE    ZERO                TO  FLG-DB-INSERT
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-T05-DATALST-MAX
+                   OR      FLG-DB-INSERT   =   1  
+               IF      SPA-NAI-T05-TDB (IDX)
+                                       =   SPACE
+                   MOVE    1               TO  FLG-DB-INSERT
+               END-IF
+           END-PERFORM
+           IF      FLG-DB-INSERT       =   ZERO
+               MOVE   "0003"               TO  SPA-ERRCD
                GO  TO  210-TOUROKU-GID-EXT
            END-IF
       *
@@ -1876,7 +1898,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
            ELSE
                MOVE    "1004"              TO  SPA-ERRCD
                GO  TO  210-TOUROKU-EXT
-           END-IF             
+           END-IF
+      *
+      *    未登録ファイルのみ抜きだし
+           INITIALIZE                  TABLE-SAVE-AREA
+           PERFORM VARYING IDX FROM    1   BY  1
+                   UNTIL   IDX >       SPA-GMN-T05-DATALST-MAX
+               IF      SPA-NAI-T05-TDB (IDX)
+                                       =   SPACE
+                   ADD     1           TO  TBL-SAVE-MAX
+                   MOVE    SPA-NAI-T05-SAVE-NAME(IDX)
+                                       TO  TBL-SAVE-NAME (TBL-SAVE-MAX) 
+               END-IF
+           END-PERFORM
       *
       *    エラーファイル名設定     
            MOVE    WRK-CONS-FILE-ID
@@ -1902,45 +1936,45 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-CONS-JOB-SHELLID
                                    TO  SHELLTBL-ARG3
            MOVE    RECEERR         TO  SHELLTBL-ARG4
-           MOVE    SPA-NAI-T05-SAVE-NAME(1)
+           MOVE    TBL-SAVE-NAME (1)
                                    TO  SHELLTBL-ARG5
-           MOVE    SPA-NAI-T05-SAVE-NAME(2)
+           MOVE    TBL-SAVE-NAME (2)
                                    TO  SHELLTBL-ARG6
-           MOVE    SPA-NAI-T05-SAVE-NAME(3)
+           MOVE    TBL-SAVE-NAME (3)
                                    TO  SHELLTBL-ARG7
-           MOVE    SPA-NAI-T05-SAVE-NAME(4)
+           MOVE    TBL-SAVE-NAME (4)
                                    TO  SHELLTBL-ARG8
-           MOVE    SPA-NAI-T05-SAVE-NAME(5)
+           MOVE    TBL-SAVE-NAME (5)
                                    TO  SHELLTBL-ARG9
-           MOVE    SPA-NAI-T05-SAVE-NAME(6)
+           MOVE    TBL-SAVE-NAME (6)
                                    TO  SHELLTBL-ARG10
-           MOVE    SPA-NAI-T05-SAVE-NAME(7)
+           MOVE    TBL-SAVE-NAME (7)
                                    TO  SHELLTBL-ARG11
-           MOVE    SPA-NAI-T05-SAVE-NAME(8)
+           MOVE    TBL-SAVE-NAME (8)
                                    TO  SHELLTBL-ARG12
-           MOVE    SPA-NAI-T05-SAVE-NAME(9)
+           MOVE    TBL-SAVE-NAME (9)
                                    TO  SHELLTBL-ARG13
-           MOVE    SPA-NAI-T05-SAVE-NAME(10)
+           MOVE    TBL-SAVE-NAME (10)
                                    TO  SHELLTBL-ARG14
-           MOVE    SPA-NAI-T05-SAVE-NAME(11)
+           MOVE    TBL-SAVE-NAME (11)
                                    TO  SHELLTBL-ARG15
-           MOVE    SPA-NAI-T05-SAVE-NAME(12)
+           MOVE    TBL-SAVE-NAME (12)
                                    TO  SHELLTBL-ARG16
-           MOVE    SPA-NAI-T05-SAVE-NAME(13)
+           MOVE    TBL-SAVE-NAME (13)
                                    TO  SHELLTBL-ARG17
-           MOVE    SPA-NAI-T05-SAVE-NAME(14)
+           MOVE    TBL-SAVE-NAME (14)
                                    TO  SHELLTBL-ARG18
-           MOVE    SPA-NAI-T05-SAVE-NAME(15)
+           MOVE    TBL-SAVE-NAME (15)
                                    TO  SHELLTBL-ARG19
-           MOVE    SPA-NAI-T05-SAVE-NAME(16)
+           MOVE    TBL-SAVE-NAME (16)
                                    TO  SHELLTBL-ARG20
-           MOVE    SPA-NAI-T05-SAVE-NAME(17)
+           MOVE    TBL-SAVE-NAME (17)
                                    TO  SHELLTBL-ARG21
-           MOVE    SPA-NAI-T05-SAVE-NAME(18)
+           MOVE    TBL-SAVE-NAME (18)
                                    TO  SHELLTBL-ARG22
-           MOVE    SPA-NAI-T05-SAVE-NAME(19)
+           MOVE    TBL-SAVE-NAME (19)
                                    TO  SHELLTBL-ARG23
-           MOVE    SPA-NAI-T05-SAVE-NAME(20)
+           MOVE    TBL-SAVE-NAME (20)
                                    TO  SHELLTBL-ARG24
       *
            MOVE    SHELLTBL        TO  MCPDATA-REC
@@ -2435,6 +2469,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                                TO  SPA-ERRMSG
                WHEN    "0002"
                    MOVE    "読み込みファイルがありません" 
+                                               TO  SPA-ERRMSG
+               WHEN    "0003"
+                   MOVE    "既にＤＢ登録済です"
                                                TO  SPA-ERRMSG
                WHEN    "0004"
                    MOVE    "対象のデータを選択してありません"
