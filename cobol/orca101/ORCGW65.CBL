@@ -1617,6 +1617,7 @@
            IF    ( SPA-GMN-SELNUM1 =  SPACE )
                PERFORM 4201-INPUT-AREA-CLEAR-SEC
                PERFORM 4201-RIREKI-AREA-CLEAR-SEC
+               MOVE    ZERO            TO  SPA-GMN-CUR
            ELSE
                MOVE    SPA-GMN-SELNUM1     TO  WRK-KANACHK-INPUT
                PERFORM 800-ENRTRY-CHK-SEC
