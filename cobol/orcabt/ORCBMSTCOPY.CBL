@@ -293,10 +293,10 @@
            MOVE    "ORCBMSTCOPY"       TO  JOB-PGID
               EVALUATE    WRK-PARA-SYORIKBN
                   WHEN    "1"
-                      MOVE    "マスタ複写（点数マスタ）"
+                      MOVE    "マスタ複写（入力コード）"
                                        TO  JOB-SHELLMSG
                   WHEN    "2"
-                      MOVE    "マスタ複写（入力コード）"
+                      MOVE    "マスタ複写（点数マスタ）"
                                        TO  JOB-SHELLMSG
                   WHEN    "3"
                       MOVE    "マスタ複写（入力セット）"
@@ -500,9 +500,9 @@
       *
            EVALUATE   WRK-PARA-SYORIKBN
                WHEN   "1"
-                   PERFORM   2001-TENSU-SEC
-               WHEN   "2"
                    PERFORM   2001-INPUTCD-SEC
+               WHEN   "2"
+                   PERFORM   2001-TENSU-SEC
                WHEN   "3"
                    PERFORM   2001-INPUTSET-SEC
            END-EVALUATE
@@ -876,10 +876,6 @@
            MOVE    CNT-JOB-UPDCNT      TO  LST-NO (CNT-LINE)
            EVALUATE   WRK-PARA-SYORIKBN
                WHEN   "1"
-                   MOVE    TNS-SRYCD   TO  LST-CD (CNT-LINE)
-                   INSPECT TNS-NAME REPLACING  ALL "  "  BY  "　"
-                   MOVE    TNS-NAME    TO  LST-NAME1 (CNT-LINE)
-               WHEN   "2"
                    MOVE    ICD-INPUTCD TO  LST-CD (CNT-LINE)
                    MOVE    SPACE       TO  TNS-TENSU-REC
                    INITIALIZE          TNS-TENSU-REC
@@ -917,6 +913,10 @@
                    MOVE    "tbl_tensu"    TO  MCP-TABLE
                    MOVE    "key"          TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC
+               WHEN   "2"
+                   MOVE    TNS-SRYCD   TO  LST-CD (CNT-LINE)
+                   INSPECT TNS-NAME REPLACING  ALL "  "  BY  "　"
+                   MOVE    TNS-NAME    TO  LST-NAME1 (CNT-LINE)
                WHEN   "3"
                    MOVE    ICD-INPUTCD TO  LST-CD (CNT-LINE)
       *                 全角チェック
@@ -932,11 +932,11 @@
       *
            MOVE    SPACE               TO  WRK-ERRCD
       *
-           IF      FLG-TENSU-ARI       =   1
+           IF      FLG-INPUTCD-ARI     =   1
                MOVE  "2001"            TO  WRK-ERRCD
            END-IF
       *
-           IF      FLG-INPUTCD-ARI     =   1
+           IF      FLG-TENSU-ARI       =   1
                MOVE  "2002"            TO  WRK-ERRCD
            END-IF
       *
@@ -948,20 +948,20 @@
                WHEN    SPACE
                   EVALUATE   WRK-PARA-SYORIKBN
                       WHEN   "1"
-                          MOVE  "点数マスタを複写しました"
+                          MOVE  "入力コードを複写しました"
                                        TO  WRK-NAIYO
                       WHEN   "2"
-                          MOVE  "入力コードを複写しました"
+                          MOVE  "点数マスタを複写しました"
                                        TO  WRK-NAIYO
                       WHEN   "3"
                           MOVE  "入力セットを複写しました"
                                        TO  WRK-NAIYO
                   END-EVALUATE
                WHEN    "2001"
-                   MOVE  "点数マスタが存在しています"
+                   MOVE  "入力コードが存在しています"
                                        TO  WRK-NAIYO
                WHEN    "2002"
-                   MOVE  "入力コードが存在しています"
+                   MOVE  "点数マスタが存在しています"
                                        TO  WRK-NAIYO
                WHEN    "2003"
                    MOVE  "入力セットが存在しています"
