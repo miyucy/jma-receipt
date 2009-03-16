@@ -161,6 +161,8 @@
       *  04.01.01    NACL-Æ£¸¶    07/11/22  ¸ø³²¥ì¥»¥×¥ÈÂÐ±þ
       *  04.01.02    NACL-Æ£¸¶    07/12/08  Ä¹ºê¸©ÂÐ±þ
       *                                     À¸ÊÝ¤ÈÈïÇú£¸£¶¤Îµ­ºÜ½ç 
+      *
+      *  04.04.01    NACL-Æ£¸¶    09/03/16  ¥ê¥¢¥ë¥¿¥¤¥à¥×¥ì¥Ó¥å¡¼»þ¤Î½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1192,10 +1194,12 @@
                MOVE    2               TO  FLG-STS
            END-IF
       *
-           OPEN    INPUT               RECE62X-FILE
-           IF  STS-RECE62X         NOT =   ZERO
-               DISPLAY "*** ORCR0710 RECE62X OPEN ERR  ***"
-               MOVE    2               TO  FLG-STS
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               OPEN    INPUT               RECE62X-FILE
+               IF  STS-RECE62X         NOT =   ZERO
+                   DISPLAY "*** ORCR0710 RECE62X OPEN ERR  ***"
+                   MOVE    2               TO  FLG-STS
+               END-IF
            END-IF
       *
            OPEN    INPUT               RECE631-FILE
@@ -7693,8 +7697,11 @@
        300-END-SEC                 SECTION.
       *
       *    ¥Õ¥¡¥¤¥ë£Ã£Ì£Ï£Ó£Å½èÍý
+           IF      WRK-PARA-SHELLID
+                                   NOT =   "RECEPTX"
+               CLOSE                       RECE62X-FILE
+           END-IF 
            CLOSE                       RECE62-FILE
-           CLOSE                       RECE62X-FILE
            CLOSE                       RECE631-FILE
            CLOSE                       RECE661-FILE
            CLOSE                       RECE67-FILE

@@ -74,6 +74,8 @@
       *  04.02.03    NACL-藤原    08/03/12  フラグ、データエリア追加
       *  04.02.04    NACL-門脇    08/03/17  宮崎県地方公費（１９０）の対応
       *  04.02.05    NACL-藤原    08/07/23  船員保険３割の「職務上の事由」の記載
+      *
+      *  04.04.01    NACL-藤原    09/03/16  リアルタイムプレビュー時の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1202,10 +1204,12 @@
                MOVE    2               TO  FLG-STS
            END-IF
       *
-           OPEN    INPUT               RECE62X-FILE
-           IF  STS-RECE62X         NOT =   ZERO
-               DISPLAY "*** ORCR0720 RECE62X OPEN ERR  ***"
-               MOVE    2               TO  FLG-STS
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               OPEN    INPUT               RECE62X-FILE
+               IF  STS-RECE62X         NOT =   ZERO
+                   DISPLAY "*** ORCR0720 RECE62X OPEN ERR  ***"
+                   MOVE    2               TO  FLG-STS
+               END-IF
            END-IF
       *
            OPEN    INPUT               RECE631-FILE
@@ -8450,8 +8454,11 @@
        300-END-SEC                 SECTION.
       *
       *    ファイルＣＬＯＳＥ処理
+           IF      WRK-PARA-SHELLID
+                                   NOT =   "RECEPTX"
+               CLOSE                       RECE62X-FILE
+           END-IF 
            CLOSE                       RECE62-FILE
-           CLOSE                       RECE62X-FILE
            CLOSE                       RECE631-FILE
            CLOSE                       RECE661-FILE
            CLOSE                       RECE67-FILE

@@ -181,6 +181,8 @@
       *  04.02.02    NACL-藤原    08/03/04  平成２０年４月改正対応
       *  04.02.03    NACL-藤原    08/03/12  フラグ、データエリア追加
       *  04.02.04    NACL-門脇    08/03/17  宮崎県地方公費（１９０）の対応
+      *
+      *  04.04.01    NACL-藤原    09/03/16  リアルタイムプレビュー時の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1273,10 +1275,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE12PARA-HOSPNUM
                MOVE    2               TO  FLG-STS
            END-IF
       *
-           OPEN    INPUT               RECE02X-FILE
-           IF  STS-RECE02X         NOT =   ZERO
-               DISPLAY "*** ORCR0104 RECE02X OPEN ERR  ***"
-               MOVE    2               TO  FLG-STS
+           IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
+               OPEN    INPUT               RECE02X-FILE
+               IF  STS-RECE02X         NOT =   ZERO
+                   DISPLAY "*** ORCR0104 RECE02X OPEN ERR  ***"
+                   MOVE    2               TO  FLG-STS
+               END-IF
            END-IF
       *
            OPEN    INPUT               RECE031-FILE
@@ -7947,8 +7951,11 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
        300-END-SEC                 SECTION.
       *
       *    ファイルＣＬＯＳＥ処理
+           IF      WRK-PARA-SHELLID
+                                   NOT =   "RECEPTX"
+               CLOSE                       RECE02X-FILE
+           END-IF
            CLOSE                       RECE02-FILE
-           CLOSE                       RECE02X-FILE
            CLOSE                       RECE031-FILE
            CLOSE                       RECE061-FILE
                                        RECE09-FILE
