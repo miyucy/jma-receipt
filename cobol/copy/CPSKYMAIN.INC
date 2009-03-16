@@ -144,11 +144,11 @@
       *データエリア
            03  SKYMAIN-RESERVE-AREA       PIC  X(50).
       *
-      *レセプト記載外公費情報作成フラグ（1:記載外公費情報作成）
-           03  SKYMAIN-ETCCREATEFLG        PIC  9(01).
-      *
       *返戻指示フラグ
            03  SKYMAIN-HENREI-SIJI-FLG    PIC  9(01).
+      *
+      *レセプト記載外公費情報作成フラグ（1:記載外公費情報作成）
+           03  SKYMAIN-ETCCREATEFLG        PIC  9(01).
       *(総括表用)
       *主保険−保険番号
            03  SKYMAIN-HKNNUM-S            PIC  X(03).
