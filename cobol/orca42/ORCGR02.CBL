@@ -123,6 +123,8 @@
       *  04.03.03    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *  04.03.04    NACL-藤原    08/11/05  医師別出力時の「主科未設定分」
       *                                     を表示しないようにする
+      *
+      *  04.04.01    NACL-藤原    09/03/05  プリンタの初期設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -7132,7 +7134,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPACE               TO  WRK-GMN-PRTNM-G
       *
            IF      WRK-PRTNMMEI        =   SPACE
-               CONTINUE
+               MOVE    SPA-GMN-PRTNMLST (1)
+                                           TO  WRK-GMN-PRTNM-G
            ELSE
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       SPA-GMN-PRTNM-MAX
