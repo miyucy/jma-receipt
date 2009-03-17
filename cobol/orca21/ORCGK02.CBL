@@ -298,6 +298,8 @@
       *    包括診療用
            03  FLG-HKTCHK              PIC 9(01).
            03  FLG-HOUKATU-ZAI         PIC 9(01).
+      *
+           03  FLG-HKNCOMBI-SET        PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -745,7 +747,6 @@
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
                                      //SPA-// BY //WRK-SPA-//.
-      *
       *
        01  WRK-SYSTIME               PIC 9(08).
       *
@@ -1677,7 +1678,7 @@
                MOVE    "1"                 TO  SPA-DRCD(1:1)
                MOVE    SPA-DRCD-NAME(1:4)  TO  SPA-DRCD(2:4)
            END-IF
-      *TEST
+      *
       *    メモ登録有無
            PERFORM 41021-PTMEMOINF-SEC
       *
@@ -1765,7 +1766,7 @@
                                        SPA-K01KYOUTU
                                        SPA-K02
       *
-      *TEST
+      *
       *    メモ登録有無
            PERFORM 41021-PTMEMOINF-SEC
       *    排他制御処理
@@ -1895,7 +1896,6 @@
                                        SPA-K01KYOUTU
                                        SPA-K02
       *
-      *TEST
       *    メモ登録有無
            PERFORM 41021-PTMEMOINF-SEC
       *    排他制御処理
@@ -3416,7 +3416,9 @@
       *
       *    保険組合
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
-           PERFORM 3101-HKNCOMBI-HEN-SEC
+           IF      FLG-HKNCOMBI-SET    =   ZERO
+               PERFORM 3101-HKNCOMBI-HEN-SEC
+           END-IF
       *
       *    未収金
            MOVE    SPA-MISYUMONEY      TO  SPA-GMN-MISYUMONEY
@@ -4798,7 +4800,7 @@
            .
        4102-PTNUM-HENSYU-EXT.
            EXIT.
-      *TEST
+      *
       *****************************************************************
       *    メモ登録有無処理
       *****************************************************************
@@ -6742,7 +6744,7 @@
                    GO      TO      4101113-INPUTCD-CHK-EXT
                END-IF
            END-IF
-      *TEST
+      *
       *    算定履歴のみ作成
            IF     (SPA-COM-INPUTCD (SPA-GMN-IDX)(1:1)
                                        =   "1"       )  AND
@@ -6757,7 +6759,7 @@
                    GO      TO      4101113-INPUTCD-CHK-EXT
                END-IF
            END-IF
-      *TEST
+      *
       *    入力コード変更ありの時
            IF      LNK-SC97-NYURYOKU   =   1
                CONTINUE
@@ -7406,7 +7408,6 @@
       *****************************************************************
        510-TBLHEN-SEC           SECTION.
       *
-      *!!!! TEST
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                  ORCSC100AREA
            MOVE    "1"                 TO  ORCSC100-KBN
@@ -8265,7 +8266,6 @@
                END-PERFORM
            END-IF
       *
-      *TEST
            IF       SPA-ERRCD      NOT =   SPACE
                MOVE    SPA-SCR-REC         TO  MAE-SCR-REC
                INITIALIZE                  SPA-SCR-REC
@@ -8288,7 +8288,6 @@
                    END-IF
                END-PERFORM
            END-IF
-      *TEST
            .
        5201-SYOHOU-HKN-EXT.
            EXIT.
@@ -8538,6 +8537,7 @@
                                        SPA-AREA
                                        SPA-K01KYOUTU
                                        SPA-K02
+      *
       *    保険組合せ変更
            IF      SPA-HKNCOMBINUM NOT =   SPA-OLD-HKNCOMBI
                MOVE    1               TO  SPA-HKN-ERR2
@@ -8547,7 +8547,8 @@
            MOVE    3               TO  FLG-PARASET
            PERFORM 3002-PARA-SET-SEC
       *
-      *    スパ共通編集処理
+      *    スパ共通編集処理（保険組合せ編集しない（ORCSC95AREA)
+           MOVE    1                   TO  FLG-HKNCOMBI-SET
            PERFORM 310-SPA-SET-SEC
       *    初診算定日は変更しない
            MOVE    WRK-SPA-GMN-SYOSINYMD   TO  SPA-GMN-SYOSINYMD
