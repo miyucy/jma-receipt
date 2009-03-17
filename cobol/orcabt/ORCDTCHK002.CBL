@@ -2400,10 +2400,7 @@
                        END-IF
       *
       *                診療行為コード退避ワーク編集処理
-                       IF    ( DCSRY-SRYCD     NOT =   "6" )
-                        AND  ( DCSRY-SRYCD     NOT =   "7" )
-                           PERFORM 200111-TSRYCD-HEN-SEC
-                       END-IF
+                       PERFORM 200111-TSRYCD-HEN-SEC
       *
       *                減算情報ワーク診療行為退避処理
                        IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
@@ -3215,10 +3212,7 @@
                            PERFORM 900-TENSU-KEY-SEL-SEC
       *
       *                    診療行為コード退避ワーク編集処理
-                           IF    ( DCSRY-SRYCD     NOT =   "6" )
-                            AND  ( DCSRY-SRYCD     NOT =   "7" )
-                               PERFORM 200111-TSRYCD-HEN-SEC
-                           END-IF
+                           PERFORM 200111-TSRYCD-HEN-SEC
                        END-IF
       *
                    END-IF
