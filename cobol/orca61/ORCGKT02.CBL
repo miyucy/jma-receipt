@@ -51,9 +51,7 @@
       *
       *    日毎データ
            SELECT  WKSRY-FILE      ASSIGN  FILE-NAME3
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
-                                   RECORD  KEY     IS  WKSRY-F-KEY
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-WKSRY.
       *
       *    収納データ

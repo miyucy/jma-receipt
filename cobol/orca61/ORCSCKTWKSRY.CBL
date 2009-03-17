@@ -52,9 +52,7 @@
                                    FILE    STATUS  IS  STS-OUTSYU.
       *    日毎データ（ＫＴ０２）
            SELECT  WKSRY-FILE02    ASSIGN  FILE-NAME5
-                                   ORGANIZATION    IS  INDEXED
-                                   ACCESS  MODE    IS  DYNAMIC
-                                   RECORD  KEY     IS  WKSRY-F02-KEY
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-WKSRY02.
       *
        DATA                        DIVISION.
@@ -1784,9 +1782,6 @@
       *    パラメタ削除集処理
       *****************************************************************
        210-PARA-DEL-SEC         SECTION.
-      *TEST
-           DISPLAY "WKSRY 210-PARA-DEL WRK-DAY:" WRK-DAY
-      *TEST
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID3
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM3
@@ -2060,6 +2055,11 @@
       *
            ADD     1                   TO  IDXL
            MOVE    WKSRYACT-REC        TO  LNK-WKSRYACT-REC (IDXL)
+      *TEST
+      *    DISPLAY "WKSRY-INPUTCD:" WKSRY-INPUTCD (1)
+      *       "," WKSRY-INPUTCD (2) ",IDXL:" IDXL
+      *    DISPLAY   "WRK-TENSUKEI:" WRK-TENSUKEI
+      *       ",WRK-KAISUKEI:" WRK-KAISUKEI
       *
            MOVE    ZERO                TO  IDY
            MOVE    SPACE               TO  WKSRYACT-REC
