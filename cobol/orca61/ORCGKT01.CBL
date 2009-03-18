@@ -8186,7 +8186,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            IF     (FLG-NEXT            =   ZERO  )  AND
-                 ((SPA-ERRCD           =   SPACE )  OR
+                 ((SPA-ERRCD           =   SPACE )  AND
                   (SPA-KIDCD           =   SPACE ))
                IF      SPA-NAI-SRYDD   NOT =   WRK-SRYDD
                    MOVE    WRK-SRYDD           TO  SPA-GMN-SRYDD
