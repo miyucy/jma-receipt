@@ -8478,6 +8478,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        6001-DAYCHEK-SEC           SECTION.
       *
            INITIALIZE                  SPA-SCR-REC
+           MOVE    ZERO            TO  SPA-GMN-GOKEI
       *
            INITIALIZE                  ORCSCKTWKSRYAREA
            MOVE    "1"                 TO  ORCSCWKSRY-KBN

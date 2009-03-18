@@ -540,15 +540,6 @@
                END-IF
                MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
            END-IF
-      *TEST
-           DISPLAY "C91 LNK-SC91-SRYCD:" LNK-SC91-SRYCD
-                ",TNS-JGNCNT :" TNS-JGNCNT
-                ",TNS-JGNCNT1D :" TNS-JGNCNT1D
-                ",LNK-SC91-CNT:" LNK-SC91-CNT
-                ",LNK-SC91-DAYCNT:" LNK-SC91-DAYCNT
-                ",WRK-DOCNT:" WRK-DOCNT
-                ",LNK-SC91-KT01FLG:" LNK-SC91-KT01FLG
-      *TEST
            MOVE    TNS-JGNCNT1D        TO  LNK-SC91-DAYMAXCNT
       *D   MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
       *
@@ -634,10 +625,6 @@
            END-IF
       *
       *
-      *TEST
-           DISPLAY "C91 LNK-SC91-ERRCD:" LNK-SC91-ERRCD
-                ",WRK-RSI-KBN  :" WRK-RSI-KBN 
-      *TEST
       *    労災毎の算定時
            IF     (LNK-SC91-ERRCD  NOT =   SPACE  )  AND
                   (WRK-RSI-KBN     NOT =   SPACE  )
@@ -797,44 +784,9 @@
       *
       *    保険毎のコードクリア
            MOVE    SPACE           TO  WRK-RSI-KBN
-      *TEST
-          DISPLAY "1009-KT01SANTEI-SEC"
-              ",WRK-SRYCD:"  WRK-SRYCD
-              ",TBL1:"  LNK-SC91-KT01-SRYCD (1)
-              ",TBL2:"  LNK-SC91-KT01-SRYCD (2)
-      *TEST
+      *    外来まとめ算定履歴編集処理
+           PERFORM 10091-KT01SANTEI-HEN-SEC
       *
-           INITIALIZE                  SANTEI-REC
-           PERFORM VARYING     IDX-SN      FROM    1   BY  1
-                   UNTIL      (IDX-SN      >   100 )   OR
-                              (LNK-SC91-KT01-SRYCD  (IDX-SN) =   SPACE)
-               IF      WRK-SRYCD       =   LNK-SC91-KT01-SRYCD (IDX-SN)
-                   INITIALIZE                  SANTEI-REC
-                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
-      *TEST
-          DISPLAY "IDX-Y2:" IDX-Y2
-              ",DAY1:"  LNK-SC91-KT01-DAY (IDX-SN 1)
-              ",DAY2:"  LNK-SC91-KT01-DAY (IDX-SN 2)
-              ",DAY3:"  LNK-SC91-KT01-DAY (IDX-SN 3)
-      *TEST
-                   PERFORM VARYING     IDD         FROM    1   BY  1
-                           UNTIL      (IDD         >   IDX-Y2 )
-                       MOVE    LNK-SC91-KT01-DAY (IDX-SN IDD)
-                                                   TO  SANTEI-DAY (IDD)
-                       ADD     SANTEI-DAY (IDD)    TO  SANTEI-MSANTEICNT
-                       IF      SANTEI-DAY (IDD)    >   ZERO
-                           IF      SANTEI-MSANTEID     =   ZERO
-                               MOVE    IDD         TO  SANTEI-MSANTEID
-                           END-IF
-                       END-IF
-                   END-PERFORM
-                   MOVE    100             TO  IDX-SN
-               END-IF
-           END-PERFORM
-      *
-      *TEST
-          DISPLAY "SANTEI-MSANTEICNT:" SANTEI-MSANTEICNT
-      *TEST
       *    算定歴の回数をチェックする
            IF      TNS-JGNCNT          >   ZERO
                MOVE    TNS-JGNCNT          TO  LNK-SC91-MAXCNT
@@ -846,8 +798,44 @@
            MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
            MOVE    TNS-JGNCNT1D        TO  LNK-SC91-DAYMAXCNT
            MOVE    SANTEI-DAY (IDX-Y2) TO  LNK-SC91-DAYCNT
+      *    エラー内容用
+           IF      LNK-SC91-CNT        >   ZERO
+               MOVE    SANTEI-SRYYM        TO  WRK-CHK-SRYYM
+               MOVE    SANTEI-MSANTEID     TO  WRK-CHK-SRYDD
+           END-IF
            .
        1009-KT01SANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    外来まとめ算定履歴編集処理
+      *****************************************************************
+       10091-KT01SANTEI-HEN-SEC      SECTION.
+      *
+           INITIALIZE                  SANTEI-REC
+           PERFORM VARYING     IDX-SN      FROM    1   BY  1
+                   UNTIL      (IDX-SN      >   100 )   OR
+                              (LNK-SC91-KT01-SRYCD  (IDX-SN) =   SPACE)
+               IF      WRK-SRYCD       =   LNK-SC91-KT01-SRYCD (IDX-SN)
+                   INITIALIZE                  SANTEI-REC
+                   MOVE    SPA-SRYYMD(1:6)     TO  SANTEI-SRYYM
+                   MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+                   PERFORM VARYING     IDD         FROM    1   BY  1
+                           UNTIL      (IDD         >=  IDX-Y2 )
+                       MOVE    LNK-SC91-KT01-DAY (IDX-SN IDD)
+                                                   TO  SANTEI-DAY (IDD)
+                       ADD     SANTEI-DAY (IDD)    TO  SANTEI-MSANTEICNT
+                       IF      SANTEI-DAY (IDD)    >   ZERO
+                           IF      SANTEI-MSANTEID     =   SPACE
+                               MOVE    IDD         TO  SANTEI-MSANTEID
+                           END-IF
+                       END-IF
+                   END-PERFORM
+                   MOVE    100             TO  IDX-SN
+               END-IF
+           END-PERFORM
+           .
+       10091-KT01SANTEI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1003,22 +991,15 @@
       *****************************************************************
        10029-KT01SANTEI-ETC-SEC         SECTION.
       *
-           INITIALIZE                  SANTEI-REC
-           PERFORM VARYING     IDX-SN      FROM    1   BY  1
-                   UNTIL      (IDX-SN      >   100 )   OR
-                              (LNK-SC91-KT01-SRYCD  (IDX-SN) =   SPACE)
-               IF      WRK-SRYCD       =   LNK-SC91-KT01-SRYCD (IDX-SN)
-                   INITIALIZE                  SANTEI-REC
-                   PERFORM VARYING     IDD         FROM    1   BY  1
-                           UNTIL      (IDD         >   31 )
-                       MOVE    LNK-SC91-KT01-DAY (IDX-SN IDD)
-                                                   TO  SANTEI-DAY (IDD)
-                       ADD     SANTEI-DAY (IDD)    TO  SANTEI-MSANTEICNT
-                   END-PERFORM
-                   MOVE    100             TO  IDX-SN
-               END-IF
-           END-PERFORM
+      *    外来まとめ算定履歴編集処理
+           PERFORM 10091-KT01SANTEI-HEN-SEC
+      *
            ADD     SANTEI-MSANTEICNT   TO  LNK-SC91-CNT
+      *
+           IF      SANTEI-MSANTEICNT   >   ZERO
+               MOVE    SPA-SRYYMD(1:6)     TO  WRK-CHK-SRYYM
+               MOVE    SANTEI-MSANTEID     TO  WRK-CHK-SRYDD
+           END-IF
       *
            .
        10029-KT01SANTEI-ETC-EXT.

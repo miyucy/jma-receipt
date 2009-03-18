@@ -813,6 +813,9 @@
       *****************************************************************
        51017-SANTEI-CHEK-SEC             SECTION.
       *
+           MOVE    ZERO                TO  WRK-KAISU-GOK
+           MOVE    ZERO                TO  WRK-KAISU
+      *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE    )   OR
                              ((SPA-GMN-INPUTCD (IDX)   =   SPACE ) AND
@@ -1023,7 +1026,8 @@
            IF      SPA-COM-NYU-KAI (IDX)  >   ZERO
                IF     (LNK-SC91-ERRCD  NOT =   SPACE )  AND
                       (LNK-SC91-ERRMSG     =   SPACE )
-                   MOVE    IDX-N2          TO  LNK-SC91-ERRMSG(1:2)
+                   MOVE    SPA-SRYYMD(7:2)
+                                           TO  LNK-SC91-ERRMSG(1:2)
                    MOVE    "Æü»»ÄêºÑ¤ß"    TO  LNK-SC91-ERRMSG(3:)
                END-IF
            END-IF
