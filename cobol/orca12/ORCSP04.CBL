@@ -227,11 +227,6 @@
            IF      FLG-PTINF           =   1
                MOVE    "1001"              TO  SPA-ERRCD
            END-IF
-      *TEST
-           DISPLAY "ORCSP04-HOSPNUM:" ORCSP04-HOSPNUM
-              ",ORCSP04-PTID:" ORCSP04-PTID
-           ",SPA-ERRCD:" SPA-ERRCD
-      *TERST
       *    パラメタファイルのクリア
            IF      SPA-ERRCD           =   SPACE
                PERFORM 100-PARA-DEL-SEC
@@ -365,10 +360,6 @@
            MOVE    PTINF-ZOKUGARA      TO  SPA-GMN-ZOKUGARA
            MOVE    PTINF-COMMENT-1     TO  SPA-GMN-COMMENT-1
            MOVE    PTINF-COMMENT-2     TO  SPA-GMN-COMMENT-2
-      *TEST
-           DISPLAY "SPA-GMN-POST:" SPA-GMN-POST
-              ",SPA-GMN-TEL1:" SPA-GMN-TEL1
-      *TERST
       *    年齢計算
            IF      SPA-NAI-BIRTHDAY    =   SPACE  OR  ZERO
                MOVE    SPACE               TO  SPA-GMN-NENREI
@@ -741,10 +732,6 @@
                    INITIALIZE                      PARA-REC
                    MOVE    "TSYRRK"            TO  PARA-FILEMEI
                    MOVE    IDX                 TO  PARA-EDANUM
-      *            更新キーを編集する
-                   MOVE    TSYRRK-HOSPNUM      TO  TSYRRK-HOSPNUM-O
-                   MOVE    TSYRRK-PTID         TO  TSYRRK-PTID-O
-                   MOVE    TSYRRK-NINSTYMD     TO  TSYRRK-NINSTYMD-O
       *            当日に有効
                    MOVE    1                   TO  SPA-NAI-TSYRRK
       *
@@ -790,10 +777,6 @@
                    INITIALIZE                      PARA-REC
                    MOVE    "TNKRRK"            TO  PARA-FILEMEI
                    MOVE    IDX                 TO  PARA-EDANUM
-      *            更新キーを編集する
-                   MOVE    TNKRRK-HOSPNUM      TO  TNKRRK-HOSPNUM-O
-                   MOVE    TNKRRK-PTID         TO  TNKRRK-PTID-O
-                   MOVE    TNKRRK-STYMD        TO  TNKRRK-STYMD-O
       *            当日に有効
                    MOVE    1                   TO  SPA-NAI-TNKRRK
       *
