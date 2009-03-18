@@ -546,6 +546,9 @@
                MOVE   20               TO    SYS-SYSYY1
                MOVE   SYS-YMD          TO    WRK-SYSYMD          
            END-IF
+           DISPLAY "========================================="
+           DISPLAY "∞ÂŒ≈µ°¥ÿID = [" LF04-CRE001-FACILITYID "]"
+           DISPLAY "ø«Œ≈«Ø∑Ó∆¸ = [" WRK-SYSYMD "]"
            MOVE    WRK-SYSYMD          TO  WRK-SRYYMD
            MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
            MOVE    WRK-SYSYMD          TO  SPA-SRYYMD
@@ -598,6 +601,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    WRK-HOSPNUM         TO  SPA-HOSPNUM
+           DISPLAY "∞ÂŒ≈µ°¥ÿ»÷πÊ = [" SPA-HOSPNUM "]"
       *
            MOVE    SPACE               TO  SPA-NOCHK-HOSPNUM
       *
@@ -719,6 +723,9 @@
                PERFORM 20010-WKSRYACT-CHK2-SEC
            END-IF
       *
+           DISPLAY "ø«Œ≈æ Û ================== " 
+           DISPLAY " BUNDLE æ Û"
+      *
            MOVE    ZERO                TO  FLG-NYUINIDOU
            INITIALIZE                  TBL-WKSRYACT-AREA
            MOVE    ZERO                TO  TBL-MAX
@@ -727,11 +734,15 @@
                              (LF04-SRYCD (IDX1)   =   SPACE)  OR
                              (FLG-END             =   1    )
                          OR  (FLG-ERR             =   1    )
+               DISPLAY "  " IDX1 " " LF04-SRYCD (IDX1) 
       *        ∆˛±°∞‹∆∞»ΩƒÍ
                IF     (WRK-NYUGAIKBN       =   "1"   ) AND
                       (LF04-SRYCDTBL (IDX1)    =   "Claim010" )
                    MOVE    1               TO  FLG-NYUINIDOU
                ELSE
+      *
+                   DISPLAY "   ITEM æ Û"
+      *
                    PERFORM 2002-ZAICHK-SEC
                    IF      FLG-ZAIEND          =   1
                        IF      TBL-MAX         >   ZERO
@@ -744,6 +755,7 @@
                        PERFORM 2005-TBLSET-NEXT-SEC
                    END-IF
                END-IF
+               DISPLAY "  " 
            END-PERFORM
       *
            IF      FLG-END             =   ZERO
@@ -817,6 +829,7 @@
       *
            INITIALIZE                      ORCSPTIDAREA
            MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
+           DISPLAY "¥µº‘»÷πÊ = ["    LF04-PTID1 "]"
            MOVE    LF04-PTID1          TO  SPTID-PTNUM
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
       *---(01.00.02) LINE ADD START  ----------------------------------
@@ -845,6 +858,8 @@
                END-IF
            END-IF
       *
+           DISPLAY "ø«Œ≈≤    = ["    WRK-SRYKA "]"
+      *
            MOVE    WRK-SRYKA           TO  WRK-SRYKA-KEY
       *    •Ï•ª≈≈§Œ≤ §´§Èø«Œ≈≤ §ÿ —ππ
            IF      SYS-9000-RECEDEN-FLG    =   "1"
@@ -867,6 +882,9 @@
            ELSE
                MOVE    SPACE               TO  WRK-DRCD
            END-IF
+      *
+           DISPLAY "•…•Ø•ø   = ["  WRK-DRCD "]"
+      *
            .
        2000-SYOKI-SET-EXT.
            EXIT.
@@ -903,6 +921,8 @@
            IF      FLG-SYSKANRI        =   1
                MOVE    SPACE               TO  WRK-DRCD
            END-IF
+      *
+      *
            .
        2003-DRCD-CHK-EXT.
            EXIT.
@@ -997,6 +1017,7 @@
                PERFORM 20011-HKNSYORI-SEC
            END-IF
       *
+           DISPLAY " ›∏±¡»πÁ§ª = [" WRK-HKNCOMBI "]"
       **** CLOSE                       LF03-FILE
       *
            .
@@ -1392,6 +1413,7 @@
       *        IF      LF04-IJICD(IDX1 IDX2)(1:9)   NUMERIC
       ***     DISPLAY  "LF04-IJICD(IDX1 IDX2)(1:9) = "  
       ***               LF04-IJICD(IDX1 IDX2)(1:9)
+                   DISPLAY "    " IDX2 " " LF04-IJICD(IDX1 IDX2)(1:9)
                    INITIALIZE                      ORCSNUMAREA
                    MOVE    LF04-IJICD(IDX1 IDX2)(1:9)
                                                TO  SNUM-INX
