@@ -2720,6 +2720,11 @@
            IF    ( FLG-PTINF       =   ZERO )
       *        排他制御処理
                PERFORM 990-LOCK-IN-SEC
+               IF  (   SPA-ERRCD   =   SPACE )
+                   CONTINUE
+               ELSE
+                   INITIALIZE          SPA-GMN-I01-CMB-SYORIKBN
+               END-IF
            ELSE
                MOVE    "0002"                  TO  SPA-ERRCD
            END-IF
@@ -3173,6 +3178,8 @@
       *
       *            患者情報設定
                    PERFORM 4101-PTINF-SET-SEC
+               ELSE
+                   INITIALIZE          SPA-GMN-I01-CMB-SYORIKBN
                END-IF
            END-IF
       *
