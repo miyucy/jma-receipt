@@ -6238,13 +6238,13 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    ZERO                TO  SPA-RJN-ERR
-           MOVE    ZERO                TO  SPA-HKN-ERR
-           MOVE    ZERO                TO  SPA-NYU-ERR
-           MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
-           MOVE    ZERO                TO  SPA-NAI-KOHFLG
-           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
-           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
+      *    MOVE    ZERO                TO  SPA-RJN-ERR
+      *    MOVE    ZERO                TO  SPA-HKN-ERR
+      *    MOVE    ZERO                TO  SPA-NYU-ERR
+      *    MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
+      *    MOVE    ZERO                TO  SPA-NAI-KOHFLG
+      *    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
+      **** MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
            IF      SPA-MACHIPG         =   "U02"
                MOVE    "U02"               TO  WRK-SAKIPG
                PERFORM 210-BACK-SYORI-SEC
@@ -6253,8 +6253,9 @@
                    MOVE    "M01"               TO  WRK-SAKIPG
                    PERFORM 210-BACK-SYORI-SEC
                ELSE
-      *        ガイドメッセージ表示へ
-                  MOVE    "0104"              TO  SPA-KIDCD
+      *            ガイドメッセージ表示へ
+                   MOVE    "0104"              TO  SPA-KIDCD
+                   PERFORM 520-KIDSET-SEC
                END-IF
            END-IF
       *
@@ -6362,6 +6363,7 @@
                    (SPA-GMN-PTID   NOT =   ZERO  )
                AND (SPA-GMN-MAX        >   ZERO  )
                MOVE    "0125"              TO  SPA-KIDCD
+               PERFORM 520-KIDSET-SEC
            ELSE
                PERFORM 2221-PTNUMCLEAR-SYORI-SEC
            END-IF
@@ -7825,7 +7827,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *            後期高齢者の保険がない時
                    WHEN    3
                        IF      SPA-NAI-ROUSTR      =   ZERO
-                           MOVE    "K076"          TO  SPA-ERRCD
+                           MOVE    "1076"          TO  SPA-ERRCD
                            MOVE    1               TO  SPA-NAI-ROUSTR
                        END-IF
                END-EVALUATE
@@ -8839,7 +8841,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (SPA-RJN-ERR         =   3   )  AND
                   (SPA-ERRCD           =   SPACE )
                IF      SPA-NAI-ROUSTR      =   ZERO
-                   MOVE    "K076"          TO  SPA-ERRCD
+                   MOVE    "1076"          TO  SPA-ERRCD
                    MOVE    1               TO  SPA-NAI-ROUSTR
                END-IF
            END-IF

@@ -8629,13 +8629,13 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    ZERO                TO  SPA-NAI-ROUSTR
-           MOVE    ZERO                TO  SPA-RJN-ERR
-           MOVE    ZERO                TO  SPA-HKN-ERR
-           MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
-           MOVE    ZERO                TO  SPA-NAI-KOHFLG
-           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
-           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
+      **** MOVE    ZERO                TO  SPA-NAI-ROUSTR
+      *    MOVE    ZERO                TO  SPA-RJN-ERR
+      *    MOVE    ZERO                TO  SPA-HKN-ERR
+      *    MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
+      *    MOVE    ZERO                TO  SPA-NAI-KOHFLG
+      *    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
+      **** MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
            IF      SPA-MACHIPG         =   "U02"
                MOVE    "U02"               TO  WRK-SAKIPG
                PERFORM 210-BACK-SYORI-SEC
@@ -8645,7 +8645,8 @@
                    PERFORM 210-BACK-SYORI-SEC
                ELSE
       *        ガイドメッセージ表示へ
-                  MOVE    "0104"              TO  SPA-KIDCD
+                   MOVE    "0104"              TO  SPA-KIDCD
+                   PERFORM 520-KIDSET-SEC
                END-IF
            END-IF
       *
@@ -8750,6 +8751,7 @@
                    (SPA-GMN-PTID   NOT =   ZERO  )
                AND (SPA-GMN-MAX        >   ZERO  )
                MOVE    "0125"              TO  SPA-KIDCD
+               PERFORM 520-KIDSET-SEC
            ELSE
                PERFORM 2221-PTNUMCLEAR-SYORI-SEC
            END-IF
@@ -8817,14 +8819,6 @@
       *****END-IF
       *
            INITIALIZE              SPA-SCR-REC
-      *
-      *    INITIALIZE              SPA-K02-AREA
-      *
-      *    チェック用月内診療行為セット
-      *    PERFORM                 320-SPA-CHKSET-SEC
-      *
-      *    画面用スパ編集処理
-      *    PERFORM                 310-SPA-SET-SEC
       *
            MOVE    ZERO            TO  SPA-GMN-GOKEI
       *
