@@ -1106,8 +1106,6 @@
            EVALUATE    SPA-MOTOPG
       *         業務選択より
                WHEN    "M01"
-      *        外来まとめより
-               WHEN    "KT01"
                    INITIALIZE                  SPA-J01KYOUTU
                    MOVE    SPA-MOTOPG          TO  SPA-J02-MOTOPG
                    MOVE    "0"                 TO  SPA-J02-MOTOFLG
@@ -1120,6 +1118,8 @@
                    MOVE    ZERO                TO  SPA-GMN-CUR
                WHEN    "K02N"
                WHEN    "K02"
+      *        外来まとめより
+               WHEN    "KT01"
       *            診療行為より
                    INITIALIZE                  SPA-J01KYOUTU
       *
@@ -1850,6 +1850,7 @@
            END-IF
       *
            IF     (SPA-MOTOPG2(1:3)    =   "K02" OR  "U02"  ) OR
+                  (SPA-MOTOPG          =   "KT01"           )  OR
                   (SPA-MOTOPG          =   "J04" OR  "J03"  OR  "J021")
       *        保存用パラメタ作成
                PERFORM 4201-SRYACCT-PARA-SEC
@@ -8195,7 +8196,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    診療会計マスターを編集
            INITIALIZE                      SRYACCT-REC 
-           MOVE    SPA-HOSPNUM          TO  ACCT-HOSPNUM
+           MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-GMN-PTID        TO  ACCT-PTID
            MOVE    SPA-NAI-SRYYM       TO  ACCT-SRYYM

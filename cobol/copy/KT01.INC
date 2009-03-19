@@ -98,6 +98,10 @@
                 04  KT01-B12-STATE  PIC S9(9)   BINARY.
               03  KT01-B01S.
                 04  KT01-B01S-STATE  PIC S9(9)   BINARY.
+              03  KT01-B08S.
+                04  KT01-B08S-STATE  PIC S9(9)   BINARY.
+              03  KT01-B09S.
+                04  KT01-B09S-STATE  PIC S9(9)   BINARY.
               03  KT01-BDAY-G   OCCURS  31.
               04  KT01-BDAY.
                 05  KT01-BDAY-STYLE  PIC X(20).
