@@ -460,6 +460,12 @@ KT01	{
 		B01S	{
 	           	state	int;
 		};
+		B08S	{
+	           	state	int;
+		};
+		B09S	{
+	           	state	int;
+		};
 		BD01	{
 			style	varchar(20);
 			label	varchar(4);
