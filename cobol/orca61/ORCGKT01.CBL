@@ -6935,20 +6935,21 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-           MOVE    ZERO                TO  SPA-RJN-ERR
-           MOVE    ZERO                TO  SPA-HKN-ERR
-           MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
-           MOVE    ZERO                TO  SPA-NAI-KOHFLG
-           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
-           MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
-           MOVE    ZERO                TO  SPA-NAI-NYUIN-ERR
-           MOVE    ZERO                TO  SPA-NAI-RRK-ERR
+      *    MOVE    ZERO                TO  SPA-RJN-ERR
+      *    MOVE    ZERO                TO  SPA-HKN-ERR
+      *    MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
+      *    MOVE    ZERO                TO  SPA-NAI-KOHFLG
+      *    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
+      *    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
+      *    MOVE    ZERO                TO  SPA-NAI-NYUIN-ERR
+      *    MOVE    ZERO                TO  SPA-NAI-RRK-ERR
       *
            IF      SPA-GMN-PTNUM       =   SPACE
                PERFORM 210-BACK-SYORI-SEC
            ELSE
       *        ガイドメッセージ表示へ
                MOVE    "0104"              TO  SPA-KIDCD
+               PERFORM 520-KIDSET-SEC
            END-IF
       *
            .
@@ -7085,6 +7086,7 @@
                    (SPA-GMN-PTID   NOT =   ZERO  )
                AND (SPA-GMN-MAX        >   ZERO  )
                MOVE    "0125"              TO  SPA-KIDCD
+               PERFORM 520-KIDSET-SEC
            ELSE
                PERFORM 2221-PTNUMCLEAR-SYORI-SEC
            END-IF
