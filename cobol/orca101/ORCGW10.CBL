@@ -41,19 +41,27 @@
        FILE-CONTROL.
       *
       *    統計メモ更新データ
-           SELECT  MST-FILE    ASSIGN
-                               "/tmp/ORCADBR-toukeimemo_x.x.x-x.dat"
+           SELECT  MST-TMEMO   ASSIGN              ASS-TMEMO
                                ORGANIZATION    IS  LINE SEQUENTIAL
-                               FILE    STATUS  IS  STS-MST.
+                               FILE    STATUS  IS  STS-TMEMO.
+      *
+      *    システム管理更新データ
+           SELECT  MST-SYSKANRI
+                               ASSIGN              ASS-SYSKANRI
+                               ORGANIZATION    IS  LINE SEQUENTIAL
+                               FILE    STATUS  IS  STS-SYSKANRI.
       *
        DATA                    DIVISION.
        FILE                    SECTION.
       *
-       FD  MST-FILE.
+       FD  MST-TMEMO.
        01  TOUKEIMEMOWK-REC.
            03  TKIMEMOWK-SYORIKBN             PIC  X(01).
            COPY    "CPTOUKEIMEMO.INC"  REPLACING   //TKIMEMO-//
                                               BY   //TKIMEMOWK-//.
+       FD  MST-SYSKANRI.
+       01  SYSWK-REC.
+           COPY    "CPSYSKANRIWK.INC".
       *
        WORKING-STORAGE             SECTION.
       *
@@ -80,7 +88,8 @@
            03  FLG-PARA-SET        PIC 9(01).
       *
        01  STS-AREA.
-           03  STS-MST             PIC X(02).
+           03  STS-TMEMO           PIC X(02).
+           03  STS-SYSKANRI        PIC X(02).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -95,8 +104,12 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
       *
-      *    一時領域
+      *    アサイン名領域
+       01  ASS-AREA.
+           03  ASS-TMEMO           PIC X(100).
+           03  ASS-SYSKANRI        PIC X(100).
       *
+      *    一時領域
        01  WRK-AREA.
            03  WRK-WIDMSG          PIC X(70).
            03  WRK-YMD             PIC X(09). 
@@ -119,6 +132,9 @@
            03  WRK-KBNCD           PIC X(08).
            03  WRK-PRGNAME         PIC X(100).
            03  WRK-LEN             PIC 9(08).
+           03  WRK-MNTCD-G.
+               05  WRK-MNTCD-GRP   PIC X(01).
+               05  WRK-MNTCD-NUM   PIC 9(03).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -756,6 +772,10 @@
                        MOVE    1       TO  SPA-NAI-W10-W19-SENI-FLG
                        PERFORM 405-W19-SENI-SEC
                    END-IF
+               WHEN    "CLICKED"       ALSO    "B07"
+                   IF    ( SPA-W10-MODE    NOT =   ZERO )
+                       PERFORM 407-NEW-FORM-INIT-SEC
+                   END-IF
                WHEN    "CLICKED"       ALSO    "B08"
       *
                    MOVE    ZERO            TO      SPA-NAI-W10-B11-CNT
@@ -1388,6 +1408,32 @@
        405-W19-SENI-EXT.
            EXIT.
       *****************************************************************
+      *    帳票追加モード
+      *****************************************************************
+       407-NEW-FORM-INIT-SEC           SECTION.
+      *
+           INITIALIZE                  SYSKANRI-REC
+           MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
+           MOVE    SPA-W10-KANRICD TO  SYS-KANRICD
+           IF    ( SPA-W10-MODE    =   1 )
+               MOVE    "1%"        TO  SYS-KBNCD
+           ELSE
+               MOVE    "2%"        TO  SYS-KBNCD
+           END-IF
+           PERFORM 900-SYSKANRI-KEY22-SEL-SEC
+           MOVE    SYS-KBNCD       TO  WRK-MNTCD-G
+           IF    ( WRK-MNTCD-NUM   IS  NOT NUMERIC )
+               MOVE    ZERO        TO  WRK-MNTCD-NUM
+           END-IF
+           COMPUTE WRK-MNTCD-NUM   =   WRK-MNTCD-NUM   +   1
+           MOVE    WRK-MNTCD-NUM   TO  SPA-W10-KBNCD
+           PERFORM 4110-MAINTENANCE-INIT-SEC
+           MOVE    1               TO  SPA-GMN-W10-CUR
+      *
+           .    
+       407-NEW-FORM-INIT-EXT.
+           EXIT.
+      *****************************************************************
       *    削除処理
       *****************************************************************
        4031-DEL-SEC                              SECTION.
@@ -1511,6 +1557,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
+           MOVE    SPACE                   TO  WRK-PRGNAME
       *
            MOVE    SPACE                   TO  SYS-3001-REC 
            INITIALIZE                      SYS-3001-REC
@@ -1537,6 +1584,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-W10-EDYUKYMD    TO  SYS-3001-EDYUKYMD
                    MOVE    SPA-GMN-W10-HCNAME      TO  SYS-3001-HCNAME 
                    MOVE    SPA-GMN-W10-PRGNAME     TO  SYS-3001-PRGNAME
+                                                       WRK-PRGNAME
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       CONST-3001-PARA-MAX
                        MOVE    SPA-GMN-W10-PARAHYOJI (IDX)
@@ -1569,6 +1617,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPA-W10-EDYUKYMD    TO  SYS-3002-EDYUKYMD
                    MOVE    SPA-GMN-W10-HCNAME1     TO  SYS-3002-HCNAME 
                    MOVE    SPA-GMN-W10-PRGNAME1    TO  SYS-3002-PRGNAME
+                                                       WRK-PRGNAME
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       CONST-3002-PARA-MAX
                        MOVE    SPA-GMN-W10-PARAHYOJI1(IDX)
@@ -1618,6 +1667,33 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      MCP-RC              NOT =   ZERO 
                MOVE    "1001"                  TO  SPA-ERRCD
                GO  TO  490-KOUSHIN-EXT
+           END-IF
+      *
+           IF    ( SYS-KANRICD             =   "0043" OR "0044" )
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SPACE               TO  ASS-SYSKANRI
+               INITIALIZE  ASS-SYSKANRI
+               STRING      "/tmp/ORCADBR-syskanri-"
+                                           DELIMITED   BY  SIZE
+                           WRK-PRGNAME     DELIMITED   BY  SPACE
+                           ".dat"          DELIMITED   BY  SIZE
+               INTO    ASS-SYSKANRI
+               END-STRING
+      *
+               OPEN    OUTPUT  MST-SYSKANRI
+               INITIALIZE      SYSWK-REC
+               IF    ( SPA-W10-SELNUM  >   ZERO )
+                   MOVE    "U"         TO  SYSWK-SYORIKBN
+               ELSE
+                   MOVE    "I"         TO  SYSWK-SYORIKBN
+               END-IF
+               MOVE    SYS-KANRICD     TO  SYSWK-KANRICD
+               MOVE    SYS-KBNCD       TO  SYSWK-KBNCD
+               MOVE    SYS-STYUKYMD    TO  SYSWK-STYUKYMD
+               MOVE    SYS-EDYUKYMD    TO  SYSWK-EDYUKYMD
+               MOVE    SYS-KANRITBL    TO  SYSWK-KANRITBL
+               WRITE   SYSWK-REC
+               CLOSE   MST-SYSKANRI
            END-IF
       *
            PERFORM 491-TOUKEIMEMO-UPD-SEC
@@ -1719,9 +1795,21 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF    ( SPA-W10-MODE    =   ZERO )
                    CONTINUE
                ELSE
-                   OPEN OUTPUT MST-FILE
+                   PERFORM 800-MCNDATE-SEC
+                   INITIALIZE  ASS-TMEMO
+                   STRING      "/tmp/ORCADBR-toukeimemo-"
+                                               DELIMITED   BY  SIZE
+                               TKIMEMO-PGID    DELIMITED   BY  SPACE
+                               ".dat"          DELIMITED   BY  SIZE
+                   INTO        ASS-TMEMO
+                   END-STRING
+                   OPEN OUTPUT MST-TMEMO
                    INITIALIZE                  TOUKEIMEMOWK-REC
-                   MOVE    "U"             TO  TKIMEMOWK-SYORIKBN
+                   IF    ( SPA-W10-SELNUM  >   ZERO )
+                       MOVE    "U"         TO  TKIMEMOWK-SYORIKBN
+                   ELSE
+                       MOVE    "I"         TO  TKIMEMOWK-SYORIKBN
+                   END-IF
                    MOVE    TOUKEIMEMO-REC  TO  TOUKEIMEMOWK-REC (2:)
                    MOVE    SPACE           TO  TKIMEMOWK-MEMO
                    MOVE    1               TO  WRK-LEN
@@ -1752,7 +1840,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SPACE           TO TKIMEMOWK-SAVEPARA
                    WRITE   TOUKEIMEMOWK-REC
       *
-                   CLOSE   MST-FILE
+                   CLOSE   MST-TMEMO
                END-IF
            ELSE
                MOVE    "1003"          TO  SPA-ERRCD
@@ -1840,10 +1928,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *****************************************************************
        4110-MAINTENANCE-INIT-SEC           SECTION.
       *
-           IF    ( SPA-W10-KANRICD     =   "3001" )
-               MOVE    "0043"          TO  SPA-W10-KANRICD
-           ELSE
-               MOVE    "0044"          TO  SPA-W10-KANRICD
+           IF    ( SPA-W10-KANRICD     =   "3001" OR "3002" )
+               IF    ( SPA-W10-KANRICD =   "3001" )
+                   MOVE    "0043"      TO  SPA-W10-KANRICD
+               ELSE
+                   MOVE    "0044"      TO  SPA-W10-KANRICD
+               END-IF
            END-IF
       *
            MOVE    SPA-W10-KBNCD       TO  WRK-KBNCD
@@ -1918,6 +2008,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF    ( SPA-W10-MODE     NOT =   ZERO )
       *
                MOVE    "帳票選択"           TO  W10-B06
+      *
+               MOVE    "帳票追加"           TO  W10-B07
       *
                IF    ( SPA-W10-MODE     =   1 )
                    MOVE    "red"            TO  W10-LBLKANRICD-STYLE
@@ -2483,6 +2575,47 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        900-SYSKANRI-INV-EXT.
+           EXIT.
+      *****************************************************************
+      *    管理マスター検索処理
+      *****************************************************************
+       900-SYSKANRI-KEY22-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO                TO  FLG-SYSKANRI
+      *
+           MOVE    SYSKANRI-REC        TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key22"             TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           IF      MCP-RC              =   ZERO
+               MOVE    "DBFETCH"       TO  MCP-FUNC
+               MOVE    "tbl_syskanri"  TO  MCP-TABLE
+               MOVE    "key22"         TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC          =   ZERO
+                   MOVE    ZERO        TO  FLG-SYSKANRI
+                   MOVE    MCPDATA-REC TO  SYSKANRI-REC
+               ELSE
+                   MOVE    1           TO  FLG-SYSKANRI
+               END-IF
+           ELSE
+                   MOVE    1           TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key22"             TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+       	    .
+       900-SYSKANRI-KEY22-SEL-EXT.
            EXIT.
       *
       *****************************************************************
