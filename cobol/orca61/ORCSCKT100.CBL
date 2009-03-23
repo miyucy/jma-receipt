@@ -81,6 +81,7 @@
            03  IDX-SN                  PIC 9(04).
            03  IDX-SN2                 PIC 9(04).
            03  IDX2                    PIC 9(04).
+           03  IDD                     PIC 9(02).
       *
       *    一時領域
        01  WRK-AREA.
@@ -850,17 +851,17 @@
        510172-HEISANTEI-CHK-SEC             SECTION.
       *
            MOVE    SPA-SRYYMD          TO  WRK-SPA-SRYYMD
-           IF      SPA-COM-NYU-KAI (IDX)  >   ZERO
+      **   IF      SPA-COM-NYU-KAI (IDX)  >   ZERO
       *        最初の日でチェックを行う
-               PERFORM VARYING IDX-N2      FROM    1   BY  1
-                       UNTIL  (IDX-N2      >   31  )   OR
-                              (SPA-ERRCD   NOT =   SPACE )
-                   IF      SPA-COM-NYUINDAY(IDX IDX-N2)    >   ZERO
-                       MOVE    IDX-N2              TO  SPA-SRYYMD(7:2)
-                       MOVE    31                  TO  IDX-N2
-                   END-IF
-               END-PERFORM
-           END-IF
+      *        PERFORM VARYING IDX-N2      FROM    1   BY  1
+      *                UNTIL  (IDX-N2      >   31  )   OR
+      *                       (SPA-ERRCD   NOT =   SPACE )
+      *            IF      SPA-COM-NYUINDAY(IDX IDX-N2)    >   ZERO
+      *                MOVE    IDX-N2              TO  SPA-SRYYMD(7:2)
+      *                MOVE    31                  TO  IDX-N2
+      *            END-IF
+      *        END-PERFORM
+      **** END-IF
       *
            IF     ((SPA-COM-HCHKFLG    (IDX)   =   SPACE )
                OR  (SPA-COM-DAYCHK-FLG (IDX)   NOT =   "2"  ))
@@ -906,6 +907,8 @@
            INITIALIZE                  LNK-SC92-KT01-AREA
            MOVE    "1"                 TO  LNK-SC92-KT01FLG
       *
+           MOVE    SPA-SRYYMD(7:2)     TO  IDD
+      *
            MOVE    ZERO                TO  IDX-SN2
            PERFORM VARYING     IDX-SN      FROM    1   BY  1
                    UNTIL      (IDX-SN      >   100 )   OR
@@ -920,9 +923,11 @@
                                                               (IDX-SN2)
                    PERFORM VARYING     IDX-N2  FROM    1   BY  1
                            UNTIL       IDX-N2  >   31
-                       ADD     SPA-SAN-DAY (IDX-SN IDX-N2)
+                       IF      IDX-N2          <   IDD
+                           ADD     SPA-SAN-DAY (IDX-SN IDX-N2)
                                                TO  LNK-SC92-KT01-DAY
                                                        (IDX-SN2 IDX-N2)
+                       END-IF
                        ADD     SPA-SANE-DAY (IDX-SN IDX-N2)
                                                TO  LNK-SC92-KT01-DAY
                                                        (IDX-SN2 IDX-N2)
@@ -1093,6 +1098,8 @@
            INITIALIZE                  LNK-ORCSC-KT01-AREA
            MOVE    "1"                 TO  LNK-ORCSC-KT01FLG
       *
+           MOVE    SPA-SRYYMD(7:2)     TO  IDD
+      *
            MOVE    ZERO                TO  IDX-SN2
            PERFORM VARYING     IDX-SN      FROM    1   BY  1
                    UNTIL      (IDX-SN      >   100     )   OR
@@ -1107,9 +1114,11 @@
                                                               (IDX-SN2)
                    PERFORM VARYING     IDX-N2  FROM    1   BY  1
                            UNTIL       IDX-N2  >   31
-                       ADD     SPA-SAN-DAY (IDX-SN IDX-N2)
+                       IF      IDX-N2          <   IDD
+                           ADD     SPA-SAN-DAY (IDX-SN IDX-N2)
                                                TO  LNK-ORCSC-KT01-DAY
                                                        (IDX-SN2 IDX-N2)
+                       END-IF
                        ADD     SPA-SANE-DAY (IDX-SN IDX-N2)
                                                TO  LNK-ORCSC-KT01-DAY
                                                        (IDX-SN2 IDX-N2)

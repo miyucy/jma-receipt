@@ -440,6 +440,9 @@
       *
       *    行オーバーの為、ＳＰＡを保存する
            MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
+      *    院内院外区分初期化
+           MOVE    SPA-SYOHOKBN        TO  SPA-INGAIKBN
+      *
       *    ワーク診療行為検索
            PERFORM 1001-WKSRYACT-INIT-SEC
       *
@@ -455,9 +458,6 @@
       *     パラメタファイルより編集処理
       *****************************************************************
        1001-WKSRYACT-INIT-SEC          SECTION.
-      *TEST
-      *    DISPLAY "WKSRY 1001-WKSRYACT-INIT-SEC ORCSCWKSRY-DAY:"
-      *                   ORCSCWKSRY-DAY
       *
            MOVE    ZERO                TO  LNK-WKSRYACT-MAX
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
@@ -496,8 +496,6 @@
            END-PERFORM
       *
            CLOSE                       WKSRY-FILE
-      *TEST
-      *    DISPLAY "WKSRY LNK-WKSRYACT-MAX:"  LNK-WKSRYACT-MAX
       *
            IF    (LNK-WKSRYACT-MAX     =   ZERO )
       *        対象データがない時、データ削除
@@ -515,9 +513,6 @@
       *   再表示あり　編集処理
       *****************************************************************
        1002-SAIHEN-SYORI-SEC          SECTION.
-      *TEST
-      *     DISPLAY "1002-SAIHEN-SYORI-SEC"
-      *TEST
       *
            MOVE    ZERO               TO  FLG-SET
            MOVE    SPACE              TO  WRK-ERRCD1

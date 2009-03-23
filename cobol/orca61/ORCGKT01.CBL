@@ -3233,6 +3233,9 @@
       *        会計カード（Ｊ０２）
                WHEN    "CLICKED"       ALSO    "B09S"
                    PERFORM 450-KAIKEI-SEC
+      *        病名登録　（Ｃ０２）
+               WHEN    "CLICKED"       ALSO    "B05S"
+                   PERFORM 440-BYOTOROKU-SEC
       *        前頁
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 450-MAEGMN-SEC
@@ -7534,6 +7537,43 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
           .
        460-SYUNOU-EXT.
            EXIT.
+      *****************************************************************
+      *    病名登録　処理
+      *****************************************************************
+       440-BYOTOROKU-SEC             SECTION.
+      *
+           IF      SPA-GMN-PTID    NOT =   ZERO
+      *        診療行為入力チェック
+               MOVE    1                   TO  FLG-HENKOU
+               PERFORM 41011-KOUI-ALLHEN-SEC
+               IF     (SPA-ERRCD       NOT =   SPACE )
+                   GO      TO      440-BYOTOROKU-EXT
+               END-IF
+           END-IF
+      *
+      *    保存パラメタを作成
+           PERFORM 4410-WSINPARA-SEC
+      *
+           MOVE    SPA-K01KYOUTU       TO  SPA-WORK
+      *
+           MOVE    "KT01"              TO  SPA-MOTOPG
+           MOVE    "KT01"              TO  SPA-MOTOPG2
+           MOVE    "C02"               TO  SPA-SAKIPG
+      *
+           MOVE    SPACE               TO  LINKAREA
+           INITIALIZE                      SPA-WORK
+           MOVE    SPA-AREA            TO  LNK-KYOUTU
+      *
+           MOVE    "CHANGE"            TO  MCP-PUTTYPE
+           MOVE    "C02"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW.
+      *
+           MOVE    1                   TO  FLG-END
+      *
+           .
+       440-BYOTOROKU-EXT.
+           EXIT.
       *
       *****************************************************************
       *   ワーク行為負担パラメタを作成　処理
@@ -9328,11 +9368,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    WIDGET-NORMAL       TO  KT01-B01S-STATE
                MOVE    WIDGET-NORMAL       TO  KT01-B08S-STATE
                MOVE    WIDGET-NORMAL       TO  KT01-B09S-STATE
+               MOVE    WIDGET-NORMAL       TO  KT01-B05S-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  KT01-B12-STATE
                MOVE    WIDGET-INSENSITIVE  TO  KT01-B01S-STATE
                MOVE    WIDGET-INSENSITIVE  TO  KT01-B08S-STATE
                MOVE    WIDGET-INSENSITIVE  TO  KT01-B09S-STATE
+               MOVE    WIDGET-INSENSITIVE  TO  KT01-B05S-STATE
            END-IF
            .
        51O-GSRAUTH-EXT.
