@@ -365,3 +365,16 @@ path	key21	{
 	};
 };
 
+path	key22	{
+	DBSELECT	{
+		DECLARE tbl_syskanri_key22_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syskanri
+		WHERE 	HOSPNUM	= :HOSPNUM
+			AND   KANRICD      =   :KANRICD
+			AND   KBNCD     LIKE   :KBNCD
+			ORDER	BY	KBNCD DESC
+		;
+	};
+};
+
