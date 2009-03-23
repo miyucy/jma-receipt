@@ -6,6 +6,9 @@ W10	{
 		B06	{
 			label   varchar(08);
 	        };
+		B07	{
+			label   varchar(08);
+	        };
 		LBLKANRICD	{
 			style   varchar(20);
 			value   varchar(08);

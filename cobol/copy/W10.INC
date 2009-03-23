@@ -19,6 +19,7 @@
               03  W10-B03.
                 04  W10-B03-STATE       PIC S9(9)   BINARY.
               03  W10-B06               PIC X(08).
+              03  W10-B07               PIC X(08).
               03  W10-LBLKANRICD-G.
                 04  W10-LBLKANRICD-STYLE
                                         PIC X(20).
