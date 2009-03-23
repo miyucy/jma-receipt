@@ -237,6 +237,7 @@
       *                                     病名が変わらないときもコード
       *                                     変換処理を行なうようにする
       *                                     入力のコードクリアも行なう
+      *  04.04.03    NACL-藤原    09/03/23  外来まとめからの遷移対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -744,7 +745,7 @@
       *
                IF      WRK-MOTOPG          =   "M01"  OR  "U02"  OR
                                                "K02"  OR  "K02N" OR
-                                               "D04"
+                                               "D04"  OR  "KT01"
                    MOVE    SPA-MOTOPG          TO  SPA-C02-MOTOPG
                END-IF
       *                      
@@ -1021,7 +1022,8 @@ grpsys                     MOVE    SPA-HOSPNUM TO  PTBYO-HOSPNUM
       *    システム日付
            IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
                                                    OR  "K02N"
-                                                   OR  "D04" )
+                                                   OR  "D04"
+                                                   OR  "KT01" )
                MOVE    SPA-SRYYMDW     TO  SPA-GMN-C02-SYSYMD
                MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
            ELSE    
@@ -1230,8 +1232,9 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
       *    患者情報（診療行為等で患者番号を入力したとき） 
            IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
                                                    OR  "K02N"
-                                                   OR  "D04" )
-           AND   ( SPA-PTNUM       NOT =   SPACE             )
+                                                   OR  "D04"
+                                                   OR  "KT01" )
+           AND   ( SPA-PTNUM       NOT =   SPACE              )
                MOVE    SPA-PTNUM       TO  C02-PTNUM
                PERFORM 41015-PTNUM-CHK-SEC
                MOVE    SPA-HKNCOMBIMEI TO  SPA-GMN-C02-HKNCOMBIMEIH
@@ -6182,7 +6185,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *
            MOVE    SPA-C02-MOTOPG     TO  SPA-SAKIPG
            IF      SPA-C02-MOTOPG NOT =   "K02"  AND  "U02"   AND
-                                          "K02N" AND  "D04" 
+                                          "K02N" AND  "D04"   AND
+                                          "KT01"
       ********* 患者番号入力へ
       *********MOVE   "C01"            TO  SPA-SAKIPG
                MOVE   "M01"            TO  SPA-SAKIPG
@@ -6193,7 +6197,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *
            MOVE    SPACE               TO  SPA-WORK 
            IF      SPA-C02-MOTOPG  NOT =   "K02"  AND  "U02"  AND 
-                                           "K02N" AND  "D04"
+                                           "K02N" AND  "D04"  AND
+                                           "KT01"
                INITIALIZE                  SPA-KYOTUKEY
                                            SPA-KYOTU-SET
            END-IF 
