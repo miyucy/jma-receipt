@@ -243,6 +243,7 @@
       *  04.03.05    NACL-門脇    09/01/14  北海道特定疾患対応
       *  04.03.06    NACL-門脇    09/02/26  ７５歳以上の前期高齢者対応
       *  04.03.07    NACL-門脇    09/03/13  前期高齢者の高額計算対応
+      *  04.03.08    NACL-門脇    09/03/24  埼玉県地方公費対応
       *
       *  04.04.01    NACL-門脇    09/02/17  地方公費の公費付加情報対応
       ****************************************************************
@@ -16491,7 +16492,7 @@
                (COMB-KOHHKNNUM(KOH-IDX)(1:1)  <= "8")
                PERFORM     23061-KOHPLUS-FUKUOKA-SEC
            END-IF.
-      *
+      *    生活療養分の助成は無し
            IF   (LNK-SYU-SRYYMD(1:6)    >=  "200610")
            AND  (FLG-SEIKATUL            =   1      )
            AND  (WK-NYUSKJRYYKBN         =  "3"     )
@@ -16509,6 +16510,21 @@
                          MOVE  "1"    TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
                    ELSE
                          MOVE  "1"    TO  WK-NYUSKJRYYKBN
+                   END-IF
+               END-IF
+           END-IF.
+      *    生活療養分の助成は無し（一般分は半額助成）
+           IF   (LNK-SYU-SRYYMD(1:6)    >=  "200610")
+           AND  (FLG-SEIKATUL            =   1      )
+           AND  (WK-NYUSKJRYYKBN         =  "1"     )
+               IF ((WK-1001-PREFNUM         =  11           ) AND
+                   (COMB-KOHHKNNUM(KOH-IDX) = "352" OR "353"
+                                                    OR "354"))
+                   IF     FLG-SEIKATUS       =   1
+                         MOVE  "7"    TO  WK-NYUSKJRYYKBN
+                         MOVE  "2"    TO  WK-NYUSKJRYYKBN-TOKU(KOH-IDX)
+                   ELSE
+                         MOVE  ZERO   TO  FLG-NYUSKJJYOGAK
                    END-IF
                END-IF
            END-IF.
@@ -17470,6 +17486,18 @@
                                       LNK-SYU-SKJ-FTN(KOH-IDX) 
                           END-IF
                        END-IF
+                   WHEN   "7"
+                       MOVE  WK-SHOKUJI-NISSUS
+                                      TO   LNK-SYU-SKJ-NISSU(KOH-IDX)
+                       MOVE  WK-SHOKUJI-RYOYOHIS
+                                      TO   LNK-SYU-SKJ-RYOYOHI(KOH-IDX)
+                       MOVE  WK-SHOKUJI-FTNS
+                                      TO   LNK-SYU-SKJ-FTN-RECE(KOH-IDX)
+                       MOVE  WK-SHOKUJI-FTNL
+                                      TO   LNK-SYU-SKJ-FTN(KOH-IDX)
+                       COMPUTE  LNK-SYU-SKJ-FTN(KOH-IDX) =
+                                LNK-SYU-SKJ-FTN(KOH-IDX) +
+                                (WK-SHOKUJI-FTNS  /  2)
            END-EVALUATE.
       *     
        2308-KOH-KEISAN2-EXT.
@@ -20002,7 +20030,19 @@
                     MOVE ZERO             TO  WK-KNJFTNKIN-SKJS
                     MOVE WK-KNJFTNKIN-SKJ TO  WK-KNJFTNKIN-SKJL
                  ELSE
-                  IF  WK-KNJFTNKIN-SKJ  <  WK-KNJFTNKIN-SKJ-KEISAN
+                  IF ((WK-NYUSKJRYYKBN-TOKU(1)  =  "2")
+                                          AND (FLG-HIKAKU-SKJ = 1))
+                  OR ((WK-NYUSKJRYYKBN-TOKU(2)  =  "2")
+                                          AND (FLG-HIKAKU-SKJ = 2))
+                  OR ((WK-NYUSKJRYYKBN-TOKU(3)  =  "2")
+                                          AND (FLG-HIKAKU-SKJ = 3))
+                  OR ((WK-NYUSKJRYYKBN-TOKU(4)  =  "2")
+                                          AND (FLG-HIKAKU-SKJ = 4))
+                    MOVE WK-SHOKUJI-FTNL  TO  WK-KNJFTNKIN-SKJL
+                    COMPUTE  WK-KNJFTNKIN-SKJS =  WK-KNJFTNKIN-SKJ
+                                               -  WK-SHOKUJI-FTNL
+                  ELSE
+                   IF  WK-KNJFTNKIN-SKJ  <  WK-KNJFTNKIN-SKJ-KEISAN
                     EVALUATE    FLG-SEIKATU
                      WHEN   1
                        IF  (FLG-SEIKATUL      =  ZERO           )
@@ -20025,6 +20065,7 @@
                                                     -  WK-SHOKUJI-FTNL
                        END-IF
                     END-EVALUATE
+                   END-IF
                   END-IF
                  END-IF
                 END-IF
