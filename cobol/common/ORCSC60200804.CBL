@@ -2756,6 +2756,13 @@
                    END-IF
                END-PERFORM
            END-IF
+      *!!!
+      *    外来まとめのチェックなし
+           IF     (LNK-ORCSC-PG        =   "KT01" )
+             OR   (LNK-ORCSC-KT01FLG   =   "1"    )
+               MOVE    1                   TO  FLG-OK
+           END-IF
+      *!!
       *
            IF      FLG-OK              =   ZERO
                MOVE    "0026"          TO  SPA-ERRCD
