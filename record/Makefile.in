@@ -609,7 +609,9 @@ DB_files = \
 	tbl_seikyu_etc.db \
 	tbl_seikyu_koh.db \
 	tbl_seikyu_main.db \
+	tbl_syunou_main.db \
 	tbl_syunou_nyuin.db \
+	tbl_chkreigai.db \
 
 
 all:   
