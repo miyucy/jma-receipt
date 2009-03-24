@@ -11,7 +11,8 @@ BIN_sources = \
 	jma-receipt-program-upgrade.sh.in \
 	jma-receipt-program-upgrade-check.sh.in \
 	orcvt_exec.sh.in \
-	jma-receipt-sysbase-setup.sh.in
+	jma-receipt-sysbase-setup.sh.in \
+	jma-dbsync.sh.in
 
 BIN_bin = \
 	orcvt_euc.rb \
