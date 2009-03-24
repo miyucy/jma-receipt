@@ -183,6 +183,8 @@
            03  IDX-ERR                 PIC 9(04).
            03  IDX-ECHK                PIC 9(04).
       *
+           03  IDX-SN               PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
@@ -1202,7 +1204,9 @@
       *    小児特定疾患カウンセリング料チェック
            IF      WRK-COM-INPUTCD (IDX-Z)     =   "113000810"
                                                OR  "113009910"
-               PERFORM 10015-SYOUNICA-CHK-SEC
+               IF      LNK-ORCSC-PG        =   "K02"
+                   PERFORM 10015-SYOUNICA-CHK-SEC
+               END-IF
            END-IF
       *
       *    アフターケアの時算定できないコードのチェック
@@ -3242,6 +3246,15 @@
       *****************************************************************
        10141-SANTEI-KEN02-SEC                  SECTION.
       *
+           MOVE    ZERO                TO  FLG-SANTEI-OK
+      *    外来まとめはＳＰＡに編集
+           IF      LNK-ORCSC-KT01FLG   =   "1"
+               PERFORM 10141-KT01-SANTEI-SEC
+               IF      FLG-SANTEI-OK   =   1
+                   GO      TO   10141-SANTEI-KEN02-EXT
+               END-IF
+           END-IF
+      *
            INITIALIZE                  SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
@@ -3262,12 +3275,20 @@
            ELSE
                MOVE    1                   TO  FLG-SANTEI
            END-IF
-           MOVE    ZERO                TO  FLG-SANTEI-OK
            PERFORM UNTIL   (FLG-SANTEI     =   1  )  OR
                            (FLG-SANTEI-OK  =   1  )
-               IF      SANTEI-SRYYM        <=  SPA-SRYYMD(1:6)
-                   MOVE    1                   TO  FLG-SANTEI-OK
+               IF      LNK-ORCSC-KT01FLG   =   "1"
+      *            外来まとめは、前月分から
+                   IF      SANTEI-SRYYM        <   SPA-SRYYMD(1:6)
+                       MOVE    1                   TO  FLG-SANTEI-OK
+                   END-IF
                ELSE
+                   IF      SANTEI-SRYYM        <=  SPA-SRYYMD(1:6)
+                       MOVE    1                   TO  FLG-SANTEI-OK
+                   END-IF
+               END-IF
+      *
+               IF      FLG-SANTEI-OK       =   ZERO
                    MOVE    "tbl_santei"        TO  MCP-TABLE
                    MOVE    "key3"              TO  MCP-PATHNAME
                    PERFORM 920-SANTEI-READ-SEC
@@ -3312,10 +3333,60 @@
       *****************************************************************
       *   算定履歴検索処理
       *****************************************************************
+       10141-KT01-SANTEI-SEC        SECTION.
+      *
+           PERFORM VARYING     IDX-SN      FROM    1   BY  1
+                   UNTIL      (IDX-SN      >   100 )   OR
+                              (LNK-ORCSC-KT01-SRYCD(IDX-SN)
+                                          =   SPACE)
+             IF      LNK-ORCSC-KT01-SRYCD (IDX-SN)
+                                          =   WRK-SRYCD
+               INITIALIZE                  SANTEI-REC
+               MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
+               MOVE    SPA-PTID            TO  SANTEI-PTID
+               MOVE    SPA-SRYYMD (1:6)    TO  SANTEI-SRYYM
+               MOVE    LNK-ORCSC-KT01-SRYCD (IDX-SN)
+                                           TO  SANTEI-SRYCD
+               MOVE    ZERO                TO  SANTEI-SRYKA
+               MOVE    ZERO                TO  SANTEI-NYUGAIKBN
+               MOVE    ZERO                TO  SANTEI-HKNCOMBINUM
+               MOVE    SPA-SRYYMD(7:2)     TO  IDX-Y2
+               PERFORM VARYING     IDX-2   FROM    1   BY  1
+                       UNTIL      (IDX-2   >   IDX-Y2 )
+                   MOVE    LNK-ORCSC-KT01-DAY (IDX-SN IDX-2)
+                                           TO  SANTEI-DAY (IDX-2)
+                   ADD     SANTEI-DAY (IDX-2)    TO  SANTEI-MSANTEICNT
+                   IF      SANTEI-DAY (IDX-2)    >   ZERO
+                       IF      SANTEI-MSANTEID     =   SPACE
+                           MOVE    IDX-2           TO  SANTEI-MSANTEID
+                       END-IF
+                   END-IF
+               END-PERFORM
+               MOVE    1               TO  FLG-SANTEI-OK
+             END-IF
+           END-PERFORM
+           .
+       10141-KT01-SANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *   算定履歴検索処理
+      *****************************************************************
        10143-NIKOCHIN-CHK03-SEC        SECTION.
       *
            MOVE    ZERO                TO  WRK-SANTEI-CNT
            MOVE    ZERO                TO  WRK-TEI-CNT
+      *    外来まとめはＳＰＡに編集
+           IF      LNK-ORCSC-KT01FLG   =   "1"
+               PERFORM 10141-KT01-SANTEI-SEC
+               PERFORM VARYING IDX-2   FROM   1      BY  1
+                       UNTIL   IDX-2   >   31
+                   COMPUTE WRK-SANTEI-CNT
+                                       =   WRK-SANTEI-CNT
+                                       +   SANTEI-DAY (IDX-2)
+               END-PERFORM
+           END-IF
+      *
            IF      LNK-ORCSC-SYORIFLG  =   1
       *        訂正で今回にある時
                PERFORM VARYING IDX-TEI     FROM   1  BY  1
@@ -3354,6 +3425,11 @@
                IF      SANTEI-SRYYM        <   WRK-SYO-YMD(1:6)
                    MOVE    1                   TO  FLG-SANTEI
                ELSE
+      *        外来まとめは当月以外
+               IF     (LNK-ORCSC-KT01FLG   =   "1" ) AND
+                      (SANTEI-SRYYM        =   SPA-SRYYMD(1:6))
+                   CONTINUE
+               ELSE
                    IF      LNK-ORCSC-SYORIFLG  =   1
       *               訂正時は訂正日までの件数
                       IF      SANTEI-SRYYM        <=  SPA-SRYYMD(1:6)
@@ -3379,6 +3455,8 @@
                                                              (IDX-2)
                        END-PERFORM
                    END-IF
+               END-IF
+      *
                END-IF
                IF      FLG-SANTEI              =   ZERO
                    MOVE    "tbl_santei"        TO  MCP-TABLE
@@ -4222,6 +4300,8 @@
              IF     (WRK-COM-SRYKBN (IDX-Z)    =   "96"
                                                OR  "95" )
                 OR  (WRK-COM-HKNCOMBI (IDX-Z) =   "9999" )
+      *    以下外来まとめはチェックなし
+                OR     (LNK-ORCSC-PG        =   "KT01" )
                 CONTINUE
              ELSE
       *         指導料・初診日チェック
@@ -4403,7 +4483,6 @@
                       (LNK-ORCSC-RRK-LSTYMD    NOT =   SPACE )
       *            労災には同日再診はないのでチェックなし
                    IF    ((SPA-HKNKBN          =   1  )
-      *********      AND  (SPA-RSI-HKNKBN  NOT =   "5" ) )
                      AND  (SPA-RSI-JUNKYO  NOT =   "1" ) )
       *            当日に診察料が算定してないときはチェックなし
                        OR (SPA-DOUJITU         =   ZERO)
@@ -4414,7 +4493,6 @@
                        CONTINUE
                    ELSE
                        MOVE    "0101"              TO  LNK-ORCSC-KIDCD
-      *TEST
       *                初診料の時、算定可能
                        IF     (IDX-ZAI1            =   1  )  AND
                               (WRK-COM-SRYKBN (IDX-SYU2)
@@ -4426,8 +4504,6 @@
                                MOVE    SPACE       TO  LNK-ORCSC-KIDCD
                            END-IF
                        END-IF
-      *TEST
-      **************** GO      TO      200-ALL-SYORI-EXT
                    END-IF
                END-IF
            END-IF
