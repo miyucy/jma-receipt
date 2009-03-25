@@ -1147,6 +1147,7 @@
       *    生活習慣病
            MOVE    ZERO                TO  SPA-SEIKATU-ARI
            MOVE    ZERO                TO  SPA-SEIKATU-ARI2
+           MOVE    ZERO                TO  SPA-SEIKATU-CHK
       *    慢性疼痛疾病管理料
            MOVE    ZERO                TO  SPA-TOKUTEI-KNJ2
       *    痴呆患者在宅指導管理料（外来加算付加算定付加）

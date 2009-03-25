@@ -299,7 +299,6 @@
            03  FLG-HKTCHK              PIC 9(01).
            03  FLG-HOUKATU-ZAI         PIC 9(01).
       *
-           03  FLG-HKNCOMBI-SET        PIC 9(01).
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -612,6 +611,9 @@
                    07  WRK-KYUSEI-ST       PIC X(01).
                    07  WRK-KYUSEI-ED       PIC X(01).
                05  WRK-TEIGEN-IN           PIC X(01).
+      *
+      *    訂正時の内容保存
+       01  WRK-ORCSC95AREA             PIC X(150).
       *
       *    小児科外来診察料テーブル
       **** COPY   "CMSYONIKATBL.INC".
@@ -3416,9 +3418,7 @@
       *
       *    保険組合
            MOVE    SPA-HKNCOMBINUM     TO  SPA-GMN-HKNCOMBINUM
-           IF      FLG-HKNCOMBI-SET    =   ZERO
-               PERFORM 3101-HKNCOMBI-HEN-SEC
-           END-IF
+           PERFORM 3101-HKNCOMBI-HEN-SEC
       *
       *    未収金
            MOVE    SPA-MISYUMONEY      TO  SPA-GMN-MISYUMONEY
@@ -8548,8 +8548,11 @@
            PERFORM 3002-PARA-SET-SEC
       *
       *    スパ共通編集処理（保険組合せ編集しない（ORCSC95AREA)
-           MOVE    1                   TO  FLG-HKNCOMBI-SET
+           MOVE    ORCSC95AREA         TO  WRK-ORCSC95AREA
            PERFORM 310-SPA-SET-SEC
+      *
+           MOVE    WRK-ORCSC95AREA     TO  ORCSC95AREA
+      *
       *    初診算定日は変更しない
            MOVE    WRK-SPA-GMN-SYOSINYMD   TO  SPA-GMN-SYOSINYMD
       *
@@ -10572,18 +10575,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
-      *    禁忌更新前のチェック
-           PERFORM 41001-YAKKNK-CHK-SEC
-      *
-      *     禁忌エラーの時、エラー表示へ
-           IF     (FLG-KINKI           =   1   )  AND
-                  (FLG-END             =   1   )
-               GO      TO      4100-TOROKU-EXT
-           END-IF
-      *
       *    後期高齢者で当月生活習慣病管理料算定中
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-SEIKATU-CHK     =   1
+                   IF     (SPA-GMN-MAX         =   ZERO )
+                       MOVE    1               TO  SPA-SEIKATU-FLG
+                   END-IF
                    IF      SPA-SEIKATU-FLG     =   ZERO
                        MOVE    "K177"          TO  SPA-ERRCD
                        MOVE    1               TO  SPA-SEIKATU-FLG
@@ -10591,9 +10588,22 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+      *        禁忌更新前のチェック
+               PERFORM 41001-YAKKNK-CHK-SEC
+           END-IF
+      *
+      *     禁忌エラーの時、エラー表示へ
+           IF     (FLG-KINKI           =   1   )  AND
+                  (FLG-END             =   1   )
+               GO      TO      4100-TOROKU-EXT
+           END-IF
+      *
       *    更新処理
       *****MOVE    SPACE           TO  WRK-PUTTYPE
-           PERFORM 41002-KOUSIN-SYORI-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41002-KOUSIN-SYORI-SEC
+           END-IF
            .
        4100-TOROKU-EXT.
            EXIT.
