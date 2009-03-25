@@ -48,6 +48,9 @@ M00	{
 		HTML1	{
 			value	varchar(200);
 		};
+		B09	{
+			label	varchar(6);
+		};
 		B11	{
 			label	varchar(10);
 		};

@@ -1463,6 +1463,11 @@
            IF      SYS-1010-GSRAUTH(4:1)    =  "1"
                MOVE    WIDGET-NORMAL      TO  M00-G04-STATE
            END-IF
+           IF      SYS-1010-GSRAUTH(5:1)    =  "1"
+               MOVE    "まとめ"           TO  M00-B09-LABEL
+           ELSE
+               MOVE    SPACE              TO  M00-B09-LABEL
+           END-IF
       *
       *
       *2001.8.7 強制プロテクト（ＰＧ未作成）
