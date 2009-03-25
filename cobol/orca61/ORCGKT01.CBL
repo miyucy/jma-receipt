@@ -2493,28 +2493,8 @@
            END-IF
       *
       *    年齢計算
-           INITIALIZE                  ORCSAGECHKAREA
-           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
-           MOVE    SPA-PTID            TO  AGECHK-PTID
-           MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
-           MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
-           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
-           CALL    "ORCSAGECHK"        USING
-                                       ORCSAGECHKAREA
-                                       SPA-AREA
-           MOVE    AGECHK-NENREI2-YY   TO  SPA-NENREI-YY
-           MOVE    AGECHK-NENREI2-MM   TO  SPA-NENREI-MM
-           MOVE    AGECHK-NENREI2-DD   TO  SPA-NENREI-DD
+           PERFORM 3102-AGECHK-HEN-SEC
       *
-      *    画面表示用
-           IF      SPA-NENREI-YY       =   ZERO
-               MOVE    SPA-NENREI-MM       TO  WRK-NENREI-ZN
-               MOVE    "ヶ月"              TO  WRK-NENREI-MEIN
-           ELSE
-               MOVE    SPA-NENREI-YY       TO  WRK-NENREI-Z
-               MOVE    "才"                TO  WRK-NENREI-MEI
-           END-IF
-           MOVE    WRK-NENREI-G        TO  SPA-NENREI-HEN
       *    診療日の末日を求める
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY7-AREA
@@ -2556,6 +2536,39 @@
       *
            .
        310-SPA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    年齢計算編集処理
+      *****************************************************************
+       3102-AGECHK-HEN-SEC              SECTION.
+      *
+      *    年齢計算
+           INITIALIZE                  ORCSAGECHKAREA
+           MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
+           MOVE    SPA-PTID            TO  AGECHK-PTID
+           MOVE    SPA-SRYYMD          TO  AGECHK-SRYYMD
+           MOVE    SPA-BIRTHDAY        TO  AGECHK-BIRTHDAY
+           MOVE    SPA-NYUGAIKBN       TO  AGECHK-NYUGAIKBN
+           CALL    "ORCSAGECHK"        USING
+                                       ORCSAGECHKAREA
+                                       SPA-AREA
+           MOVE    AGECHK-NENREI2-YY   TO  SPA-NENREI-YY
+           MOVE    AGECHK-NENREI2-MM   TO  SPA-NENREI-MM
+           MOVE    AGECHK-NENREI2-DD   TO  SPA-NENREI-DD
+      *
+      *    画面表示用
+           IF      SPA-NENREI-YY       =   ZERO
+               MOVE    SPA-NENREI-MM       TO  WRK-NENREI-ZN
+               MOVE    "ヶ月"              TO  WRK-NENREI-MEIN
+           ELSE
+               MOVE    SPA-NENREI-YY       TO  WRK-NENREI-Z
+               MOVE    "才"                TO  WRK-NENREI-MEI
+           END-IF
+           MOVE    WRK-NENREI-G        TO  SPA-NENREI-HEN
+      *
+           .
+       3102-AGECHK-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2778,24 +2791,24 @@
       *****************************************************************
       *   中途終了よりの画面用再編集処理
       *****************************************************************
-       3104-WKSRYACT-HEN-SEC           SECTION.
+      *3104-WKSRYACT-HEN-SEC           SECTION.
       *
       *    剤分離処理を行う
-           INITIALIZE                  ORCSC93AREA
-           MOVE    "KT01"               TO  LNK-SC93-PG
+      *    INITIALIZE                  ORCSC93AREA
+      *    MOVE    "KT01"               TO  LNK-SC93-PG
       *    小児科外来診療科算定有り
-           MOVE    SPA-SYONIKA-ARI2    TO  LNK-SC93-SYONIKA-ARI2
+      *    MOVE    SPA-SYONIKA-ARI2    TO  LNK-SC93-SYONIKA-ARI2
       *    寝たきり在宅科算定有り
-           IF      (SPA-NETAKIRI-ARI   NOT =   ZERO )  OR
-                   (SPA-NETAKIRI-ARI2  NOT =   ZERO )
-               MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
-           END-IF
-           CALL    "ORCSC93"           USING
-                                       MCPAREA
-                                       SPA-SCR-REC
-                                       SPA-AREA
-                                       ORCSC93AREA
-                                       MSYU-DATA-REC
+      *    IF      (SPA-NETAKIRI-ARI   NOT =   ZERO )  OR
+      *            (SPA-NETAKIRI-ARI2  NOT =   ZERO )
+      *        MOVE    1                   TO  LNK-SC93-NETAKIRI-ARI
+      *    END-IF
+      *    CALL    "ORCSC93"           USING
+      *                                MCPAREA
+      *                                SPA-SCR-REC
+      *                                SPA-AREA
+      *                                ORCSC93AREA
+      *                                MSYU-DATA-REC
       *
       *    診察料のみ変換する
       *    MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -2808,9 +2821,9 @@
       *                                SPA-KT01
       *    MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
-           .
-       3104-WKSRYACT-HEN-EXT.
-           EXIT.
+      *    .
+      *3104-WKSRYACT-HEN-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *   再表示あり　編集処理
@@ -3698,7 +3711,7 @@
                IF      SGDAY-SDAY           <   SPA-BIRTHDAY
                     MOVE    "1011"          TO  SPA-ERRCD
                END-IF
-               MOVE   SPACE                TO  SPA-KIDCD
+      *
       *        未来日は確認メッセージ
                IF      SGDAY-SDAY          >   SPA-SYSYMD
                    MOVE    "0111"              TO  SPA-KIDCD
@@ -3732,6 +3745,7 @@
        410171-SRYYMD-OK-SEC         SECTION.
       *
            IF      SPA-NAI-SRYYM       =   SPA-SRYYMD(1:6)
+               MOVE   SPACE                TO  SPA-KIDCD
                IF      SPA-NAI-RRKDAY-G    =   ZERO
                    CONTINUE
                ELSE
@@ -3787,7 +3801,7 @@
                    MOVE    WRK-MAE-SRYDD       TO  SPA-GMN-SRYDD
                    MOVE    SPA-NAI-SRYDD       TO  WRK-DAY
                    PERFORM 6001-DAYCHEK-SEC
-                   MOVE    1                  TO  SPA-GMN-CUR
+                   MOVE    1                   TO  SPA-GMN-CUR
                    MOVE    "6010"              TO  SPA-ERRCD
                END-IF
            END-IF
@@ -6938,15 +6952,6 @@
       *****************************************************************
        210-BACK                    SECTION.
       *
-      *    MOVE    ZERO                TO  SPA-RJN-ERR
-      *    MOVE    ZERO                TO  SPA-HKN-ERR
-      *    MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
-      *    MOVE    ZERO                TO  SPA-NAI-KOHFLG
-      *    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
-      *    MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
-      *    MOVE    ZERO                TO  SPA-NAI-NYUIN-ERR
-      *    MOVE    ZERO                TO  SPA-NAI-RRK-ERR
-      *
            IF      SPA-GMN-PTNUM       =   SPACE
                PERFORM 210-BACK-SYORI-SEC
            ELSE
@@ -6964,10 +6969,6 @@
       *****************************************************************
        210-BACK-SYORI-SEC               SECTION.
       *
-      *    IF      SPA-GMN-PTID    NOT =   ZERO
-      *        排他制御解除処理
-      *        PERFORM 990-LOCK-OUT-SEC
-      ***  END-IF
       *    排他削除
            MOVE    3                   TO  SLOCK-MODE
            MOVE    ZERO                TO  SLOCK-PTID
@@ -7049,9 +7050,6 @@
        210-BACK-OK-SEC                SECTION.
       *
            PERFORM 210-PARA-DEL-SEC
-      *
-      *    排他制御解除処理
-      **   PERFORM 990-LOCK-OUT-SEC
       *
       *    排他削除
            MOVE    3                   TO  SLOCK-MODE
@@ -7140,14 +7138,6 @@
       *****END-IF
       *
            INITIALIZE              SPA-SCR-REC
-      *
-      *    INITIALIZE              SPA-KT01-AREA
-      *
-      *    チェック用月内診療行為セット
-      *    PERFORM                 320-SPA-CHKSET-SEC
-      *
-      *    画面用スパ編集処理
-      *    PERFORM                 310-SPA-SET-SEC
       *
            MOVE    ZERO            TO  SPA-GMN-GOKEI
       *
@@ -8272,15 +8262,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      4100-TOROKU-EXT
            END-IF
       *
-      *    禁忌更新前のチェック
-           PERFORM 41001-YAKKNK-CHK-SEC
-      *
-      *     禁忌エラーの時、エラー表示へ
-           IF     (FLG-KINKI           =   1   )  AND
-                  (FLG-END             =   1   )
-               GO      TO      4100-TOROKU-EXT
-           END-IF
-      *
       *    後期高齢者で当月生活習慣病管理料算定中
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-NAI-SEIKATU     =   1
@@ -8291,10 +8272,23 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
+      *    禁忌更新前のチェック
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41001-YAKKNK-CHK-SEC
+           END-IF
+      *
+      *     禁忌エラーの時、エラー表示へ
+           IF     (FLG-KINKI           =   1   )  AND
+                  (FLG-END             =   1   )
+               GO      TO      4100-TOROKU-EXT
+           END-IF
+      *
            MOVE    ZERO                TO  SPA-NAI-DAYFLG-G
            MOVE    ZERO                TO  FLG-KAKUNIN
       *    更新処理
-           PERFORM 41002-KOUSIN-SYORI-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 41002-KOUSIN-SYORI-SEC
+           END-IF
            .
        4100-TOROKU-EXT.
            EXIT.
@@ -8393,6 +8387,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        6002-ALL-DAYCHEK-SEC            SECTION.
       *
            INITIALIZE                  SPA-SCR-REC
+           MOVE    WRK-DAY             TO  SPA-GMN-SRYDD
+           MOVE    WRK-DAY             TO  SPA-NAI-SRYDD
+           MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
+      *    年齢計算
+           PERFORM 3102-AGECHK-HEN-SEC
       *
            INITIALIZE                  ORCSCKTWKSRYAREA
            MOVE    "1"                 TO  ORCSCWKSRY-KBN
@@ -8413,10 +8412,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 60011-KEIKOKU-SET-SEC
       *
                PERFORM 6003-SANTEI-DEL-SEC
-      *
-               MOVE    WRK-DAY             TO  SPA-GMN-SRYDD
-               MOVE    WRK-DAY             TO  SPA-NAI-SRYDD
-               MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
       *        初診料入力は日毎
                MOVE    ZERO                TO  SPA-SYOSIN
       *
@@ -8509,7 +8504,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        6001-DAYCHEK-SEC           SECTION.
       *
            INITIALIZE                  SPA-SCR-REC
-           MOVE    ZERO            TO  SPA-GMN-GOKEI
+           MOVE    ZERO                TO  SPA-GMN-GOKEI
+      *
+           MOVE    WRK-DAY             TO  SPA-GMN-SRYDD
+           MOVE    WRK-DAY             TO  SPA-NAI-SRYDD
+           MOVE    SPA-NAI-SRYYMD      TO  SPA-SRYYMD
+      *    年齢計算
+           PERFORM 3102-AGECHK-HEN-SEC
       *
            INITIALIZE                  ORCSCKTWKSRYAREA
            MOVE    "1"                 TO  ORCSCWKSRY-KBN

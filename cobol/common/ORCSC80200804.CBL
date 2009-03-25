@@ -1918,9 +1918,13 @@
       *
       *    通院精神の時、初診日から６ヶ月以内チェック
            IF     (WRK-COM-CDKBN-KBN (IDX-Z)   =   "I" )  AND
-                  (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "002") AND
-                  (LNK-ORCSC-PG        =   "K02"  )
-               PERFORM 100113-SEISIN-CHK-SEC 
+                  (WRK-COM-CDKBN-KBNNUM(IDX-Z) =   "002")
+               IF      (LNK-ORCSC-PG        =   "K02"
+                                            OR  "KT01"  )
+                   PERFORM 100113-SEISIN-CHK-SEC
+               ELSE
+                   MOVE    1               TO  FLG-NENREI
+               END-IF
            ELSE
                MOVE    ZERO            TO  FLG-NENREI
            END-IF
