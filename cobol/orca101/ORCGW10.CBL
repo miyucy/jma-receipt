@@ -1811,6 +1811,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        MOVE    "I"         TO  TKIMEMOWK-SYORIKBN
                    END-IF
                    MOVE    TOUKEIMEMO-REC  TO  TOUKEIMEMOWK-REC (2:)
+                   MOVE    ZERO            TO  TKIMEMOWK-HOSPNUM
                    MOVE    SPACE           TO  TKIMEMOWK-MEMO
                    MOVE    1               TO  WRK-LEN
                    STRING  TKIMEMO-MEMO    DELIMITED   BY  SIZE
