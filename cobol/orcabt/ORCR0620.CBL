@@ -158,6 +158,7 @@
       *                                     記載対応
       *                                     月途中に医保と生保の併用から
       *                                     生保単独になったときのまとめ
+      *                                     公費分点欄に生保単独分記載
       *  04.04.02    NACL-藤原    09/03/10  特別な関係にある他院歴を初回
       *                                     入院日として起算しレセプト記
       *                                     載を行なう対応
@@ -405,6 +406,8 @@
       *
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
+      *
+           03  WRK-SEIHO-FLG             PIC 9(01).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -991,6 +994,8 @@
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
+           MOVE    ZERO                TO  WRK-SEIHO-FLG
+      *
       *    公費単独の場合（精神入院以外）
            IF      RECE61-HKNNUM        =   SPACE
                IF      RECE61-KOHHKNNUM-O (1)  = "020"
@@ -1048,6 +1053,7 @@
                                        =   RECE61-KOHID-O (IDYY)
                                MOVE    1           TO
                                            WRK-SEIHO-RECE61-PRTFLG(IDXX)
+                               MOVE    1           TO  WRK-SEIHO-FLG
                                PERFORM VARYING IDZZ    FROM    1   BY  1
                                        UNTIL   IDZZ    >       10
                                    IF      RECE61-HKNCOMBI-O (IDZZ)
@@ -1680,6 +1686,14 @@
                                           (IDX)    TO  
                                                RECE62-PTTOKKI-NAIYO(IDX)
                END-PERFORM
+           END-IF
+      *
+      *    生保まとめフラグ（公費単独）
+           IF      WRK-SEIHO-FLG           =   1
+               IF    ( RECE62-KOHNUM (1)       =   "012"   OR  "025" )
+               AND   ( RECE62-KOHNUM (2)       =   SPACE             )
+                   MOVE    "1"                 TO  RECE62-SEIHOFLG
+               END-IF
            END-IF
       *
            PERFORM     220-DATA-WRITE-SEC

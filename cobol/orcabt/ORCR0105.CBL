@@ -63,6 +63,7 @@
       *  04.04.01    NACL-門脇    09/02/16  地方公費のレセ記載対応
       *  04.04.02    NACL-藤原    09/01/14  月途中の生保変更時の保険履歴
       *                                     記載対応
+      *                                     生保まとめ分点欄記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4465,9 +4466,16 @@
                        (RECE02-HENTOTALTEN(IDX2) NOT =  ZERO ) AND
                        (RECE02-HENTOTALTEN(IDX1) NOT =
                                      RECE02-HENTOTALTEN(IDX2)))
+                  IF    RECE02-SEIHOFLG    =  "1"
+                   COMPUTE WRK-SUM-TENSU   =     RECE02-TENSU(IDX IDX2)
+                                           -     RECE02-TENSU(IDX IDX1)
+                   MOVE    WRK-SUM-TENSU         TO  WRK-KOUTENZ
+                   MOVE    WRK-KOUTEN            TO  HC06-KOUTEN  (IDX)
+                  ELSE
                    MOVE    RECE02-TENSU(IDX IDX2)
                                                  TO  WRK-KOUTENZ
                    MOVE    WRK-KOUTEN            TO  HC06-KOUTEN  (IDX)
+                  END-IF
                  END-IF
                END-IF
            END-PERFORM

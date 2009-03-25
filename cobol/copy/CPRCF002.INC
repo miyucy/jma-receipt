@@ -105,6 +105,7 @@
       *  04.03.05    NACL-門脇    08/10/16  公費−低２・低１項目追加
       *
       *  04.04.01    NACL-門脇    09/02/16  地方公費のレセ記載対応
+      *  04.04.02    NACL-藤原    09/03/25  生保まとめフラグ追加
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -497,6 +498,8 @@
            03  RECE02-FUKUSHIFLG          PIC  X(01).
       *入退院履歴記載フラグ
            03  RECE02-NYUINRRK-FLG        PIC  X(01).
+      *生保まとめフラグ
+           03  RECE02-SEIHOFLG            PIC  X(01).
       *合計点数情報（ぶん点・公費分離区分編集用）
            03  RECE02-HENTOTALTENINF-AREA.
                05  RECE02-HENTOTALTENINF  OCCURS  5.

@@ -199,6 +199,7 @@
       *                                     記載対応
       *                                     月途中に医保と生保の併用から
       *                                     生保単独になったときのまとめ
+      *                                     公費分点欄に生保単独分記載
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -457,6 +458,8 @@
            03  WK-PTNYUINRRK-TENSTUYMD2  PIC  X(08).
       *
            03  WRK-ZAITAKU-SRYCD         PIC  X(09).
+      *
+           03  WRK-SEIHO-FLG             PIC 9(01).
       *
       *    患者年齢算出用エリア
        01  WRK-NENREI-AREA.
@@ -1081,6 +1084,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
+           MOVE    ZERO                TO  WRK-SEIHO-FLG
+      *
       *    公費単独の場合
            IF      RECE01-HKNNUM        =   SPACE
                IF      RECE01-TEKSTYMD      =   ZERO
@@ -1134,6 +1139,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
                                        =   RECE01-KOHID-O (IDYY)
                                MOVE    1           TO
                                            WRK-SEIHO-RECE01-PRTFLG(IDXX)
+                               MOVE    1           TO  WRK-SEIHO-FLG
                                PERFORM VARYING IDZZ    FROM    1   BY  1
                                        UNTIL   IDZZ    >       10
                                    IF      RECE01-HKNCOMBI-O (IDZZ)
@@ -1751,6 +1757,14 @@ grpsys         MOVE    RECE02-HOSPNUM  TO  SPA-HOSPNUM
                                           (IDX)    TO  
                                                RECE02-PTTOKKI-NAIYO(IDX)
                END-PERFORM
+           END-IF
+      *
+      *    生保まとめフラグ（公費単独）
+           IF      WRK-SEIHO-FLG           =   1
+               IF    ( RECE02-KOHNUM (1)       =   "012"   OR  "025" )
+               AND   ( RECE02-KOHNUM (2)       =   SPACE             )
+                   MOVE    "1"                 TO  RECE02-SEIHOFLG
+               END-IF
            END-IF
       *
            PERFORM     220-DATA-WRITE-SEC

@@ -65,6 +65,7 @@
       *  04.04.01    NACL-門脇    09/02/16  地方公費のレセ記載対応
       *  04.04.02    NACL-藤原    09/01/14  月途中の生保変更時の保険履歴
       *                                     記載対応
+      *                                     生保まとめ分点欄記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5044,9 +5045,16 @@
                        (RECE62-HENTOTALTEN(IDX2) NOT =  ZERO ) AND
                        (RECE62-HENTOTALTEN(IDX1) NOT =
                                      RECE62-HENTOTALTEN(IDX2)))
+                  IF    RECE62-SEIHOFLG    =  "1"
+                   COMPUTE WRK-SUM-TENSU   =     RECE62-TENSU(IDX IDX2)
+                                           -     RECE62-TENSU(IDX IDX1)
+                   MOVE    WRK-SUM-TENSU         TO  WRK-KOUTENZ
+                   MOVE    WRK-KOUTEN            TO  HC06-KOHTEN  (IDX)
+                  ELSE
                    MOVE    RECE62-TENSU(IDX IDX2)
                                                  TO  WRK-KOUTENZ
                    MOVE    WRK-KOUTEN            TO  HC06-KOHTEN  (IDX)
+                  END-IF
                  END-IF
                END-IF
            END-PERFORM
@@ -5079,9 +5087,16 @@
                        (RECE62-HENTOTALTEN(IDX2) NOT =  ZERO ) AND
                        (RECE62-HENTOTALTEN(IDX1) NOT =
                                      RECE62-HENTOTALTEN(IDX2)))
+                  IF    RECE62-SEIHOFLG    =  "1"
+                   COMPUTE WRK-SUM-TENSU  =  RECE62-NYUKHNKEI(IDX IDX2)
+                                          -  RECE62-NYUKHNKEI(IDX IDX1)
+                   MOVE    WRK-SUM-TENSU     TO  WRK-KOUTENZ
+                   MOVE    WRK-KOUTEN        TO  HC06-NYUKOHTEN (IDX)
+                  ELSE
                    MOVE    RECE62-NYUKHNKEI(IDX IDX2)
                                              TO  WRK-KOUTENZ
                    MOVE    WRK-KOUTEN        TO  HC06-NYUKOHTEN (IDX)
+                  END-IF
                  END-IF
                END-IF
            END-PERFORM
@@ -5109,8 +5124,15 @@
                            (RECE62-HENTOTALTEN(IDX2) NOT =  ZERO ) AND
                            (RECE62-HENTOTALTEN(IDX1) NOT =
                                          RECE62-HENTOTALTEN(IDX2)))
+                      IF    RECE62-SEIHOFLG    =  "1"
+                       COMPUTE WRK-SUM-TENSU
+                                       = RECE62-NYUKHNKEI(IDX IDX2)
+                                       - RECE62-NYUKHNKEI(IDX IDX1)
+                       ADD     WRK-SUM-TENSU     TO  SUM-NYUKHNKEI (2)
+                      ELSE
                        ADD    RECE62-NYUKHNKEI(IDX IDX2)
                                                  TO  SUM-NYUKHNKEI (2)
+                      END-IF
                      END-IF
                    END-IF
                END-PERFORM    
@@ -5163,10 +5185,17 @@
                    (RECE62-HENTOTALTEN(IDX2) NOT =  ZERO ) AND
                    (RECE62-HENTOTALTEN(IDX1) NOT =
                                  RECE62-HENTOTALTEN(IDX2)))
+              IF    RECE62-SEIHOFLG    =  "1"
+               COMPUTE WRK-SUM-TENSU   = RECE62-NYUKHNKEI2(IDX2)
+                                       - RECE62-NYUKHNKEI2(IDX1)
+               MOVE    WRK-SUM-TENSU           TO  WRK-KOUTENZ
+               MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (5)
+              ELSE
                MOVE    RECE62-NYUKHNKEI2 (IDX2)
                                                TO  WRK-KOUTENZ
                MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (5)
-               IF      RECE62-NYUKHNKEI2 (IDX2)
+              END-IF
+              IF      RECE62-NYUKHNKEI2 (IDX2)
                                                <   ZERO
                    PERFORM VARYING IDZ FROM    6   BY  -1
                            UNTIL   IDZ <       1
@@ -5177,7 +5206,7 @@
                            MOVE    1           TO  IDZ
                        END-IF
                    END-PERFORM
-               END-IF
+              END-IF
              END-IF
            END-IF
       *     
@@ -5218,9 +5247,17 @@
                            (RECE62-HENTOTALTEN(IDX2) NOT =  ZERO ) AND
                            (RECE62-HENTOTALTEN(IDX1) NOT =
                                          RECE62-HENTOTALTEN(IDX2)))
+                      IF    RECE62-SEIHOFLG    =  "1"
+                       COMPUTE WRK-SUM-TENSU
+                                       = RECE62-NYUTOKKEI(IDX IDX2)
+                                       - RECE62-NYUTOKKEI(IDX IDX1)
+                       MOVE    WRK-SUM-TENSU TO  WRK-KOUTENZ
+                       MOVE    WRK-KOUTEN    TO  HC06-NYUKOHTEN (IDY)
+                      ELSE
                        MOVE    RECE62-NYUTOKKEI(IDX IDX2)
                                              TO  WRK-KOUTENZ
                        MOVE    WRK-KOUTEN    TO  HC06-NYUKOHTEN (IDY)
+                      END-IF
                      END-IF
                    END-IF
                END-IF    
@@ -5249,8 +5286,15 @@
                            (RECE62-HENTOTALTEN(IDX2) NOT =  ZERO ) AND
                            (RECE62-HENTOTALTEN(IDX1) NOT =
                                          RECE62-HENTOTALTEN(IDX2)))
+                      IF    RECE62-SEIHOFLG    =  "1"
+                       COMPUTE WRK-SUM-TENSU
+                                        = RECE62-NYUTOKKEI(IDX IDX2)
+                                        - RECE62-NYUTOKKEI(IDX IDX1)
+                       ADD    WRK-SUM-TENSU      TO  SUM-NYUKHNKEI (2)
+                      ELSE
                        ADD    RECE62-NYUTOKKEI(IDX IDX2)
                                                  TO  SUM-NYUKHNKEI (2)
+                      END-IF
                      END-IF
                    END-IF
                END-PERFORM    
@@ -5305,10 +5349,17 @@
                    (RECE62-HENTOTALTEN(IDX2) NOT =  ZERO ) AND
                    (RECE62-HENTOTALTEN(IDX1) NOT =
                                  RECE62-HENTOTALTEN(IDX2)))
+              IF    RECE62-SEIHOFLG    =  "1"
+               COMPUTE WRK-SUM-TENSU   = RECE62-NYUTOKKEI2(IDX2)
+                                       - RECE62-NYUTOKKEI2(IDX1)
+               MOVE    WRK-SUM-TENSU           TO  WRK-KOUTENZ
+               MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (10)
+              ELSE
                MOVE    RECE62-NYUTOKKEI2 (IDX2)
                                                TO  WRK-KOUTENZ
                MOVE    WRK-KOUTEN              TO  HC06-NYUKOHTEN  (10)
-               IF      RECE62-NYUTOKKEI2 (IDX2)
+              END-IF
+              IF      RECE62-NYUTOKKEI2 (IDX2)
                                                <   ZERO
                    PERFORM VARYING IDZ FROM    6   BY  -1
                            UNTIL   IDZ <       1
@@ -5319,7 +5370,7 @@
                            MOVE    1           TO  IDZ
                        END-IF
                    END-PERFORM
-               END-IF
+              END-IF
              END-IF
            END-IF
       *
