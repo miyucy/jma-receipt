@@ -183,6 +183,7 @@
       *  04.02.04    NACL-門脇    08/03/17  宮崎県地方公費（１９０）の対応
       *
       *  04.04.01    NACL-藤原    09/03/16  リアルタイムプレビュー時の修正
+      *                                     リアルタイムプレビュー時の表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1013,6 +1014,10 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *
            03  WRK-ERR-MSG-6           PIC X(30)  VALUE
                "【未請求設定の患者です】".
+      *
+           03  WRK-ERR-MSG-9.
+               05  FILLER          PIC X(48)   VALUE
+                   "【リアルタイムプレビューより作成のため提出不可】". 
       *
        01  WRK-CONS-AREA.    
       *    固定端末ＩＤ
@@ -2165,6 +2170,10 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
       *****************************************************************
        2002-KOHSKY-WRITE-SEC           SECTION.
       *
+           IF      WRK-PARA-SHELLID     =   "RECEPTX"
+               GO  TO  2002-KOHSKY-WRITE-EXT
+           END-IF
+      *
            PERFORM 990-RECE02X-READ-SEC
       *
            PERFORM             UNTIL   FLG-RECE02X =   1
@@ -2763,6 +2772,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                     END-IF
                    END-IF
                END-IF
+           END-IF
+      *
+      *    リアルタイムプレビュー時の表示
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               MOVE    SPACE                TO  WRK-HC06-HEAD4-G
+               MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
+               MOVE    WRK-ERR-MSG-9        TO  HC06-HEAD4-G (5:)
+               MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (53:)
            END-IF
       *
       *    新潟県中越沖地震対応 

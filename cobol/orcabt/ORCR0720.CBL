@@ -76,6 +76,7 @@
       *  04.02.05    NACL-藤原    08/07/23  船員保険３割の「職務上の事由」の記載
       *
       *  04.04.01    NACL-藤原    09/03/16  リアルタイムプレビュー時の修正
+      *                                     リアルタイムプレビュー時の表示
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -929,6 +930,10 @@
       *
            03  WRK-ERR-MSG-7           PIC X(30)  VALUE
               "【未請求設定の患者です】".
+      *
+           03  WRK-ERR-MSG-10.
+               05  FILLER          PIC X(48)   VALUE
+                   "【リアルタイムプレビューより作成のため提出不可】". 
       *
        01  WRK-CONS-AREA.
       *    固定端末ＩＤ
@@ -2111,6 +2116,10 @@
       *****************************************************************
        2002-KOHSKY-WRITE-SEC           SECTION.
       *
+           IF      WRK-PARA-SHELLID     =   "RECEPTX"
+               GO  TO  2002-KOHSKY-WRITE-EXT
+           END-IF
+      *
            PERFORM 990-RECE62X-READ-SEC
       *
            PERFORM             UNTIL   FLG-RECE62X =   1
@@ -2747,6 +2756,14 @@
                     END-IF
                    END-IF
                END-IF
+           END-IF
+      *
+      *    リアルタイムプレビュー時の表示
+           IF      WRK-PARA-SHELLID    =   "RECEPTX"
+               MOVE    SPACE                TO  WRK-HC06-HEAD4-G
+               MOVE    HC06-HEAD4-G (5:)    TO  WRK-HC06-HEAD4-G
+               MOVE    WRK-ERR-MSG-10       TO  HC06-HEAD4-G (5:)
+               MOVE    WRK-HC06-HEAD4-G     TO  HC06-HEAD4-G (53:)
            END-IF
       *
       *    新潟県中越沖地震対応 
