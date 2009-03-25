@@ -2570,17 +2570,10 @@
                        MOVE    SPA-K02N-NYUINYMD   TO  WRK-SYMD
                        PERFORM 520-SEIWA-HEN-SEC
                        MOVE    WRK-HENYMDG         TO  SPA-SRYYMDW
-      *                スパ共通編集処理
-                       PERFORM                 310-SPA-SET-SEC
-      *                チェック用月内診療行為セット
-                       PERFORM                 320-SPA-CHKSET-SEC
-      *
-      *                画面用スパ編集処理
-                       PERFORM                 310-SPA-GMNSET-SEC
-      *
-                       MOVE    1               TO  SPA-GMN-PAGE
-                       MOVE    1               TO  SPA-GMN-CUR
-                       MOVE    1               TO  SPA-MAP-IDX
+                       MOVE    SPA-SRYYMD          TO  SPA-NAI-SRYYMD
+                       MOVE    SPA-SRYYMDW         TO  SPA-GMN-SRYYMD
+      *                診療日確定後、編集
+                       PERFORM 410171-SRYYMD-OK-SEC
                    END-IF
       *
       *        同一検査削除へ
