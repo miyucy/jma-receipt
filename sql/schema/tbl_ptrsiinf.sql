@@ -22,7 +22,7 @@ CREATE TABLE tbl_ptrsiinf (
     sinsatuend character(8),
     kakuninymd character(8),
     sakujokbn character(1),
-    comment character varying(200),
+    "comment" character varying(200),
     saigaikbn character(1),
     jibaiseikbn character(1),
     drcd character(5),

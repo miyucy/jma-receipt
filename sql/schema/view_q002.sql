@@ -3,6 +3,8 @@ CREATE VIEW view_q002 AS
            a.ptid,
            a.nyugaikbn,
            a.sryka,
+           a.srykbn,
+           a.srysyukbn,
            b.sryymd,
            a.srycd1,
            a.srycd2,
@@ -29,10 +31,13 @@ CREATE VIEW view_q002 AS
         OR (a.zainum = b.zainum12)) 
         OR (a.zainum = b.zainum13)) 
         OR (a.zainum = b.zainum14)) 
-        OR (a.zainum = b.zainum15))) UNION ALL SELECT a.hospnum,
+        OR (a.zainum = b.zainum15))) UNI
+        ON ALL SELECT a.hospnum,
            a.ptid,
            '1' AS nyugaikbn,
            b.sryka,
+           b.srykbn,
+           '' AS srysyukbn,
            a.sryymd,
            b.srycd AS srycd1,
            '' AS srycd2,

@@ -8,7 +8,7 @@ CREATE VIEW view_bd003 AS
            a.nyuhen_money,
            a.nyuhen_ymd,
            b.sryymd 
-      FROM (tbl_syumei a JOIN tbl_syunou b 
+      FROM (tbl_syumei a JOIN tbl_syunou_main b 
      USING (hospnum,
            nyugaikbn,
            ptid,

@@ -27,7 +27,8 @@ CREATE TABLE tbl_tensuplus (
     ipnkanzanchi numeric(10,5) DEFAULT 0,
     hospnum numeric(2,0) NOT NULL,
     jgncntetcm numeric(2,0) DEFAULT 0,
-    jgncntetc numeric(3,0) DEFAULT 0
+    jgncntetc numeric(3,0) DEFAULT 0,
+    zenknskbn numeric(1,0) DEFAULT 0
 );
 
 COMMENT ON TABLE tbl_tensuplus IS '点数付加';

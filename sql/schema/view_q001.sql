@@ -35,7 +35,8 @@ CREATE VIEW view_q001 AS
         OR ((tbl_hkncombi.koh3id = tbl_ptkohinf.kohid) 
        AND (tbl_hkncombi.koh3hknnum = tbl_ptkohinf.kohnum))) 
         OR ((tbl_hkncombi.koh4id = tbl_ptkohinf.kohid) 
-       AND (tbl_hkncombi.koh4hknnum = tbl_ptkohinf.kohnum)))))) UNION SELECT tbl_hkncombi.hospnum,
+       AND (tbl_hkncombi.koh4hknnum = tbl_ptkohinf.kohnum)))))) UNI
+        ON SELECT tbl_hkncombi.hospnum,
            tbl_hkncombi.ptid,
            tbl_hkncombi.hkncombinum,
            view_q004.nyugaikbn,
@@ -64,7 +65,7 @@ CREATE VIEW view_q001 AS
            tbl_ptkohinf 
      WHERE (((((view_q004.hospnum = tbl_ptkohinf.hospnum) 
        AND (view_q004.ptid = tbl_ptkohinf.ptid)) 
-       AND ((((((((((((tbl_ptkohinf.kohnum = '960'::bpchar) 
+       AND (((((((((((((tbl_ptkohinf.kohnum = '960'::bpchar) 
         OR (tbl_ptkohinf.kohnum = '961'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '962'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '963'::bpchar)) 
@@ -74,6 +75,7 @@ CREATE VIEW view_q001 AS
         OR (tbl_ptkohinf.kohnum = '967'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '968'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '969'::bpchar)) 
+        OR (tbl_ptkohinf.kohnum = '977'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '978'::bpchar)) 
         OR (tbl_ptkohinf.kohnum = '979'::bpchar))) 
        AND (view_q004.sryymd >= tbl_ptkohinf.tekstymd)) 

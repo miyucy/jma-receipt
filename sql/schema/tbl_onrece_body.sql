@@ -65,3 +65,4 @@ ALTER TABLE ONLY tbl_onrece_body
     ADD CONSTRAINT tbl_onrece_body_primary_key PRIMARY KEY (hospnum, teisyutusaki, sryym, ucnt, scnt, rennum, receipt_no);
 
 CREATE INDEX idx_onrece_body_ptid ON tbl_onrece_body USING btree (hospnum, teisyutusaki, sryym, ptid);
+
