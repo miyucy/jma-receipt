@@ -50,16 +50,16 @@
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDX                 PIC 9(04).
-           03  IDX2                PIC 9(04).
-           03  IDX3                PIC 9(04).
-           03  IDY                 PIC 9(04).
+           03  IDX                 PIC 9(05).
+           03  IDX2                PIC 9(05).
+           03  IDX3                PIC 9(05).
+           03  IDY                 PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-MAX             PIC 9(04).
+           03  WRK-MAX             PIC 9(05).
            03  WRK-PARA            PIC X(100).
-           03  WRK-OPTION          PIC X(5000).
+           03  WRK-OPTION          PIC X(44000).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -183,7 +183,7 @@
            MOVE    SPACE               TO  WRK-PARA
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   5000 )
+                   UNTIL      (IDX     >   44000 )
                           OR  (FLG-OK  NOT =   ZERO   )
       *        # 以降はコメントとする
                IF      WRK-OPTION(IDX:1)       =   "#"
@@ -200,7 +200,7 @@
                                        =   ORCSPRGOPTION-IN-DATA
                                                           (1:WRK-MAX)
                        COMPUTE IDX2        =   (IDX   +  WRK-MAX)
-                       IF      IDX2        >=  5000
+                       IF      IDX2        >=  44000
                            MOVE    2           TO  FLG-OK
                        ELSE
                            IF      WRK-OPTION(IDX2:1)      =   "="
@@ -246,7 +246,7 @@
            ADD     1                   TO  IDX2
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX3    FROM   IDX2   BY  1
-                   UNTIL      (IDX3        >   5000 )
+                   UNTIL      (IDX3        >   44000 )
                           OR  (IDY         >=  100  )
                           OR  (FLG-OK  NOT =   ZERO   )
                IF      WRK-OPTION(IDX3:1)  =   X"0A"

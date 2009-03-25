@@ -29,6 +29,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.03.00     NACL-太田    08/05/28  エラー処理強化対応
+      * 04.04.00     NACL-伊藤    09/03/25  更新データレイアウト変更
+      *                                     OPTION 5000 -> 44000
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -57,10 +59,7 @@
       *
       *    入力：プログラムオプション更新データ
        FD  IN-FILE.
-       01  PRGOPTIONWK-REC.
-           03  PRGOPTIONWK-SYORIKBN           PIC  X(01).
-           COPY    "CPPRGOPTION.INC"   REPLACING   //PRGOPTION-//
-                                              BY   //PRGOPTIONWK-//.
+       01  IN-REC                      PIC X(50200).
       *
       *    出力：エラーファイル
        FD  ERR-FILE.
@@ -128,8 +127,25 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-ERRCD               PIC 9(01).
       *
            03  WRK-IN                  PIC X(01).
-           03  WRK-OPTION              PIC X(10000).
+           03  WRK-OPTION              PIC X(60000).
            03  WRK-OPTION-LEN          PIC 9(08).
+      *
+      *    旧マスタデータ退避領域
+       01  PRGWK-REC.
+           03  PRGWK-SYORIKBN      PIC  X(1).
+           03  PRGWK-HOSPNUM       PIC  9(2).
+           03  PRGWK-PRGID         PIC  X(25).
+           03  PRGWK-KBNCD         PIC  X(16).
+           03  PRGWK-ADDKBN        PIC  X(01).
+           03  PRGWK-TERMID        PIC  X(16).
+           03  PRGWK-OPID          PIC  X(16).
+           03  PRGWK-CREYMD        PIC  X(08).
+           03  PRGWK-UPYMD         PIC  X(08).
+           03  PRGWK-UPHMS         PIC  X(06).
+           03  PRGWK-OPTION        PIC  X(44000).
+       01  PRGWK-REC-V01.
+           03  PRGWK-V01-AREA-01       PIC X(5044).
+           03  PRGWK-V01-AREA-02       PIC X(55).
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -162,6 +178,10 @@ grpsys     COPY    "COMMON-SPA".
       *    ファイル定義
       *****************************************************************
       *
+       01  PRGOPTIONWK-REC.
+           03  PRGOPTIONWK-SYORIKBN           PIC  X(01).
+           COPY    "CPPRGOPTION.INC"   REPLACING   //PRGOPTION-//
+                                              BY   //PRGOPTIONWK-//.
       *    プログラムオプション
        01  PRGOPTION-REC.
            COPY    "CPPRGOPTION.INC".
@@ -680,11 +700,73 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
               NOT AT  END
                   MOVE    ZERO            TO  FLG-IN
                   ADD     1               TO  CNT-IN
-                  MOVE    SPA-HOSPNUM     TO  PRGOPTIONWK-HOSPNUM
           END-READ
+      *
+          IF   ( FLG-IN            =     ZERO )
+               PERFORM 900-IN-DATA-SET-SEC
+          END-IF
           .
        900-IN-KENSAKU-EXT.
           EXIT.
+      *
+      *****************************************************************
+      *    プログラムオプションマスタ変更データ設定処理
+      *****************************************************************
+       900-IN-DATA-SET-SEC         SECTION.
+      *
+           EVALUATE    TRUE
+           WHEN    LNK-DBRVERSION (3:6)    <   "040400"
+               PERFORM 900-PRGWK-V01-SET
+      *
+           WHEN    OTHER
+               PERFORM 900-PRGWK-SET
+           END-EVALUATE
+          .
+       900-IN-DATA-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    変更後レイアウト移送処理
+      *****************************************************************
+       900-PRGWK-SET              SECTION.
+      *
+           MOVE    SPACE               TO  PRGOPTIONWK-REC
+           MOVE    IN-REC              TO  PRGWK-REC
+      *
+           MOVE    PRGWK-SYORIKBN      TO  PRGOPTIONWK-SYORIKBN
+           MOVE    SPA-HOSPNUM         TO  PRGOPTIONWK-HOSPNUM
+           MOVE    PRGWK-PRGID         TO  PRGOPTIONWK-PRGID
+           MOVE    PRGWK-KBNCD         TO  PRGOPTIONWK-KBNCD
+           MOVE    PRGWK-ADDKBN        TO  PRGOPTIONWK-ADDKBN
+           MOVE    PRGWK-TERMID        TO  PRGOPTIONWK-TERMID
+           MOVE    PRGWK-OPID          TO  PRGOPTIONWK-OPID
+           MOVE    PRGWK-CREYMD        TO  PRGOPTIONWK-CREYMD
+           MOVE    PRGWK-UPYMD         TO  PRGOPTIONWK-UPYMD
+           MOVE    PRGWK-UPHMS         TO  PRGOPTIONWK-UPHMS
+           MOVE    PRGWK-OPTION        TO  PRGOPTIONWK-OPTION
+           DISPLAY "PRGID = " PRGWK-PRGID
+           DISPLAY "KBNCD = " PRGWK-KBNCD
+           DISPLAY "ADDKBN = " PRGWK-ADDKBN
+      *
+          .
+       900-PRGWK-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    変更後レイアウト移送処理
+      *****************************************************************
+       900-PRGWK-V01-SET          SECTION.
+      *
+           MOVE    SPACE               TO  PRGOPTIONWK-REC
+           MOVE    IN-REC              TO  PRGWK-REC-V01
+      *
+           MOVE    PRGWK-V01-AREA-01   TO  PRGOPTIONWK-REC (1 : 5044)
+           MOVE    PRGWK-V01-AREA-02   TO  PRGOPTIONWK-REC (44045 : 55)
+           MOVE    SPA-HOSPNUM         TO  PRGOPTIONWK-HOSPNUM
+      *
+          .
+       900-PRGWK-V01-EXT.
+           EXIT.
       *
       *****************************************************************
       *    プログラムオプション読込

@@ -32,7 +32,7 @@
       *  区分コード
                05  PRGOPTION-KBNCD         PIC  X(16).
       *オプション内容
-           03  PRGOPTION-OPTION            PIC  X(5000).
+           03  PRGOPTION-OPTION            PIC  X(44000).
       *登録区分（0:提供パラメタ、1：ユーザ登録）
            03  PRGOPTION-ADDKBN            PIC  X(01).
       *端末ＩＤ

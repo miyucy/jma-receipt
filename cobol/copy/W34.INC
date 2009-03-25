@@ -25,9 +25,9 @@
                 04  W34-HPOS    PIC S9(9)   BINARY.
                 04  W34-VPOS    PIC S9(9)   BINARY.
                 04  W34-EXPLANTION.
-                  05  W34-VALUE   PIC X(5000).
+                  05  W34-VALUE   PIC X(44000).
               03  W34-SCROLLEDWINDOW3.
                 04  W34-HPOS    PIC S9(9)   BINARY.
                 04  W34-VPOS    PIC S9(9)   BINARY.
                 04  W34-OPTION.
-                  05  W34-VALUE   PIC X(5000).
+                  05  W34-VALUE   PIC X(44000).

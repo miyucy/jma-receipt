@@ -2,7 +2,7 @@ tbl_prgoption {
 	HOSPNUM				number(2,0);
 	PRGID      			char(25);
 	KBNCD      			char(16);
-	OPTION	        		varchar(5000);
+	OPTION	        		varchar(44000);
 	ADDKBN     			char(1);
 	TERMID   			varchar(16);
 	OPID     			varchar(16);

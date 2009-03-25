@@ -30,14 +30,14 @@ W34	{
 			hpos	int;
 			vpos	int;
 			EXPLANTION	{
-				value	varchar(5000);
+				value	varchar(44000);
 			};
 		};
 		scrolledwindow3	{
 			hpos	int;
 			vpos	int;
 			OPTION	{
-				value	varchar(5000);
+				value	varchar(44000);
 			};
 		};
 	};

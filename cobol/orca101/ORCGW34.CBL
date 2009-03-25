@@ -55,7 +55,7 @@
                05  SPA-GMN-PRGID           PIC X(25).
                05  SPA-GMN-INPUT-G.
       *            オプション説明
-                   07  SPA-GMN-EXPLANTION      PIC X(5000).
+                   07  SPA-GMN-EXPLANTION      PIC X(44000).
       *            区分コード
                    07  SPA-GMN-KBNCD-G.
                        09  SPA-GMN-KBNCD           PIC X(16).
@@ -65,7 +65,7 @@
                            11  SPA-GMN-KBNCDL          PIC X(16).
                        09  SPA-KBNCD-MAX               PIC 9(04).
       *            オプション内容
-                   07  SPA-GMN-OPTION          PIC X(5000).
+                   07  SPA-GMN-OPTION          PIC X(44000).
       *        一覧
                05  SPA-GMN-PRGLIST-TBL.
                    07  SPA-GMN-PRGLIST-OCC        OCCURS   100.
@@ -94,8 +94,8 @@
       *
       *    添字領域
        01  IDX-AREA.
-           03  IDX                 PIC 9(04).
-           03  IDY                 PIC 9(04).
+           03  IDX                 PIC 9(05).
+           03  IDY                 PIC 9(05).
       *
            03  IDX2                PIC 9(02).
       *
@@ -156,9 +156,9 @@
       *   文字領域の長さ(INDATA, OUTDATAの長さと同じであること)
            03 KANACONV-STLEN           PIC S9(9) BINARY.
       *   入力文字列
-           03 KANACONV-INDATA          PIC X(5000).
+           03 KANACONV-INDATA          PIC X(44000).
       *   出力文字列
-           03 KANACONV-OUTDATA         PIC X(5000).
+           03 KANACONV-OUTDATA         PIC X(44000).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -701,8 +701,8 @@
       *
       *    半角カナは変換する
            INITIALIZE                  ORCXKANACONVAREA
-           MOVE    5000                TO  KANACONV-LEN
-           MOVE    5000                TO  KANACONV-STLEN
+           MOVE    44000               TO  KANACONV-LEN
+           MOVE    44000               TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    0                   TO  KANACONV-CHAR-TYPE
            MOVE    SPA-GMN-EXPLANTION  TO  KANACONV-INDATA
@@ -719,8 +719,8 @@
       *
       *    半角カナは変換する
            INITIALIZE                  ORCXKANACONVAREA
-           MOVE    5000                TO  KANACONV-LEN
-           MOVE    5000                TO  KANACONV-STLEN
+           MOVE    44000               TO  KANACONV-LEN
+           MOVE    44000               TO  KANACONV-STLEN
            MOVE    0                   TO  KANACONV-CONV-FLAG
            MOVE    0                   TO  KANACONV-CHAR-TYPE
            MOVE    SPA-GMN-OPTION      TO  KANACONV-INDATA
