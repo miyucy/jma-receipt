@@ -376,6 +376,7 @@
                                        OR  "M01N"
                                        OR  "M95"
                                        OR  "MVER"
+                                       OR  "KT01"
                MOVE    SPA-SYSYMDWH        TO  WRK-WSYSYMDH
                MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
                MOVE    SPA-SYSYMDW         TO  WRK-WYMD
@@ -1464,7 +1465,7 @@
                MOVE    WIDGET-NORMAL      TO  M00-G04-STATE
            END-IF
            IF      SYS-1010-GSRAUTH(5:1)    =  "1"
-               MOVE    "まとめ"           TO  M00-B09-LABEL
+               MOVE    "（まとめ）"       TO  M00-B09-LABEL
            ELSE
                MOVE    SPACE              TO  M00-B09-LABEL
            END-IF

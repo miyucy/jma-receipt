@@ -49,7 +49,7 @@ M00	{
 			value	varchar(200);
 		};
 		B09	{
-			label	varchar(6);
+			label	varchar(10);
 		};
 		B11	{
 			label	varchar(10);
