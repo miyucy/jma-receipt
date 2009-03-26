@@ -130,7 +130,6 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-IN                  PIC X(01).
            03  WRK-MEMO                PIC X(10000).
            03  WRK-MEMO-LEN            PIC 9(08).
-           03  WRK-HOMEDIR             PIC X(128).
       *
       *    出力ファイル領域
        01  MES-AREA.
@@ -160,16 +159,14 @@ grpsys     COPY    "COMMON-SPA".
            03  FILLER                  PIC X(01)   VALUE   "-".
            03  WRK-EDYUKYMD            PIC  X(08).
       *
-       01  CONST-AREA.
-           03  CONST-HOMEDIR           PIC X(28)  VALUE
+       01  WRK-HOMEDIR.
+           03  FILLER                  PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
+           03  WRK-HOMEDIR-HOSPNUM     PIC 9(02).
+           03  FILLER                  PIC X(01)  VALUE "/".
       *****************************************************************
       *    ファイル定義
       *****************************************************************
-      *
-           COPY    "ENUM-VALUE".
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
       *
       *    統計メモ
        01  TOUKEIMEMO-REC.
@@ -255,25 +252,17 @@ grpsys     COPY    "COMMON-SPA".
            .
        100-INIT-EXT.
            EXIT.
+      *
       *****************************************************************
       *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
-           INITIALIZE                      SGETTEMP-AREA
-           CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
-      *
-           IF      SGETTEMP-MW         =   SPA-PANDA
-               MOVE    CONST-HOMEDIR       TO  WRK-HOMEDIR
-           ELSE
-               MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
-           END-IF
+           MOVE    SPA-HOSPNUM         TO  WRK-HOMEDIR-HOSPNUM
       *
       *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    LNK-DBFILE          DELIMITED  BY  SPACE
                    "/"                 DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
@@ -283,8 +272,6 @@ grpsys     COPY    "COMMON-SPA".
       *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".ERR"              DELIMITED  BY  SIZE
@@ -294,8 +281,6 @@ grpsys     COPY    "COMMON-SPA".
       *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
-                   SPA-HOSPNUM         DELIMITED  BY  SIZE
-                   "/"                 DELIMITED  BY  SIZE
                    "orca-mstlog/"      DELIMITED  BY  SIZE
                    LNK-UPFILE          DELIMITED  BY  SPACE
                    ".PRF"              DELIMITED  BY  SIZE
@@ -304,6 +289,7 @@ grpsys     COPY    "COMMON-SPA".
            .
        101-ASSIN-GET-EXT.
            EXIT.
+      *
       *****************************************************************
       *    メイン処理
       *****************************************************************
@@ -312,39 +298,15 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    ZERO                TO  WRK-ERRCD
       *
            EVALUATE    TKIMEMOWK-SYORIKBN
-           WHEN    "I"
-           WHEN    "U"
-      *
-               INITIALIZE                      TOUKEIMEMO-REC
-               MOVE    TKIMEMOWK-KEY       TO  TKIMEMO-KEY
-               MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
-               MOVE    "DBSELECT"          TO  MCP-FUNC
-               MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-grpsys         PERFORM 900-ORCDBMAIN-SEC
-               IF      MCP-RC              =   ZERO
-                   MOVE    "tbl_toukeimemo"
-                                           TO  MCP-TABLE
-                   MOVE    "key"           TO  MCP-PATHNAME
-                   PERFORM  910-TOUKEIMEMO-READ-SEC
-               ELSE
-                   MOVE    1               TO  FLG-TOUKEIMEMO
-               END-IF
-      *
-      *        統計メモクローズ
-               MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 900-TBL-CLOSE-SEC
-      *
-               IF    ( FLG-TOUKEIMEMO      =   ZERO )
-                   PERFORM 2020-UPDATE-SYORI-SEC
-               ELSE
+      *        追加
+               WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
-               END-IF
-      *
-      *    削除
-           WHEN    "D"
-               PERFORM 2030-DELETE-SYORI-SEC
+      *        更新
+               WHEN    "U"
+                   PERFORM 2020-UPDATE-SYORI-SEC
+      *        削除
+               WHEN    "D"
+                   PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
       *    統計メモ更新データ読込み処理
@@ -357,6 +319,35 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *    追加  処理
       *****************************************************************
        2010-INSERT-SYORI-SEC       SECTION.
+      *
+           INITIALIZE                      TOUKEIMEMO-REC
+           MOVE    TKIMEMOWK-KEY       TO  TKIMEMO-KEY
+           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_toukeimemo"    TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_toukeimemo"  TO  MCP-TABLE
+               MOVE    "key"           TO  MCP-PATHNAME
+               PERFORM  910-TOUKEIMEMO-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-TOUKEIMEMO
+           END-IF
+      *
+      *    統計メモクローズ
+           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *    追加エラー（同一キー存在）
+      *    正常扱いとする
+      *    （パッチ提供で新規メモが複数ver提供される場合の考慮）
+           IF      FLG-TOUKEIMEMO        =   ZERO
+      *        MOVE    1               TO  WRK-ERRCD
+      *        PERFORM 2040-ERR-SYORI-SEC
+               GO      TO      2010-INSERT-SYORI-EXT
+           END-IF
       *
       *    ＤＢ追加
            PERFORM 20101-TOUKEIMEMO-INS-SEC
@@ -372,6 +363,33 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
        2020-UPDATE-SYORI-SEC           SECTION.
       *
+           INITIALIZE                  TOUKEIMEMO-REC
+           MOVE    TKIMEMOWK-KEY       TO  TKIMEMO-KEY
+           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM  910-TOUKEIMEMO-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TOUKEIMEMO
+           END-IF
+      *
+      *    統計メモクローズ
+           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *    更新エラー（同一キーなし）
+           IF      FLG-TOUKEIMEMO     NOT =  ZERO
+               MOVE    5               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+               GO      TO      2020-UPDATE-SYORI-EXT
+           END-IF
+      *
       *    ＤＢ更新
            PERFORM 20101-TOUKEIMEMO-UPD-SEC
            IF      WRK-ERRCD           =   ZERO
@@ -385,6 +403,33 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *    削除  処理
       *****************************************************************
        2030-DELETE-SYORI-SEC       SECTION.
+      *
+           INITIALIZE                      TOUKEIMEMO-REC
+           MOVE    TKIMEMOWK-KEY       TO  TKIMEMO-KEY
+           MOVE    TOUKEIMEMO-REC      TO  MCPDATA-REC
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+grpsys     PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM  910-TOUKEIMEMO-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-TOUKEIMEMO
+           END-IF
+      *
+      *    統計メモクローズ
+           MOVE    "tbl_toukeimemo"      TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 900-TBL-CLOSE-SEC
+      *
+      *    削除エラー（同一キーなし）
+           IF      FLG-TOUKEIMEMO     NOT =  ZERO
+               MOVE    6               TO  WRK-ERRCD
+               PERFORM 2040-ERR-SYORI-SEC
+               GO      TO      2030-DELETE-SYORI-EXT
+           END-IF
       *
       *    ＤＢ削除
            PERFORM 20101-TOUKEIMEMO-DEL-SEC
