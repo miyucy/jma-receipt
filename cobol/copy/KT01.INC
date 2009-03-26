@@ -106,5 +106,6 @@
                 04  KT01-B05S-STATE  PIC S9(9)   BINARY.
               03  KT01-BDAY-G   OCCURS  31.
               04  KT01-BDAY.
+                05  KT01-BDAY-STATE  PIC S9(9)   BINARY.
                 05  KT01-BDAY-STYLE  PIC X(20).
                 05  KT01-BDAY-LABEL  PIC X(4).

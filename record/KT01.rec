@@ -470,126 +470,157 @@ KT01	{
 	           	state	int;
 		};
 		BD01	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD02	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD03	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD04	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD05	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD06	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD07	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD08	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD09	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD10	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD11	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD12	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD13	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD14	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD15	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD16	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD17	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD18	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD19	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD20	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD21	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD22	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD23	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD24	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD25	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD26	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD27	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD28	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD29	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD30	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};
 		BD31	{
+	        	state	int;
 			style	varchar(20);
 			label	varchar(4);
 		};

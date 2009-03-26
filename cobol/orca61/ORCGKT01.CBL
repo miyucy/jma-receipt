@@ -9265,6 +9265,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      SPA-NAI-SRYDD       =   IDX
                    MOVE    "darkred"       TO  KT01-BDAY-STYLE (IDX)
                END-IF
+      *!!
+               IF     (IDX                 <=  SPA-SRYLST-DD )
+                   MOVE    WIDGET-NORMAL       TO  KT01-BDAY-STATE(IDX)
+               ELSE
+                   MOVE    WIDGET-INSENSITIVE  TO  KT01-BDAY-STATE(IDX)
+               END-IF
+      *!!
            END-PERFORM
       *
       *    ±¡Æâ±¡³°
