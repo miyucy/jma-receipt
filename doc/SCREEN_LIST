@@ -47,6 +47,8 @@ P02A.glade	orca12	(P02A)患者登録
 P02D.glade	orca12	(P02D)患者登録−労災自賠保険入力
 P02E.glade	orca12	(P02E)患者登録−患者複写画面
 P02F.glade	orca12	(P02F)患者登録−複写元患者一覧
+P02G.glade	orca12	(P02G)患者登録−グループ医療機関内登録済リスト
+P02G2.glade	orca12	(P02G2)患者登録−グループ医療機関内患者紐付けリスト
 P014.glade	orca12	(P01)患者登録-患者番号発行
 P015.glade	orca12	(P015)患者登録-患者番号再発行
 P98.glade	orca12	(P98)住所検索
@@ -220,6 +222,8 @@ I2FIL.glade	orca36	(I2FIL)クライアント保存画面
 D01.glade	orca41	(D01)レセプトチェック指示
 D02.glade	orca41	(D02)データチェック−個別指示
 D03.glade	orca41	(D03)確認項目設定登録
+D04.glade	orca41	(D04)データチェック−エラー内容確認画面
+D05.glade	orca41	(D05)例外設定一覧
 D99.glade	orca41	(D99)処理結果
 DERR.glade	orca41	(DERR)エラー情報
 DID1.glade	orca41	(DID1)確認画面
@@ -275,6 +279,18 @@ GERR.glade	orca52	(GERR)エラー情報
 GID1.glade	orca52	(GID1)確認画面
 GID2.glade	orca52	(GID2)確認画面
 GFIL.glade	orca52	(GFIL)クライアント保存画面
+
+KT01.glade	orca61	(KT01)外来まとめ入力−診療行為入力
+KT011.glade	orca61	(KT011)外来まとめ−禁忌薬剤一覧
+KT012.glade	orca61	(KT012)外来まとめ−診療行為選択
+KT013.glade	orca61	(KT013)外来まとめ−受診履歴
+KT02.glade	orca61	(KT02)外来まとめ−診療行為確認
+KT03.glade	orca61	(KT03)外来まとめ−算定履歴照会
+KT98.glade	orca61	(KT98)外来まとめ一覧選択サブ
+KTERR.glade	orca61	(KTERR)エラー情報
+KTERR2.glade	orca61	(KTERR2)エラー情報
+KTID1.glade	orca61	(KTID1)確認画面
+KTID2.glade	orca61	(KTID2)確認画面
 
 E01.glade	orca71	(E01)ＣＳＶ作成指示１
 E02.glade	orca71	(E02)ＣＳＶ作成指示２
