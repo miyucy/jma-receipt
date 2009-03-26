@@ -1755,12 +1755,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    WIDGET-NORMAL       TO
                                        SPA-H01GMN-HENREI-SIJI-FLG-STATE
                END-IF
-      *
-      *        返戻データ退避処理
-               IF      SPA-H01NAI-HENREI-MSG
-                                           =   1
-                   PERFORM 410211-HENREI-B-SPA-HENSYU-SEC
-               END-IF
            END-IF
       *
            MOVE    "1"                 TO  SPA-HENFLG
@@ -1781,6 +1775,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TBL-HENREI-B-ERR (IDZZ)
            END-PERFORM
            MOVE    ZERO            TO  TBL-HENREI-B-MAX
+           MOVE    ZERO            TO  FLG-HENREI-B-CHK
       *
            INITIALIZE                  HENREI-B-REC
            MOVE    SPA-HOSPNUM     TO  HENREI-B-HOSPNUM
