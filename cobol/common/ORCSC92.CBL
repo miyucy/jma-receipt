@@ -1536,10 +1536,6 @@
                GO      TO      2005-HEIYOU-CHK-EXT
            END-IF
       *
-      *TEST
-           DISPLAY "LNK-SC92-SRYCD:" LNK-SC92-SRYCD
-                ",SPA-SRYYMD :" SPA-SRYYMD 
-      *TEST
       *    チェックテーブル検索
            INITIALIZE                  CHK-REC
            MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
@@ -1826,12 +1822,6 @@
                       END-IF
                   END-IF
               END-IF
-      *TEST
-           DISPLAY "WRK-ERR-SRYCD:" WRK-ERR-SRYCD
-                 ",WRK-ERR-YMD:" WRK-ERR-YMD
-                 ",SANTEI-SRYYM:" SANTEI-SRYYM
-                 ",SANTEI-MSANTEID:" SANTEI-MSANTEID
-      *TEST
            END-IF
       *    リハビリテーション管理料チェック
            IF    ((FLG-CHKERR          =   1          )
@@ -2796,6 +2786,28 @@
            MOVE    "tbl_santei"        TO  MCP-TABLE
            MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *!!!
+      *    外来まとめは今回分ＴＢＬ編集
+           IF      LNK-SC92-KT01FLG    =   "1" 
+               PERFORM VARYING     IDX2    FROM    1   BY   1
+                       UNTIL      (IDX2    >   IDX-TBL    )
+                   IF      WRK-SRYCD       =   TBLW-SANTEI-SRYCD(IDX2)
+      *            対象の算定履歴判定
+                       MOVE    TBLW-SANTEI-REC(IDX2)   TO  SANTEI-REC
+      *                初回あり
+                       IF      HZN-SANTEI-MSANTEICNT   >   ZERO
+                           MOVE    HZN-SANTEI-FSANTEIYMD
+                                                   TO  SANTEI-FSANTEIYMD
+                       ELSE
+                           MOVE    SANTEI-SRYYM    TO  SANTEI-FSANTEIYMD
+                                                                  (1:6)
+                           MOVE    SANTEI-MSANTEID TO  SANTEI-FSANTEIYMD
+                                                                  (7:2)
+                       END-IF
+                       MOVE    SANTEI-REC          TO  HZN-SANTEI-REC
+                   END-IF
+               END-PERFORM
+           END-IF
       *
            MOVE    HZN-SANTEI-REC          TO  SANTEI-REC
            IF      SANTEI-MSANTEICNT   >   ZERO

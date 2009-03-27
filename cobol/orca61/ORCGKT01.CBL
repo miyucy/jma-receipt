@@ -7654,8 +7654,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  FLG-NEXT
       *    確定　処理
            PERFORM 4110-KAKUTEI-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-KIDCD       NOT =   SPACE )
+           IF     (FLG-DAY-IN          =   1     )
+             AND ((SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD       NOT =   SPACE ))
                GO      TO      4109-B05-SYORI-EXT
            END-IF
       *
@@ -7699,8 +7700,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    1                   TO  FLG-NEXT
       *    確定　処理
            PERFORM 4110-KAKUTEI-SEC
-           IF     (SPA-ERRCD       NOT =   SPACE )  OR
-                  (SPA-KIDCD       NOT =   SPACE )
+           IF     (FLG-DAY-IN          =   1     )
+             AND ((SPA-ERRCD       NOT =   SPACE )  OR
+                  (SPA-KIDCD       NOT =   SPACE ))
                GO      TO      4109-B08-SYORI-EXT
            END-IF
       *
@@ -7755,8 +7757,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                ELSE
       *            確定　処理
                    PERFORM 4110-KAKUTEI-SEC
-                   IF     (SPA-ERRCD           =   SPACE )  AND
-                          (SPA-KIDCD           =   SPACE )
+                   IF     (FLG-DAY-IN          =   1     )
+                     AND ((SPA-ERRCD       NOT =   SPACE )  OR
+                          (SPA-KIDCD       NOT =   SPACE ))
+                       CONTINUE
+                   ELSE
                        MOVE    WRK-BDAY            TO  WRK-DAY
                        MOVE    WRK-DAY             TO  SPA-NAI-SRYDD
                        MOVE    WRK-DAY             TO  SPA-GMN-SRYDD
