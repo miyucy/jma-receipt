@@ -13,8 +13,8 @@ BIN_sources = \
 	orcvt_exec.sh.in \
 	jma-receipt-sysbase-setup.sh.in \
 	jma-dbsync.sh.in \
-	jma-backupcluster.in \
-	jma-restorecluster.in
+	jma-backupcluster.sh.in \
+	jma-restorecluster.sh.in
 
 BIN_bin = \
 	orcvt_euc.rb \

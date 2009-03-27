@@ -25,7 +25,7 @@ invoke-rc.d postgresql-${PGVERSION} stop >/dev/null 2>&1 || err "PostgreSQLの�
 
 sleep 1
 
-pgrep postgres && err "PostgreSQLが起動しています" 202
+pgrep -f "postgres" && err "PostgreSQLが起動しています" 202
 
 tar czf ${PGDATA_BACKUP_DIR}/${BACKUP_FILENAME} -C ${PGPATH} ${PGCLUSTER} || err "${BACKUP_FILENAME}にバックアップ失敗" 301
 

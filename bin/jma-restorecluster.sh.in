@@ -38,7 +38,7 @@ invoke-rc.d postgresql-${PGVERSION} stop >/dev/null 2>&1 || err "PostgreSQLの�
 
 sleep 1
 
-pgrep postgres >/dev/null 2>&1 && err "PostgreSQLが起動しています" 202
+pgrep -f "postgres" >/dev/null 2>&1 && err "PostgreSQLが起動しています" 202
 
 mv ${PGDATA} ${PGDATA}.bak || err "${PGDATA}.bakへの移動に失敗" 302
 tar xzf ${BACKUP_FILENAME} -C ${PGPATH} || err "${PGPATH}にリストア失敗" 301
@@ -47,8 +47,8 @@ invoke-rc.d postgresql-${PGVERSION} start >/dev/null 2>&1 || err "PostgreSQLの�
 
 sleep 1
 
-pgrep postgres >/dev/null 2>&1 || err "復元後のPostgreSQLの起動に失敗した可能性があります。ログなどを確認して下さい。クラスタのバックアップは${PGDATA}.bakです。" 204
+pgrep -f "postgres" >/dev/null 2>&1 || err "復元後のPostgreSQLの起動に失敗した可能性があります。ログなどを確認して下さい。クラスタのバックアップは${PGDATA}.bakです。" 204
 
-echo ${PGPATH}に復元完了
+echo ${PGPATH}に復元完了しました。古いクラスタは${PGDATA}.bakとして保存しています。
 
 exit 0
