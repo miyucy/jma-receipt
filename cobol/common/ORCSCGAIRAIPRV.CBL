@@ -36,6 +36,7 @@
       *  04.01.00    NACL-多々納  07/11/XX  公務災害・公害対応
       *                                     器材商品名コード対応
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
+      *  04.04.00    NACL-竹田　  09/03/04  外来まとめ対応
       *****************************************************************
       *
       *
@@ -519,16 +520,65 @@
       *
       *----->take add st
       *****************************************************************
-      *    プレビュー用患者登録処理
+      *    プレビュー用TMPDB更新処理
       *****************************************************************
        100-PRV-DBMAKE-SEC              SECTION.
       *
-      *  ★ 残り 収納関係です
-           CALL    "ORCSPRVDBMAKE"     USING
-                                       SPA-AREA
+      *  ORCSCGAIRAI-HAKHOUFLG 0:通常 1:まとめ初回 9:まとめそれ以外
+           IF      ORCSCGAIRAI-HAKHOUFLG   =   1  OR  0
+                   CALL    "ORCSPRVDBMAKE"     USING
+                                               SPA-AREA
+           ELSE
+                   PERFORM 1001-SYU-DEL-SEC
+           END-IF
            .
       *
        100-PRV-DBMAKE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    テンポラリDB削除(外来まとめ対応)
+      *****************************************************************
+       1001-SYU-DEL-SEC                SECTION.
+      *
+      *収納マスタ
+           MOVE    SPA-HOSPNUM         TO      SYU-HOSPNUM
+           MOVE    SPA-NYUGAIKBN       TO      SYU-NYUGAIKBN
+           MOVE    SPA-PTID            TO      SYU-PTID
+           MOVE    SYUNOU-REC          TO      MCPDATA-REC
+           MOVE    "DBDELETE"          TO      MCP-FUNC
+           MOVE    "tbl_syunou_prv"    TO  MCP-TABLE
+           MOVE    "delprv"            TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *収納明細マスタ
+           MOVE    SPA-HOSPNUM         TO      SMEI-HOSPNUM
+           MOVE    SPA-NYUGAIKBN       TO      SMEI-NYUGAIKBN
+           MOVE    SPA-PTID            TO      SMEI-PTID
+           MOVE    SYUMEI-REC          TO      MCPDATA-REC
+           MOVE    "DBDELETE"          TO      MCP-FUNC
+           MOVE    "tbl_syumei_prv"    TO  MCP-TABLE
+           MOVE    "delprv"            TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
+      *収納トータルマスタ
+           MOVE    SPA-HOSPNUM         TO      SYUTTL-HOSPNUM
+           MOVE    SPA-NYUGAIKBN       TO      SYUTTL-NYUGAIKBN
+           MOVE    SPA-PTID            TO      SYUTTL-PTID
+           MOVE    SYUTTL-REC          TO      MCPDATA-REC
+           MOVE    "DBDELETE"          TO      MCP-FUNC
+           MOVE    "tbl_syutotal_prv"  TO  MCP-TABLE
+           MOVE    "delprv"            TO  MCP-PATHNAME
+grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+           .
+      *
+       1001-SYU-DEL-EXT.
            EXIT.
       *
       *----->take add ed
