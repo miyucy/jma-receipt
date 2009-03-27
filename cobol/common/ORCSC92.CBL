@@ -438,11 +438,11 @@
            INITIALIZE                  WRK-INPUT-SET-AREA
       *
            IF      LNK-SC92-PG         =   "K02"
+                                       OR  "KT01"
                MOVE    SPA-WORK            TO  SPA-K01KYOUTU
            ELSE
                INITIALIZE                      SPA-K01KYOUTU
            END-IF
-      *
       *
            MOVE    SPACE               TO  LNK-SC92-ERRAREA
            MOVE    LNK-SC92-GMN-IDX    TO  IDX-T
