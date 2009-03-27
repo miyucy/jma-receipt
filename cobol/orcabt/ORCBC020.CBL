@@ -120,7 +120,8 @@
        WORKING-STORAGE             SECTION.
       *
       *01  PRGSKBNO                PIC X(08)  VALUE "20070809".
-       01  PRGSKBNO                PIC X(08)  VALUE "20080428".
+      *01  PRGSKBNO                PIC X(08)  VALUE "20080428".
+       01  PRGSKBNO                PIC X(08)  VALUE "20090327".
       *
       *    病院基本情報データ
            COPY    "CPCOMMONDAT5.INC"
@@ -1023,10 +1024,19 @@
            EVALUATE  COLDAT02-SRYCD (1:1)
                WHEN  "6"
                    MOVE    "Y"         TO  WRK-DATA
+                   IF  COLDAT02-JIHOKBN    =  "1"
+                       MOVE    "Q"     TO  WRK-DATA
+                   END-IF
                WHEN  "7"
                    MOVE    "Z"         TO  WRK-DATA
+                   IF  COLDAT02-JIHOKBN    =  "1"
+                       MOVE    "R"     TO  WRK-DATA
+                   END-IF
                WHEN  "8"
                    MOVE    "C"         TO  WRK-DATA
+                   IF  COLDAT02-JIHOKBN    =  "1"
+                       MOVE    "U"     TO  WRK-DATA
+                   END-IF
                WHEN  OTHER
                    MOVE    "S"         TO  WRK-DATA
                    IF  COLDAT02-JIHOKBN    =  "1"
