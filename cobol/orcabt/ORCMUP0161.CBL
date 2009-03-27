@@ -31,6 +31,7 @@
       * 04.03.00     NACL-太田    08/05/28  エラー処理強化対応
       * 04.04.00     NACL-伊藤    09/03/25  更新データレイアウト変更
       *                                     OPTION 5000 -> 44000
+      * 04.04.00     NACL-太田    09/03/27  ２重追加チェック修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -355,8 +356,9 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    追加エラー（同一キー存在）
            IF      FLG-PRGOPTION       =   ZERO
-               MOVE    1               TO  WRK-ERRCD
-               PERFORM 2040-ERR-SYORI-SEC
+      *        MOVE    1               TO  WRK-ERRCD
+      *        PERFORM 2040-ERR-SYORI-SEC
+               CONTINUE
            ELSE
       *        ＤＢ追加
                PERFORM 20101-PRGOPTION-INS-SEC

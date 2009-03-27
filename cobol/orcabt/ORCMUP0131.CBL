@@ -29,6 +29,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       * 04.03.00     NACL-太田    08/05/28  エラー処理強化対応
+      * 04.04.00     NACL-太田    09/03/27  ２重追加チェック修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -328,8 +329,8 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *    追加エラー（同一キー存在）
            IF      FLG-HKTSANTEI       =   ZERO
-               MOVE    1               TO  WRK-ERRCD
-               PERFORM 2040-ERR-SYORI-SEC
+      *        MOVE    1               TO  WRK-ERRCD
+      *        PERFORM 2040-ERR-SYORI-SEC
                GO      TO      2010-INSERT-SYORI-EXT
            END-IF
       *
