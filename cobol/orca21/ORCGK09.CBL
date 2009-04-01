@@ -103,8 +103,8 @@
            COPY    "K02SCR-SPA".
       *
       *    ²èÌÌ¥¹¥ÑÎÎ°è
-       01  SPA-K09.
-           03  SPA-K09-AREA.
+      *01  SPA-K09.
+      *    03  SPA-K09-AREA.
       *********05  SPA-K09GMN-CUR                PIC 9(02).
       *
       ****     05  SPA-GMN-NYUGAIKBN-G.
@@ -125,45 +125,45 @@
       *                                            OCCURS  20.
       *********    07  SPA-SRYKBN-MAX              PIC 9(03).
       *
-               05  SPA-GMN-TBL.
-                   07  SPA-GMN-TBLREC-G  OCCURS  800.
-                       09  SPA-GMN-TBANGO      PIC 9(03).
-                       09  SPA-GMN-TMEISYO     PIC X(200).
-                       09  SPA-GMN-TMEISYO-1   REDEFINES
-                                                   SPA-GMN-TMEISYO.
-                           11  SPA-GMN-TYOBI0      PIC X(02).
-                           11  SPA-GMN-TMEISYO1    PIC X(196).
-                       09  SPA-GMN-TMEISYO-2   REDEFINES
-                                               SPA-GMN-TMEISYO.
-                           11  SPA-GMN-TMEISYO2    PIC X(44).
-                           11  SPA-GMN-HEN1.
-                               13  SPA-GMN-TSURYOU     PIC X(18).
-                               13  SPA-GMN-TTANI1      PIC X(08).
-                               13  SPA-GMN-TTANMEI     PIC X(06).
-                               13  SPA-GMN-TTANI2      PIC X(04).
-                               13  SPA-GMN-TYOBI1      PIC X(14).
-                           11  SPA-GMN-HEN2    REDEFINES
-                                               SPA-GMN-HEN1.
-                               13  SPA-GMN-TZAIKEI     PIC X(40).
+      *        05  SPA-GMN-TBL.
+      *            07  SPA-GMN-TBLREC-G  OCCURS  800.
+      *                09  SPA-GMN-TBANGO      PIC 9(03).
+      *                09  SPA-GMN-TMEISYO     PIC X(200).
+      *                09  SPA-GMN-TMEISYO-1   REDEFINES
+      *                                            SPA-GMN-TMEISYO.
+      *                    11  SPA-GMN-TYOBI0      PIC X(02).
+      *                    11  SPA-GMN-TMEISYO1    PIC X(196).
+      *                09  SPA-GMN-TMEISYO-2   REDEFINES
+      *                                        SPA-GMN-TMEISYO.
+      *                    11  SPA-GMN-TMEISYO2    PIC X(44).
+      *                    11  SPA-GMN-HEN1.
+      *                        13  SPA-GMN-TSURYOU     PIC X(18).
+      *                        13  SPA-GMN-TTANI1      PIC X(08).
+      *                        13  SPA-GMN-TTANMEI     PIC X(06).
+      *                        13  SPA-GMN-TTANI2      PIC X(04).
+      *                        13  SPA-GMN-TYOBI1      PIC X(14).
+      *                    11  SPA-GMN-HEN2    REDEFINES
+      *                                        SPA-GMN-HEN1.
+      *                        13  SPA-GMN-TZAIKEI     PIC X(40).
       *
-                       09  SPA-NAI-TBANGO        PIC  9(03).
-               05  SPA-GMN-MAX2                  PIC 9(04).
-               05  SPA-NAI-MAX2                  PIC 9(04).
+      *                09  SPA-NAI-TBANGO        PIC  9(03).
+      *        05  SPA-GMN-MAX2                  PIC 9(04).
+      *        05  SPA-NAI-MAX2                  PIC 9(04).
       *
-               05  SPA-GMN-DOSEL             PIC X(40).
-               05  SPA-NAI-DOSEL-G.
-                   07  SPA-NAI-DOSEL         PIC 9(03)
-                                             OCCURS   135.
-                   07  SPA-NAI-DOSEL-MAX     PIC 9(03).
+      *        05  SPA-GMN-DOSEL             PIC X(40).
+      *        05  SPA-NAI-DOSEL-G.
+      *            07  SPA-NAI-DOSEL         PIC 9(03)
+      *                                      OCCURS   135.
+      *            07  SPA-NAI-DOSEL-MAX     PIC 9(03).
       *
-               05  SPA-NAI-AREA.
+      *        05  SPA-NAI-AREA.
       *
-                   07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBLREC            OCCURS   800.
-                           11  SPA-NAI-ZAINUM        PIC  9(08).
-                           11  SPA-NAI-SRYKBN        PIC  X(02).
-                       09  SPA-SEL-IDX               PIC  9(02).
-                       09  SPA-SEL-RENNUM            PIC  9(01).
+      *            07  SPA-NAI-TBL.
+      *                09  SPA-NAI-TBLREC            OCCURS   800.
+      *                    11  SPA-NAI-ZAINUM        PIC  9(08).
+      *                    11  SPA-NAI-SRYKBN        PIC  X(02).
+      *                09  SPA-SEL-IDX               PIC  9(02).
+      *                09  SPA-SEL-RENNUM            PIC  9(01).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -528,7 +528,7 @@
            PERFORM 1001-SRYKBN-SET-SEC
       *
       *    ²èÌÌ£Ó£Ð£ÁÆÉ¤ß¹þ¤ß
-           PERFORM 1002-K09SPA-SET-SEC
+      *    PERFORM 1002-K09SPA-SET-SEC
       *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
@@ -549,9 +549,9 @@
            END-IF
       *
       *    ²èÌÌ£Ó£Ð£Á½ñ¹þ¤ß
-           IF      FLG-END2            =   ZERO
-               PERFORM 1003-K09SPA-OUT-SEC
-           END-IF
+      *    IF      FLG-END2            =   ZERO
+      *        PERFORM 1003-K09SPA-OUT-SEC
+      *    END-IF
       *
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -576,68 +576,68 @@
       *****************************************************************
       *    £Ó£Ð£Á¥Ç¡¼¥¿£Ò£Å£Á£Ä½èÍý
       *****************************************************************
-       1002-K09SPA-SET-SEC             SECTION.
+      *1002-K09SPA-SET-SEC             SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
       *
-           OPEN    INPUT               SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               GO      TO      1002-K09SPA-SET-EXT
-           END-IF
+      *    OPEN    INPUT               SPASCR-FILE
+      *    IF      STS-SPASCR     NOT =   ZERO
+      *        GO      TO      1002-K09SPA-SET-EXT
+      *    END-IF
       *
-           MOVE    SPACE               TO  SPA-K09
-           INITIALIZE                  SPA-K09
-           MOVE    SPACE               TO  WRK-DATA-REC
-           INITIALIZE          WRK-DATA-REC
-           MOVE    ZERO                TO  FLG-SPASCR
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       FLG-SPASCR  =   1
-               READ    SPASCR-FILE
-                   AT  END
-                       MOVE   1            TO  FLG-SPASCR
-                   NOT AT  END
-                       ADD    1            TO  IDX
-                       MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
-               END-READ
-           END-PERFORM
+      *    MOVE    SPACE               TO  SPA-K09
+      *    INITIALIZE                  SPA-K09
+      *    MOVE    SPACE               TO  WRK-DATA-REC
+      *    INITIALIZE          WRK-DATA-REC
+      *    MOVE    ZERO                TO  FLG-SPASCR
+      *    MOVE    ZERO                TO  IDX
+      *    PERFORM UNTIL       FLG-SPASCR  =   1
+      *        READ    SPASCR-FILE
+      *            AT  END
+      *                MOVE   1            TO  FLG-SPASCR
+      *            NOT AT  END
+      *                ADD    1            TO  IDX
+      *                MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
+      *        END-READ
+      *    END-PERFORM
       *
-           MOVE    WRK-DATA-REC        TO  SPA-K09
+      *    MOVE    WRK-DATA-REC        TO  SPA-K09
       *
-           CLOSE                       SPASCR-FILE
-           .
-       1002-K09SPA-SET-EXT.
-           EXIT.
+      *    CLOSE                       SPASCR-FILE
+      *    .
+      *1002-K09SPA-SET-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    £Ó£Ð£Á¥Ç¡¼¥¿£×£Ò£É£Ô£Å½èÍý
       *****************************************************************
-       1003-K09SPA-OUT-SEC             SECTION.
+      *1003-K09SPA-OUT-SEC             SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
+      *    MOVE    SPA-TERMID          TO  FILE-TERMID1
+      *    MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
       *
-           OPEN    OUTPUT              SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               DISPLAY "K09SPASCR OUT OPEN ERR:"   STS-SPASCR "."
-           END-IF
+      *    OPEN    OUTPUT              SPASCR-FILE
+      *    IF      STS-SPASCR     NOT =   ZERO
+      *        DISPLAY "K09SPASCR OUT OPEN ERR:"   STS-SPASCR "."
+      *    END-IF
       *
-           MOVE    SPA-K09             TO  WRK-DATA-REC
-           PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   10  )  OR
-                              (WRK-DATA (IDX)     =   SPACE)
+      *    MOVE    SPA-K09             TO  WRK-DATA-REC
+      *    PERFORM VARYING     IDX     FROM   1   BY  1
+      *            UNTIL      (IDX     >   10  )  OR
+      *                       (WRK-DATA (IDX)     =   SPACE)
       *
-               MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
-               WRITE                       SPA-DATA-REC
-               IF      STS-SPASCR     NOT =   ZERO
-                   DISPLAY "K09SPASCR OUT WRITE ERR:"   STS-SPASCR "."
-                END-IF
-           END-PERFORM
+      *        MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
+      *        WRITE                       SPA-DATA-REC
+      *        IF      STS-SPASCR     NOT =   ZERO
+      *            DISPLAY "K09SPASCR OUT WRITE ERR:"   STS-SPASCR "."
+      *         END-IF
+      *    END-PERFORM
       *
-           CLOSE                       SPASCR-FILE
-           .
-       1003-K09SPA-SET-EXT.
-           EXIT.
+      *    CLOSE                       SPASCR-FILE
+      *    .
+      *1003-K09SPA-SET-EXT.
+      *    EXIT.
       *
       *****************************************************************
       *    ½é´ü¡¡½èÍý
@@ -1613,8 +1613,8 @@
       *        ELSE
       *            PERFORM 3101-JYURRK-DBHEN-SEC
       ******** END-IF
-               INITIALIZE                  SPA-GMN-TBL
-               INITIALIZE                  SPA-NAI-TBL
+               INITIALIZE                  SPA-K09GMN-TBL
+               INITIALIZE                  SPA-K09NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2
                MOVE    ZERO                TO  SPA-NAI-MAX2
                IF      SPA-K09GMN-MAX1     >   ZERO
@@ -1710,8 +1710,8 @@
                MOVE    ZERO                TO  SPA-K09-RRK-NEXT
       *        ¼õ¿ÇÍúÎòÊÔ½¸
                PERFORM 3101-JYURRK-DBHEN-SEC
-               INITIALIZE                  SPA-GMN-TBL
-               INITIALIZE                  SPA-NAI-TBL
+               INITIALIZE                  SPA-K09GMN-TBL
+               INITIALIZE                  SPA-K09NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2
                MOVE    ZERO                TO  SPA-NAI-MAX2
                IF      SPA-K09GMN-MAX1     >   ZERO
@@ -1742,9 +1742,9 @@
       *
            INITIALIZE                  SPA-GMN-DOSEL
            INITIALIZE                  SPA-NAI-DOSEL-G
-           MOVE    SPACE               TO  SPA-GMN-TBL
-           INITIALIZE                  SPA-GMN-TBL
-           INITIALIZE                  SPA-NAI-TBL
+           MOVE    SPACE               TO  SPA-K09GMN-TBL
+           INITIALIZE                  SPA-K09GMN-TBL
+           INITIALIZE                  SPA-K09NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX2
            MOVE    ZERO                TO  SPA-NAI-MAX2
       *
@@ -1817,9 +1817,9 @@
       *
            INITIALIZE                  SPA-GMN-DOSEL
            INITIALIZE                  SPA-NAI-DOSEL-G
-           MOVE    SPACE               TO  SPA-GMN-TBL
-           INITIALIZE                  SPA-GMN-TBL
-           INITIALIZE                  SPA-NAI-TBL
+           MOVE    SPACE               TO  SPA-K09GMN-TBL
+           INITIALIZE                  SPA-K09GMN-TBL
+           INITIALIZE                  SPA-K09NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX2
            MOVE    ZERO                TO  SPA-NAI-MAX2
       *
@@ -3301,8 +3301,8 @@
       *
                PERFORM 3101-JYURRK-DBHEN-SEC
       *
-               INITIALIZE                  SPA-GMN-TBL
-               INITIALIZE                  SPA-NAI-TBL
+               INITIALIZE                  SPA-K09GMN-TBL
+               INITIALIZE                  SPA-K09NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2
                MOVE    ZERO                TO  SPA-NAI-MAX2
                IF      SPA-K09GMN-MAX1     >   ZERO
@@ -3330,8 +3330,8 @@
       *
                PERFORM 3101-JYURRK-DBHEN-SEC
       *
-               INITIALIZE                  SPA-GMN-TBL
-               INITIALIZE                  SPA-NAI-TBL
+               INITIALIZE                  SPA-K09GMN-TBL
+               INITIALIZE                  SPA-K09NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2
                MOVE    ZERO                TO  SPA-NAI-MAX2
                IF      SPA-K09GMN-MAX1     >   ZERO

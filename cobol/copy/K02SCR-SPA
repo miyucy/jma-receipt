@@ -645,3 +645,45 @@
                    07  SPA-K021-GMN-SELNUM         PIC X(03).
                    07  SPA-K021-SELNUM             PIC 9(03).
       *
+      *£Ë£°£¹¡Ê£Ä£Ï¡Ë¤Î²èÌÌ¥¹¥ÑÎÎ°è
+           03  SPA-K09-AREA.
+               05  SPA-K09GMN-TBL.
+                   07  SPA-GMN-TBLREC-G  OCCURS  800.
+                       09  SPA-GMN-TBANGO      PIC 9(03).
+                       09  SPA-GMN-TMEISYO     PIC X(200).
+                       09  SPA-GMN-TMEISYO-1   REDEFINES
+                                                   SPA-GMN-TMEISYO.
+                           11  SPA-GMN-TYOBI0      PIC X(02).
+                           11  SPA-GMN-TMEISYO1    PIC X(196).
+                       09  SPA-GMN-TMEISYO-2   REDEFINES
+                                               SPA-GMN-TMEISYO.
+                           11  SPA-GMN-TMEISYO2    PIC X(44).
+                           11  SPA-GMN-HEN1.
+                               13  SPA-GMN-TSURYOU     PIC X(18).
+                               13  SPA-GMN-TTANI1      PIC X(08).
+                               13  SPA-GMN-TTANMEI     PIC X(06).
+                               13  SPA-GMN-TTANI2      PIC X(04).
+                               13  SPA-GMN-TYOBI1      PIC X(14).
+                           11  SPA-GMN-HEN2    REDEFINES
+                                               SPA-GMN-HEN1.
+                               13  SPA-GMN-TZAIKEI     PIC X(40).
+      *
+                       09  SPA-NAI-TBANGO        PIC  9(03).
+               05  SPA-GMN-MAX2                  PIC 9(04).
+               05  SPA-NAI-MAX2                  PIC 9(04).
+      *
+               05  SPA-GMN-DOSEL             PIC X(40).
+               05  SPA-NAI-DOSEL-G.
+                   07  SPA-NAI-DOSEL         PIC 9(03)
+                                             OCCURS   135.
+                   07  SPA-NAI-DOSEL-MAX     PIC 9(03).
+      *
+               05  SPA-K09NAI-AREA.
+                   07  SPA-K09NAI-TBL.
+                       09  SPA-NAI-TBLREC            OCCURS   800.
+                           11  SPA-NAI-ZAINUM        PIC  9(08).
+                           11  SPA-NAI-SRYKBN        PIC  X(02).
+                       09  SPA-SEL-IDX               PIC  9(02).
+                       09  SPA-SEL-RENNUM            PIC  9(01).
+      *
+      *

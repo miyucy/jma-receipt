@@ -75,7 +75,7 @@
       *
       *    ＳＰＡパラメタデータ
        FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(60000).
+       01  SPA-DATA-REC            PIC X(1200).
       *
        WORKING-STORAGE             SECTION.
       * ＳＰＡデータ
@@ -863,23 +863,48 @@
                GO      TO      1002-K05SPA-SET-EXT
            END-IF
       *
-           INITIALIZE          SPA-SCR-REC
-           INITIALIZE          WRK-DATA-REC
+           MOVE    SPACE               TO  SPA-SCR-REC
+           INITIALIZE                      SPA-SCR-REC
            MOVE    ZERO                TO  FLG-SPASCR
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL       FLG-SPASCR  =   1
                READ    SPASCR-FILE
                    AT  END
-                       MOVE   1            TO  FLG-SPASCR
+                       MOVE   1                TO  FLG-SPASCR
                    NOT AT  END
-                       ADD    1            TO  IDX
-                       MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
+                       ADD    1                TO  IDX
+                       MOVE   SPA-DATA-REC     TO  SPA-GMN-TBL (IDX)
                END-READ
            END-PERFORM
-      *
-           MOVE    WRK-DATA-REC        TO  SPA-SCR-REC
-      *
            CLOSE                       SPASCR-FILE
+      *
+      *    行位置とカーソル位置の決定
+           MOVE    1                   TO  WRK-PAGE
+           MOVE    ZERO                TO  SPA-GMN-MAX
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     WRK-IDX     FROM    1   BY  1
+                   UNTIL       WRK-IDX     >   SPA-MAX-LINE
+               MOVE    ZERO                TO  SPA-COM-PAGE (WRK-IDX)
+               MOVE    ZERO                TO  SPA-COM-GYOU (WRK-IDX)
+      *        画面表示外のものに頁、行位置を設定する
+               IF      SPA-COM-SET    (WRK-IDX)  =   SPACE
+                   ADD     1                 TO  IDX
+                   IF      IDX               >   MAX-GMN
+                       ADD     1             TO  WRK-PAGE
+                       MOVE    1             TO  IDX
+                   END-IF
+                   MOVE    WRK-PAGE        TO  SPA-COM-PAGE(WRK-IDX)
+                   MOVE    IDX             TO  SPA-COM-GYOU(WRK-IDX)
+               END-IF
+      *
+               IF      (SPA-COM-INPUTCD(WRK-IDX)   =   SPACE ) AND
+                       (SPA-GMN-INPUTCD(WRK-IDX)   =   SPACE )
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  SPA-GMN-MAX
+               END-IF
+           END-PERFORM
+      *
            .
        1002-K05SPA-SET-EXT.
            EXIT.
@@ -897,15 +922,17 @@
                DISPLAY "K05SPASCR OUT OPEN ERR:"   STS-SPASCR "."
             END-IF
       *
-           MOVE    SPA-SCR-REC         TO  WRK-DATA-REC
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   10  )  OR
-                              (WRK-DATA (IDX)     =   SPACE)
-      *
-               MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
-               WRITE                       SPA-DATA-REC
-               IF      STS-SPASCR     NOT =   ZERO
-                   DISPLAY "K05SPASCR OUT WRITE ERR:"   STS-SPASCR "."
+                   UNTIL      (IDX     >   SPA-MAX-LINE ) 
+               IF      (SPA-COM-INPUTCD(IDX)   =   SPACE ) AND
+                       (SPA-GMN-INPUTCD(IDX)   =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    SPA-GMN-TBL(IDX)    TO  SPA-DATA-REC
+                   WRITE                       SPA-DATA-REC
+                   IF      STS-SPASCR     NOT =   ZERO
+                       DISPLAY "K05SPASCR OUT WRITE ERR:" STS-SPASCR "."
+                   END-IF
                 END-IF
            END-PERFORM
       *

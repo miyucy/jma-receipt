@@ -48,7 +48,7 @@
       *
       *    ＳＰＡパラメタデータ
        FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(60000).
+       01  SPA-DATA-REC            PIC X(1200).
       *
       *
        WORKING-STORAGE             SECTION.
@@ -60,11 +60,6 @@
            03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
-      *
-      *
-       01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(60000)
-                                   OCCURS  10.
       *
       *    画面色等
            COPY    "ENUM-VALUE".
@@ -502,9 +497,7 @@
        1002-K02SPA-SET-SEC             SECTION.
       *
            MOVE    SPACE               TO  SPA-SCR-REC
-           INITIALIZE          SPA-SCR-REC
-           MOVE    SPACE               TO  WRK-DATA-REC
-           INITIALIZE          WRK-DATA-REC
+           INITIALIZE                  SPA-SCR-REC
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID1
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
@@ -522,13 +515,21 @@
                        MOVE   1            TO  FLG-SPASCR
                    NOT AT  END
                        ADD    1                TO  IDX
-                       MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
+                       MOVE   SPA-DATA-REC     TO  SPA-GMN-TBL (IDX)
                END-READ
            END-PERFORM
-      *
-           MOVE    WRK-DATA-REC        TO  SPA-SCR-REC
-      *
            CLOSE                       SPASCR-FILE
+      *
+           MOVE    ZERO                TO  SPA-GMN-MAX
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-MAX-LINE
+               IF      (SPA-COM-INPUTCD(IDX)   =   SPACE ) AND
+                       (SPA-GMN-INPUTCD(IDX)   =   SPACE )
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  SPA-GMN-MAX
+               END-IF
+           END-PERFORM
            .
        1002-K02SPA-SET-EXT.
            EXIT.

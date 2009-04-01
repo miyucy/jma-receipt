@@ -69,7 +69,7 @@
       *
       *    ＳＰＡパラメタデータ
        FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(60000).
+       01  SPA-DATA-REC                 PIC X(1200).
       *
       *    ワーク診療
        FD  WKSRY-FILE.
@@ -1101,8 +1101,6 @@
       *
            MOVE    SPACE               TO  SPA-SCR-REC
            INITIALIZE          SPA-SCR-REC
-           MOVE    SPACE               TO  WRK-DATA-REC
-           INITIALIZE          WRK-DATA-REC
            MOVE    ZERO                TO  FLG-SPASCR
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL       FLG-SPASCR  =   1
@@ -1111,15 +1109,39 @@
                        MOVE   1                TO  FLG-SPASCR
                    NOT AT  END
                        ADD    1                TO  IDX
-                       IF     IDX              <=  10
-                           MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
-                       END-IF
+                       MOVE    SPA-DATA-REC    TO  SPA-GMN-TBL (IDX)
                END-READ
            END-PERFORM
       *
-           MOVE    WRK-DATA-REC        TO  SPA-SCR-REC
-      *
            CLOSE                       SPASCR-FILE
+      *
+      *    行位置とカーソル位置の決定
+           MOVE    1                   TO  WRK-PAGE
+           MOVE    ZERO                TO  SPA-GMN-MAX
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     WRK-IDX     FROM    1   BY  1
+                   UNTIL       WRK-IDX     >   SPA-MAX-LINE
+               MOVE    ZERO                TO  SPA-COM-PAGE (WRK-IDX)
+               MOVE    ZERO                TO  SPA-COM-GYOU (WRK-IDX)
+      *        画面表示外のものに頁、行位置を設定する
+               IF      SPA-COM-SET    (WRK-IDX)  =   SPACE
+                   ADD     1                 TO  IDX
+                   IF      IDX               >   MAX-GMN
+                       ADD     1             TO  WRK-PAGE
+                       MOVE    1             TO  IDX
+                   END-IF
+      *
+                   MOVE    WRK-PAGE        TO  SPA-COM-PAGE(WRK-IDX)
+                   MOVE    IDX             TO  SPA-COM-GYOU(WRK-IDX)
+               END-IF
+      *
+               IF      (SPA-COM-INPUTCD(WRK-IDX)   =   SPACE ) AND
+                       (SPA-GMN-INPUTCD(WRK-IDX)   =   SPACE )
+                   CONTINUE
+               ELSE
+                   ADD     1               TO  SPA-GMN-MAX
+               END-IF
+           END-PERFORM
            .
        1002-KT01SPA-SET-EXT.
            EXIT.
@@ -1137,18 +1159,24 @@
                DISPLAY "KT01SPASCR OUT OPEN ERR:"   STS-SPASCR "."
            END-IF
       *
-           MOVE    SPA-SCR-REC         TO  WRK-DATA-REC
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   10  )  OR
-                              (WRK-DATA (IDX)     =   SPACE)
-               MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
-               WRITE                       SPA-DATA-REC
-               IF      STS-SPASCR     NOT =   ZERO
-                   DISPLAY "KT01SPASCR OUT WRITE ERR:"   STS-SPASCR "."
-               END-IF
+                   UNTIL      (IDX     >   SPA-MAX-LINE  )
+              IF       (SPA-GMN-INPUTCD (IDX)     =   SPACE )
+                   AND (SPA-COM-INPUTCD (IDX)     =   SPACE )
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE               TO  SPA-DATA-REC
+                   MOVE    SPA-GMN-TBL (IDX)   TO  SPA-DATA-REC
+                   WRITE                       SPA-DATA-REC
+                   IF      STS-SPASCR     NOT =   ZERO
+                       DISPLAY "KT01SPASCR OUT WRITE ERR:"
+                                                  STS-SPASCR "."
+                   END-IF
+              END-IF
            END-PERFORM
       *
            CLOSE                       SPASCR-FILE
+      *TEST
            .
        1003-KT01SPA-SET-EXT.
            EXIT.
@@ -1411,11 +1439,6 @@
       *    ドクター
            MOVE    "1"                 TO  SPA-DRCD(1:1)
            MOVE    SPA-GMN-DRCD        TO  SPA-DRCD(2:4)
-      *    IF     (SPA-DRCD-NAME       NOT =   SPACE )  AND
-      *           (SPA-DRCD-NAME(1:4)  NOT =   SPA-DRCD(2:4))
-      *        MOVE    "1"                 TO  SPA-DRCD(1:1)
-      *        MOVE    SPA-DRCD-NAME(1:4)  TO  SPA-DRCD(2:4)
-      ***  END-IF
       *
       *    排他制御処理
            PERFORM 990-LOCK-IN-SEC
@@ -1471,26 +1494,12 @@
            MOVE    WRK-MAE-HKNCOMBI    TO  SPA-GMN-HKNCOMBINUM
            MOVE    WRK-MAE-HKNCOMBI    TO  SPA-HKNCOMBINUM
       *
-      *    チェック用月内診療行為セット
-      *    PERFORM                 320-SPA-CHKSET-SEC
-      *
       *    スパ共通編集処理
            PERFORM                 310-SPA-SET-SEC
            MOVE    WRK-SCR-REC         TO  SPA-SCR-REC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      30011-INIT-HEN-EXT
            END-IF
-      *
-      *    診察料のみ変換する
-      *    MOVE    SPA-K01KYOUTU       TO  SPA-WORK
-      *    INITIALIZE                      ORCSC10SAREA
-      *    MOVE    "S"                 TO  LNK-SC10S-SYORI
-      *    CALL    "ORCSC10S"          USING
-      *                                ORCSC10SAREA
-      *                                SPA-AREA
-      *                                SPA-SCR-REC
-      *                                SPA-KT01
-      *    MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
       *    診療行為、計計算処理、編集
            MOVE    SPACE               TO  FLG-TOROKU
@@ -2113,7 +2122,7 @@
       *****************************************************************
       *    再診を初診料へ自動算定より処理
       *****************************************************************
-       300109-SYOSINSET-SEC                  SECTION.
+      *300109-SYOSINSET-SEC                  SECTION.
       *
       *---- 治癒への変更はやめる  ------------------------------------
       *    患者病名病名を治癒へ
@@ -2160,11 +2169,11 @@
       *-----------------------------------------------------------------
       *
       *    初診算定
-           MOVE    1                   TO  SPA-SYOSIN
-           MOVE    SPACE               TO  SPA-GMN-SYOSINYMD
+      *    MOVE    1                   TO  SPA-SYOSIN
+      *    MOVE    SPACE               TO  SPA-GMN-SYOSINYMD
       *
       *    画面用スパ編集処理
-           MOVE    SPACE               TO  SPA-KIDCD
+      *    MOVE    SPACE               TO  SPA-KIDCD
       *
       *    診察料のみ変換する
       *    MOVE    SPA-K01KYOUTU       TO  SPA-WORK
@@ -2196,34 +2205,34 @@
       *
       *    MOVE    SPACE               TO  SPA-KID1-FLG
       *
-           .
-       300109-SYOSINSET-EXT.
-           EXIT.
+      *    .
+      *300109-SYOSINSET-EXT.
+      *    EXIT.
       *****************************************************************
       *    初診料を再診へ変更処理
       *****************************************************************
-       300110-SAISINSET-SEC                  SECTION.
+      *300110-SAISINSET-SEC                  SECTION.
       *
-           MOVE    ZERO                TO  SPA-SYOSIN
+      *    MOVE    ZERO                TO  SPA-SYOSIN
       *    初診算定日
-           IF     (SPA-SYOYMD      NOT =   SPACE )  AND
-                  (SPA-SYOSIN          =   ZERO  )
-               MOVE    SPA-SYOYMD      TO  WRK-SYMD
-               PERFORM 520-SEIWA-HEN-SEC
-               MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD
+      *    IF     (SPA-SYOYMD      NOT =   SPACE )  AND
+      *           (SPA-SYOSIN          =   ZERO  )
+      *        MOVE    SPA-SYOYMD      TO  WRK-SYMD
+      *        PERFORM 520-SEIWA-HEN-SEC
+      *        MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD
       *        同時初診
-               IF     (SPA-DOUYMD      NOT =   SPACE )
-                 AND  (SPA-DOUYMD          >=  SPA-SYOYMD)
-                   MOVE    SPA-DOUYMD      TO  WRK-SYMD
-                   PERFORM 520-SEIWA-HEN-SEC
-                   MOVE    "("             TO  SPA-GMN-SYOSINYMD(12:1)
-                   MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD(13:9)
-                   MOVE    ")"             TO  SPA-GMN-SYOSINYMD(22:1)
-               END-IF
-           END-IF
+      *        IF     (SPA-DOUYMD      NOT =   SPACE )
+      *          AND  (SPA-DOUYMD          >=  SPA-SYOYMD)
+      *            MOVE    SPA-DOUYMD      TO  WRK-SYMD
+      *            PERFORM 520-SEIWA-HEN-SEC
+      *            MOVE    "("             TO  SPA-GMN-SYOSINYMD(12:1)
+      *            MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD(13:9)
+      *            MOVE    ")"             TO  SPA-GMN-SYOSINYMD(22:1)
+      *        END-IF
+      *    END-IF
       *
       *    画面用スパ編集処理
-           MOVE    SPACE               TO  SPA-KIDCD
+      *    MOVE    SPACE               TO  SPA-KIDCD
       *    診察料のみ変換する
       *    MOVE    SPA-K01KYOUTU       TO  SPA-WORK
       *    INITIALIZE                      ORCSC10SAREA
@@ -2236,17 +2245,17 @@
       *    MOVE    SPA-WORK            TO  SPA-K01KYOUTU
       *
       *    診療行為、計計算処理、編集
-           MOVE    SPACE           TO  FLG-TOROKU
-           PERFORM 510-TBLHEN-SEC
-           MOVE    SPACE           TO  FLG-TOROKU
+      *    MOVE    SPACE           TO  FLG-TOROKU
+      *    PERFORM 510-TBLHEN-SEC
+      *    MOVE    SPACE           TO  FLG-TOROKU
       *
-           MOVE    1                   TO  SPA-GMN-CUR
+      *    MOVE    1                   TO  SPA-GMN-CUR
       *
-           MOVE    SPACE               TO  SPA-KID1-FLG
+      *    MOVE    SPACE               TO  SPA-KID1-FLG
       *
-           .
-       300110-SAISINSET-EXT.
-           EXIT.
+      *    .
+      *300110-SAISINSET-EXT.
+      *    EXIT.
       *****************************************************************
       *    他保険算定あり処理
       *****************************************************************
@@ -2476,8 +2485,8 @@
            END-IF
       *
       *    初診算定日
-           IF     (SPA-SYOYMD      NOT =   SPACE )  AND
-                  (SPA-SYOSIN          =   ZERO  )
+           IF     (SPA-SYOYMD      NOT =   SPACE )
+      ****   AND  (SPA-SYOSIN          =   ZERO  )
                MOVE    SPA-SYOYMD      TO  WRK-SYMD
                PERFORM 520-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG     TO  SPA-GMN-SYOSINYMD
@@ -6140,33 +6149,6 @@
                GO    TO  510-TBLHEN-EXT
            END-IF
       *
-           IF     (SPA-ERRCD       NOT =   SPACE )
-               GO      TO      510-TBLHEN-EXT
-           END-IF
-      ***  禁忌チェックを行う
-      *    IF      SPA-ERRCD       =   SPACE
-      *    AND    (FLG-TOROKU          =   SPACE ) 
-      *        PERFORM 51010-KNKCHK-SEC
-      *        IF      FLG-KINKI           =   1
-      *            GO      TO      510-TBLHEN-EXT
-      *        END-IF
-      **** END-IF
-      *    包括診療チェック
-      *    IF     (SPA-ERRCD           =   SPACE )  AND
-      *           (SPA-KIDCD           =   SPACE )  AND
-      *           (FLG-HKTCHK          =   1 ) AND
-      *           (SPA-HKTSANTEI-FLG   =   1 ) AND
-      *           (SPA-HKNCOMBINUM NOT =   "9999")
-      *        PERFORM 5109-HKTSANTEI-CHK-SEC
-      ***  END-IF
-      *    ７０歳到達の警告（老人公費は廃止）
-      *    IF      SPA-ERRCD       =   SPACE
-      *        IF      SPA-NAI-ROUFLG      =   1
-      *            IF      SPA-NAI-ROUSTR      =   ZERO
-      *                MOVE    "K008"          TO  SPA-ERRCD
-      *            END-IF
-      *        END-IF
-      *****END-IF
            .
         510-TBLHEN-EXT.
            EXIT.
@@ -6195,7 +6177,6 @@
                INSPECT SPA-GMN-INPUTCD(IDX)
                        REPLACING   FIRST "*"  BY  " "
            END-IF
-      *
            .
        51011-KAISU-CHK-EXT.
            EXIT.
@@ -9008,7 +8989,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    WRK-PAGE        TO  SPA-COM-PAGE(WRK-IDX)
                    MOVE    IDX             TO  SPA-COM-GYOU(WRK-IDX)
       *
-      *************IF      SPA-ERRCD       =   SPACE
                    IF      SPA-COM-CUR (WRK-IDX)   =   "1"
       *!!
       *            セットで警告の時
@@ -10217,7 +10197,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-SEC                 SECTION.
       *
            MOVE    "DBFETCH"       TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
@@ -10232,7 +10212,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        990-DBCLOSE-SEC         SECTION.
       *
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
-grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
+           CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *

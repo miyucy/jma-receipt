@@ -40,9 +40,9 @@
                                    FILE    STATUS  IS  STS-PARA.
       *
       *    £Ó£Ð£Á¥Ç¡¼¥¿
-           SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
-                                   FILE    STATUS  IS  STS-SPASCR.
+      *    SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
+      *                            ORGANIZATION    IS  LINE SEQUENTIAL
+      *                            FILE    STATUS  IS  STS-SPASCR.
       *
       *
        DATA                        DIVISION.
@@ -56,8 +56,8 @@
            03  PARA-DATA-REC            PIC X(60000).
       *
       *    £Ó£Ð£Á¥Ñ¥é¥á¥¿¥Ç¡¼¥¿
-       FD  SPASCR-FILE.
-       01  SPA-DATA-REC            PIC X(60000).
+      *FD  SPASCR-FILE.
+      *01  SPA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -77,9 +77,9 @@
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *
-       01  WRK-DATA-REC.
-           03  WRK-DATA            PIC X(60000)
-                                   OCCURS  10.
+      *01  WRK-DATA-REC.
+      *    03  WRK-DATA            PIC X(60000)
+      *                            OCCURS  10.
       *
       *    ²èÌÌÈóÉ½¼¨
            COPY    "ENUM-VALUE".
@@ -92,50 +92,6 @@
       *
       *    ²èÌÌÍÑ¶¦ÄÌ¥¹¥ÑÎÎ°è
            COPY    "KT01SCR-SPA".
-      *
-      *    ²èÌÌ¥¹¥ÑÎÎ°è
-       01  SPA-KT012.
-           03  SPA-KT012-AREA.
-      *
-               05  SPA-GMN-TBL.
-                   07  SPA-GMN-TBLREC-G  OCCURS  800.
-                       09  SPA-GMN-TBANGO      PIC 9(03).
-                       09  SPA-GMN-TMEISYO     PIC X(200).
-                       09  SPA-GMN-TMEISYO-1   REDEFINES
-                                                   SPA-GMN-TMEISYO.
-                           11  SPA-GMN-TYOBI0      PIC X(02).
-                           11  SPA-GMN-TMEISYO1    PIC X(196).
-                       09  SPA-GMN-TMEISYO-2   REDEFINES
-                                               SPA-GMN-TMEISYO.
-                           11  SPA-GMN-TMEISYO2    PIC X(44).
-                           11  SPA-GMN-HEN1.
-                               13  SPA-GMN-TSURYOU     PIC X(18).
-                               13  SPA-GMN-TTANI1      PIC X(08).
-                               13  SPA-GMN-TTANMEI     PIC X(06).
-                               13  SPA-GMN-TTANI2      PIC X(04).
-                               13  SPA-GMN-TYOBI1      PIC X(14).
-                           11  SPA-GMN-HEN2    REDEFINES
-                                               SPA-GMN-HEN1.
-                               13  SPA-GMN-TZAIKEI     PIC X(40).
-      *
-                       09  SPA-NAI-TBANGO        PIC  9(03).
-               05  SPA-GMN-MAX2                  PIC 9(04).
-               05  SPA-NAI-MAX2                  PIC 9(04).
-      *
-               05  SPA-GMN-DOSEL             PIC X(40).
-               05  SPA-NAI-DOSEL-G.
-                   07  SPA-NAI-DOSEL         PIC 9(03)
-                                             OCCURS   135.
-                   07  SPA-NAI-DOSEL-MAX     PIC 9(03).
-      *
-               05  SPA-NAI-AREA.
-      *
-                   07  SPA-NAI-TBL.
-                       09  SPA-NAI-TBLREC            OCCURS   800.
-                           11  SPA-NAI-ZAINUM        PIC  9(08).
-                           11  SPA-NAI-SRYKBN        PIC  X(02).
-                       09  SPA-SEL-IDX               PIC  9(02).
-                       09  SPA-SEL-RENNUM            PIC  9(01).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  STS-AREA.
@@ -485,9 +441,6 @@
       *    ¿ÇÎÅ¼ïÊÌ¥Æ¡¼¥Ö¥ë¥»¥Ã¥È
            PERFORM 1001-SRYKBN-SET-SEC
       *
-      *    ²èÌÌ£Ó£Ð£ÁÆÉ¤ß¹þ¤ß
-           PERFORM 1002-KT012SPA-SET-SEC
-      *
            MOVE    SPACE           TO  SPA-ERRCD
            MOVE    ZERO            TO  FLG-END
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
@@ -504,11 +457,6 @@
       *    ²èÌÌÁ«°Ü¤¬¤Ê¤¤»þ¡¢²èÌÌÉ½¼¨¤Ø
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
-           END-IF
-      *
-      *    ²èÌÌ£Ó£Ð£Á½ñ¹þ¤ß
-           IF      FLG-END2            =   ZERO
-               PERFORM 1003-KT012SPA-OUT-SEC
            END-IF
       *
            MOVE    SPA-K01KYOUTU   TO  SPA-WORK
@@ -529,72 +477,6 @@
                                        MSYU-DATA-REC
            .
        1001-SRYKBN-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ó£Ð£Á¥Ç¡¼¥¿£Ò£Å£Á£Ä½èÍý
-      *****************************************************************
-       1002-KT012SPA-SET-SEC             SECTION.
-      *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-      *
-           OPEN    INPUT               SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               GO      TO      1002-KT012SPA-SET-EXT
-           END-IF
-      *
-           MOVE    SPACE               TO  SPA-KT012
-           INITIALIZE                  SPA-KT012
-           MOVE    SPACE               TO  WRK-DATA-REC
-           INITIALIZE          WRK-DATA-REC
-           MOVE    ZERO                TO  FLG-SPASCR
-           MOVE    ZERO                TO  IDX
-           PERFORM UNTIL       FLG-SPASCR  =   1
-               READ    SPASCR-FILE
-                   AT  END
-                       MOVE   1            TO  FLG-SPASCR
-                   NOT AT  END
-                       ADD    1            TO  IDX
-                       MOVE   SPA-DATA-REC     TO  WRK-DATA (IDX)
-               END-READ
-           END-PERFORM
-      *
-           MOVE    WRK-DATA-REC        TO  SPA-KT012
-      *
-           CLOSE                       SPASCR-FILE
-           .
-       1002-KT012SPA-SET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    £Ó£Ð£Á¥Ç¡¼¥¿£×£Ò£É£Ô£Å½èÍý
-      *****************************************************************
-       1003-KT012SPA-OUT-SEC             SECTION.
-      *
-           MOVE    SPA-TERMID          TO  FILE-TERMID1
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
-      *
-           OPEN    OUTPUT              SPASCR-FILE
-           IF      STS-SPASCR     NOT =   ZERO
-               DISPLAY "KT012SPASCR OUT OPEN ERR:"   STS-SPASCR "."
-           END-IF
-      *
-           MOVE    SPA-KT012             TO  WRK-DATA-REC
-           PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   10  )  OR
-                              (WRK-DATA (IDX)     =   SPACE)
-      *
-               MOVE    WRK-DATA (IDX)      TO  SPA-DATA-REC
-               WRITE                       SPA-DATA-REC
-               IF      STS-SPASCR     NOT =   ZERO
-                   DISPLAY "KT012SPASCR OUT WRITE ERR:"   STS-SPASCR "."
-                END-IF
-           END-PERFORM
-      *
-           CLOSE                       SPASCR-FILE
-           .
-       1003-KT012SPA-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1540,8 +1422,8 @@
                MOVE    ZERO                TO  SPA-KT012-RRK-NEXT
       *        ¼õ¿ÇÍúÎòÊÔ½¸
                PERFORM 3101-JYURRK-DBHEN-SEC
-               INITIALIZE                  SPA-GMN-TBL
-               INITIALIZE                  SPA-NAI-TBL
+               INITIALIZE                  SPA-KT012GMN-TBL
+               INITIALIZE                  SPA-KT012NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2
                MOVE    ZERO                TO  SPA-NAI-MAX2
                IF      SPA-KT012GMN-MAX1     >   ZERO
@@ -1638,8 +1520,8 @@
                MOVE    ZERO                TO  SPA-KT012-RRK-NEXT
       *        ¼õ¿ÇÍúÎòÊÔ½¸
                PERFORM 3101-JYURRK-DBHEN-SEC
-               INITIALIZE                  SPA-GMN-TBL
-               INITIALIZE                  SPA-NAI-TBL
+               INITIALIZE                  SPA-KT012GMN-TBL
+               INITIALIZE                  SPA-KT012NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2
                MOVE    ZERO                TO  SPA-NAI-MAX2
                IF      SPA-KT012GMN-MAX1     >   ZERO
@@ -1669,9 +1551,9 @@
       *
            INITIALIZE                  SPA-GMN-DOSEL
            INITIALIZE                  SPA-NAI-DOSEL-G
-           MOVE    SPACE               TO  SPA-GMN-TBL
-           INITIALIZE                  SPA-GMN-TBL
-           INITIALIZE                  SPA-NAI-TBL
+           MOVE    SPACE               TO  SPA-KT012GMN-TBL
+           INITIALIZE                  SPA-KT012GMN-TBL
+           INITIALIZE                  SPA-KT012NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX2
            MOVE    ZERO                TO  SPA-NAI-MAX2
       *
@@ -1745,9 +1627,9 @@
       *
            INITIALIZE                  SPA-GMN-DOSEL
            INITIALIZE                  SPA-NAI-DOSEL-G
-           MOVE    SPACE               TO  SPA-GMN-TBL
-           INITIALIZE                  SPA-GMN-TBL
-           INITIALIZE                  SPA-NAI-TBL
+           MOVE    SPACE               TO  SPA-KT012GMN-TBL
+           INITIALIZE                  SPA-KT012GMN-TBL
+           INITIALIZE                  SPA-KT012NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX2
            MOVE    ZERO                TO  SPA-NAI-MAX2
       *
@@ -3217,8 +3099,8 @@
       *
                PERFORM 3101-JYURRK-DBHEN-SEC
       *
-               INITIALIZE                  SPA-GMN-TBL
-               INITIALIZE                  SPA-NAI-TBL
+               INITIALIZE                  SPA-KT012GMN-TBL
+               INITIALIZE                  SPA-KT012NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2
                MOVE    ZERO                TO  SPA-NAI-MAX2
                IF      SPA-KT012GMN-MAX1   >   ZERO
@@ -3246,8 +3128,8 @@
       *
                PERFORM 3101-JYURRK-DBHEN-SEC
       *
-               INITIALIZE                  SPA-GMN-TBL
-               INITIALIZE                  SPA-NAI-TBL
+               INITIALIZE                  SPA-KT012GMN-TBL
+               INITIALIZE                  SPA-KT012NAI-TBL
                MOVE    ZERO                TO  SPA-GMN-MAX2
                MOVE    ZERO                TO  SPA-NAI-MAX2
                IF      SPA-KT012GMN-MAX1   >   ZERO
