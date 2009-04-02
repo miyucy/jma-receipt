@@ -20,15 +20,13 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 月次帳票
-      *  コンポーネント名  : 経過措置薬剤更新
-      *                    :（チェックマスタ・薬剤情報マスタ・患者禁忌薬剤）
+      *  コンポーネント名  : チェックマスタ・薬剤情報マスタ経過措置薬剤更新
       *  管理者            : 
       *  作成日付    作業者        記述
       *  07/09/07    NACL-太田     新規作成
       *****************************************************************
       *  プログラム修正履歴
       *  Maj/Min/Rev 修正者        日付      内容
-      *  04.08.01    NACL-森脇     14/07/22  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -71,12 +69,7 @@
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BG0181//.
-      *----(04.08.01)--UPD-START---
-      *     03  FILLER              PIC X(04)   VALUE   ".dat".
-      *----(04.08.01)--UPD-END-----
-      *----(04.08.01)--ADD-START---
-           COPY    "CPRECEERR.INC".
-      *----(04.08.01)--ADD-END-----
+           03  FILLER              PIC X(04)   VALUE   ".dat".
       *
            COPY    "HCMSL55.INC".
       *
@@ -96,13 +89,11 @@
            03  FLG-CHKTRD          PIC 9(01).
            03  FLG-CHK005          PIC 9(01).
            03  FLG-YAKUJYO         PIC 9(01).
-           03  FLG-PTKINKI         PIC 9(01).
            03  FLG-TCHKMST         PIC 9(01).
            03  FLG-TCHKSND         PIC 9(01).
            03  FLG-TCHKTRD         PIC 9(01).
            03  FLG-TCHK005         PIC 9(01).
            03  FLG-TYAKUJYO        PIC 9(01).
-           03  FLG-TPTKINKI        PIC 9(01).
            03  FLG-LOOPEND         PIC 9(01).
       *
       *    カウント領域
@@ -121,9 +112,7 @@
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
-      *----(04.08.01)--UPD-START---
-      *     03  RECEERR             PIC X(100).
-      *----(04.08.01)--UPD-END-----
+           03  RECEERR             PIC X(100).
            03  WRK-PARA-SRYYMD     PIC X(08).
       *
       *    一時領域
@@ -150,8 +139,8 @@
       *
        01  HEAD-AREA.
            03  HEAD-FL1                    PIC X(05).
-           03  HEAD-NAME-OLD               PIC X(73).
-           03  HEAD-NAME-NEW               PIC X(73).
+           03  HEAD-NAME-OLD               PIC X(76).
+           03  HEAD-NAME-NEW               PIC X(70).
       *
        01  MEISAI-AREA.
            03  MEISAI-NO                   PIC Z(04).
@@ -189,10 +178,6 @@
            COPY    "CPYAKUJYO.INC" REPLACING   //YAKUJYO-//
                                    BY          //TYAKUJYO-//.
       *
-       01  TPTKINKI-REC.
-           COPY    "CPPTKINKI.INC" REPLACING   //PTKINKI-//
-                                   BY          //TPTKINKI-//.
-      *
            COPY    "CPTTNS.INC".
       *
            COPY    "COMMON-SPA".
@@ -219,10 +204,6 @@
       *
       *     薬剤情報マスタ
             COPY    "CPYAKUJYO.INC".
-      *
-      *    患者禁忌薬剤
-       01  PTKINKI-REC.
-           COPY    "CPPTKINKI.INC".
       *
       *    診療行為コード置き換えマスタ
        01  SRYCDCHG-REC.
@@ -257,11 +238,6 @@
       *
       *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
-      *
-      *----(04.08.01)--ADD-START---
-      *    一時ファイル名編集
-           COPY    "CPORCSGETTEMP.INC".
-      *----(04.08.01)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -309,9 +285,6 @@
            INITIALIZE                  KEY-AREA
            INITIALIZE                  SPA-AREA
            INITIALIZE                  TTNS-AREA
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
            PERFORM 100-DBOPEN-SEC
       *
@@ -343,25 +316,8 @@
                                    TO  JOB-SHELLID
            MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    "ORCBG018"      TO  JOB-PGID
-           STRING  "経過措置薬剤更新（チェックマスタ"
-                                       DELIMITED   BY  SIZE
-                   "・薬剤情報マスタ・患者禁忌薬剤）"
-                                       DELIMITED   BY  SIZE
-           INTO    JOB-SHELLMSG
-           END-STRING
-      *
-           CALL    "ORCSJOB"           USING
-                                       ORCSJOBKANRIAREA
-                                       JOBKANRI-REC
-                                       SPA-AREA
-      *
-           MOVE    "STP"           TO  SJOBKANRI-MODE
-           INITIALIZE                  JOBKANRI-REC
-           MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
-           MOVE    WRK-PARA-SHELLID
-                                   TO  JOB-SHELLID
-           MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-           MOVE    3               TO  JOB-STOPFLG
+           MOVE    "チェックマスタ・薬剤情報マスタ経過措置薬剤更新"
+                                   TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -371,17 +327,6 @@
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  BG0181-TERMID
            MOVE    SPA-HOSPNUM     TO  BG0181-HOSPNUM
-      *----(04.08.01)--ADD-START---
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    BG0181-BASENAME     TO  SGETTEMP-BASENAMES (1)
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES (2)
-           CALL    "ORCSGETTEMP"       USING
-                                       SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  BG0181-FULLNAME
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECEERR
-      *----(04.08.01)--ADD-END-----
       *
       *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
@@ -510,10 +455,6 @@
       *
                    IF    ( FLG-END         =   ZERO )
                        PERFORM 20011-YAKUJYO-EDIT-SEC
-                   END-IF
-      *
-                   IF    ( FLG-END         =   ZERO )
-                       PERFORM 20011-PTKINKI-EDIT-SEC
                    END-IF
                END-IF
       *
@@ -686,13 +627,11 @@
                MOVE    TNS-SRYCD       TO  WRK-SRYCD
                PERFORM 900-SRYCDCHG-KEY2-SEL-SEC
                IF    ( FLG-SRYCDCHG        =   ZERO )
-                   PERFORM 900-CHKSND-KEY30-SEL-SEC
+                   PERFORM 900-CHKSND-KEY6-SEL-SEC
                    IF    ( FLG-TCHKSND             =   ZERO )
-                       PERFORM 900-CHKSND-KEY6-SEL-SEC
       *電話でのお問い合わせ４月１日−チェックマスタ経過措置薬剤更新
       *での不具合データ修復対応
-                       IF    ( FLG-TCHKSND         =   ZERO )
-                        AND  ( TCHKSND-UTAGAIKBN   =   SPACE )
+                       IF    ( TCHKSND-UTAGAIKBN   =   SPACE )
                            PERFORM 200111-CHKSND-SRYCD-EDIT-SEC
                            MOVE    "1"     TO  WRK-MSTKBN
                            MOVE    "0"     TO  WRK-PROCKBN
@@ -1107,73 +1046,6 @@
        200111-YAKUJYO-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    患者禁忌薬剤更新処理
-      *****************************************************************
-       20011-PTKINKI-EDIT-SEC      SECTION.
-      *
-           PERFORM 900-PTKINKI-KEY4-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-PTKINKI NOT =   ZERO )
-      *
-               MOVE    TNS-SRYCD       TO  WRK-SRYCD
-               PERFORM 900-SRYCDCHG-KEY2-SEL-SEC
-               IF    ( FLG-SRYCDCHG        =   ZERO )
-                   PERFORM 901-PTKINKI-KEY-SEL-SEC
-                   IF    ( FLG-TPTKINKI    =   ZERO )
-                       MOVE    "3"     TO  WRK-MSTKBN
-                       MOVE    "1"     TO  WRK-PROCKBN
-                       PERFORM 2001-IN01-EDIT-SEC
-                   ELSE
-                       PERFORM 200111-PTKINKI-EDIT-SEC
-                       MOVE    "3"     TO  WRK-MSTKBN
-                       MOVE    "0"     TO  WRK-PROCKBN
-                       PERFORM 2001-IN01-EDIT-SEC
-                   END-IF
-               ELSE
-                       MOVE    "3"     TO  WRK-MSTKBN
-                       MOVE    "1"     TO  WRK-PROCKBN
-                       PERFORM 2001-IN01-EDIT-SEC
-               END-IF
-      *
-               PERFORM 900-PTKINKI-KEY4-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       20011-PTKINKI-EDIT-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者禁忌薬剤更新処理
-      *****************************************************************
-       200111-PTKINKI-EDIT-SEC     SECTION.
-      *
-           MOVE    CHG-RJNSRYCD    TO  PTKINKI-SRYCD
-           MOVE    SPACE           TO  PTKINKI-TERMID
-           MOVE    LNK-PRTKANRI-OPID
-                                   TO  PTKINKI-OPID
-           MOVE    SMCNDATE-YMD    TO  PTKINKI-CREYMD
-                                       PTKINKI-UPYMD
-           MOVE    SMCNDATE-HMS    TO  PTKINKI-UPHMS
-           MOVE    PTKINKI-REC     TO  MCPDATA-REC
-           MOVE    "tbl_ptkinki"   TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           PERFORM 910-DBINSERT-SEC
-           IF    ( MCP-RC          =   ZERO )
-               CONTINUE
-           ELSE
-               MOVE    "患者禁忌薬剤の更新に失敗しました"
-                                   TO  WRK-RECEERR
-               PERFORM 500-ERR-HENSYU-SEC
-           END-IF
-      *
-           .
-       200111-PTKINKI-EDIT-EXT.
-           EXIT.
-      *****************************************************************
       *    入力ファイル編集処理
       *****************************************************************
        2001-IN01-EDIT-SEC              SECTION.
@@ -1236,14 +1108,11 @@
            INITIALIZE                  HCMSL55
       *
            MOVE    SPACE               TO   WRK-MSTMSG
-           EVALUATE    IN01-MSTKBN
-           WHEN    "1"
+           IF    ( IN01-MSTKBN         =    "1" )
                MOVE    "チェックマスタ" TO  WRK-MSTMSG
-           WHEN    "2"
+           ELSE
                MOVE    "薬剤情報マスタ" TO  WRK-MSTMSG
-           WHEN    "3"
-               MOVE    "患者禁忌薬剤"   TO  WRK-MSTMSG
-           END-EVALUATE
+           END-IF
       *
            STRING
                "＊＊　"                            DELIMITED   BY  SIZE
@@ -1289,6 +1158,8 @@
            END-IF
       *
            INITIALIZE                      HEAD-AREA
+           MOVE    ALL "　"            TO  HEAD-NAME-OLD
+                                           HEAD-NAME-NEW
            STRING  "経過措置薬剤"      DELIMITED   BY  SIZE
            INTO    HEAD-NAME-OLD
            END-STRING
@@ -1391,8 +1262,13 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
            MOVE    "HCMSL55.red"   TO  SPRT-PRTID
-           MOVE    "経過措置薬剤更新"
+           IF    ( KEY-MSTKBN    =   "1" )
+               MOVE    "チェックマスタ経過措置薬剤更新"
                                    TO  SPRT-TITLE
+           ELSE
+               MOVE    "薬剤情報マスタ経過措置薬剤更新"
+                                   TO  SPRT-TITLE
+           END-IF
            MOVE    HCMSL55         TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  SPRT-TERMID
@@ -1997,38 +1873,12 @@ grpsys                                 SPA-AREA
       *****************************************************************
       *    チェックマスタ２検索処理
       *****************************************************************
-       900-CHKSND-KEY30-SEL-SEC        SECTION.
+       900-CHKSND-KEY6-SEL-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-TCHKSND
       *
            MOVE    CHKSND-REC          TO  TCHKSND-REC
            MOVE    CHG-RJNSRYCD        TO  TCHKSND-SRYCD
-           MOVE    "0"                 TO  TCHKSND-CDKBN
-      *
-           MOVE    TCHKSND-REC         TO  MCPDATA-REC
-           MOVE    "tbl_chksnd"        TO  MCP-TABLE
-           MOVE    "key30"             TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC TO  TCHKSND-REC
-           ELSE
-               MOVE    1           TO  FLG-TCHKSND
-               INITIALIZE              TCHKSND-REC
-           END-IF
-      *
-           MOVE    "tbl_chksnd"        TO  MCP-TABLE
-           MOVE    "key30"             TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       900-CHKSND-KEY30-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    チェックマスタ２検索処理
-      *****************************************************************
-       900-CHKSND-KEY6-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  FLG-TCHKSND
       *
            MOVE    TCHKSND-REC         TO  MCPDATA-REC
            MOVE    "tbl_chksnd"        TO  MCP-TABLE
@@ -2522,77 +2372,6 @@ grpsys                                 SPA-AREA
       *
            .
        901-YAKUJYO-KEY-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者禁忌薬剤検索処理
-      *****************************************************************
-       900-PTKINKI-KEY4-SEL-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PTKINKI
-      *
-           INITIALIZE                      PTKINKI-REC
-           MOVE    SPA-HOSPNUM         TO  PTKINKI-HOSPNUM
-           MOVE    TNS-SRYCD           TO  PTKINKI-SRYCD
-           MOVE    PTKINKI-REC         TO  MCPDATA-REC
-           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-                   MOVE    MCPDATA-REC TO  PTKINKI-REC
-           ELSE
-               MOVE    1               TO  FLG-PTKINKI
-               INITIALIZE                  PTKINKI-REC
-           END-IF
-      *
-           .
-       900-PTKINKI-KEY4-SEL-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者禁忌薬剤FETCH処理
-      *****************************************************************
-       900-PTKINKI-KEY4-FET-SEC        SECTION.
-      *
-           MOVE    ZERO                TO  FLG-PTKINKI
-      *
-           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
-           MOVE    "key4"              TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-                   MOVE    MCPDATA-REC TO  PTKINKI-REC
-           ELSE
-               MOVE    1               TO  FLG-PTKINKI
-               INITIALIZE                  PTKINKI-REC
-           END-IF
-      *
-           .
-       900-PTKINKI-KEY4-FET-EXT.
-           EXIT.
-      *****************************************************************
-      *    患者禁忌薬剤検索処理
-      *****************************************************************
-       901-PTKINKI-KEY-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO                TO  FLG-TPTKINKI
-      *
-           MOVE    PTKINKI-REC         TO  TPTKINKI-REC
-           MOVE    CHG-RJNSRYCD        TO  TPTKINKI-SRYCD
-           MOVE    TPTKINKI-REC        TO  MCPDATA-REC
-           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC TO  TPTKINKI-REC
-           ELSE
-               MOVE    1           TO  FLG-TPTKINKI
-               INITIALIZE              TPTKINKI-REC
-           END-IF
-      *
-           MOVE    "tbl_ptkinki"       TO  MCP-TABLE
-           MOVE    "key"               TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
-      *
-           .
-       901-PTKINKI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
