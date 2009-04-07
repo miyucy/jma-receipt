@@ -47,6 +47,11 @@
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
+      *    パラメタデータ
+           SELECT  PARAK02-FILE    ASSIGN  FILE-NAME22
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PARA2.
+      *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
@@ -58,6 +63,12 @@
                05  PARA-EDANUM          PIC 9(03).
            03  PARA-DATA-REC            PIC X(60000).
       *
+      *    画面スパ領域パラメタデータ
+       FD  PARAK02-FILE.
+      *    画面スパ領域
+           COPY    "K02SCR-SPA"      REPLACING
+                                     //SPA-// BY //PARA-SPA-//.
+      *
        WORKING-STORAGE             SECTION.
       *
       *    パラメタファイル名
@@ -67,10 +78,18 @@
            03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *    パラメタファイル名
+       01  FILE-NAME22.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(08)   VALUE   "K01PARA2".
+           03  FILE-HOSPNUM22      PIC 9(02)   VALUE   ZERO.
+           03  FILE-TERMID22       PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
+           03  STS-PARA2           PIC X(02).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -2287,6 +2306,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 3004-JIDOU-SAKU-SEC
            CLOSE                       PARA-FILE
       *
+      *    ＳＰＡ保存パラメタを作成
+           PERFORM 3001-PARAK02-SYORI-SEC
+      *
            .
        300-TOUROKU-PARA-EXT.
            EXIT.
@@ -2313,6 +2335,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 2002-WKSRYACT-SYORI-SEC
       *
            CLOSE                       PARA-FILE
+      *    ＳＰＡ保存パラメタを作成
+           PERFORM 3001-PARAK02-SYORI-SEC
       *
            .
        400-SENI-PARA-EXT.
@@ -2543,22 +2567,28 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-K01KYOUTU       TO  PARA-DATA-REC
            WRITE                       PARA-REC
       *
-      *    Ｋ０２ＳＰＡをパラメタへ出力
-           MOVE    SPACE               TO  SPA-K021GMN-AREA
-           MOVE    SPACE               TO  PARA-REC
-           MOVE    "K02SPA"            TO  PARA-FILEMEI
-           MOVE    1                   TO  PARA-EDANUM
-           MOVE    SPA-K02             TO  PARA-DATA-REC
-           WRITE                       PARA-REC
-      *
-           MOVE    SPACE               TO  PARA-REC
-           MOVE    "K02SPA"            TO  PARA-FILEMEI
-           MOVE    2                   TO  PARA-EDANUM
-           MOVE    SPA-K02(60001:)     TO  PARA-DATA-REC
-           WRITE                       PARA-REC
-      *
            .
        3001-PARA-SYORI-EXT.
+      *
+      *****************************************************************
+      *    ＳＰＡをパラメタファイルへ書込処理
+      *****************************************************************
+       3001-PARAK02-SYORI-SEC          SECTION.
+      *
+           MOVE    SPA-TERMID          TO  FILE-TERMID22
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
+      *
+           OPEN    OUTPUT              PARAK02-FILE
+           IF      STS-PARA2        NOT =  ZERO
+               DISPLAY "ORCSCWKSRY STS-PARA2 OPEN:"  STS-PARA2  "]"
+           END-IF
+      *    Ｋ０２ＳＰＡをパラメタへ出力
+           MOVE    SPA-K02             TO  PARA-SPA-K02
+           WRITE                       PARA-SPA-K02
+      *
+           CLOSE                       PARAK02-FILE
+           .
+       3001-PARAK02-SYORI-EXT.
            EXIT.
       *
       *****************************************************************

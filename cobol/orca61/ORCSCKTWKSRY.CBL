@@ -38,6 +38,10 @@
            SELECT  PARA-FILE       ASSIGN  FILE-NAME2
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
+      *    パラメタデータ
+           SELECT  PARA-FILE2       ASSIGN  FILE-NAME22
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PARA2.
       *
       *    日毎データ（ワーク診療行為）
            SELECT  WKSRY-FILE      ASSIGN  FILE-NAME3
@@ -65,6 +69,11 @@
                05  PARA-FILEMEI         PIC X(08).
                05  PARA-EDANUM          PIC 9(03).
            03  PARA-DATA-REC            PIC X(60000).
+      *    パラメタデータ
+       FD  PARA-FILE2.
+      *    画面スパ領域
+           COPY    "KT01SCR-SPA"      REPLACING
+                                     //SPA-// BY //PARA-SPA-//.
       *
       *    ワーク診療
        FD  WKSRY-FILE.
@@ -97,6 +106,13 @@
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *    パラメタファイル名
+       01  FILE-NAME22.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(09)   VALUE   "KT01PARA2".
+           03  FILE-HOSPNUM22      PIC 9(02)   VALUE   ZERO.
+           03  FILE-TERMID22       PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *    パラメタファイル名
        01  FILE-NAME3.
            03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
            03  FILLER              PIC X(09)   VALUE   "KT01WKSRY".
@@ -124,6 +140,7 @@
       *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
+           03  STS-PARA2           PIC X(02).
            03  STS-WKSRY           PIC X(02).
            03  STS-WKSRY02         PIC X(02).
            03  STS-OUTSYU          PIC X(02).
@@ -442,7 +459,6 @@
            MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
       *    院内院外区分初期化
            MOVE    SPA-SYOHOKBN        TO  SPA-INGAIKBN
-      *
       *    ワーク診療行為検索
            PERFORM 1001-WKSRYACT-INIT-SEC
       *
@@ -1738,7 +1754,7 @@
        400-DOWKSRY-TENKAI-EXT.
            EXIT.
       *****************************************************************
-      *    パラメタ削除集処理
+      *    パラメタ編集処理
       *****************************************************************
        4001-WKSRYACT-INIT-SEC         SECTION.
       *
@@ -2050,11 +2066,6 @@
       *
            ADD     1                   TO  IDXL
            MOVE    WKSRYACT-REC        TO  LNK-WKSRYACT-REC (IDXL)
-      *TEST
-      *    DISPLAY "WKSRY-INPUTCD:" WKSRY-INPUTCD (1)
-      *       "," WKSRY-INPUTCD (2) ",IDXL:" IDXL
-      *    DISPLAY   "WRK-TENSUKEI:" WRK-TENSUKEI
-      *       ",WRK-KAISUKEI:" WRK-KAISUKEI
       *
            MOVE    ZERO                TO  IDY
            MOVE    SPACE               TO  WKSRYACT-REC
@@ -2469,19 +2480,8 @@
       *    収納マスタ処理 
            PERFORM 30021-SYUNOU-NYU-SYORI-SEC
       *
-      *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-      *
-           OPEN    OUTPUT              PARA-FILE
-           IF      STS-PARA        NOT =  ZERO
-               DISPLAY "ORCSCWKSRY STS-PARA OPEN:"  STS-PARA  "]"
-           END-IF
       *    ＳＰＡ保存パラメタを作成
            PERFORM 3001-PARA-SYORI-SEC
-      *
-           CLOSE                       PARA-FILE
-      *
            .
        300-TOUROKU-PARA-EXT.
            EXIT.
@@ -2722,6 +2722,14 @@
       *****************************************************************
        3001-PARA-SYORI-SEC          SECTION.
       *
+           MOVE    SPA-TERMID          TO  FILE-TERMID2
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
+      *
+           OPEN    OUTPUT              PARA-FILE
+           IF      STS-PARA        NOT =  ZERO
+               DISPLAY "ORCSCWKSRY STS-PARA OPEN:"  STS-PARA  "]"
+           END-IF
+      *
       *    共通ＳＰＡをパラメタへ出力
            MOVE    SPACE               TO  PARA-REC
            MOVE    "KT01PARA"          TO  PARA-FILEMEI
@@ -2729,18 +2737,20 @@
            MOVE    SPA-K01KYOUTU       TO  PARA-DATA-REC
            WRITE                       PARA-REC
       *
-      *    Ｋ０２ＳＰＡをパラメタへ出力
-           MOVE    SPACE               TO  PARA-REC
-           MOVE    "KT01SPA"           TO  PARA-FILEMEI
-           MOVE    1                   TO  PARA-EDANUM
-           MOVE    SPA-KT01            TO  PARA-DATA-REC
-           WRITE                       PARA-REC
+           CLOSE                       PARA-FILE
       *
-           MOVE    SPACE               TO  PARA-REC
-           MOVE    "KT01SPA"           TO  PARA-FILEMEI
-           MOVE    2                   TO  PARA-EDANUM
-           MOVE    SPA-KT01(60001:)    TO  PARA-DATA-REC
-           WRITE                       PARA-REC
+      *    ＫＴ０１ＳＰＡをパラメタへ出力
+           MOVE    SPA-TERMID          TO  FILE-TERMID22
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
+      *
+           OPEN    OUTPUT              PARA-FILE2
+           IF      STS-PARA2       NOT =  ZERO
+               DISPLAY "ORCSCWKSRY STS-PARA2 OPEN:"  STS-PARA2 "]"
+           END-IF
+           MOVE    SPA-KT01            TO  PARA-SPA-KT01
+           WRITE                       PARA-SPA-KT01
+      *
+           CLOSE                       PARA-FILE2
       *
            .
        3001-PARA-SYORI-EXT.
@@ -3649,17 +3659,8 @@
       *****************************************************************
        400-SENI-PARA-SEC         SECTION.
       *
-           MOVE    SPA-TERMID          TO  FILE-TERMID2
-           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
-      *
-           OPEN    OUTPUT              PARA-FILE
-           IF      STS-PARA        NOT =  ZERO
-               DISPLAY "ORCSCWKSRY STS-PARA OPEN:"  STS-PARA  "]"
-           END-IF
       *    ＳＰＡ保存パラメタを作成
            PERFORM 3001-PARA-SYORI-SEC
-      *
-           CLOSE                       PARA-FILE
       *
            .
        400-SENI-PARA-EXT.

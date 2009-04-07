@@ -100,6 +100,11 @@
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
+      *    パラメタデータ
+           SELECT  PARAK02-FILE    ASSIGN  FILE-NAME22
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PARA2.
+      *
       *    ＳＰＡデータ
            SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -116,7 +121,13 @@
                05  PARA-EDANUM          PIC 9(03).
            03  PARA-DATA-REC            PIC X(60000).
       *
-      *    ＳＰＡパラメタデータ
+      *    画面スパ領域パラメタデータ
+       FD  PARAK02-FILE.
+      *    画面スパ領域
+           COPY    "K02SCR-SPA"      REPLACING
+                                     //SPA-// BY //PARA-SPA-//.
+      *
+      *    ＳＰＡ画面パラメタデータ
        FD  SPASCR-FILE.
        01  SPA-DATA-REC            PIC X(1200).
       *
@@ -135,6 +146,13 @@
            03  FILLER              PIC X(07)   VALUE   "K01PARA".
            03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *    パラメタファイル名
+       01  FILE-NAME22.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(08)   VALUE   "K01PARA2".
+           03  FILE-HOSPNUM22      PIC 9(02)   VALUE   ZERO.
+           03  FILE-TERMID22       PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
        01  WRK-DATA-REC.
@@ -160,6 +178,7 @@
       *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
+           03  STS-PARA2           PIC X(02).
            03  STS-SPASCR          PIC X(02).
       *
       *    フラグ領域
@@ -1131,8 +1150,6 @@
       *
            MOVE    SPACE               TO  SPA-SCR-REC
            INITIALIZE          SPA-SCR-REC
-      ***  MOVE    SPACE               TO  WRK-DATA-REC
-      **** INITIALIZE          WRK-DATA-REC
            MOVE    ZERO                TO  FLG-SPASCR
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL       FLG-SPASCR  =   1
@@ -1144,8 +1161,6 @@
                        MOVE   SPA-DATA-REC     TO  SPA-GMN-TBL (IDX)
                END-READ
            END-PERFORM
-      *
-      **** MOVE    WRK-DATA-REC        TO  SPA-SCR-REC
       *
            CLOSE                       SPASCR-FILE
       *
@@ -3350,9 +3365,6 @@
                            MOVE    PARA-DATA-REC   TO  LNK-WKSRYACT-REC
                                                       (LNK-WKSRYACT-MAX)
                        END-IF
-      ***************  MOVE    PARA-DATA-REC       TO  LNK-WKSRYACT-REC
-      *                                                (PARA-EDANUM)
-      ***************  MOVE    PARA-EDANUM        TO  LNK-WKSRYACT-MAX
                    END-IF
                END-IF
       *
@@ -3362,24 +3374,24 @@
                    END-IF
                END-IF
       *
-               IF      PARA-FILEMEI        =   "K02SPA"
-                   IF      FLG-PARASET     =   ZERO  OR  2
-                       IF      PARA-EDANUM     =   1
-                           MOVE    PARA-DATA-REC   TO  SPA-K02
-                       ELSE
-                           COMPUTE IDX-NUM     =  (PARA-EDANUM  -  1)
-                                               *   60000
-                                               +   1
-                           MOVE    PARA-DATA-REC   TO  SPA-K02(IDX-NUM:)
-                       END-IF
-                   END-IF
-               END-IF
-      *
                PERFORM 980-PARA-READ-SEC
            END-PERFORM
       *
-           IF      FLG-PARA            =   1
-               CLOSE                       PARA-FILE
+           CLOSE                       PARA-FILE
+      *
+           IF      FLG-PARASET         =   ZERO  OR  2
+               MOVE    SPA-TERMID          TO  FILE-TERMID22
+               MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
+               OPEN    INPUT               PARAK02-FILE
+               IF      STS-PARA2           =  ZERO
+                   READ    PARAK02-FILE
+                       AT  END
+                           INITIALIZE                  PARA-SPA-K02
+                       NOT AT  END
+                           MOVE    PARA-SPA-K02        TO  SPA-K02
+                   END-READ
+               END-IF
+               CLOSE                           PARAK02-FILE
            END-IF
       *
            IF      FLG-PARASET         =   ZERO  OR  2
@@ -8726,6 +8738,13 @@
       *
            MOVE    ZERO                TO  IF-RESULT
            MOVE    FILE-NAME2          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
+           MOVE    SPA-TERMID          TO  FILE-TERMID22
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME22         TO  IF-FILENAME
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
       *

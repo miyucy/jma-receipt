@@ -39,11 +39,6 @@
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
-      *    £Ó£Ð£Á¥Ç¡¼¥¿
-      *    SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-      *                            ORGANIZATION    IS  LINE SEQUENTIAL
-      *                            FILE    STATUS  IS  STS-SPASCR.
-      *
       *
        DATA                        DIVISION.
        FILE                        SECTION.
@@ -54,10 +49,6 @@
                05  PARA-FILEMEI         PIC X(08).
                05  PARA-EDANUM          PIC 9(03).
            03  PARA-DATA-REC            PIC X(60000).
-      *
-      *    £Ó£Ð£Á¥Ñ¥é¥á¥¿¥Ç¡¼¥¿
-      *FD  SPASCR-FILE.
-      *01  SPA-DATA-REC            PIC X(60000).
       *
        WORKING-STORAGE             SECTION.
       *
@@ -75,11 +66,6 @@
            03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
-      *
-      *
-      *01  WRK-DATA-REC.
-      *    03  WRK-DATA            PIC X(60000)
-      *                            OCCURS  10.
       *
       *    ²èÌÌÈóÉ½¼¨
            COPY    "ENUM-VALUE".
@@ -392,9 +378,7 @@
            COPY    "CPORCSMEIHEN.INC".
       *
       *    £Ä£Â¸¡º÷
-      *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
-      **** COPY    "CPORCMCP.INC".
       *
       *****************************************************************
       *    Ï¢Íí¡¡ÎÎ°è

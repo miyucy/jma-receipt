@@ -39,6 +39,11 @@
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
+      *    パラメタデータ
+           SELECT  PARA-FILE2      ASSIGN  FILE-NAME22
+                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   FILE    STATUS  IS  STS-PARA2.
+      *
       *    ＳＰＡデータ
            SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -66,6 +71,11 @@
                05  PARA-FILEMEI         PIC X(08).
                05  PARA-EDANUM          PIC 9(03).
            03  PARA-DATA-REC            PIC X(60000).
+      *    パラメタデータ
+       FD  PARA-FILE2.
+      *    画面スパ領域
+           COPY    "KT01SCR-SPA"      REPLACING
+                                     //SPA-// BY //PARA-SPA-//.
       *
       *    ＳＰＡパラメタデータ
        FD  SPASCR-FILE.
@@ -99,6 +109,13 @@
            03  FILLER              PIC X(08)   VALUE   "KT01PARA".
            03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *    パラメタファイル名
+       01  FILE-NAME22.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(09)   VALUE   "KT01PARA2".
+           03  FILE-HOSPNUM22      PIC 9(02)   VALUE   ZERO.
+           03  FILE-TERMID22       PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
       *    パラメタファイル名
        01  FILE-NAME3.
@@ -143,6 +160,7 @@
       *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
+           03  STS-PARA2           PIC X(02).
            03  STS-SPASCR          PIC X(02).
            03  STS-WKSRY           PIC X(02).
            03  STS-OUTSYU          PIC X(02).
@@ -217,8 +235,6 @@
            03  FLG-PARASET         PIC 9(01).
       *    検索種別
            03  FLG-KOUI            PIC 9(01).
-      *    入力有無
-      **** 03  FLG-SYORINASI       PIC 9(01).
       *    治癒有無
            03  FLG-KEIZOKU         PIC 9(01).
       *
@@ -1176,7 +1192,6 @@
            END-PERFORM
       *
            CLOSE                       SPASCR-FILE
-      *TEST
            .
        1003-KT01SPA-SET-EXT.
            EXIT.
@@ -2319,7 +2334,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ＤＯ選択（Ｋ０９）画面より処理
+      *    ＤＯ選択（ＫＴ０１２）画面より処理
       *****************************************************************
        3013-KT012-SET-SEC                  SECTION.
       *
@@ -2402,32 +2417,40 @@
                    END-IF
                END-IF
       *
-               IF      PARA-FILEMEI        =   "KT01SPA"
-                   IF      FLG-PARASET     =   1
-                       IF      PARA-EDANUM     =   1
-                           MOVE    PARA-DATA-REC   TO  SPA-KT01
-                       ELSE
-                           COMPUTE IDX-NUM     =  (PARA-EDANUM  -  1)
-                                               *   60000
-                                               +   1
-                           MOVE    PARA-DATA-REC
-                                               TO  SPA-KT01(IDX-NUM:)
-                       END-IF
-                   END-IF
-               END-IF
+      *        IF      PARA-FILEMEI        =   "KT01SPA"
+      *            IF      FLG-PARASET     =   1
+      *                IF      PARA-EDANUM     =   1
+      *                    MOVE    PARA-DATA-REC   TO  SPA-KT01
+      *                ELSE
+      *                    COMPUTE IDX-NUM     =  (PARA-EDANUM  -  1)
+      *                                        *   60000
+      *                                        +   1
+      *                    MOVE    PARA-DATA-REC
+      *                                        TO  SPA-KT01(IDX-NUM:)
+      *                END-IF
+      *            END-IF
+      *        END-IF
       *
                PERFORM 980-PARA-READ-SEC
            END-PERFORM
       *
-           IF      FLG-PARA            =   1
-               CLOSE                       PARA-FILE
-           END-IF
+           CLOSE                       PARA-FILE
       *
-           IF      FLG-PARASET         =   ZERO  OR  1
-      *         クリア
-                INITIALIZE                 SPA-KT011GMN-AREA
-                INITIALIZE                 SPA-KT98GMN-AREA
-                INITIALIZE                 SPA-KT012KYOU-AREA
+      *
+           IF      FLG-PARASET         =   1
+               MOVE    SPA-TERMID          TO  FILE-TERMID22
+               MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
+               OPEN    INPUT               PARA-FILE2
+      *
+               IF      STS-PARA2           =  ZERO
+                   READ    PARA-FILE2
+                       AT  END
+                           INITIALIZE                  PARA-SPA-KT01
+                       NOT AT  END
+                           MOVE    PARA-SPA-KT01   TO  SPA-KT01
+                   END-READ
+               END-IF
+               CLOSE                       PARA-FILE2
            END-IF
       *
            .
@@ -6997,6 +7020,13 @@
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
       *
+           MOVE    SPA-TERMID          TO  FILE-TERMID22
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME22         TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
            MOVE    SPA-TERMID          TO  FILE-TERMID3
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM3
            PERFORM VARYING    IDD      FROM    1   BY  1
@@ -7186,52 +7216,6 @@
            EXIT.
       *
       *****************************************************************
-      *    中途終了展開中の削除処理
-      *****************************************************************
-       2202-CLEAR-WKSRYACT-SEC            SECTION.
-      *
-      *    展開中の削除
-           INITIALIZE                  WKSRYACT-REC
-           MOVE    SPA-HOSPNUM         TO  WKSRY-HOSPNUM
-           MOVE    SPA-NYUGAIKBN       TO  WKSRY-NYUGAIKBN
-           MOVE    SPA-PTID            TO  WKSRY-PTID
-           MOVE    SPA-SRYYMD          TO  WKSRY-SRYYMD
-      *
-           MOVE    WKSRYACT-REC        TO  MCPDATA-REC
-           MOVE    "tbl_wksryact"      TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "key7"              TO  MCP-PATHNAME
-               PERFORM 970-WKSRYACT-READ-SEC
-           ELSE
-               INITIALIZE                  WKSRYACT-REC
-               MOVE    1               TO  FLG-WKSRYACT
-           END-IF
-           PERFORM
-               UNTIL   FLG-WKSRYACT    =   1
-               IF      WKSRY-MOD-FLG       NOT =   ZERO
-                   MOVE    WKSRYACT-REC        TO  MCPDATA-REC
-                   MOVE    "DBDELETE"          TO  MCP-FUNC
-                   MOVE    "tbl_wksryact"      TO  MCP-TABLE
-                   MOVE    "key"               TO  MCP-PATHNAME
-grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
-                                                       MCPDATA-REC
-                                                       SPA-AREA
-               END-IF
-      *
-               MOVE    "key7"              TO  MCP-PATHNAME
-               PERFORM 970-WKSRYACT-READ-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_wksryact"      TO  MCP-TABLE
-           MOVE    "key7"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           .
-       2202-CLEAR-WKSRYACT-EXT.
-           EXIT.
-      *****************************************************************
       *    中間ワーク診療行為クリア処理
       *****************************************************************
        4900-WKSRYACT-CLEAR-SEC             SECTION.
@@ -7262,6 +7246,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2
            MOVE    ZERO                TO  IF-RESULT
            MOVE    FILE-NAME2          TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                           ORCSFDELAREA
+      *
+           MOVE    SPA-TERMID          TO  FILE-TERMID22
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME22         TO  IF-FILENAME
            CALL    "orcfiledel"        USING
                                            ORCSFDELAREA
       *
