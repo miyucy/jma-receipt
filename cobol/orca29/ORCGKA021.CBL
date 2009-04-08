@@ -36,7 +36,7 @@
       *
       *    選択内容データ
            SELECT  SPAPRT-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-SPAPRT.
       *
        DATA                        DIVISION.

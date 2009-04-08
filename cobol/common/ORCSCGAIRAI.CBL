@@ -49,7 +49,7 @@
       *
       *    パラメタデータ
            SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.

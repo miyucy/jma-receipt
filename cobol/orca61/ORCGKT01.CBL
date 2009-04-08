@@ -36,17 +36,17 @@
       *
       *    パラメタデータ
            SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
       *    パラメタデータ
            SELECT  PARA-FILE2      ASSIGN  FILE-NAME22
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA2.
       *
       *    ＳＰＡデータ
            SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-SPASCR.
       *
       *    日毎データ
@@ -58,7 +58,7 @@
       *
       *    収納データ
            SELECT  OUTSYU-FILE     ASSIGN  FILE-NAME4
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-OUTSYU.
       *
        DATA                        DIVISION.
@@ -1362,7 +1362,11 @@
                    INITIALIZE                  SPA-KT01
                    MOVE    1               TO  FLG-PARASET
                    PERFORM 3002-PARA-SET-SEC
-                   PERFORM 3003-GMN-HEN-SEC
+                   IF      SPA-GMN-PTNUM       =   SPACE
+                       PERFORM 30010-INIT-GMN-SEC
+                   ELSE
+                       PERFORM 3003-GMN-HEN-SEC
+                   END-IF
            END-EVALUATE
       *
            IF      FLG-SYOKAI          =   2
@@ -1431,13 +1435,6 @@
       *****************************************************************
        3003-GMN-HEN-SEC              SECTION.
       *
-           IF      SPA-GMN-PTID        =   ZERO
-               MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
-               MOVE    SPA-SYSYMDWH        TO  SPA-SRYYMDW
-               MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
-               MOVE    SPA-GMN-PTID        TO  SPA-PTID
-               GO      TO      3003-GMN-HEN-EXT
-           END-IF
            MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
            MOVE    SPA-GMN-PTID        TO  SPA-PTID
            MOVE    SPA-GMN-NAME        TO  SPA-NAME
@@ -1457,12 +1454,12 @@
       *
       *    排他制御処理
            PERFORM 990-LOCK-IN-SEC
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      3003-GMN-HEN-EXT
-           END-IF
       *
       *    保険組合
-           PERFORM 3101-HKNCOMBI-HEN-SEC
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 3101-HKNCOMBI-HEN-SEC
+           END-IF
+      *
            .
        3003-GMN-HEN-EXT.
            EXIT.
@@ -2416,21 +2413,6 @@
                        MOVE    PARA-DATA-REC       TO  SPA-K01KYOUTU
                    END-IF
                END-IF
-      *
-      *        IF      PARA-FILEMEI        =   "KT01SPA"
-      *            IF      FLG-PARASET     =   1
-      *                IF      PARA-EDANUM     =   1
-      *                    MOVE    PARA-DATA-REC   TO  SPA-KT01
-      *                ELSE
-      *                    COMPUTE IDX-NUM     =  (PARA-EDANUM  -  1)
-      *                                        *   60000
-      *                                        +   1
-      *                    MOVE    PARA-DATA-REC
-      *                                        TO  SPA-KT01(IDX-NUM:)
-      *                END-IF
-      *            END-IF
-      *        END-IF
-      *
                PERFORM 980-PARA-READ-SEC
            END-PERFORM
       *
@@ -2447,7 +2429,7 @@
                        AT  END
                            INITIALIZE                  PARA-SPA-KT01
                        NOT AT  END
-                           MOVE    PARA-SPA-KT01   TO  SPA-KT01
+                           MOVE    PARA-SPA-KT01       TO  SPA-KT01
                    END-READ
                END-IF
                CLOSE                       PARA-FILE2

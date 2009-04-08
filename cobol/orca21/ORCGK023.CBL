@@ -40,7 +40,7 @@
       *
       *    £Ó£Ð£Á¥Ç¡¼¥¿
            SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-SPASCR.
       *
        DATA                        DIVISION.

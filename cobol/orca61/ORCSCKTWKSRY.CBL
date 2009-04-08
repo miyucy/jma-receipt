@@ -36,11 +36,11 @@
       *
       *    パラメタデータ
            SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *    パラメタデータ
            SELECT  PARA-FILE2       ASSIGN  FILE-NAME22
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA2.
       *
       *    日毎データ（ワーク診療行為）
@@ -52,11 +52,11 @@
       *
       *    収納データ
            SELECT  OUTSYU-FILE     ASSIGN  FILE-NAME4
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-OUTSYU.
       *    日毎データ（ＫＴ０２）
            SELECT  WKSRY-FILE02    ASSIGN  FILE-NAME5
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-WKSRY02.
       *
        DATA                        DIVISION.
@@ -459,6 +459,7 @@
            MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
       *    院内院外区分初期化
            MOVE    SPA-SYOHOKBN        TO  SPA-INGAIKBN
+      *
       *    ワーク診療行為検索
            PERFORM 1001-WKSRYACT-INIT-SEC
       *

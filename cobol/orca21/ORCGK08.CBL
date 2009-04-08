@@ -64,17 +64,17 @@
       *
       *    パラメタデータ
            SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
       *    パラメタデータ
            SELECT  PARA-FILE02     ASSIGN  FILE-NAME02
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA02.
       *
       *    パラメタデータ（プレビュー）
            SELECT  PARA-PREVIEW     ASSIGN  FILE-PREVIEW
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PREVIEW.
       *
        DATA                        DIVISION.

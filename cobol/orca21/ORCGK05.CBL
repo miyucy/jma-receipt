@@ -53,13 +53,13 @@
       *
       *    パラメタデータ
            SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
       *    ＳＰＡデータ
       *D   SELECT  SPASCR-FILE     ASSIGN  "K05SPASCR.TXT,T"
            SELECT  SPASCR-FILE     ASSIGN  FILE-NAME1
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-SPASCR.
       *
        DATA                        DIVISION.

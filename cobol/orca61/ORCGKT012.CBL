@@ -36,7 +36,7 @@
       *
       *    パラメタデータ
            SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
       *
@@ -2799,9 +2799,7 @@
                    PERFORM 41012-SRYACT-HEN-SEC
       *
       *            パラメタファイル作成
-      ***********  MOVE    SRY-ZAINUM          TO  WRK-ZAINUM
                    MOVE    SPACE               TO  PARA-REC
-      *************MOVE    SPA-TERMID          TO  PARA-TERMID
                    MOVE    "WKSRYACT"          TO  PARA-FILEMEI
                    ADD     1                   TO  WRK-EDANUM
                    MOVE    WRK-EDANUM          TO  PARA-EDANUM

@@ -36,27 +36,27 @@
       *
       *    パラメタデータ
            SELECT  PARA-FILE       ASSIGN  FILE-NAME2
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
       *    パラメタデータ
            SELECT  PARA-FILE02     ASSIGN  FILE-NAME02
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA02.
       *
       *    パラメタデータ（プレビュー）
            SELECT  PARA-PREVIEW     ASSIGN  FILE-PREVIEW
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-PREVIEW.
       *
       *    日毎データ
            SELECT  WKSRY-FILE      ASSIGN  FILE-NAME3
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-WKSRY.
       *
       *    収納データ
            SELECT  OUTSYU-FILE     ASSIGN  FILE-NAME4
-                                   ORGANIZATION    IS  LINE SEQUENTIAL
+                                   ORGANIZATION    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-OUTSYU.
       *
        DATA                        DIVISION.
@@ -1655,7 +1655,8 @@
            IF      IDG                 >   MAX-GMN
                CONTINUE
            ELSE
-               MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
+      **       MOVE    ALL "-"             TO  SPA-GMN-TMEISYO (IDG)
+               MOVE    ALL "−"            TO  SPA-GMN-TMEISYO (IDG)
            END-IF
       *
             .
@@ -5199,7 +5200,7 @@
                        MOVE    "削"            TO  KT02-DELFLG (IDX)
                END-EVALUATE
       *
-               IF      SPA-GMN-TMEISYO (IDX)(1:1)  =  "-"
+               IF      SPA-GMN-TMEISYO (IDX)(1:2)  =  "−"
                    MOVE    ALL "-"                 TO  KT02-BANGO (IDX)
                    MOVE    ALL "-"                 TO  KT02-DELFLG(IDX)
                END-IF
