@@ -875,6 +875,7 @@
            END-IF
       *
       *    ドクター
+           DISPLAY "ドクタ   = ["  LF04-DOCCD "]"
            IF     (LF04-DOCCD (1:5)    NUMERIC )  AND
                   (LF04-DOCCD (1:1)    =   "1" )
                MOVE    LF04-DOCCD(1:5)     TO  WRK-DRCD
@@ -2463,7 +2464,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        2006-BYOMEI-SET-SEC                 SECTION.
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   20
+                   UNTIL       IDX     >   50
       *
                INITIALIZE                  WRK-BYOMEI-TBL
                                            FLG-BYOMEI-CHK

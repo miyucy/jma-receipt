@@ -400,7 +400,7 @@
       *
       *
       * [診断履歴モジュール]
-           03  LF04-SNDRRKTBL           OCCURS  20.
+           03  LF04-SNDRRKTBL           OCCURS  50.
       * 文書ユニークID
                05  LF04-UID3                PIC X(36).
       * カルテ電子保存の確定日
