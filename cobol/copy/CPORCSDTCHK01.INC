@@ -29,12 +29,17 @@
                05  SDTCHK01-CDKBN              PIC X(01).
                05  SDTCHK01-NYUGAIKBN          PIC X(01).
                05  SDTCHK01-HKNKBN             PIC X(01).
+               05  SDTCHK01-CHKDAY-G.
+                   07  SDTCHK01-CHKDAY         PIC 9(01)   OCCURS  31.
            03  SDTCHK01-OT.
                05  SDTCHK01-O-OK               PIC 9(01).
+               05  SDTCHK01-O-NODAY-G.
+                   07  SDTCHK01-O-NODAY        PIC 9(01)   OCCURS  31.
                05  SDTCHK01-O-MAX              PIC 9(05).
                05  SDTCHK01-O-OCC              OCCURS 100.
-                   07  SDTCHK01-O-ERRFLG       PIC 9(01).
                    07  SDTCHK01-O-SRYKA        PIC X(02).
                    07  SDTCHK01-O-SRYYMD       PIC X(08).
                    07  SDTCHK01-O-NYUGAIKBN    PIC X(01).
                    07  SDTCHK01-O-BYOMEI       PIC X(160).
+                   07  SDTCHK01-O-ERRDAY-G.
+                       09  SDTCHK01-O-ERRDAY   PIC 9(01)   OCCURS  31.

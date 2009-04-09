@@ -43,7 +43,6 @@
       *    フラグ領域
        01  FLG-AREA.
            03  FLG-QDTCHK                  PIC 9(01).
-           03  FLG-CHKMST-BYOMEI           PIC 9(01).
            03  FLG-MATCH                   PIC 9(01).
            03  FLG-TAISYO                  PIC 9(01).
            03  FLG-HIT                     PIC 9(01).
@@ -57,6 +56,7 @@
            03  IDX-LEN                     PIC 9(05).
            03  IDX-ST                      PIC 9(05).
            03  IDX-COMB                    PIC 9(05).
+           03  IDX-DAY                     PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -75,6 +75,9 @@
            03  WRK-HKNCOMBI                PIC 9(04).
            03  WRK-ZAIHKNNUM               PIC X(03).
            03  WRK-BYOEDYMD                PIC X(08).
+           03  WRK-SRYYMD.
+               05  WRK-SRYYM               PIC X(06).
+               05  WRK-SRYDD               PIC 9(02).
       *
        01  LEN-AREA.
            03  LEN-CHKMST                  PIC 9(05).
@@ -88,8 +91,9 @@
            03  TBYOMEI-MAX                 PIC 9(05).
            03  TBYOMEI-OCC                 OCCURS 101.
                05  TBYOMEI-BYOMEI          PIC X(160).
+               05  TBYOMEI-ERRDAY-G.
+                   07  TBYOMEI-ERRDAY      PIC 9(01)   OCCURS  31.
                05  TBYOMEI-KEY.
-                   07  TBYOMEI-ERRFLG      PIC 9(01).
                    07  TBYOMEI-SRYKA       PIC X(02).
                    07  TBYOMEI-SRYYMD      PIC X(08).
       *
@@ -188,8 +192,6 @@
                                        LEN-AREA
                                        TBYOMEI-AREA
       *
-           MOVE    ZERO            TO  FLG-CHKMST-BYOMEI
-      *
            .
        100-INIT-EXT.
            EXIT.
@@ -223,19 +225,29 @@
            END-IF
       *
            PERFORM UNTIL ( FLG-QDTCHK      NOT =   ZERO )
-                    OR   ( FLG-CHKMST-BYOMEI   =   1    )
+                    OR   ( SDTCHK01-CHKDAY-G   =   ZERO )
       *
                PERFORM 2001-BYOMEI-CHK-SEC
                IF    ( FLG-MATCH    =  1 )
-                   PERFORM 2001-TAISYO-CHK-SEC
-                   IF    ( FLG-TAISYO  =   1 )
-                       MOVE    1           TO  FLG-CHKMST-BYOMEI
-                   ELSE
-                       PERFORM 2001-ERRINF-SEC
-                   END-IF
+                   PERFORM VARYING IDX-DAY    FROM 1   BY  1
+                           UNTIL ( IDX-DAY    >    31 )
+                            OR   ( SDTCHK01-CHKDAY-G   =   ZERO )
+      *
+                       IF    ( SDTCHK01-CHKDAY (IDX-DAY) >   ZERO )
+                           MOVE    SDTCHK01-KJNYMD TO  WRK-SRYYMD
+                           MOVE    IDX-DAY         TO  WRK-SRYDD
+                           PERFORM 2001-TAISYO-CHK-SEC
+                           IF    ( FLG-TAISYO  =   1 )
+                               MOVE    ZERO       TO  SDTCHK01-CHKDAY
+                                                            (IDX-DAY)
+                           ELSE
+                               PERFORM 2001-ERRINF-SEC
+                           END-IF
+                       END-IF
+                   END-PERFORM
                END-IF
       *
-               IF    ( FLG-CHKMST-BYOMEI   NOT =   1    )
+               IF    ( SDTCHK01-CHKDAY-G   NOT =   ZERO )
                    PERFORM 900-QDTCHK-KEY-FET-SEC
                END-IF
       *
@@ -396,15 +408,14 @@
       *
            MOVE    ZERO            TO  FLG-TAISYO
       *
-           IF    ( QDTCHK-SRYYMD (1:6)        <=   SDTCHK01-KJNYMD(1:6))
+           IF    ( QDTCHK-SRYYMD  <=   WRK-SRYYMD )
                IF    ( QDTCHK-TENKIKBN         =   SPACE )
                    IF    ( QDTCHK-NYUGAIKBN    =   SPACE )
                     OR   ( QDTCHK-NYUGAIKBN    =   SDTCHK01-NYUGAIKBN )
                            MOVE    1       TO  FLG-TAISYO
                    END-IF
                ELSE
-                   IF    ( QDTCHK-TENKIYMD (1:6)
-                                              >=   SDTCHK01-KJNYMD(1:6))
+                   IF    ( QDTCHK-TENKIYMD    >=   WRK-SRYYMD )
                        IF    ( QDTCHK-NYUGAIKBN
                                                =   SPACE )
                         OR   ( QDTCHK-NYUGAIKBN
@@ -478,26 +489,28 @@
       *    入外区分の誤りは"2"を設定、
       *    適用期間が誤っている場合は適用期間の誤りとして"1"を設定
            IF    ( QDTCHK-TENKIKBN      =   SPACE )
-               IF    ( QDTCHK-SRYYMD (1:6) <=   SDTCHK01-KJNYMD(1:6))
+               IF    ( QDTCHK-SRYYMD   <=   WRK-SRYYMD )
                 AND (( QDTCHK-NYUGAIKBN NOT =   SPACE )
                  AND ( QDTCHK-NYUGAIKBN NOT =   SDTCHK01-NYUGAIKBN ))
-                       MOVE    2   TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
+                       MOVE    2   TO  TBYOMEI-ERRDAY
+                                                  (TBYOMEI-IDX1 IDX-DAY)
                ELSE
-                   IF    ( TBYOMEI-ERRFLG (TBYOMEI-IDX1)  <=   1 )
-                       MOVE    1   TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
+                   IF    ( TBYOMEI-ERRDAY (TBYOMEI-IDX1 IDX-DAY)  <= 1 )
+                       MOVE    1   TO  TBYOMEI-ERRDAY
+                                                  (TBYOMEI-IDX1 IDX-DAY)
                    END-IF
                END-IF
            ELSE
-               IF    ( QDTCHK-SRYYMD   (1:6)
-                                           <=  SDTCHK01-KJNYMD(1:6))
-                AND  ( QDTCHK-TENKIYMD (1:6)
-                                           >=  SDTCHK01-KJNYMD(1:6))
+               IF    ( QDTCHK-SRYYMD       <=  WRK-SRYYMD )
+                AND  ( QDTCHK-TENKIYMD     >=  WRK-SRYYMD )
                 AND (( QDTCHK-NYUGAIKBN NOT =   SPACE )
                  AND ( QDTCHK-NYUGAIKBN NOT =   SDTCHK01-NYUGAIKBN ))
-                       MOVE    2   TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
+                       MOVE    2   TO  TBYOMEI-ERRDAY
+                                                  (TBYOMEI-IDX1 IDX-DAY)
                ELSE
-                   IF    ( TBYOMEI-ERRFLG (TBYOMEI-IDX1)  <=   1 )
-                       MOVE    1   TO  TBYOMEI-ERRFLG (TBYOMEI-IDX1)
+                   IF    ( TBYOMEI-ERRDAY (TBYOMEI-IDX1 IDX-DAY)  <= 1 )
+                       MOVE    1   TO  TBYOMEI-ERRDAY
+                                                  (TBYOMEI-IDX1 IDX-DAY)
                    END-IF
                END-IF
            END-IF
@@ -585,33 +598,44 @@
        300-END-SEC                     SECTION.
       *
            INITIALIZE                      SDTCHK01-OT
-           MOVE    FLG-CHKMST-BYOMEI   TO  SDTCHK01-O-OK
       *
-           IF    ( SDTCHK01-O-OK       =   ZERO )
+           IF    ( SDTCHK01-CHKDAY-G   NOT =   ZERO )
                PERFORM 3001-TBYOMEI-SORT-SEC
+           ELSE
+               MOVE    1               TO  SDTCHK01-O-OK
            END-IF
       *
            MOVE    ZERO                TO  SDTCHK01-O-MAX
       *
+           MOVE    SDTCHK01-CHKDAY-G   TO  SDTCHK01-O-NODAY-G
+      *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TBYOMEI-MAX )
       *
-               MOVE    ZERO            TO  FLG-TAISYO
-               IF    ( SYS-1101-TENKITEKBYOKBN =   "2" )
-                   IF    ( TBYOMEI-ERRFLG (IDX0)   NOT =   1 )
-                       MOVE   1        TO  FLG-TAISYO
+               PERFORM VARYING IDX-DAY FROM    1   BY  1
+                       UNTIL  (IDX-DAY >   31 )
+                   IF    ( SDTCHK01-CHKDAY (IDX-DAY)   =   ZERO )
+                               MOVE    ZERO    TO  TBYOMEI-ERRDAY
+                                                        (IDX0 IDX-DAY)
+                   ELSE
+                       IF    ( SYS-1101-TENKITEKBYOKBN =   "2" )
+                           IF    ( TBYOMEI-ERRDAY (IDX0 IDX-DAY) = 1 )
+                               MOVE    ZERO    TO  TBYOMEI-ERRDAY
+                                                        (IDX0 IDX-DAY)
+                           END-IF
+                       END-IF
                    END-IF
-               ELSE
-                       MOVE   1        TO  FLG-TAISYO
-               END-IF
       *
-               IF    ( FLG-TAISYO      =   1 )
+                   IF    ( TBYOMEI-ERRDAY (IDX0 IDX-DAY) NOT = ZERO )
+                       MOVE    ZERO    TO  SDTCHK01-O-NODAY (IDX-DAY)
+                   END-IF
+      *
+               END-PERFORM
+      *
+               IF    ( TBYOMEI-ERRDAY-G (IDX0) NOT =   ZERO )
       *
                    COMPUTE SDTCHK01-O-MAX  =   SDTCHK01-O-MAX  +   1
       *
-                   MOVE    TBYOMEI-ERRFLG (IDX0)
-                                       TO  SDTCHK01-O-ERRFLG
-                                                (SDTCHK01-O-MAX)
                    MOVE    TBYOMEI-SRYKA  (IDX0)
                                        TO  SDTCHK01-O-SRYKA
                                                 (SDTCHK01-O-MAX)
@@ -620,6 +644,9 @@
                                                 (SDTCHK01-O-MAX)
                    MOVE    TBYOMEI-BYOMEI (IDX0)
                                        TO  SDTCHK01-O-BYOMEI
+                                                (SDTCHK01-O-MAX)
+                   MOVE    TBYOMEI-ERRDAY-G (IDX0)
+                                       TO  SDTCHK01-O-ERRDAY-G
                                                 (SDTCHK01-O-MAX)
                END-IF
       *

@@ -5544,17 +5544,18 @@
                    MOVE    ORCBSD01-NYUGAIKBN
                                            TO  SDTCHK01-NYUGAIKBN
                    MOVE    DTCHK003-HKNKBN TO  SDTCHK01-HKNKBN
+                   MOVE    WRK-CHKDAY-G    TO  SDTCHK01-CHKDAY-G
                    CALL    "ORCSDTCHK01"   USING   SDTCHK01AREA
                                                    SYS-1101-REC
                                                    SDTCHK02AREA
                                                    LNK-HKNCOMBI-AREA
                                                    SPA-AREA
                                                    DTCHKCOMMON-AREA
-                   IF    ( SDTCHK01-O-OK   =   ZERO )
+                  IF    ( SDTCHK01-O-OK   =   ZERO )
                        MOVE    TSRYKA-SRYKA (IDX6)
                                            TO  WRK-SRYKA
                        INITIALIZE              TERRINF-AREA
-                       PERFORM 200112-YKZ-BYO-ERRMES-HEN-SEC
+                       PERFORM 200112-YKZ-BYO-ERRMES-SEC
                   END-IF
                END-IF
            ELSE
@@ -5673,25 +5674,25 @@
       *****************************************************************
       *    薬剤と病名エラーメッセージ編集処理
       *****************************************************************
-       200112-YKZ-BYO-ERRMES-HEN-SEC   SECTION.
+       200112-YKZ-BYO-ERRMES-SEC   SECTION.
       *
-           INITIALIZE  WRK-NISSU-AREA
-           MOVE    WRK-CHKDAY-G        TO  WRK-NISSU-DAY-G
+           IF    ( SDTCHK01-O-NODAY-G      NOT =   ZERO )
       *
-           PERFORM 200111-NISSU-HEN-SEC
+               INITIALIZE  WRK-NISSU-AREA
+               MOVE    SDTCHK01-O-NODAY-G  TO  WRK-NISSU-DAY-G
       *
-           MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
-           MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
-           PERFORM 900-TENSU-KEY-SEL-SEC
-           IF    ( FLG-TENSU       NOT =   ZERO )
-               MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
-               PERFORM 800-ZENKAKU-HEN-SEC
-               MOVE    WRK-OUT-INPUT   TO  TNS-NAME
-           END-IF
+               PERFORM 200111-NISSU-HEN-SEC
       *
-           IF    ( SDTCHK01-O-MAX      =   ZERO )
+               MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
+               MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       NOT =   ZERO )
+                   MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+               END-IF
       *
-               MOVE    "080001"        TO  WRK-ERRCD
+               MOVE    "080001"            TO  WRK-ERRCD
       *
                MOVE   SPACE                TO  WRK-ERRMES-PLUS
                STRING TNS-NAME                 DELIMITED BY SPACE
@@ -5710,47 +5711,85 @@
                IF    ( ORCBSD01-CHKKBN (8) =   "1" )
                    MOVE    1       TO  FLG-CHKEND (8)
                END-IF
-           ELSE
+           END-IF
+      *
                PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >    SDTCHK01-O-MAX )
+                       UNTIL ( IDX0    >   SDTCHK01-O-MAX )
                         OR   ( FLG-CHKEND (8)  =   1 )
+                   INITIALIZE  WRK-NISSU-AREA
       *
-                   MOVE   SPACE            TO  WRK-ERRMES-PLUS
-                   STRING TNS-NAME             DELIMITED BY SPACE
-                          "、"                 DELIMITED BY SIZE
-                          SDTCHK01-O-BYOMEI (IDX0)
-                                               DELIMITED BY SPACE
-                          WRK-NISSU-MES        DELIMITED BY SPACE
-                   INTO   WRK-ERRMES-PLUS
-                   END-STRING
+                   INITIALIZE  WRK-NISSU-AREA
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+                       IF    ( SDTCHK01-O-ERRDAY (IDX0 IDX-DAY) =   1 )
+                           MOVE    1       TO  WRK-NISSU-DAY (IDX-DAY)
+                       END-IF
+                   END-PERFORM
+                   IF    ( WRK-NISSU-DAY-G NOT =   ZERO )
+                       MOVE    "080004"   TO  WRK-ERRCD
+                       PERFORM 2001121-YKZ-BYO-ERRMES-SEC
+                   END-IF
       *
-                   IF   ( SDTCHK01-O-ERRFLG (IDX0) =   2 )
-                       IF    ( ORCBSD01-NYUGAIKBN = "1" )
+                   INITIALIZE  WRK-NISSU-AREA
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+                       IF    ( SDTCHK01-O-ERRDAY (IDX0 IDX-DAY) =   2 )
+                           MOVE    1       TO  WRK-NISSU-DAY (IDX-DAY)
+                       END-IF
+                   END-PERFORM
+                   IF    ( WRK-NISSU-DAY-G NOT =   ZERO )
+                       IF    ( ORCBSD01-NYUGAIKBN  =  "1" )
                            MOVE    "080002"   TO  WRK-ERRCD
                        ELSE
                            MOVE    "080003"   TO  WRK-ERRCD
                        END-IF
-                   ELSE
-                           MOVE    "080004"   TO  WRK-ERRCD
+                       PERFORM 2001121-YKZ-BYO-ERRMES-SEC
                    END-IF
-      *
-                   MOVE    WRK-SRYKA       TO  SRH-1005-SRYKA
-                   INITIALIZE                      TERRINF-AREA
-                   MOVE    CHKSND-SRYCD        TO  TERRINF-SRYCD
-                   MOVE    WRK-SRYKA           TO  TERRINF-SRYKA
-                   MOVE    WRK-NISSU-DAY-G     TO  TERRINF-DAY-G
-                   MOVE    WRK-NISSU-LASTYMD   TO  TERRINF-LASTYMD
-                   PERFORM 213-ERRMES-HEN-SEC
-      *
-                   IF    ( ORCBSD01-CHKKBN (8) =   "1" )
-                       MOVE    1       TO  FLG-CHKEND (8)
-                   END-IF
-      *
                END-PERFORM
+      *
+      *
+           .
+       200112-YKZ-BYO-ERRMES-EXT.
+           EXIT.
+      *****************************************************************
+      *    薬剤と病名エラーメッセージ編集処理
+      *****************************************************************
+       2001121-YKZ-BYO-ERRMES-SEC   SECTION.
+      *
+           PERFORM 200111-NISSU-HEN-SEC
+      *
+           MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
+           MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU       NOT =   ZERO )
+               MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+           END-IF
+      *
+           MOVE    SPACE           TO  WRK-ERRMES-PLUS
+           STRING  TNS-NAME            DELIMITED BY SPACE
+                   "、"                DELIMITED BY SIZE
+                   SDTCHK01-O-BYOMEI (IDX0)
+                                       DELIMITED BY SPACE
+                   WRK-NISSU-MES       DELIMITED BY SPACE
+           INTO    WRK-ERRMES-PLUS
+           END-STRING
+      *
+           MOVE    WRK-SRYKA       TO  SRH-1005-SRYKA
+           INITIALIZE                      TERRINF-AREA
+           MOVE    CHKSND-SRYCD        TO  TERRINF-SRYCD
+           MOVE    WRK-SRYKA           TO  TERRINF-SRYKA
+           MOVE    WRK-NISSU-DAY-G     TO  TERRINF-DAY-G
+           MOVE    WRK-NISSU-LASTYMD   TO  TERRINF-LASTYMD
+           PERFORM 213-ERRMES-HEN-SEC
+      *
+           IF    ( ORCBSD01-CHKKBN (8) =   "1" )
+               MOVE    1           TO  FLG-CHKEND (8)
            END-IF
       *
            .
-       200112-YKZ-BYO-ERRMES-HEN-EXT.
+       2001121-YKZ-BYO-ERRMES-EXT.
            EXIT.
       *****************************************************************
       *    診療行為と病名チェック処理
@@ -5839,6 +5878,8 @@
                MOVE    ORCBSD01-NYUGAIKBN
                                        TO  SDTCHK01-NYUGAIKBN
                MOVE    DTCHK003-HKNKBN TO  SDTCHK01-HKNKBN
+               MOVE    TSRYKA-SRYCD-DAY-G (IDX6 IDX7)
+                                       TO  SDTCHK01-CHKDAY-G
                CALL    "ORCSDTCHK01"   USING   SDTCHK01AREA
                                                SYS-1101-REC
                                                SDTCHK02AREA
@@ -5849,7 +5890,7 @@
                    MOVE    TSRYKA-SRYKA (IDX6)
                                        TO  WRK-SRYKA
                    INITIALIZE              TERRINF-AREA
-                   PERFORM 200112-SRY-BYO-ERRMES-HEN-SEC
+                   PERFORM 200112-SRY-BYO-ERRMES-SEC
                END-IF
            ELSE
                MOVE    1               TO  FLG-CHKMST
@@ -5866,26 +5907,25 @@
       *****************************************************************
       *    診療行為と病名エラーメッセージ編集処理
       *****************************************************************
-       200112-SRY-BYO-ERRMES-HEN-SEC   SECTION.
+       200112-SRY-BYO-ERRMES-SEC       SECTION.
       *
-           INITIALIZE  WRK-NISSU-AREA
-           MOVE    TSRYKA-SRYCD-DAY-G (IDX6 IDX7)
-                                       TO  WRK-NISSU-DAY-G
+           IF    ( SDTCHK01-O-NODAY-G      NOT =   ZERO )
       *
-           PERFORM 200111-NISSU-HEN-SEC
+               INITIALIZE  WRK-NISSU-AREA
+               MOVE    SDTCHK01-O-NODAY-G  TO  WRK-NISSU-DAY-G
       *
-           MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
-           MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
-           PERFORM 900-TENSU-KEY-SEL-SEC
-           IF    ( FLG-TENSU       NOT =   ZERO )
-               MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
-               PERFORM 800-ZENKAKU-HEN-SEC
-               MOVE    WRK-OUT-INPUT   TO  TNS-NAME
-           END-IF
+               PERFORM 200111-NISSU-HEN-SEC
       *
-           IF    ( SDTCHK01-O-MAX      =   ZERO )
+               MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
+               MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
+               PERFORM 900-TENSU-KEY-SEL-SEC
+               IF    ( FLG-TENSU       NOT =   ZERO )
+                   MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+                   PERFORM 800-ZENKAKU-HEN-SEC
+                   MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+               END-IF
       *
-               MOVE    "090001"        TO  WRK-ERRCD
+               MOVE    "090001"            TO  WRK-ERRCD
       *
                MOVE   SPACE                TO  WRK-ERRMES-PLUS
                STRING TNS-NAME                 DELIMITED BY SPACE
@@ -5904,47 +5944,83 @@
                IF    ( ORCBSD01-CHKKBN (9) =   "1" )
                    MOVE    1       TO  FLG-CHKEND (9)
                END-IF
-           ELSE
+           END-IF
+      *
                PERFORM VARYING IDX0    FROM    1   BY  1
-                       UNTIL ( IDX0    >    SDTCHK01-O-MAX )
+                       UNTIL ( IDX0    >   SDTCHK01-O-MAX )
                         OR   ( FLG-CHKEND (9)  =   1 )
       *
-                   MOVE   SPACE            TO  WRK-ERRMES-PLUS
-                   STRING TNS-NAME             DELIMITED BY SPACE
-                          "、"                 DELIMITED BY SIZE
-                          SDTCHK01-O-BYOMEI (IDX0)
-                                               DELIMITED BY SPACE
-                          WRK-NISSU-MES        DELIMITED BY SPACE
-                   INTO   WRK-ERRMES-PLUS
-                   END-STRING
+                   INITIALIZE  WRK-NISSU-AREA
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+                       IF    ( SDTCHK01-O-ERRDAY (IDX0 IDX-DAY) =   1 )
+                           MOVE    1       TO  WRK-NISSU-DAY (IDX-DAY)
+                       END-IF
+                   END-PERFORM
+                   IF    ( WRK-NISSU-DAY-G NOT =   ZERO )
+                       MOVE    "090004"   TO  WRK-ERRCD
+                       PERFORM 2001121-YKZ-BYO-ERRMES-SEC
+                   END-IF
       *
-                   IF   ( SDTCHK01-O-ERRFLG (IDX0) =   2 )
-                       IF    ( ORCBSD01-NYUGAIKBN = "1" )
+                   INITIALIZE  WRK-NISSU-AREA
+                   PERFORM VARYING IDX-DAY FROM    1   BY  1
+                           UNTIL ( IDX-DAY >   31 )
+                       IF    ( SDTCHK01-O-ERRDAY (IDX0 IDX-DAY) =   2 )
+                           MOVE    1       TO  WRK-NISSU-DAY (IDX-DAY)
+                       END-IF
+                   END-PERFORM
+                   IF    ( WRK-NISSU-DAY-G NOT =   ZERO )
+                       IF    ( ORCBSD01-NYUGAIKBN  =  "1" )
                            MOVE    "090002"   TO  WRK-ERRCD
                        ELSE
                            MOVE    "090003"   TO  WRK-ERRCD
                        END-IF
-                   ELSE
-                           MOVE    "090004"   TO  WRK-ERRCD
+                       PERFORM 2001121-SRY-BYO-ERRMES-SEC
                    END-IF
-      *
-                   MOVE    WRK-SRYKA       TO  SRH-1005-SRYKA
-                   INITIALIZE                      TERRINF-AREA
-                   MOVE    CHKSND-SRYCD        TO  TERRINF-SRYCD
-                   MOVE    WRK-SRYKA           TO  TERRINF-SRYKA
-                   MOVE    WRK-NISSU-DAY-G     TO  TERRINF-DAY-G
-                   MOVE    WRK-NISSU-LASTYMD   TO  TERRINF-LASTYMD
-                   PERFORM 213-ERRMES-HEN-SEC
-      *
-                   IF    ( ORCBSD01-CHKKBN (9) =   "1" )
-                       MOVE    1       TO  FLG-CHKEND (9)
-                   END-IF
-      *
                END-PERFORM
+      *
+           .
+       200112-SRY-BYO-ERRMES-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療行為と病名エラーメッセージ編集処理
+      *****************************************************************
+       2001121-SRY-BYO-ERRMES-SEC   SECTION.
+      *
+           PERFORM 200111-NISSU-HEN-SEC
+      *
+           MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
+           MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+           IF    ( FLG-TENSU       NOT =   ZERO )
+               MOVE    WRK-SRYCD       TO  WRK-MAE-INPUT
+               PERFORM 800-ZENKAKU-HEN-SEC
+               MOVE    WRK-OUT-INPUT   TO  TNS-NAME
+           END-IF
+      *
+           MOVE    SPACE           TO  WRK-ERRMES-PLUS
+           STRING  TNS-NAME            DELIMITED BY SPACE
+                   "、"                DELIMITED BY SIZE
+                   SDTCHK01-O-BYOMEI (IDX0)
+                                       DELIMITED BY SPACE
+                   WRK-NISSU-MES       DELIMITED BY SPACE
+           INTO    WRK-ERRMES-PLUS
+           END-STRING
+      *
+           MOVE    WRK-SRYKA       TO  SRH-1005-SRYKA
+           INITIALIZE                      TERRINF-AREA
+           MOVE    CHKSND-SRYCD        TO  TERRINF-SRYCD
+           MOVE    WRK-SRYKA           TO  TERRINF-SRYKA
+           MOVE    WRK-NISSU-DAY-G     TO  TERRINF-DAY-G
+           MOVE    WRK-NISSU-LASTYMD   TO  TERRINF-LASTYMD
+           PERFORM 213-ERRMES-HEN-SEC
+      *
+           IF    ( ORCBSD01-CHKKBN (9) =   "1" )
+               MOVE    1           TO  FLG-CHKEND (9)
            END-IF
       *
            .
-       200112-SRY-BYO-ERRMES-HEN-EXT.
+       2001121-SRY-BYO-ERRMES-EXT.
            EXIT.
       *****************************************************************
       *    併用算定の診療行為チェック処理
@@ -6620,6 +6696,8 @@
                MOVE    ORCBSD01-NYUGAIKBN
                                        TO  SDTCHK01-NYUGAIKBN
                MOVE    DTCHK003-HKNKBN TO  SDTCHK01-HKNKBN
+               MOVE    TSRYKA-SRYCD-DAY-G (IDX6 IDX7)
+                                       TO  SDTCHK01-CHKDAY-G
                CALL    "ORCSDTCHK03"   USING   SDTCHK01AREA
                                                SPA-AREA
                IF    ( SDTCHK01-O-OK   =   ZERO )
@@ -6641,15 +6719,9 @@
        200112-CHKMST-KNKBYO-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    薬剤と病名エラーメッセージ編集処理
+      *    禁忌薬剤と病名エラーメッセージ編集処理
       *****************************************************************
        200112-KNKBYO-ERRMES-HEN-SEC    SECTION.
-      *
-           INITIALIZE  WRK-NISSU-AREA
-           MOVE    TSRYKA-SRYCD-DAY-G (IDX6 IDX7)
-                                       TO  WRK-NISSU-DAY-G
-      *
-           PERFORM 200111-NISSU-HEN-SEC
       *
            MOVE    CHKSND-SRYCD        TO  WRK-SRYCD
            MOVE    WRK-KJNYMD          TO  WRK-TNS-YMD
@@ -6663,6 +6735,12 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >    SDTCHK01-O-MAX )
                     OR   ( FLG-CHKEND (15) =   1 )
+      *
+               INITIALIZE  WRK-NISSU-AREA
+               MOVE    SDTCHK01-O-ERRDAY-G (IDX0)
+                                       TO  WRK-NISSU-DAY-G
+      *
+               PERFORM 200111-NISSU-HEN-SEC
       *
                MOVE    SPACE               TO  WRK-NYUGAI-MES
                IF  ( SDTCHK01-O-NYUGAIKBN (IDX0)
@@ -7365,40 +7443,32 @@
       *****************************************************************
        200112-CHK005-CHK-SEC           SECTION.
       *
-           PERFORM VARYING IDX6    FROM    1   BY  1
-                   UNTIL ( IDX6    >       TSRYKA-MAX )
-                     OR  ( FLG-CHKEND (IDX-CHK)    =   1 )
-      *
-               INITIALIZE                  SDTCHK06AREA
-               IF    ( SYS-1101-BYOCHKPTN-G    =   SPACE )
-                   MOVE    CONST-CHKPTN    TO  SDTCHK06-CHKPTN-G
-               ELSE
-                   MOVE    SYS-1101-BYOCHKPTN-G
+           INITIALIZE                  SDTCHK06AREA
+           IF    ( SYS-1101-BYOCHKPTN-G    =   SPACE )
+               MOVE    CONST-CHKPTN    TO  SDTCHK06-CHKPTN-G
+           ELSE
+               MOVE    SYS-1101-BYOCHKPTN-G
                                        TO  SDTCHK06-CHKPTN-G
-               END-IF
-               MOVE    DTCHK003-HOSPNUM TO  SDTCHK06-HOSPNUM
-               MOVE    DTCHK003-PTID   TO  SDTCHK06-PTID
-               MOVE    TSRYKA-SRYKA (IDX6)
-                                       TO  SDTCHK06-SRYKA
-               MOVE    WRK-CHKKBN      TO  SDTCHK06-CHKKBN
-               MOVE    WRK-KJNYMD      TO  SDTCHK06-KJNYMD
-               MOVE    WRK-CDKBN       TO  SDTCHK06-CDKBN
-               MOVE    ORCBSD01-NYUGAIKBN
-                                       TO  SDTCHK06-NYUGAIKBN
-               MOVE    DTCHK003-HKNKBN TO  SDTCHK06-HKNKBN
-               CALL    "ORCSDTCHK06"   USING   SDTCHK06AREA
-                                               SYS-1101-REC
-                                               SDTCHK02AREA
-                                               LNK-HKNCOMBI-AREA
-                                               SPA-AREA
-                                               DTCHKCOMMON-AREA
+           END-IF
+           MOVE    DTCHK003-HOSPNUM TO  SDTCHK06-HOSPNUM
+           MOVE    DTCHK003-PTID   TO  SDTCHK06-PTID
+           MOVE    WRK-CHKKBN      TO  SDTCHK06-CHKKBN
+           MOVE    WRK-KJNYMD      TO  SDTCHK06-KJNYMD
+           MOVE    WRK-CDKBN       TO  SDTCHK06-CDKBN
+           MOVE    ORCBSD01-NYUGAIKBN
+                                   TO  SDTCHK06-NYUGAIKBN
+           MOVE    DTCHK003-HKNKBN TO  SDTCHK06-HKNKBN
+           CALL    "ORCSDTCHK06"   USING   SDTCHK06AREA
+                                           SYS-1101-REC
+                                           SDTCHK02AREA
+                                           LNK-HKNCOMBI-AREA
+                                           SPA-AREA
+                                           DTCHKCOMMON-AREA
       *
-               PERFORM VARYING IDX33   FROM    1   BY  1
-                       UNTIL ( IDX33   >   SDTCHK06-O-MAX )
-                        OR   ( FLG-CHKEND (IDX-CHK)    =   1 )
-                   PERFORM 2001121-CHK005-CHK-SEC
-               END-PERFORM
-      *
+           PERFORM VARYING IDX33   FROM    1   BY  1
+                   UNTIL ( IDX33   >   SDTCHK06-O-MAX )
+                    OR   ( FLG-CHKEND (IDX-CHK)    =   1 )
+               PERFORM 2001121-CHK005-CHK-SEC
            END-PERFORM
       *
            .
@@ -7413,40 +7483,42 @@
            MOVE    SDTCHK06-O-ID (IDX33)
                                        TO  TCHK-CHK-ID
            PERFORM 230-CHK005-GET-SEC
-           IF    ( TCHK-ACT-CD-MAX     >   ZERO )
-               MOVE    ZERO            TO  FLG-HIT
-               PERFORM VARYING IDX31   FROM    1   BY  1
-                       UNTIL ( IDX31   >  TCHK-ACT-CD-MAX )
+           MOVE    ZERO            TO  FLG-HIT
+           PERFORM VARYING IDX31   FROM    1   BY  1
+                   UNTIL ( IDX31   >  TCHK-ACT-CD-MAX )
+                    OR   ( FLG-HIT =   1 )
+             PERFORM VARYING IDX34   FROM    1   BY  1
+                     UNTIL ( IDX34   >   TSRYKA-MAX )
+                      OR   ( FLG-HIT =   1 )
+               PERFORM VARYING IDX7    FROM    1   BY  1
+                       UNTIL ( IDX7    >   TSRYKA-SRYCD-MAX(IDX34))
                         OR   ( FLG-HIT =   1 )
-                   IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
-                       PERFORM VARYING IDX7    FROM    1   BY  1
-                               UNTIL ( IDX7    >   TSRYKA-SRYCD-MAX
-                                                              (IDX6))
-                                OR   ( FLG-HIT =   1 )
       *
-                           IF    ( TCHK-ACT-CD (IDX31)
-                                       =   TSRYKA-SRYCD (IDX6 IDX7))
+                 IF    ( TCHK-ACT-CD (IDX31)
+                                   =   TSRYKA-SRYCD (IDX34 IDX7))
+                   PERFORM VARYING IDX-DAY FROM  1  BY 1
+                           UNTIL ( IDX-DAY >   31 )
+                            OR   ( FLG-HIT =   1 )
+      *
+                     IF    ( TSRYKA-SRYCD-DAY (IDX34 IDX7 IDX-DAY)
+                                                   > ZERO )
+                      AND  ( SDTCHK06-O-BYODAY (IDX33 IDX-DAY)
+                                                   > ZERO)
+                       IF    ( SYS-1101-BYOSRYKAKBN
+                                       =  "1" OR SPACE )
+                           IF    ( TSRYKA-SRYKA (IDX34)
+                                       =   SDTCHK06-O-SRYKA(IDX33))
                                MOVE    1   TO  FLG-HIT
                            END-IF
-      *
-                       END-PERFORM
-                   ELSE
-                       PERFORM VARYING IDX34   FROM    1   BY  1
-                               UNTIL ( IDX34   >       TSRYKA-MAX )
-                           PERFORM VARYING IDX7    FROM    1   BY  1
-                                   UNTIL ( IDX7    >   TSRYKA-SRYCD-MAX
-                                                               (IDX34))
-                                    OR   ( FLG-HIT =   1 )
-      *
-                               IF    ( TCHK-ACT-CD (IDX31)
-                                       =   TSRYKA-SRYCD (IDX34 IDX7))
+                       ELSE
                                    MOVE    1   TO  FLG-HIT
-                               END-IF
-      *
-                           END-PERFORM
-                       END-PERFORM
-                   END-IF
+                       END-IF
+                     END-IF
+                   END-PERFORM
+                 END-IF
                END-PERFORM
+             END-PERFORM
+           END-PERFORM
       *
                IF    ( FLG-HIT         =   ZERO )
                    MOVE    SDTCHK06-O-PTBYOMEI (IDX33)
@@ -7468,8 +7540,6 @@
                        MOVE    1               TO  FLG-CHKEND (IDX-CHK)
                    END-IF
                END-IF
-           END-IF
-      *
       *
            .
        2001121-CHK005-CHK-EXT.

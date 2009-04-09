@@ -57,6 +57,7 @@
            03  IDX-LEN                     PIC 9(05).
            03  IDX-ST                      PIC 9(05).
            03  IDX-COMB                    PIC 9(05).
+           03  IDX-DAY                     PIC 9(05).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -75,6 +76,9 @@
            03  WRK-HKNCOMBI                PIC 9(04).
            03  WRK-ZAIHKNNUM               PIC X(03).
            03  WRK-BYOEDYMD                PIC X(08).
+           03  WRK-SRYYMD.
+               05  WRK-SRYYM               PIC X(06).
+               05  WRK-SRYDD               PIC 9(02).
       *
        01  LEN-AREA.
            03  LEN-CHKMST                  PIC 9(05).
@@ -89,6 +93,8 @@
            03  TBYOMEI-OCC                 OCCURS 101.
                05  TBYOMEI-ID              PIC 9(09).
                05  TBYOMEI-PTBYOMEI        PIC X(160).
+               05  TBYOMEI-BYODAY-G.
+                   07  TBYOMEI-BYODAY      PIC 9(01)   OCCURS  31.
                05  TBYOMEI-KEY.
                    07  TBYOMEI-SRYKA       PIC X(02).
                    07  TBYOMEI-SRYYMD      PIC X(08).
@@ -444,6 +450,23 @@
                MOVE    QDTCHK-SRYYMD   TO  TBYOMEI-SRYYMD (TBYOMEI-MAX)
                MOVE    QDTCHK-PTBYOMEI TO  TBYOMEI-PTBYOMEI(TBYOMEI-MAX)
       *
+               MOVE    SDTCHK06-KJNYMD TO  WRK-SRYYMD
+               PERFORM VARYING IDX-DAY FROM    1   BY  1
+                       UNTIL ( IDX-DAY >   31 )
+                   MOVE    IDX-DAY     TO  WRK-SRYDD
+                   IF    ( QDTCHK-SRYYMD   <=  WRK-SRYYMD )
+                       IF    ( QDTCHK-TENKIKBN =   SPACE )
+                               MOVE    1   TO  TBYOMEI-BYODAY
+                                                   (TBYOMEI-MAX IDX-DAY)
+                       ELSE
+                           IF    ( QDTCHK-TENKIYMD >=  WRK-SRYYMD )
+                               MOVE    1   TO  TBYOMEI-BYODAY
+                                                   (TBYOMEI-MAX IDX-DAY)
+                           END-IF
+                       END-IF
+                   END-IF
+               END-PERFORM
+      *
            END-IF
       *
            .
@@ -539,6 +562,8 @@
                                        TO  SDTCHK06-O-SRYYMD (IDX0)
                MOVE    TBYOMEI-PTBYOMEI(IDX0)
                                        TO  SDTCHK06-O-PTBYOMEI(IDX0)
+               MOVE    TBYOMEI-BYODAY-G(IDX0)
+                                       TO  SDTCHK06-O-BYODAY-G(IDX0)
       *
            END-PERFORM
       *
@@ -619,11 +644,11 @@
       *
            MOVE    SDTCHK06-HOSPNUM     TO  QDTCHK-SELHOSPNUM
            MOVE    SDTCHK06-PTID       TO  QDTCHK-SELPTID
-           IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
-               MOVE    SDTCHK06-SRYKA  TO  QDTCHK-SELSRYKA
-           ELSE
+      *    IF    ( SYS-1101-BYOSRYKAKBN    =   "1" OR SPACE )
+      *        MOVE    SDTCHK06-SRYKA  TO  QDTCHK-SELSRYKA
+      *    ELSE
                MOVE    "%"             TO  QDTCHK-SELSRYKA
-           END-IF
+      *    END-IF
            MOVE    SDTCHK06-CHKKBN     TO  QDTCHK-SELCHKKBN
            MOVE    SDTCHK06-SRYCD      TO  QDTCHK-SELSRYCD
            MOVE    SDTCHK06-KJNYMD     TO  QDTCHK-SELYUKOSTYMD

@@ -36,3 +36,5 @@
                    07  SDTCHK06-O-SRYKA        PIC X(02).
                    07  SDTCHK06-O-SRYYMD       PIC X(08).
                    07  SDTCHK06-O-PTBYOMEI     PIC X(160).
+                   07  SDTCHK06-O-BYODAY-G.
+                       09  SDTCHK06-O-BYODAY   PIC 9(01)   OCCURS  31.

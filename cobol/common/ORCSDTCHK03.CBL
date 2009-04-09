@@ -57,6 +57,7 @@
            03  IDX-LEN                     PIC 9(05).
            03  IDX-ST                      PIC 9(05).
            03  IDX-COMB                    PIC 9(05).
+           03  IDX-DAY                     PIC 9(05).
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
@@ -74,6 +75,9 @@
            03  WRK-PTBYOMEI-KEY            PIC X(200).
            03  WRK-HKNCOMBI                PIC 9(04).
            03  WRK-ZAIHKNNUM               PIC X(03).
+           03  WRK-SRYYMD.
+               05  WRK-SRYYM               PIC X(06).
+               05  WRK-SRYDD               PIC 9(02).
       *
        01  LEN-AREA.
            03  LEN-CHKMST                  PIC 9(05).
@@ -88,8 +92,9 @@
            03  TBYOMEI-OCC                 OCCURS 101.
                05  TBYOMEI-NYUGAIKBN       PIC X(01).
                05  TBYOMEI-BYOMEI          PIC X(160).
+               05  TBYOMEI-ERRDAY-G.
+                   07  TBYOMEI-ERRDAY      PIC 9(01)   OCCURS  31.
                05  TBYOMEI-KEY.
-                   07  TBYOMEI-ERRFLG      PIC 9(01).
                    07  TBYOMEI-SRYKA       PIC X(02).
                    07  TBYOMEI-SRYYMD      PIC X(08).
       *
@@ -212,10 +217,18 @@
       *
                PERFORM 2001-BYOMEI-CHK-SEC
                IF    ( FLG-MATCH    =  1 )
-                   PERFORM 2001-TAISYO-CHK-SEC
-                   IF    ( FLG-TAISYO  =   1 )
-                       PERFORM 2001-ERRINF-SEC
-                   END-IF
+                   PERFORM VARYING IDX-DAY    FROM 1   BY  1
+                           UNTIL ( IDX-DAY    >    31 )
+      *
+                       IF    ( SDTCHK01-CHKDAY (IDX-DAY) >   ZERO )
+                           MOVE    SDTCHK01-KJNYMD TO  WRK-SRYYMD
+                           MOVE    IDX-DAY         TO  WRK-SRYDD
+                           PERFORM 2001-TAISYO-CHK-SEC
+                           IF    ( FLG-TAISYO  =   1 )
+                               PERFORM 2001-ERRINF-SEC
+                           END-IF
+                       END-IF
+                   END-PERFORM
                END-IF
       *
                PERFORM 900-QDTCHK-KEY-FET-SEC
@@ -376,12 +389,11 @@
       *
            MOVE    ZERO            TO  FLG-TAISYO
       *
-           IF    ( QDTCHK-SRYYMD (1:6)        <=   SDTCHK01-KJNYMD(1:6))
+           IF    ( QDTCHK-SRYYMD              <=   WRK-SRYYMD )
                IF    ( QDTCHK-TENKIKBN         =   SPACE )
                            MOVE    1   TO  FLG-TAISYO
                ELSE
-                   IF    ( QDTCHK-TENKIYMD (1:6)
-                                              >=   SDTCHK01-KJNYMD(1:6))
+                   IF    ( QDTCHK-TENKIYMD    >=   WRK-SRYYMD )
                            MOVE    1   TO  FLG-TAISYO
                    END-IF
                END-IF
@@ -424,7 +436,8 @@
                MOVE    QDTCHK-PTBYOMEI TO  TBYOMEI-BYOMEI (TBYOMEI-MAX)
                MOVE    QDTCHK-SRYKA    TO  TBYOMEI-SRYKA  (TBYOMEI-MAX)
                MOVE    QDTCHK-SRYYMD   TO  TBYOMEI-SRYYMD (TBYOMEI-MAX)
-               MOVE    1               TO  TBYOMEI-ERRFLG (TBYOMEI-MAX)
+               MOVE    1               TO  TBYOMEI-ERRDAY
+                                                 (TBYOMEI-MAX IDX-DAY)
       *
            END-IF
       *
@@ -441,11 +454,14 @@
            PERFORM 3001-TBYOMEI-SORT-SEC
       *
            MOVE    TBYOMEI-MAX         TO  SDTCHK01-O-MAX
+      *
+           IF    ( SDTCHK01-O-MAX  =   ZERO )
+               MOVE    1               TO  SDTCHK01-O-OK
+           END-IF
+      *
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   TBYOMEI-MAX )
       *
-               MOVE    TBYOMEI-ERRFLG (IDX0)
-                                       TO  SDTCHK01-O-ERRFLG (IDX0)
                MOVE    TBYOMEI-SRYKA  (IDX0)
                                        TO  SDTCHK01-O-SRYKA  (IDX0)
                MOVE    TBYOMEI-SRYYMD (IDX0)
@@ -454,6 +470,8 @@
                                        TO  SDTCHK01-O-BYOMEI (IDX0)
                MOVE    TBYOMEI-NYUGAIKBN (IDX0)
                                        TO  SDTCHK01-O-NYUGAIKBN (IDX0)
+               MOVE    TBYOMEI-ERRDAY-G (IDX0)
+                                       TO  SDTCHK01-O-ERRDAY-G  (IDX0)
       *
            END-PERFORM
       *
