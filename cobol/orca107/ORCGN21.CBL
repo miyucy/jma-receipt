@@ -1633,8 +1633,6 @@
                GO  TO  460-BACK-EXT
            END-IF
       *
-      *     PERFORM 460-BACK-SYORI-SEC
-      *
       *    画像添付情報削除
            INITIALIZE                  TEMP-REC
            MOVE    SPA-TERMID      TO  TEMP-TERMID
