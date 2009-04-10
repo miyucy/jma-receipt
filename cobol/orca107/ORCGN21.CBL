@@ -54,10 +54,6 @@
       *                                      形状８行以上の時確認表示
       * 04.03.01     NACL-森脇     08/06/25  画像選択機能追加
       * 04.03.02     NACL-森脇     08/12/04  薬剤情報複写機能追加
-      * 04.07.01     NACL-森脇     14/04/02  画像表示方法変更
-      * 04.08.01     NACL-森脇     14/08/07  画像イメージ作成機能追加
-      * 04.08.02     NACL-森脇     16/09/27  GINBEE(API)対応
-      * 05.00.00     NACL-森脇     17/02/10  自費薬剤登録対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -132,62 +128,49 @@
        01  WRK-PIN-AREA.
            03  WRK-PIN             PIC 9(02).
            03  WRK-PED.
-               05  WRK-PEDX        PIC X(02)   OCCURS  13.
+             05  WRK-PEDX          PIC X(02)   OCCURS  13.
            03  WRK-PKANA           PIC X(02).
            03  WRK-PMAX            PIC 9(02).
       *
       *    カナ検索用テーブル
        01  PIN-TBL-AREA.
            03  KANA-TBL.
-               05  FILLER          PIC X(10)   VALUE "アイウエオ".
-               05  FILLER          PIC X(10)   VALUE "カキクケコ".
-               05  FILLER          PIC X(10)   VALUE "サシスセソ".
-               05  FILLER          PIC X(10)   VALUE "タチツテト".
-               05  FILLER          PIC X(10)   VALUE "ナニヌネノ".
-               05  FILLER          PIC X(10)   VALUE "ハヒフヘホ".
-               05  FILLER          PIC X(10)   VALUE "マミムメモ".
-               05  FILLER          PIC X(06)   VALUE "ヤユヨ".
-               05  FILLER          PIC X(10)   VALUE "ラリルレロ".
-               05  FILLER          PIC X(10)   VALUE "ワヲン゜゛".
-               05  FILLER          PIC X(08)   VALUE "ーＳＢＣ".
+             05  FILLER            PIC X(10)   VALUE "アイウエオ".
+             05  FILLER            PIC X(10)   VALUE "カキクケコ".
+             05  FILLER            PIC X(10)   VALUE "サシスセソ".
+             05  FILLER            PIC X(10)   VALUE "タチツテト".
+             05  FILLER            PIC X(10)   VALUE "ナニヌネノ".
+             05  FILLER            PIC X(10)   VALUE "ハヒフヘホ".
+             05  FILLER            PIC X(10)   VALUE "マミムメモ".
+             05  FILLER            PIC X(06)   VALUE "ヤユヨ".
+             05  FILLER            PIC X(10)   VALUE "ラリルレロ".
+             05  FILLER            PIC X(10)   VALUE "ワヲン゜゛".
+             05  FILLER            PIC X(08)   VALUE "ーＳＢＣ".
            03  KANA-TBL-R          REDEFINES   KANA-TBL.
-               05  PKANA           PIC X(02)   OCCURS  52.
+             05  PKANA             PIC X(02)   OCCURS  52.
       *
        01  WRK-CONS-AREA.
-      *    定型文
-           03  WRK-CONS-CAUTION1.
-               05  FILLER          PIC X(32)   VALUE
-                   "医師の指示通りに服用して下さい。".
-           03  WRK-CONS-CAUTION11.
-               05  FILLER          PIC X(32)   VALUE
-                   "医師の指示通りに使用して下さい。".
-           03  WRK-CONS-CAUTION2.
-               05  FILLER          PIC X(40)   VALUE
-                   "発疹・かゆみ等の過敏症が現れた時は服用を".
-               05  FILLER          PIC X(30)   VALUE
-                   "中止し、医師に相談して下さい。".
-           03  WRK-CONS-CAUTION21.
-               05  FILLER          PIC X(40)   VALUE
-                   "発疹・かゆみ等の過敏症が現れた時は使用を".
-               05  FILLER          PIC X(30)   VALUE
-                   "中止し、医師に相談して下さい。".
-      *
-      *    画像ファイルフォルダ名
-           03  WRK-CONS-MEDIMGDIR  PIC X(08)   VALUE   "medimage".
+           03  WRK-CONS-PASS       PIC X(30)   VALUE
+                           "/var/lib/jma-receipt/medphoto/".
+           03  WRK-CONS-CAUTION.
+             05  FILLER            PIC X(34)   VALUE
+                           "医師の指示通りに服用してください。".
+             05  FILLER            PIC X(01)   VALUE   X"0A".
+             05  FILLER            PIC X(40)   VALUE
+                           "発疹・かゆみ等の過敏症が現れた時は服用を".
+             05  FILLER            PIC X(30)   VALUE
+                           "中止し、医師に相談して下さい。".
       *
       *    文字数多い場合の変換領域
        01  WRK-KANACONV-AREA.
-           03  WRK-KANACONV-LEN        PIC S9(9) BINARY.
-           03  WRK-KANACONV-RETURN     PIC S9(9) BINARY.
-           03  WRK-KANACONV-MAXLEN     PIC S9(9) BINARY.
-           03  WRK-KANACONV-CONV-FLAG  PIC S9(9) BINARY.
-           03  WRK-KANACONV-CHAR-TYPE  PIC S9(9) BINARY.
-           03  WRK-KANACONV-STLEN      PIC S9(9) BINARY.
-           03  WRK-KANACONV-INDATA     PIC X(4000).
-           03  WRK-KANACONV-OUTDATA    PIC X(4000).
-      *
-      *    画像イメージ作成パラメタ
-           COPY    "CPORCSMIAREA.INC".
+           03 WRK-KANACONV-LEN         PIC S9(9) BINARY.
+           03 WRK-KANACONV-RETURN      PIC S9(9) BINARY.
+           03 WRK-KANACONV-MAXLEN      PIC S9(9) BINARY.
+           03 WRK-KANACONV-CONV-FLAG   PIC S9(9) BINARY.
+           03 WRK-KANACONV-CHAR-TYPE   PIC S9(9) BINARY.
+           03 WRK-KANACONV-STLEN       PIC S9(9) BINARY.
+           03 WRK-KANACONV-INDATA      PIC X(4000).
+           03 WRK-KANACONV-OUTDATA     PIC X(4000).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -208,9 +191,6 @@
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
       *
-      *    画像イメージ
-           COPY    "CPMEDIMAGE.INC".
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -220,9 +200,6 @@
       *
       *    ファイル存在チェック
            COPY    "CPORCSFILECHK.INC".
-      *
-      *    ファイル削除パラメタ
-           COPY    "CPORCSFDEL.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -370,12 +347,6 @@
       *        登録
                WHEN    "CLICKED"   ALSO    "B12"
                    PERFORM 480-TOUROKU-SEC
-      *        定型文１
-               WHEN    "CLICKED"   ALSO    "TEIKEI1"
-                   PERFORM 430-TEIKEI1-SEC
-      *        定型文２
-               WHEN    "CLICKED"   ALSO    "TEIKEI2"
-                   PERFORM 430-TEIKEI2-SEC
       *        カナ入力
                WHEN    "CLICKED"   ALSO    ANY
                    PERFORM 490-KANA-SEC
@@ -417,8 +388,6 @@
       *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU  TO  SPA-KYOUTU
-               MOVE    SPACE           TO  SPA-N21FIL-PHOTO
-               MOVE    LOW-VALUE       TO  SPA-N21FIL-OBJECT
            END-IF
       *
            EVALUATE    SPA-MOTOPG
@@ -459,14 +428,19 @@
       *
            MOVE    2               TO  SPA-GMN-CUR
       *
-      *    画像ファイルフォルダ
-           MOVE    SPACE               TO  SPA-GMN-FOLDER
-           STRING  MCP-TEMPDIR         DELIMITED BY SPACE
-                   "/"                 DELIMITED BY SIZE
-                   WRK-CONS-MEDIMGDIR  DELIMITED BY SIZE
-                   "/"                 DELIMITED BY SIZE
-                   INTO    SPA-GMN-FOLDER
-           END-STRING
+      *    デフォルト画像フォルダーセット
+           PERFORM 900-SYS1030-READ-SEC
+           IF      SYS-1030-GAZOFOLDER =   SPACE
+               MOVE    SPACE       TO  SPA-GMN-FOLDER
+               STRING  WRK-CONS-PASS   DELIMITED BY SIZE
+                       SPA-HOSPNUM     DELIMITED BY SIZE
+                       "/"             DELIMITED BY SIZE
+                               INTO    SPA-GMN-FOLDER
+               END-STRING
+           ELSE
+               MOVE    SYS-1030-GAZOFOLDER
+                                       TO  SPA-GMN-FOLDER
+           END-IF
            . 
       *
        31O-SPASET-EXT.
@@ -478,6 +452,7 @@
        320-N22-SET-SEC             SECTION.
       *
            IF      SPA-N22-FLG     =   "OK"
+               MOVE    SPACE           TO  SPA-N22-FLG
                MOVE    10              TO  SPA-GMN-CUR
       *        写真があればセット
                PERFORM 430-GAZOCHK-HENSYU-SEC
@@ -562,6 +537,7 @@
                PERFORM 401-CLEAR-ENTRY-SEC
                IF      SPA-GMN-SELNUM   NOT =   ZERO
                    MOVE    SPA-GMN-KENNAME     TO  SPA-GMN-NAME
+                   MOVE    WRK-CONS-CAUTION    TO  SPA-GMN-CAUTION
                END-IF
            END-IF
       *
@@ -606,7 +582,6 @@
            IF      SPA-GMN-JYOTAIFLG   =   ZERO
                INITIALIZE                      SPA-COPY-AREA
                MOVE    SPA-NAI-YAKKAKJNCD  TO  SPA-COPY-YAKKAKJNCD
-               MOVE    SPA-NAI-YKZKBN      TO  SPA-COPY-YKZKBN
                MOVE    SPA-NAI-SRYCD       TO  SPA-COPY-SRYCD
                MOVE    SPA-NAI-KENCD       TO  SPA-COPY-KENCD
                MOVE    SPA-NAI-SELNUM      TO  SPA-COPY-SELNUM
@@ -708,11 +683,8 @@
                    MOVE    SPA-GMN-KENCD   TO  WRK-NAME
                    PERFORM 800-TENSULIST-SET-SEC
                ELSE
-      *----(05.00.00)--UPD-START---
-      *             IF    ( KANACHK-MAX     =   9 ) AND
-      *                   ( SPA-GMN-KENCD(1:1)  =   "6" )
-                   IF    ( KANACHK-MAX     =   9 )
-      *----(05.00.00)--UPD-END-----
+                   IF    ( KANACHK-MAX     =   9 ) AND
+                         ( SPA-GMN-KENCD(1:1)  =   "6" )
                        MOVE    SPA-GMN-KENCD   TO  WRK-SRYCD
                        PERFORM 900-TENSU-READ-SEC
                        IF      FLG-TENSU       =   ZERO
@@ -721,7 +693,6 @@
                                                    SPA-NAI-SRYCD
                            MOVE    TNS-YAKKAKJNCD
                                                TO  SPA-NAI-YAKKAKJNCD
-                           MOVE    TNS-YKZKBN  TO  SPA-NAI-YKZKBN
                            PERFORM 800-YAKUJYO-SET-SEC
                        ELSE
                            PERFORM 800-LIST-KENSU-SET-SEC
@@ -886,66 +857,12 @@
                                        SPA-NAI-SRYCD
            MOVE    SPA-GMN-TKJNCD(SPA-GMN-SELNUM)
                                    TO  SPA-NAI-YAKKAKJNCD
-           MOVE    SPA-GMN-TYKZKBN(SPA-GMN-SELNUM)
-                                   TO  SPA-NAI-YKZKBN
       *
       *    薬剤情報マスタ読み込み
            PERFORM 800-YAKUJYO-SET-SEC
       *
            .
        420-LISTSET-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    定型文１
-      *****************************************************************
-       430-TEIKEI1-SEC             SECTION.
-      *
-      *    薬剤が選択されているかチェック
-           IF      SPA-NAI-SRYCD   =   SPACE
-                GO  TO  430-TEIKEI1-EXT
-           END-IF
-      *
-           IF      SPA-NAI-YKZKBN  =   1
-               STRING  N21-CAUTION         DELIMITED BY SPACE
-                       WRK-CONS-CAUTION1   DELIMITED BY SPACE
-                                     INTO  SPA-GMN-CAUTION
-               END-STRING
-           ELSE
-               STRING  N21-CAUTION         DELIMITED BY SPACE
-                       WRK-CONS-CAUTION11   DELIMITED BY SPACE
-                                     INTO  SPA-GMN-CAUTION
-               END-STRING
-           END-IF
-      *
-           .
-       430-TEIKEI1-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    定型文２
-      *****************************************************************
-       430-TEIKEI2-SEC             SECTION.
-      *
-      *    薬剤が選択されているかチェック
-           IF      SPA-NAI-SRYCD   =   SPACE
-                GO  TO  430-TEIKEI2-EXT
-           END-IF
-      *
-           IF      SPA-NAI-YKZKBN  =   1
-               STRING  N21-CAUTION         DELIMITED BY SPACE
-                       WRK-CONS-CAUTION2   DELIMITED BY SPACE
-                                     INTO  SPA-GMN-CAUTION
-               END-STRING
-           ELSE
-               STRING  N21-CAUTION         DELIMITED BY SPACE
-                       WRK-CONS-CAUTION21  DELIMITED BY SPACE
-                                     INTO  SPA-GMN-CAUTION
-               END-STRING
-           END-IF
-      *
-           .
-       430-TEIKEI2-EXT.
            EXIT.
       *
       *****************************************************************
@@ -972,7 +889,7 @@
            INITIALIZE                  WRK-HENSYU-AREA
       *
       *    薬剤画像チェック
-           PERFORM 430-GAZOCHK-HENSYU-SEC
+           PERFORM 431-GAZO-SET-SEC
       *
       *    薬剤名称チェック
            PERFORM 431-NAME-SET-SEC
@@ -1130,7 +1047,6 @@
            ELSE
       *        混在エラー
                MOVE    1               TO  KANACHK-RC
-               MOVE    WRK-KANACONV-MAXLEN TO  KANACHK-MAX
            END-IF
       *
            IF      WRK-KANACONV-OUTDATA    =   SPACE
@@ -1164,33 +1080,18 @@
            EXIT.
       *
       *****************************************************************
-      *    画像ファイルチェック
+      *    画像ファイル存在チェック
       *****************************************************************
        430-GAZOCHK-HENSYU-SEC      SECTION.
-      *
-           MOVE    SPACE           TO  SPA-N21FIL-PHOTO
-           MOVE    LOW-VALUE       TO  N21-PHOTOAREA
       *
            IF      SPA-GMN-PHOTO   =   SPACE
                MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
-      *    末尾文字編集
-           MOVE    SPA-GMN-PHOTO   TO  WRK-NAIYOU
-           PERFORM 430-KANACHK-HENSYU-SEC
-           MOVE    WRK-NAIYOU      TO  SPA-GMN-PHOTO
-      *
-      *    カナチェック
-           IF    ( KANACHK-SYUBETU     NOT =   1    )  OR
-                 ( KANACHK-RC          NOT =   ZERO ) 
-               MOVE    "0003"      TO  SPA-ERRCD
-               MOVE    10          TO  SPA-GMN-CUR
-               GO  TO  430-GAZOCHK-HENSYU-EXT
-           END-IF
-      *
       *    拡張子が違えば処理抜ける
            PERFORM 431-GAZO-TYPE-CHK-SEC
+      *
            IF      FLG-OK          =   1
                MOVE    "0015"      TO  SPA-ERRCD
                MOVE    10          TO  SPA-GMN-CUR
@@ -1198,49 +1099,38 @@
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
-      *    パス名をフォルダ名とファイル名に分ける
-           PERFORM 431-GAZO-PATH-CHK-SEC
+           IF    ( SPA-N21FIL-PHOTO    NOT =   SPACE ) AND
+                 ( SPA-N21FIL-PHOTO    =   SPA-GMN-PHOTO )
+               MOVE    SPA-N21FIL-OBJECT   TO  SPA-GMN-OBJECT
+               GO  TO  430-GAZOCHK-HENSYU-EXT
+           ELSE
+               MOVE    SPACE           TO  SPA-N21FIL-PHOTO
+               MOVE    LOW-VALUE       TO  SPA-N21FIL-OBJECT
+           END-IF
       *
-      *    ファイル存在チェック
+      *    画像ファイル存在チェック
            PERFORM 431-GAZO-FILE-CHK
-           IF      FLG-OK    =   1
-               MOVE    "0014"      TO  SPA-ERRCD
-               MOVE    10          TO  SPA-GMN-CUR
-               MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
+      *
+           IF      FLG-OK          =   1
+               MOVE    "0014"          TO  SPA-ERRCD
+               MOVE    10              TO  SPA-GMN-CUR
+               MOVE    LOW-VALUE       TO  SPA-GMN-OBJECT
                GO  TO  430-GAZOCHK-HENSYU-EXT
            END-IF
       *
-      *    画像ファイルを表示
-           PERFORM 500-GAZO-OBJECT-SEC
+      *    画像イメージを表示
+           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
+           MOVE    "blob"          TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    SPA-GMN-PHOTO   TO  ORCA-BLOB-FILE
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       ORCA-BLOB
+                                       SPA-AREA
+           MOVE    ORCA-BLOB-OBJECT    TO  SPA-GMN-OBJECT
+      *
            .
        430-GAZOCHK-HENSYU-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画像ファイルチェック
-      *****************************************************************
-       431-GAZOCHK-SYOKI-SEC       SECTION.
-      *
-           MOVE    LOW-VALUE       TO  N21-PHOTOAREA
-      *
-           IF      SPA-GMN-PHOTO   =   SPACE
-               MOVE    LOW-VALUE   TO  SPA-GMN-OBJECT
-               GO  TO  431-GAZOCHK-SYOKI-EXT
-           END-IF
-      *
-      *    パス名をフォルダ名とファイル名に分ける
-           PERFORM 431-GAZO-PATH-CHK-SEC
-      *
-      *    データからイメージファイル作成
-           INITIALIZE                  ORCSMIAREA
-           MOVE    SPA-NAI-SRYCD   TO  ORCSMI-SRYCD
-           MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
-           MOVE    WRK-FILEMEI     TO  ORCSMI-FILENAME
-           CALL    "ORCSMILOAD"        USING
-                                       ORCSMIAREA
-                                       SPA-AREA
-           .
-       431-GAZOCHK-SYOKI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1248,20 +1138,11 @@
       *****************************************************************
        431-GAZO-FILE-CHK           SECTION.
       *
-           MOVE    SPACE           TO  ORCA-BLOB-FILE
-           STRING  MCP-TEMPDIR         DELIMITED BY SPACE
-                   "/"                 DELIMITED BY SIZE
-                   WRK-CONS-MEDIMGDIR  DELIMITED BY SPACE
-                   "/"                 DELIMITED BY SIZE
-                   WRK-FILEMEI         DELIMITED BY SPACE
-                               INTO    ORCA-BLOB-FILE
-           END-STRING
-      *
            MOVE    ZERO            TO  FLG-OK
       *
       *    画像ファイルがない場合は処理抜ける
            INITIALIZE                  ORCSFILECHKAREA
-           MOVE    ORCA-BLOB-FILE  TO  FILECHK-NAME
+           MOVE    SPA-GMN-PHOTO   TO  FILECHK-NAME
            CALL    "ORCSFILECHK"       USING
                                        ORCSFILECHKAREA
            IF      FILECHK-RC      NOT =   0
@@ -1341,6 +1222,29 @@
            EXIT.
       *
       *****************************************************************
+      *    画像セット処理
+      *****************************************************************
+       431-GAZO-SET-SEC            SECTION.
+      *
+           IF      SPA-GMN-PHOTO   NOT =   SPACE
+      *        パス名をフォルダ名とファイル名に分ける
+               PERFORM 431-GAZO-PATH-CHK-SEC
+               IF      FLG-OK          =   ZERO
+                   MOVE    SPACE           TO  SPA-GMN-PHOTO
+                   STRING  SPA-GMN-FOLDER      DELIMITED  BY  SPACE
+                           WRK-FILEMEI         DELIMITED  BY  SPACE
+                                       INTO    SPA-GMN-PHOTO
+                   END-STRING
+               END-IF
+           END-IF
+      *
+           PERFORM 430-GAZOCHK-HENSYU-SEC
+      *
+           .
+       431-GAZO-SET-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *   薬剤名称データセット処理
       *****************************************************************
        431-NAME-SET-SEC            SECTION.
@@ -1406,8 +1310,7 @@
                    GO  TO  431-EFFECT-SET-EXT
                END-IF
                IF      WRK-NAIYOU(1001:)   NOT =   SPACE
-                   COMPUTE IDX-KET    =   IDX-STR1 / 2
-                   MOVE    "0017"      TO  SPA-ERRCD
+                   MOVE    "0009"      TO  SPA-ERRCD
                    MOVE    5           TO  SPA-GMN-CUR
                    GO  TO  431-EFFECT-SET-EXT
                END-IF
@@ -1441,8 +1344,7 @@
                END-IF
       *        文字数オーバーチェック
                IF      WRK-NAIYOU(2001:)    NOT = SPACE
-                   COMPUTE IDX-KET    =   IDX-STR1 / 2
-                   MOVE    "0018"      TO  SPA-ERRCD
+                   MOVE    "0009"      TO  SPA-ERRCD
                    MOVE    9           TO  SPA-GMN-CUR
                    GO  TO  431-CAUTION-SET-EXT
                END-IF
@@ -1475,8 +1377,7 @@
                    GO  TO  431-COLOR-SET-EXT
                END-IF
                IF      WRK-NAIYOU(181:)    NOT = SPACE
-                   COMPUTE IDX-KET    =   IDX-STR1 / 2
-                   MOVE    "0019"      TO  SPA-ERRCD
+                   MOVE    "0009"      TO  SPA-ERRCD
                    MOVE    6           TO  SPA-GMN-CUR
                    GO  TO  431-COLOR-SET-EXT
                END-IF
@@ -1509,8 +1410,7 @@
                     GO  TO  431-SHAPE-SET-EXT
                END-IF
                IF      WRK-NAIYOU(181:)    NOT = SPACE
-                   COMPUTE IDX-KET    =   IDX-STR1 / 2
-                   MOVE    "0020"      TO  SPA-ERRCD
+                   MOVE    "0009"      TO  SPA-ERRCD
                    MOVE    7           TO  SPA-GMN-CUR
                    GO  TO  431-SHAPE-SET-EXT
                END-IF
@@ -1543,8 +1443,7 @@
                    GO  TO  431-MARK-SET-EXT
                END-IF
                IF      WRK-NAIYOU(181:)    NOT = SPACE
-                   COMPUTE IDX-KET    =   IDX-STR1 / 2
-                   MOVE    "0021"      TO  SPA-ERRCD
+                   MOVE    "0009"      TO  SPA-ERRCD
                    MOVE    8           TO  SPA-GMN-CUR
                    GO  TO  431-MARK-SET-EXT
                END-IF
@@ -1664,16 +1563,6 @@
       *    画像処理
       *****************************************************************
        440-GAZOU-SEC               SECTION.
-      *
-           PERFORM 430-TEXTCHK-SEC
-      *
-           IF      SPA-ERRCD       NOT =   SPACE
-               IF      SPA-ERRCD   =   "0014"
-                   MOVE    SPACE       TO  SPA-ERRCD
-               ELSE
-                   GO  TO  440-GAZOU-EXT
-               END-IF
-           END-IF
       *
            MOVE    SPA-N21KYOUTU   TO  SPA-WORK
            MOVE    SPA-N21SCRAREA  TO  SPA-FREE
@@ -1857,9 +1746,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
                GO  TO  471-DEL-EXT
            END-IF
       *
-      *    画像削除
-           PERFORM 482-GAZODEL-SEC
-      *
            PERFORM 490-SYORILIST-SET-SEC
       *
            .
@@ -1871,9 +1757,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *****************************************************************
        480-TOUROKU-SEC             SECTION.
       *
-      *    入力チェック
            PERFORM 430-TEXTCHK-SEC
-           MOVE    SPACE               TO  SPA-N22-FLG
       *
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  480-TOUROKU-EXT
@@ -1899,6 +1783,18 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *    登録処理
       *****************************************************************
        481-KOUSHIN-SEC             SECTION.
+      *
+           IF      SPA-N21FIL-OBJECT   NOT =   LOW-VALUE
+               MOVE    SPA-N21FIL-OBJECT   TO  ORCA-BLOB-OBJECT
+               MOVE    "BLOBEXPORT"        TO  MCP-FUNC
+               MOVE    "blob"              TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               MOVE    SPA-GMN-PHOTO       TO  ORCA-BLOB-FILE
+               CALL    "ORCDBMAIN"             USING
+                                               MCPAREA
+                                               ORCA-BLOB
+                                               SPA-AREA
+           END-IF
       *
            MOVE    SPA-NAI-SRYCD       TO  WRK-SRYCD
       *    薬剤情報マスタ読み込み
@@ -1948,59 +1844,10 @@ grpsys     CALL    "ORCDBMAIN"         USING
                GO  TO  481-KOUSHIN-EXT
            END-IF
       *
-           IF      SPA-GMN-PHOTO   =   SPACE
-      *        画像削除
-               PERFORM 482-GAZODEL-SEC
-           ELSE
-      *        画像コピー
-               PERFORM 482-GAZOCOPY-SEC
-           END-IF
-      *
            PERFORM 490-SYORILIST-SET-SEC
       *
            .
        481-KOUSHIN-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画像コピー
-      *****************************************************************
-       482-GAZOCOPY-SEC            SECTION.
-      *
-      *    画像ファイルチェック
-           PERFORM 430-GAZOCHK-HENSYU-SEC
-      *
-           INITIALIZE                  ORCSMIAREA
-           MOVE    SPA-NAI-SRYCD   TO  ORCSMI-SRYCD
-           MOVE    SPA-N22-GAZO    TO  ORCSMI-IMAGEKBN
-           MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
-           MOVE    WRK-FILEMEI     TO  ORCSMI-FILENAME
-           CALL    "ORCSMISAVE"        USING
-                                       ORCSMIAREA
-                                       SPA-AREA
-           .
-       482-GAZOCOPY-SEC-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    画像削除
-      *****************************************************************
-       482-GAZODEL-SEC             SECTION.
-      *
-           INITIALIZE                  MEDIMAGE-REC
-           MOVE    SPA-HOSPNUM     TO  MEDIMG-HOSPNUM
-           MOVE    SPA-NAI-SRYCD   TO  MEDIMG-SRYCD
-      *
-           MOVE    MEDIMAGE-REC    TO  MCPDATA-REC
-           MOVE    "DBDELETE"      TO  MCP-FUNC
-           MOVE    "tbl_med_image" TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "MONFUNC"           USING
-                                       MCPAREA
-                                       MEDIMAGE-REC
-                                       SPA-AREA
-           .
-       482-GAZODEL-SEC-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2281,7 +2128,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
            MOVE    SPACE           TO  N21
       *
       *    スクロール位置セット
-           INITIALIZE                  N21
            MOVE    WRK-ROW         TO  N21-ROW
            MOVE    ZERO            TO  N21-ROWATTR
       *
@@ -2311,22 +2157,16 @@ grpsys     CALL    "ORCDBMAIN"         USING
            MOVE    SPA-GMN-SHAPE       TO  N21-SHAPE
            MOVE    SPA-GMN-MARK        TO  N21-MARK
            MOVE    SPA-GMN-CAUTION     TO  N21-CAUTION
-      *
-           MOVE    LOW-VALUE           TO  N21-PHOTOAREA
+           MOVE    SPA-GMN-OBJECT      TO  N21-PHOTOAREA
       *
       *    画像パス編集
-           PERFORM 431-GAZO-PATH-CHK-SEC
-           IF      FLG-OK      =   1
-               MOVE    WRK-PASSMEI     TO  N21-PHOTO
-           ELSE
-               MOVE    WRK-FILEMEI     TO  N21-PHOTO
-           END-IF
-      *
-      *    ファイル存在チェック
-           PERFORM 431-GAZO-FILE-CHK
-           IF      FLG-OK    =   0
-      *        画像イメージを表示
-               PERFORM 500-GAZO-OBJECT-SEC
+           IF      SPA-GMN-PHOTO   NOT =   SPACE
+               PERFORM 431-GAZO-PATH-CHK-SEC
+               IF      FLG-OK      =   1
+                   MOVE    WRK-PASSMEI     TO  N21-PHOTO
+               ELSE
+                   MOVE    WRK-FILEMEI     TO  N21-PHOTO
+               END-IF
            END-IF
       *
       *    参照ボタン非活性
@@ -2338,12 +2178,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
                MOVE    WIDGET-NORMAL       TO  N21-B09-STATE
                MOVE    WIDGET-NORMAL       TO  N21-B11-STATE
            END-IF
-      *
-      *----(05.00.00)--ADD-START---
-           IF        ( SPA-NAI-YAKKAKJNCD  =   SPACE )
-               MOVE    WIDGET-INSENSITIVE  TO  N21-B11-STATE
-           END-IF
-      *----(05.00.00)--ADD-END-----
       *
       *    複写ボタン非活性
            IF        ( SPA-GMN-JYOTAIFLG   =   ZERO )
@@ -2373,23 +2207,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
        500-GMNHEN-EXT.
            EXIT.
       *
-      *****************************************************************
-      *    画像表示処理
-      *****************************************************************
-       500-GAZO-OBJECT-SEC         SECTION.
-      *
-      *    画像イメージを表示
-           MOVE    "BLOBIMPORT"    TO  MCP-FUNC
-           MOVE    "blob"          TO  MCP-TABLE
-           MOVE    "key"           TO  MCP-PATHNAME
-           CALL    "ORCDBMAIN"         USING
-                                       MCPAREA
-                                       ORCA-BLOB
-                                       SPA-AREA
-           MOVE    ORCA-BLOB-OBJECT    TO  N21-PHOTOAREA
-           .
-       500-GAZO-OBJECT-EXT.
-           EXIT.
       *****************************************************************
       *    エラーメッセージ表示処理
       *****************************************************************
@@ -2441,44 +2258,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
                                            TO  SPA-ERRMSG
                WHEN    "0016"
                    MOVE    "枠内に納まるよう編集して下さい"
-                                           TO  SPA-ERRMSG
-               WHEN    "0017"
-                   MOVE    SPACE           TO  SPA-ERRMSG
-                   STRING   "効能効果：文字数超過（" DELIMITED BY SIZE
-                            IDX-KET                  DELIMITED BY SIZE
-                            "/0500）"                DELIMITED BY SIZE
-                                           INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0018"
-                   MOVE    SPACE           TO  SPA-ERRMSG
-                   STRING   "注意事項：文字数超過（" DELIMITED BY SIZE
-                            IDX-KET                  DELIMITED BY SIZE
-                            "/1000）"                DELIMITED BY SIZE
-                                           INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0019"
-                   MOVE    SPACE           TO  SPA-ERRMSG
-                   STRING   "色：文字数超過（"       DELIMITED BY SIZE
-                            IDX-KET                  DELIMITED BY SIZE
-                            "/0090）"                DELIMITED BY SIZE
-                                           INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0020"
-                   MOVE    SPACE           TO  SPA-ERRMSG
-                   STRING   "形：文字数超過（"       DELIMITED BY SIZE
-                            IDX-KET                  DELIMITED BY SIZE
-                            "/0090）"                DELIMITED BY SIZE
-                                           INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0021"
-                   MOVE    SPACE           TO  SPA-ERRMSG
-                   STRING   "記号：文字数超過（"     DELIMITED BY SIZE
-                            IDX-KET                  DELIMITED BY SIZE
-                            "/0090）"                DELIMITED BY SIZE
-                                           INTO  SPA-ERRMSG
-                   END-STRING
-               WHEN    "0022"
-                   MOVE    "画像ファイルのサイズが超過しています"
                                            TO  SPA-ERRMSG
                WHEN    "1001"
                    MOVE    "登録できませんでした"
@@ -2534,7 +2313,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
            END-EVALUATE
       *
            MOVE    SPACE           TO  N21ID1
-           INITIALIZE                  N21ID1
            MOVE    SPA-N21IDCD     TO  N21ID1-ID1CODE
            MOVE    WRK-N21IDMSG    TO  N21ID1-ID1MSG
            MOVE    "B12"           TO  MCP-WIDGET
@@ -2578,10 +2356,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
                    MOVE  "CAUTION"         TO  MCP-WIDGET
                WHEN    10
                    MOVE  "PHOTO"           TO  MCP-WIDGET
-               WHEN    11
-                   MOVE  "TEIKEI1"         TO  MCP-WIDGET
-               WHEN    12
-                   MOVE  "TEIKEI2"         TO  MCP-WIDGET
                WHEN    99
                    MOVE  "B12"             TO  MCP-WIDGET
            END-EVALUATE
@@ -2598,6 +2372,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *    点数マスタ読み込み
            INITIALIZE                  TNS-TENSU-REC
            INITIALIZE                  ORCSADDSIGNAREA
+      *     MOVE    SPA-COPY-YAKKAKJNCD(1:9)
            MOVE    SPA-COPY-YAKKAKJNCD(1:8)
                                    TO  SADDSIGN-STR
            CALL    "ORCSADDSIGN"       USING
@@ -2654,27 +2429,14 @@ grpsys     CALL    "ORCDBMAIN"         USING
                                        ORCSADDSIGNAREA
            MOVE    SADDSIGN-STR    TO  TNS-NAME
                                        TNS-KANANAME
-      *----(05.00.00)--UPD-START---
-      *     MOVE    "key5"          TO  WRK-TNSPATH
-           MOVE    "key2"          TO  WRK-TNSPATH
-      *----(05.00.00)--UPD-END-----
+           MOVE    "key5"          TO  WRK-TNSPATH
            PERFORM 900-TENSU-SELECT-SEC
       *
       *    リストセット
            MOVE    ZERO            TO  IDX
            PERFORM UNTIL ( IDX     =    200 )
                    OR    ( FLG-TENSU    =   1 )
-      *----(05.00.00)--ADD-START---
-               EVALUATE    TNS-SRYCD
-                   WHEN    "600000000" THRU    "699999999"
-                   WHEN    "095210001" THRU    "095279999"
-                   WHEN    "096210001" THRU    "096279999"
-                       PERFORM 800-LIST-TENSU-SET-SEC
-               END-EVALUATE
-      *----(05.00.00)--ADD-END-----
-      *----(05.00.00)--UPD-START---
-      *         PERFORM 800-LIST-TENSU-SET-SEC
-      *----(05.00.00)--UPD-END-----
+               PERFORM 800-LIST-TENSU-SET-SEC
                PERFORM 900-TENSU-FETCH-SEC
            END-PERFORM
       *
@@ -2698,7 +2460,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
            MOVE    TNS-NAME        TO  SPA-GMN-TNAME(IDX)
            MOVE    TNS-SRYCD       TO  SPA-GMN-TCD(IDX)
            MOVE    TNS-YAKKAKJNCD  TO  SPA-GMN-TKJNCD(IDX)
-           MOVE    TNS-YKZKBN      TO  SPA-GMN-TYKZKBN(IDX)
       *
            .
        800-LIST-TENSU--SET-EXT.
@@ -2720,7 +2481,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
                    MOVE    SPA-GMN-TCD(IDX)    TO  SPA-GMN-KENCD
                                                    SPA-NAI-SRYCD
                    MOVE    SPA-GMN-TKJNCD(IDX) TO  SPA-NAI-YAKKAKJNCD
-                   MOVE    SPA-GMN-TYKZKBN(IDX) TO  SPA-NAI-YKZKBN
                    PERFORM 800-YAKUJYO-SET-SEC
                    INITIALIZE                      SPA-GMN-TBL
                    MOVE    ZERO                TO  SPA-GMN-MAX
@@ -2748,6 +2508,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *    薬剤情報セット
            IF      FLG-YAKUJYO     =   1
                MOVE    SPA-GMN-KENNAME     TO  SPA-GMN-NAME
+               MOVE    WRK-CONS-CAUTION    TO  SPA-GMN-CAUTION
            ELSE
                IF      YAKUJYO-NAME    =   SPACE
                    MOVE    SPA-GMN-KENNAME TO  SPA-GMN-NAME
@@ -2760,7 +2521,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
                MOVE    YAKUJYO-COLOR   TO  SPA-GMN-COLOR
                MOVE    YAKUJYO-SHAPE   TO  SPA-GMN-SHAPE
                MOVE    YAKUJYO-MARK    TO  SPA-GMN-MARK
-               PERFORM 431-GAZOCHK-SYOKI-SEC
+               PERFORM 430-GAZOCHK-HENSYU-SEC
            END-IF
       *
            IF      SPA-GMN-JYOTAIFLG   NOT =   ZERO
@@ -2825,12 +2586,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
                IF      MCP-RC          =   ZERO
                    MOVE    ZERO            TO  FLG-INPUTCD
                    MOVE    MCPDATA-REC     TO  INPUTCD-REC
-      *----(05.00.00)--UPD-START---
-      *             IF      ICD-SRYCD(1:1)  =   "6"
-                   EVALUATE    ICD-SRYCD
-                   WHEN    "600000000" THRU    "699999999"
-                   WHEN    "095210001" THRU    "095279999"
-                   WHEN    "096210001" THRU    "096279999"
+                   IF      ICD-SRYCD(1:1)  =   "6"
                        MOVE    1               TO  FLG-OK
       *                入力コード同一コードチェック
                        PERFORM VARYING IDY     FROM    1   BY  1
@@ -2840,8 +2596,7 @@ grpsys     CALL    "ORCDBMAIN"         USING
                                MOVE    ZERO        TO  FLG-OK
                            END-IF
                        END-PERFORM
-                   END-EVALUATE
-      *----(05.00.00)--UPD-END-----
+                   END-IF
                ELSE
                    MOVE    1               TO  FLG-INPUTCD
                    MOVE    1               TO  FLG-OK
@@ -2926,17 +2681,6 @@ grpsys     CALL    "ORCDBMAIN"         USING
       *    点数マスタ読み込み処理
       *****************************************************************
        900-TENSU-READ-SEC          SECTION.
-      *
-      *----(05.00.00)--ADD-START---
-           EVALUATE    WRK-SRYCD
-               WHEN    "600000000" THRU    "699999999"
-               WHEN    "095210001" THRU    "095279999"
-               WHEN    "096210001" THRU    "096279999"
-                   CONTINUE
-               WHEN    OTHER
-                   GO  TO  900-TENSU-READ-EXT
-           END-EVALUATE
-      *----(05.00.00)--ADD-END-----
       *
       *    点数マスタ読み込み
            INITIALIZE                  TNS-TENSU-REC
