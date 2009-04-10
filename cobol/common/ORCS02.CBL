@@ -248,6 +248,7 @@
       *  04.03.10    NACL-ÌçÏÆ    09/04/01  ºë¶Ì¸©ÃÏÊý¸øÈñÂÐ±þ
       *
       *  04.04.01    NACL-ÌçÏÆ    09/02/17  ÃÏÊý¸øÈñ¤Î¸øÈñÉÕ²Ã¾ðÊóÂÐ±þ
+      *  04.04.02    NACL-ÌçÏÆ    09/04/13  Ê¿À®£²£±Ç¯£µ·î²þÀµÂÐ±þ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -378,6 +379,9 @@
            03  FLG-RUITAISYO           PIC 9(01).
            03  FLG-KOKI-HIGAITO        PIC 9(01).
            03  FLG-CYOKI-ARI           PIC 9(01).
+           03  FLG-TOKUSITU            PIC 9(01).
+           03  FLG-TOKUSITU-TASU       PIC 9(01).
+           03  FLG-TOKUSITU-XXX        PIC 9(01).
       *
        01  WRK-AREA.
            03  WK-PAYKBN               PIC X(02).
@@ -579,6 +583,8 @@
            03  WK-CHECK-FTNJANUM2          PIC  X(08).
            03  WK-CHECK-JKYSNUM            PIC  X(20).
            03  WK-CHECK-JKYSNUM2           PIC  X(20).
+      *
+           03  WK-KOH-FTNJANUM             PIC  X(08).
       *
            03  WK-TOKU75-BIRTHDAY          PIC  X(08).
            03  WK-TOKU75-TEKSTYMD          PIC  X(08).
@@ -1007,6 +1013,16 @@
       *
        01  TBL-GENBUTU70-MAX   PIC 9(02)   VALUE     2.
       *
+      *    ÆÃÄê¼À´µÅùÈ½ÄêÍÑ¥Æ¡¼¥Ö¥ë
+       01  TBL-TOKUJYOI-AREA.
+           03  FILLER          PIC X(03)   VALUE    "966".
+           03  FILLER          PIC X(03)   VALUE    "956".
+      *
+       01  TBL-TOKUJYOI-R      REDEFINES   TBL-TOKUJYOI-AREA.
+           03  TBL-TOKUJYOI    PIC X(03)   OCCURS    2.
+      *
+       01  TBL-TOKUJYOI-MAX    PIC 9(02)   VALUE     2.
+      *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
       *****************************************************************
@@ -1086,6 +1102,8 @@
            COPY    "CPORCSNYULIFE.INC".
       *    ´µ¼Ô½êÆÀ¾ðÊóÊÔ½¸¥µ¥Ö
            COPY    "CPORCSSYOTOKU.INC".
+      *    ÆÃÄê¼À´µÅù»»ÄêÈ½Äê¥µ¥Ö
+           COPY    "CPORCSSRHKOH.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -3293,6 +3311,9 @@
             END-IF
            END-IF
       *
+      *    ÆÃÄê¼À´µÅù¤ÎÈ½Äê
+           PERFORM  2002-TOKUSITU-HANTEI-SEC
+      *
       *    £·£°ºÐÌ¤Ëþ¹â³Û¸½ÊªµëÉÕÂÐ¾Ý¼Ô
            MOVE      ZERO     TO    FLG-GENBUTU70
            IF     LNK-SYU-SRYYMD(1:6)       >=  "200704"
@@ -3347,6 +3368,13 @@
                  MOVE    "key4"                 TO  MCP-PATHNAME
                  PERFORM  DB-CLOSE-SEC
                END-PERFORM
+      *
+               IF    FLG-GENBUTU70      =  ZERO
+                 IF  FLG-TOKUSITU   NOT =  ZERO
+                    MOVE    FLG-TOKUSITU    TO  FLG-GENBUTU70
+                 END-IF
+               END-IF
+      *
              END-IF
            END-IF
       *
@@ -3575,13 +3603,25 @@
                 WHEN        1
                 WHEN        2
                   MOVE     80100   TO   WK-GEN70-GENDOGAKU
-                  IF  FLG-KOHYONKAIME = 1
-                     MOVE  44400   TO   WK-GEN70-GENDOGAKU
+                  IF  FLG-TOKUSITU-XXX  = 1
+                    IF  FLG-TOKUSITU-TASU = 1
+                      MOVE 44400   TO   WK-GEN70-GENDOGAKU
+                    END-IF
+                  ELSE
+                    IF  FLG-KOHYONKAIME = 1
+                      MOVE 44400   TO   WK-GEN70-GENDOGAKU
+                    END-IF
                   END-IF
                 WHEN        3
                   MOVE     35400   TO   WK-GEN70-GENDOGAKU
-                  IF  FLG-KOHYONKAIME = 1
-                     MOVE  24600   TO   WK-GEN70-GENDOGAKU
+                  IF  FLG-TOKUSITU-XXX  = 1
+                    IF  FLG-TOKUSITU-TASU = 1
+                      MOVE 24600   TO   WK-GEN70-GENDOGAKU
+                    END-IF
+                  ELSE
+                    IF  FLG-KOHYONKAIME = 1
+                      MOVE 24600   TO   WK-GEN70-GENDOGAKU
+                    END-IF
                   END-IF
               END-EVALUATE
               IF   ( COMB-KOH1HKNNUM  =   "972" )
@@ -3968,6 +4008,185 @@
            .
       *
        2001-KOHGENDO-GEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÆÃÄê¼À´µÅù¤ÎÈ½Äê
+      *****************************************************************
+       2002-TOKUSITU-HANTEI-SEC               SECTION.
+      *
+           MOVE     ZERO      TO    FLG-TOKUSITU
+           MOVE     ZERO      TO    FLG-TOKUSITU-TASU
+           MOVE     ZERO      TO    FLG-TOKUSITU-XXX
+           IF   (LNK-SYU-SRYYMD(1:6)       >=  "200905" )
+           AND  (COMB-HKNNUM            NOT =   SPACE   )
+             IF (COMB-SYU-HKNKOHSBTKBN      =   "8"     )
+             OR (COMB-HKNNUM  =  "971" OR "973" OR "975"
+                              OR "068" OR "069" OR "040")
+               CONTINUE
+             ELSE
+               MOVE   SPACE   TO    WK-KOH-FTNJANUM
+               IF   COMB-KOH1HKNNUM =  "051" OR "052" OR "091"
+                  INITIALIZE                     PTKOHINF-REC
+                  MOVE    LNK-SYU-HOSPNUM    TO  PTKOH-HOSPNUM
+                  MOVE    LNK-SYU-PTID       TO  PTKOH-PTID
+                  MOVE    COMB-KOH1ID        TO  PTKOH-KOHID
+                  MOVE    PTKOHINF-REC       TO  MCPDATA-REC
+                  MOVE    "DBSELECT"         TO  MCP-FUNC
+                  MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+                  MOVE    "key8"             TO  MCP-PATHNAME
+                  CALL    "ORCDBMAIN"        USING  MCPAREA
+                                                    MCPDATA-REC
+                                                    SPA-AREA
+                  IF      MCP-RC  =  ZERO
+                    MOVE    "tbl_ptkohinf"   TO  MCP-TABLE
+                    MOVE    "key8"           TO  MCP-PATHNAME
+                    PERFORM  PTKOHINF-READ-SEC
+                    IF       FLG-PTKOHINF    =   ZERO
+                       MOVE  PTKOH-FTNJANUM  TO  WK-KOH-FTNJANUM
+                    END-IF
+                  END-IF
+                  MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+                  MOVE    "key8"             TO  MCP-PATHNAME
+                  PERFORM  DB-CLOSE-SEC
+               END-IF
+               IF  (COMB-KOH1HKNNUM =  "051" OR "052" OR "091")
+               AND (WK-KOH-FTNJANUM(5:3) = "601" OR "602"     )
+                 IF     LNK-S02-KOUREI-NYUIN-KBN  =  "1"
+                   IF    COMB-HOJOKBN    =   "3" OR "7"
+                         MOVE    1    TO   FLG-TOKUSITU
+                   ELSE
+                     IF  FLG-SANSHOU3    =   SPACE
+                        MOVE     2    TO   FLG-TOKUSITU
+                     ELSE
+                        MOVE     3    TO   FLG-TOKUSITU
+                     END-IF
+                   END-IF
+                 ELSE
+                   PERFORM  20021-TOKUSITU-HENSYU-SEC
+                 END-IF
+                 MOVE       1         TO   FLG-TOKUSITU-XXX
+                 PERFORM    20022-TOKUSITU-TASU-HANTEI-SEC
+               ELSE
+                 IF     LNK-S02-KOUREI-NYUIN-KBN  =  "1"
+                   CONTINUE
+                 ELSE
+                   INITIALIZE                      SSRHKOH-AREA
+                   MOVE    LNK-SYU-PTID        TO  SSRHKOH-PTID
+                   MOVE    LNK-SYU-NYUGAIKBN   TO  SSRHKOH-NYUGAIKBN
+                   MOVE    LNK-SYU-SRYYMD(1:6) TO  SSRHKOH-SRYYM
+                   MOVE    LNK-SYU-HKNCOMBINUM TO  SSRHKOH-HKNCOMBI
+                   CALL    "ORCSSRHKOH"        USING
+                                               SSRHKOH-AREA
+                                               SPA-AREA
+                   IF   SSRHKOH-RC  =  1
+                      PERFORM  20021-TOKUSITU-HENSYU-SEC
+                   END-IF
+                 END-IF
+               END-IF
+             END-IF
+           END-IF
+      *
+           .
+       2002-TOKUSITU-HANTEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÆÃÄê¼À´µÅù¤ÎÊÔ½¸
+      *****************************************************************
+       20021-TOKUSITU-HENSYU-SEC               SECTION.
+      *
+           PERFORM  VARYING  GEN-IDX   FROM   1    BY   1
+                     UNTIL  (GEN-IDX    >    TBL-TOKUJYOI-MAX)
+                       OR   (FLG-TOKUSITU   NOT = ZERO       )
+             INITIALIZE                         PTKOHINF-REC
+             MOVE    LNK-SYU-HOSPNUM        TO  PTKOH-HOSPNUM
+             MOVE    LNK-SYU-PTID           TO  PTKOH-PTID
+             MOVE    TBL-TOKUJYOI(GEN-IDX)  TO  PTKOH-KOHNUM
+             MOVE    PTKOHINF-REC           TO  MCPDATA-REC
+             MOVE    "DBSELECT"             TO  MCP-FUNC
+             MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
+             MOVE    "key4"                 TO  MCP-PATHNAME
+             CALL    "ORCDBMAIN"            USING  MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+             IF      MCP-RC               =       ZERO
+                 MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+                 MOVE    "key4"             TO  MCP-PATHNAME
+                 PERFORM  PTKOHINF-READ-SEC
+                 PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                    IF  (PTKOH-TEKSTYMD  <=  LNK-SYU-SRYYMD)
+                    AND (LNK-SYU-SRYYMD  <=  PTKOH-TEKEDYMD)
+                    AND (PTKOH-SAKJOKBN   =  SPACE         )
+                       MOVE    1    TO  FLG-TOKUSITU
+                       MOVE    1    TO  FLG-PTKOHINF
+                    ELSE
+                       MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
+                       MOVE    "key4"          TO  MCP-PATHNAME
+                       PERFORM  PTKOHINF-READ-SEC
+                    END-IF
+                 END-PERFORM
+             END-IF
+             MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+             MOVE    "key4"             TO  MCP-PATHNAME
+             PERFORM  DB-CLOSE-SEC
+           END-PERFORM
+           IF    FLG-TOKUSITU  =  ZERO
+              IF  FLG-SANSHOU3    =   SPACE
+                   MOVE    2    TO   FLG-TOKUSITU
+              ELSE
+                   MOVE    3    TO   FLG-TOKUSITU
+              END-IF
+           END-IF
+      *
+           .
+       20021-TOKUSITU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÆÃÄê¼À´µÅù¤ÎÂ¿¿ô³ºÅö¤ÎÈ½Äê
+      *****************************************************************
+       20022-TOKUSITU-TASU-HANTEI-SEC               SECTION.
+      *
+           IF    (LNK-S02-KOUREI-NYUIN-KBN  =  "1"      )
+           AND   (FLG-TOKUSITU              =   2  OR  3)
+             CONTINUE
+           ELSE
+             INITIALIZE                         PTKOHINF-REC
+             MOVE    LNK-SYU-HOSPNUM        TO  PTKOH-HOSPNUM
+             MOVE    LNK-SYU-PTID           TO  PTKOH-PTID
+             MOVE    "958"                  TO  PTKOH-KOHNUM
+             MOVE    PTKOHINF-REC           TO  MCPDATA-REC
+             MOVE    "DBSELECT"             TO  MCP-FUNC
+             MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
+             MOVE    "key4"                 TO  MCP-PATHNAME
+             CALL    "ORCDBMAIN"            USING  MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+             IF      MCP-RC               =       ZERO
+                 MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+                 MOVE    "key4"             TO  MCP-PATHNAME
+                 PERFORM  PTKOHINF-READ-SEC
+                 PERFORM  UNTIL   FLG-PTKOHINF    =   1
+                    IF  (PTKOH-TEKSTYMD  <=  LNK-SYU-SRYYMD)
+                    AND (LNK-SYU-SRYYMD  <=  PTKOH-TEKEDYMD)
+                    AND (PTKOH-SAKJOKBN   =  SPACE         )
+                       MOVE    1    TO  FLG-TOKUSITU-TASU
+                       MOVE    1    TO  FLG-PTKOHINF
+                    ELSE
+                       MOVE    "tbl_ptkohinf"  TO  MCP-TABLE
+                       MOVE    "key4"          TO  MCP-PATHNAME
+                       PERFORM  PTKOHINF-READ-SEC
+                    END-IF
+                 END-PERFORM
+             END-IF
+             MOVE    "tbl_ptkohinf"     TO  MCP-TABLE
+             MOVE    "key4"             TO  MCP-PATHNAME
+             PERFORM  DB-CLOSE-SEC
+           END-IF
+      *
+           .
+       20022-TOKUSITU-TASU-HANTEI-EXT.
            EXIT.
       *
       ******************************************************************
@@ -4951,15 +5170,6 @@
                         OR  (COMB-KOH3HKNNUM(1:1) = "0")
                         OR  (COMB-KOH4HKNNUM(1:1) = "0")
                            CONTINUE
-      **>                  IF  LNK-SYU-SRYYMD(1:6)  >= "200610"
-      *****                  IF   MAX-KIN-KOHI1-M   >  44400
-      **>                      MOVE   44400   TO   MAX-KIN-KOHI1-M
-      *****                  END-IF
-      **>                  ELSE
-      *****                  IF   MAX-KIN-KOHI1-M   >  40200
-      **>                      MOVE   40200   TO   MAX-KIN-KOHI1-M
-      *****                  END-IF
-      **>                  END-IF
                         END-IF
                       END-IF
                      END-IF
@@ -5054,17 +5264,30 @@
                         OR  (COMB-KOH2HKNNUM(1:1) = "0")
                         OR  (COMB-KOH3HKNNUM(1:1) = "0")
                         OR  (COMB-KOH4HKNNUM(1:1) = "0")
-                           CONTINUE
-      **>                  IF  LNK-SYU-SRYYMD(1:6)  >= "200610"
-      *****                  IF   MAX-KIN-SYU-M   >  44400
-      **>                      MOVE   44400   TO   MAX-KIN-SYU-M
-      *****                  END-IF
-      **>                  ELSE
-      *****                  IF   MAX-KIN-SYU-M   >  40200
-      **>                      MOVE   40200   TO   MAX-KIN-SYU-M
-      *****                  END-IF
-      **>                  END-IF
-                        END-IF
+                          IF  (LNK-SYU-SRYYMD(1:6)  >=  "200905")
+                          AND (COMB-HOJOKBN  =  "3" OR "7"      )
+                            IF  FLG-TOKUSITU-XXX      =   1
+                              IF   FLG-TOKUSITU-TASU  =   1
+                                IF    FLG-TOKU75  =  1 OR 2
+                                  MOVE   22200    TO  MAX-KIN-SYU-M
+                                ELSE
+                                  MOVE   44400    TO  MAX-KIN-SYU-M
+                                END-IF
+                              ELSE
+                                IF    FLG-TOKU75  =  1 OR 2
+                                  MOVE   40050    TO  MAX-KIN-SYU-M
+                                ELSE
+                                  MOVE   80100    TO  MAX-KIN-SYU-M
+                                END-IF
+                              END-IF
+                            ELSE
+                              IF    FLG-TOKU75  =  1 OR 2
+                                MOVE   40050    TO  MAX-KIN-SYU-M
+                              ELSE
+                                MOVE   80100    TO  MAX-KIN-SYU-M
+                              END-IF
+                            END-IF
+                          END-IF
                       END-IF
                      END-IF
                     END-IF
@@ -5218,6 +5441,83 @@
                    OR  (COMB-KOH2HKNNUM(1:1) = "0")
                    OR  (COMB-KOH3HKNNUM(1:1) = "0")
                    OR  (COMB-KOH4HKNNUM(1:1) = "0")
+                      IF  LNK-SYU-SRYYMD(1:6)  >=  "200905"
+                        IF   FLG-TOKUSITU-XXX   =   1
+                          EVALUATE   FLG-GENBUTU70
+                            WHEN        1
+                             IF    FLG-TOKUSITU-TASU  =  1
+                              IF    FLG-TOKU75  =  3
+                                MOVE   41700    TO  MAX-KIN-SYU-M
+                              ELSE
+                                MOVE   83400    TO  MAX-KIN-SYU-M
+                              END-IF
+                             ELSE
+                              IF    FLG-TOKU75  =  3
+                                MOVE   75000    TO  MAX-KIN-SYU-M
+                              ELSE
+                                MOVE   150000   TO  MAX-KIN-SYU-M
+                              END-IF
+                              MOVE   WK-ZENGAKU TO  WK-KOUREI-IRYOHI70
+                              MOVE   5          TO  FLG-IRYOHI70
+                             END-IF
+                            WHEN        2
+                             IF    FLG-TOKUSITU-TASU  =  1
+                              IF    FLG-TOKU75  =  3
+                                MOVE   22200    TO  MAX-KIN-SYU-M
+                              ELSE
+                                MOVE   44400    TO  MAX-KIN-SYU-M
+                              END-IF
+                             ELSE
+                              IF    FLG-TOKU75  =  3
+                                MOVE   40050    TO  MAX-KIN-SYU-M
+                              ELSE
+                                MOVE   80100    TO  MAX-KIN-SYU-M
+                              END-IF
+                              MOVE   WK-ZENGAKU TO  WK-KOUREI-IRYOHI70
+                              MOVE   6          TO  FLG-IRYOHI70
+                             END-IF
+                            WHEN        3
+                             IF    FLG-TOKUSITU-TASU  =  1
+                              IF    FLG-TOKU75  =  3
+                                MOVE   12300    TO  MAX-KIN-SYU-M
+                              ELSE
+                                MOVE   24600    TO  MAX-KIN-SYU-M
+                              END-IF
+                             ELSE
+                              IF    FLG-TOKU75  =  3
+                                MOVE   17700    TO  MAX-KIN-SYU-M
+                              ELSE
+                                MOVE   35400    TO  MAX-KIN-SYU-M
+                              END-IF
+                             END-IF
+                          END-EVALUATE
+                        ELSE
+                          EVALUATE   FLG-GENBUTU70
+                            WHEN        1
+                              IF    FLG-TOKU75  =  3
+                                MOVE   75000    TO  MAX-KIN-SYU-M
+                              ELSE
+                                MOVE   150000   TO  MAX-KIN-SYU-M
+                              END-IF
+                              MOVE   WK-ZENGAKU TO  WK-KOUREI-IRYOHI70
+                              MOVE   5          TO  FLG-IRYOHI70
+                            WHEN        2
+                              IF    FLG-TOKU75  =  3
+                                MOVE   40050    TO  MAX-KIN-SYU-M
+                              ELSE
+                                MOVE   80100    TO  MAX-KIN-SYU-M
+                              END-IF
+                              MOVE   WK-ZENGAKU TO  WK-KOUREI-IRYOHI70
+                              MOVE   6          TO  FLG-IRYOHI70
+                            WHEN        3
+                              IF    FLG-TOKU75  =  3
+                                MOVE   17700    TO  MAX-KIN-SYU-M
+                              ELSE
+                                MOVE   35400    TO  MAX-KIN-SYU-M
+                              END-IF
+                          END-EVALUATE
+                        END-IF
+                      ELSE
                         IF    FLG-TOKU75  =  3
                           MOVE   40050     TO   MAX-KIN-SYU-M
                         ELSE
@@ -5225,6 +5525,7 @@
                         END-IF
                         MOVE   WK-ZENGAKU  TO   WK-KOUREI-IRYOHI70
                         MOVE   6           TO   FLG-IRYOHI70
+                      END-IF
                    END-IF
                   END-IF
                  END-IF
@@ -8266,7 +8567,7 @@
            END-IF.
       *
            IF     FLG-GENBUTU70   NOT =   ZERO
-              IF     FLG-IRYOHI70     =  1 OR 3
+              IF     FLG-IRYOHI70     =  1 OR 3 OR 5
                IF    FLG-TOKU75  =  3
                 IF  WK-KOUREI-IRYOHI70  >  250000
                    COMPUTE WK-KOUREI-IRYOHI70X =
@@ -8880,7 +9181,7 @@
            IF ((COMB-KOH1HKNNUM       NOT =  SPACE           ) AND
                (COMB-KOH1-NYUJGNKBN       =  "1"             ) AND
                (FLG-KOUREI                =  ZERO            ))
-           OR ( FLG-IRYOHI70              =  3 OR 4 OR 6      )
+           OR ( FLG-IRYOHI70              =  3 OR 4 OR 5 OR 6 )
            OR ( FLG-IRYOHI3               =  2                )
              IF  ( SYU-NYUGAIKBN              =   "1"   )
              OR  ((SYU-NYUGAIKBN              =   "2"  ) AND
@@ -8897,7 +9198,7 @@
                 IF   SYU-NYUGAIKBN  =   "1"
                  IF  FLG-GENBUTU70    NOT =  ZERO
                   IF WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL
-                    IF   FLG-IRYOHI70  =  3 OR 4 OR 6
+                    IF   FLG-IRYOHI70  =  3 OR 4 OR 5 OR 6
                      COMPUTE  WK-KOUREI-IRYOHI70  =
                               WK-KOUREI-IRYOHI70  +
                              (SYU-HKNTEN (17) * 10)
@@ -9599,8 +9900,8 @@
                 IF   SYU-NYUGAIKBN  =   "1"
                  IF  FLG-GENBUTU70    NOT =  ZERO
                   IF WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL
-                    IF   (FLG-IRYOHI70  =  6   )
-                    AND  (FLG-SYUKEI    =  ZERO)
+                    IF   (FLG-IRYOHI70  =  5 OR 6)
+                    AND  (FLG-SYUKEI    =  ZERO  )
                       IF  ((WK-1001-PREFNUM    =  07           ) AND
                            (LNK-SYU-KOH2HKNNUM = "245" OR "246"))
                       OR  ((WK-1001-PREFNUM    =  11           ) AND
@@ -11294,7 +11595,7 @@
                AND (WK-HKNJANUM2-TBL = WK-HKNJANUM-TBL)
       ***        MOVE  SYU-SYUCOMPFTN TO  WK-SYU-SYUCOMPFTN
       ***        COMPUTE WK-ENTANI = SYU-SYUCOMPFTN-ENTANI + 0.9
-      ***        IF    FLG-IRYOHI70  =  3 OR 4 OR 6
+      ***        IF    FLG-IRYOHI70  =  3 OR 4 OR 5 OR 6
       ***          COMPUTE   WK-KOUREI-IRYOHI70  =
       ***                    WK-KOUREI-IRYOHI70  +
       ***                   (SYU-HKNTEN (17) * 10)
@@ -21063,6 +21364,7 @@
                   ELSE
                     MOVE    ZERO   TO    FLG-KOUGAKUCYO-GEN70
                   END-IF
+                WHEN      5
                 WHEN      6
                     MOVE    ZERO   TO    FLG-KOUGAKUCYO-GEN70
               END-EVALUATE
