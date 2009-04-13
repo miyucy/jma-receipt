@@ -926,6 +926,7 @@
                    UNTIL      (IDX     >   SPA-MAX-LINE ) 
                IF      (SPA-COM-INPUTCD(IDX)   =   SPACE ) AND
                        (SPA-GMN-INPUTCD(IDX)   =   SPACE )
+               AND     (IDX           >   SPA-GMN-MAX  )
                    CONTINUE
                ELSE
                    MOVE    SPA-GMN-TBL(IDX)    TO  SPA-DATA-REC

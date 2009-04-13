@@ -1094,9 +1094,10 @@
            END-IF
       *
            PERFORM VARYING     IDX     FROM   1   BY  1
-                   UNTIL      (IDX     >   SPA-MAX-LINE ) 
+                   UNTIL      (IDX     >   SPA-MAX-LINE )
                IF      (SPA-COM-INPUTCD (IDX)  =   SPACE ) AND
                        (SPA-GMN-INPUTCD (IDX)  =   SPACE )
+               AND     (IDX           >   SPA-GMN-MAX  )
                    CONTINUE
                ELSE
                    MOVE    SPA-GMN-TBL (IDX)   TO  SPA-DATA-REC
