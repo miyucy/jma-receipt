@@ -116,6 +116,9 @@
       *                                     名古屋市、北九州市対応
       *  04.04.04    NACL-藤原    09/03/24  主科設定時の主科未設定データ
       *                                     の有無チェック
+      *  04.04.05    NACL-藤原    09/04/10  月遅れ分のレセ電データの有無
+      *                                     チェックのとき特別療養費は対
+      *                                     象外とする
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -919,6 +922,12 @@ grpsys                                         SPA-AREA
                                    =   SPACE )
                MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
            END-IF
+           MOVE    SYS-2009-SYUKA-SYAHO
+                                       TO  SPA-NAI-2009-SYUKA-SYAHO
+           MOVE    SYS-2009-SYUKA-KOKUHO
+                                       TO  SPA-NAI-2009-SYUKA-KOKUHO
+           MOVE    SYS-2009-SYUKA-KOUIKI
+                                       TO  SPA-NAI-2009-SYUKA-KOUIKI
            IF      SPA-SYUKA-KBN      =   "0"
                MOVE    WIDGET-INSENSITIVE  TO  SPA-B20-STATE
            ELSE
@@ -3848,19 +3857,19 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "00"                TO  RECE10-RECEKA
            EVALUATE    MCP-WIDGET
                WHEN    "B06"
-                   IF     SYS-2009-SYUKA-SYAHO  =   "1"
+                   IF     SPA-NAI-2009-SYUKA-SYAHO  =   "1"
                        MOVE    1               TO  RECE10-TEISYUTUSAKI
                        PERFORM 4602-SYUKA-CHK-SEC
                    END-IF
                WHEN    "B07"
-                   IF      SYS-2009-SYUKA-KOKUHO =   "1"
+                   IF      SPA-NAI-2009-SYUKA-KOKUHO =   "1"
                        MOVE    2               TO  RECE10-TEISYUTUSAKI
                        PERFORM 4602-SYUKA-CHK-SEC
                    END-IF
                    IF    ( FLG-SYUKA-CHK             =   ZERO   )
                    AND   ( SPA-NAI-200501-KOUIKIKBN  =   "1"    )
                    AND   ( SPA-NAI-SKYYM             >=  200804 )
-                   AND   ( SYS-2009-SYUKA-KOUIKI     =   "1"    )
+                   AND   ( SPA-NAI-2009-SYUKA-KOUIKI     =   "1"    )
                        MOVE    SPACE           TO  RECE10-REC
                        INITIALIZE                  RECE10-REC
                        MOVE    SPA-HOSPNUM     TO  RECE10-HOSPNUM
@@ -3869,7 +3878,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        PERFORM 4602-SYUKA-CHK-SEC
                    END-IF
                WHEN    "B08"
-                   IF      SYS-2009-SYUKA-KOUIKI =   "1"
+                   IF      SPA-NAI-2009-SYUKA-KOUIKI =   "1"
                        MOVE    6               TO  RECE10-TEISYUTUSAKI
                        PERFORM 4602-SYUKA-CHK-SEC
                    END-IF
@@ -5349,9 +5358,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                   "総括表・広域の処理対象データが選択してありません"
                                                TO  SPA-ERRMSG
                WHEN    "0011"
-                   STRING  "主科未設定データがあります。"
+                   STRING  "主科未設定データがあります"
                                                DELIMITED  BY  SIZE
-                           "主科未設定リストで確認して下さい"
+                           "（主科未設定リストで確認可能です）"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
@@ -5949,6 +5958,9 @@ grpsys         PERFORM 900-DBFETCH-SEC
            IF      MCP-RC              =   ZERO
                MOVE    ZERO                TO  FLG-RECE10
                MOVE    MCPDATA-REC         TO  RECE10-REC
+               IF      RECE10-RECESYUBETU  =    "6666"
+                   GO  TO  900-SEIKYU-READ-SEC
+               END-IF
            ELSE
                MOVE    1                   TO  FLG-RECE10
            END-IF

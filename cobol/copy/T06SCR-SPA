@@ -25,6 +25,8 @@
       *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤＲ出力対応
       *  04.04.02    NACL-藤原    09/11/25  症状詳記作成区分追加
       *  04.04.03    NACL-藤原    09/12/10  返戻対応
+      *  04.04.04    NACL-藤原    09/03/24  主科設定時の主科未設定データ
+      *                                     の有無チェック
       *****************************************************************
        01  SPA-T06.
       *    個別指示画面
@@ -172,6 +174,13 @@
                05  SPA-NAI-T06-200501-RECEDEN-LST1KBN
                                                PIC X(01).
       *
+               05  SPA-NAI-T06-2009-SYUKA-SYAHO
+                                               PIC X(01).
+               05  SPA-NAI-T06-2009-SYUKA-KOKUHO
+                                               PIC X(01).
+               05  SPA-NAI-T06-2009-SYUKA-KOUIKI
+                                               PIC X(01).
+      *
       *    作成履歴画面
            03  SPA-T08-AREA.
                05  SPA-GMN-T08-MAX             PIC 9(03).
@@ -211,6 +220,7 @@
                        09  SPA-NAI-T09-THENREIYM       PIC X(01).
                        09  SPA-NAI-T09-TSELECT         PIC X(01).
                        09  SPA-NAI-T09-TUKEYMD         PIC 9(08).
+                       09  SPA-NAI-T09-TSYUKA          PIC X(01).
       *
                        09  SPA-NAI-T09-TCREYMD         PIC 9(08).
                        09  SPA-NAI-T09-TKANANAME       PIC X(40).

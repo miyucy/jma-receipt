@@ -28,6 +28,8 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  04.04.01    NACL-藤原    09/12/10  返戻対応
+      *  04.04.02    NACL-藤原    09/03/31  主科設定時の主科未設定データ
+      *                                     の有無チェック
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -643,6 +645,14 @@
                GO  TO  410211-SELNUM-HENSYU-EXT
            END-IF
       *
+      *    主科未設定データ存在チェック
+           IF      SPA-NAI-T09-TSYUKA (WRK-SELNO)
+                                       =   "1"
+               MOVE    "0018"              TO  SPA-ERRCD
+               MOVE    ZERO                TO  SPA-GMN-T09-SELNUM (IDX)
+               GO  TO  410211-SELNUM-HENSYU-EXT
+           END-IF
+      *
       *    既に請求済かどうか
            IF      SPA-NAI-T09-TSEIKYU (WRK-SELNO)
                                    =   "1"
@@ -1133,6 +1143,8 @@
                WHEN    "0011"
                    MOVE    "返戻データが設定されていません"
                                                        TO  SPA-ERRMSG
+               WHEN    "0018"
+                   MOVE    "主科未設定データです"      TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "選択したデータを全て追加できません"
                                                        TO  SPA-ERRMSG

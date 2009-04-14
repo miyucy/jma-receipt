@@ -30,6 +30,8 @@
       *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
       *  04.04.02    NACL-藤原    09/11/25  症状詳記作成区分追加
       *  04.04.03    NACL-藤原    09/12/10  返戻対応
+      *  04.04.04    NACL-藤原    09/03/31  主科設定時の主科未設定データ
+      *                                     の有無チェック
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -84,6 +86,7 @@
            03  FLG-MONTHLYNUM          PIC 9(01).
            03  FLG-PTKOHINF            PIC 9(01).
            03  FLG-HENREI-B            PIC 9(01).
+           03  FLG-RECE10              PIC 9(01).
       *
            03  FLG-CHK                 PIC 9(01).
            03  FLG-ERR                 PIC 9(01).
@@ -92,6 +95,7 @@
            03  FLG-TOUROKU             PIC 9(01).
            03  FLG-HIT                 PIC 9(02).
            03  FLG-HENREI-B-SEIKYU-CHK PIC 9(01).
+           03  FLG-SYUKA-CHK          PIC 9(01).
       *
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
@@ -245,6 +249,8 @@
       *
            COPY    "CPSK2005.INC".
            COPY    "CPSK200501.INC".
+      *
+           COPY    "CPSK2009.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -615,6 +621,51 @@
            MOVE    SYS-200501-RECEDEN-LST1KBN
                                        TO
                                    SPA-NAI-T06-200501-RECEDEN-LST1KBN
+      *
+      *    レセプト編集区分情報（主科情報）
+           MOVE    SPACE               TO  SYS-2009-REC
+           INITIALIZE                      SYS-2009-REC
+           MOVE    "2009"              TO  SYS-2009-KANRICD
+           MOVE    "*"                 TO  SYS-2009-KBNCD
+           MOVE    SPA-NAI-T06-SRYYM-H TO  SYS-2009-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-2009-STYUKYMD (7:2)
+           MOVE    SYS-2009-STYUKYMD   TO  SYS-2009-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-2009-HOSPNUM
+           MOVE    SYS-2009-REC        TO  MCPDATA-REC
+           PERFORM 900-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2009-REC
+           ELSE
+               INITIALIZE                  SYS-2009-REC
+           END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   SPACE
+               MOVE    "0"             TO  SYS-2009-SYUKA-KBN
+           END-IF
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-SYAHO
+                                   =   SPACE )
+               MOVE    "1"             TO  SYS-2009-SYUKA-SYAHO
+           END-IF      
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOKUHO
+                                   =   SPACE )
+               MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
+           END-IF
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOUIKI
+                                   =   SPACE )
+               MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
+           END-IF
+           MOVE    SYS-2009-SYUKA-SYAHO
+                                       TO  SPA-NAI-T06-2009-SYUKA-SYAHO
+           MOVE    SYS-2009-SYUKA-KOKUHO
+                                       TO  SPA-NAI-T06-2009-SYUKA-KOKUHO
+           MOVE    SYS-2009-SYUKA-KOUIKI
+                                       TO  SPA-NAI-T06-2009-SYUKA-KOUIKI
       *
       *    管理情報編集処理
            PERFORM 3101-ONRECE-KANRI-HENSYU-SEC
@@ -2719,12 +2770,12 @@
                                    =   ZERO
                INITIALIZE                  ONRECE-B-REC
                MOVE    SPA-HOSPNUM     TO  ONRECE-B-HOSPNUM
-           IF      RECE10-TEISYUTUSAKI =   "1"
-               MOVE    RECE10-TEISYUTUSAKI
-                                       TO  ONRECE-B-TEISYUTUSAKI
-           ELSE
-               MOVE    "2"             TO  ONRECE-B-TEISYUTUSAKI
-           END-IF
+               IF      RECE10-TEISYUTUSAKI =   "1"
+                   MOVE    RECE10-TEISYUTUSAKI
+                                           TO  ONRECE-B-TEISYUTUSAKI
+               ELSE
+                   MOVE    "2"             TO  ONRECE-B-TEISYUTUSAKI
+               END-IF
                MOVE    SPA-NAI-T06-SRYYM-H
                                        TO  ONRECE-B-SRYYM
                MOVE    RECE10-SRYYM    TO  ONRECE-B-SRYYM-B
@@ -2745,6 +2796,24 @@
                    MOVE    ONRECE-B-SYORIYMD
                                            TO  SPA-NAI-T09-TUKEYMD (IDX)
                END-IF
+           END-IF
+      *    
+      *    主科設定時の主科未設定データの存在チェック
+           IF      RECE10-RECEKA            =   "00"
+               EVALUATE    RECE10-TEISYUTUSAKI
+                   WHEN    "1"
+                       IF     SPA-NAI-T06-2009-SYUKA-SYAHO  =   "1"
+                           MOVE    "1"     TO  SPA-NAI-T09-TSYUKA (IDX)
+                       END-IF
+                   WHEN    "2"
+                       IF      SPA-NAI-T06-2009-SYUKA-KOKUHO =   "1"
+                           MOVE    "1"     TO  SPA-NAI-T09-TSYUKA (IDX)
+                       END-IF
+                   WHEN    "6"
+                       IF      SPA-NAI-T06-2009-SYUKA-KOUIKI =   "1"
+                           MOVE    "1"     TO  SPA-NAI-T09-TSYUKA (IDX)
+                       END-IF
+               END-EVALUATE
            END-IF
       *
            MOVE    IDX             TO  SPA-GMN-T09-MAX
@@ -2775,6 +2844,13 @@
            IF      SPA-NAI-T09-THENREI (1)
                                        =   "1"
                MOVE    "0011"              TO  SPA-ERRCD
+               GO  TO  42031-SEIKYU-CHK-EXT
+           END-IF
+      *
+      *    主科未設定データ存在チェック
+           IF      SPA-NAI-T09-TSYUKA (1)
+                                       =   "1"
+               MOVE    "0018"              TO  SPA-ERRCD
                GO  TO  42031-SEIKYU-CHK-EXT
            END-IF
       *
@@ -4741,6 +4817,8 @@
                    MOVE
                    "対象の請求データに返戻の設定が行なわれていません"
                                                        TO  SPA-ERRMSG
+               WHEN    "0018"
+                   MOVE    "主科未設定データです"      TO  SPA-ERRMSG
                WHEN    "0022"
                    MOVE    "患者情報を入力中です"      TO  SPA-ERRMSG
                WHEN    "0023"
