@@ -4819,6 +4819,14 @@
                END-IF
            END-IF
       *
+           IF    ( PTINF-BIRTHDAY          >   PTBYO-SRYYMD )
+               MOVE    PTBYO-SRYKA         TO  SRH-1005-SRYKA
+               MOVE    WRK-PTBYOMES-PLUS   TO  WRK-ERRMES-PLUS
+               MOVE    "050014"            TO  WRK-ERRCD
+               INITIALIZE              TERRINF-AREA
+               PERFORM 213-ERRMES-HEN-SEC
+           END-IF
+      *
            .
        2001121-PTBYO-CHK-EXT.
            EXIT.

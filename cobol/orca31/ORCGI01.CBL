@@ -768,6 +768,7 @@
            03  SSTKJN-R    REDEFINES       SSTKJN-VAL.
                05  SSTKJN-CD                       PIC 9(01)
                                                    OCCURS  1000.
+           COPY    "CPORCSSRHKOH.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -8093,6 +8094,12 @@
       *****************************************************************
        4801-NYUIN-TOUROKU-CHK-SEC      SECTION.
       *
+           IF    ( SPA-NAI-I01-BIRTHDAY    >   SPA-NAI-I01-NYUINYMD )
+               MOVE    "1047"      TO  SPA-ERRCD
+               MOVE    7           TO  SPA-GMN-I01-CUR
+               GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
+           END-IF
+      *
       *    前回退院日≦入院日となっていること
       *    前歴が自（他）院歴の場合は前回退院日＜入院日となっていること
            IF    ( SPA-NAI-I01-TTAIINYMD (1) NOT =   SPACE )
@@ -8851,6 +8858,15 @@
       *    選定入院区分
            MOVE    SPA-GMN-I01-SENTEIKBN-CD
                                    TO  PTNYUINRRK-SENTEIKBN
+           INITIALIZE              SSRHKOH-AREA
+           MOVE    PTNYUINRRK-PTID     TO  SSRHKOH-PTID
+           MOVE    "1"                 TO  SSRHKOH-NYUGAIKBN
+           MOVE    PTNYUINRRK-NYUINYMD TO  SSRHKOH-SRYYM
+           MOVE    PTNYUINRRK-HKNCOMBINUM  TO  SSRHKOH-HKNCOMBI
+           CALL    "ORCSSRHKOH"    USING
+                                   SSRHKOH-AREA
+                                   SPA-AREA
+           DISPLAY "SSRHKOH-RC="   SSRHKOH-RC
       *
            IF    ( WRK-UPDKBN      =   "UPD" )
       *
@@ -18868,6 +18884,9 @@
                END-STRING
            WHEN    "1046"
                MOVE    "介護異動を入力して下さい"
+                                       TO  SPA-ERRMSG
+           WHEN    "1047"
+               MOVE    "入院日＜誕生日となっています"
                                        TO  SPA-ERRMSG
            WHEN    "2012"
                MOVE    "退院計算に必要な会計情報が作成されていません"
