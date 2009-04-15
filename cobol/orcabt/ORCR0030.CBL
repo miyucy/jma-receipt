@@ -396,6 +396,9 @@
       *  04.04.02    NACL-ÃÁœ∆    09/02/04  ∏°∫∫§Œ•≥•·•Û•»º´∆∞µ≠∫‹¬–±˛
       *  04.04.03    NACL-ÃÁœ∆    09/02/16  √œ ˝∏¯»Ò§Œ•Ï•ªµ≠∫‹¬–±˛
       *  04.04.04    NACL-ÃÁœ∆    09/04/13   ø¿Æ£≤£±«Ø£µ∑Ó≤˛¿µ¬–±˛
+      *  04.04.05    NACL-ÃÁœ∆    09/04/15  ≈Ïµ˛≈‘√œ ˝∏¯»Ò
+      *                                      ø¿Æ£≤£±«Ø£¥∑Ó≤˛¿µ¬–±˛
+      *  04.04.06    NACL-ÃÁœ∆    09/04/15  ∑≤«œ∏©√œ ˝∏¯»Ò¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -569,6 +572,7 @@
            03  FLG-TOKU75-KOHSKY                       PIC 9(01).
            03  FLG-KOKI-HIGAITO                        PIC 9(01).
            03  FLG-TOKUSITU                            PIC 9(01).
+           03  FLG-KOUGAKU                             PIC 9(01).
       *
       *    ¥À‹≈¿øÙ§Œ»Û…Ωº®»ΩƒÍÕ—•’•È•∞
        01  FLG-KHNTEN-AREA.
@@ -1882,6 +1886,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  RECE01PARA-HOSPNUM
            MOVE      ZERO       TO      FLG-KEISAN-TOK1
                                         FLG-KEISAN-TOK2
                                         WRK-KINGAKU-TOK1
+           MOVE      ZERO       TO      FLG-KOUGAKU
       *
            IF    (RECE02-SRYYM   >=  "200804")
            AND   (RECE02-SRYYM   <=  "201003")
@@ -7481,6 +7486,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            IF  ((SYS-1001-PREFNUM   =  42  ) AND
                 (SYU-KOH-HKNNUM(1)  = "186"))
+           OR  ((SYS-1001-PREFNUM   =  13           ) AND
+                (SYU-SYUHKNNUM NOT = "060" AND "067"
+                                           AND "039") AND
+                (SYU-KOH-HKNNUM(1)(1:1)
+                                 >=  "1" AND <=  "8"))
                  IF  FLG-TOKU75 = 1 OR 2
                      MOVE    6000      TO   WRK-KINGAKU
                  ELSE
@@ -7541,6 +7551,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
            OR  ((SYS-1001-PREFNUM   = 33            ) AND
                 (SYU-KOH-HKNNUM(1)(1:1)
                                  >=  "1" AND <=  "8"))
+           OR  ((SYS-1001-PREFNUM   = 13            ) AND
+                (SYU-SYUHKNNUM NOT = "060" AND "067") AND
+                (SYU-KOH-HKNNUM(1)(1:1)
+                                 >=  "1" AND <=  "8"))
             IF  FLG-KOHYONKAIME = 1
               IF  FLG-TOKU75 = 3
                MOVE   22200   TO   WRK-KINGAKU
@@ -7556,6 +7570,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         (( WRK-CHIHOU-KIN -  133500 ) * 0.01 )
                                                       + 0.5
                   COMPUTE  WRK-KINGAKU  =  40050  +  WRK-KINGAKU2
+                  MOVE     1      TO   FLG-KOUGAKU
                ELSE
                   MOVE     40050  TO   WRK-KINGAKU
                END-IF
@@ -7565,6 +7580,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         (( WRK-CHIHOU-KIN -  267000 ) * 0.01 )
                                                       + 0.5
                   COMPUTE  WRK-KINGAKU  =  80100  +  WRK-KINGAKU2
+                  MOVE     1      TO   FLG-KOUGAKU
                ELSE
                   MOVE     80100  TO   WRK-KINGAKU
                END-IF
@@ -7591,6 +7607,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            (( WRK-CHIHOU-KIN -  250000 ) * 0.01 )
                                                          + 0.5
                      COMPUTE  WRK-KINGAKU  = 75000   +  WRK-KINGAKU2
+                     MOVE     1      TO   FLG-KOUGAKU
                   ELSE
                      MOVE    75000   TO   WRK-KINGAKU
                   END-IF
@@ -7600,6 +7617,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            (( WRK-CHIHOU-KIN -  500000 ) * 0.01 )
                                                          + 0.5
                      COMPUTE  WRK-KINGAKU  = 150000  +  WRK-KINGAKU2
+                     MOVE     1      TO   FLG-KOUGAKU
                   ELSE
                      MOVE    150000  TO   WRK-KINGAKU
                   END-IF
@@ -7624,6 +7642,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            (( WRK-CHIHOU-KIN -  133500 ) * 0.01 )
                                                          + 0.5
                      COMPUTE  WRK-KINGAKU  =  40050  +  WRK-KINGAKU2
+                     MOVE     1      TO   FLG-KOUGAKU
                   ELSE
                      MOVE     40050  TO   WRK-KINGAKU
                   END-IF
@@ -7633,6 +7652,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            (( WRK-CHIHOU-KIN -  267000 ) * 0.01 )
                                                          + 0.5
                      COMPUTE  WRK-KINGAKU  =  80100  +  WRK-KINGAKU2
+                     MOVE     1      TO   FLG-KOUGAKU
                   ELSE
                      MOVE     80100  TO   WRK-KINGAKU
                   END-IF
@@ -8209,6 +8229,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        (RECE02-SRYYM        >=  "200810"  ) AND
                        (SYS-1001-PREFNUM     =   01       ) AND
                        (RECE02-KOHNUM(KH-IDX - 1) = "183" ))
+                OR    ((RECE02-ZAITAKU       =  "1" OR "2") AND
+                       (SYS-1001-PREFNUM     =   13       ) AND
+                       (RECE02-KOHNUM(KH-IDX - 1) =
+                         "180" OR "380" OR "181" OR "381" ))
                   ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                            RECE02-FTNMONEY(KH-IDX)
                                            RECE02-FTNMONEY-KOJ(KH-IDX)
@@ -8231,6 +8255,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
               IF    ( RECE02-KOHNUM(KH-IDX - 1) =  "012" OR "025")
               OR    ((SYS-1001-PREFNUM             =   40 ) AND
                      (RECE02-KOHHBTNUM(KH-IDX - 1) =  "41"))
+              OR    ((SYS-1001-PREFNUM             =   13        ) AND
+                     (RECE02-KOHNUM(KH-IDX - 1) =  "588"         ) AND
+                     (RECE02-SRYYM             >=  "200710"      ))
+              OR    ((SYS-1001-PREFNUM             =   13        ) AND
+                     (RECE02-KOHNUM(KH-IDX - 1) =
+                       "180" OR "380" OR "181" OR "381"          ))
                   COMPUTE  WRK-TAIHI-FTNMONEY-EN(KH-IDX)  =
                            WRK-TAIHI-FTNMONEY-EN(KH-IDX)  +
                           (SYU-KOH-COMPFTN-ENTANI(IDX3)   + 0.5)
@@ -9104,7 +9134,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *      ∑≤«œ∏©√œ ˝∏¯»Ò
              WHEN    "10"
                IF  (RECE02-SRYYM        >=  "200804")
-               AND (RECE02-TEISYUTUSAKI  =   6      )
+               AND (RECE02-TEISYUTUSAKI  =   2 OR 6 )
                AND (RECE02-ZAITAKU       =  "1"     )
                  IF  (RECE02-KOHNUM(1)(1:1) >= "1" AND <= "8"    )
                  AND (RECE02-KOHNUM(2)       =  SPACE            )
@@ -9135,6 +9165,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                  AND ((RECE02-TOTALTEN(1)  = WRK-CHK-KOKIGAK4  ) OR
                       (RECE02-TOTALTEN(1)  =
                                           RECE02-HENTOTALTEN(3)) )
+                 AND (RECE02-TEISYUTUSAKI  =    6                )
                    COMPUTE  WRK-HANTEI-TOTALTEN = RECE02-TOTALTEN(1)
                                                 - RECE02-TOTALTEN(2)
                    PERFORM  21094-JYOGENGAKU-HENSYU-SEC
@@ -10226,10 +10257,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
               END-IF
            END-IF
       *
-      *     °≤¨£¥£±œ∑øÕ
-      *    π‚√Œ£∑£≤∆˝Õƒª˘
-      *    ÀÃ≥§∆ª£¥£±œ∑øÕ
-      *
            EVALUATE   SYS-1001-PREFNUM
       *
              WHEN    "01"
@@ -10246,6 +10273,44 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE 1                  TO RECE02-KOH-SAIKEIFLG
                    MOVE WRK-FTNKEI         TO RECE02-FTNMONEY(3)
                                               RECE02-FTNMONEY-KOJ(3)
+      *
+                END-IF
+      *
+             WHEN    "13"
+      *
+                IF   RECE02-SRYYM   >=  "200710"
+                  PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
+                            UNTIL    KOHFTN-IDX     >    4
+                    IF   RECE02-KOHNUM(KOHFTN-IDX) = "588"
+                      COMPUTE  RECE02-FTNMONEY(KOHFTN-IDX + 1)        =
+                               WRK-TAIHI-FTNMONEY-EN2(KOHFTN-IDX + 1) +
+                               0.5
+                      COMPUTE  RECE02-FTNMONEY-KOJ(KOHFTN-IDX + 1)    =
+                               WRK-TAIHI-FTNMONEY-EN2(KOHFTN-IDX + 1) +
+                               0.5
+                    END-IF
+                  END-PERFORM
+                END-IF
+      *
+                IF    ((RECE02-ZAITAKU =  "1" OR "2") AND
+                       (FLG-KOUGAKU    =   1        ))
+                OR    ( RECE02-ZAITAKU =  "3"        )
+                OR    ( RECE02-ZAITAKU =  SPACE      )
+      *
+                  PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
+                            UNTIL    KOHFTN-IDX     >    4
+                    IF  (RECE02-KOHNUM(KOHFTN-IDX) = 
+                          "180" OR "380" OR "181" OR "381"        )
+                    AND (RECE02-HON-GAIMNAIJGNGAK(KOHFTN-IDX)
+                                 > RECE02-FTNMONEY(KOHFTN-IDX + 1))
+                      COMPUTE  RECE02-FTNMONEY(KOHFTN-IDX + 1)        =
+                               WRK-TAIHI-FTNMONEY-EN2(KOHFTN-IDX + 1) +
+                               0.5
+                      COMPUTE  RECE02-FTNMONEY-KOJ(KOHFTN-IDX + 1)    =
+                               WRK-TAIHI-FTNMONEY-EN2(KOHFTN-IDX + 1) +
+                               0.5
+                    END-IF
+                  END-PERFORM
       *
                 END-IF
       *
@@ -10625,7 +10690,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                AND (RECE02-TEISYUTUSAKI  =   2 OR 6     )
                    PERFORM  21112-SEIKYUTEN-HENSYU-SEC
                END-IF
+      *      ≈Ïµ˛≈‘√œ ˝∏¯»Ò
       *      µ˛≈‘…‹√œ ˝∏¯»Ò
+             WHEN    "13"
              WHEN    "26"
                IF  (RECE02-TEISYUTUSAKI  =   2 OR 6     )
                    PERFORM  21112-SEIKYUTEN-HENSYU-SEC
