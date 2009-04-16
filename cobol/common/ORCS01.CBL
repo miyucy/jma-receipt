@@ -5497,8 +5497,8 @@
                     OR  (COMB-KOH3HKNNUM(1:1) = "0")
                     OR  (COMB-KOH4HKNNUM(1:1) = "0")
                       IF  LNK-SYU-SRYYMD(1:6)  >=  "200905"
-                        IF   FLG-TOKUSITU-XXX   =   1
-                          EVALUATE   FLG-GENBUTU70
+                      AND FLG-TOKUSITU-XXX      =   1
+                        EVALUATE   FLG-GENBUTU70
                             WHEN        1
                               IF    FLG-TOKU75  =  3
                                 MOVE   75000    TO  MAX-KIN-SYU-M
@@ -5521,33 +5521,7 @@
                               ELSE
                                 MOVE   35400    TO  MAX-KIN-SYU-M
                               END-IF
-                          END-EVALUATE
-                        ELSE
-                          EVALUATE   FLG-GENBUTU70
-                            WHEN        1
-                              IF    FLG-TOKU75  =  3
-                                MOVE   75000    TO  MAX-KIN-SYU-M
-                              ELSE
-                                MOVE   150000   TO  MAX-KIN-SYU-M
-                              END-IF
-                              MOVE   WK-ZENGAKU TO  WK-KOUREI-IRYOHI70
-                              MOVE   5          TO  FLG-IRYOHI70
-                            WHEN        2
-                              IF    FLG-TOKU75  =  3
-                                MOVE   40050    TO  MAX-KIN-SYU-M
-                              ELSE
-                                MOVE   80100    TO  MAX-KIN-SYU-M
-                              END-IF
-                              MOVE   WK-ZENGAKU TO  WK-KOUREI-IRYOHI70
-                              MOVE   6          TO  FLG-IRYOHI70
-                            WHEN        3
-                              IF    FLG-TOKU75  =  3
-                                MOVE   17700    TO  MAX-KIN-SYU-M
-                              ELSE
-                                MOVE   35400    TO  MAX-KIN-SYU-M
-                              END-IF
-                          END-EVALUATE
-                        END-IF
+                        END-EVALUATE
                       ELSE
                         IF    FLG-TOKU75  =  3
                           MOVE   40050     TO   MAX-KIN-SYU-M
