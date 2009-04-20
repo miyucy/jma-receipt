@@ -5151,29 +5151,11 @@
       *
            MOVE    SPA-NENREI-HEN      TO  KT02-NENREI
       *
-      *    処理
-      *    EVALUATE    SPA-SYORIFLG
-      *        WHEN    0
-      *            MOVE    SPACE           TO  KT02-SYORIMEI-VALUE
-      *        WHEN    1
-      *            MOVE    "red"           TO  KT02-SYORIMEI-STYLE
-      *            MOVE    "［訂　正］"    TO  KT02-SYORIMEI-VALUE
-      *    END-EVALUATE
-      *
-      *
            MOVE    SPA-GMN-GOKEI       TO  WRK-GOKEI-Z3
            MOVE    WRK-GOKEI-X3        TO  KT02-GOKEITEN
            MOVE    SPA-GMN-LASTYMD     TO  KT02-LASTYMD
            MOVE    SPA-GMN-SYOSINYMD   TO  KT02-SYOSINYMD
       *
-      *    MOVE    SPA-GMN-MISYUMONEY  TO  WRK-GOKEI-Z3
-      *    MOVE    WRK-GOKEI-X3        TO  KT02-MISYUMONEY
-      *
-      *    累計点数
-      *        訂正の時、”＊”
-      *    IF      SPA-SYORIFLG        =   1
-      *        MOVE    ALL "*"             TO  KT02-ZAITENTOTAL
-      **** ELSE
       *    累計点数（入院のみ）
            IF      SPA-NYUGAIKBN       =   "2"
                COMPUTE WRK-GOKEI-Z2        =   SPA-GMN-GOKEI
@@ -5435,18 +5417,9 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *@@
-               WHEN    "9009"
-                   STRING  "レセプトの４月改正は未対応です。"
-                           "４月診療以降のプレビューはできません。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *@@
       *!
                WHEN    "K001"
                    MOVE    SPA-ERRMSG2     TO  SPA-ERRMSG
-      *D           MOVE    SPACE           TO  SPA-ERRMSG2
                    MOVE    SPA-ERRCD       TO  SPA-ERRMSG2
       *!
                WHEN    OTHER
@@ -5646,23 +5619,6 @@
       *****************************************************************
       *    パラメタデータ順読み
       *****************************************************************
-       980-PARA-READ-SEC         SECTION.
-      *
-           READ    PARA-FILE 
-               AT  END
-                   MOVE    1           TO  FLG-PARA
-               NOT AT  END
-                   MOVE    ZERO        TO  FLG-PARA
-           END-READ
-      *
-           .
-       980-PARA-READ-EXT.
-           EXIT.
-      *
-      *
-      *****************************************************************
-      *    パラメタデータ順読み
-      *****************************************************************
        980-PARA02-READ-SEC         SECTION.
       *
            READ    PARA-FILE02
@@ -5674,22 +5630,6 @@
       *
            .
        980-PARA02-READ-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    パラメタデータ順読み
-      *****************************************************************
-       990-PARA-RAND-SEC         SECTION.
-      *
-           READ    PARA-FILE
-               INVALID
-                   MOVE    1           TO  FLG-PARA
-               NOT INVALID
-                   MOVE    ZERO        TO  FLG-PARA
-           END-READ
-      *
-           .
-       990-PARA-RAND-EXT.
            EXIT.
       *****************************************************************
       *    パラメタデータ順読み
