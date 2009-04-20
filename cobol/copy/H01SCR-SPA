@@ -173,6 +173,10 @@
       *
                05  SPA-SYS-1001-HOSPSBT1       PIC 9(01).
       *
+               05  SPA-NAI-2009-SYUKA-SYAHO    PIC X(01).
+               05  SPA-NAI-2009-SYUKA-KOKUHO   PIC X(01).
+               05  SPA-NAI-2009-SYUKA-KOUIKI   PIC X(01).
+      *
       *£È£°£²²èÌÌ
            03  SPA-H02-AREA.
                05  SPA-H02GMN-MAX             PIC 9(04).

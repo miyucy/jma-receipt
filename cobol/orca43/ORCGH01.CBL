@@ -77,7 +77,10 @@
       *  04.03.02    NACL-藤原    08/06/06  レセプト種別名称、作成日の追加
       *  04.03.03    NACL-藤原    08/06/18  公費請求分の請求年月等の追加
       *
-      *  04.04.01    NACL-藤原    09/12/10  返戻対応
+      *  04.04.01    NACL-藤原    08/12/10  返戻対応
+      *
+      *  04.05.01    NACL-藤原    09/04/16  主科設定時の主科未設定のチェ
+      *                                     ック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -213,6 +216,8 @@
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK2005.INC".
+      *
+           COPY    "CPSK2009.INC".
       *
            COPY    "CPRCF010.INC".
       *
@@ -486,6 +491,50 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    "未請求"            TO  SPA-H01GMN-SKYKBNMEIL (2)
            MOVE    "2"                 TO  SPA-H01GMN-SKYKBNL    (3)
            MOVE    "請求済"            TO  SPA-H01GMN-SKYKBNMEIL (3)
+      *
+      *    レセプト編集区分情報（主科情報）
+           MOVE    SPACE               TO  SYS-2009-REC
+           INITIALIZE                      SYS-2009-REC
+           MOVE    "2009"              TO  SYS-2009-KANRICD
+           MOVE    "*"                 TO  SYS-2009-KBNCD
+           MOVE    ZERO                TO  SYS-2009-STYUKYMD 
+           MOVE    SYS-2009-STYUKYMD   TO  SYS-2009-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-2009-HOSPNUM
+           MOVE    SYS-2009-REC        TO  MCPDATA-REC
+           PERFORM 910-SYSKANRI-INV-SEC
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-2009-REC
+           ELSE
+               INITIALIZE                  SYS-2009-REC
+           END-IF
+           IF      SYS-2009-SYUKA-KBN
+                                   =   SPACE
+               MOVE    "0"             TO  SYS-2009-SYUKA-KBN
+           END-IF
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-SYAHO
+                                   =   SPACE )
+               MOVE    "1"             TO  SYS-2009-SYUKA-SYAHO
+           END-IF      
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOKUHO
+                                   =   SPACE )
+               MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
+           END-IF
+           IF    ( SYS-2009-SYUKA-KBN
+                                   =   "1"   )
+           AND   ( SYS-2009-SYUKA-KOUIKI
+                                   =   SPACE )
+               MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
+           END-IF
+           MOVE    SYS-2009-SYUKA-SYAHO
+                                       TO  SPA-NAI-2009-SYUKA-SYAHO
+           MOVE    SYS-2009-SYUKA-KOKUHO
+                                       TO  SPA-NAI-2009-SYUKA-KOKUHO
+           MOVE    SYS-2009-SYUKA-KOUIKI
+                                       TO  SPA-NAI-2009-SYUKA-KOUIKI
       *
       *****IF      SYS-2005-??         =   "0"
                MOVE    WIDGET-INSENSITIVE  TO
@@ -793,6 +842,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                        MOVE    "F"         TO
                                            SPA-H01GMN-HENREI-SIJI-FLG
                        MOVE    6           TO  SPA-H01GMN-CUR
+                   WHEN    "1006"
+                       MOVE    SPACE       TO  SPA-UPDFLG
                END-EVALUATE
            ELSE
                MOVE    "1"             TO  SPA-UPDFLG 
@@ -811,6 +862,9 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                        MOVE    WIDGET-NORMAL
                                        TO
                                        SPA-H01GMN-HENREI-SIJI-FLG-STATE
+                   WHEN    "1006"
+      *****************PERFORM 420-CLEAR-SEC
+                       MOVE    2       TO  SPA-H01GMN-CUR
                END-EVALUATE 
            END-IF
       *
@@ -1358,6 +1412,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    "0003"         TO  SPA-ERRCD
                WHEN    1
                    PERFORM 41021-SEIKYU-HENSYU-SEC
+      *            主科設定時の主科未設定のチェック（特別療養費を除く）
+                   IF    ( RECE10-RECEKA          =   "00"   )
+                   AND   ( RECE10-RECESYUBETU NOT =   "6666" )
+                       EVALUATE    RECE10-TEISYUTUSAKI
+                           WHEN    "1"
+                               IF     SPA-NAI-2009-SYUKA-SYAHO  =   "1"                           
+                                   MOVE    "1006"         TO  SPA-HIDCD
+                              END-IF
+                           WHEN    "2"
+                               IF      SPA-NAI-2009-SYUKA-KOKUHO =   "1"
+                                   MOVE    "1006"         TO  SPA-HIDCD
+                              END-IF
+                           WHEN    "6"
+                               IF      SPA-NAI-2009-SYUKA-KOUIKI =   "1"
+                                   MOVE    "1006"         TO  SPA-HIDCD
+                              END-IF
+                       END-EVALUATE
+                   END-IF
                WHEN    OTHER
                    PERFORM 41021-H99-HENSYU-SEC
            END-EVALUATE
@@ -1877,6 +1949,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SPA-H01NAI-PTID     TO  SPA-H99NAI-PTID
            MOVE    SPA-H01NAI-SRYYM    TO  SPA-H99NAI-SRYYM
       *
+           MOVE    SPACE               TO  SPA-MOTOPG
            MOVE    SPA-H01KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
            MOVE    SPA-H01FREE         TO  SPA-FREE
@@ -2481,7 +2554,6 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
       *
            IF      SPA-UPDFLG          =   SPACE
                MOVE    "0010"              TO  SPA-ERRCD
-               GO  TO  4103-KAKUTEI-CHK-EXT
            END-IF
       *
            .
@@ -3975,6 +4047,9 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                WHEN    "1004"
                WHEN    "1005"
                    MOVE    "返戻情報を解除しますか。"
+                                        TO  WRK-HIDMSG
+               WHEN    "1006"
+                   MOVE    "主科未設定です。よろしいですか"
                                         TO  WRK-HIDMSG
                WHEN    "0101"
                    MOVE    "入力の途中です。終了してよろしいですか。"

@@ -57,6 +57,9 @@
       *  04.03.02    NACL-藤原    08/06/06  レセプト種別名称、作成日の追加
       *
       *  04.04.01    NACL-藤原    09/12/10  返戻対応
+      *
+      *  04.05.01    NACL-藤原    09/04/16  主科設定時の主科未設定のチェ
+      *                                     ック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -260,6 +263,9 @@
            ELSE
       *        初期画面セット
                PERFORM 300-SCREEN-SEC
+               IF      FLG-END             =   1
+                   GO  TO  100-INIT-EXT
+               END-IF
       *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
@@ -280,11 +286,42 @@
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
+           EVALUATE    SPA-MOTOPG
+               WHEN    "HID1"
+                   PERFORM 310-HID1-SET-SEC
+                   GO      TO      300-SCREEN-EXT
+           END-EVALUATE
+      *
            MOVE    4                   TO  SPA-H99GMN-CUR
       *
            PERFORM 41021-H99-HENSYU-SEC
            .
        300-SCREEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    確認画面戻り処理
+      *****************************************************************
+       310-HID1-SET-SEC            SECTION.
+      *
+           IF      SPA-HID1-FLG    =   "OK"
+               EVALUATE    SPA-HIDCD
+                   WHEN    "1006"
+                       PERFORM 210-BACK
+               END-EVALUATE
+           ELSE
+               EVALUATE    SPA-HIDCD
+                   WHEN    "1006"
+      *****************MOVE    SPACE      TO  SPA-H99-AREA
+      *****************INITIALIZE             SPA-H99GMN-SELNUM
+                       MOVE    4          TO  SPA-H99GMN-CUR
+               END-EVALUATE 
+           END-IF
+      *
+           MOVE    SPACE           TO  SPA-HID1-FLG
+           MOVE    SPACE           TO  SPA-HIDCD      
+           .
+       310-HID1-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -295,6 +332,8 @@
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
       *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
+                   MOVE    SPACE      TO  SPA-H99-AREA
+                   INITIALIZE             SPA-H99GMN-SELNUM
                    PERFORM 210-BACK
       *     確定
                WHEN    "CLICKED"       ALSO    "B12"
@@ -734,6 +773,27 @@ grpsys         PERFORM 900-DBSELECT-SEC
            ELSE
                MOVE    SPA-H99NAI-RECE10-KEY (SPA-H99GMN-SELNUM)
                                        TO  SPA-H99-KEY
+      *        主科設定時の主科未設定のチェック（特別療養費を除く）
+               IF    ( SPA-H99-RECEKA          =   "00"   )
+               AND   ( SPA-H99-RECESYUBETU NOT =   "6666" )
+                   EVALUATE    RECE10-TEISYUTUSAKI
+                       WHEN    "1"
+                           IF     SPA-NAI-2009-SYUKA-SYAHO  =   "1"                           
+                               MOVE    "1006"         TO  SPA-HIDCD
+                               GO  TO  4104-SELNUM-CHK-EXT
+                           END-IF
+                       WHEN    "2"
+                           IF      SPA-NAI-2009-SYUKA-KOKUHO =   "1"
+                               MOVE    "1006"         TO  SPA-HIDCD
+                               GO  TO  4104-SELNUM-CHK-EXT
+                           END-IF
+                       WHEN    "6"
+                           IF      SPA-NAI-2009-SYUKA-KOUIKI =   "1"
+                               MOVE    "1006"         TO  SPA-HIDCD
+                               GO  TO  4104-SELNUM-CHK-EXT
+                           END-IF
+                   END-EVALUATE
+               END-IF
                PERFORM 210-BACK
            END-IF
            .
@@ -759,6 +819,28 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
            MOVE    SPA-H99NAI-RECE10-KEY (SPA-H99GMN-SELNUM)
                                        TO  SPA-H99-KEY
+      *    主科設定時の主科未設定のチェック（特別療養費を除く）
+           IF    ( SPA-H99-RECEKA          =   "00"   )
+           AND   ( SPA-H99-RECESYUBETU NOT =   "6666" )
+               EVALUATE    RECE10-TEISYUTUSAKI
+                   WHEN    "1"
+                       IF     SPA-NAI-2009-SYUKA-SYAHO  =   "1"                           
+                           MOVE    "1006"         TO  SPA-HIDCD
+                           GO  TO  41016-BYOMEISEL-EXT
+                       END-IF
+                   WHEN    "2"
+                       IF      SPA-NAI-2009-SYUKA-KOKUHO =   "1"
+                           MOVE    "1006"         TO  SPA-HIDCD
+                           GO  TO  41016-BYOMEISEL-EXT
+                       END-IF
+                   WHEN    "6"
+                       IF      SPA-NAI-2009-SYUKA-KOUIKI =   "1"
+                           MOVE    "1006"         TO  SPA-HIDCD
+                           GO  TO  41016-BYOMEISEL-EXT
+                       END-IF
+               END-EVALUATE
+           END-IF
+      *
            PERFORM 210-BACK
            .
        41016-BYOMEISEL-EXT.
@@ -820,6 +902,11 @@ grpsys         PERFORM 900-DBSELECT-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
+           IF      SPA-HIDCD       NOT =   SPACE
+               PERFORM 520-HIDSET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  LINKAREA
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
@@ -868,6 +955,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
                MOVE    IDX         TO  H99-COUNT
            END-PERFORM
       ***  MOVE    "T"              TO  H99-SELECT (1)
+      *
+           MOVE    SPA-H99GMN-SELNUM   TO  H99-SELNUM
       *            
            MOVE    "blue"              TO  H99-NAME-STYLE
                                            H99-SRYKANAME-STYLE
@@ -937,6 +1026,36 @@ grpsys         PERFORM 900-DBSELECT-SEC
            .
        510-ERRMSG-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    確認メッセージ表示処理
+      *****************************************************************
+       520-HIDSET-SEC              SECTION.
+      *
+           MOVE    SPACE                TO  HID1
+           MOVE    SPA-HIDCD            TO  HID1-ID1CODE
+           EVALUATE    SPA-HIDCD
+               WHEN    "1006"
+                   MOVE    "主科未設定です。よろしいですか"
+                                        TO  HID1-ID1MSG
+           END-EVALUATE
+      *
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "H99"                TO  SPA-MOTOPG
+           MOVE    "HID1"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "HID1"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END              
+      *
+           .
+       520-HIDSET-EXT.
+           EXIT.
+      *
       *
       *****************************************************************
       *    和暦西暦変換編集処理
