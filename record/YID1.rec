@@ -6,5 +6,8 @@ YID1	{
 		ID1MSG	{
 			value	varchar(80);
 		};
+		B01	{
+			label	varchar(4);
+		};
 	};
 };

@@ -158,6 +158,7 @@
                05  WRK-PTNUM       PIC X(20).
                05  WRK-PTID        PIC X(10).
                05  WRK-NAME        PIC X(50).
+               05  WRK-KANANAME    PIC X(50).
                05  WRK-SEX         PIC X(02).
                05  WRK-BIRTHDAYH   PIC X(09).
       *
@@ -187,6 +188,8 @@
            03  WRK-HYOJI               PIC 9(04).
       *
            03  WRK-YYKHYO-PG           PIC X(64).
+      *
+           03  WRK-YID1MSG             PIC X(80).
       *
       *  ＳＯＲＴ用ワーク
       *    受付患者一覧
@@ -415,6 +418,9 @@
                WHEN    "Y012"
       *            メモ・文例登録画面
                    MOVE    3                   TO  SPA-GMN-CUR
+               WHEN    "YID1"
+      *            確認画面
+                   PERFORM 30010-YID1-SET-SEC
                WHEN    OTHER
                    PERFORM 300-INIT-SYORI-SEC
            END-EVALUATE
@@ -443,33 +449,45 @@
       *
            PERFORM 310-SPASET-SEC
       *
-           EVALUATE    SPA-MOTOPG(1:1)
-               WHEN    "Y"
+           EVALUATE    SPA-MOTOPG
+               WHEN    "Y03"
+               WHEN    "Y04"
                    MOVE    SPACE               TO  SPA-GMN-PTNUM
                    MOVE    ZERO                TO  SPA-GMN-PTID
                    MOVE    SPACE               TO  SPA-GMN-NAME
                    MOVE    SPACE               TO  SPA-GMN-SEX
                    MOVE    SPACE               TO  SPA-GMN-BIRTHDAYH
                    MOVE    SPACE               TO  SPA-GMN-YYKNAME
+               WHEN    "Y05"
       *            患者検索の時、患者番号表示
-                   IF      SPA-MOTOPG          =   "Y05"
-                       MOVE    SPA-Y01-PTNUM       TO  SPA-GMN-PTNUM
-                       MOVE    SPA-Y01-PTID        TO  SPA-GMN-PTID
-                       MOVE    SPA-Y01-YYKNAME     TO  SPA-GMN-NAME
-                       MOVE    SPA-Y01-SEX         TO  SPA-GMN-SEX
-                       MOVE    SPA-Y01-BIRTHDAYH   TO  SPA-GMN-BIRTHDAYH
-                       MOVE    SPA-Y01-YYKNAME     TO  SPA-GMN-YYKNAME
+                   MOVE    SPA-Y01-PTNUM       TO  SPA-GMN-PTNUM
+                   MOVE    SPA-Y01-PTID        TO  SPA-GMN-PTID
+                   MOVE    SPA-Y01-YYKNAME     TO  SPA-GMN-NAME
+                   MOVE    SPA-Y01-SEX         TO  SPA-GMN-SEX
+                   MOVE    SPA-Y01-BIRTHDAYH   TO  SPA-GMN-BIRTHDAYH
+                   MOVE    SPA-Y01-YYKNAME     TO  SPA-GMN-YYKNAME
+               WHEN    "U01"
+      *            受付より選択後
+                   IF     (SPA-PTID       NOT =   ZERO   )
+                       MOVE    SPA-PTID           TO  SPA-GMN-PTID
+                       MOVE    SPA-PTNUM          TO  SPA-GMN-PTNUM
+                       MOVE    SPA-NAME           TO  SPA-GMN-NAME
+                       MOVE    SPA-SEX            TO  SPA-GMN-SEX
+                       MOVE    SPA-BIRTHDAYW      TO  SPA-GMN-BIRTHDAYH
+                       MOVE    SPA-NAME           TO  SPA-GMN-YYKNAME
                    END-IF
-               WHEN    OTHER
-      *            氏名検索画面より選択後
-                   IF     (SPA-MOTOPG(1:3)    =   "P97"  OR  "U01") AND
-                          (SPA-PTID       NOT =   ZERO   )
-                       MOVE    SPA-PTID       TO  SPA-GMN-PTID
-                       MOVE    SPA-PTNUM      TO  SPA-GMN-PTNUM
-                       MOVE    SPA-NAME       TO  SPA-GMN-NAME
-                       MOVE    SPA-SEX        TO  SPA-GMN-SEX
-                       MOVE    SPA-BIRTHDAYW  TO  SPA-GMN-BIRTHDAYH
-                       MOVE    SPA-NAME       TO  SPA-GMN-YYKNAME
+               WHEN    "P97"
+      *            氏名検索より
+                   IF     (SPA-PTID           =   ZERO   )
+                       MOVE    SPA-Y01-YYKNAME    TO  SPA-GMN-YYKNAME
+                       MOVE    SPACE              TO  SPA-Y01-YYKNAME
+                   ELSE
+                       MOVE    SPA-PTID           TO  SPA-GMN-PTID
+                       MOVE    SPA-PTNUM          TO  SPA-GMN-PTNUM
+                       MOVE    SPA-NAME           TO  SPA-GMN-NAME
+                       MOVE    SPA-SEX            TO  SPA-GMN-SEX
+                       MOVE    SPA-BIRTHDAYW      TO  SPA-GMN-BIRTHDAYH
+                       MOVE    SPA-NAME           TO  SPA-GMN-YYKNAME
                    END-IF
            END-EVALUATE
       *
@@ -649,7 +667,7 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *    初期設定
-           MOVE    SPA-GMN-SRYKALST (1)    TO  SPA-GMN-SRYKA-G
+           MOVE    SPA-GMN-SRYKALST(1) TO  SPA-GMN-SRYKA-G
       *
       *    職員情報をＳＰＡにセット
            MOVE    SPACE               TO  SYS-1010-REC
@@ -1110,6 +1128,35 @@
       *
            .
         5201-YYKHEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    確認画面（ＹＩＤ１）ＯＫ処理
+      *****************************************************************
+       30010-YID1-SET-SEC          SECTION.
+      *
+           EVALUATE    SPA-YID1CD
+      *        予約氏名確定
+               WHEN    "0101"
+                   MOVE    SPACE               TO  SPA-YID1CD
+                   IF      SPA-YID1-FLG         =   "OK"
+                       MOVE    SPA-Y01-PTNUM       TO  SPA-GMN-PTNUM
+                       MOVE    SPA-Y01-PTID        TO  SPA-GMN-PTID
+                       MOVE    SPA-Y01-YYKNAME     TO  SPA-GMN-NAME
+                       MOVE    SPA-Y01-SEX         TO  SPA-GMN-SEX
+                       MOVE    SPA-Y01-BIRTHDAYH   TO  SPA-GMN-BIRTHDAYH
+                       MOVE    SPA-Y01-YYKNAME     TO  SPA-GMN-YYKNAME
+                   ELSE
+                       MOVE    SPACE               TO  SPA-GMN-PTNUM
+                       MOVE    ZERO                TO  SPA-GMN-PTID
+                       MOVE    SPACE               TO  SPA-GMN-SEX
+                       MOVE    SPACE               TO  SPA-GMN-BIRTHDAYH
+                   END-IF
+                   MOVE    5               TO  SPA-GMN-CUR
+           END-EVALUATE
+           MOVE    SPACE               TO  SPA-YID1CD
+           MOVE    SPACE               TO  SPA-YID1-FLG
+           .
+        30010-YID1-SET-EXT.
            EXIT.
       *****************************************************************
       *    画面遷移処理
@@ -1593,7 +1640,7 @@
       *
            MOVE    Y01-YYKNAME         TO  SPA-GMN-YYKNAME
       *
-           INITIALIZE                  SPA-Y01-YYK-AREA
+      *    INITIALIZE                  SPA-Y01-YYK-AREA
       *
            IF      SPA-GMN-YYKNAME     =   SPACE
                GO      TO      41014-YYKNAME-EXT
@@ -1601,6 +1648,14 @@
       *
            IF      SPA-GMN-PTNUM   NOT =   SPACE
                IF      SPA-GMN-YYKNAME     =   SPA-GMN-NAME
+                   GO      TO      41014-YYKNAME-EXT
+               END-IF
+           END-IF
+      *
+      *    予約修正
+           IF      SPA-YYK-SYORI       =   2
+               IF      SPA-GMN-YYKNAME     =   SPA-GMN-NAME
+                   MOVE    5               TO  SPA-GMN-CUR
                    GO      TO      41014-YYKNAME-EXT
                END-IF
            END-IF
@@ -1614,7 +1669,7 @@
            IF     (KANACHK-RC      NOT =   ZERO  )  OR
                   (KANACHK-SYUBETU     =   1     )
                MOVE    KANACHK-MAE-INPUT   TO  SPA-GMN-YYKNAME
-               MOVE    "0017"          TO  SPA-ERRCD
+               MOVE    "0017"              TO  SPA-ERRCD
                GO      TO      41014-YYKNAME-EXT
            ELSE
                MOVE    KANACHK-OUT-INPUT   TO  SPA-GMN-YYKNAME
@@ -1623,6 +1678,23 @@
            MOVE    SPACE           TO  WRK-KNJ
            PERFORM 410141-KNJKEN-HEN-SEC
       *
+      *
+      *    予約修正中は新規予約氏名のみ変更
+           IF      SPA-YYK-SYORI       =   2
+               MOVE    SPA-GMN-YYKNAME     TO  SPA-GMN-NAME
+               MOVE    5                   TO  SPA-GMN-CUR
+               IF     (IDZ                 =   1     ) AND
+                      (WRK-PTID        NOT =   SPACE ) AND
+                     ((WRK-NAME            =   SPA-GMN-YYKNAME) OR
+                      (WRK-KANANAME        =   SPA-GMN-YYKNAME))
+                   MOVE    "0020"          TO  SPA-ERRCD
+                   MOVE    4               TO  SPA-GMN-CUR
+               END-IF
+               GO      TO      41014-YYKNAME-EXT
+           END-IF
+      *
+           INITIALIZE                  SPA-Y01-YYK-AREA
+      *
       *    IF      IDZ                  =   ZERO
       *        MOVE    "0004"          TO  SPA-ERRCD
       *        GO      TO      41014-YYKNAME-EXT
@@ -1630,6 +1702,7 @@
       *
            IF      IDZ                  >   1
       *        氏名検索へ
+               MOVE    SPA-GMN-YYKNAME     TO  SPA-Y01-YYKNAME
                PERFORM 470-SIMEIKEN-SEC
            ELSE
                IF      WRK-PTID           =   SPACE
@@ -1640,6 +1713,20 @@
                    MOVE    SPACE               TO  SPA-GMN-BIRTHDAYH
                ELSE
       *        患者マスタに予約者あり
+                   IF     (WRK-NAME            =   SPA-GMN-YYKNAME) OR
+                          (WRK-KANANAME        =   SPA-GMN-YYKNAME)
+                       CONTINUE
+                   ELSE
+                       MOVE    WRK-PTID        TO  SPA-Y01-PTID
+                       MOVE    WRK-PTNUM       TO  SPA-Y01-PTNUM
+                       MOVE    WRK-SEX         TO  SPA-Y01-SEX
+                       MOVE    WRK-BIRTHDAYH   TO  SPA-Y01-BIRTHDAYH
+                       MOVE    WRK-NAME        TO  SPA-Y01-YYKNAME
+      *
+                       MOVE    "0101"          TO  SPA-YID1CD
+                       GO      TO      41014-YYKNAME-EXT
+                   END-IF
+      *
                    MOVE    WRK-PTID        TO  SPA-GMN-PTID
                    MOVE    WRK-PTNUM       TO  SPA-GMN-PTNUM
                    MOVE    WRK-NAME        TO  SPA-GMN-NAME
@@ -1787,6 +1874,7 @@
            END-IF
       *
            MOVE    PTINF-NAME         TO  WRK-NAME
+           MOVE    PTINF-KANANAME     TO  WRK-KANANAME
            EVALUATE    PTINF-SEX
                WHEN    "1"
                    MOVE    "男"                TO  WRK-SEX
@@ -3472,6 +3560,10 @@
                MOVE    SPA-GMN-SRYKA       TO  YYK-SRYKA
                MOVE    SPA-GMN-YYKKBN      TO  YYK-YYKKBN
                MOVE    SPA-GMN-KAKREN      TO  YYK-KAKREN
+      *        予約氏名
+               IF      YYK-PTID            =   ZERO
+                   MOVE    SPA-GMN-YYKNAME     TO  YYK-NAME
+               END-IF
       *
                MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
@@ -3956,6 +4048,7 @@
            MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
            MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
            MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
+      *
            MOVE    SPA-Y01KYOUTU       TO  SPA-WORK
       *
            MOVE    "Y01"               TO  SPA-MOTOPG
@@ -4003,7 +4096,6 @@
            .
        490-UKEICHI-EXT.
            EXIT.
-      *
       *****************************************************************
       *    戻る　処理
       *****************************************************************
@@ -4043,6 +4135,11 @@
       *
            IF      SPA-ERRCD       NOT =   SPACE
                PERFORM 510-ERRSET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-IF
+      *
+           IF      SPA-YID1CD       NOT =   SPACE
+               PERFORM 510-YID1CDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
            END-IF
       *
@@ -4397,6 +4494,12 @@
                WHEN    "0019"
                    MOVE    "メモ１は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
+               WHEN    "0020"
+                   STRING  "同姓同名の患者が存在します。"
+                           "患者を変更するなら再度予約して下さい"
+                                               DELIMITED   BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
                WHEN    "K100"
                    MOVE    "警告！予約件数がオーバーしてます"
                                                TO  SPA-ERRMSG
@@ -4443,6 +4546,48 @@
            MOVE    1                    TO  FLG-END
            .
        510-ERRMSG-EXT.
+           EXIT.
+      *****************************************************************
+      *    確認メッセージ表示処理
+      *****************************************************************
+       510-YID1CDSET-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  WRK-YID1MSG
+      *
+           MOVE    SPACE               TO  WRK-YID1MSG
+           MOVE    SPACE               TO  SPA-YID1-FLG
+      *
+           EVALUATE    SPA-YID1CD
+               WHEN    "0101"
+                   STRING  "予約氏名で該当の患者が１件存在します。"
+                           "患者番号を編集しますか？"
+                                           DELIMITED  BY  SIZE
+                                           INTO    WRK-YID1MSG
+                   END-STRING
+      *
+               WHEN    OTHER
+                   MOVE    SPA-YID1CD           TO  WRK-YID1MSG
+           END-EVALUATE
+      *
+           MOVE    SPACE                TO  YID1
+           MOVE    SPA-YID1CD           TO  YID1-ID1CODE
+           MOVE    WRK-YID1MSG          TO  YID1-ID1MSG
+           MOVE    "ＮＯ"               TO  YID1-B01
+      *
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "Y01"                TO  SPA-MOTOPG
+           MOVE    "YID1"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "YID1"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+      *
+           .
+       510-YID1CDSET-EXT.
            EXIT.
       *
       *****************************************************************
