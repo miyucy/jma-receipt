@@ -973,12 +973,13 @@
       *    初診料の併用エラー
            IF      WRK-SRYKBN          =   "11"
                IF      LNK-SC92-SYOKBN     =   "1"
-      *            前に併用算定がある時、病名がすべて治癒であること
-                   IF      SPA-BYOMEI-STR      =   ZERO
-                       MOVE    1                   TO  SPA-SYOSIN-KEI
-                   ELSE
-                       MOVE    "0033"              TO  LNK-SC92-ERRCD6
-                   END-IF
+      ********     前に併用算定がある時、病名がすべて治癒であること
+      *            IF      SPA-BYOMEI-STR      =   ZERO
+      *                MOVE    1                   TO  SPA-SYOSIN-KEI
+      *            ELSE
+      *                MOVE    "0033"              TO  LNK-SC92-ERRCD6
+      **********   END-IF
+                   MOVE    1                   TO  SPA-SYOSIN-KEI
                END-IF
            END-IF
       *    エラー時、追加しない

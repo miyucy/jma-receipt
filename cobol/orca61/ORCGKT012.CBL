@@ -2880,7 +2880,7 @@
       *
            MOVE    ZERO                TO  SPA-NAI-SELNUM
            MOVE    ZERO                TO  SPA-NAI-DOSELNUM
-           MOVE    SPACE               TO  SPA-GMN-DOSELNUM
+      **** MOVE    SPACE               TO  SPA-GMN-DOSELNUM
       *
            MOVE    "KT01"              TO  SPA-SAKIPG
            MOVE    "KT012"             TO  SPA-MOTOPG

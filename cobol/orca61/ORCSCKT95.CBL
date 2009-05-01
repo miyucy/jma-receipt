@@ -252,6 +252,10 @@
                05  IDX-B2                  PIC 9(04).
                05  IDX-B3                  PIC 9(04).
                05  FLG-BYOMEI-END          PIC 9(01).
+           03  WRK-BYO-KIKAN.
+               05  WRK-B-SYMD               PIC X(10).
+               05  WRK-B-H                  PIC X(02).
+               05  WRK-B-EYMD               PIC X(10).
       *    診療年月日−１ヶ月
            03  WRK-SRYYMD-1.
                05  WRK-SRYYM-1.
@@ -502,14 +506,14 @@
                WHEN    "7"
       *            保険組合せが使用できるかのチェック
                    PERFORM 100131-HKNCOMBI-CHK-SEC
+      *        病名のみ変更
+               WHEN    "B"
+      *            病名編集
+                   PERFORM 11012-BYOMEI-HENSYU-SEC
       *        診療科変更時
                WHEN    "K"
       *            受診履歴情報セット
-                   PERFORM 1001-SPA-JYUSIN-SEC
-      *            特定疾患の有無検索
-                   PERFORM 11011-TOKUTEI-SYORI-SEC
-      *            中途終了分編集
-                   PERFORM 200-WKSRYACT-SYORI-SEC
+                   PERFORM 500-SRYKA-CHENGE-SEC
       *        保険変更時
                WHEN    "H"
       *            保険組合せチェック・編集
@@ -518,6 +522,10 @@
                    ELSE
                        PERFORM 400-HKNCOMBI-CHKHEN-SEC
                    END-IF
+      *        登録前特定疾患区分編集
+               WHEN    "9"
+      *            特定疾患の有無検索
+                   PERFORM 11011-TOKUTEI-SYORI-SEC
            END-EVALUATE
       *
            .
@@ -1178,7 +1186,7 @@
       *    病名編集
            PERFORM 11012-BYOMEI-HENSYU-SEC
       *    特定疾患の有無検索
-           PERFORM 11011-TOKUTEI-SYORI-SEC
+      **** PERFORM 11011-TOKUTEI-SYORI-SEC
       *
       *    前回患者保存
            MOVE    SPA-PTID            TO  SPA-LAST-PTID
@@ -1609,6 +1617,73 @@
            PERFORM 990-DBCLOSE-SEC
            .
        20091-KOHNUMMEI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    診療科変更時処理
+      *****************************************************************
+       500-SRYKA-CHENGE-SEC              SECTION.
+      *
+      *    前回の受診履歴より保険組合せ・ドクターを決定する
+           MOVE    ZERO                TO  IDX-J1
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL       IDX     >   SPA-GMN-MAX1
+      *        診療日より後の履歴は対象外
+               IF      (SPA-SRYYMD     >=  SPA-NAI-RRKYMD (IDX) )
+      *        包括保険は対象外
+                 AND   (SPA-NAI-RRK-HKNCOMBI(IDX)  NOT =   "9999")
+      *            最後の受診履歴を対象とする（診療日以前のもの）
+                   IF     (SPA-SRYKA           =   SPA-NAI-RRK-SRYKA
+                                                             (IDX) )
+                       MOVE     IDX                TO  IDX-J1
+                       MOVE    SPA-GMN-MAX1        TO  IDX
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           IF      IDX-J1              =   ZERO
+      *    受診歴を検索する
+               MOVE    SPACE               TO  JYURRK-REC
+               INITIALIZE                  JYURRK-KEY
+               MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
+               MOVE    SPA-PTID            TO  JYURRK-PTID
+               MOVE    SPA-NYUGAIKBN       TO  JYURRK-NYUGAIKBN
+               MOVE    SPA-SRYYMD          TO  JYURRK-SRYYMD
+               MOVE    SPA-SRYKA           TO  JYURRK-SRYKA
+      *
+               MOVE    JYURRK-REC          TO  MCPDATA-REC
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key11"             TO  MCP-PATHNAME
+               PERFORM 910-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    "key11"             TO  MCP-PATHNAME
+                   PERFORM 970-JYURRK-READ-SEC
+               ELSE
+                   MOVE    SPACE               TO  JYURRK-REC
+                   INITIALIZE                  JYURRK-REC
+                   MOVE    1               TO  FLG-JYURRK
+               END-IF
+               IF      FLG-JYURRK          =   ZERO
+                   MOVE    JYURRK-HKNCOMBINUM  TO  SPA-HKNCOMBINUM
+                   MOVE    JYURRK-DRCD         TO  SPA-DRCD
+               END-IF
+               MOVE    "tbl_jyurrk"        TO  MCP-TABLE
+               MOVE    "key11"             TO  MCP-PATHNAME
+               PERFORM 990-DBCLOSE-SEC
+           ELSE
+               MOVE    SPA-NAI-RRK-DRCD(IDX-J1)
+                                           TO  SPA-DRCD
+               MOVE    SPA-NAI-RRK-HKNCOMBI(IDX-J1)
+                                           TO  SPA-HKNCOMBINUM
+           END-IF
+      *
+      *    診療科、ドクター名称編集
+           PERFORM 10012-SYSKAN-SEC
+      *
+      *    保険組合せ名称編集
+           PERFORM 10013-HKNCOMBI-SEC
+           .
+       500-SRYKA-CHENGE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3008,10 +3083,18 @@
       *****************************************************************
        11011-TOKUTEI-SYORI-SEC         SECTION.
       *
+      *    特定疾患科
+           INITIALIZE                  SPA-TOKUTEI-AREA-G
+           MOVE    ZERO                TO  IDX
+           PERFORM VARYING     IDX-B   FROM    1   BY  1
+                   UNTIL      (IDX-B   >   SPA-NAI-BYOMEI-MAX )
+               PERFORM 110111-MANSEIKBN-SET-SEC
+           END-PERFORM
+      *
            MOVE    ZERO                TO  SPA-TOKUTEI
            MOVE    ZERO                TO  SPA-TOKUTEI-F
-           MOVE    ZERO                TO  SPA-TOKUTEIFLG
-           MOVE    ZERO                TO  SPA-CHOKITOFLG
+      **** MOVE    ZERO                TO  SPA-TOKUTEIFLG
+      **** MOVE    ZERO                TO  SPA-CHOKITOFLG
       *    特定疾患科テーブルより設定
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   10  )   OR
@@ -3039,24 +3122,26 @@
       *
       *    病名内容
            INITIALIZE                  SPA-GMN-BYOMEITBL
+           INITIALIZE                  SPA-NAI-BYOMEITBL
            INITIALIZE                  WRK-BYOMEI-AREA
       *    特定疾患科
            INITIALIZE                  SPA-TOKUTEI-AREA-G
+           MOVE    ZERO                TO  SPA-TOKUTEIFLG
+           MOVE    ZERO                TO  SPA-CHOKITOFLG
       *
-      *    特定疾患の有無検索
            MOVE    SPACE               TO  PTBYOMEI-REC
            INITIALIZE                  PTBYOMEI-REC
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-PTID            TO  PTBYO-PTID
-           MOVE    SPA-SRYKA           TO  PTBYO-SRYKA
            MOVE    SPA-SRYYMD          TO  PTBYO-SRYYMD
+           MOVE    "31"                TO  PTBYO-SRYYMD(7:2)
       *
            MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key25"             TO  MCP-PATHNAME
+           MOVE    "key17"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
            IF      MCP-RC              =   ZERO
-               MOVE    "key25"             TO  MCP-PATHNAME
+               MOVE    "key17"             TO  MCP-PATHNAME
                PERFORM 980-PTBYOMEI-READ-SEC
            ELSE
                MOVE    1                   TO  FLG-PTBYOMEI
@@ -3067,6 +3152,12 @@
            MOVE    ZERO                TO  IDX-B
            PERFORM UNTIL      (FLG-PTBYOMEI    =   1 )  OR
                               (IDX-B           >=  100)
+      *        当月に有効な病名
+               IF     (PTBYO-SRYYMD(1:6)   >   SPA-SRYYMD(1:6) )
+               OR    ((PTBYO-TENKIYMD  NOT =   SPACE    )  AND
+                      (PTBYO-TENKIYMD(1:6) <   SPA-SRYYMD(1:6) ))
+                   CONTINUE
+               ELSE
       *
                ADD     1               TO  IDX-B
                MOVE    PTBYO-SRYKA     TO  WRK-BYOMEI-NO(IDX-B)
@@ -3099,37 +3190,39 @@
                    MOVE    WRK-BYOMEI-HEN  TO  WRK-BYOMEI (IDX-B)
                END-IF
       *
-      *        特定疾患の有無
-               IF     (PTBYO-SRYYMD        <=   SPA-SRYYMD )
+      *        内部
+               MOVE    IDX-B               TO  SPA-NAI-BYOMEI-MAX
+               MOVE    PTBYO-SRYKA         TO  SPA-NAI-SRYKA (IDX-B)
+               MOVE    PTBYO-SRYYMD        TO  SPA-NAI-BYOYMD (IDX-B)
+               MOVE    PTBYO-TENKIYMD      TO  SPA-NAI-TENKIYMD (IDX-B)
+               IF     (PTBYO-UTAGAIFLG     =   "1"  AND  "3" )
       *            疑い病名は対象外とする
-                 AND  (PTBYO-UTAGAIFLG  NOT =   "1"  AND  "3" )
-                   IF      PTBYO-MANSEIKBN     =   05
-                                               OR  03
-                                               OR  04
-                                               OR  08
-                       IF     (PTBYO-TENKIKBN      =   SPACE )  OR
-                              (PTBYO-TENKIYMD      >=  SPA-SRYYMD)
-                           PERFORM 110111-MANSEIKBN-SET-SEC
-                        END-IF
+                   CONTINUE
+               ELSE
+      *            疾患区分
+                   MOVE    PTBYO-MANSEIKBN     TO  SPA-NAI-MANSEIKBN
+                                                              (IDX-B)
+      *            アトピー性皮膚炎判定
+                   IF      PTBYO-MANSEIKBN     =   04
+                       PERFORM 110111-ATOPIICHEK-SEC
                    END-IF
                END-IF
-      *        開始日＜当日
-               IF      PTBYO-SRYYMD        <   SPA-SRYYMD
-                   MOVE    1               TO  SPA-BYOMEI-STR
+      *
                END-IF
       *
                MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-               MOVE    "key25"             TO  MCP-PATHNAME
+               MOVE    "key17"             TO  MCP-PATHNAME
                PERFORM 980-PTBYOMEI-READ-SEC
            END-PERFORM
            MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
-           MOVE    "key25"             TO  MCP-PATHNAME
+           MOVE    "key17"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *    病名表示なし
            IF      SPA-BYOHYOKBN-FLG   =   ZERO
                MOVE    ZERO                TO  SPA-BYOMEI-MAX
-           ELSE
+               MOVE    ZERO                TO  IDX-B
+           END-IF
       *
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -3170,58 +3263,32 @@
                        MOVE    1           TO  FLG-BYOMEI-END
                    END-IF
                END-PERFORM
+      *!!
+      *TEST
+      *        期間編集
+      *        MOVE    SPACE               TO  WRK-BYO-KIKAN
+      *        MOVE    SPA-NAI-BYOYMD(IDX) TO  WRK-SYMD
+      *        PERFORM 800-SEIWA-HEN-SEC
+      *        MOVE    WRK-HENYMDG         TO  WRK-B-SYMD
+      *        IF      SPA-NAI-TENKIYMD(IDX)   =   SPACE
+      *            MOVE    SPACE               TO  WRK-B-EYMD
+      *        ELSE
+      *            MOVE    SPA-NAI-TENKIYMD(IDX)   TO  WRK-SYMD
+      *            PERFORM 800-SEIWA-HEN-SEC
+      *            MOVE    WRK-HENYMDG         TO  WRK-B-EYMD
+      *            MOVE    "-"                 TO  WRK-B-H
+      *        END-IF
+      **       ADD     1               TO  SPA-BYOMEI-MAX
+      *        MOVE    WRK-BYO-KIKAN           TO  SPA-GMN-BYOMEI
+      **                                            (SPA-BYOMEI-MAX)
+      *TEST
            END-PERFORM
-      *
-           END-IF
       *
            IF      SPA-BYOMEI-MAX      >   100
                MOVE    100             TO  SPA-BYOMEI-MAX
            END-IF
            .
        11012-BYOMEI-HENSYU-EXT.
-           EXIT.
-      *****************************************************************
-      *    診療科毎の特定疾患編集処理
-      *****************************************************************
-       110111-MANSEIKBN-SET-SEC              SECTION.
-      *
-      *    皮膚科特定疾患（２）の病名チェック
-           IF      PTBYO-MANSEIKBN     =   04
-               PERFORM 110111-ATOPIICHEK-SEC
-           END-IF
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL      (IDX     >   10  )
-               IF      SPA-TOKU-SRYKA (IDX)    =   SPACE
-                   MOVE    PTBYO-SRYKA     TO  SPA-TOKU-SRYKA (IDX)
-                   MOVE    PTBYO-MANSEIKBN TO  SPA-TOKU-FLG   (IDX)
-                   MOVE    10              TO  IDX
-               ELSE
-                   IF      SPA-TOKU-SRYKA (IDX)    =   PTBYO-SRYKA
-                       EVALUATE    SPA-TOKU-FLG (IDX)
-                           WHEN    05
-                           WHEN    08
-                               CONTINUE
-                           WHEN    03
-                               IF      PTBYO-MANSEIKBN     =   05
-                                                           OR  08
-                                   MOVE    PTBYO-MANSEIKBN
-                                                   TO  SPA-TOKU-FLG(IDX)
-                               END-IF
-                           WHEN    04
-                               IF      PTBYO-MANSEIKBN     =   03
-                                                           OR  05
-                                                           OR  08
-                                   MOVE    PTBYO-MANSEIKBN
-                                                   TO  SPA-TOKU-FLG(IDX)
-                               END-IF
-                       END-EVALUATE
-                       MOVE    10              TO  IDX
-                   END-IF
-               END-IF
-           END-PERFORM
-      *
-           .
-       110111-MANSEIKBN-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3235,10 +3302,66 @@
                                        OR  "6918024"
                                        OR  "8830277"
       *        アトピー性皮膚炎
-               MOVE    1               TO  SPA-ATOPII-FLG
+               MOVE    1                   TO  SPA-NAI-ATOPII (IDX-B)
            END-IF
            .
        110111-ATOPIICHEK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療科毎の特定疾患編集処理
+      *****************************************************************
+       110111-MANSEIKBN-SET-SEC              SECTION.
+      *
+      *    当日有効な病名のみ
+           IF     (SPA-NAI-BYOYMD  (IDX-B) <=  SPA-SRYYMD )
+           AND   ((SPA-NAI-TENKIYMD(IDX-B) =   SPACE    )  OR
+                  (SPA-NAI-TENKIYMD(IDX-B) >=  SPA-SRYYMD ))
+           AND    (SPA-NAI-MANSEIKBN(IDX-B)    NOT =   ZERO )
+      *
+      *        皮膚科特定疾患（２）の病名チェック
+               IF      SPA-NAI-ATOPII (IDX-B)  NOT =   ZERO
+                   MOVE    SPA-NAI-ATOPII (IDX-B)  TO  SPA-ATOPII-FLG
+               END-IF
+      *
+               PERFORM VARYING     IDX     FROM    1   BY  1
+                       UNTIL      (IDX     >   10  )
+                   IF      SPA-TOKU-SRYKA (IDX)    =   SPACE
+                       MOVE    SPA-NAI-SRYKA (IDX-B)
+                                               TO  SPA-TOKU-SRYKA (IDX)
+                       MOVE    SPA-NAI-MANSEIKBN(IDX-B)
+                                               TO  SPA-TOKU-FLG   (IDX)
+                       MOVE    10              TO  IDX
+                   ELSE
+                       IF      SPA-TOKU-SRYKA(IDX) =   SPA-NAI-SRYKA
+                                                                (IDX-B)
+                       EVALUATE    SPA-TOKU-FLG (IDX)
+                           WHEN    05
+                           WHEN    08
+                               CONTINUE
+                           WHEN    03
+                               IF      SPA-NAI-MANSEIKBN (IDX-B)
+                                                           =   05
+                                                           OR  08
+                                   MOVE    SPA-NAI-MANSEIKBN (IDX-B)
+                                                   TO  SPA-TOKU-FLG(IDX)
+                               END-IF
+                           WHEN    04
+                               IF      SPA-NAI-MANSEIKBN (IDX-B)
+                                                           =   03
+                                                           OR  05
+                                                           OR  08
+                                   MOVE    SPA-NAI-MANSEIKBN (IDX-B)
+                                                   TO  SPA-TOKU-FLG(IDX)
+                               END-IF
+                       END-EVALUATE
+                       MOVE    10              TO  IDX
+                       END-IF
+                   END-IF
+               END-PERFORM
+           END-IF
+      *
+           .
+       110111-MANSEIKBN-SET-EXT.
            EXIT.
       *
       *****************************************************************

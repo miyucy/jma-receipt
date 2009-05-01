@@ -86,7 +86,7 @@
                        09  SPA-GMN-RRKYMD        PIC X(13).
                        09  SPA-GMN-RRKHKNCOMBI   PIC X(04).
                        09  SPA-GMN-RRKSRYKA      PIC X(02).
-                   07  SPA-GMN-DOSELNUM          PIC X(04).
+      ***********  07  SPA-GMN-DOSELNUM          PIC X(04).
                    07  SPA-GMN-MAX1              PIC 9(04).
       *
       *        禁忌・アレルギー等情報
@@ -103,8 +103,15 @@
                            11  SPA-GMN-BYOMEI-NO     PIC X(02).
                            11  SPA-GMN-BYOMEI        PIC X(22).
                    07  SPA-BYOMEI-MAX            PIC 9(04).
-      *            1:開始日が当日以前
-                   07  SPA-BYOMEI-STR            PIC 9(01).
+      *
+               05  SPA-NAI-BYOMEITBL.
+                   07  SPA-NAI-BYOMEI-TBL        OCCURS  100.
+                       09  SPA-NAI-SRYKA         PIC X(02).
+                       09  SPA-NAI-BYOYMD        PIC X(08).
+                       09  SPA-NAI-TENKIYMD      PIC X(08).
+                       09  SPA-NAI-MANSEIKBN     PIC 9(02).
+                       09  SPA-NAI-ATOPII        PIC 9(01).
+                   07  SPA-NAI-BYOMEI-MAX        PIC 9(04).
       *
                05  SPA-NAI-AREA.
       *            処理フラグ

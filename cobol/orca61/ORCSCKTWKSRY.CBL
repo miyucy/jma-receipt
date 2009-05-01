@@ -221,6 +221,8 @@
            03  IDX-KAI3            PIC 9(04).
            03  IDX-KAI             PIC 9(04).
       *
+           03  IDX-ERR                 PIC 9(04).
+      *
       *    一時領域
        01  WRK-AREA.
            03  WRK-ERRCD               PIC X(04).
@@ -739,6 +741,7 @@
                                                SPA-AREA
                    IF     (SPA-ERRCD           NOT =   SPACE )  OR
                           (LNK-SC92-ERRAREA    NOT =   SPACE )
+                       PERFORM 10024-ERRCD-SET-SEC
                        MOVE    SPACE           TO  SPA-ERRCD
                        MOVE    "1"             TO  SPA-COM-CUR (IDX-1)
                    END-IF
@@ -814,10 +817,7 @@
                END-IF
       *        回数の画面用再編集
                PERFORM 10028-GAIRAI-KAISU-SEC
-      *        IF      SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "*"
-      *            PERFORM 10028-NYUIN-KAISU-SEC
-      *!           MOVE    SPACE           TO  SPA-ERRCD
-      **       END-IF
+      *
       *        訂正の展開時はすべて自動発生済みとする
                IF      ORCSCWKSRY-SYORIFLG =   ZERO
                    MOVE    IDX-1           TO  IDX
@@ -932,6 +932,23 @@
       *
            .
        1002-SAIHEN-SYORI-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    エラーコード編集
+      *****************************************************************
+       10024-ERRCD-SET-SEC              SECTION.
+      *
+           PERFORM VARYING     IDX-ERR FROM    1  BY  1
+                   UNTIL      (IDX-ERR     >   10     )  OR
+                              (SPA-ERRCD   NOT =   SPACE)
+               IF      LNK-SC92-ERRCD(IDX-ERR) NOT =   SPACE
+                   MOVE    LNK-SC92-ERRCD(IDX-ERR)     TO  SPA-ERRCD
+               END-IF
+           END-PERFORM
+           MOVE    SPA-ERRCD           TO  WRK-ERRCD2
+           .
+       10024-ERRCD-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1904,17 +1921,17 @@
            MOVE    ZERO                TO  IDX-KAI
            MOVE    ZERO                TO  WRK-TENSUKEI
       *    回数再編集
-           PERFORM VARYING     IDX-K   FROM    IDX-STR  BY  1
-                   UNTIL       IDX-K   >   IDX-END
-      *        回数・日数
-               IF      SPA-GMN-INPUTCD(IDX-K)(1:1)   =   "*"
-                   PERFORM 1001-KAISUU-SYORI-SEC
-               END-IF
+           PERFORM VARYING     IDX-K   FROM    IDX-END  BY  -1
+                   UNTIL       IDX-K   <   IDX-STR
       *        点数再編集
                IF      SPA-COM-TENSU  (IDX-K)  NOT =   ZERO
                    MOVE    SPA-COM-TENSU  (IDX-K)  TO  WRK-TENSUKEI
                END-IF
                MOVE    WRK-TENSUKEI    TO  SPA-COM-TENSU  (IDX-K)
+      *        回数・日数
+               IF      SPA-GMN-INPUTCD(IDX-K)(1:1)   =   "*"
+                   PERFORM 1001-KAISUU-SYORI-SEC
+               END-IF
            END-PERFORM
       *    ’＊’の行がなかった時、１回の診療日とする
            IF      TBL-KAISU (01)          =   ZERO
