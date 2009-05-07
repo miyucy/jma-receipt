@@ -32,12 +32,6 @@
       *                                     退院の翌日入院の対応
       *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *  04.03.00    NACL-多々納  08/08/01  保険組合せ期間チェック追加
-      *  04.04.00    NACL-多々納  08/12/17  入院料包括チェック対応
-      *  04.05.00    NACL-多々納  09/12/03  前月保険組合せ終了対応
-      *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
-      *  04.07.00    NACL-多々納  12/08/XX  サンプル薬（サ）対応
-      *  04.07.00    NACL-多々納  14/04/01  出来高算定（剤）等対応
-      *  04.08.00    NACL-多々納  16/10/XX  H28.10月途中で麻毒変更対応
       *****************************************************************
       *
       *
@@ -64,7 +58,6 @@
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-JYURRK          PIC 9(01).
-           03  FLG-SYSKANRI        PIC 9(01).
       *
            03  FLG-ARI             PIC 9(01).
            03  FLG-MADOKU          PIC 9(01).
@@ -78,15 +71,8 @@
       *
            03  FLG-NASI            PIC 9(01).
            03  FLG-HKN-CHK         PIC 9(01).
-           03  FLG-HKTCHK          PIC 9(01).
-           03  FLG-HEN             PIC 9(01).
       *
            03  FLG-NYUIN01         PIC 9(01).
-      *ver.4.7
-           03  FLG-DEKIDA          PIC 9(01).
-           03  FLG-HOKATU          PIC 9(01).
-      *ver.4.7
-           03  FLG-ARI2            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -94,7 +80,6 @@
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
-           03  IDX5                PIC 9(04).
            03  IDY                 PIC 9(04).
       *
            03  IDX-T               PIC 9(04).
@@ -107,11 +92,6 @@
            03  IDX-TAI             PIC 9(04).
       *
            03  IDX-TOU             PIC 9(03).
-      *
-           03  IDX-N               PIC 9(04).
-           03  IDZ                 PIC 9(04).
-      *ver.4.7
-           03  IDX4                PIC 9(04).
       *
       *    一時領域
        01  WRK-AREA.
@@ -138,20 +118,14 @@
                05  WRK-SRYMM           PIC 9(02).
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-KAISU               PIC 9(03).
-      *    翌月
-           03  WRK-MATU-NEXT           PIC 9(02).
-           03  WRK-SRYYM-N.
-               05  WRK-SRYYY-N         PIC 9(04).
-               05  WRK-SRYMM-N         PIC 9(02).
       *
            03  WRK-IDX2                PIC 9(04).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-SRYSYUKBN           PIC X(03).
            03  WRK-HKNCOMBI            PIC X(04).
-           03  WRK-JIHOKBN             PIC X(01).
            03  WRK-ZAINUM              PIC 9(08).
            03  WRK-DAY-AREA.
-               05  WRK-DAY-TBL         OCCURS   10.
+               05  WRK-DAY-TBL         OCCURS   4.
                     07  WRK-DAY        PIC 9(03)
                                            OCCURS  31.
       *
@@ -161,25 +135,6 @@
                    07  WRK-STMM        PIC 9(02).
                05  WRK-STDD            PIC 9(02).
            03  WRK-HKNERR              PIC X(01).
-      *ver.4.7
-           03  WRK-DDAY                PIC 9(02).
-           03  WRK-RENNUM              PIC 9(01).
-      *
-      *H26.7
-      *    前月からの入院日
-           03  WRK-NYUINYMD            PIC X(08).
-           03  WRK-CHK-SRYYMD.
-               05  WRK-CHK-SRYYM       PIC X(06).
-               05  WRK-CHK-DD          PIC 9(02).
-      *H28.10
-      *    麻薬開始
-           03  WRK-MADOKU-ST           PIC 9(02).
-      *    マスタ開始日付
-           03  WRK-YKSTYMD.
-               05  WRK-YKSTYM          PIC X(06).
-               05  WRK-YKSTDD          PIC 9(02).
-           03  WRK-HZN-DD              PIC 9(02).
-      *H26.7
       *
       *    投薬日
        01  TBL-TOUYAKU-AREA.
@@ -202,12 +157,10 @@
                05  TBL-CHO-ZAINUM          PIC 9(08).
                05  TBL-CHO-SRYKA           PIC X(02).
                05  TBL-CHO-HKNCOMBI        PIC X(04).
-               05  TBL-CHO-JIHOKBN         PIC X(01).
                05  TBL-CHO-ADD             PIC X(01).
-               05  TBL-CHO-SYORI           PIC X(01).
       *        作成
                05  TBL-CHO-DAY-AREA.
-                   07  TBL-CHO-DAY-TBL     OCCURS   10.
+                   07  TBL-CHO-DAY-TBL     OCCURS   4.
                         09  TBL-CHO-DAY    PIC 9(03)
                                            OCCURS  31.
       *    麻毒料
@@ -216,12 +169,10 @@
                05  TBL-MAD-ZAINUM          PIC 9(08).
                05  TBL-MAD-SRYKA           PIC X(02).
                05  TBL-MAD-HKNCOMBI        PIC X(04).
-               05  TBL-MAD-JIHOKBN         PIC X(01).
                05  TBL-MAD-ADD             PIC X(01).
-               05  TBL-MAD-SYORI           PIC X(01).
       *        作成
                05  TBL-MAD-DAY-AREA.
-                   07  TBL-MAD-DAY-TBL     OCCURS   10.
+                   07  TBL-MAD-DAY-TBL     OCCURS   4.
                         09  TBL-MAD-DAY    PIC 9(03)
                                            OCCURS  31.
       *    外泊
@@ -242,11 +193,6 @@
                05  TBL-TEKSTYMD            PIC X(08).
                05  TBL-TEKEDYMD            PIC X(08).
       *
-      *入院料包括
-       01  TBL-NYUAREA.
-           03  TBL-HKTCHKFLG-G.
-               05  TBL-HKTCHKFLG-OCC        OCCURS   31.
-                   07  TBL-HKTCHKFLG        PIC 9(01).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -289,7 +235,6 @@
            COPY    "CPSRYACCT.INC"  REPLACING
                                     //ACCT-// BY //HZN-ACCT-//.
       *
-      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -303,9 +248,6 @@
       *
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
-      *
-      *    入院料包括診療チェクパラメタ
-           COPY    "CPORCSCHKTALL.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -360,10 +302,12 @@
            EVALUATE    ORCSCHO-KBN
       *        通常
                WHEN    "1"
-      *            入院調剤料と麻毒の確定
-                   PERFORM 300-CHOZAI-HEN-SEC
       *            投薬の日数編集
                    PERFORM 100-TOUYAKU-HEN-SEC
+      *
+      *            入院調剤料と麻毒の確定
+                   PERFORM 300-CHOZAI-HEN-SEC
+      *
       *            入院調剤料と麻毒の更新
                    PERFORM 400-SANTEI-SYORI-SEC
       *        退院処理
@@ -400,22 +344,6 @@
                                            STS-AREA-DAY
                                            LNK-DAY7-AREA
                MOVE    LNK-DAY7-KOYOMI(7:2)    TO  WRK-MATU
-      *        診療年月＋１月の末日算定
-               COMPUTE WRK-SRYMM-N         =   WRK-SRYMM   +   1
-               IF      WRK-SRYMM-N         >   12
-                   COMPUTE WRK-SRYYY-N     =   WRK-SRYYY   +   1
-                   MOVE    1                   TO  WRK-SRYMM-N
-               ELSE
-                   MOVE    WRK-SRYYY           TO  WRK-SRYYY-N
-               END-IF
-               INITIALIZE                      STS-AREA-DAY
-               INITIALIZE                      LNK-DAY7-AREA
-               MOVE    "71"                TO  LNK-DAY7-IRAI
-               MOVE    WRK-SRYYM-N         TO  LNK-DAY7-YM
-               CALL    "ORCSDAY"           USING
-                                           STS-AREA-DAY
-                                           LNK-DAY7-AREA
-               MOVE    LNK-DAY7-KOYOMI(7:2)    TO  WRK-MATU-NEXT
       *
                IF     (FLG-NYUIN01         =   1   )  AND
                       (WRK-SRYYM       NOT =   ORCSCHO-SRYYM )
@@ -471,29 +399,9 @@
            END-IF
            PERFORM
                UNTIL       (FLG-SRYACCT         =   1       )
-      *!!!!! IF     (ACCT-YKZTEN       >   ZERO  )
+             IF      ACCT-YKZTEN       >   ZERO
       *        包括まとめ入力は対象外とする
-      *!!!!    AND  (ACCT-HKNCOMBI NOT =   "9999" )
-      *!     IF     (ACCT-HKNCOMBI NOT =   "9999" )
-      *!       薬評は対象外とする
-      *!       AND  (ACCT-ZAIKBN   NOT =   1      )
-      *H28.9
-             IF     (ACCT-HKNCOMBI     =   "9999" )
-      *        薬評は対象外とする
-               OR   (ACCT-ZAIKBN       =   1      )
-      *        持参薬は対象外とする
-               OR   (ACCT-ZAIKBN       =   3      )
-               OR   (ACCT-ZAIKBN       =   4      )
-               CONTINUE
-             ELSE
-      *H26.7
-      *        前月分で入院日が診療年月以前の時
-               IF      (WRK-SRYYM      NOT =   ORCSCHO-SRYYM)
-                   AND (WRK-NYUINYMD   NOT =   SPACE)
-                   MOVE    ACCT-SRYYM       TO  WRK-CHK-SRYYM
-               ELSE
-                   MOVE    SPACE            TO  WRK-CHK-SRYYM
-               END-IF
+               AND  (ACCT-HKNCOMBI NOT =   "9999" )
       *
       *        最初の日を保存（点数マスタ検索のため）
                MOVE    01                  TO  WRK-DD
@@ -501,53 +409,19 @@
                        UNTIL       IDY2    >   31
                    IF      ACCT-DAY (1 IDY2)   >   ZERO
                        MOVE    IDY2                TO  WRK-DD
-      *
-      *H26.7           前月の入院日より前の算定はなし
-                       IF      WRK-CHK-SRYYM       NOT =   SPACE
-                           MOVE    IDY2            TO  WRK-CHK-DD
-                           IF     (WRK-NYUINYMD    >   WRK-CHK-SRYYMD)
-                               MOVE    ZERO        TO  ACCT-DAY (1 IDY2)
-                               MOVE    ZERO        TO  ACCT-DAY (2 IDY2)
-                               MOVE    ZERO        TO  ACCT-DAY (3 IDY2)
-                           END-IF
-                       END-IF
-      *!!
                    END-IF
                END-PERFORM
       *        診療行為より麻毒判定
                PERFORM 600111-SRYACT-HEN-SEC
       *
-      *
                IF      FLG-NASI            =   ZERO
+      *
       *        回数により保存
                PERFORM VARYING     IDY2    FROM    1   BY  1
                        UNTIL       IDY2    >   31
-      *            同日入院
-                   MOVE    ZERO                TO  WRK-RENNUM
-                   MOVE    ZERO                TO  WRK-DDAY
-                   MOVE    ZERO                TO  WRK-KAISU
-                   IF     (IDX                 =  2  )  AND
-                          (TBL-NYU-DAY (IDY2)  =  3  )
-                       IF      ACCT-DAY (3 IDY2)   >   ZERO
-                           MOVE    ACCT-DAY (3 IDY2)   TO  WRK-KAISU
-                           MOVE    IDY2                TO  WRK-DDAY
-                           IF      ACCT-DAY (2 IDY2)   =   ZERO
-                               MOVE    1               TO  WRK-RENNUM
-                           END-IF
-                       ELSE
-      **                   MOVE    ACCT-DAY (2 IDY2)   TO  WRK-KAISU
-      *                    同日退院分は、１回のみとする
-                           IF      ACCT-DAY (2 IDY2)   >   ZERO
-                               MOVE    1               TO  WRK-KAISU
-                           END-IF
-                       END-IF
-                   ELSE
-                       MOVE    ACCT-DAY (1 IDY2)   TO  WRK-KAISU
-                   END-IF
       *            投薬の日が入院中であること
-      *********    IF      ACCT-DAY (1 IDY2)   >   ZERO
-                   IF      WRK-KAISU           >   ZERO
-      ***************  MOVE    ACCT-DAY (1 IDY2)   TO  WRK-KAISU
+                   IF      ACCT-DAY (1 IDY2)   >   ZERO
+                       MOVE    ACCT-DAY (1 IDY2)   TO  WRK-KAISU
                        PERFORM VARYING IDX2    FROM    1   BY   1
                                UNTIL   IDX2    >   WRK-KAISU
                            COMPUTE IDX3        =   IDY2
@@ -558,9 +432,8 @@
                                COMPUTE IDX3        =   IDX3
                                                    -   WRK-MATU
       *                        ２月以上またがらないこととする
-      *                        （翌月末日まで）
-                               IF      IDX3        >   WRK-MATU-NEXT
-                                   MOVE    WRK-MATU-NEXT   TO  IDX3
+                               IF      IDX3        >   31
+                                   MOVE    31          TO  IDX3
                                END-IF
                                COMPUTE IDX1            =   IDX   +   1
                            ELSE
@@ -571,19 +444,17 @@
                                   (TBL-NYU-DAY (IDX3)  =   ZERO)
                                MOVE    WRK-KAISU       TO  IDX2
                            ELSE
-      *ver.4.7                 算定あり編集
-                               PERFORM 100110-TOUDAY-HEN-SEC
-      ***********************  PERFORM 100111-TOU-SRYKAHEN-SEC
-      *                        IF      FLG-MADOKU      =   1
-      *                            MOVE    1           TO  TBL-DOK-DAY
-      *                                                     (IDX1 IDX3)
-      *                            PERFORM 100112-DOK-SRYKAHEN-SEC
-      *******************      END-IF
+                               MOVE    1               TO  TBL-TOU-DAY
+                                                            (IDX1 IDX3)
+                               PERFORM 100111-TOU-SRYKAHEN-SEC
+                               IF      FLG-MADOKU      =   1
+                                   MOVE    1           TO  TBL-DOK-DAY
+                                                            (IDX1 IDX3)
+                                   PERFORM 100112-DOK-SRYKAHEN-SEC
+                               END-IF
       *                        退院日の時、以降はなしとする
                                IF     (IDX1                =  2  )  AND
-                                     ((TBL-NYU-DAY (IDX3)  =  2  )  OR
-                                      (TBL-NYU-DAY (IDX3)  =  3  AND
-                                       IDX3                >  IDY2))
+                                      (TBL-NYU-DAY (IDX3)  =  2  )
                                    MOVE    WRK-KAISU       TO  IDX2
                                END-IF
                            END-IF
@@ -608,51 +479,14 @@
        10011-SRYACCT-21HEN-EXT.
            EXIT.
       *****************************************************************
-      *    投薬有編集処理
-      *****************************************************************
-       100110-TOUDAY-HEN-SEC             SECTION.
-      *
-           IF     (WRK-DDAY            =   IDX3 )
-             AND  (WRK-RENNUM          =   1    )
-      *        同日再入院日で退院分がない時
-               IF      TBL-TOU-DAY (IDX1 IDX3) =   ZERO
-                   MOVE    2           TO  TBL-TOU-DAY (IDX1 IDX3)
-      *            診療科・保険編集処理（投薬）
-                   PERFORM 100111-TOU-SRYKAHEN-SEC
-               END-IF
-           ELSE
-               MOVE    1               TO  TBL-TOU-DAY (IDX1 IDX3)
-      *        診療科・保険編集処理（投薬）
-               PERFORM 100111-TOU-SRYKAHEN-SEC
-           END-IF
-      *    麻毒算定
-           IF      FLG-MADOKU          =   1
-      *H28.10
-            AND   (WRK-MADOKU-ST       <=  IDX3  )
-               IF     (WRK-DDAY            =   IDX3 )
-                 AND  (WRK-RENNUM          =   1    )
-      *            同日再入院日で退院分がない時
-                   IF      TBL-DOK-DAY (IDX1 IDX3) =   ZERO
-                       MOVE    2           TO  TBL-DOK-DAY (IDX1 IDX3)
-                       PERFORM 100112-DOK-SRYKAHEN-SEC
-                   END-IF
-               ELSE
-                   MOVE    1               TO  TBL-DOK-DAY (IDX1 IDX3)
-                   PERFORM 100112-DOK-SRYKAHEN-SEC
-               END-IF
-           END-IF
-           .
-       100110-TOUDAY-HEN-EXT.
-           EXIT.
-      *****************************************************************
       *    診療科・保険編集処理（投薬）
       *****************************************************************
        100111-TOU-SRYKAHEN-SEC             SECTION.
       *
            MOVE    ZERO                 TO  FLG-HKN-CHK
-           MOVE    WRK-SRYYM            TO  WRK-STYM
-           MOVE    IDX3                 TO  WRK-STDD
-           IF      IDX             NOT  =   IDX1
+           MOVE    WRK-SRYYM            TO  WRK-STYMD(1:6)
+           MOVE    IDX3                 TO  WRK-STYMD(7:2)
+           IF      IDX                  =   IDX1
       *        翌月
                COMPUTE WRK-STMM         =   WRK-STMM   +   1
                IF      WRK-STMM         >   12
@@ -660,42 +494,31 @@
                    MOVE    1                TO  WRK-STMM
                END-IF
            END-IF
-      *    保険組合せチェック
-           MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
-           PERFORM 100111-HKNCOMBI-CHK-SEC
-      *    前月分で保険組合せがない場合
-           MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
-           IF     (FLG-HKN-CHK         =   ZERO          ) AND
-                  (ACCT-SRYYM      NOT =   ORCSCHO-SRYYM )
-               PERFORM VARYING     IDX5    FROM    1   BY  1
-                       UNTIL      (IDX5    >   10  )  OR
-                                  (TBL-CHO-ZAINUM(IDX5)    =   ZERO )
-                   IF      TBL-CHO-SRYKA (IDX5)    =   ACCT-SRYKA
-                       IF      TBL-CHO-DAY (IDX5 1 IDX3)   >   ZERO
-                           MOVE    TBL-CHO-HKNCOMBI (IDX5)
-                                                   TO  WRK-HKNCOMBI
-                           MOVE    10              TO  IDX5
-                        END-IF
+           PERFORM VARYING     IDX-H    FROM    1   BY  1
+                   UNTIL       IDX-H    >   50
+               IF      ACCT-HKNCOMBI    =   TBL-HKNCOMBINUM (IDX-H)
+                   IF     (WRK-STYMD       <   TBL-TEKSTYMD (IDX-H))
+                      OR  (WRK-STYMD       >   TBL-TEKEDYMD (IDX-H))
+                       MOVE    1               TO  FLG-HKN-CHK
                    END-IF
-               END-PERFORM
-               PERFORM 100111-HKNCOMBI-CHK-SEC
-           END-IF
+                   MOVE    50               TO  IDX-H
+               END-IF
+           END-PERFORM
       *
            PERFORM VARYING     IDX-T    FROM    1   BY  1
                    UNTIL       IDX-T    >   10
                IF      TBL-TOU-SRYKA (IDX1 IDX3 IDX-T) =   SPACE
                    MOVE    ACCT-SRYKA      TO  TBL-TOU-SRYKA
                                                     (IDX1 IDX3 IDX-T)
-      *******      MOVE    ACCT-HKNCOMBI   TO  TBL-TOU-HKNCOMBI
-                   MOVE    WRK-HKNCOMBI    TO  TBL-TOU-HKNCOMBI
+                   MOVE    ACCT-HKNCOMBI   TO  TBL-TOU-HKNCOMBI
                                                     (IDX1 IDX3 IDX-T)
-                   IF      FLG-HKN-CHK         =   ZERO
+                   IF      FLG-HKN-CHK         =   1
                        MOVE    "1"             TO  TBL-TOU-HKNERR
                                                     (IDX1 IDX3 IDX-T)
                    END-IF
                END-IF
                IF     (TBL-TOU-SRYKA (IDX1 IDX3 IDX-T)
-                                               =   ACCT-SRYKA  )   AND
+                                               =   ACCT-SRYKA  )   AND 
                       (TBL-TOU-HKNCOMBI(IDX1 IDX3 IDX-T)
                                                =   ACCT-HKNCOMBI)
                    MOVE    10              TO  IDX-T
@@ -704,27 +527,6 @@
       *
            .
        100111-TOU-SRYKAHEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    保険チェック処理
-      *****************************************************************
-       100111-HKNCOMBI-CHK-SEC             SECTION.
-      *
-           MOVE    ZERO                TO  FLG-HKN-CHK
-           PERFORM VARYING     IDX-H   FROM    1   BY  1
-                   UNTIL       IDX-H   >   50
-               IF      ACCT-HKNCOMBI   =   TBL-HKNCOMBINUM (IDX-H)
-                   IF     (WRK-STYMD       <   TBL-TEKSTYMD (IDX-H))
-                      OR  (WRK-STYMD       >   TBL-TEKEDYMD (IDX-H))
-                       CONTINUE
-                   ELSE
-                       MOVE    1               TO  FLG-HKN-CHK
-                   END-IF
-                   MOVE    50               TO  IDX-H
-               END-IF
-           END-PERFORM
-           .
-       100111-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療科・保険編集処理（麻毒）
@@ -736,10 +538,9 @@
                IF      TBL-DOK-SRYKA (IDX1 IDX3 IDX-T) =   SPACE
                    MOVE    ACCT-SRYKA      TO  TBL-DOK-SRYKA
                                                        (IDX1 IDX3 IDX-T)
-      *********    MOVE    ACCT-HKNCOMBI   TO  TBL-DOK-HKNCOMBI
-                   MOVE    WRK-HKNCOMBI    TO  TBL-DOK-HKNCOMBI
+                   MOVE    ACCT-HKNCOMBI   TO  TBL-DOK-HKNCOMBI
                                                        (IDX1 IDX3 IDX-T)
-                   IF      FLG-HKN-CHK         =   ZERO
+                   IF      FLG-HKN-CHK         =   1
                        MOVE    "1"             TO  TBL-DOK-HKNERR
                                                     (IDX1 IDX3 IDX-T)
                    END-IF
@@ -782,23 +583,11 @@
            END-IF
            PERFORM
                UNTIL       (FLG-SRYACCT         =   1       )
-      *!!!!!!  IF      ACCT-YKZTEN       >   ZERO
+               IF      ACCT-YKZTEN       >   ZERO
       *        包括まとめ入力は対象外とする
-      *!!!       AND  (ACCT-HKNCOMBI NOT =   "9999" )
-      **       IF     (ACCT-HKNCOMBI NOT =   "9999" )
-      *        薬評は対象外とする
-      ***        AND  (ACCT-ZAIKBN   NOT =   1      )
-      *H28.9
-               IF     (ACCT-HKNCOMBI     =   "9999" )
-      *          薬評は対象外とする
-                 OR   (ACCT-ZAIKBN       =   1      )
-      *          持参薬は対象外とする
-                 OR   (ACCT-ZAIKBN       =   3      )
-                 OR   (ACCT-ZAIKBN       =   4      )
-                   CONTINUE
-               ELSE
+               AND  (ACCT-HKNCOMBI NOT =   "9999" )
       *
-      *            最後の日を保存（点数マスタ検索のため）
+      *            最初の日を保存（点数マスタ検索のため）
                    MOVE    01                  TO  WRK-DD
                    PERFORM VARYING     IDY2    FROM    1   BY  1
                            UNTIL       IDY2    >   31
@@ -814,25 +603,15 @@
                    PERFORM VARYING     IDX3    FROM    1   BY  1
                            UNTIL       IDX3    >   31
                        IF      ACCT-DAY (1 IDX3)   >   ZERO
-      *ver.4.7
-                           MOVE    ZERO            TO  WRK-DDAY
-                           MOVE    ZERO            TO  WRK-RENNUM
-                           IF      ACCT-DAY (3 IDX3)   >   ZERO
-                               MOVE    IDX3            TO  WRK-DDAY
-                               IF      ACCT-DAY (2 IDX3)   =   ZERO
-                                   MOVE    1           TO  WRK-RENNUM
-                               END-IF
-                           END-IF
-      *ver.4.7             MOVE    1               TO  TBL-TOU-DAY
-      *                                                     (2  IDX3)
+                           MOVE    1               TO  TBL-TOU-DAY
+                                                            (2  IDX3)
                            MOVE    2               TO  IDX1
-                           PERFORM 100110-TOUDAY-HEN-SEC
-      *                    PERFORM 100111-TOU-SRYKAHEN-SEC
-      *                    IF      FLG-MADOKU      =   1
-      *                        MOVE    1               TO  TBL-DOK-DAY
-      *                                                     (2  IDX3)
-      *                        PERFORM 100112-DOK-SRYKAHEN-SEC
-      *                    END-IF
+                           PERFORM 100111-TOU-SRYKAHEN-SEC
+                           IF      FLG-MADOKU      =   1
+                               MOVE    1               TO  TBL-DOK-DAY
+                                                            (2  IDX3)
+                               PERFORM 100112-DOK-SRYKAHEN-SEC
+                           END-IF
                        END-IF
                    END-PERFORM
                  END-IF
@@ -857,9 +636,7 @@
        600111-SRYACT-HEN-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-ARI
-           MOVE    ZERO                TO  FLG-ARI2
            MOVE    ZERO                TO  FLG-MADOKU
-           MOVE    ZERO                TO   WRK-MADOKU-ST
       *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
@@ -885,15 +662,7 @@
            IF     (FLG-SRYACT          =   ZERO )  AND
                   (SRY-SRYSYUKBN       =   "214"
                                        OR  "224"
-                                       OR  "234"
-      *     院外処方対象外
-                                       OR  "212"
-                                       OR  "222"
-                                       OR  "232"
-                                       OR  "292"
-      *H26.4   外用（臨時）
-                                       OR  "298"
-                                       OR  "295" )
+                                       OR  "234" )
                MOVE    1                   TO  FLG-SRYACT
                MOVE    1                   TO  FLG-NASI
            ELSE
@@ -903,7 +672,7 @@
            PERFORM UNTIL      FLG-SRYACT   =   1
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2            >   5   )  OR
-      **************              (FLG-MADOKU      =   1    )  OR
+                                  (FLG-MADOKU      =   1    )  OR
                                   (SRY-SRYCD(IDX2) =   SPACE )
       *            薬剤
                    IF      SRY-SRYCD (IDX2)(1:1)   =   "6"
@@ -911,31 +680,9 @@
       *                点数マスタ
                        MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
-      *
-      *H28.10
                        IF      TNS-MADOKUKBN       NOT =   ZERO
-                           IF     (TNS-YUKOSTYMD(7:2)  NOT =   "01")
-                             AND  (TNS-YUKOSTYMD(1:6)
-                                                     =   ORCSCHO-SRYYM)
-                               MOVE    TNS-YUKOSTYMD
-                                                     TO  WRK-YKSTYMD
-      *                        月途中麻毒開始日
-                               PERFORM 6001110-TENSU-CHK-SEC
-                               IF     (WRK-MADOKU-ST   =   ZERO )
-                                  OR  (WRK-MADOKU-ST   >   WRK-YKSTDD)
-                                   MOVE    WRK-YKSTDD
-                                                   TO   WRK-MADOKU-ST
-                               END-IF
-                           ELSE
-                               MOVE    01          TO   WRK-MADOKU-ST
-                           END-IF
                            MOVE    1               TO  FLG-MADOKU
                        END-IF
-                   END-IF
-      *ver.4.7
-      *            サンプル薬コメント
-                   IF      SRY-SRYCD (IDX2)    =   "820000046"
-                       MOVE    1                   TO  FLG-ARI2
                    END-IF
                END-PERFORM
       *
@@ -948,34 +695,8 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *ver.4.7
-           IF     (ACCT-YKZTEN       =   ZERO )
-              AND (FLG-ARI2          =   ZERO )
-               MOVE    1                   TO  FLG-NASI
-           END-IF
-      *
            .
        600111-SRYACT-HEN-EXT.
-           EXIT.
-      *****************************************************************
-      *    月途中麻毒開始日処理
-      *****************************************************************
-       6001110-TENSU-CHK-SEC             SECTION.
-      *
-      *    １日の算定
-           MOVE    WRK-DD              TO  WRK-HZN-DD
-           MOVE    01                  TO  WRK-DD
-           MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
-           PERFORM 910-TENSU-READ-SEC
-      *
-           IF      TNS-MADOKUKBN       NOT =   ZERO
-      *        １日分が麻毒の時、１日から
-               MOVE    01              TO  WRK-YKSTDD
-           END-IF
-           MOVE    WRK-HZN-DD          TO  WRK-DD
-      *
-           .
-       6001110-TENSU-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入院・外泊の編集処理
@@ -1008,8 +729,7 @@
                        UNTIL       IDX     >   31
       *************IF      NACCT-DAY (IDX) >   ZERO
       *            外泊のゼロと４は対象外
-                   IF     (NACCT-DAY (IDX)  =  ZERO)
-                   OR     (NACCT-DAY (IDX) >=   4  )
+                   IF      NACCT-DAY (IDX) =   ZERO  OR  4
                        CONTINUE
                    ELSE
                        MOVE    NACCT-DAY (IDX)     TO  TBL-GAI-DAY(IDX)
@@ -1080,17 +800,11 @@
       *        入院日
                IF      PTNYUINRRK-NYUINYMD(1:6)  =   ORCSCHO-SRYYM
                    MOVE    PTNYUINRRK-NYUINYMD(7:2)  TO  IDX-S
-      *            当月１日入院日
-                   IF      IDX-S                 =   1
-                       MOVE    1                     TO  FLG-NYUIN01
-                   END-IF
+      *            当月入院日
+                   MOVE    1                         TO  FLG-NYUIN01
                END-IF
                IF      PTNYUINRRK-NYUINYMD(1:6)  <   ORCSCHO-SRYYM
                    MOVE    1                         TO  IDX-S
-      *H26.7
-      *            前月からの入院日
-                   MOVE    PTNYUINRRK-NYUINYMD   TO  WRK-NYUINYMD
-      *H26.7
                END-IF
       *        退院日
                IF     PTNYUINRRK-TAIINYMD(1:6)   =   ORCSCHO-SRYYM
@@ -1106,16 +820,10 @@
                       (IDX-E               >   ZERO )
                    PERFORM VARYING     IDX     FROM    IDX-S  BY  1
                            UNTIL       IDX     >   IDX-E
-      *****            MOVE    1                   TO  TBL-NYU-DAY(IDX)
+                       MOVE    1                   TO  TBL-NYU-DAY(IDX)
       *                退院日設定
                        IF      IDX                 =   IDX-TAI
-                           IF      TBL-NYU-DAY(IDX)    =   1
-                               MOVE    3           TO  TBL-NYU-DAY(IDX)
-                           ELSE
-                               MOVE    2           TO  TBL-NYU-DAY(IDX)
-                           END-IF
-                       ELSE
-                           MOVE    1               TO  TBL-NYU-DAY(IDX)
+                           MOVE    2               TO  TBL-NYU-DAY(IDX)
                        END-IF
       *                入院の科と保険
                        MOVE    PTNYUINRRK-NYUINKA  TO  TBL-NYU-SRYKA
@@ -1175,10 +883,8 @@
                           (IDX                 >=  50     )
       *        対象の保険組合せのみ編集
                IF     (COMB-DELKBN     NOT =   "1"   )  AND
-      *              ((SPA-SRYYMD(1:6)     >=  COMB-TEKSTYMD(1:6))
-      *          AND  (SPA-SRYYMD(1:6)     <=  COMB-TEKEDYMD(1:6)))
-                     ((ORCSCHO-SRYYM       >=  COMB-TEKSTYMD(1:6))
-                 AND  (ORCSCHO-SRYYM       <=  COMB-TEKEDYMD(1:6)))
+                     ((SPA-SRYYMD(1:6)     >=  COMB-TEKSTYMD(1:6))
+                  AND (SPA-SRYYMD(1:6)     <=  COMB-TEKEDYMD(1:6)))
                    ADD     1               TO  IDX
                    MOVE    COMB-HKNCOMBINUM    TO  TBL-HKNCOMBINUM
                                                                (IDX)
@@ -1233,26 +939,14 @@
                IF      ACCT-SYUTEN1        >   ZERO
       *            包括まとめ入力は対象外とする
                   AND  (ACCT-HKNCOMBI NOT =   "9999" )
-      *           薬評は対象外とする
-                  AND  (ACCT-ZAIKBN   NOT =   1      )
       *
                    ADD     1                   TO  IDX1
                    MOVE    ACCT-ZAINUM         TO  TBL-CHO-ZAINUM(IDX1)
                    MOVE    ACCT-SRYKA          TO  TBL-CHO-SRYKA (IDX1)
                    MOVE    ACCT-HKNCOMBI       TO  TBL-CHO-HKNCOMBI
                                                                  (IDX1)
-                   MOVE    ACCT-JIHOKBN        TO  TBL-CHO-JIHOKBN
-                                                                 (IDX1)
                    MOVE    ACCT-DAY-AREA       TO  TBL-CHO-DAY-AREA
                                                                  (IDX1)
-      *            手入力は内容をチェック
-                   IF      ACCT-SRYCDTOTAL     >   1
-                       PERFORM 3001-CHOZAI-CHEK-SEC
-                       IF     (FLG-DEKIDA      =   1  )
-                          OR  (FLG-HOKATU      =   1  )
-                           MOVE    "1"         TO  TBL-CHO-SYORI (IDX1)
-                       END-IF
-                   END-IF
                END-IF
       *
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
@@ -1293,24 +987,13 @@
                            (IDX1                >=  10 )
       *        包括まとめ入力は対象外とする
                IF   (ACCT-HKNCOMBI NOT =   "9999" )
-      *        薬評は対象外とする
-               AND  (ACCT-ZAIKBN   NOT =   1      )
       *
                ADD     1                   TO  IDX1
                MOVE    ACCT-ZAINUM         TO  TBL-MAD-ZAINUM  (IDX1)
                MOVE    ACCT-SRYKA          TO  TBL-MAD-SRYKA   (IDX1)
                MOVE    ACCT-HKNCOMBI       TO  TBL-MAD-HKNCOMBI(IDX1)
-               MOVE    ACCT-JIHOKBN        TO  TBL-MAD-JIHOKBN (IDX1)
                MOVE    ACCT-DAY-AREA       TO  TBL-MAD-DAY-AREA(IDX1)
       *
-      *            手入力は内容をチェック
-                   IF      ACCT-SRYCDTOTAL     >   1
-                       PERFORM 3001-CHOZAI-CHEK-SEC
-                       IF     (FLG-DEKIDA      =   1  )
-                          OR  (FLG-HOKATU      =   1  )
-                           MOVE    "1"         TO  TBL-MAD-SYORI (IDX1)
-                       END-IF
-                   END-IF
                END-IF
       *
                MOVE    "tbl_sryacct"       TO  MCP-TABLE
@@ -1327,73 +1010,15 @@
            EXIT.
       *
       *****************************************************************
-      *    診療行為内容チェック処理
-      *****************************************************************
-       3001-CHOZAI-CHEK-SEC            SECTION.
-      *
-           MOVE    SPACE               TO  SRYACT-REC
-           INITIALIZE                      SRYACT-REC
-           MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
-           MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
-           MOVE    ACCT-PTID           TO  SRY-PTID
-           MOVE    ACCT-SRYKA          TO  SRY-SRYKA
-           MOVE    ACCT-SRYYM          TO  SRY-SRYYM
-           MOVE    ACCT-ZAINUM         TO  SRY-ZAINUM
-      *
-           MOVE    SRYACT-REC          TO  MCPDATA-REC
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_sryact"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 920-SRYACT-NEXT-SEC
-           ELSE
-               MOVE    1                   TO  FLG-SRYACT
-           END-IF
-      *
-           MOVE    ZERO                TO  FLG-DEKIDA
-           MOVE    ZERO                TO  FLG-HOKATU
-           PERFORM UNTIL      FLG-SRYACT   =   1
-               PERFORM VARYING     IDX2    FROM    1   BY  1
-                       UNTIL      (IDX2            >   5   )  OR
-                                  (SRY-SRYCD(IDX2) =   SPACE )
-      *            出来高剤
-                   IF      SRY-SRYCD (IDX2)        =   "099999903"
-                       MOVE    1                   TO  FLG-DEKIDA
-                   END-IF
-      *            包括剤
-                   IF      SRY-SRYCD (IDX2)        =   "099999908"
-                       MOVE    1                   TO  FLG-HOKATU
-                   END-IF
-               END-PERFORM
-               MOVE    "tbl_sryact"        TO  MCP-TABLE
-               MOVE    "key2"              TO  MCP-PATHNAME
-               PERFORM 920-SRYACT-NEXT-SEC
-           END-PERFORM
-      *
-           MOVE    "tbl_sryact"        TO  MCP-TABLE
-           MOVE    "key2"              TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-           .
-       3001-CHOZAI-CHEK-EXT.
-           EXIT.
-      *
-      *****************************************************************
       *    調剤料再編集処理
       *****************************************************************
        400-SANTEI-SYORI-SEC            SECTION.
-      *
-      *    入院料包括チェック
-           PERFORM 4010-HKTNYUIN-HEN-SEC
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   31
                IF     (TBL-TOU-DAY (2 IDX)     =   ZERO )  OR
                       (TBL-GAI-DAY (IDX)       >   ZERO )  OR
                       (TBL-NYU-DAY (IDX)       =   ZERO )
-      *         包括でエラー
-                OR    (TBL-HKTCHKFLG (IDX)     =   9    )
       *            調剤料なし
                    PERFORM 4001-TOU-DEL-SYORI-SEC
                ELSE
@@ -1404,8 +1029,6 @@
                IF     (TBL-DOK-DAY (2 IDX)     =   ZERO )  OR
                       (TBL-GAI-DAY (IDX)       >   ZERO )  OR
                       (TBL-NYU-DAY (IDX)       =   ZERO )
-      *         包括でエラー
-                OR    (TBL-HKTCHKFLG (IDX)     =   9    )
       *            調剤料なし
                    PERFORM 4003-MAD-DEL-SYORI-SEC
                ELSE
@@ -1449,19 +1072,7 @@
       *
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  WRK-IDX2
-      *ver.4.7
-           IF      TBL-TOU-DAY (2 IDX) =   2
-               MOVE    3                   TO  IDX4
-           ELSE
-               MOVE    2                   TO  IDX4
-           END-IF
       *
-      *    包括分の判定
-           IF      TBL-HKTCHKFLG (IDX)     =   1
-               MOVE    "1"                 TO  WRK-JIHOKBN
-           ELSE
-               MOVE    SPACE               TO  WRK-JIHOKBN
-           END-IF
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   10  )  OR
                               (TBL-CHO-ZAINUM(IDX2)    =   ZERO )
@@ -1474,56 +1085,14 @@
                                                      (2 IDX IDX-T)) AND
                           (TBL-CHO-HKNCOMBI(IDX2)  =   TBL-TOU-HKNCOMBI
                                                      (2 IDX IDX-T))
-                     AND  (TBL-CHO-JIHOKBN (IDX2)  =   WRK-JIHOKBN )
                        MOVE    1               TO  FLG-CHK
-      *H26.4
-      *                当日出来高剤・包括算定の手入力がない時
-                       IF     (TBL-CHO-SYORI  (IDX2)   =   "1"   )
-                         AND  (TBL-CHO-DAY(IDX2 1 IDX) =   ZERO  )
-                           MOVE    ZERO            TO  FLG-CHK
-                       END-IF
                    END-IF
                END-PERFORM
-      *H26.4
-               IF      FLG-CHK         =   ZERO
-                   PERFORM VARYING     IDX-T   FROM    1   BY  1
-                           UNTIL      (IDX-T   >   10  )  OR
-                                 (TBL-TOU-SRYKA(2 IDX IDX-T)  =  SPACE)
-                             OR  (FLG-CHK      =   1   )
-      *            当日出来高剤・包括算定の手入力剤有
-                   IF     (TBL-CHO-SRYKA(IDX2)     =   TBL-TOU-SRYKA
-                                                     (2 IDX IDX-T)) AND
-                          (TBL-CHO-HKNCOMBI(IDX2)  =   TBL-TOU-HKNCOMBI
-                                                     (2 IDX IDX-T))
-                     AND  (TBL-CHO-JIHOKBN (IDX2)  NOT =   WRK-JIHOKBN )
-                     AND  (TBL-CHO-SYORI   (IDX2)  =   "1"       )
-                     AND  (TBL-CHO-DAY (IDX2 1 IDX)   >   ZERO  )
-                       MOVE    1               TO  FLG-CHK
-                   END-IF
-      *
-                   END-PERFORM
-               END-IF
-      *
-      *
                IF      FLG-CHK         =   1
                    MOVE    IDX2            TO  WRK-IDX2
                    IF      TBL-CHO-DAY (IDX2 1 IDX)   >   ZERO
                        IF      FLG-ARI         =   ZERO
                            MOVE    1               TO  FLG-ARI
-      *ver.4.7
-      *                    退院日・入院日判定
-                           IF      TBL-CHO-DAY (IDX2 IDX4 IDX) =   ZERO
-                               MOVE    ZERO            TO  FLG-ARI
-                               MOVE    ZERO            TO  TBL-CHO-DAY
-                                                         (IDX2 1 IDX)
-                               MOVE    ZERO            TO  TBL-CHO-DAY
-                                                         (IDX2 2 IDX)
-                               MOVE    ZERO            TO  TBL-CHO-DAY
-                                                         (IDX2 3 IDX)
-                               MOVE    ZERO            TO  TBL-CHO-DAY
-                                                         (IDX2 4 IDX)
-                           END-IF
-      *ver.4.7
                        ELSE
                            MOVE    ZERO            TO  TBL-CHO-DAY
                                                          (IDX2 1 IDX)
@@ -1546,16 +1115,13 @@
                                                          (IDX2 4 IDX)
                END-IF
            END-PERFORM
-           IF      FLG-ARI             =   1
+           IF     FLG-ARI              =   1
                GO      TO      4002-TOU-ADD-SYORI-EXT
            END-IF
       *    当日調剤料指定がない時、対象の剤へ
            IF      WRK-IDX2            >   ZERO
                MOVE    1               TO  TBL-CHO-DAY (WRK-IDX2 1 IDX)
-               MOVE    ZERO            TO  TBL-CHO-DAY (WRK-IDX2 2 IDX)
-               MOVE    ZERO            TO  TBL-CHO-DAY (WRK-IDX2 3 IDX)
-               MOVE    1               TO  TBL-CHO-DAY
-                                                    (WRK-IDX2 IDX4 IDX)
+               MOVE    1               TO  TBL-CHO-DAY (WRK-IDX2 2 IDX)
                GO      TO      4002-TOU-ADD-SYORI-EXT
            END-IF
       *
@@ -1576,28 +1142,15 @@
       *    当日調剤料指定がない時、作成へ
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   10  )
-               MOVE    ZERO                TO  FLG-HEN
                IF      TBL-CHO-ZAINUM(IDX2)    =   ZERO
-                   IF     (WRK-JIHOKBN     =   TBL-CHO-JIHOKBN  (IDX2))
-                       MOVE    1               TO  FLG-HEN
-                   ELSE
-                       IF      TBL-CHO-SRYKA(IDX2) =   SPACE
-                           MOVE    1               TO  FLG-HEN
-                       END-IF
-                   END-IF
-               END-IF
-               IF      FLG-HEN                 =   1
-      *
                    MOVE    "1"                 TO  TBL-CHO-ADD (IDX2)
       *            当日入力の科・保険で作成する
                    MOVE    TBL-TOU-SRYKA   (2 IDX IDX-TOU)
                                            TO  TBL-CHO-SRYKA(IDX2)
                    MOVE    TBL-TOU-HKNCOMBI(2 IDX IDX-TOU)
                                            TO  TBL-CHO-HKNCOMBI (IDX2)
-                   MOVE    WRK-JIHOKBN     TO  TBL-CHO-JIHOKBN  (IDX2)
                    MOVE    1               TO  TBL-CHO-DAY (IDX2 1 IDX)
-                   MOVE    1               TO  TBL-CHO-DAY
-                                                         (IDX2 IDX4 IDX)
+                   MOVE    1               TO  TBL-CHO-DAY (IDX2 2 IDX)
                    MOVE    10              TO  IDX2
                END-IF
            END-PERFORM
@@ -1620,6 +1173,7 @@
                MOVE    ZERO           TO  TBL-MAD-DAY (IDX2 4 IDX)
            END-PERFORM
            .
+      *
        4003-MAD-DEL-SYORI-EXT.
            EXIT.
       *
@@ -1630,18 +1184,6 @@
       *
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  WRK-IDX2
-      *    包括分の判定
-           IF      TBL-HKTCHKFLG (IDX)     =   1
-               MOVE    "1"                 TO  WRK-JIHOKBN
-           ELSE
-               MOVE    SPACE               TO  WRK-JIHOKBN
-           END-IF
-      *ver.4.7
-           IF      TBL-DOK-DAY (2 IDX) =   2
-               MOVE    3                   TO  IDX4
-           ELSE
-               MOVE    2                   TO  IDX4
-           END-IF
       *
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   10  )  OR
@@ -1655,54 +1197,14 @@
                                                      (2 IDX IDX-T)) AND
                           (TBL-MAD-HKNCOMBI(IDX2)  =   TBL-DOK-HKNCOMBI
                                                      (2 IDX IDX-T))
-                     AND  (TBL-MAD-JIHOKBN (IDX2)  =   WRK-JIHOKBN )
                        MOVE    1               TO  FLG-CHK
-      *H26.4
-      *                当日出来高剤・包括算定の手入力がない時
-                       IF     (TBL-MAD-SYORI  (IDX2)   =   "1"   )
-                         AND  (TBL-MAD-DAY(IDX2 1 IDX) =   ZERO  )
-                           MOVE    ZERO            TO  FLG-CHK
-                       END-IF
                    END-IF
                END-PERFORM
-      *H26.4
-               IF      FLG-CHK         =   ZERO
-                   PERFORM VARYING     IDX-T   FROM    1   BY  1
-                           UNTIL      (IDX-T   >   10  )  OR
-                                 (TBL-TOU-SRYKA(2 IDX IDX-T)  =  SPACE)
-                             OR  (FLG-CHK      =   1   )
-      *            当日出来高剤・包括算定の手入力剤有
-                   IF     (TBL-MAD-SRYKA(IDX2)     =   TBL-DOK-SRYKA
-                                                     (2 IDX IDX-T)) AND
-                          (TBL-MAD-HKNCOMBI(IDX2)  =   TBL-DOK-HKNCOMBI
-                                                     (2 IDX IDX-T))
-                     AND  (TBL-MAD-JIHOKBN (IDX2)  NOT =   WRK-JIHOKBN )
-                     AND  (TBL-MAD-SYORI   (IDX2)  =   "1"       )
-                     AND  (TBL-MAD-DAY (IDX2 1 IDX)   >   ZERO  )
-                       MOVE    1               TO  FLG-CHK
-                   END-IF
-      *
-                   END-PERFORM
-               END-IF
-      *
                IF      FLG-CHK         =   1
                    MOVE    IDX2            TO  WRK-IDX2
                    IF      TBL-MAD-DAY (IDX2 1 IDX)   >   ZERO
                        IF      FLG-ARI         =   ZERO
                            MOVE    1               TO  FLG-ARI
-      *ver.4.7
-                           IF      TBL-MAD-DAY (IDX2 IDX4 IDX) =   ZERO
-                               MOVE    ZERO            TO  FLG-ARI
-                               MOVE    ZERO            TO  TBL-MAD-DAY
-                                                         (IDX2 1 IDX)
-                               MOVE    ZERO            TO  TBL-MAD-DAY
-                                                         (IDX2 2 IDX)
-                               MOVE    ZERO            TO  TBL-MAD-DAY
-                                                         (IDX2 3 IDX)
-                               MOVE    ZERO            TO  TBL-MAD-DAY
-                                                         (IDX2 4 IDX)
-                           END-IF
-      *ver.4.7
                        ELSE
                            MOVE    ZERO            TO  TBL-MAD-DAY
                                                          (IDX2 1 IDX)
@@ -1731,11 +1233,7 @@
       *    当日調剤料指定がない時、対象の剤へ
            IF      WRK-IDX2            >   ZERO
                MOVE    1               TO  TBL-MAD-DAY (WRK-IDX2 1 IDX)
-      *ver.4.7
-               MOVE    ZERO            TO  TBL-MAD-DAY (WRK-IDX2 2 IDX)
-               MOVE    ZERO            TO  TBL-MAD-DAY (WRK-IDX2 3 IDX)
-               MOVE    1               TO  TBL-MAD-DAY
-                                                     (WRK-IDX2 IDX4 IDX)
+               MOVE    1               TO  TBL-MAD-DAY (WRK-IDX2 2 IDX)
                GO      TO      4004-MAD-ADD-SYORI-EXT
            END-IF
       *
@@ -1756,31 +1254,21 @@
       *    当日調剤料指定がない時、作成へ
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   10  )
-               MOVE    ZERO                TO  FLG-HEN
                IF      TBL-MAD-ZAINUM(IDX2)    =   ZERO
-                   IF     (WRK-JIHOKBN     =   TBL-MAD-JIHOKBN (IDX2))
-                       MOVE    1               TO  FLG-HEN
-                   ELSE
-                       IF      TBL-MAD-SRYKA(IDX2) =   SPACE
-                           MOVE    1               TO  FLG-HEN
-                       END-IF
-                   END-IF
-               END-IF
-               IF      FLG-HEN                 =   1
                    MOVE    "1"                 TO  TBL-MAD-ADD (IDX2)
       *            当日入力の科・保険で作成する
                    MOVE    TBL-DOK-SRYKA(2 IDX IDX-TOU)
                                            TO  TBL-MAD-SRYKA(IDX2)
                    MOVE    TBL-DOK-HKNCOMBI(2 IDX IDX-TOU)
                                            TO  TBL-MAD-HKNCOMBI (IDX2)
-                   MOVE    WRK-JIHOKBN     TO  TBL-MAD-JIHOKBN  (IDX2)
                    MOVE    1               TO  TBL-MAD-DAY (IDX2 1 IDX)
-                   MOVE    1               TO  TBL-MAD-DAY
-                                                         (IDX2 IDX4 IDX)
+                   MOVE    1               TO  TBL-MAD-DAY (IDX2 2 IDX)
                    MOVE    10              TO  IDX2
                END-IF
            END-PERFORM
+      *
            .
+      *
        4004-MAD-ADD-SYORI-EXT.
            EXIT.
       *
@@ -2173,8 +1661,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-HKNCOMBI
            MOVE    TBL-CHO-DAY-AREA(IDX)
                                        TO  WRK-DAY-AREA
-           MOVE    TBL-CHO-JIHOKBN(IDX)
-                                       TO  WRK-JIHOKBN
       *    保険組合せ期間チェック
            PERFORM 40054-HKNCOMBI-CHK-SEC
       *    会計照会作成処理
@@ -2257,8 +1743,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-HKNCOMBI
            MOVE    TBL-MAD-DAY-AREA(IDX)
                                        TO  WRK-DAY-AREA
-           MOVE    TBL-MAD-JIHOKBN(IDX)
-                                       TO  WRK-JIHOKBN
       *    会計照会作成処理
            PERFORM 40052-SRYACCT-INS-SEC
            IF      ORCSCHO-ERRCD   NOT =   ZERO
@@ -2323,8 +1807,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    UNTIL       IDX2    >   31
                ADD     ACCT-DAY (1 IDX2)   TO  ACCT-ZAIKAISU
            END-PERFORM
-      *    包括剤の設定
-           MOVE    WRK-JIHOKBN         TO  ACCT-JIHOKBN
       *
            MOVE    SMCNDATE-YMD        TO  ACCT-CREYMD
            MOVE    SMCNDATE-YMD        TO  ACCT-UPYMD
@@ -2441,34 +1923,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            .
       *
        40053-SRYACT-INS-EXT.
-           EXIT.
-      *****************************************************************
-      *    入院料包括チェック処理
-      *****************************************************************
-       4010-HKTNYUIN-HEN-SEC             SECTION.
-      *
-      *    入院料包括診療チェック
-           INITIALIZE                  ORCSCHKTALLAREA
-           MOVE    ORCSCHO-SRYYM       TO  ORCSCHKTALL-SRYYM
-           MOVE    "01"                TO  ORCSCHKTALL-SRYDD
-           MOVE    ORCSCHO-PTID        TO  ORCSCHKTALL-PTID
-      *    入院調剤料（診療区分のみ判定）
-           MOVE    "24"                TO  ORCSCHKTALL-HKTSRYKBN
-           MOVE    "240"               TO  ORCSCHKTALL-HKTSRYSYUKBN
-      *H26.4   入院調剤料のみ包括の場合の対応
-           MOVE    "120001110"         TO  ORCSCHKTALL-HKTSRYCD (1)
-           CALL    "ORCSCHKTALL"       USING
-                                       ORCSCHKTALLAREA
-                                       SPA-AREA
-      *    日毎の包括設定
-           PERFORM VARYING     IDX     FROM    1   BY  1
-                   UNTIL       IDX     >   31
-               MOVE    ORCSCHKTALL-HKTCHKFLG (IDX)
-                                           TO  TBL-HKTCHKFLG (IDX)
-           END-PERFORM
-      *
-           .
-       4010-HKTNYUIN-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2742,21 +2196,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        970-JYURRK-NEXT-EXT.
-           EXIT.
-      *****************************************************************
-      *    システム管理読み込み
-      *****************************************************************
-       900-SYSKANRI-READ-SEC         SECTION.
-      *
-           PERFORM 920-DBFETCH-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    ZERO            TO  FLG-SYSKANRI
-           ELSE
-               MOVE    1               TO  FLG-SYSKANRI
-           END-IF
-      *
-           .
-       900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
       *    テーブル検索処理
