@@ -309,6 +309,8 @@
            03  FLG-HKNCOMBICHK         PIC 9(01).
       *
            03  FLG-COPY                PIC 9(01).
+           03  FLG-COPYOK              PIC 9(01).
+           03  FLG-SRYYM-HEN           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -3346,24 +3348,6 @@
                END-IF
            END-IF
       *
-      *!!!
-      *初期表示はないので、使用しない
-      *    IF     (SPA-ERRCD           =   SPACE )
-      *       AND (SPA-KIDCD           =   SPACE )
-      *
-      *        パラメタファイルより表示
-      *        MOVE    3                   TO  FLG-PARASET
-      *        PERFORM 3002-PARA-SET-SEC
-      *
-      *        画面用スパ編集処理
-      *        MOVE    ZERO                TO  FLG-TEISEI
-      *        PERFORM 310-SPA-GMNSET-SEC
-      *
-      *        MOVE    1               TO  SPA-GMN-PAGE
-      *        MOVE    1               TO  SPA-GMN-CUR
-      *        MOVE    1               TO  SPA-MAP-IDX
-      **** END-IF
-      *
            .
        4102-PTNUM-HENSYU-EXT.
            EXIT.
@@ -3374,6 +3358,7 @@
       *
            MOVE    7                   TO  SPA-GMN-CUR
            MOVE    ZERO                TO  SPA-NAI-ROUSTR
+           MOVE    ZERO                TO  FLG-SRYYM-HEN
       *
            MOVE    KT01-SRYYM          TO  SPA-GMN-SRYYM
       *
@@ -3384,6 +3369,9 @@
                                        ORCSGDAYAREA
            IF      SGDAY-RC            =   ZERO
                MOVE    SGDAY-OTDAY(1:6)    TO  SPA-GMN-SRYYM
+               IF      SGDAY-SDAY (1:6)    NOT =   SPA-NAI-SRYYM
+                   MOVE    1                   TO  FLG-SRYYM-HEN
+               END-IF
                MOVE    SGDAY-SDAY (1:6)    TO  SPA-NAI-SRYYM
            ELSE
                MOVE    "1010"              TO  SPA-ERRCD
@@ -3458,20 +3446,9 @@
                IF      SGDAY-SDAY           <   SPA-BIRTHDAY
                     MOVE    "1011"          TO  SPA-ERRCD
                END-IF
-      *
-      *        未来日は確認メッセージ
-               IF      SGDAY-SDAY          >   SPA-SYSYMD
-                   MOVE    "0111"              TO  SPA-KIDCD
-                   MOVE    SGDAY-SDAY          TO  SPA-NAI-SRYYMD
-                   MOVE    ZERO                TO  SPA-HKN-ERR
-                   MOVE    ZERO                TO  SPA-RJN-ERR
-                   MOVE    ZERO                TO  SPA-NAI-KOHFLG-ERR
-                   MOVE    ZERO                TO  SPA-NAI-KOHFLG
-                   MOVE    ZERO                TO  SPA-NAI-ZENKIFLG-ERR
-                   MOVE    ZERO                TO  SPA-NAI-ZENKIFLG
-               END-IF
            END-IF
-      *!!
+      *
+      *    最終受診日のチェック
            IF    (SPA-ERRCD            =   SPACE )  AND
                  (SPA-KIDCD            =   SPACE )
                IF     (SPA-NAI-SRYYM       =   SPA-SRYYMD(1:6) )
@@ -3481,11 +3458,12 @@
                    MOVE    "6007"          TO  SPA-ERRCD
                END-IF
            END-IF
-      *!!
+      *
            IF    (SPA-ERRCD            =   SPACE )  AND
                  (SPA-KIDCD            =   SPACE )
       *        変更のない時、以降の処理はそのまま
-               IF      SGDAY-SDAY          =   SPA-NAI-SRYYMD
+               IF     (SGDAY-SDAY          =   SPA-NAI-SRYYMD )  AND
+                      (FLG-SRYYM-HEN       =   ZERO           )
                     MOVE    1                  TO  SPA-GMN-CUR
                ELSE
                    MOVE    SGDAY-SDAY          TO  SPA-NAI-SRYYMD
@@ -3501,16 +3479,16 @@
       *    診療日確定後、編集処理
       *****************************************************************
        410171-SRYYMD-OK-SEC         SECTION.
-      *!!
+      *
            IF     (SPA-NAI-SRYYM       =   SPA-SRYYMD(1:6) )
              AND  (SPA-NAI-LSTDD       >=  SPA-GMN-SRYDD   )
                MOVE    "6007"          TO  SPA-ERRCD
                GO      TO  410171-SRYYMD-OK-EXT
            END-IF
-      *!!
+      *
       *
            IF      SPA-NAI-SRYYM       =   SPA-SRYYMD(1:6)
-               MOVE   SPACE                TO  SPA-KIDCD
+               MOVE    SPACE               TO  SPA-KIDCD
                IF      SPA-NAI-RRKDAY-G    =   ZERO
                    CONTINUE
                ELSE
@@ -3529,7 +3507,11 @@
                    END-IF
                END-IF
                IF      SPA-GMN-MAX         =   ZERO
-                   PERFORM 4101712-HKNCOMBI-CHK-SEC
+                   IF      SPA-NAI-RRKDAY-G    =   ZERO
+                       PERFORM 410171-SRYYMD-INIT-SEC
+                    ELSE
+                       PERFORM 4101712-HKNCOMBI-CHK-SEC
+                   END-IF
                END-IF
            ELSE
                PERFORM 410171-SRYYMD-INIT-SEC
@@ -3558,17 +3540,12 @@
                END-IF
            END-PERFORM
            IF      FLG-HKNCOMBICHK     =   1
-               IF      SPA-NAI-RRKDAY-G    =   ZERO
-      *            受診内容がない時、再編集
-                   PERFORM 410171-SRYYMD-INIT-SEC
-               ELSE
-                   MOVE    WRK-MAE-SRYDD       TO  SPA-NAI-SRYDD
-                   MOVE    WRK-MAE-SRYDD       TO  SPA-GMN-SRYDD
-                   MOVE    SPA-NAI-SRYDD       TO  WRK-DAY
-                   PERFORM 6001-DAYCHEK-SEC
-                   MOVE    1                   TO  SPA-GMN-CUR
-                   MOVE    "6010"              TO  SPA-ERRCD
-               END-IF
+               MOVE    WRK-MAE-SRYDD       TO  SPA-NAI-SRYDD
+               MOVE    WRK-MAE-SRYDD       TO  SPA-GMN-SRYDD
+               MOVE    SPA-NAI-SRYDD       TO  WRK-DAY
+               PERFORM 6001-DAYCHEK-SEC
+               MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    "6010"              TO  SPA-ERRCD
            END-IF
            .
        4101712-HKNCOMBI-CHK-EXT.
@@ -4408,7 +4385,6 @@
                GO      TO      410112-KOUI-SPACHK-EXT
            END-IF
       *!!!
-      *TEST
       *    回数行の複写
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1        >   SPA-MAX-LINE
@@ -4428,7 +4404,6 @@
                    PERFORM 51000-ALLKAISU-HEN-SEC
                END-IF
            END-PERFORM
-      *TEST
       *!!!
       *
       *    入力のチェック
@@ -4581,6 +4556,8 @@
       *****************************************************************
        51001-KAISU-INS-SEC               SECTION.
       *
+           MOVE    "*KIJUN"            TO  SPA-MAE-INPUTCD (IDX1)
+      *
            IF      SPA-GMN-INPUTCD (IDX1 - 1)(1:1)
                                        =   "*"
                MOVE    SPACE               TO  SPA-GMN-INPUTCD (IDX1)
@@ -4590,11 +4567,16 @@
                MOVE    WRK-INPUTCD     TO  SPA-GMN-INPUTCD (IDX1)
            END-IF
       *
+           MOVE    ZERO                TO  FLG-COPYOK
            PERFORM VARYING     IDX3    FROM    1   BY  1
-                   UNTIL       IDX3    >=   IDX1
+                   UNTIL       IDX3    >   SPA-MAX-LINE
+               IF     (SPA-GMN-INPUTCD (IDX3)(1:1) =   "*" )
+                   MOVE    1               TO  FLG-COPYOK
+               END-IF
                IF     (SPA-COM-ZAIEND  (IDX3)      =   "1" )
                AND    (SPA-GMN-INPUTCD (IDX3)(1:1)  NOT =   "*" )
                  IF   (SPA-GMN-INPUTCD (IDX3 + 1)(1:1)  =   "*" )
+                 OR   (FLG-COPYOK          =   ZERO  )
                    CONTINUE
                  ELSE
                    IF     (IDX3            <   SPA-MAX-LINE )
@@ -4609,6 +4591,12 @@
                         END-IF
                     END-IF
                  END-IF
+               END-IF
+      *        終了行判定
+               IF      SPA-MAE-INPUTCD (IDX3 + 1)  =   "*KIJUN"
+                   MOVE    SPACE               TO  SPA-MAE-INPUTCD
+                                                             (IDX3 + 1)
+                   MOVE    SPA-MAX-LINE        TO  IDX3
                END-IF
            END-PERFORM
            .
@@ -6068,6 +6056,7 @@
       *
       *    初診料入力は日毎
            MOVE    ZERO                TO  SPA-SYOSIN
+      *
            MOVE    SPA-K01KYOUTU       TO  SPA-WORK
            INITIALIZE                  ORCSC100AREA
            MOVE    "1"                 TO  ORCSC100-KBN
