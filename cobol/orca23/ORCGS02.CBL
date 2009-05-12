@@ -3952,7 +3952,7 @@
                                        LNK-ORCSSAIKEISAN-REC
       *
            INITIALIZE                 ORCSSYUACCAREA
-           MOVE    "05"           TO  LNK-SYUACC-I-KBN
+           MOVE    "03"           TO  LNK-SYUACC-I-KBN
            MOVE    SPA-NAI-TSRYYMD (SPA-GMN-SELBAN)(1:6)
                                   TO  LNK-SYUACC-I-SRYYM
            MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
@@ -4093,7 +4093,7 @@
            END-IF
       *
            INITIALIZE                 ORCSSYUACCAREA
-           MOVE    "05"           TO  LNK-SYUACC-I-KBN
+           MOVE    "03"           TO  LNK-SYUACC-I-KBN
            MOVE    WRK-SKYYM      TO  LNK-SYUACC-I-SRYYM
            MOVE    WRK-NYUGAIKBN  TO  SPA-NYUGAIKBN
            MOVE    SPA-GMN-PTID   TO  SPA-PTID
