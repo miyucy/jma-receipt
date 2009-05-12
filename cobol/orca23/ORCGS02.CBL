@@ -527,6 +527,10 @@
       *    負担金再計算用パラメタ
            COPY    "CPORCSSAIKEISAN.INC".
       *
+      *    主科情報アクセス用パラメタ
+       01  ORCSSYUACCAREA.
+           COPY    "CPORCSSYUACC.INC".
+      *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
