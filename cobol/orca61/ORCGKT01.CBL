@@ -294,7 +294,7 @@
            03  FLG-HKNCHK             PIC 9(01).
       *
            03  FLG-KENSADEL            PIC 9(01).
-      * 
+      *
            03  FLG-CHKSET              PIC 9(01).
       *    Êñ³ç¿ÇÎÅÍÑ
            03  FLG-HKTCHK              PIC 9(01).
@@ -362,7 +362,7 @@
            03  IDX-HKN2            PIC 9(04).
            03  IDX-KA              PIC 9(04).
            03  IDX-KA2             PIC 9(04).
-           03  IDX-HZN              PIC 9(04).
+           03  IDX-HZN             PIC 9(04).
       *
            03  IDX-GG              PIC 9(04).
       *****03  WRK-MAX             PIC 9(04).
@@ -4605,8 +4605,8 @@
       *****************************************************************
       *    ²èÌÌÊÑ´¹¡¦ºï½ü½èÍý
       *****************************************************************
-      510011-KAISU-HEN-SEC             SECTION.
-     *
+       510011-KAISU-HEN-SEC             SECTION.
+      *
            MOVE    SPACE               TO  WRK-INPUTCD
            MOVE    SPACE               TO  WRK-KAISU-H
            MOVE    ZERO                TO  IDK2
