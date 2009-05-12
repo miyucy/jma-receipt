@@ -854,7 +854,6 @@
            MOVE    SPACE               TO  WRK-CD
            MOVE    WRK-IDX-FT          TO  IDX
            MOVE    1                   TO  IDX4
-     *D    PERFORM VARYING IDX     FROM    WRK-IDX-FT   BY  1
            PERFORM
                    UNTIL  (IDX         >   22     )
                     OR    (WRK-INPUTCD(IDX:1)
