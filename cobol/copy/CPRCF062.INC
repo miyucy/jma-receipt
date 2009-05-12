@@ -540,7 +540,7 @@
            03  RECE62-RJNKOHFTNINF        OCCURS  3.
       *老人外来公費負担額（（１）（２）（３）使用）
                05  RECE62-RJNGAIKOHFTN    PIC  9(09).
-      *老人入院公費負担額（（１）            使用）
+      *老人入院公費負担額（（１）（２）      使用）
                05  RECE62-RJNNYUKOHFTN    PIC  9(09).
       *コメントカウントフラグ
            03  RECE62-COMCNTFLG           PIC  X(01).
