@@ -323,7 +323,8 @@
                        09  WSKJH1804-CNT-SKJRYOYO2     PIC 9(05).
                        09  WSKJH1804-CNT-TOKSYOKU      PIC 9(05).
                        09  WSKJH1804-CNT-SYOKUDO       PIC 9(05).
-                   07  WSKJH1804-SRYCD-CNT-OCC OCCURS  4.
+                   07  WSKJH1804-SRYCD-CNT-OCC         REDEFINES
+                       WSKJH1804-SRYCD-CNT-VAL         OCCURS  4.
                        09  WSKJH1804-SRYCD-CNT         PIC 9(05).
       *
       *    入院料加算
@@ -2960,13 +2961,15 @@
       *    食事基本情報設定処理
            PERFORM VARYING IDXD    FROM    1   BY  1
                    UNTIL ( IDXD    >   31 )
-               PERFORM 20021-SYOKUJI-KHNINF-SET-SEC
-               IF    ( IDXB        >   ZERO )
-                 AND ( FLG-OVER    =   ZERO )
-                   MOVE    1       TO  WSYOKUJI-DAY
-                                           (IDXB IDXD)
-                   COMPUTE WSYOKUJI-ZAIKAISU (IDXB)
-                       =   WSYOKUJI-ZAIKAISU (IDXB)    +   1
+               IF    ( WSKJH1804-ZAITEN (IDXD)     >   ZERO )
+                   PERFORM 20021-SYOKUJI-KHNINF-SET-SEC
+                   IF    ( IDXB        >   ZERO )
+                     AND ( FLG-OVER    =   ZERO )
+                       MOVE    1       TO  WSYOKUJI-DAY
+                                               (IDXB IDXD)
+                       COMPUTE WSYOKUJI-ZAIKAISU (IDXB)
+                           =   WSYOKUJI-ZAIKAISU (IDXB)    +   1
+                   END-IF
                END-IF
            END-PERFORM
       *
