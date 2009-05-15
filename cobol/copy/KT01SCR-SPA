@@ -292,6 +292,8 @@
                05  SPA-SYOKAI-SRYCD           PIC  X(09).
                05  SPA-SYOKAI-IDX             PIC  9(04).
       *
+           03  SPA-NAI-SYOSIN              PIC X(08).
+      *
       *°­À­¼ðáç¸¡ºº¸¡º÷ÍÑ
            03  SPA-AKUSEI-IDX              PIC 9(04).
            03  SPA-AKUSEI-FLG              PIC 9(01).
