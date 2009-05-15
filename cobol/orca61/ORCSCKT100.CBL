@@ -357,6 +357,8 @@
       *****************************************************************
        5101-TBLSAIHEN-SEC             SECTION.
       *
+           MOVE    SPACE               TO  SPA-NAI-SYOSIN
+      *
       *    特定の診療行為の有無
            IF      SPA-HKNCOMBINUM NOT =   "9999"
                PERFORM 6100-TOKUTEICHK-SEC
@@ -1182,6 +1184,10 @@
            ELSE
                MOVE    ZERO                TO  LNK-ORCSC-SYOSIN
            END-IF
+      *    今回初診料入力
+           IF      SPA-NAI-SYOSIN  NOT =   SPACE
+               MOVE    SPA-NAI-SYOSIN      TO  LNK-ORCSC-SYOYMD
+           END-IF
       *    同日初診フラグ
            MOVE    WRK-DOUSIN          TO  LNK-ORCSC-DOUSIN
       *
@@ -1320,6 +1326,9 @@
                    ADD     1               TO  SPA-SRYKBN-CNT (01)
       *            初診フラグ
                    MOVE    LNK-ORCSC-SYOSIN2   TO  SPA-SYOSIN
+                   IF      LNK-ORCSC-SYOSIN2   =   1
+                       MOVE    SPA-SRYYMD          TO  SPA-NAI-SYOSIN
+                   END-IF
       *
       *            同日初診フラグ
                    MOVE    LNK-ORCSC-DOUSIN    TO  WRK-DOUSIN
@@ -1984,7 +1993,7 @@
            MOVE    SPA-YAKJYO-2        TO  LNK-ORCSC-YAKJYO-2
            MOVE    SPA-YAKJYO-3        TO  LNK-ORCSC-YAKJYO-3
            MOVE    SPA-TOKUTEI-FLG     TO  LNK-ORCSC-TOKUTEI-FLG
-      *外来診療料算定有無
+      *    外来診療料算定有無
            MOVE    SPA-GAIRAISIN       TO  LNK-ORCSC-GAIRAISIN
       *
            MOVE    SPA-ROUMANSEI-ARI   TO  LNK-ORCSC-ROUMANSEI-ARI

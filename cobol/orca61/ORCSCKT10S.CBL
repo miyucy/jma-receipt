@@ -290,6 +290,12 @@
                    07  WRK-RIHA-EDDD   PIC 9(02).
            03  WRK-RDD                 PIC 9(02).
       *
+           03  WRK-SRYYMD.
+               05  WRK-SRYYY           PIC 9(04).
+               05  WRK-SRYMM           PIC 9(02).
+               05  WRK-SRYDD           PIC 9(02).
+           03  WRK-SYODD               PIC 9(02).
+      *
       *    ¿Ç»¡ÎÁ¥Æ¡¼¥Ö¥ë
        01  TBL-SINSATU-AREA.
       *    ½é¿ÇÎÁ
@@ -802,13 +808,9 @@
       *    ºÆ¿ÇÎÁ¼«Æ°È¯À¸½èÍý
       *****************************************************************
        200-SAISIN-AUTO-SEC                  SECTION.
-      *TEST
-           DISPLAY "CKT10S SPA-GMN-IDX:" SPA-GMN-IDX
-                  ",SPA-GMN-MAX:" SPA-GMN-MAX
-      *TEST
+      *
       *    ºÇ½ª¹Ô¤ËÄÉ²Ã
            MOVE    SPA-GMN-MAX         TO  SPA-GMN-IDX
-      *
       *
            MOVE    ZERO                TO  FLG-SYONIKA-ARI
       *    ¾®»ù²Ê³°Íè¿ÇÎÅ²Ê¤ÎÈ½Äê
@@ -2268,6 +2270,7 @@
            END-PERFORM
       *
       *    »»ÄêÍúÎò¤«¤éÈ½Äê
+           MOVE    SPACE               TO  SPA-NAI-SYOSIN
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   100  )
                            OR (SPA-SAN-SRYCD (IDX2)    =   SPACE )
@@ -2284,8 +2287,13 @@
                    MOVE    2                   TO  FLG-SANTEI-KBN
                    PERFORM 61001-SANTEICHK-SEC
                END-IF
+      *        ½é¿ÇÎÁÈ½Äê
+               IF      WRK-SANTEICNT   NOT =   ZERO
+                   MOVE    SPA-SAN-SRYCD (IDX2)    TO  WRK-SRYCD
+                   PERFORM 61002-SYOSINCHK-SEC
+               END-IF
            END-PERFORM
-     *
+      *
            IF      SPA-SYONIKA-ARI     =   ZERO
                MOVE    SPA-SYONIKA-ARI2    TO  SPA-SYONIKA-ARI
            END-IF
@@ -2408,7 +2416,41 @@
            .
        61001-SANTEICHK-EXT.
            EXIT.
+      *****************************************************************
+      *    ÆÃÄê¤Î¿ÇÎÅ¹Ô°Ù¤ÎÍ­Ìµ½èÍý
+      *****************************************************************
+       61002-SYOSINCHK-SEC                SECTION.
       *
+      *    ¿Ç»¡ÎÁ¥»¥Ã¥È
+           SET     TBL-IDX             TO  1
+           SEARCH  TBL-SINSATU-OCC     VARYING   TBL-IDX
+                   AT   END
+                       MOVE    SPACE           TO  WRK-KBN
+                   WHEN    WRK-SRYCD           =   TBL-SRYCD(TBL-IDX)
+                       MOVE    TBL-KBN (TBL-IDX)
+                                               TO  WRK-KBN
+           END-SEARCH
+      *    ½é¿ÇÎÁ»»Äê
+           MOVE    ZERO                TO  WRK-SYODD
+           MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
+           IF      WRK-KBN             =   "F"
+               PERFORM VARYING     IDX-N2  FROM    1   BY  1
+                       UNTIL       IDX-N2  >=  WRK-SRYDD
+                   IF      SPA-SAN-DAY (IDX2 IDX-N2)   >   ZERO
+                       MOVE    IDX-N2          TO  WRK-SYODD
+                   END-IF
+               END-PERFORM
+               IF      WRK-SYODD           >   ZERO
+                   MOVE    SPA-SRYYMD          TO  SPA-NAI-SYOSIN
+                   MOVE    WRK-SYODD           TO  SPA-NAI-SYOSIN(7:2)
+               END-IF
+               IF      SPA-NAI-SYOSIN      <   SPA-SYOSIN
+                   MOVE    SPACE               TO  SPA-NAI-SYOSIN
+               END-IF
+           END-IF
+           .
+        61002-SYOSINCHK-EXTI.
+           EXIT.
       *****************************************************************
       *     ºÞÊ¬Î¥¸å¤ÎÆÃÄê»»Äê¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
