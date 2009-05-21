@@ -1987,6 +1987,10 @@
            ELSE
                MOVE    ZERO                TO  LNK-ORCSC-SYOSIN
            END-IF
+      *    今回初診料入力
+           IF      SPA-NAI-SYOSIN  NOT =   SPACE
+               MOVE    SPA-NAI-SYOSIN      TO  LNK-ORCSC-SYOYMD
+           END-IF
       *
            MOVE    SPA-CHOKI-FLG       TO  LNK-ORCSC-CHOKI-FLG
            MOVE    SPA-YAKJYO-1        TO  LNK-ORCSC-YAKJYO-1

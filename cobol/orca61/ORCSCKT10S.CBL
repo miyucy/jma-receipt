@@ -2433,9 +2433,11 @@
       *    ½é¿ÇÎÁ»»Äê
            MOVE    ZERO                TO  WRK-SYODD
            MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
-           IF      WRK-KBN             =   "F"
+           IF     (WRK-KBN             =   "F"         )
+      *        ¥À¥ß¡¼ 
+             OR   (WRK-SRYCD           =   "099110001" )
                PERFORM VARYING     IDX-N2  FROM    1   BY  1
-                       UNTIL       IDX-N2  >=  WRK-SRYDD
+                       UNTIL       IDX-N2  >   WRK-SRYDD
                    IF      SPA-SAN-DAY (IDX2 IDX-N2)   >   ZERO
                        MOVE    IDX-N2          TO  WRK-SYODD
                    END-IF

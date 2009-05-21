@@ -487,7 +487,7 @@
       *
            OPEN    INPUT               WKSRY-FILE
            IF      STS-WKSRY        NOT =  ZERO
-               DISPLAY "ORCSCWKSRY STS-WKSRY OPEN:"  STS-WKSRY  "]"
+      *******  DISPLAY "ORCSCWKSRY STS-WKSRY OPEN:"  STS-WKSRY  "]"
                MOVE    1                   TO  FLG-WKSRY
            ELSE
                MOVE    ZERO                TO  FLG-WKSRY
@@ -2111,7 +2111,7 @@
       *
            OPEN    INPUT               WKSRY-FILE
            IF      STS-WKSRY        NOT =  ZERO
-               DISPLAY "ORCSCWKSRY STS-WKSRY OPEN:"  STS-WKSRY  "]"
+      *******  DISPLAY "ORCSCWKSRY STS-WKSRY OPEN:"  STS-WKSRY  "]"
                MOVE    1                   TO  FLG-WKSRY
            END-IF
       *

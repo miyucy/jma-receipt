@@ -7497,10 +7497,16 @@
                              ((SPA-GMN-INPUTCD (IDX-1) =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDX-1) =   SPACE ))
                         OR    (SPA-HKNCOMBINUM         =   "9999")
-               IF      (SPA-COM-INPUTCD (IDX-1)(1:1) =   "1" )
-               AND     (SPA-COM-SANTEIRRKKBN (IDX-1) NOT =   ZERO)
-      *            »»ÄêÍúÎò¥Æ¡¼¥Ö¥ëÅÐÏ¿
-                   PERFORM 6005-SANTEI-SET-SEC
+               IF      (SPA-COM-INPUTCD (IDX-1)(1:1) =   "1"   )
+                  OR   (SPA-COM-INPUTCD (IDX-1)(1:3) =   "099" )
+                   IF      (SPA-COM-SRYKBN  (IDX-1)      =   "95"  OR 
+                                                             "96"  )
+                     OR    (SPA-COM-SANTEIRRKKBN (IDX-1) =   ZERO)
+                       CONTINUE
+                   ELSE
+      *                »»ÄêÍúÎò¥Æ¡¼¥Ö¥ëÅÐÏ¿
+                       PERFORM 6005-SANTEI-SET-SEC
+                   END-IF
                END-IF
            END-PERFORM
           .
