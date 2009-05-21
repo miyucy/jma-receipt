@@ -2152,7 +2152,7 @@
            END-IF
       *
       *    パラメタファイルより表示
-           MOVE    ZERO            TO  FLG-PARASET
+           MOVE    3               TO  FLG-PARASET
            PERFORM 3002-PARA-SET-SEC
       *
       *    ＤＯ画面（Ｋ０９）より、ＤＯ内容追加編集
