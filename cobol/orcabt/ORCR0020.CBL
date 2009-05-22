@@ -852,10 +852,21 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                END-IF      
                IF    ( SYS-2009-SYUKA-KBN
                                        =   "1"   )
+               AND   ( SYS-2009-SYUKA-KOKUHO
+                                       =   SPACE )
+                   MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
+               END-IF
+               IF    ( SYS-2009-SYUKA-KBN
+                                       =   "1"   )
                AND   ( SYS-2009-SYUKA-KOUIKI
                                        =   SPACE )
                    MOVE    "0"             TO  SYS-2009-SYUKA-KOUIKI
                END-IF
+      *
+               DISPLAY "SYS-2009=" SYS-2009-SYUKA-KBN " "
+                                   SYS-2009-SYUKA-SYAHO " "
+                                   SYS-2009-SYUKA-KOKUHO " "
+                                   SYS-2009-SYUKA-KOUIKI
       *         
       *        レセプト編集情報
                MOVE    SPACE           TO  SYSKANRI-REC
