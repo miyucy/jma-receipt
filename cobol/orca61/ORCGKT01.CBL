@@ -1176,6 +1176,8 @@
       *
                    END-IF
                WHEN    "KT011"
+                   MOVE    ZERO                TO  SPA-NAI-DAYFLG-G
+                   MOVE    ZERO                TO  FLG-KAKUNIN
       *            禁忌一覧 ＯＫの時、更新処理へ
                    IF     (SPA-KT011-SYORI      =   2  )  AND
                           (SPA-KT011-CHK        =   1  )
