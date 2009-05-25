@@ -63,6 +63,8 @@
                                                OCCURS  31.
       *外泊編集パターン区分
            03  HCM34S01-EXGAIHAKU              PIC X(01).
+      *食事編集パターン区分
+           03  HCM34S01-EXSYOKUJI              PIC X(01).
       *返却項目
            03  HCM34S01-HENKYAKU-AREA.
       *
