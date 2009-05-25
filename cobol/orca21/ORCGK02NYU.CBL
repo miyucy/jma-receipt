@@ -59,6 +59,7 @@
       * 04.03.00     NACL-多々納  08/09/03  投薬帳票印刷対応
       * 04.03.00     NACL-多々納  08/10/09  ユーザプログラム対応
       * 04.04.00     NACL-多々納  08/11/28  処理共通対応
+      * 04.05.00     NACL-多々納  09/05/25  回数複写追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -249,6 +250,9 @@
       *
            03  FLG-SYOKAI           PIC 9(01).
            03  FLG-RRK-ARI          PIC 9(01).
+      *
+           03  FLG-COPY                PIC 9(01).
+           03  FLG-COPYOK              PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -4200,6 +4204,28 @@
                GO      TO      410112-KOUI-SPACHK-EXT
            END-IF
       *
+      *!!!
+      *    回数行の複写
+           PERFORM VARYING     IDX1    FROM    1   BY  1
+                   UNTIL       IDX1        >   SPA-MAX-LINE
+               IF     (SPA-GMN-INPUTCD (IDX1)(1:1)  =   "*" )
+                  AND (SPA-GMN-INPUTCD (IDX1)(2:1)  =   "C"
+                                                   OR  "c" )
+                  AND (SPA-GMN-INPUTCD (IDX1)(3:1)  =   "A"
+                                                   OR  "a" )
+                   PERFORM 51001-KAISU-INS-SEC
+               END-IF
+           END-PERFORM
+      *    回数行の複写
+           MOVE    ZERO                TO  IDX-KAI
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX         >   SPA-MAX-LINE
+               IF      SPA-GMN-INPUTCD (IDX)(1:1)  =   "*"
+                   PERFORM 51000-ALLKAISU-HEN-SEC
+               END-IF
+           END-PERFORM
+      *!!!
+      *
       *    入力のチェック
            MOVE    WRK-STR             TO  SPA-GMN-IDX
            MOVE    ZERO                TO  FLG-INS
@@ -4283,6 +4309,137 @@
            .
        410112-KOUI-SPACHK-EXT.
            EXIT.
+      *
+      *!!!
+      *!!!
+      *****************************************************************
+      *    すべての剤回数追加処理
+      *****************************************************************
+       51000-ALLKAISU-HEN-SEC               SECTION.
+      *
+           MOVE    ZERO                TO  IDX2
+           MOVE    ZERO                TO  FLG-COPY
+           PERFORM VARYING     IDX3    FROM    2   BY  1
+                   UNTIL      (IDX3        >   22  )
+                         OR   (FLG-COPY    =   1   )
+               IF      SPA-GMN-INPUTCD (IDX)(IDX3:1)
+                                          =   "C"  OR  "c"
+                   MOVE    1              TO  FLG-COPY
+               END-IF
+               IF      SPA-GMN-INPUTCD (IDX)(IDX3:1)
+                                          =   "/"
+                   MOVE    IDX3           TO  IDX2
+               END-IF
+           END-PERFORM
+      *
+           IF      FLG-COPY            =   1
+               IF      IDX-KAI         >   ZERO
+                   IF      IDX2            =   ZERO
+      *            行複写
+                       MOVE    SPA-GMN-INPUTCD (IDX-KAI)
+                                               TO   SPA-GMN-INPUTCD(IDX)
+                   ELSE
+      *            日付のみ複写
+                       MOVE    SPA-GMN-INPUTCD (IDX-KAI)(IDX-KAI2:)
+                                               TO   SPA-GMN-INPUTCD(IDX)
+                                                         (IDX2:)
+                   END-IF
+               END-IF
+           ELSE
+               IF      IDX2            >   ZERO
+                   MOVE    IDX             TO  IDX-KAI
+                   MOVE    IDX2            TO  IDX-KAI2
+               END-IF
+           END-IF
+           .
+       51000-ALLKAISU-HEN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    すべての剤回数追加処理
+      *****************************************************************
+       51001-KAISU-INS-SEC               SECTION.
+      *
+           MOVE    "*KIJUN"            TO  SPA-MAE-INPUTCD (IDX1)
+      *
+           IF      SPA-GMN-INPUTCD (IDX1 - 1)(1:1)
+                                       =   "*"
+               MOVE    SPACE               TO  SPA-GMN-INPUTCD (IDX1)
+           ELSE
+               MOVE    SPA-COM-KAISU  (IDX1 - 1)   TO  WRK-KAISU-Z
+               PERFORM 510011-KAISU-HEN-SEC
+               MOVE    WRK-INPUTCD         TO  SPA-GMN-INPUTCD (IDX1)
+           END-IF
+      *
+           MOVE    ZERO                TO  FLG-COPYOK
+           PERFORM VARYING     IDX3    FROM    1   BY  1
+                   UNTIL       IDX3    >   SPA-MAX-LINE
+               IF     (SPA-GMN-INPUTCD (IDX3)(1:1) =   "*" )
+                   MOVE    1               TO  FLG-COPYOK
+               END-IF
+               IF     (SPA-COM-ZAIEND  (IDX3)      =   "1" )
+               AND    (SPA-GMN-INPUTCD (IDX3)(1:1) NOT =   "*" )
+                   IF     (SPA-GMN-INPUTCD (IDX3 + 1)(1:1)
+                                                       =   "*" )
+                   OR     (FLG-COPYOK                  =   ZERO  )
+                       CONTINUE
+                   ELSE
+                       IF     (IDX3                <   SPA-MAX-LINE )
+                           MOVE    SPA-COM-KAISU (IDX3)
+                                                       TO  WRK-KAISU-Z
+                           PERFORM 510011-KAISU-HEN-SEC
+                           COMPUTE SPA-GMN-IDX         =   IDX3  +  1
+                           PERFORM 41014-GYOINSN-SEC
+                           IF      SPA-ERRCD           =   SPACE
+                               MOVE    WRK-INPUTCD     TO
+                                                       SPA-GMN-INPUTCD
+                                                           (SPA-GMN-IDX)
+                               ADD     1               TO  IDX3
+                           END-IF
+                       END-IF
+                   END-IF
+               END-IF
+      *        終了行判定
+               IF      SPA-MAE-INPUTCD (IDX3 + 1)  =   "*KIJUN"
+                   MOVE    SPACE               TO  SPA-MAE-INPUTCD
+                                                             (IDX3 + 1)
+                   MOVE    SPA-MAX-LINE        TO  IDX3
+               END-IF
+           END-PERFORM
+           .
+       51001-KAISU-INS-EXT.
+           EXIT.
+      *****************************************************************
+      *    回数複写処理
+      *****************************************************************
+       510011-KAISU-HEN-SEC             SECTION.
+      *
+           MOVE    SPACE               TO  WRK-INPUTCD
+           MOVE    SPACE               TO  WRK-KAISU-H
+           MOVE    ZERO                TO  IDK2
+           PERFORM VARYING     IDK1    FROM    1   BY  1
+                   UNTIL       IDK1    >   4
+               IF      WRK-KAISU-X (IDK1:1)    NOT =   SPACE
+                   ADD     1           TO  IDK2
+                   MOVE    WRK-KAISU-X (IDK1:1)
+                                       TO  WRK-KAISU-H (IDK2:1)
+               END-IF
+           END-PERFORM
+           IF      WRK-KAISU-H         =   SPACE
+                                       OR  "1"
+               MOVE    "*/C"                TO  WRK-INPUTCD
+           ELSE
+               STRING  "*"                 DELIMITED  BY  SIZE
+                       WRK-KAISU-H         DELIMITED  BY  SPACE
+                       "/C"                DELIMITED  BY  SIZE
+                                           INTO    WRK-INPUTCD
+               END-STRING
+           END-IF
+           .
+       510011-KAISU-HEN-EXT.
+           EXIT.
+      *!!!
+      *!!!
       *
       *****************************************************************
       *    画面変換・削除処理
