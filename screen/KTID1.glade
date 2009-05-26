@@ -50,7 +50,6 @@
       <y>8</y>
       <width>96</width>
       <height>24</height>
-      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>10</text_max_length>
@@ -89,7 +88,6 @@
       <y>40</y>
       <width>572</width>
       <height>32</height>
-      <can_focus>True</can_focus>
       <editable>False</editable>
       <text_visible>True</text_visible>
       <text_max_length>80</text_max_length>
