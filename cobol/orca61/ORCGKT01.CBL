@@ -2598,19 +2598,19 @@
       *****************************************************************
       *    禁忌薬剤チェック用編集処理
       *****************************************************************
-       3202-KNKYAKSET-SEC              SECTION.
+      * 3202-KNKYAKSET-SEC              SECTION.
       *
-           INITIALIZE                  ORCSCKNKCHKAREA
-           MOVE    "1"                 TO  ORCSCKNKCHK-KBN 
-           CALL    "ORCSCKTKNKCHK"     USING
-                                       ORCSCKNKCHKAREA
-                                       SPA-AREA
-                                       SPA-KT01
-                                       SPA-SCR-REC
+      *    INITIALIZE                  ORCSCKNKCHKAREA
+      *    MOVE    "1"                 TO  ORCSCKNKCHK-KBN 
+      *     CALL    "ORCSCKTKNKCHK"     USING
+      *                                 ORCSCKNKCHKAREA
+      *                                 SPA-AREA
+      *                                 SPA-KT01
+      *                                 SPA-SCR-REC
       *
-           .
-       3202-KNKYAKSET-EXT.
-           EXIT.
+      *     .
+      * 3202-KNKYAKSET-EXT.
+      *     EXIT.
       *
       *****************************************************************
       *    画面遷移処理
