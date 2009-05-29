@@ -238,6 +238,9 @@
       *                                     変換処理を行なうようにする
       *                                     入力のコードクリアも行なう
       *  04.04.03    NACL-藤原    09/03/23  外来まとめからの遷移対応
+      *
+      *  04.05.01    NACL-藤原    09/05/27  複数病名登録時の保険組み合わせ対応
+      *  04.05.02    NACL-藤原    09/05/28  照会画面からの遷移対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -745,7 +748,8 @@
       *
                IF      WRK-MOTOPG          =   "M01"  OR  "U02"  OR
                                                "K02"  OR  "K02N" OR
-                                               "D04"  OR  "KT01"
+                                               "D04"  OR  "KT01" OR
+                                               "Q02"
                    MOVE    SPA-MOTOPG          TO  SPA-C02-MOTOPG
                END-IF
       *                      
@@ -1023,7 +1027,8 @@ grpsys                     MOVE    SPA-HOSPNUM TO  PTBYO-HOSPNUM
            IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
                                                    OR  "K02N"
                                                    OR  "D04"
-                                                   OR  "KT01" )
+                                                   OR  "KT01"
+                                                   OR  "Q02" )
                MOVE    SPA-SRYYMDW     TO  SPA-GMN-C02-SYSYMD
                MOVE    SPA-SRYYMD      TO  SPA-NAI-C02-SYSYMD
            ELSE    
@@ -1233,7 +1238,8 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
            IF    ( SPA-C02-MOTOPG      =   "K02"   OR  "U02"
                                                    OR  "K02N"
                                                    OR  "D04"
-                                                   OR  "KT01" )
+                                                   OR  "KT01"
+                                                   OR  "Q02"  )
            AND   ( SPA-PTNUM       NOT =   SPACE              )
                MOVE    SPA-PTNUM       TO  C02-PTNUM
                PERFORM 41015-PTNUM-CHK-SEC
@@ -5396,11 +5402,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    22                  TO  SPA-GMN-C02-CUR
       *
-           IF      SPA-NAI-C02-BYOMEICD-MAX    >   1
-               MOVE    "0060"              TO  SPA-ERRCD
-               MOVE    2                   TO  SPA-GMN-C02-CUR
-               GO  TO  4108-COMB-CHK-EXT
-           END-IF
+      *****IF      SPA-NAI-C02-BYOMEICD-MAX    >   1
+      *****    MOVE    "0060"              TO  SPA-ERRCD
+      *****    MOVE    2                   TO  SPA-GMN-C02-CUR
+      *****    GO  TO  4108-COMB-CHK-EXT
+      *****END-IF
       *
            MOVE    C02-HKNCOMBI        TO  SPA-GMN-C02-HKNCOMBI-G
       *
@@ -6125,11 +6131,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
        41021-HKNCOMBISEL-SEC       SECTION.
       *          
       *
-           IF      SPA-NAI-C02-BYOMEICD-MAX    >   1
-               MOVE    "0060"              TO  SPA-ERRCD
-               MOVE    2                   TO  SPA-GMN-C02-CUR 
-               GO  TO  41021-HKNCOMBISEL-EXT
-           END-IF
+      *****IF      SPA-NAI-C02-BYOMEICD-MAX    >   1
+      *****    MOVE    "0060"              TO  SPA-ERRCD
+      *****    MOVE    2                   TO  SPA-GMN-C02-CUR 
+      *****    GO  TO  41021-HKNCOMBISEL-EXT
+      *****END-IF
       *     
       *        行選択
            MOVE    ZERO                TO  WRK-SELNO
@@ -6186,7 +6192,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-C02-MOTOPG     TO  SPA-SAKIPG
            IF      SPA-C02-MOTOPG NOT =   "K02"  AND  "U02"   AND
                                           "K02N" AND  "D04"   AND
-                                          "KT01"
+                                          "KT01" AND  "Q02" 
       ********* 患者番号入力へ
       *********MOVE   "C01"            TO  SPA-SAKIPG
                MOVE   "M01"            TO  SPA-SAKIPG
@@ -6198,7 +6204,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPACE               TO  SPA-WORK 
            IF      SPA-C02-MOTOPG  NOT =   "K02"  AND  "U02"  AND 
                                            "K02N" AND  "D04"  AND
-                                           "KT01"
+                                           "KT01" AND  "Q02"
                INITIALIZE                  SPA-KYOTUKEY
                                            SPA-KYOTU-SET
            END-IF 
@@ -6490,6 +6496,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      SPA-ERRCD           NOT =   SPACE         
                GO  TO  450-TOUROKU-EXT
            END-IF
+           MOVE    SPA-GMN-C02-HKNCOMBI-G TO  C02-HKNCOMBI
+           PERFORM 4108-COMB-CHK-SEC
+           IF      SPA-ERRCD           NOT =   SPACE         
+               GO  TO  450-TOUROKU-EXT
+           END-IF
            IF      SPA-NAI-C02-BYOMEICD-MAX    =   1
                MOVE    SPA-GMN-C02-UTAGAIFLG-G TO  C02-UTAGAIFLG
                    PERFORM 4104-UTAGAI-CHK-SEC
@@ -6508,11 +6519,6 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
                MOVE    SPA-GMN-C02-NYUGAIKBN-G TO  C02-NYUGAIKBN
                PERFORM 4107-NYUGAIKBN-CHK-SEC
-               IF      SPA-ERRCD           NOT =   SPACE         
-                   GO  TO  450-TOUROKU-EXT
-               END-IF
-               MOVE    SPA-GMN-C02-HKNCOMBI-G TO  C02-HKNCOMBI
-               PERFORM 4108-COMB-CHK-SEC
                IF      SPA-ERRCD           NOT =   SPACE         
                    GO  TO  450-TOUROKU-EXT
                END-IF
@@ -6980,6 +6986,14 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            AND   ( WRK-PTBYO-BYOMEIHENFLG (IDXX)   =   SPACE )  
                MOVE    "1"             TO  WRK-PTBYO-HKNBYOMEIFLG(IDXX)
            END-IF
+      *
+      *    保険組み合わせ
+           IF      SPA-GMN-C02-HKNCOMBI    =   SPACE
+               MOVE    ZERO            TO  WRK-PTBYO-HKNCOMBI  (IDXX)
+           ELSE                          
+               MOVE    SPA-GMN-C02-HKNCOMBI
+                                       TO  WRK-PTBYO-HKNCOMBI  (IDXX)
+           END-IF                     
            .                   
        45011-BYOMEI-HENSYU-EXT.
            EXIT.
@@ -7003,12 +7017,6 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                END-IF                     
                MOVE    SPA-GMN-C02-NYUGAIKBN
                                        TO  WRK-PTBYO-NYUGAIKBN (IDXX)
-               IF      SPA-GMN-C02-HKNCOMBI    =   SPACE
-                   MOVE    ZERO        TO  WRK-PTBYO-HKNCOMBI  (IDXX)
-               ELSE                          
-                   MOVE    SPA-GMN-C02-HKNCOMBI
-                                       TO  WRK-PTBYO-HKNCOMBI  (IDXX)
-               END-IF                     
                MOVE    SPA-GMN-C02-BYOMEI
                                        TO  WRK-PTBYO-BYOMEI    (IDXX)
                MOVE    SPA-NAI-C02-BYOMEIMOJI
