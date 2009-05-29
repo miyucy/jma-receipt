@@ -768,7 +768,6 @@
            03  SSTKJN-R    REDEFINES       SSTKJN-VAL.
                05  SSTKJN-CD                       PIC 9(01)
                                                    OCCURS  1000.
-           COPY    "CPORCSSRHKOH.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -8858,15 +8857,6 @@
       *    選定入院区分
            MOVE    SPA-GMN-I01-SENTEIKBN-CD
                                    TO  PTNYUINRRK-SENTEIKBN
-           INITIALIZE              SSRHKOH-AREA
-           MOVE    PTNYUINRRK-PTID     TO  SSRHKOH-PTID
-           MOVE    "1"                 TO  SSRHKOH-NYUGAIKBN
-           MOVE    PTNYUINRRK-NYUINYMD TO  SSRHKOH-SRYYM
-           MOVE    PTNYUINRRK-HKNCOMBINUM  TO  SSRHKOH-HKNCOMBI
-           CALL    "ORCSSRHKOH"    USING
-                                   SSRHKOH-AREA
-                                   SPA-AREA
-           DISPLAY "SSRHKOH-RC="   SSRHKOH-RC
       *
            IF    ( WRK-UPDKBN      =   "UPD" )
       *
