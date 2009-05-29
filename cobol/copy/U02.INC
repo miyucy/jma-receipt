@@ -89,12 +89,13 @@
                   05  U02-UKETUKE-COUNT   PIC S9(9)   BINARY.
                   05  U02-UKETUKE-ROW     PIC S9(9)   BINARY.
                   05  U02-UKETUKE-ROWATTR  PIC S9(9)   BINARY.
-                  05  U02-ITEM        OCCURS  200 TIMES.
+                  05  U02-ITEM        OCCURS  400 TIMES.
                     07  U02-ULNUM         PIC X(4).
                     07  U02-ULYYKTIME     PIC X(6).
                     07  U02-ULUKETUKETIME PIC X(6).
                     07  U02-ULPTNUM       PIC X(20).
                     07  U02-ULNAME        PIC X(50).
+                    07  U02-ULSEX         PIC X(02).
                     07  U02-ULNENREI      PIC X(06).
                     07  U02-ULSRYKA       PIC X(10).
                     07  U02-ULDRNAME      PIC X(29).
@@ -102,7 +103,7 @@
                     07  U02-ULHKNCOMBI    PIC X(55).
                     07  U02-ULRRKYMD      PIC X(10).
                     07  U02-ULSRFLG       PIC X(04).
-                  05  U02-UKETUKE-SELECT  PIC X       OCCURS  200 TIMES.
+                  05  U02-UKETUKE-SELECT  PIC X       OCCURS  400 TIMES.
               03  U02-MIKAKUNINN-LIST.
                 04  U02-MIKAKUNINN-COUNT   PIC S9(9)   BINARY.
                 04  U02-MIKAKUNINN-ROW     PIC S9(9)   BINARY.
@@ -128,6 +129,8 @@
               03  U02-KOHMSG.
                 04  U02-KOHMSG-STYLE  PIC X(20).
                 04  U02-KOHMSG-VALUE   PIC X(50).
+              03  U02-SEX.
+                04  U02-VALUE   PIC X(2).
               03  U02-B05.
                 04  U02-B05-STATE   PIC S9(9)   BINARY.
               03  U02-B06.

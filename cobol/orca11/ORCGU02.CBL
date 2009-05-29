@@ -73,6 +73,7 @@
       *  03.05.01    NACL-多々納  07/08/10  メモ登録追加
       *                                     ＱＲ受付削除
       *  03.05.02    NACL-多々納  07/08/28  公費期限切れ追加他
+      *  04.05.00    NACL-多々納  09/05/29  性別表示追加、400明細
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -165,6 +166,13 @@
            03  FILE-HOSPNUM2       PIC 9(02)   VALUE   ZERO.
            03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
            03  FILLER              PIC X(06)   VALUE   ".TXT".
+      *    パラメタファイル名
+       01  FILE-NAME22.
+           03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
+           03  FILLER              PIC X(08)   VALUE   "K01PARA2".
+           03  FILE-HOSPNUM22      PIC 9(02)   VALUE   ZERO.
+           03  FILE-TERMID22       PIC X(64)   VALUE   SPACE.
+           03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
       *    一時領域
        01  WRK-AREA.
@@ -256,7 +264,7 @@
       *D        05  WRK-COMBO-SCODEMEIL               PIC X(18).  
       *
         01  WRK-SORT-TBL.
-            03  WRK-SORT-TBLO                         OCCURS   200.
+            03  WRK-SORT-TBLO                         OCCURS   400.
                 05  WRK-SORT-TUKEID                   PIC 9(05).  
                 05  WRK-SORT-TYYKTIME                 PIC X(04).
                 05  WRK-SORT-TUKETIME                 PIC X(06).
@@ -299,6 +307,9 @@
                05  WRK-THH                  PIC 99.
                05  FILLER                   PIC X(01)   VALUE  ":".
                05  WRK-TMM                  PIC 99.
+      *
+      *    予約一覧行数
+       01  MAX-LINE                    PIC 9(03)   VALUE  400.
       *
       *    スパ領域 ワーク
            COPY    "COMMON-SPA"      REPLACING
@@ -394,6 +405,8 @@
            COPY    "CPORCSLNK.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *   患者番号変換サブ
+           COPY    "CPORCSPTNUM.INC".
       *
       *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
@@ -663,10 +676,13 @@
       *
            MOVE    LNK-KYOUTU          TO  WRK-SPA-KYOUTU
       *    受付、患者検索より
-           IF      WRK-SPA-PTNUM           =   SPACE
+           IF      WRK-SPA-PTNUM       =   SPACE
                MOVE    4               TO  SPA-GMN-CUR
                IF      WRK-MOTOPG(1:3)     =   "P97"
                    MOVE    SPA-GMN-NAME        TO  SPA-MAE-NAME
+               END-IF
+               IF      SPA-GMN-NAME        =   SPACE
+                   MOVE    2                   TO  SPA-GMN-CUR
                END-IF
            ELSE
                MOVE    ZERO                TO  SPA-GMN-SELNUM
@@ -675,7 +691,7 @@
                MOVE    U02-PTNUM           TO  SPA-GMN-PTNUM
                MOVE    1                   TO  FLG-IN-PTNUM
                PERFORM 4101-PTNUM-CHK-SEC
-               MOVE    4               TO  SPA-GMN-CUR
+               MOVE    4                   TO  SPA-GMN-CUR
            END-IF
            .
        3101-U01SPASET-EXT.
@@ -808,8 +824,18 @@
            MOVE    SPA-GMN-SRYKALST(01)
                                        TO  SPA-GMN-SRYKA-G
       *
-      *    職員情報をＳＰＡにセット
+      *    全職員情報をＳＰＡにセット
       *
+           INITIALIZE                  ORCSDRSETAREA
+           MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+           MOVE    "1"                 TO  ORCSDR-KBN
+           CALL    "ORCSDRSET"         USING
+                                       SPA-AREA
+                                       ORCSDRSETAREA
+           MOVE    ORCSDR-DRCD-TBL-G   TO  SPA-ALL-DRCD-AREA
+           MOVE    ORCSDR-DRCD-MAX     TO  SPA-ALL-DRCDMAX
+      *
+      *    科毎の職員情報をＳＰＡにセット
            INITIALIZE                  ORCSDRSETAREA
            MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
            MOVE    "1"                 TO  ORCSDR-KBN
@@ -999,7 +1025,7 @@
            END-IF
       *
            PERFORM UNTIL     (FLG-YYK            =  1     )  OR
-                             (IDX               >=  200   )
+                             (IDX               >=  MAX-LINE   )
                IF     (YYK-YYKID       NOT       =   ZERO       ) AND
                       (YYK-RAIINZUMI             =   SPACE      )
                    ADD     1             TO  IDX
@@ -1039,7 +1065,7 @@
            END-IF
       *
            PERFORM     UNTIL  (FLG-UKETUKE        =  1     )  OR
-                              (IDX               >=  200   )
+                              (IDX               >=  MAX-LINE   )
                IF     (UKE-UKEID         >   ZERO    )   AND
                       (UKE-KAIKEITIME    =   ZERO    ) 
                        ADD     1             TO  IDX
@@ -1106,7 +1132,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            INITIALIZE              SPA-GMN-TBL
       *
            PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       200 
+                   UNTIL   IDX >       MAX-LINE
                    OR      WRK-SORT-NARABE(IDX)   =   SPACE
                MOVE    IDX                 TO  SPA-UKE-MAX
       *
@@ -1162,19 +1188,29 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                    END-IF
                END-PERFORM
       *        職員情報をＳＰＡにセット
-               INITIALIZE                  ORCSDRSETAREA
-               MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
-               MOVE    "2"                 TO  ORCSDR-KBN
-               MOVE    SPA-GMN-TSRYKA (IDX)
-                                           TO  ORCSDR-SRYKA
-               MOVE    SPA-GMN-DRCDLST-G   TO  ORCSDR-DRCD-TBL-G
-               MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
-               MOVE    SPA-GMN-TDRCD (IDX)
-                                           TO  ORCSDR-IN-DRCD
-               CALL    "ORCSDRSET"         USING
-                                           SPA-AREA
-                                           ORCSDRSETAREA
-               MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-TDRCD-G(IDX)
+               PERFORM VARYING     IDY     FROM    1   BY  1
+                       UNTIL       IDY     >       SPA-ALL-DRCDMAX
+                   IF      SPA-GMN-TDRCD (IDX)
+                                           =  SPA-ALL-DRCD(IDY)
+                       MOVE    SPA-ALL-DRCD-G (IDY)
+                                               TO  SPA-GMN-TDRCD-G(IDX)
+                       MOVE    SPA-ALL-DRCDMAX     TO  IDY
+                   END-IF
+               END-PERFORM
+      *
+      *        INITIALIZE                  ORCSDRSETAREA
+      *        MOVE    SPA-SYSYMD          TO  ORCSDR-SYSYMD
+      *        MOVE    "2"                 TO  ORCSDR-KBN
+      *        MOVE    SPA-GMN-TSRYKA (IDX)
+      *                                    TO  ORCSDR-SRYKA
+      *        MOVE    SPA-GMN-DRCDLST-G   TO  ORCSDR-DRCD-TBL-G
+      *        MOVE    SPA-DRCD-MAX        TO  ORCSDR-DRCD-MAX
+      *        MOVE    SPA-GMN-TDRCD (IDX)
+      *                                    TO  ORCSDR-IN-DRCD
+      *        CALL    "ORCSDRSET"         USING
+      *                                    SPA-AREA
+      *                                    ORCSDRSETAREA
+      *        MOVE    ORCSDR-IN-DRCD-G    TO  SPA-GMN-TDRCD-G(IDX)
       *        診療内容をＳＰＡにセット
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL       IDY     >   SPA-SRYNAIYO-MAX
@@ -1208,7 +1244,6 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            END-PERFORM
       *
            .
-      *
        3101-UKETU-HEN-EXT.
            EXIT.
       *****************************************************************
@@ -1217,11 +1252,11 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
        31012-SORT-SEC              SECTION.
       *  
            PERFORM VARYING IDX     FROM    1   BY  1
-                   UNTIL   IDX     >=      200
+                   UNTIL   IDX     >=      MAX-LINE
                    OR      WRK-SORT-NARABE(IDX)   =   SPACE
                COMPUTE IDY     =   IDX     +   1
                PERFORM VARYING IDZ     FROM    IDY     BY  1
-                       UNTIL   IDZ     >       200
+                       UNTIL   IDZ     >       MAX-LINE
                        OR      WRK-SORT-NARABE(IDZ)   =   SPACE
                    IF      WRK-SORT-NARABE (IDX)   >   
                                            WRK-SORT-NARABE (IDZ)
@@ -1305,11 +1340,19 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *****************************************************************
        31020-NENREI-KEI-SEC            SECTION.
       *
+      *    患者マスター存在チェック
+           MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+           MOVE    SPA-GMN-TPTID (IDX) TO  PTINF-PTID
+           PERFORM 900-PTINF-READ-SEC
+           IF      FLG-PTINF       NOT =   ZERO
+               GO      TO      31020-NENREI-KEI-EXT
+           END-IF
+      *
            INITIALIZE                  ORCSAGECHKAREA
            MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    SPA-GMN-TPTID (IDX) TO  AGECHK-PTID
            MOVE    SPA-SYSYMD          TO  AGECHK-SRYYMD
-           MOVE    SPACE               TO  AGECHK-BIRTHDAY
+           MOVE    PTINF-BIRTHDAY      TO  AGECHK-BIRTHDAY
            MOVE    "2"                 TO  AGECHK-NYUGAIKBN
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
@@ -1324,6 +1367,14 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                MOVE    "才"                TO  WRK-NENREI-MEI
            END-IF
            MOVE    WRK-NENREI-G        TO  SPA-GMN-TNENREI (IDX)
+      *    性別
+           EVALUATE    PTINF-SEX
+               WHEN    "1"
+                    MOVE    "男"                TO  SPA-GMN-TSEX (IDX)
+                WHEN    "2"
+                    MOVE    "女"                TO  SPA-GMN-TSEX (IDX)
+           END-EVALUATE
+      *
            .
        31020-NENREI-KEI-EXT.
            EXIT.
@@ -1721,29 +1772,30 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                MOVE    SPA-GMN-PTNUM       TO  SPA-MAE-PTNUM
                GO  TO  4101-PTNUM-CHK-EXT
            END-IF
-      *
-      *    患者ＩＤ読み出し
-           INITIALIZE                  ORCSPTIDAREA
-           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
-           MOVE    SPA-GMN-PTNUM       TO  SPTID-PTNUM
-           CALL    "ORCSPTID"          USING   ORCSPTIDAREA
+      *    患者番号変換処理
+           INITIALIZE                      ORCSPTNUMAREA
+           MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
+           CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
                                                SPA-AREA
-           IF      SPTID-RC        NOT =   ZERO
-               MOVE    "0002"              TO  SPA-ERRCD
-               MOVE    2                   TO  SPA-GMN-CUR
-           ELSE
-               MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
-               MOVE    SPTID-PTID          TO  SPA-GMN-PTID
+           EVALUATE    SPTNUM-RC
+               WHEN    0
+      *            患者番号決定
+                   MOVE    SPTNUM-PTID         TO  SPA-GMN-PTID
+                   MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
       *
-      *        患者マスター存在チェック
-               MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
-               MOVE    SPA-GMN-PTID        TO  PTINF-PTID
-               PERFORM 900-PTINF-READ-SEC
-               IF      FLG-PTINF           NOT =   ZERO
+      *            患者マスター存在チェック
+                   MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
+                   MOVE    SPA-GMN-PTID        TO  PTINF-PTID
+                   PERFORM 900-PTINF-READ-SEC
+                   IF      FLG-PTINF           NOT =   ZERO
+                       MOVE    "0002"              TO  SPA-ERRCD
+                       MOVE    2                   TO  SPA-GMN-CUR
+                   END-IF
+      *            患者番号なし
+               WHEN    OTHER
                    MOVE    "0002"              TO  SPA-ERRCD
                    MOVE    2                   TO  SPA-GMN-CUR
-               END-IF
-           END-IF
+           END-EVALUATE
       *
       *    排他制御処理
            IF      SPA-ERRCD           =   SPACE
@@ -1774,6 +1826,12 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *
            MOVE    PTINF-BIRTHDAY      TO  SPA-NAI-BIRTHDAY 
            MOVE    PTINF-SEX           TO  SPA-NAI-SEX
+           EVALUATE    SPA-NAI-SEX
+               WHEN    "1"
+                    MOVE    "男"                TO  SPA-GMN-SEX
+                WHEN    "2"
+                    MOVE    "女"                TO  SPA-GMN-SEX
+           END-EVALUATE
       *    年齢計算
            PERFORM 41011-NENREI-SET-SEC
       *    保険組合せ表示処理
@@ -2396,6 +2454,12 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAY
                MOVE    PTINF-BIRTHDAY      TO  SPA-NAI-BIRTHDAY
                MOVE    PTINF-SEX           TO  SPA-NAI-SEX
+               EVALUATE    SPA-NAI-SEX
+               WHEN    "1"
+                    MOVE    "男"                TO  SPA-GMN-SEX
+                WHEN    "2"
+                    MOVE    "女"                TO  SPA-GMN-SEX
+               END-EVALUATE
       *        年齢計算
                PERFORM 41011-NENREI-SET-SEC
            END-IF
@@ -3339,6 +3403,13 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
       *
+           MOVE    SPA-TERMID          TO  FILE-TERMID22
+           MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM22
+           MOVE    ZERO                TO  IF-RESULT
+           MOVE    FILE-NAME22         TO  IF-FILENAME
+           CALL    "orcfiledel"        USING
+                                       ORCSFDELAREA
+      *
            .
        210-PARA-DEL-EXT.
            EXIT.
@@ -3561,12 +3632,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
            MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
            MOVE    SPA-GMN-NAME        TO  SPA-NAME
-           EVALUATE    SPA-NAI-SEX
-               WHEN    "1"
-                    MOVE    "男"                TO  SPA-SEX
-                WHEN    "2"
-                    MOVE    "女"                TO  SPA-SEX
-           END-EVALUATE
+           MOVE    SPA-GMN-SEX         TO  SPA-SEX
            MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAYW
            MOVE    SPA-NAI-BIRTHDAY    TO  SPA-BIRTHDAY
            IF      SPA-GMN-SELNUM      >   ZERO
@@ -3721,12 +3787,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
                MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
                MOVE    SPA-GMN-NAME        TO  SPA-NAME
-               EVALUATE    SPA-NAI-SEX
-                   WHEN    "1"
-                       MOVE    "男"                TO  SPA-SEX
-                   WHEN    "2"
-                       MOVE    "女"                TO  SPA-SEX
-               END-EVALUATE
+               MOVE    SPA-GMN-SEX         TO  SPA-SEX
                MOVE    SPA-NAI-BIRTHDAY    TO  SPA-BIRTHDAY
                MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
                MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
@@ -3926,12 +3987,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
                MOVE    SPA-GMN-PTID        TO  SPA-PTID
                MOVE    SPA-GMN-PTNUM       TO  SPA-PTNUM
                MOVE    SPA-GMN-NAME        TO  SPA-NAME
-               EVALUATE    SPA-NAI-SEX
-                   WHEN    "1"
-                       MOVE    "男"                TO  SPA-SEX
-                   WHEN    "2"
-                       MOVE    "女"                TO  SPA-SEX
-               END-EVALUATE
+               MOVE    SPA-GMN-SEX         TO  SPA-SEX
                MOVE    SPA-NAI-BIRTHDAY    TO  SPA-BIRTHDAY
                MOVE    SPA-SYSYMD          TO  SPA-SRYYMD
                MOVE    SPA-GMN-SRYKA       TO  SPA-SRYKA
@@ -4002,7 +4058,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *    受付重複チェック
            IF     (FLG-TOUROKU         =   1     )  AND
                   (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-GMN-PTID    NOT =   SPACE )
+                  (SPA-GMN-PTNUM   NOT =   SPACE )
                IF      SPA-NAI-KEIFLG      =   ZERO
                    PERFORM 41091-UKETUKE-CHK-SEC
                END-IF
@@ -4010,7 +4066,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
       *    前期高齢者のチェック
            IF     (FLG-TOUROKU         =   1     )  AND
                   (SPA-ERRCD           =   SPACE )  AND
-                  (SPA-GMN-PTID    NOT =   SPACE )  AND
+                  (SPA-GMN-PTID    NOT =   ZERO  )  AND
                   (SPA-NAI-NENREI      >=  70    )
                IF      SPA-NAI-KEIFLG2     =   ZERO
                    PERFORM 41092-HKNHOJOKBN-CHK-SEC
@@ -4646,12 +4702,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *    削除対応
            MOVE    SPA-GMN-NAME        TO  SPA-NAME
-           EVALUATE    SPA-NAI-SEX
-               WHEN    "1"
-                    MOVE    "男"                TO  SPA-SEX
-                WHEN    "2"
-                    MOVE    "女"                TO  SPA-SEX
-            END-EVALUATE
+           MOVE    SPA-GMN-SEX         TO  SPA-SEX
            MOVE    SPA-GMN-BIRTHDAY    TO  SPA-BIRTHDAYW
            MOVE    SPACE               TO  SPA-SRYYMD
       *
@@ -5343,6 +5394,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-PTNUM                TO  U02-PTNUM
            MOVE    SPA-GMN-NAME                 TO  U02-NAME
            MOVE    SPA-GMN-BIRTHDAY             TO  U02-BIRTHDAY
+           MOVE    SPA-GMN-SEX                  TO  U02-SEX
            MOVE    SPA-GMN-NENREI               TO  U02-NENREI
       *    前回来院日
            MOVE    SPA-GMN-LASTYMD     TO  U02-LASTYMD
@@ -5517,6 +5569,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-GMN-TPTNUM     (IDX) TO  U02-ULPTNUM   (IDX)
                MOVE    SPA-GMN-TNAME      (IDX) TO  U02-ULNAME    (IDX)
                MOVE    SPA-GMN-TNENREI    (IDX) TO  U02-ULNENREI  (IDX)
+               MOVE    SPA-GMN-TSEX       (IDX) TO  U02-ULSEX     (IDX)
                MOVE    SPA-GMN-TSRYKA-G   (IDX) TO  U02-ULSRYKA   (IDX)
                MOVE    SPA-GMN-TDRCD-G    (IDX) TO  U02-ULDRNAME  (IDX)
                MOVE    SPA-GMN-TSRYNAIYOCD-G(IDX)

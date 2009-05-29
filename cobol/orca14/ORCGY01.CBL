@@ -292,6 +292,8 @@
            COPY    "CPORCSNUM.INC".
       *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *   患者番号変換サブ
+           COPY    "CPORCSPTNUM.INC".
       *
       *    ドクター編集変換サブ
            COPY    "CPORCSDRSET.INC".
@@ -1566,13 +1568,11 @@
                GO      TO      41013-PTNUM-EXT
            END-IF
       *
-      *
-           INITIALIZE                      ORCSPTIDAREA
-           MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
-           MOVE    SPA-GMN-PTNUM       TO  SPTID-PTNUM
-           CALL    "ORCSPTID"          USING  ORCSPTIDAREA
-                                              SPA-AREA
-           IF      SPTID-RC        NOT =   ZERO
+           INITIALIZE                      ORCSPTNUMAREA
+           MOVE    SPA-GMN-PTNUM       TO  SPTNUM-PTNUM
+           CALL    "ORCSPTNUM"         USING   ORCSPTNUMAREA
+                                               SPA-AREA
+           IF      SPTNUM-RC       NOT =   ZERO
                MOVE    "0003"           TO  SPA-ERRCD
                MOVE    ZERO             TO  SPA-GMN-PTID
                MOVE    SPACE            TO  SPA-GMN-NAME
@@ -1582,8 +1582,8 @@
                GO  TO                  41013-PTNUM-EXT
            END-IF
       *
-           MOVE    SPTID-PTNUM         TO  SPA-GMN-PTNUM
-           MOVE    SPTID-PTID          TO  SPA-GMN-PTID
+           MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
+           MOVE    SPTNUM-PTID         TO  SPA-GMN-PTID
       *
       *    患者マスター存在チェック
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM

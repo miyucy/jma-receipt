@@ -102,15 +102,16 @@ U02	{
 					value2	varchar(6);
 					value3	varchar(20);
 					value4	varchar(50);
-					value5	varchar(06);
-					value6	varchar(10);
-					value7	varchar(29);
-					value8	varchar(20);
-					value9	varchar(55);
-					value10	varchar(10);
-					value11	varchar(04);
-				}	[200];
-				select	bool[200];
+					value5	varchar(02);
+					value6	varchar(06);
+					value7	varchar(10);
+					value8	varchar(29);
+					value9	varchar(20);
+					value10	varchar(55);
+					value11	varchar(10);
+					value12	varchar(04);
+				}	[400];
+				select	bool[400];
 			};
 		};
 		MIKAKUNINN_LIST	{
@@ -144,6 +145,9 @@ U02	{
 		KOHMSG	{
 			style	varchar(20);
 			value	varchar(50);
+		};
+		SEX	{
+			value	varchar(2);
 		};
 		B05	{
 	           	state	int;

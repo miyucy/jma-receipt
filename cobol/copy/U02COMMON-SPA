@@ -37,6 +37,7 @@
                    07  SPA-GMN-NAME                   PIC X(50).
                    07  SPA-GMN-BIRTHDAY               PIC X(09).
                    07  SPA-GMN-NENREI                 PIC X(06).
+                   07  SPA-GMN-SEX                    PIC X(02).
       *
                    07  SPA-GMN-SRYKA-G.
                        09  SPA-GMN-SRYKA              PIC X(02).
@@ -134,7 +135,7 @@
       *
               05  SPA-GMN-LISTTBL.
                    07  SPA-GMN-TBL.
-                       09  SPA-GMN-TBLO                OCCURS   200.
+                       09  SPA-GMN-TBLO                OCCURS   400.
                            11  SPA-GMN-TNUM            PIC 9(04).
                            11  SPA-GMN-TUKEID          PIC 9(05).
                            11  SPA-GMN-TYYKTIME        PIC X(04).
@@ -143,6 +144,7 @@
                            11  SPA-GMN-TPTID           PIC 9(10).
                            11  SPA-GMN-TNAME           PIC X(50).
                            11  SPA-GMN-TNENREI         PIC X(06).
+                           11  SPA-GMN-TSEX            PIC X(02).
                            11  SPA-GMN-TSRYKA-G.
                                13  SPA-GMN-TSRYKA      PIC X(02).
                                13  SPA-GMN-TSRYKA1     PIC X(01).
@@ -207,6 +209,13 @@
       *
                            11  SPA-MAE-KAKUNINYMD      PIC X(08).
                            11  SPA-MAE-KAKUNINYMDW     PIC X(10).
+      *    Á´¥É¥¯¥¿¡¼°ìÍ÷
+           03  SPA-ALL-DRCD-AREA.
+               05  SPA-ALL-DRCD-G              OCCURS  99.
+                   07  SPA-ALL-DRCD            PIC X(04).
+                   07  SPA-ALL-DRCD-F          PIC X(01).
+                   07  SPA-ALL-DRNAME          PIC X(24).
+           03  SPA-ALL-DRCDMAX                 PIC 9(03).
       *
       *    £Ã£Ì£Á£É£Í²èÌÌ
            03  SPA-U02X-AREA.
