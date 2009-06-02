@@ -199,6 +199,9 @@
                05  WRK-CMB-ITM2                    PIC X(200).
            03  WRK-QIDMSG                          PIC X(80).
            03  WRK-UPDKBN               PIC X(03).
+           03  WRK-RECECOM-G.
+               05  WRK-RECECOM          PIC X(50)
+                                        OCCURS     5.
       *
       *
        01  WRK-WIDGET-AREA.
@@ -683,6 +686,11 @@
       *    減免コンボ初期処理
            PERFORM 3101-GENMEN-CMB-SYOKI-SEC
       *
+      *    コメント選択コンボ初期処理
+           PERFORM 3101-SELCOMMENT-CMB-SYOKI-SEC
+           MOVE    SPA-GMN-Q01-SELCOMMENTLST (1)
+                                   TO  SPA-GMN-Q01-SELCOMMENT-G
+      *
       *    低所得コンボ初期処理
            PERFORM 3101-TSY-CMB-SYOKI-SEC
       *
@@ -1049,6 +1057,29 @@
       *
            .
        3101-GENMEN-CMB-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    コメント選択コンボ初期処理
+      *****************************************************************
+       3101-SELCOMMENT-CMB-SYOKI-SEC   SECTION.
+      *
+           INITIALIZE                      SPA-GMN-Q01-SELCOMMENTLST-G
+      *
+           MOVE    "1"                 TO  SPA-GMN-Q01-SELCOMMENTL   (1)
+           MOVE    "患者コメント"      TO  SPA-GMN-Q01-SELCOMMENTMEIL(1)
+      *
+           MOVE    "2"                 TO  SPA-GMN-Q01-SELCOMMENTL   (2)
+           MOVE    "患者禁忌・アレルギー・感染症"
+                                       TO  SPA-GMN-Q01-SELCOMMENTMEIL(2)
+      *
+           MOVE    "3"                 TO  SPA-GMN-Q01-SELCOMMENTL   (3)
+           MOVE    "レセプトコメント"  TO  SPA-GMN-Q01-SELCOMMENTMEIL(3)
+      *
+           COMPUTE SPA-GMN-Q01-SELCOMMENTLST-MAX
+               =   3
+      *
+           .
+       3101-SELCOMMENT-CMB-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    低所得コンボ初期処理
@@ -1818,6 +1849,8 @@
            MOVE    Q01-EDAGE               TO  SPA-GMN-Q01-EDAGE
       *    基準日
            MOVE    Q01-KJYNYMD             TO  SPA-GMN-Q01-KJYNYMD
+      *    誕生月
+           MOVE    Q01-BIRTHMON            TO  SPA-GMN-Q01-BIRTHMON
       *    性別
            MOVE    Q01-SEX                 TO  SPA-GMN-Q01-SEX-G
       *    開始最終受診日
@@ -1881,6 +1914,9 @@
       *
       *    本人家族
            MOVE    Q01-HONKZKKBN       TO  SPA-GMN-Q01-HONKZKKBN-G
+      *
+      *    コメント選択
+           MOVE    Q01-SELCOMMENT      TO  SPA-GMN-Q01-SELCOMMENT-G
       *
       *    低所得
            MOVE    Q01-TSY             TO  SPA-GMN-Q01-TSY-G
@@ -1995,6 +2031,12 @@
       *
       *    基準日チェック
            PERFORM 4106-KJYNYMD-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-KHN-INPUT-CHK-EXT
+           END-IF
+      *
+      *    誕生月チェック
+           PERFORM 4106-BIRTHMON-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4101-KHN-INPUT-CHK-EXT
            END-IF
@@ -2135,6 +2177,12 @@
                END-IF
       *
            END-PERFORM
+      *
+      *    コメント選択チェック
+           PERFORM 4116-SELCOMMENT-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4101-KHN-INPUT-CHK-EXT
+           END-IF
       *
       *    コメントチェック
            PERFORM VARYING IDXA    FROM    1   BY  1
@@ -2550,15 +2598,44 @@
            .
        4106-KJYNYMD-CHK-EXT.
            EXIT.
+      *****************************************************************
+      *    誕生月チェック
+      *****************************************************************
+       4106-BIRTHMON-CHK-SEC        SECTION.
+      *
+           MOVE    ZERO             TO  SPA-NAI-Q01-BIRTHMON
+      *
+      *    数値妥当性チェック＆編集処理
+           IF  ( SPA-GMN-Q01-BIRTHMON  NOT =   SPACE )
+               INITIALIZE                      ORCSNUMAREA
+               MOVE    SPA-GMN-Q01-BIRTHMON   TO  SNUM-INX
+               CALL    "ORCSNUM"           USING
+                                       ORCSNUMAREA
+               IF  ( SNUM-RC       NOT =   ZERO  )
+                OR ( SNUM-MINKBN   NOT =   SPACE )
+                OR ( SNUM-SYOKBN   NOT =   SPACE )
+      *
+                   MOVE    SPA-GMN-Q01-BIRTHMON
+                                       TO  WRK-KANACHK-MAE-INPUT
+                   PERFORM 800-KANACHK-CHK-SEC
+                   MOVE    WRK-KANACHK-OUT-INPUT
+                                       TO  SPA-GMN-Q01-BIRTHMON
+      *
+                   MOVE    "0133"          TO  SPA-ERRCD
+                   MOVE    158             TO  SPA-GMN-Q01-CUR
+               ELSE
+                   MOVE    SNUM-OUTNUM TO  SPA-NAI-Q01-BIRTHMON
+               END-IF
+           END-IF
+      *
+           .
+       4106-BIRTHMON-CHK-EXT.
+           EXIT.
       *
       *****************************************************************
       *    性別チェック
       *****************************************************************
        4107-SEX-CHK-SEC            SECTION.
-      *
-           IF    ( SPA-GMN-Q01-SEX-G   =   SPACE )
-               GO  TO  4107-SEX-CHK-EXT
-           END-IF
       *
            MOVE    ZERO                TO  FLG-CHK
       *
@@ -3248,15 +3325,67 @@
        4116-GENMEN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    コメント選択チェック処理
+      *****************************************************************
+       4116-SELCOMMENT-CHK-SEC         SECTION.
+      *
+           PERFORM VARYING IDX2 FROM    1   BY  1
+                   UNTIL ( IDX2 >   SPA-GMN-Q01-SELCOMMENTLST-MAX )
+                      OR ( SPA-GMN-Q01-SELCOMMENT
+                                =   SPA-GMN-Q01-SELCOMMENTL (IDX2))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX2        <=  SPA-GMN-Q01-SELCOMMENTLST-MAX )
+               MOVE    SPA-GMN-Q01-SELCOMMENTLST (IDX2)
+                               TO  SPA-GMN-Q01-SELCOMMENT-G
+           ELSE
+               MOVE    SPA-GMN-Q01-SELCOMMENTLST (1)
+                               TO  SPA-GMN-Q01-SELCOMMENT-G
+           END-IF
+      *
+           .
+       4116-SELCOMMENT-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    コメントチェック処理
       *****************************************************************
        4113-COMMENT-CHK-SEC        SECTION.
+      *
+           COMPUTE WRK-ERR-CUR         =   140     +   IDXA
       *
            MOVE    SPA-GMN-Q01-COMMENT  (IDXA)
                                    TO  WRK-KANACHK-MAE-INPUT
            PERFORM 800-KANACHK-CHK-SEC
            MOVE    WRK-KANACHK-OUT-INPUT
                                    TO  SPA-GMN-Q01-COMMENT  (IDXA)
+      *
+           IF    ( SPA-GMN-Q01-SELCOMMENT  =   "3" )
+               MOVE    SPACE       TO  WRK-RECECOM-G
+               UNSTRING    SPA-GMN-Q01-COMMENT (IDXA)
+                                           DELIMITED BY  ALL "　"
+               INTO        WRK-RECECOM (1)
+                           WRK-RECECOM (2)
+                           WRK-RECECOM (3)
+                           WRK-RECECOM (4)
+                           WRK-RECECOM (5)
+               END-UNSTRING
+      *
+      *        レセコメントのキーワードは３語まで指定可能とする。
+               IF    (     WRK-RECECOM (1) NOT =   SPACE )
+                   IF    ( WRK-RECECOM (4) NOT =   SPACE )
+                       MOVE    "0132"      TO  SPA-ERRCD
+                       MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
+                   END-IF
+               ELSE
+                   IF    ( WRK-RECECOM (5) NOT =   SPACE )
+                       MOVE    "0132"      TO  SPA-ERRCD
+                       MOVE    WRK-ERR-CUR TO  SPA-GMN-Q01-CUR
+                   END-IF
+               END-IF
+            END-IF
       *
            .
        4113-COMMENT-CHK-EXT.
@@ -5451,6 +5580,10 @@
                                    TO  SPA-GMN-Q01-TEL-TO-G
                MOVE    "F"         TO  SPA-GMN-Q01-CHKTSTPT
       *
+      *        コメント選択コンボ
+               MOVE    SPA-GMN-Q01-SELCOMMENTLST (1)
+                                   TO  SPA-GMN-Q01-SELCOMMENT-G
+      *
       *        低所得識別コンボ
                MOVE    SPA-GMN-Q01-STTSYSKBTLST (1)
                                    TO  SPA-GMN-Q01-STTSYSKBT-G
@@ -6016,6 +6149,7 @@
            END-IF
       *
            MOVE    SPA-NAI-Q01-KJYNYMD     TO  SPA-Q01-KJYNYMD
+           MOVE    SPA-NAI-Q01-BIRTHMON    TO  SPA-Q01-BIRTHMON
            MOVE    SPA-GMN-Q01-SEX         TO  SPA-Q01-SEX
            MOVE    SPA-NAI-Q01-STLASTYMD   TO  SPA-Q01-STLASTYMD
            MOVE    SPA-NAI-Q01-EDLASTYMD   TO  SPA-Q01-EDLASTYMD
@@ -6071,6 +6205,9 @@
       *
                MOVE    SPA-GMN-Q01-GENMEN (IDXC)
                                            TO  SPA-Q01-GENMEN (IDXC)
+      *
+               MOVE    SPA-GMN-Q01-SELCOMMENT
+                                           TO  SPA-Q01-SELCOMMENT
       *
                MOVE    SPA-GMN-Q01-COMMENT (IDXC)
                                            TO  SPA-Q01-COMMENT (IDXC)
@@ -6191,6 +6328,7 @@
       *
       *    重複チェック
            PERFORM 4901-SPASET-DABURI-CHK
+      *
       *
            .
        4901-SPASET-EXT.
@@ -6483,9 +6621,11 @@
             OR ( SPA-Q01-CONDITION2-G      NOT =   SPACE )
             OR ( SPA-Q01-CONDITION3-G      NOT =   SPACE )
             OR ( SPA-Q01-GENMEN-G          NOT =   SPACE )
-            OR ( SPA-Q01-COMMENT-G         NOT =   SPACE )
+            OR ((SPA-Q01-SELCOMMENT        =   "1" OR "2" )
+             AND( SPA-Q01-COMMENT-G        NOT =   SPACE ))
             OR ( SPA-Q01-STBIRTHDAY        NOT =   SPACE )
             OR ( SPA-Q01-EDBIRTHDAY        NOT =   SPACE )
+            OR ( SPA-Q01-BIRTHMON          NOT =   "00" )
             OR ( SPA-Q01-SEX               NOT =   SPACE )
             OR ( SPA-Q01-TEL-G             NOT =   SPACE )
             OR ( SPA-Q01-DEATH             NOT =   SPACE )
@@ -6516,6 +6656,14 @@
            IF  ( SPA-Q01-TSY           NOT =   SPACE )
       *
               MOVE     "1"                 TO  SPA-Q01-GTBL(10)
+      *
+           END-IF
+      *
+      *    該当（１１）
+           IF   (  SPA-Q01-SELCOMMENT          =   "3" )
+             AND(  SPA-Q01-COMMENT-G       NOT =   SPACE )
+      *
+              MOVE     "1"                 TO  SPA-Q01-GTBL(11)
       *
            END-IF
       *
@@ -6680,6 +6828,8 @@
            MOVE    SPA-GMN-Q01-EDAGE       TO  Q01-EDAGE
       *    基準日
            MOVE    SPA-GMN-Q01-KJYNYMD     TO  Q01-KJYNYMD
+      *    誕生月
+           MOVE    SPA-GMN-Q01-BIRTHMON    TO  Q01-BIRTHMON
       *    性別
            MOVE    SPA-GMN-Q01-SEX-G       TO  Q01-SEX
       *
@@ -6818,6 +6968,20 @@
                MOVE    SPA-GMN-Q01-GENMENLST-MAX
                                            TO  Q01-CMB-GENMEN-COUNT
                                                               (IDX1)
+      *        コメント選択
+               MOVE    SPA-GMN-Q01-SELCOMMENT-G
+                                           TO  Q01-SELCOMMENT
+               PERFORM VARYING IDX2    FROM    1   BY  1
+                   UNTIL     ( IDX2
+                                   >   SPA-GMN-Q01-SELCOMMENTLST-MAX )
+      *
+                   MOVE    SPA-GMN-Q01-SELCOMMENTLST (IDX2)
+                               TO  Q01-CMB-SELCOMMENT-ITEM (IDX2)
+      *
+               END-PERFORM
+      *
+               MOVE    SPA-GMN-Q01-SELCOMMENTLST-MAX
+                                           TO  Q01-CMB-SELCOMMENT-COUNT
       *
       *        コメント
                MOVE    SPA-GMN-Q01-COMMENT (IDX1)
@@ -7293,6 +7457,10 @@
                MOVE  "EDTSYYM"     TO  MCP-WIDGET
            WHEN   156
                MOVE  "DEATH"       TO  MCP-WIDGET
+           WHEN   157
+               MOVE  "SELCOMMENT"  TO  MCP-WIDGET
+           WHEN   158
+               MOVE  "BIRTHMON"    TO  MCP-WIDGET
       *
       *    保険・公費タブ
            WHEN   201
@@ -7456,6 +7624,8 @@
            WHEN   "EDAGE"
                MOVE  105           TO  SPA-GMN-Q01-CUR
            WHEN   "KJYNYMD"
+               MOVE  158           TO  SPA-GMN-Q01-CUR
+           WHEN   "BIRTHMON"
                MOVE  106           TO  SPA-GMN-Q01-CUR
            WHEN   "SEX"
                MOVE  107           TO  SPA-GMN-Q01-CUR
@@ -7550,6 +7720,8 @@
            WHEN   "GENMEN2"
                MOVE  151           TO  SPA-GMN-Q01-CUR
            WHEN   "GENMEN3"
+               MOVE  157           TO  SPA-GMN-Q01-CUR
+           WHEN   "SELCOMMENT"
                MOVE  141           TO  SPA-GMN-Q01-CUR
            WHEN   "TSY"
                MOVE  153           TO  SPA-GMN-Q01-CUR
@@ -7855,6 +8027,18 @@
            WHEN    "0130"
                MOVE    "診療種別入力エラー"
                                        TO  SPA-ERRMSG
+           WHEN    "0131"
+               MOVE    "コメント選択入力エラー"
+                                       TO  SPA-ERRMSG
+           WHEN    "0132"
+               MOVE    SPACE           TO  SPA-ERRMSG
+               STRING  "レセプトコメントのキーワード"  DELIMITED BY SIZE
+                       "は３語までにしてください。"    DELIMITED BY SIZE
+               INTO    SPA-ERRMSG
+               END-STRING
+           WHEN    "0133"
+               MOVE    "誕生月入力エラー"
+                                       TO  SPA-ERRMSG
            WHEN    "1001"
                MOVE    "開始診療年月日＞終了診療年月日となっています"
                                        TO  SPA-ERRMSG
@@ -7996,6 +8180,9 @@
            WHEN    SHKITEMID-EDAGE
                MOVE    SHODATA-ITEM    TO  Q01-EDAGE
                MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-BIRTHMON
+               MOVE    SHODATA-ITEM    TO  Q01-BIRTHMON
+               MOVE    1               TO  FLG-PAGENO-00
            WHEN    SHKITEMID-SEX
                MOVE    SHODATA-ITEM    TO  Q01-SEX
                MOVE    1               TO  FLG-PAGENO-00
@@ -8123,6 +8310,9 @@
                MOVE    1               TO  FLG-PAGENO-00
            WHEN    SHKITEMID-GENMEN03
                MOVE    SHODATA-ITEM    TO  Q01-GENMEN (3)
+               MOVE    1               TO  FLG-PAGENO-00
+           WHEN    SHKITEMID-SELCOMMENT
+               MOVE    SHODATA-ITEM    TO  Q01-SELCOMMENT
                MOVE    1               TO  FLG-PAGENO-00
            WHEN    SHKITEMID-COMMENT01
                MOVE    SHODATA-ITEM    TO  Q01-COMMENT (1)
@@ -8508,6 +8698,14 @@
                PERFORM 70011-SHOUKAIDATA-INS-SEC
            END-IF
       *
+           IF    ( SPA-GMN-Q01-BIRTHMON   NOT =   SPACE )
+               MOVE    SHKITEMID-BIRTHMON
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-BIRTHMON
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
            IF    ( SPA-GMN-Q01-SEX     NOT =   SPACE )
                MOVE    SHKITEMID-SEX
                                    TO  SHODATA-ITEMID
@@ -8836,6 +9034,14 @@
                MOVE    SHKITEMID-GENMEN03
                                    TO  SHODATA-ITEMID
                MOVE    SPA-GMN-Q01-GENMEN (3)
+                                   TO  SHODATA-ITEM
+               PERFORM 70011-SHOUKAIDATA-INS-SEC
+           END-IF
+      *
+           IF    ( SPA-GMN-Q01-SELCOMMENT  NOT =   SPACE )
+               MOVE    SHKITEMID-SELCOMMENT
+                                   TO  SHODATA-ITEMID
+               MOVE    SPA-GMN-Q01-SELCOMMENT
                                    TO  SHODATA-ITEM
                PERFORM 70011-SHOUKAIDATA-INS-SEC
            END-IF

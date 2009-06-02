@@ -143,3 +143,5 @@
            03  SHKITEMID-DEATH         PIC 9(05)   VALUE   118.
            03  SHKITEMID-SRYKBN        PIC 9(05)   VALUE   119.
            03  SHKITEMID-SRYSYUKBN     PIC 9(05)   VALUE   120.
+           03  SHKITEMID-SELCOMMENT    PIC 9(05)   VALUE   121.
+           03  SHKITEMID-BIRTHMON      PIC 9(05)   VALUE   122.

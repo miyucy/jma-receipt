@@ -40,6 +40,9 @@ Q01	{
 				KJYNYMD	{
 					value	varchar(10);
 				};
+				BIRTHMON	{
+					value	varchar(2);
+				};
 				CMB_SEX	{
 					SEX	{
 						value	varchar(10);
@@ -226,6 +229,13 @@ Q01	{
 					};
 					count	int;
 					item	varchar(23)[99];
+				};
+				CMB_SELCOMMENT{
+					SELCOMMENT{
+						value	varchar(40);
+					};
+					count	int;
+					item	varchar(40)[05];
 				};
 				COMMENT1	{
 					value	varchar(50);

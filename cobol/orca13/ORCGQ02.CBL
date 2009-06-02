@@ -167,6 +167,7 @@
            03  WRK-KJYNYMD                         PIC 9(08).
            03  WRK-MCP-WIDGET                      PIC X(64).
            03  WRK-JOBID                           PIC 9(07).
+           03  WRK-WINDOW                          PIC X(20).
       *
            03  WRK-FILENM-AREA.
                07  WRK-FILENM      PIC X(100).
@@ -463,6 +464,7 @@
                MOVE    LNK-SCRSPA          TO  SPA-Q01FREE
       *    患者登録
            WHEN    "P02"
+           WHEN    "C02"
       *
       *        退避しておいたＳＰＡの内容を元に戻す
                INITIALIZE                  QSUB01-LNK
@@ -1209,9 +1211,13 @@
       *    クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 480-CLEAR-SEC
-      *    患者登録へ
+      *    他業務へ
                WHEN    "CLICKED"       ALSO    "B05"
-                   PERFORM 480-KANJYA-SEC
+                   MOVE    "P02"       TO      WRK-WINDOW
+                   PERFORM 480-GYOUMU-SENI-SEC
+               WHEN    "CLICKED"       ALSO    "B05S"
+                   MOVE    "C02"       TO      WRK-WINDOW
+                   PERFORM 480-GYOUMU-SENI-SEC
       *    前頁
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 210-MAE-PAGE-SEC
@@ -1594,20 +1600,20 @@
        480-CLEAR-EXT.
            EXIT.
       *****************************************************************
-      *    患者登録へ
+      *    他業務へ
       *****************************************************************
-       480-KANJYA-SEC             SECTION.
+       480-GYOUMU-SENI-SEC             SECTION.
       *
       *    入力時チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF  ( SPA-ERRCD         NOT =   SPACE )
-               GO  TO  480-KANJYA-EXT
+               GO  TO  480-GYOUMU-SENI-EXT
            END-IF
       *
       *    画面遷移時のチェック処理
            PERFORM 4801-GAMEN-SENIJI-CHK-SEC
            IF  ( SPA-ERRCD         NOT =   SPACE )
-               GO  TO  480-KANJYA-EXT
+               GO  TO  480-GYOUMU-SENI-EXT
            END-IF
       *
            COMPUTE IDX1    =   SPA-GMN-Q02-SELNUM
@@ -1615,7 +1621,7 @@
       *
            IF  SPA-GMN-Q02-KEKKALST-PTNUM (IDX1)  =  SPACE
                MOVE    "1002"          TO  SPA-ERRCD
-               GO  TO  480-KANJYA-EXT
+               GO  TO  480-GYOUMU-SENI-EXT
            END-IF
       *
       *    ＳＰＡの内容を退避
@@ -1635,7 +1641,7 @@
       *
       *    受付と患者検索以外の元をセット
            MOVE    "Q02"               TO  SPA-MOTOPG
-           MOVE    "P02"               TO  SPA-SAKIPG
+           MOVE    WRK-WINDOW          TO  SPA-SAKIPG
       *
            MOVE    SPACE               TO  LINKAREA
            MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
@@ -1643,14 +1649,14 @@
            MOVE    SPA-Q01FREE         TO  LNK-SCRSPA
       *
            MOVE   "CHANGE"             TO  MCP-PUTTYPE.
-           MOVE   "P02"                TO  MCP-WINDOW.
+           MOVE   WRK-WINDOW           TO  MCP-WINDOW.
       *
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1                   TO  FLG-END
       *
            .
-       480-KANJYA-EXT.
+       480-GYOUMU-SENI-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2032,6 +2038,7 @@
       *    検索結果件数がゼロ件でない場合はボタンを活性にする
            IF  ( SPA-GMN-Q02-TOTAL-NUM     >   ZERO )
                MOVE    WIDGET-NORMAL       TO  Q02-B05-STATE
+                                               Q02-B05S-STATE
                                                Q02-B11-STATE
                                                Q02-B12-STATE
                MOVE    SPA-GMN-Q02-B06-STATE
@@ -2040,6 +2047,7 @@
                                            TO  Q02-B07-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  Q02-B05-STATE
+                                               Q02-B05S-STATE
                                                Q02-B06-STATE
                                                Q02-B07-STATE
                                                Q02-B09-STATE
@@ -2056,6 +2064,12 @@
                MOVE    WIDGET-NORMAL       TO  Q02-B05-STATE
            ELSE
                MOVE    WIDGET-INSENSITIVE  TO  Q02-B05-STATE
+           END-IF
+      *
+           IF    ( SPA-GSRAUTH-22          =   "1" )
+               MOVE    WIDGET-NORMAL       TO  Q02-B05S-STATE
+           ELSE
+               MOVE    WIDGET-INSENSITIVE  TO  Q02-B05S-STATE
            END-IF
       *
       *    表題

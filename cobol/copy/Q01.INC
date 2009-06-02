@@ -34,6 +34,7 @@
                   06  Q01-STAGE                PIC X(03).
                   06  Q01-EDAGE                PIC X(03).
                   06  Q01-KJYNYMD              PIC X(10).
+                  06  Q01-BIRTHMON             PIC X(2).
                   06  Q01-CMB-SEX.
                     07  Q01-SEX                PIC X(10).
                     07  Q01-CMB-SEX-COUNT      PIC S9(9)   BINARY.
@@ -92,6 +93,10 @@
                                                            BINARY.
                       08  Q01-CMB-GENMEN-ITEM  PIC X(23)
                                                            OCCURS 99.
+                  06  Q01-CMB-SELCOMMENT.
+                    07  Q01-SELCOMMENT              PIC X(40).
+                    07  Q01-CMB-SELCOMMENT-COUNT    PIC S9(9) BINARY.
+                    07  Q01-CMB-SELCOMMENT-ITEM     PIC X(40) OCCURS 5.
                   06  Q01-COMMENT-TBL.
                     07  Q01-COMMENT            PIC X(50)   OCCURS 3.
                   06  Q01-CMB-TEL-TO.

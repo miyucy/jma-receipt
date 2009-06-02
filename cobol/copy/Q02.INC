@@ -18,6 +18,7 @@
           02  Q02.
             03  Q02-FIXED17.
               04  Q02-B05-STATE                PIC S9(9)   BINARY.
+              04  Q02-B05S-STATE               PIC S9(9)   BINARY.
               04  Q02-B06-STATE                PIC S9(9)   BINARY.
               04  Q02-B07-STATE                PIC S9(9)   BINARY.
               04  Q02-B09-STATE                PIC S9(9)   BINARY.

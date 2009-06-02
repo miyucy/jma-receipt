@@ -49,6 +49,7 @@
            03  FLG-JYOKEN-OR                       PIC 9(01).
            03  FLG-PTBYOMEI-SQL                    PIC 9(01).
            03  FLG-TBLNAME                         PIC 9(01).
+           03  FLG-RECECOM-SQL                     PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -68,6 +69,7 @@
        01  CNT-AREA.
            03  CNT-JYOKEN                          PIC 9(05).
            03  CNT-STR                             PIC 9(05).
+           03  CNT-RECECOM                         PIC 9(05).
       *
       *    一時領域
        01  WRK-AREA.
@@ -98,6 +100,10 @@
            03  WRK-PAYKBN                          PIC X(02).
            03  WRK-DISTINCT                        PIC X(08).
            03  WRK-YMD                             PIC X(08).
+           03  WRK-RECECOMMENT                     PIC X(50).
+           03  WRK-ITEM-G.
+               05  WRK-ITEM                        PIC X(50)
+                                                   OCCURS  4.
       *
       *    固定値領域
        01  CONST-AREA.
@@ -141,9 +147,10 @@
                05  CONST-TBL-GT    PIC X(20)   VALUE "VIEW_Q003    G".
                05  CONST-TBL-GV    PIC X(20)   VALUE "VIEW_Q002    G".
                05  CONST-TBL-H     PIC X(20)   VALUE "TBL_PTNUM    H".
-               05  CONST-TBL-I     PIC X(20)   VALUE "VIEW_Q001    I".
+               05  CONST-TBL-I     PIC X(20)   VALUE "VIEW_Q001    D".
                05  CONST-TBL-J1    PIC X(20)   VALUE "TBL_TSYRRK   J".
                05  CONST-TBL-J2    PIC X(20)   VALUE "TBL_TNKRRK   J".
+               05  CONST-TBL-K     PIC X(20)   VALUE "TBL_RECECOM  K".
            03  CONST-KMK-ITEM-AREA.
                05  FILLER          PIC X(10)   VALUE "PTNUM".
                05  FILLER          PIC X(10)   VALUE "KANANAME".
@@ -565,7 +572,9 @@
                                                    DELIMITED  BY  SIZE
                            ",BB.HKNJANUM,BB.HONKZKKBN,BB.HKNNUM"
                                                    DELIMITED  BY  SIZE
-                           ",BB.KIGO,BB.NUM FROM TBL_HKNCOMBI AA"
+                           ",BB.KIGO,BB.NUM,AA.HKNCOMBINUM "
+                                                   DELIMITED  BY  SIZE
+                           "FROM TBL_HKNCOMBI AA"
                                                    DELIMITED  BY  SIZE
                            " LEFT JOIN TBL_PTHKNINF BB ON "
                                                    DELIMITED  BY  SIZE
@@ -601,6 +610,11 @@
       *    診療行為コード
            IF   ( SPA-Q01-GTBL (9)  =   "1" )
                PERFORM 1001-SRYACT-JYOKEN-EDIT-SEC
+           END-IF
+      *
+      *    レセプトコメント
+           IF   ( SPA-Q01-GTBL (11)  =   "1" )
+               PERFORM 1001-RECECOM-JYOKEN-EDIT-SEC
            END-IF
       *
            .
@@ -723,6 +737,13 @@
                END-IF
            END-IF
       *
+      *    レセプトコメント
+           IF  ( SPA-Q01-GTBL (11)     =   "1" )
+               MOVE    FLG-JYOKEN      TO  FLG-JYOKEN-AND
+               PERFORM     1001-RECECOM-SQL-EDIT-SEC
+               MOVE    1               TO  FLG-JYOKEN
+           END-IF
+      *
       *    患者番号
            MOVE    ZERO            TO  FLG-JYOKEN-AND
            PERFORM 1001-PTNUM-SQL-EDIT-SEC
@@ -775,7 +796,7 @@
       *
                    IF    ( SPA-Q01-KOHNUM (IDX2)   NOT =   SPACE )
                        MOVE    IDX2    TO  WRK-NAME-SEQ
-                       STRING  ",VIEW_Q001 I"      DELIMITED  BY  SIZE
+                       STRING  ",VIEW_Q001 D"      DELIMITED  BY  SIZE
                                WRK-NAME-SEQ        DELIMITED  BY  SIZE
                        INTO    WRK-SQL
                        WITH    POINTER WRK-SQL-PNT
@@ -784,7 +805,7 @@
       *
                END-PERFORM
            ELSE
-               STRING  ",VIEW_Q001 I"          DELIMITED  BY  SIZE
+               STRING  ",VIEW_Q001 D"          DELIMITED  BY  SIZE
                INTO    WRK-SQL
                WITH    POINTER WRK-SQL-PNT
                END-STRING
@@ -902,6 +923,124 @@
        1001-SRYACT-JYOKEN-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    レセプトコメントテーブル条件編集処理
+      *****************************************************************
+       1001-RECECOM-JYOKEN-EDIT-SEC     SECTION.
+      *
+           STRING  ",TBL_RECECOM K"         DELIMITED  BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER WRK-SQL-PNT
+           END-STRING
+      *
+           .
+       1001-RECECOM-JYOKEN-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    レセプトコメント検索条件編集処理
+      *****************************************************************
+       1001-RECECOM-SQL-EDIT-SEC       SECTION.
+      *
+           MOVE    "K"             TO  WRK-SQL-TBL-NAME
+           PERFORM 900-SQL-JYOKEN-EDIT1-SEC
+      *
+           STRING  "(K.SRYYM >= '"         DELIMITED   BY  SIZE
+                   WRK-STSRYYMD(1:6)       DELIMITED   BY  SPACE
+                   "' AND K.SRYYM <= '"    DELIMITED   BY  SIZE
+                   WRK-EDSRYYMD(1:6)       DELIMITED   BY  SPACE
+                   "')"                    DELIMITED   BY  SIZE
+           INTO        WRK-SQL
+           WITH POINTER    WRK-SQL-PNT
+           END-STRING
+      *
+      *
+           IF    ( SPA-Q01-NYUGAIKBN   NOT =   SPACE )
+               PERFORM 10011-NYUGAIKBN-SQL-EDIT-SEC
+           END-IF
+      *
+           IF    ( SPA-Q01-SRYKA   NOT =   SPACE )
+               MOVE    1           TO  FLG-RECECOM-SQL
+               PERFORM 10011-SRYKA-SQL-EDIT-SEC
+           END-IF
+      *
+           IF    ( SPA-Q01-GTBL (5)    =   "1" )
+      *
+               MOVE    1                   TO  CNT-JYOKEN
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+               STRING  WRK-SQL-TBL-NAME               DELIMITED BY SPACE
+                       ".HKNCOMBI = D.HKNCOMBINUM" DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+      *
+               PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+           END-IF
+      *
+           MOVE    ZERO    TO      CNT-JYOKEN
+           PERFORM VARYING IDX1    FROM    1   BY  1
+               UNTIL   (   IDX1    >   5 )
+      *
+               MOVE    SPACE                   TO  WRK-ITEM-G
+               MOVE    SPA-Q01-COMMENT (IDX1)  TO  WRK-RECECOMMENT
+               INSPECT WRK-RECECOMMENT REPLACING   ALL "　"  BY  "  "
+               UNSTRING    WRK-RECECOMMENT    DELIMITED  BY  ALL " "
+                                   INTO       WRK-ITEM(1)
+                                              WRK-ITEM(2)
+                                              WRK-ITEM(3)
+                                              WRK-ITEM(4)
+               END-UNSTRING
+      *
+               IF  ( WRK-ITEM-G        NOT =   SPACE)
+      *
+                   COMPUTE CNT-JYOKEN  =   CNT-JYOKEN  +   1
+      *
+                   PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+                   STRING  "("                 DELIMITED   BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+      *
+                   MOVE    ZERO            TO  CNT-RECECOM
+                   PERFORM VARYING IDX2    FROM    1   BY  1
+                           UNTIL ( IDX2    >   4 )
+                       IF    ( WRK-ITEM (IDX2)     NOT =   SPACE )
+                           COMPUTE CNT-RECECOM =   CNT-RECECOM +   1
+                           IF    ( CNT-RECECOM =   1 )
+                               CONTINUE
+                           ELSE
+                               STRING  "AND"   DELIMITED   BY  SIZE
+                               INTO    WRK-SQL
+                               WITH    POINTER WRK-SQL-PNT
+                               END-STRING
+                           END-IF
+                           STRING  "("             DELIMITED   BY  SIZE
+                               WRK-SQL-TBL-NAME    DELIMITED   BY  SPACE
+                               ".COMMENT  LIKE '%" DELIMITED   BY  SIZE
+                               WRK-ITEM(IDX2)      DELIMITED   BY  SPACE
+                               "%')"               DELIMITED   BY  SIZE
+                           INTO    WRK-SQL
+                           WITH    POINTER WRK-SQL-PNT
+                           END-STRING
+                       END-IF
+                   END-PERFORM
+      *
+                   STRING  ")"                 DELIMITED   BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER WRK-SQL-PNT
+                   END-STRING
+               END-IF
+           END-PERFORM
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT4-SEC
+      *
+           .
+       1001-RECECOM-SQL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    低所得者検索条件編集処理
       *****************************************************************
        1001-TSY-SQL-EDIT-SEC           SECTION.
@@ -1017,6 +1156,9 @@
       *    生年月日検索条件編集処理
            PERFORM 10011-BIRTH-SELECT-EDIT-SEC
       *
+      *    誕生月検索条件編集処理
+           PERFORM 10011-BIRTHMON-SELECT-EDIT-SEC
+      *
       *    性別検索条件編集処理
            PERFORM 10011-SEX-SELECT-EDIT-SEC
       *
@@ -1036,7 +1178,9 @@
            PERFORM 10011-GENMEN-SEL-EDIT-SEC
       *
       *    コメント検索条件編集処理
-           PERFORM 10011-COMMENT-SELECT-EDIT-SEC
+           IF    ( SPA-Q01-SELCOMMENT  =   "1" OR "2" )
+               PERFORM 10011-COMMENT-SELECT-EDIT-SEC
+           END-IF
       *
       *    電話番号検索条件編集処理
            PERFORM 10011-TEL-SELECT-EDIT-SEC
@@ -1277,7 +1421,7 @@
                    MOVE    ZERO            TO  FLG-JYOKEN-AND
       *
                    MOVE    IDXA            TO  WRK-NAME-SEQ
-                   MOVE    "I"             TO  WRK-SQL-TBL-NAME
+                   MOVE    "D"             TO  WRK-SQL-TBL-NAME
                    MOVE    WRK-NAME-SEQ    TO  WRK-SQL-TBL-NAME (2 : 1)
       *
                    PERFORM 900-SQL-JYOKEN-EDIT1-SEC
@@ -1333,7 +1477,7 @@
                        MOVE    ZERO    TO  FLG-JYOKEN-AND
       *
                        MOVE    IDXA        TO  WRK-NAME-SEQ
-                       MOVE    "I"         TO  WRK-SQL-TBL-NAME
+                       MOVE    "D"         TO  WRK-SQL-TBL-NAME
                        MOVE    WRK-NAME-SEQ
                                            TO  WRK-SQL-TBL-NAME (2 : 1)
       *
@@ -1363,7 +1507,7 @@
                        MOVE    ZERO        TO  FLG-JYOKEN-AND
       *
                        MOVE    IDXA        TO  WRK-NAME-SEQ
-                       MOVE    "I"         TO  WRK-SQL-TBL-NAME
+                       MOVE    "D"         TO  WRK-SQL-TBL-NAME
                        MOVE    WRK-NAME-SEQ
                                            TO  WRK-SQL-TBL-NAME (2 : 1)
       *
@@ -1390,13 +1534,13 @@
       *****************************************************************
        1001-VIEWQ001-SQL-OR-EDIT-SEC   SECTION.
       *
-           MOVE    "I"                 TO  WRK-SQL-TBL-NAME
+           MOVE    "D"                 TO  WRK-SQL-TBL-NAME
       *
            PERFORM 900-SQL-JYOKEN-EDIT1-SEC
       *
-           STRING "((I.SRYYMD <= '"
+           STRING "((D.SRYYMD <= '"
                       WRK-EDSRYYMD
-                      "') AND (I.SRYYMD >= '"
+                      "') AND (D.SRYYMD >= '"
                       WRK-STSRYYMD
                       "')) AND"
            DELIMITED   BY  SIZE
@@ -2328,6 +2472,32 @@
        10011-BIRTH-SELECT-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    誕生月検索条件編集処理
+      *****************************************************************
+       10011-BIRTHMON-SELECT-EDIT-SEC          SECTION.
+      *
+           IF      ( SPA-Q01-BIRTHMON      =   "00" )
+               GO  TO  10011-BIRTHMON-SELECT-EDIT-EXT
+           END-IF
+      *
+           MOVE    1                   TO  CNT-JYOKEN
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+           STRING  "(SUBSTR(BIRTHDAY,5,2) = '" DELIMITED   BY  SIZE
+                   SPA-Q01-BIRTHMON            DELIMITED   BY  SIZE
+                   "')"                        DELIMITED   BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER WRK-SQL-PNT
+           END-STRING
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+      *
+           .
+       10011-BIRTHMON-SELECT-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    性別検索条件編集処理
       *****************************************************************
        10011-SEX-SELECT-EDIT-SEC            SECTION.
@@ -2571,7 +2741,8 @@
                    MOVE    SPA-Q01-COMMENT (IDX1)  TO  WRK-STR
                    PERFORM 900-STR-LEN-GET-SEC
       *
-                   STRING  "(COMMENT_1 LIKE '"     DELIMITED   BY  SIZE
+                   IF    ( SPA-Q01-SELCOMMENT      =   "1" )
+                       STRING  "(COMMENT_1 LIKE '" DELIMITED   BY  SIZE
                            SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
                                                    DELIMITED   BY  SIZE
                            "%')OR"                 DELIMITED   BY  SIZE
@@ -2579,9 +2750,38 @@
                            SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
                                                    DELIMITED   BY  SIZE
                            "%')"                   DELIMITED   BY  SIZE
-                   INTO    WRK-SQL
-                   WITH    POINTER WRK-SQL-PNT
-                   END-STRING
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   ELSE
+                       STRING  "(TABOO_1 LIKE '" DELIMITED   BY  SIZE
+                           SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
+                                                   DELIMITED   BY  SIZE
+                           "%')OR"                 DELIMITED   BY  SIZE
+                           "(TABOO_2 LIKE '" DELIMITED   BY  SIZE
+                           SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
+                                                   DELIMITED   BY  SIZE
+                           "%')OR"                 DELIMITED   BY  SIZE
+                           "(ALLERGY_1 LIKE '" DELIMITED   BY  SIZE
+                           SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
+                                                   DELIMITED   BY  SIZE
+                           "%')OR"                 DELIMITED   BY  SIZE
+                           "(ALLERGY_2 LIKE '" DELIMITED   BY  SIZE
+                           SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
+                                                   DELIMITED   BY  SIZE
+                           "%')OR"                 DELIMITED   BY  SIZE
+                           "(KANSENSYO_1 LIKE '" DELIMITED   BY  SIZE
+                           SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
+                                                   DELIMITED   BY  SIZE
+                           "%')OR"                 DELIMITED   BY  SIZE
+                           "(KANSENSYO_2 LIKE '" DELIMITED   BY  SIZE
+                           SPA-Q01-COMMENT (IDX1)(1: WRK-STR-LEN) 
+                                                   DELIMITED   BY  SIZE
+                           "%')"                   DELIMITED   BY  SIZE
+                       INTO    WRK-SQL
+                       WITH    POINTER WRK-SQL-PNT
+                       END-STRING
+                   END-IF
       *
                 END-IF
            END-PERFORM
@@ -2719,13 +2919,24 @@
       *
            PERFORM 900-SQL-JYOKEN-EDIT2-SEC
       *
-           STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
-                   ".SRYKA ='"         DELIMITED BY SIZE
-                   SPA-Q01-SRYKA       DELIMITED BY SIZE
-                   "'"                 DELIMITED BY SIZE
-           INTO    WRK-SQL
-           WITH    POINTER WRK-SQL-PNT
-           END-STRING
+           IF    ( FLG-RECECOM-SQL     =   1 )
+               MOVE    ZERO            TO  FLG-RECECOM-SQL
+               STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                       ".SRYKA IN ('00','" DELIMITED BY SIZE
+                       SPA-Q01-SRYKA       DELIMITED BY SIZE
+                       "')"                DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           ELSE
+               STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                       ".SRYKA ='"         DELIMITED BY SIZE
+                       SPA-Q01-SRYKA       DELIMITED BY SIZE
+                       "'"                 DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           END-IF
       *
            PERFORM 900-SQL-JYOKEN-EDIT3-SEC
       *
