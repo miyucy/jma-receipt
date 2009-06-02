@@ -1321,6 +1321,8 @@
       *****************************************************************
        30010-INIT-GMN-SEC              SECTION.
       *
+           PERFORM 4900-WKSRYACT-CLEAR-SEC
+      *
            INITIALIZE                  SPA-KYOTUKEY
            INITIALIZE                  SPA-KT01
            INITIALIZE                  SPA-SCR-REC
