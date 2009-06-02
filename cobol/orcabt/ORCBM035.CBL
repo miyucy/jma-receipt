@@ -32,6 +32,8 @@
       *  04.02.02    NACL-藤原    08/05/15  公費番号まとめの編集方法訂正
       *
       *  04.04.01    NACL-藤原    09/12/10  オンライン返戻対応
+      *
+      *  04.05.01    NACL-藤原    09/05/25  広域連合の保険者番号指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -531,7 +533,16 @@
                                        =   SPACE
                MOVE    "0"                 TO  SYS-200501-KOUIKIPRTKBN
            END-IF
+      *
+           IF      SYS-200501-KOUIKIPRTKBN
+                                       =   "1"
+               CONTINUE
+           ELSE
+               MOVE    "00000000"          TO  WRK-PARA-HKNJANUM
+           END-IF
+      *
            DISPLAY "SYS-200501-KOUIKIPRTKBN=" SYS-200501-KOUIKIPRTKBN
+           DISPLAY "WRK-PARA-HKNJANUM      =" WRK-PARA-HKNJANUM
            .
        100-INIT-EXT.
            EXIT.
@@ -675,11 +686,13 @@
               END-IF
            END-PERFORM
       *
-      *    広域連合別印刷 
-           IF      FLG-UPD        =   1
-           AND     FLG-ERR        =   ZERO 
-               MOVE    1             TO  IDY5
-               PERFORM 2002-PRINT-HENSYU-SEC
+      *    広域連合別印刷 （保険者番号指定時は印刷しない）
+           IF    ( FLG-UPD        =   1    )
+           AND   ( FLG-ERR        =   ZERO )
+               IF      WRK-PARA-HKNJANUM  =   "00000000"
+                   MOVE    1             TO  IDY5
+                   PERFORM 2002-PRINT-HENSYU-SEC
+               END-IF
            END-IF
            .
        200-HENSYU-EXT.
@@ -1506,6 +1519,8 @@
                    " SRYYM=" RECE10-SRYYM "-" RECE10-XXSRYYM 
                    " HKNNUM= " RECE10-HKNNUM
                    " PATHNAME=" WRK-MCP-PATHNAME
+                   " HKNJANUM=" RECE10-XXSTHKNJANUM "-" 
+                                RECE10-XXEDHKNJANUM
       *###
       *
            MOVE    RECE10-REC          TO  MCPDATA-REC

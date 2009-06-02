@@ -119,6 +119,8 @@
       *  04.04.05    NACL-藤原    09/04/10  月遅れ分のレセ電データの有無
       *                                     チェックのとき特別療養費は対
       *                                     象外とする
+      *
+      *  04.05.01    NACL-藤原    09/05/25  広域連合の保険者番号指定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -5252,7 +5254,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    "F"                 TO  T01-DATAKBN1-VALUE
                                                T01-DATAKBN2-VALUE
            END-IF
-           MOVE    WIDGET-INSENSITIVE  TO  T01-HKNJANUM1-STATE
+      *****MOVE    WIDGET-INSENSITIVE  TO  T01-HKNJANUM1-STATE
       *
            PERFORM 5001-MAPCUR-SEC
       *

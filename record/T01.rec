@@ -82,10 +82,10 @@ T01	{
 			value	bool;
 		};
 		HKNJAMEI	{
-			value	varchar(40);
+			value	varchar(50);
 		};
 		HKNJAMEI1	{
-			value	varchar(40);
+			value	varchar(50);
 		};
 		CHK11	{
 			state	int;

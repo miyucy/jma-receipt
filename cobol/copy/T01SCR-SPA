@@ -52,6 +52,8 @@
       *                                     名古屋市、北九州市対応
       *  04.04.04    NACL-藤原    09/03/24  主科設定時の主科未設定データ
       *                                     の有無チェック
+      *
+      *  04.05.01    NACL-藤原    09/05/25  広域連合の保険者番号指定対応
       *****************************************************************
       *
        01  SPA-T01FREE.
@@ -112,9 +114,9 @@
                        09  SPA-GMN-PRTKBN5-STYLE   PIC X(20).
                        09  SPA-GMN-PRTKBN5-VALUE   PIC X(04).
                    07  SPA-GMN-HKNJANUM            PIC X(08).
-                   07  SPA-GMN-HKNJAMEI            PIC X(40). 
+                   07  SPA-GMN-HKNJAMEI            PIC X(50). 
                    07  SPA-GMN-HKNJANUM1           PIC X(08).
-                   07  SPA-GMN-HKNJAMEI1           PIC X(40). 
+                   07  SPA-GMN-HKNJAMEI1           PIC X(50). 
                    07  SPA-GMN-TITLE               PIC X(40). 
       *
                05  SPA-NAIB-T01-AREA.
