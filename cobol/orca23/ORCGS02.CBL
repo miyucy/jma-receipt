@@ -2479,14 +2479,20 @@
                END-IF
            END-IF
       *
-           MOVE    "black"                         TO  S02-LBLMSG6-STYLE
+           MOVE    "black"                     TO  S02-LBLMSG6-STYLE
+                                                   S02-KANANAME-STYLE
+                                                   S02-NAME-STYLE
       *
            IF    ( SPA-NAI-LOCK        =   ZERO )
                CONTINUE
            ELSE
                MOVE    "red"                   TO  S02-LBLMSG2-STYLE
+                                                   S02-KANANAME-STYLE
+                                                   S02-NAME-STYLE
+      *
                MOVE    "他端末で使用中です。"  TO  S02-LBLMSG2
                MOVE    SPA-NAI-SLOCK-MSG       TO  S02-LBLMSG2(21:)
+      *
            END-IF
       *
            IF    ( SPA-NAI-SRYYM   =   SPACE )
