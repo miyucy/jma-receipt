@@ -1920,8 +1920,7 @@
            END-IF
       *
       *    ¿∫ø¿≤ µﬁ¿≠¥¸º£Œ≈…¬≈Ô∆˛±°Œ¡£±
-           IF      SYOKIKSN-IN-KHNSRYCD    =   "190121110"  OR
-                                                           "999999901"
+           IF      SYOKIKSN-IN-KHNSRYCD    =   "190121110"
                MOVE   SPACE            TO  SYOKIKSN-IN-KHNSRYCD
                MOVE   SPACE            TO  LNK-SCNYUACCT-NYUKHN-SRYCD
                                                                     (1)
@@ -1988,8 +1987,7 @@
            END-IF
       *
       *    ¿∫ø¿≤ µﬁ¿≠¥¸º£Œ≈…¬≈Ô∆˛±°Œ¡£≤
-           IF      SYOKIKSN-IN-KHNSRYCD    =   "190121210"  OR
-                                                           "999999902"
+           IF      SYOKIKSN-IN-KHNSRYCD    =   "190121210"
                MOVE   SPACE            TO  SYOKIKSN-IN-KHNSRYCD
                MOVE   SPACE            TO  LNK-SCNYUACCT-NYUKHN-SRYCD
                                                                     (1)

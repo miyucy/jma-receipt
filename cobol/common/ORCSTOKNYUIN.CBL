@@ -165,10 +165,10 @@
                        MOVE   "190130210"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "24"
       *                Àº¿À²ÊµÞÀ­´ü¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±¡ÊµÞÀ­Áý°­¤ÎºÆÆþ±¡¡Ë
-                       MOVE   "999999901"   TO  LNK-TOKNYUIN-SRYCD
+                       MOVE   "190121110"   TO  LNK-TOKNYUIN-SRYCD
                WHEN    "25"
       *                Àº¿À²ÊµÞÀ­´ü¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²¡ÊµÞÀ­Áý°­¤ÎºÆÆþ±¡¡Ë
-                       MOVE   "999999902"   TO  LNK-TOKNYUIN-SRYCD
+                       MOVE   "190121210"   TO  LNK-TOKNYUIN-SRYCD
              END-EVALUATE
            END-IF
       *
