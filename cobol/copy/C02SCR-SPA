@@ -85,6 +85,11 @@
       *
       *  04.03.01    NACL-藤原    08/06/11  前回来院日の追加
       *                                     慢性と急性のチェック対応
+      *
+      *  04.05.01    NACL-藤原    09/06/01  排他制御時の表示の変更
+      *                                     排他制御フラグの追加
+      *  04.05.02    NACL-藤原    09/06/02  病名の入力順対応
+      *                                     追加指定行の追加
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -302,6 +307,7 @@
                            11  SPA-NAI-C02-BIRTHDAY        PIC X(08).
                            11  SPA-NAI-C02-HKNCOMBI-ROUSAI PIC 9(01).
                            11  SPA-NAI-C02-HKNCOMBI-JIHI   PIC 9(01).
+                           11  SPA-NAI-C02-LOCK            PIC 9(01). 
                        09  SPA-NAI-C02-KOUMOKU.
                            11  SPA-NAI-C02-SRYYMD          PIC X(08).
                            11  SPA-NAI-C02-RENNUM          PIC 9(02).
@@ -368,6 +374,8 @@
                            11  SPA-NAI-C02-HKN-MAX          PIC 9(04).
       *                         
                        09  SPA-NAI-C02-SELNO       PIC 9(05).
+                       09  SPA-NAI-C02-SELNO-INSERT
+                                                   PIC 9(05).
       *            主病名編集フラグ             
                        09  SPA-C02-2005-SYUBYOHENFLG
                                                    PIC X(01).

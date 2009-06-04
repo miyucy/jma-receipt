@@ -672,3 +672,46 @@ path	key33	{
 	};
 };
 
+path	key34		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key34_csr CURSOR FOR
+		SELECT count(*) as rennum
+		FROM tbl_ptbyomei
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA 
+			AND   SRYYMD      =   :SRYYMD
+			AND   DLTFLG      like :DLTFLG
+		;
+	};
+};
+
+path	key35		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key35_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA 
+			AND   SRYYMD      =   :SRYYMD
+			AND   RENNUM      <   :RENNUM
+			ORDER  BY  RENNUM DESC
+		;
+	};
+};
+
+path	key36		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptbyomei_key36_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptbyomei
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   SRYKA       =   :SRYKA 
+			AND   SRYYMD      =   :SRYYMD
+			AND   RENNUM      >=  :RENNUM
+			ORDER  BY  RENNUM
+		;
+	};
+};

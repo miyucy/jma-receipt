@@ -8,9 +8,11 @@ C02	{
 			value	varchar(9);
 		};
 		KANANAME	{
+			style	varchar(20);
 			value	varchar(30);
 		};
 		NAME	{
+			style	varchar(20);
 			value	varchar(30);
 		};
 		SEX	{

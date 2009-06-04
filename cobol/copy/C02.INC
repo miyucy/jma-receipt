@@ -21,8 +21,10 @@
                 04  C02-PTNUM   PIC X(20).
               03  C02-SYSYMD.
                 04  C02-VALUE   PIC X(9).
+              03  C02-KANANAME-STYLE   PIC X(20).
               03  C02-KANANAME.
                 04  C02-VALUE   PIC X(30).
+              03  C02-NAME-STYLE   PIC X(20).
               03  C02-NAME.
                 04  C02-VALUE   PIC X(30).
               03  C02-SEX.
