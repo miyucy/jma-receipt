@@ -163,6 +163,12 @@
                WHEN    "23"
       *                ¿∫ø¿≤ µﬂµﬁ°¶πÁ ªæ…∆˛±°Œ¡
                        MOVE   "190130210"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "24"
+      *                ¿∫ø¿≤ µﬁ¿≠¥¸º£Œ≈…¬≈Ô∆˛±°Œ¡£±
+                       MOVE   "190121110"   TO  LNK-TOKNYUIN-SRYCD
+               WHEN    "25"
+      *                ¿∫ø¿≤ µﬁ¿≠¥¸º£Œ≈…¬≈Ô∆˛±°Œ¡£≤
+                       MOVE   "190121210"   TO  LNK-TOKNYUIN-SRYCD
              END-EVALUATE
            END-IF
       *
