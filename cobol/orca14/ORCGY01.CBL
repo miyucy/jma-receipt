@@ -38,6 +38,7 @@
       *  04.01.00    NACL-多々納  08/01/30  予約内容テーブル対応
       *  04.03.00    NACL-多々納  08/06/18  初期表示設定対応
       *  04.04.00    NACL-多々納  09/01/16  予約メモ・予約票対応
+      *  04.05.00    NACL-多々納  09/06/03  受付一覧からの遷移対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4073,6 +4074,11 @@
       *****************************************************************
        490-UKEICHI-SEC             SECTION.
       *
+           IF      SPA-MOTOPG3         =   "U01"
+               MOVE    "0100"              TO  SPA-ERRCD
+               GO      TO    490-UKEICHI-EXT
+           END-IF
+      *
       *    画面移行用のスパを編集する
            INITIALIZE                  SPA-KYOTUKEY
            INITIALIZE                  SPA-Y01-YYK-AREA
@@ -4102,25 +4108,25 @@
        210-BACK                    SECTION.
       *
            MOVE    SPA-MOTOPG3         TO  SPA-SAKIPG
-           MOVE    SPACE               TO  SPA-MOTOPG3
-           MOVE    "Y01"               TO  SPA-MOTOPG
-      *
-           INITIALIZE                   SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU           TO  LNK-KYOUTU
-      *
-           IF      SPA-SAKIPG           =   SPACE   OR
-                                            "U01"
+           IF      SPA-MOTOPG3         =   SPACE
+      *                                OR  "U01"
       *         業務選択へ
                 MOVE   "M01"            TO  SPA-SAKIPG
-            END-IF
+           END-IF
+           IF      SPA-MOTOPG3         =   "U01"
+               CONTINUE
+           ELSE
+               MOVE    SPACE               TO  SPA-MOTOPG3
+           END-IF
+           MOVE    "Y01"               TO  SPA-MOTOPG
       *
-           MOVE   "CHANGE"              TO  MCP-PUTTYPE
-           MOVE   SPA-SAKIPG            TO  MCP-WINDOW
+           INITIALIZE                  SPA-KYOTUKEY
+           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
       *
+           MOVE   "CHANGE"             TO  MCP-PUTTYPE
+           MOVE   SPA-SAKIPG           TO  MCP-WINDOW
            PERFORM 900-PUT-WINDOW
-      *
-           MOVE    1                    TO  FLG-END
-      *
+           MOVE    1                   TO  FLG-END
       *
            .
        210-BACK-EXT.
@@ -4522,6 +4528,13 @@
                WHEN    "K001"
                    MOVE    "注意！予約日が過去です。"
                                                TO  SPA-ERRMSG
+      *
+               WHEN    "0100"
+                   STRING  "受付一覧から遷移しています。"
+                           "受付一覧への遷移はできません。"
+                                       DELIMITED   BY  SIZE
+                                               INTO    SPA-ERRMSG
+                   END-STRING
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"

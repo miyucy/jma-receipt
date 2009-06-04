@@ -26,7 +26,7 @@
                 04  U012-LIST.
                   05  U012-LIST-COUNT  PIC S9(9)   BINARY.
                   05  U012-ROW    PIC S9(9)   BINARY.
-                  05  U012-ITEM       OCCURS  200 TIMES.
+                  05  U012-ITEM       OCCURS  400 TIMES.
                     06  U012-LNO    PIC X(4).
                     06  U012-LPTNUM PIC X(20).
                     06  U012-LNAME  PIC X(50).
@@ -41,7 +41,7 @@
                     06  U012-LYYKTIME    PIC X(6).
                     06  U012-LKAITIME    PIC X(6).
                   05  U012-LIST-SELECT
-                          PIC X       OCCURS  200 TIMES.
+                          PIC X       OCCURS  400 TIMES.
               03  U012-MIDASI.
                 04  U012-VALUE  PIC X(12).
               03  U012-NEXT.

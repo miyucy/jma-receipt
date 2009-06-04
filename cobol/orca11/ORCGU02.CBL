@@ -4023,7 +4023,7 @@ grpsys*                        CALL    "ORCDBMAIN"     USING   MCPAREA
            END-IF
       *
            PERFORM 493-CLEAR-SEC  
-           PERFORM 3101-UKETU-HEN-SEC
+      *****PERFORM 3101-UKETU-HEN-SEC
            .
        49001-KOUSIN-EXT.
            EXIT.   
@@ -4997,7 +4997,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            PERFORM 493-CLEAR-SEC  
-           PERFORM 3101-UKETU-HEN-SEC
+      **** PERFORM 3101-UKETU-HEN-SEC
            .
        491-SAKUJO-EXT.
            EXIT.

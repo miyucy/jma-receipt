@@ -44,8 +44,8 @@ U012	{
 					value10	varchar(6);
 					value11	varchar(6);
 					value12	varchar(6);
-				}	[200];
-				select	bool[200];
+				}	[400];
+				select	bool[400];
 			};
 		};
 		MIDASI	{

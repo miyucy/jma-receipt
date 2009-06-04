@@ -755,6 +755,22 @@
       <xpad>0</xpad>
       <ypad>0</ypad>
     </widget>
+
+    <widget>
+      <class>GtkPandaTimer</class>
+      <name>pandatimer1</name>
+      <x>880</x>
+      <y>696</y>
+      <width>21</width>
+      <height>21</height>
+      <signal>
+	<name>timeout</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Mon, 01 Jun 2009 06:57:40 GMT</last_modification_time>
+      </signal>
+      <duration>60</duration>
+    </widget>
   </widget>
 </widget>
 

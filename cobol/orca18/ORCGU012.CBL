@@ -102,7 +102,7 @@
                    07  SPA-GMN-SRYNAIYODSP        PIC X(16).
       *
                05  SPA-GMN-TBL.
-                   07  SPA-GMN-TBLREC    OCCURS  200.
+                   07  SPA-GMN-TBLREC    OCCURS  400.
                        09  SPA-GMN-NO              PIC 9(04).
                        09  SPA-GMN-PTNUM           PIC X(20).
                        09  SPA-GMN-PTID            PIC 9(10).
@@ -188,7 +188,7 @@
       *    ＳＯＲＴ用
        01  WRK-SORT-AREA.
                03  WRK-GMN-TBL.
-                   07  WRK-GMN-TBLREC    OCCURS  200.
+                   07  WRK-GMN-TBLREC    OCCURS  400.
                        09  WRK-GMN-NO              PIC 9(04).
                        09  WRK-GMN-PTNUM           PIC X(20).
                        09  WRK-GMN-PTID            PIC 9(10).
@@ -216,6 +216,9 @@
                        09  WRK-NAI-HYOJIJUN        PIC X(04).
       *                送受信フラグ
                        09  WRK-NAI-SRFLG           PIC X(01).
+      *    一覧表最大行数
+       01  LINE-MAX                    PIC 9(03)   VALUE   400.
+      *
       *   年齢表示
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
@@ -581,7 +584,7 @@
       *
       *    開始行
            COMPUTE IDX-STR             =   (SPA-GMN-PAGE  -  1 )
-                                       *    200
+                                       *    LINE-MAX
                                        +    1
            MOVE    ZERO                TO  SPA-GMN-NEXT
            MOVE    ZERO                TO  IDX4
@@ -636,7 +639,7 @@
                    ADD     1                   TO  IDX4
                    IF      IDX-STR             <=  IDX4
                        ADD     1               TO  IDX
-                       IF      IDX             >   200
+                       IF      IDX             >   LINE-MAX
                            MOVE    1               TO  SPA-GMN-NEXT
                        ELSE
                            PERFORM 50012-UKETUKE-SET-SEC
@@ -719,9 +722,11 @@
       *        WHEN    "CLICKED"       ALSO    "B04"
       *            PERFORM 4010-PRINT-SEC
       *        受付一覧更新
-      ***      WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 4011-UKELIST-SEC
+      *        受付一覧自動更新
+               WHEN    "CLICKED"       ALSO    "pandatimer1"
+                   PERFORM 4011-AUTOUKELIST-SEC
            END-EVALUATE
       *
            .
@@ -1041,6 +1046,20 @@
       *
            .
        4011-UKELIST-EXT.
+           EXIT.
+      *****************************************************************
+      *    受付一覧自動更新処理
+      *****************************************************************
+       4011-AUTOUKELIST-SEC              SECTION.
+      *
+           IF     (SPA-SYSYMD          =   SPA-U012-SYSYMD )
+      *    受付情報再表示
+               MOVE    1                   TO  SPA-GMN-PAGE
+               PERFORM 5001-UKETUKE-HEN-SEC
+           END-IF
+      *
+           .
+       4011-AUTOUKELIST-EXT.
            EXIT.
       *****************************************************************
       *    受付編集処理
@@ -1385,12 +1404,12 @@
            INITIALIZE                      SPA-GMN-TBL
       *    受付時間順にＳＯＲＴ
            PERFORM VARYING   IDX2      FROM    1   BY  1
-                   UNTIL     IDX2          >   200
+                   UNTIL     IDX2          >   LINE-MAX
                MOVE    HIGH-VALUE      TO  WRK-UKETIME
                MOVE    HIGH-VALUE      TO  WRK-HYOJIJUN
                MOVE    ZERO            TO  WRK-IDX
                PERFORM VARYING   IDX3      FROM    1   BY  1
-                       UNTIL     IDX3      >  200
+                       UNTIL     IDX3      >  LINE-MAX
                    IF      WRK-NAI-HYOJIJUN (IDX3)
                                            NOT =   SPACE
                        IF     (WRK-NAI-HYOJIJUN (IDX3)
@@ -1412,6 +1431,7 @@
                    MOVE    WRK-IDX         TO  IDX3
                    MOVE    WRK-GMN-TBLREC (IDX3)
                                            TO  SPA-GMN-TBLREC (IDX2)
+                   MOVE    IDX2            TO  SPA-GMN-NO     (IDX2)
                    MOVE    SPACE           TO  WRK-GMN-TBLREC (IDX3)
                    ADD     1               TO  SPA-GMN-MAX
               END-IF

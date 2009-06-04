@@ -28,8 +28,8 @@ U01	{
 					value11	varchar(8);
 					value12	varchar(8);
 					value13	varchar(4);
-				}	[200];
-				select	bool[200];
+				}	[400];
+				select	bool[400];
 			};
 		};
 		scrolledwindow2	{
@@ -51,9 +51,13 @@ U01	{
 					value11	varchar(8);
 					value12	varchar(8);
 					value13	varchar(4);
-				}	[200];
-				select	bool[200];
+				}	[400];
+				select	bool[400];
 			};
+		};
+		B10	{
+	           	state	int;
+			label	varchar(10);
 		};
 	};
 };
