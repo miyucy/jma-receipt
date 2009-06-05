@@ -51,10 +51,12 @@
               03  S02-PTNUM-STATE
                                 PIC S9(9)   BINARY.
               03  S02-PTNUM     PIC X(20).
-              03  S02-KANANAME.
-                04  S02-VALUE   PIC X(50).
-              03  S02-NAME.
-                04  S02-VALUE   PIC X(50).
+              03  S02-KANANAME-G.
+                04  S02-KANANAME-STYLE   PIC X(20).
+                04  S02-KANANAME   PIC X(50).
+              03  S02-NAME-G.
+                04  S02-NAME-STYLE   PIC X(20).
+                04  S02-NAME   PIC X(50).
               03  S02-BIRTHDAY.
                 04  S02-VALUE   PIC X(9).
               03  S02-SEX.
