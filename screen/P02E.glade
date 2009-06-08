@@ -13,8 +13,8 @@
 <widget>
   <class>GtkWindow</class>
   <name>P02E</name>
-  <width>618</width>
-  <height>240</height>
+  <width>690</width>
+  <height>360</height>
   <signal>
     <name>map_event</name>
     <handler>map_event</handler>
@@ -43,13 +43,13 @@
     <class>GtkFixed</class>
     <name>fixed10</name>
     <width>620</width>
-    <height>240</height>
+    <height>249</height>
 
     <widget>
       <class>GtkButton</class>
       <name>B01</name>
-      <x>12</x>
-      <y>196</y>
+      <x>16</x>
+      <y>324</y>
       <width>62</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -71,8 +71,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B09</name>
-      <x>308</x>
-      <y>196</y>
+      <x>284</x>
+      <y>324</y>
       <width>92</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -94,8 +94,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B12</name>
-      <x>504</x>
-      <y>196</y>
+      <x>548</x>
+      <y>324</y>
       <width>102</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -307,8 +307,8 @@
     <widget>
       <class>GtkButton</class>
       <name>B03</name>
-      <x>132</x>
-      <y>196</y>
+      <x>104</x>
+      <y>324</y>
       <width>130</width>
       <height>24</height>
       <can_focus>True</can_focus>
@@ -325,15 +325,6 @@
       </signal>
       <label>F3 ¥µº‘…≥…’ £ºÃ</label>
       <relief>GTK_RELIEF_NORMAL</relief>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator2</name>
-      <x>0</x>
-      <y>40</y>
-      <width>600</width>
-      <height>16</height>
     </widget>
 
     <widget>
@@ -382,31 +373,6 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label252</name>
-      <x>52</x>
-      <y>124</y>
-      <width>52</width>
-      <height>24</height>
-      <label>Ωª    ΩÍ</label>
-      <justify>GTK_JUSTIFY_LEFT</justify>
-      <wrap>True</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkHSeparator</class>
-      <name>hseparator1</name>
-      <x>8</x>
-      <y>176</y>
-      <width>608</width>
-      <height>16</height>
     </widget>
 
     <widget>
@@ -466,6 +432,63 @@
     </widget>
 
     <widget>
+      <class>GtkButton</class>
+      <name>B10</name>
+      <x>408</x>
+      <y>324</y>
+      <width>122</width>
+      <height>24</height>
+      <can_focus>True</can_focus>
+      <accelerator>
+	<modifiers>0</modifiers>
+	<key>GDK_F10</key>
+	<signal>clicked</signal>
+      </accelerator>
+      <signal>
+	<name>clicked</name>
+	<handler>send_event</handler>
+	<data>CLICKED</data>
+	<last_modification_time>Tue, 26 Dec 2000 01:10:35 GMT</last_modification_time>
+      </signal>
+      <label>F10 ∏¯»Ò £ºÃ§ §∑</label>
+      <relief>GTK_RELIEF_NORMAL</relief>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label252</name>
+      <x>52</x>
+      <y>124</y>
+      <width>52</width>
+      <height>24</height>
+      <label>Ωª    ΩÍ</label>
+      <justify>GTK_JUSTIFY_LEFT</justify>
+      <wrap>True</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator2</name>
+      <x>0</x>
+      <y>40</y>
+      <width>668</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
+      <class>GtkHSeparator</class>
+      <name>hseparator1</name>
+      <x>0</x>
+      <y>296</y>
+      <width>668</width>
+      <height>16</height>
+    </widget>
+
+    <widget>
       <class>GtkLabel</class>
       <name>MIDASI</name>
       <x>272</x>
@@ -479,6 +502,149 @@
       <yalign>0.5</yalign>
       <xpad>0</xpad>
       <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow2</name>
+      <x>380</x>
+      <y>184</y>
+      <width>304</width>
+      <height>108</height>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaCList</class>
+	<name>KOHLIST</name>
+	<width>233</width>
+	<height>116</height>
+	<can_focus>True</can_focus>
+	<columns>3</columns>
+	<column_widths>70,70,80</column_widths>
+	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+	<show_titles>True</show_titles>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label271</name>
+	  <label>∏¯»Ò</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label272</name>
+	  <label>…È√¥º‘»÷πÊ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label273</name>
+	  <label>ºıµÎº‘»÷πÊ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
+    </widget>
+
+    <widget>
+      <class>GtkScrolledWindow</class>
+      <name>scrolledwindow1</name>
+      <x>4</x>
+      <y>184</y>
+      <width>368</width>
+      <height>108</height>
+      <hscrollbar_policy>GTK_POLICY_NEVER</hscrollbar_policy>
+      <vscrollbar_policy>GTK_POLICY_ALWAYS</vscrollbar_policy>
+      <hupdate_policy>GTK_UPDATE_CONTINUOUS</hupdate_policy>
+      <vupdate_policy>GTK_UPDATE_CONTINUOUS</vupdate_policy>
+
+      <widget>
+	<class>GtkPandaCList</class>
+	<name>HKNLIST</name>
+	<width>300</width>
+	<height>108</height>
+	<can_focus>True</can_focus>
+	<columns>4</columns>
+	<column_widths>71,68,86,87</column_widths>
+	<selection_mode>GTK_SELECTION_SINGLE</selection_mode>
+	<show_titles>True</show_titles>
+	<shadow_type>GTK_SHADOW_IN</shadow_type>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label267</name>
+	  <label> ›∏±</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label268</name>
+	  <label> ›∏±º‘»÷πÊ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label269</name>
+	  <label>µ≠πÊ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <child_name>CList:title</child_name>
+	  <name>label270</name>
+	  <label>»÷πÊ</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+      </widget>
     </widget>
   </widget>
 </widget>

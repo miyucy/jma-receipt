@@ -1302,7 +1302,18 @@
                    07  SPA-GMN2E-ADRS2         PIC X(100).
                    07  SPA-GMN2E-BIRTHDAY      PIC X(09).
                    07  SPA-GMN2E-NENREI        PIC X(09).
-                   07  SPA-GMN2E-SEX           PIC X(04).
+                   07  SPA-GMN2E-SEX           PIC X(02).
+                   07  SPA-GMN2E-HKNLIST-G.
+                       09  SPA-GMN2E-HKNLIST-OCC   OCCURS  5.
+                           11  SPA-GMN2E-THKNMEI       PIC X(10).
+                           11  SPA-GMN2E-THKNJANUM     PIC X(08).
+                           11  SPA-GMN2E-TKIGO         PIC X(40).
+                           11  SPA-GMN2E-TNUM          PIC X(40).
+                   07  SPA-GMN2E-KOHLIST-G.
+                       09  SPA-GMN2E-KOHLIST-OCC   OCCURS  10.
+                           11  SPA-GMN2E-TKOHMEI       PIC X(10).
+                           11  SPA-GMN2E-TFTNJANUM     PIC X(10).
+                           11  SPA-GMN2E-TJKYSNUM      PIC X(20).
       *
                05  SPA-GMN2E-GRPHOSPNUM-G.
                    07  SPA-GMN2E-GRPHOSPNUM     PIC X(02).

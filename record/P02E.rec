@@ -32,7 +32,40 @@ P02E	{
 			style	varchar(20);
 			value	varchar(20);
 		};
+		scrolledwindow2	{
+			hpos	int;
+			vpos	int;
+			KOHLIST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(10);
+					value1	varchar(10);
+					value2	varchar(20);
+				}	[10];
+				select	bool[10];
+			};
+		};
+		scrolledwindow1	{
+			hpos	int;
+			vpos	int;
+			HKNLIST	{
+				count	int;
+				row	int;
+				item	{
+					value0	varchar(10);
+					value1	varchar(8);
+					value2	varchar(20);
+					value3	varchar(20);
+				}	[5];
+				select	bool[5];
+			};
+		};
 		B03	{
+	           	state	int;
+			label	varchar(20);
+		};
+		B10	{
 	           	state	int;
 			label	varchar(20);
 		};
