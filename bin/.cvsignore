@@ -6,3 +6,7 @@ jma-receipt-program-upgrade-check.sh
 jma-receipt-program-upgrade.sh
 orcvt_exec.sh
 jma-receipt-sysbase-setup.sh
+jma-backupcluster.sh
+jma-dbsync.sh
+jma-restorecluster.sh
+
