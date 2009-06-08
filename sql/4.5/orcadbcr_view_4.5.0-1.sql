@@ -23,7 +23,9 @@ CREATE VIEW view_q001 AS
            tbl_ptkohinf.kohid,
            tbl_ptkohinf.kohnum,
            tbl_ptkohinf.paykbn,
-           tbl_ptkohinf.ftnjanum 
+           tbl_ptkohinf.ftnjanum,
+           tbl_ptkohinf.jkysnum ,
+           tbl_ptkohinf.tekstymd 
       FROM (((tbl_hkncombi JOIN view_q004 
         ON ((((tbl_hkncombi.hospnum = view_q004.hospnum) 
        AND (tbl_hkncombi.ptid = view_q004.ptid)) 
@@ -59,7 +61,9 @@ CREATE VIEW view_q001 AS
            tbl_ptkohinf.kohid,
            tbl_ptkohinf.kohnum,
            tbl_ptkohinf.paykbn,
-           tbl_ptkohinf.ftnjanum 
+           tbl_ptkohinf.ftnjanum,
+           tbl_ptkohinf.jkysnum ,
+           tbl_ptkohinf.tekstymd 
       FROM ((view_q004 JOIN tbl_hkncombi 
         ON ((((view_q004.hospnum = tbl_hkncombi.hospnum) 
        AND (view_q004.ptid = tbl_hkncombi.ptid)) 

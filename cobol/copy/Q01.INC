@@ -20,6 +20,8 @@
               04  Q01-B05S-STATE               PIC S9(9)   BINARY.
               04  Q01-B06S-STATE               PIC S9(9)   BINARY.
               04  Q01-B07S-STATE               PIC S9(9)   BINARY.
+              04  Q01-B06-LABEL                PIC X(10).
+              04  Q01-B07-LABEL                PIC X(10).
               04  Q01-CMB-SELPATTERN.
                 05  Q01-SELPATTERN             PIC X(33).
                 05  Q01-CMB-SELPATTERN-COUNT   PIC S9(9)   BINARY.
@@ -154,6 +156,11 @@
                     07  Q01-CMB-UTAGAIKBN-COUNT
                                                PIC S9(9)   BINARY.
                     07  Q01-CMB-UTAGAIKBN-ITEM PIC X(20)   OCCURS  3.
+                  06  Q01-CMB-KYUSEIKBN.
+                    07  Q01-KYUSEIKBN          PIC X(20).
+                    07  Q01-CMB-KYUSEIKBN-COUNT
+                                               PIC S9(9)   BINARY.
+                    07  Q01-CMB-KYUSEIKBN-ITEM PIC X(20)   OCCURS  3.
                   06  Q01-CMB-TENKIKBN.
                     07  Q01-TENKIKBN          PIC X(20).
                     07  Q01-CMB-TENKIKBN-COUNT
@@ -232,3 +239,8 @@
                     07  Q01-RDIO-OCC       OCCURS  3.
                       08  Q01-RDIO1            PIC X.
                       08  Q01-RDIO2            PIC X.
+                  06  Q01-LBLORDER-TBL.
+                    07  Q01-LBLORDER-OCC   OCCURS  3.
+                      08  Q01-LBLORDER         PIC X(80).
+                      08  Q01-LBLORDER-STYLE   PIC X(20).
+

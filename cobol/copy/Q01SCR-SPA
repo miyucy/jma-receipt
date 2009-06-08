@@ -71,6 +71,8 @@
                        09  SPA-GMN-Q01-STSRYYMD        PIC X(10).
       *                診療年月日終了日
                        09  SPA-GMN-Q01-EDSRYYMD        PIC X(10).
+      *                前月or前日
+                       09  SPA-GMN-Q01-MMORDD              PIC 9(01).
       *                基本情報
                        09  SPA-GMN-Q01-KIHON-AREA.
       *                    生年月日開始日
@@ -273,6 +275,12 @@
                                13  SPA-GMN-Q01-UTAGAIKBN   PIC X(01).
                                13  SPA-GMN-Q01-UTAGAIKBNFL PIC X(01).
                                13  SPA-GMN-Q01-UTAGAIKBNMEI
+                                                           PIC X(18).
+      *                    急性病名
+                           11  SPA-GMN-Q01-KYUSEIKBN-G.
+                               13  SPA-GMN-Q01-KYUSEIKBN   PIC X(01).
+                               13  SPA-GMN-Q01-KYUSEIKBNFL PIC X(01).
+                               13  SPA-GMN-Q01-KYUSEIKBNMEI
                                                            PIC X(18).
       *                    転帰区分
                            11  SPA-GMN-Q01-TENKIKBN-G.
@@ -530,6 +538,12 @@
                                13  SPA-GMN-Q01-UTAGAIKBNL  PIC X(1).
                                13                          PIC X(1).
                                13  SPA-GMN-Q01-UTAGAIKBNMEIL PIC X(18).
+                       09  SPA-GMN-Q01-KYUSEIKBNLST-G.
+                           11  SPA-GMN-Q01-KYUSEIKBNLST-MAX PIC 9(05).
+                           11  SPA-GMN-Q01-KYUSEIKBNLST    OCCURS 3.
+                               13  SPA-GMN-Q01-KYUSEIKBNL  PIC X(1).
+                               13                          PIC X(1).
+                               13  SPA-GMN-Q01-KYUSEIKBNMEIL PIC X(18).
                        09  SPA-GMN-Q01-TENKIKBNLST-G.
                            11  SPA-GMN-Q01-TENKIKBNLST-MAX PIC 9(05).
                            11  SPA-GMN-Q01-TENKIKBNLST      OCCURS 10.
@@ -970,6 +984,7 @@
                    07  SPA-Q01-BYOMEI-AREA.
       *
                        09  SPA-Q01-UTAGAIKBN           PIC X(01).
+                       09  SPA-Q01-KYUSEIKBN           PIC X(01).
                        09  SPA-Q01-TENKIKBN            PIC X(01).
                        09  SPA-Q01-STTENKIYMD          PIC X(08).
                        09  SPA-Q01-EDTENKIYMD          PIC X(08).

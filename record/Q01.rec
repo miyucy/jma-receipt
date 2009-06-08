@@ -9,6 +9,12 @@ Q01	{
 		B07S	{
 					state	int;
 		};
+		B06	{
+			label	varchar(10);
+		};
+		B07	{
+			label	varchar(10);
+		};
 		CMB_SELPATTERN	{
 			SELPATTERN	{
 				value	varchar(33);
@@ -446,6 +452,13 @@ Q01	{
 					count	int;
 					item	varchar(20)[3];
 				};
+				CMB_KYUSEIKBN	{
+					KYUSEIKBN	{
+						value	varchar(20);
+					};
+					count	int;
+					item	varchar(20)[3];
+				};
 				CMB_TENKIKBN	{
 					TENKIKBN	{
 						value	varchar(20);
@@ -639,6 +652,18 @@ Q01	{
 				};
 				RDIO32	{
 					value	bool;
+				};
+				LBLORDER1	{
+					value	varchar(80);
+					style   varchar(20);
+				};
+				LBLORDER2	{
+					value	varchar(80);
+					style   varchar(20);
+				};
+				LBLORDER3	{
+					value	varchar(80);
+					style   varchar(20);
 				};
 			};
 		};

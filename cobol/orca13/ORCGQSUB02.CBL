@@ -98,12 +98,12 @@
            03  WRK-NAME-SEQ                        PIC 9(01).
            03  WRK-KOHNUM                          PIC X(04).
            03  WRK-PAYKBN                          PIC X(02).
-           03  WRK-DISTINCT                        PIC X(08).
            03  WRK-YMD                             PIC X(08).
            03  WRK-RECECOMMENT                     PIC X(50).
            03  WRK-ITEM-G.
                05  WRK-ITEM                        PIC X(50)
                                                    OCCURS  4.
+           03  WRK-KOHTBLID                        PIC X(02).
       *
       *    固定値領域
        01  CONST-AREA.
@@ -152,13 +152,13 @@
                05  CONST-TBL-J2    PIC X(20)   VALUE "TBL_TNKRRK   J".
                05  CONST-TBL-K     PIC X(20)   VALUE "TBL_RECECOM  K".
            03  CONST-KMK-ITEM-AREA.
-               05  FILLER          PIC X(10)   VALUE "PTNUM".
-               05  FILLER          PIC X(10)   VALUE "KANANAME".
-               05  FILLER          PIC X(10)   VALUE "SEX".
-               05  FILLER          PIC X(10)   VALUE "BIRTHDAY".
-               05  FILLER          PIC X(10)   VALUE "HOME_ADRS".
+               05  FILLER          PIC X(12)   VALUE "PTNUM".
+               05  FILLER          PIC X(12)   VALUE "KANANAME".
+               05  FILLER          PIC X(12)   VALUE "SEX".
+               05  FILLER          PIC X(12)   VALUE "BIRTHDAY".
+               05  FILLER          PIC X(12)   VALUE "MAX_JKYSNUM".
            03  CONST-KMK-ITEM-R    REDEFINES   CONST-KMK-ITEM-AREA.
-               05  CONST-KMK-ITEM  PIC X(10)   OCCURS  5.
+               05  CONST-KMK-ITEM  PIC X(12)   OCCURS  5.
       *
            03  CONST-ORDER-AREA.
                05  FILLER          PIC X(5)    VALUE "ASC".
@@ -238,6 +238,8 @@
            MOVE    WRK-SQL (WRK-PNT:)  TO  WRK-SQL-COUNT
                                               (WRK-SQL-COUNT-PNT :)
       *
+           PERFORM 1001-GROUP-EDIT-SEC
+      *
            PERFORM 1001-ORDER-EDIT-SEC
       *
            MOVE    SPACE               TO  WRK-SQL (WRK-SQL-PNT:)
@@ -252,7 +254,7 @@
        1001-JYOKEN-EDIT-SEC            SECTION.
       *
            MOVE    ZERO            TO  FLG-TBLNAME
-           MOVE    SPACE           TO  WRK-DISTINCT
+           MOVE    SPACE           TO  WRK-KOHTBLID
            PERFORM 10011-JYOKEN-INIT-SEC
       *
            STRING  " FROM ("       DELIMITED   BY  SIZE
@@ -265,6 +267,7 @@
            MOVE    "1"             TO  SPA-Q01-GTBL (5)
            MOVE    SPACE           TO  SPA-Q01-GTBL (6)
       *
+           MOVE    "@@"            TO  WRK-KOHTBLID
            PERFORM 1001-JYOKEN-INIT-SEC
       *
            PERFORM 1001-FROM-EDIT-SEC
@@ -282,6 +285,7 @@
            MOVE    SPACE           TO  SPA-Q01-GTBL (5)
            MOVE    "1"             TO  SPA-Q01-GTBL (6)
       *
+           MOVE    "@@"            TO  WRK-KOHTBLID
            PERFORM 1001-JYOKEN-INIT-SEC
       *
            PERFORM 1001-FROM-EDIT-SEC
@@ -300,7 +304,7 @@
        1002-JYOKEN-EDIT-SEC            SECTION.
       *
            MOVE    ZERO            TO  FLG-TBLNAME
-           MOVE    "DISTINCT"      TO  WRK-DISTINCT
+           MOVE    SPACE           TO  WRK-KOHTBLID
            PERFORM 10011-JYOKEN-INIT-SEC
       *
            STRING  " FROM ("
@@ -309,6 +313,25 @@
            END-STRING
       *
            MOVE    WRK-SQL-PNT     TO  WRK-PNT
+      *
+           MOVE    "@@"            TO  WRK-KOHTBLID
+           IF    ( SPA-Q01-GTBL (6)  =   "1" )
+               IF    ( SPA-Q01-GTBL (8)  =   "1" )
+                   IF    ( SPA-Q01-KOHNUM-JKN      =   "1" )
+                    AND  ( SPA-Q01-KOHNUM-G    NOT =   SPACE )
+                       MOVE    "D1"        TO  WRK-KOHTBLID
+                   ELSE
+                       MOVE    "D"         TO  WRK-KOHTBLID
+                   END-IF
+               ELSE
+                   IF    ( SPA-Q01-KOHNUM-JKN      =   "1" )
+                    AND  ( SPA-Q01-KOHNUM-G    NOT =   SPACE )
+                       MOVE    "E1"        TO  WRK-KOHTBLID
+                   ELSE
+                       MOVE    "E"         TO  WRK-KOHTBLID
+                   END-IF
+               END-IF
+           END-IF
       *
            PERFORM 1001-JYOKEN-INIT-SEC
       *
@@ -325,7 +348,6 @@
        1001-JYOKEN-INIT-SEC            SECTION.
       *
            MOVE    1               TO  FLG-TBLNAME
-           MOVE    SPACE           TO  WRK-DISTINCT
            PERFORM 10011-JYOKEN-INIT-SEC
       *
            STRING  " FROM TBL_PTINF A,TBL_PTNUM H "
@@ -454,14 +476,7 @@
                    WITH    POINTER   WRK-SQL-PNT
                    END-STRING
                ELSE
-      *
-                   IF    ( WRK-DISTINCT    NOT =   SPACE )
-                       STRING  WRK-DISTINCT        DELIMITED   BY  SPACE
-                               " "                 DELIMITED   BY  SIZE
-                       INTO    WRK-SQL
-                       WITH    POINTER   WRK-SQL-PNT
-                       END-STRING
-                   END-IF
+                   CONTINUE
                END-IF
       *
                IF    ( FLG-TBLNAME =   ZERO )
@@ -479,6 +494,33 @@
                END-IF
       *
            END-PERFORM
+           EVALUATE    WRK-KOHTBLID
+           WHEN    SPACE
+               STRING  ",SUBSTR(MAX(JKYSNUM),17,20) AS MAX_JKYSNUM"
+                                                       DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER   WRK-SQL-PNT
+               END-STRING
+           WHEN    "@@"
+               STRING  ",CAST('0' AS TEXT) AS JKYSNUM"
+                                                       DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER   WRK-SQL-PNT
+               END-STRING
+           WHEN    OTHER
+               STRING  ",CAST("              DELIMITED BY SIZE
+                       WRK-KOHTBLID          DELIMITED BY SPACE
+                       ".TEKSTYMD||SUBSTR("  DELIMITED BY SIZE
+                       WRK-KOHTBLID          DELIMITED BY SPACE
+                       ".FTNJANUM||'00000000',1,8)||"
+                                             DELIMITED BY SIZE
+                       WRK-KOHTBLID          DELIMITED BY SPACE
+                       ".JKYSNUM AS TEXT)AS JKYSNUM"
+                                             DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER   WRK-SQL-PNT
+               END-STRING
+           END-EVALUATE
       *
            .
        10011-JYOKEN-INIT-EXT.
@@ -1258,6 +1300,10 @@
                PERFORM 10011-UTAGAIFLG-SQL-EDIT-SEC
            END-IF
       *
+           IF    ( SPA-Q01-KYUSEIKBN   NOT =   SPACE )
+               PERFORM 10012-UTAGAIFLG-SQL-EDIT-SEC
+           END-IF
+      *
            IF    ( SPA-Q01-TENKIKBN   NOT =   SPACE )
                PERFORM 10011-TENKIKBN-SQL-EDIT-SEC
            END-IF
@@ -1358,6 +1404,10 @@
       *
                    IF    ( SPA-Q01-UTAGAIKBN   NOT =   SPACE )
                        PERFORM 10011-UTAGAIFLG-SQL-EDIT-SEC
+                   END-IF
+      *
+                   IF    ( SPA-Q01-KYUSEIKBN   NOT =   SPACE )
+                       PERFORM 10012-UTAGAIFLG-SQL-EDIT-SEC
                    END-IF
       *
                    IF    ( SPA-Q01-TENKIKBN    NOT =   SPACE )
@@ -3096,6 +3146,36 @@
        10011-UTAGAIFLG-SQL-EDIT-EXT.
            EXIT.
       *****************************************************************
+      *    病名疑いフラグ編集処理
+      *****************************************************************
+       10012-UTAGAIFLG-SQL-EDIT-SEC    SECTION.
+      *
+           MOVE    1                   TO  CNT-JYOKEN
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT2-SEC
+      *
+           IF    ( SPA-Q01-KYUSEIKBN   =   "1" )
+               STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                       ".UTAGAIFLG IN ('2','3')"
+                                           DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           ELSE
+               STRING  WRK-SQL-TBL-NAME    DELIMITED BY SPACE
+                       ".UTAGAIFLG NOT IN ('2','3')"
+                                           DELIMITED BY SIZE
+               INTO    WRK-SQL
+               WITH    POINTER WRK-SQL-PNT
+               END-STRING
+           END-IF
+      *
+           PERFORM 900-SQL-JYOKEN-EDIT3-SEC
+      *
+           .
+       10012-UTAGAIFLG-SQL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
       *    病名転帰区分編集処理
       *****************************************************************
        10011-TENKIKBN-SQL-EDIT-SEC     SECTION.
@@ -3163,6 +3243,38 @@
       *
            .
        10011-TENKIKBN-SQL-EDIT-EXT.
+           EXIT.
+      *****************************************************************
+      *    GROUP BY編集処理
+      *****************************************************************
+       1001-GROUP-EDIT-SEC                 SECTION.
+      *
+           STRING  " GROUP BY "        DELIMITED   BY  SIZE
+           INTO    WRK-SQL
+           WITH    POINTER WRK-SQL-PNT
+           END-STRING
+      *
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0    >   CONST-ITEM-MAX )
+      *
+               IF    ( IDX0    >   1 )
+                   STRING  ","         DELIMITED   BY  SIZE
+                   INTO    WRK-SQL
+                   WITH    POINTER   WRK-SQL-PNT
+                   END-STRING
+               ELSE
+                   CONTINUE
+               END-IF
+      *
+               STRING  CONST-ITEM     (IDX0)   DELIMITED   BY  SPACE
+               INTO    WRK-SQL
+               WITH    POINTER   WRK-SQL-PNT
+               END-STRING
+      *
+           END-PERFORM
+      *
+           .
+       1001-GROUP-EDIT-EXT.
            EXIT.
       *****************************************************************
       *    並べ替え順編集処理
