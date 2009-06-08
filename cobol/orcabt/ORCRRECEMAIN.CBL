@@ -62,8 +62,6 @@
       *
        WORKING-STORAGE             SECTION.
       *
-       01  LNK-TIMEOFDAY       PIC X(100).
-      *
       *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
@@ -2655,9 +2653,6 @@ grpsys                                  SPA-AREA
       *****************************************************************
        20011-REAL-DB-DELETE-SEC      SECTION.
       *受診履歴削除
-           CALL "timeofday" USING LNK-TIMEOFDAY
-           DISPLAY "real db(jyurrk) delete st  "
-                   " "  LNK-TIMEOFDAY(1:20)
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
@@ -2672,13 +2667,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            DISPLAY "take jyurrk  del "
                                 WRK-PARA-HOSPNUM WRK-PTID
 grpsys     PERFORM 900-ORCDBMAIN-SEC
-           CALL "timeofday" USING LNK-TIMEOFDAY
-           DISPLAY "real db(jyurrk) delete ed  "
-                   " "  LNK-TIMEOFDAY(1:20)
       *診療会計削除
-           CALL "timeofday" USING LNK-TIMEOFDAY
-           DISPLAY "real db(sryacct) delete st  "
-                   " "  LNK-TIMEOFDAY(1:20)
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
@@ -2691,13 +2680,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            DISPLAY "take acct  del "
                                 WRK-PARA-HOSPNUM WRK-PTID
 grpsys     PERFORM 900-ORCDBMAIN-SEC
-           CALL "timeofday" USING LNK-TIMEOFDAY
-           DISPLAY "real db(sryacct) delete ed  "
-                   " "  LNK-TIMEOFDAY(1:20)
            PERFORM 200111-REAL-SRYACY-DB-DELETE2-SEC
-           CALL "timeofday" USING LNK-TIMEOFDAY
-           DISPLAY "real db(sryact) del ed  "
-                   " "  LNK-TIMEOFDAY(1:20)
       *算定履歴削除
            DISPLAY "real db(santei) del ed  "
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
@@ -2761,9 +2744,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *    実ＤＢ更新処理
       *****************************************************************
        20011-REAL-DB-MAKE-SEC        SECTION.
-           CALL "timeofday" USING LNK-TIMEOFDAY
-           DISPLAY "real db make st  "
-                   " "  LNK-TIMEOFDAY(1:20)
            PERFORM 20011-REAL-DB-DELETE-SEC
       *収納マスタ関係は、負担金を捨てるということで一時コメントアウト
       *※ 但し、収納金額を見て負担者番号の出し入れをしているのも無視
@@ -3121,9 +3101,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
       *
-           CALL "timeofday" USING LNK-TIMEOFDAY
-           DISPLAY "real db make ed  "
-                   " "  LNK-TIMEOFDAY(1:20)
            .
        20011-REAL-DB-MAKE-EXT.
            EXIT.

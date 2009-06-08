@@ -42,7 +42,6 @@
        DATA                    DIVISION.
       *
        WORKING-STORAGE             SECTION.
-       01  LNK-TIMEOFDAY       PIC X(100).
       *
       *    フラグ領域
        01  FLG-AREA.
@@ -257,10 +256,6 @@
       *****************************************************************
        100-PRV-DBMAKE-SEC              SECTION.
       *
-      *  ★ 残り 収納関係です
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "tmp db ins START"
-                   " "  LNK-TIMEOFDAY(1:20).
       *    TMP患者マスタ作成
            PERFORM 100-PTINFPRV-INS-SEC
       *    TMP受診履歴作成
@@ -273,9 +268,6 @@
            PERFORM 100-SANTEIPRV-INS-SEC
       *    TMP診療会計付加情報作成
            PERFORM 100-ACCTPLUSPRV-INS-SEC
-           CALL "timeofday" USING LNK-TIMEOFDAY.
-           DISPLAY "tmp db ins END  "
-                   " "  LNK-TIMEOFDAY(1:20).
            .
       *
        100-PRV-DBMAKE-EXT.
