@@ -135,6 +135,7 @@
            03  WRK-DBFILE              PIC X(20).
            03  WRK-IN                  PIC X(64).
            03  WRK-SYORI               PIC 9(04).
+           03  WRK-ST-IDX              PIC 9(04).
       *
            03  WRK-DBSVERSION          PIC X(21).
            03  WRK-DBSVERSION2         PIC X(21).
@@ -241,11 +242,22 @@
            INITIALIZE                  DBKANRI-REC
            MOVE    SPACE               TO  WRK-DBFILE
            MOVE    SPACE               TO  WRK-IN
-           MOVE    ZERO                TO  WRK-SYORI
+           MOVE    1                   TO  WRK-SYORI
+           MOVE    1                   TO  WRK-ST-IDX
+      *    OpenCOBOL version check
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL      (IDX     >   200     )
+               IF      ACCT-REC(IDX:9)     =   "ORCXSMST1"
+      *            for OpenCOBOL 0.8.9
+                   COMPUTE WRK-ST-IDX          =   IDX  +  10
+                   MOVE    200                 TO  IDX
+               END-IF
+           END-PERFORM
+      *
            MOVE    ZERO                TO  IDX1
            MOVE    ZERO                TO  IDX2
            MOVE    ZERO                TO  IDY
-           PERFORM VARYING     IDX     FROM    1   BY  1
+           PERFORM VARYING     IDX     FROM    WRK-ST-IDX  BY  1
                    UNTIL      (IDX     >   200     )  OR
                               (IDY     >   7       )
               IF      WRK-SYORI            =   1
@@ -264,10 +276,6 @@
                        MOVE    ACCT-REC(IDX:1) TO  WRK-IN(IDX2:1)
                    END-IF
                  END-IF
-               END-IF
-               IF      ACCT-REC(IDX:9)     =   "ORCXSMST1"
-                   ADD     1               TO  WRK-SYORI
-                   ADD     9               TO  IDX
                END-IF
            END-PERFORM
       *
