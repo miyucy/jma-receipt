@@ -2221,7 +2221,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            IF      FLG-PTBYOMEI        =   1
                MOVE    "1003"              TO  SPA-ERRCD
                DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
-               GO  TO  3201-BYOMEI-COPY-KOUSIN-EXT
+               GO  TO  3203-BYOMEI-SRYKA-COPY-KOUSIN-EXT
            ELSE
                MOVE    PTBYOMEI-REC        TO  WRK-PTBYOMEI-COPY-REC
                                                WRK-PTBYOMEI-DELETE-REC
@@ -6707,6 +6707,48 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO  TO  450-TOUROKU-EXT
            END-IF
       *
+      *    新規又は科変更、開始日変更時の行番号追加が可能か
+           IF   (  SPA-NAI-C02-RENNUM  =   ZERO                 )
+           OR   (    ( SPA-GMN-C02-BSRYKA  NOT =
+                                       SPA-NAI-C02-SRYKA-OLD  )
+                  OR ( SPA-NAI-C02-SRYYMD  NOT =
+                                       SPA-NAI-C02-SRYYMD-OLD ) )
+      *        病名数のチェック
+               INITIALIZE                      PTBYOMEI-REC
+               MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+               MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+               MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
+               MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
+               MOVE    "%"                 TO  PTBYO-DLTFLG
+               MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+               MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+               MOVE    "key34"             TO  WRK-MCP-PATHNAME
+               PERFORM 900-PTBYO-INV-SEC
+      *        同一診療科、開始日で９９件のとき（削除分含む）
+               COMPUTE IDXX    =   PTBYO-RENNUM
+                               +   SPA-NAI-C02-BYOMEICD-MAX
+               IF      IDXX                >   99
+                   MOVE    "0034"              TO  SPA-ERRCD
+                   INITIALIZE                      PTBYOMEI-REC
+grpsys             MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+                   MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+                   MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
+                   MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
+                   MOVE    SPACE               TO  PTBYO-DLTFLG
+                   MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+                   MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+                   MOVE    "key34"             TO  WRK-MCP-PATHNAME
+                   PERFORM 900-PTBYO-INV-SEC
+      *            同一診療科、開始日で９９件のとき
+                   COMPUTE IDXX    =   PTBYO-RENNUM
+                                   +   SPA-NAI-C02-BYOMEICD-MAX
+                   IF      IDXX                >   99
+                       MOVE    "0088"          TO  SPA-ERRCD
+                   END-IF
+                   GO  TO  450-TOUROKU-EXT
+               END-IF
+           END-IF
+      *
       *    病名編集
            IF      SPA-NAI-C02-SRYYMD   =   SPACE
                MOVE    SPA-NAI-C02-SYSYMD   TO  SPA-NAI-C02-SRYYMD
@@ -7602,34 +7644,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                WHEN    ZERO
                    IF      SPA-NAI-C02-SELNO-INSERT    =   ZERO
       *                患者病名マスター追加
-                       MOVE    ZERO                TO  WRK-RENNUM
-                       INITIALIZE                  PTBYO-KEY
-grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
-                       MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
-                       MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
-                       MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
-                       MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-                       MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-                       MOVE    "key7"              TO  WRK-MCP-PATHNAME
-                       PERFORM 900-PTBYO-INV-SEC
-                       IF      FLG-PTBYOMEI        =   ZERO
-                           MOVE    PTBYO-RENNUM    TO  WRK-RENNUM
-                       END-IF
-                       ADD     1                   TO  WRK-RENNUM
-      *
-                       MOVE    WRK-PTBYOMEI-REC (IDXX)
-                                                   TO  PTBYOMEI-REC 
-grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
-                       MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
-                       MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
-                       MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
-                       MOVE    WRK-RENNUM          TO  PTBYO-RENNUM
-      *
-                       MOVE    SMCNDATE-YMD        TO  PTBYO-CREYMD
-                       MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
-                       MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
-      *
-                       MOVE    "DBINSERT"          TO  MCP-FUNC
+                       PERFORM 450222-PTBYOMEI-INSERT-SEC
+                       GO  TO  45022-PTBYOMEI-UPDATE-EXT
                    ELSE
       *                患者病名マスター行指定追加
                        MOVE    ZERO                TO  WRK-RENNUM
@@ -7693,33 +7709,9 @@ grpsys                 PERFORM 900-ORCDBMAIN-SEC
                            GO  TO  45022-PTBYOMEI-UPDATE-EXT
                        END-IF
       *
-                       MOVE    ZERO                TO  WRK-RENNUM
-                       INITIALIZE                  PTBYO-KEY
-grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
-                       MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
-                       MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
-                       MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
-                       MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
-                       MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
-                       MOVE    "key7"              TO  WRK-MCP-PATHNAME
-                       PERFORM 900-PTBYO-INV-SEC
-                       IF      FLG-PTBYOMEI        =   ZERO
-                           MOVE    PTBYO-RENNUM    TO  WRK-RENNUM
-                       END-IF
-                       ADD     1                   TO  WRK-RENNUM
-                       MOVE    WRK-PTBYOMEI-REC (IDXX)
-                                                   TO  PTBYOMEI-REC
-grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
-                       MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
-                       MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
-                       MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
-                       MOVE    WRK-RENNUM          TO  PTBYO-RENNUM
-      *
-                       MOVE    SMCNDATE-YMD        TO  PTBYO-CREYMD
-                       MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
-                       MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
-      *
-                       MOVE    "DBINSERT"          TO  MCP-FUNC
+      *                患者病名マスター追加
+                       PERFORM 450222-PTBYOMEI-INSERT-SEC
+                       GO  TO  45022-PTBYOMEI-UPDATE-EXT
                    ELSE
       *                患者病名マスター更新（診療科変更なし）
                        INITIALIZE                  PTBYO-KEY
@@ -7877,6 +7869,136 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
           PERFORM 450221-RECEUPD-UPDATE-SEC
           .
        450220-PTBYOMEI-SELNO-INSERT-EXT.
+           EXIT.
+      *
+      *
+      *****************************************************************
+      *    追加処理
+      *****************************************************************
+       450222-PTBYOMEI-INSERT-SEC           SECTION.
+      *
+           INITIALIZE                      WRK-PTBYOMEI-INSERT-AREA
+           MOVE    ZERO                TO  IDY1
+           MOVE    ZERO                TO  WRK-RENNUM
+      *
+      *    患者病名マスター追加
+           INITIALIZE                  PTBYO-KEY
+grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
+           MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
+           MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+           MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+           MOVE    "key7"              TO  WRK-MCP-PATHNAME
+           PERFORM 900-PTBYO-INV-SEC
+           IF      FLG-PTBYOMEI        =   ZERO
+               MOVE    PTBYO-RENNUM    TO  WRK-RENNUM
+           END-IF
+           IF      WRK-RENNUM          =   99
+      *        連番をつけなおして更新
+                MOVE    ZERO               TO  WRK-RENNUM
+      *
+      *        登録済の病名を退避して削除する
+               INITIALIZE                      PTBYOMEI-REC
+               MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+               MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+               MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
+               MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
+               MOVE    ZERO                TO  PTBYO-RENNUM
+               MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+               MOVE    "tbl_ptbyomei"      TO  WRK-MCP-TABLE
+               MOVE    "key36"             TO  WRK-MCP-PATHNAME
+               MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+               MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+               PERFORM 900-DBSELECT-SEC
+               IF      MCP-RC              =   ZERO
+                   MOVE    WRK-MCP-TABLE       TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
+                   PERFORM 900-PTBYO-READ-SEC
+               ELSE
+                   MOVE    1                   TO  FLG-PTBYOMEI
+               END-IF
+      *
+               PERFORM         UNTIL   FLG-PTBYOMEI    =   1
+                               OR      IDY1            =   99
+                   ADD     1               TO  IDY1
+                                               WRK-RENNUM
+                   MOVE    PTBYOMEI-REC    TO  WRK-PTBYOMEI-INSERT-REC
+                                                               (IDY1)
+                   MOVE    WRK-RENNUM      TO  WRK-PTBYO-INSERT-RENNUM
+                                                               (IDY1)
+                   MOVE    SMCNDATE-YMD    TO  WRK-PTBYO-INSERT-UPYMD
+                                                               (IDY1)
+                   MOVE    SMCNDATE-HMS    TO  WRK-PTBYO-INSERT-UPHMS
+                                                               (IDY1)
+      *            既に登録済の病名を削除する
+                   MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
+                   MOVE    "DBDELETE"      TO  MCP-FUNC
+                   MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
+                   MOVE    "key"           TO  MCP-PATHNAME
+      *???
+                   DISPLAY "PTBYO=" PTBYO-KEY "#" MCP-FUNC "#"
+      *???                
+grpsys             PERFORM 900-ORCDBMAIN-SEC
+                   IF      MCP-RC          NOT =   ZERO 
+                       MOVE    "1002"              TO  SPA-ERRCD
+                       DISPLAY "PTBYOMEI-KEY =>" PTBYO-KEY 
+                       GO  TO  450222-PTBYOMEI-INSERT-EXT
+                   END-IF
+      *
+                   MOVE    WRK-MCP-TABLE   TO  MCP-TABLE
+                   MOVE    WRK-MCP-PATHNAME
+                                           TO  MCP-PATHNAME
+                   PERFORM 900-PTBYO-READ-SEC
+               END-PERFORM
+               MOVE    WRK-MCP-TABLE   TO  MCP-TABLE
+               MOVE    WRK-MCP-PATHNAME
+                                       TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+      *
+           END-IF
+      *
+      *    追加分を追加
+           ADD     1                   TO  IDY1
+           ADD     1                   TO  WRK-RENNUM
+           MOVE    WRK-PTBYOMEI-REC (IDXX)
+                                       TO  PTBYOMEI-REC 
+           MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
+           MOVE    SPA-NAI-C02-PTID    TO  PTBYO-PTID
+           MOVE    SPA-GMN-C02-BSRYKA  TO  PTBYO-SRYKA
+           MOVE    SPA-NAI-C02-SRYYMD  TO  PTBYO-SRYYMD
+           MOVE    WRK-RENNUM          TO  PTBYO-RENNUM
+           MOVE    SMCNDATE-YMD        TO  PTBYO-CREYMD
+           MOVE    SMCNDATE-YMD        TO  PTBYO-UPYMD
+           MOVE    SMCNDATE-HMS        TO  PTBYO-UPHMS
+           MOVE    PTBYOMEI-REC        TO  WRK-PTBYOMEI-INSERT-REC
+                                                               (IDY1)
+      *
+           PERFORM VARYING IDY1    FROM    1   BY  1
+                   UNTIL   IDY1    >       99
+                   OR      WRK-PTBYO-INSERT-RENNUM (IDY1)
+                                           =   ZERO
+               MOVE    WRK-PTBYOMEI-INSERT-REC (IDY1) 
+                                           TO  PTBYOMEI-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    PTBYOMEI-REC        TO  MCPDATA-REC
+               MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+      *???
+               DISPLAY "PTBYO=" PTBYO-KEY "#" MCP-FUNC "#"
+      *???                
+grpsys         PERFORM 900-ORCDBMAIN-SEC
+               IF      MCP-RC          NOT =   ZERO 
+                   MOVE    "1001"              TO  SPA-ERRCD
+                   DISPLAY MCP-FUNC "PTBYOMEI-KEY =>" PTBYO-KEY
+                   GO  TO  450222-PTBYOMEI-INSERT-EXT
+               END-IF
+          END-PERFORM
+      *
+          PERFORM 450221-RECEUPD-UPDATE-SEC
+          .
+       450222-PTBYOMEI-INSERT-EXT.
            EXIT.
       *
       *****************************************************************
