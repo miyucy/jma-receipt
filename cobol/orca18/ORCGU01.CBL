@@ -37,8 +37,7 @@
       *                                     MONFUNC対応
       *  03.04.00    NACL−多々納 07/01/12  受付一覧年齢追加
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
-      *  04.05.00    NACL-多々納  09/06/03  予約登録遷移対応
-      *                                     400行対応
+      *  04.05.00    NACL-多々納  09/06/03  400行対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -438,12 +437,6 @@
       *
            INITIALIZE                  SPA-U01
            MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG
-      *    受付一覧→予約　から戻った時、業務メニューに戻る
-           IF      SPA-MOTOPG          =   "Y01"
-              AND  SPA-MOTOPG3         =   "U01"
-               MOVE    "M01"               TO  SPA-NAI-MOTOPG
-               MOVE    SPACE               TO  SPA-MOTOPG3
-           END-IF
       *
       *    曜日変換
            INITIALIZE                  LNK-DAY2-AREA
@@ -534,9 +527,6 @@
       *        選択一覧
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 490-U012-SYORI-SEC
-      *    予約登録へ
-               WHEN    "CLICKED"       ALSO    "B10"
-                   PERFORM 460-YOYAKU-SEC
            END-EVALUATE
       *
            .
@@ -1052,50 +1042,6 @@
        490-U012-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    予約画面へ
-      *****************************************************************
-       460-YOYAKU-SEC             SECTION.
-      *
-      *    予約登録からは、遷移不可
-           IF      SPA-NAI-MOTOPG      =   "Y01"
-               MOVE    "0004"              TO  SPA-ERRCD
-               MOVE    99                  TO  SPA-GMN-CUR
-           END-IF
-      *    選択中でないこと
-           IF      SPA-GMN-SELNUM(1)   NOT =   ZERO
-               MOVE    "0003"              TO  SPA-ERRCD
-               MOVE    1                   TO  SPA-GMN-CUR
-           END-IF
-           IF      SPA-GMN-SELNUM(2)   NOT =   ZERO
-               MOVE    "0003"              TO  SPA-ERRCD
-               MOVE    2                   TO  SPA-GMN-CUR
-           END-IF
-           IF      SPA-ERRCD       NOT =   SPACE
-               GO      TO      460-YOYAKU-EXT
-           END-IF
-      *    戻り時、画面を元へ戻す
-      *    MOVE    SPACE               TO  LINKAREA
-      *    MOVE    SPA-KYOUTU          TO  LNK-COMMON
-      *    MOVE    SPA-U02             TO  LNK-SCRSPA
-      *
-      *    画面移行用のパラメタ変更
-      **** MOVE    "U01"               TO  SPA-MOTOPG
-           MOVE    SPACE               TO  SPA-MOTOPG
-           MOVE    "U01"               TO  SPA-MOTOPG3
-           MOVE    "Y01"               TO  SPA-SAKIPG
-      **** INITIALIZE                  SPA-KYOTUKEY
-           MOVE    SPA-KYOUTU          TO  LNK-KYOUTU
-      *
-           MOVE   "CHANGE"             TO  MCP-PUTTYPE.
-           MOVE   "Y01    "            TO  MCP-WINDOW.
-      *
-           PERFORM 900-PUT-WINDOW.
-      *
-           MOVE    1                   TO  FLG-END
-           .
-       460-YOYAKU-EXT.
-           EXIT.
-      *****************************************************************
       *    前頁　処理
       *****************************************************************
        430-MAEGMN-SEC             SECTION.
@@ -1263,15 +1209,6 @@
                END-IF
            END-PERFORM
       *
-           IF      SPA-NAI-MOTOPG      =   "M01"
-                                       OR  "M01N"
-               MOVE    "予約登録"           TO  U01-B10-LABEL
-               MOVE    WIDGET-NORMAL        TO  U01-B10-STATE
-           ELSE
-               MOVE    SPACE                TO  U01-B10-LABEL
-               MOVE    WIDGET-INSENSITIVE   TO  U01-B10-STATE
-           END-IF
-      *
            PERFORM 5001-MAPCUR-SEC
            .
        500-GMNHEN-EXT.
@@ -1289,8 +1226,6 @@
                    MOVE    "SELNUM2"       TO  MCP-WIDGET
                WHEN    02
                    MOVE    "B12"           TO  MCP-WIDGET
-               WHEN    99
-                   MOVE    "B01"           TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -1309,15 +1244,6 @@
                WHEN    "0002"
                    MOVE    "選択中です。受付一覧の更新はできません"
                                        TO  SPA-ERRMSG
-               WHEN    "0003"
-                   MOVE    "選択中です。予約遷移はできません。"
-                                       TO  SPA-ERRMSG
-               WHEN    "0004"
-                   STRING  "予約画面からの遷移です。"
-                           "戻るボタンで受付一覧を終了して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
                WHEN    "0010"
                    MOVE    "新患は選択できません"
                                        TO  SPA-ERRMSG

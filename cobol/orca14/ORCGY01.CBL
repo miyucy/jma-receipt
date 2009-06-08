@@ -4074,11 +4074,6 @@
       *****************************************************************
        490-UKEICHI-SEC             SECTION.
       *
-           IF      SPA-MOTOPG3         =   "U01"
-               MOVE    "0100"              TO  SPA-ERRCD
-               GO      TO    490-UKEICHI-EXT
-           END-IF
-      *
       *    画面移行用のスパを編集する
            INITIALIZE                  SPA-KYOTUKEY
            INITIALIZE                  SPA-Y01-YYK-AREA
@@ -4528,13 +4523,6 @@
                WHEN    "K001"
                    MOVE    "注意！予約日が過去です。"
                                                TO  SPA-ERRMSG
-      *
-               WHEN    "0100"
-                   STRING  "受付一覧から遷移しています。"
-                           "受付一覧への遷移はできません。"
-                                       DELIMITED   BY  SIZE
-                                               INTO    SPA-ERRMSG
-                   END-STRING
       *
                WHEN    "9999"
                    MOVE    "他端末で使用中です。"

@@ -64,6 +64,3 @@
                     07  U01-SZ-YYKTIME  PIC X(8).
                     07  U01-SZ-SRFLG    PIC X(4).
                   06  U01-SZ-SELECT  PIC X       OCCURS  400 TIMES.
-              04  U01-B10.
-                05  U01-B10-STATE   PIC S9(9)   BINARY.
-                05  U01-B10-LABEL   PIC X(10).
