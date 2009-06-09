@@ -681,6 +681,7 @@ path	key34		{
 			AND   PTID        =   :PTID
 			AND   SRYKA       =   :SRYKA 
 			AND   SRYYMD      =   :SRYYMD
+			AND   RENNUM      >=  :RENNUM
 			AND   DLTFLG      like :DLTFLG
 		;
 	};
