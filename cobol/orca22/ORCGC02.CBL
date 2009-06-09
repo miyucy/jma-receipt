@@ -4212,7 +4212,9 @@ grpsys         MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
       *
            IF      SPA-NAI-C02-SELNO-INSERT
                                        >   ZERO
-               MOVE    "0087"              TO  SPA-ERRCD
+               IF      C02-SRYYMD      NOT =   SPA-GMN-C02-SRYYMD
+                   MOVE    "0087"              TO  SPA-ERRCD
+               END-IF
                MOVE    17                  TO  SPA-GMN-C02-CUR
                GO  TO  41012-SRYYMD-CHK-EXT
            END-IF 
@@ -6052,7 +6054,9 @@ grpsys                                       SPA-AREA
       *
            IF      SPA-NAI-C02-SELNO-INSERT
                                        >   ZERO
-               MOVE    "0087"              TO  SPA-ERRCD
+               IF      C02-BSRYKA      NOT =   SPA-GMN-C02-BSRYKA-G
+                   MOVE    "0087"              TO  SPA-ERRCD
+               END-IF
                MOVE    2                   TO  SPA-GMN-C02-CUR
                GO  TO  41019-BSRYKA-CHK-EXT
            END-IF 
