@@ -7465,35 +7465,41 @@
                                            TO  Q01-RDIO2 (IDX1)
       *
                MOVE    "black"             TO  Q01-LBLORDER-STYLE (IDX1)
-               IF    ( SPA-GMN-Q01-KMK (IDX1)  =   "5" )
-                   IF    ( WRK-KOHNAME     =   SPACE )
-                    AND  ( WRK-FTNJANUM    =   SPACE )
-                       MOVE    SPACE   TO  Q01-LBLORDER (IDX1)
-                       MOVE    "red"   TO  Q01-LBLORDER-STYLE (IDX1)
-                       STRING  "検索条件に公費情報を"
-                                               DELIMITED BY SIZE
-                               "入力してください"
-                                               DELIMITED BY SIZE
-                       INTO    Q01-LBLORDER (IDX1)
-                       END-STRING
-                   ELSE
-                       IF    ( SPA-GMN-Q01-RDHKNKOH-OR =   "T" )
-                           MOVE    "red"   TO  Q01-LBLORDER-STYLE (IDX1)
-                           MOVE    "主保険とＡＮＤ条件にしてください"
-                                           TO  Q01-LBLORDER (IDX1)
-                       ELSE
-                           IF    ( SPA-GMN-Q01-RDKOHNUM-OR =   "T" )
-                            OR   ( WRK-KOHNAME             =   SPACE )
-                               CONTINUE
-                           ELSE
-                               MOVE    "blue"
-                                           TO  Q01-LBLORDER-STYLE (IDX1)
-                               MOVE    WRK-KOHNAME
-                                           TO  Q01-LBLORDER (IDX1)
-                           END-IF
-                       END-IF
-                   END-IF
-               END-IF
+      *        IF    ( SPA-GMN-Q01-KMK (IDX1)  =   "5" )
+      *            IF    ( WRK-KOHNAME     =   SPACE )
+      *             AND  ( WRK-FTNJANUM    =   SPACE )
+      *                MOVE    SPACE   TO  Q01-LBLORDER (IDX1)
+      *                MOVE    "red"   TO  Q01-LBLORDER-STYLE (IDX1)
+      *                STRING  "検索条件に公費情報を"
+      *                                        DELIMITED BY SIZE
+      *                        "入力してください"
+      *                                        DELIMITED BY SIZE
+      *                INTO    Q01-LBLORDER (IDX1)
+      *                END-STRING
+      *            ELSE
+      *                IF    ( SPA-GMN-Q01-RDHKNKOH-OR =   "T" )
+      *                    MOVE    "red"   TO  Q01-LBLORDER-STYLE (IDX1)
+      *                STRING  "主保険と公費のＯＲ条件指定がされている"
+      *                                        DELIMITED BY SIZE
+      *                        "場合は無効となります。"
+      *                                        DELIMITED BY SIZE
+      *                INTO    Q01-LBLORDER (IDX1)
+      *                END-STRING
+      *                    MOVE    "主保険と公費のＯＲ条件指定の時は"
+      *                                    TO  Q01-LBLORDER (IDX1)
+      *                ELSE
+      *                    IF    ( SPA-GMN-Q01-RDKOHNUM-OR =   "T" )
+      *                     OR   ( WRK-KOHNAME             =   SPACE )
+      *                        CONTINUE
+      *                    ELSE
+      *                        MOVE    "blue"
+      *                                    TO  Q01-LBLORDER-STYLE (IDX1)
+      *                        MOVE    WRK-KOHNAME
+      *                                    TO  Q01-LBLORDER (IDX1)
+      *                    END-IF
+      *                END-IF
+      *            END-IF
+      *        END-IF
       *
            END-PERFORM
       *

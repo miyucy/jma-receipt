@@ -7342,22 +7342,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>LBLORDER1</name>
-	  <x>444</x>
-	  <y>96</y>
-	  <width>520</width>
-	  <height>26</height>
-	  <label>検索条件に公費の種類を指定してください</label>
-	  <justify>GTK_JUSTIFY_CENTER</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>LBLORDER2</name>
 	  <x>444</x>
 	  <y>128</y>
@@ -7380,6 +7364,102 @@
 	  <width>520</width>
 	  <height>26</height>
 	  <label>公費の種類</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>LBLORDER1</name>
+	  <x>444</x>
+	  <y>96</y>
+	  <width>520</width>
+	  <height>26</height>
+	  <label>検索条件に公費の種類を指定してください</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label945</name>
+	  <x>56</x>
+	  <y>232</y>
+	  <width>432</width>
+	  <height>22</height>
+	  <label>＜公費受給者番号順について＞</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label949</name>
+	  <x>56</x>
+	  <y>292</y>
+	  <width>880</width>
+	  <height>20</height>
+	  <label>３．同一患者について複数の公費が条件に該当する場合、適用期間開始日の最も新しい公費の受給者番号より並べ替えを行います。</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label948</name>
+	  <x>56</x>
+	  <y>312</y>
+	  <width>880</width>
+	  <height>20</height>
+	  <label>４．公費の種類をＡＮＤ条件で複数指定されている場合、先に指定された公費の受給者番号より並べ替えを行います。</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label946</name>
+	  <x>56</x>
+	  <y>252</y>
+	  <width>880</width>
+	  <height>20</height>
+	  <label>１．公費欄（公費の種類または負担者番号）に検索条件が入力されている場合に有効となります。</label>
+	  <justify>GTK_JUSTIFY_CENTER</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label947</name>
+	  <x>56</x>
+	  <y>272</y>
+	  <width>880</width>
+	  <height>20</height>
+	  <label>２．保険欄と公費欄がＯＲ条件になっている場合は無効となります。</label>
 	  <justify>GTK_JUSTIFY_CENTER</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
