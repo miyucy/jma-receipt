@@ -214,6 +214,12 @@ W11	{
 						ORCAORGNM10	{
 							value	varchar(20);
 						};
+						ORCAORGNM11	{
+							value	varchar(20);
+						};
+						ORCAORGNM12	{
+							value	varchar(20);
+						};
 						ORCAORGCHK01	{
 							value	bool;
 						};
@@ -242,6 +248,12 @@ W11	{
 							value	bool;
 						};
 						ORCAORGCHK10	{
+							value	bool;
+						};
+						ORCAORGCHK11	{
+							value	bool;
+						};
+						ORCAORGCHK12	{
 							value	bool;
 						};
 						ORCACSTNM01	{
@@ -274,6 +286,12 @@ W11	{
 						ORCACSTNM10	{
 							value	varchar(20);
 						};
+						ORCACSTNM11	{
+							value	varchar(20);
+						};
+						ORCACSTNM12	{
+							value	varchar(20);
+						};
 						ORCACSTCHK01	{
 							value	bool;
 						};
@@ -302,6 +320,12 @@ W11	{
 							value	bool;
 						};
 						ORCACSTCHK10	{
+							value	bool;
+						};
+						ORCACSTCHK11	{
+							value	bool;
+						};
+						ORCACSTCHK12	{
 							value	bool;
 						};
 					};

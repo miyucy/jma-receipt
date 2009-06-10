@@ -36,6 +36,7 @@
       *  01.00.05    NACL-多々納  06/05/12  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
       *  04.01.00    NACL-多々納  08/01/30  予約内容追加
+      *  04.05.00    NACL-多々納  09/06/10  予約一覧カスタマイズ帳票対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -162,7 +163,9 @@
       *
            03  WRK-PATH                PIC X(64).
       *
-           03  WRK-STR             PIC 9(04).
+           03  WRK-STR                 PIC 9(04).
+      *    予約一覧ＰＧ名
+           03  WRK-YYKICH-PG           PIC X(20).
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG-G.
@@ -245,6 +248,8 @@
            COPY    "CPSK0051.INC".
       *    予約内容
            COPY    "CPSK1028.INC".
+      *    帳票ＰＧ
+           COPY  "CPSK1032.INC".
       *
       *    患者マスタ−
        01  PTINF-REC.
@@ -268,6 +273,13 @@
            COPY    "CPORCSNUM.INC".
       *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
+      *
+      *    予約一覧パラメタ領域
+           COPY    "CPORCHC14.INC".
+      *    オンライン帳票共通パラメタ
+           COPY    "CPONPRTDATA.INC".
+      *    オンライン帳票名・出力先プリンタ名取得パラ
+           COPY    "CPORCSPRTNM.INC".
       *
       *    ＤＢ検索
            COPY    "MCPDATA.INC".
@@ -1167,13 +1179,40 @@
       *****************************************************************
        460-YYKICHI-SEC           SECTION.
       *
-          MOVE     SPA-GMN-SINRYOCD    TO  SPA-Y03-SRYNAIYO
-          MOVE     SPA-NAI-DRNCD       TO  SPA-Y03-DRCD
-          MOVE     SPA-NAI-SINYMD      TO  SPA-Y03-YYKYMDS
+      *    印刷制御情報取得サブ
+           CALL    "ORCSONPRTSET"      USING   SPA-AREA
       *
-           CALL    "ORCHC14"       USING  MCPAREA
-                                          SPA-AREA
-                                          SPA-Y01KYOUTU 
+      *    予約・未院一覧出力
+           INITIALIZE                      ORCSPRTNMAREA
+           MOVE    "1"                 TO  ORCSPRTNM-KBN
+           MOVE    "00000011"          TO  ORCSPRTNM-KBNCD
+           MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
+           CALL    "ORCSPRTNM"         USING
+                                           ORCSPRTNMAREA
+                                           SPA-AREA
+                                           SYS-1032-REC
+           IF      ORCSPRTNM-RC        =   ZERO
+               MOVE    ORCSPRTNM-PRTPG     TO  WRK-YYKICH-PG
+           END-IF
+      *
+           INITIALIZE                  ORCHC14AREA
+           IF      SPA-Y01-YYKID       =   ZERO
+               MOVE    "1"                 TO  ORCHC14-KBN
+           ELSE
+               MOVE    "2"                 TO  ORCHC14-KBN
+           END-IF
+           MOVE     SPA-GMN-SINRYOCD   TO  ORCHC14-SRYNAIYO
+           MOVE     SPA-NAI-DRNCD      TO  ORCHC14-DRCD-G
+           MOVE     SPA-NAI-SINYMD     TO  ORCHC14-YYKYMD
+      *
+           IF      WRK-YYKICH-PG   NOT =   SPACE
+               MOVE    WRK-YYKICH-PG       TO  ONPRTDATA-PGID
+               MOVE    ORCHC14AREA         TO  ONPRTDATA-DATA
+               CALL    "ORCHCOMMON"        USING
+                                           SPA-AREA
+                                           ONPRTDATA
+           END-IF
+      *
            .
        460-YYKICHI-EXT.
            EXIT.

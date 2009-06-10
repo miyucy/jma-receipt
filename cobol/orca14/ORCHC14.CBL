@@ -32,6 +32,7 @@
       *  01.00.03    NACL-多々納  03/06/27  出力先プリンタサブ追加
       *  01.00.04    NACL-多々納  06/05/15  MONFUNC 対応 他
       *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.05.00    NACL-多々納  09/06/XX  カスタマイズ帳票対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -48,19 +49,13 @@
       *
       *    印刷用データ
        FD  PRT-FILE.
+      *    予約一覧
            COPY    "HC14.INC".
       *
        WORKING-STORAGE             SECTION.
       *
       *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
-      **** シェル用領域
-      *    COPY    "CPCOMMONSHELL.INC".
-      *
-      *    シェル用領域
-      *    COPY    "CPSHELLTBL.INC".
-      **** COPY    "ORCA-DBPATH".
-      *
       *
       *    フラグ領域
        01  STS-AREA.
@@ -70,39 +65,21 @@
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-YYK             PIC 9(01).
-           03  FLG-KNJHEN          PIC X(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
-           03  FLG-SP              PIC 9(01).
-           03  FLG-OK              PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
-           03  IDX-Z               PIC 9(04).
-           03  IDX-S               PIC 9(04).
-           03  IDX-MAX             PIC 9(04).
-           03  IDXA                PIC 9(04).
-           03  IDX-ACT             PIC 9(02).
-           03  IDX-REN             PIC 9(04).
-           03  IDX-JYU             PIC 9(04).
-      *
-           03  IDX2                PIC 9(02).
-           03  IDX3                PIC 9(02).
-           03  IDXP                PIC 9(02).
-           03  IDXM                PIC 9(02).
-           03  IDK                 PIC 9(04).
            03  IDX-D               PIC 9(04).
       *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
       *
-      *
       *    一時領域
        01  WRK-AREA.
-      *
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -113,14 +90,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-HENYMDG         PIC X(22).
       *
-           03  WRK-PATH                PIC X(64).
-      *
-           03  WRK-HKNCOMBI        PIC X(40).
-      *
-           03  WRK-SKYMONEY        PIC S9(11).
-           03  WRK-MISYUMONEY      PIC S9(11).
-           03  WRK-MISYU           PIC S9(11).
-           03  WRK-GOKTEN          PIC 9(11).
+           03  WRK-PATH            PIC X(64).
       *
            03  WRK-PTNUM           PIC X(20).
            03  WRK-PAGE            PIC 9(03).
@@ -129,11 +99,17 @@
            03  WRK-ZZ9             PIC ZZ9.
            03  WRK-ZZZ9            PIC ZZZ9.
       *
-      *    文字変換
-           03  WRK-ZENKAKU-G.
-               05  WRK-ZENKAKU         PIC X(02)   OCCURS   10.
-           03  WRK-MOJI                PIC X(10).
-           03  WRK-MOJISU              PIC 9(02).
+      *    ドクターテーブル
+       01  TBL-DRCD-AREA.
+           03  TBL-DRCD-G              OCCURS   99.
+               05  TBL-DRCD            PIC X(05).
+               05  TBL-DRCDNAME        PIC X(30).
+      *
+      *    診療内容テーブル
+       01  TBL-SRYNAIYO-AREA.
+           03  TBL-SRYNAIYO-G          OCCURS   99.
+               05  TBL-SRYNAIYO        PIC X(02).
+               05  TBL-SRYNAIYOMEI     PIC X(24).
       *
       *    診療科テーブル
        01  TBL-SRYKA-AREA.
@@ -197,34 +173,49 @@
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *01  MCPDATA-REC                 PIC X(5000).
+      *    予約一覧パラメタ領域
+           COPY    "CPORCHC14.INC".
+      *
            COPY    "MCPDATA.INC".
-      *****COPY    "CPORCMCP.INC".
+      *
+           COPY    "MCPAREA".
       *
       *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
-      *
-           COPY    "MCPAREA".
-      *
       *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    予約用ワークスパ領域
-           COPY    "Y01COMMON-SPA".
+           COPY    "CPONPRTDATA.INC".
       *
        PROCEDURE                   DIVISION    USING
-           MCPAREA
            SPA-AREA
-           SPA-Y01KYOUTU
+           ONPRTDATA
            .
       *
       *****************************************************************
       *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
+      *
+      *    初期編集処理
+           PERFORM 100-INIT-SYORI-SEC
+      *    予約一覧処理
+           PERFORM 200-MAIN-SYORI-SEC
+      *
+           .
+       000-PROC-EXT.
+           EXIT    PROGRAM
+           .
+      *
+      *****************************************************************
+      *    初期編集処理
+      *****************************************************************
+       100-INIT-SYORI-SEC             SECTION.
+      *
+           MOVE    ONPRTDATA-DATA      TO  ORCHC14AREA
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  STS-AREA
@@ -234,95 +225,9 @@
       *
       *    各ＤＢ読込
            PERFORM 100-SYORI-SEC
-      *
-           MOVE    ZERO                TO  WRK-PAGE
-           MOVE    ZERO                TO  WRK-LINE
-      *
-      *    予約一覧編集
-           INITIALIZE                  YYK-KEY
-           INITIALIZE                  YYK-REC
-           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
-      **** MOVE    SPA-Y01-YYKYMDS     TO  YYK-YYKYMD
-           MOVE    SPA-Y03-YYKYMDS     TO  YYK-YYKYMD
-           MOVE    SPA-Y03-SRYNAIYO    TO  YYK-SRYNAIYO
-           MOVE    SPA-Y03-DRCD        TO  YYK-DRCD
-           IF     (SPA-Y03-SRYNAIYO    =   "00"  )  OR
-                  (SPA-Y03-DRCD(2:4)   =   "9999")
-               MOVE    "key5"          TO  WRK-PATH
-           ELSE
-               MOVE    "key3"          TO  WRK-PATH
-           END-IF
-      *
-           MOVE    YYK-REC             TO  MCPDATA-REC
-           MOVE    "tbl_yyk"           TO  MCP-TABLE
-           MOVE    WRK-PATH            TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF      MCP-RC              =   ZERO
-               MOVE    "tbl_yyk"           TO  MCP-TABLE
-               MOVE    WRK-PATH            TO  MCP-PATHNAME
-               PERFORM 900-YOYAKU-READ-SEC
-           ELSE
-               MOVE    1               TO  FLG-YYK
-           END-IF
-           MOVE    ZERO                TO  IDX
-           INITIALIZE                  HC14
-           PERFORM
-                   UNTIL       FLG-YYK     =   1
-               MOVE    ZERO                TO  FLG-SYORI
-               IF     (SPA-Y03-SRYNAIYO    =   "00"  )  OR
-                      (SPA-Y03-DRCD(2:4)   =   "9999")
-                   IF      SPA-Y03-SRYNAIYO    NOT =   "00"
-                       IF      SPA-Y03-SRYNAIYO    =  YYK-SRYNAIYO
-                           MOVE    1           TO  FLG-SYORI
-                       END-IF
-                   END-IF
-                   IF      SPA-Y03-DRCD(2:4)   NOT =   "9999"
-                       IF      SPA-Y03-DRCD         =  YYK-DRCD
-                           MOVE    1           TO  FLG-SYORI
-                       END-IF
-                   END-IF
-                   IF     (SPA-Y03-SRYNAIYO    =   "00"  )  AND
-                          (SPA-Y03-DRCD(2:4)   =   "9999")
-                       MOVE    1           TO  FLG-SYORI
-                   END-IF
-               ELSE
-                   MOVE    1               TO  FLG-SYORI
-               END-IF
-               IF      FLG-SYORI           =   1
-      *
-                   IF     (YYK-YYKID       >   ZERO           )  AND
-                          ((SPA-Y01-YYKID      =   ZERO  )  OR
-                          ((SPA-Y01-YYKID  NOT =   ZERO  ) AND
-                           (YYK-RAIINZUMI      =   SPACE )) )
-                       ADD     1               TO  IDX
-                       IF      IDX             >   34
-      *                    帳票印刷開始処理
-                           PERFORM 200-HC14-PRINT-SEC
-                           ADD     1           TO  IDX
-                       END-IF
-      *                明細編集処理
-                       PERFORM 300-HC14-HEN-SEC
-                   END-IF
-               END-IF
-      *
-               MOVE    "tbl_yyk"           TO  MCP-TABLE
-               MOVE    WRK-PATH            TO  MCP-PATHNAME
-               PERFORM 900-YOYAKU-READ-SEC
-           END-PERFORM
-      *    カーソルクロース
-           MOVE    "tbl_yyk"           TO  MCP-TABLE
-           MOVE    WRK-PATH            TO  MCP-PATHNAME
-           PERFORM 990-DBCLOSE-SEC
-      *
-           IF      IDX             >   ZERO
-      *        帳票印刷開始処理
-               PERFORM 200-HC14-PRINT-SEC
-           END-IF
-      *
            .
-       000-PROC-EXT.
-           EXIT    PROGRAM
-           .
+       100-INIT-SYORI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    帳票印刷開始処理
@@ -334,8 +239,7 @@
            MOVE    "HC14"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
            MOVE    SYS-TIME            TO  HC01PARA-SYOHMS
-      *    変更★★★★★★
-      *****MOVE    "001"               TO  HC01PARA-CNT
+      *
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
            OPEN    OUTPUT               PRT-FILE
       *
@@ -351,7 +255,7 @@
            PERFORM 400-SYOKI-PRINT-SEC
       *
       *　　印刷用データ出力
-           WRITE  HC14
+           WRITE   HC14
       *
             CLOSE                       PRT-FILE
       *
@@ -360,7 +264,7 @@
             MOVE   "HC14.red"          TO  MKPRT-DIA
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   HC01PARA            TO  MKPRT-DAT
-            MOVE   SYS-1031-PRTNM(7)   TO  MKPRT-PRTNM
+            MOVE   SYS-1031-PRTNM(18)  TO  MKPRT-PRTNM
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
@@ -384,9 +288,13 @@
                                            ORCSPRTNMAREA
                                            SPA-AREA
                                            SYS-1031-REC
+      *    予約一覧の出力先設定がないときは、受付一覧（元の予約一覧）
+           IF      SYS-1031-PRTNM(18)  =   SPACE
+               MOVE    SYS-1031-PRTNM(7)   TO  SYS-1031-PRTNM(18)
+           END-IF
       *
       *    診療日
-           MOVE    SPA-Y03-YYKYMDS     TO  WRK-SYMD
+           MOVE    ORCHC14-YYKYMD      TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
       *
       *    システム管理テーブル編集
@@ -400,14 +308,84 @@
       *****************************************************************
        1001-SYSKANRI-TBL-SEC           SECTION.
       *
+           INITIALIZE                  TBL-DRCD-AREA
+           INITIALIZE                  TBL-SRYNAIYO-AREA
            INITIALIZE                  TBL-SRYKA-AREA
            INITIALIZE                  TBL-RENRAK-AREA
            INITIALIZE                  TBL-YYKKBN-AREA
+      *    職員情報
+           MOVE    SPACE               TO  SYS-1010-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
+           MOVE    "1010"              TO  SYS-1010-KANRICD
+           MOVE    ORCHC14-YYKYMD      TO  SYS-1010-STYUKYMD
+           MOVE    ORCHC14-YYKYMD      TO  SYS-1010-EDYUKYMD
+      *
+           MOVE    SYS-1010-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"             TO  MCP-PATHNAME
+               PERFORM 901-KANRIMST-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   (FLG-SYSKANRI   =   1   )
+                       OR  (IDX            >=  99  )
+               MOVE    MCPDATA-REC         TO  SYS-1010-REC
+               IF      SYS-1010-KBNCD(1:1) =   "1"
+                   ADD     1                   TO  IDX
+                   MOVE    SYS-1010-KBNCD(1:5) TO  TBL-DRCD  (IDX)
+                   MOVE    SYS-1010-NAME       TO  TBL-DRCDNAME (IDX)
+               END-IF
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 901-KANRIMST-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *    診療内容
+           MOVE    SPACE               TO  SYS-1012-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1012-HOSPNUM
+           MOVE    "1012"              TO  SYS-1012-KANRICD
+           MOVE    ORCHC14-YYKYMD      TO  SYS-1012-STYUKYMD
+           MOVE    ORCHC14-YYKYMD      TO  SYS-1012-EDYUKYMD
+      *
+           MOVE    SYS-1012-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"             TO  MCP-PATHNAME
+               PERFORM 901-KANRIMST-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-SYSKANRI
+           END-IF
+           MOVE    ZERO                TO  IDX
+           PERFORM UNTIL   (FLG-SYSKANRI   =   1   )
+                       OR  (IDX            >=  99  )
+               MOVE    MCPDATA-REC         TO  SYS-1012-REC
+               ADD     1                   TO  IDX
+               MOVE    SYS-1012-KBNCD(1:2) TO  TBL-SRYNAIYO  (IDX)
+               MOVE    SYS-1012-SRYNAIYODSP    TO  TBL-SRYNAIYOMEI (IDX)
+      *
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 901-KANRIMST-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
       *    診療科
            MOVE    SPACE               TO  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1005-STYUKYMD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1005-EDYUKYMD
+           MOVE    ORCHC14-YYKYMD      TO  SYS-1005-STYUKYMD
+           MOVE    ORCHC14-YYKYMD      TO  SYS-1005-EDYUKYMD
       *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
@@ -440,8 +418,8 @@
       *    予約確認連絡コード
            MOVE    SPACE               TO  SYS-0051-REC
            MOVE    "0051"              TO  SYS-0051-KANRICD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-0051-STYUKYMD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-0051-EDYUKYMD
+           MOVE    ORCHC14-YYKYMD      TO  SYS-0051-STYUKYMD
+           MOVE    ORCHC14-YYKYMD      TO  SYS-0051-EDYUKYMD
       *
            MOVE    SPA-HOSPNUM         TO  SYS-0051-HOSPNUM
            MOVE    SYS-0051-REC        TO  MCPDATA-REC
@@ -475,8 +453,8 @@
            MOVE    SPACE               TO  SYS-1028-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1028-HOSPNUM
            MOVE    "1028"              TO  SYS-1028-KANRICD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1028-STYUKYMD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1028-EDYUKYMD
+           MOVE    ORCHC14-YYKYMD      TO  SYS-1028-STYUKYMD
+           MOVE    ORCHC14-YYKYMD      TO  SYS-1028-EDYUKYMD
       *
            MOVE    SYS-1028-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -509,6 +487,101 @@
            .
        1001-SYSKANRI-TBL-EXT.
            EXIT.
+      *
+      *****************************************************************
+      *    予約一覧処理
+      *****************************************************************
+       200-MAIN-SYORI-SEC              SECTION.
+      *
+           MOVE    ZERO                TO  WRK-PAGE
+           MOVE    ZERO                TO  WRK-LINE
+      *
+      *    予約一覧編集
+           INITIALIZE                  YYK-KEY
+           INITIALIZE                  YYK-REC
+           MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
+           MOVE    ORCHC14-YYKYMD      TO  YYK-YYKYMD
+           MOVE    ORCHC14-SRYNAIYO    TO  YYK-SRYNAIYO
+           MOVE    ORCHC14-DRCD-G      TO  YYK-DRCD
+           IF     (ORCHC14-SRYNAIYO    =   "00"  )  OR
+                  (ORCHC14-DRCD        =   "9999")
+               MOVE    "key5"          TO  WRK-PATH
+           ELSE
+               MOVE    "key3"          TO  WRK-PATH
+           END-IF
+      *
+           MOVE    YYK-REC             TO  MCPDATA-REC
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_yyk"           TO  MCP-TABLE
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
+               PERFORM 900-YOYAKU-READ-SEC
+           ELSE
+               MOVE    1               TO  FLG-YYK
+           END-IF
+           MOVE    ZERO                TO  IDX
+           INITIALIZE                  HC14
+           PERFORM
+                   UNTIL       FLG-YYK     =   1
+               MOVE    ZERO                TO  FLG-SYORI
+               IF     (ORCHC14-SRYNAIYO    =   "00"  )  OR
+                      (ORCHC14-DRCD        =   "9999")
+                   IF      ORCHC14-SRYNAIYO    NOT =   "00"
+                       IF      ORCHC14-SRYNAIYO    =  YYK-SRYNAIYO
+                           MOVE    1               TO  FLG-SYORI
+                       END-IF
+                   END-IF
+                   IF      ORCHC14-DRCD        NOT =   "9999"
+                       IF      ORCHC14-DRCD-G      =  YYK-DRCD
+                           MOVE    1               TO  FLG-SYORI
+                       END-IF
+                   END-IF
+                   IF     (ORCHC14-SRYNAIYO    =   "00"  )  AND
+                          (ORCHC14-DRCD        =   "9999")
+                       MOVE    1               TO  FLG-SYORI
+                   END-IF
+               ELSE
+                   MOVE    1               TO  FLG-SYORI
+               END-IF
+      *        キーデータは対象外
+               IF     (YYK-YYKID           =   ZERO )
+                   MOVE    ZERO                TO  FLG-SYORI
+               END-IF
+      *
+               IF      FLG-SYORI           =   1
+                   IF      (ORCHC14-KBN        =   "1"     )  OR
+                          ((ORCHC14-KBN        =   "2"  ) AND
+                           (YYK-RAIINZUMI      =   SPACE ))
+                       ADD     1               TO  IDX
+                       IF      IDX             >   34
+      *                    帳票印刷開始処理
+                           PERFORM 200-HC14-PRINT-SEC
+                           ADD     1               TO  IDX
+                       END-IF
+      *                明細編集処理
+                       PERFORM 300-HC14-HEN-SEC
+                   END-IF
+               END-IF
+      *
+               MOVE    "tbl_yyk"           TO  MCP-TABLE
+               MOVE    WRK-PATH            TO  MCP-PATHNAME
+               PERFORM 900-YOYAKU-READ-SEC
+           END-PERFORM
+      *    カーソルクロース
+           MOVE    "tbl_yyk"           TO  MCP-TABLE
+           MOVE    WRK-PATH            TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      IDX             >   ZERO
+      *        帳票印刷開始処理
+               PERFORM 200-HC14-PRINT-SEC
+           END-IF
+      *
+           .
+       200-MAIN-SYORI-EXT.
+           EXIT.
       *****************************************************************
       *    帳票編集処理
       *****************************************************************
@@ -518,7 +591,7 @@
            MOVE    WRK-PAGE            TO  WRK-ZZ9
            MOVE    WRK-ZZ9             TO  HC14-PAGE
       *
-           IF      SPA-Y01-YYKID       =   ZERO
+           IF      ORCHC14-KBN         =   "1"
                MOVE    "予約一覧表"        TO  HC14-TITLE
            ELSE
                MOVE    "未院一覧表"        TO  HC14-TITLE
@@ -539,13 +612,17 @@
       *****************************************************************
        300-HC14-HEN-SEC                SECTION.
       *
-      *    番号
+      *    連番号
            ADD     1                   TO  WRK-LINE
            MOVE    WRK-LINE            TO  WRK-ZZ9
            MOVE    WRK-ZZ9             TO  HC14-NUM   (IDX)
       *    患者番号
-           PERFORM 3001-KNJNO-HENSYU-SEC
-           MOVE    WRK-PTNUM           TO  HC14-PTNUM  (IDX)
+           IF      YYK-PTID            =   ZERO
+               MOVE    SPACE               TO  HC14-PTNUM  (IDX)
+           ELSE
+               PERFORM 3001-KNJNO-HENSYU-SEC
+               MOVE    WRK-PTNUM           TO  HC14-PTNUM  (IDX)
+           END-IF
       *    患者名称
            MOVE    YYK-NAME            TO  HC14-NAME   (IDX)
       *    予約時間
@@ -553,34 +630,25 @@
            MOVE    ":"                 TO  HC14-YYKTIME (IDX)(3:1)
            MOVE    YYK-YYKTIME(3:2)    TO  HC14-YYKTIME (IDX)(4:2)
       *    ドクター
-      *    職員情報
-           MOVE    SPACE               TO  SYS-1010-REC
-           MOVE    "1010"              TO  SYS-1010-KANRICD
-           MOVE    YYK-DRCD            TO  SYS-1010-KBNCD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1010-STYUKYMD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1010-EDYUKYMD
-      *
-           MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
-           MOVE    SYS-1010-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC        TO  SYS-1010-REC
-               MOVE    SYS-1010-NAME       TO  HC14-DRNAME (IDX)
-           END-IF
-      *
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   99  )
+                          OR  (TBL-DRCD (IDX-D)    =   SPACE)
+               IF     YYK-DRCD             =   TBL-DRCD (IDX-D)
+                   MOVE    TBL-DRCDNAME (IDX-D)
+                                           TO  HC14-DRNAME (IDX)
+                   MOVE    99              TO  IDX-D
+               END-IF
+           END-PERFORM
       *    診療内容をセット
-           MOVE    SPACE               TO  SYS-1012-REC
-           MOVE    "1012"              TO  SYS-1012-KANRICD
-           MOVE    YYK-SRYNAIYO        TO  SYS-1012-KBNCD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1012-STYUKYMD
-           MOVE    SPA-Y03-YYKYMDS     TO  SYS-1012-EDYUKYMD
-           MOVE    SPA-HOSPNUM         TO  SYS-1012-HOSPNUM
-           MOVE    SYS-1012-REC        TO  MCPDATA-REC
-           PERFORM 900-SYSKANRI-READ-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    SYSKANRI-REC            TO  SYS-1012-REC
-               MOVE    SYS-1012-SRYNAIYODSP    TO  HC14-SRYNAIYO  (IDX)
-           END-IF
+           PERFORM VARYING     IDX-D   FROM    1   BY  1
+                   UNTIL      (IDX-D   >   99  )
+                          OR  (TBL-SRYNAIYO (IDX-D)    =   SPACE)
+               IF     YYK-SRYNAIYO         =   TBL-SRYNAIYO (IDX-D)
+                   MOVE    TBL-SRYNAIYOMEI (IDX-D)
+                                           TO  HC14-SRYNAIYO (IDX)
+                   MOVE    99              TO  IDX-D
+               END-IF
+           END-PERFORM
       *
       *    来院済み
            IF      YYK-RAIINZUMI       =   "1"

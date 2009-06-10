@@ -67,6 +67,7 @@
       * 04.03.00     NACL-Â¿¡¹Ç¼  08/09/08  Æþ±¡¤ªÌô¼êÄ¢ÅùÄÉ²ÃÂÐ±þ
       * 04.04.00     NACL-Â¿¡¹Ç¼  08/12/16  ¿¦°÷¾ðÊóÈ½Äê½¤Àµ
       * 04.04.00     NACL-Â¿¡¹Ç¼  09/01/21  Í½ÌóÉ¼ÄÉ²Ã
+      * 04.05.00     NACL-Â¿¡¹Ç¼  09/06/09  Í½Ìó°ìÍ÷¡¦Í½Ìó´µ¼Ô°ìÍ÷ÊÑ¹¹
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -655,6 +656,15 @@
                    MOVE    SYS-1031-PRTNM (9)
                                            TO  SPA-GMN-TPRTNM (12)
                END-IF
+      *        Í½Ìó°ìÍ÷¡¦Í½Ìó´µ¼Ô°ìÍ÷Ì¤ÀßÄê¤Ï¡¢¼õÉÕ°ìÍ÷¡Ê¸µ¤Î¥×¥ê¥ó¥¿Ì¾¡Ë
+               IF   ( SYS-1031-PRTNM (18)  =   SPACE )
+                   MOVE    SYS-1031-PRTNM (7)
+                                           TO  SPA-GMN-TPRTNM (18)
+               END-IF
+               IF   ( SYS-1031-PRTNM (19)  =   SPACE )
+                   MOVE    SYS-1031-PRTNM (7)
+                                           TO  SPA-GMN-TPRTNM (19)
+               END-IF
       *
            END-IF
       *
@@ -714,8 +724,9 @@
            MOVE    "Áí³çÉ½¡¿ÊÝ¸±ÀÁµá½ñ"
                                        TO  SPA-GMN-TNAME (5)
            MOVE    "³Æ¼ïÅý·×É½"        TO  SPA-GMN-TNAME (6)
-           MOVE    "Í½Ìó°ìÍ÷¡¿Í½Ìó´µ¼Ô°ìÍ÷"
-                                       TO  SPA-GMN-TNAME (7)
+      ***  MOVE    "Í½Ìó°ìÍ÷¡¿Í½Ìó´µ¼Ô°ìÍ÷"
+      ****                             TO  SPA-GMN-TNAME (7)
+           MOVE    "¼õÉÕ°ìÍ÷"          TO  SPA-GMN-TNAME (7)
            MOVE    "ÌôºÞ¾ðÊóÄó¶¡½ñ"    TO  SPA-GMN-TNAME (8)
       *----(02.00.08)--UPD-START---
            MOVE    "»ÙÊ§¾ÚÌÀ½ñ¡ÊÆüÊÌ¡Ë"
@@ -741,6 +752,9 @@
            MOVE    "¤ªÌô¼êÄ¢"          TO  SPA-GMN-TNAME (16)
       *
            MOVE    "Í½ÌóÉ¼"            TO  SPA-GMN-TNAME (17)
+      *
+           MOVE    "Í½Ìó°ìÍ÷"          TO  SPA-GMN-TNAME (18)
+           MOVE    "Í½Ìó´µ¼Ô°ìÍ÷"      TO  SPA-GMN-TNAME (19)
       *
       *    ¥«¥ë¥Æ£±¹æ»æ
            MOVE    "ORCHC01"       TO  SPA-GMN-TORGPGNM (1)
@@ -784,10 +798,19 @@
            MOVE    "ORCHC67"       TO  SPA-GMN-TORGPGNM (10)
            MOVE    "T"             TO  SPA-GMN-TORGPGCHK(10)
            MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(10)
+      *    Í½Ìó°ìÍ÷
+           MOVE    "ORCHC14"       TO  SPA-GMN-TORGPGNM (11)
+           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(11)
+           MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(11)
+      *    Í½Ìó´µ¼Ô°ìÍ÷
+           MOVE    "ORCHC15"       TO  SPA-GMN-TORGPGNM (12)
+           MOVE    "T"             TO  SPA-GMN-TORGPGCHK(12)
+           MOVE    "F"             TO  SPA-GMN-TCSTPGCHK(12)
+      *
       *----(04.02.01)--ADD-END-----
       *----(04.02.01)--UPD-START---
       *    ¥«¥¹¥¿¥Þ¥¤¥ºÄ¢É¼ºÇÂç
-           MOVE    10                   TO  SPA-GPGNM-MAX
+           MOVE    12                   TO  SPA-GPGNM-MAX
       *----(04.02.01)--UPD-END-----
       *
            .
@@ -1310,6 +1333,8 @@
       *----(04.02.01)--ADD-START---
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK09"
            WHEN    "CLICKED"       ALSO    "ORCAORGCHK10"
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK11"
+           WHEN    "CLICKED"       ALSO    "ORCAORGCHK12"
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-ORCAORGCHK-CHK-SEC
       *    ¥«¥¹¥¿¥Þ¥¤¥º¥×¥í¥°¥é¥àÁªÂò»þ
@@ -1327,6 +1352,8 @@
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK09"
       *----(04.02.01)--ADD-END-----
            WHEN    "CLICKED"       ALSO    "ORCACSTCHK10"
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK11"
+           WHEN    "CLICKED"       ALSO    "ORCACSTCHK12"
                MOVE    MCP-WIDGET  TO      WRK-WIDGET
                PERFORM  4101-ORCACSTCHK-CHK-SEC
       *    É¸½à¥×¥í¥°¥é¥àÁªÂò»þ ¡á Æþ±¡ ¡á
@@ -3265,6 +3292,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    Í½ÌóÉ¼
            MOVE    SPA-GMN-TORGPGNM  (10)
                                         TO  W11-ORCAORGNM10
+      *    Í½Ìó°ìÍ÷
+           MOVE    SPA-GMN-TORGPGNM  (11)
+                                        TO  W11-ORCAORGNM11
+      *    Í½Ìó´µ¼Ô°ìÍ÷
+           MOVE    SPA-GMN-TORGPGNM  (12)
+                                        TO  W11-ORCAORGNM12
       *    ½èÊý¤»¤ó
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL   IDX2    >       SPA-GMN-ORGPGNM02-MAX
@@ -3472,7 +3505,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "PRTNM"         TO  MCP-WIDGET
                    MOVE    IDX2            TO  MCP-WIDGET(6:2)
                    MOVE    1               TO  SPA-GMN-PAGENO
-               WHEN    21      THRU   30
+               WHEN    21      THRU   40
                    MOVE    SPA-GMN-CUR     TO  IDX2
                    COMPUTE IDX2            =   IDX2    -   20
                    MOVE    "ORCACSTNM"     TO  MCP-WIDGET
@@ -3619,6 +3652,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    30          TO  SPA-GMN-CUR
                WHEN    "ORCACSTNM10"
       *        Í½ÌóÉ¼
+                   MOVE    31          TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM11"
+      *        Í½Ìó°ìÍ÷
+                   MOVE    32          TO  SPA-GMN-CUR
+               WHEN    "ORCACSTNM12"
+      *        Í½Ìó´µ¼Ô°ìÍ÷
       *            ³°ÍèºÇ½ª
                    IF    ( SPA-BEDSU       >   ZERO )
                        MOVE    51          TO  SPA-GMN-CUR

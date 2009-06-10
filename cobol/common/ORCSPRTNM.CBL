@@ -264,6 +264,12 @@
       *            Í½ÌóÉ¼
                    WHEN    "00000010"
                        MOVE    "ORCHC67"       TO  ORCSPRTNM-PRTPG
+      *            Í½Ìó°ìÍ÷
+                   WHEN    "00000011"
+                       MOVE    "ORCHC14"       TO  ORCSPRTNM-PRTPG
+      *            Í½Ìó´µ¼Ô°ìÍ÷
+                   WHEN    "00000012"
+                       MOVE    "ORCHC15"       TO  ORCSPRTNM-PRTPG
                END-EVALUATE
            END-IF
       *
