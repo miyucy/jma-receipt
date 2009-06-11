@@ -176,9 +176,6 @@
       *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *
-      *    印刷パラメタ
-           COPY    "CPORCSMKPRT.INC".
-      *
       *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
