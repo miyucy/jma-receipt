@@ -1467,6 +1467,20 @@
        310-CMB-SYORIKBN-SET6-EXT.
            EXIT.
       *****************************************************************
+      *    処理区分コンボ初期処理（ロック中）
+      *****************************************************************
+       310-CMB-SYORIKBN-SET7-SEC       SECTION.
+      *
+           INITIALIZE              SPA-GMN-I01-CMB-SYORIKBN
+      *
+           MOVE    1               TO  SPA-GMN-I01-SYORIKBN-CNT
+      *
+           MOVE    CONST-SYOUKAI-G TO  SPA-GMN-I01-SYORIKBN-ITM (01)
+      *
+           .
+       310-CMB-SYORIKBN-SET7-EXT.
+           EXIT.
+      *****************************************************************
       *    退院履歴チェック処理
       *****************************************************************
        3101-TAIINRRK-CHK-SEC           SECTION.
@@ -2637,7 +2651,8 @@
       *
            MOVE    1               TO  SPA-GMN-I01-CUR
       *
-           INITIALIZE                  SPA-NAI-I01-PTID
+           INITIALIZE                  SPA-NAI-I01-LOCK
+                                       SPA-NAI-I01-PTID
                                        SPA-GMN-I01-NAME
                                        SPA-NAI-I01-KANANAME
                                        SPA-GMN-I01-SEX
@@ -2718,13 +2733,7 @@
       *    患者マスタ検索
            PERFORM 900-PTINF-KEY-SEL-SEC
            IF    ( FLG-PTINF       =   ZERO )
-      *        排他制御処理
-               PERFORM 990-LOCK-IN-SEC
-               IF  (   SPA-ERRCD   =   SPACE )
-                   CONTINUE
-               ELSE
-                   INITIALIZE          SPA-GMN-I01-CMB-SYORIKBN
-               END-IF
+               CONTINUE
            ELSE
                MOVE    "0002"                  TO  SPA-ERRCD
            END-IF
@@ -3172,15 +3181,8 @@
            PERFORM 900-PTINF-KEY-SEL-SEC
            IF    ( FLG-PTINF           =   ZERO )
       *
-      *        排他制御処理
-               PERFORM 990-LOCK-IN-SEC
-               IF  (   SPA-ERRCD   =   SPACE )
-      *
-      *            患者情報設定
-                   PERFORM 4101-PTINF-SET-SEC
-               ELSE
-                   INITIALIZE          SPA-GMN-I01-CMB-SYORIKBN
-               END-IF
+      *        患者情報設定
+               PERFORM 4101-PTINF-SET-SEC
            END-IF
       *
       *
@@ -3192,6 +3194,9 @@
       *****************************************************************
        4101-PTINF-SET-SEC              SECTION.
       *
+      *
+      *    排他制御処理
+           PERFORM 990-LOCK-IN-SEC
       *
       *    患者ＩＤ
            MOVE    PTINF-PTID      TO  SPA-NAI-I01-PTID
@@ -3261,6 +3266,17 @@
                END-EVALUATE
            END-IF
       *
+           IF    ( SPA-ERRCD           =   "9999" )
+               MOVE        1           TO  SPA-NAI-I01-LOCK
+               IF    ( FLG-SYORIPTN    =   1 )
+                   MOVE    5           TO  FLG-SYORIPTN
+               ELSE
+                   MOVE    6           TO  FLG-SYORIPTN
+               END-IF
+           ELSE
+               MOVE        ZERO        TO  SPA-NAI-I01-LOCK
+           END-IF
+      *
            EVALUATE    FLG-SYORIPTN
            WHEN    1
                MOVE    3           TO  SPA-GMN-I01-CUR
@@ -3310,6 +3326,19 @@
                MOVE    SPA-GMN-I01-SYORIKBN-ITM (02)
                                    TO  SPA-GMN-I01-SYORIKBN
       *
+           WHEN    5
+               MOVE    1               TO  SPA-GMN-I01-CUR
+               INITIALIZE                  SPA-GMN-I01-CMB-SYORIKBN
+                                           SPA-GMN-I01-SYORIKBN
+      *
+           WHEN    6
+               MOVE    1               TO  SPA-GMN-I01-CUR
+               PERFORM 4101-INPUT-AREA-EDIT-SEC
+      *
+               PERFORM 310-CMB-SYORIKBN-SET7-SEC
+      *        デフォルトの処理区分に照会を設定
+               MOVE    SPA-GMN-I01-SYORIKBN-ITM (01)
+                                   TO  SPA-GMN-I01-SYORIKBN
            END-EVALUATE
       *
            IF    ( SPA-GMN-I01-NYUREKILST-CNT  >   ZERO )
@@ -6616,7 +6645,11 @@
                MOVE    SPA-LAST-PTID   TO  SPA-NAI-I01-PTID
                MOVE    SPA-LAST-PTNUM  TO  SPA-GMN-I01-PTNUM
                PERFORM 4101-PTINF-SELECT-SEC
-               MOVE    SPACE           TO  SPA-ERRCD
+               IF    ( SPA-ERRCD       =   "9999" )
+                   CONTINUE
+               ELSE
+                   MOVE    SPACE       TO  SPA-ERRCD
+               END-IF
            END-IF
       *
            .
@@ -17792,6 +17825,11 @@
            MOVE    SPA-GMN-I01-PTNUM       TO  I01-PTNUM
       *    患者氏名
            MOVE    SPA-GMN-I01-NAME        TO  I01-NAME
+           IF    ( SPA-NAI-I01-LOCK        =   1 )
+               MOVE    "red"               TO  I01-NAME-STYLE
+           ELSE
+               MOVE    "black"             TO  I01-NAME-STYLE
+           END-IF
       *    患者性別
            MOVE    SPA-GMN-I01-SEX         TO  I01-SEX
       *    患者誕生日
