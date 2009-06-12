@@ -48,6 +48,8 @@
       *                                     編集対応
       *  04.03.02    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
       *  04.03.03    NACL-門脇    08/07/14  投薬剤点０（院外等）記載対応
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -305,7 +307,8 @@
            MOVE    RECE66-ZAIMEISAISU   TO      RECE661-ZAIMEISAISU
            MOVE    RECE66-PTNUM         TO      RECE661-PTNUM
            MOVE    RECE66-SRYKA         TO      RECE661-SRYKA
-           IF      RECE66-SRYKBN        =       "99"          
+           IF     (RECE66-SRYKBN          =  "99" )
+           AND    (RECE66-SRYSYUKBN   NOT =  "991")
                MOVE  SPACE              TO      RECE661-SRYKBN
            ELSE
                MOVE  RECE66-SRYKBN      TO      RECE661-SRYKBN

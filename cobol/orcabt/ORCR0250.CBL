@@ -49,6 +49,9 @@
       *  04.02.02    NACL-藤原    08/04/10  レセ電用入院料加算フラグ追加
       *
       *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *
+      *  04.05.01    NACL-藤原    09/06/10  摘要欄下部へのコメント記載対応
+      *                                     診療種別区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -357,7 +360,11 @@
                 MOVE   RECE64-HKNCOMBI TO  WRK-HKNCOMBI
            END-IF
            IF      RECE64-SRYKBN   =   "99"
-               MOVE    "01"            TO  RECE641-SRYKBN
+               IF      RECE64-SRYSYUKBN    =   "991"
+                   MOVE    "99"            TO  RECE641-SRYKBN
+               ELSE
+                   MOVE    "01"            TO  RECE641-SRYKBN
+               END-IF
                IF  RECE64-HKNCOMBI     =   ZERO
                    MOVE    WRK-HKNCOMBI    TO  RECE64-HKNCOMBI
                END-IF
@@ -394,6 +401,7 @@
            MOVE    RECE64-DAY-AREA     TO  RECE641-DAY-AREA
            MOVE    RECE64-NYUKSNFLG    TO  RECE641-NYUKSNFLG
            MOVE    RECE64-TOYAKUFLG    TO  RECE641-TOYAKUFLG
+           MOVE    RECE64-SRYSYUKBN    TO  RECE641-SRYSYUKBN
       *
            WRITE   RECE641-REC
            ADD     1                   TO  CNT-OUT

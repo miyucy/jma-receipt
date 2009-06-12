@@ -50,6 +50,9 @@
       *                                     診療区分６４を６０に変更
       *
       *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *
+      *  04.05.01    NACL-藤原    09/06/10  摘要欄下部へのコメント記載対応
+      *                                     診療種別区分の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -329,7 +332,11 @@ grpsys     MOVE    RECE04-HOSPNUM      TO  RECE041-HOSPNUM
                 MOVE   RECE04-HKNCOMBI TO  WRK-HKNCOMBI
            END-IF
            IF      RECE04-SRYKBN   =   "99"
-               MOVE    "01"            TO  RECE041-SRYKBN
+               IF      RECE04-SRYSYUKBN    =   "991"
+                   MOVE    "99"            TO  RECE041-SRYKBN
+               ELSE
+                   MOVE    "01"            TO  RECE041-SRYKBN
+               END-IF
                IF  RECE04-HKNCOMBI     =   ZERO
                    MOVE    WRK-HKNCOMBI    TO  RECE04-HKNCOMBI
                END-IF
@@ -360,6 +367,7 @@ grpsys     MOVE    RECE04-HOSPNUM      TO  RECE041-HOSPNUM
            MOVE    RECE04-KNSJISKBN    TO  RECE041-KNSJISKBN
            MOVE    RECE04-TOYAKUFLG    TO  RECE041-TOYAKUFLG
            MOVE    RECE04-DAY-AREA     TO  RECE041-DAY-AREA
+           MOVE    RECE04-SRYSYUKBN    TO  RECE041-SRYSYUKBN
       *
            WRITE   RECE041-REC
            ADD     1                   TO  CNT-OUT

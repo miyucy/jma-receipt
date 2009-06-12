@@ -239,6 +239,8 @@
       *                                     基本項目単位の記録
       *  04.04.05    NACL-藤原    09/06/10  １３医学管理、１４在宅の点数、
       *                                     回数の記載の修正
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -5958,6 +5960,9 @@
                   PERFORM 200771-NYUIN-COMMENT-HENSYU-SEC
                END-IF
            END-PERFORM
+      *    摘要欄下部コメント編集
+           MOVE    9                   TO  IDZ1 
+           PERFORM 200771-NYUIN-COMMENT-HENSYU-SEC
            .
        20077-NYUIN-HENSYU-EXT.
            EXIT.
@@ -5995,19 +6000,25 @@
                            END-IF
                    END-EVALUATE
       *
-      *            負担区分編集処理
-                   MOVE    RECE641-REC  TO  WRK-RECE641-REC
-                   MOVE    SPACE        TO  WRK-FUKUSHIFLG-SKJINF-AREA
-                   PERFORM 20070-FTNKBN-HENSYU-SEC
-      *
-      *            明細テーブル退避処理
-                   PERFORM 20071-ZAI-TAIHI-SEC
-      *           摘要データ編集処理
-                   IF      FLG-END           =   ZERO
-                       PERFORM 20072-ZAI-HENSYU-SEC
-      * 
+                   IF    ( IDZ1                =   9    ) 
+                   AND   (  RECE641-SRYKBN     <   "99" )
                        PERFORM 990-RECE641-NEXT-SEC
-                   END-IF     
+                   ELSE
+      *                負担区分編集処理
+                       MOVE    RECE641-REC  TO  WRK-RECE641-REC
+                       MOVE    SPACE        TO
+                                            WRK-FUKUSHIFLG-SKJINF-AREA
+                       PERFORM 20070-FTNKBN-HENSYU-SEC
+      *
+      *                明細テーブル退避処理
+                       PERFORM 20071-ZAI-TAIHI-SEC
+      *               摘要データ編集処理
+                       IF      FLG-END           =   ZERO
+                           PERFORM 20072-ZAI-HENSYU-SEC
+      * 
+                           PERFORM 990-RECE641-NEXT-SEC
+                       END-IF
+                   END-IF         
            END-PERFORM
            .
        200771-NYUIN-COMMENT-HENSYU-EXT.

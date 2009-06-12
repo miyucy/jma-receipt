@@ -410,6 +410,8 @@
       *  04.04.11    NACL-門脇    09/06/01  平成２１年５月改正対応
       *                                     （東京都１５１）
       *  04.04.12    NACL-門脇    09/06/10  長期＋全国公費２種の対応
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4022,6 +4024,7 @@ grpsys     MOVE    RECE02-HOSPNUM       TO      RECE05-HOSPNUM
            MOVE    SRY-SRYKA            TO      RECE05-SRYKA
            MOVE    SRY-SRYKBN           TO      RECE05-SRYKBN
            MOVE    SRY-SRYSYUKBN        TO      RECE05-SRYSYUKBN
+                                                RECE04-SRYSYUKBN
            MOVE    SRY-JIHIMONEYTOTAL   TO      RECE05-JIHIMONEY
            MOVE    ZERO                 TO      FLG-OSINKBN
                                                 IDX4

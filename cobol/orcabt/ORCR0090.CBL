@@ -194,6 +194,8 @@
       *                                     処方せん（乳幼児）加算編集対応
       *
       *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4559,6 +4561,8 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE04-HOSPNUM     )
                           MOVE    31     TO  IDW3
                        END-IF
                    END-PERFORM
+                 WHEN      "99"
+                   MOVE   WRK-SRYSYUKBN  TO  RECE06-SRYSYUKBN
                END-EVALUATE
       *
                IF      RECE04-SRYKBN     =   "80"

@@ -40,6 +40,8 @@
       *  03.05.01    NACL-小豆沢  07/06/04  グループ診療対応
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （診療区分６４：病理診断対応）
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -409,7 +411,7 @@
       *
                MOVE    RECE64-ZAINUM     TO      WRK-ZAINUM
                MOVE    SPACE             TO      WRK-SRYSYUKBN
-               IF       RECE64-SRYKBN  =  "60" OR "64"
+               IF       RECE64-SRYKBN  =  "60" OR "64" OR "99"
                    PERFORM   2101-RECE65-SRYSYUKBN-HENSYU-SEC
                END-IF
       *

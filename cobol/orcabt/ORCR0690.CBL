@@ -128,6 +128,8 @@
       *                                     投薬剤点０（院外等）記載
       *
       *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4032,6 +4034,8 @@
                           MOVE    31     TO  IDW3
                        END-IF
                    END-PERFORM
+                 WHEN      "99"
+                   MOVE   WRK-SRYSYUKBN  TO  RECE66-SRYSYUKBN
                END-EVALUATE
       *
                WRITE   RECE66-REC

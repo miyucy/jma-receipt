@@ -65,6 +65,8 @@
       *                                     記載対応
       *                                     生保まとめ分点欄記載対応
       *  04.04.03    NACL-門脇    09/05/11  平成２１年５月改正対応
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -9222,6 +9224,9 @@
                    END-IF
                    IF      RECE061-SRYKBN    =   "64"
                        MOVE    "60"          TO  RECE061-SRYKBN
+                   END-IF
+                   IF      RECE061-SRYKBN    =   "99"
+                       MOVE    SPACE         TO  RECE061-SRYKBN
                    END-IF
            END-READ
       *
