@@ -186,8 +186,15 @@
                    13  SPA-GMN-W20-YKNHICH2FL1     PIC X(01).
                    13  SPA-GMN-W20-YKNHICH2MEI     PIC X(24).
                    13  SPA-GMN-W20-YKNHICH2FL2     PIC X(01).
+      *          Àº¿À²ÊÃÏ°è°Ü¹Ô¼Â»Ü²Ã»»
+                 11  SPA-GMN-W20-SEICHIIKI-LBL       PIC X(36).
+                 11  SPA-GMN-W20-SEICHIIKI-G.
+                   13  SPA-GMN-W20-SEICHIIKI         PIC X(01).
+                   13  SPA-GMN-W20-SEICHIIKIFL1      PIC X(01).
+                   13  SPA-GMN-W20-SEICHIIKIMEI      PIC X(24).
+                   13  SPA-GMN-W20-SEICHIIKIFL2      PIC X(01).
                09  SPA-GMN-W20-KSN-R   REDEFINES   SPA-GMN-W20-KSN-G.
-                 11  SPA-GMN-W20-KSN-OCC           OCCURS 17.
+                 11  SPA-GMN-W20-KSN-OCC           OCCURS 18.
                    13  SPA-GMN-W20-KSN-LBL         PIC X(36).
                    13  SPA-GMN-W20-KSN             PIC X(27).
       *        Í­¸ú³«»ÏÆü
@@ -394,9 +401,17 @@
                      15  SPA-GMN-W20-YKNHICH2FL1L      PIC X(01).
                      15  SPA-GMN-W20-YKNHICH2MEIL     PIC X(24).
                      15  SPA-GMN-W20-YKNHICH2FL2L      PIC X(01).
+      *          Àº¿À²ÊÃÏ°è°Ü¹Ô¼Â»Ü²Ã»»
+                 11  SPA-GMN-W20-SEICHIIKILST-G.
+                   13  SPA-GMN-W20-SEICHIIKI-MAX         PIC 9(03).
+                   13  SPA-GMN-W20-SEICHIIKILST          OCCURS  10.
+                     15  SPA-GMN-W20-SEICHIIKIL          PIC X(01).
+                     15  SPA-GMN-W20-SEICHIIKIFL1L       PIC X(01).
+                     15  SPA-GMN-W20-SEICHIIKIMEIL       PIC X(24).
+                     15  SPA-GMN-W20-SEICHIIKIFL2L       PIC X(01).
                09  SPA-GMN-W20-KSNLST-R    REDEFINES
                  SPA-GMN-W20-KSNLST-G.
-                 11  SPA-GMN-W20-KSNLST-OCC        OCCURS  17.
+                 11  SPA-GMN-W20-KSNLST-OCC        OCCURS  18.
                    13  SPA-GMN-W20-KSNLST-MAX      PIC 9(03).
                    13  SPA-GMN-W20-KSNLST          PIC X(27)
                                                    OCCURS  10.
@@ -530,9 +545,12 @@
       *
                  11  SPA-NAI-W20-YKNHICH2-CD        PIC 9(09).
                  11  SPA-NAI-W20-YKNHICH2-IDX       PIC 9(03).
+      *
+                 11  SPA-NAI-W20-SEICHIIKI-CD       PIC 9(09).
+                 11  SPA-NAI-W20-SEICHIIKI-IDX      PIC 9(03).
                09  SPA-NAI-W20-KSNINF-R  REDEFINES
                    SPA-NAI-W20-KSNINF-G.
-                 11  SPA-NAI-W20-KSNINF-OCC        OCCURS 17.
+                 11  SPA-NAI-W20-KSNINF-OCC        OCCURS 18.
                    13  SPA-NAI-W20-KSNINF-CD       PIC 9(09).
                    13  SPA-NAI-W20-KSNINF-IDX      PIC 9(03).
       *      ÍúÎò¥ê¥¹¥ÈÆâÉôÎÎ°è

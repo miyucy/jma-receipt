@@ -186,7 +186,7 @@
            03  CONST-SBT-MAX           PIC 9(03) VALUE 15.
            03  CONST-YKNKNG-MAX        PIC 9(03) VALUE 10.
            03  CONST-KHNRYO-MAX        PIC 9(03) VALUE 50.
-           03  CONST-KSN-MAX           PIC 9(03) VALUE 17.
+           03  CONST-KSN-MAX           PIC 9(03) VALUE 18.
            03  CONST-GKSN-MAX          PIC 9(03) VALUE 14.
            03  CONST-YKNKNGCD-VAL.
                05                      PIC X(09) VALUE "190109870".
@@ -248,6 +248,7 @@
            03  CONST-SNRHICH2          PIC X(09) VALUE "190109670".
            03  CONST-YKNHICH1          PIC X(09) VALUE "190126670".
            03  CONST-YKNHICH2          PIC X(09) VALUE "190126770".
+           03  CONST-SEICHIIKI         PIC X(09) VALUE "190127810".
            03  CONST-KNGHJOCD-MAX      PIC 9(03) VALUE 15.
            03  CONST-5001-KSN-MAX      PIC 9(03) VALUE 14.
            03  CONST-H180401           PIC X(08) VALUE "20060401".
@@ -757,6 +758,9 @@
       *
       *    夜間看護配置加算２
            PERFORM 3101-CMB-YKNHICH2-SET-SEC
+      *
+      *    精神科地域移行実施加算
+           PERFORM 3101-CMB-SEICHIIKI-SET-SEC
 
 
       *
@@ -1081,6 +1085,20 @@
       *
            .
        3101-CMB-YKNHICH2-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    精神科地域移行実施加算
+      *****************************************************************
+       3101-CMB-SEICHIIKI-SET-SEC        SECTION.
+      *
+           MOVE    "1"                 TO  SPA-GMN-W20-SEICHIIKIL(1)
+           MOVE    "算定しない"        TO  SPA-GMN-W20-SEICHIIKIMEIL(1)
+           MOVE    "2"                 TO  SPA-GMN-W20-SEICHIIKIL(2)
+           MOVE    "算定する"          TO  SPA-GMN-W20-SEICHIIKIMEIL(2)
+           MOVE    2                   TO  SPA-GMN-W20-SEICHIIKI-MAX
+      *
+           .
+       3101-CMB-SEICHIIKI-SET-EXT.
            EXIT.
       *****************************************************************
       *    医療機関情報取得処理
@@ -1782,6 +1800,8 @@
                        PERFORM 4101-YKNHICH1-CHK-SEC
                    WHEN    CONST-YKNHICH2
                        PERFORM 4101-YKNHICH2-CHK-SEC
+                   WHEN    CONST-SEICHIIKI
+                       PERFORM 4101-SEICHIIKI-CHK-SEC
                    END-EVALUATE
       *
                END-IF
@@ -2661,6 +2681,13 @@
            IF    ( SPA-GMN-W20-YKNHICH2     =  "2" )
                MOVE    SPA-GMN-W20-YKNHICH2 TO  WRK-KBN1-G
                MOVE    CONST-YKNHICH2       TO  WRK-KSNCD
+               PERFORM 420121-BTU-KSN-EDIT-SEC
+           END-IF
+      *
+      *    精神科地域移行実施加算
+           IF    ( SPA-GMN-W20-SEICHIIKI     =  "2" )
+               MOVE    SPA-GMN-W20-SEICHIIKI TO  WRK-KBN1-G
+               MOVE    CONST-SEICHIIKI       TO  WRK-KSNCD
                PERFORM 420121-BTU-KSN-EDIT-SEC
            END-IF
       *
@@ -3645,6 +3672,24 @@
        4101-YKNHICH2-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    精神科地域移行実施加算
+      *****************************************************************
+       4101-SEICHIIKI-CHK-SEC              SECTION.
+      *
+           MOVE    SPA-GMN-W20-SEICHIIKI   TO  WRK-CMB-CD
+           PERFORM 4200-SEICHIIKILST-CHK-SEC
+           IF    ( WRK-CMB-CD      =   SPACE )
+               MOVE    SPA-GMN-W20-SEICHIIKILST (1)
+                                   TO  SPA-GMN-W20-SEICHIIKI-G
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-SEICHIIKI-G
+           END-IF
+      *
+           .
+      *
+       4101-SEICHIIKI-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    基準日
       *****************************************************************
        4100-KJNYMD-CHK-SEC             SECTION.
@@ -4145,6 +4190,10 @@
                        MOVE    "2"         TO  WRK-CMB-CD
                        PERFORM 4200-YKNHICH2LST-CHK-SEC
                        MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-YKNHICH2-G
+                   WHEN    CONST-SEICHIIKI
+                       MOVE    "2"         TO  WRK-CMB-CD
+                       PERFORM 4200-SEICHIIKILST-CHK-SEC
+                       MOVE    WRK-CMB-ITM TO  SPA-GMN-W20-SEICHIIKI-G
                    END-EVALUATE
                END-IF
       *
@@ -4356,6 +4405,9 @@
                MOVE    CONST-YKNHICH1      TO  SPA-NAI-W20-YKNHICH1-CD
                MOVE    "夜間看護配置加算２" TO SPA-GMN-W20-YKNHICH2-LBL
                MOVE    CONST-YKNHICH2      TO  SPA-NAI-W20-YKNHICH2-CD
+               MOVE    "精神科地域移行実施加算"
+                                            TO SPA-GMN-W20-SEICHIIKI-LBL
+               MOVE    CONST-SEICHIIKI      TO SPA-NAI-W20-SEICHIIKI-CD
       *
            WHEN  ( SPA-NAI-W20-YUKOSTYMD   >=  CONST-H180401 )
       *
@@ -4720,6 +4772,10 @@
                    WHEN    CONST-YKNHICH2
                        IF    ( SPA-GMN-W20-YKNHICH2    =   "2" )
                            MOVE    CONST-YKNHICH2  TO  WRK-KSNCD
+                       END-IF
+                   WHEN    CONST-SEICHIIKI
+                       IF    ( SPA-GMN-W20-SEICHIIKI    =   "2" )
+                           MOVE    CONST-SEICHIIKI  TO  WRK-KSNCD
                        END-IF
                    END-EVALUATE
       *
@@ -5478,6 +5534,33 @@
       *
            .
        4200-YKNHICH2LST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    精神科地域移行実施加算コンボチェック処理
+      *****************************************************************
+       4200-SEICHIIKILST-CHK-SEC         SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-W20-SEICHIIKI-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W20-SEICHIIKIL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W20-SEICHIIKILST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM         =   SPACE )
+                   MOVE    SPA-GMN-W20-SEICHIIKILST (1)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-SEICHIIKILST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    レセプト表示区分コンボチェック処理
@@ -6684,6 +6767,7 @@
                INITIALIZE                  NYUKSNCHK-REC
                MOVE    1               TO  FLG-NYUKSNCHK
            END-IF
+      *
       *
            MOVE    "tbl_nyuksnchk"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
