@@ -42,6 +42,8 @@
       *                                     （診療区分６４：病理診断対応）
       *
       *  04.03.01    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -299,7 +301,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE86-ZAIMEISAISU   TO      RECE87-ZAIMEISAISU
            MOVE    RECE86-PTNUM         TO      RECE87-PTNUM
            MOVE    RECE86-SRYKA         TO      RECE87-SRYKA
-           IF      RECE86-SRYKBN        =       "99"          
+           IF     (RECE86-SRYKBN          =  "99" )
+           AND    (RECE86-SRYSYUKBN   NOT =  "991")
                MOVE  SPACE              TO      RECE87-SRYKBN
            ELSE
                MOVE  RECE86-SRYKBN      TO      RECE87-SRYKBN

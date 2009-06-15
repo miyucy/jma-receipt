@@ -34,6 +34,8 @@
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  04.01.01    NACL-門脇    07/11/01  公務災害対応
       *  04.03.01    NACL-門脇    09/01/23  円摘要欄編集修正
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -456,7 +458,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
              IF   RECE82-HKNKBN  =  "5"
                MOVE  "10"                  TO  RECE87-SRYKBN
              ELSE
-               MOVE  "99"                  TO  RECE87-SRYKBN
+      ***      MOVE  "99"                  TO  RECE87-SRYKBN
+               MOVE  "98"                  TO  RECE87-SRYKBN
              END-IF
              MOVE    SPACE                 TO  RECE87-ZAISKBKBN
              MOVE    ZERO                  TO  RECE87-ZAISKBBAN

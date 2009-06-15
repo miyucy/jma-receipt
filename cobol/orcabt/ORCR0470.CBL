@@ -48,6 +48,8 @@
       *  04.02.02    NACL-門脇    08/04/21  ８０その他記載順対応
       *
       *  04.03.01    NACL-門脇    08/07/09  投薬の記載順変更（日付順）
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -302,7 +304,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE46-ZAIMEISAISU   TO      RECE47-ZAIMEISAISU
            MOVE    RECE46-PTNUM         TO      RECE47-PTNUM
            MOVE    RECE46-SRYKA         TO      RECE47-SRYKA
-           IF      RECE46-SRYKBN        =       "99"          
+           IF     (RECE46-SRYKBN          =  "99" )
+           AND    (RECE46-SRYSYUKBN   NOT =  "991")
                MOVE  SPACE              TO      RECE47-SRYKBN
            ELSE
                MOVE  RECE46-SRYKBN      TO      RECE47-SRYKBN

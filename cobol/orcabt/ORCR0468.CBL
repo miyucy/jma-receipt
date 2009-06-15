@@ -35,6 +35,8 @@
       *  04.01.01    NACL-ÌçÏÆ    07/10/31  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.02.01    NACL-ÌçÏÆ    08/04/21  £¸£°¤½¤ÎÂ¾µ­ºÜ½çÂÐ±þ
       *  04.03.01    NACL-ÌçÏÆ    09/01/23  ±ßÅ¦Í×ÍóÊÔ½¸½¤Àµ
+      *
+      *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -508,7 +510,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
              IF   RECE41-HKNKBN  =  "5"
                MOVE  "10"                  TO  RECE47-SRYKBN
              ELSE
-               MOVE  "99"                  TO  RECE47-SRYKBN
+      ***      MOVE  "99"                  TO  RECE47-SRYKBN
+               MOVE  "98"                  TO  RECE47-SRYKBN
              END-IF
              MOVE    ZERO                  TO  RECE47-KNSJISKBN
              MOVE    ZERO                  TO  RECE47-SYOHOUFLG

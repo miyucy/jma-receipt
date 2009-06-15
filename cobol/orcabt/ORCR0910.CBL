@@ -93,6 +93,8 @@
       *  04.03.03    NACL-門脇    08/12/01  在宅（院外分）編集修正
       *
       *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3190,6 +3192,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                           MOVE    31     TO  IDW3
                        END-IF
                    END-PERFORM
+                 WHEN      "99"
+                   MOVE   WRK-SRYSYUKBN  TO  RECE86-SRYSYUKBN
                END-EVALUATE
       *
                MOVE    RECE84-SAFLG      TO  RECE86-SAFLG
