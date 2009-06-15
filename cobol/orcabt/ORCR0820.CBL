@@ -39,31 +39,7 @@
       *  03.05.01    NACL-門脇    07/06/01  グループ診療対応
       *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
       *  04.01.01    NACL-門脇    07/11/01  公務災害対応
-      *
-      *  04.04.01    NACL-藤原    09/03/10  特別な関係にある他院歴を初回
-      *                                     入院日として起算しレセプト記
-      *                                     載を行なう対応
-      *  04.04.02    NACL-門脇    09/06/12  療養期間の編集修正
-      *
-      *  04.05.01    NACL-門脇    11/10/07  療養期間（終了日）の編集修正
-      *  04.05.02    NACL-藤原    11/11/18  他保険での同日再入院時の保険
-      *                                     履歴対応
-      *
-      *  04.07.01    NACL-門脇    11/09/07  労災請求書作成対応
-      *  04.07.02    NACL-門脇    13/01/21  労災レセ電対応
-      *  04.07.03    NACL-藤原    13/09/20  第三者行為対応
-      *  04.07.04    NACL-門脇    14/05/08  労災レセ「新継再別」記載修正
-      *  04.07.05    NACL-門脇    14/08/07  労災レセ「新継再別」記載修正
-      *  04.07.06    NACL-藤原    15/01/24  同日再入院時の入退院履歴の記録
-      *                                     を修正
-      *                                    （入院日と退院日が同じとき）
-      *  04.07.07    NACL-藤原    15/07/07  入退院履歴のからの診療科設定
-      *                                     に退院日、転出日を条件に追加
-      *
-      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
-      *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
-      *                                     （コンパイル時のワーニング修正）
-      *  04.08.03    NACL-藤原    17/03/31  同日再入院の入退院履歴のチェック
+      *  04.03.01    NACL-門脇    09/06/12  療養期間の編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -80,6 +56,11 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE88-KEY
                                    FILE    STATUS  IS  STS-RECE88.
+           SELECT  RECE88X-FILE    ASSIGN  RECE88PARA
+                                   ORGANIZATION    IS  INDEXED
+                                   ACCESS  MODE    IS  SEQUENTIAL
+                                   RECORD  KEY     IS  RECE88X-KEY
+                                   FILE    STATUS  IS  STS-RECE88.
       *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
@@ -94,6 +75,11 @@
        FD  RECE88-FILE.
        01  RECE88-REC. 
            COPY    "CPRCF088.INC".
+      *
+       FD  RECE88X-FILE.
+       01  RECE88X-REC. 
+           COPY    "CPRCF088.INC"  REPLACING  //RECE88//
+                                   BY         //RECE88X//.
       *
       *    エラーファイル
        FD  RECEERR-FILE.
@@ -128,7 +114,6 @@
            03  FLG-PTNYUINRRK22        PIC 9(01).
            03  FLG-JYURRKCHECK         PIC 9(01).
            03  FLG-JYURRK              PIC 9(01).
-      *
            03  FLG-RRKOK               PIC 9(01).
       *
       *    カウント領域
@@ -175,14 +160,6 @@
       *
            03  WRK-HKNKBN              PIC X(01).
       *
-           03  WRK-EDYMD.
-               05  WRK-EDYM            PIC 9(06).
-               05  WRK-EDDD            PIC 9(02).
-      *
-           03  WK-PTNYUINRRK-TENSTUYMD    PIC  X(08).
-           03  WK-PTNYUINRRK-TENSTUYMD2   PIC  X(08).
-           03  WK-PTNYUINRRK-TENNYUYMD    PIC  X(08).
-      *
       *    病棟区分テーブル                                             
        01  WRK-BYOTOKBN-TABLE.                                          
            03  WRK-BYOTOKBN-T            OCCURS  4.                     
@@ -198,9 +175,9 @@
                                    BY         //WRK-RECE88//.
       *
       *    ワーク入院履歴
-       01  WRK-PTNRRK-REC.
+       01  WRK-PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
-                                       BY         //WRK-PTNRRK-//.
+                                       BY         //WRK-PTNYUINRRK-//.
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -231,12 +208,6 @@
            COPY    "CPORCSJOBKANRI.INC".
       *    労災レセプト回数取得サブ
            COPY    "CPORCSROUKAISU.INC".
-      *
-      *    日付変換サブ
-           COPY    "CPORCSDAY.INC".
-           COPY    "CPORCSLNK.INC".
-      *
-           COPY    "CPORCSGETTEMP.INC".
       *
            COPY    "MCPAREA".
       *
@@ -279,7 +250,6 @@
                                        FLG-AREA
                                        WRK-AREA
                                        SPA-AREA
-                                       RECEERR
       *
            UNSTRING    COMMAND-PARAM   DELIMITED  BY  ","
                                        INTO    WRK-PARA
@@ -289,29 +259,14 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE82PARA
-           INITIALIZE                      RECE82PARA
            MOVE    "RECE820"           TO  RECE82PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE82PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE82PARA-HOSPNUM
       *
-           MOVE    SPACE               TO  RECE88PARA
-           INITIALIZE                      RECE88PARA
            MOVE    "RECE880"           TO  RECE88PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE88PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE88PARA-HOSPNUM
       *
-           INITIALIZE                      SGETTEMP-AREA
-           MOVE    RECEERR             TO  SGETTEMP-BASENAMES  (1)
-           MOVE    RECE82PARA-BASENAME TO  SGETTEMP-BASENAMES  (2)
-           MOVE    RECE88PARA-BASENAME TO  SGETTEMP-BASENAMES  (3)
-           CALL    "ORCSGETTEMP"       USING   SGETTEMP-AREA
-           MOVE    SGETTEMP-FULLNAMES (1)
-                                       TO  RECEERR
-           MOVE    SGETTEMP-FULLNAMES (2)
-                                       TO  RECE82PARA
-           MOVE    SGETTEMP-FULLNAMES (3)
-                                       TO  RECE88PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
@@ -330,8 +285,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            OPEN    I-O                 RECE82-FILE
       *
-           OPEN    OUTPUT              RECE88-FILE
-           CLOSE                       RECE88-FILE
+           OPEN    OUTPUT              RECE88X-FILE
+           CLOSE                       RECE88X-FILE
            OPEN    I-O                 RECE88-FILE
       *
            PERFORM 900-RECE82-READ-SEC
@@ -385,7 +340,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    WHEN    "2"             ALSO    "2"
                        MOVE    7102            TO  RECE82-RECESYUBETU
                    WHEN    "4"             ALSO    ANY
-                   WHEN    "6"             ALSO    ANY
                        MOVE    7011            TO  RECE82-RECESYUBETU
                    WHEN    "5"          ALSO    ANY
                        MOVE    7061            TO  RECE82-RECESYUBETU
@@ -397,6 +351,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    労災レセプト回数取得
            IF    ( RECE82-HKNKBN     =   "1"  OR  "2" )
+           AND   ( RECE82-ROUKAISU   =   "2"          )
              INITIALIZE                    LNK-ORCSROUKAISU-REC
              MOVE  RECE82-HOSPNUM      TO  LNK-ORCSROUKAISU-HOSPNUM
              MOVE  RECE82-NYUGAIKBN    TO  LNK-ORCSROUKAISU-NYUGAIKBN
@@ -420,9 +375,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
              ELSE
                PERFORM  VARYING  IDX-ROU  FROM   1   BY  1
                          UNTIL   IDX-ROU   >    31
-                   IF  (RECE82-DAY(IDX-ROU)  =   RECE82-HKNCOMBI)
-                   OR  (RECE82-DOUJITSU-HKNCOMBI(IDX-ROU)
-                                             =   RECE82-HKNCOMBI)
+                   IF      RECE82-DAY(IDX-ROU)  =   RECE82-HKNCOMBI
                        MOVE    IDX-ROU   TO  LNK-ORCSROUKAISU-KAISHIBI
                        MOVE    31        TO  IDX-ROU
                    END-IF
@@ -434,24 +387,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                        SPA-AREA
       *
              IF    LNK-ORCSROUKAISU-RC   =   ZERO
-              IF   LNK-ORCSROUKAISU-RECEKAISU  =  1
-                MOVE   "1"               TO  RECE82-SYOKAIFLG
-              END-IF
-              MOVE     LNK-ORCSROUKAISU-RECEKAISU
+                MOVE   LNK-ORCSROUKAISU-RECEKAISU
                                          TO  RECE82-RECEKAISU
-      *
-              IF   (RECE82-SINKEI          =  "3"         )
-              AND  (RECE82-SHOSHINYMD(1:6) =  RECE82-SRYYM)
-              AND  (RECE82-KIJYUNYM-KSI    =  RECE82-SRYYM)
-              AND  (RECE82-KAISU-KSI       >  1           )
-                IF  LNK-ORCSROUKAISU-RECEKAISU  >  RECE82-KAISU-KSI
-                  MOVE     "5"           TO  RECE82-SINKEI
-                END-IF
-              ELSE
-                IF  LNK-ORCSROUKAISU-RECEKAISU  >  1
-                  MOVE     "5"           TO  RECE82-SINKEI
-                END-IF
-              END-IF
              END-IF
            END-IF
       *
@@ -470,19 +407,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                                            WRK-SHONUM
            MOVE         SPACE       TO     WRK-RYOSTYMD
                                            WRK-RYOEDYMD
-           MOVE         SPACE       TO     WRK-EDYMD
-      *
-           MOVE         SPACE       TO     WK-PTNYUINRRK-TENSTUYMD2
-           MOVE         SPACE       TO     WK-PTNYUINRRK-TENNYUYMD
-      *
-      *    月末日編集
-           INITIALIZE                      STS-AREA-DAY
-           INITIALIZE                      LNK-DAY7-AREA
-           MOVE    "71"             TO     LNK-DAY7-IRAI
-           MOVE    RECE82-SRYYM     TO     LNK-DAY7-YM
-           CALL    "ORCSDAY"        USING  STS-AREA-DAY
-                                           LNK-DAY7-AREA
-           MOVE    LNK-DAY7-KOYOMI  TO     WRK-EDYMD
       *
       *    診療月内の入退院情報
            INITIALIZE                      PTNYUINRRK-REC
@@ -512,9 +436,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF      PTNYUINRRK-TAIINYMD (1:6)
                                                >   RECE82-SRYYM
                    MOVE    31                  TO  IDX5
-                   IF      IDX5   >   WRK-EDDD
-                      MOVE    WRK-EDDD         TO  IDX5
-                   END-IF
                ELSE
                    MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SRYYMD
                    MOVE    WRK-SRYDD           TO  IDX5
@@ -548,24 +469,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                ELSE
                    PERFORM VARYING IDX FROM    IDX4    BY  1
                            UNTIL   IDX >       IDX5
-                       IF    ( IDX             =   IDX4 )
-                       AND   ( RECE82-DOUJITSU-HKNCOMBI (IDX)
-                                               =
-                                               PTNYUINRRK-HKNCOMBINUM )
-      *                    同日再入院のとき再入院分の保険組合せをチェック
-                           IF      RECE82-DOUJITSU-HKNCOMBI (IDX)
-                                                   =   RECE82-HKNCOMBI
-                               MOVE    1               TO  FLG-RRKOK
-                               PERFORM 21011-PTNYUINRRK-HENSYU-SEC
-                               MOVE   IDX5             TO  IDX
-                           END-IF    
-                       ELSE
-                           IF      RECE82-DAY (IDX)
-                                                   =   RECE82-HKNCOMBI
-                               MOVE    1               TO  FLG-RRKOK
-                               PERFORM 21011-PTNYUINRRK-HENSYU-SEC
-                               MOVE   IDX5             TO  IDX
-                           END-IF
+                       IF      RECE82-DAY (IDX)
+                                           =   RECE82-HKNCOMBI
+                           MOVE    1     TO    FLG-RRKOK
+                           PERFORM 21011-PTNYUINRRK-HENSYU-SEC
+                           MOVE   IDX5                 TO  IDX
                        END-IF
                    END-PERFORM
       *
@@ -573,7 +481,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                      PERFORM VARYING IDX FROM  IDX4    BY  1
                              UNTIL   IDX >     IDX5
                         IF  RECE82-DAY(IDX)  NOT =  999
-                        AND RECE82-DAY(IDX)  NOT =  RECE82-HKNCOMBI
                            MOVE   998    TO   RECE82-DAY(IDX)
                         END-IF
                      END-PERFORM
@@ -586,42 +493,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key23"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
-      *
-      *    病棟区分並替え
-      *
-           PERFORM    VARYING    IDX3    FROM    1    BY    1
-                       UNTIL    (IDX3                >   4   )
-                         OR     (WRK-BYOTOKBN(IDX3)  =  SPACE)
-             COMPUTE    IDX4  =  IDX3  +  1
-             PERFORM  VARYING    IDX5    FROM   IDX4  BY    1
-                       UNTIL    (IDX5                >   4   )
-                         OR     (WRK-BYOTOKBN(IDX5)  =  SPACE)
-                IF       WRK-BYOTOKBN(IDX3)  >
-                                           WRK-BYOTOKBN(IDX5)
-                   MOVE  WRK-BYOTOKBN(IDX3) TO  WRK-BYOTOKBN-DATA
-                   MOVE  WRK-BYOTOKBN(IDX5) TO  WRK-BYOTOKBN(IDX3)
-                   MOVE  WRK-BYOTOKBN-DATA  TO  WRK-BYOTOKBN(IDX5)
-                END-IF
-             END-PERFORM
-           END-PERFORM
-      *
-           MOVE    ZERO    TO    IDX4
-           PERFORM    VARYING    IDX3    FROM    1    BY    1
-                       UNTIL     IDX3     >      4
-             IF      RECE82-SRYYM     <=  "200609"
-                   MOVE    WRK-BYOTOKBN(IDX3)
-                                TO  RECE82-BYOTOKBN(IDX3)
-             ELSE
-               EVALUATE  WRK-BYOTOKBN(IDX3)
-                 WHEN     "01"
-                 WHEN     "02"
-                 WHEN     "07"
-                   ADD     1    TO  IDX4
-                   MOVE    WRK-BYOTOKBN(IDX3)
-                                TO  RECE82-BYOTOKBN(IDX4)
-               END-EVALUATE
-             END-IF
-           END-PERFORM
       *
            .
        2101-RECE88-HENSYU-EXT.
@@ -636,65 +507,15 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            PERFORM    210112-BYOTOKBN-SET-SEC
       *
       *    診療科情報のセット
-      *    退院日＜診療年月、転出日の前日＜診療年月のときはセットしない
-           IF    ( PTNYUINRRK-TENSTUYMD    =  PTNYUINRRK-TAIINYMD )
-           AND   ( PTNYUINRRK-TENNYUYMD    =  PTNYUINRRK-NYUINYMD )
-               IF      PTNYUINRRK-TAIINYMD (1:6)
-                                           >=  RECE82-SRYYM
-                   PERFORM VARYING IDW FROM    1   BY  1
-                           UNTIL   IDW >       20
-                           OR      PTNYUINRRK-NYUINKA
-                                               =   RECE82-SRYKA (IDW)
-                       IF      RECE82-SRYKA (IDW)  =   SPACE  
-                           MOVE    PTNYUINRRK-NYUINKA
-                                               TO  RECE82-SRYKA (IDW)
-                           MOVE    20          TO  IDW
-                       END-IF
-                   END-PERFORM
-               END-IF    
-           ELSE    
-               IF      PTNYUINRRK-TENSTUYMD
-                                   NOT =   PTNYUINRRK-TAIINYMD
-                   INITIALIZE              STS-AREA-DAY
-                   INITIALIZE              LNK-DAY6-AREA
-                   MOVE    "61"            TO  LNK-DAY6-IRAI
-                   MOVE   PTNYUINRRK-TENSTUYMD
-                                           TO  LNK-DAY6-KIJUN
-                   MOVE    "1"             TO  LNK-DAY6-ZOGENPTN
-                   MOVE    -1              TO  LNK-DAY6-ZOGEN
-                   CALL  "ORCSDAY"         USING   STS-AREA-DAY
-                                                   LNK-DAY6-AREA
-                   IF      LNK-DAY6-KEISAN (1:6)
-                                           >=  RECE82-SRYYM
-                       PERFORM VARYING IDW FROM    1   BY  1
-                               UNTIL   IDW >       20
-                               OR      PTNYUINRRK-NYUINKA
-                                               =   RECE82-SRYKA (IDW)
-                           IF      RECE82-SRYKA (IDW)  =   SPACE  
-                               MOVE    PTNYUINRRK-NYUINKA
-                                                   TO  RECE82-SRYKA(IDW)
-                               MOVE    20          TO  IDW
-                           END-IF
-                       END-PERFORM
-                   END-IF
+           PERFORM VARYING IDW FROM    1   BY  1
+                   UNTIL   IDW >       20
+                   OR      PTNYUINRRK-NYUINKA
+                                           =   RECE82-SRYKA (IDW)
+               IF      RECE82-SRYKA (IDW)  =   SPACE  
+                   MOVE    PTNYUINRRK-NYUINKA  TO  RECE82-SRYKA (IDW)
+                   MOVE    20          TO  IDW
                END-IF
-               IF      PTNYUINRRK-TENNYUYMD
-                                   NOT =   PTNYUINRRK-NYUINYMD
-                   IF      PTNYUINRRK-TENNYUYMD (1:6)
-                                       <=  RECE82-SRYYM
-                       PERFORM VARYING IDW FROM    1   BY  1
-                               UNTIL   IDW >       20
-                               OR      PTNYUINRRK-NYUINKA
-                                               =   RECE82-SRYKA (IDW)
-                           IF      RECE82-SRYKA (IDW)  =   SPACE  
-                               MOVE    PTNYUINRRK-NYUINKA
-                                                   TO  RECE82-SRYKA(IDW)
-                               MOVE    20          TO  IDW
-                           END-IF
-                       END-PERFORM
-                   END-IF
-               END-IF
-           END-IF
+           END-PERFORM
       *
       *    入院年月日
            IF      RECE82-NYUINYMD    =   SPACE
@@ -707,16 +528,17 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
       *    診療月内の入退院情報の履歴
            IF      FLG-RECE88          =   1                            
-               MOVE    PTNYUINRRK-REC    TO  WRK-PTNRRK-REC
+               MOVE    PTNYUINRRK-REC    TO  WRK-PTNYUINRRK-REC
                INITIALIZE                    PTNYUINRRK-REC
                MOVE    RECE82-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
                MOVE    RECE82-PTID       TO  PTNYUINRRK-PTID
-               MOVE    WRK-PTNRRK-SHONUM TO  PTNYUINRRK-SHONUM
+               MOVE    WRK-PTNYUINRRK-SHONUM
+                                         TO  PTNYUINRRK-SHONUM
                MOVE    RECE82-SRYYM      TO  PTNYUINRRK-NYUINYMD (1:6)
                MOVE    "31"              TO  PTNYUINRRK-NYUINYMD (7:2)
                MOVE    PTNYUINRRK-REC    TO  MCPDATA-REC
                MOVE    "tbl_ptnyuinrrk"  TO  MCP-TABLE
-               MOVE    "key51"           TO  MCP-PATHNAME
+               MOVE    "key22"           TO  MCP-PATHNAME
                PERFORM    900-DBSELECT-SEC
                IF      MCP-RC              =   ZERO
                    PERFORM 900-PTNYUINRRK-KEY22-READ-SEC
@@ -728,11 +550,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF    ( PTNYUINRRK-NYUINYMD <    RECE82-NYUINYMD )
                AND   ( PTNYUINRRK-SHONUM   =    WRK-SHONUM      )
                    MOVE    PTNYUINRRK-NYUINYMD  TO  RECE82-NYUINYMD
-      *
-                   IF    ( PTNYUINRRK-JTIKBN        =   "5" )
-                   AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
-                       MOVE    "1"                  TO  RECE82-TAINFLG
-                   END-IF
                END-IF
       *
                PERFORM             UNTIL   FLG-PTNYUINRRK22 =  1
@@ -741,7 +558,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                END-PERFORM
       *                 
                MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-               MOVE    "key51"             TO  MCP-PATHNAME
+               MOVE    "key22"             TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
            END-IF
            .
@@ -753,14 +570,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        210111-RECE88-WRITE-SEC         SECTION.
       *
-      *    他院歴の履歴は記載しない
-           IF    ( PTNYUINRRK-JTIKBN        =   "5" )
-           AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
-               GO  TO  210111-RECE88-WRITE-EXT
-           END-IF
-      *
-      *
-           INITIALIZE                      RECE88-REC
            MOVE    RECE82-HOSPNUM      TO  RECE88-HOSPNUM
            MOVE    RECE82-SRYYM        TO  RECE88-SRYYM
            MOVE    RECE82-NYUGAIKBN    TO  RECE88-NYUGAIKBN
@@ -769,15 +578,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    RECE82-HKNID        TO  RECE88-HKNID
            MOVE    RECE82-TEKSTYMD     TO  RECE88-TEKSTYMD
            MOVE    PTNYUINRRK-NYUINYMD TO  RECE88-NYUINYMD
-           IF      PTNYUINRRK-NYUINYMD =   PTNYUINRRK-TAIINYMD
-               MOVE    0                   TO  RECE88-NYUINYMD-SEQNO
-           ELSE 
-               IF      PTNYUINRRK-TAIINYMD =   "99999999"
-                   MOVE    9                   TO  RECE88-NYUINYMD-SEQNO
-               ELSE
-                   MOVE    1                   TO  RECE88-NYUINYMD-SEQNO
-               END-IF
-           END-IF
            MOVE    RECE88-REC          TO  WRK-RECE88-REC          
            PERFORM 900-RECE88-READ-SEC
            IF      FLG-RECE88          =   1
@@ -785,10 +585,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    PTNYUINRRK-TAIINYMD TO  RECE88-TAIINYMD
                MOVE    PTNYUINRRK-NYUINCHUKBN
                                            TO  RECE88-NYUINCHUKBN
-      *        入院年月日と同じ初回番号のときのみセット
-               IF      PTNYUINRRK-SHONUM   =    WRK-SHONUM
-                   MOVE    WRK-SHONUM           TO  RECE88-SHONUM
-               END-IF
                WRITE   RECE88-REC
                ADD     1                   TO  CNT-RECE88
       *
@@ -800,9 +596,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                  END-IF 
                  IF  PTNYUINRRK-TAIINYMD(1:6)  >  RECE82-SRYYM
                      MOVE    31                      TO  IDX7
-                     IF      IDX7   >   WRK-EDDD
-                        MOVE    WRK-EDDD             TO  IDX7
-                     END-IF
                  ELSE
                      MOVE  PTNYUINRRK-TAIINYMD(7:2)  TO  IDX7
                  END-IF
@@ -823,36 +616,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *    病棟番号・種別セット                                              
       *****************************************************************
        210112-BYOTOKBN-SET-SEC        SECTION. 
-      *
-      *    異動による転室等の場合は転出日を前日に置き換える
-           MOVE    SPACE     TO     WK-PTNYUINRRK-TENSTUYMD
-           IF      PTNYUINRRK-TENSTUYMD  =  PTNYUINRRK-TAIINYMD
-             MOVE  PTNYUINRRK-TENSTUYMD  TO  WK-PTNYUINRRK-TENSTUYMD
-             IF  (WK-PTNYUINRRK-TENSTUYMD2     NOT =  SPACE  )
-             AND (WK-PTNYUINRRK-TENSTUYMD(1:6) NOT = "999999")
-             AND (WK-PTNYUINRRK-TENSTUYMD  =
-                                     WK-PTNYUINRRK-TENSTUYMD2)
-               INITIALIZE                       STS-AREA-DAY
-               INITIALIZE                       LNK-DAY6-AREA
-               MOVE    "61"                 TO  LNK-DAY6-IRAI
-               MOVE   PTNYUINRRK-TENSTUYMD  TO  LNK-DAY6-KIJUN
-               MOVE    "1"                  TO  LNK-DAY6-ZOGENPTN
-               MOVE    -1                   TO  LNK-DAY6-ZOGEN
-               CALL  "ORCSDAY"              USING   STS-AREA-DAY
-                                                    LNK-DAY6-AREA
-               MOVE   LNK-DAY6-KEISAN    TO  WK-PTNYUINRRK-TENSTUYMD
-             END-IF
-           ELSE
-             INITIALIZE                         STS-AREA-DAY
-             INITIALIZE                         LNK-DAY6-AREA
-             MOVE      "61"                 TO  LNK-DAY6-IRAI
-             MOVE     PTNYUINRRK-TENSTUYMD  TO  LNK-DAY6-KIJUN
-             MOVE      "1"                  TO  LNK-DAY6-ZOGENPTN
-             MOVE      -1                   TO  LNK-DAY6-ZOGEN
-             CALL    "ORCSDAY"              USING   STS-AREA-DAY
-                                                    LNK-DAY6-AREA
-             MOVE     LNK-DAY6-KEISAN    TO  WK-PTNYUINRRK-TENSTUYMD
-           END-IF
       *                       
       *    病棟情報                                           
            MOVE    SPACE                 TO  SYSKANRI-REC     
@@ -865,33 +628,6 @@ grpsys     MOVE    SPA-HOSPNUM           TO  SYS-HOSPNUM
            PERFORM 900-SYSKANRI-READ-SEC                      
            IF      FLG-SYSKANRI        =   ZERO               
                MOVE  MCPDATA-REC           TO  SYS-5001-REC     
-      *
-               IF ( WK-PTNYUINRRK-TENSTUYMD(1:6) <   RECE82-SRYYM  )
-               OR ( PTNYUINRRK-TENNYUYMD(1:6)    >   RECE82-SRYYM  )
-               OR ((PTNYUINRRK-TENNYUYMD = WK-PTNYUINRRK-TENNYUYMD) AND
-                   (WK-PTNYUINRRK-TENNYUYMD  NOT =   SPACE        ))
-                 CONTINUE
-               ELSE
-                 IF  SYS-5001-RECEDSPKBN  =  SPACE
-                   CONTINUE
-                 ELSE
-                   PERFORM  VARYING  IDX3  FROM  1  BY  1
-                             UNTIL  (IDX3    >       4              )
-                               OR   (WRK-BYOTOKBN(IDX3)
-                                             =   SYS-5001-RECEDSPKBN)
-                     IF     WRK-BYOTOKBN(IDX3)  =  SPACE
-                       MOVE    SYS-5001-RECEDSPKBN
-                                       TO   WRK-BYOTOKBN(IDX3)
-                       MOVE    4       TO   IDX3
-                     END-IF
-                   END-PERFORM
-                 END-IF
-                 MOVE   WK-PTNYUINRRK-TENSTUYMD   TO
-                                        WK-PTNYUINRRK-TENSTUYMD2
-                 MOVE   PTNYUINRRK-TENNYUYMD      TO
-                                        WK-PTNYUINRRK-TENNYUYMD
-               END-IF
-      *
       *        病棟番号・種別
                MOVE    RECE82-SRYYM        TO  WRK-SRYYYMM
                PERFORM VARYING IDX3    FROM    1   BY  1
@@ -1122,18 +858,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
        900-PTNYUINRRK-KEY22-READ-SEC    SECTION.
       *
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
-           MOVE    "key51"             TO  MCP-PATHNAME
+           MOVE    "key22"             TO  MCP-PATHNAME
            PERFORM    900-DBFETCH-SEC
            IF      MCP-RC          =   ZERO
                MOVE    ZERO        TO  FLG-PTNYUINRRK22
                MOVE    MCPDATA-REC TO  PTNYUINRRK-REC
-               IF      PTNYUINRRK-JTIKBN    =   "5"
-                   IF      PTNYUINRRK-TAINRELKBN    =   "1"
-                       CONTINUE
-                   ELSE
-                       GO  TO  900-PTNYUINRRK-KEY22-READ-SEC
-                   END-IF
-               END-IF
            ELSE
                MOVE    1           TO  FLG-PTNYUINRRK22
            END-IF
