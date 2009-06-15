@@ -39,6 +39,8 @@
       *  04.03.03    NACL-門脇    08/12/01  在宅（院外分）編集修正
       *
       *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3017,6 +3019,8 @@
                           MOVE    31     TO  IDW3
                        END-IF
                    END-PERFORM
+                 WHEN      "99"
+                   MOVE   WRK-SRYSYUKBN  TO  RECE240-SRYSYUKBN
                END-EVALUATE
       *
                PERFORM 4501-RECE240-WRITE-SEC
@@ -3065,7 +3069,8 @@
                END-IF
            END-IF
       *
-           IF      RECE240-SRYKBN          =   "99"          
+           IF     (RECE240-SRYKBN         =  "99" )
+           AND    (RECE240-SRYSYUKBN  NOT =  "991")
                MOVE  SPACE                 TO  RECE240-SRYKBN
            END-IF
       *

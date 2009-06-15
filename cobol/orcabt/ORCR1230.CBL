@@ -29,6 +29,8 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
       *                                     （診療区分６４：病理診断対応）
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -334,8 +336,8 @@
                MOVE    RECE220-ZAINUM      TO  WRK-ZAINUM
                MOVE    SPACE               TO  WRK-SRYSYUKBN
                INITIALIZE                  WRK-COM-AREA
-               IF    ( RECE220-SRYKBN      =   "60" OR "64" )
-               OR    ( RECE220-COMCDFLG    =   "1"          )
+               IF    ( RECE220-SRYKBN      =   "60" OR "64" OR "99" )
+               OR    ( RECE220-COMCDFLG    =   "1"                  )
                    PERFORM 2101-RECE230-COM-HENSYU-SEC
                END-IF
       *
@@ -477,8 +479,8 @@
                          ( WRK-ZAINUM  NOT =  RECE230-ZAINUM )
       *
       *        検査のとき最初の診療区分を取得
-               IF    ( RECE220-SRYKBN      =   "60" OR "64" )
-               AND   ( WRK-SRYSYUKBN       =    SPACE       )
+               IF    ( RECE220-SRYKBN      =   "60" OR "64" OR "99" )
+               AND   ( WRK-SRYSYUKBN       =    SPACE               )
                    MOVE   RECE230-SRYSYUKBN   TO   WRK-SRYSYUKBN
                END-IF
       *        コメント取得

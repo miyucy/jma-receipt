@@ -41,6 +41,8 @@
       *  04.03.03    NACL-藤原    08/08/29  記号番号の記載方法の変更
       *  04.03.04    NACL-藤原    09/01/16  症状詳記区分の表題の変更
       *  04.03.05    NACL-門脇    09/02/04  請求点が０の場合の対応
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3181,6 +3183,9 @@ grpsys             MOVE    RECE100-HOSPNUM     TO  KEY-N-HOSPNUM
                    END-IF
                    IF      RECE140-SRYKBN    =   "64"
                        MOVE    "60"          TO  RECE140-SRYKBN
+                   END-IF
+                   IF      RECE140-SRYKBN    =   "99"
+                       MOVE    SPACE         TO  RECE140-SRYKBN
                    END-IF
            END-READ
       *

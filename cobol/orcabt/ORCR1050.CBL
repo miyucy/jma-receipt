@@ -41,6 +41,8 @@
       *                                     処方せん（乳幼児）加算編集対応
       *
       *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3188,6 +3190,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                           MOVE    31     TO  IDW3
                        END-IF
                    END-PERFORM
+                 WHEN      "99"
+                   MOVE   WRK-SRYSYUKBN  TO  RECE140-SRYSYUKBN
                END-EVALUATE
       *
                IF      RECE120-SRYKBN     =   "80"
@@ -3251,7 +3255,8 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        MOVE    9               TO  RECE140-KNSJISKBN
                END-IF
            END-IF
-           IF      RECE140-SRYKBN      =   "99"
+           IF     (RECE140-SRYKBN         =  "99" )
+           AND    (RECE140-SRYSYUKBN  NOT =  "991")
                MOVE    SPACE           TO  RECE140-SRYKBN
            END-IF
            IF      RECE140-SRYKBN        NOT =   "21" AND "22" AND "23"
