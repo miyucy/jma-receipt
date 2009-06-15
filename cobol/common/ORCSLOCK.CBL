@@ -402,6 +402,8 @@ grpsys                            SPA-AREA
            IF      WRK-LD              =   "ORCA12"
                                        OR  "ORCA21"
                                        OR  "ORCA24"
+                                       OR  "ORCA31"
+                                       OR  "ORCA32"
                                        OR  "ORCA41"
                MOVE    1               TO  FLG-ALLCHK
            ELSE
