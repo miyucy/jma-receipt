@@ -58,6 +58,7 @@
            03  FLG-SETSYORI        PIC 9(01).
       *
            03  FLG-AUTOKBN2        PIC 9(01).
+           03  FLG-ZEROOK          PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -455,24 +456,30 @@
       *
            IF      ISET-SURYO1     =   ZERO
       *        ¿ôÎÌ¥¼¥í¥Õ¥é¥°
-               IF     (SPA-SURYOZERO-FLG   =   ZERO ) OR
-                      (FLG-SYORI           =   1    ) OR
-                      (ISET-INPUTCD        =   "799990070"  OR
-                                               "770020070" )  OR
-                     ((ISET-INPUTCD(1:1)
-                                       NOT =   "6"   AND
-                                               "7" )  AND
-                      (ISET-INPUTCD(1:3)
-                                       NOT =   "059" ))
-                   MOVE    1           TO  SPA-COM-SURYO
+               MOVE    ZERO                TO  FLG-ZEROOK
+               IF     (ISET-INPUTCD(1:1)   =   "6"
+                                           OR  "7"
+                                           OR  "1"  )
+                  OR  (ISET-INPUTCD(1:3)   =   "059" )
+                   IF     (SPA-SURYOZERO-FLG   =   ZERO ) OR
+                          (FLG-SYORI           =   1    )  OR
+                          (ISET-INPUTCD        =   "799990070"  OR
+                                                   "770020070" )
+                       MOVE    ZERO                TO  FLG-ZEROOK
+                   ELSE
+                       MOVE    1                   TO  FLG-ZEROOK
+                   END-IF
+               END-IF
+               IF      FLG-ZEROOK          =   ZERO
+                   MOVE    1               TO  SPA-COM-SURYO
                                                          (SPA-GMN-IDX)
                ELSE
-                   MOVE    ZERO        TO  SPA-COM-SURYO
+                   MOVE    ZERO            TO  SPA-COM-SURYO
                                                          (SPA-GMN-IDX)
-                   MOVE    "1"         TO  SPA-COM-CUR
+                   MOVE    "1"             TO  SPA-COM-CUR
                                                          (SPA-GMN-IDX)
-                   MOVE    "A001"      TO  WRK-ERRCD2
-                   MOVE    1           TO  FLG-ERR
+                   MOVE    "A001"          TO  WRK-ERRCD2
+                   MOVE    1               TO  FLG-ERR
                END-IF
            ELSE
                MOVE    ISET-SURYO1     TO  SPA-COM-SURYO (SPA-GMN-IDX)

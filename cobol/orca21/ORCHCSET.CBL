@@ -35,6 +35,7 @@
       *  03.04.01    NACL-Â¿¡¹Ç¼  07/03/13  ·Ð²áÁ¼ÃÖÆüÄÉ²Ã
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/11/22  ´ïºà¾¦ÉÊÌ¾¥³¡¼¥ÉÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  »£±ÆÎÁÅù¤Î¿ôÎÌ¥¼¥íÂÐ±þ
       *****************************************************************
       *
       *
@@ -163,6 +164,10 @@
            03  WRK-FTNKBN              PIC X(20).
       *
            03  WRK-TNS-KEIKASOCHIYMD   PIC X(08).
+           03  WRK-TNS-KZMCOMPSIKIBETU PIC X(01).
+           03  WRK-TNS-TANICD          PIC X(02).
+           03  WRK-TNS-TANINAME        PIC X(20).
+           03  WRK-TNS-DATAKBN         PIC X(01).
       *
            03  WRK-KEIKAYMD-G.
                05  WRK-KEIKA-H         PIC X(14).
@@ -225,6 +230,10 @@
                05  B01-YOBI-03             PIC X(20).
                05  B01-HENSYU-3            PIC X(50).
                05  FILLER                  PIC X(01).
+      *!!
+       01  BODY-02.
+           03  B02-YOBI-04             PIC X(85).
+           03  B02-KAISU-HEN           PIC X(05).
       *
        01  WRK-B01-HENSYU.
            03  WRK-B01-SURYO-HEN           PIC X(15).
@@ -234,14 +243,21 @@
            03  WRK-NAME                PIC X(140).
       *
        01  WRK-HEN-SURYO.
-           03  B01-SURYO1              PIC ZZZZ9.999.
+           03  B01-SURYO1              PIC ZZZZ9.99999.
+           03  B01-F0                  PIC X(04).
+           03  B01-TANINAME1           PIC X(04).
+      *
+       01  WRK-HEN-SURYO-3.
+           03  B01-SURYO3              PIC ZZZZ9.
+           03  B01-F3                  PIC X(02).
+           03  B01-TANINAME3           PIC X(04).
       *
        01  WRK-HEN-KAISU.
            03  B01-KAKERU              PIC X(02).
            03  B01-KAISU               PIC ZZZ.
       *
        01  WRK-HEN-SURYO-2.
-           03  B01-SURYO12             PIC ZZZZ.
+           03  B01-SURYO12             PIC ZZZ9.
            03  B01-YOBI6               PIC X(02).
            03  B01-SURYO22             PIC ZZZZ.
       *
@@ -790,6 +806,9 @@
        20020-MEI-HENSYU-SEC          SECTION.
       *
            MOVE    SPACE               TO  BODY-01
+      *!!!
+           MOVE    SPACE               TO  BODY-02
+      *!!!
            MOVE    SPACE               TO  WRK-NAME
            MOVE    SPACE               TO  WRK-TNS-KEIKASOCHIYMD
            MOVE    SPACE               TO  WRK-KEIKAYMD-G
@@ -854,6 +873,11 @@
                ADD     1               TO  WRK-HEN-MAX
                MOVE    BODY-01         TO  WRK-TBL-REC (WRK-HEN-MAX)
                MOVE    SPACE           TO  WRK-KEIKAYMD-G
+           END-IF
+      *!!!
+           IF      BODY-02         NOT =   SPACE
+               ADD     1               TO  WRK-HEN-MAX
+               MOVE    BODY-02         TO  WRK-TBL-REC (WRK-HEN-MAX)
            END-IF
            .
        20020-MEI-HENSYU-EXT.
@@ -996,6 +1020,11 @@
                    MOVE    TNS-KEIKASOCHIYMD   TO  WRK-TNS-KEIKASOCHIYMD
                END-IF
       *
+               MOVE    TNS-KZMCOMPSIKIBETU TO  WRK-TNS-KZMCOMPSIKIBETU
+               MOVE    TNS-TANICD          TO  WRK-TNS-TANICD
+               MOVE    TNS-TANINAME        TO  WRK-TNS-TANINAME
+               MOVE    TNS-DATAKBN         TO  WRK-TNS-DATAKBN
+      *
                MOVE    "key4"              TO  MCP-PATHNAME
                PERFORM 910-TENSU-READ-SEC
            END-PERFORM
@@ -1029,21 +1058,40 @@
       *
            MOVE    SPACE               TO  WRK-HEN-SURYO
            MOVE    SPACE               TO  WRK-HEN-SURYO-2
-      *    ¿ôÎÌ
+           MOVE    SPACE               TO  WRK-HEN-SURYO-3
+      *    ¿ôÎÌ¡ÊÌôºÞ¡¦´ïºà¡Ë
            IF     (ISET-INPUTCD(1:1)   =   "6"  OR  "7" )  OR
-                  (ISET-SURYO1         >   1            )
-               MOVE    ISET-SURYO1         TO  WRK-SURYO
-               MOVE    WRK-SURYO           TO  B01-SURYO1
+                 ((ISET-INPUTCD(1:1)   NOT =   "1"   )  AND
+                  (ISET-SURYO1         NOT =   1     )  )
+               MOVE    ISET-SURYO1         TO  B01-SURYO1
+               MOVE    WRK-TNS-TANINAME    TO  B01-TANINAME1
                MOVE    WRK-HEN-SURYO       TO  B01-SURYO-HEN
+               MOVE    WRK-HEN-SURYO       TO  B01-HENSYU
+           ELSE
+      *        ¿ÇÎÅ¥³¡¼¥É
+               IF      (ISET-INPUTCD(1:1)      =   "1"  ) AND
+                       (ISET-SURYO1        NOT =   1    ) AND
+                       (WRK-TNS-KZMCOMPSIKIBETU
+                                           NOT =  ZERO )
+                   MOVE    ISET-SURYO1         TO  B01-SURYO3
+                   MOVE    WRK-TNS-TANINAME    TO  B01-TANINAME3
+                   MOVE    WRK-HEN-SURYO-3     TO  B01-SURYO-HEN
+                   MOVE    WRK-HEN-SURYO-3     TO  B01-HENSYU
+               END-IF
            END-IF
-      *    Ê¬²è¿ô
+      *    Ê¬²è¿ô¡Ê¥Õ¥£¥ë¥à¤Î¤ß¡Ë
            IF     (ISET-INPUTCD(1:1)   =   "7" )  AND
-                  (ISET-SURYO2         >   ZERO)
-               MOVE    ISET-SURYO1         TO  WRK-SURYO
-               MOVE    WRK-SURYO           TO  B01-SURYO12
-               MOVE    ISET-SURYO2         TO  WRK-SURYO
-               MOVE    WRK-SURYO           TO  B01-SURYO22
+                  (ISET-SURYO2         >   ZERO)  AND
+                  (WRK-TNS-DATAKBN     =   "3" )
+               MOVE    SPACE               TO  B01-HENSYU
+               MOVE    ISET-SURYO1         TO  B01-SURYO12
+               MOVE    ISET-SURYO2         TO  B01-SURYO22
                MOVE    WRK-HEN-SURYO-2     TO  B01-SURYO-HEN
+           END-IF
+      *    ÆýÍÄ»ù²Ã»»¡¦»ÀÁÇÊäÀµÎ¨¤Ï¿ôÎÌµ­ºÜ¤Ê¤·
+           IF     (ISET-INPUTCD        =   "799990070" 
+                                       OR  "770020070" )
+               MOVE    SPACE               TO  B01-HENSYU
            END-IF
       *    ¤½¤ÎÂ¾
            IF      ISET-ATAI-AREA      NOT =   SPACE
@@ -1064,7 +1112,11 @@
                   (ISET-KAISU              >   1     )
                MOVE    ISET-KAISU          TO  B01-KAISU
                MOVE    "¡ß"                TO  B01-KAKERU
-               MOVE    WRK-HEN-KAISU       TO  B01-KAISU-HEN
+               IF      B01-KAISU-HEN       =   SPACE
+                   MOVE    WRK-HEN-KAISU       TO  B01-KAISU-HEN
+               ELSE
+                   MOVE    WRK-HEN-KAISU       TO  B02-KAISU-HEN
+               END-IF
            END-IF
            .
        20023-SRYCD-HEN-EXT.

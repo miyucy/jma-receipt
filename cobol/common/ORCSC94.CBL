@@ -227,7 +227,10 @@
            EVALUATE    WRK-MOJI
       *            ¼êµ»ÎÁ
                WHEN    "1"
-                   IF      SPA-COM-SURYO  (IDX)     >  1
+                   IF     (SPA-COM-SURYO  (IDX)     >  1  )  OR
+      *            ¿ôÎÌ¥¼¥í¥Õ¥é¥°
+                         ((SPA-SURYOZERO-FLG       =   1  )  AND
+                           (SPA-COM-SURYO (IDX)    =   0  ))
                        MOVE    SPA-COM-SURYO  (IDX)    TO  WRK-SURYO
                        PERFORM 2001-SURYO-HEN-SEC
                    END-IF

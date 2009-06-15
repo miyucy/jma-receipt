@@ -965,6 +965,10 @@
                                                =   "6"  OR  "7") OR
                       (SPA-COM-INPUTCD(IDX-T)(1:3)
                                                =   "059"      )
+                OR    ((SPA-COM-INPUTCD(IDX-T)(1:1)
+                                               =   "1"     ) AND
+                       (SPA-COM-KZMCOMPSIKIBETU(IDX-T)
+                                           NOT =   0        )  )
                    MOVE    "A001"              TO  SPA-ERRCD
                ELSE
                    MOVE    "A002"              TO  SPA-ERRCD
