@@ -1057,8 +1057,15 @@
       *
            INITIALIZE                  SPA-GMN-SORTKBNLST-G
       *
-           MOVE    "0"                 TO  SPA-GMN-SORTKBNL       (1)
-           MOVE    "帕杉戎规界"        TO  SPA-GMN-SORTKBNMEIL    (1)
+           IF    ( SPA-GMN-MODE        =   CONST-MODE-MISYU
+                                       OR  CONST-MODE-NYUHEN )
+
+               MOVE    "0"             TO  SPA-GMN-SORTKBNL       (1)
+               MOVE    "券乖泣界"      TO  SPA-GMN-SORTKBNMEIL    (1)
+           ELSE
+               MOVE    "0"             TO  SPA-GMN-SORTKBNL       (1)
+               MOVE    "帕杉戎规界"    TO  SPA-GMN-SORTKBNMEIL    (1)
+           END-IF
            MOVE    "1"                 TO  SPA-GMN-SORTKBNL       (2)
            MOVE    "壳闻泣界"          TO  SPA-GMN-SORTKBNMEIL    (2)
            MOVE    2                   TO  SPA-GMN-SORTKBN-MAX
@@ -3095,7 +3102,7 @@
       *
            MOVE    S02-SORTKBN (1:1) TO  WRK-CMB-CD
            PERFORM 4200-SORTKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SORTKBN-G
+           MOVE    WRK-CMB-ITM       TO  SPA-GMN-SORTKBN-G
       *
            MOVE    1               TO  FLG-SYULIST-ROW
            PERFORM 300-SYUNOU-HENSYU-SEC
