@@ -47,6 +47,8 @@
       *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *  04.03.02    NACL-藤原    09/01/16  症状詳記区分の表題の変更
       *  04.03.03    NACL-門脇    09/02/04  請求点が０の場合の対応
+      *
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -3207,6 +3209,9 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    IF      RECE87-SRYKBN    =   "64"
                        MOVE    "60"          TO  RECE87-SRYKBN
                    END-IF    
+                   IF      RECE87-SRYKBN    =   "99"
+                       MOVE    SPACE         TO  RECE87-SRYKBN
+                   END-IF
            END-READ
       *
            .
@@ -3230,6 +3235,9 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    IF      RECE871-SRYKBN    =   "64"
                        MOVE    "60"          TO  RECE871-SRYKBN
                    END-IF    
+                   IF      RECE871-SRYKBN    =   "99"
+                       MOVE    SPACE         TO  RECE871-SRYKBN
+                   END-IF
            END-READ
       *
            .
