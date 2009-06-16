@@ -1378,3 +1378,18 @@ path	key68 	{
 		;
 	};
 };
+
+path	key69 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_main_key69_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou_main
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   NYUGAIKBN   =   :NYUGAIKBN
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   CREATEKBN   <>  '3'
+			ORDER   BY    SRYYMD,DENPNUM
+		;
+	};
+};

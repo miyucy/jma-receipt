@@ -47,6 +47,7 @@
       *  04.01.01    NACL-ÌçÏÆ    07/10/25  ¸øÌ³ºÒ³²ÂÐ±þ
       *  04.01.02    NACL-ÌçÏÆ    07/12/07  ¸ø³²ÂÐ±þ
       *  04.02.01    NACL-ÌçÏÆ    08/02/29  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.05.01    NACL-ÌçÏÆ    09/06/16  °ì³çºÆ·×»»ÊýË¡ÁªÂòµ¡Ç½ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -739,6 +740,10 @@
       *    ´µ¼ÔÉéÃ´³Û·×»»½èÍý
       *
            MOVE    "1"           TO  LNK-S01-SAIKEISAN-KBN
+           MOVE    LNK-ORCSSKS-IKTSORTKBN
+                                 TO  LNK-S01-IKTSORTKBN
+           MOVE    LNK-ORCSSKS-IKTKEISANKBN
+                                 TO  LNK-S01-IKTKEISANKBN
       *
            CALL    "ORCSGAIFTN"        USING
                                        MCPAREA

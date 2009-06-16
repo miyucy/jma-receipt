@@ -22,6 +22,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-門脇    09/06/16  一括再計算順、一括再計算方法追加
       ************************************************************
        01  LNK-ORCSSAIKEISAN-REC.
       *
@@ -35,6 +36,10 @@
            03  LNK-ORCSSKS-DENPNUM         PIC  9(07).
       *診療科
            03  LNK-ORCSSKS-SRYKA           PIC  X(02).
+      *一括再計算順
+           03  LNK-ORCSSKS-IKTSORTKBN      PIC  X(01).
+      *一括再計算方法
+           03  LNK-ORCSSKS-IKTKEISANKBN    PIC  X(01).
       *
       *返却値
       *

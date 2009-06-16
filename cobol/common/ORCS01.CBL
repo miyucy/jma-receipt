@@ -286,6 +286,8 @@
       *  04.04.04    NACL-ÌçÏÆ    09/06/01  Ê¿À®£²£±Ç¯£µ·î²þÀµÂÐ±þ
       *                                     ¡ÊÅìµþÅÔ£±£µ£±¡Ë
       *  04.04.05    NACL-ÌçÏÆ    09/06/11  £·£°ºÐÌ¤Ëþ¤Î¹â³Û·×»»ÂÐ±þ
+      *
+      *  04.05.01    NACL-ÌçÏÆ    09/06/16  °ì³çºÆ·×»»ÊýË¡ÁªÂòµ¡Ç½ÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -22035,6 +22037,23 @@
                OR    ((LNK-S01-SAIKEISAN-KBN    =   "1"           ) AND
                       (LNK-SYU-GRP-DENPNUM  NOT =  ZERO           ) AND
                       (LNK-SYU-GRP-DENPNUM      =  SYU-GRP-DENPNUM))
+               OR    ((LNK-S01-SAIKEISAN-KBN    =   "1"           ) AND
+                      (LNK-S01-IKTKEISANKBN     =   "1"           ) AND
+                      (LNK-S01-IKTSORTKBN       =   "0" OR SPACE  ) AND
+                      (LNK-SYU-DENPNUM      NOT =  ZERO           ) AND
+                      (LNK-SYU-DENPNUM          <  SYU-DENPNUM    ))
+               OR    ((LNK-S01-SAIKEISAN-KBN    =   "1"           ) AND
+                      (LNK-S01-IKTKEISANKBN     =   "1"           ) AND
+                      (LNK-S01-IKTSORTKBN       =   "1"           ) AND
+                      (LNK-SYU-SRYYMD       NOT =  SPACE          ) AND
+                      (LNK-SYU-SRYYMD           <  SYU-SRYYMD     ))
+               OR    ((LNK-S01-SAIKEISAN-KBN    =   "1"           ) AND
+                      (LNK-S01-IKTKEISANKBN     =   "1"           ) AND
+                      (LNK-S01-IKTSORTKBN       =   "1"           ) AND
+                      (LNK-SYU-SRYYMD       NOT =  SPACE          ) AND
+                      (LNK-SYU-SRYYMD           =  SYU-SRYYMD     ) AND
+                      (LNK-SYU-DENPNUM      NOT =  ZERO           ) AND
+                      (LNK-SYU-DENPNUM          <  SYU-DENPNUM    ))
                        GO    TO    SYUNOU-READ-100
                ELSE
                        MOVE    ZERO    TO  FLG-SYUNOU
