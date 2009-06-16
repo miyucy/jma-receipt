@@ -8179,18 +8179,18 @@
                    END-IF
       *
       *            同日再入院の場合継続入院となっていること
-                   IF    ( SPA-NAI-I01-TTAIINYMD (1)
-                                   =    SPA-NAI-I01-NYUINYMD )
-                       IF    ( SPA-GMN-I01-SHOKAI-CD   =   "2" )
-                         AND ( SPA-GMN-I01-SHONUM
-                                   =   SPA-GMN-I01-TSHONUM (1)  )
-                           CONTINUE
-                       ELSE
-                           MOVE    "1038"  TO  SPA-ERRCD
-                           MOVE    10      TO  SPA-GMN-I01-CUR
-                           GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
-                       END-IF
-                   END-IF
+      *-           IF    ( SPA-NAI-I01-TTAIINYMD (1)
+      *-                           =    SPA-NAI-I01-NYUINYMD )
+      *-               IF    ( SPA-GMN-I01-SHOKAI-CD   =   "2" )
+      *-                 AND ( SPA-GMN-I01-SHONUM
+      *-                           =   SPA-GMN-I01-TSHONUM (1)  )
+      *-                   CONTINUE
+      *-               ELSE
+      *-                   MOVE    "1038"  TO  SPA-ERRCD
+      *-                   MOVE    10      TO  SPA-GMN-I01-CUR
+      *-                   GO  TO  4801-NYUIN-TOUROKU-CHK-EXT
+      *-               END-IF
+      *-           END-IF
                WHEN    1
                    IF    ( SPA-NAI-I01-TTAIINYMD (1)
                                   <=    SPA-NAI-I01-NYUINYMD )
