@@ -1331,3 +1331,50 @@ path	key65 	{
 	};
 };
 
+path	key66 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_main_key66_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou_main
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   CREATEKBN   <>  '3'
+			AND   SKYNYUKINKBN =  '1'
+            AND   SKYMONEY    <>  NYUKIN_TOTAL
+			ORDER   BY            SRYYMD,NYUGAIKBN,DENPNUM
+		;
+	};
+};
+
+path	key67 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_main_key67_csr CURSOR FOR
+		SELECT distinct a.*
+		FROM tbl_syunou_main a,tbl_syumei b
+		WHERE  a.HOSPNUM      = :HOSPNUM
+		AND    a.PTID        = :PTID
+		AND    a.CREATEKBN   <> '3'
+		AND    a.HOSPNUM      = b.HOSPNUM
+		AND    a.NYUGAIKBN   = b.NYUGAIKBN
+		AND    a.PTID        = b.PTID
+		AND    a.DENPNUM     = b.DENPNUM
+		AND    b.NYUHEN_YMD  LIKE :SRYYMD
+		AND    b.NYUHEN_MONEY <> 0
+		ORDER   BY            SRYYMD,NYUGAIKBN,DENPNUM
+		;
+	};
+};
+
+path	key68 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_main_key68_csr CURSOR FOR
+		SELECT *
+		FROM tbl_syunou_main
+			WHERE   HOSPNUM    =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   SRYYMD      LIKE :SRYYMD
+			AND   CREATEKBN   <>  '3'
+			ORDER   BY    SRYYMD,NYUGAIKBN,DENPNUM
+		;
+	};
+};

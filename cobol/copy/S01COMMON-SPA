@@ -84,6 +84,8 @@
            05  SPA-S01-PAGE              PIC 9(05).
       *¼ýÇ¼¥â¡¼¥É
            05  SPA-S01-MODE              PIC 9(01).
+      *ÊÂ¤Ó½ç
+           05  SPA-S01-SORTKBN           PIC X(01).
       *¼ýÇ¼¥ê¥¹¥ÈÁªÂò¹Ô
            05  SPA-S01-SYULISTSEL        PIC 9(05).
       *³°ÍèÌ¤¼ý³Û

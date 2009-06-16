@@ -102,3 +102,8 @@
                 04  S02-MODE              PIC X(22).
                 04  S02-MODE-COUNT        PIC S9(9)   BINARY.
                 04  S02-MODE-ITEM         PIC X(22)   OCCURS  5 TIMES.
+              03  S02-CMB-SORTKBN.
+                04  S02-SORTKBN           PIC X(22).
+                04  S02-SORTKBN-COUNT     PIC S9(9)   BINARY.
+                04  S02-SORTKBN-ITEM      PIC X(22)   OCCURS  5 TIMES.
+

@@ -129,5 +129,12 @@ S02	{
 			count	int;
 			item	varchar(22)[5];
 		};
+		CMB_SORTKBN	{
+			SORTKBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[5];
+		};
 	};
 };

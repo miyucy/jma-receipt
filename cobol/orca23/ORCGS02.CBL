@@ -155,6 +155,10 @@
                            11  SPA-GMN-MODE        PIC X(01).
                            11  SPA-GMN-F1          PIC X(01).
                            11  SPA-GMN-MODEMEI     PIC X(20).
+                       09  SPA-GMN-SORTKBN-G.
+                           11  SPA-GMN-SORTKBN     PIC X(01).
+                           11  SPA-GMN-F1          PIC X(01).
+                           11  SPA-GMN-SORTKBNMEI  PIC X(20).
                    07  SPA-GMN-TBL.
                        09  SPA-GMN-REL-MAX         PIC 9(05).
                        09  SPA-GMN-MAX             PIC 9(05).
@@ -207,8 +211,15 @@
                            11  SPA-GMN-MODEL       PIC X(01).
                            11  SPA-GMN-MODEFL      PIC X(01).
                            11  SPA-GMN-MODEMEIL    PIC X(20).
+                   07  SPA-GMN-SORTKBNLST-G.
+                       09  SPA-GMN-SORTKBN-MAX     PIC 9(02).
+                       09  SPA-GMN-SORTKBNLST      OCCURS  5.
+                           11  SPA-GMN-SORTKBNL    PIC X(01).
+                           11  SPA-GMN-SORTKBNFL   PIC X(01).
+                           11  SPA-GMN-SORTKBNMEIL PIC X(20).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SRYYM               PIC X(08).
+                   07  SPA-NAI-SYS1039TBL          PIC X(500).
                    07  SPA-NAI-HEAD.
                        09  SPA-NAI-LOCK            PIC 9(01).
                        09  SPA-NAI-SLOCK-MSG       PIC X(32).
@@ -870,6 +881,10 @@
            PERFORM 4200-MODELST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-MODE-G
       *
+           MOVE    SPA-GMN-SORTKBN     TO  WRK-CMB-CD
+           PERFORM 4200-SORTKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SORTKBN-G
+      *
            .
        3101-COMBO-SYOKI-SET-EXT.
            EXIT.
@@ -891,6 +906,16 @@
       *
            INITIALIZE                   SPA-S02
                                         SPA-S01KYOUTU
+      *
+           INITIALIZE                      SYS-1039-REC
+           MOVE    "1039"              TO  SYS-1039-KANRICD
+           MOVE    "*"                 TO  SYS-1039-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1039-STYUKYMD
+                                           SYS-1039-EDYUKYMD
+           MOVE    SYS-1039-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-1039-REC
+           MOVE    SYS-1039-TBL        TO  SPA-NAI-SYS1039TBL
       *
            MOVE    SPA-SYSYMDWH(1:6)    TO  SPA-GMN-SRYYM
            MOVE    SPA-SYSYMD  (1:6)    TO  SPA-NAI-SRYYM
@@ -914,6 +939,8 @@
            PERFORM 3101-NYUGAIKBNLST-SEC
       *
            PERFORM 3101-MODELST-SEC
+      *
+           PERFORM 3101-SORTKBNLST-SEC
       *
            .
        3101-COMBO-EDIT-EXT.
@@ -1022,6 +1049,22 @@
       *
            .
        3101-MODELST-EXT.
+           EXIT.
+      *****************************************************************
+      *    事び界ＳＰＡ茶烫试礁借妄
+      *****************************************************************
+       3101-SORTKBNLST-SEC                SECTION.
+      *
+           INITIALIZE                  SPA-GMN-SORTKBNLST-G
+      *
+           MOVE    "0"                 TO  SPA-GMN-SORTKBNL       (1)
+           MOVE    "帕杉戎规界"        TO  SPA-GMN-SORTKBNMEIL    (1)
+           MOVE    "1"                 TO  SPA-GMN-SORTKBNL       (2)
+           MOVE    "壳闻泣界"          TO  SPA-GMN-SORTKBNMEIL    (2)
+           MOVE    2                   TO  SPA-GMN-SORTKBN-MAX
+      *
+           .
+       3101-SORTKBNLST-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1186,6 +1229,16 @@
       *
            INITIALIZE                  SPA-S02
       *
+           INITIALIZE                      SYS-1039-REC
+           MOVE    "1039"              TO  SYS-1039-KANRICD
+           MOVE    "*"                 TO  SYS-1039-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-1039-STYUKYMD
+                                           SYS-1039-EDYUKYMD
+           MOVE    SYS-1039-REC        TO  SYSKANRI-REC
+           PERFORM 900-SYSKANRI-KEY10-SEL-SEC
+           MOVE    SYSKANRI-REC        TO  SYS-1039-REC
+           MOVE    SYS-1039-TBL        TO  SPA-NAI-SYS1039TBL
+      *
            MOVE    SPA-S01-PTNUM       TO  SPA-GMN-PTNUM
            MOVE    SPA-S01-PTID        TO  SPA-GMN-PTID
            MOVE    SPA-S01-KANANAME    TO  SPA-GMN-KANANAME
@@ -1202,6 +1255,7 @@
            MOVE    SPA-S01-HNYUGAIKBN  TO  SPA-GMN-NYUGAIKBN
            MOVE    SPA-S01-PAGE        TO  SPA-GMN-PAGE
            MOVE    SPA-S01-MODE        TO  SPA-GMN-MODE
+           MOVE    SPA-S01-SORTKBN     TO  SPA-GMN-SORTKBN
       *
            PERFORM 320-HKNCOMBI-EDIT-SEC
       *
@@ -1695,17 +1749,31 @@
       *
            MOVE    ZERO                TO  FLG-SYUNOU
       *
-           EVALUATE SPA-GMN-MODE
-           WHEN    CONST-MODE-MISYU
-               MOVE    "tbl_syunou"    TO  WRK-TABLE
-               MOVE    "key24"         TO  WRK-PATHNAME
-           WHEN    CONST-MODE-NYUHEN
-               MOVE    "tbl_syunou"    TO  WRK-TABLE
-               MOVE    "key58"         TO  WRK-PATHNAME
-           WHEN    OTHER
-               MOVE    "tbl_syunou"    TO  WRK-TABLE
-               MOVE    "key64"         TO  WRK-PATHNAME
-           END-EVALUATE
+           IF    ( SPA-GMN-SORTKBN     =   "1" )
+               EVALUATE SPA-GMN-MODE
+               WHEN    CONST-MODE-MISYU
+                   MOVE    "tbl_syunou"    TO  WRK-TABLE
+                   MOVE    "key66"         TO  WRK-PATHNAME
+               WHEN    CONST-MODE-NYUHEN
+                   MOVE    "tbl_syunou"    TO  WRK-TABLE
+                   MOVE    "key67"         TO  WRK-PATHNAME
+               WHEN    OTHER
+                   MOVE    "tbl_syunou"    TO  WRK-TABLE
+                   MOVE    "key68"         TO  WRK-PATHNAME
+               END-EVALUATE
+           ELSE
+               EVALUATE SPA-GMN-MODE
+               WHEN    CONST-MODE-MISYU
+                   MOVE    "tbl_syunou"    TO  WRK-TABLE
+                   MOVE    "key24"         TO  WRK-PATHNAME
+               WHEN    CONST-MODE-NYUHEN
+                   MOVE    "tbl_syunou"    TO  WRK-TABLE
+                   MOVE    "key58"         TO  WRK-PATHNAME
+               WHEN    OTHER
+                   MOVE    "tbl_syunou"    TO  WRK-TABLE
+                   MOVE    "key64"         TO  WRK-PATHNAME
+               END-EVALUATE
+           END-IF
       *
            PERFORM 900-SYUNOU-SEL-SEC
       *
@@ -2246,6 +2314,7 @@
            MOVE    SPA-GMN-SRYKA-G     TO  S02-SRYKA
            MOVE    SPA-GMN-NYUGAIKBN-G TO  S02-NYUGAIKBN
            MOVE    SPA-GMN-MODE-G      TO  S02-MODE
+           MOVE    SPA-GMN-SORTKBN-G   TO  S02-SORTKBN
       *
            MOVE    SPA-GMN-SRYKA-MAX   TO  S02-SRYKA-COUNT
            PERFORM VARYING IDX-CMB    FROM    1   BY  1
@@ -2266,6 +2335,13 @@
                    UNTIL ( IDX-CMB     >      SPA-GMN-MODE-MAX )
                MOVE    SPA-GMN-MODELST (IDX-CMB)
                                        TO  S02-MODE-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-SORTKBN-MAX TO  S02-SORTKBN-COUNT
+           PERFORM VARYING IDX-CMB     FROM   1   BY  1
+                   UNTIL ( IDX-CMB     >      SPA-GMN-SORTKBN-MAX )
+               MOVE    SPA-GMN-SORTKBNLST (IDX-CMB)
+                                       TO  S02-SORTKBN-ITEM (IDX-CMB)
            END-PERFORM
       *
       *    幻年 ST
@@ -2575,6 +2651,8 @@
                MOVE    "NYUGAIKBN" TO  MCP-WIDGET
            WHEN    6
                MOVE    "MODE"      TO  MCP-WIDGET
+           WHEN    7
+               MOVE    "SORTKBN"   TO  MCP-WIDGET
            END-EVALUATE
       *
            .
@@ -2697,6 +2775,9 @@
       *    モ〖ド恃构
            WHEN    "ACTIVATE"          ALSO    "MODE"
                PERFORM 4106-MODE-CHK-SEC
+      *    事び界恃构
+           WHEN    "ACTIVATE"          ALSO    "SORTKBN"
+               PERFORM 4106-SORTKBN-CHK-SEC
       *
            END-EVALUATE
       *
@@ -3000,6 +3081,32 @@
       *
            .
        4106-MODE-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    事び界  掐蜗借妄
+      *****************************************************************
+       4106-SORTKBN-CHK-SEC               SECTION.
+      *
+           MOVE    7                   TO  SPA-GMN-CUR
+      *
+           PERFORM 4200-SAVE-SYULST-SEL-SEC
+      *
+           INITIALIZE                  SPA-GMN-PAGE
+      *
+           MOVE    S02-SORTKBN (1:1) TO  WRK-CMB-CD
+           PERFORM 4200-SORTKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SORTKBN-G
+      *
+           MOVE    1               TO  FLG-SYULIST-ROW
+           PERFORM 300-SYUNOU-HENSYU-SEC
+           IF    ( SPA-GMN-MAX     >   ZERO )
+               MOVE    1           TO  SPA-GMN-CUR
+           END-IF
+      *
+           PERFORM 4200-LOAD-SYULST-SEL-SEC
+      *
+           .
+       4106-SORTKBN-CHK-EXT.
            EXIT.
       *
       **************************************************************
@@ -4596,6 +4703,7 @@
            MOVE    SPA-GMN-NYU-MISYU   TO  SPA-S01-NYU-MISYU
            MOVE    SPA-GMN-PAGE        TO  SPA-S01-PAGE
            MOVE    SPA-GMN-MODE        TO  SPA-S01-MODE
+           MOVE    SPA-GMN-SORTKBN     TO  SPA-S01-SORTKBN
       *
            MOVE    SPA-S01KYOUTU       TO  SPA-WORK
           .
@@ -4876,6 +4984,38 @@
       *
            .
        4200-MODELST-CHK-EXT.
+           EXIT.
+      **************************************************************
+      *    事び界コンボボックスチェック借妄
+      **************************************************************
+       4200-SORTKBNLST-CHK-SEC            SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SORTKBN-MAX )
+      *
+               IF    ( SPA-GMN-SORTKBNL (IDX-CMB)
+                                   =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-SORTKBNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-NAI-SYS1039TBL  TO  SYS-1039-TBL
+               IF    ( SYS-1039-S02SORTKBN =   "1" )
+                   MOVE    SPA-GMN-SORTKBNLST (2)
+                                   TO  WRK-CMB-ITM
+               ELSE
+                   MOVE    SPA-GMN-SORTKBNLST (1)
+                                   TO  WRK-CMB-ITM
+               END-IF
+           END-IF
+      *
+           .
+       4200-SORTKBNLST-CHK-EXT.
            EXIT.
       **************************************************************
       *    箭羌リスト联买觉轮瘦积
