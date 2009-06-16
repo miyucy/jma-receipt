@@ -2105,12 +2105,16 @@ grpsys        PERFORM 900-DBSELECT-SEC
                    END-IF
       *            ø«Œ≈∂Ë ¨
                    ADD     1               TO  WRK-LINETEK
-                   IF      CNT-PAGE        =   1
-                       MOVE    RECE87-SRYKBN  TO  HC23-SRYKBN
-                                                       (WRK-LINETEK)
+                   IF      RECE87-SRYKBN   =   "98"    OR  "99"
+                       CONTINUE
                    ELSE
-                       MOVE    RECE87-SRYKBN  TO  HC29-SRYKBN
-                                                       (WRK-LINETEK)
+                       IF      CNT-PAGE        =   1
+                           MOVE    RECE87-SRYKBN  TO  HC23-SRYKBN
+                                                           (WRK-LINETEK)
+                       ELSE
+                           MOVE    RECE87-SRYKBN  TO  HC29-SRYKBN
+                                                           (WRK-LINETEK)
+                       END-IF
                    END-IF
                ELSE
       *            ∂Ë¿⁄§Í¿˛
@@ -2120,12 +2124,16 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *            ø«Œ≈∂Ë ¨
                    ADD     1             TO  WRK-LINETEK
                    IF  RECE87-SRYKBN    NOT =   WRK-R061-SRYKBN-O
-                       IF      CNT-PAGE        =   1
-                           MOVE    RECE87-SRYKBN  TO  HC23-SRYKBN
-                                                       (WRK-LINETEK)
+                       IF      RECE87-SRYKBN   =   "98"    OR  "99"
+                           CONTINUE
                        ELSE
-                           MOVE    RECE87-SRYKBN  TO  HC29-SRYKBN
-                                                       (WRK-LINETEK)
+                           IF      CNT-PAGE        =   1
+                               MOVE    RECE87-SRYKBN  TO  HC23-SRYKBN
+                                                           (WRK-LINETEK)
+                           ELSE
+                               MOVE    RECE87-SRYKBN  TO  HC29-SRYKBN
+                                                           (WRK-LINETEK)
+                           END-IF
                        END-IF
                    END-IF
                END-IF
@@ -3124,9 +3132,9 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    IF      RECE87-SRYKBN    =   "64"
                        MOVE    "60"          TO  RECE87-SRYKBN
                    END-IF
-                   IF      RECE87-SRYKBN    =   "99"
-                       MOVE    SPACE         TO  RECE87-SRYKBN
-                   END-IF
+      *************IF      RECE87-SRYKBN    =   "99"
+      *************    MOVE    SPACE         TO  RECE87-SRYKBN
+      *************END-IF
            END-READ
       *
            .
