@@ -513,6 +513,27 @@ W07	{
 					count	int;
 					item	varchar(32)[5];
 				};
+				S02SORTKBN_COMBO	{
+					S02SORTKBN{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[5];
+				};
+				IKTSORTKBN_COMBO	{
+					IKTSORTKBN{
+						value	varchar(22);
+					};
+					count	int;
+					item	varchar(22)[5];
+				};
+				IKTKEISANKBN_COMBO	{
+					IKTKEISANKBN{
+						value	varchar(52);
+					};
+					count	int;
+					item	varchar(52)[5];
+				};
 				SYUNYKNKNRKBN_COMBO	{
 					SYUNYKNKNRKBN	{
 						value	varchar(40);

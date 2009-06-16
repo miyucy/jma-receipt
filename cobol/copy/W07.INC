@@ -389,6 +389,21 @@
                       07  W07-VALUE   PIC X(32).
                     06  W07-TUKISKYMISYUPRT-COUNT   PIC S9(9) BINARY.
                     06  W07-TUKISKYMISYUPRT-ITEM    PIC X(32) OCCURS 5.
+                  05  W07-S02SORTKBN-COMBO.
+                    06  W07-S02SORTKBN.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-S02SORTKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-S02SORTKBN-ITEM    PIC X(22)   OCCURS  5.
+                  05  W07-IKTSORTKBN-COMBO.
+                    06  W07-IKTSORTKBN.
+                      07  W07-VALUE   PIC X(22).
+                    06  W07-IKTSORTKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-IKTSORTKBN-ITEM    PIC X(22)   OCCURS  5.
+                  05  W07-IKTKEISANKBN-COMBO.
+                    06  W07-IKTKEISANKBN.
+                      07  W07-VALUE   PIC X(52).
+                    06  W07-IKTKEISANKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W07-IKTKEISANKBN-ITEM    PIC X(52)   OCCURS  5.
                   05  W07-SYUNYKNKNRKBN-COMBO.
                     06  W07-SYUNYKNKNRKBN.
                       07  W07-VALUE   PIC X(40).

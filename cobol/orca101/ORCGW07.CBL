@@ -101,6 +101,9 @@
       *  04.03.00    NACL-太田    08/09/09  支払証明書印刷初期設定追加の追加
       *  04.03.00    NACL-多々納  08/10/30  世帯主名自動記載区分追加
       *  04.04.00    NACL-多々納  09/01/27  グループ医療機関氏名リスト追加
+      *  04.05.00    NACL-太田    09/06/15  請求一覧画面並び順設定追加
+      *                                     一括計算順追加
+      *                                     一括計算方法追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -663,6 +666,18 @@
                            11  SPA-GMN-TUKISKYMISYUPRT     PIC X(01).
                            11  SPA-GMN-TUKISKYMISYUPRT-F1  PIC X(01).
                            11  SPA-GMN-TUKISKYMISYUPRTMEI  PIC X(30).
+                       09  SPA-GMN-S02SORTKBN-G.
+                           11  SPA-GMN-S02SORTKBN          PIC X(01).
+                           11  SPA-GMN-S02SORTKBN-F1       PIC X(01).
+                           11  SPA-GMN-S02SORTKBNMEI       PIC X(20).
+                       09  SPA-GMN-IKTSORTKBN-G.
+                           11  SPA-GMN-IKTSORTKBN          PIC X(01).
+                           11  SPA-GMN-IKTSORTKBN-F1       PIC X(01).
+                           11  SPA-GMN-IKTSORTKBNMEI       PIC X(20).
+                       09  SPA-GMN-IKTKEISANKBN-G.
+                           11  SPA-GMN-IKTKEISANKBN          PIC X(01).
+                           11  SPA-GMN-IKTKEISANKBN-F1       PIC X(01).
+                           11  SPA-GMN-IKTKEISANKBNMEI       PIC X(50).
                        09  SPA-GMN-SYUSTIME.
                            11  SPA-GMN-SYUSTIME-HH         PIC 9(02).
                            11  SPA-GMN-SYUSTIME-MM         PIC 9(02).
@@ -760,6 +775,24 @@
                                                            PIC X(01).
                                13  SPA-GMN-TUKISKYMISYUPRTMEIL
                                                            PIC X(30).
+                       09  SPA-GMN-S02SORTKBNLST-G.
+                           11  SPA-GMN-S02SORTKBN-MAX      PIC 9(03).
+                           11  SPA-GMN-S02SORTKBNLST       OCCURS  5.
+                               13  SPA-GMN-S02SORTKBNL     PIC X(01).
+                               13  SPA-GMN-S02SORTKBN-F1L  PIC X(01).
+                               13  SPA-GMN-S02SORTKBNMEIL  PIC X(20).
+                       09  SPA-GMN-IKTSORTKBNLST-G.
+                           11  SPA-GMN-IKTSORTKBN-MAX      PIC 9(03).
+                           11  SPA-GMN-IKTSORTKBNLST       OCCURS  5.
+                               13  SPA-GMN-IKTSORTKBNL     PIC X(01).
+                               13  SPA-GMN-IKTSORTKBN-F1L  PIC X(01).
+                               13  SPA-GMN-IKTSORTKBNMEIL  PIC X(20).
+                       09  SPA-GMN-IKTKEISANKBNLST-G.
+                           11  SPA-GMN-IKTKEISANKBN-MAX      PIC 9(03).
+                           11  SPA-GMN-IKTKEISANKBNLST       OCCURS  5.
+                               13  SPA-GMN-IKTKEISANKBNL     PIC X(01).
+                               13  SPA-GMN-IKTKEISANKBN-F1L  PIC X(01).
+                               13  SPA-GMN-IKTKEISANKBNMEIL  PIC X(50).
                        09  SPA-GMN-S04SHIHARAILST-G.
                            11  SPA-GMN-S04SHIHARAI-MAX     PIC 9(03).
                            11  SPA-GMN-S04SHIHARAILST      OCCURS  3.
@@ -1667,7 +1700,23 @@
                                        TO  SPA-GMN-TUKISKYMISYUPRTLST(2)
            MOVE    2                   TO  SPA-GMN-TUKISKYMISYUPRT-MAX
       *
-           
+           MOVE    "0 伝票番号順"
+                                       TO  SPA-GMN-S02SORTKBNLST(1)
+           MOVE    "1 診療日順"
+                                       TO  SPA-GMN-S02SORTKBNLST(2)
+           MOVE    2                   TO  SPA-GMN-S02SORTKBN-MAX
+      *
+           MOVE    "0 伝票番号順"
+                                       TO  SPA-GMN-IKTSORTKBNLST(1)
+           MOVE    "1 診療日順"
+                                       TO  SPA-GMN-IKTSORTKBNLST(2)
+           MOVE    2                   TO  SPA-GMN-IKTSORTKBN-MAX
+      *
+           MOVE    "0 一部負担金を保持し先頭より再計算を行う"
+                                       TO  SPA-GMN-IKTKEISANKBNLST(1)
+           MOVE    "1 一部負担金をクリアし先頭より再計算を行う"
+                                       TO  SPA-GMN-IKTKEISANKBNLST(2)
+           MOVE    2                   TO  SPA-GMN-IKTKEISANKBN-MAX
       *
            MOVE    "0 表示する"        TO  SPA-GMN-MSG1-DSPKBNLST(1)
            MOVE    "1 表示しない"      TO  SPA-GMN-MSG1-DSPKBNLST(2)
@@ -2980,6 +3029,21 @@
                                        TO  SPA-GMN-TUKISKYMISYUPRT
            PERFORM 3101-TUKISKYMISYUPRT-SYOKI-SEC
       *
+      *    請求一覧画面並び順
+           MOVE    SYS-1039-S02SORTKBN
+                                       TO  SPA-GMN-S02SORTKBN
+           PERFORM 3101-S02SORTKBN-SYOKI-SEC
+      *
+      *    一括計算順
+           MOVE    SYS-1039-IKTSORTKBN
+                                       TO  SPA-GMN-IKTSORTKBN
+           PERFORM 3101-IKTSORTKBN-SYOKI-SEC
+      *
+      *    一括計算方法
+           MOVE    SYS-1039-IKTKEISANKBN
+                                       TO  SPA-GMN-IKTKEISANKBN
+           PERFORM 3101-IKTKEISANKBN-SYOKI-SEC
+      *
            IF    ( SYS-1039-STIME          IS  NUMERIC )
                MOVE    SYS-1039-STIME      TO  SPA-GMN-SYUSTIME
            ELSE
@@ -3344,6 +3408,81 @@
       *
            . 
        3101-TUKISKYMISYUPRT-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求一覧画面並び順初期値設定処理
+      *****************************************************************
+       3101-S02SORTKBN-SYOKI-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-S02SORTKBN-MAX
+               IF      SPA-GMN-S02SORTKBN
+                                       =   SPA-GMN-S02SORTKBNL(IDY)
+                   MOVE    SPA-GMN-S02SORTKBNLST(IDY)
+                                       TO  SPA-GMN-S02SORTKBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-S02SORTKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-S02SORTKBNLST (1)
+                                       TO  SPA-GMN-S02SORTKBN-G
+           END-IF
+      *
+           . 
+       3101-S02SORTKBN-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括計算順初期値設定処理
+      *****************************************************************
+       3101-IKTSORTKBN-SYOKI-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-IKTSORTKBN-MAX
+               IF      SPA-GMN-IKTSORTKBN
+                                       =   SPA-GMN-IKTSORTKBNL(IDY)
+                   MOVE    SPA-GMN-IKTSORTKBNLST(IDY)
+                                       TO  SPA-GMN-IKTSORTKBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-IKTSORTKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-IKTSORTKBNLST (1)
+                                       TO  SPA-GMN-IKTSORTKBN-G
+           END-IF
+      *
+           . 
+       3101-IKTSORTKBN-SYOKI-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括計算方法区分初期値設定処理
+      *****************************************************************
+       3101-IKTKEISANKBN-SYOKI-SEC        SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-IKTKEISANKBN-MAX
+               IF      SPA-GMN-IKTKEISANKBN
+                                       =   SPA-GMN-IKTKEISANKBNL(IDY)
+                   MOVE    SPA-GMN-IKTKEISANKBNLST(IDY)
+                                       TO  SPA-GMN-IKTKEISANKBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-IKTKEISANKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-IKTKEISANKBNLST (1)
+                                       TO  SPA-GMN-IKTKEISANKBN-G
+           END-IF
+      *
+           . 
+       3101-IKTKEISANKBN-SYOKI-EXT.
            EXIT.
       *****************************************************************
       *    スパ初期編集処理
@@ -3904,6 +4043,9 @@
            MOVE    W07-S02SKYSAI       TO  SPA-GMN-S02SKYSAI-G
            MOVE    W07-S02SKYMISYUPRT  TO  SPA-GMN-S02SKYMISYUPRT-G
            MOVE    W07-TUKISKYMISYUPRT TO  SPA-GMN-TUKISKYMISYUPRT-G
+           MOVE    W07-S02SORTKBN      TO  SPA-GMN-S02SORTKBN-G
+           MOVE    W07-IKTSORTKBN      TO  SPA-GMN-IKTSORTKBN-G
+           MOVE    W07-IKTKEISANKBN      TO  SPA-GMN-IKTKEISANKBN-G
            MOVE    W07-SYUSTIME-HH     TO  SPA-GMN-SYUSTIME-HH
            MOVE    W07-SYUSTIME-MM     TO  SPA-GMN-SYUSTIME-MM
       *
@@ -4238,6 +4380,18 @@
       *            月別請求書兼領収書前回請求額印字区分チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4110-TUKISKYMISYUPRT-CHK-SEC
+                   END-IF
+      *            請求一覧画面並び順区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-S02SORTKBN-CHK-SEC
+                   END-IF
+      *            一括計算順区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-IKTSORTKBN-CHK-SEC
+                   END-IF
+      *            一括計算方法区分区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4110-IKTKEISANKBN-CHK-SEC
                    END-IF
       *            登録時刻チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -6052,6 +6206,75 @@
        4110-TUKISKYMISYUPRT-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    請求一覧画面並び順区分チェック
+      *****************************************************************
+       4110-S02SORTKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S02SORTKBN-MAX
+               IF      SPA-GMN-S02SORTKBN
+                                       =   SPA-GMN-S02SORTKBNL(IDX)
+                   MOVE    SPA-GMN-S02SORTKBNLST(IDX)
+                                          TO  SPA-GMN-S02SORTKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-S02SORTKBNLST(1)
+                                          TO  SPA-GMN-S02SORTKBN-G
+           END-IF
+      *
+           .
+       4110-S02SORTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括計算順区分チェック
+      *****************************************************************
+       4110-IKTSORTKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-IKTSORTKBN-MAX
+               IF      SPA-GMN-IKTSORTKBN
+                                       =   SPA-GMN-IKTSORTKBNL(IDX)
+                   MOVE    SPA-GMN-IKTSORTKBNLST(IDX)
+                                          TO  SPA-GMN-IKTSORTKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-IKTSORTKBNLST(1)
+                                          TO  SPA-GMN-IKTSORTKBN-G
+           END-IF
+      *
+           .
+       4110-IKTSORTKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括計算方法区分区分チェック
+      *****************************************************************
+       4110-IKTKEISANKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-IKTKEISANKBN-MAX
+               IF      SPA-GMN-IKTKEISANKBN
+                                       =   SPA-GMN-IKTKEISANKBNL(IDX)
+                   MOVE    SPA-GMN-IKTKEISANKBNLST(IDX)
+                                          TO  SPA-GMN-IKTKEISANKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-IKTKEISANKBNLST(1)
+                                          TO  SPA-GMN-IKTKEISANKBN-G
+           END-IF
+      *
+           .
+       4110-IKTKEISANKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    請求書兼領収書発行区分（外来）チェック処理（収納行為機能情報）
       *****************************************************************
        4110-SYUSKYPRTG-CHK-SEC      SECTION.
@@ -7485,6 +7708,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-S03SKYMISYUPRT  TO SYS-1039-S03SKYMISYUPRTKBN
            MOVE    SPA-GMN-TUKISKYMISYUPRT
                                        TO SYS-1039-TUKISKYMISYUPRTKBN
+           MOVE    SPA-GMN-S02SORTKBN
+                                       TO SYS-1039-S02SORTKBN
+           MOVE    SPA-GMN-IKTSORTKBN
+                                       TO SYS-1039-IKTSORTKBN
+           MOVE    SPA-GMN-IKTKEISANKBN
+                                       TO SYS-1039-IKTKEISANKBN
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL ( IDX1    >   2 )
@@ -8369,6 +8598,36 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-TUKISKYMISYUPRT-MAX
                                        TO  W07-TUKISKYMISYUPRT-COUNT
+      *
+      *    請求一覧画面並び順区分
+           MOVE    SPA-GMN-S02SORTKBN-G TO  W07-S02SORTKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-S02SORTKBN-MAX
+               MOVE    SPA-GMN-S02SORTKBNLST (IDX)
+                                       TO  W07-S02SORTKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-S02SORTKBN-MAX
+                                       TO  W07-S02SORTKBN-COUNT
+      *
+      *    一括計算順区分
+           MOVE    SPA-GMN-IKTSORTKBN-G TO  W07-IKTSORTKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-IKTSORTKBN-MAX
+               MOVE    SPA-GMN-IKTSORTKBNLST (IDX)
+                                       TO  W07-IKTSORTKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-IKTSORTKBN-MAX
+                                       TO  W07-IKTSORTKBN-COUNT
+      *
+      *    一括計算方法区分
+           MOVE    SPA-GMN-IKTKEISANKBN-G TO  W07-IKTKEISANKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-IKTKEISANKBN-MAX
+               MOVE    SPA-GMN-IKTKEISANKBNLST (IDX)
+                                       TO  W07-IKTKEISANKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-IKTKEISANKBN-MAX
+                                       TO  W07-IKTKEISANKBN-COUNT
       *
       *    請求書兼領収書発行区分（外来）
            MOVE    SPA-GMN-SYUSKYPRTG-G TO  W07-SYUSKYPRTG
@@ -9356,6 +9615,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "S04SUMKBN"    TO   MCP-WIDGET
                WHEN    425
                    MOVE  "S04SYORIKBN"     TO   MCP-WIDGET
+               WHEN    426
+                   MOVE  "S02SORTKBN"      TO   MCP-WIDGET
+               WHEN    427
+                   MOVE  "IKTSORTKBN"      TO   MCP-WIDGET
+               WHEN    428
+                   MOVE  "IKTKEISANKBN"    TO   MCP-WIDGET
       *病名・コメント情報
                WHEN    500
                    MOVE  "MSG1_DSPKBN"     TO   MCP-WIDGET
@@ -9611,6 +9876,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "S02SKYMISYUPRT"
                    MOVE    418             TO  SPA-GMN-CUR
                WHEN    "TUKISKYMISYUPRT"
+                   MOVE    426             TO  SPA-GMN-CUR
+               WHEN    "S02SORTKBN"
+                   MOVE    427             TO  SPA-GMN-CUR
+               WHEN    "IKTSORTKBN"
+                   MOVE    428             TO  SPA-GMN-CUR
+               WHEN    "IKTKEISANKBN"
                    MOVE    40              TO  SPA-GMN-CUR
                WHEN    "SYUSKYPRTG"
                    MOVE    416             TO  SPA-GMN-CUR
