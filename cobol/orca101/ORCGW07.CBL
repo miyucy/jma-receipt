@@ -1599,7 +1599,11 @@
                                        TO  SPA-GMN-SYUNYKNKNRKBNLST(1)
            MOVE    "2 ÅÁÉ¼¤Î¿·¤·¤¤Ì¤¼ý½ç¤ËÆþ¶â"
                                        TO  SPA-GMN-SYUNYKNKNRKBNLST(2)
-           MOVE    2                   TO  SPA-GMN-SYUNYKNKNRKBN-MAX
+           MOVE    "3 ¿ÇÎÅÆü¤Î¸Å¤¤Ì¤¼ý½ç¤ËÆþ¶â"
+                                       TO  SPA-GMN-SYUNYKNKNRKBNLST(3)
+           MOVE    "4 ¿ÇÎÅÆü¤Î¿·¤·¤¤Ì¤¼ý½ç¤ËÆþ¶â"
+                                       TO  SPA-GMN-SYUNYKNKNRKBNLST(4)
+           MOVE    4                   TO  SPA-GMN-SYUNYKNKNRKBN-MAX
       *    £Ä£Ï½é´üÉ½¼¨
            MOVE    "00 Á´ÂÎ"           TO  SPA-GMN-DOSRYKBNFLG-LST (01)
            MOVE    "10 °å³Ø´ÉÍý¡¦ºßÂð" TO  SPA-GMN-DOSRYKBNFLG-LST (02)
