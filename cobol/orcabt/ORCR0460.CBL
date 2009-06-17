@@ -118,6 +118,7 @@
       *  04.04.01    NACL-門脇    09/02/04  検査のコメント自動記載対応
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *  04.05.02    NACL-門脇    09/06/17  処置の記載順変更（日付順）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -3359,6 +3360,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE46PARA-HOSPNUM
                  WHEN      "22"
                  WHEN      "23"
                  WHEN      "33"
+                 WHEN      "40"
                    PERFORM   VARYING   IDW3   FROM    1   BY  1
                               UNTIL    IDW3   >      31
                        IF    RECE44-KAISU(1 IDW3)    NOT =   ZERO
