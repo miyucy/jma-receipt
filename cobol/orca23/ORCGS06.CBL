@@ -145,8 +145,7 @@
                                                    PIC X(40).
                    07  SPA-GMN-SYULIST.
                        09  SPA-GMN-SYULIST-MAX     PIC 9(05).
-                       09  SPA-GMN-SYULIST-OCC     OCCURS   400.
-                           11  SPA-GMN-TBANGO      PIC 9(03).
+                       09  SPA-GMN-SYULIST-OCC     OCCURS   401.
                            11  SPA-GMN-TDENPNUM    PIC 9(07).
                            11  SPA-GMN-TNYUGAIKBN  PIC X(04).
                            11  SPA-GMN-TSRYKA      PIC X(06).
@@ -170,7 +169,7 @@
                        09  SPA-GMN-SYULIST-SEL     PIC 9(05).
       *
                    07  SPA-NAI-SYULIST.
-                       09  SPA-NAI-SYULIST-OCC     OCCURS  400.
+                       09  SPA-NAI-SYULIST-OCC     OCCURS  401.
                            11  SPA-NAI-TSRYKA      PIC  X(02).
                            11  SPA-NAI-TSRYYMD     PIC  X(08).
                            11  SPA-NAI-THAKYMD     PIC  X(08).
@@ -182,12 +181,27 @@
                                                    PIC  S9(10).
                            11  SPA-NAI-TNYUKIN-TOTAL
                                                    PIC  S9(10).
+                           11  SPA-NAI-TSRT-KEY.
+                               13  SPA-NAI-TSRT-DENPPRTYMD
+                                                   PIC  X(08).
+                               13  SPA-NAI-TSRT-NYUGAIKBN
+                                                   PIC  X(01).
+                               13  SPA-NAI-TSRT-DENPNUM
+                                                   PIC  9(07).
+                           11  SPA-NAI-TSRT2-KEY.
+                               13  SPA-NAI-TSRT2-SRYYMD
+                                                   PIC  X(08).
+                               13  SPA-NAI-TSRT2-NYUGAIKBN
+                                                   PIC  X(01).
+                               13  SPA-NAI-TSRT2-DENPNUM
+                                                   PIC  9(07).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-HEAD.
                        09  SPA-NAI-MISYUFLG        PIC  9(01).
                    07  SPA-NAI-INPUT.
                        09  SPA-NAI-NYUKINYMD       PIC  X(08).
                        09  SPA-NAI-SKYSUMKBN-BF    PIC  X(01).
+                       09  SPA-NAI-NYKNKNRKBN-BF   PIC  X(01).
       *
       *    ¥Õ¥é¥°ÎÎ°è
        01  FLG-AREA.
@@ -200,9 +214,10 @@
            03  FLG-GMN-INIT                        PIC 9(01).
            03  FLG-GAI-SKYPRT                      PIC 9(01).
            03  FLG-NYU-SKYPRT                      PIC 9(01).
+           03  FLG-SORT                            PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
-      * 01  CNT-AREA.
+      *01  CNT-AREA.
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -215,6 +230,8 @@
            03  IDXB                                PIC 9(05).
            03  IDX-OUT                             PIC 9(05).
            03  IDX-LST                             PIC 9(05).
+           03  IDX-SRT                             PIC 9(05).
+           03  IDX-TMP                             PIC 9(05).
            03  IDX-KBT                             PIC 9(05).
            03  IDX-CMB                             PIC 9(05).
       *
@@ -231,6 +248,7 @@
            03  WRK-NYUGAIKBN               PIC X(01).
            03  WRK-DENPNUM                 PIC 9(07).
            03  WRK-SIDMSG                  PIC X(70).
+           03  WRK-STIDX                   PIC 9(05).
       *
       *    ÊÝ¸±ÁÈ¹ç¤»Ì¾¾Î
            03  WRK-KUMINO                  PIC X(04).
@@ -522,6 +540,7 @@
            ELSE
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYKNKNRKBN-G
            END-IF
+           MOVE    SPA-GMN-NYKNKNRKBN  TO  SPA-NAI-NYKNKNRKBN-BF
       *
       *    Æþ¶âÊýË¡¥³¥ó¥Ü½é´üÃÍ
            IF    ( SPA-GMN-NYKNHOHO-MAX    >   ZERO )
@@ -773,8 +792,6 @@
       *
            MOVE    SPA-GMN-SYULIST-MAX TO  IDX-LST
       *
-           MOVE    IDX-LST             TO  SPA-GMN-TBANGO   (IDX-LST)
-      *
            MOVE    SYU-DENPNUM         TO  SPA-GMN-TDENPNUM (IDX-LST)
       *
       *    Æþ³°¶èÊ¬
@@ -862,6 +879,20 @@
                                        TO  SPA-NAI-TSKYMONEY-TAX-SAI
                                                             (IDX-LST)
            MOVE    SYU-NYUKIN-TOTAL    TO  SPA-NAI-TNYUKIN-TOTAL
+                                                            (IDX-LST)
+      *
+           MOVE    SYU-DENPPRTYMD      TO  SPA-NAI-TSRT-DENPPRTYMD
+                                                            (IDX-LST)
+           MOVE    SYU-NYUGAIKBN       TO  SPA-NAI-TSRT-NYUGAIKBN
+                                                            (IDX-LST)
+           MOVE    SYU-DENPNUM         TO  SPA-NAI-TSRT-DENPNUM
+                                                            (IDX-LST)
+      *
+           MOVE    SYU-SRYYMD          TO  SPA-NAI-TSRT2-SRYYMD
+                                                            (IDX-LST)
+           MOVE    SYU-NYUGAIKBN       TO  SPA-NAI-TSRT2-NYUGAIKBN
+                                                            (IDX-LST)
+           MOVE    SYU-DENPNUM         TO  SPA-NAI-TSRT2-DENPNUM
                                                             (IDX-LST)
       *
            .
@@ -1004,8 +1035,14 @@
            MOVE    "2"                 TO  SPA-GMN-NYKNKNRKBNL (2)
            MOVE    "ÅÁÉ¼¤Î¿·¤·¤¤Ì¤¼ý½ç¤ËÆþ¶â"
                                        TO  SPA-GMN-NYKNKNRKBNMEIL (2)
+           MOVE    "3"                 TO  SPA-GMN-NYKNKNRKBNL (3)
+           MOVE    "¿ÇÎÅÆü¤Î¸Å¤¤Ì¤¼ý½ç¤ËÆþ¶â"
+                                       TO  SPA-GMN-NYKNKNRKBNMEIL (3)
+           MOVE    "4"                 TO  SPA-GMN-NYKNKNRKBNL (4)
+           MOVE    "¿ÇÎÅÆü¤Î¿·¤·¤¤Ì¤¼ý½ç¤ËÆþ¶â"
+                                       TO  SPA-GMN-NYKNKNRKBNMEIL (4)
       *
-           MOVE    2                   TO  SPA-GMN-NYKNKNRKBN-MAX
+           MOVE    4                   TO  SPA-GMN-NYKNKNRKBN-MAX
       *
            .
        3101-NYKNKNRKBNLST-HEN-EXT.
@@ -1137,6 +1174,46 @@
            INITIALIZE                  SPA-GMN-SELNUM
                                        SPA-GMN-SYULIST-SEL
       *
+           COMPUTE IDX-TMP =   SPA-GMN-SYULIST-MAX     +   1
+           PERFORM VARYING IDX-LST FROM    1   BY  1
+                   UNTIL ( IDX-LST     >   SPA-GMN-SYULIST-MAX - 1)
+               COMPUTE WRK-STIDX   =   IDX-LST +   1
+               PERFORM VARYING IDX-SRT FROM    WRK-STIDX   BY  1
+                       UNTIL ( IDX-SRT >   SPA-GMN-SYULIST-MAX )
+      *
+                   MOVE    ZERO        TO  FLG-SORT
+      *
+                   IF    ( SPA-GMN-NYKNKNRKBN  =   "3" OR "4" )
+                       IF    ( SPA-NAI-TSRT2-KEY (IDX-LST)
+                                       >   SPA-NAI-TSRT2-KEY (IDX-SRT))
+                           MOVE    1   TO  FLG-SORT
+                       END-IF
+                   ELSE
+                       IF    ( SPA-NAI-TSRT-KEY (IDX-LST)
+                                       >   SPA-NAI-TSRT-KEY (IDX-SRT))
+                           MOVE    1   TO  FLG-SORT
+                       END-IF
+                   END-IF
+      *
+                   IF    ( FLG-SORT    =   1 )
+                       MOVE    SPA-GMN-SYULIST-OCC (IDX-LST)
+                                       TO  SPA-GMN-SYULIST-OCC (IDX-TMP)
+                       MOVE    SPA-GMN-SYULIST-OCC (IDX-SRT)
+                                       TO  SPA-GMN-SYULIST-OCC (IDX-LST)
+                       MOVE    SPA-GMN-SYULIST-OCC (IDX-TMP)
+                                       TO  SPA-GMN-SYULIST-OCC (IDX-SRT)
+                       MOVE    SPA-NAI-SYULIST-OCC (IDX-LST)
+                                       TO  SPA-NAI-SYULIST-OCC (IDX-TMP)
+                       MOVE    SPA-NAI-SYULIST-OCC (IDX-SRT)
+                                       TO  SPA-NAI-SYULIST-OCC (IDX-LST)
+                       MOVE    SPA-NAI-SYULIST-OCC (IDX-TMP)
+                                       TO  SPA-NAI-SYULIST-OCC (IDX-SRT)
+                   END-IF
+               END-PERFORM
+           END-PERFORM
+           INITIALIZE  SPA-GMN-SYULIST-OCC (IDX-TMP)
+                       SPA-NAI-SYULIST-OCC (IDX-TMP)
+      *
            INITIALIZE                  SPA-GMN-SYULIST-OUT-G
       *
            PERFORM VARYING IDX-LST FROM    1   BY  1
@@ -1156,9 +1233,9 @@
                                           < CONST-SYULIST-OUT-MAX )
                        COMPUTE SPA-GMN-SYULIST-OUT-MAX
                            =   SPA-GMN-SYULIST-OUT-MAX +   1
-                       MOVE    SPA-GMN-TBANGO (IDX-LST)
-                                       TO  SPA-GMN-SYULIST-OUT-IDX
+                       MOVE    IDX-LST TO  SPA-GMN-SYULIST-OUT-IDX
                                              (SPA-GMN-SYULIST-OUT-MAX)
+      *
                        IF    ( SPA-NAI-TNYUGAIKBN (IDX-LST)
                                        =   WRK-NYUGAIKBN )
                         AND  ( SPA-GMN-TDENPNUM (IDX-LST)
@@ -1629,6 +1706,19 @@
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYKNKNRKBN-G
            END-IF
       *
+           IF   (( SPA-GMN-NYKNKNRKBN          =   "1" OR "2" )
+             AND ( SPA-NAI-NYKNKNRKBN-BF       =   "1" OR "2" ))
+            OR  (( SPA-GMN-NYKNKNRKBN          =   "3" OR "4" )
+             AND ( SPA-NAI-NYKNKNRKBN-BF       =   "3" OR "4" ))
+               CONTINUE
+           ELSE
+      *
+               PERFORM 3101-SYULIST-OUT-HEN-SEC
+               PERFORM 3101-SYOKI-CUR-HEN-SEC
+           END-IF
+      *
+           MOVE    SPA-GMN-NYKNKNRKBN  TO  SPA-NAI-NYKNKNRKBN-BF
+      *
            .
        4101-NYKNKNRKBN-CHK-EXT.
            EXIT.
@@ -1725,6 +1815,7 @@
       *
            EVALUATE    SPA-GMN-NYKNKNRKBN
            WHEN    "1"
+           WHEN    "3"
                PERFORM VARYING IDX-LST
                        FROM    1   BY  1
                        UNTIL ( IDX-LST >   CONST-SYULIST-MAX )
@@ -1734,6 +1825,7 @@
       *
                END-PERFORM
            WHEN    "2"
+           WHEN    "4"
                PERFORM VARYING IDX-LST
                        FROM    CONST-SYULIST-MAX   BY  -1
                        UNTIL ( IDX-LST <   1 )
