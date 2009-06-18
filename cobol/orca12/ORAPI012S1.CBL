@@ -217,13 +217,7 @@
        000-MAIN                SECTION.
            ACCEPT  WRK-SYSYMD    FROM DATE
            MOVE    20                  TO  WRK-SYSYY
-           DISPLAY   "*************"
-           DISPLAY   "* api start *"
-           DISPLAY   "*************"
-           DISPLAY   "BODY = " PGET-BODY(1:50)
-      *    CALL  "cobsleep"   USING 30
       *
-           DISPLAY "PATIENTGET = " PATIENTGET(1:50)
            INITIALIZE        PTNUM-REC
                              IDX-AREA
                              WK-MSG
@@ -273,10 +267,6 @@
            MOVE    PGET-ID             TO  SPTID-PTNUM
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                SPA-AREA
-           DISPLAY "SPA-SYSYMD  = " SPA-SYSYMD
-           DISPLAY "SPTID-RC    = " SPTID-RC
-           DISPLAY "SPTID-PTNUM = " SPTID-PTNUM
-           DISPLAY "SPTID-PTID  = " SPTID-PTID
       *
            MOVE    ZERO                TO  PGET-API-RESULT
       *    MOVE   1                    TO  MCP-VERSION
@@ -297,9 +287,6 @@
                MOVE   "01"             TO  PGET-API-RESULT
                MOVE   "³ºÅö´µ¼Ô¤Ê¤·"   TO  PGET-API-RESULT-MSG
            END-IF
-           DISPLAY   "*************"
-           DISPLAY   "* api end   *"
-           DISPLAY   "*************"
            .
        000-MAIN-EXIT.
            EXIT    PROGRAM.
@@ -414,6 +401,7 @@
                    MOVE COMB-SYU-TANSEIDONAME
                                              TO  
                                              PGET-MAIN-INSURANCE-NAME
+                                             (IDX)
       *
                        INITIALIZE                  PTHKNINF-REC
                        MOVE    PTINF-HOSPNUM       TO  PTHKN-HOSPNUM
@@ -672,9 +660,6 @@
       **************************************************************************
        010-INIT                SECTION.
            DISPLAY 'init'
-      *    CALL    "coblog"    USING   "*************"
-      *    CALL    "coblog"    USING   "api start"
-      *    CALL    "coblog"    USING   "*************"
            MOVE   'NEW'        TO  MCP-PUTTYPE.
            MOVE   'windowtitle'     TO  MCP-WINDOW.
            PERFORM 900-PUT-WINDOW.
