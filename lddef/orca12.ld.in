@@ -26,6 +26,7 @@ bind	"P02G"		"OpenCOBOL"	"ORCGP02G";
 bind	"P02G2"		"OpenCOBOL"	"ORCGP02G2";
 bind	"PERR"		"OpenCOBOL"	"ORCGPERR";
 bind	"PID1"		"OpenCOBOL"	"ORCGPID1";
+bindapi "patientget"    "OpenCOBOL" "ORAPI012S1";
 
 multiplex_group	orca12;
 
@@ -54,7 +55,8 @@ data	{
 		P02G;
 		P02G2;
 		PERR;
-                PID1;
+		PID1;
+		patientget;
 	};
 };
 
@@ -87,7 +89,7 @@ db	{
 	tbl_wksryact;
 	tbl_santei;
 	tbl_para;
-        tbl_tensuplus;
+	tbl_tensuplus;
 	tbl_hknjainf;
 	tbl_seikyu_main;
 	tbl_seikyu_koh;

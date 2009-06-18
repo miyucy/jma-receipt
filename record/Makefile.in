@@ -400,6 +400,7 @@ RECORD_files = \
 	KTID2.rec \
 	D04.rec \
 	D05.rec \
+	patientget.rec \
 
 DEF_files = \
 	HC01.def \
