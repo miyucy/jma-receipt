@@ -541,6 +541,13 @@ W07	{
 					count	int;
 					item	varchar(40)[5];
 				};
+				IKTSRYYMKBN_COMBO	{
+					IKTSRYYMKBN{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[5];
+				};
 				S04SHIHARAIKBN_COMBO	{
 					S04SHIHARAIKBN	{
 						value	varchar(12);

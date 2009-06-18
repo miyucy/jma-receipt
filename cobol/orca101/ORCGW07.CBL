@@ -583,6 +583,11 @@
                            11  SPA-GMN-SYUNYKNKNRKBN       PIC X(01).
                            11  SPA-GMN-SYUNYKNKNRKBN-F1    PIC X(01).
                            11  SPA-GMN-SYUNYKNKNRKBNMEI    PIC X(38).
+      *                診療年月指定区分
+                       09  SPA-GMN-IKTSRYYMKBN-G.
+                           11  SPA-GMN-IKTSRYYMKBN         PIC X(01).
+                           11  SPA-GMN-IKTSRYYMKBN-F1      PIC X(01).
+                           11  SPA-GMN-IKTSRYYMKBNMEI      PIC X(30).
       *                請求書兼領収書発行（外来）
                        09  SPA-GMN-SYUSKYPRTG-G.
                            11  SPA-GMN-SYUSKYPRTG          PIC X(01).
@@ -706,6 +711,13 @@
                                13  SPA-GMN-SYUNYKNKNRKBN-F1L PIC X(01).
                                13  SPA-GMN-SYUNYKNKNRKBNMEIL
                                                            PIC X(38).
+                       09  SPA-GMN-IKTSRYYMKBNLST-G.
+                           11  SPA-GMN-IKTSRYYMKBN-MAX   PIC 9(03).
+                           11  SPA-GMN-IKTSRYYMKBNLST    OCCURS  5.
+                               13  SPA-GMN-IKTSRYYMKBNL  PIC X(01).
+                               13  SPA-GMN-IKTSRYYMKBN-F1L PIC X(01).
+                               13  SPA-GMN-IKTSRYYMKBNMEIL
+                                                           PIC X(30).
                        09  SPA-GMN-SYUSKYPRTGLST-G.
                            11  SPA-GMN-SYUSKYPRTG-MAX      PIC 9(03).
                            11  SPA-GMN-SYUSKYPRTGLST       OCCURS  2.
@@ -1604,6 +1616,12 @@
            MOVE    "4 診療日の新しい未収順に入金"
                                        TO  SPA-GMN-SYUNYKNKNRKBNLST(4)
            MOVE    4                   TO  SPA-GMN-SYUNYKNKNRKBN-MAX
+      *
+           MOVE    "1 診療年月を指定しない"
+                                       TO  SPA-GMN-IKTSRYYMKBNLST(1)
+           MOVE    "2 診療年月を指定する"
+                                       TO  SPA-GMN-IKTSRYYMKBNLST(2)
+           MOVE    2                   TO  SPA-GMN-IKTSRYYMKBN-MAX
       *    ＤＯ初期表示
            MOVE    "00 全体"           TO  SPA-GMN-DOSRYKBNFLG-LST (01)
            MOVE    "10 医学管理・在宅" TO  SPA-GMN-DOSRYKBNFLG-LST (02)
@@ -2987,6 +3005,26 @@
                                        TO  SPA-GMN-SYUNYKNKNRKBN-G
            END-IF
       *
+      *    診療年月指定区分
+           MOVE    SYS-1039-IKTSRYYMKBN    TO  SPA-GMN-IKTSRYYMKBN
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING IDY         FROM    1   BY  1
+                   UNTIL   IDY         >   SPA-GMN-IKTSRYYMKBN-MAX
+               IF      SPA-GMN-IKTSRYYMKBN
+                                       =   SPA-GMN-IKTSRYYMKBNL (IDY)
+                   MOVE    SPA-GMN-IKTSRYYMKBNLST(IDY)
+                                       TO  SPA-GMN-IKTSRYYMKBN-G
+                   MOVE    1           TO  FLG-OK
+                   MOVE    SPA-GMN-IKTSRYYMKBN-MAX
+                                       TO  IDY
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-IKTSRYYMKBNLST (1)
+                                       TO  SPA-GMN-IKTSRYYMKBN-G
+           END-IF
+      *
       *    請求書兼領収書発行区分（外来）
            MOVE    SYS-1039-SKYPRTGKBN TO  SPA-GMN-SYUSKYPRTG
            PERFORM 3101-SYUSKYPRTG-SYOKI-SEC
@@ -4030,6 +4068,7 @@
       *
       *    収納機能情報
            MOVE    W07-SYUNYKNKNRKBN   TO  SPA-GMN-SYUNYKNKNRKBN-G
+           MOVE    W07-IKTSRYYMKBN     TO  SPA-GMN-IKTSRYYMKBN-G
            MOVE    W07-SYUSKYPRTG      TO  SPA-GMN-SYUSKYPRTG-G
            MOVE    W07-S03SKYMISYUPRT  TO  SPA-GMN-S03SKYMISYUPRT-G
            MOVE    W07-SYUSRYPRTG      TO  SPA-GMN-SYUSRYPRTG-G
@@ -4364,6 +4403,10 @@
       *            入金管理区分チェック
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4109-SYUNYKNKNRKBN-CHK-SEC
+                   END-IF
+      *            診療年月指定区分チェック
+                   IF      SPA-ERRCD           =   SPACE
+                       PERFORM 4109-IKTSRYYMKBN-CHK-SEC
                    END-IF
       *            一括入金画面請求書兼領収書発行区分チェック
                    IF      SPA-ERRCD           =   SPACE
@@ -6095,6 +6138,29 @@
        4109-SYUNYKNKNRKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    診療年月指定区分チェック処理（収納行為機能情報）
+      *****************************************************************
+       4109-IKTSRYYMKBN-CHK-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  FLG-OK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-IKTSRYYMKBN-MAX
+               IF      SPA-GMN-IKTSRYYMKBN
+                                       =   SPA-GMN-IKTSRYYMKBNL (IDX)
+                   MOVE    SPA-GMN-IKTSRYYMKBNLST(IDX)
+                                          TO  SPA-GMN-IKTSRYYMKBN-G
+                   MOVE    1              TO  FLG-OK
+               END-IF
+           END-PERFORM
+           IF      FLG-OK              =   ZERO
+               MOVE    SPA-GMN-IKTSRYYMKBNLST (1)
+                                       TO  SPA-GMN-IKTSRYYMKBN-G
+           END-IF
+      *
+           .
+       4109-IKTSRYYMKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    一括入金画面請求書兼領収書発行区分チェック処理（収納行為機能情報）
       *****************************************************************
        4109-S06SKYPRT-CHK-SEC          SECTION.
@@ -7698,6 +7764,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-W01-STYUKYMD        TO  SYS-1039-STYUKYMD
            MOVE    SPA-W01-EDYUKYMD        TO  SYS-1039-EDYUKYMD
            MOVE    SPA-GMN-SYUNYKNKNRKBN   TO  SYS-1039-NYKNKNRKBN
+           MOVE    SPA-GMN-IKTSRYYMKBN     TO  SYS-1039-IKTSRYYMKBN
            MOVE    SPA-GMN-S06SKYPRT       TO  SYS-1039-S06SKYPRTGKBN
                                                SYS-1039-S06SKYPRTNKBN
            MOVE    SPA-GMN-S06SKYSUM       TO  SYS-1039-S06SKYSUMKBN
@@ -8552,6 +8619,17 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-GMN-SYUNYKNKNRKBN-MAX
                                        TO  W07-SYUNYKNKNRKBN-COUNT
+      *
+      *
+      *    診療年月指定区分（収納機能情報）
+           MOVE    SPA-GMN-IKTSRYYMKBN-G TO  W07-IKTSRYYMKBN
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-GMN-IKTSRYYMKBN-MAX
+               MOVE    SPA-GMN-IKTSRYYMKBNLST (IDX)
+                                       TO  W07-IKTSRYYMKBN-ITEM(IDX)
+           END-PERFORM
+           MOVE    SPA-GMN-IKTSRYYMKBN-MAX
+                                       TO  W07-IKTSRYYMKBN-COUNT
       *
       *    一括入金画面請求書兼領収書発行区分（収納機能情報）
            MOVE    SPA-GMN-S06SKYPRT-G TO  W07-S06SKYPRT
@@ -9625,6 +9703,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  "IKTSORTKBN"      TO   MCP-WIDGET
                WHEN    428
                    MOVE  "IKTKEISANKBN"    TO   MCP-WIDGET
+               WHEN    429
+                   MOVE  "IKTSRYYMKBN"     TO   MCP-WIDGET
       *病名・コメント情報
                WHEN    500
                    MOVE  "MSG1_DSPKBN"     TO   MCP-WIDGET
@@ -9924,6 +10004,8 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "S04SYORIKBN"
                    MOVE    42              TO  SPA-GMN-CUR
                WHEN    "SYUNYKNKNRKBN"
+                   MOVE    429             TO  SPA-GMN-CUR
+               WHEN    "IKTSRYYMKBN"
                    MOVE    47              TO  SPA-GMN-CUR
                WHEN    "S06SKYPRT"
                    MOVE    48              TO  SPA-GMN-CUR

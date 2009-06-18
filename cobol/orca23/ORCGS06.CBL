@@ -75,6 +75,12 @@
                            11                      PIC X(01).
                            11  SPA-GMN-NYKNKNRKBNMEI
                                                    PIC X(40).
+                       09  SPA-GMN-IKTSRYYMKBN-G.
+                           11  SPA-GMN-IKTSRYYMKBN PIC X(01).
+                           11                      PIC X(01).
+                           11  SPA-GMN-IKTSRYYMKBNMEI
+                                                   PIC X(30).
+                       09  SPA-GMN-IKTSRYYM        PIC X(10).
                        09  SPA-GMN-NYUKINYMD       PIC X(10).
                        09  SPA-GMN-NYKNHOHO-G.
                            11  SPA-GMN-NYKNHOHO    PIC X(02).
@@ -122,6 +128,13 @@
                            11                      PIC X(01).
                            11  SPA-GMN-NYKNKNRKBNMEIL
                                                    PIC X(40).
+                   07  SPA-GMN-IKTSRYYMKBNLST-G.
+                       09  SPA-GMN-IKTSRYYMKBN-MAX PIC 9(03).
+                       09  SPA-GMN-IKTSRYYMKBNLST  OCCURS  5.
+                           11  SPA-GMN-IKTSRYYMKBNL PIC X(01).
+                           11                      PIC X(01).
+                           11  SPA-GMN-IKTSRYYMKBNMEIL
+                                                   PIC X(30).
                    07  SPA-GMN-NYKNHOHOLST-G.
                        09  SPA-GMN-NYKNHOHO-MAX    PIC 9(03).
                        09  SPA-GMN-NYKNHOHOLST     OCCURS  5.
@@ -199,6 +212,7 @@
                    07  SPA-NAI-HEAD.
                        09  SPA-NAI-MISYUFLG        PIC  9(01).
                    07  SPA-NAI-INPUT.
+                       09  SPA-NAI-IKTSRYYM        PIC  X(08).
                        09  SPA-NAI-NYUKINYMD       PIC  X(08).
                        09  SPA-NAI-SKYSUMKBN-BF    PIC  X(01).
                        09  SPA-NAI-NYKNKNRKBN-BF   PIC  X(01).
@@ -215,6 +229,7 @@
            03  FLG-GAI-SKYPRT                      PIC 9(01).
            03  FLG-NYU-SKYPRT                      PIC 9(01).
            03  FLG-SORT                            PIC 9(01).
+           03  FLG-TARGET                          PIC 9(01).
       *
       *    カウント領域
       *01  CNT-AREA.
@@ -292,6 +307,7 @@
                05  S1005-SRYKAMEIL         PIC X(12).
       *
        01  CONST-AREA.
+           03  CONST-MODE-NORMON           PIC 9(01) VALUE 0.
            03  CONST-SYULIST-MAX           PIC 9(05)   VALUE 400.
            03  CONST-SYULIST-OUT-MAX       PIC 9(05)   VALUE 400.
       *
@@ -518,6 +534,9 @@
       *    入金管理区分コンボ編集
            PERFORM 3101-NYKNKNRKBNLST-HEN-SEC
       *
+      *    診療年月指定コンボ編集
+           PERFORM 3101-IKTSRYYMKBNLST-HEN-SEC
+      *
       *    入金方法コンボ編集
            PERFORM 3101-NYKNHOHOLST-HEN-SEC
       *
@@ -541,6 +560,26 @@
                MOVE    WRK-CMB-ITM     TO  SPA-GMN-NYKNKNRKBN-G
            END-IF
            MOVE    SPA-GMN-NYKNKNRKBN  TO  SPA-NAI-NYKNKNRKBN-BF
+      *
+      *    診療年月指定コンボ初期値
+           MOVE    SYS-1039-IKTSRYYMKBN    TO  WRK-CMB-CD
+           PERFORM 4200-IKTSRYYMKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-IKTSRYYMKBNLST (1)
+                                       TO  SPA-GMN-IKTSRYYMKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-IKTSRYYMKBN-G
+           END-IF
+      *
+           IF    ( SPA-S01-MODE            =   CONST-MODE-NORMON )
+            AND  ( SPA-S01-SRYYM (1:6) NOT =   SPACE )
+            AND  ( SPA-S01-SRYYM (7: )     =   SPACE )
+               MOVE    SPA-S01-SRYYM       TO  SPA-NAI-IKTSRYYM
+               MOVE    SPA-S01-SRYYMW      TO  SPA-GMN-IKTSRYYM
+           ELSE
+               MOVE    SPA-SYSYMD   (1:6)  TO  SPA-NAI-IKTSRYYM
+               MOVE    SPA-SYSYMDWH (1:6)  TO  SPA-GMN-IKTSRYYM
+           END-IF
       *
       *    入金方法コンボ初期値
            IF    ( SPA-GMN-NYKNHOHO-MAX    >   ZERO )
@@ -962,19 +1001,32 @@
       *************************************************************
        31011-NYUKIN-MAX-IKT-HEN-SEC     SECTION.
       *
-           PERFORM VARYING IDX-LST    FROM    1   BY  1
+           PERFORM VARYING IDX-LST    FROM     1   BY  1
                    UNTIL ( IDX-LST >  SPA-GMN-SYULIST-MAX )
       *
-               IF    ( SPA-GMN-TMISYU (IDX-LST)    >   ZERO )
-                   IF    ( SPA-NAI-TNYUGAIKBN (IDX-LST)
-                                                   =   "1" )
-                       COMPUTE SPA-GMN-NYU-NYUKIN-MAX
-                           =   SPA-GMN-NYU-NYUKIN-MAX
-                           +   SPA-GMN-TMISYU  (IDX-LST)
+               MOVE    1           TO FLG-TARGET
+      *
+               IF    ( SPA-GMN-IKTSRYYMKBN     =   "2" )
+                   IF    ( SPA-NAI-IKTSRYYM    =   SPA-NAI-TSRYYMD
+                                                      (IDX-LST)(1:6))
+                       CONTINUE
                    ELSE
-                       COMPUTE SPA-GMN-GAI-NYUKIN-MAX
-                           =   SPA-GMN-GAI-NYUKIN-MAX
-                           +   SPA-GMN-TMISYU  (IDX-LST)
+                       MOVE    ZERO    TO  FLG-TARGET
+                   END-IF
+               END-IF
+      *
+               IF    ( FLG-TARGET      =   1 )
+                   IF    ( SPA-GMN-TMISYU (IDX-LST)    >   ZERO )
+                       IF    ( SPA-NAI-TNYUGAIKBN (IDX-LST)
+                                                   =   "1" )
+                           COMPUTE SPA-GMN-NYU-NYUKIN-MAX
+                               =   SPA-GMN-NYU-NYUKIN-MAX
+                               +   SPA-GMN-TMISYU  (IDX-LST)
+                       ELSE
+                           COMPUTE SPA-GMN-GAI-NYUKIN-MAX
+                               =   SPA-GMN-GAI-NYUKIN-MAX
+                               +   SPA-GMN-TMISYU  (IDX-LST)
+                       END-IF
                    END-IF
                END-IF
       *
@@ -1046,6 +1098,25 @@
       *
            .
        3101-NYKNKNRKBNLST-HEN-EXT.
+           EXIT.
+      *************************************************************
+      *    診療年月指定コンボ編集処理
+      *************************************************************
+       3101-IKTSRYYMKBNLST-HEN-SEC      SECTION.
+      *
+           INITIALIZE                  SPA-GMN-IKTSRYYMKBNLST-G
+      *
+           MOVE    "1"                 TO  SPA-GMN-IKTSRYYMKBNL (1)
+           MOVE    "診療年月を指定しない"
+                                       TO  SPA-GMN-IKTSRYYMKBNMEIL (1)
+           MOVE    "2"                 TO  SPA-GMN-IKTSRYYMKBNL (2)
+           MOVE    "診療年月を指定する"
+                                       TO  SPA-GMN-IKTSRYYMKBNMEIL (2)
+      *
+           MOVE    2                   TO  SPA-GMN-IKTSRYYMKBN-MAX
+      *
+           .
+       3101-IKTSRYYMKBNLST-HEN-EXT.
            EXIT.
       *************************************************************
       *    入金方法コンボ編集処理
@@ -1384,6 +1455,14 @@
            WHEN    "ACTIVATE"      ALSO    "NYUGAIKBN"
                    PERFORM 4100-NYUGAIKBN-CHK-SEC
       *
+      *    診療年月指定
+           WHEN    "ACTIVATE"      ALSO    "IKTSRYYMKBN"
+                   PERFORM 4100-IKTSRYYMKBN-CHK-SEC
+      *
+      *    一括入金診療年月
+           WHEN    "ACTIVATE"      ALSO    "IKTSRYYM"
+                   PERFORM 4100-IKTSRYYM-CHK-SEC
+      *
       *    選択番号
            WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 4100-SELNUM-CHK-SEC
@@ -1462,6 +1541,18 @@
       *
       *        入金管理区分チェック
                PERFORM 4101-NYKNKNRKBN-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+      *
+      *        診療年月指定区分チェック
+               PERFORM 41001-IKTSRYYMKBN-CHK-SEC
+               IF    ( SPA-ERRCD   NOT =   SPACE )
+                   GO  TO  4102-KIHON-CHK-EXT
+               END-IF
+      *
+      *        一括入金診療年月チェック
+               PERFORM 41001-IKTSRYYM-CHK-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
                    GO  TO  4102-KIHON-CHK-EXT
                END-IF
@@ -1576,6 +1667,82 @@
            .
       *
        4100-NYUGAIKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療年月指定区分チェック
+      *****************************************************************
+       4100-IKTSRYYMKBN-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           MOVE    S06-IKTSRYYMKBN     TO  SPA-GMN-IKTSRYYMKBN-G
+      *
+           PERFORM 41001-IKTSRYYMKBN-CHK-SEC
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 3101-NYUKIN-MAX-HEN-SEC
+           END-IF
+      *
+           .
+      *
+       4100-IKTSRYYMKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療年月指定区分チェック処理
+      *****************************************************************
+       41001-IKTSRYYMKBN-CHK-SEC       SECTION.
+      *
+           MOVE    SPA-GMN-IKTSRYYMKBN TO  WRK-CMB-CD
+           PERFORM 4200-IKTSRYYMKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM             =   SPACE )
+               MOVE    SPA-GMN-IKTSRYYMKBNLST (1)
+                                       TO  SPA-GMN-IKTSRYYMKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-IKTSRYYMKBN-G
+           END-IF
+      *
+           .
+       41001-IKTSRYYMKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括入金診療年月チェック
+      *****************************************************************
+       4100-IKTSRYYM-CHK-SEC           SECTION.
+      *
+           MOVE    ZERO                TO  SPA-GMN-CUR
+      *
+           MOVE    S06-IKTSRYYM        TO  SPA-GMN-IKTSRYYM
+           PERFORM 41001-IKTSRYYM-CHK-SEC
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 3101-NYUKIN-MAX-HEN-SEC
+           ELSE
+               MOVE   SPA-NAI-IKTSRYYM TO  WRK-YMD
+               PERFORM 800-SEIWA-YM-HEN-SEC
+               MOVE    WRK-HENYMDG     TO  SPA-GMN-IKTSRYYM
+           END-IF
+      *
+           .
+      *
+       4100-IKTSRYYM-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一括入金診療年月チェック
+      *****************************************************************
+       41001-IKTSRYYM-CHK-SEC           SECTION.
+      *
+           MOVE    SPA-GMN-IKTSRYYM    TO  WRK-YMD
+           PERFORM 800-SEIWA-YM-HEN-SEC
+           IF   ( FLG-HIZUKE-ERR  NOT =   ZERO )
+               MOVE   "0016"           TO  SPA-ERRCD
+               MOVE    12              TO  SPA-GMN-CUR
+           ELSE
+               MOVE   WRK-HENYMDG      TO  SPA-GMN-IKTSRYYM
+               MOVE   WRK-SYMD         TO  SPA-NAI-IKTSRYYM
+           END-IF
+      *
+           .
+      *
+       41001-IKTSRYYM-CHK-EXT.
            EXIT.
       *****************************************************************
       *    選択番号チェック
@@ -1857,8 +2024,25 @@
                MOVE    2           TO  IDX3
            END-IF
       *
+           MOVE    1               TO  FLG-TARGET
+      *
            IF    ( SPA-GMN-IKT-NYUKIN (IDX3)    >   ZERO )
             AND  ( SPA-GMN-TMISYU (IDX-LST)     >   ZERO )
+               CONTINUE
+           ELSE
+                   MOVE    ZERO    TO  FLG-TARGET
+           END-IF
+      *
+           IF    ( SPA-GMN-IKTSRYYMKBN     =   "2" )
+               IF    ( SPA-NAI-IKTSRYYM    =   SPA-NAI-TSRYYMD
+                                                  (IDX-LST)(1:6))
+                   CONTINUE
+               ELSE
+                   MOVE    ZERO    TO  FLG-TARGET
+               END-IF
+           END-IF
+      *
+           IF    ( FLG-TARGET      =   1 )
       *
                IF    ( SPA-GMN-TMISYU (IDX-LST)
                                        >   SPA-GMN-IKT-NYUKIN (IDX3) )
@@ -2046,6 +2230,29 @@
       *
            .
        4200-NYKNKNRKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    診療年月指定コンボチェック処理
+      *****************************************************************
+       4200-IKTSRYYMKBNLST-CHK-SEC      SECTION.
+      *
+           MOVE    SPACE               TO  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+               UNTIL ( IDX-CMB     >   SPA-GMN-IKTSRYYMKBN-MAX )
+                OR   ( WRK-CMB-CD  =   SPA-GMN-IKTSRYYMKBNL (IDX-CMB))
+      *
+               CONTINUE
+      *
+           END-PERFORM
+      *
+           IF    ( IDX-CMB     <=  SPA-GMN-IKTSRYYMKBN-MAX )
+               MOVE    SPA-GMN-IKTSRYYMKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-IKTSRYYMKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    入金方法コンボチェック処理
@@ -2714,6 +2921,20 @@
                                        TO  S06-NYKNKNRKBN-ITEM (IDX1)
            END-PERFORM
       *
+           MOVE    SPA-GMN-IKTSRYYMKBN-G
+                                       TO  S06-IKTSRYYMKBN
+           MOVE    SPA-GMN-IKTSRYYMKBN-MAX
+                                       TO  S06-IKTSRYYMKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-IKTSRYYMKBN-MAX )
+               MOVE    SPA-GMN-IKTSRYYMKBNLST (IDX1)
+                                       TO  S06-IKTSRYYMKBN-ITEM (IDX1)
+           END-PERFORM
+      *
+           IF    ( SPA-GMN-IKTSRYYMKBN =   "2" )
+               MOVE    SPA-GMN-IKTSRYYM    TO  S06-IKTSRYYM
+           END-IF
+      *
            MOVE    SPA-GMN-NYUKINYMD   TO  S06-NYUKINYMD
       *
            MOVE    SPA-GMN-NYKNHOHO-G
@@ -2819,12 +3040,18 @@
                                            S06-NYUKIN-MAX-STATE
                                            S06-SKYSUMKBN-STATE
                                            S06-SKYSUMKBN-ITEM-STATE
+                                           S06-IKTSRYYMKBN-STATE
+                                           S06-IKTSRYYMKBN-ITEM-STATE
       *
            IF    ( SPA-GMN-RD-NYUKIN-IKT   =   "T" )
                MOVE    WIDGET-INSENSITIVE
                                        TO  S06-SELNUM-STATE
                                            S06-NYUKIN-STATE
                                            S06-NYUKIN-MAX-STATE
+               IF    ( SPA-GMN-IKTSRYYMKBN =   "1" )
+                   MOVE    WIDGET-INSENSITIVE
+                                       TO  S06-IKTSRYYM-STATE
+               END-IF
            ELSE
                MOVE    WIDGET-INSENSITIVE
                                        TO  S06-NYKNKNRKBN-STATE
@@ -2833,6 +3060,9 @@
                                            S06-NYU-NYUKIN-MAX-STATE
                                            S06-GAI-NYUKIN-STATE
                                            S06-GAI-NYUKIN-MAX-STATE
+                                           S06-IKTSRYYMKBN-STATE
+                                           S06-IKTSRYYMKBN-ITEM-STATE
+                                           S06-IKTSRYYM-STATE
            END-IF
       *
            .
@@ -2894,6 +3124,9 @@
                                            TO  SPA-ERRMSG
            WHEN    "0015"
                MOVE    "外来分発行方法入力エラー"
+                                           TO  SPA-ERRMSG
+           WHEN    "0016"
+               MOVE    "診療年月指定エラー"
                                            TO  SPA-ERRMSG
            WHEN    "4001"  THRU    "4999"
                MOVE    "更新処理に失敗しました"
@@ -2982,6 +3215,10 @@
                MOVE  "NYKNHOHO"        TO  MCP-WIDGET
            WHEN    10
                MOVE  "SKYSUMKBN"       TO  MCP-WIDGET
+           WHEN    11
+               MOVE  "IKTSRYYMKBN"     TO  MCP-WIDGET
+           WHEN    12
+               MOVE  "IKTSRYYM"        TO  MCP-WIDGET
            WHEN    212
                MOVE  "B12"             TO  MCP-WIDGET
            END-EVALUATE
@@ -3007,9 +3244,22 @@
       *    選択番号　　　　→　入金額
            WHEN    "SELNUM"
                MOVE    06              TO  SPA-GMN-CUR
-      *    入金管理区分　　→　外来入金額
+      *    入金管理区分　　→　診療年月指定区分
            WHEN    "NYKNKNRKBN"
-               MOVE    04              TO  SPA-GMN-CUR
+               MOVE    11              TO  SPA-GMN-CUR
+      *    診療年月指定区分→　一括入金診療年月
+           WHEN    "IKTSRYYMKBN"
+               MOVE    12              TO  SPA-GMN-CUR
+      *    一括入金診療年月　　→　外来入金額
+           WHEN    "IKTSRYYM"
+               IF    ( SPA-GMN-GAI-NYUKIN-MAX  <=  ZERO )
+                AND  ( SPA-GMN-GAI-NYUKIN       =  ZERO )
+                AND  ( SPA-GMN-NYU-NYUKIN-MAX  <=  ZERO )
+                AND  ( SPA-GMN-NYU-NYUKIN       =  ZERO )
+                   MOVE    12          TO  SPA-GMN-CUR
+               ELSE
+                   MOVE    04          TO  SPA-GMN-CUR
+               END-IF
       *    外来入金額　　　→　入院入金額
            WHEN    "GAI_NYUKIN"
                MOVE    05              TO  SPA-GMN-CUR
@@ -3058,6 +3308,24 @@
                IF    ( S06-NYKNKNRKBN-STATE
                                        =   WIDGET-INSENSITIVE )
                    MOVE    06              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   11 )
+               IF    ( S06-IKTSRYYMKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    06              TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   12 )
+               IF    ( S06-IKTSRYYM-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   IF    ( SPA-GMN-RD-NYUKIN-IKT   =   "T" )
+                       MOVE    04      TO  SPA-GMN-CUR
+                   ELSE
+                       MOVE    06      TO  SPA-GMN-CUR
+                   END-IF
                END-IF
            END-IF
       *
@@ -3119,6 +3387,31 @@
       *
            .
        800-SEIWA-HEN-EXT.
+           EXIT.
+      *****************************************************************
+      *    西暦日本語変換処理
+      *****************************************************************
+       800-SEIWA-YM-HEN-SEC            SECTION.
+      *
+           MOVE    ZERO                TO  FLG-HIZUKE-ERR
+           MOVE    SPACE               TO  WRK-SYMD
+                                           WRK-HENYMDG
+      *
+      *    日付画面チェックサブ
+           INITIALIZE                      ORCSGDAYAREA
+           MOVE    "2"                 TO  SGDAY-INTYPE
+           MOVE    WRK-YMD             TO  SGDAY-INDAY
+           CALL    "ORCSGDAY"          USING
+                                           ORCSGDAYAREA
+           IF  ( SGDAY-RC              =   ZERO )
+               MOVE    SGDAY-OTDAY     TO  WRK-HENYMDG
+               MOVE    SGDAY-SDAY      TO  WRK-SYMD
+           ELSE
+               MOVE    1               TO  FLG-HIZUKE-ERR
+           END-IF
+      *
+           .
+       800-SEIWA-YM-HEN-EXT.
            EXIT.
       *****************************************************************
       *    マシン日付取得サブ

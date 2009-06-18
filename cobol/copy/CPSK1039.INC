@@ -104,8 +104,10 @@
                05  SYS-1039-IKTSORTKBN          PIC X(01).
       *一括再計算方法
                05  SYS-1039-IKTKEISANKBN        PIC X(01).
+      *一括入金診療年月指定区分
+               05  SYS-1039-IKTSRYYMKBN         PIC X(01).
       *予備
-               05                       PIC  X(428).
+               05                       PIC  X(427).
       *端末ＩＤ
            03  SYS-1039-TERMID          PIC  X(16).
       *オペーレータＩＤ

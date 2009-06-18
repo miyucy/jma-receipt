@@ -409,6 +409,11 @@
                       07  W07-VALUE   PIC X(40).
                     06  W07-SYUNYKNKNRKBN-COUNT   PIC S9(9)   BINARY.
                     06  W07-SYUNYKNKNRKBN-ITEM    PIC X(40)   OCCURS  5.
+                  05  W07-IKTSRYYMKBN-COMBO.
+                    06  W07-IKTSRYYMKBN.
+                      07  W07-VALUE   PIC X(32).
+                    06  W07-IKTSRYYMKBN-COUNT PIC S9(9)   BINARY.
+                    06  W07-IKTSRYYMKBN-ITEM  PIC X(32)   OCCURS  5.
                   05  W07-S04SHIHARAIKBN-COMBO.
                     06  W07-S04SHIHARAIKBN       PIC X(12).
                     06  W07-S04SHIHARAIKBN-COUNT PIC S9(9)   BINARY.
