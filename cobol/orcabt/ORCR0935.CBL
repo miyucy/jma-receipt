@@ -38,6 +38,8 @@
       *  03.05.03    NACL-ÌçÏÆ    07/06/26  ÉÔÍ×¹àÌÜºï½ü
       *  04.01.01    NACL-ÌçÏÆ    07/11/26  ÆÃÄê´ïºà¾¦ÉÊÌ¾µ­ºÜÂÐ±þ
       *  04.03.01    NACL-ÌçÏÆ    09/01/23  ±ßÅ¦Í×ÍóÊÔ½¸½¤Àµ
+      *
+      *  04.05.01    NACL-ÌçÏÆ    09/06/18  ±ßÅ¦Í×Íó¥³¥á¥ó¥ÈÊÔ½¸ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -130,6 +132,7 @@
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
+           03  FLG-HENSYU2         PIC 9(01).
       *
       *    ¥«¥¦¥ó¥ÈÎÎ°è
        01  CNT-AREA.
@@ -167,6 +170,9 @@
            03  WRK-LINENUM         PIC 9(05).
       *    ºÞ°õ»ú¹Ô¿ô
            03  WRK-TBLMAX          PIC 9(03).
+      *
+           03  WRK-ZAINUM          PIC 9(08).
+           03  WRK-KINGAKU         PIC 9(09)V9(02).
       *
       *    ¿ô»úÈ¾³ÑÁ´³ÑÊÑ´¹ÍÑ     
            03  WRK-NUM                         PIC 9(01).
@@ -410,6 +416,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
       *
            INITIALIZE                      TBL-ZAIW-AREA
       *
+           MOVE        ZERO            TO  WRK-ZAINUM
+                                           WRK-KINGAKU
+           MOVE        ZERO            TO  FLG-HENSYU2
+      *
       *    ¥Ñ¥é¥á¡¼¥¿£°£´¥Õ¥¡¥¤¥ë¤è¤êÊÔ½¸
            INITIALIZE                      RECE86-REC
            MOVE    RECE82-HOSPNUM      TO  RECE86-HOSPNUM
@@ -437,6 +447,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
                OR     ( RECE82-RECEKA    NOT =   RECE86-RECEKA    )
                OR     ( RECE82-HKNID     NOT =   RECE86-HKNID     )
                OR     ( RECE82-TEKSTYMD  NOT =   RECE86-TEKSTYMD  )
+      *
+                   IF      RECE86-ZAINUM   NOT =   WRK-ZAINUM
+                      MOVE    RECE86-ZAINUM  TO    WRK-ZAINUM
+                      MOVE    ZERO           TO    WRK-KINGAKU
+                      MOVE    ZERO           TO    FLG-HENSYU2
+                   END-IF
+      *
+                   ADD     RECE86-TEN        TO    WRK-KINGAKU
+                   MOVE    WRK-KINGAKU       TO    WRK-ZAITENX
+                   MOVE    RECE86-ZAIKAISU   TO    WRK-ZAIKAISUX
       *
                    PERFORM 2001-RECE44-ZAIHEN-MAE-SEC
       *            
@@ -490,8 +510,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
        2003-TEKIYOU-HENSYU-SEC    SECTION.
       *
       *    ¶â³Û¡¦²ó¿ôÊÔ½¸
-           MOVE    TBL-ZAIW-TEN        TO  WRK-ZAITENX
-           MOVE    RECE86-ZAIKAISU     TO  WRK-ZAIKAISUX
+      ***> MOVE    TBL-ZAIW-TEN        TO  WRK-ZAITENX
+      ***> MOVE    RECE86-ZAIKAISU     TO  WRK-ZAIKAISUX
       *     
            PERFORM 4304-TENSUKAI-HEN-SEC 
       *
@@ -510,10 +530,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
       *****************************************************************
        4302-MEISAI-KETA-HEN1-SEC    SECTION.
       *
-      *    Ì¾¾Î¤ÎÄ¹¤µ
-           COMPUTE   WRK-NAMEKETA  =
-                         TBL-ZAIW-YUKOKETA 
-                         *   2
            MOVE    1                   TO  WRK-ST              
       *
            MOVE    ZERO                TO  FLG-HENSYU
@@ -521,8 +537,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
            PERFORM UNTIL   FLG-HENSYU  =   1  
                IF      WRK-TBLMAX         <   CONS-TEKIYOU1-LINE-MAX 
                    MOVE    SPACE               TO  WRK-ZAI1
+                   IF  FLG-HENSYU2  =  ZERO
+                       MOVE   "¡ö"  TO   WRK-ZAI1-NAME(1:2)
+                       MOVE    1    TO   FLG-HENSYU2
+                   END-IF
                    MOVE    TBL-ZAIW-NAME (WRK-ST:)
-                                               TO  WRK-ZAI1-NAME
+                                               TO  WRK-ZAI1-NAME(3:)
                    IF      WRK-TNSKAI      NOT =   SPACE                            
                        IF      WRK-ZAI1-NAME (WRK-TNSKAI-ST1:)
                                                =   SPACE
@@ -534,12 +554,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
                    END-IF                                                  
       *            ºÞ¡¦¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý
                    PERFORM 450-RECE87-OUT-SEC
-                   COMPUTE WRK-ST          =   WRK-ST         +
-                                               CONS-TEKIYOU1-LEN
+                   COMPUTE WRK-ST  =
+                           WRK-ST  + CONS-TEKIYOU1-LEN - 2
                ELSE
                    MOVE    SPACE               TO  WRK-ZAI
+                   IF  FLG-HENSYU2  =  ZERO
+                       MOVE   "¡ö"  TO   WRK-ZAI-NAME(1:2)
+                       MOVE    1    TO   FLG-HENSYU2
+                   END-IF
                    MOVE    TBL-ZAIW-NAME (WRK-ST:)
-                                               TO  WRK-ZAI-NAME
+                                               TO  WRK-ZAI-NAME(3:)
                    IF      WRK-TNSKAI      NOT =   SPACE                            
                        IF      WRK-ZAI-NAME (WRK-TNSKAI-ST:)
                                                =   SPACE
@@ -551,8 +575,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
                    END-IF                                                  
       *            ºÞ¡¦¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý
                    PERFORM 450-RECE87-OUT-SEC
-                   COMPUTE WRK-ST          =   WRK-ST         +
-                                               CONS-TEKIYOU2-LEN
+                   COMPUTE WRK-ST  =
+                           WRK-ST  + CONS-TEKIYOU2-LEN - 2
                END-IF
       *
       *¡¡¡¡¡¡¡¡¶â³Û¤ÎÊÔ½¸¤¬¤Ê¤¤¤È¤­¤Þ¤À°õºþ¤¹¤ëÊ¸»ú¤¬¤¢¤ë¤«         
@@ -574,8 +598,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
       *
            INITIALIZE              WRK-TNSKAI-AREA
       *
-           IF    ( TBL-ZAIW-SRYCD (1:1)  =   "8"   )
-           OR    ( TBL-ZAIW-SRYCD (1:3)  =   "008" )
+      ***> IF    ( TBL-ZAIW-SRYCD (1:1)  =   "8"   )
+      ***> OR    ( TBL-ZAIW-SRYCD (1:3)  =   "008" )
+           IF    ( RECE86-ZAILAST   =   ZERO )
+           OR    ( WRK-KINGAKU      =   ZERO )
                GO  TO  4304-TENSUKAI-HEN-EXT
            END-IF
       *                                           
@@ -598,9 +624,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
            MOVE    ZERO                TO  WRK-TNSKAI-KETA
            PERFORM VARYING   IDZ     FROM    1   BY  2
                    UNTIL     IDZ     >       20
-               IF      WRK-TNSKAI (IDZ:2)      NOT =   SPACE
-                   COMPUTE WRK-TNSKAI-KETA   =   20  -  IDZ     +   1
-                   MOVE    IDZ                 TO  WRK-TNSKAI-LEN 
+      ***>     IF      WRK-TNSKAI (IDZ:2)      NOT =   SPACE
+               IF      WRK-TNSKAI (IDZ:2)      NOT =   "¡¡"
+                   IF   IDZ = 1
+                      COMPUTE WRK-TNSKAI-KETA = 20 - IDZ + 1
+                      MOVE    IDZ   TO   WRK-TNSKAI-LEN
+                   ELSE
+                      COMPUTE WRK-TNSKAI-KETA = 20 - IDZ + 1 + 2
+                      COMPUTE WRK-TNSKAI-LEN  = IDZ  -  2
+                   END-IF
                    MOVE    20                  TO  IDZ
                END-IF 
            END-PERFORM

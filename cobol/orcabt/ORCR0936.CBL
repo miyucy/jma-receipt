@@ -36,6 +36,7 @@
       *  04.03.01    NACL-ÌçÏÆ    09/01/23  ±ßÅ¦Í×ÍóÊÔ½¸½¤Àµ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
+      *  04.05.02    NACL-ÌçÏÆ    09/06/18  ±ßÅ¦Í×Íó¥³¥á¥ó¥ÈÊÔ½¸ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -418,9 +419,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
            MOVE    ZERO                TO  WRK-TNSKAI-KETA
            PERFORM VARYING   IDZ     FROM    1   BY  2
                    UNTIL     IDZ     >       20
-               IF      WRK-TNSKAI (IDZ:2)      NOT =   SPACE
-                   COMPUTE WRK-TNSKAI-KETA   =   20  -  IDZ     +   1
-                   MOVE    IDZ                 TO  WRK-TNSKAI-LEN 
+      ***>     IF      WRK-TNSKAI (IDZ:2)      NOT =   SPACE
+               IF      WRK-TNSKAI (IDZ:2)      NOT =   "¡¡"
+                   IF   IDZ = 1
+                      COMPUTE WRK-TNSKAI-KETA = 20 - IDZ + 1
+                      MOVE    IDZ   TO   WRK-TNSKAI-LEN
+                   ELSE
+                      COMPUTE WRK-TNSKAI-KETA = 20 - IDZ + 1 + 2
+                      COMPUTE WRK-TNSKAI-LEN  = IDZ  -  2
+                   END-IF
                    MOVE    20                  TO  IDZ
                END-IF
            END-PERFORM

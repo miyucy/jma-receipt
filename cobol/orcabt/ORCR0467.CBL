@@ -40,6 +40,8 @@
       *  04.01.01    NACL-門脇    07/11/26  特定器材商品名記載対応
       *  04.03.01    NACL-門脇    09/01/23  円摘要欄編集修正
       *  04.03.02    NACL-門脇    09/03/04  （特）記載編集修正
+      *
+      *  04.05.01    NACL-門脇    09/06/18  円摘要欄コメント編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -132,6 +134,7 @@
            03  FLG-SP              PIC 9(01).
            03  FLG-NOPRT           PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
+           03  FLG-HENSYU2         PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -169,6 +172,9 @@
            03  WRK-LINENUM         PIC 9(05).
       *    剤印字行数
            03  WRK-TBLMAX         PIC 9(03).
+      *
+           03  WRK-ZAINUM          PIC 9(08).
+           03  WRK-KINGAKU         PIC 9(09)V9(02).
       *
       *    数字半角全角変換用     
            03  WRK-NUM                         PIC 9(01).
@@ -410,8 +416,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
       *
       *    外来管理加算（特例５２）の編集
            IF      RECE41-GAITOKU-PRTKBN1  =   "1"
+               MOVE    1                   TO  RECE46-ZAILAST
                PERFORM 2001-RECE44-ZAIHEN-MAE-SEC
                MOVE    RECE41-GAITOKU-TEN1 TO  WRK-ZAITENX
+                                               WRK-KINGAKU
                MOVE    RECE41-GAITOKU-KAISU1
                                            TO  WRK-ZAIKAISUX
                PERFORM 4304-TENSUKAI-HEN-SEC
@@ -419,7 +427,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
                MOVE    WRK-TNSKAI (WRK-TNSKAI-LEN:)
                                            TO
                                         WRK-ZAI1-NAME(WRK-TNSKAI-ST1:)
-               MOVE    "（特）"            TO  WRK-ZAI1-NAME (1:6)
+               MOVE    "＊（特）"          TO  WRK-ZAI1-NAME (1:8)
                MOVE    RECE41-KEY        TO  RECE46-KEY
                MOVE    SPACE             TO  RECE46-SRYKBN
                MOVE    ZERO              TO  RECE46-GAITENTTLKBN
@@ -432,8 +440,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
       *
       *    外来管理加算（特例２６）の編集
            IF      RECE41-GAITOKU-PRTKBN2  =   "1"
+               MOVE    1                   TO  RECE46-ZAILAST
                PERFORM 2001-RECE44-ZAIHEN-MAE-SEC
                MOVE    RECE41-GAITOKU-TEN2 TO  WRK-ZAITENX
+                                               WRK-KINGAKU
                MOVE    RECE41-GAITOKU-KAISU2
                                            TO  WRK-ZAIKAISUX
                PERFORM 4304-TENSUKAI-HEN-SEC
@@ -441,7 +451,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
                MOVE    WRK-TNSKAI (WRK-TNSKAI-LEN:)
                                            TO
                                         WRK-ZAI1-NAME(WRK-TNSKAI-ST1:)
-               MOVE    "（特）"            TO  WRK-ZAI1-NAME (1:6)
+               MOVE    "＊（特）"          TO  WRK-ZAI1-NAME (1:8)
                MOVE    RECE41-KEY        TO  RECE46-KEY
                MOVE    SPACE             TO  RECE46-SRYKBN
                MOVE    ZERO              TO  RECE46-GAITENTTLKBN
@@ -451,6 +461,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
                MOVE    SPACE             TO  RECE46-SRYKA
                PERFORM 450-RECE47-OUT-SEC                       
            END-IF
+      *
+           MOVE        ZERO            TO  WRK-ZAINUM
+                                           WRK-KINGAKU
+           MOVE        ZERO            TO  FLG-HENSYU2
       *
       *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE46-REC
@@ -479,6 +493,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
                OR     ( RECE41-RECEKA    NOT =   RECE46-RECEKA    )
                OR     ( RECE41-HKNID     NOT =   RECE46-HKNID     )
                OR     ( RECE41-TEKSTYMD  NOT =   RECE46-TEKSTYMD  )
+      *
+                   IF      RECE46-ZAINUM   NOT =   WRK-ZAINUM
+                      MOVE    RECE46-ZAINUM  TO    WRK-ZAINUM
+                      MOVE    ZERO           TO    WRK-KINGAKU
+                      MOVE    ZERO           TO    FLG-HENSYU2
+                   END-IF
+      *
+                   ADD     RECE46-TEN        TO    WRK-KINGAKU
+                   MOVE    WRK-KINGAKU       TO    WRK-ZAITENX
+                   MOVE    RECE46-ZAIKAISU   TO    WRK-ZAIKAISUX
       *
                    PERFORM 2001-RECE44-ZAIHEN-MAE-SEC
       *            
@@ -540,8 +564,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
        2003-TEKIYOU-HENSYU-SEC    SECTION.
       *
       *    金額・回数編集
-           MOVE    TBL-ZAIW-TEN        TO  WRK-ZAITENX
-           MOVE    RECE46-ZAIKAISU     TO  WRK-ZAIKAISUX
+      ***> MOVE    TBL-ZAIW-TEN        TO  WRK-ZAITENX
+      ***> MOVE    RECE46-ZAIKAISU     TO  WRK-ZAIKAISUX
       *     
            PERFORM 4304-TENSUKAI-HEN-SEC 
       *
@@ -560,10 +584,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
       *****************************************************************
        4302-MEISAI-KETA-HEN1-SEC    SECTION.
       *
-      *    名称の長さ
-           COMPUTE   WRK-NAMEKETA  =
-                         TBL-ZAIW-YUKOKETA 
-                         *   2
            MOVE    1                   TO  WRK-ST              
       *
            MOVE    ZERO                TO  FLG-HENSYU
@@ -571,8 +591,12 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
            PERFORM UNTIL   FLG-HENSYU  =   1  
                IF      WRK-TBLMAX         <   CONS-TEKIYOU1-LINE-MAX 
                    MOVE    SPACE               TO  WRK-ZAI1
+                   IF  FLG-HENSYU2  =  ZERO
+                       MOVE   "＊"  TO   WRK-ZAI1-NAME(1:2)
+                       MOVE    1    TO   FLG-HENSYU2
+                   END-IF
                    MOVE    TBL-ZAIW-NAME (WRK-ST:)
-                                               TO  WRK-ZAI1-NAME
+                                               TO  WRK-ZAI1-NAME(3:)
                    IF      WRK-TNSKAI      NOT =   SPACE                            
                        IF      WRK-ZAI1-NAME (WRK-TNSKAI-ST1:)
                                                =   SPACE
@@ -584,12 +608,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
                    END-IF                                                  
       *            剤・診療行為テーブル編集処理
                    PERFORM 450-RECE47-OUT-SEC
-                   COMPUTE WRK-ST          =   WRK-ST         +
-                                               CONS-TEKIYOU1-LEN
+                   COMPUTE WRK-ST  =
+                           WRK-ST  + CONS-TEKIYOU1-LEN - 2
                ELSE
                    MOVE    SPACE               TO  WRK-ZAI
+                   IF  FLG-HENSYU2  =  ZERO
+                       MOVE   "＊"  TO   WRK-ZAI-NAME(1:2)
+                       MOVE    1    TO   FLG-HENSYU2
+                   END-IF
                    MOVE    TBL-ZAIW-NAME (WRK-ST:)
-                                               TO  WRK-ZAI-NAME
+                                               TO  WRK-ZAI-NAME(3:)
                    IF      WRK-TNSKAI      NOT =   SPACE                            
                        IF      WRK-ZAI-NAME (WRK-TNSKAI-ST:)
                                                =   SPACE
@@ -601,8 +629,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
                    END-IF                                                  
       *            剤・診療行為テーブル編集処理
                    PERFORM 450-RECE47-OUT-SEC
-                   COMPUTE WRK-ST          =   WRK-ST         +
-                                               CONS-TEKIYOU2-LEN
+                   COMPUTE WRK-ST  =
+                           WRK-ST  + CONS-TEKIYOU2-LEN - 2
                END-IF
       *
       *　　　　金額の編集がないときまだ印刷する文字があるか         
@@ -624,8 +652,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
       *
            INITIALIZE              WRK-TNSKAI-AREA
       *
-           IF    ( TBL-ZAIW-SRYCD (1:1)  =   "8"   )
-           OR    ( TBL-ZAIW-SRYCD (1:3)  =   "008" )
+      ***> IF    ( TBL-ZAIW-SRYCD (1:1)  =   "8"   )
+      ***> OR    ( TBL-ZAIW-SRYCD (1:3)  =   "008" )
+           IF    ( RECE46-ZAILAST   =   ZERO )
+           OR    ( WRK-KINGAKU      =   ZERO )
                GO  TO  4304-TENSUKAI-HEN-EXT
            END-IF
       *                                           
@@ -648,9 +678,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE47PARA-HOSPNUM
            MOVE    ZERO                TO  WRK-TNSKAI-KETA
            PERFORM VARYING   IDZ     FROM    1   BY  2
                    UNTIL     IDZ     >       20
-               IF      WRK-TNSKAI (IDZ:2)      NOT =   SPACE
-                   COMPUTE WRK-TNSKAI-KETA   =   20  -  IDZ     +   1
-                   MOVE    IDZ                 TO  WRK-TNSKAI-LEN 
+      ***>     IF      WRK-TNSKAI (IDZ:2)      NOT =   SPACE
+               IF      WRK-TNSKAI (IDZ:2)      NOT =   "　"
+                   IF   IDZ = 1
+                      COMPUTE WRK-TNSKAI-KETA = 20 - IDZ + 1
+                      MOVE    IDZ   TO   WRK-TNSKAI-LEN
+                   ELSE
+                      COMPUTE WRK-TNSKAI-KETA = 20 - IDZ + 1 + 2
+                      COMPUTE WRK-TNSKAI-LEN  = IDZ  -  2
+                   END-IF
                    MOVE    20                  TO  IDZ
                END-IF 
            END-PERFORM
