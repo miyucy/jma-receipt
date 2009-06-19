@@ -4529,10 +4529,14 @@
                   MOVE    "tbl_syunou"        TO  MCP-TABLE
                   MOVE    "key"               TO  MCP-PATHNAME
                   PERFORM 910-DBUPDATE-SEC
-                  PERFORM 900-SYUMEI-KEY7-SEL-SEC
-                  COMPUTE IDX1 =   SMEI-DENPEDANUM +   1
       *
-                  PERFORM    4701-SMEI-SAKUSEI-SEC
+                  PERFORM 4701-SMEI-UPDATE-SEC
+                  IF    ( SPA-ERRCD    =   SPACE )
+                      PERFORM 900-SYUMEI-KEY7-SEL-SEC
+                      COMPUTE IDX1 =   SMEI-DENPEDANUM +   1
+      *
+                      PERFORM 4701-SMEI-SAKUSEI-SEC
+                  END-IF
              END-IF
            END-IF
       *****PERFORM    310-SPA-SET-SEC.
@@ -4545,6 +4549,40 @@
        470-NYUDEL-EXT.
            EXIT.
       *
+      *************************************************************
+      *    入金取消処理（収納明細レコード更新）
+      *************************************************************
+       4701-SMEI-UPDATE-SEC            SECTION.
+      *
+           PERFORM 900-SYUMEI-KEY6-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-SYUMEI  NOT =   ZERO )
+                    OR   ( SPA-ERRCD   NOT =   SPACE )
+      *
+               MOVE    ZERO            TO  SMEI-NYUHEN-MONEY
+      *
+               MOVE    SYUMEI-REC      TO  MCPDATA-REC
+               PERFORM 800-MCNDATE-SEC
+               MOVE    SMCNDATE-YMD    TO  SMEI-UPYMD
+               MOVE    SMCNDATE-HMS    TO  SMEI-UPHMS
+               MOVE    "tbl_syumei"    TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 910-DBUPDATE-SEC
+               IF    ( MCP-RC          NOT =   ZERO )
+                   MOVE    "4004"          TO  SPA-ERRCD
+               END-IF
+      *
+               PERFORM 900-SYUMEI-KEY6-FET-SEC
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       4701-SMEI-UPDATE-EXT.
+           EXIT.
       *************************************************************
       *    入金取消処理（収納明細レコード作成）
       *************************************************************
@@ -4582,7 +4620,7 @@
            MOVE    "2"                 TO  SMEI-NYUHEN-KBN
       *入返金額
            MOVE    ZERO                TO  SMEI-NYUHEN-MONEY
-           COMPUTE   SMEI-NYUHEN-MONEY  =  WRK-SAGAKU  *  -1
+      *    COMPUTE   SMEI-NYUHEN-MONEY  =  WRK-SAGAKU  *  -1
       *入返金日
            MOVE    SPA-SYSYMD          TO  SMEI-NYUHEN-YMD
       *入金方法
@@ -4608,7 +4646,7 @@
            PERFORM 910-DBINSERT-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1001"              TO  SPA-ERRCD
-           END-IF     
+           END-IF
            .
        4701-SMEI-SAKUSEI-EXT.
            EXIT.
@@ -6089,6 +6127,57 @@
       *
            .
        900-BD003-KEY4-FET-EXT.
+           EXIT.
+      **************************************************************
+      *    収納明細検索処理
+      **************************************************************
+       900-SYUMEI-KEY6-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYUMEI
+      *
+           INITIALIZE                      SYUMEI-REC
+      *
+           MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
+           MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
+                                       TO  SMEI-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  SMEI-PTID
+           MOVE    SPA-GMN-TDENPNUM   (SPA-GMN-SELBAN)
+                                       TO  SMEI-DENPNUM
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+      *
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUMEI-REC
+           ELSE
+               INITIALIZE                  SYUMEI-REC
+               MOVE    1               TO  FLG-SYUMEI
+           END-IF
+      *
+           .
+       900-SYUMEI-KEY6-SEL-EXT.
+           EXIT.
+      **************************************************************
+      *    収納明細検索処理
+      **************************************************************
+       900-SYUMEI-KEY6-FET-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYUMEI
+      *
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key6"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUMEI-REC
+           ELSE
+               INITIALIZE                  SYUMEI-REC
+               MOVE    1               TO  FLG-SYUMEI
+           END-IF
+      *
+           .
+       900-SYUMEI-KEY6-FET-EXT.
            EXIT.
       **************************************************************
       *    収納明細検索処理

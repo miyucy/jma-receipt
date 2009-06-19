@@ -2374,15 +2374,29 @@
                -   SPA-NAI-NYUKIN-MOTO
                +   SPA-GMN-NYUKIN
       *
-           IF    ( SPA-GMN-NYUKIN  >   ZERO )
-               MOVE    2           TO  SPA-GMN-CUR
-               MOVE    "0013"      TO  SPA-ERRCD
-           END-IF
-      *
            IF    ( SPA-ERRCD       =   SPACE )
                IF    ( WRK-NYUKIN  <  ZERO )
                    MOVE    2           TO  SPA-GMN-CUR
                    MOVE    "0014"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-NAI-DENPJTIKBN  =   "6" )
+                   IF    ( SPA-GMN-NYUKIN  =   ZERO
+                                           OR  SPA-NAI-NYUKIN-MOTO )
+                       CONTINUE
+                   ELSE
+                       MOVE    2       TO  SPA-GMN-CUR
+                       MOVE    "0017"  TO  SPA-ERRCD
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-GMN-NYUKIN  >   ZERO )
+                   MOVE    2           TO  SPA-GMN-CUR
+                   MOVE    "0013"      TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -3469,6 +3483,9 @@
            WHEN    "1005"
            WHEN    "1006"
                MOVE    "収納明細の更新処理でエラーになりました"
+                                       TO  SPA-ERRMSG
+           WHEN    "0017"
+               MOVE    "入金取消は０円にのみ変更が可能です"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
