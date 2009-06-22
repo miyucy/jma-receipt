@@ -54,6 +54,7 @@
       *  03.05.00    NACL-多々納  07/05/10  グループ診療対応
       *  03.05.00    NACL-多々納  07/05/25  UIDテーブル対応
       *  04.04.00    NACL-竹田　  09/02/25  公害対応
+      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -211,7 +212,7 @@
            03  WRK-SYUGI           PIC 9(04).
            03  WRK-YAKUZAI         PIC 9(04).
       *
-           03  WRK-SURYO           PIC 9(05)V999.
+           03  WRK-SURYO           PIC 9(05)V9(5).
       *
            03  WRK-BYOYMD.
                05  WRK-BYOYY           PIC 9(04).
@@ -2032,7 +2033,7 @@
                    IF     (SNUM-RC         NOT =   ZERO  )   OR
                           (SNUM-MINKBN         =   "1"   )   OR
                           (SNUM-SEISUU         >   12    )   OR
-                          (SNUM-SYOSUU         >   3     )
+                          (SNUM-SYOSUU         >   5     )
                         CONTINUE
                    ELSE
       *                整数がゼロの時、ゼロ
@@ -2083,7 +2084,7 @@
            IF     (SNUM-RC         NOT =   ZERO  )   OR
                   (SNUM-MINKBN         =   "1"   )   OR
                   (SNUM-SEISUU         >   7     )   OR
-                  (SNUM-SYOSUU         >   3     )
+                  (SNUM-SYOSUU         >   5     )
                MOVE    ZERO                TO  WRK-SURYO
            ELSE
                MOVE    SNUM-OUTNUM         TO  WRK-SURYO
@@ -2102,7 +2103,7 @@
                IF     (SNUM-RC         NOT =   ZERO  )   OR
                       (SNUM-MINKBN         =   "1"   )   OR
                       (SNUM-SEISUU         >   7     )   OR
-                      (SNUM-SYOSUU         >   3     )
+                      (SNUM-SYOSUU         >   5     )
                    CONTINUE
                ELSE
                    MOVE    SNUM-OUTNUM         TO  TBL-WKSRY-SRYKAISU

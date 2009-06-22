@@ -67,7 +67,7 @@
       *診療コード
                  06  LNK-S01-SRYCD         PIC  X(09).
       *数量
-                 06  LNK-S01-SURYOU        PIC  9(05)V9(03).
+                 06  LNK-S01-SURYOU        PIC  9(05)V9(05).
       *回数
                  06  LNK-S01-KAISUU        PIC  9(03).
       *点数

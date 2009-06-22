@@ -42,6 +42,7 @@
       *                                     新規・訂正追加
       *  03.05.01    NACL-多々納  07/08/16  患者メモ追加
       *  04.02.01    NACL-多々納  08/03/14  Ｈ２０年４月改正対応
+      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -166,7 +167,7 @@
       *
            03  WRK-SRYYMD          PIC X(08). 
            03  WRK-FILMCNT         PIC 9(02). 
-           03  WRK-SURYO           PIC ZZZZZZZ9.999.
+           03  WRK-SURYO           PIC ZZZZZZZ9.9(5).
            03  WRK-FILMNUM         PIC ZZZZZZ.
            03  WRK-FILMDEV         PIC ZZ.
            03  WRK-Z9              PIC ----------------.
@@ -183,10 +184,10 @@
            03  WRK-KEI-TEN         PIC 9(08)V9(03).
            03  WRK-KEI-TEN1        PIC 9(08)V9(03).
            03  WRK-KEI-TEN2        PIC 9(08).
-           03  WRK-SURYO9          PIC 9(05)V9(03).
+           03  WRK-SURYO9          PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO9.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
       *
            03  WRK-ZZZ             PIC Z99.
            03  WRK-999             PIC 9(03).
@@ -246,7 +247,7 @@
       *@@@@        07  TBL-ALSNAME    PIC  X(40).
                    07  TBL-ALSNAME    PIC  X(80).
       *数量(Z編集)
-                   07  TBL-SURYO      PIC  S9(07)V999.
+                   07  TBL-SURYO      PIC  S9(07)V9(5).
       *数量コード
                    07  TBL-SURYOCD    PIC  X(02).
       *単位
