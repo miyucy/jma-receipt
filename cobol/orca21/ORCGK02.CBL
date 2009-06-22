@@ -740,7 +740,7 @@
                05  WRK-KSN-ATAI-G.
                    07  WRK-KSN-ATAI        PIC X(08)   OCCURS  4.
                05  WRK-KSN-TENSU           PIC 9(08).
-               05  WRK-KSN-SURYO           PIC 9(05)V9(03).
+               05  WRK-KSN-SURYO           PIC 9(05)V9(05).
                05  WRK-KSN-ZAINUM          PIC 9(08).
                05  WRK-KSN-AUTOKBN         PIC X(01).
                05  WRK-KSN-INPUTCD         PIC X(22).
