@@ -30,6 +30,7 @@
       *  03.05.00    NACL-多々納  07/05/10  グループ診療対応
       *  04.02.00    NACL-多々納  08/03/XX  お薬手帳対応
       *  04.03.00    NACL-多々納  08/10/22  包括保険対象対応
+      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -148,9 +149,9 @@
                                                SPA-GMN-TMEISYO.
                            11  SPA-GMN-TMEISYO2    PIC X(46).
                            11  SPA-GMN-HEN1.
-                               13  SPA-GMN-TSURYOU     PIC X(18).
+                               13  SPA-GMN-TSURYOU     PIC X(22).
                                13  SPA-GMN-TTANI1      PIC X(08).
-                               13  SPA-GMN-TTANMEI     PIC X(06).
+                               13  SPA-GMN-TTANMEI     PIC X(02).
                                13  SPA-GMN-TYOBI1      PIC X(02).
                                13  SPA-GMN-TZAIKEI     PIC X(40).
       *
@@ -170,9 +171,9 @@
                    07  SPA-GMN-NISUU         PIC 9(03).
                    07  SPA-GMN-INPUT-TBL     OCCURS   50.
                        09  SPA-GMN-INPUT     PIC X(100).
-                       09  SPA-GMN-SURYO     PIC X(10).
+                       09  SPA-GMN-SURYO     PIC X(12).
       *
-                       09  SPA-NAI-SURYO     PIC 9(05)V9(3).
+                       09  SPA-NAI-SURYO     PIC 9(05)V9(5).
                        09  SPA-NAI-SRYCD     PIC X(09).
                    07  SPA-INPUT-MAX         PIC 9(04).
                    07  SPA-INPUT-PAGE        PIC 9(02).
@@ -221,7 +222,7 @@
                        09  SPA-WKSRY-SINRYO-TBL        OCCURS   50.
                            11  SPA-WKSRY-SRYCD         PIC  X(09).
                            11  SPA-WKSRY-NAME          PIC  X(50).
-                           11  SPA-WKSRY-SRYSURYO      PIC  9(05)V9(03).
+                           11  SPA-WKSRY-SRYSURYO      PIC  9(05)V9(05).
                            11  SPA-WKSRY-SRYKAISU      PIC  9(03).
                            11  SPA-WKSRY-ZAIKAISU      PIC  9(08).
                            11  SPA-WKSRY-INPUTNUM      PIC  9(03).
@@ -308,17 +309,17 @@
            03  WRK-SRYSYUMEI       PIC X(40).
            03  WRK-MEISYO          PIC X(40).
       *    数量表示用
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
-           03  WRK-SURYO-J         PIC X(18).
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
+           03  WRK-SURYO-J         PIC X(22).
       *    剤回数等画面編集用
            03  WRK-KAISU-H         PIC X(08).
            03  WRK-KAISU-J         PIC X(16).
@@ -1847,7 +1848,7 @@
            MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDM     FROM    3  BY  -1
+           PERFORM VARYING     IDM     FROM    5  BY  -1
                    UNTIL       IDM     <   1
                IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP
@@ -1866,7 +1867,7 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI
            MOVE    WRK-SURYO-X         TO  KANACHK-MAE-INPUT
-           MOVE    18                  TO  KANACHK-MAX-CNT
+           MOVE    22                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
@@ -2304,7 +2305,7 @@
            MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDM     FROM    3  BY  -1
+           PERFORM VARYING     IDM     FROM    5   BY  -1
                    UNTIL       IDM     <   1
                IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP
@@ -2619,7 +2620,7 @@
                    IF     (SNUM-RC        NOT =   ZERO  )   OR
                           (SNUM-MINKBN        =   "1"   )   OR
                           (SNUM-SEISUU        >   5     )   OR
-                          (SNUM-SYOSUU        >   3     )
+                          (SNUM-SYOSUU        >   5     )
                        MOVE    "0005"         TO  SPA-ERRCD
                        COMPUTE SPA-GMN-CUR    =   IDY   +   10
                    ELSE

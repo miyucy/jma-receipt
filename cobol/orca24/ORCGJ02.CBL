@@ -62,6 +62,7 @@
       *  04.02.00    NACL-多々納  08/03/XX  Ｈ２０年４月改正
       *  04.03.00    NACL-多々納  08/08/01  保険組合せ期間チェック処理追加
       *  04.04.00    NACL-多々納  08/12/24  入院料包括対応
+      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -350,19 +351,19 @@
       *
            03  WRK-MEISYO          PIC X(80).
       *    数量表示用
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z19   REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
                05  WRK-SURYO-Z3-X  REDEFINES   WRK-SURYO-Z3
-                                   PIC X(03).
-           03  WRK-SURYO-J         PIC X(18).
+                                   PIC X(05).
+           03  WRK-SURYO-J         PIC X(20).
       *    分画数画面編集用
            03  WRK-BUNGSU-X.
                05  WRK-BUNGSU-Z1   PIC ZZZ.
@@ -3207,7 +3208,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    ZERO                TO  FLG-SP
            MOVE    ZERO                TO  WRK-SURYO-Z3
-           PERFORM VARYING     IDM     FROM    3  BY  -1
+           PERFORM VARYING     IDM     FROM    5  BY  -1
                    UNTIL       IDM     <   1
                IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP
@@ -4688,7 +4689,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM VARYING     IDX-D   FROM    1   BY  1
                    UNTIL       IDX-D   >   31
                IF      SPA-GMN-DAY (IDX-D) >   ZERO
-                   IF      SPA-JIHOKBN         =   1
+                   IF      SPA-JIHOKBN         =   "1"
                        IF      SPA-NAI-HKTCHKFLG (IDX-D)   =   ZERO
       *                    包括診療剤で包括でない日
                            ADD     1               TO  IDD
@@ -4705,7 +4706,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       *
            IF      IDD                 >   ZERO
-               IF      SPA-JIHOKBN         =   1
+               IF      SPA-JIHOKBN         =   "1"
                    MOVE    "出来高算定日："    TO  WRK-HKTCHKMSG
                ELSE
                    MOVE    "包括算定日："      TO  WRK-HKTCHKMSG

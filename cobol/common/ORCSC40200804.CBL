@@ -138,13 +138,6 @@
            03  WRK-TENSUKEI-G      PIC 9(08).
            03  WRK-TENSUKEI-K      PIC 9(08).
       *
-           03  WRK-SANSO           PIC 9(08).
-           03  WRK-SANSOKIN        PIC 9(08)V99.
-           03  WRK-SANKEI          PIC 9(08).
-           03  WRK-SANTEN          PIC 9(08).
-      *
-           03  WRK-SANSOKIN-SUM    PIC 9(08)V99.
-      *
       *    手技料合計
            03  WRK-GOK-TENSUKEI    PIC 9(09).
            03  WRK-GOK-TENGAKEI    PIC 9(09).
@@ -152,17 +145,6 @@
                05  WRK-SUM-TENSUKEI    PIC 9(09).
                05  WRK-RSI-TENSUKEI    PIC 9(09).
                05  WRK-SUM-TENGAKEI    PIC 9(09).
-      *
-           03  WRK-SYOKEIS         PIC 9(08)V9999.
-           03  WRK-SYOKEIS2        PIC 9(08)V99.
-           03  WRK-SYOKEI          PIC 9(08).
-      *    フィルム点数計
-           03  WRK-FIRTEN          PIC 9(08).
-           03  WRK-FIRTEN-KEI      PIC 9(08).
-           03  WRK-FIRTEN-ADD      PIC 9(08).
-           03  WRK-KIZKEI          PIC 9(08).
-           03  WRK-KIZKEI-ADD      PIC 9(08).
-           03  WRK-TENSUKEIS       PIC 9(08)V99.
       *
            03  WRK-ERRCD           PIC X(04).
            03  WRK-ERRCD2          PIC X(04).

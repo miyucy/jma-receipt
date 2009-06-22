@@ -67,17 +67,17 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
       *
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
            03  WRK-TENSU-X.
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-TENSUS-X.
@@ -96,7 +96,7 @@
                05  WRK-KEI-Z       PIC ZZZZZZZ.
       *
       *!!  03  WRK-SURYO-H         PIC X(09).
-           03  WRK-SURYO-H         PIC X(10).
+           03  WRK-SURYO-H         PIC X(11).
            03  WRK-KAISU-H         PIC X(04).
            03  WRK-BUNGSU-H        PIC X(09).
            03  WRK-KAKERU          PIC X(01).
@@ -334,7 +334,7 @@
            END-PERFORM
            MOVE    ZERO                TO  IDK2
            PERFORM VARYING     IDK1    FROM    1   BY  1
-                   UNTIL       IDK1    >   9
+                   UNTIL       IDK1    >   11
                IF      WRK-SURYO-X (IDK1:1)    NOT =   SPACE
                    ADD     1           TO  IDK2
                    MOVE    WRK-SURYO-X (IDK1:1)
@@ -488,7 +488,7 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDM     FROM    3  BY  -1
+           PERFORM VARYING     IDM     FROM    5  BY  -1
                    UNTIL       IDM     <   1
                IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP

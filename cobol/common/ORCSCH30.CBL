@@ -101,8 +101,8 @@
            03  WRK-TBL-AREA.
                05  WRK-TBL-OCC             OCCURS   99.
                    07  TBL-SRYCD           PIC X(09).
-                   07  TBL-SURYO           PIC 9(05)V9(03).
-                   07  TBL-YOURYOU         PIC 9(05)V9(03)
+                   07  TBL-SURYO           PIC 9(05)V9(05).
+                   07  TBL-YOURYOU         PIC 9(05)V9(05)
                                            OCCURS   5.
                    07  TBL-SRYKAISU        PIC 9(03).
                05  WRK-YSRYCD              PIC X(09).

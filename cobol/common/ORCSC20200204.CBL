@@ -130,12 +130,12 @@
       *
            03  WRK-ERRCD           PIC X(04). 
       *
-           03  WRK-SYOKEIS         PIC 9(08)V99.
-           03  WRK-SYOKEIS2        PIC 9(08)V99.
+           03  WRK-SYOKEIS         PIC 9(08)V9(8).
+           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
            03  WRK-SYOKEI          PIC 9(08).
       *
-           03  WRK-ZAIKEI          PIC 9(08)V99.
-           03  WRK-GAIKEI          PIC 9(08)V99.
+           03  WRK-ZAIKEI          PIC 9(08)V9(8).
+           03  WRK-GAIKEI          PIC 9(08)V9(8).
            03  WRK-GAITEN          PIC 9(08).
            03  WRK-KIZKEI          PIC 9(08).
            03  WRK-KIZTEN          PIC 9(08).
@@ -147,8 +147,6 @@
       *
            03  WRK-IDX             PIC 9(04).
       *
-           03  WRK-TENSU-X.
-               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-KAISU-X.
                05  WRK-KAISU-Z     PIC ZZZZ.
            03  WRK-KAISU-H         PIC X(04).

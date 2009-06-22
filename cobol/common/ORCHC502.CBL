@@ -31,6 +31,7 @@
       * 03.05.00     NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       * 03.05.00     NACL-Â¿¡¹Ç¼  07/05/22  ºÆ°õºþ½èÍýÄÉ²Ã
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/11/22  ´ïºà¾¦ÉÊÌ¾¥³¡¼¥ÉÂÐ±þ
+      * 04.05.00     NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       *****************************************************************
       *
       *
@@ -74,6 +75,7 @@
            03  FLG-DAY             PIC 9(01).
            03  FLG-FUKU            PIC 9(01).
            03  FLG-KIZAI           PIC 9(01).
+           03  FLG-KETA5           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -135,16 +137,18 @@
                05  WRK-AGE-N2              PIC X(06).
                05  WRK-AGE-MEIN2           PIC X(02).
       *
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
       *
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
-           03  WRK-SURYO-N         PIC X(18).
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
+           03  WRK-SURYO-N.
+               05  WRK-SURYO-N-22      PIC X(04).
+               05  WRK-SURYO-N-18      PIC X(18).
       *
            03  WRK-DAY                 PIC 9(02).
            03  WRK-KAISU               PIC 9(03).
@@ -202,9 +206,9 @@
                05  WRK-NAIYOU-Z            PIC X(106).
                05  WRK-NAIYOU-R1           REDEFINES   WRK-NAIYOU-Z.
                    07  WRK-MEISYOU1        PIC X(70).
-                   07  WRK-SURYOU          PIC X(18).
+                   07  WRK-SURYOU          PIC X(22).
                    07  WRK-TANI            PIC X(12).
-                   07  WRK-FIL11           PIC X(06).
+                   07  WRK-FIL11           PIC X(02).
                05  WRK-NAIYOU-R3           REDEFINES   WRK-NAIYOU-Z.
                    07  WRK-MEISYOU3        PIC X(100).
                    07  WRK-FIL12           PIC X(06).
@@ -839,10 +843,14 @@
            MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDXM   FROM    3  BY  -1
+           MOVE    ZERO                TO  FLG-KETA5
+           PERFORM VARYING     IDXM   FROM    5  BY  -1
                    UNTIL       IDXM    <   1
                IF      WRK-SURYO-S2(IDXM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP
+                   IF      IDXM            >   3
+                       MOVE    1               TO  FLG-KETA5
+                   END-IF
                END-IF
                IF      FLG-SP          =   1
                    MOVE    WRK-SURYO-S2(IDXM:1) TO  WRK-SURYO-Z3(IDXM:1)
@@ -853,9 +861,18 @@
                MOVE    "."                 TO  WRK-SURYO-Z2
            END-IF
       *
-           MOVE    WRK-SURYO-X         TO  WRK-MOJI
-           PERFORM 500-HENKAN-SEC
-           MOVE    WRK-ZENKAKU-G(1:18) TO  WRK-SURYO-N
+           MOVE    SPACE               TO  WRK-SURYO-N
+           IF      FLG-KETA5           =   ZERO
+      *        ¾®¿ô£³·å°Ê²¼
+               MOVE    WRK-SURYO-X(1:9)    TO  WRK-MOJI
+               PERFORM 500-HENKAN-SEC
+               MOVE    WRK-ZENKAKU-G(1:18) TO  WRK-SURYO-N-18
+           ELSE
+      *        ¾®¿ô£´·å°Ê¾å
+               MOVE    WRK-SURYO-X         TO  WRK-MOJI
+               PERFORM 500-HENKAN-SEC
+               MOVE    WRK-ZENKAKU-G(1:22) TO  WRK-SURYO-N
+           END-IF
       *
            .
        20012-SURYO-HEN-EXT.

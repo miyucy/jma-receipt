@@ -50,7 +50,8 @@
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/11/16  ¸øÌ³ºÒ³²¡¦¸ø³²ÂÐ±þ
       * 04.01.00     NACL-Â¿¡¹Ç¼  07/12/XX  ´µ¼Ô¶Ø´÷ÌôºÞÂÐ±þ
       * 04.01.00     NACL-Â¿¡¹Ç¼  08/01/XX  ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿ÊÑ¹¹ÂÐ±þ
-      * 04.02.00    NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµ
+      * 04.02.00     NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµ
+      * 04.05.00     NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       ***************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -262,19 +263,15 @@
                05  WRK-SURYO-Z19   REDEFINES  WRK-SURYO-Z1
                                    PIC ZZZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
            03  WRK-TENSU-X.
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
-           03  WRK-TENSUS-X.
-               05  WRK-TENSUS-Z    PIC ZZZZ9.99.
            03  WRK-KAISU-X.
                05  WRK-KAISU-Z     PIC ZZZZ.
            03  WRK-BUNGSU-X.
                05  WRK-BUNGSU-Z    PIC ZZZZZZZZ.
            03  WRK-KEICOM-X.
                05  WRK-KEICOM-Z    PIC ZZZZZZZ9.
-           03  WRK-KEICOMS-X.
-               05  WRK-KEICOMS-Z   PIC ZZZZ9V99.
            03  WRK-GOKEI-X.
                05  WRK-GOKEI-Z     PIC ZZZZZZZZ.
            03  WRK-NOZ             PIC ZZ9.
@@ -284,19 +281,7 @@
            03  WRK-BUNGSU-H        PIC X(09).
            03  WRK-KAKERU          PIC X(01).
       *
-           03  WRK-SYOKEIS         PIC 9(08)V99.
-           03  WRK-SYOKEIS2        PIC 9(08)V99.
-           03  WRK-SYOKEI          PIC 9(08).
-      *
-           03  WRK-ZAIKEI          PIC 9(08)V99.
-           03  WRK-GAIKEI          PIC 9(08)V99.
            03  WRK-ZAITEN          PIC 9(08).
-           03  WRK-GAITEN          PIC 9(08).
-           03  WRK-KIZKEI          PIC 9(08).
-           03  WRK-KIZTEN          PIC 9(08).
-           03  WRK-FIRTEN          PIC 9(08).
-           03  WRK-MAISU           PIC 9(08).
-           03  WRK-KEIMAI          PIC 9(08).
            03  WRK-TENSUKEI        PIC 9(08).
            03  WRK-TENSU           PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
@@ -306,10 +291,10 @@
            03  WRK-KINGAK          PIC 9(08).
            03  WRK-KAISUKEI        PIC 9(08).
            03  WRK-INPUTCD         PIC X(10).
-           03  WRK-SURYO           PIC 9(07)V9(03).
+           03  WRK-SURYO           PIC 9(07)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(07).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
            03  WRK-BUNGSU          PIC 9(08).
            03  WRK-GOKEI           PIC 9(08).
            03  WRK-SRYSYUKBN       PIC X(03).
@@ -317,7 +302,7 @@
            03  WRK-SRYKBN          PIC X(02).
            03  WRK-SRYKBN-1        PIC X(02).
       *
-           03  WRK-SURYOKEI        PIC 9(07)V9(03).
+           03  WRK-SURYOKEI        PIC 9(07)V9(05).
            03  WRK-SRYCDKEI        PIC 9(14).
            03  WRK-MEISAISU        PIC 9(07).
            03  WRK-ZAIKAISU        PIC 9(03).
@@ -360,10 +345,6 @@
            03  WRK-CHUSYA          PIC 9(09).
            03  IDX-S               PIC 9(04).
            03  IDX-SW              PIC 9(04).
-      *   ¤­¤¶¤ßÃÍ¹Ô°ÙºÆ·×»»ÍÑ
-           03  WRK-KEI-TEN         PIC 9(08)V9(03).
-           03  WRK-KEI-TEN1        PIC 9(08)V9(03).
-           03  WRK-KEI-TEN2        PIC 9(08).
       *    ·Ù¹ðºÑ¥Õ¥é¥°ÊÝÂ¸
            03  WRK-KNKFLG          PIC X(01).
            03  WRK-KNKUMU          PIC X(01).
@@ -379,9 +360,6 @@
            03  WRK-PTKINKI-ARI         PIC 9(01).
       *    ÆþÎÏ¥»¥Ã¥È½èÍý
            03  WRK-SETCD           PIC X(06).
-      *    ÌôºÞËãÆÇ²Ã»»ÍÑ¥ï¡¼¥¯
-           03  WRK-MADOKU-SRYCD    PIC X(09).
-           03  WRK-MADOKU-TENSU    PIC 9(05)V9(03).
       *£Ë£¹£¸¡¢£Ë£¹£¹Ìá¤ê£É£Ä£ØÊÝÂ¸
            03  WRK-HZN-IDX         PIC 9(04).
       *
@@ -459,7 +437,7 @@
       *    ²èÌÌ¿ôÎÌÊÔ½¸ÍÑ
        01  WRK-GMN-SURYO-AREA.
            03  WRK-SURYO-HENSYU.
-               05  WRK-H-SURYO        PIC X(09).
+               05  WRK-H-SURYO        PIC X(11).
                05  WRK-H-TANINAME     PIC X(04).
                05  WRK-H-F1           PIC X(02).
                05  WRK-H-ZAIKEI       PIC X(08).
@@ -2023,7 +2001,7 @@
            MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDM     FROM    3  BY  -1
+           PERFORM VARYING     IDM     FROM    5  BY  -1
                    UNTIL       IDM     <   1
                IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP
@@ -5325,7 +5303,7 @@
            IF      SPA-GMN-HKTKBN          =   "1"
                MOVE   "1"                  TO  SPA-J04-JIHOKBN
            ELSE
-               MOVE   ZERO                 TO  SPA-J04-JIHOKBN
+               MOVE   SPACE                TO  SPA-J04-JIHOKBN
            END-IF
       *
       *    ¿ÇÎÅ²ñ·×ºÞ¥Á¥§¥Ã¥¯¥µ¥Ö
@@ -5338,9 +5316,9 @@
            MOVE    SPA-COM-SRYSYUKBN(01)   TO  ORCSCZAICHK-SRYSYUKBN
            MOVE    SPA-HKNCOMBINUM         TO  ORCSCZAICHK-HKNCOMBI
            MOVE    WRK-SRYCDKEI            TO  ORCSCZAICHK-SRYCDTOTAL
+           MOVE    WRK-SURYOKEI            TO  ORCSCZAICHK-SURYOUTOTAL
            MOVE    WRK-ZAITEN              TO  ORCSCZAICHK-ZAITEN
            MOVE    WRK-MEISAISU            TO  ORCSCZAICHK-MEISAISU
-           MOVE    WRK-SURYOKEI            TO  ORCSCZAICHK-SURYOUTOTAL
            MOVE    1                       TO  ORCSCZAICHK-ZAIKAISU
            MOVE    SPA-J04-JIHOKBN         TO  ORCSCZAICHK-JIHOKBN
            MOVE    ZERO                TO  IDX-ATO

@@ -131,17 +131,6 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-SRYYMD          PIC X(08).
       *
-           03  WRK-SURYO           PIC 9(05)V9(03).
-           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
-               05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
-      *
-           03  WRK-SURYO-X.
-               05  WRK-SURYO-Z1    PIC ZZZZ9.
-               05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
-           03  WRK-SURYO-N         PIC X(18).
-      *
            03  WRK-TANINAME        PIC X(04).
            03  WRK-ZZ              PIC ZZ.
            03  WRK-ZZZ             PIC ZZZ.

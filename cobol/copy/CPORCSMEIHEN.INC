@@ -35,7 +35,7 @@
       *Ì¾¾Î
                05  ORCSMEIHEN-TNS-NAME            PIC  X(100).
       *¿ôÎÌ¡ÊÊñ³ç·ï¿ô¡Ë
-               05  ORCSMEIHEN-SURYO               PIC 9(05)V9(03).
+               05  ORCSMEIHEN-SURYO               PIC 9(05)V9(05).
       *½ÐÎÏ
            03  ORCSMEIHEN-OUT-AREA.
                05  ORCSMEIHEN-MEISYO           PIC X(80).

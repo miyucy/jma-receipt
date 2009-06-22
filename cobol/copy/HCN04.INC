@@ -14,7 +14,7 @@
               03  HCN04-SRYKBN    PIC X(10).
               03  HCN04-SRYMEI    PIC X(80).
               03  HCN04-TANI  PIC X(10).
-              03  HCN04-SURYO PIC X(8).
+              03  HCN04-SURYO PIC X(11).
               03  HCN04-KAISU PIC X(3).
               03  HCN04-KINGAKU   PIC X(11).
             02  HCN04-IRYOADRS  PIC X(100).

@@ -2521,38 +2521,6 @@
     </widget>
 
     <widget>
-      <class>GtkLabel</class>
-      <name>label156</name>
-      <x>640</x>
-      <y>88</y>
-      <width>65</width>
-      <height>20</height>
-      <label>点数</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>label157</name>
-      <x>696</x>
-      <y>88</y>
-      <width>48</width>
-      <height>20</height>
-      <label>回数</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
       <class>GtkButton</class>
       <name>B09</name>
       <x>696</x>
@@ -3517,6 +3485,38 @@
       <width>38</width>
       <height>24</height>
       <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label157</name>
+      <x>704</x>
+      <y>88</y>
+      <width>48</width>
+      <height>20</height>
+      <label>回数</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>label156</name>
+      <x>650</x>
+      <y>88</y>
+      <width>65</width>
+      <height>20</height>
+      <label>点数</label>
       <justify>GTK_JUSTIFY_CENTER</justify>
       <wrap>False</wrap>
       <xalign>0.5</xalign>

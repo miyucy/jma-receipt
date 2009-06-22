@@ -75,6 +75,6 @@
                 04  KA01-INNAI-STYLE  PIC X(20).
                 04  KA01-INNAI-VALUE  PIC X(16).
               03  KA01-SUURYO-G  OCCURS  6.
-                04  KA01-SUURYO  PIC X(10).
+                04  KA01-SUURYO  PIC X(12).
               03  KA01-KOUFUYMD.
                 04  KA01-VALUE  PIC X(9).

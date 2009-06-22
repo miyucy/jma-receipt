@@ -123,7 +123,7 @@
                05  TBL-SHO-SRYSYUKBN       PIC X(03).
                05  TBL-SHO-DATA            OCCURS   50.
                    07  TBL-SHO-SRYCD           PIC X(09).
-                   07  TBL-SHO-SRYSURYO        PIC 9(05)V9(03).
+                   07  TBL-SHO-SRYSURYO        PIC 9(05)V9(05).
                    07  TBL-SHO-SRYKAISU        PIC 9(03).
                    07  TBL-SHO-INPUTNUM        PIC 9(03).
                    07  TBL-SHO-INPUTCOMENT     PIC X(80).

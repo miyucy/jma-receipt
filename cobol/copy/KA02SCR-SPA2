@@ -40,7 +40,7 @@
                     09  SPA-WKSRY-SINRYO-TBL        OCCURS   50.
                         11  SPA-WKSRY-SRYCD         PIC  X(09).
                         11  SPA-WKSRY-NAME          PIC  X(80).
-                        11  SPA-WKSRY-SRYSURYO      PIC  9(05)V9(03).
+                        11  SPA-WKSRY-SRYSURYO      PIC  9(05)V9(05).
                         11  SPA-WKSRY-SRYKAISU      PIC  9(03).
                         11  SPA-WKSRY-ZAIKAISU      PIC  9(08).
                         11  SPA-WKSRY-INPUTNUM      PIC  9(03).
@@ -59,7 +59,7 @@
                    09  SPA-PARA-ZAIKAIKEI           PIC  9(07).
                    09  SPA-PARA-SINRYO-TBL        OCCURS   50.
                            11  SPA-PARA-SRYCD         PIC  X(09).
-                           11  SPA-PARA-SRYSURYO      PIC  9(05)V9(03).
+                           11  SPA-PARA-SRYSURYO      PIC  9(05)V9(05).
                            11  SPA-PARA-SRYKAISU      PIC  9(03).
                            11  SPA-PARA-ZAIKAISU      PIC  9(08).
                            11  SPA-PARA-INPUTNUM      PIC  9(03).

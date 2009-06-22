@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者        日付      内容
+      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -94,17 +95,17 @@
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
       *
-           03  WRK-HENSURYO        PIC X(09).
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-HENSURYO        PIC X(11).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
       *
            03  WRK-ZZ9             PIC ZZ9.
            03  WRK-Z9              PIC Z9.
@@ -113,10 +114,10 @@
       *
            03  WRK-HEN-AREA.
                05  WRK-HENLINE     PIC X(54).
-               05  WRK-HENNAIYO    PIC X(24).
+               05  WRK-HENNAIYO    PIC X(26).
                05  WRK-YKZNAME     PIC X(100).
                05  WRK-YOUHOU      PIC X(100).
-               05  WRK-SURYOU      PIC X(09).
+               05  WRK-SURYOU      PIC X(11).
                05  WRK-TANI        PIC X(12).
                05  WRK-KAISUU      PIC X(03).
       *
@@ -128,7 +129,7 @@
            03  WRK-SRYKBN          PIC X(02).
            03  WRK-SRYSYUKBN       PIC X(03).
            03  WRK-SRY-TBL         OCCURS  50.
-               05  WRK-SRYSURYO    PIC 9(05)V9(03).
+               05  WRK-SRYSURYO    PIC 9(05)V9(05).
                05  WRK-SRYKAISU    PIC 9(03).
                05  WRK-INPUTCOMENT PIC X(80).
       *
@@ -605,7 +606,7 @@
       *
       *    数量小数点以下編集
            MOVE    ZERO            TO  FLG-SP
-           PERFORM VARYING IDX-STR     FROM    3   BY  -1
+           PERFORM VARYING IDX-STR     FROM    5   BY  -1
                    UNTIL   IDX-STR     <   1
                IF      WRK-SURYO-S2(IDX-STR:1) NOT =   ZERO
                    MOVE    1           TO  FLG-SP
@@ -626,7 +627,7 @@
            MOVE    SPACE           TO  WRK-HENSURYO
            MOVE    ZERO            TO  IDX-STR1
            PERFORM VARYING IDX-STR     FROM    1   BY  1
-                   UNTIL   IDX-STR     >   9
+                   UNTIL   IDX-STR     >   11
                IF      WRK-SURYO-X(IDX-STR:1)  NOT =   SPACE
                    COMPUTE IDX-STR1    =   IDX-STR1    +   1
                    MOVE  WRK-SURYO-X(IDX-STR:1)

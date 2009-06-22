@@ -55,7 +55,7 @@
       *        編集値
                05  LNK-SC97-INPUT-G.
       *        数量
-                   07  LNK-SC97-SURYO          PIC 9(07)V9(03).
+                   07  LNK-SC97-SURYO          PIC 9(07)V9(05).
       *        回数
                    07  LNK-SC97-KAISU          PIC 9(04).
       *        分画数

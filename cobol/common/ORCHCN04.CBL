@@ -37,6 +37,7 @@
       *  04.02.00    NACL-ÂÀÅÄ    08/06/02  Ï«ºÒ¡¦¼«ÇåÀÕÆþ±¡ÂÐ±þ
       *  04.03.00    NACL-ÂÀÅÄ    08/09/17  ²þÀµÂÐ±þ
       *  04.03.00    NACL-ÂÀÅÄ    08/12/25  Æþ±¡ÎÁÊñ³çÂÐ±þ¡ÊÂÐ¾Ý³°È½ÄêÄÉ²Ã¡Ë
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -156,17 +157,17 @@
            03  WRK-DENPNUM             PIC 9(07).
            03  WRK-GRP-DENPNUM         PIC 9(07).
       *
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
       *
            03  WRK-SURYO-X.
-               05  WRK-SURYO-Z1    PIC ZZZ9.
+               05  WRK-SURYO-Z1    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
            03  WRK-SURYO-X-R       REDEFINES   WRK-SURYO-X.
-               05  WRK-SURYO-ZF    PIC X(03).
+               05  WRK-SURYO-ZF    PIC X(06).
                05  WRK-SURYO-Z4    PIC ZZZZ9.
       *
       *----(03.04.01)--ADD-START---
@@ -192,7 +193,7 @@
                05  TBL-SRYCD           PIC X(09).
                05  TBL-NAME            PIC X(80).
                05  TBL-TANINAME        PIC X(10).
-               05  TBL-SURYO           PIC 9(05)V9(3).
+               05  TBL-SURYO           PIC 9(05)V9(5).
                05  TBL-JIHIMONEY       PIC S9(07).
       *    ¼«ÈñÊ¬
        01  TBL-JIHI-AREA.
@@ -211,7 +212,7 @@
                07  TBL-H-SRYKBN          PIC X(10).
                07  TBL-H-SRYMEI          PIC X(80).
                07  TBL-H-TANINAME        PIC X(10).
-               07  TBL-H-SURYO           PIC X(08).
+               07  TBL-H-SURYO           PIC X(11).
                07  TBL-H-KAISU           PIC X(03).
                07  TBL-H-KINGAKU         PIC X(11).
       *
@@ -1141,7 +1142,7 @@
            MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDXM   FROM    3  BY  -1
+           PERFORM VARYING     IDXM   FROM    5  BY  -1
                    UNTIL       IDXM    <   1
                IF      WRK-SURYO-S2(IDXM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP

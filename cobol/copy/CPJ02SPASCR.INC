@@ -32,7 +32,7 @@
                    07  SPA-GMN-TBANGO      PIC 9(03).
                    07  SPA-GMN-TMEISYO     PIC X(100).
                    07  SPA-GMN-TSURYO.
-                       09  SPA-GMN-TSURYOU      PIC X(09).
+                       09  SPA-GMN-TSURYOU      PIC X(11).
                        09  SPA-GMN-TTANI1       PIC X(01).
                        09  SPA-GMN-TTANMEI      PIC X(03).
                    07  SPA-GMN-TTENSU      PIC X(07).
@@ -60,10 +60,10 @@
                        09  SPA-NAI-JIHOKBN         PIC  X(01).
                        09  SPA-NAI-ZAITEN          PIC  9(08).
                        09  SPA-NAI-SYRCDTOTAL      PIC  9(14).
-                       09  SPA-NAI-SURYOTOTAL      PIC  9(07)V9(03).
+                       09  SPA-NAI-SURYOTOTAL      PIC  9(07)V9(05).
                        09  SPA-NAI-MEISAISU        PIC  9(07).
                        09  SPA-NAI-ZAIKAISU        PIC  9(07).
-                       09  SPA-NAI-SURYOU          PIC  9(05)V9(03).
+                       09  SPA-NAI-SURYOU          PIC  9(05)V9(05).
                        09  SPA-NAI-SYUTEN1         PIC  9(07).
                        09  SPA-NAI-SYUTEN2         PIC  9(07).
                        09  SPA-NAI-INPUTCHI-G.

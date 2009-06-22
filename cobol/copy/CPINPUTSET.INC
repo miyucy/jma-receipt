@@ -37,9 +37,9 @@
       *入力（診療）コード
            03 ISET-INPUTCD             PIC  X(09).
       *数量１
-           03 ISET-SURYO1              PIC  9(07)V9(3).
+           03 ISET-SURYO1              PIC  9(07)V9(5).
       *数量２
-           03 ISET-SURYO2              PIC  9(07)V9(3).
+           03 ISET-SURYO2              PIC  9(07)V9(5).
       *回数
            03 ISET-KAISU               PIC  9(03).
       *入力コメント

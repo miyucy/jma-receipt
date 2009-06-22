@@ -140,10 +140,10 @@
            03  WRK-HENKAN-ATO      PIC X(22).
            03  IDX-D               PIC 9(04).
            03  WRK-BUNGSU          PIC 9(08).
-           03  WRK-SURYO           PIC 9(07)V9(03).
+           03  WRK-SURYO           PIC 9(07)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(07).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
       *    ЦўБЁДќДж
        01  TBL-NYUIN-KAISU-AREA.
            03  TBL-NYUIN-OCC           OCCURS   10.
@@ -1297,7 +1297,8 @@
            IF     (SNUM-RC         NOT =   ZERO  )   OR
                   (SNUM-MINKBN         =   "1"   )   OR
                   (SNUM-SEISUU         >   7     )   OR
-                  (SNUM-SYOSUU         >   3     )
+      *****       (SNUM-SYOSUU         >   3     )
+                  (SNUM-SYOSUU         >   5     )
                MOVE    "0012"              TO  SPA-ERRCD
            ELSE
                MOVE    SNUM-SEISUU         TO  LNK-SC97-SURYOFLG

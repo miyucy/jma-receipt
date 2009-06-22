@@ -199,15 +199,6 @@
                05  WRK-TENSUKEI-TNEN   PIC 9(08).
                05  WRK-TENSUKEI-NNEN   PIC 9(08).
       *
-           03  WRK-TENSU-X.
-               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
-           03  WRK-KAISU-X.
-               05  WRK-KAISU-Z     PIC ZZZZ.
-      *    フィルム点数計
-           03  WRK-FIRTEN-KEI      PIC 9(08).
-           03  WRK-FIRTEN-ADD      PIC 9(08).
-           03  WRK-KIZKEI-ADD      PIC 9(08).
-           03  WRK-TENSUKEIS       PIC 9(08)V99.
       *    年齢判定用
            03  WRK-KGNAGE          PIC 9(03).
            03  WRK-JGNAGE          PIC 9(03).
@@ -242,12 +233,6 @@
                    07  WRK-YY              PIC 9(04).
                    07  WRK-MM              PIC 9(02).
                05  WRK-DD              PIC 9(02).
-      *    酸素
-           03  WRK-SANSO           PIC 9(08).
-           03  WRK-SANSOKIN        PIC 9(08)V99.
-           03  WRK-SANKEI          PIC 9(08).
-           03  WRK-SANTEN          PIC 9(08).
-           03  WRK-SANSOKIN-SUM    PIC 9(08)V99.
       *
            03  WRK-TNS-JGNAGE      PIC 9(02).
       *

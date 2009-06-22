@@ -159,7 +159,7 @@
            03  WRK-TENSU           PIC 9(08).
            03  WRK-ZAITEN          PIC 9(08).
            03  WRK-SRYKAISUKEI     PIC 9(03).
-           03  WRK-SRYSURYOKEI     PIC 9(07)V9(03).
+           03  WRK-SRYSURYOKEI     PIC 9(07)V9(05).
            03  WRK-MEISAISU        PIC 9(07).
            03  WRK-SRYCD           PIC X(09).
            03  WRK-SRYCD9          PIC 9(09).
@@ -190,7 +190,7 @@
                05  WRK-JIHIMONEY           PIC  9(08).
       *    ²ó¿ô
            03  WRK-KAISU           PIC 9(08).
-           03  WRK-SRYSURYO       PIC 9(07)V9(03).
+           03  WRK-SRYSURYO       PIC 9(07)V9(05).
       *
            03  WRK-JYURRK-RENNUM           PIC 9(01).
            03  WRK-JYURRK-EDANUM           PIC 9(01).
@@ -230,7 +230,7 @@
            03  TBL-MAE-AREA.
                05  TBL-MAE-REC     OCCURS   50.
                    07  TBL-MAE-SRYCD       PIC  X(09).
-                   07  TBL-MAE-SRYSURYO    PIC  9(05)V9(03).
+                   07  TBL-MAE-SRYSURYO    PIC  9(05)V9(05).
                    07  TBL-MAE-SRYKAISU    PIC  9(03).
                    07  TBL-MAE-INPUTCOMENT PIC  X(40).
                    07  TBL-MAE-ATAI-G.
@@ -238,7 +238,7 @@
            03  TBL-ATO-AREA.
                05  TBL-ATO-REC     OCCURS   50.
                    07  TBL-ATO-SRYCD       PIC  X(09).
-                   07  TBL-ATO-SRYSURYO    PIC  9(05)V9(03).
+                   07  TBL-ATO-SRYSURYO    PIC  9(05)V9(05).
                    07  TBL-ATO-SRYKAISU    PIC  9(03).
                    07  TBL-ATO-INPUTCOMENT PIC  X(40).
                    07  TBL-ATO-ATAI-G.

@@ -68,9 +68,9 @@
       *  診療コード
                05  ORDERPRT-SRYCD             PIC X(09).
       *  数量
-               05  ORDERPRT-SRYSURYO          PIC 9(05)V999.
+               05  ORDERPRT-SRYSURYO          PIC 9(05)V9(5).
       *  数量（外用の個別数量）
-               05  ORDERPRT-SRYSURYO2         PIC 9(05)V999.
+               05  ORDERPRT-SRYSURYO2         PIC 9(05)V9(5).
       *  撮影回数・外用の個別回数
                05  ORDERPRT-SRYKAISU          PIC 9(03).
       *  入力コメント（フリーコメント等）

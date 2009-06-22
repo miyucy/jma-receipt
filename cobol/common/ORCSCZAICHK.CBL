@@ -80,7 +80,7 @@
            03  TBL-MAE-AREA.
                05  TBL-MAE-REC     OCCURS   50.
                    07  TBL-MAE-SRYCD       PIC  X(09).
-                   07  TBL-MAE-SRYSURYO    PIC  9(05)V9(03).
+                   07  TBL-MAE-SRYSURYO    PIC  9(05)V9(05).
                    07  TBL-MAE-SRYKAISU    PIC  9(03).
                    07  TBL-MAE-INPUTCOMENT PIC  X(80).
                    07  TBL-MAE-ATAI-G.
@@ -88,7 +88,7 @@
            03  TBL-ATO-AREA.
                05  TBL-ATO-REC     OCCURS   50.
                    07  TBL-ATO-SRYCD       PIC  X(09).
-                   07  TBL-ATO-SRYSURYO    PIC  9(05)V9(03).
+                   07  TBL-ATO-SRYSURYO    PIC  9(05)V9(05).
                    07  TBL-ATO-SRYKAISU    PIC  9(03).
                    07  TBL-ATO-INPUTCOMENT PIC  X(80).
                    07  TBL-ATO-ATAI-G.
@@ -215,6 +215,10 @@
       *        ゼロを１で判定する
                IF      ACCT-SURYOUTOTAL    =   ZERO
                    MOVE    1                   TO  ACCT-SURYOUTOTAL
+               END-IF
+      *        自保区分（包括剤）ゼロを空白とする（ゼロがあった）
+               IF      ACCT-JIHOKBN        =   "0"
+                   MOVE    SPACE               TO  ACCT-JIHOKBN
                END-IF
       *
       *        診療コード計を比較する

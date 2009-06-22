@@ -47,8 +47,8 @@ tbl_orderprt {
 	DAY30    			number(3,0);
 	DAY31    			number(3,0);
 	SRYCD    			char(9);
-	SRYSURYO     			number(8,3);
-	SRYSURYO2     			number(8,3);
+	SRYSURYO     			number(10,5);
+	SRYSURYO2     			number(10,5);
 	SRYKAISU     			number(3,0);
         INPUTCOMENT         	        varchar(80);
 	TERMID   			varchar(64);

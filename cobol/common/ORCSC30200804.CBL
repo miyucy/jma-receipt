@@ -42,6 +42,7 @@
       * 01.00.12     NACL-Â¿¡¹Ç¼  05/12/14  MONFUNC ÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.01    NACL-Â¿¡¹Ç¼  07/07/18  Èé²¼¶ÚÆùÃí¼ÍÊÑ´¹¤Ê¤·ÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       *****************************************************************
       *
       *
@@ -118,21 +119,13 @@
            03  WRK-SRYCD-2         PIC X(09).
       *
            03  WRK-MOJI            PIC X(01). 
-           03  WRK-CHUSYA          PIC 9(09).
+           03  WRK-CHUSYA          PIC 9(09)V9(5).
       *
-           03  WRK-SYOKEIS         PIC 9(08)V99.
-           03  WRK-SYOKEIS2        PIC 9(08)V99.
-           03  WRK-SYOKEI          PIC 9(08).
+           03  WRK-SURYO           PIC 9(07)V9(05).
+           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
+               05  WRK-SURYO-S1    PIC 9(07).
+               05  WRK-SURYO-S2    PIC 9(05).
       *
-           03  WRK-ZAIKEI          PIC 9(08)V99.
-           03  WRK-GAIKEI          PIC 9(08)V99.
-           03  WRK-ZAITEN          PIC 9(08).
-           03  WRK-GAITEN          PIC 9(08).
-           03  WRK-KIZKEI          PIC 9(08).
-           03  WRK-KIZTEN          PIC 9(08).
-           03  WRK-FIRTEN          PIC 9(08).
-           03  WRK-MAISU           PIC 9(08).
-           03  WRK-KEIMAI          PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
       *
            03  WRK-SRYSYUKBNMEI    PIC X(40).
@@ -146,10 +139,6 @@
                05  WRK-TENSU-GAI       PIC 9(08)V99.
                05  WRK-TENSU-KEI       PIC 9(08)V99.
       *
-           03  WRK-TENSU-X.
-               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
-           03  WRK-KAISU-X.
-               05  WRK-KAISU-Z     PIC ZZZZ.
       *    Æþ±¡Æü¡Ü£±Ç¯
            03  WRK-NYMD.
                05  WRK-NYY             PIC 9(04).
@@ -188,8 +177,8 @@
       *
       *    ºÇÂç±ÕÎÌ
            03  WRK-MAX-RYOU            PIC 9(04).
-           03  WRK-EKIRYOU             PIC 9(09)V99.
-           03  WRK-GOK-RYOU            PIC 9(09)V99.
+           03  WRK-EKIRYOU             PIC 9(09)V9(5).
+           03  WRK-GOK-RYOU            PIC 9(09)V9(5).
       *    ¿ÇÎÅ¼ïÊÌ
            03  WRK-SRYSYUKBN           PIC X(03).
            03  WRK-SRYKBN              PIC X(02).
@@ -202,7 +191,7 @@
        01  TBL-NISUU-AREA.
            03  TBL-NISUU-OCC           OCCURS   31.
                05  TBL-DAY             PIC 9(01).
-               05  TBL-CHUSYA          PIC 9(09)V99.
+               05  TBL-CHUSYA          PIC 9(09)V9(5).
       *
                05  TBL-TEN-SRYCD       PIC X(09).
                05  TBL-TEN-SRYCD2      PIC X(09).
@@ -223,7 +212,7 @@
                05  TBL-MADOKU-IDX      PIC 9(04).
                05  TBL-MADOKU-ARI      PIC X(09).
       *        ¼ê½Ñ°Ê³°±ÕÎÌ
-               05  TBL-CHUSYA-2        PIC 9(09)V99.
+               05  TBL-CHUSYA-2        PIC 9(09)V9(5).
                05  TBL-SEIBUTU-2       PIC 9(01).
                05  TBL-MADOKU-2        PIC 9(01).
       *
@@ -231,7 +220,7 @@
        01  TBL-IVH-NISUU-AREA.
            03  TBL-IVH-NISUU-OCC           OCCURS   31.
                05  TBL-IVH-DAY             PIC 9(01).
-               05  TBL-IVH-CHUSYA          PIC 9(09)V99.
+               05  TBL-IVH-CHUSYA          PIC 9(09)V9(5).
                05  TBL-IVH-SRYCD           PIC X(09).
                05  TBL-IVH-IDX             PIC 9(04).
                05  TBL-IVH-CHUIDX          PIC 9(04).
@@ -245,13 +234,13 @@
       *        ËãÆÇ²Ã»»
                05  TBL-IVH-MADOKU          PIC 9(01).
       *    Á°²ó»»ÄêÊ¬
-               05  TBL-IVH2-CHUSYA         PIC 9(09)V99.
+               05  TBL-IVH2-CHUSYA         PIC 9(09)V9(5).
       *        À¸Êª³ØÅªÀ½ºÞ
                05  TBL-IVH2-SEIBUTU        PIC 9(01).
       *        ËãÆÇ²Ã»»
                05  TBL-IVH2-MADOKU         PIC 9(01).
       *    ¼ê½Ñ°Ê³°±ÕÎÌ
-               05  TBL-IVH-CHUSYA-2        PIC 9(09)V99.
+               05  TBL-IVH-CHUSYA-2        PIC 9(09)V9(5).
                05  TBL-IVH-SEIBUTU-2       PIC 9(01).
                05  TBL-IVH-MADOKU-2        PIC 9(01).
       *
@@ -611,9 +600,10 @@
       *
       *    ¥¢¥ó¥×¥ë¤Î»þ¡¢¾®¿ô°Ê²¼È½Äê
            IF      WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046"
-               IF     (WRK-COM-SURYO(IDX-Z)(6:3) >   ZERO    )  AND
-                      (WRK-COM-AUTOFLG2 (IDX-Z)  =   SPACE   )
-                   MOVE    IDX-Z                 TO  IDX-HAI
+               MOVE    WRK-COM-SURYO(IDX-Z)    TO  WRK-SURYO
+               IF     (WRK-SURYO-S2                >   ZERO    )  AND
+                      (WRK-COM-AUTOFLG2 (IDX-Z)    =   SPACE   )
+                   MOVE    IDX-Z                   TO  IDX-HAI
                    PERFORM 10011-HAIKI-ADD-SEC
                END-IF
            END-IF

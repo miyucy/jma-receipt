@@ -147,7 +147,7 @@
       *                コード
                        09  TBL-SRYCD           PIC  X(09).
       *                数量
-                       09  TBL-SRYSURYO        PIC  9(05)V9(03).
+                       09  TBL-SRYSURYO        PIC  9(05)V9(05).
       *                回数（外用薬）
                        09  TBL-SRYKAISU        PIC  9(03).
       *                名称入力番号
@@ -170,7 +170,7 @@
       *診療コード
                05  WRK-SRY-SRYCD           PIC  X(09).
       *数量
-               05  WRK-SRY-SRYSURYO        PIC  9(05)V9(03).
+               05  WRK-SRY-SRYSURYO        PIC  9(05)V9(05).
       *回数
                05  WRK-SRY-SRYKAISU        PIC  9(03).
       *明細請求区分

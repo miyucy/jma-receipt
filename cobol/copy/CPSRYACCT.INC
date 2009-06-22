@@ -47,7 +47,7 @@
       *診療コード計
            03  ACCT-SRYCDTOTAL          PIC  9(14).
       *数量計
-           03  ACCT-SURYOUTOTAL         PIC  9(07)V9(03).
+           03  ACCT-SURYOUTOTAL         PIC  9(07)V9(05).
       *明細数
            03  ACCT-MEISAISU            PIC  9(07).
       *剤回数

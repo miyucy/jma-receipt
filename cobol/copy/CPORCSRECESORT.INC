@@ -49,7 +49,7 @@
       *                データ区分
                        09  ORCSRECESORT-IN-DATAKBN  PIC X(01).
       *                数量
-                       09  ORCSRECESORT-IN-SRYSURYO PIC  9(05)V9(03).
+                       09  ORCSRECESORT-IN-SRYSURYO PIC  9(05)V9(05).
       *                回数
                        09  ORCSRECESORT-IN-SRYKAISU PIC  9(03).
       *                単位コード
@@ -84,7 +84,7 @@
       *                データ区分
                        09  ORCSRECESORT-DATAKBN     PIC X(01).
       *                数量
-                       09  ORCSRECESORT-SRYSURYO    PIC  9(05)V9(03).
+                       09  ORCSRECESORT-SRYSURYO    PIC  9(05)V9(05).
       *                回数
                        09  ORCSRECESORT-SRYKAISU    PIC  9(03).
       *                単位コード

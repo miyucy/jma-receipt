@@ -5,8 +5,8 @@ tbl_inputset {
 	YUKOEDYMD	  		char(8);
 	SETSEQ  			number(3);
 	INPUTCD				char(9);
-	SURYO1  			number(10,3);
-	SURYO2				number(10,3);
+	SURYO1  			number(12,5);
+	SURYO2				number(12,5);
 	KAISU				number(3);
 	COMENT				varchar(80);
 	ATAI1				char(8);

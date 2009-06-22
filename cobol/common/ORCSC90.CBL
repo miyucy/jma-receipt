@@ -58,17 +58,17 @@
       *
       *    °ì»þÎÎ°è
        01  WRK-AREA.
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
       *
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
            03  WRK-TENSU-X.
                05  WRK-TENSU-Z     PIC ZZZZZZZZ.
            03  WRK-TENSUS-X.
@@ -85,16 +85,16 @@
                05  WRK-GOKEI-Z     PIC ZZZZZZZZ.
            03  WRK-GMN-INPUTCD     PIC X(22).
       *
-           03  WRK-SYOKEIS         PIC 9(08)V99.
-           03  WRK-SYOKEIS2        PIC 9(08)V9999.
-           03  WRK-SYOKEIS3        PIC 9(08)V9999.
+           03  WRK-SYOKEIS         PIC 9(08)V9(8).
+           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
+           03  WRK-SYOKEIS3        PIC 9(08)V9(8).
            03  WRK-SYOKEI          PIC 9(08).
-           03  WRK-TENSUKEIS       PIC 9(08)V9999.
+           03  WRK-TENSUKEIS       PIC 9(08)V9(6).
            03  WRK-FIRTEN          PIC 9(08).
       *
       *    Ãí¼Í±Õ·×»»ÍÑ
            03  WRK-SURYO-CHU9      PIC 9(05).
-           03  WRK-SURYO-CHU       PIC 9(05)V9(03).
+           03  WRK-SURYO-CHU       PIC 9(05)V9(05).
       *
            03  WRK-MOJI            PIC X(01).
       *
@@ -274,9 +274,9 @@
       *    »ÄÎÌÇÑ´þ¤Î¤¢¤ë¤¹¤Ù¤Æ¤ÎÃí¼ÍÌô¤òÂÐ¾Ý¤È¤¹¤ë
            IF     (IDX                     <   MAX-LINE )  AND
                   (LNK-COM-INPUTCD(IDX + 1)  =   "099309901")
-               IF      LNK-COM-SURYO(IDX)(6:3) >   ZERO
+               IF      LNK-COM-SURYO(IDX)(6:5) >   ZERO
                    COMPUTE WRK-SURYO-CHU9      =   LNK-COM-SURYO (IDX)
-                                               +   0.99
+                                               +   0.99999
                    MOVE    WRK-SURYO-CHU9      TO  WRK-SURYO-CHU
                ELSE
                    MOVE    LNK-COM-SURYO (IDX)     TO  WRK-SURYO-CHU
@@ -505,7 +505,7 @@
                                            +   1
            END-IF
       *
-           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.9999
+           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999999
       *
            .
        2001-KEIZAITENU-EXT.
@@ -546,7 +546,7 @@
            END-IF
       *
       *****COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS2   + 0.99
-           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.9999
+           COMPUTE LNK-SC90-ZAITEN     =   WRK-SYOKEIS3   + 0.999999
       *
            .
        2001-ZAITENU-EXT.
@@ -583,7 +583,7 @@
            END-IF
       *
       *****COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS2   + 0.99
-           COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS3   + 0.9999
+           COMPUTE LNK-SC90-GAITEN     =   WRK-SYOKEIS3   + 0.999999
       *
            .
        2002-GAITENU-SET-EXT.

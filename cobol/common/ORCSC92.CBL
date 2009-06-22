@@ -62,6 +62,7 @@
       *  04.01.00    NACL-多々納  07/11/21  器材商品名表示対応
       *  04.01.00    NACL-多々納  07/12/XX  患者禁忌薬剤対応
       *  04.01.01    NACL-多々納  08/01/XX  チェックマスタ変更対応
+      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
       *
@@ -159,17 +160,17 @@
            03  WRK-KEI-TEN         PIC 9(08)V9(03).
            03  WRK-KEI-TEN1        PIC 9(08)V9(03).
            03  WRK-KEI-TEN2        PIC 9(08).
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
-           03  WRK-SURYO-X.
-               05  WRK-SURYO-Z1    PIC ZZZZZ.
-               05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
-                                   PIC ZZZZ9.
-               05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
-           03  WRK-SURYO-H         PIC X(18).
+               05  WRK-SURYO-S2    PIC 9(05).
+      *    03  WRK-SURYO-X.
+      *        05  WRK-SURYO-Z1    PIC ZZZZZ.
+      *        05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
+      *                            PIC ZZZZ9.
+      *        05  WRK-SURYO-Z2    PIC X(01).
+      *        05  WRK-SURYO-Z3    PIC ZZZZZ.
+      *    03  WRK-SURYO-H         PIC X(20).
       *    年齢判定用
            03  WRK-KGNAGE          PIC 9(03).
            03  WRK-JGNAGE          PIC 9(03).

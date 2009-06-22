@@ -52,7 +52,8 @@
                        09  SPA-GMN-MEISYO-G.
                            11  SPA-GMN-MEIH      PIC X(02).
                            11  SPA-GMN-MEISYO    PIC X(78).
-                       09  SPA-GMN-SURYO         PIC X(09).
+      **               09  SPA-GMN-SURYO         PIC X(09).
+                       09  SPA-GMN-SURYO         PIC X(11).
                        09  SPA-GMN-TANINAME      PIC X(12).
                        09  SPA-GMN-TENSU         PIC X(08).
                        09  SPA-GMN-KAISU         PIC X(04).
@@ -79,7 +80,7 @@
                        09  SPA-COM-SRYSYUKBN     PIC X(03).
                        09  SPA-COM-SRYKBN        PIC X(02).
                        09  SPA-COM-INPUTCD       PIC X(09).
-                       09  SPA-COM-SURYO         PIC 9(05)V9(03).
+                       09  SPA-COM-SURYO         PIC 9(05)V9(05).
       *                剤合計点数
                        09  SPA-COM-TENSU         PIC 9(08).
       *                自費明細金額
@@ -91,7 +92,7 @@
                        09  SPA-COM-KAISU         PIC 9(08).
                        09  SPA-COM-KEI           PIC 9(08).
       *                外用薬用入力用
-                       09  SPA-COM-SURYO2        PIC 9(05)V9(03).
+                       09  SPA-COM-SURYO2        PIC 9(05)V9(05).
                        09  SPA-COM-KAISU2        PIC 9(08).
       *
                        09  SPA-COM-BUNGSU        PIC 9(08).

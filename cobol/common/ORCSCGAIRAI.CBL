@@ -39,6 +39,7 @@
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/11/XX  ¸øÌ³ºÒ³²¡¦¸ø³²ÂÐ±þ
       *                                     ´ïºà¾¦ÉÊÌ¾¥³¡¼¥ÉÂÐ±þ
       *  04.02.00    NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       *****************************************************************
       *
       *
@@ -171,7 +172,7 @@
            03  WRK-TENSU           PIC 9(08).
            03  WRK-ZAITEN          PIC 9(08).
            03  WRK-SRYKAISUKEI     PIC 9(03).
-           03  WRK-SRYSURYOKEI     PIC 9(07)V9(03).
+           03  WRK-SRYSURYOKEI     PIC 9(07)V9(05).
            03  WRK-MEISAISU        PIC 9(07).
            03  WRK-SRYCD           PIC X(09).
            03  WRK-SRYCD9          PIC 9(09).
@@ -181,7 +182,7 @@
                05  WRK-SRYMM           PIC 9(02).
                05  WRK-SRYDD           PIC 9(02).
       *
-           03  WRK-SRYSURYO           PIC 9(07)V9(03).
+           03  WRK-SRYSURYO           PIC 9(07)V9(05).
       *
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-H-ZAINUM        PIC 9(08).

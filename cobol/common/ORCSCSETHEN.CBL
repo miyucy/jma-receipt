@@ -76,6 +76,11 @@
            03  WRK-SRYSYUKBN       PIC X(03).
            03  WRK-SRYSYUKBNMEI    PIC X(40).
            03  WRK-SRYCD           PIC X(09).
+      *
+           03  WRK-SURYO           PIC 9(07)V9(05).
+           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
+               05  WRK-SURYO-S1    PIC 9(07).
+               05  WRK-SURYO-S2    PIC 9(05).
       *    入力セット処理
            03  WRK-SETCD           PIC X(06).
            03  WRK-INPUTCD         PIC X(10).
@@ -410,12 +415,13 @@
                    UNTIL       IDX-H   >   SPA-GMN-IDX
                IF     (SPA-COM-SRYKBN (IDX-H)(1:1)  =   "3" )  AND
                       (SPA-COM-INPUTCD(IDX-H)(1:1)  =   "6" )
+                   MOVE    SPA-COM-SURYO(IDX-H)    TO  WRK-SURYO
       *        注射薬でアンプル、少数以下がある時、次に残量廃棄がある
                    IF      (SPA-COM-YKZKBN (IDX-H)  =   "4"  )  AND
                            (SPA-COM-TANICD (IDX-H)  =   "014"
                                                     OR  "022"
                                                     OR  "046" )  AND
-                           (SPA-COM-SURYO(IDX-H)(6:3)  >   ZERO)
+                           (WRK-SURYO-S2           >   ZERO)
                        IF     (IDX-H               <   SPA-MAX-LINE) AND
                               (SPA-COM-INPUTCD(IDX-H + 1)
                                                    =   "099309901")

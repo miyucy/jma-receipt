@@ -219,15 +219,6 @@
            03  WRK-HEN-2           PIC X(10).
       *
            03  WRK-KIN             PIC S9(07).
-      *    ¿ÇÎÅ¹Ô°Ù·×»»ÍÑ
-           03  WRK-TENSU           PIC 9(08).
-           03  WRK-ZAITEN          PIC 9(08).
-           03  WRK-SRYKAISUKEI     PIC 9(03).
-           03  WRK-SRYSURYOKEI     PIC 9(07)V9(03).
-           03  WRK-MEISAISU        PIC 9(07).
-           03  WRK-SRYCD           PIC 9(09).
-           03  WRK-SRYCDKEI        PIC 9(14).
-           03  WRK-SRYYMD          PIC X(08).
       *
            03  WRK-ZAINUM          PIC 9(08).
            03  WRK-H-ZAINUM        PIC 9(08).
@@ -328,9 +319,6 @@
                05  WRK-SUM-JIHI-TAX            PIC  9(07).
                05  WRK-SUM-YKZ-FTN             PIC  9(07).
       *
-               05  WRK-HKNTEN-KIN              PIC 9(07).
-      *
-               05  WRK-HKNTEN-KEI              PIC 9(07)V99.
       *    ÊÝ¸±ÁÈ¹ç¤»ÊÝÂ¸
            03  WRK-HZN-HKNCOMBINUM     PIC X(04).
            03  WRK-HZN-HKNKBN          PIC X(01).

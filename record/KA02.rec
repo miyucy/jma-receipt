@@ -46,19 +46,19 @@ KA02	{
 			value	varchar(12);
 		};
 		SUURYO1	{
-			value	varchar(10);
+			value	varchar(12);
 		};
 		SUURYO2	{
-			value	varchar(10);
+			value	varchar(12);
 		};
 		SUURYO3	{
-			value	varchar(10);
+			value	varchar(12);
 		};
 		SUURYO4	{
-			value	varchar(10);
+			value	varchar(12);
 		};
 		SUURYO5	{
-			value	varchar(10);
+			value	varchar(12);
 		};
 		HKNCOMBI_COMB	{
 			HKNCOMBI	{

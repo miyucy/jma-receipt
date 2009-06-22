@@ -122,55 +122,35 @@
       *    点数計（通則加算対象外計）
            03  WRK-SUM-TENGAKEI        PIC 9(08)V99.
       *
-      *
-           03  WRK-SANSO           PIC 9(08).
-           03  WRK-SANSOKIN        PIC 9(08)V99.
-           03  WRK-SANKEI          PIC 9(08).
-           03  WRK-SANTEN          PIC 9(08).
-           03  WRK-SANSOKIN-SUM    PIC 9(08)V99.
-      *
            03  WRK-SYOKEIS         PIC 9(08)V9999.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
            03  WRK-SYOKEI          PIC 9(08).
-      *    フィルム点数計
-           03  WRK-FIRTEN          PIC 9(08).
-           03  WRK-FIRTEN-KEI      PIC 9(08).
-           03  WRK-FIRTEN-ADD      PIC 9(08).
-           03  WRK-KIZKEI          PIC 9(08).
-           03  WRK-KIZKEI-ADD      PIC 9(08).
-           03  WRK-TENSUKEIS       PIC 9(08)V99.
       *   きざみ値行為再計算用
            03  WRK-SATU-TEN        PIC 9(08)V9(03).
            03  WRK-KEI-TEN         PIC 9(08)V9(03).
            03  WRK-KEI-TEN1        PIC 9(08)V9(03).
            03  WRK-KEI-TEN2        PIC 9(08).
-           03  WRK-SURYO           PIC 9(05)V9(03).
-           03  WRK-SURYO-K         PIC S9(05)V9(03).
-           03  WRK-SURYO-H         PIC S9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
+           03  WRK-SURYO-K         PIC S9(05)V9(05).
+           03  WRK-SURYO-H         PIC S9(05)V9(05).
            03  WRK-KZMTEN          PIC 9(08)V9(03).
            03  WRK-KZMJGN          PIC 9(08)V9(03).
            03  WRK-KZMKGN          PIC 9(08)V9(03).
       *
            03  WRK-ERRCD           PIC X(04).
       *
-      *
-           03  WRK-TENSU-X.
-               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
-           03  WRK-KAISU-X.
-               05  WRK-KAISU-Z     PIC ZZZZ.
-      *
            03  WRK-INPUTCD         PIC X(22).
       *
        01  WRK-AREA2.
       *    閉鎖循環式麻酔の数量
-           03  WRK-SURYO-G         PIC 9(05)V9(03).
+           03  WRK-SURYO-G         PIC 9(05)V9(05).
            03  WRK-MASUI-CNT       PIC 9(03).
            03  WRK-MASUI           PIC 9(03).
       *
       *    閉鎖循環式麻酔の数量チェック
        01  TBL-MASUICHK-AREA.
            03  TBL-MASUICHK-OCC            OCCURS   400.
-               05  TBL-SURYO-Z         PIC S9(05)V9(03).
+               05  TBL-SURYO-Z         PIC S9(05)V9(05).
                05  TBL-CHK             PIC X(01).
       *
       *    神経ブロック・トリガーポイント注射判定
@@ -976,10 +956,6 @@
            MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  IDX-ZS
            MOVE    ZERO                TO  IDX-SANSO
-           MOVE    ZERO                TO  WRK-SANSO
-           MOVE    ZERO                TO  WRK-SANKEI
-           MOVE    ZERO                TO  WRK-SANTEN
-           MOVE    ZERO                TO  WRK-SANSOKIN-SUM
            MOVE    ZERO                TO  IDX-MSYU
            MOVE    ZERO                TO  WRK-MASUI
       *

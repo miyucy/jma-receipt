@@ -50,7 +50,7 @@
                    07  ORCHC19-SRYSYUKBN       PIC X(03).
                    07  ORCHC19-NAI-TBL         OCCURS   50.
                        09  ORCHC19-SRYCD           PIC  X(09).
-                       09  ORCHC19-SRYSURYO        PIC  9(05)V9(03).
+                       09  ORCHC19-SRYSURYO        PIC  9(05)V9(05).
                        09  ORCHC19-SRYKAISU        PIC  9(03).
                        09  ORCHC19-INPUTCOMENT     PIC  X(80).
       *

@@ -36,6 +36,7 @@
       *  01.00.06    NACL-Â¿¡¹Ç¼  05/11/25  MONFUNC ÂÐ±þ
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/10/02  ÌôºÞ¥³¥á¥ó¥ÈÊÔ½¸ÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       *****************************************************************
       *
       *
@@ -121,13 +122,13 @@
       *
            03  WRK-TENSU           PIC 9(07)V9(04).
            03  WRK-SURYO-9         PIC 9(07).
-           03  WRK-SURYO           PIC 9(07)V9(03).
-           03  WRK-HAIKI-SURYO     PIC 9(07)V9(03).
-           03  WRK-EKIRYOU         PIC 9(07)V9(03).
+           03  WRK-SURYO           PIC 9(07)V9(05).
+           03  WRK-HAIKI-SURYO     PIC 9(07)V9(05).
+           03  WRK-EKIRYOU         PIC 9(07)V9(05).
       *
-           03  WRK-TENSU-KEI       PIC 9(07)V9(04).
-           03  WRK-SYOKEIS2        PIC 9(08)V9(04).
-           03  WRK-TENSU-GOK       PIC 9(08)V9(03).
+           03  WRK-TENSU-KEI       PIC 9(07)V9(06).
+           03  WRK-SYOKEIS2        PIC 9(08)V9(06).
+           03  WRK-TENSU-GOK       PIC 9(08)V9(05).
       *
            03  WRK-SRYCD               PIC X(09).
            03  WRK-MAX-RYOU            PIC 9(07).
@@ -147,56 +148,56 @@
        01  TBL-AREA.
            03  TBL-AREA-OCC            OCCURS   50.
                05  TBL-SRYCD           PIC X(09).
-               05  TBL-TEN             PIC 9(07)V99.
-               05  TBL-CSYYOURYO       PIC 9(07)V99.
+               05  TBL-TEN             PIC 9(07)V9(5).
+               05  TBL-CSYYOURYO       PIC 9(07)V9(5).
       *
                05  TBL-SEIBUTU         PIC 9(01).
                05  TBL-MADOKU          PIC 9(01).
                05  TBL-DAY-AREA        OCCURS   31.
                    07  TBL-DAY             PIC 9(03).
-                   07  TBL-SURYO           PIC 9(05)V9(03).
-                   07  TBL-CHUSYARYO       PIC 9(07)V9(03).
+                   07  TBL-SURYO           PIC 9(05)V9(05).
+                   07  TBL-CHUSYARYO       PIC 9(07)V9(05).
       *            ÊÝ¸±ÁÈ¹ç¤»
                    07  TBL-HKNCOMBI        PIC X(04).
                    07  TBL-SRYKA           PIC X(02).
       *            ÇÑ´þ¥Õ¥é¥°
                    07  TBL-HAIKI           PIC 9(01).
-                   07  TBL-HAIKI-SURYO     PIC 9(05)V9(03).
+                   07  TBL-HAIKI-SURYO     PIC 9(05)V9(05).
       *        ÌôºÞ¤Î¤ß(331)
                05  TBL-DAY-AREA2       OCCURS   31.
                    07  TBL-DAY2            PIC 9(03).
-                   07  TBL-SURYO2          PIC 9(05)V9(03).
+                   07  TBL-SURYO2          PIC 9(05)V9(05).
       *            ÇÑ´þ¥Õ¥é¥°
                    07  TBL-HAIKI2          PIC 9(01).
-                   07  TBL-HAIKI-SURYO2    PIC 9(05)V9(03).
+                   07  TBL-HAIKI-SURYO2    PIC 9(05)V9(05).
       *        ¼ê½Ñ°Ê³°(332)
                05  TBL-DAY-AREA4       OCCURS   31.
                    07  TBL-DAY4            PIC 9(03).
-                   07  TBL-SURYO4          PIC 9(05)V9(03).
-                   07  TBL-CHUSYARYO4      PIC 9(07)V9(03).
+                   07  TBL-SURYO4          PIC 9(05)V9(05).
+                   07  TBL-CHUSYARYO4      PIC 9(07)V9(05).
       *            ÇÑ´þ¥Õ¥é¥°
                    07  TBL-HAIKI4          PIC 9(01).
-                   07  TBL-HAIKI-SURYO4    PIC 9(05)V9(03).
+                   07  TBL-HAIKI-SURYO4    PIC 9(05)V9(05).
       *            ÊÝ¸±ÁÈ¹ç¤»
                    07  TBL-HKNCOMBI4       PIC X(04).
                    07  TBL-SRYKA4          PIC X(02).
       *        Ãæ¿´ÀÅÌ®Ê¬
                05  TBL-DAY-AREA3       OCCURS   31.
                    07  TBL-DAY3            PIC 9(03).
-                   07  TBL-SURYO3          PIC 9(05)V9(03).
+                   07  TBL-SURYO3          PIC 9(05)V9(05).
       *            ÇÑ´þ¥Õ¥é¥°
                    07  TBL-HAIKI3          PIC 9(01).
-                   07  TBL-HAIKI-SURYO3    PIC 9(05)V9(03).
+                   07  TBL-HAIKI-SURYO3    PIC 9(05)V9(05).
       *            ÊÝ¸±ÁÈ¹ç¤»
                    07  TBL-HKNCOMBI3       PIC X(04).
                    07  TBL-SRYKA3          PIC X(02).
       *        Ãæ¿´ÀÅÌ®Ê¬¡Ê¼ê½Ñ°Ê³°¡Ë(352)
                05  TBL-DAY-AREA5       OCCURS   31.
                    07  TBL-DAY5            PIC 9(03).
-                   07  TBL-SURYO5          PIC 9(05)V9(03).
+                   07  TBL-SURYO5          PIC 9(05)V9(05).
       *            ÇÑ´þ¥Õ¥é¥°
                    07  TBL-HAIKI5          PIC 9(01).
-                   07  TBL-HAIKI-SURYO5    PIC 9(05)V9(03).
+                   07  TBL-HAIKI-SURYO5    PIC 9(05)V9(05).
       *            ÊÝ¸±ÁÈ¹ç¤»
                    07  TBL-HKNCOMBI5       PIC X(04).
                    07  TBL-SRYKA5          PIC X(02).
@@ -211,7 +212,7 @@
        01  TBL-KIZAI-AREA.
            03  TBL-KIZAI-AREA-OCC            OCCURS   10.
                05  TBL-KIZ-SRYCD       PIC X(09).
-               05  TBL-KIZ-SURYO       PIC 9(05)V9(03).
+               05  TBL-KIZ-SURYO       PIC 9(05)V9(05).
                05  TBL-KIZ-CHK         PIC 9(01).
       *        ´ïºà¥³¥á¥ó¥È
                05  TBL-KIZ-COMMNT-AREA         OCCURS   5.
@@ -248,13 +249,13 @@
        01  TBL-CHUSYARYO2-AREA.
            03  TBL-CHUSYARYO2-TBL      OCCURS   31.
       *        330
-               05  TBL-CHUSYARYO-2      PIC 9(07)V9(03).
+               05  TBL-CHUSYARYO-2      PIC 9(07)V9(05).
       *        332
-               05  TBL-CHUSYARYO4-2     PIC 9(07)V9(03).
+               05  TBL-CHUSYARYO4-2     PIC 9(07)V9(05).
       *        350
-               05  TBL-SURYO3-2         PIC 9(07)V9(03).
+               05  TBL-SURYO3-2         PIC 9(07)V9(05).
       *        352
-               05  TBL-SURYO5-2         PIC 9(07)V9(03).
+               05  TBL-SURYO5-2         PIC 9(07)V9(05).
       *
       *    »»ÄêÉÔ²Ä¾ò·ï
        01  TBL-CHK-AREA.
@@ -711,7 +712,7 @@
                                                 *   ACCT-DAY (1 IDX-D)
                    ELSE
                        COMPUTE WRK-SURYO-9     =   SRY-SRYSURYO(IDX2)
-                                               +   0.99
+                                               +   0.99999
                        COMPUTE WRK-SURYO       =   WRK-SURYO-9
                                                *   ACCT-DAY (1 IDX-D)
       *                ÇÑ´þ¿ôÎÌ
@@ -771,7 +772,7 @@
                                                 *   ACCT-DAY (1 IDX-D)
                    ELSE
                        COMPUTE WRK-SURYO-9     =   SRY-SRYSURYO(IDX2)
-                                               +   0.99
+                                               +   0.99999
                        COMPUTE WRK-SURYO       =   WRK-SURYO-9
                                                *   ACCT-DAY (1 IDX-D)
       *                ÇÑ´þ¿ôÎÌ
@@ -821,7 +822,7 @@
                                                 *   ACCT-DAY (1 IDX-D)
                    ELSE
                        COMPUTE WRK-SURYO-9     =   SRY-SRYSURYO(IDX2)
-                                               +   0.99
+                                               +   0.99999
                        COMPUTE WRK-SURYO       =   WRK-SURYO-9
                                                *   ACCT-DAY (1 IDX-D)
       *                ÇÑ´þ¿ôÎÌ
@@ -881,7 +882,7 @@
                                                 *   ACCT-DAY (1 IDX-D)
                    ELSE
                        COMPUTE WRK-SURYO-9     =   SRY-SRYSURYO(IDX2)
-                                               +   0.99
+                                               +   0.99999
                        COMPUTE WRK-SURYO       =   WRK-SURYO-9
                                                *   ACCT-DAY (1 IDX-D)
       *                ÇÑ´þ¿ôÎÌ
@@ -936,7 +937,7 @@
                                                 *   ACCT-DAY (1 IDX-D)
                    ELSE
                        COMPUTE WRK-SURYO-9     =   SRY-SRYSURYO(IDX2)
-                                               +   0.99
+                                               +   0.99999
                        COMPUTE WRK-SURYO       =   WRK-SURYO-9
                                                *   ACCT-DAY (1 IDX-D)
       *                ÇÑ´þ¿ôÎÌ
@@ -1422,7 +1423,7 @@
                                                +   1
                    END-IF
                    COMPUTE WRK-TENSU           =   WRK-SYOKEIS2
-                                               +  0.9999
+                                               +  0.99999
                    MOVE    WRK-TENSU           TO  ORCSTEN-ZAITEN
                                                            (IDX-D)
                ELSE

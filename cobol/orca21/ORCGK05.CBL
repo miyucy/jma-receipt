@@ -45,6 +45,7 @@
       *  04.01.00    NACL-多々納  07/11/21  器材商品名表示対応
       *  04.03.00    NACL-多々納  08/07/24  前回ＣＤ追加
       *  04.05.00    NACL-多々納  09/06/XX  撮影料等の数量ゼロ対応
+      *                                     数量小数５桁対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -363,7 +364,7 @@
       *    画面数量編集用
        01  WRK-GMN-SURYO-AREA.
            03  WRK-SURYO-HENSYU.
-               05  WRK-H-SURYO        PIC X(09).
+               05  WRK-H-SURYO        PIC X(11).
                05  WRK-H-TANINAME     PIC X(04).
                05  WRK-H-F1           PIC X(01).
                05  WRK-H-ZAIKEI       PIC X(15).

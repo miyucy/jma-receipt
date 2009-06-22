@@ -169,19 +169,11 @@
            03  WRK-ERRCD3          PIC X(04). 
            03  WRK-ERRCD6          PIC X(04). 
       *
-           03  WRK-SYOKEIS         PIC 9(08)V99.
-           03  WRK-SYOKEIS2        PIC 9(08)V9(4).
+           03  WRK-SYOKEIS         PIC 9(08)V9(8).
+           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
            03  WRK-SYOKEI          PIC 9(08).
       *
-           03  WRK-ZAIKEI          PIC 9(08)V99.
-           03  WRK-GAIKEI          PIC 9(08)V99.
-           03  WRK-GAITEN          PIC 9(08).
-           03  WRK-KIZKEI          PIC 9(08).
-           03  WRK-KIZTEN          PIC 9(08).
-           03  WRK-FIRTEN          PIC 9(08).
-           03  WRK-MAISU           PIC 9(08).
-           03  WRK-KEIMAI          PIC 9(08).
-           03  WRK-TENSUKEI        PIC 9(08).
+           03  WRK-TENSUKEI        PIC 9(08)V9(4).
            03  WRK-KAISU           PIC 9(04).
       *
            03  WRK-TENSU-KEISAN.
@@ -212,7 +204,7 @@
                05  WRK-SANTEN-9        PIC 9(08)V99.
                05  WRK-TENKEI          PIC 9(08).
                05  WRK-ZAITEN          PIC 9(08).
-               05  WRK-ZAITEN-G        PIC 9(08)V9(4).
+               05  WRK-ZAITEN-G        PIC 9(08)V9(8).
       *
                05  WRK-CHK-SRYSYUKBN   PIC X(03).
       *    ÊÝ¸±Ëè¤ÎÄþ¸º·×»»

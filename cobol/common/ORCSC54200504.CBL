@@ -117,13 +117,6 @@
       *    点数計（通則加算対象外計）
            03  WRK-SUM-TENGAKEI        PIC 9(08)V99.
       *
-      *
-           03  WRK-SANSO           PIC 9(08).
-           03  WRK-SANSOKIN        PIC 9(08)V99.
-           03  WRK-SANKEI          PIC 9(08).
-           03  WRK-SANTEN          PIC 9(08).
-           03  WRK-SANSOKIN-SUM    PIC 9(08)V99.
-      *
            03  WRK-SYOKEIS         PIC 9(08)V9999.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
            03  WRK-SYOKEI          PIC 9(08).
@@ -136,12 +129,6 @@
            03  WRK-TENSUKEIS       PIC 9(08)V99.
       *
            03  WRK-ERRCD           PIC X(04).
-      *
-      *
-           03  WRK-TENSU-X.
-               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
-           03  WRK-KAISU-X.
-               05  WRK-KAISU-Z     PIC ZZZZ.
       *
            03  WRK-INPUTCD         PIC X(22).
       *
@@ -897,10 +884,6 @@
            MOVE    ZERO                TO  IDX-MAX
            MOVE    ZERO                TO  IDX-ZS
            MOVE    ZERO                TO  IDX-SANSO
-           MOVE    ZERO                TO  WRK-SANSO
-           MOVE    ZERO                TO  WRK-SANKEI
-           MOVE    ZERO                TO  WRK-SANTEN
-           MOVE    ZERO                TO  WRK-SANSOKIN-SUM
       *
            INITIALIZE                  WRK-AREA
            INITIALIZE                  ORCSC90AREA

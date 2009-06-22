@@ -238,10 +238,10 @@
                        09  LNK-ORCSC-SRYSYUKBN     PIC X(03).
                        09  LNK-ORCSC-SRYKBN        PIC X(02).
                        09  LNK-ORCSC-SRYCD         PIC X(09).
-                       09  LNK-ORCSC-TENSU         PIC 9(05)V9(03).
-                       09  LNK-ORCSC-SURYO         PIC 9(05)V9(03).
+                       09  LNK-ORCSC-TENSU         PIC 9(05)V9(05).
+                       09  LNK-ORCSC-SURYO         PIC 9(05)V9(05).
                        09  LNK-ORCSC-SRYCD-KS      PIC X(09).
-                       09  LNK-ORCSC-TENSU-KS      PIC 9(05)V9(03).
+                       09  LNK-ORCSC-TENSU-KS      PIC 9(05)V9(05).
                        09  LNK-ORCSC-ATAI-G.
                            11  LNK-ORCSC-ATAI   PIC X(08) OCCURS  4.
       *                入院時の回数

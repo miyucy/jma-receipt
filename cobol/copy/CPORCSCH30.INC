@@ -43,7 +43,7 @@
                    07  ORCSCH30-SRYSYUKBN       PIC X(03).
                    07  ORCSCH30-NAI-TBL         OCCURS   50.
                        09  ORCSCH30-SRYCD           PIC  X(09).
-                       09  ORCSCH30-SRYSURYO        PIC  9(05)V9(03).
+                       09  ORCSCH30-SRYSURYO        PIC  9(05)V9(05).
                        09  ORCSCH30-SRYKAISU        PIC  9(03).
                        09  ORCSCH30-ZAIKAISU        PIC  9(03).
       *

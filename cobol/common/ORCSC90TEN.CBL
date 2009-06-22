@@ -20,7 +20,7 @@
       *****************************************************************
       *  システム名        : ＯＲＣＡ
       *  サブシステム名    : 診療行為入力
-      *  コンポーネント名  : 剤ごと点数計算
+      *  コンポーネント名  : 剤ごと点数計算（2005.4）
       *  管理者            : 
       *  作成日付    作業者        記述
       *  00/12/01    NACL−多々納  新規作成
@@ -28,6 +28,7 @@
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  03.03.00    NACL-多々納  07/03/06  酸素点数計算修正
+      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
       *
@@ -66,34 +67,34 @@
       *
       *    一時領域
        01  WRK-AREA.
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
       *
-           03  WRK-SYOKEIS         PIC 9(08)V99.
-           03  WRK-SYOKEIS2        PIC 9(08)V9999.
-           03  WRK-SYOKEIS3        PIC 9(08)V9999.
+           03  WRK-SYOKEIS         PIC 9(08)V9(8).
+           03  WRK-SYOKEIS2        PIC 9(08)V9(8).
+           03  WRK-SYOKEIS3        PIC 9(08)V9(8).
            03  WRK-SYOKEI          PIC 9(08).
-           03  WRK-TENSUKEIS       PIC 9(08)V9999.
+           03  WRK-TENSUKEIS       PIC 9(08)V9(6).
            03  WRK-TENSUKEI-9      PIC 9(08).
       *    薬剤
-           03  WRK-ZAIKEI          PIC 9(08)V999.
+           03  WRK-ZAIKEI          PIC 9(08)V9(8).
       *    器材
-           03  WRK-KIZKEI          PIC 9(08)V999.
-           03  WRK-KIZKEI-3        PIC 9(08)V999.
+           03  WRK-KIZKEI          PIC 9(08)V9(5).
+           03  WRK-KIZKEI-3        PIC 9(08)V9(5).
       *    フィルム
-           03  WRK-FIRKEI          PIC 9(08)V999.
-           03  WRK-NYU-FIRKEI      PIC 9(08)V999.
-           03  WRK-NYU-FIRTEN      PIC 9(08)V999.
+           03  WRK-FIRKEI          PIC 9(08)V9(5).
+           03  WRK-NYU-FIRKEI      PIC 9(08)V9(5).
+           03  WRK-NYU-FIRTEN      PIC 9(08)V9(5).
            03  WRK-FIRTEN-G        PIC 9(08).
            03  WRK-FIRTEN          PIC 9(08).
       *    窒素
-           03  WRK-CHISOKEI        PIC 9(08)V999.
+           03  WRK-CHISOKEI        PIC 9(08)V9(5).
            03  WRK-CHITEN          PIC 9(08).
       *    酸素
-           03  WRK-SANSOKIN        PIC 9(08)V999.
-           03  WRK-SANSOKIN-SUM    PIC 9(08)V999.
+           03  WRK-SANSOKIN        PIC 9(08)V9(5).
+           03  WRK-SANSOKIN-SUM    PIC 9(08)V9(5).
            03  WRK-SANSOGOK        PIC 9(08).
            03  WRK-SANTEN          PIC 9(08).
       *
@@ -106,7 +107,7 @@
       *
       *    注射液計算用
            03  WRK-SURYO-CHU9      PIC 9(05).
-           03  WRK-SURYO-CHU       PIC 9(05)V9(03).
+           03  WRK-SURYO-CHU       PIC 9(05)V9(05).
       *
            03  WRK-MOJI            PIC X(01).
       *
@@ -268,9 +269,10 @@
       *    残量廃棄のあるすべての注射薬剤を対象とする
            IF     (IDX                     <   MAX-LINE    )  AND
                   (LNK-COM-INPUTCD(IDX + 1)  =   "099309901")
-               IF      LNK-COM-SURYO(IDX)(6:3) >   ZERO
+               MOVE    LNK-COM-SURYO(IDX)    TO  WRK-SURYO
+               IF      WRK-SURYO-S2          >   ZERO
                    COMPUTE WRK-SURYO-CHU9      =   LNK-COM-SURYO (IDX)
-                                               +   0.99
+                                               +   0.99999
                    MOVE    WRK-SURYO-CHU9          TO  WRK-SURYO-CHU
                ELSE
                    MOVE    LNK-COM-SURYO (IDX)     TO  WRK-SURYO-CHU
@@ -403,7 +405,7 @@
                                            +   1
            END-IF
       *
-           COMPUTE WRK-SC90-YKZTEN     =   WRK-SYOKEIS3   + 0.9999
+           COMPUTE WRK-SC90-YKZTEN     =   WRK-SYOKEIS3   + 0.999999
       *
            .
        1005-KEIZAITENU-EXT.

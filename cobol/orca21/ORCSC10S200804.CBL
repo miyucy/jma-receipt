@@ -4984,6 +4984,8 @@
            END-IF
       *    診察料変換
            IF      FLG-HENKAN          =   1
+      *        時間外なし
+               MOVE    1                   TO  FLG-JIKANKBN
                PERFORM 10101-SINSATU-HENKAN-SEC
            END-IF
            .

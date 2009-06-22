@@ -31,7 +31,7 @@
               03  KA02-SRYKA.
                 04  KA02-VALUE  PIC X(12).
               03  KA02-SUURYO-G  OCCURS  5.
-                04  KA02-SUURYO  PIC X(10).
+                04  KA02-SUURYO  PIC X(12).
               03  KA02-HKNCOMBI-COMB.
                 04  KA02-HKNCOMBI.
                   05  KA02-VALUE  PIC X(65).

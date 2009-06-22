@@ -49,7 +49,7 @@
       *                コード
                        09  ORCHC62-SRYCD           PIC  X(09).
       *                数量
-                       09  ORCHC62-SRYSURYO        PIC  9(05)V9(03).
+                       09  ORCHC62-SRYSURYO        PIC  9(05)V9(05).
       *                回数（外用薬）
                        09  ORCHC62-SRYKAISU        PIC  9(03).
       *                コメント名称

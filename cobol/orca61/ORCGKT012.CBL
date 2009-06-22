@@ -27,6 +27,7 @@
       *****************************************************************
       *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
       * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      * 04.05.00     NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -114,6 +115,7 @@
            03  FLG-WRITE           PIC 9(01).
            03  FLG-HEN             PIC 9(01).
            03  FLG-HENSYU          PIC 9(01).
+           03  FLG-KETA5           PIC 9(01).
       *
       *    Åº»úÎÎ°è
        01  IDX-AREA.
@@ -225,17 +227,20 @@
       *
            03  WRK-MEISYO          PIC X(40).
       *    ¿ôÎÌÉ½¼¨ÍÑ
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
-           03  WRK-SURYO-J         PIC X(18).
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
+           03  WRK-SURYO-X2        PIC X(09).
+           03  WRK-SURYO-J-G.
+               05  WRK-SURYO-J         PIC X(18).
+               05  WRK-SURYO-J2        PIC X(04).
       *    Ê¬²è¿ô²èÌÌÊÔ½¸ÍÑ
            03  WRK-BUNGSU-X.
                05  WRK-BUNGSU-Z    PIC ZZZ.
@@ -259,7 +264,7 @@
       *
            03  WRK-ZAITEN              PIC 9(08).
            03  WRK-SRYKAISUKEI         PIC 9(03).
-           03  WRK-SRYSURYOKEI         PIC 9(07)V9(03).
+           03  WRK-SRYSURYOKEI         PIC 9(07)V9(05).
            03  WRK-MEISAISU            PIC 9(07).
            03  WRK-JIHIMONEY           PIC 9(07).
       *
@@ -302,13 +307,6 @@
       *
       *    ¿ÇÎÅ¼ïÊÌÌ¾¥Æ¡¼¥Ö¥ë
            COPY    "CPORCSSRYSYU.INC".
-      *
-      *   ÆüËÜ¸ì¿ô»ú
-       01  TBL-SUJI-AREA.
-           03  FILLER          PIC X(20)   VALUE
-              "£±£²£³£´£µ£¶£·£¸£¹£°".
-       01  TBL-SUJI-R          REDEFINES   TBL-SUJI-AREA.
-           03  TBL-SUJI        PIC X(02)   OCCURS   10.
       *
       *
       *****************************************************************
@@ -376,6 +374,8 @@
            COPY    "CPORCSFDEL.INC".
       *    É½¼¨Ì¾¾ÎÊÔ½¸¥Ñ¥é¥á¥¿ÎÎ°è
            COPY    "CPORCSMEIHEN.INC".
+      *    Á´³ÑÊÑ´¹¥µ¥Ö
+           COPY    "CPORCSKANACHK.INC".
       *
       *    £Ä£Â¸¡º÷
            COPY    "MCPDATA.INC".
@@ -2279,8 +2279,13 @@
            IF      LNK-WKSRY-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7"
                MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
                PERFORM 310121-SURYO-HEN-SEC
-               MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU (IDG)
-               MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI1  (IDG)
+               IF      FLG-KETA5           =   ZERO
+                   MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU (IDG)
+                   MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI1  (IDG)
+               ELSE
+                   MOVE    WRK-SURYO-J-G       TO  SPA-GMN-TSURYOU3(IDG)
+                   MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI3  (IDG)
+               END-IF
            END-IF
       *    Ã±°Ì
            IF     (LNK-WKSRY-SRYCD (IDX IDZ)(1:1) =   "1" )  AND
@@ -2384,28 +2389,14 @@
            MOVE    WRK-KEI                 TO  WRK-ZAIKEI
       *
       *    ÆüËÜ¸ìÊÑ´¹
-           MOVE    SPACE               TO  WRK-ZAIKEIJ
-           MOVE    1                   TO  IDJ2
-           PERFORM VARYING     IDJ     FROM    1  BY  1
-                   UNTIL       IDJ     >   40
-              EVALUATE     WRK-ZAIKEI (IDJ:1)
-                   WHEN    SPACE
-                       MOVE    "¡¡"            TO  WRK-ZAIKEIJ (IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "X"
-                       MOVE    "¡ß"            TO  WRK-ZAIKEIJ (IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "1"  THRU  "9"
-                       MOVE    WRK-ZAIKEI (IDJ:1)  TO  IDJ1
-                       MOVE    TBL-SUJI (IDJ1)     TO  WRK-ZAIKEIJ
-                                                              (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-                   WHEN    "0"
-                       MOVE    TBL-SUJI (10)       TO  WRK-ZAIKEIJ
-                                                              (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-               END-EVALUATE
-           END-PERFORM
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-ZAIKEI          TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJ
+           INSPECT WRK-ZAIKEIJ         REPLACING
+                                           ALL "£Ø"  BY  "¡ß"
       *
            IF      LNK-WKSRY-JIHIMONEY(IDX IDZ)    =   ZERO
                MOVE    SPACE               TO  SPA-GMN-TZAIKEI (IDG)
@@ -2532,10 +2523,14 @@
            MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDM     FROM    3  BY  -1
+           MOVE    ZERO                TO  FLG-KETA5
+           PERFORM VARYING     IDM     FROM    5  BY  -1
                    UNTIL       IDM     <   1
                IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP
+                   IF      IDM             >   3
+                       MOVE    1               TO  FLG-KETA5
+                   END-IF
                END-IF
                IF      FLG-SP          =   1
                    MOVE    WRK-SURYO-S2(IDM:1) TO  WRK-SURYO-Z3(IDM:1)
@@ -2547,29 +2542,30 @@
                MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1-9
            END-IF
       *
+           IF      FLG-KETA5           =   1
+               IF      WRK-SURYO-X(1:2)    =   SPACE
+                   MOVE    WRK-SURYO-X(3:9)    TO  WRK-SURYO-X2
+                   MOVE    SPACE               TO  WRK-SURYO-X
+                   MOVE    WRK-SURYO-X2        TO  WRK-SURYO-X
+                   MOVE    ZERO                TO  FLG-KETA5
+                END-IF
+           END-IF
+      *
       *    ÆüËÜ¸ìÊÑ´¹
-           MOVE    SPACE               TO  WRK-SURYO-J
-           MOVE    1                   TO  IDJ2
-           PERFORM VARYING     IDJ     FROM    1  BY  1
-                   UNTIL       IDJ     >   9
-              EVALUATE     WRK-SURYO-X (IDJ:1)
-                   WHEN    SPACE
-                       MOVE    "¡¡"            TO  WRK-SURYO-J (IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "."
-                       MOVE    "¡¥"            TO  WRK-SURYO-J (IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "1"  THRU  "9"
-                       MOVE    WRK-SURYO-X (IDJ:1) TO  IDJ1
-                       MOVE    TBL-SUJI (IDJ1)     TO  WRK-SURYO-J
-                                                            (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-                   WHEN    "0"
-                       MOVE    TBL-SUJI (10)       TO  WRK-SURYO-J
-                                                          (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-               END-EVALUATE
-           END-PERFORM
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-SURYO-X         TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           IF      FLG-KETA5           =   ZERO
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-SURYO-J
+               INSPECT WRK-SURYO-J         REPLACING
+                                           ALL "£Ø"  BY  "¡ß"
+           ELSE
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-SURYO-J-G
+               INSPECT WRK-SURYO-J-G       REPLACING
+                                           ALL "£Ø"  BY  "¡ß"
+           END-IF
            .
        310121-SURYO-HEN-EXT.
            EXIT.
@@ -2580,28 +2576,14 @@
        310122-BUNGSU-HEN-SEC           SECTION.
       *
       *    ÆüËÜ¸ìÊÑ´¹
-           MOVE    SPACE               TO  WRK-BUNGSU-J
-           MOVE    1                   TO  IDJ2
-           PERFORM VARYING     IDJ     FROM    1  BY  1
-                   UNTIL       IDJ     >   3
-              EVALUATE     WRK-BUNGSU-X (IDJ:1)
-                   WHEN    SPACE
-                       MOVE    "¡¡"            TO  WRK-BUNGSU-J(IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "."
-                       MOVE    "¡¥"            TO  WRK-BUNGSU-J(IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "1"  THRU  "9"
-                       MOVE    WRK-BUNGSU-X (IDJ:1)    TO  IDJ1
-                       MOVE    TBL-SUJI (IDJ1)     TO  WRK-BUNGSU-J
-                                                               (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-                   WHEN    "0"
-                       MOVE    TBL-SUJI (10)       TO  WRK-BUNGSU-J
-                                                               (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-               END-EVALUATE
-           END-PERFORM
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-BUNGSU-X        TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-BUNGSU-J
+           INSPECT WRK-BUNGSU-J        REPLACING
+                                       ALL "£Ø"  BY  "¡ß"
            .
        310122-BUNSU-HEN-EXT.
            EXIT.
@@ -2655,29 +2637,14 @@
            END-STRING
       *
       *    ÆüËÜ¸ìÊÑ´¹
-           MOVE    SPACE               TO  WRK-ZAIKEIJ
-           MOVE    1                   TO  IDJ2
-           PERFORM VARYING     IDJ     FROM    1  BY  1
-                   UNTIL       IDJ     >   40
-              EVALUATE     WRK-ZAIKEI (IDJ:1)
-                   WHEN    SPACE
-                       MOVE    "¡¡"            TO  WRK-ZAIKEIJ (IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "X"
-                       MOVE    "¡ß"            TO  WRK-ZAIKEIJ (IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "1"  THRU  "9"
-                       MOVE    WRK-ZAIKEI (IDJ:1)  TO  IDJ1
-                       MOVE    TBL-SUJI (IDJ1)     TO  WRK-ZAIKEIJ
-                                                               (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-                   WHEN    "0"
-                       MOVE    TBL-SUJI (10)       TO  WRK-ZAIKEIJ
-                                                               (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-               END-EVALUATE
-           END-PERFORM
-      *
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-ZAIKEI          TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-ZAIKEIJ
+           INSPECT WRK-ZAIKEIJ         REPLACING
+                                       ALL "£Ø"  BY  "¡ß"
       *
            .
        31013-INPUTCD-HEN-EXT.
@@ -2687,37 +2654,6 @@
       *    ÂÐ¾Ý¿ÇÎÅ¹Ô°ÙÆâÍÆÊÔ½¸½èÍý
       *****************************************************************
        4201-WKSRYACT-SET-SEC             SECTION.
-      *
-      *    ¥Ñ¥é¥á¥¿ºï½ü
-      *     OPEN    I-O                 PARA-FILE
-      *    IF      STS-PARA        NOT =   ZERO
-      *        MOVE    2                   TO  FLG-PARA
-      *    ELSE
-      *        MOVE    ZERO                TO  FLG-PARA
-      *    END-IF
-      *    PERFORM
-      *            UNTIL   FLG-PARA    NOT =   ZERO
-      *        INITIALIZE                      PARA-REC
-      *        MOVE    SPA-TERMID          TO  PARA-TERMID
-      *        MOVE    "WKSRYACT"          TO  PARA-FILEMEI
-      *        START   PARA-FILE
-      *            KEY IS    >=   PARA-KEY
-      *            INVALID
-      *                MOVE    1               TO  FLG-PARA
-      *            NOT INVALID
-      *                PERFORM 990-PARA-NEXT-SEC
-      *        END-START
-      *        IF      (FLG-PARA            =   ZERO       )  AND
-      *                (PARA-TERMID         =   SPA-TERMID )  AND
-      *                (PARA-FILEMEI        =   "WKSRYACT" )
-      *            DELETE                   PARA-FILE    RECORD
-      *        ELSE
-      *            MOVE    1                TO  FLG-PARA
-      *        END-IF
-      *    END-PERFORM
-      *    CLOSE                       PARA-FILE
-      *
-      *****OPEN    I-O                 PARA-FILE
       *
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM2

@@ -117,29 +117,17 @@
            03  WRK-MOJI            PIC X(01). 
            03  WRK-CHUSYA          PIC 9(09).
       *
-           03  WRK-SYOKEIS         PIC 9(08)V99.
-           03  WRK-SYOKEIS2        PIC 9(08)V99.
-           03  WRK-SYOKEI          PIC 9(08).
+           03  WRK-SURYO           PIC 9(07)V9(05).
+           03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
+               05  WRK-SURYO-S1    PIC 9(07).
+               05  WRK-SURYO-S2    PIC 9(05).
       *
-           03  WRK-ZAIKEI          PIC 9(08)V99.
-           03  WRK-GAIKEI          PIC 9(08)V99.
-           03  WRK-ZAITEN          PIC 9(08).
-           03  WRK-GAITEN          PIC 9(08).
-           03  WRK-KIZKEI          PIC 9(08).
-           03  WRK-KIZTEN          PIC 9(08).
-           03  WRK-FIRTEN          PIC 9(08).
-           03  WRK-MAISU           PIC 9(08).
-           03  WRK-KEIMAI          PIC 9(08).
            03  WRK-KAISU           PIC 9(04).
       *
            03  WRK-TENSUKEI        PIC 9(08)V99.
            03  WRK-TENSUKEI-9      PIC 9(08).
            03  WRK-TENSUKEI-G      PIC 9(08).
       *
-           03  WRK-TENSU-X.
-               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
-           03  WRK-KAISU-X.
-               05  WRK-KAISU-Z     PIC ZZZZ.
       *    入院日＋１年
            03  WRK-NYMD.
                05  WRK-NYY             PIC 9(04).
@@ -573,7 +561,8 @@
       *
       *    アンプルの時、小数以下判定
            IF      WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046"
-               IF     (WRK-COM-SURYO(IDX-Z)(6:3) >   ZERO    )  AND
+               MOVE    WRK-COM-SURYO(IDX-Z)    TO  WRK-SURYO
+               IF     (WRK-SURYO-S2              >   ZERO    )  AND
                       (WRK-COM-AUTOFLG2 (IDX-Z)  =   SPACE   )
                    MOVE    IDX-Z                 TO  IDX-HAI
                    PERFORM 10011-HAIKI-ADD-SEC

@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -181,11 +182,11 @@
                            11  SPA-GMN-TBANGO2     PIC X(02).
                            11  SPA-GMN-TMEISYO2    PIC X(60).
                            11  SPA-GMN-HEN1.
-                               13  SPA-GMN-TSURYOU     PIC X(18).
+                               13  SPA-GMN-TSURYOU     PIC X(22).
                                13  SPA-GMN-TTANI1      PIC X(08).
                                13  SPA-GMN-TTANMEI     PIC X(06).
                                13  SPA-GMN-TTANI2      PIC X(04).
-                               13  SPA-GMN-TYOBI1      PIC X(32).
+                               13  SPA-GMN-TYOBI1      PIC X(28).
                            11  SPA-GMN-HEN2    REDEFINES
                                                SPA-GMN-HEN1.
                                13  SPA-GMN-TYOBI       PIC X(02).
@@ -193,13 +194,10 @@
                                13  SPA-GMN-TYOBI2      PIC X(06).
                            11  SPA-GMN-HEN3    REDEFINES
                                                SPA-GMN-HEN1.
-                               13  SPA-GMN-TSURYOU3    PIC X(18).
-                               13  SPA-GMN-TTANI13     PIC X(08).
-                               13  SPA-GMN-TZAIKEI3    PIC X(40).
-                               13  SPA-GMN-TZAIKEI3-R  REDEFINES
-                                                       SPA-GMN-TZAIKEI3.
-                                   15  SPA-GMN-TYOBI32     PIC X(06).
-                                   15  SPA-GMN-TYOBI33     PIC X(34).
+      *                        13  SPA-GMN-TSURYOU3    PIC X(22).
+      *                        13  SPA-GMN-TTANI13     PIC X(04).
+                               13  SPA-GMN-TYOBI33     PIC X(26).
+                               13  SPA-GMN-TZAIKEI3    PIC X(20).
                            11  SPA-GMN-HEN4    REDEFINES
                                                SPA-GMN-HEN1.
                                13  SPA-GMN-TYOBI41     PIC X(16).
@@ -408,17 +406,17 @@
       *
            03  WRK-MEISYO          PIC X(40).
       *    数量表示用
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
-           03  WRK-SURYO-J         PIC X(18).
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
+           03  WRK-SURYO-J         PIC X(22).
       *    分画数画面編集用
            03  WRK-BUNGSU-X.
                05  WRK-BUNGSU-Z    PIC ZZZ.
@@ -447,7 +445,6 @@
       *
            03  WRK-ZAITEN              PIC 9(08).
            03  WRK-SRYKAISUKEI         PIC 9(03).
-           03  WRK-SRYSURYOKEI         PIC 9(07)V9(03).
            03  WRK-MEISAISU            PIC 9(07).
            03  WRK-JIHIMONEY           PIC 9(07).
            03  WRK-JIHIMONEY-KEI       PIC 9(07).
@@ -2291,8 +2288,8 @@
              OR   (LNK-WKSRY-SRYCD (IDX IDZ)(1:3)   =   "059"    )
                MOVE    LNK-WKSRY-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
                PERFORM 310121-SURYO-HEN-SEC
-               MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU3 (IDG)
-               MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI13  (IDG)
+               MOVE    WRK-SURYO-J         TO  SPA-GMN-TSURYOU  (IDG)
+               MOVE    TNS-TANINAME        TO  SPA-GMN-TTANI1   (IDG)
            END-IF
       *
       *    計
@@ -2318,8 +2315,8 @@
       *
            INSPECT SPA-GMN-TBANGO2 (IDG)  REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TMEISYO2(IDG)  REPLACING  ALL "  "  BY  "　"
-           INSPECT SPA-GMN-TSURYOU3(IDG)  REPLACING  ALL "  "  BY  "　"
-           INSPECT SPA-GMN-TTANI13 (IDG)  REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TSURYOU (IDG)  REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-GMN-TTANI1  (IDG)  REPLACING  ALL "  "  BY  "　"
            INSPECT SPA-GMN-TZAIKEI3(IDG)  REPLACING  ALL "  "  BY  "　"
       *
       *    回数
@@ -2343,26 +2340,15 @@
                                            TO  WRK-KAISU-H (IDK2:1)
                    END-IF
                END-PERFORM
+      *
                MOVE    SPACE               TO  WRK-KAISU-J
-               MOVE    1                   TO  IDJ2
-               PERFORM VARYING     IDJ     FROM    1  BY  1
-                       UNTIL       IDJ     >   3
-                   EVALUATE    WRK-KAISU-H (IDJ:1)
-                       WHEN    SPACE
-                           MOVE    "　"                TO  WRK-KAISU-J
-                                                               (IDJ2:2)
-                           ADD     2                   TO  IDJ2
-                       WHEN    "1"  THRU  "9"
-                           MOVE    WRK-KAISU-H (IDJ:1) TO  IDJ1
-                           MOVE    TBL-SUJI (IDJ1)     TO  WRK-KAISU-J
-                                                               (IDJ2:2)
-                           ADD     2                   TO  IDJ2
-                       WHEN    "0"
-                           MOVE    TBL-SUJI (10)       TO  WRK-KAISU-J
-                                                               (IDJ2:2)
-                           ADD     2                   TO  IDJ2
-                   END-EVALUATE
-               END-PERFORM
+               INITIALIZE                  ORCSKANACHKAREA
+               MOVE    "2"                 TO  KANACHK-SYORI
+               MOVE    WRK-KAISU-H         TO  KANACHK-MAE-INPUT
+               CALL    "ORCSKANACHK"       USING
+                                           ORCSKANACHKAREA
+               MOVE    KANACHK-OUT-INPUT   TO  WRK-KAISU-J
+      *
                MOVE   "×"                 TO  SPA-GMN-TZAIKEI4 (IDG)
                                                                (3:2)
                MOVE   WRK-KAISU-J(1:6)     TO  SPA-GMN-TZAIKEI4 (IDG)
@@ -2535,7 +2521,7 @@
            MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDM     FROM    3  BY  -1
+           PERFORM VARYING     IDM     FROM    5  BY  -1
                    UNTIL       IDM     <   1
                IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP
@@ -2568,29 +2554,12 @@
       *****************************************************************
        310122-BUNGSU-HEN-SEC           SECTION.
       *
-      *    日本語変換
-           MOVE    SPACE               TO  WRK-BUNGSU-J
-           MOVE    1                   TO  IDJ2
-           PERFORM VARYING     IDJ     FROM    1  BY  1
-                   UNTIL       IDJ     >   3
-              EVALUATE     WRK-BUNGSU-X (IDJ:1)
-                   WHEN    SPACE
-                       MOVE    "　"            TO  WRK-BUNGSU-J(IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "."
-                       MOVE    "．"            TO  WRK-BUNGSU-J(IDJ2:2)
-                       ADD     2               TO  IDJ2
-                   WHEN    "1"  THRU  "9"
-                       MOVE    WRK-BUNGSU-X (IDJ:1)    TO  IDJ1
-                       MOVE    TBL-SUJI (IDJ1)     TO  WRK-BUNGSU-J
-                                                              (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-                   WHEN    "0"
-                       MOVE    TBL-SUJI (10)       TO  WRK-BUNGSU-J
-                                                              (IDJ2:2)
-                       ADD     2                   TO  IDJ2
-               END-EVALUATE
-           END-PERFORM
+           INITIALIZE                  ORCSKANACHKAREA
+           MOVE    "2"                 TO  KANACHK-SYORI
+           MOVE    WRK-BUNGSU-X        TO  KANACHK-MAE-INPUT
+           CALL    "ORCSKANACHK"       USING
+                                       ORCSKANACHKAREA
+           MOVE    KANACHK-OUT-INPUT   TO  WRK-BUNGSU-J
            .
        310122-BUNGSU-HEN-EXT.
            EXIT.

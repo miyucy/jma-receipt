@@ -12,7 +12,7 @@
               03  HCM04-SRYKBN    PIC X(10).
               03  HCM04-SRYMEI    PIC X(80).
               03  HCM04-TANI  PIC X(10).
-              03  HCM04-SURYO PIC X(8).
+              03  HCM04-SURYO PIC X(11).
               03  HCM04-KAISU PIC X(3).
               03  HCM04-KINGAKU   PIC X(11).
             02  HCM04-IRYOADRS  PIC X(100).

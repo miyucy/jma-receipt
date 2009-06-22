@@ -45,7 +45,7 @@
       *診療コード
                05  SRY-SRYCD           PIC  X(09).
       *数量
-               05  SRY-SRYSURYO        PIC  9(05)V9(03).
+               05  SRY-SRYSURYO        PIC  9(05)V9(05).
       *回数
                05  SRY-SRYKAISU        PIC  9(03).
       *明細請求区分

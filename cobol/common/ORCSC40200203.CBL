@@ -101,12 +101,6 @@
       *
            03  WRK-ERRCD           PIC X(04).
       *
-      *
-           03  WRK-TENSU-X.
-               05  WRK-TENSU-Z     PIC ZZZZZZZZ.
-           03  WRK-KAISU-X.
-               05  WRK-KAISU-Z     PIC ZZZZ.
-      *
       *    ÊÝÂ¸ÍÑ
        01  HOZ-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING

@@ -66,6 +66,7 @@
       *                                     パラメタによる編集対応
       * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０年４月改正対応
       * 04.03.00     NACL-多々納  08/08/28  退院時院外処方せん対応
+      * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
       *
@@ -241,25 +242,29 @@
                    07  WRK-HEN-FTNJANUM    PIC X(16).
                    07  WRK-HEN-JKYSNUM     PIC X(40).
       *
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
       *
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
                05  WRK-SURYO-Z3    PIC ZZZ.
            03  WRK-SURYO-N         PIC X(18).
+           03  WRK-SURYO-N22       PIC X(22).
       *    数量小数点以下５桁
            03  WRK-SURYO2           PIC 9(05)V9(05).
            03  WRK-SURYO2-R         REDEFINES   WRK-SURYO2.
                05  WRK-SURYO2-S1    PIC 9(05).
                05  WRK-SURYO2-S2    PIC 9(05).
            03  WRK-SURYO-X2.
-               05  WRK-SURYO2-Z1   PIC ZZ9.
+               05  WRK-SURYO2-Z1   PIC ZZZZ9.
                05  WRK-SURYO2-Z2   PIC X(01).
                05  WRK-SURYO2-Z3   PIC ZZZZZ.
+           03  WRK-SURYO-X2-R      REDEFINES   WRK-SURYO-X2.
+               05  WRK-SURYO2-X21  PIC X(02).
+               05  WRK-SURYO2-X29  PIC X(09).
            03  WRK-KANZANCHI       PIC 9(05)V9(5).
       *
            03  WRK-ZZ              PIC ZZ.
@@ -352,6 +357,11 @@
                05  WRK-NAIYOU-R3           REDEFINES   WRK-NAIYOU-Z.
                    07  WRK-FIL23           PIC X(06).
                    07  WRK-MEISYOU3        PIC X(80).
+               05  WRK-NAIYOU-R4           REDEFINES   WRK-NAIYOU-Z.
+                   07  WRK-FIL41           PIC X(46).
+                   07  WRK-SURYOU4         PIC X(22).
+                   07  WRK-TANI4           PIC X(12).
+                   07  WRK-FIL42           PIC X(06).
       *    薬剤名編集
        01  WRK-MEISAI-AREA.
            03  WRK-M-NAME              PIC X(100).
@@ -366,7 +376,7 @@
       *診療コード
                05  WRK-SRY-SRYCD           PIC  X(09).
       *数量
-               05  WRK-SRY-SRYSURYO        PIC  9(05)V9(03).
+               05  WRK-SRY-SRYSURYO        PIC  9(05)V9(05).
       *回数
                05  WRK-SRY-SRYKAISU        PIC  9(03).
       *明細請求区分
@@ -2823,17 +2833,30 @@
                MOVE    WRK-SRY-SRYSURYO (IDXA) TO  WRK-SURYO
                IF      WRK-SURYO           =   ZERO
                    MOVE    SPACE               TO  WRK-SURYO-N
+                   MOVE    SPACE               TO  WRK-SURYO-N22
                ELSE
                    PERFORM 10011-SURYO-HEN-SEC
                END-IF
       *        数量の表示位置に編集がある時、次行へ
-               IF      WRK-SURYOU (IDX-S)  NOT =   SPACE
-                   ADD     1               TO  IDX-S
-                   MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
-                   MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
+               IF      WRK-SURYO-N22       =   SPACE
+      *            １８文字まで
+                   IF      WRK-SURYOU (IDX-S)  NOT =   SPACE
+                       ADD     1               TO  IDX-S
+                       MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
+                       MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
+                   END-IF
+                   MOVE    WRK-SURYO-N         TO  WRK-SURYOU (IDX-S)
+                   MOVE    TNS-TANINAME        TO  WRK-TANI (IDX-S)
+               ELSE
+      *            ２２文字まで
+                   IF      WRK-SURYOU4(IDX-S)  NOT =   SPACE
+                       ADD     1               TO  IDX-S
+                       MOVE    ALL "　"        TO  WRK-NO     (IDX-S)
+                       MOVE    ALL "　"        TO  WRK-K2     (IDX-S)
+                   END-IF
+                   MOVE    WRK-SURYO-N22       TO  WRK-SURYOU4 (IDX-S)
+                   MOVE    TNS-TANINAME        TO  WRK-TANI4 (IDX-S)
                END-IF
-               MOVE    WRK-SURYO-N         TO  WRK-SURYOU (IDX-S)
-               MOVE    TNS-TANINAME        TO  WRK-TANI (IDX-S)
            END-IF
       *
            INSPECT WRK-MEISYOU1 (IDX-S)  REPLACING  ALL "  "  BY  "　"
@@ -3128,6 +3151,8 @@
       *****************************************************************
        10011-SURYO-HEN-SEC                  SECTION.
       *
+           MOVE    SPACE               TO  WRK-SURYO-N
+           MOVE    SPACE               TO  WRK-SURYO-N22
       *    換算値により数量変更
            IF      WRK-KANZANCHI       =   ZERO
                MOVE    1               TO  WRK-KANZANCHI
@@ -3202,13 +3227,18 @@
                MOVE    "."                 TO  WRK-SURYO2-Z2
            END-IF
       *
-           MOVE    WRK-SURYO-X2        TO  WRK-MOJI
-           MOVE    9                   TO  WRK-MOJISU
-           PERFORM 2009-HENKAN-SEC
-           MOVE    WRK-ZENKAKU-G(1:18) TO  WRK-SURYO-N
-      *    整数が３桁以上の場合、表示なしとする
-           IF      WRK-SURYO2-S1(1:2)  NOT =   ZERO
-               MOVE    SPACE               TO  WRK-SURYO-N
+           IF      WRK-SURYO2-X21      =   SPACE
+      *        整数３桁・小数部５桁まで
+               MOVE    WRK-SURYO2-X29      TO  WRK-MOJI
+               MOVE    9                   TO  WRK-MOJISU
+               PERFORM 2009-HENKAN-SEC
+               MOVE    WRK-ZENKAKU-G(1:18) TO  WRK-SURYO-N
+           ELSE
+      *        整数３桁以上・小数部５桁
+               MOVE    WRK-SURYO-X2        TO  WRK-MOJI
+               MOVE    11                  TO  WRK-MOJISU
+               PERFORM 2009-HENKAN-SEC
+               MOVE    WRK-ZENKAKU-G(1:22) TO  WRK-SURYO-N22
            END-IF
            .
        100112-SURYO-HEN05-EXT.

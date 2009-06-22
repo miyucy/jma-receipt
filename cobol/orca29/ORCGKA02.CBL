@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -175,17 +176,17 @@
            03  WRK-SRYSYUMEI       PIC X(40).
            03  WRK-MEISYO          PIC X(80).
       *    数量表示用
-           03  WRK-SURYO           PIC 9(05)V9(03).
+           03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
-           03  WRK-SURYO-J         PIC X(18).
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
+           03  WRK-SURYO-J         PIC X(22).
       *    剤回数等画面編集用
            03  WRK-KAISU-H         PIC X(08).
            03  WRK-KAISU-J         PIC X(16).
@@ -1879,7 +1880,7 @@
            MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDM     FROM    3  BY  -1
+           PERFORM VARYING     IDM     FROM    5  BY  -1
                    UNTIL       IDM     <   1
                IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP
@@ -1898,7 +1899,7 @@
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI
            MOVE    WRK-SURYO-X         TO  KANACHK-MAE-INPUT
-           MOVE    18                  TO  KANACHK-MAX-CNT
+           MOVE    22                  TO  KANACHK-MAX-CNT
            CALL    "ORCSKANACHK"       USING
                                        ORCSKANACHKAREA
            MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
@@ -2305,7 +2306,7 @@
            MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1
       *
            MOVE    ZERO                TO  FLG-SP
-           PERFORM VARYING     IDM     FROM    3  BY  -1
+           PERFORM VARYING     IDM     FROM    5  BY  -1
                    UNTIL       IDM     <   1
                IF      WRK-SURYO-S2(IDM:1) NOT =   ZERO
                    MOVE    1               TO  FLG-SP
@@ -2643,7 +2644,7 @@
                    IF     (SNUM-RC        NOT =   ZERO  )   OR
                           (SNUM-MINKBN        =   "1"   )   OR
                           (SNUM-SEISUU        >   5     )   OR
-                          (SNUM-SYOSUU        >   3     )
+                          (SNUM-SYOSUU        >   5     )
                        MOVE    "0005"         TO  SPA-ERRCD
                        COMPUTE SPA-GMN-CUR    =   IDY   +   10
                    ELSE

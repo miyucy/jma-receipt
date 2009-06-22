@@ -49,7 +49,7 @@
            03  WKSRY-SINRYO-TBL-G.
              04    WKSRY-SINRYO-TBL      OCCURS   5.
                05  WKSRY-SRYCD           PIC  X(09).
-               05  WKSRY-SRYSURYO        PIC  9(05)V9(03).
+               05  WKSRY-SRYSURYO        PIC  9(05)V9(05).
                05  WKSRY-SRYKAISU        PIC  9(03).
                05  WKSRY-ZAIKAISU        PIC  9(08).
       **自動算定区分

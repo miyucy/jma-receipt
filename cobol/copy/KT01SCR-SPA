@@ -523,6 +523,11 @@
                            11  SPA-GMN-HEN2    REDEFINES
                                                SPA-GMN-HEN1.
                                13  SPA-GMN-TZAIKEI     PIC X(40).
+                       09  SPA-GMN-TMEISYO-3   REDEFINES
+                                               SPA-GMN-TMEISYO.
+                           11  SPA-GMN-TMEISYO3    PIC X(40).
+                           11  SPA-GMN-TSURYOU3    PIC X(22).
+                           11  SPA-GMN-TTANI3      PIC X(08).
       *
                        09  SPA-NAI-TBANGO        PIC  9(03).
                05  SPA-GMN-MAX2                  PIC 9(04).

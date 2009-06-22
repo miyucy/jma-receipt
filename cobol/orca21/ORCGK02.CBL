@@ -88,6 +88,7 @@
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/12/XX  ´µ¼Ô¶Ø´÷ÌôºÞÂÐ±þ
       *  04.02.00    NACL-Â¿¡¹Ç¼  08/03/XX  £È£²£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.04.00    NACL-Â¿¡¹Ç¼  08/11/28  ½èÍý¶¦ÄÌÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/06/XX  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -450,10 +451,10 @@
            03  WRK-SELNUM2             PIC 9(04).
       *
            03  WRK-INPUTCD         PIC X(10).
-           03  WRK-SURYO           PIC 9(07)V9(03).
+           03  WRK-SURYO           PIC 9(07)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(07).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
            03  WRK-BUNGSU          PIC 9(08).
            03  WRK-SRYSYUKBN       PIC X(03).
            03  WRK-SRYSYUKBNMEI    PIC X(40).
@@ -658,10 +659,12 @@
       *    ²èÌÌ¿ôÎÌÊÔ½¸ÍÑ
        01  WRK-GMN-SURYO-AREA.
            03  WRK-SURYO-HENSYU.
-               05  WRK-H-SURYO        PIC X(09).
+      **       05  WRK-H-SURYO        PIC X(09).
+               05  WRK-H-SURYO        PIC X(11).
                05  WRK-H-TANINAME     PIC X(04).
                05  WRK-H-F1           PIC X(01).
-               05  WRK-H-ZAIKEI       PIC X(15).
+      *        05  WRK-H-ZAIKEI       PIC X(15).
+               05  WRK-H-ZAIKEI       PIC X(13).
                05  WRK-H-KEI          PIC X(08).
       *
            03  WRK-KEI-X.
@@ -9856,7 +9859,13 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-GMN-MAX         =   ZERO
                MOVE    "1056"          TO  SPA-ERRCD
            END-IF
+      *    ¿ÇÎÅ¹Ô°ÙÆþÎÏ¥Á¥§¥Ã¥¯
            IF      SPA-ERRCD           =   SPACE
+               PERFORM 41011-KOUI-ALLHEN-SEC
+           END-IF
+      *
+           IF     (SPA-ERRCD           =   SPACE )  AND
+                  (SPA-KIDCD           =   SPACE )
                IF      SPA-GMN-MAX     >   199
                    CONTINUE
                ELSE
