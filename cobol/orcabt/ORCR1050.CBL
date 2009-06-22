@@ -3225,11 +3225,6 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *****************************************************************
        4501-RECE140-WRITE-SEC                SECTION.
       *
-           IF      RECE140-ZAINUM      =   99999981  OR  99999982  OR
-                                           99999983  OR  99999984  OR
-                                           99999985
-               MOVE     ZERO               TO  RECE140-ZAINUM
-           END-IF
            IF      RECE140-ZAINUM      =   99999999
                MOVE     ZERO               TO  RECE140-ZAINUM
            END-IF
