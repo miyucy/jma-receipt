@@ -288,6 +288,7 @@
       *  04.04.05    NACL-ÌçÏÆ    09/06/11  £·£°ºÐÌ¤Ëþ¤Î¹â³Û·×»»ÂÐ±þ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/16  °ì³çºÆ·×»»ÊýË¡ÁªÂòµ¡Ç½ÂÐ±þ
+      *  04.05.02    NACL-ÌçÏÆ    09/06/22  ¿ôÎÌ¾®¿ô£µ·åÂÐ±þ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -861,7 +862,7 @@
                07  LNK-S02-SRYKBN       PIC  X(02).
                07  LNK-S02-ZAIBAN       PIC  9(08).
                07  LNK-S02-SRYCD        PIC  X(09).
-               07  LNK-S02-SURYOU       PIC  9(05)V9(03).
+               07  LNK-S02-SURYOU       PIC  9(05)V9(05).
                07  LNK-S02-KAISUU       PIC  9(03).
                07  LNK-S02-TENSUU       PIC  9(07).
       *
