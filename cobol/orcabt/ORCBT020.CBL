@@ -220,7 +220,7 @@
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-HENSYU-AREA.
                05  WRK-DATA            PIC X(200).
-               05  WRK-NUM             PIC ZZZZZZZZZ9.999. 
+               05  WRK-NUM             PIC ZZZZZZZZZ9.99999. 
                05  WRK-NAGASA          PIC 9(03).
                05  WRK-ST              PIC 9(02). 
                05  WRK-SYOSUU          PIC 9(01).
@@ -635,8 +635,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            PERFORM 5004-MOJI-HENSYU-SEC    
       *    ¿ôÎÌ
            MOVE    TOUKEI02-SRYSURYO   TO  WRK-NUM
-           MOVE    8                   TO  WRK-NAGASA
-           MOVE    3                   TO  WRK-SYOSUU     
+           MOVE    10                  TO  WRK-NAGASA
+           MOVE    5                   TO  WRK-SYOSUU     
            PERFORM 5005-NUM-HENSYU-SEC    
       *    ²ó¿ô
            MOVE    TOUKEI02-SRYKAISU   TO  WRK-NUM

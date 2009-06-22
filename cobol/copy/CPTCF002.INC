@@ -95,7 +95,7 @@
       *診療コード
                05  TOUKEI02-SRYCD          PIC  X(09).
       *数量
-               05  TOUKEI02-SRYSURYO       PIC  9(05)V9(03).
+               05  TOUKEI02-SRYSURYO       PIC  9(05)V9(05).
       *回数
                05  TOUKEI02-SRYKAISU       PIC  9(03).
       *点数識別区分
