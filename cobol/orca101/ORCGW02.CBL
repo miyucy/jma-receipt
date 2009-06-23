@@ -1666,7 +1666,8 @@
       *
       *    請求額端数区分医保（減免無自費分） 空白の時、"4"とする
            IF      SYS-1001-DISCOUNT-HASU-KBN2J   =   SPACE
-               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN2J
+               MOVE    SYS-1001-DISCOUNT-HASU-KBN2
+                                       TO  SYS-1001-DISCOUNT-HASU-KBN2J
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       4
@@ -4947,14 +4948,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               WHEN    "DISCOUNTHASU4_J"
                   MOVE    216               TO  SPA-GMN-CUR
               WHEN    "DISCOUNTHASU5_J"
-                  MOVE    202               TO  SPA-GMN-CUR
+                  MOVE    39                TO  SPA-GMN-CUR
               WHEN    "GENTAIKBN"
                   MOVE    38               TO  SPA-GMN-CUR
               WHEN    "TAXHASU"
                   MOVE    205              TO  SPA-GMN-CUR
               WHEN    "HIWARIKBN"
       *********   MOVE    01               TO  SPA-GMN-CUR
-                  MOVE     39              TO  SPA-GMN-CUR
+                  MOVE     01              TO  SPA-GMN-CUR
               WHEN    "DATACREATE"
                   MOVE    204              TO  SPA-GMN-CUR
               WHEN    "DATATEISYU"
@@ -4962,7 +4963,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               WHEN    "JIHIPOSITION"
                   MOVE    207              TO  SPA-GMN-CUR
               WHEN    "CHIHOUNUMKBN"
-                  MOVE    01               TO  SPA-GMN-CUR
+                  MOVE    202               TO  SPA-GMN-CUR
       *       連絡先情報
               WHEN    "POST"
                   MOVE    21               TO  SPA-GMN-CUR

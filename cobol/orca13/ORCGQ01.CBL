@@ -6477,7 +6477,6 @@
       *    重複チェック
            PERFORM 4901-SPASET-DABURI-CHK
       *
-      *
            .
        4901-SPASET-EXT.
            EXIT.
