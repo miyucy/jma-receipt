@@ -2338,7 +2338,7 @@
            PERFORM 4200-SAIKEIKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-SAIKEIKBN-G
       *
-           IF    ( SPA-GMN-SAIKEIKBN       =   "1" )
+           IF    ( SPA-GMN-SAIKEIKBN       =   "0" )
                MOVE    "0"                 TO  SPA-GMN-SAIKEITAIKBN
            END-IF
       *
@@ -3037,7 +3037,7 @@
                                    TO  W65-OCRTAIKBN-STATE
                                        W65-OCRTAIKBN-ITEM-STATE
            END-IF
-           IF    ( SPA-GMN-SAIKEIKBN    =   "1" )
+           IF    ( SPA-GMN-SAIKEIKBN    =   "0" )
                MOVE    WIDGET-INSENSITIVE
                                      TO  W65-SAIKEITAIKBN-STATE
                                          W65-SAIKEITAIKBN-ITEM-STATE
