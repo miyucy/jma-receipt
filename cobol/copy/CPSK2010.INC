@@ -61,9 +61,12 @@
       *·îÅÓÃæ¼õµë¼Ô¾ÚÊÑ¹¹»þÉéÃ´·×»»
            03  SYS-2010-JYUHENKBN           PIC  X(01).
            03  SYS-2010-JYUHEN-TAIKBN       PIC  X(01).
+      *ÀÁµá½ñ¸øÈñºÆ·ÇÍóµ­ºÜ
+           03  SYS-2010-SAIKEIKBN           PIC  X(01).
+           03  SYS-2010-SAIKEI-TAIKBN       PIC  X(01).
       *
       *Í½È÷
-           03  FILLER                       PIC  X(482).
+           03  FILLER                       PIC  X(480).
       *Ã¼Ëö£É£Ä
            03  SYS-2010-TERMID              PIC  X(16).
       *¥ª¥Ú¥ì¡¼¥¿£É£Ä

@@ -129,14 +129,14 @@
                        09  SPA-GMN-OCRTAIKBN       PIC X(01).
                        09  SPA-GMN-OCRTAIKBNF      PIC X(01).
                        09  SPA-GMN-OCRTAIKBNMEI    PIC X(28).
-                   07  SPA-GMN-HEIYOJIKBN-G.
-                       09  SPA-GMN-HEIYOJIKBN      PIC X(01).
-                       09  SPA-GMN-HEIYOJIKBNF     PIC X(01).
-                       09  SPA-GMN-HEIYOJIKBNMEI   PIC X(58).
-                   07  SPA-GMN-HEIYOJITAIKBN-G.
-                       09  SPA-GMN-HEIYOJITAIKBN   PIC X(01).
-                       09  SPA-GMN-HEIYOJITAIKBNF  PIC X(01).
-                       09  SPA-GMN-HEIYOJITAIKBNMEI
+                   07  SPA-GMN-SAIKEIKBN-G.
+                       09  SPA-GMN-SAIKEIKBN      PIC X(01).
+                       09  SPA-GMN-SAIKEIKBNF     PIC X(01).
+                       09  SPA-GMN-SAIKEIKBNMEI   PIC X(58).
+                   07  SPA-GMN-SAIKEITAIKBN-G.
+                       09  SPA-GMN-SAIKEITAIKBN   PIC X(01).
+                       09  SPA-GMN-SAIKEITAIKBNF  PIC X(01).
+                       09  SPA-GMN-SAIKEITAIKBNMEI
                                                    PIC X(28).
                    07  SPA-GMN-JYUHENKBN-G.
                        09  SPA-GMN-JYUHENKBN       PIC X(01).
@@ -186,12 +186,12 @@
                            11  SPA-GMN-OCRKBNL             PIC X(01).
                            11  SPA-GMN-OCRKBNFL            PIC X(01).
                            11  SPA-GMN-OCRKBNMEIL          PIC X(58).
-                   07  SPA-GMN-HEIYOJIKBNLST-G.
-                       09  SPA-GMN-HEIYOJIKBN-MAX          PIC 9(03).
-                       09  SPA-GMN-HEIYOJIKBNLST           OCCURS 10.
-                           11  SPA-GMN-HEIYOJIKBNL         PIC X(01).
-                           11  SPA-GMN-HEIYOJIKBNFL        PIC X(01).
-                           11  SPA-GMN-HEIYOJIKBNMEIL      PIC X(58).
+                   07  SPA-GMN-SAIKEIKBNLST-G.
+                       09  SPA-GMN-SAIKEIKBN-MAX          PIC 9(03).
+                       09  SPA-GMN-SAIKEIKBNLST           OCCURS 10.
+                           11  SPA-GMN-SAIKEIKBNL         PIC X(01).
+                           11  SPA-GMN-SAIKEIKBNFL        PIC X(01).
+                           11  SPA-GMN-SAIKEIKBNMEIL      PIC X(58).
                    07  SPA-GMN-JYUHENKBNLST-G.
                        09  SPA-GMN-JYUHENKBN-MAX           PIC 9(03).
                        09  SPA-GMN-JYUHENKBNLST            OCCURS 10.
@@ -204,12 +204,12 @@
                            11  SPA-GMN-COMMONTAIKBNL       PIC X(01).
                            11  SPA-GMN-COMMONTAIKBNFL      PIC X(01).
                            11  SPA-GMN-COMMONTAIKBNMEIL    PIC X(28).
-                   07  SPA-GMN-HEIYOJITAIKBNLST-G.
-                       09  SPA-GMN-HEIYOJITAIKBN-MAX       PIC 9(03).
-                       09  SPA-GMN-HEIYOJITAIKBNLST        OCCURS 10.
-                           11  SPA-GMN-HEIYOJITAIKBNL      PIC X(01).
-                           11  SPA-GMN-HEIYOJITAIKBNFL     PIC X(01).
-                           11  SPA-GMN-HEIYOJITAIKBNMEIL   PIC X(28).
+                   07  SPA-GMN-SAIKEITAIKBNLST-G.
+                       09  SPA-GMN-SAIKEITAIKBN-MAX       PIC 9(03).
+                       09  SPA-GMN-SAIKEITAIKBNLST        OCCURS 10.
+                           11  SPA-GMN-SAIKEITAIKBNL      PIC X(01).
+                           11  SPA-GMN-SAIKEITAIKBNFL     PIC X(01).
+                           11  SPA-GMN-SAIKEITAIKBNMEIL   PIC X(28).
                    07  SPA-GMN-JYUHENTAIKBNLST-G.
                        09  SPA-GMN-JYUHENTAIKBN-MAX        PIC 9(03).
                        09  SPA-GMN-JYUHENTAIKBNLST         OCCURS 10.
@@ -583,8 +583,8 @@
       *    ＯＣＲ実日数請求点省略記載コンボ編集処理
            PERFORM 3110-OCRKBNLST-SEC
       *
-      *    全国公費併用時記載（記録）対応コンボ編集処理
-           PERFORM 3110-HEIYOJIKBNLST-SEC
+      *    請求書公費再掲欄記載コンボ編集処理
+           PERFORM 3110-SAIKEIKBNLST-SEC
       *
       *    月途中受給者証変更時負担計算コンボ編集処理
            PERFORM 3110-JYUHENKBNLST-SEC
@@ -592,8 +592,8 @@
       *    共通対象区分コンボ編集処理
            PERFORM 3110-COMMONTAIKBNLST-SEC
       *
-      *    全国公費併用時記載（記録）対応対象区分コンボ編集処理
-           PERFORM 3110-HEIYOJITAIKBNLST-SEC
+      *    請求書公費再掲欄記載対象区分コンボ編集処理
+           PERFORM 3110-SAIKEITAIKBNLST-SEC
       *
       *    月途中受給者証変更時負担計算対象区分コンボ編集処理
            PERFORM 3110-JYUHENTAIKBNLST-SEC
@@ -722,27 +722,22 @@
        3110-OCRKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    全国公費併用時記載（記録）対応コンボ編集処理
+      *    請求書公費再掲欄記載コンボ編集処理
       *****************************************************************
-       3110-HEIYOJIKBNLST-SEC          SECTION.
+       3110-SAIKEIKBNLST-SEC          SECTION.
       *
-           INITIALIZE                  SPA-GMN-HEIYOJIKBNLST-G
+           INITIALIZE                  SPA-GMN-SAIKEIKBNLST-G
       *
-           MOVE    "0"             TO  SPA-GMN-HEIYOJIKBNL    (1)
-           MOVE    "不要"          TO  SPA-GMN-HEIYOJIKBNMEIL (1)
+           MOVE    "0"             TO  SPA-GMN-SAIKEIKBNL    (1)
+           MOVE    "記載する"      TO  SPA-GMN-SAIKEIKBNMEIL (1)
       *
-           MOVE    "1"             TO  SPA-GMN-HEIYOJIKBNL    (2)
-           MOVE    "請求点、負担区分対応（入院時食事療養対応を除く）"
-                                   TO  SPA-GMN-HEIYOJIKBNMEIL (2)
+           MOVE    "1"             TO  SPA-GMN-SAIKEIKBNL    (2)
+           MOVE    "記載しない"    TO  SPA-GMN-SAIKEIKBNMEIL (2)
       *
-           MOVE    "2"             TO  SPA-GMN-HEIYOJIKBNL    (3)
-           MOVE    "請求点、負担区分対応（入院時食事療養対応を含む）"
-                                   TO  SPA-GMN-HEIYOJIKBNMEIL (3)
-      *
-           MOVE    3               TO  SPA-GMN-HEIYOJIKBN-MAX
+           MOVE    2               TO  SPA-GMN-SAIKEIKBN-MAX
       *
            .
-       3110-HEIYOJIKBNLST-EXT.
+       3110-SAIKEIKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    月途中受給者証変更時負担計算コンボ編集処理
@@ -801,23 +796,28 @@
        3110-COMMONTAIKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    全国公費併用時記載（記録）対応対象区分コンボ編集処理
+      *    請求書公費再掲欄記載対象区分コンボ編集処理
       *****************************************************************
-       3110-HEIYOJITAIKBNLST-SEC       SECTION.
+       3110-SAIKEITAIKBNLST-SEC       SECTION.
       *
-           INITIALIZE                  SPA-GMN-HEIYOJITAIKBNLST-G
+           INITIALIZE                  SPA-GMN-SAIKEITAIKBNLST-G
       *
-           MOVE    "0"             TO  SPA-GMN-HEIYOJITAIKBNL    (1)
-           MOVE    "設定なし"      TO  SPA-GMN-HEIYOJITAIKBNMEIL (1)
-      *
-           MOVE    "1"             TO  SPA-GMN-HEIYOJITAIKBNL    (2)
+           MOVE    "0"             TO  SPA-GMN-SAIKEITAIKBNL    (1)
            MOVE    "国保・広域（請求分内）"
-                                   TO  SPA-GMN-HEIYOJITAIKBNMEIL (2)
+                                   TO  SPA-GMN-SAIKEITAIKBNMEIL (1)
       *
-           MOVE    2               TO  SPA-GMN-HEIYOJITAIKBN-MAX
+           MOVE    "1"             TO  SPA-GMN-SAIKEITAIKBNL    (2)
+           MOVE    "国保（請求分内）"
+                                   TO  SPA-GMN-SAIKEITAIKBNMEIL (2)
+      *
+           MOVE    "2"             TO  SPA-GMN-SAIKEITAIKBNL    (3)
+           MOVE    "広域（請求分内）"
+                                   TO  SPA-GMN-SAIKEITAIKBNMEIL (3)
+      *
+           MOVE    3               TO  SPA-GMN-SAIKEITAIKBN-MAX
       *
            .
-       3110-HEIYOJITAIKBNLST-EXT.
+       3110-SAIKEITAIKBNLST-EXT.
            EXIT.
       *****************************************************************
       *    月途中受給者証変更時負担計算対象区分コンボ編集処理
@@ -1027,8 +1027,8 @@
            MOVE    W65-SKJTAIKBN       TO  SPA-GMN-SKJTAIKBN-G
            MOVE    W65-OCRKBN          TO  SPA-GMN-OCRKBN-G
            MOVE    W65-OCRTAIKBN       TO  SPA-GMN-OCRTAIKBN-G
-           MOVE    W65-HEIYOJIKBN      TO  SPA-GMN-HEIYOJIKBN-G
-           MOVE    W65-HEIYOJITAIKBN   TO  SPA-GMN-HEIYOJITAIKBN-G
+           MOVE    W65-SAIKEIKBN       TO  SPA-GMN-SAIKEIKBN-G
+           MOVE    W65-SAIKEITAIKBN    TO  SPA-GMN-SAIKEITAIKBN-G
            MOVE    W65-JYUHENKBN       TO  SPA-GMN-JYUHENKBN-G
            MOVE    W65-JYUHENTAIKBN    TO  SPA-GMN-JYUHENTAIKBN-G
            MOVE    W65-YUKOSTYMD       TO  SPA-GMN-YUKOSTYMD
@@ -1125,11 +1125,11 @@
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 4101-HEIYOJIKBN-CHK-SEC
+               PERFORM 4101-SAIKEIKBN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-               PERFORM 4101-HEIYOJITAIKBN-CHK-SEC
+               PERFORM 4101-SAIKEITAIKBN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
@@ -1380,8 +1380,8 @@
            MOVE    SPA-GMN-SKJTAIKBN       TO SYS-2010-SKJ-TAIKBN
            MOVE    SPA-GMN-OCRKBN          TO SYS-2010-OCRKBN
            MOVE    SPA-GMN-OCRTAIKBN       TO SYS-2010-OCR-TAIKBN
-      *+   MOVE    SPA-GMN-HEIYOJIKBN      TO SYS-2010-HEIYOJIKBN
-      *+   MOVE    SPA-GMN-HEIYOJITAIKBN   TO SYS-2010-HEIYOJI-TAIKBN
+           MOVE    SPA-GMN-SAIKEIKBN      TO SYS-2010-SAIKEIKBN
+           MOVE    SPA-GMN-SAIKEITAIKBN   TO SYS-2010-SAIKEI-TAIKBN
            MOVE    SPA-GMN-JYUHENKBN       TO SYS-2010-JYUHENKBN
            MOVE    SPA-GMN-JYUHENTAIKBN    TO SYS-2010-JYUHEN-TAIKBN
       *
@@ -1966,14 +1966,14 @@
            PERFORM 4200-COMMONTAIKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-OCRTAIKBN-G
       *
-      *    MOVE    SYS-2010-HEIYOJIKBN TO  WRK-CMB-CD
-      *    PERFORM 4200-HEIYOJIKBNLST-CHK-SEC
-      *    MOVE    WRK-CMB-ITM         TO  SPA-GMN-HEIYOJIKBN-G
+           MOVE    SYS-2010-SAIKEIKBN TO  WRK-CMB-CD
+           PERFORM 4200-SAIKEIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SAIKEIKBN-G
       *
-      *    MOVE    SYS-2010-HEIYOJI-TAIKBN
-      *                                TO  WRK-CMB-CD
-      *    PERFORM 4200-HEIYOJITAIKBNLST-CHK-SEC
-      *    MOVE    WRK-CMB-ITM         TO  SPA-GMN-HEIYOJITAIKBN-G
+           MOVE    SYS-2010-SAIKEI-TAIKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SAIKEITAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-SAIKEITAIKBN-G
       *
            MOVE    SYS-2010-JYUHENKBN  TO  WRK-CMB-CD
            PERFORM 4200-JYUHENKBNLST-CHK-SEC
@@ -2330,34 +2330,30 @@
        4101-OCRTAIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    全国公費併用時記載（記録）対応チェック処理
+      *    請求書公費再掲欄記載チェック処理
       *****************************************************************
-       4101-HEIYOJIKBN-CHK-SEC         SECTION.
+       4101-SAIKEIKBN-CHK-SEC         SECTION.
       *
-           MOVE    SPA-GMN-HEIYOJIKBN      TO  WRK-CMB-CD
-           PERFORM 4200-HEIYOJIKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM             TO  SPA-GMN-HEIYOJIKBN-G
-      *
-           IF    ( SPA-GMN-HEIYOJIKBN          =   "0" )
-               MOVE    "0"                 TO  SPA-GMN-HEIYOJITAIKBN
-           END-IF
+           MOVE    SPA-GMN-SAIKEIKBN      TO  WRK-CMB-CD
+           PERFORM 4200-SAIKEIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM             TO  SPA-GMN-SAIKEIKBN-G
       *
            .
       *
-       4101-HEIYOJIKBN-CHK-EXT.
+       4101-SAIKEIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    全国公費併用時記載（記録）対応対象区分チェック処理
+      *    請求書公費再掲欄記載対象区分チェック処理
       *****************************************************************
-       4101-HEIYOJITAIKBN-CHK-SEC      SECTION.
+       4101-SAIKEITAIKBN-CHK-SEC      SECTION.
       *
-           MOVE    SPA-GMN-HEIYOJITAIKBN   TO  WRK-CMB-CD
-           PERFORM 4200-HEIYOJITAIKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM             TO  SPA-GMN-HEIYOJITAIKBN-G
+           MOVE    SPA-GMN-SAIKEITAIKBN   TO  WRK-CMB-CD
+           PERFORM 4200-SAIKEITAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM             TO  SPA-GMN-SAIKEITAIKBN-G
       *
            .
       *
-       4101-HEIYOJITAIKBN-CHK-EXT.
+       4101-SAIKEITAIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    月途中受給者証変更時負担計算チェック処理
@@ -2624,10 +2620,10 @@
            PERFORM 4200-OCRKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM     TO  SPA-GMN-OCRKBN-G
       *
-      *    全国公費併用時記載（記録）対応
+      *    請求書公費再掲欄記載
            MOVE    "0"             TO  WRK-CMB-CD
-           PERFORM 4200-HEIYOJIKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM     TO  SPA-GMN-HEIYOJIKBN-G
+           PERFORM 4200-SAIKEIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM     TO  SPA-GMN-SAIKEIKBN-G
       *
       *    月途中受給者証変更時負担計算
            MOVE    "0"             TO  WRK-CMB-CD
@@ -2646,10 +2642,10 @@
                                        SPA-GMN-SKJTAIKBN-G
                                        SPA-GMN-OCRTAIKBN-G
       *
-      *    全国公費併用時記載（記録）対応対象区分
+      *    請求書公費再掲欄記載対象区分
            MOVE    "0"             TO  WRK-CMB-CD
-           PERFORM 4200-HEIYOJITAIKBNLST-CHK-SEC
-           MOVE    WRK-CMB-ITM     TO  SPA-GMN-HEIYOJITAIKBN-G
+           PERFORM 4200-SAIKEITAIKBNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM     TO  SPA-GMN-SAIKEITAIKBN-G
       *
       *    月途中受給者証変更時負担計算対象区分
            MOVE    "0"             TO  WRK-CMB-CD
@@ -2769,8 +2765,8 @@
            MOVE    SPA-GMN-SKJTAIKBN-G         TO  W65-SKJTAIKBN
            MOVE    SPA-GMN-OCRKBN-G            TO  W65-OCRKBN
            MOVE    SPA-GMN-OCRTAIKBN-G         TO  W65-OCRTAIKBN
-      *    MOVE    SPA-GMN-HEIYOJIKBN-G        TO  W65-HEIYOJIKBN
-      *    MOVE    SPA-GMN-HEIYOJITAIKBN-G     TO  W65-HEIYOJITAIKBN
+           MOVE    SPA-GMN-SAIKEIKBN-G        TO  W65-SAIKEIKBN
+           MOVE    SPA-GMN-SAIKEITAIKBN-G     TO  W65-SAIKEITAIKBN
            MOVE    SPA-GMN-JYUHENKBN-G         TO  W65-JYUHENKBN
            MOVE    SPA-GMN-JYUHENTAIKBN-G      TO  W65-JYUHENTAIKBN
       *
@@ -2820,12 +2816,12 @@
                                    TO  W65-OCRKBN-ITEM (IDX-CMB)
            END-PERFORM
       *
-      *+   MOVE    SPA-GMN-HEIYOJIKBN-MAX      TO  W65-HEIYOJIKBN-COUNT
-      *+   PERFORM VARYING IDX-CMB FROM    1   BY  1
-      *+           UNTIL ( IDX-CMB >   SPA-GMN-HEIYOJIKBN-MAX )
-      *+           MOVE    SPA-GMN-HEIYOJIKBNLST (IDX-CMB)
-      *+                           TO  W65-HEIYOJIKBN-ITEM (IDX-CMB)
-      *+   END-PERFORM
+           MOVE    SPA-GMN-SAIKEIKBN-MAX      TO  W65-SAIKEIKBN-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-SAIKEIKBN-MAX )
+                   MOVE    SPA-GMN-SAIKEIKBNLST (IDX-CMB)
+                                   TO  W65-SAIKEIKBN-ITEM (IDX-CMB)
+           END-PERFORM
       * 
            MOVE    SPA-GMN-JYUHENKBN-MAX       TO  W65-JYUHENKBN-COUNT
            PERFORM VARYING IDX-CMB FROM    1   BY  1
@@ -2857,12 +2853,12 @@
                                        W65-OCRTAIKBN-ITEM (IDX-CMB)
            END-PERFORM
       *
-           MOVE    SPA-GMN-HEIYOJITAIKBN-MAX
-                                       TO  W65-HEIYOJITAIKBN-COUNT
+           MOVE    SPA-GMN-SAIKEITAIKBN-MAX
+                                       TO  W65-SAIKEITAIKBN-COUNT
            PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-HEIYOJITAIKBN-MAX )
-                   MOVE    SPA-GMN-HEIYOJITAIKBNLST (IDX-CMB)
-                                   TO  W65-HEIYOJITAIKBN-ITEM (IDX-CMB)
+                   UNTIL ( IDX-CMB >   SPA-GMN-SAIKEITAIKBN-MAX )
+                   MOVE    SPA-GMN-SAIKEITAIKBNLST (IDX-CMB)
+                                   TO  W65-SAIKEITAIKBN-ITEM (IDX-CMB)
            END-PERFORM
       *
            MOVE    SPA-GMN-JYUHENTAIKBN-MAX
@@ -2992,8 +2988,8 @@
                                        W65-SKJTAIKBN-ITEM-STATE
                                        W65-OCRTAIKBN-STATE
                                        W65-OCRTAIKBN-ITEM-STATE
-                                       W65-HEIYOJITAIKBN-STATE
-                                       W65-HEIYOJITAIKBN-ITEM-STATE
+                                       W65-SAIKEITAIKBN-STATE
+                                       W65-SAIKEITAIKBN-ITEM-STATE
                                        W65-JYUHENTAIKBN-STATE
                                        W65-JYUHENTAIKBN-ITEM-STATE
       *
@@ -3037,13 +3033,13 @@
                                    TO  W65-OCRTAIKBN-STATE
                                        W65-OCRTAIKBN-ITEM-STATE
            END-IF
-           MOVE    WIDGET-INSENSITIVE
-                                   TO  W65-HEIYOJIKBN-STATE
-                                       W65-HEIYOJIKBN-ITEM-STATE
-      *+   IF    ( SPA-GMN-HEIYOJIKBN    =   "0" )
-               MOVE    WIDGET-INSENSITIVE
-                                   TO  W65-HEIYOJITAIKBN-STATE
-                                       W65-HEIYOJITAIKBN-ITEM-STATE
+      *    MOVE    WIDGET-INSENSITIVE
+      *                            TO  W65-SAIKEIKBN-STATE
+      *                                W65-SAIKEIKBN-ITEM-STATE
+      *+   IF    ( SPA-GMN-SAIKEIKBN    =   "0" )
+      *+       MOVE    WIDGET-INSENSITIVE
+      *+                             TO  W65-SAIKEITAIKBN-STATE
+      *+                                 W65-SAIKEITAIKBN-ITEM-STATE
       *+   END-IF
            IF    ( SPA-GMN-JYUHENKBN    =   "0" )
                MOVE    WIDGET-INSENSITIVE
@@ -3120,9 +3116,9 @@
            WHEN    018
                MOVE    "OCRTAIKBN"         TO  MCP-WIDGET
            WHEN    019
-               MOVE    "HEIYOJIKBN"        TO  MCP-WIDGET
+               MOVE    "SAIKEIKBN"        TO  MCP-WIDGET
            WHEN    020
-               MOVE    "HEIYOJITAIKBN"     TO  MCP-WIDGET
+               MOVE    "SAIKEITAIKBN"     TO  MCP-WIDGET
            WHEN    021
                MOVE    "JYUHENKBN"         TO  MCP-WIDGET
            WHEN    022
@@ -3186,15 +3182,15 @@
            WHEN    "OCRKBN"
                MOVE    018                 TO  SPA-GMN-CUR
            WHEN    "OCRTAIKBN"
-               MOVE    019                 TO  SPA-GMN-CUR
-           WHEN    "HEIYOJIKBN"
-               MOVE    020                 TO  SPA-GMN-CUR
-           WHEN    "HEIYOJITAIKBN"
                MOVE    021                 TO  SPA-GMN-CUR
+           WHEN    "SAIKEIKBN"
+               MOVE    020                 TO  SPA-GMN-CUR
+           WHEN    "SAIKEITAIKBN"
+               MOVE    051                 TO  SPA-GMN-CUR
            WHEN    "JYUHENKBN"
                MOVE    022                 TO  SPA-GMN-CUR
            WHEN    "JYUHENTAIKBN"
-               MOVE    051                 TO  SPA-GMN-CUR
+               MOVE    019                 TO  SPA-GMN-CUR
            WHEN    "YUKOSTYMD"
                MOVE    052                 TO  SPA-GMN-CUR
            WHEN    "YUKOEDYMD"
@@ -3278,23 +3274,19 @@
            IF    ( SPA-GMN-CUR         =   18 )
                IF    ( W65-OCRTAIKBN-STATE
                                        =   WIDGET-INSENSITIVE )
-                   MOVE    19          TO  SPA-GMN-CUR
-               END-IF
-           END-IF
-      ************
-           IF    ( SPA-GMN-CUR         =   19 OR 20 )
-               MOVE    21              TO  SPA-GMN-CUR
-           END-IF
-      ************
-           IF    ( SPA-GMN-CUR         =   20 )
-               IF    ( W65-HEIYOJITAIKBN-STATE
-                                       =   WIDGET-INSENSITIVE )
                    MOVE    21          TO  SPA-GMN-CUR
                END-IF
            END-IF
       *
            IF    ( SPA-GMN-CUR         =   22 )
                IF    ( W65-JYUHENTAIKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    19          TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR         =   20 )
+               IF    ( W65-SAIKEITAIKBN-STATE
                                        =   WIDGET-INSENSITIVE )
                    MOVE    51          TO  SPA-GMN-CUR
                END-IF
@@ -3613,20 +3605,20 @@
        4200-OCRKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    全国公費併用時記載（記録）対応コンボボックスチェック処理
+      *    請求書公費再掲欄記載コンボボックスチェック処理
       *****************************************************************
-       4200-HEIYOJIKBNLST-CHK-SEC          SECTION.
+       4200-SAIKEIKBNLST-CHK-SEC          SECTION.
       *
            INITIALIZE                  WRK-CMB-ITM-G
       *
            PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-HEIYOJIKBN-MAX )
+                   UNTIL ( IDX-CMB >   SPA-GMN-SAIKEIKBN-MAX )
                     OR   ( WRK-CMB-ITM NOT =   SPACE )
       *
-               IF    ( SPA-GMN-HEIYOJIKBNL (IDX-CMB)
+               IF    ( SPA-GMN-SAIKEIKBNL (IDX-CMB)
                                        =   WRK-CMB-CD )
       *
-                   MOVE    SPA-GMN-HEIYOJIKBNLST (IDX-CMB)
+                   MOVE    SPA-GMN-SAIKEIKBNLST (IDX-CMB)
                                    TO  WRK-CMB-ITM
       *
                END-IF
@@ -3634,12 +3626,12 @@
            END-PERFORM
       *
            IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-HEIYOJIKBNLST (1)
+               MOVE    SPA-GMN-SAIKEIKBNLST (1)
                                    TO  WRK-CMB-ITM
            END-IF
       *
            .
-       4200-HEIYOJIKBNLST-CHK-EXT.
+       4200-SAIKEIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    月途中受給者証変更時負担計算コンボボックスチェック処理
@@ -3700,20 +3692,20 @@
        4200-COMMONTAIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    全国公費併用時記載（記録）対応対象区分コンボボックスチェック処理
+      *    請求書公費再掲欄記載対象区分コンボボックスチェック処理
       *****************************************************************
-       4200-HEIYOJITAIKBNLST-CHK-SEC          SECTION.
+       4200-SAIKEITAIKBNLST-CHK-SEC          SECTION.
       *
            INITIALIZE                  WRK-CMB-ITM-G
       *
            PERFORM VARYING IDX-CMB FROM    1   BY  1
-                   UNTIL ( IDX-CMB >   SPA-GMN-HEIYOJITAIKBN-MAX )
+                   UNTIL ( IDX-CMB >   SPA-GMN-SAIKEITAIKBN-MAX )
                     OR   ( WRK-CMB-ITM NOT =   SPACE )
       *
-               IF    ( SPA-GMN-HEIYOJITAIKBNL (IDX-CMB)
+               IF    ( SPA-GMN-SAIKEITAIKBNL (IDX-CMB)
                                        =   WRK-CMB-CD )
       *
-                   MOVE    SPA-GMN-HEIYOJITAIKBNLST (IDX-CMB)
+                   MOVE    SPA-GMN-SAIKEITAIKBNLST (IDX-CMB)
                                    TO  WRK-CMB-ITM
       *
                END-IF
@@ -3721,12 +3713,12 @@
            END-PERFORM
       *
            IF    ( WRK-CMB-ITM     =   SPACE )
-               MOVE    SPA-GMN-HEIYOJITAIKBNLST (1)
+               MOVE    SPA-GMN-SAIKEITAIKBNLST (1)
                                    TO  WRK-CMB-ITM
            END-IF
       *
            .
-       4200-HEIYOJITAIKBNLST-CHK-EXT.
+       4200-SAIKEITAIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    月途中受給者証変更時負担計算対象区分コンボボックスチェック処理

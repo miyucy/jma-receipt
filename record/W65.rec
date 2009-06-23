@@ -151,8 +151,8 @@ W65	{
 			item	varchar(30)[10];
 			state	int;
 		};
-		CMB_HEIYOJIKBN	{
-			HEIYOJIKBN	{
+		CMB_SAIKEIKBN	{
+			SAIKEIKBN	{
 				value	varchar(60);
 				state	int;
 			};
@@ -160,8 +160,8 @@ W65	{
 			item	varchar(60)[10];
 			state	int;
 		};
-		CMB_HEIYOJITAIKBN	{
-			HEIYOJITAIKBN	{
+		CMB_SAIKEITAIKBN	{
+			SAIKEITAIKBN	{
 				value	varchar(30);
 				state	int;
 			};
