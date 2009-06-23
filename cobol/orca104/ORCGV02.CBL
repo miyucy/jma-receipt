@@ -39,6 +39,7 @@
       *  01.00.09    NACL-多々納  04/02/10  入院食事助成額追加
       *
       *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
+      *  04.05.00    NACL-太田    09/06/23  食事療養費区分"5"追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -95,7 +96,7 @@
                                               PIC X(20).
                    07  SPA-GMN-NYUFTNKBN-MAX  PIC 9(01).
                    07  SPA-GMN-NYUSKJRYYKBNLST
-                                              OCCURS  5.
+                                              OCCURS  6.
                        09  SPA-GMN-NYUSKJRYYKBNL
                                               PIC X(01).
                        09  SPA-GMN-F1L        PIC X(01).
@@ -599,7 +600,10 @@
            MOVE    "4"                 TO  SPA-GMN-NYUSKJRYYKBNL    (5)
            MOVE    "患者負担あり（消費税あり）"
                                        TO  SPA-GMN-NYUSKJRYYKBNMEIL (5)
-           MOVE    5                   TO  SPA-GMN-NYUSKJRYYKBN-MAX
+           MOVE    "5"                 TO  SPA-GMN-NYUSKJRYYKBNL    (6)
+           MOVE    "患者負担あり（消費税なし）"
+                                       TO  SPA-GMN-NYUSKJRYYKBNMEIL (6)
+           MOVE    6                   TO  SPA-GMN-NYUSKJRYYKBN-MAX
       *
       *    法別番号チェック区分
            MOVE    "0"                 TO  SPA-GMN-HBTNUMCHKKBN-LST(1)
