@@ -2338,6 +2338,10 @@
            PERFORM 4200-SAIKEIKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM             TO  SPA-GMN-SAIKEIKBN-G
       *
+           IF    ( SPA-GMN-SAIKEIKBN       =   "1" )
+               MOVE    "0"                 TO  SPA-GMN-SAIKEITAIKBN
+           END-IF
+      *
            .
       *
        4101-SAIKEIKBN-CHK-EXT.
@@ -3033,14 +3037,11 @@
                                    TO  W65-OCRTAIKBN-STATE
                                        W65-OCRTAIKBN-ITEM-STATE
            END-IF
-      *    MOVE    WIDGET-INSENSITIVE
-      *                            TO  W65-SAIKEIKBN-STATE
-      *                                W65-SAIKEIKBN-ITEM-STATE
-      *+   IF    ( SPA-GMN-SAIKEIKBN    =   "0" )
-      *+       MOVE    WIDGET-INSENSITIVE
-      *+                             TO  W65-SAIKEITAIKBN-STATE
-      *+                                 W65-SAIKEITAIKBN-ITEM-STATE
-      *+   END-IF
+           IF    ( SPA-GMN-SAIKEIKBN    =   "1" )
+               MOVE    WIDGET-INSENSITIVE
+                                     TO  W65-SAIKEITAIKBN-STATE
+                                         W65-SAIKEITAIKBN-ITEM-STATE
+           END-IF
            IF    ( SPA-GMN-JYUHENKBN    =   "0" )
                MOVE    WIDGET-INSENSITIVE
                                    TO  W65-JYUHENTAIKBN-STATE
