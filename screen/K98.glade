@@ -557,7 +557,7 @@
       <name>B07S</name>
       <x>488</x>
       <y>524</y>
-      <width>88</width>
+      <width>98</width>
       <height>24</height>
       <can_focus>True</can_focus>
       <accelerator>
