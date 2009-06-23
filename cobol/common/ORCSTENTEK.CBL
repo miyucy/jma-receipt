@@ -1049,6 +1049,7 @@
                                   (IDX-T           >=  10    )
                    IF     (SRY-SRYCD (IDX2)(1:1)   =   "7" )  OR
                           (SRY-SRYCD (IDX2)(1:3)   =   "059" )
+                   OR     (SRY-SRYCD (IDX2)(1:3)   =   "058" )
                        ADD     1                   TO  IDX-T
                        MOVE    SRY-SRYCD (IDX2)    TO  TBL-KIZ-SRYCD
                                                                (IDX-T)
@@ -1070,6 +1071,7 @@
       *            コメントフラグクリア
                    IF     (SRY-SRYCD (IDX2)(1:1)   =   "7" )  OR
                           (SRY-SRYCD (IDX2)(1:3)   =   "059" ) OR
+                          (SRY-SRYCD (IDX2)(1:3)   =   "058" ) OR
                          ((SRY-SRYCD (IDX2)(1:1)   =   "8" )  OR
                           (SRY-SRYCD (IDX2)(1:3)   =   "008"))
                        CONTINUE
