@@ -102,3 +102,16 @@
                 04  W13-KOMUKBN-COUNT   PIC S9(9)   BINARY.
                 04  W13-KOMUKBNLST      PIC X(10)   OCCURS  2 TIMES.
               03  W13-KOMUTENTANKA      PIC S9(2).
+              03  W13-JBISKYKBN-COMBO.
+                04  W13-JBISKYKBN           PIC X(10).
+                04  W13-JBISKYKBN-COUNT   PIC S9(9)   BINARY.
+                04  W13-JBISKYKBNLST      PIC X(10)   OCCURS  2 TIMES.
+              03  W13-KOMUSKYKBN-COMBO.
+                04  W13-KOMUSKYKBN           PIC X(10).
+                04  W13-KOMUSKYKBN-COUNT   PIC S9(9)   BINARY.
+                04  W13-KOMUSKYKBNLST      PIC X(10)   OCCURS  2 TIMES.
+              03  W13-KYUGYOPRTKBN-COMBO.
+                04  W13-KYUGYOPRTKBN           PIC X(50).
+                04  W13-KYUGYOPRTKBN-COUNT   PIC S9(9)   BINARY.
+                04  W13-KYUGYOPRTKBNLST      PIC X(50) OCCURS 2 TIMES.
+
