@@ -43,17 +43,17 @@
       *            ºÞÅÀ¿ô
                    07  ORCSTEN-ZAITEN          PIC  9(08).
       *            ¹ç·×±ÕÎÌ
-                   07  ORCSTEN-CHUSYARYO       PIC  9(07)V9(03).
+                   07  ORCSTEN-CHUSYARYO       PIC  9(07)V9(05).
       *
                    07  ORCSTEN-MEISAI-OCC      OCCURS   50.
       *                ¿ÇÎÅ¥³¡¼¥É
                        09  ORCSTEN-SRYCD       PIC X(09).
       *                ¿ôÎÌ
-                       09  ORCSTEN-SURYO       PIC 9(05)V9(03).
+                       09  ORCSTEN-SURYO       PIC 9(05)V9(05).
       *                »ÄÎÌÇÑ´þ¥³¥á¥ó¥È
                        09  ORCSTEN-HAIK-SRYCD  PIC X(09).
       *                ÇÑ´þ¿ôÎÌ
-                       09  ORCSTEN-HAIK-SURYO   PIC 9(05)V9(03).
+                       09  ORCSTEN-HAIK-SURYO   PIC 9(05)V9(05).
       *                ¥³¥á¥ó¥È
                        09  ORCSTEN-COMMNT-G        OCCURS  5.
                            11  ORCSTEN-COM-SRYCD       PIC X(09).
@@ -68,7 +68,7 @@
       *                    ´ïºà¿ÇÎÅ¥³¡¼¥É
                            11  ORCSTEN-KIZ-SRYCD       PIC X(09).
       *                    ´ïºà¿ôÎÌ
-                           11  ORCSTEN-KIZ-SURYO       PIC 9(05)V9(03).
+                           11  ORCSTEN-KIZ-SURYO       PIC 9(05)V9(05).
       *                    ¥³¥á¥ó¥È
                            11  ORCSTEN-KIZ-COMMNT-G        OCCURS  5.
                                13  ORCSTEN-KIZ-COM-SRYCD   PIC X(09).
