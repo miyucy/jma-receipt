@@ -86,17 +86,13 @@
                     06  W02-YAKUJYOFLG-COUNT
                                              PIC S9(9)   BINARY.
                     06  W02-YAKUJYOFLGLST PIC X(30)   OCCURS  3.
-                  05  W02-DISCOUNTHASU-COMBO.
-                    06  W02-DISCOUNTHASU     PIC X(32).
-                    06  W02-DISCOUNTHASU-COUNT
+                  05  W02-DISCOUNTHASU-CMB-G.
+                    06  W02-DISCOUNTHASU-CMB-OCC      OCCURS  8.
+                      07  W02-DISCOUNTHASU-CMB.
+                        08  W02-DISCOUNTHASU     PIC X(32).
+                        08  W02-DISCOUNTHASU-COUNT
                                              PIC S9(9)   BINARY.
-                    06  W02-DISCOUNTHASULST  PIC X(32)
-                                                      OCCURS  4.
-                  05  W02-DISCOUNTHASU2-CMB.
-                    06  W02-DISCOUNTHASU2     PIC X(32).
-                    06  W02-DISCOUNTHASU2-COUNT
-                                             PIC S9(9)   BINARY.
-                    06  W02-DISCOUNTHASU2LST PIC X(32)
+                        08  W02-DISCOUNTHASULST  PIC X(32)
                                                       OCCURS  4.
                   05  W02-GENTAIKBN-CMB.
                     06  W02-GENTAIKBN        PIC X(22).

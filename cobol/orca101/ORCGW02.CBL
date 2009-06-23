@@ -180,13 +180,6 @@
                            11  SPA-GMN-F11L           PIC X(01).
                            11  SPA-GMN-DISCOUNT-HASU-KBNMEIL
                                                       PIC X(30).
-                       09  SPA-GMN-DISCOUNT-HASU-KBN2LST
-                                                      OCCURS  4.
-                           11  SPA-GMN-DISCOUNT-HASU-KBN2L
-                                                      PIC X(01).
-                           11                         PIC X(01).
-                           11  SPA-GMN-DISCOUNT-HASU-KBN2MEIL
-                                                      PIC X(30).
                        09  SPA-GMN-GENTAIKBNLST
                                                       OCCURS  2.
                            11  SPA-GMN-GENTAIKBNL
@@ -309,17 +302,12 @@
                                13  SPA-GMN-F17        PIC X(01).
                                13  SPA-GMN-CHIHOUNUMKBNMEI
                                                       PIC X(08).
-                           11  SPA-GMN-DISCOUNT-HASU-KBN-G.
+                           11  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                      OCCURS 8.
                                13  SPA-GMN-DISCOUNT-HASU-KBN
                                                       PIC X(01).
                                13  SPA-GMN-F11        PIC X(01).
                                13  SPA-GMN-DISCOUNT-HASU-KBNMEI
-                                                      PIC X(30).
-                           11  SPA-GMN-DISCOUNT-HASU-KBN2-G.
-                               13  SPA-GMN-DISCOUNT-HASU-KBN2
-                                                      PIC X(01).
-                               13                     PIC X(01).
-                               13  SPA-GMN-DISCOUNT-HASU-KBN2MEI
                                                       PIC X(30).
                            11  SPA-GMN-GENTAIKBN-G.
                                13  SPA-GMN-GENTAIKBN
@@ -532,6 +520,7 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDX1                PIC 9(04).
+           03  IDX-DHASU           PIC 9(04).
       *
       *    一時領域
       *
@@ -565,6 +554,17 @@
                05  WRK-HMM         PIC 9(02).
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
+      *
+       01  CONST-AREA.
+           03  CONST-DHASU         PIC 9(05) VALUE 1.
+           03  CONST-DHASU2        PIC 9(05) VALUE 2.
+           03  CONST-DHASU2J       PIC 9(05) VALUE 3.
+           03  CONST-DHASU3        PIC 9(05) VALUE 4.
+           03  CONST-DHASU3J       PIC 9(05) VALUE 5.
+           03  CONST-DHASU4        PIC 9(05) VALUE 6.
+           03  CONST-DHASU4J       PIC 9(05) VALUE 7.
+           03  CONST-DHASU5J       PIC 9(05) VALUE 8.
+           03  CONST-DHASU-MAX     PIC 9(05) VALUE 8.
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -1021,21 +1021,22 @@
                                TO  SPA-GMN-DISCOUNT-HASU-KBNMEIL (4)
            MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (1)
                                TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-      *
-           MOVE    "1"         TO  SPA-GMN-DISCOUNT-HASU-KBN2L    (1)
-           MOVE    "１０円未満四捨五入"  
-                               TO  SPA-GMN-DISCOUNT-HASU-KBN2MEIL (1)
-           MOVE    "2"         TO  SPA-GMN-DISCOUNT-HASU-KBN2L    (2)
-           MOVE    "１０円未満切り捨て" 
-                               TO  SPA-GMN-DISCOUNT-HASU-KBN2MEIL (2)
-           MOVE    "3"         TO  SPA-GMN-DISCOUNT-HASU-KBN2L    (3)
-           MOVE    "１０円未満切り上げ"   
-                               TO  SPA-GMN-DISCOUNT-HASU-KBN2MEIL (3)
-           MOVE    "4"         TO  SPA-GMN-DISCOUNT-HASU-KBN2L    (4)
-           MOVE    "１０円未満端数処理なし"
-                               TO  SPA-GMN-DISCOUNT-HASU-KBN2MEIL (4)
-           MOVE    SPA-GMN-DISCOUNT-HASU-KBN2LST (4)
-                               TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
+                                               (CONST-DHASU)
+           MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (4)
+                               TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                               (CONST-DHASU2)
+                                   SPA-GMN-DISCOUNT-HASU-KBN-G
+                                               (CONST-DHASU2J)
+                                   SPA-GMN-DISCOUNT-HASU-KBN-G
+                                               (CONST-DHASU3)
+                                   SPA-GMN-DISCOUNT-HASU-KBN-G
+                                               (CONST-DHASU3J)
+                                   SPA-GMN-DISCOUNT-HASU-KBN-G
+                                               (CONST-DHASU4)
+                                   SPA-GMN-DISCOUNT-HASU-KBN-G
+                                               (CONST-DHASU4J)
+                                   SPA-GMN-DISCOUNT-HASU-KBN-G
+                                               (CONST-DHASU5J)
       *
            MOVE    "1"         TO  SPA-GMN-GENTAIKBNL    (1)
            MOVE    "自費分を含む"  
@@ -1643,20 +1644,112 @@
                                    =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
                                        TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                  (CONST-DHASU)
                    MOVE    4               TO  IDY
                 END-IF
            END-PERFORM
       *
-      *    請求額端数区分（減免無） 空白の時、"4"とする
+      *    請求額端数区分医保（減免無保険分） 空白の時、"4"とする
            IF      SYS-1001-DISCOUNT-HASU-KBN2    =   SPACE
                MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN2
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       4
                IF      SYS-1001-DISCOUNT-HASU-KBN2
-                                   =   SPA-GMN-DISCOUNT-HASU-KBN2L (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN2LST (IDY)
-                                       TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                  (CONST-DHASU2)
+                   MOVE    4               TO  IDY
+                END-IF
+           END-PERFORM
+      *
+      *    請求額端数区分医保（減免無自費分） 空白の時、"4"とする
+           IF      SYS-1001-DISCOUNT-HASU-KBN2J   =   SPACE
+               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN2J
+           END-IF
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       4
+               IF      SYS-1001-DISCOUNT-HASU-KBN2J
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                  (CONST-DHASU2J)
+                   MOVE    4               TO  IDY
+                END-IF
+           END-PERFORM
+      *
+      *    請求額端数区分労災（減免無保険分） 空白の時、"4"とする
+           IF      SYS-1001-DISCOUNT-HASU-KBN3   =   SPACE
+               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN3
+           END-IF
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       4
+               IF      SYS-1001-DISCOUNT-HASU-KBN3
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                  (CONST-DHASU3)
+                   MOVE    4               TO  IDY
+                END-IF
+           END-PERFORM
+      *
+      *    請求額端数区分労災（減免無自費分） 空白の時、"4"とする
+           IF      SYS-1001-DISCOUNT-HASU-KBN3J   =   SPACE
+               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN3J
+           END-IF
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       4
+               IF      SYS-1001-DISCOUNT-HASU-KBN3J
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                  (CONST-DHASU3J)
+                   MOVE    4               TO  IDY
+                END-IF
+           END-PERFORM
+      *
+      *    請求額端数区分自賠責（減免無保険分） 空白の時、"4"とする
+           IF      SYS-1001-DISCOUNT-HASU-KBN4   =   SPACE
+               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN4
+           END-IF
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       4
+               IF      SYS-1001-DISCOUNT-HASU-KBN4
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                  (CONST-DHASU4)
+                   MOVE    4               TO  IDY
+                END-IF
+           END-PERFORM
+      *
+      *    請求額端数区分自賠責（減免無自費分） 空白の時、"4"とする
+           IF      SYS-1001-DISCOUNT-HASU-KBN4J   =   SPACE
+               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN4J
+           END-IF
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       4
+               IF      SYS-1001-DISCOUNT-HASU-KBN4J
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                  (CONST-DHASU4J)
+                   MOVE    4               TO  IDY
+                END-IF
+           END-PERFORM
+      *
+      *    請求額端数区分公害（減免無自費分） 空白の時、"4"とする
+           IF      SYS-1001-DISCOUNT-HASU-KBN5J   =   SPACE
+               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN5J
+           END-IF
+           PERFORM VARYING IDY     FROM    1   BY  1
+                   UNTIL   IDY     >       4
+               IF      SYS-1001-DISCOUNT-HASU-KBN5J
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                  (CONST-DHASU5J)
                    MOVE    4               TO  IDY
                 END-IF
            END-PERFORM
@@ -1952,8 +2045,12 @@
            MOVE    W02-MEIPRTFLG       TO  SPA-GMN-MEIPRTFLG-G
            MOVE    W02-YYKHYOFLG       TO  SPA-GMN-YYKHYOFLG-G
            MOVE    W02-CHIHOUNUMKBN    TO  SPA-GMN-CHIHOUNUMKBN-G
-           MOVE    W02-DISCOUNTHASU    TO  SPA-GMN-DISCOUNT-HASU-KBN-G
-           MOVE    W02-DISCOUNTHASU2   TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
+           PERFORM VARYING IDX-DHASU   FROM    1   BY  1
+                   UNTIL ( IDX-DHASU   >   CONST-DHASU-MAX )
+               MOVE    W02-DISCOUNTHASU (IDX-DHASU)
+                                   TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                        (IDX-DHASU)
+           END-PERFORM
            MOVE    W02-GENTAIKBN       TO  SPA-GMN-GENTAIKBN-G
            MOVE    W02-TAXHASU         TO  SPA-GMN-TAX-HASU-KBN-G
            MOVE    W02-HIWARIKBN       TO  SPA-GMN-HIWARIKBN-G
@@ -2141,13 +2238,12 @@
                PERFORM 4129-CHIHOUNUMKBN-CHK-SEC
            END-IF
       *
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4130-DISCOUNT-HASU-KBN-CHK-SEC
-           END-IF
-      *
-           IF      SPA-ERRCD           =   SPACE
-               PERFORM 4132-DISCOUNT-HASU-KBN2-CHK-SEC
-           END-IF
+           PERFORM VARYING IDX-DHASU   FROM    1   BY  1
+                   UNTIL ( IDX-DHASU   >   CONST-DHASU-MAX )
+               IF      SPA-ERRCD       =   SPACE
+                   PERFORM 4130-DISCOUNT-HASU-KBN-CHK-SEC
+               END-IF
+           END-PERFORM
       *
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4132-GENTAIKBN-CHK-SEC
@@ -2920,45 +3016,46 @@
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       4
-               IF      SPA-GMN-DISCOUNT-HASU-KBN
+               IF      SPA-GMN-DISCOUNT-HASU-KBN (IDX-DHASU)
                                        =   SPA-GMN-DISCOUNT-HASU-KBNL
                                                               (IDY)
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
                                        TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                             (IDX-DHASU)
                    MOVE    1           TO  FLG-OK
                END-IF
            END-PERFORM
            IF      FLG-OK              =   ZERO
-               MOVE    "0013"          TO  SPA-ERRCD
-               MOVE    38              TO  SPA-GMN-CUR
+               EVALUATE    IDX-DHASU
+               WHEN    CONST-DHASU
+                   MOVE    "0013"      TO  SPA-ERRCD
+                   MOVE    38          TO  SPA-GMN-CUR
+               WHEN    CONST-DHASU2
+                   MOVE    "0020"      TO  SPA-ERRCD
+                   MOVE    201         TO  SPA-GMN-CUR
+               WHEN    CONST-DHASU2J
+                   MOVE    "0207"      TO  SPA-ERRCD
+                   MOVE    211         TO  SPA-GMN-CUR
+               WHEN    CONST-DHASU3
+                   MOVE    "0208"      TO  SPA-ERRCD
+                   MOVE    212         TO  SPA-GMN-CUR
+               WHEN    CONST-DHASU3J
+                   MOVE    "0209"      TO  SPA-ERRCD
+                   MOVE    213         TO  SPA-GMN-CUR
+               WHEN    CONST-DHASU4
+                   MOVE    "0210"      TO  SPA-ERRCD
+                   MOVE    214         TO  SPA-GMN-CUR
+               WHEN    CONST-DHASU4J
+                   MOVE    "0211"      TO  SPA-ERRCD
+                   MOVE    215         TO  SPA-GMN-CUR
+               WHEN    CONST-DHASU5J
+                   MOVE    "0212"      TO  SPA-ERRCD
+                   MOVE    216         TO  SPA-GMN-CUR
+               END-EVALUATE
            END-IF
       *
            .
        4130-DISCOUNT-HASU-KBN-CHK-EXT.
-           EXIT.
-      *****************************************************************
-      *    請求額端数設定（減免無）
-      *****************************************************************
-       4132-DISCOUNT-HASU-KBN2-CHK-SEC     SECTION.
-      *
-           MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       4
-               IF      SPA-GMN-DISCOUNT-HASU-KBN2
-                                   =   SPA-GMN-DISCOUNT-HASU-KBN2L
-                                                              (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN2LST (IDY)
-                                   TO  SPA-GMN-DISCOUNT-HASU-KBN2-G
-                   MOVE    1           TO  FLG-OK
-               END-IF
-           END-PERFORM
-           IF      FLG-OK              =   ZERO
-               MOVE    "0020"          TO  SPA-ERRCD
-               MOVE    201             TO  SPA-GMN-CUR
-           END-IF
-      *
-           .
-       4132-DISCOUNT-HASU-KBN2-CHK-EXT.
            EXIT.
       *****************************************************************
       *    減免計算対象区分
@@ -3589,10 +3686,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SYS-1001-MEIPRTFLG
                    MOVE    SPA-GMN-CHIHOUNUMKBN
                                        TO  SYS-1001-CHIHOUNUMKBN
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU)
                                        TO  SYS-1001-DISCOUNT-HASU-KBN
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN2
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU2)
                                        TO  SYS-1001-DISCOUNT-HASU-KBN2
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU2J)
+                                       TO  SYS-1001-DISCOUNT-HASU-KBN2J
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU3)
+                                       TO  SYS-1001-DISCOUNT-HASU-KBN3
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU3J)
+                                       TO  SYS-1001-DISCOUNT-HASU-KBN3J
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU4)
+                                       TO  SYS-1001-DISCOUNT-HASU-KBN4
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU4J)
+                                       TO  SYS-1001-DISCOUNT-HASU-KBN4J
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBN(CONST-DHASU5J)
+                                       TO  SYS-1001-DISCOUNT-HASU-KBN5J
                    MOVE    SPA-GMN-GENTAIKBN
                                        TO  SYS-1001-GENTAIKBN
                    MOVE    SPA-GMN-TAX-HASU-KBN
@@ -4033,10 +4142,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  W02-OKUSURIFLG
            MOVE    SPA-GMN-YYKHYOFLG-G
                                        TO  W02-YYKHYOFLG
-           MOVE    SPA-GMN-DISCOUNT-HASU-KBN-G
+           PERFORM VARYING IDX-DHASU   FROM    1   BY  1
+                   UNTIL ( IDX-DHASU   >   CONST-DHASU-MAX )
+               MOVE    SPA-GMN-DISCOUNT-HASU-KBN-G (IDX-DHASU)
                                        TO  W02-DISCOUNTHASU
-           MOVE    SPA-GMN-DISCOUNT-HASU-KBN2-G
-                                       TO  W02-DISCOUNTHASU2
+                                             (IDX-DHASU)
+           END-PERFORM
            MOVE    SPA-GMN-GENTAIKBN-G
                                        TO  W02-GENTAIKBN
            MOVE    SPA-GMN-TAX-HASU-KBN-G
@@ -4139,18 +4250,17 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
            MOVE    SPA-CHIHOUNUMKBN-MAX   TO  W02-CHIHOUNUMKBN-COUNT
       *
-           PERFORM VARYING IDX FROM    1   BY  1
+           PERFORM VARYING IDX-DHASU   FROM   1    BY  1
+                   UNTIL ( IDX-DHASU   >   CONST-DHASU-MAX )
+             PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
                MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST(IDX)
-                                       TO  W02-DISCOUNTHASULST (IDX)
-           END-PERFORM    
-           MOVE    4                   TO  W02-DISCOUNTHASU-COUNT     
-           PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       4
-               MOVE    SPA-GMN-DISCOUNT-HASU-KBN2LST(IDX)
-                                       TO  W02-DISCOUNTHASU2LST (IDX)
-           END-PERFORM    
-           MOVE    4                   TO  W02-DISCOUNTHASU2-COUNT     
+                                       TO  W02-DISCOUNTHASULST
+                                               (IDX-DHASU IDX)
+             END-PERFORM
+             MOVE    4                 TO  W02-DISCOUNTHASU-COUNT
+                                               (IDX-DHASU)
+           END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       2
                MOVE    SPA-GMN-GENTAIKBNLST(IDX)
@@ -4457,7 +4567,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    "入金状態（定期請求）入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0020"
-                   MOVE    "請求金端数設定（減免無）入力エラー"
+                   MOVE "請求金端数設定医保（減免無・保険分）入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0021"
                    MOVE    "更正・育成限度額日割計算区分入力エラー"
@@ -4473,6 +4583,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "0206"
                    MOVE    "減免計算対象区分入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0207"
+                   MOVE "請求金端数設定医保（減免無・自費分）入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0208"
+                   MOVE "請求金端数設定労災（減免無・保険分）入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0209"
+                   MOVE "請求金端数設定労災（減免無・自費分）入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0210"
+                 MOVE "請求金端数設定自賠責（減免無・保険分）入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0211"
+                 MOVE "請求金端数設定自賠責（減免無・自費分）入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0212"
+                   MOVE "請求金端数設定公害（減免無・自費分）入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0030"
                    MOVE    "自費名称は全角で入力して下さい。"
@@ -4650,6 +4778,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                     MOVE  "OKUSURIFLG"     TO   MCP-WIDGET
                 WHEN    210
                     MOVE  "YYKHYOFLG"      TO   MCP-WIDGET
+                WHEN    211
+                    MOVE  "DISCOUNTHASU2_J"
+                                           TO   MCP-WIDGET
+                WHEN    212
+                    MOVE  "DISCOUNTHASU3"
+                                           TO   MCP-WIDGET
+                WHEN    213
+                    MOVE  "DISCOUNTHASU3_J"
+                                           TO   MCP-WIDGET
+                WHEN    214
+                    MOVE  "DISCOUNTHASU4"
+                                           TO   MCP-WIDGET
+                WHEN    215
+                    MOVE  "DISCOUNTHASU4_J"
+                                           TO   MCP-WIDGET
+                WHEN    216
+                    MOVE  "DISCOUNTHASU5_J"
+                                           TO   MCP-WIDGET
       *
                 WHEN    40
                     MOVE  "TEIRITU"        TO   MCP-WIDGET
@@ -4705,7 +4851,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(01.00.09) LINE ADD START ----------------------------------
                 WHEN    32  THRU    39
       *          WHEN    32  THRU    33
-                WHEN    201 THRU    209
+                WHEN    201 THRU    216
                     MOVE    0                TO  W02-PAGENO
       *----(01.00.09) LINE ADD END   ----------------------------------
                 WHEN    20  THRU    29
@@ -4766,6 +4912,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               WHEN    "HOSPSBT1"
                   MOVE    32               TO  SPA-GMN-CUR
               WHEN    "SYOHOKBN"
+                  MOVE    12               TO  SPA-GMN-CUR
+              WHEN    "HOSPCDN"
                   MOVE    33               TO  SPA-GMN-CUR
               WHEN    "SKYPRTFLG"
                   MOVE    34               TO  SPA-GMN-CUR
@@ -4783,24 +4931,34 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *********** MOVE    12               TO  SPA-GMN-CUR
                   MOVE    210              TO  SPA-GMN-CUR
               WHEN    "YYKHYOFLG"
-                  MOVE    12               TO  SPA-GMN-CUR
-              WHEN    "HOSPCDN"
-                  MOVE    38               TO  SPA-GMN-CUR
+                  MOVE    203               TO  SPA-GMN-CUR
               WHEN    "DISCOUNTHASU"
                   MOVE    201              TO  SPA-GMN-CUR
               WHEN    "DISCOUNTHASU2"
-                  MOVE    208               TO  SPA-GMN-CUR
+                  MOVE    211               TO  SPA-GMN-CUR
+              WHEN    "DISCOUNTHASU2_J"
+                  MOVE    212               TO  SPA-GMN-CUR
+              WHEN    "DISCOUNTHASU3"
+                  MOVE    213               TO  SPA-GMN-CUR
+              WHEN    "DISCOUNTHASU3_J"
+                  MOVE    214               TO  SPA-GMN-CUR
+              WHEN    "DISCOUNTHASU4"
+                  MOVE    215               TO  SPA-GMN-CUR
+              WHEN    "DISCOUNTHASU4_J"
+                  MOVE    216               TO  SPA-GMN-CUR
+              WHEN    "DISCOUNTHASU5_J"
+                  MOVE    202               TO  SPA-GMN-CUR
               WHEN    "GENTAIKBN"
-                  MOVE    39               TO  SPA-GMN-CUR
+                  MOVE    38               TO  SPA-GMN-CUR
               WHEN    "TAXHASU"
-                  MOVE    202              TO  SPA-GMN-CUR
+                  MOVE    205              TO  SPA-GMN-CUR
               WHEN    "HIWARIKBN"
       *********   MOVE    01               TO  SPA-GMN-CUR
-                  MOVE    203              TO  SPA-GMN-CUR
+                  MOVE     39              TO  SPA-GMN-CUR
               WHEN    "DATACREATE"
                   MOVE    204              TO  SPA-GMN-CUR
               WHEN    "DATATEISYU"
-                  MOVE    205              TO  SPA-GMN-CUR
+                  MOVE    208              TO  SPA-GMN-CUR
               WHEN    "JIHIPOSITION"
                   MOVE    207              TO  SPA-GMN-CUR
               WHEN    "CHIHOUNUMKBN"

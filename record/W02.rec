@@ -1,5 +1,5 @@
 W02	{
-	fixed12	{
+	f1	{
 	        B03	{
 	           	state	int;
 	        };
@@ -109,7 +109,7 @@ W02	{
 					count	int;
 					item	varchar(30)[3];
 				};
-				DISCOUNTHASU_COMBO	{
+				DISCOUNTHASU_CMB	{
 					DISCOUNTHASU	{
 						value	varchar(32);
 					};
@@ -118,6 +118,48 @@ W02	{
 				};
 				DISCOUNTHASU2_CMB	{
 					DISCOUNTHASU2	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[4];
+				};
+				DISCOUNTHASU2_J_CMB	{
+					DISCOUNTHASU2_J	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[4];
+				};
+				DISCOUNTHASU3_CMB	{
+					DISCOUNTHASU3	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[4];
+				};
+				DISCOUNTHASU3_J_CMB	{
+					DISCOUNTHASU3_J	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[4];
+				};
+				DISCOUNTHASU4_CMB	{
+					DISCOUNTHASU4	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[4];
+				};
+				DISCOUNTHASU4_J_CMB	{
+					DISCOUNTHASU4_J	{
+						value	varchar(32);
+					};
+					count	int;
+					item	varchar(32)[4];
+				};
+				DISCOUNTHASU5_J_CMB	{
+					DISCOUNTHASU5_J	{
 						value	varchar(32);
 					};
 					count	int;
