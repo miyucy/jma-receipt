@@ -167,7 +167,8 @@
       *
            03  WRK-SRYYMD          PIC X(08). 
            03  WRK-FILMCNT         PIC 9(02). 
-           03  WRK-SURYO           PIC ZZZZZZZ9.9(5).
+           03  WRK-SURYO           PIC ZZZZZZZ9.999.
+           03  WRK-SURYO-5         PIC ZZZZZ9.99999.
            03  WRK-FILMNUM         PIC ZZZZZZ.
            03  WRK-FILMDEV         PIC ZZ.
            03  WRK-Z9              PIC ----------------.
@@ -1905,9 +1906,19 @@
                MOVE    SPACE               TO  WRK-LF02-SURYO
                                                         (IDX-LF IDX-S)
            ELSE
-               MOVE    TBL-SURYO (IDX-LF IDX-S)    TO  WRK-SURYO
-               MOVE    WRK-SURYO           TO  WRK-LF02-SURYO
+      *        小数点以下４桁以上判定
+               MOVE    TBL-SURYO (IDX-LF IDX-S)    TO  WRK-SURYO9
+               IF      WRK-SURYO-S2(4:2)       =   ZERO
+      *            小数点以下３桁まで
+                   MOVE    TBL-SURYO (IDX-LF IDX-S)    TO  WRK-SURYO
+                   MOVE    WRK-SURYO           TO  WRK-LF02-SURYO
                                                         (IDX-LF IDX-S)
+               ELSE
+      *            小数点以下４桁以上
+                   MOVE    TBL-SURYO (IDX-LF IDX-S)    TO  WRK-SURYO-5
+                   MOVE    WRK-SURYO-5         TO  WRK-LF02-SURYO
+                                                        (IDX-LF IDX-S)
+               END-IF
            END-IF
       *数量コード
            MOVE    TBL-SURYOCD (IDX-LF IDX-S) 
