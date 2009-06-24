@@ -51,6 +51,7 @@
       *  03.05.00    NACL-多々納   07/05/22  再印刷処理追加
       *  04.01.00    NACL-森脇     07/11/29  帳票一本化、服用時点変更
       *  04.01.01    NACL-森脇     08/02/01  プログラムオプション追加
+      *  04.05.00    NACL-森脇     09/06/22  小数点以下５桁に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -141,7 +142,7 @@
       *
            03  WRK-SSTKIJUNCD      PIC X(05).
            03  WRK-HENKBN-G.
-               05  WRK-HENKBN      PIC 9(08)V9(03)
+               05  WRK-HENKBN      PIC 9(08)V9(05)
                                                OCCURS  5.
       *
            03  WRK-HOSPNAME        PIC X(100).
@@ -159,9 +160,9 @@
            03  WRK-TANINAME        PIC X(24).
            03  WRK-WARI            PIC 9(08).
            03  WRK-KAISU           PIC 9(01).
-           03  WRK-ZENSUMAE        PIC X(20).
-           03  WRK-ZENSUATO        PIC X(20).
-           03  WRK-ZENSURYO        PIC 9(08)V9(03).
+           03  WRK-ZENSUMAE        PIC X(40).
+           03  WRK-ZENSUATO        PIC X(40).
+           03  WRK-ZENSURYO        PIC 9(08)V9(05).
       *
            03  WRK-HENYMDG         PIC X(22).
            03  WRK-SYMD.
@@ -169,17 +170,17 @@
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
       *
-           03  WRK-HENSURYO        PIC X(12).
-           03  WRK-SURYO           PIC 9(08)V9(03).
+           03  WRK-HENSURYO        PIC X(14).
+           03  WRK-SURYO           PIC 9(08)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(08).
-               05  WRK-SURYO-S2    PIC 9(03).
+               05  WRK-SURYO-S2    PIC 9(05).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1    PIC ZZZZZZZZ.
                05  WRK-SURYO-Z1-9  REDEFINES   WRK-SURYO-Z1
                                    PIC ZZZZZZZ9.
                05  WRK-SURYO-Z2    PIC X(01).
-               05  WRK-SURYO-Z3    PIC ZZZ.
+               05  WRK-SURYO-Z3    PIC ZZZZZ.
       *
            03  WRK-ZZ9             PIC ZZ9.
            03  WRK-Z9              PIC Z9.
@@ -951,7 +952,7 @@
       *
       *    数量Ｚ編集
            PERFORM 250-ZHEN-SURYO-SET-SEC
-           IF      WRK-SURYO-X(12:)    =   SPACE
+      *     IF      WRK-SURYO-X(14:)    =   SPACE
       *        全角変換
                MOVE    SPACE           TO  ORCSKANACHKAREA
                INITIALIZE                  ORCSKANACHKAREA
@@ -968,14 +969,14 @@
                        INTO                WRK-HENSYUDATA
                END-STRING
                MOVE    WRK-HENSYUDATA  TO  WRK-ZENSUATO
-           END-IF
+      *     END-IF
       *
       *    換算されていれば元の数量をセット
            IF      TNS-TANINAME    NOT =   WRK-TANINAME
                MOVE    ORCHC30-SURYO(CNT-PARA) TO  WRK-SURYO
       *        数量Ｚ編集
                PERFORM 250-ZHEN-SURYO-SET-SEC
-               IF      WRK-SURYO-X(12:)    =   SPACE
+      *         IF      WRK-SURYO-X(14:)    =   SPACE
       *            全角変換
                    MOVE    SPACE           TO  ORCSKANACHKAREA
                    INITIALIZE                  ORCSKANACHKAREA
@@ -993,7 +994,7 @@
                                    INTO        WRK-HENSYUDATA
                    END-STRING
                    MOVE    WRK-HENSYUDATA  TO  WRK-ZENSUMAE
-               END-IF
+      *         END-IF
            END-IF
       *
            .
@@ -1188,7 +1189,7 @@
       *
       *    数量小数点以下編集
            MOVE    ZERO            TO  FLG-OK
-           PERFORM VARYING IDX-STR     FROM    3   BY  -1
+           PERFORM VARYING IDX-STR     FROM    5   BY  -1
                    UNTIL   IDX-STR     <   1
                IF      WRK-SURYO-S2(IDX-STR:1) NOT =   ZERO
                    MOVE    1           TO  FLG-OK
@@ -1209,7 +1210,7 @@
            MOVE    SPACE           TO  WRK-HENSURYO
            MOVE    ZERO            TO  IDX-STR1
            PERFORM VARYING IDX-STR     FROM    1   BY  1
-                   UNTIL   IDX-STR     >   12
+                   UNTIL   IDX-STR     >   14
                IF      WRK-SURYO-X(IDX-STR:1)  NOT =   SPACE
                    COMPUTE IDX-STR1    =   IDX-STR1    +   1
                    MOVE  WRK-SURYO-X(IDX-STR:1)
