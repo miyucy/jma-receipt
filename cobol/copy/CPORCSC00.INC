@@ -201,7 +201,7 @@
       *        当日チェック用（点滴）
                05  LNK-ACCT2-SRYCD           PIC X(09).
                05  LNK-ACCT2-ZAINUM          PIC 9(08).
-               05  LNK-ACCT2-CSYYOURYO       PIC 9(08).
+               05  LNK-ACCT2-CSYYOURYO       PIC 9(08)V9(5).
       *        静脈注射
                05  LNK-ACCT2-SRYCD-JYO1      PIC X(09).
                05  LNK-ACCT2-SRYCD-JYO2      PIC X(09).
