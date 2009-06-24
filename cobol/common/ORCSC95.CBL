@@ -3845,11 +3845,15 @@
                            MOVE    1           TO  FLG-TENKI
       *                中止
                        WHEN    "3"
-                         IF      PTBYO-TENKIYMD  <=  SPA-SRYYMD
-                           IF      PTBYO-TENKIYMD  >=  WRK-TENKIYMD
-                               MOVE    PTBYO-TENKIYMD  TO  WRK-TENKIYMD
+                           IF      PTBYO-TENKIYMD  <=  SPA-SRYYMD
+                               IF      PTBYO-TENKIYMD  >=  WRK-TENKIYMD
+                                   MOVE    PTBYO-TENKIYMD
+                                                       TO  WRK-TENKIYMD
+                               END-IF
+                           ELSE
+      *                        転帰日が未来日は継続とする
+                               MOVE    1           TO  FLG-TENKI
                            END-IF
-                         END-IF
                    END-EVALUATE
                END-IF
                MOVE    "tbl_ptbyomei"      TO  MCP-TABLE
