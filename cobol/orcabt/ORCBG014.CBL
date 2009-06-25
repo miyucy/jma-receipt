@@ -40,6 +40,7 @@
       *  04.02.01    NACL-森脇     08/04/15  平成２０年４月改正
       *  04.03.00    NACL-森脇     08/10/02  協会けんぽ対応
       *  04.04.00    NACL-森脇     09/03/10  オンライン返戻対応
+      *  04.05.00    NACL-森脇     09/06/09  食事療養費、食事負担金追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -135,6 +136,8 @@
            03  TOKEI-NAME              PIC X(26).
            03  TOKEI-NISSU             PIC 9(06).
            03  TOKEI-TENSU             PIC 9(10).
+           03  TOKEI-RYOYOHI           PIC 9(09).
+           03  TOKEI-SHOKUJIFTN        PIC 9(09).
       *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
@@ -251,6 +254,8 @@
                05  SUM-GOK-KENSU       PIC 9(06).
                05  SUM-GOK-NISSU       PIC 9(06).
                05  SUM-GOK-TENSU       PIC 9(10).
+               05  SUM-GOK-RYOYOHI     PIC 9(09).
+               05  SUM-GOK-SHOKUJIFTN  PIC 9(09).
            03  SUM-GOK-TEISYUTU        PIC X(01).
       *
       *    一時領域
@@ -298,7 +303,9 @@
            03  WRK-PATH-PATHNAME       PIC X(64).
            03  WRK-MISYUFLG            PIC X(02).
            03  WRK-TENSU               PIC 9(10).
-           03  WRK-TEISYUTUSAKI-KBN   PIC 9(01).
+           03  WRK-TEISYUTUSAKI-KBN    PIC 9(01).
+           03  WRK-RYOYOHI             PIC X(09).
+           03  WRK-SHOKUJIFTN          PIC X(09).
       *
       *    日付編集用
            03  WRK-SYSYMD              PIC X(08).
@@ -332,6 +339,7 @@
            03  WRK-Z4                  PIC ZZZZ.
            03  WRK-Z5                  PIC ZZZZ9.
            03  WRK-Z8                  PIC ZZZZZZZ9.
+           03  WRK-Z9                  PIC ZZZZZZZZ9.
       *
       *    印刷編集領域
        01  WRK-PRT-AREA.
@@ -343,6 +351,8 @@
                05  WRK-PRT-KENSU       PIC 9(06).
                05  WRK-PRT-NISSU       PIC 9(06).
                05  WRK-PRT-TENSU       PIC 9(10).
+               05  WRK-PRT-RYOYOHI     PIC 9(09).
+               05  WRK-PRT-SHOKUJIFTN  PIC 9(09).
       *    帳票タイトル
            03  WRK-PRT1-AREA.
                05  WRK-PRT1-HOSPNAME   PIC X(50).
@@ -372,6 +382,13 @@
                05  WRK-PRT3-FILLER3    PIC X(02).
                05  WRK-PRT3-TENSU      PIC X(08).
                05  WRK-PRT3-FILLER4    PIC X(02).
+               05  WRK-PRT3-FILLER5    PIC X(05).
+               05  WRK-PRT3-FILLER6    PIC X(13).
+               05  WRK-PRT3-RYOYOHI    PIC X(09).
+               05  WRK-PRT3-FILLER7    PIC X(08).
+               05  WRK-PRT3-FILLER8    PIC X(13).
+               05  WRK-PRT3-SHOKUJIFTN PIC X(09).
+               05  WRK-PRT3-FILLER9    PIC X(02).
       *    患者明細
            03  WRK-PRT4-AREA.
                05  WRK-PRT4-G              OCCURS  2.
@@ -383,6 +400,17 @@
                    07  WRK-PRT4-FILLER3    PIC X(02).
                    07  WRK-PRT4-TENSU      PIC X(08).
                    07  WRK-PRT4-FILLER4    PIC X(02).
+      *    患者明細２
+           03  WRK-PRT5-AREA.
+               05  WRK-PRT5-G.
+                   07  FILLER          PIC X(67).
+               05  WRK-PRT5-FILLER1    PIC X(05).
+               05  WRK-PRT5-FILLER2    PIC X(13).
+               05  WRK-PRT5-RYOYOHI    PIC X(09).
+               05  WRK-PRT5-FILLER3    PIC X(08).
+               05  WRK-PRT5-FILLER4    PIC X(13).
+               05  WRK-PRT5-SHOKUJIFTN PIC X(09).
+               05  WRK-PRT5-FILLER5    PIC X(02).
       *    CSV編集用
            COPY    "CPCSV.INC".
       *
@@ -838,6 +866,8 @@
                MOVE    1                   TO  IDX
                MOVE    RECE10-FTNMONEY(1)  TO  WRK-TENSU
                MOVE    RECE10-KIGO         TO  WRK-KIGO
+               MOVE    RECE10-SHOKUJIFTN(1)    TO  WRK-SHOKUJIFTN
+               MOVE    RECE10-SHOKUJIRYOYOHI(1)    TO  WRK-RYOYOHI
                PERFORM 240-PTINF-SYUKEI-SEC
            END-IF
       *
@@ -877,6 +907,8 @@
                MOVE    1                   TO  IDX
                MOVE    RECE10-FTNMONEY(1)  TO  WRK-TENSU
                MOVE    RECE10-KIGO         TO  WRK-KIGO
+               MOVE    RECE10-SHOKUJIFTN(1)    TO  WRK-SHOKUJIFTN
+               MOVE    RECE10-SHOKUJIRYOYOHI(1)    TO  WRK-RYOYOHI
                PERFORM 240-PTINF-SYUKEI-SEC
            END-IF
       *
@@ -1673,6 +1705,8 @@
       *
            MOVE    RECE10-TOTALTEN(IDX)    TO  WRK-TENSU
            MOVE    SPACE                   TO  WRK-KIGO
+           MOVE    RECE10-SHOKUJIFTN(IDX)  TO  WRK-SHOKUJIFTN
+           MOVE    RECE10-SHOKUJIRYOYOHI(IDX)  TO  WRK-RYOYOHI
       *    患者別集計処理
            PERFORM 240-PTINF-SYUKEI-SEC
       *
@@ -1739,6 +1773,8 @@
            MOVE    PTINF-NAME              TO  TOKEI-NAME
            MOVE    RECE10-JNISSU(IDX)      TO  TOKEI-NISSU
            MOVE    WRK-TENSU               TO  TOKEI-TENSU
+           MOVE    WRK-RYOYOHI             TO  TOKEI-RYOYOHI
+           MOVE    WRK-SHOKUJIFTN          TO  TOKEI-SHOKUJIFTN
            WRITE   TOKEI-REC
       *
            .
@@ -3008,6 +3044,35 @@
       *****************************************************************
       *    帳票編集<明細行>処理
       *****************************************************************
+       3202-BODY-NYUIN-SEC SECTION.
+      *
+           ADD     TOKEI-RYOYOHI       TO  SUM-GOK-RYOYOHI(1)
+                                           SUM-GOK-RYOYOHI(2)
+                                           SUM-GOK-RYOYOHI(3)
+           ADD     TOKEI-SHOKUJIFTN    TO  SUM-GOK-SHOKUJIFTN(1)
+                                           SUM-GOK-SHOKUJIFTN(2)
+                                           SUM-GOK-SHOKUJIFTN(3)
+      *
+           MOVE    SPACE           TO  WRK-PRT5-AREA
+           MOVE    WRK-PRT4-G(IDX) TO  WRK-PRT5-G
+           MOVE    "　"            TO  WRK-PRT5-FILLER1
+           MOVE    "食事療養費　"  TO  WRK-PRT5-FILLER2
+           MOVE    TOKEI-RYOYOHI   TO  WRK-Z9
+           MOVE    WRK-Z9          TO  WRK-PRT5-RYOYOHI
+           MOVE    "円　　"        TO  WRK-PRT5-FILLER3
+           MOVE    "食事負担金　"  TO  WRK-PRT5-FILLER4
+           MOVE    TOKEI-SHOKUJIFTN    TO  WRK-Z9
+           MOVE    WRK-Z9          TO  WRK-PRT5-SHOKUJIFTN
+           MOVE    "円"            TO  WRK-PRT5-FILLER5
+           MOVE    WRK-PRT5-AREA   TO  WRK-PRT-LINE
+           PERFORM 320-BODY-SET-SEC
+           .
+       3202-BODY-NYUIN-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    帳票編集<明細行>処理
+      *****************************************************************
        3202-BODY-SUB-HEN-SEC       SECTION.
       *
            MOVE    SPACE           TO  WRK-PRT4-AREA
@@ -3034,8 +3099,12 @@
       *
       *    患者情報セット
            IF      IDX                 >   ZERO
-               MOVE    WRK-PRT4-AREA   TO  WRK-PRT-LINE
-               PERFORM 320-BODY-SET-SEC
+               IF      WRK-NYUGAIKBN   =   "2"
+                   PERFORM 3202-BODY-NYUIN-SEC
+               ELSE
+                   MOVE    WRK-PRT4-AREA   TO  WRK-PRT-LINE
+                   PERFORM 320-BODY-SET-SEC
+               END-IF
            END-IF
       *
            .
@@ -3067,8 +3136,12 @@
       *
       *    患者情報セット
            IF      IDX                 >   ZERO
-               MOVE    WRK-PRT4-AREA   TO  WRK-PRT-LINE
-               PERFORM 320-BODY-SET-SEC
+               IF      WRK-NYUGAIKBN   =   "2"
+                   PERFORM 3202-BODY-NYUIN-SEC
+               ELSE
+                   MOVE    WRK-PRT4-AREA   TO  WRK-PRT-LINE
+                   PERFORM 320-BODY-SET-SEC
+               END-IF
            END-IF
       *
            .
@@ -3096,8 +3169,12 @@
       *
       *    患者情報セット
            IF      IDX                 >   ZERO
-               MOVE    WRK-PRT4-AREA   TO  WRK-PRT-LINE
-               PERFORM 320-BODY-SET-SEC
+               IF      WRK-NYUGAIKBN   =   "2"
+                   PERFORM 3202-BODY-NYUIN-SEC
+               ELSE
+                   MOVE    WRK-PRT4-AREA   TO  WRK-PRT-LINE
+                   PERFORM 320-BODY-SET-SEC
+               END-IF
            END-IF
       *
            .
@@ -3128,6 +3205,8 @@
                MOVE    TOKEI-RENNUM        TO  CSV-RENNUM
                MOVE    0                   TO  CSV-NISSU
                MOVE    0                   TO  CSV-TENSU
+               MOVE    0                   TO  CSV-RYOYOHI
+               MOVE    0                   TO  CSV-SHOKUJIFTN
            ELSE
                MOVE    TOKEI-NISSU         TO  WRK-Z5
                MOVE    WRK-Z5              TO  WRK-PRT4-NISSU(IDX)
@@ -3137,6 +3216,8 @@
                MOVE    TOKEI-RENNUM        TO  CSV-RENNUM
                MOVE    TOKEI-NISSU         TO  CSV-NISSU
                MOVE    TOKEI-TENSU         TO  CSV-TENSU
+               MOVE    TOKEI-RYOYOHI       TO  CSV-RYOYOHI
+               MOVE    TOKEI-SHOKUJIFTN    TO  CSV-SHOKUJIFTN
            END-IF
       *
       *    患者名セット
@@ -3191,6 +3272,10 @@
                    CSV-NISSU         DELIMITED  BY  SIZE
                    ","               DELIMITED  BY  SIZE
                    CSV-TENSU         DELIMITED  BY  SIZE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-RYOYOHI       DELIMITED  BY  SIZE
+                   ","               DELIMITED  BY  SIZE
+                   CSV-SHOKUJIFTN    DELIMITED  BY  SIZE
                              INTO    RECECSV-REC
            END-STRING
            WRITE   RECECSV-REC
@@ -3207,12 +3292,17 @@
                                            SUM-GOK-TENSU(3)
            MOVE    TOKEI-TEISYUTU      TO  SUM-GOK-TEISYUTU
       *
+           IF      WRK-NYUGAIKBN   =   "2"
+               PERFORM 3202-BODY-NYUIN-SEC
+               MOVE    ZERO            TO  IDX
+           ELSE
       *    患者情報セット
            IF      IDX             =   2
                MOVE    WRK-PRT4-AREA   TO  WRK-PRT-LINE
                PERFORM 320-BODY-SET-SEC
                MOVE    SPACE           TO  WRK-PRT4-AREA
                MOVE    ZERO            TO  IDX
+           END-IF
            END-IF
       *
            .
@@ -3229,6 +3319,8 @@
            MOVE    SUM-GOK-KENSU(1)    TO  WRK-PRT-KENSU
            MOVE    SUM-GOK-NISSU(1)    TO  WRK-PRT-NISSU
            MOVE    SUM-GOK-TENSU(1)    TO  WRK-PRT-TENSU
+           MOVE    SUM-GOK-RYOYOHI(1)  TO  WRK-PRT-RYOYOHI
+           MOVE    SUM-GOK-SHOKUJIFTN(1)   TO  WRK-PRT-SHOKUJIFTN
            MOVE    "　　　　　　　　　小計"
                                        TO  WRK-PRT-GOKEI
       *    合計行セット
@@ -3266,6 +3358,19 @@
                MOVE    WRK-Z5          TO  WRK-PRT3-NISSU
                MOVE    WRK-PRT-TENSU   TO  WRK-Z8
                MOVE    WRK-Z8          TO  WRK-PRT3-TENSU
+           END-IF
+      *
+           IF    ( WRK-PRT-RYOYOHI     NOT =  0 )  OR
+                 ( WRK-PRT-SHOKUJIFTN  NOT =  0 )
+               MOVE    "　"            TO  WRK-PRT3-FILLER5
+               MOVE    "食事療養費　"  TO  WRK-PRT3-FILLER6
+               MOVE    WRK-PRT-RYOYOHI     TO  WRK-Z9
+               MOVE    WRK-Z9          TO  WRK-PRT3-RYOYOHI
+               MOVE    "円　　"        TO  WRK-PRT3-FILLER7
+               MOVE    "食事負担金　"  TO  WRK-PRT3-FILLER8
+               MOVE    WRK-PRT-SHOKUJIFTN  TO  WRK-Z9
+               MOVE    WRK-Z9          TO  WRK-PRT3-SHOKUJIFTN
+               MOVE    "円"            TO  WRK-PRT3-FILLER9
            END-IF
            MOVE    WRK-PRT3-AREA   TO  WRK-PRT-LINE
       *
@@ -3453,6 +3558,8 @@
            MOVE    SUM-GOK-KENSU(2)    TO  WRK-PRT-KENSU
            MOVE    SUM-GOK-NISSU(2)    TO  WRK-PRT-NISSU
            MOVE    SUM-GOK-TENSU(2)    TO  WRK-PRT-TENSU
+           MOVE    SUM-GOK-RYOYOHI(2)  TO  WRK-PRT-RYOYOHI
+           MOVE    SUM-GOK-SHOKUJIFTN(2)   TO  WRK-PRT-SHOKUJIFTN
            EVALUATE    WRK-HKNKBN
                WHEN    "1" 
                    MOVE    "　　　　　　　医保合計"
@@ -3491,6 +3598,8 @@
            MOVE    SUM-GOK-KENSU(3)    TO  WRK-PRT-KENSU
            MOVE    SUM-GOK-NISSU(3)    TO  WRK-PRT-NISSU
            MOVE    SUM-GOK-TENSU(3)    TO  WRK-PRT-TENSU
+           MOVE    SUM-GOK-RYOYOHI(3)  TO  WRK-PRT-RYOYOHI
+           MOVE    SUM-GOK-SHOKUJIFTN(3)   TO  WRK-PRT-SHOKUJIFTN
            EVALUATE    WRK-ZAIKBN
                WHEN    "1"
                    MOVE    "　　　　　レセプト合計"
