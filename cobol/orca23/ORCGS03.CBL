@@ -187,6 +187,8 @@
       *
                05  SPA-NAI-AREA.
                    07  SPA-NAI-HEAD-AREA.
+                       09  SPA-NAI-MEIDSPCTRL      PIC X(01).
+                       09  SPA-NAI-MEIDSPKBN       PIC X(01).
                        09  SPA-NAI-HEAD-DENPJTIKBN PIC X(01).
                        09  SPA-NAI-SRYKA           PIC X(02).
                        09  SPA-NAI-DISCOUNT-KBN        PIC  X(02).
@@ -233,6 +235,7 @@
            03  FLG-SMEILIST1-ROW                   PIC 9(01).
            03  FLG-HIZUKE-ERR                      PIC 9(01).
            03  FLG-PTINF                           PIC 9(01).
+           03  FLG-MEIVISIBLE                      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -287,6 +290,7 @@
            03  WRK-MEISAI-PG                       PIC X(20).
            03  WRK-SKYPRTKBN                       PIC X(01).
            03  WRK-SRYPRTKBN                       PIC X(01).
+           03  WRK-MEIDSPKBN                       PIC X(01).
            03  WRK-OLD-NYUHEN-YMD                  PIC X(08).
       *
        01  WRK-ROW.
@@ -547,6 +551,16 @@
        310-SPA-SET-SEC                 SECTION.
       *
            INITIALIZE                  SPA-S03
+           PERFORM 3101-SPA-SET-SEC
+      *
+           .
+       310-SPA-SET-EXT.
+           EXIT.
+      *************************************************************
+      *    画面編集処理
+      *************************************************************
+       3101-SPA-SET-SEC                 SECTION.
+      *
       *
       *    コンボ編集処理
            PERFORM 3101-COMBO-SET-SEC
@@ -600,7 +614,7 @@
            END-EVALUATE
       *
            .
-       310-SPA-SET-EXT.
+       3101-SPA-SET-EXT.
            EXIT.
       *
       *************************************************************
@@ -1077,6 +1091,18 @@
            PERFORM UNTIL ( FLG-SYUMEI NOT  =   ZERO )
                     OR   ( IDX1           >=   CONST-SMEILIST-MAX )
       *
+             MOVE    1                   TO  FLG-MEIVISIBLE
+      *
+             IF    ( SMEI-JOUTAIKBN      =   "2" OR "4" OR "6" )
+              AND  ( SMEI-NYUHEN-MONEY   =   ZERO )
+                 MOVE      "1"           TO  SPA-NAI-MEIDSPCTRL
+                 IF  ( SPA-NAI-MEIDSPKBN =   "1" )
+                     MOVE    ZERO        TO  FLG-MEIVISIBLE
+                 END-IF
+             END-IF
+      *
+             IF    ( FLG-MEIVISIBLE      =   1 )
+      *
                COMPUTE IDX1    =   IDX1    +   1
       *
       *
@@ -1143,6 +1169,7 @@
       *
                MOVE    SMEI-NYUKIN-HOHO
                                        TO SPA-NAI-TNYKN-HOHO (IDX1)
+             END-IF
       *
                MOVE    "tbl_syumei"    TO  MCP-TABLE
                MOVE    "key6"          TO  MCP-PATHNAME
@@ -1566,8 +1593,7 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   SPA-GMN-SMEILIST-MAX )
       *
-               MOVE    SPA-GMN-TDENPEDANUM  (IDX0)
-                                           TO  WRK-EDABAN
+               MOVE    IDX0                TO  WRK-EDABAN
                MOVE    WRK-EDABAN          TO  S03-TRENNUM (IDX0)
                MOVE    SPA-GMN-TSKYMONEY    (IDX0)
                                            TO  WRK-Z9
@@ -1596,6 +1622,10 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( SPA-NAI-MEIDSPCTRL      =   1 )
+                   MOVE    "表示切替"      TO  S03-B05-LABEL
+           END-IF
       *
       *    自費名称
            PERFORM     VARYING IDX0    FROM    1   BY  1      
@@ -1868,6 +1898,9 @@
       *    処理区分
            WHEN    "CLICKED"           ALSO    "B03"
                PERFORM 430-SYORIKBN-SEC
+      *    明細表示区分
+           WHEN    "CLICKED"           ALSO    "B05"
+               PERFORM 450-MEIDSPKBN-SEC
       *    予約登録
            WHEN    "CLICKED"           ALSO    "B10"
                PERFORM 480-YOYAKU-SEC
@@ -2388,7 +2421,11 @@
                        CONTINUE
                    ELSE
                        MOVE    2       TO  SPA-GMN-CUR
-                       MOVE    "0017"  TO  SPA-ERRCD
+                       IF    ( SPA-NAI-NYUKIN-MOTO =   ZERO )
+                           MOVE    "0018"  TO  SPA-ERRCD
+                       ELSE
+                           MOVE    "0017"  TO  SPA-ERRCD
+                       END-IF
                    END-IF
                END-IF
            END-IF
@@ -3285,6 +3322,25 @@
        430-SYORIKBN-EXT.
            EXIT.
       **************************************************************
+      *    明細表示区分変更処理
+      **************************************************************
+       450-MEIDSPKBN-SEC                SECTION.
+      *
+           IF    ( SPA-NAI-MEIDSPCTRL  =   "1" )
+             IF    ( SPA-NAI-MEIDSPKBN   =   " " )
+               MOVE    "1"         TO  SPA-NAI-MEIDSPKBN
+             ELSE
+               MOVE    " "         TO  SPA-NAI-MEIDSPKBN
+             END-IF
+      *
+             PERFORM 4200-SPA-SET-SEC
+             MOVE    1               TO  FLG-SMEILIST1-ROW
+           END-IF
+      *
+           .
+       450-MEIDSPKBN-EXT.
+           EXIT.
+      **************************************************************
       *    予約登録へ
       **************************************************************
        480-YOYAKU-SEC             SECTION.
@@ -3414,15 +3470,20 @@
       *****************************************************************
        4200-SPA-SET-SEC                SECTION.
       *
-           MOVE    SPA-GMN-SKYPRT          TO  WRK-SKYPRTKBN
-           PERFORM 310-SPA-SET-SEC
-           MOVE    WRK-SKYPRTKBN           TO  SPA-GMN-SKYPRT
-           PERFORM 4101-SKYPRT-CHK-SEC
+           MOVE    SPA-NAI-MEIDSPKBN   TO  WRK-MEIDSPKBN
+           MOVE    SPA-GMN-SKYPRT      TO  WRK-SKYPRTKBN
+           MOVE    SPA-GMN-SRYPRT      TO  WRK-SRYPRTKBN
       *
-           MOVE    SPA-GMN-SRYPRT          TO  WRK-SRYPRTKBN
-           PERFORM 310-SPA-SET-SEC
-           MOVE    WRK-SRYPRTKBN           TO  SPA-GMN-SRYPRT
+           INITIALIZE                      SPA-S03
+      *
+           MOVE    WRK-MEIDSPKBN       TO  SPA-NAI-MEIDSPKBN
+      *
+           PERFORM 3101-SPA-SET-SEC
+           MOVE    WRK-SKYPRTKBN       TO  SPA-GMN-SKYPRT
+           PERFORM 4101-SKYPRT-CHK-SEC
+           MOVE    WRK-SRYPRTKBN       TO  SPA-GMN-SRYPRT
            PERFORM 4101-SRYPRT-CHK-SEC
+      *
       *
            .
        4200-SPA-SET-EXT.
@@ -3486,6 +3547,9 @@
                                        TO  SPA-ERRMSG
            WHEN    "0017"
                MOVE    "入金取消は０円にのみ変更が可能です"
+                                       TO  SPA-ERRMSG
+           WHEN    "0018"
+               MOVE    "入金取消の金額変更はできません"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *

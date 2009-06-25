@@ -3,6 +3,9 @@ S03N	{
 		B03	{
 			label	varchar(10);
 		};
+		B05	{
+			label	varchar(10);
+		};
 		B12	{
 	           	state	int;
 		};

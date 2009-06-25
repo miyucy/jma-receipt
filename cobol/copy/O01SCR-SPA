@@ -207,6 +207,8 @@
       *
                05  SPA-NAI-O04-AREA.
                    07  SPA-NAI-O04-HEAD-AREA.
+                       09  SPA-NAI-O04-MEIDSPCTRL      PIC X(01).
+                       09  SPA-NAI-O04-MEIDSPKBN       PIC X(01).
                        09  SPA-NAI-O04-PTID            PIC 9(10).
                        09  SPA-NAI-O04-NYUGAIKBN       PIC X(01).
                        09  SPA-NAI-O04-BIRTHDAY        PIC X(08).

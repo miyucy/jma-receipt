@@ -4561,6 +4561,7 @@
       *
                MOVE    ZERO            TO  SMEI-NYUHEN-MONEY
       *
+               MOVE    "00"            TO  SMEI-NYUKIN-HOHO
                MOVE    SYUMEI-REC      TO  MCPDATA-REC
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD    TO  SMEI-UPYMD

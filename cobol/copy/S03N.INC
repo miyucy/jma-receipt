@@ -17,6 +17,7 @@
       ********************************************************************
         02  S03N.
               03  S03N-B03-LABEL    PIC X(10).
+              03  S03N-B05-LABEL    PIC X(10).
               03  S03N-B12-STATE PIC S9(9)   BINARY.
               03  S03N-B12S-STATE PIC S9(9)  BINARY.
               03  S03N-LBLGEMNEN-G.
