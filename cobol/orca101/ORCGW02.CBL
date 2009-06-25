@@ -180,6 +180,14 @@
                            11  SPA-GMN-F11L           PIC X(01).
                            11  SPA-GMN-DISCOUNT-HASU-KBNMEIL
                                                       PIC X(30).
+      *
+                       09  SPA-GMN-DISCOUNT-HASU-KBNJLST
+                                                      OCCURS  5.
+                           11  SPA-GMN-DISCOUNT-HASU-KBNJL
+                                                      PIC X(01).
+                           11  SPA-GMN-F11L           PIC X(01).
+                           11  SPA-GMN-DISCOUNT-HASU-KBNJMEIL
+                                                      PIC X(30).
                        09  SPA-GMN-GENTAIKBNLST
                                                       OCCURS  2.
                            11  SPA-GMN-GENTAIKBNL
@@ -1026,17 +1034,34 @@
                                TO  SPA-GMN-DISCOUNT-HASU-KBN-G
                                                (CONST-DHASU2)
                                    SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU2J)
-                                   SPA-GMN-DISCOUNT-HASU-KBN-G
                                                (CONST-DHASU3)
-                                   SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU3J)
                                    SPA-GMN-DISCOUNT-HASU-KBN-G
                                                (CONST-DHASU4)
                                    SPA-GMN-DISCOUNT-HASU-KBN-G
-                                               (CONST-DHASU4J)
-                                   SPA-GMN-DISCOUNT-HASU-KBN-G
                                                (CONST-DHASU5J)
+      *
+           MOVE    "0"         TO  SPA-GMN-DISCOUNT-HASU-KBNJL    (1)
+           MOVE    "ÊÝ¸±Ê¬¤Ë½à¤º¤ë"
+                               TO  SPA-GMN-DISCOUNT-HASU-KBNJMEIL (1)
+           MOVE    "1"         TO  SPA-GMN-DISCOUNT-HASU-KBNJL    (2)
+           MOVE    "£±£°±ßÌ¤Ëþ»Í¼Î¸ÞÆþ"  
+                               TO  SPA-GMN-DISCOUNT-HASU-KBNJMEIL (2)
+           MOVE    "2"         TO  SPA-GMN-DISCOUNT-HASU-KBNJL    (3)
+           MOVE    "£±£°±ßÌ¤ËþÀÚ¤ê¼Î¤Æ" 
+                               TO  SPA-GMN-DISCOUNT-HASU-KBNJMEIL (3)
+           MOVE    "3"         TO  SPA-GMN-DISCOUNT-HASU-KBNJL    (4)
+           MOVE    "£±£°±ßÌ¤ËþÀÚ¤ê¾å¤²"   
+                               TO  SPA-GMN-DISCOUNT-HASU-KBNJMEIL (4)
+           MOVE    "4"         TO  SPA-GMN-DISCOUNT-HASU-KBNJL    (5)
+           MOVE    "£±£°±ßÌ¤ËþÃ¼¿ô½èÍý¤Ê¤·"
+                               TO  SPA-GMN-DISCOUNT-HASU-KBNJMEIL (5)
+           MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (1)
+                               TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                               (CONST-DHASU2J)
+                                   SPA-GMN-DISCOUNT-HASU-KBN-G
+                                               (CONST-DHASU3J)
+                                   SPA-GMN-DISCOUNT-HASU-KBN-G
+                                               (CONST-DHASU4J)
       *
            MOVE    "1"         TO  SPA-GMN-GENTAIKBNL    (1)
            MOVE    "¼«ÈñÊ¬¤ò´Þ¤à"  
@@ -1664,19 +1689,18 @@
                 END-IF
            END-PERFORM
       *
-      *    ÀÁµá³ÛÃ¼¿ô¶èÊ¬°åÊÝ¡Ê¸ºÌÈÌµ¼«ÈñÊ¬¡Ë ¶õÇò¤Î»þ¡¢"4"¤È¤¹¤ë
+      *    ÀÁµá³ÛÃ¼¿ô¶èÊ¬°åÊÝ¡Ê¸ºÌÈÌµ¼«ÈñÊ¬¡Ë ¶õÇò¤Î»þ¡¢"0"¤È¤¹¤ë
            IF      SYS-1001-DISCOUNT-HASU-KBN2J   =   SPACE
-               MOVE    SYS-1001-DISCOUNT-HASU-KBN2
-                                       TO  SYS-1001-DISCOUNT-HASU-KBN2J
+               MOVE    "0"             TO  SYS-1001-DISCOUNT-HASU-KBN2J
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       4
                IF      SYS-1001-DISCOUNT-HASU-KBN2J
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNJL (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
                                        TO  SPA-GMN-DISCOUNT-HASU-KBN-G
                                                   (CONST-DHASU2J)
-                   MOVE    4               TO  IDY
+                   MOVE    4           TO  IDY
                 END-IF
            END-PERFORM
       *
@@ -1695,15 +1719,15 @@
                 END-IF
            END-PERFORM
       *
-      *    ÀÁµá³ÛÃ¼¿ô¶èÊ¬Ï«ºÒ¡Ê¸ºÌÈÌµ¼«ÈñÊ¬¡Ë ¶õÇò¤Î»þ¡¢"4"¤È¤¹¤ë
+      *    ÀÁµá³ÛÃ¼¿ô¶èÊ¬Ï«ºÒ¡Ê¸ºÌÈÌµ¼«ÈñÊ¬¡Ë ¶õÇò¤Î»þ¡¢"0"¤È¤¹¤ë
            IF      SYS-1001-DISCOUNT-HASU-KBN3J   =   SPACE
-               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN3J
+               MOVE    "0"             TO  SYS-1001-DISCOUNT-HASU-KBN3J
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       4
                IF      SYS-1001-DISCOUNT-HASU-KBN3J
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNJL (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
                                        TO  SPA-GMN-DISCOUNT-HASU-KBN-G
                                                   (CONST-DHASU3J)
                    MOVE    4               TO  IDY
@@ -1725,15 +1749,15 @@
                 END-IF
            END-PERFORM
       *
-      *    ÀÁµá³ÛÃ¼¿ô¶èÊ¬¼«ÇåÀÕ¡Ê¸ºÌÈÌµ¼«ÈñÊ¬¡Ë ¶õÇò¤Î»þ¡¢"4"¤È¤¹¤ë
+      *    ÀÁµá³ÛÃ¼¿ô¶èÊ¬¼«ÇåÀÕ¡Ê¸ºÌÈÌµ¼«ÈñÊ¬¡Ë ¶õÇò¤Î»þ¡¢"0"¤È¤¹¤ë
            IF      SYS-1001-DISCOUNT-HASU-KBN4J   =   SPACE
-               MOVE    "4"             TO  SYS-1001-DISCOUNT-HASU-KBN4J
+               MOVE    "0"             TO  SYS-1001-DISCOUNT-HASU-KBN4J
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       4
                IF      SYS-1001-DISCOUNT-HASU-KBN4J
-                                   =   SPA-GMN-DISCOUNT-HASU-KBNL (IDY)
-                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST (IDY)
+                                   =   SPA-GMN-DISCOUNT-HASU-KBNJL (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
                                        TO  SPA-GMN-DISCOUNT-HASU-KBN-G
                                                   (CONST-DHASU4J)
                    MOVE    4               TO  IDY
@@ -3015,8 +3039,23 @@
        4130-DISCOUNT-HASU-KBN-CHK-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
-           PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       4
+           IF    ( IDX-DHASU       =   CONST-DHASU2J
+                                    OR CONST-DHASU3J
+                                    OR CONST-DHASU4J )
+             PERFORM VARYING IDY     FROM    1   BY  1
+                    UNTIL   IDY     >       5
+               IF      SPA-GMN-DISCOUNT-HASU-KBN (IDX-DHASU)
+                                       =   SPA-GMN-DISCOUNT-HASU-KBNJL
+                                                              (IDY)
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
+                                       TO  SPA-GMN-DISCOUNT-HASU-KBN-G
+                                                             (IDX-DHASU)
+                   MOVE    1           TO  FLG-OK
+               END-IF
+             END-PERFORM
+           ELSE
+             PERFORM VARYING IDY     FROM    1   BY  1
+                    UNTIL   IDY     >       4
                IF      SPA-GMN-DISCOUNT-HASU-KBN (IDX-DHASU)
                                        =   SPA-GMN-DISCOUNT-HASU-KBNL
                                                               (IDY)
@@ -3025,7 +3064,8 @@
                                                              (IDX-DHASU)
                    MOVE    1           TO  FLG-OK
                END-IF
-           END-PERFORM
+             END-PERFORM
+           END-IF
            IF      FLG-OK              =   ZERO
                EVALUATE    IDX-DHASU
                WHEN    CONST-DHASU
@@ -4253,14 +4293,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            PERFORM VARYING IDX-DHASU   FROM   1    BY  1
                    UNTIL ( IDX-DHASU   >   CONST-DHASU-MAX )
-             PERFORM VARYING IDX FROM    1   BY  1
-                   UNTIL   IDX >       4
-               MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST(IDX)
+             IF    ( IDX-DHASU         =   CONST-DHASU2J
+                                        OR CONST-DHASU3J
+                                        OR CONST-DHASU4J )
+                 PERFORM VARYING IDX FROM    1   BY  1
+                          UNTIL   IDX >       5
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST(IDX)
                                        TO  W02-DISCOUNTHASULST
                                                (IDX-DHASU IDX)
-             END-PERFORM
-             MOVE    4                 TO  W02-DISCOUNTHASU-COUNT
+                 END-PERFORM
+                 MOVE    5             TO  W02-DISCOUNTHASU-COUNT
                                                (IDX-DHASU)
+             ELSE
+                 PERFORM VARYING IDX FROM    1   BY  1
+                          UNTIL   IDX >       4
+                   MOVE    SPA-GMN-DISCOUNT-HASU-KBNLST(IDX)
+                                       TO  W02-DISCOUNTHASULST
+                                               (IDX-DHASU IDX)
+                 END-PERFORM
+                 MOVE    4             TO  W02-DISCOUNTHASU-COUNT
+                                               (IDX-DHASU)
+             END-IF
            END-PERFORM
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       2

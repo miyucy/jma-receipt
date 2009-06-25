@@ -114,56 +114,56 @@ W02	{
 						value	varchar(32);
 					};
 					count	int;
-					item	varchar(32)[4];
+					item	varchar(32)[5];
 				};
 				DISCOUNTHASU2_CMB	{
 					DISCOUNTHASU2	{
 						value	varchar(32);
 					};
 					count	int;
-					item	varchar(32)[4];
+					item	varchar(32)[5];
 				};
 				DISCOUNTHASU2_J_CMB	{
 					DISCOUNTHASU2_J	{
 						value	varchar(32);
 					};
 					count	int;
-					item	varchar(32)[4];
+					item	varchar(32)[5];
 				};
 				DISCOUNTHASU3_CMB	{
 					DISCOUNTHASU3	{
 						value	varchar(32);
 					};
 					count	int;
-					item	varchar(32)[4];
+					item	varchar(32)[5];
 				};
 				DISCOUNTHASU3_J_CMB	{
 					DISCOUNTHASU3_J	{
 						value	varchar(32);
 					};
 					count	int;
-					item	varchar(32)[4];
+					item	varchar(32)[5];
 				};
 				DISCOUNTHASU4_CMB	{
 					DISCOUNTHASU4	{
 						value	varchar(32);
 					};
 					count	int;
-					item	varchar(32)[4];
+					item	varchar(32)[5];
 				};
 				DISCOUNTHASU4_J_CMB	{
 					DISCOUNTHASU4_J	{
 						value	varchar(32);
 					};
 					count	int;
-					item	varchar(32)[4];
+					item	varchar(32)[5];
 				};
 				DISCOUNTHASU5_J_CMB	{
 					DISCOUNTHASU5_J	{
 						value	varchar(32);
 					};
 					count	int;
-					item	varchar(32)[4];
+					item	varchar(32)[5];
 				};
 				GENTAIKBN_CMB	{
 					GENTAIKBN	{

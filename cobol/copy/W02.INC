@@ -93,7 +93,7 @@
                         08  W02-DISCOUNTHASU-COUNT
                                              PIC S9(9)   BINARY.
                         08  W02-DISCOUNTHASULST  PIC X(32)
-                                                      OCCURS  4.
+                                                      OCCURS  5.
                   05  W02-GENTAIKBN-CMB.
                     06  W02-GENTAIKBN        PIC X(22).
                     06  W02-GENTAIKBN-COUNT
