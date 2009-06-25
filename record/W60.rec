@@ -111,5 +111,12 @@ W60	{ fixed1	{
 			count	int;
 			item	varchar(22)[2];
 		};
+		CMB_ERR990009KBN	{
+			ERR990009KBN	{
+				value	varchar(22);
+			};
+			count	int;
+			item	varchar(22)[5];
+		};
 	};
 };

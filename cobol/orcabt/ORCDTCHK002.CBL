@@ -255,6 +255,7 @@
            03  FLG-KOUGAI                              PIC 9(01).
            03  FLG-TAISYO-HKN                          PIC 9(01).
            03  FLG-TAISYO-SRY                          PIC 9(01).
+           03  FLG-INGAISYOHOU                         PIC 9(01).
            03  FLG-LOOP-END                            PIC 9(01).
            03  FLG-TSRYKA-OVER                         PIC 9(01).
            03  FLG-TKAISU-OVER                         PIC 9(01).
@@ -594,6 +595,9 @@
                    07  TKANRIRYO-DAY                   PIC 9(01)
                                                        OCCURS  31.
       *
+       01  ERRKBN-AREA.
+           03  ERRKBN-990009                           PIC X(01).
+      *
        01  KEY-AREA.
            03  KEY-HKNCOMBI                            PIC 9(04).
       *
@@ -849,6 +853,7 @@
       *    チェックマスタ４
            COPY    "CPCHK004.INC".
            COPY    "CPCK1102.INC".
+           COPY    "CPCK1103.INC".
       *
       *    チェックマスタ５
        01  CHK005-REC.
@@ -1076,6 +1081,9 @@
       *
       *    記号抜けチェック対象取得処理
            PERFORM 1001-CK4-1102-GET-SEC
+      *
+      *    チェック可否設定取得処理
+           PERFORM 1001-CK4-1103-GET-SEC
       *
            OPEN    INPUT               DCACCT-FILE
                                        DCSRY-FILE
@@ -1710,6 +1718,57 @@
        1001-CK4-1102-GET-EXT.
            EXIT.
       *****************************************************************
+      *    データチェック３機能情報
+      *****************************************************************
+       1001-CK4-1103-GET-SEC           SECTION.
+      *
+           INITIALIZE                  ERRKBN-AREA
+      *
+      *    システム管理マスタ検索処理
+           MOVE    ZERO                TO  FLG-CHK004
+           INITIALIZE                      CK4-1103-REC
+           MOVE    "1103"              TO  CK4-1103-KANRICD
+           MOVE    WRK-KJNYMD          TO  CK4-1103-STYUKYMD
+                                           CK4-1103-EDYUKYMD
+           MOVE    WRK-PARA-HOSPNUM    TO  CK4-1103-HOSPNUM
+           MOVE    CK4-1103-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_chk004"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF ( MCP-RC             NOT =   ZERO )
+               MOVE    1               TO  FLG-CHK004
+           ELSE
+               MOVE    MCPDATA-REC     TO  CK4-1103-REC
+           END-IF
+      *
+           PERFORM UNTIL ( FLG-CHK004  NOT =   ZERO )
+      *
+               EVALUATE    CK4-1103-KBNCD
+               WHEN    "99"
+                   MOVE    CK4-1103-ERRKBN (9)
+                                       TO  ERRKBN-990009
+               END-EVALUATE
+      *
+               MOVE    "tbl_chk004"        TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 910-DBFETCH-SEC
+               IF ( MCP-RC             NOT =   ZERO )
+                   MOVE    1           TO  FLG-CHK004
+               ELSE
+                   MOVE    MCPDATA-REC TO  CK4-1103-REC
+               END-IF
+      *
+           END-PERFORM
+      *
+           MOVE    "tbl_chk004"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       1001-CK4-1103-GET-EXT.
+           EXIT.
+      *****************************************************************
       *    主処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
@@ -1823,6 +1882,7 @@
                                        PTSRY-AREA
                                        PTZAI-AREA
       *
+           MOVE    ZERO            TO  FLG-INGAISYOHOU
       *
            PERFORM 200111-TSRYKA-AREA-INIT-SEC
       *
@@ -2471,6 +2531,12 @@
                END-IF
            ELSE
                        CONTINUE
+           END-IF
+      *
+           IF    ( DCACCT-SRYKBN           =   "21" OR "22" OR "23" )
+            AND  ( DCSRY-SRYSYUKBN(3:1)    NOT =   "3" )
+            AND  ( DCACCT-ZAITEN           =   ZERO )
+               MOVE                1       TO  FLG-INGAISYOHOU
            END-IF
       *
       *    約束セットのコードは読み飛ばす
@@ -8454,6 +8520,32 @@
                MOVE    "990005"    TO  WRK-ERRCD
                INITIALIZE              TERRINF-AREA
                PERFORM 215-ERRMES-HEN-SEC
+           END-IF
+      *
+           IF    ( ERRKBN-990009       =   "1" )
+      *
+               IF    ( FLG-INGAI-DAY-G NOT =   ZERO )
+                AND  ( FLG-INGAISYOHOU     =   ZERO )
+      *
+                   INITIALIZE                  WRK-NISSU-AREA
+                   MOVE    SPACE       TO      WRK-INGAI-MES
+                                               WRK-ERRMES-PLUS
+      *
+                   INITIALIZE                  WRK-NISSU-AREA
+                   MOVE    FLG-INGAI-DAY-G     TO  WRK-NISSU-DAY-G
+                   PERFORM 200111-NISSU-HEN-SEC
+                   MOVE    WRK-NISSU-MES       TO  WRK-INGAI-MES
+      *
+                   STRING  "小児科外来診療料（処方せんを交付）"
+                                               DELIMITED   BY  SIZE
+                           WRK-INGAI-MES       DELIMITED   BY  SPACE
+                   INTO    WRK-ERRMES-PLUS
+                   END-STRING
+                   MOVE    "990009"    TO  WRK-ERRCD
+                   INITIALIZE              TERRINF-AREA
+                   PERFORM 215-ERRMES-HEN-SEC
+               END-IF
+      *
            END-IF
       *
            .

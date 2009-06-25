@@ -483,8 +483,13 @@
            05 PIC  X(30)   VALUE   "います                        ".
            05 PIC  X(30)   VALUE   "                              ".
       *
+           05 PIC  X(06)   VALUE   "990009".
+           05 PIC  X(30)   VALUE   "診療年月に院外処方がありません".
+           05 PIC  X(30)   VALUE   "                              ".
+           05 PIC  X(30)   VALUE   "                              ".
+      *
          03  ERRMES-RED    REDEFINES   ERRMES-VAL.
-           05 ERRMES-OCC   OCCURS  83.
+           05 ERRMES-OCC   OCCURS  84.
               07  ERRMES-CD            PIC X(06).
               07  ERRMES-MESSAGE       PIC X(90).
-         03  ERRMES-MAX                PIC 9(05)   VALUE   83.
+         03  ERRMES-MAX                PIC 9(05)   VALUE   84.

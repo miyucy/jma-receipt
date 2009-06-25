@@ -67,3 +67,7 @@
                 04  W60-PRTPTLSTKBN        PIC X(22).
                 04  W60-PRTPTLSTKBN-COUNT  PIC S9(9)   BINARY.
                 04  W60-PRTPTLSTKBN-ITEM   PIC X(22)   OCCURS  2.
+              03  W60-CMB-ERR990009LSTKBN.
+                04  W60-ERR990009KBN       PIC X(22).
+                04  W60-ERR990009KBN-COUNT PIC S9(9)   BINARY.
+                04  W60-ERR990009KBN-ITEM  PIC X(22)   OCCURS  5.
