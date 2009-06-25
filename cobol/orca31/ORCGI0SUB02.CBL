@@ -942,7 +942,7 @@
                +   KONSYU-UPD-TAX-SAI (IDX-KON)
       *
       *    ∏∫Ã»æ Û
-           IF    ( KONSYU-DISCOUNT-KBN (IDX-KON)   NOT =   SPACE )
+           IF    ( KONSYU-DISCOUNT-TEIRITU (IDX-KON)   =   "1" OR "2" )
                MOVE    KONSYU-DISCOUNT-KBN     (IDX-KON)
                                    TO  SUMSYU-DISCOUNT-KBN     (IDX-SUM)
                                        TTLSYU-DISCOUNT-KBN
@@ -960,7 +960,9 @@
                                        TTLSYU-DISCOUNT-RATE
                MOVE    KONSYU-DISCOUNT-MONEY   (IDX-KON)
                                    TO  SUMSYU-DISCOUNT-MONEY   (IDX-SUM)
-                                       TTLSYU-DISCOUNT-MONEY
+               COMPUTE TTLSYU-DISCOUNT-MONEY
+                   =   TTLSYU-DISCOUNT-MONEY
+                   +   KONSYU-DISCOUNT-MONEY   (IDX-KON)
            END-IF
       *
            .

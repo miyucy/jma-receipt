@@ -2579,12 +2579,11 @@
                                        TO  IDX1
                MOVE    SPA-I0-SYUNOU-DAT (IDX1)
                                        TO  WKSYUNOU-REC
-               IF    ( WKSYU-DISCOUNT-KBN  NOT =   SPACE )
+               IF    ( WKSYU-DISCOUNT-TEIRITU  =   "1" OR "2" )
                    MOVE    "blue"      TO  I04-LBLGENMEN-STYLE
                    IF    ( SPA-I0-SYUNOU-TTLDAT-FLG (IDX1)
-                                        NOT =   ZERO )
-                       MOVE    "∏∫Ã»Õ≠"            TO  I04-LBLGENMEN
-                   ELSE
+                                       =   ZERO )
+                    OR   ( SPA-GMN-I04-HKNCOMBILST-CNT =   1 )
                        EVALUATE    WKSYU-DISCOUNT-TEIRITU
                        WHEN    "1"
                            MOVE    WKSYU-DISCOUNT-RATE     TO  WRK-ZZ9
@@ -2601,6 +2600,8 @@
                            INTO    I04-LBLGENMEN
                            END-STRING
                        END-EVALUATE
+                   ELSE
+                       MOVE    "∏∫Ã»Õ≠"            TO  I04-LBLGENMEN
                    END-IF
                END-IF
            END-IF
