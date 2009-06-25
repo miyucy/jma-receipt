@@ -1694,13 +1694,13 @@
                MOVE    "0"             TO  SYS-1001-DISCOUNT-HASU-KBN2J
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       4
+                   UNTIL   IDY     >       5
                IF      SYS-1001-DISCOUNT-HASU-KBN2J
                                    =   SPA-GMN-DISCOUNT-HASU-KBNJL (IDY)
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
                                        TO  SPA-GMN-DISCOUNT-HASU-KBN-G
                                                   (CONST-DHASU2J)
-                   MOVE    4           TO  IDY
+                   MOVE    5           TO  IDY
                 END-IF
            END-PERFORM
       *
@@ -1724,13 +1724,13 @@
                MOVE    "0"             TO  SYS-1001-DISCOUNT-HASU-KBN3J
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       4
+                   UNTIL   IDY     >       5
                IF      SYS-1001-DISCOUNT-HASU-KBN3J
                                    =   SPA-GMN-DISCOUNT-HASU-KBNJL (IDY)
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
                                        TO  SPA-GMN-DISCOUNT-HASU-KBN-G
                                                   (CONST-DHASU3J)
-                   MOVE    4               TO  IDY
+                   MOVE    5               TO  IDY
                 END-IF
            END-PERFORM
       *
@@ -1754,13 +1754,13 @@
                MOVE    "0"             TO  SYS-1001-DISCOUNT-HASU-KBN4J
            END-IF
            PERFORM VARYING IDY     FROM    1   BY  1
-                   UNTIL   IDY     >       4
+                   UNTIL   IDY     >       5
                IF      SYS-1001-DISCOUNT-HASU-KBN4J
                                    =   SPA-GMN-DISCOUNT-HASU-KBNJL (IDY)
                    MOVE    SPA-GMN-DISCOUNT-HASU-KBNJLST (IDY)
                                        TO  SPA-GMN-DISCOUNT-HASU-KBN-G
                                                   (CONST-DHASU4J)
-                   MOVE    4               TO  IDY
+                   MOVE    5               TO  IDY
                 END-IF
            END-PERFORM
       *
