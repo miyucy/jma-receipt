@@ -55,6 +55,7 @@
       *  03.05.00    NACL-多々納  07/05/25  UIDテーブル対応
       *  04.04.00    NACL-竹田　  09/02/25  公害対応
       *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
+      *  04.05.00    NACL-多々納  09/06/25  薬剤情報提供料・調基判定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -135,6 +136,9 @@
            03  FLG-NYUINIDOU       PIC 9(01). 
       *
            03  FLG-SURYO           PIC 9(01). 
+      *    薬剤情報提供料対象
+           03  FLG-YKJYO           PIC 9(01). 
+           03  FLG-CHOKI           PIC 9(01). 
       *
       *    キー領域
        01  KEY-AREA                    VALUE   LOW-VALUE.
@@ -318,17 +322,6 @@
       *
       *    対象外レセ電コード
            COPY    "CPJIDO.INC".
-      *    対象外レセ電コードの最大テーブル数
-      *01  JIDO-MAX                PIC 9(04)   VALUE   38.
-      *01  JIDO-MAX                PIC 9(04)   VALUE   42.
-      *
-      *    診療種別名テーブル
-      *01  MSYU-DATA-REC.
-      *    03  MSYU-TBL-OCC        OCCURS    60   INDEXED   MSYU-IDX.
-      *        05  MSYU-SRYKBN         PIC X(02).
-      *        05                      PIC X(01).
-      *        05  MSYU-SRYSYUKBN      PIC X(03).
-      **********5  MSYU-SRYMEI         PIC X(40).
       *
       *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
@@ -352,8 +345,6 @@
            03  WRK-CONS-KYUSEI-MOJISU
                                    PIC 9(02)   VALUE   4. 
       *
-      *****COPY    "ORCA-DBPATH".
-      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -374,6 +365,8 @@
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK1010.INC".
+      *
+           COPY    "CPSK1007.INC".
       *
       *    患者番号構成管理情報
            COPY  "CPSK1009.INC".
@@ -690,7 +683,58 @@
                                        TO  SPA-1009-KKCKSIRENNUMKETA
                MOVE    SYS-1009-KKCKSIATOKETA
                                        TO  SPA-1009-KKCKSIATOKETA
+           END-IF
       *
+           MOVE    SPACE               TO  SYS-1007-REC
+           INITIALIZE                  SYS-1007-REC
+           MOVE    "1007"              TO  SYS-1007-KANRICD
+           MOVE    "*"                 TO  SYS-1007-KBNCD
+           MOVE    WRK-SRYYMD          TO  SYS-1007-STYUKYMD
+           MOVE    WRK-SRYYMD          TO  SYS-1007-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-1007-HOSPNUM
+           MOVE    SYS-1007-REC        TO  MCPDATA-REC
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1007-REC
+               INITIALIZE                  SYS-1007-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    ZERO                TO  FLG-CHOKI
+           MOVE    ZERO                TO  FLG-YKJYO
+           IF      FLG-SYSKANRI        =   ZERO
+               MOVE    MCPDATA-REC         TO  SYS-1007-REC
+      *        調基対象
+               IF      SYS-1007-SANTEI (1:1)   =   "1"
+                   MOVE    1                   TO  FLG-CHOKI
+               END-IF
+      *        薬剤情報提供料対象
+               IF      SYS-1007-SANTEI (2:1)   =   SPACE
+                   MOVE    "0"                 TO  SYS-1007-SANTEI (2:1)
+               END-IF
+               IF      SYS-1007-SANTEI (3:1)   =   SPACE
+                   MOVE    "0"                 TO  SYS-1007-SANTEI (3:1)
+               END-IF
+               IF      SYS-1007-SANTEI (4:1)   =   SPACE
+                   MOVE    "0"                 TO  SYS-1007-SANTEI (4:1)
+               END-IF
+               IF     (SYS-1007-SANTEI (2:1)   =   "0"  )  AND
+                      (SYS-1007-SANTEI (3:1)   =   "0"  )  AND
+                      (SYS-1007-SANTEI (4:1)   =   "0"  )
+                   CONTINUE
+               ELSE
+                   MOVE    1                   TO  FLG-YKJYO
+               END-IF
            END-IF
       *
            .
@@ -1633,6 +1677,20 @@
                    MOVE    JIDO-MAX        TO  IDX
                END-IF
            END-PERFORM
+      *    薬剤情報提供料はシステム管理設定による
+           IF      FLG-YKJYO           =   ZERO
+               IF      WRK-SRYCD           =   "113701310"
+                                           OR  "120002370"
+                   MOVE    ZERO            TO  FLG-CHK
+               END-IF
+           END-IF
+      *    調基はシステム管理設定による
+           IF      FLG-CHOKI           =   ZERO
+               IF      WRK-SRYCD           =   "120001810"
+                                           OR  "120001710"
+                   MOVE    ZERO            TO  FLG-CHK
+               END-IF
+           END-IF
       *
       *    入院で点滴手技料は自動発生とする
            IF     (WRK-NYUGAIKBN       =   "1" )  AND
