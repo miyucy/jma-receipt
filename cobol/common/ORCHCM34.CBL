@@ -72,8 +72,8 @@
          02  HCM34ACCT-DAT.
            COPY    "CPSRYACCT.INC"         REPLACING   //ACCT-//
                                            BY          //HCM34ACCT-//.
-           03  HCM34ACCT-RUIKEITOTAL               PIC 9(15)V9(03).
-           03  HCM34ACCT-RUIKEITOTAL2              PIC 9(15)V9(03).
+           03  HCM34ACCT-RUIKEITOTAL               PIC 9(15)V9(05).
+           03  HCM34ACCT-RUIKEITOTAL2              PIC 9(15)V9(05).
            03  HCM34ACCT-SRT-SRYCD                 PIC X(09).
            03  HCM34ACCT-SRT-SRYSYUKBN             PIC X(03).
            03  HCM34ACCT-SRT-SRYCOMMENT            PIC 9(01).
@@ -338,18 +338,18 @@
            03  WRK-ZOGENPTN                        PIC X(01).
            03  WRK-ZOGEN                           PIC S9(05).
       *    数量表示用
-           03  WRK-SURYO                           PIC 9(05)V9(03).
+           03  WRK-SURYO                           PIC 9(05)V9(05).
            03  WRK-SURYO-R             REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1                    PIC 9(05).
-               05  WRK-SURYO-S2                    PIC 9(03).
+               05  WRK-SURYO-S2                    PIC 9(05).
            03  WRK-SURYO-X.
                05  WRK-SURYO-Z1                    PIC ZZZZZ.
                05  WRK-SURYO-Z19       REDEFINES   WRK-SURYO-Z1
                                                    PIC ZZZZ9.
                05  WRK-SURYO-Z2                    PIC X(01).
-               05  WRK-SURYO-Z3                    PIC ZZZ.
+               05  WRK-SURYO-Z3                    PIC ZZZZZ.
                05  WRK-SURYO-Z3-X      REDEFINES   WRK-SURYO-Z3
-                                                   PIC X(03).
+                                                   PIC X(05).
       *    分画数画面編集用
            03  WRK-BUNGSU                          PIC X(10).
            03  WRK-TENSUKAISU                      PIC X(20).
@@ -390,8 +390,8 @@
                05  WRK-RSI-SONOTA-KBN              PIC X(01).
                05  WRK-RSI-SONOTA-TEN              PIC 9(08).
            03  WRK-JBI-RYOYO-TEATE-KBN             PIC X(01).
-           03  WRK-RUIKEITOTAL                     PIC 9(15)V9(03).
-           03  WRK-RUIKEITOTAL2                    PIC 9(15)V9(03).
+           03  WRK-RUIKEITOTAL                     PIC 9(15)V9(05).
+           03  WRK-RUIKEITOTAL2                    PIC 9(15)V9(05).
            03  WRK-ZAINUM                          PIC 9(08).
            03  WRK-HBTSRYKA-G.
                05  WRK-HBTSRYKA-HBTKA              PIC X(02) OCCURS  31.
@@ -688,8 +688,8 @@
                                        INDEXED WKSRYACCT-IDX.
            COPY    "CPSRYACCT.INC"
                    REPLACING   //ACCT-//  BY //WKACCT-//.
-               03 WKACCT-RUIKEITOTAL      PIC 9(15)V9(03).
-               03 WKACCT-RUIKEITOTAL2     PIC 9(15)V9(03).
+               03 WKACCT-RUIKEITOTAL      PIC 9(15)V9(05).
+               03 WKACCT-RUIKEITOTAL2     PIC 9(15)V9(05).
                03 WKACCT-SRT-SRYCD        PIC X(09).
                03 WKACCT-SRT-SRYSYUKBN    PIC X(03).
                03 WKACCT-SRT-SRYCOMMENT   PIC 9(01).
@@ -4441,7 +4441,7 @@
       *
            MOVE    ZERO                TO  FLG-SP
            MOVE    ZERO                TO  WRK-SURYO-Z3
-           PERFORM VARYING   IDX10     FROM    3  BY  -1
+           PERFORM VARYING   IDX10     FROM    5  BY  -1
                    UNTIL   ( IDX10     <   1 )
       *
                IF    ( WRK-SURYO-S2(IDX10:1)   NOT =   ZERO )
@@ -4483,6 +4483,7 @@
                END-STRING
                MOVE    WRK-STR         TO  WRK-SRYACT-STR
            END-IF
+      *
            .
        2001111-SURYO-HEN-EXT.
            EXIT.
