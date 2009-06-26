@@ -15,3 +15,5 @@
           03  CSV-NAME            PIC X(26).
           03  CSV-NISSU           PIC ZZZZZ9.
           03  CSV-TENSU           PIC ZZZZZZZZZ9.
+          03  CSV-RYOYOHI         PIC ZZZZZZZZ9.
+          03  CSV-SHOKUJIFTN      PIC ZZZZZZZZ9.
