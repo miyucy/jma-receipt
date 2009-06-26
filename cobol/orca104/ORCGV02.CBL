@@ -1652,6 +1652,17 @@
                MOVE    WRK-GMN-CUR         TO  SPA-GMN-CUR
            END-IF
       *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-GMN-NYUSKJRYYKBN (IDX)  =   "5" )
+                   IF    ( SPA-GMN-HKNKOHSBTKBN    =   "8" )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0023"          TO  SPA-ERRCD
+                       MOVE    WRK-GMN-CUR     TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+           END-IF
+      *
            .
        4129-NYUSKJRYYKBN-CHK-EXT.
            EXIT.
@@ -2383,6 +2394,9 @@
                                                TO  SPA-ERRMSG
                WHEN    "0022"
                    MOVE    "法別番号チェック区分入力エラー"
+                                               TO  SPA-ERRMSG
+               WHEN    "0023"
+                 MOVE "該当の食事療養費の設定は自費保険のみ選択可能です"
                                                TO  SPA-ERRMSG
                WHEN    "0099"
                    MOVE    "未入力の項目があります"
