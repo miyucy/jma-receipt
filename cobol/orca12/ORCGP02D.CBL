@@ -38,6 +38,7 @@
       *  02.00.06    NACL-多々納  05/12/07  労災レセ回数記載追加 他
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *  04.01.00    NACL-多々納  07/10/19  公務災害追加
+      *  04.05.00    NACL-多々納  09/06/26  自賠責請求区分初期設定対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -127,6 +128,8 @@
       *    ファイルレイアウト
       *****************************************************************
       *
+      *    システム管理（労災医療機関情報）
+           COPY    "CPSK4001.INC".
       *    システム管理（損傷区分）
            COPY    "CPSK4002.INC".
       *
@@ -530,6 +533,11 @@
                END-IF
            END-PERFORM
       *
+      *    自賠責・公務災害の初期表示
+           IF     (SPA-JIBAI-FLG       =   1  )  OR
+                  (SPA-ROSAI-FLG       =   1  )
+               PERFORM 30022-JIBAISEIKBN-SET-SEC
+           END-IF
       *    自賠責患者請求区分
            MOVE    "1 患者請求する(100%)"
                                        TO  SPA-GMN2D-JIBAISEIKBN-LST(01)
@@ -745,6 +753,48 @@
            END-IF
            .
        3002-COMBBOX-HEX-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    自賠責・公務災害の初期表示編集処理
+      *****************************************************************
+       30022-JIBAISEIKBN-SET-SEC            SECTION.
+      *
+           MOVE    SPACE               TO  SYS-4001-REC
+           INITIALIZE                  SYS-4001-REC
+           MOVE    "4001"              TO  SYS-4001-KANRICD
+           MOVE    "*"                 TO  SYS-4001-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-4001-STYUKYMD
+           MOVE    SPA-SYSYMD          TO  SYS-4001-EDYUKYMD
+           MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
+      *    システム管理検索
+           MOVE    SYS-4001-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_syskanri"      TO  MCP-TABLE
+               MOVE    "key10"             TO  MCP-PATHNAME
+               PERFORM 900-KANRIMST-READ-SEC
+           ELSE
+               INITIALIZE                  SYS-4001-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key10"             TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           MOVE    SPACE               TO  SPA-JIBAI-SEI
+           MOVE    SPACE               TO  SPA-KOMU-SEI
+           IF      (FLG-SYSKANRI       =   0  )
+               MOVE    MCPDATA-REC         TO  SYS-4001-REC
+      *        自賠責請求区分
+               MOVE    SYS-4001-JIBAI-SEIKYUKBN    TO  SPA-JIBAI-SEI
+      *        公務災害責請求区分
+               MOVE    SYS-4001-KOMU-SEIKYUKBN     TO  SPA-KOMU-SEI
+           END-IF
+           .
+       30022-JIBAISEIKBN-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1505,10 +1555,16 @@
       *            自賠責
       *            自賠責患者請求区分
                    MOVE    2               TO  SPA-GMN2D-JIBAISEIKBN-MAX
-                   IF      SPA-GMN2D-JIBAISEIKBN   =   SPACE
-                       MOVE    SPA-GMN2D-JIBAISEIKBN-LST (1)
+      ***          IF      SPA-GMN2D-JIBAISEIKBN   =   SPACE
+      *                システム管理設定により、初期表示変更
+                       IF      SPA-JIBAI-SEI       =   "2"
+                           MOVE    SPA-GMN2D-JIBAISEIKBN-LST (2)
                                            TO  SPA-GMN2D-JIBAISEIKBN-G
-                   END-IF
+                       ELSE
+                           MOVE    SPA-GMN2D-JIBAISEIKBN-LST (1)
+                                           TO  SPA-GMN2D-JIBAISEIKBN-G
+                       END-IF
+      ***          END-IF
       *
                    PERFORM 41012-SINKEI-SET-SEC
                    MOVE    SPACE           TO  SPA-GMN2D-SINKEI-G
@@ -1528,10 +1584,16 @@
       *            公務災害
       *            自賠責患者請求区分
                    MOVE    2               TO  SPA-GMN2D-JIBAISEIKBN-MAX
-                   IF      SPA-GMN2D-JIBAISEIKBN   =   SPACE
-                       MOVE    SPA-GMN2D-JIBAISEIKBN-LST (1)
+      ***          IF      SPA-GMN2D-JIBAISEIKBN   =   SPACE
+      *                システム管理設定により、初期表示変更
+                       IF      SPA-KOMU-SEI        =   "2"
+                           MOVE    SPA-GMN2D-JIBAISEIKBN-LST (2)
                                            TO  SPA-GMN2D-JIBAISEIKBN-G
-                   END-IF
+                       ELSE
+                           MOVE    SPA-GMN2D-JIBAISEIKBN-LST (1)
+                                           TO  SPA-GMN2D-JIBAISEIKBN-G
+                       END-IF
+      **           END-IF
       *
                    PERFORM 41012-SINKEI-SET-SEC
                    MOVE    SPACE           TO  SPA-GMN2D-SINKEI-G

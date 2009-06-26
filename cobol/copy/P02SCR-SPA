@@ -1261,6 +1261,11 @@
                    07  SPA-NAI2D-KEIFLG            PIC 9(01).
       *
                    07  SPA-NAI2D-GMNIDX            PIC 9(04).
+      *            º´«Â¿’¿¡µ·∂Ë ¨
+                   07  SPA-JIBAI-SEI               PIC  X(01).
+      *            ∏¯Ã≥∫“≥≤¿’¿¡µ·∂Ë ¨
+                   07  SPA-KOMU-SEI                PIC  X(01).
+      *
       *
       *----(01.00.03) LINE ADD START ---------------------------------
       *    P100 ª·Ãæ —¥π≤ËÃÃ
