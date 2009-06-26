@@ -67,6 +67,7 @@
            03  FLG-PTINF                           PIC 9(01).
            03  FLG-PTTEIKIRRK                      PIC 9(01).
            03  FLG-SRYYM-CHG                       PIC 9(01).
+           03  FLG-MEIVISIBLE                      PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -134,6 +135,7 @@
            03  WRK-SYU-DENPNUM                     PIC 9(07).
            03  WRK-OIDMSG                          PIC X(100).
            03  WRK-SAGAKU                          PIC S9(10).
+           03  WRK-MEIDSPKBN                       PIC X(01).
            03  WRK-OLD-NYUHEN-YMD                  PIC X(08).
       *
        01  WRK-ROW.
@@ -1010,6 +1012,18 @@
            PERFORM UNTIL ( FLG-SYUMEI NOT  =   ZERO )
                     OR   ( IDX1           >=   CONST-SMEILIST-MAX )
       *
+             MOVE    1                   TO  FLG-MEIVISIBLE
+      *
+             IF    ( SMEI-JOUTAIKBN      =   "2" OR "4" OR "6" )
+              AND  ( SMEI-NYUHEN-MONEY   =   ZERO )
+                 MOVE      "1"           TO  SPA-NAI-O04-MEIDSPCTRL
+                 IF  ( SPA-NAI-O04-MEIDSPKBN =   "1" )
+                     MOVE    ZERO        TO  FLG-MEIVISIBLE
+                 END-IF
+             END-IF
+      *
+             IF    ( FLG-MEIVISIBLE      =   1 )
+      *
                COMPUTE IDX1    =   IDX1    +   1
       *
       *
@@ -1075,6 +1089,7 @@
       *
                MOVE    SMEI-NYUKIN-HOHO
                                        TO SPA-NAI-O04-TNYKN-HOHO (IDX1)
+             END-IF
       *
                MOVE    "tbl_syumei"        TO  MCP-TABLE
                MOVE    "key6"              TO  MCP-PATHNAME
@@ -1457,8 +1472,7 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   SPA-GMN-O04-SMEILIST-MAX )
       *
-               MOVE    SPA-GMN-O04-TDENPEDANUM  (IDX0)
-                                           TO  WRK-Z9
+               MOVE    IDX0                TO  WRK-Z9
                MOVE    WRK-Z9              TO  O04-TRENNUM (IDX0)
                INITIALIZE                      WRK-TSKYMONEY-G
                MOVE    SPA-GMN-O04-TSKYMONEY    (IDX0)
@@ -1483,6 +1497,10 @@
                END-IF
       *
            END-PERFORM
+      *
+           IF    ( SPA-NAI-O04-MEIDSPCTRL      =   1 )
+                   MOVE    "表示切替"      TO  O04-B05-LABEL
+           END-IF
       *
       *    自費名称
            PERFORM     VARYING IDX0    FROM    1   BY  1      
@@ -1742,6 +1760,9 @@
       *    登録
            WHEN    "CLICKED"           ALSO    "B12"
                PERFORM 410-TOROKU-SEC
+      *    明細表示区分
+           WHEN    "CLICKED"           ALSO    "B05"
+               PERFORM 450-MEIDSPKBN-SEC
       *    前ページ処理
            WHEN    "CLICKED"           ALSO    "B06"
                PERFORM 4101-PREV-PAGE-SEC
@@ -2731,15 +2752,35 @@
                    +   SPA-GMN-O04-NYUKIN
            END-IF
       *
-           IF    ( SPA-GMN-O04-NYUKIN  >   ZERO )
-               MOVE    2           TO  SPA-GMN-O04-CUR
-               MOVE    "0017"      TO  SPA-ERRCD
-           END-IF
-      *
            IF    ( SPA-ERRCD       =   SPACE )
                IF    ( WRK-NYUKIN  <  ZERO )
                    MOVE    2           TO  SPA-GMN-O04-CUR
                    MOVE    "0018"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-NAI-O04-DENPJTIKBN
+                                   =   "6" )
+                   IF    ( SPA-GMN-O04-NYUKIN
+                                   =   ZERO
+                                   OR  SPA-NAI-O04-NYUKIN-MOTO )
+                       CONTINUE
+                   ELSE
+                       IF    ( SPA-NAI-O04-NYUKIN-MOTO =   ZERO )
+                           MOVE    "1009"  TO  SPA-ERRCD
+                       ELSE
+                           MOVE    "1008"  TO  SPA-ERRCD
+                       END-IF
+                   END-IF
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( SPA-GMN-O04-NYUKIN  >   ZERO )
+                   MOVE    2           TO  SPA-GMN-O04-CUR
+                   MOVE    "0017"      TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -3166,6 +3207,25 @@
       *
            .
        410-P97-SENI-EXT.
+           EXIT.
+      **************************************************************
+      *    明細表示区分変更処理
+      **************************************************************
+       450-MEIDSPKBN-SEC                SECTION.
+      *
+           IF    ( SPA-NAI-O04-MEIDSPCTRL  =   "1" )
+             IF    ( SPA-NAI-O04-MEIDSPKBN   =   " " )
+               MOVE    "1"         TO  SPA-NAI-O04-MEIDSPKBN
+             ELSE
+               MOVE    " "         TO  SPA-NAI-O04-MEIDSPKBN
+             END-IF
+      *
+             PERFORM 3101-SYUMEI-SET-SEC
+             PERFORM 4200-INPUT-AREA-CLEAR-SEC
+           END-IF
+      *
+           .
+       450-MEIDSPKBN-EXT.
            EXIT.
       *************************************************************
       *    登録処理
@@ -4086,6 +4146,12 @@
                                        TO  SPA-ERRMSG
            WHEN    "1007"
                MOVE    "定期請求履歴の更新処理でエラーになりました"
+                                       TO  SPA-ERRMSG
+           WHEN    "1008"
+               MOVE    "入金取消は０円にのみ変更が可能です"
+                                       TO  SPA-ERRMSG
+           WHEN    "1009"
+               MOVE    "入金取消の金額変更はできません"
                                        TO  SPA-ERRMSG
            WHEN    "9999"
                MOVE    "他端末で使用中です。"
