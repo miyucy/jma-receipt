@@ -1485,3 +1485,24 @@ path	key27 	{
 		;
 	};
 };
+
+path	key95	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key95_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE HOSPNUM	   =   :HOSPNUM
+			AND   YUKOSTYMD    <=  :YUKOSTYMD
+			AND   YUKOEDYMD    >=  :YUKOEDYMD
+			AND  (TEN          >=  :TK_TEN
+			AND   TEN          <=  :TK_EDTEN )
+			AND   CDKBN_KBN    =   :CDKBN_KBN
+			ORDER   BY          TEN,
+                                            CDKBN_KBN,
+                                            CDKBN_KBNNUM,
+					    CDKBN_KBNNUM_EDA,
+                                            CDKBN_KOUBAN,
+					    SRYCD
+			;
+	};
+};

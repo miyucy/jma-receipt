@@ -502,6 +502,7 @@
                05  SPA-K98-NEXT                  PIC 9(01).
                05  SPA-K98-PAGE                  PIC 9(04).
       *********05  SPA-K98-NAI-SELNUM            PIC 9(03).
+               05  SPA-K98-SENTAKU               PIC X(30).
       *
                05  SPA-K98-GMN-SELNUM-G.
                    07  SPA-K98-GMN-SELNUM        PIC X(03)
@@ -529,6 +530,7 @@
                        11  SPA-K98-GMN-NAME       PIC X(70).
                        11  SPA-K98-GMN-TANI       PIC X(10).
                        11  SPA-K98-GMN-KISOTEN    PIC 9(07)V99.
+                       11  SPA-K98-GMN-SETCD      PIC X(10).
       *
                        11  SPA-K98-NAI-NO         PIC 9(03).
       *        ¼«±¡ºÎÍÑ
