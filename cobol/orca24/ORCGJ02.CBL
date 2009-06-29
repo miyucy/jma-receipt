@@ -5016,12 +5016,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    画面編集
            MOVE    SPA-HENNYMD(11:)    TO  J022-SRYYMD
-           MOVE    SPA-J022-DAY1       TO  WRK-ZZZ
-           MOVE    WRK-ZZZ-X           TO  J022-DAY1
-           MOVE    SPA-J022-DAY2       TO  WRK-ZZZ
-           MOVE    WRK-ZZZ-X           TO  J022-DAY2
-           MOVE    SPA-J022-DAY3       TO  WRK-ZZZ
-           MOVE    WRK-ZZZ-X           TO  J022-DAY3
+           MOVE    SPA-J022-DAY1       TO  J022-DAY1
+           MOVE    SPA-J022-DAY2       TO  J022-DAY2
+           MOVE    SPA-J022-DAY3       TO  J022-DAY3
       *
            MOVE    1                   TO  SPA-J022-CUR
       *
@@ -9089,6 +9086,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-GMN-BANGO       =   ZERO
                GO      TO      470-KAKUTEI-EXT
            END-IF
+      *    剤回数
+           PERFORM 41012-DAY-CHK-SEC
       *
            MOVE    ZERO                TO  WRK-CNT-TUKI
       *

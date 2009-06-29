@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-多々納  05/11/30  MONFUNC 対応
       *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  04.05.00    NACL-多々納  09/06/29  一括入力対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -92,7 +93,7 @@
                05  WRK-WDD         PIC 9(02).
            03  WRK-ENDDD           PIC 9(02).
       *
-           03  WRK-ZZ              PIC ZZZ.
+           03  WRK-MCP-WIDGET      PIC X(64).
       *
       *
       *****************************************************************
@@ -153,6 +154,11 @@
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
+           INITIALIZE                  FLG-AREA
+           INITIALIZE                  STS-AREA
+           INITIALIZE                  CNT-AREA
+           INITIALIZE                  WRK-AREA
+      *
            MOVE    SPA-COMMON      TO  SPA-AREA.
            MOVE    SPA-FREE        TO  SPA-J02
            MOVE    SPA-WORK        TO  SPA-J01KYOUTU
@@ -188,12 +194,6 @@
       *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-      *
-      *
-           INITIALIZE                  FLG-AREA
-           INITIALIZE                  STS-AREA
-           INITIALIZE                  CNT-AREA
-           INITIALIZE                  WRK-AREA
       *
       *    エラー画面より
            IF      SPA-MOTOPG          =   "JERR"
@@ -256,14 +256,10 @@
       *
       *    画面編集
            MOVE    SPA-HENNYMD(11:)    TO  J022-SRYYMD
-           MOVE    SPA-J022-DAY1       TO  WRK-ZZ
       *
-           MOVE    SPA-J022-DAY1       TO  WRK-ZZ
-           MOVE    WRK-ZZ              TO  J022-DAY1
-           MOVE    SPA-J022-DAY2       TO  WRK-ZZ
-           MOVE    WRK-ZZ              TO  J022-DAY2
-           MOVE    SPA-J022-DAY3       TO  WRK-ZZ
-           MOVE    WRK-ZZ              TO  J022-DAY3
+           MOVE    SPA-J022-DAY1       TO  J022-DAY1
+           MOVE    SPA-J022-DAY2       TO  J022-DAY2
+           MOVE    SPA-J022-DAY3       TO  J022-DAY3
       *
            PERFORM 5001-MAPCUR-SEC
            .
@@ -275,6 +271,18 @@
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
+           IF      SPA-J022-CUR        =   ZERO
+               EVALUATE    WRK-MCP-WIDGET
+                   WHEN    "DAY1"
+                       MOVE    2                   TO  SPA-J022-CUR
+                   WHEN    "DAY2"
+                       MOVE    3                   TO  SPA-J022-CUR
+                   WHEN    "DAY3"
+                       MOVE    4                   TO  SPA-J022-CUR
+                   WHEN    OTHER
+                       MOVE    1                   TO  SPA-J022-CUR
+               END-EVALUATE
+           END-IF
       *
            EVALUATE    SPA-J022-CUR
                WHEN    1
@@ -313,105 +321,56 @@
       *****************************************************************
        200-ENTRY                   SECTION.
       *
-           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        回数１  
-               WHEN    "ACTIVATE"      ALSO    "DAY1"
-                   PERFORM 2001-DAY1-SEC
-      *        回数２  
-               WHEN    "ACTIVATE"      ALSO    "DAY2"
-                   PERFORM 2002-DAY2-SEC
-      *        回数３  
-               WHEN    "ACTIVATE"      ALSO    "DAY3"
-                   PERFORM 2003-DAY3-SEC
-           END-EVALUATE
+           MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
+           MOVE    ZERO                TO  SPA-J022-CUR
+      *
+           PERFORM 410-INPUT-CHK-SEC
       *
            .
        200-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
-      *    １回目入力処理
+      *    入力チェック処理
       *****************************************************************
-       2001-DAY1-SEC                SECTION.
+       410-INPUT-CHK-SEC          SECTION.
       *
-           MOVE    1                   TO  SPA-J022-CUR
-      *
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    J022-DAY1           TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                  (SNUM-MINKBN         =   "1"   )   OR
-                  (SNUM-SYOKBN         =   "1"   )
-               MOVE    "0001"              TO  SPA-ERRCD
-               GO      TO      2001-DAY1-EXT
-           ELSE
-               MOVE    SNUM-OUTNUM         TO  SPA-J022-DAY1
-           END-IF
-      *
-           ADD     1                   TO  SPA-J022-CUR
+      *    画面をＳＰＡセット
+           PERFORM 4101-GMN-SPA-SET-SEC
+      *    基本チェックと別画面処理
+           PERFORM 4102-KIHON-CHK-SEC
       *
            .
-       2001-DAY1-EXT.
+       410-INPUT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    画面ＳＰＡ編集処理
+      *****************************************************************
+       4101-GMN-SPA-SET-SEC          SECTION.
+      *
+           MOVE    J022-DAY1           TO  SPA-J022-DAY1
+           MOVE    J022-DAY2           TO  SPA-J022-DAY2
+           MOVE    J022-DAY3           TO  SPA-J022-DAY3
+           .
+       4101-GMN-SPA-SET-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ２回目入力処理
+      *    基本チェック処理
       *****************************************************************
-       2002-DAY2-SEC                SECTION.
-      *
-           MOVE    2                   TO  SPA-J022-CUR
-      *
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    J022-DAY2           TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                  (SNUM-MINKBN         =   "1"   )   OR
-                  (SNUM-SYOKBN         =   "1"   )
-               MOVE    "0001"              TO  SPA-ERRCD
-               GO      TO      2002-DAY2-EXT
-           ELSE
-               MOVE    SNUM-OUTNUM         TO  SPA-J022-DAY2
-           END-IF
-      *
-           ADD     1                   TO  SPA-J022-CUR
+       4102-KIHON-CHK-SEC                   SECTION.
       *
            .
-       2002-DAY2-EXT.
-           EXIT.
-      *
-      *****************************************************************
-      *    ３回目入力処理
-      *****************************************************************
-       2003-DAY3-SEC                SECTION.
-      *
-           MOVE    3                   TO  SPA-J022-CUR
-      *
-      *
-           INITIALIZE                      ORCSNUMAREA
-           MOVE    J022-DAY3           TO  SNUM-INX
-           CALL    "ORCSNUM"           USING
-                                       ORCSNUMAREA
-           IF     (SNUM-RC         NOT =   ZERO  )   OR
-                  (SNUM-MINKBN         =   "1"   )   OR
-                  (SNUM-SYOKBN         =   "1"   )
-               MOVE    "0001"              TO  SPA-ERRCD
-               GO      TO      2003-DAY3-EXT
-           ELSE
-               MOVE    SNUM-OUTNUM         TO  SPA-J022-DAY3
-           END-IF
-      *
-           ADD     1                   TO  SPA-J022-CUR
-      *
-           .
-       2003-DAY3-EXT.
+       4102-KIHON-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    登録　処理
       *****************************************************************
        220-KAKUTEI-SEC                   SECTION.
+      *
+      *    入力チェック処理
+           PERFORM 410-INPUT-CHK-SEC
       *
            MOVE    SPA-J022-DAY1       TO  SPA-NAI-DAY1 (SPA-J022-IDX)
            MOVE    SPA-J022-DAY2       TO  SPA-NAI-DAY2 (SPA-J022-IDX)
@@ -514,6 +473,7 @@
       *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
+      *
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
