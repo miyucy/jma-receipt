@@ -336,6 +336,7 @@
            COPY    "Y05.INC".
            COPY    "YERR.INC".
            COPY    "YID1.INC".
+           COPY    "APPOINTMOD.INC".
       *
        PROCEDURE                   DIVISION    USING
            MCPAREA
