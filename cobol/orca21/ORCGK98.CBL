@@ -2794,6 +2794,10 @@
                    MOVE    ZERO                TO  SPA-K98-NEXT
                    MOVE    1                   TO  SPA-K98-PAGE
                    PERFORM                     310-SPA-SET-SEC
+      *            検索対象がない時
+                   IF      SPA-K98-GMN-MAX     =   ZERO
+                       MOVE    1                 TO  FLG-KENSAKU01
+                   END-IF
                END-IF
            END-IF
       *T2
