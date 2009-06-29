@@ -74,6 +74,9 @@
       *                                     （診療区分６４：病理診断対応）
       *                                     （再就労：円変更対応）
       *  04.03.01    NACL-門脇    09/02/19  アフターの検査日編集条件追加
+      *
+      *  04.05.01    NACL-門脇    09/06/29  療養期間記載方法選択機能
+      *                                     （休業証明請求時）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -214,6 +217,7 @@
            03  WRK-YKZTENTANKA                         PIC  9(02).
            03  WRK-KOMUKBN                             PIC  X(01).
            03  WRK-KOMUTENTANKA                        PIC  9(02).
+           03  WRK-KYUGYO-PRTKBN                       PIC  X(01).
       *
            03  WRK-TAIHI-FLG                           PIC  9(01).
            03  WRK-TAIHI-SRYYMD.
@@ -615,6 +619,12 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-4001-HOSPNUM
                     MOVE SYS-4001-KOMUTENTANKA
                                            TO    WRK-KOMUTENTANKA
                   END-IF
+                  IF     SYS-4001-KYUGYO-PRTKBN   =  SPACE
+                    MOVE "1"               TO    WRK-KYUGYO-PRTKBN
+                  ELSE
+                    MOVE SYS-4001-KYUGYO-PRTKBN
+                                           TO    WRK-KYUGYO-PRTKBN
+                  END-IF
               ELSE
                   MOVE    "労災自賠医療機関情報が取得できませんでした"     
                                               TO  WRK-RECEERR
@@ -920,6 +930,8 @@ grpsys         PERFORM 900-DBSELECT-SEC
            MOVE    WRK-KOMUKBN           TO   RECE41-KOMUKBN
       *    公務災害点単価
            MOVE    WRK-KOMUTENTANKA      TO   RECE41-KOMUTENTANKA
+      *    休業証明療養期間記載
+           MOVE    WRK-KYUGYO-PRTKBN     TO   RECE41-KYUGYO-PRTKBN
       *
       *    労災レセプト回数取得
            IF    ( RECE41-HKNKBN     =   "1"  OR  "2" )
@@ -2692,6 +2704,12 @@ grpsys     PERFORM 900-DBFETCH-SEC
                    ELSE
                      MOVE SYS-4001-KOMUTENTANKA
                                             TO    WRK-KOMUTENTANKA
+                   END-IF
+                   IF     SYS-4001-KYUGYO-PRTKBN   =  SPACE
+                     MOVE "1"               TO    WRK-KYUGYO-PRTKBN
+                   ELSE
+                     MOVE SYS-4001-KYUGYO-PRTKBN
+                                            TO    WRK-KYUGYO-PRTKBN
                    END-IF
                 END-IF
       *

@@ -170,6 +170,9 @@
       *  04.04.01    NACL-門脇    08/12/25  包括対応
       *  04.04.02    NACL-門脇    09/02/04  検査のコメント自動記載対応
       *  04.04.03    NACL-門脇    09/04/13  平成２１年５月改正対応
+      *
+      *  04.05.01    NACL-門脇    09/06/29  療養期間記載方法選択機能
+      *                                     （休業証明請求時）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2114,6 +2117,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                    IF      WRK-KYUGYOFLG   =   "1"
                    AND     SRY-SRYCD(IDX2) = CONS-ROUCOM1
+                        MOVE   PTCOM-INPUTCHI1(1:2)
+                                            TO  RECE41-KYUGYO-STR(1:2)
+                        MOVE   PTCOM-INPUTCHI2(1:2)
+                                            TO  RECE41-KYUGYO-STR(3:2)
                         MOVE   PTCOM-INPUTCHI3(1:2)
                                             TO  RECE41-KYUGYO-END(1:2)
                         MOVE   PTCOM-INPUTCHI4(1:2)

@@ -83,6 +83,8 @@
       *                                     編集の変更
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *  04.05.02    NACL-門脇    09/06/29  療養期間記載方法選択機能
+      *                                     （休業証明請求時）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1242,7 +1244,8 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            END-PERFORM
       *
            IF      RECE41-JNISSU  =  999
-              IF   RECE41-KYUGYOFLG   =   SPACE
+              IF  (RECE41-KYUGYOFLG      =   SPACE)
+              OR  (RECE41-KYUGYO-PRTKBN  =   "2"  )
                 MOVE    RECE41-RYOSTYMD     TO  WRK-SYMD
                 PERFORM 31012-SE-WA-YMDEDIT-SEC
                 MOVE    WRK-HENYMD          TO  HC21-RYOSTYMD
