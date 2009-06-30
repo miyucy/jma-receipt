@@ -27,7 +27,6 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
-      * 04.05.00     NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -4312,6 +4311,14 @@
                PERFORM 410-KT98-SYORI-SEC
                GO      TO                  41011-KOUI-HEN2-EXT
            END-IF
+      *    Ｐ入力なし
+           IF      LNK-SC97-INPUTCD(1:1)
+                                       =  "/"
+               MOVE    "6015"              TO  SPA-ERRCD
+               MOVE    SPACE           TO  SPA-MAE-INPUTCD(SPA-GMN-IDX)
+               MOVE    "1"             TO  SPA-COM-CUR (SPA-GMN-IDX)
+               GO      TO                  41011-KOUI-HEN2-EXT
+           END-IF
       *
            IF     LNK-SC97-NYURYOKU    =   1
       *///     セットコードに変更がない時
@@ -4471,6 +4478,7 @@
                       (SPA-GMN-INPUTCD(SPA-GMN-IDX - 1)(1:1)   =   "S")
       *            内服薬剤
                    MOVE    "3"                 TO  SPA-KT98-GMN-SYORI
+                   MOVE    1                   TO  FLG-KOUI
                ELSE
                    EVALUATE    SPA-COM-SRYKBN(SPA-GMN-IDX - 1)
                        WHEN    SPACE
@@ -8467,6 +8475,9 @@
                            "以降の日から入力して下さい。"
                                        INTO  SPA-ERRMSG
                    END-STRING
+               WHEN    "6015"
+                   MOVE    "// で入力してください。"
+                                               TO  SPA-ERRMSG
       *共通メッセージ
                WHEN    OTHER
                    MOVE    "KT01"              TO  LNK-SC96-PG
