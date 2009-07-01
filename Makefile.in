@@ -3,15 +3,20 @@ include $(top_srcdir)/Makefile.directories
 
 SUBDIRS = bin etc screen form record lddef cobol scripts init data doc tools
 
-all:   
-	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i all; done
-filecheck:   
-	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i filecheck; done
-clean: 
-	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i clean; done
+all filecheck clean:
+	@failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	for i in $(SUBDIRS); \
+	  do $(MAKE) -C $$i $@ || eval $$failcom; \
+	done
 
 distclean: 
-	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
+	@for i in $(SUBDIRS); do $(MAKE) -C $$i distclean; done
 	-rm -f Makefile Makefile.directories
 	-rm -f config.cache config.log config.status
 
@@ -44,7 +49,7 @@ snapshot:
 	$(MAKE) dist distdir=$(PACKAGE)-`date +"%Y%m%d"`
 
 install installdirs:
-	@set -e; for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done
+	@for i in $(SUBDIRS); do $(MAKE) -C $$i $@; done
 
 install-copys install-copydirs: 
 	$(MAKE) -C cobol $@

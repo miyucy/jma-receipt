@@ -59,18 +59,25 @@ endif
 
 COPYDIRS = copy
 
-all:   
-	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i all; done
-filecheck:   
-	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i filecheck; done
+all filecheck:   
+	@failcom='exit 1'; \
+	for f in x $$MAKEFLAGS; do \
+	  case $$f in \
+	    *=* | --[!k]*);; \
+	    *k*) failcom='fail=yes';; \
+	  esac; \
+	done; \
+	for i in $(COPYDIRS) $(SUBDIRS); \
+	  do $(MAKE) -C $$i $@ || eval $$failcom; \
+	done
 clean: 
-	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i clean; done
+	for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i $@; done
 distclean: 
-	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i distclean; done
+	for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i $@; done
 	-rm -f Makefile Makefile.global
 
 install installdirs:
-	@set -e; for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i $@ ; done
+	for i in $(COPYDIRS) $(SUBDIRS); do $(MAKE) -C $$i $@; done
 
 install-copys install-copydirs: 
-	@set -e; for i in $(COPYDIRS); do $(MAKE) -C $$i $@ ; done
+	for i in $(COPYDIRS); do $(MAKE) -C $$i $@ ; done
