@@ -2398,7 +2398,7 @@
            MOVE    SPACE               TO  SPA-NAI-YUKOSTYMD
       *
       *    日付妥当性チェック＆編集処理
-           IF    ( SPA-GMN-YUKOSTYMD   =   SPACE )
+           IF    ( SPA-GMN-YUKOSTYMD   =   SPACE OR "00000000" )
                MOVE    "00000000"  TO  SPA-GMN-YUKOSTYMD
                                        SPA-NAI-YUKOSTYMD
            ELSE
@@ -2419,6 +2419,16 @@
                    MOVE    "0003"      TO  SPA-ERRCD
                    MOVE    51          TO  SPA-GMN-CUR
                END-IF
+      *
+               IF    ( SPA-ERRCD       =   SPACE )
+                   IF    ( SPA-NAI-YUKOSTYMD (7:2) =   "01" )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0016"  TO  SPA-ERRCD
+                       MOVE    51      TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
+      *
            END-IF
       *
            .
@@ -2434,7 +2444,7 @@
            MOVE    SPACE               TO  SPA-NAI-YUKOEDYMD
       *
       *    日付妥当性チェック＆編集処理
-           IF    ( SPA-GMN-YUKOEDYMD   =   SPACE )
+           IF    ( SPA-GMN-YUKOEDYMD   =   SPACE OR "99999999" )
                MOVE    "99999999"      TO  SPA-GMN-YUKOEDYMD
                                            SPA-NAI-YUKOEDYMD
            ELSE
@@ -2453,7 +2463,23 @@
                    MOVE    WRK-SYMD    TO  SPA-NAI-YUKOEDYMD
                    MOVE    "0004"      TO  SPA-ERRCD
                    MOVE    52          TO  SPA-GMN-CUR
-              END-IF
+               END-IF
+               IF    ( SPA-ERRCD       =   SPACE )
+                   INITIALIZE              STS-AREA-DAY
+                   INITIALIZE              LNK-DAY7-AREA
+                   MOVE    "71"        TO  LNK-DAY7-IRAI
+                   MOVE    SPA-NAI-YUKOEDYMD (1:6)
+                                       TO  LNK-DAY7-YM
+                   CALL    "ORCSDAY"       USING
+                                           STS-AREA-DAY
+                                           LNK-DAY7-AREA
+                   IF    ( LNK-DAY7-KOYOMI =   SPA-NAI-YUKOEDYMD )
+                       CONTINUE
+                   ELSE
+                       MOVE    "0017"  TO  SPA-ERRCD
+                       MOVE    52      TO  SPA-GMN-CUR
+                   END-IF
+               END-IF
            END-IF
       *
            .
@@ -3337,6 +3363,12 @@
                                        TO  SPA-ERRMSG
            WHEN    "0015"
                MOVE    "選択された番号が多すぎます"
+                                       TO  SPA-ERRMSG
+           WHEN    "0016"
+               MOVE    "有効期間開始日は１日で入力して下さい"
+                                       TO  SPA-ERRMSG
+           WHEN    "0017"
+               MOVE    "有効期間終了日は月末日で入力して下さい"
                                        TO  SPA-ERRMSG
            WHEN    "1008"
                MOVE    "範囲内の選択番号を入力してください"
