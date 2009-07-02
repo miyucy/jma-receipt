@@ -70,6 +70,8 @@
       *  04.04.04    NACL-門脇    09/05/11  平成２１年５月改正対応
       *
       *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *  04.05.02    NACL-藤原    09/06/11  病棟別出力対応
+      *  04.05.03    NACL-藤原    09/06/18  社保レセプト遍綴順対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1589,6 +1591,14 @@
            IF      SYS-200501-KOUIKIOCRKBN
                                     =   SPACE
                MOVE    ZERO             TO  SYS-200501-KOUIKIOCRKBN
+           END-IF
+           IF      SYS-200501-BTUNUM-PRTKBN
+                                        =   SPACE
+               MOVE    "0"              TO  SYS-200501-BTUNUM-PRTKBN
+           END-IF
+           IF      SYS-200501-BTUNUM-PRTJYUNKBN
+                                        =   SPACE
+               MOVE    "0"              TO  SYS-200501-BTUNUM-PRTJYUNKBN
            END-IF
       *         
       *    レセプト編綴順情報
@@ -7854,18 +7864,21 @@
                END-IF
            END-IF
       *
-      *    編綴順項目の設定（国保特別療養費以外）
-           IF    ( RECE62-TEISYUTUSAKI =   "1"    )
-           OR    ( RECE62-TEISYUTUSAKI =   "6"    )
+      *    編綴順項目の設定
+           IF    ( RECE62-TEISYUTUSAKI =   "6"    )
            OR    ( RECE62-RECESYUBETU  =   "6666"  OR  "8888"  OR
                                            "0000" )
                CONTINUE
            ELSE
-               IF    ( FLG-SYS-2008        =   ZERO   )
-               AND   ( FLG-RECE-PUT-UM     =   ZERO   )
-                   CONTINUE
+               IF    ( RECE62-TEISYUTUSAKI =   "1"    )
+                   PERFORM 39012-SYAHO-HENTETU-HENSYU-SEC
                ELSE
-                   PERFORM 39011-HENTETU-HENSYU-SEC
+                   IF    ( FLG-SYS-2008        =   ZERO   )
+                   AND   ( FLG-RECE-PUT-UM     =   ZERO   )
+                       CONTINUE
+                   ELSE
+                       PERFORM 39011-HENTETU-HENSYU-SEC
+                   END-IF
                END-IF
            END-IF
       *
@@ -7946,6 +7959,12 @@
       *        医師別出力設定
                MOVE    RECE62-DRCD         TO  RECE08-DRCD
                MOVE    RECE62-DRCD-SRYKA   TO  RECE08-DRCD-SRYKA
+      *
+      *        病棟別出力設定
+               IF      SYS-200501-BTUNUM-PRTKBN
+                                           =   "1"
+                   MOVE    RECE62-LASTBTUNUM   TO  RECE08-SORT-1
+               END-IF
       *
                MOVE    "tbl_receprt"       TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
@@ -8356,6 +8375,132 @@
            EXIT.
       *
       *****************************************************************
+      *    社保編綴設定処理
+      *****************************************************************
+       39012-SYAHO-HENTETU-HENSYU-SEC     SECTION.
+      *
+      *    ２００８年３月以前は設定しない
+           IF      RECE62-SRYYM        <=  "200803"
+               GO  TO  39012-SYAHO-HENTETU-HENSYU-EXT
+           END-IF
+      *
+           EVALUATE    RECE08-RECESYUBETU
+               WHEN    "1127"
+               WHEN    "1137"
+                   MOVE    "010"   TO  RECE08-RECESYUBETU-SRT
+               WHEN    "1117"
+                   MOVE    "020"   TO  RECE08-RECESYUBETU-SRT
+               WHEN    "1129"
+               WHEN    "1139"
+                   MOVE    "030"   TO  RECE08-RECESYUBETU-SRT
+               WHEN    "1119"
+                   MOVE    "040"   TO  RECE08-RECESYUBETU-SRT
+               WHEN    "1121"
+               WHEN    "1131"
+                   MOVE    "050"   TO  RECE08-RECESYUBETU-SRT
+               WHEN    "1111"
+                   MOVE    "060"   TO  RECE08-RECESYUBETU-SRT
+               WHEN    "1125"
+               WHEN    "1135"
+                   MOVE    "070"   TO  RECE08-RECESYUBETU-SRT
+               WHEN    "1115"
+                   MOVE    "080"   TO  RECE08-RECESYUBETU-SRT
+               WHEN    "1123"
+               WHEN    "1133"
+                   MOVE    "090"   TO  RECE08-RECESYUBETU-SRT
+               WHEN    "1113"
+                   MOVE    "100"   TO  RECE08-RECESYUBETU-SRT
+               WHEN    "1221"
+               WHEN    "1231"
+                   MOVE    "110"   TO  RECE08-RECESYUBETU-SRT
+               WHEN    "1211"
+                   MOVE    "120"   TO  RECE08-RECESYUBETU-SRT
+           END-EVALUATE    
+      *
+      *****EVALUATE    RECE08-RECESYUBETU
+      *****    WHEN    "1127"
+      *****        MOVE    1       TO  RECE08-SYUBETU-SRT1
+      *****END-EVALUATE    
+      *
+      *    医保単独分の設定   
+           IF    (  RECE62-HKNNUM  NOT =   SPACE )
+           AND   (  RECE62-KOHNUM (1)  =   SPACE )
+      *        保険による設定   
+               EVALUATE    RECE62-HKNNUM
+                   WHEN    "001"
+                       MOVE    1           TO  RECE08-GRP-NO1
+                       MOVE    "001"       TO  RECE08-GRP-NO2
+                   WHEN    "009"
+                       MOVE    1           TO  RECE08-GRP-NO1
+                       MOVE    "002"       TO  RECE08-GRP-NO2
+                   WHEN    "002"
+                       MOVE    2           TO  RECE08-GRP-NO1
+                       EVALUATE    RECE62-HOJOKBN
+                           WHEN    "A"
+                           WHEN    "B"
+                           WHEN    "C"
+                           WHEN    "G"
+                           WHEN    "H"
+                           WHEN    "I"
+                           WHEN    "1"
+                           WHEN    "2"
+                           WHEN    "3"
+                               MOVE    "001"   TO  RECE08-GRP-NO2
+                           WHEN    OTHER
+                               MOVE    "002"   TO  RECE08-GRP-NO2
+                       END-EVALUATE        
+                   WHEN    "003"
+                       MOVE    3           TO  RECE08-GRP-NO1
+                       MOVE    "001"       TO  RECE08-GRP-NO2
+                   WHEN    "004"
+                       MOVE    3           TO  RECE08-GRP-NO1
+                       MOVE    "002"       TO  RECE08-GRP-NO2
+                   WHEN    "031"  THRU  "034"
+                       MOVE    4           TO  RECE08-GRP-NO1
+                       EVALUATE    RECE62-HOJOKBN
+                           WHEN    "B"
+                           WHEN    "H"
+                           WHEN    "2"
+                               MOVE    "001"   TO  RECE08-GRP-NO2
+                           WHEN    OTHER
+                               MOVE    "002"   TO  RECE08-GRP-NO2
+                       END-EVALUATE        
+                   WHEN    "006"
+                       MOVE    5           TO  RECE08-GRP-NO1
+                   WHEN    "007"
+                       MOVE    6           TO  RECE08-GRP-NO1
+                   WHEN    "063"
+                   WHEN    "072"  THRU  "075"
+                       MOVE    7           TO  RECE08-GRP-NO1
+               END-EVALUATE
+      *
+      *        長期の設定   
+               IF    ( RECE62-ETC-KOHNUM (1)
+                                       NOT =   SPACE )
+                   PERFORM VARYING IDX     FROM    1   BY  1
+                           UNTIL   IDX     >       4
+                           OR      RECE62-ETC-KOHNUM (IDX) =   SPACE
+                       IF      RECE62-ETC-KOHNUM (IDX) =  "972" OR "974"
+                           MOVE    "1"             TO  RECE08-CHOUKI
+                           MOVE    4               TO  IDX
+                       END-IF
+                   END-PERFORM
+               END-IF
+           END-IF
+      *
+      *    医保と公費併用分の第一公費の設定   
+           IF    (  RECE62-HKNNUM  NOT =   SPACE )
+           AND   (  RECE62-KOHNUM (1)
+                                   NOT =   SPACE )
+               MOVE    RECE62-KOHNUM (1)   TO  RECE08-KOUHI-NO
+      *********MOVE    RECE62-FTNJANUM(1)  TO  RECE08-SYUBETU-SRT2
+           END-IF
+     *
+           .
+       39012-SYAHO-HENTETU-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    出力処理
       *****************************************************************
        3903-RECE07-WRITE-SEC        SECTION.
@@ -8374,13 +8519,29 @@
            MOVE    RECE08-RECESYUBETU  TO  RECE07-RECESYUBETU
            MOVE    RECE08-NYUGAIKBN    TO  RECE07-NYUGAIKBN
            MOVE    RECE08-SRYKA        TO  RECE07-SRYKA
-           MOVE    RECE08-HKNJANUM-S   TO  RECE07-HKNJANUM
-           MOVE    RECE08-PREFKBN-SRT  TO  RECE07-PREFKBN-SRT
-           MOVE    RECE08-ZAITAKU      TO  RECE07-ZAITAKU
-           MOVE    RECE08-CHOUKI       TO  RECE07-CHOUKI
-           MOVE    RECE08-HKNJANUM-SRT TO  RECE07-HKNJANUM-SRT
-           MOVE    RECE08-RECESYUBETU-SRT
-                                       TO  RECE07-RECESYUBETU-SRT
+           IF      RECE08-TEISYUTUSAKI =   "1"
+               MOVE    "99999999"          TO  RECE08-HKNJANUM-S
+               MOVE    "999"               TO  RECE08-RECESYUBETU-SRT
+               MOVE    "99"                TO  RECE08-PREFKBN-SRT
+               MOVE    "9"                 TO  RECE08-HKNJANUM-SRT
+                                               RECE08-ZAITAKU
+                                               RECE08-CHOUKI
+               MOVE    RECE08-HKNJANUM-S   TO  RECE07-HKNJANUM
+               MOVE    RECE08-PREFKBN-SRT  TO  RECE07-PREFKBN-SRT
+               MOVE    RECE08-ZAITAKU      TO  RECE07-ZAITAKU
+               MOVE    RECE08-CHOUKI       TO  RECE07-CHOUKI
+               MOVE    RECE08-HKNJANUM-SRT TO  RECE07-HKNJANUM-SRT
+               MOVE    RECE08-RECESYUBETU-SRT
+                                           TO  RECE07-RECESYUBETU-SRT
+           ELSE   
+               MOVE    RECE08-HKNJANUM-S   TO  RECE07-HKNJANUM
+               MOVE    RECE08-PREFKBN-SRT  TO  RECE07-PREFKBN-SRT
+               MOVE    RECE08-ZAITAKU      TO  RECE07-ZAITAKU
+               MOVE    RECE08-CHOUKI       TO  RECE07-CHOUKI
+               MOVE    RECE08-HKNJANUM-SRT TO  RECE07-HKNJANUM-SRT
+               MOVE    RECE08-RECESYUBETU-SRT
+                                           TO  RECE07-RECESYUBETU-SRT
+           END-IF
            MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
            MOVE    RECE07-REC          TO  MCPDATA-REC 
            MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE

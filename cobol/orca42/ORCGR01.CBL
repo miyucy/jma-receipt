@@ -127,6 +127,9 @@
       *  04.03.03    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *  04.03.04    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
       *  04.03.05    NACL-藤原    08/08/11  コメント記載箇所選択機能対応
+      *
+      *  04.05.01    NACL-藤原    09/06/11  病棟別出力対応
+      *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -4297,6 +4300,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                            INITIALIZE     SPA-R01-RECE07-RECE-PUTH(1)
                                           SPA-R01-RECE07-RECE-PUTH(2)
                            MOVE    SPACE  TO  SPA-R01-RECE08-DRCD-SRYKA
+                                              SPA-R01-RECE08-SORT-1
+                                          SPA-R01-RECE08-RECESYUBETU-SRT
                        END-IF
                      END-IF
                    ELSE

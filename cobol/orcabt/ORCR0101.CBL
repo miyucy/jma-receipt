@@ -84,6 +84,10 @@
       *
       *  04.03.01    NACL-Æ£¸¶    08/06/19  °å»ÕÊÌ½ÐÎÏÂÐ±þ
       *                                     ¡Ö£±£±¡×¤ÎÄÉ²Ã
+      *
+      *  04.05.01    NACL-Æ£¸¶    09/06/11  ÉÂÅïÊÌ½ÐÎÏÂÐ±þ
+      *                                     ¡Ö£±£²¡×¤ÎÄÉ²Ã
+      *  04.05.02    NACL-Æ£¸¶    09/06/18  ¼ÒÊÝ¥ì¥»¥×¥ÈÊ×ÄÖ½çÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -165,6 +169,12 @@ grpsys     COPY    "COMMON-SPA".
                        09  WRK-PARA-RECE09-DRCD-PRTJYUNKBN
                                                      PIC X(01).
                        09  FILLER                    PIC X(06).
+                   07  WRK-PARA-RECE09-DATA-R1       REDEFINES
+                                                 WRK-PARA-RECE09-DATA.
+                       09  WRK-PARA-RECE09-BTUNUM    PIC X(02).
+                       09  WRK-PARA-RECE09-BTUNUM-PRTJYUNKBN
+                                                     PIC X(01).
+                       09  FILLER                    PIC X(09).
                05  WRK-PARA-RECE09-STDATA            PIC X(100).
                05  WRK-PARA-RECE09-EDDATA            PIC X(100).
                05  WRK-PARA-PRTJYUN           PIC 9(04).
@@ -326,7 +336,8 @@ grpsys     MOVE    SPA-HOSPNUM                  TO  RECE08-HOSPNUM
            MOVE    WRK-PARA-RECE09-TEISYUTUSAKI TO  RECE08-TEISYUTUSAKI
            MOVE    WRK-PARA-RECE09-RECESYUBETU  TO  RECE08-RECESYUBETU
            MOVE    WRK-PARA-RECE09-NYUGAIKBN    TO  RECE08-NYUGAIKBN
-           IF      WRK-PARA-RECE09-PRTJYUN      =   "11"
+           IF      WRK-PARA-RECE09-PRTJYUN      =   "11"    OR
+                                                    "12"
                CONTINUE
            ELSE
                MOVE    WRK-PARA-RECE09-HKNJANUM
@@ -579,6 +590,9 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                WHEN    "11"                    ALSO    ANY
       *            °å»ÕÊÌ½ç°õºþ
                    PERFORM 9002-DRCD-RECEPRT-KEY-HENSYU-SEC
+               WHEN    "12"                    ALSO    ANY
+      *            °å»ÕÊÌ½ç°õºþ
+                   PERFORM 9003-BTUNUM-RECEPRT-KEY-HENSYU-SEC
                WHEN    ANY                     ALSO    "4"
                    IF      WRK-PARA-RECE09-RECESYUBETU  =   "9999"  
                        EVALUATE    WRK-PARA-RECE09-PRTJYUN
@@ -659,13 +673,23 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-PARA-RECE09-ZAITAKU TO  RECE08-ZAITAKU
            MOVE    WRK-PARA-RECE09-KOUGAKU TO  RECE08-KOUGAKU
       *
-           EVALUATE    WRK-PARA-RECE09-SRT-LAST
-               WHEN    "0"
-                   MOVE    "key37"             TO  WRK-MCP-PATHNAME
+           EVALUATE    WRK-PARA-RECE09-TEISYUTUSAKI
                WHEN    "1"
-                   MOVE    "key40"             TO  WRK-MCP-PATHNAME
-               WHEN    "2"
-                   MOVE    "key41"             TO  WRK-MCP-PATHNAME
+                   EVALUATE    WRK-PARA-RECE09-SRT-LAST
+                       WHEN    "1"
+                           MOVE    "key51"     TO  WRK-MCP-PATHNAME
+                       WHEN    "2"
+                           MOVE    "key51"     TO  WRK-MCP-PATHNAME
+                   END-EVALUATE
+               WHEN    "2" 
+                   EVALUATE    WRK-PARA-RECE09-SRT-LAST
+                       WHEN    "0"
+                           MOVE    "key37"     TO  WRK-MCP-PATHNAME
+                       WHEN    "1"
+                           MOVE    "key40"     TO  WRK-MCP-PATHNAME
+                       WHEN    "2"
+                           MOVE    "key41"     TO  WRK-MCP-PATHNAME
+                   END-EVALUATE
            END-EVALUATE
       *
            .
@@ -704,6 +728,35 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        9002-DRCD-RECEPRT-KEY-HENSYU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÉÂÅïÊÌ½ç°õºþ½èÍý
+      *****************************************************************
+       9003-BTUNUM-RECEPRT-KEY-HENSYU-SEC    SECTION.
+      *
+           IF      WRK-PARA-RECE09-BTUNUM   =   "XX"
+               MOVE    SPACE                TO  RECE08-SORT-1
+           ELSE
+               MOVE    WRK-PARA-RECE09-BTUNUM
+                                            TO  RECE08-SORT-1
+           END-IF
+           MOVE    WRK-PARA-SRYKA       TO  RECE08-SRYKA
+      *
+           EVALUATE    WRK-PARA-RECE09-BTUNUM-PRTJYUNKBN
+                               ALSO    WRK-PARA-RECE09-RECESYUBETU
+               WHEN    "1"     ALSO    "9999"
+                   MOVE    "key49"             TO  WRK-MCP-PATHNAME
+               WHEN    "2"     ALSO    "9999"
+                   MOVE    "key50"             TO  WRK-MCP-PATHNAME
+               WHEN    "1"     ALSO    ANY
+                   MOVE    "key38"             TO  WRK-MCP-PATHNAME
+               WHEN    "2"     ALSO    ANY
+                   MOVE    "key39"             TO  WRK-MCP-PATHNAME
+           END-EVALUATE
+      *
+           .
+       9003-BTUNUM-RECEPRT-KEY-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************

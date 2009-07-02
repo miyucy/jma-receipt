@@ -37,6 +37,7 @@ tbl_receprt	{
         SYUBETU_SRT2        integer;
         DRCD                char(5);
         DRCD_SRYKA          char(2);
+        SORT_1              char(10);
         FORMID              char(20);
         PRTDATA             varchar(10000);
         PRTNM               char(16);
@@ -1236,4 +1237,81 @@ path    key48   {
                     ORDER   BY  TEISYUTUSAKI,PTNUM
                ;
         };
+};
+
+path    key49   {
+        DBSELECT        {
+		DECLARE tbl_receprt_key49_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND     PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                    AND     SRYKA        LIKE   :SRYKA
+                    AND     SORT_1       =   :SORT_1
+                    AND     KANANAME     >=  :STKANANAME
+                    AND     KANANAME     <=  :EDKANANAME 
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
+                    AND     RECESYUBETU  <>  '6666' 
+                    ORDER   BY  KANANAME
+               ;
+        };
+};
+
+path    key50   {
+        DBSELECT        {
+		DECLARE tbl_receprt_key50_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+		WHERE 	HOSPNUM	= :HOSPNUM
+                    AND     PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                    AND     SRYKA        LIKE   :SRYKA
+                    AND     SORT_1       =   :SORT_1
+                    AND     PTNUM        >=  :STKANANAME
+                    AND     PTNUM        <=  :EDKANANAME 
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
+                    AND     RECESYUBETU  <>  '6666' 
+                    ORDER   BY  PTNUM
+               ;
+        };
+};
+
+path	key51	{
+	DBSELECT	{
+		DECLARE tbl_receprt_key51_csr CURSOR FOR
+		SELECT *
+		FROM tbl_receprt
+		WHERE       HOSPNUM      =   :HOSPNUM
+                    AND     PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     PTNUM        >=  :STKANANAME
+                    AND     PTNUM        <=  :EDKANANAME 
+                    AND     NYUGAIKBN    =   :NYUGAIKBN 
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
+                    AND     RECESYUBETU  <>  '6666' 
+                    AND     RENNUM       >=  :STRENNUM
+                    AND     RENNUM       <=  :EDRENNUM
+                    AND     CHOUKI       LIKE :CHOUKI
+                    AND     ZAITAKU      LIKE :ZAITAKU
+                    AND     SRYKA        LIKE :SRYKA
+                   ORDER BY RECESYUBETU_SRT,SYUBETU_SRT1,GRP_NO1,CHOUKI,GRP_NO2,HKNJANUM,KOUHI_NO,PTNUM,RENNUM
+		;
+	};
 };

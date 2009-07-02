@@ -21,6 +21,8 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.01    NACL-藤原    09/06/18  社保レセプト遍綴順対応
+      *                                     審査支払機関、在総診フラグの追加
       *************************************************************
       *01  QUERY-RECE08-REC.
       *医療機関番号
@@ -35,10 +37,18 @@
            03  QUERY-RECE08-CREHMS         PIC X(06).
       *入外区分
            03  QUERY-RECE08-NYUGAIKBN      PIC X(01).
+      *審査支払機関
+           03  QUERY-RECE08-TEISYUTUSAKI   PIC X(01).
+      *在総診・在医総
+           03  QUERY-RECE08-ZAITAKU        PIC X(01).
       *医師コード
            03  QUERY-RECE08-DRCD           PIC X(05).
       *医師別診療科
            03  QUERY-RECE08-DRCD-SRYKA     PIC X(02).
+      *病棟
+           03  QUERY-RECE08-SORT-1         PIC X(10).
+      *診療科
+           03  QUERY-RECE08-SRYKA          PIC X(02).
       *件数
            03  QUERY-RECE08-KENSU          PIC 9(06).
       *ページ

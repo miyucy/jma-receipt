@@ -5,8 +5,12 @@ query_receprt     {
 	CREYMD				char(8);
 	CREHMS				char(6);
 	NYUGAIKBN			char(1);
+	TEISYUTUSAKI			char(1);
+	ZAITAKU				char(1);
 	DRCD				char(5);
 	DRCD_SRYKA			char(2);
+	SORT_1				char(10);
+	SRYKA				char(2);
 	KENSU				number(6);
 	PAGE				number(6);
 #-----> 検索キー用項目
@@ -53,6 +57,93 @@ path    key1            {
                 ORDER BY DRCD,DRCD_SRYKA
         };
 };
- 
 
+path    key2             {
+        DBSELECT        {
+                DECLARE query_receprt_key2_csr CURSOR FOR
+		SELECT SRYKA,SORT_1,COUNT(*) as PAGE
+		FROM tbl_receprt
+		WHERE       HOSPNUM      = :HOSPNUM
+                    AND     PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
+                    AND     RECESYUBETU  <>  '6666' 
+		GROUP BY SORT_1,SRYKA
+                ORDER BY SORT_1,SRYKA
+		;
+        };
+};
 
+path    key3            {
+        DBSELECT        {
+                DECLARE query_receprt_key3_csr CURSOR FOR
+                SELECT SRYKA,SORT_1,COUNT(*) as KENSU
+		FROM (SELECT DISTINCT SRYKA,SORT_1,TEISYUTUSAKI,recesyubetu,hknjanum,ptnum
+		FROM tbl_receprt 
+		WHERE       HOSPNUM      = :HOSPNUM
+                    AND     PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
+                    AND     RECESYUBETU  <>  '6666' 
+		GROUP BY SRYKA,SORT_1,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,PTNUM)
+		AS A 
+		GROUP BY SORT_1,SRYKA
+                ORDER BY SORT_1,SRYKA
+        };
+};
+
+path    key4             {
+        DBSELECT        {
+                DECLARE query_receprt_key4_csr CURSOR FOR
+		SELECT SRYKA,COUNT(*) as PAGE
+		FROM tbl_receprt
+		WHERE       HOSPNUM      = :HOSPNUM
+                    AND     PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     ZAITAKU      LIKE  :ZAITAKU  
+                    AND     SRYKA        LIKE  :SRYKA  
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
+                    AND     RECESYUBETU  <>  '6666'
+		GROUP BY SRYKA
+                ORDER BY SRYKA
+		;
+        };
+};
+
+path    key5            {
+        DBSELECT        {
+                DECLARE query_receprt_key5_csr CURSOR FOR
+                SELECT SRYKA,COUNT(*) as KENSU
+		FROM (SELECT DISTINCT SRYKA,TEISYUTUSAKI,recesyubetu,hknjanum,ptnum
+		FROM tbl_receprt 
+		WHERE       HOSPNUM      = :HOSPNUM
+                    AND     PRTID        =   :PRTID
+                    AND     RECEYM       =   :RECEYM
+                    AND     CREYMD       =   :CREYMD
+                    AND     CREHMS       =   :CREHMS
+                    AND     NYUGAIKBN    =   :NYUGAIKBN
+                    AND     TEISYUTUSAKI =   :TEISYUTUSAKI
+                    AND     ZAITAKU      =   :ZAITAKU  
+                    AND     SRYKA        LIKE  :SRYKA
+                    AND     RECESYUBETU  <>  '0000'
+                    AND     RECESYUBETU  <>  '8888' 
+                    AND     RECESYUBETU  <>  '6666' 
+		GROUP BY SRYKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,PTNUM)
+		AS A 
+		GROUP BY SRYKA
+                ORDER BY SRYKA
+        };
+};

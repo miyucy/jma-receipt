@@ -348,6 +348,18 @@
                     06  W12-DRCD-PRTJYUNKBN-COUNT   PIC S9(9)   BINARY.
                     06  W12-DRCD-PRTJYUNKBNLST
                             PIC X(26)   OCCURS  10 TIMES.
+                  05  W12-BTUNUM-PRTKBN-COMBO.
+                    06  W12-BTUNUM-PRTKBN.
+                      07  W12-VALUE   PIC X(26).
+                    06  W12-BTUNUM-PRTKBN-COUNT   PIC S9(9)   BINARY.
+                    06  W12-BTUNUM-PRTKBNLST
+                            PIC X(26)   OCCURS  2 TIMES.
+                  05  W12-BTUNUM-PRTJYUNKBN-COMBO.
+                    06  W12-BTUNUM-PRTJYUNKBN.
+                      07  W12-VALUE   PIC X(26).
+                    06  W12-BTUNUM-PRTJYUNKBN-COUNT  PIC S9(9)   BINARY.
+                    06  W12-BTUNUM-PRTJYUNKBNLST
+                            PIC X(26)   OCCURS  10 TIMES.
                 04  W12-FI25.
                   05  W12-MOJI-COMBO.
                     06  W12-MOJI-KISAIKBN.

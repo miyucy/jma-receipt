@@ -101,6 +101,9 @@
       *  04.03.02    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *  04.03.03    NACL-藤原    08/08/07  労災の枠印刷選択機能対応
       *  04.03.04    NACL-藤原    08/08/11  コメント記載箇所選択機能対応
+      *
+      *  04.05.01    NACL-藤原    09/06/11  病棟別出力対応
+      *  04.05.02    NACL-藤原    09/06/18  社保レセプト遍綴順対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -211,6 +214,9 @@
                                    PIC  9(07).
            03  SPA-RECE08-DRCD-SRYKA
                                    PIC X(02).
+           03  SPA-RECE08-SORT-1   PIC X(10).
+           03  SPA-RECE08-RECESYUBETU-SRT
+                                   PIC  X(03).
       *
       *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
@@ -1742,6 +1748,11 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                                           TO SPA-R01-RECE07-RECE-PUTH(2)
                        MOVE    SPA-RECE08-DRCD-SRYKA
                                           TO SPA-R01-RECE08-DRCD-SRYKA
+                       MOVE    SPA-RECE08-SORT-1
+                                          TO SPA-R01-RECE08-SORT-1
+                       MOVE    SPA-RECE08-RECESYUBETU-SRT
+                                          TO
+                                          SPA-R01-RECE08-RECESYUBETU-SRT 
       *
                        EVALUATE    SPA-RECE07-PRTKBN
                            WHEN    SPACE
@@ -1917,6 +1928,23 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                INITIALIZE                      SPA-RECE07-RECE-PUTH-T(1)
                                                SPA-RECE07-RECE-PUTH-T(2)
                MOVE    SPACE           TO  SPA-RECE08-DRCD-SRYKA
+                                           SPA-RECE08-SORT-1
+                                           SPA-RECE08-RECESYUBETU-SRT
+      *
+      *        一括作成で社保処理のとき編綴順設定の有無チェック
+               IF    ( SPA-R01-FILEKBN         =   "1"         )
+               AND   ( SPA-R01-RECEKBN         =   "0" OR  "1" )
+                   MOVE    "tbl_recekanri"     TO  WRK-MCP-TABLE
+                   MOVE    "key6"              TO  WRK-MCP-PATHNAME
+                   MOVE    "1"                 TO  RECE07-TEISYUTUSAKI
+                   MOVE    RECE07-REC          TO  MCPDATA-REC
+                   PERFORM 900-RECE07-INV-SEC
+                   IF      FLG-RECE07          =   ZERO
+                       MOVE    RECE07-RECESYUBETU-SRT
+                                                   TO
+                                           SPA-RECE08-RECESYUBETU-SRT
+                   END-IF
+               END-IF  
       *
       *        一括作成で国保処理のとき編綴順設定の有無チェック
                IF    ( SPA-R01-FILEKBN         =   "1"         )
@@ -2013,7 +2041,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    END-IF
                END-IF  
       *
-      *        一括作成のとき医師別設定の有無チェック
+      *        一括作成のとき医師別設定、病棟別設定の有無チェック
                IF    ( SPA-R01-FILEKBN         =   "1"         )
                    INITIALIZE                      RECE08-REC
                    MOVE    RECE07-HOSPNUM      TO  RECE08-HOSPNUM
@@ -2027,6 +2055,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  RECE07-HOSPNUM
                    IF      FLG-RECE08          =   ZERO
                        MOVE    RECE08-DRCD-SRYKA   TO
                                                SPA-RECE08-DRCD-SRYKA
+                       MOVE    RECE08-SORT-1       TO
+                                               SPA-RECE08-SORT-1
                    END-IF
                END-IF
            END-IF
@@ -2619,6 +2649,8 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                           TO SPA-R01-RECE07-RECE-PUTH(2)
                            MOVE    SPA-RECE08-DRCD-SRYKA
                                           TO SPA-R01-RECE08-DRCD-SRYKA
+                           MOVE    SPA-RECE08-SORT-1
+                                          TO SPA-R01-RECE08-SORT-1
                        END-IF
                      END-IF 
                    ELSE
