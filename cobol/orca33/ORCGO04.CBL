@@ -1024,6 +1024,7 @@
       *
              IF    ( FLG-MEIVISIBLE      =   1 )
       *
+      *
                COMPUTE IDX1    =   IDX1    +   1
       *
       *
@@ -1434,7 +1435,7 @@
            MOVE    SPA-GMN-O04-NYUKIN      TO  O04-KINGAKU
            MOVE    SPA-GMN-O04-NYUKINYMD   TO  O04-NYUKINYMD
       *
-           IF   (  SPA-NAI-O04-DENPJTIKBN  =   "4" OR "6" )
+           IF   (  SPA-NAI-O04-DENPJTIKBN  =   "4" )
                CONTINUE
            ELSE
                MOVE    SPA-GMN-O04-NYKN-HOHO-G
@@ -1587,7 +1588,7 @@
                                            O04-NYUKINHOUHOULST-STATE
       *
            IF    ( SPA-GMN-O04-SYORIKBN    =   CONST-PROC-RRKSYU )
-               IF    ( SPA-NAI-O04-DENPJTIKBN  =   "4" OR "6" )
+               IF    ( SPA-NAI-O04-DENPJTIKBN  =   "4" )
                    MOVE    WIDGET-INSENSITIVE
                                        TO  O04-NYUKINHOUHOU-STATE
                                            O04-NYUKINHOUHOULST-STATE
@@ -2752,35 +2753,15 @@
                    +   SPA-GMN-O04-NYUKIN
            END-IF
       *
+           IF    ( SPA-GMN-O04-NYUKIN  >   ZERO )
+               MOVE    2           TO  SPA-GMN-O04-CUR
+               MOVE    "0017"      TO  SPA-ERRCD
+           END-IF
+      *
            IF    ( SPA-ERRCD       =   SPACE )
                IF    ( WRK-NYUKIN  <  ZERO )
                    MOVE    2           TO  SPA-GMN-O04-CUR
                    MOVE    "0018"      TO  SPA-ERRCD
-               END-IF
-           END-IF
-      *
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-NAI-O04-DENPJTIKBN
-                                   =   "6" )
-                   IF    ( SPA-GMN-O04-NYUKIN
-                                   =   ZERO
-                                   OR  SPA-NAI-O04-NYUKIN-MOTO )
-                       CONTINUE
-                   ELSE
-                       IF    ( SPA-NAI-O04-NYUKIN-MOTO =   ZERO )
-                           MOVE    "1009"  TO  SPA-ERRCD
-                       ELSE
-                           MOVE    "1008"  TO  SPA-ERRCD
-                       END-IF
-                   END-IF
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-GMN-O04-NYUKIN  >   ZERO )
-                   MOVE    2           TO  SPA-GMN-O04-CUR
-                   MOVE    "0017"      TO  SPA-ERRCD
                END-IF
            END-IF
       *
@@ -3785,7 +3766,17 @@
                IF    ( SPA-GMN-O04-NYUKIN      >   ZERO )
                    MOVE  SPA-GMN-O04-NYKN-HOHO TO  SMEI-NYUKIN-HOHO
                ELSE
-                   MOVE   "00"             TO  SMEI-NYUKIN-HOHO
+                   IF    ( SMEI-JOUTAIKBN  =   "6" )
+                    AND  ( SPA-GMN-O04-NYUKIN  <   ZERO )
+                       IF    ( SPA-GMN-O04-NYKN-HOHO   =   SPACE )
+                           MOVE    "00"    TO  SMEI-NYUKIN-HOHO
+                       ELSE
+                           MOVE    SPA-GMN-O04-NYKN-HOHO
+                                           TO  SMEI-NYUKIN-HOHO
+                       END-IF
+                   ELSE
+                           MOVE    "00"    TO  SMEI-NYUKIN-HOHO
+                   END-IF
                END-IF
       *
                IF    ( SMEI-DENPEDANUM     =   1 )
@@ -4146,12 +4137,6 @@
                                        TO  SPA-ERRMSG
            WHEN    "1007"
                MOVE    "定期請求履歴の更新処理でエラーになりました"
-                                       TO  SPA-ERRMSG
-           WHEN    "1008"
-               MOVE    "入金取消は０円にのみ変更が可能です"
-                                       TO  SPA-ERRMSG
-           WHEN    "1009"
-               MOVE    "入金取消の金額変更はできません"
                                        TO  SPA-ERRMSG
            WHEN    "9999"
                MOVE    "他端末で使用中です。"

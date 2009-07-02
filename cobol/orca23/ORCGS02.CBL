@@ -328,6 +328,7 @@
            03  WRK-HKNKUMI         PIC X(40).
            03  WRK-HKNNUM          PIC X(03).
            03  WRK-RSI-HKNKBN      PIC X(01).
+           03  WRK-NYUKIN          PIC S9(10).
       *
            03  WRK-MOTOPG          PIC X(08).
       *
@@ -735,6 +736,8 @@
                MOVE    SPACE           TO  SPA-SIDCD
            WHEN    "SID1"
                PERFORM 330-SID1-SET-SEC
+           WHEN    "SID2"
+               PERFORM 330-SID2-SET-SEC
            WHEN    "S99"
                PERFORM 340-S99-SET-SEC
            WHEN    OTHER
@@ -772,6 +775,46 @@
            MOVE    SPACE           TO  SPA-SIDCD
            .
        330-SID1-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    確認画面（ＳＩＤ２）ＯＫ処理
+      *****************************************************************
+       330-SID2-SET-SEC            SECTION.
+      *
+           EVALUATE    SPA-SIDCD
+           WHEN    "2101"
+               EVALUATE    SPA-SID1-FLG
+               WHEN    "OK"
+                   PERFORM 4701-NYUDEL-SEC
+               WHEN    "NO"
+                   INITIALIZE              SPA-S01KYOUTU
+                   MOVE    "10"        TO  SPA-S01-SYORINO
+                   PERFORM 4901-SPAKYOTUKEY-SET-SEC
+      *
+                   MOVE    "S02"       TO  SPA-MOTOPG
+      *
+                   IF  ( SPA-S01-NYUGAIKBN   =   "1" )
+                       MOVE    "S03N"          TO  SPA-SAKIPG
+                       MOVE   "CHANGE"         TO  MCP-PUTTYPE
+                       MOVE   "S03N"           TO  MCP-WINDOW
+                   ELSE
+                       MOVE    "S03"           TO  SPA-SAKIPG
+                       MOVE   "CHANGE"         TO  MCP-PUTTYPE
+                       MOVE   "S03    "        TO  MCP-WINDOW
+                   END-IF
+      *
+                   PERFORM 900-PUT-WINDOW
+      *
+                   MOVE    1                   TO  FLG-END
+      *
+               END-EVALUATE
+           END-EVALUATE
+      *
+           MOVE    SPACE           TO  SPA-S99-FLG
+           MOVE    SPACE           TO  SPA-SID1-FLG
+           MOVE    SPACE           TO  SPA-SIDCD
+           .
+       330-SID2-SET-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2280,10 +2323,14 @@
            END-IF
       *
       *
-           IF     ( SPA-SIDCD       NOT =   SPACE )
+           EVALUATE    SPA-SIDCD
+           WHEN     "2000"     THRU "2099"
                PERFORM 520-SIDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
-           END-IF
+           WHEN     "2100"     THRU "2199"
+               PERFORM 520-SID2SET-SEC
+               GO  TO  500-SET-SCREEN-EXT
+           END-EVALUATE
       *
            MOVE    SPACE               TO  LNK-KYOUTU
       *
@@ -4491,11 +4538,61 @@
       *************************************************************
       *    入金取消
       *************************************************************
-       470-NYUDEL-SEC           SECTION.
+       470-NYUDEL-SEC                  SECTION.
       *
-           IF      SPA-GMN-SELBAN      =   ZERO
-               GO      TO      470-NYUDEL-EXT
+           IF    ( SPA-GMN-SELBAN      =   ZERO )
+               CONTINUE
+           ELSE
+               MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
+               MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
+                                       TO  SYU-NYUGAIKBN
+               MOVE    SPA-GMN-PTID        TO  SYU-PTID
+               MOVE    SPA-GMN-TDENPNUM (SPA-GMN-SELBAN)
+                                       TO  SYU-DENPNUM
+               PERFORM 900-SYUNOU-KEY-SEL-SEC
+               IF    ( FLG-SYUNOU      =   ZERO  )
+                   IF    ( SYU-DENPJTIKBN      =   SPACE )
+                     OR  ( SYU-NYUKIN-TOTAL    =   ZERO  )
+                       MOVE    "0002"  TO      SPA-ERRCD
+                   END-IF
+                   IF    ( SPA-ERRCD   =   SPACE )
+                       MOVE    ZERO    TO  WRK-NYUKIN
+                       PERFORM 900-SYUMEI-KEY2-SEL-SEC
+      *
+                       PERFORM UNTIL ( FLG-SYUMEI  NOT =   ZERO )
+      *
+                           IF    ( SPA-SYSYMD  =   SMEI-NYUHEN-YMD )
+                               CONTINUE
+                           ELSE
+                               COMPUTE WRK-NYUKIN
+                                   =   WRK-NYUKIN
+                                   +   SMEI-NYUHEN-MONEY
+                           END-IF
+      *
+                           PERFORM 900-SYUMEI-KEY2-FET-SEC
+                       END-PERFORM
+      *
+                       MOVE    "tbl_syumei"    TO  MCP-TABLE
+                       MOVE    "key2"          TO  MCP-PATHNAME
+                       PERFORM 910-DBCLOSECURSOR-SEC
+      *
+                       IF    ( WRK-NYUKIN      =   ZERO )
+                           PERFORM 4701-NYUDEL-SEC
+                       ELSE
+                           MOVE    "2101"      TO  SPA-SIDCD
+                       END-IF
+                   END-IF
+               END-IF
            END-IF
+      *
+           .
+       470-NYUDEL-EXT.
+           EXIT.
+      *
+      *************************************************************
+      *    入金取消
+      *************************************************************
+       4701-NYUDEL-SEC           SECTION.
       *
       *    収納マスタと収納明細の入金額を０円に変更する
       *
@@ -4511,7 +4608,7 @@
            IF      FLG-SYUNOU          =   1
                    CONTINUE
            ELSE
-             IF (SYU-DENPJTIKBN =  SPACE  OR "3"   )   OR
+             IF (SYU-DENPJTIKBN    =       SPACE   )   OR
                 (SYU-NYUKIN-TOTAL  =       ZERO    )
                   MOVE    "0002"     TO    SPA-ERRCD
              ELSE
@@ -4529,60 +4626,20 @@
                   MOVE    "tbl_syunou"        TO  MCP-TABLE
                   MOVE    "key"               TO  MCP-PATHNAME
                   PERFORM 910-DBUPDATE-SEC
+                  PERFORM 900-SYUMEI-KEY7-SEL-SEC
+                  COMPUTE IDX1 =   SMEI-DENPEDANUM +   1
       *
-                  PERFORM 4701-SMEI-UPDATE-SEC
-                  IF    ( SPA-ERRCD    =   SPACE )
-                      PERFORM 900-SYUMEI-KEY7-SEL-SEC
-                      COMPUTE IDX1 =   SMEI-DENPEDANUM +   1
-      *
-                      PERFORM 4701-SMEI-SAKUSEI-SEC
-                  END-IF
+                  PERFORM    4701-SMEI-SAKUSEI-SEC
              END-IF
            END-IF
-      *****PERFORM    310-SPA-SET-SEC.
       *
            PERFORM 3101-MISYU-EDIT-SEC
       *
            PERFORM 300-SYUNOU-HENSYU-SEC
            MOVE    1                   TO  SPA-GMN-CUR
-           .
-       470-NYUDEL-EXT.
-           EXIT.
-      *
-      *************************************************************
-      *    入金取消処理（収納明細レコード更新）
-      *************************************************************
-       4701-SMEI-UPDATE-SEC            SECTION.
-      *
-           PERFORM 900-SYUMEI-KEY6-SEL-SEC
-      *
-           PERFORM UNTIL ( FLG-SYUMEI  NOT =   ZERO )
-                    OR   ( SPA-ERRCD   NOT =   SPACE )
-      *
-               MOVE    ZERO            TO  SMEI-NYUHEN-MONEY
-      *
-               MOVE    "00"            TO  SMEI-NYUKIN-HOHO
-               MOVE    SYUMEI-REC      TO  MCPDATA-REC
-               PERFORM 800-MCNDATE-SEC
-               MOVE    SMCNDATE-YMD    TO  SMEI-UPYMD
-               MOVE    SMCNDATE-HMS    TO  SMEI-UPHMS
-               MOVE    "tbl_syumei"    TO  MCP-TABLE
-               MOVE    "key"               TO  MCP-PATHNAME
-               PERFORM 910-DBUPDATE-SEC
-               IF    ( MCP-RC          NOT =   ZERO )
-                   MOVE    "4004"          TO  SPA-ERRCD
-               END-IF
-      *
-               PERFORM 900-SYUMEI-KEY6-FET-SEC
-      *
-           END-PERFORM
-      *
-           MOVE    "tbl_syumei"        TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 910-DBCLOSECURSOR-SEC
       *
            .
-       4701-SMEI-UPDATE-EXT.
+       4701-NYUDEL-EXT.
            EXIT.
       *************************************************************
       *    入金取消処理（収納明細レコード作成）
@@ -4621,7 +4678,7 @@
            MOVE    "2"                 TO  SMEI-NYUHEN-KBN
       *入返金額
            MOVE    ZERO                TO  SMEI-NYUHEN-MONEY
-      *    COMPUTE   SMEI-NYUHEN-MONEY  =  WRK-SAGAKU  *  -1
+           COMPUTE   SMEI-NYUHEN-MONEY  =  WRK-SAGAKU  *  -1
       *入返金日
            MOVE    SPA-SYSYMD          TO  SMEI-NYUHEN-YMD
       *入金方法
@@ -4647,7 +4704,7 @@
            PERFORM 910-DBINSERT-SEC
            IF      MCP-RC          NOT =   ZERO
                MOVE    "1001"              TO  SPA-ERRCD
-           END-IF
+           END-IF     
            .
        4701-SMEI-SAKUSEI-EXT.
            EXIT.
@@ -5568,6 +5625,37 @@
            .
        520-SIDSET-EXT.
            EXIT.
+      *****************************************************************
+      *    ガイドメッセージ表示
+      *****************************************************************
+       520-SID2SET-SEC              SECTION.
+      *
+           MOVE    SPACE               TO  WRK-SIDMSG
+      *
+           EVALUATE    SPA-SIDCD
+           WHEN    "2101"
+               MOVE   "別の診療日に入金記録があります。よろしいですか"
+                                        TO  WRK-SIDMSG
+           END-EVALUATE
+      *
+           MOVE    SPACE                TO  SID2
+           MOVE    SPA-SIDCD            TO  SID2-ID1CODE
+           MOVE    WRK-SIDMSG           TO  SID2-ID1MSG
+           MOVE    "B12"                TO  MCP-WIDGET
+      *
+           MOVE    "S02"                TO  SPA-MOTOPG
+           MOVE    "SID2"               TO  SPA-SAKIPG
+      *
+           MOVE    "NEW"                TO  MCP-PUTTYPE
+           MOVE    "SID2"               TO  MCP-WINDOW
+      *
+           PERFORM 900-PUT-WINDOW
+      *
+           MOVE    1                    TO  FLG-END
+      *
+           .
+       520-SID2SET-EXT.
+           EXIT.
       **************************************************************
       *    西暦和暦編集処理
       **************************************************************
@@ -6132,57 +6220,6 @@
       **************************************************************
       *    収納明細検索処理
       **************************************************************
-       900-SYUMEI-KEY6-SEL-SEC         SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SYUMEI
-      *
-           INITIALIZE                      SYUMEI-REC
-      *
-           MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
-           MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
-                                       TO  SMEI-NYUGAIKBN
-           MOVE    SPA-GMN-PTID        TO  SMEI-PTID
-           MOVE    SPA-GMN-TDENPNUM   (SPA-GMN-SELBAN)
-                                       TO  SMEI-DENPNUM
-           MOVE    SYUMEI-REC          TO  MCPDATA-REC
-      *
-           MOVE    SYUMEI-REC          TO  MCPDATA-REC
-           MOVE    "tbl_syumei"        TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 910-DBSELECT-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYUMEI-REC
-           ELSE
-               INITIALIZE                  SYUMEI-REC
-               MOVE    1               TO  FLG-SYUMEI
-           END-IF
-      *
-           .
-       900-SYUMEI-KEY6-SEL-EXT.
-           EXIT.
-      **************************************************************
-      *    収納明細検索処理
-      **************************************************************
-       900-SYUMEI-KEY6-FET-SEC         SECTION.
-      *
-           MOVE    ZERO            TO  FLG-SYUMEI
-      *
-           MOVE    "tbl_syumei"        TO  MCP-TABLE
-           MOVE    "key6"              TO  MCP-PATHNAME
-           PERFORM 910-DBFETCH-SEC
-           IF    ( MCP-RC              =   ZERO )
-               MOVE    MCPDATA-REC     TO  SYUMEI-REC
-           ELSE
-               INITIALIZE                  SYUMEI-REC
-               MOVE    1               TO  FLG-SYUMEI
-           END-IF
-      *
-           .
-       900-SYUMEI-KEY6-FET-EXT.
-           EXIT.
-      **************************************************************
-      *    収納明細検索処理
-      **************************************************************
        900-SYUMEI-KEY7-SEL-SEC         SECTION.
       *
            MOVE    ZERO            TO  FLG-SYUMEI
@@ -6239,6 +6276,57 @@
       *
            .
        900-SYUMEI-KEY-SEL-EXT.
+           EXIT.
+      **************************************************************
+      *    収納明細検索処理
+      **************************************************************
+       900-SYUMEI-KEY2-SEL-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYUMEI
+      *
+           INITIALIZE                      SYUMEI-REC
+      *
+           MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
+           MOVE    SPA-NAI-TNYUGAIKBN (SPA-GMN-SELBAN)
+                                       TO  SMEI-NYUGAIKBN
+           MOVE    SPA-GMN-PTID        TO  SMEI-PTID
+           MOVE    SPA-GMN-TDENPNUM   (SPA-GMN-SELBAN)
+                                       TO  SMEI-DENPNUM
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+      *
+           MOVE    SYUMEI-REC          TO  MCPDATA-REC
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUMEI-REC
+           ELSE
+               INITIALIZE                  SYUMEI-REC
+               MOVE    1               TO  FLG-SYUMEI
+           END-IF
+      *
+           .
+       900-SYUMEI-KEY2-SEL-EXT.
+           EXIT.
+      **************************************************************
+      *    収納明細FETCH処理
+      **************************************************************
+       900-SYUMEI-KEY2-FET-SEC         SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYUMEI
+      *
+           MOVE    "tbl_syumei"        TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBFETCH-SEC
+           IF    ( MCP-RC              =   ZERO )
+               MOVE    MCPDATA-REC     TO  SYUMEI-REC
+           ELSE
+               INITIALIZE                  SYUMEI-REC
+               MOVE    1               TO  FLG-SYUMEI
+           END-IF
+      *
+           .
+       900-SYUMEI-KEY2-FET-EXT.
            EXIT.
       **************************************************************
       *    患者情報検索処理(KEY)

@@ -686,8 +686,13 @@
                MOVE    CONST-HOHO-HENKIN
                                            TO  WRK-HOHO
            WHEN    CONST-TORIKESI
-               MOVE    CONST-HOHO-TORIKESI
+               IF    ( SMEI-NYUKIN-HOHO    NOT =   "00" )
+                   MOVE    SMEI-NYUKIN-HOHO
                                            TO  WRK-HOHO
+               ELSE
+                   MOVE    CONST-HOHO-TORIKESI
+                                           TO  WRK-HOHO
+               END-IF
            WHEN    OTHER
                MOVE    SMEI-NYUKIN-HOHO    TO  WRK-HOHO
            END-EVALUATE

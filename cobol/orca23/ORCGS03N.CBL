@@ -289,6 +289,8 @@
            03  CONST-PROC-NO-G.
                05  CONST-PROC-NYUKIN   PIC X(02)   VALUE   "05".
                05  CONST-PROC-RRKSYU   PIC X(02)   VALUE   "08".
+               05  CONST-PROC-TORIKESHI
+                                       PIC X(02)   VALUE   "10".
                05  CONST-PROC-SYOKAI   PIC X(02)   VALUE   "09".
       *
       *    スパ領域 ワーク
@@ -556,6 +558,7 @@
            EVALUATE    SPA-S01-SYORINO
            WHEN    CONST-PROC-NYUKIN
            WHEN    CONST-PROC-RRKSYU
+           WHEN    CONST-PROC-TORIKESHI
       *
                MOVE    SPA-SYSYMD      TO  WRK-SYMD
                PERFORM 800-SEIWA-HEN-SEC
@@ -586,6 +589,7 @@
       *
            EVALUATE   SPA-S01-SYORINO
            WHEN   CONST-PROC-NYUKIN
+           WHEN   CONST-PROC-TORIKESHI
                MOVE    2               TO  SPA-GMN-CUR
            WHEN   OTHER
                MOVE    1               TO  SPA-GMN-CUR
@@ -624,9 +628,12 @@
                MOVE    "履歴修正"          TO  SPA-GMN-SYORIKBNMEIL (1)
       *
                MOVE    "3"                 TO  SPA-GMN-SYORIKBNL (2)
-               MOVE    "照会"              TO  SPA-GMN-SYORIKBNMEIL (2)
+               MOVE    "入金取消"          TO  SPA-GMN-SYORIKBNMEIL (2)
       *
-               MOVE    2                   TO  SPA-GMN-SYORIKBN-MAX
+               MOVE    "4"                 TO  SPA-GMN-SYORIKBNL (3)
+               MOVE    "照会"              TO  SPA-GMN-SYORIKBNMEIL (3)
+      *
+               MOVE    3                   TO  SPA-GMN-SYORIKBN-MAX
            ELSE
       *
                MOVE    "1"                 TO  SPA-GMN-SYORIKBNL (1)
@@ -636,9 +643,12 @@
                MOVE    "履歴修正"          TO  SPA-GMN-SYORIKBNMEIL (2)
       *
                MOVE    "3"                 TO  SPA-GMN-SYORIKBNL (3)
-               MOVE    "照会"              TO  SPA-GMN-SYORIKBNMEIL (3)
+               MOVE    "入金取消"          TO  SPA-GMN-SYORIKBNMEIL (3)
       *
-               MOVE    3                   TO  SPA-GMN-SYORIKBN-MAX
+               MOVE    "4"                 TO  SPA-GMN-SYORIKBNL (4)
+               MOVE    "照会"              TO  SPA-GMN-SYORIKBNMEIL (4)
+      *
+               MOVE    4                   TO  SPA-GMN-SYORIKBN-MAX
            END-IF
       *
            .
@@ -885,8 +895,10 @@
                MOVE    "1"             TO  WRK-CMB-CD
            WHEN    CONST-PROC-RRKSYU
                MOVE    "2"             TO  WRK-CMB-CD
-           WHEN    CONST-PROC-SYOKAI
+           WHEN    CONST-PROC-TORIKESHI
                MOVE    "3"             TO  WRK-CMB-CD
+           WHEN    CONST-PROC-SYOKAI
+               MOVE    "4"             TO  WRK-CMB-CD
            END-EVALUATE
            PERFORM 4200-SYORIKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-SYORIKBN-G
@@ -1115,7 +1127,6 @@
       *
              IF    ( FLG-MEIVISIBLE      =   1 )
       *
-      *
                COMPUTE IDX1    =   IDX1    +   1
       *
       *
@@ -1158,6 +1169,7 @@
       *
                WHEN    "6"
                    MOVE    "入金取消"  TO  SPA-GMN-TJOUTAI (IDX1)
+                   MOVE    1           TO  SPA-NAI-TLASTHENKINFLG (IDX1)
       *
                WHEN    "7"
                    MOVE    "継続"      TO  SPA-GMN-TJOUTAI (IDX1)
@@ -1522,12 +1534,13 @@
       *    入金欄
            EVALUATE    SPA-S01-SYORINO
            WHEN    CONST-PROC-NYUKIN
+           WHEN    CONST-PROC-TORIKESHI
            WHEN    CONST-PROC-RRKSYU
                MOVE    SPA-GMN-NYUKIN      TO  S03N-NYUKINGK2
                MOVE    SPA-GMN-NYUKINYMD   TO  S03N-NYUKINYMD
       *
                IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
-                AND  ( SPA-NAI-DENPJTIKBN  =   "4" OR "6" )
+                AND  ( SPA-NAI-DENPJTIKBN  =   "4" )
                    CONTINUE
                ELSE
                    MOVE    SPA-GMN-NYKN-HOHO-G TO  S03N-NYUKINHOUHOU
@@ -1619,7 +1632,7 @@
                                            S03N-NAIYOLST-STATE
       *
            IF    ( SPA-S01-SYORINO     =   CONST-PROC-RRKSYU )
-               IF    ( SPA-NAI-DENPJTIKBN  =   "4" OR "6" )
+               IF    ( SPA-NAI-DENPJTIKBN  =   "4" )
                    MOVE    WIDGET-INSENSITIVE
                                        TO  S03N-NYUKINHOUHOU-STATE
                                            S03N-NYUKINHOUHOULST-STATE
@@ -1646,46 +1659,24 @@
                                            S03N-B12-STATE
            END-IF
       *
-           IF    ( SPA-S01-SYORINO     =   CONST-PROC-NYUKIN )
+           IF    ( SPA-S01-SYORINO     =   CONST-PROC-NYUKIN
+                                       OR  CONST-PROC-TORIKESHI )
                MOVE    WIDGET-INSENSITIVE
                                        TO  S03N-CHOSEIIN-STATE
            END-IF
       *
       *
            IF    ( SPA-NAI-HEAD-DENPJTIKBN =   "3" )
-               IF    ( SPA-NAI-LASTHENKINFLG
-                           =   1 )
-                   CONTINUE
-               ELSE
-                   MOVE    WIDGET-INSENSITIVE 
-                                       TO  S03N-CHOSEIIN-STATE
-                                           S03N-NYUKINGK2-STATE
-                                           S03N-NYUKINHOUHOU-STATE
-                                           S03N-NYUKINHOUHOULST-STATE
-                                           S03N-SKYPRT-STATE
-                                           S03N-SKYPRTLST-STATE
-                                           S03N-SRYPRT-STATE
-                                           S03N-SRYPRTLST-STATE
-               END-IF
-      *
-               IF    ( SPA-GMN-SMEILIST-SEL    =   ZERO )
-                   MOVE    WIDGET-INSENSITIVE
-                                       TO  S03N-CHOSEIIN-STATE
-                                           S03N-NYUKINGK2-STATE
-                                           S03N-NYUKINYMD-STATE
-                                           S03N-NYUKINHOUHOU-STATE
-                                           S03N-NYUKINHOUHOULST-STATE
-                                           S03N-SKYPRT-STATE
-                                           S03N-SKYPRTLST-STATE
-                                           S03N-SRYPRT-STATE
-                                           S03N-SRYPRTLST-STATE
-                                           S03N-B12-STATE
-               END-IF
+               MOVE    WIDGET-INSENSITIVE 
+                                           TO  S03N-CHOSEIIN-STATE
       *
                MOVE    SPACE               TO  S03N-B03-LABEL
       *
                EVALUATE SPA-S01-SYORINO
                WHEN    CONST-PROC-RRKSYU
+                   MOVE    "入金取消"      TO  S03N-B03-LABEL
+      *
+               WHEN    CONST-PROC-TORIKESHI
                    MOVE    "照会"          TO  S03N-B03-LABEL
       *
                WHEN    CONST-PROC-SYOKAI
@@ -1700,6 +1691,9 @@
                    MOVE    "履歴修正"      TO  S03N-B03-LABEL
       *
                WHEN    CONST-PROC-RRKSYU
+                   MOVE    "入金取消"      TO  S03N-B03-LABEL
+      *
+               WHEN    CONST-PROC-TORIKESHI
                    MOVE    "照会"          TO  S03N-B03-LABEL
       *
                WHEN    CONST-PROC-SYOKAI
@@ -1999,6 +1993,9 @@
            WHEN    CONST-PROC-RRKSYU
                PERFORM 4102-RRKSYU-KIHON-CHK-SEC
       *
+           WHEN    CONST-PROC-TORIKESHI
+               PERFORM 4102-TORIKESHI-KIHON-CHK-SEC
+      *
            WHEN    CONST-PROC-SYOKAI
                PERFORM 4102-SYOKAI-KIHON-CHK-SEC
            END-EVALUATE
@@ -2070,6 +2067,32 @@
       *
            .
        4102-RRKSYU-KIHON-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    入金取消時基本チェック処理
+      *****************************************************************
+       4102-TORIKESHI-KIHON-CHK-SEC    SECTION.
+      *
+           PERFORM 4102-NYUKIN-CHK-SEC
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-NYUKINYMD-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-NYKN-HOHO-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-SKYPRT-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 4101-SRYPRT-CHK-SEC
+           END-IF
+      *
+           .
+       4102-TORIKESHI-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
       *    照会処理時基本チェック処理
@@ -2153,6 +2176,8 @@
                MOVE    CONST-PROC-NYUKIN   TO  SPA-S01-SYORINO
            WHEN    "2"
                MOVE    CONST-PROC-RRKSYU   TO  SPA-S01-SYORINO
+           WHEN    "3"
+               MOVE    CONST-PROC-TORIKESHI TO SPA-S01-SYORINO
            WHEN    OTHER
                MOVE    CONST-PROC-SYOKAI   TO  SPA-S01-SYORINO
            END-EVALUATE
@@ -2410,40 +2435,40 @@
       *****************************************************************
        4102-NYUKIN-CHK-SEC             SECTION.
       *
-           COMPUTE WRK-NYUKIN
-               =   SPA-GMN-NYUKIN-TTL
-               -   SPA-NAI-NYUKIN-MOTO
-               +   SPA-GMN-NYUKIN
+           EVALUATE    SPA-S01-SYORINO
+           WHEN    CONST-PROC-TORIKESHI
+               COMPUTE WRK-NYUKIN
+                   =   SPA-GMN-NYUKIN-TTL
+                   +   SPA-GMN-NYUKIN
+           WHEN    CONST-PROC-RRKSYU
       *
-           IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-ERRCD       =   SPACE )
-                   IF    ( WRK-NYUKIN  <  ZERO )
-                       MOVE    2       TO  SPA-GMN-CUR
-                       MOVE    "0014"  TO  SPA-ERRCD
-                   END-IF
-               END-IF
+               COMPUTE WRK-NYUKIN
+                   =   SPA-GMN-NYUKIN-TTL
+                   -   SPA-NAI-NYUKIN-MOTO
+                   +   SPA-GMN-NYUKIN
+           END-EVALUATE
+      *
+           IF    ( SPA-GMN-NYUKIN  >   ZERO )
+               MOVE    2           TO  SPA-GMN-CUR
+               MOVE    "0013"      TO  SPA-ERRCD
            END-IF
       *
            IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-NAI-DENPJTIKBN  =   "6" )
-                   IF    ( SPA-GMN-NYUKIN  =   ZERO
-                                           OR  SPA-NAI-NYUKIN-MOTO )
-                       CONTINUE
-                   ELSE
-                       MOVE    2       TO  SPA-GMN-CUR
-                       IF    ( SPA-NAI-NYUKIN-MOTO =   ZERO )
-                           MOVE    "0018"  TO  SPA-ERRCD
-                       ELSE
-                           MOVE    "0017"  TO  SPA-ERRCD
-                       END-IF
-                   END-IF
-               END-IF
-           END-IF
-      *
-           IF    ( SPA-ERRCD       =   SPACE )
-               IF    ( SPA-GMN-NYUKIN  >   ZERO )
+               IF    ( WRK-NYUKIN  <  ZERO )
                    MOVE    2           TO  SPA-GMN-CUR
-                   MOVE    "0013"      TO  SPA-ERRCD
+                   MOVE    "0014"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               IF    ( WRK-MCP-WIDGET  =   "NYUKINGK2" )
+                   IF    ( SPA-S01-SYORINO
+                                       =   CONST-PROC-TORIKESHI )
+                    AND  ( SPA-GMN-NYUKIN      =   ZERO )
+                    AND  ( WRK-NYUKIN          >   ZERO )
+                       COMPUTE SPA-GMN-NYUKIN
+                           =   WRK-NYUKIN      *   -1
+                   END-IF
                END-IF
            END-IF
       *
@@ -2880,6 +2905,8 @@
                EVALUATE    SPA-S01-SYORINO
                WHEN    CONST-PROC-NYUKIN
                    PERFORM   4902-NYUKIN-KOUSIN-SEC
+               WHEN    CONST-PROC-TORIKESHI
+                   PERFORM   4902-TORIKESHI-KOUSIN-SEC
                WHEN    CONST-PROC-RRKSYU
                    PERFORM   4902-NYUKIN-RRKSYU-SEC
                END-EVALUATE
@@ -2906,6 +2933,7 @@
       *
                EVALUATE    SPA-S01-SYORINO
                WHEN    CONST-PROC-NYUKIN
+               WHEN    CONST-PROC-TORIKESHI
                    MOVE    2       TO  FLG-SMEILIST1-ROW
                    MOVE    2       TO  SPA-GMN-CUR
                WHEN    CONST-PROC-RRKSYU
@@ -2925,12 +2953,34 @@
            EVALUATE    SPA-S01-SYORINO
            WHEN    CONST-PROC-NYUKIN
                PERFORM 4901-NYUKIN-CHK-SEC
+           WHEN    CONST-PROC-TORIKESHI
+               PERFORM 4901-TORIKESHI-CHK-SEC
            WHEN    CONST-PROC-RRKSYU
                PERFORM 4901-RRKSYU-CHK-SEC
            END-EVALUATE
       *
            .
        4901-KANRENCHK-EXT.
+           EXIT.
+      *************************************************************
+      *    入金取消時関連チェック処理
+      *************************************************************
+       4901-TORIKESHI-CHK-SEC             SECTION.
+      *
+           IF    ( SPA-GMN-NYUKIN      =   ZERO )
+               MOVE    2               TO  SPA-GMN-CUR
+               MOVE    "0007"          TO  SPA-ERRCD
+           END-IF
+      *
+           IF    ( SPA-ERRCD           =   SPACE )
+               IF    ( SPA-NAI-NYUKINYMD   =   SPACE )
+                   MOVE    3           TO  SPA-GMN-CUR
+                   MOVE    "0012"      TO  SPA-ERRCD
+               END-IF
+           END-IF
+      *
+           .
+       4901-TORIKESHI-CHK-EXT.
            EXIT.
       *************************************************************
       *    入金処理時関連チェック処理
@@ -3018,6 +3068,20 @@
        4902-NYUKIN-RRKSYU-EXT.
            EXIT.
       *************************************************************
+      *    入金取消編集処理
+      *************************************************************
+       4902-TORIKESHI-KOUSIN-SEC       SECTION.
+      *
+           PERFORM 49021-SYUNOU-UPD-SEC
+      *
+           IF    ( SPA-ERRCD       =   SPACE )
+               PERFORM 49021-SYUMEI-INS-SEC
+           END-IF
+      *
+           .
+       4902-TORIKESHI-KOUSIN-EXT.
+           EXIT.
+      *************************************************************
       *    収納マスタ更新処理
       *************************************************************
        49021-SYUNOU-UPD-SEC            SECTION.
@@ -3029,6 +3093,7 @@
       *
                EVALUATE    SPA-S01-SYORINO
                WHEN    CONST-PROC-NYUKIN
+               WHEN    CONST-PROC-TORIKESHI
                    COMPUTE SYU-NYUKIN-TOTAL
                        =   SYU-NYUKIN-TOTAL
                        +   SPA-GMN-NYUKIN
@@ -3164,7 +3229,11 @@
                MOVE    ZERO                TO  SMEI-SKYMONEY
       *
       *        入返金区分
-               MOVE    "1"                 TO  SMEI-NYUHEN-KBN
+               IF    ( SPA-S01-SYORINO     =   CONST-PROC-NYUKIN )
+                   MOVE    "1"             TO  SMEI-NYUHEN-KBN
+               ELSE
+                   MOVE    "2"             TO  SMEI-NYUHEN-KBN
+               END-IF
       *
       *        請求金額
                IF    ( SPA-NAI-PROC-FLG    = 1 OR 2 )
@@ -3186,18 +3255,31 @@
                END-IF
       *
       *        入金方法
-               MOVE    SPA-GMN-NYKN-HOHO   TO  SMEI-NYUKIN-HOHO
+               IF    ( SPA-S01-SYORINO     =   CONST-PROC-NYUKIN )
+                   MOVE    SPA-GMN-NYKN-HOHO
+                                           TO  SMEI-NYUKIN-HOHO
+               ELSE
+                   IF    ( SPA-GMN-NYKN-HOHO   =   SPACE )
+                       MOVE    "00"        TO  SMEI-NYUKIN-HOHO
+                   ELSE
+                       MOVE    SPA-GMN-NYKN-HOHO
+                                           TO  SMEI-NYUKIN-HOHO
+                   END-IF
+               END-IF
       *
       *        状態区分
-               IF    ( SPA-S01-SYORINO    =   CONST-PROC-NYUKIN )
+               EVALUATE    SPA-S01-SYORINO
+               WHEN    CONST-PROC-NYUKIN
                    IF    ( SPA-GMN-NYUKIN  >=  ZERO )
                        MOVE    "2"         TO  SMEI-JOUTAIKBN
                    ELSE
                        MOVE    "4"         TO  SMEI-JOUTAIKBN
                    END-IF
-               ELSE
+               WHEN    CONST-PROC-TORIKESHI
+                       MOVE    "6"         TO  SMEI-JOUTAIKBN
+               WHEN    OTHER
                    MOVE    "8"             TO  SMEI-JOUTAIKBN
-               END-IF
+               END-EVALUATE
       *
                PERFORM 800-MCNDATE-SEC
                MOVE    SMCNDATE-YMD        TO  SMEI-CREYMD
@@ -3282,7 +3364,17 @@
                 OR   ( SMEI-DENPEDANUM     =   1 )
                    MOVE  SPA-GMN-NYKN-HOHO TO  SMEI-NYUKIN-HOHO
                ELSE
-                   MOVE   "00"             TO  SMEI-NYUKIN-HOHO
+                   IF    ( SMEI-JOUTAIKBN  =   "6" )
+                    AND  ( SPA-GMN-NYUKIN  <   ZERO )
+                       IF    ( SPA-GMN-NYKN-HOHO   =   SPACE )
+                           MOVE    "00"    TO  SMEI-NYUKIN-HOHO
+                       ELSE
+                           MOVE    SPA-GMN-NYKN-HOHO
+                                           TO  SMEI-NYUKIN-HOHO
+                       END-IF
+                   ELSE
+                           MOVE    "00"    TO  SMEI-NYUKIN-HOHO
+                   END-IF
                END-IF
       *
       *        伝票状態区分
@@ -3338,6 +3430,9 @@
                EVALUATE SPA-S01-SYORINO
       *
                WHEN    CONST-PROC-RRKSYU
+               MOVE    CONST-PROC-TORIKESHI TO SPA-S01-SYORINO
+      *
+               WHEN    CONST-PROC-TORIKESHI 
                MOVE    CONST-PROC-SYOKAI   TO  SPA-S01-SYORINO
       *
                WHEN    CONST-PROC-SYOKAI
@@ -3354,6 +3449,9 @@
                MOVE    CONST-PROC-RRKSYU   TO  SPA-S01-SYORINO
       *
                WHEN    CONST-PROC-RRKSYU
+               MOVE    CONST-PROC-TORIKESHI TO SPA-S01-SYORINO
+      *
+               WHEN    CONST-PROC-TORIKESHI 
                MOVE    CONST-PROC-SYOKAI   TO  SPA-S01-SYORINO
       *
                WHEN    CONST-PROC-SYOKAI
@@ -3603,7 +3701,7 @@
                MOVE    "入金額が０円を下回ります"
                                        TO  SPA-ERRMSG
            WHEN    "0015"
-               MOVE    "請求取消後の返金データのみ修正可能です"
+               MOVE   "請求取消後の返金・入金取消データのみ修正可能です"
                                        TO  SPA-ERRMSG
            WHEN    "0016"
                MOVE    "請求金額が０円を下回ります"
@@ -3617,12 +3715,6 @@
            WHEN    "1005"
            WHEN    "1006"
                MOVE    "収納明細の更新処理でエラーになりました"
-                                       TO  SPA-ERRMSG
-           WHEN    "0017"
-               MOVE    "入金取消は０円にのみ変更が可能です"
-                                       TO  SPA-ERRMSG
-           WHEN    "0018"
-               MOVE    "入金取消の金額変更はできません"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *

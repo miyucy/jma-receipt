@@ -1649,10 +1649,12 @@
            MOVE    BD01003-NYUKIN (12) TO  WRK-ZZZZZZZ9
            MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
       *
-           COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
-           MOVE    "入金取消"          TO  HCM52-HOHOMSG (IDX-HOHO)
-           MOVE    BD01003-NYUKIN (13) TO  WRK-ZZZZZZZ9
-           MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
+           IF    ( BD01003-NYUKIN (13) NOT =   ZERO )
+               COMPUTE IDX-HOHO    =   IDX-HOHO    +   1
+               MOVE    "入金取消"          TO  HCM52-HOHOMSG (IDX-HOHO)
+               MOVE    BD01003-NYUKIN (13) TO  WRK-ZZZZZZZ9
+               MOVE    WRK-ZZZZZZZ9        TO  HCM52-NYUKIN  (IDX-HOHO)
+           END-IF
       *
            .
        221-BODY-EXT.
