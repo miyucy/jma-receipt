@@ -1190,7 +1190,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
            END-IF
       *
       *    一括作成で病棟別出力設定のとき
-           IF    ( SYS-200501-DRCD-PRTKBN
+           IF    ( SYS-200501-BTUNUM-PRTKBN
                                        =   "1"   )
            AND   ( SPA-R01-RECE08-SORT-1
                                    NOT =   SPACE )
@@ -3345,6 +3345,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF    
                    IF      QUERY-RECE08-SORT-1 (1:2)   =
                                            SPA-NAI-BTUNUM-TBTUNUM (IDXY)
+                       ADD     QUERY-RECE08-PAGE   TO
+                                         SPA-NAI-BTUNUM-TPAGE(IDXY 50)
                        PERFORM VARYING IDXX    FROM    1   BY  1
                                UNTIL   IDXX    >       SPA-GMN-SYUKA-MAX
                            IF      QUERY-RECE08-SRYKA
@@ -3352,7 +3354,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                ADD     QUERY-RECE08-PAGE
                                                        TO
                                          SPA-NAI-BTUNUM-TPAGE(IDXY IDXX)
-                                         SPA-NAI-BTUNUM-TPAGE(IDXY 50)
                                MOVE    100             TO  IDXY
                                MOVE    SPA-GMN-SYUKA-MAX
                                                        TO  IDXX
@@ -3411,6 +3412,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF    
                    IF      QUERY-RECE08-SORT-1 (1:2)   =
                                            SPA-NAI-BTUNUM-TBTUNUM (IDXY)
+                       ADD     QUERY-RECE08-KENSU      TO
+                                       SPA-NAI-BTUNUM-TKENSU(IDXY 50)
                        PERFORM VARYING IDXX    FROM    1   BY  1
                                UNTIL   IDXX    >       SPA-GMN-SYUKA-MAX
                            IF      QUERY-RECE08-SRYKA
@@ -3418,7 +3421,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                ADD     QUERY-RECE08-KENSU
                                                        TO
                                        SPA-NAI-BTUNUM-TKENSU(IDXY IDXX)
-                                       SPA-NAI-BTUNUM-TKENSU(IDXY 50)
                                MOVE    100             TO  IDXY
                                MOVE    SPA-GMN-SYUKA-MAX
                                                        TO  IDXX
