@@ -212,6 +212,7 @@ tbl_syunou_main {
 #--
 	UPSRYYMD			char(8),virtual;
         SELNYUIN_RRKNUM                 number(3,0),virtual;
+        SELKOHID	                number(10,0),virtual;
 };
 primary	{
 	HOSPNUM,NYUGAIKBN,PTID,DENPNUM;
@@ -1390,6 +1391,28 @@ path	key69 	{
 			AND   SRYYMD      LIKE :SRYYMD
 			AND   CREATEKBN   <>  '3'
 			ORDER   BY    SRYYMD,DENPNUM
+		;
+	};
+};
+
+path	key70 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_main_key70_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_syunou_main a , tbl_hkncombi b
+		WHERE a.HOSPNUM    =   :HOSPNUM
+		AND   a.PTID        =   :PTID
+		AND   a.HOSPNUM     =   b.HOSPNUM
+		AND   a.PTID        =   b.PTID
+		AND   CAST(a.HKNCOMBINUM AS NUMERIC(4,0)) = b.HKNCOMBINUM
+		AND   a.SRYYMD      LIKE :SRYYMD
+		AND   a.CREATEKBN   <>  '3'
+		AND   a.DENPJTIKBN  <>  '3'
+		AND ( b.KOH1ID      =  :SELKOHID
+		   OR b.KOH2ID      =  :SELKOHID
+		   OR b.KOH3ID      =  :SELKOHID
+		   OR b.KOH4ID      =  :SELKOHID )
+		ORDER   BY          SRYYMD,NYUGAIKBN,DENPNUM
 		;
 	};
 };

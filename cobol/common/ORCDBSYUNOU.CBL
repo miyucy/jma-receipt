@@ -318,6 +318,7 @@
            MOVE    SYU-UPHMS           TO  SYUMAIN-UPHMS
            MOVE    SYU-UPSRYYMD        TO  SYUMAIN-UPSRYYMD
            MOVE    SYU-NYUIN-RRKNUM    TO  SYUMAIN-SELNYUIN-RRKNUM
+           MOVE    SYU-SELKOHID        TO  SYUMAIN-SELKOHID
       *
            .
        2001-EDIT-SYUMAIN-EXT.
@@ -474,6 +475,7 @@
            MOVE    SYUMAIN-UPYMD           TO  SYU-UPYMD
            MOVE    SYUMAIN-UPHMS           TO  SYU-UPHMS
            MOVE    SYUMAIN-UPSRYYMD        TO  SYU-UPSRYYMD
+           MOVE    SYUMAIN-SELKOHID        TO  SYU-SELKOHID
       *
            IF    ( SYUMAIN-NYUGAIKBN       =   "1" )
                    PERFORM 20011-SYUNYUIN-GET-SEC

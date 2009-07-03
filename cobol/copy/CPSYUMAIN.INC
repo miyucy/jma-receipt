@@ -438,4 +438,5 @@
       *
       *入院履歴番号
            03  SYUMAIN-SELNYUIN-RRKNUM     PIC  9(03).
-
+      *診療年月日（検索用）
+           03  SYUMAIN-SELKOHID            PIC  9(10).

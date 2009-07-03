@@ -588,4 +588,6 @@
       *
       *診療年月日（検索用）
            03  SYU-UPSRYYMD            PIC  X(08).
+      *診療年月日（検索用）
+           03  SYU-SELKOHID            PIC  9(10).
       *
