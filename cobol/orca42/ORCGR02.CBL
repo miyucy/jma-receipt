@@ -2672,7 +2672,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                        ADD     1           TO  IDXY
                    END-PERFORM
-      *
                ELSE
                    ADD     1           TO  IDXY
                END-IF
@@ -3354,11 +3353,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                ADD     QUERY-RECE08-PAGE
                                                        TO
                                          SPA-NAI-BTUNUM-TPAGE(IDXY IDXX)
-                               MOVE    100             TO  IDXY
                                MOVE    SPA-GMN-SYUKA-MAX
                                                        TO  IDXX
                            END-IF    
                        END-PERFORM
+                       MOVE    100             TO  IDXY
                    END-IF
                END-PERFORM
       *
@@ -3421,11 +3420,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                ADD     QUERY-RECE08-KENSU
                                                        TO
                                        SPA-NAI-BTUNUM-TKENSU(IDXY IDXX)
-                               MOVE    100             TO  IDXY
                                MOVE    SPA-GMN-SYUKA-MAX
                                                        TO  IDXX
                            END-IF    
                        END-PERFORM
+                       MOVE    100             TO  IDXY
                    END-IF
                END-PERFORM
       *
