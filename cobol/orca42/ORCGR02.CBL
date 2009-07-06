@@ -1615,6 +1615,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "07"
                WHEN    "08"
                WHEN    "11"
+               WHEN    "12"
                    MOVE    SPA-GMN-PREFKBNLST (4)
                                                TO  SPA-GMN-PREFKBN-G
                WHEN    OTHER
@@ -1729,9 +1730,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    WHEN    "04"            ALSO    "10"    ALSO    ANY
                        MOVE    3                   TO  SPA-GMN-PAGE-MAX
                    WHEN    "03"            ALSO    "03"    ALSO    "03"
-                   WHEN    "04"            ALSO    "03"    ALSO    "04"
                    WHEN    "03"            ALSO    "04"    ALSO    "03"
+                   WHEN    "03"            ALSO    "03"    ALSO    "04"
+                   WHEN    "03"            ALSO    "04"    ALSO    "04"
+                   WHEN    "04"            ALSO    "03"    ALSO    "03"
+                   WHEN    "04"            ALSO    "04"    ALSO    "03"
+                   WHEN    "04"            ALSO    "03"    ALSO    "04"
                    WHEN    "04"            ALSO    "04"    ALSO    "04"
+                   WHEN    "06"            ALSO    "03"    ALSO    "03"
+                   WHEN    "06"            ALSO    "04"    ALSO    "03"
+                   WHEN    "06"            ALSO    "03"    ALSO    "04"
+                   WHEN    "06"            ALSO    "04"    ALSO    "04"
                        MOVE    1                   TO  SPA-GMN-PAGE-MAX
                    WHEN    "03"            ALSO    ANY    ALSO     ANY
                    WHEN    "04"            ALSO    ANY    ALSO     ANY
@@ -1972,6 +1981,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    1               TO  IDX 
                WHEN    "2"                 ALSO    "03"
                WHEN    "2"                 ALSO    "04"
+               WHEN    "2"                 ALSO    "06"
                    MOVE    1               TO  IDW
                    MOVE    2               TO  IDX 
                WHEN    "6"                 ALSO    ANY
