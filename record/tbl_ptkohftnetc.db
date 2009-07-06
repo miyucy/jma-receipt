@@ -41,7 +41,7 @@ path	key2 	{
 			AND   PTID        =   :PTID
 			AND   KOHID       =   :KOHID
 			AND   SRYYMD     LIKE :SRYYMD
-			ORDER   BY        SRYYMD,NYUGAIKBN
+			ORDER   BY        SRYYMD,RENNUM
 		;
 	};
 };
@@ -54,7 +54,34 @@ path	key3 	{
 			WHERE   HOSPNUM   =   :HOSPNUM
 			AND   PTID        =   :PTID
 			AND   KOHID       =   :KOHID
-			ORDER   BY        SRYYMD,NYUGAIKBN
+			ORDER   BY        SRYYMD,RENNUM
+		;
+	};
+};
+
+path	key4 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohftnetc_key4_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohftnetc
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   KOHID       =   :KOHID
+			AND   SRYYMD     LIKE :SRYYMD
+			ORDER   BY        SRYYMD,NYUGAIKBN,RENNUM
+		;
+	};
+};
+
+path	key5 	{
+	DBSELECT	{
+		DECLARE tbl_ptkohftnetc_key5_csr CURSOR FOR
+		SELECT *
+		FROM tbl_ptkohftnetc
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   KOHID       =   :KOHID
+			ORDER   BY        SRYYMD,NYUGAIKBN,RENNUM
 		;
 	};
 };
