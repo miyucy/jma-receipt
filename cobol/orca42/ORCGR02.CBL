@@ -1981,14 +1981,34 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    1               TO  IDX 
                WHEN    "2"                 ALSO    "03"
                WHEN    "2"                 ALSO    "04"
+                   MOVE    1               TO  IDW
+                   MOVE    2               TO  IDX
                WHEN    "2"                 ALSO    "06"
                    MOVE    1               TO  IDW
-                   MOVE    2               TO  IDX 
+                   IF      SPA-R01-NYUGAIKBN   =   "1"
+                       MOVE    2               TO  IDX
+                   ELSE 
+                       MOVE    3               TO  IDX
+                   END-IF
+               WHEN    "6"                 ALSO    "06"
+                   MOVE    SPA-GMN-PAGE-MAX    TO  IDW
+                   EVALUATE    SPA-GMN-PAGE-MAX
+                       WHEN    1
+                           IF      SPA-R01-NYUGAIKBN   =   "1"
+                               MOVE    3               TO  IDX
+                           ELSE 
+                               MOVE    4               TO  IDX
+                           END-IF
+                       WHEN    2
+                           MOVE    2               TO  IDX 
+                       WHEN    3
+                           MOVE    1               TO  IDX 
+                   END-EVALUATE
                WHEN    "6"                 ALSO    ANY
                    MOVE    SPA-GMN-PAGE-MAX    TO  IDW
                    EVALUATE    SPA-GMN-PAGE-MAX
                        WHEN    1
-                           MOVE    3               TO  IDX 
+                           MOVE    3               TO  IDX
                        WHEN    2
                            MOVE    2               TO  IDX 
                        WHEN    3
@@ -5746,9 +5766,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        END-IF
                        MOVE    WRK-SRT-LAST    TO  WRK-RECE09-SRT-LAST
                    WHEN    "1"
-                       IF    ( SPA-R01-NYUGAIKBN   =   "2" )
-                       AND   ( IDX                 =   2   )
-                           MOVE    "1"         TO  WRK-RECE09-ZAITAKU
+                       IF      SPA-R01-NYUGAIKBN   =   "2"
+                           IF      IDX                 =   1
+                               MOVE    "9"     TO  WRK-RECE09-ZAITAKU
+                           ELSE
+                               MOVE    "1"     TO  WRK-RECE09-ZAITAKU
+                           END-IF
                        ELSE
                            MOVE    "%"         TO  WRK-RECE09-ZAITAKU
                        END-IF
