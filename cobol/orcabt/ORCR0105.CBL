@@ -7592,6 +7592,11 @@
                MOVE    RECE02-KOHNUM (1)   TO  RECE08-KOUHI-NO
       *********MOVE    RECE02-FTNJANUM(1)  TO  RECE08-SYUBETU-SRT2
            END-IF
+      *
+      *    ºßÁí¿ÇÅù
+           IF      RECE02-ZAITAKU   =   "1"   
+               MOVE    "1"              TO  RECE08-ZAITAKU
+           END-IF
      *
            .
        39012-SYAHO-HENTETU-HENSYU-EXT.
