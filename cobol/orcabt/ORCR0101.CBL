@@ -673,24 +673,36 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-PARA-RECE09-ZAITAKU TO  RECE08-ZAITAKU
            MOVE    WRK-PARA-RECE09-KOUGAKU TO  RECE08-KOUGAKU
       *
-           EVALUATE    WRK-PARA-RECE09-TEISYUTUSAKI
-               WHEN    "1"
-                   EVALUATE    WRK-PARA-RECE09-SRT-LAST
-                       WHEN    "1"
-                           MOVE    "key51"     TO  WRK-MCP-PATHNAME
-                       WHEN    "2"
-                           MOVE    "key51"     TO  WRK-MCP-PATHNAME
-                   END-EVALUATE
-               WHEN    "2" 
-                   EVALUATE    WRK-PARA-RECE09-SRT-LAST
-                       WHEN    "0"
-                           MOVE    "key37"     TO  WRK-MCP-PATHNAME
-                       WHEN    "1"
-                           MOVE    "key40"     TO  WRK-MCP-PATHNAME
-                       WHEN    "2"
-                           MOVE    "key41"     TO  WRK-MCP-PATHNAME
-                   END-EVALUATE
-           END-EVALUATE
+           IF      WRK-PARA-RECE09-RECESYUBETU =   "0000"  OR
+                                                   "6666"  OR
+                                                   "8888"
+               EVALUATE    WRK-PARA-RECE09-SRT-LAST
+                   WHEN    "1"
+                       MOVE    "key10"      TO  WRK-MCP-PATHNAME
+                   WHEN    "2"
+                       MOVE    "key11"      TO  WRK-MCP-PATHNAME
+               END-EVALUATE
+               MOVE    "key11"      TO  WRK-MCP-PATHNAME
+           ELSE
+               EVALUATE    WRK-PARA-RECE09-TEISYUTUSAKI
+                   WHEN    "1"
+                       EVALUATE    WRK-PARA-RECE09-SRT-LAST
+                           WHEN    "1"
+                               MOVE    "key51" TO  WRK-MCP-PATHNAME
+                           WHEN    "2"
+                               MOVE    "key51" TO  WRK-MCP-PATHNAME
+                       END-EVALUATE
+                   WHEN    "2" 
+                       EVALUATE    WRK-PARA-RECE09-SRT-LAST
+                           WHEN    "0"
+                               MOVE    "key37"     TO  WRK-MCP-PATHNAME
+                           WHEN    "1"
+                               MOVE    "key40"     TO  WRK-MCP-PATHNAME
+                           WHEN    "2"
+                               MOVE    "key41"     TO  WRK-MCP-PATHNAME
+                       END-EVALUATE
+               END-EVALUATE
+           END-IF
       *
            .
        9001-RECEPRT-KEY-HENSYU-EXT.

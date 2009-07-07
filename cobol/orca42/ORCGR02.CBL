@@ -2457,7 +2457,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
            END-IF    
       *
-           INITIALIZE                  SPA-GMN-TBL2
       *
            MOVE    ZERO                TO  IDX
                                            IDW
@@ -2602,7 +2601,6 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
            END-IF    
       *
-           INITIALIZE                  SPA-GMN-TBL2
       *
            MOVE    ZERO                TO  IDX
                                            IDW
