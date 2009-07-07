@@ -893,6 +893,14 @@
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
+      *    入院診療行為照会テーブル
+       01  NSRYSRH-REC.
+           COPY    "CPNSRYSRH.INC".
+      *
+      *    入院履歴照会テーブル
+       01  NRRKSRH-REC.
+           COPY    "CPNRRKSRH.INC".
+      *
       *
       *****************************************************************
       *    サブプロ用領域
@@ -7671,6 +7679,9 @@
            IF      SPA-GMN-I01-SYORIKBN-CD =   "01"
                PERFORM 4801-NYUKAIKEI-EDIT-SEC
                IF    ( SPA-ERRCD       NOT =   SPACE )
+                   MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+                   MOVE    "abort"         TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
                    GO  TO  4801-PTNYUINRRK-UPD-EXT
                END-IF
            END-IF
@@ -17317,10 +17328,38 @@
            END-IF
       *
            IF    ( WRK-EDYMD       =   SPACE )
-               MOVE    "4032"          TO  SPA-ERRCD
-               MOVE    "tbl_nyuinacct" TO  MCP-TABLE
-               MOVE    "abort"         TO  MCP-PATHNAME
-               PERFORM 910-DBSELECT-SEC
+               IF    ( SPA-GMN-I01-SYORIKBN-CD = "05" OR "06" )
+      *
+                   INITIALIZE                  NSRYSRH-REC
+                   MOVE    SPA-HOSPNUM     TO  NSRYSRH-HOSPNUM
+                   MOVE    SPA-NAI-I01-PTID
+                                           TO  NSRYSRH-PTID
+                   MOVE    SPA-NAI-I01-NYUINYMD (1:6)
+                                           TO  NSRYSRH-SRYYM
+                   MOVE    NSRYSRH-REC     TO  MCPDATA-REC
+                   MOVE    "tbl_nsrysrh"   TO  MCP-TABLE
+                   MOVE    "del3"          TO  MCP-PATHNAME
+                   PERFORM 910-DBDELETE-SEC
+      *
+                   INITIALIZE                  NRRKSRH-REC
+                   MOVE    SPA-HOSPNUM     TO  NRRKSRH-HOSPNUM
+                   MOVE    SPA-NAI-I01-PTID
+                                           TO  NRRKSRH-PTID
+                   MOVE    SPA-NAI-I01-NYUINYMD
+                                           TO  NRRKSRH-SRYYMD
+                   MOVE    "31"            TO  NRRKSRH-SRYYMD(7:2)
+                   MOVE    NRRKSRH-REC     TO  MCPDATA-REC
+                   MOVE    "tbl_nrrksrh"   TO  MCP-TABLE
+                   MOVE    "del3"          TO  MCP-PATHNAME
+                   PERFORM 910-DBDELETE-SEC
+                   MOVE    WRK-STYMD       TO  WRK-EDYMD
+      *
+               ELSE
+                   MOVE    "4032"          TO  SPA-ERRCD
+                   MOVE    "tbl_nyuinacct" TO  MCP-TABLE
+                   MOVE    "abort"         TO  MCP-PATHNAME
+                   PERFORM 910-DBSELECT-SEC
+               END-IF
            END-IF
       *
            PERFORM UNTIL ( WRK-STYMD (1:6) >   WRK-EDYMD (1:6))
