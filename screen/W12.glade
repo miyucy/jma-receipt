@@ -2235,38 +2235,6 @@
 
 	<widget>
 	  <class>GtkLabel</class>
-	  <name>label225</name>
-	  <x>536</x>
-	  <y>274</y>
-	  <width>90</width>
-	  <height>17</height>
-	  <label>プログラム名</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0.5</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
-	  <name>label223</name>
-	  <x>488</x>
-	  <y>258</y>
-	  <width>144</width>
-	  <height>18</height>
-	  <label>県別レセプト編集</label>
-	  <justify>GTK_JUSTIFY_LEFT</justify>
-	  <wrap>False</wrap>
-	  <xalign>0</xalign>
-	  <yalign>0.5</yalign>
-	  <xpad>0</xpad>
-	  <ypad>0</ypad>
-	</widget>
-
-	<widget>
-	  <class>GtkLabel</class>
 	  <name>label300</name>
 	  <x>630</x>
 	  <y>258</y>
@@ -2352,7 +2320,39 @@
 	  <y>416</y>
 	  <width>187</width>
 	  <height>24</height>
-	  <label>                         （全体）入院</label>
+	  <label>　　　　　　　（全体）入院</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label225</name>
+	  <x>536</x>
+	  <y>274</y>
+	  <width>90</width>
+	  <height>17</height>
+	  <label>プログラム名</label>
+	  <justify>GTK_JUSTIFY_LEFT</justify>
+	  <wrap>False</wrap>
+	  <xalign>0.5</xalign>
+	  <yalign>0.5</yalign>
+	  <xpad>0</xpad>
+	  <ypad>0</ypad>
+	</widget>
+
+	<widget>
+	  <class>GtkLabel</class>
+	  <name>label223</name>
+	  <x>488</x>
+	  <y>258</y>
+	  <width>144</width>
+	  <height>18</height>
+	  <label>県別レセプト編集</label>
 	  <justify>GTK_JUSTIFY_LEFT</justify>
 	  <wrap>False</wrap>
 	  <xalign>0</xalign>
