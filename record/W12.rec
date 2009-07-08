@@ -192,6 +192,13 @@ W12	{
 					count	int;
 					item	varchar(31)[10];
 				};
+				PRTJYUNKBN6_COMBO	{
+					PRTJYUNKBN6	{
+						value	varchar(31);
+					};
+					count	int;
+					item	varchar(31)[10];
+				};
 				PRTJYUNKBN1_COMBO	{
 					PRTJYUNKBN1	{
 						value	varchar(31);

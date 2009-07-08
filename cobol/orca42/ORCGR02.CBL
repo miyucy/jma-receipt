@@ -1227,6 +1227,14 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                                 SYS-2005-PRTJYUNKBN3
                                                 SYS-200501-PRTJYUNKBN5
            END-IF
+           IF    ( SPA-R01-NYUGAIKBN    =   "1"   )
+           AND   ( SYS-200501-PRTJYUNKBN6
+                                    NOT =   SPACE )
+               MOVE   SYS-200501-PRTJYUNKBN6
+                                            TO  SYS-2005-PRTJYUNKBN1
+                                                SYS-2005-PRTJYUNKBN3
+                                                SYS-200501-PRTJYUNKBN5
+           END-IF           
            IF      SYS-2005-PRTJYUNKBN2 =   SPACE
                    MOVE   "01"          TO  SYS-2005-PRTJYUNKBN2
            END-IF
@@ -3936,6 +3944,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF    
            END-IF
       *
+           IF      SPA-ERRCD           =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    SPA-GMN-PRTJYUNLST (1)
+                                           TO SPA-GMN-PRTJYUN-G
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF   
+      *
            IF      SPA-R01-FILEKBN     =   "1"
                IF      SPA-GMN-PRTJYUN     =   "07"    OR  "08"
                                                        OR  "11"
@@ -4063,6 +4079,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    SPA-GMN-PRTJYUN1LST (1)
+                                           TO SPA-GMN-PRTJYUN1-G
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF   
+      *
+           IF      SPA-ERRCD           =   SPACE
       *        主科設定時は全科に戻す
                IF    ( SPA-GMN-SYUKA-MAX   >   ZERO )
                    IF      SPA-GMN-SYUKA   NOT =   "00"
@@ -4116,6 +4140,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    "0001"              TO  SPA-ERRCD
                END-IF    
            END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               CONTINUE
+           ELSE
+               MOVE    SPA-GMN-PRTJYUN2LST (1)
+                                           TO SPA-GMN-PRTJYUN2-G
+               MOVE    SPACE               TO  SPA-ERRCD
+           END-IF   
       *
            IF      SPA-ERRCD           =   SPACE
       *        主科設定時は全科に戻す

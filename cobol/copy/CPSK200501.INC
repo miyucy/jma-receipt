@@ -115,8 +115,10 @@
       *病棟別出力順区分
                05  SYS-200501-BTUNUM-PRTJYUNKBN
                                            PIC X(01).
+      *レセプト一括作成出力順区分（全体）入院
+               05  SYS-200501-PRTJYUNKBN6  PIC X(02).
       *予備
-           03  FILLER                      PIC X(399).
+           03  FILLER                      PIC X(397).
       *端末ＩＤ
            03  SYS-200501-TERMID           PIC X(16).
       *オペーレータＩＤ

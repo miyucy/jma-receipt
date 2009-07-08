@@ -154,6 +154,12 @@
                     06  W12-PRTJYUNKBN4-COUNT   PIC S9(9)   BINARY.
                     06  W12-PRTJYUNKBN4LST
                             PIC X(31)   OCCURS  10 TIMES.
+                  05  W12-PRTJYUNKBN6-COMBO.
+                    06  W12-PRTJYUNKBN6.
+                      07  W12-VALUE   PIC X(31).
+                    06  W12-PRTJYUNKBN6-COUNT   PIC S9(9)   BINARY.
+                    06  W12-PRTJYUNKBN6LST
+                            PIC X(31)   OCCURS  10 TIMES.
                   05  W12-PRTJYUNKBN1-COMBO.
                     06  W12-PRTJYUNKBN1.
                       07  W12-VALUE   PIC X(31).
