@@ -375,6 +375,7 @@
       *                                     ¡ÊÅìµþÅÔ£±£µ£±¡Ë
       *  04.04.11    NACL-ÌçÏÆ    09/06/10  Ä¹´ü¡ÜÁ´¹ñ¸øÈñ£²¼ï¤ÎÂÐ±þ
       *  04.04.12    NACL-ÌçÏÆ    09/06/23  ÅÀÅ©´ïºà¾¦ÉÊÌ¾µ­ºÜ½¤Àµ
+      *  04.04.13    NACL-ÌçÏÆ    09/07/08  Àº¿ÀÆþ±¡¸ÂÅÙ³ÛÂÐ±þ
       *
       *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
       *****************************************************************
@@ -11637,7 +11638,8 @@
                                                     =  "015" OR "016"
                                                     OR "051" OR "021"
                                                     OR "024" OR "079"
-                                                    OR "011" OR "012")
+                                                    OR "011" OR "012"
+                                                    OR "020"         )
                            ADD   SYU-KOH-HKNFTNMONEY(IDX3 - 1)  TO
                                          RECE62-FTNMONEY-FTN(KH-IDX)
                         ELSE
@@ -11931,7 +11933,7 @@
                                                  OR "024" OR "079"
                                                  OR "052" OR "011"
                                                  OR "025" OR "038"
-                                                          OR "012") OR
+                                                 OR "012" OR "020") OR
                      (TBL-TOKATUKAIFLG(KH-IDX - 1)   =  1         ))
                    ADD   SYU-KOH-HKNFTNMONEY(IDX3)  TO
                                    RECE62-FTNMONEY(KH-IDX)
@@ -12005,7 +12007,8 @@
                                        "010" OR "012" OR "015" OR
                                        "016" OR "021" OR "024" OR
                                        "051" OR "052" OR "079" OR
-                                       "011" OR "025" OR "038"   )
+                                       "011" OR "025" OR "038" OR
+                                       "020"                     )
                 AND   (KH-IDX  =  2                              )
                   EVALUATE   RECE62-KOHNUM(KH-IDX - 1)
                     WHEN       "010"
@@ -12029,6 +12032,7 @@
                     WHEN       "011"
                     WHEN       "025"
                     WHEN       "038"
+                    WHEN       "020"
                       IF  ((FLG-ZENKI-TOKUREI             =   1  ) AND
                            (RECE62-KOHNUM(KH-IDX - 1)     = "051"))
                       OR  ((FLG-ZENKI-TOKUREI             =   1  ) AND
@@ -12908,7 +12912,7 @@
                     MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
                     MOVE  "1"   TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                   END-IF
-                  IF   RECE62-KOHNUM(KOHFTN-IDX) =  "011"
+                  IF   RECE62-KOHNUM(KOHFTN-IDX) =  "011" OR "020"
                     MOVE  "1"   TO  RECE62-KISAIFLG(KOHFTN-IDX + 1)
                     MOVE SPACE  TO  RECE62-ZEROKISAIFLG(KOHFTN-IDX + 1)
                   END-IF
@@ -12957,7 +12961,7 @@
       *
       *    °ìÉôÉéÃ´¶â¡¦¿©»öÎÅÍÜÈñÉ¸½àÉéÃ´³Û¶èÊ¬¤ÎÊÔ½¸
       *
-      ***> IF      RECE62-KOUREI   NOT = SPACE
+           IF      RECE62-KOUREI   NOT = SPACE
                EVALUATE    RECE62-TEISYOTOKU
                    WHEN    "1"
                        MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN
@@ -12971,18 +12975,18 @@
                    WHEN    "4"
                        MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
                END-EVALUATE
-      ***> ELSE
-      ***>     EVALUATE    RECE62-TEISYOTOKU3
-      ***>         WHEN    "1"
-      ***>             MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN
-      ***>         WHEN    "2"
-      ***>             MOVE    "1"   TO   RECE62-SHOKUJIFTNKBN
-      ***>         WHEN    "3"
-      ***>             MOVE    "2"   TO   RECE62-SHOKUJIFTNKBN
-      ***>         WHEN    "4"
-      ***>             MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
-      ***>     END-EVALUATE
-      ***> END-IF
+           ELSE
+               EVALUATE    RECE62-TEISYOTOKU3
+                   WHEN    "1"
+                       MOVE    "3"   TO   RECE62-SHOKUJIFTNKBN
+                   WHEN    "2"
+                       MOVE    "1"   TO   RECE62-SHOKUJIFTNKBN
+                   WHEN    "3"
+                       MOVE    "2"   TO   RECE62-SHOKUJIFTNKBN
+                   WHEN    "4"
+                       MOVE    "4"   TO   RECE62-SHOKUJIFTNKBN
+               END-EVALUATE
+           END-IF
            PERFORM  VARYING   KOHFTN-IDX   FROM   1   BY   1
                      UNTIL    KOHFTN-IDX     >    4
              EVALUATE  RECE62-TEISYOTOKU2(KOHFTN-IDX)
@@ -13763,7 +13767,7 @@
                    IF  ( RECE62-KOHNUM(KOHFTN-IDX) =
                               "015" OR "016" OR "051" OR "021" OR
                               "024" OR "079" OR "052" OR "011" OR
-                              "025" OR "038" OR "012"              )
+                              "025" OR "038" OR "012" OR "020"     )
       ***          OR  ((WRK-PREFNUM             =   33           ) AND
       ***               (RECE62-KOHNUM(KOHFTN-IDX)(1:1)
       ***                                       >= "1" AND <=  "8"))
@@ -13845,7 +13849,8 @@
                IF (RECE62-KOHNUM(1) = "010" OR "012" OR "015" OR
                                       "016" OR "021" OR "024" OR
                                       "051" OR "052" OR "079" OR
-                                      "025" OR "038" OR "011"   )
+                                      "025" OR "038" OR "011" OR
+                                      "020"                     )
                OR (TBL-TOKATUKAIFLG(1)   =  1                   )
                  IF  RECE62-KOHNUM(1)    = "010"
                    IF   RECE62-KOUREI    = "1" OR "2"
