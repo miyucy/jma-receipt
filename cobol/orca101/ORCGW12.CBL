@@ -2549,9 +2549,6 @@
            IF      SYS-200501-PRTJYUNKBN5   =   SPACE
                MOVE    SYS-2005-PRTJYUNKBN1 TO  SYS-200501-PRTJYUNKBN5
            END-IF
-           IF      SYS-200501-PRTJYUNKBN6   =   SPACE
-               MOVE    SYS-2005-PRTJYUNKBN4 TO  SYS-200501-PRTJYUNKBN6
-           END-IF
       *
            MOVE    SYS-200501-JIBAIPRTKBN
                                        TO  SPA-GMN-JIBAIPRTKBN
