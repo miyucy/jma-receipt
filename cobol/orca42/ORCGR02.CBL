@@ -1209,6 +1209,36 @@ grpsys         PERFORM 900-DBSELECT-SEC
                END-EVALUATE
            END-IF
       *
+      *    ¼ÒÊÝÊ×ÄÖ½çÍÑ
+           IF      SYS-2005-PRTJYUNKBN1 =   SPACE
+               MOVE   "01"             TO  SPA-NAI-2005-PRTJYUNKBN1
+           ELSE
+               MOVE     SYS-2005-PRTJYUNKBN1
+                                       TO  SPA-NAI-2005-PRTJYUNKBN1
+           END-IF
+           IF      SYS-2005-PRTJYUNKBN3 =   SPACE
+               IF      SYS-2005-PRTJYUNKBN1 =   "06"
+                   MOVE   "01"         TO  SPA-NAI-2005-PRTJYUNKBN3
+               ELSE
+                   MOVE     SYS-2005-PRTJYUNKBN1
+                                       TO  SPA-NAI-2005-PRTJYUNKBN3
+               END-IF
+           ELSE
+               MOVE     SYS-2005-PRTJYUNKBN3
+                                       TO  SPA-NAI-2005-PRTJYUNKBN3
+           END-IF
+           IF      SYS-200501-PRTJYUNKBN5   =   SPACE
+               IF      SYS-2005-PRTJYUNKBN1 =   "06"
+                   MOVE   "01"         TO  SPA-NAI-200501-PRTJYUNKBN5
+               ELSE
+                   MOVE     SYS-2005-PRTJYUNKBN1
+                                       TO  SPA-NAI-200501-PRTJYUNKBN5
+               END-IF
+           ELSE
+               MOVE     SYS-200501-PRTJYUNKBN5
+                                       TO  SPA-NAI-200501-PRTJYUNKBN5
+           END-IF
+      *
            IF      SYS-2005-PRTJYUNKBN4 =   SPACE
                IF      SYS-2005-PRTJYUNKBN1 =   SPACE
                        MOVE   "01"          TO  SYS-2005-PRTJYUNKBN1
@@ -1227,6 +1257,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                                 SYS-2005-PRTJYUNKBN3
                                                 SYS-200501-PRTJYUNKBN5
            END-IF
+     
            IF    ( SPA-R01-NYUGAIKBN    =   "1"   )
            AND   ( SYS-200501-PRTJYUNKBN6
                                     NOT =   SPACE )
@@ -1256,13 +1287,6 @@ grpsys         PERFORM 900-DBSELECT-SEC
            END-IF
            MOVE    SYS-200501-PRT-CHECKKBN
                                        TO  SPA-NAI-2005-PRT-CHECKKBN
-      *
-           MOVE     SYS-2005-PRTJYUNKBN1
-                                       TO  SPA-NAI-2005-PRTJYUNKBN1
-           MOVE     SYS-2005-PRTJYUNKBN3
-                                       TO  SPA-NAI-2005-PRTJYUNKBN3
-           MOVE     SYS-200501-PRTJYUNKBN5
-                                       TO  SPA-NAI-200501-PRTJYUNKBN5
       *    
       *    ½ÐÎÏ½ç¡Ê°ì³çºîÀ®¡Ë
            IF      SPA-R01-FILEKBN       =   "1" 
@@ -3995,7 +4019,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF
            ELSE
-               MOVE    SPA-GMN-PRTJYUN-G   TO  SPA-GMN-PRTJYUN1-G
+               MOVE     SPA-GMN-PRTJYUN-G   TO  SPA-GMN-PRTJYUN1-G
                                                SPA-GMN-PRTJYUN2-G 
            END-IF
       *
