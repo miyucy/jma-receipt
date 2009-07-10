@@ -23,9 +23,7 @@
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       *  01.00.01    NACL-門脇    06/03/20  他医療機関等一部負担累計追加
-      *  01.00.02    NACL-門脇    09/07/10  公費一部負担金上限チェック区分、
-      *                                     公費一部負担金上限フラグ追加
-      *  01.00.03    NACL-門脇    09/07/10  他医療機関等一部負担累計
+      *  01.00.02    NACL-門脇    09/07/10  他医療機関等一部負担累計
       *                                     編集フラグ追加
       ************************************************************
        01  LNK-ORCSJGNGET-REC.
@@ -44,8 +42,6 @@
            03  LNK-ORCSJGNGET-SRYYM         PIC  X(06).
       *入院請求終了日
            03  LNK-ORCSJGNGET-SKYEDYMD      PIC  X(08).
-      *公費一部負担金上限チェック区分
-           03  LNK-ORCSJGNGET-JGNCHK        PIC  9(01).
       *
       *返却値
       *
@@ -58,9 +54,6 @@
              05  LNK-ORCSJGNGET-TAFTNRUIKEI PIC  9(07).
       *他医療機関等一部負担累計編集フラグ
              05  LNK-ORCSJGNGET-TAFTNFLG    PIC  9(01).
-      *
-      *公費一部負担金上限フラグ
-             05  LNK-ORCSJGNGET-JGNFLG      PIC  9(01).
       *
       *復帰コード
       *
