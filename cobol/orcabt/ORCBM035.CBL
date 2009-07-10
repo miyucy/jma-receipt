@@ -34,6 +34,8 @@
       *  04.04.01    NACL-藤原    09/12/10  オンライン返戻対応
       *
       *  04.05.01    NACL-藤原    09/05/25  広域連合の保険者番号指定対応
+      *  04.05.02    NACL-藤原    09/07/08  公費再掲欄への地方公費記載
+      *                                     設定対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -183,6 +185,11 @@
                                    PIC X(03)   OCCURS  10.
            03  WRK-2007-MAX        PIC 9(03).
       *
+       01  WRK-2010-AREA.
+           03  WRK-2010-TBL        OCCURS  100.
+               05  WRK-2010-KOHNUM PIC X(03).
+           03  WRK-2010-MAX        PIC 9(03).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-PAGE              PIC 9(04).
@@ -279,6 +286,8 @@
            COPY    "CPSK200501.INC".
       *
            COPY    "CPSK2007.INC".
+      *
+           COPY    "CPSK2010.INC".
       *
       *    請求管理
            COPY    "CPRCF010.INC".
@@ -511,6 +520,48 @@
            PERFORM 900-CLOSE-SEC
       *
            MOVE    IDX             TO  WRK-2007-MAX    
+      *         
+      *    請求書公費再掲欄記載情報
+           INITIALIZE                      WRK-2010-AREA
+      *
+           INITIALIZE                      SYS-2010-REC
+           MOVE    "2010"              TO  SYS-2010-KANRICD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-2010-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-2010-STYUKYMD (7:2)
+           MOVE    SYS-2010-STYUKYMD   TO  SYS-2010-EDYUKYMD
+grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
+           MOVE    SYS-2010-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           MOVE    "DBSELECT"          TO  MCP-FUNC
+           PERFORM 900-ORCDBMAIN-SEC
+           IF      MCP-RC          =   ZERO
+               MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+               MOVE    "key2"          TO  WRK-MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-N-SEC
+           ELSE
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+      *
+           MOVE    ZERO            TO  IDX
+           PERFORM         UNTIL   FLG-SYSKANRI   =   1
+                           OR      IDX            >=  100
+               MOVE    MCPDATA-REC         TO  SYS-2010-REC
+               IF      SYS-2010-SAIKEIKBN  =   "1"
+                   ADD     1                   TO  IDX
+                   MOVE    SYS-2010-KBNCD(1:3) TO WRK-2010-KOHNUM (IDX)
+               END-IF
+      *
+               MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
+               MOVE    "key2"          TO  WRK-MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-N-SEC
+           END-PERFORM
+      *
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+      *
+           MOVE    IDX             TO  WRK-2010-MAX    
       *
       *    レセプト・総括編集情報
       *    区分コード０１のデータ読み込み
@@ -837,6 +888,18 @@
       *        特定疾患無しのとき 
                IF      RECE10-KOHNUM (IDZ) =   "091"
                    MOVE    "051"               TO  RECE10-KOHNUM (IDZ)
+               END-IF
+      *
+      *        請求書公費再掲欄記載情報があるとき
+               IF      WRK-2010-MAX        >   ZERO
+                   PERFORM VARYING IDZ1    FROM    1   BY  1
+                           UNTIL   IDZ1    >       WRK-2010-MAX
+                       IF      RECE10-KOHNUM (IDZ)
+                                       =   WRK-2010-KOHNUM (IDZ1)
+                           MOVE    1               TO  FLG-UPD 
+                           GO  TO  20012-KOH-SYUKEI-EXT
+                       END-IF
+                   END-PERFORM
                END-IF
       *
       *        公費番号まとめ情報があるとき
