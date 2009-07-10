@@ -5231,23 +5231,30 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
              WHEN   "12"
       *        病棟別指定
                MOVE    SPA-NAI-2005-BTUNUM-PRTJYUNKBN
-                                           TO  WRK-SRT-LAST
-               EVALUATE    SPA-GMN-SYUKA
-                   WHEN    "00"
-                   WHEN    SPACE
-                       MOVE    "%%"             TO  WRK-SYUKA
-                       PERFORM 4505-DRCD-PRTJYUN-PRINT-SEC
-                   WHEN    OTHER
-                       MOVE    SPA-GMN-SYUKA   TO  WRK-SYUKA
-                       PERFORM VARYING IDXX    FROM    2   BY  1
-                               UNTIL   IDXX    >       SPA-GMN-SYUKA-MAX
-                           IF      WRK-SYUKA   =
-                                               SPA-GMN-SYUKAL (IDXX)
-                               PERFORM 4505-DRCD-PRTJYUN-PRINT-SEC
-                               MOVE    SPA-GMN-SYUKA-MAX    TO  IDXX
+                                        TO  WRK-SRT-LAST
+               MOVE    "1"              TO  WRK-TEISYUTUSAKI
+               MOVE    "%"              TO  WRK-PREFKBN
+      *
+               PERFORM VARYING IDW FROM    1   BY  1
+                       UNTIL   IDW >       SPA-GMN-PAGE-MAX1
+                   PERFORM VARYING IDX FROM    1   BY  1
+                           UNTIL   IDX >       WRK-CONS-LINE-MAX
+                           OR      SPA-NAI-PRTJYUNI(IDW IDX)   =   SPACE
+                           OR      SPA-ERRCD               NOT =   SPACE
+                       IF    ( IDW                 =   1   )
+                       AND   ( IDX                 >=  33  )
+                           CONTINUE
+                       ELSE 
+                           IF    ( SPA-GMN-TCHK-VALUE  (IDW IDX)
+                                                               =   "T" )
+                           AND   ( SPA-GMN-TPAGE       (IDW IDX)
+                                                               >   ZERO)
+                               MOVE    1               TO  IDY
+                               PERFORM 4506-BTUNUM-PRTJYUN-PRINT-SEC
                            END-IF
-                       END-PERFORM        
-               END-EVALUATE
+                       END-IF
+                   END-PERFORM
+               END-PERFORM
              WHEN   OTHER
       *        社保出力
                IF      SPA-R01-RECE07-SRYKA    =   "00"
@@ -6273,7 +6280,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    医師別順、病棟別順出力処理
+      *    医師別順出力処理
       *****************************************************************
        4505-DRCD-PRTJYUN-PRINT-SEC    SECTION.
       *
@@ -6300,6 +6307,36 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            END-PERFORM
            .
        4505-DRCD-PRTJYUN-PRINT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    病棟別順出力処理
+      *****************************************************************
+       4506-BTUNUM-PRTJYUN-PRINT-SEC    SECTION.
+      *
+           EVALUATE    SPA-GMN-SYUKA
+               WHEN    SPACE
+                   MOVE    "%%"            TO  WRK-SYUKA
+                   PERFORM 45011-RECEPRT-HENSYU-SEC
+               WHEN    "00"
+                   PERFORM VARYING IDXX    FROM    2   BY  1
+                           UNTIL   IDXX    >   SPA-GMN-SYUKA-MAX
+                           OR      SPA-ERRCD   NOT =   SPACE
+                       MOVE    SPA-GMN-SYUKAL (IDXX)   TO  WRK-SYUKA
+                       PERFORM 45011-RECEPRT-HENSYU-SEC
+                   END-PERFORM
+               WHEN    OTHER
+                   MOVE    SPA-GMN-SYUKA   TO  WRK-SYUKA
+                   PERFORM VARYING IDXX    FROM    2   BY  1
+                           UNTIL   IDXX    >       SPA-GMN-SYUKA-MAX
+                       IF      WRK-SYUKA   =   SPA-GMN-SYUKAL (IDXX)
+                           PERFORM 45011-RECEPRT-HENSYU-SEC
+                           MOVE    SPA-GMN-SYUKA-MAX    TO  IDXX
+                       END-IF
+                   END-PERFORM        
+           END-EVALUATE
+           .
+       4506-BTUNUM-PRTJYUN-PRINT-EXT.
            EXIT.
       *
       *****************************************************************

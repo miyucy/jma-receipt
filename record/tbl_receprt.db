@@ -1259,7 +1259,7 @@ path    key49   {
                     AND     RECESYUBETU  <>  '0000'
                     AND     RECESYUBETU  <>  '8888' 
                     AND     RECESYUBETU  <>  '6666' 
-                    ORDER   BY  SRYKA,KANANAME
+                    ORDER   BY  KANANAME
                ;
         };
 };
@@ -1284,7 +1284,7 @@ path    key50   {
                     AND     RECESYUBETU  <>  '0000'
                     AND     RECESYUBETU  <>  '8888' 
                     AND     RECESYUBETU  <>  '6666' 
-                    ORDER   BY  SRYKA,PTNUM
+                    ORDER   BY  PTNUM
                ;
         };
 };
