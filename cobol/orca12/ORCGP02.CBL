@@ -66,6 +66,7 @@
       *  04.03.00    NACL-多々納  08/07/22  特記事項追加
       *  04.04.00    NACL-多々納  09/01/27  本院分院対応
       *  04.04.00    NACL-多々納  09/03/12  テーブル削除追加
+      *  04.05.00    NACL-多々納  09/07/XX  患者公費負担額機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -379,6 +380,10 @@
        01  PTTOKKI-REC.
            COPY    "CPPTTOKKI.INC".
       *
+      *    患者公費負担額
+       01  PTKOHFTNETC-REC.
+           COPY    "CPPTKOHFTNETC.INC".
+      *
       *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
@@ -518,6 +523,7 @@
            COPY    "P02Y1.INC".
            COPY    "P02G.INC".
            COPY    "P02G2.INC".
+           COPY    "P02K.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
            COPY    "PATIENTGET.INC".
@@ -799,6 +805,13 @@
                    ELSE
                        PERFORM 3009-CLAIM-SYORI-SEC
                    END-IF
+      *        主科設定画面
+               WHEN    "P02K"
+                   MOVE    "P024"              TO  SPA-P02-GAMEN
+                   MOVE    31                  TO  SPA-GMN24-CUR
+                   MOVE    SPACE               TO  SPA-P02-WIDGET
+                   MOVE    "P024_FTNSELNUM2"   TO  SPA-P02-WIDGET
+                   MOVE    4                   TO  P02-PAGENO
       *!
       *DDDDDDD ＱＲより
       *        WHEN    "P02Q"
@@ -3299,6 +3312,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
+      *    患者公費負担額マスタ
+           INITIALIZE                      PTKOHFTNETC-REC
+           MOVE    SPA-HOSPNUM         TO  PTKOHFTNETC-HOSPNUM
+           MOVE    SPA-GMN-PTID        TO  PTKOHFTNETC-PTID
+           MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
+           MOVE    "DBDELETE"          TO  MCP-FUNC
+           MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
+           MOVE    "del1"              TO  MCP-PATHNAME
+           CALL    "ORCDBMAIN"         USING   MCPAREA
+                                               MCPDATA-REC
+                                               SPA-AREA
+      *
       *    入院履歴照会テーブル
            INITIALIZE                      NRRKSRH-REC
            MOVE    SPA-HOSPNUM         TO  NRRKSRH-HOSPNUM
@@ -5103,6 +5128,26 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                TO  SPA-ERRMSG
                WHEN    "2499"
                    MOVE    "公費負担額対象公費が５０件以上です。"
+                                               TO  SPA-ERRMSG
+      *        公費負担額複写
+               WHEN    "2440"
+                   MOVE    "次月複写対象外公費です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2441"
+                   MOVE    "複写する上限額履歴がありません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2442"
+                   MOVE
+                   "上限額最新履歴の摘用終了日が入力されていません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2443"
+                   MOVE    "公費摘用終了日以降分は複写できません。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2445"
+                   MOVE    "他一部負担入力対象外公費です。"
+                                               TO  SPA-ERRMSG
+               WHEN    "2446"
+                   MOVE    "上限額履歴を選択して下さい。"
                                                TO  SPA-ERRMSG
       *        入力履歴
                WHEN    "2502"

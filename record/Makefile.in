@@ -402,6 +402,7 @@ RECORD_files = \
 	D05.rec \
 	patientget.rec \
 	appointmod.rec \
+	P02K.rec \
 
 DEF_files = \
 	HC01.def \

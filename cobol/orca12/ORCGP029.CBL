@@ -45,6 +45,7 @@
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.01    NACL-Â¿¡¹Ç¼  07/06/11  »áÌ¾ÊÑ¹¹¤ÎÍ½Ìó¡¦¼õÉÕÂÐ±þ
       *  04.03.00    NACL-Â¿¡¹Ç¼  08/07/22  ÆÃµ­»ö¹àÄÉ²Ã
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/XX  ´µ¼Ô¸øÈñÉéÃ´³Ûµ¡Ç½ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -120,6 +121,7 @@
            03  FLG-PTBYOMEI        PIC 9(01).
            03  FLG-QRCDHKN         PIC 9(01).
            03  FLG-PTSAME          PIC 9(01).
+           03  FLG-PTKOHFTNETC     PIC 9(01).
       *
            03  FLG-SYORI           PIC X(01).
            03  FLG-SYORI2          PIC X(01).
@@ -267,6 +269,10 @@
       *    ´µ¼ÔÆÃµ­»ö¹à¥Þ¥¹¥¿
        01  PTTOKKI-REC.
            COPY    "CPPTTOKKI.INC".
+      *
+      *    ´µ¼Ô¸øÈñÉéÃ´³Û
+       01  PTKOHFTNETC-REC.
+           COPY    "CPPTKOHFTNETC.INC".
       *
       *    QR¥³¡¼¥É(ÈïÊÝ¸±¼Ô¾Ú)
        01  QRCDHKN-REC.
@@ -553,6 +559,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_para"          TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
+      *    ´µ¼Ô¸øÈñÉéÃ´³Û¥Æ¡¼¥Ö¥ë¹¹¿·
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 3001-PTKOHFTNETC-SYORI-SEC
+           END-IF
       *    ÆÃµ­»ö¹à¥Æ¡¼¥Ö¥ë¹¹¿·
            IF      SPA-ERRCD           =   SPACE
                PERFORM 300-PTTOKKI-SYORI-SEC
@@ -1976,6 +1986,145 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            .
        300-PTTOKKI-SYORI-EXT.
            EXIT.
+      *****************************************************************
+      *    ´µ¼Ô¸øÈñÉéÃ´³Û¥Æ¡¼¥Ö¥ë¹¹¿·½èÍý
+      *****************************************************************
+       3001-PTKOHFTNETC-SYORI-SEC         SECTION.
+      *
+      *    º£²ó¹¹¿·ÂÐ¾Ý·îÊ¬¤Ï¤¹¤Ù¤Æºï½ü
+           PERFORM VARYING     IDX     FROM    1  BY  1
+                   UNTIL      (IDX     >   100 )  OR
+                              (SPA-NAI24-KOHFTN-ID (IDX)   =   ZERO)
+               INITIALIZE                      PTKOHFTNETC-REC
+               MOVE    SPA-HOSPNUM         TO  PTKOHFTNETC-HOSPNUM
+               MOVE    SPA-GMN-PTID        TO  PTKOHFTNETC-PTID
+               MOVE    SPA-NAI24-KOHFTN-ID (IDX)
+                                           TO  PTKOHFTNETC-KOHID
+               MOVE    SPA-NAI24-KOHFTN-YM (IDX)
+                                           TO  PTKOHFTNETC-SRYYMD(1:6)
+               MOVE    "%"                 TO  PTKOHFTNETC-SRYYMD(7:1)
+               MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
+               MOVE    "DBDELETE"          TO  MCP-FUNC
+               MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
+               IF      SPA-NAI24-KOHFTN-YM (IDX)   =   SPACE
+      *            ¸øÈñºï½ü
+                   MOVE    "del2"              TO  MCP-PATHNAME
+               ELSE
+                   MOVE    "del3"              TO  MCP-PATHNAME
+               END-IF
+               CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+           END-PERFORM
+      *    
+           INITIALIZE                      PARA-REC
+           MOVE    "P02"               TO  PARA-GYOUMUID
+           MOVE    SPA-TERMID          TO  PARA-TERMID
+           MOVE    "PTKOHFTNETC"       TO  PARA-FILEMEI
+      *
+           MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
+           MOVE    PARA-REC            TO  MCPDATA-REC
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           ELSE
+               INITIALIZE                  PARA-REC
+               MOVE    1               TO  FLG-PARA
+           END-IF
+      *
+           PERFORM
+               UNTIL   FLG-PARA            =   1
+      *
+               PERFORM 30011-PTKOHFTNETC-DBSYORI-SEC
+      *
+               MOVE    "tbl_para"          TO  MCP-TABLE
+               MOVE    "key5"              TO  MCP-PATHNAME
+               PERFORM 990-PARA-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_para"          TO  MCP-TABLE
+           MOVE    "key5"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           .
+       3001-PTKOHFTNETC-SYORI-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¾ðÊó¹¹¿·½èÍý
+      *****************************************************************
+       30011-PTKOHFTNETC-DBSYORI-SEC         SECTION.
+      *
+           MOVE    PARA-DATA-REC       TO  PTKOHFTNETC-REC
+      *    ¸øÈñÉéÃ´ÆÉ¹þ¤ß
+           MOVE    SPA-GMN-PTID        TO  PTKOHFTNETC-PTID
+           MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
+           MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+               PERFORM 991-PTKOHFTNETC-READ-SEC
+           ELSE 
+               MOVE    1               TO  FLG-PTKOHFTN
+           END-IF
+           MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
+           MOVE    "key"               TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+      *
+           IF      FLG-PTKOHFTNETC     =   1
+               MOVE    PARA-DATA-REC       TO  PTKOHFTNETC-REC
+      *
+               MOVE    SMCNDATE-YMD        TO  PTKOHFTNETC-CREYMD
+               MOVE    SMCNDATE-YMD        TO  PTKOHFTNETC-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTKOHFTNETC-UPHMS
+      *
+               MOVE    SPA-OPID            TO  PTKOHFTNETC-OPID
+      *
+      *        ¿·µ¬
+               MOVE    SPA-GMN-PTID        TO  PTKOHFTNETC-PTID
+               MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
+               MOVE    "DBINSERT"          TO  MCP-FUNC
+               MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "P029 PTKOHFTNETC INS ERR:" MCP-RC
+                                   ",KEY:" PTKOHFTNETC-KEY
+                   MOVE    "9000"              TO  SPA-ERRCD
+               END-IF
+           ELSE
+               MOVE    PTKOHFTNETC-CREYMD  TO  WRK-CREYMD
+               MOVE    PARA-DATA-REC       TO  PTKOHFTNETC-REC
+      *
+               MOVE    WRK-CREYMD          TO  PTKOHFTNETC-CREYMD
+               MOVE    SMCNDATE-YMD        TO  PTKOHFTNETC-UPYMD
+               MOVE    SMCNDATE-HMS        TO  PTKOHFTNETC-UPHMS
+      *
+               MOVE    SPA-OPID            TO  PTKOHFTNETC-OPID
+      *
+      *        ¹¹¿·
+               MOVE    PTKOHFTNETC-REC     TO  MCPDATA-REC
+               MOVE    "DBUPDATE"          TO  MCP-FUNC
+               MOVE    "tbl_ptkohftnetc"   TO  MCP-TABLE
+               MOVE    "key"               TO  MCP-PATHNAME
+grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
+                                                   MCPDATA-REC
+                                                   SPA-AREA
+               IF      MCP-RC          NOT =   ZERO
+                   DISPLAY "P029 PTKOHFTNETC UPD ERR:" MCP-RC
+                                   ",KEY:" PTKOHFTN-KEY
+                   MOVE    "9000"              TO  SPA-ERRCD
+               END-IF
+           END-IF
+           .
+       30011-PTKOHFTNETC-DBSYORI-EXT.
+           EXIT.
       *
       *****************************************************************
       *    ¼ç²Ê¾ðÊóÀßÄê½èÍý
@@ -2635,6 +2784,23 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        991-PTKOHFTN-READ-EXT.
+           EXIT.
+      *****************************************************************
+      *    ´µ¼Ô¸øÈñÉéÃ´³Û¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
+      *****************************************************************
+       991-PTKOHFTNETC-READ-SEC         SECTION.
+      *
+           PERFORM 920-DBFETCH-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    MCPDATA-REC     TO  PTKOHFTNETC-REC
+               MOVE    ZERO            TO  FLG-PTKOHFTNETC
+           ELSE
+               INITIALIZE                  PTKOHFTNETC-REC
+               MOVE    1               TO  FLG-PTKOHFTNETC
+           END-IF
+      *
+           .
+       991-PTKOHFTNETC-READ-EXT.
            EXIT.
       *****************************************************************
       *    ¼õ¿ÇÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ

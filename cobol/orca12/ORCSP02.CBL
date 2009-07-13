@@ -48,6 +48,7 @@
       * 03.05.01     NACL-多々納  07/08/28  公費期限切れ区分追加
       * 04.03.00     NACL-多々納  08/07/22  特記事項追加
       * 04.04.00     NACL-多々納  09/01/27  本院分院対応
+      *  04.05.00    NACL-多々納  09/07/XX  患者公費負担額機能追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1344,7 +1345,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-GMN24-TSYTEKKBN-LST (2)
            MOVE    "2 地方公費のみ対象"
                                        TO  SPA-GMN24-TSYTEKKBN-LST (3)
-           MOVE    3                   TO  SPA-GMN24-TSYTEKKBN-MAX
+           MOVE    "3 食事標準負担額のみ対象"
+                                       TO  SPA-GMN24-TSYTEKKBN-LST (4)
+           MOVE    "4 地方公費＋食事標準負担額対象"
+                                       TO  SPA-GMN24-TSYTEKKBN-LST (5)
+           MOVE    5                   TO  SPA-GMN24-TSYTEKKBN-MAX
       *    所得者１（認定範囲）
            MOVE    "0 すべて対象"
                                        TO  SPA-GMN24-TNKTEKKBN-LST (1)
@@ -1352,7 +1357,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  SPA-GMN24-TNKTEKKBN-LST (2)
            MOVE    "2 地方公費のみ対象"
                                        TO  SPA-GMN24-TNKTEKKBN-LST (3)
-           MOVE    3                   TO  SPA-GMN24-TNKTEKKBN-MAX
+           MOVE    "3 食事標準負担額のみ対象"
+                                       TO  SPA-GMN24-TNKTEKKBN-LST (4)
+           MOVE    "4 地方公費＋食事標準負担額対象"
+                                       TO  SPA-GMN24-TNKTEKKBN-LST (5)
+           MOVE    5                   TO  SPA-GMN24-TNKTEKKBN-MAX
            .
        1005-COMB-SET-EXT.
            EXIT.
@@ -2332,6 +2341,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                      PARA-REC
                MOVE    "PTKOHFTN"          TO  PARA-FILEMEI
                MOVE    IDX                 TO  PARA-EDANUM
+      *        他一部負担金判定の為、クリア
+               MOVE    SPACE               TO  PTKOHFTN-TERMID
                MOVE    PTKOHFTN-REC        TO  PARA-DATA-REC
                PERFORM 400-PARA-INSERT-SEC
       *
@@ -3979,6 +3990,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                                   (IDY)
                    MOVE    IDY                 TO  SPA-GMN24-TGMNNUM2
                                                                   (IDX)
+      *            患者公費負担登録有無
+                   IF      SPA-NAI24-TFTNETCKBN (IDX)
+                                               =   SPACE
+                                               OR  "0"
+                       CONTINUE
+                   ELSE
+                       MOVE    "☆"            TO  P02-P024-TFTNETC(IDY)
+                   END-IF
+      *
                    IF      IDY                 =   SPA-GMN24-FTNSELNUM2
                        MOVE    "T"         TO  P02-P024-HFTNLST2-SELECT
                                                                  (IDY)
@@ -4002,6 +4022,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            ELSE
                MOVE    SPA-GMN24-FTNMSG1   TO  P02-FTNMSG1
                MOVE    SPA-GMN24-FTNMSG2   TO  P02-FTNMSG2
+           END-IF
+      *
+           IF      SPA-GMN24-FTNMSG1   =   SPACE
+               MOVE    "外来上限額"        TO  P02-P024-LABL1
+               MOVE    "入院上限額"        TO  P02-P024-LABL2
+           ELSE
+               MOVE    SPA-GMN24-FTNMSG1   TO  P02-P024-LABL1
+               MOVE    SPA-GMN24-FTNMSG2   TO  P02-P024-LABL2
            END-IF
       *
            MOVE    SPA-GMN24-FTNSTYMD  TO  P02-P024-FTNTEKSTYMD

@@ -116,3 +116,15 @@ path	del2 	{
 		;
 	};
 };
+
+path	del3 	{
+	DBDELETE	{
+		DELETE
+		FROM tbl_ptkohftnetc
+			WHERE   HOSPNUM   =   :HOSPNUM
+			AND   PTID        =   :PTID
+			AND   KOHID       =   :KOHID
+			AND   SRYYMD     LIKE :SRYYMD
+		;
+	};
+};

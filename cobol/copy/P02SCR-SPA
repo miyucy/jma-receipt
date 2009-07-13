@@ -38,6 +38,7 @@
       *  03.04.00    NACL-Â¿¡¹Ç¼  07/02/16  £Ñ£Ò¼õÉÕÂÐ±þ
       *  04.01.00    NACL-Â¿¡¹Ç¼  07/12/03  ´µ¼Ô¶Ø´÷ÌôºÞÂÐ±þ
       *  04.04.00    NACL-Â¿¡¹Ç¼  09/01/27  ËÜ±¡Ê¬±¡ÂÐ±þ
+      *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/XX  ´µ¼Ô¸øÈñÉéÃ´³Ûµ¡Ç½ÄÉ²Ã
       *****************************************************************
        01  SPA-P02SCRAREA.
       *
@@ -778,7 +779,7 @@
                        09  SPA-GMN24-TSYTEKKBN-G.
                            11  SPA-GMN24-TSYTEKKBN          PIC X(01).
                            11  SPA-GMN24-TSYTEKKBN-F        PIC X(01).
-                           11  SPA-GMN24-TSYTEKKBN-MEI      PIC X(18).
+                           11  SPA-GMN24-TSYTEKKBN-MEI      PIC X(28).
       *
                        09  SPA-NAI24-TSYSELNUM              PIC 9(04).
                        09  SPA-MAE24-TSYSELNUM              PIC X(04).
@@ -818,7 +819,7 @@
                        09  SPA-GMN24-TNKTEKKBN-G.
                            11  SPA-GMN24-TNKTEKKBN          PIC X(01).
                            11  SPA-GMN24-TNKTEKKBN-F        PIC X(01).
-                           11  SPA-GMN24-TNKTEKKBN-MEI      PIC X(18).
+                           11  SPA-GMN24-TNKTEKKBN-MEI      PIC X(28).
       *            ¸øÈñÉéÃ´
                    07  SPA-GMN24-KOHFTNTBL.
                        09  SPA-GMN24-FTNTBLO            OCCURS  60.
@@ -853,6 +854,8 @@
                            11  SPA-NAI24-FTNDELKBN2      PIC X(01).
                            11  SPA-NAI24-TFTNSTYMD       PIC X(08).
                            11  SPA-NAI24-TFTNEDYMD       PIC X(08).
+      *
+                           11  SPA-NAI24-TFTNETCKBN      PIC X(01).
                        09  SPA-FTN2-MAX                  PIC 9(03).
                        09  SPA-NAI24-INIT2               PIC 9(01).
       *
@@ -882,14 +885,19 @@
                        09  SPA-GMN24-FUKUSHI-MAX       PIC 9(02).
       *                Ç§ÄêÈÏ°Ï
                        09  SPA-GMN24-TSYTEKKBN-LST-G.
-                           11  SPA-GMN24-TSYTEKKBN-LST   PIC X(20)
+                           11  SPA-GMN24-TSYTEKKBN-LST   PIC X(30)
                                                          OCCURS   5.
                            11  SPA-GMN24-TSYTEKKBN-MAX   PIC 9(04).
       *                Ç§ÄêÈÏ°Ï
                        09  SPA-GMN24-TNKTEKKBN-LST-G.
-                           11  SPA-GMN24-TNKTEKKBN-LST   PIC X(20)
+                           11  SPA-GMN24-TNKTEKKBN-LST   PIC X(30)
                                                          OCCURS   5.
                            11  SPA-GMN24-TNKTEKKBN-MAX   PIC 9(04).
+      *            ¸øÈñÉéÃ´³Û½èÍýÈÏ°Ï
+                   07  SPA-NAI24-KOHFTNETC.
+                       09  SPA-NAI24-KOHFTNETC-OCC       OCCURS   100.
+                           11  SPA-NAI24-KOHFTN-ID       PIC 9(10).
+                           11  SPA-NAI24-KOHFTN-YM       PIC X(06).
       *
       *    P025(³Æ¼ïÍúÎò¡Ë
            03  SPA-P025-AREA.
@@ -1534,6 +1542,68 @@
       *
                05  SPA-P02G2-NAI-HOSPNUM        PIC X(02).
                05  SPA-P02G2-NAI-PTID           PIC 9(10).
+      *
+      *    Â¾°ìÉôÉéÃ´¶âÆþÎÏ²èÌÌ¡Ê£Ð£°£²£Ë¡Ë
+           03  SPA-P02K-AREA.
+               05  SPA-P02K-NAI-SRYYMD.
+                   07  SPA-P02K-NAI-SRYYM      PIC X(06).
+                   07  SPA-P02K-NAI-SRYDD      PIC X(02).
+               05  SPA-P02K-GMN-SRYYMD.
+                   07  SPA-P02K-GMN-SRYYM      PIC X(06).
+                   07  SPA-P02K-GMN-SRYDD      PIC X(03).
+               05  SPA-P02K-KOHID              PIC 9(10).
+               05  SPA-P02K-KOHNUM             PIC X(03).
+               05  SPA-P02K-NAI-ENDYMD.
+                   07  SPA-P02K-NAI-ENDYM      PIC X(06).
+                   07  SPA-P02K-NAI-ENDDD      PIC X(02).
+               05  SPA-P02K-GMN-ENDYMD         PIC X(09).
+               05  SPA-P02K-GAIJGNGAKKEI       PIC 9(08).
+               05  SPA-P02K-FUKUFLG            PIC 9(01).
+               05  SPA-P02K-MSG01              PIC X(30).
+               05  SPA-P02K-MSG02              PIC X(30).
+               05  SPA-P02K-MSG06              PIC X(50).
+      *
+               05  SPA-P02K-NAIMATU            PIC 9(02).
+               05  SPA-P02K-SYORI              PIC 9(01).
+               05  SPA-P02K-CUR                PIC 9(02).
+               05  SPA-P02K-NAI-AREA.
+                   07  SPA-P02K-LIST-AREA.
+                       09  SPA-P02K-LIST-G     OCCURS   50.
+                           11  SPA-P02K-TNUM            PIC 9(03).
+                           11  SPA-P02K-TGSRYYMD        PIC X(09).
+                           11  SPA-P02K-TGJITAKBN       PIC X(10).
+                           11  SPA-P02K-TGNYUGAIKBN     PIC X(04).
+                           11  SPA-P02K-TGFTNMONEY      PIC X(10).
+      *
+                           11  SPA-P02K-TFTNMONEY       PIC 9(07).
+                           11  SPA-P02K-TJITAKBN        PIC X(01).
+                           11  SPA-P02K-TNYUGAIKBN      PIC X(01).
+                           11  SPA-P02K-TSRYYMD         PIC X(08).
+                           11  SPA-P02K-TSYORIKBN       PIC X(01).
+                       09  SPA-P02K-MAX                 PIC 9(03).
+      *
+                   07  SPA-P02K-SELNUM             PIC 9(03).
+                   07  SPA-P02K-IDX                PIC 9(03).
+                   07  SPA-P02K-INPUT-AREA.
+                       09  SPA-P02K-NYUGAIKBN-G.
+                           11  SPA-P02K-NYUGAIKBN      PIC X(01).
+                           11  SPA-P02K-F1             PIC X(01).
+                           11  SPA-P02K-NYUGAIKBN-MEI  PIC X(08).
+                       09  SPA-P02K-SRYDD              PIC 9(02).
+                       09  SPA-P02K-FTNMONEY           PIC 9(07).
+      *
+                       09  SPA-P02K-MAEDD              PIC 9(02).
+                       09  SPA-P02K-KEIFLG             PIC 9(01).
+      *
+                   07  SPA-P02K-NYUGAIKBN-LIST-G.
+                       09  SPA-P02K-NYUGAIKBN-LIST     PIC X(10)
+                                                       OCCURS   2.
+      *
+                   07  SPA-P02K-JIGOKEI            PIC 9(08).
+                   07  SPA-P02K-TAGOKEI            PIC 9(08).
+                   07  SPA-P02K-MSG03              PIC X(30).
+                   07  SPA-P02K-MSG04              PIC X(30).
+                   07  SPA-P02K-MSG05              PIC X(30).
       *
       *@@
       *    £Ñ£Ò²èÌÌ¡Ê£Ð£°£²£Ñ¡Ë

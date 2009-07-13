@@ -205,6 +205,7 @@
            COPY    "P02Y1.INC".
            COPY    "P02G.INC".
            COPY    "P02G2.INC".
+           COPY    "P02K.INC".
            COPY    "PERR.INC".
            COPY    "PID1.INC".
            COPY    "PATIENTGET.INC".

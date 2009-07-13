@@ -588,18 +588,18 @@
                     06  P02-VALUE   PIC X(10).
                   05  P02-P024-TSYTEKK-COB.
                     06  P02-P024-TSYTEKK.
-                      07  P02-VALUE   PIC X(20).
+                      07  P02-VALUE   PIC X(30).
                     06  P02-P024-TSYTEKK-COUNT   PIC S9(9)   BINARY.
                     06  P02-P024-TSYTEKK-ITEM
-                            PIC X(20)   OCCURS  5 TIMES.
+                            PIC X(30)   OCCURS  5 TIMES.
                   05  P02-P024-TNKNINSTYMD.
                     06  P02-VALUE   PIC X(10).
                   05  P02-P024-TNKTEKK-COB.
                     06  P02-P024-TNKTEKK.
-                      07  P02-VALUE   PIC X(20).
+                      07  P02-VALUE   PIC X(30).
                     06  P02-P024-TNKTEKK-COUNT   PIC S9(9)   BINARY.
                     06  P02-P024-TNKTEKK-ITEM
-                            PIC X(20)   OCCURS  5 TIMES.
+                            PIC X(30)   OCCURS  5 TIMES.
                   05  P02-P024-FTNTEKSTYMD.
                     06  P02-VALUE   PIC X(10).
                   05  P02-P024-FTNTEKEDYMD.
@@ -621,6 +621,12 @@
                       07  P02-P024-HFTNLST-SELECT  PIC X   OCCURS  40.
                   05  P02-P024-PTKOHFTNLST2.
                     06  P02-P024-PTKOHFTN2.
+                      07  P02-P024-LABL1.
+                        08  P02-VALUE   PIC X(12).
+                      07  P02-P024-LABL2.
+                        08  P02-VALUE   PIC X(10).
+                      07  P02-P024-LABL3.
+                        08  P02-VALUE   PIC X(4).
                       07  P02-P024-HFTNLST2-COUNT   PIC S9(9)   BINARY.
                       07  P02-P024-HFTNLST2-ROW      PIC S9(9)   BINARY.
                       07  P02-P024-HFTNLST2-ROWATTR  PIC S9(9)   BINARY.
@@ -630,6 +636,7 @@
                         08  P02-P024-TFTNEDYMD  PIC X(9).
                         08  P02-P024-TGAIJGNGAK PIC X(9).
                         08  P02-P024-TNYUJGNGAK PIC X(9).
+                        08  P02-P024-TFTNETC    PIC X(4).
                       07  P02-P024-HFTNLST2-SELECT  PIC X   OCCURS 100.
                   05  P02-P024-FTNSELNUM.
                     06  P02-VALUE   PIC S9(3).
