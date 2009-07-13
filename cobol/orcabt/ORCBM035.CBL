@@ -102,6 +102,7 @@
            03  FLG-PTINF           PIC 9(01).
       *     
            03  FLG-PRTKBN          PIC 9(01).
+           03  FLG-2010            PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -552,6 +553,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                                            =   "0" OR  "2" )
                    ADD     1                   TO  IDX
                    MOVE    SYS-2010-KBNCD(1:3) TO WRK-2010-KOHNUM (IDX)
+      *??
+             DISPLAY "2010=" IDX "#" WRK-2010-KOHNUM (IDX) "#"
+      *??
                END-IF
       *
                MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
@@ -885,61 +889,69 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                    UNTIL   IDZ     >       4
                    OR  RECE10-KOHNUM (IDZ) =   SPACE
       *
-               MOVE    SPACE               TO  WRK-MEISYO 
+               MOVE    SPACE               TO  WRK-MEISYO
+               MOVE    ZERO                TO  FLG-2010
       *
       *        特定疾患無しのとき 
                IF      RECE10-KOHNUM (IDZ) =   "091"
                    MOVE    "051"               TO  RECE10-KOHNUM (IDZ)
                END-IF
       *
+      *??
+             DISPLAY "RECE10-KOHNUM=" IDZ "#" RECE10-KOHNUM (IDZ) "#"
+      *??
       *        請求書公費再掲欄記載情報があるとき
                IF      WRK-2010-MAX        >   ZERO
                    PERFORM VARYING IDZ1    FROM    1   BY  1
                            UNTIL   IDZ1    >       WRK-2010-MAX
                        IF      RECE10-KOHNUM (IDZ)
                                        =   WRK-2010-KOHNUM (IDZ1)
-                           MOVE    1               TO  FLG-UPD 
-                           GO  TO  20012-KOH-SYUKEI-EXT
+                           MOVE    1               TO  FLG-2010
+                           MOVE    WRK-2010-MAX    TO  IDZ1
                        END-IF
                    END-PERFORM
                END-IF
       *
-      *        公費番号まとめ情報があるとき
-               IF      WRK-2007-MAX        >   ZERO
-                   PERFORM VARYING IDZ1    FROM    1   BY  1
-                           UNTIL   IDZ1    >       WRK-2007-MAX
-                       PERFORM VARYING IDZ2    FROM    1   BY  1
-                               UNTIL   IDZ2    >       5
-                               OR      WRK-2007-KOHNUM (IDZ1 IDZ2)
-                                               =   SPACE
-                           IF      RECE10-KOHNUM (IDZ)
+               IF      FLG-2010            =   ZERO
+      *            公費番号まとめ情報があるとき
+                   IF      WRK-2007-MAX        >   ZERO
+                       PERFORM VARYING IDZ1    FROM    1   BY  1
+                               UNTIL   IDZ1    >       WRK-2007-MAX
+                           PERFORM VARYING IDZ2    FROM    1   BY  1
+                                   UNTIL   IDZ2    >       5
+                                   OR      WRK-2007-KOHNUM (IDZ1 IDZ2)
+                                                   =   SPACE
+                               IF      RECE10-KOHNUM (IDZ)
                                        =   WRK-2007-KOHNUM (IDZ1 IDZ2)
-                               MOVE    WRK-2007-KOHNUM (IDZ1 1)
+                                   MOVE    WRK-2007-KOHNUM (IDZ1 1)
                                                TO  RECE10-KOHNUM (IDZ)
-                               MOVE    WRK-2007-MEISYO (IDZ1)
+                                   MOVE    WRK-2007-MEISYO (IDZ1)
                                                TO  WRK-MEISYO
-                               MOVE    5       TO  IDZ2
-                               MOVE    WRK-2007-MAX
+                                   MOVE    5   TO  IDZ2
+                                   MOVE    WRK-2007-MAX
                                                TO  IDZ1
-                           END-IF
+                               END-IF
+                           END-PERFORM
                        END-PERFORM
-                   END-PERFORM
-               END-IF
-      *
-               PERFORM VARYING IDX2    FROM    1   BY  1
-                       UNTIL   IDX2 >          100
-                   IF      SUM-KOH-KOHNUM (IDY5 IDY4 IDX2) =   SPACE
-                       MOVE    RECE10-KOHNUM (IDZ)     TO 
-                                       SUM-KOH-KOHNUM (IDY5 IDY4 IDX2)
-                       MOVE    WRK-MEISYO              TO 
-                                       SUM-KOH-MEISYO (IDY5 IDY4 IDX2)
-                   END-IF                                
-                   IF      RECE10-KOHNUM (IDZ) 
-                                   =   SUM-KOH-KOHNUM (IDY5 IDY4 IDX2)
-                       PERFORM 200121-KOH-SYUKEI-01-SEC
-                       MOVE    100             TO  IDX2
                    END-IF
-               END-PERFORM
+      *
+                   PERFORM VARYING IDX2    FROM    1   BY  1
+                           UNTIL   IDX2 >          100
+                       IF      SUM-KOH-KOHNUM (IDY5 IDY4 IDX2) =   SPACE
+                           MOVE    RECE10-KOHNUM (IDZ)     TO 
+                                       SUM-KOH-KOHNUM (IDY5 IDY4 IDX2)
+                           MOVE    WRK-MEISYO              TO 
+                                       SUM-KOH-MEISYO (IDY5 IDY4 IDX2)
+                       END-IF                                
+                       IF      RECE10-KOHNUM (IDZ) 
+                                   =   SUM-KOH-KOHNUM (IDY5 IDY4 IDX2)
+                           PERFORM 200121-KOH-SYUKEI-01-SEC
+                           MOVE    100             TO  IDX2
+                       END-IF
+                   END-PERFORM
+               ELSE
+                   MOVE    1                   TO  FLG-UPD
+               END-IF     
            END-PERFORM                 
            .
        20012-KOH-SYUKEI-EXT.
