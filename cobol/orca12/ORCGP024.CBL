@@ -1496,6 +1496,8 @@
                END-STRING
            END-IF
       *
+           MOVE    SPACE               TO  SPA-MOTOPG
+      *
            MOVE    SPA-P02KYOUTU       TO  SPA-WORK
            MOVE    SPA-AREA            TO  SPA-COMMON
            MOVE    SPA-P02SCRAREA      TO  SPA-FREE

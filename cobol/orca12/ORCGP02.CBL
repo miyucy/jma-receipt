@@ -805,7 +805,7 @@
                    ELSE
                        PERFORM 3009-CLAIM-SYORI-SEC
                    END-IF
-      *        主科設定画面
+      *        他一部負担金設定画面
                WHEN    "P02K"
                    MOVE    "P024"              TO  SPA-P02-GAMEN
                    MOVE    31                  TO  SPA-GMN24-CUR
