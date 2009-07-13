@@ -571,7 +571,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
            PERFORM         UNTIL   FLG-SYSKANRI   =   1
                            OR      IDX            >=  100
                MOVE    MCPDATA-REC         TO  SYS-2010-REC
-               IF      SYS-2010-SAIKEIKBN  =   "1"
+               IF    ( SYS-2010-SAIKEIKBN  =   "1"         )
+               AND   ( SYS-2010-SAIKEI-TAIKBN
+                                           =   "0" OR  "1" )
                    ADD     1                   TO  IDX
                    MOVE    SYS-2010-KBNCD(1:3) TO WRK-2010-KOHNUM (IDX)
                END-IF
