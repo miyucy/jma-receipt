@@ -553,9 +553,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                                            =   "0" OR  "2" )
                    ADD     1                   TO  IDX
                    MOVE    SYS-2010-KBNCD(1:3) TO WRK-2010-KOHNUM (IDX)
-      *??
-             DISPLAY "2010=" IDX "#" WRK-2010-KOHNUM (IDX) "#"
-      *??
                END-IF
       *
                MOVE    "tbl_syskanri"  TO  WRK-MCP-TABLE
@@ -897,9 +894,6 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-2010-HOSPNUM
                    MOVE    "051"               TO  RECE10-KOHNUM (IDZ)
                END-IF
       *
-      *??
-             DISPLAY "RECE10-KOHNUM=" IDZ "#" RECE10-KOHNUM (IDZ) "#"
-      *??
       *        ÀÁµá½ñ¸øÈñºÆ·ÇÍóµ­ºÜ¾ðÊó¤¬¤¢¤ë¤È¤­
                IF      WRK-2010-MAX        >   ZERO
                    PERFORM VARYING IDZ1    FROM    1   BY  1
