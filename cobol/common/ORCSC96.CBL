@@ -147,6 +147,9 @@
                WHEN    "0012"
                    MOVE    "数量・回数等の数字・桁数エラーです"
                                        TO  SPA-ERRMSG
+               WHEN    "0312"
+                   MOVE    "器材の数量は小数点以下３桁までです"
+                                       TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE    "手技料を入力して下さい" 
                                        TO  SPA-ERRMSG

@@ -1306,6 +1306,13 @@
                MOVE    SNUM-SEISUU         TO  LNK-SC97-SURYOFLG
                MOVE    WRK-SUR-MCNT        TO  LNK-SC97-SURYOCNT
                MOVE    SNUM-OUTNUM         TO  LNK-SC97-SURYO
+      *        器材は小数点以下３桁
+               IF     (SPA-COM-INPUTCD(GMN-IDX)(1:1)
+                                           =   "7"  )  AND
+                      (SNUM-SYOSUU         >   3    )
+                  MOVE    "0312"              TO  SPA-ERRCD
+               END-IF
+      *
       *        入力値がないもの
                IF     ((SPA-COM-INPUTCD(GMN-IDX)(1:2)   =   "84") OR
                        (SPA-COM-INPUTCD(GMN-IDX)(1:4)   =   "0084"))
