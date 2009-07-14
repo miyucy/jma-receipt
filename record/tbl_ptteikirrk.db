@@ -266,3 +266,19 @@ path	key11		{
 	};
 };
 
+path	key12		{ 	
+	DBSELECT	{
+		DECLARE tbl_ptteikirrk_key12_csr CURSOR FOR
+		SELECT * 
+		FROM tbl_ptteikirrk
+		WHERE (       HOSPNUM,PTID,SRYYM,KBT,RRKNUM) IN
+		      (SELECT HOSPNUM,PTID,SRYYM,KBT,RRKNUM FROM tbl_ptteikirrk
+			WHERE HOSPNUM =  :HOSPNUM
+			 AND   PTID    = :PTID
+			 AND   DENPNUM = :DENPNUM
+			)
+		AND   DENPNUM <> :DENPNUM
+		AND   DELFLG  = 0
+		;
+	};
+};
