@@ -796,6 +796,14 @@
                                                      PIC X(01).
                            13   SPA-GMN-I04-SKYPRTOUT-NM
                                                      PIC X(28).
+      *                ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ»Øπ‘ ˝À°
+                       11  SPA-GMN-I04-SKYSUMKBN.
+                           13   SPA-GMN-I04-SKYSUMKBN-CD
+                                                     PIC X(01).
+                           13   SPA-GMN-I04-SKYSUMKBNFL
+                                                     PIC X(01).
+                           13   SPA-GMN-I04-SKYSUMKBN-NM
+                                                     PIC X(28).
       *               ø«Œ≈»ÒÃ¿∫ŸΩÒ»Øπ‘
                        11  SPA-GMN-I04-SRYPRTOUT.
                            13   SPA-GMN-I04-SRYPRTOUT-CD
@@ -947,6 +955,13 @@
                            13  SPA-GMN-I04-SKYPRTOUT-ITM
                                                      PIC X(30)
                                                      OCCURS  3.
+      *                    ¿¡µ·ΩÒ∑ÛŒŒº˝ΩÒ»Øπ‘ ˝À°
+                       11  SPA-GMN-I04-CMB-SKYSUMKBN.
+                           13  SPA-GMN-I04-SKYSUMKBN-CNT
+                                                     PIC 9(5).
+                           13  SPA-GMN-I04-SKYSUMKBN-ITM
+                                                     PIC X(30)
+                                                     OCCURS  4.
       *                    ø«Œ≈»ÒÃ¿∫ŸΩÒ
                        11  SPA-GMN-I04-CMB-SRYPRTOUT.
                            13  SPA-GMN-I04-SRYPRTOUT-CNT

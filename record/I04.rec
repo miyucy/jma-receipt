@@ -372,6 +372,13 @@ I04	{
 			count	int;
 			item	varchar(30)[03];
 		};
+		CMB_SKYSUMKBN	{
+			SKYSUMKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[04];
+		};
 		CMB_SRYPRTOUT	{
 			SRYPRTOUT	{
 				value	varchar(30);

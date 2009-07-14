@@ -15,25 +15,20 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      ************************************************************
-      *    定期請求用クエリ        COPY (CPQTEIKI.INC)           *
-      ************************************************************
+      *----------------------------------------------------------*
+      *    入院請求書まとめサブパラメタ    COPY (CPORCHCN03S02.INC)
+      *                                         (ORCHCN03S02 で使用）
+      *----------------------------------------------------------*
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-      *01  QTEIKI-REC.
-           03  QTEIKI-HOSPNUM          PIC 9(02).
-           03  QTEIKI-SRYYM            PIC X(6).
-           03  QTEIKI-KBT              PIC X(1).
-           03  QTEIKI-BTUNUM           PIC X(2).
-           03  QTEIKI-BRMNUM           PIC X(8).
-           03  QTEIKI-PTID             PIC 9(10).
-           03  QTEIKI-PTNUM            PIC X(20).
-           03  QTEIKI-DENPNUM          PIC 9(07).
-           03  QTEIKI-KANANAME         PIC X(100).
-           03  QTEIKI-KENSU            PIC 9(10).
-           03  QTEIKI-TENNYUYMD        PIC X(08).
-           03  QTEIKI-TAIINYMD         PIC X(08).
-           03  QTEIKI-SELKBT           PIC X(01) OCCURS 3.
-           03  QTEIKI-SELTAIINYMD      PIC X(08) OCCURS 2.
+      *
+       01  ORCHCN03S02AREA.
+           03  ORCHCN03S02-IDX                PIC 9(5).
+           03  ORCHCN03S02-MYMISYU            PIC S9(10).
+           03  ORCHCN03S02-FUKUSU-COMBI       PIC 9(01).
+           03  ORCHCN03S02-PRTFLG             PIC 9(01).
+           03  ORCHCN03S02-GRP-CNT            PIC 9(03).
+           03  ORCHCN03S02-GRP-DENPNUM        PIC 9(07)
+                                              OCCURS   10.

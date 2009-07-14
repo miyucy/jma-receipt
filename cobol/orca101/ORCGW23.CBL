@@ -99,6 +99,11 @@
                        09                     PIC   X(01).
                        09  SPA-GMN-DELKBNMEI
                                               PIC   X(18).
+                   07  SPA-GMN-SKYSUMKBN-G.
+                       09  SPA-GMN-SKYSUMKBN  PIC   X(01).
+                       09                     PIC   X(01).
+                       09  SPA-GMN-SKYSUMKBNMEI
+                                              PIC   X(28).
                    07  SPA-GMN-NYUKINKBNLST-G.
                        09  SPA-GMN-NYUKINKBN-MAX   PIC   9(03).
                        09  SPA-GMN-NYUKINKBNLST    OCCURS  2.
@@ -127,6 +132,13 @@
                            11                        PIC   X(01).
                            11  SPA-GMN-DELKBNMEIL
                                                      PIC   X(18).
+                   07  SPA-GMN-SKYSUMKBNLST-G.
+                       09  SPA-GMN-SKYSUMKBN-MAX   PIC   9(03).
+                       09  SPA-GMN-SKYSUMKBNLST    OCCURS  2.
+                           11  SPA-GMN-SKYSUMKBNL  PIC   X(01).
+                           11                      PIC   X(01).
+                           11  SPA-GMN-SKYSUMKBNMEIL
+                                                   PIC   X(28).
                05  SPA-NAI-AREA.
                    07  SPA-NAI-SEIKYU-VAL.
                        09  SPA-NAI-SEIKYU01   PIC 9(02).
@@ -421,6 +433,15 @@
            MOVE    SPA-GMN-DELKBNLST(1)
                                        TO  SPA-GMN-DELKBN-G
       *
+           MOVE    2                   TO  SPA-GMN-SKYSUMKBN-MAX
+           MOVE    "0"                 TO  SPA-GMN-SKYSUMKBNL(1)
+           MOVE    "個別に発行する"        TO SPA-GMN-SKYSUMKBNMEIL(1)
+           MOVE    "1"                 TO  SPA-GMN-SKYSUMKBNL(2)
+           MOVE    "期別にまとめて発行する"
+                                       TO SPA-GMN-SKYSUMKBNMEIL(2)
+           MOVE    SPA-GMN-SKYSUMKBNLST(1)
+                                       TO  SPA-GMN-SKYSUMKBN-G
+      *
            INITIALIZE                      SYS-5010-REC.
            MOVE    "5010"              TO  SYS-5010-KANRICD.
            MOVE    "*"                 TO  SYS-5010-KBNCD
@@ -485,6 +506,17 @@
                                    =   SPA-GMN-DELKBNL (IDX1))
                    MOVE    SPA-GMN-DELKBNLST (IDX1)
                                        TO  SPA-GMN-DELKBN-G
+               END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-SKYSUMKBN-MAX )
+      *
+               IF    ( SYS-5010-SKYSUMKBN
+                                   =   SPA-GMN-SKYSUMKBNL (IDX1))
+                   MOVE    SPA-GMN-SKYSUMKBNLST (IDX1)
+                                       TO  SPA-GMN-SKYSUMKBN-G
                END-IF
       *
            END-PERFORM
@@ -560,6 +592,7 @@
            MOVE    W23-NYUKINPRTKBN    TO  SPA-GMN-NYUKINPRTKBN-G
            MOVE    W23-SAISYORIKBN     TO  SPA-GMN-SAISYORIKBN-G
            MOVE    W23-DELKBN          TO  SPA-GMN-DELKBN-G
+           MOVE    W23-SKYSUMKBN       TO  SPA-GMN-SKYSUMKBN-G
       *
            .
        4101-GMN-SPA-SET-EXT.
@@ -608,6 +641,12 @@
       *
       *    削除区分チェック
            PERFORM 4100-DELKBN-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    請求書発行区分チェック
+           PERFORM 4100-SKYSUMKBN-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -865,6 +904,37 @@
            EXIT.
       *
       *****************************************************************
+      *    請求書発行区分チェック処理
+      *****************************************************************
+       4100-SKYSUMKBN-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-SKYSUMKBN-G =   SPACE )
+               MOVE    SPA-GMN-SKYSUMKBNLST(1)
+                                       TO  SPA-GMN-SKYSUMKBN-G
+               GO  TO  4100-SKYSUMKBN-CHK-EXT
+           END-IF
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   SPA-GMN-SKYSUMKBN-MAX )
+                     OR  ( SPA-GMN-SKYSUMKBN
+                                   =   SPA-GMN-SKYSUMKBNL (IDXA))
+               CONTINUE
+           END-PERFORM
+      *
+           IF    ( IDXA    >   SPA-GMN-SKYSUMKBN-MAX )
+               MOVE    SPA-GMN-SKYSUMKBNLST(1)
+                                       TO  SPA-GMN-SKYSUMKBN-G
+           ELSE
+               MOVE    SPA-GMN-SKYSUMKBNLST(IDXA)
+                                       TO  SPA-GMN-SKYSUMKBN-G
+           END-IF
+      *
+           .
+      *
+       4100-SKYSUMKBN-CHK-EXT.
+           EXIT.
+      *
+      *****************************************************************
       *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
@@ -921,6 +991,7 @@
            MOVE    SPA-GMN-NYUKINPRTKBN    TO  SYS-5010-NYUKINPRTKBN
            MOVE    SPA-GMN-SAISYORIKBN     TO  SYS-5010-SAISYORIKBN
            MOVE    SPA-GMN-DELKBN          TO  SYS-5010-DELKBN
+           MOVE    SPA-GMN-SKYSUMKBN       TO  SYS-5010-SKYSUMKBN
            MOVE    SPA-TERMID              TO  SYS-5010-TERMID
            MOVE    SPA-OPID                TO  SYS-5010-OPID
            MOVE    SYS-5010-REC            TO  SYSKANRI-REC
@@ -1033,6 +1104,14 @@
                    UNTIL ( IDX1    >   SPA-GMN-DELKBN-MAX )
                MOVE    SPA-GMN-DELKBNLST(IDX1)
                                            TO  W23-DELKBNLST(IDX1)
+           END-PERFORM
+      *
+           MOVE    SPA-GMN-SKYSUMKBN-G     TO  W23-SKYSUMKBN
+           MOVE    SPA-GMN-SKYSUMKBN-MAX   TO  W23-SKYSUMKBN-COUNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-SKYSUMKBN-MAX )
+               MOVE    SPA-GMN-SKYSUMKBNLST(IDX1)
+                                           TO  W23-SKYSUMKBNLST(IDX1)
            END-PERFORM
       *
            IF    ( SPA-GMN-NYUKINKBN       =   "1" )
@@ -1153,6 +1232,8 @@
                    MOVE    "NYUKINPRTKBN"  TO  MCP-WIDGET
            WHEN    07
                    MOVE    "DELKBN"        TO  MCP-WIDGET
+           WHEN    08
+                   MOVE    "SKYSUMKBN"     TO  MCP-WIDGET
            WHEN    101
                    MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE.
@@ -1179,6 +1260,8 @@
            WHEN    "SAISYORIKBN"
                    MOVE    7           TO  SPA-GMN-CUR
            WHEN    "DELKBN"
+                   MOVE    8           TO  SPA-GMN-CUR
+           WHEN    "SKYSUMKBN"
                    MOVE    101         TO  SPA-GMN-CUR
            END-EVALUATE
       *

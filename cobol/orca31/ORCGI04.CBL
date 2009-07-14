@@ -44,6 +44,7 @@
       *                                     セットする
       *  03.05.00    NACL-太田    07.05.15  グループ診療対応
       *  04.03.00    NACL-多々納  08.08.27  退院時院外処方せん印刷対応
+      *  04.05.00    NACL-太田    09.07.13  請求書発行方法対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -245,6 +246,7 @@
                05  BFSYU-NYUKIN                    PIC S9(9).
       *
        01  CONST-AREA.
+           03  CONST-H200401               PIC X(08)   VALUE "20080401".
            03  CONST-JOB-SHELLID           PIC X(08)   VALUE   "TEIKI1".
            03  CONST-JOB-JOBID             PIC 9(07)   VALUE   1.
            03  CONST-EDIT-RSIJBI           PIC 9(01)   VALUE   ZERO.
@@ -708,6 +710,16 @@
                MOVE    WRK-CMB-ITM TO  SPA-GMN-I04-SKYPRTOUT
            END-IF
       *
+           MOVE    SYS-5000-SKYSUMKBN
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-SKYSUMKBN-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-I04-SKYSUMKBN-ITM (1)
+                                   TO  SPA-GMN-I04-SKYSUMKBN
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I04-SKYSUMKBN
+           END-IF
+      *
            MOVE    SYS-5000-SRYPRTKBN
                                    TO  WRK-CMB-CD
            PERFORM 4103-CMB-SRYPRTOUT-CHK-SEC
@@ -1144,6 +1156,9 @@
       *    請求書兼領収書発行コンボ
            PERFORM 3100-CMB-SKYPRTOUT-SET-SEC
       *
+      *    請求書兼領収書発行方法コンボ
+           PERFORM 3100-CMB-SKYSUMKBN-SET-SEC
+      *
       *    診療費明細書発行コンボ
            PERFORM 3100-CMB-SRYPRTOUT-SET-SEC
       *
@@ -1247,13 +1262,40 @@
        3100-CMB-SKYPRTOUT-SET-SEC      SECTION.
       *
            MOVE    3               TO  SPA-GMN-I04-SKYPRTOUT-CNT
-           MOVE    "0:発行なし"    TO  SPA-GMN-I04-SKYPRTOUT-ITM (01)
-           MOVE    "1:発行あり"    TO  SPA-GMN-I04-SKYPRTOUT-ITM (02)
-           MOVE    "2:発行あり（請求あり）"  
+           MOVE    "0:発行しない"  TO  SPA-GMN-I04-SKYPRTOUT-ITM (01)
+           MOVE    "1:発行する"    TO  SPA-GMN-I04-SKYPRTOUT-ITM (02)
+           MOVE    "2:発行する（請求あり）"  
                                    TO  SPA-GMN-I04-SKYPRTOUT-ITM (03)
       *
             .
        3100-CMB-SKYPRTOUT-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求書兼領収書発行方法コンボ
+      *****************************************************************
+       3100-CMB-SKYSUMKBN-SET-SEC      SECTION.
+      *
+           IF    ( SPA-I01-I04-SKYSTYMD    <   CONST-H200401 )
+            AND  ( SPA-I01-I04-SKYEDYMD    >=  CONST-H200401 )
+               MOVE    2           TO  SPA-GMN-I04-SKYSUMKBN-CNT
+               MOVE    "0:個別に発行する"
+                                   TO  SPA-GMN-I04-SKYSUMKBN-ITM (01)
+               MOVE    "1:月別に発行する"
+                                   TO  SPA-GMN-I04-SKYSUMKBN-ITM (02)
+           ELSE
+               MOVE    4           TO  SPA-GMN-I04-SKYSUMKBN-CNT
+               MOVE    "0:個別に発行する"
+                                   TO  SPA-GMN-I04-SKYSUMKBN-ITM (01)
+               MOVE    "1:月別に発行する"
+                                   TO  SPA-GMN-I04-SKYSUMKBN-ITM (02)
+               MOVE    "2:保険組合せ別に発行する"  
+                                   TO  SPA-GMN-I04-SKYSUMKBN-ITM (03)
+               MOVE    "3:全体をまとめて発行する"  
+                                   TO  SPA-GMN-I04-SKYSUMKBN-ITM (04)
+           END-IF
+      *
+            .
+       3100-CMB-SKYSUMKBN-SET-EXT.
            EXIT.
       *****************************************************************
       *    診療費明細書発行コンボ
@@ -1261,8 +1303,8 @@
        3100-CMB-SRYPRTOUT-SET-SEC      SECTION.
       *
            MOVE    2               TO  SPA-GMN-I04-SRYPRTOUT-CNT
-           MOVE    "0:発行なし"    TO  SPA-GMN-I04-SRYPRTOUT-ITM (01)
-           MOVE    "1:発行あり"    TO  SPA-GMN-I04-SRYPRTOUT-ITM (02)
+           MOVE    "0:発行しない"  TO  SPA-GMN-I04-SRYPRTOUT-ITM (01)
+           MOVE    "1:発行する"    TO  SPA-GMN-I04-SRYPRTOUT-ITM (02)
       *
             .
        3100-CMB-SRYPRTOUT-SET-EXT.
@@ -1273,8 +1315,8 @@
        3100-CMB-TAIPRTOUT-SET-SEC      SECTION.
       *
            MOVE    2               TO  SPA-GMN-I04-TAIPRTOUT-CNT
-           MOVE    "0:発行なし"    TO  SPA-GMN-I04-TAIPRTOUT-ITM (01)
-           MOVE    "1:発行あり"    TO  SPA-GMN-I04-TAIPRTOUT-ITM (02)
+           MOVE    "0:発行しない"  TO  SPA-GMN-I04-TAIPRTOUT-ITM (01)
+           MOVE    "1:発行する"    TO  SPA-GMN-I04-TAIPRTOUT-ITM (02)
       *
             .
        3100-CMB-TAIPRTOUT-SET-EXT.
@@ -1370,7 +1412,7 @@
       *****************************************************************
        3100-CMB-SHOHOU-SET-SEC         SECTION.
       *
-           MOVE    "0 発行なし"        TO  SPA-GMN-I04-SHOHOU-ITM (1)
+           MOVE    "0 発行しない"      TO  SPA-GMN-I04-SHOHOU-ITM (1)
            MOVE    "1 発行する"        TO  SPA-GMN-I04-SHOHOU-ITM (2)
            MOVE    2                   TO  SPA-GMN-I04-SHOHOU-CNT
       *
@@ -2390,6 +2432,17 @@
                                        TO  I04-SKYPRTOUT-ITM (IDX1)
            END-PERFORM
       *
+      *    請求書兼領収書発行方法
+           MOVE    SPA-GMN-I04-SKYSUMKBN
+                                       TO  I04-SKYSUMKBN
+           MOVE    SPA-GMN-I04-SKYSUMKBN-CNT
+                                       TO  I04-SKYSUMKBN-CNT
+           PERFORM VARYING IDX1    FROM    1   BY  1
+                   UNTIL ( IDX1    >   SPA-GMN-I04-SKYSUMKBN-CNT )
+               MOVE    SPA-GMN-I04-SKYSUMKBN-ITM (IDX1)
+                                       TO  I04-SKYSUMKBN-ITM (IDX1)
+           END-PERFORM
+      *
       *    診療費明細書書発行
            MOVE    SPA-GMN-I04-SRYPRTOUT
                                        TO  I04-SRYPRTOUT
@@ -2684,6 +2737,8 @@
                MOVE    "USERPG"        TO  MCP-WIDGET
            WHEN    009
                MOVE    "SHOHOSEN"        TO  MCP-WIDGET
+           WHEN    010
+               MOVE    "SKYSUMKBN"     TO  MCP-WIDGET
            WHEN    101
                MOVE    "SELNUM"        TO  MCP-WIDGET
            WHEN    102
@@ -2710,6 +2765,8 @@
            WHEN    "SKYPRTOUT"
                MOVE    006             TO  SPA-GMN-I04-CUR
            WHEN    "SRYPRTOUT"
+               MOVE    010             TO  SPA-GMN-I04-CUR
+           WHEN    "SRYSUMKBN"
                MOVE    003             TO  SPA-GMN-I04-CUR
            WHEN    "TAIPRTOUT"
      ********* MOVE    004             TO  SPA-GMN-I04-CUR
@@ -2896,6 +2953,9 @@
       *    請求書兼領収書発行
            MOVE    I04-SKYPRTOUT   TO  SPA-GMN-I04-SKYPRTOUT
       *
+      *    請求書兼領収書発行方法
+           MOVE    I04-SKYSUMKBN   TO  SPA-GMN-I04-SKYSUMKBN
+      *
       *    診療費明細書発行
            MOVE    I04-SRYPRTOUT   TO  SPA-GMN-I04-SRYPRTOUT
       *
@@ -2946,6 +3006,12 @@
       *
       *    請求書兼領収書発行チェック処理
            PERFORM 4100-SKYPRTOUT-CHK-SEC
+           IF    ( SPA-ERRCD       NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    請求書兼領収書発行方法チェック処理
+           PERFORM 4100-SKYSUMKBN-CHK-SEC
            IF    ( SPA-ERRCD       NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -3674,6 +3740,30 @@
        4100-SKYPRTOUT-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    請求書兼領収書発行方法チェック処理
+      *****************************************************************
+       4100-SKYSUMKBN-CHK-SEC          SECTION.
+      *
+           IF    ( SPA-GMN-I04-SKYSUMKBN   =   SPACE )
+               MOVE    SPA-GMN-I04-SKYSUMKBN-ITM (1)
+                                   TO  SPA-GMN-I04-SKYSUMKBN
+               GO  TO  4100-SKYSUMKBN-CHK-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-I04-SKYSUMKBN-CD
+                                   TO  WRK-CMB-CD
+           PERFORM 4103-CMB-SKYSUMKBN-CHK-SEC
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-I04-SKYSUMKBN-ITM (1)
+                                   TO  SPA-GMN-I04-SKYSUMKBN
+           ELSE
+               MOVE    WRK-CMB-ITM TO  SPA-GMN-I04-SKYSUMKBN
+           END-IF
+      *
+           .
+       4100-SKYSUMKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    診療費明細書発行チェック処理
       *****************************************************************
        4100-SRYPRTOUT-CHK-SEC          SECTION.
@@ -4010,6 +4100,31 @@
            .
       *
        4103-CMB-SKYPRTOUT-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    請求書兼領収書発行方法サーチ処理
+      *****************************************************************
+       4103-CMB-SKYSUMKBN-CHK-SEC  SECTION.
+      *
+           INITIALIZE              WRK-CMB-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-I04-SKYSUMKBN-CNT )
+                     OR  ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-I04-SKYSUMKBN-ITM (IDX-CMB)(1:1)
+                                   =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-I04-SKYSUMKBN-ITM (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+      *
+           END-PERFORM
+      *
+           .
+      *
+       4103-CMB-SKYSUMKBN-CHK-EXT.
            EXIT.
       *****************************************************************
       *    診療費明細書リストチェック処理
@@ -4828,6 +4943,16 @@
       *
            MOVE    SPA-NAI-I04-PTRRKNUM
                                    TO  SYU-NYUIN-RRKNUM
+           EVALUATE    SPA-GMN-I04-SKYSUMKBN-CD
+           WHEN    "1"
+               MOVE    1           TO  SYU-GRP-HAKHOUFLG
+           WHEN    "2"
+               MOVE    2           TO  SYU-GRP-HAKHOUFLG
+           WHEN    "3"
+               MOVE    3           TO  SYU-GRP-HAKHOUFLG
+           WHEN    OTHER
+               MOVE    0           TO  SYU-GRP-HAKHOUFLG
+           END-EVALUATE
       *
            PERFORM 800-MCNDATE-SEC
       *

@@ -68,6 +68,7 @@
            03  FLG-TEIKIKANRI      PIC 9(01).
            03  FLG-TEIKIPRT        PIC 9(01).
            03  FLG-QTEIKI          PIC 9(01).
+           03  FLG-SYUNOU          PIC 9(01).
            03  FLG-SELTAIIN        PIC 9(01).
       *
       *    ¥Õ¥é¥°ÎÎ°è
@@ -88,6 +89,9 @@
            03  IDX3                PIC 9(04).
            03  IDX4                PIC 9(04).
            03  IDX5                PIC 9(04).
+           03  IDXA                PIC 9(05).
+           03  IDXB                PIC 9(05).
+           03  IDXC                PIC 9(05).
            03  IDX-CMB             PIC 9(05).
            03  IDX-SELKBT          PIC 9(05).
            03  IDX-PMAX            PIC 9(05).
@@ -124,6 +128,7 @@
            03  WRK-CURSOR          PIC 9(05).
            03  WRK-STPAGE          PIC 9(05).
            03  WRK-EDPAGE          PIC 9(05).
+           03  WRK-STIDX           PIC 9(05).
       *
       *
        01  WRK-HEN-AREA.
@@ -147,7 +152,35 @@
                                              "scripts/monthly/".
            05  WRK-SHELL-SHELL     PIC X(20).
       *
+       01  SRTSYU-AREA.
+           03  SRTSYU-MAX                          PIC 9(05).
+           03  SRTSYU-OCC                          OCCURS  3001.
+               05  SRTSYU-KEY.
+                   07  SRTSYU-TAIINFLG             PIC 9(01).
+                   07  SRTSYU-FIL                  PIC X(08).
+               05  SRTSYU-KEY-R1 REDEFINES SRTSYU-KEY.
+                   07  SRTSYU-R1-FIL               PIC X(01).
+                   07  SRTSYU-R1-BRMNUM            PIC X(08).
+               05  SRTSYU-KEY-R2 REDEFINES SRTSYU-KEY.
+                   07  SRTSYU-R2-FIL               PIC X(01).
+                   07  SRTSYU-R2-BRMNUM            PIC X(06).
+                   07  SRTSYU-R2-BTUNUM            PIC X(02).
+               05  SRTSYU-PTID                     PIC 9(10).
+               05  SRTSYU-DENPNUM                  PIC 9(07).
+               05  SRTSYU-SRYYM                    PIC X(08).
+               05  SRTSYU-KBT                      PIC X(01).
+               05  SRTSYU-HAKHOUFLG                PIC 9(01).
+               05  SRTSYU-HKNNUM                   PIC X(03).
+               05  SRTSYU-BTUNUM                   PIC X(02).
+               05  SRTSYU-BRMNUM                   PIC X(08).
+               05  SRTSYU-TENNYUYMD                PIC X(08).
+               05  SRTSYU-TAIINYMD                 PIC X(08).
+               05  SRTSYU-KENSU                    PIC 9(05).
+               05  SRTSYU-PAGE                     PIC 9(05).
+      *
        01  CONST-AREA.
+           03  CONST-SRTSYU-SRT            PIC 9(05)   VALUE   3001.
+           03  CONST-SRTSYU-MAX            PIC 9(05)   VALUE   3000.
            03  CONST-KBT-G.
                05  CONST-KBT-VAL.
                    07                      PIC X(01)   VALUE   "1".
@@ -201,6 +234,10 @@
       *    Äê´üÀÁµá¥¯¥¨¥ê
        01  QTEIKI-REC.
            COPY    "CPQTEIKI.INC".
+      *
+      *    ¼ýÇ¼
+       01  SYUNOU-REC.
+           COPY    "CPSYUNOU.INC".
       *
       *    ¥Ñ¥é¥á¥¿
        01  BTPARA-REC.
@@ -569,61 +606,146 @@
            END-PERFORM
       *
            MOVE    ZERO                TO  FLG-SELTAIIN
-           PERFORM 900-QUERY-TEIKI-SEL-SEC
+           PERFORM 31011-EDIT-SRTSYU-SEC
       *
            MOVE    ZERO                TO  IDX-PMAX
            MOVE    ZERO                TO  IDX-LMAX
       *
-           PERFORM UNTIL ( FLG-QTEIKI  NOT =   ZERO )
-                    OR   ( IDX-PMAX       >=   CONST-PAGE-MAX )
+           MOVE    ZERO                TO  IDXA
+           PERFORM UNTIL ( IDXA        >=  SRTSYU-MAX )
+                    OR   ( IDX-PMAX    >=  CONST-PAGE-MAX )
       *
                COMPUTE IDX-PMAX    =   IDX-PMAX    +   1
                MOVE    ZERO            TO  IDX-LMAX
       *
-               PERFORM UNTIL ( FLG-QTEIKI  NOT =   ZERO )
+               PERFORM UNTIL ( IDXA       >=  SRTSYU-MAX )
                     OR   ( IDX-PMAX       >=   CONST-PAGE-MAX )
                     OR   ( IDX-LMAX       >=   CONST-LINE-MAX )
+      *
+                   COMPUTE IDXA        =   IDXA    +   1
       *
                    COMPUTE IDX-LMAX    =   IDX-LMAX    +   1
       *
                    MOVE    "T"             TO  SPA-GMN-O03-TCHK
                                                    (IDX-PMAX IDX-LMAX)
       *
-                   MOVE    QTEIKI-KENSU    TO  SPA-GMN-O03-TPAGE
+                   MOVE    SRTSYU-KENSU (IDXA)
+                                           TO  SPA-GMN-O03-TKENSU
                                                    (IDX-PMAX IDX-LMAX)
-                                               SPA-GMN-O03-TKENSU
+                   MOVE    SRTSYU-PAGE  (IDXA)
+                                           TO  SPA-GMN-O03-TPAGE
                                                    (IDX-PMAX IDX-LMAX)
       *
                    COMPUTE SPA-GMN-O03-PAGEH
                        =   SPA-GMN-O03-PAGEH
-                       +   QTEIKI-KENSU
+                       +   SRTSYU-PAGE (IDXA)
       *
-                   EVALUATE    SPA-GMN-O03-PRTJYUN
-                   WHEN    "01"
-                   WHEN    "02"
-                       PERFORM 31011-EDIT-PAGE-BTUNUM-SEC
-                   WHEN    "03"
-                       MOVE    "A1"        TO  SPA-NAI-O03-BTUNUM
+                   COMPUTE SPA-GMN-O03-KENSUH
+                       =   SPA-GMN-O03-KENSUH
+                       +   SRTSYU-KENSU (IDXA)
+      *
+                   IF    ( SRTSYU-TAIINFLG (IDXA)  =   ZERO )
+      *
+                       EVALUATE    SPA-GMN-O03-PRTJYUN
+                       WHEN    "01"
+                       WHEN    "02"
+                           PERFORM 31011-EDIT-PAGE-BTUNUM-SEC
+                       WHEN    "03"
+                           MOVE    "A1"    TO  SPA-NAI-O03-BTUNUM
+                                                     (IDX-PMAX IDX-LMAX)
+                           MOVE    ZERO    TO  SPA-NAI-O03-BRMNUM
+                                                     (IDX-PMAX IDX-LMAX)
+                           MOVE    "¥«¥Ê»áÌ¾"
+                                           TO  SPA-GMN-O03-TSYURUINAME
+                                                     (IDX-PMAX IDX-LMAX)
+                       WHEN    "04"
+                           MOVE    "A2"    TO  SPA-NAI-O03-BTUNUM
+                                                     (IDX-PMAX IDX-LMAX)
+                           MOVE    ZERO    TO  SPA-NAI-O03-BRMNUM
+                                                     (IDX-PMAX IDX-LMAX)
+                           MOVE    "´µ¼ÔÈÖ¹æ"
+                                           TO  SPA-GMN-O03-TSYURUINAME
+                                                     (IDX-PMAX IDX-LMAX)
+                       WHEN    "05"
+                       WHEN    "06"
+                           PERFORM 31011-EDIT-PAGE-BRMNUM-SEC
+                       END-EVALUATE
+                   ELSE
+                       MOVE    "A3"        TO  SPA-NAI-O03-BTUNUM
                                                    (IDX-PMAX IDX-LMAX)
                        MOVE    ZERO        TO  SPA-NAI-O03-BRMNUM
                                                    (IDX-PMAX IDX-LMAX)
-                       MOVE    "¥«¥Ê»áÌ¾"  TO  SPA-GMN-O03-TSYURUINAME
+                       MOVE    "Âà±¡´µ¼Ô"  TO  SPA-GMN-O03-TSYURUINAME
                                                    (IDX-PMAX IDX-LMAX)
-                   WHEN    "04"
-                       MOVE    "A2"        TO  SPA-NAI-O03-BTUNUM
-                                                   (IDX-PMAX IDX-LMAX)
-                       MOVE    ZERO        TO  SPA-NAI-O03-BRMNUM
-                                                   (IDX-PMAX IDX-LMAX)
-                       MOVE    "´µ¼ÔÈÖ¹æ"  TO  SPA-GMN-O03-TSYURUINAME
-                                                   (IDX-PMAX IDX-LMAX)
-                   WHEN    "05"
-                   WHEN    "06"
-                       PERFORM 31011-EDIT-PAGE-BRMNUM-SEC
-                   END-EVALUATE
-      *
-                   PERFORM 900-QUERY-TEIKI-FET-SEC
+                   END-IF
       *
                END-PERFORM
+      *
+           END-PERFORM
+      *
+           MOVE    IDX-PMAX            TO  SPA-GMN-O03-MAX
+      *
+           .
+       3101-EDIT-PAGE-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ÊÇ¡¦·ï¿ô¤ÎÊÔ½¸½èÍý
+      *****************************************************************
+       31011-EDIT-SRTSYU-SEC           SECTION.
+      *
+           INITIALIZE                  SRTSYU-AREA
+      *
+           PERFORM 900-QUERY-TEIKI-SEL-SEC
+      *
+           PERFORM UNTIL ( FLG-QTEIKI  NOT =   ZERO )
+                    OR   ( SRTSYU-MAX      >   CONST-SRTSYU-MAX )
+      *
+               PERFORM 900-SYUNOU-KEY-SEL-SEC
+      *
+               COMPUTE SRTSYU-MAX  =   SRTSYU-MAX  +   1
+      *
+               MOVE    QTEIKI-PTID     TO  SRTSYU-PTID    (SRTSYU-MAX)
+               MOVE    QTEIKI-DENPNUM  TO  SRTSYU-DENPNUM (SRTSYU-MAX)
+               MOVE    QTEIKI-SRYYM    TO  SRTSYU-SRYYM   (SRTSYU-MAX)
+               MOVE    QTEIKI-KBT      TO  SRTSYU-KBT     (SRTSYU-MAX)
+               MOVE    SYU-GRP-HAKHOUFLG
+                                       TO  SRTSYU-HAKHOUFLG (SRTSYU-MAX)
+               MOVE    SYU-SYUHKNNUM   TO  SRTSYU-HKNNUM  (SRTSYU-MAX)
+               MOVE    QTEIKI-BTUNUM   TO  SRTSYU-BTUNUM  (SRTSYU-MAX)
+               MOVE    QTEIKI-BRMNUM   TO  SRTSYU-BRMNUM  (SRTSYU-MAX)
+               MOVE    QTEIKI-TENNYUYMD
+                                       TO  SRTSYU-TENNYUYMD
+                                                          (SRTSYU-MAX)
+               MOVE    QTEIKI-TAIINYMD TO  SRTSYU-TAIINYMD(SRTSYU-MAX)
+               MOVE    1               TO  SRTSYU-KENSU   (SRTSYU-MAX)
+      *
+               IF    ( SPA-GMN-O03-CHKTAIIN    =   "T" )
+                   IF    ( QTEIKI-TAIINYMD NOT =   "99999999" )
+                       MOVE    1               TO  SRTSYU-TAIINFLG 
+                                                          (SRTSYU-MAX)
+                   END-IF
+               END-IF
+      *
+               EVALUATE    SPA-GMN-O03-PRTJYUN
+               WHEN    "01"
+               WHEN    "02"
+                   MOVE    QTEIKI-BTUNUM
+                                       TO  SRTSYU-R1-BRMNUM (SRTSYU-MAX)
+               WHEN    "03"
+               WHEN    "04"
+                   CONTINUE
+               WHEN    "05"
+                   MOVE    QTEIKI-BRMNUM
+                                       TO  SRTSYU-R1-BRMNUM (SRTSYU-MAX)
+               WHEN    "06"
+                   MOVE    QTEIKI-BRMNUM (3:)
+                                       TO  SRTSYU-R2-BRMNUM (SRTSYU-MAX)
+                   MOVE    QTEIKI-BTUNUM
+                                       TO  SRTSYU-R2-BTUNUM (SRTSYU-MAX)
+               END-EVALUATE
+      *
+               PERFORM 900-QUERY-TEIKI-FET-SEC
       *
            END-PERFORM
       *
@@ -631,67 +753,110 @@
            MOVE    WRK-PATHNAME    TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-           IF    ( SPA-GMN-O03-CHKTAIIN    =   "T" )
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >   CONST-SRTSYU-MAX )
       *
-               MOVE    ZERO            TO  CNT-TAIIN
-               MOVE    1               TO  FLG-SELTAIIN
-               PERFORM 900-QUERY-TEIKI-SEL-SEC
-               PERFORM UNTIL ( FLG-QTEIKI  NOT =   ZERO )
-                   COMPUTE CNT-TAIIN
-                       =   CNT-TAIIN   +   QTEIKI-KENSU
-                   COMPUTE SPA-GMN-O03-PAGEH
-                       =   SPA-GMN-O03-PAGEH
-                       +   QTEIKI-KENSU
-                   PERFORM 900-QUERY-TEIKI-FET-SEC
-               END-PERFORM
+               IF    ( SRTSYU-HKNNUM (IDXA)
+                                   =   "971" OR "973" OR "975" )
+                OR   ( SRTSYU-HAKHOUFLG (IDXA)
+                                   =   0 )
+                   MOVE    1       TO  SRTSYU-PAGE (IDXA)
+               ELSE
+                   MOVE    1       TO  SRTSYU-PAGE (IDXA)
+                   PERFORM VARYING IDXB    FROM    1   BY  1
+                           UNTIL ( IDXB    >=  IDXA )
+                            OR   ( SRTSYU-PAGE (IDXA)
+                                           =   ZERO )
+                       IF    ( SRTSYU-PTID  (IDXA)
+                                        =   SRTSYU-PTID  (IDXB) )
+                        AND  ( SRTSYU-SRYYM (IDXA)
+                                        =   SRTSYU-SRYYM (IDXB) )
+                        AND  ( SRTSYU-KBT   (IDXA)
+                                        =   SRTSYU-KBT   (IDXB) )
       *
-               MOVE    "query_teiki"   TO  MCP-TABLE
-               MOVE    WRK-PATHNAME    TO  MCP-PATHNAME
-               PERFORM 910-DBCLOSECURSOR-SEC
-      *
-               IF    ( CNT-TAIIN       >   ZERO )
-                   IF    ( IDX-PMAX   >=   CONST-PAGE-MAX )
-                    AND  ( IDX-LMAX   >=   CONST-LINE-MAX )
-                       CONTINUE
-                   ELSE
-                       IF    ( IDX-LMAX    =   ZERO )
-                        OR   ( IDX-LMAX   >=   CONST-LINE-MAX )
-                           COMPUTE IDX-PMAX    =   IDX-PMAX    +   1
-                           MOVE    1           TO  IDX-LMAX
-                       ELSE
-                           COMPUTE IDX-LMAX    =   IDX-LMAX    +   1
+                           IF    ( SRTSYU-HKNNUM (IDXB)
+                                       =   "971" OR "973" OR "975" )
+                            OR   ( SRTSYU-HAKHOUFLG (IDXA)
+                                   NOT =   SRTSYU-HAKHOUFLG (IDXB))
+                               CONTINUE
+                           ELSE
+                               MOVE    ZERO TO  SRTSYU-PAGE  (IDXA)
+                           END-IF
                        END-IF
       *
-                       MOVE    "T"         TO  SPA-GMN-O03-TCHK
-                                                   (IDX-PMAX IDX-LMAX)
-                       MOVE    "A3"        TO  SPA-NAI-O03-BTUNUM
-                                                   (IDX-PMAX IDX-LMAX)
-                       MOVE    ZERO        TO  SPA-NAI-O03-BRMNUM
-                                                   (IDX-PMAX IDX-LMAX)
-                       MOVE    "Âà±¡´µ¼Ô"  TO  SPA-GMN-O03-TSYURUINAME
-                                                   (IDX-PMAX IDX-LMAX)
-                       MOVE    CNT-TAIIN   TO  SPA-GMN-O03-TPAGE
-                                                   (IDX-PMAX IDX-LMAX)
-                                               SPA-GMN-O03-TKENSU
-                                                   (IDX-PMAX IDX-LMAX)
-                   END-IF
+                   END-PERFORM
       *
                END-IF
+      *
+           END-PERFORM
+      *
+           PERFORM VARYING IDXA    FROM    1   BY  1
+                   UNTIL ( IDXA    >=  SRTSYU-MAX )
+      *
+               COMPUTE WRK-STIDX   =   IDXA    +   1
+               PERFORM VARYING IDXB    FROM    WRK-STIDX   BY  1
+                       UNTIL ( IDXB    >   SRTSYU-MAX )
+      *
+                   IF    ( SRTSYU-KEY (IDXA)   >   SRTSYU-KEY (IDXB))
+                       MOVE    SRTSYU-OCC (IDXA)
+                                       TO  SRTSYU-OCC (CONST-SRTSYU-SRT)
+                       MOVE    SRTSYU-OCC (IDXB)
+                                       TO  SRTSYU-OCC (IDXA)
+                       MOVE    SRTSYU-OCC (CONST-SRTSYU-SRT)
+                                       TO  SRTSYU-OCC (IDXB)
+                   END-IF
+      *
+               END-PERFORM
+      *
+           END-PERFORM
+      *
+           MOVE    1       TO      IDXA
+           PERFORM VARYING IDXB    FROM    2   BY  1
+                   UNTIL ( IDXB    >   SRTSYU-MAX )
+      *
+               IF    ( SRTSYU-KEY (IDXA)        =   SRTSYU-KEY (IDXB))
+                OR   ( SRTSYU-TAIINFLG (IDXA)   =   1 )
+      *
+                   COMPUTE SRTSYU-KENSU (IDXA)
+                       =   SRTSYU-KENSU (IDXA)
+                       +   SRTSYU-KENSU (IDXB)
+      *
+                   COMPUTE SRTSYU-PAGE (IDXA)
+                       =   SRTSYU-PAGE (IDXA)
+                       +   SRTSYU-PAGE (IDXB)
+      *
+                   IF    ( SRTSYU-TENNYUYMD (IDXA)
+                                   <   SRTSYU-TENNYUYMD (IDXB))
+                       MOVE    SRTSYU-TENNYUYMD (IDXB)
+                                   TO  SRTSYU-TENNYUYMD (IDXA)
+                   END-IF
+      *
+                   INITIALIZE  SRTSYU-OCC (IDXB)
+               ELSE
+                   COMPUTE IDXA    =   IDXA    +   1
+                   IF    ( IDXA    =   IDXB )
+                       CONTINUE
+                   ELSE
+                       MOVE    SRTSYU-OCC (IDXB)
+                                   TO  SRTSYU-OCC (IDXA)
+                   END-IF
+               END-IF
+      *
+           END-PERFORM
+           IF    ( SRTSYU-MAX      >   IDXA )
+               MOVE    IDXA        TO  SRTSYU-MAX
            END-IF
       *
-           MOVE    IDX-PMAX            TO  SPA-GMN-O03-MAX
-           MOVE    SPA-GMN-O03-PAGEH   TO  SPA-GMN-O03-KENSUH
-      *
            .
-       3101-EDIT-PAGE-EXT.
+       31011-EDIT-SRTSYU-EXT.
            EXIT.
-      *
       *****************************************************************
       *    ÉÂÅïÌ¾¾ÎÊÔ½¸½èÍý
       *****************************************************************
        31011-EDIT-PAGE-BTUNUM-SEC      SECTION.
       *
-           MOVE    QTEIKI-BTUNUM       TO  SPA-NAI-O03-BTUNUM
+           MOVE    SRTSYU-BTUNUM (IDXA)
+                                       TO  SPA-NAI-O03-BTUNUM
                                                    (IDX-PMAX IDX-LMAX)
       *
            PERFORM 31011-SYS5001-SEL-SEC
@@ -706,9 +871,11 @@
       *****************************************************************
        31011-EDIT-PAGE-BRMNUM-SEC      SECTION.
       *
-           MOVE    QTEIKI-BTUNUM       TO  SPA-NAI-O03-BTUNUM
+           MOVE    SRTSYU-BTUNUM (IDXA)
+                                       TO  SPA-NAI-O03-BTUNUM
                                                    (IDX-PMAX IDX-LMAX)
-           MOVE    QTEIKI-BRMNUM       TO  SPA-NAI-O03-BRMNUM
+           MOVE    SRTSYU-BRMNUM (IDXA)
+                                       TO  SPA-NAI-O03-BRMNUM
                                                    (IDX-PMAX IDX-LMAX)
            PERFORM 31011-SYS5001-SEL-SEC
            PERFORM 31011-SYS5002-SEL-SEC
@@ -729,12 +896,12 @@
       *
            INITIALIZE                      SYS-5001-REC
            MOVE    "5001"              TO  SYS-5001-KANRICD
-           MOVE    QTEIKI-BTUNUM       TO  SYS-5001-KBNCD
+           MOVE    SRTSYU-BTUNUM (IDXA)TO  SYS-5001-KBNCD
            IF    ( SPA-O01-PRTKBN  =   "1" OR "2" )
                MOVE    SPA-SYSYMD      TO  SYS-5001-STYUKYMD
                                            SYS-5001-EDYUKYMD
            ELSE
-               MOVE    QTEIKI-TENNYUYMD
+               MOVE    SRTSYU-TENNYUYMD (IDXA)
                                        TO  SYS-5001-STYUKYMD
                                            SYS-5001-EDYUKYMD
            END-IF
@@ -752,12 +919,12 @@
       *
            INITIALIZE                      SYS-5002-REC
            MOVE    "5002"              TO  SYS-5002-KANRICD
-           MOVE    QTEIKI-BRMNUM       TO  SYS-5002-KBNCD
+           MOVE    SRTSYU-BRMNUM(IDXA) TO  SYS-5002-KBNCD
            IF    ( SPA-O01-PRTKBN  =   "1" OR "2" )
                MOVE    SPA-SYSYMD      TO  SYS-5002-STYUKYMD
                                            SYS-5002-EDYUKYMD
            ELSE
-               MOVE    QTEIKI-TENNYUYMD
+               MOVE    SRTSYU-TENNYUYMD (IDXA)
                                        TO  SYS-5002-STYUKYMD
                                            SYS-5002-EDYUKYMD
            END-IF
@@ -2176,31 +2343,9 @@
            MOVE    SPACE               TO  WRK-PATHNAME
       *
            IF    ( SPA-O01-PRTKBN  =   "1" OR "2" )
-               EVALUATE    SPA-GMN-O03-PRTJYUN
-               WHEN    "01"
-               WHEN    "02"
-                   MOVE    "key2"  TO  WRK-PATHNAME
-               WHEN    "03"
-               WHEN    "04"
-                   MOVE    "key"   TO  WRK-PATHNAME
-               WHEN    "05"
-                   MOVE    "key7"  TO  WRK-PATHNAME
-               WHEN    "06"
-                   MOVE    "key9"  TO  WRK-PATHNAME
-               END-EVALUATE
+               MOVE    "key21"     TO  WRK-PATHNAME
            ELSE
-               EVALUATE    SPA-GMN-O03-PRTJYUN
-               WHEN    "01"
-               WHEN    "02"
-                   MOVE    "key12" TO  WRK-PATHNAME
-               WHEN    "03"
-               WHEN    "04"
-                   MOVE    "key11" TO  WRK-PATHNAME
-               WHEN    "05"
-                   MOVE    "key17" TO  WRK-PATHNAME
-               WHEN    "06"
-                   MOVE    "key19" TO  WRK-PATHNAME
-               END-EVALUATE
+               MOVE    "key22"     TO  WRK-PATHNAME
            END-IF
       *
            .
@@ -2225,6 +2370,36 @@
       *
            .
        900-QUERY-TEIKI-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¼ýÇ¼¥Þ¥¹¥¿¸¡º÷½èÍý
+      *****************************************************************
+       900-SYUNOU-KEY-SEL-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  FLG-SYUNOU
+      *
+           INITIALIZE                  SYUNOU-REC
+           MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
+           MOVE    "1"             TO  SYU-NYUGAIKBN
+           MOVE    QTEIKI-PTID     TO  SYU-PTID
+           MOVE    QTEIKI-DENPNUM  TO  SYU-DENPNUM
+           MOVE    SYUNOU-REC      TO  MCPDATA-REC
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC TO  SYUNOU-REC
+           ELSE
+               INITIALIZE              SYUNOU-REC
+               MOVE    1           TO  FLG-SYUNOU
+           END-IF
+      *
+           MOVE    "tbl_syunou"    TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           .
+       900-SYUNOU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
       *    £Ð£Õ£Ô¡¡½èÍý

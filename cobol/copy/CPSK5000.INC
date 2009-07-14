@@ -61,7 +61,10 @@
                    07  SYS-5000-DSPCD      PIC  X(09).
       *予備（１）
       ******   05                          PIC  X(60).
-               05                          PIC  X(59).
+               05                          PIC  X(58).
+      *請求書発行方法
+               05  SYS-5000-SKYSUMKBN
+                                           PIC  X(01).
       *退院時院外処方せん発行
                05  SYS-5000-SHOHOUKBN
                                            PIC  X(01).

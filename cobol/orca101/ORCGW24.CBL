@@ -50,6 +50,7 @@
       *  03.05.00    NACL-¾®Æ¦Âô  07.07.27  ÎÅÍÜÉÂÅï¡ÊÉÂ¾²¡ËÆþ±¡²ñ·×
       *                                     É½¼¨¶èÊ¬ÂÐ±þ
       *  04.03.00    NACL-Â¿¡¹Ç¼  08.08.28  Âà±¡»þ±¡³°½èÊý¤»¤ó¶èÊ¬ÄÉ²Ã
+      *  04.04.00    NACL-ÂÀÅÄ    09.07.13  ÀÁµá½ñÈ¯¹ÔÊýË¡ÄÉ²Ã
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -591,6 +592,9 @@
       *    ÀÁµá½ñÈ¯¹Ô¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-SKYPRTKBNLST-SET-SEC
       *
+      *    ÀÁµá½ñÈ¯¹ÔÊýË¡¥³¥ó¥Ü
+           PERFORM 310-SKYSUMKBNLST-SET-SEC
+      *
       *    ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬¥³¥ó¥Ü
            PERFORM 310-MISYUPRTKBNLST-SET-SEC
       *
@@ -830,6 +834,29 @@
       *
            .
        310-SKYPRTKBNLST-SET-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÀÁµá½ñÈ¯¹ÔÊýË¡¥³¥ó¥Ü
+      *****************************************************************
+       310-SKYSUMKBNLST-SET-SEC    SECTION.
+      *
+           MOVE    4               TO  SPA-GMN-W24-SKYSUMKBN-MAX
+      *
+           MOVE    "0"             TO  SPA-GMN-W24-SKYSUMKBNL   (1)
+           MOVE    "¸ÄÊÌ¤ËÈ¯¹Ô¤¹¤ë"    TO  SPA-GMN-W24-SKYSUMKBNMEIL(1)
+      *
+           MOVE    "1"             TO  SPA-GMN-W24-SKYSUMKBNL   (2)
+           MOVE    "·îÊÌ¤ËÈ¯¹Ô¤¹¤ë"    TO  SPA-GMN-W24-SKYSUMKBNMEIL(2)
+      *
+           MOVE    "2"             TO  SPA-GMN-W24-SKYSUMKBNL   (3)
+           MOVE    "ÊÝ¸±ÁÈ¹ç¤»ÊÌ¤ËÈ¯¹Ô¤¹¤ë"
+                                   TO  SPA-GMN-W24-SKYSUMKBNMEIL(3)
+           MOVE    "3"             TO  SPA-GMN-W24-SKYSUMKBNL   (4)
+           MOVE    "Á´ÂÎ¤ò¤Þ¤È¤á¤ÆÈ¯¹Ô¤¹¤ë"
+                                   TO  SPA-GMN-W24-SKYSUMKBNMEIL(4)
+      *
+           .
+       310-SKYSUMKBNLST-SET-EXT.
            EXIT.
       *****************************************************************
       *    ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬¥³¥ó¥Ü
@@ -1359,6 +1386,16 @@
                                            TO  SPA-GMN-W24-SKYPRTKBN-G
            END-IF
       *
+      *    ÀÁµá½ñÈ¯¹ÔÈ¯¹ÔÊýË¡
+           MOVE    SYS-5000-SKYSUMKBN   TO  WRK-CMB-CD
+           PERFORM 4200-SKYSUMKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM     NOT =   SPACE )
+               MOVE    WRK-CMB-ITM         TO  SPA-GMN-W24-SKYSUMKBN-G
+           ELSE
+               MOVE    SPA-GMN-W24-SKYSUMKBNLST (1)
+                                           TO  SPA-GMN-W24-SKYSUMKBN-G
+           END-IF
+      *
       *    ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬
            MOVE    SYS-5000-SKYMISYUPRTKBN TO  WRK-CMB-CD
            PERFORM 4200-MISYUPRTKBNLST-CHK-SEC
@@ -1701,6 +1738,9 @@
       *    ÀÁµá½ñÈ¯¹Ô¶èÊ¬
            MOVE    W24-SKYPRTKBN       TO  SPA-GMN-W24-SKYPRTKBN-G
       *
+      *    ÀÁµá½ñÈ¯¹ÔÊýË¡
+           MOVE    W24-SKYSUMKBN       TO  SPA-GMN-W24-SKYSUMKBN-G
+      *
       *    ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬
            MOVE    W24-SKYMISYUPRTKBN  TO  SPA-GMN-W24-MISYUPRTKBN-G
       *
@@ -1856,6 +1896,12 @@
       *
       *    ÀÁµá½ñÈ¯¹Ô¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
            PERFORM 4101-SKYPRTKBN-CHK-SEC
+           IF    ( SPA-ERRCD   NOT =   SPACE )
+               GO  TO  4102-KIHON-CHK-EXT
+           END-IF
+      *
+      *    ÀÁµá½ñÈ¯¹ÔÊýË¡¥Á¥§¥Ã¥¯½èÍý
+           PERFORM 4101-SKYSUMKBN-CHK-SEC
            IF    ( SPA-ERRCD   NOT =   SPACE )
                GO  TO  4102-KIHON-CHK-EXT
            END-IF
@@ -2331,6 +2377,10 @@
       *    ÀÁµá½ñÈ¯¹Ô¶èÊ¬
            MOVE    SPA-GMN-W24-SKYPRTKBN
                                    TO  SYS-5000-SKYPRTKBN
+      *
+      *    ÀÁµá½ñÈ¯¹ÔÊýË¡
+           MOVE    SPA-GMN-W24-SKYSUMKBN
+                                   TO  SYS-5000-SKYSUMKBN
       *
       *    ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬
            MOVE    SPA-GMN-W24-MISYUPRTKBN
@@ -3031,6 +3081,25 @@
        4101-SKYPRTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    ÀÁµá½ñÈ¯¹ÔÊýË¡¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4101-SKYSUMKBN-CHK-SEC       SECTION.
+      *
+           MOVE    SPA-GMN-W24-SKYSUMKBN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-SKYSUMKBNLST-CHK-SEC
+           IF    ( WRK-CMB-ITM         =   SPACE )
+               MOVE    SPA-GMN-W24-SKYSUMKBNLST (2)
+                                       TO  SPA-GMN-W24-SKYSUMKBN-G
+           ELSE
+               MOVE    WRK-CMB-ITM     TO  SPA-GMN-W24-SKYSUMKBN-G
+           END-IF
+      *
+           .
+      *
+       4101-SKYSUMKBN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    ¿ÇÎÅÈñÌÀºÙ½ñÈ¯¹Ô¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
       *****************************************************************
        4101-SRYPRTKBN-CHK-SEC       SECTION.
@@ -3396,6 +3465,31 @@
            .
       *
        4200-SKYPRTKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    ÀÁµá½ñÈ¯¹ÔÊýË¡¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       4200-SKYSUMKBNLST-CHK-SEC   SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+      *
+           PERFORM VARYING IDX-CMB     FROM    1   BY  1
+                   UNTIL ( IDX-CMB     >   SPA-GMN-W24-SKYSUMKBN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-W24-SKYSUMKBNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+                   MOVE    SPA-GMN-W24-SKYSUMKBNLST (IDX-CMB)
+                                       TO  WRK-CMB-ITM
+                   MOVE    IDX-CMB     TO  WRK-CMB-IDX
+               END-IF
+      *
+           END-PERFORM
+      *
+           .
+      *
+       4200-SKYSUMKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
@@ -3832,6 +3926,8 @@
                                    TO  SPA-GMN-W24-NYKNKNRKBN-G
            MOVE    SPA-GMN-W24-SKYPRTKBNLST    (2)
                                    TO  SPA-GMN-W24-SKYPRTKBN-G
+           MOVE    SPA-GMN-W24-SKYSUMKBNLST    (1)
+                                   TO  SPA-GMN-W24-SKYSUMKBN-G
            MOVE    SPA-GMN-W24-MISYUPRTKBNLST  (1)
                                    TO  SPA-GMN-W24-MISYUPRTKBN-G
            MOVE    SPA-GMN-W24-SRYPRTKBNLST    (1)
@@ -4341,6 +4437,19 @@
       *
            END-PERFORM
       *
+      *    ÀÁµá½ñÈ¯¹ÔÊýË¡
+           MOVE    SPA-GMN-W24-SKYSUMKBN-G
+                                       TO  W24-SKYSUMKBN
+           MOVE    SPA-GMN-W24-SKYSUMKBN-MAX
+                                       TO  W24-SKYSUMKBN-CNT
+           PERFORM VARYING IDX0    FROM    1   BY  1
+                   UNTIL ( IDX0        >   W24-SKYSUMKBN-CNT )
+      *
+               MOVE    SPA-GMN-W24-SKYSUMKBNLST (IDX0)
+                                       TO  W24-SKYSUMKBN-ITM (IDX0)
+      *
+           END-PERFORM
+      *
       *    ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬
            MOVE    SPA-GMN-W24-MISYUPRTKBN-G
                                        TO  W24-SKYMISYUPRTKBN
@@ -4684,6 +4793,8 @@
       *    Âà±¡»þ±¡³°½èÊý¤»¤ó
            WHEN    060
                MOVE    "SHOHOUKBN"     TO MCP-WIDGET
+           WHEN    061
+               MOVE    "SKYSUMKBN"     TO MCP-WIDGET
            WHEN    212
                MOVE    "B12"           TO  MCP-WIDGET
            END-EVALUATE
@@ -4789,6 +4900,8 @@
            WHEN    "NYKNKNRKBN"
                MOVE    043             TO  SPA-GMN-W24-CUR
            WHEN    "SKYPRTKBN"
+               MOVE    061             TO  SPA-GMN-W24-CUR
+           WHEN    "SKYSUMKBN"
                MOVE    044             TO  SPA-GMN-W24-CUR
            WHEN    "SKYMISYUPRTKBN"
                MOVE    050             TO  SPA-GMN-W24-CUR

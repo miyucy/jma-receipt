@@ -131,6 +131,12 @@
                                                BINARY.
                 05  W24-SKYPRTKBN-ITM          PIC X(30)
                                                OCCURS  5.
+              04  W24-CMB-SKYSUMKBN.
+                05  W24-SKYSUMKBN              PIC X(30).
+                05  W24-SKYSUMKBN-CNT          PIC S9(9)
+                                               BINARY.
+                05  W24-SKYSUMKBN-ITM          PIC X(30)
+                                               OCCURS  5.
               04  W24-CMB-SKYMISYUPRTKBN.
                 05  W24-SKYMISYUPRTKBN         PIC X(20).
                 05  W24-SKYMISYUPRTKBN-CNT     PIC S9(9)

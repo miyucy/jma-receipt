@@ -665,6 +665,11 @@
            MOVE    SPACE           TO  WRK-SAKKBN
            MOVE    ZERO            TO  FLG-GETUMATUSITEI
       *
+           IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN
+                                           =   "3" )
+               GO  TO  20011-TAISYO-CHK-EXT
+           END-IF
+      *
       *    既に退院している患者は対象外とする
            IF    ( PTNYUINRRK-TAIINYMD
                                NOT =   "99999999" )
@@ -994,6 +999,11 @@
            END-IF
       *
            MOVE    PTNYUINRRK-RRKNUM   TO  SYU-NYUIN-RRKNUM
+           IF    ( SYS-5010-SKYSUMKBN  =   "1" )
+               MOVE    1               TO  SYU-GRP-HAKHOUFLG
+           ELSE
+               MOVE    ZERO            TO  SYU-GRP-HAKHOUFLG
+           END-IF
       *
            MOVE    TEIKI1P-TERMID      TO  SYU-TERMID
       *
@@ -1203,7 +1213,9 @@
                            MOVE    PTNYUINRRK-NYUINYMD
                                            TO  WRK-NYUINYMD
                        END-IF
-                       IF    ( WRK-NYUINYMD    NOT =   SPACE )
+                       IF    ( PTNYUINRRK-TEIKI-SEIKYUKBN
+                                                   =   "1" OR "2" )
+                        AND  ( WRK-NYUINYMD    NOT =   SPACE )
                            PERFORM 20011-HENSYU-SEC
                        END-IF
                    END-IF

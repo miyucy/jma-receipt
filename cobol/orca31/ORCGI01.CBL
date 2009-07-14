@@ -1868,7 +1868,7 @@
       *
            INITIALIZE                  SPA-GMN-I01-CMB-SEIKYU
       *
-           MOVE    2               TO  SPA-GMN-I01-SEIKYU-CNT
+           MOVE    3               TO  SPA-GMN-I01-SEIKYU-CNT
       *
            MOVE    "1"             TO  SPA-GMN-I01-SEIKYUL (01)
            MOVE    "医療機関での設定"
@@ -1877,6 +1877,10 @@
            MOVE    "2"             TO  SPA-GMN-I01-SEIKYUL (02)
            MOVE    "月末時のみ請求"
                                    TO  SPA-GMN-I01-SEIKYUMEIL (02)
+      *
+           MOVE    "3"             TO  SPA-GMN-I01-SEIKYUL (03)
+           MOVE    "定期請求しない"
+                                   TO  SPA-GMN-I01-SEIKYUMEIL (03)
       *
       *
            .

@@ -356,6 +356,13 @@ W24	{
 			count	int;
 			item	varchar(30)[05];
 		};
+		CMB_SKYSUMKBN	{
+			SKYSUMKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[05];
+		};
 		CMB_SKYMISYUPRTKBN	{
 			SKYMISYUPRTKBN	{
 				value	varchar(20);

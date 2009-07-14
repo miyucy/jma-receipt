@@ -24,3 +24,7 @@
                 04  W23-DELKBN             PIC X(20).
                 04  W23-DELKBN-COUNT       PIC S9(9)   BINARY.
                 04  W23-DELKBNLST          PIC X(20)   OCCURS  5 TIMES.
+              03  W23-CMB-SKYSUMKBN.
+                04  W23-SKYSUMKBN          PIC X(30).
+                04  W23-SKYSUMKBN-COUNT    PIC S9(9)   BINARY.
+                04  W23-SKYSUMKBNLST       PIC X(30)   OCCURS  5 TIMES.

@@ -320,6 +320,9 @@
       *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
+      *    請求書兼領収書まとめサブ
+           COPY    "CPORCHCN03S02.INC".
+      *
       *****************************************************************
       *    連絡　領域
       *****************************************************************
@@ -565,8 +568,17 @@
       *    収納マスタ検索処理
            PERFORM 2001-SYUNOU-SEL-SEC
       *
-      *    入院請求書編集処理
-           PERFORM 2001-HCN03-HEN-SEC
+           INITIALIZE                  ORCHCN03S02AREA
+           MOVE    IDX-M       TO      ORCHCN03S02-IDX
+           CALL    "ORCHCN03S02"       USING
+                                       ORCHCN03AREA
+                                       ORCHCN03S02AREA
+                                       SYUNOU-REC
+                                       SPA-AREA
+           IF    ( ORCHCN03S02-PRTFLG  =   1 )
+      *        入院請求書編集処理
+               PERFORM 2001-HCN03-HEN-SEC
+           END-IF
       *
            .
        200-MAIN-EXT.
@@ -685,6 +697,12 @@
                    MOVE    WRK-Z62             TO  HCN03-FUTAN
                END-IF
            END-IF
+      *
+           IF    ( ORCHCN03S02-FUKUSU-COMBI   =    1 )
+               MOVE    "複数保険使用"  TO  HCN03-HOKEN
+               MOVE    SPACE           TO  HCN03-FUTAN
+           END-IF
+      *
       *    請求開始日
            MOVE    SYU-SKYSTYMD        TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
@@ -1362,13 +1380,6 @@
       *
            PERFORM UNTIL ( FLG-SYUNOU2 NOT =   ZERO )
       *
-               EVALUATE    TRUE
-               WHEN    ( MISYU-NYUGAIKBN   =   SYU-NYUGAIKBN )
-                   AND ( MISYU-DENPNUM     =   SYU-DENPNUM   )
-                   CONTINUE
-      *
-               WHEN    OTHER
-      *
                    IF    ( MISYU-NYUGAIKBN     =   "1" )
                        COMPUTE WRK-NYU-MISYU
                            =   WRK-NYU-MISYU
@@ -1381,8 +1392,6 @@
                            + ( MISYU-SKYMONEY  -   MISYU-NYUKIN-TOTAL )
                    END-IF
       *
-               END-EVALUATE
-      *
       *        収納マスタ読込
                PERFORM 31021-SYUNOU-READ-SEC
       *
@@ -1391,6 +1400,9 @@
            MOVE    "tbl_syunou"    TO  MCP-TABLE
            MOVE    "key6"          TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
+      *
+           COMPUTE WRK-NYU-MISYU
+               =   WRK-NYU-MISYU   -   ORCHCN03S02-MYMISYU
       *
            .
        3102-MISYU-EDIT-EXT.

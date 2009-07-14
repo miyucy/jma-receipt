@@ -493,8 +493,6 @@
                                        ZOUSYU-DENPJTIKBN
                                        ZOUSYU-CREATEKBN
                                        ZOUSYU-DENPPRTYMD
-                                       ZOUSYU-ROOMNUM
-                                       ZOUSYU-BYOTONUM
                                        ZOUSYU-NYUKIN-TOTAL
                                        ZOUSYU-NYUKIN-KAISU
                                        ZOUSYU-NYUIN-RRKNUM
@@ -504,14 +502,14 @@
                                        ZOUSYU-CREYMD
                                        ZOUSYU-UPYMD
                                        ZOUSYU-UPHMS
+                                       ZOUSYU-UPSRYYMD
+                                       ZOUSYU-SELKOHID
       *
            INITIALIZE                  GENSYU-DENPNUM
                                        GENSYU-DENPLASTNUM
                                        GENSYU-DENPJTIKBN
                                        GENSYU-CREATEKBN
                                        GENSYU-DENPPRTYMD
-                                       GENSYU-ROOMNUM
-                                       GENSYU-BYOTONUM
                                        GENSYU-NYUKIN-TOTAL
                                        GENSYU-NYUKIN-KAISU
                                        GENSYU-NYUIN-RRKNUM
@@ -521,6 +519,8 @@
                                        GENSYU-CREYMD
                                        GENSYU-UPYMD
                                        GENSYU-UPHMS
+                                       GENSYU-UPSRYYMD
+                                       GENSYU-SELKOHID
       *
            COMPUTE GENSYU-SKYMONEY
                =   GENSYU-SKYMONEY -   GENSYU-CHOSEI

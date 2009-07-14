@@ -272,6 +272,13 @@
                                 PIC S9(9)   BINARY.
                 04  I04-SKYPRTOUT-ITM
                                 PIC X(30)   OCCURS  3 TIMES.
+              03  I04-CMB-SKYSUMKBN.
+                04  I04-SKYSUMKBN.
+                  05  I04-VALUE PIC X(30).
+                04  I04-SKYSUMKBN-CNT
+                                PIC S9(9)   BINARY.
+                04  I04-SKYSUMKBN-ITM
+                                PIC X(30)   OCCURS  4 TIMES.
               03  I04-CMB-SRYPRTOUT.
                 04  I04-SRYPRTOUT.
                   05  I04-VALUE PIC X(30).

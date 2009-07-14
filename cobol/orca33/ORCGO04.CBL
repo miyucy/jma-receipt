@@ -3028,6 +3028,7 @@
            MOVE    WRK-SPA-SYSYMD  TO  ORCHCN03-SYSYMD
            MOVE    WRK-SPA-TERMID  TO  ORCHCN03-TERMID
            MOVE    1               TO  ORCHCN03-CNT
+           MOVE    1               TO  ORCHCN03-SKYPRTFLG
       *
            MOVE    WRK-SPA-HOSPNUM  TO  ORCHCN03-HOSPNUM (1)
            MOVE    WRK-SPA-PTID    TO  ORCHCN03-PTID   (1)

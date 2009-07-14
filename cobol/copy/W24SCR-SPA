@@ -159,6 +159,11 @@
                    13  SPA-GMN-W24-SKYPRTKBN           PIC X(01).
                    13                                  PIC X(01).
                    13  SPA-GMN-W24-SKYPRTKBNMEI        PIC X(28).
+      *          ÀÁµá½ñÈ¯¹ÔÊýË¡
+                 11  SPA-GMN-W24-SKYSUMKBN-G.
+                   13  SPA-GMN-W24-SKYSUMKBN           PIC X(01).
+                   13                                  PIC X(01).
+                   13  SPA-GMN-W24-SKYSUMKBNMEI        PIC X(28).
       *          ÀÁµá½ñÌ¤¼ý³Û°õºþ¶èÊ¬
                  11  SPA-GMN-W24-MISYUPRTKBN-G.
                    13  SPA-GMN-W24-MISYUPRTKBN         PIC X(01).
@@ -239,6 +244,14 @@
                        15  SPA-GMN-W24-SKYPRTKBNL      PIC X(01).
                        15                              PIC X(01).
                        15  SPA-GMN-W24-SKYPRTKBNMEIL   PIC X(28).
+      *
+      *          ÀÁµá½ñÈ¯¹ÔÊýË¡
+                 11  SPA-GMN-W24-SKYSUMKBNLST-G.
+                   13  SPA-GMN-W24-SKYSUMKBN-MAX       PIC 9(03).
+                   13  SPA-GMN-W24-SKYSUMKBNLST        OCCURS  5.
+                       15  SPA-GMN-W24-SKYSUMKBNL      PIC X(01).
+                       15                              PIC X(01).
+                       15  SPA-GMN-W24-SKYSUMKBNMEIL   PIC X(28).
       *
       *          ¿ÇÎÅÈñÌÀºÙ½ñÈ¯¹Ô¶èÊ¬
                  11  SPA-GMN-W24-SRYPRTKBNLST-G.

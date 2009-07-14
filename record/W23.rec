@@ -45,5 +45,12 @@ W23	{
 			count	int;
 			item	varchar(20)[5];
 		};
+		CMB_SKYSUMKBN	{
+			SKYSUMKBN	{
+				value	varchar(30);
+			};
+			count	int;
+			item	varchar(30)[5];
+		};
 	};
 };

@@ -1052,6 +1052,7 @@
                                            TO  WRK-SYMD
                PERFORM 4150-PTNYUINRRK-SEL-SEC
                IF    ( FLG-PTNYUINRRK  =   ZERO )
+                AND  ( PTNYUINRRK-TEIKI-SEIKYUKBN     =   "1" OR "2" )
                    MOVE    WRK-KIKAN-SKYSTYMD (IDX1)  TO  WRK-STYMD
                    MOVE    WRK-KIKAN-SKYEDYMD (IDX1)  TO  WRK-EDYMD
                    IF    ( WRK-STYMD   <   CONST-H180401 )
