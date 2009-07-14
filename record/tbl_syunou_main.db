@@ -1416,3 +1416,21 @@ path	key70 	{
 		;
 	};
 };
+
+path	key71 	{
+	DBSELECT	{
+		DECLARE tbl_syunou_main_key71_csr CURSOR FOR
+		SELECT a.*
+		FROM tbl_syunou_main a join tbl_syunou_nyuin b using (HOSPNUM,NYUGAIKBN,PTID,DENPNUM)
+			WHERE   a.HOSPNUM       =  :HOSPNUM
+			AND     a.NYUGAIKBN    =   :NYUGAIKBN
+			AND     a.PTID         =   :PTID
+			AND     a.DENPNUM      <>  :DENPNUM
+			AND     a.CREATEKBN    =   :CREATEKBN
+			AND     a.DENPJTIKBN  <>  '3'
+			AND     b.NYUIN_RRKNUM =   :SELNYUIN_RRKNUM
+			ORDER   BY a.DENPNUM
+		;
+	};
+};
+
