@@ -347,6 +347,9 @@
        01  SHOUKAIDATA-REC.
            COPY    "CPSHOUKAIDATA.INC".
       *
+       01  QUERY-PTINF-REC.
+           COPY    "CPQPTINF.INC".
+      *
       *****************************************************************
       *    サブプロ用　領域
       *****************************************************************
@@ -6238,12 +6241,22 @@
            INITIALIZE              SPA-Q01-Q02-SENI-AREA
       *
       *    診療年月日
-           MOVE    SPA-NAI-Q01-STSRYYMD    TO  SPA-Q01-STSRYYMD
-           MOVE    SPA-NAI-Q01-EDSRYYMD    TO  SPA-Q01-EDSRYYMD
+           MOVE    SPA-NAI-Q01-STSRYYMD    TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-STSRYYMD
+      *
+           MOVE    SPA-NAI-Q01-EDSRYYMD    TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-EDSRYYMD
       *
       *    基本情報
-           MOVE    SPA-NAI-Q01-STBIRTHDAY  TO  SPA-Q01-STBIRTHDAY
-           MOVE    SPA-NAI-Q01-EDBIRTHDAY  TO  SPA-Q01-EDBIRTHDAY
+           MOVE    SPA-NAI-Q01-STBIRTHDAY  TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-STBIRTHDAY
+      *
+           MOVE    SPA-NAI-Q01-EDBIRTHDAY  TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-EDBIRTHDAY
       *
       *    年齢が入力のとき、生年月日を計算  
       *    ex.2003.04.01現在で１〜２歳の子供が対象の場合、
@@ -6260,7 +6273,9 @@
                                        *   -1
                CALL  "ORCSDAY"             USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
-               MOVE    LNK-DAY6-KEISAN     TO  SPA-Q01-EDBIRTHDAY
+               MOVE    LNK-DAY6-KEISAN     TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-EDBIRTHDAY
       *
            END-IF
       *
@@ -6285,7 +6300,9 @@
                MOVE     1                  TO  LNK-DAY6-ZOGEN
                CALL  "ORCSDAY"             USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
-               MOVE    LNK-DAY6-KEISAN     TO  SPA-Q01-STBIRTHDAY
+               MOVE    LNK-DAY6-KEISAN     TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-STBIRTHDAY
            END-IF
       *
            IF    ( SPA-GMN-Q01-STAGE       =   SPACE )
@@ -6295,34 +6312,73 @@
                MOVE    1                   TO  SPA-Q01-AGE-CALC-KBN
            END-IF
       *
-           MOVE    SPA-NAI-Q01-KJYNYMD     TO  SPA-Q01-KJYNYMD
-           MOVE    SPA-NAI-Q01-BIRTHMON    TO  SPA-Q01-BIRTHMON
-           MOVE    SPA-GMN-Q01-SEX         TO  SPA-Q01-SEX
-           MOVE    SPA-NAI-Q01-STLASTYMD   TO  SPA-Q01-STLASTYMD
-           MOVE    SPA-NAI-Q01-EDLASTYMD   TO  SPA-Q01-EDLASTYMD
-           MOVE    SPA-GMN-Q01-NYUGAIKBN   TO  SPA-Q01-NYUGAIKBN
-           MOVE    SPA-GMN-Q01-SRYKA       TO  SPA-Q01-SRYKA
-           MOVE    SPA-GMN-Q01-DEATH       TO  SPA-Q01-DEATH
-           MOVE    SPA-GMN-Q01-STPTNUM     TO  SPA-Q01-STPTNUM
-           MOVE    SPA-GMN-Q01-EDPTNUM     TO  SPA-Q01-EDPTNUM
-           MOVE    SPA-GMN-Q01-CHKTSTPT    TO  SPA-Q01-CHKTSTPT
+           MOVE    SPA-NAI-Q01-KJYNYMD     TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-KJYNYMD
+      *
+           MOVE    SPA-NAI-Q01-BIRTHMON    TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-BIRTHMON
+      *
+           MOVE    SPA-GMN-Q01-SEX         TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-SEX
+      *
+           MOVE    SPA-NAI-Q01-STLASTYMD   TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-STLASTYMD
+      *
+           MOVE    SPA-NAI-Q01-EDLASTYMD   TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-EDLASTYMD
+      *
+           MOVE    SPA-GMN-Q01-NYUGAIKBN   TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-NYUGAIKBN
+      *
+           MOVE    SPA-GMN-Q01-SRYKA       TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-SRYKA
+      *
+           MOVE    SPA-GMN-Q01-DEATH       TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-DEATH
+      *
+           MOVE    SPA-GMN-Q01-STPTNUM     TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-STPTNUM
+      *
+           MOVE    SPA-GMN-Q01-EDPTNUM     TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-EDPTNUM
+      *
+           MOVE    SPA-GMN-Q01-CHKTSTPT    TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-CHKTSTPT
       *
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   5 )
       *
                MOVE    SPA-GMN-Q01-JYUSHO  (IDXC)
-                                           TO  SPA-Q01-JYUSHO  (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-JYUSHO  (IDXC)
+      *
                INSPECT SPA-Q01-JYUSHO (IDXC)
                        REPLACING   ALL "＊" BY  "%%"
                MOVE    SPA-GMN-Q01-KANANAME(IDXC) 
                                            TO  WRK-NAME
                PERFORM 49011-EDIT-SRHNAME-SEC
-               MOVE    WRK-NAME            TO  SPA-Q01-KANANAME(IDXC)
+               MOVE    WRK-NAME            TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-KANANAME(IDXC)
       *
                MOVE    SPA-GMN-Q01-NAME    (IDXC)
                                            TO  WRK-NAME
                PERFORM 49011-EDIT-SRHNAME-SEC
-               MOVE    WRK-NAME            TO  SPA-Q01-NAME    (IDXC)
+               MOVE    WRK-NAME            TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-NAME    (IDXC)
       *
            END-PERFORM
       *
@@ -6342,38 +6398,63 @@
                    UNTIL ( IDXC    >   3 )
       *
                MOVE    SPA-GMN-Q01-CONDITION1 (IDXC)
-                                           TO  SPA-Q01-CONDITION1 (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-CONDITION1 (IDXC)
       *
                MOVE    SPA-GMN-Q01-CONDITION2 (IDXC)
-                                           TO  SPA-Q01-CONDITION2 (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-CONDITION2 (IDXC)
       *
                MOVE    SPA-GMN-Q01-CONDITION3 (IDXC)
-                                           TO  SPA-Q01-CONDITION3 (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-CONDITION3 (IDXC)
       *
                MOVE    SPA-GMN-Q01-GENMEN (IDXC)
-                                           TO  SPA-Q01-GENMEN (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-GENMEN (IDXC)
       *
                MOVE    SPA-GMN-Q01-SELCOMMENT
-                                           TO  SPA-Q01-SELCOMMENT
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-SELCOMMENT
       *
                MOVE    SPA-GMN-Q01-COMMENT (IDXC)
-                                           TO  SPA-Q01-COMMENT (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-COMMENT (IDXC)
       *
                INSPECT SPA-Q01-COMMENT (IDXC)
                        REPLACING   ALL "＊" BY  "%%"
       *
                MOVE    SPA-GMN-Q01-TEL (IDXC)
-                                           TO  SPA-Q01-TEL (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-TEL (IDXC)
       *
                INSPECT SPA-Q01-TEL (IDXC)
                        REPLACING   ALL "*" BY  "%"
       *
            END-PERFORM
       *
-           MOVE    SPA-GMN-Q01-TSY         TO  SPA-Q01-TSY
-           MOVE    SPA-NAI-Q01-STTSYYM     TO  SPA-Q01-STTSYYM
-           MOVE    SPA-GMN-Q01-STTSYSKBT   TO  SPA-Q01-STTSYSKBT
-           MOVE    SPA-NAI-Q01-EDTSYYM     TO  SPA-Q01-EDTSYYM
+           MOVE    SPA-GMN-Q01-TSY         TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-TSY
+      *
+           MOVE    SPA-NAI-Q01-STTSYYM     TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-STTSYYM
+      *
+           MOVE    SPA-GMN-Q01-STTSYSKBT   TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-STTSYSKBT
+      *
+           MOVE    SPA-NAI-Q01-EDTSYYM     TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-EDTSYYM
       *
       *    保険　公費
            IF    ( SPA-GMN-Q01-RDKOHNUM-AND    =   "T" )
@@ -6388,21 +6469,37 @@
                MOVE    SPACE               TO  SPA-Q01-HKNKOH-JKN
            END-IF
       *
-           MOVE    SPA-GMN-Q01-HONKZKKBN   TO  SPA-Q01-HONKZKKBN
+           MOVE    SPA-GMN-Q01-HONKZKKBN   TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-HONKZKKBN
       *
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   5 )
       *
                MOVE    SPA-GMN-Q01-HKNJANUM(IDXC)
-                                           TO  SPA-Q01-HKNJANUM(IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-HKNJANUM(IDXC)
+      *
                MOVE    SPA-GMN-Q01-HKNNUM  (IDXC)
-                                           TO  SPA-Q01-HKNNUM  (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-HKNNUM  (IDXC)
+      *
                MOVE    SPA-GMN-Q01-KIGO    (IDXC)
-                                           TO  SPA-Q01-KIGO    (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-KIGO    (IDXC)
+      *
                MOVE    SPA-GMN-Q01-NUM     (IDXC)
-                                           TO  SPA-Q01-NUM     (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-NUM     (IDXC)
+      *
                MOVE    SPA-GMN-Q01-KOHNUM  (IDXC)
-                                           TO  SPA-Q01-KOHNUM  (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-KOHNUM  (IDXC)
       *
                EVALUATE    SPA-GMN-Q01-PAYKBN  (IDXC)
                WHEN    "1"
@@ -6416,18 +6513,32 @@
                END-EVALUATE
       *
                MOVE    SPA-GMN-Q01-FTNJANUM(IDXC)
-                                           TO  SPA-Q01-FTNJANUM(IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-FTNJANUM(IDXC)
       *
            END-PERFORM
       *
       *    病名　診療行為
-           MOVE    SPA-GMN-Q01-UTAGAIKBN   TO  SPA-Q01-UTAGAIKBN
-           MOVE    SPA-GMN-Q01-KYUSEIKBN   TO  SPA-Q01-KYUSEIKBN
+           MOVE    SPA-GMN-Q01-UTAGAIKBN   TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-UTAGAIKBN
       *
-           MOVE    SPA-GMN-Q01-TENKIKBN    TO  SPA-Q01-TENKIKBN
+           MOVE    SPA-GMN-Q01-KYUSEIKBN   TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-KYUSEIKBN
       *
-           MOVE    SPA-NAI-Q01-STTENKIYMD  TO  SPA-Q01-STTENKIYMD
-           MOVE    SPA-NAI-Q01-EDTENKIYMD  TO  SPA-Q01-EDTENKIYMD
+           MOVE    SPA-GMN-Q01-TENKIKBN    TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-TENKIKBN
+      *
+           MOVE    SPA-NAI-Q01-STTENKIYMD  TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-STTENKIYMD
+      *
+           MOVE    SPA-NAI-Q01-EDTENKIYMD  TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-EDTENKIYMD
       *
            IF    ( SPA-GMN-Q01-RDBYOMEI-AND    =   "T" )
                MOVE    "1"                 TO  SPA-Q01-BYOMEI-JKN
@@ -6435,8 +6546,13 @@
                MOVE    SPACE               TO  SPA-Q01-BYOMEI-JKN
            END-IF
       *
-           MOVE    SPA-GMN-Q01-SRYKBN      TO  SPA-Q01-SRYKBN
-           MOVE    SPA-GMN-Q01-SRYSYUKBN   TO  SPA-Q01-SRYSYUKBN
+           MOVE    SPA-GMN-Q01-SRYKBN      TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-SRYKBN
+      *
+           MOVE    SPA-GMN-Q01-SRYSYUKBN   TO  QUERY-PTINF-DBSTR
+           PERFORM 900-QPTINF-DBESCAPE-SEC
+           MOVE    QUERY-PTINF-DBSTR       TO  SPA-Q01-SRYSYUKBN
       *
            IF    ( SPA-GMN-Q01-RDSRYACT-AND    =   "T" )
                MOVE    "1"                 TO  SPA-Q01-SRYACT-JKN
@@ -6447,7 +6563,9 @@
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   5 )
                MOVE    SPA-GMN-Q01-BYOMEI(IDXC)
-                                           TO  SPA-Q01-BYOMEI(IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-BYOMEI(IDXC)
       *
                INSPECT SPA-Q01-BYOMEI(IDXC)
                        REPLACING   ALL "*" BY  "%"
@@ -6456,7 +6574,9 @@
                        REPLACING   ALL "＊" BY  "%%"
       *
                MOVE    SPA-NAI-Q01-SRYCD (IDXC)
-                                           TO  SPA-Q01-SRYCD (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-SRYCD (IDXC)
            END-PERFORM
       *
       *    並び順
@@ -6464,7 +6584,9 @@
                    UNTIL ( IDXC    >   3 )
       *
                MOVE    SPA-GMN-Q01-KMK   (IDXC)
-                                           TO  SPA-Q01-KMK (IDXC)
+                                           TO  QUERY-PTINF-DBSTR
+               PERFORM 900-QPTINF-DBESCAPE-SEC
+               MOVE    QUERY-PTINF-DBSTR   TO  SPA-Q01-KMK (IDXC)
       *
                IF  ( SPA-GMN-Q01-RDIO1 (IDXC)  =   "T" )
                    MOVE    1               TO  SPA-Q01-NARABE (IDXC)
@@ -10757,6 +10879,25 @@
       *
            .
        900-SHOUKAIDATA-KEY2-FET-EXT.
+           EXIT.
+      *****************************************************************
+      *    検索文字エスケープ処理
+      *****************************************************************
+       900-QPTINF-DBESCAPE-SEC          SECTION.
+      *
+           MOVE    QUERY-PTINF-REC TO  MCPDATA-REC
+           MOVE    "query_ptinf"   TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           MOVE    "DBESCAPE"      TO  MCP-FUNC
+           CALL    "ORCDBMAIN"         USING
+                                       MCPAREA
+                                       MCPDATA-REC
+                                       SPA-AREA
+           MOVE    MCPDATA-REC     TO  QUERY-PTINF-REC
+      *
+           .
+      *
+       900-QPTINF-DBESCAPE-EXT.
            EXIT.
       *****************************************************************
       *    ＤＢ検索処理

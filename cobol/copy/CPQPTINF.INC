@@ -55,3 +55,5 @@
       *
       *•’•Í°º£”£—£Ã ∏° WHERE∂Á°À
            03  QUERY-PTINF-SQL                 PIC  X(15000).
+      *DBESCAPEENCODING
+           03  QUERY-PTINF-DBSTR               PIC  X(500).
