@@ -35,6 +35,7 @@
       *  01.02.05    NACL-伊藤    06/02/22  MONFUNC 対応
       *  02.00.00    NACL-多々納  06/08/09  担当医設定追加
       *  04.04.00    NACL-森脇    09/01/30  他院切替機能追加、MID2の追加
+      *  04.05.00    NACL-多々納  09/07/15  小児科特例時間外区分追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -169,6 +170,7 @@
            03  WRK-SYU-DRCD            PIC X(05).
            03  WRK-MCP-WIDGET          PIC X(10).
            03  WRK-YAKANKBN            PIC 9(01).
+           03  WRK-JIKANTOKU-NYU       PIC 9(01).
       *
            03  WRK-HOSPNUM             PIC 9(02).
            03  WRK-GRPHOSPUSERID       PIC X(64).
@@ -222,6 +224,8 @@
            COPY  "CPSK1011.INC".
       *    施設規準 
            COPY  "CPSK1006.INC".
+      *    チェック機能制御情報
+           COPY  "CPSK1008.INC".
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -404,23 +408,35 @@
        3101-JIKANGAI-SET-SEC       SECTION.
       *
            MOVE    ZERO                TO  WRK-YAKANKBN
+           MOVE    ZERO                TO  WRK-JIKANTOKU-NYU
            IF     (SPA-NAI-SYSYMD      >=  "20080401" )
              AND  (SPA-HOSPSBT         =   2          )
       *        夜間・早朝加算施設規準
                PERFORM 31011-KIJUN-CHK-SEC
            END-IF
-      *
+      *    時間外加算特例乳幼児
+           IF     (SPA-NAI-SYSYMD      >=  "20080401" )
+               PERFORM 31012-JIKANTOKU-CHK-SEC
+           END-IF
       *    時間外区分
            MOVE    "0 時間内"          TO  SPA-GMN-JIKANKBN-LST(1)
            MOVE    "1 時間外"          TO  SPA-GMN-JIKANKBN-LST(2)
            MOVE    "2 休日"            TO  SPA-GMN-JIKANKBN-LST(3)
            MOVE    "3 深夜"            TO  SPA-GMN-JIKANKBN-LST(4)
            MOVE    "4 時間外特例"      TO  SPA-GMN-JIKANKBN-LST(5)
+           MOVE    5                   TO  SPA-JIKANKBN-MAX
+      *
+           IF      WRK-JIKANTOKU-NYU   =   1
+               MOVE    "5 小児科特例夜間"  TO  SPA-GMN-JIKANKBN-LST(6)
+               MOVE    "6 小児科特例休日"  TO  SPA-GMN-JIKANKBN-LST(7)
+               MOVE    "7 小児科特例深夜"  TO  SPA-GMN-JIKANKBN-LST(8)
+               ADD     3                   TO  SPA-JIKANKBN-MAX
+           END-IF
+      *
            IF      WRK-YAKANKBN        =   1
-               MOVE    "8 夜間・早朝"      TO  SPA-GMN-JIKANKBN-LST(6)
-               MOVE    6                   TO  SPA-JIKANKBN-MAX
-           ELSE
-               MOVE    5                   TO  SPA-JIKANKBN-MAX
+               ADD     1                   TO  SPA-JIKANKBN-MAX
+               MOVE    "8 夜間・早朝"      TO  SPA-GMN-JIKANKBN-LST
+                                                    (SPA-JIKANKBN-MAX)
            END-IF
       *
            MOVE    SPACE               TO  SPA-GMN-JIKANKBN-MEI
@@ -480,6 +496,50 @@
            PERFORM 990-DBCLOSE-SEC
            .
        31011-KIJUN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    時間外加算特例乳幼児処理
+      *****************************************************************
+       31012-JIKANTOKU-CHK-SEC          SECTION.
+      *
+           MOVE    ZERO            TO  WRK-JIKANTOKU-NYU
+      *
+           MOVE    SPACE               TO  SYS-1008-REC
+           INITIALIZE                      SYS-1008-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-1008-HOSPNUM
+           MOVE    "1008"              TO  SYS-1008-KANRICD
+           MOVE    SPA-NAI-SYSYMD      TO  SYS-1008-STYUKYMD
+           MOVE    SPA-NAI-SYSYMD      TO  SYS-1008-EDYUKYMD
+      *    システム管理検索
+           MOVE    SYS-1008-REC        TO  MCPDATA-REC
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           ELSE
+               MOVE    SPACE               TO  SYS-1008-REC
+               INITIALIZE                  SYS-1008-REC
+               MOVE    1               TO  FLG-SYSKANRI
+           END-IF
+           PERFORM UNTIL   FLG-SYSKANRI    =   1
+               MOVE    MCPDATA-REC         TO  SYS-1008-REC
+      *        時間外加算特例乳幼児
+               IF      SYS-1008-JIKANTOKU-NYU-FLG  =   SPACE
+                   MOVE    ZERO            TO  WRK-JIKANTOKU-NYU
+               ELSE
+                   MOVE    SYS-1008-JIKANTOKU-NYU-FLG
+                                           TO  WRK-JIKANTOKU-NYU
+               END-IF
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-SYSKANRI-READ-SEC
+           END-PERFORM
+           MOVE    "tbl_syskanri"      TO  MCP-TABLE
+           MOVE    "key2"              TO  MCP-PATHNAME
+           PERFORM 990-DBCLOSE-SEC
+           .
+       31012-JIKANTOKU-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -1646,6 +1706,33 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    "0001"              TO  SPA-ERRCD
                GO      TO      4010-PAGE1-TOROKU-EXT
            END-IF
+      *    時間外区分チェック
+           MOVE    ZERO                TO  FLG-CHK
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-JIKANKBN-MAX
+               IF      SPA-GMN-JIKANKBN    =   SPA-GMN-JIKANKBN-LST
+                                                          (IDX)(1:1)
+                   MOVE    1               TO  FLG-CHK
+                   MOVE    SPA-JIKANKBN-MAX    TO  IDX
+               END-IF
+           END-PERFORM
+           IF      FLG-CHK             =   ZERO
+               MOVE    "0003"          TO  SPA-ERRCD
+               MOVE    2               TO  SPA-M95-CUR
+           END-IF
+      *
+           IF      SPA-ERRCD           =   SPACE
+               PERFORM 40101-PAGE1-HENSYU-SEC
+           END-IF
+      *
+           .
+       4010-PAGE1-TOROKU-EXT.
+           EXIT.
+      *****************************************************************
+      *    システム日付の登録処理
+      *****************************************************************
+       40101-PAGE1-HENSYU-SEC            SECTION.
+      *
       *    曜日指定
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY3-AREA
@@ -1664,7 +1751,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SPA-GMN-JIKANKBN    TO  SPA-GAI-JIKANKBN
       *
            .
-       4010-PAGE1-TOROKU-EXT.
+       40101-PAGE1-HENSYU-EXT.
            EXIT.
       *****************************************************************
       *    担当医の登録処理
