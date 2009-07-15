@@ -748,6 +748,7 @@
       *    P024(所得者情報）
            03  SPA-P024-AREA.
                05  SPA-GMN24-CUR             PIC 9(02).
+               05  SPA-P024-KOHKEIFLG        PIC 9(01).
                05  SPA-GMN24-AREA.
                    07  SPA-GMN24-TSYTBL.
                        09  SPA-GMN24-TSYTBLO            OCCURS  20.

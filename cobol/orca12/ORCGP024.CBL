@@ -42,6 +42,7 @@
       *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
       *  03.05.01    NACL-Â¿¡¹Ç¼  07/07/20  Ç§Äê¾ðÊóÄÉ²ÃÂÐ±þ
       *  04.05.00    NACL-Â¿¡¹Ç¼  09/07/XX  ´µ¼Ô¸øÈñÉéÃ´³Ûµ¡Ç½ÄÉ²Ã
+      *                                     ¸øÈñÉéÃ´³ÛÌ¤ÆþÎÏ·Ù¹ðÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1250,6 +1251,10 @@
                                                (1:6)  )
                MOVE    "2443"              TO  SPA-ERRCD
            END-IF
+      *
+           IF      SPA-FTN2-MAX        >=  100
+               MOVE    "2443"              TO  SPA-ERRCD
+           END-IF
       *    ¸øÈñÉéÃ´³ÛÊ£¼Ì
            IF      (SPA-ERRCD          =   SPACE  ) 
                PERFORM 4171-KOHFTN-COPY-SYORI-SEC
@@ -1576,6 +1581,12 @@
       *    ´µ¼Ô¸øÈñÉéÃ´³Û
            PERFORM 410132-KOHFTNETC-PARA-SEC
       *
+      *    ¸øÈñÉéÃ´¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯
+           IF      SPA-TAGU-FLG        =   ZERO
+               IF      SPA-P024-KOHKEIFLG  =   ZERO
+                   PERFORM 410132-KOHFTN-CHK-SEC
+               END-IF
+           END-IF
            .
        490-TOUROKU-EXT.
            EXIT.
@@ -1902,6 +1913,41 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            .
        510-PARA-TNKRRK-OUT-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¤ÎÅÐÏ¿¥Á¥§¥Ã¥¯½èÍý
+      *****************************************************************
+       410132-KOHFTN-CHK-SEC          SECTION.
+      *
+           MOVE    1                   TO  SPA-P024-KOHKEIFLG
+           PERFORM VARYING     IDX2    FROM    1   BY  1
+                   UNTIL      (IDX2    >   SPA-FTN1-MAX  )
+                         OR   (SPA-ERRCD   NOT =   SPACE )
+      *        ÅöÆüÍ­¸ú¤Ê¸øÈñ¤Î¤ßÈ½Äê
+               IF     (SPA-NAI24-TKOHSTYMD (IDX2)  <=  SPA-SYSYMD )
+                 AND  (SPA-NAI24-TKOHEDYMD (IDX2)  >=  SPA-SYSYMD )
+                   MOVE    ZERO                TO  FLG-OK
+                   PERFORM VARYING IDX         FROM    1   BY  1
+                       UNTIL  (IDX         >   50     )  OR
+                              (HZN-PTKOHFTN-REC (IDX 1)
+                                           =   SPACE  )  OR
+                              (FLG-OK      =   1      )
+                       MOVE    HZN-PTKOHFTN-REC (IDX 1)
+                                               TO  PTKOHFTN-REC
+                       IF      PTKOHFTN-KOHID  =   SPA-NAI24-KOHID(IDX2)
+                           MOVE    1                   TO  FLG-OK
+                      END-IF
+                   END-PERFORM
+                   IF      FLG-OK              =   ZERO
+                       MOVE    "K240"          TO  SPA-ERRCD
+                       MOVE    30              TO  SPA-GMN24-CUR
+                   END-IF
+               END-IF
+           END-PERFORM
+      *
+           .
+       410132-KOHFTN-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2319,28 +2365,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                END-PERFORM
       *
                IF      FLG-OK              =   1
-      *
-      *        ¸øÈñ£É£ÄËè¤Ë¥Æ¡¼¥Ö¥ëÊÝÂ¸
-               IF      PTKOHFTN-KOHID  NOT =   WRK-KOHID
-                   ADD     1                   TO  IDP-1
-                   IF      IDP-1               >   50
-                       MOVE    50              TO  IDP-1
-                       MOVE    "2499"          TO  SPA-ERRCD
-                   END-IF
-                   MOVE    PTKOHFTN-KOHID      TO  WRK-KOHID
-                   MOVE    ZERO                TO  IDP-2
-               END-IF
-               IF     (SPA-NAI24-FTNSELNUM >   ZERO   )  AND
-                      (PTKOHFTN-KOHID      =   SPA-NAI24-KOHID
+      *            º£²óÁªÂòÊ¬°Ê³°
+                   IF     (SPA-NAI24-FTNSELNUM >   ZERO   )  AND
+                          (PTKOHFTN-KOHID      =   SPA-NAI24-KOHID
                                                  (SPA-NAI24-FTNSELNUM))
-                   CONTINUE
-               ELSE
-                   ADD     1                   TO  IDP-2
-                   IF      IDP-2               <=  100
-                       MOVE    PARA-DATA-REC   TO  HZN-PTKOHFTN-REC
-                                                        (IDP-1 IDP-2)
+                       CONTINUE
+                   ELSE
+                       PERFORM 4101313-KOHFTN-TBL-HEN-SEC
                    END-IF
-               END-IF
                END-IF
       *
                MOVE    "tbl_para"          TO  MCP-TABLE
@@ -2378,6 +2410,29 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 410132-KOHFTN-PARA-INS-SEC
            .
        410131-KOHFTN-PARA-EXT.
+           EXIT.
+      *****************************************************************
+      *    ¸øÈñÉéÃ´¥Æ¡¼¥Ö¥ëÄÉ²Ã½èÍý
+      *****************************************************************
+       4101313-KOHFTN-TBL-HEN-SEC           SECTION.
+      *
+      *    ¸øÈñ£É£ÄËè¤Ë¥Æ¡¼¥Ö¥ëÊÝÂ¸
+           IF      PTKOHFTN-KOHID  NOT =   WRK-KOHID
+               ADD     1                   TO  IDP-1
+               IF      IDP-1               >   50
+                   MOVE    50              TO  IDP-1
+                   MOVE    "2499"          TO  SPA-ERRCD
+               END-IF
+               MOVE    PTKOHFTN-KOHID      TO  WRK-KOHID
+               MOVE    ZERO                TO  IDP-2
+           END-IF
+           ADD     1                   TO  IDP-2
+           IF      IDP-2               <=  100
+               MOVE    PARA-DATA-REC   TO  HZN-PTKOHFTN-REC
+                                                        (IDP-1 IDP-2)
+           END-IF
+           .
+       4101313-KOHFTN-TBL-HEN-EXT.
            EXIT.
       *****************************************************************
       *    ¸øÈñÉéÃ´¥Æ¡¼¥Ö¥ëÄÉ²Ã½èÍý

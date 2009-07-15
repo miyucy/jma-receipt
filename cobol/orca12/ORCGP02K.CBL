@@ -983,6 +983,14 @@
            IF      SPA-P02K-SRYDD      >   SPA-P02K-NAIMATU
                MOVE    "0003"              TO  SPA-ERRCD
            END-IF
+      *    公費開始日チェック
+           IF     (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)(1:6)
+                                       =   SPA-P02K-NAI-SRYYMD(1:6))
+             AND  (SPA-NAI24-TKOHSTYMD (SPA-NAI24-FTNSELNUM)(7:2)
+                                       >   SPA-P02K-SRYDD     )
+             AND  (SPA-ERRCD           =   SPACE              )
+               MOVE    "0006"              TO  SPA-ERRCD
+           END-IF
       *    公費終了日チェック
            IF     (SPA-NAI24-TKOHEDYMD (SPA-NAI24-FTNSELNUM)(1:6)
                                        =   SPA-P02K-NAI-SRYYMD(1:6))
@@ -1566,7 +1574,7 @@
                    MOVE    "選択番号を入力して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "0006"
-                   STRING  "公費適用終了日以降となります。"
+                   STRING  "公費適用期間外です。日を確認してください。"
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0010"

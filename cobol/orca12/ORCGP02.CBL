@@ -67,6 +67,7 @@
       *  04.04.00    NACL-多々納  09/01/27  本院分院対応
       *  04.04.00    NACL-多々納  09/03/12  テーブル削除追加
       *  04.05.00    NACL-多々納  09/07/XX  患者公費負担額機能追加
+      *                                     公費負担額未入力警告対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -157,6 +158,7 @@
            03  WRK-SAKIPG          PIC X(08).
            03  WRK-WIDGET          PIC X(20).
            03  WRK-P02-GAMEN       PIC X(06).
+           03  WRK-PIDCD           PIC X(04).
       *
            03  WRK-EVENT           PIC X(20).
            03  WRK-STATUS          PIC X(04).
@@ -3633,56 +3635,48 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO                  4901-KOUSINMAE-EXT
            END-IF
       *
-      ***  所得(タグ変更時・切替押下時、未更新のため、ここで必ず更新)
-      *    MOVE    "CLICKED" TO  MCP-EVENT
-      *    MOVE    "B12"     TO  MCP-WIDGET
-      *    MOVE    "PUTG"    TO  MCP-STATUS
-      *    CALL    "ORCGP024"       USING   MCPAREA
-      *                                            SPAAREA
-      *                                            LINKAREA
-      *                                            SCRAREA
-      *    MOVE    SPA-COMMON          TO  SPA-AREA
-      *    MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-      *    MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-      *    IF  SPA-ERRCD           NOT =   SPACE
-      *        MOVE    "P024"              TO  SPA-P02-GAMEN
-      *        GO  TO                  4901-KOUSINMAE-EXT
-      **** END-IF
-      *
-      **** EVALUATE    SPA-P02-GAMEN
-      *    基本
-      *****WHEN    "P02 "
+           MOVE    SPACE               TO  WRK-PIDCD
       *    基本情報チェック
-               MOVE    "CLICKED" TO  MCP-EVENT
-               MOVE    "B12"     TO  MCP-WIDGET
-               MOVE    "PUTG"    TO  MCP-STATUS
-               CALL    "ORCGP02W1"      USING   MCPAREA
-                                                SPAAREA
-                                                LINKAREA
-                                                SCRAREA
-               MOVE    SPA-COMMON          TO  SPA-AREA
-               MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-               MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-               IF     (SPA-ERRCD           NOT =   SPACE )  OR
-                      (SPA-PIDCD           NOT =   SPACE )
+           MOVE    "CLICKED"           TO  MCP-EVENT
+           MOVE    "B12"               TO  MCP-WIDGET
+           MOVE    "PUTG"              TO  MCP-STATUS
+           CALL    "ORCGP02W1"     USING   MCPAREA
+                                           SPAAREA
+                                           LINKAREA
+                                           SCRAREA
+           MOVE    SPA-COMMON          TO  SPA-AREA
+           MOVE    SPA-FREE            TO  SPA-P02SCRAREA
+           MOVE    SPA-WORK            TO  SPA-P02KYOUTU
+           IF     (SPA-ERRCD           NOT =   SPACE )
+               MOVE    "P02"               TO  SPA-P02-GAMEN
+               MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
+               GO      TO                  4901-KOUSINMAE-EXT
+           END-IF
+           IF     (SPA-PIDCD           NOT =   SPACE )
+               IF      (SPA-PIDCD(1:1)          =   "K"   )
+                   MOVE    SPA-PIDCD           TO  WRK-PIDCD
+                   MOVE    SPACE               TO  SPA-PIDCD
+               ELSE
                    MOVE    "P02"               TO  SPA-P02-GAMEN
                    MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
                    GO      TO                  4901-KOUSINMAE-EXT
                END-IF
+           END-IF
       *
       *    所得(タグ変更時・切替押下時、未更新のため、ここで必ず更新)
-           MOVE    "CLICKED" TO  MCP-EVENT
-           MOVE    "B12"     TO  MCP-WIDGET
-           MOVE    "PUTG"    TO  MCP-STATUS
-           CALL    "ORCGP024"       USING   MCPAREA
-                                                   SPAAREA
-                                                   LINKAREA
-                                                   SCRAREA
+           MOVE    "CLICKED"           TO  MCP-EVENT
+           MOVE    "B12"               TO  MCP-WIDGET
+           MOVE    "PUTG"              TO  MCP-STATUS
+           CALL    "ORCGP024"      USING   MCPAREA
+                                           SPAAREA
+                                           LINKAREA
+                                           SCRAREA
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-P02SCRAREA
            MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-           IF  SPA-ERRCD           NOT =   SPACE
+           IF      SPA-ERRCD       NOT =   SPACE
                MOVE    "P024"              TO  SPA-P02-GAMEN
+               MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
                GO  TO                  4901-KOUSINMAE-EXT
            END-IF
       *    特記事項
@@ -3696,14 +3690,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-COMMON          TO  SPA-AREA
            MOVE    SPA-FREE            TO  SPA-P02SCRAREA
            MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-           IF  SPA-ERRCD           NOT =   SPACE
+           IF      SPA-ERRCD       NOT =   SPACE
                MOVE    "P026"              TO  SPA-P02-GAMEN
                GO  TO                  4901-KOUSINMAE-EXT
            END-IF
       *
       *    -------------------------
            EVALUATE    SPA-P02-GAMEN
-      *
+      *各画面表示中
       *    住所
            WHEN    "P021"
                MOVE    "CLICKED" TO  MCP-EVENT
@@ -3716,32 +3710,6 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-COMMON          TO  SPA-AREA
                MOVE    SPA-FREE            TO  SPA-P02SCRAREA
                MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-               IF  SPA-ERRCD           NOT =   SPACE
-                   MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
-                   GO  TO                  4901-KOUSINMAE-EXT
-               END-IF
-      *    -------------------------
-      *
-      *    紹介
-      *     WHEN    "P023"
-      *         MOVE    "CLICKED" TO  MCP-EVENT
-      *         MOVE    "B12"     TO  MCP-WIDGET
-      *         MOVE    "PUTG"    TO  MCP-STATUS
-      *         CALL    "ORCGP023"       USING   MCPAREA
-      *                                          SPAAREA
-      *                                          LINKAREA
-      *                                          SCRAREA
-      *         MOVE    SPA-COMMON          TO  SPA-AREA
-      *         MOVE    SPA-FREE            TO  SPA-P02SCRAREA
-      *         MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-      *         IF  SPA-ERRCD           NOT =   SPACE
-      *             GO  TO                  4901-KOUSINMAE-EXT
-      *         END-IF
-      *    -------------------------
-      *
-      *     WHEN    "P024"
-      *
-      *    -------------------------
       *
       *    入力履歴
            WHEN    "P025"
@@ -3755,12 +3723,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-COMMON          TO  SPA-AREA
                MOVE    SPA-FREE            TO  SPA-P02SCRAREA
                MOVE    SPA-WORK            TO  SPA-P02KYOUTU
-               IF  SPA-ERRCD           NOT =   SPACE
-                   MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
-                   GO  TO                  4901-KOUSINMAE-EXT
-               END-IF
       *
            END-EVALUATE
+      *
+           IF      SPA-ERRCD       NOT =   SPACE
+               MOVE    MCP-WIDGET          TO  SPA-P02-WIDGET
+               GO  TO                  4901-KOUSINMAE-EXT
+           END-IF
+      *    確認メッセージ
+           IF     (SPA-PIDCD           =   SPACE )  AND
+                  (WRK-PIDCD       NOT =   SPACE )
+               MOVE    WRK-PIDCD           TO  SPA-PIDCD
+               MOVE    "P02"               TO  SPA-P02-GAMEN
+               GO      TO                  4901-KOUSINMAE-EXT
+           END-IF
       *
       *    患者番号存在チェック（新規の時、存在しないこと）
            IF      SPA-P02-SYORI       =   1
@@ -5149,6 +5125,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "2446"
                    MOVE    "上限額履歴を選択して下さい。"
                                                TO  SPA-ERRMSG
+               WHEN    "K240"
+                   STRING  "警告！！"
+                           "公費負担額の設定がない公費があります。"
+                                               DELIMITED  BY  SIZE
+                                               INTO  SPA-ERRMSG
+                   END-STRING
       *        入力履歴
                WHEN    "2502"
                    MOVE    "選択番号入力エラー"    TO  SPA-ERRMSG
