@@ -54,6 +54,8 @@
       *  04.04.01    NACL-門脇    08/12/25  包括対応
       *  04.04.02    NACL-門脇    09/02/04  検査のコメント自動記載対応
       *  04.04.03    NACL-門脇    09/04/13  平成２１年５月改正対応
+      *
+      *  04.05.01    NACL-藤原    09/07/14  小数点以下５桁対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -284,7 +286,7 @@
            03  WRK-TANICD                              PIC 9(03).
            03  WRK-TANIMOJISU                          PIC 9(01).
            03  WRK-TANINAME                            PIC X(24).
-           03  WRK-SRYSURYO                            PIC 9(05)V9(03).
+           03  WRK-SRYSURYO                            PIC 9(05)V9(05).
            03  WRK-SRYSURYO2                           PIC 9(05).
            03  WRK-SRYSURYO3                           PIC 9(05).
            03  WRK-RENNUM                              PIC 9(02).
@@ -1487,7 +1489,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
                IF  SRY-SRYCD(IDX2)        =     CONS-ZANHAIKI           
                   COMPUTE WRK-SRYSURYO2   =     WRK-SRYSURYO            
-                                          +     0.999                   
+                                          +     0.99999                   
                   COMPUTE RECE130-SRYSURYO(IDX4)                         
                                           =     WRK-SRYSURYO2           
                                           -     WRK-SRYSURYO            
