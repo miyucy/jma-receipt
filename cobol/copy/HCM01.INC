@@ -59,3 +59,5 @@
               03  HCM01-JKYSNO12  PIC X(24).
             02  HCM01-KIGO  PIC X(32).
             02  HCM01-NUM   PIC X(32).
+            02  HCM01-COMMENT
+                    PIC X(96)   OCCURS  5 TIMES.
