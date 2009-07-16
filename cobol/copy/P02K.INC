@@ -34,7 +34,8 @@
                   05  P02K-FTNLIST-SELECT
                           PIC X       OCCURS  50 TIMES.
               03  P02K-MSG03.
-                04  P02K-VALUE  PIC X(30).
+                04  P02K-MSG03-STYLE   PIC X(20).
+                04  P02K-MSG03-VALUE  PIC X(50).
               03  P02K-MSG04.
                 04  P02K-MSG04-STYLE   PIC X(20).
                 04  P02K-MSG04-VALUE  PIC X(30).
@@ -42,6 +43,3 @@
                 04  P02K-VALUE  PIC X(30).
               03  P02K-MSG06.
                 04  P02K-VALUE  PIC X(50).
-              03  P02K-MSG07.
-                04  P02K-MSG07-STYLE   PIC X(20).
-                04  P02K-MSG07-VALUE  PIC X(30).

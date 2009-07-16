@@ -514,10 +514,42 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>MSG03</name>
+      <name>label261</name>
+      <x>8</x>
+      <y>444</y>
+      <width>64</width>
+      <height>24</height>
+      <label>選択番号</label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0.5</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MSG01</name>
+      <x>132</x>
+      <y>28</y>
+      <width>232</width>
+      <height>20</height>
+      <label></label>
+      <justify>GTK_JUSTIFY_CENTER</justify>
+      <wrap>False</wrap>
+      <xalign>0</xalign>
+      <yalign>0.5</yalign>
+      <xpad>0</xpad>
+      <ypad>0</ypad>
+    </widget>
+
+    <widget>
+      <class>GtkLabel</class>
+      <name>MSG04</name>
       <x>240</x>
-      <y>428</y>
-      <width>160</width>
+      <y>452</y>
+      <width>184</width>
       <height>20</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>
@@ -546,58 +578,10 @@
 
     <widget>
       <class>GtkLabel</class>
-      <name>label261</name>
-      <x>8</x>
-      <y>444</y>
-      <width>64</width>
-      <height>24</height>
-      <label>選択番号</label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0.5</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MSG04</name>
-      <x>240</x>
-      <y>452</y>
-      <width>184</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MSG01</name>
-      <x>132</x>
-      <y>28</y>
-      <width>232</width>
-      <height>20</height>
-      <label></label>
-      <justify>GTK_JUSTIFY_CENTER</justify>
-      <wrap>False</wrap>
-      <xalign>0</xalign>
-      <yalign>0.5</yalign>
-      <xpad>0</xpad>
-      <ypad>0</ypad>
-    </widget>
-
-    <widget>
-      <class>GtkLabel</class>
-      <name>MSG07</name>
-      <x>16</x>
-      <y>412</y>
-      <width>184</width>
+      <name>MSG03</name>
+      <x>198</x>
+      <y>430</y>
+      <width>242</width>
       <height>20</height>
       <label></label>
       <justify>GTK_JUSTIFY_CENTER</justify>

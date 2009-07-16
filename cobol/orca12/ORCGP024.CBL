@@ -121,6 +121,7 @@
            03  WRK-MCP-WIDGET          PIC X(64).
       *
            03  WRK-Z7                  PIC Z,ZZZ,ZZZ.
+           03  WRK-Z8                  PIC ZZ,ZZZ,ZZZ.
       *
            03  WRK-IDX                 PIC 9(04).
            03  WRK-KOHID               PIC 9(10).
@@ -1428,7 +1429,7 @@
            MOVE    SPACE               TO  SPA-P02K-FTNRUIKBN
            MOVE    ZERO                TO  IDK2
            MOVE    ZERO                TO  WRK-TGAIJGNGAK-G
-           MOVE    ZERO                TO  WRK-TNYUJGNGAK
+           MOVE    ZERO                TO  SPA-P02K-TNYUJGNGAK
            PERFORM VARYING     IDK     FROM    1   BY  1
                    UNTIL       IDK     >   SPA-FTN2-MAX
                IF      SPA-NAI24-FTNSELNUM2    =   IDK
@@ -1440,7 +1441,7 @@
                                                TO  WRK-TGAIJGNGAK (IDK2)
       *            …È√¥Œﬂ∑◊
                    ADD     SPA-GMN24-TNYUJGNGAK (IDK)
-                                               TO  WRK-TNYUJGNGAK
+                                               TO  SPA-P02K-TNYUJGNGAK
                    IF      SPA-NAI24-TFTNETCKBN (IDX)
                                            NOT =   "0"
                        MOVE    "1"             TO  SPA-P02K-FTNRUIKBN
@@ -1466,7 +1467,7 @@
                                                TO  WRK-TGAIJGNGAK (IDK2)
       *                …È√¥Œﬂ∑◊
                        ADD     SPA-GMN24-TNYUJGNGAK (IDK)
-                                               TO  WRK-TNYUJGNGAK
+                                               TO  SPA-P02K-TNYUJGNGAK
                        IF      SPA-NAI24-TFTNETCKBN (IDX)
                                                NOT =   "0"
                            MOVE    "1"         TO  SPA-P02K-FTNRUIKBN
@@ -1525,10 +1526,10 @@
       *    ¬æ∞Ï…Ù…È√¥Œﬂ∑◊∆˛Œœ
            MOVE    SPACE               TO  SPA-P02K-MSG07
            IF      SPA-P02K-FTNRUIKBN  =   SPACE
-               IF      WRK-TNYUJGNGAK      >   ZERO
-                   MOVE    WRK-TNYUJGNGAK      TO  WRK-Z7
+               IF      SPA-P02K-TNYUJGNGAK     >   ZERO
+                   MOVE    SPA-P02K-TNYUJGNGAK     TO  WRK-Z8
                    STRING    "¬æ∞Ï…Ù…È√¥Œﬂ∑◊°ß"
-                             WRK-Z7        DELIMITED  BY  SIZE
+                             WRK-Z8        DELIMITED  BY  SIZE
                                            INTO    SPA-P02K-MSG07
                    END-STRING
                    MOVE    "9"             TO  SPA-P02K-FTNRUIKBN

@@ -349,18 +349,9 @@
                    WRK-ZZZ9            DELIMITED  BY  SIZE
                                        INTO    SPA-P02K-MSG02
            END-STRING
-           MOVE    SPA-P02K-TAGOKEI    TO  WRK-ZZZ9
-           STRING  "他院累計："
-                   WRK-ZZZ9            DELIMITED  BY  SIZE
-                                       INTO    SPA-P02K-MSG03
-           END-STRING
-           COMPUTE WRK-GOUKEI          =   SPA-P02K-TAGOKEI
-                                       +   SPA-P02K-JIGOKEI
-           MOVE    WRK-GOUKEI          TO  WRK-ZZZ9
-           STRING  "合　　計："
-                   WRK-ZZZ9            DELIMITED  BY  SIZE
-                                       INTO    SPA-P02K-MSG04
-           END-STRING
+      *
+      *    他院累計等編集処理
+           PERFORM 440-TBLHEN-GOKEI-SEC
       *
            .
        300-SPA-INIT-EXT.
@@ -671,7 +662,14 @@
            MOVE    SPA-P02K-MSG01      TO  P02K-MSG01-VALUE
            MOVE    "black"             TO  P02K-MSG01-STYLE
            MOVE    SPA-P02K-MSG02      TO  P02K-MSG02
-           MOVE    SPA-P02K-MSG03      TO  P02K-MSG03
+      *    他
+           IF      SPA-P02K-FTNRUIKBN  =   "9"
+               MOVE    "blue"              TO  P02K-MSG03-STYLE
+               MOVE    SPA-P02K-MSG07      TO  P02K-MSG03-VALUE
+           ELSE
+               MOVE    "black"             TO  P02K-MSG03-STYLE
+               MOVE    SPA-P02K-MSG03      TO  P02K-MSG03-VALUE
+           END-IF
            MOVE    SPA-P02K-MSG04      TO  P02K-MSG04-VALUE
            MOVE    SPA-P02K-MSG05      TO  P02K-MSG05
            IF     (SPA-P02K-JIGOKEI    +   SPA-P02K-TAGOKEI )
@@ -682,12 +680,6 @@
                MOVE    "black"             TO  P02K-MSG04-STYLE
            END-IF
            MOVE    SPA-P02K-MSG06      TO  P02K-MSG06
-           MOVE    SPA-P02K-MSG07      TO  P02K-MSG07-VALUE
-           IF      SPA-P02K-FTNRUIKBN  =   "9"
-               MOVE    "red"               TO  P02K-MSG07-STYLE
-           ELSE
-               MOVE    "black"             TO  P02K-MSG07-STYLE
-           END-IF
       *
            MOVE    ZERO                TO  IDY
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1091,12 +1083,13 @@
            END-PERFORM
       *
            MOVE    SPA-P02K-TAGOKEI    TO  WRK-ZZZ9
-           STRING  "他院累計："
+           STRING  "　　　他院累計："
                    WRK-ZZZ9            DELIMITED  BY  SIZE
                                        INTO    SPA-P02K-MSG03
            END-STRING
            COMPUTE WRK-GOUKEI          =   SPA-P02K-TAGOKEI
                                        +   SPA-P02K-JIGOKEI
+                                       +   SPA-P02K-TNYUJGNGAK
            MOVE    WRK-GOUKEI          TO  WRK-ZZZ9
            STRING  "合　　計："
                    WRK-ZZZ9            DELIMITED  BY  SIZE

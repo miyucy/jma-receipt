@@ -1567,6 +1567,7 @@
                05  SPA-P02K-MSG07              PIC X(50).
       *        公費上限額の負担累計入力（ :なし、1:他一部負担、9:累計）
                05  SPA-P02K-FTNRUIKBN          PIC X(01).
+               05  SPA-P02K-TNYUJGNGAK         PIC 9(07).
       *
                05  SPA-P02K-NAIMATU            PIC 9(02).
                05  SPA-P02K-SYORI              PIC 9(01).
@@ -1606,7 +1607,7 @@
       *
                    07  SPA-P02K-JIGOKEI            PIC 9(08).
                    07  SPA-P02K-TAGOKEI            PIC 9(08).
-                   07  SPA-P02K-MSG03              PIC X(30).
+                   07  SPA-P02K-MSG03              PIC X(50).
                    07  SPA-P02K-MSG04              PIC X(30).
                    07  SPA-P02K-MSG05              PIC X(30).
       *
