@@ -2763,10 +2763,10 @@
            WHEN    "NYUKIN"
                MOVE    002             TO  SPA-GMN-I04-CUR
            WHEN    "SKYPRTOUT"
+               MOVE    010             TO  SPA-GMN-I04-CUR
+           WHEN    "SKYSUMKBN"
                MOVE    006             TO  SPA-GMN-I04-CUR
            WHEN    "SRYPRTOUT"
-               MOVE    010             TO  SPA-GMN-I04-CUR
-           WHEN    "SRYSUMKBN"
                MOVE    003             TO  SPA-GMN-I04-CUR
            WHEN    "TAIPRTOUT"
      ********* MOVE    004             TO  SPA-GMN-I04-CUR
